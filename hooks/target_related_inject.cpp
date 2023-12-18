@@ -73,26 +73,6 @@ namespace
 		}
 	}
 
-	void __declspec(naked) is_target_visible_wrapper() // 004E5E30
-	{
-		static u32 result;
-		static Unit* target;
-		static Unit* unit;
-		__asm
-		{
-			MOV target, EAX
-			MOV unit, ESI
-			PUSHAD
-		}
-		result = hooks::is_target_visible(target, unit);
-		__asm
-		{
-			POPAD
-			MOV EAX, result
-			RETN
-		}
-	}
-
 	void __declspec(naked) is_unit_visible_wrapper() // 004E5DB0
 	{
 		static u32 result;
@@ -422,6 +402,23 @@ namespace
 		}
 	}
 
+	void __declspec(naked) is_target_visible_wrapper() { // 004E5E30
+		static u32 result;
+		static Unit* target;
+		static Unit* unit;
+		__asm {
+			MOV target, EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		result = hooks::is_target_visible(target, unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	// Patches \\
 
 	const u32 GetClosestReachable_2F155 = 0x0042F155;
@@ -488,6 +485,7 @@ namespace hooks
 		jump_patch(get_closest_point_of_target_wrapper,					0x004762C0, 1);
 		jump_patch(unit_order_move_to_target_reset_order_state_wrapper,	0x00479FA0, 0);
 		jump_patch(is_target_within_min_range_wrapper,					0x00430F10, 1);
+		jump_patch(is_target_visible_wrapper,							0x004E5E30, 4);
 
 		// Patches \\
 

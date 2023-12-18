@@ -550,11 +550,11 @@ namespace hooks
 		jump_patch(unit_stat_act_egg_wrapper,						0x00427260, 0);
 
 		jump_patch(stats_addon_builder_wrapper,						0x00425F30, 2);
-	//	jump_patch(stats_incomplete_unit_wrapper,					0x004260C0, 2); // Breaks unit training tooltips
-	//	jump_patch(stats_queue_progress_wrapper,					0x004268D0, 1); // Breaks unit training tooltips
-	//	jump_patch(stats_morph_progress_wrapper,					0x00457250, 1); // Breaks unit training tooltips
-	//	jump_patch(stats_nuke_silo_wrapper,							0x00426FF0, 3);
-	//	jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0);
+		jump_patch(stats_incomplete_unit_wrapper,					0x004260C0, 2);
+	//	jump_patch(stats_queue_progress_wrapper,					0x004268D0, 1); // Doesn't clear stats panel properly
+	//	jump_patch(stats_morph_progress_wrapper,					0x00457250, 1); // Replaces unit queue with structure progress bar
+		jump_patch(stats_nuke_silo_wrapper,							0x00426FF0, 3);
+	//	jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0); // This is not used anymore, so we can ignore it.
 
 		jump_patch(stats_text_energy_timer_wrapper,					0x00425A30, 2);
 		jump_patch(unit_stat_act_default_wrapper,					0x00425EE0, 4);

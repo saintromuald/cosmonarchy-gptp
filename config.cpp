@@ -48,6 +48,7 @@ void load_config() {
 		load_field(config_node, "show-timer", config.show_timer);
 		load_field(config_node, "show-apm", config.show_apm);
 		load_field(config_node, "always-show-extended-tooltips", config.always_show_extended_tooltips);
+		load_field(config_node, "require-control-for-console-hotkey", config.require_control_for_console_hotkey);
 
 		// Selection UI
 		load_field(config_node, "show-rally-lines", config.show_rally_lines);
@@ -118,6 +119,7 @@ void save_config() {
 	write_field(out, "show-timer", config.show_timer);
 	write_field(out, "show-apm", config.show_apm);
 	write_field(out, "always-show-extended-tooltips", config.always_show_extended_tooltips);
+	write_field(out, "require-control-for-console-hotkey", config.require_control_for_console_hotkey);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Selection UI");

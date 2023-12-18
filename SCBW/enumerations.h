@@ -590,7 +590,8 @@ namespace GameType
 		Scenario = 31,
 		Omnipresence = 32,
 		FactionWars = 33,
-		Debug = 34,
+		Massacre = 34,
+		Debug = 35,
 	};
 }
 

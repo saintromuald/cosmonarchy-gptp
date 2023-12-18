@@ -24,6 +24,7 @@ namespace NewGameCommand
 		GenericSwitchAbility,
 		IssueCTFCop2,
 		CameraSync,
+		SelectFaction,
 	};
 }
 

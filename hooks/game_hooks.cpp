@@ -44,6 +44,7 @@
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/update_unit_sight.h"
+#include "hooks/orders/larva_creep_spawn.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -753,7 +754,7 @@ namespace hooks {
 				}
 			}
 			
-			// Init Extended Features
+			// Init extended features
 			reset_search_index();
 			update_search_index();
 			init_player_colors();
@@ -761,7 +762,7 @@ namespace hooks {
 			init_layouts();
 			init_custom_ai();
 
-			// Execute Triggers before frame 0
+			// Execute triggers before frame 0
 			scbw::set_ingame_loop_state(true);
 			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
 			scbw::set_ingame_loop_state(false);
@@ -776,7 +777,7 @@ namespace hooks {
 			}
 		}
 
-		if (!scbw::is_game_paused()) { // If the game is not paused
+		if (!scbw::is_game_paused()) {
 			graphics::reset_all_graphics();
 		}
 
@@ -991,6 +992,15 @@ namespace hooks {
 		}
 		unit_ext->values[ValueUnitInit] = unit->id + 1;
 
+		if (scbw::get_game_kind() == GameKind_Massacre) {
+			if (unit_id_is_vespene_node(unit->id)) {
+				unit->remove();
+				return;
+			} else if (unit_id_should_give_gas_in_massacre_mode(unit->id)) {
+				scbw::add_massacre_resource(unit->player);
+			}
+		}
+
 		switch (unit->id) {
 			case UnitId::TerranGoliath: {
 				helper::turn_unit(unit, 96);
@@ -1203,6 +1213,7 @@ namespace hooks {
 		// Clear Stagger Blacklist
 		if (unit_ext->timers[TimerClearStaggerBlacklist]) {
 			unit_ext->unit_vectors[UnitVectorStaggerBlacklist].clear();
+			unit_ext->values[ValueStaggerCount] = 0;
 			apply_weapon_cooldown(unit, unit_ext->values[ValueStaggerWeaponId]);
 		}
 
@@ -1338,6 +1349,10 @@ namespace hooks {
 					{
 						unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
 					}
+				}
+
+				if (unit->main_order_id == OrderId::DroneLand) {
+					// TODO: check if it collides with a building, and order it to decollide, without the conditionals being too expensive or naive. -Pr0nogo
 				}
 			} break;
 			case UnitId::ZergEvigrilisk: {
@@ -2604,13 +2619,16 @@ namespace hooks {
 			should_update_speed = true;
 		}
 
-		// Blissful Embrace - Creep spread and Larva spawn
-		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			if (!units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
-			//	helper::secondary_order_spawning_larva(unit); // Doesn't work currently, as spawning larva is a secondary order, just like train
+		// Custom Larva Spawn
+		if (unit_spawns_custom_larva(unit)) {
+			if (unit->secondary_order_id != OrderId::SpawningLarva) { // let's not duplicate the order
+				hooks::secondary_order_spawning_larva(unit, true);
 			}
+		}
 
-			if (*g_elapsed_time_frames % 15 == 0 && !(unit->status & UnitStatus::InAir) && !helper::spreads_creep(unit->id, true)) {
+		// Blissful Embrace - Creep spread and Larva spawn
+		if (unit_spreads_custom_creep(unit)) {
+			if (*g_elapsed_time_frames % 15 == 0) {
 				scbw::spread_custom_creep(unit);
 			}
 		}
@@ -3214,6 +3232,8 @@ namespace hooks {
 		graphics::reset_all_graphics();
 		graphics::reset_stat_res_graphics();
 
+		buttonset_context.reset();
+
 		init_threshold();
 		if (!grp_wire_Font) {
 			init_grp_wire_font("font_wire");
@@ -3779,6 +3799,64 @@ namespace hooks {
 								Point16 pos = *(Point16*)(buffer + 3);
 								globals.players[player].camera = pos;
 							} break;
+							case NewGameCommand::SelectFaction:
+							{
+								u32 player = buffer[2];
+								Faction faction = (Faction)buffer[3];
+								globals.players[player].faction = faction;
+								globals.players[player].faction_was_set = true;
+								switch (g_player_table[player].race) {
+									case RaceId::Terran:
+									{
+										switch (faction) {
+											case Faction_TerranOrionImperium:
+											{
+												scbw::printf("\tPlayer %u has selected the Orion Imperium.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_TerranHecatonCoalition:
+											{
+												scbw::printf("\tPlayer %u has selected the Hecaton Coalition.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_TerranFuturistFederation:
+											{
+												scbw::printf("\tPlayer %u has selected the Futurist Federation.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_TerranGoldenRepublic:
+											{
+												scbw::printf("\tPlayer %u has selected the Golden Republic.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_TerranNydusTrinity:
+											{
+												scbw::printf("\tPlayer %u has selected the Nydus Trinity.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_TerranUpstart:
+											{
+												scbw::printf("\tPlayer %u has selected the Terran Upstarts.", player + 1, GameTextColor::White);
+											} break;
+										}
+									} break;
+									case RaceId::Protoss:
+									{
+										switch (faction) {
+											case Faction_ProtossDivinePrimacy:
+											{
+												scbw::printf("\tPlayer %u has selected the Divine Primacy.", player + 1, GameTextColor::White);
+											} break;
+										}
+									} break;
+									case RaceId::Zerg:
+									{
+										switch (faction)
+										{
+											case Faction_ZergAtaltrethTendril:
+											{
+												scbw::printf("\tPlayer %u has selected the Ataltreth Tendril.", player + 1, GameTextColor::White);
+											} break;
+										}
+									} break;
+								}
+								helper::play_sound_global(SoundId::Misc_button_wav);
+							} break;
 						}
 						goto next_command;
 					}
@@ -3814,7 +3892,7 @@ namespace hooks {
 		return result;
 	}
 
-	void initialize_provider_version(GameVersion* version) {
+	void initialize_provider_version(GameVersion* version) { // 00472770
 		*version = {};
 		version->size = sizeof(*version);
 		version->game_id = 'CMBW';

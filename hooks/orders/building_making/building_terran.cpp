@@ -429,6 +429,9 @@ namespace hooks
 					u32 sound_id = 0;
 					if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 						sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_AddonComplete);
+						if (!sound_id) {
+							sound_id = SoundId::Terran_Advisor_TAdUpd03_WAV;
+						}
 					} else if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) {
 						sound_id = SoundId::Terran_SCV_TSCUpd00_WAV; // Job's finished
 					}

@@ -167,6 +167,7 @@ enum ExtValueId {
 	ValueEnsnareFactor,
 	ValueVultureLaunchPos,
 	ValueStaggerWeaponId,
+	ValueStaggerCount,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -284,6 +285,8 @@ enum ExtTimerId {
 	TimerEmpressAnodyneAnnex,
 	TimerZarcavrokorSecondaryFire,
 	TimerClearStaggerBlacklist,
+	TimerUseLastRepulsion,
+	TimerCustomLarva,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -301,8 +304,6 @@ enum ExtTimerId {
 	TimerAI_KitingSync,
 	TimerAI_KitingCombat,
 	TimerAI_Patience,
-
-	TimerUseLastRepulsion,
 
 	TimerCount,
 };

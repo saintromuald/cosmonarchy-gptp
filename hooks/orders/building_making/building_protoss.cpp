@@ -145,7 +145,7 @@ namespace hooks {
 					++building->main_order_state;
 
 					if (!(*g_is_in_replay) && building->player == *g_local_nation_id) {
-						u32 sound_id = SoundId::ProtossAdvisorUpdateStructure;
+						u32 sound_id = scbw::get_advisor_sound_from_event_type(building->player, AdvisorEvent_StructureComplete_P);
 						if (helper::play_sound_from_unit(sound_id, building, 1, 99)) {
 							helper::do_unit_event_notification(building, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 						} else {

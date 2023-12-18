@@ -530,7 +530,7 @@ namespace hooks
 				scbw::print(buffer, GameTextColor::Yellow);
 				GPTP::critical_logger << "Invalid Hash, type 1! Local nation id: " << *g_local_nation_id << " | Active nation id: " << *g_active_nation_id << " | Player flag: " << *g_player_flag <<
 					"\nHash offset:" << *g_current_hash_offset << "\nHash 1: 0x" << g_hash_list[hash_struct_index].hash << "| Hash 2: 0x" << *(u16*)(data + 2) <<
-					"\nP1 resources: " << g_game_minerals[0] << " | " << g_game_vespene[0] << "\nP2 resources: " << g_game_minerals[0] << " | " << g_game_vespene[0] <<
+					"\nP1 resources: " << g_game_minerals[0] << " | " << g_game_vespene[0] << "\nP2 resources: " << g_game_minerals[1] << " | " << g_game_vespene[1] <<
 					"\nElapsed time: " << *g_elapsed_time_frames << " | Last random number: " << *g_last_random_number <<
 					"\nActive visions: " << *g_player_visions << " | Explored visions: " << *g_player_explored_visions <<
 					"\nMap dimensions: " << g_map_tile_size->width << "x" << g_map_tile_size->height <<

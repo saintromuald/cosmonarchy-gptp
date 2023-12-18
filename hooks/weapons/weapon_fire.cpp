@@ -348,16 +348,26 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 	}
 
 	if (has_stagger) {
+	fired_stagger:
+		bool apply_cooldown = false;
 		if (fired_at) {
-		fired_stagger:
 			blacklist.push_back(fired_at);
 			unit->ground_weapon_cooldown = options.stagger;
 			unit->air_weapon_cooldown = options.stagger;
 			unit_ext->timers[TimerClearStaggerBlacklist] = options.stagger + 6; // Ideally we would get attack animation time instead of hardcoding 6. -Veeq7
 			unit_ext->values[ValueStaggerWeaponId] = weapon_id;
+			unit_ext->values[ValueStaggerCount] += 1;
+			if (max_targets && unit_ext->values[ValueStaggerCount] >= max_targets) {
+				apply_cooldown = true;
+			}
 		} else {
+			apply_cooldown = true;
+		}
+
+		if (apply_cooldown) {
 			blacklist.clear();
 			unit_ext->timers[TimerClearStaggerBlacklist] = 0;
+			unit_ext->values[ValueStaggerCount] = 0;
 			apply_weapon_cooldown(unit, weapon_id);
 		}
 	}

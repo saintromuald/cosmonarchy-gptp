@@ -19,6 +19,7 @@ struct Config {
 	bool show_timer = true;
 	bool show_apm = true;
 	bool always_show_extended_tooltips = false;
+	bool require_control_for_console_hotkey = true;
 
 	// Selection UI
 	bool show_rally_lines = true;

@@ -625,7 +625,6 @@ struct FullName {
 };
 
 struct PlayerData {
-	bool can_randomize_player_colors;
 	bool has_custom_color[PlayerLimit];
 	bool has_custom_player_name[PlayerLimit];
 	bool color_used[PlayerColor::Count];
@@ -644,7 +643,7 @@ extern std::vector<const char*> easter_egg_unit_names[UnitsIdLimit];
 const char* get_random_easter_egg_unit_name(u16 unit_id);
 
 u8 get_player_color_index(u32 player, u32 index);
-void set_player_color(u32 player, u32 color);
+bool set_player_color(u32 player, u32 color);
 void init_player_colors();
 void load_player_colors();
 

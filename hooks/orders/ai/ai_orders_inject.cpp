@@ -488,14 +488,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ai_find_best_repair_unit_wrapper() { // 00443160
+	void __declspec(naked) ai_find_best_repair_target_wrapper() { // 00443160
 		static Unit* result;
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::ai_find_best_repair_unit(unit);
+		result = hooks::ai_find_best_repair_target(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -504,7 +504,7 @@ namespace
 	}
 
 	void __declspec(naked) ai_worker_repair_controller_wrapper() { // 00433C70
-		static s32 result;
+		static b32 result;
 		static Unit* repairer;
 		static AiTown* town;
 		__asm {
@@ -930,7 +930,7 @@ namespace hooks
 		jump_patch(ai_auto_harvest_wrapper,						0x00433B90, 1);
 		jump_patch(ai_get_build_order_id_wrapper,				0x00434C31, 0);
 
-		jump_patch(ai_find_best_repair_unit_wrapper,			0x00443160, 1);
+		jump_patch(ai_find_best_repair_target_wrapper,			0x00443160, 1);
 	//	jump_patch(ai_worker_repair_controller_wrapper,			0x00433C70, 1);
 		jump_patch(ai_expand_wrapper,							0x0045B530, 1);
 		jump_patch(ai_remove_addon_placements,					0x00443CC0, 3);

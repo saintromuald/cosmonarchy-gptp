@@ -1,6 +1,7 @@
 #include "aise_signal.h"
 #include "DatExtend/datext.h"
 #include "hooks/grafting/grafting.h"
+#include "config.h"
 
 static u16* find_req_id(u16* req_table, u32 req_id) {
 	u16* current = req_table + 1;
@@ -62,6 +63,12 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 		} break;
 		case AiseSignal_GetResearchReq: {
 			return (u32)find_req_id(requirements::research, v1);
+		} break;
+		case AiseSignal_GetClientSelection: {
+			return (u32)ccmu_extender.new_client_selection_group;
+		} break;
+		case AiseSignal_GetAltConsoleHotkey: {
+			return (u32)config.require_control_for_console_hotkey;
 		} break;
 	}
 	return 0;

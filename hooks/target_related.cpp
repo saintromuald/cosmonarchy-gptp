@@ -166,23 +166,6 @@ namespace hooks
 		return target->status & 0x300 && !((1 << unit->player) & target->detection_status);
 	}
 
-	// Hooked to help with cloak rewrite. - Pr0nogo
-	u32 is_target_visible(Unit* target, Unit* unit) // 004E5E30
-	{
-		s32 player = 1 << unit->player;
-		if (!target)
-		{
-			return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
-		}
-
-		u32 result = 0;
-		if (!(target->status & 0x300) || (1 << unit->player) & target->detection_status)
-		{
-			result = (u8)(player & target->sprite->visibility_status);
-		}
-		return result;
-	}
-
 	// Hooked to help with cloak rewrite - Pr0nogo
 	u32 is_unit_visible(Unit* unit) // 004E5DB0
 	{
@@ -1037,5 +1020,25 @@ namespace hooks
 			}
 		}
 		return min_range >= helper::get_distance_fast(0, x2, 0, y2);
+	}
+
+	// Hooked to protect against nullsprite crashes. -Pr0nogo
+	u32 is_target_visible(Unit* target, Unit* unit) // 004E5E30
+	{
+		s32 player_flag = 1 << unit->player;
+		if (!target || target->is_dead()) // Latter is new
+		{
+			ActiveTile* tile = scbw::get_active_tile_at_coords(unit->order_target.pt);
+			return player_flag & ~(tile->vision_flags & 0xFF);
+		}
+
+		u32 result;
+		if (!(target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) || player_flag & target->detection_status)
+		{
+			result = (u8)(player_flag & target->sprite->visibility_status);
+		} else {
+			result = 0;
+		}
+		return result;
 	}
 }

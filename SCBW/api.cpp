@@ -2477,6 +2477,13 @@ namespace scbw {
 			if (unit->id == UnitId::TerranCleric && unit->status & UnitStatus::AttackMove) {
 				helper::order_return_to_idle(unit);
 			}
+
+			// Fix AI workers getting stuck
+			if (unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergGosvileth) {
+				if (unit->main_order_id == OrderId::DroneLand) {
+					helper::order_return_to_idle(unit);
+				}
+			}
 		}
 	}
 
@@ -3207,6 +3214,9 @@ namespace scbw {
 			case GameType::FactionWars:
 				return GameKind_FactionWars;
 
+			case GameType::Massacre:
+				return GameKind_Massacre;
+
 			case GameType::Debug:
 				return GameKind_Competitive;
 		}
@@ -3288,6 +3298,7 @@ namespace scbw {
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
 						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoMinerals01, SoundId::MeskAdvisor_NoMinerals04);
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoMinerals01, SoundId::AckmedAdvisor_NoMinerals04);
 					}
 				} break;
 				case AdvisorEvent_NoVespene: {
@@ -3296,6 +3307,7 @@ namespace scbw {
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr01_WAV;
 						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr01_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoVespene01, SoundId::MeskAdvisor_NoVespene05);
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoVespene01, SoundId::AckmedAdvisor_NoVespene04);
 					}
 				} break;
 				case AdvisorEvent_NoEnergy: {
@@ -3304,6 +3316,7 @@ namespace scbw {
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr06_WAV;
 						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr06_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoEnergy01, SoundId::MeskAdvisor_NoEnergy05);
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoEnergy01, SoundId::AckmedAdvisor_NoEnergy04);
 					}
 				} break;
 				case AdvisorEvent_NoBuildTerran: {
@@ -3333,6 +3346,7 @@ namespace scbw {
 						case AdvisorType_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
 					//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
 						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Warp01;
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Warp01, SoundId::AckmedAdvisor_Warp02);
 					} 
 				} break;
 				case AdvisorEvent_StructureComplete_Z: {
@@ -3344,6 +3358,7 @@ namespace scbw {
 					//	case AdvisorType_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
 					//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
 						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Addon01;
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Addon01, SoundId::AckmedAdvisor_Addon02);
 					}
 				} break;
 				case AdvisorEvent_TechUpComplete: {
@@ -3352,6 +3367,7 @@ namespace scbw {
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd06_WAV;
 						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_ZAdUpd06_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_Tech01, SoundId::MeskAdvisor_Tech02);
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Tech01, SoundId::AckmedAdvisor_Tech02);
 					} 
 				} break;
 				case AdvisorEvent_MissileComplete: {
@@ -3369,6 +3385,7 @@ namespace scbw {
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd04_WAV;
 						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_MissileLaunch01, SoundId::MeskAdvisor_MissileLaunch02);
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_MissileLaunch01, SoundId::AckmedAdvisor_MissileLaunch02);
 					}
 				} break;
 				case AdvisorEvent_AllyUnderAttack_T: {
@@ -3669,5 +3686,11 @@ namespace scbw {
 			}
 		}
 		return count;
+	}
+
+	void add_massacre_resource(u32 player_id)
+	{
+		g_game_vespene[player_id] += 3;
+		g_total_vespene[player_id] += 3;
 	}
 }

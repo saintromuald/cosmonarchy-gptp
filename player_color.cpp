@@ -18,14 +18,11 @@ static bool player_wants_to_randomize(u32 player) {
 	if (player_data.has_custom_color[player]) {
 		return false;
 	}
-	if (player_data.can_randomize_player_colors) {
-		bool randomize = g_player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
-		if (g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
-			randomize = !randomize;
-		}
-		return randomize;
+	bool randomize = g_player_force_flags[g_player_table[player].force - 1].randomize_start_locations;
+	if (g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player] & VespeneDeaths_ToggleRandomizeColor) {
+		randomize = !randomize;
 	}
-	return false;
+	return randomize;
 }
 
 static bool player_can_randomize(u32 player) {
@@ -173,12 +170,7 @@ static u32 get_next_best_color(u32 player) {
 		if (!can_use_player_color(color, player)) continue;
 		matches.push_back(make_color_match(player, color));
 	}
-	u32 color = get_best_color(matches, true);
-	if (color == PlayerColor::Invalid) {
-		scbw::printf("Something went wrong when randomizing colors!");
-		return PlayerColor::Red;
-	}
-	return color;
+	return get_best_color(matches, true);
 }
 
 static u32 get_color_for_personality(u32 player) {
@@ -197,24 +189,9 @@ static u32 get_color_for_personality(u32 player) {
 	return PlayerColor::Invalid;
 }
 
-static bool has_enough_colors() {
-	u32 banned_race_tints_count = 0;
-	for (const std::vector<u32>& race : banned_race_tints) {
-		if (race.size() > banned_race_tints_count) {
-			banned_race_tints_count = race.size();
-		}
-	}
-	if (player_tints.size() - banned_tileset_tints[*g_current_tileset].size() - banned_race_tints_count < PlayerLimit - scbw::get_witness_count()) {
-		return false;
-	}
-	return true;
-}
-
 static void randomize_player_color(u32 player) {
 	if (g_player_table[player].type == PlayerType::Computer) {
-		u32 color = get_color_for_personality(player);
-		if (color != PlayerColor::Invalid) {
-			set_player_color(player, color);
+		if (set_player_color(player, get_color_for_personality(player))) {
 			return;
 		}
 	}
@@ -243,7 +220,10 @@ u8 get_player_color_index(u32 player, u32 index) {
 	return g_player_in_game_colors[player * ColorSetSize + index];
 }
 
-void set_player_color(u32 player, u32 color) {
+bool set_player_color(u32 player, u32 color) {
+	if (color == PlayerColor::Invalid) {
+		return false;
+	}
 	player_data.has_custom_color[player] = true;
 	player_data.player_color_list[player] = color;
 	g_player_minimap_colors[player] = tminimap_colors[color + ColorSetCount * *g_current_tileset];
@@ -251,6 +231,7 @@ void set_player_color(u32 player, u32 color) {
 	for (u32 i = 0; i < ColorSetSize; i++) {
 		g_player_in_game_colors[player * ColorSetSize + i] = tunit_colors[color * ColorSetSize + i];
 	}
+	return true;
 }
 
 static void init_player_colors() {
@@ -289,7 +270,6 @@ const char* get_random_easter_egg_unit_name(u16 unit_id) {
 }
 
 void load_player_colors() {
-	player_data.can_randomize_player_colors = has_enough_colors();
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (player_wants_to_randomize(player) && player_can_randomize(player)) {
 			randomize_player_color(player);

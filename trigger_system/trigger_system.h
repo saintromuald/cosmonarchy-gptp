@@ -110,6 +110,7 @@ enum AdvisorType : u8 {
 	AdvisorType_Zerg,
 
 	AdvisorType_Mesk,
+	AdvisorType_Ackmed,
 
 	AdvisorType_Count,
 };
@@ -123,6 +124,7 @@ static const char* advisor_symbol_names[] = {
 	"Zerg",
 
 	"Mesk",
+	"Ackmed",
 };
 C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == AdvisorType_Count);
 
@@ -141,6 +143,12 @@ struct AlertState {
 	u8 ally_cooldown;
 };
 
+struct AdvisorState {
+	u16 sound_id;
+	u8 play_timer;
+	u8 cooldown;
+};
+
 struct Globals {
 	PlayerVars players[PlayerLimit];
 	u32 celebration;
@@ -148,6 +156,7 @@ struct Globals {
 	AdvisorType current_advisor;
 
 	AlertState alert;
+	AdvisorState advisor_state;
 };
 
 extern Globals globals;

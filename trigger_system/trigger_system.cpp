@@ -244,6 +244,16 @@ void update_trigger_system(bool in_game) {
 				helper::play_sound_from_unit(globals.alert.sound_id, 0);
 			}
 		}
+
+		if (globals.advisor_state.cooldown) {
+			globals.advisor_state.cooldown--;
+		}
+		if (globals.advisor_state.play_timer) {
+			globals.advisor_state.play_timer--;
+			if (!globals.advisor_state.play_timer) {
+				helper::play_sound_from_unit(globals.advisor_state.sound_id, 0);
+			}
+		}
 	}
 	trigger_game_paused = paused;
 }

@@ -1022,7 +1022,7 @@ namespace hooks {
 			worker_ai->last_update_second = *g_elapsed_time_seconds;
 			GroupFlag group_flags = units_dat::group_flags[worker->id];
 			if ((group_flags.is_zerg || group_flags.is_protoss || !group_flags.is_terran || !helper::ai_worker_repair_controller(worker, town))
-				&& !helper::ai_try_progress_spending_queue_worker(town, worker)) {
+			&&  !helper::ai_try_progress_spending_queue_worker(town, worker)) {
 				Unit* main_building = town->main_building;
 				if (main_building) {
 					Unit* town_gas = 0;
@@ -1296,37 +1296,42 @@ namespace hooks {
 	}
 
 	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
-	Unit* ai_find_best_repair_unit(Unit* to_repair) { // 00443160
-		EntryArray workers = {};
-		unit_search_radial(&workers, to_repair->position, 64 * 32);
-		unit_search_filter(&workers, to_repair, FilterAlly, {UnitId::TerranMason, UnitId::TerranTalos});
-		Unit* best = unit_search_find_best(&workers, [=](Unit* worker) {
-			if (!worker->has_path_to_unit(to_repair) ||
-				to_repair->order_target.unit == worker ||
-				scbw::is_allied_to(worker->player, to_repair->player) ||
-				!helper::is_order_valid(OrderId::Repair1, worker, 0, to_repair, 0)) {
+	Unit* ai_find_best_repair_target(Unit* repairman) { // 00443160
+		EntryArray repair_targets = {};
+		unit_search_radial(&repair_targets, repairman->position, 1024 * 32);
+		unit_search_filter(&repair_targets, repairman, FilterAlly);
+		Unit* best_target = unit_search_find_best(&repair_targets, [=](Unit* repair_target) {
+			if (!repairman->has_path_to_unit(repair_target)
+			||	 repairman->order_target.unit == repair_target
+			||   scbw::is_allied_to(repair_target->player, repairman->player)
+			||  !helper::is_order_valid(OrderId::Repair1, repairman, 0, repair_target, 0))
+			{
 				return ScoreInvalidUnit;
 			}
-			s32 score = 0;
-			score -= scbw::get_distance_fast(worker->position, to_repair->position);
-			if (worker->id == UnitId::TerranTalos) {
-				score += 1000;
+			s32 max_hp = units_dat::max_hitpoints[repair_target->id] / 256;
+			if (!max_hp) {
+				max_hp = (repair_target->hitpoints + 255) / 256;
+				if (!max_hp) {
+					max_hp = 1;
+				}
 			}
+			s32 score = max_hp - ((repair_target->hitpoints + 255) / 256);
 		});
-		return best;
+		return best_target;
 	}
 
 	// Same as above. -Pr0nogo
-	s32 ai_worker_repair_controller(Unit* worker, AiTown* town) { // 00433C70
-		u32 best_score = 0;
-		Unit* repairee = 0;
+	b32 ai_worker_repair_controller(Unit* repairman, AiTown* town) { // 00433C70
+		s32 best_score = 0;
+		Unit* repair_target = 0;
 		for (BuildingAi* building_ai = town->buildings.first; building_ai; building_ai = building_ai->link.prev) {
 			Unit* building = building_ai->parent;
 			if (building->connected_unit || !helper::ai_is_building_safe(building)) {
 				continue;
 			}
 			if (!(building->status & UnitStatus::Completed)) {
-				continue; // Used to break, but it should actually continue. unless the building list is sorted a particular way, which allows to break early...?
+				break;	// Used to break, but it should actually continue. Unless the building list is sorted a particular way, which allows to break early...?
+						// Trying break again to fix issues with AI never repairing certain structures. -Pr0nogo
 			}
 			s32 max_hp = units_dat::max_hitpoints[building->id] / 256;
 			if (!max_hp) {
@@ -1335,46 +1340,50 @@ namespace hooks {
 					max_hp = 1;
 				}
 			}
-			u32 score = max_hp - ((building->hitpoints + 255) / 256);
+			s32 score = max_hp - ((building->hitpoints + 255) / 256);
 			if (best_score < score) {
-				repairee = building;
+				repair_target = building;
 				best_score = score;
 			}
 		}
-		if (!town->buildings.first || !repairee) {
+
+		if (!town->buildings.first || !repair_target) {
 			if (!town->building_scv) {
-				town->building_scv = worker;
+				town->building_scv = repairman;
 			}
-			if (town->building_scv != worker) {
+			if (town->building_scv != repairman) {
 				return 0;
 			}
-			repairee = helper::ai_find_best_repair_unit(worker); // This writing to repairee seems really wrong
-			if (!repairee) {
+			repair_target = helper::ai_find_best_repair_unit(repairman);
+			if (!repair_target) {
 				return 0;
 			}
 		}
-		worker->user_action_flags |= 1u;
-		Point16 repairee_pos = {}; // Shouldn't we return when nothing to repair?
-		if (repairee) {
-			repairee_pos = repairee->sprite->position;
+
+		repairman->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+		Point16 repair_target_pos = {};
+		if (repair_target) {
+			repair_target_pos = repair_target->sprite->position;
 		}
-		if (worker->main_order_id) {
-			for (Order* order_tail = worker->order_queue_tail; order_tail; order_tail = worker->order_queue_tail) {
+
+		if (repairman->main_order_id) {
+			for (Order* order_tail = repairman->order_queue_tail; order_tail; order_tail = repairman->order_queue_tail) {
 				if (!orders_dat::can_be_interrupted[order_tail->order_id] && order_tail->order_id != OrderId::Repair1) {
 					break;
 				}
-				helper::remove_order_from_unit_queue(order_tail, worker);
+				helper::remove_order_from_unit_queue(order_tail, repairman);
 			}
-			helper::perform_another_order(OrderId::Repair1, 0, worker, UnitId::None, repairee_pos, repairee);
+			helper::perform_another_order(OrderId::Repair1, 0, repairman, UnitId::None, repair_target_pos, repair_target);
 		}
-		helper::do_next_queued_order(worker);
-		repairee->connected_unit = worker;
+		helper::do_next_queued_order(repairman);
+		repair_target->connected_unit = repairman;
+		scbw::print("ai_worker_repair_controller returned 1");
 		return 1;
 	}
 
 	bool ai_resarea_valid_for_expo(u32 player, u32 resarea, AiTown* main_town, bool has_transport, EntryArray* out_units) {
 		ResourceArea* area = &g_resource_areas->areas[resarea];
-		if (area->flags & 2) { // Already taken by an AI, maybe we shouldn't care and allow them both to compete for the expo?
+		if (area->flags & 2) { // Already taken by an AI, maybe we shouldn't care and allow them both to compete for the expo? -Veeq7
 			return false;
 		}
 		Region* area_region = scbw::get_region(scbw::get_region_id(area->position));
@@ -1385,8 +1394,8 @@ namespace hooks {
 			}
 		}
 
-		// Since we are not checking for area->flags & 1, we need to make sure the AI doesn't expand to own main town and main towns of allied players
-		// Maybe we should assign the area flag 2 for those? Or maybe not check area flag 2 at all and only use this method?
+		// Since we are not checking for area->flags & 1, we need to make sure the AI doesn't expand to own main town and main towns of allied players.
+		// Maybe we should assign the area flag 2 for those? Or maybe not check area flag 2 at all and only use this method? -Veeq7
 		for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 			if (scbw::is_allied_to(player, other_player) && g_player_table[other_player].type == PlayerType::Computer) {
 				for (AiTown* town = g_ai_town_list[other_player].first; town; town = town->prev) {

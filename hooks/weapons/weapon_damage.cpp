@@ -290,6 +290,9 @@ namespace hooks
 			weapon_damage_lifesteal(data);
 		}
 		if (weapon_damage_is_lethal(data)) {
+			if (scbw::get_game_kind() == GameKind_Massacre) {
+				scbw::add_massacre_resource(data.attacking_player_id);
+			}
 			if (!weapon_damage_fatal(data)) { // Prevent attack if it wasn't fatal
 				data.damage = 0;
 				data.damage_type = DamageType::Independent;

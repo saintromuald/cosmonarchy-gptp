@@ -106,7 +106,7 @@ namespace hooks
 				if (*g_cheat_state & CheatFlags::OperationCwal) {
 					hp_gain *= 16;
 				}
-				if (unit->id == UnitId::TerranTalos) { // Talos - Advanced repair speed
+				if (unit->id == UnitId::TerranTalos) { // Talos - Increased repair speed
 					hp_gain *= 1.5;
 				}
 				hp_gain *= 0.75; // Reduce overall healing rate
@@ -124,8 +124,7 @@ namespace hooks
 			helper::force_order_done(unit);
 			/*unit->userActionFlags |= 1;
 			prepareForNextOrder(unit);*/
-		}
-		else {
+		} else {
 			unit->main_order_state = 1;
 			/*u8 orderId;
 

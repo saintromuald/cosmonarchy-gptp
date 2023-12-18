@@ -54,10 +54,10 @@ bool isGameOn = false;
 			PUSHAD
 			MOV EBP, ESP
 		}
+
 		{
 			hooks::next_frame();
 		}
-
 		if (scbw::is_game_paused())
 		{
 			__asm {
@@ -65,9 +65,7 @@ bool isGameOn = false;
 				MOV EAX, 1
 				RETN
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				MOV EAX, 0
@@ -271,7 +269,7 @@ bool isGameOn = false;
 		}
 	}
 
-	void __declspec(naked) initialize_provider_version_wrapper() {
+	void __declspec(naked) initialize_provider_version_wrapper() { // 00472770
 		static GameVersion* version;
 		__asm {
 			MOV version, ESI

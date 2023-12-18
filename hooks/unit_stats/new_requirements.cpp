@@ -3240,8 +3240,7 @@ namespace hooks {
 			case UnitId::Omnivale:
 			{
 				if (unit_id == UnitId::TerranMason
-				||	unit_id == UnitId::ProtossScribe
-				||	unit_id == UnitId::ZergDroleth)
+				||	unit_id == UnitId::ProtossScribe)
 				{
 					return TECH_ACTIVE;
 				}
