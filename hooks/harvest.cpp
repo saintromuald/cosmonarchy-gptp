@@ -480,7 +480,7 @@ namespace hooks {
 			worker->worker.harvest_target = 0;
 			if (node)
 			{
-				--node->building.resource.is_mining;
+				node->building.resource.is_mining = 0;
 				Unit* next_harvester = helper::let_next_unit_mine(node);
 				if (next_harvester)
 				{
