@@ -981,7 +981,8 @@ bool unit_can_be_ensnared(Unit* unit) {
 
 bool weapon_id_is_line_attack(u32 weapon_id) {
 	return weapon_id == WeaponId::StrigaPhaseSaber
-		|| weapon_id == WeaponId::PariahIconoclastBlades;
+		|| weapon_id == WeaponId::PariahIconoclastBlades
+		|| weapon_id_is_flamethrower(weapon_id);
 }
 
 u32 get_splash_width_from_weapon_id(u32 weapon_id) {
@@ -1154,4 +1155,14 @@ bool rapid_rendezvous_can_target_unit_id(u32 unit_id) { // Does not prohibit air
 bool unit_id_ignores_ground_collision(u32 unit_id)
 {
 	return unit_id_is_larva(unit_id) || unit_id == UnitId::ZergRilirokor;
+}
+
+bool unit_id_has_projection_attack(u32 unit_id)
+{
+	return unit_id == UnitId::TerranHarakan
+		|| unit_id == UnitId::TerranStriga
+		|| unit_id == UnitId::TerranMatadorCinderMode
+		|| unit_id == UnitId::TerranMatadorTurretCinderMode
+		|| unit_id == UnitId::TerranDurendal
+		|| unit_id == UnitId::ProtossPariah;
 }

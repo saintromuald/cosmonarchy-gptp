@@ -95,8 +95,11 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit_ext->timers[TimerReclaiming] = 2 * 24;
 		unit_ext->timers[TimerStun]       = 2 * 24;
 		unit_ext->timers[TimerDecaySafe]  = 3;
-		unit_ext->values[ValueDecaying] = true;
-	//	unit_ext->values[ValueNoCorpse] = true;
+		if (player != 8 && scbw::get_game_kind() != GameKind_TheTurning) {
+			unit_ext->values[ValueDecaying] = true;
+		} else {
+			unit_ext->values[ValueNoCorpse] = true;
+		}
 	}
 	return unit;
 }

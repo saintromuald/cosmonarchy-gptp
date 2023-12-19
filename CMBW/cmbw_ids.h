@@ -95,3 +95,4 @@ bool unit_spreads_custom_creep(Unit* unit);
 bool unit_id_should_give_gas_in_massacre_mode(u32 unit_id);
 bool rapid_rendezvous_can_target_unit_id(u32 unit_id);
 bool unit_id_ignores_ground_collision(u32 unit_id);
+bool unit_id_has_projection_attack(u32 unit_id);

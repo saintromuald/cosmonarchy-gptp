@@ -591,7 +591,8 @@ namespace GameType
 		Omnipresence = 32,
 		FactionWars = 33,
 		Massacre = 34,
-		Debug = 35,
+		TheTurning = 35,
+		Debug = 36,
 	};
 }
 

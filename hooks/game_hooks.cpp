@@ -1210,17 +1210,27 @@ namespace hooks {
 			}
 		}
 
-		// Clear Stagger Blacklist
+		// Clear stagger blacklist
 		if (unit_ext->timers[TimerClearStaggerBlacklist]) {
 			unit_ext->unit_vectors[UnitVectorStaggerBlacklist].clear();
 			unit_ext->values[ValueStaggerCount] = 0;
 			apply_weapon_cooldown(unit, unit_ext->values[ValueStaggerWeaponId]);
 		}
 
-		// Handle custom line attacks
-		if ((unit->id == UnitId::ProtossPariah || unit->id == UnitId::TerranStriga) && unit->order_signal & 0x20) {
-			unit->order_signal &= ~0x20;
-			iquare_globals.remove_unit_from_line_attack_table(unit, true);
+		// Projection (line attack) handling
+		if (unit_id_has_projection_attack(unit->id)) {
+			bool remove = false;
+			if (unit->order_signal & 0x20) {
+				unit->order_signal &= ~0x20;
+				remove = true;
+			} else if (unit->subunit && unit->subunit->is_subunit() && unit->subunit->order_signal & 0x20) {
+				unit->subunit->order_signal &= ~0x20;
+				remove = true;
+			}
+
+			if (remove) {
+				iquare_globals.remove_unit_from_line_attack_table(unit, true);
+			}
 		}
 
 		if (unit->unit_ai) {
@@ -1314,7 +1324,7 @@ namespace hooks {
 					}
 				}
 
-				if (!unit_ext->timers[TimerVilgolethTimedLife]) {
+				if (unit->player != 11 && !unit_ext->timers[TimerVilgolethTimedLife]) {
 					unit_ext->timers[TimerVilgolethTimedLife] = 10 * 24;
 				} else if (unit_ext->timers[TimerVilgolethTimedLife] == 1) {
 				//	iquare_globals.create_effect(EffectId_VilgolethHeal, 5 * 24, unit->position, 3 * 32, SpriteId::KeskathalorMissileImpact, unit->sprite->elevation + 1, unit->player, unit);

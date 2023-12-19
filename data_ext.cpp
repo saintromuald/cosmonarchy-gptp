@@ -111,6 +111,10 @@ void update_ext_variables() {
 			thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
 		}
 
+		if (scbw::get_game_kind() == GameKind_TheTurning && thingy_ext->activity_timer >= 24) {
+			reclaim_corpse(thingy, 8);
+		}
+
 		if (thingy_ext->avenge_or_ascend_player && thingy_ext->activity_timer >= 24) {
 			avenge_or_ascend_corpse(thingy, thingy_ext->avenge_or_ascend_player - 1);
 		}

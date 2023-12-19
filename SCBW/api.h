@@ -56,6 +56,7 @@ enum GameKind {
 	GameKind_Omnipresence,
 	GameKind_FactionWars,
 	GameKind_Massacre,
+	GameKind_TheTurning,
 	GameKind_Debug,
 	GameKind_Count,
 };

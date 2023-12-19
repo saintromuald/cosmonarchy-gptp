@@ -2587,11 +2587,8 @@ namespace scbw {
 			{
 				return 5;
 			}
-			case WeaponId::HarakanFlamethrower:
 			case WeaponId::HypnagogueKaleidoscopeCannon:
 			case WeaponId::VultureFragmentationGrenade:
-			case WeaponId::MatadorTwinstrikeFlamethrowers:
-			case WeaponId::DurendalAbaddonFlamethrowers:
 			case WeaponId::PazuzuJupiterDriver:
 			case WeaponId::WraithBurstLasers:
 			case WeaponId::SundogBlindsideRockets:
@@ -3223,6 +3220,9 @@ namespace scbw {
 			case GameType::Massacre:
 				return GameKind_Massacre;
 
+			case GameType::TheTurning:
+				return GameKind_TheTurning;
+
 			case GameType::Debug:
 				return GameKind_Competitive;
 		}
@@ -3706,6 +3706,7 @@ namespace scbw {
 		return game_kind == GameKind_Competitive
 			|| game_kind == GameKind_Omnipresence
 			|| game_kind == GameKind_FactionWars
-			|| game_kind == GameKind_Massacre;
+			|| game_kind == GameKind_Massacre
+			|| game_kind == GameKind_TheTurning;
 	}
 }

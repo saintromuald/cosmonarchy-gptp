@@ -351,6 +351,8 @@ namespace hooks
 		}
 
 		// GPTP Timer + Value
+		add_status(statuses, "Apollyoid Adhesive", unit_ext->values[ValueApollyoidAdhesiveStacks], 0,
+			unit_ext->timers[TimerApollyoidAdhesive], TimerType::Gptp);
 		add_status(statuses, "Empowered", unit_ext->values[ValueSavantPowerSiphonBuff], 0,
 			unit_ext->timers[TimerSavantPowerSiphonBuff], TimerType::Gptp);
 		add_status(statuses, "Power Siphoned", unit_ext->values[ValueSavantPowerSiphonDebuff], 0,
