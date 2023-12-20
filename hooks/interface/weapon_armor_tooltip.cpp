@@ -400,6 +400,7 @@ namespace hooks
 		add_status(statuses, "Incubating", -1, 1, unit_ext->timers[TimerIncubationArm], TimerType::Gptp);
 		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
 		add_status(statuses, "Blinded", -1, 1, unit_ext->timers[TimerAuralAssaultBlind], TimerType::Gptp);
+		add_status(statuses, "Swarming Omen", -1, 1, unit_ext->timers[TimerSwarmingOmenDebuff], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
@@ -420,7 +421,6 @@ namespace hooks
 		add_status(statuses, "Tempo Down", unit_ext->values[ValueMadrigalTempoDown] == 1, 1);
 		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
-		add_status(statuses, "Swarming Omen", unit_ext->values[ValueSwarmingOmenPlayer] > 0, 1);
 		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
 
 		if (unit_ext->units[UnitMindController]) {

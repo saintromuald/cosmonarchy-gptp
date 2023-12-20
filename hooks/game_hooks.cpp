@@ -1324,10 +1324,9 @@ namespace hooks {
 					}
 				}
 
-				if (unit->player != 11 && !unit_ext->timers[TimerVilgolethTimedLife]) {
+				if (unit->player != 11 && !unit_ext->timers[TimerVilgolethTimedLife]) { // Ignores P12 Vilgoleths to make preplaced ones permanent
 					unit_ext->timers[TimerVilgolethTimedLife] = 10 * 24;
 				} else if (unit_ext->timers[TimerVilgolethTimedLife] == 1) {
-				//	iquare_globals.create_effect(EffectId_VilgolethHeal, 5 * 24, unit->position, 3 * 32, SpriteId::KeskathalorMissileImpact, unit->sprite->elevation + 1, unit->player, unit);
 					unit->remove();
 				}
 			} break;
@@ -2121,7 +2120,7 @@ namespace hooks {
 			case UnitId::TerranDurendal:
 			{
 				// Durendal - Forward March
-				if ((!(unit->status & UnitStatus::InTransport) || unit->status & UnitStatus::InBuilding) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if (!unit_ext->timers[TimerSecondaryWeaponCooldown] && scbw::unit_can_fire_secondary_weapon(unit)) {
 					FireMultipleOptions options = {};
 					options.apply_cooldown = false;
 					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, options)) {
@@ -2416,13 +2415,12 @@ namespace hooks {
 		}
 
 		// Zoryusthaleth - Swarming Omen marking
-		if (unit_ext->values[ValueSwarmingOmenPlayer]) {
-			u32 player = unit_ext->values[ValueSwarmingOmenPlayer] - 1;
+		if (unit_ext->timers[TimerSwarmingOmenDebuff]) {
 			EntryArray targets = {};
 			unit_search_radial(&targets, unit->position, 10 * 32);
 			for (u32 i = 0; i < targets.count; ++i) {
 				Unit* target = targets.units[i];
-				if (!scbw::is_allied_to(player, target->player)) {
+				if (scbw::is_allied_to(unit->player, target->player)) {
 					continue;
 				}
 				UnitExt* target_ext = get_unit_ext(target);
@@ -3000,7 +2998,7 @@ namespace hooks {
 					unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod] = 24;
 				}
 				if (unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod] == 1) {
-					unit->damage_with_custom(256, 2);
+					unit->damage_with_custom(256);
 				}
 
 			}
@@ -3011,9 +3009,12 @@ namespace hooks {
 		}
 
 		// Clear speed buffs for currently-moving flingy units. -Pr0nogo
-		if (unit_ext->timers[TimerTerminalSurge] == 1
-		||	unit_ext->timers[TimerCausticDischargeSpeed] == 1)
+		if (unit_ext->timers[TimerTerminalSurge] == 1 || unit_ext->timers[TimerCausticDischargeSpeed] == 1)
 		{
+			should_update_speed = true;
+		}
+
+		if (unit_ext->timers[TimerCausticDischargeSpeed] > 1) {
 			should_update_speed = true;
 		}
 

@@ -801,4 +801,5 @@ namespace scbw
 	u32 get_witness_count();
 	void add_massacre_resource(u32 player_id);
 	bool game_kind_supports_kills(GameKind game_kind);
+	bool unit_can_fire_secondary_weapon(Unit* unit);
 }

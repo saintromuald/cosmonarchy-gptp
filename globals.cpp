@@ -383,7 +383,7 @@ void tick_effect(Effect* effect) {
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
 					unit->damage_with_custom(30 * total_scalar, -1, effect->source, effect->player);
-					unit_ext->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
+					unit_ext->timers[TimerCausticDischargeSpeed] = 3 * 24 + 1;
 				});
 			} break;
 			case EffectId_DiademIonField: {
@@ -971,10 +971,10 @@ namespace scbw
 			child_ext->timers[TimerStellarEnforcement] = parent_ext->timers[TimerStellarEnforcement];
 		}
 
-		// Inherit Swarming Omen
-		if (parent_ext->values[ValueSwarmingOmenPlayer])
+		// Inherit Swarming Omen debuff
+		if (parent_ext->timers[TimerSwarmingOmenDebuff])
 		{
-			child_ext->values[ValueSwarmingOmenPlayer] = parent_ext->values[ValueSwarmingOmenPlayer];
+			child_ext->timers[TimerSwarmingOmenDebuff] = parent_ext->timers[TimerSwarmingOmenDebuff];
 		}
 
 		// Inherit Kaiser Rampage

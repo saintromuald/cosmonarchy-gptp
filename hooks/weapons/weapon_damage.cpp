@@ -578,7 +578,7 @@ namespace hooks
 				case WeaponId::DurendalAbaddonFlamethrowers:
 				{
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
-					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24;
+					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24 + 1;
 				} break;
 				case WeaponId::CyclopsFlakCannons:
 				{
@@ -767,7 +767,7 @@ namespace hooks
 					case WeaponId::ZoryusthalethMonstrousMaw: {
 						// Zoryusthaleth - Swarming Omen
 						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
-							target_ext->values[ValueSwarmingOmenPlayer] = data.attacking_player_id + 1;
+							target_ext->timers[TimerSwarmingOmenDebuff] = 24;
 						}
 					} break;
 					case WeaponId::KonviliskSowingSpines: {

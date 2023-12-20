@@ -3709,4 +3709,16 @@ namespace scbw {
 			|| game_kind == GameKind_Massacre
 			|| game_kind == GameKind_TheTurning;
 	}
+
+	bool unit_can_fire_secondary_weapon(Unit* unit)
+	{
+		if (unit->status & UnitStatus::InTransport) {
+			if (unit->status & UnitStatus::InBuilding && unit->connected_unit && !(unit->connected_unit->status & UnitStatus::InAir)) {
+				return true;
+			}
+			return false;
+		} else {
+			return true;
+		}
+	}
 }

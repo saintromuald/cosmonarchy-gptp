@@ -11,8 +11,8 @@ struct AdvisorSetting {
 const std::string CONFIG_FILENAME = "config.yml";
 struct Config {
 	// Launch settings
-	bool disable_wmode_prompt = false;
-	bool prefer_wmode = true;
+	bool disable_wmode_prompt = true;
+	bool prefer_wmode = false;
 
 	// General UI
 	bool extended_camera_hotkeys = true;

@@ -65,12 +65,12 @@ namespace hooks
 		}
 
 		// Keskathalor - Caustic Discharge - speed up
-		if (unit_ext->timers[TimerCausticDischargeSpeed] > 0)
+		if (unit_ext->timers[TimerCausticDischargeSpeed] > 1)
 		{
 			speed *= 1.5;
 		}
 
-		// Zoryusthaleth - Swarming Omen - 125% movement speed when moving towards Zoryusthaleth
+		// Zoryusthaleth - Swarming Omen - 133% movement speed when moving towards Zoryusthaleth
 		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
 			bool accelerate = false;
 			EntryArray targets = {};
@@ -79,17 +79,16 @@ namespace hooks
 			for (u32 i = 0; i < targets.count; ++i) {
 				Unit* target = targets.units[i];
 				UnitExt* target_ext = get_unit_ext(target);
-				if (!target_ext->values[ValueSwarmingOmenPlayer]) {
+				if (!target_ext->timers[TimerSwarmingOmenDebuff]) {
 					continue;
 				}
-				u32 player = target_ext->values[ValueSwarmingOmenPlayer] - 1;
-				if (!scbw::is_allied_to(player, unit->player)) {
+				if (scbw::is_allied_to(target->player, unit->player)) {
 					continue;
 				}
 				accelerate = true;
 			}
 			if (accelerate) {
-				speed *= 1.25;
+				speed *= 1.33;
 			}
 		}
 
