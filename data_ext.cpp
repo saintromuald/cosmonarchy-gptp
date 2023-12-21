@@ -112,7 +112,9 @@ void update_ext_variables() {
 		}
 
 		if (scbw::get_game_kind() == GameKind_TheTurning && thingy_ext->activity_timer >= 24) {
-			reclaim_corpse(thingy, 8);
+			if (!(units_dat::base_property[thingy_ext->unit_id] & UnitProperty::Building)) {
+				reclaim_corpse(thingy, TheTurningZombiePlayerId);
+			}
 		}
 
 		if (thingy_ext->avenge_or_ascend_player && thingy_ext->activity_timer >= 24) {

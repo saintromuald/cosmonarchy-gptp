@@ -1166,3 +1166,17 @@ bool unit_id_has_projection_attack(u32 unit_id)
 		|| unit_id == UnitId::TerranDurendal
 		|| unit_id == UnitId::ProtossPariah;
 }
+
+bool player_id_is_extended(u32 player_id)
+{
+	switch (player_id)
+	{
+		case 8:
+		case 9:
+		case 10:
+		{
+			return true;
+		}
+	}
+	return false;
+}

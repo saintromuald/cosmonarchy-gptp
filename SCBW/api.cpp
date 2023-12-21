@@ -3696,6 +3696,9 @@ namespace scbw {
 
 	void add_massacre_resource(u32 player_id)
 	{
+		if (player_id_is_extended(player_id)) {
+			return;
+		}
 		g_game_vespene[player_id] += 3;
 	//	g_total_vespene[player_id] += 3;
 	//	g_aiscript_controller[player_id].vespene_available += 3;

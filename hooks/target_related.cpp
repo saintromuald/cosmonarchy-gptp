@@ -1032,13 +1032,12 @@ namespace hooks
 			return player_flag & ~(tile->vision_flags & 0xFF);
 		}
 
-		u32 result;
+		if (player_id_is_extended(unit->player)) {
+			return true;
+		}
 		if (!(target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) || player_flag & target->detection_status)
 		{
-			result = (u8)(player_flag & target->sprite->visibility_status);
-		} else {
-			result = 0;
+			return (u8)(player_flag & target->sprite->visibility_status);
 		}
-		return result;
 	}
 }
