@@ -190,6 +190,7 @@ SCBW_DATA(Ping*, ping_array, 0x0059C1B8); // 16
 SCBW_DATA(StringMap_b*,	single_race_select,			0x0051AAA0);
 SCBW_DATA(StringMap_w*,	single_type_select,			0x0051AAA8);
 SCBW_DATA(u16*,			g_network_table,			0x006D1220);
+SCBW_DATA(StringTbl*,	g_network_table_df,			0x006D1220);
 
 // For init_singleplayer_custom
 SCBW_DATA(u32*,			g_selected_game_type,			0x0059BA64);
@@ -1210,6 +1211,12 @@ SCBW_DATA(u8*,				g_region_vision_filter,				0x00629C90);
 
 // For desync debugging
 SCBW_DATA(u8*,				g_player_flag,						0x0065FC10);
+
+// For glu_main_dialog_interact (glucustom.cpp)
+SCBW_DATA(u32*,				g_is_broodwar,						0x006D11E4);
+
+typedef bool __fastcall glu_main_function(BinDlg*, DialogEvent*);
+SCBW_DATA(glu_main_function**, glu_main_functions, 0x0051A388);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

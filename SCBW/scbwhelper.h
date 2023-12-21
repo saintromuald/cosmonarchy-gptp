@@ -1686,4 +1686,17 @@ namespace helper {
 	BYTE* statport_alloc();														// 0045E360
 	bool generic_dialog_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 00418EB0
 	bool generic_common_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 00418C40
+
+	void glu_main_create(BinDlg* dialog);										// 004DB280
+	void dialog_swish_in(BinDlg* dialog);										// 004DE150
+	void dialog_music_fade(u32 music_id);										// 004A6310
+	void glu_main_destroy(BinDlg* dialog);										// 004DB140
+	char load_glu_pok_bindlg(char* string);										// 004B7180
+	s32 select_game_mode(u32 game_mode);										// 004DB6E0
+	char dialog_swish_out(BinDlg* dialog);										// 004DD040
+	s32 load_staredit_process(BinDlg* dialog);									// 004DB490
+	s32 glu_main_display_cdrom_error_bindlg();									// 004DB770
+	s32 register_menu_functions(bool(__fastcall** save_game_text_box)(BinDlg* func_dialog, DialogEvent* func_dlg_event), BinDlg* dialog, u32 count, u32 palette); // 004DD9E0
+	void game_menu_bindlg(BinDlg* dialog);										// 004CA370
+	void game_menu_bindlg_bypass(BinDlg* dialog);								// 004CA450
 }

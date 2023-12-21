@@ -787,4 +787,111 @@ namespace hooks
 		}
 		helper::change_menu();
 	}
+
+	char __fastcall glu_main_dialog_interact(BinDlg* text_message, DialogEvent* dlg_event) // 004DB7A0
+	{
+		if (dlg_event->number_order == DialogEventType_Dialog)
+		{
+			switch (dlg_event->user)
+			{
+				case DialogUserType_Create:
+				{
+					helper::glu_main_create(text_message);
+					helper::dialog_swish_in(text_message);
+					helper::generic_dialog_interact(text_message, dlg_event);
+					if (g_music_playing)
+					{
+						goto LABEL_17;
+					}
+					helper::dialog_music_fade(0x16); // music_title_wav
+					return 1;
+				}
+				case DialogUserType_Destroy:
+				{
+					helper::glu_main_destroy(text_message);
+					return helper::generic_dialog_interact(text_message, dlg_event);
+				}
+				case DialogUserType_Activate:
+					switch (*last_control_index)
+					{
+						case 3:
+						{
+							if (*g_is_demo)
+							{
+								if (g_network_table_df->get_string_count() > 102)
+								{
+									helper::load_glu_pok_bindlg((char*)g_network_table_df->get_string(103));
+								} else {
+									helper::load_glu_pok_bindlg("");
+								}
+								return 1;
+							}
+							if (*g_is_broodwar)
+							{
+								if (!helper::select_game_mode(0))
+								{
+									goto LABEL_17;
+								}
+								return helper::dialog_swish_out(text_message);
+							}
+						} break;
+						case 4:
+						{
+							if (*g_is_broodwar)
+							{
+								if (!helper::select_game_mode(1))
+								{
+									return 1;
+								}
+								return helper::dialog_swish_out(text_message);
+							}
+							if (*g_is_demo)
+							{
+							LABEL_28:
+								*g_is_expansion = 0;
+								return helper::dialog_swish_out(text_message);
+							}
+						} break;
+						case 5:
+						{
+							helper::load_staredit_process(text_message);
+							return 1;
+						}
+						default:
+						{
+							return helper::dialog_swish_out(text_message);
+						}
+					}
+					if (!helper::glu_main_display_cdrom_error_bindlg())
+					{
+						goto LABEL_17;
+					}
+					goto LABEL_28;
+				case DialogUserType_InitChildren:
+				{
+					helper::register_menu_functions(glu_main_functions, text_message, 0x2Cu, 0);
+					return helper::generic_dialog_interact(text_message, dlg_event);
+				}
+				default:
+				{
+					goto LABEL_4;
+				}
+			}
+		}
+
+		if (dlg_event->number_order == DialogEventType_Spacebar && dlg_event->virtual_key == VK_SPACE)
+		{
+		LABEL_17:
+			return 1;
+		} else {
+		LABEL_4:
+			/*
+			if (dlg_event->virtual_key == VK_F10) {
+				*last_bindlg_menu_function = helper::game_menu_bindlg_bypass;
+				helper::load_dialog("rez\\gamemenu.bin", helper::game_menu_dialog_interact);
+			}
+			*/
+			return helper::generic_dialog_interact(text_message, dlg_event);
+		}
+	}
 }

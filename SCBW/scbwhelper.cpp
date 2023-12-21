@@ -14498,4 +14498,155 @@ namespace helper {
 		}
 		return (bool)result;
 	}
+
+	void glu_main_create(BinDlg* dialog)
+	{
+		const u32 func_address = 0x004DB280;
+		__asm {
+			PUSHAD
+			MOV EAX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void dialog_swish_in(BinDlg* dialog)
+	{
+		const u32 func_address = 0x004DE150;
+		__asm {
+			PUSHAD
+			MOV EBX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void dialog_music_fade(u32 music_id)
+	{
+		const u32 func_address = 0x004A6310;
+		__asm {
+			PUSHAD
+			MOV EAX, music_id
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void glu_main_destroy(BinDlg* dialog)
+	{
+		const u32 func_address = 0x004DB140;
+		__asm {
+			PUSHAD
+			MOV EAX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	char load_glu_pok_bindlg(char* string)
+	{
+		const u32 func_address = 0x004B7180;
+		static char result;
+		__asm {
+			PUSHAD
+			MOV EAX, string
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	s32 select_game_mode(u32 game_mode)
+	{
+		const u32 func_address = 0x004DB6E0;
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH game_mode
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	char dialog_swish_out(BinDlg* dialog)
+	{
+		const u32 func_address = 0x004DD040;
+		static char result;
+		__asm {
+			PUSHAD
+			PUSH dialog
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+	}
+
+	s32 load_staredit_process(BinDlg* dialog)
+	{
+		const u32 func_address = 0x004DB490;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, dialog
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 glu_main_display_cdrom_error_bindlg()
+	{
+		const u32 func_address = 0x004DB770;
+		static s32 result;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 register_menu_functions(bool (__fastcall** save_game_text_box)(BinDlg* func_dialog, DialogEvent* func_dlg_event), BinDlg* dialog, u32 count, u32 palette)
+	{
+		const u32 func_address = 0x004DD9E0;
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH palette
+			PUSH count
+			PUSH dialog
+			MOV EAX, save_game_text_box
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void game_menu_bindlg(BinDlg* dialog)
+	{
+		const u32 func_address = 0x004CA370;
+		__asm {
+			PUSHAD
+			MOV ECX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void game_menu_bindlg_bypass(BinDlg* dialog)
+	{
+		const u32 func_address = 0x004CA450;
+		__asm {
+			PUSHAD
+			MOV ECX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
 }

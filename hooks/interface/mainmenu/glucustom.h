@@ -8,6 +8,7 @@ namespace hooks
 	void display_establishing_shot();					// 004D9200, hooked by X405
 	void cmdact_game_speed(BinDlg* control);			// 00481EF0
 	void hide_dialog(BinDlg* dialog);					// 00418700
+	char __fastcall glu_main_dialog_interact(BinDlg* text_message, DialogEvent* dlg_event); // 004DB7A0
 
 	void inject_glucustom_hooks();
 
