@@ -41,15 +41,31 @@ enum SearchFilter
 #define ScoreInvalidUnit INT_MIN
 #define EntryLimit UnitLimit
 
-struct EntryArray {
+template <typename T>
+struct EntryArrayInternal {
 	u32 count;
-	union {
-		void* entries[EntryLimit];
-		Unit* units[EntryLimit];
-		Bullet* bullets[EntryLimit];
-		Thingy* corpses[EntryLimit];
-		Effect* effects[EntryLimit];
-	};
+	T data[EntryLimit];
+
+	T& operator[](u32 index) {
+		return data[index];
+	}
+
+	T* begin() {
+		return data;
+	}
+
+	T* end() {
+		return data + count;
+	}
+};
+
+union EntryArray {
+	u32 count;
+	EntryArrayInternal<void*> entries;
+	EntryArrayInternal<Unit*> units;
+	EntryArrayInternal<Bullet*> bullets;
+	EntryArrayInternal<Thingy*> corpses;
+	EntryArrayInternal<Effect*> effects;
 };
 
 void entry_array_add(EntryArray* array, void* data);

@@ -52,6 +52,7 @@ bool weapon_id_pierces(u32 weapon_id);
 bool weapon_id_piercing_stops_on_armor(u32 weapon_id);
 
 bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id);
+bool weapon_id_cleaves(u32 weapon_id);
 
 bool order_id_is_harvest_related(u32 order_id);
 

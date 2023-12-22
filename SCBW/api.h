@@ -308,6 +308,20 @@ namespace scbw
 		return { vector.x / dist, vector.y / dist };
 	}
 
+	inline Vector32f get_normalized_vector_between(Point16 source, Point16 target) {
+		Vector32f diff = { target.x, target.y };
+		diff.x -= source.x;
+		diff.y -= source.y;
+		return scbw::get_normalized_vector(diff);
+	}
+
+	inline Vector32f get_normalized_vector_between(Vector32f source, Vector32f target) {
+		Vector32f diff = { target.x, target.y };
+		diff.x -= source.x;
+		diff.y -= source.y;
+		return scbw::get_normalized_vector(diff);
+	}
+
 	inline f32 dot_product(Vector32f a, Vector32f b) {
 		return a.x * b.x + a.y * b.y;
 	}
