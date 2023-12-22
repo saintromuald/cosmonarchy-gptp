@@ -27,7 +27,7 @@ SCBW_DATA(Unit**,			first_psi_field_provider,		0x0063FF54);
 SCBW_DATA(u32*,				psi_field_grp_width,			0x0063FF4C);
 SCBW_DATA(u32*,				psi_field_grp_height,			0x0063FF58);
 SCBW_DATA(u8**,				psi_field_mask,					0x006D5BD8);
-SCBW_DATA(u32*,				psi_unknown,					0x0063FF48);
+SCBW_DATA(u32*,				g_psi_aura_is_drawn,			0x0063FF48);
 SCBW_DATA(u32*,				g_player_visions,				0x0057F0B0);
 SCBW_DATA(Bullet**,			first_bullet,					0x0064DEC4);
 SCBW_DATA(Bullet**,			last_bullet,					0x0064DEAC);

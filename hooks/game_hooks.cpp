@@ -2680,9 +2680,7 @@ namespace hooks {
 				unit->get_x() + range,
 				unit->get_y() + range
 			).filter([&](Unit* target) {
-				if (unit->player == target->player
-					|| scbw::is_allied_to(unit->player, target->player)
-					|| target->id != UnitId::TerranSeraph) {
+				if (unit->player == target->player || scbw::is_allied_to(unit->player, target->player) || target->id != UnitId::TerranSeraph) {
 					return false;
 				}
 				return true;
