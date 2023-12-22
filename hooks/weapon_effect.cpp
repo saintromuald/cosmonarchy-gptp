@@ -175,6 +175,7 @@ namespace hooks {
 
 			if (bullet->source_unit) {
 				bool skip = false;
+
 				if (iquare_globals.spine_pair_exists(bullet->source_unit, target)) {
 					skip = true;
 					break;
@@ -186,8 +187,53 @@ namespace hooks {
 		}
 	}
 
+	static void cleaving_attack(Bullet* bullet, u32 weapon_id) {
+		Unit* attacker = bullet->source_unit;
+		if (!attacker) {
+			return;
+		}
+
+		Unit* attack_target = bullet->attack_target.unit;
+		Point16 forward_pos = attack_target ? attack_target->position : bullet->position;
+		Vector32f forward_diff = scbw::get_normalized_vector_between(attacker->position, forward_pos);
+
+		f32 outer    = weapons_dat::outer_splash_radius[weapon_id];
+		f32 inner_t  = 1 - weapons_dat::inner_splash_radius[weapon_id] / outer;
+		f32 medium_t = 1 - weapons_dat::medium_splash_radius[weapon_id] / outer;
+		f32 outer_t  = 0;
+
+		EntryArray units_in_splash = {};
+		unit_search_rect(&units_in_splash, box32_rect(attacker->position, get_splash_width_from_weapon_id(weapon_id), get_splash_height_from_weapon_id(weapon_id)));
+		unit_search_filter(&units_in_splash, attacker, 0);
+		for (Unit* target : units_in_splash.units) {
+			if (!helper::is_unit_distance_within(target, bullet, outer)) {
+				continue;
+			}
+			if (!scbw::can_weapon_target_unit(bullet->weapon_id, target, attacker)) {
+				continue;
+			}
+			if (!scbw::is_unit_enemy(bullet->player, target) && target != attack_target) {
+				continue;
+			}
+
+			Vector32f target_diff = scbw::get_normalized_vector_between(attacker->position, target->position);
+			f32 t = scbw::dot_product(forward_diff, target_diff);
+			if (t >= inner_t) {
+				helper::weapon_bullet_shot(target, bullet, 1); // 100% damage
+			} else if (t >= medium_t) {
+				helper::weapon_bullet_shot(target, bullet, 2); // 50% damage
+			} else if (t >= outer_t) {
+				helper::weapon_bullet_shot(target, bullet, 4); // 25% damage
+			}
+		}
+	}
+
 	// clone of 'Normal' damage for reference
 	void normal_damage(Bullet* bullet, u32 weapon_id) {
+		if (weapon_id_cleaves(weapon_id)) {
+			cleaving_attack(bullet, weapon_id);
+			return;
+		}
 		if (weapon_is_melee_with_aoe(bullet, weapon_id)) {
 			splash(bullet, weapon_id, SplashType::FriendlyNew, bullet->attack_target.unit);
 			return;

@@ -245,7 +245,7 @@ void unit_search_filter(EntryArray* unit_array, Unit* reference, u32 flags, std:
 
 void unit_search_custom_filter(EntryArray* unit_array, SearchFilterFunc filter) {
 	for (u32 i = 0; i < unit_array->count; i++) {
-		Unit* unit = unit_array->units[i];
+		Unit* unit = unit_array->units.data[i];
 		if (!filter(unit)) {
 			entry_array_remove(unit_array, i--);
 			continue;
@@ -256,7 +256,7 @@ void unit_search_custom_filter(EntryArray* unit_array, SearchFilterFunc filter) 
 void unit_search_sort(EntryArray* unit_array, SearchScoreFunc score_func) {
 	// not a fan of std::sort, probably should replace with own qsort
 	// qsort from C can't work with lambdas
-	std::sort(unit_array->units, unit_array->units + unit_array->count, [&](Unit* a, Unit* b) {
+	std::sort(unit_array->units.data, unit_array->units.data + unit_array->count, [&](Unit* a, Unit* b) {
 		return score_func(a) > score_func(b);	
 	});
 }
@@ -273,12 +273,12 @@ static s32 corpse_distance_compare_func(void const* a, void const* b) {
 
 void unit_search_sort_by_distance(EntryArray* unit_array, Point16 center) {
 	temp_center = center;
-	qsort(unit_array->units, unit_array->count, sizeof(Unit*), unit_distance_compare_func);
+	qsort(unit_array->units.data, unit_array->count, sizeof(Unit*), unit_distance_compare_func);
 }
 
 void corpse_search_sort_by_distance(EntryArray* corpse_array, Point16 center) {
 	temp_center = center;
-	qsort(corpse_array->corpses, corpse_array->count, sizeof(Thingy*), corpse_distance_compare_func);
+	qsort(corpse_array->corpses.data, corpse_array->count, sizeof(Thingy*), corpse_distance_compare_func);
 }
 
 Unit* unit_search_find_best(EntryArray* unit_array, SearchScoreFunc score_func) {

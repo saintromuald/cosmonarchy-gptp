@@ -454,6 +454,10 @@ bool weapon_id_is_melee_aoe(u32 weapon_id) {
 		|| weapon_id == WeaponId::TetcaerokorCleavingMaw;
 }
 
+bool weapon_id_cleaves(u32 weapon_id) {
+	return weapon_id == WeaponId::TethzorokorSaberArray;
+}
+
 u32 weapon_id_intercepts(u32 weapon_id) {
 	switch (weapon_id) {
 		case WeaponId::OptectonSunsplitBeam:
