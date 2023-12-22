@@ -18,8 +18,8 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 			modifier.multiplier *= 1.5;
 		}
 		*/
-	} else {
-		modifier.multiplier *= 1 + 0.25 * building_ext->unit_vectors[UnitVectorCrucibles].size();
+	} else if (building_ext->unit_vectors[UnitVectorCrucibles].size()) {
+		modifier.multiplier *= 2;
 	}
 
 	if (scbw::get_game_kind() == GameKind_Debug) {

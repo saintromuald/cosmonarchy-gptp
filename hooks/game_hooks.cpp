@@ -2835,6 +2835,7 @@ namespace hooks {
 					scbw::remove_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay);
 					crucibles.erase(it);
 					--it;
+					should_update_speed = true;
 				}
 			}
 		}
@@ -2868,6 +2869,7 @@ namespace hooks {
 				auto& vec = target_ext->unit_vectors[UnitVectorCrucibles];
 				if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
 					vec.push_back(unit);
+					target->update_speed();
 				}
 				if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
 					scbw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, true);

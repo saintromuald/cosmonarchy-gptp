@@ -411,7 +411,7 @@ namespace hooks
 		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);
 		add_status(statuses, "Controlled Opposition", unit_ext->values[ValueAutocratControlledOppositionStacks], 0);
 		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
-		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size(), 0);
+		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0, 0);
 		add_status(statuses, "Decaying", unit_ext->values[ValueDecaying], 1);
 
 		// GPTP Value - Gimmicked

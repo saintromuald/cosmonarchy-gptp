@@ -53,7 +53,8 @@ namespace hooks {
 		}
 
 		// Crucible Aura
-		cooldown /= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
+		bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
+		cooldown /= 1 + has_crucible;
 
 		// Vithrilisk - Corrosive Spores: lower attack speed of victim
 		cooldown *= 1 + unit_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
