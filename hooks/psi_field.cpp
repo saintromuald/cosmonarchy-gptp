@@ -60,7 +60,7 @@ namespace hooks
 			helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, 0);
 			return true;
 		}
-		if (*psi_unknown) {
+		if (*g_psi_aura_is_drawn) {
 			helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, *g_player_visions);
 			return true;
 		}
