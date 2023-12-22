@@ -21,6 +21,38 @@ static bool player_has_completed_addon_unit_id(s32 player_id, u32 unit_id) {
 	return Player::number_of_completed_addon_units_of_id(player_id, unit_id);
 }
 
+u32 get_refinery_id_from_race(u32 player)
+{
+	// TODO: Add handling for custom races. -Pr0nogo
+	u32 refinery_id = UnitId::None;
+	switch (g_player_table[player].race)
+	{
+		case RaceId::Terran:
+		{
+			if (player_has_completed_landed_unit_id(player, UnitId::TerranAtlas)) {
+				refinery_id = UnitId::TerranReservoir;
+			}
+			if (player_has_completed_landed_unit_id(player, UnitId::TerranDaedala)) {
+				refinery_id = UnitId::TerranWellbore;
+			}
+		} break;
+		case RaceId::Protoss:
+		{
+			refinery_id = UnitId::ProtossAquifer;
+		} break;
+		case RaceId::Zerg:
+		{
+			if (player_has_unit_id(player, UnitId::ZergIrolIris)) {
+				refinery_id = UnitId::ZergExcisant;
+			}
+			if (player_has_unit_id(player, UnitId::ZergOthstolOviform)) {
+				refinery_id = UnitId::ZergEzigrisant;
+			}
+		} break;
+	}
+	return refinery_id;
+	}
+
 namespace hooks
 {
 	// Don't know what this was hooked for; tidied May 2021 - Pr0nogo
@@ -565,7 +597,8 @@ namespace hooks
 					return worker_count;
 				}
 
-				if (g_game_minerals[player] < 500)
+				u32 refinery_id = get_refinery_id_from_race(player);
+				if (g_game_minerals[player] < units_dat::mineral_cost[refinery_id] / 2)
 				{
 					return player;
 				}
@@ -578,33 +611,7 @@ namespace hooks
 				priority = 140;
 			}
 
-			u16 refinery_id = UnitId::None;
-			u8 race = g_player_table[player].race; // TODO: Add handling for custom races. -Pr0nogo
-			switch (race)
-			{
-				case RaceId::Terran:
-				{
-					if (player_has_completed_landed_unit_id(player, UnitId::TerranAtlas)) {
-						refinery_id = UnitId::TerranReservoir;
-					}
-					if (player_has_completed_landed_unit_id(player, UnitId::TerranDaedala)) {
-						refinery_id = UnitId::TerranWellbore;
-					}
-				} break;
-				case RaceId::Protoss:
-				{
-					refinery_id = UnitId::ProtossAquifer;
-				} break;
-				case RaceId::Zerg:
-				{
-					if (player_has_unit_id(player, UnitId::ZergIrolIris)) {
-						refinery_id = UnitId::ZergExcisant;
-					}
-					if (player_has_unit_id(player, UnitId::ZergOthstolOviform)) {
-						refinery_id = UnitId::ZergEzigrisant;
-					}
-				} break;
-			}
+			u16 refinery_id = get_refinery_id_from_race(player);
 
 			result = 0;
 			if (refinery_id != UnitId::None) {
