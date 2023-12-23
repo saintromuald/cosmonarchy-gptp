@@ -537,8 +537,11 @@ namespace hooks
 					"\nCurrent hash offset: " << *g_current_hash_offset << " | g_region_vision_hash: " << *g_region_vision_hash << 
 					"\n";
 				GPTP::critical_logger << "Active tile array:\n";
-				for (u32 i = 0; i < g_map_tile_size->height * g_map_tile_size->width; i++) {
-				//	GPTP::critical_logger << *g_active_tile_array[i];
+				for (u32 y = 0; y < g_map_tile_size->height; y++) {
+					for (u32 x = 0; x < g_map_tile_size->width; x++) {
+						ActiveTile* tile = scbw::get_active_tile_at_tile(x, y);
+						GPTP::critical_logger << tile->vision_flags;
+					}
 				}
 				GPTP::critical_logger << "\n";
 			} else {
