@@ -98,3 +98,5 @@ bool rapid_rendezvous_can_target_unit_id(u32 unit_id);
 bool unit_id_ignores_ground_collision(u32 unit_id);
 bool unit_id_has_projection_attack(u32 unit_id);
 bool player_id_is_extended(u32 player_id);
+bool order_id_is_build_order(u32 order_id);
+bool unit_id_has_custom_weapon_handling(u32 unit_id);

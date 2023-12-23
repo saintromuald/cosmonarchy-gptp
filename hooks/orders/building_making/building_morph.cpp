@@ -195,8 +195,8 @@ namespace hooks
 		return false;
 	}
 
-	// Determines the number of units which have @p unit_id and are being built by the
-	// @p unit. This hook is used by StarCraft's AI for counting units and buildings.
+	// Determines the number of units which have @p unit_id and are being built by the @p unit.
+	// This hook is used by StarCraft's AI for counting units and buildings.
 	s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignore_incomplete)
 	{
 		s32 unit_count = BuildingHelper::get_unit_id_count(unit, unit_id, ignore_incomplete);
@@ -238,10 +238,22 @@ namespace hooks
 
 			case UnitId::ZergQuazethPool:
 			{
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergNathrokLake, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKalkiirPond, ignore_incomplete);
+			} break;
+
+			case UnitId::ZergNathrokLake:
+			{
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKalkiirPond, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergHydrithDen:
+			{
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSkithrokScab, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergBactithSwamp, ignore_incomplete);
+			} break;
+
+			case UnitId::ZergSkithrokScab:
 			{
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergBactithSwamp, ignore_incomplete);
 			} break;

@@ -1184,3 +1184,19 @@ bool player_id_is_extended(u32 player_id)
 	}
 	return false;
 }
+
+bool order_id_is_build_order(u32 order_id)
+{
+	return	order_id == OrderId::BuildTerran
+	||		order_id == OrderId::BuildProtoss1
+	||		order_id == OrderId::DroneLand
+	||		order_id == OrderId::DroneBuild
+	||		order_id == OrderId::DroneStartBuild;
+}
+
+bool unit_id_has_custom_weapon_handling(u32 unit_id) // TODO: better name
+{
+	return unit_id == UnitId::TerranWyvern
+		|| unit_id == UnitId::TerranWyvernTurret
+		|| unit_id == UnitId::ProtossAnthelion;
+}

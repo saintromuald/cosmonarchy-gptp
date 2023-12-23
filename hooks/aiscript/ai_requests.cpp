@@ -42,16 +42,16 @@ u32 get_refinery_id_from_race(u32 player)
 		} break;
 		case RaceId::Zerg:
 		{
-			if (player_has_unit_id(player, UnitId::ZergIrolIris)) {
+			if (player_has_completed_unit_id(player, UnitId::ZergIrolIris) || player_has_unit_id(player, UnitId::ZergOthstolOviform)) {
 				refinery_id = UnitId::ZergExcisant;
 			}
-			if (player_has_unit_id(player, UnitId::ZergOthstolOviform)) {
+			if (player_has_completed_unit_id(player, UnitId::ZergOthstolOviform)) {
 				refinery_id = UnitId::ZergEzigrisant;
 			}
 		} break;
 	}
 	return refinery_id;
-	}
+}
 
 namespace hooks
 {
@@ -788,7 +788,6 @@ namespace hooks
 				best_unit = unit;
 			}
 		}
-
 		return best_unit;
 	}
 
@@ -1262,5 +1261,67 @@ namespace hooks
 				return UnitId::ProtossAquifer;
 			}
 		}
+	}
+
+	// Hooked to improve functionality. -Pr0nogo
+	u32 ai_get_queued_count(Unit* builder, u32 unit_id) // 00466B70
+	{
+		u32 main_order = builder->main_order_id;
+		if (units_dat::base_property[builder->id] & UnitProperty::Worker)
+		{
+			Unit* build_unit = 0;
+			if (main_order == OrderId::BuildTerran || main_order == OrderId::Repair1 || main_order == OrderId::ConstructingBuilding || helper::is_attempting_protoss_build(builder))
+			{
+				build_unit = builder->order_target.unit;
+			} else {
+				u32 secondary_order = builder->secondary_order_id;
+				if (secondary_order != OrderId::Train && secondary_order != OrderId::TrainFighter && !helper::is_constructing_addon(builder))
+				{
+					if (builder->build_queue[builder->build_queue_slot % 5] == unit_id && order_id_is_build_order(main_order))
+					{
+						return 1;
+					}
+					return 0;
+				}
+				build_unit = builder->current_build_unit;
+			}
+			if (build_unit)
+			{
+				return 0;
+			}
+			if (builder->build_queue[builder->build_queue_slot % 5] == unit_id && order_id_is_build_order(main_order))
+			{
+				return 1;
+			}
+			return 0;
+		}
+
+		switch (builder->id)
+		{
+			case UnitId::ZergEgg:
+			{
+				return unit_id == builder->build_queue[builder->build_queue_slot];
+			}
+			case UnitId::ZergCocoon:
+			{
+				return unit_id == builder->build_queue[builder->build_queue_slot];
+			}
+		}
+
+		if (main_order == OrderId::Morph2 || main_order == OrderId::ZergBuildSelf)
+		{
+			return unit_id == builder->build_queue[builder->build_queue_slot];
+		}
+		u32 count = 0;
+		u32 offset = 0;
+		for (u32 i = 1; i < 5; ++i) {
+			u32 slot = i + builder->build_queue_slot - offset;
+			u32 build_id = builder->build_queue[slot];
+			if (build_id == unit_id) {
+				count++;
+			}
+			offset++;
+		}
+		return count;
 	}
 }

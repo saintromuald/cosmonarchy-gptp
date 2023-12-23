@@ -58,12 +58,18 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergHachirosk, UnitId::ZergCaphrolosk, 1},
 	{UnitId::ZergHachirosk, UnitId::ZergGathtelosk, 1},
 
+	{UnitId::ZergExcisant, UnitId::ZergEzigrisant, 1},
+
 	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 2},
 
+	{UnitId::ZergQuazethPool, UnitId::ZergNathrokLake, 1},
 	{UnitId::ZergQuazethPool, UnitId::ZergKalkiirPond, 1},
+	{UnitId::ZergNathrokLake, UnitId::ZergKalkiirPond, 1},
 	{UnitId::ZergMutathSpire, UnitId::ZergTosvrolHaunt, 1},
 	{UnitId::ZergAxtothAxis, UnitId::ZergBegrozithBarrow, 1},
+	{UnitId::ZergHydrithDen, UnitId::ZergSkithrokScab, 1},
 	{UnitId::ZergHydrithDen, UnitId::ZergBactithSwamp, 1},
+	{UnitId::ZergSkithrokScab, UnitId::ZergBactithSwamp, 1},
 	{UnitId::ZergAlkagIteth, UnitId::ZergChokralgantChazsal, 1},
 	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, 1},
 	{UnitId::ZergZorkizShroud, UnitId::ZergUltravCavern, 1},

@@ -452,6 +452,23 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) ai_get_queued_count_wrapper() { // 00466B70
+		static u32 result;
+		static Unit* builder;
+		static u32 unit_id;
+		__asm {
+			MOV builder, ECX
+			MOV unit_id, EDI
+			PUSHAD
+		}
+		result = hooks::ai_get_queued_count(builder, unit_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -478,5 +495,6 @@ namespace hooks {
 		jump_patch(has_resources_for_unit_wrapper,					0x004487B0, 1);
 	//	jump_patch(ai_make_guard_wrapper,							0x0043A010, 1);
 		jump_patch(get_default_refinery_type_wrapper,				0x004320D0, 5);
+		jump_patch(ai_get_queued_count_wrapper,						0x00466B70, 3);
 	}
 }

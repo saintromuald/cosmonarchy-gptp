@@ -436,13 +436,20 @@ namespace hooks {
 			// Skithrokor behavior
 			if (weapon_id_returns_to_attacker(weapon_id))
 			{
-				u32 timer = 21;
-				if (weapon_id == WeaponId::SkithrokorSkitteringSpores) {
-					timer = 9;
+				u32 timer = 0;
+				u32 max_range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit);
+				switch (weapon_id) {
+					case WeaponId::SkithrokorSkitteringSpores:
+					{
+						timer = 9;
+					} break;
+					case WeaponId::LakiziliskSubterraneanSpines:
+					{
+						timer = 3 + ((max_range / 32) * 3);
+					} break;
 				}
 				unit_ext->timers[TimerMissileReturnETA] = timer;
-				u32 range = weapons_dat::max_range[weapon_id] + 16;
-			//	u32 range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit) + 16;
+				u32 range = max_range + 16;
 				Point16 unit_pos = { unit->position.x, unit->position.y };
 				Point16 target_pos = { unit->order_target.unit->position.x, unit->order_target.unit->position.y };
 				s32 angle = scbw::get_angle(unit_pos.x, unit_pos.y, target_pos.x, target_pos.y);
@@ -457,9 +464,7 @@ namespace hooks {
 				}
 			}
 
-			if (unit->id != UnitId::TerranWyvern
-			&&	unit->id != UnitId::TerranWyvernTurret
-			&&  unit->id != UnitId::ProtossAnthelion) // disable default weapon for custom behaviors
+			if (unit_id_has_custom_weapon_handling(unit->id))
 			{
 				// Madrigal - Tempo Change weapon switch
 				if (weapon_id == WeaponId::MadrigalFuriaMissiles && unit_ext->values[ValueMadrigalTempoDown] == 1)

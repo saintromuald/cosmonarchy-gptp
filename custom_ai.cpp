@@ -1,5 +1,6 @@
 #include "custom_ai.h"
 #include "ai_layouts.h"
+#include "hooks/aiscript/ai_requests.h"
 
 CustomAiPlayer custom_ai_players[PlayerLimit];
 CustomAiTown custom_ai_towns[AiTownLimit];
@@ -27,14 +28,7 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 			}
 		}
 
-		u32 capped_id = UnitId::None;
-		// TODO: Add support for custom races. -Pr0nogo
-		switch (g_player_table[ai_town->player].race) {
-			case RaceId::Terran:  capped_id = UnitId::TerranReservoir; break;
-			case RaceId::Protoss: capped_id = UnitId::ProtossAquifer;  break;
-			case RaceId::Zerg:	  capped_id = UnitId::ZergExcisant;    break;
-		}
-
+		u32 capped_id = get_refinery_id_from_race(ai_town->player);
 		if (capped_id != UnitId::None) {
 			u32 total_gas = 0;
 			u32 harvestable_gas = 0;
@@ -55,17 +49,18 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 
 			u32 requested_count = town_count_units(ai_town, capped_id, false);
 			u32 mineral_threshold = requested_count ? 100 : 500;
-			u32 needed_threshold = 100 * (1 + requested_count);
+			u32 needed_threshold = 75 * (1 + requested_count);
 			if (total_gas == 1) {
 				needed_threshold *= 2;
 			}
 
 			if ((harvestable_gas || total_gas == 1)
-				&& g_game_minerals[ai_town->player] >= mineral_threshold
-				&& g_aiscript_controller[ai_town->player].vespene_needed >= needed_threshold) {
+			&&   g_game_minerals[ai_town->player] >= mineral_threshold
+			&&   g_aiscript_controller[ai_town->player].vespene_needed >= needed_threshold)
+			{
 				s32 request_count = std::min(total_gas - unupgradeable_gas, custom_ai_town->gas_cap) - requested_count;
 				if (request_count > 0) {
-					u32 priority = 125 - requested_count;
+					u32 priority = 150 - requested_count;
 					for (u32 i = 0; i < request_count; ++i) {
 						scbw::town_add_spending_request(ai_town, 1, capped_id, priority);
 						priority -= 1;
