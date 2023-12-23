@@ -464,7 +464,7 @@ namespace hooks {
 				}
 			}
 
-			if (unit_id_has_custom_weapon_handling(unit->id))
+			if (!unit_id_has_custom_weapon_handling(unit->id))
 			{
 				// Madrigal - Tempo Change weapon switch
 				if (weapon_id == WeaponId::MadrigalFuriaMissiles && unit_ext->values[ValueMadrigalTempoDown] == 1)
@@ -1526,7 +1526,9 @@ namespace hooks {
 			case WeaponBehavior_GoToMaxRange:
 			{
 				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
-			//	s32 max_range_var = get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16;
+				if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
+					max_range_var = (get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16) * 256;
+				}
 				Vector32 target_pos = {};
 				target_pos.x = (s32)(parent->position.x + ((max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16));
 				target_pos.y = (s32)(parent->position.y + ((max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16));
