@@ -536,7 +536,11 @@ namespace hooks
 					"\nMap dimensions: " << g_map_tile_size->width << "x" << g_map_tile_size->height <<
 					"\nCurrent hash offset: " << *g_current_hash_offset << " | g_region_vision_hash: " << *g_region_vision_hash << 
 					"\n";
-				GPTP::critical_logger << "Active tile array: " << *g_active_tile_array << "\n";
+				GPTP::critical_logger << "Active tile array:\n";
+				for (u32 i = 0; i < g_map_tile_size->height * g_map_tile_size->width; i++) {
+				//	GPTP::critical_logger << *g_active_tile_array[i];
+				}
+				GPTP::critical_logger << "\n";
 			} else {
 				sprintf_s(buffer, "Invalid Hash!\nhash_struct_index: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u",
 					hash_struct_index,
