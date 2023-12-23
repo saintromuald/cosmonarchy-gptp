@@ -528,7 +528,7 @@ namespace hooks
 			if (g_hash_list[hash_struct_index].hash_type == 1) {
 				sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", *g_local_nation_id);
 				scbw::print(buffer, GameTextColor::Yellow);
-				GPTP::critical_logger << "Invalid Hash, type 1! Local nation id: " << *g_local_nation_id << " | Active nation id: " << *g_active_nation_id << " | Player flag: " << *g_player_flag <<
+				GPTP::critical_logger << "Invalid Hash, type 1! Local nation id: " << *g_local_nation_id << " | Active nation id: " << *g_active_nation_id << " | Player flag: " << (u32)*g_player_flag <<
 					"\nHash offset:" << *g_current_hash_offset << "\nHash 1: 0x" << g_hash_list[hash_struct_index].hash << "| Hash 2: 0x" << *(u16*)(data + 2) <<
 					"\nP1 resources: " << g_game_minerals[0] << " | " << g_game_vespene[0] << "\nP2 resources: " << g_game_minerals[1] << " | " << g_game_vespene[1] <<
 					"\nElapsed time: " << *g_elapsed_time_frames << " | Last random number: " << *g_last_random_number <<
