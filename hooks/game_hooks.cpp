@@ -1144,8 +1144,6 @@ namespace hooks {
 			scbw::add_unit_overlay(unit, ImageId::TyrannyOverlay);
 		}
 
-		// Overlay for units 
-
 		// Reclamation
 		{
 			// Decaying
@@ -1191,6 +1189,7 @@ namespace hooks {
 			scbw::give_ai_ex(unit);
 		}
 
+		// Random movement for The Turning zombies
 		if (scbw::get_game_kind() == GameKind_TheTurning && unit->player == TheTurningZombiePlayerId) {
 			if (unit->main_order_id == OrderId::PlayerGuard) {
 				unit->order_to_idle();
