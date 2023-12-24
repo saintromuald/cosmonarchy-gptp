@@ -45,7 +45,7 @@ static void init_auto_celebration() {
 			globals.celebration = Celebration_AprilFools;
 		} break;
 		case 12: {
-		//	globals.celebration = Celebration_Christmas;
+			globals.celebration = Celebration_Christmas;
 		} break;
 		default: {
 			globals.celebration = Celebration_None;
