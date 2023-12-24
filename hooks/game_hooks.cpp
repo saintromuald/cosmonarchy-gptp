@@ -1191,6 +1191,13 @@ namespace hooks {
 			scbw::give_ai_ex(unit);
 		}
 
+		if (scbw::get_game_kind() == GameKind_TheTurning && unit->player == TheTurningZombiePlayerId) {
+			if (unit->main_order_id == OrderId::PlayerGuard) {
+				unit->order_to_idle();
+			}
+			helper::add_order_targeting_nothing(unit, 0, OrderId::JunkYardDog);
+		}
+
 		u32 creep_spreader_id = scbw::unit_get_creep_spreader_id(unit);
 		if (creep_spreader_id != UnitId::None && unit->player < PlayerLimit) {
 			Box32 creep_area = {};
