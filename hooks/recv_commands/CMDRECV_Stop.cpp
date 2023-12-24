@@ -21,66 +21,36 @@ namespace hooks
 				helper::parse_orders_dat_requirements();
 			}
 
-			if (current_unit->player != *g_active_nation_id)
-			{
+			if (current_unit->player != *g_active_nation_id) {
 				*u32_0066FF60 = 0x01;
-			}
-			else if (!(current_unit->status & UnitStatus::Completed))
-			{
+			} else if (!(current_unit->status & UnitStatus::Completed)) {
 				*u32_0066FF60 = 0x14;
-			}
-			else if (current_unit->is_frozen())
-			{
+			} else if (current_unit->is_frozen()) {
 				*u32_0066FF60 = 0x0A;
-			}
-			else if (current_unit->status & UnitStatus::Burrowed
-			&&		 current_unit->id != UnitId::ZergLakizilisk)
-			{
+			} else if (current_unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(current_unit->id)) {
 				*u32_0066FF60 = 0x0B;
-			}
-			else if ((current_unit->id == UnitId::TerranMason || current_unit->id == UnitId::TerranTalos)
-			&&		 current_unit->main_order_id == OrderId::ConstructingBuilding)
-			{
+			} else if ((current_unit->id == UnitId::TerranMason || current_unit->id == UnitId::TerranTalos) && current_unit->main_order_id == OrderId::ConstructingBuilding) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if (scbw::unit_can_nuke(current_unit)
-			&&		  current_unit->main_order_id == OrderId::NukeTrack)
-			{
+			} else if (scbw::unit_can_nuke(current_unit) && current_unit->main_order_id == OrderId::NukeTrack) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur)
-			&&		  current_unit->main_order_id == OrderId::CompletingArchonSummon)
-			{
+			} else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) && current_unit->main_order_id == OrderId::CompletingArchonSummon) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if (current_unit->id == UnitId::ProtossMindTyrant
-			&&		 current_unit->main_order_id == OrderId::CompletingArchonSummon)
-			{
+			} else if (current_unit->id == UnitId::ProtossMindTyrant && current_unit->main_order_id == OrderId::CompletingArchonSummon) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if (orders_dat::req_offset[OrderId::ReaverStop] == 0)
-			{
+			} else if (orders_dat::req_offset[OrderId::ReaverStop] == 0) {
 				*u32_0066FF60 = 0x17;
-			}
-			else if (helper::parse_requirement_opcodes(current_unit, OrderId::ReaverStop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::ReaverStop]) == 1)
-			{
+			} else if (helper::parse_requirement_opcodes(current_unit, OrderId::ReaverStop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::ReaverStop]) == 1) {
 				current_unit->user_action_flags |= 1;
 				if (current_unit->main_order_id != OrderId::Die)
 				{
 					bool bContinueLoop = true;
 					while (bContinueLoop)
 					{
-						if (current_unit->order_queue_tail == nullptr)
-						{
+						if (current_unit->order_queue_tail == nullptr) {
 							bContinueLoop = false;
-						}
-						else if (orders_dat::can_be_interrupted[current_unit->order_queue_tail->order_id]
-						||		 current_unit->order_queue_tail->order_id == OrderId::ReaverStop)
-						{
+						} else if (orders_dat::can_be_interrupted[current_unit->order_queue_tail->order_id] || current_unit->order_queue_tail->order_id == OrderId::ReaverStop) {
 							helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
-						}
-						else
-						{
+						} {
 							bContinueLoop = false;
 						}
 					}
@@ -105,48 +75,25 @@ namespace hooks
 				helper::parse_orders_dat_requirements();
 			}
 
-			if (current_unit->player != *g_active_nation_id)
-			{
+			if (current_unit->player != *g_active_nation_id) {
 				*u32_0066FF60 = 0x01;
-			}
-			else if (!(current_unit->status & UnitStatus::Completed))
-			{
+			} else if (!(current_unit->status & UnitStatus::Completed)) {
 				*u32_0066FF60 = 0x14;
-			}
-			else if (current_unit->is_frozen())
-			{
+			} else if (current_unit->is_frozen()) {
 				*u32_0066FF60 = 0x0A;
-			}
-			else if (current_unit->status & UnitStatus::Burrowed
-			&&		 current_unit->id != UnitId::ZergLakizilisk)
-			{
+			} else if (current_unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(current_unit->id)) {
 				*u32_0066FF60 = 0x0B;
-			}
-			else if (current_unit->id == UnitId::TerranMason || current_unit->id == UnitId::TerranTalos && current_unit->main_order_id == OrderId::ConstructingBuilding)
-			{
+			} else if (current_unit->id == UnitId::TerranMason || current_unit->id == UnitId::TerranTalos && current_unit->main_order_id == OrderId::ConstructingBuilding) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if (scbw::unit_can_nuke(current_unit)
-			&&		  current_unit->main_order_id == OrderId::NukeTrack)
-			{
+			} else if (scbw::unit_can_nuke(current_unit) && current_unit->main_order_id == OrderId::NukeTrack) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur)
-			&&   current_unit->main_order_id == OrderId::CompletingArchonSummon)
-			{
+			} else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) && current_unit->main_order_id == OrderId::CompletingArchonSummon) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if (current_unit->id == UnitId::ProtossMindTyrant
-			&&  current_unit->main_order_id == OrderId::CompletingArchonSummon)
-			{
+			} else if (current_unit->id == UnitId::ProtossMindTyrant && current_unit->main_order_id == OrderId::CompletingArchonSummon) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if (orders_dat::req_offset[OrderId::CarrierStop] == 0)
-			{
+			} else if (orders_dat::req_offset[OrderId::CarrierStop] == 0) {
 				*u32_0066FF60 = 0x17;
-			}
-			else if (helper::parse_requirement_opcodes(current_unit, OrderId::CarrierStop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::CarrierStop]) == 1)
-			{
+			} else if (helper::parse_requirement_opcodes(current_unit, OrderId::CarrierStop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::CarrierStop]) == 1) {
 				current_unit->user_action_flags |= 1;
 				if (current_unit->main_order_id != OrderId::Die)
 				{
@@ -156,14 +103,9 @@ namespace hooks
 						if (current_unit->order_queue_tail == nullptr)
 						{
 							bContinueLoop = false;
-						}
-						else if (orders_dat::can_be_interrupted[current_unit->order_queue_tail->order_id]
-						||		 current_unit->order_queue_tail->order_id == OrderId::CarrierStop)
-						{
+						} else if (orders_dat::can_be_interrupted[current_unit->order_queue_tail->order_id] || current_unit->order_queue_tail->order_id == OrderId::CarrierStop) {
 							helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
-						}
-						else
-						{
+						} else {
 							bContinueLoop = false;
 						}
 					}
@@ -188,43 +130,23 @@ namespace hooks
 				helper::parse_orders_dat_requirements();
 			}
 
-			if (current_unit->player != *g_active_nation_id)
-			{
+			if (current_unit->player != *g_active_nation_id) {
 				*u32_0066FF60 = 0x01;
-			}
-			else if (!(current_unit->status & UnitStatus::Completed))
-			{
+			} else if (!(current_unit->status & UnitStatus::Completed)) {
 				*u32_0066FF60 = 0x14;
-			}
-			else if (current_unit->is_frozen())
-			{
+			} else if (current_unit->is_frozen()) {
 				*u32_0066FF60 = 0x0A;
-			}
-			else if (current_unit->status & UnitStatus::Burrowed && current_unit->id != UnitId::ZergLakizilisk)
-			{
+			} else if (current_unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(current_unit->id)) {
 				*u32_0066FF60 = 0x0B;
-			}
-			else if (scbw::unit_can_nuke(current_unit)
-			&&		  current_unit->main_order_id == OrderId::NukeTrack)
-			{
+			} else if (scbw::unit_can_nuke(current_unit) && current_unit->main_order_id == OrderId::NukeTrack) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur)
-			&&		  current_unit->main_order_id == OrderId::CompletingArchonSummon)
-			{
+			} else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) && current_unit->main_order_id == OrderId::CompletingArchonSummon) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if (current_unit->id == UnitId::ProtossMindTyrant
-			&&		 current_unit->main_order_id == OrderId::CompletingArchonSummon)
-			{
+			} else if (current_unit->id == UnitId::ProtossMindTyrant && current_unit->main_order_id == OrderId::CompletingArchonSummon) {
 				*u32_0066FF60 = 0x08;
-			}
-			else if (orders_dat::req_offset[OrderId::Stop] == 0)
-			{
+			} else if (orders_dat::req_offset[OrderId::Stop] == 0) {
 				*u32_0066FF60 = 0x17;
-			}
-			else if (helper::parse_requirement_opcodes(current_unit, OrderId::Stop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::Stop]) == 1)
-			{
+			} else if (helper::parse_requirement_opcodes(current_unit, OrderId::Stop, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::Stop]) == 1) {
 				helper::targeted_order(current_unit, UnitId::None, *g_order_type_4_target, *g_order_type_4_position, OrderId::Stop, 0, bCommandType != 0, 1); // bCommandType is 1 if order is queued
 			}
 

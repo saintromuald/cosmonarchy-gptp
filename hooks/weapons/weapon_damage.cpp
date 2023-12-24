@@ -812,7 +812,7 @@ namespace hooks
 					case WeaponId::MagisterNeutronCannon:
 					{
 						// Stellar Enforcement - Magister behavior
-						if (!scbw::is_allied_to(data.attacker->player, data.target->player) && !target_ext->values[TimerStellarEnforcement]) {
+						if (!scbw::is_allied_to(data.attacker->player, data.target->player) && !target_ext->timers[TimerStellarEnforcement]) {
 							target_ext->timers[TimerStellarEnforcement] = 3 * 24 + 1;
 							target_ext->timers[TimerStellarEnforcementOverlay] = 30;
 							scbw::add_unit_overlay(data.target, ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(data.target->id, true));  // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
@@ -1188,7 +1188,7 @@ namespace hooks
 	// Hooked to stop damage from forcing units to unburrow. -Pr0nogo
 	void react_to_hit(Unit* attacker, Unit* victim) { // 004776C0
 		if (!unit_id_is_larva(victim->id)) {
-			if (!(victim->status & UnitStatus::Burrowed) || victim->irradiate_timer || victim->id == UnitId::ZergLakizilisk) {
+			if (!(victim->status & UnitStatus::Burrowed) || victim->irradiate_timer || unit_id_is_burrowed_attacker(victim->id)) {
 				if  (units_dat::base_property[victim->id] & UnitProperty::Building || helper::unit_can_attack_target(attacker, victim, 1)
 				&& !(units_dat::base_property[victim->id] & UnitProperty::Worker)) {
 					victim->auto_target_unit = attacker;
@@ -1197,7 +1197,7 @@ namespace hooks
 						subunit->last_attacking_player = victim->last_attacking_player;
 						subunit->auto_target_unit = attacker;
 					}
-				} else if (victim->id != UnitId::ZergLakizilisk || !(victim->status & UnitStatus::Burrowed) || victim->unit_ai && !victim->irradiate_timer) {
+				} else if (!unit_id_is_burrowed_attacker(victim->id) || !(victim->status & UnitStatus::Burrowed) || victim->unit_ai && !victim->irradiate_timer) {
 					if (units_dat::base_property[victim->id] & UnitProperty::Subunit) {
 						victim = victim->subunit;
 					}

@@ -445,7 +445,7 @@ namespace hooks {
 					} break;
 					case WeaponId::LakiziliskSubterraneanSpines:
 					{
-						timer = 3 + ((max_range / 32) * 3);
+						timer = 2 + ((max_range / 32) * 3);
 					} break;
 				}
 				unit_ext->timers[TimerMissileReturnETA] = timer;
@@ -1726,7 +1726,7 @@ namespace hooks {
 			{
 				helper::use_weapon_iscript(unit, units_dat::air_weapon[unit->id], 2, iscript_anim + 1);
 			} else {
-				if (unit->id != UnitId::ZergLakizilisk || unit->status & UnitStatus::Burrowed)
+				if (!unit_id_is_burrowed_attacker(unit->id) || unit->status & UnitStatus::Burrowed)
 				{
 					helper::use_weapon_iscript(unit, units_dat::ground_weapon[unit->id], 1, iscript_anim);
 				} else {

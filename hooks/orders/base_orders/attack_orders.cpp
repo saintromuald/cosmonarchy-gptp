@@ -822,10 +822,8 @@ namespace hooks
 					if (target->status & UnitStatus::InAir)
 					{
 						weapon_id = units_dat::air_weapon[final_unit->id];
-					}
-					else
-					{
-						if (final_unit->id != UnitId::ZergLakizilisk || final_unit->status & UnitStatus::Burrowed)
+					} else {
+						if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed)
 						{
 							weapon_id = units_dat::ground_weapon[final_unit->id];
 						}
@@ -848,9 +846,7 @@ namespace hooks
 				{
 					helper::get_next_strafe_position(unit, 1u, unit->order_target.pt);
 					unit->main_order_state = 4;
-				}
-				else
-				{
+				} else {
 					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 				}
 				break;
@@ -1129,7 +1125,7 @@ namespace hooks
 				{
 					weapon_id = units_dat::air_weapon[final_unit->id];
 				} else {
-					if (final_unit->id != UnitId::ZergLakizilisk || final_unit->status & UnitStatus::Burrowed)
+					if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed)
 					{
 						weapon_id = units_dat::ground_weapon[final_unit->id];
 					} else {

@@ -375,7 +375,7 @@ namespace hooks
 			if (is_ground_weapon != 1)
 			{
 				weapon_id = units_dat::air_weapon[attacker->id];
-			} else if (attacker->id != UnitId::ZergLakizilisk || (attacker->status & UnitStatus::Burrowed))
+			} else if (!unit_id_is_burrowed_attacker(attacker->id) || (attacker->status & UnitStatus::Burrowed))
 			{
 				weapon_id = units_dat::ground_weapon[attacker->id];
 			} else {

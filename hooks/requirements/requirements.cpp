@@ -80,7 +80,7 @@ namespace hooks
 
 				case RequirementOpcodes::MustBeResearched:
 				{
-					if (id == TechId::Burrowing && unit->id == UnitId::ZergLakizilisk)
+					if (id == TechId::Burrowing && unit_id_is_burrowed_attacker(unit->id))
 					{
 						success++;
 						break;
@@ -235,7 +235,7 @@ namespace hooks
 						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
-					if ((unit->id == UnitId::ZergLakizilisk || (unit->status & UnitStatus::Burrowed) == 0) && units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack)
+					if ((unit_id_is_burrowed_attacker(unit->id) || (unit->status & UnitStatus::Burrowed) == 0) && units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack)
 					{
 						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
@@ -317,9 +317,9 @@ namespace hooks
 
 				case RequirementOpcodes::CanHoldPosition:
 				{
-					if ((unit->id != UnitId::ZergLakizilisk || (unit->status & UnitStatus::Burrowed) == 0)
-						&& units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack
-						&& ((unit->status & UnitStatus::GroundedBuilding) == 0 || unit->is_factory() == false))
+					if ((!unit_id_is_burrowed_attacker(unit->id) || (unit->status & UnitStatus::Burrowed) == 0)
+					&&    units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack
+					&&  ((unit->status & UnitStatus::GroundedBuilding) == 0 || unit->is_factory() == false))
 					{
 						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
 						return 0;

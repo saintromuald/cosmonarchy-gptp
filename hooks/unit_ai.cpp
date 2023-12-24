@@ -825,7 +825,7 @@ namespace hooks {
 	// Hooked in case we need it for Lakizilisk tactical AI
 	void ai_order_lurker_burrow(Unit* unit) // 0043C230
 	{
-		if (unit->id == UnitId::ZergLakizilisk && !(unit->status & UnitStatus::Burrowed) && unit->main_order_id != OrderId::Burrow)
+		if (unit_id_is_burrowed_attacker(unit->id) && !(unit->status & UnitStatus::Burrowed) && unit->main_order_id != OrderId::Burrow)
 		{
 			helper::issue_order_targeting_nothing(unit, OrderId::Burrow);
 		}

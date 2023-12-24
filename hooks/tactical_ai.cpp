@@ -606,7 +606,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 static bool unit_could_kite(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	bool in_combat = unit_in_combat(unit, false);
-	if (unit->id == UnitId::ZergLakizilisk || unit->status & UnitStatus::Burrowed) {
+	if (unit_id_is_burrowed_attacker(unit->id) || unit->status & UnitStatus::Burrowed) {
 		return false;
 	}
 

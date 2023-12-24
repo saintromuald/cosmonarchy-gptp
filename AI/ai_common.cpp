@@ -195,7 +195,7 @@ namespace AI
 
 				if (units_dat::base_property[target->id] & UnitProperty::Building)
 				{
-					if (target->can_detect() ||  target->id == UnitId::ZergSurkithCesiant ||  target->id == UnitId::ZergLakizilisk) // lmao
+					if (target->can_detect() || target->id == UnitId::ZergSurkithCesiant || unit_id_is_burrowed_attacker(target->id)) // lmao
 					{
 						total_nuke_target_value = 800;
 					}

@@ -100,3 +100,4 @@ bool unit_id_has_projection_attack(u32 unit_id);
 bool player_id_is_extended(u32 player_id);
 bool order_id_is_build_order(u32 order_id);
 bool unit_id_has_custom_weapon_handling(u32 unit_id);
+bool unit_id_is_burrowed_attacker(u32 unit_id);

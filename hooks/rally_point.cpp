@@ -80,14 +80,10 @@ namespace hooks
 			{
 				*g_last_internal_error = 10;
 				result = 0;
-			}
-			else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk) // ?
-			{
+			} else if (unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(unit->id)) {
 				*g_last_internal_error = 11;
 				result = 0;
-			}
-			else
-			{
+			} else {
 				u16 unit_id = unit->id;
 				if ((unit_id == UnitId::TerranMason || unit_id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding
 				||  scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
@@ -95,30 +91,22 @@ namespace hooks
 				{
 					*g_last_internal_error = 8;
 					result = 0;
-				}
-				else
-				{
+				} else {
 					result = orders_dat::req_offset[OrderId::RallyPointToTile];
 					if (orders_dat::req_offset[OrderId::RallyPointToTile])
 					{
 						if (unit->id == UnitId::ZergCagrantCesiant && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvoskCesiant) // lame
 						{
 							result = 1;
-						}
-						else
-						{
+						} else {
 							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPointToTile, player, g_orders_requirement_tree, orders_dat::req_offset[OrderId::RallyPointToTile]);
 						}
-					}
-					else
-					{
+					} else {
 						*g_last_internal_error = 23;
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			*g_last_internal_error = 1;
 			result = 0;
 		}
@@ -228,12 +216,10 @@ namespace hooks
 		for (Unit* unit = result; result; unit = result)
 		{
 			u16 id = unit->id;
-			if (id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
+			if (unit_id_is_burrowed_attacker(id) && unit->status & UnitStatus::Burrowed)
 			{
 				order_type = 3;
-			}
-			else
-			{
+			} else {
 				order_type = helper::get_right_click_action_order(unit);
 				if (!order_type)
 				{
@@ -454,7 +440,7 @@ namespace hooks
 		}
 
 		u8 order_id = OrderId::Die;
-		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
+		if (unit_id_is_burrowed_attacker(unit->id) && unit->status & UnitStatus::Burrowed) {
 			order_id = OrderId::PlayerGuard;
 		} else {
 			u8 right_click_order = units_dat::right_click_action[unit->id];
@@ -545,7 +531,7 @@ namespace hooks
 		||  order_id == OrderId::BunkerLoad)) {
 			return 1;
 		}
-		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
+		if (unit_id_is_burrowed_attacker(unit->id) && unit->status & UnitStatus::Burrowed) {
 			return 1;
 		}
 		u8 right_click_order = units_dat::right_click_action[unit->id];
@@ -559,7 +545,7 @@ namespace hooks
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	char get_right_click_action_order(Unit* unit) { // 004E5EA0
-		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
+		if (unit_id_is_burrowed_attacker(unit->id) && unit->status & UnitStatus::Burrowed) {
 			return 3;
 		}
 
@@ -587,7 +573,7 @@ namespace hooks
 		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = g_client_selection_group->unit[i];
 			if (unit) {
-				if (unit->id == UnitId::ZergLakizilisk) {
+				if (unit_id_is_burrowed_attacker(unit->id)) {
 					if (unit->status & UnitStatus::Burrowed) {
 						return true;
 					}
@@ -610,7 +596,7 @@ namespace hooks
 			if (!unit) {
 				continue;
 			}
-			if (unit->id == UnitId::ZergLakizilisk) {
+			if (unit_id_is_burrowed_attacker(unit->id)) {
 				if (unit->status & UnitStatus::Burrowed) {
 					continue;
 				}
@@ -634,7 +620,7 @@ namespace hooks
 		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = g_client_selection_group->unit[i];
 			if (unit) {
-				if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed
+				if (unit_id_is_burrowed_attacker(unit->id) && unit->status & UnitStatus::Burrowed
 				||  units_dat::right_click_action[unit->id]
 				||  unit_can_rally(unit)) {
 					if (helper::ai_unit_can_attack(unit)) {
@@ -649,7 +635,7 @@ namespace hooks
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	b32 unit_can_move(Unit* unit) { // 00455660
 		u16 right_click_order = units_dat::right_click_action[unit->id];
-		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
+		if (unit_id_is_burrowed_attacker(unit->id) && unit->status & UnitStatus::Burrowed) {
 			right_click_order = OrderId::PlayerGuard;
 		} else if (!right_click_order) {
 			if (unit_can_rally(unit)) {

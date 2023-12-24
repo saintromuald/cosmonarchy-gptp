@@ -257,7 +257,7 @@ namespace hooks
 		||  cleric->player >= PlayerLimit
 		||  target->hitpoints >= units_dat::max_hitpoints[target->id]
 		||  target->is_frozen()
-		||  target_ext->values[TimerReviveFlagClearMax])
+		||  target_ext->timers[TimerReviveFlagClearMax])
 		{
 			return 0;
 		}

@@ -190,7 +190,7 @@ namespace hooks {
 		if (target) {
 			u32 weapon_id;
 			// Lakizilisks can only attack while burrowed even if given a melee attack, according to this code.
-			if (attacker->id != UnitId::ZergLakizilisk
+			if (!unit_id_is_burrowed_attacker(attacker->id)
 			|| (attacker->status & UnitStatus::Burrowed
 			||  attacker->status & UnitStatus::InBuilding)) // Attempt to allow Lakizilisks to attack from within Bunkers. Didn't work, but may still be part of the solution. -Pr0nogo
 			{

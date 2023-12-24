@@ -257,14 +257,14 @@ namespace hooks
 	{
 		helper::toggle_unit_path(unit);
 
-		char pathing_flags = unit->pathing_flags;
+		u8 pathing_flags = unit->pathing_flags;
 		unit->movement_state = 0;
 		unit->pathing_flags = (pathing_flags ^ (unit->sprite->elevation < 12)) & 1 ^ pathing_flags;
 		unit->status |= (UnitStatus::CloakingForFree | UnitStatus::Burrowed);
 		unit->sprite->flags |= SpriteFlags::Burrowed;
 		Sprite* old_sprite = unit->sprite;
 		Sprite* new_sprite = 0;
-		if (unit->id == UnitId::ZergLakizilisk)
+		if (unit_id_is_burrowed_attacker(unit->id))
 		{
 			helper::switch_sprite_id(old_sprite, SpriteId::White_Circle2);
 			unit->sprite->elevation = 1;

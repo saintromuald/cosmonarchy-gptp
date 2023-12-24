@@ -1000,7 +1000,13 @@ namespace scbw {
 		if (!can_use_cliff_advantage(unit, weapon)) {
 			return 0;
 		}
-		s32 source_height = xHeight_table[g_map_tile_size->width * (unit->position.y >> 5) + (unit->position.x >> 5)];
+		Point16 unit_pos;
+		if (unit_id_is_burrowed_attacker(unit->id)) {
+			unit_pos = unit->move_target.pt;
+		} else {
+			unit_pos = unit->position;
+		}
+		s32 source_height = xHeight_table[g_map_tile_size->width * (unit_pos.y >> 5) + (unit_pos.x >> 5)];
 		if (!target_unit) {
 			return std::max(source_height, 0) * 2;
 		} else if (target_unit->status & UnitStatus::InAir) {
@@ -3088,7 +3094,7 @@ namespace scbw {
 		{
 			weapon_id = units_dat::air_weapon[attacker->id];
 		} else {
-			if (attacker->id != UnitId::ZergLakizilisk || attacker->status & UnitStatus::Burrowed)
+			if (!unit_id_is_burrowed_attacker(attacker->id) || attacker->status & UnitStatus::Burrowed)
 			{
 				weapon_id = units_dat::ground_weapon[attacker->id];
 			}

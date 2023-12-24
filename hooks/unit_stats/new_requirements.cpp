@@ -814,8 +814,7 @@ namespace hooks {
 				case UnitId::ZergProtathalor:
 				case UnitId::ZergCikralisk:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergTosvrolHaunt)
-					||  player_has_completed_unit_id(player_id, UnitId::ZergMutathSpire))
+					if (player_has_unit_id(player_id, UnitId::ZergTosvrolHaunt) || player_has_completed_unit_id(player_id, UnitId::ZergMutathSpire))
 					{
 						return true;
 					}
@@ -823,8 +822,7 @@ namespace hooks {
 				case UnitId::ZergAxitrilisk:
 				case UnitId::ZergMortothrokor:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergAxtothAxis)
-					||  player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow))
+					if (player_has_unit_id(player_id, UnitId::ZergAxtothAxis) || player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow))
 					{
 						return true;
 					}
@@ -857,8 +855,7 @@ namespace hooks {
 				case UnitId::ZergGorgrokor:
 				case UnitId::ZergLakizilisk:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergUltravCavern)
-						|| player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud))
+					if (player_has_unit_id(player_id, UnitId::ZergUltravCavern) || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud))
 					{
 						return true;
 					}
@@ -867,8 +864,7 @@ namespace hooks {
 				case UnitId::ZergVilgorokor:
 				case UnitId::ZergMatraleth:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergAlmakisAntre)
-						|| player_has_completed_unit_id(player_id, UnitId::ZergMatravilNest))
+					if (player_has_unit_id(player_id, UnitId::ZergAlmakisAntre) || player_has_completed_unit_id(player_id, UnitId::ZergMatravilNest))
 					{
 						return true;
 					}
@@ -876,8 +872,7 @@ namespace hooks {
 				case UnitId::ZergKeskathalor:
 				case UnitId::ZergGeszithalor:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergAlkajChasm)
-					||  player_has_completed_unit_id(player_id, UnitId::ZergGeszkathGrotto))
+					if (player_has_unit_id(player_id, UnitId::ZergAlkajChasm) || player_has_completed_unit_id(player_id, UnitId::ZergGeszkathGrotto))
 					{
 						return true;
 					}

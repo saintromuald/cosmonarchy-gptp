@@ -27,7 +27,7 @@ namespace hooks
 		if (target->status & UnitStatus::InAir)
 		{
 			weapon_id = units_dat::air_weapon[final_unit->id];
-		} else if (final_unit->id != UnitId::ZergLakizilisk || final_unit->status & UnitStatus::Burrowed)
+		} else if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed)
 		{
 			weapon_id = units_dat::ground_weapon[final_unit->id];
 		}
@@ -103,7 +103,7 @@ namespace hooks
 			weapon_id = units_dat::air_weapon[final_attacker->id];
 		} else {
 			u32 attacker_id = final_attacker->id;
-			if (attacker_id != UnitId::ZergLakizilisk || final_attacker->status & UnitStatus::Burrowed)
+			if (!unit_id_is_burrowed_attacker(attacker_id) || final_attacker->status & UnitStatus::Burrowed)
 			{
 				weapon_id = units_dat::ground_weapon[attacker_id];
 			} else {
@@ -440,7 +440,7 @@ namespace hooks
 									air_weapon = units_dat::air_weapon[subunit->id];
 								} else {
 									u16 subunit_id = subunit->id;
-									if (subunit_id != UnitId::ZergLakizilisk || subunit->status & 0x10)
+									if (!unit_id_is_burrowed_attacker(subunit_id) || subunit->status & UnitStatus::Burrowed)
 									{
 										air_weapon = units_dat::ground_weapon[subunit_id];
 									} else {

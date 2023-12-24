@@ -301,7 +301,7 @@ namespace hooks
 					{
 						*g_last_internal_error = 10;
 						result = 0;
-					} else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk && order_id != OrderId::Unburrow) {
+					} else if (unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(unit->id) && order_id != OrderId::Unburrow) {
 						*g_last_internal_error = 11;
 						result = 0;
 					} else {
@@ -350,7 +350,7 @@ namespace hooks
 			{
 				u8 action = RightClickActions::NoCommand_AutoAttack;
 				u16 unit_id = unit->id;
-				if (unit_id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
+				if (unit_id_is_burrowed_attacker(unit_id) && unit->status & UnitStatus::Burrowed)
 				{
 					action = RightClickActions::NoMove_NormalAttack;
 				} else {

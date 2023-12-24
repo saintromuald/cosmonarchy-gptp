@@ -35,7 +35,7 @@ namespace hooks
 				index++;
 			}
 
-			if (active_unit->id != UnitId::ZergLakizilisk || active_unit->status & UnitStatus::Burrowed)
+			if (!unit_id_is_burrowed_attacker(active_unit->id) || active_unit->status & UnitStatus::Burrowed)
 			{
 				UnitExt* unit_ext = get_unit_ext(active_unit);
 				bool no_ground_weapon_display = false;
@@ -66,7 +66,7 @@ namespace hooks
 					if (ground_weapon_subunit == WeaponId::None)
 					{
 						no_ground_weapon_display = true;
-					} else if (active_unit->id == UnitId::ZergLakizilisk && !(active_unit->status & UnitStatus::Burrowed)) {
+					} else if (unit_id_is_burrowed_attacker(active_unit->id) && !(active_unit->status & UnitStatus::Burrowed)) {
 						ground_weapon = WeaponId::None;
 					} else if (ground_weapon_main_unit != WeaponId::None) {
 						ground_weapon = ground_weapon_main_unit;
@@ -128,13 +128,9 @@ namespace hooks
 			if (air_weapon_main_unit != WeaponId::None)
 			{
 				air_weapon_subunit = air_weapon_main_unit;
-			}
-			else if (!active_unit->subunit)
-			{
+			} else if (!active_unit->subunit) {
 				no_air_weapon_display = true;
-			}
-			else
-			{
+			} else {
 				air_weapon_subunit = units_dat::air_weapon[active_unit->subunit->id];
 			}
 
@@ -143,31 +139,23 @@ namespace hooks
 				if (air_weapon_subunit == WeaponId::None)
 				{
 					no_air_weapon_display = true;
-				}
-				else if (air_weapon_main_unit != WeaponId::None)
-				{
+				} else if (air_weapon_main_unit != WeaponId::None) {
 					air_weapon = air_weapon_main_unit;
-				}
-				else
-				{
+				} else {
 					if (!active_unit->subunit)
 					{
 						air_weapon = WeaponId::None;
-					}
-					else
-					{
+					} else {
 						air_weapon = units_dat::air_weapon[active_unit->subunit->id];
 					}
 				}
 				if (!no_air_weapon_display)
 				{
 					u8 ground_weapon;
-					if (active_unit->id == UnitId::ZergLakizilisk && !(active_unit->status & UnitStatus::Burrowed))
+					if (unit_id_is_burrowed_attacker(active_unit->id) && !(active_unit->status & UnitStatus::Burrowed))
 					{
 						ground_weapon = WeaponId::None;
-					}
-					else
-					{
+					} else {
 						ground_weapon = units_dat::ground_weapon[active_unit->id];
 						if (ground_weapon == WeaponId::None && active_unit->subunit)
 						{
@@ -178,19 +166,13 @@ namespace hooks
 					if (air_weapon == ground_weapon)
 					{
 						no_air_weapon_display = true;
-					}
-					else if (air_weapon_main_unit != WeaponId::None)
-					{
+					} else if (air_weapon_main_unit != WeaponId::None) {
 						air_weapon = air_weapon_main_unit;
-					}
-					else if (air_weapon_main_unit == WeaponId::None)
-					{
+					} else if (air_weapon_main_unit == WeaponId::None) {
 						if (!active_unit->subunit)
 						{
 							air_weapon = WeaponId::None;
-						}
-						else
-						{
+						} else {
 							air_weapon = units_dat::air_weapon[active_unit->subunit->id]; // 00426E16
 						}
 					}

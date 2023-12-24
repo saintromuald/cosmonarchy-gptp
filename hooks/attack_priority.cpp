@@ -327,7 +327,7 @@ namespace
 
 		s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), x, y);
 
-		if (unit->id == UnitId::ZergLakizilisk)
+		if (unit_id_is_burrowed_attacker(unit->id))
 		{
 			unit->current_direction_1 = angle;
 			return true;
