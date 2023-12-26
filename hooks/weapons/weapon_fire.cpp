@@ -446,6 +446,7 @@ namespace hooks {
 					case WeaponId::LakiziliskSubterraneanSpines:
 					{
 						timer = 2 + ((max_range / 32) * 3);
+						unit_ext->values[ValueWyvernLandGrabOn] = max_range + 16;
 					} break;
 				}
 				unit_ext->timers[TimerMissileReturnETA] = timer;
@@ -1525,9 +1526,15 @@ namespace hooks {
 			}
 			case WeaponBehavior_GoToMaxRange:
 			{
-				s32 max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
+				s32 max_range_var;
 				if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
-					max_range_var = (get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16) * 256;
+					max_range_var = get_unit_ext(parent)->values[ValueWyvernLandGrabOn];
+					if (!max_range_var) {
+						max_range_var = get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16;
+					}
+					max_range_var *= 256;
+				} else {
+					max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
 				}
 				Vector32 target_pos = {};
 				target_pos.x = (s32)(parent->position.x + ((max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16));
