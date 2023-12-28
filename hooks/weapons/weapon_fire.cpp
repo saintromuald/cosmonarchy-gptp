@@ -446,7 +446,7 @@ namespace hooks {
 					case WeaponId::LakiziliskSubterraneanSpines:
 					{
 						timer = 2 + ((max_range / 32) * 3);
-						unit_ext->values[ValueWyvernLandGrabOn] = max_range + 16;
+						unit_ext->values[ValueHasFiredReturnAttack] = max_range + 16;
 					} break;
 				}
 				unit_ext->timers[TimerMissileReturnETA] = timer;
@@ -1528,7 +1528,7 @@ namespace hooks {
 			{
 				s32 max_range_var;
 				if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
-					max_range_var = get_unit_ext(parent)->values[ValueWyvernLandGrabOn];
+					max_range_var = get_unit_ext(parent)->values[ValueHasFiredReturnAttack];
 					if (!max_range_var) {
 						max_range_var = get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16;
 					}
