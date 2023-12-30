@@ -1203,6 +1203,8 @@ namespace ImageId {
 		OcsalRegressionOverlay						= 1778,
 		TyrannyOverlay								= 1779,
 
+		MortothrokorPassiveOverlay					= 1783,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

@@ -2226,6 +2226,13 @@ namespace hooks {
 			{
 				if (unit_ext->timers[TimerMortothrokorPassive] == 0) {
 					unit_ext->values[ValueMortothrokorStacks] = 0;
+					if (unit->get_overlay(ImageId::MortothrokorPassiveOverlay)) {
+						unit->remove_overlay(ImageId::MortothrokorPassiveOverlay);
+					}
+				} else if (unit_ext->timers[TimerMortothrokorPassive] == 47) {
+					if (!unit->get_overlay(ImageId::MortothrokorPassiveOverlay)) {
+						unit->sprite->create_top_overlay(ImageId::MortothrokorPassiveOverlay);
+					}
 				}
 				should_update_speed = true;
 			} break;
