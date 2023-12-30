@@ -355,7 +355,12 @@ void tick_effect(Effect* effect) {
 
 				for (u32 j = 0; j < unit_array.count; j++) {
 					Unit* target = unit_array.units[j];
-					target->damage_with_custom(30 * total_scalar, 3, effect->source, effect->player);
+					UnitExt* target_ext = get_unit_ext(target);
+					if (!target_ext->timers[TimerSalamanderFire]) { // So it only applies to the same unit once every second.
+						target_ext->values[ValueApollyoidAdhesiveStacks]++;
+						target_ext->timers[TimerApollyoidAdhesive] = 2 * 24 + 1;
+						target_ext->timers[TimerSalamanderFire] = 24;
+					}
 				}
 			} break;
 			case EffectId_AspirantCriticality: {

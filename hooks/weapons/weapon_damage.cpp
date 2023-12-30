@@ -786,6 +786,7 @@ namespace hooks
 						scbw::update_signify_status(data.target, target_ext);
 					} break;
 					case WeaponId::EcclesiastAstralBlaster:
+					case WeaponId::MatrixKhaydarinRay:
 					{
 						// Astral Blessing - Ecclesiast behavior
 						if (data.attacking_player_id != data.target->player && !scbw::is_allied_to(data.attacking_player_id, data.target->player)) {

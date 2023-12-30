@@ -604,12 +604,13 @@ namespace hooks {
 					} break;
 					case WeaponId::MatrixKhaydarinRay: {
 						FireMultipleOptions options = {};
-						options.use_weapon_factor = false;
 						options.stagger = -1;
 						options.weapon_offsets = get_weapon_offsets(weapon_id);
-
-						// Multi-Attack IV
-						fire_multiple(unit, weapon_id, 4, FilterEnemy,  options);
+						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
+						Unit* target = unit->order_target.unit;
+						if (target && unit->player != target->player && !scbw::is_allied_to(unit->player, target->player)) {
+							scbw::astral_blessing_proc(unit, unit->player, weapon_id);
+						}
 					} break;
 					case WeaponId::BarghestRayOfAgony: {
 						FireMultipleOptions options = {};

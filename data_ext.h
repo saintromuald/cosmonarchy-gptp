@@ -8,7 +8,7 @@ enum ExtValueId {
 	ValueUnitIdName,
 	ValueWyvernLandGrabOn,
 	ValueAmitosis,
-//	ValueSublimeShepherd,
+	ValueHasFiredReturnAttack,
 	ValueHasSublimeShepherd,
 	ValueWyvernLandGrabX,
 	ValueWyvernLandGrabY,
@@ -194,7 +194,7 @@ enum ExtTimerId {
 	TimerCausticDischargeSpeed,
 	TimerIonFieldAttackSpeed,
 	TimerReconstitutionCooldown,
-	TimerBindingGrip,							// unused
+	TimerSalamanderFire,
 	TimerWendigoShatteredWinds,
 	TimerControlledDemolition,
 	TimerEmergencyDetonation,

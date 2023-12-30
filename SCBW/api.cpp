@@ -1065,10 +1065,10 @@ namespace scbw {
 	s32 get_final_damage(Unit* unit, u16 weapon_id) {
 		s32 upgrade_type = get_upgrade_type(unit);
 		s32 base_damage = weapons_dat::damage_amount[weapon_id];
-		f64 bonus_damagge = (f64)weapons_dat::armor_pen[weapon_id] * (f64)scbw::get_upgrade_level(unit->player, upgrade_type);
+		f64 bonus_damage = (f64)weapons_dat::armor_pen[weapon_id] * (f64)scbw::get_upgrade_level(unit->player, upgrade_type);
 		f64 final_damage = base_damage;
-		if (bonus_damagge) {
-			final_damage = base_damage + bonus_damagge;
+		if (bonus_damage) {
+			final_damage = base_damage + bonus_damage;
 		}
 		return final_damage;
 	}
@@ -1087,8 +1087,7 @@ namespace scbw {
 			|| order_id == OrderId::FireYamatoGun1;
 	}
 
-	// Creates the Plasma Shield flickering effect.
-	// Identical to function @ 0x004E6140
+	// Creates the shield flickering effect. 004E6140
 	void create_shield_overlay(Unit* unit, u32 attack_direction) {
 		const LO_Header* shield_lo = g_shield_overlays[unit->sprite->main_graphic->id];
 		u32 frame_angle = (attack_direction - 124) / 8 % 32;
@@ -2394,7 +2393,8 @@ namespace scbw {
 		u32 heal_amount = 2;
 		u32 range = 64;
 		switch (weapon_id) {
-			case WeaponId::EcclesiastAstralBlaster: {
+			case WeaponId::EcclesiastAstralBlaster:
+			case WeaponId::MatrixKhaydarinRay: {
 				heal_amount = 2;
 				range = 64;
 			} break;

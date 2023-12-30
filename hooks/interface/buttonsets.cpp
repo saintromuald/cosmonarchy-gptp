@@ -2210,7 +2210,7 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ProtossMatrix: {
-									if (current_button->icon_id == IconId::ApialSensors) { // Matrix - Multi-Attack IV
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Matrix - Astral Tether
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
