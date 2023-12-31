@@ -205,6 +205,7 @@ namespace hooks
 			case UnitId::TerranCyprian:
 			case UnitId::TerranSevenstep:
 			case UnitId::ProtossCabalist:
+			case UnitId::ZergLiiralisk:
 			case UnitId::ZergIzirokor:
 			case UnitId::ZergKagralisk:
 			{
