@@ -3908,15 +3908,6 @@ namespace hooks {
 		}
 	}
 
-	constexpr u32 hash_string_to_u32(const char* string) {
-		u32 result = 2166136261;
-		for (const char* c = string; *c; c++) {
-			result ^= *c;
-			result *= 16777619;
-		}
-		return result;
-	}
-
 	void initialize_provider_version(GameVersion* version) { // 00472770
 		*version = {};
 		version->size = sizeof(*version);
@@ -3924,7 +3915,7 @@ namespace hooks {
 		version->game_title = "Cosmonarchy Brood War";
 
 		version->game_description = "internal version unknown";
-		version->version_id = hash_string_to_u32(__TIMESTAMP__);
+		version->version_id = comptime(hash_string(__TIMESTAMP__));
 		version->max_players = 8;
 		version->category_bits = 255;
 		helper::get_cd_key_info(&version->key_owner, &version->key);

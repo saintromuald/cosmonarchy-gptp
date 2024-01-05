@@ -44,14 +44,6 @@ SFile::~SFile() {
 	}
 }
 
-u32 hash_string(const char* string) {
-	u32 hash = 5381;
-	for (const char* c = string; *c; ++c) {
-		hash = ((hash << 5) + hash) + *c;
-	}
-	return hash;
-}
-
 void sb_resize(StringBuilder* sb, u32 needed_size) {
 	if (sb->size + needed_size > sb->capacity) {
 		u32 new_capacity = sb->capacity ? sb->capacity * 2 + needed_size : 512 + needed_size;

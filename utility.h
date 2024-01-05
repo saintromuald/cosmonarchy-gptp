@@ -24,7 +24,18 @@ private:
 	char* m_data = 0;
 };
 
-u32 hash_string(const char* string);
+constexpr u32 hash_string(const char* string) {
+	u32 result = 2166136261;
+	for (const char* c = string; *c; c++) {
+		result ^= *c;
+		result *= 16777619;
+	}
+	return result;
+}
+
+consteval auto comptime(auto value) {
+	return value;
+}
 
 struct StringBuilder {
 	u32 capacity;
