@@ -2600,7 +2600,6 @@ namespace scbw {
 			case WeaponId::SundogBlindsideRockets:
 			case WeaponId::CohortGaussPistols:
 			case WeaponId::ZealotPhaseBlades:
-			case WeaponId::LegionnairePhaseSpear:
 			case WeaponId::AmaranthPsiCleaver:
 			case WeaponId::GolemBloodlessAssault:
 			case WeaponId::PariahIconoclastBlades:
