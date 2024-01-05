@@ -592,7 +592,7 @@ namespace hooks {
 		u8 iterate; // al
 		s16 v6; // cx
 		s16 v7; // ax
-		char* v8; // eax
+		const char* v8; // eax
 		s16 v9; // cx
 		Unit* v10; // eax
 		Unit* v11; // ebx
@@ -619,7 +619,7 @@ namespace hooks {
 					goto LABEL_15;
 				}
 				if (v7 < g_stat_txt_buffer->get_string_count()) {
-					v8 = (char*)g_stat_txt_buffer->get_string(v7 + 1);
+					v8 = g_stat_txt_buffer->get_string(v7 + 1);
 					if (!v8) {
 				LABEL_15:
 						if (v1->order_queue_head) {

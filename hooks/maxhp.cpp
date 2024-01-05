@@ -252,7 +252,9 @@ LABEL_26:
 				v9 = "";
 			}
 			v10 = helper::get_last_queue_slot_id((*g_active_portrait_unit));
-			sprintf_s("", 260, "%s %d", v9, (units_dat::supply_provided[v10] + 1) / 2);
+
+			char buffer[260] = {};
+			sprintf_s(buffer, 260, "%s %d", v9, (units_dat::supply_provided[v10] + 1) / 2);
 			v11 = v20 + 66353;
 			if (v21 == -818)
 			{
@@ -261,7 +263,7 @@ LABEL_26:
 				v11 = (u16)v11;
 				v12 = (char*)g_stat_txt_buffer->get_string(v11 + 1);
 			} else {
-				v12 = "";
+				v12 = buffer;
 			}
 			ByteOperations::SetLowByte(v11, v21);
 			v13 = helper::get_supplies_available((*g_active_portrait_unit)->player, v11);

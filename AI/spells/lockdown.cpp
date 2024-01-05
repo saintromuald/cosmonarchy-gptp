@@ -7,7 +7,7 @@ namespace AI
 	{
 		if (caster->mine_carrier.mine_count == 0)
 		{
-			return false;
+			return 0;
 		}
 
 		s32 bounds;

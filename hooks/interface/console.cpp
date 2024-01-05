@@ -98,15 +98,15 @@ namespace hooks
 				hp_state = helper::unit_hp_between_33_66_percent(active_unit) != 0 ? 3 : 7;
 			}
 
-			if (units_dat::shields_enabled[active_id])
-			{
+			static char buffer[32] = {};
+			if (units_dat::shields_enabled[active_id]) {
 				s32 hp_plus_1 = (active_unit->hitpoints + 255) >> 8;
 				u16 last_queue_id = helper::get_last_queue_slot_id(active_unit);
-				sprintf_s("", 32, "%d/%d %c%d/%d", active_unit->shields >> 8, units_dat::max_shield_points[last_queue_id], hp_state, hp_plus_1, max_hp_raw);
+				sprintf_s(buffer, 32, "%d/%d %c%d/%d", active_unit->shields >> 8, units_dat::max_shield_points[last_queue_id], hp_state, hp_plus_1, max_hp_raw);
 			} else {
-				sprintf_s("", 32, "%c%d/%d", hp_state, (active_unit->hitpoints + 255) >> 8, max_hp_raw);
+				sprintf_s(buffer, 32, "%c%d/%d", hp_state, (active_unit->hitpoints + 255) >> 8, max_hp_raw);
 			}
-			string = "";
+			string = buffer;
 		}
 		helper::add_text_to_dialog(dialog, -7, string);
 		helper::draw_energy(dialog);

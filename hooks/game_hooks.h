@@ -1,4 +1,5 @@
 #pragma once
+#include "SCBW\scbwdata.h"
 
 struct GameVersion;
 

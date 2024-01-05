@@ -64,7 +64,7 @@ namespace helper {
 		return result;
 	}
 
-	void* load_graphic(char* a1, u32 a2, u32 a3, char* log_filename, u32 log_line) {
+	void* load_graphic(const char* a1, u32 a2, u32 a3, const char* log_filename, u32 log_line) {
 		static void* result;
 		const u32 func_address = 0x004D2B30;
 		__asm {
@@ -2320,7 +2320,7 @@ namespace helper {
 		return return_value;
 	}
 
-	const char* set_unit_stat_txt_error_message(char* message) {
+	const char* set_unit_stat_txt_error_message(const char* message) {
 		static const char* result;
 		const u32 func_address = 0x0048CCB0;
 		__asm {
@@ -3572,7 +3572,7 @@ namespace helper {
 		return (pre_result != 0);
 	}
 
-	u32 get_stat_txt_string(Unit* unit, u32 player, char* message) {
+	u32 get_stat_txt_string(Unit* unit, u32 player, const char* message) {
 		const u32 Func_get_statTxt_Str_0 = 0x0048EF30;
 		static u32 return_value;
 		__asm {
@@ -4521,17 +4521,17 @@ namespace helper {
 		return (__int8)result;
 	}
 
-	char* get_stat_txt_string(u16 a1) {
+	const char* get_stat_txt_string(u16 id) {
 		const u32 func_address = 0x004C36F0;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOVZX CX, a1
+			MOVZX CX, id
 			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
-		return (char*)result;
+		return (const char*)result;
 	}
 
 	// For stats_weapon_level / stats_armor_level
@@ -6522,9 +6522,9 @@ namespace helper {
 
 	void* SMemAlloc(u32 amount) {
 		const u32 Func_SMemAlloc = 0x0041006A;
-		char* unkFilename  = "";
-		u32   unkLine      = 0;
-		u32   defaultValue = 0;
+		const char* unkFilename  = "";
+		u32   unkLine            = 0;
+		u32   defaultValue       = 0;
 		static void* pointer_on_allocated_memory;
 		__asm {
 			PUSHAD
@@ -6539,7 +6539,7 @@ namespace helper {
 		return pointer_on_allocated_memory;
 	}
 
-	void* SMemAlloc(u32 amount, char* unkFilename, u32 unkLine, u32 defaultValue) {
+	void* SMemAlloc(u32 amount, const char* unkFilename, u32 unkLine, u32 defaultValue) {
 		const u32 Func_SMemAlloc = 0x0041006A;
 		static void* pointer_on_allocated_memory;
 		__asm {
@@ -8217,7 +8217,7 @@ namespace helper {
 	}
 
 	// For display_establishing_shot
-	void* load_init_credits_bin(char* a1) {
+	void* load_init_credits_bin(const char* a1) {
 		s32 address = 0x004D8DF0;
 		void* result_;
 		__asm {
@@ -8228,7 +8228,7 @@ namespace helper {
 		return result_;
 	}
 
-	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle) {
+	bool SFileOpenArchive(const char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle) {
 		const u32 Func_SFileOpenArchive = 0x004100B2;
 		static u32 result;
 		__asm {
@@ -8599,9 +8599,9 @@ namespace helper {
 	bool SMemFree(void* location) {
 		static bool result;
 		const u32 Func_SMemFree = 0x00410070;
-		char* logFileName  = "";
-		u32   logLine      = 0;
-		u32   defaultValue = 0;
+		const char* logFileName  = "";
+		u32   logLine            = 0;
+		u32   defaultValue       = 0;
 		__asm {
 			PUSHAD
 			PUSH defaultValue
@@ -8615,7 +8615,7 @@ namespace helper {
 		return result;
 	}
 
-	bool SMemFree(void* location, char* logFileName, s32 logLine, char defaultValue) {
+	bool SMemFree(void* location, const char* logFileName, s32 logLine, char defaultValue) {
 		static bool result;
 		const u32 Func_SMemFree = 0x00410070;
 		__asm {
@@ -10261,7 +10261,7 @@ namespace helper {
 		return result;
 	}
 
-	void load_dialog(char* filename, void* function) {
+	void load_dialog(const char* filename, void* function) {
 		const u32 func_address = 0x004F57A0;
 		__asm {
 			PUSHAD
@@ -10841,7 +10841,7 @@ namespace helper {
 		}
 	}
 
-	void send_message_something(u32 unused, char* string) {
+	void send_message_something(u32 unused, const char* string) {
 		const u32 func_address = 0x004F31D0;
 		__asm {
 			PUSHAD
@@ -13769,8 +13769,7 @@ namespace helper {
 		return result;
 	}
 
-	typedef const char* cstr; // to apply constness on the correct part of the double pointer -Veeq7
-	u32* get_cd_key_info(cstr* owner, u32* key) {
+	u32* get_cd_key_info(const char** owner, u32* key) {
 		static u32* result;
 		const u32 func_address = 0x004D9BF0;
 		__asm {
@@ -14544,7 +14543,7 @@ namespace helper {
 		}
 	}
 
-	char load_glu_pok_bindlg(char* string)
+	char load_glu_pok_bindlg(const char* string)
 	{
 		const u32 func_address = 0x004B7180;
 		static char result;

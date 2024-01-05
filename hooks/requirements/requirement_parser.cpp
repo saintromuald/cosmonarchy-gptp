@@ -8,7 +8,7 @@ namespace
 	const int TMP_CONST_COUNT_ARG = 512;
 	const int ENTRY_OPCODE_LIMIT_ARG = 32;
 
-	bool parseRequirementsFile(char* path, u16 requirementOverridesIndex[TMP_CONST_COUNT_ARG], u16 requirementOpcodes[TMP_CONST_COUNT_ARG * ENTRY_OPCODE_LIMIT_ARG])
+	bool parseRequirementsFile(const char* path, u16 requirementOverridesIndex[TMP_CONST_COUNT_ARG], u16 requirementOpcodes[TMP_CONST_COUNT_ARG * ENTRY_OPCODE_LIMIT_ARG])
 	{
 		HANDLE fileHandle;
 		if (!SFileOpenFileEx(0, path, 0, &fileHandle))
@@ -30,7 +30,7 @@ namespace
 			return false;
 		}
 
-		char* delimiter = "\r\n";
+		const char* delimiter = "\r\n";
 		int line = 1;  // To ensure no indexes point to line 0 which is undefined
 		int opcodeSetCount = 0;
 		int requirementSet = 0;

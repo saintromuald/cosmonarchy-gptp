@@ -753,7 +753,7 @@ static void set_ally(u32 a, u32 b, bool ally) {
 	}
 }
 
-static void messagef(char* format, ...) {
+static void messagef(const char* format, ...) {
 	static char buffer[1024];
 
 	va_list va;

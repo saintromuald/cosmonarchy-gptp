@@ -58,7 +58,7 @@ namespace scbw {
 		/// Returns the number of units found by UnitFinder::search() call.
 		/// If no searches have been conducted, returns 0.
 		s32 get_unit_count() const;
-		s32 UnitFinder::get_unit_count(CallbackMatch match) const;
+		s32 get_unit_count(CallbackMatch match) const;
 
 		/// Returns the unit at the given index. Invalid index returns nullptr instead.
 		Unit* get_unit(s32 index) const;

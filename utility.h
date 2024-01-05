@@ -1,15 +1,30 @@
 #pragma once
 #include "SCBW/api.h"
 
-struct LoadedFile {
-	u32 size;
-	char* data;
+class SFile {
+public:
+	static bool exists(const char* filename);
+	static SFile load(const char* filename);
+
+	~SFile();
+	SFile(const SFile&) = delete;
+	SFile& operator=(const SFile&) = delete;
+	SFile(SFile&& other) : m_size(std::exchange(other.m_size, 0)), m_data(std::exchange(other.m_data, nullptr)) {}
+	SFile& operator=(SFile&& other) { std::swap(*this, other); return *this; };
+
+	u32 size() const { return m_size; }
+	char* data() const { return m_data; }
+
+	char* begin() const { return m_data; }
+	char* end() const { return m_data + m_size; }
+
+private:
+	SFile() {} // use SFile::load
+	u32 m_size = 0;
+	char* m_data = 0;
 };
 
-bool file_exists(char* filename);
-LoadedFile load_entire_sfile(char* filename);
-void free_loaded_file(LoadedFile* file);
-u32 hash_string(char* string);
+u32 hash_string(const char* string);
 
 struct StringBuilder {
 	u32 capacity;

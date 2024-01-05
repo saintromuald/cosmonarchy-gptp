@@ -1034,6 +1034,10 @@ namespace hooks
 			goto cannot_attack;
 		}
 
+		// Required for "goto process_attack" to compile in C++20 mode :( -Veeq7
+		b32 has_weapon;
+		Unit* final_unit;
+
 		if (helper::unit_is_carrier(unit))
 		{
 			goto process_attack;
@@ -1077,8 +1081,8 @@ namespace hooks
 
 		// Originally handled Matraleth infest fail case, and AI Didact, neither of which apply anymore. -Pr0nogo
 
-		b32 has_weapon = false;
-		Unit* final_unit = unit->subunit;
+		has_weapon = false;
+		final_unit = unit->subunit;
 		if (!helper::unit_is_subunit(unit->subunit))
 		{
 			final_unit = unit;

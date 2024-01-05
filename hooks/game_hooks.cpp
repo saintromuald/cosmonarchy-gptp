@@ -3284,7 +3284,7 @@ namespace hooks {
 	void game_recv(char* buffer, s32 size, bool in_replay) { // 004865D0
 		// Size needs to be s32 to support less than 0 comparison...
 		if (size) {
-			b32 is_in_replay = *g_is_in_replay;
+			bool is_in_replay = *g_is_in_replay;
 			u32 command_id = 0;
 			u32 command_size = 0;
 			while (true) {
@@ -3312,7 +3312,6 @@ namespace hooks {
 							command_size = 2 * (u8)buffer[1] + 2;
 						}
 						size -= command_size;
-					maybe_process_command:
 						if (size <= 0) {
 							return;
 						}
@@ -3898,7 +3897,9 @@ namespace hooks {
 						size -= command_size;
 						buffer += command_size;
 						is_in_replay = *g_is_in_replay;
-						goto maybe_process_command;
+						if (size > 0) {
+							goto process_command;
+						}
 					}
 				} break;
 				default:

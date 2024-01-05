@@ -587,6 +587,7 @@ namespace hooks
 			return 1;
 		}
 
+		b32 result; // required by C++20 mode goto
 		if (!is_incomplete)
 		{
 			helper::update_unit_stats_and_finish_building(unit);
@@ -594,9 +595,8 @@ namespace hooks
 		}
 		helper::update_unit_stats_and_finish_building(unit);
 
-		b32 result = helper::show_finished_unit(unit);
-		if (result)
-		{
+		result = helper::show_finished_unit(unit);
+		if (result) {
 		finish:
 			helper::update_unit_strength_and_apply_default_orders(unit);
 			if (!(unit->status & UnitStatus::GroundedBuilding))

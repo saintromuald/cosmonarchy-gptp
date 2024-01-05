@@ -125,7 +125,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -160,7 +160,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -197,7 +197,7 @@
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -236,7 +236,7 @@
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>

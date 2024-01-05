@@ -817,7 +817,7 @@ namespace hooks
 		}
 	}
 
-	void init_stat_res_font(char* font_name) {
+	static void init_stat_res_font(const char* font_name) {
 		const u32 load_font = 0x0041FD10;
 
 		__asm {

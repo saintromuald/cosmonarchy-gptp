@@ -674,7 +674,11 @@ namespace hooks
 				{
 					return;
 				}
-				goto LABEL_24;
+				if (units_dat::base_property[cargo_subunit->id] & UnitProperty::Subunit)
+				{
+					helper::toggle_unit_pathing_properties(cargo_subunit);
+				}
+				return;
 			}
 			u32 cargo_index = cargo - g_unit_table + 1;
 			u32 target_order_shifted = 0;
@@ -719,7 +723,6 @@ namespace hooks
 			cargo_subunit = cargo->subunit;
 			if (cargo_subunit)
 			{
-			LABEL_24:
 				if (units_dat::base_property[cargo_subunit->id] & UnitProperty::Subunit)
 				{
 					helper::toggle_unit_pathing_properties(cargo_subunit);

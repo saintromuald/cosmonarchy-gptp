@@ -163,7 +163,7 @@ struct Unit : public UnitLayout
 	/// Returns the position of the bottom edge of the unit's collision box.
 	s16 get_bottom() const;
 
-	Box16 Unit::get_box() const;
+	Box16 get_box() const;
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -193,7 +193,7 @@ struct Unit : public UnitLayout
 		u8 damage_divisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
 	);
 
-	void Unit::damage_with_custom(
+	void damage_with_custom(
 		s32 damage,
 		s32 armor_pen = -1,		// -1 = ignore all armor
 		Unit* attacker = 0,

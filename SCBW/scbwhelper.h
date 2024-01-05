@@ -23,7 +23,7 @@ namespace helper {
 	SCBW_FUNC(0x00440FA0, bool __fastcall, return_cargo_to_best_depot_proc, Unit* depot, Unit* worker);
 	SCBW_FUNC(0x004D27A0, void* __fastcall, alloc_background_image, const char* filename, Bitmap* bitmap, u32 buffer, u32 arg4, u32 arg5);
 	SCBW_FUNC(0x00459B00, char __fastcall, statbtn_dialog_interact, BinDlg* dialog, DialogEvent* dlg_event);
-	SCBW_FUNC(0x00410154, b32 __stdcall, sbmp_load_image, const char* filename, PaletteEntry* palette, void* buffer, u32 buffer_size, u32* width, u32* height, u32* bpp);
+	SCBW_FUNC(0x00410154, b32 __stdcall, sbmp_load_image, const char* filename, PaletteEntry* palette, const char* buffer, u32 buffer_size, u32* width, u32* height, u32* bpp);
 	SCBW_FUNC(0x004B5220, char __fastcall, glu_expcampaign_custom_ctrl_id, BinDlg* dialog, DialogEvent* dlg_event);
 	SCBW_FUNC(0x004BE0B0, char __cdecl, refresh_cursor_0);
 	SCBW_FUNC(0x004BE060, s32 __cdecl, cursor_refresh);
@@ -34,7 +34,7 @@ namespace helper {
 	// For loadRaceUI
 	void get_race_sound_list(s8 a1);
 	s32 dialog_grp_construct(s32 a1, s32 a2, s32 a3, s32(__fastcall* a4)(s32, s32, s32, s32));
-	void* load_graphic(char* a1, u32 a2, u32 a3, char* log_filename, u32 log_line);
+	void* load_graphic(const char* a1, u32 a2, u32 a3, const char* log_filename, u32 log_line);
 
 	s32 rand_func();
 	bool unit_hp_below_33_percent(Unit* unit);
@@ -272,7 +272,7 @@ namespace helper {
 	void switch_to_warp_texture(Image* image);																// 004D8500
 	bool set_thingy_visibility_flags(Thingy* thingy);									                    // 004878F0
 	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player);		    								// 00488210
-	const char* set_unit_stat_txt_error_message(char* message);									            // 0048CCB0
+	const char* set_unit_stat_txt_error_message(const char* message);									    // 0048CCB0
 	void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play = 1, u32 min_volume = 0);				// 0048EC10
 	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
 	u32 iterate_units_at_location_target_proc_recall_targets(Unit* unit, Box16* coords);					// 004E8280
@@ -446,7 +446,7 @@ namespace helper {
 	//// cast_order
 	u32 get_weapon_cooldown(Unit* unit, u8 weapon_id);																				// 00475DC0
 	bool is_ready_to_attack(Unit* unit, u32 weapon_id);																				// 00476640
-	u32 get_stat_txt_string(Unit* unit, u32 player, char* message);																	// 0048EF30
+	u32 get_stat_txt_string(Unit* unit, u32 player, const char* message);															// 0048EF30
 	bool can_cast_spell(Unit* unit);																								// 00492140
 	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero);														// 00492620
 
@@ -564,7 +564,8 @@ namespace helper {
 
 	// For get_unit_rank_string and check_hotkey_char
 	__int8 unitGetRace(Unit* a1);																									// 0047B150
-	char* get_stat_txt_string(u16 a1);																								// 004C36F0
+	const char* get_stat_txt_string(u16 id);																						// 004C36F0
+	char* get_stat_txt_mutable_string(u16 id);																						// 004C36F0
 
 	// For stats_weapon_level / stats_armor_level
 	char getArmorCount(Unit* unit, s32 a2);																							// 00453FC0
@@ -863,7 +864,7 @@ namespace helper {
 	void remove_hp_bar(Image* a1);
 	void refund_all_queue_slots(Unit* unit);
 	void* SMemAlloc(u32 amount);																					// 0041006A (based on Storm.dll definition)
-	void* SMemAlloc(u32 amount, char* unkFilename, u32 unkLine, u32 defaultValue);									// 0041006A (based on Storm.dll definition)
+	void* SMemAlloc(u32 amount, const char* unkFilename, u32 unkLine, u32 defaultValue);							// 0041006A (based on Storm.dll definition)
 	void set_callback_timer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);											// 00416090
 	void remove_from_selections(Unit* unit);																		// 0049A7F0
 	u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
@@ -1000,8 +1001,8 @@ namespace helper {
 	AiScript* delete_aiscripts_using_town(AiTown* town);													// 0045AE20
 
 	// For display_establishing_shot
-	void* load_init_credits_bin(char* a1);																	// 004D8DF0
-	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);				// 004100B2
+	void* load_init_credits_bin(const char* a1);															// 004D8DF0
+	bool SFileOpenArchive(const char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);		// 004100B2
 	bool SFileCloseArchive(void* archive);																	// 004100BE
 	bool sfile_open_file_ex(void* hMPQ, const char* szFileName, u32 dwSearchScope, HANDLE** phFile);		// 004100C4
 //	bool SFileCloseFile(void* hFile);																		// 004100C4
@@ -1043,7 +1044,7 @@ namespace helper {
 	void fastFileRead(s32 a1, s32 a2, char* a3, s32 fileName, s32 buffer, s32 bytesRead, char* logFileName, s32 logLine);		// 004D2D10
 	s32 parseWaveFile(s32 a1, s32 a2, s32 a3);																					// 004BBD80
 	bool SMemFree(void* location);																								// 00410070
-	bool SMemFree(void* location, char* logFileName, s32 logLine, char defaultValue);											// 00410070
+	bool SMemFree(void* location, const char* logFileName, s32 logLine, char defaultValue);										// 00410070
 	u32 get_sound_duration(s32 sound_id);																						// 004BB890
 
 	/*
@@ -1240,7 +1241,7 @@ namespace helper {
 	s32 mark_cagra_to_disappear(u32 tile_x, u32 tile_y);													// 0047DD60
 
 	void* process_options_change(BinDlg* control);															// 004C9780
-	void load_dialog(char* filename, void* function);														// 004F57A0
+	void load_dialog(const char* filename, void* function);													// 004F57A0
 	BinDlg** destroy_dialog(BinDlg* control);																// 00419EA0
 
 	typedef void main_menu_options_custom_interact_func(BinDlg* control);
@@ -1315,7 +1316,7 @@ namespace helper {
 	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args);										// 004C7E20
 	void kill_powerup(Unit* unit);																			// 004F3C60
 
-	void send_message_something(u32 unused, char* string);													// 004F31D0
+	void send_message_something(u32 unused, const char* string);											// 004F31D0
 	u32 set_ingame_input_procs();																			// 00484CC0
 	void update_current_buttonset();																		// 004599A0
 	bool is_unit_owned_by_player_ex(u32 player, Unit* unit);												// 0045FEF0
@@ -1691,7 +1692,7 @@ namespace helper {
 	void dialog_swish_in(BinDlg* dialog);										// 004DE150
 	void dialog_music_fade(u32 music_id);										// 004A6310
 	void glu_main_destroy(BinDlg* dialog);										// 004DB140
-	char load_glu_pok_bindlg(char* string);										// 004B7180
+	char load_glu_pok_bindlg(const char* string);								// 004B7180
 	s32 select_game_mode(u32 game_mode);										// 004DB6E0
 	char dialog_swish_out(BinDlg* dialog);										// 004DD040
 	s32 load_staredit_process(BinDlg* dialog);									// 004DB490

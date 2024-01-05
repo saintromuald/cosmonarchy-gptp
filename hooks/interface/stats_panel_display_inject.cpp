@@ -39,7 +39,7 @@ namespace
 	void __declspec(naked) get_unit_rank_string_wrapper() // 0042F370
 	{
 		static Unit* a1;
-		static char* result;
+		static const char* result;
 		__asm {
 			MOV a1, ESI
 			PUSHAD

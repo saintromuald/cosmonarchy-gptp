@@ -1,7 +1,7 @@
 #include "utility.h"
 #include <stdarg.h>
 
-bool file_exists(char* filename) {
+bool SFile::exists(const char* filename) {
 	HANDLE file = 0;
 	helper::SFileOpenFile(filename, &file);
 	if (file) {
@@ -11,44 +11,42 @@ bool file_exists(char* filename) {
 	return false;
 }
 
-LoadedFile load_entire_sfile(char* filename) {
-	HANDLE file = 0;
-	helper::SFileOpenFile(filename, &file);
-	if (!file) {
+SFile SFile::load(const char* filename) {
+	HANDLE handle = 0;
+	helper::SFileOpenFile(filename, &handle);
+	if (!handle) {
 		scbw::printf("Error: File %s missing!", filename);
 		return {};
 	}
 
 	DWORD high = 0;
-	DWORD size = helper::SFileGetFileSize(file, &high);
+	DWORD size = helper::SFileGetFileSize(handle, &high);
 	if (high) {
 		scbw::printf("Error: File %s too big!", filename);
 		return {};
 	}
 
-	LoadedFile loaded_file = {};
-	loaded_file.size = size;
-	if (loaded_file.size) {
-		loaded_file.data = (char*)helper::SMemAlloc(loaded_file.size + 1);
-		helper::SFileReadFile(file, loaded_file.data, loaded_file.size, 0, 0);
-		loaded_file.data[loaded_file.size] = 0;
+	SFile file = {};
+	file.m_size = size;
+	if (file.m_size) {
+		file.m_data = (char*)helper::SMemAlloc(file.m_size + 1);
+		helper::SFileReadFile(handle, file.m_data, file.m_size, 0, 0);
+		file.m_data[file.m_size] = 0;
 	}
-	helper::SFileCloseFile(file);
+	helper::SFileCloseFile(handle);
 
-	return loaded_file;
+	return file;
 }
 
-void free_loaded_file(LoadedFile* file) {
-	if (file->data) {
-		helper::SMemFree(file->data);
+SFile::~SFile() {
+	if (m_data) {
+		helper::SMemFree(m_data);
 	}
-	file->size = 0;
-	file->data = 0;
 }
 
-u32 hash_string(char* string) {
+u32 hash_string(const char* string) {
 	u32 hash = 5381;
-	for (char* c = string; *c; ++c) {
+	for (const char* c = string; *c; ++c) {
 		hash = ((hash << 5) + hash) + *c;
 	}
 	return hash;

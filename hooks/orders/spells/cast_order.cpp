@@ -37,7 +37,7 @@ namespace hooks
 			}
 
 			u8 caster_race = caster->get_race();
-			char* string = helper::get_stat_txt_string(caster_race + 864);
+			const char* string = helper::get_stat_txt_string(caster_race + 864);
 			if (string) {
 				if (*g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(string);
@@ -48,10 +48,10 @@ namespace hooks
 		}
 
 		s16 order_string_index = default_order_string - 1;
-		char* final_string;
+		const char* final_string;
 		if (default_order_string) {
 			if (order_string_index < g_stat_txt_buffer->get_string_count()) {
-				final_string = (char*)g_stat_txt_buffer->get_string(order_string_index + 1);
+				final_string = g_stat_txt_buffer->get_string(order_string_index + 1);
 			} else {
 				final_string = "";
 			}
@@ -366,10 +366,10 @@ namespace hooks
 		*g_order_id_unit = order_1;
 		*g_order_id_obstructed = order_2;
 		*g_order_id_ground = order_3;
-		char* error = "";
+		const char* error = "";
 		if (*g_network_table > 62)
 		{
-			error = (char*)g_network_table_DF->get_string(63);
+			error = g_network_table_DF->get_string(63);
 		}
 		helper::send_message_something(order_3, error);
 		helper::set_ingame_input_procs();

@@ -184,7 +184,7 @@ bool isGameOn = false;
 		}
 	}
 
-	static char* get_replay_path(char* name) {
+	static char* get_replay_path(const char* name) {
 		char module[MAX_PATH] = {};
 		if (GetModuleFileNameA(0, module, MAX_PATH) ) {
 			char* c = strrchr(module, '\\');
