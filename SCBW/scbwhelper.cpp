@@ -13769,7 +13769,8 @@ namespace helper {
 		return result;
 	}
 
-	u32* get_cd_key_info(char** owner, u32* key) {
+	typedef const char* cstr; // to apply constness on the correct part of the double pointer -Veeq7
+	u32* get_cd_key_info(cstr* owner, u32* key) {
 		static u32* result;
 		const u32 func_address = 0x004D9BF0;
 		__asm {

@@ -1330,8 +1330,8 @@ struct CmdBtnPalette {
 
 struct GameVersion {
 	u32 size;
-	char* game_title;
-	char* game_description;
+	const char* game_title;
+	const char* game_description;
 	u32 game_id;
 	u32 version_id;
 	u32 reserved;
@@ -1340,7 +1340,7 @@ struct GameVersion {
 	u32 init_data_bytes;
 	u32 reserved2;
 	u32 category_bits;
-	char* key_owner;
+	const char* key_owner;
 	u32 key;
 	u32 is_demo;
 	u32 lang;

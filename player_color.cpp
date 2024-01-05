@@ -287,7 +287,7 @@ static bool can_get_player_name(u32 player) {
 	return false;
 }
 
-static bool is_valid_name(u32 player, char* name) {
+static bool is_valid_name(u32 player, const char* name) {
 	if (!name) {
 		return false;
 	}
@@ -318,7 +318,7 @@ void safe_strcpy(char* to, const char* from, size_t capacity) {
 	to[capacity - 1] = 0;
 }
 
-void set_player_name(u32 player, char* name, bool prevent_overwrites) {
+void set_player_name(u32 player, const char* name, bool prevent_overwrites) {
 	if (prevent_overwrites) {
 		player_data.has_custom_player_name[player] = true;
 	}
@@ -327,7 +327,7 @@ void set_player_name(u32 player, char* name, bool prevent_overwrites) {
 	safe_strcpy(player_data.full_player_names[player].data, name, FullNameCap);
 }
 
-void set_player_force_name(u32 player, char* name) {
+void set_player_force_name(u32 player, const char* name) {
 	safe_strcpy(g_player_name_list->player[player].force_name, name, 30);
 	safe_strcpy(player_data.full_force_names[player].data, name, FullNameCap);
 }
@@ -344,7 +344,7 @@ static void update_player_name(u32 player) {
 	if (count) {
 		for (u32 tries = 0; tries < 100; ++tries) {
 			u32 random = scbw::rand_between(0, PlayerPesonalityMaxNames - 1);
-			char* name = player_personality_names[race][personality][random];
+			const char* name = player_personality_names[race][personality][random];
 			if (is_valid_name(player, name)) {
 				set_player_name(player, name, true);
 				return;

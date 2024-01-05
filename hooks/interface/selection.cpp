@@ -1047,7 +1047,7 @@ namespace hooks
 							}
 							*/
 
-							bool iterations = 0;
+							u8 iterations = 0;
 							do
 							{
 								Unit* unit_from_selection = *selection;

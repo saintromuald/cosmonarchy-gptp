@@ -38,7 +38,7 @@ namespace Flags
 	};
 }
 
-scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds);
+scbw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds);
 
 bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);

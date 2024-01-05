@@ -19,7 +19,7 @@ namespace scbw
 		return this->unitCount;
 	}
 
-	s32 UnitFinder::get_unit_count(UnitFinderCallbackMatchInterface callback) const
+	s32 UnitFinder::get_unit_count(CallbackMatch callback) const
 	{
 		s32 count = 0;
 		for (Unit* unit : units)
@@ -133,7 +133,7 @@ namespace scbw
 	Unit* UnitFinder::getNearest(s32 x, s32 y, s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 		UnitFinderData* left, UnitFinderData* top,
 		UnitFinderData* right, UnitFinderData* bottom,
-		UnitFinderCallbackMatchInterface match, Unit* source_unit)
+		CallbackMatch match, Unit* source_unit)
 	{
 		s32 bestDistance = scbw::get_distance_fast(0, 0, std::max(x - boundsLeft, boundsRight - x), std::max(y - boundsTop, boundsBottom - y));
 		Unit* bestUnit = nullptr;
@@ -272,7 +272,7 @@ namespace scbw
 	Unit* UnitFinder::getNearest(s32 x, s32 y, s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 		UnitFinderData* left, UnitFinderData* top,
 		UnitFinderData* right, UnitFinderData* bottom,
-		UnitFinderCallbackMatchInterface match, Bullet* sourceBullet)
+		CallbackMatch match, Bullet* sourceBullet)
 	{
 		s32 bestDistance = scbw::get_distance_fast(0, 0, std::max(x - boundsLeft, boundsRight - x), std::max(y - boundsTop, boundsBottom - y));
 		Unit* bestUnit = nullptr;
@@ -411,7 +411,7 @@ namespace scbw
 	Unit* UnitFinder::getNearest(s32 x, s32 y, 	s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 		UnitFinderData* left, UnitFinderData* top,
 		UnitFinderData* right, UnitFinderData* bottom,
-		UnitFinderCallbackMatchInterface match, Vector32 sourcePosition)
+		CallbackMatch match, Vector32 sourcePosition)
 	{
 		s32 bestDistance = scbw::get_distance_fast(0, 0, std::max(x - boundsLeft, boundsRight - x), std::max(y - boundsTop, boundsBottom - y));
 		Unit* bestUnit = nullptr;
@@ -545,7 +545,7 @@ namespace scbw
 	}
 
 
-	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom, Unit* source_unit, UnitFinderCallbackMatchInterface match)
+	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom, Unit* source_unit, CallbackMatch match)
 	{
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
 
@@ -572,7 +572,7 @@ namespace scbw
 			match, source_unit);
 	}
 
-	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom, Bullet* sourceBullet, UnitFinderCallbackMatchInterface match)
+	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom, Bullet* sourceBullet, CallbackMatch match)
 	{
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
 
@@ -592,7 +592,7 @@ namespace scbw
 			match, sourceBullet);
 	}
 
-	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom, Vector32 sourcePosition, UnitFinderCallbackMatchInterface match)
+	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom, Vector32 sourcePosition, CallbackMatch match)
 	{
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
 
@@ -610,13 +610,13 @@ namespace scbw
 			match, sourcePosition);
 	}
 
-	Unit* UnitFinder::get_nearest_target(Unit* source_unit, UnitFinderCallbackMatchInterface match)
+	Unit* UnitFinder::get_nearest_target(Unit* source_unit, CallbackMatch match)
 	{
 		return get_nearest_target(0, 0, g_map_tile_size->width * 32, g_map_tile_size->height * 32, source_unit, match);
 	}
 
 	//-------- Template member function definitions --------//
-	s32 UnitFinder::get_matching_unit_count(UnitFinderCallbackMatchInterface callback)
+	s32 UnitFinder::get_matching_unit_count(CallbackMatch callback)
 	{
 		s32 count = 0;
 		for (s32 i = 0; i < this->get_unit_count(); ++i)
@@ -629,7 +629,7 @@ namespace scbw
 		return count;
 	}
 
-	UnitFinder& UnitFinder::filter(scbw::UnitFinderCallbackMatchInterface callback)
+	UnitFinder& UnitFinder::filter(CallbackMatch callback)
 	{
 		s32 newUnitCount = 0;
 		for (s32 i = 0; i < this->get_unit_count(); ++i)
@@ -644,7 +644,7 @@ namespace scbw
 		return *this;
 	}
 
-	void UnitFinder::for_each(scbw::UnitFinderCallbackProcInterface callback) const
+	void UnitFinder::for_each(CallbackProc callback) const
 	{
 		for (s32 i = 0; i < this->get_unit_count(); ++i)
 		{
@@ -662,7 +662,7 @@ namespace scbw
 		return vec;
 	}
 
-	Unit* UnitFinder::get_first(UnitFinderCallbackMatchInterface callback) const
+	Unit* UnitFinder::get_first(CallbackMatch callback) const
 	{
 		for (s32 i = 0; i < this->get_unit_count(); ++i)
 		{
@@ -674,7 +674,7 @@ namespace scbw
 		return nullptr;
 	}
 
-	Unit* UnitFinder::get_best(scbw::UnitFinderCallbackScoreInterface callback) const
+	Unit* UnitFinder::get_best(CallbackScore callback) const
 	{
 		s32 bestScore = -1;
 		Unit* bestUnit = nullptr;
