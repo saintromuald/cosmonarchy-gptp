@@ -1,7 +1,7 @@
 #include "utility.h"
 #include <stdarg.h>
 
-bool SFile::exists(const char* filename) {
+bool mpq_file_exists(const char* filename) {
 	HANDLE file = 0;
 	helper::SFileOpenFile(filename, &file);
 	if (file) {
@@ -11,7 +11,7 @@ bool SFile::exists(const char* filename) {
 	return false;
 }
 
-SFile SFile::load(const char* filename) {
+std::string mpq_load_file(const char* filename) {
 	HANDLE handle = 0;
 	helper::SFileOpenFile(filename, &handle);
 	if (!handle) {
@@ -26,22 +26,15 @@ SFile SFile::load(const char* filename) {
 		return {};
 	}
 
-	SFile file = {};
-	file.m_size = size;
-	if (file.m_size) {
-		file.m_data = (char*)helper::SMemAlloc(file.m_size + 1);
-		helper::SFileReadFile(handle, file.m_data, file.m_size, 0, 0);
-		file.m_data[file.m_size] = 0;
+	std::string file;
+	if (size) {
+		file.resize(size, 0);
+		helper::SFileReadFile(handle, file.data(), file.size(), 0, 0);
+		return file;
 	}
 	helper::SFileCloseFile(handle);
 
 	return file;
-}
-
-SFile::~SFile() {
-	if (m_data) {
-		helper::SMemFree(m_data);
-	}
 }
 
 void sb_resize(StringBuilder* sb, u32 needed_size) {

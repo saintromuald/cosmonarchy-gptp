@@ -15,11 +15,11 @@ static bool sound_paths_init;
 char sound_paths[SoundIdLimit][MAX_PATH];
 
 static void init_sound_paths() {
-	SFile file = SFile::load("arr\\sounds.txt");
+	std::string file = mpq_load_file("arr\\sounds.txt");
 
 	u16 sound_id = 0;
 	u16 char_index = 0;
-	for (const char* c = file.begin(); c != file.end(); c++) {
+	for (const char* c = file.data(); c != file.data() + file.size(); c++) {
 		if (c[0] == '\r' && c[1] == '\n') {
 			char_index = 0;
 			++sound_id;
@@ -192,8 +192,8 @@ static bool load_ds_buffer(Sound* sound) {
 		return false;
 	}
 
-	SFile file = SFile::load(sound->path);
-	if (!file.data()) {
+	std::string file = mpq_load_file(sound->path);
+	if (file.empty()) {
 		scbw::printf("Error: File %s missing!", sound->path);
 		return false;
 	}
@@ -283,7 +283,7 @@ Sound* load_sound(char* filename) {
 		Sound* sound = &loaded_sounds[loaded_sounds_count++];
 		snprintf(sound->path, MaxPath, "%s", filename);
 
-		if (SFile::exists(sound->path)) {
+		if (mpq_file_exists(sound->path)) {
 			u32 hash_index = hash_string(filename) % MaxSoundHash;
 			sound->hash_next = loaded_sounds_hash_table[hash_index];
 			loaded_sounds_hash_table[hash_index] = sound;

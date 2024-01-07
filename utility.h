@@ -1,30 +1,8 @@
 #pragma once
 #include "SCBW/api.h"
 
-// TODO: consider just returning std::string (probably preferrable?) or making SFile internally have std::vector or making SFile internally have unique_ptr with custom deleter,
-//       since currently having to define explicit copy/move is pretty ugly
-class SFile {
-public:
-	static bool exists(const char* filename);
-	static SFile load(const char* filename);
-
-	~SFile();
-	SFile(const SFile&) = delete;
-	SFile& operator=(const SFile&) = delete;
-	SFile(SFile&& other) : m_size(std::exchange(other.m_size, 0)), m_data(std::exchange(other.m_data, nullptr)) {}
-	SFile& operator=(SFile&& other) { std::swap(*this, other); return *this; };
-
-	u32 size() const { return m_size; }
-	char* data() const { return m_data; }
-
-	char* begin() const { return m_data; }
-	char* end() const { return m_data + m_size; }
-
-private:
-	SFile() {} // use SFile::load
-	u32 m_size = 0;
-	char* m_data = 0;
-};
+bool mpq_file_exists(const char* filename);
+std::string mpq_load_file(const char* filename);
 
 constexpr u32 hash_string(const char* string) {
 	u32 result = 2166136261;
