@@ -1,6 +1,8 @@
 #pragma once
 #include "SCBW/api.h"
 
+// TODO: consider just returning std::string (probably preferrable?) or making SFile internally have std::vector or making SFile internally have unique_ptr with custom deleter,
+//       since currently having to define explicit copy/move is pretty ugly
 class SFile {
 public:
 	static bool exists(const char* filename);

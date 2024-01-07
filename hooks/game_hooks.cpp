@@ -3307,11 +3307,14 @@ namespace hooks {
 						goto process_command;
 					}
 					default: {
-						u32 command_size = g_turn_command_size[command_id];
-						if (command_id >= GameCommand_Select && command_id <= GameCommand_ShiftDeselect) {
-							command_size = 2 * (u8)buffer[1] + 2;
+						{
+							u32 command_size = g_turn_command_size[command_id];
+							if (command_id >= GameCommand_Select && command_id <= GameCommand_ShiftDeselect) {
+								command_size = 2 * (u8)buffer[1] + 2;
+							}
+							size -= command_size;
 						}
-						size -= command_size;
+					maybe_process_command:
 						if (size <= 0) {
 							return;
 						}
@@ -3897,9 +3900,7 @@ namespace hooks {
 						size -= command_size;
 						buffer += command_size;
 						is_in_replay = *g_is_in_replay;
-						if (size > 0) {
-							goto process_command;
-						}
+						goto maybe_process_command;
 					}
 				} break;
 				default:
