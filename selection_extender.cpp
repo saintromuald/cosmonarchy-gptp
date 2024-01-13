@@ -14,7 +14,7 @@ static u32 tmp;
 
 graphics::Font* grp_wire_Font;
 extern u8 tFontGame_ImageData[];
-void init_grp_wire_font(char* font_name) {
+void init_grp_wire_font(const char* font_name) {
 	const u32 load_font = 0x0041FD10;
 
 	__asm {

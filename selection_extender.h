@@ -5,7 +5,7 @@
 #include "graphics/Font.h"
 
 extern graphics::Font* grp_wire_Font;
-void init_grp_wire_font(char* font_name);
+void init_grp_wire_font(const char* font_name);
 
 namespace hooks {
 	void inject_selection_extender();

@@ -114,7 +114,7 @@ Token parser_get_word(Parser* parser) {
 	return parser->token;
 }
 
-bool parser_get_keyword(Parser* parser, char* keyword) {
+bool parser_get_keyword(Parser* parser, const char* keyword) {
 	char* marker = parser_marker(parser);
 	parser_get_word(parser);
 	if (parser_eq(parser, keyword)) {
@@ -545,7 +545,7 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 	return bitset;
 }
 
-static const char* remove_prefix(const char* string, char* prefix) {
+static const char* remove_prefix(const char* string, const char* prefix) {
 	u32 len = strlen(prefix);
 	if (strnicmp(string, prefix, len) == 0) {
 		string += len;
@@ -815,25 +815,25 @@ Point16 box_center(Box32 box) {
 	return point;
 }
 
-bool token_eq(Token* token, char* string) {
+bool token_eq(Token* token, const char* string) {
 	if (!string) return false;
 	return strcmp(token->data, string) == 0;
 }
 
-bool token_eqi(Token* token, char* string) {
+bool token_eqi(Token* token, const char* string) {
 	if (!string) return false;
 	return stricmp(token->data, string) == 0;
 }
 
-bool token_eql(Token* token, char* string) {
+bool token_eql(Token* token, const char* string) {
 	if (!string) return false;
 	return str_equals_lazy(token->data, string);
 }
 
-bool parser_eq(Parser* parser, char* string) {
+bool parser_eq(Parser* parser, const char* string) {
 	return token_eq(&parser->token, string);
 }
 
-bool parser_eqi(Parser* parser, char* string) {
+bool parser_eqi(Parser* parser, const char* string) {
 	return token_eqi(&parser->token, string);
 }

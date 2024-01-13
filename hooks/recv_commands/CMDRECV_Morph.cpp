@@ -144,7 +144,7 @@ namespace hooks
 		*g_is_targeting = 1;
 		*g_order_id_unit = OrderId::RallyPointToVisibleUnit;
 
-		char* string = (char*)g_network_table_DF->get_string(63);
+		const char* string = g_network_table_DF->get_string(63);
 		if (network_table_1 || network_table_2) {
 			string = "";
 		}

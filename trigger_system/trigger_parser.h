@@ -87,7 +87,7 @@ RecolorSet parser_get_recolor_set(Parser* parser);
 
 Point16 box_center(Box32 box);
 
-bool token_eq(Token* token, char* string);
-bool token_eqi(Token* token, char* string);
-bool parser_eq(Parser* parser, char* string);
-bool parser_eqi(Parser* parser, char* string);
+bool token_eq(Token* token, const char* string);
+bool token_eqi(Token* token, const char* string);
+bool parser_eq(Parser* parser, const char* string);
+bool parser_eqi(Parser* parser, const char* string);

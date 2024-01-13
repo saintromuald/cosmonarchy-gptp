@@ -3284,7 +3284,7 @@ namespace hooks {
 	void game_recv(char* buffer, s32 size, bool in_replay) { // 004865D0
 		// Size needs to be s32 to support less than 0 comparison...
 		if (size) {
-			b32 is_in_replay = *g_is_in_replay;
+			bool is_in_replay = *g_is_in_replay;
 			u32 command_id = 0;
 			u32 command_size = 0;
 			while (true) {
@@ -3307,11 +3307,13 @@ namespace hooks {
 						goto process_command;
 					}
 					default: {
-						u32 command_size = g_turn_command_size[command_id];
-						if (command_id >= GameCommand_Select && command_id <= GameCommand_ShiftDeselect) {
-							command_size = 2 * (u8)buffer[1] + 2;
+						{
+							u32 command_size = g_turn_command_size[command_id];
+							if (command_id >= GameCommand_Select && command_id <= GameCommand_ShiftDeselect) {
+								command_size = 2 * (u8)buffer[1] + 2;
+							}
+							size -= command_size;
 						}
-						size -= command_size;
 					maybe_process_command:
 						if (size <= 0) {
 							return;
@@ -3907,15 +3909,6 @@ namespace hooks {
 		}
 	}
 
-	constexpr u32 hash_string_to_u32(const char* string) {
-		u32 result = 2166136261;
-		for (const char* c = string; *c; ++c) {
-			result ^= *c;
-			result *= 16777619;
-		}
-		return result;
-	}
-
 	void initialize_provider_version(GameVersion* version) { // 00472770
 		*version = {};
 		version->size = sizeof(*version);
@@ -3923,7 +3916,7 @@ namespace hooks {
 		version->game_title = "Cosmonarchy Brood War";
 
 		version->game_description = "internal version unknown";
-		version->version_id = hash_string_to_u32(__TIMESTAMP__);
+		version->version_id = comptime(hash_string(__TIMESTAMP__));
 		version->max_players = 8;
 		version->category_bits = 255;
 		helper::get_cd_key_info(&version->key_owner, &version->key);

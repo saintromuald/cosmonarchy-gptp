@@ -329,7 +329,7 @@ namespace hooks
 			helper::place_building_refinery_proc();
 		}
 
-		char* string = "";
+		const char* string = "";
 		if (*g_network_table > 63)
 		{
 			string = (char*)g_network_table_DF->get_string(64);
@@ -395,10 +395,10 @@ namespace hooks
 
 			if (error_string)
 			{
-				char* string = 0;
+				const char* string = 0;
 				if ((u16)(error_string - 1) < g_stat_txt_buffer->get_string_count())
 				{
-					string = (char*)g_stat_txt_buffer->get_string(error_string);
+					string = g_stat_txt_buffer->get_string(error_string);
 					if (!string)
 					{
 						return;
@@ -449,6 +449,7 @@ namespace hooks
 
 		Thingy* fow_sprite_1 = *g_first_fow_sprite;
 		Thingy* fow_sprite_2 = *g_first_fow_sprite;
+		Sprite* sprite = fow_sprite_1->sprite;
 		while (2)
 		{
 			u32 unit_id = UnitId::None;
@@ -480,7 +481,6 @@ namespace hooks
 				} break;
 			}
 
-			Sprite* sprite = fow_sprite_1->sprite;
 			if (radius + tile_x - (sprite->position.x - units_dat::building_dimensions[unit_id].x / 2) / 32 >= (2 * radius + units_dat::building_dimensions[unit_id].x / 32)
 			||  radius + tile_y - (sprite->position.y - units_dat::building_dimensions[unit_id].y / 2) / 32 >= (2 * radius + units_dat::building_dimensions[unit_id].y / 32))
 			{

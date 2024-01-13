@@ -484,11 +484,13 @@ namespace hooks
 							if (*g_client_selection_count != 1
 							|| *g_active_portrait_unit != unit_at_point
 							|| unit_at_point && hooks::unit_can_rally(unit_at_point)) {
+								u32 i; // :(
+								Unit* unit;
 								if (unit_at_point) {
 									goto exit;
 								}
-								for (u32 i = 0; i < SelectionCap; ++i) {
-									Unit* unit = g_client_selection_group->unit[i];
+								for (i = 0; i < SelectionCap; ++i) {
+									unit = g_client_selection_group->unit[i];
 									if (unit) {
 										if (helper::can_move(unit)) {
 											if (i < SelectionCap) {

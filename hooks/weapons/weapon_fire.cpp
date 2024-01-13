@@ -256,16 +256,43 @@ void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u
 	}
 }
 
-bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, FireMultipleOptions options) {
+static bool internal_fired_stagger(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options, Unit* fired_at) {
+	UnitExt* unit_ext = get_unit_ext(unit);
+	auto& blacklist = unit_ext->unit_vectors[UnitVectorStaggerBlacklist];
+
+	bool apply_cooldown = false;
+	if (fired_at) {
+		blacklist.push_back(fired_at);
+		unit->ground_weapon_cooldown = options.stagger;
+		unit->air_weapon_cooldown = options.stagger;
+		unit_ext->timers[TimerClearStaggerBlacklist] = options.stagger + 6; // Ideally we would get attack animation time instead of hardcoding 6. -Veeq7
+		unit_ext->values[ValueStaggerWeaponId] = weapon_id;
+		unit_ext->values[ValueStaggerCount] += 1;
+		if (max_targets && unit_ext->values[ValueStaggerCount] >= max_targets) {
+			apply_cooldown = true;
+		}
+	} else {
+		apply_cooldown = true;
+	}
+
+	if (apply_cooldown) {
+		blacklist.clear();
+		unit_ext->timers[TimerClearStaggerBlacklist] = 0;
+		unit_ext->values[ValueStaggerCount] = 0;
+		apply_weapon_cooldown(unit, weapon_id);
+	}
+
+	return fired_at != 0;
+}
+
+bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options) {
 	u32 attack_range = options.range_overwrite ? options.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
 	u32 factor = options.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 
 	UnitExt* unit_ext = get_unit_ext(unit);
 	bool has_stagger = options.stagger >= 0;
 	auto& blacklist = unit_ext->unit_vectors[UnitVectorStaggerBlacklist];
-	if (has_stagger) {
-		options.apply_cooldown = false;
-	}
+	bool apply_cooldown = has_stagger ? false : options.apply_cooldown;
 
 	Unit* fired_at = 0;
 	Unit* order_target_unit = unit->order_target.unit;
@@ -282,13 +309,13 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
 			if (!(has_stagger && std::find(blacklist.begin(), blacklist.end(), order_target_unit) != blacklist.end())) {
 				for (u32 i = 0; i < factor; i++) {
-					Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), options.weapon_offsets, options.apply_cooldown);
+					Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), options.weapon_offsets, apply_cooldown);
 					if (bullet) {
 						fired_at = order_target_unit;
 						BulletExt* bullet_ext = get_bullet_ext(bullet);
 						bullet_ext->divisor_multiplier = options.divisor_multiplier;
 						if (has_stagger) {
-							goto fired_stagger;
+							return internal_fired_stagger(unit, weapon_id, max_targets, filters, options, fired_at);
 						}
 					}
 				}
@@ -335,42 +362,18 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, Fire
 		}
 
 		for (u32 i = 0; i < factor; i++) {
-			Bullet* bullet = fire_bullet(unit, weapon_id, make_target(target), options.weapon_offsets, options.apply_cooldown);
+			Bullet* bullet = fire_bullet(unit, weapon_id, make_target(target), options.weapon_offsets, apply_cooldown);
 			if (bullet) {
 				fired_at = target;
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
 				bullet_ext->divisor_multiplier = options.divisor_multiplier;
 				if (has_stagger) {
-					goto fired_stagger;
+					return internal_fired_stagger(unit, weapon_id, max_targets, filters, options, fired_at);
 				}
 			}
 		}
 	}
 
-	if (has_stagger) {
-	fired_stagger:
-		bool apply_cooldown = false;
-		if (fired_at) {
-			blacklist.push_back(fired_at);
-			unit->ground_weapon_cooldown = options.stagger;
-			unit->air_weapon_cooldown = options.stagger;
-			unit_ext->timers[TimerClearStaggerBlacklist] = options.stagger + 6; // Ideally we would get attack animation time instead of hardcoding 6. -Veeq7
-			unit_ext->values[ValueStaggerWeaponId] = weapon_id;
-			unit_ext->values[ValueStaggerCount] += 1;
-			if (max_targets && unit_ext->values[ValueStaggerCount] >= max_targets) {
-				apply_cooldown = true;
-			}
-		} else {
-			apply_cooldown = true;
-		}
-
-		if (apply_cooldown) {
-			blacklist.clear();
-			unit_ext->timers[TimerClearStaggerBlacklist] = 0;
-			unit_ext->values[ValueStaggerCount] = 0;
-			apply_weapon_cooldown(unit, weapon_id);
-		}
-	}
 	return fired_at != 0;
 }
 

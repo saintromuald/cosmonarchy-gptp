@@ -24,7 +24,7 @@ CmdBtnPalette new_cmdbtn_palette[tIconCount];
 
 bool disable_mouse_scroll;
 
-void format_time(char* buffer, u32 size, char* prefix, u32 seconds, bool allow_short) {
+void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool allow_short) {
 	u32 sec = seconds % 60;
 	u32 min = seconds / 60 % 60;
 	u32 hrs = seconds / 60 / 60;
@@ -231,7 +231,7 @@ LABEL_15:
 			return 0;
 		}
 
-		char* label = helper::get_stat_txt_string(dialog->button_user->requirement_string_id);
+		const char* label = helper::get_stat_txt_string(dialog->button_user->requirement_string_id);
 		if (*label == VK_ESCAPE && hotkey == label[0]) { // escape handling for grid hotkeys
 			return 1;
 		}
@@ -383,14 +383,19 @@ LABEL_15:
 		}
 		Unit* unit = first_player_unit->unit[player];
 		if (unit) {
+			// Required for goto to compile in C++20 mode :( -Veeq7
+			u32 visibility;
+			u32 unit_status;
+			u32 vision;
+
 			u32 checksum = *g_minimap_box_checksum;
 			while (true) {
 				if (unit_id_ignored_on_minimap(unit->id)) {
 					goto next;
 				}
 
-				u32 visibility = unit->sprite->visibility_status;
-				u32 unit_status = unit->status;
+				visibility = unit->sprite->visibility_status;
+				unit_status = unit->status;
 				if (unit_status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) {
 					visibility &= unit->detection_status;
 				}
@@ -399,7 +404,7 @@ LABEL_15:
 					break;
 				}
 
-				u32 vision = 0;
+				vision = 0;
 				if (*g_is_in_replay) {
 					if (visibility & *g_replay_visions) {
 						break;
@@ -1112,10 +1117,10 @@ LABEL_15:
 			//	if (!config.use_spacebar_for_scrolling) {
 				{
 				RespondToPortraitEvent:
-					s8* key_pressed = *g_dialog_key;
-					s8 virtual_key = *(*g_dialog_key);
 					if (*g_dialog_key)
 					{
+						s8* key_pressed = *g_dialog_key;
+						s8 virtual_key = *(*g_dialog_key);
 						while (virtual_key != dlg_event->virtual_key)
 						{
 							virtual_key = (key_pressed++)[1];

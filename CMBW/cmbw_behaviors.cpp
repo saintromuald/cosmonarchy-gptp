@@ -58,7 +58,7 @@ Thingy* get_closest_active_corpse(Point16 position, u32 radius) {
 
 Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 	if (!is_active_corpse(corpse)) {
-		return false;
+		return 0;
 	}
 
 	ThingyExt* corpse_ext = get_thingy_ext(corpse);

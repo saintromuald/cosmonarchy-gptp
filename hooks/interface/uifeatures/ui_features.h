@@ -18,7 +18,7 @@ extern ApmCounter player_apm_counter[PlayerLimit];
 
 extern bool disable_mouse_scroll;
 
-void format_time(char* buffer, u32 size, char* prefix, u32 seconds, bool allow_short);
+void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool allow_short);
 
 namespace hooks {
 	void draw_text(const char* text, u32 x, u32 y, u32 w, u32 h, char color = 2);

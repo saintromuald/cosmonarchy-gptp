@@ -603,10 +603,11 @@ namespace hooks {
 		// Overwrite mnemonic hotkey text with grid hotkeys, if applicable
 		if (!stop_there && config.grid_hotkeys) {
 			for (BinDlg* dialog = current_dialog; dialog; dialog = dialog->next) {
-				if (dialog->index > 0 && dialog->index <= 9 &&
-					dialog->control_type == DialogControlTypes::Button &&
-					dialog->button_user && dialog->button_user->requirement_string_id) {					
-					char* label = helper::get_stat_txt_string(dialog->button_user->requirement_string_id);
+				if (dialog->index > 0 && dialog->index <= 9
+					&& dialog->control_type == DialogControlTypes::Button
+					&& dialog->button_user && dialog->button_user->requirement_string_id) {
+					// we normally want const string to avoid accidental overwrites, but here we intend to overwrite the hotkey character, that's why we cast to char*
+					char* label = (char*)helper::get_stat_txt_string(dialog->button_user->requirement_string_id); 
 					char* hotkey_char = find_hotkey_char(label + 2);
 					if (hotkey_char) {
 						u32 index = dialog->index - 1;

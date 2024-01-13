@@ -820,7 +820,7 @@ namespace hooks
 							{
 								if (g_network_table_df->get_string_count() > 102)
 								{
-									helper::load_glu_pok_bindlg((char*)g_network_table_df->get_string(103));
+									helper::load_glu_pok_bindlg(g_network_table_df->get_string(103));
 								} else {
 									helper::load_glu_pok_bindlg("");
 								}

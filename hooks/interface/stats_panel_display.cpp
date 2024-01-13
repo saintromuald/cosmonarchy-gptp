@@ -231,7 +231,7 @@ namespace hooks
 	}
 
 	// Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
-	char* get_unit_rank_string(Unit* unit) { // 0042F370
+	const char* get_unit_rank_string(Unit* unit) { // 0042F370
 		if (GetAsyncKeyState(VK_MENU)) { // TODO: use keyboard.held(VK_MENU) when tab branch is merged
 			static char buffer[260] = {};
 			UnitExt* unit_ext = get_unit_ext(unit);
@@ -278,9 +278,9 @@ namespace hooks
 				helper::add_text_to_dialog(dialog, -21, player_data.full_force_names[unit->player].data);
 			}
 		} else if (unit->kill_count) {
-			char* text = "";
+			const char* text = "";
 			if (g_stat_txt_buffer->get_string_count() > 763) {
-				text = (char*)g_stat_txt_buffer->get_string(764);
+				text = g_stat_txt_buffer->get_string(764);
 			}
 
 			sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
@@ -883,10 +883,10 @@ namespace hooks
 			u8 race = unit->get_race();
 			u32 race_string_1 = race + 771;
 			u32 race_string_2 = race + 770;
-			char* text = "";
+			const char* text = "";
 			if (race_string_1) {
 				if (race_string_2 < g_stat_txt_buffer->get_string_count()) {
-					text = (char*)g_stat_txt_buffer->get_string(race_string_2 + 1);
+					text = g_stat_txt_buffer->get_string(race_string_2 + 1);
 				} else {
 					text = "";
 				}

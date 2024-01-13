@@ -56,9 +56,9 @@ Unit* rangeMatchPosition(Vector32 position, u32 r, u32 context, std::vector<u16>
 	return a;
 }
 
-scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds)
+scbw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds)
 {
-	scbw::UnitFinderCallbackMatchInterface callback = [=](Unit* target)
+	scbw::UnitFinder::CallbackMatch callback = [=](Unit* target)
 	{
 		if (target == center && !(context & Flags::IncludingSelf))
 		{
