@@ -566,7 +566,7 @@ namespace hooks
 			case UnitId::TerranSpiderMine:
 			case UnitId::TerranLobotomyMine: {
 				if (unit->id == UnitId::TerranVulture) {
-					return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1363);		// "Lobotomy Mines"
+					return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363);		// "Lobotomy Mines"
 				} else {
 					return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			// "Spider Mines"
 				}

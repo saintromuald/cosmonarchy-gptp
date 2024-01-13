@@ -646,6 +646,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047EB39, (u32)0x8AC005C6);//MOV byte ptr [0x00658AC0], ...
 	memory_patch(0x0047EB3D, (u32)0xC3000065);//...0; RETN;
 	memory_patch_df(0x0047EB41, (u8)0x90, 2);
+
+	// Fix potential spin cases when iscript units decollide
+	memory_patch(0x00495D05, (u32)0x7E224E3A);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start

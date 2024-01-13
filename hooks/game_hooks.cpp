@@ -1665,7 +1665,7 @@ namespace hooks {
 				// Apostle - Lazarus Agent cast
 				if (scbw::get_generic_rust_value(unit, RustId::ToggleLazarusAgent) == 1) {
 					u32 energy = techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256;
-					if (unit->has_energy(energy)) {
+					if (unit->has_energy(energy) && !unit->is_dead()) {
 						if (!unit_ext->timers[TimerReclaimInterval]) {
 							unit_ext->timers[TimerReclaimInterval] = 24;
 							scbw::decloak_passive_proc(unit);
