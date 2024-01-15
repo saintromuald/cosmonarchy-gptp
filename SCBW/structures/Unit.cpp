@@ -1244,7 +1244,7 @@ bool Unit::is_target_enemy(Unit* target) const {
 
 bool Unit::is_visible_to(u8 player) const {
 	assert(this);
-	return this->detection_status & (1 << player) && this->sprite && this->sprite->visibility_status & (1 << player);
+	return (!(this->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) || this->detection_status & (1 << player)) && this->sprite && this->sprite->visibility_status & (1 << player);
 }
 
 void Unit::update_speed() {
