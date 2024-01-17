@@ -204,9 +204,9 @@ namespace
 	void __declspec(naked) initialize_unit_wrapper() { // 0049ECF0
 		static Unit* unit;
 		static u32 pos_y;
-		static u32 unit_id;
+		static u16 unit_id;
 		static u32 pos_x;
-		static u32 player;
+		static u8 player;
 		static b32 result;
 		__asm {
 			PUSH EBP
