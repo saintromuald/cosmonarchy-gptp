@@ -3933,8 +3933,38 @@ namespace hooks {
 		{
 			return helper::keypress_escape();
 		} else {
-			if (key_pressed >= '0' && key_pressed <= '9') {
-				return helper::select_unit_group(key_pressed - '0');
+			if (config.remapped_control_groups) {
+				switch (key_pressed)
+				{
+					case 114: // R
+					{
+						key_pressed = '8';
+					} break;
+					case 102: // F
+					{
+						key_pressed = '9';
+					} break;
+					case 118: // V
+					{
+						key_pressed = '0';
+					} break;
+				}
+			}
+			switch (key_pressed)
+			{
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+				case '0':
+				{
+					return helper::select_unit_group(key_pressed - '0');
+				}
 			}
 		}
 	}

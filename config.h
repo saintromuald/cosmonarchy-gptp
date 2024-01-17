@@ -67,6 +67,7 @@ struct Config {
 	bool quick_building = false;
 	bool grid_hotkeys = false;
 	std::array<std::string, 3> layout = {"QWE", "ASD", "ZXC"};
+	bool remapped_control_groups = false;
 
 	// Debug
 	bool verbose = false;

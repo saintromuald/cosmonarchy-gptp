@@ -91,6 +91,7 @@ void load_config() {
 			load_field(grid_node, "enabled", config.grid_hotkeys);
 			load_field(grid_node, "layout", config.layout);
 		}
+		load_field(config_node, "remapped-control-groups", config.remapped_control_groups);
 
 		// Debug
 		load_field(config_node, "verbose", config.verbose);
@@ -183,6 +184,9 @@ void save_config() {
 		out << str;
 	}
 	out << YAML::EndSeq << YAML::EndMap;
+	out << YAML::Newline << YAML::Comment("For use with grid hotkeys only!");
+	out << YAML::Newline << YAML::Comment("Replaces 8, 9, 0 with R, F, V -- currently does not support control or shift modifiers!");
+	write_field (out, "remapped-control-groups", config.remapped_control_groups);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Debug");
