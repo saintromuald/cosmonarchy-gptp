@@ -1065,4 +1065,88 @@ namespace hooks
 		}
 		return 0;
 	}
+
+	b32 initialize_unit(Unit* unit, s32 posY, u16 unitId, s32 posX, u8 playerId) {
+		Unit* old_active_iscript_unit = *g_active_iscript_unit;
+		*g_active_iscript_unit = unit;
+
+		if (helper::initialize_flingy(units_dat::graphic[unitId], posY, posX, (Flingy*)unit, playerId, 0)) {
+			unit->player = playerId;
+			unit->main_order_id = OrderId::Fatal;
+			unit->main_order_state = 0;
+			unit->order_signal = 0;
+			unit->order_unit_id = UnitId::None;
+			*(u32*)(&unit->main_order_timer) = 0;//Zero-inits the cooldown timers as well.
+			unit->order_target = {0, 0, NULL};
+			u32* union_0xC0 = (u32*)(&unit->mine_carrier);//Not specifically mine carriers, just unit layout offset 0xC0.
+			*union_0xC0 = 0;
+			*(union_0xC0 + 1) = 0;//0xC4
+			*(union_0xC0 + 2) = 0;//0xC8
+			*(union_0xC0 + 3) = 0;//0xCC
+			unit->id = unitId;
+			unit->resource_type = 0;
+			unit->secondary_order_timer = 0;
+
+			if (unit->sprite) {
+				helper::sprite_to_iscript_loop(unit->sprite);
+
+				if (!unit->sprite->images.head) {
+					unit->sprite = NULL;
+				}
+			}
+
+			*g_active_iscript_unit = old_active_iscript_unit;
+
+			if (!unit->sprite)
+				return false;//Did not exist in the original function. Added to avoid dereferencing null sprite.
+
+			unit->last_attacking_player = 8;
+			unit->shields = units_dat::max_shield_points[unit->id] << 8;
+
+			if (unitId == UnitId::ProtossShieldBattery) {//ProtossVagrant in CMBW, this likely needs attention.
+				unit->energy = 25600;
+			} else {
+				unit->energy = helper::get_unit_max_energy(unit) / 4;
+			}
+
+			unit->ai_action_flags = 0;
+			unit->sprite->elevation = units_dat::elevation[unitId];
+			u32 base_property = units_dat::base_property[unitId];
+
+			if (base_property & 1) {
+				unit->building.tech_id = TechId::None;
+				unit->building.upgrade_id = UpgradeId::None;
+			}
+
+			u32 unit_status = unit->status;
+			unit_status ^= ((base_property << 1) ^ unit_status) & UnitStatus::GroundedBuilding;			//UnitProperty::Building
+			unit_status ^= (base_property ^ unit_status) & UnitStatus::InAir;							//UnitProperty::Flyer
+			unit_status ^= ((base_property >> 12) ^ unit_status) & UnitStatus::CanTurnAroundToAttack;	//UnitProperty::Attack
+			unit_status ^= ((base_property >> 10) ^ unit_status) & UnitStatus::Reacts;					//UnitProperty::AutoAttackAndMove
+			unit_status ^= (~(unit_status << 18) ^ unit_status) & UnitStatus::IsNormal;					//!UnitProperty::Flyer
+			unit_status ^= ((base_property >> 3) ^ unit_status) & UnitStatus::Invincible;				//UnitProperty::Invincible
+
+			/*if ((unitId >= UnitId::Special_ZergBeacon && unitId <= UnitId::Special_ProtossFlagBeacon) || unitId == UnitId::FloorHatch) {
+				unit_status |= UnitStatus::NoCollide;
+			}*/
+
+			unit->status = unit_status;
+			u8 is_ground_level = units_dat::elevation[unitId] < 12 ? 1 : 0;
+			unit->pathing_flags = (is_ground_level ^ unit->pathing_flags) & 1;
+			unit->path = NULL;
+			unit->movement_state = 0;
+			unit->recent_order_timer = 0;
+			unit->damage_overlay_state = g_building_overlay_state_max[unit->sprite->main_graphic->id];
+			u16 time_cost = units_dat::time_cost[unitId];
+			unit->remaining_build_time = time_cost | !time_cost;//Set time_cost to 1 if it's 0, without branching.
+			helper::update_hp_gain(unit);
+			helper::update_building_construct_shields_amount(unit);
+			helper::apply_speed_upgrade_from_unit_type(unit);
+			unit->update_speed();
+			return true;
+		}
+
+		*g_active_iscript_unit = old_active_iscript_unit;
+		return false;
+	}
 }

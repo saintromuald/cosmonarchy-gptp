@@ -10371,6 +10371,16 @@ namespace helper {
 		return result;
 	}
 
+	void update_hp_gain(Unit* unit) {
+		const u32 func_address = 0x0047B180;
+		__asm {
+			PUSHAD
+			MOV EDI, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
 	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker) {
 		static bool result;
 		const u32 func_address = 0x00468930;

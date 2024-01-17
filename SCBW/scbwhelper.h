@@ -1259,6 +1259,7 @@ namespace helper {
 	Sprite* sprite_destructor(Sprite* sprite);																// 00497B40
 	UnitPath* reassign_path(Unit* unit);																	// 0042F740
 	u32 initialize_unit(Unit* unit, u32 y, u32 unit_id, u32 x, u8 player_id);								// 0049F206
+	void update_hp_gain(Unit* unit);																		// 0047B180
 
 	bool unit_is_geyser_ex(Unit* resource_node, Unit* worker);												// 00468930
 	void prepend_order(Unit* unit, u8 order_id, Point16 target_pos, Unit* target_unit);						// 00474AF0

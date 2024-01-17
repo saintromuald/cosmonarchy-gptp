@@ -14,6 +14,7 @@ namespace hooks {
 	u32 update_unit_strength_and_apply_default_orders(Unit* unit);							// 0049FA40
 	u32 initialize_unit_base(Unit* unit, u32 unit_id, u32 pos_x, u32 pos_y, u32 player);	// 004A0320
 	b32 set_thingy_visibility_flags(Thingy* thingy);										// 004878F0
+	b32 initialize_unit(Unit* unit, s32 pos_y, u16 unit_id, s32 pos_x, u8 player);			// 0049ECF0
 
 	void inject_update_unit_state_hooks();
 }
