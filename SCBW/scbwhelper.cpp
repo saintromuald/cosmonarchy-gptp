@@ -14659,4 +14659,31 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	u32 select_unit_group(u8 control_group)
+	{
+		static u32 result;
+		const u32 func_address = 0x00496B40;
+		__asm {
+			PUSHAD
+			PUSH control_group
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u8 keypress_escape()
+	{
+		static u8 result;
+		const u32 func_address = 0x00489DA0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }

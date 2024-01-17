@@ -1701,4 +1701,7 @@ namespace helper {
 	s32 register_menu_functions(bool(__fastcall** save_game_text_box)(BinDlg* func_dialog, DialogEvent* func_dlg_event), BinDlg* dialog, u32 count, u32 palette); // 004DD9E0
 	void game_menu_bindlg(BinDlg* dialog);										// 004CA370
 	void game_menu_bindlg_bypass(BinDlg* dialog);								// 004CA450
+
+	u32 select_unit_group(u8 control_group);									// 00496B40
+	u8 keypress_escape();														//00489DA0
 }

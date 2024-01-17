@@ -3909,6 +3909,7 @@ namespace hooks {
 		}
 	}
 
+	// Hooked to handle versioning. -Veeq7
 	void initialize_provider_version(GameVersion* version) { // 00472770
 		*version = {};
 		version->size = sizeof(*version);
@@ -3922,5 +3923,19 @@ namespace hooks {
 		helper::get_cd_key_info(&version->key_owner, &version->key);
 		version->is_demo = *g_is_demo;
 		version->lang = helper::local_get_lang();
+	}
+
+	// Hooked to add control group keyboard shortcut customization. -Pr0nogo
+	u8 game_input_user_key_press(DialogEvent* event_arg) // 004846B0
+	{
+		u32 key_pressed = (u16)event_arg->virtual_key;
+		if (key_pressed == VK_ESCAPE)
+		{
+			return helper::keypress_escape();
+		} else {
+			if (key_pressed >= '0' && key_pressed <= '9') {
+				return helper::select_unit_group(key_pressed - '0');
+			}
+		}
 	}
 }
