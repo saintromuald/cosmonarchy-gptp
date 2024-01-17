@@ -208,7 +208,6 @@ namespace
 		static u32 pos_x;
 		static u32 player;
 		static b32 result;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -222,9 +221,7 @@ namespace
 			MOV player, AL
 			PUSHAD
 		}
-
 		result = hooks::initialize_unit(unit, pos_y, unit_id, pos_x, player);
-
 		__asm {
 			POPAD
 			MOV EAX, result
