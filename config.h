@@ -68,6 +68,7 @@ struct Config {
 	bool grid_hotkeys = false;
 	std::array<std::string, 3> layout = {"QWE", "ASD", "ZXC"};
 	bool extended_control_groups = false;
+	bool default_to_steal_hotkeys = false;
 
 	// Debug
 	bool verbose = false;

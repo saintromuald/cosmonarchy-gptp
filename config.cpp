@@ -97,6 +97,7 @@ void load_config() {
 			load_field(grid_node, "layout", config.layout);
 		}
 		load_field(config_node, "extended-control-groups", config.extended_control_groups);
+		load_field(config_node, "default-to-steal-hotkeys", config.default_to_steal_hotkeys);
 
 		if (!config.grid_hotkeys && config.extended_control_groups) {
 			config.extended_control_groups = false;
@@ -194,9 +195,9 @@ void save_config() {
 		out << str;
 	}
 	out << YAML::EndSeq << YAML::EndMap;
-	out << YAML::Newline << YAML::Comment("For use with grid hotkeys only!");
 	out << YAML::Newline << YAML::Comment("Adds extra control groups at R, F, V, T, G, B. Must be used with grid hotkeys!");
 	write_field (out, "extended-control-groups", config.extended_control_groups);
+	write_field (out, "default-to-steal-hotkeys", config.default_to_steal_hotkeys);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Debug");

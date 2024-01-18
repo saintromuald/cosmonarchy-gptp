@@ -13,8 +13,9 @@ public:
 	void update() {
 		bool is_active = GetActiveWindow() == *g_main_window;
 		for (size_t i = 0; i < KEY_COUNT; i++) {
+			bool key_held = GetAsyncKeyState(i) & (1 << 15);
 			was_held[i] = is_held[i];
-			is_held[i] = is_active ? GetAsyncKeyState(i) : false;
+			is_held[i] = is_active ? key_held : false;
 
 			if (is_held[i] && was_held[i]) {
 				released_for[i] = 0;

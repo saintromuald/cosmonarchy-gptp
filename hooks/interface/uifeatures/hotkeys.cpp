@@ -57,7 +57,13 @@ static void update_control_groups() {
 			hotkeys.last_control_group_selected = control_group;
 		}
 
-		if (keyboard.held(VK_MENU)) {
+		bool steal = false;
+		if (config.default_to_steal_hotkeys) {
+			steal = keyboard.held(VK_CONTROL) || keyboard.held(VK_SHIFT);
+		} else {
+			steal = keyboard.held(VK_MENU);
+		}
+		if (steal) {
 			for (u32 i = 0; i < ExtendedControlGroups; i++) {
 				if (control_group == &hotkeys.control_groups[i]) {
 					continue;

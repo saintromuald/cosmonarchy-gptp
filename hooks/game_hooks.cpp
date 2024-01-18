@@ -1093,7 +1093,7 @@ namespace hooks {
 
 		/*
 		if (scbw::unit_id_is_resource_node(unit->id, true)) {
-			bool show = GetAsyncKeyState(VK_MENU);
+			bool show = keyboard.held(VK_MENU);
 			if (!show) {
 				for (u32 i = 0; i < *g_client_selection_count; ++i) {
 					if (unit == g_client_selection_group->unit[i]) {

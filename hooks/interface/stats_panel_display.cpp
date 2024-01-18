@@ -7,6 +7,7 @@
 #include "player_color.h"
 
 #include "hooks/interface/weapon_armor_tooltip.h"
+#include "hooks/interface/uifeatures/hotkeys.h"
 
 namespace hooks
 {
@@ -232,7 +233,7 @@ namespace hooks
 
 	// Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
 	const char* get_unit_rank_string(Unit* unit) { // 0042F370
-		if (GetAsyncKeyState(VK_MENU)) { // TODO: use keyboard.held(VK_MENU) when tab branch is merged
+		if (keyboard.held(VK_MENU)) {
 			static char buffer[260] = {};
 			UnitExt* unit_ext = get_unit_ext(unit);
 			sprintf_s(buffer, sizeof(buffer), "Damage taken: %d", unit_ext->total_damage_taken / 256);
@@ -269,7 +270,7 @@ namespace hooks
 
 	void draw_unit_kills_string(BinDlg* dialog) { // 00425DD0
 		Unit* unit = *g_active_portrait_unit;
-		if (GetAsyncKeyState(VK_MENU)) { // TODO: use keyboard.held(VK_MENU) when tab branch is merged
+		if (keyboard.held(VK_MENU)) {
 			UnitExt* unit_ext = get_unit_ext(unit);
 			sprintf_s(g_kills_buffer, 260, "Damage dealt: %d", unit_ext->total_damage_dealt / 256);
 			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
