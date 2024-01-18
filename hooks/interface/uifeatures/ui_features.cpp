@@ -49,7 +49,6 @@ namespace hooks {
 
 	void draw_ui_text(const char* text, u8 color) {
 		draw_text(text, ui_text_pos.x, ui_text_pos.y, 300, ui_text_height * 4, color);
-		//	ui_text_pos.y += ui_text_height;
 		ui_text_pos.y = *printXYPosY;
 	}
 
