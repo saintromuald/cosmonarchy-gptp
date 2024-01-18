@@ -4,7 +4,7 @@
 #include <SCBW/ExtendSightLimit.h>
 #include "psi_field.h"
 #include <cstdio>
-#include "hooks/interface/uifeatures/screen_hotkeys.h"
+#include "hooks/interface/uifeatures/hotkeys.h"
 #include "hooks/interface/uifeatures/ui_features.h"
 #include "hooks/interface/hpbars/hpbars.h"
 #include "Utils/captivating_claws.h"
@@ -723,7 +723,11 @@ namespace hooks {
 
 		update_discord(true);
 
-		handle_screen_hotkeys();
+		if (*g_elapsed_time_frames == 0) {
+			init_hotkeys();
+		} else {
+			update_hotkeys();
+		}
 		if (scbw::is_game_paused()) {
 			return true;
 		}
@@ -735,7 +739,6 @@ namespace hooks {
 			scbw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
 #endif
 			scbw::weapon_tile_heights();
-			init_screen_locations();
 			hooks::init_actions();
 			iquare_globals.reset();
 			init_ext_variables();
@@ -3931,7 +3934,7 @@ namespace hooks {
 		if (key_pressed == VK_ESCAPE) {
 			return helper::keypress_escape();
 		} else {
-			if (config.extra_control_groups) {
+			if (config.remapped_control_groups) {
 				switch (key_pressed) {
 					case 'r': {
 						key_pressed = '8';

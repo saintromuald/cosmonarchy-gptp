@@ -93,7 +93,7 @@
 	#include "hooks/build_time.h"
 	#include "AI/spellcasting.h"
 	#include "hooks/misc/cosmonarchy_specific.h"
-	#include "hooks/interface/uifeatures/screen_hotkeys.h"
+	#include "hooks/interface/uifeatures/hotkeys.h"
 	#include "hooks/interface/uifeatures/ui_features.h"
 	#include "hooks/trap_hooks.h"
 	#include "hooks/target_related.h"
@@ -816,7 +816,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_sfx_hooks();
 	hooks::inject_miss_chance_hooks();
 	hooks::inject_build_time_hooks();
-	hooks::inject_screen_hotkey_hooks();
+	hooks::inject_hotkey_hooks();
 //	hooks::inject_hp_bars_hooks();
 	hooks::inject_ui_features_hooks();
 	hooks::inject_trap_hooks();

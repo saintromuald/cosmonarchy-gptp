@@ -1,4 +1,4 @@
-#include "screen_hotkeys.h"
+#include "hotkeys.h"
 #include "hook_tools.h"
 #include "config.h"
 
@@ -11,7 +11,7 @@ namespace {
 			MOV id, EAX
 			PUSHAD
 		}
-		result = hooks::save_screen_location(id);
+		result = 0; // We handle this ourselves in GPTP, we don't need to handle it twice
 		_asm {
 			POPAD
 			MOV EAX, result
@@ -26,7 +26,7 @@ namespace {
 			MOV id, EAX
 			PUSHAD
 		}
-		result = hooks::recall_screen_location(id);
+		result = 0; // We handle this ourselves in GPTP, we don't need to handle it twice
 		_asm {
 			POPAD
 			MOV EAX, result
@@ -67,7 +67,7 @@ namespace {
 }
 
 namespace hooks {
-	void inject_screen_hotkey_hooks() {
+	void inject_hotkey_hooks() {
 		if (config.extended_camera_hotkeys) {
 			jump_patch(save_screen_location_wrapper,		0x00484360, 0);
 			jump_patch(recall_screen_location_wrapper,		0x00484500, 1);

@@ -246,8 +246,7 @@ LABEL_15:
 
 	char create_upgrade_level_tooltip(char* text) {
 		if (!*g_upgrade_level_tooltip) {
-			if (text)
-			{
+			if (text) {
 				return helper::create_tooltip(text);
 			}
 			return helper::refresh_selection_screen();
