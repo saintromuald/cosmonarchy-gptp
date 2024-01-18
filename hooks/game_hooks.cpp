@@ -3927,40 +3927,4 @@ namespace hooks {
 		version->is_demo = *g_is_demo;
 		version->lang = helper::local_get_lang();
 	}
-
-	// Hooked to add control group keyboard shortcut customization. -Pr0nogo
-	u8 game_input_user_key_press(DialogEvent* event_arg) { // 004846B0
-		u32 key_pressed = (u16)event_arg->virtual_key;
-		if (key_pressed == VK_ESCAPE) {
-			return helper::keypress_escape();
-		} else {
-			if (config.remapped_control_groups) {
-				switch (key_pressed) {
-					case 'r': {
-						key_pressed = '8';
-					} break; 
-					case 'f': {
-						key_pressed = '9';
-					} break;
-					case 'v': {
-						key_pressed = '0';
-					} break;
-				}
-			}
-			switch (key_pressed) {
-				case '1':
-				case '2':
-				case '3':
-				case '4':
-				case '5':
-				case '6':
-				case '7':
-				case '8':
-				case '9':
-				case '0': {
-					return helper::select_unit_group(key_pressed - '0');
-				}
-			}
-		}
-	}
 }

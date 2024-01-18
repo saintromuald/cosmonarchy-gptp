@@ -64,6 +64,21 @@ namespace {
 			JMP loc_484B24
 		}
 	}
+
+	void __declspec(naked) game_input_user_key_press_wrapper() { // 004846B0
+		static DialogEvent* event_arg;
+		static u8 result;
+		__asm {
+			MOV event_arg, ECX
+			PUSHAD
+		}
+		result = hooks::game_input_user_key_press(event_arg);
+		__asm {
+			POPAD
+			MOV result, AL
+			RET
+		}
+	}
 }
 
 namespace hooks {
@@ -73,6 +88,7 @@ namespace hooks {
 			jump_patch(recall_screen_location_wrapper,		0x00484500, 1);
 			jump_patch(help_menu_call_wrapper,				0x00484770, 0);
 			jump_patch(screen_location_switch_case_wrapper,	0x0048478A, 1);
+			jump_patch(game_input_user_key_press_wrapper,	0x004846B0, 0);
 		}
 	}
 }

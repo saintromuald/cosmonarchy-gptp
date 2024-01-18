@@ -300,6 +300,7 @@
     <ClCompile Include="SCBW\ExtendSightLimit.cpp" />
     <ClCompile Include="SCBW\scbwdata.cpp" />
     <ClCompile Include="SCBW\Storm.cpp" />
+    <ClCompile Include="SCBW\structures.cpp" />
     <ClCompile Include="selection_extender.cpp" />
     <ClCompile Include="trigger_system\trigger_events.cpp" />
     <ClCompile Include="trigger_system\trigger_parser.cpp" />

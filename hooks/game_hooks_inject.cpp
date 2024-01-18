@@ -283,21 +283,6 @@ bool isGameOn = false;
 		}
 	}
 
-	void __declspec(naked) game_input_user_key_press_wrapper() { // 004846B0
-		static DialogEvent* event_arg;
-		static u8 result;
-		__asm {
-			MOV event_arg, ECX
-			PUSHAD
-		}
-		result = hooks::game_input_user_key_press(event_arg);
-		__asm {
-			POPAD
-			MOV result, AL
-			RET
-		}
-	}
-
 //-------- Hook injector --------//
 
 namespace hooks {
@@ -319,6 +304,5 @@ namespace hooks {
 		jump_patch(replay_save_wrapper,					0x004EEBEA, 1);
 
 		jump_patch(initialize_provider_version_wrapper, 0x00472770, 1);
-		jump_patch(game_input_user_key_press_wrapper,	0x004846B0, 0);
 	}
 }

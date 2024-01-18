@@ -1270,12 +1270,29 @@ struct IscriptProgram {
 	u8 wait;							// 0x7
 };
 
+namespace helper {
+	extern bool unit_is_standard_and_movable(Unit* unit);
+}
+
 union UnitIndex {
 	struct {
 		u32 index : 12;			// btw. Updated with CCMU extender
 		u32 unique_id : 20;
 	};
 	u32 value;
+
+	Unit* get(bool allow_non_standard_units = false);
+	void set(Unit* unit) { *this = UnitIndex::from(unit); }
+	bool is_set() { return get(true) != nullptr; }
+	void clear() { value = 0; }
+
+	static UnitIndex from(Unit* unit) {
+		if (!unit) return {};
+		UnitIndex result = {};
+		result.index = unit->get_unit_index();
+		result.unique_id = unit->unique_id;
+		return result;
+	}
 };
 
 C_ASSERT(sizeof(UnitIndex) == 0x4);
@@ -1372,6 +1389,15 @@ const s32 SelectionCap = SelectionLimit; // Old const
 
 struct ControlGroup {
 	UnitIndex unit_index[SelectionCap];
+
+	UnitIndex* find(UnitIndex index);
+	bool has(UnitIndex index) { return find(index) != 0; }
+	bool add(UnitIndex index);
+	void clear();
+	void remove(UnitIndex index);
+	void select();
+	void add_selection();
+	void center_camera();
 };
 
 struct WireList {

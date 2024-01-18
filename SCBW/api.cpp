@@ -2857,28 +2857,6 @@ namespace scbw {
 		return code;
 	}
 
-	Unit* unit_index_get(UnitIndex unit_index, bool allow_non_standard_units) {
-		if (!unit_index.index) {
-			return 0;
-		}
-
-		Unit* unit = &g_unit_table[unit_index.index - 1];
-		if (unit->unique_id != unit_index.unique_id) {
-			return 0;
-		}
-		if (!unit->sprite || unit->sprite->flags & SpriteFlags::Hidden) {
-			return 0;
-		}
-		if (unit->main_order_id == OrderId::Die && unit->main_order_state == 1) {
-			return 0;
-		}
-		if (!allow_non_standard_units && !helper::unit_is_standard_and_movable(unit)) {
-			return 0;
-		}
-
-		return unit;
-	}
-
 	void move_camera(Point16 pos) {
 		if (pos.x >= 320) {
 			pos.x -= 320;
@@ -3727,6 +3705,15 @@ namespace scbw {
 			return false;
 		} else {
 			return true;
+		}
+	}
+
+	void select(std::vector<Unit*>& units) {
+		if (units.size()) {
+			helper::create_new_unit_selections_from_list(units.data(), units.size());
+			helper::cmdact_select(units.data(), units.size());
+			*g_client_selection_changed = true;
+			scbw::refresh_console();
 		}
 	}
 }

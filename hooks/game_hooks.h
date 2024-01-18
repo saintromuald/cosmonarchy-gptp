@@ -26,5 +26,4 @@ namespace hooks {
 	void inject_game_hooks();
 
 	void initialize_provider_version(GameVersion* version);			// 00472770
-	u8 game_input_user_key_press(DialogEvent* event);				// 004846B0
 }

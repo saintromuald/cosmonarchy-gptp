@@ -774,7 +774,6 @@ namespace scbw
 	Image* get_powerup_overlay(Sprite* sprite);
 	Image* get_addon_connector_image(Unit* unit);
 	PlayerColorCode get_player_color_code(u32 player, bool use_green_for_self);
-	Unit* unit_index_get(UnitIndex unit_index, bool allow_non_standard_units);
 	void move_camera(Point16 pos);
 	bool are_mutual_allies(u32 player1, u32 player2);
 	Quad quad_from_line(Point16 from, Point16 to, f32 line_width);
@@ -816,4 +815,5 @@ namespace scbw
 	void add_massacre_resource(u32 player_id);
 	bool game_kind_supports_kills(GameKind game_kind);
 	bool unit_can_fire_secondary_weapon(Unit* unit);
+	void select(std::vector<Unit*>& units);
 }
