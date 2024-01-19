@@ -7,7 +7,7 @@
 #define StandardControlGroups 10
 #define ExtendedControlGroups 16
 
-static const char control_group_keys[] = "0123456789rfvtgb";
+static const char control_group_keys[] = "0123456789RFVTGB"; // NOTE: lower case letters do not work on some computers...
 static_assert(sizeof(control_group_keys) == ExtendedControlGroups + 1); // null term
 
 struct Hotkeys {
