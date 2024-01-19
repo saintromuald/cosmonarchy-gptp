@@ -3716,4 +3716,19 @@ namespace scbw {
 			scbw::refresh_console();
 		}
 	}
+
+	u32 get_manual_weapon_id_sound(u32 weapon_id)
+	{
+		switch (weapon_id)
+		{
+			case WeaponId::DemiurgeGalacticWeaver:
+			{
+				return scbw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
+			}
+			default:
+			{
+				return 0; // No sound
+			}
+		}
+	}
 }

@@ -1580,6 +1580,10 @@ namespace SoundId
 		ClaymoreWeaponHit01					= 2521,
 		ClaymoreWeaponHit02					= 2522,
 
+		DemiurgeWeaponfire01				= 2525,
+		DemiurgeWeaponfire02				= 2526,
+		DemiurgeWeaponfire03				= 2527,
+
 		BactaliskDeath01					= 2539,
 
 		Lobby_PlayerJoin					= 2557,

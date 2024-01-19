@@ -639,6 +639,10 @@ namespace hooks {
 						fire_multiple(unit, weapon_id, 2, FilterEnemy, options);
 					} break;
 					default: {
+						u32 sound_id = scbw::get_manual_weapon_id_sound(weapon_id);
+						if (sound_id) {
+							helper::play_sound_from_unit(sound_id, unit, 1, 0);
+						}
 						create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 				}
