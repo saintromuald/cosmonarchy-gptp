@@ -37,11 +37,14 @@ static void update_control_groups() {
 		char key = control_group_keys[i];
 		if (keyboard.held(key)) {
 			control_group = &hotkeys.control_groups[i];
-			center = keyboard.held_time(key) >= 8;
+			center = keyboard.held_time(key) >= 12;
 			just_pressed = keyboard.pressed(key);
-			if (keyboard.pressed(key) && keyboard.release_time(key) <= 6 &&
-					hotkeys.last_control_group_selected == control_group) {
+		}
+		if (hotkeys.last_control_group_selected == control_group) {
+			if (keyboard.pressed(key) && keyboard.release_time(key) <= 12) {
 				center = true;
+			} else {
+				hotkeys.last_control_group_selected = 0;
 			}
 		}
 	}

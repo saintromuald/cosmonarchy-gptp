@@ -2,37 +2,50 @@
 #include "SCBW/scbwdata.h"
 #include "logger.h"
 
+struct Key {
+	bool was_held;
+	bool is_held;
+	u32 released_for;
+	u32 held_for;
+	u32 last_held_for;
+
+	void update(bool key_held, bool window_active) {
+		was_held = is_held;
+		is_held = window_active ? key_held : false;
+
+		if (is_held && was_held) {
+			released_for = 0;
+			held_for += 1;
+		} else {
+			if (was_held) {
+				last_held_for = held_for;
+			}
+			released_for += 1;
+			held_for = 0;
+		}
+	}
+};
+
 class Keyboard {
 public:
-	bool held(size_t i) { return is_held[i]; }
-	u32 release_time(size_t i) { return released_for[i]; }
-	u32 held_time(size_t i) { return held_for[i]; }
-	bool pressed(size_t i) { return is_held[i] && !was_held[i]; }
-	bool released(size_t i) { return !is_held[i] && was_held[i]; }
+	bool held(size_t i) { return keys[i].is_held; }
+	u32 release_time(size_t i) { return keys[i].released_for; }
+	u32 held_time(size_t i) { return keys[i].held_for; }
+	u32 last_held_time(size_t i) { return keys[i].last_held_for; }
+	bool pressed(size_t i) { return keys[i].is_held && !keys[i].was_held; }
+	bool released(size_t i) { return !keys[i].is_held && keys[i].was_held; }
 
 	void update() {
-		bool is_active = GetActiveWindow() == *g_main_window;
+		bool window_active = GetActiveWindow() == *g_main_window;
 		for (size_t i = 0; i < KEY_COUNT; i++) {
 			bool key_held = GetAsyncKeyState(i) & (1 << 15);
-			was_held[i] = is_held[i];
-			is_held[i] = is_active ? key_held : false;
-
-			if (is_held[i] && was_held[i]) {
-				released_for[i] = 0;
-				held_for[i] += 1;
-			} else {
-				released_for[i] += 1;
-				held_for[i] = 0;
-			}
+			keys[i].update(key_held, window_active);
 		}
 	}
 
 private:
 	static constexpr size_t KEY_COUNT = 256;
-	bool was_held[KEY_COUNT] = {};
-	bool is_held[KEY_COUNT] = {};
-	u32 released_for[KEY_COUNT] = {};
-	u32 held_for[KEY_COUNT] = {};
+	Key keys[KEY_COUNT] = {};
 };
 
 extern Keyboard keyboard;
