@@ -32,11 +32,13 @@ static void update_control_groups() {
 	u32 count = config.extended_control_groups ? ExtendedControlGroups : StandardControlGroups;
 	ControlGroup* control_group = 0;
 	bool center = false;
+	bool just_pressed = false;
 	for (u32 i = 0; i < count; i++) {
 		char key = control_group_keys[i];
 		if (keyboard.held(key)) {
 			control_group = &hotkeys.control_groups[i];
 			center = keyboard.held_time(key) >= 8;
+			just_pressed = keyboard.pressed(key);
 			if (keyboard.pressed(key) && keyboard.release_time(key) <= 6 &&
 					hotkeys.last_control_group_selected == control_group) {
 				center = true;
@@ -50,11 +52,14 @@ static void update_control_groups() {
 		} else if (keyboard.held(VK_CONTROL) || keyboard.held(VK_MENU)) {
 			control_group->clear();
 			control_group->add_selection();
-		} else if (center) {
-			control_group->center_camera();
 		} else {
-			control_group->select();
-			hotkeys.last_control_group_selected = control_group;
+			if (center) {
+				control_group->center_camera();
+			}
+			if (just_pressed || center) {
+				control_group->select();
+				hotkeys.last_control_group_selected = control_group;
+			}
 		}
 
 		bool steal = false;

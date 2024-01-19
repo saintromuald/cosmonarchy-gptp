@@ -4,6 +4,8 @@
 #include "config_utility.h"
 #include <logger.h>
 
+#include <format>
+
 Config config;
 
 // This code is pretty gross, the yaml library is pretty bad. It would probably be better to have a custom config format. -Veeq7
@@ -12,13 +14,18 @@ bool file_exists(std::string file) {
 	return std::ifstream(file).good();
 }
 
+static void config_error(const std::string_view message, const auto&... args) {
+	MessageBoxA(0, std::format(message, args...).c_str(), "Invalid config.yml!", MB_OK | MB_ICONERROR);
+	exit(0);
+}
+
 static AdvisorType parse_advisor_name(const char* name) {
 	Parser parser = {};
 	parser.at = (char*)name;
-	AdvisorType advisor = (AdvisorType)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), -1);
-	if (advisor == -1) {
-		// TODO: print error
-		return (AdvisorType) -1;
+	AdvisorType advisor = (AdvisorType)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), CHAR_MAX);
+	if (advisor == CHAR_MAX) {
+		config_error("Advisor \"{}\" does not exist! Please remove it from your config.yml.", name);
+		return (AdvisorType) CHAR_MAX;
 	}
 	return advisor;
 }
@@ -27,17 +34,31 @@ static void load_advisors(const YAML::Node& config_node, const char* name, Advis
 	load_field(config_node, name, advisor->strings);
 	advisor->types.clear();
 	for (const std::string& name : advisor->strings) {
-		AdvisorType type = parse_advisor_name(name.c_str());
-		if (type == -1) {
-			continue;
-		}
-		advisor->types.push_back(type);
+		advisor->types.push_back(parse_advisor_name(name.c_str()));
 	}
 }
 
-static void config_error(const char* message) {
-	MessageBoxA(0, message, "Invalid config.yml!", MB_OK | MB_ICONERROR);
-	exit(0);
+static void validate_config() {
+	if (config.extended_control_groups) {
+		if (!config.grid_hotkeys) {
+			config.extended_control_groups = false;
+			config_error("Extended control groups must be used together with grid hotkeys!");
+		}
+		for (u32 i = 0; i < 3; i++) {
+			for (u32 j = 0; j < 3; j++) {
+				char hotkey = config.layout[i][j];
+
+				for (u32 k = 0; k < 6; k++) {
+					static const char* valid_hotkeys = "RFVTGB";
+					char valid_ch = valid_hotkeys[k];
+					if (hotkey == valid_ch) {
+						config.extended_control_groups = false;
+						config_error("Grid hotkey \"{}\" collides with extended control group \"{}\"! Please resolve the collision in config.yml.", hotkey, valid_ch);
+					}
+				}
+			}
+		}
+	}
 }
 
 void load_config() {
@@ -99,11 +120,6 @@ void load_config() {
 		load_field(config_node, "extended-control-groups", config.extended_control_groups);
 		load_field(config_node, "default-to-steal-hotkeys", config.default_to_steal_hotkeys);
 
-		if (!config.grid_hotkeys && config.extended_control_groups) {
-			config.extended_control_groups = false;
-			config_error("Extended control groups must be used together with grid hotkeys!");
-		}
-
 		// Debug
 		load_field(config_node, "verbose", config.verbose);
 		GPTP::logger.set_enabled(config.verbose);
@@ -112,6 +128,7 @@ void load_config() {
 		load_field(config_node, "default-map-directory", config.default_map_directory);
 		load_field(config_node, "auto-save-replays", config.auto_save_replays);
 	}
+	validate_config();
 	save_config();
 }
 
