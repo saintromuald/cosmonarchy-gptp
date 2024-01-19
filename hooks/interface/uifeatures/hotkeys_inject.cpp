@@ -89,6 +89,11 @@ namespace hooks {
 			jump_patch(help_menu_call_wrapper,				0x00484770, 0);
 			jump_patch(screen_location_switch_case_wrapper,	0x0048478A, 1);
 			jump_patch(game_input_user_key_press_wrapper,	0x004846B0, 0);
+
+			// Remove Ctrl-R
+			if (config.extended_control_groups) {
+				nops(0x00484785, 5);
+			}
 		}
 	}
 }
