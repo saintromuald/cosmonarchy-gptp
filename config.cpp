@@ -14,9 +14,11 @@ bool file_exists(std::string file) {
 	return std::ifstream(file).good();
 }
 
-static void config_error(const std::string_view message, const auto&... args) {
-	MessageBoxA(0, std::format(message, args...).c_str(), "Invalid config.yml!", MB_OK | MB_ICONERROR);
-	exit(0);
+// Have to use std::vformat and no `const auto&...`, because of some obscure VS issue that makes it not compile for Pr0nogo.
+// It's sad, because it will make std::string allocate a copy, but it is what it is, we only do it once on a fail path anyways. -Veeq7
+static void config_error(const std::string_view message, auto... args) {
+    MessageBoxA(0, std::vformat(message, std::make_format_args(args...)).c_str(), "Invalid config.yml!", MB_OK | MB_ICONERROR);
+    exit(0);
 }
 
 static AdvisorType parse_advisor_name(const char* name) {
