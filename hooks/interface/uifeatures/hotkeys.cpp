@@ -19,7 +19,21 @@ struct Hotkeys {
 Keyboard keyboard;
 static Hotkeys hotkeys;
 
+static LRESULT CALLBACK keyboard_proc(int code, WPARAM wparam, LPARAM lparam) {
+	char key = wparam;
+	bool was_held = lparam & (1 << 30);
+	bool is_held = !(lparam & (1 << 31));
+	keyboard.add_key_event(key, was_held, is_held);
+	return 0;
+}
+
 void init_hotkeys() {
+	static bool init_proc = false;
+	if (!init_proc) {
+		init_proc = true;
+		SetWindowsHookA(WH_KEYBOARD, keyboard_proc);
+	}
+
 	keyboard = {};
 	hotkeys = {};
 	for (u32 i = 0; i < CameraCap; ++i) {
@@ -28,59 +42,65 @@ void init_hotkeys() {
 	}
 }
 
-static void update_control_groups() {
+static void update_control_groups(const KeyEvent& ev) {
 	u32 count = config.extended_control_groups ? ExtendedControlGroups : StandardControlGroups;
-	ControlGroup* control_group = 0;
+	s32 index = -1;
+	for (u32 i = 0; i < count; i++) {
+		if (ev.key == control_group_keys[i]) {
+			index = i;
+			break;
+		}
+	}
+	if (index == -1) {
+		return;
+	}
+
+	ControlGroup& control_group = hotkeys.control_groups[index];
+
 	bool center = false;
 	bool just_pressed = false;
-	for (u32 i = 0; i < count; i++) {
-		char key = control_group_keys[i];
-		if (keyboard.held(key)) {
-			control_group = &hotkeys.control_groups[i];
-			center = keyboard.held_time(key) >= 12;
-			just_pressed = keyboard.pressed(key);
-		}
-		if (hotkeys.last_control_group_selected == control_group) {
-			if (keyboard.pressed(key) && keyboard.release_time(key) <= 12) {
-				center = true;
-			} else {
-				hotkeys.last_control_group_selected = 0;
-			}
+	if (ev.held()) {
+		center = ev.held_time() >= 12;
+		just_pressed = ev.pressed();
+	}
+	if (hotkeys.last_control_group_selected == &control_group) {
+		if (ev.pressed() && ev.release_time() <= 12) {
+			center = true;
+		} else {
+			hotkeys.last_control_group_selected = 0;
 		}
 	}
 
-	if (control_group) {
-		if (keyboard.held(VK_SHIFT)) {
-			control_group->add_selection();
-		} else if (keyboard.held(VK_CONTROL) || keyboard.held(VK_MENU)) {
-			control_group->clear();
-			control_group->add_selection();
-		} else {
-			if (center) {
-				control_group->center_camera();
-			}
-			if (just_pressed || center) {
-				control_group->select();
-				hotkeys.last_control_group_selected = control_group;
-			}
+	if (keyboard.held(VK_SHIFT)) {
+		control_group.add_selection();
+	} else if (keyboard.held(VK_CONTROL) || keyboard.held(VK_MENU)) {
+		control_group.clear();
+		control_group.add_selection();
+	} else {
+		if (center) {
+			control_group.center_camera();
 		}
+		if (just_pressed || center) {
+			control_group.select();
+			hotkeys.last_control_group_selected = &control_group;
+		}
+	}
 
-		bool steal = false;
-		if (config.default_to_steal_hotkeys) {
-			steal = keyboard.held(VK_CONTROL) || keyboard.held(VK_SHIFT);
-		} else {
-			steal = keyboard.held(VK_MENU);
-		}
-		if (steal) {
-			for (u32 i = 0; i < ExtendedControlGroups; i++) {
-				if (control_group == &hotkeys.control_groups[i]) {
-					continue;
-				}
-				for (u32 j = 0; j < SelectionCap; j++) {
-					Unit* unit = control_group->unit_index[j].get();
-					if (unit) {
-						hotkeys.control_groups[i].remove(UnitIndex::from(unit));
-					}
+	bool steal = false;
+	if (config.default_to_steal_hotkeys) {
+		steal = keyboard.held(VK_CONTROL) || keyboard.held(VK_SHIFT);
+	} else {
+		steal = keyboard.held(VK_MENU);
+	}
+	if (steal) {
+		for (u32 i = 0; i < ExtendedControlGroups; i++) {
+			if (&control_group == &hotkeys.control_groups[i]) {
+				continue;
+			}
+			for (u32 j = 0; j < SelectionCap; j++) {
+				Unit* unit = control_group.unit_index[j].get();
+				if (unit) {
+					hotkeys.control_groups[i].remove(UnitIndex::from(unit));
 				}
 			}
 		}
@@ -90,20 +110,21 @@ static void update_control_groups() {
 void update_hotkeys() {
 	keyboard.update();
 
-	if (config.extended_camera_hotkeys) {
-		for (s32 i = 0; i < CameraCap; i++) {
-			if (keyboard.held(VK_F1 + i)) {
+	for (const KeyEvent& ev : keyboard.poll()) {
+		if (config.extended_camera_hotkeys) {
+			if (ev.key >= VK_F1 && ev.key <= VK_F12) {
+				Point16& screen = hotkeys.screens[ev.key - VK_F1];
 				if (keyboard.held(VK_CONTROL) || keyboard.held(VK_SHIFT)) {
-					hotkeys.screens[i].x = *g_move_to_x;
-					hotkeys.screens[i].y = *g_move_to_y;
+					screen.x = *g_move_to_x;
+					screen.y = *g_move_to_y;
 				} else {
-					helper::move_screen(hotkeys.screens[i]);
+					helper::move_screen(screen);
 				}
 			}
 		}
+		
+		update_control_groups(ev);
 	}
-
-	update_control_groups();
 }
 
 namespace hooks {
