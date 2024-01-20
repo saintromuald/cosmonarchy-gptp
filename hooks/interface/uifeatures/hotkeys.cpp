@@ -56,7 +56,6 @@ static void update_control_groups(const KeyEvent& ev) {
 	}
 
 	ControlGroup& control_group = hotkeys.control_groups[index];
-
 	bool center = false;
 	bool just_pressed = false;
 	if (ev.held()) {
@@ -64,8 +63,10 @@ static void update_control_groups(const KeyEvent& ev) {
 		just_pressed = ev.pressed();
 	}
 	if (hotkeys.last_control_group_selected == &control_group) {
-		if (ev.pressed() && ev.release_time() <= 12) {
-			center = true;
+		if (ev.release_time() <= 12) {
+			if (ev.pressed()) {
+				center = true;
+			}
 		} else {
 			hotkeys.last_control_group_selected = 0;
 		}

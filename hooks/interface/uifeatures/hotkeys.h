@@ -68,7 +68,6 @@ public:
 			KeyState& state = key_states[i];
 			if (state.is_held) {
 				state.held_time += 1;
-				state.release_time += 1;
 
 				// To release keys when we lose window focus
 				bool is_pressed = GetKeyState(i) & (1 << 15);
@@ -77,6 +76,7 @@ public:
 				}
 			} else {
 				state.was_held = false;
+				state.release_time += 1;
 			}
 		}
 	}
