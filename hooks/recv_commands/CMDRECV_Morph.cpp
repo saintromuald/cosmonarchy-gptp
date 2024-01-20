@@ -139,13 +139,11 @@ namespace hooks
 	void btnsact_rally_point(u32 xd) { // 004244A0
 		*g_order_id_ground = OrderId::RallyPointToTile;
 		*g_order_id_obstructed = OrderId::RallyPointToTile;
-		bool network_table_1 = *g_network_table < 62;
-		bool network_table_2 = *g_network_table == 62;
 		*g_is_targeting = 1;
 		*g_order_id_unit = OrderId::RallyPointToVisibleUnit;
 
 		const char* string = g_network_table_DF->get_string(63);
-		if (network_table_1 || network_table_2) {
+		if (g_network_table_DF->get_string_count() <= 62) {
 			string = "";
 		}
 

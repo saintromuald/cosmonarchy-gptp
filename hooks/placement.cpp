@@ -330,7 +330,7 @@ namespace hooks
 		}
 
 		const char* string = "";
-		if (*g_network_table > 63)
+		if (g_network_table_DF->get_string_count() > 63)
 		{
 			string = (char*)g_network_table_DF->get_string(64);
 		}

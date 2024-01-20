@@ -353,7 +353,7 @@ namespace hooks
 		if (!unit) {
 			return;
 		}
-		unit->user_action_flags |= 1u;
+		unit->user_action_flags |= 1;
 		unit->order(id, coord_x, coord_y, 0, UnitId::None, true);
 		helper::do_next_queued_order(unit);
 	}
@@ -367,7 +367,7 @@ namespace hooks
 		*g_order_id_obstructed = order_2;
 		*g_order_id_ground = order_3;
 		const char* error = "";
-		if (*g_network_table > 62)
+		if (g_network_table_DF->get_string_count() > 62)
 		{
 			error = g_network_table_DF->get_string(63);
 		}

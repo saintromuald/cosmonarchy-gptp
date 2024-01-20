@@ -303,8 +303,8 @@ namespace hooks {
 				return unit;
 			} else {
 				const char* text  = "";
-				if ( *g_network_table > 17 ) {
-					text = (char *)g_network_table + g_network_table[18];
+				if ( g_network_table_DF->get_string_count() > 17) {
+					text = g_network_table_DF->get_string(18);
 				}
 				const char* text2 = helper::get_unit_name_stat_string(unit->id);
 				char buffer[256] = {};
