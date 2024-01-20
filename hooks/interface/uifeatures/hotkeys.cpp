@@ -72,9 +72,9 @@ static void update_control_groups(const KeyEvent& ev) {
 		}
 	}
 
-	if (keyboard.held(VK_SHIFT)) {
+	if (ev.shift_held) {
 		control_group.add_selection();
-	} else if (keyboard.held(VK_CONTROL) || keyboard.held(VK_MENU)) {
+	} else if (ev.control_held || ev.alt_held) {
 		control_group.clear();
 		control_group.add_selection();
 	} else {
@@ -89,9 +89,9 @@ static void update_control_groups(const KeyEvent& ev) {
 
 	bool steal = false;
 	if (config.default_to_steal_hotkeys) {
-		steal = keyboard.held(VK_CONTROL) || keyboard.held(VK_SHIFT);
+		steal = ev.control_held || ev.shift_held;
 	} else {
-		steal = keyboard.held(VK_MENU);
+		steal = ev.alt_held;
 	}
 	if (steal) {
 		for (u32 i = 0; i < ExtendedControlGroups; i++) {
@@ -113,9 +113,12 @@ void update_hotkeys() {
 
 	for (const KeyEvent& ev : keyboard.poll()) {
 		if (config.extended_camera_hotkeys) {
+			if (ev.key == VK_F4 && ev.alt_held) {
+
+			}
 			if (ev.key >= VK_F1 && ev.key <= VK_F12) {
 				Point16& screen = hotkeys.screens[ev.key - VK_F1];
-				if (keyboard.held(VK_CONTROL) || keyboard.held(VK_SHIFT)) {
+				if (ev.control_held || ev.shift_held) {
 					screen.x = *g_move_to_x;
 					screen.y = *g_move_to_y;
 				} else {
