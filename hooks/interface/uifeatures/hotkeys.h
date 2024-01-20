@@ -22,6 +22,25 @@ struct KeyEvent {
 	inline u32 last_held_time() const { return state.last_held_time; }
 };
 
+// Since std::move would clear capacity on Keyboard::poll() and that's means reallocating the buffer each frame
+// this allows to iterate over the container and then clears it automatically (setting vec's size to 0, but not freeing the buffer)
+template <typename Container>
+class ClearSpan {
+public:
+	explicit ClearSpan(Container& container) : container(container) {}
+	ClearSpan(const ClearSpan&) = delete;
+	ClearSpan& operator=(const ClearSpan&) = delete;
+	~ClearSpan() { container.clear(); }
+
+	typename Container::iterator begin() { return container.begin(); }
+	typename Container::iterator end() { return container.end(); }
+	typename Container::const_iterator cbegin() const { return container.cbegin(); }
+	typename Container::const_iterator cend() const { return container.cend(); }
+
+private:
+	Container& container;
+};
+
 class Keyboard {
 public:
 	bool held(size_t i) { return key_states[i].is_held; } // Use for modifier keys only!
@@ -62,8 +81,8 @@ public:
 		}
 	}
 
-	std::vector<KeyEvent> poll() {
-		return std::move(events);
+	ClearSpan<std::vector<KeyEvent>> poll() {
+		return ClearSpan<std::vector<KeyEvent>>(events);
 	}
 
 private:
