@@ -995,6 +995,7 @@ LABEL_15:
 		}
 	}
 
+	// Hooked to disable functionality when using space for drag. -Pr0nogo
 	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event) // 0045F290
 	{
 		bool result = 0;

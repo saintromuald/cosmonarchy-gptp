@@ -65,7 +65,7 @@ enum ExtValueId {
 	ValueMindControlOriginalPlayer,
 	ValuePreMorphEnergy,
 	ValueWendigoShatteredWindsStacks,
-//	ValueGodsMadeFleshActive,
+	ValuePlayerColor,
 	ValueMissileReturnTarget, // unit
 //	ValueKelvinMunitionsSlow,
 	ValueRaceSupplyType,

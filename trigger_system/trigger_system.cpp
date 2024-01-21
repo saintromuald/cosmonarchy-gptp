@@ -461,6 +461,39 @@ b32 parse_comment_condition(TriggerAction* action) {
 						return check_quota(quota_type, quota, var->value);
 					}
 					return false;
+				} else if (parser_eq(&parser, "unit_color")) { // Currently naive; doesn't allow combining player colors. -Pr0nogo
+					Area area = parser_get_area(&parser);
+					PlayerBitset players = parser_get_player_bitset(&parser);
+					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
+					u32 quota = parser_get_s32(&parser);
+					u32 color_id = parser_get_s32(&parser);
+
+					EntryArray units = {};
+					unit_search_rect(&units, area.box);
+
+					u32 count = 0;
+					for (u32 i = 0; i < units.count; ++i) {
+						Unit* unit = units.units[i];
+						UnitExt* unit_ext = get_unit_ext(unit);
+						Point16 position = unit->position;
+						if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+							continue;
+						}
+						if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+							continue;
+						}
+						if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+							continue;
+						}
+						if (unit_ext->values[ValuePlayerColor] == color_id) {
+							count++;
+						}
+					}
+					if (check_quota(quota_type, quota, count)) {
+						return true;
+					}
+					return false;
 				}
 			}
 		}
