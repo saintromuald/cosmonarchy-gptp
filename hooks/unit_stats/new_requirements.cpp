@@ -431,22 +431,35 @@ namespace hooks {
 					if (faction != Faction_TerranUpstart) {
 						return true;
 					}
+					return false;
 				}
 				case UnitId::TerranTrojan:
 				{
-					return true;
+					if (faction != Faction_TerranHecatonCoalition) {
+						return true;
+					}
+					return false;
 				}
 				case UnitId::TerranPhiloc:
 				{
 					if (faction == Faction_TerranFuturistFederation) {
 						return true;
 					}
+					return false;
 				}
 				case UnitId::TerranWendigo:
 				{
 					if (faction == Faction_TerranUpstart) {
 						return true;
 					}
+					return false;
+				} break;
+				case UnitId::TerranQilin:
+				{
+					if (faction == Faction_TerranHecatonCoalition) {
+						return true;
+					}
+					return false;
 				} break;
 			}
 		}
@@ -1998,11 +2011,15 @@ namespace hooks {
 					}
 					case UnitId::TerranTrojan:
 					{
-						if (in_air)
+						if (faction != Faction_TerranHecatonCoalition)
 						{
-							return TECH_HIDDEN;
+							if (in_air)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
 						}
-						return TECH_ACTIVE;
+						return TECH_HIDDEN;
 					}
 					case UnitId::TerranAncile:
 					{
@@ -2031,6 +2048,18 @@ namespace hooks {
 					case UnitId::TerranWendigo:
 					{
 						if (faction == Faction_TerranUpstart)
+						{
+							if (in_air)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranQilin:
+					{
+						if (faction == Faction_TerranHecatonCoalition)
 						{
 							if (in_air)
 							{

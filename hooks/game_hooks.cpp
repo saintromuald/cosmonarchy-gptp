@@ -1803,6 +1803,29 @@ namespace hooks {
 					}
 				}
 			} break;
+			case UnitId::TerranQilin:
+			{
+				if (unit->is_frozen() || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport) {
+					break;
+				}
+				u32 timer = unit_ext->timers[TimerNaniteField];
+				if (!timer) {
+					unit_ext->timers[TimerNaniteField] = 24;
+					u32 counter = 0;
+					bool has_cargo = false;
+					for (; counter < units_dat::space_provided[unit->id]; ++counter) {
+						Unit* cargo = helper::get_loaded_unit_from_index(unit, counter);
+						if (!cargo) {
+							break;
+						}
+						has_cargo = true;
+						cargo->heal_hp(4 * 256, unit);
+					}
+					if (has_cargo) {
+						scbw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id));
+					}
+				}
+			} break;
 			case UnitId::TerranCentaur:
 			{
 				// Centaur - Sunchaser Missiles

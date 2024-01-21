@@ -948,6 +948,18 @@ namespace hooks {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
+									case UnitId::TerranTrojan: {
+										if (globals.players[unit->player].faction == Faction_TerranHecatonCoalition) {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::TerranQilin: {
+										if (globals.players[unit->player].faction == Faction_TerranHecatonCoalition) {
+											if (!in_air) {
+												current_button_state = Button_State::Enabled;
+											}
+										}
+									} break;
 								}
 							} break;
 							case UnitId::TerranStarport: {
@@ -1904,6 +1916,11 @@ namespace hooks {
 								} break;
 								case UnitId::TerranTrojan: {
 									if (current_button->icon_id == IconId::Land) { // Trojan - Hotdrop
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranQilin: {
+									if (current_button->icon_id == IconId::ColossusReactor) { // Qilin - Nanite Chambers
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
