@@ -1110,7 +1110,7 @@ namespace hooks
 			unit->sprite->elevation = units_dat::elevation[unit_id];
 			u32 base_property = units_dat::base_property[unit_id];
 
-			if (base_property & 1) {
+			if (base_property & UnitProperty::Building) {
 				unit->building.tech_id = TechId::None;
 				unit->building.upgrade_id = UpgradeId::None;
 			}
@@ -1124,8 +1124,7 @@ namespace hooks
 			unit_status ^= ((base_property >> 3) ^ unit_status) & UnitStatus::Invincible;				//  UnitProperty::Invincible
 
 			unit->status = unit_status;
-			u8 is_ground_level = units_dat::elevation[unit_id] < 12 ? 1 : 0;
-			unit->pathing_flags = (is_ground_level ^ unit->pathing_flags) & 1;
+			unit->pathing_flags ^= (unit->pathing_flags ^ (units_dat::elevation[unit_id] < 12)) & PathingFlags::PathingFlags_ProvidesCollision;
 			unit->path = 0;
 			unit->movement_state = 0;
 			unit->recent_order_timer = 0;
