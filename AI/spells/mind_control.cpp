@@ -24,7 +24,7 @@ namespace AI
 				return false;
 			}
 
-			if (target->id == UnitId::ProtossEnvoy || target->id == UnitId::TerranTrojan)
+			if (unit_id_is_transport(target->id))
 			{
 				if (target->has_loaded_unit())
 				{

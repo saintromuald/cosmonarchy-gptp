@@ -1274,7 +1274,8 @@ namespace scbw {
 			|| id == UnitId::TerranAspirant
 			|| id == UnitId::TerranSouthpaw
 			|| id == UnitId::TerranPhiloc
-			|| id == UnitId::TerranWendigo;
+			|| id == UnitId::TerranWendigo
+			|| id == UnitId::TerranQilin;
 	}
 
 	void apply_hallucinating(Unit* unit, u8 player, u32 time) {

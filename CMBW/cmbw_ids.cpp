@@ -106,6 +106,7 @@ b32 unit_id_is_tech_tier_structure(u32 unit_id) {
 
 bool unit_id_is_transport(u32 unit_id) {
 	return unit_id == UnitId::TerranTrojan
+		|| unit_id == UnitId::TerranQilin
 		|| unit_id == UnitId::TerranPythean
 		|| unit_id == UnitId::ProtossEnvoy
 		|| unit_id == UnitId::ZergOvileth
