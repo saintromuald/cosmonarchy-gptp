@@ -109,11 +109,11 @@ const s32 AIWebTimer = 1 * 24;
 const s32 DidactStasisFieldTimer = 23; // roughly 8 seconds
 
 // Star Sovereign
-const s32 AIStarsovereignAbilSeekRange = 6 * 32;
-const s32 AIStarsovereignAbilMinEnemyHealth = 2000;
-const s32 AIStarsovereignAbilMaxAllyHealth = 2000;
-const f64 AIStarsovereignAbilLifePercentage = 0.5;
-const s32 AIStarsovereignAbilTimer = 612;
+const s32 AIStarSovereignAbilSeekRange = 6 * 32;
+const s32 AIStarSovereignAbilMinEnemyHealth = 2000;
+const s32 AIStarSovereignAbilMaxAllyHealth = 2000;
+const f64 AIStarSovereignAbilLifePercentage = 0.5;
+const s32 AIStarSovereignAbilTimer = 612;
 
 // ZERG \\
 
