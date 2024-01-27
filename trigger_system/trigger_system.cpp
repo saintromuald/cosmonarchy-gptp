@@ -461,13 +461,13 @@ b32 parse_comment_condition(TriggerAction* action) {
 						return check_quota(quota_type, quota, var->value);
 					}
 					return false;
-				} else if (parser_eq(&parser, "unit_color")) { // Currently naive; doesn't allow combining player colors. -Pr0nogo
+				} else if (parser_eq(&parser, "unit_color")) {
 					Area area = parser_get_area(&parser);
 					PlayerBitset players = parser_get_player_bitset(&parser);
 					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
 					u32 quota = parser_get_s32(&parser);
-					u32 color_id = parser_get_s32(&parser);
+					u32 color_id = parser_get_s32(&parser); // Currently naive; need a way to get multiple pcolors and match them. -Pr0nogo
 
 					EntryArray units = {};
 					unit_search_rect(&units, area.box);
@@ -494,7 +494,28 @@ b32 parse_comment_condition(TriggerAction* action) {
 						return true;
 					}
 					return false;
-				}
+				}/* else if (parser_eq(&parser, "selected")) {
+					PlayerBitset players = parser_get_player_bitset(&parser);
+					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
+					u32 quota = parser_get_s32(&parser);
+
+					u32 count = 0;
+					for (u32 i = 0; i < units.count; ++i) { // TODO: Replace with selection. -Pr0nogo
+						Unit* unit = units.units[i];
+						if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+							continue;
+						}
+						if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+							continue;
+						}
+						count++;
+					}
+					if (check_quota(quota_type, quota, count)) {
+						return true;
+					}
+					return false;
+				}*/
 			}
 		}
 	}
@@ -1061,6 +1082,39 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 				UnitExt* unit_ext = get_unit_ext(unit);
 				unit_ext->values[ValueDisableAutoBurrow] = !enable;
+			}
+		} else if (parser_eq(&parser, "kill")) {
+			Area area = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+			u32 count = parser_get_s32(&parser);
+			bool remove = parser_get_s32(&parser);
+
+			EntryArray units = {};
+			unit_search_rect(&units, area.box);
+
+			u32 unit_count = 0;
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Point16 position = unit->position;
+				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				if (unit_count >= count) {
+					return true; // @Veeq7 is this a proper exit procedure? -Pr0nogo
+				}
+				unit_count++;
+				if (remove) {
+					unit->user_action_flags |= UserActionFlags_HideUnit;
+				}
+				unit->remove();
 			}
 		} else if (parser_eq(&parser, "var") || parser_eq(&parser, "timer")) {
 			bool is_timer = parser_eq(&parser, "timer");

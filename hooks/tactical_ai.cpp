@@ -1146,7 +1146,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			u32 enemy_units_health = 0;
 			u32 allied_units_health = 0;
 			bool allied_town_centers = false;
-			cosmonarchyFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange, Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u) {
+			cosmonarchyFinderLoop(unit, unit->sprite->position, AIStarSovereignAbilSeekRange, Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u) {
 				if (!scbw::is_allied_to(unit->player, u->player))
 				{
 					enemy_units_health += (u->hitpoints + u->shields) / 256;
