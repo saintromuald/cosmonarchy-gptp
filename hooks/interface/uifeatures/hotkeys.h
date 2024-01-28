@@ -11,11 +11,11 @@ struct KeyState {
 
 struct KeyEvent {
 	char key;
+	bool was_held;
 
 	// Modifiers keys are commonly checked when processing a key event,
 	// to keep the information about sequentiality we embed it here,
 	// instead of checking if they are held this frame
-	bool was_held;
 	bool control_held;
 	bool shift_held;
 	bool alt_held;
@@ -82,6 +82,7 @@ public:
 	}
 
 	void update() {
+		// TODO: maybe only do those release events on window focus loss
 		for (size_t i = 0; i < KEY_COUNT; i++) {
 			KeyState& state = key_states[i];
 			if (state.is_held) {
