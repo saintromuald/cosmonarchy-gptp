@@ -388,6 +388,10 @@ bool unit_id_is_zerg_supply(u16 unit_id) {
 }
 
 bool unit_regens_in_combat(Unit* unit) {
+	UnitExt* unit_ext = get_unit_ext(unit);
+	if (unit_ext->values[ValueNathreliskCloud]) {
+		return true;
+	}
 	return false; // Can update later with status checks and etc. -Pr0nogo
 }
 bool unit_paths_over_small_units(Unit* unit) {

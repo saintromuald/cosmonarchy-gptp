@@ -320,11 +320,18 @@ namespace hooks
 				stop_here = true;
 			}
 
-			// HP regeneration
-			if (scbw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw()
-			&&  unit_ext->damage_taken_timer > 2 * 24 || unit_regens_in_combat(unit))
+			// Passive HP regeneration
+			if (scbw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw())
 			{
-				s32 regen = 11; // 1 HP per second
+				u32 factor = 0;
+				if (unit_ext->damage_taken_timer > 2 * 24) {
+					factor++;
+				}
+				if (unit_regens_in_combat(unit)) {
+					factor++;
+				}
+
+				s32 regen = 11 * factor; // 1 HP per second, before factor.
 				if (unit->status & UnitStatus::Burrowed) {
 					regen *= 2;
 				}
