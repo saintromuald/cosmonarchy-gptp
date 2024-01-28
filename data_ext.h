@@ -167,6 +167,7 @@ enum ExtValueId {
 	ValueVultureLaunchPos,
 	ValueStaggerWeaponId,
 	ValueStaggerCount,
+	ValueNathreliskCloud,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

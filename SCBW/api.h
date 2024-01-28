@@ -817,4 +817,5 @@ namespace scbw
 	bool unit_can_fire_secondary_weapon(Unit* unit);
 	void select(std::vector<Unit*>& units);
 	u32 get_manual_weapon_id_sound(u32 weapon_id);
+	bool unit_regenerates_hp(Unit* unit);
 }

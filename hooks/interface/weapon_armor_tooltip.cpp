@@ -396,6 +396,7 @@ namespace hooks
 		add_status(statuses, "Terminal Surge", -1, 1, unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
 		add_status(statuses, "Crisis of Faith", -1, 1, unit_ext->timers[TimerDemiurgeWorship], TimerType::Gptp);
 		add_status(statuses, "Stellar Enforcement", -1, 1, unit_ext->timers[TimerStellarEnforcement], TimerType::Gptp);
+		add_status(statuses, "Adrenal Frenzy", -1, 1, unit_ext->timers[TimerZergAdrenalFrenzy], TimerType::Gptp);
 		add_status(statuses, "Caustic Discharge", -1, 1, unit_ext->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
 		add_status(statuses, "Incubating", -1, 1, unit_ext->timers[TimerIncubationArm], TimerType::Gptp);
 		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);

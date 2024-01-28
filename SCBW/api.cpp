@@ -3733,4 +3733,12 @@ namespace scbw {
 			}
 		}
 	}
+
+	bool unit_regenerates_hp(Unit* unit)
+	{
+		UnitExt* unit_ext = get_unit_ext(unit);
+		return units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP
+			|| unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]
+			|| unit_ext->values[ValueNathreliskCloud];
+	}
 }
