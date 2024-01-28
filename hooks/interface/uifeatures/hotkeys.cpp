@@ -116,7 +116,7 @@ void update_hotkeys() {
 			if (ev.key == VK_F4 && ev.alt_held) {
 
 			}
-			if (ev.key >= VK_F1 && ev.key <= VK_F12) {
+			if (ev.key >= VK_F1 && ev.key <= VK_F1 + CameraCap) {
 				Point16& screen = hotkeys.screens[ev.key - VK_F1];
 				if (ev.control_held || ev.shift_held) {
 					screen.x = *g_move_to_x;
