@@ -832,6 +832,30 @@ namespace hooks {
 							} break;
 							case UnitId::TerranCaptaincy: {
 								switch (current_button->requirement_var) {
+									case UnitId::TerranApostle:
+									{
+										if (globals.players[unit->player].faction != Faction_TerranHecatonCoalition) {
+											if (scbw::unit_queue_full(unit) || is_adding_on || in_air) {
+												current_button_state = Button_State::Invisible;
+											} else {
+												current_button_state = Button_State::Enabled;
+											}
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::TerranAuriel:
+									{
+										if (globals.players[unit->player].faction == Faction_TerranHecatonCoalition) {
+											if (scbw::unit_queue_full(unit) || is_adding_on || in_air) {
+												current_button_state = Button_State::Invisible;
+											} else {
+												current_button_state = Button_State::Enabled;
+											}
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
 									case UnitId::TerranSiren:
 									case UnitId::TerranStriga: {
 										if (!scbw::all_selected_units_have_addon(UnitId::TerranTinkerersTower) || scbw::unit_queue_full(unit))
@@ -1781,6 +1805,11 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranAuriel: {
+									if (current_button->icon_id == IconId::FlyerAttack) { // Auriel - Incineration
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranHotshot:
 								case UnitId::TerranSiren: {
 									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon		// Siren - Prolonged Arms
@@ -1811,7 +1840,7 @@ namespace hooks {
 									if (current_button->icon_id == IconId::DefensiveMatrix) { // Sevenstep - Curtain Call
 										current_button_state = Button_State::Enabled;
 									}
-								}
+								} break;
 								case UnitId::TerranLobotomyMine: {
 									if (current_button->icon_id == IconId::UseSpiderMines) { // Lobotomy Mine - Dazing Detonation
 										current_button_state = Button_State::Enabled;

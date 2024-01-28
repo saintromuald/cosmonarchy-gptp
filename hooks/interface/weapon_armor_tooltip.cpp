@@ -386,6 +386,7 @@ namespace hooks
 		add_status(statuses, "Controlled Demolition", -1, 1, unit_ext->timers[TimerControlledDemolition], TimerType::Gptp);
 		add_status(statuses, "Emergency Detonation", -1, 1, unit_ext->timers[TimerEmergencyDetonation], TimerType::Gptp);
 		add_status(statuses, "Ion Field", -1, 1, unit_ext->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
+		add_status(statuses, "Incinerating", -1, 1, unit_ext->timers[TimerAurielIncineration], TimerType::Gptp);
 		add_status(statuses, "Lobotomized", -1, 1, unit_ext->timers[TimerLobotomySlow], TimerType::Gptp);
 		add_status(statuses, "Kelvin Munitions", -1, 1, unit_ext->timers[TimerKelvinMunitions], TimerType::Gptp);
 		add_status(statuses, "Hallucinating", -1, 1, unit_ext->timers[TimerHallucinating], TimerType::Gptp);

@@ -3049,6 +3049,26 @@ namespace hooks {
 			}
 		}
 
+		// Auriel - Incineration
+		{
+			u32 image_id = ImageId::HarakanApollyoidAdhesiveOverlay;
+			if (unit_ext->timers[TimerAurielIncineration] >= 1) {
+				if (!unit->sprite->get_overlay(image_id)) {
+					scbw::add_unit_overlay(unit, image_id);
+				}
+				if (!unit_ext->timers[TimerAurielIncinerationDamagePeriod]) {
+					unit_ext->timers[TimerAurielIncinerationDamagePeriod] = 6;
+				}
+				if (unit_ext->timers[TimerAurielIncinerationDamagePeriod] == 1) {
+					unit->damage_with_custom(256);
+				}
+
+			}
+			if (unit_ext->timers[TimerAurielIncineration] == 1) {
+				scbw::remove_unit_overlay(unit, image_id);
+			}
+		}
+
 		// Clear speed buffs for currently-moving flingy units. -Pr0nogo
 		if (unit_ext->timers[TimerTerminalSurge] == 1 || unit_ext->timers[TimerCausticDischargeSpeed] == 1)
 		{

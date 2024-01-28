@@ -2594,6 +2594,7 @@ namespace scbw {
 			{
 				return 5;
 			}
+			case WeaponId::AurielQuarternaryRifle:
 			case WeaponId::HypnagogueKaleidoscopeCannon:
 			case WeaponId::VultureFragmentationGrenade:
 			case WeaponId::PazuzuJupiterDriver:

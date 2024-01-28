@@ -269,10 +269,21 @@ namespace hooks {
 				} break;
 				case UnitId::TerranMadcap:
 				case UnitId::TerranHeracles:
-				case UnitId::TerranApostle:
 				case UnitId::TerranTinkerersTower:
 				{
 					return true;
+				} break;
+				case UnitId::TerranApostle:
+				{
+					if (faction != Faction_TerranHecatonCoalition) {
+						return true;
+					}
+				} break;
+				case UnitId::TerranAuriel:
+				{
+					if (faction == Faction_TerranHecatonCoalition) {
+						return true;
+					}
 				} break;
 				case UnitId::TerranSiren:
 				case UnitId::TerranStriga:
@@ -1747,13 +1758,34 @@ namespace hooks {
 					}
 					case UnitId::TerranMadcap:
 					case UnitId::TerranHeracles:
-					case UnitId::TerranApostle:
 					{
 						if (in_air)
 						{
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
+					}
+					case UnitId::TerranApostle:
+					{
+						if (faction != Faction_TerranHecatonCoalition) {
+							if (in_air)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranAuriel:
+					{
+						if (faction == Faction_TerranHecatonCoalition) {
+							if (in_air)
+							{
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
 					}
 					case UnitId::TerranSiren:
 					case UnitId::TerranStriga:

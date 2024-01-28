@@ -202,6 +202,11 @@ void unit_on_death_behaviors(Unit* unit) {
 		} break;
 	}
 
+	if (unit_ext->timers[TimerAurielIncineration] >= 1) {
+		iquare_globals.create_effect(EffectId_SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext->values[ValueAurielIncinerationPlayer], 0);
+		unit_ext->timers[TimerAurielIncineration] = 0;
+	}
+
 	// These require the unit to be completed
 	if (unit->status & UnitStatus::Completed) {
 		switch (unit->id) {

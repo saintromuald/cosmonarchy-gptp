@@ -413,13 +413,18 @@ namespace hooks
 
 		// No attacker here
 		switch (data.weapon_id) {
+			case WeaponId::AurielQuarternaryRifle:
+			{
+				target_ext->values[ValueAurielIncinerationPlayer] = data.attacking_player_id;
+				target_ext->timers[TimerAurielIncineration] = 2 * 24 + 1;
+			} break;
 			case WeaponId::WendigoFusionSaw:
 			{
 				target_ext->values[ValueWendigoShatteredWindsStacks]++;
 				target_ext->timers[TimerWendigoShatteredWinds] = 2 * 24 + 1;
 			} break;
 			case WeaponId::LegionnairePhaseSpear: {
-				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
+				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1;
 			} break;
 			case WeaponId::GladiusPlasmaFlurry: {
 				if (target_ext->timers[TimerBindingPlasma]) {

@@ -96,6 +96,7 @@ namespace UnitId
 		TerranZergMeleeHybrid								= 349,
 		TerranHotshot										= 395,
 		TerranQilin											= 398,
+		TerranAuriel										= 399,
 
 	// Terran-Building
 		TerranVestry										= 119,		// Starbase / Terran Unused 1
