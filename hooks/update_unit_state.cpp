@@ -323,11 +323,8 @@ namespace hooks
 			// Passive HP regeneration
 			if (scbw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw())
 			{
-				u32 factor = 0;
+				u32 factor = scbw::get_regeneration_factor(unit);
 				if (unit_ext->damage_taken_timer > 2 * 24) {
-					factor++;
-				}
-				if (unit_regens_in_combat(unit)) {
 					factor++;
 				}
 

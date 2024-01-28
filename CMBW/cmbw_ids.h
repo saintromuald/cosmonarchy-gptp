@@ -37,7 +37,6 @@ bool unit_id_is_minerals(u16 unit_id);
 bool unit_id_is_zerg_supply(u16 unit_id);
 
 // TODO: maybe move to cmbw_behaviors? or cmbw_utils?
-bool unit_regens_in_combat(Unit* unit);
 bool unit_paths_over_small_units(Unit* unit);
 bool unit_collides_with_titanic(Unit* unit);
 
