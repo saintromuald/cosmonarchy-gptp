@@ -1051,7 +1051,9 @@ namespace hooks {
 		// Fixes first attack from Paladin (and maybe other units) aiming upwards
 		unit->velocity_direction_2 = unit->velocity_direction_1;
 
-		unit_ext->values[ValuePlayerColor] = player_data.player_color_list[unit->player];
+		if (unit->player < PlayerLimit) {
+			unit_ext->values[ValuePlayerColor] = player_data.player_color_list[unit->player];
+		}
 	}
 
 	void tick_unit(Unit* unit, bool unit_is_hidden) {
