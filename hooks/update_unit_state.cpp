@@ -1095,7 +1095,6 @@ namespace hooks
 
 			if (unit->sprite) {
 				helper::sprite_to_iscript_loop(unit->sprite);
-
 				if (!unit->sprite->images.head) {
 					unit->sprite = 0;
 				}
@@ -1140,6 +1139,11 @@ namespace hooks
 			helper::update_building_construct_shields_amount(unit);
 			helper::apply_speed_upgrade_from_unit_type(unit);
 			unit->update_speed();
+
+			// Preserve player color from unit transforms, even after the player leaves or is defeated. -Pr0nogo
+			// TODO: Find out how to assign player color to a sprite.
+		//	UnitExt* unit_ext = get_unit_ext(unit);
+		//	unit_ext->values[ValuePlayerColor];
 			return true;
 		}
 		*g_active_iscript_unit = old_active_iscript_unit;

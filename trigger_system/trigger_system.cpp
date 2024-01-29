@@ -1116,6 +1116,43 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 				unit->remove();
 			}
+		} else if (parser_eq(&parser, "set_unit_stat")) {
+			Area area = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+			u32 count = parser_get_s32(&parser);
+			TriggerStat trigger_stat = (TriggerStat)parser_get_enum(&parser, trigger_stat_names, ARRAY_SIZE(trigger_stat_names));
+			s32 stat_amount = parser_get_s32(&parser); // We should separately make "modify_unit_stat" and have operator parsing for stat amount. -Pr0nogo
+
+			EntryArray units = {};
+			unit_search_rect(&units, area.box);
+
+			u32 unit_count = 0;
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Point16 position = unit->position;
+				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				if (count && unit_count >= count) {
+					return true; // @Veeq7 is this a proper exit procedure? -Pr0nogo
+				}
+				unit_count++;
+
+				switch (trigger_stat) {
+					case TriggerStat_Armor:
+					{
+						unit_ext->values[ValueTriggerArmorBase] = stat_amount;
+					} break;
+				}
+			}
 		} else if (parser_eq(&parser, "var") || parser_eq(&parser, "timer")) {
 			bool is_timer = parser_eq(&parser, "timer");
 			TriggerVarType var_type = is_timer ? TriggerVarType_Timer : TriggerVarType_Var;

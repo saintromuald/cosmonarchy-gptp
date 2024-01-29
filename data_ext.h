@@ -168,6 +168,7 @@ enum ExtValueId {
 	ValueStaggerWeaponId,
 	ValueStaggerCount,
 	ValueNathreliskCloud,
+	ValueTriggerArmorBase,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

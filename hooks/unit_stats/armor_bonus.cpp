@@ -33,6 +33,11 @@ namespace hooks
 		s32 armor = units_dat::armor_amount[unit->id] + get_armor_bonus(unit);
 		UnitExt* unit_ext = get_unit_ext(unit);
 
+		// Override base armor
+		if (unit_ext->values[ValueTriggerArmorBase]) {
+			armor = unit_ext->values[ValueTriggerArmorBase];
+		}
+
 		// Armor rends
 		armor -= unit_ext->values[ValueApollyoidAdhesiveStacks];
 		armor -= unit_ext->values[ValueAutocratControlledOppositionStacks];

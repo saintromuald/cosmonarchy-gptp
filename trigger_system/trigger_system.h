@@ -159,6 +159,18 @@ struct Globals {
 	AdvisorState advisor_state;
 };
 
+enum TriggerStat : u8 {
+	TriggerStat_Armor,
+
+	TriggerStat_Count,
+};
+
+
+static const char* trigger_stat_names[] = {
+	"armor",
+};
+C_ASSERT(ARRAY_SIZE(trigger_stat_names) == TriggerStat_Count);
+
 extern Globals globals;
 
 void init_trigger_system();

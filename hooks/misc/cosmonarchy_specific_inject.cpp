@@ -534,7 +534,7 @@ namespace hooks
 					"\nElapsed time: " << *g_elapsed_time_frames << " | Last random number: " << *g_last_random_number <<
 					"\nActive visions: " << *g_player_visions << " | Explored visions: " << *g_player_explored_visions <<
 					"\nMap dimensions: " << g_map_tile_size->width << "x" << g_map_tile_size->height <<
-					"\nCurrent hash offset: " << *g_current_hash_offset << " | g_region_vision_hash: " << *g_region_vision_hash << 
+					"\nCurrent hash offset: " << *g_current_hash_offset << " | g_region_vision_hash: " << (u32)*g_region_vision_hash << 
 					"\n";
 				GPTP::critical_logger << "Active tile array:\n";
 				for (u32 y = 0; y < g_map_tile_size->height; y++) {
