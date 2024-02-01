@@ -1,20 +1,20 @@
 #include "color_palette.h"
 
 Recolor default_recolor() {
-	Recolor recolor = {};
-	recolor.r = 1;
-	recolor.g = 1;
-	recolor.b = 1;
-	recolor.gamma = 1;
-	recolor.saturation = 1;
-	return recolor;
+	return {
+		.r = 1,
+		.g = 1,
+		.b = 1,
+		.gamma = 1,
+		.saturation = 1,
+	};
 }
 
 RecolorSet default_recolor_set() {
-	RecolorSet set = {};
-	set.count = 1;
-	set.recolors[0] = default_recolor();
-	return set;
+	return {
+		.count = 1,
+		.recolors = { default_recolor(), },
+	};
 }
 
 // Todo: move those static functions to maths file
