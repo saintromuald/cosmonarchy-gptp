@@ -10,13 +10,15 @@ f32 lerp(f32 t, f32 a, f32 b) {
 	return a * (1 - t) + b * t;
 }
 
-f32 ease_in_out(f32 t) {
-	f32 ease_in = t * t;
-	f32 ease_out = 1 - (1 - t) * (1 - t);
-	return lerp(t, ease_in, ease_out);
+f32 ease_in(f32 t) {
+	return t * t;
 }
 
-f32 smoothstep(f32 t, f32 a, f32 b) {
-	return lerp(ease_in_out(t), a, b);
+f32 ease_out(f32 t) {
+	return 1 - (t - 1) * (t - 1);
+}
+
+f32 ease_in_out(f32 t) {
+	return lerp(t, ease_in(t), ease_out(t));
 }
 

@@ -29,6 +29,7 @@ static const char* race_names[] = {
 	"Terran",
 };
 
+// TODO: Move to Globals (or new global struct if need be)
 extern bool trigger_game_paused;
 extern bool trigger_system_init;
 extern bool trigger_system_in_game;
@@ -40,6 +41,7 @@ extern u32 sprite_replacements_count;
 extern SpriteReplacement sprite_replacements[SpriteReplacementCap];
 
 extern Token custom_unit_names[PlayerLimit][UnitId::Count];
+// END TODO
 
 enum WitnessMode: u8 {
 	WitnessMode_Disabled = 0,   // Normal Player

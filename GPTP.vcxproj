@@ -295,6 +295,7 @@
     <ClCompile Include="hooks\orders\orders_root_inject.cpp" />
     <ClCompile Include="hooks\update_unit_sight.cpp" />
     <ClCompile Include="hooks\update_unit_sight_inject.cpp" />
+    <ClCompile Include="maths.cpp" />
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="SCBW\extender\TileHeight_extender.cpp" />
     <ClCompile Include="SCBW\ExtendSightLimit.cpp" />
@@ -645,6 +646,7 @@
     <ClInclude Include="hooks\orders\orders_root.h" />
     <ClInclude Include="DatExtend\dat_limits.h" />
     <ClInclude Include="hooks\update_unit_sight.h" />
+    <ClInclude Include="maths.h" />
     <ClInclude Include="req_table.h" />
     <ClInclude Include="SCBW\enumerations\PortraitId.h" />
     <ClInclude Include="SCBW\extender\TileHeight_extender.h" />
