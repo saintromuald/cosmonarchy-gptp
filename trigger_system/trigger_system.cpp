@@ -1142,15 +1142,141 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					continue;
 				}
 				if (count && unit_count >= count) {
-					return true; // @Veeq7 is this a proper exit procedure? -Pr0nogo
+					return true;
 				}
 				unit_count++;
 
 				switch (trigger_stat) {
 					case TriggerStat_Armor:
 					{
-						unit_ext->values[ValueTriggerArmorBase] = stat_amount;
+						unit_ext->values[ValueTriggerArmorBaseSet] = 1;
+						unit_ext->values[ValueTriggerArmorBaseAmount] = stat_amount;
 					} break;
+					case TriggerStat_WeaponRange:
+					{
+						unit_ext->values[ValueTriggerWeaponRangeBaseSet] = 1;
+						unit_ext->values[ValueTriggerWeaponRangeBaseAmount] = stat_amount;
+					} break;
+					case TriggerStat_ArmorPenetration:
+					{
+						unit_ext->values[ValueTriggerArmorPenBaseSet] = 1;
+						unit_ext->values[ValueTriggerArmorPenBaseAmount] = stat_amount;
+					} break;
+					case TriggerStat_Damage:
+					{
+						unit_ext->values[ValueTriggerDamageBaseSet] = 1;
+						unit_ext->values[ValueTriggerDamageBaseAmount] = stat_amount * 256;
+					} break;
+					case TriggerStat_SplashInner:
+					{
+						unit_ext->values[ValueTriggerWeaponSplashInnerSet] = 1;
+						unit_ext->values[ValueTriggerWeaponSplashInnerAmount] = stat_amount;
+					} break;
+					case TriggerStat_SplashMedium:
+					{
+						unit_ext->values[ValueTriggerWeaponSplashMediumSet] = 1;
+						unit_ext->values[ValueTriggerWeaponSplashMediumAmount] = stat_amount;
+					} break;
+					case TriggerStat_SplashOuter:
+					{
+						unit_ext->values[ValueTriggerWeaponSplashOuterSet] = 1;
+						unit_ext->values[ValueTriggerWeaponSplashOuterAmount] = stat_amount;
+					} break;
+					case TriggerStat_TimedLife:
+					{
+						unit->remove_timer = (u16)(stat_amount / 42) + 0.5f;
+					} break;
+				}
+			}
+		} else if (parser_eq(&parser, "set_unit_behavior")) {
+			Area area = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+			u32 count = parser_get_s32(&parser);
+			TriggerBehavior trigger_behavior = (TriggerBehavior)parser_get_enum(&parser, trigger_behavior_names, ARRAY_SIZE(trigger_stat_names));
+			b32 enable = parser_get_s32(&parser);
+
+			EntryArray units = {};
+			unit_search_rect(&units, area.box);
+
+			u32 unit_count = 0;
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Point16 position = unit->position;
+				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				if (count && unit_count >= count) {
+					return true;
+				}
+				unit_count++;
+
+				switch (trigger_behavior) {
+					case TriggerBehavior_CloakProximity:
+					{
+						unit_ext->values[ValueTriggerBehaviorProximityCloak] = enable;
+					} break;
+					case TriggerBehavior_CloakSteady:
+					{
+						unit_ext->values[ValueTriggerBehaviorSteadyShroud] = enable;
+					} break;
+					case TriggerBehavior_Hallucination:
+					{
+						if (enable && !(unit->status & UnitStatus::IsHallucination)) {
+							unit->status |= UnitStatus::IsHallucination;
+						} else if (!enable && unit->status & UnitStatus::IsHallucination) {
+							unit->status &= ~UnitStatus::IsHallucination;
+						}
+					} break;
+				}
+			}
+		} else if (parser_eq(&parser, "move_unit")) {
+			Area area_init = parser_get_area(&parser);
+			Area area_dest = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+			u32 count = parser_get_s32(&parser);
+			b32 overlay = parser_get_s32(&parser);
+
+			EntryArray units = {};
+			unit_search_rect(&units, area_init.box);
+
+			Point16 dest = { area_dest.box.left + ((area_dest.box.right - area_dest.box.left) / 2), area_dest.box.top + ((area_dest.box.bottom - area_dest.box.top) / 2) };
+
+			u32 unit_count = 0;
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Point16 position = unit->position;
+				if (!check_area(area_init, position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				if (count && unit_count >= count) {
+					return true;
+				}
+				unit_count++;
+				Point16 origin = unit->position;
+				if (!scbw::teleport_to_point(unit, dest)) {
+					scbw::printf("move_unit: Failed to move unit with id %u to coordinates %u, %u", unit->id, dest.x, dest.y);
+				}
+				if (overlay) {
+					if (!unit->get_overlay(ImageId::LegionnaireTeleportEffect)) {
+						helper::create_thingy(SpriteId::LegionnaireTeleportEffect, origin.x, origin.y, unit->player);
+						scbw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
+					}
 				}
 			}
 		} else if (parser_eq(&parser, "var") || parser_eq(&parser, "timer")) {

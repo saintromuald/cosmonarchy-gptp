@@ -790,7 +790,11 @@ namespace hooks
 			unit->status |= UnitStatus::Completed;
 		}
 		helper::increment_unit_scores_ex(unit, 1, 1);
-		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak)
+
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak
+		||	unit_ext->values[ValueTriggerBehaviorProximityCloak]
+		||	unit_ext->values[ValueTriggerBehaviorSteadyShroud])
 		{
 			u32 sound_id = scbw::get_cloak_sound_id(unit);
 			helper::begin_cloak(unit, sound_id);

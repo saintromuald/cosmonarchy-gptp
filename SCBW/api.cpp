@@ -1140,6 +1140,10 @@ namespace scbw {
 		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak) {
 			return true;
 		}
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueTriggerBehaviorSteadyShroud]) {
+			return true;
+		}
 		return unit->status & UnitStatus::CloakingForFree; // Didact
 	}
 
@@ -1148,6 +1152,10 @@ namespace scbw {
 			return false;
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && unit_id_has_proximity_cloak(unit->id)) {
+			return true;
+		}
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueTriggerBehaviorProximityCloak]) {
 			return true;
 		}
 		return false;

@@ -17,7 +17,7 @@ char buffer[256];
 
 // Returns the C-string for the tooltip text of the unit's weapon grp_frame.
 // This function is used for weapon icons and special icons.
-// Precondition: @p entryStrIndex is a stat_txt.tbl string index.
+// Precondition: @p entry_string_index is a stat_txt.tbl string index.
 #include "SCBW/stat_txt_spec.h"
 #include <iomanip>
 
@@ -68,18 +68,23 @@ void append_tooltip_value(std::string& text, f32 value, f32 bonus, bool extended
 	text += BWTC_RESET;
 }
 
-const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrIndex) {
+const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string_index) {
 	const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
 	bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
 
 	// Get game strings
-	const char* entry_name = g_stat_txt_tbl_new->get_string(entryStrIndex);
+	const char* entry_name = g_stat_txt_tbl_new->get_string(entry_string_index);
 	const char* damage_string = g_stat_txt_tbl_new->get_string(777);					//"Damage:"
+
+	UnitExt* unit_ext = get_unit_ext(unit);
 
 	u8 damage_factor = scbw::get_damage_factor_for_tooltip(weapon_id, unit);
 	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
 	u8 damage_type = weapons_dat::damage_type[weapon_id];
 	u32 base_damage = weapons_dat::damage_amount[weapon_id];
+	if (unit_ext->values[ValueTriggerDamageBaseSet]) {
+		base_damage = unit_ext->values[ValueTriggerDamageBaseAmount] / 256;
+	}
 	u32 armor_pen = weapons_dat::armor_pen[weapon_id];
 	s32 bonus_armor_pen = hooks::get_modified_armor_pen(unit, 0, weapon_id);
 	if (bonus_armor_pen < 0) {
@@ -300,7 +305,9 @@ namespace hooks
 		if (bonus_armor < 0) {
 			bonus_armor = 0;
 		}
-		bonus_armor -= base_armor;
+		if (!unit_ext->values[ValueTriggerArmorBaseSet]) {
+			bonus_armor -= base_armor;
+		}
 		return bonus_armor;
 	}
 
@@ -414,7 +421,13 @@ namespace hooks
 		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0, 0);
 		add_status(statuses, "Decaying", unit_ext->values[ValueDecaying], 1);
-		add_status(statuses, "Chosen Armor", unit_ext->values[ValueTriggerArmorBase]);
+		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
+		add_status(statuses, "Decided Reach", unit_ext->values[ValueTriggerWeaponRangeBaseAmount] / 32);
+		add_status(statuses, "Decided Piercing", unit_ext->values[ValueTriggerArmorPenBaseAmount]);
+		add_status(statuses, "Decided Damage", unit_ext->values[ValueTriggerDamageBaseAmount] / 256);
+		add_status(statuses, "Decided Collateral (Inner)", unit_ext->values[ValueTriggerWeaponSplashInnerAmount] / 32);
+		add_status(statuses, "Decided Collateral (Medium)", unit_ext->values[ValueTriggerWeaponSplashMediumAmount] / 32);
+		add_status(statuses, "Decided Collateral (Outer)", unit_ext->values[ValueTriggerWeaponSplashOuterAmount] / 32);
 
 		// GPTP Value - Gimmicked
 		add_status(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);

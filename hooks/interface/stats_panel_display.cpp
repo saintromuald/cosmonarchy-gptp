@@ -498,8 +498,15 @@ namespace hooks
 	// Hooked to draw new values to icons. - Pr0nogo
 	void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, u8 weapon_id) // 00425790
 	{
-		u32 active_player = (*g_active_portrait_unit)->player;
-		u16 damage_value = weapons_dat::damage_amount[weapon_id] * scbw::get_damage_factor_for_tooltip(weapon_id, *g_active_portrait_unit); // TODO: calculate current damage using g_active_portrait_unit
+		Unit* unit = *g_active_portrait_unit;
+		UnitExt* unit_ext = get_unit_ext(unit);
+		u32 active_player = unit->player;
+
+		u32 damage = weapons_dat::damage_amount[weapon_id];	// TODO: calculate current damage using g_active_portrait_unit
+		if (unit_ext->values[ValueTriggerDamageBaseSet]) {
+			damage = unit_ext->values[ValueTriggerDamageBaseAmount] / 256;
+		}
+		u16 damage_value = damage * scbw::get_damage_factor_for_tooltip(weapon_id, unit);
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", damage_value);
 
 		BinDlg* dialog_var = dialog;
@@ -548,8 +555,14 @@ namespace hooks
 	void stats_shield_level(BinDlg* dialog, u16 status_screen_index) // 00425510
 	{
 		BinDlg* dialog_var = dialog;
-		Unit* portrait_unit = *g_active_portrait_unit;
-		u32 armor_value = units_dat::armor_amount[portrait_unit->id] + get_bonus_armor(portrait_unit, units_dat::armor_amount[portrait_unit->id]);
+		Unit* unit = *g_active_portrait_unit;
+		UnitExt* unit_ext = get_unit_ext(unit);
+
+		u32 base_armor = units_dat::armor_amount[unit->id];
+		if (unit_ext->values[ValueTriggerArmorBaseSet]) {
+			base_armor = unit_ext->values[ValueTriggerArmorBaseAmount];
+		}
+		u32 armor_value = base_armor + get_bonus_armor(unit, units_dat::armor_amount[unit->id]);
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", armor_value);
 
 		if (dialog_var->control_type)

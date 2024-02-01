@@ -1206,17 +1206,15 @@ namespace scbw
 		UnitExt* unit_ext = get_unit_ext(unit);
 		f64 self_damage = (unit_ext->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::damage_amount[weapon_id] * 256.0));
 		Unit* deconstruction_target = unit;
-		if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
 			deconstruction_target = unit_ext->units[UnitTurretParentLink]; // TODO: port as unit
-			if (!deconstruction_target)
-			{
+			if (!deconstruction_target) {
 				return;
 			}
 		}
+		unit_ext->values[ValueTakingDeconstructionDamage] = true;
 		hooks::weapon_damage(self_damage, deconstruction_target, weapon_id, deconstruction_target, deconstruction_target->player, 0, 1);
-		if (play_sound)
-		{
+		if (play_sound) {
 			helper::play_sound_from_unit(SoundId::PazuzuDeconstructionDamage, unit, 1, 0);
 		}
 	}

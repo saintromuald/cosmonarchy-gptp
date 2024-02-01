@@ -795,6 +795,8 @@ namespace SpriteId
 
 		AprilFools_Quazilisk		= 879,
 
+		LegionnaireTeleportEffect	= 893,
+
 		// CORPSE \\
 			
 		Corpse_Aspirant				= 685,

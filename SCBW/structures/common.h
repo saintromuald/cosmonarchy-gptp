@@ -1,4 +1,4 @@
-//Based on BWAPI's BW/Position.h
+// Based on BWAPI's BW/Position.h
 
 #pragma once
 #include "../../types.h"
@@ -96,12 +96,5 @@ C_ASSERT(sizeof(Vector32) == 8);
 C_ASSERT(sizeof(Box16) == 8);
 C_ASSERT(sizeof(Box32) == 16);
 C_ASSERT(sizeof(Bounds) == 12);
-
-//static_assert(sizeof(Point8)  == 2,   "The count of the Point8 structure is invalid");
-//static_assert(sizeof(Point16) == 4,   "The count of the Point16 structure is invalid");
-//static_assert(sizeof(Point32) == 8,   "The count of the Point32 structure is invalid");
-//static_assert(sizeof(Box16)   == 8,   "The count of the Box16 structure is invalid");
-//static_assert(sizeof(Box32)   == 16,  "The count of the Box32 structure is invalid");
-//static_assert(sizeof(Bounds) == 12, "The count of the Bounds structure is invalid");
 
 #pragma pack()

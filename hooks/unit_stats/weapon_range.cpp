@@ -32,6 +32,9 @@ namespace hooks
 		}
 
 		u32 final_range = units_dat::seek_range[unit->id];
+		if (unit_ext->values[ValueTriggerWeaponRangeBaseSet]) {
+			final_range = unit_ext->values[ValueTriggerWeaponRangeBaseAmount];
+		}
 		if (target && target->status & UnitStatus::InAir) {
 			u32 weapon_id = unit->get_air_weapon();
 			if (unit_id_has_custom_air_weapon(unit->id)) {
@@ -86,6 +89,11 @@ namespace hooks
 			return std::min((s32)weapons_dat::max_range[weapon_id], 64);
 		}
 
-		return weapons_dat::max_range[weapon_id] * scale + bonus_amount;
+		u32 final_range = weapons_dat::max_range[weapon_id];
+		if (unit_ext->values[ValueTriggerWeaponRangeBaseSet]) {
+			final_range = unit_ext->values[ValueTriggerWeaponRangeBaseAmount];
+		}
+
+		return final_range * scale + bonus_amount;
 	}
 }

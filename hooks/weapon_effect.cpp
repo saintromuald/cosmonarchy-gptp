@@ -47,6 +47,11 @@ namespace hooks {
 		if (!bullet) {
 			return;
 		}
+
+		s16 inner = weapons_dat::inner_splash_radius[weapon_id];
+		s16 medium = weapons_dat::medium_splash_radius[weapon_id];
+		s16 outer = weapons_dat::outer_splash_radius[weapon_id];
+
 		Point16 pos = bullet->sprite->position;
 		Unit* unit = bullet->source_unit;
 		if (unit && unit->sprite) {
@@ -73,11 +78,17 @@ namespace hooks {
 					iquare_globals.create_effect(EffectId_KeskathalorCausticDischarge, 5 * 24, {pos.x, pos.y}, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->player, unit);
 				} break;
 			}
-		}
 
-		s16 inner = weapons_dat::inner_splash_radius[weapon_id];
-		s16 medium = weapons_dat::medium_splash_radius[weapon_id];
-		s16 outer = weapons_dat::outer_splash_radius[weapon_id];
+			if (bullet_source_ext->values[ValueTriggerWeaponSplashInnerSet]) {
+				inner = bullet_source_ext->values[ValueTriggerWeaponSplashInnerAmount];
+			}
+			if (bullet_source_ext->values[ValueTriggerWeaponSplashMediumSet]) {
+				medium = bullet_source_ext->values[ValueTriggerWeaponSplashMediumAmount];
+			}
+			if (bullet_source_ext->values[ValueTriggerWeaponSplashOuterSet]) {
+				outer = bullet_source_ext->values[ValueTriggerWeaponSplashOuterAmount];
+			}
+		}
 
 		if (guaranteed_hit) {
 			helper::weapon_bullet_shot(guaranteed_hit, bullet, 1);
@@ -296,43 +307,43 @@ namespace hooks {
 			return;
 		}
 		s16 radius = weapons_dat::outer_splash_radius[weapon_id];
-		Sprite* bulletSprite = bullet->sprite;
-		s16 posX = bulletSprite->position.x;
-		s16 posY = bulletSprite->position.y;
+		Sprite* bullet_sprite = bullet->sprite;
+		s16 pos_x = bullet_sprite->position.x;
+		s16 pos_y = bullet_sprite->position.y;
 		s32 list;
 		Box16* search_radius = {};
 
 		*g_air_splash_list_count = 0;
-		search_radius->left = posX - radius;
-		search_radius->top = posY - radius;
-		search_radius->right = radius + posX;
-		search_radius->bottom = radius + posY;
+		search_radius->left = pos_x - radius;
+		search_radius->top = pos_y - radius;
+		search_radius->right = radius + pos_x;
+		search_radius->bottom = radius + pos_y;
 
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
 		r = weapons_dat::outer_splash_radius[weapon_id];
 		// Get units within the outer splash radius
-		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
+		scbw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
 
 		carapace_swarm_damage(x, y, r, bullet, weapon_id);
 
 		s32 result;
-		for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
+		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++)
 		{
 			// air_splash_proc
-			s8 weaponIdLoop;
-			s32 listCount;
-			Unit* target = unitsInSplash.get_unit(i);
+			s8 weapon_id_loop;
+			s32 list_count;
+			Unit* target = units_in_splash.get_unit(i);
 
-			weaponIdLoop = bullet->weapon_id;
+			weapon_id_loop = bullet->weapon_id;
 			if (target != bullet->source_unit && (target->player != bullet->player || target == bullet->attack_target.unit))
 			{
-				if (scbw::can_weapon_target_unit(weaponIdLoop, target, target))
+				if (scbw::can_weapon_target_unit(weapon_id_loop, target, target))
 				{
-					if (helper::is_unit_distance_within(target, bullet, weapons_dat::outer_splash_radius[weaponIdLoop]))
+					if (helper::is_unit_distance_within(target, bullet, weapons_dat::outer_splash_radius[weapon_id_loop]))
 					{
-						if (helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weaponIdLoop])
+						if (helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weapon_id_loop])
 							&& target == bullet->attack_target.unit)
 						{
 							g_air_splash_list[0] = target;
@@ -340,9 +351,9 @@ namespace hooks {
 							*g_air_splash_list_count = 1;
 							break;
 						}
-						listCount = *g_air_splash_list_count;
+						list_count = *g_air_splash_list_count;
 						g_air_splash_list[*g_air_splash_list_count] = target;
-						*g_air_splash_list_count = listCount + 1;
+						*g_air_splash_list_count = list_count + 1;
 					}
 				}
 			}
@@ -350,12 +361,9 @@ namespace hooks {
 
 		if (g_air_splash_list_count)
 		{
-			if (*g_air_splash_list_count == 1)
-			{
+			if (*g_air_splash_list_count == 1) {
 				list = 0;
-			}
-			else
-			{
+			} else {
 				list = helper::randomize_short(58) % *g_air_splash_list_count;
 			}
 			helper::weapon_bullet_shot(target, bullet, (s32)g_air_splash_list[list]);

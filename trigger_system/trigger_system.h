@@ -161,6 +161,13 @@ struct Globals {
 
 enum TriggerStat : u8 {
 	TriggerStat_Armor,
+	TriggerStat_WeaponRange,
+	TriggerStat_ArmorPenetration,
+	TriggerStat_Damage,
+	TriggerStat_SplashInner,
+	TriggerStat_SplashMedium,
+	TriggerStat_SplashOuter,
+	TriggerStat_TimedLife,
 
 	TriggerStat_Count,
 };
@@ -168,8 +175,31 @@ enum TriggerStat : u8 {
 
 static const char* trigger_stat_names[] = {
 	"armor",
+	"weapon_range",
+	"armor_pen",
+	"damage",
+	"splash_inner",
+	"splash_medium",
+	"splash_outer",
+	"timed_life",
 };
 C_ASSERT(ARRAY_SIZE(trigger_stat_names) == TriggerStat_Count);
+
+enum TriggerBehavior : u8 {
+	TriggerBehavior_CloakProximity,
+	TriggerBehavior_CloakSteady,
+	TriggerBehavior_Hallucination,
+
+	TriggerBehavior_Count,
+};
+
+
+static const char* trigger_behavior_names[] = {
+	"cloak_proximity",
+	"cloak_steady",
+	"hallucination",
+};
+C_ASSERT(ARRAY_SIZE(trigger_behavior_names) == TriggerBehavior_Count);
 
 extern Globals globals;
 

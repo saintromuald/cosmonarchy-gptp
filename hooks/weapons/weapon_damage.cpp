@@ -172,6 +172,16 @@ namespace hooks
 		}
 
 		UnitExt* target_ext = get_unit_ext(data.target);
+		if (data.attacker) {
+			UnitExt* attacker_ext = get_unit_ext(data.attacker);
+			if (!attacker_ext->values[ValueTakingDeconstructionDamage] && attacker_ext->values[ValueTriggerDamageBaseSet] && weapon_id_procs_onhits(data.weapon_id)) {
+				data.damage = attacker_ext->values[ValueTriggerDamageBaseAmount];
+			}
+
+			if (data.attacker->status & UnitStatus::IsHallucination) {
+				data.damage /= 2;
+			}
+		}
 
 		// Ancile - Providence - Hitscan handling
 		switch (weapons_dat::behavior[data.weapon_id]) {
@@ -220,14 +230,8 @@ namespace hooks
 			scbw::spread_clarion_damage(data);
 		}
 
-		// Hallucinations deal half damage
-		if (data.attacker) {
-			if (data.attacker->status & UnitStatus::IsHallucination) {
-				data.damage /= 2;
-			}
-		}
-
-		// Minimum amount of damage that can be dealt
+		// Minimum amount of damage that can be dealt.
+		// @Veeq7 - should this be above the Ancile code, to prevent dealing less than 1 damage to Ancile energy? -Pr0nogo
 		if (data.damage < 256) {
 			data.damage = 256;
 		}
