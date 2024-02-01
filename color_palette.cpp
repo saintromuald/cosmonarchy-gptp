@@ -39,9 +39,15 @@ Recolor lerpn_recolor(f32 t, Recolor* recolors, u32 count) {
 	}
 	// Could potentially apply ease_in_out on t here (aka smoothstep),
 	// but unfortunately that also casues black pixels :(
-	u32 index = clamp(t * count, 0, count - 2);
-	t -= index * (1.0 / count);
-	t *= count;
+	u32 last = count - 1;
+	t = clamp(t, 0, 1);
+	t *= last;
+
+	u32 index = (u32)t;
+	if (index == last) {
+		return recolors[last];
+	}
+	t -= index;
 	return lerp_recolor(t, recolors[index], recolors[index + 1]);
 }
 

@@ -22,3 +22,6 @@ f32 ease_in_out(f32 t) {
 	return lerp(t, ease_in(t), ease_out(t));
 }
 
+f32 smoothstep(f32 t, f32 a, f32 b) {
+	return lerp(ease_in_out(t), a, b);
+}
