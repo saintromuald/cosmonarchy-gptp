@@ -64,11 +64,14 @@ static u8 mix_color(f32 base, f32 blend, f32 saturation, f32 brightness) {
 
 void set_palette_recolor(RecolorSet set) {
 	for (u32 i = 0; i < PaletteSize; ++i) {
-		f32 brightness = (init_palette->colors[i].r + init_palette->colors[i].g + init_palette->colors[i].b) / 3.0 / 255.0;
+		RGBA color = init_palette->colors[i];
+		f32 brightness = (color.r + color.g + color.b) / 3.0 / 255.0;
 		Recolor recolor = lerpn_recolor(brightness, set.recolors, set.count);
-		game_palette->colors[i].r = mix_color(init_palette->colors[i].r / 255.0, recolor.r * recolor.gamma, recolor.saturation, brightness);
-		game_palette->colors[i].g = mix_color(init_palette->colors[i].g / 255.0, recolor.g * recolor.gamma, recolor.saturation, brightness);
-		game_palette->colors[i].b = mix_color(init_palette->colors[i].b / 255.0, recolor.b * recolor.gamma, recolor.saturation, brightness);
+
+		RGBA* out = &game_palette->colors[i];
+		out->r = mix_color(color.r / 255.0, recolor.r * recolor.gamma, recolor.saturation, brightness);
+		out->g = mix_color(color.g / 255.0, recolor.g * recolor.gamma, recolor.saturation, brightness);
+		out->b = mix_color(color.b / 255.0, recolor.b * recolor.gamma, recolor.saturation, brightness);
 	}
 	helper::update_palette();
 }
