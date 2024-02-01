@@ -1,4 +1,5 @@
 #include "color_palette.h"
+#include "maths.h"
 
 Recolor default_recolor() {
 	return {
@@ -13,34 +14,16 @@ Recolor default_recolor() {
 RecolorSet default_recolor_set() {
 	return {
 		.count = 1,
-		.recolors = { default_recolor(), },
+		.recolors = { default_recolor() },
 	};
 }
 
-// Todo: move those static functions to maths file
-static f32 clamp(f32 value, f32 min, f32 max) {
-	if (value < min) return min;
-	if (value > max) return max;
-	return value;
-}
-
-static f32 lerp(f32 t, f32 a, f32 b) {
-	return a * (1 - t) + b * t;
-}
-
-static f32 smoothstep(f32 t, f32 a, f32 b) {
-	f32 ease_in = t * t;
-	f32 ease_out = 1 - (1 - t) * (1 - t);
-	f32 ease_in_out = lerp(t, ease_in, ease_out);
-	return lerp(ease_in_out, a, b);
-}
-
 Recolor lerp_recolor(f32 t, Recolor a, Recolor b) {
-	a.r          = smoothstep(t, a.r,			 b.r);
-	a.g          = smoothstep(t, a.g,			 b.g);
-	a.b          = smoothstep(t, a.b,			 b.b);
-	a.gamma      = smoothstep(t, a.gamma,		 b.gamma);
-	a.saturation = smoothstep(t, a.saturation,   b.saturation);
+	a.r          = lerp(t, a.r,			 b.r);
+	a.g          = lerp(t, a.g,			 b.g);
+	a.b          = lerp(t, a.b,			 b.b);
+	a.gamma      = lerp(t, a.gamma,		 b.gamma);
+	a.saturation = lerp(t, a.saturation,   b.saturation);
 	return a;
 }
 
@@ -51,6 +34,7 @@ Recolor lerpn_recolor(f32 t, Recolor* recolors, u32 count) {
 	if (count == 1) {
 		return recolors[0];
 	}
+	t = ease_in_out(t);
 	u32 index = clamp(t * count, 0, count - 2);
 	t -= index * (1.0 / count);
 	t *= count;
@@ -58,7 +42,7 @@ Recolor lerpn_recolor(f32 t, Recolor* recolors, u32 count) {
 }
 
 static u8 mix_color(f32 base, f32 blend, f32 saturation, f32 brightness) {
-	base = smoothstep(saturation, brightness, base);
+	base = lerp(saturation, brightness, base);
 	return clamp(base * blend, 0, 1) * 255;
 }
 
