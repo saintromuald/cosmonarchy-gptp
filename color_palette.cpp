@@ -19,6 +19,9 @@ RecolorSet default_recolor_set() {
 }
 
 Recolor lerp_recolor(f32 t, Recolor a, Recolor b) {
+	// Would use smoothstep, since it seems to produce better colors,
+	// but there seems to be a problem where sometimes essentially
+	// black pixels will be created :(, same thing for every lerp in the file
 	a.r          = lerp(t, a.r,			 b.r);
 	a.g          = lerp(t, a.g,			 b.g);
 	a.b          = lerp(t, a.b,			 b.b);
@@ -34,7 +37,8 @@ Recolor lerpn_recolor(f32 t, Recolor* recolors, u32 count) {
 	if (count == 1) {
 		return recolors[0];
 	}
-	t = ease_in_out(t);
+	// Could potentially apply ease_in_out on t here (aka smoothstep),
+	// but unfortunately that also casues black pixels :(
 	u32 index = clamp(t * count, 0, count - 2);
 	t -= index * (1.0 / count);
 	t *= count;
