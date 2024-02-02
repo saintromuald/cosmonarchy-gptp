@@ -734,13 +734,13 @@ void Unit::add_unit_energy_capped(u32 energy, u32 energyMax) {
 	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
 }
 
-// Identical to get_total_hp_plus_shields @ 00402710
+// Identical to get_max_vitality @ 00402710
 s32 Unit::get_total_hp_plus_shields() {
 	assert(this);
 	s32 id = this->id;
 	s32 shields = 0;
 	s32 hp = units_dat::max_hitpoints[id] >> 8;
-	if (units_dat::shields_enabled[id]) {
+	if (scbw::unit_has_shields(this)) {
 		shields = units_dat::max_shield_points[id];
 	}
 	if (!hp) {

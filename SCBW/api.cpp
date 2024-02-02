@@ -2435,7 +2435,7 @@ namespace scbw {
 				return;
 			}
 
-			if (units_dat::shields_enabled[unit->id] && unit->shields < units_dat::max_shield_points[unit->id] * 256) {
+			if (scbw::unit_has_shields(unit) && unit->shields < units_dat::max_shield_points[unit->id] * 256) {
 				// Shield check for default behavior
 				helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 				helper::add_overlay_below_main(heal_source->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
@@ -2444,7 +2444,7 @@ namespace scbw {
 				return;
 			}
 
-			if (units_dat::shields_enabled[unit->id]) {
+			if (scbw::unit_has_shields(unit)) {
 				// Shield heal
 				unit->heal_shields(heal_amount * 256, heal_source);
 			}
@@ -3756,5 +3756,11 @@ namespace scbw {
 			factor = 2;
 		}
 		return factor;
+	}
+
+	bool unit_has_shields(Unit* unit)
+	{
+		// This will potentially allow for more flexible shield crigs and behaviors. -Pr0nogo
+		return units_dat::shields_enabled[unit->id];
 	}
 }

@@ -137,23 +137,21 @@ namespace AI
 	}
 
 	// Loop content based on unit_shields_clump_in_area_accumulator_proc @ 0x00440A60
-	// 0x00695798 would contains totalEnemyShields
+	// 0x00695798 would contains total_enemy_shields
 	s32 get_total_enemy_shields_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster)
 	{
 		unitStatTotalFinder.search(x - search_bounds, y - search_bounds,
 			x + search_bounds, y + search_bounds);
-		s32 totalEnemyShields = 0;
+		s32 total_enemy_shields = 0;
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
-			if (!(target->status & UnitStatus::Invincible) &&
-				caster->is_target_enemy(target) &&
-				units_dat::shields_enabled[target->id])
+			if (!(target->status & UnitStatus::Invincible) && caster->is_target_enemy(target) && scbw::unit_has_shields(target))
 			{
-				totalEnemyShields += target->get_current_shields_ingame();
+				total_enemy_shields += target->get_current_shields_ingame();
 			}
 		}
-		return totalEnemyShields;
+		return total_enemy_shields;
 	}
 
 	// Loop content based on unitEnergyClumpInAreaAccumulatorProc @ 0x00440AC0

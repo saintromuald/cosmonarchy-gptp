@@ -17,38 +17,35 @@
 
 	// Hooked in this file
 	Line 2486: 00402714  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00402710 -- GetMaxHealth -- HOOKED
-	Line 56570: 004262B7  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00426190 -- drawUnitInfo -- HOOKED
+	Line 56570: 004262B7  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00426190 -- draw_unit_info -- HOOKED
 	Line 58295: 0042781F  |.  8A8A B0476600 MOV CL,BYTE PTR DS:[EDX+6647B0] -- 0x00427540 -- Ss_DrawSupplyUnitStatus -- HOOKED
 	Line 129037: 004566B4  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004566B0 -- drawWireframeShield -- HOOKED
-	Line 95955: 00440A9A   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x00440A20 -- AI_TargetEnemyProc -- HOOKED
+	Line 95955: 00440A9A   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x00440A20 -- ai_target_enemy_proc -- HOOKED
 	Line 58440: 004279F3   .  8A83 B0476600 MOV AL,BYTE PTR DS:[EBX+6647B0] -- 0x00427890 -- draw_building_info -- HOOKED
-	Line 72970: 00431274  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00431270 -- calcUnitStrength -- HOOKED
+	Line 72970: 00431274  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00431270 -- calculate_unit_strength -- HOOKED
 	Line 73606: 00431865  |.  8A86 B0476600 MOV AL,BYTE PTR DS:[ESI+6647B0] -- 0x00431800 -- get_unit_strength -- HOOKED
 	Line 95686: 00440800   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004407E0 -- AI_RestorationRequirementsProc -- HOOKED
 	Line 96913: 004413E7   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004413D0 -- AI_EMPShieldRequirementsProc -- HOOKED
 	Line 180864: 00479777  |.  8A82 B0476600 MOV AL,BYTE PTR DS:[EDX+6647B0] -- 0x00479730 -- attack_overlay_and_notify -- HOOKED
 	Line 182607: 0047A841  |.  8A8F B0476600 MOV CL,BYTE PTR DS:[EDI+6647B0] -- 0x0047A820 -- DrawImage_HpBar -- HOOKED
-	Line 184040: 0047B6A5  |.  8A87 B0476600 MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x0047B6A0 -- setBuildShieldGain -- HOOKED, dysfunctional
-	Line 206949: 0048AD35  |.  8A81 B0476600 MOV AL,BYTE PTR DS:[ECX+6647B0] -- 0x0048ACD0 -- getUnitBulletDamage -- HOOKED, compiler errors
-	Line 217770: 00492239  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00492140 -- canCastSpell -- HOOKED
-	Line 293899: 004C5A3D  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004C5A20 -- modifyUnitShields -- HOOKED
+	Line 184040: 0047B6A5  |.  8A87 B0476600 MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x0047B6A0 -- update_building_construct_shields_amount -- HOOKED, dysfunctional
+	Line 206949: 0048AD35  |.  8A81 B0476600 MOV AL,BYTE PTR DS:[ECX+6647B0] -- 0x0048ACD0 -- get_unit_bullet_damage -- HOOKED, compiler errors
+	Line 217770: 00492239  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00492140 -- can_cast_spell -- HOOKED
+	Line 293899: 004C5A3D  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004C5A20 -- modify_unit_shields -- HOOKED
 	Line 318718: 004D60BC  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004D6010 -- compile_health_bar -- HOOKED, compiler error
-	Line 343282: 004E6FC6  |.  8A87 B0476600 |MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x004E6EF0 -- ai_find_transport -- HOOKED, compiler errors
-	Line 349375: 004EB0F4   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x004EAFE0 -- mapDataTransfer -- HOOKED, type error?
+	Line 343282: 004E6FC6  |.  8A87 B0476600 |MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x004E6EF0 -- ai_find_best_transport -- HOOKED, compiler errors
+	Line 349375: 004EB0F4   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x004EAFE0 -- map_data_transfer -- HOOKED, type error?
 */
 
 namespace hooks
 {
-	u32 maxhp(s32 id, s32 player)
+	u32 get_max_hp(s32 id, s32 player)
 	{
 		u32 result = units_dat::max_hitpoints[id];
-		//if (id==UnitId::firebat && scbw::get_upgrade_level(player, UpgradeId::Heatshield)) {
-		//	result += 15 * 256;
-		//}
 		return result;
 	}
 
-	u32 maxshields(s32 id, s32 player)
+	u32 get_max_shields(s32 id, s32 player)
 	{
 		u32 result = units_dat::max_shield_points[id];
 		//if (units_dat::base_property[id] & UnitProperty::RoboticUnit && scbw::get_upgrade_level(player, UpgradeId::Autovitality)) {
@@ -57,30 +54,60 @@ namespace hooks
 		return result;
 	}
 
-	u32 get_total_hp_plus_shields(Unit* a1)
-	{ // 00402710
-		s32 v1; // eax
-		s32 v2; // ecx
-		s32 v3; // eax
-
-		v1 = (u16)a1->id;
-		if (units_dat::shields_enabled[v1])
-			v2 = units_dat::max_shield_points[v1];
-		else
-			v2 = 0;
-		v3 = units_dat::max_hitpoints[v1] >> 8;
-		if (!v3)
+	u32 get_max_vitality(Unit* unit) // 00402710
+	{
+		s32 current_shields = 0;
+		if (scbw::unit_has_shields(unit))
 		{
-			v3 = (a1->hitpoints + 255) >> 8;
-			if (!v3)
-				v3 = 1;
+			current_shields = units_dat::max_shield_points[unit->id];
+		}		
+		s32 hitpoints = units_dat::max_hitpoints[unit->id] >> 8;
+		if (!hitpoints)
+		{
+			hitpoints = (unit->hitpoints + 255) >> 8;
+			if (!hitpoints)
+			{
+				hitpoints = 1;
+			}
 		}
-		return v2 + v3;
+		return current_shields + hitpoints;
 	}
 
-	void drawUnitInfo(BinDlg* a1)
-	{ // 00426190
-		BinDlg* v1; // ebx
+	void __stdcall stats_panel_draw_health_shields(BinDlg* dialog) // 004263E0
+	{
+		const char* string = "";
+		Unit* active_unit = *g_active_portrait_unit;
+		s32 max_hitpoints = units_dat::max_hitpoints[active_unit->id] >> 8;
+		if ((max_hitpoints || (max_hitpoints = (active_unit->hitpoints + 255) >> 8) != 0) && max_hitpoints > 9999
+		||  units_dat::max_shield_points[active_unit->id] > 9999 || active_unit->status & UnitStatus::Invincible)
+		{
+			string = 0;
+		} else {
+			u8 hp_state = 0;
+			if (helper::unit_hp_below_33_percent(active_unit)) {
+				hp_state = 6;
+			} else {
+				hp_state = helper::unit_hp_between_33_66_percent(active_unit) != 0 ? 3 : 7;
+			}
+
+			if (scbw::unit_has_shields(active_unit)) {
+				s32 max_hp = helper::get_max_hp(active_unit);
+				s32 active_hp = (active_unit->hitpoints + 255) >> 8;
+				u16 queue_slot = helper::get_last_queue_slot_id(active_unit);
+				s32 max_shields = units_dat::max_shield_points[queue_slot];
+			//	helper::bw_sprintf_s(0, 32, "%d/%d %c%d/%d", active_unit->shields >> 8, max_shields, hp_state, active_hp, max_hp);
+			} else {
+				s32 max_hp = helper::get_max_hp(active_unit);
+			//	helper::bw_sprintf_s(0, 32, "%c%d/%d", hp_state, (active_unit->hitpoints + 255) >> 8, max_hp);
+			}
+			string = "";
+		}
+		helper::add_text_to_dialog(dialog, -7, string);
+		helper::stats_panel_draw_energy(dialog);
+	}
+
+	void draw_unit_info(BinDlg* dialog) // 00426190
+	{
 		s16 v2; // ax
 		const char* v3; // eax
 		u16 v4; // cx
@@ -89,31 +116,31 @@ namespace hooks
 		s32 v7; // [esp-8h] [ebp-10h]
 		BufferStr* v8; // [esp-8h] [ebp-10h]
 
-		v1 = a1;
-		*g_supplies_available_temp = (*g_active_portrait_unit)->building.resource.resource_amount;
+		Unit* active_unit = *g_active_portrait_unit;
+		*g_supplies_available_temp = active_unit->building.resource.resource_amount;
 		if (*g_status_screen_func != 15)
 		{
-			helper::hide_optional_status_screen_controls(a1);
-			helper::show_control_group(v1, -10, -13);
+			helper::hide_optional_status_screen_controls(dialog);
+			helper::show_control_group(dialog, -10, -13);
 			*g_status_screen_func = 15;
 		}
-		helper::add_text_to_dialog(v1, -10, 0);
-		helper::add_text_to_dialog(v1, -12, 0);
-		helper::add_text_to_dialog(v1, -13, 0);
-		v2 = (*g_active_portrait_unit)->id;
+		helper::add_text_to_dialog(dialog, -10, 0);
+		helper::add_text_to_dialog(dialog, -12, 0);
+		helper::add_text_to_dialog(dialog, -13, 0);
+		v2 = active_unit->id;
 		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u)
 		{
 			if (*g_stat_txt_tbl > 0x31Bu)
 				v3 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[796];
 			else
 				v3 = "";
-			v7 = (u16)(*g_active_portrait_unit)->building.resource.resource_amount;
+			v7 = (u16)active_unit->building.resource.resource_amount;
 LABEL_14:
 			sprintf_s(g_struct_char->buf, 260, "%s %d", v3, v7);
 			v8 = g_struct_char;
 			goto LABEL_19;
 		}
-		v4 = (*g_active_portrait_unit)->building.resource.resource_amount;
+		v4 = active_unit->building.resource.resource_amount;
 		if (v4)
 		{
 			if (*g_stat_txt_tbl > 0x31Cu)
@@ -129,16 +156,13 @@ LABEL_14:
 			v5 = "";
 		v8 = (BufferStr*)v5;
 LABEL_19:
-		helper::add_text_to_dialog(v1, -11, (const char*)v8);
-		if (units_dat::shields_enabled[(*g_active_portrait_unit)->id])
-		{
-			helper::draw_shield_upgrade(v1, 0);
-		}
-		else
-		{
-			if (v1->control_type)
-				v1 = *(BinDlg**)&v1->parent;
-			v6 = *(BinDlg**)&v1->child_dialog;
+		helper::add_text_to_dialog(dialog, -11, (const char*)v8);
+		if (scbw::unit_has_shields(active_unit)) {
+			helper::draw_shield_upgrade(dialog, 0);
+		} else {
+			if (dialog->control_type)
+				dialog = *(BinDlg**)&dialog->parent;
+			v6 = *(BinDlg**)&dialog->child_dialog;
 			if (v6)
 			{
 				while (v6->index != 9)
@@ -157,376 +181,119 @@ LABEL_26:
 		}
 	}
 
-	void draw_supply_unit_info(s32 a1)
-	{ // 00427540
-		BinDlg* v1; // ebx
-		Unit* v2; // esi
-		GroupFlag v3; // al
-		u8 v4; // cl
-		s32 v5; // edx
-		s16 v6; // ax
-		const char* v7; // ecx
-		s16 v8; // ax
-		const char* v9; // esi
-		u16 v10; // ax
-		s32 v11; // ecx
-		const char* v12; // esi
-		s32 v13; // eax
-		GroupFlag v14; // al
-		s32 v15; // ecx
-		s16 v16; // ax
-		const char* v17; // eax
-		u16 v18; // ax
-		BinDlg* v19; // eax
-		s32 v20; // [esp+0h] [ebp-8h]
-		u8 v21; // [esp+7h] [ebp-1h]
-		u8 v22; // [esp+7h] [ebp-1h]
-
-		v1 = (BinDlg*)a1;
-		v2 = *g_active_portrait_unit;
-		if (*g_is_in_replay || (*g_active_portrait_unit)->player == *g_local_nation_id)
-		{
-			helper::get_supplies_used_no_args();
-			if (*g_status_screen_func != 12)
-			{
-				helper::hide_optional_status_screen_controls(v1);
-				helper::show_control_group(v1, -10, -13);
-				v2 = *g_active_portrait_unit;
-				*g_status_screen_func = 12;
-			}
-			v3 = units_dat::group_flags[(u16)v2->id];
-			if (v3.is_zerg)
-			{
-				v21 = 0;
-			}
-			else if (v3.is_protoss)
-			{
-				v21 = 2;
-			}
-			else
-			{
-				v21 = (v3.is_terran) != 0 ? RaceId::Terran : RaceId::Neutral;
-			}
-			v4 = v2->player;
-			if (v21)
-			{ // !RACE_Zerg
-				if (v21 == RaceId::Terran)
-				{
-					v5 = g_race_supply[RaceId::Terran].used[v4];
-				}
-				else if (v21 == RaceId::Protoss)
-				{
-					v5 = g_race_supply[RaceId::Protoss].used[v4];
-				}
-				else
-				{
-					v5 = 0;
-				}
-			}
-			else
-			{
-				v5 = g_race_supply[RaceId::Zerg].used[v4];
-			}
-			ByteOperations::SetLowWord(v20, v21);
-			v6 = v21 + 820;
-			if (v21 == -821)
-			{
-				v7 = 0;
-			}
-			else if (v6 < *g_stat_txt_tbl)
-			{
-				v7 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[v6 + 1];
-			}
-			else
-			{
-				v7 = "";
-			}
-			sprintf_s(g_struct_char_2->buf, 260, "%s %d", v7, (v5 + 1) / 2);
-			v8 = v21 + 814;
-			if (v21 == -815)
-			{
-				v9 = 0;
-			} else if (v8 < *g_stat_txt_tbl) {
-				v9 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[v8 + 1];
-			} else {
-				v9 = "";
-			}
-			v10 = helper::get_last_queue_slot_id((*g_active_portrait_unit));
-
-			char buffer[260] = {};
-			sprintf_s(buffer, 260, "%s %d", v9, (units_dat::supply_provided[v10] + 1) / 2);
-			v11 = v20 + 66353;
-			if (v21 == -818)
-			{
-				v12 = 0;
-			} else if ((u16)v11 < g_stat_txt_buffer->get_string_count()) {
-				v11 = (u16)v11;
-				v12 = (char*)g_stat_txt_buffer->get_string(v11 + 1);
-			} else {
-				v12 = buffer;
-			}
-			ByteOperations::SetLowByte(v11, v21);
-			v13 = helper::get_supplies_available((*g_active_portrait_unit)->player, v11);
-			sprintf_s(g_unk_string_char, 260, "%s %d", v12, (v13 + 1) / 2);
-			v22 = (*g_active_portrait_unit)->player;
-			v14 = units_dat::group_flags[helper::get_last_queue_slot_id((*g_active_portrait_unit))];
-			s32 race = (*g_active_portrait_unit)->get_race();
-			if (v14.is_zerg)
-			{
-				v15 = g_race_supply[RaceId::Zerg].max[v22];
-			}
-			else if (v14.is_terran)
-			{
-				v15 = g_race_supply[RaceId::Terran].max[v22];
-			}
-			else if (v14.is_protoss)
-			{
-				v15 = g_race_supply[RaceId::Protoss].max[v22];
-			}
-			else
-			{
-				v15 = 0;
-			}
-			v16 = v20 + 823;
-			if ((s16)v20 == -824)
-			{
-				v17 = 0;
-			}
-			else if (v16 < *g_stat_txt_tbl)
-			{
-				v17 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[v16 + 1];
-			}
-			else
-			{
-				v17 = "";
-			}
-			sprintf_s(g_struct_char_2->buf, 260, "%s %d", v17, (u32)(v15 + 1) >> 1);
-			helper::add_text_to_dialog(v1, -10, (const char*)g_struct_char);
-			helper::add_text_to_dialog(v1, -11, "");
-			helper::add_text_to_dialog(v1, -12, (const char*)g_unk_string_char);
-			helper::add_text_to_dialog(v1, -13, (const char*)g_struct_char_2);
-			v18 = (*g_active_portrait_unit)->id;
-			if (units_dat::shields_enabled[v18])
-			{
-				helper::draw_shield_upgrade(v1, 0);
-			}
-			else if (v18 != UnitId::ZergOvileth && v18 != UnitId::Hero_Yggdrasill)
-			{
-				if (v1->control_type)
-					v1 = *(BinDlg**)&v1->parent;
-				v19 = *(BinDlg**)&v1->child_dialog;
-				if (v19)
-				{
-					while (v19->index != 9)
-					{
-						v19 = v19->next;
-						if (!v19)
-							goto LABEL_55;
-					}
-				}
-				else
-				{
-LABEL_55:
-					v19 = 0;
-				}
-				helper::hide_dialog(v19);
-			}
-			else
-			{
-				helper::draw_armor(v1, v18, 0);
-			}
-		}
-		else
-		{
-			helper::unit_stat_act_standard((void*)a1);
-		}
-	}
-
-	bool AI_TargetEnemyProc(Unit* a1, Unit* a2)
-	{ // 00440A20
-		s8 v2; // dl
-		s8 v3; // bl
-		s32 v4; // eax
-		s8 result; // eax
-
-		result = 0;
-		if (a1 != a2)
-		{
-			v2 = a2->player;
-			v3 = a1->player == 11 ? a1->sprite->player : a1->player;
-			if (!scbw::is_allied_to(v2, v3))
-			{
-				ByteOperations::SetLowByte(v4, helper::ai_unit_can_attack(a1));
-				if (v4)
+	b32 ai_target_enemy_proc(Unit* target, Unit* unit) // 00440A20
+	{
+		b32 result = 0;
+		if (target != unit) {
+			u8 target_player = target->player == 11 ? target->sprite->player : target->player;
+			if (!scbw::is_allied_to(unit->player, target_player)) {
+				if (helper::ai_unit_can_attack(target)) {
 					result = 1;
+				}
 			}
 		}
 		return result;
 	}
 
-	s32 calcUnitStrength(s32 a1, u8 a2)
-	{ // 00431270
-		s32 v2; // ecx
-		unsigned _int64 v3; // rax
-		s32 v4; // ebx
-		u32 v5; // esi
-		s32 v6; // edi
-		s32 v7; // eax
-		s32 totalHits; // [esp+0h] [ebp-4h]
-
-		if (units_dat::shields_enabled[a1])
-		{
-			v2 = units_dat::max_shield_points[a1];
-		}
-		else
-		{
-			v2 = 0;
+	s32 calculate_unit_strength(u32 unit_id, u8 weapon_id) // 00431270
+	{
+		s32 max_shields = 0;
+		if (units_dat::shields_enabled[unit_id]) {
+			max_shields = units_dat::max_shield_points[unit_id];
 		}
 
-		totalHits = v2 + (units_dat::max_hitpoints[a1] >> 8);
-		if (totalHits)
+		s32 max_vitality = max_shields + (units_dat::max_hitpoints[unit_id] >> 8);
+		u64 final_strength = 0;
+		if (max_vitality)
 		{
-			v4 = (u8)weapons_dat::damage_factor[a2];
-			v5 = weapons_dat::cooldown[a2];
-			v6 = weapons_dat::damage_amount[a2];
-			if (a2 == -126)
-			{
-				v7 = 0;
+			u32 damage_factor = weapons_dat::damage_factor[weapon_id];
+			u32 weapon_cooldown = weapons_dat::cooldown[weapon_id];
+			u32 weapon_damage = weapons_dat::damage_amount[weapon_id];
+			u32 weapon_strength = 0;
+			if (weapon_id != WeaponId::None) {
+				weapon_strength = (weapon_damage * damage_factor << 11) / (s32)weapon_cooldown;
 			}
-			else
-			{
-				v7 = (v6 * v4 << 11) / (s32)v5;
-			}
-			v3 = (unsigned _int64)(sqrt((f64)(v6 * v4 * (weapons_dat::max_range[a2] / v5)
-				+ ((u32)(totalHits * v7) >> 8)))
-				* 7.58);
+			final_strength = (u64)(sqrt((double)(weapon_damage * damage_factor * (weapons_dat::max_range[weapon_id] / weapon_cooldown)
+										+ ((u32)(max_vitality * weapon_strength) >> 8))) * 7.58);
 		}
-		else
-		{
-			v3 = 0;
-		}
-		return v3;
+		return (s32)final_strength;
 	}
 
-	u32 getUnitStrengthHook(Unit* a1, s32 a2, bool a3)
-	{ // 00431800
-		Unit* v3; // edi
-		s32 v4; // esi
-		s32 v5; // ebx
-		s32 v7; // ebx
-		s32 v8; // esi
-		u32 v9; // ecx
-		s32 groundAir; // [esp+10h] [ebp+8h]
-
-		v3 = a1;
-		v4 = (u16)a1->id;
-		if (v4 == UnitId::ZergLarva || v4 == UnitId::ZergEgg || v4 == UnitId::ZergCocoon)
+	u32 get_unit_strength(Unit* unit, s32 unused, bool is_ground) // 00431800
+	{
+		if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
 			return 0;
-		if (a1->status & UnitStatus::IsHallucination)
-		{
-			v5 = get_total_hp_plus_shields(a1);
-			if (helper::get_current_hp_plus_shields(v3) < v5)
+		}
+		if (unit->status & UnitStatus::IsHallucination) {
+			if (helper::get_current_hp_plus_shields(unit) < get_max_vitality(unit)) {
 				return 0;
+			}
 		}
-		v7 = helper::get_base_strength(a3, v3);
-		groundAir = helper::get_current_hp_plus_shields(v3);
-		if (units_dat::shields_enabled[v4])
-			v8 = units_dat::max_shield_points[v4];
-		else
-			v8 = 0;
-		v9 = v8 + helper::get_max_hp(v3);
-		if (!v9)
-			v9 = 1;
-		return v7 * groundAir / v9;
+		s32 base_strength = helper::get_base_strength(is_ground, unit);
+		s32 current_vitality = helper::get_current_hp_plus_shields(unit);
+		s32 max_shields = 0;
+		if (scbw::unit_has_shields(unit)) {
+			max_shields = units_dat::max_shield_points[unit->id];
+		}
+		s32 max_vitality = max_shields + helper::get_max_hp(unit);
+		if (!max_vitality) {
+			max_vitality = 1;
+		}
+		return base_strength * current_vitality / max_vitality;
 	}
 
-	bool AI_RestorationRequirementsProc(Unit* a1, Unit* a2)
-	{ // 004407E0
-		Unit* v2; // edx
-		s32 v3; // eax
-		bool result; // eax
-
-		result = 0;
-		if (a1->player == a2->player)
+	b32 ai_restoration_requirements_proc(Unit* caster, Unit* target) // 004407E0
+	{
+		b32 result = 0;
+		if (caster->player == target->player && helper::can_weapon_target_unit(WeaponId::Restoration, caster, target))
 		{
-			if (helper::can_weapon_target_unit(WeaponId::Restoration, a1, a2))
+			s32 shields = scbw::unit_has_shields(target) ? target->shields >> 8 : 0;
+			if (shields + ((target->hitpoints + 255) >> 8) > 60
+			&& (target->ensnare_timer || target->plague_timer || target->irradiate_timer || target->lockdown_timer || target->maelstrom_timer || target->corrosive_spore_count_unused))
 			{
-				v3 = units_dat::shields_enabled[(u16)v2->id] ? v2->shields >> 8 : 0;
-				if (v3 + ((v2->hitpoints + 255) >> 8) > 60
-					&& scbw::is_debuffed(v2))
-				{
-					result = 1;
-				}
+				result = 1;
 			}
 		}
 		return result;
 	}
 
-	bool AI_EMPShieldRequirementsProc(Unit* a1, Unit* a2)
-	{ // 004413D0
-		Unit* v2; // esi
-		Unit* v3; // edi
-		Sprite* v5; // edx
-		s16 v6; // cx
-		s16 spriteX;
-
-		v2 = a1;
-		v3 = a2;
-		if (!helper::ai_target_unit_is_worth_hitting(a1, a2)
-			|| !units_dat::shields_enabled[(u16)v2->id]
-			|| !helper::can_weapon_target_unit(WeaponId::EMP_Shockwave, v2, v3))
+	b32 ai_emp_shield_requirements_proc(Unit* target, Unit* caster) // 004413D0
+	{
+		if (!helper::ai_target_unit_is_worth_hitting(target, caster) || !scbw::unit_has_shields(target) || !helper::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))
 		{
 			return 0;
 		}
-		v5 = v2->sprite;
-		v6 = v5->position.y;
-		spriteX = v5->position.x;
+		u16 pos_x = target->sprite->position.x;
+		u16 pos_y = target->sprite->position.y;
 		*g_temp_hp_shields = 0;
 		*g_temp_weapon = WeaponId::EMP_Shockwave;
-		helper::create_splash_weapon_proc(
-			160,
-			spriteX,
-			v6,
-			(s32(__fastcall*)(s32, s32))helper::unit_shields_clump_in_area_accumulator_proc,
-			(s32)v3);
+		helper::create_splash_weapon_proc(160, pos_x, pos_y, (s32(__fastcall*)(s32, s32))helper::unit_shields_clump_in_area_accumulator_proc, caster);
 		return *g_temp_hp_shields >= 200;
 	}
 
-	char attackOverlayAndNotify(Unit* a1, Unit* a2, u8 a3, char a4)
-	{ // 00479730
-		s32* v4; // eax
-		Unit* v5; // ebx
-		char returnValue = 0;
-
-		v5 = a1;
-		v4 = &a1->hitpoints;
-		if (v4)
+	// Hooked to improve functionality and extend max HP / shields. -Pr0nogo
+	void attack_overlay_and_notify(Unit* victim, Unit* attacker, u8 weapon_id, u8 direction) // 00479730
+	{
+		s32 hitpoints = victim->hitpoints;
+		if (hitpoints && !(victim->status & UnitStatus::Invincible))
 		{
-			if (!(v5->status & UnitStatus::Invincible))
-			{
-				if (a2)
-				{
-					helper::unit_was_hit(v5, a2, a3 != WeaponId::Irradiate);
-					if (a3 != WeaponId::Irradiate && v5->player != a2->player)
-						helper::unit_attack_notify(v5);
+			if (attacker) {
+				helper::unit_was_hit(victim, attacker, weapon_id != WeaponId::Irradiate);
+				if (weapon_id != WeaponId::Irradiate && victim->player != attacker->player) {
+					helper::unit_attack_notify(victim);
 				}
-				if (units_dat::shields_enabled[(u16)v5->id])
-				{
-					if (v5->shields >= 256)
-					{
-						*v4 = a3;
-						if (weapons_dat::damage_type[a3])
-						{
-							returnValue = (char)helper::create_shield_overlay(a4, v5);
-						}
+			}
+			if (scbw::unit_has_shields(victim)) {
+				if (victim->shields >= 256) {
+					if (weapons_dat::damage_type[weapon_id]) {
+						helper::create_shield_overlay(weapon_id, victim);
 					}
 				}
 			}
 		}
-		return returnValue;
 	}
 
-	void drawImageHPBar(s32 g_screen_x, s32 g_screen_y, GrpFrame* pFrame, Box32* grpRect, s32 colorData)
+	void draw_image_hp_bar(s32 g_screen_x, s32 g_screen_y, GrpFrame* pFrame, Box32* grpRect, s32 colorData)
 	{ // 0047A820
 		s32 v5; // esi
 		s32 v6; // edi
@@ -700,178 +467,109 @@ LABEL_32:
 		}
 	}
 
-	void setBuildShieldGain(Unit* a1)
-	{ // 0047B6A0
-		s32 _type; // edi
-		u16 v2; // dx
-		s32 v3; // ecx
-		u32 v4; // edx
-		u32 v5; // eax
-
-		_type = (u16)a1->id;
-		if (units_dat::shields_enabled[_type])
+	void update_building_construct_shields_amount(Unit* unit) // 0047B6A0
+	{
+		if (scbw::unit_has_shields(unit))
 		{
-			if (a1->status & UnitStatus::GroundedBuilding)
+			if (unit->status & UnitStatus::GroundedBuilding)
 			{
-				v4 = (s32)((unsigned __int64)(1717986919i64 * (units_dat::max_shield_points[_type] << 8)) >> 0x20) >> 2;
-				v3 = v4 + (v4 >> 31);
-				a1->shields = v3;
-				v2 = units_dat::time_cost[_type];
-				if (!v2
-					|| (v5 = (((u32)units_dat::max_shield_points[_type] << 8) - v3) / v2, (a1->build_repair_hp_gain = v5) == 0))
+				u32 max_shields = units_dat::max_shield_points[unit->id];
+				s32 shields_xd = (s32)((u64)(1717986919i64 * (max_shields << 8)) >> 32) >> 2;
+				s32 shields = shields_xd + (shields_xd >> 31);
+				unit->shields = shields;
+				u32 time_cost = units_dat::time_cost[unit->id];
+				u32 missing_shields = (((u32)max_shields << 8) - shields) / time_cost;
+				if (!time_cost || unit->build_repair_hp_gain != missing_shields)
 				{
-					a1->build_repair_hp_gain = 1;
+					unit->build_repair_hp_gain = 1;
 				}
 			}
 		}
 	}
 
-	s32 getUnitBulletDamage(Unit* victim, Bullet* bullet)
-	{ // 0048ACD0
-		s32 v2; // edi
-		Unit* v3; // esi
-		s32 v4; // eax
-		s32 v5; // eax
-		unsigned __int16 v6; // cx
-		s32 v7; // esi
-		s8 v8; // cl
-		s32 result; // eax
-		s32 v10; // eax
-		s32 unit_id; // ecx
-		s32 v12; // eax
-		s32 v13; // ecx
-		s32 v14; // eax
-		s32 v15; // eax
+	u32 get_unit_bullet_damage(Unit* victim, Bullet* bullet) // 0048ACD0
+	{
+		// Originally had Nuclear Missile code here.
 
-		v2 = (u8)bullet->weapon_id;
-		v3 = victim;
-		if (weapons_dat::explosion_type[v2] == WeaponEffect::NuclearMissile)
-		{
-			unit_id = (u16)victim->id;
-			v10 = units_dat::max_hitpoints[unit_id];
-			if (units_dat::shields_enabled[unit_id])
-			{
-				v12 = v10 >> 8;
-				if (!v12)
-				{
-					v12 = (v3->hitpoints + 255) >> 8;
-					if (!v12)
-						v12 = 1;
-				}
-				v13 = 2 * (v12 + units_dat::max_shield_points[unit_id]);
-			}
-			else
-			{
-				v14 = v10 >> 8;
-				if (!v14)
-				{
-					v14 = (v3->hitpoints + 255) >> 8;
-					if (!v14)
-						v14 = 1;
-				}
-				v13 = 2 * v14;
-			}
-			v15 = v13 / 3;
-			if (v13 / 3 < 500)
-				v15 = 500;
-			result = v15 << 8;
-		}
-		else
-		{
-			v5 = (u8)bullet->weapon_id;
-			v6 = weapons_dat::damage_upgrade[v5];
-			v7 = weapons_dat::damage_amount[v5];
-			v4 = (u8)bullet->player;
-			if (v6 >= (u16)BwUpgrade::UnusedUpgrade46)
-				/*v8 = g_upgrades_level_bw[v4][v6];
-			else
-				v8 = g_upgrades_level_sc[v4][v6];*/
-				result = (v7 + v8 * weapons_dat::armor_pen[v2]) << 8;
-		}
-		return result;
+		u32 damage_amount = weapons_dat::damage_amount[bullet->weapon_id];
+
+		// Originally had code for upgrades here.
+
+		return damage_amount << 8;
 	}
 
-	s32 canCastSpell(Unit* a1)
-	{ // 00492140
-		u8 v1; // al
-		s32 v2; // ebx
-		Unit* v3; // esi
-		s32 result; // eax
-		s32 v5; // eax
-		s32 v6; // eax
-		bool v7; // eax
-		s16 v8; // [esp+8h] [ebp-Ch]
-		s16 v9; // [esp+Ch] [ebp-8h]
-		u8 v10; // [esp+13h] [ebp-1h]
-
-		v1 = a1->main_order_id;
-		v2 = v1;
-		v10 = orders_dat::order_weapon_id[v1];
-		v8 = a1->order_target.pt.y;
-		v3 = a1->order_target.unit;
-		v9 = a1->order_target.pt.x;
-		if (a1->unit_ai)
+	b32 can_cast_spell(Unit* unit) // 00492140
+	{
+		u32 order_id = unit->main_order_id;
+		u32 order_weapon_id = orders_dat::order_weapon_id[order_id];
+		u32 order_target_x = unit->order_target.pt.x;
+		u32 order_target_y = unit->order_target.pt.y;
+		Unit* order_target_unit = unit->order_target.unit;
+		if (unit->unit_ai)
 		{
-			switch (v1)
+			switch (order_id)
 			{
 				case OrderId::MagnaPulse:
 				case OrderId::StasisField:
-					if (v3 && !helper::unitIsFrozen(v3))
-						goto LABEL_23;
-					goto LABEL_17;
-				case OrderId::CastParasite:
-					if (v3 && !v3->parasite_flags)
-						goto LABEL_23;
-					result = 1;
-					break;
-				case OrderId::EMPShockwave:
-					if (!v3)
-						goto LABEL_23;
-					ByteOperations::SetLowByte(v5, helper::isUnitCasterNotHallucination(v3));
-					if (v5)
-					{
-						if (HIBYTE(v3->energy) >= 0x64u)
-							goto LABEL_23;
-					}
-					if (units_dat::shields_enabled[(u16)v3->id] && (s32)(v3->shields & 0xFFFFFF00) >= 25600)
-						goto LABEL_23;
-LABEL_17:
-					result = 1;
-					break;
-				case OrderId::Irradiate:
-					if (v3 && !v3->irradiate_timer)
-						goto LABEL_23;
-					result = 1;
-					break;
-				case OrderId::Plague:
-					if (v3 && !v3->plague_timer)
-						goto LABEL_23;
-					result = 1;
-					break;
-				case OrderId::Ensnare:
-					if (!v3 || !v3->ensnare_timer)
-						goto LABEL_23;
-					result = 1;
-					break;
-				default:
-					goto LABEL_23;
-			}
-		}
-		else
-		{
-LABEL_23:
-			if (orders_dat::use_weapon_targeting[v2])
-			{
-				if (!helper::can_weapon_target_unit(v10, v3, a1))
-					return 1;
-			}
-			else
-			{
-				ByteOperations::SetLowByte(v6, orders_dat::tech_used[v2]);
-				if ((u8)v6 < (u8)TechId::None)
 				{
-					v6 = (u8)v6;
-					switch ((u8)v6)
+					if (order_target_unit && !order_target_unit->is_frozen()) {
+						goto check_target_further;
+					}
+					goto can_cast;
+				} break;
+				case OrderId::CastParasite:
+				{
+					if (order_target_unit && !order_target_unit->parasite_flags) {
+						goto check_target_further;
+					}
+				} return 1;
+				case OrderId::EMPShockwave:
+				{
+					if (!order_target_unit || helper::unit_is_valid_caster(order_target_unit) && order_target_unit->energy >= 100 || scbw::unit_has_shields(order_target_unit)
+						&& (s32)(order_target_unit->shields & 0xFFFFFF00) >= 25600)
+					{
+						goto check_target_further;
+					}
+				can_cast:
+					return 1;
+				} break;
+				case OrderId::Irradiate:
+				{
+					if (order_target_unit && !order_target_unit->irradiate_timer)
+					{
+						goto check_target_further;
+					}
+				} return 1;
+				case OrderId::Plague:
+				{
+					if (order_target_unit && !order_target_unit->plague_timer)
+					{
+						goto check_target_further;
+					}
+				} return 1;
+				case OrderId::Ensnare:
+				{
+					if (!order_target_unit || !order_target_unit->ensnare_timer)
+					{
+						goto check_target_further;
+					}
+				} return 1;
+				default: {
+					goto check_target_further;
+				}
+			}
+		} else {
+		check_target_further:
+			if (orders_dat::use_weapon_targeting[order_id]) {
+				if (!helper::can_weapon_target_unit(order_weapon_id, order_target_unit, unit))
+				{
+					return 1;
+				}
+			} else {
+				u32 tech_id = orders_dat::tech_used[order_id];
+				if (tech_id != TechId::None)
+				{
+					switch (tech_id)
 					{
 						case TechId::EMPShockwave:
 						case TechId::ScannerSweep:
@@ -885,170 +583,118 @@ LABEL_23:
 						case TechId::MindTyrantMaelstrom:
 							break;
 						default:
-							if ((u8)v6 == TechId::SpiderMines)
+							b32 invalid_target = 0;
+							if (tech_id == TechId::SpiderMines)
 							{
-								ByteOperations::SetLowByte(v7, helper::get_active_tile_flag(v8, v9, 0x410000, 0));
+								invalid_target = helper::get_active_tile_flag(order_target_y, order_target_x, 0x410000, 0);
+							} else {
+								if (!order_target_unit || order_target_unit->status & UnitStatus::Invincible)
+								{
+									goto can_cast;
+								}
+								invalid_target = !helper::get_target_unit_ability_error_stat_string(order_target_unit, unit->player, tech_id);
 							}
-							else
+							if (!invalid_target)
 							{
-								if (!v3 || v3->status & 0x4000000)
-									goto LABEL_17;
-								v7 = (u16)helper::get_target_unit_ability_error_stat_string(v3, a1->player, v6) == 0;
+								goto can_cast;
 							}
-							if (!v7)
-								goto LABEL_17;
 							break;
-					}
+						}
 				}
 			}
-			result = 0;
 		}
-		return result;
+		return 0;
 	}
 
-	s32 modifyUnitShields(s32 a1, s32 a2)
-	{ // 004C5A20
-		s32 v3; // eax
-		s32 v4; // ecx
-
-		if (!a1)
+	b32 __stdcall modify_unit_shields(Unit* unit, s32 new_amount) // 004C5A20
+	{
+		if (!unit)
 		{
 			helper::SErrSetLastError(87);
 			return 0;
 		}
-		v3 = *(u16*)(a1 + 100);
-		if (!units_dat::shields_enabled[v3])
+		if (!scbw::unit_has_shields(unit))
+		{
 			return 0;
-		v4 = units_dat::max_shield_points[v3];
-		if (v4 >= (s32)(a2 * v4 / 0x64u))
-			v4 = a2 * (u32)units_dat::max_shield_points[v3] / 0x64;
-		*(s32*)(a1 + 96) = v4 << 8;
+		}
+
+		s32 max_shields = units_dat::max_shield_points[unit->id];
+		if (max_shields >= (signed int)(new_amount * max_shields / 100))
+		{
+			max_shields = new_amount * units_dat::max_shield_points[unit->id] / 100;
+		}
+		unit->shields = max_shields << 8;
 		return 1;
 	}
 
-	void compile_health_bar(s32 a1, s32 a2)
-	{ // 004D6010
-		s32 v2; // eax
-		Unit* v3; // edi
-		u8 v4; // cl
-		s32 v5; // eax
-		u16 v6; // ax
-		s32 v7; // eax
-		char v8; // cl
-		char v9; // cl
-		s32* v10; // edx
-
-		v2 = *(u16*)(a2 + 8);
-		v3 = active_player_selection->unit[*(u8*)(a2 + 11)];
-		v4 = sprites_dat::is_visible[v2 + 390];
-		*(s8*)(a1 + 15) = sprites_dat::hp_bar_size[v2 + 262]
-			+ (g_image_grp_graphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].h >> 1)
-			+ 8;
-		*(s8*)(*(s32*)(a1 + 44) + 6) = 0;
-		*(s8*)(*(s32*)(a1 + 44) + 7) = 0;
-		*(s8*)(*(s32*)(a1 + 44) + 8) = v4 - (v4 - 1) % 3;
-		v5 = *(s32*)(a1 + 44);
-		if (*(s8*)(v5 + 8) < 0x13u)
-			*(s8*)(v5 + 8) = 19;
-		*(s8*)(*(s32*)(a1 + 44) + 9) = 0;
-		v6 = v3->id;
-		if (units_dat::base_property[v6] & 0x200000 && !(v3->status & 0x40000000)
-			|| v3->status & 0x40000000
-			|| v6 == 40)
+	b32 ai_find_best_transport(Unit* unit, Unit* result_unit) // 004E6EF0
+	{
+		result_unit->link.prev = 0;
+		Unit* first_unit = first_player_unit[unit->player].unit[0];
+		if (!first_unit)
 		{
-			*(s8*)(*(s32*)(a1 + 44) + 9) += 6;
+			return 0;
 		}
-		v7 = *(s32*)(a1 + 44);
-		v8 = *(s8*)(v7 + 9);
-		if (units_dat::shields_enabled[(unsigned __int16)v3->id])
-			v9 = v8 + 7;
-		else
-			v9 = v8 + 5;
-		*(s8*)(v7 + 9) = v9;
-		*(s16*)(*(s32*)(a1 + 44) + 2) = *(unsigned __int8*)(*(s32*)(a1 + 44) + 8);
-		*(s16*)(*(s32*)(a1 + 44) + 4) = *(unsigned __int8*)(*(s32*)(a1 + 44) + 9);
-		*(s32*)(a1 + 60) = a2;
-		*(s16*)(a1 + 12) = 0;
-		v10 = (s32*)(a1 + 36);
-		*v10 = 0;
-		v10[1] = 0;
-		// *(s32*)(a1 + 48) = v3;
-		helper::update_image_data_draw((Image*)a1);
-		*(s8*)(a1 + 12) |= 1u;
-		helper::play_image_iscript((Image*)a1, 0);
-	}
 
-	s32 AI_FindTransport(Unit* a1, s32 a2)
-	{ // 004E6EF0
-		Unit* v2; // esi
-		s32 v3; // ecx
-		u16 v4; // ax
-		s32 v5; // edi
-		s32 v6; // eax
-		char v7; // al
-		s16 v8; // ST16_2
-		u32 v9; // eax
-		s32 v11; // [esp+8h] [ebp-Ch]
-		u32 v12; // [esp+Ch] [ebp-8h]
-
-		*(s32*)a2 = 0;
-		v2 = first_player_unit->unit[(u8)a1->player];
-		v11 = 0;
-		v12 = 99999999;
-		if (!v2)
-			return v11;
+		b32 found_transport = 0;
+		u32 max_distance = 99999999;
 		while (1)
 		{
-			v3 = v2->status;
-			if (v3 & 0x40000000)
-				goto LABEL_22;
-			v4 = v2->id;
-			//			if (v4 == 42 && !g_upgrades_level_sc[(u8)v2->player][24])
-			goto LABEL_22;
-			v5 = v4;
-			if (!units_dat::space_provided[v4] || !(v3 & 1) || !(v3 & 0x20000))
-				goto LABEL_22;
-			if (v2->order_target.unit == a1)
-				break;
-			v6 = units_dat::max_hitpoints[v4] >> 8;
-			if (!v6)
-			{
-				v6 = (v2->hitpoints + 255) >> 8;
-				if (!v6)
-					v6 = 1;
+			if (!(first_unit->status & UnitStatus::IsHallucination)) {
+				if (units_dat::space_provided[first_unit->id]) {
+					if (first_unit->status & UnitStatus::Completed && first_unit->status & UnitStatus::Reacts) {
+						break;
+					}
+				}
 			}
-			if ((v2->hitpoints + 255) >> 8 >= 3 * v6 / 4 || units_dat::shields_enabled[v5] && v2->shields >> 8 == units_dat::max_shield_points[v5])
+		valid_transport:
+			first_unit = first_unit->player_link.next;
+			if (!first_unit)
 			{
-				v11 = 1;
-				if (helper::can_enter_transport(v2, a1))
+				return found_transport;
+			}
+		}
+
+		if (first_unit->order_target.unit != unit)
+		{
+			s32 first_unit_hp = units_dat::max_hitpoints[first_unit->id] >> 8;
+			if (!first_unit_hp)
+			{
+				first_unit_hp = (first_unit->hitpoints + 255) >> 8;
+				if (!first_unit_hp)
 				{
-					v7 = v2->main_order_id;
-					if (v7 != OrderId::Pickup2 && v7 != OrderId::Unload)
+					first_unit_hp = 1;
+				}
+			}
+			if ((first_unit->hitpoints + 255) >> 8 >= 3 * first_unit_hp / 4
+			||	 scbw::unit_has_shields(first_unit) && first_unit->shields >> 8 == units_dat::max_shield_points[first_unit->id])
+			{
+				found_transport = 1;
+				if (helper::can_enter_transport(first_unit, unit))
+				{
+					u32 order_id = first_unit->main_order_id;
+					if (order_id != OrderId::Pickup2 && order_id != OrderId::Unload)
 					{
-						if (v7 != OrderId::MoveUnload
-							|| (v8 = helper::get_region_id(v2->order_target.pt.x, v2->order_target.pt.y),
-								v8 == helper::get_region_id(a1->order_target.pt.x, a1->order_target.pt.y)))
+						u32 region_id = region_id = helper::get_region_id(first_unit->order_target.pt.x, first_unit->order_target.pt.y);
+						if (order_id != OrderId::MoveUnload || region_id == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y))
 						{
-							v9 = helper::getUnitDistanceToHalt(v2->sprite->position.y, a1, v2->sprite->position.x);
-							if (v9 < v12)
+							u32 distance = helper::get_unit_distance_to_halt(first_unit->sprite->position.y, unit, first_unit->sprite->position.x);
+							if (distance < max_distance)
 							{
-								//								*(s32*)a2 = v2;
-								v12 = v9;
+								result_unit->link.prev = first_unit;
+								max_distance = distance;
 							}
 						}
 					}
 				}
 			}
-LABEL_22:
-			v2 = v2->player_link.next;
-			if (!v2)
-				return v11;
+			goto valid_transport;
 		}
-		//		*(s32*)a2 = v2;
+		result_unit->link.prev = first_unit;
 		return 1;
 	}
 
-	s32 mapDataTransfer(char a1, s32 a2, s32 a3)
+	s32 map_data_transfer(char a1, s32 a2, s32 a3)
 	{ // 004EAFE0
 		s32 v3; // eax
 		s32 result; // eax

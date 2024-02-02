@@ -158,7 +158,7 @@ namespace helper {
 		}
 	}
 
-	void draw_energy(BinDlg* dialog) {
+	void stats_panel_draw_energy(BinDlg* dialog) {
 		const u32 func_address = 0x00425A30;
 		__asm {
 			PUSHAD
@@ -238,7 +238,7 @@ namespace helper {
 		}
 	}
 
-	// For AI_TargetEnemyProc
+	// For ai_target_enemy_proc
 
 	bool ai_unit_can_attack(Unit* a1) {
 		const u32 Func_AI_UnitCanAttack = 0x00476180;
@@ -544,17 +544,17 @@ namespace helper {
 		return result;
 	}
 
-	s32 create_splash_weapon_proc(s16 a1, s16 a2, s16 a3, s32(__fastcall* a4)(s32, s32), s32 a5) {
-		const u32 Func_createSplashWeaponProc = 0x004E82E0;
+	s32 create_splash_weapon_proc(u16 range, u16 pos_x, u16 pos_y, s32(__fastcall* callback)(s32, s32), Unit* caster) {
+		const u32 func_address = 0x004E82E0;
 		static s32 result;
 		__asm {
 			PUSHAD
-			PUSH a5
-			PUSH a4
-			MOVZX EAX, a1
-			MOVZX EDX, a2
-			MOVZX ECX, a3
-			CALL Func_createSplashWeaponProc
+			PUSH caster
+			PUSH callback
+			MOVZX ECX, pos_y
+			MOVZX EDX, pos_x
+			MOVZX EAX, range
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -612,7 +612,7 @@ namespace helper {
 		return result;
 	}
 
-	// For drawImageHPBar
+	// For draw_image_hp_bar
 
 	s32 unk_billions(s32 a1, s32 a2, s32 a3, s32 a4) {
 		const u32 Func_unk_billions = 0x0047A750;
@@ -726,7 +726,7 @@ namespace helper {
 		return result;
 	}
 
-	// For canCastSpell
+	// For can_cast_spell
 
 	bool unitIsFrozen(Unit* a1) {
 		const u32 Func_unitIsFrozen = 0x004020B0;
@@ -786,7 +786,7 @@ namespace helper {
 		return result;
 	}
 
-	// For modifyUnitShields
+	// For modify_unit_shields
 
 	s32 SErrSetLastError(char a1) {
 		const u32 Func_SErrSetLastError = 0x00410172;
@@ -876,7 +876,7 @@ namespace helper {
 		return (s16)result;
 	}
 
-	s32 getUnitDistanceToHalt(s32 a1, Unit* a2, s32 a3) {
+	s32 get_unit_distance_to_halt(s32 a1, Unit* a2, s32 a3) {
 		const u32 Func_getUnitDistanceToHalt = 0x00402140;
 		static s32 result;
 		__asm {
@@ -891,7 +891,7 @@ namespace helper {
 		return result;
 	}
 
-	// For mapDataTransfer
+	// For map_data_transfer
 
 	s32 dataTransfer00(s32 a1, char a2, s32 a3) {
 		const u32 Func_dataTransfer00 = 0x00472A00;
@@ -14685,5 +14685,11 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	b32 unit_is_valid_caster(Unit* unit) // Based on 00401210. -Pr0nogo
+	{
+		return  (units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
+			&& !(unit->status & UnitStatus::IsHallucination);
 	}
 }

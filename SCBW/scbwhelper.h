@@ -42,7 +42,7 @@ namespace helper {
 	s32 get_max_hp(Unit* unit);
 	u16 get_last_queue_slot_id(Unit* unit);
 	void add_text_to_dialog(BinDlg* dialog, s16 index, const char* text);
-	void draw_energy(BinDlg* dialog);
+	void stats_panel_draw_energy(BinDlg* dialog);
 	void hide_optional_status_screen_controls(BinDlg* dialog);
 	void show_control_group(BinDlg* dialog, u16 firstId, u16 lastId);
 	void hide_dialog(BinDlg* dialog);
@@ -52,7 +52,7 @@ namespace helper {
 	u32 get_supplies_available(u8 a1, s32 a2);
 	void unit_stat_act_standard(void* a1);
 
-	// For AI_TargetEnemyProc
+	// For ai_target_enemy_proc
 	bool ai_unit_can_attack(Unit* a1);
 
 	// For draw_building_info
@@ -90,7 +90,7 @@ namespace helper {
 
 	// For AI_EMPShieldRequirementsProc
 	s32 ai_target_unit_is_worth_hitting(Unit* a1, Unit* a2);
-	s32 create_splash_weapon_proc(s16 a1, s16 a2, s16 a3, s32(__fastcall* a4)(s32, s32), s32 a5);
+	s32 create_splash_weapon_proc(u16 range, u16 pos_x, u16 pos_y, s32(__fastcall* callback)(s32, s32), Unit* caster);
 	s32 unit_shields_clump_in_area_accumulator_proc(Unit* a1, Unit* a2);
 
 	// For hallucinationHit
@@ -98,7 +98,7 @@ namespace helper {
 	void unit_attack_notify(Unit* unit);
 	Image* create_shield_overlay(s32 a1, Unit* a2);
 
-	// For drawImageHPBar
+	// For draw_image_hp_bar
 
 	s32 unk_billions(s32 a1, s32 a2, s32 a3, s32 a4);
 	s32 unk_billions2(s32 a1, s32 a2, s32 a3, s32 a4);
@@ -108,24 +108,24 @@ namespace helper {
 	s32 get_unit_max_energy(Unit* a1);
 	s32 getHpBarDrawSizes(s32 a1, s32 a2, s32 a3, s32 a4);
 
-	// For canCastSpell
+	// For can_cast_spell
 	bool unitIsFrozen(Unit* a1);
 	bool isUnitCasterNotHallucination(Unit* a1);
 	b32 get_active_tile_flag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags);
 	Unit* get_target_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3);
 
-	// For modifyUnitShields
+	// For modify_unit_shields
 	s32 SErrSetLastError(char a1);
 
 	// For compile_health_bar
 	void update_image_data_draw(Image* result);
 	void play_image_iscript(Image* img, u8 iscript_anim);
 
-	// For AI_FindTransport
+	// For ai_find_best_transport
 	bool can_enter_transport(Unit* a1, Unit* a2);
-	s32 getUnitDistanceToHalt(s32 a1, Unit* a2, s32 a3);
+	s32 get_unit_distance_to_halt(s32 a1, Unit* a2, s32 a3);
 
-	// For mapDataTransfer
+	// For map_data_transfer
 	s32 dataTransfer00(s32 a1, char a2, s32 a3);
 	s32 dataTransfer01(u32 a1, s32 a2, u32 a3);
 	s32 dataTransfer02(s32 a1, s32 a2, char a3);
@@ -1703,5 +1703,6 @@ namespace helper {
 	void game_menu_bindlg_bypass(BinDlg* dialog);								// 004CA450
 
 	u32 select_unit_group(u8 control_group);									// 00496B40
-	u8 keypress_escape();														//00489DA0
+	u8 keypress_escape();														// 00489DA0
+	b32 unit_is_valid_caster(Unit* unit);										// 00401210
 }

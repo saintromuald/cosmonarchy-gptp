@@ -775,7 +775,7 @@ namespace hooks
 	// Hooked to debug Stewards in a post-extender environment. -Pr0nogo
 	void orders_strafe_unit(Unit* unit) // 00465F60
 	{
-		if (unit->hangar_unit.parent && unit->shields < units_dat::shields_enabled[UnitId::ProtossSteward] << 8 >> 2) // Return if shields are below some threshold
+		if (unit->hangar_unit.parent && unit->hitpoints < units_dat::max_hitpoints[UnitId::ProtossSteward] << 8 >> 2) // Return if shields are below some threshold
 		{
 			helper::issue_order_targeting_nothing(unit, OrderId::Return);
 		}

@@ -819,4 +819,5 @@ namespace scbw
 	u32 get_manual_weapon_id_sound(u32 weapon_id);
 	bool unit_regenerates_hp(Unit* unit);
 	u32 get_regeneration_factor(Unit* unit);
+	bool unit_has_shields(Unit* unit);
 }

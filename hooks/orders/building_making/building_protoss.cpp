@@ -50,7 +50,7 @@ namespace hooks {
 							unit->build_queue[unit->build_queue_slot] = UnitId::None;
 
 							if (built_unit) {
-								if (units_dat::shields_enabled[built_unit->id]) {
+								if (scbw::unit_has_shields(built_unit)) {
 									built_unit->shields += 3 * 256;
 								}
 

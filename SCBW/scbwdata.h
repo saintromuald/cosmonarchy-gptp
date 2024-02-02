@@ -315,7 +315,7 @@ struct BufferStr {
 	char buf[260];
 };
 
-// For drawUnitInfo
+// For draw_unit_info
 SCBW_DATA(u16*,			g_supplies_available_temp,	0x006CA93C);
 SCBW_DATA(u8*,			g_status_screen_func,		0x0068C1E5);
 SCBW_DATA(BufferStr*,	g_struct_char,				0x006CA9F8);
@@ -342,12 +342,12 @@ SCBW_DATA(char*,		g_redraw_transport_ui,		0x006CA9F0);
 SCBW_DATA(s32*,			g_temp_hp_shields,			0x00695798);
 SCBW_DATA(s32*,			g_temp_weapon,				0x00695604);
 
-// For drawImageHPBar
+// For draw_image_hp_bar
 SCBW_DATA(unk_61*,		struct_5140C4,				0x005140C4);
 SCBW_DATA(unk_61*,		struct_5140D8,				0x005140D8);
 SCBW_DATA(unk_62*,		struct_5140E8,				0x005140E8);
 
-// For getUnitBulletDamage
+// For get_unit_bullet_damage
 SCBW_DATA(char*,		g_upgrades_level_sc,		0x0058D2B0);
 SCBW_DATA(char*,		g_upgrades_level_bw,		0x0058F2FE);
 
