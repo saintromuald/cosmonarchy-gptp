@@ -249,12 +249,12 @@ namespace UnitId
 	// Zerg-Building
 		ZergAxtothAxis										= 130,		// Infested Command Center
 		ZergOthstolOviform									= 152,		// Cerebrate Daggoth
-		ZergBactithSwamp									= 153,		// Unused Zerg 2
+		ZergTethvithSwamp									= 153,		// Unused Zerg 2
 		ZergAlkagIteth										= 170,		// Arbiter Tribunal
 		ZergIrulentIvoa										= 181,		// Cantina
 		ZergZorkizShroud									= 193,		// Protoss Marker
 		ZergTosvrolHaunt									= 197,		// Zerg Flag Beacon
-		ZergKalkiirPond										= 204,		// Floor Hatch
+		ZergKalkiirLake										= 204,		// Floor Hatch
 		ZergAlkajChasm										= 212,		// Right Wall Missile Trap
 		ZergLarvoskCesiant									= 216,		// Young Chrysalis
 		ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
@@ -269,8 +269,8 @@ namespace UnitId
 		ZergOcsalCesiant									= 354,		// Morphed from Larvosk Cesiant
 		ZergKazitrithCesiant								= 355,		// Morphed from Cagrant Cesiant
 		ZergEzigrisant										= 364,		// Morphed from Excisant
-		ZergNathrokLake										= 396,		// Morphed from Quazeth Pool
-		ZergSkithrokScab									= 397,		// Morphed from Hydrith Den
+		ZergVornathPond										= 396,		// Morphed from Quazeth Pool
+		ZergSkibactScab										= 397,		// Morphed from Hydrith Den
 
 	// Special-Unit
 		TerranCivilianExt									= 332,

@@ -822,14 +822,14 @@ namespace hooks {
 				case UnitId::ZergZethrokor:
 				case UnitId::ZergQuazilisk:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergKalkiirPond)|| player_has_unit_id(player_id, UnitId::ZergNathrokLake) || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool))
+					if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake)|| player_has_unit_id(player_id, UnitId::ZergVornathPond) || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool))
 					{
 						return true;
 					}
 				} break;
 				case UnitId::ZergNathrokor:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergKalkiirPond) || player_has_completed_unit_id(player_id, UnitId::ZergNathrokLake))
+					if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))
 					{
 						return true;
 					}
@@ -854,14 +854,14 @@ namespace hooks {
 				case UnitId::ZergHydralisk:
 				case UnitId::ZergIzirokor:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergBactithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkithrokScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen))
+					if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkibactScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen))
 					{
 						return true;
 					}
 				} break;
 				case UnitId::ZergSkithrokor:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergBactithSwamp) || player_has_completed_unit_id(player_id, UnitId::ZergSkithrokScab))
+					if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_completed_unit_id(player_id, UnitId::ZergSkibactScab))
 					{
 						return true;
 					}
@@ -937,7 +937,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergVorvrokor)
 			{
-				if (player_has_unit_id(player_id, UnitId::ZergKalkiirPond) || player_has_completed_unit_id(player_id, UnitId::ZergNathrokLake))
+				if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))
 				{
 					return true;
 				}
@@ -947,7 +947,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergLiiralisk)
 			{
-				if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirPond))
+				if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake))
 				{
 					return true;
 				}
@@ -957,7 +957,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergKalkalisk)
 			{
-				if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirPond))
+				if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake))
 				{
 					return true;
 				}
@@ -1017,7 +1017,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergBactalisk)
 			{
-				if (player_has_completed_unit_id(player_id, UnitId::ZergBactithSwamp))
+				if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp))
 				{
 					return true;
 				}
@@ -1027,7 +1027,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergTethzorokor)
 			{
-				if (player_has_completed_unit_id(player_id, UnitId::ZergBactithSwamp))
+				if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp))
 				{
 					return true;
 				}
@@ -1037,7 +1037,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergVithrilisk)
 			{
-				if (player_has_completed_unit_id(player_id, UnitId::ZergBactithSwamp))
+				if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp))
 				{
 					return true;
 				}
@@ -1268,11 +1268,11 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool))
 		{
-			if (unit_id == UnitId::ZergNathrokLake)
+			if (unit_id == UnitId::ZergVornathPond)
 			{
 				return true;
 			}
-			if (unit_id == UnitId::ZergKalkiirPond)
+			if (unit_id == UnitId::ZergKalkiirLake)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier2])
 				{
@@ -1282,11 +1282,11 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen))
 		{
-			if (unit_id == UnitId::ZergSkithrokScab)
+			if (unit_id == UnitId::ZergSkibactScab)
 			{
 				return true;
 			}
-			if (unit_id == UnitId::ZergBactithSwamp)
+			if (unit_id == UnitId::ZergTethvithSwamp)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier2])
 				{
@@ -2518,7 +2518,7 @@ namespace hooks {
 					case UnitId::ZergZethrokor:
 					case UnitId::ZergQuazilisk:
 					{
-						if (player_has_unit_id(player_id, UnitId::ZergKalkiirPond) || player_has_unit_id(player_id, UnitId::ZergNathrokLake) || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool))
+						if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_unit_id(player_id, UnitId::ZergVornathPond) || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool))
 						{
 							return TECH_ACTIVE;
 						}
@@ -2526,7 +2526,7 @@ namespace hooks {
 					}
 					case UnitId::ZergNathrokor:
 					{
-						if (player_has_unit_id(player_id, UnitId::ZergKalkiirPond) || player_has_completed_unit_id(player_id, UnitId::ZergNathrokLake))
+						if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))
 						{
 							return TECH_ACTIVE;
 						}
@@ -2535,7 +2535,7 @@ namespace hooks {
 					case UnitId::ZergHydralisk:
 					case UnitId::ZergIzirokor:
 					{
-						if (player_has_unit_id(player_id, UnitId::ZergBactithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkithrokScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen))
+						if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkibactScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen))
 						{
 							return TECH_ACTIVE;
 						}
@@ -2543,7 +2543,7 @@ namespace hooks {
 					}
 					case UnitId::ZergSkithrokor:
 					{
-						if (player_has_unit_id(player_id, UnitId::ZergBactithSwamp) || player_has_completed_unit_id(player_id, UnitId::ZergSkithrokScab))
+						if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_completed_unit_id(player_id, UnitId::ZergSkibactScab))
 						{
 							return TECH_ACTIVE;
 						}
@@ -2647,7 +2647,7 @@ namespace hooks {
 					{
 						return TECH_HIDDEN;
 					}
-					if (player_has_unit_id(player_id, UnitId::ZergKalkiirPond) || player_has_completed_unit_id(player_id, UnitId::ZergNathrokLake))
+					if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))
 					{
 						return TECH_ACTIVE;
 					}
@@ -2663,7 +2663,7 @@ namespace hooks {
 					{
 						return TECH_HIDDEN;
 					}
-					if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirPond))
+					if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake))
 					{
 						return TECH_ACTIVE;
 					}
@@ -2675,7 +2675,7 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ZergKalkalisk)
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirPond))
+					if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake))
 					{
 						return TECH_ACTIVE;
 					}
@@ -2747,7 +2747,7 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ZergBactalisk)
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergBactithSwamp) || player_has_completed_unit_id(player_id, UnitId::ZergSkithrokScab))
+					if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_completed_unit_id(player_id, UnitId::ZergSkibactScab))
 					{
 						return TECH_ACTIVE;
 					}
@@ -2763,7 +2763,7 @@ namespace hooks {
 					{
 						return TECH_HIDDEN;
 					}
-					if (player_has_completed_unit_id(player_id, UnitId::ZergBactithSwamp))
+					if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp))
 					{
 						return TECH_ACTIVE;
 					}
@@ -2775,7 +2775,7 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ZergVithrilisk)
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ZergBactithSwamp))
+					if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp))
 					{
 						return TECH_ACTIVE;
 					}
@@ -2985,7 +2985,7 @@ namespace hooks {
 					}
 					case UnitId::ZergVorvrokor:
 					{
-						if (player_has_unit_id(player_id, UnitId::ZergKalkiirPond) || player_has_completed_unit_id(player_id, UnitId::ZergNathrokLake))
+						if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))
 						{
 							return TECH_ACTIVE;
 						}
@@ -2994,7 +2994,7 @@ namespace hooks {
 					case UnitId::ZergLiiralisk:
 					case UnitId::ZergKalkalisk:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirPond))
+						if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake))
 						{
 							return TECH_ACTIVE;
 						}
@@ -3023,7 +3023,7 @@ namespace hooks {
 					case UnitId::ZergTethzorokor:
 					case UnitId::ZergVithrilisk:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::ZergBactithSwamp))
+						if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp))
 						{
 							return TECH_ACTIVE;
 						}
@@ -3253,10 +3253,10 @@ namespace hooks {
 			}
 			case UnitId::ZergQuazethPool:
 			{
-				if (unit_id == UnitId::ZergNathrokLake) {
+				if (unit_id == UnitId::ZergVornathPond) {
 					return TECH_ACTIVE;
 				}
-				if (unit_id == UnitId::ZergKalkiirPond)
+				if (unit_id == UnitId::ZergKalkiirLake)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{
@@ -3266,9 +3266,9 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			}
-			case UnitId::ZergNathrokLake:
+			case UnitId::ZergVornathPond:
 			{
-				if (unit_id == UnitId::ZergKalkiirPond)
+				if (unit_id == UnitId::ZergKalkiirLake)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{
@@ -3280,10 +3280,10 @@ namespace hooks {
 			}
 			case UnitId::ZergHydrithDen:
 			{
-				if (unit_id == UnitId::ZergSkithrokScab) {
+				if (unit_id == UnitId::ZergSkibactScab) {
 					return TECH_ACTIVE;
 				}
-				if (unit_id == UnitId::ZergBactithSwamp)
+				if (unit_id == UnitId::ZergTethvithSwamp)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{
@@ -3293,9 +3293,9 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			}
-			case UnitId::ZergSkithrokScab:
+			case UnitId::ZergSkibactScab:
 			{
-				if (unit_id == UnitId::ZergBactithSwamp)
+				if (unit_id == UnitId::ZergTethvithSwamp)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2])
 					{

@@ -238,24 +238,24 @@ namespace hooks
 
 			case UnitId::ZergQuazethPool:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergNathrokLake, ignore_incomplete);
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKalkiirPond, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergVornathPond, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKalkiirLake, ignore_incomplete);
 			} break;
 
-			case UnitId::ZergNathrokLake:
+			case UnitId::ZergVornathPond:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKalkiirPond, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKalkiirLake, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergHydrithDen:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSkithrokScab, ignore_incomplete);
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergBactithSwamp, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSkibactScab, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergTethvithSwamp, ignore_incomplete);
 			} break;
 
-			case UnitId::ZergSkithrokScab:
+			case UnitId::ZergSkibactScab:
 			{
-				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergBactithSwamp, ignore_incomplete);
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergTethvithSwamp, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergMutathSpire:

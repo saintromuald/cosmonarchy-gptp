@@ -258,7 +258,7 @@ namespace flingy_id
 		ProtossCosmicAltar = 248,
 		ZergNathrokor = 249,
 		ProtossEmpyrean = 250,
-		ZergNathrokLake = 251,
+		ZergVornathPond = 251,
 		ProtossEcclesiast = 252,
 		ProtossAtreus = 253,
 		ProtossAmaranth = 254,

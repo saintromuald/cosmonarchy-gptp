@@ -66,13 +66,13 @@ b32 unit_id_is_tech(u32 unit_id) {
 		case UnitId::ZergIrulentIvoa:
 		case UnitId::ZergOthstolOviform:
 		case UnitId::ZergQuazethPool:
-		case UnitId::ZergKalkiirPond:
+		case UnitId::ZergKalkiirLake:
 		case UnitId::ZergMutathSpire:
 		case UnitId::ZergTosvrolHaunt:
 		case UnitId::ZergAxtothAxis:
 		case UnitId::ZergBegrozithBarrow:
 		case UnitId::ZergHydrithDen:
-		case UnitId::ZergBactithSwamp:
+		case UnitId::ZergTethvithSwamp:
 		case UnitId::ZergAlkagIteth:
 		case UnitId::ZergChokralgantChazsal:
 		case UnitId::ZergGeszkathGrotto:
