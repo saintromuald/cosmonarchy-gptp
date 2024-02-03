@@ -35,14 +35,14 @@ u32 get_harvest_amount(Unit* unit) {
 		case UnitId::ResourceMineralField:
 		case UnitId::ResourceMineralFieldType2:
 		case UnitId::ResourceMineralFieldType3: {
-			return unit->building.resource.resource_amount > DepletedYield ? FullYield : DepletedYield;
+			return unit->building.resource.resource_amount > DepletedYield ? globals.get_yield(YieldType_Mineral, FullYield) : globals.get_yield(YieldType_MineralDepleted, DepletedYield);
 		} break;
 		default: {
 			switch (get_gas_tier(unit)) {
-				case 1: return 2;
-				case 2: return 4;
-				case 3: return 5;
-				case 4: return 6;
+				case 1: return globals.get_yield(YieldType_GasRidge, 2);
+				case 2: return globals.get_yield(YieldType_GasGeyser, 4);
+				case 3: return globals.get_yield(YieldType_GasTier2, 5);
+				case 4: return globals.get_yield(YieldType_GasTier3, 6);
 			}
 		} break;
 	}

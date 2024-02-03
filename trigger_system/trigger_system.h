@@ -151,6 +151,17 @@ struct AdvisorState {
 	u8 cooldown;
 };
 
+enum YieldType {
+	YieldType_Mineral,
+	YieldType_MineralDepleted,
+	YieldType_GasRidge,
+	YieldType_GasGeyser,
+	YieldType_GasTier2,
+	YieldType_GasTier3,
+
+	YieldType_Count,
+};
+
 struct Globals {
 	PlayerVars players[PlayerLimit];
 	u32 celebration;
@@ -159,6 +170,14 @@ struct Globals {
 
 	AlertState alert;
 	AdvisorState advisor_state;
+
+	u8 yields[YieldType_Count];
+
+	u8 get_yield(YieldType type, u8 default_value) {
+		u8 value = yields[(size_t)type];
+		if (value) return value;
+		return default_value;
+	}
 };
 
 enum TriggerStat : u8 {
