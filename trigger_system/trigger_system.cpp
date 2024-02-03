@@ -814,7 +814,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			u32 depleted_yield = parser_get_s32(&parser);
 			u32 yield = parser_get_s32(&parser);
 
-			globals.yields[YieldType_MineralDepleted] = yield;
+			globals.yields[YieldType_MineralDepleted] = depleted_yield;
 			globals.yields[YieldType_Mineral] = yield;
 		} else if (parser_eq(&parser, "set_gas_yields")) {
 			u32 ridge_yield = parser_get_s32(&parser);

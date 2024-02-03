@@ -31,8 +31,6 @@
 #define Clamp(x, min, max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
 
 #define HarvestTimer  36
-#define FullYield     4
-#define DepletedYield 2
 
 #define PlayerColorByte 0x0B
 struct PlayerColorCode {

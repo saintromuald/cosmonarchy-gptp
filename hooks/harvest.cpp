@@ -35,14 +35,14 @@ u32 get_harvest_amount(Unit* unit) {
 		case UnitId::ResourceMineralField:
 		case UnitId::ResourceMineralFieldType2:
 		case UnitId::ResourceMineralFieldType3: {
-			return unit->building.resource.resource_amount > DepletedYield ? globals.get_yield(YieldType_Mineral, FullYield) : globals.get_yield(YieldType_MineralDepleted, DepletedYield);
+			return unit->building.resource.resource_amount > globals.get_yield(YieldType_MineralDepleted) ? globals.get_yield(YieldType_Mineral) : globals.get_yield(YieldType_MineralDepleted);
 		} break;
 		default: {
 			switch (get_gas_tier(unit)) {
-				case 1: return globals.get_yield(YieldType_GasRidge, 2);
-				case 2: return globals.get_yield(YieldType_GasGeyser, 4);
-				case 3: return globals.get_yield(YieldType_GasTier2, 5);
-				case 4: return globals.get_yield(YieldType_GasTier3, 6);
+				case 1: return globals.get_yield(YieldType_GasRidge);
+				case 2: return globals.get_yield(YieldType_GasGeyser);
+				case 3: return globals.get_yield(YieldType_GasTier2);
+				case 4: return globals.get_yield(YieldType_GasTier3);
 			}
 		} break;
 	}
@@ -69,13 +69,13 @@ namespace hooks {
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
 		u32 harvest_amount = get_harvest_amount(resource);
 		if (is_mineral) {
-			if (resource->building.resource.resource_amount < 4) {
-				resource->building.resource.resource_amount = DepletedYield;
+			if (resource->building.resource.resource_amount < globals.get_yield(YieldType_Mineral)) {
+				resource->building.resource.resource_amount = globals.get_yield(YieldType_MineralDepleted);
 				resource->status |= UnitStatus::NoCollide;
-			} else if (resource->building.resource.resource_amount -  harvest_amount > DepletedYield) {
+			} else if (resource->building.resource.resource_amount -  harvest_amount > globals.get_yield(YieldType_MineralDepleted)) {
 				resource->building.resource.resource_amount -= harvest_amount;
 			} else {
-				resource->building.resource.resource_amount = DepletedYield;
+				resource->building.resource.resource_amount = globals.get_yield(YieldType_MineralDepleted);
 				resource->status |= UnitStatus::NoCollide; // Not sure if we should |= every time this function is called? -Pr0nogo
 			}
 			update_mineral_field_image(resource);

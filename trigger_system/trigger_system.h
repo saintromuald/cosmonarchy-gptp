@@ -152,8 +152,8 @@ struct AdvisorState {
 };
 
 enum YieldType {
-	YieldType_Mineral,
 	YieldType_MineralDepleted,
+	YieldType_Mineral,
 	YieldType_GasRidge,
 	YieldType_GasGeyser,
 	YieldType_GasTier2,
@@ -161,6 +161,8 @@ enum YieldType {
 
 	YieldType_Count,
 };
+
+static constexpr u8 default_yields[YieldType_Count] = { 2, 4, 2, 4, 5, 6 };
 
 struct Globals {
 	PlayerVars players[PlayerLimit];
@@ -173,10 +175,8 @@ struct Globals {
 
 	u8 yields[YieldType_Count];
 
-	u8 get_yield(YieldType type, u8 default_value) {
-		u8 value = yields[(size_t)type];
-		if (value) return value;
-		return default_value;
+	u8 get_yield(YieldType type) {
+		return yields[type] ? yields[type] : default_yields[type];
 	}
 };
 
