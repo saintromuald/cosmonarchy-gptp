@@ -814,7 +814,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			u32 depleted_yield = parser_get_s32(&parser);
 			u32 yield = parser_get_s32(&parser);
 
-			scbw::printf("Setting mineral yields to %u/%u", depleted_yield, yield);
 			globals.yields[YieldType_MineralDepleted] = yield;
 			globals.yields[YieldType_Mineral] = yield;
 		} else if (parser_eq(&parser, "set_gas_yields")) {
@@ -823,7 +822,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			u32 tier2_yield = parser_get_s32(&parser);
 			u32 tier3_yield = parser_get_s32(&parser);
 
-			scbw::printf("Setting gas yields to %u/%u/%u/%u", ridge_yield, geyser_yield, tier2_yield, tier3_yield);
 			globals.yields[YieldType_GasRidge] = ridge_yield;
 			globals.yields[YieldType_GasGeyser] = geyser_yield;
 			globals.yields[YieldType_GasTier2] = tier2_yield;
