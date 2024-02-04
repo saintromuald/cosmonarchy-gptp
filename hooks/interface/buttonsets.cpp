@@ -382,14 +382,14 @@ namespace hooks {
 		if (scbw::get_game_kind() == GameKind_FactionWars && !globals.players[local_player].faction_was_set) {
 			if (buttonset_id == UnitId::None) {
 				switch (g_player_table[local_player].race) {
-					case RaceId::Terran:
-					case RaceId::Protoss: {
+					case RaceId::Terran: {
 						buttonset_id = UnitId::Buttons_FactionSelect;
 					} break;
+					case RaceId::Protoss: {
+						buttonset_id = UnitId::Buttons_FactionSelectProtoss;
+					} break;
 					case RaceId::Zerg: {
-						// TODO: Make this like Terran when the Zerg factions are actually implemented.
-						command.faction = Faction_ZergAtaltrethTendril;
-						helper::queue_game_command((u8*)&command, 0xc);
+						buttonset_id = UnitId::Buttons_FactionSelectZerg;
 					} break;
 						// TODO: Add Askosi case
 				}
@@ -626,7 +626,7 @@ namespace hooks {
 					current_button_state = helper::req_check((u32)current_button->requirement_func, current_button->requirement_var, *g_local_nation_id, unit);
 					// Fight that lardcode, tony!
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons) {
-						if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva || buttonset_id == UnitId::Buttons_FactionSelect) {
+						if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva || buttonset_id_is_faction_selection(buttonset_id)) {
 							current_button_state = Button_State::Enabled;
 						}
 						if ((buttonset_id == UnitId::TerranMason || buttonset_id == UnitId::TerranTalos) && (unit->main_order_id != OrderId::ConstructingBuilding)) {

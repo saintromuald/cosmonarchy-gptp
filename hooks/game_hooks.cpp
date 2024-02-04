@@ -3918,6 +3918,10 @@ namespace hooks {
 											{
 												scbw::printf("\tPlayer %u has selected the Divine Primacy.", player + 1, GameTextColor::White);
 											} break;
+											case Faction_ProtossOrderOfTheSacredSaber:
+											{
+												scbw::printf("\tPlayer %u has selected the Order of the Sacred Saber.", player + 1, GameTextColor::White);
+											} break;
 										}
 									} break;
 									case RaceId::Zerg:
@@ -3927,6 +3931,10 @@ namespace hooks {
 											case Faction_ZergAtaltrethTendril:
 											{
 												scbw::printf("\tPlayer %u has selected the Ataltreth Tendril.", player + 1, GameTextColor::White);
+											} break;
+											case Faction_ZergZorthosTendril:
+											{
+												scbw::printf("\tPlayer %u has selected the Zorthos Tendril.", player + 1, GameTextColor::White);
 											} break;
 										}
 									} break;

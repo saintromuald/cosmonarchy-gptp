@@ -1203,3 +1203,10 @@ bool unit_id_is_burrowed_attacker(u32 unit_id)
 {
 	return unit_id == UnitId::ZergLakizilisk;
 }
+
+bool buttonset_id_is_faction_selection(u32 buttonset_id)
+{
+	return buttonset_id == UnitId::Buttons_FactionSelect
+		|| buttonset_id == UnitId::Buttons_FactionSelectProtoss
+		|| buttonset_id == UnitId::Buttons_FactionSelectZerg;
+}

@@ -588,5 +588,9 @@ namespace UnitId
 		Buttons_FactionSelect4								= 392,
 		Buttons_FactionSelect5								= 393,
 		Buttons_FactionSelect6								= 394,
+
+		// Temporary until all factions are implemented for all races!
+		Buttons_FactionSelectProtoss						= 404,
+		Buttons_FactionSelectZerg							= 405,
 	};
 }
