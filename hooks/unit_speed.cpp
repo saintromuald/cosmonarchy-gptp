@@ -151,12 +151,6 @@ namespace hooks
 				const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 				speed *= multiplier;
 			} break;
-			case UnitId::ProtossClarion:
-			{
-				// Clarion Harmony Drive: gains increased movement speed based on shields
-				f64 fraction = (unit->shields / 256.0) / units_dat::max_shield_points[unit->id];
-				speed *= 1.0 + fraction / 2;
-			} break;
 			case UnitId::ZergUltrokor:
 			{
 				// Ultrakor Kaiser Rampage: gains 200% movespeed on kill for 1 second
@@ -164,6 +158,15 @@ namespace hooks
 				if (unit_ext->timers[TimerKaiserRampage])
 				{
 					speed *= 2;
+				}
+			} break;
+
+			// Deathless Procession
+			case UnitId::ProtossAdherent:
+			{
+				speed *= 1.25;
+				if (unit->shields > 256) {
+					speed *= 1.25;
 				}
 			} break;
 

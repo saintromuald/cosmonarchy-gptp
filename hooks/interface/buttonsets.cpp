@@ -382,13 +382,9 @@ namespace hooks {
 		if (scbw::get_game_kind() == GameKind_FactionWars && !globals.players[local_player].faction_was_set) {
 			if (buttonset_id == UnitId::None) {
 				switch (g_player_table[local_player].race) {
-					case RaceId::Terran: {
-						buttonset_id = UnitId::Buttons_FactionSelect;
-					} break;
+					case RaceId::Terran:
 					case RaceId::Protoss: {
-						// TODO: Make this like Terran when the Protoss factions are actually implemented.
-						command.faction = Faction_ProtossDivinePrimacy;
-						helper::queue_game_command((u8*)&command, 0xc);
+						buttonset_id = UnitId::Buttons_FactionSelect;
 					} break;
 					case RaceId::Zerg: {
 						// TODO: Make this like Terran when the Zerg factions are actually implemented.
@@ -433,7 +429,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Protoss: {
-							command.faction = Faction_ProtossOrderOfTheSacredTemplar;
+							command.faction = Faction_ProtossOrderOfTheSacredSaber;
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Zerg: {
@@ -787,12 +783,14 @@ namespace hooks {
 					bool is_training = 0;
 					bool is_burrowed = 0;
 					bool is_adding_on = 0;
+					Faction faction = Faction_None;
 					if (unit) {
 						has_addon = units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon;
 						in_air = unit->status & UnitStatus::InAir;
 						is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 						is_burrowed = unit->status & UnitStatus::Burrowed;
 						is_adding_on = unit->current_build_unit && units_dat::base_property[unit->current_build_unit->id] & UnitProperty::Addon;
+						faction = globals.players[unit->player].faction;
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) {
@@ -817,12 +815,12 @@ namespace hooks {
 									} break;
 
 									case UnitId::TerranCyprian: {
-										if (globals.players[unit->player].faction == Faction_TerranNydusTrinity) { current_button_state = Button_State::Invisible;
+										if (faction == Faction_TerranNydusTrinity) { current_button_state = Button_State::Invisible;
 										}
 									} break;
 
 									case UnitId::TerranCohort: {
-										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || globals.players[unit->player].faction != Faction_TerranNydusTrinity) {
+										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction_TerranNydusTrinity) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -834,7 +832,7 @@ namespace hooks {
 								switch (current_button->requirement_var) {
 									case UnitId::TerranApostle:
 									{
-										if (globals.players[unit->player].faction != Faction_TerranHecatonCoalition) {
+										if (faction != Faction_TerranHecatonCoalition) {
 											if (scbw::unit_queue_full(unit) || is_adding_on || in_air) {
 												current_button_state = Button_State::Invisible;
 											} else {
@@ -846,7 +844,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranAuriel:
 									{
-										if (globals.players[unit->player].faction == Faction_TerranHecatonCoalition) {
+										if (faction == Faction_TerranHecatonCoalition) {
 											if (scbw::unit_queue_full(unit) || is_adding_on || in_air) {
 												current_button_state = Button_State::Invisible;
 											} else {
@@ -894,14 +892,14 @@ namespace hooks {
 									} break;
 
 									case UnitId::TerranGoliath: {
-										if (globals.players[unit->player].faction == Faction_TerranGoldenRepublic
-										||	globals.players[unit->player].faction == Faction_TerranUpstart) {
+										if (faction == Faction_TerranGoldenRepublic
+										||	faction == Faction_TerranUpstart) {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
 									case UnitId::TerranPhalanxTankMode: {
 										if (!scbw::all_selected_units_have_addon(UnitId::TerranPalladium) || scbw::unit_queue_full(unit)
-										||	 globals.players[unit->player].faction == Faction_TerranNydusTrinity) {
+										||	 faction == Faction_TerranNydusTrinity) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -909,14 +907,14 @@ namespace hooks {
 									} break;
 
 									case UnitId::TerranSouthpaw: {
-										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || globals.players[unit->player].faction != Faction_TerranUpstart) {
+										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction_TerranUpstart) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
 									case UnitId::TerranAspirant: {
-										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || globals.players[unit->player].faction != Faction_TerranGoldenRepublic) {
+										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction_TerranGoldenRepublic) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -924,7 +922,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranTarasque: {
 										if (!scbw::all_selected_units_have_addon(UnitId::TerranPalladium) || scbw::unit_queue_full(unit)
-										||  globals.players[unit->player].faction != Faction_TerranNydusTrinity) {
+										||  faction != Faction_TerranNydusTrinity) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -963,22 +961,22 @@ namespace hooks {
 							case UnitId::TerranStarpad: {
 								switch (current_button->requirement_var) {
 									case UnitId::TerranWraith: {
-										if (globals.players[unit->player].faction == Faction_TerranFuturistFederation) {
+										if (faction == Faction_TerranFuturistFederation) {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
 									case UnitId::TerranAncile: {
-										if (globals.players[unit->player].faction == Faction_TerranUpstart) {
+										if (faction == Faction_TerranUpstart) {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
 									case UnitId::TerranTrojan: {
-										if (globals.players[unit->player].faction == Faction_TerranHecatonCoalition) {
+										if (faction == Faction_TerranHecatonCoalition) {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
 									case UnitId::TerranQilin: {
-										if (globals.players[unit->player].faction == Faction_TerranHecatonCoalition) {
+										if (faction == Faction_TerranHecatonCoalition) {
 											if (!in_air) {
 												current_button_state = Button_State::Enabled;
 											}
@@ -1005,7 +1003,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranSeraph: {
 										if (!scbw::all_selected_units_have_addon(UnitId::TerranCommandment) || scbw::unit_queue_full(unit)
-										||	 globals.players[unit->player].faction == Faction_TerranGoldenRepublic) {
+										||	 faction == Faction_TerranGoldenRepublic) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -1013,7 +1011,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranLuminary: {
 										if (!scbw::all_selected_units_have_addon(UnitId::TerranCommandment) || scbw::unit_queue_full(unit)
-										|| 	 globals.players[unit->player].faction != Faction_TerranGoldenRepublic) {
+										|| 	 faction != Faction_TerranGoldenRepublic) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -1234,6 +1232,26 @@ namespace hooks {
 									current_button_state = Button_State::Enabled;
 								} else {
 									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ProtossGateway: {
+								switch (current_button->requirement_var) {
+									case UnitId::ProtossZealot:
+									case UnitId::ProtossDracadin:
+									case UnitId::ProtossEcclesiast:
+									case UnitId::ProtossHierophant: {
+										current_button_state = Button_State::Enabled;
+									} break;
+									case UnitId::ProtossLegionnaire: {
+										if (faction != Faction_ProtossOrderOfTheSacredSaber) {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
+									case UnitId::ProtossAdherent: {
+										if (faction == Faction_ProtossOrderOfTheSacredSaber) {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
 								}
 							} break;
 							case UnitId::ProtossGrandLibrary: {
@@ -2079,6 +2097,11 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossLegionnaire: {
 									if (current_button->icon_id == IconId::PsiAssault) { // Legionnaire - Blade Vortex
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossAdherent: {
+									if (current_button->icon_id == IconId::LegEnhancements) { // Adherent - Deathless Procession
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

@@ -177,6 +177,10 @@ namespace UnitId
 		ProtossAccantor										= 352,		// The new one
 		ProtossVassal										= 360,		// The new one
 
+	// Protoss-Unit-Factional
+		ProtossAdherent										= 400,
+		ProtossExtatus										= 401,
+
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1
 		ProtossProstrationStage								= 159,		// Observatory

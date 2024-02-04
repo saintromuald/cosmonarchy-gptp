@@ -68,7 +68,7 @@ enum Faction: u8 {
 	Faction_TerranUpstart,
 
 	Faction_ProtossDivinePrimacy,
-	Faction_ProtossOrderOfTheSacredTemplar,
+	Faction_ProtossOrderOfTheSacredSaber,
 	Faction_ProtossKhalendricKnights,
 	Faction_ProtossStarbound,
 

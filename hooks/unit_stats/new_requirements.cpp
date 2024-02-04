@@ -215,23 +215,23 @@ namespace hooks {
 					if (faction != Faction_TerranHecatonCoalition) {
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranHotshot:
 				{
 					if (faction == Faction_TerranHecatonCoalition) {
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranHarakan:
 				{
 					return true;
-				}
+				} break;
 				case UnitId::TerranCyprian:
 				{
 					if (faction != Faction_TerranNydusTrinity) {
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranCohort:
 				{
 					if (faction == Faction_TerranNydusTrinity) {
@@ -365,14 +365,14 @@ namespace hooks {
 						{
 							return true;
 						}
-					}
+					} break;
 				case UnitId::TerranMadrigalImperiosoMode:
 				{
 					if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranTarasque:
 				{
 					if (faction == Faction_TerranNydusTrinity) {
@@ -415,7 +415,7 @@ namespace hooks {
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranAnticthon:
 				case UnitId::TerranAion:
 				{
@@ -502,14 +502,14 @@ namespace hooks {
 							return true;
 						}
 					}
-				}
+				} break;
 				case UnitId::TerranAzazel:
 				{
 					if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
 					{
 						return true;
 					}
-				}
+				} break;
 				case UnitId::TerranLuminary:
 				{
 					if (faction == Faction_TerranGoldenRepublic) {
@@ -584,6 +584,7 @@ namespace hooks {
 				case UnitId::ProtossDracadin:
 				case UnitId::ProtossEcclesiast:
 				case UnitId::ProtossLegionnaire:
+				case UnitId::ProtossAdherent:
 				case UnitId::ProtossHierophant:
 				{
 					return true;
@@ -1494,7 +1495,7 @@ namespace hooks {
 						return TECH_LOCKED;
 					}
 				}
-			}
+			} break;
 			case UnitId::TerranMinistry:
 			{
 				switch (unit_id)
@@ -1831,7 +1832,7 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 				}
-			}
+			} break;
 			case UnitId::TerranFulcrum:
 			{
 				switch (unit_id)
@@ -1973,7 +1974,7 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 				}
-			}
+			} break;
 			case UnitId::TerranIronFoundry:
 			{
 				switch (unit_id)
@@ -2102,7 +2103,7 @@ namespace hooks {
 						return TECH_HIDDEN;
 					}
 				}
-			}
+			} break;
 			case UnitId::TerranStarport:
 			{
 				switch (unit_id)
@@ -2260,14 +2261,27 @@ namespace hooks {
 					case UnitId::ProtossZealot:
 					case UnitId::ProtossDracadin:
 					case UnitId::ProtossEcclesiast:
-					case UnitId::ProtossLegionnaire:
 					case UnitId::ProtossHierophant:
 					{
 						return TECH_ACTIVE;
 					}
+					case UnitId::ProtossLegionnaire:
+					{
+						if (faction == Faction_ProtossOrderOfTheSacredSaber) {
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossAdherent:
+					{
+						if (faction != Faction_ProtossOrderOfTheSacredSaber) {
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossGrandLibrary:
 			{
 				switch (unit_id)
@@ -2281,7 +2295,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossRogueGallery:
 			{
 				switch (unit_id)
@@ -2295,7 +2309,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossProstrationStage:
 			{
 				switch (unit_id)
@@ -2309,7 +2323,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossAncestralArchives:
 			{
 				switch (unit_id)
@@ -2322,7 +2336,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossHallOfHeretics:
 			{
 				switch (unit_id)
@@ -2334,7 +2348,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossLattice:
 			{
 				switch (unit_id)
@@ -2349,7 +2363,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossArdentAuthority:
 			{
 				switch (unit_id)
@@ -2364,7 +2378,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossAuxiliaryOasis:
 			{
 				switch (unit_id)
@@ -2379,7 +2393,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossSyntheticSynod:
 			{
 				switch (unit_id)
@@ -2392,7 +2406,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossStargate:
 			{
 				switch (unit_id)
@@ -2407,7 +2421,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossArgosy:
 			{
 				switch (unit_id)
@@ -2422,7 +2436,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			case UnitId::ProtossMonumentOfSin:
 			{
 				switch (unit_id)
@@ -2434,7 +2448,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 
 			// Subunits
 			case UnitId::ProtossSolarion:
@@ -2494,7 +2508,7 @@ namespace hooks {
 					}
 					return TECH_HIDDEN;
 				}
-			}
+			} break;
 			
 			// ZERG
 			// Units
