@@ -332,9 +332,6 @@ namespace hooks
 				if (unit->status & UnitStatus::Burrowed) {
 					regen *= 2;
 				}
-				if (unit_ext->values[ValueNathreliskCloud]) {
-					regen *= 2;
-				}
 
 				bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
 				regen *= 1 + has_crucible;

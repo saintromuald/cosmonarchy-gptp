@@ -852,6 +852,7 @@ namespace hooks
 				u32 percentage = attacker_ext->values[ValueMortothrokorStacks] * 0.05;
 				data.attacker->heal_hp(damage_dealt * percentage, data.attacker);
 			} break;
+			case WeaponId::AdherentPhaseBlade:
 			case WeaponId::AmaranthPsiCleaver:
 			{
 				// Eternal Service - Amaranth behavior

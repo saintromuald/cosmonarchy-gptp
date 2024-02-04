@@ -638,6 +638,10 @@ namespace hooks {
 						fire_bullet(unit, weapon_id, unit->order_target);
 						fire_multiple(unit, weapon_id, 2, FilterEnemy, options);
 					} break;
+					case WeaponId::NathreliskSignalingSpores:
+					{
+						iquare_globals.create_effect(EffectId_VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
+					} // Fallthrough intended, for now.
 					default: {
 						u32 sound_id = scbw::get_manual_weapon_id_sound(weapon_id);
 						if (sound_id) {

@@ -539,8 +539,9 @@ namespace hooks
 				GPTP::critical_logger << "Active tile array:\n";
 				for (u32 y = 0; y < g_map_tile_size->height; y++) {
 					for (u32 x = 0; x < g_map_tile_size->width; x++) {
-						ActiveTile* tile = scbw::get_active_tile_at_tile(x, y);
-						GPTP::critical_logger << tile->vision_flags;
+						u32 tile = scbw::get_active_tile_at_tile(x, y)->vision_flags;
+						sprintf(buffer, "%08d ", tile);
+						GPTP::critical_logger << buffer;
 					}
 				}
 				GPTP::critical_logger << "\n";

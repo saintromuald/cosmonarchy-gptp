@@ -148,6 +148,8 @@ namespace WeaponId {
 		SouthpawKnockoutDrivers				= 169,
 		HotshotDispatchShotgun				= 208,
 		AurielQuarternaryRifle				= 209,
+		AdherentPhaseBlade					= 210,
+		NathreliskSignalingSpores			= 211,
 
 		// Terran \\
 			

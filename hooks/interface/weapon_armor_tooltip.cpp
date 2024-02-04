@@ -409,6 +409,7 @@ namespace hooks
 		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
 		add_status(statuses, "Blinded", -1, 1, unit_ext->timers[TimerAuralAssaultBlind], TimerType::Gptp);
 		add_status(statuses, "Swarming Omen", -1, 1, unit_ext->timers[TimerSwarmingOmenDebuff], TimerType::Gptp);
+		add_status(statuses, "Mitosal Fog", -1, 1, unit_ext->timers[TimerNathreliskMitosalFog], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);

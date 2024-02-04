@@ -520,7 +520,8 @@ void tick_effect(Effect* effect) {
 
 				for (u32 j = 0; j < unit_array.count; j++) {
 					Unit* target = unit_array.units[j];
-					target->heal_hp(10 * tick_scalar);
+					UnitExt* target_ext = get_unit_ext(target);
+					target_ext->timers[TimerNathreliskMitosalFog] = 24;
 				}
 			} break;
 			case EffectId_CyclopsRecursionRound: {

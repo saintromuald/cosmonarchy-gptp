@@ -829,6 +829,7 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::ZergNathrokor:
+				case UnitId::ZergNathrelisk:
 				{
 					if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))
 					{
@@ -954,7 +955,7 @@ namespace hooks {
 				}
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergNathrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergNathrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva) || player_has_completed_unit_id(player_id, UnitId::ZergNathrelisk))
 		{
 			if (unit_id == UnitId::ZergKalkalisk)
 			{
@@ -2540,6 +2541,20 @@ namespace hooks {
 					}
 					case UnitId::ZergNathrokor:
 					{
+						if (faction == Faction_ZergZorthosTendril) {
+							return TECH_HIDDEN;
+						}
+						if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))
+						{
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
+					}
+					case UnitId::ZergNathrelisk:
+					{
+						if (faction != Faction_ZergZorthosTendril) {
+							return TECH_HIDDEN;
+						}
 						if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))
 						{
 							return TECH_ACTIVE;
@@ -2686,6 +2701,7 @@ namespace hooks {
 				return TECH_HIDDEN;
 			}
 			case UnitId::ZergNathrokor:
+			case UnitId::ZergNathrelisk:
 			{
 				if (unit_id == UnitId::ZergKalkalisk)
 				{

@@ -250,6 +250,11 @@ namespace UnitId
 		ZergAxitriliskWeaponless							= 377,
 		ZergVilgoleth										= 378,
 
+	// Zerg-Unit-Factional
+		ZergNathrelisk										= 402,
+		ZergIziralisk										= 403,
+
+
 	// Zerg-Building
 		ZergAxtothAxis										= 130,		// Infested Command Center
 		ZergOthstolOviform									= 152,		// Cerebrate Daggoth

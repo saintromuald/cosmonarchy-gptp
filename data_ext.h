@@ -167,7 +167,6 @@ enum ExtValueId {
 	ValueVultureLaunchPos,
 	ValueStaggerWeaponId,
 	ValueStaggerCount,
-	ValueNathreliskCloud,
 	ValueTriggerArmorBaseSet,
 	ValueTriggerArmorBaseAmount,
 	ValueTriggerArmorPenBaseSet,
@@ -303,6 +302,7 @@ enum ExtTimerId {
 	TimerClearStaggerBlacklist,
 	TimerUseLastRepulsion,
 	TimerCustomLarva,
+	TimerNathreliskMitosalFog,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

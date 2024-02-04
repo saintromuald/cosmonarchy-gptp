@@ -94,6 +94,7 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergZethrokor, UnitId::ZergVorvrokor},
 	{UnitId::ZergQuazilisk, UnitId::ZergLiiralisk},
 	{UnitId::ZergNathrokor, UnitId::ZergKalkalisk},
+	{UnitId::ZergNathrelisk, UnitId::ZergKalkalisk},
 	{UnitId::ZergCikralisk, UnitId::ZergGhitorokor},
 	{UnitId::ZergProtathalor, UnitId::ZergSovroleth},
 	{UnitId::ZergMutalisk, UnitId::ZergTosgrilisk},

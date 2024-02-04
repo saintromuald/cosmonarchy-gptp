@@ -508,6 +508,7 @@ namespace scbw {
 			case UnitId::ZergZethrokor:
 			case UnitId::ZergQuazilisk:
 			case UnitId::ZergNathrokor:
+			case UnitId::ZergNathrelisk:
 			case UnitId::ZergCikralisk:
 			case UnitId::ZergProtathalor:
 			case UnitId::ZergMutalisk:
@@ -2220,7 +2221,7 @@ namespace scbw {
 			case UnitId::ZergIroleth:				return UnitId::ZergOvileth;
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
 			case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
-			case UnitId::ZergKalkalisk:				return UnitId::ZergNathrokor;
+		//	case UnitId::ZergKalkalisk:				return UnitId::ZergNathrokor;
 			case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
 			case UnitId::ZergTosgrilisk:			return UnitId::ZergMutalisk;
 			case UnitId::ZergBactalisk:				return UnitId::ZergHydralisk;
@@ -2237,6 +2238,18 @@ namespace scbw {
 			case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
 			case UnitId::ZergSelkerilisk:			return UnitId::ZergVilgorokor;
 			case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
+
+			case UnitId::ZergKalkalisk:
+			{
+				switch (globals.players[unit->player].faction) {
+					case Faction_ZergAtaltrethTendril: {
+						return UnitId::ZergNathrokor;
+					}
+					case Faction_ZergZorthosTendril: {
+						return UnitId::ZergNathrelisk;
+					}
+				}
+			}
 		}
 		return UnitId::None;
 	}
@@ -3746,13 +3759,13 @@ namespace scbw {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		return units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP
 			|| unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]
-			|| unit_ext->values[ValueNathreliskCloud];
+			|| unit_ext->timers[TimerNathreliskMitosalFog];
 	}
 
 	u32 get_regeneration_factor(Unit* unit) {
 		u32 factor = 0;
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueNathreliskCloud]) {
+		if (unit_ext->timers[TimerNathreliskMitosalFog]) {
 			factor = 2;
 		}
 		return factor;

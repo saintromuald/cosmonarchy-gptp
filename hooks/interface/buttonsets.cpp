@@ -1379,11 +1379,27 @@ namespace hooks {
 										}
 									} break;
 									case UnitId::ZergNathrokor: {
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergVornathPond)
-										||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
-											current_button_state = Button_State::Enabled;
+										if (faction != Faction_ZergZorthosTendril) {	
+											if (player_has_completed_unit_id(unit->player, UnitId::ZergVornathPond)
+											||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+												current_button_state = Button_State::Enabled;
+											} else {
+												current_button_state = Button_State::Disabled;
+											}
 										} else {
-											current_button_state = Button_State::Disabled;
+												current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::ZergNathrelisk: {
+										if (faction == Faction_ZergZorthosTendril) {	
+											if ((player_has_completed_unit_id(unit->player, UnitId::ZergVornathPond)
+											||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) && faction == Faction_ZergZorthosTendril) {
+												current_button_state = Button_State::Enabled;
+											} else {
+												current_button_state = Button_State::Disabled;
+											}
+										} else {
+												current_button_state = Button_State::Invisible;
 										}
 									} break;
 									case UnitId::ZergHydralisk:
@@ -2299,6 +2315,11 @@ namespace hooks {
 								} break;
 								case UnitId::ZergNathrokor: {
 									if (current_button->icon_id == IconId::AdrenalGlands) { // Nathrokor - Adrenal Frenzy
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergNathrelisk: {
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Nathrelisk - Mitosal Fog
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

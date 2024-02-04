@@ -243,6 +243,7 @@ namespace hooks {
 						case UnitId::ZergOvileth:
 						case UnitId::ZergOthstoleth:
 						case UnitId::ZergNathrokor:
+						case UnitId::ZergNathrelisk:
 						case UnitId::ZergMutalisk:
 						case UnitId::ZergSkithrokor:
 						case UnitId::ZergAlmaksalisk:
@@ -311,7 +312,7 @@ namespace hooks {
 						{
 							animation = IscriptAnimation::Unused1;
 						} break;
-						// New mutation handling! Everything will eventually use this. -Pr0nogo
+						// New mutation animation handling! Everything will eventually use this. -Pr0nogo
 						case UnitId::ZergQuazilisk:
 						case UnitId::ZergNathrokor:
 						{
