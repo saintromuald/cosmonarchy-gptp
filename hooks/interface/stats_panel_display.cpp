@@ -659,20 +659,15 @@ namespace hooks
 	// Hooked to change the name of new building morphs.
 	// Since August 2022, data extenders make use of their own hook for naming extended unit ids.
 	// - Pr0nogo
-	const char* get_unit_name(Unit* unit) {
-		if (unit->player < PlayerLimit && unit->id < UnitId::Count &&
-			custom_unit_names[unit->player][unit->id].size) {
+	const char* get_unit_name(Unit* unit) { // 0047B5A0
+		if (unit->player < PlayerLimit && unit->id < UnitId::Count && custom_unit_names[unit->player][unit->id].size) {
 			return custom_unit_names[unit->player][unit->id].data;
 		}
 
 		u16 queue = unit->build_queue[unit->build_queue_slot];
-		if (unit->status & UnitStatus::Completed
-		||  !scbw::is_zerg_building_morph_result(queue))
-		{
+		if (unit->status & UnitStatus::Completed || !scbw::is_zerg_building_morph_result(queue)) {
 			return helper::get_unit_name_stat_string(unit->id);
-		}
-		else
-		{
+		} else {
 			return helper::get_unit_name_stat_string(queue);
 		}
 	}
