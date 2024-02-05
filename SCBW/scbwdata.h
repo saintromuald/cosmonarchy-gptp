@@ -1211,6 +1211,7 @@ SCBW_DATA(u8*,				g_region_vision_filter,				0x00629C90);
 
 // For desync debugging
 SCBW_DATA(u8*,				g_player_flag,						0x0065FC10);
+SCBW_DATA(u32*,				g_mask_hash_current_y,				0x0065EB28);
 
 // For glu_main_dialog_interact (glucustom.cpp)
 SCBW_DATA(u32*,				g_is_broodwar,						0x006D11E4);

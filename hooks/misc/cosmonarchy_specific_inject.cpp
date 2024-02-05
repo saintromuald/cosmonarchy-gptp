@@ -529,20 +529,29 @@ namespace hooks
 				sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", *g_local_nation_id);
 				scbw::print(buffer, GameTextColor::Yellow);
 				GPTP::critical_logger << "Invalid Hash, type 1! Local nation id: " << *g_local_nation_id << " | Active nation id: " << *g_active_nation_id << " | Player flag: " << (u32)*g_player_flag <<
-					"\nHash offset:" << *g_current_hash_offset << "\nHash 1: 0x" << g_hash_list[hash_struct_index].hash << "| Hash 2: 0x" << *(u16*)(data + 2) <<
-					"\nP1 resources: " << g_game_minerals[0] << " | " << g_game_vespene[0] << "\nP2 resources: " << g_game_minerals[1] << " | " << g_game_vespene[1] <<
+					"\nHash offset:" << *g_current_hash_offset << "\nHash 1: 0x" << g_hash_list[hash_struct_index].hash << " | Hash 2: 0x" << *(u16*)(data + 2) <<
 					"\nElapsed time: " << *g_elapsed_time_frames << " | Last random number: " << *g_last_random_number <<
 					"\nActive visions: " << *g_player_visions << " | Explored visions: " << *g_player_explored_visions <<
 					"\nMap dimensions: " << g_map_tile_size->width << "x" << g_map_tile_size->height <<
-					"\nCurrent hash offset: " << *g_current_hash_offset << " | g_region_vision_hash: " << (u32)*g_region_vision_hash << 
-					"\n";
-				GPTP::critical_logger << "Active tile array:\n";
-				for (u32 y = 0; y < g_map_tile_size->height; y++) {
-					for (u32 x = 0; x < g_map_tile_size->width; x++) {
-						u32 tile = scbw::get_active_tile_at_tile(x, y)->vision_flags;
-						sprintf(buffer, "%08d ", tile);
-						GPTP::critical_logger << buffer;
+					"\nCurrent hash offset: " << *g_current_hash_offset << " | g_region_vision_hash: " << (u32)*g_region_vision_hash <<
+					"\n\nActive tiles:";
+				//This value is incremented *after* generating the mask_hash, so we use the previous value to get the tiles pertinent to the hash.
+				s32 y = (*g_mask_hash_current_y ? *g_mask_hash_current_y : g_map_tile_size->height) - 1;
+
+				for (u32 x = 0; x < g_map_tile_size->width; x++) {
+					if (!(x % 16)) {
+						GPTP::critical_logger << "\n";
 					}
+					u32 tile = scbw::get_active_tile_at_tile(x, y)->vision_flags;
+					sprintf(buffer, " %08x", tile);
+					GPTP::critical_logger << buffer;
+				}
+
+				GPTP::critical_logger << "\n\nActive units:";
+
+				for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+					sprintf_s(buffer, "\n hp:0x%08x sh:0x%08x id:%04d en:0x%08x pos:0x%04x%04x", unit->hitpoints, unit->shields, unit->id, unit->energy, unit->sprite->position.x, unit->sprite->position.y);
+					GPTP::critical_logger << buffer;
 				}
 				GPTP::critical_logger << "\n";
 			} else {
