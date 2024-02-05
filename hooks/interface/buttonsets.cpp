@@ -2117,7 +2117,8 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ProtossAdherent: {
-									if (current_button->icon_id == IconId::LegEnhancements) { // Adherent - Deathless Procession
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Adherent - Eternal Service
+									||	current_button->icon_id == IconId::LegEnhancements) {			// Adherent - Deathless Procession
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
