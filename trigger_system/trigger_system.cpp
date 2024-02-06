@@ -1509,6 +1509,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player_vars->neutral_hostile != neutral_hostile) {
 				player_vars->neutral_hostile = (bool)neutral_hostile;
 			}
+		} else if (parser_eq(&parser, "toggle_player_team_ui")) {
+			u32 player = parser_get_player(&parser);
+			if (player) {
+				player -= 1;
+				PlayerVars* player_vars = &globals.players[trigger_player];
+				player_vars->show_in_team_ui = player_vars->show_in_team_ui ? false : true;
+			}
 		}
 	}
 	return true;

@@ -242,16 +242,14 @@ Unit* AttackPriorityData::find_random_target() const
 		++priority;
 		if (priority >= countof(target_counts))
 		{
-			return nullptr;
+			return 0;
 		}
 	}
 
 	if (target_counts[priority] == 1)
 	{
 		return targets[priority][0];
-	}
-	else
-	{
+	} else {
 		return targets[priority][scbw::random() % target_counts[priority]];
 	}
 }
@@ -266,7 +264,7 @@ Unit* AttackPriorityData::find_best_target(Unit* attacker) const
 		++priority;
 		if (priority >= countof(target_counts))
 		{
-			return nullptr;
+			return 0;
 		}
 	}
 

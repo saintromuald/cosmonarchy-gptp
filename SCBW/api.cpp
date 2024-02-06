@@ -3311,6 +3311,7 @@ namespace scbw {
 						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoMinerals01, SoundId::MeskAdvisor_NoMinerals04);
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoMinerals01, SoundId::AckmedAdvisor_NoMinerals04);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoMinerals01;
 					}
 				} break;
 				case AdvisorEvent_NoVespene: {
@@ -3320,6 +3321,7 @@ namespace scbw {
 						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr01_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoVespene01, SoundId::MeskAdvisor_NoVespene05);
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoVespene01, SoundId::AckmedAdvisor_NoVespene04);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoVespene01;
 					}
 				} break;
 				case AdvisorEvent_NoEnergy: {
@@ -3329,6 +3331,7 @@ namespace scbw {
 						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr06_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_NoEnergy01, SoundId::MeskAdvisor_NoEnergy05);
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoEnergy01, SoundId::AckmedAdvisor_NoEnergy04);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoEnergy01;
 					}
 				} break;
 				case AdvisorEvent_NoBuildTerran: {
@@ -3359,6 +3362,7 @@ namespace scbw {
 					//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
 						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Warp01;
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Warp01, SoundId::AckmedAdvisor_Warp02);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Warp01;
 					} 
 				} break;
 				case AdvisorEvent_StructureComplete_Z: {
@@ -3371,6 +3375,7 @@ namespace scbw {
 					//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
 						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Addon01;
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Addon01, SoundId::AckmedAdvisor_Addon02);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Addon01;
 					}
 				} break;
 				case AdvisorEvent_TechUpComplete: {
@@ -3380,6 +3385,7 @@ namespace scbw {
 						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_ZAdUpd06_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_Tech01, SoundId::MeskAdvisor_Tech02);
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Tech01, SoundId::AckmedAdvisor_Tech02);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Tech01;
 					} 
 				} break;
 				case AdvisorEvent_MissileComplete: {
@@ -3398,6 +3404,7 @@ namespace scbw {
 						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_sfx_between(SoundId::MeskAdvisor_MissileLaunch01, SoundId::MeskAdvisor_MissileLaunch02);
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_MissileLaunch01, SoundId::AckmedAdvisor_MissileLaunch02);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_MissileLaunch01;
 					}
 				} break;
 				case AdvisorEvent_AllyUnderAttack_T: {
@@ -3746,7 +3753,7 @@ namespace scbw {
 		{
 			case WeaponId::DemiurgeGalacticWeaver:
 			{
-				return scbw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
+				return helper::get_random_sfx_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
 			}
 			default:
 			{

@@ -339,16 +339,14 @@ namespace hooks
 		}
 		if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster) {
 			unit->energy = hooks::get_unit_max_energy(unit); // New starting amount
-		}
-		else {
+		} else {
 			unit->energy = 0;
 		}
+
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			helper::list_push_back_used_unit_entry(unit);
-		}
-		else
-		{
+		} else {
 			helper::list_push_back_hidden_unit_entry(unit);
 		}
 

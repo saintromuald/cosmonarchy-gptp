@@ -93,9 +93,7 @@ namespace hooks
 					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 0) >= 400)
 					{
 						supply_max1 = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 0);
-					}
-					else
-					{
+					} else {
 						supply_max1 = 400;
 					}
 
@@ -104,9 +102,7 @@ namespace hooks
 					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 1) >= 400)
 					{
 						supply_max3 = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 1);
-					}
-					else
-					{
+					} else {
 						supply_max3 = 400;
 					}
 
@@ -114,9 +110,7 @@ namespace hooks
 					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 2) >= 400)
 					{
 						result = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 2);
-					}
-					else
-					{
+					} else {
 						result = 400;
 					}
 
@@ -125,9 +119,7 @@ namespace hooks
 				++force_iterator;
 			}
 			while (force_iterator <= 4);
-		}
-		else
-		{
+		} else {
 			result = (s32)g_supplies_max_terran;
 			do
 			{
@@ -648,8 +640,9 @@ namespace hooks
 			}*/
 
 			for (u32 player = 0; player < PlayerLimit; ++player) {
-				if ((g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::Human)
-				&& !globals.players[player].witness_mode) {
+				PlayerVars player_vars = globals.players[player];
+				u32 player_type = g_player_table[player].type;
+				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !player_vars.witness_mode && player_vars.show_in_team_ui) {
 					draw_player_stats(&dialog, &pos, player,
 						true,						//use_player_color
 						config.witness_show_apm,	//can_show_apm
@@ -679,10 +672,10 @@ namespace hooks
 
 			if (config.show_team_ui) {
 				for (u32 player = 0; player < PlayerLimit; ++player) {
-					if ((g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::Human)
-					&& player != local_player
-					&& !globals.players[player].witness_mode
-					&& scbw::is_allied_to(player, local_player)) {
+					PlayerVars player_vars = globals.players[player];
+					u32 player_type = g_player_table[player].type;
+					if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && player != local_player && !player_vars.witness_mode
+					&& player_vars.show_in_team_ui && scbw::is_allied_to(player, local_player)) {
 						draw_player_stats(&dialog, &pos, player,
 							true,						//use_player_color
 							config.show_team_ui_apm,	//can_show_apm

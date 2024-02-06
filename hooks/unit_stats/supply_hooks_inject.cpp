@@ -243,7 +243,7 @@ namespace hooks
 		jump_patch(get_supplies_max_wrapper,			0x00488990, 4);
 		jump_patch(get_supplies_used_wrapper,			0x004888C0, 1);
 		jump_patch(initialize_unit_counts_wrapper,		0x00488F90, 0);
-		//jump_patch(stat_res_main_proc_wrapper,			0x004E5640, 4);
+	//	jump_patch(stat_res_main_proc_wrapper,			0x004E5640, 4);
 		jump_patch(get_supplies_temp_wrapper,			0x004246D0, 1);
 		jump_patch(redraw_supply_info_wrapper,			0x00425230, 4);
 		jump_patch(draw_supply_unit_status_wrapper,		0x00427540, 1); // Currently broken, supply used in unit status display won't show properly for zerg and protoss units

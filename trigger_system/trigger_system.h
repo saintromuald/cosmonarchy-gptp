@@ -114,6 +114,8 @@ enum AdvisorType : u8 {
 	AdvisorType_Mesk,
 	AdvisorType_Ackmed,
 
+	AdvisorType_HADRAL,
+
 	AdvisorType_Count,
 };
 
@@ -127,6 +129,8 @@ static const char* advisor_symbol_names[] = {
 
 	"Mesk",
 	"Ackmed",
+
+	"HADRAL",
 };
 C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == AdvisorType_Count);
 
@@ -136,6 +140,7 @@ struct PlayerVars {
 	Faction faction;
 	bool neutral_hostile;
 	bool faction_was_set;
+	bool show_in_team_ui;
 };
 
 struct AlertState {

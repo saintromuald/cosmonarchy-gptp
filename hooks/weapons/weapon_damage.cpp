@@ -94,7 +94,7 @@ namespace hooks
 						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
 						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
 						if (sound_first && sound_last) {
-							sound_id = scbw::rand_between_local(sound_first, sound_last);
+							sound_id = helper::get_random_sfx_between(sound_first, sound_last);
 						}
 					}
 					play_alert(unit, sound_id);
@@ -196,7 +196,7 @@ namespace hooks
 					if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && scbw::is_allied_to(unit->player, data.target->player)) {
 						scbw::create_shield_overlay(data.target, data.direction);
 						unit->spend_unit_energy(data.damage);
-						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
 						ignore_alert = true;
 						unit_attack_notify(unit);
 						ignore_alert = false;

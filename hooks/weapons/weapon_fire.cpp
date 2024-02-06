@@ -429,9 +429,9 @@ namespace hooks {
 		{
 			if (unit->id == UnitId::TerranSavant) {
 				if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
-					helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05), unit, 1, 0);
+					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05), unit, 1, 0);
 				} else {
-					helper::play_sound_from_unit(scbw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05), unit, 1, 0);
+					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05), unit, 1, 0);
 				}
 			}
 
@@ -754,7 +754,7 @@ namespace hooks {
 				// pierce targets
 				iquare_globals.add_bullet_multihit(bullet, target);
 				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
-				helper::play_sound_from_unit(scbw::rand_between(SoundId::ClaymoreWeaponHit01, SoundId::ClaymoreWeaponHit02), target, 1, 0);
+				helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::ClaymoreWeaponHit01, SoundId::ClaymoreWeaponHit02), target, 1, 0);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 
 				// slow pierced targets
@@ -926,7 +926,7 @@ namespace hooks {
 			u32 period = 1 * 32;
 			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
 				scbw::create_and_init_thingy(SpriteId::AntiMatterMissileHit, bullet->position.x, bullet->position.y, bullet->player, bullet->sprite->elevation - 1);
-				helper::play_sound_at_pos(scbw::rand_between(SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03), bullet->position, 1, 0);
+				helper::play_sound_at_pos(helper::get_random_sfx_between(SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03), bullet->position, 1, 0);
 				EntryArray targets = {};
 				unit_search_radial(&targets, bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]);
 				unit_search_filter(&targets, 0, 0); // Let's filter with no flags, since that should remove untargetable stuff and what not
