@@ -2,7 +2,8 @@
 #include <SCBW/api.h>
 #include <SCBW/Storm.h>
 
-// Those functions are less likely to be useful (especially if modified alone against as a part of a larger modification), or may cause more trouble if modified the wrong way, so they are put here a bit on the side.
+// Those functions are less likely to be useful (especially if modified alone against as a part of a larger modification),
+// or may cause more trouble if modified the wrong way, so they are put here a bit on the side.
 
 namespace hooks
 {	
@@ -26,8 +27,7 @@ namespace hooks
 		dialog->flags |= (BinDlgFlags::NoClickSound + BinDlgFlags::VerticalAlignmentBottom);
 		dialog->onInitDialog0x46.unk4a = 0;
 
-		if (dlgFunc != nullptr)
-		{
+		if (dlgFunc) {
 			dialog->fxn_interact = dlgFunc;
 		}
 

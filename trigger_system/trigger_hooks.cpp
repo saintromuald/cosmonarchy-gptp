@@ -336,13 +336,11 @@ void do_unit_event_notification(Unit* unit, u8 event, u32 timer, bool ping, u32 
 			*g_notification_message_id = message_id;
 			helper::set_callback_timer(*g_portrait, 3, 1000, (u32)helper::animate_unit_portrait_for_event);
 		}
-		if (unit) {
-			if (ping) {
-				helper::set_last_event_position(unit->position.x, unit->position.y);
-				unit->last_event_timer = 8;
-				unit->last_event_color = event;
-				helper::minimap_ping(unit->position.x, unit->position.y, event);
-			}
+		if (unit && ping) {
+			helper::set_last_event_position(unit->position.x, unit->position.y);
+			unit->last_event_timer = 8;
+			unit->last_event_color = event;
+			helper::minimap_ping(unit->position.x, unit->position.y, event);
 		}
 	}
 }
@@ -591,5 +589,5 @@ void inject_trigger_system_hooks() {
 	jump_patch(get_unit_portrait_override_wrapper,			0x0045E320, 6);
 	jump_patch(game_talking_portrait_wrapper,				0x0045EDD0, 4);
 	jump_patch(show_portrait,								0x0046CF30, 3);
-//	jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
+	jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
 }

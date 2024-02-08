@@ -162,7 +162,7 @@ namespace hooks {
 							return;
 						}
 						parentUnitAi->trainQueueTypes[queueSlot] = 1;
-						region = helper::getAiRegionInfoFromUnitLoc(newUnit);
+						region = helper::get_ai_region_info_from_unit_loc(newUnit);
 						parentUnitAi->trainQueueValues[queueSlot] = (void*)region;
 					}
 					if (parentUnitAi->trainQueueTypes[queueSlot] == 1) {

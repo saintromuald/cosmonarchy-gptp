@@ -271,7 +271,6 @@ namespace helper {
 	void iscript_opcode_cases(Image* image, void* iscript_header, u32 dont_modify_image, u32 out_value);	// 004D74C0
 	void switch_to_warp_texture(Image* image);																// 004D8500
 	bool set_thingy_visibility_flags(Thingy* thingy);									                    // 004878F0
-	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player);		    								// 00488210
 	const char* set_unit_stat_txt_error_message(const char* message);									    // 0048CCB0
 	void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play = 1, u32 min_volume = 0);				// 0048EC10
 	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
@@ -718,7 +717,7 @@ namespace helper {
 	void attack_overlay_and_notify(Unit* attacker, Unit* target, u32 weaponType, u32 direction);			        // 00479730
 	u32 get_unit_bullet_damage(Bullet* bullet, Unit* target);														// 0048ACD0
 	u32 get_spell_stat_string(Unit* target, u32 techId, u8 player);													// 00491E80
-	void disableUnitFunc(Unit* unit);																				// 00492CC0 (hooked in weapon_spellhit)
+	void disable_unit(Unit* unit);																				// 00492CC0 (hooked in weapon_spellhit)
 	void set_all_image_group_flags_palette_11(Sprite* sprite);														// 00497430
 	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attacking_player_id, Box16* coords);					// 004E8280
 	void iterate_units_at_location_target_proc_ensnare(Unit* attacker, Box16* coords);								// 004E8280
@@ -847,7 +846,7 @@ namespace helper {
 	Unit* list_push_back_used_unit_entry(Unit* unit);																// 0049DCA0
 	Unit* list_push_back_hidden_unit_entry(Unit* unit);																// 0049DCE0
 	Sprite* unit_destructor(Unit* unit);																			// 004A0990
-	void* get_image_attack_frame(void* resultArg, Sprite* sprite, s32 index, u32 overlay_type);						// 00401DF0
+	void* get_image_attack_frame(void* result_arg, Sprite* sprite, s32 index, u32 overlay_type);					// 00401DF0
 	void set_sprite_main_image_offset(Sprite* sprite, char x, char y);												// 00401E40
 
 	//// psi_field_util
@@ -857,7 +856,7 @@ namespace helper {
 	void queue_game_command(u8* params, u32 param_length);
 
 	// misc
-	Thingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 player);
+	Thingy* create_thingy(u32 sprite_id, s16 x, s16 y, u32 player);
 	bool do_units_collide(Unit* first, Unit* second);
 	void unburrow(Unit* unit);
 	Image* create_healthbar(Sprite* sprite);
@@ -865,7 +864,7 @@ namespace helper {
 	void refund_all_queue_slots(Unit* unit);
 	void* SMemAlloc(u32 amount);																					// 0041006A (based on Storm.dll definition)
 	void* SMemAlloc(u32 amount, const char* unkFilename, u32 unkLine, u32 defaultValue);							// 0041006A (based on Storm.dll definition)
-	void set_callback_timer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);											// 00416090
+	void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, u32 callback);								// 00416090
 	void remove_from_selections(Unit* unit);																		// 0049A7F0
 	u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
 	void register_user_dialog_action(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray);				// 00418100
@@ -880,7 +879,7 @@ namespace helper {
 	void update_image_position_offset(Image* image);
 
 	// Identical to function @ 0x004F3AF0
-	void set_resource_amount_carried(Unit* worker, u8 amountCarried, u32 chunkImageId, bool isMineral);
+	void set_resource_amount_carried(Unit* worker, u8 amount_carried, u32 chunk_image_id, bool is_mineral);
 
 	// ai misc
 	s32 ai_has_buildings_needing_power(u32 player);
@@ -888,7 +887,7 @@ namespace helper {
 	s32 get_supplies_remaining(u8 player, u16 unit_id);
 	s32 get_supplies_used(s32 byte_data, u8 player);
 	bool ai_isnt_at_define_max(s32 player, s32 unit_id);
-	void applyCloakingOrder(Unit* unit);																	// 00491B30
+	void apply_cloaking_order(Unit* unit);																	// 00491B30
 
 	//// use_tech
 	const void issue_tri_target_order(u8 order1, u8 order2, u8 order3);										// 0048CAF0
@@ -949,8 +948,8 @@ namespace helper {
 	bool unit_stat_cond_standard();																			// 00424980
 
 	// For draw_supply_unit_status
-	void draw_shield_upgrade(BinDlg* dialog, u16 statusScreenIndex);										// 00425510
-	void draw_armor(BinDlg* dialog, s32 unit_id, u16 statusScreenIndex);									// 00425600
+	void draw_shield_upgrade(BinDlg* dialog, u16 status_screen_index);										// 00425510
+	void draw_armor(BinDlg* dialog, s32 unit_id, u16 status_screen_index);									// 00425600
 
 	// For progressBulletFrame
 	void bullet_behavior_fly(Bullet* bullet);																// 0048B3B0
@@ -965,7 +964,7 @@ namespace helper {
 	Unit* get_hidden_miner(Unit* unit);																		// 00468A60
 	bool unit_has_hangar(Unit* unit);																		// identical to 004014B0
 	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
-	Unit* getCreatingUnit(Unit* unit);																		// 00466A30
+	Unit* get_creating_unit(Unit* unit);																		// 00466A30
 
 	// For UnitMove
 	void move_sprite(Sprite* sprite, s16 x, s16 y);															// 00497A10
@@ -976,7 +975,7 @@ namespace helper {
 	Bullet* assign_weapon_data(Bullet* bullet, char behavior_type);											// 0048AA80
 
 	// For ai_training_normal
-	AiRegion* getAiRegionInfoFromUnitLoc(Unit* unit);														// 00438BF0
+	AiRegion* get_ai_region_info_from_unit_loc(Unit* unit);														// 00438BF0
 	void add_guard_ai_to_unit(Unit* unit);																	// 00462960
 
 	s8 create_unit_allowed(u16 unit_id, Unit* unit, s32 player);											// 0046E1C0

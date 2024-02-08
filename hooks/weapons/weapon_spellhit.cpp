@@ -704,7 +704,7 @@ namespace hooks {
 				helper::give_all_unit_properties_to_player(connected_unit, player_id_var);
 			}
 			if (helper::is_constructing_addon(unit)) {
-				Unit* creating_unit = helper::getCreatingUnit(unit);
+				Unit* creating_unit = helper::get_creating_unit(unit);
 				helper::give_all_unit_properties_to_player(creating_unit, player_id_var);
 			}
 			if (unit->id == UnitId::ZergNydusCesiant) {
