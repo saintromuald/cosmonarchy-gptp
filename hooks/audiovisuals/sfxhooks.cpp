@@ -148,6 +148,9 @@ namespace hooks {
 				case UnitId::ProtossOptecton: {
 					return helper::get_random_sfx_between(SoundId::OptectonOrderAggressive01, SoundId::OptectonOrderAggressive04);
 				} break;
+				case UnitId::ProtossGolem: {
+					return helper::get_random_sfx_between(SoundId::GolemOrderAggressive01, SoundId::GolemOrderAggressive02);
+				} break;
 				case UnitId::ProtossMagister: {
 					return helper::get_random_sfx_between(SoundId::MagisterOrderAggressive01, SoundId::MagisterOrderAggressive04);
 				} break;
@@ -170,8 +173,7 @@ namespace hooks {
 					bool can_play = (g_options_list->flags >> 1) & 1;
 					if (helper::play_sound_from_unit(rand_response, self, can_play, 99)) {
 						helper::do_unit_event_notification(self, 17, sfx_dat::portrait_duration[rand_response] + 1000 * (sfx_dat::sound_data[rand_response].duration_ms / 1000), 0, rand_response);
-					}
-					else {
+					} else {
 						*g_last_random_sfx_id = last_rand;
 					}
 				}
@@ -300,6 +302,9 @@ namespace hooks {
 					} break;
 					case UnitId::ProtossOptecton: {
 						ready_sound = helper::get_random_sfx_between(SoundId::OptectonReady01, SoundId::OptectonReady03);
+					} break;
+					case UnitId::ProtossGolem: {
+						ready_sound = helper::get_random_sfx_between(SoundId::GolemReady01, SoundId::GolemReady02);
 					} break;
 					case UnitId::ProtossMagister: {
 						ready_sound = helper::get_random_sfx_between(SoundId::MagisterReady01, SoundId::MagisterReady03);

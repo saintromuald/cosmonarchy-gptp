@@ -3460,7 +3460,7 @@ namespace helper {
 		const u32 func_address = 0x0046D610;
 		__asm {
 			PUSHAD
-			PUSH func_address
+			PUSH address
 			PUSH player
 			PUSH order_id
 			MOV EAX, req_offset

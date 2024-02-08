@@ -1696,5 +1696,11 @@ namespace SoundId
 		DracadinOrderAggressive02				= 2729,
 		DracadinOrderAggressive03				= 2730,
 		DracadinOrderAggressive04				= 2731,
+
+		GolemReady01							= 2742,
+		GolemReady02							= 2743,
+
+		GolemOrderAggressive01					= 2748,
+		GolemOrderAggressive02					= 2749,
 	};
 }
