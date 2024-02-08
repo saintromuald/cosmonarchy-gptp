@@ -154,6 +154,7 @@ namespace PortraitId {
 		Anthelion		= 142,
 		AdvisorNydusTrinity	= 143,
 		Nekron			= 144,
+		Gladius			= 145,
 
 		/*0xFFFF*/	None = 0xFFFF
 	};
