@@ -589,5 +589,5 @@ void inject_trigger_system_hooks() {
 	jump_patch(get_unit_portrait_override_wrapper,			0x0045E320, 6);
 	jump_patch(game_talking_portrait_wrapper,				0x0045EDD0, 4);
 	jump_patch(show_portrait,								0x0046CF30, 3);
-	jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
+//	jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
 }
