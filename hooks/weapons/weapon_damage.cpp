@@ -61,7 +61,6 @@ namespace hooks
 		globals.alert.play_timer = 12;
 	}
 
-
 	static void reset_all_unit_attack_notify_timers_in_range(Unit* unit) {
 		EntryArray units = {};
 		unit_search_radial(&units, unit->position, 11 * 32);

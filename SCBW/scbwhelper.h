@@ -1713,4 +1713,5 @@ namespace helper {
 	b32 set_last_event_position(u32 x, u32 y);											// 0045E3A0
 	u32 svid_play_end(u8 video);														// 004100EE
 	void start_unit_portrait(BinDlg* dialog);											// 0044EDB0
+	u16 get_unit_portrait_override(u16 unit_id);										// 0045E320
 }

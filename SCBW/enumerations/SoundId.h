@@ -1702,5 +1702,8 @@ namespace SoundId
 
 		GolemOrderAggressive01					= 2748,
 		GolemOrderAggressive02					= 2749,
+
+		IzirokorOrderAggressive01				= 2761,
+		IzirokorOrderAggressive02				= 2762,
 	};
 }

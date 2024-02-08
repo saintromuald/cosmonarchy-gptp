@@ -1,6 +1,7 @@
 #include "cmbw_ids.h"
 #include "SCBW\api.h"
 #include "hooks\weapons\weapon_fire.h"
+#include "trigger_system/trigger_system.h"
 
 bool unit_id_is_capped_gas_structure(u16 unit_id) {
 	return unit_id == UnitId::TerranReservoir
@@ -1205,7 +1206,73 @@ bool buttonset_id_is_faction_selection(u32 buttonset_id) {
 }
 
 bool portrait_id_is_default_advisor(u32 portrait_id) {
-	return portrait_id == PortraitId::TerranAdvisor
+	return portrait_id == PortraitId::AdvisorOrionImperium
 		|| portrait_id == PortraitId::ProtossAdvisor
-		|| portrait_id == PortraitId::Overmind;
+		|| portrait_id == PortraitId::AdvisorAtaltreth;
+}
+
+u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
+	PlayerVars player_vars = globals.players[player];
+	bool faction_set = player_vars.faction_was_set;
+
+	switch (portrait_id) {
+		case PortraitId::AdvisorOrionImperium:
+		{
+			if (faction_set) {
+				switch (player_vars.faction) {
+					case Faction_TerranHecatonCoalition:
+					{
+						portrait_id = PortraitId::HADRAL; // Temporary
+					} break;
+					case Faction_TerranFuturistFederation:
+					{
+						portrait_id = PortraitId::AdvisorFuturistFederation;
+					} break;
+					case Faction_TerranGoldenRepublic:
+					{
+						portrait_id = PortraitId::AdvisorGoldenRepublic;
+					} break;
+					case Faction_TerranNydusTrinity:
+					{
+						portrait_id = PortraitId::AdvisorNydusTrinity;
+					} break;
+					case Faction_TerranUpstart:
+					{
+						portrait_id = PortraitId::AdvisorUpstartTerran;
+					} break;
+				}
+			}
+		} break;
+		case PortraitId::ProtossAdvisor:
+		{
+			if (faction_set) {
+				switch (player_vars.faction) {
+					case Faction_ProtossOrderOfTheSacredSaber:
+					{
+						portrait_id = PortraitId::Patriarch; // Temporary
+					} break;
+					case Faction_ProtossStarbound:
+					{
+						portrait_id = PortraitId::AdvisorStarbound;
+					} break;
+				}
+			}
+		} break;
+		case PortraitId::AdvisorAtaltreth:
+		{
+			if (faction_set) {
+				switch (player_vars.faction) {
+					case Faction_ZergImicrenTendril:
+					{
+						portrait_id = PortraitId::AdvisorImicren;
+					} break;
+					case Faction_ZergZorthosTendril:
+					{
+						portrait_id = PortraitId::AdvisorZorthos;
+					} break;
+				}
+			}
+		} break;
+	}
+	return portrait_id;
 }

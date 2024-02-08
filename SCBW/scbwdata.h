@@ -1228,6 +1228,9 @@ SCBW_DATA(u32*,				g_trigger_portrait_active,			0x0068AC4C);
 // For do_unit_event_notification
 SCBW_DATA(u32*,				g_notification_message_id,			0x0068ACA0);
 
+// For updatae_selected_unit_portrait
+SCBW_DATA(u32*,				g_unk_portrait,						0x0068AC60);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

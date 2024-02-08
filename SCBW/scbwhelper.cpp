@@ -14767,4 +14767,18 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	u16 get_unit_portrait_override(u16 unit_id)
+	{
+		static u16 result;
+		const u32 func_address = 0x0045E320;
+		__asm {
+			PUSHAD
+			MOV AX, unit_id
+			CALL func_address
+			MOV result, AX
+			POPAD
+		}
+		return result;
+	}
 }

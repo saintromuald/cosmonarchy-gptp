@@ -230,45 +230,12 @@ u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 {
 	u32 portrait_id = units_dat::portrait_id[unit_id];
 	if (portrait_id_is_default_advisor(portrait_id)) {
-		u32 player = (*g_active_portrait_unit)->player;
-		PlayerVars player_vars = globals.players[player];
-		bool faction_set = player_vars.faction_was_set;
-
-		switch (portrait_id) {
-			case PortraitId::TerranAdvisor:
-			{
-				if (faction_set) {
-					switch (player_vars.faction) {
-						case Faction_TerranHecatonCoalition:
-						{
-							portrait_id = PortraitId::HADRAL;
-						} break;
-					}
-				}
-			} break;
-			case PortraitId::ProtossAdvisor:
-			{
-				if (faction_set) {
-					switch (player_vars.faction) {
-						case Faction_ProtossOrderOfTheSacredSaber:
-						{
-							portrait_id = PortraitId::Sycophant;
-						} break;
-					}
-				}
-			} break;
-			case PortraitId::Overmind:
-			{
-				if (faction_set) {
-					switch (player_vars.faction) {
-						case Faction_ZergZorthosTendril:
-						{
-							portrait_id = PortraitId::Kagg;
-						} break;
-					}
-				}
-			} break;
+		u32 player = *g_local_nation_id;
+		Unit* active_unit = *g_active_portrait_unit;
+		if (active_unit) {
+			player = active_unit->player;
 		}
+		portrait_id = get_player_portrait_id_override(portrait_id, player);
 	}
 	return portrait_id;
 }
@@ -278,7 +245,7 @@ s32 game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) // 0045ED
 {
 	*g_trigger_portrait_active = 1;
 	helper::set_callback_timer(*g_portrait, 4, time, (u32)helper::trigger_portrait_finished);
-	u32 portrait_id = get_unit_portrait_override(unit_id);
+	u32 portrait_id = helper::get_unit_portrait_override(unit_id);
 	helper::display_update_portrait(portrait_id, 0, 2);
 	helper::set_callback_timer(*g_portrait, 3, time, (u32)helper::trigger_portrait_something);
 	if (x_pos != -1) {
@@ -312,7 +279,20 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) // 0046
 		final_dlg = 0;
 	}
 
-	u16 portrait_id = get_unit_portrait_override(unit_id);
+	u16 portrait_id = helper::get_unit_portrait_override(unit_id);
+	if (!strcmp(g_current_map_name, "Anad's Greatsword")) {
+		switch (portrait_id) {
+			case PortraitId::AdvisorOrionImperium:
+			{
+				portrait_id = PortraitId::HADRAL;
+			} break;
+			case PortraitId::Maverick:
+			{
+				portrait_id = PortraitId::AnadThyron;
+			} break;
+		}
+	}
+
 	PortraitData* portrait_data = final_dlg->portrait_data; // Ignoring nullcheck warning as it is accessed without nullchecks all over the codebase. -Pr0nogo
 	if (portrait_data->smk) {
 		helper::svid_play_end((u8)portrait_data->smk);
@@ -328,9 +308,9 @@ void do_unit_event_notification(Unit* unit, u8 event, u32 timer, bool ping, u32 
 {
 	if (!(*g_trigger_portrait_active))
 	{
-		u32 portrait_id = get_unit_portrait_override(helper::get_last_queue_slot_id(unit));
+		u32 portrait_id = helper::get_unit_portrait_override(helper::get_last_queue_slot_id(unit));
 		helper::display_update_portrait(portrait_id, unit, 2);
-		if (timer || message_id >= 1144) {
+		if (timer || message_id >= SoundIdLimit) {
 			helper::set_callback_timer(*g_portrait, 3, timer, (u32)helper::trigger_portrait_something);
 		} else {
 			*g_notification_message_id = message_id;
@@ -342,6 +322,37 @@ void do_unit_event_notification(Unit* unit, u8 event, u32 timer, bool ping, u32 
 			unit->last_event_color = event;
 			helper::minimap_ping(unit->position.x, unit->position.y, event);
 		}
+	}
+}
+
+// Hooked to add support for crig-based portrait overrides. -Pr0nogo
+void update_selected_unit_portrait() // 0045EBC0
+{
+	if (*g_portrait_redraw)
+	{
+		if (!*g_unk_portrait)
+		{
+			BinDlg* portrait_dlg = *g_portrait;
+			Unit* portrait_unit = portrait_dlg->unit_user;
+			Unit* active_unit = *g_active_portrait_unit;
+
+			if (!active_unit) {
+				portrait_dlg->unit_user = active_unit;
+				portrait_dlg->graphic = -1;
+				helper::hide_dialog(portrait_dlg);
+				*g_portrait_redraw = 0;
+				return;
+			}
+
+			u32 active_unit_id = helper::get_last_queue_slot_id(active_unit);
+			u32 portrait_unit_id = helper::get_last_queue_slot_id(portrait_unit);
+			if (portrait_unit != active_unit
+			||  portrait_unit && portrait_unit_id != active_unit_id)
+			{
+				helper::display_update_portrait(helper::get_unit_portrait_override(active_unit_id), active_unit, 1);
+			}
+		}
+		*g_portrait_redraw = 0;
 	}
 }
 
@@ -553,14 +564,15 @@ void __declspec(naked) do_unit_event_notification_wrapper() { // 0045EFE0
 	static Unit* unit;
 	static u8 event_arg;
 	static u32 timer;
-	static bool ping;
+	static b32 ping;
 	static u32 message_id;
 	__asm {
 		PUSH EBP
 		MOV EBP, ESP
 		PUSH EAX
 		MOV EAX, [EBP + 0x08]
-		MOV ping, AL
+		MOVZX EAX, AL
+		MOV ping, EAX
 		MOV EAX, [EBP + 0x0C]
 		MOV message_id, EAX
 		POP EAX
@@ -569,12 +581,23 @@ void __declspec(naked) do_unit_event_notification_wrapper() { // 0045EFE0
 		MOV unit, EAX
 		PUSHAD
 	}
-	do_unit_event_notification(unit, event_arg, timer, ping, message_id);
+	do_unit_event_notification(unit, event_arg, timer, (bool)ping, message_id);
 	__asm {
 		POPAD
 		MOV ESP, EBP
 		POP EBP
 		RETN 0x08
+	}
+}
+
+void __declspec(naked) update_selected_unit_portrait_wrapper() { // 0045EBC0
+	__asm {
+		PUSHAD
+	}
+	update_selected_unit_portrait();
+	__asm {
+		POPAD
+		RETN
 	}
 }
 
@@ -589,5 +612,6 @@ void inject_trigger_system_hooks() {
 	jump_patch(get_unit_portrait_override_wrapper,			0x0045E320, 6);
 	jump_patch(game_talking_portrait_wrapper,				0x0045EDD0, 4);
 	jump_patch(show_portrait,								0x0046CF30, 3);
-//	jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
+	jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
+	jump_patch(update_selected_unit_portrait_wrapper,		0x0045EBC0, 0);
 }

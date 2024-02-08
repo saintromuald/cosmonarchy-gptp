@@ -102,3 +102,4 @@ bool unit_id_has_custom_weapon_handling(u32 unit_id);
 bool unit_id_is_burrowed_attacker(u32 unit_id);
 bool buttonset_id_is_faction_selection(u32 buttonset_id);
 bool portrait_id_is_default_advisor(u32 portrait_id);
+u32 get_player_portrait_id_override(u32 portrait_id, u32 player);
