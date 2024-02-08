@@ -813,7 +813,7 @@ namespace scbw
 	void add_massacre_resource(u32 player_id);
 	bool game_kind_supports_kills(GameKind game_kind);
 	bool unit_can_fire_secondary_weapon(Unit* unit);
-	void select(std::vector<Unit*>& units);
+	void select(std::vector<Unit*>& units, bool play_response);
 	u32 get_manual_weapon_id_sound(u32 weapon_id);
 	bool unit_regenerates_hp(Unit* unit);
 	u32 get_regeneration_factor(Unit* unit);

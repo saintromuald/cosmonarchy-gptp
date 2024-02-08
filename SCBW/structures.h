@@ -1407,7 +1407,7 @@ struct ControlGroup {
 	bool add(UnitIndex index);
 	void clear();
 	void remove(UnitIndex index);
-	void select();
+	void select(bool play_response);
 	void add_selection();
 	void center_camera();
 };

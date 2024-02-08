@@ -3738,8 +3738,16 @@ namespace scbw {
 		}
 	}
 
-	void select(std::vector<Unit*>& units) {
+	void select(std::vector<Unit*>& units, bool play_response) {
 		if (units.size()) {
+			Unit* response_unit = 0;
+			for (Unit* unit : units) {
+				if (!response_unit || helper::compare_unit_rank(unit, response_unit)) {
+					response_unit = unit;
+				}
+			}
+			helper::select_building_sfx(response_unit);
+
 			helper::create_new_unit_selections_from_list(units.data(), units.size());
 			helper::cmdact_select(units.data(), units.size());
 			*g_client_selection_changed = true;

@@ -62,10 +62,12 @@ static void update_control_groups(const KeyEvent& ev) {
 		center = ev.held_time() >= 12;
 		just_pressed = ev.pressed();
 	}
+	bool play_response = just_pressed;
 	if (hotkeys.last_control_group_selected == &control_group) {
 		if (ev.release_time() <= 12) {
 			if (ev.pressed()) {
 				center = true;
+				play_response = false;
 			}
 		} else {
 			hotkeys.last_control_group_selected = 0;
@@ -82,7 +84,7 @@ static void update_control_groups(const KeyEvent& ev) {
 			control_group.center_camera();
 		}
 		if (just_pressed || center) {
-			control_group.select();
+			control_group.select(play_response);
 			hotkeys.last_control_group_selected = &control_group;
 		}
 	}

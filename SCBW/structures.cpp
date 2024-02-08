@@ -58,7 +58,7 @@ void ControlGroup::remove(UnitIndex index) {
 	}
 }
 
-void ControlGroup::select() {
+void ControlGroup::select(bool play_response) {
 	std::vector<Unit*> to_select;
 	to_select.reserve(SelectionCap);
 	for (u32 i = 0; i < SelectionCap; i++) {
@@ -67,7 +67,7 @@ void ControlGroup::select() {
 			to_select.push_back(unit);
 		}
 	}
-	scbw::select(to_select);
+	scbw::select(to_select, play_response);
 }
 
 void ControlGroup::add_selection() {
