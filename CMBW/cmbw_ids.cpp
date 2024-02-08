@@ -1154,13 +1154,11 @@ bool rapid_rendezvous_can_target_unit_id(u32 unit_id) { // Does not prohibit air
 		&&	unit_id != UnitId::ZergEgg;
 }
 
-bool unit_id_ignores_ground_collision(u32 unit_id)
-{
+bool unit_id_ignores_ground_collision(u32 unit_id) {
 	return unit_id_is_larva(unit_id) || unit_id == UnitId::ZergRilirokor;
 }
 
-bool unit_id_has_projection_attack(u32 unit_id)
-{
+bool unit_id_has_projection_attack(u32 unit_id) {
 	return unit_id == UnitId::TerranHarakan
 		|| unit_id == UnitId::TerranStriga
 		|| unit_id == UnitId::TerranMatadorCinderMode
@@ -1169,8 +1167,7 @@ bool unit_id_has_projection_attack(u32 unit_id)
 		|| unit_id == UnitId::ProtossPariah;
 }
 
-bool player_id_is_extended(u32 player_id)
-{
+bool player_id_is_extended(u32 player_id) {
 	switch (player_id)
 	{
 		case 8:
@@ -1183,8 +1180,7 @@ bool player_id_is_extended(u32 player_id)
 	return false;
 }
 
-bool order_id_is_build_order(u32 order_id)
-{
+bool order_id_is_build_order(u32 order_id) {
 	return	order_id == OrderId::BuildTerran
 	||		order_id == OrderId::BuildProtoss1
 	||		order_id == OrderId::DroneLand
@@ -1192,21 +1188,24 @@ bool order_id_is_build_order(u32 order_id)
 	||		order_id == OrderId::DroneStartBuild;
 }
 
-bool unit_id_has_custom_weapon_handling(u32 unit_id) // TODO: better name
-{
+bool unit_id_has_custom_weapon_handling(u32 unit_id) { // TODO: better name 
 	return unit_id == UnitId::TerranWyvern
 		|| unit_id == UnitId::TerranWyvernTurret
 		|| unit_id == UnitId::ProtossAnthelion;
 }
 
-bool unit_id_is_burrowed_attacker(u32 unit_id)
-{
+bool unit_id_is_burrowed_attacker(u32 unit_id) {
 	return unit_id == UnitId::ZergLakizilisk;
 }
 
-bool buttonset_id_is_faction_selection(u32 buttonset_id)
-{
+bool buttonset_id_is_faction_selection(u32 buttonset_id) {
 	return buttonset_id == UnitId::Buttons_FactionSelect
 		|| buttonset_id == UnitId::Buttons_FactionSelectProtoss
 		|| buttonset_id == UnitId::Buttons_FactionSelectZerg;
+}
+
+bool portrait_id_is_default_advisor(u32 portrait_id) {
+	return portrait_id == PortraitId::TerranAdvisor
+		|| portrait_id == PortraitId::ProtossAdvisor
+		|| portrait_id == PortraitId::Overmind;
 }

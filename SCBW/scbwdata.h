@@ -506,7 +506,7 @@ SCBW_DATA(u32**,	g_active_tile_array_int,		0x006D1260);
 SCBW_DATA(void**,	g_get_right_click_order_array,	0x005153FC);
 
 // For prepare_unit_move_custom
-SCBW_DATA(BinDlg*,	g_portrait,						0x0068AC98);
+SCBW_DATA(BinDlg**,	g_portrait,						0x0068AC98);
 
 // For fog of war changes by DarkenedFantasies
 SCBW_DATA(FogMask*,	g_fog_of_war_mask,				0x00657AA0);
@@ -1218,6 +1218,15 @@ SCBW_DATA(u32*,				g_is_broodwar,						0x006D11E4);
 
 typedef bool __fastcall glu_main_function(BinDlg*, DialogEvent*);
 SCBW_DATA(glu_main_function**, glu_main_functions, 0x0051A388);
+
+// For get_unit_portrait_override
+SCBW_DATA(u16*,				g_campaign_index,					0x0057F244);
+
+// For game_talking_portrait
+SCBW_DATA(u32*,				g_trigger_portrait_active,			0x0068AC4C);
+
+// For do_unit_event_notification
+SCBW_DATA(u32*,				g_notification_message_id,			0x0068ACA0);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

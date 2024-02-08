@@ -1687,5 +1687,14 @@ namespace SoundId
 		OptectonOrderAggressive02				= 2710,
 		OptectonOrderAggressive03				= 2711,
 		OptectonOrderAggressive04				= 2712,
+
+		DracadinReady01							= 2717,
+		DracadinReady02							= 2718,
+		DracadinReady03							= 2719,
+		
+		DracadinOrderAggressive01				= 2728,
+		DracadinOrderAggressive02				= 2729,
+		DracadinOrderAggressive03				= 2730,
+		DracadinOrderAggressive04				= 2731,
 	};
 }

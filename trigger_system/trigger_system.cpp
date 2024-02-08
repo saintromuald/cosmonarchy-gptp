@@ -1495,6 +1495,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "set_advisor")) {
 			u32 player = parser_get_player(&parser);
+			u32 portrait_id = parser_get_s32(&parser);
 			AdvisorType advisor = (AdvisorType)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names));
 
 			if (player) {

@@ -14692,4 +14692,98 @@ namespace helper {
 		return  (units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
 			&& !(unit->status & UnitStatus::IsHallucination);
 	}
+
+	u8 trigger_portrait_finished(BinDlg* dialog, u16 timer)
+	{
+		static u8 result;
+		const u32 func_address = 0x0045E610;
+		__asm {
+			PUSHAD
+			MOV ECX, dialog
+			MOV DX, timer
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void display_update_portrait(u32 portrait_id, Unit* unit, u16 idle_or_talking)
+	{
+		const u32 func_address = 0x0045EA30;
+		u32 idle_or_talking_xd = idle_or_talking;
+		__asm {
+			PUSHAD
+			PUSH idle_or_talking_xd
+			PUSH unit
+			MOV EAX, portrait_id
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void trigger_portrait_something(BinDlg* dialog, u16 type_arg)
+	{
+		const u32 func_address = 0x0045EC40;
+		__asm {
+			PUSHAD
+			MOV ECX, dialog
+			MOV DX, type_arg
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void animate_unit_portrait_for_event(BinDlg* dialog, u16 type_arg)
+	{
+		const u32 func_address = 0x0045EF50;
+		__asm {
+			PUSHAD
+			MOV ECX, dialog
+			MOV DX, type_arg
+			CALL func_address
+			POPAD
+		}
+	}
+
+	b32 set_last_event_position(u32 x, u32 y)
+	{
+		static b32 result;
+		const u32 func_address = 0x0045E3A0;
+		__asm {
+			PUSHAD
+			PUSH y
+			MOV EAX, x
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 svid_play_end(u8 video)
+	{
+		static u32 result;
+		const u32 func_address = 0x004100EE;
+		u32 video_xd = video;
+		__asm {
+			PUSHAD
+			PUSH video_xd
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void start_unit_portrait(BinDlg* dialog)
+	{
+		const u32 func_address = 0x0044EDB0;
+		__asm {
+			PUSHAD
+			MOV EAX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
 }

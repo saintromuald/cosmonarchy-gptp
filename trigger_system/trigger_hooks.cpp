@@ -225,6 +225,128 @@ u32 is_unit_at_height(Unit* unit, u32 height) // 0045F8D0
 	return result;
 }
 
+// Hooked to add support for factional and crig-based advisors. -Pr0nogo
+u16 get_unit_portrait_override(u16 unit_id) // 0045E320
+{
+	u32 portrait_id = units_dat::portrait_id[unit_id];
+	if (portrait_id_is_default_advisor(portrait_id)) {
+		u32 player = (*g_active_portrait_unit)->player;
+		PlayerVars player_vars = globals.players[player];
+		bool faction_set = player_vars.faction_was_set;
+
+		switch (portrait_id) {
+			case PortraitId::TerranAdvisor:
+			{
+				if (faction_set) {
+					switch (player_vars.faction) {
+						case Faction_TerranHecatonCoalition:
+						{
+							portrait_id = PortraitId::HADRAL;
+						} break;
+					}
+				}
+			} break;
+			case PortraitId::ProtossAdvisor:
+			{
+				if (faction_set) {
+					switch (player_vars.faction) {
+						case Faction_ProtossOrderOfTheSacredSaber:
+						{
+							portrait_id = PortraitId::Sycophant;
+						} break;
+					}
+				}
+			} break;
+			case PortraitId::Overmind:
+			{
+				if (faction_set) {
+					switch (player_vars.faction) {
+						case Faction_ZergZorthosTendril:
+						{
+							portrait_id = PortraitId::Kagg;
+						} break;
+					}
+				}
+			} break;
+		}
+	}
+	return portrait_id;
+}
+
+// Hooked to add support for factional and crig-based advisors. -Pr0nogo
+s32 game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) // 0045EDD0
+{
+	*g_trigger_portrait_active = 1;
+	helper::set_callback_timer(*g_portrait, 4, time, (u32)helper::trigger_portrait_finished);
+	u32 portrait_id = get_unit_portrait_override(unit_id);
+	helper::display_update_portrait(portrait_id, 0, 2);
+	helper::set_callback_timer(*g_portrait, 3, time, (u32)helper::trigger_portrait_something);
+	if (x_pos != -1) {
+		g_last_event_position->x = (x_pos - 320) & ((x_pos - 320 < 0) - 1);
+		g_last_event_position->y = (y_pos - 200) & ((y_pos - 200 < 0) - 1);
+	}
+	return 1;
+}
+
+// Hooked to add support for factional and crig-based advisors. -Pr0nogo
+void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) // 0046CF30
+{
+	BinDlg* ready_room_dlg = *g_ready_room_dialog;
+	if (ready_room_dlg->control_type) {
+		ready_room_dlg = ready_room_dlg->parent;
+	}
+
+	BinDlg* child = ready_room_dlg->child_dialog;
+	BinDlg* final_dlg = 0;
+	if (child) {
+		u16 slot = portrait_slot + 15;
+		while (child->index != slot) {
+			child = child->next;
+			if (!child) {
+				goto exit_loop;
+			}
+		}
+		final_dlg = child;
+	} else {
+	exit_loop:
+		final_dlg = 0;
+	}
+
+	u16 portrait_id = get_unit_portrait_override(unit_id);
+	PortraitData* portrait_data = final_dlg->portrait_data; // Ignoring nullcheck warning as it is accessed without nullchecks all over the codebase. -Pr0nogo
+	if (portrait_data->smk) {
+		helper::svid_play_end((u8)portrait_data->smk);
+		portrait_data->smk = 0;
+	}
+	portrait_data->flags = 2;
+	portrait_data->portrait_id = portrait_id;
+	helper::start_unit_portrait(final_dlg);
+}
+
+// Hooked to add support for factional and crig-based advisors. -Pr0nogo
+void do_unit_event_notification(Unit* unit, u8 event, u32 timer, bool ping, u32 message_id) // 0045EFE0
+{
+	if (!(*g_trigger_portrait_active))
+	{
+		u32 portrait_id = get_unit_portrait_override(helper::get_last_queue_slot_id(unit));
+		helper::display_update_portrait(portrait_id, unit, 2);
+		if (timer || message_id >= 1144) {
+			helper::set_callback_timer(*g_portrait, 3, timer, (u32)helper::trigger_portrait_something);
+		} else {
+			*g_notification_message_id = message_id;
+			helper::set_callback_timer(*g_portrait, 3, 1000, (u32)helper::animate_unit_portrait_for_event);
+		}
+		if (unit) {
+			if (ping) {
+				helper::set_last_event_position(unit->position.x, unit->position.y);
+				unit->last_event_timer = 8;
+				unit->last_event_color = event;
+				helper::minimap_ping(unit->position.x, unit->position.y, event);
+			}
+		}
+	}
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
@@ -385,6 +507,79 @@ void __declspec(naked) is_unit_at_height_wrapper() { // 0045F8D0
 	}
 }
 
+void __declspec(naked) get_unit_portrait_override_wrapper() { // 0045E320
+	static u16 unit_id;
+	static u16 result;
+	__asm {
+		MOV unit_id, AX
+		PUSHAD
+	}
+	result = get_unit_portrait_override(unit_id);
+	__asm {
+		POPAD
+		MOV AX, result
+		RETN
+	}
+}
+
+void __declspec(naked) game_talking_portrait_wrapper() { // 0045EDD0
+	static s32 x_pos;
+	static u32 time;
+	static u32 unit_id;
+	static s32 y_pos;
+	static s32 result;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x08]
+		MOV unit_id, EAX
+		MOV EAX, [EBP + 0x0C]
+		MOV y_pos, EAX
+		POP EAX
+		MOV x_pos, EDI
+		MOV time, ESI
+		PUSHAD
+	}
+	result = game_talking_portrait(x_pos, time, unit_id, y_pos);
+	__asm {
+		POPAD
+		MOV EAX, result
+		MOV ESP, EBP
+		POP EBP
+		RETN 0x08
+	}
+}
+
+void __declspec(naked) do_unit_event_notification_wrapper() { // 0045EFE0
+	static Unit* unit;
+	static u8 event_arg;
+	static u32 timer;
+	static bool ping;
+	static u32 message_id;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x08]
+		MOV ping, AL
+		MOV EAX, [EBP + 0x0C]
+		MOV message_id, EAX
+		POP EAX
+		MOV timer, EDI
+		MOV event_arg, BL
+		MOV unit, EAX
+		PUSHAD
+	}
+	do_unit_event_notification(unit, event_arg, timer, ping, message_id);
+	__asm {
+		POPAD
+		MOV ESP, EBP
+		POP EBP
+		RETN 0x08
+	}
+}
+
 void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
@@ -393,4 +588,8 @@ void inject_trigger_system_hooks() {
 //	jump_patch(pylon_placement_wrapper,						0x00446775, 1);
 //	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
 	jump_patch(is_unit_at_height_wrapper,					0x0045F8D0, 2);
+	jump_patch(get_unit_portrait_override_wrapper,			0x0045E320, 6);
+	jump_patch(game_talking_portrait_wrapper,				0x0045EDD0, 4);
+	jump_patch(show_portrait,								0x0046CF30, 3);
+//	jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
 }

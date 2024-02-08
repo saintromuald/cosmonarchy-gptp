@@ -124,6 +124,9 @@ namespace hooks {
 				case UnitId::TerranPhobos: {
 					return helper::get_random_sfx_between(SoundId::PhobosOrderAggressive01, SoundId::PhobosOrderAggressive04);
 				} break;
+				case UnitId::ProtossDracadin: {
+					return helper::get_random_sfx_between(SoundId::DracadinOrderAggressive01, SoundId::DracadinOrderAggressive04);
+				} break;
 				case UnitId::ProtossEcclesiast: {
 					return helper::get_random_sfx_between(SoundId::EcclesiastOrderAggressive01, SoundId::EcclesiastOrderAggressive04);
 				} break;
@@ -274,8 +277,11 @@ namespace hooks {
 						ready_sound = helper::get_random_sfx_between(SoundId::ZealotReady01, SoundId::ZealotReady02);
 					} break;
 					case UnitId::ProtossEcclesiast:
-					case UnitId::ProtossPatriarch: {
+					case UnitId::ProtossPatriarch: { // TODO: Own lines
 						ready_sound = helper::get_random_sfx_between(SoundId::EcclesiastReady01, SoundId::EcclesiastReady03);
+					} break;
+					case UnitId::ProtossDracadin: {
+						ready_sound = helper::get_random_sfx_between(SoundId::DracadinReady01, SoundId::DracadinReady03);
 					} break;
 					case UnitId::ProtossLegionnaire: {
 						ready_sound = helper::get_random_sfx_between(SoundId::LegionnaireReady01, SoundId::LegionnaireReady03);

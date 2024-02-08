@@ -393,6 +393,17 @@ struct StatusScreenState
 	u8			id;			// 0x8
 };
 
+struct PortraitData
+{
+	u16			dims_x;			// 0x0
+	u16			dims_y;			// 0x2
+	void*		bmp_buffer;		// 0x4
+	void*		smk;			// 0x8
+	u16			flags;			// 0xC
+	u16			portrait_id;	// 0xE
+	u8			anim_type;		// 0x10
+};
+
 struct ButtonSet
 {
 	u32			buttons_in_set;
@@ -603,6 +614,7 @@ struct BinDlg
 		StatusScreenState*	stat_button_user; // from Neiv's list
 		/*0x26*/  u32		non_user_value;
 		GrpHead*			grp_head_user;
+		PortraitData*		portrait_data;
 	};
 
 	/*0x2A*/  void*			fxn_interact;

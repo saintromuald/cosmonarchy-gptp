@@ -1704,5 +1704,14 @@ namespace helper {
 
 	u32 select_unit_group(u8 control_group);									// 00496B40
 	u8 keypress_escape();														// 00489DA0
+
 	b32 unit_is_valid_caster(Unit* unit);										// 00401210
+
+	u8 trigger_portrait_finished(BinDlg* dialog, u16 timer);							// 0045E610
+	void display_update_portrait(u32 portrait_id, Unit* unit, u16 idle_or_talking);		// 0045EA30
+	void trigger_portrait_something(BinDlg* dialog, u16 type_arg);						// 0045EC40
+	void animate_unit_portrait_for_event(BinDlg* dialog, u16 type_arg);					// 0045EF50
+	b32 set_last_event_position(u32 x, u32 y);											// 0045E3A0
+	u32 svid_play_end(u8 video);														// 004100EE
+	void start_unit_portrait(BinDlg* dialog);											// 0044EDB0
 }
