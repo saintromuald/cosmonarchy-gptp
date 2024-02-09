@@ -258,279 +258,299 @@ void update_trigger_system(bool in_game) {
 	trigger_game_paused = paused;
 }
 
+bool parse_condition(Parser* parser) {
+	if (parser_get_word(parser).size) {
+		if (parser_eq(parser, "combat")) {
+			Area area = parser_get_area(parser);
+			PlayerBitset source_players = parser_get_player_bitset(parser);
+			UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(parser);
+			PlayerBitset target_players = parser_get_player_bitset(parser);
+			UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(parser);
+			QuotaType time_quota_type = parser_get_quota_type(parser, QuotaType_LessOrEqual);
+			u32 time_quota = parser_get_time_ticks(parser);
+			u32 scouting_player = parser_get_player(parser);
+
+			for (u32 i = 0; i < combat_events.count; ++i) {
+				TriggerEvent* event = &kill_events.events[i];
+				if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
+					continue;
+				}
+				if (event->source_player >= FullPlayerLimit || event->target_player >= FullPlayerLimit) {
+					continue;
+				}
+				if ((!source_players.set[event->source_player] || !source_unit_ids.set[event->source_unit_id] || !target_players.set[event->target_player] || !target_unit_ids.set[event->target_unit_id])
+				&&  (!source_players.set[event->target_player] || !source_unit_ids.set[event->target_unit_id] || !target_players.set[event->source_player] || !target_unit_ids.set[event->source_unit_id])) {
+					continue;
+				}
+				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
+					continue;
+				}
+				if (scouting_player) {
+					if (!(event->seen_by & 1 << (scouting_player - 1))) {
+						continue;
+					}
+				}
+				return true;
+			}
+			return false;
+		} else if (parser_eq(parser, "kills")) {
+			Area area = parser_get_area(parser);
+			PlayerBitset source_players = parser_get_player_bitset(parser);
+			UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(parser);
+			PlayerBitset target_players = parser_get_player_bitset(parser);
+			UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(parser);
+			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_GreaterOrEqual);
+			u32 quota = parser_get_s32(parser);
+			QuotaType time_quota_type = parser_get_quota_type(parser, QuotaType_LessOrEqual);
+			u32 time_quota = parser_get_time_ticks(parser);
+			u32 scouting_player = parser_get_player(parser);
+
+			u32 count = 0;
+			for (u32 i = 0; i < kill_events.count; ++i) {
+				TriggerEvent* event = &kill_events.events[i];
+				if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
+					continue;
+				}
+				if (event->source_player >= FullPlayerLimit || !source_players.set[event->source_player]) {
+					continue;
+				}
+				if (!source_unit_ids.set[event->source_unit_id]) {
+					continue;
+				}
+				if (event->target_player >= FullPlayerLimit || !target_players.set[event->target_player]) {
+					continue;
+				}
+				if (!target_unit_ids.set[event->target_unit_id]) {
+					continue;
+				}
+				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
+					continue;
+				}
+				if (scouting_player) {
+					if (!(event->seen_by & 1 << (scouting_player - 1))) {
+						continue;
+					}
+				}
+				count += 1;
+			}
+
+			if (check_quota(quota_type, quota, count)) {
+				return true;
+			}
+			return false;
+		} else if (parser_eq(parser, "deaths")) {
+			Area area = parser_get_area(parser);
+			PlayerBitset players = parser_get_player_bitset(parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(parser);
+			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_GreaterOrEqual);
+			u32 quota = parser_get_s32(parser);
+			QuotaType time_quota_type = parser_get_quota_type(parser, QuotaType_LessOrEqual);
+			u32 time_quota = parser_get_time_ticks(parser);
+			u32 scouting_player = parser_get_player(parser);
+
+			u32 count = 0;
+			for (u32 i = 0; i < kill_events.count; ++i) {
+				TriggerEvent* event = &kill_events.events[i];
+				if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
+					continue;
+				}
+				if (event->target_player >= FullPlayerLimit || !players.set[event->target_player]) {
+					continue;
+				}
+				if (!unit_ids.set[event->target_unit_id]) {
+					continue;
+				}
+				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
+					continue;
+				}
+				if (scouting_player) {
+					if (!(event->seen_by & 1 << (scouting_player - 1))) {
+						continue;
+					}
+				}
+				count += 1;
+			}
+
+			if (check_quota(quota_type, quota, count)) {
+				return true;
+			}
+			return false;
+		} else if (parser_eq(parser, "unit_count")) {
+			Area area = parser_get_area(parser);
+			PlayerBitset players = parser_get_player_bitset(parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(parser);
+			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_GreaterOrEqual);
+			u32 quota = parser_get_s32(parser);
+			u32 scouting_player = parser_get_player(parser);
+			QuotaType scouting_time_quota_type = parser_get_quota_type(parser, QuotaType_LessOrEqual);
+			u32 scouting_time_quota = parser_get_time_ticks(parser);
+
+			EntryArray units = {};
+			if (scouting_player) {
+				seen_unit_search_rect(&units, scouting_player - 1, area.box);
+			} else {
+				unit_search_rect(&units, area.box);
+			}
+
+			u32 count = 0;
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Point16 position = unit->position;
+				if (scouting_player) {
+					position = unit_ext->last_seen_position[scouting_player - 1];
+				}
+				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota, unit_ext->last_seen_timer[scouting_player - 1])) {
+					count++;
+				}
+			}
+
+			if (check_quota(quota_type, quota, count)) {
+				return true;
+			}
+			return false;
+		} else if (parser_eq(parser, "local_camera")) {
+			Area area = parser_get_area(parser);
+			Token min_visibility = parser_get_word(parser);
+
+			Point16 center = {};
+			center.x = *g_move_to_x + 320;
+			center.y = *g_move_to_y + 200;
+
+			if (center.x >= area.box.left && center.x <= area.box.right &&
+				center.y >= area.box.top  && center.y <= area.box.bottom) {
+				ActiveTile* tile = scbw::get_active_tile_at_coords(center.x, center.y);
+				// TODO: should we check area flags?
+				if (token_eqi(&min_visibility, "unexplored")) {
+					return true;
+				} else if (token_eqi(&min_visibility, "explored")) {
+					if (!(tile->explored_flags & (1 << *g_local_nation_id))) {
+						return true;
+					}
+				} else if (token_eqi(&min_visibility, "visible") || true) {
+					if (!(tile->visibility_flags & (1 << *g_local_nation_id))) {
+						return true;
+					}
+				}
+			}
+			return false;
+		} else if (parser_eq(parser, "var") || parser_eq(parser, "timer")) {
+			bool is_timer = parser_eq(parser, "timer");
+			TriggerVarType var_type = is_timer ? TriggerVarType_Timer : TriggerVarType_Var;
+
+			Token name = parser_get_string(parser);
+			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_Equal);
+			TriggerVar* var = parser_get_char(parser, '=') ? find_or_create_trigger_var(var_type, name.data) : find_trigger_var(var_type, name.data);
+			s32 quota = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
+			if (var) {
+				return check_quota(quota_type, quota, var->value);
+			}
+			return false;
+		} else if (parser_eq(parser, "unit_color")) {
+			Area area = parser_get_area(parser);
+			PlayerBitset players = parser_get_player_bitset(parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(parser);
+			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_GreaterOrEqual);
+			u32 quota = parser_get_s32(parser);
+			u32 color_id = parser_get_s32(parser); // Currently naive; need a way to get multiple pcolors and match them. -Pr0nogo
+
+			EntryArray units = {};
+			unit_search_rect(&units, area.box);
+
+			u32 count = 0;
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Point16 position = unit->position;
+				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				if (unit_ext->values[ValuePlayerColor] == color_id) {
+					count++;
+				}
+			}
+			if (check_quota(quota_type, quota, count)) {
+				return true;
+			}
+			return false;
+		}/* else if (parser_eq(parser, "selected")) {
+			PlayerBitset players = parser_get_player_bitset(parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(parser);
+			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_GreaterOrEqual);
+			u32 quota = parser_get_s32(parser);
+
+			u32 count = 0;
+			for (u32 i = 0; i < units.count; ++i) { // TODO: Replace with selection. -Pr0nogo
+				Unit* unit = units.units[i];
+				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				count++;
+			}
+			if (check_quota(quota_type, quota, count)) {
+				return true;
+			}
+			return false;
+		}*/
+	}
+	return false;
+}
+
 b32 parse_comment_condition(TriggerAction* action) {
-	u32 trigger_player = *g_current_trigger_player_id;
-	bool is_local_player = trigger_player == *g_local_nation_id;
 	Parser parser = {};
 	parser.at = helper::get_chk_string(action->text_string);
 	while (parser_get_command(&parser)) {
 		if (parser_eq(&parser, "condition")) {
-			if (parser_get_word(&parser).size) {
-				if (parser_eq(&parser, "combat")) {
-					Area area = parser_get_area(&parser);
-					PlayerBitset source_players = parser_get_player_bitset(&parser);
-					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
-					PlayerBitset target_players = parser_get_player_bitset(&parser);
-					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
-					QuotaType time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
-					u32 time_quota = parser_get_time_ticks(&parser);
-					u32 scouting_player = parser_get_player(&parser);
-
-					for (u32 i = 0; i < combat_events.count; ++i) {
-						TriggerEvent* event = &kill_events.events[i];
-						if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
-							continue;
-						}
-						if (event->source_player >= FullPlayerLimit || event->target_player >= FullPlayerLimit) {
-							continue;
-						}
-						if ((!source_players.set[event->source_player] || !source_unit_ids.set[event->source_unit_id] || !target_players.set[event->target_player] || !target_unit_ids.set[event->target_unit_id])
-						&&  (!source_players.set[event->target_player] || !source_unit_ids.set[event->target_unit_id] || !target_players.set[event->source_player] || !target_unit_ids.set[event->source_unit_id])) {
-							continue;
-						}
-						if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
-							continue;
-						}
-						if (scouting_player) {
-							if (!(event->seen_by & 1 << (scouting_player - 1))) {
-								continue;
-							}
-						}
-						return true;
-					}
-					return false;
-				} else if (parser_eq(&parser, "kills")) {
-					Area area = parser_get_area(&parser);
-					PlayerBitset source_players = parser_get_player_bitset(&parser);
-					UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(&parser);
-					PlayerBitset target_players = parser_get_player_bitset(&parser);
-					UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(&parser);
-					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
-					u32 quota = parser_get_s32(&parser);
-					QuotaType time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
-					u32 time_quota = parser_get_time_ticks(&parser);
-					u32 scouting_player = parser_get_player(&parser);
-
-					u32 count = 0;
-					for (u32 i = 0; i < kill_events.count; ++i) {
-						TriggerEvent* event = &kill_events.events[i];
-						if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
-							continue;
-						}
-						if (event->source_player >= FullPlayerLimit || !source_players.set[event->source_player]) {
-							continue;
-						}
-						if (!source_unit_ids.set[event->source_unit_id]) {
-							continue;
-						}
-						if (event->target_player >= FullPlayerLimit || !target_players.set[event->target_player]) {
-							continue;
-						}
-						if (!target_unit_ids.set[event->target_unit_id]) {
-							continue;
-						}
-						if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
-							continue;
-						}
-						if (scouting_player) {
-							if (!(event->seen_by & 1 << (scouting_player - 1))) {
-								continue;
-							}
-						}
-						count += 1;
-					}
-
-					if (check_quota(quota_type, quota, count)) {
-						return true;
-					}
-					return false;
-				} else if (parser_eq(&parser, "deaths")) {
-					Area area = parser_get_area(&parser);
-					PlayerBitset players = parser_get_player_bitset(&parser);
-					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
-					u32 quota = parser_get_s32(&parser);
-					QuotaType time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
-					u32 time_quota = parser_get_time_ticks(&parser);
-					u32 scouting_player = parser_get_player(&parser);
-
-					u32 count = 0;
-					for (u32 i = 0; i < kill_events.count; ++i) {
-						TriggerEvent* event = &kill_events.events[i];
-						if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
-							continue;
-						}
-						if (event->target_player >= FullPlayerLimit || !players.set[event->target_player]) {
-							continue;
-						}
-						if (!unit_ids.set[event->target_unit_id]) {
-							continue;
-						}
-						if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
-							continue;
-						}
-						if (scouting_player) {
-							if (!(event->seen_by & 1 << (scouting_player - 1))) {
-								continue;
-							}
-						}
-						count += 1;
-					}
-
-					if (check_quota(quota_type, quota, count)) {
-						return true;
-					}
-					return false;
-				} else if (parser_eq(&parser, "unit_count")) {
-					Area area = parser_get_area(&parser);
-					PlayerBitset players = parser_get_player_bitset(&parser);
-					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
-					u32 quota = parser_get_s32(&parser);
-					u32 scouting_player = parser_get_player(&parser);
-					QuotaType scouting_time_quota_type = parser_get_quota_type(&parser, QuotaType_LessOrEqual);
-					u32 scouting_time_quota = parser_get_time_ticks(&parser);
-
-					EntryArray units = {};
-					if (scouting_player) {
-						seen_unit_search_rect(&units, scouting_player - 1, area.box);
-					} else {
-						unit_search_rect(&units, area.box);
-					}
-
-					u32 count = 0;
-					for (u32 i = 0; i < units.count; ++i) {
-						Unit* unit = units.units[i];
-						UnitExt* unit_ext = get_unit_ext(unit);
-						Point16 position = unit->position;
-						if (scouting_player) {
-							position = unit_ext->last_seen_position[scouting_player - 1];
-						}
-						if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
-							continue;
-						}
-						if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
-							continue;
-						}
-						if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
-							continue;
-						}
-						if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota, unit_ext->last_seen_timer[scouting_player - 1])) {
-							count++;
-						}
-					}
-
-					if (check_quota(quota_type, quota, count)) {
-						return true;
-					}
-					return false;
-				} else if (parser_eq(&parser, "local_camera")) {
-					Area area = parser_get_area(&parser);
-					Token min_visibility = parser_get_word(&parser);
-
-					Point16 center = {};
-					center.x = *g_move_to_x + 320;
-					center.y = *g_move_to_y + 200;
-
-					if (center.x >= area.box.left && center.x <= area.box.right &&
-						center.y >= area.box.top  && center.y <= area.box.bottom) {
-						ActiveTile* tile = scbw::get_active_tile_at_coords(center.x, center.y);
-						// TODO: should we check area flags?
-						if (token_eqi(&min_visibility, "unexplored")) {
-							return true;
-						} else if (token_eqi(&min_visibility, "explored")) {
-							if (!(tile->explored_flags & (1 << *g_local_nation_id))) {
-								return true;
-							}
-						} else if (token_eqi(&min_visibility, "visible") || true) {
-							if (!(tile->visibility_flags & (1 << *g_local_nation_id))) {
-								return true;
-							}
-						}
-					}
-					return false;
-				} else if (parser_eq(&parser, "var") || parser_eq(&parser, "timer")) {
-					bool is_timer = parser_eq(&parser, "timer");
-					TriggerVarType var_type = is_timer ? TriggerVarType_Timer : TriggerVarType_Var;
-
-					Token name = parser_get_string(&parser);
-					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_Equal);
-					TriggerVar* var = parser_get_char(&parser, '=') ? find_or_create_trigger_var(var_type, name.data) : find_trigger_var(var_type, name.data);
-					s32 quota = is_timer ? parser_get_time_ticks(&parser) : parser_get_s32(&parser);
-					if (var) {
-						return check_quota(quota_type, quota, var->value);
-					}
-					return false;
-				} else if (parser_eq(&parser, "unit_color")) {
-					Area area = parser_get_area(&parser);
-					PlayerBitset players = parser_get_player_bitset(&parser);
-					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
-					u32 quota = parser_get_s32(&parser);
-					u32 color_id = parser_get_s32(&parser); // Currently naive; need a way to get multiple pcolors and match them. -Pr0nogo
-
-					EntryArray units = {};
-					unit_search_rect(&units, area.box);
-
-					u32 count = 0;
-					for (u32 i = 0; i < units.count; ++i) {
-						Unit* unit = units.units[i];
-						UnitExt* unit_ext = get_unit_ext(unit);
-						Point16 position = unit->position;
-						if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
-							continue;
-						}
-						if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
-							continue;
-						}
-						if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
-							continue;
-						}
-						if (unit_ext->values[ValuePlayerColor] == color_id) {
-							count++;
-						}
-					}
-					if (check_quota(quota_type, quota, count)) {
-						return true;
-					}
-					return false;
-				}/* else if (parser_eq(&parser, "selected")) {
-					PlayerBitset players = parser_get_player_bitset(&parser);
-					UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-					QuotaType quota_type = parser_get_quota_type(&parser, QuotaType_GreaterOrEqual);
-					u32 quota = parser_get_s32(&parser);
-
-					u32 count = 0;
-					for (u32 i = 0; i < units.count; ++i) { // TODO: Replace with selection. -Pr0nogo
-						Unit* unit = units.units[i];
-						if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
-							continue;
-						}
-						if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
-							continue;
-						}
-						count++;
-					}
-					if (check_quota(quota_type, quota, count)) {
-						return true;
-					}
-					return false;
-				}*/
-			}
+			return parse_condition(&parser);
 		}
 	}
-
 	return true;
 }
 
 b32 __fastcall parse_comment_action(TriggerAction* action) {
 	u32 trigger_player = *g_current_trigger_player_id;
 	bool is_local_player = trigger_player == *g_local_nation_id;
+	TriggerVector* trigger_node = *g_current_trigger_node;
+
 	Parser parser = {};
 	parser.at = helper::get_chk_string(action->text_string);
 	while (parser_get_command(&parser)) {
+		// Condition Triggers
+		if (parser_eq(&parser, "exit_if")) {
+			if (!parse_condition(&parser)) {
+				trigger_node->trigger.current_action_index = 64;
+				return false;
+			}
+		} else if (parser_eq(&parser, "exit_preserve_if")) {
+			if (!parse_condition(&parser)) {
+				trigger_node->trigger.flags |= 0x4;	
+				trigger_node->trigger.current_action_index = 64;
+				return false;
+			}
+		} else if (parser_eq(&parser, "wait_if")) {
+			if (!parse_condition(&parser)) {
+				return false;
+			}
 		// Local Only Triggers
-		if (parser_eq(&parser, "play_music") && is_local_player) {
+		} else if (parser_eq(&parser, "play_music") && is_local_player) {
 			Token filename = parser_get_string(&parser);
 			playback.next_music = get_sound(filename.data);
 			playback.target_fade = 0;
