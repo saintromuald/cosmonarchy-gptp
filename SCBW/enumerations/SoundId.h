@@ -1186,6 +1186,12 @@ namespace SoundId
 		StarSovereignGriefOfAllGodsChannel	= 1246,
 		MindTyrantMindControlChannel		= 1276,
 		AkistrokorBlissfulEmbraceChannel	= 1277,
+
+		LegionnaireTeleport01				= 1289,
+		LegionnaireTeleport02				= 1290,
+		LegionnaireTeleport03				= 1291,
+		LegionnaireTeleport04				= 1292,
+
 		Simulacrum_Clone_01					= 1332,
 
 		MadcapOrderAggressive01				= 1344,

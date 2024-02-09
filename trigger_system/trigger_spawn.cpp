@@ -20,7 +20,7 @@ void update_spawn() {
 		switch (seq->type) {
 			case SpawnType_Augur: {
 				Thingy* thingy = helper::create_thingy(SpriteId::AugurDeathExplosion, seq->source_pos.x, seq->source_pos.y, seq->player);
-				helper::play_sound_from_unit(scbw::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
+				helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
 			} break;
 			case SpawnType_AugurDamage: {
 				Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, seq->player, seq->source_pos.x, seq->source_pos.y);
@@ -28,6 +28,10 @@ void update_spawn() {
 					augur->user_action_flags |= 4;
 					augur_sacrifice(augur, 10 * 32);
 				}
+			} break;
+			case SpawnType_Teleport:
+			{
+				Thingy* thingy = helper::create_thingy(SpriteId::LegionnaireTeleportEffect, seq->source_pos.x, seq->source_pos.y, seq->player);
 			} break;
 		}
 

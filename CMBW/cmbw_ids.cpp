@@ -1273,6 +1273,26 @@ u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
 				}
 			}
 		} break;
+
+		// Temporary, for mapcrap
+		case PortraitId::Maverick:
+		{
+			if (faction_set && player_vars.faction == Faction_TerranHecatonCoalition) {
+				portrait_id = PortraitId::AnadThyron;
+			}
+		} break;
+		case PortraitId::Legionnaire:
+		{
+			if (faction_set && player_vars.faction == Faction_ProtossOrderOfTheSacredSaber) {
+				portrait_id = PortraitId::Patriarch;
+			}
+		} break;
+		case PortraitId::Izirokor:
+		{
+			if (faction_set && player_vars.faction == Faction_ZergZorthosTendril) {
+				portrait_id = PortraitId::Patriarch;
+			}
+		} break;
 	}
 	return portrait_id;
 }

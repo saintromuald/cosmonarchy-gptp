@@ -229,14 +229,12 @@ u32 is_unit_at_height(Unit* unit, u32 height) // 0045F8D0
 u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 {
 	u32 portrait_id = units_dat::portrait_id[unit_id];
-	if (portrait_id_is_default_advisor(portrait_id)) {
-		u32 player = *g_local_nation_id;
-		Unit* active_unit = *g_active_portrait_unit;
-		if (active_unit) {
-			player = active_unit->player;
-		}
-		portrait_id = get_player_portrait_id_override(portrait_id, player);
+	u32 player = *g_local_nation_id;
+	Unit* active_unit = *g_active_portrait_unit;
+	if (active_unit) {
+		player = active_unit->player;
 	}
+	portrait_id = get_player_portrait_id_override(portrait_id, player);
 	return portrait_id;
 }
 
