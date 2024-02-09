@@ -1138,7 +1138,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			u32 count = parser_get_s32(&parser);
 			TriggerStat trigger_stat = (TriggerStat)parser_get_enum(&parser, trigger_stat_names, ARRAY_SIZE(trigger_stat_names));
-			s32 stat_amount = parser_get_s32(&parser); // We should separately make "modify_unit_stat" and have operator parsing for stat amount. -Pr0nogo
+			// We should separately make "modify_unit_stat" and have operator parsing for stat amount. -Pr0nogo
+			// Not really... We would just have assign operators before value i.e. =|+=|-=|*=|/= -Veeq7
+			s32 value = 0;
+			if (trigger_stat == TriggerStat_TimedLife) {
+				value = parser_get_time_ticks(&parser);
+			} else {
+				value = parser_get_s32(&parser);
+			}
 
 			EntryArray units = {};
 			unit_search_rect(&units, area.box);
@@ -1163,44 +1170,36 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				unit_count++;
 
 				switch (trigger_stat) {
-					case TriggerStat_Armor:
-					{
+					case TriggerStat_Armor: {
 						unit_ext->values[ValueTriggerArmorBaseSet] = 1;
-						unit_ext->values[ValueTriggerArmorBaseAmount] = stat_amount;
+						unit_ext->values[ValueTriggerArmorBaseAmount] = value;
 					} break;
-					case TriggerStat_WeaponRange:
-					{
+					case TriggerStat_WeaponRange: {
 						unit_ext->values[ValueTriggerWeaponRangeBaseSet] = 1;
-						unit_ext->values[ValueTriggerWeaponRangeBaseAmount] = stat_amount;
+						unit_ext->values[ValueTriggerWeaponRangeBaseAmount] = value;
 					} break;
-					case TriggerStat_ArmorPenetration:
-					{
+					case TriggerStat_ArmorPenetration: {
 						unit_ext->values[ValueTriggerArmorPenBaseSet] = 1;
-						unit_ext->values[ValueTriggerArmorPenBaseAmount] = stat_amount;
+						unit_ext->values[ValueTriggerArmorPenBaseAmount] = value;
 					} break;
-					case TriggerStat_Damage:
-					{
+					case TriggerStat_Damage: {
 						unit_ext->values[ValueTriggerDamageBaseSet] = 1;
-						unit_ext->values[ValueTriggerDamageBaseAmount] = stat_amount * 256;
+						unit_ext->values[ValueTriggerDamageBaseAmount] = value * 256;
 					} break;
-					case TriggerStat_SplashInner:
-					{
+					case TriggerStat_SplashInner: {
 						unit_ext->values[ValueTriggerWeaponSplashInnerSet] = 1;
-						unit_ext->values[ValueTriggerWeaponSplashInnerAmount] = stat_amount;
+						unit_ext->values[ValueTriggerWeaponSplashInnerAmount] = value;
 					} break;
-					case TriggerStat_SplashMedium:
-					{
+					case TriggerStat_SplashMedium: {
 						unit_ext->values[ValueTriggerWeaponSplashMediumSet] = 1;
-						unit_ext->values[ValueTriggerWeaponSplashMediumAmount] = stat_amount;
+						unit_ext->values[ValueTriggerWeaponSplashMediumAmount] = value;
 					} break;
-					case TriggerStat_SplashOuter:
-					{
+					case TriggerStat_SplashOuter: {
 						unit_ext->values[ValueTriggerWeaponSplashOuterSet] = 1;
-						unit_ext->values[ValueTriggerWeaponSplashOuterAmount] = stat_amount;
+						unit_ext->values[ValueTriggerWeaponSplashOuterAmount] = value;
 					} break;
-					case TriggerStat_TimedLife:
-					{
-						unit->remove_timer = (u16)(stat_amount / 42) + 0.5f;
+					case TriggerStat_TimedLife: {
+						unit->remove_timer = value;
 					} break;
 				}
 			}

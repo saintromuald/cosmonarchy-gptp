@@ -198,7 +198,6 @@ enum TriggerStat : u8 {
 	TriggerStat_Count,
 };
 
-
 static const char* trigger_stat_names[] = {
 	"armor",
 	"weapon_range",
@@ -218,7 +217,6 @@ enum TriggerBehavior : u8 {
 
 	TriggerBehavior_Count,
 };
-
 
 static const char* trigger_behavior_names[] = {
 	"cloak_proximity",
