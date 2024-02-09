@@ -21,8 +21,10 @@ static LRESULT CALLBACK keyboard_proc(int code, WPARAM wparam, LPARAM lparam) {
 	u32 key = wparam;
 	bool was_held = lparam & (1 << 30);
 	bool is_held = !(lparam & (1 << 31));
-	keyboard.add_key_event(key, was_held, is_held);
-	return 0;
+	if (keyboard.key_event(key, was_held, is_held)) {
+		return 1;
+	}
+	return CallNextHookEx(0, code, wparam, lparam);
 }
 
 void init_hotkeys() {
@@ -58,22 +60,22 @@ static int control_group_index_from_key(u32 key) {
 	return -1;
 }
 
-static void update_control_groups(const KeyEvent& ev) {
+static bool update_control_groups(const KeyEvent& ev) {
 	s32 index = control_group_index_from_key(ev.key);
 	if (index == -1) {
-		return;
+		return false;
 	}
 
 	ControlGroup& control_group = hotkeys.control_groups[index];
 	bool center = false;
 	bool just_pressed = false;
 	if (ev.held()) {
-		center = ev.held_time() >= 12;
+		center = ev.held_time() >= 500;
 		just_pressed = ev.pressed();
 	}
 	bool play_response = just_pressed;
 	if (hotkeys.last_control_group_selected == &control_group) {
-		if (ev.release_time() <= 12) {
+		if (ev.release_time() <= 500) {
 			if (ev.pressed()) {
 				center = true;
 				play_response = false;
@@ -117,33 +119,39 @@ static void update_control_groups(const KeyEvent& ev) {
 			}
 		}
 	}
+	return true;
+}
+
+bool Keyboard::handle_key_event(const KeyEvent& ev) {
+	if (ev.key == VK_F4 && ev.alt_held) {
+		return false;
+	}
+	if (aise_state.console_visible) {
+		return false;
+	}
+
+	if (config.extended_camera_hotkeys) {
+		if (ev.key >= VK_F1 && ev.key < VK_F1 + CameraCap) {
+			Point16& screen = hotkeys.screens[ev.key - VK_F1];
+			if (ev.control_held || ev.shift_held) {
+				screen.x = *g_move_to_x;
+				screen.y = *g_move_to_y;
+			} else {
+				helper::move_screen(screen);
+			}
+			return true;
+		}
+	}
+
+	if (update_control_groups(ev)) {
+		return true;
+	}
+
+	return false;
 }
 
 void update_hotkeys() {
 	keyboard.update();
-
-	for (const KeyEvent& ev : keyboard.poll()) {
-		if (ev.key == VK_F4 && ev.alt_held) {
-			continue;
-		}
-		if (aise_state.console_visible) {
-			continue;
-		}
-
-		if (config.extended_camera_hotkeys) {
-			if (ev.key >= VK_F1 && ev.key < VK_F1 + CameraCap) {
-				Point16& screen = hotkeys.screens[ev.key - VK_F1];
-				if (ev.control_held || ev.shift_held) {
-					screen.x = *g_move_to_x;
-					screen.y = *g_move_to_y;
-				} else {
-					helper::move_screen(screen);
-				}
-			}
-		}
-		
-		update_control_groups(ev);
-	}
 }
 
 namespace hooks {
