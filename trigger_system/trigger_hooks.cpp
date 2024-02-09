@@ -244,10 +244,10 @@ u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 s32 game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) // 0045EDD0
 {
 	*g_trigger_portrait_active = 1;
-	helper::set_callback_timer(*g_portrait, 4, time, (u32)helper::trigger_portrait_finished);
+	helper::set_callback_timer(*g_portrait, 4, time, 0x0045E610);
 	u32 portrait_id = helper::get_unit_portrait_override(unit_id);
 	helper::display_update_portrait(portrait_id, 0, 2);
-	helper::set_callback_timer(*g_portrait, 3, time, (u32)helper::trigger_portrait_something);
+	helper::set_callback_timer(*g_portrait, 3, time, 0x0045EC40);
 	if (x_pos != -1) {
 		g_last_event_position->x = (x_pos - 320) & ((x_pos - 320 < 0) - 1);
 		g_last_event_position->y = (y_pos - 200) & ((y_pos - 200 < 0) - 1);
@@ -311,10 +311,10 @@ void do_unit_event_notification(Unit* unit, u8 event, u32 timer, bool ping, u32 
 		u32 portrait_id = helper::get_unit_portrait_override(helper::get_last_queue_slot_id(unit));
 		helper::display_update_portrait(portrait_id, unit, 2);
 		if (timer || message_id >= SoundIdLimit) {
-			helper::set_callback_timer(*g_portrait, 3, timer, (u32)helper::trigger_portrait_something);
+			helper::set_callback_timer(*g_portrait, 3, timer, 0x0045EC40);
 		} else {
 			*g_notification_message_id = message_id;
-			helper::set_callback_timer(*g_portrait, 3, 1000, (u32)helper::animate_unit_portrait_for_event);
+			helper::set_callback_timer(*g_portrait, 3, 1000, 0x0045EF50);
 		}
 		if (unit && ping) {
 			helper::set_last_event_position(unit->position.x, unit->position.y);
@@ -564,15 +564,14 @@ void __declspec(naked) do_unit_event_notification_wrapper() { // 0045EFE0
 	static Unit* unit;
 	static u8 event_arg;
 	static u32 timer;
-	static b32 ping;
+	static bool ping;
 	static u32 message_id;
 	__asm {
 		PUSH EBP
 		MOV EBP, ESP
 		PUSH EAX
 		MOV EAX, [EBP + 0x08]
-		MOVZX EAX, AL
-		MOV ping, EAX
+		MOV ping, AL
 		MOV EAX, [EBP + 0x0C]
 		MOV message_id, EAX
 		POP EAX
@@ -581,7 +580,7 @@ void __declspec(naked) do_unit_event_notification_wrapper() { // 0045EFE0
 		MOV unit, EAX
 		PUSHAD
 	}
-	do_unit_event_notification(unit, event_arg, timer, (bool)ping, message_id);
+	do_unit_event_notification(unit, event_arg, timer, ping, message_id);
 	__asm {
 		POPAD
 		MOV ESP, EBP
