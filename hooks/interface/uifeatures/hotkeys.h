@@ -10,10 +10,11 @@ struct KeyState {
 };
 
 struct KeyEvent {
+	u64 timestamp;
 	u32 key;
 	bool was_held;
 
-	// Modifiers keys are commonly checked when processing a key event,
+	// Modifier keys are commonly checked when processing a key event,
 	// to keep the information about sequentiality we embed it here,
 	// instead of checking if they are held this frame
 	bool control_held;
@@ -27,8 +28,8 @@ struct KeyEvent {
 	inline bool pressed() const { return !was_held && state.is_held; }
 	inline bool held() const { return state.is_held; }
 	inline bool released() const { return !state.is_held; }
-	inline u64 held_time() const { return GetTickCount64() - state.last_pressed; }
-	inline u64 release_time() const { return GetTickCount64() - state.last_released; }
+	inline u64 held_time() const { return timestamp - state.last_pressed; }
+	inline u64 release_time() const { return timestamp - state.last_released; }
 	inline u64 last_held_time() const { return state.last_held_time; }
 };
 
@@ -54,6 +55,7 @@ public:
 		}
 
 		KeyEvent ev = {};
+		ev.timestamp    = now;
 		ev.key          = key;
 		ev.was_held     = was_held;
 		ev.control_held = GetKeyState(VK_CONTROL) & (1 << 15);
