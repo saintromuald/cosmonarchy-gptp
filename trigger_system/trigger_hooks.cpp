@@ -366,7 +366,7 @@ void update_selected_unit_portrait() // 0045EBC0
 // Hooked to enable crig-based briefing music. -Pr0nogo
 void dialog_music_fade(u32 music_id) // 004A6310
 {
-	if (!*g_direct_sound_handle || !g_music_playing)
+	if (!*g_direct_sound_handle || !*g_music_playing)
 	{
 		switch (music_id) {
 			case MusicId_TRdyRoom:
