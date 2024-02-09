@@ -3,6 +3,8 @@
 #include "hooks/grafting/grafting.h"
 #include "config.h"
 
+AiseState aise_state = {};
+
 static u16* find_req_id(u16* req_table, u32 req_id) {
 	u16* current = req_table + 1;
 	while (true) {
@@ -68,7 +70,10 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 			return (u32)ccmu_extender.new_client_selection_group;
 		} break;
 		case AiseSignal_GetAltConsoleHotkey: {
-			return (u32)config.require_control_for_console_hotkey;
+			return (u32)config.tilde_control_group;
+		} break;
+		case AiseSignal_SetConsoleVisible: {
+			aise_state.console_visible = v1;
 		} break;
 	}
 	return 0;

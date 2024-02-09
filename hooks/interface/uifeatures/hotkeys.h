@@ -10,7 +10,7 @@ struct KeyState {
 };
 
 struct KeyEvent {
-	char key;
+	u32 key;
 	bool was_held;
 
 	// Modifiers keys are commonly checked when processing a key event,
@@ -58,7 +58,7 @@ public:
 	// Exposing this only to BW's functionality that cannot be wired using the event loop.
 	bool key_held_this_frame(char key) const { return key_states[key].is_held; }
 	
-	void add_key_event(int key, bool was_held, bool is_held) {
+	void add_key_event(u32 key, bool was_held, bool is_held) {
 		if (key >= KEY_COUNT) return;
 
 		KeyState& state = key_states[key];

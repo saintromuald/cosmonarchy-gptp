@@ -2,17 +2,15 @@
 #include "SCBW/api.h"
 #include <windows.h>
 #include "hooks/interface/buttonsets.h"
+#include "aise_signal.h"
 
 #define CameraCap 8
-#define StandardControlGroups 10
-#define ExtendedControlGroups 16
-
-static const char control_group_keys[] = "0123456789RFVTGB"; // NOTE: lower case letters do not work on some computers...
-static_assert(sizeof(control_group_keys) == ExtendedControlGroups + 1); // null term
+#define ControlGroupCap 17
+#define ExtendedControlGroupKeys "RFVTGB"
 
 struct Hotkeys {
 	Point16 screens[CameraCap];
-	ControlGroup control_groups[ExtendedControlGroups];
+	ControlGroup control_groups[ControlGroupCap];
 	ControlGroup* last_control_group_selected;
 };
 
@@ -20,7 +18,7 @@ Keyboard keyboard;
 static Hotkeys hotkeys;
 
 static LRESULT CALLBACK keyboard_proc(int code, WPARAM wparam, LPARAM lparam) {
-	char key = wparam;
+	u32 key = wparam;
 	bool was_held = lparam & (1 << 30);
 	bool is_held = !(lparam & (1 << 31));
 	keyboard.add_key_event(key, was_held, is_held);
@@ -42,15 +40,26 @@ void init_hotkeys() {
 	}
 }
 
-static void update_control_groups(const KeyEvent& ev) {
-	u32 count = config.extended_control_groups ? ExtendedControlGroups : StandardControlGroups;
-	s32 index = -1;
-	for (u32 i = 0; i < count; i++) {
-		if (ev.key == control_group_keys[i]) {
-			index = i;
-			break;
+static int control_group_index_from_key(u32 key) {
+	if (key >= '0' && key <= '9') {
+		return key - '0';
+	}
+	if (config.extended_control_groups) {
+		const char* keys = "RFVTGB"; // NOTE: lower case letters do not work on some computers...
+		for (u32 i = 0; i < 6; i++) {
+			if (key == keys[i]) {
+				return 10 + i;
+			}
 		}
 	}
+	if (config.tilde_control_group && key == 192) {
+		return 16;
+	}
+	return -1;
+}
+
+static void update_control_groups(const KeyEvent& ev) {
+	s32 index = control_group_index_from_key(ev.key);
 	if (index == -1) {
 		return;
 	}
@@ -96,7 +105,7 @@ static void update_control_groups(const KeyEvent& ev) {
 		steal = ev.alt_held;
 	}
 	if (steal) {
-		for (u32 i = 0; i < ExtendedControlGroups; i++) {
+		for (u32 i = 0; i < ControlGroupCap; i++) {
 			if (&control_group == &hotkeys.control_groups[i]) {
 				continue;
 			}
@@ -114,11 +123,15 @@ void update_hotkeys() {
 	keyboard.update();
 
 	for (const KeyEvent& ev : keyboard.poll()) {
-		if (config.extended_camera_hotkeys) {
-			if (ev.key == VK_F4 && ev.alt_held) {
+		if (ev.key == VK_F4 && ev.alt_held) {
+			continue;
+		}
+		if (aise_state.console_visible) {
+			continue;
+		}
 
-			}
-			if (ev.key >= VK_F1 && ev.key <= VK_F1 + CameraCap) {
+		if (config.extended_camera_hotkeys) {
+			if (ev.key >= VK_F1 && ev.key < VK_F1 + CameraCap) {
 				Point16& screen = hotkeys.screens[ev.key - VK_F1];
 				if (ev.control_held || ev.shift_held) {
 					screen.x = *g_move_to_x;

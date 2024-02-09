@@ -19,7 +19,6 @@ struct Config {
 	bool show_timer = true;
 	bool show_apm = true;
 	bool always_show_extended_tooltips = false;
-	bool require_control_for_console_hotkey = true;
 
 	// Selection UI
 	bool show_rally_lines = true;
@@ -69,6 +68,7 @@ struct Config {
 	std::array<std::string, 3> layout = {"QWE", "ASD", "ZXC"};
 	bool extended_control_groups = false;
 	bool default_to_steal_hotkeys = false;
+	bool tilde_control_group = true;
 
 	// Debug
 	bool verbose = false;

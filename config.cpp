@@ -76,7 +76,6 @@ void load_config() {
 		load_field(config_node, "show-timer", config.show_timer);
 		load_field(config_node, "show-apm", config.show_apm);
 		load_field(config_node, "always-show-extended-tooltips", config.always_show_extended_tooltips);
-		load_field(config_node, "require-control-for-console-hotkey", config.require_control_for_console_hotkey);
 
 		// Selection UI
 		load_field(config_node, "show-rally-lines", config.show_rally_lines);
@@ -121,6 +120,7 @@ void load_config() {
 		}
 		load_field(config_node, "extended-control-groups", config.extended_control_groups);
 		load_field(config_node, "default-to-steal-hotkeys", config.default_to_steal_hotkeys);
+		load_field(config_node, "tilde-control-group", config.tilde_control_group);
 
 		// Debug
 		load_field(config_node, "verbose", config.verbose);
@@ -150,7 +150,6 @@ void save_config() {
 	write_field(out, "show-timer", config.show_timer);
 	write_field(out, "show-apm", config.show_apm);
 	write_field(out, "always-show-extended-tooltips", config.always_show_extended_tooltips);
-	write_field(out, "require-control-for-console-hotkey", config.require_control_for_console_hotkey);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Selection UI");
@@ -217,6 +216,8 @@ void save_config() {
 	out << YAML::Newline << YAML::Comment("Adds extra control groups at R, F, V, T, G, B. Must be used with grid hotkeys!");
 	write_field (out, "extended-control-groups", config.extended_control_groups);
 	write_field (out, "default-to-steal-hotkeys", config.default_to_steal_hotkeys);
+	out << YAML::Newline << YAML::Comment("Replaces tilde with an additional control group, moves console to F12");
+	write_field(out, "tilde-control-group", config.tilde_control_group);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Debug");
