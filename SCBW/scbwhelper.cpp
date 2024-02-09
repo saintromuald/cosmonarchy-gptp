@@ -14781,4 +14781,15 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void play_music(u32 music_id)
+	{
+		const u32 func_address = 0x004A6140;
+		__asm {
+			PUSHAD
+			MOV EDI, music_id
+			CALL func_address
+			POPAD
+		}
+	}
 }

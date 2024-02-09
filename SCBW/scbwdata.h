@@ -1228,8 +1228,13 @@ SCBW_DATA(u32*,				g_trigger_portrait_active,			0x0068AC4C);
 // For do_unit_event_notification
 SCBW_DATA(u32*,				g_notification_message_id,			0x0068ACA0);
 
-// For updatae_selected_unit_portrait
+// For update_selected_unit_portrait
 SCBW_DATA(u32*,				g_unk_portrait,						0x0068AC60);
+
+// For dialog_music_fade
+SCBW_DATA(HANDLE**,			g_direct_sound_handle,				0x006D5BAC);
+SCBW_DATA(MusicStruct*,		g_music_bank,						0x00512BB8);
+SCBW_DATA(u32*,				g_big_music_volume,					0x006D5BB8);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

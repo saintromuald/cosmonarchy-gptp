@@ -290,6 +290,14 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) // 0046
 			{
 				portrait_id = PortraitId::AnadThyron;
 			} break;
+			case PortraitId::Zealot:
+			{
+				portrait_id = PortraitId::Patriarch;
+			} break;
+			case PortraitId::Ovileth:
+			{
+				portrait_id = PortraitId::AdvisorZorthos;
+			} break;
 		}
 	}
 
@@ -345,14 +353,45 @@ void update_selected_unit_portrait() // 0045EBC0
 			}
 
 			u32 active_unit_id = helper::get_last_queue_slot_id(active_unit);
-			u32 portrait_unit_id = helper::get_last_queue_slot_id(portrait_unit);
 			if (portrait_unit != active_unit
-			||  portrait_unit && portrait_unit_id != active_unit_id)
+			||  portrait_unit && helper::get_last_queue_slot_id(portrait_unit) != active_unit_id)
 			{
 				helper::display_update_portrait(helper::get_unit_portrait_override(active_unit_id), active_unit, 1);
 			}
 		}
 		*g_portrait_redraw = 0;
+	}
+}
+
+// Hooked to enable crig-based briefing music. -Pr0nogo
+void dialog_music_fade(u32 music_id) // 004A6310
+{
+	if (!*g_direct_sound_handle || !g_music_playing)
+	{
+		switch (music_id) {
+			case MusicId_TRdyRoom:
+			{
+				if (!strcmp(g_current_map_name, "Anad's Greatsword")) {
+					music_id = MusicId_None;
+				}
+			} break;
+		}
+
+		if (g_music_bank[music_id].flags)
+		{
+			u32 volume = *g_music_volume;
+			*g_music_volume = -10000;
+			helper::play_music(music_id);
+			*g_music_volume = volume;
+			if (g_options_list->music)
+			{
+				*g_big_music_volume = 4294963900;
+				KillTimer(*g_main_window, 3);
+				SetTimer(*g_main_window, 3, 0x14, (TIMERPROC)0x004A6030);
+			}
+		} else {
+			helper::play_music(music_id);
+		}
 	}
 }
 
@@ -600,6 +639,19 @@ void __declspec(naked) update_selected_unit_portrait_wrapper() { // 0045EBC0
 	}
 }
 
+void __declspec(naked) dialog_music_fade_wrapper() { // 004A6310
+	static u32 music_id;
+	__asm {
+		MOV music_id, EAX
+		PUSHAD
+	}
+	dialog_music_fade(music_id);
+	__asm {
+		POPAD
+		RETN
+	}
+}
+
 void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
@@ -613,4 +665,5 @@ void inject_trigger_system_hooks() {
 	jump_patch(show_portrait,								0x0046CF30, 3);
 	jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
 	jump_patch(update_selected_unit_portrait_wrapper,		0x0045EBC0, 0);
+	jump_patch(dialog_music_fade_wrapper,					0x004A6310, 3);
 }

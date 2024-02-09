@@ -1714,4 +1714,5 @@ namespace helper {
 	u32 svid_play_end(u8 video);														// 004100EE
 	void start_unit_portrait(BinDlg* dialog);											// 0044EDB0
 	u16 get_unit_portrait_override(u16 unit_id);										// 0045E320
+	void play_music(u32 music_id);														// 004A6140
 }

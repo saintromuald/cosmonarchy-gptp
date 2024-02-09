@@ -649,6 +649,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// Fix potential spin cases when iscript units decollide
 	memory_patch(0x00495D05, (u32)0x7E224E3A);
+
+	// Skip music fade delay between menus
+	memory_patch(0x004A5F65, (u16)0xE990);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
