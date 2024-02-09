@@ -235,6 +235,25 @@ u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 		player = active_unit->player;
 	}
 	portrait_id = get_player_portrait_id_override(portrait_id, player);
+
+	if (strcmp(g_current_map_name, "Anad's Greatsword") == 0) {
+		// Temporary, for mapcrap
+		switch (portrait_id) {
+			case PortraitId::Maverick:
+			{
+				portrait_id = PortraitId::AnadThyron;
+			} break;
+			case PortraitId::Legionnaire:
+			{
+				portrait_id = PortraitId::Patriarch;
+			} break;
+			case PortraitId::Izirokor:
+			{
+				portrait_id = PortraitId::AdvisorZorthos;
+			} break;
+		}
+	}
+
 	return portrait_id;
 }
 
@@ -279,6 +298,7 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) // 0046
 
 	u16 portrait_id = helper::get_unit_portrait_override(unit_id);
 	if (!strcmp(g_current_map_name, "Anad's Greatsword")) {
+		// Temporary, for mapcrap
 		switch (portrait_id) {
 			case PortraitId::AdvisorOrionImperium:
 			{
@@ -370,6 +390,7 @@ void dialog_music_fade(u32 music_id) // 004A6310
 			case MusicId_TRdyRoom:
 			{
 				if (!strcmp(g_current_map_name, "Anad's Greatsword")) {
+					// Temporary, for mapcrap
 					music_id = MusicId_None;
 				}
 			} break;
