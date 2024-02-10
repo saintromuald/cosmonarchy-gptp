@@ -546,6 +546,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				return false;
 			}
 		} else if (parser_eq(&parser, "wait_if")) {
+			if (parse_condition(&parser)) {
+				return false;
+			}
+		} else if (parser_eq(&parser, "wait_until")) {
 			if (!parse_condition(&parser)) {
 				return false;
 			}
