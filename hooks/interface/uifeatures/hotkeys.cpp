@@ -123,10 +123,16 @@ static bool update_control_groups(const KeyEvent& ev) {
 }
 
 bool Keyboard::handle_key_event(const KeyEvent& ev) {
-	if (ev.key == VK_F4 && ev.alt_held) {
+	// Ignore outside of game
+	if (!*g_is_in_game) {
 		return false;
 	}
-	if (aise_state.console_visible) {
+	// Ignore Alt+F4
+	if (ev.alt_held && ev.key == VK_F4) {
+		return false;
+	}
+	// Ignore when in UI
+	if (*g_popup_dialog || aise_state.console_visible) {
 		return false;
 	}
 

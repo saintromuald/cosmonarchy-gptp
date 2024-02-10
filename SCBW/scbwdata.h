@@ -1236,6 +1236,9 @@ SCBW_DATA(HANDLE**,			g_direct_sound_handle,				0x006D5BAC);
 SCBW_DATA(MusicStruct*,		g_music_bank,						0x00512BB8);
 SCBW_DATA(u32*,				g_big_music_volume,					0x006D5BB8);
 
+// For ignoring inputs in menu
+SCBW_DATA(BinDlg**,         g_popup_dialog,                     0x006D5BF4);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"
