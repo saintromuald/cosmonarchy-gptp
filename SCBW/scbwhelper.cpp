@@ -14792,4 +14792,49 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	u32 pixel_pos_has_cagra(s16 pos_x, s16 pos_y) // Default args are inverted
+	{
+		static u32 result;
+		const u32 func_address = 0x004E8BC0;
+		static s32 pos_y_xd = pos_y;
+		__asm {
+			PUSHAD
+			PUSH pos_y_xd
+			MOV AX, pos_x
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	b32 chk_larva_stray(Unit* larva, u32 pos_x, u32 pos_y)
+	{
+		static s32 result;
+		const u32 func_address = 0x004E93E0;
+		__asm {
+			PUSHAD
+			PUSH pos_y
+			PUSH pos_x
+			MOV EBX, larva
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void chk_larva_stray0(Unit* larva, u32 pos_x, u32 pos_y)
+	{
+		const u32 func_address = 0x004E94B0;
+		__asm {
+			PUSHAD
+			PUSH pos_y
+			PUSH pos_x
+			PUSH larva
+			CALL func_address
+			POPAD
+		}
+	}
 }

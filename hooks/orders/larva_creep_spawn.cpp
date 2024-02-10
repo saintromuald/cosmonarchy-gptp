@@ -336,4 +336,56 @@ namespace hooks
 		}
 		return 0;
 	}
+
+	// Hooked to make Larvae move towards the spawner's rally angle. -Pr0nogo
+	void orders_larva_idle(Unit* unit) // 004E9F90
+	{
+		Unit* spawner = unit->connected_unit;
+		if (spawner && !helper::is_target_within_min_range(unit, 10, spawner)) {
+			helper::move_to_target(spawner, unit);
+			u32 spawner_pos_x = spawner->position.x;
+			u32 spawner_pos_y = spawner->position.y;
+			if (spawner_pos_x != unit->next_target_waypoint.x || spawner_pos_y != unit->next_target_waypoint.y)
+			{
+				unit->next_target_waypoint.x = spawner_pos_x;
+				unit->next_target_waypoint.y = spawner_pos_y;
+			}
+		}
+
+		u16 unit_x = unit->position.x;
+		u16 unit_y = unit->position.y;
+		u16 move_x = unit->move_target.pt.x;
+		u16 move_y = unit->move_target.pt.y;
+		Unit* move_target = unit->move_target.unit;
+		if (move_x == unit_x && move_y == unit_y && (!(unit->status & UnitStatus::Unmovable)) // Guessed unmovable status math
+		||  move_target && (move_x != move_target->position.x || move_y != move_target->position.y) && !helper::pixel_pos_has_cagra(move_x, move_y))
+		{
+			if ((!spawner || move_target != spawner) && !(scbw::get_active_tile_at_coords(unit->position)->has_cagra)) // Guessed flag
+			{
+				helper::orders_self_destructing(unit);
+				return;
+			}
+
+			u32 random = 0;
+			if (*g_is_in_game_loop) {
+				random = (22695477 * *g_last_random_number + 1) >> 16;
+				++g_random_counts[20];
+				++*g_total_random_counts;
+				*g_last_random_number = 22695477 * (*g_last_random_number) + 1;
+			}
+
+			u32 pos_x = unit->position.x + ((random & 8) != 0 ? 10 : -10);
+			u32 pos_y = unit->position.y + ((random & 120) != 0 ? 10 : -10);
+			if (pos_x < *g_map_width_pixels && pos_y < *g_map_height_pixels && helper::pixel_pos_has_cagra(pos_x, pos_y))
+			{
+				if (!helper::chk_larva_stray(unit, pos_x, pos_y)) {
+					if (helper::chk_larva_stray(unit, unit->sprite->position.x, unit->sprite->position.y)) {
+						return;
+					}
+					helper::chk_larva_stray0(unit, pos_x, pos_y);
+				}
+				helper::change_movement_target_move_target_2(unit, pos_x, pos_y);
+			}
+		}
+	}
 }

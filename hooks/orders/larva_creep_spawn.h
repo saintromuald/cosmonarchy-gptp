@@ -15,6 +15,7 @@ namespace hooks
 //	char apply_creep_at_location_from_unit_id(s16 a1, s32 a2, s32 a3);										// 004148F0
 	u32 btsncond_zerg_building_rally(u32 unused, u32 player, Unit* unit);									// 00429740
 	s32 update_creep_disappearance_unit(Unit* unit);														// 0047DD60
+	void orders_larva_idle(Unit* unit);																		// 004E9F90
 
 	void inject_larva_creep_spawn_hooks();
 }
