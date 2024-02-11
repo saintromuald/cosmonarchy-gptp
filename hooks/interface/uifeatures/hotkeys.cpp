@@ -7,22 +7,81 @@
 #define CameraCap 8
 #define ControlGroupCap 17
 #define ExtendedControlGroupKeys "RFVTGB"
+#define KeyCap 256
+
+struct KeyState {
+	bool is_held;
+	u64 last_pressed;
+	u64 last_released;
+	u64 last_held_time;
+};
+
+struct KeyEvent {
+	u64 timestamp;
+	u32 key;
+	bool was_held;
+
+	// Modifier keys are commonly checked when processing a key event,
+	// to keep the information about sequentiality we embed it here,
+	// instead of checking if they are held this frame
+	bool control_held;
+	bool shift_held;
+	bool alt_held;
+
+	// JAI's using would be perfect here, since ideally we want to inherit all the vars instead of accessor methods,
+	// but we also want to be able to say `ev.state = state`
+	KeyState state;
+
+	inline bool pressed() const { return !was_held && state.is_held; }
+	inline bool held() const { return state.is_held; }
+	inline bool released() const { return !state.is_held; }
+	inline u64 held_time() const { return timestamp - state.last_pressed; }
+	inline u64 release_time() const { return timestamp - state.last_released; }
+	inline u64 last_held_time() const { return state.last_held_time; }
+};
 
 struct Hotkeys {
 	Point16 screens[CameraCap];
 	ControlGroup control_groups[ControlGroupCap];
 	ControlGroup* last_control_group_selected;
+	KeyState keys[KeyCap];
 };
 
-Keyboard keyboard;
 static Hotkeys hotkeys;
+
+static bool handle_key_event(const KeyEvent& ev);
+
+static KeyEvent key_event(u32 key, bool was_held, bool is_held) {
+	u64 now = GetTickCount64();
+	KeyState& state = hotkeys.keys[key];
+	state.is_held = is_held;
+	if (!was_held && is_held) {
+		state.last_pressed = now;
+	}
+	if (!is_held) {
+		state.last_held_time = now - state.last_pressed;
+		state.last_released = now;
+	}
+
+	KeyEvent ev = {};
+	ev.timestamp    = now;
+	ev.key          = key;
+	ev.was_held     = was_held;
+	ev.control_held = GetKeyState(VK_CONTROL) & (1 << 15);
+	ev.shift_held   = GetKeyState(VK_SHIFT)   & (1 << 15);
+	ev.alt_held     = GetKeyState(VK_MENU)    & (1 << 15);
+	ev.state        = state;
+	return ev;
+}
 
 static LRESULT CALLBACK keyboard_proc(int code, WPARAM wparam, LPARAM lparam) {
 	u32 key = wparam;
 	bool was_held = lparam & (1 << 30);
 	bool is_held = !(lparam & (1 << 31));
-	if (keyboard.key_event(key, was_held, is_held)) {
-		return 1;
+	if (key < KeyCap) {
+		if (handle_key_event(key_event(key, was_held, is_held))) {
+			return 1;
+		}
 	}
 	return CallNextHookEx(0, code, wparam, lparam);
 }
@@ -34,7 +93,6 @@ void init_hotkeys() {
 		SetWindowsHookA(WH_KEYBOARD, keyboard_proc);
 	}
 
-	keyboard = {};
 	hotkeys = {};
 	for (u32 i = 0; i < CameraCap; ++i) {
 		hotkeys.screens[i].x = *g_move_to_x;
@@ -122,7 +180,7 @@ static bool update_control_groups(const KeyEvent& ev) {
 	return true;
 }
 
-bool Keyboard::handle_key_event(const KeyEvent& ev) {
+static bool handle_key_event(const KeyEvent& ev) {
 	// Ignore when in UI
 	if (!*g_is_in_game || *g_popup_dialog || *g_chat_message_type || aise_state.console_visible) {
 		return false;
@@ -161,8 +219,20 @@ bool Keyboard::handle_key_event(const KeyEvent& ev) {
 }
 
 void update_hotkeys() {
-	keyboard.update();
+	// TODO: maybe only do those release events on window focus loss
+	for (size_t i = 0; i < KeyCap; i++) {
+		KeyState& state = hotkeys.keys[i];
+		if (state.is_held) {
+			// To release keys when we lose window focus
+			bool is_pressed = GetKeyState(i) & (1 << 15);
+			if (!is_pressed) {
+				handle_key_event(key_event(i, true, false));
+			}
+		}
+	}
 }
+
+bool key_held_this_frame(char key) { return key < KeyCap ? hotkeys.keys[key].is_held : false; }
 
 namespace hooks {
 	bool screen_location_switch_case(s32 n) {
