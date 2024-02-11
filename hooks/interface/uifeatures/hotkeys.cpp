@@ -49,8 +49,6 @@ struct Hotkeys {
 
 static Hotkeys hotkeys;
 
-static bool handle_key_event(const KeyEvent& ev);
-
 static KeyEvent key_event(u32 key, bool was_held, bool is_held) {
 	u64 now = GetTickCount64();
 	KeyState& state = hotkeys.keys[key];
@@ -72,32 +70,6 @@ static KeyEvent key_event(u32 key, bool was_held, bool is_held) {
 	ev.alt_held     = GetKeyState(VK_MENU)    & (1 << 15);
 	ev.state        = state;
 	return ev;
-}
-
-static LRESULT CALLBACK keyboard_proc(int code, WPARAM wparam, LPARAM lparam) {
-	u32 key = wparam;
-	bool was_held = lparam & (1 << 30);
-	bool is_held = !(lparam & (1 << 31));
-	if (key < KeyCap) {
-		if (handle_key_event(key_event(key, was_held, is_held))) {
-			return 1;
-		}
-	}
-	return CallNextHookEx(0, code, wparam, lparam);
-}
-
-void init_hotkeys() {
-	static bool init_proc = false;
-	if (!init_proc) {
-		init_proc = true;
-		SetWindowsHookA(WH_KEYBOARD, keyboard_proc);
-	}
-
-	hotkeys = {};
-	for (u32 i = 0; i < CameraCap; ++i) {
-		hotkeys.screens[i].x = *g_move_to_x;
-		hotkeys.screens[i].y = *g_move_to_y;
-	}
 }
 
 static int control_group_index_from_key(u32 key) {
@@ -217,6 +189,33 @@ static bool handle_key_event(const KeyEvent& ev) {
 
 	return false;
 }
+
+static LRESULT CALLBACK keyboard_proc(int code, WPARAM wparam, LPARAM lparam) {
+	u32 key = wparam;
+	bool was_held = lparam & (1 << 30);
+	bool is_held = !(lparam & (1 << 31));
+	if (key < KeyCap) {
+		if (handle_key_event(key_event(key, was_held, is_held))) {
+			return 1;
+		}
+	}
+	return CallNextHookEx(0, code, wparam, lparam);
+}
+
+void init_hotkeys() {
+	static bool init_proc = false;
+	if (!init_proc) {
+		init_proc = true;
+		SetWindowsHookA(WH_KEYBOARD, keyboard_proc);
+	}
+
+	hotkeys = {};
+	for (u32 i = 0; i < CameraCap; ++i) {
+		hotkeys.screens[i].x = *g_move_to_x;
+		hotkeys.screens[i].y = *g_move_to_y;
+	}
+}
+
 
 void update_hotkeys() {
 	// TODO: maybe only do those release events on window focus loss
