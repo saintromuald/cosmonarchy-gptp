@@ -22,8 +22,7 @@ static void config_error(const std::string_view message, auto... args) {
 }
 
 static AdvisorType parse_advisor_name(const char* name) {
-	Parser parser = {};
-	parser.at = (char*)name;
+	Parser parser = new_parser(name);
 	AdvisorType advisor = (AdvisorType)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), CHAR_MAX);
 	if (advisor == CHAR_MAX) {
 		config_error("Advisor \"{}\" does not exist! Please remove it from your config.yml.", name);

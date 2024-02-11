@@ -143,8 +143,7 @@ namespace hooks {
 		if (!game_inited) {
 			game_inited = true;
 			/*
-			Parser parser = {};
-			parser.at = ...;
+			Parser parser = new_parser(...);
 			while (parser_get_word(&parser)) {
 				if (parser_eq(&parser, "-map")) {
 					Token token = parser_get_string(&parser);

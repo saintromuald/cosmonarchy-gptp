@@ -85,7 +85,7 @@ void init_trigger_system() {
 	memset(sprite_replacements, 0, sizeof(sprite_replacements));
 
 	memset(custom_unit_names, 0, sizeof(custom_unit_names));
-	memset(&globals, 0, sizeof(globals));
+	globals = {};
 
 	init_auto_celebration();
 	init_recolors();
@@ -205,6 +205,11 @@ void update_trigger_system(bool in_game) {
 
 	if (in_game) {
 		trigger_system_in_game = true;
+		for (auto& [key, time] : globals.ongoing_waits) {
+			if (time > 0) {
+				time--;
+			}
+		}
 	} else if (trigger_system_in_game) {
 		// Leaving the game should reset music
 		trigger_system_in_game = false;
@@ -515,8 +520,7 @@ bool parse_condition(Parser* parser) {
 }
 
 b32 parse_comment_condition(TriggerAction* action) {
-	Parser parser = {};
-	parser.at = helper::get_chk_string(action->text_string);
+	Parser parser = new_parser(helper::get_chk_string(action->text_string));
 	while (parser_get_command(&parser)) {
 		if (parser_eq(&parser, "condition")) {
 			return parse_condition(&parser);
@@ -530,11 +534,27 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 	bool is_local_player = trigger_player == *g_local_nation_id;
 	TriggerVector* trigger_node = *g_current_trigger_node;
 
-	Parser parser = {};
-	parser.at = helper::get_chk_string(action->text_string);
+	Parser parser = new_parser(helper::get_chk_string(action->text_string));
 	while (parser_get_command(&parser)) {
+		// Wait 
+		if (parser_eq(&parser, "wait")) {
+			u32 time = parser_get_time_ticks(&parser);
+			u32& wait = globals.ongoing_waits[wait_key(action, trigger_player, parser.at - parser.start)];
+
+			bool init = action->flags & 1;
+			if (!init) {
+				wait = time;
+				action->flags |= 1;
+				return false;
+			}
+			
+			if (wait > 0) {
+				return false;
+			}
+			action->flags &= ~1;
+			return true;
 		// Condition Triggers
-		if (parser_eq(&parser, "exit_if")) {
+		} else if (parser_eq(&parser, "exit_if")) {
 			if (!parse_condition(&parser)) {
 				trigger_node->trigger.current_action_index = 64;
 				return false;
@@ -1544,3 +1564,4 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 	}
 	return true;
 }
+

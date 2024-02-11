@@ -82,11 +82,18 @@ static char parser_get_relative_op(Parser* parser) {
 	return 0;
 }
 
-char* parser_marker(Parser* parser) {
+Parser new_parser(const char* at) {
+	return {
+		.start = at,
+		.at = at,
+	};
+}
+
+const char* parser_marker(Parser* parser) {
 	return parser->at;
 }
 
-void parser_unwind(Parser* parser, char* marker) {
+void parser_unwind(Parser* parser, const char* marker) {
 	parser_clear(parser);
 	parser->at = marker;
 }
@@ -115,7 +122,7 @@ Token parser_get_word(Parser* parser) {
 }
 
 bool parser_get_keyword(Parser* parser, const char* keyword) {
-	char* marker = parser_marker(parser);
+	const char* marker = parser_marker(parser);
 	parser_get_word(parser);
 	if (parser_eq(parser, keyword)) {
 		return true;
@@ -355,7 +362,7 @@ Area parser_get_area(Parser* parser, Area default_value) {
 		return area;
 	}
 
-	char* marker = parser_marker(parser);
+	const char* marker = parser_marker(parser);
 	Token string = parser_get_string(parser);
 	if (parser_eq(parser, "*")) {
 		area.box = g_location_table[63].dimensions;
@@ -415,7 +422,7 @@ Point16 parser_get_position(Parser* parser, Point16 default_value) {
 		return pos;
 	}
 
-	char* marker = parser_marker(parser);
+	const char* marker = parser_marker(parser);
 	Token string = parser_get_string(parser);
 	if (parser_eq(parser, "*")) {
 		return box_center(g_location_table[63].dimensions);
@@ -483,7 +490,7 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 	PlayerBitset current_bitset = {};
 	while (true) {
 		bool negate = parser_get_negation(parser);
-		char* marker = parser_marker(parser);
+		const char* marker = parser_marker(parser);
 		s32 value = parser_get_s32(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
@@ -593,7 +600,7 @@ static bool str_equals_lazy(const char* a, const char* b) {
 }
 
 u32 parser_get_unit_id(Parser* parser) {
-	char* marker = parser_marker(parser);
+	const char* marker = parser_marker(parser);
 	Token token = parser_get_string(parser);
 	for (u32 i = 0; i < UnitId::Count; ++i) {
 		if (str_equals_lazy(token.data, get_short_unit_name(i).data)) {
@@ -630,7 +637,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 	UnitIdBitset current_bitset = {};
 	while (true) {
 		bool negate = parser_get_negation(parser);
-		char* marker = parser_marker(parser);
+		const char* marker = parser_marker(parser);
 		parser_get_string(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
@@ -738,7 +745,7 @@ QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
 	}
 
 	if (*parser->at == '>' || *parser->at == '<' || *parser->at == '!' || *parser->at == '=' || *parser->at == '*') {
-		char* marker = parser_marker(parser);
+		const char* marker = parser_marker(parser);
 		char op = *parser->at++;
 
 		bool equals = parser_get_char(parser, '=');

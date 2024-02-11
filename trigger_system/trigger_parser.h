@@ -11,7 +11,8 @@ struct Token {
 #define ParserStackSize 64
 struct Parser {
 	bool parsed_first_command;
-	char* at;
+	const char* start;
+	const char* at;
 	Token token;
 };
 
@@ -49,12 +50,13 @@ enum QuotaType {
 	QuotaType_Count
 };
 
-char* parser_marker(Parser* parser);
-void parser_unwind(Parser* parser, char* marker);
+Parser new_parser(const char* at);
+const char* parser_marker(Parser* parser);
+void parser_unwind(Parser* parser, const char* marker);
 
 bool parser_get_char(Parser* parser, char c);
 Token parser_get_word(Parser* parser);
-bool parser_get_keyword(Parser* parser, char* keyword);
+bool parser_get_keyword(Parser* parser, const char* keyword);
 bool parser_get_command(Parser* parser);
 Token parser_get_string(Parser* parser);
 

@@ -166,8 +166,15 @@ enum YieldType {
 
 	YieldType_Count,
 };
-
 static constexpr u8 default_yields[YieldType_Count] = { 2, 4, 2, 4, 5, 6 };
+
+inline u64 wait_key(TriggerAction* action, u8 player, u32 ch) {
+	assert(u64(action) < (1ull << 32));
+	assert(player      < (1    << 3));
+	assert(ch          < (1    << 29));
+	u64 player_and_ch = player | (ch << 3);
+	return u64(action) | (player_and_ch << 32);
+}
 
 struct Globals {
 	PlayerVars players[PlayerLimit];
@@ -183,6 +190,8 @@ struct Globals {
 	u8 get_yield(YieldType type) {
 		return yields[type] ? yields[type] : default_yields[type];
 	}
+
+	std::unordered_map<u64, u32> ongoing_waits;
 };
 
 enum TriggerStat : u8 {
