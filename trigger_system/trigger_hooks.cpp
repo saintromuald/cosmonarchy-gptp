@@ -247,7 +247,7 @@ u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 			{
 				portrait_id = PortraitId::Patriarch;
 			} break;
-			case PortraitId::Izirokor:
+			case PortraitId::Apostle:
 			{
 				portrait_id = PortraitId::AdvisorZorthos;
 			} break;

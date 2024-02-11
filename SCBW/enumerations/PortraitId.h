@@ -189,6 +189,7 @@ namespace PortraitId {
 		Cikralisk					= 177,
 		Kagralisk					= 178,
 		Hypnagogue					= 179,
+		Apostle						= 180,
 
 		/*0xFFFF*/	None = 0xFFFF
 	};
