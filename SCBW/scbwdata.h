@@ -1238,6 +1238,7 @@ SCBW_DATA(u32*,				g_big_music_volume,					0x006D5BB8);
 
 // For ignoring inputs in menu
 SCBW_DATA(BinDlg**,         g_popup_dialog,                     0x006D5BF4);
+SCBW_DATA(u8*,              g_chat_message_type,                0x0068C144);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

@@ -123,19 +123,22 @@ static bool update_control_groups(const KeyEvent& ev) {
 }
 
 bool Keyboard::handle_key_event(const KeyEvent& ev) {
-	// Ignore outside of game
-	if (!*g_is_in_game) {
+	// Ignore when in UI
+	if (!*g_is_in_game || *g_popup_dialog || *g_chat_message_type || aise_state.console_visible) {
 		return false;
 	}
 	// Ignore Alt+F4
 	if (ev.alt_held && ev.key == VK_F4) {
 		return false;
 	}
-	// Ignore when in UI
-	if (*g_popup_dialog || aise_state.console_visible) {
-		return false;
+	// Specifically ignore 1-6 for faction selection for non-grid hotkeys
+	if (!config.grid_hotkeys && buttonset_id_is_faction_selection(*g_current_buttonset_id)) {
+		if (ev.key >= '1' && ev.key <= '6' && !ev.control_held && !ev.shift_held && !ev.alt_held) {
+			return false;
+		}
 	}
 
+	// Cameras
 	if (config.extended_camera_hotkeys) {
 		if (ev.key >= VK_F1 && ev.key < VK_F1 + CameraCap) {
 			Point16& screen = hotkeys.screens[ev.key - VK_F1];
@@ -149,6 +152,7 @@ bool Keyboard::handle_key_event(const KeyEvent& ev) {
 		}
 	}
 
+	// Control Groups
 	if (update_control_groups(ev)) {
 		return true;
 	}
