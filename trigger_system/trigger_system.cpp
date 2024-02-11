@@ -1148,7 +1148,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					continue;
 				}
 				if (unit_count >= count) {
-					return true; // @Veeq7 is this a proper exit procedure? -Pr0nogo
+					return true;
 				}
 				unit_count++;
 				if (remove) {

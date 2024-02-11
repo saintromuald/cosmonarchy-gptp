@@ -23,25 +23,27 @@ static bool execute_trigger_condition(TriggerCondition* condition) {
 s32 execute_trigger_conditions(TriggerVector* trigger_vector) { // 00489200
 	for (u32 i = 0; i < 64; ++i) {
 		TriggerAction* action = &trigger_vector->trigger.actions[i];
-		if (!(action->flags & 2)) {
-			if (action->action_type == 47) {
-				if (!parse_comment_condition(action)) {
-					return false;
-				}
-			}
+		if (action->flags & 2) {
+			continue;
+		}
+
+		if (action->action_type == 47 && !parse_comment_condition(action)) {
+			return false;
 		}
 	}
 
 	for (u32 i = 0; i < 16; ++i) {
 		TriggerCondition* condition = &trigger_vector->trigger.conditions[i];
-		if (!(condition->flags & 2)) {
-			if (!condition->condition_type) {
-				return true;
-			}
+		if (condition->flags & 2) {
+			continue;
+		}
 
-			if (!execute_trigger_condition(condition)) {
-				return false;
-			}
+		if (!condition->condition_type) {
+			return true;
+		}
+
+		if (!execute_trigger_condition(condition)) {
+			return false;
 		}
 	}
 	return true;
