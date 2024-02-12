@@ -297,12 +297,11 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, cons
 	Unit* fired_at = 0;
 	Unit* order_target_unit = unit->order_target.unit;
 	if (!options.ignore_main
-	&&   order_target_unit
-	&&   unit->main_order_id != OrderId::Follow
-	&&   unit->main_order_id != OrderId::Patrol
-	&&   unit->is_target_within_min_range(order_target_unit, attack_range)
-	&&   unit->can_attack_target(order_target_unit))
-	{
+	        && order_target_unit
+	        && unit->main_order_id != OrderId::Follow
+	        && unit->main_order_id != OrderId::Patrol
+	        && unit->is_target_within_min_range(order_target_unit, attack_range)
+	        && unit->can_attack_target(order_target_unit)) {
 		if (weapon_id_is_secondary(weapon_id) && scbw::is_allied_to(unit->player, order_target_unit->player)) {
 			return false; // This is stupid, but the unit_flag_match handling causes tism with entering transports. Should make more elegant later. -Pr0nogo
 		}
@@ -374,6 +373,9 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, cons
 		}
 	}
 
+	if (has_stagger) {
+		return internal_fired_stagger(unit, weapon_id, max_targets, filters, options, fired_at);
+	}
 	return fired_at != 0;
 }
 
