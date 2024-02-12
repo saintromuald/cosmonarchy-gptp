@@ -470,12 +470,6 @@ namespace hooks {
 
 			if (!unit_id_has_custom_weapon_handling(unit->id))
 			{
-				// Madrigal - Tempo Change weapon switch
-				if (weapon_id == WeaponId::MadrigalFuriaMissiles && unit_ext->values[ValueMadrigalTempoDown] == 1)
-				{
-					weapon_id = WeaponId::MadrigalImperiosoMissiles;
-				}
-
 				// Madcap - Maverick Feeders passive
 				if (unit->id == UnitId::TerranMadcap)
 				{

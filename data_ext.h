@@ -131,7 +131,7 @@ enum ExtValueId {
 	ValueCustomImage,
 	ValueAionLaunchPos,
 	ValueMortothrokorStacks,
-	ValueMadrigalTempoDown,
+//	ValueMadrigalTempoDown,
 	ValueAssignedHarvesters,
 	ValueAssignedAiGasHarvesters,
 	ValueActiveHarvesters,
@@ -272,7 +272,7 @@ enum ExtTimerId {
 	TimerMatadorHeal,
 	TimerMortothrokorPassive,
 	TimerLiftLandDelay,
-	TimerMadrigalTempoChange,
+//	TimerMadrigalTempoChange,
 	TimerDidactStasisFieldOverlay,
 	TimerStellarEnforcement,
 	TimerDeconstruction,
@@ -311,7 +311,7 @@ enum ExtTimerId {
 	TimerAI_Skyfall,
 	TimerAI_GriefOfAllGods,
 	TimerAI_DisruptionField,
-	TimerAI_MadrigalTempoChangeTimer,
+	TimerAI_MadrigalTempoChangeTimer, // unused
 	TimerAI_MadrigalTempoChangeCooldown,
 
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities

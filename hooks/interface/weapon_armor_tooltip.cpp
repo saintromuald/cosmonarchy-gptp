@@ -422,6 +422,7 @@ namespace hooks
 		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0, 0);
 		add_status(statuses, "Decaying", unit_ext->values[ValueDecaying], 1);
+
 		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
 		add_status(statuses, "Decided Reach", unit_ext->values[ValueTriggerWeaponRangeBaseAmount] / 32);
 		add_status(statuses, "Decided Piercing", unit_ext->values[ValueTriggerArmorPenBaseAmount]);
@@ -433,8 +434,8 @@ namespace hooks
 		// GPTP Value - Gimmicked
 		add_status(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
 		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
-		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigalImperiosoMode && unit_ext->values[ValueMadrigalTempoDown] == 0, 1);
-		add_status(statuses, "Tempo Down", unit_ext->values[ValueMadrigalTempoDown] == 1, 1);
+		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigalImperiosoMode, 1);
+		add_status(statuses, "Tempo Down", unit->id == UnitId::TerranMadrigalFuriaMode, 1);
 		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
 		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
