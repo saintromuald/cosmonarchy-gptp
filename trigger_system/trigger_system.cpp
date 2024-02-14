@@ -205,9 +205,11 @@ void update_trigger_system(bool in_game) {
 
 	if (in_game) {
 		trigger_system_in_game = true;
-		for (auto& [key, time] : globals.ongoing_waits) {
-			if (time > 0) {
-				time--;
+		for (auto& [trigger_action, trigger_ext] : globals.trigger_exts) {
+			for (auto& [wait_key, time] : trigger_ext.ongoing_waits) {
+				if (time > 0) {
+					time--;
+				}
 			}
 		}
 	} else if (trigger_system_in_game) {
@@ -530,47 +532,59 @@ b32 parse_comment_condition(TriggerAction* action) {
 }
 
 b32 __fastcall parse_comment_action(TriggerAction* action) {
+	TriggerVector& trigger_node = **g_current_trigger_node;
 	u32 trigger_player = *g_current_trigger_player_id;
 	bool is_local_player = trigger_player == *g_local_nation_id;
-	TriggerVector* trigger_node = *g_current_trigger_node;
+
+	TriggerExt& trigger_ext = globals.trigger_exts[action];
+	OngoingWait& ongoing_wait = trigger_ext.ongoing_waits[trigger_player];
 
 	Parser parser = new_parser(helper::get_chk_string(action->text_string));
+	parser.at += ongoing_wait.parser_position;
 	while (parser_get_command(&parser)) {
 		// Wait 
 		if (parser_eq(&parser, "wait")) {
 			u32 time = parser_get_time_ticks(&parser);
-			u32& wait = globals.ongoing_waits[wait_key(action, trigger_player, parser.at - parser.start)];
 
 			bool init = action->flags & 1;
 			if (!init) {
-				wait = time;
+				ongoing_wait.timer = time;
+				ongoing_wait.parser_position = parser.at - parser.start;
 				action->flags |= 1;
 				return false;
-			}
-			
-			if (wait > 0) {
+			} else if (ongoing_wait.timer > 0) {
 				return false;
+			} else {
+				ongoing_wait.parser_position = 0;
+				action->flags &= ~1;
+				return true;
 			}
-			action->flags &= ~1;
-			return true;
 		// Condition Triggers
+		} else if (parser_eq(&parser, "wait_if")) {
+			if (parse_condition(&parser)) {
+				ongoing_wait.parser_position = parser.at - parser.start;
+				return false;
+			} else {
+				ongoing_wait.parser_position = 0;
+				return true;
+			}
+		} else if (parser_eq(&parser, "wait_until")) {
+			if (!parse_condition(&parser)) {
+				ongoing_wait.parser_position = parser.at - parser.start;
+				return false;
+			} else {
+				ongoing_wait.parser_position = 0;
+				return true;
+			}
 		} else if (parser_eq(&parser, "exit_if")) {
 			if (!parse_condition(&parser)) {
-				trigger_node->trigger.current_action_index = 64;
+				trigger_node.trigger.current_action_index = 64;
 				return false;
 			}
 		} else if (parser_eq(&parser, "exit_preserve_if")) {
 			if (!parse_condition(&parser)) {
-				trigger_node->trigger.flags |= 0x4;	
-				trigger_node->trigger.current_action_index = 64;
-				return false;
-			}
-		} else if (parser_eq(&parser, "wait_if")) {
-			if (parse_condition(&parser)) {
-				return false;
-			}
-		} else if (parser_eq(&parser, "wait_until")) {
-			if (!parse_condition(&parser)) {
+				trigger_node.trigger.flags |= 0x4;	
+				trigger_node.trigger.current_action_index = 64;
 				return false;
 			}
 		// Local Only Triggers
