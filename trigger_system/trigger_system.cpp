@@ -712,8 +712,17 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
-				objective->score += score;
-				objective->max_score += max_score;
+				if (score < 0) {
+					objective->score -= score;
+				} else {
+					objective->score += score;
+				}
+				if (max_score < 0) {
+					objective->max_score -= max_score;
+				} else {
+					objective->max_score += max_score;
+				}
+
 				if (objective->score < 0) {
 					objective->score = 0;
 				}
