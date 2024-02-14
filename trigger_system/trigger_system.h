@@ -92,7 +92,7 @@ static const char* faction_symbol_names[] = { // This array needs to the same si
 	"upstart_terran",
 
 	"divine_primacy",
-	"order_of_the_sacred_templar",
+	"order_of_the_sacred_saber",
 	"khalendric_knights",
 	"starbound",
 

@@ -675,7 +675,7 @@ namespace hooks
 					PlayerVars player_vars = globals.players[player];
 					u32 player_type = g_player_table[player].type;
 					if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && player != local_player && !player_vars.witness_mode
-					&& player_vars.hide_in_team_ui && scbw::is_allied_to(player, local_player)) {
+					&& !player_vars.hide_in_team_ui && scbw::is_allied_to(player, local_player)) {
 						draw_player_stats(&dialog, &pos, player,
 							true,						//use_player_color
 							config.show_team_ui_apm,	//can_show_apm

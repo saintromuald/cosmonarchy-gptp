@@ -1548,17 +1548,20 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser_eq(&parser, "neutral_hostile")) {
-			bool neutral_hostile = (bool)parser_get_s32(&parser);
+			bool state = (bool)parser_get_s32(&parser);
 			PlayerVars* player_vars = &globals.players[trigger_player];
-			if (player_vars->neutral_hostile != neutral_hostile) {
-				player_vars->neutral_hostile = (bool)neutral_hostile;
+			if (player_vars->neutral_hostile != state) {
+				player_vars->neutral_hostile = (bool)state;
 			}
-		} else if (parser_eq(&parser, "toggle_player_team_ui")) {
+		} else if (parser_eq(&parser, "set_player_team_ui")) {
 			u32 player = parser_get_player(&parser);
+			bool state = (bool)parser_get_s32(&parser);
 			if (player) {
 				player -= 1;
-				PlayerVars* player_vars = &globals.players[trigger_player];
-				player_vars->hide_in_team_ui = player_vars->hide_in_team_ui ? false : true;
+				PlayerVars* player_vars = &globals.players[player];
+				if (player_vars->hide_in_team_ui != state) {
+					player_vars->hide_in_team_ui = (bool)state;
+				}
 			}
 		}
 	}
