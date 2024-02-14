@@ -35,14 +35,18 @@ Objective* find_objective(s32 key) {
 }
 
 Objective* find_or_create_objective(s32 key) {
-	Objective* objective = find_objective(key);
-	if (!objective && objectives_count < ObjectivesCap) {
-		objective = &objectives[objectives_count++];
-		*objective = {};
-		objective->key = key;
-		qsort(objectives, objectives_count, sizeof(Objective), compare_objective);
+	Objective* found_objective = find_objective(key);
+	if (found_objective) {
+		return found_objective;
 	}
-	return objective;
+	if (objectives_count < ObjectivesCap) {
+		Objective* new_objective = &objectives[objectives_count++];
+		*new_objective = {};
+		new_objective->key = key;
+		qsort(objectives, objectives_count, sizeof(Objective), compare_objective);
+		return new_objective;
+	}
+	return 0;
 }
 
 void remove_objective(Objective* objective) {
