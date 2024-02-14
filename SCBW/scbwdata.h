@@ -1033,7 +1033,7 @@ SCBW_DATA(u32*,			building_complete_something,	0x006D1AE8);
 
 // For trigact_transmission
 SCBW_DATA(char*,			g_is_executing_wait,		0x006509B8);
-SCBW_DATA(TriggerVector**,	g_current_trigger_node,		0x006509AC);
+SCBW_DATA(TriggerLink**,	g_current_trigger_node,		0x006509AC);
 SCBW_DATA(u32*,				g_trigger_wait,				0x00650980);
 
 // For draw_minimap_box

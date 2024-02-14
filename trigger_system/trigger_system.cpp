@@ -533,7 +533,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 }
 
 b32 __fastcall parse_comment_action(TriggerAction* action) {
-	TriggerVector& trigger_node = **g_current_trigger_node;
+	Trigger& trigger = (*g_current_trigger_node)->trigger;
 	u32 trigger_player = *g_current_trigger_player_id;
 	bool is_local_player = trigger_player == *g_local_nation_id;
 
@@ -577,13 +577,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		// Conditional Exits
 		} else if (parser_eq(&parser, "exit_if")) {
 			if (parse_condition(&parser)) {
-				trigger_node.trigger.current_action_index = 64;
+				trigger.current_action_index = 64;
 				return false;
 			}
 		} else if (parser_eq(&parser, "exit_preserve_if")) {
 			if (parse_condition(&parser)) {
-				trigger_node.trigger.flags |= 0x4;	
-				trigger_node.trigger.current_action_index = 64;
+				trigger.flags |= 0x4;
+				trigger.current_action_index = 64;
 				return false;
 			}
 		// Local Only Triggers

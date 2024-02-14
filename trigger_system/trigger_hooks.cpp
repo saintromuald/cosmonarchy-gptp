@@ -20,9 +20,9 @@ static bool execute_trigger_condition(TriggerCondition* condition) {
 }
 
 // Hooked to check custom conditions. -Pr0nogo
-s32 execute_trigger_conditions(TriggerVector* trigger_vector) { // 00489200
+s32 execute_trigger_conditions(TriggerLink* trigger_link) { // 00489200
 	for (u32 i = 0; i < 64; ++i) {
-		TriggerAction* action = &trigger_vector->trigger.actions[i];
+		TriggerAction* action = &trigger_link->trigger.actions[i];
 		if (action->flags & 2) {
 			continue;
 		}
@@ -33,7 +33,7 @@ s32 execute_trigger_conditions(TriggerVector* trigger_vector) { // 00489200
 	}
 
 	for (u32 i = 0; i < 16; ++i) {
-		TriggerCondition* condition = &trigger_vector->trigger.conditions[i];
+		TriggerCondition* condition = &trigger_link->trigger.conditions[i];
 		if (condition->flags & 2) {
 			continue;
 		}
@@ -420,7 +420,7 @@ void dialog_music_fade(u32 music_id) // 004A6310
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
 	static b32 result;
-	static TriggerVector* trigger_vector;
+	static TriggerLink* trigger_vector;
 	__asm {
 		MOV trigger_vector, EAX
 		PUSHAD

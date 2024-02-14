@@ -1222,9 +1222,9 @@ struct Trigger {
 	u8					current_action_index;	// 0x95F
 };
 
-struct TriggerVector {
-	TriggerVector*	prev;		// 0x0
-	TriggerVector*	next;		// 0x4
+struct TriggerLink {
+	TriggerLink*	prev;		// 0x0
+	TriggerLink*	next;		// 0x4
 	Trigger 		trigger;	// 0x8
 };
 
