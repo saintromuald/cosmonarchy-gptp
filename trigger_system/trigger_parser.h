@@ -13,6 +13,7 @@ struct Parser {
 	bool parsed_first_command;
 	const char* start;
 	const char* at;
+	u32 command_start_pos;
 	Token token;
 };
 

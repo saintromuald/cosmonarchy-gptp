@@ -132,6 +132,7 @@ bool parser_get_keyword(Parser* parser, const char* keyword) {
 }
 
 bool parser_get_command(Parser* parser) {
+	parser->command_start_pos = parser->at - parser->start;
 	if (!parser->parsed_first_command) {
 		parser->parsed_first_command = true;
 	} else {

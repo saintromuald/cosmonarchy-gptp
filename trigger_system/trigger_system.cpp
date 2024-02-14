@@ -549,7 +549,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			bool init = action->flags & 1;
 			if (!init) {
 				ongoing_wait.timer = time;
-				ongoing_wait.parser_position = parser.at - parser.start;
+				ongoing_wait.parser_position = parser.command_start_pos;
 				action->flags |= 1;
 				return false;
 			} else if (ongoing_wait.timer > 0) {
@@ -562,7 +562,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		// Condition Triggers
 		} else if (parser_eq(&parser, "wait_if")) {
 			if (parse_condition(&parser)) {
-				ongoing_wait.parser_position = parser.at - parser.start;
+				ongoing_wait.parser_position = parser.command_start_pos;
 				return false;
 			} else {
 				ongoing_wait.parser_position = 0;
@@ -570,7 +570,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "wait_until")) {
 			if (!parse_condition(&parser)) {
-				ongoing_wait.parser_position = parser.at - parser.start;
+				ongoing_wait.parser_position = parser.command_start_pos;
 				return false;
 			} else {
 				ongoing_wait.parser_position = 0;
@@ -1593,6 +1593,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					player_vars->hide_in_team_ui = (bool)state;
 				}
 			}
+		} else if (parser_eq(&parser, "print")) {
+			Token text = parser_get_string(&parser);
+			scbw::print(text.data);
 		}
 	}
 	return true;
