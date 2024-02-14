@@ -24,12 +24,12 @@ static bool is_word_char(char c) {
 	return isalnum(c) || c == '.' || c == '_' || c == '*';
 }
 
-static void parser_clear(Parser* parser) {
+static void parser_clear_token(Parser* parser) {
 	memset(&parser->token, 0, sizeof(parser->token));
 }
 
 static bool parser_skip_whitespace(Parser* parser) {
-	parser_clear(parser);
+	parser_clear_token(parser);
 	while (*parser->at && is_any_space(*parser->at)) {
 		if (is_newline(*parser->at)) {
 			return false;
@@ -40,7 +40,7 @@ static bool parser_skip_whitespace(Parser* parser) {
 }
 
 static bool parser_skip_non_word_chars(Parser* parser) {
-	parser_clear(parser);
+	parser_clear_token(parser);
 	while (*parser->at && !is_word_char(*parser->at)) {
 		if (is_newline(*parser->at)) {
 			return false;
@@ -94,7 +94,7 @@ const char* parser_marker(Parser* parser) {
 }
 
 void parser_unwind(Parser* parser, const char* marker) {
-	parser_clear(parser);
+	parser_clear_token(parser); // TODO: Isn't this a problem? We might be relying on what token was after unwinding? Maybe Marker should be a struct that has marker and token, and token should eventually be a char slice, instead of a small char buffer
 	parser->at = marker;
 }
 
@@ -106,11 +106,7 @@ bool parser_get_char(Parser* parser, char c) {
 	return false;
 }
 
-Token parser_get_word(Parser* parser) {
-	if (!parser_skip_non_word_chars(parser)) {
-		return {};
-	}
-
+static Token parser_eat_word(Parser* parser) {
 	while (is_word_char(*parser->at)) {
 		if (parser->token.size < MaxToken) {
 			parser->token.data[parser->token.size++] = *parser->at;
@@ -121,18 +117,32 @@ Token parser_get_word(Parser* parser) {
 	return parser->token;
 }
 
-bool parser_get_keyword(Parser* parser, const char* keyword) {
-	const char* marker = parser_marker(parser);
-	parser_get_word(parser);
-	if (parser_eq(parser, keyword)) {
-		return true;
+Token parser_get_word(Parser* parser, bool is_command) {
+	if (!parser_skip_non_word_chars(parser)) {
+		return {};
 	}
-	parser_unwind(parser, marker);
-	return false;
+
+	if (is_command) {
+		parser->command_start_pos = parser->at - parser->start;
+	}
+	return parser_eat_word(parser);
+}
+
+void parser_load_command_pos(Parser* parser, u32 position) {
+	if (position) {
+		parser->should_load_pos = true;
+		parser->at = parser->start + position;
+	}
 }
 
 bool parser_get_command(Parser* parser) {
-	parser->command_start_pos = parser->at - parser->start;
+	if (parser->should_load_pos) {
+		parser->should_load_pos = false;
+		parser->parsed_first_command = true;
+		return parser_eat_word(parser).size != 0;
+	}
+
+	// Skip to end of line
 	if (!parser->parsed_first_command) {
 		parser->parsed_first_command = true;
 	} else {
@@ -141,11 +151,22 @@ bool parser_get_command(Parser* parser) {
 		}
 	}
 
+	// Skip newlines
 	while (*parser->at && is_newline(*parser->at)) {
 		++parser->at;
 	}
 
-	return parser_get_word(parser).size;
+	return parser_get_word(parser, true).size != 0;
+}
+
+bool parser_get_keyword(Parser* parser, const char* keyword) {
+	const char* marker = parser_marker(parser);
+	parser_get_word(parser);
+	if (parser_eq(parser, keyword)) {
+		return true;
+	}
+	parser_unwind(parser, marker);
+	return false;
 }
 
 Token parser_get_string(Parser* parser) {

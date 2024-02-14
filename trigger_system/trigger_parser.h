@@ -11,6 +11,7 @@ struct Token {
 #define ParserStackSize 64
 struct Parser {
 	bool parsed_first_command;
+	bool should_load_pos;
 	const char* start;
 	const char* at;
 	u32 command_start_pos;
@@ -55,10 +56,12 @@ Parser new_parser(const char* at);
 const char* parser_marker(Parser* parser);
 void parser_unwind(Parser* parser, const char* marker);
 
+
 bool parser_get_char(Parser* parser, char c);
-Token parser_get_word(Parser* parser);
-bool parser_get_keyword(Parser* parser, const char* keyword);
+Token parser_get_word(Parser* parser, bool is_command = false);
+void parser_load_command_pos(Parser* parser, u32 position);
 bool parser_get_command(Parser* parser);
+bool parser_get_keyword(Parser* parser, const char* keyword);
 Token parser_get_string(Parser* parser);
 
 s32 parser_get_s32(Parser* parser, s32 default_value = 0);

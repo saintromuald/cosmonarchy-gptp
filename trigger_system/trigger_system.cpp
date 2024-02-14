@@ -206,9 +206,10 @@ void update_trigger_system(bool in_game) {
 	if (in_game) {
 		trigger_system_in_game = true;
 		for (auto& [trigger_action, trigger_ext] : globals.trigger_exts) {
-			for (auto& [wait_key, time] : trigger_ext.ongoing_waits) {
-				if (time > 0) {
-					time--;
+			for (u32 player = 0; player < PlayerLimit; player++) {
+				OngoingWait& ongoing_wait = trigger_ext.ongoing_waits[player];
+				if (ongoing_wait.timer > 0) {
+					ongoing_wait.timer--;
 				}
 			}
 		}
@@ -540,7 +541,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 	OngoingWait& ongoing_wait = trigger_ext.ongoing_waits[trigger_player];
 
 	Parser parser = new_parser(helper::get_chk_string(action->text_string));
-	parser.at += ongoing_wait.parser_position;
+	parser_load_command_pos(&parser, ongoing_wait.parser_position);
 	while (parser_get_command(&parser)) {
 		// Wait 
 		if (parser_eq(&parser, "wait")) {
@@ -558,7 +559,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				ongoing_wait.parser_position = 0;
 				action->flags &= ~1;
 			}
-		// Condition Triggers
+		// Conditional Waits
 		} else if (parser_eq(&parser, "wait_if")) {
 			if (parse_condition(&parser)) {
 				ongoing_wait.parser_position = parser.command_start_pos;
@@ -573,6 +574,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			} else {
 				ongoing_wait.parser_position = 0;
 			}
+		// Conditional Exits
 		} else if (parser_eq(&parser, "exit_if")) {
 			if (!parse_condition(&parser)) {
 				trigger_node.trigger.current_action_index = 64;
