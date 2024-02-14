@@ -457,7 +457,7 @@ void init_ext_variables();
 void update_ext_variables();
 
 UnitExt* get_unit_ext(Unit* unit);
-void reset_unit_ext(Unit* unit);
+void reset_unit_ext(UnitExt* unit_ext);
 
 void unit_death_start(Unit* unit);
 void unit_death_end(Unit* unit);

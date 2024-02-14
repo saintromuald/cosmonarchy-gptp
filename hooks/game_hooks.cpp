@@ -740,7 +740,6 @@ namespace hooks {
 			scbw::weapon_tile_heights();
 			hooks::init_actions();
 			iquare_globals.reset();
-			init_ext_variables();
 
 			for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
 				scbw::set_upgrade_level(i, UpgradeId::VentralSacs, 1); // Zerg AI may require this to function properly
@@ -3313,6 +3312,8 @@ namespace hooks {
 		}
 
 		memset(vision_timers, 0, 8*256*256);
+
+		init_ext_variables();
 
 		GPTP::logger << "Started a match!\n";
 		return true;
