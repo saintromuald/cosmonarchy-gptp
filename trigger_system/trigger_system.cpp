@@ -557,7 +557,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			} else {
 				ongoing_wait.parser_position = 0;
 				action->flags &= ~1;
-				return true;
 			}
 		// Condition Triggers
 		} else if (parser_eq(&parser, "wait_if")) {
@@ -566,7 +565,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				return false;
 			} else {
 				ongoing_wait.parser_position = 0;
-				return true;
 			}
 		} else if (parser_eq(&parser, "wait_until")) {
 			if (!parse_condition(&parser)) {
@@ -574,7 +572,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				return false;
 			} else {
 				ongoing_wait.parser_position = 0;
-				return true;
 			}
 		} else if (parser_eq(&parser, "exit_if")) {
 			if (!parse_condition(&parser)) {
@@ -1198,7 +1195,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					continue;
 				}
 				if (unit_count >= count) {
-					return true;
+					break;
 				}
 				unit_count++;
 				if (remove) {
@@ -1239,7 +1236,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					continue;
 				}
 				if (count && unit_count >= count) {
-					return true;
+					break;
 				}
 				unit_count++;
 
