@@ -3061,7 +3061,7 @@ namespace scbw {
 
 	void add_unit_overlay(Unit* unit, u32 image_id, bool underlay) {
 		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
-			unit = unit->subunit;
+			unit = unit->subunit->id != UnitId::TerranWyvernTurret ? unit->subunit : unit;
 		}
 		if (unit->get_overlay(image_id)) {
 			return;
@@ -3076,20 +3076,18 @@ namespace scbw {
 
 	void remove_unit_overlay(Unit* unit, u32 image_id) {
 		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
-			unit = unit->subunit;
+			unit = unit->subunit->id != UnitId::TerranWyvernTurret ? unit->subunit : unit;
 		}
 
 		unit->sprite->remove_overlay(image_id);
 	}
 
-	void play_action_sound(u32 sound_id, Unit* unit)
-	{
+	void play_action_sound(u32 sound_id, Unit* unit) {
 		helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
 		helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 0, sound_id);
 	}
 
-	u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target)
-	{
+	u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target) {
 		u32 weapon_id = WeaponId::None;
 		if (target->status & UnitStatus::InAir)
 		{

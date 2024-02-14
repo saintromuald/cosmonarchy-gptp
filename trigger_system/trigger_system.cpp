@@ -1558,7 +1558,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				PlayerVars* player_vars = &globals.players[trigger_player];
-				player_vars->show_in_team_ui = player_vars->show_in_team_ui ? false : true;
+				player_vars->hide_in_team_ui = player_vars->hide_in_team_ui ? false : true;
 			}
 		}
 	}

@@ -140,7 +140,7 @@ struct PlayerVars {
 	Faction faction;
 	bool neutral_hostile;
 	bool faction_was_set;
-	bool show_in_team_ui;
+	bool hide_in_team_ui;
 };
 
 struct AlertState {
