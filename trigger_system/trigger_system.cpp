@@ -712,17 +712,24 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
-				if (score < 0) {
-					objective->score -= score;
-				} else {
-					objective->score += score;
+				objective->score += score;
+				objective->max_score += max_score;
+				if (objective->score < 0) {
+					objective->score = 0;
 				}
-				if (max_score < 0) {
-					objective->max_score -= max_score;
-				} else {
-					objective->max_score += max_score;
+				if (objective->score > objective->max_score) {
+					objective->score = objective->max_score;
 				}
+			}
+		} else if (parser_eq(&parser, "objective_score_subtract") && is_local_player) {
+			s32 key = parser_get_s32(&parser);
+			s32 score = parser_get_s32(&parser);
+			s32 max_score = parser_get_s32(&parser);
 
+			Objective* objective = find_or_create_objective(key);
+			if (objective) {
+				objective->score -= score;
+				objective->max_score -= max_score;
 				if (objective->score < 0) {
 					objective->score = 0;
 				}
