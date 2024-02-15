@@ -18,8 +18,8 @@ static void load_field(const YAML::Node& node, const std::string& key, T& variab
 	if (node[key]) {
 		try {
 			variable = node[key].as<T>();
-		} catch (YAML::Exception) {
-			config_error("Invalid value for variable \"{}\"! Please correct your config.yml.", key);
+		} catch (YAML::Exception exception) {
+			config_error("Invalid value for variable \"{}\"! Please correct your config.yml.\n\n{}", key, exception.what());
 		}
 	} else {
 		config_error("Missing variable \"{}\"! Please correct your config.yml.", key);
