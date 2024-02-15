@@ -79,6 +79,7 @@ struct Config {
 };
 extern Config config;
 
-bool file_exists(std::string file);
 void load_config();
 void save_config();
+
+bool file_exists(const std::string& file);
