@@ -526,7 +526,9 @@ b32 parse_comment_condition(TriggerAction* action) {
 	Parser parser = new_parser(helper::get_chk_string(action->text_string));
 	while (parser_get_command(&parser)) {
 		if (parser_eq(&parser, "condition")) {
-			return parse_condition(&parser);
+			if (!parse_condition(&parser)) {
+				return false;
+			}
 		}
 	}
 	return true;
