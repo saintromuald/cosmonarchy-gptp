@@ -1151,17 +1151,6 @@ namespace SoundId
 
 		// Cosmonarchy \\
 
-		TalosSalvageLoop					= 55,
-
-		SavantSiphonFire01					= 694,
-		SavantSiphonFire02					= 695,
-		SavantSiphonFire03					= 696,
-		SavantSiphonFire04					= 697,
-		SavantSiphonFire05					= 698,
-
-		WyvernAttack01						= 1118,
-		WyvernAttack02						= 1119,
-
 		AncilePassiveProc01					= 1154,
 		AncilePassiveProc02					= 1155,
 		AncilePassiveProc03					= 1156,
@@ -1711,5 +1700,16 @@ namespace SoundId
 
 		IzirokorOrderAggressive01				= 2761,
 		IzirokorOrderAggressive02				= 2762,
+
+		SavantSiphonFire01						= 2788,
+		SavantSiphonFire02						= 2789,
+		SavantSiphonFire03						= 2790,
+		SavantSiphonFire04						= 2791,
+		SavantSiphonFire05						= 2792,
+
+		WyvernWeaponfire01						= 2836,
+		WyvernWeaponfire02						= 2837,
+
+		TalosSalvageLoop						= 2849,
 	};
 }

@@ -831,6 +831,9 @@ namespace SpriteId
 		Corpse_Izirokor				= 763,
 		Corpse_Kagralisk			= 780,
 		Corpse_Evigrilisk			= 785,
+		
+		Corpse_Dilettante			= 797,
+		Corpse_Hypnagogue			= 799,
 
 		Corpse_Mason				= 809,
 		Corpse_Vulture				= 813,
