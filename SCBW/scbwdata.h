@@ -12,6 +12,12 @@
 #define SCBW_DATA(type, name, offset) type const name = (type)offset;		// Designed as const to make sure programmers don't read from or write to the address itself.
 #define SCBW_DATA_REF(type, name, offset)  extern type& name;				// Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
 
+// TODO: Replace SCBW_DATA to those new macros (which are harder to misuse and simpler to define)
+//       Or potentially make Neiv's style templated classes, like BwOffset<T> and BwArray<T> that would have either T& conversion operator or operator[]
+//                                                                                                                                                -Veeq7
+#define SCBW_REF(type, name, offset) inline type& name = *(type*)offset;
+#define SCBW_ARRAY(type, name, offset) type const* name = (type*)offset;
+
 //////////////////////////////////////////////////////////////// @}
 /// @name Linked list nodes
 //////////////////////////////////////////////////////////////// @{
@@ -1033,7 +1039,7 @@ SCBW_DATA(u32*,			building_complete_something,	0x006D1AE8);
 
 // For trigact_transmission
 SCBW_DATA(char*,			g_is_executing_wait,		0x006509B8);
-SCBW_DATA(TriggerLink**,	g_current_trigger_node,		0x006509AC);
+SCBW_REF(TriggerLink*,		g_current_trigger_node,		0x006509AC);
 SCBW_DATA(u32*,				g_trigger_wait,				0x00650980);
 
 // For draw_minimap_box

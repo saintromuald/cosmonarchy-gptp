@@ -295,7 +295,7 @@ LABEL_15:
 				trigger->flags = trigger_flags & 0xFE;
 				return 1;
 			}
-			if ((*g_current_trigger_node)->trigger.flags & 0x10)
+			if (g_current_trigger_node->trigger.flags & 0x10)
 			{
 				return 1;
 			}

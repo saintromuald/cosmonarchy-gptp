@@ -533,7 +533,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 }
 
 b32 __fastcall parse_comment_action(TriggerAction* action) {
-	Trigger& trigger = (*g_current_trigger_node)->trigger;
+	Trigger& trigger = g_current_trigger_node->trigger;
 	u32 trigger_player = *g_current_trigger_player_id;
 	bool is_local_player = trigger_player == *g_local_nation_id;
 
