@@ -88,13 +88,16 @@ namespace hooks
 					globals.alert.own_cooldown = 100;
 
 					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-					u32 sound_id = (is_building ? SoundId::BaseUnderAttack_Zerg : SoundId::ForcesUnderAttack_Zerg) + *g_console_index;
+					u32 sound_id;
+					AdvisorEvent type = is_building ? AdvisorEvent_BaseUnderAttack : AdvisorEvent_UnitsUnderAttack;
 					if (!is_building) {
 						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
 						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
 						if (sound_first && sound_last) {
 							sound_id = helper::get_random_sfx_between(sound_first, sound_last);
 						}
+					} else {
+						sound_id = scbw::get_advisor_sound_from_event_type(local_player, type);
 					}
 					play_alert(unit, sound_id);
 				}
@@ -107,7 +110,23 @@ namespace hooks
 					reset_all_unit_attack_notify_timers_in_range(unit);
 					globals.alert.ally_cooldown = 1000;
 
-					u32 sound_id = SoundId::AdvisorZergUnderAttackZerg + (*g_console_index * 3) + g_player_table[unit->player].race;
+					AdvisorEvent type;
+					switch (g_player_table[unit->player].race)
+					{
+						case RaceId::Zerg:
+						{
+							type = AdvisorEvent_AllyUnderAttack_Z;
+						} break;
+						case RaceId::Protoss:
+						{
+							type = AdvisorEvent_AllyUnderAttack_P;
+						} break;
+						case RaceId::Terran:
+						{
+							type = AdvisorEvent_AllyUnderAttack_T;
+						}
+					}
+					u32 sound_id = scbw::get_advisor_sound_from_event_type(local_player, type);
 					play_alert(unit, sound_id);
 				}
 			}
