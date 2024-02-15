@@ -42,19 +42,24 @@ static void load_advisors(const YAML::Node& config_node, const char* name, Advis
 static void validate_config() {
 	if (config.extended_control_groups) {
 		if (!config.grid_hotkeys) {
-			config.extended_control_groups = false;
 			config_error("Extended control groups must be used together with grid hotkeys!");
 		}
 		for (u32 i = 0; i < 3; i++) {
 			for (u32 j = 0; j < 3; j++) {
-				char hotkey = config.layout[i][j];
-
+				char& hotkey = config.layout[i][j];
+				if (hotkey < 'A' || hotkey > 'Z') {
+					if (hotkey >= 'a' && hotkey <= 'z') {
+						hotkey = toupper(hotkey);
+					} else {
+						config_error("Grid hotkey '{}' is not valid! Please correct your config.yml to use hotkeys from the A-Z range.", hotkey);
+					}
+				}
 				for (u32 k = 0; k < 6; k++) {
-					static const char* valid_hotkeys = "RFVTGB";
-					char valid_ch = valid_hotkeys[k];
-					if (hotkey == valid_ch) {
-						config.extended_control_groups = false;
-						config_error("Grid hotkey \"{}\" collides with extended control group \"{}\"! Please resolve the collision in config.yml.", hotkey, valid_ch);
+					// Note: We don't need to validate against tilde, since not only it's not included in A-Z range, neither '`' nor '~' maps to the correct VK code anyways.
+					static const char* invalid_hotkeys = "RFVTGB";
+					char invalid_ch = invalid_hotkeys[k];
+					if (hotkey == invalid_ch) {
+						config_error("Grid hotkey \"{}\" collides with extended control group \"{}\"! Please resolve the collision in config.yml.", hotkey, invalid_ch);
 					}
 				}
 			}
