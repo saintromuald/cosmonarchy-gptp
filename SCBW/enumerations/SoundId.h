@@ -1711,5 +1711,23 @@ namespace SoundId
 		WyvernWeaponfire02						= 2837,
 
 		TalosSalvageLoop						= 2849,
+
+		MeskAdvisor_AllyUnderAttack_Protoss01	= 2861,
+		MeskAdvisor_AllyUnderAttack_Protoss02	= 2862,
+
+		MeskAdvisor_AllyUnderAttack_Terran01	= 2864,
+		MeskAdvisor_AllyUnderAttack_Terran02	= 2865,
+
+		MeskAdvisor_AllyUnderAttack_Zerg01		= 2867,
+		MeskAdvisor_AllyUnderAttack_Zerg02		= 2868,
+		MeskAdvisor_AllyUnderAttack_Zerg03		= 2869,
+		MeskAdvisor_ArmyUnderAttack01			= 2870,
+		MeskAdvisor_ArmyUnderAttack02			= 2871,
+
+		MeskAdvisor_BaseUnderAttack01			= 2873,
+		MeskAdvisor_BaseUnderAttack02			= 2874,
+		MeskAdvisor_BaseUnderAttack03			= 2875,
+		MeskAdvisor_BaseUnderAttack04			= 2876,
+		MeskAdvisor_BaseUnderAttack05			= 2877,
 	};
 }
