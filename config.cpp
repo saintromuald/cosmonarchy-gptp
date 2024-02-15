@@ -21,8 +21,6 @@ static void load_field(const YAML::Node& node, const std::string& key, T& variab
 		} catch (YAML::Exception exception) {
 			config_error("Invalid value for variable \"{}\"! Please correct your config.yml.\n\n{}", key, exception.what());
 		}
-	} else {
-		config_error("Missing variable \"{}\"! Please correct your config.yml.", key);
 	}
 }
 
