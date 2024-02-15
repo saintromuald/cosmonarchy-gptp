@@ -70,6 +70,9 @@ namespace hooks {
 		}
 		if (aggressive_response) {
 			switch (unit->id) {
+				case UnitId::TerranHotshot: {
+					return helper::get_random_sfx_between(SoundId::HotshotOrderAggressive01, SoundId::HotshotOrderAggressive04);
+				} break;
 				case UnitId::TerranCyprian: {
 					return helper::get_random_sfx_between(SoundId::CyprianOrderAggressive01, SoundId::CyprianOrderAggressive04);
 				} break;
@@ -201,7 +204,9 @@ namespace hooks {
 			if (unit_id != UnitId::ProtossSteward && unit_id != UnitId::ProtossPlasmaShell) {
 				u32 ready_sound = units_dat::sound_ready[unit_id];
 				switch (unit_id) {
-					// TODO: Maybe use random method in get_unit_response_id to avoid the same ready line back to back multiple times? -Pr0nogo
+					case UnitId::TerranHotshot: {
+						ready_sound = helper::get_random_sfx_between(SoundId::HotshotReady01, SoundId::HotshotReady03);
+					} break;
 					case UnitId::TerranCyprian: {
 						ready_sound = helper::get_random_sfx_between(SoundId::CyprianReady01, SoundId::CyprianReady03);
 					} break;

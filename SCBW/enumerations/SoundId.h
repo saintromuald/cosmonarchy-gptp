@@ -1729,5 +1729,14 @@ namespace SoundId
 		MeskAdvisor_BaseUnderAttack03			= 2875,
 		MeskAdvisor_BaseUnderAttack04			= 2876,
 		MeskAdvisor_BaseUnderAttack05			= 2877,
+
+		HotshotReady01							= 2878,
+		HotshotReady02							= 2879,
+		HotshotReady03							= 2880,
+
+		HotshotOrderAggressive01				= 2889,
+		HotshotOrderAggressive02				= 2890,
+		HotshotOrderAggressive03				= 2891,
+		HotshotOrderAggressive04				= 2892,
 	};
 }
