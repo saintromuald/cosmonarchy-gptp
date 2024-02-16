@@ -247,7 +247,7 @@ namespace helper {
 	void attack_move_try_pick_target(Unit* unit, u8 order_id);												// 00477820
 	bool attack_move_react_to_attack(Unit* unit, u8 order_id);												// 00478370
 	bool attack_unit_main(Unit* unit);																		// 00478540
-	bool is_unit_critter(Unit* unit);																		// 0047B450
+	bool unit_is_critter(Unit* unit);																		// 0047B450
 	void move_to_collide(Unit* unit, Unit* target);														    // 00495400
 
 	bool is_unit_visible(Unit* unit);																		// 004E5DB0
@@ -1719,4 +1719,6 @@ namespace helper {
 	u32 pixel_pos_has_cagra(s16 pos_x, s16 pos_y);								// 004E8BC0
 	b32 chk_larva_stray(Unit* larva, u32 pos_x, u32 pos_y);						// 004E93E0
 	void chk_larva_stray0(Unit* larva, u32 pos_x, u32 pos_y);					// 004E94B0
+
+	void issue_queued_order_target(Unit* target, Unit* attacker, u8 order_id, u32 stop_previous);	// 00474D10
 }

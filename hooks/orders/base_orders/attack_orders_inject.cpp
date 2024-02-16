@@ -32,23 +32,6 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) orders_turret_attack_wrapper() {
-		static Unit* unit;
-		__asm {
-			PUSH EBP
-			MOV EBP, ESP
-			MOV unit, EAX
-			PUSHAD
-		}
-		hooks::orders_turret_attack(unit);
-		__asm {
-			POPAD
-			MOV ESP, EBP
-			POP EBP
-			RETN
-		}
-	}
-
 	void __declspec(naked) orders_attack_fixed_range_wrapper() {
 		static Unit* unit;
 		__asm {
@@ -280,13 +263,29 @@ namespace {
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) orders_turret_attack_wrapper() { // 00477980
+		static Unit* unit;
+		static Unit* unused;
+		__asm
+		{
+			MOV unit, EAX
+			MOV unused, ECX
+			PUSHAD
+		}
+		hooks::orders_turret_attack(unit);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
 	void inject_attack_orders_hooks() {
 	//	jump_patch(orders_reaver_attack_wrapper,				0x00465690, 2);
 	//	jump_patch(orders_carrier_attack_wrapper,				0x00465950, 0);
-	//	jump_patch(orders_turret_attack_wrapper,				0x00477980, 1);
 	//	jump_patch(orders_attack_fixed_range_wrapper,			0x00477D00, 0);
 	//	jump_patch(orders_sap_unit_wrapper,						0x004788E0, 2);
 	//	jump_patch(orders_sap_location_wrapper,					0x00478A40, 3);
@@ -301,5 +300,6 @@ namespace hooks {
 		jump_patch(order_attack_behavior_wrapper,				0x00478540, 0);
 		jump_patch(attack_move_react_to_attack_wrapper,			0x00478370, 0);
 		jump_patch(order_attack_move_try_pick_target_wrapper,	0x00477820, 1);
+		jump_patch(orders_turret_attack_wrapper,				0x00477980, 1);
 	}
 }

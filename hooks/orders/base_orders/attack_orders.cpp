@@ -98,257 +98,6 @@ namespace hooks
 		}
 	}
 
-	void orders_turret_attack(Unit* unit)
-	{
-		Unit* target;
-		Unit* current_unit;
-		u8 current_unit_weapon_id;
-
-		bool jump_to_77A45 = false;
-		bool jump_to_77A70 = false;
-		bool jump_to_77A9D = false;
-		bool jump_to_77AB7 = false;
-		bool jump_to_77AFE = false;
-		bool jump_to_77CDA = false;
-		bool bJumpToEarlierCode;
-
-		// perform lots of checks, possibly in an attempt to auto-select a better target if the turret has choice
-		helper::pick_new_target_if_needed(unit);
-		target = unit->order_target.unit;
-
-		if (target)
-		{
-			unit->order_target.pt.x = target->position.x;
-			unit->order_target.pt.y = target->position.y;
-		}
-
-		if (unit->is_frozen() || !target || target->status & UnitStatus::Invincible
-		|| (target->sprite && target->sprite->flags & SpriteFlags::Hidden)
-		||  helper::unit_cant_see_cloaked_target(unit, target))
-		{
-			jump_to_77A45 = true;
-		} else {
-			if ((unit->subunit)->is_subunit())
-			{
-				current_unit = unit->subunit;
-			} else {
-				current_unit = unit;
-			}
-
-			// identical to check performed by unit_is_carrier @ 0x00401470
-			if (unit->id == UnitId::ProtossSolarion)
-			{
-				jump_to_77AFE = true;
-			} else if (!(unit->id == UnitId::ProtossAccantorOld)) {
-				jump_to_77A9D = true;
-			} else if (target->status & UnitStatus::InAir) {
-				jump_to_77A45 = true;
-			} else if (unit->has_path_to_unit(target)) {
-				jump_to_77AFE = true;
-			} else {
-				jump_to_77A45 = true;
-			}
-		}
-
-		do
-		{
-			bJumpToEarlierCode = false;
-			if (jump_to_77A45)
-			{
-				unit->user_action_flags |= 1;
-				if (unit->main_order_id == OrderId::Die)
-				{
-					prepare_for_next_order(unit);
-				} else {
-					jump_to_77A70 = true;
-				}
-			}
-
-			jump_to_77A45 = false;
-			if (jump_to_77A70)
-			{
-				bool bStopLoop77A70 = false;
-				while (!bStopLoop77A70 && unit->order_queue_tail != nullptr)
-				{
-					if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] &&
-						unit->order_queue_tail->order_id != OrderId::TurretGuard)
-					{
-						bStopLoop77A70 = true;
-					} else {
-						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
-					}
-				}
-				jump_to_77CDA = true;
-			}
-			jump_to_77A70 = false;
-			if (jump_to_77A9D)
-			{
-
-				if (helper::unit_can_infest(unit))
-				{
-					if (helper::is_infestable_unit(target))
-					{
-						jump_to_77AFE = true;
-					} else {
-						jump_to_77A45 = true;
-						bJumpToEarlierCode = true;
-					}
-				} else {
-					jump_to_77AB7 = true;
-				}
-			}
-
-			jump_to_77A9D = false;
-			if (jump_to_77AB7)
-			{
-				if (target->status & UnitStatus::InAir)
-				{
-					current_unit_weapon_id = units_dat::air_weapon[current_unit->id];
-				} else {
-					current_unit_weapon_id = current_unit->get_ground_weapon();
-				}
-				if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
-				{
-					current_unit_weapon_id = WeaponId::None;
-				}
-				if (current_unit_weapon_id == WeaponId::None)
-				{
-					jump_to_77A45 = true;
-					bJumpToEarlierCode = true;
-				} else {
-					jump_to_77AFE = true;
-				}
-			}
-
-			jump_to_77AB7 = false;
-			if (jump_to_77AFE)
-			{
-				if (!helper::is_target_visible(unit, target))
-				{
-					jump_to_77A45 = true;
-					bJumpToEarlierCode = true;
-				} else {
-					Unit* current_subunit = unit->subunit;
-					bool jump_to_77BD7 = false;
-
-					if (unit->id != UnitId::TerranPhalanxTankModeTurret
-					||  current_subunit->unit_ai == nullptr
-					|| (current_subunit->can_use_tech(TechId::TankSiegeMode, unit->player) != TRUE)
-					|| !helper::is_unit_visible(unit))
-					{
-						jump_to_77BD7 = true;
-					} else {
-						u32 result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::ground_weapon[UnitId::TerranPhalanxSiegeModeTurret]);
-						if (!helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange))
-						{
-							jump_to_77BD7 = true;
-						} else {
-							result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::ground_weapon[UnitId::TerranPhalanxTankModeTurret]);
-
-							if (helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange)
-							||  helper::is_unit_critter(target))
-							{
-								jump_to_77BD7 = true;
-							} else {
-								unit->order_computer(OrderId::Nothing2);
-
-								// this order_id is hardcoded, not calculated 
-								unit->order_simple(units_dat::attack_unit_order[UnitId::TerranPhalanxSiegeModeTurret], false);
-								current_subunit->order_computer(OrderId::SiegeMode);
-
-								// this order_id is hardcoded, not calculated
-								current_subunit->issue_queued_order_target(units_dat::attack_unit_order[UnitId::TerranPhalanxSiegeMode], target, false);
-							}
-						}
-					}
-
-					if (jump_to_77BD7)
-					{
-						bool jump_to_77C78 = false;
-						bool jump_to_77CA1 = false;
-						if (target != nullptr)
-						{
-							if (helper::is_target_visible(unit, target))
-							{
-								if ((unit->subunit)->is_subunit())
-								{
-									current_unit = unit->subunit;
-								} else {
-									current_unit = unit;
-								}
-
-								if (target->status & UnitStatus::InAir)
-								{
-									current_unit_weapon_id = current_unit->get_air_weapon();
-								} else {
-									current_unit_weapon_id = current_unit->get_ground_weapon(); // include the Lakizilisk special case so it's ok
-								}
-								if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
-								{
-									current_unit_weapon_id = WeaponId::None;
-								}
-								if (current_unit_weapon_id == WeaponId::None)
-								{
-									jump_to_77C78 = true;
-								} else if (weapons_dat::min_range[current_unit_weapon_id] != 0
-								&&		   current_unit->is_target_within_min_range(target, weapons_dat::min_range[current_unit_weapon_id]))
-								{
-										jump_to_77C78 = true;
-								} else {
-									if (helper::is_target_within_min_movement_range(current_unit, target, unit->get_max_weapon_range(current_unit_weapon_id)))
-									{
-										jump_to_77CA1 = true;
-									} else {
-										jump_to_77C78 = true;
-									}
-								}
-							} else {
-								jump_to_77C78 = true;
-							}
-						} else {
-							jump_to_77CA1 = true;
-						}
-						if (jump_to_77C78)
-						{
-							if ((unit->subunit)->main_order_id == units_dat::attack_unit_order[(unit->subunit)->id]
-							&&   helper::get_right_click_action_order(unit->subunit) != RightClickActions::NoMove_NormalAttack)
-							{
-								jump_to_77CA1 = true;
-							} else {
-								unit->order_computer(OrderId::TurretGuard);
-							}
-						}
-
-						jump_to_77C78 = false;
-						if (jump_to_77CA1)
-						{
-							if (unit->order_target.pt.x != unit->next_target_waypoint.x
-								|| unit->order_target.pt.y != unit->next_target_waypoint.y)
-							{
-								unit->next_target_waypoint.x = unit->order_target.pt.x;
-								unit->next_target_waypoint.y = unit->order_target.pt.y;
-							}
-							if (!((unit->subunit)->movement_flags & MovementFlags_Accelerating))
-							{
-								helper::get_weapon_begin_iscript(unit, IscriptAnimation::GndAttkRpt);
-							}
-						}
-						jump_to_77CA1 = false;
-					}
-					jump_to_77BD7 = false;
-				}
-			}
-			jump_to_77AFE = false;
-			if (jump_to_77CDA)
-			{
-				unit->perform_another_order(OrderId::TurretGuard, 0, 0, nullptr, UnitId::None);
-				prepare_for_next_order(unit);
-			}
-			jump_to_77CDA = false;
-		}
-		while (bJumpToEarlierCode);
-	}
-
 	void orders_attack_fixed_range(Unit* unit)
 	{
 		Unit* target;
@@ -1274,6 +1023,157 @@ namespace hooks
 					{
 						subunit->status |= UnitStatus::AttackMove;
 					}
+				}
+			}
+		}
+	}
+
+	// Hooked to protect against nullsprite crashes. -Pr0nogo
+	void orders_turret_attack(Unit* unit) // 00477980
+	{
+		helper::pick_new_target_if_needed(unit);
+		Unit* target = unit->order_target.unit;
+		if (target && !target->is_dead()) { // is_dead is new
+			unit->order_target.pt.x = target->sprite->position.x;
+			unit->order_target.pt.y = target->sprite->position.y;
+		}
+
+		bool has_weapon_id = false;
+		Unit* final_unit = unit->subunit;
+		Order* tail = 0;
+		u32 order_id = 0;
+		u32 last_order = 0;
+
+		if (unit->is_frozen() || !target || target->is_dead()) // is_dead is new
+		{
+			goto cannot_attack;
+		}
+		if (target->status & UnitStatus::Invincible || target->sprite->flags & SpriteFlags::Hidden || helper::unit_can_see_cloaked_target(target, unit))
+		{
+			goto cannot_attack;
+		}
+
+		if (!helper::unit_is_subunit(unit->subunit)) {
+			final_unit = unit;
+		}
+
+		if (!helper::unit_is_carrier(unit)) {
+			if (helper::unit_is_reaver(unit)) {
+				if (target->status & UnitStatus::InAir || !helper::unit_has_path_to_target(unit, target))
+				{
+					goto cannot_attack;
+				}
+			} else {
+				if (target->status & UnitStatus::InAir) {
+					has_weapon_id = final_unit->get_air_weapon() != WeaponId::None;
+				} else {
+					has_weapon_id = final_unit->get_ground_weapon() != WeaponId::None;
+				}
+
+				if (!has_weapon_id)
+				{
+				cannot_attack:
+					order_id = unit->main_order_id;
+					unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+					if (order_id) {
+						while (1)
+						{
+							tail = unit->order_queue_tail;
+							if (!tail) {
+								break;
+							}
+							last_order = tail->order_id;
+							if (!orders_dat::can_be_interrupted[last_order] && last_order != OrderId::TurretGuard) {
+								break;
+							}
+							helper::remove_order_from_unit_queue(tail, unit);
+						}
+						helper::perform_another_order(OrderId::TurretGuard, 0, unit, UnitId::None, {}, 0);
+					}
+					helper::do_next_queued_order(unit);
+					return;
+				}
+			}
+		}
+		if (!helper::is_target_visible(unit->order_target.unit, unit))
+		{
+			goto cannot_attack;
+		}
+
+		Unit* subunit = unit->subunit;
+		u32 siege_mode_weapon = WeaponId::None;
+		u32 tank_mode_weapon = WeaponId::None;
+		u32 range = 0;
+		u32 range2 = 0;
+		u32 final_weapon = WeaponId::None;
+		u32 final_range = 0;
+		u32 max_range = 0;
+
+		if (unit->id != UnitId::TerranPhalanxTankModeTurret || !subunit->unit_ai)
+		{
+			goto test_range;
+		}
+
+		siege_mode_weapon = units_dat::ground_weapon[UnitId::TerranPhalanxSiegeModeTurret];
+		tank_mode_weapon = units_dat::ground_weapon[UnitId::TerranPhalanxTankModeTurret];
+		range = helper::get_unit_max_weapon_range(unit, siege_mode_weapon);
+		range2 = helper::get_unit_max_weapon_range(unit, tank_mode_weapon);
+		if (helper::is_unit_visible(unit)
+		&&  helper::is_target_within_min_movement_range(subunit, unit->order_target.unit, range)
+		&& !helper::is_target_within_min_movement_range(subunit, unit->order_target.unit, range2)
+		&& !helper::unit_is_critter(unit->order_target.unit))
+		{
+			helper::issue_order_targeting_nothing(unit, OrderId::Nothing2);
+			helper::order_targeting_nothing(units_dat::attack_unit_order[UnitId::TerranPhalanxSiegeModeTurret], unit, 0);
+			helper::issue_order_targeting_nothing(subunit, OrderId::SiegeMode);
+			helper::issue_queued_order_target(target, subunit, units_dat::attack_unit_order[UnitId::TerranPhalanxSiegeMode], 0);
+		} else {
+		test_range:
+			if (!target) {
+				goto move_or_repeat;
+			}
+			if (helper::is_target_visible(target, unit)) {
+				if (!subunit || !(units_dat::base_property[subunit->id] & UnitStatus::Burrowed)) {
+					subunit = unit;
+				}
+				if (target->status & UnitStatus::InAir) {
+					final_weapon = units_dat::air_weapon[subunit->id];
+				} else {
+					if (subunit->id != UnitId::ZergLakizilisk || subunit->status & UnitStatus::Burrowed)
+					{
+						final_weapon = units_dat::ground_weapon[subunit->id];
+					} else {
+						final_weapon = WeaponId::None;
+					}
+				}
+
+				if (final_weapon != WeaponId::None) {
+					final_range = weapons_dat::min_range[final_weapon];
+					if (!final_range || !helper::is_target_within_min_range(subunit, final_range, target))
+					{
+						max_range = helper::get_unit_max_weapon_range(unit, final_weapon);
+						if (helper::is_target_within_min_movement_range(subunit, target, max_range))
+						{
+							goto move_or_repeat;
+						}
+					}
+				}
+			}
+			if (subunit->main_order_id != units_dat::attack_unit_order[subunit->id]
+			||  helper::get_right_click_action_order(subunit) == OrderId::PlayerGuard)
+			{
+				helper::issue_order_targeting_nothing(unit, OrderId::TurretGuard);
+			} else {
+			move_or_repeat:
+				u16 tgt_x = unit->order_target.pt.x;
+				u16 tgt_y = unit->order_target.pt.y;
+				if (tgt_x != unit->next_target_waypoint.x || tgt_y != unit->next_target_waypoint.y)
+				{
+					unit->next_target_waypoint.x = tgt_x;
+					unit->next_target_waypoint.y = tgt_y;
+				}
+				if (!(unit->subunit->movement_flags & MovementFlags_Accelerating)) {
+					get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
 				}
 			}
 		}

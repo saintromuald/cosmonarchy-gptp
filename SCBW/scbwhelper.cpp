@@ -2020,7 +2020,7 @@ namespace helper {
 	}
 
 	// 0x0047B450
-	bool is_unit_critter(Unit* unit) {
+	bool unit_is_critter(Unit* unit) {
 		return false;
 	}
 
@@ -14833,6 +14833,21 @@ namespace helper {
 			PUSH pos_y
 			PUSH pos_x
 			PUSH larva
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void issue_queued_order_target(Unit* target, Unit* attacker, u8 order_id, u32 stop_previous)
+	{
+		const u32 func_address = 0x00474D10;
+		u32 order_id_xd = order_id;
+		__asm {
+			PUSHAD
+			PUSH stop_previous
+			PUSH order_id_xd
+			PUSH attacker
+			MOV EAX, target
 			CALL func_address
 			POPAD
 		}

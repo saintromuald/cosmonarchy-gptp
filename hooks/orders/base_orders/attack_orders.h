@@ -5,7 +5,6 @@ namespace hooks
 {
 	void orders_reaver_attack(Unit* unit);											// 00465690
 	void orders_carrier_attack(Unit* unit);											// 00465950
-	void orders_turret_attack(Unit* unit);											// 00477980
 	void orders_attack_fixed_range(Unit* unit);										// 00477D00
 	void orders_sap_unit(Unit* unit);												// 004788E0
 	void orders_sap_location(Unit* unit);											// 00478A40
@@ -21,6 +20,7 @@ namespace hooks
 	s32 order_attack_behavior(Unit* unit);											// 00478540
 	b32 attack_move_react_to_attack(Unit* unit, u32 order_id);						// 00478370
 	void order_attack_move_try_pick_target(Unit* unit, u8 order_id);				// 00477820
+	void orders_turret_attack(Unit* unit);											// 00477980
 
 	void inject_attack_orders_hooks();
 }
