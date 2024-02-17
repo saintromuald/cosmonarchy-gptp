@@ -22,7 +22,6 @@ void sort_gas_buildings(AiTown* town) {
 
 namespace hooks {
 	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
-	// TODO: finish and cleanup
 	void ai_unit_was_hit(Unit* unit, Unit* attacker, s32 main_target_reactions, s32 dont_call_help) { // 0043F320
 		if (g_player_table[unit->player].type != PlayerType::Computer || unit->player >= PlayerLimit) {
 			return;
@@ -129,7 +128,7 @@ namespace hooks {
 				}
 			}
 
-			unit_region->flags |= 0x20u;
+			unit_region->flags |= 0x20;
 			if (unit->status & UnitStatus::Completed) {
 				u32 unit_order_id = unit->main_order_id; // Keeping a copy of the order id, since some of the calls later could probably change it -Veeq7
 				if (unit_order_id == OrderId::CompletingArchonSummon ||
