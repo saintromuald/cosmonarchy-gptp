@@ -28,6 +28,7 @@ struct Config {
 	bool show_aura_circles = false;
 	bool show_ability_ranges = true;
 	bool always_show_condensed_selection = false;
+	bool use_alt_for_selection_ui = false;
 
 	// Witness and replay UI
 	bool witness_show_apm = true;

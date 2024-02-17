@@ -502,7 +502,7 @@ namespace hooks {
 			bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
 
 			// Show auras
-			if (config.show_aura_circles
+			if (config.show_aura_circles && scbw::can_show_custom_ui()
 			&& (scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
 				switch (unit->id) {
 					case UnitId::TerranShamanSupportMode:
@@ -552,7 +552,7 @@ namespace hooks {
 			}
 
 			// Rally points
-			if (config.show_rally_lines
+			if (config.show_rally_lines && scbw::can_show_custom_ui()
 			&& (scbw::is_allied_to(*g_local_nation_id, unit->player) || in_replay_or_witness))
 			{
 				Point16 target = get_target_point(unit->rally);
@@ -570,7 +570,7 @@ namespace hooks {
 			}
 			
 			// Ability ranges - DF
-			if (config.show_ability_ranges && *g_is_targeting) {
+			if (config.show_ability_ranges && *g_is_targeting && scbw::can_show_custom_ui()) {
 				u32 weapon = WeaponId::None;
 				switch (*g_order_id_ground)
 				{
@@ -629,8 +629,8 @@ namespace hooks {
 				}
 			}
 
-			if ((!in_replay_or_witness && config.show_order_lines && scbw::is_allied_to(*g_local_nation_id, unit->player))
-			||   (in_replay_or_witness && config.witness_show_order_lines)) {
+			if ((!in_replay_or_witness && config.show_order_lines && scbw::is_allied_to(*g_local_nation_id, unit->player) && scbw::can_show_custom_ui())
+			||   (in_replay_or_witness && config.witness_show_order_lines && scbw::can_show_custom_ui())) {
 				Unit* ignore_resource_unit = 0;
 
 				// Worker harvest links

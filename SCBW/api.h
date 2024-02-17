@@ -818,4 +818,5 @@ namespace scbw
 	bool unit_regenerates_hp(Unit* unit);
 	u32 get_regeneration_factor(Unit* unit);
 	bool unit_has_shields(Unit* unit);
+	bool can_show_custom_ui();
 }

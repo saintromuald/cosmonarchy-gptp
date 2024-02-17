@@ -3832,4 +3832,14 @@ namespace scbw {
 		// This will potentially allow for more flexible shield crigs and behaviors. -Pr0nogo
 		return units_dat::shields_enabled[unit->id];
 	}
+
+	bool can_show_custom_ui() {
+		if (config.use_alt_for_selection_ui) {
+			if (g_is_keycode_used[VK_MENU]) {
+				return true;
+			}
+			return false;
+		}
+		return true;
+	}
 }

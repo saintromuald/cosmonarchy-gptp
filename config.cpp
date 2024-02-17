@@ -100,6 +100,7 @@ void load_config() {
 	load_field(yaml, "show-aura-circles", config.show_aura_circles);
 	load_field(yaml, "show-ability-ranges", config.show_ability_ranges);
 	load_field(yaml, "always-show-condensed-selection", config.always_show_condensed_selection);
+	load_field(yaml, "use-alt-for-selection-ui", config.use_alt_for_selection_ui);
 
 	// Witness and replay UI
 	load_field(yaml, "witness-show-apm", config.witness_show_apm);
@@ -175,6 +176,7 @@ void save_config() {
 	write_field(yaml, "show-aura-circles", config.show_aura_circles);
 	write_field(yaml, "show-ability-ranges", config.show_ability_ranges);
 	write_field(yaml, "always-show-condensed-selection", config.always_show_condensed_selection);
+	write_field(yaml, "use-alt-for-selection-ui", config.use_alt_for_selection_ui);
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Witness and replay UI");
