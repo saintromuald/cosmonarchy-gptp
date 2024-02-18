@@ -253,6 +253,17 @@ u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 				portrait_id = PortraitId::AdvisorZorthos;
 			} break;
 		}
+	} else if (strcmp(g_current_map_name, "Further Notice") == 0) {
+		switch (portrait_id) {
+			case PortraitId::Cyprian:
+			{
+			//	portrait_id = PortraitId::Hotshot;
+			} break;
+			case PortraitId::JimRaynor:
+			{
+				portrait_id = PortraitId::Madrigal;
+			} break;
+		}
 	}
 
 	return portrait_id;

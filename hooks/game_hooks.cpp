@@ -2343,6 +2343,13 @@ namespace hooks {
 			}
 		}
 
+		// Stimpack - Delayed buff handling
+		if (unit_ext->timers[TimerStimpackDelay] == 1) {
+			helper::play_sound_from_unit(helper::rand_between(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit, 1, 0);
+			unit->stim_timer = StimpackTimer;
+			should_update_speed = true;
+		}
+
 		// Protoss - Binding Plasma
 		if (unit_ext->timers[TimerBindingPlasma]) {
 			u32 source_player = unit_ext->values[ValueGladiusBindingPlasmaPlayer];

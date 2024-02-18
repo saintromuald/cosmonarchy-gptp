@@ -1760,5 +1760,7 @@ namespace SoundId
 		ArtemisAdvisor_NoVespene01					= 2915,
 		ArtemisAdvisor_NoVespene02					= 2916,
 		ArtemisAdvisor_Warp01						= 2917,
+
+		StimpackInject01							= 2918,
 	};
 }
