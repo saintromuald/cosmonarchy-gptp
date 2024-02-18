@@ -4,50 +4,7 @@
 #include "hooks/interface/buttonsets.h"
 #include "aise_signal.h"
 
-#define CameraCap 8
-#define ControlGroupCap 17
-#define ExtendedControlGroupKeys "RFVTGB"
-#define KeyCap 256
-
-struct KeyState {
-	bool is_held;
-	u64 last_pressed;
-	u64 last_released;
-	u64 last_held_time;
-};
-
-struct KeyEvent {
-	u64 timestamp;
-	u32 key;
-	bool was_held;
-
-	// Modifier keys are commonly checked when processing a key event,
-	// to keep the information about sequentiality we embed it here,
-	// instead of checking if they are held this frame
-	bool control_held;
-	bool shift_held;
-	bool alt_held;
-
-	// JAI's using would be perfect here, since ideally we want to inherit all the vars instead of accessor methods,
-	// but we also want to be able to say `ev.state = state`
-	KeyState state;
-
-	inline bool pressed() const { return !was_held && state.is_held; }
-	inline bool held() const { return state.is_held; }
-	inline bool released() const { return !state.is_held; }
-	inline u64 held_time() const { return timestamp - state.last_pressed; }
-	inline u64 release_time() const { return timestamp - state.last_released; }
-	inline u64 last_held_time() const { return state.last_held_time; }
-};
-
-struct Hotkeys {
-	Point16 screens[CameraCap];
-	ControlGroup control_groups[ControlGroupCap];
-	ControlGroup* last_control_group_selected;
-	KeyState keys[KeyCap];
-};
-
-static Hotkeys hotkeys;
+Hotkeys hotkeys;
 
 static KeyEvent key_event(u32 key, bool was_held, bool is_held) {
 	u64 now = GetTickCount64();

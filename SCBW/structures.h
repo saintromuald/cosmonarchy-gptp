@@ -1410,6 +1410,9 @@ struct ControlGroup {
 	void select(bool play_response);
 	void add_selection();
 	void center_camera();
+	
+	UnitIndex* begin() { return unit_index; }
+	UnitIndex* end() { return unit_index + SelectionCap; }
 };
 
 struct WireList {

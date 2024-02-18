@@ -8,38 +8,16 @@
 #include "hooks\orders\ai\ai_orders.h"
 #include "hooks\unit_stats\max_energy.h"
 #include "globals.h"
+#include "hooks\interface\uifeatures\hotkeys.h"
 
 namespace hooks {
-	static void add_unit_to_control_group(ControlGroup* control_group, Unit* unit) {
-		for (u32 i = 0; i < SelectionCap; ++i) {
-			UnitIndex* index = &control_group->unit_index[i];
-			if (control_group->unit_index[i].index) {
-				Unit* old_unit = &g_unit_table[index->index - 1];
-				if (old_unit->unique_id == index->unique_id) {
-					continue;
-				}
-			}
-			index->index = unit->get_unit_index();
-			index->unique_id = unit->unique_id;
-			break;
-		}
-	}
-
 	static void add_new_unit_to_control_groups(Unit* original_unit, Unit* new_unit) {
 		assert(original_unit->player == new_unit->player);
 		u32 player = original_unit->player;
 		for (u32 i = 0; i < TotalControlGroups; ++i) {
-			for (u32 j = 0; j < SelectionCap; ++j) {
-				UnitIndex index = control_group_array->player[player].control_group[i].unit_index[j];
-				if (!index.value) {
-					break;
-				}
-				if (index.index) {
-					Unit* unit = &g_unit_table[index.index - 1];
-					if (unit == original_unit) {
-						add_unit_to_control_group(&control_group_array->player[player].control_group[i], new_unit);
-					}
-				}
+			ControlGroup& control_group = hotkeys.control_groups[i];
+			if (control_group.has(UnitIndex::from(original_unit))) {
+				control_group.add(UnitIndex::from(new_unit));
 			}
 		}
 	}
