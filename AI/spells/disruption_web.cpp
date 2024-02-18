@@ -56,13 +56,12 @@ namespace AI
 				return true;
 			}
 			if (target->id == UnitId::TerranWatchdog
-			||  target->id == UnitId::TerranAnchor
-		//	||  target->id == UnitId::TerranTencendur
 			||  target->id == UnitId::ZergSpraithCesiant
 			||  target->id == UnitId::ZergSkortrithCesiant
 			||  target->id == UnitId::ZergSpirtithCesiant
 			||  target->id == UnitId::ProtossWarden
-			||  target->id == UnitId::ProtossMatrix)
+			||  target->id == UnitId::ProtossMatrix
+			||	unit_id_is_garrison(target->id))
 			{
 				return true;
 			}

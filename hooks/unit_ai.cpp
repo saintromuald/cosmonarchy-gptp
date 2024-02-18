@@ -296,8 +296,6 @@ namespace hooks {
 				if (!(g_aiscript_controller[town->player].ai_flags.is_use_map_settings)
 				||	  unit->status & UnitStatus::GroundedBuilding
 				&&	  unit->id != UnitId::TerranWatchdog
-				&&	  unit->id != UnitId::TerranAnchor
-			//	&&	  unit->id != UnitId::TerranTencendur
 				&&	  unit->id != UnitId::ZergCagrantCesiant
 				&&	  unit->id != UnitId::ZergSpraithCesiant
 				&&	  unit->id != UnitId::ZergSurkithCesiant
@@ -306,7 +304,8 @@ namespace hooks {
 				&&	  unit->id != UnitId::ZergNydusCesiant
 				&&	  unit->id != UnitId::ZergKazitrithCesiant
 				&&	  unit->id != UnitId::ProtossPylon
-				&&	  unit->id != UnitId::ProtossWarden)
+				&&	  unit->id != UnitId::ProtossWarden
+				&&	 !unit_id_is_garrison(unit->id))
 				{
 					helper::ai_make_guard(town->player, unit);
 				}
