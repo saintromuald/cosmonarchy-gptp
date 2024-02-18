@@ -33,10 +33,10 @@ namespace hooks
 	// Code used by the AI (no questions about sync between players in that case) -GPTP
 	void use_stimpack_ai(Unit* unit) // 004554A0
 	{
-		if (unit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS && unit->stim_timer == 0) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS && unit->stim_timer == 0 && unit_ext->timers[TimerStimpackDelay] <= 1) {
 			helper::play_sound_from_unit(SoundId::StimpackInject01, unit, 1, 0);
 			unit->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, 0, -1, true);
-			UnitExt* unit_ext = get_unit_ext(unit);
 			unit_ext->timers[TimerStimpackDelay] = 3 * 24 + 1;
 		}
 	}
