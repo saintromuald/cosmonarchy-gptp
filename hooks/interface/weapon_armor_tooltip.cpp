@@ -410,6 +410,7 @@ namespace hooks
 		add_status(statuses, "Blinded", -1, 1, unit_ext->timers[TimerAuralAssaultBlind], TimerType::Gptp);
 		add_status(statuses, "Swarming Omen", -1, 1, unit_ext->timers[TimerSwarmingOmenDebuff], TimerType::Gptp);
 		add_status(statuses, "Mitosal Fog", -1, 1, unit_ext->timers[TimerNathreliskMitosalFog], TimerType::Gptp);
+		add_status(statuses, "Awaiting Injection", -1, 1, unit_ext->timers[TimerStimpackDelay], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
@@ -462,7 +463,7 @@ namespace hooks
 		add_status(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 100, unit->defensive_matrix_timer);
 
 		// Vanilla Timers
-		add_status(statuses, "Stimpack", -1, 1, unit->stim_timer);
+		add_status(statuses, "Stimpack Injection", -1, 1, unit->stim_timer);
 		add_status(statuses, "Irradiated", -1, 1, unit->irradiate_timer);
 		add_status(statuses, "Lobotomized", -1, 1, unit->lockdown_timer);
 		add_status(statuses, "Maelstromed", -1, 1, unit->maelstrom_timer);
