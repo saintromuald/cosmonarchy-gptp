@@ -188,6 +188,12 @@ struct TriggerExt {
 	OngoingWait ongoing_waits[PlayerLimit];
 };
 
+struct TriggerButton {
+	const char* id;
+	const char* display_name;
+	char hotkey;
+};
+
 struct Globals {
 	PlayerVars players[PlayerLimit];
 	u32 celebration;
@@ -208,6 +214,8 @@ struct Globals {
 	SmallArray<SpriteReplacement, 800> sprite_replacements;
 
 	Token custom_unit_names[PlayerLimit][UnitId::Count];
+
+	SmallArray<TriggerButton, 32> trigger_buttons;
 };
 
 enum TriggerStat : u8 {
