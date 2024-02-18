@@ -102,8 +102,8 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	if (is_ion_cannon) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		target.unit = 0;
-		target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
-		target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+		target.pt.x = unit_ext->values[ValueDiademTargetPosX];
+		target.pt.y = unit_ext->values[ValueDiademTargetPosY];
 	}
 
 	Point16 launch_pos = unit->position;
@@ -144,7 +144,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (is_ion_cannon) {
-			unit_ext->values[ValueIonCannonTargeting] = false;
+			unit_ext->values[ValueDiademTargeting] = false;
 			unit->order_target.unit = unit_ext->units[UnitIonCannonTarget]; // Restore original target
 		}
 		if (weapon_offsets && unit_ext->values[weapon_offsets->value_id] < weapon_offsets->fake_count) {

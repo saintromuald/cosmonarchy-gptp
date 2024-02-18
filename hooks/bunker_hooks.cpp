@@ -223,10 +223,10 @@ namespace hooks
 		
 		if (unit->id == UnitId::TerranDiadem) {
 			UnitExt* unit_ext = get_unit_ext(unit);
-			unit_ext->values[ValueIonCannonTargeting] = true;
+			unit_ext->values[ValueDiademTargeting] = true;
 			unit_ext->units[UnitIonCannonTarget] = target;
-			unit_ext->values[ValueIonCannonTargetPosX] = target->position.x;
-			unit_ext->values[ValueIonCannonTargetPosY] = target->position.y;
+			unit_ext->values[ValueDiademTargetPosX] = target->position.x;
+			unit_ext->values[ValueDiademTargetPosY] = target->position.y;
 			unit->order_target.unit = 0;
 		}
 		if (unit->status & UnitStatus::InBuilding) {

@@ -648,10 +648,10 @@ namespace hooks {
 				}
 
 				// Main orders
-				if (unit_ext->values[ValueIonCannonTargeting]) {
+				if (unit_ext->values[ValueDiademTargeting]) {
 					Target ion_target = {};
-					ion_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
-					ion_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+					ion_target.pt.x = unit_ext->values[ValueDiademTargetPosX];
+					ion_target.pt.y = unit_ext->values[ValueDiademTargetPosY];
 					source = draw_order_line(source, ion_target, graphics::RED, ignore_resource_unit);
 
 					if (config.show_queued_order_lines || in_replay_or_witness && config.witness_show_order_lines) {
@@ -2301,8 +2301,8 @@ namespace hooks {
 				// Fire Hammerfall Beacon for weapon targeting
 				if (unit->order_signal & 0x20) {
 					unit->order_signal &= ~0x20;
-					unit->order_target.pt.x = unit_ext->values[ValueIonCannonTargetPosX];
-					unit->order_target.pt.y = unit_ext->values[ValueIonCannonTargetPosY];
+					unit->order_target.pt.x = unit_ext->values[ValueDiademTargetPosX];
+					unit->order_target.pt.y = unit_ext->values[ValueDiademTargetPosY];
 					helper::create_bullet(WeaponId::DiademHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 				}
 			} break;
