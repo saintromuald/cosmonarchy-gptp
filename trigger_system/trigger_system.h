@@ -1,6 +1,7 @@
 #pragma once
 #include "SCBW/api.h"
 #include "trigger_parser.h"
+#include "collections.h"
 
 struct Sound;
 
@@ -14,6 +15,9 @@ struct SoundReplacement {
 	u32 animation;
 	u32 old_sound_id;
 	Sound* new_sound;
+
+	inline bool operator==(SoundReplacement& other) { return memcmp(this, &other, sizeof(*this)) == 0; }
+	inline bool operator!=(SoundReplacement& other) { return !(*this == other); }
 };
 
 #define SpriteReplacementCap 800
@@ -33,14 +37,6 @@ static const char* race_names[] = {
 extern bool trigger_game_paused;
 extern bool trigger_system_init;
 extern bool trigger_system_in_game;
-
-extern u32 sound_replacements_count;
-extern SoundReplacement sound_replacements[SoundReplacementCap];
-
-extern u32 sprite_replacements_count;
-extern SpriteReplacement sprite_replacements[SpriteReplacementCap];
-
-extern Token custom_unit_names[PlayerLimit][UnitId::Count];
 // END TODO
 
 enum WitnessMode: u8 {
@@ -180,6 +176,7 @@ enum YieldType {
 
 	YieldType_Count,
 };
+
 static constexpr u8 default_yields[YieldType_Count] = { 2, 4, 2, 4, 5, 6 };
 
 struct OngoingWait {
@@ -206,6 +203,11 @@ struct Globals {
 	}
 
 	std::unordered_map<TriggerAction*, TriggerExt> trigger_exts;
+
+	SmallArray<SoundReplacement, 1600> sound_replacements;
+	SmallArray<SpriteReplacement, 800> sprite_replacements;
+
+	Token custom_unit_names[PlayerLimit][UnitId::Count];
 };
 
 enum TriggerStat : u8 {
@@ -252,6 +254,8 @@ extern Globals globals;
 
 void init_trigger_system();
 void update_trigger_system(bool in_game);
+
+Box16 button_rect(u32 index);
 
 b32 parse_comment_condition(TriggerAction* action);
 b32 __fastcall parse_comment_action(TriggerAction* action);

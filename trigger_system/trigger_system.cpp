@@ -22,14 +22,6 @@ bool trigger_game_paused;
 bool trigger_system_init;
 bool trigger_system_in_game;
 
-u32 sound_replacements_count;
-SoundReplacement sound_replacements[SoundReplacementCap];
-
-u32 sprite_replacements_count;
-SpriteReplacement sprite_replacements[SpriteReplacementCap];
-
-Token custom_unit_names[PlayerLimit][UnitId::Count];
-
 Globals globals;
 
 static void init_auto_celebration() {
@@ -78,14 +70,7 @@ void init_trigger_system() {
 	trigger_game_paused = false;
 	g_action_table[47] = (ActionPointer)parse_comment_action;
 
-	sound_replacements_count = 0;
-	memset(sound_replacements, 0, sizeof(sound_replacements));
-
-	sprite_replacements_count = 0;
-	memset(sprite_replacements, 0, sizeof(sprite_replacements));
-
-	memset(custom_unit_names, 0, sizeof(custom_unit_names));
-	globals = {};
+	new(&globals) Globals; // since `globals = {};` is a stack overflow on Debug builds
 
 	init_auto_celebration();
 	init_recolors();
@@ -117,15 +102,14 @@ static bool unit_can_change_sprite(Unit* unit) {
 }
 
 static u32 unit_get_desired_sprite_id(Unit* unit) {
-	for (u32 i = 0; i < sprite_replacements_count; ++i) {
-		SpriteReplacement* sprite_replacement = &sprite_replacements[i];
-		if (unit->player > PlayerLimit || !sprite_replacement->players.set[unit->player]) {
+	for (SpriteReplacement& sprite_replacement : globals.sprite_replacements) {
+		if (unit->player > PlayerLimit || !sprite_replacement.players.set[unit->player]) {
 			continue;
 		}
-		if (unit->id >= UnitId::Count || !sprite_replacement->unit_ids.set[unit->id]) {
+		if (unit->id >= UnitId::Count || !sprite_replacement.unit_ids.set[unit->id]) {
 			continue;
 		}
-		return sprite_replacement->sprite_id;
+		return sprite_replacement.sprite_id;
 	}
 
 	switch (globals.celebration) {
@@ -264,6 +248,15 @@ void update_trigger_system(bool in_game) {
 		}
 	}
 	trigger_game_paused = paused;
+}
+
+Box16 button_rect(u32 index) {
+	Box16 rect = {};
+	rect.x = 16;
+	rect.y = 48 + index * 24;
+	rect.w = 96;
+	rect.h = 16;
+	return rect;
 }
 
 bool parse_condition(Parser* parser) {
@@ -785,7 +778,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Token name = parser_get_string(&parser);
 			if (player && unit_id != UnitId::None) {
 				player -= 1;
-				custom_unit_names[player][unit_id] = name;
+				globals.custom_unit_names[player][unit_id] = name;
 			}
 		} else if (parser_eq(&parser, "set_player_race_name") && is_local_player) {
 			u32 player = parser_get_player(&parser);
@@ -799,21 +792,21 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (!unit_ids.set[i]) {
 						continue;
 					}
-					if (!custom_unit_names[player][i].size) {
+					if (!globals.custom_unit_names[player][i].size) {
 						const char* default_name = Unit::get_name(i);
 						u32 len = strlen(default_name);
 						if (len > MaxToken) {
 							len = MaxToken;
 						}
-						custom_unit_names[player][i].size = len;
-						memset(custom_unit_names[player][i].data, 0, MaxToken);
-						strncpy(custom_unit_names[player][i].data, default_name, len);
+						globals.custom_unit_names[player][i].size = len;
+						memset(globals.custom_unit_names[player][i].data, 0, MaxToken);
+						strncpy(globals.custom_unit_names[player][i].data, default_name, len);
 					}
 
-					if (old_race.size <= custom_unit_names[player][i].size && strncmp(custom_unit_names[player][i].data, old_race.data, old_race.size) == 0) {
-						Token copy = custom_unit_names[player][i];
-						snprintf(custom_unit_names[player][i].data, MaxToken, "%s%s", new_race.data, copy.data + old_race.size);
-						custom_unit_names[player][i].size = strlen(custom_unit_names[player][i].data);
+					if (old_race.size <= globals.custom_unit_names[player][i].size && strncmp(globals.custom_unit_names[player][i].data, old_race.data, old_race.size) == 0) {
+						Token copy = globals.custom_unit_names[player][i];
+						snprintf(globals.custom_unit_names[player][i].data, MaxToken, "%s%s", new_race.data, copy.data + old_race.size);
+						globals.custom_unit_names[player][i].size = strlen(globals.custom_unit_names[player][i].data);
 					}
 				}
 			}
@@ -822,7 +815,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				for (u32 i = 0; i < UnitId::Count; ++i) {
-					custom_unit_names[player][i] = {};
+					globals.custom_unit_names[player][i] = {};
 				}
 			}
 		} else if (parser_eq(&parser, "unit_sound") && is_local_player) {
@@ -843,15 +836,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			parser_get_word(&parser);
 			if (parser_eq(&parser, "clear")) {
-				for (u32 i = 0; i < sound_replacements_count; ++i) {
-					if (memcmp(&sound_replacement, &sound_replacements[i], sizeof(SoundReplacement)) == 0) {
-						sound_replacements[i--] = sound_replacements[--sound_replacements_count];
+				for (u32 i = 0; i < globals.sound_replacements.size(); ++i) {
+					if (sound_replacement == globals.sound_replacements[i]) {
+						globals.sound_replacements.remove(i--);
 					}
 				}
 			} else {
-				if (sound_replacements_count < SoundReplacementCap) {
-					sound_replacements[sound_replacements_count++] = sound_replacement;
-				}
+				globals.sound_replacements.append(sound_replacement);
 			}
 		// Bitset Local Only Triggers
 		} else if (parser_eq(&parser, "play_sound") && is_local_player) {
@@ -916,9 +907,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				continue;
 			}
 
-			if (sprite_replacements_count < SpriteReplacementCap) {
-				sprite_replacements[sprite_replacements_count++] = sprite_replacement;
-			}
+			globals.sprite_replacements.append(sprite_replacement);
 		} else if (parser_eq(&parser, "clear_unit_sprite")) {
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
@@ -934,18 +923,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				continue;
 			}
 
-			for (u32 i = 0; i < sprite_replacements_count; ++i) {
-				SpriteReplacement* sprite_replacement = &sprite_replacements[i];
-				if (memcmp(&sprite_replacement->players, &players, sizeof(PlayerBitset)) != 0) {
+			for (u32 i = 0; i < globals.sprite_replacements.size(); ++i) {
+				SpriteReplacement* sprite_replacement = &globals.sprite_replacements[i];
+				if (sprite_replacement->players != players) {
 					continue;
 				}
-				if (memcmp(&sprite_replacement->unit_ids, &unit_ids, sizeof(UnitIdBitset)) != 0) {
+				if (sprite_replacement->unit_ids != unit_ids) {
 					continue;
 				}
 				if (sprite_replacement->sprite_id != sprite_id) {
 					continue;
 				}
-				sprite_replacements[i--] = sprite_replacements[--sprite_replacements_count];
+				globals.sprite_replacements.remove(i--);
 			}
 		} else if (parser_eq(&parser, "clear_creep")) {
 			Area location = parser_get_area(&parser);

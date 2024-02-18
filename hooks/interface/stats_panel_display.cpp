@@ -653,8 +653,8 @@ namespace hooks
 	// Since August 2022, data extenders make use of their own hook for naming extended unit ids.
 	// - Pr0nogo
 	const char* get_unit_name(Unit* unit) { // 0047B5A0
-		if (unit->player < PlayerLimit && unit->id < UnitId::Count && custom_unit_names[unit->player][unit->id].size) {
-			return custom_unit_names[unit->player][unit->id].data;
+		if (unit->player < PlayerLimit && unit->id < UnitId::Count && globals.custom_unit_names[unit->player][unit->id].size) {
+			return globals.custom_unit_names[unit->player][unit->id].data;
 		}
 
 		u16 queue = unit->build_queue[unit->build_queue_slot];
