@@ -572,8 +572,19 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				trigger.current_action_index = 64;
 				return false;
 			}
+		} else if (parser_eq(&parser, "exit_unless")) {
+			if (!parse_condition(&parser)) {
+				trigger.current_action_index = 64;
+				return false;
+			}
 		} else if (parser_eq(&parser, "exit_preserve_if")) {
 			if (parse_condition(&parser)) {
+				trigger.flags |= 0x4;
+				trigger.current_action_index = 64;
+				return false;
+			}
+		} else if (parser_eq(&parser, "exit_preserve_unless")) {
+			if (!parse_condition(&parser)) {
 				trigger.flags |= 0x4;
 				trigger.current_action_index = 64;
 				return false;

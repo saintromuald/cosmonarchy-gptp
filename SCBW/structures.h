@@ -1218,9 +1218,10 @@ struct Trigger {
 	TriggerCondition	conditions[16];			// 0x000
 	TriggerAction		actions[64];			// 0x140
 	u32					flags;					// 0x940
-	u16					execute_for;			// 0x944
+	u8					execute_for[27];		// 0x944
 	u8					current_action_index;	// 0x95F
 };
+C_ASSERT(sizeof(Trigger) == 0x960);
 
 struct TriggerLink {
 	TriggerLink*	prev;		// 0x0
