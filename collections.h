@@ -6,12 +6,12 @@
 
 // Currently only supports Plain Old Data (POD), Destructors do not function here
 template <typename T, size_t N>
-class SmallArray {
+class StaticArray {
 public:
 	inline size_t size() { return m_size; }
 	inline size_t capacity() { return N; }
 
-	SmallArray() { clear(); }
+	StaticArray() { clear(); }
 
 	void append(T elem) {
 		if (m_size >= N) {

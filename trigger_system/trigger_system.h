@@ -210,12 +210,12 @@ struct Globals {
 
 	std::unordered_map<TriggerAction*, TriggerExt> trigger_exts;
 
-	SmallArray<SoundReplacement, 1600> sound_replacements;
-	SmallArray<SpriteReplacement, 800> sprite_replacements;
+	StaticArray<SoundReplacement, 1600> sound_replacements;
+	StaticArray<SpriteReplacement, 800> sprite_replacements;
 
 	Token custom_unit_names[PlayerLimit][UnitId::Count];
 
-	SmallArray<TriggerButton, 32> trigger_buttons;
+	StaticArray<TriggerButton, 32> trigger_buttons;
 };
 
 enum TriggerStat : u8 {

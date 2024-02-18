@@ -13,7 +13,7 @@ struct TriggerEvent {
 };
 
 #define EventCap 100'000
-extern SmallArray<TriggerEvent, EventCap> kill_events;
-extern SmallArray<TriggerEvent, EventCap> combat_events;
+extern StaticArray<TriggerEvent, EventCap> kill_events;
+extern StaticArray<TriggerEvent, EventCap> combat_events;
 
 void init_trigger_events();

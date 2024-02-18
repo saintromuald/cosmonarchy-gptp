@@ -1,7 +1,7 @@
 #include "trigger_events.h"
 
-SmallArray<TriggerEvent, EventCap> kill_events;
-SmallArray<TriggerEvent, EventCap> combat_events;
+StaticArray<TriggerEvent, EventCap> kill_events;
+StaticArray<TriggerEvent, EventCap> combat_events;
 
 void init_trigger_events() {
 	kill_events.clear();
