@@ -107,14 +107,21 @@ C_ASSERT(ARRAY_SIZE(faction_symbol_names) == Faction_Count);
 enum AdvisorType : u8 {
 	AdvisorType_Default,
 
+	// Races
+
 	AdvisorType_Terran,
 	AdvisorType_Protoss,
 	AdvisorType_Zerg,
 
+	// Characters
+
 	AdvisorType_Mesk,
 	AdvisorType_Ackmed,
-
 	AdvisorType_HADRAL,
+
+	// Faction-specific
+
+	AdvisorType_Artemis,
 
 	AdvisorType_Count,
 };
@@ -123,14 +130,21 @@ enum AdvisorType : u8 {
 static const char* advisor_symbol_names[] = {
 	"Default",
 
+	// Races
+
 	"Terran",
 	"Protoss",
 	"Zerg",
 
+	// Characters
+
 	"Mesk",
 	"Ackmed",
-
 	"HADRAL",
+
+	// Faction-specific
+
+	"Artemis",
 };
 C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == AdvisorType_Count);
 
