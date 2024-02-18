@@ -571,7 +571,6 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 
 	if (attacker) {
 		TriggerEvent event = {};
-		event.seen_by = 0;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			if (is_visible_to(i)) {
 				event.seen_by |= 1 << i;
@@ -583,7 +582,7 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 		event.source_unit_id = attacker->id;
 		event.target_unit_id = this->id;
 		event.timestamp = *g_elapsed_time_frames;
-		trigger_event_array_add(&combat_events, event);
+		combat_events.append(event);
 	}
 
 	u32 notify_xd = notify ? 1 : 0;
@@ -612,7 +611,7 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 		event.source_unit_id = attacker ? attacker->id : UnitId::None;
 		event.target_unit_id = this->id;
 		event.timestamp = *g_elapsed_time_frames;
-		trigger_event_array_add(&kill_events, event);
+		kill_events.append(event);
 	}
 }
 

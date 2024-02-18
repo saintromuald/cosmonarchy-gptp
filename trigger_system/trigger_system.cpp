@@ -271,23 +271,22 @@ bool parse_condition(Parser* parser) {
 			u32 time_quota = parser_get_time_ticks(parser);
 			u32 scouting_player = parser_get_player(parser);
 
-			for (u32 i = 0; i < combat_events.count; ++i) {
-				TriggerEvent* event = &kill_events.events[i];
-				if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
+			for (const TriggerEvent& event : combat_events) {
+				if (!check_area(area, event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
 					continue;
 				}
-				if (event->source_player >= FullPlayerLimit || event->target_player >= FullPlayerLimit) {
+				if (event.source_player >= FullPlayerLimit || event.target_player >= FullPlayerLimit) {
 					continue;
 				}
-				if ((!source_players.set[event->source_player] || !source_unit_ids.set[event->source_unit_id] || !target_players.set[event->target_player] || !target_unit_ids.set[event->target_unit_id])
-				&&  (!source_players.set[event->target_player] || !source_unit_ids.set[event->target_unit_id] || !target_players.set[event->source_player] || !target_unit_ids.set[event->source_unit_id])) {
+				if ((!source_players.set[event.source_player] || !source_unit_ids.set[event.source_unit_id] || !target_players.set[event.target_player] || !target_unit_ids.set[event.target_unit_id])
+				&&  (!source_players.set[event.target_player] || !source_unit_ids.set[event.target_unit_id] || !target_players.set[event.source_player] || !target_unit_ids.set[event.source_unit_id])) {
 					continue;
 				}
-				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
+				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event.timestamp)) {
 					continue;
 				}
 				if (scouting_player) {
-					if (!(event->seen_by & 1 << (scouting_player - 1))) {
+					if (!(event.seen_by & 1 << (scouting_player - 1))) {
 						continue;
 					}
 				}
@@ -307,28 +306,27 @@ bool parse_condition(Parser* parser) {
 			u32 scouting_player = parser_get_player(parser);
 
 			u32 count = 0;
-			for (u32 i = 0; i < kill_events.count; ++i) {
-				TriggerEvent* event = &kill_events.events[i];
-				if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
+			for (const TriggerEvent& event : kill_events) {
+				if (!check_area(area, event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
 					continue;
 				}
-				if (event->source_player >= FullPlayerLimit || !source_players.set[event->source_player]) {
+				if (event.source_player >= FullPlayerLimit || !source_players.set[event.source_player]) {
 					continue;
 				}
-				if (!source_unit_ids.set[event->source_unit_id]) {
+				if (!source_unit_ids.set[event.source_unit_id]) {
 					continue;
 				}
-				if (event->target_player >= FullPlayerLimit || !target_players.set[event->target_player]) {
+				if (event.target_player >= FullPlayerLimit || !target_players.set[event.target_player]) {
 					continue;
 				}
-				if (!target_unit_ids.set[event->target_unit_id]) {
+				if (!target_unit_ids.set[event.target_unit_id]) {
 					continue;
 				}
-				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
+				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event.timestamp)) {
 					continue;
 				}
 				if (scouting_player) {
-					if (!(event->seen_by & 1 << (scouting_player - 1))) {
+					if (!(event.seen_by & 1 << (scouting_player - 1))) {
 						continue;
 					}
 				}
@@ -350,22 +348,21 @@ bool parse_condition(Parser* parser) {
 			u32 scouting_player = parser_get_player(parser);
 
 			u32 count = 0;
-			for (u32 i = 0; i < kill_events.count; ++i) {
-				TriggerEvent* event = &kill_events.events[i];
-				if (!check_area(area, event->position, units_dat::base_property[event->target_unit_id] & UnitProperty::Flyer)) {
+			for (TriggerEvent& event : kill_events) {
+				if (!check_area(area, event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
 					continue;
 				}
-				if (event->target_player >= FullPlayerLimit || !players.set[event->target_player]) {
+				if (event.target_player >= FullPlayerLimit || !players.set[event.target_player]) {
 					continue;
 				}
-				if (!unit_ids.set[event->target_unit_id]) {
+				if (!unit_ids.set[event.target_unit_id]) {
 					continue;
 				}
-				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event->timestamp)) {
+				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event.timestamp)) {
 					continue;
 				}
 				if (scouting_player) {
-					if (!(event->seen_by & 1 << (scouting_player - 1))) {
+					if (!(event.seen_by & 1 << (scouting_player - 1))) {
 						continue;
 					}
 				}

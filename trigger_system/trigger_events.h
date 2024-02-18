@@ -1,5 +1,6 @@
 #pragma once
 #include "SCBW/api.h"
+#include "collections.h"
 
 struct TriggerEvent {
 	u8 seen_by;
@@ -12,14 +13,7 @@ struct TriggerEvent {
 };
 
 #define EventCap 100'000
-struct TriggerEventArray {
-	u32 count;
-	u32 index;
-	TriggerEvent events[EventCap];
-};
-
-extern TriggerEventArray kill_events;
-extern TriggerEventArray combat_events;
+extern SmallArray<TriggerEvent, EventCap> kill_events;
+extern SmallArray<TriggerEvent, EventCap> combat_events;
 
 void init_trigger_events();
-void trigger_event_array_add(TriggerEventArray* array, TriggerEvent event);
