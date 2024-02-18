@@ -98,6 +98,8 @@ namespace hooks
 		}
 		helper::play_sound_at_pos(sound_id_source, source);
 		helper::play_sound_at_pos(sound_id_target, target);
+
+		unit->order_queue_timer = 8;
 	}
 
 	void orders_recall(Unit* unit) {
@@ -112,45 +114,48 @@ namespace hooks
 					scbw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
 				}
 
-				static b32* const recall_successful = (b32*)(0x0063FF50);
-				*recall_successful = false;
-				EntryArray targets = {};
-				unit_search_radial(&targets, unit->order_target.pt, 2 * 32);
-				for (u32 i = 0; i < targets.count; ++i) {
-					Unit* target = targets.units[i];
-					spells_recall_action_on_target_in_range(target, unit);
-				}
-
-				if (*recall_successful) {
-					u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol02_WAV;
-					u32 sound_id_target = SoundId::Protoss_ARBITER_PAbFol03_WAV;
-					if (scbw::random() % 2 == 0) {
-						sound_id_source = SoundId::Protoss_ARBITER_PAbFol03_WAV;
-						sound_id_target = SoundId::Protoss_ARBITER_PAbFol02_WAV;
-					}
-					helper::play_sound_at_pos(sound_id_source, unit->position);
-					helper::play_sound_at_pos(sound_id_target, unit->order_target.pt);
-				} else {
-					u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol00_WAV;
-					u32 sound_id_target = SoundId::Protoss_ARBITER_PAbFol01_WAV;
-					if (scbw::random() % 2 == 0) {
-						sound_id_source = SoundId::Protoss_ARBITER_PAbFol01_WAV;
-						sound_id_target = SoundId::Protoss_ARBITER_PAbFol00_WAV;
-					}
-					helper::play_sound_at_pos(sound_id_source, unit->position);
-					helper::play_sound_at_pos(sound_id_target, unit->order_target.pt);
-				}
-
-				scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, unit->position.x, unit->position.y, unit->player, unit->sprite->elevation - 1);
-				scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevation + 1);
-
-				unit->spend_unit_energy(5 * 256 / 24 * 9);
+				unit->spend_unit_energy(5 * 256 / 24);
 				if (unit->energy == 0 || scbw::get_generic_rust_value(unit, RustId::CancelRecall)) {
 					scbw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
 					unit_ext->values[ValueDidactRecalling] = false;
 
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->order_to_idle();
+				}
+
+				if (unit_ext->timers[TimerRecallEffect] == 0) {
+					unit_ext->timers[TimerRecallEffect] = 8;
+
+					static b32* const recall_successful = (b32*)(0x0063FF50);
+					*recall_successful = false;
+					EntryArray targets = {};
+					unit_search_radial(&targets, unit->order_target.pt, 2 * 32);
+					for (u32 i = 0; i < targets.count; ++i) {
+						Unit* target = targets.units[i];
+						spells_recall_action_on_target_in_range(target, unit);
+					}
+					if (*recall_successful) {
+						u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol02_WAV;
+						u32 sound_id_target = SoundId::Protoss_ARBITER_PAbFol03_WAV;
+						if (scbw::random() % 2 == 0) {
+							sound_id_source = SoundId::Protoss_ARBITER_PAbFol03_WAV;
+							sound_id_target = SoundId::Protoss_ARBITER_PAbFol02_WAV;
+						}
+						helper::play_sound_at_pos(sound_id_source, unit->position);
+						helper::play_sound_at_pos(sound_id_target, unit->order_target.pt);
+					} else {
+						u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol00_WAV;
+						u32 sound_id_target = SoundId::Protoss_ARBITER_PAbFol01_WAV;
+						if (scbw::random() % 2 == 0) {
+							sound_id_source = SoundId::Protoss_ARBITER_PAbFol01_WAV;
+							sound_id_target = SoundId::Protoss_ARBITER_PAbFol00_WAV;
+						}
+						helper::play_sound_at_pos(sound_id_source, unit->position);
+						helper::play_sound_at_pos(sound_id_target, unit->order_target.pt);
+					}
+
+					scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, unit->position.x, unit->position.y, unit->player, unit->sprite->elevation - 1);
+					scbw::create_and_init_thingy(SpriteId::RecallFieldShorter, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevation + 1);
 				}
 			} else {
 				unit_ext->energy_regen_timer = 0; // Prevent energy regen during channel
@@ -176,8 +181,7 @@ namespace hooks
 
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 				unit->main_order_state = 1;
-				unit->main_order_timer = 6 * 9; // 2.25s, this is not very flexible, but the interval of 9 is required
-												// for the channel animation (and the order processing anyways), which is the unit order execution interval
+				unit->main_order_timer = 2.25 * 24;
 				helper::make_to_hold_position(unit);
 				unit_ext->values[ValueDidactChannelIndex] = 0;
 				unit_ext->values[ValueDidactRecalling] = false;

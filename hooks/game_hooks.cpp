@@ -3300,6 +3300,10 @@ namespace hooks {
 		// Update harvest time for mineral fields
 		memory_patch(0x004698BC + 3, (u8)HarvestTimer);
 
+		// Fix order timer
+		memory_patch(0x004EBF50 + 6, (u8)OrderQueueTimer);
+		// memory_patch(0x004EC70B + 6, (u8)OrderQueueTimer); // hooked within unused_order_patch_wrapper in cosmonarchy_specific_inject.cpp 
+
 		chk_cache_size = 0;
 		memset(chk_cache, 0, sizeof(chk_cache));
 

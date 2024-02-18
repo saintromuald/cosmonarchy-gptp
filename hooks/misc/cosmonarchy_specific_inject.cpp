@@ -110,7 +110,7 @@ namespace hooks
 
 		static u8 order_id;
 		__asm {
-			MOV [ESI + 0x85], 0x8
+			MOV [ESI + 0x85], OrderQueueTimer
 			CALL func_getTargetSomething
 			MOV AL, [ESI + 0x4D]
 			MOV order_id, AL
