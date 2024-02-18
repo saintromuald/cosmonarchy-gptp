@@ -189,9 +189,9 @@ struct TriggerExt {
 };
 
 struct TriggerButton {
-	const char* id;
-	const char* display_name;
-	char hotkey;
+	Token id;
+	Token display_name;
+	s32 priority;
 };
 
 struct Globals {

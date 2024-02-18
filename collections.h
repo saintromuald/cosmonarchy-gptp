@@ -1,4 +1,5 @@
 #pragma once
+#include <string.h>
 #include <algorithm>
 #include <ranges>
 
@@ -20,6 +21,15 @@ public:
 		m_data[m_size++] = elem;
 	}
 
+	void insert(size_t index, T elem) {
+		if (m_size >= N) {
+			return;
+		}
+		memmove(m_data + index + 1, m_data + index, (m_size - index) * sizeof(T));
+		m_data[index] = elem;
+		m_size++;
+	}
+
 	T pop() {
 		if (m_size <= 0) {
 			return {};
@@ -28,6 +38,16 @@ public:
 	}
 
 	T remove(size_t index) {
+		if (index >= m_size) {
+			return {};
+		}
+		T result = m_data[index];
+		memmove(m_data + index, m_data + index + 1, (m_size - index - 1) * sizeof(T));
+		m_size--;
+		return result;
+	}
+
+	T remove_swap(size_t index) {
 		if (index >= m_size) {
 			return {};
 		}
@@ -88,6 +108,8 @@ public:
 		m_data[m_size++] = elem;
 	}
 
+	// TODO: insert
+
 	T pop() {
 		if (m_size <= 0) {
 			return {};
@@ -95,7 +117,9 @@ public:
 		return m_data[--m_size];
 	}
 
-	T remove(size_t index) {
+	// TODO: remove
+
+	T remove_swap(size_t index) {
 		if (index >= m_size) {
 			return {};
 		}

@@ -6,6 +6,9 @@
 struct Token {
 	u32 size;
 	char data[MaxToken + 1];
+
+	inline bool operator==(Token& other) { return size == other.size && memcmp(data, other.data, size) == 0; }
+	inline bool operator!=(Token& other) { return !(*this == other); }
 };
 
 #define ParserStackSize 64

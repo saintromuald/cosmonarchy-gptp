@@ -589,6 +589,35 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				trigger.current_action_index = 64;
 				return false;
 			}
+		// Buttons
+		} else if (parser_eq(&parser, "show_button")) {
+			Token id = parser_get_string(&parser);
+			Token display_name = parser_get_string(&parser);
+			s32 priority = parser_get_s32(&parser);
+
+			u32 insert_index = globals.trigger_buttons.size();
+			for (u32 i = 0; i < globals.trigger_buttons.size(); i++) {
+				TriggerButton& other = globals.trigger_buttons[i];
+				if (priority < other.priority) {
+					insert_index = i;
+					break;
+				}
+			}
+
+			TriggerButton trigger_button = {};
+			trigger_button.id = id;
+			trigger_button.display_name = display_name.size ? display_name : id;
+			trigger_button.priority = priority;
+			globals.trigger_buttons.insert(insert_index, trigger_button);
+		} else if (parser_eq(&parser, "hide_button")) {
+			Token id = parser_get_string(&parser);
+
+			for (u32 i = 0; i < globals.trigger_buttons.size(); i++) {
+				TriggerButton& button = globals.trigger_buttons[i];
+				if (button.id == id) {
+					globals.trigger_buttons.remove(i--);
+				}
+			}
 		// Local Only Triggers
 		} else if (parser_eq(&parser, "play_music") && is_local_player) {
 			Token filename = parser_get_string(&parser);
