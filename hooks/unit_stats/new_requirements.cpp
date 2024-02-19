@@ -109,20 +109,11 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranMason:
-				{
-					return true;
-				} break;
 				case UnitId::TerranLodestone:
-				{
-					return true;
-				} break;
 				case UnitId::TerranQuarry:
 				case UnitId::TerranAnvil:
 				{
-					if (TierUnlocked[RaceId::Terran][Tier2])
-					{
-						return true;
-					}
+					return true;
 				} break;
 			}
 		}
@@ -150,11 +141,16 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranTalos:
 				case UnitId::TerranMason:
 				{
 					return true;
 				} break;
+				case UnitId::TerranTalos:
+				{
+					if (TierUnlocked[RaceId::Terran][Tier2]) {
+						return true;
+					}
+				}
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranTreasury))
@@ -162,16 +158,10 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranLodestone:
-				{
-					return true;
-				} break;
 				case UnitId::TerranQuarry:
 				case UnitId::TerranAnvil:
 				{
-					if (TierUnlocked[RaceId::Terran][Tier2])
-					{
-						return true;
-					}
+					return true;
 				} break;
 			}
 		}
@@ -200,15 +190,9 @@ namespace hooks {
 			switch (unit_id)
 			{
 				case UnitId::TerranVestry:
-				{
-					return true;
-				} break;
 				case UnitId::TerranCovenant:
 				{
-					if (TierUnlocked[RaceId::Terran][Tier2])
-					{
-						return true;
-					}
+					return true;
 				} break;
 				case UnitId::TerranMaverick:
 				{
@@ -260,16 +244,10 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranGuildhall:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier3])
-					{
-						return true;
-					}
-				} break;
 				case UnitId::TerranMadcap:
 				case UnitId::TerranHeracles:
 				case UnitId::TerranTinkerersTower:
+				case UnitId::TerranGuildhall:
 				{
 					return true;
 				} break;
@@ -320,14 +298,8 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranPalladium:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier2])
-					{
-						return true;
-					}
-				} break;
 				case UnitId::TerranScrapyard:
+				case UnitId::TerranPalladium:
 				case UnitId::TerranVulture:
 				case UnitId::TerranCyclops:
 				{
@@ -1369,44 +1341,47 @@ namespace hooks {
 	s32 create_unit_allowed_partial(u16 unit_id, Unit* unit, s32 player_id)
 	{
 		*g_last_internal_error = InternalErrors::UnknownError0;
-		if (unit_id == UnitId::None)
-		{
+		if (unit_id == UnitId::None) {
 			*g_last_internal_error = InternalErrors::UnknownError16;
 			return TECH_HIDDEN;
 		}
-		if (player_id != unit->player)
-		{
+		if (player_id != unit->player) {
 			*g_last_internal_error = InternalErrors::UnknownError1;
 			return TECH_HIDDEN;
 		}
-		if (!(unit->status & UnitStatus::Completed))
-		{
+		if (!(unit->status & UnitStatus::Completed)) {
 			*g_last_internal_error = InternalErrors::UnknownError20;
 			return TECH_HIDDEN;
 		}
-		if (unit->is_frozen())
-		{
+		if (unit->is_frozen()) {
 			*g_last_internal_error = InternalErrors::UnitFrozen;
 			return TECH_HIDDEN;
 		}
-		if (!g_unit_availability->available[unit->player][unit_id])
-		{
+		if (!g_unit_availability->available[unit->player][unit_id]) {
 			*g_last_internal_error = InternalErrors::UnknownError2;
 			return TECH_HIDDEN;
 		}
-		if (unit->is_queue_slot_active(4))
-		{
+		if (unit->is_queue_slot_active(4)) {
 			*g_last_internal_error = InternalErrors::UnknownError3;
 			return TECH_HIDDEN;
 		}
-		if (unit->status & UnitStatus::IsHallucination)
-		{
+		if (unit->status & UnitStatus::IsHallucination) {
 			*g_last_internal_error = InternalErrors::UnknownError22;
 			return TECH_HIDDEN;
 		}
 
-		enum
-		{
+		// New hidden cases
+		if (helper::is_constructing_addon(unit)) {
+			return TECH_HIDDEN;
+		}
+		if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit_ext->values[ValueAddonInactive]) {
+				return TECH_HIDDEN;
+			}
+		}
+
+		enum {
 			Tier1 = 0,
 			Tier2,
 			Tier3,
@@ -1428,15 +1403,9 @@ namespace hooks {
 
 		Faction faction = globals.players[player_id].faction;
 
-		if (helper::is_constructing_addon(unit))
-		{
-			return TECH_HIDDEN;
-		}
-
 		bool has_addon = false;
 		s32 addon_id = -1; 
-		if (unit->building.addon)
-		{
+		if (unit->building.addon) {
 			if (!(unit->building.addon >= g_unit_table)) { // This is a crash case when Vultures are group-selected with buildings! -Pr0nogo
 				return TECH_HIDDEN;
 			}
@@ -1477,8 +1446,7 @@ namespace hooks {
 					case UnitId::TerranMantle:
 					case UnitId::TerranStarport:
 					{
-						if (TierUnlocked[RaceId::Terran][Tier2])
-						{
+						if (TierUnlocked[RaceId::Terran][Tier2]) {
 							return TECH_ACTIVE;
 						}
 						return TECH_LOCKED;
@@ -1489,8 +1457,7 @@ namespace hooks {
 					case UnitId::TerranIronFoundry:
 					case UnitId::TerranNaniteAssembly:
 					{
-						if (TierUnlocked[RaceId::Terran][Tier3])
-						{
+						if (TierUnlocked[RaceId::Terran][Tier3]) {
 							return TECH_ACTIVE;
 						}
 						return TECH_LOCKED;
@@ -1503,32 +1470,19 @@ namespace hooks {
 				{
 					case UnitId::TerranMason:
 					{
-						if (in_air)
-						{
+						if (in_air) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranLodestone:
-					{
-						if (has_addon || is_training)
-						{
-							return TECH_HIDDEN;
-						}
-						return TECH_ACTIVE;
-					}
 					case UnitId::TerranQuarry:
 					case UnitId::TerranAnvil:
 					{
-						if (has_addon || is_training)
-						{
+						if (has_addon || is_training) {
 							return TECH_HIDDEN;
 						}
-						if (TierUnlocked[RaceId::Terran][Tier2])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 				}
 			} break;
@@ -1538,8 +1492,7 @@ namespace hooks {
 				{
 					case UnitId::TerranMorningstar:
 					{
-						if (!unit->building.silo.nuke && unit->build_queue[unit->build_queue_slot] == UnitId::None)
-						{
+						if (!unit->building.silo.nuke && unit->build_queue[unit->build_queue_slot] == UnitId::None) {
 							return TECH_ACTIVE;
 						}
 					}
@@ -1550,9 +1503,15 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranMason:
-					case UnitId::TerranTalos:
 					{
 						return TECH_ACTIVE;
+					}
+					case UnitId::TerranTalos:
+					{
+						if (TierUnlocked[RaceId::Terran][Tier2]) {
+							return TECH_ACTIVE;
+						}
+						return TECH_LOCKED;
 					}
 				}
 			} break;
@@ -1561,25 +1520,13 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranLodestone:
-					{
-						if (has_addon || is_training)
-						{
-							return TECH_HIDDEN;
-						}
-						return TECH_ACTIVE;
-					}
 					case UnitId::TerranQuarry:
 					case UnitId::TerranAnvil:
 					{
-						if (has_addon || is_training)
-						{
+						if (has_addon || is_training)  {
 							return TECH_HIDDEN;
 						}
-						if (TierUnlocked[RaceId::Terran][Tier2])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 				}
 			} break;
@@ -1589,8 +1536,7 @@ namespace hooks {
 				{
 					case UnitId::TerranFountainhead:
 					{
-						if (has_addon || is_training)
-						{
+						if (has_addon || is_training) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -1603,8 +1549,7 @@ namespace hooks {
 				{
 					case UnitId::TerranAtelier:
 					{
-						if (has_addon || is_training)
-						{
+						if (has_addon || is_training) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -1617,8 +1562,7 @@ namespace hooks {
 				{
 					case UnitId::TerranArmistice:
 					{
-						if (in_air)
-						{
+						if (in_air) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -1630,31 +1574,17 @@ namespace hooks {
 				switch (unit_id)
 				{
 					case UnitId::TerranVestry:
+					case UnitId::TerranCovenant:
 					{
-						if (has_addon || is_training)
-						{
+						if (has_addon || is_training) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranCovenant:
-					{
-						if (has_addon || is_training)
-						{
-							return TECH_HIDDEN;
-						}
-						if (TierUnlocked[RaceId::Terran][Tier2])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
 					case UnitId::TerranMaverick:
 					{
-						if (faction != Faction_TerranHecatonCoalition)
-						{
-							if (in_air || is_adding_on)
-							{
+						if (faction != Faction_TerranHecatonCoalition) {
+							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -1663,18 +1593,15 @@ namespace hooks {
 					}
 					case UnitId::TerranHarakan:
 					{
-						if (in_air || is_adding_on)
-						{
+						if (in_air || is_adding_on) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranCyprian:
 					{
-						if (faction != Faction_TerranNydusTrinity)
-						{
-							if (in_air || is_adding_on)
-							{
+						if (faction != Faction_TerranNydusTrinity) {
+							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -1684,12 +1611,10 @@ namespace hooks {
 					case UnitId::TerranCleric:
 					case UnitId::TerranShamanSupportMode:
 					{
-						if (in_air)
-						{
+						if (in_air) {
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranVestry)
-						{
+						if (addon_id == UnitId::TerranVestry) {
 							return TECH_ACTIVE;
 						}
 						return TECH_HIDDEN;
@@ -1697,22 +1622,18 @@ namespace hooks {
 					case UnitId::TerranEidolon:
 					case UnitId::TerranSavant:
 					{
-						if (in_air)
-						{
+						if (in_air) {
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranCovenant)
-						{
+						if (addon_id == UnitId::TerranCovenant) {
 							return TECH_ACTIVE;
 						}
 						return TECH_HIDDEN;
 					}
 					case UnitId::TerranHotshot:
 					{
-						if (faction == Faction_TerranHecatonCoalition)
-						{
-							if (in_air || is_adding_on)
-							{
+						if (faction == Faction_TerranHecatonCoalition) {
+							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -1721,10 +1642,8 @@ namespace hooks {
 					}
 					case UnitId::TerranCohort:
 					{
-						if (faction == Faction_TerranNydusTrinity)
-						{
-							if (in_air || is_adding_on)
-							{
+						if (faction == Faction_TerranNydusTrinity) {
+							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -1738,22 +1657,10 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
+					case UnitId::TerranTinkerersTower:
 					case UnitId::TerranGuildhall:
 					{
-						if (has_addon || is_training)
-						{
-							return TECH_HIDDEN;
-						}
-						if (TierUnlocked[RaceId::Terran][Tier3])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::TerranTinkerersTower:
-					{
-						if (has_addon || is_training)
-						{
+						if (has_addon || is_training) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -1761,8 +1668,7 @@ namespace hooks {
 					case UnitId::TerranMadcap:
 					case UnitId::TerranHeracles:
 					{
-						if (in_air)
-						{
+						if (in_air) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -1770,8 +1676,7 @@ namespace hooks {
 					case UnitId::TerranApostle:
 					{
 						if (faction != Faction_TerranHecatonCoalition) {
-							if (in_air)
-							{
+							if (in_air) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -1781,8 +1686,7 @@ namespace hooks {
 					case UnitId::TerranAuriel:
 					{
 						if (faction == Faction_TerranHecatonCoalition) {
-							if (in_air)
-							{
+							if (in_air) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -1792,12 +1696,10 @@ namespace hooks {
 					case UnitId::TerranSiren:
 					case UnitId::TerranStriga:
 					{
-						if (in_air)
-						{
+						if (in_air) {
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranTinkerersTower)
-						{
+						if (addon_id == UnitId::TerranTinkerersTower) {
 							return TECH_ACTIVE;
 						}
 						return TECH_HIDDEN;
@@ -1805,12 +1707,10 @@ namespace hooks {
 					case UnitId::TerranOlympian:
 					case UnitId::TerranAutocrat:
 					{
-						if (in_air)
-						{
+						if (in_air) {
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranGuildhall)
-						{
+						if (addon_id == UnitId::TerranGuildhall) {
 							return TECH_ACTIVE;
 						}
 						return TECH_HIDDEN;
@@ -1820,14 +1720,13 @@ namespace hooks {
 			case UnitId::TerranApothecary:
 			{
 				switch (unit_id)
-					{
+				{
 					case UnitId::TerranDilettante:
 					case UnitId::TerranSevenstep:
 					case UnitId::TerranSilvertongue:
 					case UnitId::TerranHypnagogue:
 					{
-						if (in_air)
-						{
+						if (in_air) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -1838,22 +1737,10 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
+					case UnitId::TerranScrapyard:
 					case UnitId::TerranPalladium:
 					{
-						if (has_addon || is_training)
-						{
-							return TECH_HIDDEN;
-						}
-						if (TierUnlocked[RaceId::Terran][Tier2])
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::TerranScrapyard:
-					{
-						if (has_addon || is_training)
-						{
+						if (has_addon || is_training) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -1861,18 +1748,15 @@ namespace hooks {
 					case UnitId::TerranVulture:
 					case UnitId::TerranCyclops:
 					{
-						if (in_air || is_adding_on)
-						{
+						if (in_air || is_adding_on) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranGoliath:
 					{
-						if (faction != Faction_TerranUpstart && faction != Faction_TerranGoldenRepublic)
-						{
-							if (in_air || is_adding_on)
-							{
+						if (faction != Faction_TerranUpstart && faction != Faction_TerranGoldenRepublic) {
+							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -1882,26 +1766,21 @@ namespace hooks {
 					case UnitId::TerranBlackjack:
 					case UnitId::TerranMatadorTankMode:
 					{
-						if (in_air || is_adding_on)
-						{
+						if (in_air || is_adding_on) {
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranScrapyard)
-						{
+						if (addon_id == UnitId::TerranScrapyard) {
 							return TECH_ACTIVE;
 						}
 						return TECH_HIDDEN;
 					}
 					case UnitId::TerranPhalanxTankMode:
 					{
-						if (faction != Faction_TerranNydusTrinity)
-						{
-							if (in_air || is_adding_on)
-							{
+						if (faction != Faction_TerranNydusTrinity) {
+							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
-							if (addon_id == UnitId::TerranPalladium)
-							{
+							if (addon_id == UnitId::TerranPalladium) {
 								return TECH_ACTIVE;
 							}
 						}
@@ -1909,22 +1788,18 @@ namespace hooks {
 					}
 					case UnitId::TerranMadrigalImperiosoMode:
 					{
-						if (in_air || is_adding_on)
-						{
+						if (in_air || is_adding_on) {
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranPalladium)
-						{
+						if (addon_id == UnitId::TerranPalladium)  {
 							return TECH_ACTIVE;
 						}
 						return TECH_HIDDEN;
 					}
 					case UnitId::TerranAspirant:
 					{
-						if (faction == Faction_TerranGoldenRepublic)
-						{
-							if (in_air)
-							{
+						if (faction == Faction_TerranGoldenRepublic) {
+							if (in_air) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -1933,10 +1808,8 @@ namespace hooks {
 					}
 					case UnitId::TerranSouthpaw:
 					{
-						if (faction == Faction_TerranUpstart)
-						{
-							if (in_air || is_adding_on)
-							{
+						if (faction == Faction_TerranUpstart) {
+							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -1945,14 +1818,11 @@ namespace hooks {
 					}
 					case UnitId::TerranTarasque:
 					{
-						if (faction == Faction_TerranNydusTrinity)
-						{
-							if (in_air || is_adding_on)
-							{
+						if (faction == Faction_TerranNydusTrinity) {
+							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
-							if (addon_id == UnitId::TerranPalladium)
-							{
+							if (addon_id == UnitId::TerranPalladium) {
 								return TECH_ACTIVE;
 							}
 						}
@@ -1968,8 +1838,7 @@ namespace hooks {
 					case UnitId::TerranDurendal:
 					case UnitId::TerranCataphract:
 					{
-						if (in_air)
-						{
+						if (in_air) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -1983,8 +1852,7 @@ namespace hooks {
 					case UnitId::TerranBioticBastion:
 					case UnitId::TerranFutureStation:
 					{
-						if (has_addon || is_training)
-						{
+						if (has_addon || is_training) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -1993,8 +1861,7 @@ namespace hooks {
 					case UnitId::TerranCuirassTankMode:
 					case UnitId::TerranPazuzu:
 					{
-						if (in_air || is_adding_on)
-						{
+						if (in_air || is_adding_on) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -2002,12 +1869,10 @@ namespace hooks {
 					case UnitId::TerranClaymore:
 					case UnitId::TerranPenumbra:
 					{
-						if (in_air || is_adding_on)
-						{
+						if (in_air || is_adding_on) {
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranFutureStation)
-						{
+						if (addon_id == UnitId::TerranFutureStation) {
 							return TECH_ACTIVE;
 						}
 						return TECH_HIDDEN;
@@ -2015,12 +1880,10 @@ namespace hooks {
 					case UnitId::TerranAnticthon:
 					case UnitId::TerranAion:
 					{
-						if (in_air || is_adding_on)
-						{
+						if (in_air || is_adding_on) {
 							return TECH_HIDDEN;
 						}
-						if (addon_id == UnitId::TerranBioticBastion)
-						{
+						if (addon_id == UnitId::TerranBioticBastion) {
 							return TECH_ACTIVE;
 						}
 						return TECH_HIDDEN;
@@ -2033,10 +1896,8 @@ namespace hooks {
 				{
 					case UnitId::TerranWraith:
 					{
-						if (faction != Faction_TerranFuturistFederation)
-						{
-							if (in_air)
-							{
+						if (faction != Faction_TerranFuturistFederation) {
+							if (in_air) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -2045,10 +1906,8 @@ namespace hooks {
 					}
 					case UnitId::TerranTrojan:
 					{
-						if (faction != Faction_TerranHecatonCoalition)
-						{
-							if (in_air)
-							{
+						if (faction != Faction_TerranHecatonCoalition) {
+							if (in_air) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -2057,10 +1916,8 @@ namespace hooks {
 					}
 					case UnitId::TerranAncile:
 					{
-						if (faction != Faction_TerranUpstart)
-						{
-							if (in_air)
-							{
+						if (faction != Faction_TerranUpstart) {
+							if (in_air) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -2069,10 +1926,8 @@ namespace hooks {
 					}
 					case UnitId::TerranPhiloc:
 					{
-						if (faction == Faction_TerranFuturistFederation)
-						{
-							if (in_air)
-							{
+						if (faction == Faction_TerranFuturistFederation) {
+							if (in_air) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -2081,10 +1936,8 @@ namespace hooks {
 					}
 					case UnitId::TerranWendigo:
 					{
-						if (faction == Faction_TerranUpstart)
-						{
-							if (in_air)
-							{
+						if (faction == Faction_TerranUpstart) {
+							if (in_air) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;
@@ -2093,10 +1946,8 @@ namespace hooks {
 					}
 					case UnitId::TerranQilin:
 					{
-						if (faction == Faction_TerranHecatonCoalition)
-						{
-							if (in_air)
-							{
+						if (faction == Faction_TerranHecatonCoalition) {
+							if (in_air) {
 								return TECH_HIDDEN;
 							}
 							return TECH_ACTIVE;

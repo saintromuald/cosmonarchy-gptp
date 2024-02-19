@@ -3464,6 +3464,17 @@ namespace scbw {
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Zerg01;
 					}
 				} break;
+				case AdvisorEvent_AbandonAddon: {
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case AdvisorType_Ackmed:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case AdvisorType_HADRAL:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case AdvisorType_Artemis:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+					}
+				} break;
 			}
 		}
 		return 0; // This actually means reverting to original, instead of no sound

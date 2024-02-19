@@ -14857,4 +14857,15 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	void play_addon_detach_sound(Unit* unit)
+	{
+		const u32 func_address = 0x0048F8A0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }

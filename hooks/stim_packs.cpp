@@ -37,7 +37,7 @@ namespace hooks
 		if (unit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS && unit->stim_timer == 0 && unit_ext->timers[TimerStimpackDelay] <= 1) {
 			helper::play_sound_from_unit(SoundId::StimpackInject01, unit, 1, 0);
 			unit->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, 0, -1, true);
-			unit_ext->timers[TimerStimpackDelay] = 3 * 24 + 1;
+			unit_ext->timers[TimerStimpackDelay] = 1.5 * 24 + 1;
 		}
 	}
 
@@ -54,7 +54,7 @@ namespace hooks
 				helper::play_sound_from_unit(SoundId::StimpackInject01, active_player_selection, 1, 0);
 				active_player_selection->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, 0, -1, true);
 				UnitExt* unit_ext = get_unit_ext(active_player_selection);
-				unit_ext->timers[TimerStimpackDelay] = 2 * 24 + 1;
+				unit_ext->timers[TimerStimpackDelay] = 1.5 * 24 + 1;
 			}
 			active_player_selection = get_active_player_next_selection();
 		}

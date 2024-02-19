@@ -1107,50 +1107,52 @@ namespace hooks {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
-									case UnitId::TerranLodestone: {
-										if (has_addon || is_training || is_adding_on) {
-											current_button_state = Button_State::Invisible;
-										} else {
-											current_button_state = Button_State::Enabled;
-										}
-									} break;
+									case UnitId::TerranLodestone:
 									case UnitId::TerranQuarry:
 									case UnitId::TerranAnvil: {
 										if (has_addon || is_training || is_adding_on) {
 											current_button_state = Button_State::Invisible;
-										} else if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtlas)) {
-											current_button_state = Button_State::Enabled;
 										} else {
-											current_button_state = Button_State::Disabled;
+											current_button_state = Button_State::Enabled;
 										}
 									} break;
 								}
 							} break;
 							case UnitId::TerranTreasury: {
 								switch (current_button->requirement_var) {
-									case UnitId::TerranLodestone: {
-										if (has_addon || is_training || is_adding_on) {
-											current_button_state = Button_State::Invisible;
-										} else {
-											current_button_state = Button_State::Enabled;
-										}
-									} break;
+									case UnitId::TerranLodestone:
 									case UnitId::TerranQuarry:
 									case UnitId::TerranAnvil: {
 										if (has_addon || is_training || is_adding_on) {
 											current_button_state = Button_State::Invisible;
-										} else if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtlas)) {
-											current_button_state = Button_State::Enabled;
 										} else {
-											current_button_state = Button_State::Disabled;
+											current_button_state = Button_State::Enabled;
 										}
 									} break;
 								}
 							} break;
-							case UnitId::TerranParthenon: {
+							case UnitId::TerranQuarry: {
 								switch (current_button->requirement_var) {
-									case UnitId::TerranArmistice: {
-										if (unit->status & UnitStatus::GroundedBuilding) {
+									case UnitId::TerranMason: {
+										if (!unit_ext->values[ValueAddonInactive]) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::TerranTalos: {
+										if (!unit_ext->values[ValueAddonInactive] && player_has_completed_landed_unit_id(unit->player, UnitId::TerranAtlas)) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+								}
+							} break;
+							case UnitId::TerranAnvil: {
+								switch (current_button->requirement_var) {
+									case UnitId::TerranMorningstar: {
+										if (!unit_ext->values[ValueAddonInactive] && !unit->building.silo.nuke && !is_training) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Invisible;

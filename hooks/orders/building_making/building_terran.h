@@ -13,6 +13,9 @@ namespace hooks
 	b32 unit_is_geyser(Unit* unit);									// 004688B0
 	b32 is_constructing_addon(Unit* unit);							// 004E66B0
 	b32 building_addon(Unit* unit, u32 hp_gain, b32 is_incomplete);	// 004679A0
+	void disconnect_addon(Unit* unit);								// 00464930
+	void complete_addon(Unit* addon, Unit* parent);					// 00463D50
+	void play_addon_detach_sound(Unit* unit);						// 0048F8A0
 
 	void inject_building_terran_hook();
 }

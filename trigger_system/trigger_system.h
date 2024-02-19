@@ -177,7 +177,7 @@ enum YieldType {
 	YieldType_Count,
 };
 
-static constexpr u8 default_yields[YieldType_Count] = { 2, 4, 2, 4, 5, 6 };
+static constexpr u8 default_yields[YieldType_Count] = { 3, 4, 2, 4, 5, 6 };
 
 struct OngoingWait {
 	s32 timer;

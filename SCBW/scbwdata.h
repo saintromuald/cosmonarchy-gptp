@@ -1246,6 +1246,9 @@ SCBW_DATA(u32*,				g_big_music_volume,					0x006D5BB8);
 SCBW_DATA(BinDlg**,         g_popup_dialog,                     0x006D5BF4);
 SCBW_DATA(u8*,              g_chat_message_type,                0x0068C144);
 
+// For play_addon_detach_sound
+SCBW_DATA(u8*,				g_audio_something,						0x006D1A98);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

@@ -607,13 +607,68 @@ namespace hooks
 			if (units_dat::group_flags[unit->id].is_terran)
 			{
 				Unit* addon = helper::connect_addon_check(unit);
-				if (addon)
-				{
+				if (addon) {
 					helper::complete_addon(unit, addon);
 				}
 			}
 			return 1;
 		}
 		return result;
+	}
+
+	// Hooked to stop giving addons to neutral. -Pr0nogo
+	void disconnect_addon(Unit* unit) // 00464930
+	{
+		Unit* addon = unit->building.addon;
+		unit->building.addon = 0;
+		helper::play_addon_detach_sound(addon);
+
+		UnitExt* addon_ext = get_unit_ext(addon);
+		addon_ext->values[ValueAddonInactive] = 1;
+		scbw::refresh_console();
+
+		Unit* active_unit = *g_active_iscript_unit;
+		*g_active_iscript_unit = addon;
+		for (Image* i = addon->sprite->images.head; i; i = i->link.next) {
+			play_image_iscript(i, IscriptAnimation::LiftOff);
+		}
+		*g_active_iscript_unit = active_unit;
+	}
+
+	// Hooked to stop giving addons to neutral. -Pr0nogo
+	void complete_addon(Unit* addon, Unit* parent) // 00463D50
+	{
+		u32 player = parent->player;
+		parent->building.addon = addon;
+		helper::give_unit(addon, player, 0);
+		helper::give_sprite(addon, parent->player);
+
+		UnitExt* addon_ext = get_unit_ext(addon);
+		addon_ext->values[ValueAddonInactive] = 0;
+
+		Unit* active_unit = *g_active_iscript_unit;
+		*g_active_iscript_unit = addon;
+		for (Image* i = addon->sprite->images.head; i; i = i->link.next) {
+			helper::play_image_iscript(i, IscriptAnimation::Landing);
+		}
+		*g_active_iscript_unit = active_unit;
+
+		bool is_silo = parent->id == UnitId::TerranAnvil;
+		if (is_silo) {
+			Unit* missile = parent->building.silo.nuke;
+			if (missile) {
+				helper::give_unit(missile, parent->player, 0);
+			}
+		}
+	}
+
+	// Hooked to add custom advisor handling. -Pr0nogo
+	void play_addon_detach_sound(Unit* unit) // 0048F8A0
+	{
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
+			u32 sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_AbandonAddon);
+			helper::play_sound_from_unit(sound_id, unit, (g_options_list->flags >> 2) & 1, 99);
+			helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (*g_audio_something / 1000), 1, 130);
+		}
 	}
 }

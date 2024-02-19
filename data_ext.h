@@ -184,6 +184,7 @@ enum ExtValueId {
 	ValueTriggerWeaponRangeBaseAmount,
 	ValueTriggerBehaviorProximityCloak,
 	ValueTriggerBehaviorSteadyShroud,
+	ValueAddonInactive,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

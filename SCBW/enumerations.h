@@ -1470,6 +1470,8 @@ enum AdvisorEvent {
 	AdvisorEvent_AllyUnderAttack_T		= 18,
 	AdvisorEvent_AllyUnderAttack_P		= 19,
 	AdvisorEvent_AllyUnderAttack_Z		= 20,
+
+	AdvisorEvent_AbandonAddon			= 21,
 };
 
 enum AdvisorMessageId {
