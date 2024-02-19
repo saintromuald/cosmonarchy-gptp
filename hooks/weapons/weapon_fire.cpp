@@ -286,8 +286,13 @@ static bool internal_fired_stagger(Unit* unit, u32 weapon_id, u32 max_targets, u
 }
 
 bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options) {
-	u32 attack_range = options.range_overwrite ? options.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
+	u32 max_attack_range = options.range_overwrite ? options.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
 	u32 factor = options.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
+
+	auto can_fire_at = [unit, weapon_id, &options](Unit* target) {
+		u32 attack_range = options.range_overwrite ? options.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, target);
+	    return unit->is_target_within_min_range(target, attack_range);
+	};
 
 	UnitExt* unit_ext = get_unit_ext(unit);
 	bool has_stagger = options.stagger >= 0;
@@ -300,7 +305,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, cons
 	        && order_target_unit
 	        && unit->main_order_id != OrderId::Follow
 	        && unit->main_order_id != OrderId::Patrol
-	        && unit->is_target_within_min_range(order_target_unit, attack_range)
+			&& can_fire_at(order_target_unit)
 	        && unit->can_attack_target(order_target_unit)) {
 		if (weapon_id_is_secondary(weapon_id) && scbw::is_allied_to(unit->player, order_target_unit->player)) {
 			return false; // This is stupid, but the unit_flag_match handling causes tism with entering transports. Should make more elegant later. -Pr0nogo
@@ -327,13 +332,13 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, cons
 		if (!order_target_unit) {
 			return fired_at != 0;
 		}
-		unit_search_radial(&targets, order_target_unit->position, options.center_on_target_range_overwrite ? options.center_on_target_range_overwrite : attack_range);
+		unit_search_radial(&targets, order_target_unit->position, options.center_on_target_range_overwrite ? options.center_on_target_range_overwrite : max_attack_range);
 	} else {
 		Box32 area = {
-			unit->get_left()   - attack_range - 8 * 32, // We can't account for size of all possible other units, but we want border to border search,
-			unit->get_top()    - attack_range - 8 * 32, // so we will just use an additional constant offset here.
-			unit->get_right()  + attack_range + 8 * 32, // This is not really meant to be a rect area, more like rect extended circle, just like normal weapons,
-			unit->get_bottom() + attack_range + 8 * 32,	// for both of those reasons we later check the min range between units -Veeq7
+			unit->get_left()   - max_attack_range - 8 * 32, // We can't account for size of all possible other units, but we want border to border search,
+			unit->get_top()    - max_attack_range - 8 * 32, // so we will just use an additional constant offset here.
+			unit->get_right()  + max_attack_range + 8 * 32, // This is not really meant to be a rect area, more like rect extended circle, just like normal weapons,
+			unit->get_bottom() + max_attack_range + 8 * 32,	// for both of those reasons we later check the min range between units -Veeq7
 		};
 		unit_search_rect(&targets, area);
 	}
@@ -352,11 +357,11 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, cons
 		||   target == order_target_unit
 		||   scbw::is_allied_to(unit->player, target->player)
 		||  !unit->can_attack_target(target)
-		||  !unit->is_target_within_min_range(target, attack_range)) {
+		||  !can_fire_at(target)) {
 			continue;
 		}
 
-		if (has_stagger && std::find(blacklist.begin(), blacklist.end(), target) != blacklist.end()) {
+		if (has_stagger && std::ranges::find(blacklist, target) != blacklist.end()) {
 			continue;
 		}
 
