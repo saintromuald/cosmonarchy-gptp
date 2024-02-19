@@ -341,7 +341,7 @@ enum ExtUnitId {
 	UnitAddonParent,
 	UnitResponseTarget,
 	UnitCentaurSecondaryWeaponTarget,
-	UnitIonCannonTarget,
+	UnitDiademTarget,
 	UnitSevenstepMindMatterSource,
 	UnitPennant,
 	UnitDemiurge,

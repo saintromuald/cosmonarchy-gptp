@@ -655,7 +655,7 @@ namespace hooks {
 					source = draw_order_line(source, ion_target, graphics::RED, ignore_resource_unit);
 
 					if (config.show_queued_order_lines || in_replay_or_witness && config.witness_show_order_lines) {
-						ion_target.unit = unit_ext->units[UnitIonCannonTarget];
+						ion_target.unit = unit_ext->units[UnitDiademTarget];
 						source = draw_order_line(source, ion_target, graphics::GREY, ignore_resource_unit);
 					}
 				} else {
