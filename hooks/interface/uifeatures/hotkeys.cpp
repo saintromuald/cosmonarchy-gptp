@@ -125,6 +125,11 @@ static bool handle_key_event(const KeyEvent& ev) {
 		}
 	}
 
+	// Trigger Buttons
+	if (buttons_handle_input(ev)) {
+		return true;
+	}
+
 	// Cameras
 	if (config.extended_camera_hotkeys) {
 		if (ev.key >= VK_F1 && ev.key < VK_F1 + CameraCap) {
@@ -146,7 +151,6 @@ static bool handle_key_event(const KeyEvent& ev) {
 
 	return false;
 }
-
 static LRESULT CALLBACK keyboard_proc(int code, WPARAM wparam, LPARAM lparam) {
 	u32 key = wparam;
 	bool was_held = lparam & (1 << 30);
@@ -159,11 +163,49 @@ static LRESULT CALLBACK keyboard_proc(int code, WPARAM wparam, LPARAM lparam) {
 	return CallNextHookEx(0, code, wparam, lparam);
 }
 
+static WNDPROC original_window_proc;
+static LRESULT CALLBACK window_proc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
+	switch (message) {
+		case WM_LBUTTONDOWN: {
+			if (handle_key_event(key_event(VK_LBUTTON, false, true))) {
+				return 0;
+			}
+		} break;
+		case WM_LBUTTONUP: {
+			if (handle_key_event(key_event(VK_LBUTTON, true, false))) {
+				return 0;
+			}
+		} break;
+		case WM_MBUTTONDOWN: {
+			if (handle_key_event(key_event(VK_MBUTTON, false, true))) {
+				return 0;
+			}
+		} break;
+		case WM_MBUTTONUP: {
+			if (handle_key_event(key_event(VK_MBUTTON, true, false))) {
+				return 0;
+			}
+		} break;
+		case WM_RBUTTONDOWN: {
+			if (handle_key_event(key_event(VK_RBUTTON, false, true))) {
+				return 0;
+			}
+		} break;
+		case WM_RBUTTONUP: {
+			if (handle_key_event(key_event(VK_RBUTTON, true, false))) {
+				return 0;
+			}
+		} break;
+	}
+	return original_window_proc(hwnd, message, wparam, lparam);
+}
+
 void init_hotkeys() {
 	static bool init_proc = false;
 	if (!init_proc) {
 		init_proc = true;
 		SetWindowsHookA(WH_KEYBOARD, keyboard_proc);
+		original_window_proc = (WNDPROC)SetWindowLongPtrA(*g_main_window, GWLP_WNDPROC, (LONG_PTR)window_proc);
 	}
 
 	hotkeys = {};

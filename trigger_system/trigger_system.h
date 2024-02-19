@@ -263,7 +263,9 @@ extern Globals globals;
 void init_trigger_system();
 void update_trigger_system(bool in_game);
 
-Box16 button_rect(u32 index);
+bool buttons_hovers();
+bool buttons_handle_input(const struct KeyEvent& key_event);
+void buttons_draw();
 
 b32 parse_comment_condition(TriggerAction* action);
 b32 __fastcall parse_comment_action(TriggerAction* action);

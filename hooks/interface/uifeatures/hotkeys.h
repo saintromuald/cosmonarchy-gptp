@@ -14,6 +14,11 @@ struct KeyState {
 	u64 last_held_time;
 };
 
+struct MouseState {
+	s32 x;
+	s32 y;
+};
+
 struct KeyEvent {
 	u64 timestamp;
 	u32 key;
@@ -29,6 +34,9 @@ struct KeyEvent {
 	// JAI's using would be perfect here, since ideally we want to inherit all the vars instead of accessor methods,
 	// but we also want to be able to say `ev.state = state`
 	KeyState state;
+
+	// TODO: Consider splitting to seperate events or union?
+	MouseState mouse_state;
 
 	inline bool pressed() const { return !was_held && state.is_held; }
 	inline bool held() const { return state.is_held; }

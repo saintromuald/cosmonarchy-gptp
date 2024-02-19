@@ -557,6 +557,9 @@ LABEL_15:
 
 	// Hooked for Veeq7's transport UI. -Pr0nogo
 	u32 get_cursor_type() { // 004D1460
+		if (buttons_hovers()) {
+			return CursorType_HoveringAlly;
+		}
 		if (transport_ui_unit) {
 			if (transport_ui_unit->player == 11) {
 				return CursorType_HoveringNeutral;

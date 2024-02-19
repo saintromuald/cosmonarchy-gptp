@@ -16,6 +16,7 @@
 #include "config.h"
 
 #include "hooks/harvest.h"
+#include "hooks/interface/uifeatures/hotkeys.h"
 #include "graphics/graphics.h"
 
 bool trigger_game_paused;
@@ -215,6 +216,7 @@ void update_trigger_system(bool in_game) {
 		update_spawn();
 		update_trigger_vars();
 		tick_objectives();
+		buttons_draw();
 
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (!unit_can_change_sprite(unit)) {
@@ -253,10 +255,64 @@ void update_trigger_system(bool in_game) {
 Box16 button_rect(u32 index) {
 	Box16 rect = {};
 	rect.x = 16;
-	rect.y = 48 + index * 24;
+	rect.y = 40 + index * 28;
 	rect.w = 96;
-	rect.h = 16;
+	rect.h = 20;
 	return rect;
+}
+
+static bool rect_is_hovered(Box16 rect) {
+	return g_mouse->x >= rect.x && g_mouse->x <= rect.x + rect.w
+		&& g_mouse->y >= rect.y && g_mouse->y <= rect.y + rect.h;
+}
+
+bool buttons_hovers() {
+	for (u32 i = 0; i < globals.trigger_buttons.size(); i++) {
+		Box16 rect = button_rect(i);
+		if (rect_is_hovered(rect)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool buttons_handle_input(const KeyEvent& key_event) {
+	for (u32 i = 0; i < globals.trigger_buttons.size(); i++) {
+		Box16 rect = button_rect(i);
+		if (!rect_is_hovered(rect)) {
+			continue;
+		}
+
+		TriggerButton& button = globals.trigger_buttons[i];
+		if (key_event.key == VK_LBUTTON && key_event.pressed()) {
+			TriggerVar* var = find_or_create_trigger_var(TriggerVarType_Var, button.id.data);
+			if (var) {
+				var->value = 1;
+			}
+			globals.trigger_buttons.remove(i--);
+			return true;
+		}
+	}
+	return false;
+}
+
+void buttons_draw() {
+	for (u32 i = 0; i < globals.trigger_buttons.size(); i++) {
+		Box16 rect = button_rect(i);
+		bool hovered = rect_is_hovered(rect);
+
+		TriggerButton& button = globals.trigger_buttons[i];
+		graphics::draw_filled_box(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? graphics::GREY : graphics::BLACK);
+		graphics::draw_box(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? graphics::WHITE : graphics::GREY);
+
+		const char* text = button.display_name.data;
+		graphics::FontSize font_size = graphics::FONT_MEDIUM;
+
+		graphics::Font* font = font_base[font_size];
+		s32 w = font->getTextWidth(text);
+		s32 h = font->getTextHeight(text);
+		graphics::draw_text(rect.x + rect.w / 2 - w / 2, rect.y + rect.h / 2 - h / 2, text, font_size); // TODO: center
+	}
 }
 
 bool parse_condition(Parser* parser) {
@@ -609,6 +665,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			trigger_button.display_name = display_name.size ? display_name : id;
 			trigger_button.priority = priority;
 			globals.trigger_buttons.insert(insert_index, trigger_button);
+
+			TriggerVar* var = find_or_create_trigger_var(TriggerVarType_Var, id.data);
+			if (var) {
+				var->value = 0;
+			}
 		} else if (parser_eq(&parser, "hide_button")) {
 			Token id = parser_get_string(&parser);
 
