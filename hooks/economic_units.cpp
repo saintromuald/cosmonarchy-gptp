@@ -52,10 +52,8 @@ namespace hooks
 		//unit is unused. this is function is supposed to be used for custom faction worker
 		switch (unit_id)
 		{
-			case UnitId::TerranMinistry:
-				//		case UnitId::KelmorianTacticalCenter:
-				//		case UnitId::UmojanGarrison:
-				//		case UnitId::KelmorianMiningStation:		
+			case UnitId::TerranMinistry:	
+			case UnitId::TerranTreasury:	
 			case UnitId::ProtossNexus:
 			case UnitId::ZergHachirosk:
 				return true;
@@ -71,6 +69,7 @@ namespace hooks
 		switch (unit_id)
 		{
 			case UnitId::TerranMinistry:
+			case UnitId::TerranTreasury:
 			case UnitId::ProtossNexus:
 			case UnitId::ZergHachirosk: // advanced mutations are not required
 				return true;
@@ -237,7 +236,7 @@ namespace hooks
 		u8 race = g_player_table[player].race;
 		if (mainTown)
 		{
-			if (checkSupplyNeed(player, RaceId::Terran))
+			if (check_supply_need(player, RaceId::Terran))
 			{
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Terran);
 				if (town)
@@ -245,7 +244,7 @@ namespace hooks
 					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
 				}
 			}
-			if (checkSupplyNeed(player, RaceId::Protoss))
+			if (check_supply_need(player, RaceId::Protoss))
 			{
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Protoss);
 				if (town)
@@ -253,7 +252,7 @@ namespace hooks
 					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
 				}
 			}
-			if (checkSupplyNeed(player, RaceId::Zerg))
+			if (check_supply_need(player, RaceId::Zerg))
 			{
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Zerg);
 				if (town)
@@ -264,7 +263,7 @@ namespace hooks
 		}
 	}
 
-	bool checkSupplyNeed(u8 player, u8 race)
+	bool check_supply_need(u8 player, u8 race)
 	{
 		u32 checkEcoUnits;
 		s32 supplyRemaining;

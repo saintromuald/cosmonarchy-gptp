@@ -2018,6 +2018,7 @@ namespace hooks {
 		char* placement_data_2 = (char*)1;
 		switch (unit_id) {
 			case UnitId::TerranMinistry:
+			case UnitId::TerranTreasury:
 			case UnitId::ZergHachirosk:
 			case UnitId::ProtossNexus:
 			{

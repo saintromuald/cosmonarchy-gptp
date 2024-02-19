@@ -13,7 +13,7 @@ namespace hooks
 	bool is_terran_supply(u16 unit_id, Unit* worker);
 	bool is_vespene_top_structure(u16 unit_id);
 	bool is_gasholder_structure(u16 unit_id);
-	bool checkSupplyNeed(u8 player_, u8 race_);
+	bool check_supply_need(u8 player_, u8 race_);
 	s32 AI_AddTownSpendingRequest(s32 player, s32 priority, s32 unit_id, void* param); // 00448400
 
 	u32 orders_isGeyserTopUnitHook(Unit* unit);

@@ -70,12 +70,7 @@ static bool update_townhall_marker(AiPlaceholder* placeholder, u32 player, u32 t
 			}
 		} break;
 		case RaceId::Protoss: {
-			if (townhall_index && hooks::create_unit_id_allowed(UnitId::ProtossCrucible, player, true)
-				&& can_place_unit(UnitId::ProtossCrucible, placeholder->position, player)) {
-				placeholder->unit_id = UnitId::ProtossCrucible;
-			} else {
-				placeholder->unit_id = UnitId::ProtossNexus;
-			}
+			placeholder->unit_id = UnitId::ProtossNexus;
 		} break;
 		case RaceId::Zerg: {
 			placeholder->unit_id = UnitId::ZergHachirosk;

@@ -26,20 +26,16 @@ namespace hooks {
 		return Player::number_of_completed_addon_units_of_id(player_id, unit_id);
 	}
 
-	s32 create_unit_id_allowed(u16 unit_id, s32 player_id, bool ignore_creator)
-	{
+	s32 create_unit_id_allowed(u16 unit_id, s32 player_id, bool ignore_creator) {
 		*g_last_internal_error = InternalErrors::UnknownError0;
-		if (unit_id == UnitId::None)
-		{
+		if (unit_id == UnitId::None) {
 			return false;
 		}
-		if (!g_unit_availability->available[player_id][unit_id])
-		{
+		if (!g_unit_availability->available[player_id][unit_id]) {
 			return false;
 		}
 
-		enum
-		{
+		enum {
 			Tier1 = 0,
 			Tier2,
 			Tier3,

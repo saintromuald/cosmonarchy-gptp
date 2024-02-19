@@ -317,14 +317,30 @@ namespace hooks {
 					town_ext->gas_buildings_count = 0;
 				}
 
-				u32 town_hall_id = UnitId::ZergHachirosk;
-				if (g_player_table[unit->player].race == RaceId::Terran) {
-					town_hall_id = UnitId::TerranMinistry;
-				} else if (g_player_table[unit->player].race == RaceId::Protoss) {
-					town_hall_id = UnitId::ProtossNexus;
+				bool is_valid_town_hall = false;
+				switch (g_player_table[unit->player].race)
+				{
+					case RaceId::Terran:
+					{
+						if (unit->id == UnitId::TerranMinistry || unit->id == UnitId::TerranTreasury) {
+							is_valid_town_hall = true;
+						}
+					} break;
+					case RaceId::Protoss:
+					{
+						if (unit->id == UnitId::ProtossNexus) {
+							is_valid_town_hall = true;
+						}
+					} break;
+					case RaceId::Zerg:
+					{
+						if (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk) {
+							is_valid_town_hall = true;
+						}
+					} break;
 				}
 
-				if (unit->id == town_hall_id || helper::unit_is_active_resource_depot(unit)) {
+				if (is_valid_town_hall || helper::unit_is_active_resource_depot(unit)) {
 					if (!town->main_building) {
 						town->main_building = unit;
 					}
