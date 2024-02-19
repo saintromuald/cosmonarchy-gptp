@@ -303,16 +303,14 @@ namespace hooks
 
 	// STUPID
 	template<typename T>
-	T* take_iscript_data(IscriptProgram* program_state, u32 count)
-	{
+	T* take_iscript_data(IscriptProgram* program_state, u32 count) {
 		BYTE* data = (BYTE*)*g_iscript_data + program_state->program_counter;
 		program_state->program_counter += sizeof(T) * count;
 		return (T*)data;
 	}
 
 	template<typename T>
-	T take_iscript_datum(IscriptProgram* program_state)
-	{
+	T take_iscript_datum(IscriptProgram* program_state) {
 		return *take_iscript_data<T>(program_state, 1);
 	}
 
@@ -320,11 +318,9 @@ namespace hooks
 	// Local only.
 	void iscript_playfram(Image* image, u32 frame) // 004D5E70
 	{
-		if (image->frameset != frame)
-		{
+		if (image->frameset != frame) {
 			image->frameset = frame;
-			if (image->frame_index != image->frameset + image->direction)
-			{
+			if (image->frame_index != image->frameset + image->direction) {
 				image->flags |= ImageFlags::Redraw;
 				image->frame_index = image->frameset + image->direction;
 			}
@@ -335,8 +331,7 @@ namespace hooks
 	// Local only.
 	void iscript_set_pos(Image* image, char x, char y) // 004D5900
 	{
-		if (image->horizontal_offset != x || image->vertical_offset != y)
-		{
+		if (image->horizontal_offset != x || image->vertical_offset != y) {
 			image->flags |= ImageFlags::Redraw;
 			image->horizontal_offset = x;
 			image->vertical_offset = y;
@@ -348,8 +343,7 @@ namespace hooks
 	Thingy* iscript_create_sprite(Image* image, u16 sprite_id, u32 x, u32 y, char elevation_level) // 004D7120
 	{
 		Thingy* result = helper::create_thingy(sprite_id, x + image->horizontal_offset + (u16)image->parent_sprite->position.x, y + image->vertical_offset + image->parent_sprite->position.y, 0);
-		if (result)
-		{
+		if (result) {
 			result->sprite->elevation = elevation_level;
 			helper::set_thingy_visibility_flags(result);
 		}
@@ -369,14 +363,11 @@ namespace hooks
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
 	void iscript_attackwith(Unit* attacker, u8 is_ground_weapon) // 00479D60
 	{
-		if (attacker->order_target.unit || attacker->id == UnitId::TerranDiadem)
-		{
+		if (attacker->order_target.unit || attacker->id == UnitId::TerranDiadem) {
 			u32 weapon_id;
-			if (is_ground_weapon != 1)
-			{
+			if (is_ground_weapon != 1) {
 				weapon_id = units_dat::air_weapon[attacker->id];
-			} else if (!unit_id_is_burrowed_attacker(attacker->id) || (attacker->status & UnitStatus::Burrowed))
-			{
+			} else if (!unit_id_is_burrowed_attacker(attacker->id) || (attacker->status & UnitStatus::Burrowed)) {
 				weapon_id = units_dat::ground_weapon[attacker->id];
 			} else {
 				weapon_id = WeaponId::None;
@@ -388,11 +379,9 @@ namespace hooks
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
 	void iscript_useweapon(Unit* unit, u8 weapon_id) // 00479C30
 	{
-		if (weapons_dat::flingy_id[weapon_id])
-		{
+		if (weapons_dat::flingy_id[weapon_id]) {
 			helper::create_bullet(weapon_id, unit, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->current_direction_1);
-			if (weapons_dat::damage_factor[weapon_id] == 2)
-			{
+			if (weapons_dat::damage_factor[weapon_id] == 2) {
 				helper::create_bullet(weapon_id, unit, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->current_direction_1);
 			}
 		}
@@ -403,8 +392,7 @@ namespace hooks
 	{
 		unit->status &= ~UnitStatus::NoBrkCodeStart;
 		unit->sprite->flags &= ~SpriteFlags::IscriptCode;
-		if (unit->order_queue_head && (unit->user_action_flags & UserActionFlags_IscriptGoToIdle))
-		{
+		if (unit->order_queue_head && (unit->user_action_flags & UserActionFlags_IscriptGoToIdle)) {
 			if (unit->id == UnitId::TerranDiadem) {
 				return;
 			}
@@ -416,13 +404,11 @@ namespace hooks
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
 	void iscript_opcode_cases(Image* image, IscriptProgram* program_state, u32 noop, u32* distance_moved) // 004D74C0 | arg2 iscript_data unused, omitted
 	{
-		if (program_state->wait)
-		{
+		if (program_state->wait) {
 			program_state->wait -= 1;
 			return;
 		}
-		while (2)
-		{
+		while (2) {
 			IscriptOpcodes::Enum opcode = take_iscript_datum<IscriptOpcodes::Enum>(program_state);
 			switch (opcode)
 			{
