@@ -45,20 +45,20 @@ namespace hooks
 	// Check the active player selection and apply stimpack effect on each valid stimpack user -GPTP
 	void cmdrecv_stimpack() // 004C2F30
 	{
-		Unit* active_player_selection;
+		Unit* unit;
 		*g_unit_iterator_pos = 0;
-		active_player_selection = get_active_player_next_selection();
-		while (active_player_selection) {
-			UnitExt* unit_ext = get_unit_ext(active_player_selection);
-			if (active_player_selection->can_use_tech(TechId::Stimpacks, *g_active_nation_id) == 1
-				&& active_player_selection->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS
+		unit = get_active_player_next_selection();
+		while (unit) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (unit->can_use_tech(TechId::Stimpacks, *g_active_nation_id) == 1
+				&& unit->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS
 				&& unit_ext->timers[TimerStimpackDelay] <= 1)
 			{
-				helper::play_sound_from_unit(SoundId::StimpackInject01, active_player_selection, 1, 0);
-				active_player_selection->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, 0, -1, true);
+				helper::play_sound_from_unit(SoundId::StimpackInject01, unit, 1, 0);
+				unit->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, 0, -1, true);
 				unit_ext->timers[TimerStimpackDelay] = 1.5 * 24 + 1;
 			}
-			active_player_selection = get_active_player_next_selection();
+			unit = get_active_player_next_selection();
 		}
 	}
 }

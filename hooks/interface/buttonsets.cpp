@@ -1751,6 +1751,16 @@ namespace hooks {
 							current_button_state = Button_State::Invisible;
 						}
 
+						/* // Enable this when buttonsets.cpp doesn't have the selection order bug. -Pr0nogo
+						if (current_button->requirement_var == TechId::Stimpacks) {
+							if (unit_ext->timers[TimerStimpackDelay] > 1) {
+								current_button_state = Button_State::Disabled;
+							} else {
+							//	current_button_state = Button_State::Enabled;
+							}
+						}
+						*/
+
 						// Passive icons (yes, it's quite ugly)
 						if (current_button->requirement_var == TechId::Healing && current_button->icon_id != IconId::Heal) {
 							current_button_state = Button_State::Disabled;
