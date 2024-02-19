@@ -49,11 +49,13 @@ namespace hooks
 		*g_unit_iterator_pos = 0;
 		active_player_selection = get_active_player_next_selection();
 		while (active_player_selection) {
-			if (active_player_selection->can_use_tech(TechId::Stimpacks, *g_active_nation_id) == 1 && active_player_selection->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS)
+			UnitExt* unit_ext = get_unit_ext(active_player_selection);
+			if (active_player_selection->can_use_tech(TechId::Stimpacks, *g_active_nation_id) == 1
+				&& active_player_selection->hitpoints > MIN_HITPOINTS_FOR_STIMPACKS
+				&& unit_ext->timers[TimerStimpackDelay] <= 1)
 			{
 				helper::play_sound_from_unit(SoundId::StimpackInject01, active_player_selection, 1, 0);
 				active_player_selection->damage_hp(MIN_HITPOINTS_FOR_STIMPACKS, 0, -1, true);
-				UnitExt* unit_ext = get_unit_ext(active_player_selection);
 				unit_ext->timers[TimerStimpackDelay] = 1.5 * 24 + 1;
 			}
 			active_player_selection = get_active_player_next_selection();
