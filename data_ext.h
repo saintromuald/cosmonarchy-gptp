@@ -135,7 +135,7 @@ enum ExtValueId {
 	ValueAssignedHarvesters,
 	ValueAssignedAiGasHarvesters,
 	ValueActiveHarvesters,
-	ValueIsActiveHarvester,
+	ValueHarvesterActivity,
 	ValueNoCorpse,
 	ValueDidactChannelIndex,
 	ValueDidactRecalling,

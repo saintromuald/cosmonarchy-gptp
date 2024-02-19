@@ -60,8 +60,13 @@ enum GameKind {
 	GameKind_Count,
 };
 
-namespace scbw
-{
+namespace scbw {
+	inline bool harvester_is_active(Unit* unit) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		u32 activity = unit_ext->values[ValueHarvesterActivity];
+		return activity > 0 && activity <= HarvestTimer;
+	}
+
 	bool is_any_morph_result(u16 id);
 	bool is_conventional_unit_morph_result(u16 id);
 	bool is_conventional_unit_morph_source(u16 id, bool allow_larvae = false);
@@ -164,21 +169,24 @@ namespace scbw
 	/// Warning: This function is inaccurate for long distances.
 	u32 get_distance_fast(s32 x1, s32 y1, s32 x2, s32 y2);
 
-	inline u32 get_distance_fast(Point16 p1, Point16 p2)
-	{
+	inline u32 get_distance_fast(Point16 p1, Point16 p2) {
 		return get_distance_fast(p1.x, p1.y, p2.x, p2.y);
 	}
 
 	/// Distance, but in a square instead of circle (max of x dist and y dist)
-	inline u32 get_distance_square(s32 x1, s32 y1, s32 x2, s32 y2);
+	u32 get_distance_square(s32 x1, s32 y1, s32 x2, s32 y2);
+
+	inline u32 get_distance_square(Point16 p1, Point16 p2) {
+		return get_distance_square(p1.x, p1.y, p2.x, p2.y);
+	}
 
 	/// Calculates the X Cartesian coordinate from the given polar coordinates
 	/// (distance, angle), using StarCraft's internal data.
-	inline s32 get_polar_x(s32 distance, u8 angle);
+	s32 get_polar_x(s32 distance, u8 angle);
 
 	/// Calculates the Y Cartesian coordinate from the given polar coordinates
 	/// (distance, angle), using StarCraft's internal data.
-	inline s32 get_polar_y(s32 distance, u8 angle);
+	s32 get_polar_y(s32 distance, u8 angle);
 
 	inline Point16 clamp_point(Point16 point) {
 		if (point.x < 0) {

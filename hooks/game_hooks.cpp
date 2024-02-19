@@ -940,10 +940,6 @@ namespace hooks {
 				unit_ext->values[ValueActiveHarvesters] = 0;
 				unit_ext->values[ValueAssignedAiGasHarvesters] = 0;
 			}
-			if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
-				UnitExt* unit_ext = get_unit_ext(unit);
-				unit_ext->values[ValueIsActiveHarvester] = false;
-			}
 		}
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
@@ -951,20 +947,28 @@ namespace hooks {
 			}
 			UnitExt* unit_ext = get_unit_ext(unit);
 			if (!order_id_is_harvest_related(unit->main_order_id)) {
+				unit_ext->values[ValueHarvesterActivity] = 0;
 				continue;
 			}
 			Unit* target = unit->worker.target_resource.unit;
-			if (target) {
-				UnitExt* target_ext = get_unit_ext(target);
-				target_ext->values[ValueAssignedHarvesters] += 1;
-				if (unit->unit_ai && unit->unit_ai->type == AiType::Worker &&
+			if (!target) {
+				unit_ext->values[ValueHarvesterActivity] = 0;
+				continue;
+			}
+			
+			UnitExt* target_ext = get_unit_ext(target);
+			target_ext->values[ValueAssignedHarvesters] += 1;
+			if (unit->unit_ai && unit->unit_ai->type == AiType::Worker &&
 					unit->unit_ai->worker_ai.target_resource == AiTargetResource_Gas) {
-					target_ext->values[ValueAssignedAiGasHarvesters] += 1;
-				}
-				if (helper::is_target_within_min_range(unit, 10, target) || helper::is_unit_movable(unit)) {
-					unit_ext->values[ValueIsActiveHarvester] = true;
-					target_ext->values[ValueActiveHarvesters] += 1;
-				}
+				target_ext->values[ValueAssignedAiGasHarvesters] += 1;
+			}
+			if (!helper::is_target_within_min_range(unit, 10, target) && !helper::is_unit_movable(unit)) {
+				unit_ext->values[ValueHarvesterActivity] = 0;
+				continue;
+			}
+			unit_ext->values[ValueHarvesterActivity] += 1;
+			if (scbw::harvester_is_active(unit)) {
+				target_ext->values[ValueActiveHarvesters] += 1;
 			}
 		}
 

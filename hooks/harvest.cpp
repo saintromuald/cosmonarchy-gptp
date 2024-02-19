@@ -567,18 +567,22 @@ namespace hooks {
 		u32 original_group_id = scbw::get_region(current_node->position)->group_index;
 		u32 original_height = scbw::get_active_tile_at_coords(current_node->position)->ground_height;
 
-		Unit* best_node = current_node;
+		Unit* townhall = find_best_return_cargo_target(worker);
+		Unit* best_node = 0;
 		s32 best_worker_count = get_unit_ext(current_node)->values[ValueActiveHarvesters];
-		if (get_unit_ext(worker)->values[ValueIsActiveHarvester]) {
+		if (scbw::harvester_is_active(worker)) {
 			best_worker_count -= 1; // we don't want to count the current worker
 		}
 		u32 best_distance = 0; // we don't want to change the current node on distance alone
 
 		EntryArray nodes = {};
-		unit_search_radial(&nodes, current_node->position, 5 * 32);
+		unit_search_radial(&nodes, current_node->position, 8 * 32);
 		for (u32 i = 0; i < nodes.count; ++i) {
 			Unit* node = nodes.units[i];
-			if (!unit_id_is_minerals(node->id)) {
+			if (node == current_node || !unit_id_is_minerals(node->id)) {
+				continue;
+			}
+			if (townhall && scbw::get_distance_square(node->position, townhall->position) > 10 * 32) {
 				continue;
 			}
 			if (is_pathing) {
@@ -611,20 +615,20 @@ namespace hooks {
 		}
 		UnitExt* current_node_ext = get_unit_ext(current_node);
 		if (current_node_ext->values[ValueActiveHarvesters] && !worker->worker.is_harvesting) {
-			Unit* new_node = find_better_node(worker, current_node);
-			if (new_node && new_node != current_node) {
+			Unit* better_node = find_better_node(worker, current_node);
+			if (better_node) {
 				current_node_ext->values[ValueAssignedHarvesters] -= 1;
 				UnitExt* worker_ext = get_unit_ext(worker);
-				if (worker_ext->values[ValueIsActiveHarvester]) {
-					worker_ext->values[ValueIsActiveHarvester] = false;
+				if (scbw::harvester_is_active(worker)) {
 					current_node_ext->values[ValueActiveHarvesters] -= 1; // we don't want to count the current worker
 				}
-				get_unit_ext(new_node)->values[ValueAssignedHarvesters] += 1;
+				worker_ext->values[ValueHarvesterActivity] = 0;
+				get_unit_ext(better_node)->values[ValueAssignedHarvesters] += 1;
 
-				Target new_target = make_target(new_node);
+				Target new_target = make_target(better_node);
 				worker->order_target = new_target;
 				worker->worker.target_resource = new_target;
-				helper::move_to_target(new_node, worker);
+				helper::move_to_target(better_node, worker);
 				// NOTE: Fixes an edge case where the unit would not move to a new node correctly if it's already in range,
 				//       since move_to_target wouldn't update the move_target in such case
 				worker->move_target = new_target;
