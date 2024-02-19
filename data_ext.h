@@ -302,7 +302,7 @@ enum ExtTimerId {
 	TimerZarcavrokorSecondaryFire,
 	TimerClearStaggerBlacklist,
 	TimerUseLastRepulsion,
-	TimerCustomLarva,
+	TimerSpawnLarva,
 	TimerNathreliskMitosalFog,
 	TimerStimpackDelay,
 	TimerRecallEffect,

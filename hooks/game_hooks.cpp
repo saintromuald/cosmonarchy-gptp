@@ -2682,7 +2682,7 @@ namespace hooks {
 		// Custom Larva Spawn
 		if (unit_spawns_custom_larva(unit)) {
 			if (unit->secondary_order_id != OrderId::SpawningLarva) { // let's not duplicate the order
-				hooks::secondary_order_spawning_larva(unit, true);
+				hooks::secondary_order_spawning_larva(unit);
 			}
 		}
 

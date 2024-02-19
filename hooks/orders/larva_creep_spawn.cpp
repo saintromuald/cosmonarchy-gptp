@@ -50,7 +50,7 @@ namespace hooks
 		return false;
 	}
 
-	void secondary_order_spawning_larva(Unit* unit, bool use_custom_timer) {
+	void secondary_order_spawning_larva(Unit* unit) {
 		if (!unit_id_spawns_larva_by_order(unit->id) && !unit_spawns_custom_larva(unit)) {
 			return;
 		}
@@ -58,11 +58,9 @@ namespace hooks
 			return;
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
-		u32 timer = use_custom_timer ? unit_ext->timers[TimerCustomLarva] : unit->order_queue_timer;
-		if (timer == 0 && unit->player != 11) {
-			if (use_custom_timer) {
-				unit_ext->timers[TimerCustomLarva] = 8;
-			}
+		if (unit_ext->timers[TimerSpawnLarva] == 0 && unit->player != 11) {
+			unit_ext->timers[TimerSpawnLarva] = 8;
+
 			*g_larva_counter = 0;
 			Box16 coords = {};
 			coords.left = unit->sprite->position.x - 256;
@@ -102,7 +100,7 @@ namespace hooks
 	void secondary_order_spread_creep_spawning_larva(Unit* unit) { // 004EA880
 		// No longer checks unit ids here because we check in the function itself,
 		// in order to prevent Cagrants regressed from Larvosks from spawning Larva. -Pr0nogo
-		secondary_order_spawning_larva(unit, false);
+		secondary_order_spawning_larva(unit);
 		if (unit->building.creep_timer != 0) {
 			if (unit->building.creep_timer >= 2) {
 				unit->building.creep_timer -= 2;

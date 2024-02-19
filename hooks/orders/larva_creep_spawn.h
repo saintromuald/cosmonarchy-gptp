@@ -5,7 +5,7 @@ namespace hooks
 {
 	void create_building_larva(Unit* main_building);														// 0049D660
 	bool iterate_units_at_location_target_proc_larva_count(Unit* unit, Unit* main_building);				// 004E8C80
-	void secondary_order_spawning_larva(Unit* unit, bool use_custom_timer);									// 004EA780
+	void secondary_order_spawning_larva(Unit* unit);														// 004EA780
 	void secondary_order_spread_creep_spawning_larva(Unit* unit);											// 004EA880
 
 	bool get_creep_region(Box32* rect, u16 unit_id, s32 x, s32 y, bool isComplete);							// 00413DB0
