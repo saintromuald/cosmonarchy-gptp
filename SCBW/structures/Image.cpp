@@ -403,7 +403,7 @@ namespace hooks
 	{
 		unit->status &= ~UnitStatus::NoBrkCodeStart;
 		unit->sprite->flags &= ~SpriteFlags::IscriptCode;
-		if (unit->order_queue_head && (unit->user_action_flags & 1))
+		if (unit->order_queue_head && (unit->user_action_flags & UserActionFlags_IscriptGoToIdle))
 		{
 			if (unit->id == UnitId::TerranDiadem) {
 				return;
