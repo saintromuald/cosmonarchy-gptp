@@ -105,11 +105,11 @@ namespace hooks
 	const u32 func_getTargetSomething = 0x0043FF90;
 	const u32 progressOrderSwitch_e71b = 0x004EC71B;
 	const u32 spellOrderCases = 0x004ECADB;
-	void __declspec(naked) unused_order_patch_wrapper()
-	{
-
+	void __declspec(naked) unused_order_patch_wrapper() {
+		static Unit* unit;
 		static u8 order_id;
 		__asm {
+			MOV unit, ESI
 			MOV [ESI + 0x85], OrderQueueTimer
 			CALL func_getTargetSomething
 			MOV AL, [ESI + 0x4D]
@@ -117,15 +117,15 @@ namespace hooks
 			MOVZX EAX, AL
 			PUSHAD
 		}
-		if (hooks::is_unused_order(order_id))
-		{
+		if (unit->id == UnitId::TerranDiadem) {
+			unit->order_queue_timer = 4; // Required for Diadems to shoot
+		}
+		if (hooks::is_unused_order(order_id)) {
 			__asm {
 				POPAD
 				JMP spellOrderCases
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP progressOrderSwitch_e71b
