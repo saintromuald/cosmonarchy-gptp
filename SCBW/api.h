@@ -64,7 +64,7 @@ namespace scbw {
 	inline bool harvester_is_active(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		u32 activity = unit_ext->values[ValueHarvesterActivity];
-		return activity > 0 && activity <= HarvestTimer;
+		return activity > 0 && activity <= HarvestTimer - 4;
 	}
 
 	bool is_any_morph_result(u16 id);
