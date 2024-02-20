@@ -49,7 +49,8 @@ enum InterceptType {
 };
 
 enum GameKind {
-	GameKind_Unsupported,
+	GameKind_Invalid,
+
 	GameKind_Competitive,
 	GameKind_Scenario,
 	GameKind_Omnipresence,
@@ -57,6 +58,7 @@ enum GameKind {
 	GameKind_Massacre,
 	GameKind_TheTurning,
 	GameKind_Debug,
+
 	GameKind_Count,
 };
 

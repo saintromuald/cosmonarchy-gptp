@@ -3233,7 +3233,7 @@ namespace scbw {
 			case GameType::Debug:
 				return GameKind_Competitive;
 		}
-		return GameKind_Unsupported;
+		return GameKind_Invalid;
 	}
 
 	u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
