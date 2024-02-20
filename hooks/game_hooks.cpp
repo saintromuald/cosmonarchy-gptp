@@ -966,7 +966,12 @@ namespace hooks {
 				unit_ext->values[ValueHarvesterActivity] = 0;
 				continue;
 			}
-			unit_ext->values[ValueHarvesterActivity] += 1;
+
+			if (unit->worker.is_harvesting) {
+				unit_ext->values[ValueHarvesterActivity] += 1;
+			} else {
+				unit_ext->values[ValueHarvesterActivity] = 1;
+			}
 			if (scbw::harvester_is_active(unit)) {
 				target_ext->values[ValueActiveHarvesters] += 1;
 			}
