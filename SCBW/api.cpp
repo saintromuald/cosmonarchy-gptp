@@ -2849,17 +2849,17 @@ namespace scbw {
 		switch (unit->id) {
 			case UnitId::TerranVestry:
 			{
-				image_id = ImageId::MedbayConnector;
+				image_id = ImageId::VestryConnector;
 			} break;
 			case UnitId::TerranCovenant:
 			{
-				image_id = ImageId::CovertOpsConnector;
+				image_id = ImageId::CovenantConnector;
 			} break;
 			case UnitId::TerranScrapyard:
 			case UnitId::TerranPalladium:
 			case UnitId::TerranRotary:
 			{
-				image_id = ImageId::MachineShopConnector;
+				image_id = ImageId::PalladiumConnector;
 			} break;
 			case UnitId::TerranCommandment:
 			{
