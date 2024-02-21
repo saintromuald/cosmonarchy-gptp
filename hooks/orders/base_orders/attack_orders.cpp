@@ -623,24 +623,25 @@ namespace hooks
 	// Hooked to remove randomness. -Pr0nogo
 	void get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 position) // 00465D30
 	{
-		// TODO: replace randomness with a clockwise rotation?
-		u32 rand_aids = strafe_type * helper::rand_between(-127, 128, 11);
-		u32 rand_aids_2 = strafe_type * helper::rand_between(0, 128, 11); // Dunno what's up with the first arg, it was an uninitialized variable in IDA, whose register didn't get written to in the previous function.
-		u32 rand_pos_x = rand_aids + position.x;
+		// TODO: replace randomness with some kind of consistent rotation.
+		u32 rand_off_x = strafe_type * helper::rand_between(-127, 128, 11);
+		u32 rand_off_y = strafe_type * helper::rand_between(-127, 128, 11);
+
+		u32 rand_pos_x = rand_off_x + position.x;
 		if (rand_pos_x < units_dat::unit_bounds[UnitId::ProtossSteward].x
 		||  rand_pos_x >= *g_map_width_pixels - units_dat::unit_bounds[UnitId::ProtossSteward].w)
 		{
-			rand_aids = -rand_aids;
+			rand_off_x = -rand_off_x;
 		}
-		u32 rand_pos_y = rand_aids_2 + position.y;
+		u32 rand_pos_y = rand_off_y + position.y;
 		if (rand_pos_y < units_dat::unit_bounds[UnitId::ProtossSteward].y
 		||  rand_pos_y >= *g_map_height_pixels - units_dat::unit_bounds[UnitId::ProtossSteward].h)
 		{
-			rand_aids_2 = -rand_aids_2;
+			rand_off_y = -rand_off_y;
 		}
+		position.x += rand_off_x;
+		position.y += rand_off_y;
 
-		position.x += rand_aids;
-		position.y += rand_aids_2;
 		helper::fix_target_location(&position, UnitId::ProtossSteward);
 		u32 pos_x = position.x;
 		u32 pos_y = position.y;
