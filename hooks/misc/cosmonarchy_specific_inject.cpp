@@ -102,11 +102,17 @@ namespace hooks
 
 	}
 
-	static bool is_turreted_unit(u16 unit_id) {
+	static bool should_use_dumb_order_timer(u16 unit_id) {
+		if (unit_id == UnitId::TerranDiadem) {
+			return true;
+		}
 		u16 subunit_id = units_dat::subunit[unit_id];
-		return subunit_id != UnitId::None
+		if (subunit_id != UnitId::None
 			&& !(units_dat::base_property[unit_id] & UnitProperty::Subunit)
-			&& units_dat::base_property[subunit_id] & UnitProperty::Subunit;
+			&& units_dat::base_property[subunit_id] & UnitProperty::Subunit) {
+			return true;
+		}
+		return false;
 	}
 
 	const u32 func_getTargetSomething = 0x0043FF90;
@@ -124,8 +130,8 @@ namespace hooks
 			MOVZX EAX, AL
 			PUSHAD
 		}
-		if (is_turreted_unit(unit->id)) {
-			// Required for turreted units to shoot properly
+		if (should_use_dumb_order_timer(unit->id)) {
+			// Required for Diadem and turreted units to shoot properly
 			// TODO: Find a fix that does not require dumbing down those units' order timer
 			//																			-Veeq7
 			unit->order_queue_timer = 4;

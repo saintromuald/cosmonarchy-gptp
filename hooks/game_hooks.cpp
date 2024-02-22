@@ -63,6 +63,7 @@ namespace hooks {
 	typedef enum EDiscordResult discord_create_t(DiscordVersion version, struct DiscordCreateParams* params, struct IDiscordCore** result);
 	discord_create_t* discord_create;
 
+	static bool game_started;
 	static u32 discord_init_timeout;
 	static bool discord_in_game;
 	static IDiscordCore* discord;
@@ -722,11 +723,12 @@ namespace hooks {
 
 		update_discord(true);
 
-		if (*g_elapsed_time_frames == 0) {
+		if (!game_started) {
+			game_started = true;
 			init_hotkeys();
-		} else {
-			update_hotkeys();
 		}
+		update_hotkeys();
+
 		if (scbw::is_game_paused()) {
 			return true;
 		}
@@ -3303,7 +3305,7 @@ namespace hooks {
 		}
 	}
 
-	bool game_on() {
+	bool game_init() {
 		set_max_sight_range();
 
 		// Update harvest time for mineral fields
@@ -3336,6 +3338,8 @@ namespace hooks {
 		init_ext_variables();
 
 		GPTP::logger << "Started a match!\n";
+		game_started = false;
+
 		return true;
 	}
 

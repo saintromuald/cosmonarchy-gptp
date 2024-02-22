@@ -18,7 +18,7 @@ bool isGameOn = false;
 		__asm PUSHAD;
 		{
 			isGameOn = true;
-			hooks::game_on();
+			hooks::game_init();
 			GPTP::logger.start_game();
 		}
 		__asm {
