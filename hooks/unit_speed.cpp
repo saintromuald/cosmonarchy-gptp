@@ -189,6 +189,7 @@ namespace hooks
 			case UnitId::ProtossScribe:
 			case UnitId::ZergDroleth:
 			case UnitId::TerranMaverick:
+			case UnitId::TerranHotshot:
 			case UnitId::TerranHarakan:
 			case UnitId::TerranCleric:
 			case UnitId::TerranEidolon:
