@@ -1134,7 +1134,7 @@ namespace hooks
 				goto move_or_repeat;
 			}
 			if (helper::is_target_visible(target, unit)) {
-				if (!subunit || !(units_dat::base_property[subunit->id] & UnitStatus::Burrowed)) {
+				if (!subunit || !(units_dat::base_property[subunit->id] & UnitProperty::Subunit)) {
 					subunit = unit;
 				}
 				if (target->status & UnitStatus::InAir) {
@@ -1174,7 +1174,7 @@ namespace hooks
 					unit->next_target_waypoint.y = tgt_y;
 				}
 				if (!(unit->subunit->movement_flags & MovementFlags_Accelerating)) {
-					get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+					helper::get_weapon_begin_iscript(unit, IscriptAnimation::GndAttkRpt);
 				}
 			}
 		}
