@@ -82,8 +82,7 @@ namespace hooks {
 				case UnitId::TerranMantle:
 				case UnitId::TerranStarport:
 				{
-					if (TierUnlocked[RaceId::Terran][Tier2])
-					{
+					if (TierUnlocked[RaceId::Terran][Tier2]) {
 						return true;
 					}
 				} break;
@@ -93,8 +92,7 @@ namespace hooks {
 				case UnitId::TerranIronFoundry:
 				case UnitId::TerranNaniteAssembly:
 				{
-					if (TierUnlocked[RaceId::Terran][Tier3])
-					{
+					if (TierUnlocked[RaceId::Terran][Tier3]) {
 						return true;
 					}
 				} break;
