@@ -177,27 +177,23 @@ namespace hooks
 	b32 unload_unit_proc(Unit* unit) // 004E7F70
 	{
 		b32 return_value = 0;
-		if (unit->connected_unit)
-		{
+		if (unit->connected_unit) {
 			bool cargo_is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
 			Unit* transport = unit->connected_unit;
 			if ((transport->main_order_timer == 0
-			|| (units_dat::base_property[transport->id] & UnitProperty::Building && !(transport->status & UnitStatus::InAir))) // For Bunkers
+				|| (units_dat::base_property[transport->id] & UnitProperty::Building && !(transport->status & UnitStatus::InAir))) // For Bunkers
 			&& !transport->is_frozen())
 			{
 				Point16 pos = {0, 0};
-				if (helper::can_unload(transport, unit, &pos))
-				{
+				if (helper::can_unload(transport, unit, &pos)) {
 					if (cargo_is_building && !units_dat::group_flags[unit->id].is_zerg != RaceId::Zerg) {
 						ActiveTile* tile = scbw::get_active_tile_at_coords(pos);
 						TileExt* tile_ext = get_tile_ext_at_tile(pos.x, pos.y);
-						if (tile->has_cagra)// && !can_place_on_creep_tile(tile_ext, unit->player)) {
-						{
+						if (tile->has_cagra /*&& !can_place_on_creep_tile(tile_ext, unit->player)*/) {
 							return 0;
 						}
 					}
-					if (transport->id == UnitId::TerranTrojan)
-					{
+					if (transport->id == UnitId::TerranTrojan) {
 						transport->main_order_timer = 7;
 					} else {
 						transport->main_order_timer = 15;
@@ -208,16 +204,14 @@ namespace hooks
 
 					special_unload_unit(unit, transport, &pos);
 					scbw::set_unit_position(unit, pos.x, pos.y);
-					if (unit->subunit)
-					{
+					if (unit->subunit) {
 						scbw::set_unit_position(unit->subunit, pos.x, pos.y);
 					}
 
 					helper::ignore_iscript_go_to_idle(unit);
 					helper::unload_unit_ext(unit, 0);
 					if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
-						if (!unit->unit_ai)
-						{
+						if (!unit->unit_ai) {
 							unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 						} else {
 							unit->order_computer(OrderId::ComputerAI);
@@ -225,10 +219,8 @@ namespace hooks
 					}
 
 					UnitExt* transport_ext = get_unit_ext(transport);
-					if (transport_ext->values[ValueIsNeutralBunker])
-					{
-						if (!transport->get_first_loaded_unit())
-						{
+					if (transport_ext->values[ValueIsNeutralBunker]) {
+						if (!transport->get_first_loaded_unit()) {
 							transport->give_to(11);
 							transport->sprite->player = 11;
 						} else {
@@ -236,13 +228,11 @@ namespace hooks
 							for (u32 i = 0; i < 4; ++i)
 							{
 								Unit* cargo_unit = transport->get_loaded_unit(i);
-								if (cargo_unit && cargo_unit->player != unit->player)
-								{
+								if (cargo_unit && cargo_unit->player != unit->player) {
 									is_owner_valid = false;
 								}
 							}
-							if (!is_owner_valid)
-							{
+							if (!is_owner_valid) {
 								transport->give_to(transport->get_first_loaded_unit()->player);
 							}
 						}
@@ -250,19 +240,15 @@ namespace hooks
 
 					scbw::refresh_console();
 					return_value = 1;
-					if (units_dat::base_property[transport->id] & UnitProperty::Building)
-					{
-						if (unit->id != UnitId::ProtossAccantorOld)
-						{
-							u8 weapon_id = unit->get_ground_weapon();
-							if (weapon_id != WeaponId::None)
-							{
-								unit->ground_weapon_cooldown = 2; // helper::get_weapon_cooldown(unit, weapon_id);
+					if (units_dat::base_property[transport->id] & UnitProperty::Building) {
+						if (unit->id != UnitId::ProtossAccantorOld) {
+							u32 weapon_id = unit->get_ground_weapon();
+							if (weapon_id != WeaponId::None) {
+								unit->ground_weapon_cooldown = 2;
 							}
 							weapon_id = unit->get_air_weapon();
-							if (weapon_id != WeaponId::None)
-							{
-								unit->air_weapon_cooldown = 2; // helper::get_weapon_cooldown(unit, weapon_id);
+							if (weapon_id != WeaponId::None) {
+								unit->air_weapon_cooldown = 2;
 							}
 							unit->spell_cooldown = 30;
 						} else {
@@ -279,26 +265,21 @@ namespace hooks
 	char update_unit_transport_data(Unit* cargo, Unit* unused) // 00401EA0
 	{
 		u32 pathing = cargo->status;
-		if (cargo->status & UnitStatus::InTransport)
-		{
+		if (cargo->status & UnitStatus::InTransport) {
 			Unit* cargo_transport = cargo->connected_unit;
-			if (cargo_transport)
-			{
+			if (cargo_transport) {
 				UnitExt* cargo_transport_ext = get_unit_ext(cargo_transport);
 				u32 cargo_index = cargo - g_unit_table + 1;
 				u32 loaded_index = 0;
-				if (cargo_index <= UnitLimit)
-				{
+				if (cargo_index <= UnitLimit) {
 					loaded_index = cargo_index | (cargo->unique_id << 12);
 				}
 				u32 i = 0;
-				if (units_dat::space_provided[cargo_transport->id])
-				{
+				if (units_dat::space_provided[cargo_transport->id]) {
 					for (i = 0; i < units_dat::space_provided[cargo_transport->id]; ++i)
 					{
 						u16 index = cargo_transport_ext->loaded_unit[i].index;
-						if (index == loaded_index)
-						{
+						if (index == loaded_index) {
 							break;
 						}
 					}
@@ -309,20 +290,16 @@ namespace hooks
 				cargo->connected_unit = 0;
 				cargo->status = cargo_status_bool;
 				helper::toggle_unit_pathing_properties(cargo);
-				if (cargo->subunit)
-				{
-					if (units_dat::base_property[cargo->subunit->id] & UnitProperty::Subunit)
-					{
+				if (cargo->subunit) {
+					if (units_dat::base_property[cargo->subunit->id] & UnitProperty::Subunit) {
 						pathing = helper::toggle_unit_pathing_properties(cargo->subunit);
 					}
 				}
 			} else {
 				cargo->status = pathing & ~UnitStatus::InTransport;
 				helper::toggle_unit_pathing_properties(cargo);
-				if (cargo->subunit)
-				{
-					if (units_dat::base_property[cargo->subunit->id] & UnitProperty::Subunit)
-					{
+				if (cargo->subunit) {
+					if (units_dat::base_property[cargo->subunit->id] & UnitProperty::Subunit) {
 						pathing = helper::toggle_unit_pathing_properties(cargo->subunit);
 					}
 				}
