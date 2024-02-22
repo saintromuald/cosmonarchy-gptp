@@ -2689,13 +2689,13 @@ namespace helper {
 		}
 	}
 
-	u32 rand_between(u32 min, u32 max, u32 someIndex) {
+	u32 rand_between(u32 min, u32 max, u32 seed_type) {
 		const u32 func_address = 0x004DC550;
 		static u32 return_value;
 		__asm {
 			PUSHAD
 			PUSH max
-			MOV EAX, someIndex
+			MOV EAX, seed_type
 			MOV EDX, min
 			CALL func_address
 			MOV return_value, EAX

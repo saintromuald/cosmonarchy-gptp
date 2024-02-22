@@ -24,18 +24,16 @@ namespace hooks
 					helper::verify_resources(repair_cost_minerals, repair_cost_vespene, unit->player);
 					unit->worker.repair_resource_loss_timer = 0; // Now used as a toggle for the AlmostBuilt animation to avoid some visual bug, but can probably just use a local bool if necessary.
 					unit->main_order_state++;
-				} break;
+				} // Fallthrough intended
 				case 1:
 				{
 					if (!(target->status & UnitStatus::Completed)) {
 						unit->order_to(OrderId::ConstructingBuilding, target);
-
 						if (*g_is_placing_building && !helper::can_still_place_building()) {
 							helper::refresh_layers_3_and_4();
 							helper::end_building_placement();
 						}
-					}
-					else {
+					} else {
 						if (helper::order_to_move_to_target(unit, target)) {
 							helper::unit_order_move_to_target_unit(unit, target);
 							unit->main_order_state = 6;
@@ -94,8 +92,7 @@ namespace hooks
 			if (target->hitpoints < units_dat::max_hitpoints[target->id]) {
 				if (target->new_repair_timer) {
 					target->new_repair_timer--;
-				}
-				else {
+				} else {
 					if (!helper::subtract_repair_resources(unit, target)) {
 						unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 						unit->order_to_idle();
@@ -103,9 +100,6 @@ namespace hooks
 					}
 				}
 				u32 hp_gain = target->build_repair_hp_gain;
-				if (*g_cheat_state & CheatFlags::OperationCwal) {
-					hp_gain *= 16;
-				}
 				if (unit->id == UnitId::TerranTalos) { // Talos - Increased repair speed
 					hp_gain *= 1.5;
 				}
@@ -120,7 +114,7 @@ namespace hooks
 		// LABEL_43:
 		unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 
-		if (unit->order_queue_head) {
+		if (unit->order_queue_head || !target) {
 			helper::force_order_done(unit);
 			/*unit->userActionFlags |= 1;
 			prepareForNextOrder(unit);*/

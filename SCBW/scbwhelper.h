@@ -322,7 +322,7 @@ namespace helper {
 	void set_secondary_waypoint(Unit* unit, s32 x, s32 y);									                // 00494BB0
 	void display_last_network_error_for_player(u32 player);									                // 0049E530
 	u32 randomize_short(u32 unknown_index);																	// 004DC4A0
-	u32 rand_between(u32 min, u32 max, u32 someIndex);														// 004DC550
+	u32 rand_between(u32 min, u32 max, u32 seed_type);														// 004DC550
 	void init_building(Unit* unit, b32 flag);																// 004E65E0
 	bool set_move_target_xy(Unit* unit, s32 x, s32 y);									                    // 004EB820
 	bool order_to_move_to_target(Unit* unit, Unit* target);													// 004EB980
