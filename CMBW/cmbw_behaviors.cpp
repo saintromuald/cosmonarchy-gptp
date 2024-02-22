@@ -79,12 +79,13 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit_ext->values[ValueReviveStarted] = 1;
 		unit_ext->timers[TimerReviveFlagClearMin] = 14; // 3;
 		unit_ext->timers[TimerReviveFlagClearMax] = 14;
+		unit_ext->values[ValueOriginatedFromOcsalLarva] = corpse_ext->create_origin == UnitId::ZergOcsalLarva;
 		switch (unit->id) {
 			case UnitId::ZergRililisk:
 			case UnitId::ZergRilirokor:
 			{
 				unit->remove_timer = BroodspawnTimer;
-			}
+			} break;
 		}
 		consume_corpse(corpse);
 

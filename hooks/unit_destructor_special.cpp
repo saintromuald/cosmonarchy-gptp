@@ -412,6 +412,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 				thingy_ext->unit_id = unit->id;
 				thingy_ext->sight_range_before_death = unit->get_sight_range() * 32;
 				thingy_ext->avenge_or_ascend_player = unit_avenges_or_ascends(unit);
+				thingy_ext->create_origin = unit->create_origin;
 
 				UnitExt* unit_ext = get_unit_ext(unit);
 				if (unit_ext->timers[TimerAutocratControlledOpposition]) {
