@@ -3398,7 +3398,7 @@ namespace scbw {
 				case AdvisorEvent_MissileComplete: {
 					// TODO: fill in
 				} break;
-				case AdvisorEvent_UnitsUnderAttack: {
+				case AdvisorEvent_ArmyUnderAttack: {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::ForcesUnderAttack_Terran;
 						case AdvisorType_Protoss:	return SoundId::ForcesUnderAttack_Protoss;

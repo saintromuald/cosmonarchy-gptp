@@ -88,13 +88,15 @@ namespace hooks
 					globals.alert.own_cooldown = 100;
 
 					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-					u32 sound_id;
-					AdvisorEvent type = is_building ? AdvisorEvent_BaseUnderAttack : AdvisorEvent_UnitsUnderAttack;
+					u32 sound_id = SoundId::No_sound;
+					AdvisorEvent type = is_building ? AdvisorEvent_BaseUnderAttack : AdvisorEvent_ArmyUnderAttack;
 					if (!is_building) {
 						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
 						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
 						if (sound_first && sound_last) {
 							sound_id = helper::get_random_sfx_between(sound_first, sound_last);
+						} else {
+							sound_id = scbw::get_advisor_sound_from_event_type(local_player, type);
 						}
 					} else {
 						sound_id = scbw::get_advisor_sound_from_event_type(local_player, type);

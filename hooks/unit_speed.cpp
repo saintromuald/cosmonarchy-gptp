@@ -182,6 +182,7 @@ namespace hooks
 			case UnitId::TerranSiren:
 			case UnitId::TerranPhalanxTankMode:
 			case UnitId::TerranDurendal:
+			case UnitId::ZergEvigrilisk:
 			{
 				speed *= 0.9;
 			} break;

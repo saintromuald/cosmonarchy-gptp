@@ -1464,7 +1464,7 @@ enum AdvisorEvent {
 	AdvisorEvent_TechUpComplete			= 13,
 	AdvisorEvent_MissileComplete		= 14,
 
-	AdvisorEvent_UnitsUnderAttack		= 15,
+	AdvisorEvent_ArmyUnderAttack		= 15,
 	AdvisorEvent_BaseUnderAttack		= 16,
 	AdvisorEvent_MissileLaunch			= 17,
 	AdvisorEvent_AllyUnderAttack_T		= 18,
