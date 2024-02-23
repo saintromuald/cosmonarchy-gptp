@@ -1723,4 +1723,6 @@ namespace helper {
 	void issue_queued_order_target(Unit* target, Unit* attacker, u8 order_id, u32 stop_previous);	// 00474D10
 
 	void play_addon_detach_sound(Unit* unit);									// 0048F8A0
+	Unit* find_best_return_cargo_target(Unit* worker);							// 00441310
+	void return_resources_from_unit(Unit* unit);								// 004F39A0
 }

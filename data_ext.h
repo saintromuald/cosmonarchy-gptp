@@ -306,6 +306,7 @@ enum ExtTimerId {
 	TimerNathreliskMitosalFog,
 	TimerStimpackDelay,
 	TimerRecallEffect,
+	TimerArtisanReturn,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

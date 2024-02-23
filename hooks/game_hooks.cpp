@@ -2351,7 +2351,23 @@ namespace hooks {
 				if (unit->sprite && unit->main_order_id != OrderId::Die && unit_ext->timers[TimerMissileReturnETA] == 1) {
 					scbw::launch_return_missile(unit, WeaponId::SkithrokorSkitteringSpores);
 				}
-			}
+			} break;
+			case UnitId::ProtossArtisan:
+			{
+				if (unit_ext->timers[TimerArtisanReturn] == 1) {
+					unit->status &= ~UnitStatus::CanNotReceiveOrders;
+
+					helper::return_resources_from_unit(unit);
+					Unit* target_resource = unit->worker.target_resource.unit;
+					u32 order_id = unit->resource_type == ResourceType::Minerals ? OrderId::MoveToMinerals : OrderId::HarvestGas1;
+					if (target_resource) {
+						helper::prepend_order_targeting_unit(unit, target_resource, order_id);
+					} else {
+						helper::order_immediate(unit, order_id);
+					}
+					helper::to_idle(unit);
+				}
+			} break;
 		}
 
 		// Stimpack - Delayed buff handling

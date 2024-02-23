@@ -14868,4 +14868,29 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	Unit* find_best_return_cargo_target(Unit* worker)
+	{
+		static Unit* result;
+		const u32 func_address = 0x00441310;
+		__asm {
+			PUSHAD
+			MOV EAX, worker
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void return_resources_from_unit(Unit* unit)
+	{
+		const u32 func_address = 0x004F39A0;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }

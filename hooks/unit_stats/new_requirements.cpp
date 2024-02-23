@@ -730,7 +730,7 @@ namespace hooks {
 		}
 
 		// Structures
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe) || player_has_completed_unit_id(player_id, UnitId::ProtossArtisan))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe))
 		{
 			switch (unit_id)
 			{
@@ -2317,7 +2317,6 @@ namespace hooks {
 
 			// Structures
 			case UnitId::ProtossScribe:
-			case UnitId::ProtossArtisan:
 			{
 				switch (unit_id)
 				{

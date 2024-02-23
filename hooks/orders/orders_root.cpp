@@ -890,4 +890,21 @@ namespace hooks {
 			} break;
 		}
 	}
+
+	// Hooked to do a silly imlpementation of the Artisan revision. -Pr0nogo
+	s32 order_to_move_to_target(Unit* target, Unit* unit) // 004EB980
+	{
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->timers[TimerArtisanReturn]) {
+			return 0;
+		}
+		s32 result = helper::move_to_target(target, unit);
+		u32 pos_x = target->sprite->position.x;
+		u32 pos_y = target->sprite->position.y;
+		if (pos_x != unit->next_target_waypoint.x || pos_y != unit->next_target_waypoint.y) {
+			unit->next_target_waypoint.x = pos_x;
+			unit->next_target_waypoint.y = pos_y;
+		}
+		return result;
+	}
 }

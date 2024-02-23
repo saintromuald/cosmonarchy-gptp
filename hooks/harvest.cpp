@@ -166,6 +166,10 @@ namespace hooks {
 					}
 				}
 				helper::set_resource_amount_carried(worker, resource_amount, chunk_image_id, is_mineral);
+				if (worker->id == UnitId::ProtossArtisan) {
+					UnitExt* unit_ext = get_unit_ext(worker);
+					unit_ext->timers[TimerArtisanReturn] = 49;
+				}
 			}
 		}
 	}
@@ -652,6 +656,10 @@ namespace hooks {
 
 	// Hooked to make workers always return to the closest town center by pathing distance. -Pr0nogo
 	Unit* find_best_return_cargo_target(Unit* worker) { // 00441310
+		if (worker->id == UnitId::ProtossArtisan) {
+			return 0;
+		}
+
 		Unit* best_depot = 0;
 		u32 best_distance = UINT_MAX;
 		for (Unit* depot = *g_first_visible_unit; depot; depot = depot->link.next) {

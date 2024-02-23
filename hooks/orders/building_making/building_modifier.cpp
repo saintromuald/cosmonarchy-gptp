@@ -19,7 +19,7 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 		}
 		*/
 	} else if (building_ext->unit_vectors[UnitVectorCrucibles].size()) {
-		modifier.multiplier *= 2;
+		modifier.multiplier *= 1.5;
 	}
 
 	if (scbw::get_game_kind() == GameKind_Debug) {

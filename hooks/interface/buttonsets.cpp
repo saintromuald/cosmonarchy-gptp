@@ -1187,8 +1187,7 @@ namespace hooks {
 									} break;
 								}
 							} break;
-							case UnitId::ProtossScribe:
-							case UnitId::ProtossArtisan: {
+							case UnitId::ProtossScribe: {
 								switch (current_button->requirement_var) {
 									case UnitId::ProtossNexus:
 									case UnitId::ProtossPylon:
@@ -2103,7 +2102,7 @@ namespace hooks {
 								// PROTOSS \\
 
 								case UnitId::ProtossArtisan: {
-									if (current_button->icon_id == IconId::KhaydarinCore) { // Artisan - Concordance Field
+									if (current_button->icon_id == IconId::KhaydarinCore) { // Artisan - Radiant Rifts
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

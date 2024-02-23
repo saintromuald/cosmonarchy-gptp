@@ -49,22 +49,18 @@ namespace hooks
 		if (unit->main_order_id == OrderId::Burrow || unit->main_order_id == OrderId::Burrowed
 		|| (unit_id_is_burrowed_attacker(unit->id) && unit->main_order_id != OrderId::Unburrow && unit->status & UnitStatus::Burrowed))
 		{
-			if (unit_id_is_burrowed_attacker(unit->id))
-			{
+			if (unit_id_is_burrowed_attacker(unit->id)) {
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 			}
 			unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
-			if (unit->main_order_id)
-			{
+			if (unit->main_order_id) {
 				while (1)
 				{
 					Order* last_order = unit->order_queue_tail;
-					if (!last_order)
-					{
+					if (!last_order) {
 						break;
 					}
-					if (!orders_dat::can_be_interrupted[last_order->order_id] && last_order->order_id != OrderId::Burrow)
-					{
+					if (!orders_dat::can_be_interrupted[last_order->order_id] && last_order->order_id != OrderId::Burrow) {
 						break;
 					}
 					helper::remove_order_from_unit_queue(last_order, unit);
