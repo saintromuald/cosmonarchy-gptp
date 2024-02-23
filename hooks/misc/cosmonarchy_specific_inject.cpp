@@ -102,19 +102,6 @@ namespace hooks
 
 	}
 
-	static bool should_use_dumb_order_timer(u16 unit_id) {
-		if (unit_id == UnitId::TerranDiadem) {
-			return true;
-		}
-		u16 subunit_id = units_dat::subunit[unit_id];
-		if (subunit_id != UnitId::None
-			&& !(units_dat::base_property[unit_id] & UnitProperty::Subunit)
-			&& units_dat::base_property[subunit_id] & UnitProperty::Subunit) {
-			return true;
-		}
-		return false;
-	}
-
 	const u32 func_getTargetSomething = 0x0043FF90;
 	const u32 progressOrderSwitch_e71b = 0x004EC71B;
 	const u32 spellOrderCases = 0x004ECADB;
@@ -130,10 +117,8 @@ namespace hooks
 			MOVZX EAX, AL
 			PUSHAD
 		}
-		if (should_use_dumb_order_timer(unit->id)) {
-			// Required for Diadem and turreted units to shoot properly
-			// TODO: Find a fix that does not require dumbing down those units' order timer
-			//																			-Veeq7
+		if (unit->id == UnitId::TerranDiadem) {
+			// Required for Diadem to shoot properly
 			unit->order_queue_timer = 4;
 		}
 		if (hooks::is_unused_order(order_id)) {
