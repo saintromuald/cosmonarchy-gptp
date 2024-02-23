@@ -48,6 +48,9 @@ namespace hooks
 
 	void orders_terran_mine(Unit* unit) // 00463DF0
 	{
+
+
+
 		if (unit->main_order_state == 0) {
 			helper::play_sound_from_unit(SoundId::SpiderMineDeploy01, unit, 1, 0);
 			unit->ground_weapon_cooldown = MineBurrowTime;
@@ -81,7 +84,6 @@ namespace hooks
 				unit->sprite->flags &= ~SpriteFlags::Burrowed;
 				// might have been some cloaking order before
 				unit->set_secondary_order(OrderId::Nothing2);
-				unit->order_queue_timer = 4;
 				unit->main_order_state = 4;
 			}
 		}
@@ -91,9 +93,11 @@ namespace hooks
 				unit->sprite->elevation = units_dat::elevation[unit->id];
 				unit->status &= ~UnitStatus::NoCollide;
 				if (unit->order_target.unit) {
+					unit->order_queue_timer = 4;
 					helper::move_to_collide(unit, unit->order_target.unit);
 					unit->main_order_state = 5;
 				} else {
+					unit->order_queue_timer = 8;
 					unit->main_order_state = 1;
 				}
 			}
