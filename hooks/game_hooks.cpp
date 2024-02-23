@@ -2938,9 +2938,13 @@ namespace hooks {
 		if (scbw::get_generic_rust_value(unit, RustId::CastControlledDemolition)
 		&& !unit_ext->timers[TimerEmergencyDetonation] && !unit_ext->timers[TimerControlledDemolition])
 		{
-			scbw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
-			unit_ext->timers[TimerControlledDemolition] = ControlledDemolitionTimer;
-			unit->sprite->create_overlay(ImageId::ControlledDemolition);
+			if (unit->id == UnitId::TerranLobotomyMine) {
+				unit->remove();
+			} else {
+				scbw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
+				unit_ext->timers[TimerControlledDemolition] = ControlledDemolitionTimer;
+				unit->sprite->create_overlay(ImageId::ControlledDemolition);
+			}
 		}
 
 		// Start overlay fade

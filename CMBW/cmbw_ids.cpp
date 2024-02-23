@@ -1277,3 +1277,9 @@ u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
 	}
 	return portrait_id;
 }
+
+bool unit_id_is_tiny_unit(u32 unit_id)
+{
+	return unit_id == UnitId::TerranLobotomyMine
+		|| unit_id == UnitId::ZergRilirokor;
+}

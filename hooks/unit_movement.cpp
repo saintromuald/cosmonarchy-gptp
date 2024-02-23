@@ -83,8 +83,8 @@ namespace hooks
 			return false;
 		}
 
-		if (unit_id == UnitId::ZergRilirokor && collider_id != UnitId::ZergRilirokor && !(collider_status & UnitStatus::GroundedBuilding)
-		||	collider_id == UnitId::ZergRilirokor && unit_id != UnitId::ZergRilirokor) {
+		if (unit_id_is_tiny_unit(unit_id) && !unit_id_is_tiny_unit(collider_id) && !(collider_status & UnitStatus::GroundedBuilding)
+		||	unit_id_is_tiny_unit(collider_id) && !unit_id_is_tiny_unit(unit_id)) {
 			return false;
 		}
 

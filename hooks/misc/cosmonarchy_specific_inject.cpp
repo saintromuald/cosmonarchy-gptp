@@ -83,16 +83,13 @@ namespace hooks
 			MOV id, DI
 			PUSHAD
 		}
-		if (!hooks::is_high_templar_conduit(id))
-		{
+		if (!hooks::is_high_templar_conduit(id)) {
 			__asm {
 				POPAD
 				MOV AL, 0x6A
 				JMP jmp_004295F8
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				MOV AL, 0x6A
