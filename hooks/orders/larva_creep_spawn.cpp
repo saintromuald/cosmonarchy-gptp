@@ -263,20 +263,29 @@ namespace hooks
 	}
 
 	// Callback to determine the creep tile that will replace the existing tile.
-	bool run_creep_randomizer(u16* tile_backup, u8* creep_overlay_value, u32* return_value, u16* tile, u32 arg) {
+	bool run_creep_randomizer(u16* tile_backup, u8* creep_overlay_value, u32* return_value, u16* tile, u32 arg) { // 004140A0
 		// Stores the existing tile to replace the creep tile when the creep is removed
 		if (*tile_backup == 0) {
 			*tile_backup = *tile;
 		}
 
 		u16 creep_tile = 0;
-		if ((scbw::random() % 100) >= 4) {
-			creep_tile = scbw::random() % 6; // normal tiles
+		if ((*g_last_random_number % 100) >= 4) {
+			creep_tile = *g_last_random_number % 6; // normal tiles
 		} else {
-			creep_tile = (scbw::random() % 7) + 6;
+			creep_tile = (*g_last_random_number % 7) + 6;
 		}
 		*tile = creep_tile + 0x10; // tile in creep group
 		*return_value = 0;
+
+		// Change random number
+		if (*g_is_in_game_loop) {
+			u32 random = (22695477 * *g_last_random_number + 1) >> 16;
+			++g_random_counts[20];
+			++*g_total_random_counts;
+			*g_last_random_number = 22695477 * (*g_last_random_number) + 1;
+		}
+
 		return true;
 	}
 
@@ -343,8 +352,7 @@ namespace hooks
 			helper::move_to_target(spawner, unit);
 			u32 spawner_pos_x = spawner->position.x;
 			u32 spawner_pos_y = spawner->position.y;
-			if (spawner_pos_x != unit->next_target_waypoint.x || spawner_pos_y != unit->next_target_waypoint.y)
-			{
+			if (spawner_pos_x != unit->next_target_waypoint.x || spawner_pos_y != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = spawner_pos_x;
 				unit->next_target_waypoint.y = spawner_pos_y;
 			}

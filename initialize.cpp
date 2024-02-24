@@ -168,14 +168,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	char exePath[300];
 	const DWORD pathLen = GetModuleFileName(nullptr, exePath, sizeof(exePath));
 
-	if (pathLen == sizeof(exePath))
-	{
+	if (pathLen == sizeof(exePath)) {
 		MessageBox(nullptr, "Error: Cannot check version of StarCraft.exe. The file path is too long.", nullptr, MB_OK);
 		return FALSE;
 	}
 
-	if (!check_starcraft_exe_version(exePath))
-	{
+	if (!check_starcraft_exe_version(exePath)) {
 		return FALSE;
 	}
 
@@ -652,6 +650,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	// Skip music fade delay between menus
 	memory_patch(0x004A5F65, (u16)0xE990);
+
+	// Show score screen after singleplayer quit
+	memory_patch(0x004C9600, (u8)7);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
