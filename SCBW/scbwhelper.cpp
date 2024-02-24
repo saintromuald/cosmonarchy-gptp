@@ -4310,7 +4310,7 @@ namespace helper {
 		return result;
 	}
 
-	void function_004756B0(Unit* unit, u8 order_id, u32 unk1, u32 unk2, u32 bCommandType) {
+	void function_004756B0(Unit* unit, u8 order_id, u32 unk1, u32 unk2, u32 command_type) {
 		const u32 Func_Sub4756B0 = 0x004756B0;
 		__asm {
 			PUSHAD
@@ -4318,20 +4318,20 @@ namespace helper {
 			MOV ESI, unit
 			PUSH unk1
 			PUSH unk2
-			PUSH bCommandType
+			PUSH command_type
 			CALL Func_Sub4756B0
 			POPAD
 		}
 	}
 
-	void function_004756E0(Unit* unit, Unit* target, u32 order_id, u32 bCommandType) {
+	void function_004756E0(Unit* unit, Unit* target, u32 order_id, u32 command_type) {
 		const u32 func_address = 0x004756E0;
 		__asm {
 			PUSHAD
 			MOV EDX, target
 			MOV ESI, unit
 			PUSH order_id
-			PUSH bCommandType
+			PUSH command_type
 			CALL func_address
 			POPAD
 		}
@@ -4351,50 +4351,21 @@ namespace helper {
 		return result;
 	}
 
-	// Logically identical to 0049A480 sub_49A480
+	// Replaces 0049A480
 	bool can_target_self(Unit* unit, u8 order_id) {
 		bool return_value = false;
 		if (unit->status & UnitStatus::GroundedBuilding && (order_id == OrderId::RallyPointToVisibleUnit || order_id == OrderId::RallyPointToTile)) {
 			return_value = true;
-		}
-		else if ((unit->id == UnitId::ZergIsthrathaleth) && order_id == OrderId::CarapaceSwarm) {
+		} else if ((unit->id == UnitId::ZergIsthrathaleth) && order_id == OrderId::CarapaceSwarm) {
 			return_value = true;
-		}
-		else if (unit->status & UnitStatus::IsHallucination) {
+		} else if (unit->status & UnitStatus::IsHallucination) {
 			return_value = false;
-		}
-		else if (unit->id == UnitId::ZergOvileth && UpgradesSc->current_level[unit->player][UpgradeId::VentralSacs] == 0) {
+		} else if (units_dat::space_provided[unit->id] == 0) {
 			return_value = false;
-		}
-		else if (units_dat::space_provided[unit->id] == 0) {
-			return_value = false;
-		}
-		else if (order_id == OrderId::MoveUnload) {
+		} else if (order_id == OrderId::MoveUnload) {
 			return_value = true;
 		}
 		return return_value;
-	}
-
-	void function_0049A500(Unit* unit, u8* array_of_data) {
-		const u32 func_address = 0x0049A500;
-		__asm {
-			PUSHAD
-			PUSH array_of_data
-			PUSH unit
-			CALL func_address
-			POPAD
-		}
-	}
-
-	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed) {
-		const u32 func_address = 0x0049A8C0;
-		__asm {
-			PUSHAD
-			PUSH bCanBeObstructed
-			MOV EDI, array_of_data
-			CALL func_address
-			POPAD
-		}
 	}
 
 	char ignore_iscript_go_to_idle(Unit* unit) {
@@ -9253,13 +9224,13 @@ namespace helper {
 	playNextMusic_Func* play_next_bw_music  = (playNextMusic_Func*) 0x004A6250;
 	stopMusic_Func* stop_bw_music           = (stopMusic_Func*)     0x004A5F50;
 
-	void prepare_formation_movement(MovementGroup* a1, char a2) {
+	void prepare_formation_movement(MovementGroup* movement_group, char can_be_obstructed) {
 		const u32 func_address = 0x0049A8C0;
-		s32 a2_xd = a2;
+		s32 can_be_obstructed_xd = can_be_obstructed;
 		__asm {
 			PUSHAD
-			PUSH a2_xd
-			MOV EDI, a1
+			PUSH can_be_obstructed_xd
+			MOV EDI, movement_group
 			CALL func_address
 			POPAD
 		}
@@ -9321,12 +9292,12 @@ namespace helper {
 		return result;
 	}
 
-	void get_formation_movement_target(Unit *a1, MovementGroup* a2) {
+	void get_formation_movement_target(Unit* unit, MovementGroup* movement_group) {
 		const u32 func_address = 0x0049A500;
 		__asm {
 			PUSHAD
-			PUSH a2
-			PUSH a1
+			PUSH movement_group
+			PUSH unit
 			CALL func_address
 			POPAD
 		}

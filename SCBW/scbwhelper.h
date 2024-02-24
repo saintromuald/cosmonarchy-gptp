@@ -541,12 +541,10 @@ namespace helper {
 	Image* make_sprite_invisible(Sprite* sprite);																					// 00498A10
 
 	//// receive_command
-	void function_004756B0(Unit* unit, u8 order_id, u32 unk1, u32 unk2, u32 bCommandType);											// 004756B0
-	void function_004756E0(Unit* unit, Unit* target, u32 order_id, u32 bCommandType);												// 004756E0
+	void function_004756B0(Unit* unit, u8 order_id, u32 unk1, u32 unk2, u32 command_type);											// 004756B0
+	void function_004756E0(Unit* unit, Unit* target, u32 order_id, u32 command_type);												// 004756E0
 	u32 can_do_targeted_order(Unit* unit, u8 order_id);																				// 0049A410
 	bool can_target_self(Unit* unit, u8 order_id);																					// 0049A480
-	void function_0049A500(Unit* unit, u8* array_of_data);																			// 0049A500
-	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed);																// 0049A8C0
 
 	//// load_unload_proc
 	char ignore_iscript_go_to_idle(Unit* unit);																						// 00476550
@@ -1135,12 +1133,12 @@ namespace helper {
 	extern playNextMusic_Func* play_next_bw_music;
 	extern stopMusic_Func* stop_bw_music;
 
-	void prepare_formation_movement(MovementGroup* a1, char a2);												// 0049A8C0
+	void prepare_formation_movement(MovementGroup* movement_group, char can_be_obstructed);						// 0049A8C0
 	Unit* find_fow_unit(u16 y_pos, u16 x_pos, u32 fow_unit_id);													// 00487FD0
 	void targeted_order_unit(Unit* a1, Unit* a2, int a3, char a4);												// 004756E0
 	void targeted_order_ground(int a1, int a2, Unit* a3, int a4, int a5, int a6);								// 004756B0
 	Unit* get_next_commanded_unit();																			// 0049A850
-	void get_formation_movement_target(Unit *a1, MovementGroup* a2);											// 0049A500
+	void get_formation_movement_target(Unit* unit, MovementGroup* movement_group);								// 0049A500
 
 	u8 get_right_click_order(u32 type, Unit* unit, s32 x, s32 y, Unit** target, s32 unit_id);
 
