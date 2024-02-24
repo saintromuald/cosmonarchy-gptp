@@ -17,6 +17,7 @@ namespace hooks
 	void consume_hit(Unit* attacker, Unit* target);									// 004F47B0
 	void ensnare_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);					// 004F4830
 	void dark_swarm_hit(s32 x, s32 y, u32 attacking_player_id, Bullet* bullet);		// 004F48A0
+	void carapace_swarm_hit_internal(s32 x, s32 y, u32 attacking_player_id, u32 spell_unit_id);
 	void broodling_hit(Unit* attacker, Unit* target, Bullet* bullet);				// 004F4940
 	void plague_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);					// 004F4B30
 	void maelstrom_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);				// 004F6850

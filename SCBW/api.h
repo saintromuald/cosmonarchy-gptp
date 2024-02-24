@@ -139,7 +139,7 @@ namespace scbw {
 	/// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
 	/// unit is a inside unit or a building.
 	bool is_under_carapace_swarm(Unit* unit);
-	Unit* get_dark_swarm_unit(Unit* unit);
+	Unit* get_carapace_swarm_unit(Unit* unit);
 	Unit* get_dark_swarm_from_position(u16 x, u16 y, u16 radius);
 	//Checks if the @p target can be targeted by player @p castingPlayer with
 	//tech/spell @p techId

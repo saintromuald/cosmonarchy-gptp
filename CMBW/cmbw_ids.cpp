@@ -888,12 +888,7 @@ u32 get_scribe_warp_distance(u32 unit_id) {
 }
 
 bool unit_id_ignored_on_minimap(u32 unit_id) {
-	switch (unit_id) {
-		case UnitId::Spell_DarkSwarm: {
-			return true;
-		}
-	}
-	return units_dat::base_property[unit_id] & UnitProperty::Subunit;
+	return unit_id_is_spell(unit_id) || units_dat::base_property[unit_id] & UnitProperty::Subunit;
 }
 
 bool unit_is_combatant(Unit* unit) {
@@ -1278,8 +1273,13 @@ u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
 	return portrait_id;
 }
 
-bool unit_id_is_tiny_unit(u32 unit_id)
-{
+bool unit_id_is_tiny_unit(u32 unit_id) {
 	return unit_id == UnitId::TerranLobotomyMine
 		|| unit_id == UnitId::ZergRilirokor;
+}
+
+bool unit_id_is_spell(u32 unit_id) {
+	return unit_id == UnitId::Spell_CarapaceSwarm
+		|| unit_id == UnitId::Spell_CarapaceSwarmSmall
+		|| unit_id == UnitId::Spell_ScannerSweep;
 }

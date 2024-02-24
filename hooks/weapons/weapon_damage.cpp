@@ -481,6 +481,12 @@ namespace hooks
 					incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
 				}
 			} break;
+			case UnitId::ZergVilgorokor:
+			{
+				if (!scbw::is_under_carapace_swarm(data.target)) {
+					hooks::carapace_swarm_hit_internal(data.target->position.x, data.target->position.y, data.target->player, UnitId::Spell_CarapaceSwarmSmall);
+				}
+			} break;
 		}
 
 		if (data.attacker) {
@@ -954,7 +960,7 @@ namespace hooks
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
 			case UnitId::ZergVilgorokor: {
-				// Vilgorokor - On Death behaviorw
+				// Vilgorokor - On Death behavior
 				scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
 				scbw::transform_unit(data.target, UnitId::ZergVilgoleth);
 				data.target->set_hitpoints(data.target->get_max_hp_raw());

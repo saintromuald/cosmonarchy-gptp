@@ -70,8 +70,7 @@ namespace hooks
 		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories
 		||	unit->status & UnitStatus::Frozen
 		||	unit_id_is_trap(unit->id)
-		||	unit->id == UnitId::Spell_DarkSwarm
-		||	unit->id == UnitId::Spell_DisruptionWeb
+		||  unit_id_is_spell(unit->id)
 		||	unit->id == UnitId::Special_PitDoor
 		||	unit->id == UnitId::Special_RightPitDoor
 		||	unit->id == UnitId::Special_UpperLevelDoor

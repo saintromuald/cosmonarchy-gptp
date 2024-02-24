@@ -213,14 +213,14 @@ namespace scbw {
 	}
 
 	bool is_under_carapace_swarm(Unit* unit) {
-		return !(unit->status & UnitStatus::InAir) && get_dark_swarm_unit(unit) != nullptr;
+		return !(unit->status & UnitStatus::InAir) && get_carapace_swarm_unit(unit);
 	}
 
 	bool is_dark_swarm(Unit* unit) {
-		return unit->id == UnitId::Spell_DarkSwarm;
+		return unit->id == UnitId::Spell_CarapaceSwarm || unit->id == UnitId::Spell_CarapaceSwarmSmall;
 	}
 
-	Unit* get_dark_swarm_unit(Unit* unit) {
+	Unit* get_carapace_swarm_unit(Unit* unit) {
 		if (unit->is_dead()) return 0;
 		static UnitFinder dark_swarm_finder;
 		dark_swarm_finder.search(unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom());
@@ -483,7 +483,7 @@ namespace scbw {
 			case UnitId::ZergUltrokor:
 			case UnitId::ZergZobriolisk:
 			case UnitId::ZergZarcavrokor:
-			case UnitId::ZergSelkerilisk:
+			case UnitId::ZergIsthrathaleth:
 			case UnitId::ZergAkistrokor:
 			case UnitId::ZergAlkajelisk:
 			case UnitId::ZergOgroszaleth:
@@ -2239,7 +2239,7 @@ namespace scbw {
 			case UnitId::ZergZobriolisk:			return UnitId::ZergLakizilisk;
 			case UnitId::ZergZarcavrokor:			return UnitId::ZergGorgrokor;
 			case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
-			case UnitId::ZergSelkerilisk:			return UnitId::ZergVilgorokor;
+			case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
 			case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
 
 			case UnitId::ZergKalkalisk:

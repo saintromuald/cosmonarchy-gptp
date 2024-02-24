@@ -479,7 +479,7 @@ namespace hooks
 		// Case Specific
 		add_status(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
 		if (scbw::is_under_carapace_swarm(unit)) {
-			Unit* darkSwarm = scbw::get_dark_swarm_unit(unit);
+			Unit* darkSwarm = scbw::get_carapace_swarm_unit(unit);
 			add_status(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
 		}
 

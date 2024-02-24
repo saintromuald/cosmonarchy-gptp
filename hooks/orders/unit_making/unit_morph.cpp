@@ -570,7 +570,7 @@ namespace hooks {
 			} break;
 			case UnitId::ZergVilgorokor:
 			{
-				if (morph_unit_id == UnitId::ZergSelkerilisk)
+				if (morph_unit_id == UnitId::ZergIsthrathaleth)
 				{
 					return true;
 				}
@@ -579,22 +579,6 @@ namespace hooks {
 			case UnitId::ZergMatraleth:
 			{
 				if (morph_unit_id == UnitId::ZergAkistrokor)
-				{
-					return true;
-				}
-				return false;
-			} break;
-			case UnitId::ZergIsthrathaleth:
-			{
-				if (morph_unit_id == UnitId::ZergOgroszaleth)
-				{
-					return true;
-				}
-				return false;
-			} break;
-			case UnitId::ZergElthrazalisk:
-			{
-				if (morph_unit_id == UnitId::ZergRakzilisk)
 				{
 					return true;
 				}

@@ -352,21 +352,45 @@ namespace hooks {
 	void dark_swarm_hit(s32 x, s32 y, u32 attacking_player_id, Bullet* bullet) {
 		// Adjust location where Dark Swarm will be created if necessary (by modifying coords)
 		Point16 coords = {x, y};
-		helper::fix_target_location(&coords, UnitId::Spell_DarkSwarm);
+		helper::fix_target_location(&coords, UnitId::Spell_CarapaceSwarm);
 
-		// The dark swarm is created for player 11 (neutral), not for the owner
-		Unit* dark_swarm_unit = helper::create_unit(UnitId::Spell_DarkSwarm, coords.x, coords.y, 11); 
-		if (!dark_swarm_unit) {
+		// The spell is created for player 11 (neutral), not for the owner		
+		Unit* spell_unit = helper::create_unit(UnitId::Spell_CarapaceSwarm, coords.x, coords.y, 11); 
+		if (!spell_unit) {
 			helper::display_last_network_error_for_player(attacking_player_id);
 		} else {
-			dark_swarm_unit->status |= UnitStatus::NoCollide;
-			dark_swarm_unit->sprite->elevation = 11;
+			spell_unit->status |= UnitStatus::NoCollide;
+			spell_unit->sprite->elevation = 11;
 
-			// update various stuff (set hp, set shield...) not finished on create_unit
-			helper::update_unit_stats_and_finish_building(dark_swarm_unit);
-			helper::update_unit_strength(dark_swarm_unit);
-			if (dark_swarm_unit->remove_timer == 0 || dark_swarm_unit->remove_timer > 570) {
-				dark_swarm_unit->remove_timer = 565;
+			helper::update_unit_stats_and_finish_building(spell_unit);
+			helper::update_unit_strength(spell_unit);
+			if (spell_unit->remove_timer == 0 || spell_unit->remove_timer > 495) {
+				spell_unit->remove_timer = 495;
+			}
+		}
+	}
+
+	void carapace_swarm_hit_internal(s32 x, s32 y, u32 attacking_player_id, u32 spell_unit_id) {
+		// Adjust location where Dark Swarm will be created if necessary (by modifying coords)
+		Point16 coords = {x, y};
+		helper::fix_target_location(&coords, spell_unit_id);
+
+		// The spell is created for player 11 (neutral), not for the owner		
+		Unit* spell_unit = helper::create_unit(spell_unit_id, coords.x, coords.y, 11);
+		if (!spell_unit) {
+			helper::display_last_network_error_for_player(attacking_player_id);
+		} else {
+			spell_unit->status |= UnitStatus::NoCollide;
+			spell_unit->sprite->elevation = 11;
+
+			helper::update_unit_stats_and_finish_building(spell_unit);
+			helper::update_unit_strength(spell_unit);
+			u32 remove_timer = 495;
+			if (spell_unit_id == UnitId::Spell_CarapaceSwarmSmall) {
+				remove_timer = 116;
+			}
+			if (spell_unit->remove_timer == 0 || spell_unit->remove_timer > remove_timer) {
+				spell_unit->remove_timer = remove_timer;
 			}
 		}
 	}
@@ -541,14 +565,15 @@ namespace hooks {
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	Unit* create_disruption_web(u32 attacking_player_id, s32 x, s32 y) {
+		return 0; // Reimplemented entirely in Cosmonarchy
 		Point16 coords;
 		Unit* disruption_web_unit;
 		coords.x = x;
 		coords.y = y;
 
 		// adjust location where Disruption Web will be created if necessary (by modifying coords)
-		helper::fix_target_location(&coords, UnitId::Spell_DisruptionWeb);
-		disruption_web_unit = helper::create_unit(UnitId::Spell_DisruptionWeb, coords.x, coords.y, 11);
+		helper::fix_target_location(&coords, UnitId::Spell_CarapaceSwarmSmall);
+		disruption_web_unit = helper::create_unit(UnitId::Spell_CarapaceSwarmSmall, coords.x, coords.y, 11);
 		if (!disruption_web_unit) {
 			helper::display_last_network_error_for_player(attacking_player_id);
 		} else {

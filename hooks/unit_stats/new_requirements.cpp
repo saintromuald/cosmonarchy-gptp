@@ -869,14 +869,6 @@ namespace hooks {
 						return true;
 					}
 				} break;
-				case UnitId::ZergIsthrathaleth:
-				case UnitId::ZergElthrazalisk:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ZergElthisthMound))
-					{
-						return true;
-					}
-				} break;
 			}
 		}
 
@@ -1093,7 +1085,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergVilgorokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva))
 		{
-			if (unit_id == UnitId::ZergSelkerilisk)
+			if (unit_id == UnitId::ZergIsthrathaleth)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre))
 				{
@@ -1106,26 +1098,6 @@ namespace hooks {
 			if (unit_id == UnitId::ZergAkistrokor)
 			{
 				if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre))
-				{
-					return true;
-				}
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergIsthrathaleth) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva))
-		{
-			if (unit_id == UnitId::ZergOgroszaleth)
-			{
-				if (player_has_completed_unit_id(player_id, UnitId::ZergRakzogthRoost))
-				{
-					return true;
-				}
-			}
-		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergElthrazalisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva))
-		{
-			if (unit_id == UnitId::ZergRakzilisk)
-			{
-				if (player_has_completed_unit_id(player_id, UnitId::ZergRakzogthRoost))
 				{
 					return true;
 				}
@@ -2485,15 +2457,6 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::ZergIsthrathaleth:
-					case UnitId::ZergElthrazalisk:
-					{
-						if (player_has_completed_unit_id(player_id, UnitId::ZergElthisthMound))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
 				}
 				return TECH_HIDDEN;
 			}
@@ -2737,18 +2700,6 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			}
-			case UnitId::ZergMatraleth:
-			{
-				if (unit_id == UnitId::ZergAkistrokor)
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre))
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_LOCKED;
-				}
-				return TECH_HIDDEN;
-			}
 			case UnitId::ZergKonvilisk:
 			{
 				if (unit_id == UnitId::ZergTetcaerokor)
@@ -2767,14 +2718,22 @@ namespace hooks {
 			}
 			case UnitId::ZergVilgorokor:
 			{
-				if (unit_id == UnitId::ZergSelkerilisk)
+				if (unit_id == UnitId::ZergIsthrathaleth)
 				{
-					if (unit->status & UnitStatus::Burrowed)
-					{
+					if (unit->status & UnitStatus::Burrowed) {
 						return TECH_HIDDEN;
 					}
-					if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre))
-					{
+					if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre)) {
+						return TECH_ACTIVE;
+					}
+					return TECH_LOCKED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergMatraleth:
+			{
+				if (unit_id == UnitId::ZergAkistrokor) {
+					if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre)) {
 						return TECH_ACTIVE;
 					}
 					return TECH_LOCKED;
@@ -2802,38 +2761,6 @@ namespace hooks {
 				if (unit_id == UnitId::ZergAlkajelisk)
 				{
 					return TECH_ACTIVE;
-				}
-				return TECH_HIDDEN;
-			}
-			case UnitId::ZergIsthrathaleth:
-			{
-				if (unit_id == UnitId::ZergOgroszaleth)
-				{
-					if (unit->status & UnitStatus::Burrowed)
-					{
-						return TECH_HIDDEN;
-					}
-					if (player_has_completed_unit_id(player_id, UnitId::ZergRakzogthRoost))
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_LOCKED;
-				}
-				return TECH_HIDDEN;
-			}
-			case UnitId::ZergElthrazalisk:
-			{
-				if (unit_id == UnitId::ZergRakzilisk)
-				{
-					if (unit->status & UnitStatus::Burrowed)
-					{
-						return TECH_HIDDEN;
-					}
-					if (player_has_completed_unit_id(player_id, UnitId::ZergRakzogthRoost))
-					{
-						return TECH_ACTIVE;
-					}
-					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
@@ -2905,6 +2832,7 @@ namespace hooks {
 					}
 					case UnitId::ZergCherbrathalor:
 					case UnitId::ZergOkrimnilisk:
+					case UnitId::ZergAlgoztalisk:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ZergChokralgantChazsal))
 						{
@@ -2927,19 +2855,10 @@ namespace hooks {
 						return TECH_LOCKED;
 					}
 					case UnitId::ZergTetcaerokor:
-					case UnitId::ZergSelkerilisk:
+					case UnitId::ZergIsthrathaleth:
 					case UnitId::ZergAkistrokor:
 					{
 						if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre))
-						{
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
-					}
-					case UnitId::ZergOgroszaleth:
-					case UnitId::ZergRakzilisk:
-					{
-						if (player_has_completed_unit_id(player_id, UnitId::ZergRakzogthRoost))
 						{
 							return TECH_ACTIVE;
 						}

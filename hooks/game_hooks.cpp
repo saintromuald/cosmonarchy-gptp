@@ -2355,7 +2355,7 @@ namespace hooks {
 			case UnitId::ProtossArtisan:
 			{
 				if (unit_ext->timers[TimerArtisanReturn] == 1) {
-					unit->status &= ~UnitStatus::CanNotReceiveOrders;
+					unit->unfreeze();
 
 					helper::return_resources_from_unit(unit);
 					Unit* target_resource = unit->worker.target_resource.unit;
@@ -2717,7 +2717,7 @@ namespace hooks {
 		}
 
 		// Akistrokor - Blissful Embrace ability
-		if (unit->id == UnitId::ZergAkistrokor) {
+		if (unit->id == UnitId::ZergMatraleth || unit->id == UnitId::ZergAkistrokor) {
 			if (unit->main_order_id == OrderId::BlissfulEmbrace) {
 				Unit* target = unit->order_target.unit;
 				if (target && target->hitpoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed

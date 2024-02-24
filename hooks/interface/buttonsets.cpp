@@ -1570,7 +1570,7 @@ namespace hooks {
 										}
 									} break;
 									case UnitId::ZergTetcaerokor:
-									case UnitId::ZergSelkerilisk:
+									case UnitId::ZergIsthrathaleth:
 									case UnitId::ZergAkistrokor: {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergAlmakisAntre)) {
 											current_button_state = Button_State::Enabled;
@@ -1581,14 +1581,6 @@ namespace hooks {
 									case UnitId::ZergKethrostalor:
 									case UnitId::ZergAlkajelisk: {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergGeszkathGrotto)) {
-											current_button_state = Button_State::Enabled;
-										} else {
-											current_button_state = Button_State::Disabled;
-										}
-									} break;
-									case UnitId::ZergOgroszaleth:
-									case UnitId::ZergRakzilisk: {
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergRakzogthRoost)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
@@ -2457,7 +2449,8 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergVilgorokor: {
-									if (current_button->icon_id == IconId::Radioactive_Zerg_Egg) { // Vilgorokor - Autophagy
+									if (current_button->icon_id == IconId::Dark_Swarm				// Vilgorokor - Reconstitution
+									||  current_button->icon_id == IconId::Radioactive_Zerg_Egg) {	// Vilgorokor - Autophagy
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

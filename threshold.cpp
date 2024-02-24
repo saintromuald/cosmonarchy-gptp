@@ -948,13 +948,13 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				if (i == UnitId::Spell_ScannerSweep)   continue;
 				if (i == UnitId::Special_RightPitDoor) continue;
-				if (i == UnitId::Spell_DarkSwarm)      continue;
+				if (i == UnitId::Spell_CarapaceSwarm)      continue;
 				g_unit_deaths_table[i].player[player] = threshold.frauds[fraud][race].deaths[i];
 			}
 
-			g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player] = threshold.frauds[fraud][race].personality;
+			g_unit_deaths_table[UnitId::Spell_CarapaceSwarmSmall].player[player] = threshold.frauds[fraud][race].personality;
 			g_unit_deaths_table[UnitId::ProtossPlasmaShell].player[player] = threshold.frauds[fraud][race].build_type;
-			g_unit_deaths_table[UnitId::Spell_DarkSwarm].player[player] = threshold.frauds[fraud][race].build_order;
+			g_unit_deaths_table[UnitId::Spell_CarapaceSwarm].player[player] = threshold.frauds[fraud][race].build_order;
 			set_player_color(player, threshold.frauds[fraud][race].color);
 			set_player_name(player, (char*)fraud_names[fraud], true);
 			set_player_force_name(player, (char*)fraud_class_names[fraud_class]);

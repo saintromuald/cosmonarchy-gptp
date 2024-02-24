@@ -112,7 +112,7 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergLakizilisk, UnitId::ZergZobriolisk},
 	{UnitId::ZergGorgrokor, UnitId::ZergZarcavrokor},
 	{UnitId::ZergKonvilisk, UnitId::ZergTetcaerokor},
-	{UnitId::ZergVilgorokor, UnitId::ZergSelkerilisk},
+	{UnitId::ZergVilgorokor, UnitId::ZergIsthrathaleth},
 	{UnitId::ZergMatraleth, UnitId::ZergAkistrokor},
 	{UnitId::ZergIsthrathaleth, UnitId::ZergOgroszaleth},
 	{UnitId::ZergElthrazalisk, UnitId::ZergRakzilisk},

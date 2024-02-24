@@ -26,7 +26,7 @@ static bool player_wants_to_randomize(u32 player) {
 }
 
 static bool player_can_randomize(u32 player) {
-	u32 personality = g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player];
+	u32 personality = g_unit_deaths_table[UnitId::Spell_CarapaceSwarmSmall].player[player];
 	if (g_player_table[player].type == PlayerType::Computer && !personality) {
 		return false; // Don't randomize AI players that don't have personality yet
 	}
@@ -175,7 +175,7 @@ static u32 get_next_best_color(u32 player) {
 
 static u32 get_color_for_personality(u32 player) {
 	const u32 race = g_player_table[player].race;
-	const u32 build = g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player] - 1;
+	const u32 build = g_unit_deaths_table[UnitId::Spell_CarapaceSwarmSmall].player[player] - 1;
 	if (build >= 0
 		&& personality_colors.size() > race
 		&& personality_colors[race].size() > build) {
@@ -339,7 +339,7 @@ static void update_player_name(u32 player) {
 		return;
 	}
 	u32 race = g_player_table[player].race;
-	u32 personality = g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player];
+	u32 personality = g_unit_deaths_table[UnitId::Spell_CarapaceSwarmSmall].player[player];
 	u32 count = get_name_count(race, personality);
 	if (count) {
 		for (u32 tries = 0; tries < 100; ++tries) {

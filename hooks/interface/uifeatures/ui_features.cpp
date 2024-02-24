@@ -482,7 +482,7 @@ LABEL_15:
 		}
 		
 		for (Thingy* thingy = *g_first_fow_sprite; thingy; thingy = thingy->next) {
-			if (thingy->unit_id != UnitId::Spell_DarkSwarm) {
+			if (thingy->unit_id != UnitId::Spell_CarapaceSwarm) {
 				bool not_visible = helper::thingy_visiblity_check(1, thingy) && !unit_id_is_resource_node(thingy->unit_id, true);
 				if (!*g_is_in_replay || !not_visible) {
 					Sprite* sprite = thingy->sprite;

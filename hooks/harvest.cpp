@@ -169,6 +169,7 @@ namespace hooks {
 				if (worker->id == UnitId::ProtossArtisan) {
 					UnitExt* unit_ext = get_unit_ext(worker);
 					unit_ext->timers[TimerArtisanReturn] = 49;
+					worker->freeze();
 				}
 			}
 		}

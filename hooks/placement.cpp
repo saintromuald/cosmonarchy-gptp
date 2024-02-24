@@ -84,8 +84,7 @@ namespace hooks
 			||  (needs_detection && !also_invisible)
 			||   other_unit == builder
 			||   other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir | UnitStatus::Burrowed)
-			||   other_unit->id == UnitId::Spell_DarkSwarm
-			||   other_unit->id == UnitId::Spell_DisruptionWeb
+			||   unit_id_is_spell(other_unit->id)
 			||   other_unit->sprite->flags & SpriteFlags::Hidden)
 			{
 				continue;
