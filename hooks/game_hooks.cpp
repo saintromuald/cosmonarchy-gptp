@@ -1517,7 +1517,7 @@ namespace hooks {
 					if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
 						Unit* egg = scbw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
-							set_custom_egg(egg, UnitId::ZergSovroleth, 2 * 24);
+							set_custom_egg(egg, UnitId::ZergSovroleth, 4 * 24);
 						}
 						UnitExt* egg_ext = get_unit_ext(egg);
 						egg_ext->values[ValueNoCorpse] = true;
