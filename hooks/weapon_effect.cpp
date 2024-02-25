@@ -302,10 +302,10 @@ namespace hooks {
 	void air_splash(Bullet* bullet, u32 weapon_id) // 0048B790
 	{
 		Unit* target = bullet->attack_target.unit;
-		if (!target)
-		{
+		if (!target || target->is_dead()) {
 			return;
 		}
+
 		s16 radius = weapons_dat::outer_splash_radius[weapon_id];
 		Sprite* bullet_sprite = bullet->sprite;
 		s16 pos_x = bullet_sprite->position.x;
@@ -325,7 +325,6 @@ namespace hooks {
 		r = weapons_dat::outer_splash_radius[weapon_id];
 		// Get units within the outer splash radius
 		scbw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
-
 		carapace_swarm_damage(x, y, r, bullet, weapon_id);
 
 		s32 result;
@@ -337,12 +336,9 @@ namespace hooks {
 			Unit* target = units_in_splash.get_unit(i);
 
 			weapon_id_loop = bullet->weapon_id;
-			if (target != bullet->source_unit && (target->player != bullet->player || target == bullet->attack_target.unit))
-			{
-				if (scbw::can_weapon_target_unit(weapon_id_loop, target, target))
-				{
-					if (helper::is_unit_distance_within(target, bullet, weapons_dat::outer_splash_radius[weapon_id_loop]))
-					{
+			if (target != bullet->source_unit && (target->player != bullet->player || target == bullet->attack_target.unit)) {
+				if (scbw::can_weapon_target_unit(weapon_id_loop, target, target)) {
+					if (helper::is_unit_distance_within(target, bullet, weapons_dat::outer_splash_radius[weapon_id_loop])) {
 						if (helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weapon_id_loop])
 							&& target == bullet->attack_target.unit)
 						{
@@ -359,8 +355,7 @@ namespace hooks {
 			}
 		}
 
-		if (g_air_splash_list_count)
-		{
+		if (*g_air_splash_list_count) {
 			if (*g_air_splash_list_count == 1) {
 				list = 0;
 			} else {

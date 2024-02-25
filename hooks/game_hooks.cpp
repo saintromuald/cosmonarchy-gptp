@@ -2626,7 +2626,7 @@ namespace hooks {
 				y_offset = MathUtils::clamp(y_offset, -127, 128);
 
 				// TODO: Figure out why changing a construction frame freezes this overlay.
-				unit->sprite->create_overlay(ImageId::FusionCutterHitDamageless, x_offset, y_offset);
+				unit->sprite->create_overlay(ImageId::AddonWeldOverlay, x_offset, y_offset);
 				unit_ext->timers[TimerAddonAnimation] = scbw::rand_between(16, 20);
 			}
 		}

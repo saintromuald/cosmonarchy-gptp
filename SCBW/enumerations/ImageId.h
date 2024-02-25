@@ -1205,6 +1205,8 @@ namespace ImageId {
 
 		MortothrokorPassiveOverlay					= 1783,
 
+		AddonWeldOverlay							= 1807,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

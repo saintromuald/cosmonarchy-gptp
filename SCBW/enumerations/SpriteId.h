@@ -797,6 +797,8 @@ namespace SpriteId
 
 		LegionnaireTeleportEffect	= 893,
 
+		FusionCutterHitDamageless	= 901,
+
 		// CORPSE \\
 			
 		Corpse_Aspirant				= 685,

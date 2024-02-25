@@ -485,8 +485,7 @@ namespace hooks
 				{
 					u8 min = take_iscript_datum<unsigned char>(program_state);
 					u8 max = take_iscript_datum<unsigned char>(program_state);
-					if (noop)
-					{
+					if (noop) {
 						break;
 					}
 					u8 v16 = helper::randomize_short(3);

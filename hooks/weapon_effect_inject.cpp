@@ -275,8 +275,7 @@ namespace
 
 namespace hooks
 {
-	void inject_weapon_effect_hooks()
-	{
+	void inject_weapon_effect_hooks() {
 		u8 max_id = ARRAY_SIZE(WeaponEffects_SwitchTable) - 1;
 		u8 data[4];
 		*(u32*)data = (u32)WeaponEffects_SwitchTable;
