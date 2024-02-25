@@ -168,7 +168,8 @@ namespace hooks {
 				helper::set_resource_amount_carried(worker, resource_amount, chunk_image_id, is_mineral);
 				if (worker->id == UnitId::ProtossArtisan) {
 					UnitExt* unit_ext = get_unit_ext(worker);
-					unit_ext->timers[TimerArtisanReturn] = 49;
+					unit_ext->timers[TimerArtisanReturn] = 24 * 2 + 1;
+					helper::play_sound_from_unit(SoundId::ArtisanRadiantChannel, worker, 1, 0);
 					worker->freeze();
 				}
 			}

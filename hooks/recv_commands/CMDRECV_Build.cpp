@@ -135,6 +135,7 @@ namespace hooks
 	}
 
 	// Hooked to try to allow for queueable build orders. -Pr0nogo
+	// Not injected. Status unknown as of Feb '24.
 	void process_building_placement(Unit* unit, u8 order_id, Point16 pos, u16 target_unit_id) // 0048DE70
 	{
 		if (order_id == OrderId::BuildingLand) {

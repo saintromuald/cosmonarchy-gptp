@@ -203,6 +203,9 @@ namespace hooks
 
 	void orders_building_liftoff(Unit* unit) { // 004649B0
 		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->timers[TimerLiftoffDelay] > 1) {
+			return;
+		}
 		if (unit_ext->values[ValueIsNeutralBunker]) {
 			unit->order_to_idle();
 			return;

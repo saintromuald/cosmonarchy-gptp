@@ -1762,5 +1762,8 @@ namespace SoundId
 		ArtemisAdvisor_Warp01						= 2917,
 
 		StimpackInject01							= 2918,
+		TerranLiftoffStart							= 2919,
+		ArtisanRadiantChannel						= 2920,
+		ArtisanRadiantProc							= 2921,
 	};
 }

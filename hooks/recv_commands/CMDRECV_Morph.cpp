@@ -122,6 +122,11 @@ namespace hooks
 								u16 x = buffer_u16[0];
 								u16 y = buffer_u16[1];
 								if (x < *g_map_width_pixels && y < *g_map_height_pixels) {
+									UnitExt* unit_ext = get_unit_ext(unit);
+									if (!unit_ext->timers[TimerLiftoffDelay]) {
+										unit_ext->timers[TimerLiftoffDelay] = 12 + 1;
+										helper::play_sound_from_unit(SoundId::TerranLiftoffStart, unit, 1, 0);
+									}
 									helper::issue_order_targeting_ground(unit, OrderId::BuildingLiftoff, x, y);
 									helper::do_order(unit, units_dat::return_to_idle_order[unit->id], x, y - 42, 0);
 								}

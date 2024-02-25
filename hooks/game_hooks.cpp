@@ -2357,6 +2357,7 @@ namespace hooks {
 				if (unit_ext->timers[TimerArtisanReturn] == 1) {
 					unit->unfreeze();
 
+					helper::play_sound_from_unit(SoundId::ArtisanRadiantProc, unit, 1, 0);
 					helper::return_resources_from_unit(unit);
 					Unit* target_resource = unit->worker.target_resource.unit;
 					u32 order_id = unit->resource_type == ResourceType::Minerals ? OrderId::MoveToMinerals : OrderId::HarvestGas1;
@@ -4015,8 +4016,8 @@ namespace hooks {
 	void initialize_provider_version(GameVersion* version) { // 00472770
 		*version = {};
 		version->size = sizeof(*version);
-		version->game_id = 'CMBW';
-		version->game_title = "Cosmonarchy Brood War";
+		version->game_id = 'CM';
+		version->game_title = "Cosmonarchy";
 
 		version->game_description = "internal version unknown";
 		version->version_id = comptime(hash_string(__TIMESTAMP__));
