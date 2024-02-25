@@ -541,14 +541,16 @@ namespace hooks
 						GPTP::critical_logger << "\n";
 					}
 					u32 tile = scbw::get_active_tile_at_tile(x, y)->vision_flags;
-					sprintf(buffer, " %08x", tile);
+					sprintf(buffer, " %08x", tile & ~0x40000000);//'temporary_cagra' isn't part of the GameHash indexing, so it's not useful.
 					GPTP::critical_logger << buffer;
 				}
 
 				GPTP::critical_logger << "\n\nActive units:";
 
 				for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-					sprintf_s(buffer, "\n hp:0x%08x sh:0x%08x id:%04d en:0x%08x pos:0x%04x%04x", unit->hitpoints, unit->shields, unit->id, unit->energy, unit->sprite->position.x, unit->sprite->position.y);
+					sprintf_s(buffer, "\n hp:0x%08x sh:0x%08x id:%04d en:0x%08x pos:0x%04x%04x | u:%03d o:0x%02x%02x%02x%02x s:0x%02x",
+						unit->hitpoints, unit->shields, unit->id, unit->energy, unit->sprite->position.x, unit->sprite->position.y,//Unit data used for GameHash indexing.
+						unit->unique_id, unit->main_order_id, unit->main_order_state, unit->order_signal, unit->main_order_timer, unit->status);//Extra info, not associated with the hash code.
 					GPTP::critical_logger << buffer;
 				}
 				GPTP::critical_logger << "\n";
