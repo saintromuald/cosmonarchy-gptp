@@ -635,8 +635,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	memory_patch(0x004EB8C4, (u8)8); // Improve melee edge performance
 
-	memory_patch(0x004AF7B3, (u32)0x0059686F); // Skip briefings for competitive mode and so on by reading Unit Stats game mode field
+	memory_patch(0x004AF7B3, (u32)0x0059686F); // Skip briefings for competitive - singleplayer by reading Unit Stats game mode field
 	memory_patch(0x004AAFD6, (u8)0xA);
+	memory_patch(0x004D4369, (u32)0x0059686F); // Skip briefings for competitive - multiplayer
 
 	// Remove cursor centering after singleplayer center view and do not break drag-selection.
 	memory_patch(0x0047F109, (u16)0x28EB);//JMP 0x47F133
