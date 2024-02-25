@@ -4016,7 +4016,7 @@ namespace hooks {
 	void initialize_provider_version(GameVersion* version) { // 00472770
 		*version = {};
 		version->size = sizeof(*version);
-		version->game_id = 'CM';
+		version->game_id = 'CMBW';
 		version->game_title = "Cosmonarchy";
 
 		version->game_description = "internal version unknown";

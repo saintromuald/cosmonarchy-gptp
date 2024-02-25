@@ -250,6 +250,7 @@ struct UnitLayout
 	/*0x050*/ u16       order_unit_id;
 	/*0x052*/ u16		create_origin;					// was unused
 	/*0x054*/ u8        main_order_timer;				// A timer for orders, example: time left before minerals are harvested
+														// Vanilla use cases at: https://pastebin.com/raw/J9qGT5Yb -DF
 	/*0x055*/ u8        ground_weapon_cooldown;
 	/*0x056*/ u8        air_weapon_cooldown;
 	/*0x057*/ u8        spell_cooldown;
