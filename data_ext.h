@@ -308,6 +308,7 @@ enum ExtTimerId {
 	TimerRecallEffect,
 	TimerArtisanReturn,
 	TimerLiftoffDelay,
+	TimerReconstitutionDelay,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

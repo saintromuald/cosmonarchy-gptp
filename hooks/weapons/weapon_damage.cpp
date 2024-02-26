@@ -483,8 +483,9 @@ namespace hooks
 			} break;
 			case UnitId::ZergVilgorokor:
 			{
-				if (!scbw::is_under_carapace_swarm(data.target)) {
-					hooks::carapace_swarm_hit_internal(data.target->position.x, data.target->position.y, data.target->player, UnitId::Spell_CarapaceSwarmSmall);
+				if (!scbw::is_under_carapace_swarm(data.target) && !target_ext->timers[TimerReconstitutionDelay]) {
+					target_ext->timers[TimerReconstitutionDelay] = 2 * 24 + 1;
+					helper::play_sound_from_unit(SoundId::Zerg_Ultra_ZUlRor00_WAV, data.target, 1, 0);
 				}
 			} break;
 		}
@@ -964,6 +965,7 @@ namespace hooks
 				scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
 				scbw::transform_unit(data.target, UnitId::ZergVilgoleth);
 				data.target->set_hitpoints(data.target->get_max_hp_raw());
+				data.target->sprite->create_top_overlay(ImageId::QueenDeath);
 				fatal_deal_damage = false;
 			} break;
 			case UnitId::TerranCuirassTankMode:

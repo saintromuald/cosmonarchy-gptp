@@ -1296,7 +1296,6 @@ namespace hooks {
 			// Sires
 			case UnitId::ZergZoryusthaleth:
 			case UnitId::ZergKonvilisk:
-			case UnitId::ZergVilgorokor:
 			case UnitId::ZergVilgoleth:
 			case UnitId::ZergMatraleth:
 			case UnitId::ZergTetcaerokor:
@@ -2367,6 +2366,12 @@ namespace hooks {
 						helper::order_immediate(unit, order_id);
 					}
 					helper::to_idle(unit);
+				}
+			} break;
+			case UnitId::ZergVilgorokor:
+			{
+				if (unit_ext->timers[TimerReconstitutionDelay] == 1) {
+					hooks::carapace_swarm_hit_internal(unit->position.x, unit->position.y, unit->player, UnitId::Spell_CarapaceSwarmSmall);
 				}
 			} break;
 		}
