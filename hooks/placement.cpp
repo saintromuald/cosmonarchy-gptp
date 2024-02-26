@@ -381,33 +381,38 @@ namespace hooks
 	{
 		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id)
 		{
-			u32 race = unit->get_race();
-			u32 sound_id = race + 159;
-			if (race == RaceId::Protoss) {
-				sound_id = SoundId::ProtossAdvisorErrorPlacement;
+			u32 sound_id = SoundId::No_sound;
+			switch (unit->get_race()) {
+				case RaceId::Terran:
+				{
+					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildTerran);
+				} break;
+				case RaceId::Protoss:
+				{
+					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildProtoss);
+				} break;
+				case RaceId::Zerg:
+				{
+					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildZerg);
+				} break;
 			}
 
-			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
-			{
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
 				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 			}
 
-			if (error_string)
-			{
+			if (error_string) {
 				const char* string = 0;
-				if ((u16)(error_string - 1) < g_stat_txt_buffer->get_string_count())
-				{
+				if ((u16)(error_string - 1) < g_stat_txt_buffer->get_string_count()) {
 					string = g_stat_txt_buffer->get_string(error_string);
-					if (!string)
-					{
+					if (!string) {
 						return;
 					}
 				} else {
 					string = "";
 				}
 
-				if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
-				{
+				if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(string);
 				}
 			}
@@ -419,19 +424,27 @@ namespace hooks
 	{
 		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id)
 		{
-			u32 race = unit->get_race();
-			u32 sound_id = race + 162;
-			if (race == RaceId::Protoss) {
-				sound_id = SoundId::ProtossAdvisorErrorPlacement;
+			u32 sound_id = SoundId::No_sound;
+			switch (unit->get_race()) {
+				case RaceId::Terran:
+				{
+					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
+				} break;
+				case RaceId::Protoss:
+				{
+					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
+				} break;
+				case RaceId::Zerg:
+				{
+					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
+				} break;
 			}
 
-			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
-			{
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
 				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 			}
 
-			if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
-			{
+			if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 				char* string = (char*)g_stat_txt_buffer->get_string(856);
 				helper::set_unit_stat_txt_error_message(string);
 			}

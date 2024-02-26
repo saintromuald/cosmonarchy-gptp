@@ -148,7 +148,7 @@ namespace SoundId
 		Misc_ZBldgPlc_wav_2					= 141,
 		Terran_Advisor_tAdErr04_WAV_1		= 142,
 		Terran_Advisor_tAdErr03_WAV_1		= 143,
-		Terran_Advisor_tAdErr03_WAV_2		= 144,
+		Zerg_DRONE_ZDrErr00					= 144,
 		Terran_Advisor_tAdErr04_WAV_2		= 145,
 		Zerg_Advisor_ZAdErr00_WAV_1			= 146,
 		Zerg_Advisor_ZAdErr00_WAV_2			= 147,

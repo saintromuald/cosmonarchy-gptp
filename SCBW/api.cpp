@@ -3357,13 +3357,37 @@ namespace scbw {
 					}
 				} break;
 				case AdvisorEvent_NoBuildTerran: {
-					// TODO: fill in
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_SCV_TSCErr01_WAV;
+						case AdvisorType_Protoss:	return SoundId::Terran_SCV_TSCErr01_WAV;
+						case AdvisorType_Zerg:		return SoundId::Terran_SCV_TSCErr01_WAV;
+						case AdvisorType_Mesk:		return SoundId::Terran_SCV_TSCErr01_WAV;
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
+						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
+					}
 				} break;
 				case AdvisorEvent_NoBuildProtoss: {
-					// TODO: fill in
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::ProtossAdvisorErrorPlacement;
+						case AdvisorType_Protoss:	return SoundId::ProtossAdvisorErrorPlacement;
+						case AdvisorType_Zerg:		return SoundId::ProtossAdvisorErrorPlacement;
+						case AdvisorType_Mesk:		return SoundId::ProtossAdvisorErrorPlacement;
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoWarp01, SoundId::AckmedAdvisor_NoWarp01);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoWarp01;
+						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoWarp01;
+					}
 				} break;
 				case AdvisorEvent_NoBuildZerg: {
-					// TODO: fill in
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Zerg_DRONE_ZDrErr00;
+						case AdvisorType_Protoss:	return SoundId::Zerg_DRONE_ZDrErr00;
+						case AdvisorType_Zerg:		return SoundId::Zerg_DRONE_ZDrErr00;
+						case AdvisorType_Mesk:		return SoundId::Zerg_DRONE_ZDrErr00;
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
+						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
+					}
 				} break;
 				case AdvisorEvent_NoLanding: {
 					// TODO: fill in
@@ -3380,7 +3404,15 @@ namespace scbw {
 					}
 				} break;
 				case AdvisorEvent_PlacementInterrupted: {
-					// TODO: fill in
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_SCV_TSCErr00_WAV;
+						case AdvisorType_Protoss:	return SoundId::Protoss_PROBE_PPrErr00_WAV;
+						case AdvisorType_Zerg:		return SoundId::Zerg_DRONE_ZDrErr00;
+						case AdvisorType_Mesk:		return SoundId::Terran_SCV_TSCErr00_WAV;
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
+						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
+					}
 				} break;
 				case AdvisorEvent_StructureComplete_T: {
 					// TODO: fill in

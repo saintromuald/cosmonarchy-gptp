@@ -272,7 +272,24 @@ namespace hooks
 	void play_landing_interrupt_sound(Unit* unit) // 0048F5A0
 	{
 		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
-			u32 sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_LandingInterrupted);
+			AdvisorEvent event_type = AdvisorEvent_LandingInterrupted;
+			switch (unit->get_race()) {
+				case RaceId::Terran:
+				{
+					if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+						event_type = AdvisorEvent_PlacementInterrupted;
+					}
+				} break;
+				case RaceId::Protoss:
+				{
+					event_type = AdvisorEvent_NoBuildProtoss;
+				} break;
+				case RaceId::Zerg:
+				{
+					event_type = AdvisorEvent_PlacementInterrupted;
+				} break;
+			}
+			u32 sound_id = scbw::get_advisor_sound_from_event_type(unit->player, event_type);
 			if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
 				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 			}
