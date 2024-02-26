@@ -3302,8 +3302,26 @@ namespace scbw {
 	}
 
 	u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) { 
-		if (scbw::has_custom_advisor(player)) {
+	/*	if (scbw::has_custom_advisor(player)) */ {
 			AdvisorType advisor = globals.current_advisor;
+			if (advisor == AdvisorType_Default) {
+				switch (g_player_table[player].race)
+				{
+					case RaceId::Terran:
+					{
+						advisor = AdvisorType_Terran;
+					} break;
+					case RaceId::Protoss:
+					{
+						advisor = AdvisorType_Protoss;
+					} break;
+					case RaceId::Zerg:
+					{
+						advisor = AdvisorType_Zerg;
+					} break;
+				}
+			}
+
 			switch (event_type) {
 				case AdvisorEvent_NoMinerals: {
 					switch (advisor) {
@@ -3352,10 +3370,10 @@ namespace scbw {
 				} break;
 				case AdvisorEvent_LandingInterrupted: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr03_WAV_2;
-						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_tAdErr03_WAV_2;
-						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_tAdErr03_WAV_2;
-						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_tAdErr03_WAV_2;
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr03_WAV_1;
+						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_tAdErr03_WAV_1;
+						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_tAdErr03_WAV_1;
+						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_tAdErr03_WAV_1;
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_LandingInterrupt01, SoundId::AckmedAdvisor_LandingInterrupt02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_LandingInterrupt01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_LandingInterrupt01;
