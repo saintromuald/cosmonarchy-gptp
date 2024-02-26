@@ -3023,7 +3023,7 @@ namespace helper {
 		}
 	}
 
-	void play_building_land_sound(Unit* unit) {
+	void play_landing_interrupt_sound(Unit* unit) {
 		const u32 func_address = 0x0048F5A0;
 		__asm {
 			PUSHAD

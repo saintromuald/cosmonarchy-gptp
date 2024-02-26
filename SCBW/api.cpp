@@ -3351,7 +3351,15 @@ namespace scbw {
 					// TODO: fill in
 				} break;
 				case AdvisorEvent_LandingInterrupted: {
-					// TODO: fill in
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr03_WAV_2;
+						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_tAdErr03_WAV_2;
+						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_tAdErr03_WAV_2;
+						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_tAdErr03_WAV_2;
+						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_LandingInterrupt01, SoundId::AckmedAdvisor_LandingInterrupt02);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_LandingInterrupt01;
+						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_LandingInterrupt01;
+					}
 				} break;
 				case AdvisorEvent_PlacementInterrupted: {
 					// TODO: fill in

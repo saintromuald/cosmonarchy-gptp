@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "hooks\unit_speed.h"
 #include "hooks/load_unload_proc.h"
+#include <hooks/limits/sfx_extender.h>
 
 namespace hooks
 {
@@ -57,7 +58,7 @@ namespace hooks
 				// Check for units occupying the landing zone before the final vertical movement started.
 				if (helper::can_build_on_tile_location(unit, unit->player, x, y, unit->id, 0, 0, 1, 0)) {
 					// Play "landing sequence interrupted".
-					helper::play_building_land_sound(unit);
+					helper::play_landing_interrupt_sound(unit);
 
 					if (unit->order_queue_head
 					&&	unit->order_queue_head->order_id == OrderId::PlaceAddon)
@@ -264,6 +265,17 @@ namespace hooks
 				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, 0);
 			}
 			helper::force_order_done(unit);
+		}
+	}
+
+	// Hooked for custom advisor handling. -Pr0nogo
+	void play_landing_interrupt_sound(Unit* unit) // 0048F5A0
+	{
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
+			u32 sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_LandingInterrupted);
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
+				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+			}
 		}
 	}
 }

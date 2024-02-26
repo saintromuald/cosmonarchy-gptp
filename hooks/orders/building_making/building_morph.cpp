@@ -450,7 +450,7 @@ namespace hooks
 							}
 
 							if (unmovable == 2) {
-								helper::play_building_land_sound(unit);
+								helper::play_landing_interrupt_sound(unit);
 								Order* order_queue = unit->order_queue_head;
 								if (order_queue)
 								{
@@ -540,7 +540,7 @@ namespace hooks
 							}
 							return;
 						}
-						helper::play_building_land_sound(unit);
+						helper::play_landing_interrupt_sound(unit);
 						Order* order_queue = unit->order_queue_head;
 						if (order_queue) {
 							if (order_queue->order_id == OrderId::DroneBuild) {
@@ -550,7 +550,7 @@ namespace hooks
 						helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
 						return;
 					}
-					helper::play_building_land_sound(unit);
+					helper::play_landing_interrupt_sound(unit);
 					Order* order_queue = unit->order_queue_head;
 					if (order_queue) {
 						if (order_queue->order_id == OrderId::DroneBuild) {

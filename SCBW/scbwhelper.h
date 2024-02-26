@@ -360,7 +360,7 @@ namespace helper {
 	bool update_creep_disappearance_unit(Unit* unit);																				// 0047DF90
 	void update_creep_disappearance_unit_id(u32 unit_id, u32 x, u32 y, b32 completed);												// 0047DE40
 	void place_building_proc();																										// 0048E6E0
-	void play_building_land_sound(Unit* unit);																						// 0048F5A0
+	void play_landing_interrupt_sound(Unit* unit);																						// 0048F5A0
 	Unit* set_unit_movement_speed(Unit* unit, u32 speed);																			// 004951C0
 	void set_shadow_y(Sprite* sprite, u8 newVerticalOffset);																		// 00498150
 	void create_landing_dust(Sprite* sprite);																						// 004997E0
