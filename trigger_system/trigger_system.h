@@ -40,9 +40,9 @@ extern bool trigger_system_in_game;
 // END TODO
 
 enum WitnessMode: u8 {
-	WitnessMode_Disabled = 0,   // Normal Player
-	WitnessMode_Pure,			// Pure Witness,    Witness Mode && hidden on scoreboard
-	WitnessMode_Defeated,		// Defeated Player, Witness Mode && shown on scoreboard
+	WitnessMode_Disabled = 0,   // Normal Player	|	No witness mode && shown on scoreboard
+	WitnessMode_Pure,			// Pure Witness		|	Witness Mode && hidden on scoreboard
+	WitnessMode_Defeated,		// Defeated Player	|	Witness Mode && shown on scoreboard
 };
 
 enum Celebration: u8 {

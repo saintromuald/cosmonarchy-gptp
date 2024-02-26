@@ -830,4 +830,5 @@ namespace scbw {
 	u32 get_regeneration_factor(Unit* unit);
 	bool unit_has_shields(Unit* unit);
 	bool can_show_custom_ui();
+	bool player_is_witness(u32 player);
 }

@@ -1078,4 +1078,28 @@ LABEL_15:
 		}
 		return result;
 	}
+
+	// Hooked to prevent witness pings from showing for non-witnesses. -Pr0nogo
+	char CMDRECV_minimap_ping(char* buffer) // 004BF7A0
+	{
+		u16 pos_x = *(u16*)(buffer + 1);
+		if (pos_x < *g_map_width_pixels)
+		{
+			u16 pos_y = *(u16*)(buffer + 3);
+			if (pos_y < *g_map_height_pixels)
+			{
+				*buffer = *g_active_nation_id;
+				if (scbw::player_is_witness(*g_active_nation_id) && !scbw::player_is_witness(*g_local_nation_id)
+				|| !scbw::player_is_witness(*g_active_nation_id) &&  scbw::player_is_witness(*g_local_nation_id)) {
+					return *buffer;
+				}
+
+				if (scbw::is_allied_to(*g_active_nation_id, *g_local_nation_id)
+				||	scbw::player_is_witness(*g_active_nation_id) && scbw::player_is_witness(*g_local_nation_id)) {
+					*buffer = helper::minimap_ping(pos_x, pos_y, (*g_active_nation_id != *g_local_nation_id) + 17);
+				}
+			}
+		}
+		return *buffer;
+	}
 }

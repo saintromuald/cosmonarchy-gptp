@@ -3865,4 +3865,8 @@ namespace scbw {
 		}
 		return true;
 	}
+
+	bool player_is_witness(u32 player) {
+		return globals.players[player].witness_mode != WitnessMode_Disabled;
+	}
 }

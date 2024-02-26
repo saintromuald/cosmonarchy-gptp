@@ -51,11 +51,12 @@ namespace hooks {
 	void update_actions();
 	void draw_ui_features();
 
-	char input_mmb_down(DialogEvent* event);																				// 00484520
-	int __cdecl input_mmb_up();																								// 004843A0
-	void __cdecl input_mmb_move();																							// 00484460
+	char input_mmb_down(DialogEvent* event);											// 00484520
+	int __cdecl input_mmb_up();															// 004843A0
+	void __cdecl input_mmb_move();														// 00484460
 
-	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event);														// 0045F290
+	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event);					// 0045F290
+	char CMDRECV_minimap_ping(char* buffer);											// 004BF7A0
 }
 
 #define tIconCount 7
