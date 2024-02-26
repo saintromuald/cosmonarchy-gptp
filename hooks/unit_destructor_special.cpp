@@ -293,7 +293,7 @@ void unit_on_death_behaviors(Unit* unit) {
 		}
 	}
 
-	{ // Mortothrokor - Whetted Appetite - Add stacks when in vision
+	if (!unit_id_is_spell(unit->id)) { // Mortothrokor - Whetted Appetite - Add stacks when in vision
 		EntryArray unit_array = {};
 		unit_search_radial(&unit_array, unit->position, units_dat::sight_range[UnitId::ZergMortothrokor] * 32);
 		unit_search_filter(&unit_array, unit, 0, {UnitId::ZergMortothrokor});
