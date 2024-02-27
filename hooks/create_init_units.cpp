@@ -72,12 +72,10 @@ namespace hooks {
 
 		if (created_unit) {
 			helper::update_unit_stats_and_finish_building(created_unit);
-			if (helper::show_finished_unit(created_unit) != 0)
-			{
+			if (helper::show_finished_unit(created_unit) != 0) {
 				helper::update_unit_strength(created_unit);
 			}
-			if (helper::spreads_creep(created_unit->id, 1) || units_dat::base_property[created_unit->id] & UnitProperty::CreepBuilding)
-			{
+			if (helper::spreads_creep(created_unit->id, 1) || units_dat::base_property[created_unit->id] & UnitProperty::CreepBuilding) {
 				helper::apply_creep_at_location_from_unit_id(created_unit->sprite->position.x, created_unit->sprite->position.y, created_unit->id);
 			}
 		}
@@ -242,8 +240,7 @@ namespace hooks {
 							if (created_unit) {
 								scbw::teleport_to_point(created_unit, pos);
 								helper::update_unit_stats_and_finish_building(created_unit);
-								if (helper::show_finished_unit(created_unit) != 0)
-								{
+								if (helper::show_finished_unit(created_unit) != 0) {
 									helper::update_unit_strength(created_unit);
 								}
 							}
@@ -280,8 +277,7 @@ namespace hooks {
 		if (created_unit)
 		{
 			helper::update_unit_stats_and_finish_building(created_unit);
-			if (helper::show_finished_unit(created_unit) != 0)
-			{
+			if (helper::show_finished_unit(created_unit) != 0) {
 				helper::update_unit_strength(created_unit);
 			}
 		}
@@ -346,7 +342,6 @@ namespace hooks {
 			if (unit) {
 				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
 				unit->remove_timer = 0;
-
 				hooks::init_unit(unit);
 			}
 			return unit;

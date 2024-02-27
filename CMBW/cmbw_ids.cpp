@@ -1136,12 +1136,15 @@ bool unit_spreads_custom_creep(Unit* unit) {
 }
 
 bool unit_id_should_give_gas_in_massacre_mode(u32 unit_id) {
-	return unit_id != UnitId::ProtossSteward
-		&& unit_id != UnitId::ZergLarva
-		&& unit_id != UnitId::ZergOcsalLarva
-		&& unit_id != UnitId::ZergEgg
-		&& unit_id != UnitId::ZergCocoon
-		&& unit_id != UnitId::Special_MapRevealer;
+	return   unit_id != UnitId::ProtossSteward
+		&&   unit_id != UnitId::ZergLarva
+		&&   unit_id != UnitId::ZergOcsalLarva
+		&&   unit_id != UnitId::ZergEgg
+		&&   unit_id != UnitId::ZergCocoon
+		&&   unit_id != UnitId::Special_MapRevealer
+		&&  !unit_id_is_spell(unit_id)
+		&& !(units_dat::base_property[unit_id] & UnitProperty::Subunit)
+		&& !unit_id_is_resource_node(unit_id, false);
 }
 
 bool rapid_rendezvous_can_target_unit_id(u32 unit_id) { // Does not prohibit air units, must be done separately

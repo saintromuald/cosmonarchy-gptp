@@ -79,7 +79,7 @@ namespace hooks {
 						building->set_hitpoints(hp_after_morph);
 						building->remaining_build_time = 0;
 					} else if (building->create_origin == UnitId::ZergGosvileth) {
-						Unit* worker = scbw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y);
+						Unit* worker = scbw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y, 0, 0, 0);
 						if (worker) {
 							worker->set_hitpoints(building->previous_hitpoints << 8);
 						}

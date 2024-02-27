@@ -732,12 +732,10 @@ namespace hooks {
 						} break;
 						case 1:
 						{
-							if (unit->main_order_timer <= 45 || helper::is_unit_movable(unit))
-							{
+							if (unit->main_order_timer <= 45 || helper::is_unit_movable(unit)) {
 								u32 sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_MissileLaunch);
 								helper::play_sound_from_unit(sound_id, 0, 1, 0);
-								if (g_stat_txt_buffer->get_string_count() > 1046)
-								{
+								if (g_stat_txt_buffer->get_string_count() > 1046) {
 									helper::show_stat_txt_to_player((s32)g_stat_txt_buffer->get_string(1047), *g_local_nation_id);
 								} else {
 									helper::show_stat_txt_to_player((s32)"", *g_local_nation_id);
@@ -747,8 +745,7 @@ namespace hooks {
 						} break;
 						case 2:
 						{
-							if (!unit->main_order_timer || helper::is_unit_movable(unit))
-							{
+							if (!unit->main_order_timer || helper::is_unit_movable(unit)) {
 								helper::hide_unit(unit);
 								unit->connected_unit->connected_unit = unit;
 								helper::set_resource_target(unit);

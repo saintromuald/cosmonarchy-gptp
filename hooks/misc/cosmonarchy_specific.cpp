@@ -324,8 +324,7 @@ namespace hooks
 	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) 
 	{
 		Vector32 attack_frame = {};
-		if (*g_is_in_game_loop)
-		{
+		if (*g_is_in_game_loop) {
 			++g_random_counts[14];
 			*g_last_random_number = 0x15A4E35 * *g_last_random_number + 1;
 			++(*g_total_random_counts);
@@ -333,32 +332,29 @@ namespace hooks
 		}
 
 		Unit* unit = helper::unit_constructor(x, y, unit_id, player, attack_frame.y);
-		if (!unit)
-		{
+		if (!unit) {
 			return 0;
 		}
+
 		if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster) {
 			unit->energy = hooks::get_unit_max_energy(unit); // New starting amount
 		} else {
 			unit->energy = 0;
 		}
 
-		if (unit->status & UnitStatus::GroundedBuilding)
-		{
+		if (unit->status & UnitStatus::GroundedBuilding) {
 			helper::list_push_back_used_unit_entry(unit);
 		} else {
 			helper::list_push_back_hidden_unit_entry(unit);
 		}
 
-		if (units_dat::subunit[unit_id] == UnitId::None)
-		{
+		if (units_dat::subunit[unit_id] == UnitId::None) {
 			unit->subunit = 0;
 			return unit;
 		}
 
 		Unit* subunit = helper::unit_constructor(x, y, units_dat::subunit[unit_id], player, attack_frame.y);
-		if (!subunit)
-		{
+		if (!subunit) {
 			helper::unit_destructor(unit);
 			return 0;
 		}
@@ -371,6 +367,10 @@ namespace hooks
 		// New
 		if (subunit) {
 			helper::turn_unit(subunit, 96);
+		}
+
+		if (scbw::get_game_kind() == GameKind_Massacre && unit_id_should_give_gas_in_massacre_mode(unit->id)) {
+			scbw::add_massacre_resource(unit->player);
 		}
 		return unit;
 	}

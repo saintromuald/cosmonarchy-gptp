@@ -207,4 +207,42 @@ namespace hooks {
 	b32 _stdcall button_is_training(Unit* unit) {
 		return unit->build_queue[unit->build_queue_slot % 5] != UnitId::None;
 	}
+
+	// Hooked to try a different approach for Massacre resources. -Pr0nogo
+	void update_unit_stats_and_finish_building(Unit* unit) // 004A01F0
+	{
+		if (unit->remaining_build_time) {
+			unit->hitpoints = units_dat::max_hitpoints[unit->id];
+			unit->shields = units_dat::max_shield_points[unit->id] << 8;
+			unit->remaining_build_time = 0;
+		}
+
+		if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building || unit->id == UnitId::None) {
+			unit->current_buttonset = unit->id;
+		}
+
+		if (unit->status & UnitStatus::GroundedBuilding) {
+			unit->parasite_flags = 0;
+			unit->is_blind = 0;
+			helper::init_building(unit, 0);
+			for (Image* i = unit->sprite->images.head; i; i = i->link.next)
+			{
+				play_image_iscript(i, IscriptAnimation::Built);
+			}
+
+			if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
+				scbw::refresh_console();
+			}
+		} else {
+			if (unit->status & UnitStatus::CanTurnAroundToAttack) {
+				u32 start_dir = units_dat::start_direction[unit->id];
+				if (start_dir == 32) {
+					start_dir = helper::randomize_short(36) & 0x1F;
+				}
+				helper::turn_unit(unit, 8 * start_dir);
+			}
+			// Previously didn't run this helper for traps
+			helper::show_and_enable_unit(unit);
+		}
+	}
 }

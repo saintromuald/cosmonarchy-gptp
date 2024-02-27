@@ -590,60 +590,60 @@ struct DatLoad {
 namespace units_dat {
 //	SCBW_DATA(const DatLoad*,	unitsDat,	0x00513C30); // now in scbwdata.cpp
 
-	SCBW_DATA_REF(u16*,			graphic, unitsDat[0].address);							// 006644F8
-	SCBW_DATA_REF(u16*,			subunit, unitsDat[1].address);							// 006607C0
-	SCBW_DATA_REF(u16*,			subunit_2,	unitsDat[2].address);						// 00660C38
-	SCBW_DATA_REF(u16*,			infested_unit_partial, unitsDat[3].address);			// 00664980 // (Id - UnitId::TerranMinistry) for it to work, last valid id is UnitId::Special_OvermindCocoon by default
-	SCBW_DATA_REF(u32*,			construction_graphic, unitsDat[4].address);				// 006610B0
-	SCBW_DATA_REF(u8*,			start_direction, unitsDat[5].address);					// 006605F0 // Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise). 32 means random
-	SCBW_DATA_REF(u8*,			shields_enabled, unitsDat[6].address);					// 006647B0
-	SCBW_DATA_REF(u16*,			max_shield_points, unitsDat[7].address);				// 00660E00
-	SCBW_DATA_REF(s32*,			max_hitpoints, unitsDat[8].address);					// 00662350
-	SCBW_DATA_REF(u8*,			elevation, unitsDat[9].address);						// 00663150
-	SCBW_DATA_REF(u8*,			movement_flags, unitsDat[10].address);					// 00660FC8
-	SCBW_DATA_REF(u8*,			rank, unitsDat[11].address);							// 00663DD0
-	SCBW_DATA_REF(u8*,			computer_idle_order, unitsDat[12].address);				// 00662EA0
-	SCBW_DATA_REF(u8*,			human_idle_order, unitsDat[13].address);				// 00662268
-	SCBW_DATA_REF(u8*,			return_to_idle_order, unitsDat[14].address);			// 00664898
-	SCBW_DATA_REF(u8*,			attack_unit_order, unitsDat[15].address);				// 00663320
-	SCBW_DATA_REF(u8*,			attack_move_order, unitsDat[16].address);				// 00663A50
-	SCBW_DATA_REF(u8*,			ground_weapon, unitsDat[17].address);					// 006636B8
-	SCBW_DATA_REF(u8*,			max_ground_hits, unitsDat[18].address);					// 006645E0
-	SCBW_DATA_REF(u8*,			air_weapon, unitsDat[19].address);						// 006616E0
-	SCBW_DATA_REF(u8*,			max_air_hits, unitsDat[20].address);					// 0065FC18
-	SCBW_DATA_REF(u8*,			computer_ai_internal, unitsDat[21].address);			// 00660178
-	SCBW_DATA_REF(u32*,			base_property, unitsDat[22].address);					// 00664080 // AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
-	SCBW_DATA_REF(u8*,			seek_range, unitsDat[23].address);						// 00662DB8 // AKA Target Acquisition Range, Acquire Target Range, etc.
-	SCBW_DATA_REF(u8*,			sight_range, unitsDat[24].address);						// 00663238
-	SCBW_DATA_REF(u8*,			armor_upgrade, unitsDat[25].address);					// 006635D0
-	SCBW_DATA_REF(u8*,			size_type, unitsDat[26].address);						// 00662180
-	SCBW_DATA_REF(u8*,			armor_amount, unitsDat[27].address);					// 0065FEC8
-	SCBW_DATA_REF(u8*,			right_click_action, unitsDat[28].address);				// 00662098
-	SCBW_DATA_REF(u16*,			sound_ready, unitsDat[29].address);						// 00661FC0
-	SCBW_DATA_REF(u16*,			sound_what_first, unitsDat[30].address);				// 0065FFB0
-	SCBW_DATA_REF(u16*,			sound_what_last, unitsDat[31].address);					// 00662BF0
-	SCBW_DATA_REF(u16*,			sound_annoyed_first, unitsDat[32].address);				// 00663B38
-	SCBW_DATA_REF(u16*,			sound_annoyed_last, unitsDat[33].address);				// 00661EE8
-	SCBW_DATA_REF(u16*,			sound_yes_first, unitsDat[34].address);					// 00663C10
-	SCBW_DATA_REF(u16*,			sound_yes_last, unitsDat[35].address);					// 00661440
-	SCBW_DATA_REF(Point16*,		building_dimensions, unitsDat[36].address);				// 00662860	// Placement Box in PyDAT
-	SCBW_DATA_REF(Point16*,		addon_placement, unitsDat[37].address);					// 006626E0 // Addon Position in PyDAT
-	SCBW_DATA_REF(Box16*,		unit_bounds, unitsDat[38].address);						// 006617C8	// Unit Dimensions in PyDAT
-	SCBW_DATA_REF(u16*,			portrait_id, unitsDat[39].address);						// 00662F88
-	SCBW_DATA_REF(u16*,			mineral_cost, unitsDat[40].address);					// 00663888
-	SCBW_DATA_REF(u16*,			vespene_cost, unitsDat[41].address);					// 0065FD00
-	SCBW_DATA_REF(u16*,			time_cost, unitsDat[42].address);						// 00660428
-	SCBW_DATA_REF(u16*,			requirement_offsets, unitsDat[43].address);				// 00660A70 // "Restriction Address" according to EUDDB
-	SCBW_DATA_REF(GroupFlag*,	group_flags, unitsDat[44].address);						// 006637A0
-	SCBW_DATA_REF(u8*,			supply_provided, unitsDat[45].address);					// 006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
-	SCBW_DATA_REF(u8*,			supply_required, unitsDat[46].address);					// 00663CE8
-	SCBW_DATA_REF(u8*,			space_required, unitsDat[47].address);					// 00664410
-	SCBW_DATA_REF(u8*,			space_provided, unitsDat[48].address);					// 00660988
-	SCBW_DATA_REF(u16*,			build_score, unitsDat[49].address);						// 00663408
-	SCBW_DATA_REF(u16*,			destroy_score, unitsDat[50].address);					// 00663EB8
-	SCBW_DATA_REF(u16*,			map_string_id, unitsDat[51].address);					// 00660260
-	SCBW_DATA_REF(u8*,			broodwar_only, unitsDat[52].address);					// 006606D8
-	SCBW_DATA_REF(u16*,			staredit_avail_flags, unitsDat[53].address);			// 00661518
+	SCBW_DATA_REF(u16*,			graphic,				unitsDat[0].address);	// 006644F8
+	SCBW_DATA_REF(u16*,			subunit,				unitsDat[1].address);	// 006607C0
+	SCBW_DATA_REF(u16*,			subunit_2,				unitsDat[2].address);	// 00660C38
+	SCBW_DATA_REF(u16*,			infested_unit_partial,	unitsDat[3].address);	// 00664980 // (Id - UnitId::TerranMinistry) for it to work, last valid id is UnitId::Special_OvermindCocoon by default
+	SCBW_DATA_REF(u32*,			construction_graphic,	unitsDat[4].address);	// 006610B0
+	SCBW_DATA_REF(u8*,			start_direction,		unitsDat[5].address);	// 006605F0 // Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise). 32 means random
+	SCBW_DATA_REF(u8*,			shields_enabled,		unitsDat[6].address);	// 006647B0
+	SCBW_DATA_REF(u16*,			max_shield_points,		unitsDat[7].address);	// 00660E00
+	SCBW_DATA_REF(s32*,			max_hitpoints,			unitsDat[8].address);	// 00662350
+	SCBW_DATA_REF(u8*,			elevation,				unitsDat[9].address);	// 00663150
+	SCBW_DATA_REF(u8*,			movement_flags,			unitsDat[10].address);	// 00660FC8
+	SCBW_DATA_REF(u8*,			rank,					unitsDat[11].address);	// 00663DD0
+	SCBW_DATA_REF(u8*,			computer_idle_order,	unitsDat[12].address);	// 00662EA0
+	SCBW_DATA_REF(u8*,			human_idle_order,		unitsDat[13].address);	// 00662268
+	SCBW_DATA_REF(u8*,			return_to_idle_order,	unitsDat[14].address);	// 00664898
+	SCBW_DATA_REF(u8*,			attack_unit_order,		unitsDat[15].address);	// 00663320
+	SCBW_DATA_REF(u8*,			attack_move_order,		unitsDat[16].address);	// 00663A50
+	SCBW_DATA_REF(u8*,			ground_weapon,			unitsDat[17].address);	// 006636B8
+	SCBW_DATA_REF(u8*,			max_ground_hits,		unitsDat[18].address);	// 006645E0
+	SCBW_DATA_REF(u8*,			air_weapon,				unitsDat[19].address);	// 006616E0
+	SCBW_DATA_REF(u8*,			max_air_hits,			unitsDat[20].address);	// 0065FC18
+	SCBW_DATA_REF(u8*,			computer_ai_internal,	unitsDat[21].address);	// 00660178
+	SCBW_DATA_REF(u32*,			base_property,			unitsDat[22].address);	// 00664080 // AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
+	SCBW_DATA_REF(u8*,			seek_range,				unitsDat[23].address);	// 00662DB8 // AKA Target Acquisition Range, Acquire Target Range, etc.
+	SCBW_DATA_REF(u8*,			sight_range,			unitsDat[24].address);	// 00663238
+	SCBW_DATA_REF(u8*,			armor_upgrade,			unitsDat[25].address);	// 006635D0
+	SCBW_DATA_REF(u8*,			size_type,				unitsDat[26].address);	// 00662180
+	SCBW_DATA_REF(u8*,			armor_amount,			unitsDat[27].address);	// 0065FEC8
+	SCBW_DATA_REF(u8*,			right_click_action,		unitsDat[28].address);	// 00662098
+	SCBW_DATA_REF(u16*,			sound_ready,			unitsDat[29].address);	// 00661FC0
+	SCBW_DATA_REF(u16*,			sound_what_first,		unitsDat[30].address);	// 0065FFB0
+	SCBW_DATA_REF(u16*,			sound_what_last,		unitsDat[31].address);	// 00662BF0
+	SCBW_DATA_REF(u16*,			sound_annoyed_first,	unitsDat[32].address);	// 00663B38
+	SCBW_DATA_REF(u16*,			sound_annoyed_last,		unitsDat[33].address);	// 00661EE8
+	SCBW_DATA_REF(u16*,			sound_yes_first,		unitsDat[34].address);	// 00663C10
+	SCBW_DATA_REF(u16*,			sound_yes_last,			unitsDat[35].address);	// 00661440
+	SCBW_DATA_REF(Point16*,		building_dimensions,	unitsDat[36].address);	// 00662860	// Placement Box in PyDAT
+	SCBW_DATA_REF(Point16*,		addon_placement,		unitsDat[37].address);	// 006626E0 // Addon Position in PyDAT
+	SCBW_DATA_REF(Box16*,		unit_bounds,			unitsDat[38].address);	// 006617C8	// Unit Dimensions in PyDAT
+	SCBW_DATA_REF(u16*,			portrait_id,			unitsDat[39].address);	// 00662F88
+	SCBW_DATA_REF(u16*,			mineral_cost,			unitsDat[40].address);	// 00663888
+	SCBW_DATA_REF(u16*,			vespene_cost,			unitsDat[41].address);	// 0065FD00
+	SCBW_DATA_REF(u16*,			time_cost,				unitsDat[42].address);	// 00660428
+	SCBW_DATA_REF(u16*,			requirement_offsets,	unitsDat[43].address);	// 00660A70 // "Restriction Address" according to EUDDB
+	SCBW_DATA_REF(GroupFlag*,	group_flags,			unitsDat[44].address);	// 006637A0
+	SCBW_DATA_REF(u8*,			supply_provided,		unitsDat[45].address);	// 006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
+	SCBW_DATA_REF(u8*,			supply_required,		unitsDat[46].address);	// 00663CE8
+	SCBW_DATA_REF(u8*,			space_required,			unitsDat[47].address);	// 00664410
+	SCBW_DATA_REF(u8*,			space_provided,			unitsDat[48].address);	// 00660988
+	SCBW_DATA_REF(u16*,			build_score,			unitsDat[49].address);	// 00663408
+	SCBW_DATA_REF(u16*,			destroy_score,			unitsDat[50].address);	// 00663EB8
+	SCBW_DATA_REF(u16*,			map_string_id,			unitsDat[51].address);	// 00660260
+	SCBW_DATA_REF(u8*,			broodwar_only,			unitsDat[52].address);	// 006606D8
+	SCBW_DATA_REF(u16*,			staredit_avail_flags,	unitsDat[53].address);	// 00661518
 } // (last entry at 0x00513EAC)
 
 namespace flingy_dat {

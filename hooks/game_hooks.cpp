@@ -1004,15 +1004,6 @@ namespace hooks {
 		}
 		unit_ext->values[ValueUnitInit] = unit->id + 1;
 
-		if (scbw::get_game_kind() == GameKind_Massacre) {
-			if (unit_id_is_vespene_node(unit->id)) {
-				unit->remove();
-				return;
-			} else if (unit_id_should_give_gas_in_massacre_mode(unit->id)) {
-				scbw::add_massacre_resource(unit->player);
-			}
-		}
-
 		switch (unit->id) {
 			case UnitId::TerranGoliath: {
 				helper::turn_unit(unit, 96);
@@ -1043,8 +1034,7 @@ namespace hooks {
 			} break;
 			case UnitId::ZergNydusCesiant:
 			{
-				if (unit->player == 11)
-				{
+				if (unit->player == 11) {
 					unit_ext->values[ValueIsNeutralNydus] = 1;
 				}
 			} break;
@@ -1062,6 +1052,13 @@ namespace hooks {
 
 		if (unit->player < PlayerLimit) {
 			unit_ext->values[ValuePlayerColor] = player_data.player_color_list[unit->player];
+		}
+
+		if (scbw::get_game_kind() == GameKind_Massacre) {
+			if (unit_id_is_vespene_node(unit->id)) {
+				unit->remove();
+				return;
+			}
 		}
 	}
 

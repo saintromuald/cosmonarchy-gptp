@@ -565,7 +565,7 @@ namespace scbw {
 	///
 	/// @return           The created unit or nullptr if the unit cannot be created.
 	//function used for broodlings and similar stuff
-	Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator = nullptr, bool initAI = true);
+	Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator = nullptr, bool init_ai = true, bool give_massacre_resource = true);
 
 	Unit* create_hangar_unit(Unit* source, u32 unit_id);
 	void create_hangar_units(Unit* source, u32 count, u32 unit_id);

@@ -811,7 +811,7 @@ namespace scbw {
 
 	//-------- Utility functions --------//
 
-	Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator, bool initAI) {
+	Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator, bool init_ai, bool give_massacre_resource) {
 		if (*g_unit_count >= UnitLimit) {
 			return 0; // Prevent crashes, move to create unit later. -Veeq7
 		}
@@ -822,9 +822,14 @@ namespace scbw {
 			helper::display_last_network_error_for_player(player);
 			return 0;
 		}
+		if (!give_massacre_resource) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			unit_ext->values[ValueNoMassacreResource] = 1;
+		}
+
 		helper::update_unit_stats_and_finish_building(unit);
 		helper::update_unit_strength(unit);
-		if (initAI) {
+		if (init_ai) {
 			scbw::give_ai_ex(unit); // no longer need creator if we are using this robust AI function, still keeping the argument for legacy reasons
 		}
 		return unit;
@@ -3200,8 +3205,7 @@ namespace scbw {
 			} break;
 			case UnitId::ProtossLanifect:
 			{
-				if (unit_ext->values[ValueDisruptionFieldOn])
-				{
+				if (unit_ext->values[ValueDisruptionFieldOn]) {
 					return false;
 				}
 			} break;
@@ -3830,8 +3834,8 @@ namespace scbw {
 			return;
 		}
 		g_game_vespene[player_id] += 3;
-	//	g_total_vespene[player_id] += 3;
-	//	g_aiscript_controller[player_id].vespene_available += 3;
+		g_total_vespene[player_id] += 3;
+		g_aiscript_controller[player_id].vespene_available += 3;
 	}
 
 	bool game_kind_supports_kills(GameKind game_kind)

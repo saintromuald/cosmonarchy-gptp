@@ -139,8 +139,10 @@ namespace hooks
 					}
 
 					if (action_sound) {
-						helper::play_sound_from_unit(action_sound, unit, g_options_list->flags & 1, 99);
-						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
+						if (helper::play_sound_from_unit(action_sound, unit, g_options_list->flags & 1, 99)
+						&& !*g_is_in_replay && unit->player == *g_local_nation_id) {
+							helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
+						}
 					}
 					scbw::refresh_console();
 				}

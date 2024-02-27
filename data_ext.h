@@ -185,6 +185,7 @@ enum ExtValueId {
 	ValueTriggerBehaviorProximityCloak,
 	ValueTriggerBehaviorSteadyShroud,
 	ValueAddonInactive,
+	ValueNoMassacreResource,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

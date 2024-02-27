@@ -704,26 +704,20 @@ namespace hooks
 			return 0;
 		}
 
-		if (!(unit->sprite->flags & SpriteFlags::Hidden))
-		{
+		if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 			helper::sort_unit(unit);
-			if (unit->status & UnitStatus::GroundedBuilding)
-			{
+			if (unit->status & UnitStatus::GroundedBuilding) {
 				helper::clear_building_from_tile_flag(unit, unit->position.x, unit->position.y);
 			}
-			if (unit->status & UnitStatus::InAir)
-			{
+			if (unit->status & UnitStatus::InAir) {
 				helper::remove_repulse_tile(unit);
 			}
 		}
 		helper::transform_unit_sprite(unit, new_id);
 
-		if (units_dat::base_property[unit->id] & UnitProperty::Building)
-		{
-			if (unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection))
-			{
-				if (unit->secondary_order_id != OrderId::Nothing2)
-				{
+		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+			if (unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) {
+				if (unit->secondary_order_id != OrderId::Nothing2) {
 					unit->secondary_order_id = OrderId::Nothing2;
 					unit->secondary_order_pos = { 0, 0 };
 					unit->current_build_unit = 0;
@@ -736,10 +730,8 @@ namespace hooks
 			helper::set_image_direction(unit->sprite->main_graphic, direction);
 		}
 
-		if (unit->sprite->flags & SpriteFlags::Selected)
-		{
-			if (!helper::unit_is_standard_and_movable(unit) && *g_client_selection_count > 1 && new_id != UnitId::ZergEgg)
-			{
+		if (unit->sprite->flags & SpriteFlags::Selected) {
+			if (!helper::unit_is_standard_and_movable(unit) && *g_client_selection_count > 1 && new_id != UnitId::ZergEgg) {
 				helper::update_building_land_unit_selection(0, unit);
 				helper::remove_from_client_selection_3(unit);
 			}
@@ -749,27 +741,22 @@ namespace hooks
 		u32 pos_y = unit->position.y;
 		Point16 position = {pos_x, pos_y};
 		helper::fix_target_location(&position, new_id);
-		if (pos_x != position.x || pos_y != position.y)
-		{
+		if (pos_x != position.x || pos_y != position.y) {
 			helper::move_unit(unit, position.x, position.y);
 		}
-		if (!(unit->sprite->flags & SpriteFlags::Hidden))
-		{
+		if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 			helper::update_unit_order_finder(unit);
-			if (unit->status & UnitStatus::GroundedBuilding)
-			{
+			if (unit->status & UnitStatus::GroundedBuilding) {
 				helper::set_building_tile_flag(unit, unit->position.x, unit->position.y);
 			}
 			helper::check_unstack(unit);
-			if (unit->status & UnitStatus::InAir)
-			{
+			if (unit->status & UnitStatus::InAir) {
 				helper::set_repulse_angle(unit);
 			}
 		}
 
 		Unit* subunit = unit->subunit;
-		if (subunit)
-		{
+		if (subunit) {
 			helper::transform_subunit(subunit, units_dat::subunit[new_id]);
 		}
 		return helper::apply_unit_effects(unit);
@@ -789,6 +776,14 @@ namespace hooks
 		helper::increment_unit_scores_ex(unit, 1, 1);
 
 		UnitExt* unit_ext = get_unit_ext(unit);
+		if (!unit_ext->values[ValueNoMassacreResource]) {
+			if (scbw::get_game_kind() == GameKind_Massacre && unit_id_should_give_gas_in_massacre_mode(unit->id)) {
+				scbw::add_massacre_resource(unit->player);
+			}
+		} else {
+			unit_ext->values[ValueNoMassacreResource] = 0;
+		}
+
 		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak
 		||	unit_ext->values[ValueTriggerBehaviorProximityCloak]
 		||	unit_ext->values[ValueTriggerBehaviorSteadyShroud])
@@ -798,37 +793,30 @@ namespace hooks
 		}
 		if (unit->id == UnitId::Spell_ScannerSweep || unit->id == UnitId::Special_MapRevealer)
 		{
-			if (*g_first_hidden_unit == unit)
-			{
+			if (*g_first_hidden_unit == unit) {
 				*g_first_hidden_unit = unit->link.next;
 			}
-			if (*g_last_hidden_unit == unit)
-			{
+			if (*g_last_hidden_unit == unit) {
 				*g_last_hidden_unit = unit->link.prev;
 			}
-			if (unit->link.prev)
-			{
+			if (unit->link.prev) {
 				unit->link.prev->link.next = unit->link.next;
 			}
 			Unit* next_unit = unit->link.next;
-			if (next_unit)
-			{
+			if (next_unit) {
 				next_unit->link.prev = unit->link.prev;
 			}
 			unit->link.prev = 0;
 			unit->link.next = 0;
 			Unit* first_scanner = *g_first_scanner_sweep;
-			if (*g_first_scanner_sweep)
-			{
-				if (*g_last_scanner_sweep == *g_first_scanner_sweep)
-				{
+			if (*g_first_scanner_sweep) {
+				if (*g_last_scanner_sweep == *g_first_scanner_sweep) {
 					*g_last_scanner_sweep = unit;
 				}
 				unit->link.prev = *g_first_scanner_sweep;
 				unit->link.next = first_scanner->link.next;
 				Unit* next_scanner = first_scanner->link.next;
-				if (next_scanner)
-				{
+				if (next_scanner) {
 					next_scanner->link.prev = unit;
 				}
 				first_scanner->link.next = unit;
@@ -842,23 +830,21 @@ namespace hooks
 			helper::show_and_enable_unit(unit);
 		}
 		// Originally had trap code
+
 		u32 player_type = g_player_table[(unsigned __int8)unit->player].type;
 		if (player_type == PlayerType::Rescuable)
 		{
 			u32 main_order_id = unit->main_order_id;
 			unit->user_action_flags |= UserActionFlags::UserActionFlags_IscriptGoToIdle;
-			if (main_order_id)
-			{
+			if (main_order_id) {
 				while (1)
 				{
 					Order* tail = unit->order_queue_tail;
-					if (!tail)
-					{
+					if (!tail) {
 						break;
 					}
 					u32 tail_order_id = tail->order_id;
-					if (!orders_dat::can_be_interrupted[tail_order_id] && tail_order_id != OrderId::RescuePassive)
-					{
+					if (!orders_dat::can_be_interrupted[tail_order_id] && tail_order_id != OrderId::RescuePassive) {
 						break;
 					}
 					helper::remove_order_from_unit_queue(tail, unit);
@@ -868,8 +854,7 @@ namespace hooks
 			helper::do_next_queued_order(unit);
 		} else {
 			u32 new_order_id;
-			if (player_type == PlayerType::Neutral)
-			{
+			if (player_type == PlayerType::Neutral) {
 				new_order_id = OrderId::Neutral;
 			} else if (player_type == PlayerType::Computer) {
 				new_order_id = units_dat::computer_idle_order[unit->id];
@@ -878,8 +863,8 @@ namespace hooks
 			}
 			helper::issue_order_targeting_nothing(unit, new_order_id);
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories)
-		{
+
+		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories) {
 			Sprite* sprite = unit->sprite;
 			unit->powerup_origin.x = sprite->position.x;
 			unit->powerup_origin.y = sprite->position.y;
@@ -924,8 +909,7 @@ namespace hooks
 		unit->unit_ai = 0;
 
 		u32 initialized = helper::initialize_unit(unit, pos_y, unit_id, pos_x, player);
-		if (initialized)
-		{
+		if (initialized) {
 			*(u32*)unit->build_queue = 0xE400E4;
 			*(u32*)&unit->build_queue[2] = 0xE400E4;
 			unit->build_queue[4] = UnitId::None;

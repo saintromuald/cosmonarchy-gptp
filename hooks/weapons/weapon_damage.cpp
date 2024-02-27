@@ -987,9 +987,15 @@ namespace hooks
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
 
+				if (scbw::get_game_kind() == GameKind_Massacre && unit_id_should_give_gas_in_massacre_mode(data.target->id)) {
+					scbw::add_massacre_resource(data.target->player);
+				}
+
 				u32 sound = helper::get_random_sfx_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
-				helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99);
-				helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
+				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99)
+				&& !*g_is_in_replay && data.target->player == *g_local_nation_id) {
+					helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
+				}
 				fatal_deal_damage = false;
 			} break;
 			case UnitId::ProtossArchon:
