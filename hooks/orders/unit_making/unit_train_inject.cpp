@@ -147,7 +147,7 @@ namespace hooks
 		jump_patch(order_train_wrapper,								0x00468420, 4);
 		jump_patch(get_max_hangar_space_wrapper,					0x004653D0, 3);
 		jump_patch(button_is_training,								0x00428530, 0);
-		jump_patch(update_unit_stats_and_finish_building_wrapper,	0x004A01F0, 1);
+	//	jump_patch(update_unit_stats_and_finish_building_wrapper,	0x004A01F0, 1); // Causes nullsprite crashes when killing Map Revealers
 
 		jump_patch(is_lifted_off_wrapper,							0x0046D832, 3);
 		jump_patch(is_not_lifted_off_wrapper,						0x0046D845, 2);

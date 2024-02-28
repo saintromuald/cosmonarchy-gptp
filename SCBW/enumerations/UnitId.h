@@ -507,7 +507,7 @@ namespace UnitId
 		Special_ProtossFlagBeacon							= 199,
 		Special_PowerGenerator								= 200,
 		Special_OvermindCocoon								= 201,
-		Spell_CarapaceSwarm										= 202,
+		Spell_CarapaceSwarm									= 202,
 		Special_FloorMissileTrap							= 203,
 		FloorHatch											= 204,
 		Special_UpperLevelDoor								= 205,

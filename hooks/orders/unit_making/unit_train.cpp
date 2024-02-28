@@ -225,9 +225,9 @@ namespace hooks {
 			unit->parasite_flags = 0;
 			unit->is_blind = 0;
 			helper::init_building(unit, 0);
-			for (Image* i = unit->sprite->images.head; i; i = i->link.next)
+			for (Image* image = unit->sprite->images.head; image; image = image->link.next)
 			{
-				play_image_iscript(i, IscriptAnimation::Built);
+				play_image_iscript(image, IscriptAnimation::Built);
 			}
 
 			if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
