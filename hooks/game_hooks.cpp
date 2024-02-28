@@ -2267,7 +2267,8 @@ namespace hooks {
 			case UnitId::ProtossSolarion:
 			{
 				// Auto-train Stewards
-				if (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count < 12 && unit->build_queue[unit->build_queue_slot] != UnitId::ProtossSteward)
+				if (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count < 12
+					&& unit->build_queue[unit->build_queue_slot] != UnitId::ProtossSteward)
 				{
 					unit->build_queue[unit->build_queue_slot] = UnitId::ProtossSteward;
 					unit->set_secondary_order(OrderId::TrainFighter);
@@ -2722,7 +2723,7 @@ namespace hooks {
 		}
 
 		// Matraleth - Blissful Embrace ability
-		if (unit->id == UnitId::ZergMatraleth || unit->id == UnitId::ZergAkistrokor) {
+		if (unit->id == UnitId::ZergMatraleth) {
 			if (unit->main_order_id == OrderId::BlissfulEmbrace) {
 				Unit* target = unit->order_target.unit;
 				if (target && can_infest(unit->player, target)) {
