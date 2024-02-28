@@ -62,6 +62,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 	}
 
 	ThingyExt* corpse_ext = get_thingy_ext(corpse);
+	u32 original_player = corpse_ext->player;
 	u32 unit_id = corpse_ext->unit_id;
 	Point16 pos = corpse->sprite->position;
 	if (units_dat::base_property[unit_id] & UnitProperty::Flyer) {
@@ -93,10 +94,12 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit->set_hitpoints(25 * 256);
 		unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
-		unit_ext->timers[TimerReclaiming] = 2 * 24;
-		unit_ext->timers[TimerStun]       = 2 * 24;
-		unit_ext->timers[TimerDecaySafe]  = 3;
-		unit_ext->values[ValueDecaying] = true;
+		unit_ext->timers[TimerReclaiming]     = 2 * 24;
+		unit_ext->timers[TimerReclaimingHeal] = 2 * 24;
+		unit_ext->timers[TimerStun]           = 2 * 24;
+		if (player != original_player) {
+			unit_ext->values[ValueDecaying] = true;
+		}
 		if (scbw::get_game_kind() == GameKind_TheTurning && player == TheTurningZombiePlayerId) {
 			unit_ext->values[ValueDecaying] = false;
 			unit_ext->values[ValueNoCorpse] = true;
@@ -276,6 +279,7 @@ void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id) {
 }
 
 bool can_infest(u32 player, Unit* target) {
+	// Spawning cagra wouldn't work properly on units. Spawning cagra on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
 	UnitExt* target_ext = get_unit_ext(target);
 	return target->status & UnitStatus::Completed && !(units_dat::base_property[target->id] & UnitProperty::Addon)
 		&& player != target->player && !scbw::is_allied_to(player, target->player) && !target_ext->values[ValueInfested];
@@ -295,7 +299,6 @@ void spread_debuffs(Unit* from, Unit* to) {
 	UnitExt* to_ext = get_unit_ext(to);
 
 	if (from_ext->values[ValueDecaying]) {
-		to_ext->timers[TimerDecaySafe] = 3;
 		to_ext->values[ValueDecaying] = true;
 	}
 	if (from_ext->values[ValueInfested]) {

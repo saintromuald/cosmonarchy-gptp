@@ -1167,15 +1167,14 @@ namespace hooks {
 					}
 				}
 
-				if (!unit_ext->timers[TimerDecaySafe]) {
-					// TODO: Add decay reads?
+				if (!unit_ext->timers[TimerReclaimingHeal]) {
 					unit->damage_hp((5 * 256) / 24, 0, unit->player, false);
 				}
 			}
 
 			// Reclaiming
 			if (unit_ext->timers[TimerReclaiming]) {
-				if (unit_ext->timers[TimerDecaySafe]) {
+				if (unit_ext->timers[TimerReclaimingHeal]) {
 					unit->heal_hp((25 * 256) / (2 * 24));
 				}
 				if (unit_ext->timers[TimerReclaiming] == 1) {
@@ -1276,20 +1275,6 @@ namespace hooks {
 		// Unit behavior groups
 		const static u32 broodspawn_max_time = 5 * 24; // TODO: move to unit consts?
 		switch (unit->id) {
-			// Reclaimers
-			case UnitId::TerranApostle:
-			case UnitId::TerranAutocrat:
-			case UnitId::TerranAnticthon:
-			case UnitId::TerranAion: {
-				EntryArray targets = {};
-				unit_search_radial(&targets, unit->position, unit->get_sight_range() * 32);
-				unit_search_filter(&targets, unit, FilterAlly | FilterInvincible);
-				for (u32 i = 0; i < targets.count; ++i) {
-					UnitExt* target_ext = get_unit_ext(targets.units[i]);
-					target_ext->timers[TimerDecaySafe] = 3;
-				}
-			} break;
-
 			// Sires
 			case UnitId::ZergZoryusthaleth:
 			case UnitId::ZergKonvilisk:
@@ -2726,7 +2711,8 @@ namespace hooks {
 		}
 
 		// Blissful Embrace - Visuals
-		if (unit_ext->values[ValueInfested]) {
+		if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::Completed) {
+			scbw::blissful_embrace_init(unit);
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
 				u32 image_id = ImageId::OcsalRegressionOverlay;
 				if (!unit->get_overlay(image_id)) {

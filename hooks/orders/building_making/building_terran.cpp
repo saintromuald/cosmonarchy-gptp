@@ -264,6 +264,7 @@ namespace hooks
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
 
 						if (built_unit) {
+							spread_debuffs(unit, built_unit);
 							builder_ext->values[ValueTerranConstruction] = built_unit->id;
 							built_unit->create_origin = unit->id;
 							built_unit->connected_unit = unit;

@@ -186,6 +186,7 @@ enum ExtValueId {
 	ValueNoMassacreResource,
 	ValueJustCastedHallucination,
 	ValueInfested,
+	ValueInfestedInit,
 	ValueInfestingPlayer,
 
 	ValueAI_WorkerChosenForExpansion,
@@ -292,7 +293,7 @@ enum ExtTimerId {
 	TimerDemiurgeWorship,
 	TimerAxitriliskPerpetualWind,
 	TimerReclaiming,
-	TimerDecaySafe,
+	TimerReclaimingHeal,
 	TimerVilgolethSpawn,
 	TimerVilgolethTimedLife,
 	TimerAvenge,

@@ -1946,62 +1946,73 @@ namespace scbw {
 		}
 	}
 
-	void blissful_embrace(Unit* unit, u32 player) {
-		// Sanity check.
-		// Spawning cagra wouldn't work properly on units. Spawning cagra on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
-		if (!can_infest(player, unit)) {
+	void blissful_embrace_init(Unit* target) {
+		UnitExt* target_ext = get_unit_ext(target);
+		if (target_ext->values[ValueInfestedInit]) {
 			return;
 		}
+		target_ext->values[ValueInfestedInit] = true;
 
-		// Eject loaded units if possible, kill them otherwise
-		scbw::unload_or_kill_loaded_units(unit);
-		UnitExt* target_ext = get_unit_ext(unit);
-
-		// Obtain control
-		target_ext->values[ValueInfested] = true;
-		unit->give_to(player);
-
-		// Spread initial creep
-		scbw::spawn_custom_creep(unit);
-
-		// Remove connected larva
-		u16 larva_id = UnitId::ZergLarva;
-		if (unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergOcsalCesiant) {
-			larva_id = UnitId::ZergOcsalLarva;
-		}
-		EntryArray larvae = {};
-		unit_search_radial(&larvae, unit->position, 4 * 32);
-		unit_search_filter(&larvae, unit, 0, {larva_id});
-		for (u32 i = 0; i < larvae.count; ++i) {
-			Unit* larva = larvae.units[i];
-			if (larva->connected_unit == unit) {
-				larva->connected_unit = 0;
+		// Spawn infestation overlay
+		if (units_dat::base_property[target->id] & UnitProperty::Building) {
+			u32 image_id = ImageId::InfestedOverlay_Large;
+			if (unit_id_is_smaller_building(target->id)) {
+				image_id = ImageId::InfestedOverlay_Small;
 			}
-		}
-
-		// Spawn infested overlay
-		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-			u32 infested_image_id = ImageId::InfestedOverlay_Large;
-			if (unit_id_is_smaller_building(unit->id)) {
-				infested_image_id = ImageId::InfestedOverlay_Small;
-			}
-			if (!unit->get_overlay(infested_image_id)) {
-				scbw::add_unit_overlay(unit, infested_image_id);
+			if (!target->get_overlay(image_id)) {
+				scbw::add_unit_overlay(target, image_id);
 			}
 		}
 
 		// Spawn effect overlay
-		// TODO: Make this a sprite
 		u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-		if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
+		if (units_dat::base_property[target->id] & UnitProperty::LargeOverlay) {
 			effect_image_id = ImageId::ZergBuildingExplosion;
-		} else if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay) {
+		} else if (units_dat::base_property[target->id] & UnitProperty::MediumOverlay) {
 			effect_image_id = ImageId::ZergAirDeathExplosion_Large;
 		}
-		unit->sprite->create_overlay(effect_image_id);
+		target->sprite->create_overlay(effect_image_id);
 
 		// Play sound
-		helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
+		helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, target, true, 0);
+
+		// Spread initial creep
+		if (unit_spreads_custom_creep(target)) {
+			scbw::spawn_custom_creep(target);
+		}
+	}
+
+	void blissful_embrace(Unit* target, u32 player) {
+		// Sanity check.
+		if (!can_infest(player, target)) {
+			return;
+		}
+
+		// Eject loaded units if possible, kill them otherwise
+		scbw::unload_or_kill_loaded_units(target);
+		UnitExt* target_ext = get_unit_ext(target);
+
+		// Remove connected larva
+		u16 larva_id = UnitId::ZergLarva;
+		if (target->id == UnitId::ZergCaphrolosk || target->id == UnitId::ZergOcsalCesiant) {
+			larva_id = UnitId::ZergOcsalLarva;
+		}
+		EntryArray larvae = {};
+		unit_search_radial(&larvae, target->position, 4 * 32);
+		unit_search_filter(&larvae, target, 0, {larva_id});
+		for (u32 i = 0; i < larvae.count; ++i) {
+			Unit* larva = larvae.units[i];
+			if (larva->connected_unit == target) {
+				larva->connected_unit = 0;
+			}
+		}
+
+		// Obtain control
+		target_ext->values[ValueInfested] = true;
+		target->give_to(player);
+
+		// Init infestation
+		blissful_embrace_init(target);
 	}
 
 	AiScript* run_ai(u32 player, Box32 area, s32 name) {
