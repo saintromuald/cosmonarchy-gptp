@@ -388,8 +388,9 @@ namespace hooks {
 		if (!bullet->source_unit) {
 			return;
 		}
-
-		scbw::create_unit_in_game(UnitId::ZergVilgoleth, bullet->player, bullet->position.x, bullet->position.y);
+		Unit* spawn = scbw::create_unit_in_game(UnitId::ZergVilgoleth, bullet->player, bullet->position.x, bullet->position.y);
+		UnitExt* unit_ext = get_unit_ext(spawn);
+		unit_ext->timers[TimerVilgolethSpawn] = 24;
 	}
 
 	void broodlings(Bullet* bullet, u32 weapon_id)
