@@ -27,7 +27,7 @@ namespace hooks
 		unit->main_order_state = 1;
 		if (unit->sprite) {
 			if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
-				if (!(unit->status & UnitStatus::IsHallucination | UnitStatus::IsSelfDestructing)) {
+				if (!(unit->status & UnitStatus::IsHallucination) || unit->status & UnitStatus::IsSelfDestructing) {
 					play_death_animation = true;
 				} else {
 					helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit, 1, 0);
