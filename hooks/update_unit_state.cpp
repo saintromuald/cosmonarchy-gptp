@@ -197,15 +197,13 @@ namespace hooks
 		unit->is_being_healed = 0;
 
 		// Cowardice slow flag
-		if (unit->new_flags_3 & 0x10)
-		{
+		if (unit->new_flags_3 & 0x10) {
 			unit->new_flags_3 &= ~0x10;
 			unit->update_speed();
 		}
 
 		// Something to do with player-specific Signify overlays?
-		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*g_active_nation_id][0])
-		{
+		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*g_active_nation_id][0]) {
 			unit->new_flags_3 &= ~0x20;
 			scbw::refresh_console();
 		}
@@ -217,15 +215,15 @@ namespace hooks
 
 				u32 overlay_id = ImageId::RechargeShields_Small;
 				switch (scbw::get_overlay_offset(unit->id, true)) {
-				case 1: {
-					overlay_id = ImageId::RechargeShieldsCustom_Medium;
-				} break;
-				case 2: {
-					overlay_id = ImageId::RechargeShields_Large;
-				} break;
-				case 3: {
-					overlay_id = ImageId::RechargeShieldsCustom_XLarge;
-				} break;
+					case 1: {
+						overlay_id = ImageId::RechargeShieldsCustom_Medium;
+					} break;
+					case 2: {
+						overlay_id = ImageId::RechargeShields_Large;
+					} break;
+					case 3: {
+						overlay_id = ImageId::RechargeShieldsCustom_XLarge;
+					} break;
 				}
 
 				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24) {
@@ -248,8 +246,7 @@ namespace hooks
 					scbw::remove_unit_overlay(unit, overlay_id);
 					if (unit->shields >= max_shields) {
 						helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
-					}
-					else {
+					} else {
 						helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
 					}
 				}
@@ -266,10 +263,8 @@ namespace hooks
 		}
 
 		// Supposedly, allows Zethrokors to attack after unburrowing without delay
-		if (unit->id == UnitId::ZergZethrokor)
-		{
-			if (unit->ground_weapon_cooldown == 0)
-			{
+		if (unit->id == UnitId::ZergZethrokor) {
+			if (unit->ground_weapon_cooldown == 0) {
 				unit->order_queue_timer = 0;
 			}
 		}
@@ -277,8 +272,7 @@ namespace hooks
 		// update unit status effects (stim, maelstrom, plague, etc.)
 		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & SpriteFlags::Hidden)) {
 			unit->cycle_counter++;
-			if (unit->cycle_counter >= 8)
-			{
+			if (unit->cycle_counter >= 8) {
 				unit->cycle_counter = 0;
 				helper::restore_all_unit_stats(unit); // use update_status_effects hook if available
 			}
@@ -291,36 +285,28 @@ namespace hooks
 		||	scbw::is_zerg_building_morph_result(unit->build_queue[unit->build_queue_slot]))
 		{
 			bool stop_here = false;
-
-			// remove units with timed lives
-			if (unit->remove_timer != 0)
-			{
+			if (unit->remove_timer != 0) {
 				unit->remove_timer -= 1;
-				if (unit->remove_timer == 0)
-				{
+				if (unit->remove_timer == 0) {
 					unit->remove();
 					stop_here = true;
 				}
 			}
 
-			// update unit energy (energy regen/drain)
 			update_unit_energy(unit);
 
-			if (unit->recent_order_timer != 0)
-			{
+			if (unit->recent_order_timer != 0) {
 				unit->recent_order_timer--;
 			}
 
 			// Augur - Final Hour
-			if (unit->id == UnitId::ProtossAugur && unit->shields == 0)
-			{
+			if (unit->id == UnitId::ProtossAugur && unit->shields == 0) {
 				augur_sacrifice(unit);
 				stop_here = true;
 			}
 
 			// Passive HP regeneration
-			if (scbw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw())
-			{
+			if (scbw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw()) {
 				u32 factor = scbw::get_regeneration_factor(unit);
 				if (unit_ext->damage_taken_timer > 2 * 24) {
 					factor++;
@@ -340,22 +326,18 @@ namespace hooks
 			{
 				s32 tick_heal = 0;
 				// Alaszileth - Dermal Accelerant - 500% life regen
-				if (unit_ext->timers[TimerAlaszilethRegenBoost] > 0)
-				{
+				if (unit_ext->timers[TimerAlaszilethRegenBoost] > 0) {
 					tick_heal += 11 * 5;
 				}
 
 				// Azazel Defensive Matrix - heal over time
-				if (unit->defensive_matrix_hp != 0)
-				{
-					if (unit->hitpoints > 0 && unit->hitpoints / 256 != unit->get_max_hp_ingame())
-					{
+				if (unit->defensive_matrix_hp != 0) {
+					if (unit->hitpoints > 0 && unit->hitpoints / 256 != unit->get_max_hp_ingame()) {
 						tick_heal += AzazelDefensiveMatrixHeal;
 					}
 				}
 
-				if (tick_heal)
-				{
+				if (tick_heal) {
 					unit->heal_hp(tick_heal);
 				}
 			}
@@ -392,15 +374,10 @@ namespace hooks
 			}
 
 			// Terran building burn-down
-			if (!stop_here && !unit_ext->values[ValueBlissfulEmbraceOriginalPlayer])
-			{
-				if (unit->get_race() == RaceId::Terran)
-				{
-					if (unit->status & UnitStatus::GroundedBuilding
-					||  units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)
-					{
-						if (helper::unit_hp_is_in_redzone(unit))
-						{
+			if (!stop_here && !unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+				if (unit->get_race() == RaceId::Terran) {
+					if (unit->status & UnitStatus::GroundedBuilding || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
+						if (helper::unit_hp_is_in_redzone(unit)) {
 							unit->damage_hp(20, 0, unit->last_attacking_player, true);
 						}
 					}

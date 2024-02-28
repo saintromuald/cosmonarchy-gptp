@@ -418,11 +418,11 @@ struct UnitLayout
 	/*0x127*/ u8        corrosive_spore_timer_unused[9];	// replaced with generic_timer
 	/*0x130*/ u16       offset_index_3_by_3;				// Cycles between 0-12 for each bullet fired by this unit (if it uses a "Attack 3x3 box" weapon)
 	/*0x132*/ u8		new_flags_3;						// Cosmonarchy - different flags
-															// 0x1 - burrowed bactalisk flag (unused)
-															// 0x2 - vorvaling proc flag
-															// 0x4 - vorvaling egg flag (unused)
-															// 0x8 - shaman deployment flag (unused)
-															// 0x10 - hierophant signify update speed flag
+															// 0x1  - burrowed Bactalisk flag (unused)
+															// 0x2  - Vorvrokor proc flag
+															// 0x4  - Vorvrokor Egg flag (unused)
+															// 0x8  - Shaman deployment flag (unused)
+															// 0x10 - Hierophant signify update speed flag
 															// 0x20 - update console - new parasite
 															// 0x40 - warp flash
 	/*-133-*/ u8        unused_133;
