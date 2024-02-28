@@ -1249,6 +1249,9 @@ SCBW_DATA(u8*,              g_chat_message_type,                0x0068C144);
 // For play_addon_detach_sound
 SCBW_DATA(u8*,				g_audio_something,						0x006D1A98);
 
+// For unit_die
+SCBW_DATA(u32*,				g_ignore_unit_flag80_clear_subcount,	0x006D5BD0);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

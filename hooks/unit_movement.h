@@ -8,6 +8,7 @@ namespace hooks
 	bool can_collide_with(Unit* unit, Unit* colliding_unit);			// 0042DEE0
 	s32 unit_movement_start_path(Unit* unit);							// 0046BD90
 	b32 move_towards(Unit* target, Unit* unit);							// 004EB900
+	s32 unit_movement_initialize(Unit* unit);							// 0046C320
 
 	void inject_unit_movement_hooks();
 }

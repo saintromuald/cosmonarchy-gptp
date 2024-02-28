@@ -7385,7 +7385,7 @@ namespace helper {
 		return result;
 	}
 
-	void updateUnitTimers(Unit* unit) {
+	void update_unit_state(Unit* unit) {
 		const u32 func_address = 0x004EC290;
 		__asm {
 			PUSHAD
@@ -8120,7 +8120,7 @@ namespace helper {
 		return result;
 	}
 
-	void ai_remove_medic(Unit* unit) {
+	void ai_remove_cleric(Unit* unit) {
 		const u32 func_address = 0x004477C0;
 		__asm {
 			PUSHAD
@@ -14860,6 +14860,130 @@ namespace helper {
 		__asm {
 			PUSHAD
 			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void unit_destructor_special_cases(Unit* unit)
+	{
+		const u32 func_address = 0x0049F4A0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void remove_references(Unit* unit)
+	{
+		const u32 func_address = 0x0049EB70;
+		__asm {
+			PUSHAD
+			PUSH 1 // 2nd arg is always true
+			MOV EDI, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Bullet* clear_bullet_targets(Unit* unit)
+	{
+		const u32 func_address = 0x0048AAC0;
+		static Bullet* result;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void building_death(Unit* unit, Sprite* sprite)
+	{
+		const u32 func_address = 0x0049FD00;
+		__asm {
+			PUSHAD
+			MOV EDX, sprite
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	Unit* remove_unit_from_lists(Unit* unit)
+	{
+		const u32 func_address = 0x0049E3F0;
+		static Unit* result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* clist_remove_hidden_unit_entry(Unit* unit)
+	{
+		const u32 func_address = 0x0049DE50;
+		static Unit* result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Unit* clist_remove_used_unit_entry(Unit* unit)
+	{
+		const u32 func_address = 0x0049DEA0;
+		static Unit* result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void unit_movement_instant_stop(Unit* unit)
+	{
+		const u32 func_address = 0x0046BF00;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void progress_flingy(Unit* unit)
+	{
+		const u32 func_address = 0x00495EE0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void finish_unit_movement(Unit* unit)
+	{
+		const u32 func_address = 0x0046AD90;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
 			CALL func_address
 			POPAD
 		}

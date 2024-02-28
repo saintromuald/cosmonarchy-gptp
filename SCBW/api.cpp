@@ -928,11 +928,13 @@ namespace scbw {
 
 	void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator) {
 		u32 remove_timer = 0;
-		switch (unit_id) {
+		switch (unit_id)
+		{
 			case UnitId::ZergRililisk:
-			case UnitId::ZergRilirokor: {
+			case UnitId::ZergRilirokor:
+			{
 				remove_timer = BroodspawnTimer;
-			}
+			} break;
 		}
 
 		for (s32 i = 0; i < count; i++) {
@@ -947,21 +949,29 @@ namespace scbw {
 				unit->remove_timer = 1350;
 				unit->sprite->create_overlay(ImageId::HallucinationDeath3);
 			}
+			UnitExt* unit_ext = get_unit_ext(unit);
+
 			switch (unit_id) {
-				case UnitId::ZergRilirokor:
-				case UnitId::ZergRililisk: {
-					helper::play_sound_from_unit(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
-					if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
-						unit->remove_timer = remove_timer;
-					}
-				} break;
-				case UnitId::ProtossSimulacrum: {
+				case UnitId::ProtossSimulacrum:
+				{
 					if (creator) {
 						unit->hitpoints = std::max(256, creator->hitpoints);
 						unit->shields = std::max(256, creator->shields);
 						scbw::inherit_debuffs(creator, unit);
 					}
 					helper::play_sound_from_unit(SoundId::Simulacrum_Clone_01, unit, 1, 0);
+				} break;
+				case UnitId::ZergRilirokor:
+				case UnitId::ZergRililisk:
+				{
+					helper::play_sound_from_unit(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
+					if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
+						unit->remove_timer = remove_timer;
+					}
+				} break;
+				case UnitId::ZergVilgoleth:
+				{
+					unit_ext->timers[TimerVilgolethSpawn] = 24;
 				} break;
 			}
 		}

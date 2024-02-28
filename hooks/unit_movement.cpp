@@ -146,4 +146,67 @@ namespace hooks
 		}
 		return helper::move_to_target(target, unit);
 	}
+
+	// Hooked to troubleshoot nullsprite crashes. -Pr0nogo
+	s32 unit_movement_initialize(Unit* unit) // 0046C320
+	{
+		Sprite* sprite = unit->sprite;
+		u32 pathing_flags = unit->pathing_flags;
+		unit->contour_bounds.y = 0;
+		unit->contour_bounds.x = 0;
+		unit->contour_bounds.h = 0;
+		unit->contour_bounds.w = 0;
+
+		u32 is_pathing_enabled = pathing_flags & 0xFC;
+		if (sprite) { // Nice meme that lard nullchecks sprite after this.
+			is_pathing_enabled = pathing_flags & 0xFC | (sprite->elevation < 12);
+		}
+		unit->pathing_flags = is_pathing_enabled;
+
+		bool is_subunit = units_dat::base_property[unit->id] & UnitProperty::Subunit;
+		if (!is_subunit) {
+			if (unit->status & UnitStatus::NoBrkCodeStart) {
+				unit->movement_state = UnitMovement_InitSeq;
+				return 1;
+			}
+		}
+
+		if (!sprite || !unit->main_order_id && unit->main_order_state == 1) {
+			unit->movement_state = UnitMovement_Lump;
+			return 1;
+		}
+		if (unit->status & UnitStatus::InBuilding) {
+			unit->movement_state = UnitMovement_Bunker;
+			return 1;
+		}
+
+		if (!(sprite->flags & SpriteFlags::Hidden)) {
+			if (!(unit->status & UnitStatus::Burrowed)) {
+				u32 status = unit->status;
+				if ((status >> 17) & 1 || status & UnitStatus::CanTurnAroundToAttack) {
+					if ((status >> 17) & 1) {
+						unit->movement_state = (is_pathing_enabled & 1) != 0 ? UnitMovement_AtRest : UnitMovement_Flyer;
+					} else {
+						unit->movement_state = 2 * (is_subunit == 0) + 3;
+					}
+					return 1;
+				} else if (is_pathing_enabled & 1 && (unit->movement_flags & MovementFlags_Accelerating || !helper::is_unit_movable(unit))) {
+					unit->movement_state = UnitMovement_LumpWannabe;
+					return 1;
+				} else {
+					unit->movement_state = UnitMovement_Lump;
+					return 1;
+				}
+			}
+			unit->movement_state = UnitMovement_Lump;
+			return 1;
+		}
+		if (unit->movement_flags & MovementFlags_Accelerating || !helper::is_unit_movable(unit)) {
+			helper::unit_movement_instant_stop(unit);
+			helper::progress_flingy(unit);
+			helper::finish_unit_movement(unit);
+		}
+		unit->movement_state = UnitMovement_Hidden;
+		return 1;
+	}
 }

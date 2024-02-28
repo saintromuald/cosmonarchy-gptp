@@ -430,20 +430,16 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 {
 	u32 id = unit->id;
-	if (units_dat::base_property[id] & UnitProperty::Subunit)
-	{
+	if (units_dat::base_property[id] & UnitProperty::Subunit) {
 		Unit* first_dying_unit = *g_first_dying_unit;
-		if (first_dying_unit)
-		{
-			if (*g_last_dying_unit == first_dying_unit)
-			{
+		if (first_dying_unit) {
+			if (*g_last_dying_unit == first_dying_unit) {
 				*g_last_dying_unit = unit;
 			}
 			unit->link.prev = first_dying_unit;
 			unit->link.next = first_dying_unit->link.next;
 			Unit* next_dying_u = first_dying_unit->link.next;
-			if (next_dying_u)
-			{
+			if (next_dying_u) {
 				next_dying_u->link.prev = unit;
 			}
 			first_dying_unit->link.next = unit;
@@ -453,19 +449,16 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 		}
 
 		Unit* previous_player_u = unit->player_link.prev;
-		if (previous_player_u)
-		{
+		if (previous_player_u) {
 			previous_player_u->player_link.next = unit->player_link.next;
 		}
 		Unit* next_player_u = unit->player_link.next;
-		if (next_player_u)
-		{
+		if (next_player_u) {
 			next_player_u->player_link.prev = unit->player_link.prev;
 		}
 
 		s32 player = unit->player;
-		if (unit == first_player_unit->unit[player])
-		{
+		if (unit == first_player_unit->unit[player]) {
 			first_player_unit->unit[player] = unit->player_link.next;
 		}
 		unit->player_link.prev = 0;
@@ -476,22 +469,18 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	}
 
 	Sprite* sprite = unit->sprite;
-	if (sprite->flags & SpriteFlags::Hidden)
-	{
+	if (!sprite || sprite->flags & SpriteFlags::Hidden) {
 		return 0;
 	}
-	if (id != UnitId::TerranReservoir && id != UnitId::TerranWellbore)
-	{
-		if (id == UnitId::ZergExcisant)
-		{
+	if (id != UnitId::TerranReservoir && id != UnitId::TerranWellbore) {
+		if (id == UnitId::ZergExcisant) {
 			helper::remove_creep_at_unit(sprite->position.x, sprite->position.y, id);
 		} else if (id != UnitId::ProtossAquifer) {
 			return 0;
 		}
 	}
 
-	if (unit->status & UnitStatus::Completed)
-	{
+	if (unit->status & UnitStatus::Completed) {
 		helper::increment_unit_scores_ex(unit, -1, 0);
 	}
 
@@ -514,11 +503,155 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	unit->status |= UnitStatus::Completed;
 	helper::increment_unit_scores_ex(unit, 1, 1);
 
-	if (*g_is_placing_building)
-	{
+	if (*g_is_placing_building) {
 		helper::place_building_refinery_check(unit);
 	}
 	return 1;
+}
+
+// Hooked to troubleshoot Map Revealer crash. -Pr0nogo
+void unit_die(Unit* unit) // 004A0740
+{
+	if (units_dat::base_property[(unsigned __int16)unit->id] & UnitProperty::Building) {
+		*g_ignore_unit_flag80_clear_subcount = 1;
+	}
+	helper::unit_destructor_special_cases(unit);
+	helper::kill_all_loaded_units(unit);
+	helper::remove_references(unit);
+	helper::clear_bullet_targets(unit);
+	helper::remove_from_ai_structs(unit, (UnitAi*)1);
+	helper::remove_worker_or_building_ai(unit, 0);
+
+	UnitAi* unit_ai = unit->unit_ai;
+	if (unit_ai) {
+		if (unit_ai->type == AiType::Guard) {
+			u32 times_died = unit_ai->guard_ai.times_died;
+			unit_ai->guard_ai.parent = 0;
+			if (times_died < 100) {
+				unit_ai->guard_ai.times_died = times_died + 1;
+			}
+		}
+	}
+	helper::ai_remove_cleric(unit);
+	unit->unit_ai = 0;
+
+	if (!remove_subunit_or_gas_container(unit)) {
+		helper::set_resource_target(unit);
+		Sprite* sprite = unit->sprite;
+		if (sprite && !(sprite->flags & SpriteFlags::Hidden)) {
+			helper::end_collision_tracking(unit);
+		}
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+			unit->is_cloaked = 0;
+			helper::is_unit_cloaking(unit);
+			if (unit->status & UnitStatus::RequiresDetection) {
+				helper::end_cloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+			}
+		}
+
+		helper::building_death(unit, sprite);
+		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding && unit->building.upgrade_id) {
+			helper::clear_building_from_tile_flag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+		}
+		if (unit->path) {
+			helper::reassign_path(unit);
+		}
+
+		Unit* building_unit = unit->current_build_unit;
+		if (building_unit) {
+			u32 secondary_id = unit->secondary_order_id;
+			if (secondary_id == OrderId::Train || secondary_id == OrderId::TrainFighter) {
+				helper::orders_self_destructing(building_unit);
+			}
+		}
+		if (unit->secondary_order_id != OrderId::Nothing2) {
+			unit->secondary_order_id = OrderId::Nothing2;
+			unit->secondary_order_pos.x = 0;
+			unit->secondary_order_pos.y = 0;
+			unit->current_build_unit = 0;
+			unit->secondary_order_state = 0;
+		}
+		helper::drop_powerup(unit);
+		helper::remove_from_selections(unit);
+		if (sprite) {
+			helper::remove_from_client_selection_3(unit);
+			helper::remove_selection_circle(sprite);
+		}
+		helper::increment_unit_scores(unit, -1);
+		if (unit->status & UnitStatus::Completed) {
+			helper::increment_unit_scores_ex(unit, -1, 0);
+		}
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id && *g_is_placing_building
+			&& !helper::CMDRECV_place_building_allowed(*g_active_portrait_unit, *g_place_building_order_id, *g_place_building_unit_id))
+		{
+			helper::refresh_layers_3_and_4();
+			helper::end_building_placement();
+		}
+		helper::remove_unit_from_lists(unit);
+		scbw::refresh_console();
+	}
+}
+
+// Hooked to troubleshoot Map Revealer crash. -Pr0nogo
+Unit* remove_unit_from_lists(Unit* unit) // 0049E3F0
+{
+	Unit* prev_unit = unit->player_link.prev;
+	if (prev_unit) {
+		prev_unit->player_link.next = unit->player_link.next;
+	}
+
+	Unit* next_unit = unit->player_link.next;
+	if (next_unit) {
+		next_unit->player_link.prev = unit->player_link.prev;
+	}
+
+	u32 player = unit->player;
+	if (unit == first_player_unit->unit[player]) {
+		first_player_unit->unit[player] = unit->player_link.next;
+	}
+	unit->player_link.prev = 0;
+	unit->player_link.next = 0;
+
+	if (unit->id == UnitId::Spell_ScannerSweep || unit->id == UnitId::Special_MapRevealer) {
+		if (*g_first_scanner_sweep == unit) {
+			*g_first_scanner_sweep = unit->link.next;
+		}
+		if (*g_last_scanner_sweep == unit) {
+			*g_last_scanner_sweep = unit->link.prev;
+		}
+		if (unit->link.prev) {
+			unit->link.prev->link.next = unit->link.next;
+		}
+		if (unit->link.next) {
+			unit->link.next->link.prev = unit->link.prev;
+		}
+		unit->link.prev = 0;
+		unit->link.next = 0;
+	} else if (unit->sprite->flags & SpriteFlags::Hidden)
+	{
+		unit = helper::clist_remove_hidden_unit_entry(unit);
+	} else {
+		unit = helper::clist_remove_used_unit_entry(unit);
+	}
+
+	Unit* dying_unit = *g_first_dying_unit;
+	if (*g_first_dying_unit)
+	{
+		if (*g_last_dying_unit == *g_first_dying_unit) {
+			*g_last_dying_unit = unit;
+		}
+		unit->link.prev = *g_first_dying_unit;
+		unit->link.next = dying_unit->link.next;
+		Unit* linked_dying_unit = dying_unit->link.next;
+		if (linked_dying_unit) {
+			linked_dying_unit->link.prev = unit;
+		}
+		dying_unit->link.next = unit;
+	} else {
+		*g_last_dying_unit = unit;
+		*g_first_dying_unit = unit;
+	}
+	return unit;
 }
 
 //-------- Actual hooking --------//
@@ -614,6 +747,35 @@ void __declspec(naked) remove_subunit_or_gas_container_wrapper() {
 	}
 }
 
+void __declspec(naked) unit_die_wrapper() {
+	static Unit* unit;
+	__asm {
+		MOV unit, EAX
+		PUSHAD
+	}
+	unit_die(unit);
+	__asm {
+		POPAD
+		MOV EAX, 0 // unused return value
+		RETN
+	}
+}
+
+void __declspec(naked) remove_unit_from_lists_wrapper() {
+	static Unit* unit;
+	static Unit* result;
+	__asm {
+		MOV unit, EAX
+		PUSHAD
+	}
+	result = remove_unit_from_lists(unit);
+	__asm {
+		POPAD
+		MOV EAX, result
+		RETN
+	}
+}
+
 	// PATCHES \\
 
 void __declspec(naked) clear_bullet_targets_patch_8AACC() {
@@ -651,6 +813,8 @@ namespace hooks {
 		jump_patch(clear_tile_flags_from_area_wrapper,		0x00472E50, 2);
 		jump_patch(iscript_create_sprite_wrapper,			0x004D7120, 1);
 		jump_patch(remove_subunit_or_gas_container_wrapper,	0x004A0080, 3);
+	//	jump_patch(unit_die_wrapper,						0x004A0740, 3); // Not tested yet
+	//	jump_patch(remove_unit_from_lists_wrapper,			0x0049E3F0, 0); // Not tested yet
 
 		nops(0x004A0766, 5); // Disable kill all loaded units so we can call it before UnitExt is cleared
 		jump_patch(clear_bullet_targets_patch_8AACC,		0x0048AACC, 2); // DF: Fix bug where dying Lakizilisks sometimes deal double damage

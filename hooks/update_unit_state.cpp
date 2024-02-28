@@ -78,7 +78,7 @@ namespace hooks
 				scbw::add_unit_overlay(unit, overlay_id);
 				helper::play_sound_from_unit(SoundId::EnergyRegenStart, unit, 1, 0);
 			}
-		} else if (unit->sprite->get_overlay(overlay_id)) {
+		} else if (unit->get_overlay(overlay_id)) {
 			Image* overlay = unit->get_overlay(overlay_id);
 			overlay->play_iscript_animation(IscriptAnimation::Death);
 			helper::play_sound_from_unit(SoundId::EnergyRegenEnd, unit, 1, 0);
@@ -244,8 +244,7 @@ namespace hooks
 						scbw::add_unit_overlay(unit, overlay_id);
 						helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
 					}
-				}
-				else if (unit->sprite->get_overlay(overlay_id)) {
+				} else if (unit->get_overlay(overlay_id)) {
 					scbw::remove_unit_overlay(unit, overlay_id);
 					if (unit->shields >= max_shields) {
 						helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
@@ -276,8 +275,7 @@ namespace hooks
 		}
 
 		// update unit status effects (stim, maelstrom, plague, etc.)
-		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & SpriteFlags::Hidden))
-		{
+		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & SpriteFlags::Hidden)) {
 			unit->cycle_counter++;
 			if (unit->cycle_counter >= 8)
 			{
@@ -601,7 +599,7 @@ namespace hooks
 				helper::refresh_sprite(unit->sprite, g_selection_circle_color[unit->player]);
 			}
 		}
-		update_unit_state(unit);
+		helper::update_unit_state(unit);
 		helper::progress_order(unit);
 		helper::perform_secondary_orders(unit, unit->player); // ECX at the time of calling this function
 
@@ -765,8 +763,7 @@ namespace hooks
 	// Hooked to change the sound id for permacloaked units on initial creation. -Pr0nogo
 	u32 update_unit_strength_and_apply_default_orders(Unit* unit) // 0049FA40
 	{
-		if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 			helper::increment_unit_scores(unit, -1);
 			unit->status |= UnitStatus::Completed;
 			helper::increment_unit_scores(unit, 1);
@@ -791,8 +788,7 @@ namespace hooks
 			u32 sound_id = scbw::get_cloak_sound_id(unit);
 			helper::begin_cloak(unit, sound_id);
 		}
-		if (unit->id == UnitId::Spell_ScannerSweep || unit->id == UnitId::Special_MapRevealer)
-		{
+		if (unit->id == UnitId::Spell_ScannerSweep || unit->id == UnitId::Special_MapRevealer) {
 			if (*g_first_hidden_unit == unit) {
 				*g_first_hidden_unit = unit->link.next;
 			}
@@ -832,8 +828,7 @@ namespace hooks
 		// Originally had trap code
 
 		u32 player_type = g_player_table[(unsigned __int8)unit->player].type;
-		if (player_type == PlayerType::Rescuable)
-		{
+		if (player_type == PlayerType::Rescuable) {
 			u32 main_order_id = unit->main_order_id;
 			unit->user_action_flags |= UserActionFlags::UserActionFlags_IscriptGoToIdle;
 			if (main_order_id) {

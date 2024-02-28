@@ -5,7 +5,7 @@ namespace hooks
 {
 	void orders_die(Unit* unit) // 00479480
 	{
-		bool jump_to_795AB = false;
+		bool play_death_animation = false;
 		if (unit->user_action_flags & UserActionFlags_HideUnit) {
 			helper::hide_and_disable_unit(unit);
 		}
@@ -28,19 +28,19 @@ namespace hooks
 		if (unit->sprite) {
 			if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 				if (!(unit->status & UnitStatus::IsHallucination) || unit->status & UnitStatus::IsSelfDestructing) {
-					jump_to_795AB = true;
+					play_death_animation = true;
 				} else {
 					helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit, 1, 0);
 					Thingy* hallucination_smoke = helper::create_thingy( SpriteId::Hallucination_Death1, unit->get_x(), unit->get_y(), 0);
 					if (hallucination_smoke) {
-						//allow players to see smoke if could already see unit vanishing
+						// allow players to see smoke if could already see unit vanishing
 						helper::refresh_all_visible_images_at_screen_pos(hallucination_smoke->sprite, unit->sprite->visibility_status);
 					}
 				}
 			}
 		}
 
-		if (!jump_to_795AB) {
+		if (!play_death_animation) {
 			helper::hide_and_disable_unit(unit);
 			if (unit->subunit) {
 				if (units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {

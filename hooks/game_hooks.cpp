@@ -1889,7 +1889,7 @@ namespace hooks {
 
 					UnitExt* target_ext = get_unit_ext(target);
 					target_ext->timers[TimerEnsnaringBrood] = 3;
-					if (!target->get_overlay(ImageId::EnsnaringBroodOverlay)) {
+					if (!(target->status & UnitStatus::Burrowed) && !target->get_overlay(ImageId::EnsnaringBroodOverlay)) {
 						scbw::add_unit_overlay(target, ImageId::EnsnaringBroodOverlay);
 					}
 				}
@@ -2898,7 +2898,7 @@ namespace hooks {
 		}
 
 		// Remove Ensnaring Brood overlay
-		if (unit_ext->timers[TimerEnsnaringBrood] == 1) {
+		if (unit_ext->timers[TimerEnsnaringBrood] == 1 || (unit_ext->timers[TimerEnsnaringBrood] > 1 && unit->status & UnitStatus::Burrowed)) {
 			scbw::remove_unit_overlay(unit, ImageId::EnsnaringBroodOverlay);
 		}
 

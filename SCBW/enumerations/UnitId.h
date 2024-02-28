@@ -410,7 +410,7 @@ namespace UnitId
 		Hero_GerardDuGalle									= 102,
 		ZergLakizilisk										= 103,
 		Hero_InfestedDuran									= 104,
-		Spell_CarapaceSwarmSmall									= 105,
+		Spell_CarapaceSwarmSmall							= 105,
 		TerranMinistry										= 106,
 		TerranComsatStation									= 107,
 		TerranAnvil											= 108,

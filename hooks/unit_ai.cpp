@@ -562,7 +562,7 @@ namespace hooks {
 				}
 			}
 		}
-		helper::ai_remove_medic(unit);
+		helper::ai_remove_cleric(unit);
 		unit->unit_ai = 0;
 	}
 

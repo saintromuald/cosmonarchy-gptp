@@ -959,14 +959,6 @@ namespace hooks
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
-			case UnitId::ZergVilgorokor: {
-				// Vilgorokor - On Death behavior
-				scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
-				scbw::transform_unit(data.target, UnitId::ZergVilgoleth);
-				data.target->set_hitpoints(data.target->get_max_hp_raw());
-				data.target->sprite->create_top_overlay(ImageId::QueenDeath);
-				fatal_deal_damage = false;
-			} break;
 			case UnitId::TerranCuirassTankMode:
 			{
 				// Cuirass - Stonewall Protocol
@@ -1064,6 +1056,12 @@ namespace hooks
 				helper::play_sound_from_unit(SoundId::Zerg_Hydra_ZHyDth00_WAV, data.target, 1, 0);
 				target_ext->timers[TimerAxitriliskPerpetualWind] = 8 * 24 + 1;
 				fatal_deal_damage = false;
+			} break;
+			case UnitId::ZergVilgorokor: {
+				// Vilgorokor - On Death behavior
+				scbw::create_unit_from_ability(UnitId::ZergVilgoleth, 1, data.target->player, data.target->position);
+				scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
+			//	scbw::transform_unit(data.target, UnitId::ZergVilgoleth);
 			} break;
 		}
 

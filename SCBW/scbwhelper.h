@@ -789,7 +789,7 @@ namespace helper {
 
 	// For progress_unit_frame
 	char refresh_sprite(Sprite* sprite, s32 spriteId);																// 004EBBD0
-	void updateUnitTimers(Unit* unit);																				// 004EC290
+	void update_unit_state(Unit* unit);																				// 004EC290
 	void progress_order(Unit* unit);																				// 004EC4D0
 	void perform_secondary_orders(Unit* result, s32 unused);														// 004ECF70
 	void sprite_to_iscript_loop(Sprite* sprite);																	// 00497920
@@ -986,7 +986,7 @@ namespace helper {
 	// For remove_unit_ai
 	s32 remove_from_ai_structs(Unit* unit, UnitAi* unitAI);													// 00439D60
 	s32 remove_worker_or_building_ai(Unit* unit, b32 force_remove_building_ai);								// 00434C90
-	void ai_remove_medic(Unit* unit);																		// 004477C0
+	void ai_remove_cleric(Unit* unit);																		// 004477C0
 
 	// AI utility
 	void give_ai(Unit* unit);																				// 00463040
@@ -1722,4 +1722,15 @@ namespace helper {
 	void play_addon_detach_sound(Unit* unit);									// 0048F8A0
 	Unit* find_best_return_cargo_target(Unit* worker);							// 00441310
 	void return_resources_from_unit(Unit* unit);								// 004F39A0
+
+	void unit_destructor_special_cases(Unit* unit);								// 0049F4A0
+	void remove_references(Unit* unit);											// 0049EB70
+	Bullet* clear_bullet_targets(Unit* unit);									// 0048AAC0
+	void building_death(Unit* unit, Sprite* sprite);							// 0049FD00
+	Unit* remove_unit_from_lists(Unit* unit);									// 0049E3F0
+	Unit* clist_remove_hidden_unit_entry(Unit* unit);							// 0049DE50
+	Unit* clist_remove_used_unit_entry(Unit* unit);								// 0049DEA0
+	void unit_movement_instant_stop(Unit* unit);								// 0046BF00
+	void progress_flingy(Unit* unit);											// 00495EE0
+	void finish_unit_movement(Unit* unit);										// 0046AD90
 }
