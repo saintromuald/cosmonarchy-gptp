@@ -1109,9 +1109,6 @@ bool unit_could_spawn_custom_larva(Unit* unit) {
 		case UnitId::Omnivale:
 			return true;
 	}
-	if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::GroundedBuilding) {
-		return true;
-	}
 	return false;
 }
 
