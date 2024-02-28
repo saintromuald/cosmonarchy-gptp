@@ -97,6 +97,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit_ext->timers[TimerReclaiming]     = 2 * 24;
 		unit_ext->timers[TimerReclaimingHeal] = 2 * 24;
 		unit_ext->timers[TimerStun]           = 2 * 24;
+		unit_ext->values[ValueNoCorpse] = true;
 		if (player != original_player) {
 			unit_ext->values[ValueDecaying] = true;
 		}
