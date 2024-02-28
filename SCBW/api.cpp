@@ -2009,6 +2009,7 @@ namespace scbw {
 
 		// Obtain control
 		target_ext->values[ValueInfested] = true;
+		target_ext->timers[TimerAlliedInvFrames] = 24;
 		target->give_to(player);
 
 		// Init infestation

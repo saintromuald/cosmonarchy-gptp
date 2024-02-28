@@ -1042,7 +1042,6 @@ namespace hooks
 			if (target_ext->timers[TimerInfesting] && !target_ext->values[ValueInfested]) {
 				fatal_deal_damage = false;
 				scbw::blissful_embrace(data.target, target_ext->values[ValueInfestingPlayer]);
-
 				data.target->set_hitpoints(100 + units_dat::max_hitpoints[data.target->id] / 3);
 				return fatal_deal_damage;
 			}
