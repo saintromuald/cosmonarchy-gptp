@@ -151,7 +151,7 @@ namespace hooks
 			case TechId::Infestation: {
 				helper::issue_tri_target_order(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
 			} break;
-			case TechId::AkistrokorBlissfulEmbrace: {
+			case TechId::ZergBlissfulEmbrace: {
 				helper::issue_tri_target_order(OrderId::CTFCOP1, 0, 0);
 			} break;
 			case TechId::CarapaceSwarm: {

@@ -31,7 +31,7 @@ namespace TechId {
 		LarvalSubmenuSelectSwarm			= 33, // Unused Tech 33
 		LarvalSubmenuSelectAssault			= 38, // Unused Tech 38
 		LarvalSubmenuSelectShared			= 9,  // Cloaking Field Wraith
-		AkistrokorBlissfulEmbrace			= 35, // Unused Tech 35
+		ZergBlissfulEmbrace			= 35, // Unused Tech 35
 		KazitrithColonyAdaptation			= 46,
 
 		// Brood War \\

@@ -2481,7 +2481,8 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergAkistrokor: {
-									if (current_button->icon_id == IconId::Ensnare) { // Akistrokor - Captivating Claws
+									if (current_button->icon_id == IconId::Ensnare				// Akistrokor - Captivating Claws
+									||	current_button->icon_id == IconId::SuicideScourge) {	// Akistrokor - Devouring Instinct
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

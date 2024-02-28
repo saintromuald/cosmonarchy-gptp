@@ -283,7 +283,7 @@ namespace WeaponId {
 		QuaziliskAcridBarbs					= 102,
 		AlmaksaliskPiercingSpines			= 110,
 		KalkaliskViscousAcid				= 117,
-		AkistrokorBlissfulEmbrace			= 127,	// Akistrokor ability targeting
+		ZergBlissfulEmbrace			= 127,	// Akistrokor ability targeting
 		AxitriliskSearingVenom				= 134,
 		IzirokorEnergizedBioplasma			= 142,
 		KagraliskRepeatingVenom				= 145,

@@ -361,7 +361,7 @@ namespace hooks
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
 		UnitExt* target_ext = get_unit_ext(data.target);
 
-		// Allied invincibility frames (for e.g. Akistrokor Blissful Embrace)
+		// Allied invincibility frames (for e.g. Blissful Embrace)
 		if (target_ext->timers[TimerAlliedInvFrames]) {
 			if (scbw::is_allied_to(data.attacking_player_id, target_ext->values[ValueAlliedInvPlayer])) {
 				data.damage = 0;
@@ -639,8 +639,8 @@ namespace hooks
 				}
 
 				switch (data.weapon_id) {
+					case WeaponId::ZergBlissfulEmbrace:
 					case WeaponId::AkistrokorHarryingTalons:
-					case WeaponId::AkistrokorBlissfulEmbrace:
 					{
 						mark_infesting(data.attacking_player_id, data.target);
 					} break;
