@@ -3228,6 +3228,12 @@ namespace scbw {
 					return false;
 				}
 			} break;
+			case UnitId::ZergMatraleth:
+			{
+				if (unit->main_order_id == OrderId::BlissfulEmbrace) {
+					return false;
+				}
+			} break;
 		}
 		return true;
 	}
