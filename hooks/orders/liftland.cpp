@@ -168,7 +168,7 @@ namespace hooks
 				helper::force_order_done(unit);
 
 				UnitExt* unit_ext = get_unit_ext(unit);
-				if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+				if (unit_ext->values[ValueInfested]) {
 					scbw::spawn_custom_creep(unit);
 				}
 				Unit* addon = helper::connect_addon_check(unit);

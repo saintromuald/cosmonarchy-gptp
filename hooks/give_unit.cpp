@@ -141,7 +141,7 @@ namespace hooks
 				}
 			} else {
 				UnitExt* unitExt = get_unit_ext(unit);
-				if (unitExt->values[ValueBlissfulEmbraceOriginalPlayer] || unitExt->units[UnitMindController]) {
+				if (unitExt->values[ValueInfested] || unitExt->units[UnitMindController]) {
 					helper::ai_training_simple_military(unit, unit);
 				} else {
 					helper::add_guard_ai_to_unit(unit);

@@ -93,8 +93,6 @@ enum ExtValueId {
 	ValueIsZombified,
 	ValueCuirassIsSelfReviving,
 	ValueTalosAnimationTimer,
-	ValueBlissfulEmbraceOriginalPlayer,
-	ValueBlissfulEmbraceOriginalHealth,
 	ValueSpecialSovrolethBirth,
 	ValuePlayingAddonWorkingAnim,
 	ValueMindControlPlayer,
@@ -188,6 +186,7 @@ enum ExtValueId {
 	ValueNoMassacreResource,
 	ValueJustCastedHallucination,
 	ValueInfested,
+	ValueInfestingPlayer,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -312,6 +311,7 @@ enum ExtTimerId {
 	TimerArtisanReturn,
 	TimerLiftoffDelay,
 	TimerReconstitutionDelay,
+	TimerInfesting,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -343,7 +343,6 @@ enum ExtUnitId {
 	UnitEmpressAnodyneAnnexSource,
 	UnitAnthelionGravityWellSource,
 	UnitTurretParentLink,
-	UnitBlissfulEmbrace,
 	UnitMorphConnectedUnit,
 	UnitAddonParent,
 	UnitResponseTarget,

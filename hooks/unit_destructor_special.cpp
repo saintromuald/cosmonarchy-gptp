@@ -350,6 +350,22 @@ void unit_destructor_special_cases(Unit* unit) {
 		}
 	}
 
+	// Blissful Embrace - Cleanup & Visual Effects
+	if (unit_ext->values[ValueInfested]) {
+		// Update creep
+		scbw::update_custom_creep_disappearance(unit);
+
+		// Make this a sprite
+		u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
+		if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
+			effect_image_id = ImageId::ZergBuildingExplosion;
+		} else if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay) {
+			effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+		}
+		unit->sprite->create_overlay(effect_image_id);
+		helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
+	}
+
 	// Proc on death behaviors
 	unit_on_death_behaviors(unit);
 

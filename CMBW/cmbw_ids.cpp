@@ -2,6 +2,7 @@
 #include "SCBW\api.h"
 #include "hooks\weapons\weapon_fire.h"
 #include "trigger_system/trigger_system.h"
+#include "data_ext.h"
 
 bool unit_id_is_capped_gas_structure(u16 unit_id) {
 	return unit_id == UnitId::TerranReservoir
@@ -1098,41 +1099,50 @@ bool unit_building_can_act(Unit* unit) {
 	return true;
 }
 
-bool unit_spawns_custom_larva(Unit* unit) {
+bool unit_could_spawn_custom_larva(Unit* unit) {
 	if (unit_id_spawns_larva_by_order(unit->id)) {
 		return false;
 	}
 
+	UnitExt* unit_ext = get_unit_ext(unit);
 	switch (unit->id) {
-		case UnitId::Omnivale: return true;
+		case UnitId::Omnivale:
+			return true;
+	}
+	if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::GroundedBuilding) {
+		return true;
+	}
+	return false;
+}
+
+bool unit_spawns_custom_larva(Unit* unit) {
+	if (unit->status & UnitStatus::InAir || !(unit->status & UnitStatus::Completed)) {
+		return false;
+	}
+	return unit_could_spawn_custom_larva(unit);
+}
+
+bool unit_could_spread_custom_creep(Unit* unit) {
+	if (helper::spreads_creep(unit->id, true)) {
+		return false;
 	}
 
 	UnitExt* unit_ext = get_unit_ext(unit);
-	if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] && units_dat::group_flags[unit->id].is_factory) {
+	switch (unit->id) {
+		case UnitId::Omnivale:
+			return true;
+	}
+	if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::GroundedBuilding) {
 		return true;
 	}
-
 	return false;
 }
 
 bool unit_spreads_custom_creep(Unit* unit) {
-	if (helper::spreads_creep(unit->id, true)) {
-		return false;
-	}
 	if (unit->status & UnitStatus::InAir || !(unit->status & UnitStatus::Completed)) {
 		return false;
 	}
-
-	switch (unit->id) {
-		case UnitId::Omnivale: return true;
-	}
-	
-	UnitExt* unit_ext = get_unit_ext(unit);
-	if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
-		return true;
-	}
-
-	return false;
+	return unit_could_spread_custom_creep(unit);
 }
 
 bool unit_id_should_give_gas_in_massacre_mode(u32 unit_id) {

@@ -2931,7 +2931,7 @@ namespace hooks {
 				Unit* target = units.units[i];
 				UnitExt* target_ext = get_unit_ext(target);
 				if (unit_id_is_tech(target->id)) {
-					if (units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+					if (units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueInfested]) {
 						continue;
 					}
 				}
@@ -2939,7 +2939,7 @@ namespace hooks {
 					case UnitId::TerranSupplyDepot:
 					case UnitId::TerranAnchor:
 					case UnitId::TerranReservoir: { // @Veeq7: What are these edge cases? -Pr0nogo
-						if (!target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+						if (!target_ext->values[ValueInfested]) {
 							continue;
 						}
 					} break;

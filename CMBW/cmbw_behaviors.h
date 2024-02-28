@@ -18,3 +18,4 @@ u32 unit_avenges_or_ascends(Unit* unit); // Returns (source_player + 1) if shoul
 void incubate(Unit* target, u32 count, u32 unit_id, u32 player);
 void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);
 void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id);
+void spread_debuffs(Unit* from, Unit* to);

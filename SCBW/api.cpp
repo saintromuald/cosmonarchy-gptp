@@ -1941,7 +1941,7 @@ namespace scbw {
 
 	void update_custom_creep_disappearance(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit->id == UnitId::Omnivale || unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+		if (unit_could_spread_custom_creep(unit)) {
 			helper::update_creep_disappearance_unit_id(UnitId::ZergGathtelosk, unit->position.x, unit->position.y, true);
 		}
 	}
@@ -1958,23 +1958,17 @@ namespace scbw {
 		UnitExt* target_ext = get_unit_ext(unit);
 
 		// Obtain control
-		if (!target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			target_ext->values[ValueBlissfulEmbraceOriginalPlayer] = unit->player + 1;
-			target_ext->values[ValueBlissfulEmbraceOriginalHealth] = unit->hitpoints;
-		}
+		target_ext->values[ValueInfested] = true;
 		unit->give_to(player);
 
 		// Spread initial creep
 		scbw::spawn_custom_creep(unit);
 
-
 		// Remove connected larva
 		u16 larva_id = UnitId::ZergLarva;
-		if (unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergOcsalCesiant)
-		{
+		if (unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergOcsalCesiant) {
 			larva_id = UnitId::ZergOcsalLarva;
 		}
-
 		EntryArray larvae = {};
 		unit_search_radial(&larvae, unit->position, 4 * 32);
 		unit_search_filter(&larvae, unit, 0, {larva_id});
@@ -2066,7 +2060,7 @@ namespace scbw {
 		if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
 			return unit->id;
 		}
-		if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] && !(unit->status & UnitStatus::InAir)) {
+		if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::GroundedBuilding) {
 			return UnitId::ZergHachirosk;
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) {
@@ -3909,9 +3903,8 @@ namespace scbw {
 	bool unit_regenerates_hp(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		return units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP
-			|| unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]
-			|| unit_ext->timers[TimerNathreliskMitosalFog]
-			|| unit_ext->values[ValueInfested];
+			|| unit_ext->values[ValueInfested]
+			|| unit_ext->timers[TimerNathreliskMitosalFog];
 	}
 
 	u32 get_regeneration_factor(Unit* unit) {

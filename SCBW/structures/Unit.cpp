@@ -391,6 +391,8 @@ void Unit::set_hitpoints(s32 hitpoints) {
 	static u32 func_address = 0x00467340;
 	assert(this);
 
+	hitpoints = Clamp(hitpoints, 0, units_dat::max_hitpoints[this->id]);
+
 	__asm {
 		PUSHAD
 		MOV EAX, this

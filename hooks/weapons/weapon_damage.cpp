@@ -639,6 +639,12 @@ namespace hooks
 				}
 
 				switch (data.weapon_id) {
+					case WeaponId::AkistrokorHarryingTalons:
+					case WeaponId::AkistrokorBlissfulEmbrace:
+					{
+						target_ext->timers[TimerInfesting] = 24;
+						target_ext->values[ValueInfestingPlayer] = data.attacking_player_id;
+					} break;
 					case WeaponId::SavantDiscoidRailgun:
 					{
 						// Power Siphon
@@ -890,72 +896,25 @@ namespace hooks
 
 	static bool weapon_damage_fatal(const WeaponDamageData& data) {
 		bool fatal_deal_damage = true;
-
 		UnitExt* target_ext = get_unit_ext(data.target);
+
+		// Note that the order here matters a lot
+		//
+		// 1. Plague
+		// 2. Unit Specific Behaviors
+		// 3. Infestation
+		// 4. Regression
+		// 5. Zombification
+		//
+		// We exit early to not trigger multiple different fatal damage handling at once
+
 		switch (data.weapon_id) {
 			case WeaponId::Plague: {
 				// Plague - Don't kill
 				fatal_deal_damage = false;
 				data.target->set_hitpoints(256);
+				return fatal_deal_damage;
 			} break;
-		}
-
-		// Empress - Anodyne Annex - zombify target
-		if (target_ext->values[ValueEmpressAnodyneAnnexStacks] && !target_ext->values[ValueIsZombified]) {
-			fatal_deal_damage = false;
-			scbw::empress_zombify(target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer], target_ext->units[UnitEmpressAnodyneAnnexSource], data.target, target_ext->values[ValueEmpressAnodyneAnnexStacks]);
-		}
-
-		if (target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			// Update creep
-			scbw::update_custom_creep_disappearance(data.target);
-
-			// Remove creep from beneath
-			//if (!helper::spreads_creep(data.target->id, true)) {
-			//	scbw::clear_creep(scbw::unit_area(data.target));
-			//}
-
-			// Remove connected larva
-			u16 larva_id = UnitId::ZergLarva;
-			if (data.target->id == UnitId::ZergCaphrolosk || data.target->id == UnitId::ZergOcsalCesiant) {
-				larva_id = UnitId::ZergOcsalLarva;
-			}
-
-			EntryArray larvae = {};
-			unit_search_radial(&larvae, data.target->position, 4 * 32);
-			unit_search_filter(&larvae, data.target, 0, {larva_id});
-			for (u32 i = 0; i < larvae.count; ++i) {
-				Unit* larva = larvae.units[i];
-				if (larva->connected_unit == data.target) {
-					larva->connected_unit = 0;
-				}
-			}
-
-			scbw::unload_or_kill_loaded_units(data.target);
-
-			// Recede control
-			data.target->give_to(target_ext->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
-			target_ext->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
-
-			fatal_deal_damage = false;
-			data.target->set_hitpoints(target_ext->values[ValueBlissfulEmbraceOriginalHealth]);
-
-			// Make this a sprite
-			u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-			if (units_dat::base_property[data.target->id] & UnitProperty::LargeOverlay) {
-				effect_image_id = ImageId::ZergBuildingExplosion;
-			} else if (units_dat::base_property[data.target->id] & UnitProperty::MediumOverlay) {
-				effect_image_id = ImageId::ZergAirDeathExplosion_Large;
-			}
-			data.target->sprite->create_overlay(effect_image_id);
-			helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
-
-			// Create busy overlays for buildings only
-			u32 infested_image_id = ImageId::InfestedOverlay_Large;
-			if (unit_id_is_smaller_building(data.target->id)) {
-				infested_image_id = ImageId::InfestedOverlay_Small;
-			}
-			scbw::remove_unit_overlay(data.target, infested_image_id);
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
@@ -1079,31 +1038,51 @@ namespace hooks
 			}
 		}
 
-		// Fix burrowed regression / transforms. -DF
-		if (data.target->status & UnitStatus::Burrowed)
-		{
-			data.target->main_order_id = OrderId::Unburrow;
-		}
-
-		u32 regression_id = scbw::get_zerg_regression(data.target);
-		if (data.damage > 0 && regression_id != UnitId::None) {
-			if (data.target->id != UnitId::ZergExcisant) {
+		if (fatal_deal_damage) {
+			// Matraleth, Akistokor - Blissful Embrace - infest target
+			if (target_ext->timers[TimerInfesting] && !target_ext->values[ValueInfested]) {
 				fatal_deal_damage = false;
-			}
-			if (data.target->id == UnitId::ZergNydusCesiant) {
-				Unit* nydus_exit = data.target->building.nydus_exit;
-				if (nydus_exit) {
-					data.target->building.nydus_exit = 0;
-					nydus_exit->building.nydus_exit = 0;
+				scbw::blissful_embrace(data.target, target_ext->values[ValueInfestingPlayer]);
 
-					if (!target_ext->values[ValueIsNydusExit] == 1) {
-						nydus_exit->remove();
+				data.target->set_hitpoints(100 + units_dat::max_hitpoints[data.target->id] / 3);
+				return fatal_deal_damage;
+			}
+
+			// Zerg Regression
+			u32 regression_id = scbw::get_zerg_regression(data.target);
+			if (data.damage > 0 && regression_id != UnitId::None) {
+				if (data.target->id != UnitId::ZergExcisant) {
+					fatal_deal_damage = false;
+				}
+				if (data.target->id == UnitId::ZergNydusCesiant) {
+					Unit* nydus_exit = data.target->building.nydus_exit;
+					if (nydus_exit) {
+						data.target->building.nydus_exit = 0;
+						nydus_exit->building.nydus_exit = 0;
+
+						if (!target_ext->values[ValueIsNydusExit] == 1) {
+							nydus_exit->remove();
+						}
 					}
 				}
+				scbw::regress(data.target, regression_id);
+				if (data.target) {
+					unit_on_death_behaviors(data.target);
+				}
+
+				// Fix burrowed regression / transforms. -DF
+				if (data.target->status & UnitStatus::Burrowed) {
+					data.target->main_order_id = OrderId::Unburrow;
+				}
+
+				return fatal_deal_damage;
 			}
-			scbw::regress(data.target, regression_id);
-			if (data.target) {
-				unit_on_death_behaviors(data.target);
+			
+			// Empress - Anodyne Annex - zombify target
+			if (target_ext->values[ValueEmpressAnodyneAnnexStacks] && !target_ext->values[ValueIsZombified]) {
+				fatal_deal_damage = false;
+				scbw::empress_zombify(target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer], target_ext->units[UnitEmpressAnodyneAnnexSource], data.target, target_ext->values[ValueEmpressAnodyneAnnexStacks]);
+				return fatal_deal_damage;
 			}
 		}
 

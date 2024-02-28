@@ -374,7 +374,7 @@ namespace hooks
 			}
 
 			// Terran building burn-down
-			if (!stop_here && !unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
+			if (!stop_here && !unit_ext->values[ValueInfested]) {
 				if (unit->get_race() == RaceId::Terran) {
 					if (unit->status & UnitStatus::GroundedBuilding || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
 						if (helper::unit_hp_is_in_redzone(unit)) {

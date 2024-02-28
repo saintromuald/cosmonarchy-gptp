@@ -439,7 +439,7 @@ namespace hooks
 		add_status(statuses, "Tempo Down", unit->id == UnitId::TerranMadrigalFuriaMode, 1);
 		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
-		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
+		add_status(statuses, "Blissfully Embraced", unit_ext->values[ValueInfested], 1);
 
 		if (unit_ext->units[UnitMindController]) {
 			switch (unit_ext->units[UnitMindController]->id) {
@@ -458,6 +458,7 @@ namespace hooks
 		// GPTP Timers - Gimmicked
 		add_status(statuses, "Observing", unit_ext->timers[TimerObservanceOverlay] > 0, 1);
 		add_status(statuses, "Dermal Accelerant", unit_ext->timers[TimerAlaszilethRegenBoost] > 0, 1);
+		add_status(statuses, "Blissful Embrace", unit_ext->timers[TimerInfesting] > 0, 1);
 
 		// Vanilla Timer + Value
 		add_status(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 100, unit->defensive_matrix_timer);

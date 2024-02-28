@@ -274,3 +274,16 @@ void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id) {
 		}
 	}
 }
+
+void spread_debuffs(Unit* from, Unit* to) {
+	UnitExt* from_ext = get_unit_ext(from);
+	UnitExt* to_ext = get_unit_ext(to);
+
+	if (from_ext->values[ValueDecaying]) {
+		to_ext->timers[TimerDecaySafe] = 3;
+		to_ext->values[ValueDecaying] = true;
+	}
+	if (from_ext->values[ValueInfested]) {
+		to_ext->values[ValueInfested] = true;
+	}
+}
