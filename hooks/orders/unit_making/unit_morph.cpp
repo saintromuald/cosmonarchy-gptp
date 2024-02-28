@@ -90,6 +90,7 @@ namespace hooks {
 			for (u32 i = 0; i < extra_count; ++i) {
 				Unit* new_unit = scbw::create_unit_in_game(unit->id, unit->player, unit->position.x, unit->position.y);
 				if (new_unit) {
+					spread_debuffs(unit, new_unit);
 					new_unit->rally = unit->rally;
 					UnitExt* new_ext = get_unit_ext(new_unit);
 					new_ext->values[ValueOriginatedFromOcsalLarva] = unit_ext->values[ValueOriginatedFromOcsalLarva];

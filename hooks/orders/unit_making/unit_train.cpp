@@ -141,6 +141,7 @@ namespace hooks {
 							for (u32 i = 0; i < count; i++) {
 								Unit* new_unit = built_units[i];
 								if (new_unit) {
+									spread_debuffs(unit, new_unit);
 									if (spawn_point_set) {
 										scbw::move_unit(new_unit, spawn_point.x, spawn_point.y);
 									}

@@ -17,6 +17,7 @@ namespace hooks
 		if (helper::get_larva_spawn_pos(building, &coords)) {
 			Unit* unit = helper::create_unit(unit_id, coords.x, coords.y, building->player);
 			if (unit) {
+				spread_debuffs(building, unit);
 				helper::update_unit_stats_and_finish_building(unit);
 				helper::update_unit_strength(unit);
 				unit->connected_unit = building;

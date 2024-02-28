@@ -642,8 +642,10 @@ namespace hooks
 					case WeaponId::AkistrokorHarryingTalons:
 					case WeaponId::AkistrokorBlissfulEmbrace:
 					{
-						target_ext->timers[TimerInfesting] = 24;
-						target_ext->values[ValueInfestingPlayer] = data.attacking_player_id;
+						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
+							target_ext->timers[TimerInfesting] = 24;
+							target_ext->values[ValueInfestingPlayer] = data.attacking_player_id;
+						}
 					} break;
 					case WeaponId::SavantDiscoidRailgun:
 					{
