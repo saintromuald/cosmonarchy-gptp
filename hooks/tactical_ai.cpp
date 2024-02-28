@@ -1169,7 +1169,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				unit->order_target.pt = unit->sprite->position;
 				unit->main_order_state = 0;
 			}
-		} else if (unit->id == UnitId::ZergAkistrokor && unit->main_order_id != OrderId::BlissfulEmbrace) {
+		} else if (unit->id == UnitId::ZergMatraleth && unit->main_order_id != OrderId::BlissfulEmbrace) {
 			EntryArray targets = {};
 			unit_search_radial(&targets, unit->position, 512 * 32);
 			unit_search_filter(&targets, unit, FilterEnemy | FilterBuilding);
@@ -1178,8 +1178,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			Unit* best_target = 0;
 			for (u32 i = 0; i < targets.count; ++i) {
 				Unit* target = targets.units[i];
-				if (target->hitpoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
-					&& units_dat::base_property[target->id] & UnitProperty::Building && !(units_dat::base_property[target->id] & UnitProperty::Addon)) {
+				if (can_infest(unit->player, target)) {
 					f32 cost = get_blissful_embrace_target_cost(unit, target);
 					if (cost < min_cost) {
 						min_cost = cost;

@@ -275,6 +275,20 @@ void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id) {
 	}
 }
 
+bool can_infest(u32 player, Unit* target) {
+	return target->status & UnitStatus::Completed && !(units_dat::base_property[target->id] & UnitProperty::Addon)
+		&& player != target->player && !scbw::is_allied_to(player, target->player);
+}
+
+void mark_infesting(u32 player, Unit* target) {
+	if (!can_infest(player, target)) {
+		return;
+	}
+	UnitExt* target_ext = get_unit_ext(target);
+	target_ext->timers[TimerInfesting] = 24;
+	target_ext->values[ValueInfestingPlayer] = player;
+}
+
 void spread_debuffs(Unit* from, Unit* to) {
 	UnitExt* from_ext = get_unit_ext(from);
 	UnitExt* to_ext = get_unit_ext(to);

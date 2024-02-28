@@ -2725,32 +2725,17 @@ namespace hooks {
 			}
 		}
 
-		// Akistrokor - Blissful Embrace ability
+		// Matraleth - Blissful Embrace ability
 		if (unit->id == UnitId::ZergMatraleth || unit->id == UnitId::ZergAkistrokor) {
 			if (unit->main_order_id == OrderId::BlissfulEmbrace) {
 				Unit* target = unit->order_target.unit;
-				if (target && target->hitpoints <= target->get_max_hp_raw() / 2 && target->status & UnitStatus::Completed
-					&& units_dat::base_property[target->id] & UnitProperty::Building && !(units_dat::base_property[target->id] & UnitProperty::Addon
-					&& unit->player != target->player && !scbw::is_allied_to(unit->player, target->player))) {
-					UnitExt* target_ext = get_unit_ext(target);
-
-					for (u32 i = 0; i < 8; ++i) {
-						if (scbw::is_allied_to(i, unit->player)) {
-							target_ext->ai_timer_avoid_targeting[i] = 2;
-						}
-					}
+				if (target && can_infest(unit->player, target)) {
 					if (unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
-						if (unit->order_signal & 0x2) {
-							unit->order_signal &= ~0x2;
-							helper::force_order_done(unit);
-							scbw::blissful_embrace(target, unit->player);
-						}
+						mark_infesting(unit->player, target);
 					}
 				} else {
 					helper::force_order_done(unit);
 				}
-			} else {
-				unit->order_signal &= ~0x2;
 			}
 		}
 
