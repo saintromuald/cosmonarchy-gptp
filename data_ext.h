@@ -186,6 +186,7 @@ enum ExtValueId {
 	ValueTriggerBehaviorSteadyShroud,
 	ValueAddonInactive,
 	ValueNoMassacreResource,
+	ValueJustCastedHallucination,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

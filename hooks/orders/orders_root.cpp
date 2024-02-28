@@ -456,15 +456,11 @@ namespace hooks {
 	void do_next_queued_order(Unit* unit) // 0047500
 	{
 		Order* queue_head = unit->order_queue_head;
-		if (unit->unit_ai)
-		{
-			if (queue_head)
-			{
-				if (unit->status & UnitStatus::Burrowed)
-				{
+		if (unit->unit_ai) {
+			if (queue_head) {
+				if (unit->status & UnitStatus::Burrowed) {
 					u32 order_queue_id = queue_head->order_id;
-					if (order_queue_id)
-					{
+					if (order_queue_id) {
 						if (order_queue_id != OrderId::Unburrow && order_queue_id != OrderId::Burrowed && order_queue_id != OrderId::ComputerAI)
 						{
 							if (!unit_id_is_trap(unit->id)
@@ -480,11 +476,10 @@ namespace hooks {
 				}
 			}
 		}
+
 		u32 status = unit->status;
-		if (!(status & (UnitStatus::NoBrkCodeStart | UnitStatus::CanNotReceiveOrders)) || queue_head && !queue_head->order_id)
-		{
-			if (queue_head)
-			{
+		if (!(status & (UnitStatus::NoBrkCodeStart | UnitStatus::CanNotReceiveOrders)) || queue_head && !queue_head->order_id) {
+			if (queue_head) {
 				Order* order = helper::remove_order_from_unit_queue(queue_head, unit);
 				u32 order_unit_id = order->unit_id;
 				u32 order_id = order->order_id;
@@ -493,11 +488,10 @@ namespace hooks {
 				bool cannot_be_interrupted = orders_dat::can_be_interrupted[order_id] == 0;
 
 				status = unit->status & ~(UnitStatus::AttackMove | UnitStatus::CanNotReceiveOrders | UnitStatus::Disabled);
-				u32 final_order_id = order_id;
 				Unit* order_target_var = order_target;
 				unit->order_queue_timer = 0;
 				unit->recent_order_timer = 0;
-				unit->user_action_flags &= ~1;
+				unit->user_action_flags &= ~UserActionFlags_IscriptGoToIdle;
 				unit->status = status | (cannot_be_interrupted << 12);
 				if (order_target) {
 					helper::unit_order_move_to_target_reset_order_state(unit, order_id, order_target);
@@ -506,8 +500,7 @@ namespace hooks {
 					unit->order_target.pt = order_position;
 					unit->order_target.unit = 0;
 					unit->main_order_id = order_id;
-					if (order_unit_id == UnitId::None)
-					{
+					if (order_unit_id == UnitId::None) {
 						unit->order_target.pt.y = order_position.y;
 						unit->order_unit_id = UnitId::None;
 					} else {
@@ -519,27 +512,25 @@ namespace hooks {
 					unit->auto_target_unit = 0;
 				}
 				helper::ignore_iscript_go_to_idle(unit);
-				u32 unit_var_id = unit->id;
-				if (!(units_dat::base_property[unit_var_id] & UnitProperty::Subunit)) {
-					Unit* unit_subunit = unit->subunit;
-					if (unit_subunit) {
-						if (units_dat::base_property[unit_subunit->id] & UnitProperty::Subunit) {
-							if (order_id == units_dat::return_to_idle_order[unit_var_id])
-							{
-								final_order_id = units_dat::return_to_idle_order[unit_subunit->id];
-							} else if (order_id == units_dat::attack_unit_order[unit_var_id]) {
-								final_order_id = units_dat::attack_unit_order[unit_subunit->id];
-							} else if (order_id == units_dat::attack_move_order[unit_var_id]) {
-								final_order_id = units_dat::attack_move_order[unit_subunit->id];
+				if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit)) {
+					Unit* subunit = unit->subunit;
+					if (subunit) {
+						if (units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
+							u32 final_order_id = order_id;
+							if (order_id == units_dat::return_to_idle_order[unit->id]) {
+								final_order_id = units_dat::return_to_idle_order[subunit->id];
+							} else if (order_id == units_dat::attack_unit_order[unit->id]) {
+								final_order_id = units_dat::attack_unit_order[subunit->id];
+							} else if (order_id == units_dat::attack_move_order[unit->id]) {
+								final_order_id = units_dat::attack_move_order[subunit->id];
 							} else if (!orders_dat::Unknown4[order_id]) {
 								return;
 							}
 
-							if (order_target_var)
-							{
-								helper::order_interrupt(unit_subunit, order_target_var, order_position.x, order_position.y, final_order_id);
+							if (order_target_var) {
+								helper::order_interrupt(subunit, order_target_var, order_position.x, order_position.y, final_order_id);
 							} else {
-								helper::issue_order_targeting_fow(unit_subunit, final_order_id, order_unit_id, order_position.x, order_position.y);
+								helper::issue_order_targeting_fow(subunit, final_order_id, order_unit_id, order_position.x, order_position.y);
 							}
 						}
 					}

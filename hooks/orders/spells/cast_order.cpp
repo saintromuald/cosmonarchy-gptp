@@ -16,21 +16,23 @@ namespace hooks
 		{
 			u16 tech_cost = techdata_dat::energy_cost[tech_id] << 8;
 			*energy_cost = tech_cost;
-			if (caster->energy >= tech_cost) // Used to check for TheGathering cheat.
-			{
+			if (caster->energy >= tech_cost) { // Used to check for TheGathering cheat.			
 				if (tech_id == TechId::Hallucination && !order_target) {
+					UnitExt* unit_ext = get_unit_ext(caster);
+					if (unit_ext->values[ValueJustCastedHallucination]) {
+						return 0;
+					}
 					Point16 target_pos = caster->order_target.pt;
 					if (scbw::get_distance_fast(caster->position, target_pos) > range) {
 						helper::set_move_target_xy(caster, target_pos.x, target_pos.y);
 						return 0;
 					}
-					helper::set_move_target_xy(caster, caster->position.x, caster->position.y);
 
+					helper::set_move_target_xy(caster, caster->position.x, caster->position.y);
 					if (!helper::is_angle_in_attack_angle(target_pos.y, target_pos.x, caster, TechId::Hallucination)) {
 						helper::turn_unit(caster, scbw::get_angle(caster->position, target_pos));
 						return 0;
 					}
-
 					return 1;
 				}
 				return helper::spell_order_move_towards_target(caster, range);
@@ -76,7 +78,8 @@ namespace hooks
 	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
 	bool can_target_spell(u16 tech_id, Unit* target, s16 fow_unit_id, Unit* caster, s16 x, s16 y, u16* error) // 00492020
 	{
-		switch (tech_id) {
+		switch (tech_id)
+		{
 			// Targeting inside; added many new cases
 			case TechId::Irradiate:
 			case TechId::EMPShockwave:
@@ -96,25 +99,20 @@ namespace hooks
 			}
 			default:
 			{
-				if (tech_id != TechId::SpiderMines
-				&&  tech_id != TechId::UnusedLobotomyMine)
-				{
+				if (tech_id != TechId::SpiderMines && tech_id != TechId::UnusedLobotomyMine) {
 					bool has_target = false;
 					u16 error_stat_string = 0;
 					if (target) {
 						if (!(target->status & UnitStatus::Invincible)) {
 						LABEL_20:
-							if (fow_unit_id == UnitId::None)
-							{
+							if (fow_unit_id == UnitId::None) {
 								error_stat_string = (u32)helper::get_target_unit_ability_error_stat_string(target, caster->player, tech_id);
 							} else {
 								error_stat_string = helper::can_target_spell_on_fow_unit((s32)tech_id, fow_unit_id);
 							}
 							
-							if (error_stat_string)
-							{
-								if (error)
-								{
+							if (error_stat_string) {
+								if (error) {
 									*error = error_stat_string;
 								}
 							}
@@ -123,33 +121,25 @@ namespace hooks
 						has_target = fow_unit_id != UnitId::None;
 					} else {
 						has_target = fow_unit_id != UnitId::None;
-						if (fow_unit_id == UnitId::None)
-						{
-							if (error)
-							{
+						if (fow_unit_id == UnitId::None) {
+							if (error) {
 								*error = 878; // Must target units.<0>
 							}
 							return 0;
 						}
 					}
-					if (!has_target || !(~(units_dat::base_property[fow_unit_id] >> 29) & 1))
-					{
-						if (error)
-						{
+					if (!has_target || !(~(units_dat::base_property[fow_unit_id] >> 29) & 1)) {
+						if (error) {
 							*error = 876; // Invalid target.<0>
 						}
 						return 0;
 					}
 					goto LABEL_20;
 				}
-
-				if (hooks::get_active_tile_flag(y, x, 0x410000, 0))
-				{
+				if (hooks::get_active_tile_flag(y, x, 0x410000, 0)) {
 					return 1;
 				}
-
-				if (error)
-				{
+				if (error) {
 					*error = 902; // Must target passable terrain.
 				}
 				return 0;
@@ -159,7 +149,7 @@ namespace hooks
 
 	void orders_spell(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		u8 order_weapon_id = orders_dat::order_weapon_id[unit->main_order_id];
+		u32 order_weapon_id = orders_dat::order_weapon_id[unit->main_order_id];
 		Unit* target = unit->order_target.unit;
 
 		// Paladin Skyfall
@@ -217,8 +207,7 @@ namespace hooks
 					spell_cost = techdata_dat::energy_cost[tech_used] * 256;
 				}
 
-				if (unit->energy < spell_cost)
-				{
+				if (unit->energy < spell_cost) {
 					u8 race_id = unit->get_race();
 					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + race_id); // Not enough energy
 					if (message) {
@@ -237,19 +226,15 @@ namespace hooks
 						progress_moving = helper::ordered_spell_progress_moving(unit, 0);
 					}
 
-					if (unit->main_order_state == 0)
-					{
+					if (unit->main_order_state == 0) {
 						unit->main_order_state = 1;
 					}
 					bool gcd_condition = true;
-					if (unit->id == UnitId::TerranWyvern && unit->ground_weapon_cooldown > 0)
-					{
+					if (unit->id == UnitId::TerranWyvern && unit->ground_weapon_cooldown > 0) {
 						gcd_condition = false; // new
 					}
-					if (progress_moving == 0)
-					{
-						if (unit->get_movable_state() == MovableState_UnmovableAtDestination)
-						{
+					if (progress_moving == 0) {
+						if (unit->get_movable_state() == MovableState_UnmovableAtDestination) {
 							unit->order_to_idle();
 						}
 					} else {
@@ -273,58 +258,48 @@ namespace hooks
 									// This code would not work for weapons id of NuclearMissile, YamatoGun, and weapons id before those, they must be excluded somewhere else
 									// Maybe the switch and array use could be removed in a future version since enough elements use default value (switch 6)
 									u32 switch_value = array_00492B44[order_weapon_id - 0x20];
-									if (switch_value != 6)
-									{
-										// no idea why irradiate is so important
+									if (switch_value != 6) {
+										// No idea why irradiate is so important
 										u32 analyzed_target_status = target->irradiate_timer;
-										if (switch_value == 2)
-										{
+										if (switch_value == 2) {
 											analyzed_target_status |= target->parasite_flags;
 										}
-										if (switch_value == 3)
-										{
+										if (switch_value == 3) {
 											analyzed_target_status |= target->ensnare_timer;
 										}
-										if (switch_value == 4)
-										{
+										if (switch_value == 4) {
 											analyzed_target_status |= target->plague_timer;
 										}
-										if (switch_value == 5)
-										{
+										if (switch_value == 5) {
 											analyzed_target_status |= target->is_blind;
 										}
-										if (switch_value == 0 && unit->is_frozen())
-										{
+										if (switch_value == 0 && unit->is_frozen()) {
 											analyzed_target_status |= 1;
 										}
-										if (analyzed_target_status != 0)
-										{
+										if (analyzed_target_status != 0) {
 											unit->order_to_idle();
 											idiot = true;
 										}
 									}
 								}
 							}
-							if (!idiot)
-							{
+
+							if (!idiot) {
 								unit->spend_unit_energy(spell_cost);
 
 								u8 cooldown = helper::get_weapon_cooldown(unit, order_weapon_id);
 								unit->spell_cooldown = cooldown;
-								if (unit->id == UnitId::TerranWyvern)
-								{
+								if (unit->id == UnitId::TerranWyvern) {
 									unit->ground_weapon_cooldown = cooldown; // new
 								}
 
 								// disable flag 2 if enabled, else has no effect
 								unit->order_signal &= ~2; //&= -3
 								unit->movement_flags |= MovementFlags_StartingAttack;
-								if (unit->sprite->images.head)
-								{
+								if (unit->sprite->images.head) {
 									Image* current_image = unit->sprite->images.head;
 									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::order_animation[unit->main_order_id];
-									if (tech_used == TechId::Lockdown && unit->mine_carrier.mine_count > 0)
-									{
+									if (tech_used == TechId::Lockdown && unit->mine_carrier.mine_count > 0) {
 										unit->mine_carrier.mine_count--;
 									}
 
@@ -335,8 +310,7 @@ namespace hooks
 									}
 								}
 								unit->main_order_state = 2;
-								if (unit->unit_ai)
-								{
+								if (unit->unit_ai) {
 									g_aiscript_controller[unit->player].spellcaster_timer = 1;
 								}
 							}

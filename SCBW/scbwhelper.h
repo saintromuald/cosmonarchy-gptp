@@ -594,7 +594,7 @@ namespace helper {
 	bool ai_has_worker_or_building(u32 region_id, u32 player);																		// 00432AD0
 
 	//// hallucination_spell
-	// for orders_Hallucination1
+	// for orders_hallucination1
 	bool spell_order(Unit* unit, u32 tech_id, u16* energy_cost, u32 sight_range, u32 error_message_index);							// 004926D0
 
 	void remove_unit(Unit* unit);

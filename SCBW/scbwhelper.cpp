@@ -4690,7 +4690,7 @@ namespace helper {
 		}
 	}
 
-	// for orders_Hallucination1
+	// for orders_hallucination1
 	bool spell_order(Unit* unit, u32 tech_id, u16* energy_cost, u32 sight_range, u32 error_message_index) {
 		const u32 func_address = 0x004926D0;
 		static b32 result;

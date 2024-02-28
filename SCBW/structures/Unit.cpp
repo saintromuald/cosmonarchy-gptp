@@ -820,8 +820,8 @@ void Unit::issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviou
 void Unit::order_to_idle() {
 	assert(this);
 	if (this->order_queue_head) {
-		this->user_action_flags |= 1;
-		prepare_for_next_order(this);
+		this->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+		helper::do_next_queued_order(this);
 	} else if (this->unit_ai) {
 		this->order_to(OrderId::ComputerAI);
 	} else {

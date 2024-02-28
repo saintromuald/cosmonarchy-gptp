@@ -2371,6 +2371,12 @@ namespace hooks {
 					hooks::carapace_swarm_hit_internal(unit->position.x, unit->position.y, unit->player, UnitId::Spell_CarapaceSwarmSmall);
 				}
 			} break;
+			case UnitId::ProtossCantavis:
+			{
+				if (unit_ext->values[ValueJustCastedHallucination] && unit->order_signal & 32) {
+					unit_ext->values[ValueJustCastedHallucination] = 0;
+				}
+			} break;
 		}
 
 		// Stimpack - Delayed buff handling
