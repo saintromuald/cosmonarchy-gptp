@@ -39,7 +39,7 @@ namespace hooks {
 
 		// Stimpack
 		if (unit->stim_timer) {
-			cooldown /= 2;
+			cooldown /= 2.5;
 		}
 
 		// Ensnare

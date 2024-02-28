@@ -259,8 +259,7 @@ namespace hooks
 
 	u32 get_modified_unit_speed(Unit* unit, u32 base_speed) // 0047B5F0
 	{
-		if (!unit)
-		{
+		if (!unit) {
 			return 1;
 		}
 
@@ -275,14 +274,12 @@ namespace hooks
 			default:
 			{
 				// Flingy-related code
-				if (increase > 0)
-				{
+				if (increase > 0) {
 					for (s32 i = 0; i < increase; i++)
 					{
-						base_speed *= 1.5;
+						base_speed *= 1.6;
 					}
-					if (base_speed < 853)
-					{
+					if (base_speed < 853) {
 						base_speed = 853;
 					}
 				}
@@ -335,45 +332,39 @@ namespace hooks
 	// Hooked to fix the speed tooltip for iscript units. -Pr0nogo
 	void update_iscript_speed(Unit* unit) // 0042D8C0
 	{
-		if (unit->flingy_movement_type == MovementType::MovementType_Iscript)
-		{
+		if (unit->flingy_movement_type == MovementType::MovementType_Iscript) {
 			Image* image = unit->sprite->main_graphic;
 			*g_temp_iscript_header = image->iscript_header_offset;
 			*g_iscript_speed_something = image->return_address;
-			if (helper::set_temp_iscript_animation(IscriptAnimation::Walking))
-			{
+			if (helper::set_temp_iscript_animation(IscriptAnimation::Walking)) {
 				Unit* active_unit = *g_active_iscript_unit;
 				u32 iteration_factor = 0;
 				u32 opcode_value = 0;
 				u32 tile_size = 32;
 				bool tile_size_bool = 0;
 				u32 base_speed = 0;
-				do {
+				do
+				{
 					Image* loop_image = unit->sprite->main_graphic;
 					*g_active_iscript_unit = unit;
 				//	helper::iscript_opcode_cases(loop_image, g_temp_iscript_header, 1, (u32)&opcode_value); // This is probably wrong, compare to IDA (our helper has 1 less arg)
-					char stim_timer = unit->stim_timer;
+					u8 stim_timer = unit->stim_timer;
 					u32 opcode_value_final = opcode_value;
 
 					u32 buff_or_debuff = 0;
 					*g_active_iscript_unit = active_unit;
-					if (stim_timer)
-					{
+					if (stim_timer) {
 						buff_or_debuff = 1;
 					}
-					if (unit->status & UnitStatus::SpeedUpgrade)
-					{
+					if (unit->status & UnitStatus::SpeedUpgrade) {
 						++buff_or_debuff;
 					}
-					if (unit->ensnare_timer)
-					{
+					if (unit->ensnare_timer) {
 						--buff_or_debuff;
 					}
 
-					if (buff_or_debuff <= 0)
-					{
-						if (buff_or_debuff < 0)
-						{
+					if (buff_or_debuff <= 0) {
+						if (buff_or_debuff < 0) {
 							opcode_value_final = opcode_value - (opcode_value >> 2);
 						}
 					} else {
@@ -395,13 +386,11 @@ namespace hooks
 	{
 		s32 result = 0;
 		s32 speed = unit->current_speed_2;
-		if (!speed || unit->flingy_movement_type)
-		{
+		if (!speed || unit->flingy_movement_type) {
 			return result;
 		}
 		u32 flingy_id = unit->flingy_id;
-		if (speed != flingy_dat::top_speed[flingy_id] || unit->flingy_acceleration != flingy_dat::acceleration[flingy_id])
-		{
+		if (speed != flingy_dat::top_speed[flingy_id] || unit->flingy_acceleration != flingy_dat::acceleration[flingy_id]) {
 			result = speed * speed / (2 * unit->flingy_acceleration);
 		} else {
 			result = flingy_dat::halt_distance[flingy_id] >> 2;
