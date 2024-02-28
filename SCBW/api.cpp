@@ -3910,7 +3910,8 @@ namespace scbw {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		return units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP
 			|| unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]
-			|| unit_ext->timers[TimerNathreliskMitosalFog];
+			|| unit_ext->timers[TimerNathreliskMitosalFog]
+			|| unit_ext->values[ValueInfested];
 	}
 
 	u32 get_regeneration_factor(Unit* unit) {

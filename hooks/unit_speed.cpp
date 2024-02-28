@@ -142,6 +142,11 @@ namespace hooks
 			speed *= 0.5;
 		}
 
+		// Infestation - Slow
+		if (unit_ext->values[ValueInfested]) {
+			speed *= 0.75;
+		}
+
 		switch (unit->id) {
 			case UnitId::TerranBlackjack:
 			{

@@ -187,6 +187,7 @@ enum ExtValueId {
 	ValueAddonInactive,
 	ValueNoMassacreResource,
 	ValueJustCastedHallucination,
+	ValueInfested,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

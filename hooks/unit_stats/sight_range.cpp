@@ -9,9 +9,7 @@ namespace hooks
 	/// Equivalent to getUpgradedSightRange @ 004E5B40  
 	u32 get_sight_range(Unit* unit, bool is_for_spellcasting) {
 		// Check if the unit is a constructing building (exclude remorphing buildings)
-		if  (unit->status & UnitStatus::GroundedBuilding
-		&& !(unit->status & UnitStatus::Completed)
-		&&  !unit->is_remorphing_building()) {
+		if  (unit->status & UnitStatus::GroundedBuilding && !(unit->status & UnitStatus::Completed) && !unit->is_remorphing_building()) {
 			return DEFAULT_SIGHT_RANGE;
 		}
 		if (!is_for_spellcasting && unit->is_blind) { // Check if the unit is blinded (don't bother if this is for spellcasting)
@@ -19,6 +17,11 @@ namespace hooks
 		}
 		u32 sight_range = units_dat::sight_range[unit->id];
 		if (unit->status & UnitStatus::Burrowed && !unit_id_is_trap(unit->id)) {
+			sight_range /= 2;
+		}
+
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueInfested]) {
 			sight_range /= 2;
 		}
 		return sight_range;
