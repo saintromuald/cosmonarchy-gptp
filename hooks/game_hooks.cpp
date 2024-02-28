@@ -2726,7 +2726,10 @@ namespace hooks {
 		if (unit->id == UnitId::ZergMatraleth) {
 			if (unit->main_order_id == OrderId::BlissfulEmbrace) {
 				Unit* target = unit->order_target.unit;
-				if (target && can_infest(unit->player, target) && helper::get_distance_to_unit(unit, target) <= 16) {
+				if (target && can_infest(unit->player, target)) {
+					if (helper::get_distance_to_unit(unit, target) > 16) {
+						helper::spell_order_move_towards_target(unit, 16);
+					}
 					if (unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
 						mark_infesting(unit->player, target);
 					}

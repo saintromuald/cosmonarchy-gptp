@@ -30,6 +30,9 @@ namespace hooks
 				}
 			} break;
 		}
+		if (unit_ext->values[ValueInfested]) {
+			armor_modifier += 1;
+		}
 		return armor_modifier;
 	}
 
