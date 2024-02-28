@@ -2718,10 +2718,20 @@ namespace hooks {
 			}
 		}
 
-		// Blissful Embrace - Creep spread and Larva spawn
+		// Custom Creep Spread
 		if (unit_spreads_custom_creep(unit)) {
 			if (*g_elapsed_time_frames % 15 == 0) {
 				scbw::spread_custom_creep(unit);
+			}
+		}
+
+		// Blissful Embrace - Visuals
+		if (unit_ext->values[ValueInfested]) {
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+				u32 image_id = ImageId::OcsalRegressionOverlay;
+				if (!unit->get_overlay(image_id)) {
+					scbw::add_unit_overlay(unit, image_id);
+				}
 			}
 		}
 

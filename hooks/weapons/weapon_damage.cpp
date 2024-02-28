@@ -642,8 +642,6 @@ namespace hooks
 					case WeaponId::AkistrokorHarryingTalons:
 					case WeaponId::AkistrokorBlissfulEmbrace:
 					{
-						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
-						}
 						mark_infesting(data.attacking_player_id, data.target);
 					} break;
 					case WeaponId::SavantDiscoidRailgun:

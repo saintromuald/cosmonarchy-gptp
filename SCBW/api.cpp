@@ -1949,7 +1949,7 @@ namespace scbw {
 	void blissful_embrace(Unit* unit, u32 player) {
 		// Sanity check.
 		// Spawning cagra wouldn't work properly on units. Spawning cagra on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
-		if (!(units_dat::base_property[unit->id] & UnitProperty::Building) || units_dat::base_property[unit->id] & UnitProperty::Addon) {
+		if (!can_infest(player, unit)) {
 			return;
 		}
 
@@ -1980,15 +1980,18 @@ namespace scbw {
 		}
 
 		// Spawn infested overlay
-		u32 infested_image_id = ImageId::InfestedOverlay_Large;
-		if (unit_id_is_smaller_building(unit->id)) {
-			infested_image_id = ImageId::InfestedOverlay_Small;
-		}
-		if (!unit->get_overlay(infested_image_id)) {
-			scbw::add_unit_overlay(unit, infested_image_id);
+		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+			u32 infested_image_id = ImageId::InfestedOverlay_Large;
+			if (unit_id_is_smaller_building(unit->id)) {
+				infested_image_id = ImageId::InfestedOverlay_Small;
+			}
+			if (!unit->get_overlay(infested_image_id)) {
+				scbw::add_unit_overlay(unit, infested_image_id);
+			}
 		}
 
-		// Spawn effect overlay | TODO: Make this a sprite
+		// Spawn effect overlay
+		// TODO: Make this a sprite
 		u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
 		if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
 			effect_image_id = ImageId::ZergBuildingExplosion;
