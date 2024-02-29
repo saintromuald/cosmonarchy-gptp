@@ -70,6 +70,9 @@ namespace hooks {
 		}
 		if (aggressive_response) {
 			switch (unit->id) {
+				case UnitId::TerranTalos: {
+					return helper::get_random_sfx_between(SoundId::TalosOrderAggressive01, SoundId::TalosOrderAggressive04);
+				} break;
 				case UnitId::TerranHotshot: {
 					return helper::get_random_sfx_between(SoundId::HotshotOrderAggressive01, SoundId::HotshotOrderAggressive04);
 				} break;
@@ -204,6 +207,9 @@ namespace hooks {
 			if (unit_id != UnitId::ProtossSteward && unit_id != UnitId::ProtossPlasmaShell) {
 				u32 ready_sound = units_dat::sound_ready[unit_id];
 				switch (unit_id) {
+					case UnitId::TerranTalos: {
+						ready_sound = helper::get_random_sfx_between(SoundId::TalosReady01, SoundId::TalosReady03);
+					} break;
 					case UnitId::TerranHotshot: {
 						ready_sound = helper::get_random_sfx_between(SoundId::HotshotReady01, SoundId::HotshotReady03);
 					} break;

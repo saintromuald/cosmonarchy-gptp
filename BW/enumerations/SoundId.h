@@ -1765,5 +1765,13 @@ namespace SoundId
 		TerranLiftoffStart							= 2919,
 		ArtisanRadiantChannel						= 2920,
 		ArtisanRadiantProc							= 2921,
+		TalosReady01								= 2922,
+		TalosReady02								= 2923,
+		TalosReady03								= 2924,
+
+		TalosOrderAggressive01						= 2933,
+		TalosOrderAggressive02						= 2934,
+		TalosOrderAggressive03						= 2935,
+		TalosOrderAggressive04						= 2936,
 	};
 }
