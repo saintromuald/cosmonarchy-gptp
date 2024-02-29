@@ -294,39 +294,52 @@ void mark_infesting(u32 player, Unit* target) {
 	target_ext->values[ValueInfestingPlayer] = player;
 }
 
-void blissful_embrace_init(Unit* target) {
-	UnitExt* target_ext = get_unit_ext(target);
-	if (target_ext->values[ValueInfestedInit]) {
-		return;
-	}
-	target_ext->values[ValueInfestedInit] = true;
-
-	// Spawn infestation overlay
+static u32 blissful_embrace_overlay_image_id(Unit* target) {
 	if (units_dat::base_property[target->id] & UnitProperty::Building) {
-		u32 image_id = ImageId::InfestedOverlay_Large;
 		if (unit_id_is_smaller_building(target->id)) {
-			image_id = ImageId::InfestedOverlay_Small;
+			return ImageId::InfestedOverlay_Small;
+		} else {
+			return ImageId::InfestedOverlay_Large;
 		}
-		if (!target->get_overlay(image_id)) {
-			bw::add_unit_overlay(target, image_id);
+	} else {
+		if (units_dat::base_property[target->id] & UnitProperty::LargeOverlay) {
+			return ImageId::InfestedOverlay_Large;
+		} else if (units_dat::base_property[target->id] & UnitProperty::MediumOverlay) {
+			return ImageId::InfestedOverlay_Small;
+		} else {
+			return ImageId::OcsalRegressionOverlay;
 		}
 	}
+}
 
-	// Spawn effect overlay
-	u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-	if (units_dat::base_property[target->id] & UnitProperty::LargeOverlay) {
-		effect_image_id = ImageId::ZergBuildingExplosion;
-	} else if (units_dat::base_property[target->id] & UnitProperty::MediumOverlay) {
-		effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+void blissful_embrace_tick(Unit* target) {
+	// Spawn infestation overlay
+	u32 overlay_image_id = blissful_embrace_overlay_image_id(target);
+	if (!target->get_overlay(overlay_image_id)) {
+		target->sprite->create_overlay(overlay_image_id);
 	}
-	target->sprite->create_overlay(effect_image_id);
 
-	// Play sound
-	helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, target, true, 0);
+	// Init
+	UnitExt* target_ext = get_unit_ext(target);
+	if (!target_ext->values[ValueInfestedInit]) {
+		target_ext->values[ValueInfestedInit] = true;
+		
+		// Play sound
+		helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, target, true, 0);
 
-	// Spread initial creep
-	if (unit_spreads_custom_creep(target)) {
-		bw::spawn_custom_creep(target);
+		// Spawn effect overlay
+		u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
+		if (units_dat::base_property[target->id] & UnitProperty::LargeOverlay) {
+			effect_image_id = ImageId::ZergBuildingExplosion;
+		} else if (units_dat::base_property[target->id] & UnitProperty::MediumOverlay) {
+			effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+		}
+		target->sprite->create_overlay(effect_image_id);
+
+		// Spread initial creep
+		if (unit_spreads_custom_creep(target)) {
+			bw::spawn_custom_creep(target);
+		}
 	}
 }
 
@@ -361,7 +374,7 @@ void blissful_embrace(Unit* target, u32 player) {
 	target->give_to(player);
 
 	// Init infestation
-	blissful_embrace_init(target);
+	blissful_embrace_tick(target);
 }
 
 void spread_debuffs(Unit* from, Unit* to) {

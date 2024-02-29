@@ -20,6 +20,6 @@ void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);
 void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id);
 bool can_infest(u32 player, Unit* target);
 void mark_infesting(u32 player, Unit* target);
-void blissful_embrace_init(Unit* target);
+void blissful_embrace_tick(Unit* target);
 void blissful_embrace(Unit* target, u32 player);
 void spread_debuffs(Unit* from, Unit* to);

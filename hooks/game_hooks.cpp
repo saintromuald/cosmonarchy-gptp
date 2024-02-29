@@ -2708,13 +2708,7 @@ namespace hooks {
 
 		// Blissful Embrace - Init & Visuals
 		if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::Completed) {
-			blissful_embrace_init(unit);
-			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
-				u32 image_id = ImageId::OcsalRegressionOverlay;
-				if (!unit->get_overlay(image_id)) {
-					bw::add_unit_overlay(unit, image_id);
-				}
-			}
+			blissful_embrace_tick(unit);
 		}
 
 		// Matraleth - Blissful Embrace ability
