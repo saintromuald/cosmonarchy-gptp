@@ -95,7 +95,6 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
 		unit_ext->timers[TimerReclaiming]     = 2 * 24;
-		unit_ext->timers[TimerReclaimingHeal] = 2 * 24;
 		unit_ext->timers[TimerStun]           = 2 * 24;
 		unit_ext->values[ValueNoCorpse] = true;
 		if (player != original_player) {
@@ -293,6 +292,76 @@ void mark_infesting(u32 player, Unit* target) {
 	UnitExt* target_ext = get_unit_ext(target);
 	target_ext->timers[TimerInfesting] = 24;
 	target_ext->values[ValueInfestingPlayer] = player;
+}
+
+void blissful_embrace_init(Unit* target) {
+	UnitExt* target_ext = get_unit_ext(target);
+	if (target_ext->values[ValueInfestedInit]) {
+		return;
+	}
+	target_ext->values[ValueInfestedInit] = true;
+
+	// Spawn infestation overlay
+	if (units_dat::base_property[target->id] & UnitProperty::Building) {
+		u32 image_id = ImageId::InfestedOverlay_Large;
+		if (unit_id_is_smaller_building(target->id)) {
+			image_id = ImageId::InfestedOverlay_Small;
+		}
+		if (!target->get_overlay(image_id)) {
+			scbw::add_unit_overlay(target, image_id);
+		}
+	}
+
+	// Spawn effect overlay
+	u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
+	if (units_dat::base_property[target->id] & UnitProperty::LargeOverlay) {
+		effect_image_id = ImageId::ZergBuildingExplosion;
+	} else if (units_dat::base_property[target->id] & UnitProperty::MediumOverlay) {
+		effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+	}
+	target->sprite->create_overlay(effect_image_id);
+
+	// Play sound
+	helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, target, true, 0);
+
+	// Spread initial creep
+	if (unit_spreads_custom_creep(target)) {
+		scbw::spawn_custom_creep(target);
+	}
+}
+
+void blissful_embrace(Unit* target, u32 player) {
+	// Sanity check.
+	if (!can_infest(player, target)) {
+		return;
+	}
+
+	// Eject loaded units if possible, kill them otherwise
+	scbw::unload_or_kill_loaded_units(target);
+	UnitExt* target_ext = get_unit_ext(target);
+
+	// Remove connected larva
+	u16 larva_id = UnitId::ZergLarva;
+	if (target->id == UnitId::ZergCaphrolosk || target->id == UnitId::ZergOcsalCesiant) {
+		larva_id = UnitId::ZergOcsalLarva;
+	}
+	EntryArray larvae = {};
+	unit_search_radial(&larvae, target->position, 4 * 32);
+	unit_search_filter(&larvae, target, 0, {larva_id});
+	for (u32 i = 0; i < larvae.count; ++i) {
+		Unit* larva = larvae.units[i];
+		if (larva->connected_unit == target) {
+			larva->connected_unit = 0;
+		}
+	}
+
+	// Obtain control
+	target_ext->values[ValueInfested] = true;
+	target_ext->timers[TimerAlliedInvFrames] = 24;
+	target->give_to(player);
+
+	// Init infestation
+	blissful_embrace_init(target);
 }
 
 void spread_debuffs(Unit* from, Unit* to) {

@@ -1157,33 +1157,28 @@ namespace hooks {
 			scbw::add_unit_overlay(unit, ImageId::TyrannyOverlay);
 		}
 
-		// Reclamation
-		{
-			// Decaying
-			if (unit_ext->values[ValueDecaying]) {
-				if (!(unit->status & UnitStatus::Cloaked)) {
-					if (!unit->sprite->get_overlay(ImageId::RevivedDecayingOverlay)) {
-						unit->sprite->create_overlay(ImageId::RevivedDecayingOverlay);
-					}
-				}
-
-				if (!unit_ext->timers[TimerReclaimingHeal]) {
-					unit->damage_hp((5 * 256) / 24, 0, unit->player, false);
+		// Reclamation - Decaying
+		if (unit_ext->values[ValueDecaying]) {
+			if (!(unit->status & UnitStatus::Cloaked)) {
+				if (!unit->sprite->get_overlay(ImageId::RevivedDecayingOverlay)) {
+					unit->sprite->create_overlay(ImageId::RevivedDecayingOverlay);
 				}
 			}
 
-			// Reclaiming
-			if (unit_ext->timers[TimerReclaiming]) {
-				if (unit_ext->timers[TimerReclaimingHeal]) {
-					unit->heal_hp((25 * 256) / (2 * 24));
-				}
-				if (unit_ext->timers[TimerReclaiming] == 1) {
-					unit->sprite->create_overlay(ImageId::LazarusAgentCast);
-					// Play sound for the end of healing and stun
-				} else if (unit_ext->timers[TimerReclaiming] % 12 == 1) {
-					unit->sprite->create_overlay(ImageId::LazarusAgentCast);
-					// Play sound for healing and stun
-				}
+			if (!unit_ext->timers[TimerReclaiming]) {
+				unit->damage_hp((5 * 256) / 24, 0, unit->player, false);
+			}
+		}
+
+		// Reclamation - Reclaiming
+		if (unit_ext->timers[TimerReclaiming]) {
+			unit->heal_hp((25 * 256) / (2 * 24));
+			if (unit_ext->timers[TimerReclaiming] == 1) {
+				unit->sprite->create_overlay(ImageId::LazarusAgentCast);
+				// Play sound for the end of healing and stun
+			} else if (unit_ext->timers[TimerReclaiming] % 12 == 1) {
+				unit->sprite->create_overlay(ImageId::LazarusAgentCast);
+				// Play sound for healing and stun
 			}
 		}
 
@@ -2711,9 +2706,9 @@ namespace hooks {
 			}
 		}
 
-		// Blissful Embrace - Visuals
+		// Blissful Embrace - Init & Visuals
 		if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::Completed) {
-			scbw::blissful_embrace_init(unit);
+			blissful_embrace_init(unit);
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
 				u32 image_id = ImageId::OcsalRegressionOverlay;
 				if (!unit->get_overlay(image_id)) {

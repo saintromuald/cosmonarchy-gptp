@@ -293,7 +293,6 @@ enum ExtTimerId {
 	TimerDemiurgeWorship,
 	TimerAxitriliskPerpetualWind,
 	TimerReclaiming,
-	TimerReclaimingHeal,
 	TimerVilgolethSpawn,
 	TimerVilgolethTimedLife,
 	TimerAvenge,
