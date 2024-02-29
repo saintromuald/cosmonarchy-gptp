@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW\scbwdata.h"
+#include "BW\bwdata.h"
 #include "hooks\weapons\weapon_fire.h"
 
 bool unit_id_is_capped_gas_structure(u16 unit_id);

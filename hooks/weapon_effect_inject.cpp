@@ -1,7 +1,7 @@
 #include "weapon_effect.h"
 #include "weapons\weapon_spellhit.h"
 #include "../hook_tools.h"
-#include "SCBW/enumerations.h"
+#include "BW/enumerations.h"
 
 const u32 Addr_WeaponsDatEffectCount = 0x0048B785 + 2;
 const u32 Addr_WeaponsDatEffectSwitch = 0x0048B790 + 3;

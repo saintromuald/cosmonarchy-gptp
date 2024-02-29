@@ -1,6 +1,6 @@
 #include "api.h"
-#include "scbwdata.h"
-#include <SCBW/UnitFinder.h>
+#include "BWdata.h"
+#include <BW/UnitFinder.h>
 #include <hooks/cosmonarchy_finder.h>
 #include <algorithm>
 #include <cassert>

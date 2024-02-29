@@ -1,5 +1,5 @@
 #include "cm_ids.h"
-#include "SCBW\api.h"
+#include "BW\api.h"
 #include "hooks\weapons\weapon_fire.h"
 #include "trigger_system/trigger_system.h"
 #include "data_ext.h"

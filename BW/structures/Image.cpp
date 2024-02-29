@@ -1,7 +1,7 @@
 #include "Image.h"
 #include "Sprite.h"
-#include <SCBW/api.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/bwdata.h>
 #include <cassert>
 #include "hook_tools.h"
 #include <hooks/weapons/weapon_spellhit.h>

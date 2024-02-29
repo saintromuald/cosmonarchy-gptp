@@ -1,5 +1,5 @@
 #include "load_unload_proc.h"
-#include "SCBW\structures.h"
+#include "BW\structures.h"
 #include <hook_tools.h>
 
 namespace

@@ -172,7 +172,7 @@ const char* Unit::get_name() {
 	return get_name(this->id);
 }
 
-#include "SCBW/stat_txt_spec.h"
+#include "BW/stat_txt_spec.h"
 // Based on function @ 0x0047B090
 const char* Unit::get_name(u16 unit_id) {
 	assert(unit_id < UnitsIdLimit);

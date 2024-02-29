@@ -1,5 +1,5 @@
 #include "max_energy.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace hooks
 {

@@ -1,7 +1,7 @@
 #include "ai_orders.h"
-#include <SCBW/api.h>
-#include <SCBW/structures.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
 #include "logger.h"
 #include "ai_layouts.h"
 #include "globals.h"

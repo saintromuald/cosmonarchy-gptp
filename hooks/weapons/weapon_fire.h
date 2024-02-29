@@ -1,6 +1,6 @@
 #pragma once
-#include <SCBW/structures/Unit.h>
-#include <SCBW/structures/Bullet.h>
+#include <BW/structures/Unit.h>
+#include <BW/structures/Bullet.h>
 
 struct WeaponOffsets {
 	u32 value_id;

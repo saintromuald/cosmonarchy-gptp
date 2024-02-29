@@ -1,5 +1,5 @@
 #include "neutral_related.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace hooks {
 	bool unit_is_not_neutral(CHKUnit* unit) { // 004CBE20

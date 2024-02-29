@@ -6,7 +6,7 @@
 #include "List.h"
 #include <vector>
 #include <unordered_map>
-#include "SCBW/enumerations/IconId.h"
+#include "BW/enumerations/IconId.h"
 
 #pragma pack(1)
 
@@ -146,7 +146,7 @@ namespace RustId
 	};
 }
 
-#include "SCBW\enumerations\TechId.h"
+#include "BW\enumerations\TechId.h"
 const u32 string_toggle_on[] = {1265, 1355};
 const u32 string_toggle_off[] = {1270, 1351};
 const u32 button_toggle_on[] = {IconId::DisruptionWeb2, IconId::RechargeShields};

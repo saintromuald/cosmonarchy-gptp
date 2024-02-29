@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/structures.h"
+#include "BW/structures.h"
 
 u8 tFontGame_ImageData[328];//Larger tfont.pcx buffer to fit the new colors.
 u16 display_text_color[11];

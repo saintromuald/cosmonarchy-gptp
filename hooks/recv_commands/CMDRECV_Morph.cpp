@@ -1,6 +1,6 @@
 #pragma once
 #include "CMDRECV_Morph.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "hooks/rally_point.h"
 
 namespace hooks

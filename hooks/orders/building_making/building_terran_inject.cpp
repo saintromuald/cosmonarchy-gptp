@@ -1,6 +1,6 @@
 #include "building_terran.h"
 #include <hook_tools.h>
-#include "SCBW/api.h"
+#include "BW/api.h"
 namespace
 {
 	void __declspec(naked) orders_terran_build_self_wrapper()

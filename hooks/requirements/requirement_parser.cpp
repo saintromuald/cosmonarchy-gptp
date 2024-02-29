@@ -1,6 +1,6 @@
 #include "requirement_parser.h"
-#include "SCBW/api.h"
-#include "SCBW/Storm.h"
+#include "BW/api.h"
+#include "BW/Storm.h"
 
 namespace
 {

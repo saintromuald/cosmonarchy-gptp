@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW\api.h"
+#include "BW\api.h"
 
 // TODO: rename this file to something more accurate, we have all kinds of player customization here, not only color
 

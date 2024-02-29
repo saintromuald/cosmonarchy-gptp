@@ -1,6 +1,6 @@
 #include "stats_panel_display.h"
-#include <SCBW/api.h>
-#include "SCBW/stat_txt_spec.h"
+#include <BW/api.h>
+#include "BW/stat_txt_spec.h"
 #include "hooks/interface/buttonsets.h"
 #include "trigger_system/trigger_system.h"
 #include "DatExtend/datext.h"

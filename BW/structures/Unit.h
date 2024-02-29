@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "UnitLayout.h"
 #include "unit_constants.h"
-#include <SCBW/enumerations.h>
+#include <BW/enumerations.h>
 #include "../../graphics/graphics.h"
 
 struct Flingy

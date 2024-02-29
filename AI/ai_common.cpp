@@ -1,7 +1,7 @@
 #include "ai_common.h"
-#include <SCBW/enumerations.h>
-#include <SCBW/api.h>
-#include <SCBW/UnitFinder.h>
+#include <BW/enumerations.h>
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
 #include <globals.h>
 #include <cassert>
 

@@ -1,5 +1,5 @@
 #include "feedback_spell.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace hooks
 {

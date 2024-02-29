@@ -1,4 +1,4 @@
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <DatExtend/datext.h>
 #include <hooks/grafting/grafting.h>
 
@@ -52,7 +52,7 @@ SCBW_DATA_VAR(u32*,								ai_strength_air_var, 0x006BB210);
 SCBW_DATA_VAR(u32*,								ai_strength_ground_var, 0x006BB5A0);
 SCBW_DATA_VAR(u8*,								g_is_valid_sprite_var, 0x00629A88);
 
-// scbwdata expects pointer references, so make struct pointers to reference
+// bwdata expects pointer references, so make struct pointers to reference
 SCBW_DATA_VAR(AI_Main*,							AIScriptController_var, &AIScriptController_dat);
 SCBW_DATA_VAR(_uavail*,							unit_availability_var, &UnitAvailability_dat);
 SCBW_DATA_VAR(ImagesDatExtraOverlayLO_Files*,	lo_files_var, &lo_files_dat);
@@ -156,7 +156,7 @@ namespace flingy_dat {
 // Farty sound extender
 /*
 namespace sfx_dat {
-	SCBW_DATA(const	DatLoad*,	sfxDat,		0x00515498); // now in scbwdata.cpp
+	SCBW_DATA(const	DatLoad*,	sfxDat,		0x00515498); // now in bwdata.cpp
 
 	SCBW_DATA_DEF(u32*, sound_pointer, sfxDat[0].address);		// 0068DAA0
 	SCBW_DATA_DEF(u8*,	priority, sfxDat[1].address);			// 0068D628

@@ -1,7 +1,7 @@
 #include "tech_target_check.h"
-#include <SCBW/scbwdata.h>
-#include <SCBW/enumerations.h>
-#include <SCBW/api.h>
+#include <BW/bwdata.h>
+#include <BW/enumerations.h>
+#include <BW/api.h>
 
 namespace hooks
 {

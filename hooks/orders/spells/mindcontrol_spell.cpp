@@ -1,5 +1,5 @@
 #include "recall_spell.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "globals.h"
 #include "hooks/weapons/weapon_fire.h"
 

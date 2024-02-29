@@ -1,6 +1,6 @@
 #include "update_status_effects.h"
-#include <SCBW/api.h>
-#include <SCBW/UnitFinder.h>
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
 #include "hooks/weapons/weapon_spellhit.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "globals.h"

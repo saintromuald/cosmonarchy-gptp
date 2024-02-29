@@ -1,5 +1,5 @@
 #pragma once
-#include <SCBW/structures/Unit.h>
+#include <BW/structures/Unit.h>
 
 const s32 DEFAULT_SIGHT_RANGE = 4;
 const s32 BLIND_SIGHT_RANGE = 2;

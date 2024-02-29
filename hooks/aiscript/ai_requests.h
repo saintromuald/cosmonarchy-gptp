@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW\structures.h"
+#include "BW\structures.h"
 
 u32 get_refinery_id_from_race(u32 player);
 

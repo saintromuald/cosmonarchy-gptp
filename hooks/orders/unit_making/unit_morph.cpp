@@ -1,7 +1,7 @@
-#include <SCBW/api.h>
+#include <BW/api.h>
 // copied from unhooked
-#include <SCBW/scbwdata.h>
-#include <SCBW/enumerations/TechId.h>
+#include <BW/bwdata.h>
+#include <BW/enumerations/TechId.h>
 #include <cassert>
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"

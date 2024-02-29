@@ -1,6 +1,6 @@
 ﻿#include "target_related.h"
 #include "hook_tools.h"
-#include "SCBW/structures.h"
+#include "BW/structures.h"
 
 namespace
 {

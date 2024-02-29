@@ -1,6 +1,6 @@
 #include "larva_creep_spawn.h"
 #include <hook_tools.h>
-#include <SCBW/scbwdata.h>
+#include <BW/bwdata.h>
 
 namespace
 {	

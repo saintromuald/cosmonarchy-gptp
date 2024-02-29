@@ -4,7 +4,7 @@
 #include "hooks/orders/unit_making/unit_train.h"
 #include "stopwatch/Stopwatch.h"
 #include "logger.h"
-#include "SCBW/scbwdata.h"
+#include "BW/bwdata.h"
 #include "hooks/unit_stats/max_energy.h"
 #include <array>
 

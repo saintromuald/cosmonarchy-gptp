@@ -1,7 +1,7 @@
 #pragma once
 #include "../definitions.h"
 #include "structures.h"
-#include "scbwhelper.h"
+#include "BWhelper.h"
 #include "bullet_extender.h"
 #include "hooks/limits/ccmu.h"
 #include "graphics\Font.h"
@@ -588,7 +588,7 @@ struct DatLoad {
 };
 
 namespace units_dat {
-//	SCBW_DATA(const DatLoad*,	unitsDat,	0x00513C30); // now in scbwdata.cpp
+//	SCBW_DATA(const DatLoad*,	unitsDat,	0x00513C30); // now in bwdata.cpp
 
 	SCBW_DATA_REF(u16*,			graphic,				unitsDat[0].address);	// 006644F8
 	SCBW_DATA_REF(u16*,			subunit,				unitsDat[1].address);	// 006607C0
@@ -647,7 +647,7 @@ namespace units_dat {
 } // (last entry at 0x00513EAC)
 
 namespace flingy_dat {
-//	SCBW_DATA(const DatLoad*,	flingyDat,	0x00515A38); // now in scbwdata.cpp
+//	SCBW_DATA(const DatLoad*,	flingyDat,	0x00515A38); // now in bwdata.cpp
 
 	SCBW_DATA_REF(u16*,	sprite_id,			flingyDat[0].address);	// 006CA318
 	SCBW_DATA_REF(u32*,	top_speed,			flingyDat[1].address);	// 006C9EF8
@@ -663,7 +663,7 @@ namespace flingy_dat {
 // Farty sound extender
 /*
 namespace sfx_dat {
-//	SCBW_DATA(const	DatLoad*,	sfxDat,		0x00515498); // now in scbwdata.cpp
+//	SCBW_DATA(const	DatLoad*,	sfxDat,		0x00515498); // now in bwdata.cpp
 	
 	SCBW_DATA_REF(u32*,	sound_pointer,		sfxDat[0].address);	// 0068DAA0
 	SCBW_DATA_REF(u8*,	priority,			sfxDat[1].address);	// 0068D628
@@ -703,7 +703,7 @@ namespace weapons_dat {
 } //weapons_dat (last entry at 0x0051397C)
 
 namespace upgrades_dat {
-//	SCBW_DATA(const DatLoad*,	upgradesDat,	0x005136E0); // now in scbwdata.cpp
+//	SCBW_DATA(const DatLoad*,	upgradesDat,	0x005136E0); // now in bwdata.cpp
 
 	SCBW_DATA_REF(u16*,		mineral_cost_base,			upgradesDat[0].address);	// 00656740
 	SCBW_DATA_REF(u16*,		mineral_cost_factor,		upgradesDat[1].address);	// 006559C0
@@ -720,7 +720,7 @@ namespace upgrades_dat {
 } //upgrades_dat (last entry at 0x00513764)
 
 namespace techdata_dat {
-//	SCBW_DATA(const DatLoad*,	techdataDat,	0x005137D8); // now in scbwdata.cpp
+//	SCBW_DATA(const DatLoad*,	techdataDat,	0x005137D8); // now in bwdata.cpp
 
 	SCBW_DATA_REF(u16*,		mineral_cost,				techdataDat[0].address);	// 00656248
 	SCBW_DATA_REF(u16*,		vespene_cost,					techdataDat[1].address);	// 006561F0
@@ -736,7 +736,7 @@ namespace techdata_dat {
 } // last entry at 0x00513850
 
 namespace orders_dat {
-//	SCBW_DATA(const DatLoad*,	ordersDat,	0x00513EC8); // now in scbwdata.cpp
+//	SCBW_DATA(const DatLoad*,	ordersDat,	0x00513EC8); // now in bwdata.cpp
 
 	SCBW_DATA_REF(u16*,		label,						ordersDat[0].address);	// 00665280
 	SCBW_DATA_REF(u8*,		use_weapon_targeting,		ordersDat[1].address);	// 00664B00
@@ -760,7 +760,7 @@ namespace orders_dat {
 } //orders_dat (last entry at 0x00513FA0)
 
 namespace sprites_dat {
-//	SCBW_DATA(const DatLoad*,	spritesDat,		0x00513FB8); // now in scbwdata.cpp
+//	SCBW_DATA(const DatLoad*,	spritesDat,		0x00513FB8); // now in bwdata.cpp
 
 	SCBW_DATA_REF(u16*,		image_id,					spritesDat[0].address);	// 00666160
 	SCBW_DATA_REF(s8*,		hp_bar_size,				spritesDat[1].address);	// 00665E50
@@ -771,7 +771,7 @@ namespace sprites_dat {
 } //sprites_dat (last entry at 0x00513FF4)
 
 namespace images_dat {
-//	SCBW_DATA(const DatLoad*,	imagesDat,	0x00514010); // now in scbwdata.cpp
+//	SCBW_DATA(const DatLoad*,	imagesDat,	0x00514010); // now in bwdata.cpp
 
 	SCBW_DATA_REF(const u32*,		image_file,			imagesDat[0].address);	// 00668AA0
 	SCBW_DATA_REF(const u8*,		is_turnable,		imagesDat[1].address);	// 0066E860

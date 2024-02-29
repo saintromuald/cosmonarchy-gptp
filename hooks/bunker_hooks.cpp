@@ -1,10 +1,10 @@
 #include "bunker_hooks.h"
-#include <SCBW/scbwdata.h>
-#include <SCBW\api.h>
-#include "../SCBW/enumerations.h"
-#include "../SCBW/structures.h"
+#include <BW/bwdata.h>
+#include <BW\api.h>
+#include "../BW/enumerations.h"
+#include "../BW/structures.h"
 #include "globals.h"
-#include "scbw/UnitFinder.h"
+#include "BW/UnitFinder.h"
 #include "hooks/unit_stats/weapon_range.h"
 
 namespace hooks

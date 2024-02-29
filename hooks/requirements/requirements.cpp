@@ -1,7 +1,7 @@
 #include "requirements.h"
 #include "requirement_parser.h"
-#include "SCBW/structures/Player.h"
-#include <SCBW/api.h>
+#include "BW/structures/Player.h"
+#include <BW/api.h>
 
 namespace hooks
 {

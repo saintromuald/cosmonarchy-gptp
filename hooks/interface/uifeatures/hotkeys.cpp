@@ -1,5 +1,5 @@
 #include "hotkeys.h"
-#include "SCBW/api.h"
+#include "BW/api.h"
 #include <windows.h>
 #include "hooks/interface/buttonsets.h"
 #include "aise_signal.h"

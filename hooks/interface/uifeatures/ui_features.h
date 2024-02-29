@@ -1,6 +1,6 @@
 #pragma once
-#include "SCBW/scbwdata.h"
-#include "SCBW/api.h"
+#include "BW/bwdata.h"
+#include "BW/api.h"
 
 #define ActionSampleTime 10
 #define MaxActions 2000

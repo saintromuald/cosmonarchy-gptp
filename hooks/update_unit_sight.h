@@ -1,9 +1,9 @@
 #pragma once
-#include <SCBW/api.h>
-#include <SCBW/extender/TileHeight_extender.h>
-#include <SCBW/scbwdata.h>
-#include <SCBW/structures.h>
-#include <SCBW/structures/Unit.h>
+#include <BW/api.h>
+#include <BW/extender/TileHeight_extender.h>
+#include <BW/bwdata.h>
+#include <BW/structures.h>
+#include <BW/structures/Unit.h>
 
 extern u8 vision_timers[256*256][8];
 

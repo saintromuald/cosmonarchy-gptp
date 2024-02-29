@@ -1,7 +1,7 @@
 #pragma once
-#include "SCBW\api.h"
-#include "SCBW\scbwdata.h"
-#include "SCBW\UnitFinder.h"
+#include "BW\api.h"
+#include "BW\bwdata.h"
+#include "BW\UnitFinder.h"
 #include <vector>
 
 namespace Flags

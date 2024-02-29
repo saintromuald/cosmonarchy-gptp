@@ -3,7 +3,7 @@
 //   hooks/unit_selection_graphics.cpp
 
 #pragma once
-#include "../SCBW/structures/Unit.h"
+#include "../BW/structures/Unit.h"
 
 namespace hooks {
 	// Edit these functions in psi_field.cpp.

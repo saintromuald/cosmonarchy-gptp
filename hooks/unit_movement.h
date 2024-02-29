@@ -1,5 +1,5 @@
 #pragma once
-#include <SCBW/structures/Unit.h>
+#include <BW/structures/Unit.h>
 
 namespace hooks
 {

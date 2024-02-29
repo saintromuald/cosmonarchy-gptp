@@ -1,7 +1,7 @@
 #include "weapon_cooldown.h"
-#include "../../SCBW/scbwdata.h"
-#include "../../SCBW/enumerations.h"
-#include "../../SCBW/api.h"
+#include "../../BW/bwdata.h"
+#include "../../BW/enumerations.h"
+#include "../../BW/api.h"
 #include "../../math_utils.h"
 #include "globals.h"
 

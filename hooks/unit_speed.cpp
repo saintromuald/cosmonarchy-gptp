@@ -1,11 +1,11 @@
 //Contains hooks that control unit movement speed, acceleration, and turn speed.
 
 #include "unit_speed.h"
-#include "../SCBW/enumerations.h"
-#include "../SCBW/scbwdata.h"
+#include "../BW/enumerations.h"
+#include "../BW/bwdata.h"
 #include "hooks/cosmonarchy_finder.h"
-#include <SCBW/UnitFinder.h>
-#include "SCBW/api.h"
+#include <BW/UnitFinder.h>
+#include "BW/api.h"
 #include "globals.h"
 #include "math_utils.h"
 #include "Utils/captivating_claws.h"

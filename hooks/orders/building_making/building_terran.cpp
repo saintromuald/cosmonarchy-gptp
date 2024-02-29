@@ -1,6 +1,6 @@
 #include "building_terran.h"
 #include "building_modifier.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <globals.h>
 #include <hooks/limits/sfx_extender.h>
 

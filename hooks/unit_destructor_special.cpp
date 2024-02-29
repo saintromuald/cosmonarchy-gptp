@@ -1,9 +1,9 @@
 #include "unit_destructor_special.h"
-#include "../SCBW/api.h"
+#include "../BW/api.h"
 #include "../hook_tools.h"
 #include "hooks/weapons/weapon_spellhit.h"
 #include "logger.h"
-#include <SCBW/UnitFinder.h>
+#include <BW/UnitFinder.h>
 #include "globals.h"
 
 void augur_proc(Unit* augur, s32 radius) {

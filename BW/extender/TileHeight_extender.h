@@ -1,5 +1,5 @@
 #pragma once
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 extern s32 base_height;
 extern s8 xHeight_table[];

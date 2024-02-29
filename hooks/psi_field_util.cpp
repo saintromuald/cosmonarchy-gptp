@@ -2,7 +2,7 @@
 // Do NOT modify any functions in this file!
 
 #include "psi_field.h"
-#include "../SCBW/scbwdata.h"
+#include "../BW/bwdata.h"
 #include <algorithm>
 #include <cassert>
 #include "CM/cm_ids.h"

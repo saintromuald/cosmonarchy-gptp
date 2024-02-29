@@ -1,5 +1,5 @@
 #include "hook_tools.h"
-#include "SCBW/api.h"
+#include "BW/api.h"
 #include "ai_requests.h"
 
 namespace

@@ -1,8 +1,8 @@
 #pragma once
 #include <hook_tools.h>
-#include <SCBW/api.h>
-#include <SCBW/enumerations.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/enumerations.h>
+#include <BW/bwdata.h>
 
 namespace hooks
 {

@@ -1,7 +1,7 @@
 #include "buttonsets.h"
 #include <hook_tools.h>
 
-#include "SCBW/stat_txt_spec.h"
+#include "BW/stat_txt_spec.h"
 namespace
 {
 	void __declspec(naked) update_buttonset_ex_wrapper()

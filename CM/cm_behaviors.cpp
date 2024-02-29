@@ -1,5 +1,5 @@
 #include "cm_behaviors.h"
-#include "SCBW\api.h"
+#include "BW\api.h"
 
 bool is_any_corpse(Thingy* thingy) {
 	if (thingy->sprite && bw::sprite_id_is_corpse(thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath)) {

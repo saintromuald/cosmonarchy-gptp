@@ -1,6 +1,6 @@
 #include "use_tech.h"
-#include "SCBW/scbwdata.h"
-#include "SCBW/api.h"
+#include "BW/bwdata.h"
+#include "BW/api.h"
 #include "hook_tools.h"
 
 namespace

@@ -1,6 +1,6 @@
 #include "Sprite.h"
 #include "Image.h"
-#include "../scbwdata.h"
+#include "../bwdata.h"
 #include <algorithm>
 #include <cassert>
 #include "data_ext.h"

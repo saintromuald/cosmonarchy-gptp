@@ -1,5 +1,5 @@
 #pragma once
-#include <SCBW\scbwdata.h>
+#include <BW\bwdata.h>
 #include <globals.h>
 #include <functional>
 #include <unordered_set>

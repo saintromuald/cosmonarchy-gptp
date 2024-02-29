@@ -1,5 +1,5 @@
 #include "buttonsets.h"
-#include "SCBW/api.h"
+#include "BW/api.h"
 #include "globals.h"
 #include "hooks/game_hooks.h"
 #include "hooks/grafting/button_functions.h"

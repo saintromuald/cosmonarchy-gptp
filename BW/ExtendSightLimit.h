@@ -1,8 +1,8 @@
 #pragma once
 #include "../definitions.h"
 #include "../hook_tools.h"
-#include "SCBW/structures.h"
-#include "SCBW/scbwdata.h"
+#include "BW/structures.h"
+#include "BW/bwdata.h"
 
 #define MAX_SIGHT_RANGE 20
 

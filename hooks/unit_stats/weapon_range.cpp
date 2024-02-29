@@ -1,6 +1,6 @@
 #include "weapon_range.h"
 #include "hooks/cosmonarchy_finder.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "globals.h"
 namespace hooks
 {

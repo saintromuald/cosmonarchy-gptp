@@ -1,4 +1,4 @@
-#include <SCBW/structures.h>
+#include <BW/structures.h>
 
 namespace hooks
 {

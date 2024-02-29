@@ -1,7 +1,7 @@
 #include "game_hooks.h"
 #include <graphics/graphics.h>
-#include <SCBW/api.h>
-#include <SCBW/ExtendSightLimit.h>
+#include <BW/api.h>
+#include <BW/ExtendSightLimit.h>
 #include "psi_field.h"
 #include <cstdio>
 #include "hooks/interface/uifeatures/hotkeys.h"
@@ -32,7 +32,7 @@
 #include "config.h"
 #include "color_palette.h"
 #include "custom_ai.h"
-#include "SCBW\UnitFinder.h"
+#include "BW\UnitFinder.h"
 #include "hooks/interface/buttonsets.h"
 #include "weapons/weapon_fire.h"
 #include "harvest.h"

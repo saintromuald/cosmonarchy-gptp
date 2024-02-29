@@ -1,9 +1,9 @@
 #include "selection_extender.h"
 #include "hooks/limits/ccmu.h"
 #include "hook_tools.h"
-#include "scbw/structures.h"
-#include "SCBW/scbwdata.h"
-#include "SCBW/api.h"
+#include "BW/structures.h"
+#include "BW/bwdata.h"
+#include "BW/api.h"
 #include "config.h"
 #include "trigger_system/trigger_system.h"
 

@@ -1,10 +1,10 @@
 //Based on BWAPI's BW/Bitmap.cpp
 #include "Bitmap.h"
 #include "Font.h"
-#include "../SCBW/scbwdata.h"
+#include "../BW/bwdata.h"
 #include <cassert>
 #include <algorithm>
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <player_color.h>
 
 #define NOMINMAX

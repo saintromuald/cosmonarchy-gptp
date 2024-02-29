@@ -1,6 +1,6 @@
 #include "spider_mine.h"
-#include <SCBW/api.h>
-#include <SCBW/UnitFinder.h>
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
 #include "logger.h"
 #include "byte_operations_utils.h"
 

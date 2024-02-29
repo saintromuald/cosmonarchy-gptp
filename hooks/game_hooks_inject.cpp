@@ -1,5 +1,5 @@
 #include "game_hooks.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <hook_tools.h>
 #include <logger.h>
 #include <config.h>

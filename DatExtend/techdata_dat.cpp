@@ -1,8 +1,8 @@
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <hook_tools.h>
 #include "datext.h"
 
-// scbwdata modified by DatExt
+// bwdata modified by DatExt
 DATEXT_VAR_REF(_bwTechs*, TechBw_var);
 
 namespace {
@@ -157,7 +157,7 @@ namespace DatExt {
 	
 		const_replace(tech_consts, newCount);
 
-		// Apply 'newArrs' to appropriate scbwdata.h variables
+		// Apply 'newArrs' to appropriate bwdata.h variables
 		for (i = 0; i < PLAYER_COUNT; i++)
 		{
 			TechBw_var->is_enabled[i] = (u8*)(tech_newArrs[0]) + (newCount - 24) * i;

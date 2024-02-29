@@ -1,6 +1,6 @@
 #include "cast_order.h"
-#include <SCBW/api.h>
-#include "SCBW/stat_txt_spec.h"
+#include <BW/api.h>
+#include "BW/stat_txt_spec.h"
 #include "hooks/orders/pathfinding.h"
 #include "hooks/unit_stats/sight_range.h"
 

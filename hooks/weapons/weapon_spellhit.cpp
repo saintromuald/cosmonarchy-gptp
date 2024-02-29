@@ -1,6 +1,6 @@
 #include "weapon_spellhit.h"
-#include <SCBW/api.h>
-#include <SCBW/UnitFinder.h>
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
 #include "logger.h"
 #include "globals.h"
 #include <algorithm>

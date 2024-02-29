@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/structures/Unit.h"
+#include "BW/structures/Unit.h"
 
 namespace hooks {
 	void orders_id_cases(Unit* unit);						// 004EBED0

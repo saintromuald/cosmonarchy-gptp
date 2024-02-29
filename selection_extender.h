@@ -1,6 +1,6 @@
 //Header
 #pragma once
-#include "scbw/structures.h"
+#include "BW/structures.h"
 #include "hooks/limits/ccmu.h"
 #include "graphics/Font.h"
 

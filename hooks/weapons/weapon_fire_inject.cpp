@@ -1,7 +1,7 @@
 #include "weapon_fire.h"
 #include <hook_tools.h>
-#include <SCBW/UnitFinder.h>
-#include "SCBW/api.h"
+#include <BW/UnitFinder.h>
+#include "BW/api.h"
 
 namespace
 {

@@ -1,6 +1,6 @@
 #include "give_unit.h"
 #include "globals.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "ai_layouts.h"
 
 namespace hooks

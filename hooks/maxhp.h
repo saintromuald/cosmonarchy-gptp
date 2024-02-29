@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/api.h"
+#include "BW/api.h"
 namespace hooks
 {
 	u32 get_max_hp(s32 id, s32 player);																			// 0040140B

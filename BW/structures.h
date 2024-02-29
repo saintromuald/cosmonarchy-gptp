@@ -1052,7 +1052,7 @@ struct ResourceAreaArray {
 	u32 frames_till_update;
 };
 
-// From BWAPI Offsets.h, used in scbwdata.h by g_unit_availability
+// From BWAPI Offsets.h, used in bwdata.h by g_unit_availability
 struct _uavail {
 	u8* available[PLAYER_COUNT];
 };
@@ -1076,7 +1076,7 @@ struct StringTbl
 		} else if (index <= get_string_count()) {
 			return (const char*)(buffer)+buffer[index];
 		} else {
-			return (const char*)0x00501B7D;	//g_string_empty in scbwdata.h, SC default empty string
+			return (const char*)0x00501B7D;	//g_string_empty in bwdata.h, SC default empty string
 		}
 	}
 	u16* buffer;

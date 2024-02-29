@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
 #include "List.h"
-#include <SCBW/enumerations.h>
+#include <BW/enumerations.h>
 #pragma pack(1)
 
 // Additions from bwapi/bwapi/BWMemoryEdit/Enums/RLE.cs

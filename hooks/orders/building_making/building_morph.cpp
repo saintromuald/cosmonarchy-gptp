@@ -1,7 +1,7 @@
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "building_modifier.h"
-#include <SCBW/enumerations.h>
-#include <SCBW/scbwdata.h>
+#include <BW/enumerations.h>
+#include <BW/bwdata.h>
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include "hooks\orders\building_making\building_helper.h"

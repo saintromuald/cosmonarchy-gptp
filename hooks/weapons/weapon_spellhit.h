@@ -1,7 +1,7 @@
 #pragma once
-#include <SCBW/structures/Unit.h>
-#include <SCBW/structures/Bullet.h>
-#include "SCBW\api.h"
+#include <BW/structures/Unit.h>
+#include <BW/structures/Bullet.h>
+#include "BW\api.h"
 
 namespace hooks
 {

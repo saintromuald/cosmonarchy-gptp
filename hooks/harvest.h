@@ -1,5 +1,5 @@
 #pragma once
-#include "../SCBW/structures/Unit.h"
+#include "../BW/structures/Unit.h"
 
 u32 get_gas_tier(Unit* unit);
 u32 get_harvest_amount(Unit* unit);

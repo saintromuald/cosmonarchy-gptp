@@ -1,6 +1,6 @@
 #include "weapon_armor_tooltip.h"
-#include <SCBW/api.h>
-#include <SCBW/enumerations/WeaponId.h>
+#include <BW/api.h>
+#include <BW/enumerations/WeaponId.h>
 #include <cstdio>
 #include "../unit_speed.h"
 #include "../weapons/weapon_cooldown.h"
@@ -18,7 +18,7 @@ char buffer[256];
 // Returns the C-string for the tooltip text of the unit's weapon grp_frame.
 // This function is used for weapon icons and special icons.
 // Precondition: @p entry_string_index is a stat_txt.tbl string index.
-#include "SCBW/stat_txt_spec.h"
+#include "BW/stat_txt_spec.h"
 #include <iomanip>
 
 static std::string format_string_vector(std::vector<std::string> strings) {

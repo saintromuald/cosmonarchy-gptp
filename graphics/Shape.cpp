@@ -2,7 +2,7 @@
 #include "graphics_misc.h"
 #include "graphics_errors.h"
 #include "Bitmap.h"
-#include "../SCBW/scbwdata.h"
+#include "../BW/bwdata.h"
 
 namespace graphics
 {

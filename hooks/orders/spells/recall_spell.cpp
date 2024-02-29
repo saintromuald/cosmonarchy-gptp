@@ -1,6 +1,6 @@
 #include "recall_spell.h"
-#include <SCBW/api.h>
-#include "SCBW/stat_txt_spec.h"
+#include <BW/api.h>
+#include "BW/stat_txt_spec.h"
 
 namespace hooks
 {

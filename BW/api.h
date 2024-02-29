@@ -2,13 +2,13 @@
 // hook functions.
 
 #pragma once
-#include <SCBW/scbwdata.h>
-#include <SCBW/enumerations.h>
+#include <BW/bwdata.h>
+#include <BW/enumerations.h>
 #include <string>
 #include <math.h>
 #include <unit_search.h>
 
-#include "CM\cm.h"
+#include "CM/cm.h"
 
 #include "utility.h"
 

@@ -7,7 +7,7 @@
 #include <ostream>
 #include <istream>
 #include <assert.h>
-#include "scbw\api.h"
+#include "BW\api.h"
 #include "data_ext.h"
 
 #define ATTACK_LIMIT 64

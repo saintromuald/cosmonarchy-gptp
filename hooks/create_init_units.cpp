@@ -1,6 +1,6 @@
 #include "create_init_units.h"
-#include <SCBW/api.h>
-#include <SCBW/UnitFinder.h>
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
 #include "ai_layouts.h"
 #include "threshold.h"
 #include "hooks/game_hooks.h"

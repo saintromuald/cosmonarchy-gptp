@@ -1,5 +1,5 @@
 #include "apply_upgrade_flags.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace hooks
 {

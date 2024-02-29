@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/api.h"
+#include "BW/api.h"
 
 bool mpq_file_exists(const char* filename);
 std::string mpq_load_file(const char* filename);

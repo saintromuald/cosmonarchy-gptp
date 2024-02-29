@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/api.h"
+#include "BW/api.h"
 
 #pragma pack(push, 1)
 struct RGBA {

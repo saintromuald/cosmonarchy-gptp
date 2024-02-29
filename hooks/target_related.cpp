@@ -1,7 +1,7 @@
 #include "target_related.h"
-#include <SCBW/api.h>
-#include <SCBW/structures.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
 #include <hooks/unit_stats/weapon_range.h>
 #include <globals.h>
 #include "byte_operations_utils.h"

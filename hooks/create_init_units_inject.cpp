@@ -1,7 +1,7 @@
 //Injector source file for the Create Initial Units hook module.
 #include "create_init_units.h"
 #include <hook_tools.h>
-#include "SCBW/scbwhelper.h"
+#include "BW/bwhelper.h"
 
 namespace {
 	void __declspec(naked) create_initial_melee_buildings_wrapper() {

@@ -1,6 +1,6 @@
 #include "harvest.h"
 #include "../hook_tools.h"
-#include "SCBW/api.h"
+#include "BW/api.h"
 
 namespace {
 	void __declspec(naked) remove_powerup_image_overlay_wrapper() // 004F3900

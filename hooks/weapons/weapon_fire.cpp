@@ -1,8 +1,8 @@
 #include "weapon_fire.h"
-#include <SCBW/scbwdata.h>
-#include <SCBW/enumerations.h>
-#include <SCBW/api.h>
-#include "SCBW/UnitFinder.h"
+#include <BW/bwdata.h>
+#include <BW/enumerations.h>
+#include <BW/api.h>
+#include "BW/UnitFinder.h"
 #include "hooks/cosmonarchy_finder.h"
 #include "math_utils.h"
 #include "hooks/byte_operations_utils.h"

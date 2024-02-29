@@ -1,5 +1,5 @@
 #include "receive_command.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "globals.h"
 
 namespace hooks

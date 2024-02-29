@@ -1,4 +1,4 @@
-#include <SCBW/extender/TileHeight_extender.h>
+#include <BW/extender/TileHeight_extender.h>
 
 s32 base_height;
 s8 xHeight_table[256*256];

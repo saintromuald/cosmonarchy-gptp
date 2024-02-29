@@ -1,5 +1,5 @@
 #include "btns_cond.h"
-#include "../../SCBW/api.h"
+#include "../../BW/api.h"
 
 namespace hooks
 {

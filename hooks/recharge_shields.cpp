@@ -1,7 +1,7 @@
 #include "recharge_shields.h"
-#include "../SCBW/scbwdata.h"
-#include "../SCBW/enumerations.h"
-#include "../SCBW/api.h"
+#include "../BW/bwdata.h"
+#include "../BW/enumerations.h"
+#include "../BW/api.h"
 
 //This function is called every frame when a unit recharges shields.
 //Equivalent to 004934B0  sub_4934B0

@@ -1,5 +1,5 @@
 #include "weapon_damage.h"
-#include "../../SCBW/api.h"
+#include "../../BW/api.h"
 #include <algorithm>
 #include <cmath>
 #include "math_utils.h"
@@ -17,7 +17,7 @@
 #include "hooks/unit_stats/armor_bonus.h"
 #include "hooks/unit_destructor_special.h"
 
-#include "SCBW\UnitFinder.h"
+#include "BW\UnitFinder.h"
 
 Bullet* weapon_damage_current_bullet;
 

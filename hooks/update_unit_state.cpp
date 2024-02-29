@@ -1,12 +1,12 @@
 #include "update_unit_state.h"
 #include "update_status_effects.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <algorithm>
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/weapon_effect.h"
 #include "hooks/tactical_ai.h"
 #include "globals.h"
-#include "SCBW\UnitFinder.h"
+#include "BW\UnitFinder.h"
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/unit_destructor_special.h"
 #include "hooks/update_unit_sight.h"

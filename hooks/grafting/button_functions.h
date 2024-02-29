@@ -1,5 +1,5 @@
 #pragma once
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 // Taken from hooks/interface/buttonsets.cpp
 // Main names from Firegraft, comments names from vgce

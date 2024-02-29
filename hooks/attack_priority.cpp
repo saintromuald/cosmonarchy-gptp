@@ -1,11 +1,11 @@
 //Note: Units with smaller attack priority ranks will be attacked first!
 
 #include "attack_priority.h"
-#include <SCBW/scbwdata.h>
-#include <SCBW/api.h>
+#include <BW/bwdata.h>
+#include <BW/api.h>
 #include <cassert>
 #include <algorithm>
-#include <SCBW/UnitFinder.h>
+#include <BW/UnitFinder.h>
 #include <hooks/unit_stats/weapon_range.h>
 
 const s32 ATTACK_PRIORITY_GROUP_SIZE = 16;

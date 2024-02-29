@@ -1,5 +1,5 @@
 #pragma once
-#include "scbwdata.h"
+#include "BWdata.h"
 #include <algorithm>
 #include <functional>
 #include <vector>

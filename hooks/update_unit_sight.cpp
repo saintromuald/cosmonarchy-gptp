@@ -1,5 +1,5 @@
 #include "update_unit_sight.h"
-#include "SCBW/ExtendSightLimit.h"
+#include "BW/ExtendSightLimit.h"
 
 s32 tmpHeight;
 u8 vision_timers[256*256][8];

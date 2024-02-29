@@ -1,7 +1,7 @@
 #include "sfxhooks.h"
-#include <SCBW/api.h>
-#include <SCBW/structures.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
 #include <hooks/byte_operations_utils.h>
 #include <hooks/limits/sfx_extender.h>
 

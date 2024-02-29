@@ -1,5 +1,5 @@
 #pragma once
-#include "../../SCBW/structures/Unit.h"
+#include "../../BW/structures/Unit.h"
 
 extern Bullet* weapon_damage_current_bullet;
 static bool ignore_alert;

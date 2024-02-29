@@ -1,5 +1,5 @@
 #include "unit_train.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "hooks/cosmonarchy_finder.h"
 #include "hooks/orders/spells/hallucination_spell.h"
 #include "hooks/orders/building_making/building_modifier.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW\scbwdata.h"
+#include "BW\bwdata.h"
 
 bool is_any_corpse(Thingy* thingy);
 bool is_inactive_corpse(Thingy* thingy);

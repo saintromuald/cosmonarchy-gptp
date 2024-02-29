@@ -1,8 +1,8 @@
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include <hook_tools.h>
-#include "SCBW\structures\Unit.h"
-#include <SCBW/api.h>
+#include "BW\structures\Unit.h"
+#include <BW/api.h>
 #include <algorithm>
 
 namespace

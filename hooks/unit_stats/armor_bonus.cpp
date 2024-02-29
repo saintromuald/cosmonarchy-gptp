@@ -1,5 +1,5 @@
 #include "armor_bonus.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "globals.h"
 #include <algorithm>
 #include <cmath>

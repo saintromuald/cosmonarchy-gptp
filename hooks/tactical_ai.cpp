@@ -1,6 +1,6 @@
 #include "hooks\tactical_ai.h"
-#include "SCBW/api.h"
-#include "SCBW/scbwdata.h"
+#include "BW/api.h"
+#include "BW/bwdata.h"
 #include "unit_constants.h"
 #include "math_utils.h"
 #include "globals.h"

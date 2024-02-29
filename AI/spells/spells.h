@@ -1,5 +1,5 @@
 #pragma once
-#include <SCBW/structures/Unit.h>
+#include <BW/structures/Unit.h>
 
 // Many of these are now deprecated! -Pr0nogo
 namespace AI

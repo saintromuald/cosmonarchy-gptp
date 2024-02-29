@@ -1,5 +1,5 @@
 #include "cloak_tech.h"
-#include <SCBW/scbwdata.h>
+#include <BW/bwdata.h>
 
 namespace hooks
 {

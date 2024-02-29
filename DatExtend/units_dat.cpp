@@ -1,8 +1,8 @@
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <hook_tools.h>
 #include "datext.h"
 
-// scbwdata modified by DatExt
+// bwdata modified by DatExt
 DATEXT_VAR_REF(UnitDeaths*, deathTable_var);
 DATEXT_VAR_REF(UnitDeaths*, unitAllCountTable_var);
 DATEXT_VAR_REF(UnitDeaths*, unitCompleteTable_var);
@@ -572,7 +572,7 @@ namespace DatExt {
 	
 		const_replace(unit_consts, newCount);
 	
-		// Apply 'newArrs' to appropriate scbwdata.h variables
+		// Apply 'newArrs' to appropriate bwdata.h variables
 		unitAllCountTable_var = (UnitDeaths*)unit_newArrs[0];
 		unitCompleteTable_var = (UnitDeaths*)unit_newArrs[1];
 		unitKilledTable_var = (UnitDeaths*)unit_newArrs[2];

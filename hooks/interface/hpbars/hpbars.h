@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/scbwdata.h"
+#include "BW/bwdata.h"
 
 namespace hooks
 {

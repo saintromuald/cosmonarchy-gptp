@@ -1,6 +1,6 @@
 #include "psi_field.h"
-#include "../SCBW/scbwdata.h"
-#include "SCBW/api.h"
+#include "../BW/bwdata.h"
+#include "BW/api.h"
 #include "trigger_system/trigger_system.h"
 
 namespace hooks
