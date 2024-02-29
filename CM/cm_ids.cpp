@@ -1,4 +1,4 @@
-#include "cmbw_ids.h"
+#include "cm_ids.h"
 #include "SCBW\api.h"
 #include "hooks\weapons\weapon_fire.h"
 #include "trigger_system/trigger_system.h"

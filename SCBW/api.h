@@ -8,7 +8,7 @@
 #include <math.h>
 #include <unit_search.h>
 
-#include "CMBW\cmbw.h"
+#include "CM\cm.h"
 
 #include "utility.h"
 

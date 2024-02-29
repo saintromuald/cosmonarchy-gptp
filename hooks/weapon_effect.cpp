@@ -6,7 +6,7 @@
 #include "globals.h"
 #include "weapons/weapon_damage.h"
 #include "limits/ccmu.h"
-#include "cmbw/cmbw.h"
+#include "CM/cm.h"
 
 namespace
 {

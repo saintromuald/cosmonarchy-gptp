@@ -1,4 +1,4 @@
-#include "cmbw_behaviors.h"
+#include "cm_behaviors.h"
 #include "SCBW\api.h"
 
 bool is_any_corpse(Thingy* thingy) {

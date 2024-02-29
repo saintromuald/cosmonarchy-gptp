@@ -5,7 +5,7 @@
 #include "../SCBW/scbwdata.h"
 #include <algorithm>
 #include <cassert>
-#include "CMBW/cmbw_ids.h"
+#include "CM/cm_ids.h"
 
 // NOT FULLY REVALIDATED BY UNDEADSTAR
 
