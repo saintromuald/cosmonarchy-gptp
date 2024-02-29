@@ -15,14 +15,14 @@ std::string mpq_load_file(const char* filename) {
 	HANDLE handle = 0;
 	helper::SFileOpenFile(filename, &handle);
 	if (!handle) {
-		scbw::printf("Error: File %s missing!", filename);
+		bw::printf("Error: File %s missing!", filename);
 		return {};
 	}
 
 	DWORD high = 0;
 	DWORD size = helper::SFileGetFileSize(handle, &high);
 	if (high) {
-		scbw::printf("Error: File %s too big!", filename);
+		bw::printf("Error: File %s too big!", filename);
 		return {};
 	}
 

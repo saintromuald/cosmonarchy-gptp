@@ -12,7 +12,7 @@ namespace AI
 			return nullptr;
 		}
 		s32 bounds = 32 * 32;
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->position.x - bounds,
 			caster->position.y - bounds,
 			caster->position.x + bounds,
@@ -28,7 +28,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (scbw::get_tech_user_error_message((Unit*)target, caster->player, TechId::Hallucination) != 0)
+			if (bw::get_tech_user_error_message((Unit*)target, caster->player, TechId::Hallucination) != 0)
 			{
 				return false;
 			}

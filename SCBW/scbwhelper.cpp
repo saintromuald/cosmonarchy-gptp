@@ -2526,7 +2526,7 @@ namespace helper {
 	// is_valid_morph @ 0x0045CC60;
 	bool is_valid_building_morph(u16 building_id) {
 		bool result;
-		if (scbw::is_zerg_building_morph_result(building_id)) {
+		if (bw::is_zerg_building_morph_result(building_id)) {
 			result = true;
 		} else {
 			result = false;
@@ -5843,7 +5843,7 @@ namespace helper {
 				(*g_first_invisible_unit)->invisible_link.prev = unit;
 			}
 			*g_first_invisible_unit = unit;
-			scbw::refresh_console();
+			bw::refresh_console();
 		}
 	}
 
@@ -6666,7 +6666,7 @@ namespace helper {
 			update_image_position_offset(chunk_image);
 		}
 		worker->worker.resource_carry_amount = amount_carried;
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	s32 ai_has_buildings_needing_power(u32 player) {

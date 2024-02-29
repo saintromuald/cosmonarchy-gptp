@@ -41,7 +41,7 @@ namespace
 				unit->order_to(OrderId::Morph1);
 			}
 		}
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	//-------- BTNSCOND_CanBuildUnit --------//
@@ -102,7 +102,7 @@ namespace
 		}
 		unit->status &= ~(UnitStatus::Completed);
 		morphEggType = hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]);
-		assert(scbw::is_zerg_egg_new(unit, true, false, morphEggType));
+		assert(bw::is_zerg_egg_new(unit, true, false, morphEggType));
 		__asm
 		{
 			POPAD
@@ -159,8 +159,8 @@ namespace
 			return;
 		}
 
-		if (scbw::is_conventional_unit_morph_source(unit->id, false)
-		||	scbw::is_conventional_unit_morph_result(unit->id))
+		if (bw::is_conventional_unit_morph_source(unit->id, false)
+		||	bw::is_conventional_unit_morph_result(unit->id))
 		{
 			return;
 		}
@@ -180,7 +180,7 @@ namespace
 			resources->gas[unit->player] += units_dat::vespene_cost[unit->id] * 3 / 4;
 		} else {
 			u16 refund_unit_id;
-			if (scbw::is_zerg_egg_new(unit, true, false))
+			if (bw::is_zerg_egg_new(unit, true, false))
 			{
 				refund_unit_id = unit->build_queue[unit->build_queue_slot % 5];
 			} else {
@@ -209,7 +209,7 @@ namespace
 						silo->main_order_state = 0;
 					}
 					unit->remove();
-					scbw::refresh_console();
+					bw::refresh_console();
 				} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 					helper::play_sound_from_unit(SoundId::Misc_Explo1_wav, unit, 1, 0);
 					helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player); // TODO: Find working Terran-themed overlay
@@ -253,7 +253,7 @@ namespace
 	s32 get_remaining_build_time_pct(Unit* unit)
 	{
 		u16 unit_id = unit->id;
-		if (scbw::is_zerg_egg_new(unit, true, false) || unit->is_remorphing_building())
+		if (bw::is_zerg_egg_new(unit, true, false) || unit->is_remorphing_building())
 		{
 			unit_id = unit->build_queue[unit->build_queue_slot];
 		}
@@ -366,7 +366,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		if (scbw::is_larval_egg(unit))
+		if (bw::is_larval_egg(unit))
 		{
 			__asm {
 				POPAD
@@ -392,7 +392,7 @@ namespace
 			MOV unit, EBX
 			PUSHAD
 		}
-		if (scbw::is_larval_egg(unit))
+		if (bw::is_larval_egg(unit))
 		{
 			__asm
 			{
@@ -449,7 +449,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		if (scbw::is_larval_egg(unit))
+		if (bw::is_larval_egg(unit))
 		{
 			__asm
 			{
@@ -477,7 +477,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		if (scbw::is_larval_egg(unit))
+		if (bw::is_larval_egg(unit))
 		{
 			__asm
 			{

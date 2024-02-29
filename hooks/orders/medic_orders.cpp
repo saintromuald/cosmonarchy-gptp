@@ -170,7 +170,7 @@ namespace hooks
 						}
 						return 3;
 					}
-					scbw::decloak_passive_proc(cleric);
+					bw::decloak_passive_proc(cleric);
 					target->heal_hp(ClericHealValue, cleric);
 					return 1;
 				}
@@ -252,7 +252,7 @@ namespace hooks
 		UnitExt* target_ext = get_unit_ext(target);
 		if (units_dat::base_property[target->id] & UnitProperty::Building
 		||  target->status & UnitStatus::InAir
-		|| !scbw::is_allied_to(cleric->player, target->player)
+		|| !bw::is_allied_to(cleric->player, target->player)
 		||  target->player >= PlayerLimit
 		||  cleric->player >= PlayerLimit
 		||  target->hitpoints >= units_dat::max_hitpoints[target->id]

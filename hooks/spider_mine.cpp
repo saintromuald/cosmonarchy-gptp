@@ -15,7 +15,7 @@ namespace hooks
 		}
 
 		u32 range = 32 * mine->get_seek_range();
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 				mine->get_x() - range, mine->get_y() - range,
 				mine->get_x() + range, mine->get_y() + range,
 				mine, [&](Unit* target)
@@ -39,7 +39,7 @@ namespace hooks
 			if (!target->is_visible_to(mine->player)) {
 				return false;
 			}
-			if (scbw::get_distance_fast(mine->position, target->position) > range) {
+			if (bw::get_distance_fast(mine->position, target->position) > range) {
 				return false;
 			}
 			return true;
@@ -165,7 +165,7 @@ namespace hooks
 				if ((helper::get_distance_fast(unit->halt.x, unit->order_target.pt.x << 8, unit->halt.y, unit->order_target.pt.y << 8) & 0xFFFFFF00) <= 5120) {
 					helper::orders_hold_pos_suicidal(unit);
 					Point16 target_pos = {unit->order_target.pt.x, unit->order_target.pt.y};
-					u32 mine_id = scbw::get_trap_id(unit);
+					u32 mine_id = bw::get_trap_id(unit);
 					helper::fix_target_location(&target_pos, mine_id);
 					Unit* mine = helper::create_unit(mine_id, target_pos.x, target_pos.y, unit->player);
 					if (mine)

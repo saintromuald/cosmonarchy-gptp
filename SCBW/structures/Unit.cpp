@@ -243,7 +243,7 @@ u32 Unit::get_sight_range(bool is_for_spellcasting) const {
 // Similar to function Unit__HasEnergy @ 0x00491480
 // The original function returned 0 when got energy or code
 bool Unit::has_energy(u32 energy) const {
-	if (scbw::is_cheat_enabled(CheatFlags::TheGathering) || this->energy >= energy) {
+	if (bw::is_cheat_enabled(CheatFlags::TheGathering) || this->energy >= energy) {
 		return true;
 	}
 	return false;
@@ -287,7 +287,7 @@ bool Unit::has_weapon() const {
 // Identical to function @ 0x004020B0
 bool Unit::is_frozen() const {
 	assert(this);
-	return scbw::unit_is_stunned((Unit*)this);
+	return bw::unit_is_stunned((Unit*)this);
 }
 
 bool Unit::is_remorphing_building() const {
@@ -422,7 +422,7 @@ u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
 
 	// If heals to full clear debuffs
 	if (restore && this->hitpoints == this->get_max_hp_raw()) {
-	//	scbw::restore_func(this);
+	//	bw::restore_func(this);
 	}
 
 	return value;
@@ -440,7 +440,7 @@ u32 Unit::heal_shields(s32 value, Unit* source, bool restore, bool proc_flash_sh
 
 	// If heals to full, clear debuffs
 	if (restore && this->shields == this->get_max_shields_raw()) {
-	//	scbw::restore_func(this);
+	//	bw::restore_func(this);
 	}
 
 	// Activate flash shielding
@@ -567,9 +567,9 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 	*/
 
 	if (attacker) {
-		scbw::update_on_damage_dealt(attacker, damage);
+		bw::update_on_damage_dealt(attacker, damage);
 	}
-	scbw::update_on_damage_taken(this, damage);
+	bw::update_on_damage_taken(this, damage);
 
 	if (attacker) {
 		TriggerEvent event = {};
@@ -643,7 +643,7 @@ void Unit::reduce_defensive_matrix_hp(s32 amount) {
 	if (this->defensive_matrix_timer != 0 && !(this->status & UnitStatus::Burrowed)) {
 		Unit* unit = this->subunit ? this->subunit : this;
 		// get_unit_overlay_adjustment code was hardcoded into function in original code)
-		unit->sprite->create_top_overlay(scbw::get_unit_overlay_adjustment(unit) + ImageId::DefensiveMatrixHit_Small);
+		unit->sprite->create_top_overlay(bw::get_unit_overlay_adjustment(unit) + ImageId::DefensiveMatrixHit_Small);
 	}
 }
 
@@ -703,7 +703,7 @@ void Unit::unfreeze() {
 	}
 	this->status &= ~UnitStatus::Frozen;
 	helper::change_unit_buttonset(this, this->id);
-	scbw::refresh_console();
+	bw::refresh_console();
 }
 
 void Unit::remove_acid_spores() {
@@ -743,7 +743,7 @@ s32 Unit::get_total_hp_plus_shields() {
 	s32 id = this->id;
 	s32 shields = 0;
 	s32 hp = units_dat::max_hitpoints[id] >> 8;
-	if (scbw::unit_has_shields(this)) {
+	if (bw::unit_has_shields(this)) {
 		shields = units_dat::max_shield_points[id];
 	}
 	if (!hp) {
@@ -1016,7 +1016,7 @@ u32 Unit::get_distance_to_target(Unit* target) const {
 			dy = 0;
 		}
 	}
-	return scbw::get_distance_fast(0, 0, dx, dy);
+	return bw::get_distance_fast(0, 0, dx, dy);
 }
 
 u32 Unit::get_distance_to_point(Point16 point) const {
@@ -1039,7 +1039,7 @@ u32 Unit::get_distance_to_point(Point16 point) const {
 			dy = 0;
 		}
 	}
-	return scbw::get_distance_fast(0, 0, dx, dy);
+	return bw::get_distance_fast(0, 0, dx, dy);
 }
 
 bool Unit::has_path_to_pos(u32 x, u32 y) const {
@@ -1242,7 +1242,7 @@ bool Unit::is_dead() const {
 // Probably equivalent to function @ 0047B910
 bool Unit::is_target_enemy(Unit* target) const {
 	assert(this);
-	return scbw::is_unit_enemy(this->player, target);
+	return bw::is_unit_enemy(this->player, target);
 }
 
 bool Unit::is_visible_to(u8 player) const {
@@ -1276,7 +1276,7 @@ u32 Unit::get_supply_provided() { // overwrites previous supply provided
 	}
 
 	u32 supply = units_dat::supply_provided[id];
-	if (scbw::is_zerg_egg_new(this, false, false)) {
+	if (bw::is_zerg_egg_new(this, false, false)) {
 		if (build_queue[build_queue_slot % 5] == UnitId::ZergIroleth)
 		{
 			supply = units_dat::supply_provided[UnitId::ZergOvileth];

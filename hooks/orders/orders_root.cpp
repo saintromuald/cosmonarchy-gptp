@@ -578,7 +578,7 @@ namespace hooks {
 					final_attacker = unit;
 				}
 
-				u32 weapon_id = scbw::get_unit_weapon_based_on_target(final_attacker, target);
+				u32 weapon_id = bw::get_unit_weapon_based_on_target(final_attacker, target);
 				u32 min_range = weapons_dat::min_range[weapon_id];
 				u32 max_range = helper::get_unit_max_weapon_range(unit, weapon_id);
 				if (weapon_id == WeaponId::None
@@ -609,7 +609,7 @@ namespace hooks {
 					final_attacker_2 = unit;
 				}
 
-				u32 weapon_id = scbw::get_unit_weapon_based_on_target(final_attacker_2, target);
+				u32 weapon_id = bw::get_unit_weapon_based_on_target(final_attacker_2, target);
 				if (weapon_id != WeaponId::None)
 				{
 					u32 min_range_2 = weapons_dat::min_range[weapon_id];
@@ -724,7 +724,7 @@ namespace hooks {
 						case 1:
 						{
 							if (unit->main_order_timer <= 45 || helper::is_unit_movable(unit)) {
-								u32 sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_MissileLaunch);
+								u32 sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_MissileLaunch);
 								helper::play_sound_from_unit(sound_id, 0, 1, 0);
 								if (g_stat_txt_buffer->get_string_count() > 1046) {
 									helper::show_stat_txt_to_player((s32)g_stat_txt_buffer->get_string(1047), *g_local_nation_id);
@@ -831,7 +831,7 @@ namespace hooks {
 							{
 								Unit* garrisoned_unit = unit;
 								u32 garrisoned_unit_id = unit->id;
-								if (scbw::unit_is_ranged_attacker(garrisoned_unit))
+								if (bw::unit_is_ranged_attacker(garrisoned_unit))
 								{
 									garrisoned_unit->status |= UnitStatus::AttackMove;
 									Unit* subunit_in_bunker = garrisoned_unit->subunit;

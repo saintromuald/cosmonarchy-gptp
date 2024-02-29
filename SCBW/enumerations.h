@@ -341,7 +341,7 @@ namespace Button_State
 	};
 }
 
-// For use with scbw::print()
+// For use with bw::print()
 namespace GameTextColor
 {
 	enum Enum
@@ -398,7 +398,7 @@ namespace LobbyTextColor
 	};
 };
 
-// For use with scbw::play_iscript_animation()
+// For use with bw::play_iscript_animation()
 namespace IscriptAnimation
 {
 	enum Enum : u8

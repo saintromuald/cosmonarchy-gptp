@@ -71,7 +71,7 @@ namespace hooks
 					{
 						stringId = 877; // Unable to target structure.<0>
 					}
-					else if (scbw::is_allied_to(target->player, castingPlayerId) || target->player == castingPlayerId)
+					else if (bw::is_allied_to(target->player, castingPlayerId) || target->player == castingPlayerId)
 					{
 						stringId = 1327; // Must target enemy units<0>
 					}
@@ -106,8 +106,8 @@ namespace hooks
 				} break;
 				case TechId::Consume: {
 					if (units_dat::base_property[target->id] & UnitProperty::Building
-						|| !scbw::is_allied_to(target->player, castingPlayerId)
-						|| scbw::is_zerg_egg_new(target))
+						|| !bw::is_allied_to(target->player, castingPlayerId)
+						|| bw::is_zerg_egg_new(target))
 					{
 						stringId = 876; // Invalid target.<0>
 					}
@@ -118,7 +118,7 @@ namespace hooks
 				} break;
 				case TechId::TalosSalvage: {
 					if (!target
-						|| !scbw::is_allied_to(target->player, castingPlayerId)
+						|| !bw::is_allied_to(target->player, castingPlayerId)
 						|| !(target->status & UnitStatus::Completed)) {
 						stringId = 876; // Invalid target.<0>
 					}

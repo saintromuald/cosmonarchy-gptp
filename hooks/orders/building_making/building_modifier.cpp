@@ -22,7 +22,7 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 		modifier.multiplier *= 1.5;
 	}
 
-	if (scbw::get_game_kind() == GameKind_Debug) {
+	if (bw::get_game_kind() == GameKind_Debug) {
 		modifier.multiplier *= 32;
 	}
 

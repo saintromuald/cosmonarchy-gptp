@@ -226,7 +226,7 @@ namespace hooks
 			}
 		}
 		while (aiTown = aiTown->next);
-		//scbw::printString("Can't find eligible town for supply building!");
+		//bw::printString("Can't find eligible town for supply building!");
 		return nullptr; // couldn't find anything
 	}
 
@@ -241,7 +241,7 @@ namespace hooks
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Terran);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
+					AI_AddTownSpendingRequest(player, bw::get_supply_remaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
 				}
 			}
 			if (check_supply_need(player, RaceId::Protoss))
@@ -249,7 +249,7 @@ namespace hooks
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Protoss);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
+					AI_AddTownSpendingRequest(player, bw::get_supply_remaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
 				}
 			}
 			if (check_supply_need(player, RaceId::Zerg))
@@ -257,7 +257,7 @@ namespace hooks
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Zerg);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player), (void*)town);
+					AI_AddTownSpendingRequest(player, bw::get_supply_remaining(player, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player), (void*)town);
 				}
 			}
 		}

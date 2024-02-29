@@ -13,7 +13,7 @@ namespace hooks
 				unit->order_to(OrderId::MoveToMinerals, rally.unit);
 			} else if (is_worker && unit_id_is_gas_structure(rally.unit->id)) {
 				unit->order_to(OrderId::HarvestGas1, rally.unit);
-			} else */ if (scbw::is_allied_to(unit->player, rally.unit->player)) {
+			} else */ if (bw::is_allied_to(unit->player, rally.unit->player)) {
 				unit->order_to(OrderId::Follow, rally.unit);
 			} else {
 				unit->order_to(OrderId::AttackUnit, rally.unit);
@@ -86,7 +86,7 @@ namespace hooks
 			} else {
 				u16 unit_id = unit->id;
 				if ((unit_id == UnitId::TerranMason || unit_id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding
-				||  scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
+				||  bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
 				||  unit_id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
 				{
 					*g_last_internal_error = 8;
@@ -662,7 +662,7 @@ namespace hooks
 			helper::stop_creep_disappearing_at_building(unit);
 		}
 		u32 unit_status = unit->status;
-		if (!scbw::unit_is_stunned(unit) || units_dat::base_property[unit->id] & UnitProperty::Building) {
+		if (!bw::unit_is_stunned(unit) || units_dat::base_property[unit->id] & UnitProperty::Building) {
 			if (unit_can_have_rally(unit)) {
 				unit->current_buttonset = UnitId::Buttons_CancelMutationWithRallyPt;
 			} else {

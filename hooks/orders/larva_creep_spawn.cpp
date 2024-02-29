@@ -158,7 +158,7 @@ namespace hooks
 						// adjust value 1300000 to get slightly different radius
 
 						if (in_range) {
-							ActiveTile* a = scbw::get_active_tile_at_coords(i * 32, j * 32);
+							ActiveTile* a = bw::get_active_tile_at_coords(i * 32, j * 32);
 							if (a->has_cagra || a->temporary_cagra || a->cagra_receding) {
 								// why is there nothing here LMAO
 							} else {
@@ -367,7 +367,7 @@ namespace hooks
 		if (move_x == unit_x && move_y == unit_y && (!(unit->status & UnitStatus::Unmovable)) // Guessed unmovable status math
 		||  move_target && (move_x != move_target->position.x || move_y != move_target->position.y) && !helper::pixel_pos_has_cagra(move_x, move_y))
 		{
-			if ((!spawner || move_target != spawner) && !(scbw::get_active_tile_at_coords(unit->position)->has_cagra)) // Guessed flag
+			if ((!spawner || move_target != spawner) && !(bw::get_active_tile_at_coords(unit->position)->has_cagra)) // Guessed flag
 			{
 				helper::orders_self_destructing(unit);
 				return;

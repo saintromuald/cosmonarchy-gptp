@@ -15,7 +15,7 @@ namespace hooks
 		if (globals.players[player].witness_mode || *g_is_in_replay) {
 			return true;
 		}
-		if (!scbw::is_allied_to(unit->player, player))
+		if (!bw::is_allied_to(unit->player, player))
 		{
 			return false;
 		}

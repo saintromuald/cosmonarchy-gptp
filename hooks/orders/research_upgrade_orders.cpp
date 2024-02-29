@@ -36,7 +36,7 @@ namespace hooks
 						helper::apply_speed_upgrade_from_upgrade_id(unit, unit->building.upgrade_id);
 					}
 				}
-				scbw::refresh_console();
+				bw::refresh_console();
 			}
 		}
 
@@ -157,7 +157,7 @@ namespace hooks
 				else if (*g_is_brood_war)
 					TechBw->is_researched[unit->player][unit->building.tech_id - TechId::Restoration] = 1;
 
-				scbw::refresh_console();
+				bw::refresh_console();
 
 			}
 

@@ -54,7 +54,7 @@ namespace hooks
 		u32 target = *g_place_building_unit_id;
 		u16 addon_x = (*place_building_x - units_dat::addon_placement[2 * *g_place_building_unit_id - 212].x / 32);
 		u16 addon_y = (*place_building_y - units_dat::addon_placement[2 * *g_place_building_unit_id - 211].y / 32);
-		scbw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
+		bw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
 
 		s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, *g_placing_player, *place_building_x, *place_building_y, *g_place_building_unit_id, 1, 1, 0, 0);
 		s32 result = helper::can_build_on_tile_location(*g_active_portrait_unit, *g_placing_player, addon_x, addon_y, *g_place_building_base_type, 0, 1, 0, 0);
@@ -71,7 +71,7 @@ namespace hooks
 			Unit* other_unit = *it;
 			bool needs_detection = false;
 			if (builder) {
-				if (scbw::is_allied_to(other_unit->player, builder->player)) {
+				if (bw::is_allied_to(other_unit->player, builder->player)) {
 					continue;
 				}
 				if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {
@@ -111,7 +111,7 @@ namespace hooks
 		u8 result = 0;
 		for (u32 y = 0; y < size.y; ++y) {
 			for (u32 x = 0; x < size.x; ++x) {
-				ActiveTile* tile = scbw::get_active_tile_at_tile(x_tile + x, y_tile + y);
+				ActiveTile* tile = bw::get_active_tile_at_tile(x_tile + x, y_tile + y);
 
 				char state = 0;
 				if (tile->explored_flags & human_only_player_bit) {
@@ -145,7 +145,7 @@ namespace hooks
 		u8 result = 0;
 		for (u32 y = 0; y < size.y; ++y) {
 			for (u32 x = 0; x < size.x; ++x) {
-				ActiveTile* tile = scbw::get_active_tile_at_tile(tile_x + x, tile_y + y);
+				ActiveTile* tile = bw::get_active_tile_at_tile(tile_x + x, tile_y + y);
 				TileExt* tile_ext = get_tile_ext_at_tile(tile_x + x, tile_y + y);
 
 				u32 flags = 0x20800000; // cliff_edge, always_unbuildable
@@ -212,7 +212,7 @@ namespace hooks
 			player = builder->player;
 			g_game_minerals[player] -= g_ai_minerals_reserve[player];
 			g_game_vespene[player] -= g_ai_vespene_reserve[player];
-			scbw::prepare_building_area(builder->order_target.pt, building_id);
+			bw::prepare_building_area(builder->order_target.pt, building_id);
 			return 1;
 		}
 	}
@@ -385,15 +385,15 @@ namespace hooks
 			switch (unit->get_race()) {
 				case RaceId::Terran:
 				{
-					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildTerran);
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildTerran);
 				} break;
 				case RaceId::Protoss:
 				{
-					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildProtoss);
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildProtoss);
 				} break;
 				case RaceId::Zerg:
 				{
-					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildZerg);
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildZerg);
 				} break;
 			}
 
@@ -428,15 +428,15 @@ namespace hooks
 			switch (unit->get_race()) {
 				case RaceId::Terran:
 				{
-					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
 				} break;
 				case RaceId::Protoss:
 				{
-					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
 				} break;
 				case RaceId::Zerg:
 				{
-					sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
 				} break;
 			}
 

@@ -88,7 +88,7 @@ namespace hooks {
 			}
 
 			for (u32 i = 0; i < extra_count; ++i) {
-				Unit* new_unit = scbw::create_unit_in_game(unit->id, unit->player, unit->position.x, unit->position.y);
+				Unit* new_unit = bw::create_unit_in_game(unit->id, unit->player, unit->position.x, unit->position.y);
 				if (new_unit) {
 					spread_debuffs(unit, new_unit);
 					new_unit->rally = unit->rally;
@@ -129,9 +129,9 @@ namespace hooks {
 			helper::fix_target_location(&pos, unit->id);
 			if (pos.x != unit->sprite->position.x ||
 				pos.y != unit->sprite->position.y) {
-				scbw::set_unit_position(unit, pos.x, pos.y);
+				bw::set_unit_position(unit, pos.x, pos.y);
 			}
-			if (!scbw::is_zerg_egg_new(unit, true, false)) {
+			if (!bw::is_zerg_egg_new(unit, true, false)) {
 				helper::order_new_unit_to_rally(unit, factory);
 				if (twin_unit) {
 					helper::order_new_unit_to_rally(twin_unit, factory);
@@ -146,7 +146,7 @@ namespace hooks {
 		if (!unit->remaining_build_time) {
 			return 1;
 		}
-		if (scbw::get_game_kind() == GameKind_Debug) {
+		if (bw::get_game_kind() == GameKind_Debug) {
 			if (unit->remaining_build_time < 32) {
 				unit->remaining_build_time = 0;
 				helper::set_unit_hp(unit, unit->get_max_hp_raw());
@@ -167,7 +167,7 @@ namespace hooks {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->main_order_state == 0)
 		{
-			if (scbw::is_conventional_unit_morph_source(unit->id, true))
+			if (bw::is_conventional_unit_morph_source(unit->id, true))
 			{
 				if (!helper::has_supplies_for_unit(unit->build_queue[unit->build_queue_slot], unit->player, 1))
 				{
@@ -259,7 +259,7 @@ namespace hooks {
 						if (egg_id == UnitId::ZergEgg) {
 							helper::add_worker_structure_ai(unit, town);
 						} else {
-							scbw::printf("There is no code for cocoon building AI in internal game code, this shouldn't be called!");
+							bw::printf("There is no code for cocoon building AI in internal game code, this shouldn't be called!");
 						}
 					} else {
 						helper::replace_unit_with_id(unit, egg_id); // morph into egg from source unit
@@ -593,7 +593,7 @@ namespace hooks {
 	}
 
 	bool is_rallyable_egg_unit(u16 unit_id) {
-		if (scbw::is_zerg_egg_new(0, false, false, unit_id)) {
+		if (bw::is_zerg_egg_new(0, false, false, unit_id)) {
 			return false;
 		}
 		return true;
@@ -662,7 +662,7 @@ namespace hooks {
 		if (unit->status & UnitStatus::GroundedBuilding
 			|| unit->id == UnitId::ProtossSolarion
 			|| unit->id == UnitId::ProtossAccantorOld
-			|| scbw::is_larval_egg(unit)) // just egg
+			|| bw::is_larval_egg(unit)) // just egg
 		{
 			if (helper::has_supplies_for_unit(unit_id, unit->player, notify_error))
 			{

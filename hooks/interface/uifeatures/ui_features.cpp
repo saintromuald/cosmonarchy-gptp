@@ -262,7 +262,7 @@ LABEL_15:
 		}
 		char buffer[128];
 		sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)*g_upgrade_level_tooltip);
-		scbw::printf("%s", buffer);
+		bw::printf("%s", buffer);
 		return helper::create_tooltip(buffer);
 	}
 
@@ -370,7 +370,7 @@ LABEL_15:
 		char index_ref = 0;
 		if (*g_minimap_state) {
 			color_mod = g_palette_index_reference[20];
-			if (scbw::is_allied_to(*g_local_nation_id, player)) {
+			if (bw::is_allied_to(*g_local_nation_id, player)) {
 				index_ref = g_palette_index_reference[17];
 			} else {
 				index_ref = color_mod;
@@ -494,7 +494,7 @@ LABEL_15:
 					&&  sprite->id != SpriteId::MineralFieldType2
 					&&  sprite->id != SpriteId::MineralFieldType3) {
 						if (*g_minimap_state) {
-							if (scbw::is_allied_to(player, sprite->player)) {
+							if (bw::is_allied_to(player, sprite->player)) {
 								color = g_palette_index_reference[17];
 							} else {
 								color = g_palette_index_reference[20];
@@ -507,7 +507,7 @@ LABEL_15:
 					Point16 pos = sprite->position;
 					/*
 					if (sprite->player == 11) {
-						ActiveTile* tile = scbw::get_active_tile_at_coords(pos);
+						ActiveTile* tile = bw::get_active_tile_at_coords(pos);
 						if (tile->explored_flags & 1 << *g_local_nation_id) {
 							color = dark_pcx_image_map->index[28][color];
 						} else {
@@ -530,7 +530,7 @@ LABEL_15:
 				if (!*g_is_in_replay && player == *g_local_nation_id) {
 					continue;
 				}
-				if (!*g_is_in_replay && !globals.players[*g_local_nation_id].witness_mode && !scbw::is_allied_to(player, *g_local_nation_id)) {
+				if (!*g_is_in_replay && !globals.players[*g_local_nation_id].witness_mode && !bw::is_allied_to(player, *g_local_nation_id)) {
 					continue;
 				}
 				Point16 camera = globals.players[player].camera;
@@ -1089,13 +1089,13 @@ LABEL_15:
 			if (pos_y < *g_map_height_pixels)
 			{
 				*buffer = *g_active_nation_id;
-				if (scbw::player_is_witness(*g_active_nation_id) && !scbw::player_is_witness(*g_local_nation_id)
-				|| !scbw::player_is_witness(*g_active_nation_id) &&  scbw::player_is_witness(*g_local_nation_id)) {
+				if (bw::player_is_witness(*g_active_nation_id) && !bw::player_is_witness(*g_local_nation_id)
+				|| !bw::player_is_witness(*g_active_nation_id) &&  bw::player_is_witness(*g_local_nation_id)) {
 					return *buffer;
 				}
 
-				if (scbw::is_allied_to(*g_active_nation_id, *g_local_nation_id)
-				||	scbw::player_is_witness(*g_active_nation_id) && scbw::player_is_witness(*g_local_nation_id)) {
+				if (bw::is_allied_to(*g_active_nation_id, *g_local_nation_id)
+				||	bw::player_is_witness(*g_active_nation_id) && bw::player_is_witness(*g_local_nation_id)) {
 					*buffer = helper::minimap_ping(pos_x, pos_y, (*g_active_nation_id != *g_local_nation_id) + 17);
 				}
 			}

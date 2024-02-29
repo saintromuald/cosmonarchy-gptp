@@ -34,7 +34,7 @@ namespace hooks
 			{
 				case RequirementOpcodes::MustBeBroodWar:
 				{
-					if (scbw::is_brood_war_mode() == false)
+					if (bw::is_brood_war_mode() == false)
 					{
 						*g_last_internal_error = InternalErrors::UnknownError26;
 						return 0;
@@ -85,7 +85,7 @@ namespace hooks
 						success++;
 						break;
 					}
-					if (scbw::has_tech_researched(player, id) == false && scbw::is_cheat_enabled(CheatFlags::MedievalMan) == false)
+					if (bw::has_tech_researched(player, id) == false && bw::is_cheat_enabled(CheatFlags::MedievalMan) == false)
 					{
 						break;
 					}
@@ -337,7 +337,7 @@ namespace hooks
 
 				case RequirementOpcodes::UpgradeLv1Requires:
 				{
-					switch (scbw::get_upgrade_level(player, id))
+					switch (bw::get_upgrade_level(player, id))
 					{
 						default:
 						{
@@ -794,7 +794,7 @@ LABEL_87:
 				{
 					//DebugOut("IsResearched (%d):", currentOpcode);
 					v10 = requirementsTable[opcodeIndex++];
-					if (scbw::has_tech_researched(parent_unit->player, v10) && !(*g_cheat_state & CheatFlags::MedievalMan))
+					if (bw::has_tech_researched(parent_unit->player, v10) && !(*g_cheat_state & CheatFlags::MedievalMan))
 					{
 						*g_last_internal_error = InternalErrors::UnknownError9;
 						//DebugOut(">Return Gray");

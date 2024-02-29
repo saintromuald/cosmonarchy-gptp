@@ -58,7 +58,7 @@ namespace hooks
 					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 					helper::unit_order_move_to_target_unit(unit, target);
 					if (!helper::is_unit_positions_2_equal(unit)) {
-						u8 current_angle = unit->current_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
+						u8 current_angle = unit->current_direction_1 - bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 						if (current_angle > 128) {
 							current_angle = 256 - current_angle;
 						}
@@ -224,7 +224,7 @@ namespace hooks
 			case OrderId::Pickup2:
 			{
 				error_string_id = 890;
-				if (!target || !scbw::is_allied_to(target->player, unit->player))
+				if (!target || !bw::is_allied_to(target->player, unit->player))
 				{
 					if (bErrorFlag)
 					{
@@ -300,7 +300,7 @@ namespace hooks
 						result = 0;
 					} else {
 						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding && order_id != 1
-						|| (scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
+						|| (bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
 						||  unit->id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
 						||  unit->id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
 						{

@@ -31,7 +31,7 @@ namespace hooks
 				*u32_0066FF60 = 0x0B;
 			} else if ((current_unit->id == UnitId::TerranMason || current_unit->id == UnitId::TerranTalos) && current_unit->main_order_id == OrderId::ConstructingBuilding) {
 				*u32_0066FF60 = 0x08;
-			} else if (scbw::unit_can_nuke(current_unit) && current_unit->main_order_id == OrderId::NukeTrack) {
+			} else if (bw::unit_can_nuke(current_unit) && current_unit->main_order_id == OrderId::NukeTrack) {
 				*u32_0066FF60 = 0x08;
 			} else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) && current_unit->main_order_id == OrderId::CompletingArchonSummon) {
 				*u32_0066FF60 = 0x08;
@@ -85,7 +85,7 @@ namespace hooks
 				*u32_0066FF60 = 0x0B;
 			} else if (current_unit->id == UnitId::TerranMason || current_unit->id == UnitId::TerranTalos && current_unit->main_order_id == OrderId::ConstructingBuilding) {
 				*u32_0066FF60 = 0x08;
-			} else if (scbw::unit_can_nuke(current_unit) && current_unit->main_order_id == OrderId::NukeTrack) {
+			} else if (bw::unit_can_nuke(current_unit) && current_unit->main_order_id == OrderId::NukeTrack) {
 				*u32_0066FF60 = 0x08;
 			} else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) && current_unit->main_order_id == OrderId::CompletingArchonSummon) {
 				*u32_0066FF60 = 0x08;
@@ -138,7 +138,7 @@ namespace hooks
 				*u32_0066FF60 = 0x0A;
 			} else if (current_unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(current_unit->id)) {
 				*u32_0066FF60 = 0x0B;
-			} else if (scbw::unit_can_nuke(current_unit) && current_unit->main_order_id == OrderId::NukeTrack) {
+			} else if (bw::unit_can_nuke(current_unit) && current_unit->main_order_id == OrderId::NukeTrack) {
 				*u32_0066FF60 = 0x08;
 			} else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) && current_unit->main_order_id == OrderId::CompletingArchonSummon) {
 				*u32_0066FF60 = 0x08;

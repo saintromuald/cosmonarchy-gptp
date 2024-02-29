@@ -57,7 +57,7 @@ one another. Attempt to group as many units as possible during the channel.
 #define ENABLE_KITE_DEBUG_MESSAGES 0
 
 #if ENABLE_KITE_DEBUG_MESSAGES
-#define KITE_DEBUG(...) scbw::printf(__VA_ARGS__)
+#define KITE_DEBUG(...) bw::printf(__VA_ARGS__)
 #else
 #define KITE_DEBUG(...)
 #endif
@@ -99,7 +99,7 @@ static bool is_melee_attacker(u32 unit_id) {
 }
 
 static void adjust_vector(Vector32f* vector, Unit* unit, Point16 position, s32 value) {
-	Vector32f delta = scbw::get_normalized_vector(scbw::get_vector_between(unit->position, position));
+	Vector32f delta = bw::get_normalized_vector(bw::get_vector_between(unit->position, position));
 	delta.x *= value;
 	delta.y *= value;
 	vector->x += delta.x;
@@ -271,7 +271,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 	cost -= get_dps_against(target, source);
 
 	// Value attacking units with smaller pathing cost more
-	s32 dist = (s32)scbw::get_distance_fast(source->position, target->position) - get_max_range(source->id);
+	s32 dist = (s32)bw::get_distance_fast(source->position, target->position) - get_max_range(source->id);
 	if (dist > 0) {
 		cost += dist / 32.0;
 	}
@@ -389,7 +389,7 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 			}
 		} break;
 		case EffectId_CyclopsRecursionRound: {
-			if (!scbw::is_allied_to(unit->player, effect->player) && effect->current_time < 25) {
+			if (!bw::is_allied_to(unit->player, effect->player) && effect->current_time < 25) {
 				value -= 100;
 			}
 		} break;
@@ -507,7 +507,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 		}
 		result.hostile_strength += strength; 
 
-		u32 distance = scbw::get_distance_fast(unit->position, hostile->position);
+		u32 distance = bw::get_distance_fast(unit->position, hostile->position);
 		if (distance < result.distance) {
 			result.distance = distance;
 		}
@@ -581,24 +581,24 @@ static KitePositions get_kite_positions(Unit* unit) {
 		forward_pos.y += hostile_vector.y;
 		forward_pos.x -= effect_vector.x;
 		forward_pos.y -= effect_vector.y;
-		forward_pos = scbw::get_normalized_vector(forward_pos);
+		forward_pos = bw::get_normalized_vector(forward_pos);
 		forward_pos.x *= MoveRadius;
 		forward_pos.y *= MoveRadius;
 		forward_pos.x += unit->position.x;
 		forward_pos.y += unit->position.y;
-		result.forward_pos = scbw::to_point16(forward_pos);
+		result.forward_pos = bw::to_point16(forward_pos);
 
 		Vector32f backward_pos = backward_vector;
 		backward_pos.x -= hostile_vector.x;
 		backward_pos.y -= hostile_vector.y;
 		backward_pos.x -= effect_vector.x;
 		backward_pos.y -= effect_vector.y;
-		backward_pos = scbw::get_normalized_vector(backward_pos);
+		backward_pos = bw::get_normalized_vector(backward_pos);
 		backward_pos.x *= MoveRadius;
 		backward_pos.y *= MoveRadius;
 		backward_pos.x += unit->position.x;
 		backward_pos.y += unit->position.y;
-		result.backward_pos = scbw::to_point16(backward_pos);
+		result.backward_pos = bw::to_point16(backward_pos);
 	}
 	return result;
 }
@@ -657,7 +657,7 @@ static bool unit_kiting_can_attack(Unit* unit) {
 void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 	if (unit_could_kite(unit) && unit_ext->timers[TimerAI_KitingLeash]) {
 		bool should_leash = unit_ext->timers[TimerAI_KitingLeash] == 1;
-		if (units_dat::base_property[unit->id] & UnitProperty::Worker && scbw::get_distance_fast(unit->position, unit_ext->ai_kiting_origin) > GroupRadius) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker && bw::get_distance_fast(unit->position, unit_ext->ai_kiting_origin) > GroupRadius) {
 			should_leash = true;
 		}
 		if (should_leash) {
@@ -725,7 +725,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			auto target_match = cosmonarchy_finder_match(unit, Flags::Enemy, {});
 			Unit* best_target = 0;
 			s32 best_cost = INT_MAX;
-			scbw::UnitFinder(
+			bw::UnitFinder(
 				unit->get_x() - GroupRadius,
 				unit->get_y() - GroupRadius,
 				unit->get_x() + GroupRadius,
@@ -738,9 +738,9 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 
 				if (!(unit->status & UnitStatus::InAir)) {
-					u32 distance = scbw::get_distance_fast(unit->position, target->position);
+					u32 distance = bw::get_distance_fast(unit->position, target->position);
 					u32 range = get_max_range(unit->id);
-					if (distance > range && scbw::get_region(scbw::get_region_id(unit->position))->group_index != scbw::get_region(scbw::get_region_id(target->position))->group_index) {
+					if (distance > range && bw::get_region(bw::get_region_id(unit->position))->group_index != bw::get_region(bw::get_region_id(target->position))->group_index) {
 						return;
 					}
 				}
@@ -776,7 +776,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				unit_ext->values[ValueAI_PreventTargeting] = 0;
 			}
 		} else if (unit_can_kite(unit)) {
-			scbw::UnitFinder local_group(
+			bw::UnitFinder local_group(
 				unit->get_x() - LocalGroupRadius,
 				unit->get_y() - LocalGroupRadius,
 				unit->get_x() + LocalGroupRadius,
@@ -914,7 +914,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	cost -= hooks::get_current_dps(target, weapon_id) * multiplier;
 
 	// Value attacking units with smaller pathing cost more
-	s32 dist = (s32)scbw::get_distance_fast(source->position, target->position) - get_max_range(source->id);
+	s32 dist = (s32)bw::get_distance_fast(source->position, target->position) - get_max_range(source->id);
 	if (dist > 0) {
 		cost += dist / 32.0;
 	}
@@ -1001,7 +1001,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				unit_search_filter(&units, unit, FilterAlly, {UnitId::TerranApostle});
 				for (u32 i = 0; i < units.count; ++i) {
 					Unit* other = units.units[i];
-					if (!scbw::is_allied_to(other->player, unit->player)) {
+					if (!bw::is_allied_to(other->player, unit->player)) {
 						continue;
 					}
 					UnitExt* other_ext = get_unit_ext(other);
@@ -1018,14 +1018,14 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					corpse_search_radial(&corpses, unit->position, radius);
 					for (u32 i = 0; i < corpses.count; i++) {
 						Thingy* corpse = corpses.corpses[i];
-						if (scbw::is_active_corpse(corpse)) {
+						if (bw::is_active_corpse(corpse)) {
 							count += 1;
 							break;
 						}
 					}
 
 					if (count) {
-						scbw::set_generic_rust_value(unit, RustId::ToggleLazarusAgent, 1);
+						bw::set_generic_rust_value(unit, RustId::ToggleLazarusAgent, 1);
 						unit_ext->timers[TimerAI_Lazarus] = ApostleAILazarusAgentTimer;
 					}
 				}
@@ -1093,13 +1093,13 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			}
 			*/
 		} else if (unit->id == UnitId::ProtossLanifect) {
-			u32 web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
+			u32 web_state = bw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
 			u32 lanifects = 0;
 			u32 webs = 0;
 			cosmonarchyFinderLoop(unit, unit->position, AILanifectSeekRange, Flags::Own, {}, [&](Unit* target) {
 				if (target->id == UnitId::ProtossLanifect) {
 					lanifects += 1;
-					if (scbw::get_generic_rust_value(target, RustId::ToggleDisruptionField)) {
+					if (bw::get_generic_rust_value(target, RustId::ToggleDisruptionField)) {
 						webs += 1;
 					}
 				}
@@ -1114,14 +1114,14 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				cosmonarchyFinderLoop(unit, unit->position, AILanifectSeekRange, Flags::Enemy, {}, [&](Unit* target) {
 					bool valid = true;
 					cosmonarchyFinderLoop(unit, target->position, AILanifectCheckRange / 2, Flags::Own, {}, [&](Unit* dweb) {
-						if (scbw::get_generic_rust_value(dweb, RustId::ToggleDisruptionField)) {
+						if (bw::get_generic_rust_value(dweb, RustId::ToggleDisruptionField)) {
 							valid = false;
 						}
 					});
 					if (valid) {
 						s32 score = cosmonarchy_unit_count(unit, target->position, AILanifectCheckRange, Flags::Enemy, {});
 						score -= cosmonarchy_unit_count(unit, target->position, AILanifectCheckRange, Flags::Ally, {});
-						score -= scbw::get_distance_fast(unit->position, target->position) / 128;
+						score -= bw::get_distance_fast(unit->position, target->position) / 128;
 						if (score > max_score) {
 							max_score = score;
 							best_target = target;
@@ -1130,13 +1130,13 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				});
 				if (best_target) {
 					unit->order_to(OrderId::Move, best_target->position.x, best_target->position.y);
-					scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 1);
+					bw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 1);
 					unit_ext->timers[TimerAI_DisruptionField] = AIWebTimer;
 				}
 			}
 
 			if (web_state && webs > threshold) {
-				scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
+				bw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
 				if (unit->main_order_id == OrderId::Move)
 				{
 					unit->order_to_idle();
@@ -1147,11 +1147,11 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			u32 allied_units_health = 0;
 			bool allied_town_centers = false;
 			cosmonarchyFinderLoop(unit, unit->sprite->position, AIStarSovereignAbilSeekRange, Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u) {
-				if (!scbw::is_allied_to(unit->player, u->player))
+				if (!bw::is_allied_to(unit->player, u->player))
 				{
 					enemy_units_health += (u->hitpoints + u->shields) / 256;
 				}
-				if (scbw::is_allied_to(unit->player, u->player))
+				if (bw::is_allied_to(unit->player, u->player))
 				{
 					if (units_dat::base_property[u->id] & UnitProperty::ResourceDepot)
 					{
@@ -1194,31 +1194,31 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 
 		/*	
 		else if (unit->id == UnitId::TerranPaladin) {
-			if (unit->main_order_id != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
+			if (unit->main_order_id != OrderId::Skyfall && bw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
 				bool skyfallCondition = false;
 				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::Skyfall],
 					CFlags::Enemy, {}, [&](Unit* u) {
 
-					// scbw::print("Loop");
+					// bw::print("Loop");
 					Unit* tryTarget = u;
 					s32 innerCount = 0;
 					cosmonarchyFinderLoop(u, u->position, weapons_dat::max_range[WeaponId::Skyfall] , CFlags::Ally, {},
 						[&](Unit* internalUnit) {
 						innerCount++;
 					});
-					// scbw::printf("Count is %d", innerCount);
+					// bw::printf("Count is %d", innerCount);
 					if (innerCount >= 6) {
 						Point16 source = unit->position;
 						Point16 target = u->position;
 
-						auto distance = scbw::get_distance_fast(source.x, source.y, target.x, target.y);
+						auto distance = bw::get_distance_fast(source.x, source.y, target.x, target.y);
 						if (distance >= 64) {
 							f64 fraction = (distance - 64) / distance;
 							u16 resultX, resultY;
 							resultX = MathUtils::lerp(fraction, source.x, target.x, false);
 							resultY = MathUtils::lerp(fraction, source.y, target.y, false);
 							unit->order_to(OrderId::Skyfall, u->position.x, u->position.y);
-							scbw::set_generic_timer(unit, RustId::AI_PaladinTimer, 50);
+							bw::set_generic_timer(unit, RustId::AI_PaladinTimer, 50);
 						}
 					}
 				});

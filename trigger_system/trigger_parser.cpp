@@ -334,7 +334,7 @@ s32 parser_get_var_value(Parser* parser, bool is_timer) {
 	if (parser_get_keyword(parser, "random")) {
 		s32 min_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 		s32 max_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
-		return scbw::rand_between(min_value, max_value);
+		return bw::rand_between(min_value, max_value);
 	}
 	return is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 }
@@ -414,7 +414,7 @@ Area parser_get_area(Parser* parser, Area default_value) {
 bool check_area(Area area, Point16 position, bool air) {
 	if (position.x >= area.box.left && position.x <= area.box.right &&
 		position.y >= area.box.top  && position.y <= area.box.bottom) {
-		ActiveTile* tile = scbw::get_active_tile_at_coords(position.x, position.y);
+		ActiveTile* tile = bw::get_active_tile_at_coords(position.x, position.y);
 		u32 height = tile->ground_height / 2;
 		if (height == 0) {
 			// Low
@@ -520,11 +520,11 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 			}
 		} else if (value == 14) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, scbw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
+				player_bitset_set(&current_bitset, i, bw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
 		} else if (value == 15) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, !scbw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
+				player_bitset_set(&current_bitset, i, !bw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
 		} else if (value == 16) {
 			// wasn't used in aise, but we can do something here later?

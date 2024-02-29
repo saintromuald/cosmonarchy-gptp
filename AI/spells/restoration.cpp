@@ -12,7 +12,7 @@ namespace AI
 
 		s32 bounds = 32 * 32;
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds,
 			caster->get_y() - bounds,
 			caster->get_x() + bounds,
@@ -24,13 +24,13 @@ namespace AI
 			if (target->player != caster->player)
 				return false;
 
-			if (!scbw::can_weapon_target_unit(WeaponId::Restoration, target, caster))
+			if (!bw::can_weapon_target_unit(WeaponId::Restoration, target, caster))
 				return false;
 
 			if (target->get_current_life_ingame() <= 60)
 				return false;
 
-			if (scbw::is_debuffed(target))
+			if (bw::is_debuffed(target))
 				return true;
 
 			return false;
@@ -45,7 +45,7 @@ namespace AI
 		if (isUnderAttack)
 			return nullptr;
 
-		return scbw::UnitFinder::get_nearest_target(caster, [&](Unit* target)
+		return bw::UnitFinder::get_nearest_target(caster, [&](Unit* target)
 		{
 
 			if (target->player != caster->player)
@@ -54,7 +54,7 @@ namespace AI
 			if (!(target->parasite_flags || target->maelstrom_timer))
 				return false;
 
-			if (!scbw::can_weapon_target_unit(WeaponId::Restoration, target, caster))
+			if (!bw::can_weapon_target_unit(WeaponId::Restoration, target, caster))
 				return false;
 
 			return true;

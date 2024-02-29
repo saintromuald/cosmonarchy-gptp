@@ -2,7 +2,7 @@
 #include "SCBW\api.h"
 
 bool is_any_corpse(Thingy* thingy) {
-	if (thingy->sprite && scbw::sprite_id_is_corpse(thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
+	if (thingy->sprite && bw::sprite_id_is_corpse(thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
 		ThingyExt* corpse_ext = get_thingy_ext(thingy);
 		u32 unit_id = corpse_ext->unit_id;
 		if (units_dat::base_property[unit_id] & UnitProperty::Building
@@ -72,7 +72,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 			pos.y = 0;
 		}
 	}
-	Unit* unit = scbw::create_unit_in_game(unit_id, player, pos.x, pos.y);
+	Unit* unit = bw::create_unit_in_game(unit_id, player, pos.x, pos.y);
 	if (unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
@@ -100,7 +100,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		if (player != original_player) {
 			unit_ext->values[ValueDecaying] = true;
 		}
-		if (scbw::get_game_kind() == GameKind_TheTurning && player == TheTurningZombiePlayerId) {
+		if (bw::get_game_kind() == GameKind_TheTurning && player == TheTurningZombiePlayerId) {
 			unit_ext->values[ValueDecaying] = false;
 			unit_ext->values[ValueNoCorpse] = true;
 		}
@@ -111,19 +111,19 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 void avenge_corpse(Thingy* corpse, u32 player) {
 	ThingyExt* corpse_ext = get_thingy_ext(corpse);
 	u32 corpse_player = corpse_ext->player;
-	if (!is_active_corpse(corpse) || !scbw::are_mutual_allies(player, corpse_player)) {
+	if (!is_active_corpse(corpse) || !bw::are_mutual_allies(player, corpse_player)) {
 		return;
 	}
 
 	Point16 pos = corpse->sprite->position;
-	scbw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
+	bw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
 	helper::play_sound_at_pos(SoundId::ZealotRevive01, pos);
 		
 	EntryArray units = {};
 	unit_search_radial(&units, corpse->sprite->position, corpse_ext->sight_range_before_death);
 	for (u32 i = 0; i < units.count; ++i) {
 		Unit* unit = units.units[i];
-		if (!scbw::is_allied_to(player, unit->player)) {
+		if (!bw::is_allied_to(player, unit->player)) {
 			continue;
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -138,12 +138,12 @@ void avenge_corpse(Thingy* corpse, u32 player) {
 void ascend_corpse(Thingy* corpse, u32 player) {
 	ThingyExt* corpse_ext = get_thingy_ext(corpse);
 	u32 corpse_player = corpse_ext->player;
-	if (!is_active_corpse(corpse) || scbw::are_mutual_allies(player, corpse_player)) {
+	if (!is_active_corpse(corpse) || bw::are_mutual_allies(player, corpse_player)) {
 		return;
 	}
 
 	Point16 pos = corpse->sprite->position;
-	scbw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
+	bw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
 	ascend_in_area(player, pos, corpse_ext->sight_range_before_death);
 	consume_corpse(corpse);
 }
@@ -155,7 +155,7 @@ void ascend_in_area(u32 player, Point16 position, u32 range) {
 	unit_search_radial(&units, position, range);
 	for (u32 i = 0; i < units.count; ++i) {
 		Unit* unit = units.units[i];
-		if (!scbw::is_allied_to(player, unit->player)) {
+		if (!bw::is_allied_to(player, unit->player)) {
 			continue;
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -167,7 +167,7 @@ void ascend_in_area(u32 player, Point16 position, u32 range) {
 void avenge_or_ascend_corpse(Thingy* corpse, u32 player) {
 	ThingyExt* corpse_ext = get_thingy_ext(corpse);
 	u32 corpse_player = corpse_ext->player;
-	if (scbw::are_mutual_allies(player, corpse_player)) {
+	if (bw::are_mutual_allies(player, corpse_player)) {
 		avenge_corpse(corpse, player);
 	} else {
 		ascend_corpse(corpse, player);
@@ -235,7 +235,7 @@ u32 unit_avenges_or_ascends(Unit* unit) {
 		ascend_player = unit_ext->values[ValuePariahHitPlayer];
 	}
 
-	if (ascend_player >= 0 && !scbw::are_mutual_allies(unit->player, ascend_player)) {
+	if (ascend_player >= 0 && !bw::are_mutual_allies(unit->player, ascend_player)) {
 		return ascend_player + 1;
 	}
 	return 0;
@@ -252,7 +252,7 @@ void incubate(Unit* target, u32 count, u32 unit_id, u32 player) {
 	target_ext->values[ValueIncubationUnitId] = unit_id; 
 	target_ext->values[ValueIncubationPlayer] = player;
 	target_ext->timers[TimerIncubationArm] = 2 * 24 + 1;
-	scbw::add_unit_overlay(target, ImageId::ParasiteOverlay);
+	bw::add_unit_overlay(target, ImageId::ParasiteOverlay);
 }
 
 void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp) {
@@ -276,13 +276,6 @@ void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id) {
 			unit->play_iscript_animation(IscriptAnimation::SpecialState1);
 		}
 	}
-}
-
-static bool is_hostile_or_neutral(u32 player, u32 other_player) {
-	if (other_player == NeutralPlayer) {
-		return true;
-	}
-	return player != other_player && !scbw::is_allied_to(player, other_player);
 }
 
 bool can_infest(u32 player, Unit* target) {
@@ -315,7 +308,7 @@ void blissful_embrace_init(Unit* target) {
 			image_id = ImageId::InfestedOverlay_Small;
 		}
 		if (!target->get_overlay(image_id)) {
-			scbw::add_unit_overlay(target, image_id);
+			bw::add_unit_overlay(target, image_id);
 		}
 	}
 
@@ -333,7 +326,7 @@ void blissful_embrace_init(Unit* target) {
 
 	// Spread initial creep
 	if (unit_spreads_custom_creep(target)) {
-		scbw::spawn_custom_creep(target);
+		bw::spawn_custom_creep(target);
 	}
 }
 
@@ -344,7 +337,7 @@ void blissful_embrace(Unit* target, u32 player) {
 	}
 
 	// Eject loaded units if possible, kill them otherwise
-	scbw::unload_or_kill_loaded_units(target);
+	bw::unload_or_kill_loaded_units(target);
 	UnitExt* target_ext = get_unit_ext(target);
 
 	// Remove connected larva
@@ -382,3 +375,4 @@ void spread_debuffs(Unit* from, Unit* to) {
 		to_ext->values[ValueInfested] = true;
 	}
 }
+

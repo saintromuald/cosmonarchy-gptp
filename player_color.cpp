@@ -158,9 +158,9 @@ static u32 get_best_color(std::vector<ColorMatch>& matches, bool return_backup_c
 	if (matches.size()) {
 		// We are only interested in the better portion of the colors, unless we have no distance data (e.g. first melee randomization)
 		u32 cap = any_distance ? Max(matches.size() / 8, 1) : matches.size();
-		best_match = matches[scbw::random() % cap];
+		best_match = matches[bw::random() % cap];
 	}
-	// scbw::printf("Returning color match %s with min distance %u", player_color_names[best_match.color], best_match.min_distance);
+	// bw::printf("Returning color match %s with min distance %u", player_color_names[best_match.color], best_match.min_distance);
 	return best_match.color;
 }
 
@@ -265,7 +265,7 @@ const char* get_random_easter_egg_unit_name(u16 unit_id) {
 	if (names.empty()) {
 		return 0;
 	}
-	u32 index = scbw::rand_between(0, names.size() - 1);
+	u32 index = bw::rand_between(0, names.size() - 1);
 	return names[index];
 }
 
@@ -343,7 +343,7 @@ static void update_player_name(u32 player) {
 	u32 count = get_name_count(race, personality);
 	if (count) {
 		for (u32 tries = 0; tries < 100; ++tries) {
-			u32 random = scbw::rand_between(0, PlayerPesonalityMaxNames - 1);
+			u32 random = bw::rand_between(0, PlayerPesonalityMaxNames - 1);
 			const char* name = player_personality_names[race][personality][random];
 			if (is_valid_name(player, name)) {
 				set_player_name(player, name, true);

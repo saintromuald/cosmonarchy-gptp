@@ -50,12 +50,12 @@ namespace hooks {
 						{
 							unit->build_queue_slot = 0;
 						}
-						scbw::refresh_console();
+						bw::refresh_console();
 						unit->current_build_unit = 0;
 						unit->secondary_order_state = 0;
 					}
 				} else {
-					scbw::refresh_console();
+					bw::refresh_console();
 					unit->current_build_unit = 0;
 					unit->secondary_order_state = 0;
 				}
@@ -97,7 +97,7 @@ namespace hooks {
 						if (built_unit->subunit) {
 							built_unit->subunit->sprite->player = unit->sprite->player;
 						}
-						scbw::play_work_animation(unit);
+						bw::play_work_animation(unit);
 					}
 				}
 			} else if (unit->secondary_order_state == 2) {
@@ -112,7 +112,7 @@ namespace hooks {
 							built_unit->remaining_build_time -= modifier.decrease;
 						} else {
 							built_unit->remaining_build_time = 0;
-							if (scbw::get_game_kind() == GameKind_Debug) {
+							if (bw::get_game_kind() == GameKind_Debug) {
 								helper::set_unit_hp(built_unit, built_unit->get_max_hp_raw());
 							}
 						}
@@ -123,15 +123,15 @@ namespace hooks {
 							Unit* built_units[2] = {built_unit, 0};
 							if (units_dat::base_property[built_unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 								count = 2;
-								built_units[1] = scbw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
+								built_units[1] = bw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
 							}
 
 							bool spawn_point_set = false;
 							Point16 spawn_point = unit->position;
 							if (unit->rally.pt.x || unit->rally.pt.y) {
-								Point16 new_spawn_point = scbw::get_rect_edge_point_towards(unit->position, units_dat::unit_bounds[unit->id], unit->rally.pt);
+								Point16 new_spawn_point = bw::get_rect_edge_point_towards(unit->position, units_dat::unit_bounds[unit->id], unit->rally.pt);
 								if (new_spawn_point != unit->rally.pt) {
-									if (scbw::get_active_tile_at_coords(spawn_point)->ground_height == scbw::get_active_tile_at_coords(new_spawn_point)->ground_height) {
+									if (bw::get_active_tile_at_coords(spawn_point)->ground_height == bw::get_active_tile_at_coords(new_spawn_point)->ground_height) {
 										spawn_point_set = true;
 										spawn_point = new_spawn_point;
 									}
@@ -143,7 +143,7 @@ namespace hooks {
 								if (new_unit) {
 									spread_debuffs(unit, new_unit);
 									if (spawn_point_set) {
-										scbw::move_unit(new_unit, spawn_point.x, spawn_point.y);
+										bw::move_unit(new_unit, spawn_point.x, spawn_point.y);
 									}
 									helper::ai_training_unit(new_unit, unit);
 									if (built_unit->id == UnitId::TerranMorningstar)
@@ -187,7 +187,7 @@ namespace hooks {
 					jump_to_685D8 = true;
 				}
 				if (jump_to_685D8) {
-					scbw::refresh_console();
+					bw::refresh_console();
 					unit->current_build_unit = 0;
 					unit->secondary_order_state = 0;
 				}
@@ -232,7 +232,7 @@ namespace hooks {
 			}
 
 			if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
-				scbw::refresh_console();
+				bw::refresh_console();
 			}
 		} else {
 			if (unit->status & UnitStatus::CanTurnAroundToAttack) {

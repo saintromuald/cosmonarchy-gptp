@@ -48,7 +48,7 @@ namespace hooks
 	u32 get_max_shields(s32 id, s32 player)
 	{
 		u32 result = units_dat::max_shield_points[id];
-		//if (units_dat::base_property[id] & UnitProperty::RoboticUnit && scbw::get_upgrade_level(player, UpgradeId::Autovitality)) {
+		//if (units_dat::base_property[id] & UnitProperty::RoboticUnit && bw::get_upgrade_level(player, UpgradeId::Autovitality)) {
 		//	result += result / 2;
 		//}
 		return result;
@@ -57,7 +57,7 @@ namespace hooks
 	u32 get_max_vitality(Unit* unit) // 00402710
 	{
 		s32 current_shields = 0;
-		if (scbw::unit_has_shields(unit))
+		if (bw::unit_has_shields(unit))
 		{
 			current_shields = units_dat::max_shield_points[unit->id];
 		}		
@@ -90,7 +90,7 @@ namespace hooks
 				hp_state = helper::unit_hp_between_33_66_percent(active_unit) != 0 ? 3 : 7;
 			}
 
-			if (scbw::unit_has_shields(active_unit)) {
+			if (bw::unit_has_shields(active_unit)) {
 				s32 max_hp = helper::get_max_hp(active_unit);
 				s32 active_hp = (active_unit->hitpoints + 255) >> 8;
 				u16 queue_slot = helper::get_last_queue_slot_id(active_unit);
@@ -157,7 +157,7 @@ LABEL_14:
 		v8 = (BufferStr*)v5;
 LABEL_19:
 		helper::add_text_to_dialog(dialog, -11, (const char*)v8);
-		if (scbw::unit_has_shields(active_unit)) {
+		if (bw::unit_has_shields(active_unit)) {
 			helper::draw_shield_upgrade(dialog, 0);
 		} else {
 			if (dialog->control_type)
@@ -186,7 +186,7 @@ LABEL_26:
 		b32 result = 0;
 		if (target != unit) {
 			u8 target_player = target->player == 11 ? target->sprite->player : target->player;
-			if (!scbw::is_allied_to(unit->player, target_player)) {
+			if (!bw::is_allied_to(unit->player, target_player)) {
 				if (helper::ai_unit_can_attack(target)) {
 					result = 1;
 				}
@@ -232,7 +232,7 @@ LABEL_26:
 		s32 base_strength = helper::get_base_strength(is_ground, unit);
 		s32 current_vitality = helper::get_current_hp_plus_shields(unit);
 		s32 max_shields = 0;
-		if (scbw::unit_has_shields(unit)) {
+		if (bw::unit_has_shields(unit)) {
 			max_shields = units_dat::max_shield_points[unit->id];
 		}
 		s32 max_vitality = max_shields + helper::get_max_hp(unit);
@@ -247,7 +247,7 @@ LABEL_26:
 		b32 result = 0;
 		if (caster->player == target->player && helper::can_weapon_target_unit(WeaponId::Restoration, caster, target))
 		{
-			s32 shields = scbw::unit_has_shields(target) ? target->shields >> 8 : 0;
+			s32 shields = bw::unit_has_shields(target) ? target->shields >> 8 : 0;
 			if (shields + ((target->hitpoints + 255) >> 8) > 60
 			&& (target->ensnare_timer || target->plague_timer || target->irradiate_timer || target->lockdown_timer || target->maelstrom_timer || target->corrosive_spore_count_unused))
 			{
@@ -259,7 +259,7 @@ LABEL_26:
 
 	b32 ai_emp_shield_requirements_proc(Unit* target, Unit* caster) // 004413D0
 	{
-		if (!helper::ai_target_unit_is_worth_hitting(target, caster) || !scbw::unit_has_shields(target) || !helper::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))
+		if (!helper::ai_target_unit_is_worth_hitting(target, caster) || !bw::unit_has_shields(target) || !helper::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))
 		{
 			return 0;
 		}
@@ -283,7 +283,7 @@ LABEL_26:
 					helper::unit_attack_notify(victim);
 				}
 			}
-			if (scbw::unit_has_shields(victim)) {
+			if (bw::unit_has_shields(victim)) {
 				if (victim->shields >= 256) {
 					if (weapons_dat::damage_type[weapon_id]) {
 						helper::create_shield_overlay(weapon_id, victim);
@@ -469,7 +469,7 @@ LABEL_32:
 
 	void update_building_construct_shields_amount(Unit* unit) // 0047B6A0
 	{
-		if (scbw::unit_has_shields(unit))
+		if (bw::unit_has_shields(unit))
 		{
 			if (unit->status & UnitStatus::GroundedBuilding)
 			{
@@ -525,7 +525,7 @@ LABEL_32:
 				} return 1;
 				case OrderId::EMPShockwave:
 				{
-					if (!order_target_unit || helper::unit_is_valid_caster(order_target_unit) && order_target_unit->energy >= 100 || scbw::unit_has_shields(order_target_unit)
+					if (!order_target_unit || helper::unit_is_valid_caster(order_target_unit) && order_target_unit->energy >= 100 || bw::unit_has_shields(order_target_unit)
 						&& (s32)(order_target_unit->shields & 0xFFFFFF00) >= 25600)
 					{
 						goto check_target_further;
@@ -613,7 +613,7 @@ LABEL_32:
 			helper::SErrSetLastError(87);
 			return 0;
 		}
-		if (!scbw::unit_has_shields(unit))
+		if (!bw::unit_has_shields(unit))
 		{
 			return 0;
 		}
@@ -667,7 +667,7 @@ LABEL_32:
 				}
 			}
 			if ((first_unit->hitpoints + 255) >> 8 >= 3 * first_unit_hp / 4
-			||	 scbw::unit_has_shields(first_unit) && first_unit->shields >> 8 == units_dat::max_shield_points[first_unit->id])
+			||	 bw::unit_has_shields(first_unit) && first_unit->shields >> 8 == units_dat::max_shield_points[first_unit->id])
 			{
 				found_transport = 1;
 				if (helper::can_enter_transport(first_unit, unit))

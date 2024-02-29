@@ -323,12 +323,12 @@ namespace hooks
         }
         if (increment_scores) {
             if (units_dat::group_flags[unit_id].is_men) {
-                if (!scbw::is_any_morph_result(unit_id))  {
+                if (!bw::is_any_morph_result(unit_id))  {
                     units_owned[unit->player] += count;
                 }
                 unit_score[unit->player] += count;
             } else if (units_dat::group_flags[unit_id].is_building)  {
-                if (!scbw::is_zerg_building_morph_result(unit_id)) {
+                if (!bw::is_zerg_building_morph_result(unit_id)) {
                     buildings_owned[unit->player] += count;
                 }
                 building_score[unit->player] += count * units_dat::build_score[unit_id];
@@ -365,7 +365,7 @@ namespace hooks
             return false;
         }
         // Supply limit exceeded
-        if (supply_cost > scbw::get_supply_remaining(player, RaceId::Terran)) {
+        if (supply_cost > bw::get_supply_remaining(player, RaceId::Terran)) {
             if (can_show_error) {
 				helper::display_error_message_id_with_sfx(player, 844 + race, 153 + race);
             }
@@ -551,7 +551,7 @@ namespace hooks
 
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 			if (count_in_production || unit->status & UnitStatus::Completed) {
-				u32 unit_id = scbw::is_zerg_egg(unit->id, true, false) ? unit->build_queue[unit->build_queue_slot] : unit->id;
+				u32 unit_id = bw::is_zerg_egg(unit->id, true, false) ? unit->build_queue[unit->build_queue_slot] : unit->id;
 
 				if (units_dat::base_property[unit_id] & UnitProperty::Worker) {
 					++workers;
@@ -675,7 +675,7 @@ namespace hooks
 					PlayerVars player_vars = globals.players[player];
 					u32 player_type = g_player_table[player].type;
 					if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && player != local_player && !player_vars.witness_mode
-						&& !player_vars.hide_in_team_ui && scbw::is_allied_to(player, local_player))
+						&& !player_vars.hide_in_team_ui && bw::is_allied_to(player, local_player))
 					{
 						draw_player_stats(&dialog, &pos, player,
 							true,						//use_player_color

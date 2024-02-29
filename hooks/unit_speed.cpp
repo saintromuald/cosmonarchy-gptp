@@ -82,7 +82,7 @@ namespace hooks
 				if (!target_ext->timers[TimerSwarmingOmenDebuff]) {
 					continue;
 				}
-				if (scbw::is_allied_to(target->player, unit->player)) {
+				if (bw::is_allied_to(target->player, unit->player)) {
 					continue;
 				}
 				accelerate = true;
@@ -105,11 +105,11 @@ namespace hooks
 		// Hierophant Signify: Cowardice
 		if (unit_ext->values[ValueSignifyStacks]) {
 			auto match = cosmonarchy_finder_match(unit, 0, {});
-			Vector32f dir = scbw::get_unit_direction_vector(unit);
+			Vector32f dir = bw::get_unit_direction_vector(unit);
 
 			// TODO: unit search / optimize
 			const u32 radius = 6 * 32;
-			Unit* enemy_unit = scbw::UnitFinder::get_nearest_target(
+			Unit* enemy_unit = bw::UnitFinder::get_nearest_target(
 				unit->get_x() - radius,
 				unit->get_y() - radius,
 				unit->get_x() + radius,
@@ -119,13 +119,13 @@ namespace hooks
 				if (!match(enemy)) {
 					return false;
 				}
-				if (!scbw::is_allied_to(unit_ext->values[ValueSignifyPlayer], enemy->player)) {
+				if (!bw::is_allied_to(unit_ext->values[ValueSignifyPlayer], enemy->player)) {
 					return false;
 				}
 
-				Vector32 diff = scbw::get_vector_between(enemy->position, unit->position);
-				Vector32f target = scbw::get_normalized_vector(diff);
-				f32 dot = scbw::dot_product(dir, target);
+				Vector32 diff = bw::get_vector_between(enemy->position, unit->position);
+				Vector32f target = bw::get_normalized_vector(diff);
+				f32 dot = bw::dot_product(dir, target);
 				if (dot < 0) {
 					return false;
 				}

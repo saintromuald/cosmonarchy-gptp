@@ -207,7 +207,7 @@ namespace
 	// This was moved out of the naked function to prevent stack corruption bug
 	void zerg_build_self_update_timer_and_hitpoints(Unit* unit, u16 unit_id)
 	{
-		bool isOperationCwalEnabled = scbw::is_cheat_enabled(CheatFlags::OperationCwal);
+		bool isOperationCwalEnabled = bw::is_cheat_enabled(CheatFlags::OperationCwal);
 		if (unit->remaining_build_time)
 		{
 			if (isOperationCwalEnabled)

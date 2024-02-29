@@ -90,19 +90,19 @@ namespace hooks
 
     // Hooked because the helper is fucked - Pr0nogo
     b32 get_active_tile_flag(s16 y, s16 x, s32 included_flags, s32 excluded_flags) { // 00472F80
-        ActiveTile* tile = scbw::get_active_tile_at_coords(x, y);
+        ActiveTile* tile = bw::get_active_tile_at_coords(x, y);
         return tile->vision_flags & included_flags && !(tile->vision_flags & excluded_flags);
     }
 
     // Hooked to investigate crashes - Pr0nogo
     bool unit_has_path_to_dest(Unit* unit, s32 x, s32 y) { // 0049CB60
         Point16 target = {x, y};
-        return scbw::get_region(unit->position)->group_index == scbw::get_region(target)->group_index;
+        return bw::get_region(unit->position)->group_index == bw::get_region(target)->group_index;
     }
 
     // Hooked to investigate crashes - Pr0nogo
     bool unit_has_path_to_unit(Unit* unit, Unit* target) { // 0049CBB0
-        return scbw::get_region(unit->position)->group_index == scbw::get_region(target->position)->group_index;
+        return bw::get_region(unit->position)->group_index == bw::get_region(target->position)->group_index;
     }
 
     // Hooked to OoooooO. -Pr0nogo
@@ -159,7 +159,7 @@ namespace hooks
                 }
 
                 Vector32f diff = {};
-                diff = scbw::get_normalized_vector(scbw::get_vector_between(target->position, unit->position));
+                diff = bw::get_normalized_vector(bw::get_vector_between(target->position, unit->position));
                 if (abs(diff.x) < 0.001 && abs(diff.y) < 0.001) {
                     continue;
                 }
@@ -168,10 +168,10 @@ namespace hooks
                 repulsion.y += diff.y;
             }
 
-            repulsion = scbw::get_normalized_vector(repulsion);
+            repulsion = bw::get_normalized_vector(repulsion);
 
             if (abs(repulsion.x) < 0.001 && abs(repulsion.y) < 0.001) {
-                Vector32 random_repulse = g_angle_distance[scbw::rand_between(0, 255)];
+                Vector32 random_repulse = g_angle_distance[bw::rand_between(0, 255)];
                 repulsion.x = random_repulse.x / 256.0;
                 repulsion.y = random_repulse.y / 256.0;
             }
@@ -184,7 +184,7 @@ namespace hooks
             Point16 target = {};
             target.x = unit->position.x + repulsion.x * (unit->flingy_top_speed / 256.0 / 2.0);
             target.y = unit->position.y + repulsion.y * (unit->flingy_top_speed / 256.0 / 2.0);
-            target = scbw::clamp_point(target);
+            target = bw::clamp_point(target);
 
             unit->move_target.pt.x = target.x;
             unit->move_target.pt.y = target.y;

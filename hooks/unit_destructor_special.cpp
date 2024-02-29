@@ -7,7 +7,7 @@
 #include "globals.h"
 
 void augur_proc(Unit* augur, s32 radius) {
-	Unit* target = scbw::UnitFinder::get_nearest_target(
+	Unit* target = bw::UnitFinder::get_nearest_target(
 		augur->get_x() - radius,
 		augur->get_y() - radius,
 		augur->get_x() + radius,
@@ -21,7 +21,7 @@ void augur_proc(Unit* augur, s32 radius) {
 		if (unit->player == augur->player) {
 			return false;
 		}
-		if (scbw::is_allied_to(unit->player, augur->player)) {
+		if (bw::is_allied_to(unit->player, augur->player)) {
 			return false;
 		}
 		if (unit->status & UnitStatus::Invincible) {
@@ -33,7 +33,7 @@ void augur_proc(Unit* augur, s32 radius) {
 	helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
 	if (target) {
 		augur->order_target.unit = target;
-		helper::create_bullet(WeaponId::AugurFinalHour, augur, augur->get_x(), augur->get_y(), augur->player, scbw::get_angle(augur->get_x(), augur->get_y(), target->get_x(), target->get_y()));
+		helper::create_bullet(WeaponId::AugurFinalHour, augur, augur->get_x(), augur->get_y(), augur->player, bw::get_angle(augur->get_x(), augur->get_y(), target->get_x(), target->get_y()));
 	}
 }
 
@@ -194,7 +194,7 @@ void unit_on_death_behaviors(Unit* unit) {
 				nydus_exit->building.nydus_exit = 0;
 
 				if (unit_ext->values[ValueIsNydusExit] == 1) {
-					scbw::regress(nydus_exit, UnitId::ZergCagrantCesiant); // Lame hardcode
+					bw::regress(nydus_exit, UnitId::ZergCagrantCesiant); // Lame hardcode
 				} else {
 					nydus_exit->remove();
 				}
@@ -215,7 +215,7 @@ void unit_on_death_behaviors(Unit* unit) {
 			{
 				// Anvil - death while armed
 				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerSalvageStunTimer]) {
-					scbw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->position.x, unit->position.y, 11, 12);
+					bw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->position.x, unit->position.y, 11, 12);
 					helper::create_bullet(WeaponId::NuclearMissile, unit, unit->position.x, unit->position.y, unit->player, 0);
 				}
 			} break;
@@ -226,7 +226,7 @@ void unit_on_death_behaviors(Unit* unit) {
 			case UnitId::ProtossClarion:
 			{
 				// Phase Link
-				scbw::clear_clarion_links(unit);
+				bw::clear_clarion_links(unit);
 			} break;
 			case UnitId::ProtossAccantorOld:
 			case UnitId::ProtossSolarion:
@@ -286,7 +286,7 @@ void unit_on_death_behaviors(Unit* unit) {
 
 		for (u32 i = 0; i < unit_array.count; ++i) {
 			Unit* caster = unit_array.units[i];
-			if (scbw::get_distance_fast(unit->position, caster->position) <= caster->get_sight_range() * 32) {
+			if (bw::get_distance_fast(unit->position, caster->position) <= caster->get_sight_range() * 32) {
 				caster->heal_energy(5 * 256);
 				caster->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
@@ -300,7 +300,7 @@ void unit_on_death_behaviors(Unit* unit) {
 
 		for (u32 i = 0; i < unit_array.count; ++i) {
 			Unit* mortothrokor = unit_array.units[i];
-			if (scbw::get_distance_fast(unit->position, mortothrokor->position) <= mortothrokor->get_sight_range() * 32) {
+			if (bw::get_distance_fast(unit->position, mortothrokor->position) <= mortothrokor->get_sight_range() * 32) {
 				UnitExt* unit_ext = get_unit_ext(mortothrokor);
 				unit_ext->values[ValueMortothrokorStacks]++;
 				unit_ext->timers[TimerMortothrokorPassive] = 2 * 24;
@@ -322,7 +322,7 @@ void unit_on_death_behaviors(Unit* unit) {
 
 	// Gladius - Binding Plasma - proc on death
 	if (unit_ext->timers[TimerBindingPlasma]) {
-		scbw::binding_plasma_proc(unit);
+		bw::binding_plasma_proc(unit);
 		// TODO: Preserve timer and source position of dying unit, instead of immediately bouncing. -Pr0nogo
 	}
 }
@@ -342,7 +342,7 @@ void unit_destructor_special_cases(Unit* unit) {
 				if (unit_id == UnitId::None) {
 					continue;
 				}
-				if (!scbw::unit_id_is_available_without_an_addon(unit_id)) {
+				if (!bw::unit_id_is_available_without_an_addon(unit_id)) {
 					helper::refund_queue_slot(parent, slot);
 					offset++;
 				}
@@ -353,7 +353,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	// Blissful Embrace - Cleanup & Visual Effects
 	if (unit_ext->values[ValueInfested]) {
 		// Update creep
-		scbw::update_custom_creep_disappearance(unit);
+		bw::update_custom_creep_disappearance(unit);
 
 		// Make this a sprite
 		u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
@@ -370,7 +370,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	unit_on_death_behaviors(unit);
 
 	// Update custom creep disappearance
-	scbw::update_custom_creep_disappearance(unit);
+	bw::update_custom_creep_disappearance(unit);
 
 	// Call kill all loaded units before UnitExt is cleared. Note that the original call is nops'ed
 	helper::kill_all_loaded_units(unit);
@@ -399,7 +399,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 	u32 pos_x = x + image->horizontal_offset + sprite->position.x;
 	u32 pos_y = y + image->vertical_offset   + sprite->position.y;
 
-	if (scbw::sprite_id_is_corpse(id)) {
+	if (bw::sprite_id_is_corpse(id)) {
 		Unit* unit = *g_active_iscript_unit;
 		if (unit) {
 			UnitExt* unit_ext = get_unit_ext(unit);
@@ -418,7 +418,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 	if (thingy) {
 		if (id == SpriteId::Egg_Spawn) {
 			thingy->sprite->player = sprite->player;
-		} else if (scbw::sprite_id_is_corpse(id)) {
+		} else if (bw::sprite_id_is_corpse(id)) {
 			thingy->sprite->player = sprite->player;
 
 			Unit* unit = *g_active_iscript_unit;
@@ -604,7 +604,7 @@ void unit_die(Unit* unit) // 004A0740
 			helper::end_building_placement();
 		}
 		helper::remove_unit_from_lists(unit);
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 }
 

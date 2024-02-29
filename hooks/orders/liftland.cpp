@@ -91,7 +91,7 @@ namespace hooks
 			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
 			bool stop_there = false;
 			if (!helper::is_unit_positions_2_equal(unit)) {
-				stop_there = ((unit->velocity_direction_1 - scbw::get_angle(unit->position.x, unit->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
+				stop_there = ((unit->velocity_direction_1 - bw::get_angle(unit->position.x, unit->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
 			}
 			if (!stop_there) {
 				unit->sprite->play_iscript_animation(IscriptAnimation::Landing);
@@ -115,7 +115,7 @@ namespace hooks
 
 				unit->sprite->elevation = 4;
 				helper::set_unit_pathing(unit, 0);
-				scbw::set_unit_position(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+				bw::set_unit_position(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
 				helper::start_collision_tracking(unit); // Maybe update orders targeting the unit, set repulse for units in surroundings, and some other things?
 
@@ -131,8 +131,8 @@ namespace hooks
 					unit->sprite->images.tail->flags &= ~ImageFlags::DontUpdate;
 				}
 				helper::create_landing_dust(unit->sprite);
-				scbw::refresh_console();
-				scbw::prepare_building_area(unit->position, unit->id);
+				bw::refresh_console();
+				bw::prepare_building_area(unit->position, unit->id);
 
 				if (units_dat::base_property[unit->id] & UnitProperty::Attack) {
 					unit->status |= UnitStatus::CanTurnAroundToAttack;
@@ -169,7 +169,7 @@ namespace hooks
 
 				UnitExt* unit_ext = get_unit_ext(unit);
 				if (unit_ext->values[ValueInfested]) {
-					scbw::spawn_custom_creep(unit);
+					bw::spawn_custom_creep(unit);
 				}
 				Unit* addon = helper::connect_addon_check(unit);
 				if (addon) {
@@ -182,9 +182,9 @@ namespace hooks
 					{
 						Unit* cargo_unit = unit->get_loaded_unit(i);
 						if (!cargo_unit) continue;
-					//	scbw::set_unit_position(cargo_unit, unit->position.x, unit->position.y);
+					//	bw::set_unit_position(cargo_unit, unit->position.x, unit->position.y);
 						if (cargo_unit->subunit) {
-							scbw::set_unit_position(cargo_unit->subunit, unit->position.x, unit->position.y);
+							bw::set_unit_position(cargo_unit->subunit, unit->position.x, unit->position.y);
 						}
 					}
 				}
@@ -243,14 +243,14 @@ namespace hooks
 				unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 			}
 
-			scbw::refresh_console();
+			bw::refresh_console();
 			if (unit->sprite->position.x != unit->next_target_waypoint.x
 			||	unit->sprite->position.y - 42 != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = unit->sprite->position.x;
 				unit->next_target_waypoint.y = unit->sprite->position.y - 42;
 			}
 			// Originally called update_creep_disappearance_unit when lifting off Infested Command Centers
-			scbw::update_custom_creep_disappearance(unit);
+			bw::update_custom_creep_disappearance(unit);
 
 			if (*g_is_placing_building) {
 				helper::place_building_proc();
@@ -289,7 +289,7 @@ namespace hooks
 					event_type = AdvisorEvent_PlacementInterrupted;
 				} break;
 			}
-			u32 sound_id = scbw::get_advisor_sound_from_event_type(unit->player, event_type);
+			u32 sound_id = bw::get_advisor_sound_from_event_type(unit->player, event_type);
 			if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
 				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 			}

@@ -51,7 +51,7 @@ namespace helpers {
 
 		addon_unit = unit->building.addon;
 		unit->building.addon = nullptr;
-		scbw::refreshConsole();
+		bw::refreshConsole();
 
 		__asm {
 			PUSHAD
@@ -316,7 +316,7 @@ namespace helpers {
 				POPAD
 			}
 
-			scbw::refreshConsole();
+			bw::refreshConsole();
 
 			if(
 				!units_dat::GroupFlags[unit->id].isNeutral &&
@@ -377,7 +377,7 @@ namespace helpers {
 		const uint32 offset_006BEE6C = 0x006BEE6C;
 		const uint32 offset_006BEE64 = 0x006BEE64;
 
-		scbw::UnitFinder unit_finder;
+		bw::UnitFinder unit_finder;
 		s32 unit_finder_index = 0;
 		s32 unit_finder_items_count;
 
@@ -538,12 +538,12 @@ namespace helpers {
 
 					//A20B2:
 
-					if(!scbw::isInReplay() && unit->playerId != *LOCAL_NATION_ID) {
+					if(!bw::isInReplay() && unit->playerId != *LOCAL_NATION_ID) {
 						unit->sprite->selectionTimer = 45;
-						scbw::playSound(playerTable[*LOCAL_NATION_ID].race + SoundId::Misc_ZRescue_wav, unit);
+						bw::playSound(playerTable[*LOCAL_NATION_ID].race + SoundId::Misc_ZRescue_wav, unit);
 					}
 
-					scbw::refreshConsole();
+					bw::refreshConsole();
 
 				} //if(!jump_to_A2105)
 

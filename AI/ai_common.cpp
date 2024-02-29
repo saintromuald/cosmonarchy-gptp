@@ -86,7 +86,7 @@ namespace AI
 	// 00440DC0  AIEnemyUnitHPAccumulatorProc
 	// 00440FF0  FindNearestEnemyAndClumpProc
 
-	scbw::UnitFinder unitStatTotalFinder;
+	bw::UnitFinder unitStatTotalFinder;
 
 	// In original functions:
 	// 0x00695604 would contains weapon_id
@@ -99,7 +99,7 @@ namespace AI
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
 			if ((target != caster) && !(target->status & UnitStatus::Invincible)
-			&&   scbw::can_weapon_target_unit(weapon_id, target, caster) && caster->is_target_enemy(target))
+			&&   bw::can_weapon_target_unit(weapon_id, target, caster) && caster->is_target_enemy(target))
 			{
 				// specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
 				if (weapon_id == WeaponId::Plague)
@@ -128,7 +128,7 @@ namespace AI
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
-			if (!(target->status & UnitStatus::Invincible) && scbw::can_weapon_target_unit(weapon_id, target, caster) && !caster->is_target_enemy(target))
+			if (!(target->status & UnitStatus::Invincible) && bw::can_weapon_target_unit(weapon_id, target, caster) && !caster->is_target_enemy(target))
 			{
 				total_ally_life += target->get_current_life_ingame();
 			}
@@ -146,7 +146,7 @@ namespace AI
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
-			if (!(target->status & UnitStatus::Invincible) && caster->is_target_enemy(target) && scbw::unit_has_shields(target))
+			if (!(target->status & UnitStatus::Invincible) && caster->is_target_enemy(target) && bw::unit_has_shields(target))
 			{
 				total_enemy_shields += target->get_current_shields_ingame();
 			}

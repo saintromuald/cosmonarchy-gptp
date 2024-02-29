@@ -16,7 +16,7 @@ namespace hooks {
 				}
 			} break;
 			case 1: {
-				u32 distance = scbw::get_distance_fast(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
+				u32 distance = bw::get_distance_fast(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
 				u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
 
 				if (distance / 256 > distance_wanted) {
@@ -51,7 +51,7 @@ namespace hooks {
 
 							if (built_unit) {
 								spread_debuffs(unit, built_unit);
-								if (scbw::unit_has_shields(built_unit)) {
+								if (bw::unit_has_shields(built_unit)) {
 									built_unit->shields += 3 * 256;
 								}
 
@@ -146,7 +146,7 @@ namespace hooks {
 					++building->main_order_state;
 
 					if (!(*g_is_in_replay) && building->player == *g_local_nation_id) {
-						u32 sound_id = scbw::get_advisor_sound_from_event_type(building->player, AdvisorEvent_StructureComplete_P);
+						u32 sound_id = bw::get_advisor_sound_from_event_type(building->player, AdvisorEvent_StructureComplete_P);
 						if (helper::play_sound_from_unit(sound_id, building, 1, 99)) {
 							helper::do_unit_event_notification(building, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 						} else {

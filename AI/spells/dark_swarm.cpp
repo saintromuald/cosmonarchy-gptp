@@ -6,13 +6,13 @@ namespace AI
 	b32 weapon_behavior_can_hit_target_check(Unit* caster, Unit* attacker, Unit* target)
 	{
 		// code equivalent to is_under_carapace_swarm @ 0x00476210:
-		// a function different from scbw::is_under_carapace_swarm(target) that just seeks a nearby Carapace Swarm active spell and is used in here.
+		// a function different from bw::is_under_carapace_swarm(target) that just seeks a nearby Carapace Swarm active spell and is used in here.
 
 		b32 return_value;
 		u8 is_under_swarm_status;
 		if (target->status & UnitStatus::InAir) {
 			is_under_swarm_status = 0;
-		} else if ((units_dat::base_property[target->id] & UnitProperty::Building) || (*g_neutral_carapace_swarm == 0) || !scbw::is_under_carapace_swarm(target)) {
+		} else if ((units_dat::base_property[target->id] & UnitProperty::Building) || (*g_neutral_carapace_swarm == 0) || !bw::is_under_carapace_swarm(target)) {
 			s32 target_x = target->get_x();
 			s32 target_y = target->get_y();
 
@@ -23,7 +23,7 @@ namespace AI
 				target_y += 31;
 			}
 
-			if (scbw::get_active_tile_at_coords(target_x, target_y)->has_doodad_cover)
+			if (bw::get_active_tile_at_coords(target_x, target_y)->has_doodad_cover)
 			{
 				is_under_swarm_status = OrderId::CarapaceSwarm; /*0x77*/
 			} else {
@@ -40,7 +40,7 @@ namespace AI
 		} else if (target->status & UnitStatus::InAir) {
 			return_value = is_under_swarm_status;
 		} else {
-			if (scbw::get_ground_height_at_pos(attacker->get_x(), attacker->get_y()) >= scbw::get_ground_height_at_pos(target->get_x(), target->get_y()))
+			if (bw::get_ground_height_at_pos(attacker->get_x(), attacker->get_y()) >= bw::get_ground_height_at_pos(target->get_x(), target->get_y()))
 			{
 				return_value = is_under_swarm_status;
 			} else if (is_under_swarm_status <= OrderId::CarapaceSwarm) { // code use 0x77, the order seems to fit, but maybe that's just an accident and it's unrelated
@@ -114,7 +114,7 @@ namespace AI
 			bounds = 32 * 32;	/*0x400*/
 		}
 		// Based on AI_BestUnit @ 0x004E8740 and canHitUnit @ 0x00441870
-		Unit* result = scbw::UnitFinder::get_nearest_target(
+		Unit* result = bw::UnitFinder::get_nearest_target(
 			caster->position.x - bounds,
 			caster->position.y - bounds,
 			caster->position.x + bounds,

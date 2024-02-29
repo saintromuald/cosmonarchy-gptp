@@ -43,7 +43,7 @@ namespace hooks
 		}
 
 		// Prepare height based on shields
-		if (scbw::unit_has_shields(selection))
+		if (bw::unit_has_shields(selection))
 		{
 			grp_height += 7;
 		} else {

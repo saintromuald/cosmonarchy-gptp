@@ -15,7 +15,7 @@ namespace hooks
 			{
 				// start construction if successful
 				unit->order_computer(OrderId::Morph2);
-				scbw::refresh_console();
+				bw::refresh_console();
 			}
 		}
 	}
@@ -40,7 +40,7 @@ namespace hooks
 				prepare_for_next_order(current_unit);
 			}
 		}
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	s32 compare_unit_train_priority(const void* a, const void* b) {
@@ -80,7 +80,7 @@ namespace hooks
 				if (helper::has_money_can_make(unit, unit_id)) {
 					helper::set_secondary_order(unit, OrderId::Train);
 				}
-				scbw::refresh_console();
+				bw::refresh_console();
 			}
 		}
 	}
@@ -113,7 +113,7 @@ namespace hooks
 							continue;
 						}
 						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding
-							|| scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
+							|| bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
 							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)	{
 							*g_last_internal_error = 8;
 						} else if (orders_dat::req_offset[OrderId::BuildingLiftoff]) {
@@ -168,7 +168,7 @@ namespace hooks
 		u32 result = helper::order_acquire_generic_right_click_harvest_proc(target_unit, unit);
 		if (result == OrderId::None) {
 			if (!(target_unit->status & UnitStatus::GroundedBuilding) || target_unit->status & UnitStatus::Completed) {
-				if (scbw::is_allied_to(unit->player, target_unit->player)) {
+				if (bw::is_allied_to(unit->player, target_unit->player)) {
 					if (target_unit->hitpoints < target_unit->get_max_hp_raw()) {
 						if (helper::is_order_valid(OrderId::Repair1, unit, target_unit, target_unit, 0)) {
 							return OrderId::Repair1;

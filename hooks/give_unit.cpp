@@ -77,7 +77,7 @@ namespace hooks
 			}
 
 			helper::recheck_attacks(unit);
-			scbw::refresh_console();
+			bw::refresh_console();
 			if (units_dat::group_flags[unit->id].is_zerg != 1
 				&& units_dat::group_flags[unit->id].is_protoss != 1
 				&& unit->status & UnitStatus::GroundedBuilding)
@@ -119,9 +119,9 @@ namespace hooks
 			}
 
 			if (units_dat::computer_ai_internal[unit->id] & 2) { // "Non-military"
-				AiTown* town = scbw::get_closest_town(player, unit->position);
-			//	u32 closest_resarea = scbw::get_closest_resarea(unit->position);
-			//	if (default_ai_expansion_block[player] && scbw::unit_id_is_town_center(unit->id) && (!town || town->resarea != closest_resarea)) {
+				AiTown* town = bw::get_closest_town(player, unit->position);
+			//	u32 closest_resarea = bw::get_closest_resarea(unit->position);
+			//	if (default_ai_expansion_block[player] && bw::unit_id_is_town_center(unit->id) && (!town || town->resarea != closest_resarea)) {
 			//		AiScript* aiscript = 0;
 			//		for (AiScript* it = *g_first_active_aiscript; it; it = it->link.next) {
 			//			if (it->player == player) {
@@ -132,7 +132,7 @@ namespace hooks
 			//		if (aiscript) {
 			//			if (helper::ai_try_expanding_to(closest_resarea)) {
 			//				helper::ai_expand_to(aiscript, closest_resarea, default_ai_expansion_block[aiscript->player]);
-			//				town = scbw::get_closest_town(player, unit->position);
+			//				town = bw::get_closest_town(player, unit->position);
 			//			}
 			//		}
 			//	}

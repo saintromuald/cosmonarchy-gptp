@@ -6,7 +6,7 @@
 
 //V241 for VS2008
 
-namespace scbw {
+namespace bw {
 
 	/// The UnitFinder struct is used to efficiently search for units in a certain
 	/// box using StarCraft's internal data structures.

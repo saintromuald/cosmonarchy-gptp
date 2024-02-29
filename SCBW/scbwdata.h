@@ -895,7 +895,7 @@ template <typename T>
 struct PlayerFlags {
 	T flags[PLAYER_COUNT];
 };
-SCBW_DATA(PlayerFlags<u8>*,		player_alliance,			0x0058D634); // See scbw::is_allied_to()
+SCBW_DATA(PlayerFlags<u8>*,		player_alliance,			0x0058D634); // See bw::is_allied_to()
 SCBW_DATA(PlayerFlags<u32>*,	player_vision,				0x0057F1EC);
 
 SCBW_DATA(Unit**,				g_active_portrait_unit,		0x00597248);
@@ -910,15 +910,15 @@ SCBW_DATA(ResourceAreaArray*,	g_resource_areas,		0x00692688);
 
 //-------- Internal constants --------//
 
-SCBW_DATA(b32*, g_is_game_paused,				0x006509C4);  // See scbw::g_is_game_paused()
-SCBW_DATA(b8*,  g_is_brood_war,					0x0058F440);  // See scbw::is_brood_war_mode()
-SCBW_DATA(u32*, g_cheat_state,					0x006D5A6C);  // See scbw::is_cheat_enabled()
-SCBW_DATA(b32*, g_is_in_replay,					0x006D0F14);  // See scbw::is_in_replay()
+SCBW_DATA(b32*, g_is_game_paused,				0x006509C4);  // See bw::g_is_game_paused()
+SCBW_DATA(b8*,  g_is_brood_war,					0x0058F440);  // See bw::is_brood_war_mode()
+SCBW_DATA(u32*, g_cheat_state,					0x006D5A6C);  // See bw::is_cheat_enabled()
+SCBW_DATA(b32*, g_is_in_replay,					0x006D0F14);  // See bw::is_in_replay()
 SCBW_DATA(b32*, g_is_replay_paused,				0x006D11B0);
 SCBW_DATA(s32*, g_max_unit_width,				0x006BEE68);
 SCBW_DATA(s32*, g_max_unit_height,				0x006BB930);
 SCBW_DATA(b32*, g_is_in_game_loop,				0x006D11C8);
-SCBW_DATA(u32*, g_last_random_number,			0x0051CA14);  // See scbw::random(), scbw::rand_between()
+SCBW_DATA(u32*, g_last_random_number,			0x0051CA14);  // See bw::random(), bw::rand_between()
 SCBW_DATA(b32*, g_can_update_powered_status,	0x0063FF44);
 SCBW_DATA(b32*, g_is_placing_building,			0x00640880);
 

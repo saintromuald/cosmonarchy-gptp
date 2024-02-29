@@ -23,14 +23,14 @@ namespace hooks
 						return 0;
 					}
 					Point16 target_pos = caster->order_target.pt;
-					if (scbw::get_distance_fast(caster->position, target_pos) > range) {
+					if (bw::get_distance_fast(caster->position, target_pos) > range) {
 						helper::set_move_target_xy(caster, target_pos.x, target_pos.y);
 						return 0;
 					}
 
 					helper::set_move_target_xy(caster, caster->position.x, caster->position.y);
 					if (!helper::is_angle_in_attack_angle(target_pos.y, target_pos.x, caster, TechId::Hallucination)) {
-						helper::turn_unit(caster, scbw::get_angle(caster->position, target_pos));
+						helper::turn_unit(caster, bw::get_angle(caster->position, target_pos));
 						return 0;
 					}
 					return 1;
@@ -154,7 +154,7 @@ namespace hooks
 
 		// Paladin Skyfall
 		if (unit->id == UnitId::TerranPaladin) {
-			scbw::decloak_passive_proc(unit);
+			bw::decloak_passive_proc(unit);
 			if (unit->order_signal & 0x20) {
 				unit->order_signal &= ~0x20;
 				unit_ext->timers[TimerSkyfall] = 3;

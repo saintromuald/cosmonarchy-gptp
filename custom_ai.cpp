@@ -62,7 +62,7 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 				if (request_count > 0) {
 					u32 priority = 150 - requested_count;
 					for (u32 i = 0; i < request_count; ++i) {
-						scbw::town_add_spending_request(ai_town, 1, capped_id, priority);
+						bw::town_add_spending_request(ai_town, 1, capped_id, priority);
 						priority -= 1;
 					}
 				}

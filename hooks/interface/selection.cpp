@@ -21,8 +21,8 @@ namespace hooks
 		mouse_pos.x = *g_move_to_x + g_selection_start->x;
 		mouse_pos.y = *g_move_to_y + g_selection_start->y;
 
-		s32 distance_a = scbw::get_distance_fast(ua->position, mouse_pos);
-		s32 distance_b = scbw::get_distance_fast(ub->position, mouse_pos);
+		s32 distance_a = bw::get_distance_fast(ua->position, mouse_pos);
+		s32 distance_b = bw::get_distance_fast(ub->position, mouse_pos);
 		return distance_a - distance_b;
 	}
 
@@ -552,7 +552,7 @@ namespace hooks
 			helper::cmdact_select(unit_list, count);
 		}
 		*g_client_selection_changed = 1;
-		scbw::refresh_console();
+		bw::refresh_console();
 		return 1;
 	}
 
@@ -722,7 +722,7 @@ namespace hooks
 	b32 is_human_player_on_same_team(u32 player_id) { // 0049A110
 		if (player_id != *g_local_human_id
 		&&  player_id < PlayerLimit) { // Originally checked for singleplayer (turned off so sp replays load selections) and for a team game (turned off so it works at all).
-			if (scbw::is_allied_to(player_id, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player_id) && !globals.players[player_id].witness_mode) {
+			if (bw::is_allied_to(player_id, *g_local_human_id) && bw::is_allied_to(*g_local_human_id, player_id) && !globals.players[player_id].witness_mode) {
 				return true;
 			}
 		}
@@ -735,8 +735,8 @@ namespace hooks
 	// Hooked to not die to lard. -Pr0nogo
 	u8 get_team_size(u32 selecting_player) { // 00485710
 		if ((selecting_player < PlayerLimit && globals.players[selecting_player].witness_mode)
-		||	!scbw::is_allied_to(selecting_player, *g_local_human_id) 
-		||	!scbw::is_allied_to(*g_local_human_id, selecting_player)) {
+		||	!bw::is_allied_to(selecting_player, *g_local_human_id) 
+		||	!bw::is_allied_to(*g_local_human_id, selecting_player)) {
 			return 2;
 		}
 		return 4;
@@ -869,7 +869,7 @@ namespace hooks
 			helper::cmdact_select(selection_array, selection_index);
 			result = 1;
 			*g_client_selection_changed = 1;
-			scbw::refresh_console();
+			bw::refresh_console();
 		}
 		return result;
 	}
@@ -1270,7 +1270,7 @@ namespace hooks
 					helper::create_new_unit_selections_from_list(&unit, 1);
 					helper::cmdact_select(&unit, 1);
 					*g_client_selection_changed = 1;//client_selection_changed
-					scbw::refresh_console();
+					bw::refresh_console();
 				}
 
 				return;
@@ -1300,7 +1300,7 @@ namespace hooks
 		helper::create_new_unit_selections_from_list(unit_list, i_0);
 		helper::cmdact_select(unit_list, i_0);
 		*g_client_selection_changed = 1; //client_selection_changed
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	void generate_group_wireframes(BinDlg* dialog) {

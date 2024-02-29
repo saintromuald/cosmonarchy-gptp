@@ -19,7 +19,7 @@ namespace hooks
 					}
 					helper::force_order_done(unit);
 					helper::change_unit_buttonset(unit, unit->id);
-					scbw::refresh_console();
+					bw::refresh_console();
 
 					while (current_image)
 					{
@@ -50,7 +50,7 @@ namespace hooks
 				helper::set_thingy_visibility_flags(nuke_dot);
 			}
 			unit->main_order_state = 6;
-			scbw::decloak_passive_proc(unit);
+			bw::decloak_passive_proc(unit);
 		}
 	}
 
@@ -66,14 +66,14 @@ namespace hooks
 		u32 sight_range = unit->get_sight_range(false) * 32;
 		if (unit->unit_ai)
 		{
-			distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
+			distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 			if (distance / 256 <= sight_range * 3)
 			{
 				helper::ai_order_unit_cloaking(unit);
 			}
 		}
 
-		distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
+		distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 		if (distance / 256 > sight_range)
 		{
 			if (unit->recent_order_timer == 0)
@@ -86,7 +86,7 @@ namespace hooks
 			helper::set_resource_target(unit);
 			if (unit->next_target_waypoint.x != unit->position.x || unit->next_target_waypoint.y != unit->position.y)
 			{
-				direction = unit->current_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
+				direction = unit->current_direction_1 - bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 				if (direction < -1 || direction > 1)
 				{
 					end_there_idiot = true;
@@ -144,7 +144,7 @@ namespace hooks
 							helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 						}
 					}
-					scbw::refresh_console();
+					bw::refresh_console();
 				}
 			}
 		}

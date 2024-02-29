@@ -67,7 +67,7 @@ void ControlGroup::select(bool play_response) {
 			to_select.push_back(unit);
 		}
 	}
-	scbw::select(to_select, play_response);
+	bw::select(to_select, play_response);
 }
 
 void ControlGroup::add_selection() {
@@ -96,7 +96,7 @@ void ControlGroup::center_camera() {
 	}
 	if (total_count == 1) {
 		assert(any_unit);
-		scbw::move_camera(any_unit->position);
+		bw::move_camera(any_unit->position);
 		return;
 	}
 
@@ -120,7 +120,7 @@ void ControlGroup::center_camera() {
 					continue;
 				}
 
-				if (scbw::get_distance_fast(unit->position, other->position) <= distance_quota) {
+				if (bw::get_distance_fast(unit->position, other->position) <= distance_quota) {
 					score += 1;
 				}
 			}
@@ -137,7 +137,7 @@ void ControlGroup::center_camera() {
 	Vector32 avg_pos = {};
 	for (u32 i = 0; i < SelectionCap; ++i) {
 		Unit* unit = unit_index[i].get(false);
-		if (!unit || scbw::get_distance_fast(unit->position, anchor->position) > distance_quota) {
+		if (!unit || bw::get_distance_fast(unit->position, anchor->position) > distance_quota) {
 			continue;
 		}
 
@@ -149,5 +149,5 @@ void ControlGroup::center_camera() {
 	assert(avg_count);
 	avg_pos.x /= avg_count;
 	avg_pos.y /= avg_count;
-	scbw::move_camera({(u16)avg_pos.x, (u16)avg_pos.y});
+	bw::move_camera({(u16)avg_pos.x, (u16)avg_pos.y});
 }

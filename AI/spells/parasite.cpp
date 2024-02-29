@@ -10,7 +10,7 @@ namespace AI {
 			bounds = 32 * 9;
 		}
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds,
 			caster->get_y() - bounds,
 			caster->get_x() + bounds,
@@ -22,7 +22,7 @@ namespace AI {
 
 			UnitExt* target_ext = get_unit_ext(target);
 
-			if (!scbw::can_weapon_target_unit(WeaponId::MatralethParasite, target, caster)) {
+			if (!bw::can_weapon_target_unit(WeaponId::MatralethParasite, target, caster)) {
 				return false;
 			}
 
@@ -31,7 +31,7 @@ namespace AI {
 			}
 
 			if (!(target->status & UnitStatus::IsHallucination)
-				&& (target->id != UnitId::ZergOvileth || scbw::get_upgrade_level(target->player, UpgradeId::VentralSacs))
+				&& (target->id != UnitId::ZergOvileth || bw::get_upgrade_level(target->player, UpgradeId::VentralSacs))
 				&& units_dat::space_provided[target->id] > 0) {
 				return true;
 			}

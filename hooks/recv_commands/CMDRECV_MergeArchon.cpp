@@ -138,7 +138,7 @@ namespace hooks
 
 		}
 
-		scbw::refresh_console();
+		bw::refresh_console();
 
 	}
 
@@ -278,7 +278,7 @@ namespace hooks
 
 		}
 
-		scbw::refresh_console();
+		bw::refresh_console();
 
 	}
 }

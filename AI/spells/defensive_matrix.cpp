@@ -16,7 +16,7 @@ namespace AI
 		else
 			bounds = 32 * 64;
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds,
 			caster->get_y() - bounds,
 			caster->get_x() + bounds,
@@ -36,7 +36,7 @@ namespace AI
 				return false;
 			if (target->status & UnitStatus::Invincible)
 				return false;
-			if (scbw::get_tech_user_error_message((Unit*)target, caster->player, TechId::DefensiveMatrix) != 0)
+			if (bw::get_tech_user_error_message((Unit*)target, caster->player, TechId::DefensiveMatrix) != 0)
 				return false;
 			return true;
 		});

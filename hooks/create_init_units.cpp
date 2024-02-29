@@ -36,7 +36,7 @@ u32 get_racial_worker(u32 raceId)
 namespace hooks {
 	void create_initial_melee_buildings(u8 race_id, u32 player) {
 		u32 building_id = get_racial_townhall(race_id);
-		bool is_omni = scbw::get_game_kind() == GameKind_Omnipresence
+		bool is_omni = bw::get_game_kind() == GameKind_Omnipresence
 			&& g_player_table[player].type != PlayerType::Computer
 			&& g_player_table[player].type != PlayerType::ComputerSlot;
 
@@ -90,16 +90,16 @@ namespace hooks {
 		s32 sum_y = 0;
 		u32 count = 0;
 
-		scbw::UnitFinder unit_finder;
+		bw::UnitFinder unit_finder;
 		unit_finder.search(
 			startX - 10 * 32,
 			startY - 10 * 32,
 			startX + 10 * 32,
 			startY + 10 * 32
 		);
-		u8 cliff_level = scbw::get_active_tile_at_coords(startX, startY)->ground_height;
+		u8 cliff_level = bw::get_active_tile_at_coords(startX, startY)->ground_height;
 		unit_finder.for_each([&](Unit* unit) {
-			if (unit_id_is_minerals(unit->id) && scbw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height == cliff_level)
+			if (unit_id_is_minerals(unit->id) && bw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height == cliff_level)
 			{
 				Point16 pos = unit->position;
 				sum_x += pos.x - startX;
@@ -189,7 +189,7 @@ namespace hooks {
 				}
 
 				if (starting_units == 1 || starting_units == 2) {
-					bool is_omni = scbw::get_game_kind() == GameKind_Omnipresence
+					bool is_omni = bw::get_game_kind() == GameKind_Omnipresence
 								&& g_player_table[player].type != PlayerType::Computer
 								&& g_player_table[player].type != PlayerType::ComputerSlot;
 
@@ -238,7 +238,7 @@ namespace hooks {
 
 							Unit* created_unit = helper::create_unit(worker_id, pos.x, pos.y, player);
 							if (created_unit) {
-								scbw::teleport_to_point(created_unit, pos);
+								bw::teleport_to_point(created_unit, pos);
 								helper::update_unit_stats_and_finish_building(created_unit);
 								if (helper::show_finished_unit(created_unit) != 0) {
 									helper::update_unit_strength(created_unit);
@@ -325,7 +325,7 @@ namespace hooks {
 		}
 		// Requires changes to player select so they actually spawn units
 		//if (flags & ChkUnitFlags_Lifted) {
-		//	if (!scbw::unit_id_race_check(chkunit->unit_id, g_player_table[chkunit->player].race)) {
+		//	if (!bw::unit_id_race_check(chkunit->unit_id, g_player_table[chkunit->player].race)) {
 		//		return 0;
 		//	}
 		//}

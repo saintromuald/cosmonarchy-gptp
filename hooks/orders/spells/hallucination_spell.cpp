@@ -15,7 +15,7 @@ namespace hooks
 			if (Unit* target = unit->order_target.unit) {
 				hit = {target->get_x(), target->get_y()};
 			}
-			scbw::decloak_passive_proc(unit);
+			bw::decloak_passive_proc(unit);
 			unit->play_iscript_animation(IscriptAnimation::Unused2);
 			unit->spend_unit_energy(tech_cost);
 
@@ -38,7 +38,7 @@ namespace hooks
 				helper::hallucinate_scarabs(unit, source);
 				u32 count = source->unit_with_hangar.in_hangar_count;
 				for (u32 i = 0; i < count; ++i) {
-					Unit* plasma_shell = scbw::create_hangar_unit(unit, UnitId::ProtossPlasmaShell);
+					Unit* plasma_shell = bw::create_hangar_unit(unit, UnitId::ProtossPlasmaShell);
 					if (plasma_shell) {
 						apply_hallucination(plasma_shell, unit, unit->remove_timer);
 					}
@@ -47,7 +47,7 @@ namespace hooks
 			if (unit->id == UnitId::ProtossSolarion) {
 				u32 count = source->unit_with_hangar.in_hangar_count + source->unit_with_hangar.out_hangar_count;
 				for (u32 i = 0; i < count; ++i) {
-					Unit* steward = scbw::create_hangar_unit(unit, UnitId::ProtossSteward);
+					Unit* steward = bw::create_hangar_unit(unit, UnitId::ProtossSteward);
 					if (steward) {
 						apply_hallucination(steward, unit, unit->remove_timer);
 					}
@@ -68,7 +68,7 @@ namespace hooks
 			return 0;
 		}
 		apply_hallucination(hallucinated_unit, source, time);
-		scbw::give_ai_ex(hallucinated_unit);
+		bw::give_ai_ex(hallucinated_unit);
 		return hallucinated_unit;
 	}
 }

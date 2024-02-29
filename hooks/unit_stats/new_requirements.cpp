@@ -2466,7 +2466,7 @@ namespace hooks {
 				if (unit_id == UnitId::ZergIroleth)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier2]
-						&& scbw::transport_is_empty(unit))
+						&& bw::transport_is_empty(unit))
 					{
 						return TECH_ACTIVE;
 					}

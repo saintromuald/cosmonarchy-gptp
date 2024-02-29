@@ -44,7 +44,7 @@ namespace hooks {
 		}
 		helper::set_resource_target(unit);
 		s16 unit_id = unit->id;
-		if (scbw::unit_can_nuke(unit)) {
+		if (bw::unit_can_nuke(unit)) {
 			Unit* nuke = unit->connected_unit;
 			if (nuke) {
 				if (nuke->id == UnitId::TerranMorningstar) {
@@ -97,7 +97,7 @@ namespace hooks {
 
 		const u32 radius = 2 * 32;
 		helper::play_sound_from_unit(SoundId::Terran_Medic_Miopia1_wav, (Unit*)bullet, 1, 0);
-		scbw::UnitFinder(
+		bw::UnitFinder(
 			bullet->position.x - radius,
 			bullet->position.y - radius,
 			bullet->position.x + radius,
@@ -116,7 +116,7 @@ namespace hooks {
 			target->remove();
 		} else {
 			// Create impact overlay
-			scbw::restore_func(target);
+			bw::restore_func(target);
 		}
 	}
 
@@ -125,7 +125,7 @@ namespace hooks {
 	void lockdown_hit(Unit* target, u8 timer, Bullet* bullet) {
 		// Add lockdown overlay if no ongoing lockdown already
 		if (target->lockdown_timer == 0) {
-			u32 image_id = ImageId::LockdownField_Small + scbw::get_overlay_offset(target->id);
+			u32 image_id = ImageId::LockdownField_Small + bw::get_overlay_offset(target->id);
 			Unit* overlay_unit = target->subunit ? target->subunit : target;
 			overlay_unit->sprite->create_top_overlay(image_id, 0, 0, 0);
 		}
@@ -136,7 +136,7 @@ namespace hooks {
 		}
 
 		// Should stop movements/orders/scripts of the unit, give it the status DoodadStatesThing.
-		// May have an effect on selection. Performs scbw::refresh_console() code at the end
+		// May have an effect on selection. Performs bw::refresh_console() code at the end
 		disable_unit(target);
 		UnitExt* target_ext = get_unit_ext(target);
 		target_ext->timers[TimerLobotomySlow] = 6 * 24 + 1;
@@ -210,14 +210,14 @@ namespace hooks {
 			u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
 			damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
 			if (attacker_ext->values[ValueDeconstruction]) {
-				scbw::do_deconstruction_damage(attacker, weapon_id);
+				bw::do_deconstruction_damage(attacker, weapon_id);
 			}
 			target->damage_with(weapon_id, damage, attacker, attacker->player, attacker->current_direction_1, 1);
 
 			// Cloaked units - decloak
 			// Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
 		//	if (unit->id != UnitId::ProtossCabalist) {
-				scbw::decloak_passive_proc(attacker);
+				bw::decloak_passive_proc(attacker);
 		//	}
 			apply_weapon_cooldown(attacker, weapon_id);
 		}
@@ -228,7 +228,7 @@ namespace hooks {
 	//	attacker from bullet->source_unit
 	//	x and y from bullet->sprite->position
 	void emp_shockwave_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
-		scbw::create_and_init_thingy(ImageId::DefensiveMatrixFront_Small, x, y, 11, 19);
+		bw::create_and_init_thingy(ImageId::DefensiveMatrixFront_Small, x, y, 11, 19);
 		static u16* const max_box_right_value = (u16*)0x00628450;	// should usually be g_map_tile_size->width * 32
 		static u16* const max_box_bottom_value = (u16*)0x006284B4;	// should usually be g_map_tile_size->height * 32
 
@@ -288,7 +288,7 @@ namespace hooks {
 		// IterateUnitsAtLocationTargetProc_CorrosiveAcid(attacking_player_id,&coords);
 		// Originally spreads.
 		if (bullet->attack_target.unit) {
-			auto vec = scbw::get_clarion_links(bullet->attack_target.unit);
+			auto vec = bw::get_clarion_links(bullet->attack_target.unit);
 			if (vec.size() != 0) {
 				for (auto unit : vec) {
 					helper::apply_spores(unit);
@@ -398,7 +398,7 @@ namespace hooks {
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void broodling_hit(Unit* attacker, Unit* target, Bullet* bullet) {
 		u32 broodlings_to_spawn = 3;
-		ActiveTile* tile = scbw::get_active_tile_at_coords(bullet->sprite->position.x, bullet->sprite->position.y);
+		ActiveTile* tile = bw::get_active_tile_at_coords(bullet->sprite->position.x, bullet->sprite->position.y);
 		if (tile->has_cagra|| tile->cagra_receding) {
 			broodlings_to_spawn = 5;
 		}
@@ -417,7 +417,7 @@ namespace hooks {
 				move_area.right = current.x + 32;
 				move_area.bottom = current.y + 32;
 
-				if (scbw::check_unit_collision_pos(attacker, &in_pos, &out_pos, &move_area, false, 0)) {
+				if (bw::check_unit_collision_pos(attacker, &in_pos, &out_pos, &move_area, false, 0)) {
 					current = out_pos;
 				}
 			}
@@ -470,7 +470,7 @@ namespace hooks {
 		//	helper::iterate_units_at_location_target_proc_plague(attacker, &coords);
 		//
 		//	UnitExt* attacker_ext = get_unit_ext(attacker);
-		//	scbw::UnitFinder(
+		//	bw::UnitFinder(
 		//		x - distance,
 		//		y - distance,
 		//		x + distance,
@@ -479,7 +479,7 @@ namespace hooks {
 		//		if (attacker && attacker_ext->timers[TimerEnsnaringBrood] > 0
 		//			&& !(units_dat::base_property[unit->id] & UnitProperty::Building))
 		//		{
-		//			scbw::apply_ensnare(unit);
+		//			bw::apply_ensnare(unit);
 		//		}
 		//	});
 		//}
@@ -488,7 +488,7 @@ namespace hooks {
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void maelstrom_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
 		if (attacker) {
-			scbw::decloak_passive_proc(attacker);
+			bw::decloak_passive_proc(attacker);
 		}
 
 		Thingy* maelstrom_effect_sprite = helper::create_thingy(SpriteId::Maelstrom_Hit, x, y, 0);
@@ -500,7 +500,7 @@ namespace hooks {
 
 		// TODO: Unit search
 		const u32 radius = 48;
-		scbw::UnitFinder(
+		bw::UnitFinder(
 			x - radius,
 			y - radius,
 			x + radius,
@@ -528,18 +528,18 @@ namespace hooks {
 
 	// No bullet because this function is called in another context without the bullet.
 	void mind_control_hit(Unit* attacker, Unit* target) { // 004F6910
-		scbw::decloak_passive_proc(attacker);
+		bw::decloak_passive_proc(attacker);
 		if (target->status & UnitStatus::IsHallucination) {
 			target->remove();
 		} else {
-			u32 overlay_id = scbw::overlay_size(target) + ImageId::MindControlHit_Small;
+			u32 overlay_id = bw::overlay_size(target) + ImageId::MindControlHit_Small;
 			if (target->subunit) {
 				target->subunit->sprite->create_top_overlay(overlay_id, 0, 0, 0);
 			} else {
 				target->sprite->create_top_overlay(overlay_id, 0, 0, 0);
 			}
 			target->order_to_idle();
-			scbw::mind_control(attacker, target);
+			bw::mind_control(attacker, target);
 		}
 		helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 		target->order_to_idle();
@@ -553,7 +553,7 @@ namespace hooks {
 
 	void stasis_field_hit_internal(Unit* attacker, Point16 position, Bullet* bullet)
 	{
-		scbw::create_and_init_thingy(SpriteId::Stasis_Field_Hit, position.x, position.y, 11, 17);
+		bw::create_and_init_thingy(SpriteId::Stasis_Field_Hit, position.x, position.y, 11, 17);
 		helper::play_sound_at_pos(SoundId::Protoss_ARBITER_PAbCag00_WAV, position, 1, 0);
 		Box16 coords = {};
 		coords.left = position.x - 48;
@@ -599,7 +599,7 @@ namespace hooks {
 			if (!final_unit) {
 				final_unit = unit;
 			}
-			u16 image_id = ImageId::StasisField_Small + scbw::get_overlay_offset(unit->id);
+			u16 image_id = ImageId::StasisField_Small + bw::get_overlay_offset(unit->id);
 			unit->sprite->create_overlay(image_id, 0, 0, 0);
 			unit->status |= UnitStatus::Invincible; // remove
 		}
@@ -753,7 +753,7 @@ namespace hooks {
 			{
 				final_unit = unit;
 			}
-			final_unit->sprite->create_overlay(ImageId::MaelstromOverlay_Small + scbw::get_overlay_offset(unit->id), 0, 0, 0);
+			final_unit->sprite->create_overlay(ImageId::MaelstromOverlay_Small + bw::get_overlay_offset(unit->id), 0, 0, 0);
 		}
 		u32 timer = unit_ext->timers[TimerMindTyrantMaelstromSlow];
 		if (duration > timer)

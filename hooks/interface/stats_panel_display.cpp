@@ -247,7 +247,7 @@ namespace hooks
 			|| !units_dat::map_string_id[unit_id])
 		{
 			if (helper::unitGetRace(unit) == RaceId::Terran
-				&& !scbw::unit_id_is_factional(unit->id))
+				&& !bw::unit_id_is_factional(unit->id))
 			{
 				return helper::get_stat_txt_string((unit->rank_increase + units_dat::rank[unit_id]) + 1302);
 			}
@@ -267,7 +267,7 @@ namespace hooks
 			UnitExt* unit_ext = get_unit_ext(unit);
 			sprintf_s(g_kills_buffer, 260, "Damage dealt: %d", unit_ext->total_damage_dealt / 256);
 			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
-		} else if (!scbw::game_kind_supports_kills(scbw::get_game_kind())) {
+		} else if (!bw::game_kind_supports_kills(bw::get_game_kind())) {
 			if (unit->player < PlayerLimit) {
 				helper::add_text_to_dialog(dialog, -21, player_data.full_force_names[unit->player].data);
 			}
@@ -317,7 +317,7 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		if (!*g_is_in_replay && !scbw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
+		if (!*g_is_in_replay && !bw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
 			if (*g_status_screen_func != 4) {
 				helper::hide_optional_status_screen_controls(dialog);
 				*g_status_screen_func = 4;
@@ -467,7 +467,7 @@ namespace hooks
 		child->graphic = 37 + (armor_value >= 10 || armor_value < 0) + (armor_value >= 100 || armor_value <= -10);
 		state->button_grp = icons_grp;
 		u32 final_unit_id = active_unit->build_queue[active_unit->build_queue_slot];
-		if (active_unit->status & UnitStatus::Completed || scbw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot]))
+		if (active_unit->status & UnitStatus::Completed || bw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot]))
 		{
 			final_unit_id = active_unit->id; // We also need to do this for birthing Zerg units
 		}
@@ -499,7 +499,7 @@ namespace hooks
 		if (unit_ext->values[ValueTriggerDamageBaseSet]) {
 			damage = unit_ext->values[ValueTriggerDamageBaseAmount] / 256;
 		}
-		u16 damage_value = damage * scbw::get_damage_factor_for_tooltip(weapon_id, unit);
+		u16 damage_value = damage * bw::get_damage_factor_for_tooltip(weapon_id, unit);
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", damage_value);
 
 		BinDlg* dialog_var = dialog;
@@ -658,7 +658,7 @@ namespace hooks
 		}
 
 		u16 queue = unit->build_queue[unit->build_queue_slot];
-		if (unit->status & UnitStatus::Completed || !scbw::is_zerg_building_morph_result(queue)) {
+		if (unit->status & UnitStatus::Completed || !bw::is_zerg_building_morph_result(queue)) {
 			return helper::get_unit_name_stat_string(unit->id);
 		} else {
 			return helper::get_unit_name_stat_string(queue);
@@ -812,7 +812,7 @@ namespace hooks
 			return unit->id;
 		}
 		u16 queued_id = unit->build_queue[unit->build_queue_slot];
-		if (!scbw::is_zerg_building_morph_result(queued_id))
+		if (!bw::is_zerg_building_morph_result(queued_id))
 		{
 			return unit->id;
 		}
@@ -849,7 +849,7 @@ namespace hooks
 	// Hooked to show progress bars on allied and detected eggs. -Pr0nogo
 	void unit_stat_act_egg(BinDlg* dialog) { // 00427260
 		Unit* unit = *g_active_portrait_unit;
-		if (!*g_is_in_replay && !scbw::unit_is_allied_or_detected(unit, *g_local_nation_id) || unit->status & UnitStatus::IsHallucination) {
+		if (!*g_is_in_replay && !bw::unit_is_allied_or_detected(unit, *g_local_nation_id) || unit->status & UnitStatus::IsHallucination) {
 			helper::unit_stat_act_standard(dialog);
 		} else {
 			if (*g_status_screen_func != 10) {
@@ -1075,7 +1075,7 @@ namespace hooks
 				if (!(unit->status & UnitStatus::Completed))
 				{
 					unit_id = unit->build_queue[unit->build_queue_slot];
-					if (scbw::is_zerg_building_morph_result(unit_id))
+					if (bw::is_zerg_building_morph_result(unit_id))
 					{
 						unit_id = unit->id;
 					}

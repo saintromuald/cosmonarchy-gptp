@@ -5,7 +5,7 @@ namespace AI
 {
 	Unit* find_best_nuke_launch_target(Unit* caster, bool isUnderAttack)
 	{
-		return scbw::UnitFinder::get_nearest_target(caster, [&](Unit* target)
+		return bw::UnitFinder::get_nearest_target(caster, [&](Unit* target)
 		{
 			if ((target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) && !target->is_visible_to(caster->player))
 			{

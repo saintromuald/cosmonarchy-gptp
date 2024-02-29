@@ -13,20 +13,20 @@ namespace
 		HANDLE fileHandle;
 		if (!SFileOpenFileEx(0, path, 0, &fileHandle))
 		{
-			scbw::printf_console("File not found: %s", path);
+			bw::printf_console("File not found: %s", path);
 			return false;
 		}
 		int fileSize = SFileGetFileSize(fileHandle, 0);
 		if (fileSize == -1 || !fileSize)
 		{
-			scbw::printf_console("File is empty: %s", path);
+			bw::printf_console("File is empty: %s", path);
 			return false;
 		}
 		char* filePointer = (char*)SMemAlloc(fileSize, "logfilename", 0, 0);
 		u32 bytesRead;
 		if (!SFileReadFile(fileHandle, filePointer, fileSize, &bytesRead, 0) || bytesRead != fileSize)
 		{
-			scbw::printf_console("File reading error %s (%d)", path, GetLastError());
+			bw::printf_console("File reading error %s (%d)", path, GetLastError());
 			return false;
 		}
 

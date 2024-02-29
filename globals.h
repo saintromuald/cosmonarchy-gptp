@@ -160,7 +160,7 @@ namespace hooks
 	struct WeaponDamageData;
 }
 
-namespace scbw
+namespace bw
 {
 	bool is_slowed(Unit* unit);
 	void refresh_debuffs(Unit* unit);

@@ -92,9 +92,9 @@ namespace
 		// original code is hardcoded instead of using a function like get_cloaking_tech
 		const u16 energyCost = techdata_dat::energy_cost[hooks::get_cloaking_tech(unit)] * 256;
 
-		if (scbw::is_cheat_enabled(CheatFlags::TheGathering) || unit->energy >= energyCost)
+		if (bw::is_cheat_enabled(CheatFlags::TheGathering) || unit->energy >= energyCost)
 		{
-			if (!scbw::is_cheat_enabled(CheatFlags::TheGathering))
+			if (!bw::is_cheat_enabled(CheatFlags::TheGathering))
 			{
 				bool spend = true;
 				if (unit_ext->values[ValueAICloakGimmick] == 1)
@@ -217,7 +217,7 @@ namespace
 			Unit* unit = g_client_selection_group->unit[i];
 			if (unit != nullptr)
 			{
-				if (scbw::is_cheat_enabled(CheatFlags::TheGathering)
+				if (bw::is_cheat_enabled(CheatFlags::TheGathering)
 					|| unit->energy >= techdata_dat::energy_cost[hooks::get_cloaking_tech(unit)] * 256)
 				{
 					return true;
@@ -225,7 +225,7 @@ namespace
 			}
 		}
 		race = (*g_active_portrait_unit)->get_race();
-		scbw::show_error_message_with_sfx((*g_active_portrait_unit)->player, 864 + race, 156 + race);
+		bw::show_error_message_with_sfx((*g_active_portrait_unit)->player, 864 + race, 156 + race);
 		return false;
 	}
 }

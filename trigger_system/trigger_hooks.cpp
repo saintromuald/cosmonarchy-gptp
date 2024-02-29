@@ -76,7 +76,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 	if (unit && sprite->main_graphic == image) {
 		u32 valid_count = valid_sound_replacement_count(image, sound_id, unit);
 		if (valid_count) {
-			u32 target_index = scbw::rand_between_local(0, valid_count - 1);
+			u32 target_index = bw::rand_between_local(0, valid_count - 1);
 			u32 index = 0;
 			for (SoundReplacement& sound_replacement : globals.sound_replacements) {
 				if (sound_replacement_match(&sound_replacement, image, sound_id, unit)) {
@@ -545,7 +545,7 @@ void __declspec(naked) team_game_check_wrapper() {
 	__asm {
 		PUSHAD
 	}
-	if (scbw::is_team_game_map(g_current_map_name)) {
+	if (bw::is_team_game_map(g_current_map_name)) {
 		game_data->teams_enabled = true;
 	}
 

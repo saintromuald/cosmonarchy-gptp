@@ -110,7 +110,7 @@ void update_ext_variables() {
 			thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
 		}
 
-		if (scbw::get_game_kind() == GameKind_TheTurning && thingy_ext->activity_timer >= 24) {
+		if (bw::get_game_kind() == GameKind_TheTurning && thingy_ext->activity_timer >= 24) {
 			if (!(units_dat::base_property[thingy_ext->unit_id] & UnitProperty::Building)) {
 				reclaim_corpse(thingy, TheTurningZombiePlayerId);
 			}
@@ -241,7 +241,7 @@ void reset_town_ext(AiTown* town) {
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player) {
 	u32 allied_bits = 0;
 	for (u32 i = 0; i < PlayerLimit; ++i) {
-		if (scbw::is_allied_to(i, player)) {
+		if (bw::is_allied_to(i, player)) {
 			allied_bits |= 1 << i;
 		}
 	}

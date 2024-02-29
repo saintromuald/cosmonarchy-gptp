@@ -292,7 +292,7 @@ struct Unit : public UnitLayout
 	static graphics::ColorId get_color(Unit* unit);
 
 	// Returns the distance between this unit and the @p target, taking unit collision count in units.dat into account.
-	// Internally, this function uses scbw::get_distance_fast().
+	// Internally, this function uses bw::get_distance_fast().
 	u32 get_distance_to_target(Unit* target) const;
 	u32 get_distance_to_point(Point16 point) const;
 
@@ -354,7 +354,7 @@ struct Unit : public UnitLayout
 	// Checks if the unit has an associated sprite and is not running the OrderId::Die order.
 	bool is_dead() const;
 
-	// Checks whether the @p target unit is an enemy of this unit. Internally, this calls scbw::is_unit_enemy().
+	// Checks whether the @p target unit is an enemy of this unit. Internally, this calls bw::is_unit_enemy().
 	bool is_target_enemy(Unit* target) const;
 
 	/// Checks whether this unit can be seen by @player (i.e. not covered by the fog-of-war and is detectable).

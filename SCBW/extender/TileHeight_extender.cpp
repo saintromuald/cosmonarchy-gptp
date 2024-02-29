@@ -3,7 +3,7 @@
 s32 base_height;
 s8 xHeight_table[256*256];
 
-namespace scbw {
+namespace bw {
 	vf4* get_minitile(u32 gridPos) {
 		u32 tile_id = (u16)(*zergCreepTileData)->tile[gridPos];
 

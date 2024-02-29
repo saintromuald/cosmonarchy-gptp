@@ -55,7 +55,7 @@ namespace hooks
 			}
 		}
 
-		if (scbw::unit_is_ranged_attacker(unit)) {
+		if (bw::unit_is_ranged_attacker(unit)) {
 			unit->status |= UnitStatus::AttackMove;
 			if (unit->subunit) {
 				unit->subunit->status |= UnitStatus::AttackMove;
@@ -80,14 +80,14 @@ namespace hooks
 
 					if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
 						const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->get_air_weapon()));
-						unit->order_target.unit = scbw::UnitFinder::get_nearest_target(
+						unit->order_target.unit = bw::UnitFinder::get_nearest_target(
 							unit->get_left()   - radius,
 							unit->get_top()    - radius,
 							unit->get_right()  + radius,
 							unit->get_bottom() + radius,
 							unit,
 							[&](Unit* target) {
-							if (scbw::is_allied_to(unit->player, target->player)
+							if (bw::is_allied_to(unit->player, target->player)
 							|| !unit->can_attack_target(target)
 							|| !is_within_attack_range(unit, target)) {
 								return false;
@@ -144,7 +144,7 @@ namespace hooks
 			sprite_id = SpriteId::HarakanFlamethrower;
 		}
 
-		scbw::decloak_passive_proc(final_unit->connected_unit);
+		bw::decloak_passive_proc(final_unit->connected_unit);
 
 		// TODO: Fix effect nonsense with subunits
 		Thingy* bunker_attack_effect = helper::create_thingy(sprite_id, offset.x + final_unit->get_x(), offset.y + final_unit->get_y(), final_unit->player);
@@ -201,7 +201,7 @@ namespace hooks
 			return false;
 		}
 
-		s32 angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
+		s32 angle = bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
 		angle = unit->current_direction_1 - angle;
 		if (angle < 0) {
 			angle = angle + 256;

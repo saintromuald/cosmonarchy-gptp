@@ -98,13 +98,13 @@ namespace hooks {
 			if (!skip_checks && g_aiscript_controller[unit->player].ai_flags.is_use_map_settings) {
 				ignore_defense = true;
 			}
-			AiRegion* unit_region = scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position));
+			AiRegion* unit_region = bw::get_ai_region(unit->player, bw::get_region_id(unit->position));
 			if (!ignore_defense) {
 				if (!dont_call_help) {
 					helper::ai_ask_for_help(unit, target, in_attack_group);
 				}
 				if (!in_attack_group) {
-					AiRegion* target_region = scbw::get_ai_region(unit->player, scbw::get_region_id(target->position));
+					AiRegion* target_region = bw::get_ai_region(unit->player, bw::get_region_id(target->position));
 					if (unit->unit_ai
 						&& !helper::unit_is_in_attack_group(unit, 0)
 						&& (unit->unit_ai->type != AiType::Guard || !g_aiscript_controller[unit->player].ai_flags.is_use_map_settings)) {
@@ -137,7 +137,7 @@ namespace hooks {
 					return;
 				}
 
-				if (!main_target_reactions && scbw::order_is_spell(unit_order_id)) {
+				if (!main_target_reactions && bw::order_is_spell(unit_order_id)) {
 					return;
 				}
 
@@ -174,13 +174,13 @@ namespace hooks {
 					// Disabled for now... -Veeq7
 					/*
 					if (current <= total * 3 / 4
-						&& scbw::ai_unit_id_can_flee_three_quarters(unit->id)
+						&& bw::ai_unit_id_can_flee_three_quarters(unit->id)
 						&& helper::ai_return_to_nearest_base_forced(unit)) {
 						return;
 					}
 
 					if (current <= total * 2 / 3
-						&& scbw::ai_unit_id_can_flee_two_thirds(unit->id)
+						&& bw::ai_unit_id_can_flee_two_thirds(unit->id)
 						&& helper::ai_return_to_nearest_base_forced(unit)) {
 						return;
 					}
@@ -210,7 +210,7 @@ namespace hooks {
 				// Flee with workers, unless they have to defend (disabled, since kiting is now responsible for this) -Veeq7
 				if (units_dat::base_property[unit->id] & UnitProperty::Worker
 					/* && !(units_dat::base_property[target->id] & UnitProperty::Worker)
-					&& !scbw::unit_is_ranged_attacker(target) // previously only checked for Zethrokor id
+					&& !bw::unit_is_ranged_attacker(target) // previously only checked for Zethrokor id
 					&& !helper::ai_has_no_defense_build(unit->id)*/) {
 					if (main_target_reactions) {
 						helper::ai_flee(unit, target);
@@ -219,7 +219,7 @@ namespace hooks {
 				}
 
 				// Ignore allied units (new) -Veeq7		
-				if (target && scbw::is_allied_to(unit->player, target->player) && !globals.players[target->player].neutral_hostile) {
+				if (target && bw::is_allied_to(unit->player, target->player) && !globals.players[target->player].neutral_hostile) {
 					UnitExt* unit_ext = get_unit_ext(unit);
 					u32 patience = unit_ext->timers[TimerAI_Patience];
 					unit_ext->timers[TimerAI_Patience] += 2 * 24;
@@ -369,8 +369,8 @@ namespace hooks {
 		
 		// Count own and allied AI force
 		for (u32 player = 0; player < PlayerLimit; ++player) {
-			if (scbw::is_allied_to(ai_region->player, player)) {
-				AiRegion* player_ai_region = scbw::get_ai_region(player, ai_region->region);
+			if (bw::is_allied_to(ai_region->player, player)) {
+				AiRegion* player_ai_region = bw::get_ai_region(player, ai_region->region);
 				for (MilitaryAi* military_ai = player_ai_region->military.first; military_ai; military_ai = military_ai->link.prev) {
 					Unit* unit = (Unit*)military_ai->unit;
 					if (!unit || unit->status & UnitStatus::InBuilding) {
@@ -389,11 +389,11 @@ namespace hooks {
 		// Also count in allied non-AI force
 		{
 			EntryArray region_units = {};
-			unit_search_rect(&region_units, scbw::get_region_area(scbw::get_region(ai_region->region)));
+			unit_search_rect(&region_units, bw::get_region_area(bw::get_region(ai_region->region)));
 			unit_search_filter(&region_units, 0, FilterCanAttackOrCast | FilterNotWorker | FilterNoTrap);
 			for (u32 i = 0; i < region_units.count; ++i) {
 				Unit* unit = region_units.units[i];
-				if (!scbw::is_allied_to(ai_region->player, unit->player)) {
+				if (!bw::is_allied_to(ai_region->player, unit->player)) {
 					continue;
 				}
 				if (unit->unit_ai && unit->unit_ai->type == AiType::Military) {
@@ -431,13 +431,13 @@ namespace hooks {
 
 	// Hooked to change functionality later - Pr0nogo
 	Unit* get_closest_enemy_structure(s32 x, s32 y, s32 player) { // 004A0F90
-		Point16 region_center = scbw::get_region_center(scbw::get_region(helper::get_region_id(x, y)));
+		Point16 region_center = bw::get_region_center(bw::get_region(helper::get_region_id(x, y)));
 		u32 max_distance = 99999999;
 		Unit* best_unit = 0;
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (unit->main_order_id && unit->status & UnitStatus::GroundedBuilding) {
-				if (!scbw::is_allied_to(player, unit->player)) {
-					u32 distance = scbw::get_distance_fast(region_center, unit->position);
+				if (!bw::is_allied_to(player, unit->player)) {
+					u32 distance = bw::get_distance_fast(region_center, unit->position);
 					if (distance < max_distance) {
 						max_distance = distance;
 						best_unit = unit;
@@ -867,7 +867,7 @@ namespace hooks {
 		if (target_unit->player == 11) { // Neutral
 			target_player = target_unit->sprite->player;
 		}
-		if (!scbw::is_allied_to(unit->player, target_player)) {
+		if (!bw::is_allied_to(unit->player, target_player)) {
 			if (helper::unit_can_attack_target(target_unit, unit, 1)) {
 				helper::order_to_attack_target(unit->auto_target_unit, unit, 1, 0);
 				unit->status |= UnitStatus::Disabled;
@@ -962,7 +962,7 @@ namespace hooks {
 				score /= 2;
 			}
 
-			u32 distance = ai_town->main_building ? scbw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
+			u32 distance = ai_town->main_building ? bw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
 			if (score > best_score || (score == best_score && distance < best_distance)) {
 				best_score = score;
 				best_distance = distance;
@@ -996,7 +996,7 @@ namespace hooks {
 				score /= 2;
 			}
 
-			u32 distance = ai_town->main_building ? scbw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
+			u32 distance = ai_town->main_building ? bw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
 			if (score > best_score || (score == best_score && distance < best_distance)) {
 				best_score = score;
 				best_distance = distance;
@@ -1300,7 +1300,7 @@ namespace hooks {
 		Unit* best_target = unit_search_find_best(&repair_targets, [=](Unit* repair_target) {
 			if (!repairman->has_path_to_unit(repair_target)
 			||	 repairman->order_target.unit == repair_target
-			||   scbw::is_allied_to(repair_target->player, repairman->player)
+			||   bw::is_allied_to(repair_target->player, repairman->player)
 			||  !helper::is_order_valid(OrderId::Repair1, repairman, 0, repair_target, 0))
 			{
 				return ScoreInvalidUnit;
@@ -1374,7 +1374,7 @@ namespace hooks {
 		}
 		helper::do_next_queued_order(repairman);
 		repair_target->connected_unit = repairman;
-		scbw::print("ai_worker_repair_controller returned 1");
+		bw::print("ai_worker_repair_controller returned 1");
 		return 1;
 	}
 
@@ -1383,8 +1383,8 @@ namespace hooks {
 		if (area->flags & 2) { // Already taken by an AI, maybe we shouldn't care and allow them both to compete for the expo? -Veeq7
 			return false;
 		}
-		Region* area_region = scbw::get_region(scbw::get_region_id(area->position));
-		Region* main_region = scbw::get_region(scbw::get_region_id(main_town->position));
+		Region* area_region = bw::get_region(bw::get_region_id(area->position));
+		Region* main_region = bw::get_region(bw::get_region_id(main_town->position));
 		if (main_region->group_index != area_region->group_index) {
 			if (!has_transport) {
 				return false;
@@ -1394,9 +1394,9 @@ namespace hooks {
 		// Since we are not checking for area->flags & 1, we need to make sure the AI doesn't expand to own main town and main towns of allied players.
 		// Maybe we should assign the area flag 2 for those? Or maybe not check area flag 2 at all and only use this method? -Veeq7
 		for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-			if (scbw::is_allied_to(player, other_player) && g_player_table[other_player].type == PlayerType::Computer) {
+			if (bw::is_allied_to(player, other_player) && g_player_table[other_player].type == PlayerType::Computer) {
 				for (AiTown* town = g_ai_town_list[other_player].first; town; town = town->prev) {
-					if (scbw::get_distance_fast(town->position, area->position) <= 12 * 32) {
+					if (bw::get_distance_fast(town->position, area->position) <= 12 * 32) {
 						return false;
 					}
 				}
@@ -1412,13 +1412,13 @@ namespace hooks {
 		for (u32 j = 0; j < out_units->count; ++j) {
 			Unit* unit = out_units->units[j];
 			if (unit->player < PlayerLimit) {
-				if (player != unit->player && scbw::is_allied_to(player, unit->player)
+				if (player != unit->player && bw::is_allied_to(player, unit->player)
 					&& (units_dat::group_flags[unit->id].is_factory
 						|| units_dat::base_property[unit->id] & UnitProperty::ResourceDepot
 						|| units_dat::base_property[unit->id] & UnitProperty::Worker)) {
 					return false;
 				}
-				if (!scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
+				if (!bw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
 					return false;
 				}
 			}
@@ -1448,11 +1448,11 @@ namespace hooks {
 
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			for (Unit* unit = first_player_unit->unit[i]; unit; unit = unit->player_link.next) {
-				f32 distance = scbw::get_distance_fast(area->position, unit->position) / 32.0;
+				f32 distance = bw::get_distance_fast(area->position, unit->position) / 32.0;
 				if (player == i) {
 					own_count++;
 					average_own_distance += distance;
-				} else if (scbw::is_allied_to(player, i)) {
+				} else if (bw::is_allied_to(player, i)) {
 					ally_count++;
 					average_ally_distance += distance;
 				} else {
@@ -1461,7 +1461,7 @@ namespace hooks {
 				}
 			}
 			if (player != i && first_player_unit->unit[i]) {
-				f32 distance = scbw::get_distance_fast(area->position, g_start_positions[i]) / 32.0;
+				f32 distance = bw::get_distance_fast(area->position, g_start_positions[i]) / 32.0;
 				start_location_count++;
 				average_start_location_distance += distance;
 			}
@@ -1479,7 +1479,7 @@ namespace hooks {
 			score += average_enemy_distance * enemy_bias;
 		}
 
-		f32 distance_from_main = scbw::get_ground_path_distance_tiles(main_town->position, area->position);
+		f32 distance_from_main = bw::get_ground_path_distance_tiles(main_town->position, area->position);
 		score += distance_from_main * distance_bias;
 
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
@@ -1494,7 +1494,7 @@ namespace hooks {
 		for (u32 j = 0; j < units->count; ++j) {
 			Unit* unit = units->units[j];
 			if (unit->player < PlayerLimit) {
-				if (player != unit->player && scbw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
+				if (player != unit->player && bw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
 					score -= 10;
 				}
 			}
@@ -1507,15 +1507,15 @@ namespace hooks {
 		u32 best_resarea = 0;
 		f32 best_score = INT_MIN;
 
-		bool has_transport = scbw::player_has_transport(player);
-		Region* main_region = scbw::get_region(scbw::get_region_id(main_town->position));
+		bool has_transport = bw::player_has_transport(player);
+		Region* main_region = bw::get_region(bw::get_region_id(main_town->position));
 		for (u32 i = 1; i <= g_resource_areas->count; ++i) {
 			ResourceArea* area = &g_resource_areas->areas[i];
 			EntryArray units = {};
 			if (!ai_resarea_valid_for_expo(player, i, main_town, has_transport, &units)) {
 				continue;
 			}
-			Region* area_region = scbw::get_region(scbw::get_region_id(area->position));
+			Region* area_region = bw::get_region(bw::get_region_id(area->position));
 			bool use_absolute_path = false;
 			if (main_region->group_index != area_region->group_index && has_transport) {
 				use_absolute_path = true;
@@ -1685,29 +1685,29 @@ namespace hooks {
 			Unit* slowest_unit = ai_region->slowest_unit;
 			if (slowest_unit) {
 				u32 new_region_id = helper::get_region_id_from_unit(slowest_unit);
-				if (is_valid_group_region(ai_region, scbw::get_ai_region(unit->player, new_region_id))) {
+				if (is_valid_group_region(ai_region, bw::get_ai_region(unit->player, new_region_id))) {
 					region_id = new_region_id;
 
-				//	scbw::printf("Player %u is grouping units!", unit->player);
-				//	Point16 ping = scbw::get_region_center(scbw::get_region(new_region_id));
-				//	scbw::minimap_ping(ping.x, ping.y, unit->player);
+				//	bw::printf("Player %u is grouping units!", unit->player);
+				//	Point16 ping = bw::get_region_center(bw::get_region(new_region_id));
+				//	bw::minimap_ping(ping.x, ping.y, unit->player);
 				}
 			}
 		}
 
-		Region* region = scbw::get_region(region_id);
+		Region* region = bw::get_region(region_id);
 		if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == region_id) {
 			helper::make_to_hold_position(unit);
 		} else {
-			Point16 center = scbw::get_region_center(region);
+			Point16 center = bw::get_region_center(region);
 			helper::ai_order_to_destination(unit, OrderId::AttackMove, center.x, center.y);
 		}
 	}
 
 	// Hooked to help AI group mixed speed armies in more intelligent ways. -Pr0nogo
 	void ai_assign_region_to_slowest_unit(AiRegion* ai_region) { // 00436F70
-		Region* region = scbw::get_region(ai_region->region);
-		Point16 center = scbw::get_region_center(region);
+		Region* region = bw::get_region(ai_region->region);
+		Point16 center = bw::get_region_center(region);
 
 		Unit* slowest_ground_unit = 0;
 		u32 slowest_ground_speed = UINT_MAX;
@@ -1717,7 +1717,7 @@ namespace hooks {
 		Unit* slowest_unit = ai_region->slowest_unit;
 		if (slowest_unit) {
 			if (is_valid_grouping_unit(slowest_unit)) {
-				u32 speed = scbw::get_distance_fast(slowest_unit->position, center); // Used to divide by flingy_top_speed, but we just want to group around the closest unit
+				u32 speed = bw::get_distance_fast(slowest_unit->position, center); // Used to divide by flingy_top_speed, but we just want to group around the closest unit
 				if (slowest_unit->status & UnitStatus::InAir) {
 					slowest_air_unit = ai_region->slowest_unit;
 					slowest_air_speed = speed;
@@ -1731,7 +1731,7 @@ namespace hooks {
 		for (MilitaryAi* military_ai = ai_region->military.first; military_ai; military_ai = military_ai->link.prev) {
 			Unit* unit = military_ai->unit;
 			if (is_valid_grouping_unit(unit)) {
-				u32 speed = scbw::get_distance_fast(unit->position, center); // Used to divide by flingy_top_speed, but we just want to group around the closest unit
+				u32 speed = bw::get_distance_fast(unit->position, center); // Used to divide by flingy_top_speed, but we just want to group around the closest unit
 				if (unit->status & UnitStatus::InAir) {
 					if (speed < slowest_air_speed) {
 						slowest_air_speed = speed;
@@ -1889,8 +1889,8 @@ namespace hooks {
 		*/
 
 		u32 player = ai_region->player;
-		Region* region = scbw::get_region(ai_region->region);
-		Point16 region_center = scbw::get_region_center(region);
+		Region* region = bw::get_region(ai_region->region);
+		Point16 region_center = bw::get_region_center(region);
 		s32 missing_ground = ai_region->ground_strength_needed - ai_region->ground_strength_full;
 		s32 missing_air = ai_region->air_strength_needed - ai_region->air_strength_full;
 
@@ -1917,7 +1917,7 @@ namespace hooks {
 				}
 
 				// Skip attack wave units for unimportant defense regions and reduce their score otherwise
-				if (scbw::is_attack_region(current_ai_region)) {
+				if (bw::is_attack_region(current_ai_region)) {
 					if (ai_region->defense_priority <= 110) {
 						continue;
 					} else {
@@ -1966,7 +1966,7 @@ namespace hooks {
 			}
 		}
 
-		if (best_unit && scbw::move_unit_ai(best_unit, ai_region)) {
+		if (best_unit && bw::move_unit_ai(best_unit, ai_region)) {
 			return against_air ? ai_strength_air[best_unit->id] : ai_strength_ground[best_unit->id];
 		}
 		return 0;
@@ -2200,7 +2200,7 @@ namespace hooks {
 				{
 					unit_in_region_player = first_unit_in_region->sprite->player;
 				}
-				if (!scbw::is_allied_to(destination->player, unit_in_region_player))
+				if (!bw::is_allied_to(destination->player, unit_in_region_player))
 				{
 					u32 is_flyer = (first_unit_in_region->status >> 2) & 1;
 					if (!is_flyer)
@@ -2233,16 +2233,16 @@ namespace hooks {
 
 	static u32 attack_distance(Point16 a, Point16 b, bool air_only_attack) {
 		if (air_only_attack) {
-			return scbw::get_distance_fast(a, b) / 32;
+			return bw::get_distance_fast(a, b) / 32;
 		}
-		return scbw::get_ground_path_distance_tiles(a, b);
+		return bw::get_ground_path_distance_tiles(a, b);
 	}
 
 	AiRegion* get_best_grouping_region(u32 player, bool air_only_attack) {
 		AiRegion* best_region = 0;
 		s32 best_score = 0;
 		for (u32 i = 1; i < (*g_sai_paths)->region_count; ++i) {
-			AiRegion* ai_region = scbw::get_ai_region(player, i);
+			AiRegion* ai_region = bw::get_ai_region(player, i);
 			s32 score = 0;
 
 			switch (ai_region->state) {
@@ -2256,7 +2256,7 @@ namespace hooks {
 					continue;
 			}
 
-			Region* region = scbw::get_region(ai_region->region);
+			Region* region = bw::get_region(ai_region->region);
 			if (!air_only_attack && region->accessibility_flags == RegionAirOnly) {
 				continue;
 			}
@@ -2265,7 +2265,7 @@ namespace hooks {
 			u32 town_score = 0;
 			for (AiTown* ai_town = g_ai_town_list[player].first; ai_town; ai_town = ai_town->prev) {
 				town_count += 1;
-				town_score += attack_distance(scbw::get_region_center(region), ai_town->position, air_only_attack);
+				town_score += attack_distance(bw::get_region_center(region), ai_town->position, air_only_attack);
 			}
 			if (town_count) {
 				score -= town_score / town_count;
@@ -2276,9 +2276,9 @@ namespace hooks {
 				u32 hostile_score = 0;
 				u32 hostile_count = 0;
 				for (u32 j = 0; j < PlayerLimit; ++j) {
-					if (!scbw::is_allied_to(player, j)) { // TODO: maybe instead of start locations we iterate over all units?
+					if (!bw::is_allied_to(player, j)) { // TODO: maybe instead of start locations we iterate over all units?
 						hostile_count += 1;
-						hostile_score += attack_distance(scbw::get_region_center(region), g_start_positions[j], air_only_attack);
+						hostile_score += attack_distance(bw::get_region_center(region), g_start_positions[j], air_only_attack);
 					}
 				}
 				if (hostile_count) {
@@ -2302,7 +2302,7 @@ namespace hooks {
 		AiRegion* best_region = 0;
 		s32 best_score = 0;
 		for (u32 i = 1; i < (*g_sai_paths)->region_count; ++i) {
-			AiRegion* ai_region = scbw::get_ai_region(player, i);
+			AiRegion* ai_region = bw::get_ai_region(player, i);
 			s32 score = 0;
 
 			switch (ai_region->state) {
@@ -2315,8 +2315,8 @@ namespace hooks {
 					continue;
 			}
 
-			Region* region = scbw::get_region(ai_region->region);
-			Region* grouping_region = scbw::get_region(grouping_ai_region->region);
+			Region* region = bw::get_region(ai_region->region);
+			Region* grouping_region = bw::get_region(grouping_ai_region->region);
 			if (!air_only_attack) {
 				if (region->accessibility_flags == RegionAirOnly) {
 					continue;
@@ -2328,14 +2328,14 @@ namespace hooks {
 
 			bool valid_region = false;
 			EntryArray units = {};
-			unit_search_rect(&units, scbw::get_region_area(region)); // TODO: consider radial search of more distance
+			unit_search_rect(&units, bw::get_region_area(region)); // TODO: consider radial search of more distance
 			for (u32 j = 0; j < units.count; ++j) {
 				Unit* unit = units.units[j];
 				if (unit->player > PlayerLimit) {
 					continue;
 				}
 				UnitExt* unit_ext = get_unit_ext(unit);
-				if (scbw::is_allied_to(player, unit->player)) {
+				if (bw::is_allied_to(player, unit->player)) {
 					if (unit_ext->damage_dealt_timer <= 4 * 24
 					||  unit_ext->damage_taken_timer <= 4 * 24) {
 						score += unit->get_strength();
@@ -2357,7 +2357,7 @@ namespace hooks {
 				continue;
 			}
 
-			score -= attack_distance(scbw::get_region_center(region), scbw::get_region_center(grouping_region), air_only_attack);
+			score -= attack_distance(bw::get_region_center(region), bw::get_region_center(grouping_region), air_only_attack);
 
 			if (!best_region || score > best_score) {
 				best_score = score;
@@ -2391,7 +2391,7 @@ namespace hooks {
 			return true;
 		}
 		if (g_aiscript_controller[player].ai_attack_group_region) {
-			AiRegion* grouping_region = scbw::get_ai_region(player, g_aiscript_controller[player].ai_attack_group_region - 1);
+			AiRegion* grouping_region = bw::get_ai_region(player, g_aiscript_controller[player].ai_attack_group_region - 1);
 			return grouping_region->state != RegionState::PreparingAttack;
 		}
 
@@ -2451,7 +2451,7 @@ namespace hooks {
 
 	static bool ai_has_an_active_attack(u32 player) {
 		for (u32 i = 1; i < (*g_sai_paths)->region_count; ++i) {
-			AiRegion* ai_region = scbw::get_ai_region(player, i);
+			AiRegion* ai_region = bw::get_ai_region(player, i);
 			if (ai_region->state == RegionState::ContinueAttackHere
 			||	ai_region->state == RegionState::Attacking) {
 				return true;
@@ -2504,12 +2504,12 @@ namespace hooks {
 		b32 has_ground_military = false; 
 		helper::ai_get_region_military_types(ai_region, &has_ground_military, &cant_attack_ground, &cant_attack_air);
 
-		Region* region = scbw::get_region(ai_region->region);
+		Region* region = bw::get_region(ai_region->region);
 		if (has_ground_military && region->accessibility_flags == RegionAirOnly || helper::ai_can_travel_to_region(ai_region, ai_region) ) {
 			helper::ai_set_region_state(RegionState::Nothing, ai_region);
 			Unit* attack_target = helper::ai_pick_attack_target_no_buildings(ai_region);
 			if (attack_target) {
-				AiRegion* target_ai_region = scbw::get_ai_region(player, scbw::get_region_id(attack_target->position));
+				AiRegion* target_ai_region = bw::get_ai_region(player, bw::get_region_id(attack_target->position));
 				helper::ai_set_region_state(RegionState::PreparingAttackOldUnreachable, target_ai_region);
 				helper::ai_move_military_to_other_region(target_ai_region, ai_region, false, true, true); // New: allow pure spellcasters -Veeq7
 			} else {
@@ -2533,7 +2533,7 @@ namespace hooks {
 				}
 				bool has_active_attack = false;
 				for (u32 i = 0; i < PlayerLimit; ++i) {
-					if (!scbw::is_allied_to(player, i)) {
+					if (!bw::is_allied_to(player, i)) {
 						return;
 					}
 
@@ -2573,7 +2573,7 @@ namespace hooks {
 
 		u32 target_region = ai_region->target_region;
 		if (target_region) {
-			AiRegion* target_ai_region = scbw::get_ai_region(ai_region->player, target_region);
+			AiRegion* target_ai_region = bw::get_ai_region(ai_region->player, target_region);
 			helper::ai_set_region_state(RegionState::ContinueAttackHere, target_ai_region);
 			helper::ai_move_military_to_other_region(target_ai_region, ai_region, false, true, true); // New: allow pure spellcasters -Veeq7
 		}
@@ -2582,12 +2582,12 @@ namespace hooks {
 
 	// Hooked to improve and validate. -Veeq7
 	bool is_ground_map(Point16 position, u32 player) { // 00433110
-		Region* source = scbw::get_region(position);
+		Region* source = bw::get_region(position);
 		for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
-			if (scbw::is_allied_to(player, other_player) || g_completed_factory_counts->unit[other_player] == 0) {
+			if (bw::is_allied_to(player, other_player) || g_completed_factory_counts->unit[other_player] == 0) {
 				continue;
 			}
-			Region* target = scbw::get_region(g_start_positions[other_player]);
+			Region* target = bw::get_region(g_start_positions[other_player]);
 			if (source->group_index == target->group_index) {
 				return true;
 			}

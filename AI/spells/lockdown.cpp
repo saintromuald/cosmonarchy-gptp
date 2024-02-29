@@ -29,7 +29,7 @@ namespace AI
 			return nullptr;
 		}
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds,
 			caster->get_y() - bounds,
 			caster->get_x() + bounds,
@@ -43,7 +43,7 @@ namespace AI
 				return false;
 			}
 
-			if (!scbw::can_weapon_target_unit(WeaponId::Lockdown, target, caster))
+			if (!bw::can_weapon_target_unit(WeaponId::Lockdown, target, caster))
 			{
 				return false;
 			}

@@ -25,7 +25,7 @@ struct AttackPriorityData
 
 // Global variables (bad practice, but it's faster)
 AttackPriorityData attackPriorityData;
-scbw::UnitFinder attackTargetFinder;
+bw::UnitFinder attackTargetFinder;
 
 namespace
 {
@@ -132,7 +132,7 @@ namespace hooks
 		}
 
 		// Units that are not important
-		if (scbw::is_zerg_egg(target->id))
+		if (bw::is_zerg_egg(target->id))
 		{
 			return 5;
 		}
@@ -250,7 +250,7 @@ Unit* AttackPriorityData::find_random_target() const
 	{
 		return targets[priority][0];
 	} else {
-		return targets[priority][scbw::random() % target_counts[priority]];
+		return targets[priority][bw::random() % target_counts[priority]];
 	}
 }
 
@@ -279,12 +279,12 @@ Unit* AttackPriorityData::find_best_target(Unit* attacker) const
 	// AI auto-targeted units with high shields/hp when using Skrylings, but we don't have them anymore, and we already handle that in tactical_ai! -Pr0nogo
 	
 	// Find the nearest target (don't use unit box sizes)
-	u32 best_target_distance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), best_target->get_x(), best_target->get_y());
+	u32 best_target_distance = bw::get_distance_fast(attacker->get_x(), attacker->get_y(), best_target->get_x(), best_target->get_y());
 
 	for (u32 i = 1; i < target_counts[priority]; ++i)
 	{
 		Unit* current_target = targets[priority][i];
-		const u32 current_target_distance = scbw::get_distance_fast(attacker->get_x(), attacker->get_y(), current_target->get_x(), current_target->get_y());
+		const u32 current_target_distance = bw::get_distance_fast(attacker->get_x(), attacker->get_y(), current_target->get_x(), current_target->get_y());
 
 		if (current_target_distance < best_target_distance)
 		{
@@ -323,7 +323,7 @@ namespace
 	{
 		assert(unit);
 
-		s32 angle = scbw::get_angle(unit->get_x(), unit->get_y(), x, y);
+		s32 angle = bw::get_angle(unit->get_x(), unit->get_y(), x, y);
 
 		if (unit_id_is_burrowed_attacker(unit->id))
 		{

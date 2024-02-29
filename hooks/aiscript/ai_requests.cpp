@@ -108,7 +108,7 @@ namespace hooks
 						Unit* worker = first_worker->parent; // This was null during a crash
 						if (!worker)
 						{
-							scbw::print("null unit in AI_progressBuild");
+							bw::print("null unit in AI_progressBuild");
 							return result;
 						}
 						s32 build_order_id = (u8)worker->main_order_id;
@@ -378,7 +378,7 @@ namespace hooks
 
 		helper::ai_reserve(player, 1);
 		helper::ai_pop_spending_request(player);
-		if (scbw::is_conventional_unit_morph_source(unit_copy->id))
+		if (bw::is_conventional_unit_morph_source(unit_copy->id))
 		{
 			helper::issue_order_targeting_nothing(unit_copy, OrderId::Morph1);
 			return 1;
@@ -640,7 +640,7 @@ namespace hooks
 		}
 		helper::ai_add_cost_to_needs(unit_id, player_id, 1);
 		helper::ai_add_spending_request(unit_id, player_id, 2, priority, guard_ai);
-		helper::ai_add_base_unit_spending_request(unit_id, player_id, scbw::get_ai_region(player_id, scbw::get_region_id(guard_ai->current_home)), priority);
+		helper::ai_add_base_unit_spending_request(unit_id, player_id, bw::get_ai_region(player_id, bw::get_region_id(guard_ai->current_home)), priority);
 	}
 
 	static bool is_valid_attack_unit(AiRegion* ai_region, Unit* unit, bool strict) {
@@ -667,7 +667,7 @@ namespace hooks
 		if (unit->unit_ai->type == AiType::Military) {
 			// Skip current attack force units
 			AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
-			if (scbw::is_attack_region(current_ai_region)) {
+			if (bw::is_attack_region(current_ai_region)) {
 				return false;
 			}
 
@@ -689,7 +689,7 @@ namespace hooks
 		}
 
 		// Skip units that can't access the region
-		Region* region = scbw::get_region(ai_region->region);
+		Region* region = bw::get_region(ai_region->region);
 		if (region->accessibility_flags == RegionAirOnly && unit->pathing_flags & 1) {
 			return false;
 		}
@@ -699,12 +699,12 @@ namespace hooks
 
 	static Unit* add_attack_unit(AiRegion* ai_region, u32 unit_id) {
 		u32 player = ai_region->player;
-		Region* region = scbw::get_region(ai_region->region);
+		Region* region = bw::get_region(ai_region->region);
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 			if (unit->id != unit_id || !is_valid_attack_unit(ai_region, unit, false)) {
 				continue;
 			}
-			if (scbw::move_unit_ai(unit, ai_region)) {
+			if (bw::move_unit_ai(unit, ai_region)) {
 				return unit;
 			}
 		}
@@ -727,12 +727,12 @@ namespace hooks
 		}
 
 		u32 player = ai_region->player;
-		Region* region = scbw::get_region(ai_region->region);
+		Region* region = bw::get_region(ai_region->region);
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 			if (!is_valid_attack_unit(ai_region, unit, true)) {
 				continue;
 			}
-			scbw::move_unit_ai(unit, ai_region);
+			bw::move_unit_ai(unit, ai_region);
 		}
 	}
 
@@ -773,7 +773,7 @@ namespace hooks
 			}
 
 			AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
-			if (scbw::is_attack_region(current_ai_region)) {
+			if (bw::is_attack_region(current_ai_region)) {
 				continue;
 			}
 			if (current_ai_region->defense_priority > 110) {
@@ -812,7 +812,7 @@ namespace hooks
 					helper::ai_training_simple_military(unit, unit);
 				}
 			} else {
-				AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(guard_ai->original_home));
+				AiRegion* ai_region = bw::get_ai_region(player, bw::get_region_id(guard_ai->original_home));
 				Unit* unit = find_unit_for_guard(player, guard_ai->unit_id, guard_ai->original_home);
 				if (unit) {
 					helper::remove_unit_ai(unit, 0);
@@ -898,8 +898,8 @@ namespace hooks
 				if (existing_count < requested_count) {
 					u32 count = requested_count - existing_count;
 					if (request->is_upgrade) {
-						u32 mineral_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::mineral_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
-						u32 vespene_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::vespene_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
+						u32 mineral_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::mineral_cost_factor[request->id] * bw::get_upgrade_level(player, request->id);
+						u32 vespene_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::vespene_cost_factor[request->id] * bw::get_upgrade_level(player, request->id);
 						g_aiscript_controller[player].minerals_needed += mineral_cost * count;
 						g_aiscript_controller[player].vespene_needed  += vespene_cost * count;
 						for (u32 i = 0; i < count; ++i) {
@@ -915,7 +915,7 @@ namespace hooks
 						}
 					} else {
 						bool request_base = request->only_if_needed ? false : true;
-						scbw::town_add_spending_request(town, count, request->id, request->priority, request_base);
+						bw::town_add_spending_request(town, count, request->id, request->priority, request_base);
 					}
 				}
 			}
@@ -1046,14 +1046,14 @@ namespace hooks
 						return helper::ai_finish_unit(unit);
 					}
 
-					region_id = scbw::get_region_id(build_pos);
-					AiRegion* ai_region = scbw::get_ai_region(player, region_id);
+					region_id = bw::get_region_id(build_pos);
+					AiRegion* ai_region = bw::get_ai_region(player, region_id);
 					if (!ai_region->state) {
 						helper::ai_set_region_state(4, ai_region);
 						ai_region->flags |= 0x1;
 						ai_region->flags |= 0x40;
 
-						Region* region = scbw::get_region(region_id);
+						Region* region = bw::get_region(region_id);
 						if (region->accessibility_flags != RegionAirOnly) {
 							ai_region->ground_strength_needed = 1000;
 						}
@@ -1207,8 +1207,8 @@ namespace hooks
 
 	// Hooked to change position check from sprite to unit. -Pr0nogo
 	void ai_make_guard(u32 player, Unit* unit) { // 0043A010
-		u32 region_id = scbw::get_region_id(unit->position);
-		AiRegion* ai_region = scbw::get_ai_region(player, region_id);
+		u32 region_id = bw::get_region_id(unit->position);
+		AiRegion* ai_region = bw::get_ai_region(player, region_id);
 		char region_state = ai_region->state;
 		if (!region_state || region_state == RegionState::TownRegionLow) {
 			helper::ai_set_region_state(RegionState::TownRegionHigh, ai_region);
@@ -1216,11 +1216,11 @@ namespace hooks
 			if (!g_aiscript_controller[player].ai_flags.is_use_map_settings) {
 				ai_region->flags |= 0x40;
 			}
-			AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
+			AiRegion* ai_region = bw::get_ai_region(player, bw::get_region_id(unit->position));
 			for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 				if (!g_aiscript_controller[other_player].ai_flags.is_use_map_settings) {
-					if (scbw::is_allied_to(other_player, player)) {
-						AiRegion* other_player_ai_region = scbw::get_ai_region(other_player, region_id);
+					if (bw::is_allied_to(other_player, player)) {
+						AiRegion* other_player_ai_region = bw::get_ai_region(other_player, region_id);
 						if (!other_player_ai_region->state) {
 							helper::ai_set_region_state(RegionState::TownRegionLow, other_player_ai_region);
 						}

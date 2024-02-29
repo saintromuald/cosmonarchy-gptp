@@ -45,7 +45,7 @@ namespace hooks
 			}
 			current_selection = get_active_player_next_selection();
 		}
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	// Note: the default function isn't compatible with multiple selection
@@ -63,7 +63,7 @@ namespace hooks
 				{
 					builder->set_secondary_order(OrderId::Train);
 				}
-				scbw::refresh_console();
+				bw::refresh_console();
 			}
 		}
 	}

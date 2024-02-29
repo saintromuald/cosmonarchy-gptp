@@ -35,7 +35,7 @@ namespace hooks
 			&&	 current_unit->status & UnitStatus::Completed
 			&& !(units_dat::base_property[current_unit->id] & UnitProperty::NeutralAccessories)
 			&&   current_unit->id != UnitId::TerranMorningstar
-			&&   scbw::are_mutual_allies(current_unit->player, cloaker->player)
+			&&   bw::are_mutual_allies(current_unit->player, cloaker->player)
 			&&   current_unit->player != 11
 			&&   cloaker->is_target_within_min_range(current_unit, cloak_radius) // Check again if unit in distance of cloaking
 			&&  !current_unit->is_frozen())
@@ -54,7 +54,7 @@ namespace hooks
 		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list_last_index[*g_temp_units_list_arrays_counts_list_last_index];
 		*g_temp_units_list_arrays_counts_list_last_index = *g_temp_units_list_arrays_counts_list_last_index - 1;
 		if (needs_refresh) {
-			scbw::refresh_console();
+			bw::refresh_console();
 		}
 	}
 }

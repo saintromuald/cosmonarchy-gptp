@@ -62,7 +62,7 @@ enum GameKind {
 	GameKind_Count,
 };
 
-namespace scbw {
+namespace bw {
 	inline bool harvester_is_active(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		u32 activity = unit_ext->values[ValueHarvesterActivity];
@@ -321,14 +321,14 @@ namespace scbw {
 		Vector32f diff = { target.x, target.y };
 		diff.x -= source.x;
 		diff.y -= source.y;
-		return scbw::get_normalized_vector(diff);
+		return bw::get_normalized_vector(diff);
 	}
 
 	inline Vector32f get_normalized_vector_between(Vector32f source, Vector32f target) {
 		Vector32f diff = { target.x, target.y };
 		diff.x -= source.x;
 		diff.y -= source.y;
-		return scbw::get_normalized_vector(diff);
+		return bw::get_normalized_vector(diff);
 	}
 
 	inline f32 dot_product(Vector32f a, Vector32f b) {
@@ -336,16 +336,16 @@ namespace scbw {
 	}
 
 	inline bool unit_is_facing_position(Unit* unit, Point16 position) {
-		Vector32f angle = scbw::get_direction_vector_from_unit(unit);
-		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(unit->position, position));
-		f32 dot = scbw::dot_product(angle, diff);
+		Vector32f angle = bw::get_direction_vector_from_unit(unit);
+		Vector32f diff = bw::get_normalized_vector(bw::get_vector_between(unit->position, position));
+		f32 dot = bw::dot_product(angle, diff);
 		return dot >= 0.5;
 	}
 
 	inline bool unit_is_exposed_to_position(Unit* unit, Point16 position) {
-		Vector32f angle = scbw::get_direction_vector_from_unit(unit);
-		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(unit->position, position));
-		f32 dot = scbw::dot_product(angle, diff);
+		Vector32f angle = bw::get_direction_vector_from_unit(unit);
+		Vector32f diff = bw::get_normalized_vector(bw::get_vector_between(unit->position, position));
+		f32 dot = bw::dot_product(angle, diff);
 		return dot <= -0.5;
 	}
 
@@ -359,8 +359,8 @@ namespace scbw {
 
 	inline Vector32f get_unit_direction_vector(Unit* unit) {
 		return {
-			(f32)  sin(scbw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f),
-			(f32) -cos(scbw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f)
+			(f32)  sin(bw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f),
+			(f32) -cos(bw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f)
 		};
 	}
 
@@ -405,7 +405,7 @@ namespace scbw {
 	}
 
 	inline bool are_mutual_allies(u32 a, u32 b) {
-		return scbw::is_allied_to(a, b) && scbw::is_allied_to(b, a);
+		return bw::is_allied_to(a, b) && bw::is_allied_to(b, a);
 	}
 
 	/// Checks whether the @p unit is recognized by @p player as an enemy.
@@ -649,7 +649,7 @@ namespace scbw {
 	}
 
 	/// Sets or clears the "is currently inside the game loop" property.
-	/// This must be called in next_frame() to use scbw::random() there.
+	/// This must be called in next_frame() to use bw::random() there.
 	inline bool set_ingame_loop_state(bool new_state)
 	{
 		//Identical to function @ 0x004DC540

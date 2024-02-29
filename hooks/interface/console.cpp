@@ -99,7 +99,7 @@ namespace hooks
 			}
 
 			static char buffer[32] = {};
-			if (scbw::unit_has_shields(active_unit)) {
+			if (bw::unit_has_shields(active_unit)) {
 				s32 hp_plus_1 = (active_unit->hitpoints + 255) >> 8;
 				u16 last_queue_id = helper::get_last_queue_slot_id(active_unit);
 				sprintf_s(buffer, 32, "%d/%d %c%d/%d", active_unit->shields >> 8, units_dat::max_shield_points[last_queue_id], hp_state, hp_plus_1, max_hp_raw);

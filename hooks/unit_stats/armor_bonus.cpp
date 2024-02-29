@@ -9,7 +9,7 @@ namespace hooks
 	u8 get_armor_bonus(Unit* unit) // 00453FC0
 	{
 		UnitExt* unit_ext = get_unit_ext(unit);
-		s32 armor_modifier = scbw::get_upgrade_level(unit->player, units_dat::armor_upgrade[unit->id]);
+		s32 armor_modifier = bw::get_upgrade_level(unit->player, units_dat::armor_upgrade[unit->id]);
 		switch (unit->id) {
 			case UnitId::TerranMatadorCinderMode:
 			{

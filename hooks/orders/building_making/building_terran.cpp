@@ -69,7 +69,7 @@ namespace hooks
 					if (movable_state == MovableState_UnmovableAtDestination) {
 						unit->order_to_idle();
 					} else if (movable_state != MovableState_NotReachedDestination) {
-						scbw::refresh_console();
+						bw::refresh_console();
 
 						if (built_unit->connected_unit
 						&&  built_unit->connected_unit != unit
@@ -139,7 +139,7 @@ namespace hooks
 					if (unit->position == unit->next_target_waypoint) {
 						helper::set_resource_target(unit);
 						helper::set_secondary_waypoint(unit, (unit->order_target.unit)->sprite->position.x, (unit->order_target.unit)->sprite->position.y);
-						s32 angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
+						s32 angle = bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 						unit->order_target.pt.x = (g_angle_distance[angle].x * 20) / 256 + unit->sprite->position.x;
 						unit->order_target.pt.y = (g_angle_distance[angle].y * 20) / 256 + unit->sprite->position.y;
 						++unit->main_order_state;
@@ -147,7 +147,7 @@ namespace hooks
 				} break;
 				case 7: {
 					if (!helper::is_unit_positions_2_equal(unit)) {
-						s32 angle = unit->current_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
+						s32 angle = unit->current_direction_1 - bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 						if (angle < 0) {
 							angle += 256;
 						}
@@ -280,7 +280,7 @@ namespace hooks
 								}
 							}
 
-							scbw::refresh_console();
+							bw::refresh_console();
 							built_unit->order_computer(OrderId::BuildSelf1);
 							helper::ai_training_overlord(built_unit, unit);
 						} else {
@@ -294,7 +294,7 @@ namespace hooks
 				}
 			}
 		} else {
-			scbw::refresh_console();
+			bw::refresh_console();
 
 			if (unit->order_target.unit) {
 				unit->order_target.pt.x = (unit->order_target.unit)->sprite->position.x;
@@ -333,7 +333,7 @@ namespace hooks
 					Point16 addon_point;
 					addon_point.x = units_dat::addon_placement[unit_id].x;
 					addon_point.y = units_dat::addon_placement[unit_id].y;
-					scbw::adjust_addon_coordinates(*g_place_building_unit_id, 0, &addon_point.x, &addon_point.y);
+					bw::adjust_addon_coordinates(*g_place_building_unit_id, 0, &addon_point.x, &addon_point.y);
 					helper::unk_building_placement_related(0, &addon_point);
 				}
 				result = helper::refresh_layers_3_and_4();
@@ -402,7 +402,7 @@ namespace hooks
 				case RaceId::Zerg: {
 					u32 sound_id = 0;
 					if (unit_id_is_tech_tier_structure(unit->id)) {
-						sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
+						sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
 					}
 					if (unit->create_origin == UnitId::ZergDroleth) {
 						if (sound_id) {
@@ -429,7 +429,7 @@ namespace hooks
 					UnitExt* builder_ext = get_unit_ext(unit);
 					u32 sound_id = 0;
 					if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-						sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_AddonComplete);
+						sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_AddonComplete);
 						if (!sound_id) {
 							sound_id = SoundId::Terran_Advisor_TAdUpd03_WAV;
 						}
@@ -438,7 +438,7 @@ namespace hooks
 					}
 
 					if (unit_id_is_tech_tier_structure(builder_ext->values[ValueTerranConstruction])) {
-						sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
+						sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
 					}
 
 					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
@@ -446,7 +446,7 @@ namespace hooks
 				} break;
 				case RaceId::Protoss:
 				default: {
-					u32 sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_StructureComplete_P);
+					u32 sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_StructureComplete_P);
 					helper::play_sound_from_unit(sound_id, unit, 1, 99);
 					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
 				} break;
@@ -578,7 +578,7 @@ namespace hooks
 					unit->remaining_build_time -= modifier.decrease;
 				} else {
 					unit->remaining_build_time = 0;
-					if (scbw::get_game_kind() == GameKind_Debug) {
+					if (bw::get_game_kind() == GameKind_Debug) {
 						helper::set_unit_hp(unit, unit->get_max_hp_raw());
 					}
 				}
@@ -626,7 +626,7 @@ namespace hooks
 
 		UnitExt* addon_ext = get_unit_ext(addon);
 		addon_ext->values[ValueAddonInactive] = 1;
-		scbw::refresh_console();
+		bw::refresh_console();
 
 		Unit* active_unit = *g_active_iscript_unit;
 		*g_active_iscript_unit = addon;
@@ -667,7 +667,7 @@ namespace hooks
 	void play_addon_detach_sound(Unit* unit) // 0048F8A0
 	{
 		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
-			u32 sound_id = scbw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_AbandonAddon);
+			u32 sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_AbandonAddon);
 			helper::play_sound_from_unit(sound_id, unit, (g_options_list->flags >> 2) & 1, 99);
 			helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (*g_audio_something / 1000), 1, 130);
 		}

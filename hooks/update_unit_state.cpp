@@ -62,7 +62,7 @@ namespace hooks
 		}
 		*/
 
-		u32 overlay_id = ImageId::EnergyRegenOverlaySmall + scbw::get_overlay_offset(unit->id, true);
+		u32 overlay_id = ImageId::EnergyRegenOverlaySmall + bw::get_overlay_offset(unit->id, true);
 		if (!dont_regen && unit->energy < max_energy) {
 			unit->heal_energy(10 * 256 / 24, unit);
 			if (unit->energy > max_energy) {
@@ -75,7 +75,7 @@ namespace hooks
 			}
 
 			if (!unit->get_overlay(overlay_id)) {
-				scbw::add_unit_overlay(unit, overlay_id);
+				bw::add_unit_overlay(unit, overlay_id);
 				helper::play_sound_from_unit(SoundId::EnergyRegenStart, unit, 1, 0);
 			}
 		} else if (unit->get_overlay(overlay_id)) {
@@ -88,8 +88,8 @@ namespace hooks
 	static bool wyvern_can_fire_at(Unit* unit, Unit* target) {
 		if (target->sprite) {
 			const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
-			return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
-				&& scbw::get_distance_fast(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
+			return bw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
+				&& bw::get_distance_fast(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
 				&& unit->can_attack_target(target);
 		}
 		return false;
@@ -120,7 +120,7 @@ namespace hooks
 				Unit* target = unit_ext->units[UnitWyvernTargetLock];
 				UnitExt* target_ext = get_unit_ext(target);
 				if (target_ext->timers[TimerOwnerChangedRecently]
-				&&  scbw::is_allied_to(unit->player, target->player)) {
+				&&  bw::is_allied_to(unit->player, target->player)) {
 					unit_ext->units[UnitWyvernTargetLock] = 0;
 				}
 			}
@@ -129,18 +129,18 @@ namespace hooks
 			if (unit->status & UnitStatus::Completed && unit_ext->timers[TimerWyvernAttackCooldown] == 0) {
 				u32 range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
 				s32 forward_offset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
-				u32 x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
-				u32 y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1);
+				u32 x = unit->get_x() + bw::get_polar_x(forward_offset, unit->current_direction_1);
+				u32 y = unit->get_y() + bw::get_polar_y(forward_offset, unit->current_direction_1);
 
 				bool seek_unit = true;
 				if (unit_ext->values[ValueWyvernLandGrabOn] == 1) {
 					u32 targ_x = unit_ext->values[ValueWyvernLandGrabX];
 					u32 targ_y = unit_ext->values[ValueWyvernLandGrabY];
-					s32 direction = scbw::get_angle(x, y, targ_x, targ_y);
-					if (scbw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
+					s32 direction = bw::get_angle(x, y, targ_x, targ_y);
+					if (bw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						u32 sound = helper::get_random_sfx_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02);
 						helper::play_sound_from_unit(sound, unit, 1, 0);
-						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, 0, targ_x, targ_y);
+						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, 0, targ_x, targ_y);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 						turret->order_target.pt.x = targ_x;
 						turret->order_target.pt.y = targ_y;
@@ -172,7 +172,7 @@ namespace hooks
 							if (it == unit) {
 								continue;
 							}
-							if (scbw::is_allied_to(unit->player, it->player)) {
+							if (bw::is_allied_to(unit->player, it->player)) {
 								continue;
 							}
 							if (!wyvern_can_fire_at(unit, it)) {
@@ -184,9 +184,9 @@ namespace hooks
 					}
 					
 					if (target && wyvern_can_fire_at(unit, target)) {
-						s32 direction = scbw::get_angle(x, y, target->get_x(), target->get_y());
+						s32 direction = bw::get_angle(x, y, target->get_x(), target->get_y());
 						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02), unit, 1, 0);
-						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
+						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 					}
 				}
@@ -205,7 +205,7 @@ namespace hooks
 		// Something to do with player-specific Signify overlays?
 		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*g_active_nation_id][0]) {
 			unit->new_flags_3 &= ~0x20;
-			scbw::refresh_console();
+			bw::refresh_console();
 		}
 
 		// Flash shielding (regeneration)
@@ -214,7 +214,7 @@ namespace hooks
 				s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
 				u32 overlay_id = ImageId::RechargeShields_Small;
-				switch (scbw::get_overlay_offset(unit->id, true)) {
+				switch (bw::get_overlay_offset(unit->id, true)) {
 					case 1: {
 						overlay_id = ImageId::RechargeShieldsCustom_Medium;
 					} break;
@@ -239,11 +239,11 @@ namespace hooks
 					}
 
 					if (!unit->get_overlay(overlay_id)) {
-						scbw::add_unit_overlay(unit, overlay_id);
+						bw::add_unit_overlay(unit, overlay_id);
 						helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
 					}
 				} else if (unit->get_overlay(overlay_id)) {
-					scbw::remove_unit_overlay(unit, overlay_id);
+					bw::remove_unit_overlay(unit, overlay_id);
 					if (unit->shields >= max_shields) {
 						helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
 					} else {
@@ -282,7 +282,7 @@ namespace hooks
 		// Modified 24/01/23 to allow Zerg building morph sources to regenerate while mutating. -Pr0nogo
 		if (unit->status & UnitStatus::Completed
 		||	unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon
-		||	scbw::is_zerg_building_morph_result(unit->build_queue[unit->build_queue_slot]))
+		||	bw::is_zerg_building_morph_result(unit->build_queue[unit->build_queue_slot]))
 		{
 			bool stop_here = false;
 			if (unit->remove_timer != 0) {
@@ -306,8 +306,8 @@ namespace hooks
 			}
 
 			// Passive HP regeneration
-			if (scbw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw()) {
-				u32 factor = scbw::get_regeneration_factor(unit);
+			if (bw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw()) {
+				u32 factor = bw::get_regeneration_factor(unit);
 				if (unit_ext->damage_taken_timer > 2 * 24) {
 					factor++;
 				}
@@ -345,19 +345,19 @@ namespace hooks
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora) {
 				if (unit_ext->values[ValueLastOrdersInit] == 1) {
-					auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
+					auto distance = bw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
 					if (distance < 32) {
 						unit->status |= UnitStatus::Invincible;
 						// TODO: unit search radial
 						auto match = cosmonarchy_finder_match(unit, Flags::NoAir | Flags::Enemy, {});
 						const u32 radius = 64;
-						scbw::UnitFinder(
+						bw::UnitFinder(
 							unit->get_x() - radius,
 							unit->get_y() - radius,
 							unit->get_x() + radius,
 							unit->get_y() + radius
 						).for_each_in_match(match, [&](Unit* target) {
-							u32 dist = scbw::get_distance_fast(unit->position, target->position);
+							u32 dist = bw::get_distance_fast(unit->position, target->position);
 							u32 damage = 25 * 256;
 							if (dist > 48) {
 								damage /= 4;
@@ -499,7 +499,7 @@ namespace hooks
 				Unit* next_burrowed = invisible_unit->invisible_link.next;
 				if (helper::is_unit_cloaking(invisible_unit))
 				{
-					do_cloak(invisible_unit, scbw::get_cloak_sound_id(invisible_unit));
+					do_cloak(invisible_unit, bw::get_cloak_sound_id(invisible_unit));
 				} else {
 					u32 status_1 = invisible_unit->status;
 					bool cloak_or_burrow;
@@ -515,7 +515,7 @@ namespace hooks
 					{
 						goto Next_Or_Redraw;
 					}
-					helper::begin_cloak(invisible_unit, scbw::get_cloak_sound_id(invisible_unit));
+					helper::begin_cloak(invisible_unit, bw::get_cloak_sound_id(invisible_unit));
 				}
 				redraw = 1;
 			Next_Or_Redraw:
@@ -524,7 +524,7 @@ namespace hooks
 				{
 					if (redraw)
 					{
-						scbw::refresh_console();
+						bw::refresh_console();
 					}
 					return;
 				}
@@ -541,7 +541,7 @@ namespace hooks
 		}
 		if (!*g_is_in_replay && unit->player == *g_local_nation_id)
 		{
-			scbw::refresh_console();
+			bw::refresh_console();
 		}
 
 		if (unit->status & UnitStatus::Burrowed)
@@ -711,7 +711,7 @@ namespace hooks
 				helper::remove_from_client_selection_3(unit);
 			}
 		}
-		scbw::refresh_console();
+		bw::refresh_console();
 		u32 pos_x = unit->position.x;
 		u32 pos_y = unit->position.y;
 		Point16 position = {pos_x, pos_y};
@@ -751,8 +751,8 @@ namespace hooks
 
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (!unit_ext->values[ValueNoMassacreResource]) {
-			if (scbw::get_game_kind() == GameKind_Massacre && unit_id_should_give_gas_in_massacre_mode(unit->id)) {
-				scbw::add_massacre_resource(unit->player);
+			if (bw::get_game_kind() == GameKind_Massacre && unit_id_should_give_gas_in_massacre_mode(unit->id)) {
+				bw::add_massacre_resource(unit->player);
 			}
 		} else {
 			unit_ext->values[ValueNoMassacreResource] = 0;
@@ -762,7 +762,7 @@ namespace hooks
 		||	unit_ext->values[ValueTriggerBehaviorProximityCloak]
 		||	unit_ext->values[ValueTriggerBehaviorSteadyShroud])
 		{
-			u32 sound_id = scbw::get_cloak_sound_id(unit);
+			u32 sound_id = bw::get_cloak_sound_id(unit);
 			helper::begin_cloak(unit, sound_id);
 		}
 		if (unit->id == UnitId::Spell_ScannerSweep || unit->id == UnitId::Special_MapRevealer) {

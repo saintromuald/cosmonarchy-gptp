@@ -361,7 +361,7 @@ namespace hooks
 		bool air_unit = target->status & UnitStatus::InAir;
 		u32 weapon = air_unit ? final_attacker->get_air_weapon() : final_attacker->get_ground_weapon();
 		if (air_unit && unit_id_has_custom_air_weapon(attacker->id)) {
-			weapon = scbw::get_custom_secondary_weapon_from_unit_id(attacker->id);
+			weapon = bw::get_custom_secondary_weapon_from_unit_id(attacker->id);
 		}
 
 		// For stationary attackers
@@ -550,7 +550,7 @@ namespace hooks
 		if (compare_unit != auto_target)
 		{
 			u32 compare_player = compare_unit->player == 11 ? compare_unit->sprite->player : compare_unit->player;
-			if (!scbw::is_allied_to(self->player, compare_player))
+			if (!bw::is_allied_to(self->player, compare_player))
 			{
 				if (!auto_target
 				||  !helper::unit_can_attack_target(auto_target, self, 1)
@@ -1028,7 +1028,7 @@ namespace hooks
 		s32 player_flag = 1 << unit->player;
 		if (!target || target->is_dead()) // Latter is new
 		{
-			ActiveTile* tile = scbw::get_active_tile_at_coords(unit->order_target.pt);
+			ActiveTile* tile = bw::get_active_tile_at_coords(unit->order_target.pt);
 			return player_flag & ~(tile->vision_flags & 0xFF);
 		}
 

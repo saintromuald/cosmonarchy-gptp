@@ -11,9 +11,9 @@ namespace hooks {
 	u32 get_unit_response_id(s32 unit_id, s32 last_sound_id) { // 0048EA20
 		/*
 		if (!(units_dat::group_flags[unit_id].is_building)) { // original check was unit_id <= DisruptionWeb, now checks for existance of annoyed lines
-			u32 sound = scbw::get_unit_data(UnitsDatEntries::SndPssFirst, unit_id);
+			u32 sound = bw::get_unit_data(UnitsDatEntries::SndPssFirst, unit_id);
 			if (sound) {
-				if (last_sound_id <= scbw::get_unit_data(UnitsDatEntries::SndPssLast, unit_id) - sound + 1) {
+				if (last_sound_id <= bw::get_unit_data(UnitsDatEntries::SndPssLast, unit_id) - sound + 1) {
 					if (last_sound_id) {
 						return sound + last_sound_id - 1;
 					}
@@ -62,7 +62,7 @@ namespace hooks {
 					}
 				} break;
 				case URC_OrderId: {
-					if (scbw::order_id_is_aggressive(unit_ext->values[ValueUnitResponseOrder])) {
+					if (bw::order_id_is_aggressive(unit_ext->values[ValueUnitResponseOrder])) {
 						aggressive_response = true;
 					}
 				} break;

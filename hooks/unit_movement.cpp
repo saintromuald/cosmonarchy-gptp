@@ -65,7 +65,7 @@ namespace hooks
 				player = colliding_unit->sprite->player;
 			}
 
-			if (!scbw::are_mutual_allies(unit->player, player)) {
+			if (!bw::are_mutual_allies(unit->player, player)) {
 				return false;
 			}
 		}

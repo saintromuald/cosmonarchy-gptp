@@ -194,7 +194,7 @@ static bool load_ds_buffer(Sound* sound) {
 
 	std::string file = mpq_load_file(sound->path);
 	if (file.empty()) {
-		scbw::printf("Error: File %s missing!", sound->path);
+		bw::printf("Error: File %s missing!", sound->path);
 		return false;
 	}
 

@@ -21,7 +21,7 @@
 #include <windows.h>
 #include <hooks\unit_movement.h>
 
-namespace scbw {
+namespace bw {
 	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt) {
 		Unit* target_unit = source->order_target.unit;
 		Point16 target_pos = source->order_target.pt;
@@ -47,12 +47,12 @@ namespace scbw {
 
 	void teleport_internal(Unit* unit, Point16 target, u16 sprite_id, bool preserve_order) {
 		// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
-		scbw::prepare_unit_move(unit, false);
+		bw::prepare_unit_move(unit, false);
 		if (!preserve_order) {
 			unit->order_target.unit = 0;
 		}
-		scbw::set_unit_position(unit, target.x, target.y);
-		scbw::refresh_unit_after_move(unit);
+		bw::set_unit_position(unit, target.x, target.y);
+		bw::refresh_unit_after_move(unit);
 
 		// Stop some currently active orders
 		if (unit->id != UnitId::ZergCocoon && !preserve_order) {
@@ -69,7 +69,7 @@ namespace scbw {
 		}
 
 		// Disconnect a nuke from a unit using it
-		if (scbw::unit_can_nuke(unit)) {
+		if (bw::unit_can_nuke(unit)) {
 			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranMorningstar) {
 				unit->connected_unit->connected_unit = 0;
 				unit->connected_unit = 0;
@@ -79,7 +79,7 @@ namespace scbw {
 
 	bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id, bool preserve_order) {
 		Point16 new_pos = {};
-		if (!scbw::check_unit_collision_pos(unit, &target, &new_pos, 0, false, 0)) {
+		if (!bw::check_unit_collision_pos(unit, &target, &new_pos, 0, false, 0)) {
 			return false;
 		}
 
@@ -96,7 +96,7 @@ namespace scbw {
 		move_area = clamp_box16(move_area);
 
 		Point16 new_pos = {};
-		if (!scbw::check_unit_collision_pos(unit, &unit->position, &new_pos, &move_area, false, 0)) {
+		if (!bw::check_unit_collision_pos(unit, &unit->position, &new_pos, &move_area, false, 0)) {
 			return false;
 		}
 		if (target->get_distance_to_point(new_pos) > radius * 1.5) {
@@ -596,8 +596,8 @@ namespace scbw {
 		auto data_ptr = &data;
 		auto len_ptr = &len;
 		u32 val = reinterpret_cast<u32>(name);
-		auto length = scbw::get_aise_value(0, reinterpret_cast<Unit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
-		char* buf = (char*)scbw::get_aise_value(0, 0, AiseId::ReadSamaseFile_Ptr, 0, 0);
+		auto length = bw::get_aise_value(0, reinterpret_cast<Unit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
+		char* buf = (char*)bw::get_aise_value(0, 0, AiseId::ReadSamaseFile_Ptr, 0, 0);
 		std::string str;
 		if (length == 0) {
 			return str;
@@ -617,11 +617,11 @@ namespace scbw {
 	}
 
 	void set_generic_rust_unit(Unit* unit, u32 id, Unit* targ) {
-		scbw::send_gptp_aise_command(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
+		bw::send_gptp_aise_command(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
 	}
 
 	void set_generic_variable(u32 id, s32 val) {
-		scbw::send_gptp_aise_command(0, 0, GptpId::SetGenericVariable, id, val, 0);
+		bw::send_gptp_aise_command(0, 0, GptpId::SetGenericVariable, id, val, 0);
 	}
 
 	u32 get_generic_rust_value(Unit* u, u32 val) {
@@ -629,7 +629,7 @@ namespace scbw {
 	}
 
 	void set_generic_rust_value(Unit* u, u32 id, u32 val) {
-		scbw::send_gptp_aise_command(u, 0, GptpId::SetGenericValue, id, val, 0);
+		bw::send_gptp_aise_command(u, 0, GptpId::SetGenericValue, id, val, 0);
 	}
 
 	void set_sprite_data(u32 entry, u32 index, u32 value) {
@@ -771,14 +771,14 @@ namespace scbw {
 
 	bool move_unit_improved(Unit* unit, s16 x, s16 y) {
 		if (!(unit->status & UnitStatus::InAir)) {
-			ActiveTile* original_tile = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y);
-			ActiveTile* final_tile = scbw::get_active_tile_at_coords(x, y);
+			ActiveTile* original_tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+			ActiveTile* final_tile = bw::get_active_tile_at_coords(x, y);
 
 			if (final_tile->is_unwalkable || original_tile->ground_height != final_tile->ground_height) {
 				return false;
 			}
 
-			Unit* collision = scbw::UnitFinder(
+			Unit* collision = bw::UnitFinder(
 				x - units_dat::unit_bounds[unit->id].left,
 				y - units_dat::unit_bounds[unit->id].top,
 				x + units_dat::unit_bounds[unit->id].right,
@@ -830,7 +830,7 @@ namespace scbw {
 		helper::update_unit_stats_and_finish_building(unit);
 		helper::update_unit_strength(unit);
 		if (init_ai) {
-			scbw::give_ai_ex(unit); // no longer need creator if we are using this robust AI function, still keeping the argument for legacy reasons
+			bw::give_ai_ex(unit); // no longer need creator if we are using this robust AI function, still keeping the argument for legacy reasons
 		}
 		return unit;
 	}
@@ -938,11 +938,11 @@ namespace scbw {
 		}
 
 		for (s32 i = 0; i < count; i++) {
-			Unit* unit = scbw::create_unit_in_game(unit_id, player, position.x, position.y, creator, false);
+			Unit* unit = bw::create_unit_in_game(unit_id, player, position.x, position.y, creator, false);
 			if (!unit) {
 				return;
 			}
-			scbw::give_ai_ex(unit);
+			bw::give_ai_ex(unit);
 			if (creator && creator->status & UnitStatus::IsHallucination) {
 				helper::apply_hallucination_stats(unit);
 				unit->status |= UnitStatus::IsHallucination;
@@ -957,7 +957,7 @@ namespace scbw {
 					if (creator) {
 						unit->hitpoints = std::max(256, creator->hitpoints);
 						unit->shields = std::max(256, creator->shields);
-						scbw::inherit_debuffs(creator, unit);
+						bw::inherit_debuffs(creator, unit);
 					}
 					helper::play_sound_from_unit(SoundId::Simulacrum_Clone_01, unit, 1, 0);
 				} break;
@@ -1037,14 +1037,14 @@ namespace scbw {
 		if (!(unit->ensnare_timer)
 			&& !(unit->status & UnitStatus::Burrowed)) {
 			Unit* victim = unit->subunit ? unit->subunit : unit;
-			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
+			victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + bw::get_overlay_offset(unit->id));
 		}
 		unit->ensnare_timer = 37;
 		unit->update_speed();
 	}
 
 	bool is_enabled(Unit* unit) {
-		if (scbw::unit_is_stunned(unit) || unit->status & UnitStatus::Disabled) {
+		if (bw::unit_is_stunned(unit) || unit->status & UnitStatus::Disabled) {
 			return false;
 		}
 		return true;
@@ -1082,7 +1082,7 @@ namespace scbw {
 	s32 get_final_damage(Unit* unit, u16 weapon_id) {
 		s32 upgrade_type = get_upgrade_type(unit);
 		s32 base_damage = weapons_dat::damage_amount[weapon_id];
-		f64 bonus_damage = (f64)weapons_dat::armor_pen[weapon_id] * (f64)scbw::get_upgrade_level(unit->player, upgrade_type);
+		f64 bonus_damage = (f64)weapons_dat::armor_pen[weapon_id] * (f64)bw::get_upgrade_level(unit->player, upgrade_type);
 		f64 final_damage = base_damage;
 		if (bonus_damage) {
 			final_damage = base_damage + bonus_damage;
@@ -1111,7 +1111,7 @@ namespace scbw {
 
 		s32 direction = unit->sprite->main_graphic->direction;
 		if (direction >= shield_lo->frame_count) {
-			scbw::printf("Unit id %u has an invalid shield overlay!", unit->id);
+			bw::printf("Unit id %u has an invalid shield overlay!", unit->id);
 		} else {
 			Point8 offset = shield_lo->get_offset(direction, frame_angle);
 			unit->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frame_angle);
@@ -1580,10 +1580,10 @@ namespace scbw {
 	}
 
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unit_ext) {
-		scbw::add_unit_overlay(unit, ImageId::MadrigalDirgeProc);
+		bw::add_unit_overlay(unit, ImageId::MadrigalDirgeProc);
 		const u32 radius = 2 * 32;
 		// TODO: Unit search
-		scbw::UnitFinder(
+		bw::UnitFinder(
 			unit->get_x() - radius,
 			unit->get_y() - radius,
 			unit->get_x() + radius,
@@ -1597,20 +1597,20 @@ namespace scbw {
 	void update_signify_status(Unit* unit, UnitExt* unit_ext) {
 		unit->update_speed();
 
-		const u32 cowardice_id = ImageId::Cowardice_Small + scbw::get_overlay_offset(unit->id);
-		const u32 malice_id = ImageId::Malice_Small + scbw::get_overlay_offset(unit->id);
+		const u32 cowardice_id = ImageId::Cowardice_Small + bw::get_overlay_offset(unit->id);
+		const u32 malice_id = ImageId::Malice_Small + bw::get_overlay_offset(unit->id);
 		if (unit_ext->values[ValueSignifyStacks] == 0) {
-			scbw::remove_unit_overlay(unit, cowardice_id);
-			scbw::remove_unit_overlay(unit, malice_id);
+			bw::remove_unit_overlay(unit, cowardice_id);
+			bw::remove_unit_overlay(unit, malice_id);
 		} else if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
 				  || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
 				  || unit->has_weapon())
 		{
 			if (unit_ext->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardice_id)) {
-				scbw::add_unit_overlay(unit, cowardice_id);
+				bw::add_unit_overlay(unit, cowardice_id);
 			} else if (unit_ext->values[ValueSignifyStacks] >= 5 && !unit->get_overlay(malice_id)) {
-				scbw::remove_unit_overlay(unit, cowardice_id);
-				scbw::add_unit_overlay(unit, malice_id);
+				bw::remove_unit_overlay(unit, cowardice_id);
+				bw::add_unit_overlay(unit, malice_id);
 			}
 		}
 	}
@@ -1621,13 +1621,13 @@ namespace scbw {
 
 		auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
 		const u32 radius = 5 * 32;
-		scbw::UnitFinder(
+		bw::UnitFinder(
 			unit->get_x() - radius,
 			unit->get_y() - radius,
 			unit->get_x() + radius,
 			unit->get_y() + radius
 		).for_each_in_match(match, [&](Unit* target) {
-			if (scbw::is_allied_to(target->player, unit->player))
+			if (bw::is_allied_to(target->player, unit->player))
 			{
 				ally_count++;
 			}
@@ -1672,8 +1672,8 @@ namespace scbw {
 		target_ext->timers[TimerAlliedInvFrames] = 24;
 
 		// Audiovisuals
-		target->sprite->create_overlay(ImageId::MindControlHit_Small + scbw::get_overlay_offset(target->id));
-		helper::play_sound_from_unit(scbw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03), target);
+		target->sprite->create_overlay(ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
+		helper::play_sound_from_unit(bw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03), target);
 	}
 
 	void mind_control(Unit* source, Unit* target) {
@@ -1682,7 +1682,7 @@ namespace scbw {
 		// we would need to create a version of this function that somehow works with only the attacking player and unit id, and pass
 		// those details through unit_ext... or so I think.
 		
-		if (!source || !target || source->player == target->player || scbw::is_allied_to(source->player, target->player)) {
+		if (!source || !target || source->player == target->player || bw::is_allied_to(source->player, target->player)) {
 			return;
 		}
 
@@ -1734,10 +1734,10 @@ namespace scbw {
 		// Audiovisuals
 		if (!(source->sprite->flags & SpriteFlags::Hidden)) {
 			if (source->id == UnitId::ProtossDemiurge) {
-				scbw::add_unit_overlay(target, ImageId::Worship_Small + scbw::get_overlay_offset(target->id));
+				bw::add_unit_overlay(target, ImageId::Worship_Small + bw::get_overlay_offset(target->id));
 				helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
 			} else if (source->id == UnitId::ProtossMindTyrant) {
-				scbw::add_unit_overlay(target, ImageId::MindControlHit_Small + scbw::get_overlay_offset(target->id));
+				bw::add_unit_overlay(target, ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
 			}
 		}
 	}
@@ -1812,7 +1812,7 @@ namespace scbw {
 		u32 best_resarea = 0;
 		for (u32 i = 1; i <= g_resource_areas->count; ++i) {
 			ResourceArea* resarea = &g_resource_areas->areas[i];
-			u32 distance = scbw::get_distance_fast(position, resarea->position);
+			u32 distance = bw::get_distance_fast(position, resarea->position);
 			if (distance < min_distance) {
 				min_distance = distance;
 				best_resarea = i;
@@ -1828,7 +1828,7 @@ namespace scbw {
 			if (!town->inited) {
 				continue;
 			}
-			u32 distance = scbw::get_distance_fast(position, town->position);
+			u32 distance = bw::get_distance_fast(position, town->position);
 			if (distance < min_distance) {
 				min_distance = distance;
 				best_town = town;
@@ -1862,7 +1862,7 @@ namespace scbw {
 	}
 
 	void ai_defend(u32 player, u32 region_id) {
-		AiRegion* ai_region = scbw::get_ai_region(player, region_id);
+		AiRegion* ai_region = bw::get_ai_region(player, region_id);
 		switch (ai_region->state) {
 			case RegionState::Nothing:
 			case RegionState::EnemySighted:
@@ -1888,8 +1888,8 @@ namespace scbw {
 		if (allied_structures.count) {
 			for (u32 ai_player = 0; ai_player < 8; ++ai_player) {
 				if (g_player_table[ai_player].type == PlayerType::Computer && victim->is_visible_to(ai_player) &&
-					!scbw::is_allied_to(ai_player, attacker->player) && scbw::is_allied_to(ai_player, victim->player)) {
-					scbw::ai_defend(ai_player, scbw::get_region_id(attacker->position));
+					!bw::is_allied_to(ai_player, attacker->player) && bw::is_allied_to(ai_player, victim->player)) {
+					bw::ai_defend(ai_player, bw::get_region_id(attacker->position));
 				}
 			}
 		}
@@ -1935,7 +1935,7 @@ namespace scbw {
 	}
 
 	void spread_custom_creep(Unit* unit) {
-		scbw::stop_custom_creep_disappearing(unit);
+		bw::stop_custom_creep_disappearing(unit);
 		helper::spread_creep(UnitId::ZergGathtelosk, unit->position.x, unit->position.y);
 	}
 
@@ -1958,11 +1958,11 @@ namespace scbw {
 				Point16 center = {};
 				center.x = area.left + (area.right - area.left)   / 2;
 				center.y = area.top  + (area.top   - area.bottom) / 2;
-				ai_script->flags |= scbw::get_closest_resarea(center) << 3;
+				ai_script->flags |= bw::get_closest_resarea(center) << 3;
 			}
 			return ai_script;
 		} else {
-			scbw::printf("scenario.cpp, run_ai: Invalid AI block!");
+			bw::printf("scenario.cpp, run_ai: Invalid AI block!");
 		}
 		return 0;
 	}
@@ -1979,9 +1979,9 @@ namespace scbw {
 	AiScript* run_default_ai(u32 player, Point16 pos) {
 		u32 race = g_player_table[player].race;
 		switch (race) {
-			case RaceId::Terran:	scbw::printf("Running Terran AI for player %u",  player + 1); return scbw::run_ai(player, pos, 'xCMT');
-			case RaceId::Protoss:	scbw::printf("Running Protoss AI for player %u", player + 1); return scbw::run_ai(player, pos, 'xCMP');
-			case RaceId::Zerg:		scbw::printf("Running Zerg AI for player %u",    player + 1); return scbw::run_ai(player, pos, 'xCMZ');
+			case RaceId::Terran:	bw::printf("Running Terran AI for player %u",  player + 1); return bw::run_ai(player, pos, 'xCMT');
+			case RaceId::Protoss:	bw::printf("Running Protoss AI for player %u", player + 1); return bw::run_ai(player, pos, 'xCMP');
+			case RaceId::Zerg:		bw::printf("Running Zerg AI for player %u",    player + 1); return bw::run_ai(player, pos, 'xCMZ');
 		}
 		return 0;
 	}
@@ -1996,7 +1996,7 @@ namespace scbw {
 			if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
 				g_aiscript_controller[unit->player].main_medic = unit;
 			}
-			helper::add_military_ai(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)), unit, true);
+			helper::add_military_ai(bw::get_ai_region(unit->player, bw::get_region_id(unit->position)), unit, true);
 		}
 	}
 
@@ -2212,7 +2212,7 @@ namespace scbw {
 	}
 
 	bool unit_is_allied_or_detected(Unit* unit, u32 player) {
-		if (scbw::is_allied_to(unit->player, player)) {
+		if (bw::is_allied_to(unit->player, player)) {
 			 return true;
 		}
 		if (helper::get_detecting_players(unit) & (1 << player)) {
@@ -2361,7 +2361,7 @@ namespace scbw {
 			unit->unit_ai->guard_ai.parent = 0;
 			unit->unit_ai = 0;
 			helper::add_military_ai(ai_region, unit, 1);
-			helper::ai_recalculate_region_strength(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)));
+			helper::ai_recalculate_region_strength(bw::get_ai_region(unit->player, bw::get_region_id(unit->position)));
 			helper::ai_recalculate_region_strength(ai_region); // New
 			return true;
 		}
@@ -2405,7 +2405,7 @@ namespace scbw {
 				return;
 			}
 
-			if (scbw::unit_has_shields(unit) && unit->shields < units_dat::max_shield_points[unit->id] * 256) {
+			if (bw::unit_has_shields(unit) && unit->shields < units_dat::max_shield_points[unit->id] * 256) {
 				// Shield check for default behavior
 				helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 				helper::add_overlay_below_main(heal_source->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
@@ -2414,7 +2414,7 @@ namespace scbw {
 				return;
 			}
 
-			if (scbw::unit_has_shields(unit)) {
+			if (bw::unit_has_shields(unit)) {
 				// Shield heal
 				unit->heal_shields(heal_amount * 256, heal_source);
 			}
@@ -2512,7 +2512,7 @@ namespace scbw {
 				military_add_spending_request(player, unit_id, position, priority, request_base);
 			}
 		}
-		helper::ai_add_spending_request(unit_id, player, RequestType::Military, priority, scbw::get_ai_region(player, scbw::get_region_id(position)));
+		helper::ai_add_spending_request(unit_id, player, RequestType::Military, priority, bw::get_ai_region(player, bw::get_region_id(position)));
 	}
 
 	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority, bool request_base) {
@@ -2705,7 +2705,7 @@ namespace scbw {
 		unit_search_filter(&targets, victim, FilterNotSelf | FilterNotSubunit);
 		for (u32 i = 0; i < targets.count; ++i) {
 			Unit* target = targets.units[i];
-			if (scbw::is_allied_to(player, target->player)) {
+			if (bw::is_allied_to(player, target->player)) {
 				entry_array_remove(&targets, i--);
 			}
 			if (!target->is_visible_to(player)) {
@@ -2725,13 +2725,13 @@ namespace scbw {
 			Unit* target = targets.units[target_index];
 			target_index = (target_index + 1) % targets.count;
 
-			u32 angle = scbw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
+			u32 angle = bw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
 			Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, victim, victim->position.x, victim->position.y, player, angle);
 			if (!bullet) {
 				break; 
 			}
 
-			scbw::set_bullet_target(bullet, target);
+			bw::set_bullet_target(bullet, target);
 			victim_ext->values[ValueGladiusBindingPlasmaStacks]--;
 		}
 
@@ -2881,13 +2881,13 @@ namespace scbw {
 
 	static bool sat_collision_internal(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
 		for (u32 i = 0; i < a_count; ++i) {
-			Vector32f diff = scbw::get_vectorf_between(a[i], a[(i + 1) % a_count]);
+			Vector32f diff = bw::get_vectorf_between(a[i], a[(i + 1) % a_count]);
 			Vector32f proj = {-diff.y, diff.x};
 
 			f32 a_min = INFINITY;
 			f32 a_max = -INFINITY;
 			for (u32 j = 0; j < a_count; ++j) {
-				f32 dot = scbw::dot_product(a[j], proj);
+				f32 dot = bw::dot_product(a[j], proj);
 				if (dot < a_min) a_min = dot;
 				if (dot > a_max) a_max = dot;
 			}
@@ -2895,7 +2895,7 @@ namespace scbw {
 			f32 b_min = INFINITY;
 			f32 b_max = -INFINITY;
 			for (u32 j = 0; j < b_count; ++j) {
-				f32 dot = scbw::dot_product(b[j], proj);
+				f32 dot = bw::dot_product(b[j], proj);
 				if (dot < b_min) b_min = dot;
 				if (dot > b_max) b_max = dot;
 			}
@@ -2912,11 +2912,11 @@ namespace scbw {
 	}
 
 	f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector32f* out_cp) {
-		Vector32f ab = scbw::get_vectorf_between(from, to);
-		Vector32f ap = scbw::get_vectorf_between(from, point);
+		Vector32f ab = bw::get_vectorf_between(from, to);
+		Vector32f ap = bw::get_vectorf_between(from, point);
 
-		f32 dot = scbw::dot_product(ab, ap);
-		dot /= scbw::dot_product(ab, ab);
+		f32 dot = bw::dot_product(ab, ap);
+		dot /= bw::dot_product(ab, ab);
 		dot = Clamp(dot, 0, 1);
 
 		Vector32f cp = from;
@@ -2926,7 +2926,7 @@ namespace scbw {
 			*out_cp = cp;
 		}
 
-		return scbw::get_distance_between(cp, point);
+		return bw::get_distance_between(cp, point);
 	}
 
 	static void line_intersects_rect_internal(Quad quad_a, Quad quad_b, Vector32f axis, f32* best_distance, Vector32f* best_cp, f32* best_t) {
@@ -2937,7 +2937,7 @@ namespace scbw {
 				Vector32f point = quad_b.corners[j];
 				Vector32f cp = {};
 				f32 distance = line_to_point_distance(line0, line1, point, &cp);
-				f32 t = scbw::dot_product(cp, axis);
+				f32 t = bw::dot_product(cp, axis);
 				if (abs(distance - *best_distance) < 1) {
 					if (t < *best_t) {
 						*best_distance = distance;
@@ -2961,7 +2961,7 @@ namespace scbw {
 				return true;
 			}
 
-			Vector32f axis = scbw::get_vectorf_between(from, to);
+			Vector32f axis = bw::get_vectorf_between(from, to);
 			f32 best_distance = INFINITY;
 			Vector32f best_cp = {};
 			best_cp.x = rect.left   + (rect.right - rect.left)   / 2;
@@ -2976,7 +2976,7 @@ namespace scbw {
 				out_cp->y = best_cp.y;
 			}
 			if (out_t) {
-				*out_t = scbw::dot_product(best_cp, axis);
+				*out_t = bw::dot_product(best_cp, axis);
 			}
 
 			return true;
@@ -3073,7 +3073,7 @@ namespace scbw {
 
 			Unit* new_unit = unit;
 			if (unit->id == UnitId::ZergExcisant) {
-				new_unit = scbw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
+				new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
 			} else {
 				helper::replace_unit_with_id(unit, regress_to);
 				unit->set_hitpoints(unit->get_max_hp_raw());
@@ -3196,18 +3196,18 @@ namespace scbw {
 	}
 
 	u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
-		u32 distance = scbw::get_distance_fast(unit->position, target);
+		u32 distance = bw::get_distance_fast(unit->position, target);
 		if (!(unit->pathing_flags & 1)) {
 			return distance;
 		}
-		u32 original_group_id = scbw::get_region(unit->position)->group_index;
-		u32 group_id = scbw::get_region(target)->group_index;
+		u32 original_group_id = bw::get_region(unit->position)->group_index;
+		u32 group_id = bw::get_region(target)->group_index;
 		if (group_id != original_group_id) {
 			return UINT_MAX;
 		}
 		if (distance <= 8 * 32) {
-			u32 original_height = scbw::get_active_tile_at_coords(unit->position)->ground_height;
-			u32 height = scbw::get_active_tile_at_coords(target)->ground_height;
+			u32 original_height = bw::get_active_tile_at_coords(unit->position)->ground_height;
+			u32 height = bw::get_active_tile_at_coords(target)->ground_height;
 			if (height == original_height) {
 				return distance;
 			}
@@ -3216,7 +3216,7 @@ namespace scbw {
 	}
 
 	Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target) {
-		Vector32f shift = scbw::get_normalized_vector(scbw::get_vector_between(pos, target));
+		Vector32f shift = bw::get_normalized_vector(bw::get_vector_between(pos, target));
         f32 max_distance = std::max(abs(shift.x), abs(shift.y));
         if (max_distance) {
             shift.x /= max_distance;
@@ -3261,7 +3261,7 @@ namespace scbw {
 	}
 
 	u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) { 
-	/*	if (scbw::has_custom_advisor(player)) */ {
+	/*	if (bw::has_custom_advisor(player)) */ {
 			AdvisorType advisor = globals.current_advisor;
 			if (advisor == AdvisorType_Default) {
 				switch (g_player_table[player].race)
@@ -3498,18 +3498,18 @@ namespace scbw {
 	}
 
 	u32 get_advisor_sound_from_message_id(u32 player, u32 message_id) {
-		if (scbw::has_custom_advisor(player)) {
+		if (bw::has_custom_advisor(player)) {
 			switch (message_id) {
-				case AdvisorMessageId_NoMinerals:     return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
-				case AdvisorMessageId_NoVespene:      return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
-				case AdvisorMessageId_NoBuildZerg:    return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
-				case AdvisorMessageId_NoBuildProtoss: return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
-				case AdvisorMessageId_NoLanding:      return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoLanding);
+				case AdvisorMessageId_NoMinerals:     return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
+				case AdvisorMessageId_NoVespene:      return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
+				case AdvisorMessageId_NoBuildZerg:    return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
+				case AdvisorMessageId_NoBuildProtoss: return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
+				case AdvisorMessageId_NoLanding:      return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoLanding);
 
 				case AdvisorMessageId_NoEnergy:
 				case AdvisorMessageId_NoEnergy2:
 				case AdvisorMessageId_NoEnergy3:
-					return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoEnergy);
+					return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoEnergy);
 
 				case AdvisorMessageId_NoBuildResources:
 				case AdvisorMessageId_NoBuildOffMap:
@@ -3519,11 +3519,11 @@ namespace scbw {
 				case AdvisorMessageId_NoBuildGeyser:
 				case AdvisorMessageId_NoBuildCouldntReach: {
 					switch (g_player_table[player].race) {
-						case RaceId::Terran:  return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
-						case RaceId::Protoss: return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
-						case RaceId::Zerg:    return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
+						case RaceId::Terran:  return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
+						case RaceId::Protoss: return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
+						case RaceId::Zerg:    return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
 					}
-					return scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
+					return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
 				} break;
 			}
 		}
@@ -3594,7 +3594,7 @@ namespace scbw {
 			bounds_wy
 		};
 
-		scbw::draw_shape(20, ((float)(radius << 5)) / 256.0F, offset, color);
+		bw::draw_shape(20, ((float)(radius << 5)) / 256.0F, offset, color);
 	}
 
 	void reveal_attacker(Unit* attacker, Unit* victim)
@@ -3604,7 +3604,7 @@ namespace scbw {
 		}
 		u32 flags = 1 << victim->player;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (scbw::is_vision_allied_to(victim->player, i)) {
+			if (bw::is_vision_allied_to(victim->player, i)) {
 				flags |= 1 << i;
 			}
 		}
@@ -3685,7 +3685,7 @@ namespace scbw {
 		unit->position.x = (u16)pos.x;
 		unit->position.y = (u16)pos.y;
 		unit->sprite->position = unit->position;
-		scbw::artificial_bullet_from(weapon_id, unit->player, unit, 0, spr_position);
+		bw::artificial_bullet_from(weapon_id, unit->player, unit, 0, spr_position);
 		u32 sound_id = SoundId::LakiziliskProjectileReturn;
 		if (weapon_id == WeaponId::SkithrokorSkitteringSpores) {
 			sound_id = SoundId::SkithrokorWeaponfire01;
@@ -3702,7 +3702,7 @@ namespace scbw {
 	{
 		iquare_globals.add_incremental_bullet_multihit(bullet, target);
 		s32 count = iquare_globals.get_multihit_count(bullet) - 1;
-		scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, position.x, position.y, bullet->player);
+		bw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, position.x, position.y, bullet->player);
 		target->damage_with(weapon_id, (weapons_dat::damage_amount[weapon_id] - count) * 256, bullet->source_unit, bullet->player);
 
 		if (count >= weapons_dat::damage_amount[weapon_id]) {
@@ -3832,7 +3832,7 @@ namespace scbw {
 			helper::create_new_unit_selections_from_list(units.data(), units.size());
 			helper::cmdact_select(units.data(), units.size());
 			*g_client_selection_changed = true;
-			scbw::refresh_console();
+			bw::refresh_console();
 		}
 	}
 

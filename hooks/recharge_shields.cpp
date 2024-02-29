@@ -33,7 +33,7 @@ void rechargeShieldsProc(Unit* target, Unit* battery)
 
 	target->heal_shields(shield_gain, battery);
 
-	if (!scbw::is_cheat_enabled(CheatFlags::TheGathering))
+	if (!bw::is_cheat_enabled(CheatFlags::TheGathering))
 		battery->spend_unit_energy(energySpent);
 
 }
@@ -48,7 +48,7 @@ namespace hooks
 	// Decides whether the @p target can recharge shields from the @p battery.
 	b32 unitCanRechargeShieldsHook(Unit* target, Unit* battery) {
 		//Check target conditions
-		if (!scbw::is_allied_to(target->player, battery->player)			 // Is not owned by the player (NEW: or the player's allies)
+		if (!bw::is_allied_to(target->player, battery->player)			 // Is not owned by the player (NEW: or the player's allies)
 		|| !(units_dat::shields_enabled[target->id])						     // Does not have shields
 		|| !(target->status & UnitStatus::Completed)						 // Is incomplete?
 	//	|| !(target->status & UnitStatus::IsBuilding)						 // Is building (like archon build self)?

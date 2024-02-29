@@ -60,7 +60,7 @@ AdvisorType get_advisor_type_from_config(u32 race) {
 		} break;
 	}
 	if (advisors.size()) {
-		u32 index = scbw::rand_between_local(0, advisors.size() - 1);
+		u32 index = bw::rand_between_local(0, advisors.size() - 1);
 		return advisors[index];
 	}
 	return AdvisorType_Default;
@@ -207,7 +207,7 @@ void update_trigger_system(bool in_game) {
 	if (in_game) {
 		update_sound();
 	}
-	bool paused = scbw::is_game_paused();
+	bool paused = bw::is_game_paused();
 	if (trigger_game_paused && !paused) {
 		set_palette_recolor(recolor_system.current_recolor.set);
 	}
@@ -482,7 +482,7 @@ bool parse_condition(Parser* parser) {
 
 			if (center.x >= area.box.left && center.x <= area.box.right &&
 				center.y >= area.box.top  && center.y <= area.box.bottom) {
-				ActiveTile* tile = scbw::get_active_tile_at_coords(center.x, center.y);
+				ActiveTile* tile = bw::get_active_tile_at_coords(center.x, center.y);
 				// TODO: should we check area flags?
 				if (token_eqi(&min_visibility, "unexplored")) {
 					return true;
@@ -717,7 +717,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					current_playlist.tracks[current_playlist.size++] = music;
 				}
 			} else {
-				scbw::printf("Error: Playlist already full! (%s)", filename.data);
+				bw::printf("Error: Playlist already full! (%s)", filename.data);
 			}
 		} else if (parser_eq(&parser, "playlist_shuffle") && is_local_player) {
 			s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
@@ -954,7 +954,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					play_sound(get_sound(path.data), get_sound_volume());
 				} else {
 					bool play = false;
-					ActiveTile* tile = scbw::get_active_tile_at_coords(position.x, position.y);
+					ActiveTile* tile = bw::get_active_tile_at_coords(position.x, position.y);
 
 					if (token_eqi(&min_visibility, "unexplored")) {
 						play = true;
@@ -1036,7 +1036,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "clear_creep")) {
 			Area location = parser_get_area(&parser);
-			scbw::clear_creep(location.box);
+			bw::clear_creep(location.box);
 		} else if (parser_eq(&parser, "spawn")) {
 			SpawnSequence sequence = {};
 			sequence.count = parser_get_s32(&parser);
@@ -1142,7 +1142,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
 			Point16 resarea_position = parser_get_position(&parser, box_center(area.box));
 
-			u32 resarea = scbw::get_closest_resarea(resarea_position);
+			u32 resarea = bw::get_closest_resarea(resarea_position);
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (!players.set[i]) {
 					continue;
@@ -1185,7 +1185,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						helper::ai_get_old_peons(town, worker_count);
 					}
 					if (attach_to_nearest_resarea) {
-						town->resarea = scbw::get_closest_resarea(pos);
+						town->resarea = bw::get_closest_resarea(pos);
 						layouts_town->wants_no_resarea = false;
 					} else {
 						town->resarea = 0;
@@ -1205,7 +1205,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 							if (!placeholder->town) {
 								placeholder->town = town;
 								if (show_player_layouts[player]) {
-									scbw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder->unit_id), i, placeholder->resarea);
+									bw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder->unit_id), i, placeholder->resarea);
 								}
 							}
 						}
@@ -1446,13 +1446,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 				unit_count++;
 				Point16 origin = unit->position;
-				if (!scbw::teleport_to_point(unit, dest)) {
-					scbw::printf("move_unit: Failed to move unit with id %u to coordinates %u, %u", unit->id, dest.x, dest.y);
+				if (!bw::teleport_to_point(unit, dest)) {
+					bw::printf("move_unit: Failed to move unit with id %u to coordinates %u, %u", unit->id, dest.x, dest.y);
 				}
 				if (overlay) {
 					if (!unit->get_overlay(ImageId::LegionnaireTeleportEffect)) {
 						helper::create_thingy(SpriteId::LegionnaireTeleportEffect, origin.x, origin.y, unit->player);
-						scbw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
+						bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 					}
 				}
 			}
@@ -1513,7 +1513,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				g_player_table[player].type = PlayerType::Computer;
-				scbw::run_default_ai(player, g_start_positions[player]);
+				bw::run_default_ai(player, g_start_positions[player]);
 			};
 		} else if (parser_eq(&parser, "threshold_set_fraud_slots")) {
 			PlayerBitset players = parser_get_player_bitset(&parser);
@@ -1588,9 +1588,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					continue;
 				}
 				for (u32 j = 0; j < count; ++j) {
-					Unit* cargo_unit = scbw::create_unit_in_game(unit_id, player ? player : unit->player, 0, 0);
+					Unit* cargo_unit = bw::create_unit_in_game(unit_id, player ? player : unit->player, 0, 0);
 					if (cargo_unit) {
-						if (force ? !scbw::transport_is_full(unit) : scbw::can_be_entered_by(unit, cargo_unit)) {
+						if (force ? !bw::transport_is_full(unit) : bw::can_be_entered_by(unit, cargo_unit)) {
 							helper::load_unit_proc(unit, cargo_unit);
 						} else {
 							cargo_unit->user_action_flags |= 0x4;
@@ -1682,7 +1682,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "print")) {
 			Token text = parser_get_string(&parser);
-			scbw::print(text.data);
+			bw::print(text.data);
 		}
 	}
 	return true;

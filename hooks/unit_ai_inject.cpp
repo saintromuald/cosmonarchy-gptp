@@ -161,7 +161,7 @@ namespace
 		}
 		if ((u32)free <= 0x100000)
 		{
-			scbw::print("Corrupted pointer in AddUnitAi!");
+			bw::print("Corrupted pointer in AddUnitAi!");
 			__asm
 			{
 				POPAD

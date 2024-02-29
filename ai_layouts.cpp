@@ -127,7 +127,7 @@ void update_layouts() {
 			}
 
 			if (show_player_layouts[town->player]) {
-				scbw::printf("Player %u started Town #%u at resarea %u", town->player + 1, town_id, town->resarea);
+				bw::printf("Player %u started Town #%u at resarea %u", town->player + 1, town_id, town->resarea);
 			}
 		}
 		if (layouts_town->inited) {
@@ -224,7 +224,7 @@ void update_layouts() {
 					if (!placeholder->requested) {
 						placeholder->requested = true;
 						if (show_player_layouts[town->player]) {
-							scbw::printf("Player %u requested %s #%u at resarea %u", player + 1, Unit::get_name(placeholder->unit_id), placeholder_id, placeholder->resarea);
+							bw::printf("Player %u requested %s #%u at resarea %u", player + 1, Unit::get_name(placeholder->unit_id), placeholder_id, placeholder->resarea);
 						}
 					}
 
@@ -317,7 +317,7 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 	u32 best_distance = UINT_MAX;
 	u32 best_resarea = 0;
 
-	bool has_transport = scbw::player_has_transport(main_town->player);
+	bool has_transport = bw::player_has_transport(main_town->player);
 
 	AiLayouts* layouts = &player_layouts[main_town->player];
 	for (u32 j = 0; j < layouts->placeholders_count; ++j) {
@@ -332,7 +332,7 @@ u32 ai_get_next_custom_expo(AiTown* main_town) {
 		}
 		// See if it's an optimal expansion
 		if (placeholder->should_request && !placeholder->is_townhall_marker && units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
-			u32 distance = scbw::get_distance_fast(main_town->position, g_resource_areas->areas[placeholder->resarea].position);
+			u32 distance = bw::get_distance_fast(main_town->position, g_resource_areas->areas[placeholder->resarea].position);
 			if (placeholder->priority > best_priority || (placeholder->priority == best_priority && distance < best_distance)) {
 				best_priority = placeholder->priority;
 				best_distance = distance;
@@ -396,11 +396,11 @@ u32 town_count_units(AiTown* town, u32 unit_id, bool completed) {
 	u32 count = 0;
 	for (Unit* unit = first_player_unit->unit[town->player]; unit; unit = unit->player_link.next) {
 		if (completed) {
-			if (unit->id == unit_id && unit->status & UnitStatus::Completed && town == scbw::get_closest_town(unit->player, unit->position)) {
+			if (unit->id == unit_id && unit->status & UnitStatus::Completed && town == bw::get_closest_town(unit->player, unit->position)) {
 				count += 1;
 			}
 		} else {
-			if (unit->id == unit_id && town == scbw::get_closest_town(unit->player, unit->position)) {
+			if (unit->id == unit_id && town == bw::get_closest_town(unit->player, unit->position)) {
 				count += 1;
 			}
 			UnitAi* unit_ai = unit->unit_ai;
@@ -473,7 +473,7 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 		placeholder->priority = 180;
 		placeholder->yield_score = 0;
 
-		u32 resarea = scbw::get_closest_resarea(placeholder->position);
+		u32 resarea = bw::get_closest_resarea(placeholder->position);
 		EntryArray found = {};
 		unit_search_radial(&found, placeholder->position, 12 * 32);
 		for (u32 i = 0; i < found.count; ++i) {
@@ -489,7 +489,7 @@ void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, 
 			if (unit_id_is_uncapped_gas_node(unit->id)) {
 				score *= 3;
 			}
-			u32 distance = scbw::get_distance_fast(placeholder->position, unit->position) / 32;
+			u32 distance = bw::get_distance_fast(placeholder->position, unit->position) / 32;
 			if (distance) {
 				score /= distance;
 			}
@@ -530,7 +530,7 @@ void add_placeholder(CHKUnit* unit, u32 player) {
 	placeholder.was_preplaced = !(flags & ChkUnitFlags_Cloaked);
 	placeholder.should_request = !(flags & ChkUnitFlags_Hallucinated);
 	if (!(flags & ChkUnitFlags_Invincible)) {
-		placeholder.resarea = scbw::get_closest_resarea(placeholder.position);
+		placeholder.resarea = bw::get_closest_resarea(placeholder.position);
 	}
 	add_placeholder_by_unit_id(&player_layouts[player], &placeholder, unit->unit_id);
 }
@@ -579,7 +579,7 @@ static s32 compare_base_layout(const void* a, const void* b) {
 	if (pa->resarea && pb->resarea) {
 		Point16 point_a = g_resource_areas->areas[pa->resarea].position;
 		Point16 point_b = g_resource_areas->areas[pb->resarea].position;
-		s32 pos_diff = scbw::get_distance_fast(pa->position, point_a) - scbw::get_distance_fast(pb->position, point_b);
+		s32 pos_diff = bw::get_distance_fast(pa->position, point_a) - bw::get_distance_fast(pb->position, point_b);
 		if (pos_diff) return pos_diff;
 	}
 
@@ -598,7 +598,7 @@ bool unit_has_creep(u32 unit_id, u32 x, u32 y) {
 	area.y = y - area.h / 2;
 	for (u32 xx = 0; xx < area.w / 32; ++xx) {
 		for (u32 yy = 0; yy < area.h / 32; ++yy) {
-			ActiveTile* tile = scbw::get_active_tile_at_coords(area.x + xx * 32, area.y + yy * 32);
+			ActiveTile* tile = bw::get_active_tile_at_coords(area.x + xx * 32, area.y + yy * 32);
 			if (!tile->has_cagra) {
 				return false;
 			}
@@ -615,7 +615,7 @@ bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 	area.y = y - area.h / 2;
 	for (u32 xx = 0; xx < area.w / 32; ++xx) {
 		for (u32 yy = 0; yy < area.h / 32; ++yy) {
-			ActiveTile* tile = scbw::get_active_tile_at_coords(area.x + xx * 32, area.y + yy * 32);
+			ActiveTile* tile = bw::get_active_tile_at_coords(area.x + xx * 32, area.y + yy * 32);
 			TileExt* tile_ext = get_tile_ext_at_coords(area.x + xx * 32, area.y + yy * 32);
 			if (tile->has_cagra && !can_place_on_creep_tile(tile_ext, player)) {
 				return false;
@@ -702,7 +702,7 @@ void init_placeholder(AiTown* town, AiPlaceholder* placeholder) {
 
 	placeholder->inited = true;
 	if (units_dat::base_property[placeholder->unit_id] & UnitProperty::Building) {
-		scbw::send_gptp_aise_command((Unit*)placeholder, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
+		bw::send_gptp_aise_command((Unit*)placeholder, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
 	}
 }
 
@@ -718,16 +718,16 @@ void request_placeholder(AiTown* town, AiLayoutsTown* layouts_town, AiPlaceholde
 		}
 		*/
 
-		scbw::town_add_spending_request(town, 1, placeholder->unit_id, placeholder->priority);
+		bw::town_add_spending_request(town, 1, placeholder->unit_id, placeholder->priority);
 	} else if (units_dat::computer_ai_internal[placeholder->unit_id] & 2) {
-		scbw::military_add_spending_request(town->player, placeholder->unit_id, placeholder->position, placeholder->priority);
+		bw::military_add_spending_request(town->player, placeholder->unit_id, placeholder->position, placeholder->priority);
 	} else {
 		if (!placeholder->guard_ai) {
-			placeholder->guard_ai = scbw::create_guard_ai(town->player, placeholder->unit_id, placeholder->position);
+			placeholder->guard_ai = bw::create_guard_ai(town->player, placeholder->unit_id, placeholder->position);
 		}
 		if (placeholder->guard_ai && !placeholder->guard_ai->parent) {
-			scbw::guard_add_spending_request(town->player, placeholder->guard_ai, placeholder->priority);
+			bw::guard_add_spending_request(town->player, placeholder->guard_ai, placeholder->priority);
 		}
-		// scbw::send_gptp_aise_command((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
+		// bw::send_gptp_aise_command((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
 	}
 }

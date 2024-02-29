@@ -162,7 +162,7 @@ namespace hooks
 					{
 						current_weapon_id = current_unit->get_air_weapon();
 					}
-					if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
+					if (current_unit->id == UnitId::ProtossClarion && bw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 					{
 						current_weapon_id = WeaponId::None;
 					}
@@ -316,7 +316,7 @@ namespace hooks
 			} else {
 				if (unit->status & UnitStatus::Unmovable)
 				{
-					u32 distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
+					u32 distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 					if ((distance / 256) > weapons_dat::outer_splash_radius[WeaponId::InfestedTerranSuicide])
 					{
 						unit->order_to_idle();
@@ -653,7 +653,7 @@ namespace hooks
 				out_unit->sprite->elevation = unit->sprite->elevation- 1;
 				out_unit->order_to(units_dat::attack_unit_order[UnitId::ProtossSteward], unit->order_target.unit);
 				unit->order_queue_timer = 4; // Originally unit->main_order_timer = 7;
-				scbw::decloak_passive_proc(unit);
+				bw::decloak_passive_proc(unit);
 			}
 
 		} else if (unit->unit_ai && unit->main_order_timer == 0) {
@@ -721,7 +721,7 @@ namespace hooks
 					y = unit->position.y;
 				}
 
-				scbw::refresh_console();
+				bw::refresh_console();
 				if (unit->unit_with_hangar.in_hangar_child == launched_unit)
 				{
 					unit->unit_with_hangar.in_hangar_child = launched_unit->hangar_unit.hangar_link.prev;
@@ -744,7 +744,7 @@ namespace hooks
 				unit->unit_with_hangar.out_hangar_child = launched_unit;
 				unit->unit_with_hangar.out_hangar_count++;
 
-				scbw::set_unit_position(launched_unit, x, y);
+				bw::set_unit_position(launched_unit, x, y);
 				//void showAndEnableUnit(Unit* unit) @ 004E6490
 				__asm {
 					PUSHAD
@@ -962,7 +962,7 @@ namespace hooks
 			if (auto_target->is_dead()) return 0; // New
 
 			u8 target_player = auto_target->player == 11 ? auto_target->sprite->player : auto_target->player;
-			if (!scbw::is_allied_to(unit->player, target_player)
+			if (!bw::is_allied_to(unit->player, target_player)
 			&& !(auto_target->sprite->flags & SpriteFlags::Hidden)
 			&& !(auto_target->status & UnitStatus::Invincible))
 			{

@@ -6,7 +6,7 @@ namespace AI
 	Unit* find_best_tyranny_target(Unit* caster, bool isUnderAttack)
 	{
 		s32 bounds = 32 * 32;
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->position.x - bounds,
 			caster->position.y - bounds,
 			caster->position.x + bounds,

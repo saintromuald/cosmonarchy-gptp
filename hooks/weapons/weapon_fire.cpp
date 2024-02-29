@@ -19,7 +19,7 @@ static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
 	{
 		return false;
 	}
-	if (scbw::is_allied_to(bullet->player, unit->player))
+	if (bw::is_allied_to(bullet->player, unit->player))
 	{
 		return false;
 	}
@@ -89,8 +89,8 @@ Point16 make_launch_pos(Point16 unit_position, Point8 offset) {
 }
 
 u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, Point16 other_pos) {
-	Point16 edge_point = scbw::get_rect_edge_point_towards(unit_pos, units_dat::unit_bounds[unit_id], other_pos);
-	return scbw::get_distance_fast(source_pos, edge_point);
+	Point16 edge_point = bw::get_rect_edge_point_towards(unit_pos, units_dat::unit_bounds[unit_id], other_pos);
+	return bw::get_distance_fast(source_pos, edge_point);
 }
 
 Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown, bool ignore_max_range, bool dont_follow) {
@@ -114,7 +114,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 		launch_pos = make_launch_pos(launch_pos, get_next_bullet_offset(unit, weapon_offsets));
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
-		Vector32f diff = scbw::get_normalized_vector(scbw::get_vector_between(launch_pos, target.pt));
+		Vector32f diff = bw::get_normalized_vector(bw::get_vector_between(launch_pos, target.pt));
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 16;
 		max_range += get_correction_distance(unit->position, unit->id, launch_pos, target.pt);
 		Vector32f target_pos = { launch_pos.x + (diff.x * max_range), launch_pos.y + (diff.y * max_range) };
@@ -130,7 +130,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 		target.pt.x = target_pos.x;
 		target.pt.y = target_pos.y;
 	}
-	s32 angle = scbw::get_angle(launch_pos.x, launch_pos.y, target.pt.x, target.pt.y);
+	s32 angle = bw::get_angle(launch_pos.x, launch_pos.y, target.pt.x, target.pt.y);
 
 	Target original_target = unit->order_target;
 	unit->order_target = target;
@@ -138,9 +138,9 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	unit->order_target = original_target;
 	if (bullet) {
 		if (dont_follow || weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
-			scbw::set_bullet_target_absolute(bullet, target);
+			bw::set_bullet_target_absolute(bullet, target);
 		} else {
-			scbw::set_bullet_target_follow(bullet, target);
+			bw::set_bullet_target_follow(bullet, target);
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (is_ion_cannon) {
@@ -163,22 +163,22 @@ void apply_weapon_cooldown(Unit* unit, u8 weapon_id) {
 Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown) {
 	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attacking_player, direction);
 	if (bullet) {
-		scbw::decloak_passive_proc(source);
+		bw::decloak_passive_proc(source);
 		if (apply_cooldown) {
 			apply_weapon_cooldown(source, weapon_id);
 		}
 
 		UnitExt* source_ext = get_unit_ext(source);
 		if (source_ext->values[ValueDeconstruction]) {
-			scbw::do_deconstruction_damage(source, weapon_id, false);
+			bw::do_deconstruction_damage(source, weapon_id, false);
 		}
 	}
 	return bullet;
 }
 
 static Point16 set_target_range(Point16 origin, Point16 point, f32 distance) {
-	Vector32f vector = scbw::get_vectorf_between(origin, point);
-	f32 old_distance = scbw::get_vector_distance(vector);
+	Vector32f vector = bw::get_vectorf_between(origin, point);
+	f32 old_distance = bw::get_vector_distance(vector);
 
 	vector.x *= distance / old_distance;
 	vector.y *= distance / old_distance;
@@ -203,15 +203,15 @@ void fire_line(Unit* unit, u32 weapon_id, u32 total_count, u32 forward_spread, u
 	u32 forward_count = total_count / lines;
 	s32 forward_offset = (forward_spread * forward_index) - (forward_spread * (forward_count - 1) / 2);
 	u32 forward_angle = unit_ext->values[ValueProjectileAngle];
-	target.pt.x += scbw::get_polar_x(forward_offset, forward_angle);
-	target.pt.y += scbw::get_polar_y(forward_offset, forward_angle);
+	target.pt.x += bw::get_polar_x(forward_offset, forward_angle);
+	target.pt.y += bw::get_polar_y(forward_offset, forward_angle);
 
 	if (lines > 1) {
 		u32 side_index = index % lines;
 		s32 side_offset = (side_spread * side_index) + (side_spread * (lines - 1) / 2);
 		u32 side_angle = (forward_angle + 64) % 256;
-		target.pt.x -= scbw::get_polar_x(side_offset, side_angle);
-		target.pt.y -= scbw::get_polar_y(side_offset, side_angle);
+		target.pt.x -= bw::get_polar_x(side_offset, side_angle);
+		target.pt.y -= bw::get_polar_y(side_offset, side_angle);
 	}
 
 	fire_bullet(unit, weapon_id, target, weapon_offsets, true, false, true);
@@ -221,7 +221,7 @@ void fire_line(Unit* unit, u32 weapon_id, u32 total_count, u32 forward_spread, u
 void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets) {
 	Target target = unit->order_target;
 
-	u32 max_range = scbw::get_distance_fast(unit->position, target.pt);
+	u32 max_range = bw::get_distance_fast(unit->position, target.pt);
 	if (weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
 	}
@@ -250,7 +250,7 @@ void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u
 			if (j == 0) {
 				angle = 360 - angle;
 			}
-			Point16 target_pt = scbw::rotate_point(launch_pos, set_target_range(launch_pos, target.pt, current_range), angle);
+			Point16 target_pt = bw::rotate_point(launch_pos, set_target_range(launch_pos, target.pt, current_range), angle);
 			fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), weapon_offsets, true, true, true);
 		}
 	}
@@ -307,7 +307,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, cons
 	        && unit->main_order_id != OrderId::Patrol
 			&& can_fire_at(order_target_unit)
 	        && unit->can_attack_target(order_target_unit)) {
-		if (weapon_id_is_secondary(weapon_id) && scbw::is_allied_to(unit->player, order_target_unit->player)) {
+		if (weapon_id_is_secondary(weapon_id) && bw::is_allied_to(unit->player, order_target_unit->player)) {
 			return false; // This is stupid, but the unit_flag_match handling causes tism with entering transports. Should make more elegant later. -Pr0nogo
 		}
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
@@ -355,7 +355,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, cons
 		Unit* target = targets.units[i];
 		if  (target == unit
 		||   target == order_target_unit
-		||   scbw::is_allied_to(unit->player, target->player)
+		||   bw::is_allied_to(unit->player, target->player)
 		||  !unit->can_attack_target(target)
 		||  !can_fire_at(target)) {
 			continue;
@@ -419,23 +419,23 @@ namespace hooks {
 			y = unit->order_target.pt.y;
 		} else {
 			s32 forward_offset = weapons_dat::forward_offset[weapon_id];
-			x = unit->position.x + scbw::get_polar_x(forward_offset, unit->current_direction_1);
-			y = unit->position.y + scbw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[weapon_id];
+			x = unit->position.x + bw::get_polar_x(forward_offset, unit->current_direction_1);
+			y = unit->position.y + bw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[weapon_id];
 		}
 
 		// Cloaked units - decloak
 		// Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
 	//	if (unit->id != UnitId::ProtossCabalist) {
-			scbw::decloak_passive_proc(unit);
+			bw::decloak_passive_proc(unit);
 	//	}
 		if (unit->id == UnitId::ProtossSteward && unit->hangar_unit.parent) {
-			scbw::decloak_passive_proc(unit->hangar_unit.parent);
+			bw::decloak_passive_proc(unit->hangar_unit.parent);
 		}
 
 		if (weapons_dat::flingy_id[weapon_id] != 0)
 		{
 			if (unit->id == UnitId::TerranSavant) {
-				if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
+				if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
 					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05), unit, 1, 0);
 				} else {
 					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05), unit, 1, 0);
@@ -463,9 +463,9 @@ namespace hooks {
 				u32 range = max_range + 16;
 				Point16 unit_pos = { unit->position.x, unit->position.y };
 				Point16 target_pos = { unit->order_target.unit->position.x, unit->order_target.unit->position.y };
-				s32 angle = scbw::get_angle(unit_pos.x, unit_pos.y, target_pos.x, target_pos.y);
-				unit_ext->values[ValueMissileReturnX] = unit_pos.x + scbw::get_polar_x(range, angle);
-				unit_ext->values[ValueMissileReturnY] = unit_pos.y + scbw::get_polar_y(range, angle);
+				s32 angle = bw::get_angle(unit_pos.x, unit_pos.y, target_pos.x, target_pos.y);
+				unit_ext->values[ValueMissileReturnX] = unit_pos.x + bw::get_polar_x(range, angle);
+				unit_ext->values[ValueMissileReturnY] = unit_pos.y + bw::get_polar_y(range, angle);
 				if (unit->order_target.unit)
 				{
 					unit_ext->values[ValueMissileReturnTarget] = (u32)unit->order_target.unit;
@@ -547,7 +547,7 @@ namespace hooks {
 					} break;
 					case WeaponId::SavantDiscoidRailgun: {
 						// Entropy Gauntlets
-						if (!scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
+						if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
 							helper::create_thingy(SpriteId::EntropyGauntletsOverlay, unit->position.x, unit->position.y, unit->player);
 							fire_bullet(unit, WeaponId::SavantDiscoidRailgunPiercing, unit->order_target);
 						} else {
@@ -612,8 +612,8 @@ namespace hooks {
 						options.weapon_offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
 						Unit* target = unit->order_target.unit;
-						if (target && unit->player != target->player && !scbw::is_allied_to(unit->player, target->player)) {
-							scbw::astral_blessing_proc(unit, unit->player, weapon_id);
+						if (target && unit->player != target->player && !bw::is_allied_to(unit->player, target->player)) {
+							bw::astral_blessing_proc(unit, unit->player, weapon_id);
 						}
 					} break;
 					case WeaponId::BarghestRayOfAgony: {
@@ -644,7 +644,7 @@ namespace hooks {
 						iquare_globals.create_effect(EffectId_VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
 					} // Fallthrough intended, for now.
 					default: {
-						u32 sound_id = scbw::get_manual_weapon_id_sound(weapon_id);
+						u32 sound_id = bw::get_manual_weapon_id_sound(weapon_id);
 						if (sound_id) {
 							helper::play_sound_from_unit(sound_id, unit, 1, 0);
 						}
@@ -684,7 +684,7 @@ namespace hooks {
 			if (unit_id_ignores_ground_collision(unit->id)) {
 				continue;
 			}
-			if (bullet->attack_target.unit != unit && scbw::is_allied_to(bullet->player, unit->player)) {
+			if (bullet->attack_target.unit != unit && bw::is_allied_to(bullet->player, unit->player)) {
 				continue;
 			}
 			if (intercept_type == InterceptType_GroundOnly) {
@@ -702,7 +702,7 @@ namespace hooks {
 
 			f32 t = 0;
 			Point16 cp = {};
-			if (!scbw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
+			if (!bw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
 				continue;
 			}
 			if (t < best_t) {
@@ -732,21 +732,21 @@ namespace hooks {
 			case WeaponId::HippogriffChimeraCannons:
 			{
 				iquare_globals.add_bullet_multihit(bullet, target);
-				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
 			// Same as default, but red effect
 			case WeaponId::SavantDiscoidRailgunPiercing:
 			{
 				iquare_globals.add_bullet_multihit(bullet, target);
-				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, cp.x, cp.y, bullet->player);
+				bw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
 			case WeaponId::PenumbraErebolShockCannon:
 			{
 				// Penumbra - Shroud Piercer
 				iquare_globals.add_bullet_multihit(bullet, target);
-				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, bullet->attack_target.unit == target ? 1 : 2);
 			} break;
 			case WeaponId::ClaymoreHarpoonRailgun:
@@ -754,7 +754,7 @@ namespace hooks {
 				// Claymore - Kelvin Munitions
 				// pierce targets
 				iquare_globals.add_bullet_multihit(bullet, target);
-				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
 				helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::ClaymoreWeaponHit01, SoundId::ClaymoreWeaponHit02), target, 1, 0);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 
@@ -767,23 +767,23 @@ namespace hooks {
 			case WeaponId::KalkaliskViscousAcid:
 			{
 				// Kalkalisk - Ablative Spores
-				scbw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
+				bw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
 			} break;
 			case WeaponId::SkithrokorSkitteringSpores:
 			{
 				// Skithrokor - Ablative Whiplash
-				scbw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
+				bw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
 			} break;
 			case WeaponId::ZarcavrokorBonesofReflection:
 			{
 				iquare_globals.add_bullet_multihit(bullet, target);
-				scbw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
+				bw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
 			default:
 			{
 				iquare_globals.add_bullet_multihit(bullet, target);
-				scbw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, cp.x, cp.y, bullet->player);
+				bw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			}
 		}
@@ -814,10 +814,10 @@ namespace hooks {
 			if (unit->status & UnitStatus::Invincible) {
 				continue;
 			}
-			if (bullet->attack_target.unit != unit && scbw::is_allied_to(bullet->player, unit->player)) {
+			if (bullet->attack_target.unit != unit && bw::is_allied_to(bullet->player, unit->player)) {
 				continue;
 			}
-			if (!scbw::can_weapon_target_unit(bullet->weapon_id, unit)) {
+			if (!bw::can_weapon_target_unit(bullet->weapon_id, unit)) {
 				continue;
 			}
 			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, unit)) {
@@ -829,7 +829,7 @@ namespace hooks {
 
 			f32 t = 0;
 			Point16 cp = {};
-			if (!scbw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
+			if (!bw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
 				continue;
 			}
 
@@ -887,7 +887,7 @@ namespace hooks {
 			if (!bullet->attack_target.unit) {
 				u32 range = AlkajeliskParasiticSporesSeekRange;
 				// TODO: Unit search
-				auto seek_target = scbw::UnitFinder::get_nearest_target(
+				auto seek_target = bw::UnitFinder::get_nearest_target(
 					bullet->position.x - range,
 					bullet->position.y - range,
 					bullet->position.x + range,
@@ -896,7 +896,7 @@ namespace hooks {
 					return alkajelisk_spore_match(bullet, unit);
 				});
 				if (seek_target) {
-					scbw::set_bullet_target(bullet, seek_target);
+					bw::set_bullet_target(bullet, seek_target);
 					helper::progress_bullet_movement(bullet);
 				}
 			} else {
@@ -908,11 +908,11 @@ namespace hooks {
 
 		// Simulate Z
 		u32 old_distance_traveled = bullet_ext->distance_traveled;
-		bullet_ext->distance_traveled += scbw::get_distance_fast(old_position, bullet->position);
+		bullet_ext->distance_traveled += bw::get_distance_fast(old_position, bullet->position);
 		bullet_ext->time_traveled += 1;
 		if (z_climb) {
-			f32 distance_from_source = scbw::get_distance_fast(bullet_ext->bullet_source, bullet->position);
-			f32 distance_to_target = scbw::get_distance_fast(bullet->position, bullet->target_position_1);
+			f32 distance_from_source = bw::get_distance_fast(bullet_ext->bullet_source, bullet->position);
+			f32 distance_to_target = bw::get_distance_fast(bullet->position, bullet->target_position_1);
 			f32 total_distance = distance_from_source + distance_to_target;
 			f32 factor = distance_to_target / total_distance;
 
@@ -926,17 +926,17 @@ namespace hooks {
 			// Positron - Particle Annihilation
 			u32 period = 1 * 32;
 			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
-				scbw::create_and_init_thingy(SpriteId::AntiMatterMissileHit, bullet->position.x, bullet->position.y, bullet->player, bullet->sprite->elevation - 1);
+				bw::create_and_init_thingy(SpriteId::AntiMatterMissileHit, bullet->position.x, bullet->position.y, bullet->player, bullet->sprite->elevation - 1);
 				helper::play_sound_at_pos(helper::get_random_sfx_between(SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03), bullet->position, 1, 0);
 				EntryArray targets = {};
 				unit_search_radial(&targets, bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]);
 				unit_search_filter(&targets, 0, 0); // Let's filter with no flags, since that should remove untargetable stuff and what not
 				for (u32 i = 0; i < targets.count; ++i) {
 					Unit* target = targets.units[i];
-					if (scbw::is_allied_to(bullet->player, target->player) || target == bullet->attack_target.unit) {
+					if (bw::is_allied_to(bullet->player, target->player) || target == bullet->attack_target.unit) {
 						continue;
 					}
-					u32 distance = scbw::get_distance_fast(bullet->position, target->position);
+					u32 distance = bw::get_distance_fast(bullet->position, target->position);
 					u32 divisor = 1;
 					if (distance <= weapons_dat::inner_splash_radius[bullet->weapon_id]) {
 						divisor = 4;
@@ -972,7 +972,7 @@ namespace hooks {
 			Unit* main_target = bullet->attack_target.unit;
 			UnitExt* unit_ext = get_unit_ext(bullet->source_unit);
 			const u32 distance_from_source = bullet_ext->distance_traveled;
-			const u32 distance_from_target = scbw::get_distance_fast(bullet->position, main_target->position);
+			const u32 distance_from_target = bw::get_distance_fast(bullet->position, main_target->position);
 			if (distance_from_source > 5 * 32 && distance_from_target < 3 * 32) {
 				if (!iquare_globals.multihit_bullet_is_set(bullet)) {
 					Unit* old_target = bullet->source_unit->order_target.unit;
@@ -981,7 +981,7 @@ namespace hooks {
 					bullet->source_unit->sprite->position = bullet->position;
 					bullet->source_unit->position = bullet->position;
 					u32 radius = 3 * 32;
-					scbw::UnitFinder units_in_splash(
+					bw::UnitFinder units_in_splash(
 						main_target->position.x - radius,
 						main_target->position.y - radius,
 						main_target->position.x + radius,
@@ -1003,7 +1003,7 @@ namespace hooks {
 							continue;
 						}
 						bullet->source_unit->order_target.unit = target;
-						s32 new_angle = scbw::get_angle(bullet->position.x, bullet->position.y, target->position.x, target->position.y);
+						s32 new_angle = bw::get_angle(bullet->position.x, bullet->position.y, target->position.x, target->position.y);
 						Bullet* new_bullet = create_bullet_ex(WeaponId::ArchitectDispersiveSalvo,
 							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
 						if (new_bullet) {
@@ -1108,7 +1108,7 @@ namespace hooks {
 
 		BulletExt* bullet_ext = get_bullet_ext(bullet);
 		u32 old_distance_traveled = bullet_ext->distance_traveled;
-		bullet_ext->distance_traveled += scbw::get_distance_fast(old_position, bullet->position);
+		bullet_ext->distance_traveled += bw::get_distance_fast(old_position, bullet->position);
 		bullet_ext->time_traveled += 1;
 		if (weapon_id_bounces_caustic_fission(bullet->weapon_id) && !bullet_ext->bounced) {
 			u32 period = 4 * 32;
@@ -1218,7 +1218,7 @@ namespace hooks {
 		}
 
 		u8 player = target->player == 11 ? target->sprite->player : target->player;
-		if (scbw::is_allied_to(bounce_source->player, player) || *g_bullet_bounce_missile_target == target)
+		if (bw::is_allied_to(bounce_source->player, player) || *g_bullet_bounce_missile_target == target)
 		{
 			return 0;
 		}

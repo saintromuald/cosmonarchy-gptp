@@ -16,7 +16,7 @@ namespace AI
 			bounds = 32 * 64;
 		}
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds, caster->get_y() - bounds,
 			caster->get_x() + bounds, caster->get_y() + bounds,
 			caster, [&](Unit* target)
@@ -26,7 +26,7 @@ namespace AI
 				return false;
 			}
 
-			if (!scbw::can_weapon_target_unit(WeaponId::SpawnBroodlings, target, caster))
+			if (!bw::can_weapon_target_unit(WeaponId::SpawnBroodlings, target, caster))
 			{
 				return false;
 			}

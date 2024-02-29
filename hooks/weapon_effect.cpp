@@ -26,10 +26,10 @@ namespace
 
 namespace hooks {
 	void carapace_swarm_damage(u16 x, u16 y, u16 r, Bullet* bullet, u32 weapon_id) {
-		Unit* swarm = scbw::get_dark_swarm_from_position(x, y, r);
+		Unit* swarm = bw::get_dark_swarm_from_position(x, y, r);
 		if (swarm) {
 			u32 damage = (weapons_dat::damage_amount[weapon_id] * 256) +
-				(weapons_dat::armor_pen[weapon_id] * 256 * scbw::get_upgrade_level(bullet->player, weapons_dat::damage_upgrade[weapon_id]));
+				(weapons_dat::armor_pen[weapon_id] * 256 * bw::get_upgrade_level(bullet->player, weapons_dat::damage_upgrade[weapon_id]));
 			if (bullet->hit_flags & 2) {
 				damage /= 2;
 			}
@@ -112,16 +112,16 @@ namespace hooks {
 			if (unit == target && bullet->weapon_id != WeaponId::PsiStorm) continue;
 
 			// Don't hit allied units -- normally just checks target->player == bullet->player (also checks if type is 'splash enemy' or 'nuclear missile')
-			// if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
+			// if (bw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
 
 			if (splash == SplashType::Enemy) {
 				if (bullet->player == target->player && target != bullet->attack_target.unit) continue;
 			} else if (splash == SplashType::FriendlyNew) {
-				if (scbw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
+				if (bw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
 			}
 
 			// Can the unit be targeted?
-			if (!scbw::can_weapon_target_unit(bullet->weapon_id, target, target)) continue;
+			if (!bw::can_weapon_target_unit(bullet->weapon_id, target, target)) continue;
 
 			if (!helper::is_unit_distance_within(target, bullet, outer)) continue;
 
@@ -151,7 +151,7 @@ namespace hooks {
 		s16 r = weapons_dat::outer_splash_radius[weapon_id];
 
 		// Get units within the outer splash radius
-		scbw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
+		bw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
 
 		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 			Unit* target = units_in_splash.get_unit(i);
@@ -171,13 +171,13 @@ namespace hooks {
 					}
 				}
 					
-				if (scbw::is_unit_enemy(bullet->player, target) == false && !lakizilisk_override && target != bullet->attack_target.unit) {
+				if (bw::is_unit_enemy(bullet->player, target) == false && !lakizilisk_override && target != bullet->attack_target.unit) {
 					continue;
 				}
 			}
 
 			// Can the unit be targeted?
-			if (!scbw::can_weapon_target_unit(bullet->weapon_id, target, target)) continue;
+			if (!bw::can_weapon_target_unit(bullet->weapon_id, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
 			if (!helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[bullet->weapon_id])) {
@@ -206,7 +206,7 @@ namespace hooks {
 
 		Unit* attack_target = bullet->attack_target.unit;
 		Point16 forward_pos = attack_target ? attack_target->position : bullet->position;
-		Vector32f forward_diff = scbw::get_normalized_vector_between(attacker->position, forward_pos);
+		Vector32f forward_diff = bw::get_normalized_vector_between(attacker->position, forward_pos);
 
 		f32 outer    = weapons_dat::outer_splash_radius[weapon_id];
 		f32 inner_t  = 1 - weapons_dat::inner_splash_radius[weapon_id] / outer;
@@ -220,15 +220,15 @@ namespace hooks {
 			if (!helper::is_unit_distance_within(target, bullet, outer)) {
 				continue;
 			}
-			if (!scbw::can_weapon_target_unit(bullet->weapon_id, target, attacker)) {
+			if (!bw::can_weapon_target_unit(bullet->weapon_id, target, attacker)) {
 				continue;
 			}
-			if (!scbw::is_unit_enemy(bullet->player, target) && target != attack_target) {
+			if (!bw::is_unit_enemy(bullet->player, target) && target != attack_target) {
 				continue;
 			}
 
-			Vector32f target_diff = scbw::get_normalized_vector_between(attacker->position, target->position);
-			f32 t = scbw::dot_product(forward_diff, target_diff);
+			Vector32f target_diff = bw::get_normalized_vector_between(attacker->position, target->position);
+			f32 t = bw::dot_product(forward_diff, target_diff);
 			if (t >= inner_t) {
 				helper::weapon_bullet_shot(target, bullet, 1); // 100% damage
 			} else if (t >= medium_t) {
@@ -324,7 +324,7 @@ namespace hooks {
 		y = bullet->sprite->position.y;
 		r = weapons_dat::outer_splash_radius[weapon_id];
 		// Get units within the outer splash radius
-		scbw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
+		bw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
 		carapace_swarm_damage(x, y, r, bullet, weapon_id);
 
 		s32 result;
@@ -337,7 +337,7 @@ namespace hooks {
 
 			weapon_id_loop = bullet->weapon_id;
 			if (target != bullet->source_unit && (target->player != bullet->player || target == bullet->attack_target.unit)) {
-				if (scbw::can_weapon_target_unit(weapon_id_loop, target, target)) {
+				if (bw::can_weapon_target_unit(weapon_id_loop, target, target)) {
 					if (helper::is_unit_distance_within(target, bullet, weapons_dat::outer_splash_radius[weapon_id_loop])) {
 						if (helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weapon_id_loop])
 							&& target == bullet->attack_target.unit)
@@ -388,7 +388,7 @@ namespace hooks {
 		if (!bullet->source_unit) {
 			return;
 		}
-		Unit* spawn = scbw::create_unit_in_game(UnitId::ZergVilgoleth, bullet->player, bullet->position.x, bullet->position.y);
+		Unit* spawn = bw::create_unit_in_game(UnitId::ZergVilgoleth, bullet->player, bullet->position.x, bullet->position.y);
 		UnitExt* unit_ext = get_unit_ext(spawn);
 		unit_ext->timers[TimerVilgolethSpawn] = 24;
 	}
@@ -408,7 +408,7 @@ namespace hooks {
 		s16 x = bullet->sprite->position.x;
 		s16 y = bullet->sprite->position.y;
 		s16 r = weapons_dat::outer_splash_radius[WeaponId::LobotomyMineExplosion];
-		scbw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
+		bw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
 		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++)
 		{
 			Unit* target = units_in_splash.get_unit(i);

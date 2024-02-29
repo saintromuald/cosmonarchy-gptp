@@ -58,7 +58,7 @@ bool isGameOn = false;
 		{
 			hooks::next_frame();
 		}
-		if (scbw::is_game_paused())
+		if (bw::is_game_paused())
 		{
 			__asm {
 				POPAD

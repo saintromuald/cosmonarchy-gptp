@@ -38,7 +38,7 @@ namespace
 			MOV eax_res, EAX
 			PUSHAD
 		}
-		if (opcode < scbw::get_aise_value(nullptr, nullptr, AiseId::UpgradeLength, 0, 0))
+		if (opcode < bw::get_aise_value(nullptr, nullptr, AiseId::UpgradeLength, 0, 0))
 		{
 			__asm {
 				POPAD

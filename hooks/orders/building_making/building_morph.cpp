@@ -18,13 +18,13 @@ namespace hooks {
 		u16 building_id = building->build_queue[building->build_queue_slot];
 		BuildingModifier modifier = get_building_modifier(building, 0, helper::is_valid_building_morph(building->id) ? false : true);
 
-		if (!scbw::is_zerg_building_morph_result(building_id)) {
+		if (!bw::is_zerg_building_morph_result(building_id)) {
 			building_id = building->id;
 		}
 
 		switch (building->main_order_state) {
 			case 0: {
-				scbw::prepare_building_area(building->position, building_id);
+				bw::prepare_building_area(building->position, building_id);
 				// Remove statuses if the source worker had them before morphing
 				building->status &= ~UnitStatus::NoCollide;
 				building->status &= ~UnitStatus::IsGathering;
@@ -79,7 +79,7 @@ namespace hooks {
 						building->set_hitpoints(hp_after_morph);
 						building->remaining_build_time = 0;
 					} else if (building->create_origin == UnitId::ZergGosvileth) {
-						Unit* worker = scbw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y, 0, 0, 0);
+						Unit* worker = bw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y, 0, 0, 0);
 						if (worker) {
 							worker->set_hitpoints(building->previous_hitpoints << 8);
 						}
@@ -114,7 +114,7 @@ namespace hooks {
 			}
 		}
 
-		if (!scbw::is_zerg_building_morph_result(building_id) || building_ext->values[ValueIsNydusExit]) {
+		if (!bw::is_zerg_building_morph_result(building_id) || building_ext->values[ValueIsNydusExit]) {
 			building->set_hitpoints(building->hitpoints + hp_gain);
 		}
 	}
@@ -188,7 +188,7 @@ namespace hooks
 	// Note: This hook affects the behavior of Unit::is_remorphing_building().
 	bool is_morphed_building(u16 unit_id)
 	{
-		if (scbw::is_zerg_building_morph_result(unit_id))
+		if (bw::is_zerg_building_morph_result(unit_id))
 		{
 			return true;
 		}
@@ -326,7 +326,7 @@ namespace hooks
 		helper::give_sprite(target, unit->player);
 		target->create_origin = unit->id;
 		helper::replace_unit_with_id(target, unit_id);
-		if (!scbw::unit_is_stunned(target) || units_dat::base_property[target->id] & UnitProperty::Building) {
+		if (!bw::unit_is_stunned(target) || units_dat::base_property[target->id] & UnitProperty::Building) {
 			target->current_buttonset = UnitId::Buttons_CancelConstruction;
 		}
 		helper::add_overlay_below_main(target->sprite, ImageId::VespeneGeyser2, 0, 0, 0);
@@ -481,7 +481,7 @@ namespace hooks
 									helper::refresh_sprite_data(unit->sprite);
 									helper::order_immediate(unit, OrderId::ResetCollision1);
 								}
-								scbw::refresh_console();
+								bw::refresh_console();
 								helper::force_order_done(unit);
 							}
 						}
@@ -628,6 +628,6 @@ namespace hooks
 		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 			play_image_iscript(image, IscriptAnimation::SpecialState1);
 		}
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 }

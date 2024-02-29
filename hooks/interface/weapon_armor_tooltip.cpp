@@ -78,8 +78,8 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string
 
 	UnitExt* unit_ext = get_unit_ext(unit);
 
-	u8 damage_factor = scbw::get_damage_factor_for_tooltip(weapon_id, unit);
-	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
+	u8 damage_factor = bw::get_damage_factor_for_tooltip(weapon_id, unit);
+	u8 upgrade_level = bw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
 	u8 damage_type = weapons_dat::damage_type[weapon_id];
 	u32 base_damage = weapons_dat::damage_amount[weapon_id];
 	if (unit_ext->values[ValueTriggerDamageBaseSet]) {
@@ -194,8 +194,8 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string
 			text += builder.str();
 		}
 		append_tooltip_value(text, range, bonus_range, extended);
-		if (extended && (scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
-			scbw::draw_weapon_range(unit, weapon_id, 174);
+		if (extended && (bw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
+			bw::draw_weapon_range(unit, weapon_id, 174);
 		}
 	}
 
@@ -433,11 +433,11 @@ namespace hooks
 		add_status(statuses, "Decided Collateral (Outer)", unit_ext->values[ValueTriggerWeaponSplashOuterAmount] / 32);
 
 		// GPTP Value - Gimmicked
-		add_status(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
-		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
+		add_status(statuses, "Power Siphon", bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
+		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
 		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigalImperiosoMode, 1);
 		add_status(statuses, "Tempo Down", unit->id == UnitId::TerranMadrigalFuriaMode, 1);
-		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
+		add_status(statuses, "Phase Link", bw::has_clarion_links(unit), 1);
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
 		add_status(statuses, "Blissfully Embraced", unit_ext->values[ValueInfested], 1);
 
@@ -479,8 +479,8 @@ namespace hooks
 
 		// Case Specific
 		add_status(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
-		if (scbw::is_under_carapace_swarm(unit)) {
-			Unit* darkSwarm = scbw::get_carapace_swarm_unit(unit);
+		if (bw::is_under_carapace_swarm(unit)) {
+			Unit* darkSwarm = bw::get_carapace_swarm_unit(unit);
 			add_status(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
 		}
 
@@ -537,7 +537,7 @@ namespace hooks
 
 		if (extended) {
 			if (unit->player < PlayerLimit) {
-				text += "\nColor: " + std::string(scbw::get_player_color_code(unit->player, false).data) + std::string(player_color_names[player_data.player_color_list[unit->player]]) + "\002"; // TODO: move to rank text
+				text += "\nColor: " + std::string(bw::get_player_color_code(unit->player, false).data) + std::string(player_color_names[player_data.player_color_list[unit->player]]) + "\002"; // TODO: move to rank text
 			}
 			text += "\nPlane: " + plane;
 			text += "\nFlags: " + flag;
@@ -545,8 +545,8 @@ namespace hooks
 				text += "\nAcceleration: " + acceleration;
 			}
 			text += "\nTurn Rate: " + turn_rate;
-		//	if ((scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
-		//		scbw::draw_weapon_range(unit, sight_range, 255);
+		//	if ((bw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
+		//		bw::draw_weapon_range(unit, sight_range, 255);
 		//	}
 			if (transport_space != 255) {
 				text += "\nTransport Space: " + std::to_string(transport_space);

@@ -24,7 +24,7 @@ static SaveState saveState;
 
 void IquareGlobals::aise_save()
 {
-	scbw::print("WARNING: Saving doesn't work properly in Cosmonarchy.\n\t\t\tAny plugin specific data will be lost.", GameTextColor::Yellow);
+	bw::print("WARNING: Saving doesn't work properly in Cosmonarchy.\n\t\t\tAny plugin specific data will be lost.", GameTextColor::Yellow);
 	return;
 
 	output.clear();
@@ -204,7 +204,7 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 
 	//u32 multihit_count = 0;
 	//stream.read(reinterpret_cast<char*>(&multihit_count), sizeof(multihit_count));
-	//scbw::printf("Hits: %d", multihit_count);
+	//bw::printf("Hits: %d", multihit_count);
 	/*
 	for (s32 i = 0; i < multihit_count; i++) {
 		MultihitBullet bull;
@@ -308,7 +308,7 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 	}
 	// if not already irradiated and not burrowed, add the irradiate overlay
 	if (unit->irradiate_timer == 0 && !(unit->status & UnitStatus::Burrowed)) {
-		u32 irradiate_image_id = ImageId::IrradiateNew_Small + scbw::get_overlay_offset(unit->id);
+		u32 irradiate_image_id = ImageId::IrradiateNew_Small + bw::get_overlay_offset(unit->id);
 		Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
 		overlay_unit->sprite->create_top_overlay(irradiate_image_id, 0, 0, 0);
 	}
@@ -323,7 +323,7 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 void tick_effect(Effect* effect) {
 	if (effect->current_time && effect->sprite_id >= 0) {
 		if (!effect->thingy || !effect->thingy->sprite) {
-			effect->thingy = scbw::create_and_init_thingy(effect->sprite_id, effect->position.x, effect->position.y, effect->player, effect->elevation);
+			effect->thingy = bw::create_and_init_thingy(effect->sprite_id, effect->position.x, effect->position.y, effect->player, effect->elevation);
 		}
 	}
 	const s32 effect_period = 6;
@@ -337,7 +337,7 @@ void tick_effect(Effect* effect) {
 					return;
 				}
 
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
@@ -364,26 +364,26 @@ void tick_effect(Effect* effect) {
 				}
 			} break;
 			case EffectId_AspirantCriticality: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
 					unit->heal_shields_then_hp(4 * 256 / 24 * effect_period, effect->source, true);
 				});
 			} break;
 			case EffectId_KeskathalorCausticDischarge: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
@@ -392,13 +392,13 @@ void tick_effect(Effect* effect) {
 				});
 			} break;
 			case EffectId_DiademIonField: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
@@ -407,26 +407,26 @@ void tick_effect(Effect* effect) {
 				});
 			} break;
 			case EffectId_HallucinatingField: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
-					scbw::apply_hallucinating(unit, effect->player, 3 * 24 + 1);
+					bw::apply_hallucinating(unit, effect->player, 3 * 24 + 1);
 				});
 			} break;
 			case EffectId_Irradiate: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
 					apply_irradiate(unit, effect->player, 15);
@@ -448,7 +448,7 @@ void tick_effect(Effect* effect) {
 						Point16 new_pos = effect->position;
 						new_pos.x += distance;
 						for (u32 j = 0; j < count; ++j) {
-							new_pos = scbw::rotate_point(effect->position, new_pos, (360.0 / count));
+							new_pos = bw::rotate_point(effect->position, new_pos, (360.0 / count));
 							iquare_globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, new_pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 						}
 					} break;
@@ -466,7 +466,7 @@ void tick_effect(Effect* effect) {
 					break;
 				}
 
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - 60,
 					effect->position.y - 40,
 					effect->position.x + 60,
@@ -494,7 +494,7 @@ void tick_effect(Effect* effect) {
 				});
 			} break;
 			case EffectId_IsthrathalethPlagueField: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - 1.5 * 32,
 					effect->position.y - 1 * 32,
 					effect->position.x + 1.5 * 32,
@@ -531,7 +531,7 @@ void tick_effect(Effect* effect) {
 					unit_search_filter(&unit_array, effect->source, FilterEnemy);
 					for (u32 j = 0; j < unit_array.count; j++) {
 						Unit* target = unit_array.units[j];
-						if (scbw::is_allied_to(effect->player, target->player)) {
+						if (bw::is_allied_to(effect->player, target->player)) {
 							continue;
 						}
 						target->damage_with_custom(8 * 256, 0, effect->source, effect->player);
@@ -767,7 +767,7 @@ void inject_globals_hooks()
 	// memoryPatch(0x004AAE94 + 5, &retn, 1);
 }
 
-namespace scbw
+namespace bw
 {
 	void refresh_debuffs(Unit* unit)
 	{
@@ -838,7 +838,7 @@ namespace scbw
 		}
 
 		//was hardcoded in original code
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	void inherit_debuffs(Unit* parent, Unit* child)
@@ -1006,7 +1006,7 @@ namespace scbw
 		child_ext->timers[TimerSignify] = parent_ext->timers[TimerSignify];
 		child_ext->values[ValueSignifyStacks] = parent_ext->values[ValueSignifyStacks];
 		child_ext->values[ValueSignifyPlayer] = parent_ext->values[ValueSignifyPlayer];
-		scbw::update_signify_status(child, child_ext);
+		bw::update_signify_status(child, child_ext);
 
 		// Inherit domination
 		child_ext->timers[TimerDemiurgeWorship]				= parent_ext->timers[TimerDemiurgeWorship];
@@ -1016,7 +1016,7 @@ namespace scbw
 		child_ext->values[ValueMindControlOriginalPlayer]	= parent_ext->values[ValueMindControlOriginalPlayer];
 		child_ext->timers[TimerMindControlRecede]			= parent_ext->timers[TimerMindControlRecede];
 
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	// TODO: update
@@ -1024,7 +1024,7 @@ namespace scbw
 		UnitExt* unit_ext = get_unit_ext(unit);
 		bool has_parasite = false;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (!scbw::is_allied_to(i, unit->player)) {
+			if (!bw::is_allied_to(i, unit->player)) {
 				has_parasite = true;
 			}
 		}
@@ -1054,13 +1054,13 @@ namespace scbw
 		{
 			overlayTargetUnit = unit->subunit;
 		}
-		u32 overlayImageId = ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id);;
+		u32 overlayImageId = ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id);;
 		(overlayTargetUnit->sprite)->create_top_overlay(overlayImageId, 0, 0, 0);
 
 		// remove status effects and corresponding overlays
 
 		// Remove Incubation
-		if (!scbw::is_allied_to(unit_ext->values[ValueIncubationPlayer], unit->player) && unit_ext->timers[TimerIncubationArm]) {
+		if (!bw::is_allied_to(unit_ext->values[ValueIncubationPlayer], unit->player) && unit_ext->timers[TimerIncubationArm]) {
 			unit_ext->timers[TimerIncubationArm] = 0;
 			unit->remove_overlay(ImageId::ParasiteOverlay);
 		}
@@ -1073,7 +1073,7 @@ namespace scbw
 		if (unit_ext->timers[TimerAuralAssaultBlind]) {
 			unit_ext->timers[TimerAuralAssaultBlind] = 0;
 
-			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(unit->id);
+			u32 overlay = ImageId::OpticalFlareHit_Small + bw::get_overlay_offset(unit->id);
 			Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
 			overlay_unit->remove_overlay(overlay);
 			unit->status &= ~UnitStatus::CanNotReceiveOrders;
@@ -1167,12 +1167,12 @@ namespace scbw
 		unit_ext->timers[TimerSignify] = 0;
 		unit_ext->values[ValueSignifyStacks] = 0;
 		unit_ext->values[ValueSignifyPlayer] = 0;
-		scbw::update_signify_status(unit, unit_ext);
+		bw::update_signify_status(unit, unit_ext);
 
 		// Remove Stellar Enforcement
 		unit_ext->timers[TimerStellarEnforcement] = 0;
 
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	bool is_slowed(Unit* unit)
@@ -1259,14 +1259,14 @@ namespace scbw
 
 		clear_clarion_links(unit);
 		const s32 radius = 3 * 32;
-		scbw::UnitFinder(
+		bw::UnitFinder(
 			unit->get_x() - radius,
 			unit->get_y() - radius,
 			unit->get_x() + radius,
 			unit->get_y() + radius
 		).filter([&](Unit* target)
 		{
-			if (!scbw::is_allied_to(unit->player, target->player))
+			if (!bw::is_allied_to(unit->player, target->player))
 			{
 				return false;
 			}
@@ -1282,7 +1282,7 @@ namespace scbw
 			{
 				return false;
 			}
-			if (scbw::get_distance_fast(target->get_x(), target->get_y(), unit->get_x(), unit->get_y()) > radius)
+			if (bw::get_distance_fast(target->get_x(), target->get_y(), unit->get_x(), unit->get_y()) > radius)
 			{
 				return false;
 			}
@@ -1342,7 +1342,7 @@ namespace scbw
 				for (Unit* linked_unit : links) {
 					s32 unit_damage = std::min(divided, linked_unit->shields);
 					damage -= unit_damage;
-					data.direction = scbw::get_angle(damage_origin->get_x(), damage_origin->get_y(), linked_unit->get_x(), linked_unit->get_y());
+					data.direction = bw::get_angle(damage_origin->get_x(), damage_origin->get_y(), linked_unit->get_x(), linked_unit->get_y());
 					link_damage(linked_unit, unit_damage, data);
 				}
 				data.direction = old_direction;

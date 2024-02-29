@@ -52,11 +52,11 @@ namespace hooks
 		// Forcibly unburrow units that collide with buildings
 		if (unit->status & UnitStatus::Burrowed)
 		{
-			ActiveTile* tile = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+			ActiveTile* tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
 			if (tile->currently_occupied)
 			{
 				// TODO: unit search
-				Unit* nearest = scbw::UnitFinder::get_nearest_target(
+				Unit* nearest = bw::UnitFinder::get_nearest_target(
 					unit->get_left() - 32,
 					unit->get_top() - 32,
 					unit->get_right() + 32,
@@ -116,9 +116,9 @@ namespace hooks
 		{
 			if (unit->is_valid_caster())
 			{
-				if (!scbw::is_allied_to(*g_local_nation_id, unit->player))
+				if (!bw::is_allied_to(*g_local_nation_id, unit->player))
 				{
-					scbw::refresh_console();
+					bw::refresh_console();
 				}
 			}
 		}
@@ -178,9 +178,9 @@ namespace hooks
 
 		}
 
-		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
+		if (unit->id == UnitId::ProtossClarion && bw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 		{
-			scbw::place_clarion_links(unit); // Clears, then places all Clarion links
+			bw::place_clarion_links(unit); // Clears, then places all Clarion links
 		}
 
 		if (unit->is_under_storm != 0)
@@ -220,9 +220,9 @@ namespace hooks
 						// Originally checked for burrow tech here
 						) {
 						bool can_burrow = true;
-						ActiveTile* tile = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+						ActiveTile* tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
 						if (tile->currently_occupied) {
-							Unit* nearest = scbw::UnitFinder::get_nearest_target(
+							Unit* nearest = bw::UnitFinder::get_nearest_target(
 								unit->get_left() - 32,
 								unit->get_top() - 32,
 								unit->get_right() + 32,
@@ -283,7 +283,7 @@ namespace hooks
 	// Hooked to hide new resource overlays when burrowed. -Pr0nogo
 	void refresh_carryable_sprite(Sprite* sprite) // 00497750
 	{
-		Image* overlay = scbw::get_powerup_overlay(sprite);
+		Image* overlay = bw::get_powerup_overlay(sprite);
 		if (overlay) {
 			if (!(overlay->flags & ImageFlags::Invisible))
 			{
@@ -299,7 +299,7 @@ namespace hooks
 	// Hooked to show new resources after unburrowing. -Pr0nogo
 	void update_carryable_sprite_flags(Sprite* sprite) // 004981B0
 	{
-		Image* overlay = scbw::get_powerup_overlay(sprite);
+		Image* overlay = bw::get_powerup_overlay(sprite);
 		if (overlay) {
 			if (overlay->flags & ImageFlags::Invisible)
 			{

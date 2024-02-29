@@ -21,7 +21,7 @@ namespace hooks {
 			case UnitId::TerranOlympian: {
 				// Olympian Dishonorable Discharge - add 3 armor pen to targets facing away from the Olympian
 				if (target && !units_dat::group_flags[target->id].is_building) {
-					if (scbw::unit_is_exposed_to_position(target, unit->position)) {
+					if (bw::unit_is_exposed_to_position(target, unit->position)) {
 						helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, target, 1, 0);
 						// TODO: Overlay
 						armor_pen += 3;

@@ -149,7 +149,7 @@ namespace hooks
 
 					// give the proper button set to the unit
 					helper::change_unit_buttonset(unitInfested, infestedUnitNewId);
-					scbw::refresh_console();
+					bw::refresh_console();
 				}
 			}
 		}
@@ -194,9 +194,9 @@ namespace hooks
 			// using unitInfesting->sprite->position because the queen and command center are
 			// indeed at the same location, and more importantly, if the infested unit got
 			// destroyed, then access to unitInfested->sprite->position would cause a crash
-			if (scbw::check_unit_collision_pos(unitInfesting, &unitInfesting->sprite->position, &actualpos))
+			if (bw::check_unit_collision_pos(unitInfesting, &unitInfesting->sprite->position, &actualpos))
 			{
-				scbw::set_unit_position(unitInfesting, actualpos.x, actualpos.y);
+				bw::set_unit_position(unitInfesting, actualpos.x, actualpos.y);
 				helper::make_to_hold_position(unitInfesting);
 				helper::show_and_enable_unit(unitInfesting);
 
