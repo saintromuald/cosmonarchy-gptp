@@ -202,6 +202,7 @@ namespace hooks
 			case UnitId::TerranSavant:
 			case UnitId::TerranMadcap:
 			case UnitId::TerranApostle:
+			case UnitId::TerranOlympian:
 			case UnitId::TerranCataphract:
 			case UnitId::ProtossSimulacrum:
 			case UnitId::ZergZoryusthaleth:

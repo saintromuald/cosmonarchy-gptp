@@ -616,15 +616,6 @@ namespace hooks {
 							bw::astral_blessing_proc(unit, unit->player, weapon_id);
 						}
 					} break;
-					case WeaponId::BarghestRayOfAgony: {
-						FireMultipleOptions options = {};
-						options.use_weapon_factor = false;
-						options.stagger = -1;
-						options.weapon_offsets = get_weapon_offsets(weapon_id);
-
-						// Multi-Attack III
-						fire_multiple(unit, weapon_id, 3, FilterEnemy | FilterFrontalArc, options);
-					} break;
 					case WeaponId::SkortrithColonySkortraTendril: {
 						FireMultipleOptions options = {};
 						options.weapon_offsets = get_weapon_offsets(weapon_id);
@@ -725,7 +716,6 @@ namespace hooks {
 			// Same as default, but orange effect
 			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::AutocratEminenceRifle:
-			case WeaponId::MadrigalImperiosoMissiles:
 			case WeaponId::RamessesPharoahCannons:
 			case WeaponId::WyvernJacksonCannon:
 			case WeaponId::MagnetarNewtonianShockCannon:

@@ -17,6 +17,10 @@ namespace hooks {
 			armor_pen = unit_ext->values[ValueTriggerArmorPenBaseAmount];
 		}
 
+		if (unit_ext->unit_vectors[UnitVectorBarghests].size()) {
+			armor_pen += unit_ext->unit_vectors[UnitVectorBarghests].size();
+		}
+
 		switch (unit->id) {
 			case UnitId::TerranOlympian: {
 				// Olympian Dishonorable Discharge - add 3 armor pen to targets facing away from the Olympian

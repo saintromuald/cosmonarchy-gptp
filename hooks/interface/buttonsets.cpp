@@ -2156,7 +2156,7 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossBarghest: {
 									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
-									||	current_button->icon_id == IconId::ApialSensors) {				// Barghest - Multi-Attack III
+									||	current_button->icon_id == IconId::ApialSensors) {				// Barghest - Repentant Chorus
 										current_button_state = Button_State::Enabled;
 									}
 									if (current_button->icon_id == IconId::ApialSensors) {

@@ -226,7 +226,7 @@ namespace hooks
 					} break;
 				}
 
-				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24) {
+				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24 && !unit->is_frozen()) {
 					bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
 					unit->heal_shields((10 * 256 / 24) * (1 + has_crucible), unit, false);
 					if (unit->shields > max_shields) {

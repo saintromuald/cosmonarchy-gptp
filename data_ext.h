@@ -188,6 +188,7 @@ enum ExtValueId {
 	ValueInfested,
 	ValueInfestedInit,
 	ValueInfestingPlayer,
+	ValueRepentantChorus,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -312,6 +313,7 @@ enum ExtTimerId {
 	TimerLiftoffDelay,
 	TimerReconstitutionDelay,
 	TimerInfesting,
+	TimerRepentantChorus,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -368,6 +370,7 @@ enum ExtUnitVectorId {
 	UnitVectorCrucibles,
 	UnitVectorMindControlling,
 	UnitVectorStaggerBlacklist,
+	UnitVectorBarghests,
 
 	UnitVectorCount,
 };

@@ -423,6 +423,7 @@ namespace hooks
 		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0, 0);
 		add_status(statuses, "Decaying", unit_ext->values[ValueDecaying], 1);
+		add_status(statuses, "Repentant Chorus", unit_ext->unit_vectors[UnitVectorBarghests].size(), 0);
 
 		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
 		add_status(statuses, "Decided Reach", unit_ext->values[ValueTriggerWeaponRangeBaseAmount] / 32);

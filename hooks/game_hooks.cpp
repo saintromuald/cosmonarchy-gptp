@@ -2358,6 +2358,66 @@ namespace hooks {
 					unit_ext->values[ValueJustCastedHallucination] = 0;
 				}
 			} break;
+			case UnitId::ProtossCrucible:
+			{
+				// Crucible - Khaydarin Charge stacks
+				if (unit->status & UnitStatus::Completed) {
+					EntryArray units = {};
+					unit_search_radial(&units, unit->position, 8 * 32);
+					unit_search_filter(&units, unit, FilterAlly | FilterBuilding);
+					for (u32 i = 0; i < units.count; i++) {
+						Unit* target = units.units[i];
+						UnitExt* target_ext = get_unit_ext(target);
+						if (unit_id_is_tech(target->id)) {
+							if (units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueInfested]) {
+								continue;
+							}
+						}
+						switch (target->id) {
+							case UnitId::TerranSupplyDepot:
+							case UnitId::TerranAnchor:
+							case UnitId::TerranReservoir: { // @Veeq7: What are these edge cases? -Pr0nogo
+								if (!target_ext->values[ValueInfested]) {
+									continue;
+								}
+							} break;
+						}
+						if (!(target->status & UnitStatus::Completed) && target->id != UnitId::ZergNydusCesiant) {
+							continue;
+						}
+
+						auto& vec = target_ext->unit_vectors[UnitVectorCrucibles];
+						if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
+							vec.push_back(unit);
+							target->update_speed();
+						}
+						if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
+							bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, true);
+						}
+					}
+				}
+			} break;
+			case UnitId::ProtossBarghest:
+			{
+				if (unit_ext->timers[TimerDecloak] >= 2) {
+					if (unit->status & UnitStatus::Completed) {
+						EntryArray units = {};
+						unit_search_radial(&units, unit->position, 5 * 32);
+						unit_search_filter(&units, unit, FilterAlly);
+						for (u32 i = 0; i < units.count; i++) {
+							Unit* target = units.units[i];
+							UnitExt* target_ext = get_unit_ext(target);
+							if (!(target->status & UnitStatus::Completed) || !target->has_weapon()) {
+								continue;
+							}
+							auto& vec = target_ext->unit_vectors[UnitVectorBarghests];
+							if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
+								vec.push_back(unit);
+							}
+						}
+					}
+				}
+			} break;
 		}
 
 		// Stimpack - Delayed buff handling
@@ -2728,6 +2788,19 @@ namespace hooks {
 			}
 		}
 
+		// Clear Barghest vector
+		{
+			auto& barghests = unit_ext->unit_vectors[UnitVectorBarghests];
+			for (auto it = barghests.begin(); it != barghests.end(); ++it) {
+				Unit* barghest = *it;
+				UnitExt* barghest_ext = get_unit_ext(barghest);
+				if (barghest_ext->timers[TimerDecloak] < 2 || bw::get_distance_fast(unit->position, barghest->position) > 5 * 32) {
+					barghests.erase(it);
+					--it;
+				}
+			}
+		}
+
 		// Seraph - Observance
 		if (unit_ext->timers[TimerObservanceDebuff] > 1) {
 			// TODO: unit search
@@ -2892,43 +2965,6 @@ namespace hooks {
 					crucibles.erase(it);
 					--it;
 					should_update_speed = true;
-				}
-			}
-		}
-
-		// Crucible - Khaydarin Charge stacks
-		if (unit->id == UnitId::ProtossCrucible && unit->status & UnitStatus::Completed) {
-			EntryArray units = {};
-			unit_search_radial(&units, unit->position, 8 * 32);
-			unit_search_filter(&units, unit, FilterAlly | FilterBuilding);
-			for (u32 i = 0; i < units.count; i++) {
-				Unit* target = units.units[i];
-				UnitExt* target_ext = get_unit_ext(target);
-				if (unit_id_is_tech(target->id)) {
-					if (units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueInfested]) {
-						continue;
-					}
-				}
-				switch (target->id) {
-					case UnitId::TerranSupplyDepot:
-					case UnitId::TerranAnchor:
-					case UnitId::TerranReservoir: { // @Veeq7: What are these edge cases? -Pr0nogo
-						if (!target_ext->values[ValueInfested]) {
-							continue;
-						}
-					} break;
-				}
-				if (!(target->status & UnitStatus::Completed) && target->id != UnitId::ZergNydusCesiant) {
-					continue;
-				}
-
-				auto& vec = target_ext->unit_vectors[UnitVectorCrucibles];
-				if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
-					vec.push_back(unit);
-					target->update_speed();
-				}
-				if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
-					bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, true);
 				}
 			}
 		}

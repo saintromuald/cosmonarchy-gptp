@@ -162,8 +162,8 @@ namespace WeaponId {
 		BlackjackMonogun					= 15,
 		SalamanderPerditionBarrage			= 17,
 		GorgonArtificeBattery				= 18,
-		MadrigalFuriaMissiles				= 21,	// Madrigal default weapon
-		MadrigalImperiosoMissiles			= 22,	// Madrigal toggled weapon
+		MadrigalFuriaMissiles				= 21,	// Madrigal toggled weapon
+		MadrigalImperiosoMissiles			= 22,	// Madrigal default weapon
 		CentaurArtaxCannon					= 23,
 		CentaurSunchaserMissiles			= 24,	// Centaur close-range weapon
 		CyprianTwinRailguns					= 26,

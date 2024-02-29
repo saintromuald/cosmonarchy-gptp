@@ -488,7 +488,6 @@ bool weapon_id_pierces(u32 weapon_id) {
 		case WeaponId::SavantDiscoidRailgunPiercing:
 		case WeaponId::AutocratEminenceRifle:
 		case WeaponId::SevenstepGeometricRiflePiercing:
-		case WeaponId::MadrigalImperiosoMissiles:
 		case WeaponId::RamessesPharoahCannons:
 		case WeaponId::ClaymoreHarpoonRailgun:
 		case WeaponId::PenumbraErebolShockCannon:
