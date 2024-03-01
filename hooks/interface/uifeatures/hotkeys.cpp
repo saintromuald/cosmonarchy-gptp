@@ -205,7 +205,7 @@ void init_hotkeys() {
 	if (!init_proc) {
 		init_proc = true;
 		SetWindowsHookA(WH_KEYBOARD, keyboard_proc);
-		original_window_proc = (WNDPROC)SetWindowLongPtrA(*g_main_window, GWLP_WNDPROC, (LONG_PTR)window_proc);
+		// original_window_proc = (WNDPROC)SetWindowLongPtrA(*g_main_window, GWLP_WNDPROC, (LONG_PTR)window_proc);
 	}
 
 	hotkeys = {};
