@@ -1258,7 +1258,7 @@ namespace bw
 		auto& link = unitExt->unit_vectors[UnitVectorPhaseLink];
 
 		clear_clarion_links(unit);
-		const s32 radius = 3 * 32;
+		const s32 radius = 5 * 32;
 		bw::UnitFinder(
 			unit->get_x() - radius,
 			unit->get_y() - radius,
@@ -1266,24 +1266,19 @@ namespace bw
 			unit->get_y() + radius
 		).filter([&](Unit* target)
 		{
-			if (!bw::is_allied_to(unit->player, target->player))
-			{
+			if (!bw::is_allied_to(unit->player, target->player)) {
 				return false;
 			}
-			if (units_dat::base_property[target->id] & UnitProperty::Building)
-			{
+			if (units_dat::base_property[target->id] & UnitProperty::Building) {
 				return false;
 			}
-			if (!target->shields_enabled())
-			{
+			if (!target->shields_enabled()) {
 				return false;
 			}
-			if (target->shields < 256)
-			{
+			if (target->shields < 256) {
 				return false;
 			}
-			if (bw::get_distance_fast(target->get_x(), target->get_y(), unit->get_x(), unit->get_y()) > radius)
-			{
+			if (bw::get_distance_fast(target->get_x(), target->get_y(), unit->get_x(), unit->get_y()) > radius) {
 				return false;
 			}
 			return true;
