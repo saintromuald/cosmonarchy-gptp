@@ -192,6 +192,10 @@ namespace hooks
 		}
 
 		UnitExt* target_ext = get_unit_ext(data.target);
+		if (target_ext->values[ValueTakingDeconstructionDamage]) {
+			data.dont_proc_link_damage = true;
+		}
+
 		if (data.attacker) {
 			UnitExt* attacker_ext = get_unit_ext(data.attacker);
 			if (!attacker_ext->values[ValueTakingDeconstructionDamage] && attacker_ext->values[ValueTriggerDamageBaseSet] && weapon_id_procs_onhits(data.weapon_id)) {
