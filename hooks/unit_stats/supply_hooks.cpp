@@ -610,9 +610,9 @@ namespace hooks
 
 		dialog = dialog->child_dialog;
 
-		do {// This while loop is not necessary with a properly organized bin file, but keep it for safety. -DF
+		do { // This while loop is not necessary with a properly organized bin file, but keep it for safety. -DF
 			if (!dialog) {
-				return;// The original function would set dialog to null and break out of the loop. Surely that can't be good. -DF
+				return; // The original function would set dialog to null and break out of the loop. Surely that can't be good. -DF
 			}
 
 			if (dialog->index != 1) {
