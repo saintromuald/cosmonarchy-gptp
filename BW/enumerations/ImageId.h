@@ -1205,7 +1205,10 @@ namespace ImageId {
 
 		MortothrokorPassiveOverlay					= 1783,
 
-		AddonWeldOverlay							= 1807,
+		AddonWeldOverlay							= 1807,		
+		RepentantChorusSmall						= 1808,
+		RepentantChorusMedium						= 1809,
+		RepentantChorusLarge						= 1810,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

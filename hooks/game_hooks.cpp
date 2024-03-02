@@ -2594,10 +2594,16 @@ namespace hooks {
 		}
 		*/
 
-		// Clarion - Phase Link - overlay
-		if (*g_elapsed_time_frames % 10 == 0 && unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size()) {
-			bw::add_unit_overlay(unit, ImageId::PhaseLinkSmall + bw::get_overlay_offset(unit->id));
+		// Periodic overlays
+		if (*g_elapsed_time_frames % 10 == 0) {
+			if (unit_ext->unit_vectors[UnitVectorBarghests].size()) {
+				bw::add_unit_overlay(unit, ImageId::RepentantChorusSmall + bw::get_overlay_offset(unit->id));
+			}
+			if (unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size()) {
+				bw::add_unit_overlay(unit, ImageId::PhaseLinkSmall + bw::get_overlay_offset(unit->id));
+			}
 		}
+		
 
 		// Incubation
 		if (unit_ext->timers[TimerIncubationArm] == 1) {
