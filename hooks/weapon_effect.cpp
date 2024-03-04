@@ -302,7 +302,7 @@ namespace hooks {
 	void air_splash(Bullet* bullet, u32 weapon_id) // 0048B790
 	{
 		Unit* target = bullet->attack_target.unit;
-		if (!target || target->is_dead()) {
+		if (!target || !target->sprite) {
 			return;
 		}
 

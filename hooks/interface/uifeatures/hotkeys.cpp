@@ -118,6 +118,10 @@ static bool handle_key_event(const KeyEvent& ev) {
 	if (ev.alt_held && ev.key == VK_F4) {
 		return false;
 	}
+	// Ignore Ctrl+Q
+	if (ev.control_held && ev.key == 'Q') {
+		return true;
+	}
 	// Specifically ignore 1-6 for faction selection for non-grid hotkeys
 	if (!config.grid_hotkeys && buttonset_id_is_faction_selection(*g_current_buttonset_id)) {
 		if (ev.key >= '1' && ev.key <= '6' && !ev.control_held && !ev.shift_held && !ev.alt_held) {

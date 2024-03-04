@@ -543,38 +543,30 @@ namespace hooks {
 	void orders_stay_in_range(Unit* unit) // 0047C4F0
 	{
 		Unit* target = unit->order_target.unit;
-		if (target && !target->is_dead()) // is_dead is new
-		{
+		if (target && target->sprite) { // sprite is new
 			unit->order_target.pt = target->position;
-			if (!helper::unit_can_attack_target(target, unit, true))
-			{
-				if (!(unit->status & UnitStatus::AttackMove) && !unit->unit_ai)
-				{
+			if (!helper::unit_can_attack_target(target, unit, true)) {
+				if (!(unit->status & UnitStatus::AttackMove) && !unit->unit_ai) {
 					helper::prepend_order_targeting_ground(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y, unit);
 				}
 				helper::to_idle(unit);
 				return;
 			}
 
-			if (unit->main_order_state)
-			{
-				if (!target)
-				{
+			if (unit->main_order_state) {
+				if (!target) {
 					helper::make_to_hold_position(unit);
 					goto turn_to_face_target;
 				}
 
-				if (!helper::is_target_visible(unit, target))
-				{
-					if (!helper::move_towards(unit, unit->order_target.unit))
-					{
+				if (!helper::is_target_visible(unit, target)) {
+					if (!helper::move_towards(unit, unit->order_target.unit)) {
 						return;
 					}
 					goto turn_to_face_target;
 				}
 				Unit* final_attacker = unit->subunit;
-				if (!final_attacker || !(units_dat::base_property[final_attacker->id] & UnitProperty::Subunit))
-				{
+				if (!final_attacker || !(units_dat::base_property[final_attacker->id] & UnitProperty::Subunit)) {
 					final_attacker = unit;
 				}
 
@@ -585,8 +577,7 @@ namespace hooks {
 				||  min_range && helper::is_target_within_min_range(final_attacker, min_range, target)
 				|| !helper::is_target_within_min_movement_range(final_attacker, target, max_range))
 				{
-					if (!helper::move_towards(unit, unit->order_target.unit))
-					{
+					if (!helper::move_towards(unit, unit->order_target.unit)) {
 						return;
 					}
 				} else {
@@ -595,29 +586,23 @@ namespace hooks {
 				goto turn_to_face_target;
 			}
 
-			if (!target)
-			{
+			if (!target) {
 				unit->main_order_state = 1;
 				goto turn_to_face_target;
 			}
 
-			if (helper::is_target_visible(unit, target))
-			{
+			if (helper::is_target_visible(unit, target)) {
 				Unit* final_attacker_2 = unit->subunit;
-				if (!final_attacker_2 || !(units_dat::base_property[final_attacker_2->id] & UnitProperty::Subunit))
-				{
+				if (!final_attacker_2 || !(units_dat::base_property[final_attacker_2->id] & UnitProperty::Subunit)) {
 					final_attacker_2 = unit;
 				}
 
 				u32 weapon_id = bw::get_unit_weapon_based_on_target(final_attacker_2, target);
-				if (weapon_id != WeaponId::None)
-				{
+				if (weapon_id != WeaponId::None) {
 					u32 min_range_2 = weapons_dat::min_range[weapon_id];
-					if (!min_range_2 || !helper::is_target_within_min_range(final_attacker_2, min_range_2, target))
-					{
+					if (!min_range_2 || !helper::is_target_within_min_range(final_attacker_2, min_range_2, target)) {
 						u32 max_range_2 = helper::get_unit_max_weapon_range(unit, weapon_id);
-						if (helper::is_target_within_min_movement_range(final_attacker_2, target, max_range_2))
-						{
+						if (helper::is_target_within_min_movement_range(final_attacker_2, target, max_range_2)) {
 							unit->main_order_state = 1;
 							goto turn_to_face_target;
 						}
@@ -625,21 +610,17 @@ namespace hooks {
 				}
 			}
 
-			if (helper::move_to_target(unit->order_target.unit, unit))
-			{
+			if (helper::move_to_target(unit->order_target.unit, unit)) {
 				unit->main_order_state = 1;
 			turn_to_face_target:
-				if (unit->id == UnitId::TerranGoliath && !(unit->movement_flags & UnitMovement::UnitMovement_Lump))
-				{
+				if (unit->id == UnitId::TerranGoliath && !(unit->movement_flags & UnitMovement::UnitMovement_Lump)) {
 					u32 pos_x = unit->order_target.pt.x;
 					u32 pos_y = unit->order_target.pt.y;
 					s32 direction = helper::get_direction_from_points(pos_y, unit->sprite->position.x, pos_x, unit->sprite->position.y) - unit->current_direction_1;
-					if (direction >= 128 || direction <= -128)
-					{
+					if (direction >= 128 || direction <= -128) {
 						direction = -128;
 					}
-					if (abs(direction) >= 32)
-					{
+					if (abs(direction) >= 32) {
 						helper::set_secondary_waypoint(unit, pos_x, pos_y);
 					}
 				}
@@ -649,14 +630,12 @@ namespace hooks {
 			helper::set_resource_target(unit);
 			u32 move_x = unit->move_target.pt.x;
 			u32 move_y = unit->move_target.pt.y;
-			if (move_x != unit->next_target_waypoint.x || move_y != unit->next_target_waypoint.y)
-			{
+			if (move_x != unit->next_target_waypoint.x || move_y != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = move_x;
 				unit->next_target_waypoint.y = move_y;
 			}
 
-			if (unit->order_queue_head)
-			{
+			if (unit->order_queue_head) {
 				unit->user_action_flags |= 1;
 				do_next_queued_order(unit);
 			} else if (unit->unit_ai) {

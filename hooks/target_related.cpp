@@ -43,15 +43,13 @@ namespace hooks
 
 	s32 is_ready_to_attack(Unit* unit, u8 weapon_id) // 00476640
 	{
-		if (unit->movement_flags & MovementFlags_StartingAttack)
-		{
+		if (unit->movement_flags & MovementFlags_StartingAttack) {
 			return 0;
 		}
 
 		u32 distance = 0;
 		Unit* target = unit->order_target.unit;
-		if (target && !target->is_dead())
-		{
+		if (target && target->sprite) { // sprite is new
 			distance = helper::get_distance_to_unit(unit, target);
 		} else {
 			distance = helper::distance_from_box_corner(unit, unit->order_target.pt.x, unit->order_target.pt.y);
@@ -207,7 +205,7 @@ namespace hooks
 
 	// Hooked to help with cloak rewrite - Pr0nogo
 	void check_unit_visibility(Unit* unit) { // 00443390
-		if (unit->is_dead() || !unit->sprite) {
+		if (!unit->sprite) {
 			return;
 		}
 		u32 detecting_players = helper::get_detecting_players(unit);
@@ -1026,7 +1024,7 @@ namespace hooks
 	u32 is_target_visible(Unit* target, Unit* unit) // 004E5E30
 	{
 		s32 player_flag = 1 << unit->player;
-		if (!target || target->is_dead()) // Latter is new
+		if (!target || !target->sprite) // sprite is new
 		{
 			ActiveTile* tile = bw::get_active_tile_at_coords(unit->order_target.pt);
 			return player_flag & ~(tile->vision_flags & 0xFF);

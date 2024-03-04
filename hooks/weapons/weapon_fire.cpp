@@ -1067,7 +1067,7 @@ namespace hooks {
 			}
 			bullet->order_signal |= 0x80; // new
 			bullet->main_order_state = 0;
-			bullet->order_unit_id = 228;
+			bullet->order_unit_id = UnitId::None;
 			for (Image* image = bullet->sprite->images.head; image; image = image->link.next) {
 				helper::play_image_iscript(image, IscriptAnimation::Death);
 			}
@@ -1087,7 +1087,7 @@ namespace hooks {
 
 	void bullet_behavior_bounce(Bullet* bullet) { // 0048B2D0
 		Unit* target_unit = bullet->attack_target.unit;
-		if (target_unit && !target_unit->is_dead()) {
+		if (target_unit && target_unit->sprite) {
 			if (!(bullet->hit_flags & 1)) {
 				helper::change_move_pos(bullet, target_unit->position.y, target_unit->position.x);
 			}
@@ -1839,7 +1839,7 @@ namespace hooks {
 	void bullet_behavior_follow(Bullet* bullet) // 0048B500
 	{
 		Unit* target = bullet->attack_target.unit;
-		if (!target || target->is_dead())
+		if (!target || !target->sprite)
 		{
 			bullet->behavior_type = 1;
 			bullet->attack_target.unit = 0;
