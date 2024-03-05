@@ -6,7 +6,7 @@ namespace
 	void __declspec(naked) unit_movement_dormant_wrapper() // 0046A8D0
 	{
 		static Unit* unit;
-		static s32 result;
+		static b32 result;
 		__asm
 		{
 			MOV unit, EAX

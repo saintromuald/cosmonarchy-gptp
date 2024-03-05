@@ -555,7 +555,7 @@ SCBW_DATA(u32*,		g_min_range,				0x006955B8); // sizeof 10
 SCBW_DATA(s32*,		g_max_range_in_px,			0x006957A4);
 
 // For show_right_click_error_if_needed
-SCBW_DATA(u32*,		use_quiet_sounds,			0x0064086C);
+SCBW_DATA(u32*,		g_use_quiet_sounds,			0x0064086C);
 SCBW_DATA(char*,	draw_out_text_left,			0x00641598);
 SCBW_DATA(char*,	text_bytes,					0x00641674); // sizeof 13
 SCBW_DATA(s32*,		unit_stat_update_timer,		0x00640B54);

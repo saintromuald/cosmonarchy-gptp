@@ -72,7 +72,7 @@ namespace hooks
 	void inject_sfx_hooks()
 	{
 		jump_patch(get_unit_response_id_wrapper,			0x0048EA20, 1);
-	//	jump_patch(play_yes_unit_response_wrapper,			0x0048F4D0, 3);
+		jump_patch(play_yes_unit_response_wrapper,			0x0048F4D0, 3);
 		jump_patch(get_random_yes_unit_response_wrapper,	0x0048EAB0, 0);
 		jump_patch(play_unit_ready_sound_wrapper,			0x0048F440, 3);
 	}

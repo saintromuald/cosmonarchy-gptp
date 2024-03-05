@@ -292,33 +292,24 @@ namespace hooks
 	void orders_sap_location(Unit* unit)
 	{
 		bool bStopThere = false;
-		if (unit->main_order_state == 0)
-		{
+		if (unit->main_order_state == 0) {
 			bStopThere = !helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-			if (unit->order_target.pt.x != unit->next_target_waypoint.x
-				|| unit->order_target.pt.y != unit->next_target_waypoint.y)
-			{
+			if (unit->order_target.pt.x != unit->next_target_waypoint.x || unit->order_target.pt.y != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = unit->order_target.pt.x;
 				unit->next_target_waypoint.y = unit->order_target.pt.y;
 			}
-			if (!bStopThere)
-			{
+			if (!bStopThere) {
 				unit->main_order_state = 1;
 			}
 		}
 
-		if (!bStopThere && unit->main_order_state == 1)
-		{
-			if (unit->position.x != unit->move_target.pt.x
-				|| unit->position.y != unit->move_target.pt.y)
-			{
+		if (!bStopThere && unit->main_order_state == 1) {
+			if (unit->position.x != unit->move_target.pt.x || unit->position.y != unit->move_target.pt.y) {
 				bStopThere = true;
 			} else {
-				if (unit->status & UnitStatus::Unmovable)
-				{
+				if (unit->status & UnitStatus::Unmovable) {
 					u32 distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
-					if ((distance / 256) > weapons_dat::outer_splash_radius[WeaponId::InfestedTerranSuicide])
-					{
+					if ((distance / 256) > weapons_dat::outer_splash_radius[WeaponId::InfestedTerranSuicide]) {
 						unit->order_to_idle();
 						bStopThere = true;
 					}

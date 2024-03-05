@@ -481,8 +481,7 @@ namespace hooks
 		}
 	place_addon:
 		if  (unit->move_target.pt.x == unit->position.x
-		&&   unit->move_target.pt.y == unit->position.y
-		&& ((unit->status & UnitStatus::Unmovable) != 0) != -1)
+		&&   unit->move_target.pt.y == unit->position.y)
 		{
 			// Get addon position - this is probably wrong right now, the original IDA code was a disaster.
 			u32 addon_id = unit->building.addon_build_id;

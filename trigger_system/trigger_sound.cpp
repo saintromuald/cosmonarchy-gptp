@@ -414,7 +414,7 @@ static getMusicVolume_Func* getMusicVolume = (getMusicVolume_Func*)0x004A5EF0;
 
 s32 get_sound_volume() {
 	s32 index = 99;
-	if (*use_quiet_sounds) {
+	if (*g_use_quiet_sounds) {
 		index /= 5;
 	}
 	return g_big_volume_array[index * g_options_list->sfx / 100];
@@ -422,7 +422,7 @@ s32 get_sound_volume() {
 
 s32 get_sound_volume_at_pos(Point16 pos) {
 	s32 index = helper::get_sfx_volume_from_screen_distance(pos.x, pos.y);
-	if (*use_quiet_sounds) {
+	if (*g_use_quiet_sounds) {
 		index /= 5;
 	}
 	if (index <= 10) {

@@ -891,7 +891,7 @@ namespace helper {
 	s32 check_energy_for_tech_use(s32 tech_id);																// 00423660
 
 	//// pathfinding
-	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, Point16 position_xy);						// 004EB720
+	s32 is_point_at_unit_border(s32 unused, Unit* other, Unit* self, Point16 position_xy);						// 004EB720
 	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y);														// 004E7420
 
 	// order attack behavior
@@ -1733,4 +1733,5 @@ namespace helper {
 	void unit_movement_instant_stop(Unit* unit);								// 0046BF00
 	void progress_flingy(Unit* unit);											// 00495EE0
 	void finish_unit_movement(Unit* unit);										// 0046AD90
+	u32 get_random_yes_unit_response(u32 unit_id);								// 0048EAB0
 }

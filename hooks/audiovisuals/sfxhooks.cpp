@@ -30,16 +30,15 @@ namespace hooks {
 	}
 	
 	// Hooked to allow for aggressive order unit responses. -Pr0nogo
-	void play_yes_unit_response(Unit* self) { // 0048F4D0
-		if (!*use_quiet_sounds) {
+	void play_yes_unit_response(Unit* unit) { // 0048F4D0
+		if (!*g_use_quiet_sounds) {
 			*g_place_building_parent_unit = 0;
-			if (!*g_is_in_replay && self->player == *g_local_nation_id) {
-				if (!self->is_frozen()) {
+			if (!*g_is_in_replay && unit && unit->player == *g_local_nation_id) { // unit nullcheck is new, resolves rare minimap crash
+				if (!unit->is_frozen()) {
 					u32 last_rand = *g_last_random_sfx_id;
-					u32 rand_response = get_random_yes_unit_response(self->id);
-					bool can_play = (g_options_list->flags >> 1) & 1;
-					if (helper::play_sound_from_unit(rand_response, self, can_play, 99)) {
-						helper::do_unit_event_notification(self, 17, sfx_dat::portrait_duration[rand_response] + 1000 * (sfx_dat::sound_data[rand_response].duration_ms / 1000), 0, rand_response);
+					u32 sound_id = helper::get_random_yes_unit_response(unit->id);
+					if (helper::play_sound_from_unit(sound_id, unit, (g_options_list->flags >> 1) & 1, 99)) {
+						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 0, sound_id);
 					} else {
 						*g_last_random_sfx_id = last_rand;
 					}
@@ -170,7 +169,7 @@ namespace hooks {
 
 	// Written for aggressive order unit responses. -Pr0nogo
 	void play_yes_unit_response_internal(Unit* self, UnitResponseContext context) {
-		if (!*use_quiet_sounds) {
+		if (!*g_use_quiet_sounds) {
 			*g_place_building_parent_unit = 0;
 			if (!*g_is_in_replay && self->player == *g_local_nation_id) {
 				if (!self->is_frozen()) {
@@ -202,7 +201,7 @@ namespace hooks {
 
 	// Hooked to allow more ready unit responses. -Pr0nogo
 	void play_unit_ready_sound(Unit* unit) { // 0048F440
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id && !*use_quiet_sounds) {
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id && !*g_use_quiet_sounds) {
 			u32 unit_id = unit->id;
 			if (unit_id != UnitId::ProtossSteward && unit_id != UnitId::ProtossPlasmaShell) {
 				u32 ready_sound = units_dat::sound_ready[unit_id];

@@ -156,11 +156,10 @@ namespace hooks
 			return;
 		}
 
-		if (unit->main_order_state)
-		{
+		if (unit->main_order_state) {
 			Sprite* unit_sprite = unit->sprite;
 			if  (helper::tech_use_allowed(unit, TechId::SpiderMines, unit->player)
-			&&  (unit->move_target.pt.x != unit_sprite->position.x) || unit->move_target.pt.y != unit_sprite->position.y || ((unit->status & UnitStatus::Unmovable) != 0) != 1)
+			&&  (unit->move_target.pt.x != unit->position.x) || unit->move_target.pt.y != unit->position.y || !(unit->status & UnitStatus::Unmovable))
 			{
 				if ((helper::get_distance_fast(unit->halt.x, unit->order_target.pt.x << 8, unit->halt.y, unit->order_target.pt.y << 8) & 0xFFFFFF00) <= 5120) {
 					helper::orders_hold_pos_suicidal(unit);

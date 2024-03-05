@@ -53,24 +53,21 @@ namespace hooks
     // Hooked to resolve contextual order issues - Pr0nogo
     s32 move_to_target(Unit* target, Unit* unit) { // 004EB720
         Point16 new_target = get_target_point(unit, target);
-        if (target == unit->move_target.unit
-        && ((unit->move_target.pt.x == new_target.x && unit->move_target.pt.y == new_target.y)
-            || helper::isPointAtUnitBorder(0, unit->move_target.unit, unit, unit->move_target.pt))) {
+        if (target == unit->move_target.unit && ((unit->move_target.pt.x == new_target.x && unit->move_target.pt.y == new_target.y)
+            || helper::is_point_at_unit_border(0, unit->move_target.unit, unit, unit->move_target.pt)))
+        {
             unit->status &= ~UnitStatus::Unmovable;
             return true;
         }
-        if (unit->unit_ai
-        &&  unit->main_order_id != OrderId::TransportLoad
-        &&  helper::ai_prepare_moving_to(unit, new_target.x, new_target.y)) {
+        if (unit->unit_ai && unit->main_order_id != OrderId::TransportLoad && helper::ai_prepare_moving_to(unit, new_target.x, new_target.y)) {
             return false;
         }
 
-        UnitPath* path = (UnitPath*)unit->path;
+        UnitPath* path = unit->path;
         if (path) {
             path->is_calculating |= 1;
         }
-        if (unit->move_target.pt != new_target
-        ||  unit->move_target.unit != target) {
+        if (unit->move_target.pt != new_target || unit->move_target.unit != target) {
             unit->move_target.unit = target;
             unit->move_target.pt = new_target;
             unit->next_movement_waypoint = new_target;

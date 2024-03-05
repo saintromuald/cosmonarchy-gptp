@@ -3,23 +3,19 @@
 
 namespace hooks
 {
-	s32 unit_movement_dormant(Unit* unit) // 0046A8D0
+	b32 unit_movement_dormant(Unit* unit) // 0046A8D0
 	{
-		u32 flags = unit->status;
-		if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal))
-		{
-			Sprite* sprite = unit->sprite;
-			if  (sprite
-            &&   unit->move_target.pt.x == sprite->position.x
-			&&   unit->move_target.pt.y == sprite->position.y
-			&& ((flags & UnitStatus::Unmovable) != 0) != -1
-			&&   unit->next_target_waypoint.x == unit->position.x
-			&&   unit->next_target_waypoint.y == unit->position.y)
+		if (!(unit->status & UnitStatus::IgnoreTileCollision) || !(unit->status & UnitStatus::IsNormal)) {
+			if (unit->sprite
+            &&  unit->move_target.pt.x == unit->sprite->position.x
+			&&  unit->move_target.pt.y == unit->sprite->position.y
+			&&  unit->next_target_waypoint.x == unit->position.x
+			&&  unit->next_target_waypoint.y == unit->position.y)
 			{
 				return 0;
 			}
 		}
-		unit->movement_state = 9; // At rest
+		unit->movement_state = UnitMovement_AtRest; // At rest
 		return 1;
 	}
 
@@ -33,23 +29,18 @@ namespace hooks
         unit->halt.x = new_pos.x << 8;
         unit->halt.y = new_pos.y << 8;
         helper::move_sprite(unit->sprite, new_pos.x, new_pos.y);
-        if (unit->sprite)
-        {
-            if (unit->main_order_id)
-            {
+        if (unit->sprite) {
+            if (unit->main_order_id) {
                 helper::set_move_target_xy(unit, new_pos.x, new_pos.y);
-                if (new_pos.x != unit->next_target_waypoint.x || new_pos.y != unit->next_target_waypoint.y)
-                {
+                if (new_pos.x != unit->next_target_waypoint.x || new_pos.y != unit->next_target_waypoint.y) {
                     unit->next_target_waypoint.x = new_pos.x;
                     unit->next_target_waypoint.y = new_pos.y;
                 }
             }
         }
-        if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && !ignore_collision)
-        {
+        if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && !ignore_collision) {
             helper::update_unit_sorting_info(new_pos.x - old_pos.x, unit, new_pos.y - old_pos.y);
-            if (!ignore_collision && !(unit->sprite->flags & SpriteFlags::Hidden))
-            {
+            if (!ignore_collision && !(unit->sprite->flags & SpriteFlags::Hidden)) {
                 helper::check_unstack(unit);
             }
         }

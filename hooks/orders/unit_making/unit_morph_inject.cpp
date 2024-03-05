@@ -159,16 +159,13 @@ namespace
 			return;
 		}
 
-		if (bw::is_conventional_unit_morph_source(unit->id, false)
-		||	bw::is_conventional_unit_morph_result(unit->id))
-		{
+		if (bw::is_conventional_unit_morph_source(unit->id, false) || bw::is_conventional_unit_morph_result(unit->id)) {
 			return;
 		}
 
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-			if (unit->get_race() == RaceId::Zerg)
-			{
+			if (unit->get_race() == RaceId::Zerg) {
 				cancel_zerg_building(unit);
 				if (unit->rally.pt.x || unit->rally.pt.y) {
 					unit->rally.pt.x = 0;
@@ -180,8 +177,7 @@ namespace
 			resources->gas[unit->player] += units_dat::vespene_cost[unit->id] * 3 / 4;
 		} else {
 			u16 refund_unit_id;
-			if (bw::is_zerg_egg_new(unit, true, false))
-			{
+			if (bw::is_zerg_egg_new(unit, true, false)) {
 				refund_unit_id = unit->build_queue[unit->build_queue_slot % 5];
 			} else {
 				refund_unit_id = unit->id;

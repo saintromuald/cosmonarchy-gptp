@@ -235,7 +235,7 @@ namespace hooks
 						max_volume = 0;
 					}
 				}
-				if (*use_quiet_sounds) {
+				if (*g_use_quiet_sounds) {
 					max_volume /= 5;
 				}
 				if (max_volume > 10) {

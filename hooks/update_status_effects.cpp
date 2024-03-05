@@ -216,7 +216,6 @@ namespace hooks
 				if (unit->main_order_id == OrderId::ComputerAI || unit->main_order_id == OrderId::Guard) {
 					if (unit->move_target.pt.x == unit->sprite->position.x
 						&& unit->move_target.pt.y == unit->sprite->position.y
-						&& ((unit->status & UnitStatus::Unmovable) != 0) != -1
 						// Originally checked for burrow tech here
 						) {
 						bool can_burrow = true;

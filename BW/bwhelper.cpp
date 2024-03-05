@@ -7078,7 +7078,7 @@ namespace helper {
 	}
 
 	// For move_to_target
-	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, Point16 position_xy) {
+	s32 is_point_at_unit_border(s32 unused, Unit* other, Unit* self, Point16 position_xy) {
 		const u32 func_address = 0x0042DA90;
 		static s32 result;
 		__asm {
@@ -14987,5 +14987,19 @@ namespace helper {
 			CALL func_address
 			POPAD
 		}
+	}
+
+	u32 get_random_yes_unit_response(u32 unit_id)
+	{
+		const u32 func_address = 0x0048EAB0;
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, unit_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

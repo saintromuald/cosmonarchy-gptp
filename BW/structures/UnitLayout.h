@@ -290,7 +290,7 @@ struct UnitLayout
 														// 2 = issued an order, 3 = interrupted an order, 4 = hide self before death (self-destruct?)
 	/*0x094*/ u16       current_buttonset;				// The u16 is a guess, used to be u8
 	/*0x096*/ u8        is_cloaked;
-	/*0x097*/ u8        movement_state;					// A value based on conditions related to pathing, see BWAPI Path.h or UnitMovement.cs for info
+	/*0x097*/ u8        movement_state;					// See UnitMovement enum
 	/*0x098*/ u16       build_queue[5];					// Also train queue for buildings and unit_with_hangar/reaver (stores the unitid) / zerg eggs stores the id of the morphing unit in queue[0]
 														// Note that it doesn't begin with index 0, but with #build_queue_slot index.
 	/*0x0A2*/ u16       energy;							// Energy Points // officially "xwMagic"

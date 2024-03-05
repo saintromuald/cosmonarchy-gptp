@@ -469,6 +469,20 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) droleth_build_excisant_wrapper() // 0045D790
+	{
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::droleth_build_excisant(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -496,5 +510,6 @@ namespace hooks
 	//	jump_patch(orders_drone_build_wrapper,											0x0045E090, 0);
 	//	jump_patch(orders_drone_land_wrapper,											0x004E9AA0, 1);
 		jump_patch(orders_morph2_wrapper,												0x0045D0D0, 2);
+		jump_patch(droleth_build_excisant_wrapper,										0x0045D790, 5);
 	}
 }

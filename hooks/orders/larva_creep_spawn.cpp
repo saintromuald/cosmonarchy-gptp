@@ -364,7 +364,7 @@ namespace hooks
 		u16 move_x = unit->move_target.pt.x;
 		u16 move_y = unit->move_target.pt.y;
 		Unit* move_target = unit->move_target.unit;
-		if (move_x == unit_x && move_y == unit_y && (!(unit->status & UnitStatus::Unmovable)) // Guessed unmovable status math
+		if (move_x == unit_x && move_y == unit_y
 		||  move_target && (move_x != move_target->position.x || move_y != move_target->position.y) && !helper::pixel_pos_has_cagra(move_x, move_y))
 		{
 			if ((!spawner || move_target != spawner) && !(bw::get_active_tile_at_coords(unit->position)->has_cagra)) // Guessed flag
