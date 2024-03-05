@@ -323,7 +323,6 @@ namespace helper {
 	void display_last_network_error_for_player(u32 player);									                // 0049E530
 	u32 rand_between(u32 min, u32 max, u32 seed_type);														// 004DC550
 	void init_building(Unit* unit, b32 flag);																// 004E65E0
-	bool set_move_target_xy(Unit* unit, s32 x, s32 y);									                    // 004EB820
 	bool order_to_move_to_target(Unit* unit, Unit* target);													// 004EB980
 	b32 unk_terrain_collision_2(Unit* unit, s32 x, s32 y);													// 004F1870
 
@@ -642,7 +641,7 @@ namespace helper {
 
 	//// medic_orders
 	b32 ai_order_heal(Unit* unit, Unit* target);																					// 00463530
-	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id);																	// 004748E0
+	void perform_another_order_at_coords(Unit* unit, s32 x, s32 y, u8 order_id);													// 004748E0
 	void update_target_something(Unit* unit, Unit* target, u8 order_id);															// 00474940
 	void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 order_id);														// 00474C30
 	void unit_order_move_to_target_unit(Unit* unit, Unit* target);																	// 00479FE0

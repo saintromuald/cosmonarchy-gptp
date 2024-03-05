@@ -4999,7 +4999,7 @@ namespace helper {
 		return result;
 	}
 
-	void function_4748E0(Unit* unit, s32 x, s32 y, u8 order_id) {
+	void perform_another_order_at_coords(Unit* unit, s32 x, s32 y, u8 order_id) {
 		const u32 func_address = 0x004748E0;
 		__asm {
 			PUSHAD
