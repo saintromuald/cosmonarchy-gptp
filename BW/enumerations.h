@@ -1561,3 +1561,7 @@ enum MusicId {
 	MusicId_Terran2Credits		= 23,
 	MusicId_RadioFreeZerg		= 24,
 };
+
+enum SpectatorEvent {
+	SpectatorEvent_Tech			= 0,
+};

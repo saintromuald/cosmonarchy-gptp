@@ -203,6 +203,9 @@ namespace hooks
 		if (built_unit) {
 			built_unit->connected_unit = 0;
 			helper::play_building_completed_sound(unit);
+			if (unit_id_is_tech_tier_structure(built_unit->id)) {
+				replay_witness_event(built_unit, SpectatorEvent_Tech);
+			}
 			builder_ext->values[ValueTerranConstruction] = UnitId::None;
 			helper::update_unit_damage_overlay(built_unit); // New - fix bug where damaged structures don't create overlay until damaged or healed. -Pr0nogo
 
@@ -283,6 +286,10 @@ namespace hooks
 							bw::refresh_console();
 							built_unit->order_computer(OrderId::BuildSelf1);
 							helper::ai_training_overlord(built_unit, unit);
+
+							if (unit_id_is_tech_tier_structure(built_unit->id)) {
+								replay_witness_event(built_unit, SpectatorEvent_Tech);
+							}
 						} else {
 							helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot], unit->player);
 							helper::display_last_network_error_for_player(unit->player);

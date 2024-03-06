@@ -1,5 +1,6 @@
 #include "cm_utils.h"
 #include "BW\api.h"
+#include "trigger_system/trigger_system.h"
 
 Box32 box32_rect(Point16 pos, u32 w, u32 h) {
 	Box32 box = {};
@@ -24,4 +25,21 @@ bool is_hostile_or_neutral(u32 player, u32 other_player) {
 		return true;
 	}
 	return player != other_player && !bw::is_allied_to(player, other_player);
+}
+
+void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
+	if (*g_is_in_replay || globals.players[*g_local_nation_id].witness_mode) {
+		bool ping = true;
+		Point16 position = {};
+		switch (event_type) {
+			case SpectatorEvent_Tech:
+			{
+				position = { unit->position.x, unit->position.y };
+			//	helper::play_sound_global(units_dat::sound_yes_first[unit->id]);
+			} break;
+		}
+		if (ping) {
+			helper::minimap_ping(position.x, position.y, 17);
+		}
+	}
 }

@@ -817,11 +817,15 @@ namespace hooks
 					} break;
 					case WeaponId::KonviliskSowingSpines: {
 						// Fertile Spines - incubate
-						incubate(data.target, 1, UnitId::ZergRilirokor, data.attacking_player_id);
+						if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
+							incubate(data.target, 1, UnitId::ZergRilirokor, data.attacking_player_id);
+						}
 					} break;
 					case WeaponId::TetcaerokorCleavingMaw: {
 						// Virile Coating - incubate
-						incubate(data.target, 1, UnitId::ZergRililisk, data.attacking_player_id);
+						if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
+							incubate(data.target, 1, UnitId::ZergRililisk, data.attacking_player_id);
+						}
 					} break;
 					case WeaponId::HierophantPhaseSignifier:
 					{

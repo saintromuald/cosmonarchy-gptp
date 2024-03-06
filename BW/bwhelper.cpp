@@ -11324,8 +11324,8 @@ namespace helper {
 		return result;
 	}
 
-	char minimap_ping(u32 x_pos, u32 y_pos, u32 color) {
-		static char result;
+	u8 minimap_ping(u32 x_pos, u32 y_pos, u32 color) {
+		static u8 result;
 		const u32 func_address = 0x004A34C0;
 		__asm {
 			PUSHAD

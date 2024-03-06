@@ -67,6 +67,11 @@ namespace hooks {
 								unit->order_target.unit = built_unit;
 								helper::ai_training_overlord(built_unit, unit);
 								built_unit->order_computer(OrderId::BuildSelf2);
+
+								if (built_unit->id == UnitId::ProtossMonumentOfSin) {
+									replay_witness_event(built_unit, SpectatorEvent_Tech);
+								}
+
 								helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
 								++unit->main_order_state;
 								return;
@@ -75,7 +80,6 @@ namespace hooks {
 								helper::display_last_network_error_for_player(unit->player);
 							}
 						}
-
 						unit->order_to_idle();
 					}
 				}
@@ -153,6 +157,10 @@ namespace hooks {
 							helper::minimap_ping(building->position.x, building->position.y, 17);
 							helper::do_unit_event_notification(building, 17, sfx_dat::portrait_duration[0] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, 0);
 						}
+					}
+
+					if (building->id == UnitId::ProtossMonumentOfSin) {
+						replay_witness_event(building, SpectatorEvent_Tech);
 					}
 				}
 			} break;

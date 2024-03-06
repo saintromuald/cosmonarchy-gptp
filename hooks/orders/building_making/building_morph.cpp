@@ -32,6 +32,9 @@ namespace hooks {
 					building->create_origin = building->id;
 				}
 				++building->main_order_state;
+				if (unit_id_is_tech_tier_structure(building_id)) {
+					replay_witness_event(building, SpectatorEvent_Tech);
+				}
 			} // fall
 			case 1: {
 				if (building->remaining_build_time < 3 * units_dat::time_cost[building_id] >> 2) {
@@ -55,6 +58,9 @@ namespace hooks {
 				if (!building->remaining_build_time) {
 					building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 					helper::play_building_completed_sound(building);
+					if (unit_id_is_tech_tier_structure(building->id)) {
+						replay_witness_event(building, SpectatorEvent_Tech);
+					}
 					++building->main_order_state;
 				}
 			} break;
@@ -296,6 +302,10 @@ namespace hooks
 		unit->status &= ~UnitStatus::Completed;
 		unit->create_origin = unit->id;
 		helper::replace_unit_with_id(unit, id);
+		if (unit_id_is_tech_tier_structure(unit->id)) {
+			replay_witness_event(unit, SpectatorEvent_Tech);
+		}
+
 		if (g_player_table[unit->player].type == PlayerType::Computer) {
 			if (unit->unit_ai) {
 				WorkerAi* worker_ai = (WorkerAi*)unit->unit_ai;

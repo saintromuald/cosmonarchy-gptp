@@ -42,7 +42,7 @@ namespace hooks {
 	void draw_stat_button_image(BinDlg* dialog);																			// 00456C30
 	void statbtn_button_update(BinDlg* button);																				// 00458900
 	void load_statdata_bin();																								// 00459B90
-	//void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update);	// 004E52E0
+//	void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update);	// 004E52E0
 
 	void inject_ui_features_hooks();
 

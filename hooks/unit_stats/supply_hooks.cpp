@@ -35,19 +35,12 @@ namespace hooks
 	{
 		u32 supply_available = 0;
 		u32 supply_used = 0;
-		if (hooks::get_supplies_max(unit_id, player) >= g_supplies_available_terran[player])
-		{
+		if (hooks::get_supplies_max(unit_id, player) >= g_supplies_available_terran[player]) {
 			supply_used = g_supplies_used_terran[player];
 			supply_available = g_supplies_available_terran[player];
-		}
-		else
-		{
+		} else {
 			supply_used = g_supplies_used_terran[player];
 			supply_available = hooks::get_supplies_max(unit_id, player);
-		}
-		if (*g_cheat_state & 0x20000) // Food for Thought
-		{
-			return g_supplies_max_terran[player] - supply_used;
 		}
 		return supply_available - supply_used;
 	}
@@ -77,21 +70,18 @@ namespace hooks
 		memset(g_unit_availability->available[0], 1, UnitsIdLimit * PLAYER_COUNT * sizeof(u8));
 
 		s32 result = 0;
-		if (*g_multiplayer_mode && game_data->teams_enabled)
-		{
+		if (*g_multiplayer_mode && game_data->teams_enabled) {
 			s32 force_iterator = 1;
 			do
 			{
 				result = unknown_57F41CB[(u8)force_iterator];
 				u8 iterator_result = unknown_57F41CB[(u8)force_iterator];
-				if ((s8)result != -1)
-				{
+				if ((s8)result != -1) {
 					s32 supply_max1 = 0;
 					s32 supply_max2 = 0;
 					s32 supply_max3 = 0;
 
-					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 0) >= 400)
-					{
+					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 0) >= 400) {
 						supply_max1 = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 0);
 					} else {
 						supply_max1 = 400;
@@ -99,16 +89,14 @@ namespace hooks
 
 					supply_max2 = iterator_result;
 					g_supplies_max_terran[supply_max2] = supply_max1;
-					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 1) >= 400)
-					{
+					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 1) >= 400) {
 						supply_max3 = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 1);
 					} else {
 						supply_max3 = 400;
 					}
 
 					g_supplies_max_terran[supply_max2] += supply_max3;
-					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 2) >= 400)
-					{
+					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 2) >= 400) {
 						result = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 2);
 					} else {
 						result = 400;
@@ -146,8 +134,7 @@ namespace hooks
 
 	bool redraw_supply_info() // 00425230 // Guessed name
 	{
-		if (!*g_is_in_replay && (u8)(*g_active_portrait_unit)->player != *g_local_nation_id)
-		{
+		if (!*g_is_in_replay && (u8)(*g_active_portrait_unit)->player != *g_local_nation_id) {
 			return helper::unit_stat_cond_standard();
 		}
 
@@ -155,11 +142,9 @@ namespace hooks
 		GroupFlag groupFlags = units_dat::group_flags[(u16)(*g_active_portrait_unit)->id];
 		char race = RaceId::Terran;
 
-		if ((u16)g_supplies_available_temp == get_supplies_available(activePlayer, race))
-		{
+		if ((u16)g_supplies_available_temp == get_supplies_available(activePlayer, race)) {
 			s32 suppliesVar = g_supplies_used_terran[activePlayer];
-			if ((u16)g_supplies_used_temp == suppliesVar)
-			{
+			if ((u16)g_supplies_used_temp == suppliesVar) {
 				return 0;
 			}
 		}
