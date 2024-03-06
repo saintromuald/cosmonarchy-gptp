@@ -842,6 +842,8 @@ namespace bw
 	}
 
 	void inherit_debuffs(Unit* parent, Unit* child) {
+		spread_debuffs(parent, child);
+
 		UnitExt* parent_ext = get_unit_ext(parent);
 		UnitExt* child_ext = get_unit_ext(child);
 
@@ -985,8 +987,9 @@ namespace bw
 		child_ext->values[ValueSignifyPlayer] = parent_ext->values[ValueSignifyPlayer];
 		bw::update_signify_status(child, child_ext);
 
-		// Inherit domination
-		spread_debuffs(parent, child);
+		// Inherit Worship
+		child_ext->timers[TimerDemiurgeWorship]	= parent_ext->timers[TimerDemiurgeWorship];
+		child_ext->values[ValueDemiurgePlayer]  = parent_ext->values[ValueDemiurgePlayer];
 
 		bw::refresh_console();
 	}

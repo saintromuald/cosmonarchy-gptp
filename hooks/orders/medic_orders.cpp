@@ -82,7 +82,7 @@ namespace hooks
 						{
 							helper::update_target_something(unit, old_target, OrderId::HealMove);
 						} else {
-							helper::function_4748E0(unit, old_pos.x, old_pos.y, OrderId::HealMove);
+							helper::perform_another_order_at_coords(unit, old_pos.x, old_pos.y, OrderId::HealMove);
 						}
 					}
 				}
