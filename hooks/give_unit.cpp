@@ -140,8 +140,8 @@ namespace hooks
 					helper::add_worker_structure_ai(unit, town);
 				}
 			} else {
-				UnitExt* unitExt = get_unit_ext(unit);
-				if (unitExt->values[ValueInfested] || unitExt->units[UnitMindController]) {
+				UnitExt* unit_ext = get_unit_ext(unit);
+				if (unit_ext->values[ValueInfested] || unit_ext->values[ValueMindControlPlayer]) {
 					helper::ai_training_simple_military(unit, unit);
 				} else {
 					helper::add_guard_ai_to_unit(unit);

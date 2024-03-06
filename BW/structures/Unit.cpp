@@ -1226,8 +1226,10 @@ bool Unit::give_to(u8 player) {
 		{
 			this->order_to_idle();
 		}
-		UnitExt* unitExt = get_unit_ext(this);
-		unitExt->timers[TimerOwnerChangedRecently] = 2;
+		UnitExt* unit_ext = get_unit_ext(this);
+		unit_ext->timers[TimerOwnerChangedRecently] = 2;
+		unit_ext->values[ValueAlliedInvPlayer] = player;
+		unit_ext->timers[TimerAlliedInvFrames] = 24;
 		return true;
 	}
 	return false;

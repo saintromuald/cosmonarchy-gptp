@@ -442,18 +442,16 @@ namespace hooks
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
 		add_status(statuses, "Blissfully Embraced", unit_ext->values[ValueInfested], 1);
 
-		if (unit_ext->units[UnitMindController]) {
-			switch (unit_ext->units[UnitMindController]->id) {
-				case UnitId::ProtossMindTyrant: {
-					add_status(statuses, "Tyranny", 1, 1);
-				} break;
-				case UnitId::ProtossDemiurge: {
-					add_status(statuses, "Worshiping", 1, 1);
-				} break;
-				case UnitId::ProtossEmpress: {
-					add_status(statuses, "Zombified", 1, 1);
-				} break;
-			}
+		switch (unit_ext->values[ValueMindControllerUnitId]) {
+			case UnitId::ProtossMindTyrant: {
+				add_status(statuses, "Tyranny", 1, 1);
+			} break;
+			case UnitId::ProtossDemiurge: {
+				add_status(statuses, "Worshiping", 1, 1);
+			} break;
+		}
+		if (unit_ext->values[ValueIsZombified]) {
+			add_status(statuses, "Zombified", 1, 1);
 		}
 
 		// GPTP Timers - Gimmicked

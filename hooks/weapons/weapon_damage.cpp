@@ -754,6 +754,7 @@ namespace hooks
 					{
 						// Demiurge - Worship
 						if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+							target_ext->values[ValueDemiurgePlayer] = data.attacking_player_id;
 							if (target_ext->timers[TimerDemiurgeWorship] == 0) {
 								target_ext->timers[TimerDemiurgeWorship] = 10 * 24 + 1;
 							}
@@ -763,7 +764,6 @@ namespace hooks
 							else if (target_ext->timers[TimerDemiurgeWorship] < 24) {
 								target_ext->timers[TimerDemiurgeWorship] = 2;
 							}
-							target_ext->units[UnitDemiurge] = data.attacker;
 						}
 					} break;
 					case WeaponId::EmpressFadingBioplasma:
@@ -1025,20 +1025,6 @@ namespace hooks
 				bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
 			//	bw::transform_unit(data.target, UnitId::ZergVilgoleth);
 			} break;
-		}
-
-		if (data.attacker) {
-			UnitExt* attacker_ext = get_unit_ext(data.attacker);
-			switch (data.weapon_id) {
-				// Alkajelisk Parasitic Spores were here
-			}
-
-			// Mind Control - energy restore
-			if (attacker_ext->units[UnitMindController]) {
-				Unit* mind_controller = attacker_ext->units[UnitMindController];
-				mind_controller->add_unit_energy(MindControlEnergyGain);
-				mind_controller->sprite->create_underlay(ImageId::SmallExplosion_Unused);
-			}
 		}
 
 		if (fatal_deal_damage) {

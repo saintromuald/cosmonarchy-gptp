@@ -845,8 +845,6 @@ namespace bw
 		UnitExt* parent_ext = get_unit_ext(parent);
 		UnitExt* child_ext = get_unit_ext(child);
 
-		spread_debuffs(parent, child);
-
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
@@ -854,22 +852,18 @@ namespace bw
 		s32 overlay_offset = get_overlay_offset(child->id);
 
 		// Inherit Ensnare
-		if (parent->ensnare_timer != 0)
-		{
+		if (parent->ensnare_timer) {
 			child->ensnare_timer = parent->ensnare_timer;
-			if (!(child->sprite->get_overlay(ImageId::EnsnareOverlay_Small + overlay_offset)))
-			{
+			if (!(child->sprite->get_overlay(ImageId::EnsnareOverlay_Small + overlay_offset))) {
 				child->sprite->create_overlay(ImageId::EnsnareOverlay_Small + overlay_offset);
 			}
 			child->update_speed();
 		}
 
 		// Inherit Plague
-		if (parent->plague_timer != 0)
-		{
+		if (parent->plague_timer != 0) {
 			child->plague_timer = parent->plague_timer;
-			if (!(child->sprite->get_overlay(ImageId::PlagueOverlay_Small + overlay_offset)))
-			{
+			if (!(child->sprite->get_overlay(ImageId::PlagueOverlay_Small + overlay_offset))) {
 				child->sprite->create_overlay(ImageId::PlagueOverlay_Small + overlay_offset);
 			}
 		}
@@ -884,47 +878,40 @@ namespace bw
 		}
 
 		// Inherit Observance
-		if (parent_ext->timers[TimerObservanceDebuff] > 0)
-		{
+		if (parent_ext->timers[TimerObservanceDebuff] > 0) {
 			child_ext->timers[TimerObservanceDebuff] = parent_ext->timers[TimerObservanceDebuff];
 			child_ext->timers[TimerObservancePeriod] = parent_ext->timers[TimerObservancePeriod];
 			child_ext->values[ValueObservanceRend] = parent_ext->values[ValueObservanceRend];
 		}
 
 		// Inherit Knockout Drivers
-		if (parent_ext->timers[TimerPetrification] > 0)
-		{
+		if (parent_ext->timers[TimerPetrification] > 0) {
 			child_ext->timers[TimerPetrification] = parent_ext->timers[TimerPetrification];
 		}
 
 		// Inherit Hallucination
-		if (parent_ext->timers[TimerHallucinating]  > 0)
-		{
+		if (parent_ext->timers[TimerHallucinating] > 0) {
 			child_ext->timers[TimerHallucinating] = parent_ext->timers[TimerHallucinating];
 		}
 
 		// Inherit Captivating ZethrokorClaws
-		if (auto timer = parent_ext->timers[TimerCaptivatingClaws])
-		{
+		if (auto timer = parent_ext->timers[TimerCaptivatingClaws]) {
 			child_ext->timers[TimerCaptivatingClaws] = timer;
 			parent_ext->unit_vectors[UnitVectorCaptivatingClaws] = child_ext->unit_vectors[UnitVectorCaptivatingClaws];
 		}
 
 		// Inherit Lockdown
-		if (parent->lockdown_timer != 0)
-		{
+		if (parent->lockdown_timer != 0) {
 			child->lockdown_timer = parent->lockdown_timer;
 		}
 
 		// Inherit Maelstrom
-		if (parent->maelstrom_timer != 0)
-		{
+		if (parent->maelstrom_timer != 0) {
 			child->maelstrom_timer = parent->maelstrom_timer;
 		}
 
 		// Inherit Devourer Corrosive Spores
-		if (parent_ext->timers[TimerCorrosiveTouch])
-		{
+		if (parent_ext->timers[TimerCorrosiveTouch]) {
 			child_ext->values[ValueCorrosiveTouchStacks] = parent_ext->values[ValueCorrosiveTouchStacks];
 			child_ext->timers[TimerCorrosiveTouch] = parent_ext->timers[TimerCorrosiveTouch];
 		}
@@ -935,70 +922,59 @@ namespace bw
 		}
 
 		// Inherit Defensive Matrix
-		if (parent->defensive_matrix_timer > 0)
-		{
+		if (parent->defensive_matrix_timer > 0) {
 			child->defensive_matrix_hp = parent->defensive_matrix_hp;
 			child->defensive_matrix_timer = parent->defensive_matrix_timer;
 		}
 
 		// Inherit Stasis Field
-		if (parent->stasis_timer > 0)
-		{
+		if (parent->stasis_timer > 0) {
 			child->stasis_timer = parent->stasis_timer;
 		}
 
 		// Inherit Deconstruction
-		if (parent_ext->values[ValueDeconstruction])
-		{
+		if (parent_ext->values[ValueDeconstruction]) {
 			child_ext->values[ValueDeconstruction] = parent_ext->values[ValueDeconstruction];
 			child_ext->timers[TimerDeconstruction] = parent_ext->timers[TimerDeconstruction];
 			Sprite* sprite = child->sprite;
-			if (child->subunit != nullptr)
-			{
+			if (child->subunit) {
 				UnitExt* subunit_ext = get_unit_ext(child->subunit);
 				subunit_ext->values[ValueDeconstruction] = parent_ext->values[ValueDeconstruction];
 				subunit_ext->timers[TimerDeconstruction] = parent_ext->timers[TimerDeconstruction];
 				sprite = child->subunit->sprite;
 			}
-			if (!sprite->get_overlay(ImageId::DeconstructionSmall + overlay_offset))
-			{
+			if (!sprite->get_overlay(ImageId::DeconstructionSmall + overlay_offset)) {
 				sprite->create_overlay(ImageId::DeconstructionSmall + overlay_offset);
 			}
 		}
 
 		// Inherit Terminal Surge
-		if (parent_ext->values[ValueTerminalSurge])
-		{
+		if (parent_ext->values[ValueTerminalSurge]) {
 			child_ext->values[ValueTerminalSurge] = parent_ext->values[ValueTerminalSurge];
 		}
 
 		// Inherit Stellar Enforcement
-		if (parent_ext->timers[TimerStellarEnforcement])
-		{
+		if (parent_ext->timers[TimerStellarEnforcement]) {
 			child_ext->timers[TimerStellarEnforcement] = parent_ext->timers[TimerStellarEnforcement];
 		}
 
 		// Inherit Swarming Omen debuff
-		if (parent_ext->timers[TimerSwarmingOmenDebuff])
-		{
+		if (parent_ext->timers[TimerSwarmingOmenDebuff]) {
 			child_ext->timers[TimerSwarmingOmenDebuff] = parent_ext->timers[TimerSwarmingOmenDebuff];
 		}
 
 		// Inherit Kaiser Rampage
-		if (parent_ext->timers[TimerKaiserRampage])
-		{
+		if (parent_ext->timers[TimerKaiserRampage]) {
 			child_ext->timers[TimerKaiserRampage] = parent_ext->timers[TimerKaiserRampage];
 		}
 
 		// Inherit Kelvin Munitions
-		if (parent_ext->timers[TimerKelvinMunitions])
-		{
+		if (parent_ext->timers[TimerKelvinMunitions]) {
 			child_ext->timers[TimerKelvinMunitions] = parent_ext->timers[TimerKelvinMunitions];
 		}
 
 		// Inherit Empress Passive Stacks
-		if (parent_ext->values[ValueEmpressAnodyneAnnexStacks])
-		{
+		if (parent_ext->values[ValueEmpressAnodyneAnnexStacks]) {
 			child_ext->values[ValueEmpressAnodyneAnnexStacks] = parent_ext->values[ValueEmpressAnodyneAnnexStacks];
 			child_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = parent_ext->values[ValueEmpressAnodyneAnnexSourcePlayer];
 		}
@@ -1010,12 +986,7 @@ namespace bw
 		bw::update_signify_status(child, child_ext);
 
 		// Inherit domination
-		child_ext->timers[TimerDemiurgeWorship]				= parent_ext->timers[TimerDemiurgeWorship];
-		child_ext->units[UnitMindController]				= parent_ext->units[UnitMindController];
-		child_ext->units[UnitDemiurge]						= parent_ext->units[UnitDemiurge];
-		child_ext->values[ValueMindControlPlayer]			= parent_ext->values[ValueMindControlPlayer];
-		child_ext->values[ValueMindControlOriginalPlayer]	= parent_ext->values[ValueMindControlOriginalPlayer];
-		child_ext->timers[TimerMindControlRecede]			= parent_ext->timers[TimerMindControlRecede];
+		spread_debuffs(parent, child);
 
 		bw::refresh_console();
 	}

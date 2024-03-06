@@ -2499,8 +2499,7 @@ namespace hooks {
 			unit_search_radial(&masters, unit->position, 8 * 32);
 			unit_search_filter(&masters, unit, 0, { UnitId::ProtossDemiurge });
 			unit_search_custom_filter(&masters, [=](Unit* master) {
-				Unit* demiurge = unit_ext->units[UnitDemiurge];
-				if (demiurge && bw::is_allied_to(master->player, demiurge->player)) {
+				if (bw::is_allied_to(master->player, unit_ext->values[ValueDemiurgePlayer])) {
 					return true;
 				}
 				return false;
@@ -2508,7 +2507,6 @@ namespace hooks {
 
 			if (!masters.count) {
 				unit_ext->timers[TimerDemiurgeWorship] = 0;
-				unit_ext->units[UnitDemiurge] = 0;
 			}
 		}
 
@@ -3051,10 +3049,7 @@ namespace hooks {
 
 		// Demiurge - Worship - Control unit when timer is up
 		if (unit_ext->timers[TimerDemiurgeWorship] == 1) {
-			Unit* demiurge = unit_ext->units[UnitDemiurge];
-			if (demiurge) {
-				mind_control(demiurge->player, demiurge, unit);
-			}
+			mind_control(unit_ext->values[ValueDemiurgePlayer], UnitId::ProtossDemiurge, unit);
 		}
 
 		// Silly way of pathing workers to expansion site

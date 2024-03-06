@@ -369,10 +369,8 @@ void blissful_embrace(Unit* target, u32 player) {
 	}
 
 	// Obtain control
-	target_ext->values[ValueInfested] = true;
-	target_ext->values[ValueAlliedInvPlayer] = player;
-	target_ext->timers[TimerAlliedInvFrames] = 24;
 	target->give_to(player);
+	target_ext->values[ValueInfested] = true;
 
 	// Init infestation
 	blissful_embrace_tick(target);
@@ -380,7 +378,6 @@ void blissful_embrace(Unit* target, u32 player) {
 
 void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
 	UnitExt* target_ext = get_unit_ext(target);
-	target_ext->units[UnitMindController] = 0;
 	target_ext->values[ValueMindControlOriginalPlayer] = 0;
 
 	// Recurse
@@ -390,10 +387,6 @@ void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
 			empress_zombify(player, source, unit, stacks);
 		}
 	}
-	for (Unit* unit : target_ext->unit_vectors[UnitVectorMindControlling]) {
-		empress_zombify(player, source, unit, stacks);
-	}
-	target_ext->unit_vectors[UnitVectorMindControlling].clear();
 
 	// Obtain control
 	target->give_to(player);
@@ -406,46 +399,30 @@ void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
 	target->give_to(player);
 	target_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
 	target_ext->values[ValueIsZombified] = true;
-	target_ext->values[ValueAlliedInvPlayer] = player;
-	target_ext->timers[TimerAlliedInvFrames] = 24;
 
 	// Audiovisuals
 	target->sprite->create_overlay(ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
 	helper::play_sound_from_unit(bw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03), target);
 }
 
-void mind_control(u32 player, Unit* source, Unit* target) {
-	// Caveat 7 May 2023 - Pr0nogo
-	// Demiurges which are killed before the Worship timer expires will NOT pass the first return check. If we wanted to fix this,
-	// we would need to create a version of this function that somehow works with only the attacking player and unit id, and pass
-	// those details through unit_ext... or so I think.
-	
+void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target) {
 	if (!target || player == target->player || bw::is_allied_to(player, target->player)) {
 		return;
 	}
 
-	if (source) {
-		UnitExt* source_ext = get_unit_ext(source);
-		source_ext->unit_vectors[UnitVectorMindControlling].push_back(target);
-	}
-
 	UnitExt* target_ext = get_unit_ext(target);
-	target_ext->units[UnitMindController] = source;
 	if (!target_ext->values[ValueMindControlOriginalPlayer]) {
 		target_ext->values[ValueMindControlOriginalPlayer] = target->player + 1;
 	}
+	target_ext->values[ValueMindControllerUnitId] = mind_controller_unit_id;
 
 	// Recurse
 	for (u32 i = 0; i < TransportCap; ++i) {
 		Unit* unit = target->get_loaded_unit(i);
 		if (unit) {
-			mind_control(player, source, unit);
+			mind_control(player, mind_controller_unit_id, unit);
 		}
 	}
-	for (Unit* unit : target_ext->unit_vectors[UnitVectorMindControlling]) {
-		mind_control(player, source, unit);
-	}
-	target_ext->unit_vectors[UnitVectorMindControlling].clear();
 
 	// Cancel in-progress units
 	if (units_dat::group_flags[target->id].is_factory) {
@@ -468,17 +445,13 @@ void mind_control(u32 player, Unit* source, Unit* target) {
 
 	// Obtain control
 	target->give_to(player);
-	target_ext->values[ValueAlliedInvPlayer] = player;
-	target_ext->timers[TimerAlliedInvFrames] = 24;
 
 	// Audiovisuals
-	if (source && !(source->sprite->flags & SpriteFlags::Hidden)) {
-		if (source->id == UnitId::ProtossDemiurge) {
-			bw::add_unit_overlay(target, ImageId::Worship_Small + bw::get_overlay_offset(target->id));
-			helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
-		} else if (source->id == UnitId::ProtossMindTyrant) {
-			bw::add_unit_overlay(target, ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
-		}
+	if (mind_controller_unit_id == UnitId::ProtossDemiurge) {
+		bw::add_unit_overlay(target, ImageId::Worship_Small + bw::get_overlay_offset(target->id));
+		helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
+	} else if (mind_controller_unit_id == UnitId::ProtossMindTyrant) {
+		bw::add_unit_overlay(target, ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
 	}
 }
 
@@ -488,20 +461,12 @@ void recede_mind_control(Unit* target) {
 	}
 
 	UnitExt* target_ext = get_unit_ext(target);
-	Unit* mind_controller = target_ext->units[UnitMindController];
-	if (mind_controller) {
-		UnitExt* mind_controller_ext = get_unit_ext(mind_controller);
-		auto& vec = mind_controller_ext->unit_vectors[UnitVectorMindControlling];
-		vec.erase(std::remove(vec.begin(), vec.end(), target), vec.end());
-	}
-	target_ext->units[UnitMindController] = 0;
-
 	if (target_ext->values[ValueMindControlOriginalPlayer]) {
 		target->give_to(target_ext->values[ValueMindControlOriginalPlayer] - 1);
-			target_ext->values[ValueMindControlOriginalPlayer] = 0;
-		}
-		target_ext->values[ValueMindControlPlayer] = 0;
 	}
+	target_ext->values[ValueMindControlOriginalPlayer] = 0;
+	target_ext->values[ValueMindControlPlayer] = 0;
+}
 
 void spread_debuffs(Unit* from, Unit* to) {
 	UnitExt* from_ext = get_unit_ext(from);
@@ -519,7 +484,7 @@ void spread_debuffs(Unit* from, Unit* to) {
 	}
 	if (from_ext->values[ValueMindControlPlayer]) {
 		to->give_to(from_ext->values[ValueMindControlOriginalPlayer] - 1);
-		mind_control(from_ext->values[ValueMindControlPlayer] - 1, from, to);
+		mind_control(from_ext->values[ValueMindControlPlayer] - 1, from_ext->values[ValueMindControllerUnitId], to);
 	}
 }
 

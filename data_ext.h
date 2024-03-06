@@ -96,6 +96,7 @@ enum ExtValueId {
 	ValueSpecialSovrolethBirth,
 	ValuePlayingAddonWorkingAnim,
 	ValueMindControlPlayer,
+	ValueMindControllerUnitId,
 	ValueNewRepairTimer,
 	ValueSpraithColonyLaunchPos,
 	ValueMissileSiloLoaded,
@@ -189,6 +190,7 @@ enum ExtValueId {
 	ValueInfestedInit,
 	ValueInfestingPlayer,
 	ValueRepentantChorus,
+	ValueDemiurgePlayer,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -338,7 +340,6 @@ enum ExtTimerId {
 enum ExtUnitId {
 	UnitBroodlingMother,			// is this still really used?
 	UnitDecaySavant,
-	UnitMindController,
 	UnitWyvernTargetLock,
 	UnitDirgeSource,
 	UnitBunkerLockOn,
@@ -352,7 +353,6 @@ enum ExtUnitId {
 	UnitDiademTarget,
 	UnitSevenstepMindMatterSource,
 	UnitPennant,
-	UnitDemiurge,
 
 	UnitCount,
 };
@@ -368,7 +368,6 @@ enum ExtUnitVectorId {
 	UnitVectorPhaseLink,
 	UnitVectorPhaseLinkClarions,
 	UnitVectorCrucibles,
-	UnitVectorMindControlling,
 	UnitVectorStaggerBlacklist,
 	UnitVectorBarghests,
 
