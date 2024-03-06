@@ -841,10 +841,11 @@ namespace bw
 		bw::refresh_console();
 	}
 
-	void inherit_debuffs(Unit* parent, Unit* child)
-	{
+	void inherit_debuffs(Unit* parent, Unit* child) {
 		UnitExt* parent_ext = get_unit_ext(parent);
 		UnitExt* child_ext = get_unit_ext(child);
+
+		spread_debuffs(parent, child);
 
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45

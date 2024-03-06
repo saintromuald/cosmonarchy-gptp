@@ -694,9 +694,6 @@ namespace bw {
 	void madrigal_dirge_fuse(Unit* unit, UnitExt* unit_ext);
 	void update_signify_status(Unit* unit, UnitExt* unit_ext);
 	bool is_unit_isolated(Unit* unit);
-	void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks);
-	void mind_control(Unit* source, Unit* target);
-	void recede_mind_control(Unit* target);
 	bool transport_is_full(Unit* transport);
 	bool transport_is_empty(Unit* transport);
 

@@ -22,4 +22,7 @@ bool can_infest(u32 player, Unit* target);
 void mark_infesting(u32 player, Unit* target);
 void blissful_embrace_tick(Unit* target);
 void blissful_embrace(Unit* target, u32 player);
+void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks);
+void mind_control(u32 player, Unit* source, Unit* target);
+void recede_mind_control(Unit* target);
 void spread_debuffs(Unit* from, Unit* to);

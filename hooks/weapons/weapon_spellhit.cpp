@@ -539,7 +539,9 @@ namespace hooks {
 				target->sprite->create_top_overlay(overlay_id, 0, 0, 0);
 			}
 			target->order_to_idle();
-			bw::mind_control(attacker, target);
+			if (attacker) {
+				mind_control(attacker->player, attacker, target);
+			}
 		}
 		helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 		target->order_to_idle();

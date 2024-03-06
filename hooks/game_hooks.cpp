@@ -2488,7 +2488,7 @@ namespace hooks {
 				unit->unfreeze();
 				u32 offset = bw::get_overlay_offset(unit->id, true);
 				bw::remove_unit_overlay(unit, ImageId::TyrannyStunSmall + offset);
-				bw::recede_mind_control(unit);
+				recede_mind_control(unit);
 				unit_ext->values[ValueMindControlPlayer] = 0;
 			}
 		}
@@ -3051,7 +3051,10 @@ namespace hooks {
 
 		// Demiurge - Worship - Control unit when timer is up
 		if (unit_ext->timers[TimerDemiurgeWorship] == 1) {
-			bw::mind_control(unit_ext->units[UnitDemiurge], unit);
+			Unit* demiurge = unit_ext->units[UnitDemiurge];
+			if (demiurge) {
+				mind_control(demiurge->player, demiurge, unit);
+			}
 		}
 
 		// Silly way of pathing workers to expansion site
