@@ -781,7 +781,8 @@ namespace hooks {
 				ActiveTile* active_tile = *g_active_tile_array;
 				for (u32 tile_size = g_map_tile_size->width * g_map_tile_size->height; tile_size; --tile_size)
 				{
-					active_tile[tile_size].visibility_flags = 0;
+					active_tile->visibility_flags = 0;
+					active_tile->explored_flags = 0;
 					++active_tile;
 				}
 				if (!(g_game_layer->has_been_refreshed & 1)) {

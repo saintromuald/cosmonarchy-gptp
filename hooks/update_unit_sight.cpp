@@ -181,6 +181,10 @@ namespace hooks {
 	}
 
 	void update_fog() {
+		if (bw::get_game_kind() == GameKind_Debug) {
+			return;
+		}
+
 		if (*g_multiplayer_mode) {
 			*g_cheat_state &= ~(CheatFlags::BlackSheepWall + CheatFlags::WarAintWhatItUsedToBe);
 		}
