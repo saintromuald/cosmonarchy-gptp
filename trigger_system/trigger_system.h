@@ -109,11 +109,15 @@ enum AdvisorType : u8 {
 	AdvisorType_Protoss,
 	AdvisorType_Zerg,
 
-	// Characters
+	// Community
 
 	AdvisorType_Mesk,
+
+	// Characters
+
 	AdvisorType_Ackmed,
 	AdvisorType_HADRAL,
+	AdvisorType_ISN,
 
 	// Faction-specific
 
@@ -132,11 +136,15 @@ static const char* advisor_symbol_names[] = {
 	"Protoss",
 	"Zerg",
 
-	// Characters
+	// Community
 
 	"Mesk",
+
+	// Characters
+
 	"Ackmed",
 	"HADRAL",
+	"ISN",
 
 	// Faction-specific
 

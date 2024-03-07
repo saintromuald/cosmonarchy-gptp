@@ -3168,6 +3168,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoMinerals01, SoundId::AckmedAdvisor_NoMinerals04);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoMinerals01;
 						case AdvisorType_Artemis:	return helper::get_random_sfx_between(SoundId::ArtemisAdvisor_NoMinerals01, SoundId::ArtemisAdvisor_NoMinerals02);
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_NoMinerals01, SoundId::ISNAdvisor_NoMinerals04);
 					}
 				} break;
 				case AdvisorEvent_NoVespene: {
@@ -3179,6 +3180,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoVespene01, SoundId::AckmedAdvisor_NoVespene04);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoVespene01;
 						case AdvisorType_Artemis:	return helper::get_random_sfx_between(SoundId::ArtemisAdvisor_NoVespene01, SoundId::ArtemisAdvisor_NoVespene02);
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_NoVespene01, SoundId::ISNAdvisor_NoVespene04);
 					}
 				} break;
 				case AdvisorEvent_NoEnergy: {
@@ -3190,6 +3192,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoEnergy01, SoundId::AckmedAdvisor_NoEnergy04);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoEnergy01;
 						case AdvisorType_Artemis:	return helper::get_random_sfx_between(SoundId::ArtemisAdvisor_NoEnergy01, SoundId::ArtemisAdvisor_NoEnergy02);
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_NoEnergy01, SoundId::ISNAdvisor_NoEnergy04);
 					}
 				} break;
 				case AdvisorEvent_NoBuildTerran: {
@@ -3201,6 +3204,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
 					}
 				} break;
 				case AdvisorEvent_NoBuildProtoss: {
@@ -3212,6 +3216,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoWarp01, SoundId::AckmedAdvisor_NoWarp01);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoWarp01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoWarp01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_NoWarp01, SoundId::ISNAdvisor_NoWarp02);
 					}
 				} break;
 				case AdvisorEvent_NoBuildZerg: {
@@ -3223,6 +3228,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
 					}
 				} break;
 				case AdvisorEvent_NoLanding: {
@@ -3237,6 +3243,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_LandingInterrupt01, SoundId::AckmedAdvisor_LandingInterrupt02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_LandingInterrupt01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_LandingInterrupt01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_LandingInterrupt01, SoundId::ISNAdvisor_LandingInterrupt02);
 					}
 				} break;
 				case AdvisorEvent_PlacementInterrupted: {
@@ -3248,6 +3255,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
 					}
 				} break;
 				case AdvisorEvent_StructureComplete_T: {
@@ -3262,7 +3270,8 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Warp01, SoundId::AckmedAdvisor_Warp02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Warp01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_Warp01;
-					} 
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_Warp01, SoundId::ISNAdvisor_Warp02);
+					}
 				} break;
 				case AdvisorEvent_StructureComplete_Z: {
 					// TODO: fill in
@@ -3276,6 +3285,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Addon01, SoundId::AckmedAdvisor_Addon02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Addon01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_Addon01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_Addon01, SoundId::ISNAdvisor_Addon02);
 					}
 				} break;
 				case AdvisorEvent_TechUpComplete: {
@@ -3287,7 +3297,8 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Tech01, SoundId::AckmedAdvisor_Tech02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Tech01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_Tech01;
-					} 
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_Tech01, SoundId::ISNAdvisor_Tech02);
+					}
 				} break;
 				case AdvisorEvent_MissileComplete: {
 					// TODO: fill in
@@ -3301,6 +3312,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_ArmyUnderAttack01, SoundId::AckmedAdvisor_ArmyUnderAttack03);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_ArmyUnderAttack01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_ArmyUnderAttack01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_ArmyUnderAttack01, SoundId::ISNAdvisor_ArmyUnderAttack04);
 					}
 				} break;
 				case AdvisorEvent_BaseUnderAttack: {
@@ -3312,6 +3324,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_BaseUnderAttack01, SoundId::AckmedAdvisor_BaseUnderAttack03);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_BaseUnderAttack01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_BaseUnderAttack01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_BaseUnderAttack01, SoundId::ISNAdvisor_BaseUnderAttack01);
 					}
 				} break;
 				case AdvisorEvent_MissileLaunch: {
@@ -3323,6 +3336,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_MissileLaunch01, SoundId::AckmedAdvisor_MissileLaunch02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_MissileLaunch01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_MissileLaunch01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_MissileLaunch01, SoundId::ISNAdvisor_MissileLaunch02);
 					}
 				} break;
 				case AdvisorEvent_AllyUnderAttack_T: {
@@ -3334,6 +3348,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_AllyUnderAttack_Terran01, SoundId::AckmedAdvisor_AllyUnderAttack_Terran03);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Terran01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Terran01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_AllyUnderAttack_Terran01, SoundId::ISNAdvisor_AllyUnderAttack_Terran03);
 					}
 				} break;
 				case AdvisorEvent_AllyUnderAttack_P: {
@@ -3345,6 +3360,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_AllyUnderAttack_Protoss01, SoundId::AckmedAdvisor_AllyUnderAttack_Protoss03);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Protoss01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Protoss01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_AllyUnderAttack_Protoss01, SoundId::ISNAdvisor_AllyUnderAttack_Protoss03);
 					}
 				} break;
 				case AdvisorEvent_AllyUnderAttack_Z: {
@@ -3356,6 +3372,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_AllyUnderAttack_Zerg01, SoundId::AckmedAdvisor_AllyUnderAttack_Zerg03);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Zerg01;
 						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Zerg01;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_AllyUnderAttack_Zerg01, SoundId::ISNAdvisor_AllyUnderAttack_Zerg01);
 					}
 				} break;
 				case AdvisorEvent_AbandonAddon: {
@@ -3367,6 +3384,7 @@ namespace bw {
 						case AdvisorType_Ackmed:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
 						case AdvisorType_HADRAL:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
 						case AdvisorType_Artemis:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case AdvisorType_ISN:		return helper::get_random_sfx_between(SoundId::ISNAdvisor_AddonAbandon01, SoundId::ISNAdvisor_AddonAbandon02);
 					}
 				} break;
 			}
