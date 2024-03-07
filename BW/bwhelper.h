@@ -1428,7 +1428,7 @@ namespace helper {
 	u16 get_targeting_error_string(u32 weapon_id, s32* error, Unit* target);										// 0046EFE0
 	char cmdact_target_order(u8 order_id, Unit* target, u16 x_pos, u16 y_pos, u16 fow_unit_id, char keycode_used);	// 004C0300
 
-	void ground_attack_init(u16 x_pos, u16 y_pos);															// 00488660
+	void show_cursor_marker(u16 x_pos, u16 y_pos);															// 00488660
 	void bw_sprintf_s(char* buffer, int buffer_size, const char* format_string, int value);					// 0041F1B0
 
 	Image* set_image_palette_type(Image* out_image, u8 palette_type);										// 004D58B0

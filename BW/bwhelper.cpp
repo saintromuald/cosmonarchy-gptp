@@ -11843,7 +11843,7 @@ namespace helper {
 	}
 
 	// Inverted args for sanity
-	void ground_attack_init(u16 x_pos, u16 y_pos) {
+	void show_cursor_marker(u16 x_pos, u16 y_pos) {
 		const u32 func_address = 0x00488660;
 		__asm {
 			PUSHAD

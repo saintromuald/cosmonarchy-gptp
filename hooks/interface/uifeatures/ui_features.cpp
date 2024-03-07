@@ -589,44 +589,35 @@ LABEL_15:
 	// Hooked to allow for aggressive unit responses. -Pr0nogo
 	void cmdact_right_click_minimap(DialogEvent* dlg_event) // 004563A0
 	{
-		if (*g_active_portrait_unit && (*g_active_portrait_unit)->player == *g_local_nation_id)
-		{
+		if (*g_active_portrait_unit && (*g_active_portrait_unit)->player == *g_local_nation_id) {
 			u32 selection = 0;
 			while (1)
 			{
 				Unit* selected = g_client_selection_group->unit[selection];
-				if (selected)
-				{
-					if (helper::accepts_right_click_commands(selected))
-					{
+				if (selected) {
+					if (helper::accepts_right_click_commands(selected)) {
 						break;
 					}
 				}
-				if (++selection >= SelectionCap)
-				{
+				if (++selection >= SelectionCap) {
 					return;
 				}
 			}
-			if (selection < SelectionCap)
-			{
+			if (selection < SelectionCap) {
 				u32 selection_2 = 0;
 				while (1)
 				{
 					Unit* selected_2 = g_client_selection_group->unit[selection_2];
-					if (selected_2)
-					{
-						if (helper::can_move(selected_2))
-						{
+					if (selected_2) {
+						if (helper::can_move(selected_2)) {
 							break;
 						}
 					}
-					if (++selection_2 >= SelectionCap)
-					{
+					if (++selection_2 >= SelectionCap) {
 						return;
 					}
 				}
-				if (selection_2 < SelectionCap)
-				{
+				if (selection_2 < SelectionCap) {
 					u32 x_pos = dlg_event->current.x;
 					u32 y_pos = dlg_event->current.y;
 					helper::get_minimap_cursor_pos((u16*)&x_pos, (u16*)&y_pos);
@@ -641,7 +632,7 @@ LABEL_15:
 					command[9] = g_is_keycode_used[16];
 					queue_game_command(command, 10);
 					hooks::play_yes_unit_response(*g_active_portrait_unit);
-					helper::ground_attack_init(mouse_pos_y, mouse_pos_x);
+					helper::show_cursor_marker(mouse_pos_x, mouse_pos_y);
 				}
 			}
 		}

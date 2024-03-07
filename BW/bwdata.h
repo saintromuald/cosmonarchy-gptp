@@ -1086,7 +1086,7 @@ SCBW_DATA(u32*,			g_current_buttonset_id,				0x0068C1C4);
 SCBW_DATA_REF(u32*,		ai_strength_air,					0x006BB210);
 SCBW_DATA_REF(u32*,		ai_strength_ground,					0x006BB5A0);
 
-// For ground_attack_init
+// For show_cursor_marker
 SCBW_DATA(Thingy**,		g_first_used_thingy_1,				0x00652918);
 SCBW_DATA(u8*,			g_can_draw_thingy,					0x00652920);
 SCBW_DATA(char**,		g_iscript_data,						0x006D1200);

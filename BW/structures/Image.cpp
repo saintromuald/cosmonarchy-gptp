@@ -231,7 +231,7 @@ namespace hooks
 	}
 
 	// Hooked to extend iscript.bin. -Pr0nogo
-	void ground_attack_init(u16 pos_x, u16 pos_y) { // 00488660
+	void show_cursor_marker(u16 pos_x, u16 pos_y) { // 00488660
 		Thingy* thingy = *g_first_used_thingy_1;
 		Sprite* thingy_sprite = thingy->sprite;
 		*g_can_draw_thingy = 0;
@@ -1305,7 +1305,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) ground_attack_init_wrapper() { // 00488660
+	void __declspec(naked) show_cursor_marker_wrapper() { // 00488660
 		static u16 x_pos;
 		static u16 y_pos;
 		__asm {
@@ -1313,7 +1313,7 @@ namespace hooks
 			MOV x_pos, CX
 			PUSHAD
 		}
-		hooks::ground_attack_init(x_pos, y_pos);
+		hooks::show_cursor_marker(x_pos, y_pos);
 		__asm {
 			POPAD
 			RETN
@@ -1456,7 +1456,7 @@ namespace hooks
 		jump_patch(set_image_direction_wrapper,		0x004D5F80, 1);
 		jump_patch(update_image_direction_wrapper,	0x004D5EA0, 2);
 		jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
-		jump_patch(ground_attack_init_wrapper,		0x00488660, 3);
+		jump_patch(show_cursor_marker_wrapper,		0x00488660, 3);
 		jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
 		jump_patch(image_update_warp_flash_wrapper,	0x004D8590, 1);
 	//	jump_patch(iscript_opcode_cases_wrapper,	0x004D74C0, 1);
