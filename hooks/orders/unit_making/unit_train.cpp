@@ -246,4 +246,24 @@ namespace hooks {
 			helper::show_and_enable_unit(unit);
 		}
 	}
+
+	// Hooked to investigate the "upper map bound" fail state for Seraph training. -Pr0nogo
+	Unit* attempt_train_hatch_unit(u16 unit_id, Unit* source, u32 show_error) // 00468200
+	{
+		if (source->status & UnitStatus::GroundedBuilding
+		||  source->id == UnitId::ProtossSolarion
+		||  source->id == UnitId::ProtossAccantorOld
+		||  source->id == UnitId::Hero_Warbringer
+		||  source->id == UnitId::ZergEgg)
+		{
+			if (helper::has_supplies_for_unit(source->player, unit_id, show_error)) {
+				Unit* new_unit = helper::create_unit(unit_id, source->sprite->position.x, source->sprite->position.y, source->player);
+				if (new_unit) {
+					return new_unit;
+				}
+				helper::display_last_network_error_for_player(source->player);
+			}
+		}
+		return 0;
+	}
 }
