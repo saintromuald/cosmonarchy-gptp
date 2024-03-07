@@ -324,11 +324,10 @@ namespace hooks
 				}
 				*/
 
-				if (!bStopThere)
-				{
+				if (!bStopThere) {
 					Image* current_image = unit->sprite->images.head;
 					unit->order_target.unit = unit;
-					while (current_image != nullptr)
+					while (current_image)
 					{
 						current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 						current_image = current_image->link.next;
@@ -339,12 +338,10 @@ namespace hooks
 			}
 		}
 
-		if (!bStopThere && unit->main_order_state == 2)
-		{
-			if (unit->order_signal & 1)
-			{
+		if (!bStopThere && unit->main_order_state == 2) {
+			if (unit->order_signal & 1) {
 				unit->status |= UnitStatus::IsSelfDestructing;
-				unit->remove(); // orders_self_destructing
+				unit->remove();
 			}
 		}
 	}
@@ -352,21 +349,15 @@ namespace hooks
 	void orders_attack_move_ep(Unit* unit)
 	{
 		u8 previous_main_order_id = unit->main_order_id;
-		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) && unit->main_order_timer == 0)
-		{
+		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) && unit->main_order_timer == 0) {
 			unit->main_order_timer = 0; // used to be 15
-			if (helper::get_region_id(unit->position.x, unit->position.y) == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y))
-			{
+			if (helper::get_region_id(unit->position.x, unit->position.y) == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y)) {
 				helper::make_to_hold_position(unit);
 				unit->order_to_idle();
 			} else {
 				bool jump_to_78EAE = false;
-				if (unit->get_movable_state() != 0
-				&& (unit->order_target.pt.x != unit->position.x || unit->order_target.pt.y != unit->position.y))
-				{
-
-					if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
-					{
+				if (unit->get_movable_state() != 0 && (unit->order_target.pt.x != unit->position.x || unit->order_target.pt.y != unit->position.y)) {
+					if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
 						jump_to_78EAE = true;
 					} else if (helper::ai_is_unreachable_position(unit, (s32)unit->order_target.pt.x, (s32)unit->order_target.pt.y)) {
 						helper::make_to_hold_position(unit);
@@ -375,8 +366,7 @@ namespace hooks
 					jump_to_78EAE = true;
 				}
 
-				if (jump_to_78EAE)
-				{
+				if (jump_to_78EAE) {
 					helper::attack_move_try_pick_target(unit, previous_main_order_id);
 				}
 			}
@@ -387,12 +377,9 @@ namespace hooks
 	{
 		// Logically, would check if a target is in distance, and if that's the case (not returning 0),
 		// stop the "move" part that follow to attack the unit met
-		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) != 0 && unit->main_order_timer == 0)
-		{
+		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) != 0 && unit->main_order_timer == 0) {
 			unit->main_order_timer = 0; // used to be 15
-			if (unit->move_target.pt.x != unit->position.x
-			||  unit->move_target.pt.y != unit->position.y)
-			{
+			if (unit->move_target.pt.x != unit->position.x || unit->move_target.pt.y != unit->position.y) {
 				// This function would check one last time if a target is in distance, and attack it if that's the case, else AttackMove end here
 				helper::attack_move_try_pick_target(unit, unit->main_order_id);
 			} else {
@@ -407,14 +394,9 @@ namespace hooks
 		|| (unit->order_target.unit && units_dat::base_property[(unit->order_target.unit)->id] & UnitProperty::Building)
 		|| !helper::ai_try_return_home(unit, 0))
 		{
-			// perform lots of checks, possibly in an attempt to auto-select a better target if the unit has choice
 			helper::pick_new_target_if_needed(unit);
-
-			// function perform tests to see if attack is possible and how it should be done and return true if attack can be done
-			if (helper::attack_unit_main(unit))
-			{
-				if (unit->unit_ai)
-				{
+			if (helper::attack_unit_main(unit)) {
+				if (unit->unit_ai) {
 					helper::ai_attack_unit(unit);
 				}
 				helper::get_weapon_begin_iscript(unit, IscriptAnimation::GndAttkRpt);
@@ -475,8 +457,7 @@ namespace hooks
 					unit->main_order_state = 6;
 				}
 			} else if (unit->main_order_state == 6) {
-				if (unit->order_signal & 1)
-				{
+				if (unit->order_signal & 1) {
 					unit->status |= UnitStatus::IsSelfDestructing;
 					unit->remove();
 				}
