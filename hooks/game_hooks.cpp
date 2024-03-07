@@ -777,7 +777,7 @@ namespace hooks {
 					g_game_vespene[i] = 999999;
 					g_total_vespene[i] = 999999;
 				}
-
+			} else if (bw::get_game_kind() == GameKind_DebugFog) {
 				ActiveTile* active_tile = *g_active_tile_array;
 				for (u32 tile_size = g_map_tile_size->width * g_map_tile_size->height; tile_size; --tile_size)
 				{

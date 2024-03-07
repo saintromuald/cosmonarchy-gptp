@@ -58,6 +58,7 @@ enum GameKind {
 	GameKind_Massacre,
 	GameKind_TheTurning,
 	GameKind_Debug,
+	GameKind_DebugFog,
 
 	GameKind_Count,
 };
