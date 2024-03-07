@@ -32,6 +32,10 @@ void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
 		bool ping = true;
 		Point16 position = {};
 		switch (event_type) {
+			case SpectatorEvent_Combat:
+			{
+				position = { unit->position.x, unit->position.y };
+			} break;
 			case SpectatorEvent_Tech:
 			{
 				position = { unit->position.x, unit->position.y };

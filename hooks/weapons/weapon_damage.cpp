@@ -76,32 +76,37 @@ namespace hooks
 			return;
 		}
 		u32 local_player = *g_local_nation_id;
-		if (*g_is_in_replay || globals.players[local_player].witness_mode || unit->player == 11) {
+		if (unit->player == 11) {
 			return;
 		}
-		if (unit->player == local_player) {
+		bool witness_or_replay = *g_is_in_replay || globals.players[local_player].witness_mode;
+		if (unit->player == local_player || witness_or_replay) {
 			unit->last_event_color = g_palette_index_reference[20];
 			unit->last_event_timer = 20;
 			if (!globals.alert.own_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
-					reset_all_unit_attack_notify_timers_in_range(unit);
-					globals.alert.own_cooldown = 100;
-
-					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-					u32 sound_id = SoundId::No_sound;
-					AdvisorEvent type = is_building ? AdvisorEvent_BaseUnderAttack : AdvisorEvent_ArmyUnderAttack;
-					if (!is_building) {
-						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
-						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
-						if (sound_first && sound_last) {
-							sound_id = helper::get_random_sfx_between(sound_first, sound_last);
+					if (!witness_or_replay) {
+						reset_all_unit_attack_notify_timers_in_range(unit);
+						globals.alert.own_cooldown = 100;
+						bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
+						u32 sound_id = SoundId::No_sound;
+						AdvisorEvent type = is_building ? AdvisorEvent_BaseUnderAttack : AdvisorEvent_ArmyUnderAttack;
+						if (!is_building) {
+							u32 sound_first = units_dat::sound_annoyed_first[unit->id];
+							u32 sound_last = units_dat::sound_annoyed_last[unit->id];
+							if (sound_first && sound_last) {
+								sound_id = helper::get_random_sfx_between(sound_first, sound_last);
+							} else {
+								sound_id = bw::get_advisor_sound_from_event_type(local_player, type);
+							}
 						} else {
 							sound_id = bw::get_advisor_sound_from_event_type(local_player, type);
 						}
+						play_alert(unit, sound_id);
 					} else {
-						sound_id = bw::get_advisor_sound_from_event_type(local_player, type);
+						globals.alert.own_cooldown = 100;
+						replay_witness_event(unit, SpectatorEvent_Combat);
 					}
-					play_alert(unit, sound_id);
 				}
 			}
 		} else if (bw::are_mutual_allies(local_player, unit->player)) {

@@ -194,7 +194,6 @@ namespace hooks
 				return;
 			}
 		}
-
 		
 		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 			image->play_iscript_animation(IscriptAnimation::WalkingToIdle);

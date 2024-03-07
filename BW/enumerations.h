@@ -1563,5 +1563,6 @@ enum MusicId {
 };
 
 enum SpectatorEvent {
+	SpectatorEvent_Combat		= 1,
 	SpectatorEvent_Tech			= 0,
 };
