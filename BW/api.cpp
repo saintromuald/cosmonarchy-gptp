@@ -3067,7 +3067,7 @@ namespace bw {
 				return GameKind_TheTurning;
 
 			case GameType::Debug:
-				return GameKind_Competitive;
+				return GameKind_Debug;
 		}
 		return GameKind_Invalid;
 	}

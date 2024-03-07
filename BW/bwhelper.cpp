@@ -15002,4 +15002,21 @@ namespace helper {
 		}
 		return result;
 	}
+
+	s32 bw_refresh(s32 left, s32 height, s32 top, s32 width)
+	{
+		const u32 func_address = 0x0041E0D0;
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH width
+			MOV ECX, top
+			MOV EDX, height
+			MOV EAX, result
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

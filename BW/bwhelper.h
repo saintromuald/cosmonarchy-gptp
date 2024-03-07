@@ -1733,4 +1733,5 @@ namespace helper {
 	void progress_flingy(Unit* unit);											// 00495EE0
 	void finish_unit_movement(Unit* unit);										// 0046AD90
 	u32 get_random_yes_unit_response(u32 unit_id);								// 0048EAB0
+	s32 bw_refresh(s32 left, s32 height, s32 top, s32 width);					// 0041E0D0
 }
