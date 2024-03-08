@@ -1636,6 +1636,17 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
+							case UnitId::ZergAlmaksalisk: {
+								if (current_button->requirement_var == UnitId::ZergAlgoztalisk) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
 							case UnitId::ZergLakizilisk: {
 								if (!is_burrowed && current_button->requirement_var == UnitId::ZergZobriolisk) {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergUltravCavern)) {
@@ -2408,6 +2419,11 @@ namespace hooks {
 								} break;
 								case UnitId::ZergEvigrilisk: {
 									if (current_button->icon_id == IconId::RilirokorToxicSpores) { // Evigrilisk - Lashing Limbs
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergAlgoztalisk: {
+									if (current_button->icon_id == IconId::ChitinousPlating) { // Algoztalisk - Escape Velocity
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
