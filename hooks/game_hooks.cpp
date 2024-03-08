@@ -717,7 +717,7 @@ namespace hooks {
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
-		if (!bw::is_in_replay() || *g_elapsed_time_frames == 0) {
+		if (!*g_is_in_replay || *g_elapsed_time_frames == 0) {
 			g_options_list->speed = 6; // Lock game speed at fastest
 		}
 
@@ -2182,7 +2182,7 @@ namespace hooks {
 					unit_ext->values[ValueThroughTheLookingGlassX] = target_pos.x;
 					unit_ext->values[ValueThroughTheLookingGlassY] = target_pos.y;
 					if (unit->has_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256)) {
-					//	unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
+						unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
 					}
 				}
 				if (unit_ext->timers[TimerHypnagogueChannel] == 1) {

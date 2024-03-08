@@ -340,8 +340,7 @@ namespace hooks
 		do
 		{
 			Unit* unit = *selected_units;
-			if (*selected_units)
-			{
+			if (*selected_units) {
 				u8 action = RightClickActions::NoCommand_AutoAttack;
 				u16 unit_id = unit->id;
 				if (unit_id_is_burrowed_attacker(unit_id) && unit->status & UnitStatus::Burrowed)

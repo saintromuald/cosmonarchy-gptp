@@ -279,6 +279,10 @@ namespace hooks
 		bool shield_overlay = false;
 		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
 			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.target, data.weapon_id) + data.bonus_armor_pen;
+			if (weapon_damage_current_bullet && weapon_damage_current_bullet->weapon_id == WeaponId::AlgoztaliskBottomlessSpinestacks) {
+				BulletExt* bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+				armor_pen += bullet_ext->distance_traveled / 32;
+			}
 			s32 armor_total = (hooks::get_armor_internal(data.target) - armor_pen);
 
 			if (data.attacker) {

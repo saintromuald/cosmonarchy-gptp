@@ -283,7 +283,7 @@ namespace WeaponId {
 		QuaziliskAcridBarbs					= 102,
 		AlmaksaliskPiercingSpines			= 110,
 		KalkaliskViscousAcid				= 117,
-		ZergBlissfulEmbrace			= 127,	// Akistrokor ability targeting
+		ZergBlissfulEmbrace					= 127,	// Ability targeting
 		AxitriliskSearingVenom				= 134,
 		IzirokorEnergizedBioplasma			= 142,
 		KagraliskRepeatingVenom				= 145,
@@ -303,6 +303,10 @@ namespace WeaponId {
 		SkortrithColonySkortraTendril		= 180,
 		NathrokorNathrokClaws				= 204,
 		GorgrokorCalcification				= 205,
+		AlgoztaliskBottomlessSpinestacks	= 212,
+		OkrimniliskRelentlessTendrils		= 213,
+		OkrimniliskOmnispores				= 214,
+		CherbrathalorVenemousBursts			= 215,
 
 		// Misc \\
 

@@ -118,7 +118,6 @@ namespace hooks
 				queue_generic_ability(RustId::ToggleLazarusAgent, 1);
 			} break;
 			case TechId::HypnagogueThroughTheLookingGlass: {
-				bw::print("select target");
 				helper::issue_tri_target_order(OrderId::CastThroughTheLookingGlass, 0, 0);
 			} break;
 			case TechId::SpiderMines: {

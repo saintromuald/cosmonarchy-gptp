@@ -70,7 +70,7 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergHydrithDen, UnitId::ZergSkibactScab, 1},
 	{UnitId::ZergHydrithDen, UnitId::ZergTethvithSwamp, 1},
 	{UnitId::ZergSkibactScab, UnitId::ZergTethvithSwamp, 1},
-	{UnitId::ZergAlkagIteth, UnitId::ZergChokralgantChazsal, 1},
+	{UnitId::ZergAlkagIteth, UnitId::ZergChokralChazsal, 1},
 	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, 1},
 	{UnitId::ZergZorkizShroud, UnitId::ZergUltravCavern, 1},
 	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre, 1},

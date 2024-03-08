@@ -76,7 +76,7 @@ b32 unit_id_is_tech(u32 unit_id) {
 		case UnitId::ZergHydrithDen:
 		case UnitId::ZergTethvithSwamp:
 		case UnitId::ZergAlkagIteth:
-		case UnitId::ZergChokralgantChazsal:
+		case UnitId::ZergChokralChazsal:
 		case UnitId::ZergGeszkathGrotto:
 		case UnitId::ZergAlkajChasm:
 		case UnitId::ZergZorkizShroud:

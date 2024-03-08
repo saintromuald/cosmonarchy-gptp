@@ -559,6 +559,7 @@ namespace bw {
 			case UnitId::ZergTosvrolHaunt:
 			case UnitId::ZergSkibactScab:
 			case UnitId::ZergTethvithSwamp:
+			case UnitId::ZergChokralChazsal:
 			case UnitId::ZergAlmakisAntre:
 			case UnitId::ZergAlkajChasm:
 			case UnitId::ZergUltravCavern: {
@@ -580,6 +581,7 @@ namespace bw {
 			case UnitId::ZergVornathPond:
 			case UnitId::ZergHydrithDen:
 			case UnitId::ZergSkibactScab:
+			case UnitId::ZergAlkagIteth:
 			case UnitId::ZergMutathSpire:
 			case UnitId::ZergMatravilNest:
 			case UnitId::ZergZorkizShroud:
@@ -2030,7 +2032,7 @@ namespace bw {
 			case UnitId::ZergTethvithSwamp:			return UnitId::ZergSkibactScab;
 			case UnitId::ZergBegrozithBarrow:		return UnitId::ZergAxtothAxis;
 			case UnitId::ZergAlkajChasm:			return UnitId::ZergGeszkathGrotto;
-			case UnitId::ZergChokralgantChazsal:	return UnitId::ZergAlkagIteth;
+			case UnitId::ZergChokralChazsal:	return UnitId::ZergAlkagIteth;
 			case UnitId::ZergUltravCavern:			return UnitId::ZergZorkizShroud;
 			case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
 			case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
@@ -3067,7 +3069,7 @@ namespace bw {
 				return GameKind_TheTurning;
 
 			case GameType::Debug:
-				return GameKind_DebugFog;
+				return GameKind_Debug;
 		}
 		return GameKind_Invalid;
 	}

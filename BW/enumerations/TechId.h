@@ -27,12 +27,13 @@ namespace TechId {
 
 	// Zerg
 		MatralethEnsnaringBrood				= 13, // Spawn Broodlings
+		ZergBlissfulEmbrace					= 35, // Unused Tech 35
+		KazitrithColonyAdaptation			= 46,
+
+		LarvalSubmenuSelectShared			= 9,  // Cloaking Field Wraith
 		LarvalSubmenuSelectControl			= 28, // Dark Archon Meld
 		LarvalSubmenuSelectSwarm			= 33, // Unused Tech 33
 		LarvalSubmenuSelectAssault			= 38, // Unused Tech 38
-		LarvalSubmenuSelectShared			= 9,  // Cloaking Field Wraith
-		ZergBlissfulEmbrace			= 35, // Unused Tech 35
-		KazitrithColonyAdaptation			= 46,
 
 		// Brood War \\
 

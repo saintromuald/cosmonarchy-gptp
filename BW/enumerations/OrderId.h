@@ -385,11 +385,11 @@ enum Enum {
 	// Cosmonarchy BW \\
 	
 	// Terran
-	PaladinSkyfall				= 12,   // Attack Tile              | Paladin missile barrage ability
+	PaladinSkyfall				= 12,   // Attack Tile              | Paladin missile barrage ability		| unused
 	TalosSalvage				= 13,   // Hover                    | Savant energy siphon ability			| unused
 	EnergyDecay					= 104,  // Guardian Aspect          | Savant anti-specialist ability		| unused
-	Observance					= 122,  // EMP Shockwave            | Science Vessel armor rend ability		| unused
-	CastThroughTheLookingGlass	= 189,
+	Observance					= 122,  // EMP Shockwave            | Seraph armor rend ability				| unused
+	CastThroughTheLookingGlass	= 180,	// Restoration				| Hypnagogue transportation ability
 	
 	// Protoss
 	WyvernLandGrab				= 153,	// CTF COP (Initialize)		| Wyvern switch							| unused

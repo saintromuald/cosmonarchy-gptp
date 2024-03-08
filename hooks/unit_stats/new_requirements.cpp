@@ -1007,7 +1007,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergCherbrathalor)
 			{
-				if (player_has_completed_unit_id(player_id, UnitId::ZergChokralgantChazsal))
+				if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal))
 				{
 					return true;
 				}
@@ -1017,7 +1017,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergOkrimnilisk)
 			{
-				if (player_has_completed_unit_id(player_id, UnitId::ZergChokralgantChazsal))
+				if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal))
 				{
 					return true;
 				}
@@ -1027,7 +1027,7 @@ namespace hooks {
 		{
 			if (unit_id == UnitId::ZergAlgoztalisk)
 			{
-				if (player_has_completed_unit_id(player_id, UnitId::ZergChokralgantChazsal))
+				if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal))
 				{
 					return true;
 				}
@@ -1282,7 +1282,7 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergAlkagIteth))
 		{
-			if (unit_id == UnitId::ZergChokralgantChazsal)
+			if (unit_id == UnitId::ZergChokralChazsal)
 			{
 				if (TierUnlocked[RaceId::Zerg][Tier3])
 				{
@@ -2623,7 +2623,7 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ZergCherbrathalor)
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ZergChokralgantChazsal))
+					if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal))
 					{
 						return TECH_ACTIVE;
 					}
@@ -2635,7 +2635,7 @@ namespace hooks {
 			{
 				if (unit_id == UnitId::ZergOkrimnilisk)
 				{
-					if (player_has_completed_unit_id(player_id, UnitId::ZergChokralgantChazsal))
+					if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal))
 					{
 						return TECH_ACTIVE;
 					}
@@ -2833,7 +2833,7 @@ namespace hooks {
 					case UnitId::ZergOkrimnilisk:
 					case UnitId::ZergAlgoztalisk:
 					{
-						if (player_has_completed_unit_id(player_id, UnitId::ZergChokralgantChazsal))
+						if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal))
 						{
 							return TECH_ACTIVE;
 						}
@@ -3132,6 +3132,18 @@ namespace hooks {
 			case UnitId::ZergZorkizShroud:
 			{
 				if (unit_id == UnitId::ZergUltravCavern)
+				{
+					if (TierUnlocked[RaceId::Zerg][Tier3])
+					{
+						return TECH_ACTIVE;
+					}
+					return TECH_LOCKED;
+				}
+				return TECH_HIDDEN;
+			}
+			case UnitId::ZergAlkagIteth:
+			{
+				if (unit_id == UnitId::ZergChokralChazsal)
 				{
 					if (TierUnlocked[RaceId::Zerg][Tier3])
 					{

@@ -567,19 +567,15 @@ namespace hooks
 	// TODO: Figure out how to properly access g_client_selection_group in this context
 	void do_targeted_order(void* unused, u32 sound_offset, u32 pos_x, u32 pos_y, Unit* target, u32 fow_unit_id) // 0046F5B0
 	{
-		if (!*g_is_targeting)
-		{
+		if (!*g_is_targeting) {
 			return;
 		}
 		s32 error = 0xFFFF;
 		helper::cancel_target_order();
 		u8 order_id = *g_order_id_obstructed;
-		if (target)
-		{
+		if (target) {
 			order_id = *g_order_id_unit;
-		}
-		else if (fow_unit_id == UnitId::None)
-		{
+		} else if (fow_unit_id == UnitId::None) {
 			order_id = *g_order_id_ground;
 		}
 
@@ -587,67 +583,52 @@ namespace hooks
 		u8 weapon_id = orders_dat::order_weapon_id[order_id];
 		u8 tech_id = orders_dat::tech_used[order_id];
 		u32 energy_cost = 0;
-		if (tech_id != TechId::None)
-		{
+		if (tech_id != TechId::None) {
 			energy_cost = techdata_dat::energy_cost[tech_id] << 8;
 		}
-		if (orders_dat::obscured_order[order_id] == OrderId::None)
-		{
+		if (orders_dat::obscured_order[order_id] == OrderId::None) {
 			fow_unit_id = UnitId::None;
 		}
 
 		u8 can_attack_final = 0;
 		u8 not_enough_energy = 0;
 		u8 can_target_spell = 0;
-		Unit** selected_units = &g_client_selection_group->unit[11];
-		Unit** selected_units_2 = &g_client_selection_group->unit[11];
+		Unit** selected_units = g_client_selection_group->unit;
+		Unit** selected_units_2 = g_client_selection_group->unit;
 		while (1) {
-			Unit* unit = *selected_units; // Accessed incorrectly, unit = 0x100
-			if (*selected_units)
-			{
-				if (!unit->is_frozen())
-				{
-					if (!use_weapon)
-					{
-						if (tech_id == TechId::None)
-						{
-							if (fow_unit_id == UnitId::None)
-							{
+			Unit* unit = selected_units[0];
+			if (unit) {
+				if (!unit->is_frozen()) {
+					if (!use_weapon) {
+						if (tech_id == TechId::None) {
+							if (fow_unit_id == UnitId::None) {
 								helper::is_order_valid(order_id, unit, target, target, &error);
 							} else {
 								helper::can_target_order_on_fow_unit(unit, order_id, fow_unit_id, &error);
 							}
 						} else {
-							if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error))
-							{
-								if (!unit->has_energy(energy_cost))
-								{
+							if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error)) {
+								if (!unit->has_energy(energy_cost)) {
 									not_enough_energy = 1;
 								}
-								can_target_spell = 1;
+								can_target_spell = 1;	
 							}
 						}
 						goto iterate_selection;
 					}
-					if (weapon_id == WeaponId::None)
-					{
-						if (!target)
-						{
-							if (helper::unit_can_attack_ground_type(fow_unit_id, unit))
-							{
+					if (weapon_id == WeaponId::None) {
+						if (!target) {
+							if (helper::unit_can_attack_ground_type(fow_unit_id, unit)) {
 								can_attack_final = 1;
 							}
 							goto iterate_selection;
 						}
-						if (helper::get_right_click_action_order(unit) == 3)
-						{
-							if (is_unit_target_out_of_max_range(unit, target))
-							{
+						if (helper::get_right_click_action_order(unit) == 3) {
+							if (is_unit_target_out_of_max_range(unit, target)) {
 								error = 888;
 								goto iterate_selection;
 							}
-							if (helper::target_is_inside_minimum_range(unit, target))
-							{
+							if (helper::target_is_inside_minimum_range(unit, target)) {
 								error = 889;
 								goto iterate_selection;
 							}
@@ -655,10 +636,8 @@ namespace hooks
 						can_attack_final = unit_can_attack_target(target, unit, 1);
 						goto iterate_selection;
 					}
-					if (helper::can_weapon_target_unit(weapon_id, target, unit) || fow_unit_id < UnitId::None && ~(units_dat::base_property[fow_unit_id] >> 29) & 1)
-					{
-						if (!unit->has_energy(energy_cost))
-						{
+					if (helper::can_weapon_target_unit(weapon_id, target, unit) || fow_unit_id < UnitId::None && ~(units_dat::base_property[fow_unit_id] >> 29) & 1) {
+						if (!unit->has_energy(energy_cost)) {
 							not_enough_energy = 1;
 						}
 						can_attack_final = 1;
@@ -673,42 +652,33 @@ namespace hooks
 			}
 		}
 
-		u32 error_type_2 = error;
+		s32 error_type_2 = error;
 		Unit* active_unit = *g_active_portrait_unit;
 		u8 race = active_unit->get_race();
-		if (use_weapon)
-		{
-			if (!can_attack_final || error != -1)
-			{
+		if (use_weapon) {
+			if (!can_attack_final || error != 0xFFFF) {
 				helper::get_targeting_error_string(weapon_id, &error, target);
 				helper::display_error_message_id_with_sfx(active_unit->player, error, race + 138);
-				if (weapon_id == WeaponId::None)
-				{
+				if (weapon_id == WeaponId::None) {
 					helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
 				}
 				return;
 			}
 		check_energy:
-			if (energy_cost && !not_enough_energy)
-			{
+			if (energy_cost && not_enough_energy) {
 				helper::display_error_message_id_with_sfx(active_unit->player, race + 864, race + 156);
 				return;
 			}
 		} else {
-			if (energy_cost)
-			{
-				if (!can_target_spell)
-				{
-					if (error == -1)
-					{
+			if (energy_cost) {
+				if (!can_target_spell) {
+					if (error == 0xFFFF) {
 						error = 876;
 					}
 					u16 error_type_1 = error - 1;
 					const char* error_string_2 = 0;
-					if (error)
-					{
-						if (error_type_1 < g_stat_txt_buffer->get_string_count())
-						{
+					if (error) {
+						if (error_type_1 < g_stat_txt_buffer->get_string_count()) {
 							error_string_2 = (char*)g_stat_txt_buffer->get_string(error_type_1 + 1);
 						} else {
 							error_string_2 = "";
@@ -723,8 +693,7 @@ namespace hooks
 			error_type_2 = error;
 		}
 
-		if (error_type_2 == -1)
-		{
+		if (error_type_2 == 0xFFFF) {
 			UnitExt* unit_ext = get_unit_ext(active_unit);
 			unit_ext->values[ValueUnitResponseOrder] = order_id;
 			hooks::play_yes_unit_response_internal(active_unit, UnitResponseContext::URC_OrderId);
@@ -732,10 +701,8 @@ namespace hooks
 		} else {
 			u8 active_player = active_unit->player;
 			u16 error_string_id = error_type_2 - 1;
-			if (error_type_2)
-			{
-				if (error_string_id < g_stat_txt_buffer->get_string_count())
-				{
+			if (error_type_2) {
+				if (error_string_id < g_stat_txt_buffer->get_string_count()) {
 					helper::get_stat_txt_string(active_unit, active_player, (char*)g_stat_txt_buffer->get_string(error_string_id + 1));
 				} else {
 					helper::get_stat_txt_string(active_unit, active_player, "");

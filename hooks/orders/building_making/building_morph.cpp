@@ -231,12 +231,12 @@ namespace hooks
 			case UnitId::ZergSurkithCesiant:
 			{
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSkortrithCesiant, ignore_incomplete);
-			}
+			} break;
 
 			case UnitId::ZergSpraithCesiant:
 			{
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergSpirtithCesiant, ignore_incomplete);
-			}
+			} break;
 
 			case UnitId::ZergIrolIris:
 			{
@@ -278,6 +278,11 @@ namespace hooks
 			case UnitId::ZergGeszkathGrotto:
 			{
 				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergAlkajChasm, ignore_incomplete);
+			} break;
+
+			case UnitId::ZergAlkagIteth:
+			{
+				unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergChokralChazsal, ignore_incomplete);
 			} break;
 
 			case UnitId::ZergZorkizShroud:

@@ -1445,7 +1445,7 @@ namespace hooks {
 									case UnitId::ZergEvigrilisk:
 									case UnitId::ZergAlmaksalisk: {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergAlkagIteth)
-										||  player_has_unit_id(unit->player, UnitId::ZergChokralgantChazsal)) {
+										||  player_has_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
@@ -1563,7 +1563,7 @@ namespace hooks {
 									case UnitId::ZergCherbrathalor:
 									case UnitId::ZergOkrimnilisk:
 									case UnitId::ZergAlgoztalisk: {
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralgantChazsal)) {
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
@@ -1724,6 +1724,17 @@ namespace hooks {
 								} else if (current_button->requirement_var == UnitId::ZergTethvithSwamp) {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
 									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ZergAlkagIteth: {
+								if (current_button->requirement_var == UnitId::ZergChokralChazsal) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
 										current_button_state = Button_State::Enabled;
 									} else {
 										current_button_state = Button_State::Disabled;
