@@ -504,6 +504,7 @@ namespace hooks
 	
 	static bool warning_once_03_00 = false;
 	static bool warning_once_03_01 = false;
+	static bool warning_once_03_02 = false;
 	const u32 Hook_DropDebugging03 = 0x0047CDF1;
 	void __declspec(naked) drop_debugging_03()
 	{
@@ -520,41 +521,45 @@ namespace hooks
 			MOV hash_type, BL
 		}
 		succeeded = true;
-		if (g_hash_list[hash_struct_index].hash != *(u16*)(data + 2) && !warning_once_03_00)
+		if (g_hash_list[hash_struct_index].hash != *(u16*)(data + 2))
 		{
 			succeeded = false;
 			if (g_hash_list[hash_struct_index].hash_type == 1) {
-				sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", *g_local_nation_id);
-				bw::print(buffer, GameTextColor::Yellow);
-				GPTP::critical_logger << "Invalid Hash, type 1! Local nation id: " << *g_local_nation_id << " | Active nation id: " << *g_active_nation_id << " | Player flag: " << (u32)*g_player_flag <<
-					"\nHash offset:" << *g_current_hash_offset << "\nHash 1: 0x" << g_hash_list[hash_struct_index].hash << " | Hash 2: 0x" << *(u16*)(data + 2) <<
-					"\nElapsed time: " << *g_elapsed_time_frames << " | Last random number: " << *g_last_random_number <<
-					"\nActive visions: " << *g_player_visions << " | Explored visions: " << *g_player_explored_visions <<
-					"\nMap dimensions: " << g_map_tile_size->width << "x" << g_map_tile_size->height <<
-					"\nCurrent hash offset: " << *g_current_hash_offset << " | g_region_vision_hash: " << (u32)*g_region_vision_hash <<
-					"\n\nActive tiles:";
-				//This value is incremented *after* generating the mask_hash, so we use the previous value to get the tiles pertinent to the hash.
-				s32 y = (*g_mask_hash_current_y ? *g_mask_hash_current_y : g_map_tile_size->height) - 1;
+				if (!warning_once_03_00) {
+					sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", *g_local_nation_id);
+					bw::print(buffer, GameTextColor::Yellow);
+					sprintf_s(buffer, "Local Type: %u | Remote Type: %u\nLocal Hash: 0x%X | Remote Hash: 0x%X\nLocal nation id: %u | Active visions: %u | Explored visions: %u\nLast random number: %u",
+						g_hash_list[hash_struct_index].hash_type, hash_type,
+						g_hash_list[hash_struct_index].hash , *(u16*)(data + 2),
+						*g_local_nation_id, *g_player_visions, *g_player_explored_visions,
+						*g_last_random_number);
+					GPTP::critical_logger << buffer;
+					//This value is incremented *after* generating the mask_hash, so we use the previous value to get the tiles pertinent to the hash.
+					s32 y = (*g_mask_hash_current_y ? *g_mask_hash_current_y : g_map_tile_size->height) - 1;
+					sprintf_s(buffer, "\n\nActive tiles (%u):", y);
+					GPTP::critical_logger << buffer;
 
-				for (u32 x = 0; x < g_map_tile_size->width; x++) {
-					if (!(x % 16)) {
-						GPTP::critical_logger << "\n";
+					for (u32 x = 0; x < g_map_tile_size->width; x++) {
+						if (!(x % 16)) {
+							GPTP::critical_logger << "\n";
+						}
+						u32 tile = bw::get_active_tile_at_tile(x, y)->vision_flags;
+						sprintf(buffer, " %08X", tile & ~0x40000000);//'temporary_cagra' isn't part of the GameHash indexing, so it's not useful.
+						GPTP::critical_logger << buffer;
 					}
-					u32 tile = bw::get_active_tile_at_tile(x, y)->vision_flags;
-					sprintf(buffer, " %08x", tile & ~0x40000000);//'temporary_cagra' isn't part of the GameHash indexing, so it's not useful.
-					GPTP::critical_logger << buffer;
-				}
 
-				GPTP::critical_logger << "\n\nActive units:";
+					GPTP::critical_logger << "\n\nActive units:";
 
-				for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-					sprintf_s(buffer, "\n hp:0x%08x sh:0x%08x id:%04d en:0x%08x pos:0x%04x%04x | u:%03d o:0x%02x%02x%02x%02x s:0x%02x",
-						unit->hitpoints, unit->shields, unit->id, unit->energy, unit->sprite->position.x, unit->sprite->position.y,//Unit data used for GameHash indexing.
-						unit->unique_id, unit->main_order_id, unit->main_order_state, unit->order_signal, unit->main_order_timer, unit->status);//Extra info, not associated with the hash code.
-					GPTP::critical_logger << buffer;
+					for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+						sprintf_s(buffer, "\n[%03X] hp:0x%08X sh:0x%08X id:%04u en:0x%04X pos:0x%04X%04X | u:%02u o:0x%02X%02X%02X%02X s:0x%08X",
+							((u32)unit - (u32)&ccmu_extender.unit_table) / 336, unit->hitpoints, unit->shields, unit->id, unit->energy, unit->sprite->position.x, unit->sprite->position.y,//Unit data used for GameHash indexing.
+							unit->unique_id, unit->main_order_id, unit->main_order_state, unit->order_signal, unit->main_order_timer, unit->status);//Extra info, not associated with the hash code.
+						GPTP::critical_logger << buffer;
+					}
+					GPTP::critical_logger << "\n";
+					warning_once_03_00 = true;
 				}
-				GPTP::critical_logger << "\n";
-			} else {
+			} else if (!warning_once_03_01) {
 				sprintf_s(buffer, "Invalid Hash!\nhash_struct_index: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u",
 					hash_struct_index,
 					g_hash_list[hash_struct_index].hash_type,
@@ -563,16 +568,16 @@ namespace hooks
 					*(u16*)(data + 2),
 					*g_elapsed_time_frames);
 				bw::print(buffer, GameTextColor::Yellow);
+				warning_once_03_01 = true;
 			}
-			warning_once_03_00 = true;
 		}
 
-		if (g_hash_list[hash_struct_index].hash_type != (hash_type & 0x0F) && warning_once_03_01)
+		if (g_hash_list[hash_struct_index].hash_type != (hash_type & 0x0F) && warning_once_03_02)
 		{
 			succeeded = false;
 			sprintf_s(buffer, "Invalid HashType!\hash_struct_index: %u\nHashType = %u", hash_struct_index, g_hash_list[hash_struct_index].hash_type);
 			bw::print(buffer, GameTextColor::Red);
-			warning_once_03_01 = true;
+			warning_once_03_02 = true;
 		}
 		if (succeeded)
 		{
