@@ -33,6 +33,8 @@
 #define HarvestTimer 36
 #define OrderQueueTimer 0
 
+#define UnloadDelay 24
+
 #define PlayerColorByte 0x0B
 struct PlayerColorCode {
 	char data[3];
@@ -65,6 +67,11 @@ enum GameKind {
 
 namespace bw {
 	inline bool harvester_is_active(Unit* unit) {
+		if (!unit->worker.is_harvesting && unit->worker.harvest_target) {
+			// Always consider waiting workers active, since it's almost never optimal to triple harvest a node,
+			// when you can double harvest another one, and that's what otherwise will often happen
+			return true;
+		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		u32 activity = unit_ext->values[ValueHarvesterActivity];
 		return activity > 0 && activity <= HarvestTimer - 12;

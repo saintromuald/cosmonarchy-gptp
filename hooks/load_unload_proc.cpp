@@ -240,21 +240,27 @@ namespace hooks
 
 					bw::refresh_console();
 					return_value = 1;
-					if (units_dat::base_property[transport->id] & UnitProperty::Building) {
-						if (unit->id != UnitId::ProtossAccantorOld) {
-							u32 weapon_id = unit->get_ground_weapon();
-							if (weapon_id != WeaponId::None) {
-								unit->ground_weapon_cooldown = 2;
+
+					auto apply_unload_delay = [](Unit* unit) {
+						if (!unit) return;
+						auto update_delay = [](auto& var, auto value) {
+							if (var < value) {
+								var = value;
 							}
-							weapon_id = unit->get_air_weapon();
-							if (weapon_id != WeaponId::None) {
-								unit->air_weapon_cooldown = 2;
-							}
-							unit->spell_cooldown = 30;
-						} else {
-							unit->main_order_timer = 30;
+						};
+						u32 ground_weapon_id = unit->get_ground_weapon();
+						if (ground_weapon_id != WeaponId::None) {
+							update_delay(unit->ground_weapon_cooldown, weapons_dat::cooldown[ground_weapon_id] / 2);
 						}
-					}
+						u32 air_weapon_id = unit->get_air_weapon();
+						if (air_weapon_id != WeaponId::None) {
+							update_delay(unit->air_weapon_cooldown, weapons_dat::cooldown[air_weapon_id] / 2);
+						}
+						update_delay(unit->spell_cooldown, UnloadDelay);
+					};
+
+					apply_unload_delay(unit);
+					apply_unload_delay(unit->subunit);
 				}
 			}
 		}

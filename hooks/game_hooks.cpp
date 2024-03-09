@@ -981,7 +981,7 @@ namespace hooks {
 				unit_ext->values[ValueHarvesterActivity] = 0;
 				continue;
 			}
-
+			
 			if (unit->worker.is_harvesting) {
 				unit_ext->values[ValueHarvesterActivity] += 1;
 			} else {
