@@ -33,7 +33,7 @@
 #define HarvestTimer 36
 #define OrderQueueTimer 0
 
-#define UnloadDelay 24
+#define UnloadDelay 4
 
 #define PlayerColorByte 0x0B
 struct PlayerColorCode {

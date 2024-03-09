@@ -243,20 +243,20 @@ namespace hooks
 
 					auto apply_unload_delay = [](Unit* unit) {
 						if (!unit) return;
-						auto update_delay = [](auto& var, auto value) {
-							if (var < value) {
-								var = value;
+						auto update_delay = [](auto& var) {
+							if (var < UnloadDelay) {
+								var = UnloadDelay;
 							}
 						};
 						u32 ground_weapon_id = unit->get_ground_weapon();
 						if (ground_weapon_id != WeaponId::None) {
-							update_delay(unit->ground_weapon_cooldown, weapons_dat::cooldown[ground_weapon_id] / 2);
+							update_delay(unit->ground_weapon_cooldown);
 						}
 						u32 air_weapon_id = unit->get_air_weapon();
 						if (air_weapon_id != WeaponId::None) {
-							update_delay(unit->air_weapon_cooldown, weapons_dat::cooldown[air_weapon_id] / 2);
+							update_delay(unit->air_weapon_cooldown);
 						}
-						update_delay(unit->spell_cooldown, UnloadDelay);
+						update_delay(unit->spell_cooldown);
 					};
 
 					apply_unload_delay(unit);
