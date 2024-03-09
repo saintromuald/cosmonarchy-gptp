@@ -94,7 +94,7 @@ namespace hooks
 
 		// Crucible - speed up
 		bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
-		speed *= 1 + has_crucible;
+		speed *= 1 + (has_crucible * 0.25);
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
 		if (unit_ext->timers[TimerTerminalSurge] > 1)
