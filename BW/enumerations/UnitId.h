@@ -274,7 +274,7 @@ namespace UnitId
 		ZergSkortrithCesiant								= 293,		// Morphed from Surkith Cesiant
 		ZergRakzogthRoost									= 303,		// Unused
 		ZergBegrozithBarrow									= 329,		// Unused
-		ZergChokralChazsal								= 330,		// Morphed from Alkag Iteth
+		ZergChokralChazsal									= 330,		// Morphed from Alkag Iteth
 		ZergNephrilosk										= 350,		// Unused
 		ZergOcsalCesiant									= 354,		// Morphed from Larvosk Cesiant
 		ZergKazitrithCesiant								= 355,		// Morphed from Cagrant Cesiant
