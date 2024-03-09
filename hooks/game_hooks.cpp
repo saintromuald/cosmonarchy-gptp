@@ -987,7 +987,9 @@ namespace hooks {
 			} else {
 				unit_ext->values[ValueHarvesterActivity] = 1;
 			}
-			if (bw::harvester_is_active(unit)) {
+			if (bw::harvester_is_active(unit) || bw::harvester_is_waiting(unit)) {
+				// Always consider waiting workers active, since it's almost never optimal to triple harvest a node,
+				// when you can double harvest another one, and that's what otherwise will often happen
 				target_ext->values[ValueActiveHarvesters] += 1;
 			}
 		}
