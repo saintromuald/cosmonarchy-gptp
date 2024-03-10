@@ -68,16 +68,13 @@ namespace hooks
 	u32 btnscond_rally(u32 unused, u32 player, Unit* unit) // 00429520
 	{
 		*g_last_internal_error = 0;
-		if (orders_dat::req_offset[OrderId::RallyPointToTile] == -1)
-		{
+		if (orders_dat::req_offset[OrderId::RallyPointToTile] == -1) {
 			helper::parse_orders_dat_requirements();
 		}
 
 		u32 result = 0;
-		if (player == unit->player)
-		{
-			if (unit->is_frozen())
-			{
+		if (player == unit->player) {
+			if (unit->is_frozen()) {
 				*g_last_internal_error = 10;
 				result = 0;
 			} else if (unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(unit->id)) {
@@ -93,10 +90,8 @@ namespace hooks
 					result = 0;
 				} else {
 					result = orders_dat::req_offset[OrderId::RallyPointToTile];
-					if (orders_dat::req_offset[OrderId::RallyPointToTile])
-					{
-						if (unit->id == UnitId::ZergCagrantCesiant && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvoskCesiant) // lame
-						{
+					if (orders_dat::req_offset[OrderId::RallyPointToTile]) {
+						if (unit->id == UnitId::ZergCagrantCesiant && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvoskCesiant) { // lame
 							result = 1;
 						} else {
 							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPointToTile, player, g_orders_requirement_tree, orders_dat::req_offset[OrderId::RallyPointToTile]);
@@ -115,66 +110,49 @@ namespace hooks
 
 	Order* remove_references(Unit* unit, Unit* dying) // 0049E590
 	{
-		if (unit->current_build_unit == dying)
-		{
+		if (unit->current_build_unit == dying) {
 			unit->current_build_unit = 0;
 		}
-		if (unit->order_target.unit == dying)
-		{
+		if (unit->order_target.unit == dying) {
 			unit->order_target.unit = 0;
 		}
-		if (unit->move_target.unit == dying)
-		{
+		if (unit->move_target.unit == dying) {
 			unit->move_target.unit = 0;
 		}
-		if (unit->auto_target_unit == dying)
-		{
+		if (unit->auto_target_unit == dying) {
 			unit->auto_target_unit = 0;
 		}
-		if (unit->connected_unit == dying)
-		{
+		if (unit->connected_unit == dying) {
 			unit->connected_unit = 0;
 		}
-		if (unit->irradiate_caster == dying)
-		{
+		if (unit->irradiate_caster == dying) {
 			unit->irradiate_caster = 0;
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Worker)
-		{
-			if (unit->worker.target_resource.unit == dying)
-			{
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+			if (unit->worker.target_resource.unit == dying) {
 				unit->worker.target_resource.unit = 0;
 			}
-			if (unit->worker.is_harvesting)
-			{
-				if (unit->worker.harvest_target == dying)
-				{
+			if (unit->worker.is_harvesting) {
+				if (unit->worker.harvest_target == dying) {
 					unit->worker.is_harvesting = 0;
 					unit->worker.harvest_target = 0;
 				}
 			}
-		}
-		else if (unit->status & UnitStatus::GroundedBuilding)
-		{
-			if (unit->building.addon == dying)
-			{
+		} else if (unit->status & UnitStatus::GroundedBuilding) {
+			if (unit->building.addon == dying) {
 				unit->building.addon = 0;
 			}
 		}
-		if (hooks::unit_can_have_rally(unit))
-		{
+		if (hooks::unit_can_have_rally(unit)) {
 			UnitExt* unitExt = get_unit_ext(unit);
-			if (unit->rally.unit == dying)
-			{
+			if (unit->rally.unit == dying) {
 				unit->rally.unit = 0;
 				unit->rally.pt.x = dying->sprite->position.x;
 				unit->rally.pt.y = dying->sprite->position.y;
 			}
 		}
-		if (unit->subunit)
-		{
-			if (units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit)
-			{
+		if (unit->subunit) {
+			if (units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
 				remove_references(unit->subunit, dying);
 			}
 		}
@@ -182,8 +160,7 @@ namespace hooks
 		while (result)
 		{
 			Order* next = result->next;
-			if (result->target.unit == dying)
-			{
+			if (result->target.unit == dying) {
 				helper::remove_order_from_unit_queue(result, unit);
 			}
 			result = next;
@@ -197,15 +174,11 @@ namespace hooks
 		movement_group.pos.x = x;
 		movement_group.pos.y = y;
 		helper::prepare_formation_movement(&movement_group, 1);
-		if (target)
-		{
+		if (target) {
 			fow_unit_id = UnitId::None;
-		}
-		else if (fow_unit_id != UnitId::None)
-		{
-			u32 tileId = x / 32 + g_map_tile_size->width * (y / 32);
-			if (!((1 << *g_active_nation_id) & (*g_active_tile_array_int)[tileId]))
-			{
+		} else if (fow_unit_id != UnitId::None) {
+			u32 tile_id = x / 32 + g_map_tile_size->width * (y / 32);
+			if (!((1 << *g_active_nation_id) & (*g_active_tile_array_int)[tile_id])) {
 				target = helper::find_fow_unit(y, x, fow_unit_id);
 				fow_unit_id = UnitId::None;
 			}
@@ -216,36 +189,28 @@ namespace hooks
 		for (Unit* unit = result; result; unit = result)
 		{
 			u16 id = unit->id;
-			if (unit_id_is_burrowed_attacker(id) && unit->status & UnitStatus::Burrowed)
-			{
+			if (unit_id_is_burrowed_attacker(id) && unit->status & UnitStatus::Burrowed) {
 				order_type = 3;
 			} else {
 				order_type = helper::get_right_click_action_order(unit);
-				if (!order_type)
-				{
+				if (!order_type) {
 					if (hooks::unit_can_rally(unit)) {
 						order_type = 2;
 					}
 				}
 			}
-			if (unit->status & UnitStatus::IsHallucination)
-			{
-				if (order_type == 4 || order_type == 5)
-				{
+			if (unit->status & UnitStatus::IsHallucination) {
+				if (order_type == 4 || order_type == 5) {
 					order_type = 1;
 				}
 			}
 			unk_order_array[0] = OrderId::Nothing2;
-			u8 rightOrder = helper::get_right_click_order(order_type, unit, x, y, &target, fow_unit_id);
-			if (rightOrder != OrderId::Nothing2)
-			{
-				if (rightOrder == OrderId::RallyPointToVisibleUnit)
-				{
-					if (hooks::unit_can_have_rally(unit))
-					{
+			u8 right_click_order = helper::get_right_click_order(order_type, unit, x, y, &target, fow_unit_id);
+			if (right_click_order != OrderId::Nothing2) {
+				if (right_click_order == OrderId::RallyPointToVisibleUnit) {
+					if (hooks::unit_can_have_rally(unit)) {
 						Unit* rally_target = target;
-						if (!rally_target)
-						{
+						if (!rally_target) {
 							rally_target = unit;
 						}
 
@@ -254,62 +219,45 @@ namespace hooks
 						unit->rally.pt.x = rally_target->sprite->position.x;
 						unit->rally.pt.y = rally_target->sprite->position.y;
 					}
-				}
-				else if (unit != target)
-				{
-					if (rightOrder == OrderId::RallyPointToTile)
-					{
-						if (hooks::unit_can_have_rally(unit))
-						{
+				} else if (unit != target) {
+					if (right_click_order == OrderId::RallyPointToTile) {
+						if (hooks::unit_can_have_rally(unit)) {
 							UnitExt* unitExt = get_unit_ext(unit);
 							unit->rally.unit = 0;
 							unit->rally.pt.x = x;
 							unit->rally.pt.y = y;
 						}
-					}
-					else
-					{
-						if (rightOrder == OrderId::Attack1)
-						{
+					} else {
+						if (right_click_order == OrderId::Attack1) {
 							Unit* subunit = unit->subunit;
-							if (subunit)
-							{
+							if (subunit) {
 								helper::targeted_order_unit(target, unit->subunit, queued != 0, units_dat::attack_unit_order[subunit->id]);
 							}
-							rightOrder = units_dat::attack_unit_order[unit->id];
+							right_click_order = units_dat::attack_unit_order[unit->id];
 						}
-						if (helper::order_is_allowed(unit, rightOrder, *g_active_nation_id) == 1)
-						{
-							if (target)
-							{
-								helper::targeted_order_unit(target, unit, queued != 0, rightOrder);
-								if (unk_order_array[0] != OrderId::Nothing2)
-								{
+						if (helper::order_is_allowed(unit, right_click_order, *g_active_nation_id) == 1) {
+							if (target) {
+								helper::targeted_order_unit(target, unit, queued != 0, right_click_order);
+								if (unk_order_array[0] != OrderId::Nothing2) {
 									helper::targeted_order_unit(target, unit, queued != 0, unk_order_array[0]);
 								}
-							}
-							else
-							{
+							} else {
 								movement_group.pos.x = x;
 								movement_group.pos.y = y;
-								if (fow_unit_id == UnitId::None)
-								{
+								if (fow_unit_id == UnitId::None) {
 									helper::get_formation_movement_target(unit, &movement_group);
-								}
-								else
-								{
+								} else {
 									movement_group.current_unit_target = movement_group.pos;
 								}
 
 								u16 target_x = movement_group.current_unit_target.x;
 								u16 target_y = movement_group.current_unit_target.y;
-								helper::targeted_order_ground(rightOrder, fow_unit_id, unit, queued != 0, target_x, target_y);
-								if (unk_order_array[0] != OrderId::Nothing2)
-								{
+								helper::targeted_order_ground(right_click_order, fow_unit_id, unit, queued != 0, target_x, target_y);
+								if (unk_order_array[0] != OrderId::Nothing2) {
 									helper::targeted_order_ground(unk_order_array[0], fow_unit_id, unit, queued != 0, target_x, target_y);
 								}
 							}
-							unit->user_action_flags |= 2u;
+							unit->user_action_flags |= UserActionFlags_UMStartPath;
 						}
 					}
 				}

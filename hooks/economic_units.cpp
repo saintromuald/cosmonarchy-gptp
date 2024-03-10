@@ -230,7 +230,7 @@ namespace hooks
 		return nullptr; // couldn't find anything
 	}
 
-	void Ai_BuildSupplies(AiTown* mainTown)
+	void ai_build_supplies(AiTown* mainTown) // 00433730
 	{
 		u8 player = mainTown->player;
 		u8 race = g_player_table[player].race;

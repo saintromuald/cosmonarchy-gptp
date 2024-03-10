@@ -32,7 +32,7 @@ namespace hooks
 	}
 
 	// Probably is going to be hook instead
-	void __declspec(naked) Ai_BuildSupplies_Wrapper()
+	void __declspec(naked) ai_build_supplies_wrapper() // 00433730
 	{
 		static AiTown* town;
 		__asm {
@@ -44,7 +44,7 @@ namespace hooks
 			POP EAX
 			PUSHAD
 		}
-		Ai_BuildSupplies(town);
+		ai_build_supplies(town);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -237,7 +237,7 @@ namespace hooks
 	void injectWorkerHooks()
 	{
 		jump_patch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
-		jump_patch(Ai_BuildSupplies_Wrapper, 0x00433730);
+		jump_patch(ai_build_supplies_wrapper, 0x00433730);
 		jump_patch(Ai_GetDefaultWorkerFromRace, 0x00432130);
 	}
 
