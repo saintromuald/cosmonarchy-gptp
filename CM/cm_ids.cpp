@@ -849,6 +849,13 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.count = 2;
 			return &offsets;
 		} break;
+		case WeaponId::CherbrathalorVenemousBursts:
+		{
+			static WeaponOffsets offsets = {};
+			offsets.value_id = ValueCherbrathalorLaunchPos;
+			offsets.count = 4;
+			return &offsets;
+		} break;
 		case WeaponId::KeskathalorScreamingVenom:
 		{
 			static WeaponOffsets offsets = {};

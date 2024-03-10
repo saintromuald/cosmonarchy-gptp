@@ -602,10 +602,24 @@ namespace hooks {
 					} break;
 					case WeaponId::TosgriliskExplosiveSpores:
 					case WeaponId::IzirokorEnergizedBioplasma:
-					case WeaponId::CherbrathalorVenemousBursts:
 					case WeaponId::KonviliskSowingSpines: {
 						// Crushing Tide - Tosgrilisk, Izirokor, Konvilisk
 						fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
+					} break;
+					case WeaponId::CherbrathalorVenemousBursts:
+					{
+						// Crushing Tide - Cherbrathalor
+						FireMultipleOptions options = {};
+						options.ignore_main = false;
+						options.use_weapon_factor = false;
+						options.apply_cooldown = true;
+						options.weapon_offsets = get_weapon_offsets(weapon_id);
+						options.range_overwrite = 0;
+						options.divisor_multiplier = 1;
+						options.stagger = -1;
+						options.center_on_target = false;
+						options.center_on_target_range_overwrite = 0;
+						fire_multiple(unit, weapon_id, 3, FilterEnemy, options);
 					} break;
 					case WeaponId::MatrixKhaydarinRay: {
 						FireMultipleOptions options = {};

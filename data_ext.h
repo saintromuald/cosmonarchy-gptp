@@ -130,7 +130,7 @@ enum ExtValueId {
 	ValueCustomImage,
 	ValueAionLaunchPos,
 	ValueMortothrokorStacks,
-//	ValueMadrigalTempoDown,
+	ValueCherbrathalorLaunchPos,
 	ValueAssignedHarvesters,
 	ValueAssignedAiGasHarvesters,
 	ValueActiveHarvesters,

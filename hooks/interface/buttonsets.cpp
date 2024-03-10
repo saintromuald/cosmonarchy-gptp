@@ -2379,7 +2379,8 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergTosgrilisk:
-								case UnitId::ZergIzirokor: {
+								case UnitId::ZergIzirokor:
+								case UnitId::ZergCherbrathalor: {
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Izirokor - Crushing Tide
 										current_button_state = Button_State::Enabled;
 									}

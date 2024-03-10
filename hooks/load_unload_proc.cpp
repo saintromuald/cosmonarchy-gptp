@@ -106,8 +106,7 @@ namespace hooks
 			}
 		}
 
-		if (transport->player == 11)
-		{
+		if (transport->player == 11) {
 			UnitExt* unit_ext = get_unit_ext(transport);
 			unit_ext->values[ValueIsNeutralBunker] = 1;
 			transport->give_to(cargo_unit->player);

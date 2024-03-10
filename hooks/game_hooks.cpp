@@ -1053,6 +1053,14 @@ namespace hooks {
 					unit_ext->values[ValueIsNeutralNydus] = 1;
 				}
 			} break;
+			case UnitId::ProtossVassalOld:
+			{
+				helper::replace_unit_with_id(unit, UnitId::ProtossVassal);
+			} break;
+			case UnitId::ProtossAccantorOld:
+			{
+				helper::replace_unit_with_id(unit, UnitId::ProtossAccantor);
+			} break;
 			case UnitId::ProtossSolarion:
 			{
 				u32 missing_count = 12 - (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count);
