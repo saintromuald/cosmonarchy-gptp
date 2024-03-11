@@ -612,12 +612,12 @@ namespace hooks
 		u32 local_player = *g_local_nation_id;
 		Point16 pos = { 434, 3 };//x is dialog->bounds.left of the third row element (from the right), minus 2. -DF
 
-		if (*g_is_in_replay || globals.players[local_player].witness_mode) {
+		if (*g_is_in_replay || globals->players[local_player].witness_mode) {
 			/*bool can_show_apm = false;
 
 			if (config.witness_show_apm) {
 				for (u32 player = 0; player < PlayerLimit; ++player) {
-					if (g_player_table[player].type == PlayerType::Human && !globals.players[player].witness_mode) {
+					if (g_player_table[player].type == PlayerType::Human && !globals->players[player].witness_mode) {
 						can_show_apm = true;
 						break;
 					}
@@ -625,7 +625,7 @@ namespace hooks
 			}*/
 
 			for (u32 player = 0; player < PlayerLimit; ++player) {
-				PlayerVars player_vars = globals.players[player];
+				PlayerVars player_vars = globals->players[player];
 				u32 player_type = g_player_table[player].type;
 				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !player_vars.witness_mode && !player_vars.hide_in_team_ui) {
 					draw_player_stats(&dialog, &pos, player,
@@ -641,7 +641,7 @@ namespace hooks
 			/*bool can_show_apm = config.show_apm;
 
 			for (u32 player = 0; player < PlayerLimit; ++player) {
-				if (g_player_table[player].type == PlayerType::Human && player != local_player && !globals.players[player].witness_mode) {
+				if (g_player_table[player].type == PlayerType::Human && player != local_player && !globals->players[player].witness_mode) {
 					can_show_apm = true;
 					break;
 				}
@@ -657,7 +657,7 @@ namespace hooks
 
 			if (config.show_team_ui) {
 				for (u32 player = 0; player < PlayerLimit; ++player) {
-					PlayerVars player_vars = globals.players[player];
+					PlayerVars player_vars = globals->players[player];
 					u32 player_type = g_player_table[player].type;
 					if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && player != local_player && !player_vars.witness_mode
 						&& !player_vars.hide_in_team_ui && bw::is_allied_to(player, local_player))

@@ -12,7 +12,7 @@ namespace hooks
 
 	// Conditions on which the power field should be showed
 	bool unit_can_show_power_for(Unit* unit, u32 player) {
-		if (globals.players[player].witness_mode || *g_is_in_replay) {
+		if (globals->players[player].witness_mode || *g_is_in_replay) {
 			return true;
 		}
 		if (!bw::is_allied_to(unit->player, player))

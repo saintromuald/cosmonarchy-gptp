@@ -732,7 +732,7 @@ void __declspec(naked) globals_save_state_wrapper()
 	__asm {
 		PUSHAD
 	}
-//	state = &globals.aise_save();
+//	state = &globals->aise_save();
 	iquare_globals.aise_save();
 	state = &saveState;
 	__asm {

@@ -74,7 +74,7 @@ namespace hooks
 
 		/*
 		s32 unit_array_length = UNIT_ARRAY_LENGTH;
-		if (globals.extended_unit_table == 1)
+		if (globals->extended_unit_table == 1)
 		{
 			unit_array_length = NEW_ARRAY_LENGTH;
 		}

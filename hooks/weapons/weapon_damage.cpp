@@ -57,8 +57,8 @@ namespace hooks
 		helper::play_sound_from_unit(alert_id, 0, g_options_list->flags & 1, 0);
 		helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);
 
-		globals.alert.sound_id = sound_id;
-		globals.alert.play_timer = 12;
+		globals->alert.sound_id = sound_id;
+		globals->alert.play_timer = 12;
 	}
 
 	static void reset_all_unit_attack_notify_timers_in_range(Unit* unit) {
@@ -79,15 +79,15 @@ namespace hooks
 		if (unit->player == 11) {
 			return;
 		}
-		bool witness_or_replay = *g_is_in_replay || globals.players[local_player].witness_mode;
+		bool witness_or_replay = *g_is_in_replay || globals->players[local_player].witness_mode;
 		if (unit->player == local_player || witness_or_replay) {
 			unit->last_event_color = g_palette_index_reference[20];
 			unit->last_event_timer = 20;
-			if (!globals.alert.own_cooldown) {
+			if (!globals->alert.own_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
 					if (!witness_or_replay) {
 						reset_all_unit_attack_notify_timers_in_range(unit);
-						globals.alert.own_cooldown = 100;
+						globals->alert.own_cooldown = 100;
 						bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
 						u32 sound_id = SoundId::No_sound;
 						AdvisorEvent type = is_building ? AdvisorEvent_BaseUnderAttack : AdvisorEvent_ArmyUnderAttack;
@@ -104,7 +104,7 @@ namespace hooks
 						}
 						play_alert(unit, sound_id);
 					} else {
-						globals.alert.own_cooldown = 100;
+						globals->alert.own_cooldown = 100;
 						replay_witness_event(unit, SpectatorEvent_Combat);
 					}
 				}
@@ -112,10 +112,10 @@ namespace hooks
 		} else if (bw::are_mutual_allies(local_player, unit->player)) {
 			unit->last_event_color = g_palette_index_reference[20];
 			unit->last_event_timer = 20;
-			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
+			if (!globals->alert.own_cooldown && !globals->alert.ally_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
 					reset_all_unit_attack_notify_timers_in_range(unit);
-					globals.alert.ally_cooldown = 1000;
+					globals->alert.ally_cooldown = 1000;
 
 					AdvisorEvent type;
 					switch (g_player_table[unit->player].race)

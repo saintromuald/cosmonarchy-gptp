@@ -1,6 +1,7 @@
 #pragma once
 #include "BW/api.h"
 #include "trigger_parser.h"
+#include "trigger_helper.h"
 #include "collections.h"
 
 struct Sound;
@@ -266,7 +267,7 @@ static const char* trigger_behavior_names[] = {
 };
 C_ASSERT(ARRAY_SIZE(trigger_behavior_names) == TriggerBehavior_Count);
 
-extern Globals globals;
+extern LazyInit<Globals> globals;
 
 void init_trigger_system();
 void update_trigger_system(bool in_game);

@@ -55,7 +55,7 @@ namespace hooks {
 		TierUnlocked[RaceId::Protoss][Tier2] = true;
 		TierUnlocked[RaceId::Protoss][Tier3] = true;
 
-		Faction faction = globals.players[player_id].faction;
+		Faction faction = globals->players[player_id].faction;
 
 		// TERRAN
 		// @Todo: Consider making AI check for landed structures as a safety, e.g. player_has_completed_landed_unit_id(player_id, UnitId::TerranMinistry)
@@ -1366,7 +1366,7 @@ namespace hooks {
 		TierUnlocked[RaceId::Protoss][Tier2] = true;
 		TierUnlocked[RaceId::Protoss][Tier3] = true;
 
-		Faction faction = globals.players[player_id].faction;
+		Faction faction = globals->players[player_id].faction;
 
 		bool has_addon = false;
 		s32 addon_id = -1; 

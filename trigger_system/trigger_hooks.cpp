@@ -58,8 +58,8 @@ static bool sound_replacement_match(SoundReplacement* sound_replacement, Image* 
 
 static u32 valid_sound_replacement_count(Image* image, u32 sound_id, Unit* unit) {
 	u32 count = 0;
-	for (u32 i = 0; i < globals.sound_replacements.size(); ++i) {
-		SoundReplacement* sound_replacement = &globals.sound_replacements[i];
+	for (u32 i = 0; i < globals->sound_replacements.size(); ++i) {
+		SoundReplacement* sound_replacement = &globals->sound_replacements[i];
 		if (sound_replacement_match(sound_replacement, image, sound_id, unit)) {
 			count += 1;
 		}
@@ -78,7 +78,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 		if (valid_count) {
 			u32 target_index = bw::rand_between_local(0, valid_count - 1);
 			u32 index = 0;
-			for (SoundReplacement& sound_replacement : globals.sound_replacements) {
+			for (SoundReplacement& sound_replacement : globals->sound_replacements) {
 				if (sound_replacement_match(&sound_replacement, image, sound_id, unit)) {
 					if (index == target_index) {
 						play_sound(sound_replacement.new_sound, get_sound_volume_at_pos(sprite->position), helper::get_sfx_pan_from_screen_distance(sprite->position.x));
