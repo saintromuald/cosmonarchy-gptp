@@ -146,7 +146,9 @@ void ControlGroup::center_camera() {
 		avg_pos.y += unit->position.y;
 	}
 
-	assert(avg_count);
+	if (!avg_count) {
+		return;
+	}
 	avg_pos.x /= avg_count;
 	avg_pos.y /= avg_count;
 	bw::move_camera({(u16)avg_pos.x, (u16)avg_pos.y});
