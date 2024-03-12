@@ -365,7 +365,7 @@ static KiterType get_kiter_type(u32 unit_id) {
 		} break;
 	}
 
-	if (is_melee_attacker(unit_id)) {
+	if (is_melee_attacker(unit_id) || unit_id == UnitId::ZergOkrimnilisk) {
 		// Minor adjustments, while in melee distance
 		return KiterType_Melee;
 	}

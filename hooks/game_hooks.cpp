@@ -2242,7 +2242,7 @@ namespace hooks {
 						FireMultipleOptions options = {};
 						options.ignore_main = false;
 						options.use_weapon_factor = true;
-						if (fire_multiple(unit, weapon_id, 1, FilterEnemy, options)) {
+						if (fire_multiple(unit, weapon_id, 1, FilterEnemy | FilterNoAir, options)) {
 							helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03), unit, 1, 0);
 						}
 					}

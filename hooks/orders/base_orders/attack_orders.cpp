@@ -868,7 +868,7 @@ namespace hooks
 			} else {
 				Unit* target = helper::find_best_attack_target(unit);
 				if (target) {
-					if (unit->id == UnitId::ProtossOptecton && target->status & UnitStatus::InAir) {
+					if (unit_id_has_custom_air_weapon(unit->id) && target->status & UnitStatus::InAir) {
 						return;
 					}
 					helper::set_resource_target(unit);

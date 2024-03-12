@@ -91,7 +91,7 @@ namespace
 			return false;
 		}
 
-		if (unit->id == UnitId::ProtossOptecton && target->status & UnitStatus::InAir) {
+		if (unit_id_has_custom_air_weapon(unit->id) && target->status & UnitStatus::InAir) {
 			return false;
 		}
 

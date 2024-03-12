@@ -2168,6 +2168,9 @@ namespace bw {
 			case UnitId::ProtossOptecton: {
 				return WeaponId::OptectonSkybondRay;
 			}
+			case UnitId::ZergOkrimnilisk: {
+				return WeaponId::OkrimniliskOmnispores;
+			}
 			case UnitId::ZergZarcavrokor: {
 				return WeaponId::ZarcavrokorBonesofReflection;
 			}

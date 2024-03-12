@@ -407,6 +407,7 @@ bool unit_collides_with_titanic(Unit* unit) {
 		|| unit->id == UnitId::ProtossOptecton
 		|| unit->id == UnitId::ProtossArchitect
 		|| unit->id == UnitId::ProtossDemiurge
+		|| unit->id == UnitId::ZergOkrimnilisk
 		|| unit->id == UnitId::ZergKeskathalor
 		|| unit->id == UnitId::ZergKethrostalor
 		|| unit->id == UnitId::ZergUltrokor;
@@ -1062,7 +1063,8 @@ u32 weapon_id_is_secondary(u32 weapon_id) {
 
 bool unit_id_has_custom_air_weapon(u32 unit_id) {
 	return unit_id == UnitId::TerranDurendal
-		|| unit_id == UnitId::ProtossOptecton;
+		|| unit_id == UnitId::ProtossOptecton
+		|| unit_id == UnitId::ZergOkrimnilisk;
 }
 
 bool weapon_id_returns_to_attacker(u32 weapon_id) {
