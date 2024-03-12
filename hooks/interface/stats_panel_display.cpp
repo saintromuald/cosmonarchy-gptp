@@ -107,6 +107,11 @@ namespace hooks
 								helper::stats_weapon_level(dialog, index, WeaponId::StarSovereignInterventionMissiles);
 								index++;
 							} break;
+							case UnitId::ZergOkrimnilisk:
+							{
+								helper::stats_weapon_level(dialog, index, WeaponId::OkrimniliskOmnispores);
+								index++;
+							} break;
 							case UnitId::ZergZarcavrokor:
 							{
 								helper::stats_weapon_level(dialog, index, WeaponId::ZarcavrokorBonesofReflection);

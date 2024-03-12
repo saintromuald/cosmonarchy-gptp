@@ -1581,6 +1581,10 @@ namespace SoundId
 
 		BactaliskDeath01					= 2539,
 
+		SpirtithWeaponfire01				= 2542,
+		SpirtithWeaponfire02				= 2543,
+		SpirtithWeaponfire03				= 2544,
+
 		Lobby_PlayerJoin					= 2557,
 		CloakTerranOn						= 2558,
 		CloakTerranOff						= 2559,

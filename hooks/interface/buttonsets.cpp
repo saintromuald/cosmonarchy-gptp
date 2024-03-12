@@ -1636,6 +1636,28 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
+							case UnitId::ZergKagralisk: {
+								if (current_button->requirement_var == UnitId::ZergCherbrathalor) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ZergEvigrilisk: {
+								if (current_button->requirement_var == UnitId::ZergOkrimnilisk) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
 							case UnitId::ZergAlmaksalisk: {
 								if (current_button->requirement_var == UnitId::ZergAlgoztalisk) {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
@@ -2381,7 +2403,7 @@ namespace hooks {
 								case UnitId::ZergTosgrilisk:
 								case UnitId::ZergIzirokor:
 								case UnitId::ZergCherbrathalor: {
-									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Izirokor - Crushing Tide
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Crushing Tide
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2413,40 +2435,45 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergVithrilisk: {
-									if (current_button->icon_id == IconId::VenomUnused				// Vithrilisk - Corrosive Touch
-									||  current_button->icon_id == IconId::SuicideInfestedTerran) { // Vithrilisk - Critical Mass
+									if (current_button->icon_id == IconId::VenomUnused				// Corrosive Touch
+									||  current_button->icon_id == IconId::SuicideInfestedTerran) { // Critical Mass
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergEvigrilisk: {
-									if (current_button->icon_id == IconId::RilirokorToxicSpores) { // Evigrilisk - Lashing Limbs
+									if (current_button->icon_id == IconId::RilirokorToxicSpores) { // Lashing Limbs
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergOkrimnilisk: {
+									if (current_button->icon_id == IconId::Antennae) { // Endless Limbs
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergAlgoztalisk: {
-									if (current_button->icon_id == IconId::ChitinousPlating) { // Algoztalisk - Escape Velocity
+									if (current_button->icon_id == IconId::ChitinousPlating) { // Escape Velocity
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergGeszithalor: {
-									if (current_button->icon_id == IconId::ZergFlyerAttacks) { // Geszithalor - Searing Acid
+									if (current_button->icon_id == IconId::ZergFlyerAttacks) { // Searing Acid
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergKeskathalor: {
-									if (current_button->icon_id == IconId::VenomUnused) { // Keskathalor - Caustic Discharge
+									if (current_button->icon_id == IconId::VenomUnused) { // Caustic Discharge
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergZoryusthaleth: {
-									if (current_button->icon_id == IconId::Rilirokor			// Zoryusthaleth - Mitosis
-									||	current_button->icon_id == IconId::MetabolicBoost) {	// Zoryusthaleth - Swarming Omen
+									if (current_button->icon_id == IconId::Rilirokor			// Mitosis
+									||	current_button->icon_id == IconId::MetabolicBoost) {	// Swarming Omen
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergRilirokor:
 								case UnitId::ZergRililisk: {
-									if (current_button->icon_id == IconId::RoarUnused) { // Broodspawn - Death Cycle
+									if (current_button->icon_id == IconId::RoarUnused) { // Death Cycle
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2458,7 +2485,7 @@ namespace hooks {
 											is_mixed = true;
 										}
 									}
-									if (current_button->icon_id == IconId::Attack) { // Lakizilisk - Burrowed attacker
+									if (current_button->icon_id == IconId::Attack) { // Burrowed attacker
 										if (is_mixed) {
 											current_button_state = Button_State::Enabled;
 										} else if (unit->status & UnitStatus::Burrowed && unit->main_order_id != OrderId::Unburrow) {
@@ -2466,69 +2493,69 @@ namespace hooks {
 										} else {
 											current_button_state = Button_State::Disabled;
 										}
-									} else if (current_button->icon_id == IconId::LakiziliskSubterraneanSpines) { // Lakizilisk - Seismic Spines
+									} else if (current_button->icon_id == IconId::LakiziliskSubterraneanSpines) { // Seismic Spines
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergKonvilisk: {
-									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle // Konvilisk - Fertile Spines
-									||	current_button->icon_id == IconId::GeszithalorAcidSpore) {			// Konvilisk - Crushing Tide
+									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle // Fertile Spines
+									||	current_button->icon_id == IconId::GeszithalorAcidSpore) {			// Crushing Tide
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergVilgorokor: {
-									if (current_button->icon_id == IconId::Dark_Swarm				// Vilgorokor - Reconstitution
-									||  current_button->icon_id == IconId::Radioactive_Zerg_Egg) {	// Vilgorokor - Autophagy
+									if (current_button->icon_id == IconId::Dark_Swarm				// Reconstitution
+									||  current_button->icon_id == IconId::Radioactive_Zerg_Egg) {	// Autophagy
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergVilgoleth: {
-									if (current_button->icon_id == IconId::PneumatizedCaparace)	{ // Vilgoleth - Corpse Autophagy
+									if (current_button->icon_id == IconId::PneumatizedCaparace)	{ // Corpse Autophagy
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergMatraleth: {
-									if (current_button->icon_id == IconId::Ensnare) { // Matraleth - Ensnaring Brood
+									if (current_button->icon_id == IconId::Ensnare) { // Ensnaring Brood
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergUltrokor: {
-									if (current_button->icon_id == IconId::UltrokorKaiserBlades // Ultrokor - Saber Siphon
-									||  current_button->icon_id == IconId::AnabolicSynthesis) {	// Ultrokor - Kaiser Rampage
+									if (current_button->icon_id == IconId::UltrokorKaiserBlades // Saber Siphon
+									||  current_button->icon_id == IconId::AnabolicSynthesis) {	// Kaiser Rampage
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergZarcavrokor: {
-									if (current_button->icon_id == IconId::RoarUnused) { // Zarcavrokor - Fan of Teeth
+									if (current_button->icon_id == IconId::RoarUnused) { // Fan of Teeth
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergTetcaerokor: {
-									if (current_button->icon_id == IconId::RoarUnused) { // Tetcaerokor - Virile Coating
+									if (current_button->icon_id == IconId::RoarUnused) { // Virile Coating
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergAkistrokor: {
-									if (current_button->icon_id == IconId::Ensnare				// Akistrokor - Captivating Claws
-									||	current_button->icon_id == IconId::SuicideScourge) {	// Akistrokor - Devouring Instinct
+									if (current_button->icon_id == IconId::Ensnare				// Captivating Claws
+									||	current_button->icon_id == IconId::SuicideScourge) {	// Devouring Instinct
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergHachirosk:
 								case UnitId::ZergLarvoskCesiant: {
-									if (current_button->icon_id == IconId::MetasynapticNode) { // Larvosk Cesiant - Larval Gestation
+									if (current_button->icon_id == IconId::MetasynapticNode) { // Larval Gestation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergCaphrolosk:
 								case UnitId::ZergGathtelosk:
 								case UnitId::ZergOcsalCesiant: {
-									if (current_button->icon_id == IconId::SuicideScourge) { // Caphrolosk, Gathtelosk - Ocsal Gestation, Swarmhold
+									if (current_button->icon_id == IconId::SuicideScourge) { // Ocsal Gestation / Swarmhold
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergSkortrithCesiant: {
-									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) { // Skortrith Colony - Tendril Amitosis
+									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) { // Tendril Amitosis
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

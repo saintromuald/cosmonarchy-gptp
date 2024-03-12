@@ -2467,6 +2467,7 @@ namespace bw {
 			case WeaponId::LiiraliskHollowedSpores:
 			case WeaponId::CikraliskAcidSalvo:
 			case WeaponId::TosgriliskExplosiveSpores:
+			case WeaponId::AxitriliskSearingVenom:
 			case WeaponId::MortothrokorWickedIncisors:
 			case WeaponId::BactaliskCorrosiveAcid:
 			case WeaponId::AlmaksaliskPiercingSpines:
