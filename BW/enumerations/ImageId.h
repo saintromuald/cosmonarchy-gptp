@@ -1211,6 +1211,8 @@ namespace ImageId {
 		RepentantChorusLarge						= 1810,
 
 		OkrimniliskOmnisporesFire					= 1819, 
+		
+		ArtisanResourceChannel						= 1821,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

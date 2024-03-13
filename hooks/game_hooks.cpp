@@ -2384,19 +2384,28 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossArtisan:
 			{
-				if (unit_ext->timers[TimerArtisanReturn] == 1) {
-					unit->unfreeze();
-
-					helper::play_sound_from_unit(SoundId::ArtisanRadiantProc, unit, 1, 0);
-					helper::return_resources_from_unit(unit);
-					Unit* target_resource = unit->worker.target_resource.unit;
-					u32 order_id = unit->resource_type == ResourceType::Minerals ? OrderId::MoveToMinerals : OrderId::HarvestGas1;
-					if (target_resource) {
-						helper::prepend_order_targeting_unit(unit, target_resource, order_id);
-					} else {
-						helper::order_immediate(unit, order_id);
-					}
-					helper::to_idle(unit);
+				switch (unit_ext->timers[TimerArtisanReturn])
+				{
+					case 24:
+					case 12:
+					{
+						unit->sprite->create_top_overlay(ImageId::ArtisanResourceChannel);
+					} break;
+					case 1:
+					{
+						unit->unfreeze();
+						unit->sprite->create_top_overlay(ImageId::ArtisanResourceChannel);
+						helper::play_sound_from_unit(SoundId::ArtisanRadiantProc, unit, 1, 0);
+						helper::return_resources_from_unit(unit);
+						Unit* target_resource = unit->worker.target_resource.unit;
+						u32 order_id = unit->resource_type == ResourceType::Minerals ? OrderId::MoveToMinerals : OrderId::HarvestGas1;
+						if (target_resource) {
+							helper::prepend_order_targeting_unit(unit, target_resource, order_id);
+						} else {
+							helper::order_immediate(unit, order_id);
+						}
+						helper::to_idle(unit);
+					} break;
 				}
 			} break;
 			case UnitId::ZergVilgorokor:
