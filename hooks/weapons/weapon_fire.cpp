@@ -350,7 +350,7 @@ bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, cons
 	if (max_targets && count > max_targets) {
 		count = max_targets;
 	}
-
+	
 	for (u32 i = 0; i < count; ++i) {
 		Unit* target = targets.units[i];
 		if  (target == unit

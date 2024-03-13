@@ -439,7 +439,9 @@ bool weapon_id_bounces_lithe_organelle(u32 weapon_id) {
 
 bool weapon_id_bounces_crushing_tide(u32 weapon_id) {
 	return weapon_id == WeaponId::IzirokorEnergizedBioplasma
-		|| weapon_id == WeaponId::TosgriliskExplosiveSpores;
+		|| weapon_id == WeaponId::TosgriliskExplosiveSpores
+		|| weapon_id == WeaponId::KonviliskSowingSpines
+		|| weapon_id == WeaponId::CherbrathalorVenemousBursts;
 }
 
 bool weapon_id_accelerates(u32 weapon_id) {
