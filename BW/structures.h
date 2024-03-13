@@ -1295,8 +1295,10 @@ union UnitIndex {
 	u32 value;
 
 	Unit* get(bool allow_non_standard_units = false);
+	Unit* get_for_selection(bool allow_non_standard_units = false);
 	void set(Unit* unit) { *this = UnitIndex::from(unit); }
 	bool is_set() { return get(true) != nullptr; }
+	bool is_set_for_selection() { return get_for_selection(true) != nullptr; }
 	void clear() { value = 0; }
 
 	static UnitIndex from(Unit* unit) {

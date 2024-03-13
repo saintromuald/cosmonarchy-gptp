@@ -24,6 +24,14 @@ Unit* UnitIndex::get(bool allow_non_standard_units) {
 	return unit;
 }
 
+Unit* UnitIndex::get_for_selection(bool allow_non_standard_units) {
+	Unit* unit = get(allow_non_standard_units);
+	if (unit && unit->player == *g_local_nation_id) {
+		return unit;
+	}
+	return 0;
+}
+
 UnitIndex* ControlGroup::find(UnitIndex index) {
 	for (u32 i = 0; i < SelectionCap; i++) {
 		if (unit_index[i].value == index.value) {
@@ -34,10 +42,10 @@ UnitIndex* ControlGroup::find(UnitIndex index) {
 }
 
 bool ControlGroup::add(UnitIndex index) {
-	if (!index.is_set()) return false;
+	if (!index.is_set_for_selection()) return false;
 	if (has(index)) return true;
 	for (u32 i = 0; i < SelectionCap; i++) {
-		if (!unit_index[i].is_set()) {
+		if (!unit_index[i].is_set_for_selection()) {
 			unit_index[i] = index;
 			return true;
 		}
@@ -62,7 +70,7 @@ void ControlGroup::select(bool play_response) {
 	std::vector<Unit*> to_select;
 	to_select.reserve(SelectionCap);
 	for (u32 i = 0; i < SelectionCap; i++) {
-		Unit* unit = unit_index[i].get(true);
+		Unit* unit = unit_index[i].get_for_selection(true);
 		if (unit && std::ranges::find(to_select, unit) == to_select.end()) {
 			to_select.push_back(unit);
 		}
@@ -83,7 +91,7 @@ void ControlGroup::center_camera() {
 	u32 total_count = 0;
 	Unit* any_unit = 0;
 	for (u32 i = 0; i < SelectionCap; ++i) {
-		Unit* unit = unit_index[i].get(true);
+		Unit* unit = unit_index[i].get_for_selection(true);
 		if (!unit) {
 			continue;
 		}
@@ -105,7 +113,7 @@ void ControlGroup::center_camera() {
 	{
 		u32 best_score = 0;
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			Unit* unit = unit_index[i].get(false);
+			Unit* unit = unit_index[i].get_for_selection(false);
 			if (!unit) {
 				continue;
 			}
@@ -115,7 +123,7 @@ void ControlGroup::center_camera() {
 				if (i == j) {
 					continue;
 				}
-				Unit* other = unit_index[j].get(total_count <= 1);
+				Unit* other = unit_index[j].get_for_selection(total_count <= 1);
 				if (!other ) {
 					continue;
 				}
@@ -132,11 +140,13 @@ void ControlGroup::center_camera() {
 		}
 	}
 
-	assert(anchor);
+	if (!anchor) {
+		return;
+	}
 	u32 avg_count = 0;
 	Vector32 avg_pos = {};
 	for (u32 i = 0; i < SelectionCap; ++i) {
-		Unit* unit = unit_index[i].get(false);
+		Unit* unit = unit_index[i].get_for_selection(false);
 		if (!unit || bw::get_distance_fast(unit->position, anchor->position) > distance_quota) {
 			continue;
 		}
