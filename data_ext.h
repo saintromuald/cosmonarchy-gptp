@@ -141,7 +141,7 @@ enum ExtValueId {
 	ValueDiademTargeting,
 	ValueDiademTargetPosX,
 	ValueDiademTargetPosY,
-	ValueWorshipStack,
+	ValueWorshipStack,	// unused
 	ValueCyprianLaunchPos,
 	ValueSavantEntropyGauntlets,
 	ValueSavantPowerSiphonBuff,

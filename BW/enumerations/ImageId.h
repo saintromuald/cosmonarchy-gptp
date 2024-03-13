@@ -1153,6 +1153,8 @@ namespace ImageId {
 		SporeColonyCopy								= 1523,
 		FusionCutterHitDamageless					= 1524,
 
+		NeutronFlareBlueDamageless					= 1539,
+
 		SentinelBase								= 1544,
 		SentinelTurret								= 1545,
 		SentinelShadow								= 1546,
@@ -1213,6 +1215,7 @@ namespace ImageId {
 		OkrimniliskOmnisporesFire					= 1819, 
 		
 		ArtisanResourceChannel						= 1821,
+		ArtisanResourceProc							= 1822,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

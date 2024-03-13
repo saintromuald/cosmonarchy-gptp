@@ -2386,6 +2386,8 @@ namespace hooks {
 			{
 				switch (unit_ext->timers[TimerArtisanReturn])
 				{
+					case 48:
+					case 36:
 					case 24:
 					case 12:
 					{
@@ -2394,7 +2396,7 @@ namespace hooks {
 					case 1:
 					{
 						unit->unfreeze();
-						unit->sprite->create_top_overlay(ImageId::ArtisanResourceChannel);
+						unit->sprite->create_top_overlay(ImageId::ArtisanResourceProc);
 						helper::play_sound_from_unit(SoundId::ArtisanRadiantProc, unit, 1, 0);
 						helper::return_resources_from_unit(unit);
 						Unit* target_resource = unit->worker.target_resource.unit;
@@ -2567,8 +2569,12 @@ namespace hooks {
 				return false;
 			});
 
+			u32 overlay_id = ImageId::Malediction_Small + bw::get_overlay_offset(unit->id);
 			if (!masters.count) {
 				unit_ext->timers[TimerDemiurgeWorship] = 0;
+				unit->remove_overlay(overlay_id);
+			} else if (!unit->get_overlay(overlay_id)) {
+				bw::add_unit_overlay(unit, overlay_id);
 			}
 		}
 
