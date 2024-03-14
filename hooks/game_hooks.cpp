@@ -764,6 +764,10 @@ namespace hooks {
 			init_trigger_system();
 			init_layouts();
 			init_custom_ai();
+			for (u32 i = 0; i < 16; i++) {
+				unmovable_hits[i] = 0;
+				unmovable_lastframe[i] = 0;
+			}
 
 			// Execute triggers before frame 0
 			bw::set_ingame_loop_state(true);
