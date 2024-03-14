@@ -280,11 +280,11 @@ void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id) {
 	}
 }
 
-bool can_infest(u32 player, Unit* target) {
+bool can_infest(u32 player, Unit* target, bool force) {
 	// Spawning cagra wouldn't work properly on units. Spawning cagra on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
 	UnitExt* target_ext = get_unit_ext(target);
 	return target->status & UnitStatus::Completed && !(units_dat::base_property[target->id] & UnitProperty::Addon)
-		&& is_hostile_or_neutral(player, target->player) && !target_ext->values[ValueInfested];
+		&& (force || is_hostile_or_neutral(player, target->player));
 }
 
 void mark_infesting(u32 player, Unit* target) {
@@ -345,9 +345,9 @@ void blissful_embrace_tick(Unit* target) {
 	}
 }
 
-void blissful_embrace(Unit* target, u32 player) {
+void blissful_embrace(Unit* target, u32 player, bool force) {
 	// Sanity check.
-	if (!can_infest(player, target)) {
+	if (!can_infest(player, target, force)) {
 		return;
 	}
 

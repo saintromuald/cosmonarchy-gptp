@@ -18,10 +18,10 @@ u32 unit_avenges_or_ascends(Unit* unit); // Returns (source_player + 1) if shoul
 void incubate(Unit* target, u32 count, u32 unit_id, u32 player);
 void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);
 void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id);
-bool can_infest(u32 player, Unit* target);
+bool can_infest(u32 player, Unit* target, bool force = false);
 void mark_infesting(u32 player, Unit* target);
 void blissful_embrace_tick(Unit* target);
-void blissful_embrace(Unit* target, u32 player);
+void blissful_embrace(Unit* target, u32 player, bool force = false);
 void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks);
 void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target);
 void recede_mind_control(Unit* target);

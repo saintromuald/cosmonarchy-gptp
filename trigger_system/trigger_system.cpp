@@ -1600,6 +1600,27 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
+		} else if (parser_eq(&parser, "blissful_embrace")) {
+			Area area = parser_get_area(&parser);
+			PlayerBitset players = parser_get_player_bitset(&parser);
+			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+			s32 infesting_player = parser_get_s32(&parser, 0);
+
+			EntryArray units = {};
+			unit_search_rect(&units, area.box);
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				if (unit->player >= PlayerLimit || !players.set[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+					continue;
+				}
+				if (!check_area(area, unit->position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				blissful_embrace(unit, infesting_player ? infesting_player - 1 : unit->player, true);
+			}
 		} else if (parser_eq(&parser, "witness_mode")) {
 			WitnessMode new_value = (WitnessMode)parser_get_s32(&parser);
 
