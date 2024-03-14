@@ -1294,20 +1294,20 @@ union UnitIndex {
 	};
 	u32 value;
 
+	UnitIndex() noexcept : value(0) {}
+
+	UnitIndex(Unit* unit) : value(0) {
+		if (!unit) return;
+		index = unit->get_unit_index();
+		unique_id = unit->unique_id;
+	}
+
 	Unit* get(bool allow_non_standard_units = false);
 	Unit* get_for_selection(bool allow_non_standard_units = false);
-	void set(Unit* unit) { *this = UnitIndex::from(unit); }
+	void set(Unit* unit) { *this = unit; }
 	bool is_set() { return get(true) != nullptr; }
 	bool is_set_for_selection() { return get_for_selection(true) != nullptr; }
 	void clear() { value = 0; }
-
-	static UnitIndex from(Unit* unit) {
-		if (!unit) return {};
-		UnitIndex result = {};
-		result.index = unit->get_unit_index();
-		result.unique_id = unit->unique_id;
-		return result;
-	}
 };
 
 C_ASSERT(sizeof(UnitIndex) == 0x4);

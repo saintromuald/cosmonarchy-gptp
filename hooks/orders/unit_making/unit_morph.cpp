@@ -11,17 +11,6 @@
 #include "hooks\interface\uifeatures\hotkeys.h"
 
 namespace hooks {
-	static void add_new_unit_to_control_groups(Unit* original_unit, Unit* new_unit) {
-		assert(original_unit->player == new_unit->player);
-		u32 player = original_unit->player;
-		for (u32 i = 0; i < TotalControlGroups; ++i) {
-			ControlGroup& control_group = hotkeys.control_groups[i];
-			if (control_group.has(UnitIndex::from(original_unit))) {
-				control_group.add(UnitIndex::from(new_unit));
-			}
-		}
-	}
-
 	void orders_zerg_birth(Unit* unit) {
 		// DF - Fixes hatching eggs not playing a death animation
 		if (unit->hitpoints == 0) {
@@ -82,7 +71,7 @@ namespace hooks {
 				if (twin_unit) {
 					twin_unit->rally = unit->rally;
 					helper::ai_training_unit(twin_unit, unit);
-					add_new_unit_to_control_groups(unit, twin_unit);
+					inherit_selection(unit, twin_unit);
 				}
 				extra_count *= 2;
 			}
@@ -98,7 +87,7 @@ namespace hooks {
 					if (*g_active_player_id == *g_local_human_id && unit->sprite->flags & SpriteFlags::Selected) {
 						helper::select_new_unit(new_unit);
 					}
-					add_new_unit_to_control_groups(unit, new_unit);
+					inherit_selection(unit, new_unit);
 				}
 			}
 

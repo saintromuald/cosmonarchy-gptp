@@ -82,7 +82,7 @@ void ControlGroup::add_selection() {
 	for (u32 i = 0; i < SelectionLimit; i++) {
 		Unit* unit = ccmu_extender.new_local_selection_group[i];
 		if (unit) {
-			add(UnitIndex::from(unit));
+			add(unit);
 		}
 	}
 }

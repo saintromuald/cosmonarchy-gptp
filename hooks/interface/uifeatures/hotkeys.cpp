@@ -101,7 +101,7 @@ static bool update_control_groups(const KeyEvent& ev) {
 			for (u32 j = 0; j < SelectionCap; j++) {
 				Unit* unit = control_group.unit_index[j].get();
 				if (unit) {
-					hotkeys.control_groups[i].remove(UnitIndex::from(unit));
+					hotkeys.control_groups[i].remove(unit);
 				}
 			}
 		}
@@ -230,6 +230,15 @@ void update_hotkeys() {
 			if (!is_pressed) {
 				handle_key_event(key_event(i, true, false));
 			}
+		}
+	}
+}
+
+void inherit_selection(Unit* parent, Unit* child) {
+	// TODO: also inherit selection
+	for (ControlGroup& control_group : hotkeys.control_groups) {
+		if (control_group.has(parent)) {
+			control_group.add(child);
 		}
 	}
 }

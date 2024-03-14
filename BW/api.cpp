@@ -15,6 +15,7 @@
 #include <hooks/limits/sfx_extender.h>
 #include "hooks/update_unit_sight.h"
 #include "hooks/rally_point.h"
+#include "hooks/interface/uifeatures/hotkeys.h"
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -960,6 +961,7 @@ namespace bw {
 						unit->hitpoints = std::max(256, creator->hitpoints);
 						unit->shields = std::max(256, creator->shields);
 						bw::inherit_debuffs(creator, unit);
+						inherit_selection(creator, unit);
 					}
 					helper::play_sound_from_unit(SoundId::Simulacrum_Clone_01, unit, 1, 0);
 				} break;

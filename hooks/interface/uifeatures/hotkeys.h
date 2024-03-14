@@ -58,6 +58,8 @@ extern Hotkeys hotkeys;
 void init_hotkeys();
 void update_hotkeys();
 
+void inherit_selection(Unit* parent, Unit* child);
+
 // In general keys should be handled using keyboard events in handle_hotkeys event loop,
 // since checking if key is held on a given frame does not account for sequentiality of presses!
 // Exposing this only to BW's functionality that cannot be wired using the event loop.
