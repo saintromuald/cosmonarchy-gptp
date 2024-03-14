@@ -1189,7 +1189,7 @@ namespace hooks {
 			}
 
 			if (!unit_ext->timers[TimerReclaiming]) {
-				unit->damage_hp((5 * 256) / 24, 0, unit->player, false);
+				unit->damage_hp((3 * 256) / 24, 0, unit->player, false);
 			}
 		}
 
