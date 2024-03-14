@@ -1211,6 +1211,8 @@ namespace hooks {
 			if (unit_ext->timers[TimerStun] > 1) {
 				unit->status &= ~UnitStatus::Invincible;
 			} else {
+				++unmovable_hits[2];
+				unmovable_lastframe[2] = *g_elapsed_time_frames;
 				unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 			}
 			unit_ext->timers[TimerReviveFlagClearMin] = 0;
@@ -1285,8 +1287,12 @@ namespace hooks {
 		}
 
 		if (unit_ext->timers[TimerStun] > 1) {
+			++unmovable_hits[3];
+			unmovable_lastframe[3] = *g_elapsed_time_frames;
 			unit->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 		} else if (unit_ext->timers[TimerStun] == 1) {
+			++unmovable_hits[4];
+			unmovable_lastframe[4] = *g_elapsed_time_frames;
 			unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 		}
 
@@ -1733,6 +1739,8 @@ namespace hooks {
 						unit->hitpoints = unit->get_max_hp_raw();
 						bw::restore_func(unit);
 						unit->order_computer(OrderId::Stop);
+						++unmovable_hits[5];
+						unmovable_lastframe[5] = *g_elapsed_time_frames;
 						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 						helper::play_sound_from_unit(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
 					} else {
@@ -2593,6 +2601,8 @@ namespace hooks {
 		&& !unit->movement_flags
 		&&  unit->movement_state == UnitMovement::UnitMovement_Dormant)
 		{
+			++unmovable_hits[6];
+			unmovable_lastframe[6] = *g_elapsed_time_frames;
 			unit->status ^= UnitStatus::Unmovable;
 		}
 

@@ -1337,3 +1337,23 @@ namespace bw
 		return std::vector<Unit*>(links.begin(), links.end());
 	}
 }
+
+const char* unmovable_names[] = {
+	"get_movable_state",
+	"reclaim_corpse",
+	"tick_unit revive",
+	"tick_unit stun on",
+	"tick_unit stun off",
+	"tick_unit cuirass",
+	"melee units freeze fix",
+	"orders_sap_location state1",
+	"orders_drone_land state1",
+	"orders_drone_land state0",
+	"orders_scv_build state1",
+	"move_to_target arrived",
+	"move_to_target moving",
+	"repulse_unit",
+	"orders_place_mine state1",
+	"weapon_damage_fatal cuirass" };
+u32 unmovable_hits[16];
+u32 unmovable_lastframe[16];

@@ -528,12 +528,18 @@ namespace hooks
 				if (!warning_once_03_00) {
 					sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", *g_local_nation_id);
 					bw::print(buffer, GameTextColor::Yellow);
-					sprintf_s(buffer, "Local Type: %u | Remote Type: %u\nLocal Hash: 0x%X | Remote Hash: 0x%X\nLocal nation id: %u | Active visions: %u | Explored visions: %u\nLast random number: %u",
+					sprintf_s(buffer, "Local Type: %u | Remote Type: %u\nLocal Hash: 0x%X | Remote Hash: 0x%X\nLocal nation id: %u | Active visions: %u | Explored visions: %u\nLast random number: %u\n\nUnmovable Hits:",
 						g_hash_list[hash_struct_index].hash_type, hash_type,
 						g_hash_list[hash_struct_index].hash , *(u16*)(data + 2),
 						*g_local_nation_id, *g_player_visions, *g_player_explored_visions,
 						*g_last_random_number);
 					GPTP::critical_logger << buffer;
+
+					for (u32 i = 0; i < 16; i++) {
+						sprintf(buffer, "\n %u - %s: %u / %u", i, unmovable_names[i], unmovable_hits[i], unmovable_lastframe[i]);
+						GPTP::critical_logger << buffer;
+					}
+
 					//This value is incremented *after* generating the mask_hash, so we use the previous value to get the tiles pertinent to the hash.
 					s32 y = (*g_mask_hash_current_y ? *g_mask_hash_current_y : g_map_tile_size->height) - 1;
 					sprintf_s(buffer, "\n\nActive tiles (%u):", y);

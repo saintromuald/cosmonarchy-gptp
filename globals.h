@@ -175,3 +175,7 @@ namespace bw
 	std::vector<Unit*> get_clarion_links(Unit* unit);
 	void spread_clarion_damage(hooks::WeaponDamageData& data);
 }
+
+extern const char* unmovable_names[16];
+extern u32 unmovable_hits[16];
+extern u32 unmovable_lastframe[16];

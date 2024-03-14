@@ -56,6 +56,8 @@ namespace hooks
         if (target == unit->move_target.unit && ((unit->move_target.pt.x == new_target.x && unit->move_target.pt.y == new_target.y)
             || helper::is_point_at_unit_border(0, unit->move_target.unit, unit, unit->move_target.pt)))
         {
+			++unmovable_hits[11];
+			unmovable_lastframe[11] = *g_elapsed_time_frames;
             unit->status &= ~UnitStatus::Unmovable;
             return true;
         }
@@ -75,6 +77,8 @@ namespace hooks
             unit->movement_flags |= MovementFlags_OrderedAtLeastOnce;
         }
         unit->recent_order_timer = 15;
+		++unmovable_hits[12];
+		unmovable_lastframe[12] = *g_elapsed_time_frames;
         unit->status &= ~UnitStatus::Unmovable;
         Order* next_order = unit->order_queue_head;
         if (!next_order || orders_dat::Unknown7[next_order->order_id]) {
@@ -109,6 +113,8 @@ namespace hooks
 
     void repulse_unit(Unit* unit, b32 should_repulse) { // 004535A0
         UnitExt* unit_ext = get_unit_ext(unit);
+		++unmovable_hits[13];
+		unmovable_lastframe[13] = *g_elapsed_time_frames;
         if (unit->pathing_flags & 1
         ||  unit->status & UnitStatus::CanNotReceiveOrders
         ||  unit->status & UnitStatus::NoBrkCodeStart

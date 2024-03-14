@@ -267,6 +267,8 @@ namespace hooks
 			if (unit->position.x != unit->move_target.pt.x || unit->position.y != unit->move_target.pt.y) {
 				bStopThere = true;
 			} else {
+				++unmovable_hits[7];
+				unmovable_lastframe[7] = *g_elapsed_time_frames;
 				if (unit->status & UnitStatus::Unmovable) {
 					u32 distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 					if ((distance / 256) > weapons_dat::outer_splash_radius[WeaponId::InfestedTerranSuicide]) {

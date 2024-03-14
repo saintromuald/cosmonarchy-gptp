@@ -236,6 +236,8 @@ namespace hooks
 			if (unit->main_order_state == 1) {
 				if (unit->sprite->position.x == unit->move_target.pt.x
 					&& unit->sprite->position.y == unit->move_target.pt.y) {
+					++unmovable_hits[10];
+					unmovable_lastframe[10] = *g_elapsed_time_frames;
 					if (!(unit->status & UnitStatus::Unmovable)
 					&&    helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)
 					&&    helper::begin_building(unit))
