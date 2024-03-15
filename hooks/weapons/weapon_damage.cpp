@@ -821,7 +821,7 @@ namespace hooks
 					case WeaponId::ZoryusthalethMonstrousMaw: {
 						// Zoryusthaleth - Swarming Omen
 						if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
-							target_ext->timers[TimerSwarmingOmenDebuff] = 24;
+							target_ext->timers[TimerSwarmingOmenDebuff] = 24 + 1;
 						}
 					} break;
 					case WeaponId::KonviliskSowingSpines: {

@@ -2620,16 +2620,25 @@ namespace hooks {
 		}
 
 		// Zoryusthaleth - Swarming Omen marking
-		if (unit_ext->timers[TimerSwarmingOmenDebuff]) {
-			EntryArray targets = {};
-			unit_search_radial(&targets, unit->position, 10 * 32);
-			for (u32 i = 0; i < targets.count; ++i) {
-				Unit* target = targets.units[i];
-				if (bw::is_allied_to(unit->player, target->player)) {
-					continue;
+		{
+			u32 overlay_id = ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true);
+			if (unit_ext->timers[TimerSwarmingOmenDebuff] > 1) {
+				if (!unit->get_overlay(overlay_id)) {
+					bw::add_unit_overlay(unit, overlay_id);
 				}
-				UnitExt* target_ext = get_unit_ext(target);
-				target_ext->timers[TimerSwarmingOmenSearch] = 24;
+
+				EntryArray targets = {};
+				unit_search_radial(&targets, unit->position, 10 * 32);
+				for (u32 i = 0; i < targets.count; ++i) {
+					Unit* target = targets.units[i];
+					if (bw::is_allied_to(unit->player, target->player)) {
+						continue;
+					}
+					UnitExt* target_ext = get_unit_ext(target);
+					target_ext->timers[TimerSwarmingOmenSearch] = 24 + 1;
+				}
+			} else if (unit_ext->timers[TimerSwarmingOmenDebuff == 1]) {
+				bw::remove_unit_overlay(unit, overlay_id);
 			}
 		}
 
@@ -2855,6 +2864,7 @@ namespace hooks {
 		// Blissful Embrace - Init & Visuals
 		if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::Completed) {
 			blissful_embrace_tick(unit);
+			should_update_speed = true;
 		}
 
 		// Matraleth - Blissful Embrace ability

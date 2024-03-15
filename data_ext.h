@@ -279,7 +279,7 @@ enum ExtTimerId {
 	TimerMatadorHeal,
 	TimerMortothrokorPassive,
 	TimerLiftLandDelay,
-//	TimerMadrigalTempoChange,
+	TimerSwarmingOmenVisuals,
 	TimerDidactStasisFieldOverlay,
 	TimerStellarEnforcement,
 	TimerDeconstruction,
@@ -316,6 +316,7 @@ enum ExtTimerId {
 	TimerReconstitutionDelay,
 	TimerInfesting,
 	TimerRepentantChorus,
+	TimerSwarmingOmenAudio,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

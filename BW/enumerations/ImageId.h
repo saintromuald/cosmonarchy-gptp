@@ -1216,6 +1216,10 @@ namespace ImageId {
 		
 		ArtisanResourceChannel						= 1821,
 		ArtisanResourceProc							= 1822,
+		SwarmingOmenSmall							= 1823,
+		SwarmingOmenMedium							= 1824,
+		SwarmingOmenLarge							= 1825,
+		SwarmingOmenXLarge							= 1826,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

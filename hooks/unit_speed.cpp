@@ -89,6 +89,14 @@ namespace hooks
 			}
 			if (accelerate) {
 				speed *= 1.33;
+				if (!unit_ext->timers[TimerSwarmingOmenVisuals]) {
+					unit_ext->timers[TimerSwarmingOmenVisuals] = 12;
+					bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
+				}
+				if (!unit_ext->timers[TimerSwarmingOmenAudio]) {
+					unit_ext->timers[TimerSwarmingOmenAudio] = 36;
+					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02), unit, 1, 0);
+				}
 			}
 		}
 
@@ -97,8 +105,7 @@ namespace hooks
 		speed *= 1 + (has_crucible * 0.25);
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
-		if (unit_ext->timers[TimerTerminalSurge] > 1)
-		{
+		if (unit_ext->timers[TimerTerminalSurge] > 1) {
 			speed *= 1.25;
 		}
 
