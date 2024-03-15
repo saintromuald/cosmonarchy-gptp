@@ -2571,6 +2571,11 @@ namespace hooks {
 				bw::remove_unit_overlay(unit, ImageId::TyrannyStunSmall + offset);
 				recede_mind_control(unit);
 				unit_ext->values[ValueMindControlPlayer] = 0;
+
+				u32 worship_overlay_id = ImageId::Malediction_Small + offset;
+				if (unit->get_overlay(worship_overlay_id)) {
+					bw::remove_unit_overlay(unit, worship_overlay_id);
+				}
 			}
 		}
 
@@ -2589,7 +2594,7 @@ namespace hooks {
 			u32 overlay_id = ImageId::Malediction_Small + bw::get_overlay_offset(unit->id);
 			if (!masters.count) {
 				unit_ext->timers[TimerDemiurgeWorship] = 0;
-				unit->remove_overlay(overlay_id);
+				bw::remove_unit_overlay(unit, overlay_id);
 			} else if (!unit->get_overlay(overlay_id)) {
 				bw::add_unit_overlay(unit, overlay_id);
 			}
