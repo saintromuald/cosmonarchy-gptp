@@ -59,7 +59,7 @@ namespace hooks
 		}
 	}
 
-	// Hooked because the default code didn't allow for multiple units
+	// Hooked because the default code didn't allow for multi-selection
 	void cmdrecv_cancel_train(u16 slot) // 004C0100
 	{
 		*g_unit_iterator_pos = 0;

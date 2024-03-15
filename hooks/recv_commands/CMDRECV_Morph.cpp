@@ -76,11 +76,14 @@ namespace hooks
 		u16 unit_id = *(u16*)(buffer + 1);
 		for (u32 i = 0; i < size; ++i) {
 			Unit* unit = selection[i];
-			if (helper::create_unit_allowed(unit_id, unit, *g_active_nation_id) == 1) {
-				if (helper::has_money_can_make(unit, unit_id)) {
-					helper::set_secondary_order(unit, OrderId::Train);
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (!unit_ext->timers[TimerLiftoffDelay]) {
+				if (helper::create_unit_allowed(unit_id, unit, *g_active_nation_id) == 1) {
+					if (helper::has_money_can_make(unit, unit_id)) {
+						helper::set_secondary_order(unit, OrderId::Train);
+					}
+					bw::refresh_console();
 				}
-				bw::refresh_console();
 			}
 		}
 	}

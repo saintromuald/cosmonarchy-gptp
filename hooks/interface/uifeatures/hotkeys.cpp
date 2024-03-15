@@ -111,7 +111,7 @@ static bool update_control_groups(const KeyEvent& ev) {
 
 static bool handle_key_event(const KeyEvent& ev) {
 	// Ignore when in UI
-	if (!*g_is_in_game || *g_popup_dialog || *g_chat_message_type || aise_state.console_visible) {
+	if (!start_ui_override || *g_popup_dialog || *g_chat_message_type || aise_state.console_visible) {
 		return false;
 	}
 	// Ignore Alt+F4

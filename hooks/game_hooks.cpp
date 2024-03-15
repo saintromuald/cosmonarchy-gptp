@@ -45,6 +45,7 @@
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/update_unit_sight.h"
 #include "hooks/orders/larva_creep_spawn.h"
+#include "hooks/interface/uifeatures/hotkeys.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -484,6 +485,10 @@ namespace hooks {
 			Unit* unit = g_client_selection_group->unit[i];
 			UnitExt* unit_ext = get_unit_ext(unit);
 			Point16 source = unit->position;
+
+			if (unit_ext->timers[TimerLiftoffDelay]) {
+				bw::printf("delay is %u", unit_ext->timers[TimerLiftoffDelay]);
+			}
 
 			// For checking cargo-related elements.
 			// This helped me solve an Anchor issue on 3 February 2023, please leave it here for the future. -Pr0nogo
@@ -3474,6 +3479,7 @@ namespace hooks {
 
 		GPTP::logger << "Started a match!\n";
 		game_started = false;
+		start_ui_override = true;
 
 		return true;
 	}
@@ -3486,6 +3492,7 @@ namespace hooks {
 			g_factions_colors_ordering[player] = g_player_color_ids[player];
 			g_player_color_ids[player] = 0;
 		}
+		start_ui_override = false;
 		return true;
 	}
 
@@ -4046,27 +4053,27 @@ namespace hooks {
 										switch (faction) {
 											case Faction_TerranOrionImperium:
 											{
-												bw::printf("\tPlayer %u has selected the Orion Imperium.", player + 1, GameTextColor::White);
+												bw::printf("\tPlayer %u has chosen the Orion Imperium.", player + 1, GameTextColor::White);
 											} break;
 											case Faction_TerranHecatonCoalition:
 											{
-												bw::printf("\tPlayer %u has selected the Hecaton Coalition.", player + 1, GameTextColor::White);
+												bw::printf("\tPlayer %u has chosen the Hecaton Coalition.", player + 1, GameTextColor::White);
 											} break;
 											case Faction_TerranFuturistFederation:
 											{
-												bw::printf("\tPlayer %u has selected the Futurist Federation.", player + 1, GameTextColor::White);
+												bw::printf("\tPlayer %u has chosen the Futurist Federation.", player + 1, GameTextColor::White);
 											} break;
 											case Faction_TerranGoldenRepublic:
 											{
-												bw::printf("\tPlayer %u has selected the Golden Republic.", player + 1, GameTextColor::White);
+												bw::printf("\tPlayer %u has chosen the Golden Republic.", player + 1, GameTextColor::White);
 											} break;
 											case Faction_TerranNydusTrinity:
 											{
-												bw::printf("\tPlayer %u has selected the Nydus Trinity.", player + 1, GameTextColor::White);
+												bw::printf("\tPlayer %u has chosen the Nydus Trinity.", player + 1, GameTextColor::White);
 											} break;
 											case Faction_TerranUpstart:
 											{
-												bw::printf("\tPlayer %u has selected the Terran Upstarts.", player + 1, GameTextColor::White);
+												bw::printf("\tPlayer %u has chosen the Terran Upstarts.", player + 1, GameTextColor::White);
 											} break;
 										}
 									} break;
@@ -4075,11 +4082,11 @@ namespace hooks {
 										switch (faction) {
 											case Faction_ProtossDivinePrimacy:
 											{
-												bw::printf("\tPlayer %u has selected the Divine Primacy.", player + 1, GameTextColor::White);
+												bw::printf("\tPlayer %u has chosen the Divine Primacy.", player + 1, GameTextColor::White);
 											} break;
 											case Faction_ProtossOrderOfTheSacredSaber:
 											{
-												bw::printf("\tPlayer %u has selected the Order of the Sacred Saber.", player + 1, GameTextColor::White);
+												bw::printf("\tPlayer %u has chosen the Order of the Sacred Saber.", player + 1, GameTextColor::White);
 											} break;
 										}
 									} break;
@@ -4089,11 +4096,11 @@ namespace hooks {
 										{
 											case Faction_ZergAtaltrethTendril:
 											{
-												bw::printf("\tPlayer %u has selected the Ataltreth Tendril.", player + 1, GameTextColor::White);
+												bw::printf("\tPlayer %u has chosen the Ataltreth Tendril.", player + 1, GameTextColor::White);
 											} break;
 											case Faction_ZergZorthosTendril:
 											{
-												bw::printf("\tPlayer %u has selected the Zorthos Tendril.", player + 1, GameTextColor::White);
+												bw::printf("\tPlayer %u has chosen the Zorthos Tendril.", player + 1, GameTextColor::White);
 											} break;
 										}
 									} break;

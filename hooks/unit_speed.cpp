@@ -203,7 +203,6 @@ namespace hooks
 			case UnitId::ZergDroleth:
 			case UnitId::TerranMaverick:
 			case UnitId::TerranHotshot:
-			case UnitId::TerranHarakan:
 			case UnitId::TerranCleric:
 			case UnitId::TerranEidolon:
 			case UnitId::TerranSavant:
@@ -229,6 +228,7 @@ namespace hooks
 			{
 				speed *= 1.2;
 			} break;
+			case UnitId::TerranHarakan:
 			case UnitId::TerranHeracles:
 			case UnitId::ProtossSycophant:
 			case UnitId::ZergZethrokor:

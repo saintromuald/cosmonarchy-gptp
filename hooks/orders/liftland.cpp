@@ -211,8 +211,7 @@ namespace hooks
 			unit->order_to_idle();
 			return;
 		}
-		if ((unit->status & UnitStatus::GroundedBuilding) && (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding))
-		{
+		if ((unit->status & UnitStatus::GroundedBuilding) && (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)) {
 			Unit* addon = unit->building.addon;
 			if (addon) {
 				if (addon->id == UnitId::TerranLodestone) {

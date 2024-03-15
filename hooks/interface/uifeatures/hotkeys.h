@@ -7,6 +7,8 @@
 #define ExtendedControlGroupKeys "RFVTGB"
 #define KeyCap 256
 
+static bool start_ui_override;
+
 struct KeyState {
 	bool is_held;
 	u64 last_pressed;

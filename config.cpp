@@ -154,7 +154,7 @@ void save_config() {
 	YAML::Emitter yaml;
 	yaml << YAML::BeginMap;
 
-	yaml << YAML::Comment("Cosmonarchy BW Config");
+	yaml << YAML::Comment("Cosmonarchy config");
 	yaml << YAML::Newline << YAML::Newline;
 	yaml << YAML::Comment("Launch settings");
 	write_field(yaml, "disable-wmode-prompt", config.disable_wmode_prompt);

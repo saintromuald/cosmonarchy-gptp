@@ -11,18 +11,12 @@ namespace hooks
 		{
 			u32 unit_to_train;
 			// The original code was messy, simplified/optimized version here. -GPTP
-			if (current_selection->id == UnitId::ProtossSolarion)
-			{
+			if (current_selection->id == UnitId::ProtossSolarion) {
 				unit_to_train = UnitId::ProtossSteward;
-			}
-			else
-			{
-				if (current_selection->id == UnitId::ProtossAccantorOld)
-				{
+			} else {
+				if (current_selection->id == UnitId::ProtossAccantorOld) {
 					unit_to_train = UnitId::ProtossPlasmaShell;
-				}
-				else
-				{
+				} else {
 					unit_to_train = 0; // Not translating it as marine as it's an error case
 				}
 			}
@@ -30,11 +24,8 @@ namespace hooks
 			if (current_selection->can_make_unit(unit_to_train, *g_active_nation_id) == 1
 			&&  helper::has_money_can_make(current_selection, unit_to_train)) // Add unit to build queue if successful
 			{
-				if (current_selection->id == UnitId::ProtossSolarion
-				||  current_selection->id == UnitId::ProtossAccantorOld)
-				{
-					if (current_selection->secondary_order_state != 2)
-					{
+				if (current_selection->id == UnitId::ProtossSolarion || current_selection->id == UnitId::ProtossAccantorOld) {
+					if (current_selection->secondary_order_state != 2) {
 						current_selection->secondary_order_id = OrderId::TrainFighter;
 						current_selection->secondary_order_pos.y = 0;
 						current_selection->secondary_order_pos.x = 0;
@@ -54,17 +45,14 @@ namespace hooks
 		Unit* builder;
 		*g_unit_iterator_pos = 0;
 		builder = get_active_player_next_selection();
-		if (builder && get_active_player_next_selection() == 0)
-		{
-			// Originally also checked for a lardcoded ID distance, disabled for training units with high IDs
-			if (builder->can_make_unit(unit_id, *g_active_nation_id) == 1)
-			{
-				if (helper::has_money_can_make(builder, unit_id)) // Add unit to build queue if successful
-				{
+		if (builder && get_active_player_next_selection() == 0) {
+			UnitExt* builder_ext = get_unit_ext(builder);
+			// Originally also checked for a lardcoded ID distance, disabled for training units with high IDs. -Pr0nogo
+			if (builder->can_make_unit(unit_id, *g_active_nation_id) == 1) {
+				if (helper::has_money_can_make(builder, unit_id))
 					builder->set_secondary_order(OrderId::Train);
-				}
-				bw::refresh_console();
 			}
+			bw::refresh_console();
 		}
 	}
 }
