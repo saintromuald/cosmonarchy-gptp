@@ -550,7 +550,7 @@ namespace hooks
 					}
 
 					GPTP::critical_logger << "\n\nSynced selections:";
-					for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT, player++;) {
+					for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
 						for (u32 i = 0; i < SelectionLimit; i++) {
 							snprintf(buffer, sizeof(buffer), "\n Player %04u", player);
 							GPTP::critical_logger << buffer;
