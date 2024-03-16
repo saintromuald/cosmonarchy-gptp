@@ -486,10 +486,6 @@ namespace hooks {
 			UnitExt* unit_ext = get_unit_ext(unit);
 			Point16 source = unit->position;
 
-			if (unit_ext->timers[TimerLiftoffDelay]) {
-				bw::printf("delay is %u", unit_ext->timers[TimerLiftoffDelay]);
-			}
-
 			// For checking cargo-related elements.
 			// This helped me solve an Anchor issue on 3 February 2023, please leave it here for the future. -Pr0nogo
 			/*
