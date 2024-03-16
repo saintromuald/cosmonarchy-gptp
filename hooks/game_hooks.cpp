@@ -64,7 +64,7 @@ namespace hooks {
 	typedef enum EDiscordResult discord_create_t(DiscordVersion version, struct DiscordCreateParams* params, struct IDiscordCore** result);
 	discord_create_t* discord_create;
 
-	static bool game_started;
+	static bool game_fully_started;
 	static u32 discord_init_timeout;
 	static bool discord_in_game;
 	static IDiscordCore* discord;
@@ -724,8 +724,8 @@ namespace hooks {
 
 		update_discord(true);
 
-		if (!game_started) {
-			game_started = true;
+		if (!game_fully_started) {
+			game_fully_started = true;
 			init_hotkeys();
 		}
 		update_hotkeys();
@@ -3479,8 +3479,8 @@ namespace hooks {
 		init_ext_variables();
 
 		GPTP::logger << "Started a match!\n";
-		game_started = false;
-		start_ui_override = true;
+		game_fully_started = false;
+		hotkeys.game_started = true;
 
 		return true;
 	}
@@ -3493,7 +3493,7 @@ namespace hooks {
 			g_factions_colors_ordering[player] = g_player_color_ids[player];
 			g_player_color_ids[player] = 0;
 		}
-		start_ui_override = false;
+		hotkeys.game_started = false;
 		return true;
 	}
 

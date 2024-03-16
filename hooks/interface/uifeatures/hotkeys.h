@@ -7,8 +7,6 @@
 #define ExtendedControlGroupKeys "RFVTGB"
 #define KeyCap 256
 
-static bool start_ui_override;
-
 struct KeyState {
 	bool is_held;
 	u64 last_pressed;
@@ -49,6 +47,7 @@ struct KeyEvent {
 };
 
 struct Hotkeys {
+	bool game_started;
 	Point16 screens[CameraCap];
 	ControlGroup control_groups[ControlGroupCap];
 	ControlGroup* last_control_group_selected;
