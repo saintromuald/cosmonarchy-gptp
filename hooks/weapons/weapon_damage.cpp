@@ -762,7 +762,7 @@ namespace hooks
 					case WeaponId::DemiurgeGalacticWeaver:
 					{
 						// Demiurge - Worship
-						if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+						if (is_hostile_or_neutral(data.attacking_player_id, data.target->player)) {
 							target_ext->values[ValueDemiurgePlayer] = data.attacking_player_id;
 							if (target_ext->timers[TimerDemiurgeWorship] == 0) {
 								target_ext->timers[TimerDemiurgeWorship] = 10 * 24 + 1;

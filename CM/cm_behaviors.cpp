@@ -408,7 +408,7 @@ void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
 }
 
 void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target) {
-	if (!target || player == target->player || bw::is_allied_to(player, target->player)) {
+	if (!target || player == target->player || !is_hostile_or_neutral(player, target->player)) {
 		return;
 	}
 
