@@ -972,7 +972,7 @@ namespace hooks
 				{
 					helper::set_repulse_angle(unit);
 				}
-				helper::init_building(unit, 1);
+				helper::unit_completion_init(unit, 1);
 				helper::refresh_all_visible_images_at_screen_pos(unit->sprite, 0);
 				if (*g_is_placing_building)
 				{

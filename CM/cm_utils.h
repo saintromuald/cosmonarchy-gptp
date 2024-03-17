@@ -8,3 +8,4 @@ Box32 box32_square(Point16 pos, u32 w);
 
 bool is_hostile_or_neutral(u32 player, u32 other_player);
 void replay_witness_event(Unit* unit, SpectatorEvent event_type);
+u32 get_construction_graphic(Unit* unit);

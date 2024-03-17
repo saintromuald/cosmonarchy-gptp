@@ -2716,12 +2716,12 @@ namespace helper {
 		return (char)result;
 	}
 
-	void init_building(Unit* unit, b32 flag) {
+	void unit_completion_init(Unit* unit, b32 has_construction_anim) {
 		const u32 func_address = 0x004E65E0;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
-			PUSH flag
+			PUSH has_construction_anim
 			CALL func_address
 			POPAD
 		}
@@ -15013,6 +15013,25 @@ namespace helper {
 			MOV ECX, top
 			MOV EDX, height
 			MOV EAX, result
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	Image* make_cloaked(u8 param, Sprite* sprite, u8 status, u8 timer)
+	{
+		const u32 func_address = 0x00497FD0;
+		static Image* result;
+		static u32 status_xd = status;
+		static u32 timer_xd = timer;
+		__asm {
+			PUSHAD
+			PUSH timer_xd
+			PUSH status_xd
+			MOV ESI, sprite
+			MOV AL, param
 			CALL func_address
 			MOV result, EAX
 			POPAD

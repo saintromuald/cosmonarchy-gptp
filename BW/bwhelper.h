@@ -322,7 +322,7 @@ namespace helper {
 	void set_secondary_waypoint(Unit* unit, s32 x, s32 y);									                // 00494BB0
 	void display_last_network_error_for_player(u32 player);									                // 0049E530
 	u32 rand_between(u32 min, u32 max, u32 seed_type);														// 004DC550
-	void init_building(Unit* unit, b32 flag);																// 004E65E0
+	void unit_completion_init(Unit* unit, b32 has_construction_anim);										// 004E65E0
 	bool order_to_move_to_target(Unit* unit, Unit* target);													// 004EB980
 	b32 unk_terrain_collision_2(Unit* unit, s32 x, s32 y);													// 004F1870
 
@@ -1734,4 +1734,5 @@ namespace helper {
 	void finish_unit_movement(Unit* unit);										// 0046AD90
 	u32 get_random_yes_unit_response(u32 unit_id);								// 0048EAB0
 	s32 bw_refresh(s32 left, s32 height, s32 top, s32 width);					// 0041E0D0
+	Image* make_cloaked(u8 param, Sprite* sprite, u8 status, u8 timer);			// 00497FD0
 }

@@ -36,7 +36,7 @@ namespace hooks
 					return;
 				}
 
-				helper::init_building(building, 0);
+				helper::unit_completion_init(building, 0);
 				for (Image* image = building->sprite->images.head; image; image = image->link.next) {
 					image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				}

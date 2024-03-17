@@ -631,7 +631,7 @@ namespace hooks
 			unit->current_buttonset = UnitId::Buttons_HatcheryMorphing;
 		}
 
-		helper::init_building(unit, 1);
+		helper::unit_completion_init(unit, 1);
 		unit->remaining_build_time = units_dat::time_cost[unit_id];
 		unit->user_action_flags |= 1;
 		if (unit->main_order_id) {

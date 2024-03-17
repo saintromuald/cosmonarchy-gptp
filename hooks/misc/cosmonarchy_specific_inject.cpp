@@ -521,8 +521,7 @@ namespace hooks
 			MOV hash_type, BL
 		}
 		succeeded = true;
-		if (g_hash_list[hash_struct_index].hash != *(u16*)(data + 2))
-		{
+		if (g_hash_list[hash_struct_index].hash != *(u16*)(data + 2)) {
 			succeeded = false;
 			if (g_hash_list[hash_struct_index].hash_type == 1) {
 				if (!warning_once_03_00) {
@@ -600,15 +599,13 @@ namespace hooks
 			}
 		}
 
-		if (g_hash_list[hash_struct_index].hash_type != (hash_type & 0x0F) && warning_once_03_02)
-		{
+		if (g_hash_list[hash_struct_index].hash_type != (hash_type & 0x0F) && warning_once_03_02) {
 			succeeded = false;
 			sprintf_s(buffer, "Invalid HashType!\hash_struct_index: %u\nHashType = %u", hash_struct_index, g_hash_list[hash_struct_index].hash_type);
 			bw::print(buffer, GameTextColor::Red);
 			warning_once_03_02 = true;
 		}
-		if (succeeded)
-		{
+		if (succeeded) {
 			__asm {
 				POPAD
 				POP ESI
@@ -639,8 +636,7 @@ namespace hooks
 	void __declspec(naked) create_damage_overlay_wrapper() // 004993C0
 	{
 		static Sprite* sprite;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -650,8 +646,7 @@ namespace hooks
 			PUSHAD
 		}
 		hooks::create_damage_overlay(sprite);
-		__asm
-		{
+		__asm {
 			POPAD
 //			MOV EAX, result
 			MOV ESP, EBP

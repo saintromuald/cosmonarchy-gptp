@@ -1563,7 +1563,7 @@ namespace hooks {
 						bw::give_ai_ex(unit);
 						helper::play_unit_ready_sound(unit);
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
-						helper::init_building(unit, 1);
+						helper::unit_completion_init(unit, 1);
 						unit_ext->values[ValueSpecialSovrolethBirth] = morph_unit_id == UnitId::ZergSovroleth;
 						unit->order_computer(OrderId::ZergBirth);
 					}

@@ -618,7 +618,7 @@ namespace hooks
 			}
 		}
 
-		helper::init_building(unit, 1);
+		helper::unit_completion_init(unit, 1);
 		char main_order_id = unit->main_order_id;
 		char action_flags = unit->user_action_flags | 1;
 		unit->hitpoints = units_dat::max_hitpoints[unit->id] / 10;

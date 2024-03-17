@@ -22,8 +22,7 @@ namespace hooks
 			unitMaxHp = unit->get_max_hp_ingame();
 			unitHpTest = unit->get_current_hp_ingame();
 			// if HP/maxHP higher or equal than 50%, not damaged enough
-			if (((100 * unitHpTest) / unitMaxHp) >= 50)
-			{
+			if (((100 * unitHpTest) / unitMaxHp) >= 50) {
 				returnValue = false;
 			}
 		}
@@ -36,30 +35,24 @@ namespace hooks
 		bool bErrorReturnToIdle;
 		bool bStopFunction = false;
 		u16 infestedUnitNewId;
-		u16 infestationOverlayId;
+		u16 infestation_overlay_id;
 		Unit* unitInfesting = unitInfested->order_target.unit;
 		bErrorReturnToIdle = (unitInfesting == nullptr || !unit_can_be_infested(unitInfested));
 
-		if (!bErrorReturnToIdle)
-		{
-			if (unitInfested->main_order_state == 0)
-			{
+		if (!bErrorReturnToIdle) {
+			if (unitInfested->main_order_state == 0) {
 				//init timer
 				unitInfested->remaining_build_time = 3;
 				unitInfested->main_order_state = 2;
 				bStopFunction = true;
 			}
 
-			if (!bStopFunction)
-			{
-				if (unitInfested->remaining_build_time != 0)
-				{
+			if (!bStopFunction) {
+				if (unitInfested->remaining_build_time != 0) {
 					// advancing timer
 					unitInfested->remaining_build_time--;
 					bStopFunction = true;
-				}
-				else
-				{
+				} else {
 					// will become 0xffff, this is used by internal functions
 					unitInfested->remaining_build_time--;
 
@@ -94,8 +87,7 @@ namespace hooks
 
 					// effect unknown, don't seem to affect score screen at endgame
 					helper::increment_unit_scores(unitInfested, 1);
-					if (unitInfested->status & UnitStatus::Completed)
-					{
+					if (unitInfested->status & UnitStatus::Completed) {
 						helper::increment_unit_scores_ex(unitInfested, 0, 1);
 					}
 
@@ -122,28 +114,23 @@ namespace hooks
 						helper::remove_order_from_unit_queue(unitInfested->order_queue_head, unitInfested);
 					}
 
-					if (unitInfested->status & UnitStatus::GroundedBuilding)
-					{
+					if (unitInfested->status & UnitStatus::GroundedBuilding) {
 						Image* current_image = unitInfested->sprite->images.head;
-
 						while (current_image != nullptr)
 						{
 							// script 0x14 in asm code
 							current_image->play_iscript_animation(IscriptAnimation::WorkingToIdle);
-
 							// load next image of the list (or nullptr)
 							current_image = current_image->link.next;
 						}
 					}
 
-					// Just use image_id::InfestedCommandCenterOverlay instead
-					// if you're modding this file and you're going for the
-					// default infestation overlay for any target.
-					infestationOverlayId = units_dat::construction_graphic[infestedUnitNewId];
+					// Just use image_id::InfestedCommandCenterOverlay instead, if you're modding this file
+					// and you're going for the default infestation overlay for any target. -GPTP
+					infestation_overlay_id = get_construction_graphic(unitInfested);
 
-					if (infestationOverlayId < ImageId::None)
-					{
-						unitInfested->sprite->create_overlay(infestationOverlayId);
+					if (infestation_overlay_id != ImageId::None) {
+						unitInfested->sprite->create_overlay(infestation_overlay_id);
 					}
 					unitInfested->set_hitpoints(units_dat::max_hitpoints[infestedUnitNewId]);
 

@@ -1031,6 +1031,9 @@ namespace ImageId {
 		EntropyGauntletsOverlayLarge				= 1109,
 		ShamanNaniteField							= 1158,
 		PhaseLineBlast								= 1195,
+
+		KalkaliskBirthCocoon						= 1222,
+
 		SeraphRedOverlay							= 1230,
 		ObservanceOverlayLarge						= 1231,
 		ObservanceOverlayMedium						= 1232,
@@ -1220,6 +1223,7 @@ namespace ImageId {
 		SwarmingOmenMedium							= 1824,
 		SwarmingOmenLarge							= 1825,
 		SwarmingOmenXLarge							= 1826,
+		KalkaliskBirthEgg							= 1827,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

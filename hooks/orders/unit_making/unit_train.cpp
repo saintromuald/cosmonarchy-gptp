@@ -225,7 +225,7 @@ namespace hooks {
 		if (unit->status & UnitStatus::GroundedBuilding) {
 			unit->parasite_flags = 0;
 			unit->is_blind = 0;
-			helper::init_building(unit, 0);
+			helper::unit_completion_init(unit, 0);
 			for (Image* image = unit->sprite->images.head; image; image = image->link.next)
 			{
 				play_image_iscript(image, IscriptAnimation::Built);

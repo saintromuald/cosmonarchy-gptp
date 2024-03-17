@@ -42,7 +42,7 @@ namespace hooks
 			if (!nydus_exit) {
 				helper::display_last_network_error_for_player(nydus_canal->player);
 			} else {
-				helper::init_building(nydus_exit, 1);
+				helper::unit_completion_init(nydus_exit, 1);
 				// logically equivalent to a more complex original calculation
 				nydus_exit->hitpoints = (10 * units_dat::max_hitpoints[nydus_exit->id]) / 100;
 				nydus_exit->order_computer(OrderId::ZergBuildSelf);

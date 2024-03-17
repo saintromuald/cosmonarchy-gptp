@@ -47,3 +47,20 @@ void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
 		}
 	}
 }
+
+u32 get_construction_graphic(Unit* unit)
+{
+	UnitExt* unit_ext = get_unit_ext(unit);
+	switch (unit->id)
+	{
+		case UnitId::ZergKalkalisk:
+		{
+			if (unit_ext->values[ValueOriginatedFromOcsalLarva]) {
+				return ImageId::KalkaliskBirthEgg;
+			} else {
+				return ImageId::KalkaliskBirthCocoon;
+			}
+		} break;
+	}
+	return units_dat::construction_graphic[unit->id];
+}
