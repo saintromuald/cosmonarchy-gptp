@@ -299,6 +299,7 @@
     <ClCompile Include="hooks\update_unit_sight.cpp" />
     <ClCompile Include="hooks\update_unit_sight_inject.cpp" />
     <ClCompile Include="maths.cpp" />
+    <ClCompile Include="utility\RegConfig.cpp" />
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="BW\extender\TileHeight_extender.cpp" />
     <ClCompile Include="BW\ExtendSightLimit.cpp" />
@@ -651,6 +652,7 @@
     <ClInclude Include="DatExtend\dat_limits.h" />
     <ClInclude Include="hooks\update_unit_sight.h" />
     <ClInclude Include="maths.h" />
+    <ClInclude Include="utility\RegConfig.h" />
     <ClInclude Include="req_table.h" />
     <ClInclude Include="BW\enumerations\PortraitId.h" />
     <ClInclude Include="BW\extender\TileHeight_extender.h" />
