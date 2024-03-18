@@ -317,6 +317,7 @@ enum ExtTimerId {
 	TimerInfesting,
 	TimerRepentantChorus,
 	TimerSwarmingOmenAudio,
+	TimerTurningRoam,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

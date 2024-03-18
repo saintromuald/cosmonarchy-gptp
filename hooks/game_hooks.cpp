@@ -1241,7 +1241,10 @@ namespace hooks {
 			if (unit->main_order_id == OrderId::PlayerGuard) {
 				unit->order_to_idle();
 			}
-			helper::add_order_targeting_nothing(unit, 0, OrderId::JunkYardDog);
+			if (unit->main_order_id != OrderId::JunkYardDog && !unit_ext->timers[TimerTurningRoam]) {
+				helper::add_order_targeting_nothing(unit, unit->order_queue_head, OrderId::JunkYardDog);
+				unit_ext->timers[TimerTurningRoam] = 3;
+			}
 		}
 
 		u32 creep_spreader_id = bw::unit_get_creep_spreader_id(unit);

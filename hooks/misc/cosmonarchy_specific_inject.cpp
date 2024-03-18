@@ -548,6 +548,7 @@ namespace hooks
 						}
 					}
 
+					/*
 					GPTP::critical_logger << "\n\nSynced selections:";
 					for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
 						for (u32 i = 0; i < SelectionLimit; i++) {
@@ -560,6 +561,7 @@ namespace hooks
 							}
 						}
 					}
+					*/
 
 					//This value is incremented *after* generating the mask_hash, so we use the previous value to get the tiles pertinent to the hash.
 					s32 y = (*g_mask_hash_current_y ? *g_mask_hash_current_y : g_map_tile_size->height) - 1;
