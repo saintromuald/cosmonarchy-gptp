@@ -796,6 +796,9 @@ namespace hooks {
 									   (s16)g_game_layer->top,  (s16)g_game_layer->width  + (s16)g_game_layer->left - 1);
 				}
 			}
+
+			// Required to do this here since the globals reset happens after the first call of this util func, but create_init_units needs the first call, too. -Pr0nogo
+			init_omnipresence_state();
 		}
 
 		if (!bw::is_game_paused()) {
@@ -1025,6 +1028,13 @@ namespace hooks {
 		unit_ext->values[ValueUnitInit] = unit->id + 1;
 
 		switch (unit->id) {
+			case UnitId::Omnivale:
+			{
+				// Spread initial creep
+				if (unit_spreads_custom_creep(unit)) {
+					bw::spawn_custom_creep(unit);
+				}
+			} break;
 			case UnitId::TerranGoliath: {
 				helper::turn_unit(unit, 96);
 				if (unit->subunit) {
@@ -3477,6 +3487,7 @@ namespace hooks {
 		memset(vision_timers, 0, 8*256*256);
 
 		init_ext_variables();
+		init_omnipresence_state();
 
 		GPTP::logger << "Started a match!\n";
 		game_fully_started = false;

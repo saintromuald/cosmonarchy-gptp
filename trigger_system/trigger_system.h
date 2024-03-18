@@ -54,6 +54,28 @@ enum Celebration: u8 {
 	Celebration_Count,
 };
 
+enum OmnipresenceState: u8 {
+	OmnipresenceState_None,
+	OmnipresenceState_TerranProtoss,
+	OmnipresenceState_ProtossZerg,
+	OmnipresenceState_ZergTerran,
+	OmnipresenceState_All,
+
+	OmnipresenceState_Count,
+};
+
+// NOTE: This is case insensitive for parsing
+static const char* omnipresence_state_symbol_names[] = {
+	"None",
+
+	"TerranProtoss",
+	"ProtossZerg",
+	"ZergTerran",
+
+	"All",
+};
+C_ASSERT(ARRAY_SIZE(omnipresence_state_symbol_names) == OmnipresenceState_Count);
+
 enum Faction: u8 {
 	Faction_None,
 
@@ -160,6 +182,8 @@ struct PlayerVars {
 	bool neutral_hostile;
 	bool faction_was_set;
 	bool hide_in_team_ui;
+	OmnipresenceState omnipresence_state;
+	bool omnipresence_state_was_set;
 };
 
 struct AlertState {

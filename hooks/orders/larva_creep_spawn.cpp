@@ -250,7 +250,6 @@ namespace hooks
 			case UnitId::ZergNydusCesiant:
 			case UnitId::ZergKazitrithCesiant:
 			case UnitId::ZergOcsalCesiant:
-			case UnitId::Omnivale:
 			{
 				return true;
 			}

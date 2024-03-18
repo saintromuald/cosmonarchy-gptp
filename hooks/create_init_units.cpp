@@ -4,6 +4,7 @@
 #include "ai_layouts.h"
 #include "threshold.h"
 #include "hooks/game_hooks.h"
+#include "trigger_system/trigger_system.h"
 
 u32 get_racial_townhall(u32 race_id)
 {
@@ -19,14 +20,14 @@ u32 get_racial_townhall(u32 race_id)
 	}
 }
 
-u32 get_racial_worker(u32 raceId)
+u32 get_racial_worker(u32 race_id)
 {
 	// TODO: Add support for custom races. -Pr0nogo
-	if (raceId == RaceId::Zerg) {
+	if (race_id == RaceId::Zerg) {
 		return UnitId::ZergDroleth;
-	} else if (raceId == RaceId::Terran) {
+	} else if (race_id == RaceId::Terran) {
 		return UnitId::TerranMason;
-	} else if (raceId == RaceId::Protoss) {
+	} else if (race_id == RaceId::Protoss) {
 		return UnitId::ProtossScribe;
 	} else {
 		return UnitId::None;
@@ -212,26 +213,83 @@ namespace hooks {
 							dy = units_dat::unit_bounds[worker_id].bottom + units_dat::unit_bounds[worker_id].top + 1;
 						}
 
-						for (s32 i = 0; i < 6; i++) {
+						for (s32 worker_count = 0; worker_count < 6; worker_count++) {
 							pos.x += dx;
 							pos.y -= dy;
 
 							if (is_omni) {
-								switch (i) {
-									case 0:
-									case 1:
+								switch (globals->players[player].omnipresence_state)
+								{
+									case OmnipresenceState_All:
 									{
-										worker_id = UnitId::TerranMason;
+										switch (worker_count) {
+											case 0:
+											case 1:
+											{
+												worker_id = UnitId::TerranMason;
+											} break;
+											case 2:
+											case 3:
+											{
+												worker_id = UnitId::ProtossScribe;
+											} break;
+											case 4:
+											case 5:
+											{
+												worker_id = UnitId::ZergDroleth;
+											} break;
+										}
 									} break;
-									case 2:
-									case 3:
+									case OmnipresenceState_TerranProtoss:
 									{
-										worker_id = UnitId::ProtossScribe;
+										switch (worker_count) {
+											case 0:
+											case 1:
+											case 2:
+											{
+												worker_id = UnitId::TerranMason;
+											} break;
+											case 3:
+											case 4:
+											case 5:
+											{
+												worker_id = UnitId::ProtossScribe;
+											} break;
+										}
 									} break;
-									case 4:
-									case 5:
+									case OmnipresenceState_ProtossZerg:
 									{
-										worker_id = UnitId::ZergDroleth;
+										switch (worker_count) {
+											case 0:
+											case 1:
+											case 2:
+											{
+												worker_id = UnitId::ProtossScribe;
+											} break;
+											case 3:
+											case 4:
+											case 5:
+											{
+												worker_id = UnitId::ZergDroleth;
+											} break;
+										}
+									} break;
+									case OmnipresenceState_ZergTerran:
+									{
+										switch (worker_count) {
+											case 0:
+											case 1:
+											case 2:
+											{
+												worker_id = UnitId::TerranMason;
+											} break;
+											case 3:
+											case 4:
+											case 5:
+											{
+												worker_id = UnitId::ZergDroleth;
+											} break;
+										}
 									} break;
 								}
 							}

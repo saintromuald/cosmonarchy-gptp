@@ -658,7 +658,9 @@ namespace hooks {
 							||	   current_button->requirement_var == TechId::LarvalSubmenuSelectAssault
 							||	   current_button->requirement_var == TechId::LarvalSubmenuSelectControl)
 						{
-							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit_id_is_larva(unit->id) || unit->id == UnitId::Omnivale) {
+							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
+								|| unit_id_is_larva(unit->id)
+								|| (unit->id == UnitId::Omnivale && globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
 								current_button_state = Button_State::Enabled;
 							} else {
 								current_button_state = Button_State::Invisible;
@@ -731,7 +733,9 @@ namespace hooks {
 					}
 
 					if (current_button->icon_id == IconId::Larva) {
-						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit_id_is_larva(unit->id) || unit->id == UnitId::Omnivale) {
+						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
+							|| unit_id_is_larva(unit->id)
+							|| (unit->id == UnitId::Omnivale && globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
@@ -1055,6 +1059,37 @@ namespace hooks {
 						// As of late 2022, we must force train/build icons for extended unit ids to show up using this very dumb method that
 						// inlines requirements in yet another position. Not sure how to fix! -Pr0nogo
 						switch (unit->id) {
+							case UnitId::Omnivale:
+							{
+								OmnipresenceState omni_state = globals->players[unit->player].omnipresence_state;
+								switch (current_button->requirement_var) {
+									case UnitId::TerranMason:
+									{
+										if (omni_state != OmnipresenceState_ProtossZerg) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::ProtossScribe:
+									{
+										if (omni_state != OmnipresenceState_ZergTerran) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::ZergDroleth:
+									{
+										if (omni_state != OmnipresenceState_TerranProtoss) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+								}
+							} break;
+
 							case UnitId::TerranMason:
 							case UnitId::TerranTalos: {
 								if (unit->main_order_id != OrderId::BuildTerran && unit->main_order_id != OrderId::ConstructingBuilding) {

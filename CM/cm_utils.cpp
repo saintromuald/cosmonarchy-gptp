@@ -64,3 +64,32 @@ u32 get_construction_graphic(Unit* unit)
 	}
 	return units_dat::construction_graphic[unit->id];
 }
+
+void init_omnipresence_state() {
+	if (bw::get_game_kind() == GameKind_Omnipresence) {
+		for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
+			if (g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot) {
+				continue;
+			}
+			if (globals->players[player].omnipresence_state_was_set == false) {
+				OmnipresenceState omni_state = OmnipresenceState_None;
+				switch (g_player_table[player].race) {
+					case RaceId::Terran:
+					{
+						omni_state = OmnipresenceState_TerranProtoss;
+					} break;
+					case RaceId::Protoss:
+					{
+						omni_state = OmnipresenceState_ProtossZerg;
+					} break;
+					case RaceId::Zerg:
+					{
+						omni_state = OmnipresenceState_ZergTerran;
+					} break;
+				}
+				globals->players[player].omnipresence_state = omni_state;
+				globals->players[player].omnipresence_state_was_set = true;
+			}
+		}
+	}
+}

@@ -1117,7 +1117,11 @@ bool unit_could_spawn_custom_larva(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	switch (unit->id) {
 		case UnitId::Omnivale:
-			return true;
+		{
+			if (globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss) {
+				return true;
+			}
+		} break;
 	}
 	return false;
 }
@@ -1137,7 +1141,11 @@ bool unit_could_spread_custom_creep(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	switch (unit->id) {
 		case UnitId::Omnivale:
-			return true;
+		{
+			if (globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss) {
+				return true;
+			}
+		} break;
 	}
 	if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::GroundedBuilding) {
 		return true;

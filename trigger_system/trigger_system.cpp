@@ -1701,6 +1701,16 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					player_vars->hide_in_team_ui = (bool)state;
 				}
 			}
+		} else if (parser_eq(&parser, "set_omnipresence_state")) {
+			u32 player = parser_get_player(&parser);
+			OmnipresenceState omni_state = (OmnipresenceState)parser_get_enum(&parser, omnipresence_state_symbol_names, ARRAY_SIZE(omnipresence_state_symbol_names));
+
+			if (player) {
+				player -= 1;
+				PlayerVars* player_vars = &globals->players[player];
+				player_vars->omnipresence_state = omni_state;
+				player_vars->omnipresence_state_was_set = true;
+			}
 		} else if (parser_eq(&parser, "print")) {
 			Token text = parser_get_string(&parser);
 			bw::print(text.data);
