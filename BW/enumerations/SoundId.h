@@ -1836,5 +1836,9 @@ namespace SoundId
 		EmpressOrderAggressive02					= 3013,
 		EmpressOrderAggressive03					= 3014,
 		EmpressOrderAggressive04					= 3015,
+
+		MadcapPassiveCharge01						= 3020,
+		MadcapPassiveCharge02						= 3021,
+		MadcapPassiveCharge03						= 3022,
 	};
 }

@@ -432,8 +432,7 @@ namespace hooks {
 			bw::decloak_passive_proc(unit->hangar_unit.parent);
 		}
 
-		if (weapons_dat::flingy_id[weapon_id] != 0)
-		{
+		if (weapons_dat::flingy_id[weapon_id] != 0) {
 			if (unit->id == UnitId::TerranSavant) {
 				if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
 					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05), unit, 1, 0);
@@ -444,8 +443,7 @@ namespace hooks {
 
 			// Lakizilisk Seismic Spines behavior
 			// Skithrokor behavior
-			if (weapon_id_returns_to_attacker(weapon_id))
-			{
+			if (weapon_id_returns_to_attacker(weapon_id)) {
 				u32 timer = 0;
 				u32 max_range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit);
 				switch (weapon_id) {
@@ -466,8 +464,7 @@ namespace hooks {
 				s32 angle = bw::get_angle(unit_pos.x, unit_pos.y, target_pos.x, target_pos.y);
 				unit_ext->values[ValueMissileReturnX] = unit_pos.x + bw::get_polar_x(range, angle);
 				unit_ext->values[ValueMissileReturnY] = unit_pos.y + bw::get_polar_y(range, angle);
-				if (unit->order_target.unit)
-				{
+				if (unit->order_target.unit) {
 					unit_ext->values[ValueMissileReturnTarget] = (u32)unit->order_target.unit;
 				}
 				if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
@@ -475,12 +472,13 @@ namespace hooks {
 				}
 			}
 
-			if (!unit_id_has_custom_weapon_handling(unit->id))
-			{
+			if (!unit_id_has_custom_weapon_handling(unit->id)) {
 				// Madcap - Maverick Feeders passive
-				if (unit->id == UnitId::TerranMadcap)
-				{
+				if (unit->id == UnitId::TerranMadcap) {
 					s32 stacks = unit_ext->values[ValueMadcapStacks];
+					if (stacks == 108) { // 9 stacks
+						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::MadcapPassiveCharge01, SoundId::MadcapPassiveCharge03), unit, 1, 0);
+					}
 					unit_ext->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
 				}
 
