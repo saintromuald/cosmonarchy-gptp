@@ -156,6 +156,9 @@ namespace hooks {
 				case UnitId::ProtossGolem: {
 					return helper::get_random_sfx_between(SoundId::GolemOrderAggressive01, SoundId::GolemOrderAggressive02);
 				} break;
+				case UnitId::ProtossEmpress: {
+					return helper::get_random_sfx_between(SoundId::EmpressOrderAggressive01, SoundId::EmpressOrderAggressive04);
+				} break;
 				case UnitId::ProtossMagister: {
 					return helper::get_random_sfx_between(SoundId::MagisterOrderAggressive01, SoundId::MagisterOrderAggressive04);
 				} break;
@@ -315,6 +318,9 @@ namespace hooks {
 					} break;
 					case UnitId::ProtossGolem: {
 						ready_sound = helper::get_random_sfx_between(SoundId::GolemReady01, SoundId::GolemReady02);
+					} break;
+					case UnitId::ProtossEmpress: {
+						ready_sound = helper::get_random_sfx_between(SoundId::EmpressReady01, SoundId::EmpressReady03);
 					} break;
 					case UnitId::ProtossMagister: {
 						ready_sound = helper::get_random_sfx_between(SoundId::MagisterReady01, SoundId::MagisterReady03);

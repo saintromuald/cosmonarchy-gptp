@@ -1827,5 +1827,14 @@ namespace SoundId
 		ISNAdvisor_NoVespene04						= 2987,
 		ISNAdvisor_Warp01							= 2988,
 		ISNAdvisor_Warp02							= 2989,
+			
+		EmpressReady01								= 3001,
+		EmpressReady02								= 3002,
+		EmpressReady03								= 3003,
+
+		EmpressOrderAggressive01					= 3012,
+		EmpressOrderAggressive02					= 3013,
+		EmpressOrderAggressive03					= 3014,
+		EmpressOrderAggressive04					= 3015,
 	};
 }
