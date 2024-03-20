@@ -3739,6 +3739,22 @@ namespace bw {
 		}
 	}
 
+	u32 get_manual_unit_weapon_sound(Unit* unit, u32 weapon_id)
+	{
+		switch (unit->id)
+		{
+			case UnitId::TerranSavant:
+			{
+				if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
+					return helper::get_random_sfx_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
+				} else {
+					return helper::get_random_sfx_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
+				}
+			}
+		}
+		return get_manual_weapon_id_sound(weapon_id);
+	}
+
 	u32 get_manual_weapon_id_sound(u32 weapon_id)
 	{
 		switch (weapon_id)

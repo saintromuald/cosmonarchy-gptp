@@ -6,8 +6,7 @@ namespace
 	void __declspec(naked) orders_die_wrapper() // 00479480
 	{
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
@@ -15,8 +14,7 @@ namespace
 			PUSHAD
 		}
 		hooks::orders_die(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			POP EBP
 			RETN 4

@@ -145,6 +145,9 @@ namespace hooks
 		}
 
 		bw::decloak_passive_proc(final_unit->connected_unit);
+		if (final_unit->id == UnitId::TerranSavant) {
+			helper::play_sound_from_unit(bw::get_manual_unit_weapon_sound(final_unit, WeaponId::None), final_unit->connected_unit, 1, 0);
+		}
 
 		// TODO: Fix effect nonsense with subunits
 		Thingy* bunker_attack_effect = helper::create_thingy(sprite_id, offset.x + final_unit->get_x(), offset.y + final_unit->get_y(), final_unit->player);

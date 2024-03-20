@@ -568,11 +568,8 @@ namespace hooks
 	// Hooked to add nullcheck - Pr0nogo
 	void progress_unit_frame(Unit* unit) // 004ECF70
 	{
-		Unit* unitVar = unit;
-		if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && unit->sprite)
-		{
-			if (!(unit->sprite->flags & 0x20))
-			{
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && unit->sprite) {
+			if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 				helper::refresh_sprite(unit->sprite, g_selection_circle_color[unit->player]);
 			}
 		}
@@ -580,20 +577,16 @@ namespace hooks
 		helper::progress_order(unit);
 		helper::perform_secondary_orders(unit, unit->player); // ECX at the time of calling this function
 
-		if (unit->subunit)
-		{
-			if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit))
-			{
+		if (unit->subunit) {
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit)) {
 				*g_active_iscript_unit = unit->subunit;
 				progress_unit_frame(unit->subunit);
 				*g_active_iscript_unit = unit;
 			}
 		}
-		if (unit->sprite)
-		{
+		if (unit->sprite) {
 			helper::sprite_to_iscript_loop(unit->sprite);
-			if (!unit->sprite->images.head)
-			{
+			if (!unit->sprite->images.head) {
 				unit->sprite = 0;
 			}
 		}
@@ -613,52 +606,42 @@ namespace hooks
 				}
 				((void(__thiscall*)(Image*))image->update_fxn)(image);
 				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
-				if (!sprite->images.head)
-				{
+				if (!sprite->images.head) {
 					u32 pos_y = sprite->position.y / 32;
-					if (pos_y >= 0)
-					{
-						if (pos_y >= *g_map_tile_height)
-						{
+					if (pos_y >= 0) {
+						if (pos_y >= *g_map_tile_height) {
 							pos_y = *g_map_tile_height - 1;
 						}
 					} else {
 						pos_y = 0;
 					}
 
-					if (g_horizontal_sprite_lines_begin[pos_y] == sprite)
-					{
+					if (g_horizontal_sprite_lines_begin[pos_y] == sprite) {
 						g_horizontal_sprite_lines_begin[pos_y] = sprite->link.next;
 					}
-					if (g_horizontal_sprite_lines_end[pos_y] == sprite)
-					{
+					if (g_horizontal_sprite_lines_end[pos_y] == sprite) {
 						g_horizontal_sprite_lines_end[pos_y] = sprite->link.prev;
 					}
-					if (sprite->link.prev)
-					{
+					if (sprite->link.prev) {
 						sprite->link.prev->link.next = sprite->link.next;
 					}
 
 					Sprite* next_sprite = sprite->link.next;
-					if (next_sprite)
-					{
+					if (next_sprite) {
 						next_sprite->link.prev = sprite->link.prev;
 					}
 
 					sprite->link.prev = 0;
 					sprite->link.next = 0;
 					Sprite* first_free = g_free_sprites->head;
-					if (g_free_sprites->head)
-					{
-						if (g_free_sprites->tail == g_free_sprites->head)
-						{
+					if (g_free_sprites->head) {
+						if (g_free_sprites->tail == g_free_sprites->head) {
 							g_free_sprites->tail = sprite;
 						}
 						sprite->link.prev = g_free_sprites->head;
 						sprite->link.next = first_free->link.next;
 						Sprite* next_free = first_free->link.next;
-						if (next_free)
-						{
+						if (next_free) {
 							next_free->link.prev = sprite;
 						}
 						first_free->link.next = sprite;

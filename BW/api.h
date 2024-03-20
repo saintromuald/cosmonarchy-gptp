@@ -828,6 +828,7 @@ namespace bw {
 	bool game_kind_supports_kills(GameKind game_kind);
 	bool unit_can_fire_secondary_weapon(Unit* unit);
 	void select(std::vector<Unit*>& units, bool play_response);
+	u32 get_manual_unit_weapon_sound(Unit* unit, u32 weapon_id);
 	u32 get_manual_weapon_id_sound(u32 weapon_id);
 	bool unit_regenerates_hp(Unit* unit);
 	u32 get_regeneration_factor(Unit* unit);

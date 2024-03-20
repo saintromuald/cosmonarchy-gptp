@@ -384,21 +384,18 @@ namespace hooks
 		Target order_target = unit->order_target;
 		unit->previous_unit_type = unit->id;
 		unit->previous_hitpoints = hp / 256;
-		if (!unit->previous_hitpoints)
-		{
+		if (!unit->previous_hitpoints) {
 			unit->previous_hitpoints = 1;
 		}
 		Sprite* sprite = unit->sprite;
 		u32 player_id = sprite->player;
 		u32 x = sprite->position.x;
 		u32 y = sprite->position.y;
-		if (sprite->images.head)
-		{
+		if (sprite->images.head) {
 			helper::sprite_destructor(sprite);
 			unit->sprite = 0;
 		}
-		if (unit->path)
-		{
+		if (unit->path) {
 			helper::reassign_path(unit);
 		}
 		helper::initialize_unit(unit, y, unit_id, x, unit->player);

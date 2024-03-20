@@ -434,11 +434,7 @@ namespace hooks {
 
 		if (weapons_dat::flingy_id[weapon_id] != 0) {
 			if (unit->id == UnitId::TerranSavant) {
-				if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
-					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05), unit, 1, 0);
-				} else {
-					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05), unit, 1, 0);
-				}
+				helper::play_sound_from_unit(bw::get_manual_unit_weapon_sound(unit, WeaponId::None), unit, 1, 0);
 			}
 
 			// Lakizilisk Seismic Spines behavior
