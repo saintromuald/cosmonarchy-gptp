@@ -350,7 +350,7 @@ namespace helper {
 	void flying_building_lift_if_still_blocked(Unit* unit);																			// 00463640
 	void complete_addon(Unit* unit, Unit* addon);																					// 00463D50
 	void crush_immobile_units(Unit* unit);																							// 00464300
-	void disconnect_from_addon(Unit* unit);																							// 00464930
+	void disconnect_addon(Unit* unit);																							// 00464930
 	void clear_building_from_tile_flag(Unit* unit, s32 x, s32 y);																	// 00469EC0
 	void set_building_tile_flag(Unit* unit, s32 x, s32 y);																			// 00469F60
 	void end_collision_tracking(Unit* unit);																						// 0046A560
@@ -1735,4 +1735,6 @@ namespace helper {
 	u32 get_random_yes_unit_response(u32 unit_id);								// 0048EAB0
 	s32 bw_refresh(s32 left, s32 height, s32 top, s32 width);					// 0041E0D0
 	Image* make_cloaked(u8 param, Sprite* sprite, u8 status, u8 timer);			// 00497FD0
+	void unit_refund_partial_technology(Unit* unit);							// 00453DD0
+	void unit_refund_partial_upgrade(Unit* unit);								// 00454220
 }

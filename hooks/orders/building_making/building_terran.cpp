@@ -638,7 +638,7 @@ namespace hooks
 		Unit* active_unit = *g_active_iscript_unit;
 		*g_active_iscript_unit = addon;
 		for (Image* i = addon->sprite->images.head; i; i = i->link.next) {
-			play_image_iscript(i, IscriptAnimation::LiftOff);
+			helper::play_image_iscript(i, IscriptAnimation::LiftOff);
 		}
 		*g_active_iscript_unit = active_unit;
 	}

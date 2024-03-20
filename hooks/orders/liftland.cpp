@@ -225,7 +225,7 @@ namespace hooks
 						addon_ext->loaded_unit[i].value = 0;
 					}
 				}
-				helper::disconnect_from_addon(unit);
+				helper::disconnect_addon(unit);
 			}
 			if (unit->is_factory()) {
 				unit->rally.unit = unit;

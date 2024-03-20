@@ -93,3 +93,19 @@ void init_omnipresence_state() {
 		}
 	}
 }
+
+void disconnect_addon_no_event(Unit* unit) {
+	Unit* addon = unit->building.addon;
+	unit->building.addon = 0;
+
+	UnitExt* addon_ext = get_unit_ext(addon);
+	addon_ext->values[ValueAddonInactive] = 1;
+	bw::refresh_console();
+
+	Unit* active_unit = *g_active_iscript_unit;
+	*g_active_iscript_unit = addon;
+	for (Image* i = addon->sprite->images.head; i; i = i->link.next) {
+		helper::play_image_iscript(i, IscriptAnimation::LiftOff);
+	}
+	*g_active_iscript_unit = active_unit;
+}

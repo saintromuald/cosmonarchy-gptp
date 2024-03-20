@@ -3271,9 +3271,9 @@ namespace bw {
 				} break;
 				case AdvisorEvent_StructureComplete_P: {
 					switch (advisor) {
-					//	case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
+						case AdvisorType_Terran:	return SoundId::ProtossAdvisorUpdateStructure; // Todo: replace
 						case AdvisorType_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
-					//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
+						case AdvisorType_Zerg:		return SoundId::ProtossAdvisorUpdateStructure; // Todo: replace
 						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Warp01;
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Warp01, SoundId::AckmedAdvisor_Warp02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Warp01;
@@ -3287,8 +3287,8 @@ namespace bw {
 				case AdvisorEvent_AddonComplete: {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd03_WAV;
-					//	case AdvisorType_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
-					//	case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
+						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_TAdUpd03_WAV; // Todo: replace
+						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_TAdUpd03_WAV; // Todo: replace
 						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Addon01;
 						case AdvisorType_Ackmed:	return helper::get_random_sfx_between(SoundId::AckmedAdvisor_Addon01, SoundId::AckmedAdvisor_Addon02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Addon01;

@@ -670,6 +670,46 @@ Unit* remove_unit_from_lists(Unit* unit) // 0049E3F0
 	return unit;
 }
 
+// Hooked to fix abandon addon transmission playing when structure dies. -Pr0nogo
+void building_death(Unit* unit, Sprite* sprite) // 0049FD00
+{
+	if (unit->status & UnitStatus::GroundedBuilding) {
+		if (unit->secondary_order_id == OrderId::BuildAddon) {
+			Unit* current_build_unit = unit->current_build_unit;
+			if (current_build_unit) {
+				if (!(current_build_unit->status & UnitStatus::Completed))
+				{
+					helper::cancel_unit(current_build_unit);
+				}
+			}
+		}
+		if (unit->building.addon) {
+			disconnect_addon_no_event(unit);
+		}
+		if (unit->building.tech_id != TechId::None) {
+			helper::unit_refund_partial_technology(unit);
+		}
+		if (unit->building.upgrade_id != UpgradeId::None) {
+			helper::unit_refund_partial_upgrade(unit);
+		}
+		u32 build_queue_id = unit->build_queue[unit->build_queue_slot % 5];
+		if (build_queue_id != UnitId::None && !(units_dat::base_property[build_queue_id] & UnitProperty::Building)) {
+			helper::refund_all_queue_slots(unit);
+		}
+		if (*g_is_placing_building) {
+			helper::place_building_proc();
+		}
+		if (units_dat::group_flags[unit->id].is_zerg) {
+			if (helper::unit_is_morphing(unit)) {
+				unit->status |= UnitStatus::Completed;
+			}
+			if (!helper::update_creep_disappearance_unit(unit)) {
+				unit->status |= UnitStatus::UNKNOWN2;
+			}
+		}
+	}
+}
+
 //-------- Actual hooking --------//
 
 void __declspec(naked) unit_destructor_special_cases_wrapper()
@@ -792,6 +832,21 @@ void __declspec(naked) remove_unit_from_lists_wrapper() {
 	}
 }
 
+void __declspec(naked) building_death_wrapper() {
+	static Unit* unit;
+	static Sprite* sprite;
+	__asm {
+		MOV unit, EAX
+		MOV sprite, EDX
+		PUSHAD
+	}
+	building_death(unit, sprite);
+	__asm {
+		POPAD
+		RETN
+	}
+}
+
 	// PATCHES \\
 
 void __declspec(naked) clear_bullet_targets_patch_8AACC() {
@@ -831,6 +886,7 @@ namespace hooks {
 		jump_patch(remove_subunit_or_gas_container_wrapper,	0x004A0080, 3);
 	//	jump_patch(unit_die_wrapper,						0x004A0740, 3); // Not tested yet
 	//	jump_patch(remove_unit_from_lists_wrapper,			0x0049E3F0, 0); // Not tested yet
+		jump_patch(building_death_wrapper,					0x0049FD00, 5);
 
 		nops(0x004A0766, 5); // Disable kill all loaded units so we can call it before UnitExt is cleared
 		jump_patch(clear_bullet_targets_patch_8AACC,		0x0048AACC, 2); // DF: Fix bug where dying Lakizilisks sometimes deal double damage

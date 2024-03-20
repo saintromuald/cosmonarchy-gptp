@@ -2789,8 +2789,8 @@ namespace hooks {
 				x_offset = MathUtils::clamp(x_offset, -127, 128);
 				y_offset = MathUtils::clamp(y_offset, -127, 128);
 
-				// TODO: Figure out why changing a construction frame freezes this overlay.
 				unit->sprite->create_overlay(ImageId::AddonWeldOverlay, x_offset, y_offset);
+				helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AddonConstruction01, SoundId::AddonConstruction04), unit, 1, 0);
 				unit_ext->timers[TimerAddonAnimation] = bw::rand_between(16, 20);
 			}
 		}

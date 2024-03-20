@@ -2907,7 +2907,7 @@ namespace helper {
 		}
 	}
 
-	void disconnect_from_addon(Unit* unit) {
+	void disconnect_addon(Unit* unit) {
 		const u32 func_address = 0x00464930;
 		__asm {
 			PUSHAD
@@ -4234,6 +4234,9 @@ namespace helper {
 
 	// For check_unit_visibility
 	u32 get_detecting_players(Unit* unit) {
+		if (!unit->sprite) {
+			return 0;
+		}
 		const u32 func_address = 0x00441130;
 		static u32 result;
 		__asm {
@@ -15037,5 +15040,29 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	void unit_refund_partial_technology(Unit* unit)
+	{
+		const u32 func_address = 0x00453DD0;
+		__asm {
+			PUSHAD
+			MOV EDX, 0 // unused arg
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void unit_refund_partial_upgrade(Unit* unit)
+	{
+		const u32 func_address = 0x00454220;
+		__asm {
+			PUSHAD
+			MOV EDX, 0 // unused arg
+			MOV ESI, unit
+			CALL func_address
+			POPAD
+		}
 	}
 }

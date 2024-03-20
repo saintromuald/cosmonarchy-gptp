@@ -1840,5 +1840,9 @@ namespace SoundId
 		MadcapPassiveCharge01						= 3020,
 		MadcapPassiveCharge02						= 3021,
 		MadcapPassiveCharge03						= 3022,
+		AddonConstruction01							= 3023,
+		AddonConstruction02							= 3024,
+		AddonConstruction03							= 3025,
+		AddonConstruction04							= 3026,
 	};
 }
