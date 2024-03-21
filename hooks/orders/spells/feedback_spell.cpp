@@ -10,18 +10,15 @@ namespace hooks
 		{
 			u16 tech_cost;
 			s32 sight_range = unit->get_sight_range(true);
-			if (helper::spell_order(unit, TechId::Feedback, &tech_cost, sight_range * 32, 0x532)) // Must target units with energy
-			{
-				if (target->status & UnitStatus::IsHallucination)
-				{
+			if (helper::spell_order(unit, TechId::Feedback, &tech_cost, sight_range * 32, 0x532)) { // Must target units with energy
+				if (target->status & UnitStatus::IsHallucination) {
 					u8 overlay_size = bw::overlay_size(target);
 					helper::replace_feedback_sprite(target, overlay_size + SpriteId::Feedback_Hit_Small);
 					unit->spend_unit_energy(tech_cost);
 					target->remove();
 					unit->order_to_idle();
 				} else {
-					if (target->energy <= 0)
-					{
+					if (target->energy <= 0) {
 						unit->order_to_idle();
 					} else {
 						target->damage_with(WeaponId::Feedback, target->energy, unit, unit->player, 1, 1);
@@ -29,8 +26,7 @@ namespace hooks
 						unit->spend_unit_energy(tech_cost);
 						helper::play_sound_from_unit(SoundId::Protoss_Darchon_feedback_wav, target, 1, 0);
 
-						if (!target->is_dead())
-						{
+						if (!target->is_dead()) {
 							u8 overlay_size = bw::overlay_size(target);
 							if (target->subunit) {
 								target->subunit->sprite->create_top_overlay(overlay_size + ImageId::Feedback_Small, 0, 0, 0);
@@ -47,8 +43,7 @@ namespace hooks
 				}
 			}
 		} else {
-			if (unit->order_queue_head)
-			{
+			if (unit->order_queue_head) {
 				unit->user_action_flags |= 1;
 				prepare_for_next_order(unit);
 			} else if (unit->unit_ai) {

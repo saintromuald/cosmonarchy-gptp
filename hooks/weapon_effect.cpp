@@ -260,7 +260,7 @@ namespace hooks {
 		// Kalkalisk behavior
 		if (weapon_id_is_incremental(bullet->weapon_id)) {
 			iquare_globals.add_incremental_bullet_multihit(bullet, target);
-			auto count = iquare_globals.get_multihit_count(bullet);
+			u32 count = iquare_globals.get_multihit_count(bullet);
 			target->damage_with(bullet->weapon_id, (weapons_dat::damage_amount[bullet->weapon_id] - count) * 256, bullet->source_unit, bullet->player);
 			return;
 		}

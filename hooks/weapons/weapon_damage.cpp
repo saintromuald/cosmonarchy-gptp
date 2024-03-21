@@ -598,13 +598,14 @@ namespace hooks
 							if (phantom) {
 								BulletExt* phantom_ext = get_bullet_ext(phantom);
 								phantom_ext->is_phantom = true;
+								phantom_ext->damage_override = data.damage + data.shield_reduce_amount;
 							}
 						} else {
 							u32 inv_direction = 255 - data.direction;
 							// attkshiftproj probably does something specific that avoids the iscript errors. -Pr0nogo
 						//	data.target->sprite->create_overlay(image_id, 0, 0, inv_direction);
 							if (data.attacker) {
-								data.attacker->damage_with(data.weapon_id, -1, data.attacker, data.attacking_player_id, inv_direction, 2);
+								data.attacker->damage_with(data.weapon_id, data.damage, data.attacker, data.attacking_player_id, inv_direction, 2);
 							}
 						}
 					}

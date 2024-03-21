@@ -146,6 +146,10 @@ namespace hooks {
 		BulletExt* bullet_ext = get_bullet_ext(bullet);
 		damage_divisor *= bullet_ext->divisor_multiplier;
 		u32 base_damage = helper::get_unit_bullet_damage(bullet, target);
+		if (bullet_ext->damage_override) { // Currently only true for Analogue strikes
+			base_damage = bullet_ext->damage_override;
+		}
+
 		if (bullet->hit_flags & 2) {
 			if (bullet->source_unit) {
 				target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->current_direction_1, damage_divisor);
