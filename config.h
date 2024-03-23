@@ -75,7 +75,7 @@ struct Config {
 	bool verbose = false;
 
 	// Map directory
-	std::string default_map_directory = "BroodWar"; // std::string is awful, but the yaml library requires it for text... -Veeq7
+	std::string default_map_directory = "";
 	bool auto_save_replays = true;
 };
 extern Config config;
