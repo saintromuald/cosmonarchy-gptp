@@ -1222,7 +1222,8 @@ namespace hooks {
 									} break;
 								}
 							} break;
-							case UnitId::ProtossScribe: {
+							case UnitId::ProtossScribe:
+							case UnitId::ProtossPrudence: {
 								switch (current_button->requirement_var) {
 									case UnitId::ProtossNexus:
 									case UnitId::ProtossPylon:
@@ -1245,7 +1246,6 @@ namespace hooks {
 									case UnitId::ProtossSequesteredIcon:
 									case UnitId::ProtossSyntheticSynod:
 									case UnitId::ProtossStargate:
-									case UnitId::ProtossAstralOmen:
 									case UnitId::ProtossArgosy:
 									case UnitId::ProtossFleetBeacon:
 									case UnitId::ProtossMonumentOfSin: {

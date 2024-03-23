@@ -730,7 +730,7 @@ namespace hooks {
 		}
 
 		// Structures
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe))
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe) || player_has_completed_unit_id(player_id, UnitId::ProtossPrudence))
 		{
 			switch (unit_id)
 			{
@@ -758,7 +758,6 @@ namespace hooks {
 					case UnitId::ProtossUnitaryUnion:
 					case UnitId::ProtossSyntheticSynod:
 					case UnitId::ProtossStargate:
-					case UnitId::ProtossAstralOmen:
 					case UnitId::ProtossArgosy:
 					case UnitId::ProtossFleetBeacon:
 					case UnitId::ProtossMonumentOfSin:
@@ -2288,6 +2287,7 @@ namespace hooks {
 
 			// Structures
 			case UnitId::ProtossScribe:
+			case UnitId::ProtossPrudence:
 			{
 				switch (unit_id)
 				{
@@ -2315,7 +2315,6 @@ namespace hooks {
 					case UnitId::ProtossUnitaryUnion:
 					case UnitId::ProtossSyntheticSynod:
 					case UnitId::ProtossStargate:
-					case UnitId::ProtossAstralOmen:
 					case UnitId::ProtossArgosy:
 					case UnitId::ProtossFleetBeacon:
 					case UnitId::ProtossMonumentOfSin:

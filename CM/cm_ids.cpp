@@ -155,7 +155,6 @@ bool unit_id_is_protoss_warp_factory(u32 unit_id) {
 		|| unit_id == UnitId::ProtossAncestralArchives
 		|| unit_id == UnitId::ProtossHallOfHeretics
 		|| unit_id == UnitId::ProtossStargate
-		|| unit_id == UnitId::ProtossAstralOmen
 		|| unit_id == UnitId::ProtossArgosy
 		|| unit_id == UnitId::ProtossFleetBeacon
 		|| unit_id == UnitId::ProtossMonumentOfSin;

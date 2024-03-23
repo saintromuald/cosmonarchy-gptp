@@ -179,6 +179,7 @@ namespace UnitId
 		ProtossVassal										= 360,		// The new one
 
 	// Protoss-Unit-Factional
+		ProtossPrudence										= 184,		// Independent Starport
 		ProtossAdherent										= 400,
 		ProtossExtatus										= 401,
 
@@ -187,7 +188,6 @@ namespace UnitId
 		ProtossProstrationStage								= 159,		// Observatory
 		ProtossRogueGallery									= 161,		// Unused Protoss 2
 		ProtossArgosy										= 168,		// Stasis Chamber
-		ProtossAstralOmen									= 184,		// Independent Starport
 		ProtossCrucible										= 201,		// Overmind Cocoon
 		ProtossArdentAuthority								= 220,		// Mineral Chunk Type 1
 		ProtossMonumentOfSin								= 223,		// Protoss Gas Orb Type 2
