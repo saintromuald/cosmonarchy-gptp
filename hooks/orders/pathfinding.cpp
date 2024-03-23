@@ -52,12 +52,10 @@ namespace hooks
 
     // Hooked to resolve contextual order issues - Pr0nogo
     s32 move_to_target(Unit* target, Unit* unit) { // 004EB720
-        if (!target->sprite) { // New
-            return false;
-        }
         Point16 new_target = get_target_point(unit, target);
-        if (target == unit->move_target.unit && ((unit->move_target.pt.x == new_target.x && unit->move_target.pt.y == new_target.y)
-            || helper::is_point_at_unit_border(0, unit->move_target.unit, unit, unit->move_target.pt)))
+        if (target == unit->move_target.unit
+        && ((unit->move_target.pt.x == new_target.x && unit->move_target.pt.y == new_target.y)
+          || helper::is_point_at_unit_border(0, unit->move_target.unit, unit, unit->move_target.pt)))
         {
 			++unmovable_hits[11];
 			unmovable_lastframe[11] = *g_elapsed_time_frames;

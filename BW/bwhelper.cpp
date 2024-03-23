@@ -4234,9 +4234,7 @@ namespace helper {
 
 	// For check_unit_visibility
 	u32 get_detecting_players(Unit* unit) {
-		if (!unit->sprite) {
-			return 0;
-		}
+		// There can be a nullsprite crash in this func despite being nullchecked previously. I am not sure how this is possible, nor how to fix it. -Pr0nogo
 		const u32 func_address = 0x00441130;
 		static u32 result;
 		__asm {
