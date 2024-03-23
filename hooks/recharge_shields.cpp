@@ -1,62 +1,45 @@
 #include "recharge_shields.h"
-#include "../SCBW/scbwdata.h"
-#include "../SCBW/enumerations.h"
-#include "../SCBW/api.h"
+#include "../BW/bwdata.h"
+#include "../BW/enumerations.h"
+#include "../BW/api.h"
 
-//This function is called every frame when a unit recharges shields.
-//Equivalent to 004934B0  sub_4934B0
-//Not hooked
-void rechargeShieldsProc(Unit* target, Unit* battery)
+// This function is called every frame when a unit recharges shields.
+// Not hooked
+void recharge_shields_proc(Unit* target, Unit* battery) // 004934B0
 {
-
-	const s32 maxShields = units_dat::max_shield_points[target->id] * 256;
-
-	s32 shield_gain = 1280, energySpent = 640;
-
-	if (maxShields - target->shields < shield_gain)
-	{
-
-		shield_gain = maxShields - target->shields;
-
-		if (shield_gain < 0)
+	const s32 max_shields = units_dat::max_shield_points[target->id] * 256;
+	s32 shield_gain = 1280;
+	s32 energy_spent = 640;
+	if (max_shields - target->shields < shield_gain) {
+		shield_gain = max_shields - target->shields;
+		if (shield_gain < 0) {
 			shield_gain++;
-
-		energySpent = shield_gain / 2;
-
+		}
+		energy_spent = shield_gain / 2;
 	}
 
-	if (energySpent > battery->energy)
-	{
-		energySpent = battery->energy;
-		shield_gain = energySpent * 2;
+	if (energy_spent > battery->energy) {
+		energy_spent = battery->energy;
+		shield_gain = energy_spent * 2;
 	}
-
 	target->heal_shields(shield_gain, battery);
-
-	if (!scbw::is_cheat_enabled(CheatFlags::TheGathering))
-		battery->spend_unit_energy(energySpent);
-
+	battery->spend_unit_energy(energy_spent);
 }
-
-;
 
 //-------- Actual hook functions --------//
 
 namespace hooks
 {
-
 	// Decides whether the @p target can recharge shields from the @p battery.
-	b32 unitCanRechargeShieldsHook(Unit* target, Unit* battery) {
-		//Check target conditions
-		if (!scbw::is_allied_to(target->player, battery->player)			 // Is not owned by the player (NEW: or the player's allies)
-		|| !(units_dat::shields_enabled[target->id])						     // Does not have shields
-		|| !(target->status & UnitStatus::Completed)						 // Is incomplete?
-	//	|| !(target->status & UnitStatus::IsBuilding)						 // Is building (like archon build self)?
-	//	|| target->status & UnitStatus::GroundedBuilding					 // Is a building
-	//	|| target->get_race() != RaceId::Protoss							     // Check target race
+	b32 unit_can_recharge_shields(Unit* target, Unit* battery) // 00493520
+	{
+		if (!bw::is_allied_to(target->player, battery->player)					// Is not owned by the player (NEW: or the player's allies)
+		|| !(units_dat::shields_enabled[target->id])							// Does not have shields
+		|| !(target->status & UnitStatus::Completed)							// Is incomplete?
 		|| target->shields >= (units_dat::max_shield_points[target->id] * 256) // Already has max shields
 		|| !(battery->status & UnitStatus::Completed) || !battery->energy
-		|| battery->is_frozen() || helper::is_hangar_unit(target)) {
+		|| battery->is_frozen() || helper::is_hangar_unit(target))
+		{
 			return 0;
 		}
 
@@ -65,127 +48,73 @@ namespace hooks
 			if (target->main_order_id == OrderId::RechargeShields1 || target->main_order_id == OrderId::TransportLoad) {
 				return 0;
 			}
-
 			if (target->order_queue_head && target->order_queue_head->order_id == OrderId::RechargeShields1) {
 				return 1;
 			}
-
 			return 0;
 		}
-
 		return 1;
 	}
 
-	// The order process run by a unit when recharging shields
-	// Identical to orders_RechargeShields1 @ 00493DD0
-	void orderRechargeShieldsHook(Unit* unit)
+	void order_recharge_shields(Unit* unit) // 00493DD0
 	{
-
-		const s32 BATTERY_RANGE = 0x80; //(128)
-
+		const s32 BATTERY_RANGE = 128;
 		Unit* battery = unit->order_target.unit;
-
-		//Skip if the Shield Battery does not exist, has no energy, or is disabled
-		//is_frozen code was hardcoded rather than function call in original code
-		if (battery == nullptr || battery->energy == 0 || battery->is_frozen())
-		{
-
-			if (unit->order_queue_head == nullptr)
-			{
-				unit->user_action_flags |= 1;
+		if (!battery || battery->energy == 0 || battery->is_frozen()) { // is_frozen code was hardcoded rather than function call in original code
+			if (unit->order_queue_head) {
+				unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 				prepare_for_next_order(unit);
-			}
-			else
-			{
-				if (unit->unit_ai != nullptr)
+			} else {
+				if (unit->unit_ai) {
 					unit->order_computer(OrderId::ComputerAI);
-				else
+				} else {
 					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
+				}
 			}
-
-		}
-		else
-			if (unit->main_order_state <= 3)
-			{
-
-				bool bStopThere = false;
-
-				if (unit->main_order_state == 0)
-				{
-
-					if (helper::order_to_move_to_target(unit, battery))
-						unit->main_order_state = 1;
-
-					bStopThere = true;
-
-				}
-				else
-					if (unit->main_order_state == 1)
-					{
-
-						u32 movableState = unit->get_movable_state();
-
-						if (movableState == 0)
-						{ //not reached destination
-							if (!unit->is_target_within_min_range(battery, BATTERY_RANGE))
-								bStopThere = true;
+		} else if (unit->main_order_state <= 3) {
+			bool bStopThere = false;
+			if (unit->main_order_state == 0) {
+				if (helper::order_to_move_to_target(unit, battery))
+					unit->main_order_state = 1;
+				bStopThere = true;
+			} else if (unit->main_order_state == 1) {
+					u32 movable_state = unit->get_movable_state();
+					if (movable_state == MovableState_NotReachedDestination) {
+						if (!unit->is_target_within_min_range(battery, BATTERY_RANGE)) {
+							bStopThere = true;
 						}
-						else
-							if (movableState == 1)
-							{ //unit reached destination
-								helper::make_to_hold_position(unit);
-								unit->main_order_state = 2;
-							}
-							else
-							{ //probably movableState == 2 == unit unmovable
-								unit->order_to_idle();
-								bStopThere = true;
-							}
-
-					}
-
-				if (!bStopThere && unit->main_order_state == 2)
-				{
-
-					u8 overlaysCounter;
-
-					if (battery->secondary_order_id != OrderId::ShieldBattery)
-						battery->set_secondary_order(OrderId::ShieldBattery);
-
-					overlaysCounter = helper::has_overlay(unit);
-					unit->sprite->create_overlay(ImageId::RechargeShields_Small + overlaysCounter, 0, 0, 0);
-
-					//the order is correct, see OrderId.h description
-					helper::insert_first_order(unit, OrderId::Harvest5);
-
-					unit->main_order_state = 3;
-
-				}
-
-				if (!bStopThere && unit->main_order_state == 3)
-				{
-
-					if (battery->order_target.unit == nullptr)
-						battery->order_target.unit = unit;
-
-					//do 1 recharge action? (increase unit shield, decrease battery energy)
-					rechargeShieldsProc(unit, battery);
-
-					if (
-						unit->shields >= units_dat::max_shield_points[unit->id] * 256 ||
-						battery->energy == 0
-						)
-					{
-
-						if (battery->order_target.unit == unit)
-							battery->order_target.unit = nullptr;
-
+					} else if (movable_state == MovableState_ReachedDestination) {
+						helper::make_to_hold_position(unit);
+						unit->main_order_state = 2;
+					} else {
 						unit->order_to_idle();
-
+						bStopThere = true;
 					}
+				}
+			if (!bStopThere && unit->main_order_state == 2) {
+				u8 overlay_counter;
+				if (battery->secondary_order_id != OrderId::ShieldBattery) {
+					battery->set_secondary_order(OrderId::ShieldBattery);
+				}
+				overlay_counter = helper::has_overlay(unit);
+				unit->sprite->create_overlay(ImageId::RechargeShields_Small + overlay_counter, 0, 0, 0);
+				helper::insert_first_order(unit, OrderId::Harvest5); // the order is correct, see OrderId.h description
+				unit->main_order_state = 3;
+			}
+			if (!bStopThere && unit->main_order_state == 3) {
+				if (!battery->order_target.unit) {
+					battery->order_target.unit = unit;
+				}
+				// do 1 recharge action? (increase unit shield, decrease battery energy)
+				recharge_shields_proc(unit, battery);
 
-				} //if(!bStopThere && unit->main_order_state == 3)
-
-			} //if(unit->main_order_state <= 3)
+				if (unit->shields >= units_dat::max_shield_points[unit->id] * 256 || battery->energy == 0) {
+					if (battery->order_target.unit == unit) {
+						battery->order_target.unit = 0;
+					}
+					unit->order_to_idle();
+				}
+			}
+		}
 	}
 }

@@ -1,5 +1,5 @@
 #include "merge_units.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <algorithm>
 
 #ifndef MAXINT32
@@ -194,7 +194,7 @@ namespace hooks
 
 			//946F3
 			distanceBetweenUnits =
-				scbw::get_distance_fast(
+				bw::get_distance_fast(
 					unit->sprite->position.x,
 					unit->sprite->position.y,
 					targetUnit->sprite->position.x,
@@ -307,7 +307,7 @@ namespace hooks
 
 				//947E0:
 				helper::change_unit_buttonset(unit, UnitId::None);
-				scbw::refresh_console();
+				bw::refresh_console();
 
 				unit->kill_count += targetUnit->kill_count;
 				unit->energy = 12800;	//50 energy ingame
@@ -393,7 +393,7 @@ namespace hooks
 
 			//94913
 			distanceBetweenUnits =
-				scbw::get_distance_fast(
+				bw::get_distance_fast(
 					unit->sprite->position.x,
 					unit->sprite->position.y,
 					targetUnit->sprite->position.x,
@@ -504,7 +504,7 @@ namespace hooks
 
 				//949F0:
 				helper::change_unit_buttonset(unit, UnitId::None);
-				scbw::refresh_console();
+				bw::refresh_console();
 
 				unit->kill_count += targetUnit->kill_count;
 

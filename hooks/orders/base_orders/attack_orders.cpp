@@ -1,5 +1,5 @@
 #include "attack_orders.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 #ifndef TRUE
 #define TRUE 1
@@ -10,45 +10,36 @@
 
 namespace hooks
 {
-	void orders_reaver_attack(Unit* unit)
+	void orders_reaver_attack(Unit* unit) // 00465690
 	{
 		Unit* target = unit->order_target.unit;
-		if (!target)
-		{
-			if (unit->order_queue_head)
-			{
+		if (!target) {
+			if (unit->order_queue_head) {
 				unit->user_action_flags |= 1;
 				prepare_for_next_order(unit);
 			} else {
-				if (unit->unit_ai)
-				{
+				if (unit->unit_ai) {
 					unit->order_computer(OrderId::ComputerAI);
 				} else {
 					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 			}
 		} else {
-			if (!unit->can_attack_target(target, true))
-			{
+			if (!unit->can_attack_target(target, true)) {
 				unit->order_to(OrderId::Move, unit->order_target.pt.x, unit->order_target.pt.y);
 			} else {
 				u32 status_saved = (unit->status & UnitStatus::AttackMove) + (unit->status & UnitStatus::Disabled);
 				u8 new_order_id = OrderId::Die;
-				if (unit->id == UnitId::ProtossAccantorOld)
-				{
-					if (unit->main_order_id == OrderId::ReaverHold)
-					{
+				if (unit->id == UnitId::ProtossAccantorOld) {
+					if (unit->main_order_id == OrderId::ReaverHold) {
 						new_order_id = OrderId::ReaverHold;
 					} else {
 						new_order_id = OrderId::ReaverFight;
 					}
-				}
-				else {
-					if (unit->main_order_id == OrderId::HoldPositionSolarion)
-					{
+				} else {
+					if (unit->main_order_id == OrderId::HoldPositionSolarion) {
 						new_order_id = OrderId::HoldPositionSolarion;
-					} else
-					{
+					} else {
 						new_order_id = OrderId::CarrierFight;
 					}
 				}
@@ -98,273 +89,19 @@ namespace hooks
 		}
 	}
 
-	void orders_turret_attack(Unit* unit)
-	{
-		Unit* target;
-		Unit* current_unit;
-		u8 current_unit_weapon_id;
-
-		bool jump_to_77A45 = false;
-		bool jump_to_77A70 = false;
-		bool jump_to_77A9D = false;
-		bool jump_to_77AB7 = false;
-		bool jump_to_77AFE = false;
-		bool jump_to_77CDA = false;
-		bool bJumpToEarlierCode;
-
-		// perform lots of checks, possibly in an attempt to auto-select a better target if the turret has choice
-		helper::pick_new_target_if_needed(unit);
-		target = unit->order_target.unit;
-
-		if (target)
-		{
-			unit->order_target.pt.x = target->position.x;
-			unit->order_target.pt.y = target->position.y;
-		}
-
-		if (unit->is_frozen() || !target || target->status & UnitStatus::Invincible
-		|| (target->sprite && target->sprite->flags & SpriteFlags::Hidden)
-		||  helper::unit_cant_see_cloaked_target(unit, target))
-		{
-			jump_to_77A45 = true;
-		} else {
-			if ((unit->subunit)->is_subunit())
-			{
-				current_unit = unit->subunit;
-			} else {
-				current_unit = unit;
-			}
-
-			// identical to check performed by unit_is_carrier @ 0x00401470
-			if (unit->id == UnitId::ProtossSolarion)
-			{
-				jump_to_77AFE = true;
-			} else if (!(unit->id == UnitId::ProtossAccantorOld)) {
-				jump_to_77A9D = true;
-			} else if (target->status & UnitStatus::InAir) {
-				jump_to_77A45 = true;
-			} else if (unit->has_path_to_unit(target)) {
-				jump_to_77AFE = true;
-			} else {
-				jump_to_77A45 = true;
-			}
-		}
-
-		do
-		{
-			bJumpToEarlierCode = false;
-			if (jump_to_77A45)
-			{
-				unit->user_action_flags |= 1;
-				if (unit->main_order_id == OrderId::Die)
-				{
-					prepare_for_next_order(unit);
-				} else {
-					jump_to_77A70 = true;
-				}
-			}
-
-			jump_to_77A45 = false;
-			if (jump_to_77A70)
-			{
-				bool bStopLoop77A70 = false;
-				while (!bStopLoop77A70 && unit->order_queue_tail != nullptr)
-				{
-					if (!orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] &&
-						unit->order_queue_tail->order_id != OrderId::TurretGuard)
-					{
-						bStopLoop77A70 = true;
-					} else {
-						helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
-					}
-				}
-				jump_to_77CDA = true;
-			}
-			jump_to_77A70 = false;
-			if (jump_to_77A9D)
-			{
-
-				if (helper::unit_can_infest(unit))
-				{
-					if (helper::is_infestable_unit(target))
-					{
-						jump_to_77AFE = true;
-					} else {
-						jump_to_77A45 = true;
-						bJumpToEarlierCode = true;
-					}
-				} else {
-					jump_to_77AB7 = true;
-				}
-			}
-
-			jump_to_77A9D = false;
-			if (jump_to_77AB7)
-			{
-				if (target->status & UnitStatus::InAir)
-				{
-					current_unit_weapon_id = units_dat::air_weapon[current_unit->id];
-				} else {
-					current_unit_weapon_id = current_unit->get_ground_weapon();
-				}
-				if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
-				{
-					current_unit_weapon_id = WeaponId::None;
-				}
-				if (current_unit_weapon_id == WeaponId::None)
-				{
-					jump_to_77A45 = true;
-					bJumpToEarlierCode = true;
-				} else {
-					jump_to_77AFE = true;
-				}
-			}
-
-			jump_to_77AB7 = false;
-			if (jump_to_77AFE)
-			{
-				if (!helper::is_target_visible(unit, target))
-				{
-					jump_to_77A45 = true;
-					bJumpToEarlierCode = true;
-				} else {
-					Unit* current_subunit = unit->subunit;
-					bool jump_to_77BD7 = false;
-
-					if (unit->id != UnitId::TerranPhalanxTankModeTurret
-					||  current_subunit->unit_ai == nullptr
-					|| (current_subunit->can_use_tech(TechId::TankSiegeMode, unit->player) != TRUE)
-					|| !helper::is_unit_visible(unit))
-					{
-						jump_to_77BD7 = true;
-					} else {
-						u32 result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::ground_weapon[UnitId::TerranPhalanxSiegeModeTurret]);
-						if (!helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange))
-						{
-							jump_to_77BD7 = true;
-						} else {
-							result_getMaxWpnRange = unit->get_max_weapon_range(units_dat::ground_weapon[UnitId::TerranPhalanxTankModeTurret]);
-
-							if (helper::is_target_within_min_movement_range(current_subunit, target, result_getMaxWpnRange)
-							||  helper::is_unit_critter(target))
-							{
-								jump_to_77BD7 = true;
-							} else {
-								unit->order_computer(OrderId::Nothing2);
-
-								// this order_id is hardcoded, not calculated 
-								unit->order_simple(units_dat::attack_unit_order[UnitId::TerranPhalanxSiegeModeTurret], false);
-								current_subunit->order_computer(OrderId::SiegeMode);
-
-								// this order_id is hardcoded, not calculated
-								current_subunit->issue_queued_order_target(units_dat::attack_unit_order[UnitId::TerranPhalanxSiegeMode], target, false);
-							}
-						}
-					}
-
-					if (jump_to_77BD7)
-					{
-						bool jump_to_77C78 = false;
-						bool jump_to_77CA1 = false;
-						if (target != nullptr)
-						{
-							if (helper::is_target_visible(unit, target))
-							{
-								if ((unit->subunit)->is_subunit())
-								{
-									current_unit = unit->subunit;
-								} else {
-									current_unit = unit;
-								}
-
-								if (target->status & UnitStatus::InAir)
-								{
-									current_unit_weapon_id = current_unit->get_air_weapon();
-								} else {
-									current_unit_weapon_id = current_unit->get_ground_weapon(); // include the Lakizilisk special case so it's ok
-								}
-								if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
-								{
-									current_unit_weapon_id = WeaponId::None;
-								}
-								if (current_unit_weapon_id == WeaponId::None)
-								{
-									jump_to_77C78 = true;
-								} else if (weapons_dat::min_range[current_unit_weapon_id] != 0
-								&&		   current_unit->is_target_within_min_range(target, weapons_dat::min_range[current_unit_weapon_id]))
-								{
-										jump_to_77C78 = true;
-								} else {
-									if (helper::is_target_within_min_movement_range(current_unit, target, unit->get_max_weapon_range(current_unit_weapon_id)))
-									{
-										jump_to_77CA1 = true;
-									} else {
-										jump_to_77C78 = true;
-									}
-								}
-							} else {
-								jump_to_77C78 = true;
-							}
-						} else {
-							jump_to_77CA1 = true;
-						}
-						if (jump_to_77C78)
-						{
-							if ((unit->subunit)->main_order_id == units_dat::attack_unit_order[(unit->subunit)->id]
-							&&   helper::get_right_click_action_order(unit->subunit) != RightClickActions::NoMove_NormalAttack)
-							{
-								jump_to_77CA1 = true;
-							} else {
-								unit->order_computer(OrderId::TurretGuard);
-							}
-						}
-
-						jump_to_77C78 = false;
-						if (jump_to_77CA1)
-						{
-							if (unit->order_target.pt.x != unit->next_target_waypoint.x
-								|| unit->order_target.pt.y != unit->next_target_waypoint.y)
-							{
-								unit->next_target_waypoint.x = unit->order_target.pt.x;
-								unit->next_target_waypoint.y = unit->order_target.pt.y;
-							}
-							if (!((unit->subunit)->movement_flags & MovementFlags_Accelerating))
-							{
-								helper::get_weapon_begin_iscript(unit, IscriptAnimation::GndAttkRpt);
-							}
-						}
-						jump_to_77CA1 = false;
-					}
-					jump_to_77BD7 = false;
-				}
-			}
-			jump_to_77AFE = false;
-			if (jump_to_77CDA)
-			{
-				unit->perform_another_order(OrderId::TurretGuard, 0, 0, nullptr, UnitId::None);
-				prepare_for_next_order(unit);
-			}
-			jump_to_77CDA = false;
-		}
-		while (bJumpToEarlierCode);
-	}
-
-	void orders_attack_fixed_range(Unit* unit)
+	void orders_attack_fixed_range(Unit* unit) // 00477D00
 	{
 		Unit* target;
 		bool jump_to_77E48 = false;
 		bool jump_to_77E99 = false;
-		if (unit->unit_ai != nullptr)
-		{
-			unit->order_target.unit = helper::find_best_attack_target(unit); // 00477D13
+		if (unit->unit_ai) {
+			unit->order_target.unit = helper::find_best_attack_target(unit);
 		} else {
-			// perform lots of checks, possibly in an attempt to auto-select a better target if the unit has choice
-			helper::pick_new_target_if_needed(unit); // 00477D1F
+			helper::pick_new_target_if_needed(unit);
 		}
 
 		target = unit->order_target.unit;
-		if (!target)
-		{
+		if (target) {
 			unit->order_target.pt.x = target->position.x;
 			unit->order_target.pt.y = target->position.y;
 		}
@@ -378,15 +115,13 @@ namespace hooks
 		} else {
 			Unit* current_unit;
 			bool jump_to_77DEF = false;
-			if (unit->subunit->is_subunit()) // check if is not null AND is a subunit
-			{
+			if (unit->subunit->is_subunit()) { // check if is not null AND is a subunit 
 				current_unit = unit->subunit;
 			} else {
 				current_unit = unit;
 			}
 
-			if (unit->id == UnitId::ProtossSolarion)
-			{
+			if (unit->id == UnitId::ProtossSolarion) {
 				jump_to_77E99 = true;
 			} else if (!(unit->id == UnitId::ProtossAccantorOld)) {
 				jump_to_77DEF = true;
@@ -397,28 +132,23 @@ namespace hooks
 			} else {
 				jump_to_77E48 = true;
 			}
-			if (jump_to_77DEF)
-			{
-				if (helper::unit_can_infest(unit))
-				{
-					if (helper::is_infestable_unit(target))
-					{
+
+			if (jump_to_77DEF) {
+				if (helper::unit_can_infest(unit)) {
+					if (helper::is_infestable_unit(target)) {
 						jump_to_77E99 = true;
 					} else {
 						jump_to_77E48 = true;
 					}
 				} else {
 					u8 current_weapon_id = current_unit->get_ground_weapon();
-					if (target->status & UnitStatus::InAir)
-					{
+					if (target->status & UnitStatus::InAir) {
 						current_weapon_id = current_unit->get_air_weapon();
 					}
-					if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
-					{
+					if (current_unit->id == UnitId::ProtossClarion && bw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 						current_weapon_id = WeaponId::None;
 					}
-					if (current_weapon_id != WeaponId::None)
-					{
+					if (current_weapon_id != WeaponId::None) {
 						jump_to_77E99 = true;
 					} else {
 						jump_to_77E48 = true;
@@ -427,10 +157,8 @@ namespace hooks
 			}
 		}
 
-		if (jump_to_77E48)
-		{
-			if (unit->order_queue_head)
-			{
+		if (jump_to_77E48) {
+			if (unit->order_queue_head) {
 				unit->user_action_flags |= 1;
 				prepare_for_next_order(unit);
 			} else if (unit->unit_ai) {
@@ -440,15 +168,11 @@ namespace hooks
 			}
 		}
 
-		if (jump_to_77E99)
-		{
+		if (jump_to_77E99) {
 			bool jump_to_77EC8 = false;
 			bool jump_to_77ED6 = false;
-			if (helper::is_unit_in_weapon_range(unit, target))
-			{
-				if (unit->order_target.pt.x != unit->next_target_waypoint.x
-					|| unit->order_target.pt.y != unit->next_target_waypoint.y)
-				{
+			if (helper::is_unit_in_weapon_range(unit, target)) {
+				if (unit->order_target.pt.x != unit->next_target_waypoint.x || unit->order_target.pt.y != unit->next_target_waypoint.y) {
 					unit->next_target_waypoint.x = unit->order_target.pt.x;
 					unit->next_target_waypoint.y = unit->order_target.pt.y;
 				}
@@ -461,33 +185,27 @@ namespace hooks
 		}
 	}
 
-	void orders_sap_unit(Unit* unit)
+	void orders_sap_unit(Unit* unit) // 004788E0
 	{
 		Unit* target = unit->order_target.unit;
-		if (!target)
-		{
-			if (unit->order_queue_head)
-			{
-				unit->user_action_flags |= 1;
+		if (!target) {
+			if (unit->order_queue_head) {
+				unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 				prepare_for_next_order(unit);
 			} else {
-				if (unit->unit_ai)
-				{
+				if (unit->unit_ai) {
 					unit->order_computer(OrderId::ComputerAI);
 				} else {
 					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				}
 			}
 		} else {
-			if (!unit->can_attack_target(target, true))
-			{
+			if (!unit->can_attack_target(target, true)) {
 				unit->order_to(OrderId::Move, target->position.x, target->position.y);
 			} else {
 				bool bStopThere = false;
-				if (unit->main_order_state == 0)
-				{
-					if (helper::move_to_target(target, unit))
-					{
+				if (unit->main_order_state == 0) {
+					if (helper::move_to_target(target, unit)) {
 						unit->main_order_state = 1;
 					} else {
 						bStopThere = true;
@@ -496,13 +214,8 @@ namespace hooks
 
 				if (!bStopThere && unit->main_order_state == 1)
 				{
-					if (!unit->is_target_within_min_range(target, 4)
-						&& unit->get_movable_state() != 2)
-					{
-						if (unit->is_target_within_min_range(target, 256)
-							&& target->movement_flags & MovementFlags_Accelerating)							
-						{
-							// maybe trigger the acceleration of the infested terran, or something else related to distances?
+					if (!unit->is_target_within_min_range(target, 4) && unit->get_movable_state() != 2) {
+						if (unit->is_target_within_min_range(target, 256) && target->movement_flags & MovementFlags_Accelerating) {
 							helper::move_to_collide(unit, target);
 						} else {
 							helper::move_towards(unit, target);
@@ -510,8 +223,7 @@ namespace hooks
 						bStopThere = true;
 					} else {
 						helper::set_resource_target(unit);
-						if (!unit->is_target_within_min_range(target, weapons_dat::outer_splash_radius[WeaponId::InfestedTerranSuicide]))
-						{
+						if (!unit->is_target_within_min_range(target, weapons_dat::outer_splash_radius[WeaponId::InfestedTerranSuicide])) {
 							unit->order_to_idle();
 							bStopThere = true;
 						} else {
@@ -527,11 +239,8 @@ namespace hooks
 						}
 					}
 				}
-
-				if (!bStopThere && unit->main_order_state == 2)
-				{
-					if (unit->order_signal & 1)
-					{
+				if (!bStopThere && unit->main_order_state == 2) {
+					if (unit->order_signal & 1) {
 						unit->status |= UnitStatus::IsSelfDestructing;
 						unit->remove(); // orders_self_destructing
 					}
@@ -540,36 +249,29 @@ namespace hooks
 		}
 	}
 
-	void orders_sap_location(Unit* unit)
+	void orders_sap_location(Unit* unit) // 00478A40
 	{
 		bool bStopThere = false;
-		if (unit->main_order_state == 0)
-		{
+		if (unit->main_order_state == 0) {
 			bStopThere = !helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-			if (unit->order_target.pt.x != unit->next_target_waypoint.x
-				|| unit->order_target.pt.y != unit->next_target_waypoint.y)
-			{
+			if (unit->order_target.pt.x != unit->next_target_waypoint.x || unit->order_target.pt.y != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = unit->order_target.pt.x;
 				unit->next_target_waypoint.y = unit->order_target.pt.y;
 			}
-			if (!bStopThere)
-			{
+			if (!bStopThere) {
 				unit->main_order_state = 1;
 			}
 		}
 
-		if (!bStopThere && unit->main_order_state == 1)
-		{
-			if (unit->position.x != unit->move_target.pt.x
-				|| unit->position.y != unit->move_target.pt.y)
-			{
+		if (!bStopThere && unit->main_order_state == 1) {
+			if (unit->position.x != unit->move_target.pt.x || unit->position.y != unit->move_target.pt.y) {
 				bStopThere = true;
 			} else {
-				if (unit->status & UnitStatus::Unmovable)
-				{
-					u32 distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
-					if ((distance / 256) > weapons_dat::outer_splash_radius[WeaponId::InfestedTerranSuicide])
-					{
+				++unmovable_hits[7];
+				unmovable_lastframe[7] = *g_elapsed_time_frames;
+				if (unit->status & UnitStatus::Unmovable) {
+					u32 distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
+					if ((distance / 256) > weapons_dat::outer_splash_radius[WeaponId::InfestedTerranSuicide]) {
 						unit->order_to_idle();
 						bStopThere = true;
 					}
@@ -584,11 +286,10 @@ namespace hooks
 				}
 				*/
 
-				if (!bStopThere)
-				{
+				if (!bStopThere) {
 					Image* current_image = unit->sprite->images.head;
 					unit->order_target.unit = unit;
-					while (current_image != nullptr)
+					while (current_image)
 					{
 						current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
 						current_image = current_image->link.next;
@@ -599,34 +300,26 @@ namespace hooks
 			}
 		}
 
-		if (!bStopThere && unit->main_order_state == 2)
-		{
-			if (unit->order_signal & 1)
-			{
+		if (!bStopThere && unit->main_order_state == 2) {
+			if (unit->order_signal & 1) {
 				unit->status |= UnitStatus::IsSelfDestructing;
-				unit->remove(); // orders_self_destructing
+				unit->remove();
 			}
 		}
 	}
 
-	void orders_attack_move_ep(Unit* unit)
+	void orders_attack_move_ep(Unit* unit) // 00478DE0
 	{
 		u8 previous_main_order_id = unit->main_order_id;
-		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) && unit->main_order_timer == 0)
-		{
+		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) && unit->main_order_timer == 0) {
 			unit->main_order_timer = 0; // used to be 15
-			if (helper::get_region_id(unit->position.x, unit->position.y) == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y))
-			{
+			if (helper::get_region_id(unit->position.x, unit->position.y) == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y)) {
 				helper::make_to_hold_position(unit);
 				unit->order_to_idle();
 			} else {
 				bool jump_to_78EAE = false;
-				if (unit->get_movable_state() != 0
-				&& (unit->order_target.pt.x != unit->position.x || unit->order_target.pt.y != unit->position.y))
-				{
-
-					if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
-					{
+				if (unit->get_movable_state() != 0 && (unit->order_target.pt.x != unit->position.x || unit->order_target.pt.y != unit->position.y)) {
+					if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
 						jump_to_78EAE = true;
 					} else if (helper::ai_is_unreachable_position(unit, (s32)unit->order_target.pt.x, (s32)unit->order_target.pt.y)) {
 						helper::make_to_hold_position(unit);
@@ -635,25 +328,18 @@ namespace hooks
 					jump_to_78EAE = true;
 				}
 
-				if (jump_to_78EAE)
-				{
+				if (jump_to_78EAE) {
 					helper::attack_move_try_pick_target(unit, previous_main_order_id);
 				}
 			}
 		}
 	}
 
-	void orders_attack_move(Unit* unit)
+	void orders_attack_move(Unit* unit) // 00479040
 	{
-		// Logically, would check if a target is in distance, and if that's the case (not returning 0),
-		// stop the "move" part that follow to attack the unit met
-		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) != 0 && unit->main_order_timer == 0)
-		{
+		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) != 0 && unit->main_order_timer == 0) {
 			unit->main_order_timer = 0; // used to be 15
-			if (unit->move_target.pt.x != unit->position.x
-			||  unit->move_target.pt.y != unit->position.y)
-			{
-				// This function would check one last time if a target is in distance, and attack it if that's the case, else AttackMove end here
+			if (unit->move_target.pt.x != unit->position.x || unit->move_target.pt.y != unit->position.y) {
 				helper::attack_move_try_pick_target(unit, unit->main_order_id);
 			} else {
 				unit->order_to_idle();
@@ -661,20 +347,15 @@ namespace hooks
 		}
 	}
 
-	void orders_attack_unit(Unit* unit)
+	void orders_attack_unit(Unit* unit) // 00479BD0
 	{
 		if (g_player_table[unit->player].type != PlayerType::Computer
 		|| (unit->order_target.unit && units_dat::base_property[(unit->order_target.unit)->id] & UnitProperty::Building)
 		|| !helper::ai_try_return_home(unit, 0))
 		{
-			// perform lots of checks, possibly in an attempt to auto-select a better target if the unit has choice
 			helper::pick_new_target_if_needed(unit);
-
-			// function perform tests to see if attack is possible and how it should be done and return true if attack can be done
-			if (helper::attack_unit_main(unit))
-			{
-				if (unit->unit_ai)
-				{
+			if (helper::attack_unit_main(unit)) {
+				if (unit->unit_ai) {
 					helper::ai_attack_unit(unit);
 				}
 				helper::get_weapon_begin_iscript(unit, IscriptAnimation::GndAttkRpt);
@@ -685,19 +366,15 @@ namespace hooks
 	// Ported from public GPTP to fix the Plasma Shell launch sound. -Pr0nogo
 	void orders_strafe_unit2(Unit* unit) // 00465E00
 	{
-		if (unit->main_order_state <= 6)
-		{
-			if (unit->main_order_state == 0)
-			{
-				if (unit->remove_timer == 0 || unit->remove_timer > 90)
-				{
+		if (unit->main_order_state <= 6) {
+			if (unit->main_order_state == 0) {
+				if (unit->remove_timer == 0 || unit->remove_timer > 90) {
 					unit->remove_timer = 90;
 				}
 
 				unit->status |= UnitStatus::NoCollide;
 				unit->main_order_timer = 7;
-				if (unit->order_target.unit)
-				{
+				if (unit->order_target.unit) {
 					u8 rand_value = helper::randomize_short(0) & 1;
 					helper::play_sound_from_unit(SoundId::Bullet_pTrFir00_wav + rand_value, unit, 1, 0);
 					helper::move_to_target(unit, unit->order_target.unit);
@@ -706,26 +383,19 @@ namespace hooks
 					unit->main_order_state = 2;
 				}
 			} else if (unit->main_order_state == 2) {
-				if (unit->main_order_timer == 0)
-				{
+				if (unit->main_order_timer == 0) {
 					unit->status &= ~UnitStatus::NoCollide; // unset flag if set
 					unit->main_order_state = 3;
 				}
 			}
 
-			if (unit->main_order_state == 2 || unit->main_order_state == 3)
-			{
+			if (unit->main_order_state == 2 || unit->main_order_state == 3) {
 				Unit* target = unit->order_target.unit;
 				bool bNotEndThere;
-				if (target)
-				{
-					if (unit->is_target_within_min_range(target, 256)
-					&&  target->movement_flags & MovementFlags_Accelerating)
-					{
+				if (target) {
+					if (unit->is_target_within_min_range(target, 256) && target->movement_flags & MovementFlags_Accelerating) {
 						helper::move_to_collide(unit, target);
-					}
-					else
-					{
+					} else {
 						helper::move_towards(unit, target);
 					}
 					bNotEndThere = unit->is_target_within_min_range(target, weapons_dat::inner_splash_radius[units_dat::ground_weapon[unit->id]]);
@@ -733,8 +403,7 @@ namespace hooks
 					bNotEndThere = (unit->get_movable_state() != MovableState_NotReachedDestination);
 				}
 
-				if (bNotEndThere)
-				{
+				if (bNotEndThere) {
 					Image* current_image;
 					unit->order_target.pt.x = unit->position.x;
 					unit->order_target.pt.y = unit->position.y;
@@ -747,8 +416,7 @@ namespace hooks
 					unit->main_order_state = 6;
 				}
 			} else if (unit->main_order_state == 6) {
-				if (unit->order_signal & 1)
-				{
+				if (unit->order_signal & 1) {
 					unit->status |= UnitStatus::IsSelfDestructing;
 					unit->remove();
 				}
@@ -775,103 +443,87 @@ namespace hooks
 	// Hooked to debug Stewards in a post-extender environment. -Pr0nogo
 	void orders_strafe_unit(Unit* unit) // 00465F60
 	{
-		if (unit->hangar_unit.parent && unit->shields < units_dat::shields_enabled[UnitId::ProtossSteward] << 8 >> 2) // Return if shields are below some threshold
-		{
+		if (unit->hangar_unit.parent && unit->hitpoints < units_dat::max_hitpoints[UnitId::ProtossSteward] << 8 >> 2) {
 			helper::issue_order_targeting_nothing(unit, OrderId::Return);
-		}
-		else if (helper::return_interceptor_if_cannot_attack(unit))
-		{
-			Unit* target = unit->order_target.unit; // Compiler error avoidance
+		} else if (helper::return_interceptor_if_cannot_attack(unit)) {
+			Unit* target = unit->order_target.unit;
 			switch (unit->main_order_state)
 			{
-			case 0:
-				if (unit->hangar_unit.parent)
+				case 0:
 				{
-					helper::play_sound_from_unit(616, unit, 1, 0);
-					helper::get_next_strafe_position(unit, 3u, unit->order_target.pt);
-					unit->main_order_timer = 15;
-					unit->main_order_state = 1;
-					goto LABEL_9;
-				}
-				helper::orders_self_destructing(unit);
-				break;
-			case 1:
-			LABEL_9:
-				if (!unit->main_order_timer)
+					if (unit->hangar_unit.parent) {
+						helper::play_sound_from_unit(616, unit, 1, 0);
+						helper::get_next_strafe_position(unit, 3u, unit->order_target.pt);
+						unit->main_order_timer = 15;
+						unit->main_order_state = 1;
+						goto LABEL_9;
+					}
+					helper::orders_self_destructing(unit);
+				} break;
+				case 1:
 				{
-					unit->sprite->elevation += 2;
-					unit->main_order_state = 3;
-					goto LABEL_11;
-				}
-				break;
-			case 3:
+				LABEL_9:
+					if (!unit->main_order_timer) {
+						unit->sprite->elevation += 2;
+						unit->main_order_state = 3;
+						goto LABEL_11;
+					}
+				} break;
+				case 3:
+				{
 			LABEL_11:
-				if (!target)
-				{
-					goto LABEL_38;
-				}
-				if (helper::is_target_visible(target, unit))
-				{
-					Unit* final_unit = unit->subunit;
-					if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit))
-					{
-						final_unit = unit;
-					}
-
-					u32 weapon_id = WeaponId::None;
-					if (target->status & UnitStatus::InAir)
-					{
-						weapon_id = units_dat::air_weapon[final_unit->id];
-					}
-					else
-					{
-						if (final_unit->id != UnitId::ZergLakizilisk || final_unit->status & UnitStatus::Burrowed)
-						{
-							weapon_id = units_dat::ground_weapon[final_unit->id];
+					if (!target) {
+						helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+					} else if (helper::is_target_visible(target, unit)) {
+						Unit* final_unit = unit->subunit;
+						if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
+							final_unit = unit;
 						}
-					}
-					if (weapon_id != WeaponId::None)
-					{
-						u32 min_range = weapons_dat::min_range[weapon_id];
-						if (!min_range || !helper::is_target_within_min_range(final_unit, min_range, target))
-						{
-							u32 max_weapon_range = helper::get_unit_max_weapon_range(unit, weapon_id);
-							if (helper::is_target_within_min_movement_range(final_unit, target, max_weapon_range))
-							{
-							LABEL_38:
-								helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+
+						u32 weapon_id = WeaponId::None;
+						if (target->status & UnitStatus::InAir) {
+							weapon_id = units_dat::air_weapon[final_unit->id];
+						} else {
+							if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed) {
+								weapon_id = units_dat::ground_weapon[final_unit->id];
+							}
+						}
+						if (weapon_id != WeaponId::None) {
+							u32 min_range = weapons_dat::min_range[weapon_id];
+							if (!min_range || !helper::is_target_within_min_range(final_unit, min_range, target)) {
+								u32 max_weapon_range = helper::get_unit_max_weapon_range(unit, weapon_id);
+								if (helper::is_target_within_min_movement_range(final_unit, target, max_weapon_range)) {
+									helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+								}
 							}
 						}
 					}
-				}
-				if (helper::is_target_within_min_movement_range(unit, 0, 50))
-				{
-					helper::get_next_strafe_position(unit, 1u, unit->order_target.pt);
-					unit->main_order_state = 4;
-				}
-				else
-				{
-					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-				}
-				break;
-			case 4:
-				if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50))
-				{
-					helper::get_next_strafe_position(unit, 2, unit->order_target.pt);
-					unit->main_order_state = 5;
-				}
-				break;
-			case 5:
-				if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50))
-				{
-					if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y))
-					{
-						unit->main_order_state = 3;
+					if (helper::is_target_within_min_movement_range(unit, 0, 50)) {
+						helper::get_next_strafe_position(unit, 1u, unit->order_target.pt);
+						unit->main_order_state = 4;
+					} else {
+						helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 					}
+				} break;
+				case 4:
+				{
+					if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50)) {
+						helper::get_next_strafe_position(unit, 2, unit->order_target.pt);
+						unit->main_order_state = 5;
+					}
+				} break;
+				case 5:
+				{
+					if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50)) {
+						if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
+							unit->main_order_state = 3;
+						}
+					}
+				} break;
+				default:
+				{
+					return;
 				}
-				break;
-			default:
-				return;
 			}
 		}
 	}
@@ -879,30 +531,30 @@ namespace hooks
 	// Hooked to remove randomness. -Pr0nogo
 	void get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 position) // 00465D30
 	{
-		// TODO: replace randomness with a clockwise rotation?
-		u32 rand_aids = strafe_type * helper::rand_between(-127, 128, 11);
-		u32 rand_aids_2 = strafe_type * helper::rand_between(0, 128, 11); // Dunno what's up with the first arg, it was an uninitialized variable in IDA, whose register didn't get written to in the previous function.
-		u32 rand_pos_x = rand_aids + position.x;
+		// TODO: replace randomness with some kind of consistent rotation.
+		u32 rand_off_x = strafe_type * helper::rand_between(-127, 128, 11);
+		u32 rand_off_y = strafe_type * helper::rand_between(-127, 128, 11);
+
+		u32 rand_pos_x = rand_off_x + position.x;
 		if (rand_pos_x < units_dat::unit_bounds[UnitId::ProtossSteward].x
 		||  rand_pos_x >= *g_map_width_pixels - units_dat::unit_bounds[UnitId::ProtossSteward].w)
 		{
-			rand_aids = -rand_aids;
+			rand_off_x = -rand_off_x;
 		}
-		u32 rand_pos_y = rand_aids_2 + position.y;
+		u32 rand_pos_y = rand_off_y + position.y;
 		if (rand_pos_y < units_dat::unit_bounds[UnitId::ProtossSteward].y
 		||  rand_pos_y >= *g_map_height_pixels - units_dat::unit_bounds[UnitId::ProtossSteward].h)
 		{
-			rand_aids_2 = -rand_aids_2;
+			rand_off_y = -rand_off_y;
 		}
+		position.x += rand_off_x;
+		position.y += rand_off_y;
 
-		position.x += rand_aids;
-		position.y += rand_aids_2;
 		helper::fix_target_location(&position, UnitId::ProtossSteward);
 		u32 pos_x = position.x;
 		u32 pos_y = position.y;
 		helper::set_move_target_xy(unit, position.x, position.y);
-		if (pos_x != unit->next_target_waypoint.x || pos_y != unit->next_target_waypoint.y)
-		{
+		if (pos_x != unit->next_target_waypoint.x || pos_y != unit->next_target_waypoint.y) {
 			unit->next_target_waypoint.x = pos_x;
 			unit->next_target_waypoint.y = pos_y;
 		}
@@ -912,17 +564,15 @@ namespace hooks
 	// Used when unit->main_order_id is OrderId::Carrier, OrderId::CarrierFight or OrderId::HoldPositionSolarion
 	void orders_carrier_idle(Unit* unit) // 004666A0
 	{
-		if (helper::order_hangar_unit(unit, 0, 6 * 32))
-		{
+		if (helper::order_hangar_unit(unit, 0, 6 * 32)) {
 			Unit* out_unit = release_fighter(unit);
 			if (out_unit) {
 				// Originally set shields to full.
 				out_unit->sprite->elevation = unit->sprite->elevation- 1;
 				out_unit->order_to(units_dat::attack_unit_order[UnitId::ProtossSteward], unit->order_target.unit);
 				unit->order_queue_timer = 4; // Originally unit->main_order_timer = 7;
-				scbw::decloak_passive_proc(unit);
+				bw::decloak_passive_proc(unit);
 			}
-
 		} else if (unit->unit_ai && unit->main_order_timer == 0) {
 			unit->order_computer(OrderId::ComputerAI);
 		}
@@ -938,14 +588,10 @@ namespace hooks
 			launched_unit = launched_unit->hangar_unit.hangar_link.prev;
 		}
 
-		if (launched_unit)
-		{
+		if (launched_unit) {
 			Unit* temp_unit = launched_unit->hangar_unit.hangar_link.prev;
-
 			while (temp_unit) {
-				if ((temp_unit->status & UnitStatus::Completed)
-				&&	(temp_unit->hitpoints > launched_unit->hitpoints))
-				{
+				if ((temp_unit->status & UnitStatus::Completed) && (temp_unit->hitpoints > launched_unit->hitpoints)) {
 					launched_unit = temp_unit;
 				}
 				temp_unit = temp_unit->hangar_unit.hangar_link.prev;
@@ -953,12 +599,10 @@ namespace hooks
 
 			if (launched_unit->id == UnitId::ProtossSteward) {
 				u32 max_hp = units_dat::max_hitpoints[UnitId::ProtossSteward];
-				if (max_hp < 0)
-				{
+				if (max_hp < 0) {
 					max_hp += 1;
 				}
-				if (launched_unit->hitpoints < max_hp / 2)
-				{
+				if (launched_unit->hitpoints < max_hp / 2) {
 					launched_unit = 0;
 				}
 			}
@@ -982,36 +626,31 @@ namespace hooks
 						CALL Func_turnGraphic
 						POPAD
 					}
-
 				} else {
 					x = unit->position.x;
 					y = unit->position.y;
 				}
 
-				scbw::refresh_console();
-				if (unit->unit_with_hangar.in_hangar_child == launched_unit)
-				{
+				bw::refresh_console();
+				if (unit->unit_with_hangar.in_hangar_child == launched_unit) {
 					unit->unit_with_hangar.in_hangar_child = launched_unit->hangar_unit.hangar_link.prev;
 				}
-				if (launched_unit->hangar_unit.hangar_link.prev)
-				{
+				if (launched_unit->hangar_unit.hangar_link.prev) {
 					(launched_unit->hangar_unit.hangar_link.prev)->hangar_unit.hangar_link.next = launched_unit->hangar_unit.hangar_link.next;
 				}
-				if (launched_unit->hangar_unit.hangar_link.next)
-				{
+				if (launched_unit->hangar_unit.hangar_link.next) {
 					(launched_unit->hangar_unit.hangar_link.next)->hangar_unit.hangar_link.prev = launched_unit->hangar_unit.hangar_link.prev;
 				}
 				unit->unit_with_hangar.in_hangar_count--;
 				launched_unit->hangar_unit.hangar_link.prev = unit->unit_with_hangar.out_hangar_child;
 				launched_unit->hangar_unit.hangar_link.next = 0;
-				if (unit->unit_with_hangar.out_hangar_child)
-				{
+				if (unit->unit_with_hangar.out_hangar_child) {
 					(unit->unit_with_hangar.out_hangar_child)->hangar_unit.hangar_link.next = launched_unit;
 				}
 				unit->unit_with_hangar.out_hangar_child = launched_unit;
 				unit->unit_with_hangar.out_hangar_count++;
 
-				scbw::set_unit_position(launched_unit, x, y);
+				bw::set_unit_position(launched_unit, x, y);
 				//void showAndEnableUnit(Unit* unit) @ 004E6490
 				__asm {
 					PUSHAD
@@ -1039,30 +678,28 @@ namespace hooks
 			goto cannot_attack;
 		}
 
-		if (helper::unit_is_carrier(unit))
-		{
+		// Required for "goto process_attack" to compile in C++20 mode :( -Veeq7
+		b32 has_weapon;
+		Unit* final_unit;
+
+		if (helper::unit_is_carrier(unit)) {
 			goto process_attack;
 		}
-		if (!(target_unit->status & UnitStatus::InAir) && helper::unit_has_path_to_target(unit, target_unit))
-		{
+		if (!(target_unit->status & UnitStatus::InAir) && helper::unit_has_path_to_target(unit, target_unit)) {
 			goto process_attack;
 		}
 
-		if (unit->id == UnitId::ProtossAccantorOld) // Here to preserve old flow control.
-		{
+		if (unit->id == UnitId::ProtossAccantorOld) { // Here to preserve old flow control.
 		cannot_attack:
 			s32 result = 0;
-			if (!target_unit || unit->status & UnitStatus::AttackMove)
-			{
+			if (!target_unit || unit->status & UnitStatus::AttackMove) {
 				helper::set_resource_target(unit);
-				if (unit->order_queue_head)
-				{
+				if (unit->order_queue_head) {
 					unit->user_action_flags |= 1u;
 					helper::do_next_queued_order(unit);
 					result = 0;
 				} else {
-					if (unit->unit_ai)
-					{
+					if (unit->unit_ai) {
 						helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 					} else {
 						helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
@@ -1070,8 +707,7 @@ namespace hooks
 					result = 0;
 				}
 			} else {
-				if (!unit->unit_ai)
-				{
+				if (!unit->unit_ai) {
 					helper::prepend_order_targeting_ground(OrderId::Move, target_unit->position.x, target_unit->position.y, unit); // Originally passed sprite position.
 				}
 				helper::to_idle(unit);
@@ -1082,20 +718,17 @@ namespace hooks
 
 		// Originally handled Matraleth infest fail case, and AI Didact, neither of which apply anymore. -Pr0nogo
 
-		b32 has_weapon = false;
-		Unit* final_unit = unit->subunit;
-		if (!helper::unit_is_subunit(unit->subunit))
-		{
+		has_weapon = false;
+		final_unit = unit->subunit;
+		if (!helper::unit_is_subunit(unit->subunit)) {
 			final_unit = unit;
 		}
-		if (target_unit->status & UnitStatus::InAir)
-		{
+		if (target_unit->status & UnitStatus::InAir) {
 			has_weapon = units_dat::air_weapon[final_unit->id] != WeaponId::None;
 		} else {
 			has_weapon = units_dat::ground_weapon[final_unit->id] != WeaponId::None;
 		}
-		if (!has_weapon)
-		{
+		if (!has_weapon) {
 			goto cannot_attack;
 		}
 
@@ -1104,40 +737,32 @@ namespace hooks
 		u16 target_y = target_unit->position.y; // ^
 		unit->order_target.pt.x = target_x;
 		unit->order_target.pt.y = target_y;
-		if (target_x != unit->next_target_waypoint.x || target_y != unit->next_target_waypoint.y)
-		{
+		if (target_x != unit->next_target_waypoint.x || target_y != unit->next_target_waypoint.y) {
 			unit->next_target_waypoint.x = target_x;
 			unit->next_target_waypoint.y = target_y;
 		}
-		if (!unit->main_order_state)
-		{
-			if (!target_unit)
-			{
+		if (!unit->main_order_state) {
+			if (!target_unit) {
 				unit->main_order_state = 1;
 				return 1;
 			}
-			if (helper::is_target_visible(unit, target_unit))
-			{
+			if (helper::is_target_visible(unit, target_unit)) {
 				final_unit = unit->subunit;
-				if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit))
-				{
+				if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
 					final_unit = unit;
 				}
 
 				u32 weapon_id = WeaponId::None;
-				if (target_unit->status & UnitStatus::InAir)
-				{
+				if (target_unit->status & UnitStatus::InAir) {
 					weapon_id = units_dat::air_weapon[final_unit->id];
 				} else {
-					if (final_unit->id != UnitId::ZergLakizilisk || final_unit->status & UnitStatus::Burrowed)
-					{
+					if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed) {
 						weapon_id = units_dat::ground_weapon[final_unit->id];
 					} else {
 						weapon_id = WeaponId::None;
 					}
 				}
-				if (weapon_id != WeaponId::None)
-				{
+				if (weapon_id != WeaponId::None) {
 					u32 min_range = weapons_dat::min_range[weapon_id];
 					if (!min_range || !helper::is_target_within_min_range(final_unit, min_range, target_unit))
 					{
@@ -1150,21 +775,16 @@ namespace hooks
 					}
 				}
 			}
-			if (helper::move_to_target(unit->order_target.unit, unit))
-			{
+			if (helper::move_to_target(unit->order_target.unit, unit)) {
 				unit->main_order_state = 1;
 				return 1;
 			}
 			return 0;
 		}
-		if (helper::is_unit_target_out_of_max_range(unit, target_unit))
-		{
-			if (unit->unit_ai)
-			{
-				if (helper::is_unreachable(unit->order_target.unit, unit) || helper::is_unit_movable(unit) == 2)
-				{
-					if (helper::ai_update_attack_target(unit, 0, 1, 0))
-					{
+		if (helper::is_unit_target_out_of_max_range(unit, target_unit)) {
+			if (unit->unit_ai) {
+				if (helper::is_unreachable(unit->order_target.unit, unit) || helper::is_unit_movable(unit) == 2) {
+					if (helper::ai_update_attack_target(unit, 0, 1, 0)) {
 						return 0;
 					}
 					helper::make_to_hold_position(unit);
@@ -1180,16 +800,14 @@ namespace hooks
 					return 0;
 				}
 			}
-			if (helper::should_stay_at_range(unit))
-			{
+			if (helper::should_stay_at_range(unit)) {
 				helper::move_towards(unit, target_unit);
 				return 0;
 			}
 			helper::move_for_melee_range(target_unit, unit);
 			return 0;
 		}
-		if (unit_id_is_melee_air_unit(unit->id))
-		{
+		if (unit_id_is_melee_air_unit(unit->id)) {
 			if (unit->id != UnitId::ZergGorgrokor || !(target_unit->status & UnitStatus::InAir)) {
 				helper::move_for_melee_range(unit->order_target.unit, unit);
 			}
@@ -1202,37 +820,31 @@ namespace hooks
 	// Hooked to nullcheck sprite (commonly crashed with Lakizilisks) -Pr0nogo
 	b32 attack_move_react_to_attack(Unit* unit, u32 order_id) // 00478370
 	{
-		if (!unit->main_order_state)
-		{
+		if (!unit->main_order_state) {
 			u32 pt_x = unit->order_target.pt.x;
 			u32 pt_y = unit->order_target.pt.y;
 			bool move_target_set = helper::set_move_target_xy(unit, pt_x, pt_y);
-			if (pt_x != unit->next_target_waypoint.x || pt_y != unit->next_target_waypoint.y)
-			{
+			if (pt_x != unit->next_target_waypoint.x || pt_y != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = pt_x;
 				unit->next_target_waypoint.y = pt_y;
 			}
-			if (!move_target_set)
-			{
+			if (!move_target_set) {
 				return 0;
 			}
 			unit->main_order_state = 1;
 		}
 
 		Unit* auto_target = unit->auto_target_unit;
-		if (auto_target)
-		{
-			if (auto_target->is_dead()) return 0; // New
+		if (auto_target) {
+			if (!auto_target->sprite) return 0; // New
 
 			u8 target_player = auto_target->player == 11 ? auto_target->sprite->player : auto_target->player;
-			if (!scbw::is_allied_to(unit->player, target_player)
+			if (!bw::is_allied_to(unit->player, target_player)
 			&& !(auto_target->sprite->flags & SpriteFlags::Hidden)
 			&& !(auto_target->status & UnitStatus::Invincible))
 			{
-				if (!helper::unit_can_see_cloaked_target(auto_target, unit))
-				{
-					if (unit->unit_ai)
-					{
+				if (!helper::unit_can_see_cloaked_target(auto_target, unit)) {
+					if (unit->unit_ai) {
 						return helper::ai_update_attack_target(unit, 0, 0, 0) == 0;
 					}
 					helper::set_resource_target(unit);
@@ -1248,33 +860,168 @@ namespace hooks
 		return 1;
 	}
 
-	// Hooked to fix Optectons when they have edge targets! -Pr0nogo
+	// Hooked to fix Optectons when they have edge targets. -Pr0nogo
 	void order_attack_move_try_pick_target(Unit* unit, u8 order_id) // 00477820
 	{
 		if (helper::get_target_acquisition_range_upgrade(unit))
 		{
-			if (unit->unit_ai)
-			{
+			if (unit->unit_ai) {
 				helper::ai_update_attack_target(unit, 0, 0, 0);
 			} else {
 				Unit* target = helper::find_best_attack_target(unit);
-				if (target)
-				{
-					if (unit->id == UnitId::ProtossOptecton && target->status & UnitStatus::InAir) {
+				if (target) {
+					if (unit_id_has_custom_air_weapon(unit->id) && target->status & UnitStatus::InAir) {
 						return;
 					}
 					helper::set_resource_target(unit);
 					helper::prepend_order(unit, order_id, unit->order_target.pt, unit->order_target.unit);
-					helper::insert_order_before(unit, unit->order_queue_head, units_dat::attack_unit_order[unit->id],
-											    target->position.x, target->position.y, target, UnitId::None);
+					helper::insert_order_before(unit, unit->order_queue_head, units_dat::attack_unit_order[unit->id], target->position.x, target->position.y, target, UnitId::None);
 					helper::force_order_done(unit);
 					target = 0;
 					unit->status |= UnitStatus::AttackMove;
 					Unit* subunit = unit->subunit;
-					if (subunit)
-					{
+					if (subunit) {
 						subunit->status |= UnitStatus::AttackMove;
 					}
+				}
+			}
+		}
+	}
+
+	// Hooked to protect against nullsprite crashes. -Pr0nogo
+	void orders_turret_attack(Unit* unit) // 00477980
+	{
+		helper::pick_new_target_if_needed(unit);
+		Unit* target = unit->order_target.unit;
+		if (target && target->sprite) { // sprite is new
+			unit->order_target.pt.x = target->sprite->position.x;
+			unit->order_target.pt.y = target->sprite->position.y;
+		}
+
+		bool has_weapon_id = false;
+		Unit* final_unit = unit->subunit;
+		Order* tail = 0;
+		u32 order_id = 0;
+		u32 last_order = 0;
+
+		if (unit->is_frozen() || !target || !target->sprite) { // sprite is new
+			goto cannot_attack;
+		}
+		if (target->status & UnitStatus::Invincible || target->sprite->flags & SpriteFlags::Hidden || helper::unit_can_see_cloaked_target(target, unit)) {
+			goto cannot_attack;
+		}
+
+		if (!helper::unit_is_subunit(unit->subunit)) {
+			final_unit = unit;
+		}
+
+		if (!helper::unit_is_carrier(unit)) {
+			if (helper::unit_is_reaver(unit)) {
+				if (target->status & UnitStatus::InAir || !helper::unit_has_path_to_target(unit, target)) {
+					goto cannot_attack;
+				}
+			} else {
+				if (target->status & UnitStatus::InAir) {
+					has_weapon_id = final_unit->get_air_weapon() != WeaponId::None;
+				} else {
+					has_weapon_id = final_unit->get_ground_weapon() != WeaponId::None;
+				}
+
+				if (!has_weapon_id) {
+				cannot_attack:
+					order_id = unit->main_order_id;
+					unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+					if (order_id) {
+						while (1)
+						{
+							tail = unit->order_queue_tail;
+							if (!tail) {
+								break;
+							}
+							last_order = tail->order_id;
+							if (!orders_dat::can_be_interrupted[last_order] && last_order != OrderId::TurretGuard) {
+								break;
+							}
+							helper::remove_order_from_unit_queue(tail, unit);
+						}
+						helper::perform_another_order(OrderId::TurretGuard, 0, unit, UnitId::None, {}, 0);
+					}
+					helper::do_next_queued_order(unit);
+					return;
+				}
+			}
+		}
+		if (!helper::is_target_visible(unit, unit->order_target.unit)) {
+			goto cannot_attack;
+		}
+
+		Unit* subunit = unit->subunit;
+		u32 siege_mode_weapon = WeaponId::None;
+		u32 tank_mode_weapon = WeaponId::None;
+		u32 range = 0;
+		u32 range2 = 0;
+		u32 final_weapon = WeaponId::None;
+		u32 final_range = 0;
+		u32 max_range = 0;
+
+		if (unit->id != UnitId::TerranPhalanxTankModeTurret || !subunit->unit_ai) {
+			goto test_range;
+		}
+
+		siege_mode_weapon = units_dat::ground_weapon[UnitId::TerranPhalanxSiegeModeTurret];
+		tank_mode_weapon = units_dat::ground_weapon[UnitId::TerranPhalanxTankModeTurret];
+		range = helper::get_unit_max_weapon_range(unit, siege_mode_weapon);
+		range2 = helper::get_unit_max_weapon_range(unit, tank_mode_weapon);
+		if (helper::is_unit_visible(unit)
+		&&  helper::is_target_within_min_movement_range(subunit, unit->order_target.unit, range)
+		&& !helper::is_target_within_min_movement_range(subunit, unit->order_target.unit, range2)
+		&& !helper::unit_is_critter(unit->order_target.unit))
+		{
+			helper::issue_order_targeting_nothing(unit, OrderId::Nothing2);
+			helper::order_targeting_nothing(units_dat::attack_unit_order[UnitId::TerranPhalanxSiegeModeTurret], unit, 0);
+			helper::issue_order_targeting_nothing(subunit, OrderId::SiegeMode);
+			helper::issue_queued_order_target(target, subunit, units_dat::attack_unit_order[UnitId::TerranPhalanxSiegeMode], 0);
+		} else {
+		test_range:
+			if (!target) {
+				goto move_or_repeat;
+			}
+			if (helper::is_target_visible(unit, target)) {
+				if (!subunit || !(units_dat::base_property[subunit->id] & UnitProperty::Subunit)) {
+					subunit = unit;
+				}
+				if (target->status & UnitStatus::InAir) {
+					final_weapon = units_dat::air_weapon[subunit->id];
+				} else {
+					if (subunit->id != UnitId::ZergLakizilisk || subunit->status & UnitStatus::Burrowed) {
+						final_weapon = units_dat::ground_weapon[subunit->id];
+					} else {
+						final_weapon = WeaponId::None;
+					}
+				}
+
+				if (final_weapon != WeaponId::None) {
+					final_range = weapons_dat::min_range[final_weapon];
+					if (!final_range || !helper::is_target_within_min_range(subunit, final_range, target)) {
+						max_range = helper::get_unit_max_weapon_range(unit, final_weapon);
+						if (helper::is_target_within_min_movement_range(subunit, target, max_range)) {
+							goto move_or_repeat;
+						}
+					}
+				}
+			}
+			if (subunit->main_order_id != units_dat::attack_unit_order[subunit->id] || helper::get_right_click_action_order(subunit) == OrderId::PlayerGuard) {
+				helper::issue_order_targeting_nothing(unit, OrderId::TurretGuard);
+			} else {
+			move_or_repeat:
+				u16 tgt_x = unit->order_target.pt.x;
+				u16 tgt_y = unit->order_target.pt.y;
+				if (tgt_x != unit->next_target_waypoint.x || tgt_y != unit->next_target_waypoint.y) {
+					unit->next_target_waypoint.x = tgt_x;
+					unit->next_target_waypoint.y = tgt_y;
+				}
+				if (!(unit->subunit->movement_flags & MovementFlags_Accelerating)) {
+					helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
 				}
 			}
 		}

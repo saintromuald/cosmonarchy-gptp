@@ -53,5 +53,6 @@ namespace hooks
 		jump_patch(display_establishing_shot_wrapper,	0x004D9200, 1);
 		jump_patch(CMDACT_game_speed_wrapper,			0x00481EF0, 0);
 	//	jump_patch(hide_dialog_wrapper,					0x00418700, 1); // Not actually necessary for the change.
+		jump_patch(glu_main_dialog_interact,			0x004DB7A0, 3);
 	}
 }

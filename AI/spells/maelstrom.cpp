@@ -15,7 +15,7 @@ namespace AI
 			bounds = 32 * 32;
 		}
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->position.x - bounds,
 			caster->position.y - bounds,
 			caster->position.x + bounds,
@@ -27,7 +27,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (!scbw::can_weapon_target_unit(WeaponId::MindTyrantMaelstrom, target, caster))
+			if (!bw::can_weapon_target_unit(WeaponId::MindTyrantMaelstrom, target, caster))
 			{
 				return false;
 			}
@@ -44,7 +44,7 @@ namespace AI
 				return false;
 			}
 			if (is_target_attacking_ally(target, caster)
-				&& !scbw::is_zerg_egg_new(target, true, true))
+				&& !bw::is_zerg_egg_new(target, true, true))
 			{
 				const s32 totalEnemyLife = get_total_enemy_life_in_area(target->get_x(), target->get_y(), 96, caster, WeaponId::MindTyrantMaelstrom);
 				if (!isUnderAttack && totalEnemyLife < 250)

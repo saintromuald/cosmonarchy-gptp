@@ -1,6 +1,6 @@
 #include "loading_hook.h"
-#include <SCBW/api.h>
-#include <SCBW/Storm.h>
+#include <BW/api.h>
+#include <BW/Storm.h>
 #include <cstdio>
 #include "hooks/DatExtend/dat_load.h"
 #include "hooks/grafting/grafting.h"

@@ -83,16 +83,13 @@ namespace hooks
 			MOV id, DI
 			PUSHAD
 		}
-		if (!hooks::is_high_templar_conduit(id))
-		{
+		if (!hooks::is_high_templar_conduit(id)) {
 			__asm {
 				POPAD
 				MOV AL, 0x6A
 				JMP jmp_004295F8
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				MOV AL, 0x6A
@@ -105,27 +102,28 @@ namespace hooks
 	const u32 func_getTargetSomething = 0x0043FF90;
 	const u32 progressOrderSwitch_e71b = 0x004EC71B;
 	const u32 spellOrderCases = 0x004ECADB;
-	void __declspec(naked) unused_order_patch_wrapper()
-	{
-
+	void __declspec(naked) unused_order_patch_wrapper() {
+		static Unit* unit;
 		static u8 order_id;
 		__asm {
-			MOV [ESI + 0x85], 0x8
+			MOV unit, ESI
+			MOV [ESI + 0x85], OrderQueueTimer
 			CALL func_getTargetSomething
 			MOV AL, [ESI + 0x4D]
 			MOV order_id, AL
 			MOVZX EAX, AL
 			PUSHAD
 		}
-		if (hooks::is_unused_order(order_id))
-		{
+		if (unit->id == UnitId::TerranDiadem) {
+			// Required for Diadem to shoot properly
+			unit->order_queue_timer = 4;
+		}
+		if (hooks::is_unused_order(order_id)) {
 			__asm {
 				POPAD
 				JMP spellOrderCases
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP progressOrderSwitch_e71b
@@ -158,7 +156,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = scbw::get_trap_id(unit);
+		result = bw::get_trap_id(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -175,7 +173,7 @@ namespace hooks
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = scbw::get_trap_id(unit);
+		result = bw::get_trap_id(unit);
 		__asm {
 			POPAD
 			MOV ECX, result
@@ -421,7 +419,7 @@ namespace hooks
 		if (!warningOnce00)
 		{
 			sprintf_s(buffer, "Invalid hash_struct_index!!\nhashStructIndex: %u", hashStructIndex);
-			scbw::print(buffer, GameTextColor::Red);
+			bw::print(buffer, GameTextColor::Red);
 			warningOnce00 = true;
 		}
 		__asm {
@@ -448,7 +446,7 @@ namespace hooks
 		if (!warningOnce01)
 		{
 			sprintf_s(buffer, "Invalid PlayerFlag!\nplayer id: %u", active_nation_id);
-			scbw::print(buffer, GameTextColor::Red);
+			bw::print(buffer, GameTextColor::Red);
 			warningOnce01 = true;
 		}
 
@@ -480,9 +478,9 @@ namespace hooks
 		if (!succeeded && !warning_once_02)
 		{
 //			sprintf_s(buffer, "Invalid SpriteVisibility!!\nactiveNationID: %u", *g_active_nation_id);
-//			scbw::print(buffer, GameTextColor::Red);
-			scbw::printf("Invalid SpriteVisibility!\nactive_nation_id: % u", *g_active_nation_id);
-			scbw::printf("SpriteVisHash (from VisionSync) %d =/= vision_hash (from CMD) %d", nation_hash, visibility_hash);
+//			bw::print(buffer, GameTextColor::Red);
+			bw::printf("Invalid SpriteVisibility!\nactive_nation_id: % u", *g_active_nation_id);
+			bw::printf("SpriteVisHash (from VisionSync) %d =/= vision_hash (from CMD) %d", nation_hash, visibility_hash);
 			warning_once_02 = true;
 		}
 		__asm {
@@ -506,10 +504,11 @@ namespace hooks
 	
 	static bool warning_once_03_00 = false;
 	static bool warning_once_03_01 = false;
+	static bool warning_once_03_02 = false;
 	const u32 Hook_DropDebugging03 = 0x0047CDF1;
 	void __declspec(naked) drop_debugging_03()
 	{
-		static char buffer[256];
+		static char buffer[1024];
 		static u8* data;
 		static u32 hash_struct_index;
 		static u8 hash_type;
@@ -522,22 +521,74 @@ namespace hooks
 			MOV hash_type, BL
 		}
 		succeeded = true;
-		if (g_hash_list[hash_struct_index].hash != *(u16*)(data + 2) && !warning_once_03_00)
-		{
+		if (g_hash_list[hash_struct_index].hash != *(u16*)(data + 2)) {
 			succeeded = false;
 			if (g_hash_list[hash_struct_index].hash_type == 1) {
-				sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", *g_local_nation_id);
-				scbw::print(buffer, GameTextColor::Yellow);
-				GPTP::critical_logger << "Invalid Hash, type 1! Local nation id: " << *g_local_nation_id << " | Active nation id: " << *g_active_nation_id << " | Player flag: " << *g_player_flag <<
-					"\nHash offset:" << *g_current_hash_offset << "\nHash 1: 0x" << g_hash_list[hash_struct_index].hash << "| Hash 2: 0x" << *(u16*)(data + 2) <<
-					"\nP1 resources: " << g_game_minerals[0] << " | " << g_game_vespene[0] << "\nP2 resources: " << g_game_minerals[1] << " | " << g_game_vespene[1] <<
-					"\nElapsed time: " << *g_elapsed_time_frames << " | Last random number: " << *g_last_random_number <<
-					"\nActive visions: " << *g_player_visions << " | Explored visions: " << *g_player_explored_visions <<
-					"\nMap dimensions: " << g_map_tile_size->width << "x" << g_map_tile_size->height <<
-					"\nCurrent hash offset: " << *g_current_hash_offset << " | g_region_vision_hash: " << *g_region_vision_hash << 
-					"\n";
-				GPTP::critical_logger << "Active tile array: " << *g_active_tile_array << "\n";
-			} else {
+				if (!warning_once_03_00) {
+					sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", *g_local_nation_id);
+					bw::print(buffer, GameTextColor::Yellow);
+					snprintf(buffer, sizeof(buffer), "Local Type: %u | Remote Type: %u\nLocal Hash: 0x%X | Remote Hash: 0x%X\nLocal nation id: %u | Active visions: %u | Explored visions: %u\nLast random number: %u\n\nUnmovable Hits:",
+						g_hash_list[hash_struct_index].hash_type, hash_type,
+						g_hash_list[hash_struct_index].hash , *(u16*)(data + 2),
+						*g_local_nation_id, *g_player_visions, *g_player_explored_visions,
+						*g_last_random_number);
+					GPTP::critical_logger << buffer;
+
+					for (u32 i = 0; i < 16; i++) {
+						snprintf(buffer, sizeof(buffer), "\n %u - %s: %u / %u", i, unmovable_names[i], unmovable_hits[i], unmovable_lastframe[i]);
+						GPTP::critical_logger << buffer;
+					}
+
+					GPTP::critical_logger << "\n\nLocal selections:";
+					for (u32 i = 0; i < SelectionLimit; i++) {
+						Unit* unit = g_client_selection_group->unit[i];
+						if (unit) {
+							snprintf(buffer, sizeof(buffer), "\n id:%04u, index:0x%08X", unit->id, unit->get_unit_index());
+							GPTP::critical_logger << buffer;
+						}
+					}
+
+					/*
+					GPTP::critical_logger << "\n\nSynced selections:";
+					for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
+						for (u32 i = 0; i < SelectionLimit; i++) {
+							snprintf(buffer, sizeof(buffer), "\n Player %04u", player);
+							GPTP::critical_logger << buffer;
+							Unit* unit = players_selections->unit[player][i];
+							if (unit) {
+								snprintf(buffer, sizeof(buffer), "\n id:%04u, index:0x%08X", unit->id, unit->get_unit_index());
+								GPTP::critical_logger << buffer;
+							}
+						}
+					}
+					*/
+
+					//This value is incremented *after* generating the mask_hash, so we use the previous value to get the tiles pertinent to the hash.
+					s32 y = (*g_mask_hash_current_y ? *g_mask_hash_current_y : g_map_tile_size->height) - 1;
+					snprintf(buffer, sizeof(buffer), "\n\nActive tiles (%u):", y);
+					GPTP::critical_logger << buffer;
+
+					for (u32 x = 0; x < g_map_tile_size->width; x++) {
+						if (!(x % 16)) {
+							GPTP::critical_logger << "\n";
+						}
+						u32 tile = bw::get_active_tile_at_tile(x, y)->vision_flags;
+						snprintf(buffer, sizeof(buffer), " %08X", tile & ~0x40000000);//'temporary_cagra' isn't part of the GameHash indexing, so it's not useful.
+						GPTP::critical_logger << buffer;
+					}
+
+					GPTP::critical_logger << "\n\nActive units:";
+
+					for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+						snprintf(buffer, sizeof(buffer), "\n[%03X] hp:0x%08X sh:0x%08X id:%04u en:0x%04X pos:0x%04X%04X | u:%02u o:0x%02X%02X%02X%02X s:0x%08X",
+							((u32)unit - (u32)&ccmu_extender.unit_table) / 336, unit->hitpoints, unit->shields, unit->id, unit->energy, unit->sprite->position.x, unit->sprite->position.y,//Unit data used for GameHash indexing.
+							unit->unique_id, unit->main_order_id, unit->main_order_state, unit->order_signal, unit->main_order_timer, unit->status);//Extra info, not associated with the hash code.
+						GPTP::critical_logger << buffer;
+					}
+					GPTP::critical_logger << "\n";
+					warning_once_03_00 = true;
+				}
+			} else if (!warning_once_03_01) {
 				sprintf_s(buffer, "Invalid Hash!\nhash_struct_index: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u",
 					hash_struct_index,
 					g_hash_list[hash_struct_index].hash_type,
@@ -545,20 +596,18 @@ namespace hooks
 					hash_type & 0x0F,
 					*(u16*)(data + 2),
 					*g_elapsed_time_frames);
-				scbw::print(buffer, GameTextColor::Yellow);
+				bw::print(buffer, GameTextColor::Yellow);
+				warning_once_03_01 = true;
 			}
-			warning_once_03_00 = true;
 		}
 
-		if (g_hash_list[hash_struct_index].hash_type != (hash_type & 0x0F) && warning_once_03_01)
-		{
+		if (g_hash_list[hash_struct_index].hash_type != (hash_type & 0x0F) && warning_once_03_02) {
 			succeeded = false;
 			sprintf_s(buffer, "Invalid HashType!\hash_struct_index: %u\nHashType = %u", hash_struct_index, g_hash_list[hash_struct_index].hash_type);
-			scbw::print(buffer, GameTextColor::Red);
-			warning_once_03_01 = true;
+			bw::print(buffer, GameTextColor::Red);
+			warning_once_03_02 = true;
 		}
-		if (succeeded)
-		{
+		if (succeeded) {
 			__asm {
 				POPAD
 				POP ESI
@@ -589,8 +638,7 @@ namespace hooks
 	void __declspec(naked) create_damage_overlay_wrapper() // 004993C0
 	{
 		static Sprite* sprite;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -600,8 +648,7 @@ namespace hooks
 			PUSHAD
 		}
 		hooks::create_damage_overlay(sprite);
-		__asm
-		{
+		__asm {
 			POPAD
 //			MOV EAX, result
 			MOV ESP, EBP

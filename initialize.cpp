@@ -1,141 +1,139 @@
-	#include "definitions.h"
-	#include "Plugin.h"
-	#include "globals.h"
-	#include "hook_tools.h"
-	#include <chrono>
-	#include <thread>
+#include "definitions.h"
+#include "Plugin.h"
+#include "globals.h"
+#include "hook_tools.h"
+#include <chrono>
+#include <thread>
 
-	// Hook header files
-	#include "hooks/game_hooks.h"
-	#include "graphics/draw_hook.h"
-	#include "config.h"
-	#include "hooks/maxhp.h"
-	#include "hooks/apply_upgrade_flags.h"
-	#include "hooks/attack_priority.h"
-	#include "hooks/bunker_hooks.h"
-	#include "hooks/cloak_nearby_units.h"
-	#include "hooks/cloak_tech.h"
-	#include "hooks/detector.h"
-	#include "hooks/harvest.h"
-	#include "hooks/rally_point.h"
-	#include "hooks/recharge_shields.h"
-	#include "hooks/spider_mine.h"
-	#include "hooks/stim_packs.h"
-	#include "hooks/tech_target_check.h"
-	#include "hooks/transfer_tech_upgrades.h"
-	#include "hooks/unit_speed.h"
-	#include "hooks/update_status_effects.h"
-	#include "hooks/update_unit_state.h"
-	#include "hooks/weapons/weapon_cooldown.h"
-	#include "hooks/weapons/weapon_damage.h"
-	#include "hooks/weapons/weapon_fire.h"
-	#include "hooks/unit_destructor_special.h"
-	#include "hooks/psi_field.h"
-	#include "hooks/unit_stats/armor_bonus.h"
-	#include "hooks/unit_stats/sight_range.h"
-	#include "hooks/unit_stats/max_energy.h"
-	#include "hooks/unit_stats/weapon_range.h"
-	#include "hooks/interface/weapon_armor_tooltip.h"
-	#include "hooks/orders/ai/ai_orders.h"
-	#include "hooks/orders/base_orders/attack_orders.h"
-	#include "hooks/interface/btns_cond.h"
-	#include "hooks/orders/building_making/building_morph.h"
-	#include "hooks/interface/buttonsets.h"
-	#include "hooks/orders/building_making/building_protoss.h"
-	#include "hooks/orders/building_making/building_terran.h"
-	#include "hooks/recv_commands/burrow_tech.h"
-	#include "hooks/orders/spells/cast_order.h"
-	#include "hooks/recv_commands/CMDRECV_Build.h"
-	#include "hooks/recv_commands/CMDRECV_Cancel.h"
-	#include "hooks/recv_commands/CMDRECV_MergeArchon.h"
-	#include "hooks/recv_commands/CMDRECV_Morph.h"
-	#include "hooks/recv_commands/CMDRECV_SiegeTank.h"
-	#include "hooks/recv_commands/CMDRECV_Stop.h"
-	#include "hooks/create_init_units.h"
-	#include "hooks/orders/base_orders/die_order.h"
-	#include "hooks/orders/enter_nydus.h"
-	#include "hooks/orders/spells/feedback_spell.h"
-	#include "hooks/give_unit.h"
-	#include "hooks/orders/spells/hallucination_spell.h"
-	#include "hooks/orders/infestation.h"
-	#include "hooks/orders/larva_creep_spawn.h"
-	#include "hooks/orders/liftland.h"
-	#include "hooks/orders/load_unload_orders.h"
-	#include "hooks/load_unload_proc.h"
-	#include "hooks/interface/mainmenu/lobby.h"
-	#include "hooks/orders/building_making/make_nydus_exit.h"
-	#include "hooks/orders/medic_orders.h"
-	#include "hooks/orders/merge_units.h"
-	#include "hooks/orders/spells/mindcontrol_spell.h"
-	#include "hooks/miss_chance.h"
-	#include "hooks/orders/spells/nuke_orders.h"
-	#include "hooks/orders/spells/recall_spell.h"
-	#include "hooks/recv_commands/receive_command.h"
-	#include "hooks/orders/repair_order.h"
-	#include "hooks/orders/research_upgrade_orders.h"
-	#include "hooks/interface/select_larva.h"
-	#include "hooks/interface/selection.h"
-	#include "hooks/audiovisuals/sfxhooks.h"
-	#include "hooks/orders/siege_transform.h"
-	#include "hooks/interface/stats_panel_display.h"
-	#include "hooks/orders/base_orders/stopholdpos_orders.h"
-	#include "hooks/recv_commands/train_cmd_receive.h"
-	#include "hooks/orders/unit_making/unit_morph.h"
-	#include "hooks/orders/unit_making/unit_train.h"
-	#include "hooks/utils/utils.h"
-	#include "hooks/interface/wireframe.h"
-	#include "hooks/weapons/weapon_spellhit.h"
-	#include "hooks/weapon_effect.h"
-	#include "hooks/use_tech.h"
-	#include "hooks/limits/ccmu.h"
-	#include "hooks/economic_units.h"
-	#include "hooks/limits/extender.h"
-	#include "hooks/build_time.h"
-	#include "AI/spellcasting.h"
-	#include "hooks/misc/cosmonarchy_specific.h"
-	#include "hooks/interface/uifeatures/screen_hotkeys.h"
-	#include "hooks/interface/uifeatures/ui_features.h"
-	#include "hooks/trap_hooks.h"
-	#include "hooks/target_related.h"
-	#include "hooks/unit_movement.h"
-	#include "hooks/neutral_related.h"
-	#include "hooks/game/file_operations.h"
-	#include "hooks/interface/mainmenu/glucustom.h"
-	#include "hooks/orders/pathfinding.h"
-	#include "hooks/placement.h"
-	#include "hooks/interface/briefing/briefing.h"
-	#include "hooks/unit_stats/supply_hooks.h"
-	#include "hooks/unit_stats/new_requirements.h"
-	#include "hooks/unit_ai.h"
-	#include "hooks/aiscript/ai_requests.h"
-	#include "SCBW/ExtendSightLimit.h"
-//	#include "hooks/requirements/requirements.h"
-	#include "trigger_system/trigger_hooks.h"
-	#include "hooks/loading_hook.h"
-	#include "hooks/DatExtend/dat_load.h"
-	#include "DatExtend/datext.h"
-	#include "hooks/interface/hpbars/hpbars.h"
-	#include "SCBW/structures/Image.h"
-	#include "hooks/orders/orders_root.h"
-	#include "selection_extender.h"
-	#include "hooks/update_unit_sight.h"
+// Hook header files
+#include "hooks/game_hooks.h"
+#include "graphics/draw_hook.h"
+#include "config.h"
+#include "hooks/maxhp.h"
+#include "hooks/apply_upgrade_flags.h"
+#include "hooks/attack_priority.h"
+#include "hooks/bunker_hooks.h"
+#include "hooks/cloak_nearby_units.h"
+#include "hooks/cloak_tech.h"
+#include "hooks/detector.h"
+#include "hooks/harvest.h"
+#include "hooks/rally_point.h"
+#include "hooks/recharge_shields.h"
+#include "hooks/spider_mine.h"
+#include "hooks/stim_packs.h"
+#include "hooks/tech_target_check.h"
+#include "hooks/transfer_tech_upgrades.h"
+#include "hooks/unit_speed.h"
+#include "hooks/update_status_effects.h"
+#include "hooks/update_unit_state.h"
+#include "hooks/weapons/weapon_cooldown.h"
+#include "hooks/weapons/weapon_damage.h"
+#include "hooks/weapons/weapon_fire.h"
+#include "hooks/unit_destructor_special.h"
+#include "hooks/psi_field.h"
+#include "hooks/unit_stats/armor_bonus.h"
+#include "hooks/unit_stats/sight_range.h"
+#include "hooks/unit_stats/max_energy.h"
+#include "hooks/unit_stats/weapon_range.h"
+#include "hooks/interface/weapon_armor_tooltip.h"
+#include "hooks/orders/ai/ai_orders.h"
+#include "hooks/orders/base_orders/attack_orders.h"
+#include "hooks/interface/btns_cond.h"
+#include "hooks/orders/building_making/building_morph.h"
+#include "hooks/interface/buttonsets.h"
+#include "hooks/orders/building_making/building_protoss.h"
+#include "hooks/orders/building_making/building_terran.h"
+#include "hooks/recv_commands/burrow_tech.h"
+#include "hooks/orders/spells/cast_order.h"
+#include "hooks/recv_commands/CMDRECV_Build.h"
+#include "hooks/recv_commands/CMDRECV_Cancel.h"
+#include "hooks/recv_commands/CMDRECV_MergeArchon.h"
+#include "hooks/recv_commands/CMDRECV_Morph.h"
+#include "hooks/recv_commands/CMDRECV_SiegeTank.h"
+#include "hooks/recv_commands/CMDRECV_Stop.h"
+#include "hooks/create_init_units.h"
+#include "hooks/orders/base_orders/die_order.h"
+#include "hooks/orders/enter_nydus.h"
+#include "hooks/orders/spells/feedback_spell.h"
+#include "hooks/give_unit.h"
+#include "hooks/orders/spells/hallucination_spell.h"
+#include "hooks/orders/infestation.h"
+#include "hooks/orders/larva_creep_spawn.h"
+#include "hooks/orders/liftland.h"
+#include "hooks/orders/load_unload_orders.h"
+#include "hooks/load_unload_proc.h"
+#include "hooks/interface/mainmenu/lobby.h"
+#include "hooks/orders/building_making/make_nydus_exit.h"
+#include "hooks/orders/medic_orders.h"
+#include "hooks/orders/merge_units.h"
+#include "hooks/orders/spells/mindcontrol_spell.h"
+#include "hooks/miss_chance.h"
+#include "hooks/orders/spells/nuke_orders.h"
+#include "hooks/orders/spells/recall_spell.h"
+#include "hooks/recv_commands/receive_command.h"
+#include "hooks/orders/repair_order.h"
+#include "hooks/orders/research_upgrade_orders.h"
+#include "hooks/interface/select_larva.h"
+#include "hooks/interface/selection.h"
+#include "hooks/audiovisuals/sfxhooks.h"
+#include "hooks/orders/siege_transform.h"
+#include "hooks/interface/stats_panel_display.h"
+#include "hooks/orders/base_orders/stopholdpos_orders.h"
+#include "hooks/recv_commands/train_cmd_receive.h"
+#include "hooks/orders/unit_making/unit_morph.h"
+#include "hooks/orders/unit_making/unit_train.h"
+#include "hooks/utils/utils.h"
+#include "hooks/interface/wireframe.h"
+#include "hooks/weapons/weapon_spellhit.h"
+#include "hooks/weapon_effect.h"
+#include "hooks/use_tech.h"
+#include "hooks/limits/ccmu.h"
+#include "hooks/economic_units.h"
+#include "hooks/limits/extender.h"
+#include "hooks/build_time.h"
+#include "AI/spellcasting.h"
+#include "hooks/misc/cosmonarchy_specific.h"
+#include "hooks/interface/uifeatures/hotkeys.h"
+#include "hooks/interface/uifeatures/ui_features.h"
+#include "hooks/trap_hooks.h"
+#include "hooks/target_related.h"
+#include "hooks/unit_movement.h"
+#include "hooks/neutral_related.h"
+#include "hooks/game/file_operations.h"
+#include "hooks/interface/mainmenu/glucustom.h"
+#include "hooks/orders/pathfinding.h"
+#include "hooks/placement.h"
+#include "hooks/interface/briefing/briefing.h"
+#include "hooks/unit_stats/supply_hooks.h"
+#include "hooks/unit_stats/new_requirements.h"
+#include "hooks/unit_ai.h"
+#include "hooks/aiscript/ai_requests.h"
+#include "BW/ExtendSightLimit.h"
+// #include "hooks/requirements/requirements.h"
+#include "trigger_system/trigger_hooks.h"
+#include "hooks/loading_hook.h"
+#include "hooks/DatExtend/dat_load.h"
+#include "DatExtend/datext.h"
+#include "hooks/interface/hpbars/hpbars.h"
+#include "BW/structures/Image.h"
+#include "hooks/orders/orders_root.h"
+#include "selection_extender.h"
+#include "hooks/update_unit_sight.h"
+#include "utility/RegConfig.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
 /// You can also add custom modifications to StarCraft.exe by using:
 ///	memory_patch(address_to_patch, value_to_patch_with);
 
-namespace
-{
-	void load_wmode()
-	{
+namespace {
+	void load_wmode() {
 		HINSTANCE hDll;
 		hDll = LoadLibrary("./WMODE.dll");
 		hDll = LoadLibrary("./WMODE_FIX.dll");
 	}
 
-	void run_wmode(bool hide_prompt, bool prefer_wmode)
-	{
+	void run_wmode(bool hide_prompt, bool prefer_wmode) {
 		if (!hide_prompt)
 		{
 			// KYSXD windowed mode
@@ -160,24 +158,25 @@ namespace
 	}
 }
 
-BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
-{
+BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	load_config();
 	run_wmode(config.disable_wmode_prompt, config.prefer_wmode);
 	//StarCraft.exe version check
 	char exePath[300];
 	const DWORD pathLen = GetModuleFileName(nullptr, exePath, sizeof(exePath));
 
-	if (pathLen == sizeof(exePath))
-	{
+	if (pathLen == sizeof(exePath)) {
 		MessageBox(nullptr, "Error: Cannot check version of StarCraft.exe. The file path is too long.", nullptr, MB_OK);
 		return FALSE;
 	}
 
-	if (!check_starcraft_exe_version(exePath))
-	{
+	if (!check_starcraft_exe_version(exePath)) {
 		return FALSE;
 	}
+
+	// I am not sure if this is early enough for it work on the current run
+	// might require a game restart...                               -Veeq7
+	RegConfig::overwrite_reg_config();
 
 	// In case we need to attach a debugger on launch
 	/*
@@ -637,8 +636,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 
 	memory_patch(0x004EB8C4, (u8)8); // Improve melee edge performance
 
-	memory_patch(0x004AF7B3, (u32)0x0059686F); // Skip briefings for competitive mode and so on by reading Unit Stats game mode field
+	memory_patch(0x004AF7B3, (u32)0x0059686F); // Skip briefings for competitive - singleplayer by reading Unit Stats game mode field
 	memory_patch(0x004AAFD6, (u8)0xA);
+	memory_patch(0x004D4369, (u32)0x0059686F); // Skip briefings for competitive - multiplayer
 
 	// Remove cursor centering after singleplayer center view and do not break drag-selection.
 	memory_patch(0x0047F109, (u16)0x28EB);//JMP 0x47F133
@@ -646,6 +646,15 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memory_patch(0x0047EB39, (u32)0x8AC005C6);//MOV byte ptr [0x00658AC0], ...
 	memory_patch(0x0047EB3D, (u32)0xC3000065);//...0; RETN;
 	memory_patch_df(0x0047EB41, (u8)0x90, 2);
+
+	// Fix potential spin cases when iscript units decollide
+	memory_patch(0x00495D05, (u32)0x7E224E3A);
+
+	// Skip music fade delay between menus
+	memory_patch(0x004A5F65, (u16)0xE990);
+
+	// Show score screen after singleplayer quit
+	memory_patch(0x004C9600, (u8)7);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
@@ -755,7 +764,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	hooks::injectResearchUpgradeOrdersHooks();
 	hooks::inject_medic_orders_hooks();
 	hooks::inject_hallucination_spell_hooks();
-//	hooks::injectFeedbackSpellHook();
+//	hooks::inject_feedback_spell();
 //	hooks::injectBtnsCondHook();
 //	hooks::inject_receive_command_hooks();
 	hooks::inject_create_initial_units_hooks();
@@ -813,7 +822,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::inject_sfx_hooks();
 	hooks::inject_miss_chance_hooks();
 	hooks::inject_build_time_hooks();
-	hooks::inject_screen_hotkey_hooks();
+	hooks::inject_hotkey_hooks();
 //	hooks::inject_hp_bars_hooks();
 	hooks::inject_ui_features_hooks();
 	hooks::inject_trap_hooks();

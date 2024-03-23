@@ -1,11 +1,9 @@
 #pragma once
-#include "../../../SCBW/structures/Unit.h"
+#include "../../../BW/structures/Unit.h"
 
 namespace hooks
 {
+	void orders_feedback(Unit* unit); // 004F6D40
 
-	void orders_feedback(Unit* unit);	//0x004F6D40
-
-	void injectFeedbackSpellHook();
-
-} //hooks
+	void inject_feedback_spell();
+}

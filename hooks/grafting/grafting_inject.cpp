@@ -1,9 +1,9 @@
 #include "grafting.h"
-#include <SCBW/Storm.h>
+#include <BW/Storm.h>
 #include <hook_tools.h>
 #include <DatExtend/datext.h>
 
-// scbwdata modifid by grafting
+// bwdata modifid by grafting
 DATEXT_VAR_REF(ButtonSet*, buttonSetTable_var);
 DATEXT_VAR_REF(UnitStatFuncArrayEntry*, unitStatFuncs_var);
 DATEXT_VAR_REF(u16*, g_orders_requirement_tree_var);

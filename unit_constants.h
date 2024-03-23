@@ -22,8 +22,9 @@
 // General
 const s32 HealthMultiplier = 256;
 const s32 StimpackOffset = 5 * 256;
-const s32 StimpackTimer = 37;
+const s32 StimpackTimer = 14;
 const s32 MindControlEnergyGain = 5 * 256;
+const u32 TheTurningZombiePlayerId = 9;
 
 // Factional
 const s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;
@@ -108,11 +109,11 @@ const s32 AIWebTimer = 1 * 24;
 const s32 DidactStasisFieldTimer = 23; // roughly 8 seconds
 
 // Star Sovereign
-const s32 AIStarsovereignAbilSeekRange = 6 * 32;
-const s32 AIStarsovereignAbilMinEnemyHealth = 2000;
-const s32 AIStarsovereignAbilMaxAllyHealth = 2000;
-const f64 AIStarsovereignAbilLifePercentage = 0.5;
-const s32 AIStarsovereignAbilTimer = 612;
+const s32 AIStarSovereignAbilSeekRange = 6 * 32;
+const s32 AIStarSovereignAbilMinEnemyHealth = 2000;
+const s32 AIStarSovereignAbilMaxAllyHealth = 2000;
+const f64 AIStarSovereignAbilLifePercentage = 0.5;
+const s32 AIStarSovereignAbilTimer = 612;
 
 // ZERG \\
 
@@ -155,4 +156,4 @@ const s32 AlkajeliskParasiticSporesTimer = 135; // 135 is 255 - 5 * 24
 const s32 AlkajeliskParasiticSporesSeekRange = 8 * 32;
 
 // Hatchery
-const s32 LarvaSpawnRate = 34; // ~12 seconds
+const s32 LarvaSpawnRate = (12 * 24) / 8; // 12 seconds

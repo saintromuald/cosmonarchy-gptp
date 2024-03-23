@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/structures.h"
+#include "BW/structures.h"
 #include "unit_search.h"
 
 void sort_gas_buildings(AiTown* town);

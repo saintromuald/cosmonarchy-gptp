@@ -1,8 +1,8 @@
 #include "console.h"
 #include <Windows.h>
-#include <SCBW/api.h>
-#include <SCBW/structures.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
 
 namespace hooks
 {
@@ -98,17 +98,17 @@ namespace hooks
 				hp_state = helper::unit_hp_between_33_66_percent(active_unit) != 0 ? 3 : 7;
 			}
 
-			if (units_dat::shields_enabled[active_id])
-			{
+			static char buffer[32] = {};
+			if (bw::unit_has_shields(active_unit)) {
 				s32 hp_plus_1 = (active_unit->hitpoints + 255) >> 8;
 				u16 last_queue_id = helper::get_last_queue_slot_id(active_unit);
-				sprintf_s("", 32, "%d/%d %c%d/%d", active_unit->shields >> 8, units_dat::max_shield_points[last_queue_id], hp_state, hp_plus_1, max_hp_raw);
+				sprintf_s(buffer, 32, "%d/%d %c%d/%d", active_unit->shields >> 8, units_dat::max_shield_points[last_queue_id], hp_state, hp_plus_1, max_hp_raw);
 			} else {
-				sprintf_s("", 32, "%c%d/%d", hp_state, (active_unit->hitpoints + 255) >> 8, max_hp_raw);
+				sprintf_s(buffer, 32, "%c%d/%d", hp_state, (active_unit->hitpoints + 255) >> 8, max_hp_raw);
 			}
-			string = "";
+			string = buffer;
 		}
 		helper::add_text_to_dialog(dialog, -7, string);
-		helper::draw_energy(dialog);
+		helper::stats_panel_draw_energy(dialog);
 	}
 }

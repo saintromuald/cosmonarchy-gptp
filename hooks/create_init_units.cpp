@@ -1,9 +1,10 @@
 #include "create_init_units.h"
-#include <SCBW/api.h>
-#include <SCBW/UnitFinder.h>
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
 #include "ai_layouts.h"
 #include "threshold.h"
 #include "hooks/game_hooks.h"
+#include "trigger_system/trigger_system.h"
 
 u32 get_racial_townhall(u32 race_id)
 {
@@ -19,14 +20,14 @@ u32 get_racial_townhall(u32 race_id)
 	}
 }
 
-u32 get_racial_worker(u32 raceId)
+u32 get_racial_worker(u32 race_id)
 {
 	// TODO: Add support for custom races. -Pr0nogo
-	if (raceId == RaceId::Zerg) {
+	if (race_id == RaceId::Zerg) {
 		return UnitId::ZergDroleth;
-	} else if (raceId == RaceId::Terran) {
+	} else if (race_id == RaceId::Terran) {
 		return UnitId::TerranMason;
-	} else if (raceId == RaceId::Protoss) {
+	} else if (race_id == RaceId::Protoss) {
 		return UnitId::ProtossScribe;
 	} else {
 		return UnitId::None;
@@ -36,7 +37,7 @@ u32 get_racial_worker(u32 raceId)
 namespace hooks {
 	void create_initial_melee_buildings(u8 race_id, u32 player) {
 		u32 building_id = get_racial_townhall(race_id);
-		bool is_omni = scbw::get_game_kind() == GameKind_Omnipresence
+		bool is_omni = bw::get_game_kind() == GameKind_Omnipresence
 			&& g_player_table[player].type != PlayerType::Computer
 			&& g_player_table[player].type != PlayerType::ComputerSlot;
 
@@ -72,12 +73,10 @@ namespace hooks {
 
 		if (created_unit) {
 			helper::update_unit_stats_and_finish_building(created_unit);
-			if (helper::show_finished_unit(created_unit) != 0)
-			{
+			if (helper::show_finished_unit(created_unit) != 0) {
 				helper::update_unit_strength(created_unit);
 			}
-			if (helper::spreads_creep(created_unit->id, 1) || units_dat::base_property[created_unit->id] & UnitProperty::CreepBuilding)
-			{
+			if (helper::spreads_creep(created_unit->id, 1) || units_dat::base_property[created_unit->id] & UnitProperty::CreepBuilding) {
 				helper::apply_creep_at_location_from_unit_id(created_unit->sprite->position.x, created_unit->sprite->position.y, created_unit->id);
 			}
 		}
@@ -92,16 +91,16 @@ namespace hooks {
 		s32 sum_y = 0;
 		u32 count = 0;
 
-		scbw::UnitFinder unit_finder;
+		bw::UnitFinder unit_finder;
 		unit_finder.search(
 			startX - 10 * 32,
 			startY - 10 * 32,
 			startX + 10 * 32,
 			startY + 10 * 32
 		);
-		u8 cliff_level = scbw::get_active_tile_at_coords(startX, startY)->ground_height;
+		u8 cliff_level = bw::get_active_tile_at_coords(startX, startY)->ground_height;
 		unit_finder.for_each([&](Unit* unit) {
-			if (unit_id_is_minerals(unit->id) && scbw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height == cliff_level)
+			if (unit_id_is_minerals(unit->id) && bw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height == cliff_level)
 			{
 				Point16 pos = unit->position;
 				sum_x += pos.x - startX;
@@ -191,7 +190,7 @@ namespace hooks {
 				}
 
 				if (starting_units == 1 || starting_units == 2) {
-					bool is_omni = scbw::get_game_kind() == GameKind_Omnipresence
+					bool is_omni = bw::get_game_kind() == GameKind_Omnipresence
 								&& g_player_table[player].type != PlayerType::Computer
 								&& g_player_table[player].type != PlayerType::ComputerSlot;
 
@@ -214,36 +213,92 @@ namespace hooks {
 							dy = units_dat::unit_bounds[worker_id].bottom + units_dat::unit_bounds[worker_id].top + 1;
 						}
 
-						for (s32 i = 0; i < 6; i++) {
+						for (s32 worker_count = 0; worker_count < 6; worker_count++) {
 							pos.x += dx;
 							pos.y -= dy;
 
 							if (is_omni) {
-								switch (i) {
-									case 0:
-									case 1:
+								switch (globals->players[player].omnipresence_state)
+								{
+									case OmnipresenceState_All:
 									{
-										worker_id = UnitId::TerranMason;
+										switch (worker_count) {
+											case 0:
+											case 1:
+											{
+												worker_id = UnitId::TerranMason;
+											} break;
+											case 2:
+											case 3:
+											{
+												worker_id = UnitId::ProtossScribe;
+											} break;
+											case 4:
+											case 5:
+											{
+												worker_id = UnitId::ZergDroleth;
+											} break;
+										}
 									} break;
-									case 2:
-									case 3:
+									case OmnipresenceState_TerranProtoss:
 									{
-										worker_id = UnitId::ProtossScribe;
+										switch (worker_count) {
+											case 0:
+											case 1:
+											case 2:
+											{
+												worker_id = UnitId::TerranMason;
+											} break;
+											case 3:
+											case 4:
+											case 5:
+											{
+												worker_id = UnitId::ProtossScribe;
+											} break;
+										}
 									} break;
-									case 4:
-									case 5:
+									case OmnipresenceState_ProtossZerg:
 									{
-										worker_id = UnitId::ZergDroleth;
+										switch (worker_count) {
+											case 0:
+											case 1:
+											case 2:
+											{
+												worker_id = UnitId::ProtossScribe;
+											} break;
+											case 3:
+											case 4:
+											case 5:
+											{
+												worker_id = UnitId::ZergDroleth;
+											} break;
+										}
+									} break;
+									case OmnipresenceState_ZergTerran:
+									{
+										switch (worker_count) {
+											case 0:
+											case 1:
+											case 2:
+											{
+												worker_id = UnitId::TerranMason;
+											} break;
+											case 3:
+											case 4:
+											case 5:
+											{
+												worker_id = UnitId::ZergDroleth;
+											} break;
+										}
 									} break;
 								}
 							}
 
 							Unit* created_unit = helper::create_unit(worker_id, pos.x, pos.y, player);
 							if (created_unit) {
-								scbw::teleport_to_point(created_unit, pos);
+								bw::teleport_to_point(created_unit, pos);
 								helper::update_unit_stats_and_finish_building(created_unit);
-								if (helper::show_finished_unit(created_unit) != 0)
-								{
+								if (helper::show_finished_unit(created_unit) != 0) {
 									helper::update_unit_strength(created_unit);
 								}
 							}
@@ -280,8 +335,7 @@ namespace hooks {
 		if (created_unit)
 		{
 			helper::update_unit_stats_and_finish_building(created_unit);
-			if (helper::show_finished_unit(created_unit) != 0)
-			{
+			if (helper::show_finished_unit(created_unit) != 0) {
 				helper::update_unit_strength(created_unit);
 			}
 		}
@@ -303,8 +357,8 @@ namespace hooks {
 				return unit;
 			} else {
 				const char* text  = "";
-				if ( *g_network_table > 17 ) {
-					text = (char *)g_network_table + g_network_table[18];
+				if ( g_network_table_DF->get_string_count() > 17) {
+					text = g_network_table_DF->get_string(18);
 				}
 				const char* text2 = helper::get_unit_name_stat_string(unit->id);
 				char buffer[256] = {};
@@ -329,7 +383,7 @@ namespace hooks {
 		}
 		// Requires changes to player select so they actually spawn units
 		//if (flags & ChkUnitFlags_Lifted) {
-		//	if (!scbw::unit_id_race_check(chkunit->unit_id, g_player_table[chkunit->player].race)) {
+		//	if (!bw::unit_id_race_check(chkunit->unit_id, g_player_table[chkunit->player].race)) {
 		//		return 0;
 		//	}
 		//}
@@ -346,7 +400,6 @@ namespace hooks {
 			if (unit) {
 				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
 				unit->remove_timer = 0;
-
 				hooks::init_unit(unit);
 			}
 			return unit;

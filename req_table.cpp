@@ -122,7 +122,7 @@ Button_State::Enum get_button_state(Button* button, Unit* unit, Button_State::En
 	for (u32 i = 0; i < unit_entry->require_units_count; ++i) {
 		RequireUnit* require_unit = &unit_entry->require_units[i];
 		if (require_unit->flags & RequireUnitFlags_Connected) {
-			if (!scbw::all_selected_units_have_addon(require_unit->unit_id)) {
+			if (!bw::all_selected_units_have_addon(require_unit->unit_id)) {
 				update_button_state_result(&result, Button_State::Invisible);
 			}
 		} else {
@@ -132,7 +132,7 @@ Button_State::Enum get_button_state(Button* button, Unit* unit, Button_State::En
 		}
 	}
 
-	if (unit_entry->require_faction && globals.players[unit->player].faction != unit_entry->require_faction) {
+	if (unit_entry->require_faction && globals->players[unit->player].faction != unit_entry->require_faction) {
 		update_button_state_result(&result, Button_State::Invisible);
 	}
 

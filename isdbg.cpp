@@ -1,5 +1,5 @@
 #include "MPQDraftPlugin.h"
-#include "SCBW/api.h"
+#include "BW/api.h"
 #include <windows.h>
 #include <string.h>
 #include <stdio.h>

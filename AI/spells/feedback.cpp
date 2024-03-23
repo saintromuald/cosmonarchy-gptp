@@ -17,7 +17,7 @@ namespace AI
 		else
 			bounds = 32 * 32;
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds,
 			caster->get_y() - bounds,
 			caster->get_x() + bounds,

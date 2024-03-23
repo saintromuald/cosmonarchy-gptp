@@ -1,8 +1,9 @@
 #include "utils.h"
-#include <SCBW/api.h>
-#include <SCBW/Storm.h>
+#include <BW/api.h>
+#include <BW/Storm.h>
 
-// Those functions are less likely to be useful (especially if modified alone against as a part of a larger modification), or may cause more trouble if modified the wrong way, so they are put here a bit on the side.
+// Those functions are less likely to be useful (especially if modified alone against as a part of a larger modification),
+// or may cause more trouble if modified the wrong way, so they are put here a bit on the side.
 
 namespace hooks
 {	
@@ -26,8 +27,7 @@ namespace hooks
 		dialog->flags |= (BinDlgFlags::NoClickSound + BinDlgFlags::VerticalAlignmentBottom);
 		dialog->onInitDialog0x46.unk4a = 0;
 
-		if (dlgFunc != nullptr)
-		{
+		if (dlgFunc) {
 			dialog->fxn_interact = dlgFunc;
 		}
 
@@ -70,8 +70,7 @@ namespace hooks
 		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories
 		||	unit->status & UnitStatus::Frozen
 		||	unit_id_is_trap(unit->id)
-		||	unit->id == UnitId::Spell_DarkSwarm
-		||	unit->id == UnitId::Spell_DisruptionWeb
+		||  unit_id_is_spell(unit->id)
 		||	unit->id == UnitId::Special_PitDoor
 		||	unit->id == UnitId::Special_RightPitDoor
 		||	unit->id == UnitId::Special_UpperLevelDoor

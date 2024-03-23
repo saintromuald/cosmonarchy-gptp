@@ -1,5 +1,5 @@
 #include "siege_transform.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <cassert>
 #include <hooks/limits/sfx_extender.h>
 
@@ -15,7 +15,7 @@ namespace hooks
 				return;
 			}
 
-			scbw::decloak_passive_proc(unit);
+			bw::decloak_passive_proc(unit);
 			Unit* subunit = unit->subunit;
 			if (unit->status & UnitStatus::NoBrkCodeStart || (subunit && subunit->status & UnitStatus::NoBrkCodeStart)) {
 				return;
@@ -24,7 +24,7 @@ namespace hooks
 			if (subunit) {
 				subunit->order_to(OrderId::Nothing3, unit);
 				helper::play_subunit_iscript(unit, IscriptAnimation::SpecialState1);
-				scbw::decloak_passive_proc(subunit);
+				bw::decloak_passive_proc(subunit);
 			}
 			for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 				image->play_iscript_animation(IscriptAnimation::SpecialState2);
@@ -50,7 +50,7 @@ namespace hooks
 				}
 			
 				if (action_sound) {
-					scbw::play_action_sound(action_sound, unit);
+					bw::play_action_sound(action_sound, unit);
 				}
 			}
 		}
@@ -79,7 +79,7 @@ namespace hooks
 				} break;
 			}
 
-			scbw::transform_unit(unit, unit_id);
+			bw::transform_unit(unit, unit_id);
 			helper::order_return_to_idle(unit);
 			if (unit->subunit) {
 				helper::order_return_to_idle(unit->subunit);
@@ -146,7 +146,7 @@ namespace hooks
 						} break;
 					}
 					if (action_sound) {
-						scbw::play_action_sound(action_sound, unit);
+						bw::play_action_sound(action_sound, unit);
 					}
 				}
 
@@ -171,7 +171,7 @@ namespace hooks
 					} break;
 				}
 
-				scbw::transform_unit(unit, unit_id);
+				bw::transform_unit(unit, unit_id);
 				++unit->main_order_state;
 			}
 			case 3:

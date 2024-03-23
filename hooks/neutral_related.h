@@ -1,6 +1,6 @@
 #pragma once
-#include <SCBW/api.h>
-#include <SCBW/structures/Unit.h>
+#include <BW/api.h>
+#include <BW/structures/Unit.h>
 
 namespace hooks
 {

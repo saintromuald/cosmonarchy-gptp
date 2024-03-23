@@ -1,5 +1,5 @@
 #include "repair_order.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <hooks/rally_point.h>
 #include "globals.h"
 
@@ -24,18 +24,16 @@ namespace hooks
 					helper::verify_resources(repair_cost_minerals, repair_cost_vespene, unit->player);
 					unit->worker.repair_resource_loss_timer = 0; // Now used as a toggle for the AlmostBuilt animation to avoid some visual bug, but can probably just use a local bool if necessary.
 					unit->main_order_state++;
-				} break;
+				} // Fallthrough intended
 				case 1:
 				{
 					if (!(target->status & UnitStatus::Completed)) {
 						unit->order_to(OrderId::ConstructingBuilding, target);
-
 						if (*g_is_placing_building && !helper::can_still_place_building()) {
 							helper::refresh_layers_3_and_4();
 							helper::end_building_placement();
 						}
-					}
-					else {
+					} else {
 						if (helper::order_to_move_to_target(unit, target)) {
 							helper::unit_order_move_to_target_unit(unit, target);
 							unit->main_order_state = 6;
@@ -60,7 +58,7 @@ namespace hooks
 					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 					helper::unit_order_move_to_target_unit(unit, target);
 					if (!helper::is_unit_positions_2_equal(unit)) {
-						u8 current_angle = unit->current_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
+						u8 current_angle = unit->current_direction_1 - bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 						if (current_angle > 128) {
 							current_angle = 256 - current_angle;
 						}
@@ -94,8 +92,7 @@ namespace hooks
 			if (target->hitpoints < units_dat::max_hitpoints[target->id]) {
 				if (target->new_repair_timer) {
 					target->new_repair_timer--;
-				}
-				else {
+				} else {
 					if (!helper::subtract_repair_resources(unit, target)) {
 						unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 						unit->order_to_idle();
@@ -103,9 +100,6 @@ namespace hooks
 					}
 				}
 				u32 hp_gain = target->build_repair_hp_gain;
-				if (*g_cheat_state & CheatFlags::OperationCwal) {
-					hp_gain *= 16;
-				}
 				if (unit->id == UnitId::TerranTalos) { // Talos - Increased repair speed
 					hp_gain *= 1.5;
 				}
@@ -120,7 +114,7 @@ namespace hooks
 		// LABEL_43:
 		unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
 
-		if (unit->order_queue_head) {
+		if (unit->order_queue_head || !target) {
 			helper::force_order_done(unit);
 			/*unit->userActionFlags |= 1;
 			prepareForNextOrder(unit);*/
@@ -230,7 +224,7 @@ namespace hooks
 			case OrderId::Pickup2:
 			{
 				error_string_id = 890;
-				if (!target || !scbw::is_allied_to(target->player, unit->player))
+				if (!target || !bw::is_allied_to(target->player, unit->player))
 				{
 					if (bErrorFlag)
 					{
@@ -301,12 +295,12 @@ namespace hooks
 					{
 						*g_last_internal_error = 10;
 						result = 0;
-					} else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk && order_id != OrderId::Unburrow) {
+					} else if (unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(unit->id) && order_id != OrderId::Unburrow) {
 						*g_last_internal_error = 11;
 						result = 0;
 					} else {
 						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding && order_id != 1
-						|| (scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
+						|| (bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
 						||  unit->id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
 						||  unit->id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
 						{
@@ -346,11 +340,10 @@ namespace hooks
 		do
 		{
 			Unit* unit = *selected_units;
-			if (*selected_units)
-			{
+			if (*selected_units) {
 				u8 action = RightClickActions::NoCommand_AutoAttack;
 				u16 unit_id = unit->id;
-				if (unit_id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
+				if (unit_id_is_burrowed_attacker(unit_id) && unit->status & UnitStatus::Burrowed)
 				{
 					action = RightClickActions::NoMove_NormalAttack;
 				} else {
@@ -478,7 +471,7 @@ namespace hooks
 							max_volume = 0;
 						}
 					}
-					if (*use_quiet_sounds)
+					if (*g_use_quiet_sounds)
 					{
 						max_volume /= 5;
 					}

@@ -1,11 +1,11 @@
 #include "selection.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "hooks/rally_point.h"
 #include "trigger_system/trigger_system.h"
 #include "config.h"
 
 bool unit_is_owned_by_current_player_new(Unit* unit) {
-	if (!*g_is_in_replay && !globals.players[*g_local_nation_id].witness_mode) {
+	if (!*g_is_in_replay && !globals->players[*g_local_nation_id].witness_mode) {
 		return unit->player == *g_local_nation_id;
 	}
 	return unit->player == active_player_selection->unit[0]->player;
@@ -21,8 +21,8 @@ namespace hooks
 		mouse_pos.x = *g_move_to_x + g_selection_start->x;
 		mouse_pos.y = *g_move_to_y + g_selection_start->y;
 
-		s32 distance_a = scbw::get_distance_fast(ua->position, mouse_pos);
-		s32 distance_b = scbw::get_distance_fast(ub->position, mouse_pos);
+		s32 distance_a = bw::get_distance_fast(ua->position, mouse_pos);
+		s32 distance_b = bw::get_distance_fast(ub->position, mouse_pos);
 		return distance_a - distance_b;
 	}
 
@@ -135,7 +135,7 @@ namespace hooks
 							dont_add_to_list = true;
 						} else if (!helper::unit_is_standard_and_movable(current_unit)) {
 							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
-						} else if (*g_is_in_replay || globals.players[*g_local_nation_id].witness_mode) {
+						} else if (*g_is_in_replay || globals->players[*g_local_nation_id].witness_mode) {
 							goto new_replay_logic; // New from DF
 						} else if (current_unit->player != *g_local_nation_id) {
 							keep_for_empty_list_case = true;
@@ -552,7 +552,7 @@ namespace hooks
 			helper::cmdact_select(unit_list, count);
 		}
 		*g_client_selection_changed = 1;
-		scbw::refresh_console();
+		bw::refresh_console();
 		return 1;
 	}
 
@@ -722,11 +722,11 @@ namespace hooks
 	b32 is_human_player_on_same_team(u32 player_id) { // 0049A110
 		if (player_id != *g_local_human_id
 		&&  player_id < PlayerLimit) { // Originally checked for singleplayer (turned off so sp replays load selections) and for a team game (turned off so it works at all).
-			if (scbw::is_allied_to(player_id, *g_local_human_id) && scbw::is_allied_to(*g_local_human_id, player_id) && !globals.players[player_id].witness_mode) {
+			if (bw::is_allied_to(player_id, *g_local_human_id) && bw::is_allied_to(*g_local_human_id, player_id) && !globals->players[player_id].witness_mode) {
 				return true;
 			}
 		}
-		if (*g_is_in_replay || globals.players[*g_local_human_id].witness_mode) {
+		if (*g_is_in_replay || globals->players[*g_local_human_id].witness_mode) {
 			return true;
 		}
 		return false;
@@ -734,9 +734,9 @@ namespace hooks
 
 	// Hooked to not die to lard. -Pr0nogo
 	u8 get_team_size(u32 selecting_player) { // 00485710
-		if ((selecting_player < PlayerLimit && globals.players[selecting_player].witness_mode)
-		||	!scbw::is_allied_to(selecting_player, *g_local_human_id) 
-		||	!scbw::is_allied_to(*g_local_human_id, selecting_player)) {
+		if ((selecting_player < PlayerLimit && globals->players[selecting_player].witness_mode)
+		||	!bw::is_allied_to(selecting_player, *g_local_human_id) 
+		||	!bw::is_allied_to(*g_local_human_id, selecting_player)) {
 			return 2;
 		}
 		return 4;
@@ -753,7 +753,7 @@ namespace hooks
 		if (!*g_is_in_replay && *g_local_human_id == selecting_player) {
 			return;
 		}
-		if (selecting_player < PlayerLimit && globals.players[selecting_player].witness_mode) {
+		if (selecting_player < PlayerLimit && globals->players[selecting_player].witness_mode) {
 			return;
 		}
 		helper::create_dashed_selection(selecting_player, unit->sprite, g_selection_circle_color[unit->player]);
@@ -869,7 +869,7 @@ namespace hooks
 			helper::cmdact_select(selection_array, selection_index);
 			result = 1;
 			*g_client_selection_changed = 1;
-			scbw::refresh_console();
+			bw::refresh_console();
 		}
 		return result;
 	}
@@ -1047,7 +1047,7 @@ namespace hooks
 							}
 							*/
 
-							bool iterations = 0;
+							u8 iterations = 0;
 							do
 							{
 								Unit* unit_from_selection = *selection;
@@ -1270,7 +1270,7 @@ namespace hooks
 					helper::create_new_unit_selections_from_list(&unit, 1);
 					helper::cmdact_select(&unit, 1);
 					*g_client_selection_changed = 1;//client_selection_changed
-					scbw::refresh_console();
+					bw::refresh_console();
 				}
 
 				return;
@@ -1300,7 +1300,7 @@ namespace hooks
 		helper::create_new_unit_selections_from_list(unit_list, i_0);
 		helper::cmdact_select(unit_list, i_0);
 		*g_client_selection_changed = 1; //client_selection_changed
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	void generate_group_wireframes(BinDlg* dialog) {

@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <sstream>
-#include "SCBW\api.h"
+#include "BW\api.h"
 #include "hook_tools.h"
 #include "tbl_extender.h"
 #define NO_IDENTIFIER -1

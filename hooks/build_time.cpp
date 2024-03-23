@@ -1,6 +1,6 @@
 #include "build_time.h"
-#include "SCBW/api.h"
-#include "SCBW/UnitFinder.h"
+#include "BW/api.h"
+#include "BW/UnitFinder.h"
 #include "globals.h"
 
 namespace hooks
@@ -14,7 +14,7 @@ namespace hooks
 			return 1;
 		}
 		u16 multiplier = 1;
-		if (scbw::is_cheat_enabled(CheatFlags::OperationCwal))
+		if (bw::is_cheat_enabled(CheatFlags::OperationCwal))
 		{
 			multiplier = 16;
 		}

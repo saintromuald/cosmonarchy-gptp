@@ -4,7 +4,7 @@
 #include "hooks/orders/unit_making/unit_train.h"
 #include "stopwatch/Stopwatch.h"
 #include "logger.h"
-#include "SCBW/scbwdata.h"
+#include "BW/bwdata.h"
 #include "hooks/unit_stats/max_energy.h"
 #include <array>
 
@@ -29,7 +29,7 @@ namespace hooks
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
 				if (sprite->main_graphic->frame_index >= overlay->frame_count)
 				{
-					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
+					bw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
 					{
 						return false;
 					}
@@ -40,7 +40,7 @@ namespace hooks
 		auto result_pos = results.begin();
 		if (sprite->main_graphic->frame_index >= overlay->frame_count)
 		{
-			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
+			bw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
 			return false;
 		}
 		return true;
@@ -66,7 +66,7 @@ namespace hooks
 				image->free();
 				if (sprite->main_graphic->frame_index >= overlay->frame_count)
 				{
-					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
+					bw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
 					{
 						return; 
 					}
@@ -88,7 +88,7 @@ namespace hooks
 			{
 				continue;
 			}
-			scbw::printf("Overlay: %d", i);
+			bw::printf("Overlay: %d", i);
 			u32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
 			bool found = false;
 			for (Image* image = sprite->images.head; image; image = image->link.next)
@@ -106,7 +106,7 @@ namespace hooks
 		}
 		if (result_pos != results.begin())
 		{
-			s32 variation = results[scbw::rand_between(0, result_pos - results.begin() - 1)];
+			s32 variation = results[bw::rand_between(0, result_pos - results.begin() - 1)];
 			Point8 offset = overlay->get_offset(sprite->main_graphic->frame_index, variation);
 			sprite->create_top_overlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 		}
@@ -196,10 +196,10 @@ namespace hooks
 	{
 		if (orig_result == 0) // Valid target
 		{
-			scbw::print("Can cast");
+			bw::print("Can cast");
 			if (techId == TechId::Lockdown)
 			{
-				scbw::printf("Lockdown %d %d", caster->order_target.pt.x, caster->order_target.pt.y);
+				bw::printf("Lockdown %d %d", caster->order_target.pt.x, caster->order_target.pt.y);
 			}
 		}
 		return orig_result;
@@ -210,14 +210,14 @@ namespace hooks
 		if (unit->id != UnitId::ProtossStarSovereign) {
 			return;
 		}
-		scbw::decloak_passive_proc(unit);
+		bw::decloak_passive_proc(unit);
 		unit->order_target.pt = unit->position;
 
 		UnitExt* unit_ext = get_unit_ext(unit);
 		switch (unit_ext->values[ValueProtossSwitchOrderState]) {
 			case 0: {
 				if (unit->movement_flags & MovementFlags_Accelerating) {
-					scbw::make_to_hold_position(unit);
+					bw::make_to_hold_position(unit);
 				}
 				unit_ext->values[ValueProtossSwitchOrderState] = 1;
 			} break;
@@ -256,7 +256,7 @@ namespace hooks
 
 	bool can_attack_target_end_chunk(Unit* source, u32 target_flags)
 	{
-		if (source->id == UnitId::ProtossClarion && scbw::get_aise_value(source, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
+		if (source->id == UnitId::ProtossClarion && bw::get_aise_value(source, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 		{
 			return false;
 		}
@@ -284,7 +284,7 @@ namespace hooks
 		sw.Start();
 		f64 aiLoop, unitLoop, imageThingyLoop, tileLoop;
 
-		scbw::set_ingame_loop_state(1);
+		bw::set_ingame_loop_state(1);
 		helper::initialize_randomizer_info();
 		helper::ai_loop();
 		aiLoop = sw.ElapsedMilliseconds();
@@ -316,7 +316,7 @@ namespace hooks
 		sw.Stop();
 		imageThingyLoop = sw.ElapsedMilliseconds();
 	//	GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
-		return scbw::set_ingame_loop_state(0);
+		return bw::set_ingame_loop_state(0);
 	}
 
 	// 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
@@ -324,8 +324,7 @@ namespace hooks
 	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) 
 	{
 		Vector32 attack_frame = {};
-		if (*g_is_in_game_loop)
-		{
+		if (*g_is_in_game_loop) {
 			++g_random_counts[14];
 			*g_last_random_number = 0x15A4E35 * *g_last_random_number + 1;
 			++(*g_total_random_counts);
@@ -333,34 +332,29 @@ namespace hooks
 		}
 
 		Unit* unit = helper::unit_constructor(x, y, unit_id, player, attack_frame.y);
-		if (!unit)
-		{
+		if (!unit) {
 			return 0;
 		}
+
 		if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster) {
 			unit->energy = hooks::get_unit_max_energy(unit); // New starting amount
-		}
-		else {
+		} else {
 			unit->energy = 0;
 		}
-		if (unit->status & UnitStatus::GroundedBuilding)
-		{
+
+		if (unit->status & UnitStatus::GroundedBuilding) {
 			helper::list_push_back_used_unit_entry(unit);
-		}
-		else
-		{
+		} else {
 			helper::list_push_back_hidden_unit_entry(unit);
 		}
 
-		if (units_dat::subunit[unit_id] == UnitId::None)
-		{
+		if (units_dat::subunit[unit_id] == UnitId::None) {
 			unit->subunit = 0;
 			return unit;
 		}
 
 		Unit* subunit = helper::unit_constructor(x, y, units_dat::subunit[unit_id], player, attack_frame.y);
-		if (!subunit)
-		{
+		if (!subunit) {
 			helper::unit_destructor(unit);
 			return 0;
 		}
@@ -374,6 +368,10 @@ namespace hooks
 		if (subunit) {
 			helper::turn_unit(subunit, 96);
 		}
+
+		if (bw::get_game_kind() == GameKind_Massacre && unit_id_should_give_gas_in_massacre_mode(unit->id)) {
+			bw::add_massacre_resource(unit->player);
+		}
 		return unit;
 	}
 
@@ -386,21 +384,18 @@ namespace hooks
 		Target order_target = unit->order_target;
 		unit->previous_unit_type = unit->id;
 		unit->previous_hitpoints = hp / 256;
-		if (!unit->previous_hitpoints)
-		{
+		if (!unit->previous_hitpoints) {
 			unit->previous_hitpoints = 1;
 		}
 		Sprite* sprite = unit->sprite;
 		u32 player_id = sprite->player;
 		u32 x = sprite->position.x;
 		u32 y = sprite->position.y;
-		if (sprite->images.head)
-		{
+		if (sprite->images.head) {
 			helper::sprite_destructor(sprite);
 			unit->sprite = 0;
 		}
-		if (unit->path)
-		{
+		if (unit->path) {
 			helper::reassign_path(unit);
 		}
 		helper::initialize_unit(unit, y, unit_id, x, unit->player);

@@ -1,25 +1,21 @@
 #include "unit_movement.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace hooks
 {
-	s32 unit_movement_dormant(Unit* unit) // 0046A8D0
+	b32 unit_movement_dormant(Unit* unit) // 0046A8D0
 	{
-		u32 flags = unit->status;
-		if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal))
-		{
-			Sprite* sprite = unit->sprite;
-			if  (sprite
-            &&   unit->move_target.pt.x == sprite->position.x
-			&&   unit->move_target.pt.y == sprite->position.y
-			&& ((flags & UnitStatus::Unmovable) != 0) != -1
-			&&   unit->next_target_waypoint.x == unit->position.x
-			&&   unit->next_target_waypoint.y == unit->position.y)
+		if (!(unit->status & UnitStatus::IgnoreTileCollision) || !(unit->status & UnitStatus::IsNormal)) {
+			if (unit->sprite
+            &&  unit->move_target.pt.x == unit->sprite->position.x
+			&&  unit->move_target.pt.y == unit->sprite->position.y
+			&&  unit->next_target_waypoint.x == unit->position.x
+			&&  unit->next_target_waypoint.y == unit->position.y)
 			{
 				return 0;
 			}
 		}
-		unit->movement_state = 9; // At rest
+		unit->movement_state = UnitMovement_AtRest; // At rest
 		return 1;
 	}
 
@@ -33,23 +29,18 @@ namespace hooks
         unit->halt.x = new_pos.x << 8;
         unit->halt.y = new_pos.y << 8;
         helper::move_sprite(unit->sprite, new_pos.x, new_pos.y);
-        if (unit->sprite)
-        {
-            if (unit->main_order_id)
-            {
+        if (unit->sprite) {
+            if (unit->main_order_id) {
                 helper::set_move_target_xy(unit, new_pos.x, new_pos.y);
-                if (new_pos.x != unit->next_target_waypoint.x || new_pos.y != unit->next_target_waypoint.y)
-                {
+                if (new_pos.x != unit->next_target_waypoint.x || new_pos.y != unit->next_target_waypoint.y) {
                     unit->next_target_waypoint.x = new_pos.x;
                     unit->next_target_waypoint.y = new_pos.y;
                 }
             }
         }
-        if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && !ignore_collision)
-        {
+        if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && !ignore_collision) {
             helper::update_unit_sorting_info(new_pos.x - old_pos.x, unit, new_pos.y - old_pos.y);
-            if (!ignore_collision && !(unit->sprite->flags & SpriteFlags::Hidden))
-            {
+            if (!ignore_collision && !(unit->sprite->flags & SpriteFlags::Hidden)) {
                 helper::check_unstack(unit);
             }
         }
@@ -65,7 +56,7 @@ namespace hooks
 				player = colliding_unit->sprite->player;
 			}
 
-			if (!scbw::are_mutual_allies(unit->player, player)) {
+			if (!bw::are_mutual_allies(unit->player, player)) {
 				return false;
 			}
 		}
@@ -79,12 +70,12 @@ namespace hooks
 
 		u16 unit_id = unit->id;
 		u16 collider_id = colliding_unit->id;
-		if ((unit_id == UnitId::ZergLarva && !(collider_status & UnitStatus::GroundedBuilding)) || collider_id == UnitId::ZergLarva) {
+		if ((unit_id_is_larva(unit_id) && !(collider_status & UnitStatus::GroundedBuilding)) || unit_id_is_larva(collider_id)) {
 			return false;
 		}
 
-		if (unit_id == UnitId::ZergRilirokor && collider_id != UnitId::ZergRilirokor && !(collider_status & UnitStatus::GroundedBuilding)
-		||	collider_id == UnitId::ZergRilirokor && unit_id != UnitId::ZergRilirokor) {
+		if (unit_id_is_tiny_unit(unit_id) && !unit_id_is_tiny_unit(collider_id) && !(collider_status & UnitStatus::GroundedBuilding)
+		||	unit_id_is_tiny_unit(collider_id) && !unit_id_is_tiny_unit(unit_id)) {
 			return false;
 		}
 
@@ -145,5 +136,68 @@ namespace hooks
 			return 1;
 		}
 		return helper::move_to_target(target, unit);
+	}
+
+	// Hooked to troubleshoot nullsprite crashes. -Pr0nogo
+	s32 unit_movement_initialize(Unit* unit) // 0046C320
+	{
+		Sprite* sprite = unit->sprite;
+		u32 pathing_flags = unit->pathing_flags;
+		unit->contour_bounds.y = 0;
+		unit->contour_bounds.x = 0;
+		unit->contour_bounds.h = 0;
+		unit->contour_bounds.w = 0;
+
+		u32 is_pathing_enabled = pathing_flags & 0xFC;
+		if (sprite) { // Nice meme that lard nullchecks sprite after this.
+			is_pathing_enabled = pathing_flags & 0xFC | (sprite->elevation < 12);
+		}
+		unit->pathing_flags = is_pathing_enabled;
+
+		bool is_subunit = units_dat::base_property[unit->id] & UnitProperty::Subunit;
+		if (!is_subunit) {
+			if (unit->status & UnitStatus::NoBrkCodeStart) {
+				unit->movement_state = UnitMovement_InitSeq;
+				return 1;
+			}
+		}
+
+		if (!sprite || !unit->main_order_id && unit->main_order_state == 1) {
+			unit->movement_state = UnitMovement_Lump;
+			return 1;
+		}
+		if (unit->status & UnitStatus::InBuilding) {
+			unit->movement_state = UnitMovement_Bunker;
+			return 1;
+		}
+
+		if (!(sprite->flags & SpriteFlags::Hidden)) {
+			if (!(unit->status & UnitStatus::Burrowed)) {
+				u32 status = unit->status;
+				if ((status >> 17) & 1 || status & UnitStatus::CanTurnAroundToAttack) {
+					if ((status >> 17) & 1) {
+						unit->movement_state = (is_pathing_enabled & 1) != 0 ? UnitMovement_AtRest : UnitMovement_Flyer;
+					} else {
+						unit->movement_state = 2 * (is_subunit == 0) + 3;
+					}
+					return 1;
+				} else if (is_pathing_enabled & 1 && (unit->movement_flags & MovementFlags_Accelerating || !helper::is_unit_movable(unit))) {
+					unit->movement_state = UnitMovement_LumpWannabe;
+					return 1;
+				} else {
+					unit->movement_state = UnitMovement_Lump;
+					return 1;
+				}
+			}
+			unit->movement_state = UnitMovement_Lump;
+			return 1;
+		}
+		if (unit->movement_flags & MovementFlags_Accelerating || !helper::is_unit_movable(unit)) {
+			helper::unit_movement_instant_stop(unit);
+			helper::progress_flingy(unit);
+			helper::finish_unit_movement(unit);
+		}
+		unit->movement_state = UnitMovement_Hidden;
+		return 1;
 	}
 }

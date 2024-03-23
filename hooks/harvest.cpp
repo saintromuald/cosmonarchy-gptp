@@ -1,5 +1,5 @@
 #include "harvest.h"
-#include "../SCBW/api.h"
+#include "../BW/api.h"
 
 #include "trigger_system/trigger_system.h"
 
@@ -35,14 +35,14 @@ u32 get_harvest_amount(Unit* unit) {
 		case UnitId::ResourceMineralField:
 		case UnitId::ResourceMineralFieldType2:
 		case UnitId::ResourceMineralFieldType3: {
-			return unit->building.resource.resource_amount > DepletedYield ? FullYield : DepletedYield;
+			return unit->building.resource.resource_amount > globals->get_yield(YieldType_MineralDepleted) ? globals->get_yield(YieldType_Mineral) : globals->get_yield(YieldType_MineralDepleted);
 		} break;
 		default: {
 			switch (get_gas_tier(unit)) {
-				case 1: return 2;
-				case 2: return 4;
-				case 3: return 5;
-				case 4: return 6;
+				case 1: return globals->get_yield(YieldType_GasRidge);
+				case 2: return globals->get_yield(YieldType_GasGeyser);
+				case 3: return globals->get_yield(YieldType_GasTier2);
+				case 4: return globals->get_yield(YieldType_GasTier3);
 			}
 		} break;
 	}
@@ -69,13 +69,13 @@ namespace hooks {
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
 		u32 harvest_amount = get_harvest_amount(resource);
 		if (is_mineral) {
-			if (resource->building.resource.resource_amount < 4) {
-				resource->building.resource.resource_amount = DepletedYield;
+			if (resource->building.resource.resource_amount < globals->get_yield(YieldType_Mineral)) {
+				resource->building.resource.resource_amount = globals->get_yield(YieldType_MineralDepleted);
 				resource->status |= UnitStatus::NoCollide;
-			} else if (resource->building.resource.resource_amount -  harvest_amount > DepletedYield) {
+			} else if (resource->building.resource.resource_amount -  harvest_amount > globals->get_yield(YieldType_MineralDepleted)) {
 				resource->building.resource.resource_amount -= harvest_amount;
 			} else {
-				resource->building.resource.resource_amount = DepletedYield;
+				resource->building.resource.resource_amount = globals->get_yield(YieldType_MineralDepleted);
 				resource->status |= UnitStatus::NoCollide; // Not sure if we should |= every time this function is called? -Pr0nogo
 			}
 			update_mineral_field_image(resource);
@@ -90,7 +90,7 @@ namespace hooks {
 
 		if (unit_id_is_minerals(resource->id)) {
 			chunk_image_id = ImageId::MineralChunkType1;
-			if (globals.celebration == Celebration_Christmas) {
+			if (globals->celebration == Celebration_Christmas) {
 				chunk_image_id = ImageId::Christmas_MineralChunk1;
 			}
 			is_mineral = true;
@@ -107,7 +107,7 @@ namespace hooks {
 		}
 
 		if (!no_chunk_image) {
-			if (globals.celebration == Celebration_Christmas) {
+			if (globals->celebration == Celebration_Christmas) {
 				if (!is_mineral) {
 					chunk_image_id = ImageId::Christmas_VespeneChunk1;
 				}
@@ -124,7 +124,7 @@ namespace hooks {
 				}
 
 				// Resource return multipliers
-				switch (scbw::get_upgrade_level(worker->player, UpgradeId::MiningEfficiency)) {
+				switch (bw::get_upgrade_level(worker->player, UpgradeId::MiningEfficiency)) {
 					case 0:
 					case 99:
 					{
@@ -166,6 +166,12 @@ namespace hooks {
 					}
 				}
 				helper::set_resource_amount_carried(worker, resource_amount, chunk_image_id, is_mineral);
+				if (worker->id == UnitId::ProtossArtisan) {
+					UnitExt* unit_ext = get_unit_ext(worker);
+					unit_ext->timers[TimerArtisanReturn] = 24 * 2 + 1;
+					helper::play_sound_from_unit(SoundId::ArtisanRadiantChannel, worker, 1, 0);
+					worker->freeze();
+				}
 			}
 		}
 	}
@@ -184,7 +190,7 @@ namespace hooks {
 			case UnitId::ZergExcisant:
 			case UnitId::ZergEzigrisant:
 			{
-				if ((ignore_completed || node->status & UnitStatus::Completed) && (node->player == worker->player || scbw::are_mutual_allies(node->player, worker->player)))
+				if ((ignore_completed || node->status & UnitStatus::Completed) && (node->player == worker->player || bw::are_mutual_allies(node->player, worker->player)))
 				{
 					return true;
 				}
@@ -232,7 +238,7 @@ namespace hooks {
 					}
 				}
 			} else {
-				helper::turn_unit(unit, scbw::get_angle(unit->position, node->position));
+				helper::turn_unit(unit, bw::get_angle(unit->position, node->position));
 				unit->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				unit->main_order_state = 5;
 				unit->main_order_timer = HarvestTimer;
@@ -261,7 +267,7 @@ namespace hooks {
 				valid_structure = true;
 			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant
 			||			node->id == UnitId::TerranWellbore	|| node->id == UnitId::ZergEzigrisant)
-				&&		(node->player == unit->player || scbw::are_mutual_allies(node->player, unit->player)))
+				&&		(node->player == unit->player || bw::are_mutual_allies(node->player, unit->player)))
 			{
 				valid_structure = true;
 			} 
@@ -271,7 +277,7 @@ namespace hooks {
 			&& node->status & UnitStatus::Completed
 			&& valid_structure
 			&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either)) {
-			helper::turn_unit(unit, scbw::get_angle(unit->position, node->position));
+			helper::turn_unit(unit, bw::get_angle(unit->position, node->position));
 			if (!unit->main_order_state) {
 				helper::Order_BeginHarvest(node, unit);
 			}
@@ -312,7 +318,7 @@ namespace hooks {
 				}
 			} else {
 				if (!helper::unit_is_active_resource_depot(node)
-				||   node->player != worker->player && (!scbw::is_allied_to(node->player, worker->player) || !scbw::is_allied_to(worker->player, node->player)))
+				||   node->player != worker->player && (!bw::is_allied_to(node->player, worker->player) || !bw::is_allied_to(worker->player, node->player)))
 				{
 					result = OrderId::None;
 					return result;
@@ -381,7 +387,7 @@ namespace hooks {
 		Unit* final_worker = 0;
 		while (worker) {
 			u32 previous_status = worker->status;
-			if (!scbw::unit_is_stunned(worker)) {
+			if (!bw::unit_is_stunned(worker)) {
 				if (worker->main_order_id == OrderId::CanEnterGasMine || worker->main_order_id == OrderId::CanHarvestOre) {
 					final_worker = worker;
 				}
@@ -480,7 +486,7 @@ namespace hooks {
 			worker->worker.harvest_target = 0;
 			if (node)
 			{
-				--node->building.resource.is_mining;
+				node->building.resource.is_mining = 0;
 				Unit* next_harvester = helper::let_next_unit_mine(node);
 				if (next_harvester)
 				{
@@ -564,36 +570,40 @@ namespace hooks {
 
 	static Unit* find_better_node(Unit* worker, Unit* current_node) {
 		bool is_pathing = worker->pathing_flags & 1;
-		u32 original_group_id = scbw::get_region(current_node->position)->group_index;
-		u32 original_height = scbw::get_active_tile_at_coords(current_node->position)->ground_height;
+		u32 original_group_id = bw::get_region(current_node->position)->group_index;
+		u32 original_height = bw::get_active_tile_at_coords(current_node->position)->ground_height;
 
-		Unit* best_node = current_node;
+		Unit* townhall = find_best_return_cargo_target(worker);
+		Unit* best_node = 0;
 		s32 best_worker_count = get_unit_ext(current_node)->values[ValueActiveHarvesters];
-		if (get_unit_ext(worker)->values[ValueIsActiveHarvester]) {
+		if (bw::harvester_is_active(worker)) {
 			best_worker_count -= 1; // we don't want to count the current worker
 		}
 		u32 best_distance = 0; // we don't want to change the current node on distance alone
 
 		EntryArray nodes = {};
-		unit_search_radial(&nodes, current_node->position, 5 * 32);
+		unit_search_radial(&nodes, current_node->position, 8 * 32);
 		for (u32 i = 0; i < nodes.count; ++i) {
 			Unit* node = nodes.units[i];
-			if (!unit_id_is_minerals(node->id)) {
+			if (node == current_node || !unit_id_is_minerals(node->id)) {
+				continue;
+			}
+			if (townhall && bw::get_distance_square(node->position, townhall->position) > 10 * 32) {
 				continue;
 			}
 			if (is_pathing) {
-				u32 group_id = scbw::get_region(node->position)->group_index;
+				u32 group_id = bw::get_region(node->position)->group_index;
 				if (group_id != original_group_id) {
 					continue;
 				}
-				u32 height = scbw::get_active_tile_at_coords(node->position)->ground_height;
+				u32 height = bw::get_active_tile_at_coords(node->position)->ground_height;
 				if (height != original_height) {
 					continue;
 				}
 			}
 
 			u32 worker_count = get_unit_ext(node)->values[ValueAssignedHarvesters];
-			u32 distance = scbw::get_worker_harvest_distance(worker, node->position);
+			u32 distance = bw::get_worker_harvest_distance(worker, node->position);
 			if (worker_count < best_worker_count || (worker_count == best_worker_count && distance < best_distance)) {
 				best_node = node;
 				best_worker_count = worker_count;
@@ -611,20 +621,20 @@ namespace hooks {
 		}
 		UnitExt* current_node_ext = get_unit_ext(current_node);
 		if (current_node_ext->values[ValueActiveHarvesters] && !worker->worker.is_harvesting) {
-			Unit* new_node = find_better_node(worker, current_node);
-			if (new_node && new_node != current_node) {
+			Unit* better_node = find_better_node(worker, current_node);
+			if (better_node) {
 				current_node_ext->values[ValueAssignedHarvesters] -= 1;
 				UnitExt* worker_ext = get_unit_ext(worker);
-				if (worker_ext->values[ValueIsActiveHarvester]) {
-					worker_ext->values[ValueIsActiveHarvester] = false;
+				if (bw::harvester_is_active(worker)) {
 					current_node_ext->values[ValueActiveHarvesters] -= 1; // we don't want to count the current worker
 				}
-				get_unit_ext(new_node)->values[ValueAssignedHarvesters] += 1;
+				worker_ext->values[ValueHarvesterActivity] = 0;
+				get_unit_ext(better_node)->values[ValueAssignedHarvesters] += 1;
 
-				Target new_target = make_target(new_node);
+				Target new_target = make_target(better_node);
 				worker->order_target = new_target;
 				worker->worker.target_resource = new_target;
-				helper::move_to_target(new_node, worker);
+				helper::move_to_target(better_node, worker);
 				// NOTE: Fixes an edge case where the unit would not move to a new node correctly if it's already in range,
 				//       since move_to_target wouldn't update the move_target in such case
 				worker->move_target = new_target;
@@ -637,7 +647,7 @@ namespace hooks {
 	// Hooked to enable returns to allied town centers. -Pr0nogo
 	b32 return_cargo_to_best_depot_proc(Unit* depot, Unit* worker) { // 00440FA0
 		if (helper::unit_is_active_resource_depot(depot)) {
-			if (depot->player == worker->player || scbw::are_mutual_allies(depot->player, worker->player)) {
+			if (depot->player == worker->player || bw::are_mutual_allies(depot->player, worker->player)) {
 				if (!(worker->pathing_flags & PathingFlags_ProvidesCollision) || helper::unit_has_path_to_destination(worker, depot->position.x, depot->position.y)) {
 					return true;
 				}
@@ -648,6 +658,10 @@ namespace hooks {
 
 	// Hooked to make workers always return to the closest town center by pathing distance. -Pr0nogo
 	Unit* find_best_return_cargo_target(Unit* worker) { // 00441310
+		if (worker->id == UnitId::ProtossArtisan) {
+			return 0;
+		}
+
 		Unit* best_depot = 0;
 		u32 best_distance = UINT_MAX;
 		for (Unit* depot = *g_first_visible_unit; depot; depot = depot->link.next) {
@@ -655,7 +669,7 @@ namespace hooks {
 				continue;
 			}
 
-			u32 distance = scbw::get_worker_harvest_distance(worker, depot->position);
+			u32 distance = bw::get_worker_harvest_distance(worker, depot->position);
 			if (distance < best_distance) {
 				best_depot = depot;
 				best_distance = distance;

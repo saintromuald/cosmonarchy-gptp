@@ -1,10 +1,10 @@
 #pragma once
 #include "dat_limits.h"
-//#include <SCBW/api.h>
+//#include <BW/api.h>
 
 // Signifies the byte after the end of an array
 #define ARRAY_END          (s32)0x80000000
-// Used to define references to scbwdata.h variables that are modified by DatExt
+// Used to define references to bwdata.h variables that are modified by DatExt
 #define DATEXT_VAR_REF(type, name)  extern type name;
 
 namespace DatExt {

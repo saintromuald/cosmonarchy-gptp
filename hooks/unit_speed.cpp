@@ -1,11 +1,11 @@
 //Contains hooks that control unit movement speed, acceleration, and turn speed.
 
 #include "unit_speed.h"
-#include "../SCBW/enumerations.h"
-#include "../SCBW/scbwdata.h"
+#include "../BW/enumerations.h"
+#include "../BW/bwdata.h"
 #include "hooks/cosmonarchy_finder.h"
-#include <SCBW/UnitFinder.h>
-#include "SCBW/api.h"
+#include <BW/UnitFinder.h>
+#include "BW/api.h"
 #include "globals.h"
 #include "math_utils.h"
 #include "Utils/captivating_claws.h"
@@ -17,12 +17,11 @@ namespace hooks
 
 		f64 speed = 1;
 		// Set additives based on status effects
-		s32 increase = (unit->stim_timer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		s32 decrease = (unit->ensnare_timer ? unit_ext->values[ValueEnsnareFactor] : 0);
 
 		if (decrease > 0) {
 			for (s32 i = 0; i < decrease; i++) {
-				speed *= 0.5;
+				speed *= 0.666;
 			}
 		}
 
@@ -66,12 +65,12 @@ namespace hooks
 		}
 
 		// Keskathalor - Caustic Discharge - speed up
-		if (unit_ext->timers[TimerCausticDischargeSpeed] > 0)
+		if (unit_ext->timers[TimerCausticDischargeSpeed] > 1)
 		{
 			speed *= 1.5;
 		}
 
-		// Zoryusthaleth - Swarming Omen - 125% movement speed when moving towards Zoryusthaleth
+		// Zoryusthaleth - Swarming Omen - 133% movement speed when moving towards Zoryusthaleth
 		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
 			bool accelerate = false;
 			EntryArray targets = {};
@@ -80,37 +79,44 @@ namespace hooks
 			for (u32 i = 0; i < targets.count; ++i) {
 				Unit* target = targets.units[i];
 				UnitExt* target_ext = get_unit_ext(target);
-				if (!target_ext->values[ValueSwarmingOmenPlayer]) {
+				if (!target_ext->timers[TimerSwarmingOmenDebuff]) {
 					continue;
 				}
-				u32 player = target_ext->values[ValueSwarmingOmenPlayer] - 1;
-				if (!scbw::is_allied_to(player, unit->player)) {
+				if (bw::is_allied_to(target->player, unit->player)) {
 					continue;
 				}
 				accelerate = true;
 			}
 			if (accelerate) {
-				speed *= 1.25;
+				speed *= 1.33;
+				if (!unit_ext->timers[TimerSwarmingOmenVisuals]) {
+					unit_ext->timers[TimerSwarmingOmenVisuals] = 12;
+					bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
+				}
+				if (!unit_ext->timers[TimerSwarmingOmenAudio]) {
+					unit_ext->timers[TimerSwarmingOmenAudio] = 36;
+					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02), unit, 1, 0);
+				}
 			}
 		}
 
 		// Crucible - speed up
-		speed /= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
+		bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
+		speed *= 1 + (has_crucible * 0.25);
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
-		if (unit_ext->timers[TimerTerminalSurge] > 1)
-		{
+		if (unit_ext->timers[TimerTerminalSurge] > 1) {
 			speed *= 1.25;
 		}
 
 		// Hierophant Signify: Cowardice
 		if (unit_ext->values[ValueSignifyStacks]) {
 			auto match = cosmonarchy_finder_match(unit, 0, {});
-			Vector32f dir = scbw::get_unit_direction_vector(unit);
+			Vector32f dir = bw::get_unit_direction_vector(unit);
 
 			// TODO: unit search / optimize
 			const u32 radius = 6 * 32;
-			Unit* enemy_unit = scbw::UnitFinder::get_nearest_target(
+			Unit* enemy_unit = bw::UnitFinder::get_nearest_target(
 				unit->get_x() - radius,
 				unit->get_y() - radius,
 				unit->get_x() + radius,
@@ -120,13 +126,13 @@ namespace hooks
 				if (!match(enemy)) {
 					return false;
 				}
-				if (!scbw::is_allied_to(unit_ext->values[ValueSignifyPlayer], enemy->player)) {
+				if (!bw::is_allied_to(unit_ext->values[ValueSignifyPlayer], enemy->player)) {
 					return false;
 				}
 
-				Vector32 diff = scbw::get_vector_between(enemy->position, unit->position);
-				Vector32f target = scbw::get_normalized_vector(diff);
-				f32 dot = scbw::dot_product(dir, target);
+				Vector32 diff = bw::get_vector_between(enemy->position, unit->position);
+				Vector32f target = bw::get_normalized_vector(diff);
+				f32 dot = bw::dot_product(dir, target);
 				if (dot < 0) {
 					return false;
 				}
@@ -143,6 +149,11 @@ namespace hooks
 			speed *= 0.5;
 		}
 
+		// Infestation - Slow
+		if (unit_ext->values[ValueInfested]) {
+			speed *= 0.75;
+		}
+
 		switch (unit->id) {
 			case UnitId::TerranBlackjack:
 			{
@@ -151,54 +162,6 @@ namespace hooks
 				const u32 maxHealth = unit->get_max_hp_ingame();
 				const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 				speed *= multiplier;
-			} break;
-			case UnitId::ProtossClarion:
-			{
-				// Clarion Harmony Drive: gains increased movement speed based on shields
-				f64 fraction = (unit->shields / 256.0) / units_dat::max_shield_points[unit->id];
-				speed *= 1.0 + fraction / 2;
-			} break;
-			case UnitId::ZergVorvrokor:
-			{
-				// Vorvaling Adrenal Surge: gains f64 movespeed when moving towards enemies
-				if (unit->id == UnitId::ZergVorvrokor)
-				{
-					u32 range = unit->get_sight_range(false) * 32;
-					scbw::UnitFinder unit_finder(
-						unit->get_x() - range,
-						unit->get_y() - range,
-						unit->get_x() + range,
-						unit->get_y() + range
-					);
-					unit_finder.for_each([&](Unit* target)
-						{
-							if (scbw::is_allied_to(unit->player, target->player)
-								|| units_dat::base_property[target->id] & UnitProperty::Flyer)
-							{
-								return;
-							}
-							u16 angle = scbw::get_angle(unit->position.x, unit->position.y,
-								target->position.x, target->position.y);
-							u16 unit_angle = unit->velocity_direction_1;
-							s32 arc = (f64)60 / 1.40625;
-							// 120 degrees
-							s32 delta = unit_angle - angle;
-							delta = abs((delta + 128) % 256 - 128);
-							if (delta <= arc)
-							{
-								unit->new_flags_3 |= 0x2;
-							}
-						});
-					if (unit->new_flags_3 & 0x2)
-					{
-						speed *= 2;
-						unit->new_flags_3 &= ~0x2;
-					}
-					else
-					{
-						speed * 1.2;
-					}
-				}
 			} break;
 			case UnitId::ZergUltrokor:
 			{
@@ -209,7 +172,9 @@ namespace hooks
 					speed *= 2;
 				}
 			} break;
-			case UnitId::ProtossZealot:
+
+			// Deathless Procession
+			case UnitId::ProtossAdherent:
 			{
 				speed *= 1.25;
 				if (unit->shields > 256) {
@@ -229,7 +194,7 @@ namespace hooks
 			case UnitId::TerranSiren:
 			case UnitId::TerranPhalanxTankMode:
 			case UnitId::TerranDurendal:
-			case UnitId::TerranClaymore:
+			case UnitId::ZergEvigrilisk:
 			{
 				speed *= 0.9;
 			} break;
@@ -237,11 +202,13 @@ namespace hooks
 			case UnitId::ProtossScribe:
 			case UnitId::ZergDroleth:
 			case UnitId::TerranMaverick:
+			case UnitId::TerranHotshot:
 			case UnitId::TerranCleric:
 			case UnitId::TerranEidolon:
 			case UnitId::TerranSavant:
 			case UnitId::TerranMadcap:
 			case UnitId::TerranApostle:
+			case UnitId::TerranOlympian:
 			case UnitId::TerranCataphract:
 			case UnitId::ProtossSimulacrum:
 			case UnitId::ZergZoryusthaleth:
@@ -252,23 +219,26 @@ namespace hooks
 			{
 				speed *= 1.15;
 			} break;
-			case UnitId::TerranHarakan:
 			case UnitId::TerranCyprian:
 			case UnitId::TerranSevenstep:
 			case UnitId::ProtossCabalist:
+			case UnitId::ZergLiiralisk:
 			case UnitId::ZergIzirokor:
 			case UnitId::ZergKagralisk:
 			{
 				speed *= 1.2;
 			} break;
+			case UnitId::TerranHarakan:
 			case UnitId::TerranHeracles:
 			case UnitId::ProtossSycophant:
 			case UnitId::ZergZethrokor:
+			case UnitId::ZergVorvrokor:
 			case UnitId::ZergAxitrilisk:
 			{
 				speed *= 1.25;
 			} break;
 			case UnitId::TerranStriga:
+			case UnitId::ProtossZealot:
 			{
 				speed *= 1.35;
 			} break;
@@ -279,10 +249,13 @@ namespace hooks
 			case UnitId::ProtossLegionnaire:
 			case UnitId::ProtossVagrantShade:
 			case UnitId::ZergAxitriliskWeaponless:
-			case UnitId::ZergMortothrokor:
 			case UnitId::ZergHydralisk:
 			{
 				speed *= 1.5;
+			} break;
+			case UnitId::ZergMortothrokor:
+			{
+				speed *= 1.6;
 			} break;
 		}
 
@@ -294,8 +267,7 @@ namespace hooks
 
 	u32 get_modified_unit_speed(Unit* unit, u32 base_speed) // 0047B5F0
 	{
-		if (!unit)
-		{
+		if (!unit) {
 			return 1;
 		}
 
@@ -310,14 +282,12 @@ namespace hooks
 			default:
 			{
 				// Flingy-related code
-				if (increase > 0)
-				{
+				if (increase > 0) {
 					for (s32 i = 0; i < increase; i++)
 					{
-						base_speed *= 1.5;
+						base_speed *= 1.6;
 					}
-					if (base_speed < 853)
-					{
+					if (base_speed < 853) {
 						base_speed = 853;
 					}
 				}
@@ -370,45 +340,39 @@ namespace hooks
 	// Hooked to fix the speed tooltip for iscript units. -Pr0nogo
 	void update_iscript_speed(Unit* unit) // 0042D8C0
 	{
-		if (unit->flingy_movement_type == MovementType::MovementType_Iscript)
-		{
+		if (unit->flingy_movement_type == MovementType::MovementType_Iscript) {
 			Image* image = unit->sprite->main_graphic;
 			*g_temp_iscript_header = image->iscript_header_offset;
 			*g_iscript_speed_something = image->return_address;
-			if (helper::set_temp_iscript_animation(IscriptAnimation::Walking))
-			{
+			if (helper::set_temp_iscript_animation(IscriptAnimation::Walking)) {
 				Unit* active_unit = *g_active_iscript_unit;
 				u32 iteration_factor = 0;
 				u32 opcode_value = 0;
 				u32 tile_size = 32;
 				bool tile_size_bool = 0;
 				u32 base_speed = 0;
-				do {
+				do
+				{
 					Image* loop_image = unit->sprite->main_graphic;
 					*g_active_iscript_unit = unit;
 				//	helper::iscript_opcode_cases(loop_image, g_temp_iscript_header, 1, (u32)&opcode_value); // This is probably wrong, compare to IDA (our helper has 1 less arg)
-					char stim_timer = unit->stim_timer;
+					u8 stim_timer = unit->stim_timer;
 					u32 opcode_value_final = opcode_value;
 
 					u32 buff_or_debuff = 0;
 					*g_active_iscript_unit = active_unit;
-					if (stim_timer)
-					{
+					if (stim_timer) {
 						buff_or_debuff = 1;
 					}
-					if (unit->status & UnitStatus::SpeedUpgrade)
-					{
+					if (unit->status & UnitStatus::SpeedUpgrade) {
 						++buff_or_debuff;
 					}
-					if (unit->ensnare_timer)
-					{
+					if (unit->ensnare_timer) {
 						--buff_or_debuff;
 					}
 
-					if (buff_or_debuff <= 0)
-					{
-						if (buff_or_debuff < 0)
-						{
+					if (buff_or_debuff <= 0) {
+						if (buff_or_debuff < 0) {
 							opcode_value_final = opcode_value - (opcode_value >> 2);
 						}
 					} else {
@@ -430,13 +394,11 @@ namespace hooks
 	{
 		s32 result = 0;
 		s32 speed = unit->current_speed_2;
-		if (!speed || unit->flingy_movement_type)
-		{
+		if (!speed || unit->flingy_movement_type) {
 			return result;
 		}
 		u32 flingy_id = unit->flingy_id;
-		if (speed != flingy_dat::top_speed[flingy_id] || unit->flingy_acceleration != flingy_dat::acceleration[flingy_id])
-		{
+		if (speed != flingy_dat::top_speed[flingy_id] || unit->flingy_acceleration != flingy_dat::acceleration[flingy_id]) {
 			result = speed * speed / (2 * unit->flingy_acceleration);
 		} else {
 			result = flingy_dat::halt_distance[flingy_id] >> 2;

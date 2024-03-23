@@ -54,7 +54,7 @@ namespace hooks
 		u32 target = *g_place_building_unit_id;
 		u16 addon_x = (*place_building_x - units_dat::addon_placement[2 * *g_place_building_unit_id - 212].x / 32);
 		u16 addon_y = (*place_building_y - units_dat::addon_placement[2 * *g_place_building_unit_id - 211].y / 32);
-		scbw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
+		bw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
 
 		s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, *g_placing_player, *place_building_x, *place_building_y, *g_place_building_unit_id, 1, 1, 0, 0);
 		s32 result = helper::can_build_on_tile_location(*g_active_portrait_unit, *g_placing_player, addon_x, addon_y, *g_place_building_base_type, 0, 1, 0, 0);
@@ -71,7 +71,7 @@ namespace hooks
 			Unit* other_unit = *it;
 			bool needs_detection = false;
 			if (builder) {
-				if (scbw::is_allied_to(other_unit->player, builder->player)) {
+				if (bw::is_allied_to(other_unit->player, builder->player)) {
 					continue;
 				}
 				if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {
@@ -84,8 +84,7 @@ namespace hooks
 			||  (needs_detection && !also_invisible)
 			||   other_unit == builder
 			||   other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir | UnitStatus::Burrowed)
-			||   other_unit->id == UnitId::Spell_DarkSwarm
-			||   other_unit->id == UnitId::Spell_DisruptionWeb
+			||   unit_id_is_spell(other_unit->id)
 			||   other_unit->sprite->flags & SpriteFlags::Hidden)
 			{
 				continue;
@@ -112,7 +111,7 @@ namespace hooks
 		u8 result = 0;
 		for (u32 y = 0; y < size.y; ++y) {
 			for (u32 x = 0; x < size.x; ++x) {
-				ActiveTile* tile = scbw::get_active_tile_at_tile(x_tile + x, y_tile + y);
+				ActiveTile* tile = bw::get_active_tile_at_tile(x_tile + x, y_tile + y);
 
 				char state = 0;
 				if (tile->explored_flags & human_only_player_bit) {
@@ -146,7 +145,7 @@ namespace hooks
 		u8 result = 0;
 		for (u32 y = 0; y < size.y; ++y) {
 			for (u32 x = 0; x < size.x; ++x) {
-				ActiveTile* tile = scbw::get_active_tile_at_tile(tile_x + x, tile_y + y);
+				ActiveTile* tile = bw::get_active_tile_at_tile(tile_x + x, tile_y + y);
 				TileExt* tile_ext = get_tile_ext_at_tile(tile_x + x, tile_y + y);
 
 				u32 flags = 0x20800000; // cliff_edge, always_unbuildable
@@ -213,7 +212,7 @@ namespace hooks
 			player = builder->player;
 			g_game_minerals[player] -= g_ai_minerals_reserve[player];
 			g_game_vespene[player] -= g_ai_vespene_reserve[player];
-			scbw::prepare_building_area(builder->order_target.pt, building_id);
+			bw::prepare_building_area(builder->order_target.pt, building_id);
 			return 1;
 		}
 	}
@@ -329,8 +328,8 @@ namespace hooks
 			helper::place_building_refinery_proc();
 		}
 
-		char* string = "";
-		if (*g_network_table > 63)
+		const char* string = "";
+		if (g_network_table_DF->get_string_count() > 63)
 		{
 			string = (char*)g_network_table_DF->get_string(64);
 		}
@@ -380,35 +379,39 @@ namespace hooks
 	// Hooked to improve functionality, and later add handling for new races. -Pr0nogo
 	void set_worker_error(Unit* unit, u32 error_string) // 0048F7B0
 	{
-		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id)
-		{
-			u32 race = unit->get_race();
-			u32 sound_id = race + 159;
-			if (race == RaceId::Protoss) {
-				sound_id = SoundId::ProtossAdvisorErrorPlacement;
+		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id) {
+			u32 sound_id = SoundId::No_sound;
+			switch (unit->get_race()) {
+				case RaceId::Terran:
+				{
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildTerran);
+				} break;
+				case RaceId::Protoss:
+				{
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildProtoss);
+				} break;
+				case RaceId::Zerg:
+				{
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildZerg);
+				} break;
 			}
 
-			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
-			{
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
 				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 			}
 
-			if (error_string)
-			{
-				char* string = 0;
-				if ((u16)(error_string - 1) < g_stat_txt_buffer->get_string_count())
-				{
-					string = (char*)g_stat_txt_buffer->get_string(error_string);
-					if (!string)
-					{
+			if (error_string) {
+				const char* string = 0;
+				if ((u16)(error_string - 1) < g_stat_txt_buffer->get_string_count()) {
+					string = g_stat_txt_buffer->get_string(error_string);
+					if (!string) {
 						return;
 					}
 				} else {
 					string = "";
 				}
 
-				if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
-				{
+				if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(string);
 				}
 			}
@@ -418,21 +421,28 @@ namespace hooks
 	// Hooked to improve functionality, and later add handling for new races. -Pr0nogo
 	void play_worker_error_sound(Unit* unit, u32 error_text_index) // 0048F6C0
 	{
-		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id)
-		{
-			u32 race = unit->get_race();
-			u32 sound_id = race + 162;
-			if (race == RaceId::Protoss) {
-				sound_id = SoundId::ProtossAdvisorErrorPlacement;
+		if (!(*g_is_in_replay) && unit->player == *g_local_nation_id) {
+			u32 sound_id = SoundId::No_sound;
+			switch (unit->get_race()) {
+				case RaceId::Terran:
+				{
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
+				} break;
+				case RaceId::Protoss:
+				{
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
+				} break;
+				case RaceId::Zerg:
+				{
+					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
+				} break;
 			}
 
-			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
-			{
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
 				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 			}
 
-			if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id)
-			{
+			if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 				char* string = (char*)g_stat_txt_buffer->get_string(856);
 				helper::set_unit_stat_txt_error_message(string);
 			}
@@ -449,6 +459,7 @@ namespace hooks
 
 		Thingy* fow_sprite_1 = *g_first_fow_sprite;
 		Thingy* fow_sprite_2 = *g_first_fow_sprite;
+		Sprite* sprite = fow_sprite_1->sprite;
 		while (2)
 		{
 			u32 unit_id = UnitId::None;
@@ -480,7 +491,6 @@ namespace hooks
 				} break;
 			}
 
-			Sprite* sprite = fow_sprite_1->sprite;
 			if (radius + tile_x - (sprite->position.x - units_dat::building_dimensions[unit_id].x / 2) / 32 >= (2 * radius + units_dat::building_dimensions[unit_id].x / 32)
 			||  radius + tile_y - (sprite->position.y - units_dat::building_dimensions[unit_id].y / 2) / 32 >= (2 * radius + units_dat::building_dimensions[unit_id].y / 32))
 			{

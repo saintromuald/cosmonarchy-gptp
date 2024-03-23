@@ -18,7 +18,7 @@ namespace AI
 		else
 			bounds = 32 * 32;
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds, caster->get_y() - bounds,
 			caster->get_x() + bounds, caster->get_y() + bounds,
 			caster,
@@ -27,7 +27,7 @@ namespace AI
 			if (!is_target_worth_hitting(target, caster))
 				return false;
 
-			if (!scbw::can_weapon_target_unit(WeaponId::Ensnare, target, caster))
+			if (!bw::can_weapon_target_unit(WeaponId::Ensnare, target, caster))
 				return false;
 
 			if (target->ensnare_timer)

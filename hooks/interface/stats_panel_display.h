@@ -1,11 +1,11 @@
 #pragma once
-#include "../../SCBW/structures/Unit.h"
-#include "../../SCBW/structures.h"
+#include "../../BW/structures/Unit.h"
+#include "../../BW/structures.h"
 
 namespace hooks
 {
 	void stats_panel_display(BinDlg* dialog);																										// 00426C60
-	char* get_unit_rank_string(Unit* a1);																											// 0042F370
+	const char* get_unit_rank_string(Unit* a1);																										// 0042F370
 	void draw_unit_kills_string(BinDlg* dialog);																									// 00425DD0
 	void draw_building_info(BinDlg* dlg);																											// 00427890
 	void stats_armor_level(BinDlg* dialog, Unit* unit, u16 status_screen_index);																	// 00425600

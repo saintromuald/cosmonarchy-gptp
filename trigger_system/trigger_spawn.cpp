@@ -20,18 +20,22 @@ void update_spawn() {
 		switch (seq->type) {
 			case SpawnType_Augur: {
 				Thingy* thingy = helper::create_thingy(SpriteId::AugurDeathExplosion, seq->source_pos.x, seq->source_pos.y, seq->player);
-				helper::play_sound_from_unit(scbw::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
+				helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
 			} break;
 			case SpawnType_AugurDamage: {
-				Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, seq->player, seq->source_pos.x, seq->source_pos.y);
+				Unit* augur = bw::create_unit_in_game(UnitId::ProtossAugur, seq->player, seq->source_pos.x, seq->source_pos.y);
 				if (augur) {
 					augur->user_action_flags |= 4;
 					augur_sacrifice(augur, 10 * 32);
 				}
 			} break;
+			case SpawnType_Teleport:
+			{
+				Thingy* thingy = helper::create_thingy(SpriteId::LegionnaireTeleportEffect, seq->source_pos.x, seq->source_pos.y, seq->player);
+			} break;
 		}
 
-		Unit* unit = scbw::create_unit_in_game(seq->unit_id, seq->player, seq->source_pos.x, seq->source_pos.y);
+		Unit* unit = bw::create_unit_in_game(seq->unit_id, seq->player, seq->source_pos.x, seq->source_pos.y);
 		if (unit) {
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Building) && (seq->move_pos.x || seq->move_pos.y)) {
 				if (unit->unit_ai) {
@@ -53,8 +57,8 @@ void update_spawn() {
 					rubble = SpriteId::Terran_Building_Rubble_Large;
 					explo = SpriteId::Building_Explosion_Large;
 				}
-				scbw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, 0);
-				scbw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation + 1);
+				bw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, 0);
+				bw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation + 1);
 			} break;
 			case SpawnType_Zerg: {
 				u32 rubble = SpriteId::Zerg_Building_Rubble_Small;
@@ -63,8 +67,8 @@ void update_spawn() {
 					rubble = SpriteId::Zerg_Building_Rubble_Large;
 					explo = SpriteId::ZergAirExplosionLarge;
 				}
-				scbw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, 0);
-				scbw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation + 1);
+				bw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, 0);
+				bw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation + 1);
 				helper::play_sound_at_pos(SoundId::Zerg_Bldg_ZBldgDth_WAV, seq->source_pos, 1, 0);
 			} break;
 		}

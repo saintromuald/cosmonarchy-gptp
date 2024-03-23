@@ -1,6 +1,6 @@
 #include "weapon_armor_tooltip.h"
-#include <SCBW/api.h>
-#include <SCBW/enumerations/WeaponId.h>
+#include <BW/api.h>
+#include <BW/enumerations/WeaponId.h>
 #include <cstdio>
 #include "../unit_speed.h"
 #include "../weapons/weapon_cooldown.h"
@@ -17,8 +17,8 @@ char buffer[256];
 
 // Returns the C-string for the tooltip text of the unit's weapon grp_frame.
 // This function is used for weapon icons and special icons.
-// Precondition: @p entryStrIndex is a stat_txt.tbl string index.
-#include "SCBW/stat_txt_spec.h"
+// Precondition: @p entry_string_index is a stat_txt.tbl string index.
+#include "BW/stat_txt_spec.h"
 #include <iomanip>
 
 static std::string format_string_vector(std::vector<std::string> strings) {
@@ -68,18 +68,23 @@ void append_tooltip_value(std::string& text, f32 value, f32 bonus, bool extended
 	text += BWTC_RESET;
 }
 
-const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrIndex) {
+const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string_index) {
 	const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
-	bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
+	bool in_replay_or_witness = globals->players[*g_local_nation_id].witness_mode || *g_is_in_replay;
 
 	// Get game strings
-	const char* entry_name = g_stat_txt_tbl_new->get_string(entryStrIndex);
+	const char* entry_name = g_stat_txt_tbl_new->get_string(entry_string_index);
 	const char* damage_string = g_stat_txt_tbl_new->get_string(777);					//"Damage:"
 
-	u8 damage_factor = scbw::get_damage_factor_for_tooltip(weapon_id, unit);
-	u8 upgrade_level = scbw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
+	UnitExt* unit_ext = get_unit_ext(unit);
+
+	u8 damage_factor = bw::get_damage_factor_for_tooltip(weapon_id, unit);
+	u8 upgrade_level = bw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
 	u8 damage_type = weapons_dat::damage_type[weapon_id];
 	u32 base_damage = weapons_dat::damage_amount[weapon_id];
+	if (unit_ext->values[ValueTriggerDamageBaseSet]) {
+		base_damage = unit_ext->values[ValueTriggerDamageBaseAmount] / 256;
+	}
 	u32 armor_pen = weapons_dat::armor_pen[weapon_id];
 	s32 bonus_armor_pen = hooks::get_modified_armor_pen(unit, 0, weapon_id);
 	if (bonus_armor_pen < 0) {
@@ -189,8 +194,8 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entryStrInde
 			text += builder.str();
 		}
 		append_tooltip_value(text, range, bonus_range, extended);
-		if (extended && (scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
-			scbw::draw_weapon_range(unit, weapon_id, 174);
+		if (extended && (bw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
+			bw::draw_weapon_range(unit, weapon_id, 174);
 		}
 	}
 
@@ -300,7 +305,9 @@ namespace hooks
 		if (bonus_armor < 0) {
 			bonus_armor = 0;
 		}
-		bonus_armor -= base_armor;
+		if (!unit_ext->values[ValueTriggerArmorBaseSet]) {
+			bonus_armor -= base_armor;
+		}
 		return bonus_armor;
 	}
 
@@ -308,7 +315,7 @@ namespace hooks
 		UnitExt* unit_ext = get_unit_ext(unit);
 
 		const bool extended = *g_is_holding_shift || config.always_show_extended_tooltips;
-		bool in_replay_or_witness = globals.players[*g_local_nation_id].witness_mode || *g_is_in_replay;
+		bool in_replay_or_witness = globals->players[*g_local_nation_id].witness_mode || *g_is_in_replay;
 
 		const u16 label_id = upgrades_dat::label[units_dat::armor_upgrade[unit->id]];
 		const char* armor_upgrade_name = g_stat_txt_tbl_new->get_string(label_id);
@@ -351,6 +358,8 @@ namespace hooks
 		}
 
 		// GPTP Timer + Value
+		add_status(statuses, "Apollyoid Adhesive", unit_ext->values[ValueApollyoidAdhesiveStacks], 0,
+			unit_ext->timers[TimerApollyoidAdhesive], TimerType::Gptp);
 		add_status(statuses, "Empowered", unit_ext->values[ValueSavantPowerSiphonBuff], 0,
 			unit_ext->timers[TimerSavantPowerSiphonBuff], TimerType::Gptp);
 		add_status(statuses, "Power Siphoned", unit_ext->values[ValueSavantPowerSiphonDebuff], 0,
@@ -384,20 +393,24 @@ namespace hooks
 		add_status(statuses, "Controlled Demolition", -1, 1, unit_ext->timers[TimerControlledDemolition], TimerType::Gptp);
 		add_status(statuses, "Emergency Detonation", -1, 1, unit_ext->timers[TimerEmergencyDetonation], TimerType::Gptp);
 		add_status(statuses, "Ion Field", -1, 1, unit_ext->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
+		add_status(statuses, "Incinerating", -1, 1, unit_ext->timers[TimerAurielIncineration], TimerType::Gptp);
 		add_status(statuses, "Lobotomized", -1, 1, unit_ext->timers[TimerLobotomySlow], TimerType::Gptp);
 		add_status(statuses, "Kelvin Munitions", -1, 1, unit_ext->timers[TimerKelvinMunitions], TimerType::Gptp);
 		add_status(statuses, "Hallucinating", -1, 1, unit_ext->timers[TimerHallucinating], TimerType::Gptp);
 		add_status(statuses, "Triumphant Rise", -1, 1, unit_ext->timers[TimerTriumphantRiseDebuff], TimerType::Gptp);
-		add_status(statuses, "Binding Grip", -1, 1, unit_ext->timers[TimerBindingGrip], TimerType::Gptp);
 		add_status(statuses, "Maelstrom", -1, 1, unit_ext->timers[TimerMindTyrantMaelstromSlow], TimerType::Gptp);
 		add_status(statuses, "Autovitality", -1, 1, unit_ext->timers[TimerSimulacrumClone], TimerType::Gptp);
 		add_status(statuses, "Terminal Surge", -1, 1, unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
 		add_status(statuses, "Crisis of Faith", -1, 1, unit_ext->timers[TimerDemiurgeWorship], TimerType::Gptp);
 		add_status(statuses, "Stellar Enforcement", -1, 1, unit_ext->timers[TimerStellarEnforcement], TimerType::Gptp);
+		add_status(statuses, "Adrenal Frenzy", -1, 1, unit_ext->timers[TimerZergAdrenalFrenzy], TimerType::Gptp);
 		add_status(statuses, "Caustic Discharge", -1, 1, unit_ext->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
 		add_status(statuses, "Incubating", -1, 1, unit_ext->timers[TimerIncubationArm], TimerType::Gptp);
 		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
 		add_status(statuses, "Blinded", -1, 1, unit_ext->timers[TimerAuralAssaultBlind], TimerType::Gptp);
+		add_status(statuses, "Swarming Omen", -1, 1, unit_ext->timers[TimerSwarmingOmenDebuff], TimerType::Gptp);
+		add_status(statuses, "Mitosal Fog", -1, 1, unit_ext->timers[TimerNathreliskMitosalFog], TimerType::Gptp);
+		add_status(statuses, "Awaiting Injection", -1, 1, unit_ext->timers[TimerStimpackDelay], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
@@ -408,42 +421,49 @@ namespace hooks
 		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);
 		add_status(statuses, "Controlled Opposition", unit_ext->values[ValueAutocratControlledOppositionStacks], 0);
 		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
-		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size(), 0);
+		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0, 0);
 		add_status(statuses, "Decaying", unit_ext->values[ValueDecaying], 1);
+		add_status(statuses, "Repentant Chorus", unit_ext->unit_vectors[UnitVectorBarghests].size(), 0);
+
+		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
+		add_status(statuses, "Decided Reach", unit_ext->values[ValueTriggerWeaponRangeBaseAmount] / 32);
+		add_status(statuses, "Decided Piercing", unit_ext->values[ValueTriggerArmorPenBaseAmount]);
+		add_status(statuses, "Decided Damage", unit_ext->values[ValueTriggerDamageBaseAmount] / 256);
+		add_status(statuses, "Decided Collateral (Inner)", unit_ext->values[ValueTriggerWeaponSplashInnerAmount] / 32);
+		add_status(statuses, "Decided Collateral (Medium)", unit_ext->values[ValueTriggerWeaponSplashMediumAmount] / 32);
+		add_status(statuses, "Decided Collateral (Outer)", unit_ext->values[ValueTriggerWeaponSplashOuterAmount] / 32);
 
 		// GPTP Value - Gimmicked
-		add_status(statuses, "Power Siphon", scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
-		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
-		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigalImperiosoMode && unit_ext->values[ValueMadrigalTempoDown] == 0, 1);
-		add_status(statuses, "Tempo Down", unit_ext->values[ValueMadrigalTempoDown] == 1, 1);
-		add_status(statuses, "Phase Link", scbw::has_clarion_links(unit), 1);
+		add_status(statuses, "Power Siphon", bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
+		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
+		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigalImperiosoMode, 1);
+		add_status(statuses, "Tempo Down", unit->id == UnitId::TerranMadrigalFuriaMode, 1);
+		add_status(statuses, "Phase Link", bw::has_clarion_links(unit), 1);
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
-		add_status(statuses, "Swarming Omen", unit_ext->values[ValueSwarmingOmenPlayer] > 0, 1);
-		add_status(statuses, "Blissful Embrace", unit_ext->values[ValueBlissfulEmbraceOriginalPlayer] > 0, 1);
+		add_status(statuses, "Blissfully Embraced", unit_ext->values[ValueInfested], 1);
 
-		if (unit_ext->units[UnitMindController]) {
-			switch (unit_ext->units[UnitMindController]->id) {
-				case UnitId::ProtossMindTyrant: {
-					add_status(statuses, "Tyranny", 1, 1);
-				} break;
-				case UnitId::ProtossDemiurge: {
-					add_status(statuses, "Worshiping", 1, 1);
-				} break;
-				case UnitId::ProtossEmpress: {
-					add_status(statuses, "Zombified", 1, 1);
-				} break;
-			}
+		switch (unit_ext->values[ValueMindControllerUnitId]) {
+			case UnitId::ProtossMindTyrant: {
+				add_status(statuses, "Tyranny", 1, 1);
+			} break;
+			case UnitId::ProtossDemiurge: {
+				add_status(statuses, "Worshiping", 1, 1);
+			} break;
+		}
+		if (unit_ext->values[ValueIsZombified]) {
+			add_status(statuses, "Zombified", 1, 1);
 		}
 
 		// GPTP Timers - Gimmicked
 		add_status(statuses, "Observing", unit_ext->timers[TimerObservanceOverlay] > 0, 1);
 		add_status(statuses, "Dermal Accelerant", unit_ext->timers[TimerAlaszilethRegenBoost] > 0, 1);
+		add_status(statuses, "Blissful Embrace", unit_ext->timers[TimerInfesting] > 0, 1);
 
 		// Vanilla Timer + Value
 		add_status(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 100, unit->defensive_matrix_timer);
 
 		// Vanilla Timers
-		add_status(statuses, "Stimpack", -1, 1, unit->stim_timer);
+		add_status(statuses, "Stimpack Injection", -1, 1, unit->stim_timer);
 		add_status(statuses, "Irradiated", -1, 1, unit->irradiate_timer);
 		add_status(statuses, "Lobotomized", -1, 1, unit->lockdown_timer);
 		add_status(statuses, "Maelstromed", -1, 1, unit->maelstrom_timer);
@@ -458,8 +478,8 @@ namespace hooks
 
 		// Case Specific
 		add_status(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
-		if (scbw::is_under_carapace_swarm(unit)) {
-			Unit* darkSwarm = scbw::get_dark_swarm_unit(unit);
+		if (bw::is_under_carapace_swarm(unit)) {
+			Unit* darkSwarm = bw::get_carapace_swarm_unit(unit);
 			add_status(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
 		}
 
@@ -516,7 +536,7 @@ namespace hooks
 
 		if (extended) {
 			if (unit->player < PlayerLimit) {
-				text += "\nColor: " + std::string(scbw::get_player_color_code(unit->player, false).data) + std::string(player_color_names[player_data.player_color_list[unit->player]]) + "\002"; // TODO: move to rank text
+				text += "\nColor: " + std::string(bw::get_player_color_code(unit->player, false).data) + std::string(player_color_names[player_data.player_color_list[unit->player]]) + "\002"; // TODO: move to rank text
 			}
 			text += "\nPlane: " + plane;
 			text += "\nFlags: " + flag;
@@ -524,8 +544,8 @@ namespace hooks
 				text += "\nAcceleration: " + acceleration;
 			}
 			text += "\nTurn Rate: " + turn_rate;
-		//	if ((scbw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
-		//		scbw::draw_weapon_range(unit, sight_range, 255);
+		//	if ((bw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
+		//		bw::draw_weapon_range(unit, sight_range, 255);
 		//	}
 			if (transport_space != 255) {
 				text += "\nTransport Space: " + std::to_string(transport_space);
@@ -565,7 +585,7 @@ namespace hooks
 			case UnitId::TerranSpiderMine:
 			case UnitId::TerranLobotomyMine: {
 				if (unit->id == UnitId::TerranVulture) {
-					return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1363);		// "Lobotomy Mines"
+					return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363);		// "Lobotomy Mines"
 				} else {
 					return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			// "Spider Mines"
 				}

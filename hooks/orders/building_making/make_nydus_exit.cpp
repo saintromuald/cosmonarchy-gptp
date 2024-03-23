@@ -1,5 +1,5 @@
 #include "make_nydus_exit.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace hooks
 {
@@ -33,7 +33,7 @@ namespace hooks
 			helper::play_worker_error_sound(nydus_canal, 0x358); // "You can't build there"
 			nydus_canal->order_to_idle();
 		} else {
-			scbw::prepare_building_area(nydus_canal->order_target.pt, UnitId::ZergNydusCesiant);
+			bw::prepare_building_area(nydus_canal->order_target.pt, UnitId::ZergNydusCesiant);
 			Unit* nydus_exit = helper::create_unit(UnitId::ZergNydusCesiant, nydus_canal->order_target.pt.x, nydus_canal->order_target.pt.y, nydus_canal->player);
 			if (nydus_exit) {
 				helper::ai_training_overlord(nydus_exit, nydus_canal);
@@ -42,7 +42,7 @@ namespace hooks
 			if (!nydus_exit) {
 				helper::display_last_network_error_for_player(nydus_canal->player);
 			} else {
-				helper::init_building(nydus_exit, 1);
+				helper::unit_completion_init(nydus_exit, 1);
 				// logically equivalent to a more complex original calculation
 				nydus_exit->hitpoints = (10 * units_dat::max_hitpoints[nydus_exit->id]) / 100;
 				nydus_exit->order_computer(OrderId::ZergBuildSelf);

@@ -1,5 +1,5 @@
 #include "draw_hook.h"
-#include "../SCBW/api.h"
+#include "../BW/api.h"
 #include "../hook_tools.h"
 #include "graphics_misc.h"
 
@@ -11,7 +11,7 @@ namespace
 		if (want_refresh)
 		{
 			want_refresh = false;
-			scbw::refresh_screen();
+			bw::refresh_screen();
 		}
 		/*
 		if (g_unit_deaths_table[0].player[11] == 1) {

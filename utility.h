@@ -1,15 +1,21 @@
 #pragma once
-#include "SCBW/api.h"
+#include "BW/api.h"
 
-struct LoadedFile {
-	u32 size;
-	char* data;
-};
+bool mpq_file_exists(const char* filename);
+std::string mpq_load_file(const char* filename);
 
-bool file_exists(char* filename);
-LoadedFile load_entire_sfile(char* filename);
-void free_loaded_file(LoadedFile* file);
-u32 hash_string(char* string);
+constexpr u32 hash_string(const char* string) {
+	u32 result = 2166136261;
+	for (const char* c = string; *c; c++) {
+		result ^= *c;
+		result *= 16777619;
+	}
+	return result;
+}
+
+consteval auto comptime(auto value) {
+	return value;
+}
 
 struct StringBuilder {
 	u32 capacity;

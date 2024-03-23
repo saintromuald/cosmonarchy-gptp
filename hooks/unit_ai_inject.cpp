@@ -1,5 +1,5 @@
 #include "hook_tools.h"
-#include "SCBW/api.h"
+#include "BW/api.h"
 #include "unit_ai.h"
 
 namespace
@@ -161,7 +161,7 @@ namespace
 		}
 		if ((u32)free <= 0x100000)
 		{
-			scbw::print("Corrupted pointer in AddUnitAi!");
+			bw::print("Corrupted pointer in AddUnitAi!");
 			__asm
 			{
 				POPAD

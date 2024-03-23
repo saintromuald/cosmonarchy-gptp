@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW\api.h"
+#include "BW\api.h"
 #include "unit_constants.h"
 
 enum ChkUnitFlags {
@@ -58,13 +58,19 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergHachirosk, UnitId::ZergCaphrolosk, 1},
 	{UnitId::ZergHachirosk, UnitId::ZergGathtelosk, 1},
 
+	{UnitId::ZergExcisant, UnitId::ZergEzigrisant, 1},
+
 	{UnitId::ZergIrolIris, UnitId::ZergOthstolOviform, 2},
 
-	{UnitId::ZergQuazethPool, UnitId::ZergKalkiirPond, 1},
+	{UnitId::ZergQuazethPool, UnitId::ZergVornathPond, 1},
+	{UnitId::ZergQuazethPool, UnitId::ZergKalkiirLake, 1},
+	{UnitId::ZergVornathPond, UnitId::ZergKalkiirLake, 1},
 	{UnitId::ZergMutathSpire, UnitId::ZergTosvrolHaunt, 1},
 	{UnitId::ZergAxtothAxis, UnitId::ZergBegrozithBarrow, 1},
-	{UnitId::ZergHydrithDen, UnitId::ZergBactithSwamp, 1},
-	{UnitId::ZergAlkagIteth, UnitId::ZergChokralgantChazsal, 1},
+	{UnitId::ZergHydrithDen, UnitId::ZergSkibactScab, 1},
+	{UnitId::ZergHydrithDen, UnitId::ZergTethvithSwamp, 1},
+	{UnitId::ZergSkibactScab, UnitId::ZergTethvithSwamp, 1},
+	{UnitId::ZergAlkagIteth, UnitId::ZergChokralChazsal, 1},
 	{UnitId::ZergGeszkathGrotto, UnitId::ZergAlkajChasm, 1},
 	{UnitId::ZergZorkizShroud, UnitId::ZergUltravCavern, 1},
 	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre, 1},
@@ -88,6 +94,7 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergZethrokor, UnitId::ZergVorvrokor},
 	{UnitId::ZergQuazilisk, UnitId::ZergLiiralisk},
 	{UnitId::ZergNathrokor, UnitId::ZergKalkalisk},
+	{UnitId::ZergNathrelisk, UnitId::ZergKalkalisk},
 	{UnitId::ZergCikralisk, UnitId::ZergGhitorokor},
 	{UnitId::ZergProtathalor, UnitId::ZergSovroleth},
 	{UnitId::ZergMutalisk, UnitId::ZergTosgrilisk},
@@ -105,7 +112,7 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergLakizilisk, UnitId::ZergZobriolisk},
 	{UnitId::ZergGorgrokor, UnitId::ZergZarcavrokor},
 	{UnitId::ZergKonvilisk, UnitId::ZergTetcaerokor},
-	{UnitId::ZergVilgorokor, UnitId::ZergSelkerilisk},
+	{UnitId::ZergVilgorokor, UnitId::ZergIsthrathaleth},
 	{UnitId::ZergMatraleth, UnitId::ZergAkistrokor},
 	{UnitId::ZergIsthrathaleth, UnitId::ZergOgroszaleth},
 	{UnitId::ZergElthrazalisk, UnitId::ZergRakzilisk},

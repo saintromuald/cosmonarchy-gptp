@@ -1,5 +1,5 @@
 #include "unit_search.h"
-#include <SCBW\api.h>
+#include <BW\api.h>
 
 #define CELL_SIZE 8
 #define CELL_PX_SIZE (CELL_SIZE * 32)
@@ -69,7 +69,7 @@ static void search_index_add(SearchIndex* index, Point16 position, void* data) {
 }
 
 static void index_search_rect(EntryArray* entry_array, SearchIndex* index, Box32 rect) {
-	rect = scbw::clamp_box32(rect);
+	rect = bw::clamp_box32(rect);
 	const u32 x1 = rect.left / CELL_PX_SIZE;
 	const u32 y1 = rect.top / CELL_PX_SIZE;
 	const u32 x2 = ceil(rect.right / (f32)CELL_PX_SIZE);
@@ -110,7 +110,7 @@ static void index_search_radial(EntryArray* entry_array, SearchIndex* index, Poi
 		center.x + (s32)radius,
 		center.y + (s32)radius
 	};
-	dims = scbw::clamp_box32(dims);
+	dims = bw::clamp_box32(dims);
 
 	const u32 x1 = dims.left / CELL_PX_SIZE;
 	const u32 y1 = dims.top / CELL_PX_SIZE;
@@ -123,10 +123,10 @@ static void index_search_radial(EntryArray* entry_array, SearchIndex* index, Poi
 				x * CELL_PX_SIZE + CELL_PX_SIZE / 2,
 				y * CELL_PX_SIZE + CELL_PX_SIZE / 2
 			};
-			bool is_fully_covered = scbw::get_distance_fast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
+			bool is_fully_covered = bw::get_distance_fast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
 
 			for (SearchEntry* entry = index->grid[x][y]; entry; entry = entry->next) {
-				if (is_fully_covered || scbw::get_distance_fast(center, entry->position) <= radius) {
+				if (is_fully_covered || bw::get_distance_fast(center, entry->position) <= radius) {
 					entry_array_add(entry_array, entry->data);
 				}
 			}
@@ -245,7 +245,7 @@ void unit_search_filter(EntryArray* unit_array, Unit* reference, u32 flags, std:
 
 void unit_search_custom_filter(EntryArray* unit_array, SearchFilterFunc filter) {
 	for (u32 i = 0; i < unit_array->count; i++) {
-		Unit* unit = unit_array->units[i];
+		Unit* unit = unit_array->units.data[i];
 		if (!filter(unit)) {
 			entry_array_remove(unit_array, i--);
 			continue;
@@ -256,29 +256,29 @@ void unit_search_custom_filter(EntryArray* unit_array, SearchFilterFunc filter) 
 void unit_search_sort(EntryArray* unit_array, SearchScoreFunc score_func) {
 	// not a fan of std::sort, probably should replace with own qsort
 	// qsort from C can't work with lambdas
-	std::sort(unit_array->units, unit_array->units + unit_array->count, [&](Unit* a, Unit* b) {
+	std::sort(unit_array->units.data, unit_array->units.data + unit_array->count, [&](Unit* a, Unit* b) {
 		return score_func(a) > score_func(b);	
 	});
 }
 
 static Point16 temp_center;
 static s32 unit_distance_compare_func(void const* a, void const* b) {
-	return scbw::get_distance_fast(temp_center, ((Unit*)a)->position) > scbw::get_distance_fast(temp_center, ((Unit*)b)->position);	
+	return bw::get_distance_fast(temp_center, ((Unit*)a)->position) > bw::get_distance_fast(temp_center, ((Unit*)b)->position);	
 }
 
 static s32 corpse_distance_compare_func(void const* a, void const* b) {
 	if (!((Thingy*)a)->sprite || !((Thingy*)b)->sprite) return 0;
-	return scbw::get_distance_fast(temp_center, ((Thingy*)a)->sprite->position) > scbw::get_distance_fast(temp_center, ((Thingy*)b)->sprite->position);	
+	return bw::get_distance_fast(temp_center, ((Thingy*)a)->sprite->position) > bw::get_distance_fast(temp_center, ((Thingy*)b)->sprite->position);	
 }
 
 void unit_search_sort_by_distance(EntryArray* unit_array, Point16 center) {
 	temp_center = center;
-	qsort(unit_array->units, unit_array->count, sizeof(Unit*), unit_distance_compare_func);
+	qsort(unit_array->units.data, unit_array->count, sizeof(Unit*), unit_distance_compare_func);
 }
 
 void corpse_search_sort_by_distance(EntryArray* corpse_array, Point16 center) {
 	temp_center = center;
-	qsort(corpse_array->corpses, corpse_array->count, sizeof(Thingy*), corpse_distance_compare_func);
+	qsort(corpse_array->corpses.data, corpse_array->count, sizeof(Thingy*), corpse_distance_compare_func);
 }
 
 Unit* unit_search_find_best(EntryArray* unit_array, SearchScoreFunc score_func) {
@@ -344,7 +344,7 @@ void update_search_index() {
 
 	// Add corpses
 	for (Thingy* thingy = *g_first_thingy; thingy; thingy = thingy->next) {
-		if (thingy->sprite && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath) && scbw::sprite_id_is_corpse(thingy->sprite->id)) {
+		if (thingy->sprite && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath) && bw::sprite_id_is_corpse(thingy->sprite->id)) {
 			search_index_add(&corpse_index, thingy->sprite->position, thingy);
 		}
 	}
@@ -416,17 +416,17 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	}
 	if (center) {
 		if (flags & FilterFrontalArc) {
-			if (!scbw::unit_is_facing_position(center, target->position)) {
+			if (!bw::unit_is_facing_position(center, target->position)) {
 				return false;
 			}
 		}
 		if (flags & FilterOwn && target->player != center->player) {
 			return false;
 		}
-		if (scbw::is_allied_to(target->player, center->player) && flags & FilterEnemy) {
+		if (bw::is_allied_to(target->player, center->player) && flags & FilterEnemy) {
 			return false;
 		}
-		if (!scbw::is_allied_to(target->player, center->player) && flags & FilterAlly) {
+		if (!bw::is_allied_to(target->player, center->player) && flags & FilterAlly) {
 			return false;
 		}
 	}
@@ -451,7 +451,7 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	if (!(units_dat::base_property[target->id] & UnitProperty::Building) && flags & FilterBuilding) {
 		return false;
 	}
-	if (!(scbw::is_enabled(target)) && flags & FilterEnabled) {
+	if (!(bw::is_enabled(target)) && flags & FilterEnabled) {
 		return false;
 	}
 	if (flags & FilterCanAttackOrCast && !target->has_weapon() && !(units_dat::base_property[target->id] & UnitProperty::Spellcaster)) {

@@ -1,5 +1,5 @@
 #include "armor_bonus.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "globals.h"
 #include <algorithm>
 #include <cmath>
@@ -8,16 +8,30 @@ namespace hooks
 {
 	u8 get_armor_bonus(Unit* unit) // 00453FC0
 	{
-		s32 armor_modifier = scbw::get_upgrade_level(unit->player, units_dat::armor_upgrade[unit->id]);
+		UnitExt* unit_ext = get_unit_ext(unit);
+		s32 armor_modifier = bw::get_upgrade_level(unit->player, units_dat::armor_upgrade[unit->id]);
 		switch (unit->id) {
 			case UnitId::TerranMatadorCinderMode:
 			{
-				armor_modifier += 2;
+				if (!unit_ext->values[ValueTriggerArmorBaseSet] || unit_ext->values[ValueTriggerArmorBaseAmount]) {
+					armor_modifier += 2;
+				}
 			} break;
 			case UnitId::TerranPhalanxTankMode:
 			{
-				armor_modifier += 4;
+				if (!unit_ext->values[ValueTriggerArmorBaseSet] || unit_ext->values[ValueTriggerArmorBaseAmount]) {
+					armor_modifier += 4;
+				}
 			} break;
+			case UnitId::ProtossZealot:
+			{
+				if (unit->shields > 256) {
+					armor_modifier += 1;
+				}
+			} break;
+		}
+		if (unit_ext->values[ValueInfested]) {
+			armor_modifier += 1;
 		}
 		return armor_modifier;
 	}
@@ -27,8 +41,13 @@ namespace hooks
 		s32 armor = units_dat::armor_amount[unit->id] + get_armor_bonus(unit);
 		UnitExt* unit_ext = get_unit_ext(unit);
 
+		// Override base armor
+		if (unit_ext->values[ValueTriggerArmorBaseSet]) {
+			armor = unit_ext->values[ValueTriggerArmorBaseAmount];
+		}
+
 		// Armor rends
-		armor -= unit_ext->values[ValueApollyoidAdhesiveStacks] / 2;
+		armor -= unit_ext->values[ValueApollyoidAdhesiveStacks];
 		armor -= unit_ext->values[ValueAutocratControlledOppositionStacks];
 		armor -= unit_ext->values[ValueObservanceRend];
 		armor -= unit_ext->values[ValueCorrosiveTouchStacks];

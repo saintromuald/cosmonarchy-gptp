@@ -5,28 +5,27 @@
 static UnitExt unit_ext_array[UNIT_ARRAY_LENGTH];
 static TileExt tile_ext_array[256][256];
 static BulletExt bullet_ext_array[BULLET_ARRAY_LENGTH];
-static SpriteExt sprite_ext_array[SPRITE_ARRAY_LENGTH];
 static ImageExt image_ext_array[IMAGE_ARRAY_LENGTH];
+static SpriteExt sprite_ext_array[SPRITE_ARRAY_LENGTH];
 static ThingyExt thingy_ext_array[THINGY_ARRAY_LENGTH];
 static AiTownExt ai_town_ext_array[PlayerLimit][AiTownCap];
 
 void init_ext_variables() {
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) {
-		reset_unit_ext(&g_unit_table[i]);
+		reset_unit_ext(&unit_ext_array[i]);
 	}
 	memset(tile_ext_array, 0, sizeof(tile_ext_array));
+	// TODO: reset tiles?
 	for (u32 i = 0; i < IMAGE_ARRAY_LENGTH; ++i) {
 		reset_image_ext(&g_image_table[i]);
 	}
 	for (u32 i = 0; i < SPRITE_ARRAY_LENGTH; ++i) {
 		reset_sprite_ext(&g_sprite_table[i]);
 	}
-	for (u32 i = 0; i < IMAGE_ARRAY_LENGTH; ++i) {
-		reset_image_ext(&g_image_table[i]);
-	}
 	for (u32 i = 0; i < THINGY_ARRAY_LENGTH; ++i) {
 		reset_thingy_ext(&g_thingy_table[i]);
 	}
+	// TODO: reset ai towns?
 }
 
 void update_ext_variables() {
@@ -111,6 +110,12 @@ void update_ext_variables() {
 			thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
 		}
 
+		if (bw::get_game_kind() == GameKind_TheTurning && thingy_ext->activity_timer >= 24) {
+			if (!(units_dat::base_property[thingy_ext->unit_id] & UnitProperty::Building)) {
+				reclaim_corpse(thingy, TheTurningZombiePlayerId);
+			}
+		}
+
 		if (thingy_ext->avenge_or_ascend_player && thingy_ext->activity_timer >= 24) {
 			avenge_or_ascend_corpse(thingy, thingy_ext->avenge_or_ascend_player - 1);
 		}
@@ -123,8 +128,7 @@ UnitExt* get_unit_ext(Unit* unit) {
 	return &unit_ext_array[index];
 }
 
-void reset_unit_ext(Unit* unit) {
-	UnitExt* unit_ext = get_unit_ext(unit);
+void reset_unit_ext(UnitExt* unit_ext) {
 	*unit_ext = {};
 	// every unit will start being out of combat
 	unit_ext->shield_regen_timer = UINT_MAX;
@@ -167,7 +171,7 @@ void unit_death_start(Unit* unit) {
 }
 
 void unit_death_end(Unit* unit) {
-	reset_unit_ext(unit);
+	reset_unit_ext(get_unit_ext(unit));
 }
 
 TileExt* get_tile_ext_at_tile(u32 tile_x, u32 tile_y) {
@@ -237,7 +241,7 @@ void reset_town_ext(AiTown* town) {
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player) {
 	u32 allied_bits = 0;
 	for (u32 i = 0; i < PlayerLimit; ++i) {
-		if (scbw::is_allied_to(i, player)) {
+		if (bw::is_allied_to(i, player)) {
 			allied_bits |= 1 << i;
 		}
 	}

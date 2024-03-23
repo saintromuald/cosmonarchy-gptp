@@ -1,8 +1,8 @@
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include <hook_tools.h>
-#include "SCBW\structures\Unit.h"
-#include <SCBW/api.h>
+#include "BW\structures\Unit.h"
+#include <BW/api.h>
 #include <algorithm>
 
 namespace
@@ -207,7 +207,7 @@ namespace
 	// This was moved out of the naked function to prevent stack corruption bug
 	void zerg_build_self_update_timer_and_hitpoints(Unit* unit, u16 unit_id)
 	{
-		bool isOperationCwalEnabled = scbw::is_cheat_enabled(CheatFlags::OperationCwal);
+		bool isOperationCwalEnabled = bw::is_cheat_enabled(CheatFlags::OperationCwal);
 		if (unit->remaining_build_time)
 		{
 			if (isOperationCwalEnabled)
@@ -469,6 +469,20 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) droleth_build_excisant_wrapper() // 0045D790
+	{
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::droleth_build_excisant(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -496,5 +510,6 @@ namespace hooks
 	//	jump_patch(orders_drone_build_wrapper,											0x0045E090, 0);
 	//	jump_patch(orders_drone_land_wrapper,											0x004E9AA0, 1);
 		jump_patch(orders_morph2_wrapper,												0x0045D0D0, 2);
+		jump_patch(droleth_build_excisant_wrapper,										0x0045D790, 5);
 	}
 }

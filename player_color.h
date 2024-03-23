@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW\api.h"
+#include "BW\api.h"
 
 // TODO: rename this file to something more accurate, we have all kinds of player customization here, not only color
 
@@ -435,7 +435,7 @@ const std::vector<std::vector<std::vector<u32>>> personality_colors = {
 // Feel free to modify this to suit your needed amount of names per personality
 // (you can also specify less names than this maximum)
 #define PlayerPesonalityMaxNames 20
-char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPesonalityMaxNames] = {
+const char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPesonalityMaxNames] = {
 	// Zerg
 	{
 		{},
@@ -648,5 +648,5 @@ void init_player_colors();
 void load_player_colors();
 
 void load_player_names();
-void set_player_name(u32 player, char* name, bool prevent_overwrites);
-void set_player_force_name(u32 player, char* name);
+void set_player_name(u32 player, const char* name, bool prevent_overwrites);
+void set_player_force_name(u32 player, const char* name);

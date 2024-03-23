@@ -1,5 +1,5 @@
-#include <SCBW/api.h>
-#include <SCBW/Storm.h>
+#include <BW/api.h>
+#include <BW/Storm.h>
 #include <hook_tools.h>
 #include "datext.h"
 

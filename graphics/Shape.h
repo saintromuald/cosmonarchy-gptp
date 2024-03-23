@@ -1,5 +1,5 @@
 #pragma once
-#include "../SCBW/structures/common.h"
+#include "../BW/structures/common.h"
 #include "graphics.h"
 #include <string>
 

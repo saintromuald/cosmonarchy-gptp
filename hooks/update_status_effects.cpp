@@ -1,6 +1,6 @@
 #include "update_status_effects.h"
-#include <SCBW/api.h>
-#include <SCBW/UnitFinder.h>
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
 #include "hooks/weapons/weapon_spellhit.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "globals.h"
@@ -32,69 +32,55 @@ namespace hooks
 	void update_status_effects(Unit* unit) // 00492F70
 	{
 		UnitExt* unit_ext = get_unit_ext(unit);
-
-		if (unit->subunit != nullptr)
-		{
-			UnitExt* subunitExt = get_unit_ext(unit->subunit);
-			subunitExt->units[UnitTurretParentLink] = unit;
+		if (unit->subunit) {
+			UnitExt* subunit_ext = get_unit_ext(unit->subunit);
+			subunit_ext->units[UnitTurretParentLink] = unit;
 		}
 
 		// Decrement Stasis Field timer (and remove effect if 0)
-		if (unit->stasis_timer != 0)
-		{
+		if (unit->stasis_timer != 0) {
 			unit->stasis_timer--;
-			if (unit->stasis_timer == 0)
-			{
+			if (unit->stasis_timer == 0) {
 				unit->unfreeze();
 			}
 		}
 
 		// Forcibly unburrow units that collide with buildings
-		if (unit->status & UnitStatus::Burrowed)
-		{
-			ActiveTile* tile = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y);
-			if (tile->currently_occupied)
-			{
+		if (unit->status & UnitStatus::Burrowed) {
+			ActiveTile* tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+			if (tile->currently_occupied) {
 				// TODO: unit search
-				Unit* nearest = scbw::UnitFinder::get_nearest_target(
-					unit->get_left() - 32,
-					unit->get_top() - 32,
-					unit->get_right() + 32,
-					unit->get_bottom() + 32,
-					unit, [&](Unit* target)
-				{
+				Unit* nearest = bw::UnitFinder::get_nearest_target(
+				unit->get_left() - 32,
+				unit->get_top() - 32,
+				unit->get_right() + 32,
+				unit->get_bottom() + 32,
+				unit, [&](Unit* target) {
 					return safety_unburrow_check(unit, target);
 				});
-				bool canBurrowAfter = false;
 				// from Ai_Burrowable
-				if (nearest != nullptr)
-				{
+				if (nearest) {
 					helper::unburrow(unit);
 				}
 			}
 		}
 
-		if (unit->stim_timer != 0)
-		{
+		if (unit->stim_timer != 0) {
 			unit->stim_timer--;
-			if (unit->stim_timer == 0)
-			{
+			if (unit->stim_timer == 0) {
 				unit->update_speed();
 			}
 		}
 
 		// TODO: Why are we updating Vorvrokor / Ovileth speed every frame?
-		if (unit->id == UnitId::ZergVorvrokor || unit->id == UnitId::ZergOvileth)
-		{
+		if (unit->id == UnitId::ZergVorvrokor || unit->id == UnitId::ZergOvileth) {
 			unit->update_speed();
 		}
 
 		// Decrement Ensnare timer (and remove effect if 0)
-		if (unit->ensnare_timer != 0)
-		{
+		if (unit->ensnare_timer != 0) {
 			unit->ensnare_timer--;
-			if (unit->ensnare_timer == 0)
-			{
+			if (unit->ensnare_timer == 0) {
 				unit->remove_overlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 				unit->update_speed();
 				unit_ext->values[ValueEnsnareFactor] = 0;
@@ -102,102 +88,78 @@ namespace hooks
 		}
 
 		// Decrement Defensive Matrix timer (and remove effect if 0)
-		if (unit->defensive_matrix_timer != 0)
-		{
+		if (unit->defensive_matrix_timer != 0) {
 			unit->defensive_matrix_timer--;
-			if (unit->defensive_matrix_timer == 0)
-			{
+			if (unit->defensive_matrix_timer == 0) {
 				unit->reduce_defensive_matrix_hp(unit->defensive_matrix_hp);
 			}
 		}
 
 		// Redraw console and UI elements
-		if (unit == *g_active_portrait_unit)
-		{
-			if (unit->is_valid_caster())
-			{
-				if (!scbw::is_allied_to(*g_local_nation_id, unit->player))
-				{
-					scbw::refresh_console();
+		if (unit == *g_active_portrait_unit) {
+			if (unit->is_valid_caster()) {
+				if (!bw::is_allied_to(*g_local_nation_id, unit->player)) {
+					bw::refresh_console();
 				}
 			}
 		}
 
 		// Irradiate ability
-		if (unit->irradiate_timer != 0)
-		{
+		if (unit->irradiate_timer != 0) {
 			unit->irradiate_timer--;
 			do_irradiate_damage(unit);
-			if (unit->irradiate_timer == 0)
-			{
+			if (unit->irradiate_timer == 0) {
 				unit->remove_overlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
 				unit->irradiate_caster = 0;
 				unit->irradiate_player_id = 8;
 			}
 		}
 
-		if (unit->lockdown_timer != 0)
-		{
+		if (unit->lockdown_timer != 0) {
 			unit->lockdown_timer--;
-			if (unit->lockdown_timer == 0)
-			{
+			if (unit->lockdown_timer == 0) {
 				unit->remove_lockdown();
 			}
 		}
 
-		if (unit->maelstrom_timer != 0)
-		{
+		if (unit->maelstrom_timer != 0) {
 			unit->maelstrom_timer--;
-			if (unit->maelstrom_timer == 0)
-			{
+			if (unit->maelstrom_timer == 0) {
 				unit->remove_maelstrom();
 			}
 		}
 
-		if (unit->plague_timer)
-		{
+		if (unit->plague_timer) {
 			unit->plague_timer--;
-
-			if (!(unit->status & UnitStatus::Invincible))
-			{
+			if (!(unit->status & UnitStatus::Invincible)) {
 				s32 damage = (weapons_dat::damage_amount[WeaponId::Plague] * 256) / 30;
-				if (!unit->plague_timer)
-				{
+				if (!unit->plague_timer) {
 					damage += (weapons_dat::damage_amount[WeaponId::Plague] * 256) % 30;
 				}
-				if (damage > 0)
-				{
+				if (damage > 0) {
 					unit->damage_with(WeaponId::Plague, damage);
 				}
 			}
-
-			if (!unit->plague_timer)
-			{
+			if (!unit->plague_timer) {
 				unit->remove_overlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
 			}
-
 		}
 
-		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
-		{
-			scbw::place_clarion_links(unit); // Clears, then places all Clarion links
+		if (unit->id == UnitId::ProtossClarion && bw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
+			bw::place_clarion_links(unit); // Clears, then places all Clarion links
 		}
 
-		if (unit->is_under_storm != 0)
-		{
+		if (unit->is_under_storm != 0) {
 			unit->is_under_storm--;
 		}
 
 		// Vithrilisk - Corrosive Touch - update overlays
-		if (unit_ext->values[ValueCorrosiveTouchStacks] != 0)
-		{
+		if (unit_ext->values[ValueCorrosiveTouchStacks] != 0) {
 			// Calculate the appropriate overlay ID
 			u32 acid_overlay_id = get_spores_overlay_id(unit);
-			if (!unit->get_overlay(acid_overlay_id))
-			{
+			if (!unit->get_overlay(acid_overlay_id)) {
 				unit->remove_overlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
-				if (unit->subunit)
-				{
+				if (unit->subunit) {
 					unit = unit->subunit;
 				}
 				unit->sprite->create_top_overlay(acid_overlay_id);
@@ -216,13 +178,12 @@ namespace hooks
 				if (unit->main_order_id == OrderId::ComputerAI || unit->main_order_id == OrderId::Guard) {
 					if (unit->move_target.pt.x == unit->sprite->position.x
 						&& unit->move_target.pt.y == unit->sprite->position.y
-						&& ((unit->status & UnitStatus::Unmovable) != 0) != -1
 						// Originally checked for burrow tech here
 						) {
 						bool can_burrow = true;
-						ActiveTile* tile = scbw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+						ActiveTile* tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
 						if (tile->currently_occupied) {
-							Unit* nearest = scbw::UnitFinder::get_nearest_target(
+							Unit* nearest = bw::UnitFinder::get_nearest_target(
 								unit->get_left() - 32,
 								unit->get_top() - 32,
 								unit->get_right() + 32,
@@ -235,7 +196,7 @@ namespace hooks
 							}
 						}
 						if (can_burrow) {
-							if (unit->id != UnitId::ZergLakizilisk) {
+							if (!unit_id_is_burrowed_attacker(unit->id)) {
 								EntryArray array = {};
 								unit_search_radial(&array, unit->position, 10 * 32);
 								unit_search_filter(&array, unit, FilterAlly | FilterBuilding);
@@ -283,7 +244,7 @@ namespace hooks
 	// Hooked to hide new resource overlays when burrowed. -Pr0nogo
 	void refresh_carryable_sprite(Sprite* sprite) // 00497750
 	{
-		Image* overlay = scbw::get_powerup_overlay(sprite);
+		Image* overlay = bw::get_powerup_overlay(sprite);
 		if (overlay) {
 			if (!(overlay->flags & ImageFlags::Invisible))
 			{
@@ -299,7 +260,7 @@ namespace hooks
 	// Hooked to show new resources after unburrowing. -Pr0nogo
 	void update_carryable_sprite_flags(Sprite* sprite) // 004981B0
 	{
-		Image* overlay = scbw::get_powerup_overlay(sprite);
+		Image* overlay = bw::get_powerup_overlay(sprite);
 		if (overlay) {
 			if (overlay->flags & ImageFlags::Invisible)
 			{

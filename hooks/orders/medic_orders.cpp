@@ -1,5 +1,5 @@
 #include "medic_orders.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "globals.h"
 #include <math_utils.h>
 
@@ -82,7 +82,7 @@ namespace hooks
 						{
 							helper::update_target_something(unit, old_target, OrderId::HealMove);
 						} else {
-							helper::function_4748E0(unit, old_pos.x, old_pos.y, OrderId::HealMove);
+							helper::perform_another_order_at_coords(unit, old_pos.x, old_pos.y, OrderId::HealMove);
 						}
 					}
 				}
@@ -170,7 +170,7 @@ namespace hooks
 						}
 						return 3;
 					}
-					scbw::decloak_passive_proc(cleric);
+					bw::decloak_passive_proc(cleric);
 					target->heal_hp(ClericHealValue, cleric);
 					return 1;
 				}
@@ -252,12 +252,12 @@ namespace hooks
 		UnitExt* target_ext = get_unit_ext(target);
 		if (units_dat::base_property[target->id] & UnitProperty::Building
 		||  target->status & UnitStatus::InAir
-		|| !scbw::is_allied_to(cleric->player, target->player)
+		|| !bw::is_allied_to(cleric->player, target->player)
 		||  target->player >= PlayerLimit
 		||  cleric->player >= PlayerLimit
 		||  target->hitpoints >= units_dat::max_hitpoints[target->id]
 		||  target->is_frozen()
-		||  target_ext->values[TimerReviveFlagClearMax])
+		||  target_ext->timers[TimerReviveFlagClearMax])
 		{
 			return 0;
 		}

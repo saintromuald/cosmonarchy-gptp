@@ -1,9 +1,9 @@
 #include "selection_extender.h"
 #include "hooks/limits/ccmu.h"
 #include "hook_tools.h"
-#include "scbw/structures.h"
-#include "SCBW/scbwdata.h"
-#include "SCBW/api.h"
+#include "BW/structures.h"
+#include "BW/bwdata.h"
+#include "BW/api.h"
 #include "config.h"
 #include "trigger_system/trigger_system.h"
 
@@ -14,7 +14,7 @@ static u32 tmp;
 
 graphics::Font* grp_wire_Font;
 extern u8 tFontGame_ImageData[];
-void init_grp_wire_font(char* font_name) {
+void init_grp_wire_font(const char* font_name) {
 	const u32 load_font = 0x0041FD10;
 
 	__asm {
@@ -2305,7 +2305,7 @@ void __declspec(naked) combine_lists_patch_6F2D1() {
 	__asm {
 		PUSHAD
 	}
-	is_witness_or_in_replay = globals.players[*g_local_human_id].witness_mode | *g_is_in_replay;
+	is_witness_or_in_replay = globals->players[*g_local_human_id].witness_mode | *g_is_in_replay;
 	__asm {
 		POPAD
 		MOV	EAX, is_witness_or_in_replay

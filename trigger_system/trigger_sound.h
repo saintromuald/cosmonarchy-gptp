@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/api.h"
+#include "BW/api.h"
 #include "trigger_system.h"
 #include <dsound.h>
 

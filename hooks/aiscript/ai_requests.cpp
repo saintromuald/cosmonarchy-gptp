@@ -1,7 +1,7 @@
 #include "ai_requests.h"
-#include <SCBW/api.h>
-#include <SCBW/structures.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
 #include "logger.h"
 #include "ai_layouts.h"
 
@@ -19,6 +19,38 @@ static bool player_has_completed_landed_unit_id(s32 player_id, u32 unit_id) {
 
 static bool player_has_completed_addon_unit_id(s32 player_id, u32 unit_id) {
 	return Player::number_of_completed_addon_units_of_id(player_id, unit_id);
+}
+
+u32 get_refinery_id_from_race(u32 player)
+{
+	// TODO: Add handling for custom races. -Pr0nogo
+	u32 refinery_id = UnitId::None;
+	switch (g_player_table[player].race)
+	{
+		case RaceId::Terran:
+		{
+			if (player_has_completed_landed_unit_id(player, UnitId::TerranAtlas)) {
+				refinery_id = UnitId::TerranReservoir;
+			}
+			if (player_has_completed_landed_unit_id(player, UnitId::TerranDaedala)) {
+				refinery_id = UnitId::TerranWellbore;
+			}
+		} break;
+		case RaceId::Protoss:
+		{
+			refinery_id = UnitId::ProtossAquifer;
+		} break;
+		case RaceId::Zerg:
+		{
+			if (player_has_completed_unit_id(player, UnitId::ZergIrolIris) || player_has_unit_id(player, UnitId::ZergOthstolOviform)) {
+				refinery_id = UnitId::ZergExcisant;
+			}
+			if (player_has_completed_unit_id(player, UnitId::ZergOthstolOviform)) {
+				refinery_id = UnitId::ZergEzigrisant;
+			}
+		} break;
+	}
+	return refinery_id;
 }
 
 namespace hooks
@@ -76,7 +108,7 @@ namespace hooks
 						Unit* worker = first_worker->parent; // This was null during a crash
 						if (!worker)
 						{
-							scbw::print("null unit in AI_progressBuild");
+							bw::print("null unit in AI_progressBuild");
 							return result;
 						}
 						s32 build_order_id = (u8)worker->main_order_id;
@@ -346,7 +378,7 @@ namespace hooks
 
 		helper::ai_reserve(player, 1);
 		helper::ai_pop_spending_request(player);
-		if (scbw::is_conventional_unit_morph_source(unit_copy->id))
+		if (bw::is_conventional_unit_morph_source(unit_copy->id))
 		{
 			helper::issue_order_targeting_nothing(unit_copy, OrderId::Morph1);
 			return 1;
@@ -469,6 +501,10 @@ namespace hooks
 				}
 				transport_unit_id_1 = UnitId::TerranTrojan;
 				transport_unit_id_2 = UnitId::TerranTrojan;
+				if (globals->players[player_id].faction == Faction_TerranHecatonCoalition) {
+					transport_unit_id_1 = UnitId::TerranQilin;
+					transport_unit_id_2 = UnitId::TerranQilin;
+				}
 			} else {
 				if (player_race != RaceId::Protoss)
 				{
@@ -565,7 +601,8 @@ namespace hooks
 					return worker_count;
 				}
 
-				if (g_game_minerals[player] < 500)
+				u32 refinery_id = get_refinery_id_from_race(player);
+				if (g_game_minerals[player] < units_dat::mineral_cost[refinery_id] / 2)
 				{
 					return player;
 				}
@@ -578,33 +615,7 @@ namespace hooks
 				priority = 140;
 			}
 
-			u16 refinery_id = UnitId::None;
-			u8 race = g_player_table[player].race; // TODO: Add handling for custom races. -Pr0nogo
-			switch (race)
-			{
-				case RaceId::Terran:
-				{
-					if (player_has_completed_landed_unit_id(player, UnitId::TerranAtlas)) {
-						refinery_id = UnitId::TerranReservoir;
-					}
-					if (player_has_completed_landed_unit_id(player, UnitId::TerranDaedala)) {
-						refinery_id = UnitId::TerranWellbore;
-					}
-				} break;
-				case RaceId::Protoss:
-				{
-					refinery_id = UnitId::ProtossAquifer;
-				} break;
-				case RaceId::Zerg:
-				{
-					if (player_has_unit_id(player, UnitId::ZergIrolIris)) {
-						refinery_id = UnitId::ZergExcisant;
-					}
-					if (player_has_unit_id(player, UnitId::ZergOthstolOviform)) {
-						refinery_id = UnitId::ZergEzigrisant;
-					}
-				} break;
-			}
+			u16 refinery_id = get_refinery_id_from_race(player);
 
 			result = 0;
 			if (refinery_id != UnitId::None) {
@@ -629,7 +640,7 @@ namespace hooks
 		}
 		helper::ai_add_cost_to_needs(unit_id, player_id, 1);
 		helper::ai_add_spending_request(unit_id, player_id, 2, priority, guard_ai);
-		helper::ai_add_base_unit_spending_request(unit_id, player_id, scbw::get_ai_region(player_id, scbw::get_region_id(guard_ai->current_home)), priority);
+		helper::ai_add_base_unit_spending_request(unit_id, player_id, bw::get_ai_region(player_id, bw::get_region_id(guard_ai->current_home)), priority);
 	}
 
 	static bool is_valid_attack_unit(AiRegion* ai_region, Unit* unit, bool strict) {
@@ -656,7 +667,7 @@ namespace hooks
 		if (unit->unit_ai->type == AiType::Military) {
 			// Skip current attack force units
 			AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
-			if (scbw::is_attack_region(current_ai_region)) {
+			if (bw::is_attack_region(current_ai_region)) {
 				return false;
 			}
 
@@ -678,7 +689,7 @@ namespace hooks
 		}
 
 		// Skip units that can't access the region
-		Region* region = scbw::get_region(ai_region->region);
+		Region* region = bw::get_region(ai_region->region);
 		if (region->accessibility_flags == RegionAirOnly && unit->pathing_flags & 1) {
 			return false;
 		}
@@ -688,12 +699,12 @@ namespace hooks
 
 	static Unit* add_attack_unit(AiRegion* ai_region, u32 unit_id) {
 		u32 player = ai_region->player;
-		Region* region = scbw::get_region(ai_region->region);
+		Region* region = bw::get_region(ai_region->region);
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 			if (unit->id != unit_id || !is_valid_attack_unit(ai_region, unit, false)) {
 				continue;
 			}
-			if (scbw::move_unit_ai(unit, ai_region)) {
+			if (bw::move_unit_ai(unit, ai_region)) {
 				return unit;
 			}
 		}
@@ -716,12 +727,12 @@ namespace hooks
 		}
 
 		u32 player = ai_region->player;
-		Region* region = scbw::get_region(ai_region->region);
+		Region* region = bw::get_region(ai_region->region);
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 			if (!is_valid_attack_unit(ai_region, unit, true)) {
 				continue;
 			}
-			scbw::move_unit_ai(unit, ai_region);
+			bw::move_unit_ai(unit, ai_region);
 		}
 	}
 
@@ -762,7 +773,7 @@ namespace hooks
 			}
 
 			AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
-			if (scbw::is_attack_region(current_ai_region)) {
+			if (bw::is_attack_region(current_ai_region)) {
 				continue;
 			}
 			if (current_ai_region->defense_priority > 110) {
@@ -781,7 +792,6 @@ namespace hooks
 				best_unit = unit;
 			}
 		}
-
 		return best_unit;
 	}
 
@@ -802,7 +812,7 @@ namespace hooks
 					helper::ai_training_simple_military(unit, unit);
 				}
 			} else {
-				AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(guard_ai->original_home));
+				AiRegion* ai_region = bw::get_ai_region(player, bw::get_region_id(guard_ai->original_home));
 				Unit* unit = find_unit_for_guard(player, guard_ai->unit_id, guard_ai->original_home);
 				if (unit) {
 					helper::remove_unit_ai(unit, 0);
@@ -888,8 +898,8 @@ namespace hooks
 				if (existing_count < requested_count) {
 					u32 count = requested_count - existing_count;
 					if (request->is_upgrade) {
-						u32 mineral_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::mineral_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
-						u32 vespene_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::vespene_cost_factor[request->id] * scbw::get_upgrade_level(player, request->id);
+						u32 mineral_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::mineral_cost_factor[request->id] * bw::get_upgrade_level(player, request->id);
+						u32 vespene_cost = upgrades_dat::mineral_cost_base[request->id] + upgrades_dat::vespene_cost_factor[request->id] * bw::get_upgrade_level(player, request->id);
 						g_aiscript_controller[player].minerals_needed += mineral_cost * count;
 						g_aiscript_controller[player].vespene_needed  += vespene_cost * count;
 						for (u32 i = 0; i < count; ++i) {
@@ -905,7 +915,7 @@ namespace hooks
 						}
 					} else {
 						bool request_base = request->only_if_needed ? false : true;
-						scbw::town_add_spending_request(town, count, request->id, request->priority, request_base);
+						bw::town_add_spending_request(town, count, request->id, request->priority, request_base);
 					}
 				}
 			}
@@ -1036,14 +1046,14 @@ namespace hooks
 						return helper::ai_finish_unit(unit);
 					}
 
-					region_id = scbw::get_region_id(build_pos);
-					AiRegion* ai_region = scbw::get_ai_region(player, region_id);
+					region_id = bw::get_region_id(build_pos);
+					AiRegion* ai_region = bw::get_ai_region(player, region_id);
 					if (!ai_region->state) {
 						helper::ai_set_region_state(4, ai_region);
 						ai_region->flags |= 0x1;
 						ai_region->flags |= 0x40;
 
-						Region* region = scbw::get_region(region_id);
+						Region* region = bw::get_region(region_id);
 						if (region->accessibility_flags != RegionAirOnly) {
 							ai_region->ground_strength_needed = 1000;
 						}
@@ -1197,8 +1207,8 @@ namespace hooks
 
 	// Hooked to change position check from sprite to unit. -Pr0nogo
 	void ai_make_guard(u32 player, Unit* unit) { // 0043A010
-		u32 region_id = scbw::get_region_id(unit->position);
-		AiRegion* ai_region = scbw::get_ai_region(player, region_id);
+		u32 region_id = bw::get_region_id(unit->position);
+		AiRegion* ai_region = bw::get_ai_region(player, region_id);
 		char region_state = ai_region->state;
 		if (!region_state || region_state == RegionState::TownRegionLow) {
 			helper::ai_set_region_state(RegionState::TownRegionHigh, ai_region);
@@ -1206,11 +1216,11 @@ namespace hooks
 			if (!g_aiscript_controller[player].ai_flags.is_use_map_settings) {
 				ai_region->flags |= 0x40;
 			}
-			AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
+			AiRegion* ai_region = bw::get_ai_region(player, bw::get_region_id(unit->position));
 			for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 				if (!g_aiscript_controller[other_player].ai_flags.is_use_map_settings) {
-					if (scbw::is_allied_to(other_player, player)) {
-						AiRegion* other_player_ai_region = scbw::get_ai_region(other_player, region_id);
+					if (bw::is_allied_to(other_player, player)) {
+						AiRegion* other_player_ai_region = bw::get_ai_region(other_player, region_id);
 						if (!other_player_ai_region->state) {
 							helper::ai_set_region_state(RegionState::TownRegionLow, other_player_ai_region);
 						}
@@ -1255,5 +1265,67 @@ namespace hooks
 				return UnitId::ProtossAquifer;
 			}
 		}
+	}
+
+	// Hooked to improve functionality. -Pr0nogo
+	u32 ai_get_queued_count(Unit* builder, u32 unit_id) // 00466B70
+	{
+		u32 main_order = builder->main_order_id;
+		if (units_dat::base_property[builder->id] & UnitProperty::Worker)
+		{
+			Unit* build_unit = 0;
+			if (main_order == OrderId::BuildTerran || main_order == OrderId::Repair1 || main_order == OrderId::ConstructingBuilding || helper::is_attempting_protoss_build(builder))
+			{
+				build_unit = builder->order_target.unit;
+			} else {
+				u32 secondary_order = builder->secondary_order_id;
+				if (secondary_order != OrderId::Train && secondary_order != OrderId::TrainFighter && !helper::is_constructing_addon(builder))
+				{
+					if (builder->build_queue[builder->build_queue_slot % 5] == unit_id && order_id_is_build_order(main_order))
+					{
+						return 1;
+					}
+					return 0;
+				}
+				build_unit = builder->current_build_unit;
+			}
+			if (build_unit)
+			{
+				return 0;
+			}
+			if (builder->build_queue[builder->build_queue_slot % 5] == unit_id && order_id_is_build_order(main_order))
+			{
+				return 1;
+			}
+			return 0;
+		}
+
+		switch (builder->id)
+		{
+			case UnitId::ZergEgg:
+			{
+				return unit_id == builder->build_queue[builder->build_queue_slot];
+			}
+			case UnitId::ZergCocoon:
+			{
+				return unit_id == builder->build_queue[builder->build_queue_slot];
+			}
+		}
+
+		if (main_order == OrderId::Morph2 || main_order == OrderId::ZergBuildSelf)
+		{
+			return unit_id == builder->build_queue[builder->build_queue_slot];
+		}
+		u32 count = 0;
+		u32 offset = 0;
+		for (u32 i = 1; i < 5; ++i) {
+			u32 slot = i + builder->build_queue_slot - offset;
+			u32 build_id = builder->build_queue[slot];
+			if (build_id == unit_id) {
+				count++;
+			}
+			offset++;
+		}
+		return count;
 	}
 }

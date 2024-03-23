@@ -1,12 +1,13 @@
 #include "stats_panel_display.h"
-#include <SCBW/api.h>
-#include "SCBW/stat_txt_spec.h"
+#include <BW/api.h>
+#include "BW/stat_txt_spec.h"
 #include "hooks/interface/buttonsets.h"
 #include "trigger_system/trigger_system.h"
 #include "DatExtend/datext.h"
 #include "player_color.h"
 
 #include "hooks/interface/weapon_armor_tooltip.h"
+#include "hooks/interface/uifeatures/hotkeys.h"
 
 namespace hooks
 {
@@ -35,20 +36,13 @@ namespace hooks
 				index++;
 			}
 
-			if (active_unit->id != UnitId::ZergLakizilisk || active_unit->status & UnitStatus::Burrowed)
+			if (!unit_id_is_burrowed_attacker(active_unit->id) || active_unit->status & UnitStatus::Burrowed)
 			{
 				UnitExt* unit_ext = get_unit_ext(active_unit);
 				bool no_ground_weapon_display = false;
 				u32 ground_weapon;
 				u8 ground_weapon_main_unit = units_dat::ground_weapon[active_unit->id];
-				if (active_unit->id == UnitId::TerranMadrigalImperiosoMode
-				&&  unit_ext->values[ValueMadrigalTempoDown]
-				&&  ground_weapon_main_unit == WeaponId::MadrigalFuriaMissiles)
-				{
-					ground_weapon_main_unit = WeaponId::MadrigalImperiosoMissiles;
-				}
-
-				u8 ground_weapon_subunit;
+				u8 ground_weapon_subunit = WeaponId::None;
 				if (ground_weapon_main_unit == WeaponId::None)
 				{
 					if (!active_unit->subunit)
@@ -66,7 +60,7 @@ namespace hooks
 					if (ground_weapon_subunit == WeaponId::None)
 					{
 						no_ground_weapon_display = true;
-					} else if (active_unit->id == UnitId::ZergLakizilisk && !(active_unit->status & UnitStatus::Burrowed)) {
+					} else if (unit_id_is_burrowed_attacker(active_unit->id) && !(active_unit->status & UnitStatus::Burrowed)) {
 						ground_weapon = WeaponId::None;
 					} else if (ground_weapon_main_unit != WeaponId::None) {
 						ground_weapon = ground_weapon_main_unit;
@@ -113,6 +107,11 @@ namespace hooks
 								helper::stats_weapon_level(dialog, index, WeaponId::StarSovereignInterventionMissiles);
 								index++;
 							} break;
+							case UnitId::ZergOkrimnilisk:
+							{
+								helper::stats_weapon_level(dialog, index, WeaponId::OkrimniliskOmnispores);
+								index++;
+							} break;
 							case UnitId::ZergZarcavrokor:
 							{
 								helper::stats_weapon_level(dialog, index, WeaponId::ZarcavrokorBonesofReflection);
@@ -128,13 +127,9 @@ namespace hooks
 			if (air_weapon_main_unit != WeaponId::None)
 			{
 				air_weapon_subunit = air_weapon_main_unit;
-			}
-			else if (!active_unit->subunit)
-			{
+			} else if (!active_unit->subunit) {
 				no_air_weapon_display = true;
-			}
-			else
-			{
+			} else {
 				air_weapon_subunit = units_dat::air_weapon[active_unit->subunit->id];
 			}
 
@@ -143,31 +138,23 @@ namespace hooks
 				if (air_weapon_subunit == WeaponId::None)
 				{
 					no_air_weapon_display = true;
-				}
-				else if (air_weapon_main_unit != WeaponId::None)
-				{
+				} else if (air_weapon_main_unit != WeaponId::None) {
 					air_weapon = air_weapon_main_unit;
-				}
-				else
-				{
+				} else {
 					if (!active_unit->subunit)
 					{
 						air_weapon = WeaponId::None;
-					}
-					else
-					{
+					} else {
 						air_weapon = units_dat::air_weapon[active_unit->subunit->id];
 					}
 				}
 				if (!no_air_weapon_display)
 				{
 					u8 ground_weapon;
-					if (active_unit->id == UnitId::ZergLakizilisk && !(active_unit->status & UnitStatus::Burrowed))
+					if (unit_id_is_burrowed_attacker(active_unit->id) && !(active_unit->status & UnitStatus::Burrowed))
 					{
 						ground_weapon = WeaponId::None;
-					}
-					else
-					{
+					} else {
 						ground_weapon = units_dat::ground_weapon[active_unit->id];
 						if (ground_weapon == WeaponId::None && active_unit->subunit)
 						{
@@ -178,19 +165,13 @@ namespace hooks
 					if (air_weapon == ground_weapon)
 					{
 						no_air_weapon_display = true;
-					}
-					else if (air_weapon_main_unit != WeaponId::None)
-					{
+					} else if (air_weapon_main_unit != WeaponId::None) {
 						air_weapon = air_weapon_main_unit;
-					}
-					else if (air_weapon_main_unit == WeaponId::None)
-					{
+					} else if (air_weapon_main_unit == WeaponId::None) {
 						if (!active_unit->subunit)
 						{
 							air_weapon = WeaponId::None;
-						}
-						else
-						{
+						} else {
 							air_weapon = units_dat::air_weapon[active_unit->subunit->id]; // 00426E16
 						}
 					}
@@ -249,7 +230,13 @@ namespace hooks
 	}
 
 	// Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
-	char* get_unit_rank_string(Unit* unit) { // 0042F370
+	const char* get_unit_rank_string(Unit* unit) { // 0042F370
+		if (key_held_this_frame(VK_MENU)) {
+			static char buffer[260] = {};
+			UnitExt* unit_ext = get_unit_ext(unit);
+			sprintf_s(buffer, sizeof(buffer), "Damage taken: %d", unit_ext->total_damage_taken / 256);
+			return buffer;
+		}
 		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories) {
 			return "";
 		}
@@ -265,7 +252,7 @@ namespace hooks
 			|| !units_dat::map_string_id[unit_id])
 		{
 			if (helper::unitGetRace(unit) == RaceId::Terran
-				&& !scbw::unit_id_is_factional(unit->id))
+				&& !bw::unit_id_is_factional(unit->id))
 			{
 				return helper::get_stat_txt_string((unit->rank_increase + units_dat::rank[unit_id]) + 1302);
 			}
@@ -281,15 +268,20 @@ namespace hooks
 
 	void draw_unit_kills_string(BinDlg* dialog) { // 00425DD0
 		Unit* unit = *g_active_portrait_unit;
-		if (scbw::get_game_kind() != GameKind_Competitive) {
+		if (key_held_this_frame(VK_MENU)) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			sprintf_s(g_kills_buffer, 260, "Damage dealt: %d", unit_ext->total_damage_dealt / 256);
+			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
+		} else if (!bw::game_kind_supports_kills(bw::get_game_kind())) {
 			if (unit->player < PlayerLimit) {
 				helper::add_text_to_dialog(dialog, -21, player_data.full_force_names[unit->player].data);
 			}
 		} else if (unit->kill_count) {
-			char* text = "";
+			const char* text = "";
 			if (g_stat_txt_buffer->get_string_count() > 763) {
-				text = (char*)g_stat_txt_buffer->get_string(764);
+				text = g_stat_txt_buffer->get_string(764);
 			}
+
 			sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
 			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
 		} else if (unit->player == *g_local_nation_id && !*g_is_in_replay) {
@@ -330,7 +322,7 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		if (!*g_is_in_replay && !scbw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
+		if (!*g_is_in_replay && !bw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
 			if (*g_status_screen_func != 4) {
 				helper::hide_optional_status_screen_controls(dialog);
 				*g_status_screen_func = 4;
@@ -480,7 +472,7 @@ namespace hooks
 		child->graphic = 37 + (armor_value >= 10 || armor_value < 0) + (armor_value >= 100 || armor_value <= -10);
 		state->button_grp = icons_grp;
 		u32 final_unit_id = active_unit->build_queue[active_unit->build_queue_slot];
-		if (active_unit->status & UnitStatus::Completed || scbw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot]))
+		if (active_unit->status & UnitStatus::Completed || bw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot]))
 		{
 			final_unit_id = active_unit->id; // We also need to do this for birthing Zerg units
 		}
@@ -504,8 +496,15 @@ namespace hooks
 	// Hooked to draw new values to icons. - Pr0nogo
 	void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, u8 weapon_id) // 00425790
 	{
-		u32 active_player = (*g_active_portrait_unit)->player;
-		u16 damage_value = weapons_dat::damage_amount[weapon_id] * scbw::get_damage_factor_for_tooltip(weapon_id, *g_active_portrait_unit); // TODO: calculate current damage using g_active_portrait_unit
+		Unit* unit = *g_active_portrait_unit;
+		UnitExt* unit_ext = get_unit_ext(unit);
+		u32 active_player = unit->player;
+
+		u32 damage = weapons_dat::damage_amount[weapon_id];	// TODO: calculate current damage using g_active_portrait_unit
+		if (unit_ext->values[ValueTriggerDamageBaseSet]) {
+			damage = unit_ext->values[ValueTriggerDamageBaseAmount] / 256;
+		}
+		u16 damage_value = damage * bw::get_damage_factor_for_tooltip(weapon_id, unit);
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", damage_value);
 
 		BinDlg* dialog_var = dialog;
@@ -554,8 +553,14 @@ namespace hooks
 	void stats_shield_level(BinDlg* dialog, u16 status_screen_index) // 00425510
 	{
 		BinDlg* dialog_var = dialog;
-		Unit* portrait_unit = *g_active_portrait_unit;
-		u32 armor_value = units_dat::armor_amount[portrait_unit->id] + get_bonus_armor(portrait_unit, units_dat::armor_amount[portrait_unit->id]);
+		Unit* unit = *g_active_portrait_unit;
+		UnitExt* unit_ext = get_unit_ext(unit);
+
+		u32 base_armor = units_dat::armor_amount[unit->id];
+		if (unit_ext->values[ValueTriggerArmorBaseSet]) {
+			base_armor = unit_ext->values[ValueTriggerArmorBaseAmount];
+		}
+		u32 armor_value = base_armor + get_bonus_armor(unit, units_dat::armor_amount[unit->id]);
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", armor_value);
 
 		if (dialog_var->control_type)
@@ -652,20 +657,15 @@ namespace hooks
 	// Hooked to change the name of new building morphs.
 	// Since August 2022, data extenders make use of their own hook for naming extended unit ids.
 	// - Pr0nogo
-	const char* get_unit_name(Unit* unit) {
-		if (unit->player < PlayerLimit && unit->id < UnitId::Count &&
-			custom_unit_names[unit->player][unit->id].size) {
-			return custom_unit_names[unit->player][unit->id].data;
+	const char* get_unit_name(Unit* unit) { // 0047B5A0
+		if (unit->player < PlayerLimit && unit->id < UnitId::Count && globals->custom_unit_names[unit->player][unit->id].size) {
+			return globals->custom_unit_names[unit->player][unit->id].data;
 		}
 
 		u16 queue = unit->build_queue[unit->build_queue_slot];
-		if (unit->status & UnitStatus::Completed
-		||  !scbw::is_zerg_building_morph_result(queue))
-		{
+		if (unit->status & UnitStatus::Completed || !bw::is_zerg_building_morph_result(queue)) {
 			return helper::get_unit_name_stat_string(unit->id);
-		}
-		else
-		{
+		} else {
 			return helper::get_unit_name_stat_string(queue);
 		}
 	}
@@ -817,7 +817,7 @@ namespace hooks
 			return unit->id;
 		}
 		u16 queued_id = unit->build_queue[unit->build_queue_slot];
-		if (!scbw::is_zerg_building_morph_result(queued_id))
+		if (!bw::is_zerg_building_morph_result(queued_id))
 		{
 			return unit->id;
 		}
@@ -854,7 +854,7 @@ namespace hooks
 	// Hooked to show progress bars on allied and detected eggs. -Pr0nogo
 	void unit_stat_act_egg(BinDlg* dialog) { // 00427260
 		Unit* unit = *g_active_portrait_unit;
-		if (!*g_is_in_replay && !scbw::unit_is_allied_or_detected(unit, *g_local_nation_id) || unit->status & UnitStatus::IsHallucination) {
+		if (!*g_is_in_replay && !bw::unit_is_allied_or_detected(unit, *g_local_nation_id) || unit->status & UnitStatus::IsHallucination) {
 			helper::unit_stat_act_standard(dialog);
 		} else {
 			if (*g_status_screen_func != 10) {
@@ -890,10 +890,10 @@ namespace hooks
 			u8 race = unit->get_race();
 			u32 race_string_1 = race + 771;
 			u32 race_string_2 = race + 770;
-			char* text = "";
+			const char* text = "";
 			if (race_string_1) {
 				if (race_string_2 < g_stat_txt_buffer->get_string_count()) {
-					text = (char*)g_stat_txt_buffer->get_string(race_string_2 + 1);
+					text = g_stat_txt_buffer->get_string(race_string_2 + 1);
 				} else {
 					text = "";
 				}
@@ -1080,7 +1080,7 @@ namespace hooks
 				if (!(unit->status & UnitStatus::Completed))
 				{
 					unit_id = unit->build_queue[unit->build_queue_slot];
-					if (scbw::is_zerg_building_morph_result(unit_id))
+					if (bw::is_zerg_building_morph_result(unit_id))
 					{
 						unit_id = unit->id;
 					}

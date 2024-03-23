@@ -1,13 +1,10 @@
 #pragma once
-#include <SCBW/structures.h>
+#include <BW/structures.h>
 
 namespace hooks
 {
-	void applyUpgradeFlagsToNewUnitHook(Unit* unit);
-	void applyUpgradeFlagsToExistingUnitsHook(Unit* unit, u8 upgradeId);
-
-	// Applies @upgradeId to all units that are owned by the owner of @p unit.
-	void applyUpgradeFlagsToExistingUnits(Unit* unit, u8 upgradeId);
+	void apply_upgrade_flags_to_new_unit(Unit* unit);						// 00454370
+	void apply_upgrade_flags_to_existing_units(Unit* unit, u8 upgrade_id);	// 00454540
 
 	void inject_apply_upgrade_flags_hooks();
 }

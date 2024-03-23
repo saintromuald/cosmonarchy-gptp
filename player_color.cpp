@@ -26,11 +26,11 @@ static bool player_wants_to_randomize(u32 player) {
 }
 
 static bool player_can_randomize(u32 player) {
-	u32 personality = g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player];
+	u32 personality = g_unit_deaths_table[UnitId::Spell_CarapaceSwarmSmall].player[player];
 	if (g_player_table[player].type == PlayerType::Computer && !personality) {
 		return false; // Don't randomize AI players that don't have personality yet
 	}
-	if (globals.players[player].witness_mode) {
+	if (globals->players[player].witness_mode) {
 		return false;
 	}
 	return true;
@@ -71,7 +71,7 @@ static bool should_check_color_overlap(u32 player, u32 other_player) {
 	if (player_wants_to_randomize(other_player) && !player_can_randomize(other_player)) {
 		return false;
 	}
-	return other_player != player && !globals.players[other_player].witness_mode && (other_player < player || !player_wants_to_randomize(other_player));
+	return other_player != player && !globals->players[other_player].witness_mode && (other_player < player || !player_wants_to_randomize(other_player));
 }
 
 static bool can_use_player_color(u32 color, u32 player) {
@@ -158,9 +158,9 @@ static u32 get_best_color(std::vector<ColorMatch>& matches, bool return_backup_c
 	if (matches.size()) {
 		// We are only interested in the better portion of the colors, unless we have no distance data (e.g. first melee randomization)
 		u32 cap = any_distance ? Max(matches.size() / 8, 1) : matches.size();
-		best_match = matches[scbw::random() % cap];
+		best_match = matches[bw::random() % cap];
 	}
-	// scbw::printf("Returning color match %s with min distance %u", player_color_names[best_match.color], best_match.min_distance);
+	// bw::printf("Returning color match %s with min distance %u", player_color_names[best_match.color], best_match.min_distance);
 	return best_match.color;
 }
 
@@ -175,7 +175,7 @@ static u32 get_next_best_color(u32 player) {
 
 static u32 get_color_for_personality(u32 player) {
 	const u32 race = g_player_table[player].race;
-	const u32 build = g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player] - 1;
+	const u32 build = g_unit_deaths_table[UnitId::Spell_CarapaceSwarmSmall].player[player] - 1;
 	if (build >= 0
 		&& personality_colors.size() > race
 		&& personality_colors[race].size() > build) {
@@ -248,6 +248,7 @@ static void init_player_colors() {
 		easter_egg_unit_names[UnitId::ProtossAccantor].push_back("Protoss iquare");
 		easter_egg_unit_names[UnitId::ProtossServitor].push_back("Protoss Shoevitor");
 
+		easter_egg_unit_names[UnitId::ZergDroleth].push_back("Zerg Shambler");
 		easter_egg_unit_names[UnitId::ZergLiiralisk].push_back("Zerg Wigglehead Raptor");
 		easter_egg_unit_names[UnitId::ZergProtathalor].push_back("Zerg Pr0tathalor");
 		easter_egg_unit_names[UnitId::ZergIzirokor].push_back("Zerg Chadrokor");
@@ -265,7 +266,7 @@ const char* get_random_easter_egg_unit_name(u16 unit_id) {
 	if (names.empty()) {
 		return 0;
 	}
-	u32 index = scbw::rand_between(0, names.size() - 1);
+	u32 index = bw::rand_between(0, names.size() - 1);
 	return names[index];
 }
 
@@ -287,7 +288,7 @@ static bool can_get_player_name(u32 player) {
 	return false;
 }
 
-static bool is_valid_name(u32 player, char* name) {
+static bool is_valid_name(u32 player, const char* name) {
 	if (!name) {
 		return false;
 	}
@@ -318,7 +319,7 @@ void safe_strcpy(char* to, const char* from, size_t capacity) {
 	to[capacity - 1] = 0;
 }
 
-void set_player_name(u32 player, char* name, bool prevent_overwrites) {
+void set_player_name(u32 player, const char* name, bool prevent_overwrites) {
 	if (prevent_overwrites) {
 		player_data.has_custom_player_name[player] = true;
 	}
@@ -327,7 +328,7 @@ void set_player_name(u32 player, char* name, bool prevent_overwrites) {
 	safe_strcpy(player_data.full_player_names[player].data, name, FullNameCap);
 }
 
-void set_player_force_name(u32 player, char* name) {
+void set_player_force_name(u32 player, const char* name) {
 	safe_strcpy(g_player_name_list->player[player].force_name, name, 30);
 	safe_strcpy(player_data.full_force_names[player].data, name, FullNameCap);
 }
@@ -339,12 +340,12 @@ static void update_player_name(u32 player) {
 		return;
 	}
 	u32 race = g_player_table[player].race;
-	u32 personality = g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player];
+	u32 personality = g_unit_deaths_table[UnitId::Spell_CarapaceSwarmSmall].player[player];
 	u32 count = get_name_count(race, personality);
 	if (count) {
 		for (u32 tries = 0; tries < 100; ++tries) {
-			u32 random = scbw::rand_between(0, PlayerPesonalityMaxNames - 1);
-			char* name = player_personality_names[race][personality][random];
+			u32 random = bw::rand_between(0, PlayerPesonalityMaxNames - 1);
+			const char* name = player_personality_names[race][personality][random];
 			if (is_valid_name(player, name)) {
 				set_player_name(player, name, true);
 				return;

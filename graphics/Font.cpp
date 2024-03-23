@@ -1,8 +1,8 @@
 //Based on BWAPI's BW/Font.cpp
 #include "Font.h"
-#include "../SCBW/scbwdata.h"
+#include "../BW/bwdata.h"
 #include <cassert>
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace graphics
 {

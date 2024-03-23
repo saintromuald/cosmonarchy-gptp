@@ -1,6 +1,6 @@
 #include "requirement_parser.h"
-#include "SCBW/api.h"
-#include "SCBW/Storm.h"
+#include "BW/api.h"
+#include "BW/Storm.h"
 
 namespace
 {
@@ -8,29 +8,29 @@ namespace
 	const int TMP_CONST_COUNT_ARG = 512;
 	const int ENTRY_OPCODE_LIMIT_ARG = 32;
 
-	bool parseRequirementsFile(char* path, u16 requirementOverridesIndex[TMP_CONST_COUNT_ARG], u16 requirementOpcodes[TMP_CONST_COUNT_ARG * ENTRY_OPCODE_LIMIT_ARG])
+	bool parseRequirementsFile(const char* path, u16 requirementOverridesIndex[TMP_CONST_COUNT_ARG], u16 requirementOpcodes[TMP_CONST_COUNT_ARG * ENTRY_OPCODE_LIMIT_ARG])
 	{
 		HANDLE fileHandle;
 		if (!SFileOpenFileEx(0, path, 0, &fileHandle))
 		{
-			scbw::printf_console("File not found: %s", path);
+			bw::printf_console("File not found: %s", path);
 			return false;
 		}
 		int fileSize = SFileGetFileSize(fileHandle, 0);
 		if (fileSize == -1 || !fileSize)
 		{
-			scbw::printf_console("File is empty: %s", path);
+			bw::printf_console("File is empty: %s", path);
 			return false;
 		}
 		char* filePointer = (char*)SMemAlloc(fileSize, "logfilename", 0, 0);
 		u32 bytesRead;
 		if (!SFileReadFile(fileHandle, filePointer, fileSize, &bytesRead, 0) || bytesRead != fileSize)
 		{
-			scbw::printf_console("File reading error %s (%d)", path, GetLastError());
+			bw::printf_console("File reading error %s (%d)", path, GetLastError());
 			return false;
 		}
 
-		char* delimiter = "\r\n";
+		const char* delimiter = "\r\n";
 		int line = 1;  // To ensure no indexes point to line 0 which is undefined
 		int opcodeSetCount = 0;
 		int requirementSet = 0;

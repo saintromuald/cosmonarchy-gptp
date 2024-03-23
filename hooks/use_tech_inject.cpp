@@ -1,6 +1,6 @@
 #include "use_tech.h"
-#include "SCBW/scbwdata.h"
-#include "SCBW/api.h"
+#include "BW/bwdata.h"
+#include "BW/api.h"
 #include "hook_tools.h"
 
 namespace
@@ -38,7 +38,7 @@ namespace
 			MOV eax_res, EAX
 			PUSHAD
 		}
-		if (opcode < scbw::get_aise_value(nullptr, nullptr, AiseId::UpgradeLength, 0, 0))
+		if (opcode < bw::get_aise_value(nullptr, nullptr, AiseId::UpgradeLength, 0, 0))
 		{
 			__asm {
 				POPAD

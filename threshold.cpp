@@ -564,7 +564,7 @@ static FraudSpawnLocation* get_random_spawn() {
 		return 0;
 	}
 
-	u32 offset = scbw::rand_between(0, count - 1);
+	u32 offset = bw::rand_between(0, count - 1);
 	u32 best_cost = UINT_MAX;
 	u32 best_location = offset;
 	for (u32 i = 0; i < count; ++i) {
@@ -603,7 +603,7 @@ static FraudSpawnLocation* get_closest_spawn(Point16 pos) {
 	f32 lowest_distance = 999999999;
 	for (u32 i = 0; i < threshold.spawn_count; ++i) {
 		FraudSpawnLocation* loc = &threshold.spawns[i];
-		f32 distance = scbw::get_distance_fast(loc->pos, pos);
+		f32 distance = bw::get_distance_fast(loc->pos, pos);
 		if (distance < lowest_distance) {
 			closest_loc = loc;
 			lowest_distance = distance;
@@ -617,7 +617,7 @@ static FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point1
 	f32 lowest_distance = 999999999;
 	for (u32 i = 0; i < location->source_count; ++i) {
 		FraudSpawnSource* loc = &location->sources[i];
-		f32 distance = scbw::get_distance_fast(loc->pos, pos);
+		f32 distance = bw::get_distance_fast(loc->pos, pos);
 		if (distance < lowest_distance) {
 			closest_loc = loc;
 			lowest_distance = distance;
@@ -644,7 +644,7 @@ bool init_threshold_spawn(CHKUnit* unit, u32 flags) {
 				if (threshold.spawn_count < FraudSpawnCap) {
 					threshold.spawns[threshold.spawn_count++] = spawn;
 				} else {
-					scbw::printf("Spawn cap reached (" STR(FraudSpawnCap) ")");
+					bw::printf("Spawn cap reached (" STR(FraudSpawnCap) ")");
 				}
 			}
 			return false; // We don't want to delete Town Center Markers, since they are supposed to be also processed by AI layouts
@@ -675,7 +675,7 @@ static void init_threshold_spawns() {
 			if (spawn->source_count < FraudSourceCap) {
 				spawn->sources[spawn->source_count++] = { position };
 			} else {
-				scbw::printf("Source cap per spawn reached (" STR(FraudSourceCap) ")");
+				bw::printf("Source cap per spawn reached (" STR(FraudSourceCap) ")");
 			}
 		}
 	}
@@ -688,7 +688,7 @@ static void init_threshold_spawns() {
 				if (source->rally_count < FraudRallyCap) {
 					source->rallies[source->rally_count++] = position;
 				} else {
-					scbw::printf("Rally cap per source reached (" STR(FraudRallyCap) ")");
+					bw::printf("Rally cap per source reached (" STR(FraudRallyCap) ")");
 				}
 			}
 		}
@@ -707,7 +707,7 @@ static void spawn_array_add(FraudSpawnArray* spawn_array, FraudSpawnUnit unit, b
 	if (spawn_array->count < FraudUnitCap) {
 		spawn_array->units[spawn_array->count++] = unit;
 	} else {
-		scbw::printf("Unit entry cap per fraud/race reached (" STR(FraudUnitCap) ")");
+		bw::printf("Unit entry cap per fraud/race reached (" STR(FraudUnitCap) ")");
 	}
 }
 
@@ -753,7 +753,7 @@ static void set_ally(u32 a, u32 b, bool ally) {
 	}
 }
 
-static void messagef(char* format, ...) {
+static void messagef(const char* format, ...) {
 	static char buffer[1024];
 
 	va_list va;
@@ -791,7 +791,7 @@ static u32 get_next_fraud(u32 fraud_class) {
 	}
 	if (count) {
 		u32 fraud = first;
-		u32 index = scbw::rand_between(1, count);
+		u32 index = bw::rand_between(1, count);
 		while (index) {
 			if (!threshold.used[fraud]) {
 				if (!--index) {
@@ -830,7 +830,7 @@ static u32 get_fraud_race(u32 fraud) {
 		|| fraud >= FraudSuper_ZergFirst && fraud <= FraudSuper_ZergLast) {
 		return RaceId::Zerg;
 	}
-	return scbw::rand_between(0, 2);
+	return bw::rand_between(0, 2);
 }
 
 static void clear_player_slot(u32 player, bool map_start) {
@@ -850,7 +850,7 @@ static void clear_player_slot(u32 player, bool map_start) {
 	for (Thingy* thingy = *g_first_fow_sprite; thingy; thingy = thingy_next) {
 		thingy_next = thingy->next;
 		if (thingy->sprite->player == player) {
-			scbw::delete_fow_sprite(thingy);
+			bw::delete_fow_sprite(thingy);
 		}
 	}
 
@@ -858,7 +858,7 @@ static void clear_player_slot(u32 player, bool map_start) {
 	AiTown* ai_town_prev = 0;
 	for (AiTown* ai_town = g_ai_town_list[player].first; ai_town; ai_town = ai_town_prev) {
 		ai_town_prev = ai_town->prev;
-		scbw::delete_town(ai_town);
+		bw::delete_town(ai_town);
 	}
 
 	// Clear AI scripts
@@ -866,7 +866,7 @@ static void clear_player_slot(u32 player, bool map_start) {
 	for (AiScript* ai_script = *g_first_active_aiscript; ai_script; ai_script = ai_script_next) {
 		ai_script_next = ai_script->link.next;
 		if (ai_script->player == player) {
-			scbw::delete_ai_script(ai_script);
+			bw::delete_ai_script(ai_script);
 		}
 	}
 }
@@ -948,13 +948,13 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				if (i == UnitId::Spell_ScannerSweep)   continue;
 				if (i == UnitId::Special_RightPitDoor) continue;
-				if (i == UnitId::Spell_DarkSwarm)      continue;
+				if (i == UnitId::Spell_CarapaceSwarm)      continue;
 				g_unit_deaths_table[i].player[player] = threshold.frauds[fraud][race].deaths[i];
 			}
 
-			g_unit_deaths_table[UnitId::Spell_DisruptionWeb].player[player] = threshold.frauds[fraud][race].personality;
+			g_unit_deaths_table[UnitId::Spell_CarapaceSwarmSmall].player[player] = threshold.frauds[fraud][race].personality;
 			g_unit_deaths_table[UnitId::ProtossPlasmaShell].player[player] = threshold.frauds[fraud][race].build_type;
-			g_unit_deaths_table[UnitId::Spell_DarkSwarm].player[player] = threshold.frauds[fraud][race].build_order;
+			g_unit_deaths_table[UnitId::Spell_CarapaceSwarm].player[player] = threshold.frauds[fraud][race].build_order;
 			set_player_color(player, threshold.frauds[fraud][race].color);
 			set_player_name(player, (char*)fraud_names[fraud], true);
 			set_player_force_name(player, (char*)fraud_class_names[fraud_class]);
@@ -996,7 +996,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 
 			g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player] = 1; // Disable AI upgrade overwrite
 			u32 resource_upgrade = fraud_class;
-			scbw::set_upgrade_level(player, UpgradeId::MiningEfficiency, resource_upgrade);
+			bw::set_upgrade_level(player, UpgradeId::MiningEfficiency, resource_upgrade);
 
 			g_start_positions[player] = spawn_location->pos;
 			
@@ -1004,7 +1004,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 
 			{
 				Point16 pos = threshold.sequence[player].location->pos;
-			//	Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, pos.x, pos.y);
+			//	Unit* augur = bw::create_unit_in_game(UnitId::ProtossAugur, player, pos.x, pos.y);
 			//	if (augur) {
 			//		augur->user_action_flags |= 4;
 			//		augur_sacrifice(augur, 10 * 32);
@@ -1020,7 +1020,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 					Unit* unit = helper::create_unit_at_pos(townhall, player, pos.x, pos.y);
 					sequence->temp_townhall = unit;
 					if (unit) {
-						scbw::create_and_init_thingy(SpriteId::AugurDeathExplosion, pos.x, pos.y, player, unit->sprite->elevation + 1);
+						bw::create_and_init_thingy(SpriteId::AugurDeathExplosion, pos.x, pos.y, player, unit->sprite->elevation + 1);
 						helper::play_sound_at_pos(helper::get_random_sfx_between(SoundId::AugurDeath01, SoundId::AugurDeath04), pos);
 					}
 				}
@@ -1042,7 +1042,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				}
 			}
 
-			scbw::minimap_ping(spawn_location->pos.x, spawn_location->pos.y, 0, *g_local_nation_id);
+			bw::minimap_ping(spawn_location->pos.x, spawn_location->pos.y, 0, *g_local_nation_id);
 			
 			for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 				if (!threshold.fraud_enabled[other_player] || threshold_config.witness_enabled[other_player]) {
@@ -1050,7 +1050,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				}
 			}
 
-			scbw::run_default_ai(player, spawn_location->pos);
+			bw::run_default_ai(player, spawn_location->pos);
 			return true;
 		}
 	}
@@ -1281,9 +1281,9 @@ void spawn_new_frauds() {
 		u32 fraud_class = FraudClass_None;
 		if (threshold.used_count < threshold_config.total_count) {
 			fraud_class = FraudClass_Fraud;
-			if (get_next_fraud(FraudClass_Hero) && (s32)scbw::rand_between(0, 99) < threshold.hero_spawn_counter * 33) {
+			if (get_next_fraud(FraudClass_Hero) && (s32)bw::rand_between(0, 99) < threshold.hero_spawn_counter * 33) {
 				fraud_class = FraudClass_Hero;
-			} else if (get_next_fraud(FraudClass_Super) && (s32)scbw::rand_between(0, 99) < threshold.super_spawn_counter * 20) {
+			} else if (get_next_fraud(FraudClass_Super) && (s32)bw::rand_between(0, 99) < threshold.super_spawn_counter * 20) {
 				fraud_class = FraudClass_Super;
 			}
 		} else if (threshold.used_type_count[FraudClass_God]) {
@@ -1357,14 +1357,14 @@ static void spawn_sequence_units() {
 						Point16 source_pos = source->pos;
 						Point16 rally = source->rallies[sequence->rally_index % source->rally_count];
 
-					//	Unit* augur = scbw::create_unit_in_game(UnitId::ProtossAugur, player, source_pos.x, source_pos.y);
+					//	Unit* augur = bw::create_unit_in_game(UnitId::ProtossAugur, player, source_pos.x, source_pos.y);
 					//	if (augur) {
 					//		augur->user_action_flags |= 4;
 					//		augur_sacrifice(augur, 10 * 32);
 					//	}
-						Unit* unit = scbw::create_unit_in_game(unit_id, player, source_pos.x, source_pos.y);
+						Unit* unit = bw::create_unit_in_game(unit_id, player, source_pos.x, source_pos.y);
 						if (unit) {
-							scbw::create_and_init_thingy(SpriteId::AugurDeathExplosion, source_pos.x, source_pos.y, unit->player, unit->sprite->elevation + 1);
+							bw::create_and_init_thingy(SpriteId::AugurDeathExplosion, source_pos.x, source_pos.y, unit->player, unit->sprite->elevation + 1);
 							helper::play_sound_at_pos(helper::get_random_sfx_between(SoundId::AugurDeath01, SoundId::AugurDeath04), source_pos);
 							if (!(units_dat::base_property[unit_id] & UnitProperty::Worker)) {
 								unit->order_to(OrderId::AttackMove, rally.x, rally.y);

@@ -1,7 +1,7 @@
 #pragma once
-#include "SCBW\api.h"
-#include "SCBW\scbwdata.h"
-#include "SCBW\UnitFinder.h"
+#include "BW\api.h"
+#include "BW\bwdata.h"
+#include "BW\UnitFinder.h"
 #include <vector>
 
 namespace Flags
@@ -38,7 +38,7 @@ namespace Flags
 	};
 }
 
-scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds);
+bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds);
 
 bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
@@ -48,7 +48,7 @@ template<typename cosmonarchyLoop>
 inline void cosmonarchyFinderLoop(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds, cosmonarchyLoop l)
 {
 	auto condition = cosmonarchy_finder_match(unitPtr, flags, unitIds);
-	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
+	bw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
 		pos.x + r, pos.y + r);
 	for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
 	{

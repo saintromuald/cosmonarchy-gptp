@@ -1,5 +1,5 @@
 #include "hpbars.h"
-#include "SCBW/api.h"
+#include "BW/api.h"
 
 namespace hooks
 {
@@ -43,7 +43,7 @@ namespace hooks
 		}
 
 		// Prepare height based on shields
-		if (units_dat::shields_enabled[selection->id])
+		if (bw::unit_has_shields(selection))
 		{
 			grp_height += 7;
 		} else {

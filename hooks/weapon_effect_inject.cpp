@@ -1,7 +1,7 @@
 #include "weapon_effect.h"
 #include "weapons\weapon_spellhit.h"
 #include "../hook_tools.h"
-#include "SCBW/enumerations.h"
+#include "BW/enumerations.h"
 
 const u32 Addr_WeaponsDatEffectCount = 0x0048B785 + 2;
 const u32 Addr_WeaponsDatEffectSwitch = 0x0048B790 + 3;
@@ -243,40 +243,39 @@ namespace
 
 	const void* WeaponEffects_SwitchTable[] =
 	{
-		(void*)0x0048BBF6,		//  0 - None
-		normal_damage_wrapper,			//  1 - Normal
-		radial_splash_wrapper,	//  2 - Splash (Radial)
+		(void*)0x0048BBF6,			//  0 - None
+		normal_damage_wrapper,		//  1 - Normal
+		radial_splash_wrapper,		//  2 - Splash (Radial)
 		enemy_splash_wrapper,		//  3 - Splash (Enemy)
-		lockdown_wrapper,		//  4 - Lockdown
-		nuke_wrapper,			//  5 - Nuclear Missile
-		parasite_wrapper,		//  6 - MatralethParasite
-		broodspawn_wrapper,		//  7 - Broodlings
-		(void*)0x0048BA0F,		//  8 - EMP Shockwave
-		irradiate_wrapper,		//  9 - Irradiate
-		(void*)0x0048BAAB,		// 10 - Ensnare
-		(void*)0x0048BAC8,		// 11 - Plague
-		(void*)0x0048B93D,		// 12 - Stasis Field
-		(void*)0x0048BAE2,		// 13 - Dark Swarm
-		(void*)0x0048BB00,		// 14 - Consume
-		yamato_damage_wrapper,			// 15 - Yamato Gun
-		(void*)0x0048BA2C,		// 16 - Restoration
-		(void*)0x0048BB35,		// 17 - Disruption Web
-		(void*)0x0048BB53,		// 18 - Corrosive Acid
-		(void*)0x0048BBE9,		// 19 - Mind Control -- unused
-		(void*)0x0048BBE9,		// 20 - Feedback -- unused
-		(void*)0x0048BBC2,		// 21 - Optical Flare
-		(void*)0x0048BB99,		// 22 - Maelstrom
+		lockdown_wrapper,			//  4 - Lockdown
+		nuke_wrapper,				//  5 - Nuclear Missile
+		parasite_wrapper,			//  6 - MatralethParasite
+		broodspawn_wrapper,			//  7 - Broodlings
+		(void*)0x0048BA0F,			//  8 - EMP Shockwave
+		irradiate_wrapper,			//  9 - Irradiate
+		(void*)0x0048BAAB,			// 10 - Ensnare
+		(void*)0x0048BAC8,			// 11 - Plague
+		(void*)0x0048B93D,			// 12 - Stasis Field
+		(void*)0x0048BAE2,			// 13 - Dark Swarm
+		(void*)0x0048BB00,			// 14 - Consume
+		yamato_damage_wrapper,		// 15 - Yamato Gun
+		(void*)0x0048BA2C,			// 16 - Restoration
+		(void*)0x0048BB35,			// 17 - Disruption Web
+		(void*)0x0048BB53,			// 18 - Corrosive Acid
+		(void*)0x0048BBE9,			// 19 - Mind Control -- unused
+		(void*)0x0048BBE9,			// 20 - Feedback -- unused
+		(void*)0x0048BBC2,			// 21 - Optical Flare
+		(void*)0x0048BB99,			// 22 - Maelstrom
 		friendly_splash_wrapper,	// 23 - Unused
-		(void*)0x0048B828,		// 24 - Splash (Air)
-//		air_splash_wrapper,		// 24 - Splash (Air)
+		(void*)0x0048B828,			// 24 - Splash (Air)
+//		air_splash_wrapper,			// 24 - Splash (Air)
 		// Add more !
 	};
 }
 
 namespace hooks
 {
-	void inject_weapon_effect_hooks()
-	{
+	void inject_weapon_effect_hooks() {
 		u8 max_id = ARRAY_SIZE(WeaponEffects_SwitchTable) - 1;
 		u8 data[4];
 		*(u32*)data = (u32)WeaponEffects_SwitchTable;

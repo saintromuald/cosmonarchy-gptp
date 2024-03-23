@@ -3,7 +3,7 @@
 //passed from one player to another, either by triggers or casting Mind Control.
 #include "transfer_tech_upgrades.h"
 #include "apply_upgrade_flags.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace {
 	struct TechTransferData {

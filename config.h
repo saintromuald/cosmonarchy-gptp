@@ -11,15 +11,14 @@ struct AdvisorSetting {
 const std::string CONFIG_FILENAME = "config.yml";
 struct Config {
 	// Launch settings
-	bool disable_wmode_prompt = false;
-	bool prefer_wmode = true;
+	bool disable_wmode_prompt = true;
+	bool prefer_wmode = false;
 
 	// General UI
 	bool extended_camera_hotkeys = true;
 	bool show_timer = true;
 	bool show_apm = true;
 	bool always_show_extended_tooltips = false;
-	bool require_control_for_console_hotkey = true;
 
 	// Selection UI
 	bool show_rally_lines = true;
@@ -29,6 +28,7 @@ struct Config {
 	bool show_aura_circles = false;
 	bool show_ability_ranges = true;
 	bool always_show_condensed_selection = false;
+	bool use_alt_for_selection_ui = false;
 
 	// Witness and replay UI
 	bool witness_show_apm = true;
@@ -65,18 +65,22 @@ struct Config {
 	// Hotkeys
 	bool quick_casting = false;
 	bool quick_building = false;
-	bool grid_hotkeys = false;
+	bool grid_hotkeys = true;
 	std::array<std::string, 3> layout = {"QWE", "ASD", "ZXC"};
+	bool extended_control_groups = true;
+	bool default_to_steal_hotkeys = false;
+	bool tilde_control_group = true;
 
 	// Debug
 	bool verbose = false;
 
 	// Map directory
-	std::string default_map_directory = "BroodWar"; // std::string is awful, but the yaml library requires it for text... -Veeq7
+	std::string default_map_directory = "";
 	bool auto_save_replays = true;
 };
 extern Config config;
 
-bool file_exists(std::string file);
 void load_config();
 void save_config();
+
+bool file_exists(const std::string& file);

@@ -27,7 +27,7 @@ namespace
 
 namespace hooks
 {
-	void injectFeedbackSpellHook()
+	void inject_feedback_spell()
 	{
 		jump_patch(orders_FeedbackWrapper,	0x004F6D40, 0);
 	}

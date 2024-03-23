@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/api.h"
+#include "BW/api.h"
 
 // TODO: move unit ext handling here (from iquare_globals)
 
@@ -8,7 +8,7 @@ enum ExtValueId {
 	ValueUnitIdName,
 	ValueWyvernLandGrabOn,
 	ValueAmitosis,
-//	ValueSublimeShepherd,
+	ValueHasFiredReturnAttack,
 	ValueHasSublimeShepherd,
 	ValueWyvernLandGrabX,
 	ValueWyvernLandGrabY,
@@ -65,9 +65,9 @@ enum ExtValueId {
 	ValueMindControlOriginalPlayer,
 	ValuePreMorphEnergy,
 	ValueWendigoShatteredWindsStacks,
-//	ValueGodsMadeFleshActive,
+	ValuePlayerColor,
 	ValueMissileReturnTarget, // unit
-//	ValueKelvinMunitionsSlow,
+	ValueAurielIncinerationPlayer,
 	ValueRaceSupplyType,
 	ValueExemplarLaunchPos,
 	ValueClaymoreLaunchPos,
@@ -93,11 +93,10 @@ enum ExtValueId {
 	ValueIsZombified,
 	ValueCuirassIsSelfReviving,
 	ValueTalosAnimationTimer,
-	ValueBlissfulEmbraceOriginalPlayer,
-	ValueBlissfulEmbraceOriginalHealth,
 	ValueSpecialSovrolethBirth,
 	ValuePlayingAddonWorkingAnim,
 	ValueMindControlPlayer,
+	ValueMindControllerUnitId,
 	ValueNewRepairTimer,
 	ValueSpraithColonyLaunchPos,
 	ValueMissileSiloLoaded,
@@ -114,7 +113,6 @@ enum ExtValueId {
 	ValueMatrixLaunchPos,
 	ValueCataphractLaunchPos,
 	ValueDilettanteLuck,
-	ValueSwarmingOmenPlayer,
 	ValuePanoptusLaunchPos,
 	ValueThroughTheLookingGlassX,
 	ValueThroughTheLookingGlassY,
@@ -132,18 +130,18 @@ enum ExtValueId {
 	ValueCustomImage,
 	ValueAionLaunchPos,
 	ValueMortothrokorStacks,
-	ValueMadrigalTempoDown,
+	ValueCherbrathalorLaunchPos,
 	ValueAssignedHarvesters,
 	ValueAssignedAiGasHarvesters,
 	ValueActiveHarvesters,
-	ValueIsActiveHarvester,
+	ValueHarvesterActivity,
 	ValueNoCorpse,
 	ValueDidactChannelIndex,
 	ValueDidactRecalling,
-	ValueIonCannonTargeting,
-	ValueIonCannonTargetPosX,
-	ValueIonCannonTargetPosY,
-	ValueWorshipStack,
+	ValueDiademTargeting,
+	ValueDiademTargetPosX,
+	ValueDiademTargetPosY,
+	ValueWorshipStack,	// unused
 	ValueCyprianLaunchPos,
 	ValueSavantEntropyGauntlets,
 	ValueSavantPowerSiphonBuff,
@@ -168,6 +166,31 @@ enum ExtValueId {
 	ValueVultureLaunchPos,
 	ValueStaggerWeaponId,
 	ValueStaggerCount,
+	ValueTriggerArmorBaseSet,
+	ValueTriggerArmorBaseAmount,
+	ValueTriggerArmorPenBaseSet,
+	ValueTriggerArmorPenBaseAmount,
+	ValueTriggerDamageBaseSet,
+	ValueTriggerDamageBaseAmount,
+	ValueTakingDeconstructionDamage,
+	ValueTriggerWeaponSplashInnerSet,
+	ValueTriggerWeaponSplashInnerAmount,
+	ValueTriggerWeaponSplashMediumSet,
+	ValueTriggerWeaponSplashMediumAmount,
+	ValueTriggerWeaponSplashOuterSet,
+	ValueTriggerWeaponSplashOuterAmount,
+	ValueTriggerWeaponRangeBaseSet,
+	ValueTriggerWeaponRangeBaseAmount,
+	ValueTriggerBehaviorProximityCloak,
+	ValueTriggerBehaviorSteadyShroud,
+	ValueAddonInactive,
+	ValueNoMassacreResource,
+	ValueJustCastedHallucination,
+	ValueInfested,
+	ValueInfestedInit,
+	ValueInfestingPlayer,
+	ValueRepentantChorus,
+	ValueDemiurgePlayer,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -195,15 +218,14 @@ enum ExtTimerId {
 	TimerCausticDischargeSpeed,
 	TimerIonFieldAttackSpeed,
 	TimerReconstitutionCooldown,
-	TimerBindingGrip,							// unused
+	TimerSalamanderFire,
 	TimerWendigoShatteredWinds,
 	TimerControlledDemolition,
 	TimerEmergencyDetonation,
 	TimerNemeanReactors,
-	TimerSwarmingOmen,
 	TimerSimulacrumClone,
 	TimerEnsnaringBrood,
-	TimerNewMedstim,							// unused
+	TimerAurielIncineration,
 	TimerAugurGimmick,
 	TimerObservanceOverlay,
 	TimerNaniteField,
@@ -220,7 +242,7 @@ enum ExtTimerId {
 	TimerCaptivatingClaws,
 	TimerAlaszilethRegenBoost,
 	TimerWyvernAttackCooldown,
-	TimerDirgeFuse,								// unused
+	TimerAurielIncinerationDamagePeriod,
 	TimerSignify,
 	TimerReviveFlagClearMin,
 	TimerReviveFlagClearMax,
@@ -242,7 +264,7 @@ enum ExtTimerId {
 	TimerTalosAnimationSubtimer,
 	TimerTalosSoundLoopTimer,
 	TimerAddonAnimation,
-	TimerSwarmingOmenSFX,
+	TimerSwarmingOmenDebuff,
 	TimerBladeVortex,
 	TimerStellarEnforcementOverlay,
 	TimerSwarmingOmenSearch,
@@ -257,7 +279,7 @@ enum ExtTimerId {
 	TimerMatadorHeal,
 	TimerMortothrokorPassive,
 	TimerLiftLandDelay,
-	TimerMadrigalTempoChange,
+	TimerSwarmingOmenVisuals,
 	TimerDidactStasisFieldOverlay,
 	TimerStellarEnforcement,
 	TimerDeconstruction,
@@ -274,7 +296,6 @@ enum ExtTimerId {
 	TimerDemiurgeWorship,
 	TimerAxitriliskPerpetualWind,
 	TimerReclaiming,
-	TimerDecaySafe,
 	TimerVilgolethSpawn,
 	TimerVilgolethTimedLife,
 	TimerAvenge,
@@ -286,7 +307,17 @@ enum ExtTimerId {
 	TimerZarcavrokorSecondaryFire,
 	TimerClearStaggerBlacklist,
 	TimerUseLastRepulsion,
-	TimerCustomLarva,
+	TimerSpawnLarva,
+	TimerNathreliskMitosalFog,
+	TimerStimpackDelay,
+	TimerRecallEffect,
+	TimerArtisanReturn,
+	TimerLiftoffDelay,
+	TimerReconstitutionDelay,
+	TimerInfesting,
+	TimerRepentantChorus,
+	TimerSwarmingOmenAudio,
+	TimerTurningRoam,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -295,7 +326,7 @@ enum ExtTimerId {
 	TimerAI_Skyfall,
 	TimerAI_GriefOfAllGods,
 	TimerAI_DisruptionField,
-	TimerAI_MadrigalTempoChangeTimer,
+	TimerAI_MadrigalTempoChangeTimer, // unused
 	TimerAI_MadrigalTempoChangeCooldown,
 
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
@@ -311,22 +342,19 @@ enum ExtTimerId {
 enum ExtUnitId {
 	UnitBroodlingMother,			// is this still really used?
 	UnitDecaySavant,
-	UnitMindController,
 	UnitWyvernTargetLock,
 	UnitDirgeSource,
 	UnitBunkerLockOn,
 	UnitEmpressAnodyneAnnexSource,
 	UnitAnthelionGravityWellSource,
 	UnitTurretParentLink,
-	UnitBlissfulEmbrace,
 	UnitMorphConnectedUnit,
 	UnitAddonParent,
 	UnitResponseTarget,
 	UnitCentaurSecondaryWeaponTarget,
-	UnitIonCannonTarget,
+	UnitDiademTarget,
 	UnitSevenstepMindMatterSource,
 	UnitPennant,
-	UnitDemiurge,
 
 	UnitCount,
 };
@@ -342,8 +370,8 @@ enum ExtUnitVectorId {
 	UnitVectorPhaseLink,
 	UnitVectorPhaseLinkClarions,
 	UnitVectorCrucibles,
-	UnitVectorMindControlling,
 	UnitVectorStaggerBlacklist,
+	UnitVectorBarghests,
 
 	UnitVectorCount,
 };
@@ -360,6 +388,8 @@ struct UnitExt {
 	u32						shield_regen_timer;
 	u32						damage_taken_timer;
 	u32						damage_dealt_timer;
+	u32                     total_damage_taken;
+	u32                     total_damage_dealt;
 	Point16					anthelion_last_move_target;
 	Vector32f				repulsion_vector;
 	Point16					last_bullet_launch_position;
@@ -405,6 +435,7 @@ struct BulletExt {
 	u32 time_traveled;
 	u32 divisor_multiplier = 1;
 	u32 current_z_displacement;
+	u32 damage_override = 0;
 	bool bounced;
 	bool is_phantom;
 	bool did_pierce;
@@ -427,6 +458,7 @@ struct ThingyExt {
 	u32 activity_timer;
 	u32 avenge_or_ascend_player;
 	u32 sight_range_before_death;
+	u32 create_origin;
 };
 
 #define GasBuildingsCap 16
@@ -439,7 +471,7 @@ void init_ext_variables();
 void update_ext_variables();
 
 UnitExt* get_unit_ext(Unit* unit);
-void reset_unit_ext(Unit* unit);
+void reset_unit_ext(UnitExt* unit_ext);
 
 void unit_death_start(Unit* unit);
 void unit_death_end(Unit* unit);

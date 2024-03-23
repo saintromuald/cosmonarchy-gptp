@@ -1,6 +1,6 @@
 #include "weapon_range.h"
 #include "hooks/cosmonarchy_finder.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "globals.h"
 namespace hooks
 {
@@ -23,7 +23,7 @@ namespace hooks
 		}
 
 		// Height advantage
-		bonus_amount += scbw::get_cliff_advantage(unit, target, 0, true);
+		bonus_amount += bw::get_cliff_advantage(unit, target, 0, true);
 
 		// Ignore bonus distance for melee units
 		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || unit_id_is_trap(unit->id)) {
@@ -32,10 +32,13 @@ namespace hooks
 		}
 
 		u32 final_range = units_dat::seek_range[unit->id];
+		if (unit_ext->values[ValueTriggerWeaponRangeBaseSet]) {
+			final_range = unit_ext->values[ValueTriggerWeaponRangeBaseAmount];
+		}
 		if (target && target->status & UnitStatus::InAir) {
 			u32 weapon_id = unit->get_air_weapon();
 			if (unit_id_has_custom_air_weapon(unit->id)) {
-				weapon_id = scbw::get_custom_secondary_weapon_from_unit_id(unit->id);
+				weapon_id = bw::get_custom_secondary_weapon_from_unit_id(unit->id);
 			}
 			if (weapon_id != WeaponId::None && weapons_dat::max_range[weapon_id] / 32 < final_range) {
 				final_range = weapons_dat::max_range[weapon_id] / 32;
@@ -68,7 +71,7 @@ namespace hooks
 
 		// Height advantage
 		if (!ignore_cliff_advantage) {
-			bonus_amount += scbw::get_cliff_advantage(unit, target, weapon_id, false) * 32;
+			bonus_amount += bw::get_cliff_advantage(unit, target, weapon_id, false) * 32;
 		}
 
 		// Ignore bonus distance for melee units
@@ -86,6 +89,11 @@ namespace hooks
 			return std::min((s32)weapons_dat::max_range[weapon_id], 64);
 		}
 
-		return weapons_dat::max_range[weapon_id] * scale + bonus_amount;
+		u32 final_range = weapons_dat::max_range[weapon_id];
+		if (unit_ext->values[ValueTriggerWeaponRangeBaseSet]) {
+			final_range = unit_ext->values[ValueTriggerWeaponRangeBaseAmount];
+		}
+
+		return final_range * scale + bonus_amount;
 	}
 }

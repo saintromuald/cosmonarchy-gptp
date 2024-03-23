@@ -1,6 +1,6 @@
 #pragma once
-#include <SCBW/structures/Unit.h>
-#include <SCBW/structures/Bullet.h>
+#include <BW/structures/Unit.h>
+#include <BW/structures/Bullet.h>
 
 struct WeaponOffsets {
 	u32 value_id;
@@ -34,7 +34,7 @@ void apply_weapon_cooldown(Unit* unit, u8 weapon_id);
 Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown = true);
 void fire_line(Unit* unit, u32 weapon_id, u32 count, u32 forward_spread, u32 lines, u32 side_spread, WeaponOffsets* weapon_offsets = 0);
 void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets = 0);
-bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 filters, FireMultipleOptions options);
+bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options);
 
 namespace hooks
 {

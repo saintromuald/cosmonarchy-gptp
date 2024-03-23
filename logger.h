@@ -4,7 +4,7 @@
 
 #include <fstream>
 
-#include "SCBW/scbwdata.h"
+#include "BW/bwdata.h"
 #include "config.h"
 
 namespace GPTP {

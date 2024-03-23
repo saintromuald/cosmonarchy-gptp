@@ -52,6 +52,20 @@ inline void call_patch(const void* target, DWORD position, u32 nops = 0)
 	call_patch(target, (void*)position, nops);
 }
 
+/// Inject an array of bytes, using the given count.
+void memory_patch(void* const address, const u8* data, const size_t size);
+
+inline void memory_patch(const u32 address, const u8* data, const size_t size)
+{
+	memory_patch((void*)address, data, size);
+}
+
+template <typename T>
+void memory_patch(const u32 address, const T& data)
+{
+	memory_patch(address, (u8*)&data, sizeof(T));
+}
+
 /// Patches the specified address with the given data using memcpy().
 template <typename T>
 void memory_patch_df(const u32 address, const T& data, unsigned char reps = 0)
@@ -68,20 +82,6 @@ void memory_patch_df(const u32 address, const T& data, unsigned char reps = 0)
 	else {
 		memory_patch(address, (u8*)&data, sizeof(T));
 	}
-}
-
-
-template <typename T>
-void memory_patch(const u32 address, const T& data)
-{
-	memory_patch(address, (u8*)&data, sizeof(T));
-}
-
-/// Inject an array of bytes, using the given count.
-void memory_patch(void* const address, const u8* data, const size_t size);
-inline void memory_patch(const u32 address, const u8* data, const size_t size)
-{
-	memory_patch((void*)address, data, size);
 }
 
 void wrapper_patch(const u8* code, u32 len, const u32 position, u32 nops = 0);

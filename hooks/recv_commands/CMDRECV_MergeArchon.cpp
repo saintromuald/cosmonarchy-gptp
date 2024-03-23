@@ -1,5 +1,5 @@
 #include "CMDRECV_MergeArchon.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace hooks
 {
@@ -138,7 +138,7 @@ namespace hooks
 
 		}
 
-		scbw::refresh_console();
+		bw::refresh_console();
 
 	}
 
@@ -278,7 +278,7 @@ namespace hooks
 
 		}
 
-		scbw::refresh_console();
+		bw::refresh_console();
 
 	}
 }

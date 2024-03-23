@@ -1,12 +1,12 @@
 #include "update_unit_state.h"
 #include "update_status_effects.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <algorithm>
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/weapon_effect.h"
 #include "hooks/tactical_ai.h"
 #include "globals.h"
-#include "SCBW\UnitFinder.h"
+#include "BW\UnitFinder.h"
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/unit_destructor_special.h"
 #include "hooks/update_unit_sight.h"
@@ -62,7 +62,7 @@ namespace hooks
 		}
 		*/
 
-		u32 overlay_id = ImageId::EnergyRegenOverlaySmall + scbw::get_overlay_offset(unit->id, true);
+		u32 overlay_id = ImageId::EnergyRegenOverlaySmall + bw::get_overlay_offset(unit->id, true);
 		if (!dont_regen && unit->energy < max_energy) {
 			unit->heal_energy(10 * 256 / 24, unit);
 			if (unit->energy > max_energy) {
@@ -75,10 +75,10 @@ namespace hooks
 			}
 
 			if (!unit->get_overlay(overlay_id)) {
-				scbw::add_unit_overlay(unit, overlay_id);
+				bw::add_unit_overlay(unit, overlay_id);
 				helper::play_sound_from_unit(SoundId::EnergyRegenStart, unit, 1, 0);
 			}
-		} else if (unit->sprite->get_overlay(overlay_id)) {
+		} else if (unit->get_overlay(overlay_id)) {
 			Image* overlay = unit->get_overlay(overlay_id);
 			overlay->play_iscript_animation(IscriptAnimation::Death);
 			helper::play_sound_from_unit(SoundId::EnergyRegenEnd, unit, 1, 0);
@@ -88,8 +88,8 @@ namespace hooks
 	static bool wyvern_can_fire_at(Unit* unit, Unit* target) {
 		if (target->sprite) {
 			const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
-			return scbw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
-				&& scbw::get_distance_fast(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
+			return bw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
+				&& bw::get_distance_fast(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
 				&& unit->can_attack_target(target);
 		}
 		return false;
@@ -120,7 +120,7 @@ namespace hooks
 				Unit* target = unit_ext->units[UnitWyvernTargetLock];
 				UnitExt* target_ext = get_unit_ext(target);
 				if (target_ext->timers[TimerOwnerChangedRecently]
-				&&  scbw::is_allied_to(unit->player, target->player)) {
+				&&  bw::is_allied_to(unit->player, target->player)) {
 					unit_ext->units[UnitWyvernTargetLock] = 0;
 				}
 			}
@@ -129,18 +129,18 @@ namespace hooks
 			if (unit->status & UnitStatus::Completed && unit_ext->timers[TimerWyvernAttackCooldown] == 0) {
 				u32 range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
 				s32 forward_offset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
-				u32 x = unit->get_x() + scbw::get_polar_x(forward_offset, unit->current_direction_1);
-				u32 y = unit->get_y() + scbw::get_polar_y(forward_offset, unit->current_direction_1);
+				u32 x = unit->get_x() + bw::get_polar_x(forward_offset, unit->current_direction_1);
+				u32 y = unit->get_y() + bw::get_polar_y(forward_offset, unit->current_direction_1);
 
 				bool seek_unit = true;
 				if (unit_ext->values[ValueWyvernLandGrabOn] == 1) {
 					u32 targ_x = unit_ext->values[ValueWyvernLandGrabX];
 					u32 targ_y = unit_ext->values[ValueWyvernLandGrabY];
-					s32 direction = scbw::get_angle(x, y, targ_x, targ_y);
-					if (scbw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
-						u32 sound = scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
+					s32 direction = bw::get_angle(x, y, targ_x, targ_y);
+					if (bw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
+						u32 sound = helper::get_random_sfx_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02);
 						helper::play_sound_from_unit(sound, unit, 1, 0);
-						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, 0, targ_x, targ_y);
+						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, 0, targ_x, targ_y);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 						turret->order_target.pt.x = targ_x;
 						turret->order_target.pt.y = targ_y;
@@ -172,7 +172,7 @@ namespace hooks
 							if (it == unit) {
 								continue;
 							}
-							if (scbw::is_allied_to(unit->player, it->player)) {
+							if (bw::is_allied_to(unit->player, it->player)) {
 								continue;
 							}
 							if (!wyvern_can_fire_at(unit, it)) {
@@ -184,9 +184,9 @@ namespace hooks
 					}
 					
 					if (target && wyvern_can_fire_at(unit, target)) {
-						s32 direction = scbw::get_angle(x, y, target->get_x(), target->get_y());
-						helper::play_sound_from_unit(scbw::rand_between(SoundId::WyvernAttack01, SoundId::WyvernAttack02), unit, 1, 0);
-						scbw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
+						s32 direction = bw::get_angle(x, y, target->get_x(), target->get_y());
+						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02), unit, 1, 0);
+						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 					}
 				}
@@ -197,17 +197,15 @@ namespace hooks
 		unit->is_being_healed = 0;
 
 		// Cowardice slow flag
-		if (unit->new_flags_3 & 0x10)
-		{
+		if (unit->new_flags_3 & 0x10) {
 			unit->new_flags_3 &= ~0x10;
 			unit->update_speed();
 		}
 
 		// Something to do with player-specific Signify overlays?
-		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*g_active_nation_id][0])
-		{
+		if (unit->new_flags_3 & 0x20 && unit == players_selections->unit[*g_active_nation_id][0]) {
 			unit->new_flags_3 &= ~0x20;
-			scbw::refresh_console();
+			bw::refresh_console();
 		}
 
 		// Flash shielding (regeneration)
@@ -216,20 +214,21 @@ namespace hooks
 				s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
 				u32 overlay_id = ImageId::RechargeShields_Small;
-				switch (scbw::get_overlay_offset(unit->id, true)) {
-				case 1: {
-					overlay_id = ImageId::RechargeShieldsCustom_Medium;
-				} break;
-				case 2: {
-					overlay_id = ImageId::RechargeShields_Large;
-				} break;
-				case 3: {
-					overlay_id = ImageId::RechargeShieldsCustom_XLarge;
-				} break;
+				switch (bw::get_overlay_offset(unit->id, true)) {
+					case 1: {
+						overlay_id = ImageId::RechargeShieldsCustom_Medium;
+					} break;
+					case 2: {
+						overlay_id = ImageId::RechargeShields_Large;
+					} break;
+					case 3: {
+						overlay_id = ImageId::RechargeShieldsCustom_XLarge;
+					} break;
 				}
 
-				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24) {
-					unit->heal_shields((10 * 256 / 24) * (1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size()), unit, false);
+				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24 && !unit->is_frozen()) {
+					bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
+					unit->heal_shields((10 * 256 / 24) * (1 + (has_crucible * 0.25)), unit, false);
 					if (unit->shields > max_shields) {
 						if (unit->shields > max_shields) {
 							unit->shields = max_shields;
@@ -240,16 +239,14 @@ namespace hooks
 					}
 
 					if (!unit->get_overlay(overlay_id)) {
-						scbw::add_unit_overlay(unit, overlay_id);
+						bw::add_unit_overlay(unit, overlay_id);
 						helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
 					}
-				}
-				else if (unit->sprite->get_overlay(overlay_id)) {
-					scbw::remove_unit_overlay(unit, overlay_id);
+				} else if (unit->get_overlay(overlay_id)) {
+					bw::remove_unit_overlay(unit, overlay_id);
 					if (unit->shields >= max_shields) {
 						helper::play_sound_from_unit(SoundId::FlashShieldingEnd, unit, 1, 0);
-					}
-					else {
+					} else {
 						helper::play_sound_from_unit(SoundId::FlashShieldingInterrupt, unit, 1, 0);
 					}
 				}
@@ -266,20 +263,16 @@ namespace hooks
 		}
 
 		// Supposedly, allows Zethrokors to attack after unburrowing without delay
-		if (unit->id == UnitId::ZergZethrokor)
-		{
-			if (unit->ground_weapon_cooldown == 0)
-			{
+		if (unit->id == UnitId::ZergZethrokor) {
+			if (unit->ground_weapon_cooldown == 0) {
 				unit->order_queue_timer = 0;
 			}
 		}
 
 		// update unit status effects (stim, maelstrom, plague, etc.)
-		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & SpriteFlags::Hidden))
-		{
+		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & SpriteFlags::Hidden)) {
 			unit->cycle_counter++;
-			if (unit->cycle_counter >= 8)
-			{
+			if (unit->cycle_counter >= 8) {
 				unit->cycle_counter = 0;
 				helper::restore_all_unit_stats(unit); // use update_status_effects hook if available
 			}
@@ -289,48 +282,43 @@ namespace hooks
 		// Modified 24/01/23 to allow Zerg building morph sources to regenerate while mutating. -Pr0nogo
 		if (unit->status & UnitStatus::Completed
 		||	unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon
-		||	scbw::is_zerg_building_morph_result(unit->build_queue[unit->build_queue_slot]))
+		||	bw::is_zerg_building_morph_result(unit->build_queue[unit->build_queue_slot]))
 		{
 			bool stop_here = false;
-
-			// remove units with timed lives
-			if (unit->remove_timer != 0)
-			{
+			if (unit->remove_timer != 0) {
 				unit->remove_timer -= 1;
-				if (unit->remove_timer == 0)
-				{
+				if (unit->remove_timer == 0) {
 					unit->remove();
 					stop_here = true;
 				}
 			}
 
-			// update unit energy (energy regen/drain)
 			update_unit_energy(unit);
 
-			if (unit->recent_order_timer != 0)
-			{
+			if (unit->recent_order_timer != 0) {
 				unit->recent_order_timer--;
 			}
 
 			// Augur - Final Hour
-			if (unit->id == UnitId::ProtossAugur && unit->shields == 0)
-			{
+			if (unit->id == UnitId::ProtossAugur && unit->shields == 0) {
 				augur_sacrifice(unit);
 				stop_here = true;
 			}
 
-			// HP regeneration
-			if ((units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP || unit_ext->values[ValueBlissfulEmbraceOriginalPlayer])
-			&&	 unit->hitpoints > 0
-			&&	 unit->hitpoints != unit->get_max_hp_raw()
-			&&	 unit_ext->damage_taken_timer > 2 * 24 || unit_regens_in_combat(unit))
-			{
-				s32 regen = 11; // 1 HP per second
+			// Passive HP regeneration
+			if (bw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw()) {
+				u32 factor = bw::get_regeneration_factor(unit);
+				if (unit_ext->damage_taken_timer > 2 * 24) {
+					factor++;
+				}
+
+				s32 regen = 11 * factor; // 1 HP per second, before factor.
 				if (unit->status & UnitStatus::Burrowed) {
 					regen *= 2;
 				}
 
-				regen *= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
+				bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
+				regen *= 1 + (has_crucible * 0.25);
 				unit->heal_hp(regen, 0, false);
 			}
 
@@ -338,22 +326,18 @@ namespace hooks
 			{
 				s32 tick_heal = 0;
 				// Alaszileth - Dermal Accelerant - 500% life regen
-				if (unit_ext->timers[TimerAlaszilethRegenBoost] > 0)
-				{
+				if (unit_ext->timers[TimerAlaszilethRegenBoost] > 0) {
 					tick_heal += 11 * 5;
 				}
 
 				// Azazel Defensive Matrix - heal over time
-				if (unit->defensive_matrix_hp != 0)
-				{
-					if (unit->hitpoints > 0 && unit->hitpoints / 256 != unit->get_max_hp_ingame())
-					{
+				if (unit->defensive_matrix_hp != 0) {
+					if (unit->hitpoints > 0 && unit->hitpoints / 256 != unit->get_max_hp_ingame()) {
 						tick_heal += AzazelDefensiveMatrixHeal;
 					}
 				}
 
-				if (tick_heal)
-				{
+				if (tick_heal) {
 					unit->heal_hp(tick_heal);
 				}
 			}
@@ -361,19 +345,19 @@ namespace hooks
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora) {
 				if (unit_ext->values[ValueLastOrdersInit] == 1) {
-					auto distance = scbw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
+					auto distance = bw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
 					if (distance < 32) {
 						unit->status |= UnitStatus::Invincible;
 						// TODO: unit search radial
 						auto match = cosmonarchy_finder_match(unit, Flags::NoAir | Flags::Enemy, {});
 						const u32 radius = 64;
-						scbw::UnitFinder(
+						bw::UnitFinder(
 							unit->get_x() - radius,
 							unit->get_y() - radius,
 							unit->get_x() + radius,
 							unit->get_y() + radius
 						).for_each_in_match(match, [&](Unit* target) {
-							u32 dist = scbw::get_distance_fast(unit->position, target->position);
+							u32 dist = bw::get_distance_fast(unit->position, target->position);
 							u32 damage = 25 * 256;
 							if (dist > 48) {
 								damage /= 4;
@@ -390,15 +374,10 @@ namespace hooks
 			}
 
 			// Terran building burn-down
-			if (!stop_here && !unit_ext->values[ValueBlissfulEmbraceOriginalPlayer])
-			{
-				if (unit->get_race() == RaceId::Terran)
-				{
-					if (unit->status & UnitStatus::GroundedBuilding
-					||  units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)
-					{
-						if (helper::unit_hp_is_in_redzone(unit))
-						{
+			if (!stop_here && !unit_ext->values[ValueInfested]) {
+				if (unit->get_race() == RaceId::Terran) {
+					if (unit->status & UnitStatus::GroundedBuilding || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
+						if (helper::unit_hp_is_in_redzone(unit)) {
 							unit->damage_hp(20, 0, unit->last_attacking_player, true);
 						}
 					}
@@ -520,7 +499,7 @@ namespace hooks
 				Unit* next_burrowed = invisible_unit->invisible_link.next;
 				if (helper::is_unit_cloaking(invisible_unit))
 				{
-					do_cloak(invisible_unit, scbw::get_cloak_sound_id(invisible_unit));
+					do_cloak(invisible_unit, bw::get_cloak_sound_id(invisible_unit));
 				} else {
 					u32 status_1 = invisible_unit->status;
 					bool cloak_or_burrow;
@@ -536,7 +515,7 @@ namespace hooks
 					{
 						goto Next_Or_Redraw;
 					}
-					helper::begin_cloak(invisible_unit, scbw::get_cloak_sound_id(invisible_unit));
+					helper::begin_cloak(invisible_unit, bw::get_cloak_sound_id(invisible_unit));
 				}
 				redraw = 1;
 			Next_Or_Redraw:
@@ -545,7 +524,7 @@ namespace hooks
 				{
 					if (redraw)
 					{
-						scbw::refresh_console();
+						bw::refresh_console();
 					}
 					return;
 				}
@@ -562,7 +541,7 @@ namespace hooks
 		}
 		if (!*g_is_in_replay && unit->player == *g_local_nation_id)
 		{
-			scbw::refresh_console();
+			bw::refresh_console();
 		}
 
 		if (unit->status & UnitStatus::Burrowed)
@@ -589,32 +568,25 @@ namespace hooks
 	// Hooked to add nullcheck - Pr0nogo
 	void progress_unit_frame(Unit* unit) // 004ECF70
 	{
-		Unit* unitVar = unit;
-		if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && unit->sprite)
-		{
-			if (!(unit->sprite->flags & 0x20))
-			{
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && unit->sprite) {
+			if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 				helper::refresh_sprite(unit->sprite, g_selection_circle_color[unit->player]);
 			}
 		}
-		update_unit_state(unit);
+		helper::update_unit_state(unit);
 		helper::progress_order(unit);
 		helper::perform_secondary_orders(unit, unit->player); // ECX at the time of calling this function
 
-		if (unit->subunit)
-		{
-			if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit))
-			{
+		if (unit->subunit) {
+			if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit)) {
 				*g_active_iscript_unit = unit->subunit;
 				progress_unit_frame(unit->subunit);
 				*g_active_iscript_unit = unit;
 			}
 		}
-		if (unit->sprite)
-		{
+		if (unit->sprite) {
 			helper::sprite_to_iscript_loop(unit->sprite);
-			if (!unit->sprite->images.head)
-			{
+			if (!unit->sprite->images.head) {
 				unit->sprite = 0;
 			}
 		}
@@ -634,52 +606,42 @@ namespace hooks
 				}
 				((void(__thiscall*)(Image*))image->update_fxn)(image);
 				helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
-				if (!sprite->images.head)
-				{
+				if (!sprite->images.head) {
 					u32 pos_y = sprite->position.y / 32;
-					if (pos_y >= 0)
-					{
-						if (pos_y >= *g_map_tile_height)
-						{
+					if (pos_y >= 0) {
+						if (pos_y >= *g_map_tile_height) {
 							pos_y = *g_map_tile_height - 1;
 						}
 					} else {
 						pos_y = 0;
 					}
 
-					if (g_horizontal_sprite_lines_begin[pos_y] == sprite)
-					{
+					if (g_horizontal_sprite_lines_begin[pos_y] == sprite) {
 						g_horizontal_sprite_lines_begin[pos_y] = sprite->link.next;
 					}
-					if (g_horizontal_sprite_lines_end[pos_y] == sprite)
-					{
+					if (g_horizontal_sprite_lines_end[pos_y] == sprite) {
 						g_horizontal_sprite_lines_end[pos_y] = sprite->link.prev;
 					}
-					if (sprite->link.prev)
-					{
+					if (sprite->link.prev) {
 						sprite->link.prev->link.next = sprite->link.next;
 					}
 
 					Sprite* next_sprite = sprite->link.next;
-					if (next_sprite)
-					{
+					if (next_sprite) {
 						next_sprite->link.prev = sprite->link.prev;
 					}
 
 					sprite->link.prev = 0;
 					sprite->link.next = 0;
 					Sprite* first_free = g_free_sprites->head;
-					if (g_free_sprites->head)
-					{
-						if (g_free_sprites->tail == g_free_sprites->head)
-						{
+					if (g_free_sprites->head) {
+						if (g_free_sprites->tail == g_free_sprites->head) {
 							g_free_sprites->tail = sprite;
 						}
 						sprite->link.prev = g_free_sprites->head;
 						sprite->link.next = first_free->link.next;
 						Sprite* next_free = first_free->link.next;
-						if (next_free)
-						{
+						if (next_free) {
 							next_free->link.prev = sprite;
 						}
 						first_free->link.next = sprite;
@@ -700,26 +662,20 @@ namespace hooks
 			return 0;
 		}
 
-		if (!(unit->sprite->flags & SpriteFlags::Hidden))
-		{
+		if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 			helper::sort_unit(unit);
-			if (unit->status & UnitStatus::GroundedBuilding)
-			{
+			if (unit->status & UnitStatus::GroundedBuilding) {
 				helper::clear_building_from_tile_flag(unit, unit->position.x, unit->position.y);
 			}
-			if (unit->status & UnitStatus::InAir)
-			{
+			if (unit->status & UnitStatus::InAir) {
 				helper::remove_repulse_tile(unit);
 			}
 		}
 		helper::transform_unit_sprite(unit, new_id);
 
-		if (units_dat::base_property[unit->id] & UnitProperty::Building)
-		{
-			if (unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection))
-			{
-				if (unit->secondary_order_id != OrderId::Nothing2)
-				{
+		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+			if (unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) {
+				if (unit->secondary_order_id != OrderId::Nothing2) {
 					unit->secondary_order_id = OrderId::Nothing2;
 					unit->secondary_order_pos = { 0, 0 };
 					unit->current_build_unit = 0;
@@ -732,40 +688,33 @@ namespace hooks
 			helper::set_image_direction(unit->sprite->main_graphic, direction);
 		}
 
-		if (unit->sprite->flags & SpriteFlags::Selected)
-		{
-			if (!helper::unit_is_standard_and_movable(unit) && *g_client_selection_count > 1 && new_id != UnitId::ZergEgg)
-			{
+		if (unit->sprite->flags & SpriteFlags::Selected) {
+			if (!helper::unit_is_standard_and_movable(unit) && *g_client_selection_count > 1 && new_id != UnitId::ZergEgg) {
 				helper::update_building_land_unit_selection(0, unit);
 				helper::remove_from_client_selection_3(unit);
 			}
 		}
-		scbw::refresh_console();
+		bw::refresh_console();
 		u32 pos_x = unit->position.x;
 		u32 pos_y = unit->position.y;
 		Point16 position = {pos_x, pos_y};
 		helper::fix_target_location(&position, new_id);
-		if (pos_x != position.x || pos_y != position.y)
-		{
+		if (pos_x != position.x || pos_y != position.y) {
 			helper::move_unit(unit, position.x, position.y);
 		}
-		if (!(unit->sprite->flags & SpriteFlags::Hidden))
-		{
+		if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 			helper::update_unit_order_finder(unit);
-			if (unit->status & UnitStatus::GroundedBuilding)
-			{
+			if (unit->status & UnitStatus::GroundedBuilding) {
 				helper::set_building_tile_flag(unit, unit->position.x, unit->position.y);
 			}
 			helper::check_unstack(unit);
-			if (unit->status & UnitStatus::InAir)
-			{
+			if (unit->status & UnitStatus::InAir) {
 				helper::set_repulse_angle(unit);
 			}
 		}
 
 		Unit* subunit = unit->subunit;
-		if (subunit)
-		{
+		if (subunit) {
 			helper::transform_subunit(subunit, units_dat::subunit[new_id]);
 		}
 		return helper::apply_unit_effects(unit);
@@ -774,8 +723,7 @@ namespace hooks
 	// Hooked to change the sound id for permacloaked units on initial creation. -Pr0nogo
 	u32 update_unit_strength_and_apply_default_orders(Unit* unit) // 0049FA40
 	{
-		if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 			helper::increment_unit_scores(unit, -1);
 			unit->status |= UnitStatus::Completed;
 			helper::increment_unit_scores(unit, 1);
@@ -783,44 +731,48 @@ namespace hooks
 			unit->status |= UnitStatus::Completed;
 		}
 		helper::increment_unit_scores_ex(unit, 1, 1);
-		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak)
+
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (!unit_ext->values[ValueNoMassacreResource]) {
+			if (bw::get_game_kind() == GameKind_Massacre && unit_id_should_give_gas_in_massacre_mode(unit->id)) {
+				bw::add_massacre_resource(unit->player);
+			}
+		} else {
+			unit_ext->values[ValueNoMassacreResource] = 0;
+		}
+
+		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak
+		||	unit_ext->values[ValueTriggerBehaviorProximityCloak]
+		||	unit_ext->values[ValueTriggerBehaviorSteadyShroud])
 		{
-			u32 sound_id = scbw::get_cloak_sound_id(unit);
+			u32 sound_id = bw::get_cloak_sound_id(unit);
 			helper::begin_cloak(unit, sound_id);
 		}
-		if (unit->id == UnitId::Spell_ScannerSweep || unit->id == UnitId::Special_MapRevealer)
-		{
-			if (*g_first_hidden_unit == unit)
-			{
+		if (unit->id == UnitId::Spell_ScannerSweep || unit->id == UnitId::Special_MapRevealer) {
+			if (*g_first_hidden_unit == unit) {
 				*g_first_hidden_unit = unit->link.next;
 			}
-			if (*g_last_hidden_unit == unit)
-			{
+			if (*g_last_hidden_unit == unit) {
 				*g_last_hidden_unit = unit->link.prev;
 			}
-			if (unit->link.prev)
-			{
+			if (unit->link.prev) {
 				unit->link.prev->link.next = unit->link.next;
 			}
 			Unit* next_unit = unit->link.next;
-			if (next_unit)
-			{
+			if (next_unit) {
 				next_unit->link.prev = unit->link.prev;
 			}
 			unit->link.prev = 0;
 			unit->link.next = 0;
 			Unit* first_scanner = *g_first_scanner_sweep;
-			if (*g_first_scanner_sweep)
-			{
-				if (*g_last_scanner_sweep == *g_first_scanner_sweep)
-				{
+			if (*g_first_scanner_sweep) {
+				if (*g_last_scanner_sweep == *g_first_scanner_sweep) {
 					*g_last_scanner_sweep = unit;
 				}
 				unit->link.prev = *g_first_scanner_sweep;
 				unit->link.next = first_scanner->link.next;
 				Unit* next_scanner = first_scanner->link.next;
-				if (next_scanner)
-				{
+				if (next_scanner) {
 					next_scanner->link.prev = unit;
 				}
 				first_scanner->link.next = unit;
@@ -834,23 +786,20 @@ namespace hooks
 			helper::show_and_enable_unit(unit);
 		}
 		// Originally had trap code
+
 		u32 player_type = g_player_table[(unsigned __int8)unit->player].type;
-		if (player_type == PlayerType::Rescuable)
-		{
+		if (player_type == PlayerType::Rescuable) {
 			u32 main_order_id = unit->main_order_id;
 			unit->user_action_flags |= UserActionFlags::UserActionFlags_IscriptGoToIdle;
-			if (main_order_id)
-			{
+			if (main_order_id) {
 				while (1)
 				{
 					Order* tail = unit->order_queue_tail;
-					if (!tail)
-					{
+					if (!tail) {
 						break;
 					}
 					u32 tail_order_id = tail->order_id;
-					if (!orders_dat::can_be_interrupted[tail_order_id] && tail_order_id != OrderId::RescuePassive)
-					{
+					if (!orders_dat::can_be_interrupted[tail_order_id] && tail_order_id != OrderId::RescuePassive) {
 						break;
 					}
 					helper::remove_order_from_unit_queue(tail, unit);
@@ -860,8 +809,7 @@ namespace hooks
 			helper::do_next_queued_order(unit);
 		} else {
 			u32 new_order_id;
-			if (player_type == PlayerType::Neutral)
-			{
+			if (player_type == PlayerType::Neutral) {
 				new_order_id = OrderId::Neutral;
 			} else if (player_type == PlayerType::Computer) {
 				new_order_id = units_dat::computer_idle_order[unit->id];
@@ -870,8 +818,8 @@ namespace hooks
 			}
 			helper::issue_order_targeting_nothing(unit, new_order_id);
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories)
-		{
+
+		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories) {
 			Sprite* sprite = unit->sprite;
 			unit->powerup_origin.x = sprite->position.x;
 			unit->powerup_origin.y = sprite->position.y;
@@ -916,8 +864,7 @@ namespace hooks
 		unit->unit_ai = 0;
 
 		u32 initialized = helper::initialize_unit(unit, pos_y, unit_id, pos_x, player);
-		if (initialized)
-		{
+		if (initialized) {
 			*(u32*)unit->build_queue = 0xE400E4;
 			*(u32*)&unit->build_queue[2] = 0xE400E4;
 			unit->build_queue[4] = UnitId::None;
@@ -1008,7 +955,7 @@ namespace hooks
 				{
 					helper::set_repulse_angle(unit);
 				}
-				helper::init_building(unit, 1);
+				helper::unit_completion_init(unit, 1);
 				helper::refresh_all_visible_images_at_screen_pos(unit->sprite, 0);
 				if (*g_is_placing_building)
 				{
@@ -1062,5 +1009,84 @@ namespace hooks
 			}
 		}
 		return 0;
+	}
+
+	// Hooked to improve functionality and fix a few CMBW-specific bugs. -DF
+	b32 initialize_unit(Unit* unit, s32 pos_y, u16 unit_id, s32 pos_x, u8 player_id) { // 0049ECF0
+		Unit* old_active_iscript_unit = *g_active_iscript_unit;
+		*g_active_iscript_unit = unit;
+
+		if (helper::initialize_flingy(units_dat::graphic[unit_id], pos_y, pos_x, (Flingy*)unit, player_id, 0)) {
+			unit->player = player_id;
+			unit->main_order_id = OrderId::Fatal;
+			unit->main_order_state = 0;
+			unit->order_signal = 0;
+			unit->order_unit_id = UnitId::None;
+			*(u32*)(&unit->main_order_timer) = 0; // Zero-inits the cooldown timers as well.
+			unit->order_target = {0, 0, 0};
+			u32* union_0xC0 = (u32*)(&unit->mine_carrier); // Not specifically mine carriers, just unit layout offset 0xC0.
+			*union_0xC0 = 0;
+			*(union_0xC0 + 1) = 0; // 0xC4
+			*(union_0xC0 + 2) = 0; // 0xC8
+			*(union_0xC0 + 3) = 0; // 0xCC
+			unit->id = unit_id;
+			unit->resource_type = 0;
+			unit->secondary_order_timer = 0;
+
+			if (unit->sprite) {
+				helper::sprite_to_iscript_loop(unit->sprite);
+				if (!unit->sprite->images.head) {
+					unit->sprite = 0;
+				}
+			}
+
+			*g_active_iscript_unit = old_active_iscript_unit;
+			if (!unit->sprite)
+			{
+				return false; // Did not exist in the original function. Added to avoid dereferencing null sprite.
+			}
+
+			unit->last_attacking_player = 8;
+			unit->shields = units_dat::max_shield_points[unit->id] << 8;
+			unit->energy = helper::get_unit_max_energy(unit) / 4;
+
+			unit->ai_action_flags = 0;
+			unit->sprite->elevation = units_dat::elevation[unit_id];
+			u32 base_property = units_dat::base_property[unit_id];
+
+			if (base_property & UnitProperty::Building) {
+				unit->building.tech_id = TechId::None;
+				unit->building.upgrade_id = UpgradeId::None;
+			}
+
+			u32 unit_status = unit->status;
+			unit_status ^= ((base_property << 1) ^ unit_status) & UnitStatus::GroundedBuilding;			//  UnitProperty::Building
+			unit_status ^= (base_property ^ unit_status) & UnitStatus::InAir;							//  UnitProperty::Flyer
+			unit_status ^= ((base_property >> 12) ^ unit_status) & UnitStatus::CanTurnAroundToAttack;	//  UnitProperty::Attack
+			unit_status ^= ((base_property >> 10) ^ unit_status) & UnitStatus::Reacts;					//  UnitProperty::AutoAttackAndMove
+			unit_status ^= (~(unit_status << 18) ^ unit_status) & UnitStatus::IsNormal;					// !UnitProperty::Flyer
+			unit_status ^= ((base_property >> 3) ^ unit_status) & UnitStatus::Invincible;				//  UnitProperty::Invincible
+
+			unit->status = unit_status;
+			unit->pathing_flags ^= (unit->pathing_flags ^ (units_dat::elevation[unit_id] < 12)) & PathingFlags::PathingFlags_ProvidesCollision;
+			unit->path = 0;
+			unit->movement_state = 0;
+			unit->recent_order_timer = 0;
+			unit->damage_overlay_state = g_building_overlay_state_max[unit->sprite->main_graphic->id];
+			u16 time_cost = units_dat::time_cost[unit_id];
+			unit->remaining_build_time = time_cost | !time_cost; // Set time_cost to 1 if it's 0, without branching.
+			helper::update_hp_gain(unit);
+			helper::update_building_construct_shields_amount(unit);
+			helper::apply_speed_upgrade_from_unit_type(unit);
+			unit->update_speed();
+
+			// Preserve player color from unit transforms, even after the player leaves or is defeated. -Pr0nogo
+			// TODO: Find out how to assign player color to a sprite.
+		//	UnitExt* unit_ext = get_unit_ext(unit);
+		//	unit_ext->values[ValuePlayerColor];
+			return true;
+		}
+		*g_active_iscript_unit = old_active_iscript_unit;
+		return false;
 	}
 }

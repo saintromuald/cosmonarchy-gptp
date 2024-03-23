@@ -80,6 +80,23 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) order_to_move_to_target_wrapper() { // 004EB980
+		static s32 result;
+		static Unit* target;
+		static Unit* unit;
+		__asm {
+			MOV target, EAX
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::order_to_move_to_target(target, unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	// PATCHES \\
 
 	const u32 perform_orders_E9E67 = 0x004E9E67;
@@ -115,6 +132,7 @@ namespace hooks {
 		jump_patch(do_next_queued_order_wrapper,	0x00475000,	1);
 		jump_patch(orders_stay_in_range_wrapper,	0x0047C4F0,	0);
 		jump_patch(partial_order_handling_wrapper,	0x004EBED0,	5);
+		jump_patch(order_to_move_to_target_wrapper,	0x004EB980,	1);
 
 		jump_patch(perform_orders_patch_E9E61,					0x004E9E61, 1);	
 		jump_patch(set_unit_stat_txt_error_message_patch_8CCB4,	0x0048CCB4);	// Prevents "unit's waypoint list is full" in replays. -DF

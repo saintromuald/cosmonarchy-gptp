@@ -4,7 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_spell_wrapper()
+	void __declspec(naked) orders_spell_wrapper() // 00492850
 	{
 		static Unit* unit;
 		__asm
@@ -24,33 +24,31 @@ namespace
 		}
 	}
 
-	void __declspec(naked) spell_order_wrapper()
+	void __declspec(naked) spell_order_wrapper() // 004926D0
 	{
 		static s32 result;
-		static s32 defaultOrderString;
+		static s32 default_error_string;
 		static Unit* caster;
-		static u16 techId;
+		static u16 tech_id;
 		static s32 range;
-		static u16* energyCost;
-		__asm
-		{
+		static u16* energy_cost;
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV techId, AX
+			MOV tech_id, AX
 			MOV EAX, [EBP + 0x0C]
 			MOV range, EAX
 			MOV EAX, [EBP + 0x10]
-			MOV energyCost, EAX
+			MOV energy_cost, EAX
 			POP EAX
 			MOV caster, EBX
-			MOV defaultOrderString, EAX
+			MOV default_error_string, EAX
 			PUSHAD
 		}
-		result = hooks::spell_order(defaultOrderString, caster, techId, range, energyCost);
-		__asm
-		{
+		result = hooks::spell_order(default_error_string, caster, tech_id, range, energy_cost);
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -62,15 +60,14 @@ namespace
 	void __declspec(naked) can_target_spell_wrapper() // 00492020
 	{
 		static bool result;
-		static u16 techId;
+		static u16 tech_id;
 		static Unit* target;
-		static s16 fowUnitId;
+		static s16 fow_unit_id;
 		static Unit* caster;
 		static s16 x;
 		static s16 y;
 		static u16* error;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -83,14 +80,13 @@ namespace
 			MOV EAX, [EBP + 0x14]
 			MOV error, EAX
 			POP EAX
-			MOV fowUnitId, SI
+			MOV fow_unit_id, SI
 			MOV target, EDI
-			MOV techId, DX
+			MOV tech_id, DX
 			PUSHAD
 		}
-		result = hooks::can_target_spell(techId, target, fowUnitId, caster, x, y, error);
-		__asm
-		{
+		result = hooks::can_target_spell(tech_id, target, fow_unit_id, caster, x, y, error);
+		__asm {
 			POPAD
 			MOV AL, result
 			MOV ESP, EBP
@@ -103,26 +99,24 @@ namespace
 	{
 		static Unit* unit;
 		static u32 id;
-		static u16 coordX;
-		static u16 coordY;
-		__asm
-		{
+		static u16 coord_x;
+		static u16 coord_y;
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV id, EAX
 			MOV EAX, [EBP + 0x0C]
-			MOV coordX, AX
+			MOV coord_x, AX
 			MOV EAX, [EBP + 0x10]
-			MOV coordY, AX
+			MOV coord_y, AX
 			POP EAX
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::issue_order_targeting_ground(unit, id, coordX, coordY);
-		__asm
-		{
+		hooks::issue_order_targeting_ground(unit, id, coord_x, coord_y);
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP

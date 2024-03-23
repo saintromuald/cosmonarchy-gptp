@@ -1,5 +1,5 @@
 #pragma once
-#include "scbw/structures.h"
+#include "BW/structures.h"
 
 struct CCMU_Extender {
 	Unit unit_table[UnitLimit];

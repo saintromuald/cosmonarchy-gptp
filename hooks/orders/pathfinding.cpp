@@ -1,4 +1,4 @@
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "globals.h"
 #include <math_utils.h>
 
@@ -52,25 +52,27 @@ namespace hooks
 
     // Hooked to resolve contextual order issues - Pr0nogo
     s32 move_to_target(Unit* target, Unit* unit) { // 004EB720
+        if (!target->sprite) { // New
+            return false;
+        }
         Point16 new_target = get_target_point(unit, target);
-        if (target == unit->move_target.unit
-        && ((unit->move_target.pt.x == new_target.x && unit->move_target.pt.y == new_target.y)
-            || helper::isPointAtUnitBorder(0, unit->move_target.unit, unit, unit->move_target.pt))) {
+        if (target == unit->move_target.unit && ((unit->move_target.pt.x == new_target.x && unit->move_target.pt.y == new_target.y)
+            || helper::is_point_at_unit_border(0, unit->move_target.unit, unit, unit->move_target.pt)))
+        {
+			++unmovable_hits[11];
+			unmovable_lastframe[11] = *g_elapsed_time_frames;
             unit->status &= ~UnitStatus::Unmovable;
             return true;
         }
-        if (unit->unit_ai
-        &&  unit->main_order_id != OrderId::TransportLoad
-        &&  helper::ai_prepare_moving_to(unit, new_target.x, new_target.y)) {
+        if (unit->unit_ai && unit->main_order_id != OrderId::TransportLoad && helper::ai_prepare_moving_to(unit, new_target.x, new_target.y)) {
             return false;
         }
 
-        UnitPath* path = (UnitPath*)unit->path;
+        UnitPath* path = unit->path;
         if (path) {
             path->is_calculating |= 1;
         }
-        if (unit->move_target.pt != new_target
-        ||  unit->move_target.unit != target) {
+        if (unit->move_target.pt != new_target || unit->move_target.unit != target) {
             unit->move_target.unit = target;
             unit->move_target.pt = new_target;
             unit->next_movement_waypoint = new_target;
@@ -78,6 +80,8 @@ namespace hooks
             unit->movement_flags |= MovementFlags_OrderedAtLeastOnce;
         }
         unit->recent_order_timer = 15;
+		++unmovable_hits[12];
+		unmovable_lastframe[12] = *g_elapsed_time_frames;
         unit->status &= ~UnitStatus::Unmovable;
         Order* next_order = unit->order_queue_head;
         if (!next_order || orders_dat::Unknown7[next_order->order_id]) {
@@ -90,19 +94,19 @@ namespace hooks
 
     // Hooked because the helper is fucked - Pr0nogo
     b32 get_active_tile_flag(s16 y, s16 x, s32 included_flags, s32 excluded_flags) { // 00472F80
-        ActiveTile* tile = scbw::get_active_tile_at_coords(x, y);
+        ActiveTile* tile = bw::get_active_tile_at_coords(x, y);
         return tile->vision_flags & included_flags && !(tile->vision_flags & excluded_flags);
     }
 
     // Hooked to investigate crashes - Pr0nogo
     bool unit_has_path_to_dest(Unit* unit, s32 x, s32 y) { // 0049CB60
         Point16 target = {x, y};
-        return scbw::get_region(unit->position)->group_index == scbw::get_region(target)->group_index;
+        return bw::get_region(unit->position)->group_index == bw::get_region(target)->group_index;
     }
 
     // Hooked to investigate crashes - Pr0nogo
     bool unit_has_path_to_unit(Unit* unit, Unit* target) { // 0049CBB0
-        return scbw::get_region(unit->position)->group_index == scbw::get_region(target->position)->group_index;
+        return bw::get_region(unit->position)->group_index == bw::get_region(target->position)->group_index;
     }
 
     // Hooked to OoooooO. -Pr0nogo
@@ -112,6 +116,8 @@ namespace hooks
 
     void repulse_unit(Unit* unit, b32 should_repulse) { // 004535A0
         UnitExt* unit_ext = get_unit_ext(unit);
+		++unmovable_hits[13];
+		unmovable_lastframe[13] = *g_elapsed_time_frames;
         if (unit->pathing_flags & 1
         ||  unit->status & UnitStatus::CanNotReceiveOrders
         ||  unit->status & UnitStatus::NoBrkCodeStart
@@ -159,7 +165,7 @@ namespace hooks
                 }
 
                 Vector32f diff = {};
-                diff = scbw::get_normalized_vector(scbw::get_vector_between(target->position, unit->position));
+                diff = bw::get_normalized_vector(bw::get_vector_between(target->position, unit->position));
                 if (abs(diff.x) < 0.001 && abs(diff.y) < 0.001) {
                     continue;
                 }
@@ -168,10 +174,10 @@ namespace hooks
                 repulsion.y += diff.y;
             }
 
-            repulsion = scbw::get_normalized_vector(repulsion);
+            repulsion = bw::get_normalized_vector(repulsion);
 
             if (abs(repulsion.x) < 0.001 && abs(repulsion.y) < 0.001) {
-                Vector32 random_repulse = g_angle_distance[scbw::rand_between(0, 255)];
+                Vector32 random_repulse = g_angle_distance[bw::rand_between(0, 255)];
                 repulsion.x = random_repulse.x / 256.0;
                 repulsion.y = random_repulse.y / 256.0;
             }
@@ -184,7 +190,7 @@ namespace hooks
             Point16 target = {};
             target.x = unit->position.x + repulsion.x * (unit->flingy_top_speed / 256.0 / 2.0);
             target.y = unit->position.y + repulsion.y * (unit->flingy_top_speed / 256.0 / 2.0);
-            target = scbw::clamp_point(target);
+            target = bw::clamp_point(target);
 
             unit->move_target.pt.x = target.x;
             unit->move_target.pt.y = target.y;

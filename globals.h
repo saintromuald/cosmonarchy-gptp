@@ -7,7 +7,7 @@
 #include <ostream>
 #include <istream>
 #include <assert.h>
-#include "scbw\api.h"
+#include "BW\api.h"
 #include "data_ext.h"
 
 #define ATTACK_LIMIT 64
@@ -160,7 +160,7 @@ namespace hooks
 	struct WeaponDamageData;
 }
 
-namespace scbw
+namespace bw
 {
 	bool is_slowed(Unit* unit);
 	void refresh_debuffs(Unit* unit);
@@ -175,3 +175,7 @@ namespace scbw
 	std::vector<Unit*> get_clarion_links(Unit* unit);
 	void spread_clarion_damage(hooks::WeaponDamageData& data);
 }
+
+extern const char* unmovable_names[16];
+extern u32 unmovable_hits[16];
+extern u32 unmovable_lastframe[16];

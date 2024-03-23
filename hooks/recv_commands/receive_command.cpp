@@ -1,5 +1,5 @@
 #include "receive_command.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "globals.h"
 
 namespace hooks
@@ -21,7 +21,7 @@ namespace hooks
 		*saved_x = x;
 		*saved_y = y;
 		*saved_order = bActionOrder;
-		helper::function_0049A8C0((u8*)&array_of_data[0], orders_dat::can_be_obstructed[bActionOrder]);
+		helper::prepare_formation_movement((MovementGroup*)&array_of_data[0], orders_dat::can_be_obstructed[bActionOrder]);
 		if (bActionOrder > OrderId::CTFCOP2 || switch_value[bActionOrder] == 1)
 		{
 			Unit* current_unit;
@@ -29,43 +29,30 @@ namespace hooks
 			*g_unit_iterator_pos = 0;
 			current_unit = get_active_player_next_selection();
 			*saved_unit = current_unit;
-			while (current_unit != nullptr)
+			while (current_unit)
 			{
 				bool jump_to_9AD7E = false;
 				bool bOrderAllowed;
-				if (orders_dat::tech_used[current_order] != TechId::None)
-				{
+				if (orders_dat::tech_used[current_order] != TechId::None) {
 					bOrderAllowed = (current_unit->can_use_tech(orders_dat::tech_used[current_order], *g_active_nation_id) == 1);
-				}
-				else
-				{
+				} else {
 					bOrderAllowed = (helper::order_is_allowed(current_unit, current_order, *g_active_nation_id) == 1);
 				}
 
-				if (bOrderAllowed)
-				{
-					if (current_unit == unitParam)
-					{
-						if (!helper::can_target_self(current_unit, bActionOrder))
-						{
+				if (bOrderAllowed) {
+					if (current_unit == unitParam) {
+						if (!helper::can_target_self(current_unit, bActionOrder)) {
 							jump_to_9AD7E = true;
 						}
 					}
-				}
-				else
-				{
+				} else {
 					jump_to_9AD7E = true;
 				}
 
-				if (!jump_to_9AD7E)
-				{ // 0049ABC4:
-					if (helper::can_do_targeted_order(current_unit, bActionOrder) == 0)
-					{
+				if (!jump_to_9AD7E) { // 0049ABC4:
+					if (helper::can_do_targeted_order(current_unit, bActionOrder) == 0) {
 						jump_to_9AD7E = true;
-					}
-					else if (current_unit->main_order_id != OrderId::NukeLaunch
-					||		 bActionOrder == OrderId::Die)
-					{ // 0049ABE7
+					} else if (current_unit->main_order_id != OrderId::NukeLaunch || bActionOrder == OrderId::Die) { // 0049ABE7
 						bool jump_to_9ac4e = false;
 						bool jump_to_9aca9 = false;
 						bool jump_to_9ad09 = false;
@@ -75,42 +62,28 @@ namespace hooks
 
 						*saved_order_2 = OrderId::Nothing2;
 						*saved_order_3 = bActionOrder;
-						if (current_unit->id == UnitId::TerranCleric)
-						{
-							if (bActionOrder == OrderId::AttackMove
-							||  bActionOrder == OrderId::Attack1)
-							{ // 0049AC09
+						if (current_unit->id == UnitId::TerranCleric) {
+							if (bActionOrder == OrderId::AttackMove ||  bActionOrder == OrderId::Attack1) { // 0049AC09
 								*saved_order_3 = OrderId::HealMove;
-							}
-							else
-							{
+							} else {
 								jump_to_9aca9 = true;
 							}
-						}
-						else
-						{
+						} else {
 							jump_to_9ac4e = true;
 						}
 
 						while (loop_to_9ac0d)
 						{
-							if (!jump_to_9ac4e && !jump_to_9aca9)
-							{
-								if (unitParam == nullptr)
-								{
+							if (!jump_to_9ac4e && !jump_to_9aca9) {
+								if (!unitParam) {
 									jump_to_9ad09 = true;
 									loop_to_9ac0d = false;
-								}
-								else
-								{
+								} else {
 									helper::function_004756E0(current_unit, unitParam, *saved_order_3, bCommandType);
-									if (*saved_order_2 == OrderId::Nothing2)
-									{
+									if (*saved_order_2 == OrderId::Nothing2) {
 										jump_to_9ad74 = true;
 										loop_to_9ac0d = false;
-									}
-									else
-									{
+									} else {
 										helper::function_004756E0(current_unit->subunit, unitParam, *saved_order_2, bCommandType);
 										jump_to_9ad74 = true;
 										loop_to_9ac0d = false;
@@ -118,46 +91,30 @@ namespace hooks
 								}
 							}
 
-							if (jump_to_9ac4e)
-							{
+							if (jump_to_9ac4e) {
 								jump_to_9ac4e = false;
-								if (bActionOrder != OrderId::Attack1)
-								{
+								if (bActionOrder != OrderId::Attack1) {
 									jump_to_9aca9 = true;
-								}
-								else
-								{
+								} else {
 									// Attack command conversion
-									if (unitParam != nullptr)
-									{
+									if (unitParam) {
 										*saved_order_3 = units_dat::attack_unit_order[current_unit->id];
-									}
-									else
-									{
+									} else {
 										*saved_order_3 = units_dat::attack_move_order[current_unit->id];
 									}
 
-									if (*saved_order_3 == OrderId::Nothing2)
-									{
+									if (*saved_order_3 == OrderId::Nothing2) {
 										jump_to_9AD7E = true;
 										loop_to_9ac0d = false;
-									}
-									else if (current_unit->subunit->is_subunit())
-									{
-										if (unitParam != nullptr)
-										{
+									} else if (current_unit->subunit->is_subunit()) {
+										if (unitParam) {
 											*saved_order_2 = units_dat::attack_unit_order[current_unit->subunit->id];
 											jump_to_9aca9 = true;
-										}
-										else
-										{
+										} else {
 											*saved_order_2 = units_dat::attack_move_order[current_unit->subunit->id];
 											jump_to_9aca9 = true;
 										}
-
-									}
-									else
-									{
+									} else {
 										jump_to_9aca9 = true;
 									}
 								}
@@ -170,8 +127,7 @@ namespace hooks
 								if (*saved_order_3 == OrderId::RallyPointToVisibleUnit)
 								{
 									Unit* target = unitParam;
-									if (target == nullptr)
-									{
+									if (!target) {
 										target = current_unit;
 									}
 									UnitExt* current_unitExt = get_unit_ext(current_unit);
@@ -183,8 +139,7 @@ namespace hooks
 								}
 
 								// 0049ACDF
-								if (*saved_order_2 == OrderId::RallyPointToTile)
-								{
+								if (*saved_order_2 == OrderId::RallyPointToTile) {
 									loop_to_9ac0d = false;
 									UnitExt* current_unitExt = get_unit_ext(current_unit);
 									current_unit->rally.unit = nullptr;
@@ -196,56 +151,44 @@ namespace hooks
 						}
 
 						// 0049AD09
-						if (jump_to_9ad09)
-						{
+						if (jump_to_9ad09) {
 							jump_to_9ad09 = false;
 							*saved_x = x;
 							*saved_y = y;
-							if (wUnitType == UnitId::None)
-							{
-								helper::function_0049A500(current_unit, (u8*)&array_of_data[0]);
-							}
-							else
-							{
+							if (wUnitType == UnitId::None) {
+								helper::get_formation_movement_target(current_unit, (MovementGroup*)&array_of_data[0]);
+							} else {
 								*saved_unknown_2 = *saved_unknown_1;
 							}
 
 							helper::function_004756B0(current_unit, *saved_order_3, *saved_unknown_2 / 65536, *saved_unknown_2, bCommandType);
-							if (*saved_order_2 == OrderId::Nothing2)
-							{
+							if (*saved_order_2 == OrderId::Nothing2) {
 								jump_to_9ad74 = true;
-							}
-							else
-							{
+							} else {
 								helper::function_004756B0(current_unit->subunit, *saved_order_2, *saved_unknown_2 / 65536, *saved_unknown_2, bCommandType);
 								jump_to_9ad74 = true;
 							}
 						}
 
 						// 0049AD74
-						if (jump_to_9ad74 == true)
-						{
+						if (jump_to_9ad74 == true) {
 							jump_to_9ad74 = false;
 							jump_to_9ad77 = true;
 						}
 
 						// 0049AD77
-						if (jump_to_9ad77 == true)
-						{
+						if (jump_to_9ad77 == true) {
 							jump_to_9ad77 = false;
 							current_unit->user_action_flags |= 2;
 							jump_to_9AD7E = true;
 						}
-					}
-					else
-					{
-					jump_to_9AD7E = true;
+					} else {
+						jump_to_9AD7E = true;
 					}
 				}
 
 				// 0049AD7E (use next unit in selection):
-				if (jump_to_9AD7E)
-				{
+				if (jump_to_9AD7E) {
 					jump_to_9AD7E = false;
 					*saved_unit = get_active_player_next_selection();
 				}

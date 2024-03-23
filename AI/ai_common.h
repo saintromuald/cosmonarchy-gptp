@@ -1,8 +1,8 @@
 #pragma once
-#include "../SCBW/UnitFinder.h"
+#include "../BW/UnitFinder.h"
 #pragma once
-#include "../SCBW/structures/Unit.h"
-#include "../SCBW/api.h"
+#include "../BW/structures/Unit.h"
+#include "../BW/api.h"
 
 namespace AI
 {

@@ -14,6 +14,6 @@ namespace sfx_dat {
 
 namespace hooks
 {
-	void sfxExtenderGetCount();
-	void newSfxExtender();
+	void sfx_extender_get_count();
+	void new_sfx_extender();
 }

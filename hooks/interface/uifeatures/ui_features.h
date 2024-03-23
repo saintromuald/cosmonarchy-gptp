@@ -1,6 +1,6 @@
 #pragma once
-#include "SCBW/scbwdata.h"
-#include "SCBW/api.h"
+#include "BW/bwdata.h"
+#include "BW/api.h"
 
 #define ActionSampleTime 10
 #define MaxActions 2000
@@ -18,7 +18,7 @@ extern ApmCounter player_apm_counter[PlayerLimit];
 
 extern bool disable_mouse_scroll;
 
-void format_time(char* buffer, u32 size, char* prefix, u32 seconds, bool allow_short);
+void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool allow_short);
 
 namespace hooks {
 	void draw_text(const char* text, u32 x, u32 y, u32 w, u32 h, char color = 2);
@@ -42,7 +42,7 @@ namespace hooks {
 	void draw_stat_button_image(BinDlg* dialog);																			// 00456C30
 	void statbtn_button_update(BinDlg* button);																				// 00458900
 	void load_statdata_bin();																								// 00459B90
-	//void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update);	// 004E52E0
+//	void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update);	// 004E52E0
 
 	void inject_ui_features_hooks();
 
@@ -51,11 +51,12 @@ namespace hooks {
 	void update_actions();
 	void draw_ui_features();
 
-	char input_mmb_down(DialogEvent* event);																				// 00484520
-	int __cdecl input_mmb_up();																								// 004843A0
-	void __cdecl input_mmb_move();																							// 00484460
+	char input_mmb_down(DialogEvent* event);											// 00484520
+	int __cdecl input_mmb_up();															// 004843A0
+	void __cdecl input_mmb_move();														// 00484460
 
-	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event);														// 0045F290
+	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event);					// 0045F290
+	char CMDRECV_minimap_ping(char* buffer);											// 004BF7A0
 }
 
 #define tIconCount 7

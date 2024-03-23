@@ -1,8 +1,8 @@
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <hook_tools.h>
 #include "datext.h"
 
-// scbwdata modified by DatExt
+// bwdata modified by DatExt
 DATEXT_VAR_REF(const LO_Header* const*, shieldOverlays_var);
 DATEXT_VAR_REF(u8*, g_building_overlay_state_max_var);
 DATEXT_VAR_REF(GrpHead* const*, imageGrpGraphics_var);
@@ -99,7 +99,7 @@ namespace DatExt {
         // img_consts
         const_replace(img_consts, newCount);
 
-        // Apply 'newArrs' to appropriate scbwdata.h variables
+        // Apply 'newArrs' to appropriate bwdata.h variables
         imageGrpGraphics_var = (GrpHead* const*)img_newArrs[0];
         lo_files_var->attack_overlays = (LO_Header**)img_newArrs[1];
         lo_files_var->damage_overlays = &((LO_Header**)img_newArrs[1])[newCount];

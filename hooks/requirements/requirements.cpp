@@ -1,7 +1,7 @@
 #include "requirements.h"
 #include "requirement_parser.h"
-#include "SCBW/structures/Player.h"
-#include <SCBW/api.h>
+#include "BW/structures/Player.h"
+#include <BW/api.h>
 
 namespace hooks
 {
@@ -34,7 +34,7 @@ namespace hooks
 			{
 				case RequirementOpcodes::MustBeBroodWar:
 				{
-					if (scbw::is_brood_war_mode() == false)
+					if (bw::is_brood_war_mode() == false)
 					{
 						*g_last_internal_error = InternalErrors::UnknownError26;
 						return 0;
@@ -80,12 +80,12 @@ namespace hooks
 
 				case RequirementOpcodes::MustBeResearched:
 				{
-					if (id == TechId::Burrowing && unit->id == UnitId::ZergLakizilisk)
+					if (id == TechId::Burrowing && unit_id_is_burrowed_attacker(unit->id))
 					{
 						success++;
 						break;
 					}
-					if (scbw::has_tech_researched(player, id) == false && scbw::is_cheat_enabled(CheatFlags::MedievalMan) == false)
+					if (bw::has_tech_researched(player, id) == false && bw::is_cheat_enabled(CheatFlags::MedievalMan) == false)
 					{
 						break;
 					}
@@ -235,7 +235,7 @@ namespace hooks
 						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
 					}
-					if ((unit->id == UnitId::ZergLakizilisk || (unit->status & UnitStatus::Burrowed) == 0) && units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack)
+					if ((unit_id_is_burrowed_attacker(unit->id) || (unit->status & UnitStatus::Burrowed) == 0) && units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack)
 					{
 						*g_last_internal_error = InternalErrors::UnknownError19;
 						return 0;
@@ -317,9 +317,9 @@ namespace hooks
 
 				case RequirementOpcodes::CanHoldPosition:
 				{
-					if ((unit->id != UnitId::ZergLakizilisk || (unit->status & UnitStatus::Burrowed) == 0)
-						&& units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack
-						&& ((unit->status & UnitStatus::GroundedBuilding) == 0 || unit->is_factory() == false))
+					if ((!unit_id_is_burrowed_attacker(unit->id) || (unit->status & UnitStatus::Burrowed) == 0)
+					&&    units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack
+					&&  ((unit->status & UnitStatus::GroundedBuilding) == 0 || unit->is_factory() == false))
 					{
 						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
 						return 0;
@@ -337,7 +337,7 @@ namespace hooks
 
 				case RequirementOpcodes::UpgradeLv1Requires:
 				{
-					switch (scbw::get_upgrade_level(player, id))
+					switch (bw::get_upgrade_level(player, id))
 					{
 						default:
 						{
@@ -794,7 +794,7 @@ LABEL_87:
 				{
 					//DebugOut("IsResearched (%d):", currentOpcode);
 					v10 = requirementsTable[opcodeIndex++];
-					if (scbw::has_tech_researched(parent_unit->player, v10) && !(*g_cheat_state & CheatFlags::MedievalMan))
+					if (bw::has_tech_researched(parent_unit->player, v10) && !(*g_cheat_state & CheatFlags::MedievalMan))
 					{
 						*g_last_internal_error = InternalErrors::UnknownError9;
 						//DebugOut(">Return Gray");

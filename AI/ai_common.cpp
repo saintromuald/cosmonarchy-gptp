@@ -1,7 +1,7 @@
 #include "ai_common.h"
-#include <SCBW/enumerations.h>
-#include <SCBW/api.h>
-#include <SCBW/UnitFinder.h>
+#include <BW/enumerations.h>
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
 #include <globals.h>
 #include <cassert>
 
@@ -86,7 +86,7 @@ namespace AI
 	// 00440DC0  AIEnemyUnitHPAccumulatorProc
 	// 00440FF0  FindNearestEnemyAndClumpProc
 
-	scbw::UnitFinder unitStatTotalFinder;
+	bw::UnitFinder unitStatTotalFinder;
 
 	// In original functions:
 	// 0x00695604 would contains weapon_id
@@ -99,7 +99,7 @@ namespace AI
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
 			if ((target != caster) && !(target->status & UnitStatus::Invincible)
-			&&   scbw::can_weapon_target_unit(weapon_id, target, caster) && caster->is_target_enemy(target))
+			&&   bw::can_weapon_target_unit(weapon_id, target, caster) && caster->is_target_enemy(target))
 			{
 				// specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
 				if (weapon_id == WeaponId::Plague)
@@ -128,7 +128,7 @@ namespace AI
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
-			if (!(target->status & UnitStatus::Invincible) && scbw::can_weapon_target_unit(weapon_id, target, caster) && !caster->is_target_enemy(target))
+			if (!(target->status & UnitStatus::Invincible) && bw::can_weapon_target_unit(weapon_id, target, caster) && !caster->is_target_enemy(target))
 			{
 				total_ally_life += target->get_current_life_ingame();
 			}
@@ -137,23 +137,21 @@ namespace AI
 	}
 
 	// Loop content based on unit_shields_clump_in_area_accumulator_proc @ 0x00440A60
-	// 0x00695798 would contains totalEnemyShields
+	// 0x00695798 would contains total_enemy_shields
 	s32 get_total_enemy_shields_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster)
 	{
 		unitStatTotalFinder.search(x - search_bounds, y - search_bounds,
 			x + search_bounds, y + search_bounds);
-		s32 totalEnemyShields = 0;
+		s32 total_enemy_shields = 0;
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i)
 		{
 			Unit* target = unitStatTotalFinder.get_unit(i);
-			if (!(target->status & UnitStatus::Invincible) &&
-				caster->is_target_enemy(target) &&
-				units_dat::shields_enabled[target->id])
+			if (!(target->status & UnitStatus::Invincible) && caster->is_target_enemy(target) && bw::unit_has_shields(target))
 			{
-				totalEnemyShields += target->get_current_shields_ingame();
+				total_enemy_shields += target->get_current_shields_ingame();
 			}
 		}
-		return totalEnemyShields;
+		return total_enemy_shields;
 	}
 
 	// Loop content based on unitEnergyClumpInAreaAccumulatorProc @ 0x00440AC0
@@ -195,7 +193,7 @@ namespace AI
 
 				if (units_dat::base_property[target->id] & UnitProperty::Building)
 				{
-					if (target->can_detect() ||  target->id == UnitId::ZergSurkithCesiant ||  target->id == UnitId::ZergLakizilisk) // lmao
+					if (target->can_detect() || target->id == UnitId::ZergSurkithCesiant || unit_id_is_burrowed_attacker(target->id)) // lmao
 					{
 						total_nuke_target_value = 800;
 					}

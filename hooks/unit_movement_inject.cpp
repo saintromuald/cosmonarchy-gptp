@@ -6,7 +6,7 @@ namespace
 	void __declspec(naked) unit_movement_dormant_wrapper() // 0046A8D0
 	{
 		static Unit* unit;
-		static s32 result;
+		static b32 result;
 		__asm
 		{
 			MOV unit, EAX
@@ -96,6 +96,22 @@ namespace
 		}
 	}
 
+	void __declspec(naked) unit_movement_initialize_wrapper() {
+		static Unit* unit;
+		static s32 result;
+
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+		result = hooks::unit_movement_initialize(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	// Patches \\
 
 	const u32 playIdleIscript_978D8 = 0x004978D8;
@@ -120,6 +136,7 @@ namespace hooks
 		jump_patch(can_collide_with_wrapper,			0x0042DEE0, 2);
 	//	jump_patch(unit_movement_start_path_wrapper,	0x0046BD90, 1);
 		jump_patch(move_towards_wrapper,				0x004EB900, 1);
+	//	jump_patch(unit_movement_initialize_wrapper,	0x0046C320, 4); // Not tested yet
 
 	//	jump_patch(play_idle_iscript_patch_978D3,	0x004978D3); // DF - Fix animation bug with acceleration movement flag
 	}

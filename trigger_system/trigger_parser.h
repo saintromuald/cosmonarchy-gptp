@@ -1,17 +1,23 @@
 #pragma once
-#include "SCBW/api.h"
+#include "BW/api.h"
 #include "color_palette.h"
 
 #define MaxToken 256
 struct Token {
 	u32 size;
 	char data[MaxToken + 1];
+
+	inline bool operator==(Token& other) { return size == other.size && memcmp(data, other.data, size) == 0; }
+	inline bool operator!=(Token& other) { return !(*this == other); }
 };
 
 #define ParserStackSize 64
 struct Parser {
 	bool parsed_first_command;
-	char* at;
+	bool should_load_pos;
+	const char* start;
+	const char* at;
+	u32 command_start_pos;
 	Token token;
 };
 
@@ -31,10 +37,16 @@ struct Area {
 
 struct PlayerBitset {
 	bool set[FullPlayerLimit];
+
+	inline bool operator==(PlayerBitset& other) { return memcmp(this, &other, sizeof(*this)) == 0; }
+	inline bool operator!=(PlayerBitset& other) { return !(*this == other); }
 };
 
 struct UnitIdBitset {
 	bool set[UnitId::Count];
+
+	inline bool operator==(UnitIdBitset& other) { return memcmp(this, &other, sizeof(*this)) == 0; }
+	inline bool operator!=(UnitIdBitset& other) { return !(*this == other); }
 };
 
 enum QuotaType {
@@ -49,13 +61,16 @@ enum QuotaType {
 	QuotaType_Count
 };
 
-char* parser_marker(Parser* parser);
-void parser_unwind(Parser* parser, char* marker);
+Parser new_parser(const char* at);
+const char* parser_marker(Parser* parser);
+void parser_unwind(Parser* parser, const char* marker);
+
 
 bool parser_get_char(Parser* parser, char c);
-Token parser_get_word(Parser* parser);
-bool parser_get_keyword(Parser* parser, char* keyword);
+Token parser_get_word(Parser* parser, bool is_command = false);
+void parser_load_command_pos(Parser* parser, u32 position);
 bool parser_get_command(Parser* parser);
+bool parser_get_keyword(Parser* parser, const char* keyword);
 Token parser_get_string(Parser* parser);
 
 s32 parser_get_s32(Parser* parser, s32 default_value = 0);
@@ -87,7 +102,7 @@ RecolorSet parser_get_recolor_set(Parser* parser);
 
 Point16 box_center(Box32 box);
 
-bool token_eq(Token* token, char* string);
-bool token_eqi(Token* token, char* string);
-bool parser_eq(Parser* parser, char* string);
-bool parser_eqi(Parser* parser, char* string);
+bool token_eq(Token* token, const char* string);
+bool token_eqi(Token* token, const char* string);
+bool parser_eq(Parser* parser, const char* string);
+bool parser_eqi(Parser* parser, const char* string);

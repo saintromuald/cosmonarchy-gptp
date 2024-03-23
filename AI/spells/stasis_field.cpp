@@ -16,7 +16,7 @@ namespace AI
 		else
 			bounds = 32 * 32;
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->position.x - bounds,
 			caster->position.y - bounds,
 			caster->position.x + bounds,
@@ -28,7 +28,7 @@ namespace AI
 			if (!is_target_worth_hitting(target, caster))
 				return false;
 
-			if (!scbw::can_weapon_target_unit(WeaponId::StasisField, target, caster))
+			if (!bw::can_weapon_target_unit(WeaponId::StasisField, target, caster))
 				return false;
 
 			if (units_dat::base_property[target->id] & UnitProperty::Building)

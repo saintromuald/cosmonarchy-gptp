@@ -1,7 +1,7 @@
 #include "supply_hooks.h"
-#include <SCBW/api.h>
-#include <SCBW/structures.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
 #include <windows.h>
 #include <globals.h>
 #include "trigger_system/trigger_system.h"
@@ -35,19 +35,12 @@ namespace hooks
 	{
 		u32 supply_available = 0;
 		u32 supply_used = 0;
-		if (hooks::get_supplies_max(unit_id, player) >= g_supplies_available_terran[player])
-		{
+		if (hooks::get_supplies_max(unit_id, player) >= g_supplies_available_terran[player]) {
 			supply_used = g_supplies_used_terran[player];
 			supply_available = g_supplies_available_terran[player];
-		}
-		else
-		{
+		} else {
 			supply_used = g_supplies_used_terran[player];
 			supply_available = hooks::get_supplies_max(unit_id, player);
-		}
-		if (*g_cheat_state & 0x20000) // Food for Thought
-		{
-			return g_supplies_max_terran[player] - supply_used;
 		}
 		return supply_available - supply_used;
 	}
@@ -77,46 +70,35 @@ namespace hooks
 		memset(g_unit_availability->available[0], 1, UnitsIdLimit * PLAYER_COUNT * sizeof(u8));
 
 		s32 result = 0;
-		if (*g_multiplayer_mode && game_data->teams_enabled)
-		{
+		if (*g_multiplayer_mode && game_data->teams_enabled) {
 			s32 force_iterator = 1;
 			do
 			{
 				result = unknown_57F41CB[(u8)force_iterator];
 				u8 iterator_result = unknown_57F41CB[(u8)force_iterator];
-				if ((s8)result != -1)
-				{
+				if ((s8)result != -1) {
 					s32 supply_max1 = 0;
 					s32 supply_max2 = 0;
 					s32 supply_max3 = 0;
 
-					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 0) >= 400)
-					{
+					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 0) >= 400) {
 						supply_max1 = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 0);
-					}
-					else
-					{
+					} else {
 						supply_max1 = 400;
 					}
 
 					supply_max2 = iterator_result;
 					g_supplies_max_terran[supply_max2] = supply_max1;
-					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 1) >= 400)
-					{
+					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 1) >= 400) {
 						supply_max3 = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 1);
-					}
-					else
-					{
+					} else {
 						supply_max3 = 400;
 					}
 
 					g_supplies_max_terran[supply_max2] += supply_max3;
-					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 2) >= 400)
-					{
+					if (400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 2) >= 400) {
 						result = 400 * (u8)helper::team_game_count_races(force_iterator, (char*)0x190, 2);
-					}
-					else
-					{
+					} else {
 						result = 400;
 					}
 
@@ -125,9 +107,7 @@ namespace hooks
 				++force_iterator;
 			}
 			while (force_iterator <= 4);
-		}
-		else
-		{
+		} else {
 			result = (s32)g_supplies_max_terran;
 			do
 			{
@@ -154,8 +134,7 @@ namespace hooks
 
 	bool redraw_supply_info() // 00425230 // Guessed name
 	{
-		if (!*g_is_in_replay && (u8)(*g_active_portrait_unit)->player != *g_local_nation_id)
-		{
+		if (!*g_is_in_replay && (u8)(*g_active_portrait_unit)->player != *g_local_nation_id) {
 			return helper::unit_stat_cond_standard();
 		}
 
@@ -163,11 +142,9 @@ namespace hooks
 		GroupFlag groupFlags = units_dat::group_flags[(u16)(*g_active_portrait_unit)->id];
 		char race = RaceId::Terran;
 
-		if ((u16)g_supplies_available_temp == get_supplies_available(activePlayer, race))
-		{
+		if ((u16)g_supplies_available_temp == get_supplies_available(activePlayer, race)) {
 			s32 suppliesVar = g_supplies_used_terran[activePlayer];
-			if ((u16)g_supplies_used_temp == suppliesVar)
-			{
+			if ((u16)g_supplies_used_temp == suppliesVar) {
 				return 0;
 			}
 		}
@@ -331,12 +308,12 @@ namespace hooks
         }
         if (increment_scores) {
             if (units_dat::group_flags[unit_id].is_men) {
-                if (!scbw::is_any_morph_result(unit_id))  {
+                if (!bw::is_any_morph_result(unit_id))  {
                     units_owned[unit->player] += count;
                 }
                 unit_score[unit->player] += count;
             } else if (units_dat::group_flags[unit_id].is_building)  {
-                if (!scbw::is_zerg_building_morph_result(unit_id)) {
+                if (!bw::is_zerg_building_morph_result(unit_id)) {
                     buildings_owned[unit->player] += count;
                 }
                 building_score[unit->player] += count * units_dat::build_score[unit_id];
@@ -373,7 +350,7 @@ namespace hooks
             return false;
         }
         // Supply limit exceeded
-        if (supply_cost > scbw::get_supply_remaining(player, RaceId::Terran)) {
+        if (supply_cost > bw::get_supply_remaining(player, RaceId::Terran)) {
             if (can_show_error) {
 				helper::display_error_message_id_with_sfx(player, 844 + race, 153 + race);
             }
@@ -559,7 +536,7 @@ namespace hooks
 
 		for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 			if (count_in_production || unit->status & UnitStatus::Completed) {
-				u32 unit_id = scbw::is_zerg_egg(unit->id, true, false) ? unit->build_queue[unit->build_queue_slot] : unit->id;
+				u32 unit_id = bw::is_zerg_egg(unit->id, true, false) ? unit->build_queue[unit->build_queue_slot] : unit->id;
 
 				if (units_dat::base_property[unit_id] & UnitProperty::Worker) {
 					++workers;
@@ -618,9 +595,9 @@ namespace hooks
 
 		dialog = dialog->child_dialog;
 
-		do {// This while loop is not necessary with a properly organized bin file, but keep it for safety. -DF
+		do { // This while loop is not necessary with a properly organized bin file, but keep it for safety. -DF
 			if (!dialog) {
-				return;// The original function would set dialog to null and break out of the loop. Surely that can't be good. -DF
+				return; // The original function would set dialog to null and break out of the loop. Surely that can't be good. -DF
 			}
 
 			if (dialog->index != 1) {
@@ -635,12 +612,12 @@ namespace hooks
 		u32 local_player = *g_local_nation_id;
 		Point16 pos = { 434, 3 };//x is dialog->bounds.left of the third row element (from the right), minus 2. -DF
 
-		if (*g_is_in_replay || globals.players[local_player].witness_mode) {
+		if (*g_is_in_replay || globals->players[local_player].witness_mode) {
 			/*bool can_show_apm = false;
 
 			if (config.witness_show_apm) {
 				for (u32 player = 0; player < PlayerLimit; ++player) {
-					if (g_player_table[player].type == PlayerType::Human && !globals.players[player].witness_mode) {
+					if (g_player_table[player].type == PlayerType::Human && !globals->players[player].witness_mode) {
 						can_show_apm = true;
 						break;
 					}
@@ -648,8 +625,9 @@ namespace hooks
 			}*/
 
 			for (u32 player = 0; player < PlayerLimit; ++player) {
-				if ((g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::Human)
-				&& !globals.players[player].witness_mode) {
+				PlayerVars player_vars = globals->players[player];
+				u32 player_type = g_player_table[player].type;
+				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !player_vars.witness_mode && !player_vars.hide_in_team_ui) {
 					draw_player_stats(&dialog, &pos, player,
 						true,						//use_player_color
 						config.witness_show_apm,	//can_show_apm
@@ -663,7 +641,7 @@ namespace hooks
 			/*bool can_show_apm = config.show_apm;
 
 			for (u32 player = 0; player < PlayerLimit; ++player) {
-				if (g_player_table[player].type == PlayerType::Human && player != local_player && !globals.players[player].witness_mode) {
+				if (g_player_table[player].type == PlayerType::Human && player != local_player && !globals->players[player].witness_mode) {
 					can_show_apm = true;
 					break;
 				}
@@ -679,10 +657,11 @@ namespace hooks
 
 			if (config.show_team_ui) {
 				for (u32 player = 0; player < PlayerLimit; ++player) {
-					if ((g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::Human)
-					&& player != local_player
-					&& !globals.players[player].witness_mode
-					&& scbw::is_allied_to(player, local_player)) {
+					PlayerVars player_vars = globals->players[player];
+					u32 player_type = g_player_table[player].type;
+					if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && player != local_player && !player_vars.witness_mode
+						&& !player_vars.hide_in_team_ui && bw::is_allied_to(player, local_player))
+					{
 						draw_player_stats(&dialog, &pos, player,
 							true,						//use_player_color
 							config.show_team_ui_apm,	//can_show_apm
@@ -817,7 +796,7 @@ namespace hooks
 		}
 	}
 
-	void init_stat_res_font(char* font_name) {
+	static void init_stat_res_font(const char* font_name) {
 		const u32 load_font = 0x0041FD10;
 
 		__asm {

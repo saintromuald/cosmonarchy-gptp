@@ -3,8 +3,8 @@
 
 bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 {
-	scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
-	auto a = scbw::UnitFinder::get_nearest_target(
+	bw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
+	auto a = bw::UnitFinder::get_nearest_target(
 		unit->get_x() - r, unit->get_y() - r,
 		unit->get_x() + r, unit->get_y() + r,
 		unit, cosmonarchy_finder_match(unit, context, allowedIds)
@@ -15,7 +15,7 @@ bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 u32 cosmonarchy_unit_count(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds)
 {
 	auto condition = cosmonarchy_finder_match(unitPtr, flags, unitIds);
-	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
+	bw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
 		pos.x + r, pos.y + r);
 	auto count = 0;
 	for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
@@ -30,8 +30,8 @@ u32 cosmonarchy_unit_count(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::ve
 }
 Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 {
-	scbw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
-	auto a = scbw::UnitFinder::get_nearest_target(
+	bw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
+	auto a = bw::UnitFinder::get_nearest_target(
 		unit->get_x() - r,
 		unit->get_y() - r,
 		unit->get_x() + r,
@@ -44,8 +44,8 @@ Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds
 
 Unit* rangeMatchPosition(Vector32 position, u32 r, u32 context, std::vector<u16> allowedIds)
 {
-	scbw::UnitFinder unitsInSplash(position.x - r, position.y - r, position.x + r, position.x + r);
-	auto a = scbw::UnitFinder::get_nearest_target(
+	bw::UnitFinder unitsInSplash(position.x - r, position.y - r, position.x + r, position.x + r);
+	auto a = bw::UnitFinder::get_nearest_target(
 		position.x - r,
 		position.y - r,
 		position.x + r,
@@ -56,9 +56,9 @@ Unit* rangeMatchPosition(Vector32 position, u32 r, u32 context, std::vector<u16>
 	return a;
 }
 
-scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds)
+bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds)
 {
-	scbw::UnitFinderCallbackMatchInterface callback = [=](Unit* target)
+	bw::UnitFinder::CallbackMatch callback = [=](Unit* target)
 	{
 		if (target == center && !(context & Flags::IncludingSelf))
 		{
@@ -96,7 +96,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 		}
 		if (context & Flags::Shielded)
 		{
-			if (!units_dat::shields_enabled[target->id])
+			if (!bw::unit_has_shields(target))
 			{
 				return false;
 			}
@@ -137,7 +137,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 		{
 			if (context & Flags::FrontalArc)
 			{
-				if (!scbw::unit_is_facing_position(center, target->position)) {
+				if (!bw::unit_is_facing_position(center, target->position)) {
 					return false;
 				}
 			}
@@ -145,11 +145,11 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 			{
 				return false;
 			}
-			if (scbw::is_allied_to(target->player, center->player) && context & Flags::Enemy)
+			if (bw::is_allied_to(target->player, center->player) && context & Flags::Enemy)
 			{
 				return false;
 			}
-			if (!scbw::is_allied_to(target->player, center->player) && context & Flags::Ally)
+			if (!bw::is_allied_to(target->player, center->player) && context & Flags::Ally)
 			{
 				return false;
 			}
@@ -190,7 +190,7 @@ scbw::UnitFinderCallbackMatchInterface cosmonarchy_finder_match(Unit* center, u3
 		{
 			return false;
 		}
-		if (!(scbw::is_enabled(target)) && context & Flags::Enabled)
+		if (!(bw::is_enabled(target)) && context & Flags::Enabled)
 		{
 			return false;
 		}

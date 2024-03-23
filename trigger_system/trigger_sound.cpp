@@ -15,11 +15,11 @@ static bool sound_paths_init;
 char sound_paths[SoundIdLimit][MAX_PATH];
 
 static void init_sound_paths() {
-	LoadedFile file = load_entire_sfile("arr\\sounds.txt");
+	std::string file = mpq_load_file("arr\\sounds.txt");
 
 	u16 sound_id = 0;
 	u16 char_index = 0;
-	for (char* c = file.data; *c; ++c) {
+	for (const char* c = file.data(); c != file.data() + file.size(); c++) {
 		if (c[0] == '\r' && c[1] == '\n') {
 			char_index = 0;
 			++sound_id;
@@ -36,8 +36,6 @@ static void init_sound_paths() {
 			sound_paths[sound_id][char_index++] = *c;
 		}
 	}
-
-	free_loaded_file(&file);
 }
 
 void init_sound() {
@@ -194,9 +192,9 @@ static bool load_ds_buffer(Sound* sound) {
 		return false;
 	}
 
-	LoadedFile file = load_entire_sfile(sound->path);
-	if (!file.data) {
-		scbw::printf("Error: File %s missing!", sound->path);
+	std::string file = mpq_load_file(sound->path);
+	if (file.empty()) {
+		bw::printf("Error: File %s missing!", sound->path);
 		return false;
 	}
 
@@ -204,8 +202,8 @@ static bool load_ds_buffer(Sound* sound) {
 	size_t size = 0;
 	s8* data = 0;
 
-	u8* at = (u8*)file.data;
-	void* end = file.data + file.size;
+	u8* at = (u8*)file.data();
+	void* end = file.data() + file.size();
 	while (at < end) {
 		u32* type = (u32*)at;
 		switch (*type) {
@@ -244,7 +242,6 @@ static bool load_ds_buffer(Sound* sound) {
 	buffer_description.lpwfxFormat = &wave_format;
 
 	if (!SUCCEEDED(direct_sound->CreateSoundBuffer(&buffer_description, &sound->ds_buffer, 0))) {
-		free_loaded_file(&file);
 		return false;
 	}
 
@@ -269,15 +266,12 @@ static bool load_ds_buffer(Sound* sound) {
 			}
 
 			sound->ds_buffer->Unlock(ptr1, bytes1, ptr2, bytes2);
-
-			free_loaded_file(&file);
 			return true;
 		}
 	}
 
 	sound->ds_buffer->Release();
 	sound->ds_buffer = 0;
-	free_loaded_file(&file);
 	return false;
 }
 
@@ -289,7 +283,7 @@ Sound* load_sound(char* filename) {
 		Sound* sound = &loaded_sounds[loaded_sounds_count++];
 		snprintf(sound->path, MaxPath, "%s", filename);
 
-		if (file_exists(sound->path)) {
+		if (mpq_file_exists(sound->path)) {
 			u32 hash_index = hash_string(filename) % MaxSoundHash;
 			sound->hash_next = loaded_sounds_hash_table[hash_index];
 			loaded_sounds_hash_table[hash_index] = sound;
@@ -420,7 +414,7 @@ static getMusicVolume_Func* getMusicVolume = (getMusicVolume_Func*)0x004A5EF0;
 
 s32 get_sound_volume() {
 	s32 index = 99;
-	if (*use_quiet_sounds) {
+	if (*g_use_quiet_sounds) {
 		index /= 5;
 	}
 	return g_big_volume_array[index * g_options_list->sfx / 100];
@@ -428,7 +422,7 @@ s32 get_sound_volume() {
 
 s32 get_sound_volume_at_pos(Point16 pos) {
 	s32 index = helper::get_sfx_volume_from_screen_distance(pos.x, pos.y);
-	if (*use_quiet_sounds) {
+	if (*g_use_quiet_sounds) {
 		index /= 5;
 	}
 	if (index <= 10) {

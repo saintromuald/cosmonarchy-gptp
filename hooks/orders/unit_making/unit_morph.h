@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../SCBW/structures/Unit.h"
+#include "../../../BW/structures/Unit.h"
 
 namespace hooks
 {
@@ -11,6 +11,7 @@ namespace hooks
 	u16 get_cancel_morph_revert_id(Unit* eggUnit);
 	s16 get_unit_vertical_offset_on_birth(Unit* unit);
 	Unit* begin_train(Unit* unit, u16 unit_id, bool notify_error);
+	Image* unit_completion_init(Unit* unit, u32 has_construction_anim);						// 004E65E0
 
 	void inject_unit_morph_hooks();
 }

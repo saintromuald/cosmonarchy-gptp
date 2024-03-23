@@ -1,6 +1,6 @@
 #include "load_unload_orders.h"
 #include "hooks\load_unload_proc.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <logger.h>
 #include "globals.h"
 #include "hooks\limits\ccmu.h"
@@ -13,7 +13,7 @@ namespace hooks
 	void orders_pickup_1(Unit* unit)
 	{
 		Unit* unit_to_load = unit->order_target.unit;
-		if (unit_to_load && scbw::can_be_entered_by(unit, unit_to_load))
+		if (unit_to_load && bw::can_be_entered_by(unit, unit_to_load))
 		{
 			helper::prepend_order_targeting_unit(unit, unit_to_load, OrderId::Pickup2);
 			prepare_for_next_order(unit);
@@ -63,7 +63,7 @@ namespace hooks
 				}
 			}
 		} else {
-			if (scbw::can_be_entered_by(unit, unit_to_load))
+			if (bw::can_be_entered_by(unit, unit_to_load))
 			{
 				unit_to_load->order_to(OrderId::EnterTransport, unit);
 			}
@@ -96,7 +96,7 @@ namespace hooks
 			{
 				if (unit->main_order_state == 0)
 				{
-					if (scbw::can_be_entered_by(unit, unit_to_load))
+					if (bw::can_be_entered_by(unit, unit_to_load))
 					{
 						if (unit->main_order_timer == 0)
 						{
@@ -144,7 +144,7 @@ namespace hooks
 			unit->order_target.unit = 0;
 		}
 
-		distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
+		distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 		distance &= 0xFFFFFF00;
 		if (distance <= 0x1000)
 		{
@@ -165,10 +165,10 @@ namespace hooks
 			}
 			if (unit->unit_ai)
 			{
-				u32 ground_height_at_pos_1 = scbw::get_ground_height_at_pos(unit->sprite->position.x, unit->sprite->position.y);
-				if (ground_height_at_pos_1 != scbw::get_ground_height_at_pos(unit->order_target.pt.x, unit->order_target.pt.y))
+				u32 ground_height_at_pos_1 = bw::get_ground_height_at_pos(unit->sprite->position.x, unit->sprite->position.y);
+				if (ground_height_at_pos_1 != bw::get_ground_height_at_pos(unit->order_target.pt.x, unit->order_target.pt.y))
 				{
-					distance = scbw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
+					distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 					distance &= 0xFFFFFF00;
 					if (distance <= 0xCA000
 					&&  helper::ai_are_on_connected_regions(unit, unit->order_target.pt.x, unit->order_target.pt.y) != 0
@@ -325,7 +325,7 @@ namespace hooks
 				}
 				if (jump_to_E7C2B)
 				{
-					if (scbw::can_be_entered_by(target, unit))
+					if (bw::can_be_entered_by(target, unit))
 					{
 						jump_to_E7C44 = true;
 					}
@@ -375,7 +375,7 @@ namespace hooks
 		if	 (target
 		&&	!(target->status & UnitStatus::IsHallucination)
 		&&	  units_dat::space_provided[target->id] != 0
-		&&	  scbw::can_be_entered_by(target, unit))
+		&&	  bw::can_be_entered_by(target, unit))
 		{
 			if (unit->main_order_state == 0
 			&&  target->main_order_id != OrderId::Pickup2)
@@ -538,11 +538,11 @@ namespace hooks
 		{
 			return 0;
 		}
-		if (!scbw::is_allied_to(unit->player, transport->player))
+		if (!bw::is_allied_to(unit->player, transport->player))
 		{
 			return 0;
 		}
-		if (scbw::transport_is_full(transport))
+		if (bw::transport_is_full(transport))
 		{
 			return 0;
 		}

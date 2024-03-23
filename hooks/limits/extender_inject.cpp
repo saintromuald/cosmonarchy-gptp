@@ -10,7 +10,7 @@ namespace hooks
 {
 	void loadAiseSamaseData()
 	{
-		hooks::sfxExtenderGetCount();
+		hooks::sfx_extender_get_count();
 	}
 
 	u32 buildingVisionSyncHook()
@@ -34,7 +34,7 @@ namespace hooks
 				{
 					auto flingy_id = fakeExtFlingyIds[i];
 					auto sprite_id = flingy_dat::sprite_id[flingy_id];
-					scbw::set_sprite_data(SpritesDatEntries::IncludeInVision, sprite_id, 1);
+					bw::set_sprite_data(SpritesDatEntries::IncludeInVision, sprite_id, 1);
 				}
 			}
 			i++;
@@ -59,7 +59,7 @@ namespace hooks
 	void inject_limit_hooks()
 	{
 //		hooks::sfxExtender();
-		newSfxExtender();
+		new_sfx_extender();
 //		jump_patch(preInitDataWrapper, 0x004DAF31);
 	}
 }

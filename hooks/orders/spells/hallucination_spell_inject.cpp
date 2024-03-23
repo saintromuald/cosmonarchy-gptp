@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_Hallucination1Wrapper()
+	void __declspec(naked) orders_hallucination1_wrapper() // 004F6C40
 	{
 		static Unit* unit;
 		__asm {
@@ -12,7 +12,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::orders_Hallucination1(unit);
+		hooks::orders_hallucination1(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -21,7 +21,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) createHallucination_Wrapper()
+	void __declspec(naked) create_hallucination_wrapper() // 004F6B90
 	{
 		static Unit* source;
 		static s32 player;
@@ -51,7 +51,7 @@ namespace hooks
 {
 	void inject_hallucination_spell_hooks()
 	{
-		jump_patch(orders_Hallucination1Wrapper,	0x004F6C40, 0);
-		jump_patch(createHallucination_Wrapper,		0x004F6B90, 2);
+		jump_patch(orders_hallucination1_wrapper,	0x004F6C40, 0);
+		jump_patch(create_hallucination_wrapper,	0x004F6B90, 2);
 	}
 }

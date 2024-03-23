@@ -1,5 +1,5 @@
 #include "update_unit_sight.h"
-#include "SCBW/ExtendSightLimit.h"
+#include "BW/ExtendSightLimit.h"
 
 s32 tmpHeight;
 u8 vision_timers[256*256][8];
@@ -50,7 +50,7 @@ namespace hooks {
 					u32 rel_tile_pos = cur_tile_pos + test_tile->w + (g_map_tile_size->width * test_tile->h);
 
 					if (!(relFlags & test_tile->visibility_mask)
-						&& scbw::tile_is_equal_or_lower(tmpHeight, rel_tile_pos)
+						&& bw::tile_is_equal_or_lower(tmpHeight, rel_tile_pos)
 						&& (!(xHeight_table[rel_tile_pos] == xHeight_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000))) {
 						refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
 						sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
@@ -87,7 +87,7 @@ namespace hooks {
 				u32 rel_tile_pos = cur_tile_pos + test_tile->w + (g_map_tile_size->width * test_tile->h);
 
 				if (!(relFlags & test_tile->visibility_mask)
-				&&    scbw::tile_is_equal_or_lower(tmpHeight, rel_tile_pos)
+				&&    bw::tile_is_equal_or_lower(tmpHeight, rel_tile_pos)
 				&& (!(xHeight_table[rel_tile_pos] == xHeight_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000)))
 				{
 					refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
@@ -181,6 +181,10 @@ namespace hooks {
 	}
 
 	void update_fog() {
+		if (bw::get_game_kind() == GameKind_DebugFog) {
+			return;
+		}
+
 		if (*g_multiplayer_mode) {
 			*g_cheat_state &= ~(CheatFlags::BlackSheepWall + CheatFlags::WarAintWhatItUsedToBe);
 		}

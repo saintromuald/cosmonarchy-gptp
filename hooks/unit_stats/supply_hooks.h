@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/structures.h"
+#include "BW/structures.h"
 #include "graphics/Font.h"
 
 #define ResSize 32//PLAYABLE_PLAYER_COUNT * 4

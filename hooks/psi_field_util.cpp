@@ -2,10 +2,10 @@
 // Do NOT modify any functions in this file!
 
 #include "psi_field.h"
-#include "../SCBW/scbwdata.h"
+#include "../BW/bwdata.h"
 #include <algorithm>
 #include <cassert>
-#include "CMBW/cmbw_ids.h"
+#include "CM/cm_ids.h"
 
 // NOT FULLY REVALIDATED BY UNDEADSTAR
 

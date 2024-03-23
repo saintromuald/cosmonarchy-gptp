@@ -1,7 +1,7 @@
 #include "larva_creep_spawn.h"
 #include "building_making\building_modifier.h"
-#include <SCBW/api.h>
-#include "SCBW\UnitFinder.h"
+#include <BW/api.h>
+#include "BW\UnitFinder.h"
 #include "globals.h"
 
 namespace hooks
@@ -17,6 +17,7 @@ namespace hooks
 		if (helper::get_larva_spawn_pos(building, &coords)) {
 			Unit* unit = helper::create_unit(unit_id, coords.x, coords.y, building->player);
 			if (unit) {
+				spread_debuffs(building, unit);
 				helper::update_unit_stats_and_finish_building(unit);
 				helper::update_unit_strength(unit);
 				unit->connected_unit = building;
@@ -50,7 +51,7 @@ namespace hooks
 		return false;
 	}
 
-	void secondary_order_spawning_larva(Unit* unit, bool use_custom_timer) {
+	void secondary_order_spawning_larva(Unit* unit) {
 		if (!unit_id_spawns_larva_by_order(unit->id) && !unit_spawns_custom_larva(unit)) {
 			return;
 		}
@@ -58,11 +59,9 @@ namespace hooks
 			return;
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
-		u32 timer = use_custom_timer ? unit_ext->timers[TimerCustomLarva] : unit->order_queue_timer;
-		if (timer == 0 && unit->player != 11) {
-			if (use_custom_timer) {
-				unit_ext->timers[TimerCustomLarva] = 8;
-			}
+		if (unit_ext->timers[TimerSpawnLarva] == 0 && unit->player != 11) {
+			unit_ext->timers[TimerSpawnLarva] = 8;
+
 			*g_larva_counter = 0;
 			Box16 coords = {};
 			coords.left = unit->sprite->position.x - 256;
@@ -102,7 +101,7 @@ namespace hooks
 	void secondary_order_spread_creep_spawning_larva(Unit* unit) { // 004EA880
 		// No longer checks unit ids here because we check in the function itself,
 		// in order to prevent Cagrants regressed from Larvosks from spawning Larva. -Pr0nogo
-		secondary_order_spawning_larva(unit, false);
+		secondary_order_spawning_larva(unit);
 		if (unit->building.creep_timer != 0) {
 			if (unit->building.creep_timer >= 2) {
 				unit->building.creep_timer -= 2;
@@ -159,7 +158,7 @@ namespace hooks
 						// adjust value 1300000 to get slightly different radius
 
 						if (in_range) {
-							ActiveTile* a = scbw::get_active_tile_at_coords(i * 32, j * 32);
+							ActiveTile* a = bw::get_active_tile_at_coords(i * 32, j * 32);
 							if (a->has_cagra || a->temporary_cagra || a->cagra_receding) {
 								// why is there nothing here LMAO
 							} else {
@@ -251,7 +250,6 @@ namespace hooks
 			case UnitId::ZergNydusCesiant:
 			case UnitId::ZergKazitrithCesiant:
 			case UnitId::ZergOcsalCesiant:
-			case UnitId::Omnivale:
 			{
 				return true;
 			}
@@ -265,20 +263,29 @@ namespace hooks
 	}
 
 	// Callback to determine the creep tile that will replace the existing tile.
-	bool run_creep_randomizer(u16* tile_backup, u8* creep_overlay_value, u32* return_value, u16* tile, u32 arg) {
+	bool run_creep_randomizer(u16* tile_backup, u8* creep_overlay_value, u32* return_value, u16* tile, u32 arg) { // 004140A0
 		// Stores the existing tile to replace the creep tile when the creep is removed
 		if (*tile_backup == 0) {
 			*tile_backup = *tile;
 		}
 
 		u16 creep_tile = 0;
-		if ((scbw::random() % 100) >= 4) {
-			creep_tile = scbw::random() % 6; // normal tiles
+		if ((*g_last_random_number % 100) >= 4) {
+			creep_tile = *g_last_random_number % 6; // normal tiles
 		} else {
-			creep_tile = (scbw::random() % 7) + 6;
+			creep_tile = (*g_last_random_number % 7) + 6;
 		}
 		*tile = creep_tile + 0x10; // tile in creep group
 		*return_value = 0;
+
+		// Change random number
+		if (*g_is_in_game_loop) {
+			u32 random = (22695477 * *g_last_random_number + 1) >> 16;
+			++g_random_counts[20];
+			++*g_total_random_counts;
+			*g_last_random_number = 22695477 * (*g_last_random_number) + 1;
+		}
+
 		return true;
 	}
 
@@ -335,5 +342,56 @@ namespace hooks
 			return 0;
 		}
 		return 0;
+	}
+
+	// Hooked to make Larvae move towards the spawner's rally angle. -Pr0nogo
+	void orders_larva_idle(Unit* unit) // 004E9F90
+	{
+		Unit* spawner = unit->connected_unit;
+		if (spawner && !helper::is_target_within_min_range(unit, 10, spawner)) {
+			helper::move_to_target(spawner, unit);
+			u32 spawner_pos_x = spawner->position.x;
+			u32 spawner_pos_y = spawner->position.y;
+			if (spawner_pos_x != unit->next_target_waypoint.x || spawner_pos_y != unit->next_target_waypoint.y) {
+				unit->next_target_waypoint.x = spawner_pos_x;
+				unit->next_target_waypoint.y = spawner_pos_y;
+			}
+		}
+
+		u16 unit_x = unit->position.x;
+		u16 unit_y = unit->position.y;
+		u16 move_x = unit->move_target.pt.x;
+		u16 move_y = unit->move_target.pt.y;
+		Unit* move_target = unit->move_target.unit;
+		if (move_x == unit_x && move_y == unit_y
+		||  move_target && (move_x != move_target->position.x || move_y != move_target->position.y) && !helper::pixel_pos_has_cagra(move_x, move_y))
+		{
+			if ((!spawner || move_target != spawner) && !(bw::get_active_tile_at_coords(unit->position)->has_cagra)) // Guessed flag
+			{
+				helper::orders_self_destructing(unit);
+				return;
+			}
+
+			u32 random = 0;
+			if (*g_is_in_game_loop) {
+				random = (22695477 * *g_last_random_number + 1) >> 16;
+				++g_random_counts[20];
+				++*g_total_random_counts;
+				*g_last_random_number = 22695477 * (*g_last_random_number) + 1;
+			}
+
+			u32 pos_x = unit->position.x + ((random & 8) != 0 ? 10 : -10);
+			u32 pos_y = unit->position.y + ((random & 120) != 0 ? 10 : -10);
+			if (pos_x < *g_map_width_pixels && pos_y < *g_map_height_pixels && helper::pixel_pos_has_cagra(pos_x, pos_y))
+			{
+				if (!helper::chk_larva_stray(unit, pos_x, pos_y)) {
+					if (helper::chk_larva_stray(unit, unit->sprite->position.x, unit->sprite->position.y)) {
+						return;
+					}
+					helper::chk_larva_stray0(unit, pos_x, pos_y);
+				}
+				helper::change_movement_target_move_target_2(unit, pos_x, pos_y);
+			}
+		}
 	}
 }

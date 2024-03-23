@@ -1,6 +1,6 @@
 #pragma once
-#include "../../SCBW/structures/Unit.h"
-#include "SCBW/structures.h"
+#include "../../BW/structures/Unit.h"
+#include "BW/structures.h"
 
 namespace hooks
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW/api.h"
+#include "BW/api.h"
 
 namespace BuildingHelper
 {
@@ -55,7 +55,7 @@ namespace BuildingHelper
 			}
 		}
 
-		if (scbw::is_zerg_egg(unit->id, true, false)
+		if (bw::is_zerg_egg(unit->id, true, false)
 			|| unit->main_order_id == OrderId::Morph2
 			|| unit->main_order_id == OrderId::ZergBuildSelf)
 			return (unit->build_queue[unit->build_queue_slot % 5] == unit_id) ? 1 : 0;

@@ -1,6 +1,6 @@
 #include "building_terran.h"
 #include "building_modifier.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <globals.h>
 #include <hooks/limits/sfx_extender.h>
 
@@ -36,7 +36,7 @@ namespace hooks
 					return;
 				}
 
-				helper::init_building(building, 0);
+				helper::unit_completion_init(building, 0);
 				for (Image* image = building->sprite->images.head; image; image = image->link.next) {
 					image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				}
@@ -69,7 +69,7 @@ namespace hooks
 					if (movable_state == MovableState_UnmovableAtDestination) {
 						unit->order_to_idle();
 					} else if (movable_state != MovableState_NotReachedDestination) {
-						scbw::refresh_console();
+						bw::refresh_console();
 
 						if (built_unit->connected_unit
 						&&  built_unit->connected_unit != unit
@@ -139,7 +139,7 @@ namespace hooks
 					if (unit->position == unit->next_target_waypoint) {
 						helper::set_resource_target(unit);
 						helper::set_secondary_waypoint(unit, (unit->order_target.unit)->sprite->position.x, (unit->order_target.unit)->sprite->position.y);
-						s32 angle = scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
+						s32 angle = bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 						unit->order_target.pt.x = (g_angle_distance[angle].x * 20) / 256 + unit->sprite->position.x;
 						unit->order_target.pt.y = (g_angle_distance[angle].y * 20) / 256 + unit->sprite->position.y;
 						++unit->main_order_state;
@@ -147,7 +147,7 @@ namespace hooks
 				} break;
 				case 7: {
 					if (!helper::is_unit_positions_2_equal(unit)) {
-						s32 angle = unit->current_direction_1 - scbw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
+						s32 angle = unit->current_direction_1 - bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
 						if (angle < 0) {
 							angle += 256;
 						}
@@ -194,7 +194,6 @@ namespace hooks
 				return;
 			}
 		}
-
 		
 		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 			image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
@@ -203,6 +202,9 @@ namespace hooks
 		if (built_unit) {
 			built_unit->connected_unit = 0;
 			helper::play_building_completed_sound(unit);
+			if (unit_id_is_tech_tier_structure(built_unit->id)) {
+				replay_witness_event(built_unit, SpectatorEvent_Tech);
+			}
 			builder_ext->values[ValueTerranConstruction] = UnitId::None;
 			helper::update_unit_damage_overlay(built_unit); // New - fix bug where damaged structures don't create overlay until damaged or healed. -Pr0nogo
 
@@ -234,6 +236,8 @@ namespace hooks
 			if (unit->main_order_state == 1) {
 				if (unit->sprite->position.x == unit->move_target.pt.x
 					&& unit->sprite->position.y == unit->move_target.pt.y) {
+					++unmovable_hits[10];
+					unmovable_lastframe[10] = *g_elapsed_time_frames;
 					if (!(unit->status & UnitStatus::Unmovable)
 					&&    helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)
 					&&    helper::begin_building(unit))
@@ -264,6 +268,7 @@ namespace hooks
 						unit->build_queue[unit->build_queue_slot] = UnitId::None;
 
 						if (built_unit) {
+							spread_debuffs(unit, built_unit);
 							builder_ext->values[ValueTerranConstruction] = built_unit->id;
 							built_unit->create_origin = unit->id;
 							built_unit->connected_unit = unit;
@@ -279,9 +284,13 @@ namespace hooks
 								}
 							}
 
-							scbw::refresh_console();
+							bw::refresh_console();
 							built_unit->order_computer(OrderId::BuildSelf1);
 							helper::ai_training_overlord(built_unit, unit);
+
+							if (unit_id_is_tech_tier_structure(built_unit->id)) {
+								replay_witness_event(built_unit, SpectatorEvent_Tech);
+							}
 						} else {
 							helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot], unit->player);
 							helper::display_last_network_error_for_player(unit->player);
@@ -293,7 +302,7 @@ namespace hooks
 				}
 			}
 		} else {
-			scbw::refresh_console();
+			bw::refresh_console();
 
 			if (unit->order_target.unit) {
 				unit->order_target.pt.x = (unit->order_target.unit)->sprite->position.x;
@@ -332,7 +341,7 @@ namespace hooks
 					Point16 addon_point;
 					addon_point.x = units_dat::addon_placement[unit_id].x;
 					addon_point.y = units_dat::addon_placement[unit_id].y;
-					scbw::adjust_addon_coordinates(*g_place_building_unit_id, 0, &addon_point.x, &addon_point.y);
+					bw::adjust_addon_coordinates(*g_place_building_unit_id, 0, &addon_point.x, &addon_point.y);
 					helper::unk_building_placement_related(0, &addon_point);
 				}
 				result = helper::refresh_layers_3_and_4();
@@ -401,7 +410,7 @@ namespace hooks
 				case RaceId::Zerg: {
 					u32 sound_id = 0;
 					if (unit_id_is_tech_tier_structure(unit->id)) {
-						sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
+						sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
 					}
 					if (unit->create_origin == UnitId::ZergDroleth) {
 						if (sound_id) {
@@ -428,7 +437,7 @@ namespace hooks
 					UnitExt* builder_ext = get_unit_ext(unit);
 					u32 sound_id = 0;
 					if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-						sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_AddonComplete);
+						sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_AddonComplete);
 						if (!sound_id) {
 							sound_id = SoundId::Terran_Advisor_TAdUpd03_WAV;
 						}
@@ -437,7 +446,7 @@ namespace hooks
 					}
 
 					if (unit_id_is_tech_tier_structure(builder_ext->values[ValueTerranConstruction])) {
-						sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
+						sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
 					}
 
 					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
@@ -445,7 +454,7 @@ namespace hooks
 				} break;
 				case RaceId::Protoss:
 				default: {
-					u32 sound_id = scbw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_StructureComplete_P);
+					u32 sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_StructureComplete_P);
 					helper::play_sound_from_unit(sound_id, unit, 1, 99);
 					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
 				} break;
@@ -480,8 +489,7 @@ namespace hooks
 		}
 	place_addon:
 		if  (unit->move_target.pt.x == unit->position.x
-		&&   unit->move_target.pt.y == unit->position.y
-		&& ((unit->status & UnitStatus::Unmovable) != 0) != -1)
+		&&   unit->move_target.pt.y == unit->position.y)
 		{
 			// Get addon position - this is probably wrong right now, the original IDA code was a disaster.
 			u32 addon_id = unit->building.addon_build_id;
@@ -577,7 +585,7 @@ namespace hooks
 					unit->remaining_build_time -= modifier.decrease;
 				} else {
 					unit->remaining_build_time = 0;
-					if (scbw::get_game_kind() == GameKind_Debug) {
+					if (bw::get_game_kind() == GameKind_Debug) {
 						helper::set_unit_hp(unit, unit->get_max_hp_raw());
 					}
 				}
@@ -587,6 +595,7 @@ namespace hooks
 			return 1;
 		}
 
+		b32 result; // required by C++20 mode goto
 		if (!is_incomplete)
 		{
 			helper::update_unit_stats_and_finish_building(unit);
@@ -594,9 +603,8 @@ namespace hooks
 		}
 		helper::update_unit_stats_and_finish_building(unit);
 
-		b32 result = helper::show_finished_unit(unit);
-		if (result)
-		{
+		result = helper::show_finished_unit(unit);
+		if (result) {
 		finish:
 			helper::update_unit_strength_and_apply_default_orders(unit);
 			if (!(unit->status & UnitStatus::GroundedBuilding))
@@ -607,13 +615,68 @@ namespace hooks
 			if (units_dat::group_flags[unit->id].is_terran)
 			{
 				Unit* addon = helper::connect_addon_check(unit);
-				if (addon)
-				{
+				if (addon) {
 					helper::complete_addon(unit, addon);
 				}
 			}
 			return 1;
 		}
 		return result;
+	}
+
+	// Hooked to stop giving addons to neutral. -Pr0nogo
+	void disconnect_addon(Unit* unit) // 00464930
+	{
+		Unit* addon = unit->building.addon;
+		unit->building.addon = 0;
+		helper::play_addon_detach_sound(addon);
+
+		UnitExt* addon_ext = get_unit_ext(addon);
+		addon_ext->values[ValueAddonInactive] = 1;
+		bw::refresh_console();
+
+		Unit* active_unit = *g_active_iscript_unit;
+		*g_active_iscript_unit = addon;
+		for (Image* i = addon->sprite->images.head; i; i = i->link.next) {
+			helper::play_image_iscript(i, IscriptAnimation::LiftOff);
+		}
+		*g_active_iscript_unit = active_unit;
+	}
+
+	// Hooked to stop giving addons to neutral. -Pr0nogo
+	void complete_addon(Unit* addon, Unit* parent) // 00463D50
+	{
+		u32 player = parent->player;
+		parent->building.addon = addon;
+		helper::give_unit(addon, player, 0);
+		helper::give_sprite(addon, parent->player);
+
+		UnitExt* addon_ext = get_unit_ext(addon);
+		addon_ext->values[ValueAddonInactive] = 0;
+
+		Unit* active_unit = *g_active_iscript_unit;
+		*g_active_iscript_unit = addon;
+		for (Image* i = addon->sprite->images.head; i; i = i->link.next) {
+			helper::play_image_iscript(i, IscriptAnimation::Landing);
+		}
+		*g_active_iscript_unit = active_unit;
+
+		bool is_silo = parent->id == UnitId::TerranAnvil;
+		if (is_silo) {
+			Unit* missile = parent->building.silo.nuke;
+			if (missile) {
+				helper::give_unit(missile, parent->player, 0);
+			}
+		}
+	}
+
+	// Hooked to add custom advisor handling. -Pr0nogo
+	void play_addon_detach_sound(Unit* unit) // 0048F8A0
+	{
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
+			u32 sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_AbandonAddon);
+			helper::play_sound_from_unit(sound_id, unit, (g_options_list->flags >> 2) & 1, 99);
+			helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (*g_audio_something / 1000), 1, 130);
+		}
 	}
 }

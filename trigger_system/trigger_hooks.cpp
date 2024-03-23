@@ -20,28 +20,30 @@ static bool execute_trigger_condition(TriggerCondition* condition) {
 }
 
 // Hooked to check custom conditions. -Pr0nogo
-s32 execute_trigger_conditions(TriggerVector* trigger_vector) { // 00489200
+s32 execute_trigger_conditions(TriggerLink* trigger_link) { // 00489200
 	for (u32 i = 0; i < 64; ++i) {
-		TriggerAction* action = &trigger_vector->trigger.actions[i];
-		if (!(action->flags & 2)) {
-			if (action->action_type == 47) {
-				if (!parse_comment_condition(action)) {
-					return false;
-				}
-			}
+		TriggerAction* action = &trigger_link->trigger.actions[i];
+		if (action->flags & 2) {
+			continue;
+		}
+
+		if (action->action_type == 47 && !parse_comment_condition(action)) {
+			return false;
 		}
 	}
 
 	for (u32 i = 0; i < 16; ++i) {
-		TriggerCondition* condition = &trigger_vector->trigger.conditions[i];
-		if (!(condition->flags & 2)) {
-			if (!condition->condition_type) {
-				return true;
-			}
+		TriggerCondition* condition = &trigger_link->trigger.conditions[i];
+		if (condition->flags & 2) {
+			continue;
+		}
 
-			if (!execute_trigger_condition(condition)) {
-				return false;
-			}
+		if (!condition->condition_type) {
+			return true;
+		}
+
+		if (!execute_trigger_condition(condition)) {
+			return false;
 		}
 	}
 	return true;
@@ -56,8 +58,8 @@ static bool sound_replacement_match(SoundReplacement* sound_replacement, Image* 
 
 static u32 valid_sound_replacement_count(Image* image, u32 sound_id, Unit* unit) {
 	u32 count = 0;
-	for (u32 i = 0; i < sound_replacements_count; ++i) {
-		SoundReplacement* sound_replacement = &sound_replacements[i];
+	for (u32 i = 0; i < globals->sound_replacements.size(); ++i) {
+		SoundReplacement* sound_replacement = &globals->sound_replacements[i];
 		if (sound_replacement_match(sound_replacement, image, sound_id, unit)) {
 			count += 1;
 		}
@@ -74,14 +76,13 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 	if (unit && sprite->main_graphic == image) {
 		u32 valid_count = valid_sound_replacement_count(image, sound_id, unit);
 		if (valid_count) {
-			u32 target_index = scbw::rand_between_local(0, valid_count - 1);
+			u32 target_index = bw::rand_between_local(0, valid_count - 1);
 			u32 index = 0;
-			for (u32 i = 0; i < sound_replacements_count; ++i) {
-				SoundReplacement* sound_replacement = &sound_replacements[i];
-				if (sound_replacement_match(sound_replacement, image, sound_id, unit)) {
+			for (SoundReplacement& sound_replacement : globals->sound_replacements) {
+				if (sound_replacement_match(&sound_replacement, image, sound_id, unit)) {
 					if (index == target_index) {
-						play_sound(sound_replacement->new_sound, get_sound_volume_at_pos(sprite->position), helper::get_sfx_pan_from_screen_distance(sprite->position.x));
-						if (sound_replacement->replace) {
+						play_sound(sound_replacement.new_sound, get_sound_volume_at_pos(sprite->position), helper::get_sfx_pan_from_screen_distance(sprite->position.x));
+						if (sound_replacement.replace) {
 							replace = true;
 						}
 					} else {
@@ -225,11 +226,207 @@ u32 is_unit_at_height(Unit* unit, u32 height) // 0045F8D0
 	return result;
 }
 
+// Hooked to add support for factional and crig-based advisors. -Pr0nogo
+u16 get_unit_portrait_override(u16 unit_id) // 0045E320
+{
+	u32 portrait_id = units_dat::portrait_id[unit_id];
+	u32 player = *g_local_nation_id;
+	Unit* active_unit = *g_active_portrait_unit;
+	if (active_unit) {
+		player = active_unit->player;
+	}
+	portrait_id = get_player_portrait_id_override(portrait_id, player);
+
+	if (strcmp(g_current_map_name, "Anad's Greatsword") == 0) {
+		// Temporary, for mapcrap
+		switch (portrait_id) {
+			case PortraitId::Maverick:
+			{
+				portrait_id = PortraitId::AnadThyron;
+			} break;
+			case PortraitId::Legionnaire:
+			{
+				portrait_id = PortraitId::Patriarch;
+			} break;
+			case PortraitId::Apostle:
+			{
+				portrait_id = PortraitId::AdvisorZorthos;
+			} break;
+		}
+	}
+
+	return portrait_id;
+}
+
+// Hooked to add support for factional and crig-based advisors. -Pr0nogo
+s32 game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) // 0045EDD0
+{
+	*g_trigger_portrait_active = 1;
+	helper::set_callback_timer(*g_portrait, 4, time, 0x0045E610);
+	u32 portrait_id = helper::get_unit_portrait_override(unit_id);
+	helper::display_update_portrait(portrait_id, 0, 2);
+	helper::set_callback_timer(*g_portrait, 3, time, 0x0045EC40);
+	if (x_pos != -1) {
+		g_last_event_position->x = (x_pos - 320) & ((x_pos - 320 < 0) - 1);
+		g_last_event_position->y = (y_pos - 200) & ((y_pos - 200 < 0) - 1);
+	}
+	return 1;
+}
+
+// Hooked to add support for factional and crig-based advisors. -Pr0nogo
+void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) // 0046CF30
+{
+	BinDlg* ready_room_dlg = *g_ready_room_dialog;
+	if (ready_room_dlg->control_type) {
+		ready_room_dlg = ready_room_dlg->parent;
+	}
+
+	BinDlg* child = ready_room_dlg->child_dialog;
+	BinDlg* final_dlg = 0;
+	if (child) {
+		u16 slot = portrait_slot + 15;
+		while (child->index != slot) {
+			child = child->next;
+			if (!child) {
+				goto exit_loop;
+			}
+		}
+		final_dlg = child;
+	} else {
+	exit_loop:
+		final_dlg = 0;
+	}
+
+	u16 portrait_id = helper::get_unit_portrait_override(unit_id);
+	if (!strcmp(g_current_map_name, "Anad's Greatsword")) {
+		// Temporary, for mapcrap
+		switch (portrait_id) {
+			case PortraitId::AdvisorOrionImperium:
+			{
+				portrait_id = PortraitId::HADRAL;
+			} break;
+			case PortraitId::Maverick:
+			{
+				portrait_id = PortraitId::AnadThyron;
+			} break;
+			case PortraitId::Zealot:
+			{
+				portrait_id = PortraitId::Patriarch;
+			} break;
+			case PortraitId::Ovileth:
+			{
+				portrait_id = PortraitId::AdvisorZorthos;
+			} break;
+		}
+	} else if (strcmp(g_current_map_name, "Further Notice") == 0) {
+		switch (portrait_id) {
+			case PortraitId::Cyprian:
+			{
+				portrait_id = PortraitId::Hotshot;
+			} break;
+		}
+	}
+
+	PortraitData* portrait_data = final_dlg->portrait_data; // Ignoring nullcheck warning as it is accessed without nullchecks all over the codebase. -Pr0nogo
+	if (portrait_data->smk) {
+		helper::svid_play_end((u8)portrait_data->smk);
+		portrait_data->smk = 0;
+	}
+	portrait_data->flags = 2;
+	portrait_data->portrait_id = portrait_id;
+	helper::start_unit_portrait(final_dlg);
+}
+
+// Hooked to add support for factional and crig-based advisors. -Pr0nogo
+void do_unit_event_notification(Unit* unit, u8 event, u32 timer, bool ping, u32 message_id) // 0045EFE0
+{
+	if (!(*g_trigger_portrait_active))
+	{
+		u32 portrait_id = helper::get_unit_portrait_override(helper::get_last_queue_slot_id(unit));
+		helper::display_update_portrait(portrait_id, unit, 2);
+		if (timer || message_id >= SoundIdLimit) {
+			helper::set_callback_timer(*g_portrait, 3, timer, 0x0045EC40);
+		} else {
+			*g_notification_message_id = message_id;
+			helper::set_callback_timer(*g_portrait, 3, 1000, 0x0045EF50);
+		}
+		if (unit && ping) {
+			helper::set_last_event_position(unit->position.x, unit->position.y);
+			unit->last_event_timer = 8;
+			unit->last_event_color = event;
+			helper::minimap_ping(unit->position.x, unit->position.y, event);
+		}
+	}
+}
+
+// Hooked to add support for crig-based portrait overrides. -Pr0nogo
+void update_selected_unit_portrait() // 0045EBC0
+{
+	if (*g_portrait_redraw)
+	{
+		if (!*g_unk_portrait)
+		{
+			BinDlg* portrait_dlg = *g_portrait;
+			Unit* portrait_unit = portrait_dlg->unit_user;
+			Unit* active_unit = *g_active_portrait_unit;
+
+			if (!active_unit) {
+				portrait_dlg->unit_user = active_unit;
+				portrait_dlg->graphic = -1;
+				helper::hide_dialog(portrait_dlg);
+				*g_portrait_redraw = 0;
+				return;
+			}
+
+			u32 active_unit_id = helper::get_last_queue_slot_id(active_unit);
+			if (portrait_unit != active_unit
+			||  portrait_unit && helper::get_last_queue_slot_id(portrait_unit) != active_unit_id)
+			{
+				helper::display_update_portrait(helper::get_unit_portrait_override(active_unit_id), active_unit, 1);
+			}
+		}
+		*g_portrait_redraw = 0;
+	}
+}
+
+// Hooked to enable crig-based briefing music. -Pr0nogo
+void dialog_music_fade(u32 music_id) // 004A6310
+{
+	if (!*g_direct_sound_handle || !*g_music_playing)
+	{
+		switch (music_id) {
+			case MusicId_TRdyRoom:
+			{
+				if (!strcmp(g_current_map_name, "Anad's Greatsword")) {
+					// Temporary, for mapcrap
+					music_id = MusicId_None;
+				}
+			} break;
+		}
+
+		if (g_music_bank[music_id].flags)
+		{
+			u32 volume = *g_music_volume;
+			*g_music_volume = -10000;
+			helper::play_music(music_id);
+			*g_music_volume = volume;
+			if (g_options_list->music)
+			{
+				*g_big_music_volume = 4294963900;
+				KillTimer(*g_main_window, 3);
+				SetTimer(*g_main_window, 3, 0x14, (TIMERPROC)0x004A6030);
+			}
+		} else {
+			helper::play_music(music_id);
+		}
+	}
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
 	static b32 result;
-	static TriggerVector* trigger_vector;
+	static TriggerLink* trigger_vector;
 	__asm {
 		MOV trigger_vector, EAX
 		PUSHAD
@@ -348,7 +545,7 @@ void __declspec(naked) team_game_check_wrapper() {
 	__asm {
 		PUSHAD
 	}
-	if (scbw::is_team_game_map(g_current_map_name)) {
+	if (bw::is_team_game_map(g_current_map_name)) {
 		game_data->teams_enabled = true;
 	}
 
@@ -385,6 +582,103 @@ void __declspec(naked) is_unit_at_height_wrapper() { // 0045F8D0
 	}
 }
 
+void __declspec(naked) get_unit_portrait_override_wrapper() { // 0045E320
+	static u16 unit_id;
+	static u16 result;
+	__asm {
+		MOV unit_id, AX
+		PUSHAD
+	}
+	result = get_unit_portrait_override(unit_id);
+	__asm {
+		POPAD
+		MOV AX, result
+		RETN
+	}
+}
+
+void __declspec(naked) game_talking_portrait_wrapper() { // 0045EDD0
+	static s32 x_pos;
+	static u32 time;
+	static u32 unit_id;
+	static s32 y_pos;
+	static s32 result;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x08]
+		MOV unit_id, EAX
+		MOV EAX, [EBP + 0x0C]
+		MOV y_pos, EAX
+		POP EAX
+		MOV x_pos, EDI
+		MOV time, ESI
+		PUSHAD
+	}
+	result = game_talking_portrait(x_pos, time, unit_id, y_pos);
+	__asm {
+		POPAD
+		MOV EAX, result
+		MOV ESP, EBP
+		POP EBP
+		RETN 0x08
+	}
+}
+
+void __declspec(naked) do_unit_event_notification_wrapper() { // 0045EFE0
+	static Unit* unit;
+	static u8 event_arg;
+	static u32 timer;
+	static bool ping;
+	static u32 message_id;
+	__asm {
+		PUSH EBP
+		MOV EBP, ESP
+		PUSH EAX
+		MOV EAX, [EBP + 0x08]
+		MOV ping, AL
+		MOV EAX, [EBP + 0x0C]
+		MOV message_id, EAX
+		POP EAX
+		MOV timer, EDI
+		MOV event_arg, BL
+		MOV unit, EAX
+		PUSHAD
+	}
+	do_unit_event_notification(unit, event_arg, timer, ping, message_id);
+	__asm {
+		POPAD
+		MOV ESP, EBP
+		POP EBP
+		RETN 0x08
+	}
+}
+
+void __declspec(naked) update_selected_unit_portrait_wrapper() { // 0045EBC0
+	__asm {
+		PUSHAD
+	}
+	update_selected_unit_portrait();
+	__asm {
+		POPAD
+		RETN
+	}
+}
+
+void __declspec(naked) dialog_music_fade_wrapper() { // 004A6310
+	static u32 music_id;
+	__asm {
+		MOV music_id, EAX
+		PUSHAD
+	}
+	dialog_music_fade(music_id);
+	__asm {
+		POPAD
+		RETN
+	}
+}
+
 void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
@@ -393,4 +687,10 @@ void inject_trigger_system_hooks() {
 //	jump_patch(pylon_placement_wrapper,						0x00446775, 1);
 //	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
 	jump_patch(is_unit_at_height_wrapper,					0x0045F8D0, 2);
+	jump_patch(get_unit_portrait_override_wrapper,			0x0045E320, 6);
+	jump_patch(game_talking_portrait_wrapper,				0x0045EDD0, 4);
+	jump_patch(show_portrait,								0x0046CF30, 3);
+	jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
+	jump_patch(update_selected_unit_portrait_wrapper,		0x0045EBC0, 0);
+	jump_patch(dialog_music_fade_wrapper,					0x004A6310, 3);
 }

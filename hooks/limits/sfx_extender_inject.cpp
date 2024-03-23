@@ -12,11 +12,11 @@ namespace sfx_dat {
 
 namespace hooks
 {
-	void sfxExtenderGetCount() {
+	void sfx_extender_get_count() {
 		iquare_globals.extended_sfx = 1;
 	}
 
-	void newSfxExtender() {
+	void new_sfx_extender() {
 		NEW_SOUND_TYPE_COUNT = SoundIdLimit; // Define your length here (change later to custom func reading sfxdata)
 		sfx_dat::volume = new u8[NEW_SOUND_TYPE_COUNT];
 		sfx_dat::sound_flags = new u8[NEW_SOUND_TYPE_COUNT];

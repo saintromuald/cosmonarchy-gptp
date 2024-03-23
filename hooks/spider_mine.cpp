@@ -1,6 +1,6 @@
 #include "spider_mine.h"
-#include <SCBW/api.h>
-#include <SCBW/UnitFinder.h>
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
 #include "logger.h"
 #include "byte_operations_utils.h"
 
@@ -10,13 +10,12 @@ namespace hooks
 	Unit* find_best_mine_target(Unit* mine) // 00441270
 	{
 		// Don't search for a target if the mine is under a Disruption Field
-		if (mine->status & UnitStatus::CanNotAttack)
-		{
+		if (mine->status & UnitStatus::CanNotAttack) {
 			return 0;
 		}
 
 		u32 range = 32 * mine->get_seek_range();
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 				mine->get_x() - range, mine->get_y() - range,
 				mine->get_x() + range, mine->get_y() + range,
 				mine, [&](Unit* target)
@@ -29,7 +28,7 @@ namespace hooks
 			if (target->status & UnitStatus::Invincible) {
 				return false;
 			}
-			// Don't attack edge units / buildings
+			// Don't attack air units / buildings
 			if (target->status & (UnitStatus::InAir | UnitStatus::GroundedBuilding)) {
 				return false;
 			}
@@ -40,7 +39,7 @@ namespace hooks
 			if (!target->is_visible_to(mine->player)) {
 				return false;
 			}
-			if (scbw::get_distance_fast(mine->position, target->position) > range) {
+			if (bw::get_distance_fast(mine->position, target->position) > range) {
 				return false;
 			}
 			return true;
@@ -49,29 +48,26 @@ namespace hooks
 
 	void orders_terran_mine(Unit* unit) // 00463DF0
 	{
-		if (unit->main_order_state == 0)
-		{
+
+
+
+		if (unit->main_order_state == 0) {
 			helper::play_sound_from_unit(SoundId::SpiderMineDeploy01, unit, 1, 0);
 			unit->ground_weapon_cooldown = MineBurrowTime;
 			unit->main_order_state = 1;
 		}
 
-		if (unit->main_order_state == 1)
-		{
-			if (unit->ground_weapon_cooldown == 0)
-			{
+		if (unit->main_order_state == 1) {
+			if (unit->ground_weapon_cooldown == 0) {
 				unit->sprite->play_iscript_animation(IscriptAnimation::Burrow, true);
 				unit->status |= UnitStatus::NoCollide;
 				unit->main_order_state = 2;
 			}
 		}
 
-		if (unit->main_order_state == 2)
-		{
-			if (unit->order_signal & 4)
-			{
-				if (!(unit->status & UnitStatus::IsHallucination))
-				{
+		if (unit->main_order_state == 2) {
+			if (unit->order_signal & 4) {
+				if (!(unit->status & UnitStatus::IsHallucination)) {
 					helper::burrow_generic(unit);
 					helper::instant_cloak(unit);
 				}
@@ -79,12 +75,10 @@ namespace hooks
 			}
 		}
 
-		if (unit->main_order_state == 3)
-		{
+		if (unit->main_order_state == 3) {
 			Unit* target = helper::spider_mine_acquire_target(unit);
 
-			if (target)
-			{
+			if (target) {
 				unit->order_target.unit = target;
 				unit->sprite->play_iscript_animation(IscriptAnimation::UnBurrow, true);
 				unit->sprite->flags &= ~SpriteFlags::Burrowed;
@@ -94,55 +88,39 @@ namespace hooks
 			}
 		}
 
-		if (unit->main_order_state == 4)
-		{
-			if (unit->order_signal & 4)
-			{
+		if (unit->main_order_state == 4) {
+			if (unit->order_signal & 4) {
 				unit->sprite->elevation = units_dat::elevation[unit->id];
 				unit->status &= ~UnitStatus::NoCollide;
-				if (unit->order_target.unit)
-				{
-					// probably trigger movement/acceleration of unit toward the target
+				if (unit->order_target.unit) {
+					unit->order_queue_timer = 4;
 					helper::move_to_collide(unit, unit->order_target.unit);
-
 					unit->main_order_state = 5;
 				} else {
+					unit->order_queue_timer = 8;
 					unit->main_order_state = 1;
 				}
 			}
-		}
-
-		// unlike the previous states, going directly from state 4 to 5 in the same frame is impossible
-		else if (unit->main_order_state == 5)
-		{
+		} else if (unit->main_order_state == 5) { // unlike the previous states, going directly from state 4 to 5 in the same frame is impossible
 			bool is_completely_in_range = false;
 			bool not_movable = false;
 			helper::unburrow_generic(unit);
-			if (unit->order_target.unit)
-			{
-				if (unit->is_target_within_min_range(unit->order_target.unit, MineSeekRange))
-				{
-					// probably trigger movement/acceleration of unit
-					// toward the target
+			if (unit->order_target.unit) {
+				if (unit->is_target_within_min_range(unit->order_target.unit, MineSeekRange)) {
 					helper::move_to_collide(unit, unit->order_target.unit);
-					if (unit->is_target_within_min_range(unit->order_target.unit, MineDetonateRange))
-					{
-						is_completely_in_range = true; // jump to 00463F22
-					}
-					else if (unit->get_movable_state() != 2) // unit not unmovable
-					{
+					if (unit->is_target_within_min_range(unit->order_target.unit, MineDetonateRange)) {
+						is_completely_in_range = true;
+					} else if (unit->get_movable_state() != MovableState_UnmovableAtDestination) {
 						not_movable = true;
 					}
 				}
 			}
-			if (!not_movable && !is_completely_in_range) // 00463F14
-			{
+			if (!not_movable && !is_completely_in_range) {
 				helper::set_resource_target(unit);
 				unit->main_order_state = 1;
 			}
 
-			if (is_completely_in_range) // 00463F22
-			{
+			if (is_completely_in_range) {
 				Image* current_image;
 				unit->order_target.unit = 0;
 				unit->order_target.pt.x = unit->sprite->position.x;
@@ -153,6 +131,7 @@ namespace hooks
 					// This is really stupid, but it works, because the weapon is actually hardcoded within iscript. -Pr0nogo
 					anim = IscriptAnimation::Unused2;
 				}
+
 				while (current_image)
 				{
 					current_image->play_iscript_animation(anim);
@@ -162,11 +141,8 @@ namespace hooks
 			}
 		}
 
-		// Unlike state 5 with state 4, state 6 can be chained from state 5, so no else here
-		if (unit->main_order_state == 6)
-		{
-			if (unit->order_signal & 1)
-			{
+		if (unit->main_order_state == 6) { // Unlike state 5 with state 4, state 6 can be chained from state 5, so no else here
+			if (unit->order_signal & 1) {
 				unit->remove();
 			}
 		}
@@ -180,16 +156,17 @@ namespace hooks
 			return;
 		}
 
-		if (unit->main_order_state)
-		{
+		if (unit->main_order_state) {
 			Sprite* unit_sprite = unit->sprite;
+			++unmovable_hits[14];
+			unmovable_lastframe[14] = *g_elapsed_time_frames;
 			if  (helper::tech_use_allowed(unit, TechId::SpiderMines, unit->player)
-			&&  (unit->move_target.pt.x != unit_sprite->position.x) || unit->move_target.pt.y != unit_sprite->position.y || ((unit->status & UnitStatus::Unmovable) != 0) != 1)
+			&&  (unit->move_target.pt.x != unit->position.x) || unit->move_target.pt.y != unit->position.y || !(unit->status & UnitStatus::Unmovable))
 			{
 				if ((helper::get_distance_fast(unit->halt.x, unit->order_target.pt.x << 8, unit->halt.y, unit->order_target.pt.y << 8) & 0xFFFFFF00) <= 5120) {
 					helper::orders_hold_pos_suicidal(unit);
 					Point16 target_pos = {unit->order_target.pt.x, unit->order_target.pt.y};
-					u32 mine_id = scbw::get_trap_id(unit);
+					u32 mine_id = bw::get_trap_id(unit);
 					helper::fix_target_location(&target_pos, mine_id);
 					Unit* mine = helper::create_unit(mine_id, target_pos.x, target_pos.y, unit->player);
 					if (mine)
@@ -257,14 +234,14 @@ namespace hooks
 	{
 		helper::toggle_unit_path(unit);
 
-		char pathing_flags = unit->pathing_flags;
+		u8 pathing_flags = unit->pathing_flags;
 		unit->movement_state = 0;
 		unit->pathing_flags = (pathing_flags ^ (unit->sprite->elevation < 12)) & 1 ^ pathing_flags;
 		unit->status |= (UnitStatus::CloakingForFree | UnitStatus::Burrowed);
 		unit->sprite->flags |= SpriteFlags::Burrowed;
 		Sprite* old_sprite = unit->sprite;
 		Sprite* new_sprite = 0;
-		if (unit->id == UnitId::ZergLakizilisk)
+		if (unit_id_is_burrowed_attacker(unit->id))
 		{
 			helper::switch_sprite_id(old_sprite, SpriteId::White_Circle2);
 			unit->sprite->elevation = 1;

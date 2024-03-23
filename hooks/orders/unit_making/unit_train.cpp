@@ -1,5 +1,5 @@
 #include "unit_train.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "hooks/cosmonarchy_finder.h"
 #include "hooks/orders/spells/hallucination_spell.h"
 #include "hooks/orders/building_making/building_modifier.h"
@@ -50,12 +50,12 @@ namespace hooks {
 						{
 							unit->build_queue_slot = 0;
 						}
-						scbw::refresh_console();
+						bw::refresh_console();
 						unit->current_build_unit = 0;
 						unit->secondary_order_state = 0;
 					}
 				} else {
-					scbw::refresh_console();
+					bw::refresh_console();
 					unit->current_build_unit = 0;
 					unit->secondary_order_state = 0;
 				}
@@ -97,7 +97,7 @@ namespace hooks {
 						if (built_unit->subunit) {
 							built_unit->subunit->sprite->player = unit->sprite->player;
 						}
-						scbw::play_work_animation(unit);
+						bw::play_work_animation(unit);
 					}
 				}
 			} else if (unit->secondary_order_state == 2) {
@@ -112,7 +112,7 @@ namespace hooks {
 							built_unit->remaining_build_time -= modifier.decrease;
 						} else {
 							built_unit->remaining_build_time = 0;
-							if (scbw::get_game_kind() == GameKind_Debug) {
+							if (bw::get_game_kind() == GameKind_Debug) {
 								helper::set_unit_hp(built_unit, built_unit->get_max_hp_raw());
 							}
 						}
@@ -123,15 +123,15 @@ namespace hooks {
 							Unit* built_units[2] = {built_unit, 0};
 							if (units_dat::base_property[built_unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 								count = 2;
-								built_units[1] = scbw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
+								built_units[1] = bw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
 							}
 
 							bool spawn_point_set = false;
 							Point16 spawn_point = unit->position;
 							if (unit->rally.pt.x || unit->rally.pt.y) {
-								Point16 new_spawn_point = scbw::get_rect_edge_point_towards(unit->position, units_dat::unit_bounds[unit->id], unit->rally.pt);
+								Point16 new_spawn_point = bw::get_rect_edge_point_towards(unit->position, units_dat::unit_bounds[unit->id], unit->rally.pt);
 								if (new_spawn_point != unit->rally.pt) {
-									if (scbw::get_active_tile_at_coords(spawn_point)->ground_height == scbw::get_active_tile_at_coords(new_spawn_point)->ground_height) {
+									if (bw::get_active_tile_at_coords(spawn_point)->ground_height == bw::get_active_tile_at_coords(new_spawn_point)->ground_height) {
 										spawn_point_set = true;
 										spawn_point = new_spawn_point;
 									}
@@ -141,8 +141,9 @@ namespace hooks {
 							for (u32 i = 0; i < count; i++) {
 								Unit* new_unit = built_units[i];
 								if (new_unit) {
+									spread_debuffs(unit, new_unit);
 									if (spawn_point_set) {
-										scbw::move_unit(new_unit, spawn_point.x, spawn_point.y);
+										bw::move_unit(new_unit, spawn_point.x, spawn_point.y);
 									}
 									helper::ai_training_unit(new_unit, unit);
 									if (built_unit->id == UnitId::TerranMorningstar)
@@ -186,7 +187,7 @@ namespace hooks {
 					jump_to_685D8 = true;
 				}
 				if (jump_to_685D8) {
-					scbw::refresh_console();
+					bw::refresh_console();
 					unit->current_build_unit = 0;
 					unit->secondary_order_state = 0;
 				}
@@ -206,5 +207,63 @@ namespace hooks {
 
 	b32 _stdcall button_is_training(Unit* unit) {
 		return unit->build_queue[unit->build_queue_slot % 5] != UnitId::None;
+	}
+
+	// Hooked to try a different approach for Massacre resources. -Pr0nogo
+	void update_unit_stats_and_finish_building(Unit* unit) // 004A01F0
+	{
+		if (unit->remaining_build_time) {
+			unit->hitpoints = units_dat::max_hitpoints[unit->id];
+			unit->shields = units_dat::max_shield_points[unit->id] << 8;
+			unit->remaining_build_time = 0;
+		}
+
+		if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building || unit->id == UnitId::None) {
+			unit->current_buttonset = unit->id;
+		}
+
+		if (unit->status & UnitStatus::GroundedBuilding) {
+			unit->parasite_flags = 0;
+			unit->is_blind = 0;
+			helper::unit_completion_init(unit, 0);
+			for (Image* image = unit->sprite->images.head; image; image = image->link.next)
+			{
+				play_image_iscript(image, IscriptAnimation::Built);
+			}
+
+			if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
+				bw::refresh_console();
+			}
+		} else {
+			if (unit->status & UnitStatus::CanTurnAroundToAttack) {
+				u32 start_dir = units_dat::start_direction[unit->id];
+				if (start_dir == 32) {
+					start_dir = helper::randomize_short(36) & 0x1F;
+				}
+				helper::turn_unit(unit, 8 * start_dir);
+			}
+			// Previously didn't run this helper for traps
+			helper::show_and_enable_unit(unit);
+		}
+	}
+
+	// Hooked to investigate the "upper map bound" fail state for Seraph training. -Pr0nogo
+	Unit* attempt_train_hatch_unit(u16 unit_id, Unit* source, u32 show_error) // 00468200
+	{
+		if (source->status & UnitStatus::GroundedBuilding
+		||  source->id == UnitId::ProtossSolarion
+		||  source->id == UnitId::ProtossAccantorOld
+		||  source->id == UnitId::Hero_Warbringer
+		||  source->id == UnitId::ZergEgg)
+		{
+			if (helper::has_supplies_for_unit(source->player, unit_id, show_error)) {
+				Unit* new_unit = helper::create_unit(unit_id, source->sprite->position.x, source->sprite->position.y, source->player);
+				if (new_unit) {
+					return new_unit;
+				}
+				helper::display_last_network_error_for_player(source->player);
+			}
+		}
+		return 0;
 	}
 }

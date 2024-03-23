@@ -1,6 +1,6 @@
 #include "detector.h"
-#include "../SCBW/scbwdata.h"
-#include "../SCBW/enumerations.h"
+#include "../BW/bwdata.h"
+#include "../BW/enumerations.h"
 
 namespace hooks
 {

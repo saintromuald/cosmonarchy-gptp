@@ -1,5 +1,5 @@
 #include "wireframe.h"
-#include "../../SCBW/api.h"
+#include "../../BW/api.h"
 
 namespace hooks
 {
@@ -13,7 +13,7 @@ namespace hooks
 		if (!(unit->status & UnitStatus::Completed))
 		{
 			unit_id = unit->build_queue[unit->build_queue_slot];
-			if (scbw::is_zerg_building_morph_result(unit_id))
+			if (bw::is_zerg_building_morph_result(unit_id))
 			{
 				bUseCurrentUnitId = false;
 			}
@@ -31,7 +31,7 @@ namespace hooks
 		u8 al = 0;
 		if (units_dat::shields_enabled[unit->id])
 		{
-			auto lastSlot = scbw::get_last_queue_slot_id(unit);
+			auto lastSlot = bw::get_last_queue_slot_id(unit);
 			u32 maxShields = units_dat::max_shield_points[lastSlot];
 			if (lastSlot == unit->id)
 			{

@@ -1,6 +1,6 @@
 #include "building_terran.h"
 #include <hook_tools.h>
-#include "SCBW/api.h"
+#include "BW/api.h"
 namespace
 {
 	void __declspec(naked) orders_terran_build_self_wrapper()
@@ -185,6 +185,49 @@ namespace
 		}
 	}
 
+	void __declspec(naked) disconnect_addon_wrapper() { // 00464930
+		static Unit* unit;
+		static Sprite* unused;
+		__asm {
+			MOV unit, EAX
+			MOV unused, EDX
+			PUSHAD
+		}
+		hooks::disconnect_addon(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) complete_addon_wrapper() { // 00463D50
+		static Unit* addon;
+		static Unit* parent;
+		__asm {
+			MOV parent, EDI
+			MOV addon, EAX
+			PUSHAD
+		}
+		hooks::complete_addon(addon, parent);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) play_addon_detach_sound_wrapper() { // 0048F8A0
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::play_addon_detach_sound(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	const u32 orders_place_addon_E6891 = 0x004E6B91;
 	void __declspec(naked) orders_place_addon_patch() {
 		__asm {
@@ -249,6 +292,9 @@ namespace hooks
 		jump_patch(unit_is_geyser_wrapper,					0x004688B0, 2);
 	//	jump_patch(is_constructing_addon_wrapper,			0x004E66B0, 2); // Probably fine, but not necessary
 		jump_patch(building_addon_wrapper,					0x004679A0,	1);
+		jump_patch(disconnect_addon_wrapper,				0x00464930,	5);
+		jump_patch(complete_addon_wrapper,					0x00463D50,	1);
+		jump_patch(play_addon_detach_sound_wrapper,			0x0048F8A0,	2);
 
 		jump_patch(orders_place_addon_patch,				0x004E6B8B, 1);
 		call_patch(complete_addon_patch,					0x00463D69, 0);

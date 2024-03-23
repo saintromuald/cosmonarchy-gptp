@@ -1,8 +1,9 @@
 #include "larva_creep_spawn.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "globals.h"
 #include "hooks\unit_speed.h"
 #include "hooks/load_unload_proc.h"
+#include <hooks/limits/sfx_extender.h>
 
 namespace hooks
 {
@@ -57,7 +58,7 @@ namespace hooks
 				// Check for units occupying the landing zone before the final vertical movement started.
 				if (helper::can_build_on_tile_location(unit, unit->player, x, y, unit->id, 0, 0, 1, 0)) {
 					// Play "landing sequence interrupted".
-					helper::play_building_land_sound(unit);
+					helper::play_landing_interrupt_sound(unit);
 
 					if (unit->order_queue_head
 					&&	unit->order_queue_head->order_id == OrderId::PlaceAddon)
@@ -90,7 +91,7 @@ namespace hooks
 			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
 			bool stop_there = false;
 			if (!helper::is_unit_positions_2_equal(unit)) {
-				stop_there = ((unit->velocity_direction_1 - scbw::get_angle(unit->position.x, unit->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
+				stop_there = ((unit->velocity_direction_1 - bw::get_angle(unit->position.x, unit->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
 			}
 			if (!stop_there) {
 				unit->sprite->play_iscript_animation(IscriptAnimation::Landing);
@@ -114,7 +115,7 @@ namespace hooks
 
 				unit->sprite->elevation = 4;
 				helper::set_unit_pathing(unit, 0);
-				scbw::set_unit_position(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+				bw::set_unit_position(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
 				helper::start_collision_tracking(unit); // Maybe update orders targeting the unit, set repulse for units in surroundings, and some other things?
 
@@ -130,8 +131,8 @@ namespace hooks
 					unit->sprite->images.tail->flags &= ~ImageFlags::DontUpdate;
 				}
 				helper::create_landing_dust(unit->sprite);
-				scbw::refresh_console();
-				scbw::prepare_building_area(unit->position, unit->id);
+				bw::refresh_console();
+				bw::prepare_building_area(unit->position, unit->id);
 
 				if (units_dat::base_property[unit->id] & UnitProperty::Attack) {
 					unit->status |= UnitStatus::CanTurnAroundToAttack;
@@ -167,8 +168,8 @@ namespace hooks
 				helper::force_order_done(unit);
 
 				UnitExt* unit_ext = get_unit_ext(unit);
-				if (unit_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
-					scbw::spawn_custom_creep(unit);
+				if (unit_ext->values[ValueInfested]) {
+					bw::spawn_custom_creep(unit);
 				}
 				Unit* addon = helper::connect_addon_check(unit);
 				if (addon) {
@@ -181,9 +182,9 @@ namespace hooks
 					{
 						Unit* cargo_unit = unit->get_loaded_unit(i);
 						if (!cargo_unit) continue;
-					//	scbw::set_unit_position(cargo_unit, unit->position.x, unit->position.y);
+					//	bw::set_unit_position(cargo_unit, unit->position.x, unit->position.y);
 						if (cargo_unit->subunit) {
-							scbw::set_unit_position(cargo_unit->subunit, unit->position.x, unit->position.y);
+							bw::set_unit_position(cargo_unit->subunit, unit->position.x, unit->position.y);
 						}
 					}
 				}
@@ -203,12 +204,14 @@ namespace hooks
 
 	void orders_building_liftoff(Unit* unit) { // 004649B0
 		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->timers[TimerLiftoffDelay] > 1) {
+			return;
+		}
 		if (unit_ext->values[ValueIsNeutralBunker]) {
 			unit->order_to_idle();
 			return;
 		}
-		if ((unit->status & UnitStatus::GroundedBuilding) && (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding))
-		{
+		if ((unit->status & UnitStatus::GroundedBuilding) && (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)) {
 			Unit* addon = unit->building.addon;
 			if (addon) {
 				if (addon->id == UnitId::TerranLodestone) {
@@ -222,7 +225,7 @@ namespace hooks
 						addon_ext->loaded_unit[i].value = 0;
 					}
 				}
-				helper::disconnect_from_addon(unit);
+				helper::disconnect_addon(unit);
 			}
 			if (unit->is_factory()) {
 				unit->rally.unit = unit;
@@ -239,14 +242,14 @@ namespace hooks
 				unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 			}
 
-			scbw::refresh_console();
+			bw::refresh_console();
 			if (unit->sprite->position.x != unit->next_target_waypoint.x
 			||	unit->sprite->position.y - 42 != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = unit->sprite->position.x;
 				unit->next_target_waypoint.y = unit->sprite->position.y - 42;
 			}
 			// Originally called update_creep_disappearance_unit when lifting off Infested Command Centers
-			scbw::update_custom_creep_disappearance(unit);
+			bw::update_custom_creep_disappearance(unit);
 
 			if (*g_is_placing_building) {
 				helper::place_building_proc();
@@ -261,6 +264,34 @@ namespace hooks
 				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, 0);
 			}
 			helper::force_order_done(unit);
+		}
+	}
+
+	// Hooked for custom advisor handling. -Pr0nogo
+	void play_landing_interrupt_sound(Unit* unit) // 0048F5A0
+	{
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
+			AdvisorEvent event_type = AdvisorEvent_LandingInterrupted;
+			switch (unit->get_race()) {
+				case RaceId::Terran:
+				{
+					if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+						event_type = AdvisorEvent_PlacementInterrupted;
+					}
+				} break;
+				case RaceId::Protoss:
+				{
+					event_type = AdvisorEvent_NoBuildProtoss;
+				} break;
+				case RaceId::Zerg:
+				{
+					event_type = AdvisorEvent_PlacementInterrupted;
+				} break;
+			}
+			u32 sound_id = bw::get_advisor_sound_from_event_type(unit->player, event_type);
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
+				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+			}
 		}
 	}
 }

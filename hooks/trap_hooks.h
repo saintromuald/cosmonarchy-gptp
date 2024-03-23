@@ -1,5 +1,5 @@
-#include "SCBW/api.h"
-#include "SCBW/scbwdata.h"
+#include "BW/api.h"
+#include "BW/bwdata.h"
 
 namespace hooks
 {

@@ -1,5 +1,5 @@
 #include "CMDRECV_Cancel.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "hooks\orders\building_making\building_morph.h"
 
 namespace hooks
@@ -29,7 +29,7 @@ namespace hooks
 				&&  unit->status & UnitStatus::Completed
 				&&  unit->player == *g_active_nation_id) {
 					helper::cancel_addon_proc(unit);
-					scbw::refresh_console();
+					bw::refresh_console();
 				}
 			}
 		}
@@ -41,7 +41,7 @@ namespace hooks
 		while (Unit* unit = get_active_player_next_selection()) {
 			if (unit->status & UnitStatus::Completed && unit->player == *g_active_nation_id) {
 				helper::cancel_upgrade_proc(unit);
-				scbw::refresh_console();
+				bw::refresh_console();
 			}
 		}
 	}
@@ -54,12 +54,12 @@ namespace hooks
 			&&  unit->status & UnitStatus::Completed
 			&&  unit->player == *g_active_nation_id) {
 				helper::cancel_research_proc(unit);
-				scbw::refresh_console();
+				bw::refresh_console();
 			}
 		}
 	}
 
-	// Hooked because the default code didn't allow for multiple units
+	// Hooked because the default code didn't allow for multi-selection
 	void cmdrecv_cancel_train(u16 slot) // 004C0100
 	{
 		*g_unit_iterator_pos = 0;
@@ -67,18 +67,18 @@ namespace hooks
 		{
 			if (unit->id != UnitId::ZergLarva
 			&&  unit->id != UnitId::ZergOcsalLarva
-			&& !scbw::is_conventional_unit_morph_source(unit->id)
+			&& !bw::is_conventional_unit_morph_source(unit->id)
 			&&  unit->status & UnitStatus::Completed
 			&&  unit->player == *g_active_nation_id)
 			{
 				if (slot == 254) {
 					helper::cancel_last_training(unit);
-					scbw::refresh_console();
+					bw::refresh_console();
 				} else if (slot == 255) {
-					scbw::refresh_console();
+					bw::refresh_console();
 				} else {
 					helper::refund_queue_slot(unit, slot);
-					scbw::refresh_console();
+					bw::refresh_console();
 				}
 			}
 		}

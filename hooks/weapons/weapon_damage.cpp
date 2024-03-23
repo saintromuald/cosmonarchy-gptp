@@ -1,5 +1,5 @@
 #include "weapon_damage.h"
-#include "../../SCBW/api.h"
+#include "../../BW/api.h"
 #include <algorithm>
 #include <cmath>
 #include "math_utils.h"
@@ -17,14 +17,14 @@
 #include "hooks/unit_stats/armor_bonus.h"
 #include "hooks/unit_destructor_special.h"
 
-#include "SCBW\UnitFinder.h"
+#include "BW\UnitFinder.h"
 
 Bullet* weapon_damage_current_bullet;
 
 void apply_ensnare_internal(Unit* unit, u32 ensnare_factor) {
 	// Overlay
 	if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
-		scbw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
+		bw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + bw::get_overlay_offset(unit->id));
 	}
 
 	// Effect
@@ -35,7 +35,7 @@ void apply_ensnare_internal(Unit* unit, u32 ensnare_factor) {
 }
 
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
-	return scbw::is_under_carapace_swarm(target)
+	return bw::is_under_carapace_swarm(target)
 		&& weapons_dat::max_range[weapon_id] > 32
 		&& (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
 		&& weapon_id != WeaponId::HarakanFlamethrower
@@ -57,10 +57,9 @@ namespace hooks
 		helper::play_sound_from_unit(alert_id, 0, g_options_list->flags & 1, 0);
 		helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);
 
-		globals.alert.sound_id = sound_id;
-		globals.alert.play_timer = 12;
+		globals->alert.sound_id = sound_id;
+		globals->alert.play_timer = 12;
 	}
-
 
 	static void reset_all_unit_attack_notify_timers_in_range(Unit* unit) {
 		EntryArray units = {};
@@ -77,38 +76,64 @@ namespace hooks
 			return;
 		}
 		u32 local_player = *g_local_nation_id;
-		if (*g_is_in_replay || globals.players[local_player].witness_mode || unit->player == 11) {
+		if (unit->player == 11) {
 			return;
 		}
-		if (unit->player == local_player) {
+		bool witness_or_replay = *g_is_in_replay || globals->players[local_player].witness_mode;
+		if (unit->player == local_player || witness_or_replay) {
 			unit->last_event_color = g_palette_index_reference[20];
 			unit->last_event_timer = 20;
-			if (!globals.alert.own_cooldown) {
+			if (!globals->alert.own_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
-					reset_all_unit_attack_notify_timers_in_range(unit);
-					globals.alert.own_cooldown = 100;
-
-					bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-					u32 sound_id = (is_building ? SoundId::BaseUnderAttack_Zerg : SoundId::ForcesUnderAttack_Zerg) + *g_console_index;
-					if (!is_building) {
-						u32 sound_first = units_dat::sound_annoyed_first[unit->id];
-						u32 sound_last = units_dat::sound_annoyed_last[unit->id];
-						if (sound_first && sound_last) {
-							sound_id = scbw::rand_between_local(sound_first, sound_last);
+					if (!witness_or_replay) {
+						reset_all_unit_attack_notify_timers_in_range(unit);
+						globals->alert.own_cooldown = 100;
+						bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
+						u32 sound_id = SoundId::No_sound;
+						AdvisorEvent type = is_building ? AdvisorEvent_BaseUnderAttack : AdvisorEvent_ArmyUnderAttack;
+						if (!is_building) {
+							u32 sound_first = units_dat::sound_annoyed_first[unit->id];
+							u32 sound_last = units_dat::sound_annoyed_last[unit->id];
+							if (sound_first && sound_last) {
+								sound_id = helper::get_random_sfx_between(sound_first, sound_last);
+							} else {
+								sound_id = bw::get_advisor_sound_from_event_type(local_player, type);
+							}
+						} else {
+							sound_id = bw::get_advisor_sound_from_event_type(local_player, type);
 						}
+						play_alert(unit, sound_id);
+					} else {
+						globals->alert.own_cooldown = 100;
+						replay_witness_event(unit, SpectatorEvent_Combat);
 					}
-					play_alert(unit, sound_id);
 				}
 			}
-		} else if (scbw::are_mutual_allies(local_player, unit->player)) {
+		} else if (bw::are_mutual_allies(local_player, unit->player)) {
 			unit->last_event_color = g_palette_index_reference[20];
 			unit->last_event_timer = 20;
-			if (!globals.alert.own_cooldown && !globals.alert.ally_cooldown) {
+			if (!globals->alert.own_cooldown && !globals->alert.ally_cooldown) {
 				if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
 					reset_all_unit_attack_notify_timers_in_range(unit);
-					globals.alert.ally_cooldown = 1000;
+					globals->alert.ally_cooldown = 1000;
 
-					u32 sound_id = SoundId::AdvisorZergUnderAttackZerg + (*g_console_index * 3) + g_player_table[unit->player].race;
+					AdvisorEvent type;
+					switch (g_player_table[unit->player].race)
+					{
+						case RaceId::Zerg:
+						{
+							type = AdvisorEvent_AllyUnderAttack_Z;
+						} break;
+						case RaceId::Protoss:
+						{
+							type = AdvisorEvent_AllyUnderAttack_P;
+						} break;
+						case RaceId::Terran:
+						{
+							type = AdvisorEvent_AllyUnderAttack_T;
+						}
+					}
+					u32 sound_id = bw::get_advisor_sound_from_event_type(local_player, type);
 					play_alert(unit, sound_id);
 				}
 			}
@@ -172,6 +197,20 @@ namespace hooks
 		}
 
 		UnitExt* target_ext = get_unit_ext(data.target);
+		if (target_ext->values[ValueTakingDeconstructionDamage]) {
+			data.dont_proc_link_damage = true;
+		}
+
+		if (data.attacker) {
+			UnitExt* attacker_ext = get_unit_ext(data.attacker);
+			if (!attacker_ext->values[ValueTakingDeconstructionDamage] && attacker_ext->values[ValueTriggerDamageBaseSet] && weapon_id_procs_onhits(data.weapon_id)) {
+				data.damage = attacker_ext->values[ValueTriggerDamageBaseAmount];
+			}
+
+			if (data.attacker->status & UnitStatus::IsHallucination) {
+				data.damage /= 2;
+			}
+		}
 
 		// Ancile - Providence - Hitscan handling
 		switch (weapons_dat::behavior[data.weapon_id]) {
@@ -183,14 +222,14 @@ namespace hooks
 				unit_search_radial(&units, data.target->position, 2 * 32);
 				for (u32 i = 0; i < units.count; ++i) {
 					Unit* unit = units.units[i];
-					if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && scbw::is_allied_to(unit->player, data.target->player)) {
-						scbw::create_shield_overlay(data.target, data.direction);
+					if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && bw::is_allied_to(unit->player, data.target->player)) {
+						bw::create_shield_overlay(data.target, data.direction);
 						unit->spend_unit_energy(data.damage);
-						helper::play_sound_from_unit(scbw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
 						ignore_alert = true;
 						unit_attack_notify(unit);
 						ignore_alert = false;
-						scbw::reveal_attacker(data.attacker, unit);
+						bw::reveal_attacker(data.attacker, unit);
 						return;
 					}
 				}
@@ -204,7 +243,7 @@ namespace hooks
 			if (ai->type == AiType::Worker || ai->type == AiType::Building) {
 				if (!ai->town) {
 					u32 attacker_id = data.attacker ? data.attacker->id : UnitId::None;
-					scbw::printf("Ai_ReactToHit crash prevention - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
+					bw::printf("Ai_ReactToHit crash prevention - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
 																              attacker_id, data.attacker->player, data.target->id, data.target->player);
 					return; // Don't think this ever happens anymore, removed can_damage bool 11/27/2023 -Pr0nogo
 				}
@@ -215,19 +254,13 @@ namespace hooks
 			weapon_damage_damage_modifiers(data);
 		}
 
-		if (!data.dont_proc_link_damage && scbw::has_clarion_links(data.target)) {
+		if (!data.dont_proc_link_damage && bw::has_clarion_links(data.target)) {
 			data.damage /= 2;
-			scbw::spread_clarion_damage(data);
+			bw::spread_clarion_damage(data);
 		}
 
-		// Hallucinations deal half damage
-		if (data.attacker) {
-			if (data.attacker->status & UnitStatus::IsHallucination) {
-				data.damage /= 2;
-			}
-		}
-
-		// Minimum amount of damage that can be dealt
+		// Minimum amount of damage that can be dealt.
+		// @Veeq7 - should this be above the Ancile code, to prevent dealing less than 1 damage to Ancile energy? -Pr0nogo
 		if (data.damage < 256) {
 			data.damage = 256;
 		}
@@ -246,12 +279,16 @@ namespace hooks
 		bool shield_overlay = false;
 		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
 			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.target, data.weapon_id) + data.bonus_armor_pen;
+			if (weapon_damage_current_bullet && weapon_damage_current_bullet->weapon_id == WeaponId::AlgoztaliskBottomlessSpinestacks) {
+				BulletExt* bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+				armor_pen += bullet_ext->distance_traveled / 32;
+			}
 			s32 armor_total = (hooks::get_armor_internal(data.target) - armor_pen);
 
 			if (data.attacker) {
-				u32 fore_castle_factor = scbw::get_fore_castle_factor(data.target);
+				u32 fore_castle_factor = bw::get_fore_castle_factor(data.target);
 				if (fore_castle_factor) {
-					u16 angle = scbw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
+					u16 angle = bw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocity_direction_1;
 					s32 arc = (f64)45 / 1.40625; // 90 degrees
 					s32 delta = unit_angle - angle;
@@ -290,8 +327,8 @@ namespace hooks
 			weapon_damage_lifesteal(data);
 		}
 		if (weapon_damage_is_lethal(data)) {
-			if (scbw::get_game_kind() == GameKind_Massacre) {
-				scbw::add_massacre_resource(data.attacking_player_id);
+			if (!bw::is_allied_to(data.target->player, data.attacking_player_id) && bw::get_game_kind() == GameKind_Massacre) {
+				bw::add_massacre_resource(data.attacking_player_id);
 			}
 			if (!weapon_damage_fatal(data)) { // Prevent attack if it wasn't fatal
 				data.damage = 0;
@@ -311,18 +348,22 @@ namespace hooks
 		}
 
 		// New AI defense logic -Veeq7
-		scbw::ask_for_ai_help(data.target, data.attacker);
+		bw::ask_for_ai_help(data.target, data.attacker);
 
 		// Reduce shields
 		if (data.shield_reduce_amount) {
 			data.target->shields -= data.shield_reduce_amount;
+			if (data.attacker) {
+				bw::update_on_damage_dealt(data.attacker, data.shield_reduce_amount);
+			}
+			bw::update_on_damage_taken(data.target, data.shield_reduce_amount);
 			if (data.damage_type != DamageType::Independent && data.target->shields != 0) {
 				shield_overlay = true;
 			}
 		}
 
 		if (shield_overlay) {
-			scbw::create_shield_overlay(data.target, data.direction);
+			bw::create_shield_overlay(data.target, data.direction);
 		}
 
 		// Update unit strength data
@@ -333,9 +374,9 @@ namespace hooks
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
 		UnitExt* target_ext = get_unit_ext(data.target);
 
-		// Allied invincibility frames (for e.g. Akistrokor Blissful Embrace)
+		// Allied invincibility frames (for e.g. Blissful Embrace)
 		if (target_ext->timers[TimerAlliedInvFrames]) {
-			if (scbw::is_allied_to(data.attacking_player_id, target_ext->values[ValueAlliedInvPlayer])) {
+			if (bw::is_allied_to(data.attacking_player_id, target_ext->values[ValueAlliedInvPlayer])) {
 				data.damage = 0;
 			}
 		}
@@ -383,7 +424,7 @@ namespace hooks
 		}
 
 		// Hallucinating targets - fire a phantom strike
-		if (data.attacker && weapon_id_procs_onhits(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !scbw::is_allied_to(data.attacker->player, data.target->player))
+		if (data.attacker && weapon_id_procs_onhits(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !bw::is_allied_to(data.attacker->player, data.target->player))
 		{
 			if (weapon_damage_current_bullet && data.weapon_id != WeaponId::GladiusPlasmaFlurry && data.weapon_id != WeaponId::PaladinCrusaderMissiles) {
 				BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
@@ -409,18 +450,23 @@ namespace hooks
 
 		// No attacker here
 		switch (data.weapon_id) {
+			case WeaponId::AurielQuarternaryRifle:
+			{
+				target_ext->values[ValueAurielIncinerationPlayer] = data.attacking_player_id;
+				target_ext->timers[TimerAurielIncineration] = 2 * 24 + 1;
+			} break;
 			case WeaponId::WendigoFusionSaw:
 			{
 				target_ext->values[ValueWendigoShatteredWindsStacks]++;
 				target_ext->timers[TimerWendigoShatteredWinds] = 2 * 24 + 1;
 			} break;
 			case WeaponId::LegionnairePhaseSpear: {
-				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1; // Temporary? Or at least needs to be looked at again when aise no longer manages Blade Vortex marks. -Pr0nogo
+				target_ext->timers[TimerBladeVortex] = 2 * 24 + 1;
 			} break;
 			case WeaponId::GladiusPlasmaFlurry: {
 				if (target_ext->timers[TimerBindingPlasma]) {
 					u32 source_player = target_ext->values[ValueGladiusBindingPlasmaPlayer];
-					if (scbw::is_allied_to(data.attacking_player_id, source_player)) {
+					if (bw::is_allied_to(data.attacking_player_id, source_player)) {
 						target_ext->values[ValueGladiusBindingPlasmaStacks]++;
 					}
 				} else {
@@ -439,13 +485,20 @@ namespace hooks
 			case UnitId::ProtossGolem: {
 				// Golem - Tranquility Array
 				if (data.target->shields >= 128) {
-					scbw::shield_heal_proc(data.target, data.target->player, 64, 2);
+					bw::shield_heal_proc(data.target, data.target->player, 64, 2);
 				}
 			} break;
 			case UnitId::ZergZoryusthaleth: {
 				// Zoryusthaleth - Incubate on damage taken
-				if (!scbw::is_allied_to(data.target->player, data.attacking_player_id)) {
+				if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
 					incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
+				}
+			} break;
+			case UnitId::ZergVilgorokor:
+			{
+				if (!bw::is_under_carapace_swarm(data.target) && !target_ext->timers[TimerReconstitutionDelay]) {
+					target_ext->timers[TimerReconstitutionDelay] = 2 * 24 + 1;
+					helper::play_sound_from_unit(SoundId::Zerg_Ultra_ZUlRor00_WAV, data.target, 1, 0);
 				}
 			} break;
 		}
@@ -471,13 +524,13 @@ namespace hooks
 			// Ensnaring Brood - Matraleth enchantment ability
 			if (unit_applies_ensnare(data.attacker) && unit_can_be_ensnared(data.target))
 			{
-				 apply_ensnare_internal(data.target, scbw::get_ensnare_factor(data.attacker));
+				 apply_ensnare_internal(data.target, bw::get_ensnare_factor(data.attacker));
 			}
 
 			switch (data.weapon_id) {
 				case WeaponId::PotentatePhaseSaber:
 				{
-					if (!scbw::is_allied_to(data.target->player, data.attacker->player)) {
+					if (!bw::is_allied_to(data.target->player, data.attacker->player)) {
 						ascend_in_area(data.attacker->player, data.attacker->position, 4 * 32);
 					}
 				} break;
@@ -495,13 +548,13 @@ namespace hooks
 					// Striga - Fleeting Focus
 					if (!(units_dat::base_property[data.attacker->id] & UnitProperty::Building)
 					&&	!(data.attacker->status & UnitStatus::Burrowed)
-					&&   !scbw::is_under_carapace_swarm(data.target))
+					&&   !bw::is_under_carapace_swarm(data.target))
 					{
-						const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
+						const u32 dist = bw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
 							const u32 displacement_time = 5;
-							Vector32 diff = scbw::get_vector_between(data.target->sprite->position, data.attacker->sprite->position);
-							Vector32f displacement = scbw::get_normalized_vector(diff);
+							Vector32 diff = bw::get_vector_between(data.target->sprite->position, data.attacker->sprite->position);
+							Vector32f displacement = bw::get_normalized_vector(diff);
 							displacement.x *= 1 * 32.0 / displacement_time;
 							displacement.y *= 1 * 32.0 / displacement_time;
 
@@ -513,14 +566,14 @@ namespace hooks
 				case UnitId::ProtossSimulacrum:
 				{
 					// Autovitality - Simulacrum behavior
-					if (!scbw::is_allied_to(data.target->player, data.attacker->player)
-					&&  !scbw::is_under_carapace_swarm(data.target)
+					if (!bw::is_allied_to(data.target->player, data.attacker->player)
+					&&  !bw::is_under_carapace_swarm(data.target)
 					&&   data.shield_reduce_amount >= data.target->shields
 					&&   data.damage
 					&&   target_ext->timers[TimerSimulacrumClone] == 0)
 					{
 						target_ext->timers[TimerSimulacrumClone] = 4 * 24;
-						scbw::add_unit_overlay(data.target, ImageId::LegionnaireTeleportEffect);
+						bw::add_unit_overlay(data.target, ImageId::LegionnaireTeleportEffect);
 						helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
 					}
 				} break;
@@ -545,13 +598,14 @@ namespace hooks
 							if (phantom) {
 								BulletExt* phantom_ext = get_bullet_ext(phantom);
 								phantom_ext->is_phantom = true;
+								phantom_ext->damage_override = data.damage + data.shield_reduce_amount;
 							}
 						} else {
 							u32 inv_direction = 255 - data.direction;
 							// attkshiftproj probably does something specific that avoids the iscript errors. -Pr0nogo
 						//	data.target->sprite->create_overlay(image_id, 0, 0, inv_direction);
 							if (data.attacker) {
-								data.attacker->damage_with(data.weapon_id, -1, data.attacker, data.attacking_player_id, inv_direction, 2);
+								data.attacker->damage_with(data.weapon_id, data.damage, data.attacker, data.attacking_player_id, inv_direction, 2);
 							}
 						}
 					}
@@ -574,7 +628,7 @@ namespace hooks
 				case WeaponId::DurendalAbaddonFlamethrowers:
 				{
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
-					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24;
+					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24 + 1;
 				} break;
 				case WeaponId::CyclopsFlakCannons:
 				{
@@ -583,7 +637,7 @@ namespace hooks
 				} break;
 			}
 
-			if (!scbw::is_under_carapace_swarm(data.target)) {
+			if (!bw::is_under_carapace_swarm(data.target)) {
 				// Astral Rule - Patriarch behavior
 				if (target_ext->timers[TimerPatriarchAstralRule] > 1
 				&&  units_dat::shields_enabled[data.attacker->id]
@@ -595,14 +649,19 @@ namespace hooks
 
 				if (target_ext->timers[TimerTriumphantRiseDebuff])
 				{
-					scbw::astral_blessing_proc(data.target, data.attacking_player_id, WeaponId::HeraldStellarTorch);
+					bw::astral_blessing_proc(data.target, data.attacking_player_id, WeaponId::HeraldStellarTorch);
 				}
 
 				switch (data.weapon_id) {
+					case WeaponId::ZergBlissfulEmbrace:
+					case WeaponId::AkistrokorHarryingTalons:
+					{
+						mark_infesting(data.attacking_player_id, data.target);
+					} break;
 					case WeaponId::SavantDiscoidRailgun:
 					{
 						// Power Siphon
-						if  (scbw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)
+						if  (bw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)
 						&&	unit_is_combatant(data.target))
 						{
 							attacker_ext->values[ValueSavantPowerSiphonBuff]++;
@@ -619,7 +678,7 @@ namespace hooks
 								target_ext->values[ValueSavantPowerSiphonDebuff]++;
 								target_ext->timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
 							}
-							helper::create_thingy(SpriteId::Feedback_Hit_Small + scbw::get_overlay_offset(data.target->id), data.target->position.x, data.target->position.y, data.attacking_player_id);
+							helper::create_thingy(SpriteId::Feedback_Hit_Small + bw::get_overlay_offset(data.target->id), data.target->position.x, data.target->position.y, data.attacking_player_id);
 						}
 					} break;
 					case WeaponId::AutocratEminenceRifle:
@@ -648,7 +707,7 @@ namespace hooks
 							target_ext->values[ValueDeconstruction]++;
 							target_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
 							target_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
-							u32 overlay = ImageId::DeconstructionSmall + scbw::get_overlay_offset(data.target->id);
+							u32 overlay = ImageId::DeconstructionSmall + bw::get_overlay_offset(data.target->id);
 							if (data.target->subunit) {
 								UnitExt* subunit_ext = get_unit_ext(data.target->subunit);
 								subunit_ext->values[ValueDeconstruction]++;
@@ -684,10 +743,10 @@ namespace hooks
 						||    (data.target->status & UnitStatus::InAir && data.target->main_order_id != OrderId::Liftoff && data.target->main_order_id != OrderId::BuildingLand))
 						&& !(data.target->status & UnitStatus::Burrowed))
 						{
-							const u32 dist = scbw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
+							const u32 dist = bw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 							const u32 displacement_time = 5;
-							Vector32 diff = scbw::get_vector_between(data.target->sprite->position, data.attacker->sprite->position);
-							Vector32f displacement = scbw::get_normalized_vector(diff);
+							Vector32 diff = bw::get_vector_between(data.target->sprite->position, data.attacker->sprite->position);
+							Vector32f displacement = bw::get_normalized_vector(diff);
 							displacement.x *= 2 * 32.0 / displacement_time;
 							displacement.y *= 2 * 32.0 / displacement_time;
 							target_ext->timers[TimerMagnetarAttraction] = displacement_time;
@@ -696,7 +755,7 @@ namespace hooks
 					} break;
 					case WeaponId::HeraldStellarTorch:
 					{
-						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
+						if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
 							// TODO: Audiovisuals
 							target_ext->timers[TimerTriumphantRiseDebuff] = 36;
 						}
@@ -704,7 +763,8 @@ namespace hooks
 					case WeaponId::DemiurgeGalacticWeaver:
 					{
 						// Demiurge - Worship
-						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
+						if (is_hostile_or_neutral(data.attacking_player_id, data.target->player)) {
+							target_ext->values[ValueDemiurgePlayer] = data.attacking_player_id;
 							if (target_ext->timers[TimerDemiurgeWorship] == 0) {
 								target_ext->timers[TimerDemiurgeWorship] = 10 * 24 + 1;
 							}
@@ -714,7 +774,6 @@ namespace hooks
 							else if (target_ext->timers[TimerDemiurgeWorship] < 24) {
 								target_ext->timers[TimerDemiurgeWorship] = 2;
 							}
-							target_ext->units[UnitDemiurge] = data.attacker;
 						}
 					} break;
 					case WeaponId::EmpressFadingBioplasma:
@@ -736,7 +795,7 @@ namespace hooks
 						// TODO: Unit search
 						if (target_ext->values[ValueCorrosiveTouchStacks]) {
 							s32 range = 160;
-							scbw::UnitFinder(
+							bw::UnitFinder(
 								data.target->get_x() - 96,
 								data.target->get_y() - 96,
 								data.target->get_x() + 96,
@@ -748,7 +807,7 @@ namespace hooks
 								if (target->status & UnitStatus::Invincible) {
 									return;
 								}
-								if (scbw::is_allied_to(data.attacker->player, target->player)) {
+								if (bw::is_allied_to(data.attacker->player, target->player)) {
 									return;
 								}
 								helper::apply_spores(target);
@@ -762,43 +821,48 @@ namespace hooks
 					} break;
 					case WeaponId::ZoryusthalethMonstrousMaw: {
 						// Zoryusthaleth - Swarming Omen
-						if (!scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
-							target_ext->values[ValueSwarmingOmenPlayer] = data.attacking_player_id + 1;
+						if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+							target_ext->timers[TimerSwarmingOmenDebuff] = 24 + 1;
 						}
 					} break;
 					case WeaponId::KonviliskSowingSpines: {
 						// Fertile Spines - incubate
-						incubate(data.target, 1, UnitId::ZergRilirokor, data.attacking_player_id);
+						if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
+							incubate(data.target, 1, UnitId::ZergRilirokor, data.attacking_player_id);
+						}
 					} break;
 					case WeaponId::TetcaerokorCleavingMaw: {
 						// Virile Coating - incubate
-						incubate(data.target, 1, UnitId::ZergRililisk, data.attacking_player_id);
+						if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
+							incubate(data.target, 1, UnitId::ZergRililisk, data.attacking_player_id);
+						}
 					} break;
 					case WeaponId::HierophantPhaseSignifier:
 					{
 						target_ext->values[ValueSignifyStacks]++;
 						target_ext->timers[TimerSignify] = 3 * 24 + 1;
 						target_ext->values[ValueSignifyPlayer] = data.attacking_player_id;
-						scbw::update_signify_status(data.target, target_ext);
+						bw::update_signify_status(data.target, target_ext);
 					} break;
 					case WeaponId::EcclesiastAstralBlaster:
+					case WeaponId::MatrixKhaydarinRay:
 					{
 						// Astral Blessing - Ecclesiast behavior
-						if (data.attacking_player_id != data.target->player && !scbw::is_allied_to(data.attacking_player_id, data.target->player)) {
-							scbw::astral_blessing_proc(data.target, data.attacking_player_id, data.weapon_id);
+						if (data.attacking_player_id != data.target->player && !bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+							bw::astral_blessing_proc(data.target, data.attacking_player_id, data.weapon_id);
 						}
 					} break;
 					case WeaponId::CharlatanFerventBlaster:
 					{
 						// Charlatan - Leading the Blind passive
-						if (!scbw::is_allied_to(data.attacker->player, data.target->player)) {
-							scbw::apply_hallucinating(data.target, data.attacker->player, 25);
+						if (!bw::is_allied_to(data.attacker->player, data.target->player)) {
+							bw::apply_hallucinating(data.target, data.attacker->player, 25);
 						}
 					} break;
 					case WeaponId::PatriarchIronhandWeaver:
 					{
 						if (data.attacking_player_id != data.target->player
-						&& !scbw::is_allied_to(data.attacking_player_id, data.target->player)
+						&& !bw::is_allied_to(data.attacking_player_id, data.target->player)
 						&&  target_ext->timers[TimerPatriarchAstralRule] == 0)
 						{
 							target_ext->values[ValuePatriarchAstralRulePlayer] = data.attacking_player_id;
@@ -808,10 +872,10 @@ namespace hooks
 					case WeaponId::MagisterNeutronCannon:
 					{
 						// Stellar Enforcement - Magister behavior
-						if (!scbw::is_allied_to(data.attacker->player, data.target->player) && !target_ext->values[TimerStellarEnforcement]) {
+						if (!bw::is_allied_to(data.attacker->player, data.target->player) && !target_ext->timers[TimerStellarEnforcement]) {
 							target_ext->timers[TimerStellarEnforcement] = 3 * 24 + 1;
 							target_ext->timers[TimerStellarEnforcementOverlay] = 30;
-							scbw::add_unit_overlay(data.target, ImageId::StellarEnforcementDebuffSmall + scbw::get_overlay_offset(data.target->id, true));  // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
+							bw::add_unit_overlay(data.target, ImageId::StellarEnforcementDebuffSmall + bw::get_overlay_offset(data.target->id, true));  // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
 						}
 					} break;
 				}
@@ -838,6 +902,7 @@ namespace hooks
 				u32 percentage = attacker_ext->values[ValueMortothrokorStacks] * 0.05;
 				data.attacker->heal_hp(damage_dealt * percentage, data.attacker);
 			} break;
+			case WeaponId::AdherentPhaseBlade:
 			case WeaponId::AmaranthPsiCleaver:
 			{
 				// Eternal Service - Amaranth behavior
@@ -848,83 +913,28 @@ namespace hooks
 
 	static bool weapon_damage_fatal(const WeaponDamageData& data) {
 		bool fatal_deal_damage = true;
-
 		UnitExt* target_ext = get_unit_ext(data.target);
+
+		// Note that the order here matters a lot
+		//
+		// 1. Plague
+		// 2. Unit Specific Behaviors
+		// 3. Infestation
+		// 4. Regression
+		// 5. Zombification
+		//
+		// We exit early to not trigger multiple different fatal damage handling at once
+
 		switch (data.weapon_id) {
 			case WeaponId::Plague: {
 				// Plague - Don't kill
 				fatal_deal_damage = false;
 				data.target->set_hitpoints(256);
+				return fatal_deal_damage;
 			} break;
-		}
-
-		// Empress - Anodyne Annex - zombify target
-		if (target_ext->values[ValueEmpressAnodyneAnnexStacks] && !target_ext->values[ValueIsZombified]) {
-			fatal_deal_damage = false;
-			scbw::empress_zombify(target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer], target_ext->units[UnitEmpressAnodyneAnnexSource], data.target, target_ext->values[ValueEmpressAnodyneAnnexStacks]);
-		}
-
-		if (target_ext->values[ValueBlissfulEmbraceOriginalPlayer]) {
-			// Update creep
-			scbw::update_custom_creep_disappearance(data.target);
-
-			// Remove creep from beneath
-			//if (!helper::spreads_creep(data.target->id, true)) {
-			//	scbw::clear_creep(scbw::unit_area(data.target));
-			//}
-
-			// Remove connected larva
-			u16 larva_id = UnitId::ZergLarva;
-			if (data.target->id == UnitId::ZergCaphrolosk || data.target->id == UnitId::ZergOcsalCesiant)
-			{
-				larva_id = UnitId::ZergOcsalLarva;
-			}
-
-			EntryArray larvae = {};
-			unit_search_radial(&larvae, data.target->position, 4 * 32);
-			unit_search_filter(&larvae, data.target, 0, {larva_id});
-			for (u32 i = 0; i < larvae.count; ++i) {
-				Unit* larva = larvae.units[i];
-				if (larva->connected_unit == data.target) {
-					larva->connected_unit = 0;
-				}
-			}
-
-			scbw::unload_or_kill_loaded_units(data.target);
-
-			// Recede control
-			data.target->give_to(target_ext->values[ValueBlissfulEmbraceOriginalPlayer] - 1);
-			target_ext->values[ValueBlissfulEmbraceOriginalPlayer] = 0;
-
-			fatal_deal_damage = false;
-			data.target->set_hitpoints(target_ext->values[ValueBlissfulEmbraceOriginalHealth]);
-
-			// Make this a sprite
-			u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-			if (units_dat::base_property[data.target->id] & UnitProperty::LargeOverlay) {
-				effect_image_id = ImageId::ZergBuildingExplosion;
-			} else if (units_dat::base_property[data.target->id] & UnitProperty::MediumOverlay) {
-				effect_image_id = ImageId::ZergAirDeathExplosion_Large;
-			}
-			data.target->sprite->create_overlay(effect_image_id);
-			helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, data.target, true, 0);
-
-			// Create busy overlays for buildings only
-			u32 infested_image_id = ImageId::InfestedOverlay_Large;
-			if (unit_id_is_smaller_building(data.target->id)) {
-				infested_image_id = ImageId::InfestedOverlay_Small;
-			}
-			scbw::remove_unit_overlay(data.target, infested_image_id);
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
-			case UnitId::ZergVilgorokor: {
-				// Vilgorokor - On Death behaviorw
-				scbw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
-				scbw::transform_unit(data.target, UnitId::ZergVilgoleth);
-				data.target->set_hitpoints(data.target->get_max_hp_raw());
-				fatal_deal_damage = false;
-			} break;
 			case UnitId::TerranCuirassTankMode:
 			{
 				// Cuirass - Stonewall Protocol
@@ -933,6 +943,8 @@ namespace hooks
 					data.target->hitpoints = CuirassSelfReviveHP;
 					fatal_deal_damage = false;
 					data.target->order_computer(OrderId::Stop);
+					++unmovable_hits[15];
+					unmovable_lastframe[15] = *g_elapsed_time_frames;
 					data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 					helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
 				}
@@ -945,15 +957,21 @@ namespace hooks
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
 
+				if (bw::get_game_kind() == GameKind_Massacre && unit_id_should_give_gas_in_massacre_mode(data.target->id)) {
+					bw::add_massacre_resource(data.target->player);
+				}
+
 				u32 sound = helper::get_random_sfx_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
-				helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99);
-				helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
+				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99)
+				&& !*g_is_in_replay && data.target->player == *g_local_nation_id) {
+					helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
+				}
 				fatal_deal_damage = false;
 			} break;
 			case UnitId::ProtossArchon:
 			{
 				// Archon - Astral Aegis
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					data.target->get_x() - 96,
 					data.target->get_y() - 96,
 					data.target->get_x() + 96,
@@ -971,7 +989,7 @@ namespace hooks
 				// Last Orders - Aurora behavior
 				if (target_ext->values[ValueLastOrdersInit] == 0) {
 					target_ext->values[ValueLastOrdersInit] = 1;
-					Unit* nearest = scbw::UnitFinder(
+					Unit* nearest = bw::UnitFinder(
 						data.target->get_x() - 9 * 32,
 						data.target->get_y() - 9 * 32,
 						data.target->get_x() + 9 * 32,
@@ -981,7 +999,7 @@ namespace hooks
 						if (unit->player == data.target->player) {
 							return false;
 						}
-						if (scbw::is_allied_to(data.target->player, unit->player)) {
+						if (bw::is_allied_to(data.target->player, unit->player)) {
 							return false;
 						}
 						if (unit->status & UnitStatus::Invincible) {
@@ -993,7 +1011,7 @@ namespace hooks
 						if (!unit->is_visible_to(data.target->player)) {
 							return false;
 						}
-						if (scbw::get_distance_fast(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 9 * 32) {
+						if (bw::get_distance_fast(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 9 * 32) {
 							return false;
 						}
 						return true;
@@ -1017,47 +1035,58 @@ namespace hooks
 				target_ext->timers[TimerAxitriliskPerpetualWind] = 8 * 24 + 1;
 				fatal_deal_damage = false;
 			} break;
+			case UnitId::ZergVilgorokor: {
+				// Vilgorokor - On Death behavior
+				bw::create_unit_from_ability(UnitId::ZergVilgoleth, 1, data.target->player, data.target->position);
+				bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
+			//	bw::transform_unit(data.target, UnitId::ZergVilgoleth);
+			} break;
 		}
 
-		if (data.attacker) {
-			UnitExt* attacker_ext = get_unit_ext(data.attacker);
-			switch (data.weapon_id) {
-				// Alkajelisk Parasitic Spores were here
-			}
-
-			// Mind Control - energy restore
-			if (attacker_ext->units[UnitMindController]) {
-				Unit* mind_controller = attacker_ext->units[UnitMindController];
-				mind_controller->add_unit_energy(MindControlEnergyGain);
-				mind_controller->sprite->create_underlay(ImageId::SmallExplosion_Unused);
-			}
-		}
-
-		// Fix burrowed regression / transforms. -DF
-		if (data.target->status & UnitStatus::Burrowed)
-		{
-			data.target->main_order_id = OrderId::Unburrow;
-		}
-
-		u32 regression_id = scbw::get_zerg_regression(data.target);
-		if (data.damage > 0 && regression_id != UnitId::None) {
-			if (data.target->id != UnitId::ZergExcisant) {
+		if (fatal_deal_damage) {
+			// Matraleth, Akistokor - Blissful Embrace - infest target
+			if (target_ext->timers[TimerInfesting] && !target_ext->values[ValueInfested]) {
 				fatal_deal_damage = false;
+				blissful_embrace(data.target, target_ext->values[ValueInfestingPlayer]);
+				data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);
+				return fatal_deal_damage;
 			}
-			if (data.target->id == UnitId::ZergNydusCesiant) {
-				Unit* nydus_exit = data.target->building.nydus_exit;
-				if (nydus_exit) {
-					data.target->building.nydus_exit = 0;
-					nydus_exit->building.nydus_exit = 0;
 
-					if (!target_ext->values[ValueIsNydusExit] == 1) {
-						nydus_exit->remove();
+			// Zerg Regression
+			u32 regression_id = bw::get_zerg_regression(data.target);
+			if (data.damage > 0 && regression_id != UnitId::None) {
+				if (data.target->id != UnitId::ZergExcisant) {
+					fatal_deal_damage = false;
+				}
+				if (data.target->id == UnitId::ZergNydusCesiant) {
+					Unit* nydus_exit = data.target->building.nydus_exit;
+					if (nydus_exit) {
+						data.target->building.nydus_exit = 0;
+						nydus_exit->building.nydus_exit = 0;
+
+						if (!target_ext->values[ValueIsNydusExit] == 1) {
+							nydus_exit->remove();
+						}
 					}
 				}
+				bw::regress(data.target, regression_id);
+				if (data.target) {
+					unit_on_death_behaviors(data.target);
+				}
+
+				// Fix burrowed regression / transforms. -DF
+				if (data.target->status & UnitStatus::Burrowed) {
+					data.target->main_order_id = OrderId::Unburrow;
+				}
+
+				return fatal_deal_damage;
 			}
-			scbw::regress(data.target, regression_id);
-			if (data.target) {
-				unit_on_death_behaviors(data.target);
+			
+			// Empress - Anodyne Annex - zombify target
+			if (target_ext->values[ValueEmpressAnodyneAnnexStacks] && !target_ext->values[ValueIsZombified]) {
+				fatal_deal_damage = false;
+				empress_zombify(target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer], target_ext->units[UnitEmpressAnodyneAnnexSource], data.target, target_ext->values[ValueEmpressAnodyneAnnexStacks]);
+				return fatal_deal_damage;
 			}
 		}
 
@@ -1067,7 +1096,7 @@ namespace hooks
 	void apply_ensnare(Unit* unit) { // 004F45E0
 		// Overlay
 		if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
-			scbw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + scbw::get_overlay_offset(unit->id));
+			bw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + bw::get_overlay_offset(unit->id));
 		}
 
 		// Effect
@@ -1088,7 +1117,7 @@ namespace hooks
 		if (stacks > 50) {
 			overlay_multiplier++;
 		}
-		return overlay_multiplier + 4 * scbw::get_overlay_offset(target->id) + ImageId::AcidSpores_1_Overlay_Small;
+		return overlay_multiplier + 4 * bw::get_overlay_offset(target->id) + ImageId::AcidSpores_1_Overlay_Small;
 	}
 
 	// Hooked to change Corrosive Spores timer - Pr0nogo
@@ -1135,9 +1164,9 @@ namespace hooks
 				helper::ai_unit_was_hit(victim, attacker, 1, 0);
 				if (reveal && attacker->sprite) {
 					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
-						scbw::reveal_attacker(attacker, victim);
+						bw::reveal_attacker(attacker, victim);
 						if (attacker->id == UnitId::ProtossSteward && attacker->hangar_unit.parent) {
-							scbw::reveal_attacker(attacker->hangar_unit.parent, victim);
+							bw::reveal_attacker(attacker->hangar_unit.parent, victim);
 						}
 					}
 				}
@@ -1184,7 +1213,7 @@ namespace hooks
 	// Hooked to stop damage from forcing units to unburrow. -Pr0nogo
 	void react_to_hit(Unit* attacker, Unit* victim) { // 004776C0
 		if (!unit_id_is_larva(victim->id)) {
-			if (!(victim->status & UnitStatus::Burrowed) || victim->irradiate_timer || victim->id == UnitId::ZergLakizilisk) {
+			if (!(victim->status & UnitStatus::Burrowed) || victim->irradiate_timer || unit_id_is_burrowed_attacker(victim->id)) {
 				if  (units_dat::base_property[victim->id] & UnitProperty::Building || helper::unit_can_attack_target(attacker, victim, 1)
 				&& !(units_dat::base_property[victim->id] & UnitProperty::Worker)) {
 					victim->auto_target_unit = attacker;
@@ -1193,13 +1222,13 @@ namespace hooks
 						subunit->last_attacking_player = victim->last_attacking_player;
 						subunit->auto_target_unit = attacker;
 					}
-				} else if (victim->id != UnitId::ZergLakizilisk || !(victim->status & UnitStatus::Burrowed) || victim->unit_ai && !victim->irradiate_timer) {
+				} else if (!unit_id_is_burrowed_attacker(victim->id) || !(victim->status & UnitStatus::Burrowed) || victim->unit_ai && !victim->irradiate_timer) {
 					if (units_dat::base_property[victim->id] & UnitProperty::Subunit) {
 						victim = victim->subunit;
 					}
 
 					UnitExt* victim_ext = get_unit_ext(victim);
-					if (scbw::unit_can_flee(victim))
+					if (bw::unit_can_flee(victim))
 					{
 						Target flee_target = helper::ai_prepare_to_flee(victim, attacker);
 						helper::order_interrupt(victim, 0, flee_target.pt.x, flee_target.pt.y, OrderId::Move);

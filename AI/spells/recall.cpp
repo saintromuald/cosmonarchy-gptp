@@ -11,10 +11,10 @@ namespace AI
 			return nullptr;
 		}
 
-		return scbw::UnitFinder::get_nearest_target(caster,
+		return bw::UnitFinder::get_nearest_target(caster,
 			[&](Unit* target)
 		{
-			if (target->player != caster->player && !scbw::is_allied_to(target->player, caster->player))
+			if (target->player != caster->player && !bw::is_allied_to(target->player, caster->player))
 			{
 				return false;
 			}

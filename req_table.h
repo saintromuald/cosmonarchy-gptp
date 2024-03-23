@@ -1,5 +1,5 @@
 #pragma once
-#include "SCBW\api.h"
+#include "BW\api.h"
 
 enum RequireUnitFlags {
 	RequireUnitFlags_Connected		= (1 << 1),

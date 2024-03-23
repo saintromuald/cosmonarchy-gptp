@@ -1,7 +1,7 @@
 #include "target_related.h"
-#include <SCBW/api.h>
-#include <SCBW/structures.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
 #include <hooks/unit_stats/weapon_range.h>
 #include <globals.h>
 #include "byte_operations_utils.h"
@@ -27,7 +27,7 @@ namespace hooks
 		if (target->status & UnitStatus::InAir)
 		{
 			weapon_id = units_dat::air_weapon[final_unit->id];
-		} else if (final_unit->id != UnitId::ZergLakizilisk || final_unit->status & UnitStatus::Burrowed)
+		} else if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed)
 		{
 			weapon_id = units_dat::ground_weapon[final_unit->id];
 		}
@@ -43,15 +43,13 @@ namespace hooks
 
 	s32 is_ready_to_attack(Unit* unit, u8 weapon_id) // 00476640
 	{
-		if (unit->movement_flags & MovementFlags_StartingAttack)
-		{
+		if (unit->movement_flags & MovementFlags_StartingAttack) {
 			return 0;
 		}
 
 		u32 distance = 0;
 		Unit* target = unit->order_target.unit;
-		if (target && !target->is_dead())
-		{
+		if (target && target->sprite) { // sprite is new
 			distance = helper::get_distance_to_unit(unit, target);
 		} else {
 			distance = helper::distance_from_box_corner(unit, unit->order_target.pt.x, unit->order_target.pt.y);
@@ -103,7 +101,7 @@ namespace hooks
 			weapon_id = units_dat::air_weapon[final_attacker->id];
 		} else {
 			u32 attacker_id = final_attacker->id;
-			if (attacker_id != UnitId::ZergLakizilisk || final_attacker->status & UnitStatus::Burrowed)
+			if (!unit_id_is_burrowed_attacker(attacker_id) || final_attacker->status & UnitStatus::Burrowed)
 			{
 				weapon_id = units_dat::ground_weapon[attacker_id];
 			} else {
@@ -207,7 +205,7 @@ namespace hooks
 
 	// Hooked to help with cloak rewrite - Pr0nogo
 	void check_unit_visibility(Unit* unit) { // 00443390
-		if (unit->is_dead() || !unit->sprite) {
+		if (!unit->sprite) {
 			return;
 		}
 		u32 detecting_players = helper::get_detecting_players(unit);
@@ -361,7 +359,7 @@ namespace hooks
 		bool air_unit = target->status & UnitStatus::InAir;
 		u32 weapon = air_unit ? final_attacker->get_air_weapon() : final_attacker->get_ground_weapon();
 		if (air_unit && unit_id_has_custom_air_weapon(attacker->id)) {
-			weapon = scbw::get_custom_secondary_weapon_from_unit_id(attacker->id);
+			weapon = bw::get_custom_secondary_weapon_from_unit_id(attacker->id);
 		}
 
 		// For stationary attackers
@@ -440,7 +438,7 @@ namespace hooks
 									air_weapon = units_dat::air_weapon[subunit->id];
 								} else {
 									u16 subunit_id = subunit->id;
-									if (subunit_id != UnitId::ZergLakizilisk || subunit->status & 0x10)
+									if (!unit_id_is_burrowed_attacker(subunit_id) || subunit->status & UnitStatus::Burrowed)
 									{
 										air_weapon = units_dat::ground_weapon[subunit_id];
 									} else {
@@ -550,7 +548,7 @@ namespace hooks
 		if (compare_unit != auto_target)
 		{
 			u32 compare_player = compare_unit->player == 11 ? compare_unit->sprite->player : compare_unit->player;
-			if (!scbw::is_allied_to(self->player, compare_player))
+			if (!bw::is_allied_to(self->player, compare_player))
 			{
 				if (!auto_target
 				||  !helper::unit_can_attack_target(auto_target, self, 1)
@@ -569,19 +567,15 @@ namespace hooks
 	// TODO: Figure out how to properly access g_client_selection_group in this context
 	void do_targeted_order(void* unused, u32 sound_offset, u32 pos_x, u32 pos_y, Unit* target, u32 fow_unit_id) // 0046F5B0
 	{
-		if (!*g_is_targeting)
-		{
+		if (!*g_is_targeting) {
 			return;
 		}
 		s32 error = 0xFFFF;
 		helper::cancel_target_order();
 		u8 order_id = *g_order_id_obstructed;
-		if (target)
-		{
+		if (target) {
 			order_id = *g_order_id_unit;
-		}
-		else if (fow_unit_id == UnitId::None)
-		{
+		} else if (fow_unit_id == UnitId::None) {
 			order_id = *g_order_id_ground;
 		}
 
@@ -589,67 +583,52 @@ namespace hooks
 		u8 weapon_id = orders_dat::order_weapon_id[order_id];
 		u8 tech_id = orders_dat::tech_used[order_id];
 		u32 energy_cost = 0;
-		if (tech_id != TechId::None)
-		{
+		if (tech_id != TechId::None) {
 			energy_cost = techdata_dat::energy_cost[tech_id] << 8;
 		}
-		if (orders_dat::obscured_order[order_id] == OrderId::None)
-		{
+		if (orders_dat::obscured_order[order_id] == OrderId::None) {
 			fow_unit_id = UnitId::None;
 		}
 
 		u8 can_attack_final = 0;
 		u8 not_enough_energy = 0;
 		u8 can_target_spell = 0;
-		Unit** selected_units = &g_client_selection_group->unit[11];
-		Unit** selected_units_2 = &g_client_selection_group->unit[11];
+		Unit** selected_units = g_client_selection_group->unit;
+		Unit** selected_units_2 = g_client_selection_group->unit;
 		while (1) {
-			Unit* unit = *selected_units; // Accessed incorrectly, unit = 0x100
-			if (*selected_units)
-			{
-				if (!unit->is_frozen())
-				{
-					if (!use_weapon)
-					{
-						if (tech_id == TechId::None)
-						{
-							if (fow_unit_id == UnitId::None)
-							{
+			Unit* unit = selected_units[0];
+			if (unit) {
+				if (!unit->is_frozen()) {
+					if (!use_weapon) {
+						if (tech_id == TechId::None) {
+							if (fow_unit_id == UnitId::None) {
 								helper::is_order_valid(order_id, unit, target, target, &error);
 							} else {
 								helper::can_target_order_on_fow_unit(unit, order_id, fow_unit_id, &error);
 							}
 						} else {
-							if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error))
-							{
-								if (!unit->has_energy(energy_cost))
-								{
+							if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error)) {
+								if (!unit->has_energy(energy_cost)) {
 									not_enough_energy = 1;
 								}
-								can_target_spell = 1;
+								can_target_spell = 1;	
 							}
 						}
 						goto iterate_selection;
 					}
-					if (weapon_id == WeaponId::None)
-					{
-						if (!target)
-						{
-							if (helper::unit_can_attack_ground_type(fow_unit_id, unit))
-							{
+					if (weapon_id == WeaponId::None) {
+						if (!target) {
+							if (helper::unit_can_attack_ground_type(fow_unit_id, unit)) {
 								can_attack_final = 1;
 							}
 							goto iterate_selection;
 						}
-						if (helper::get_right_click_action_order(unit) == 3)
-						{
-							if (is_unit_target_out_of_max_range(unit, target))
-							{
+						if (helper::get_right_click_action_order(unit) == 3) {
+							if (is_unit_target_out_of_max_range(unit, target)) {
 								error = 888;
 								goto iterate_selection;
 							}
-							if (helper::target_is_inside_minimum_range(unit, target))
-							{
+							if (helper::target_is_inside_minimum_range(unit, target)) {
 								error = 889;
 								goto iterate_selection;
 							}
@@ -657,10 +636,8 @@ namespace hooks
 						can_attack_final = unit_can_attack_target(target, unit, 1);
 						goto iterate_selection;
 					}
-					if (helper::can_weapon_target_unit(weapon_id, target, unit) || fow_unit_id < UnitId::None && ~(units_dat::base_property[fow_unit_id] >> 29) & 1)
-					{
-						if (!unit->has_energy(energy_cost))
-						{
+					if (helper::can_weapon_target_unit(weapon_id, target, unit) || fow_unit_id < UnitId::None && ~(units_dat::base_property[fow_unit_id] >> 29) & 1) {
+						if (!unit->has_energy(energy_cost)) {
 							not_enough_energy = 1;
 						}
 						can_attack_final = 1;
@@ -675,42 +652,33 @@ namespace hooks
 			}
 		}
 
-		u32 error_type_2 = error;
+		s32 error_type_2 = error;
 		Unit* active_unit = *g_active_portrait_unit;
 		u8 race = active_unit->get_race();
-		if (use_weapon)
-		{
-			if (!can_attack_final || error != -1)
-			{
+		if (use_weapon) {
+			if (!can_attack_final || error != 0xFFFF) {
 				helper::get_targeting_error_string(weapon_id, &error, target);
 				helper::display_error_message_id_with_sfx(active_unit->player, error, race + 138);
-				if (weapon_id == WeaponId::None)
-				{
+				if (weapon_id == WeaponId::None) {
 					helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
 				}
 				return;
 			}
 		check_energy:
-			if (energy_cost && !not_enough_energy)
-			{
+			if (energy_cost && not_enough_energy) {
 				helper::display_error_message_id_with_sfx(active_unit->player, race + 864, race + 156);
 				return;
 			}
 		} else {
-			if (energy_cost)
-			{
-				if (!can_target_spell)
-				{
-					if (error == -1)
-					{
+			if (energy_cost) {
+				if (!can_target_spell) {
+					if (error == 0xFFFF) {
 						error = 876;
 					}
 					u16 error_type_1 = error - 1;
 					const char* error_string_2 = 0;
-					if (error)
-					{
-						if (error_type_1 < g_stat_txt_buffer->get_string_count())
-						{
+					if (error) {
+						if (error_type_1 < g_stat_txt_buffer->get_string_count()) {
 							error_string_2 = (char*)g_stat_txt_buffer->get_string(error_type_1 + 1);
 						} else {
 							error_string_2 = "";
@@ -725,8 +693,7 @@ namespace hooks
 			error_type_2 = error;
 		}
 
-		if (error_type_2 == -1)
-		{
+		if (error_type_2 == 0xFFFF) {
 			UnitExt* unit_ext = get_unit_ext(active_unit);
 			unit_ext->values[ValueUnitResponseOrder] = order_id;
 			hooks::play_yes_unit_response_internal(active_unit, UnitResponseContext::URC_OrderId);
@@ -734,10 +701,8 @@ namespace hooks
 		} else {
 			u8 active_player = active_unit->player;
 			u16 error_string_id = error_type_2 - 1;
-			if (error_type_2)
-			{
-				if (error_string_id < g_stat_txt_buffer->get_string_count())
-				{
+			if (error_type_2) {
+				if (error_string_id < g_stat_txt_buffer->get_string_count()) {
 					helper::get_stat_txt_string(active_unit, active_player, (char*)g_stat_txt_buffer->get_string(error_string_id + 1));
 				} else {
 					helper::get_stat_txt_string(active_unit, active_player, "");
@@ -1026,19 +991,18 @@ namespace hooks
 	u32 is_target_visible(Unit* target, Unit* unit) // 004E5E30
 	{
 		s32 player_flag = 1 << unit->player;
-		if (!target || target->is_dead()) // Latter is new
+		if (!target || !target->sprite) // sprite is new
 		{
-			ActiveTile* tile = scbw::get_active_tile_at_coords(unit->order_target.pt);
+			ActiveTile* tile = bw::get_active_tile_at_coords(unit->order_target.pt);
 			return player_flag & ~(tile->vision_flags & 0xFF);
 		}
 
-		u32 result;
+		if (player_id_is_extended(unit->player)) {
+			return true;
+		}
 		if (!(target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) || player_flag & target->detection_status)
 		{
-			result = (u8)(player_flag & target->sprite->visibility_status);
-		} else {
-			result = 0;
+			return (u8)(player_flag & target->sprite->visibility_status);
 		}
-		return result;
 	}
 }

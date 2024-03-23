@@ -1,5 +1,5 @@
 #include "game_hooks.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <hook_tools.h>
 #include <logger.h>
 #include <config.h>
@@ -18,7 +18,7 @@ bool isGameOn = false;
 		__asm PUSHAD;
 		{
 			isGameOn = true;
-			hooks::game_on();
+			hooks::game_init();
 			GPTP::logger.start_game();
 		}
 		__asm {
@@ -58,7 +58,7 @@ bool isGameOn = false;
 		{
 			hooks::next_frame();
 		}
-		if (scbw::is_game_paused())
+		if (bw::is_game_paused())
 		{
 			__asm {
 				POPAD
@@ -184,7 +184,7 @@ bool isGameOn = false;
 		}
 	}
 
-	static char* get_replay_path(char* name) {
+	static char* get_replay_path(const char* name) {
 		char module[MAX_PATH] = {};
 		if (GetModuleFileNameA(0, module, MAX_PATH) ) {
 			char* c = strrchr(module, '\\');
@@ -237,7 +237,7 @@ bool isGameOn = false;
 			if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
 				continue;
 			}
-			if (globals.players[i].is_witness) {
+			if (globals->players[i].is_witness) {
 				continue;
 			}
 			if (first) {

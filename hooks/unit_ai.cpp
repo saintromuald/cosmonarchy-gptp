@@ -1,7 +1,7 @@
 #include "unit_ai.h"
-#include <SCBW/api.h>
-#include <SCBW/structures.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
 #include "logger.h"
 #include "globals.h"
 #include "ai_layouts.h"
@@ -31,8 +31,8 @@ namespace hooks {
 			// So we shouldn't be initializing military AI twice, since it leads to disaster
 			if (unit->status & UnitStatus::IsHallucination) {
 				// Here we readd the hallucination code
-				helper::add_military_ai(scbw::get_ai_region(unit->player, scbw::get_region_id(unit->position)), unit, true);
-			} else if (!scbw::is_conventional_unit_morph_result(unit->id)) {
+				helper::add_military_ai(bw::get_ai_region(unit->player, bw::get_region_id(unit->position)), unit, true);
+			} else if (!bw::is_conventional_unit_morph_result(unit->id)) {
 				// And we add AI only if it's not a morph result, in which case it should already have AI
 				helper::ai_training_normal(unit, parent);
 			}
@@ -42,7 +42,7 @@ namespace hooks {
 	// Hooked to add ai_region null check - Pr0nogo
 	void ai_training_simple_military(Unit* unit, Unit* parent) { // 0043E280
 		if (units_dat::base_property[unit->id] & (UnitProperty::Worker | UnitProperty::Building)) {
-			scbw::printf("SimpleMilitary on worker or building! ID: %u", (u32)unit->id);
+			bw::printf("SimpleMilitary on worker or building! ID: %u", (u32)unit->id);
 		}
 
 		Point16 position = {};
@@ -50,19 +50,19 @@ namespace hooks {
 			position = unit->sprite->position;
 		} else {
 			position = unit->position;
-			scbw::printf("null sprite of Create Broodling detected!");
+			bw::printf("null sprite of Create Broodling detected!");
 		}
 
-		s32 region_id = scbw::get_region_id(position);
+		s32 region_id = bw::get_region_id(position);
 		AiRegion* player_region = g_ai_region_captains[parent->player];
 		if (!player_region) {
-			scbw::printf("null region in AI_TrainingBroodling!");
+			bw::printf("null region in AI_TrainingBroodling!");
 			return;
 		}
 
 		AiRegion* region = &player_region[region_id];
 		if (!region) {
-			scbw::printf("AI Broodling Bug: Null region!");
+			bw::printf("AI Broodling Bug: Null region!");
 			return;
 		}
 
@@ -79,7 +79,7 @@ namespace hooks {
 		if (parent_ai && (parent_ai->type == AiType::Worker || parent_ai->type == AiType::Building)) {
 			town = parent_ai->town;
 		} else {
-			town = scbw::get_closest_town(unit->player, unit->position);
+			town = bw::get_closest_town(unit->player, unit->position);
 		}
 
 		if (parent == unit) {
@@ -115,9 +115,9 @@ namespace hooks {
 	// Hooked to investigate crashes and remove Archon hardcode - Pr0nogo
 	void ai_training_normal(Unit* newUnit, Unit* parentUnit) { // 00435DB0
 		s16 unit_id = newUnit->id;
-		if (!scbw::is_conventional_unit_morph_result(unit_id)) {
+		if (!bw::is_conventional_unit_morph_result(unit_id)) {
 			if (newUnit->status & UnitStatus::IsHallucination) {
-				helper::add_military_ai(&g_ai_region_captains[newUnit->player][scbw::get_region_id(newUnit->sprite->position)], newUnit, 1);
+				helper::add_military_ai(&g_ai_region_captains[newUnit->player][bw::get_region_id(newUnit->sprite->position)], newUnit, 1);
 				return;
 			}
 			if (unit_id != UnitId::TerranMorningstar && unit_id != UnitId::ProtossWitness) {
@@ -162,7 +162,7 @@ namespace hooks {
 							return;
 						}
 						parentUnitAi->trainQueueTypes[queueSlot] = 1;
-						region = helper::getAiRegionInfoFromUnitLoc(newUnit);
+						region = helper::get_ai_region_info_from_unit_loc(newUnit);
 						parentUnitAi->trainQueueValues[queueSlot] = (void*)region;
 					}
 					if (parentUnitAi->trainQueueTypes[queueSlot] == 1) {
@@ -178,7 +178,7 @@ namespace hooks {
 	// Hooked because iquare told me to - Pr0nogo
 	void* add_worker_structure_ai(Unit* unit, AiTown* town) { // 00433DD0
 		if (unit->unit_ai) {
-		//	scbw::printf("Attempt to add worker or structure AI to a unit with unit_ai (prevented)");
+		//	bw::printf("Attempt to add worker or structure AI to a unit with unit_ai (prevented)");
 			helper::remove_unit_ai(unit, false);
 		}
 
@@ -188,16 +188,16 @@ namespace hooks {
 				WorkerAi* ai = 0;
 				if (town && town->workers.array) {
 					if (town->workers.array && town->workers.array <= (void*)0x100000) {
-						scbw::printf("Corrupted free worker AI array!");
+						bw::printf("Corrupted free worker AI array!");
 						return result;
 					}
 					if (town->workers.array && town->workers.array->first_free_worker
 						&& town->workers.array->first_free_worker <= (void*)0x100000) {
-						scbw::printf("Corrupted first free worker AI!");
+						bw::printf("Corrupted first free worker AI!");
 						return result;
 					}
 					if (town->workers.first && town->workers.first <= (void*)0x100000) {
-						scbw::printf("Corrupted first active worker AI!");
+						bw::printf("Corrupted first active worker AI!");
 						return result;
 					}
 					ai = town->workers.array->first_free_worker; // This nullcheck was added
@@ -255,16 +255,16 @@ namespace hooks {
 			BuildingAi* ai = 0;
 			if (town) {
 				if (town->buildings.array && town->buildings.array <= (void*)0x100000) {
-					scbw::printf("Corrupted free building AI array!");
+					bw::printf("Corrupted free building AI array!");
 					return result;
 				}
 				if (town->buildings.array && town->buildings.array->first_free_building
 					&& town->buildings.array->first_free_building <= (void*)0x100000) {
-					scbw::printf("Corrupted first free building AI!");
+					bw::printf("Corrupted first free building AI!");
 					return result;
 				}
 				if (town->buildings.first && town->buildings.first <= (void*)0x100000) {
-					scbw::printf("Corrupted first active building AI!");
+					bw::printf("Corrupted first active building AI!");
 					return result;
 				}
 				ai = helper::create_building_ai(&town->buildings); // This nullcheck was added
@@ -296,8 +296,6 @@ namespace hooks {
 				if (!(g_aiscript_controller[town->player].ai_flags.is_use_map_settings)
 				||	  unit->status & UnitStatus::GroundedBuilding
 				&&	  unit->id != UnitId::TerranWatchdog
-				&&	  unit->id != UnitId::TerranAnchor
-			//	&&	  unit->id != UnitId::TerranTencendur
 				&&	  unit->id != UnitId::ZergCagrantCesiant
 				&&	  unit->id != UnitId::ZergSpraithCesiant
 				&&	  unit->id != UnitId::ZergSurkithCesiant
@@ -306,7 +304,8 @@ namespace hooks {
 				&&	  unit->id != UnitId::ZergNydusCesiant
 				&&	  unit->id != UnitId::ZergKazitrithCesiant
 				&&	  unit->id != UnitId::ProtossPylon
-				&&	  unit->id != UnitId::ProtossWarden)
+				&&	  unit->id != UnitId::ProtossWarden
+				&&	 !unit_id_is_garrison(unit->id))
 				{
 					helper::ai_make_guard(town->player, unit);
 				}
@@ -318,14 +317,30 @@ namespace hooks {
 					town_ext->gas_buildings_count = 0;
 				}
 
-				u32 town_hall_id = UnitId::ZergHachirosk;
-				if (g_player_table[unit->player].race == RaceId::Terran) {
-					town_hall_id = UnitId::TerranMinistry;
-				} else if (g_player_table[unit->player].race == RaceId::Protoss) {
-					town_hall_id = UnitId::ProtossNexus;
+				bool is_valid_town_hall = false;
+				switch (g_player_table[unit->player].race)
+				{
+					case RaceId::Terran:
+					{
+						if (unit->id == UnitId::TerranMinistry || unit->id == UnitId::TerranTreasury) {
+							is_valid_town_hall = true;
+						}
+					} break;
+					case RaceId::Protoss:
+					{
+						if (unit->id == UnitId::ProtossNexus) {
+							is_valid_town_hall = true;
+						}
+					} break;
+					case RaceId::Zerg:
+					{
+						if (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk) {
+							is_valid_town_hall = true;
+						}
+					} break;
 				}
 
-				if (unit->id == town_hall_id || helper::unit_is_active_resource_depot(unit)) {
+				if (is_valid_town_hall || helper::unit_is_active_resource_depot(unit)) {
 					if (!town->main_building) {
 						town->main_building = unit;
 					}
@@ -366,37 +381,37 @@ namespace hooks {
 	// Hooked to investigate improperly-initialized unit AI, and to add functionality. -Pr0nogo
 	void ai_add_military_to_region(AiRegion* ai_region, Unit* unit, u32 must_use_region, void* debug_caller_address) { // 0043DA20
 		if (unit->unit_ai) {
-		//	scbw::printf("Attempt to add military AI to a unit with unit_ai (prevented)");
+		//	bw::printf("Attempt to add military AI to a unit with unit_ai (prevented)");
 			helper::remove_unit_ai(unit, false);
 		}
 
 		bool prevent = false;
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
-			scbw::printf("Military AI added to worker (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			bw::printf("Military AI added to worker (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-			scbw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			bw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		} else if (units_dat::computer_ai_internal[unit->id] & 2 && unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon && unit->id != UnitId::ZergOvileth) {
-			scbw::printf("Military AI added to non military unit (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			bw::printf("Military AI added to non military unit (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}
 		if (g_player_table[unit->player].type != PlayerType::Computer) {
-			scbw::printf("Military AI added to non computer (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			bw::printf("Military AI added to non computer (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}
 		if (ai_region->player != unit->player) {
-			scbw::printf("Military AI added to wrong player (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			bw::printf("Military AI added to wrong player (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}
 		if (prevent) {
-			scbw::printf("Prevented military add (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			bw::printf("Prevented military add (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			helper::remove_unit_ai(unit, false);
-			scbw::give_ai_ex(unit);
+			bw::give_ai_ex(unit);
 			return;
 		}
 		if (ai_region->state == RegionState::EnemySighted && !must_use_region) {
-			ai_region = scbw::get_ai_region(unit->player, scbw::get_region_id(unit->sprite->position));
+			ai_region = bw::get_ai_region(unit->player, bw::get_region_id(unit->sprite->position));
 		}
 		MilitaryAi* military_ai = ai_region->military.array->first_free_military;
 		if (military_ai) {
@@ -418,7 +433,7 @@ namespace hooks {
 					++ai_region->ground_unit_count;
 				}
 				unit->unit_ai = (UnitAi*)military_ai;
-				Region* region = scbw::get_region(ai_region->region);
+				Region* region = bw::get_region(ai_region->region);
 				helper::ai_order_to_destination(unit, unit->id == UnitId::TerranCleric ? OrderId::HealMove : OrderId::AttackMoveComputer,
 					region->region_center_x >> 8, region->region_center_y >> 8);
 				char region_state = ai_region->state;
@@ -547,14 +562,14 @@ namespace hooks {
 				}
 			}
 		}
-		helper::ai_remove_medic(unit);
+		helper::ai_remove_cleric(unit);
 		unit->unit_ai = 0;
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
 	void delete_worker_ai(WorkerAi* worker_ai, WorkerAiList* worker_ai_list) { // 00404470
 		if (worker_ai->type != AiType::Worker) {
-			scbw::printf("delete_worker_ai called on a non-worker unit AI! Please check the call stack with debugger attached!");
+			bw::printf("delete_worker_ai called on a non-worker unit AI! Please check the call stack with debugger attached!");
 		}
 
 		if (worker_ai_list->first == worker_ai) {
@@ -580,7 +595,7 @@ namespace hooks {
 	// Hooked to resolve a crash - Pr0nogo
 	void delete_building_ai(BuildingAi* building_ai, BuildingAiList* building_ai_list) { // 00404500
 		if (building_ai->type != AiType::Building) {
-			scbw::printf("delete_building_ai called on a non-building unit AI! Please check the call stack with debugger attached!");
+			bw::printf("delete_building_ai called on a non-building unit AI! Please check the call stack with debugger attached!");
 		}
 
 		if (building_ai_list->first == building_ai) {
@@ -606,7 +621,7 @@ namespace hooks {
 	// Hooked to investigate unit AI issues -Veeq7
 	void delete_military_ai(MilitaryAi* military_ai, AiRegion* ai_region) { // 004371D0
 		if (military_ai->type != AiType::Military) {
-			scbw::printf("delete_military_ai called on a non-military unit AI! Please check the call stack with debugger attached!");
+			bw::printf("delete_military_ai called on a non-military unit AI! Please check the call stack with debugger attached!");
 		}
 
 		if (!(military_ai->unit->status & UnitStatus::InAir)) {
@@ -640,7 +655,7 @@ namespace hooks {
 			}
 
 			for (u32 i = 1; i < (*g_sai_paths)->region_count; ++i) {
-				AiRegion* ai_region = scbw::get_ai_region(player, i);
+				AiRegion* ai_region = bw::get_ai_region(player, i);
 				if (ai_region->air_target == unit) {
 					ai_region->air_target = 0;
 				}
@@ -659,8 +674,8 @@ namespace hooks {
 			if (unit_player == 11 && unit->sprite) {
 				unit_player = unit->sprite->player;
 			}
-			if (!scbw::is_allied_to(unit->player, player)) {
-				AiRegion* ai_region = scbw::get_ai_region(player, scbw::get_region_id(unit->position));
+			if (!bw::is_allied_to(unit->player, player)) {
+				AiRegion* ai_region = bw::get_ai_region(player, bw::get_region_id(unit->position));
 				if (ai_region->ground_strength_needed >= ai_strength_ground[unit->id]) {
 					ai_region->ground_strength_needed -= ai_strength_ground[unit->id];
 				} else {
@@ -683,8 +698,8 @@ namespace hooks {
 		if (ai_region->state == RegionState::PreparingAttack) {
 			helper::remove_from_attack_force(unit->id, unit->player);
 		} else if (was_killed) {
-			if (!scbw::is_attack_region(ai_region)) {
-				if (scbw::get_region_id(unit->position) != ai_region->region && !helper::ai_has_worker_or_building(ai_region->region, ai_region->player)) {
+			if (!bw::is_attack_region(ai_region)) {
+				if (bw::get_region_id(unit->position) != ai_region->region && !helper::ai_has_worker_or_building(ai_region->region, ai_region->player)) {
 					helper::ai_set_region_state(RegionState::EnemySighted, ai_region);
 				}
 			}
@@ -709,8 +724,8 @@ namespace hooks {
 			|| base_property & UnitProperty::Building && unit_id != UnitId::ResourceVespeneGeyser
 			|| unit_id == UnitId::ZergLarva
 			|| unit_id == UnitId::ZergOcsalLarva
-			|| scbw::is_larval_egg(unit)
-			|| scbw::unit_id_is_zerg_supply(unit_id))*/) {
+			|| bw::is_larval_egg(unit)
+			|| bw::unit_id_is_zerg_supply(unit_id))*/) {
 			BuildingAi* building_ai = &current_unit_ai->building_ai;
 			town = building_ai->town;
 			helper::delete_building_ai(building_ai, &town->buildings);
@@ -825,7 +840,7 @@ namespace hooks {
 	// Hooked in case we need it for Lakizilisk tactical AI
 	void ai_order_lurker_burrow(Unit* unit) // 0043C230
 	{
-		if (unit->id == UnitId::ZergLakizilisk && !(unit->status & UnitStatus::Burrowed) && unit->main_order_id != OrderId::Burrow)
+		if (unit_id_is_burrowed_attacker(unit->id) && !(unit->status & UnitStatus::Burrowed) && unit->main_order_id != OrderId::Burrow)
 		{
 			helper::issue_order_targeting_nothing(unit, OrderId::Burrow);
 		}
@@ -859,7 +874,7 @@ namespace hooks {
 				{
 					goto next;
 				}
-				distance = scbw::get_distance_fast(x1, unit->sprite->position.x, y1, unit->sprite->position.y);
+				distance = bw::get_distance_fast(x1, unit->sprite->position.x, y1, unit->sprite->position.y);
 				if ( distance >= min_distance )
 				{
 					goto next;
@@ -980,7 +995,7 @@ namespace hooks {
 	// Hooked to resolve unit AI issues. -Pr0nogo
 	void __stdcall add_guard_ai_to_unit(Unit* unit) { // 00462960
 		if (unit->unit_ai) {
-		//	scbw::printf("Attempt to add guard AI to a unit with unit_ai (prevented)");
+		//	bw::printf("Attempt to add guard AI to a unit with unit_ai (prevented)");
 			helper::remove_unit_ai(unit, false);
 		}
 

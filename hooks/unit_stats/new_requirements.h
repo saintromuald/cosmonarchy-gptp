@@ -1,5 +1,5 @@
 #pragma once
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace hooks
 {

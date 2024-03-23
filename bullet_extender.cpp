@@ -1,6 +1,6 @@
 #include "bullet_extender.h"
 #include "hook_tools.h"
-#include "scbw/structures/Bullet.h"
+#include "BW/structures/Bullet.h"
 
 Bullet new_bullet_table[BulletLimit];
 

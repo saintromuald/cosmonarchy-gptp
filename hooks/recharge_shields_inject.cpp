@@ -3,7 +3,7 @@
 
 namespace
 {
-	void __declspec(naked) unitCanRechargeShieldsWrapper()
+	void __declspec(naked) unit_can_recharge_shields_wrapper() // 00493520
 	{
 		static Unit* target;
 		static Unit* battery;
@@ -13,7 +13,7 @@ namespace
 			MOV target, EAX
 			PUSHAD
 		}
-		result = hooks::unitCanRechargeShieldsHook(target, battery);
+		result = hooks::unit_can_recharge_shields(target, battery);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -21,14 +21,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orderRechargeShieldsWrapper()
+	void __declspec(naked) order_recharge_shields_wrapper() // 00493DD0
 	{
 		static Unit* unit;
 		__asm {
 			MOV unit, EDI
 			PUSHAD
 		}
-		hooks::orderRechargeShieldsHook(unit);
+		hooks::order_recharge_shields(unit);
 		__asm {
 			POPAD
 			RETN
@@ -40,7 +40,7 @@ namespace hooks
 {
 	void inject_recharge_shields_hooks()
 	{
-		jump_patch(unitCanRechargeShieldsWrapper,	0x00493520, 1);
-	//	jump_patch(orderRechargeShieldsWrapper,		0x00493DD0, 1);
+		jump_patch(unit_can_recharge_shields_wrapper,	0x00493520, 1);
+	//	jump_patch(order_recharge_shields_wrapper,		0x00493DD0, 1);
 	}
 }

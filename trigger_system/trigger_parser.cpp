@@ -24,12 +24,12 @@ static bool is_word_char(char c) {
 	return isalnum(c) || c == '.' || c == '_' || c == '*';
 }
 
-static void parser_clear(Parser* parser) {
+static void parser_clear_token(Parser* parser) {
 	memset(&parser->token, 0, sizeof(parser->token));
 }
 
 static bool parser_skip_whitespace(Parser* parser) {
-	parser_clear(parser);
+	parser_clear_token(parser);
 	while (*parser->at && is_any_space(*parser->at)) {
 		if (is_newline(*parser->at)) {
 			return false;
@@ -40,7 +40,7 @@ static bool parser_skip_whitespace(Parser* parser) {
 }
 
 static bool parser_skip_non_word_chars(Parser* parser) {
-	parser_clear(parser);
+	parser_clear_token(parser);
 	while (*parser->at && !is_word_char(*parser->at)) {
 		if (is_newline(*parser->at)) {
 			return false;
@@ -82,12 +82,19 @@ static char parser_get_relative_op(Parser* parser) {
 	return 0;
 }
 
-char* parser_marker(Parser* parser) {
+Parser new_parser(const char* at) {
+	return {
+		.start = at,
+		.at = at,
+	};
+}
+
+const char* parser_marker(Parser* parser) {
 	return parser->at;
 }
 
-void parser_unwind(Parser* parser, char* marker) {
-	parser_clear(parser);
+void parser_unwind(Parser* parser, const char* marker) {
+	parser_clear_token(parser); // TODO: Isn't this a problem? We might be relying on what token was after unwinding? Maybe Marker should be a struct that has marker and token, and token should eventually be a char slice, instead of a small char buffer
 	parser->at = marker;
 }
 
@@ -99,11 +106,7 @@ bool parser_get_char(Parser* parser, char c) {
 	return false;
 }
 
-Token parser_get_word(Parser* parser) {
-	if (!parser_skip_non_word_chars(parser)) {
-		return {};
-	}
-
+static Token parser_eat_word(Parser* parser) {
 	while (is_word_char(*parser->at)) {
 		if (parser->token.size < MaxToken) {
 			parser->token.data[parser->token.size++] = *parser->at;
@@ -114,17 +117,32 @@ Token parser_get_word(Parser* parser) {
 	return parser->token;
 }
 
-bool parser_get_keyword(Parser* parser, char* keyword) {
-	char* marker = parser_marker(parser);
-	parser_get_word(parser);
-	if (parser_eq(parser, keyword)) {
-		return true;
+Token parser_get_word(Parser* parser, bool is_command) {
+	if (!parser_skip_non_word_chars(parser)) {
+		return {};
 	}
-	parser_unwind(parser, marker);
-	return false;
+
+	if (is_command) {
+		parser->command_start_pos = parser->at - parser->start;
+	}
+	return parser_eat_word(parser);
+}
+
+void parser_load_command_pos(Parser* parser, u32 position) {
+	if (position) {
+		parser->should_load_pos = true;
+		parser->at = parser->start + position;
+	}
 }
 
 bool parser_get_command(Parser* parser) {
+	if (parser->should_load_pos) {
+		parser->should_load_pos = false;
+		parser->parsed_first_command = true;
+		return parser_eat_word(parser).size != 0;
+	}
+
+	// Skip to end of line
 	if (!parser->parsed_first_command) {
 		parser->parsed_first_command = true;
 	} else {
@@ -133,11 +151,22 @@ bool parser_get_command(Parser* parser) {
 		}
 	}
 
+	// Skip newlines
 	while (*parser->at && is_newline(*parser->at)) {
 		++parser->at;
 	}
 
-	return parser_get_word(parser).size;
+	return parser_get_word(parser, true).size != 0;
+}
+
+bool parser_get_keyword(Parser* parser, const char* keyword) {
+	const char* marker = parser_marker(parser);
+	parser_get_word(parser);
+	if (parser_eq(parser, keyword)) {
+		return true;
+	}
+	parser_unwind(parser, marker);
+	return false;
 }
 
 Token parser_get_string(Parser* parser) {
@@ -305,7 +334,7 @@ s32 parser_get_var_value(Parser* parser, bool is_timer) {
 	if (parser_get_keyword(parser, "random")) {
 		s32 min_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 		s32 max_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
-		return scbw::rand_between(min_value, max_value);
+		return bw::rand_between(min_value, max_value);
 	}
 	return is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 }
@@ -355,7 +384,7 @@ Area parser_get_area(Parser* parser, Area default_value) {
 		return area;
 	}
 
-	char* marker = parser_marker(parser);
+	const char* marker = parser_marker(parser);
 	Token string = parser_get_string(parser);
 	if (parser_eq(parser, "*")) {
 		area.box = g_location_table[63].dimensions;
@@ -385,7 +414,7 @@ Area parser_get_area(Parser* parser, Area default_value) {
 bool check_area(Area area, Point16 position, bool air) {
 	if (position.x >= area.box.left && position.x <= area.box.right &&
 		position.y >= area.box.top  && position.y <= area.box.bottom) {
-		ActiveTile* tile = scbw::get_active_tile_at_coords(position.x, position.y);
+		ActiveTile* tile = bw::get_active_tile_at_coords(position.x, position.y);
 		u32 height = tile->ground_height / 2;
 		if (height == 0) {
 			// Low
@@ -415,7 +444,7 @@ Point16 parser_get_position(Parser* parser, Point16 default_value) {
 		return pos;
 	}
 
-	char* marker = parser_marker(parser);
+	const char* marker = parser_marker(parser);
 	Token string = parser_get_string(parser);
 	if (parser_eq(parser, "*")) {
 		return box_center(g_location_table[63].dimensions);
@@ -483,7 +512,7 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 	PlayerBitset current_bitset = {};
 	while (true) {
 		bool negate = parser_get_negation(parser);
-		char* marker = parser_marker(parser);
+		const char* marker = parser_marker(parser);
 		s32 value = parser_get_s32(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
@@ -491,11 +520,11 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 			}
 		} else if (value == 14) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, scbw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
+				player_bitset_set(&current_bitset, i, bw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
 		} else if (value == 15) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, !scbw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
+				player_bitset_set(&current_bitset, i, !bw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
 		} else if (value == 16) {
 			// wasn't used in aise, but we can do something here later?
@@ -545,7 +574,7 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 	return bitset;
 }
 
-static const char* remove_prefix(const char* string, char* prefix) {
+static const char* remove_prefix(const char* string, const char* prefix) {
 	u32 len = strlen(prefix);
 	if (strnicmp(string, prefix, len) == 0) {
 		string += len;
@@ -593,7 +622,7 @@ static bool str_equals_lazy(const char* a, const char* b) {
 }
 
 u32 parser_get_unit_id(Parser* parser) {
-	char* marker = parser_marker(parser);
+	const char* marker = parser_marker(parser);
 	Token token = parser_get_string(parser);
 	for (u32 i = 0; i < UnitId::Count; ++i) {
 		if (str_equals_lazy(token.data, get_short_unit_name(i).data)) {
@@ -630,7 +659,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 	UnitIdBitset current_bitset = {};
 	while (true) {
 		bool negate = parser_get_negation(parser);
-		char* marker = parser_marker(parser);
+		const char* marker = parser_marker(parser);
 		parser_get_string(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
@@ -738,7 +767,7 @@ QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
 	}
 
 	if (*parser->at == '>' || *parser->at == '<' || *parser->at == '!' || *parser->at == '=' || *parser->at == '*') {
-		char* marker = parser_marker(parser);
+		const char* marker = parser_marker(parser);
 		char op = *parser->at++;
 
 		bool equals = parser_get_char(parser, '=');
@@ -815,25 +844,25 @@ Point16 box_center(Box32 box) {
 	return point;
 }
 
-bool token_eq(Token* token, char* string) {
+bool token_eq(Token* token, const char* string) {
 	if (!string) return false;
 	return strcmp(token->data, string) == 0;
 }
 
-bool token_eqi(Token* token, char* string) {
+bool token_eqi(Token* token, const char* string) {
 	if (!string) return false;
 	return stricmp(token->data, string) == 0;
 }
 
-bool token_eql(Token* token, char* string) {
+bool token_eql(Token* token, const char* string) {
 	if (!string) return false;
 	return str_equals_lazy(token->data, string);
 }
 
-bool parser_eq(Parser* parser, char* string) {
+bool parser_eq(Parser* parser, const char* string) {
 	return token_eq(&parser->token, string);
 }
 
-bool parser_eqi(Parser* parser, char* string) {
+bool parser_eqi(Parser* parser, const char* string) {
 	return token_eqi(&parser->token, string);
 }

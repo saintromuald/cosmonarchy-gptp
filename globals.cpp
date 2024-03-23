@@ -24,7 +24,7 @@ static SaveState saveState;
 
 void IquareGlobals::aise_save()
 {
-	scbw::print("WARNING: Saving doesn't work properly in Cosmonarchy.\n\t\t\tAny plugin specific data will be lost.", GameTextColor::Yellow);
+	bw::print("WARNING: Saving doesn't work properly in Cosmonarchy.\n\t\t\tAny plugin specific data will be lost.", GameTextColor::Yellow);
 	return;
 
 	output.clear();
@@ -204,7 +204,7 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 
 	//u32 multihit_count = 0;
 	//stream.read(reinterpret_cast<char*>(&multihit_count), sizeof(multihit_count));
-	//scbw::printf("Hits: %d", multihit_count);
+	//bw::printf("Hits: %d", multihit_count);
 	/*
 	for (s32 i = 0; i < multihit_count; i++) {
 		MultihitBullet bull;
@@ -308,7 +308,7 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 	}
 	// if not already irradiated and not burrowed, add the irradiate overlay
 	if (unit->irradiate_timer == 0 && !(unit->status & UnitStatus::Burrowed)) {
-		u32 irradiate_image_id = ImageId::IrradiateNew_Small + scbw::get_overlay_offset(unit->id);
+		u32 irradiate_image_id = ImageId::IrradiateNew_Small + bw::get_overlay_offset(unit->id);
 		Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
 		overlay_unit->sprite->create_top_overlay(irradiate_image_id, 0, 0, 0);
 	}
@@ -323,7 +323,7 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 void tick_effect(Effect* effect) {
 	if (effect->current_time && effect->sprite_id >= 0) {
 		if (!effect->thingy || !effect->thingy->sprite) {
-			effect->thingy = scbw::create_and_init_thingy(effect->sprite_id, effect->position.x, effect->position.y, effect->player, effect->elevation);
+			effect->thingy = bw::create_and_init_thingy(effect->sprite_id, effect->position.x, effect->position.y, effect->player, effect->elevation);
 		}
 	}
 	const s32 effect_period = 6;
@@ -337,7 +337,7 @@ void tick_effect(Effect* effect) {
 					return;
 				}
 
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
@@ -355,45 +355,50 @@ void tick_effect(Effect* effect) {
 
 				for (u32 j = 0; j < unit_array.count; j++) {
 					Unit* target = unit_array.units[j];
-					target->damage_with_custom(30 * total_scalar, 3, effect->source, effect->player);
+					UnitExt* target_ext = get_unit_ext(target);
+					if (!target_ext->timers[TimerSalamanderFire]) { // So it only applies to the same unit once every second.
+						target_ext->values[ValueApollyoidAdhesiveStacks]++;
+						target_ext->timers[TimerApollyoidAdhesive] = 2 * 24 + 1;
+						target_ext->timers[TimerSalamanderFire] = 24;
+					}
 				}
 			} break;
 			case EffectId_AspirantCriticality: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
 					unit->heal_shields_then_hp(4 * 256 / 24 * effect_period, effect->source, true);
 				});
 			} break;
 			case EffectId_KeskathalorCausticDischarge: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
 					unit->damage_with_custom(30 * total_scalar, -1, effect->source, effect->player);
-					unit_ext->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
+					unit_ext->timers[TimerCausticDischargeSpeed] = 3 * 24 + 1;
 				});
 			} break;
 			case EffectId_DiademIonField: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
@@ -402,26 +407,26 @@ void tick_effect(Effect* effect) {
 				});
 			} break;
 			case EffectId_HallucinatingField: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
-					scbw::apply_hallucinating(unit, effect->player, 3 * 24 + 1);
+					bw::apply_hallucinating(unit, effect->player, 3 * 24 + 1);
 				});
 			} break;
 			case EffectId_Irradiate: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - effect->radius,
 					effect->position.y - effect->radius,
 					effect->position.x + effect->radius,
 					effect->position.y + effect->radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					if (scbw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
 						return;
 					}
 					apply_irradiate(unit, effect->player, 15);
@@ -443,7 +448,7 @@ void tick_effect(Effect* effect) {
 						Point16 new_pos = effect->position;
 						new_pos.x += distance;
 						for (u32 j = 0; j < count; ++j) {
-							new_pos = scbw::rotate_point(effect->position, new_pos, (360.0 / count));
+							new_pos = bw::rotate_point(effect->position, new_pos, (360.0 / count));
 							iquare_globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, new_pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
 						}
 					} break;
@@ -461,7 +466,7 @@ void tick_effect(Effect* effect) {
 					break;
 				}
 
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - 60,
 					effect->position.y - 40,
 					effect->position.x + 60,
@@ -489,7 +494,7 @@ void tick_effect(Effect* effect) {
 				});
 			} break;
 			case EffectId_IsthrathalethPlagueField: {
-				scbw::UnitFinder(
+				bw::UnitFinder(
 					effect->position.x - 1.5 * 32,
 					effect->position.y - 1 * 32,
 					effect->position.x + 1.5 * 32,
@@ -515,7 +520,8 @@ void tick_effect(Effect* effect) {
 
 				for (u32 j = 0; j < unit_array.count; j++) {
 					Unit* target = unit_array.units[j];
-					target->heal_hp(10 * tick_scalar);
+					UnitExt* target_ext = get_unit_ext(target);
+					target_ext->timers[TimerNathreliskMitosalFog] = 24;
 				}
 			} break;
 			case EffectId_CyclopsRecursionRound: {
@@ -525,13 +531,13 @@ void tick_effect(Effect* effect) {
 					unit_search_filter(&unit_array, effect->source, FilterEnemy);
 					for (u32 j = 0; j < unit_array.count; j++) {
 						Unit* target = unit_array.units[j];
-						if (scbw::is_allied_to(effect->player, target->player)) {
+						if (bw::is_allied_to(effect->player, target->player)) {
 							continue;
 						}
 						target->damage_with_custom(8 * 256, 0, effect->source, effect->player);
 						target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
 					}
-					helper::play_sound_at_pos(scbw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), effect->position, 1, 0);
+					helper::play_sound_at_pos(helper::get_random_sfx_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), effect->position, 1, 0);
 					helper::create_thingy(SpriteId::FragmentaryExplosion, effect->position.x, effect->position.y, effect->player);
 				}
 			} break;
@@ -726,7 +732,7 @@ void __declspec(naked) globals_save_state_wrapper()
 	__asm {
 		PUSHAD
 	}
-//	state = &globals.aise_save();
+//	state = &globals->aise_save();
 	iquare_globals.aise_save();
 	state = &saveState;
 	__asm {
@@ -761,7 +767,7 @@ void inject_globals_hooks()
 	// memoryPatch(0x004AAE94 + 5, &retn, 1);
 }
 
-namespace scbw
+namespace bw
 {
 	void refresh_debuffs(Unit* unit)
 	{
@@ -832,11 +838,12 @@ namespace scbw
 		}
 
 		//was hardcoded in original code
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
-	void inherit_debuffs(Unit* parent, Unit* child)
-	{
+	void inherit_debuffs(Unit* parent, Unit* child) {
+		spread_debuffs(parent, child);
+
 		UnitExt* parent_ext = get_unit_ext(parent);
 		UnitExt* child_ext = get_unit_ext(child);
 
@@ -847,22 +854,18 @@ namespace scbw
 		s32 overlay_offset = get_overlay_offset(child->id);
 
 		// Inherit Ensnare
-		if (parent->ensnare_timer != 0)
-		{
+		if (parent->ensnare_timer) {
 			child->ensnare_timer = parent->ensnare_timer;
-			if (!(child->sprite->get_overlay(ImageId::EnsnareOverlay_Small + overlay_offset)))
-			{
+			if (!(child->sprite->get_overlay(ImageId::EnsnareOverlay_Small + overlay_offset))) {
 				child->sprite->create_overlay(ImageId::EnsnareOverlay_Small + overlay_offset);
 			}
 			child->update_speed();
 		}
 
 		// Inherit Plague
-		if (parent->plague_timer != 0)
-		{
+		if (parent->plague_timer != 0) {
 			child->plague_timer = parent->plague_timer;
-			if (!(child->sprite->get_overlay(ImageId::PlagueOverlay_Small + overlay_offset)))
-			{
+			if (!(child->sprite->get_overlay(ImageId::PlagueOverlay_Small + overlay_offset))) {
 				child->sprite->create_overlay(ImageId::PlagueOverlay_Small + overlay_offset);
 			}
 		}
@@ -877,47 +880,40 @@ namespace scbw
 		}
 
 		// Inherit Observance
-		if (parent_ext->timers[TimerObservanceDebuff] > 0)
-		{
+		if (parent_ext->timers[TimerObservanceDebuff] > 0) {
 			child_ext->timers[TimerObservanceDebuff] = parent_ext->timers[TimerObservanceDebuff];
 			child_ext->timers[TimerObservancePeriod] = parent_ext->timers[TimerObservancePeriod];
 			child_ext->values[ValueObservanceRend] = parent_ext->values[ValueObservanceRend];
 		}
 
 		// Inherit Knockout Drivers
-		if (parent_ext->timers[TimerPetrification] > 0)
-		{
+		if (parent_ext->timers[TimerPetrification] > 0) {
 			child_ext->timers[TimerPetrification] = parent_ext->timers[TimerPetrification];
 		}
 
 		// Inherit Hallucination
-		if (parent_ext->timers[TimerHallucinating]  > 0)
-		{
+		if (parent_ext->timers[TimerHallucinating] > 0) {
 			child_ext->timers[TimerHallucinating] = parent_ext->timers[TimerHallucinating];
 		}
 
 		// Inherit Captivating ZethrokorClaws
-		if (auto timer = parent_ext->timers[TimerCaptivatingClaws])
-		{
+		if (auto timer = parent_ext->timers[TimerCaptivatingClaws]) {
 			child_ext->timers[TimerCaptivatingClaws] = timer;
 			parent_ext->unit_vectors[UnitVectorCaptivatingClaws] = child_ext->unit_vectors[UnitVectorCaptivatingClaws];
 		}
 
 		// Inherit Lockdown
-		if (parent->lockdown_timer != 0)
-		{
+		if (parent->lockdown_timer != 0) {
 			child->lockdown_timer = parent->lockdown_timer;
 		}
 
 		// Inherit Maelstrom
-		if (parent->maelstrom_timer != 0)
-		{
+		if (parent->maelstrom_timer != 0) {
 			child->maelstrom_timer = parent->maelstrom_timer;
 		}
 
 		// Inherit Devourer Corrosive Spores
-		if (parent_ext->timers[TimerCorrosiveTouch])
-		{
+		if (parent_ext->timers[TimerCorrosiveTouch]) {
 			child_ext->values[ValueCorrosiveTouchStacks] = parent_ext->values[ValueCorrosiveTouchStacks];
 			child_ext->timers[TimerCorrosiveTouch] = parent_ext->timers[TimerCorrosiveTouch];
 		}
@@ -928,70 +924,59 @@ namespace scbw
 		}
 
 		// Inherit Defensive Matrix
-		if (parent->defensive_matrix_timer > 0)
-		{
+		if (parent->defensive_matrix_timer > 0) {
 			child->defensive_matrix_hp = parent->defensive_matrix_hp;
 			child->defensive_matrix_timer = parent->defensive_matrix_timer;
 		}
 
 		// Inherit Stasis Field
-		if (parent->stasis_timer > 0)
-		{
+		if (parent->stasis_timer > 0) {
 			child->stasis_timer = parent->stasis_timer;
 		}
 
 		// Inherit Deconstruction
-		if (parent_ext->values[ValueDeconstruction])
-		{
+		if (parent_ext->values[ValueDeconstruction]) {
 			child_ext->values[ValueDeconstruction] = parent_ext->values[ValueDeconstruction];
 			child_ext->timers[TimerDeconstruction] = parent_ext->timers[TimerDeconstruction];
 			Sprite* sprite = child->sprite;
-			if (child->subunit != nullptr)
-			{
+			if (child->subunit) {
 				UnitExt* subunit_ext = get_unit_ext(child->subunit);
 				subunit_ext->values[ValueDeconstruction] = parent_ext->values[ValueDeconstruction];
 				subunit_ext->timers[TimerDeconstruction] = parent_ext->timers[TimerDeconstruction];
 				sprite = child->subunit->sprite;
 			}
-			if (!sprite->get_overlay(ImageId::DeconstructionSmall + overlay_offset))
-			{
+			if (!sprite->get_overlay(ImageId::DeconstructionSmall + overlay_offset)) {
 				sprite->create_overlay(ImageId::DeconstructionSmall + overlay_offset);
 			}
 		}
 
 		// Inherit Terminal Surge
-		if (parent_ext->values[ValueTerminalSurge])
-		{
+		if (parent_ext->values[ValueTerminalSurge]) {
 			child_ext->values[ValueTerminalSurge] = parent_ext->values[ValueTerminalSurge];
 		}
 
 		// Inherit Stellar Enforcement
-		if (parent_ext->timers[TimerStellarEnforcement])
-		{
+		if (parent_ext->timers[TimerStellarEnforcement]) {
 			child_ext->timers[TimerStellarEnforcement] = parent_ext->timers[TimerStellarEnforcement];
 		}
 
-		// Inherit Swarming Omen
-		if (parent_ext->values[ValueSwarmingOmenPlayer])
-		{
-			child_ext->values[ValueSwarmingOmenPlayer] = parent_ext->values[ValueSwarmingOmenPlayer];
+		// Inherit Swarming Omen debuff
+		if (parent_ext->timers[TimerSwarmingOmenDebuff]) {
+			child_ext->timers[TimerSwarmingOmenDebuff] = parent_ext->timers[TimerSwarmingOmenDebuff];
 		}
 
 		// Inherit Kaiser Rampage
-		if (parent_ext->timers[TimerKaiserRampage])
-		{
+		if (parent_ext->timers[TimerKaiserRampage]) {
 			child_ext->timers[TimerKaiserRampage] = parent_ext->timers[TimerKaiserRampage];
 		}
 
 		// Inherit Kelvin Munitions
-		if (parent_ext->timers[TimerKelvinMunitions])
-		{
+		if (parent_ext->timers[TimerKelvinMunitions]) {
 			child_ext->timers[TimerKelvinMunitions] = parent_ext->timers[TimerKelvinMunitions];
 		}
 
 		// Inherit Empress Passive Stacks
-		if (parent_ext->values[ValueEmpressAnodyneAnnexStacks])
-		{
+		if (parent_ext->values[ValueEmpressAnodyneAnnexStacks]) {
 			child_ext->values[ValueEmpressAnodyneAnnexStacks] = parent_ext->values[ValueEmpressAnodyneAnnexStacks];
 			child_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = parent_ext->values[ValueEmpressAnodyneAnnexSourcePlayer];
 		}
@@ -1000,17 +985,13 @@ namespace scbw
 		child_ext->timers[TimerSignify] = parent_ext->timers[TimerSignify];
 		child_ext->values[ValueSignifyStacks] = parent_ext->values[ValueSignifyStacks];
 		child_ext->values[ValueSignifyPlayer] = parent_ext->values[ValueSignifyPlayer];
-		scbw::update_signify_status(child, child_ext);
+		bw::update_signify_status(child, child_ext);
 
-		// Inherit domination
-		child_ext->timers[TimerDemiurgeWorship]				= parent_ext->timers[TimerDemiurgeWorship];
-		child_ext->units[UnitMindController]				= parent_ext->units[UnitMindController];
-		child_ext->units[UnitDemiurge]						= parent_ext->units[UnitDemiurge];
-		child_ext->values[ValueMindControlPlayer]			= parent_ext->values[ValueMindControlPlayer];
-		child_ext->values[ValueMindControlOriginalPlayer]	= parent_ext->values[ValueMindControlOriginalPlayer];
-		child_ext->timers[TimerMindControlRecede]			= parent_ext->timers[TimerMindControlRecede];
+		// Inherit Worship
+		child_ext->timers[TimerDemiurgeWorship]	= parent_ext->timers[TimerDemiurgeWorship];
+		child_ext->values[ValueDemiurgePlayer]  = parent_ext->values[ValueDemiurgePlayer];
 
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	// TODO: update
@@ -1018,7 +999,7 @@ namespace scbw
 		UnitExt* unit_ext = get_unit_ext(unit);
 		bool has_parasite = false;
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (!scbw::is_allied_to(i, unit->player)) {
+			if (!bw::is_allied_to(i, unit->player)) {
 				has_parasite = true;
 			}
 		}
@@ -1048,13 +1029,13 @@ namespace scbw
 		{
 			overlayTargetUnit = unit->subunit;
 		}
-		u32 overlayImageId = ImageId::RestorationHit_Small + scbw::get_overlay_offset(unit->id);;
+		u32 overlayImageId = ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id);;
 		(overlayTargetUnit->sprite)->create_top_overlay(overlayImageId, 0, 0, 0);
 
 		// remove status effects and corresponding overlays
 
 		// Remove Incubation
-		if (!scbw::is_allied_to(unit_ext->values[ValueIncubationPlayer], unit->player) && unit_ext->timers[TimerIncubationArm]) {
+		if (!bw::is_allied_to(unit_ext->values[ValueIncubationPlayer], unit->player) && unit_ext->timers[TimerIncubationArm]) {
 			unit_ext->timers[TimerIncubationArm] = 0;
 			unit->remove_overlay(ImageId::ParasiteOverlay);
 		}
@@ -1067,7 +1048,7 @@ namespace scbw
 		if (unit_ext->timers[TimerAuralAssaultBlind]) {
 			unit_ext->timers[TimerAuralAssaultBlind] = 0;
 
-			u32 overlay = ImageId::OpticalFlareHit_Small + scbw::get_overlay_offset(unit->id);
+			u32 overlay = ImageId::OpticalFlareHit_Small + bw::get_overlay_offset(unit->id);
 			Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
 			overlay_unit->remove_overlay(overlay);
 			unit->status &= ~UnitStatus::CanNotReceiveOrders;
@@ -1161,12 +1142,12 @@ namespace scbw
 		unit_ext->timers[TimerSignify] = 0;
 		unit_ext->values[ValueSignifyStacks] = 0;
 		unit_ext->values[ValueSignifyPlayer] = 0;
-		scbw::update_signify_status(unit, unit_ext);
+		bw::update_signify_status(unit, unit_ext);
 
 		// Remove Stellar Enforcement
 		unit_ext->timers[TimerStellarEnforcement] = 0;
 
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	bool is_slowed(Unit* unit)
@@ -1201,17 +1182,15 @@ namespace scbw
 		UnitExt* unit_ext = get_unit_ext(unit);
 		f64 self_damage = (unit_ext->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::damage_amount[weapon_id] * 256.0));
 		Unit* deconstruction_target = unit;
-		if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
 			deconstruction_target = unit_ext->units[UnitTurretParentLink]; // TODO: port as unit
-			if (!deconstruction_target)
-			{
+			if (!deconstruction_target) {
 				return;
 			}
 		}
+		unit_ext->values[ValueTakingDeconstructionDamage] = true;
 		hooks::weapon_damage(self_damage, deconstruction_target, weapon_id, deconstruction_target, deconstruction_target->player, 0, 1);
-		if (play_sound)
-		{
+		if (play_sound) {
 			helper::play_sound_from_unit(SoundId::PazuzuDeconstructionDamage, unit, 1, 0);
 		}
 	}
@@ -1254,32 +1233,27 @@ namespace scbw
 		auto& link = unitExt->unit_vectors[UnitVectorPhaseLink];
 
 		clear_clarion_links(unit);
-		const s32 radius = 3 * 32;
-		scbw::UnitFinder(
+		const s32 radius = 5 * 32;
+		bw::UnitFinder(
 			unit->get_x() - radius,
 			unit->get_y() - radius,
 			unit->get_x() + radius,
 			unit->get_y() + radius
 		).filter([&](Unit* target)
 		{
-			if (!scbw::is_allied_to(unit->player, target->player))
-			{
+			if (!bw::is_allied_to(unit->player, target->player)) {
 				return false;
 			}
-			if (units_dat::base_property[target->id] & UnitProperty::Building)
-			{
+			if (units_dat::base_property[target->id] & UnitProperty::Building) {
 				return false;
 			}
-			if (!target->shields_enabled())
-			{
+			if (!target->shields_enabled()) {
 				return false;
 			}
-			if (target->shields < 256)
-			{
+			if (target->shields < 256) {
 				return false;
 			}
-			if (scbw::get_distance_fast(target->get_x(), target->get_y(), unit->get_x(), unit->get_y()) > radius)
-			{
+			if (bw::get_distance_fast(target->get_x(), target->get_y(), unit->get_x(), unit->get_y()) > radius) {
 				return false;
 			}
 			return true;
@@ -1338,7 +1312,7 @@ namespace scbw
 				for (Unit* linked_unit : links) {
 					s32 unit_damage = std::min(divided, linked_unit->shields);
 					damage -= unit_damage;
-					data.direction = scbw::get_angle(damage_origin->get_x(), damage_origin->get_y(), linked_unit->get_x(), linked_unit->get_y());
+					data.direction = bw::get_angle(damage_origin->get_x(), damage_origin->get_y(), linked_unit->get_x(), linked_unit->get_y());
 					link_damage(linked_unit, unit_damage, data);
 				}
 				data.direction = old_direction;
@@ -1363,3 +1337,23 @@ namespace scbw
 		return std::vector<Unit*>(links.begin(), links.end());
 	}
 }
+
+const char* unmovable_names[] = {
+	"get_movable_state",
+	"reclaim_corpse",
+	"tick_unit revive",
+	"tick_unit stun on",
+	"tick_unit stun off",
+	"tick_unit cuirass",
+	"melee units freeze fix",
+	"orders_sap_location state1",
+	"orders_drone_land state1",
+	"orders_drone_land state0",
+	"orders_scv_build state1",
+	"move_to_target arrived",
+	"move_to_target moving",
+	"repulse_unit",
+	"orders_place_mine state1",
+	"weapon_damage_fatal cuirass" };
+u32 unmovable_hits[16];
+u32 unmovable_lastframe[16];

@@ -1,5 +1,5 @@
 #pragma once
-#include "../SCBW/structures/Unit.h"
+#include "../BW/structures/Unit.h"
 
 namespace hooks {
 	Unit* find_best_mine_target(Unit* mine);		// 00441270

@@ -3,20 +3,18 @@
 
 namespace
 {
-	void __declspec(naked) orders_DieWrapper()
+	void __declspec(naked) orders_die_wrapper() // 00479480
 	{
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_Die(unit);
-		__asm
-		{
+		hooks::orders_die(unit);
+		__asm {
 			POPAD
 			POP EBP
 			RETN 4
@@ -28,6 +26,6 @@ namespace hooks
 {
 	void inject_die_order_hooks()
 	{
-		jump_patch(orders_DieWrapper,	0x00479480, 2);
+		jump_patch(orders_die_wrapper,	0x00479480, 2);
 	}
 }

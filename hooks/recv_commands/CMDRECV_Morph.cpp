@@ -1,6 +1,6 @@
 #pragma once
 #include "CMDRECV_Morph.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "hooks/rally_point.h"
 
 namespace hooks
@@ -15,7 +15,7 @@ namespace hooks
 			{
 				// start construction if successful
 				unit->order_computer(OrderId::Morph2);
-				scbw::refresh_console();
+				bw::refresh_console();
 			}
 		}
 	}
@@ -40,7 +40,7 @@ namespace hooks
 				prepare_for_next_order(current_unit);
 			}
 		}
-		scbw::refresh_console();
+		bw::refresh_console();
 	}
 
 	s32 compare_unit_train_priority(const void* a, const void* b) {
@@ -67,7 +67,7 @@ namespace hooks
 		Unit* selection[SelectionCap] = {};
 		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = players_selections->unit[*g_active_player_id][i];
-			if (unit && !unit->is_dead()) {
+			if (unit && unit->sprite) { // sprite is new
 				selection[size++] = unit;
 			}
 		}
@@ -76,11 +76,14 @@ namespace hooks
 		u16 unit_id = *(u16*)(buffer + 1);
 		for (u32 i = 0; i < size; ++i) {
 			Unit* unit = selection[i];
-			if (helper::create_unit_allowed(unit_id, unit, *g_active_nation_id) == 1) {
-				if (helper::has_money_can_make(unit, unit_id)) {
-					helper::set_secondary_order(unit, OrderId::Train);
+			UnitExt* unit_ext = get_unit_ext(unit);
+			if (!unit_ext->timers[TimerLiftoffDelay]) {
+				if (helper::create_unit_allowed(unit_id, unit, *g_active_nation_id) == 1) {
+					if (helper::has_money_can_make(unit, unit_id)) {
+						helper::set_secondary_order(unit, OrderId::Train);
+					}
+					bw::refresh_console();
 				}
-				scbw::refresh_console();
 			}
 		}
 	}
@@ -113,7 +116,7 @@ namespace hooks
 							continue;
 						}
 						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding
-							|| scbw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
+							|| bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
 							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)	{
 							*g_last_internal_error = 8;
 						} else if (orders_dat::req_offset[OrderId::BuildingLiftoff]) {
@@ -122,6 +125,11 @@ namespace hooks
 								u16 x = buffer_u16[0];
 								u16 y = buffer_u16[1];
 								if (x < *g_map_width_pixels && y < *g_map_height_pixels) {
+									UnitExt* unit_ext = get_unit_ext(unit);
+									if (!unit_ext->timers[TimerLiftoffDelay]) {
+										unit_ext->timers[TimerLiftoffDelay] = 12 + 1;
+										helper::play_sound_from_unit(SoundId::TerranLiftoffStart, unit, 1, 0);
+									}
 									helper::issue_order_targeting_ground(unit, OrderId::BuildingLiftoff, x, y);
 									helper::do_order(unit, units_dat::return_to_idle_order[unit->id], x, y - 42, 0);
 								}
@@ -139,13 +147,11 @@ namespace hooks
 	void btnsact_rally_point(u32 xd) { // 004244A0
 		*g_order_id_ground = OrderId::RallyPointToTile;
 		*g_order_id_obstructed = OrderId::RallyPointToTile;
-		bool network_table_1 = *g_network_table < 62;
-		bool network_table_2 = *g_network_table == 62;
 		*g_is_targeting = 1;
 		*g_order_id_unit = OrderId::RallyPointToVisibleUnit;
 
-		char* string = (char*)g_network_table_DF->get_string(63);
-		if (network_table_1 || network_table_2) {
+		const char* string = g_network_table_DF->get_string(63);
+		if (g_network_table_DF->get_string_count() <= 62) {
 			string = "";
 		}
 
@@ -165,7 +171,7 @@ namespace hooks
 		u32 result = helper::order_acquire_generic_right_click_harvest_proc(target_unit, unit);
 		if (result == OrderId::None) {
 			if (!(target_unit->status & UnitStatus::GroundedBuilding) || target_unit->status & UnitStatus::Completed) {
-				if (scbw::is_allied_to(unit->player, target_unit->player)) {
+				if (bw::is_allied_to(unit->player, target_unit->player)) {
 					if (target_unit->hitpoints < target_unit->get_max_hp_raw()) {
 						if (helper::is_order_valid(OrderId::Repair1, unit, target_unit, target_unit, 0)) {
 							return OrderId::Repair1;

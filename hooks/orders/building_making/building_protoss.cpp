@@ -1,6 +1,6 @@
 #include "building_protoss.h"
 #include "building_modifier.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include <globals.h>
 #include <hooks/limits/sfx_extender.h>
 namespace hooks {
@@ -16,7 +16,7 @@ namespace hooks {
 				}
 			} break;
 			case 1: {
-				u32 distance = scbw::get_distance_fast(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
+				u32 distance = bw::get_distance_fast(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
 				u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
 
 				if (distance / 256 > distance_wanted) {
@@ -50,7 +50,8 @@ namespace hooks {
 							unit->build_queue[unit->build_queue_slot] = UnitId::None;
 
 							if (built_unit) {
-								if (units_dat::shields_enabled[built_unit->id]) {
+								spread_debuffs(unit, built_unit);
+								if (bw::unit_has_shields(built_unit)) {
 									built_unit->shields += 3 * 256;
 								}
 
@@ -66,6 +67,11 @@ namespace hooks {
 								unit->order_target.unit = built_unit;
 								helper::ai_training_overlord(built_unit, unit);
 								built_unit->order_computer(OrderId::BuildSelf2);
+
+								if (built_unit->id == UnitId::ProtossMonumentOfSin) {
+									replay_witness_event(built_unit, SpectatorEvent_Tech);
+								}
+
 								helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
 								++unit->main_order_state;
 								return;
@@ -74,7 +80,6 @@ namespace hooks {
 								helper::display_last_network_error_for_player(unit->player);
 							}
 						}
-
 						unit->order_to_idle();
 					}
 				}
@@ -145,13 +150,17 @@ namespace hooks {
 					++building->main_order_state;
 
 					if (!(*g_is_in_replay) && building->player == *g_local_nation_id) {
-						u32 sound_id = scbw::get_advisor_sound_from_event_type(building->player, AdvisorEvent_StructureComplete_P);
+						u32 sound_id = bw::get_advisor_sound_from_event_type(building->player, AdvisorEvent_StructureComplete_P);
 						if (helper::play_sound_from_unit(sound_id, building, 1, 99)) {
 							helper::do_unit_event_notification(building, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 						} else {
 							helper::minimap_ping(building->position.x, building->position.y, 17);
 							helper::do_unit_event_notification(building, 17, sfx_dat::portrait_duration[0] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, 0);
 						}
+					}
+
+					if (building->id == UnitId::ProtossMonumentOfSin) {
+						replay_witness_event(building, SpectatorEvent_Tech);
 					}
 				}
 			} break;

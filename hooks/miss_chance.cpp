@@ -1,13 +1,13 @@
 #include "miss_chance.h"
-#include <SCBW/api.h>
-#include <SCBW/structures.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
 
 namespace hooks
 {
 	s32 can_hit_target_check(Unit* target, Unit* attacker)
 	{
-		if (scbw::is_under_carapace_swarm(target)) return 255;
+		if (bw::is_under_carapace_swarm(target)) return 255;
 		return 0;
 	};
 }

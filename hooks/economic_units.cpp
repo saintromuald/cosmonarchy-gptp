@@ -52,10 +52,8 @@ namespace hooks
 		//unit is unused. this is function is supposed to be used for custom faction worker
 		switch (unit_id)
 		{
-			case UnitId::TerranMinistry:
-				//		case UnitId::KelmorianTacticalCenter:
-				//		case UnitId::UmojanGarrison:
-				//		case UnitId::KelmorianMiningStation:		
+			case UnitId::TerranMinistry:	
+			case UnitId::TerranTreasury:	
 			case UnitId::ProtossNexus:
 			case UnitId::ZergHachirosk:
 				return true;
@@ -71,6 +69,7 @@ namespace hooks
 		switch (unit_id)
 		{
 			case UnitId::TerranMinistry:
+			case UnitId::TerranTreasury:
 			case UnitId::ProtossNexus:
 			case UnitId::ZergHachirosk: // advanced mutations are not required
 				return true;
@@ -227,44 +226,44 @@ namespace hooks
 			}
 		}
 		while (aiTown = aiTown->next);
-		//scbw::printString("Can't find eligible town for supply building!");
+		//bw::printString("Can't find eligible town for supply building!");
 		return nullptr; // couldn't find anything
 	}
 
-	void Ai_BuildSupplies(AiTown* mainTown)
+	void ai_build_supplies(AiTown* mainTown) // 00433730
 	{
 		u8 player = mainTown->player;
 		u8 race = g_player_table[player].race;
 		if (mainTown)
 		{
-			if (checkSupplyNeed(player, RaceId::Terran))
+			if (check_supply_need(player, RaceId::Terran))
 			{
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Terran);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
+					AI_AddTownSpendingRequest(player, bw::get_supply_remaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
 				}
 			}
-			if (checkSupplyNeed(player, RaceId::Protoss))
+			if (check_supply_need(player, RaceId::Protoss))
 			{
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Protoss);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
+					AI_AddTownSpendingRequest(player, bw::get_supply_remaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
 				}
 			}
-			if (checkSupplyNeed(player, RaceId::Zerg))
+			if (check_supply_need(player, RaceId::Zerg))
 			{
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Zerg);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, scbw::get_supply_remaining(player, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player), (void*)town);
+					AI_AddTownSpendingRequest(player, bw::get_supply_remaining(player, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player), (void*)town);
 				}
 			}
 		}
 	}
 
-	bool checkSupplyNeed(u8 player, u8 race)
+	bool check_supply_need(u8 player, u8 race)
 	{
 		u32 checkEcoUnits;
 		s32 supplyRemaining;

@@ -1,53 +1,20 @@
-#include <SCBW/api.h>
+#include <BW/api.h>
 // copied from unhooked
-#include <SCBW/scbwdata.h>
-#include <SCBW/enumerations/TechId.h>
+#include <BW/bwdata.h>
+#include <BW/enumerations/TechId.h>
 #include <cassert>
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include "hooks\orders\ai\ai_orders.h"
 #include "hooks\unit_stats\max_energy.h"
 #include "globals.h"
+#include "hooks\interface\uifeatures\hotkeys.h"
 
 namespace hooks {
-	static void add_unit_to_control_group(ControlGroup* control_group, Unit* unit) {
-		for (u32 i = 0; i < SelectionCap; ++i) {
-			UnitIndex* index = &control_group->unit_index[i];
-			if (control_group->unit_index[i].index) {
-				Unit* old_unit = &g_unit_table[index->index - 1];
-				if (old_unit->unique_id == index->unique_id) {
-					continue;
-				}
-			}
-			index->index = unit->get_unit_index();
-			index->unique_id = unit->unique_id;
-			break;
-		}
-	}
-
-	static void add_new_unit_to_control_groups(Unit* original_unit, Unit* new_unit) {
-		assert(original_unit->player == new_unit->player);
-		u32 player = original_unit->player;
-		for (u32 i = 0; i < TotalControlGroups; ++i) {
-			for (u32 j = 0; j < SelectionCap; ++j) {
-				UnitIndex index = control_group_array->player[player].control_group[i].unit_index[j];
-				if (!index.value) {
-					break;
-				}
-				if (index.index) {
-					Unit* unit = &g_unit_table[index.index - 1];
-					if (unit == original_unit) {
-						add_unit_to_control_group(&control_group_array->player[player].control_group[i], new_unit);
-					}
-				}
-			}
-		}
-	}
-
 	void orders_zerg_birth(Unit* unit) {
 		// DF - Fixes hatching eggs not playing a death animation
 		if (unit->hitpoints == 0) {
-			helper::init_building(unit, 0);
+			helper::unit_completion_init(unit, 0);
 			helper::orders_self_destructing(unit);
 			return;
 		}
@@ -104,14 +71,15 @@ namespace hooks {
 				if (twin_unit) {
 					twin_unit->rally = unit->rally;
 					helper::ai_training_unit(twin_unit, unit);
-					add_new_unit_to_control_groups(unit, twin_unit);
+					inherit_selection(unit, twin_unit);
 				}
 				extra_count *= 2;
 			}
 
 			for (u32 i = 0; i < extra_count; ++i) {
-				Unit* new_unit = scbw::create_unit_in_game(unit->id, unit->player, unit->position.x, unit->position.y);
+				Unit* new_unit = bw::create_unit_in_game(unit->id, unit->player, unit->position.x, unit->position.y);
 				if (new_unit) {
+					spread_debuffs(unit, new_unit);
 					new_unit->rally = unit->rally;
 					UnitExt* new_ext = get_unit_ext(new_unit);
 					new_ext->values[ValueOriginatedFromOcsalLarva] = unit_ext->values[ValueOriginatedFromOcsalLarva];
@@ -119,7 +87,7 @@ namespace hooks {
 					if (*g_active_player_id == *g_local_human_id && unit->sprite->flags & SpriteFlags::Selected) {
 						helper::select_new_unit(new_unit);
 					}
-					add_new_unit_to_control_groups(unit, new_unit);
+					inherit_selection(unit, new_unit);
 				}
 			}
 
@@ -127,7 +95,7 @@ namespace hooks {
 			&&  unit->id != UnitId::ZergOvileth) {
 				helper::ai_training_unit(unit, unit);
 			}
-			helper::init_building(unit, 0);
+			helper::unit_completion_init(unit, 0);
 			if (unit_ext->values[ValueCustomEggActive]) {
 				unit_ext->values[ValueCustomEggActive] = false;
 				u32 hp = unit->hitpoints;
@@ -150,9 +118,9 @@ namespace hooks {
 			helper::fix_target_location(&pos, unit->id);
 			if (pos.x != unit->sprite->position.x ||
 				pos.y != unit->sprite->position.y) {
-				scbw::set_unit_position(unit, pos.x, pos.y);
+				bw::set_unit_position(unit, pos.x, pos.y);
 			}
-			if (!scbw::is_zerg_egg_new(unit, true, false)) {
+			if (!bw::is_zerg_egg_new(unit, true, false)) {
 				helper::order_new_unit_to_rally(unit, factory);
 				if (twin_unit) {
 					helper::order_new_unit_to_rally(twin_unit, factory);
@@ -167,7 +135,7 @@ namespace hooks {
 		if (!unit->remaining_build_time) {
 			return 1;
 		}
-		if (scbw::get_game_kind() == GameKind_Debug) {
+		if (bw::get_game_kind() == GameKind_Debug) {
 			if (unit->remaining_build_time < 32) {
 				unit->remaining_build_time = 0;
 				helper::set_unit_hp(unit, unit->get_max_hp_raw());
@@ -188,7 +156,7 @@ namespace hooks {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->main_order_state == 0)
 		{
-			if (scbw::is_conventional_unit_morph_source(unit->id, true))
+			if (bw::is_conventional_unit_morph_source(unit->id, true))
 			{
 				if (!helper::has_supplies_for_unit(unit->build_queue[unit->build_queue_slot], unit->player, 1))
 				{
@@ -243,6 +211,7 @@ namespace hooks {
 						case UnitId::ZergOvileth:
 						case UnitId::ZergOthstoleth:
 						case UnitId::ZergNathrokor:
+						case UnitId::ZergNathrelisk:
 						case UnitId::ZergMutalisk:
 						case UnitId::ZergSkithrokor:
 						case UnitId::ZergAlmaksalisk:
@@ -279,7 +248,7 @@ namespace hooks {
 						if (egg_id == UnitId::ZergEgg) {
 							helper::add_worker_structure_ai(unit, town);
 						} else {
-							scbw::printf("There is no code for cocoon building AI in internal game code, this shouldn't be called!");
+							bw::printf("There is no code for cocoon building AI in internal game code, this shouldn't be called!");
 						}
 					} else {
 						helper::replace_unit_with_id(unit, egg_id); // morph into egg from source unit
@@ -311,7 +280,7 @@ namespace hooks {
 						{
 							animation = IscriptAnimation::Unused1;
 						} break;
-						// New mutation handling! Everything will eventually use this. -Pr0nogo
+						// New mutation animation handling! Everything will eventually use this. -Pr0nogo
 						case UnitId::ZergQuazilisk:
 						case UnitId::ZergNathrokor:
 						{
@@ -358,8 +327,7 @@ namespace hooks {
 				unit->main_order_state = 2;
 			}
 		} else if (unit->main_order_state == 2) {
-			if (unit->order_signal & 4)
-			{
+			if (unit->order_signal & 4) {
 				unit->order_signal &= ~4;
 				helper::replace_unit_with_id(unit, unit->build_queue[unit->build_queue_slot]);
 				if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster) {
@@ -368,18 +336,15 @@ namespace hooks {
 					unit->energy = 0;
 				}
 
-				if (unit->id == UnitId::ZergDroleth
-				||  unit->id == UnitId::ZergOvileth)
-				{
+				if (unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergOvileth) {
 					helper::ai_training_unit(unit, unit);
 				}
 
 				helper::play_unit_ready_sound(unit);
 				unit->build_queue[unit->build_queue_slot] = UnitId::None;
-				if (units_dat::construction_graphic[unit->id] != 0)
-				{
+				if (get_construction_graphic(unit) != 0) {
 					Image* current_image;
-					helper::init_building(unit, 1);
+					helper::unit_completion_init(unit, 1);
 					current_image = unit->sprite->images.head;
 					while (current_image)
 					{
@@ -391,8 +356,7 @@ namespace hooks {
 				} else {
 					helper::update_unit_stats_and_finish_building(unit);
 					helper::update_unit_strength(unit);
-					if (unit->id == UnitId::ZergEgg && (unit->create_origin == UnitId::ZergLarva || unit->create_origin == UnitId::ZergOcsalLarva))
-					{
+					if (unit->id == UnitId::ZergEgg && (unit->create_origin == UnitId::ZergLarva || unit->create_origin == UnitId::ZergOcsalLarva)) {
 						helper::order_new_unit_to_rally(unit, unit->connected_unit);
 					}
 				}
@@ -407,216 +371,175 @@ namespace hooks {
 			case UnitId::ZergLarva:
 			case UnitId::ZergOcsalLarva:
 			{
-				if (unit->can_make_unit(morph_unit_id, *g_active_nation_id) == 1)
-				{
+				if (unit->can_make_unit(morph_unit_id, *g_active_nation_id) == 1) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergDroleth:
 			{
-				if (morph_unit_id == UnitId::ZergGosvileth)
-				{
+				if (morph_unit_id == UnitId::ZergGosvileth) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergOvileth:
 			{
-				if (morph_unit_id == UnitId::ZergIroleth)
-				{
+				if (morph_unit_id == UnitId::ZergIroleth) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergZethrokor:
 			{
-				if (morph_unit_id == UnitId::ZergVorvrokor)
-				{
+				if (morph_unit_id == UnitId::ZergVorvrokor) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergQuazilisk:
 			{
-				if (morph_unit_id == UnitId::ZergLiiralisk)
-				{
+				if (morph_unit_id == UnitId::ZergLiiralisk) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergNathrokor:
 			{
-				if (morph_unit_id == UnitId::ZergKalkalisk)
-				{
+				if (morph_unit_id == UnitId::ZergKalkalisk) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergCikralisk:
 			{
-				if (morph_unit_id == UnitId::ZergGhitorokor)
-				{
+				if (morph_unit_id == UnitId::ZergGhitorokor) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergProtathalor:
 			{
-				if (morph_unit_id == UnitId::ZergSovroleth)
-				{
+				if (morph_unit_id == UnitId::ZergSovroleth) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergMutalisk:
 			{
-				if (morph_unit_id == UnitId::ZergTosgrilisk)
-				{
+				if (morph_unit_id == UnitId::ZergTosgrilisk) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergAxitrilisk:
 			{
-				if (morph_unit_id == UnitId::ZergBegrothilisk)
-				{
+				if (morph_unit_id == UnitId::ZergBegrothilisk) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergMortothrokor:
 			{
-				if (morph_unit_id == UnitId::ZergOztukrokor)
-				{
+				if (morph_unit_id == UnitId::ZergOztukrokor) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergHydralisk:
 			{
-				if (morph_unit_id == UnitId::ZergBactalisk)
-				{
+				if (morph_unit_id == UnitId::ZergBactalisk) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergIzirokor:
 			{
-				if (morph_unit_id == UnitId::ZergTethzorokor)
-				{
+				if (morph_unit_id == UnitId::ZergTethzorokor) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergSkithrokor:
 			{
-				if (morph_unit_id == UnitId::ZergVithrilisk)
-				{
+				if (morph_unit_id == UnitId::ZergVithrilisk) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergKagralisk:
 			{
-				if (morph_unit_id == UnitId::ZergCherbrathalor)
-				{
+				if (morph_unit_id == UnitId::ZergCherbrathalor) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergEvigrilisk:
 			{
-				if (morph_unit_id == UnitId::ZergOkrimnilisk)
-				{
+				if (morph_unit_id == UnitId::ZergOkrimnilisk) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergAlmaksalisk:
 			{
-				if (morph_unit_id == UnitId::ZergAlgoztalisk)
-				{
+				if (morph_unit_id == UnitId::ZergAlgoztalisk) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergKeskathalor:
 			{
-				if (morph_unit_id == UnitId::ZergKethrostalor)
-				{
+				if (morph_unit_id == UnitId::ZergKethrostalor) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergGeszithalor:
 			{
-				if (morph_unit_id == UnitId::ZergAlkajelisk)
-				{
+				if (morph_unit_id == UnitId::ZergAlkajelisk) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergZoryusthaleth:
 			{
-				if (morph_unit_id == UnitId::ZergUltrokor)
-				{
+				if (morph_unit_id == UnitId::ZergUltrokor) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergLakizilisk:
 			{
-				if (morph_unit_id == UnitId::ZergZobriolisk)
-				{
+				if (morph_unit_id == UnitId::ZergZobriolisk) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergGorgrokor:
 			{
-				if (morph_unit_id == UnitId::ZergZarcavrokor)
-				{
+				if (morph_unit_id == UnitId::ZergZarcavrokor) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergKonvilisk:
 			{
-				if (morph_unit_id == UnitId::ZergTetcaerokor)
-				{
+				if (morph_unit_id == UnitId::ZergTetcaerokor) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergVilgorokor:
 			{
-				if (morph_unit_id == UnitId::ZergSelkerilisk)
-				{
+				if (morph_unit_id == UnitId::ZergIsthrathaleth) {
 					return true;
 				}
 				return false;
 			} break;
 			case UnitId::ZergMatraleth:
 			{
-				if (morph_unit_id == UnitId::ZergAkistrokor)
-				{
-					return true;
-				}
-				return false;
-			} break;
-			case UnitId::ZergIsthrathaleth:
-			{
-				if (morph_unit_id == UnitId::ZergOgroszaleth)
-				{
-					return true;
-				}
-				return false;
-			} break;
-			case UnitId::ZergElthrazalisk:
-			{
-				if (morph_unit_id == UnitId::ZergRakzilisk)
-				{
+				if (morph_unit_id == UnitId::ZergAkistrokor) {
 					return true;
 				}
 				return false;
@@ -629,7 +552,7 @@ namespace hooks {
 	}
 
 	bool is_rallyable_egg_unit(u16 unit_id) {
-		if (scbw::is_zerg_egg_new(0, false, false, unit_id)) {
+		if (bw::is_zerg_egg_new(0, false, false, unit_id)) {
 			return false;
 		}
 		return true;
@@ -638,8 +561,7 @@ namespace hooks {
 	// Return the ID of the egg unit to use when morphing @p unit_id. If the unit cannot morph, return UnitId::None.
 	u16 get_unit_morph_egg_id(u16 unit_id, Unit* unit, u16 resultId)
 	{
-		if (units_dat::base_property[unit_id] & UnitProperty::Flyer)
-		{
+		if (units_dat::base_property[unit_id] & UnitProperty::Flyer) {
 			return UnitId::ZergCocoon;
 		} else {
 			return UnitId::ZergEgg;
@@ -651,10 +573,8 @@ namespace hooks {
 	u16 get_cancel_morph_revert_id(Unit* egg_unit)
 	{
 		u32 source = egg_unit->create_origin;
-		if (egg_unit->get_race() == RaceId::Zerg)
-		{
-			if (!(units_dat::base_property[egg_unit->id] & UnitProperty::Building))
-			{
+		if (egg_unit->get_race() == RaceId::Zerg) {
+			if (!(units_dat::base_property[egg_unit->id] & UnitProperty::Building)) {
 				UnitExt* unit_ext = get_unit_ext(egg_unit);
 				if (source != UnitId::ZergLarva || unit_ext->values[ValueMorphConnectedUnitId] != UnitId::ZergCaphrolosk) {
 					return source;
@@ -698,7 +618,7 @@ namespace hooks {
 		if (unit->status & UnitStatus::GroundedBuilding
 			|| unit->id == UnitId::ProtossSolarion
 			|| unit->id == UnitId::ProtossAccantorOld
-			|| scbw::is_larval_egg(unit)) // just egg
+			|| bw::is_larval_egg(unit)) // just egg
 		{
 			if (helper::has_supplies_for_unit(unit_id, unit->player, notify_error))
 			{
@@ -711,5 +631,41 @@ namespace hooks {
 			}
 		}
 		return 0;
+	}
+
+	// Hooked to change construction animations contextually, for Zerg morphs. -Pr0nogo
+	Image* unit_completion_init(Unit* unit, u32 has_construction_anim) // 004E65E0
+	{
+		u32 status = ((unit->status) >> 8) & 3; // Idk what this is
+		u8 draw_func1 = 0;
+		u8 draw_func2 = 0;
+		Image* main_graphic;
+		if (status) {
+			main_graphic = unit->sprite->main_graphic;
+			draw_func1 = main_graphic->warp.timer;
+			draw_func2 = main_graphic->warp.param;
+		}
+
+		Unit* iscript_unit = *g_active_iscript_unit;
+		*g_active_iscript_unit = unit;
+		u32 construction_id = get_construction_graphic(unit);
+		if (!has_construction_anim || construction_id == 0) {
+			construction_id = sprites_dat::image_id[unit->sprite->id];
+		}
+
+		helper::replace_sprite_images(unit->sprite, construction_id, unit->current_direction_1);
+		*g_active_iscript_unit = iscript_unit;
+
+		if (status) {
+			helper::make_cloaked(draw_func2, unit->sprite, status, draw_func1);
+			if (*g_player_visions & unit->detection_status)
+			{
+				helper::make_sprite_visible(unit->sprite);
+			}
+		}
+		helper::apply_unit_effects(unit);
+		main_graphic = unit->sprite->main_graphic;
+		unit->damage_overlay_state = g_building_overlay_state_max[main_graphic->id];
+		return main_graphic;
 	}
 }

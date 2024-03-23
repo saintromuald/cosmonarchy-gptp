@@ -1,5 +1,5 @@
 #include "buttonsets.h"
-#include "SCBW/api.h"
+#include "BW/api.h"
 #include "globals.h"
 #include "hooks/game_hooks.h"
 #include "hooks/grafting/button_functions.h"
@@ -232,7 +232,7 @@ namespace hooks {
 		} else {
 			if (!(current_button_dialog->flags & BinDlgFlags::Highlighted)) {
 				current_button_dialog->flags |= BinDlgFlags::Highlighted;
-				scbw::update_dialog(current_button_dialog);
+				bw::update_dialog(current_button_dialog);
 			}
 			*g_highlighted_icon = used_button_icon;
 		}
@@ -245,7 +245,7 @@ namespace hooks {
 	void update_buttonset() {
 		*g_buttonset_special_buttonset_id = UnitId::Buttons_Blank;
 		*g_active_portrait_buttonset_id = UnitId::Buttons_Blank;
-		if (scbw::is_in_replay()) {
+		if (bw::is_in_replay()) {
 			if (*g_is_replay_paused) {
 				*g_buttonset_special_buttonset_id = UnitId::Buttons_ReplayPaused;
 			} else {
@@ -379,21 +379,17 @@ namespace hooks {
 		command.faction = 1; // Default case
 		auto buttonset_id = *g_active_portrait_buttonset_id;
 		u32 local_player = *g_local_human_id;
-		if (scbw::get_game_kind() == GameKind_FactionWars && !globals.players[local_player].faction_was_set) {
+		if (bw::get_game_kind() == GameKind_FactionWars && !globals->players[local_player].faction_was_set) {
 			if (buttonset_id == UnitId::None) {
 				switch (g_player_table[local_player].race) {
 					case RaceId::Terran: {
 						buttonset_id = UnitId::Buttons_FactionSelect;
 					} break;
 					case RaceId::Protoss: {
-						// TODO: Make this like Terran when the Protoss factions are actually implemented.
-						command.faction = Faction_ProtossDivinePrimacy;
-						helper::queue_game_command((u8*)&command, 0xc);
+						buttonset_id = UnitId::Buttons_FactionSelectProtoss;
 					} break;
 					case RaceId::Zerg: {
-						// TODO: Make this like Terran when the Zerg factions are actually implemented.
-						command.faction = Faction_ZergAtaltrethTendril;
-						helper::queue_game_command((u8*)&command, 0xc);
+						buttonset_id = UnitId::Buttons_FactionSelectZerg;
 					} break;
 						// TODO: Add Askosi case
 				}
@@ -425,7 +421,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
-					globals.players[local_player].faction_was_set = true;
+					globals->players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect2) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
@@ -433,7 +429,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Protoss: {
-							command.faction = Faction_ProtossOrderOfTheSacredTemplar;
+							command.faction = Faction_ProtossOrderOfTheSacredSaber;
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 						case RaceId::Zerg: {
@@ -441,7 +437,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
-					globals.players[local_player].faction_was_set = true;
+					globals->players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect3) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
@@ -457,7 +453,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
-					globals.players[local_player].faction_was_set = true;
+					globals->players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect4) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
@@ -473,7 +469,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
-					globals.players[local_player].faction_was_set = true;
+					globals->players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect5) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
@@ -489,7 +485,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
-					globals.players[local_player].faction_was_set = true;
+					globals->players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect6) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
@@ -505,7 +501,7 @@ namespace hooks {
 						//	helper::queue_game_command((u8*)&command, 0xc);
 					//	} break;
 					}
-					globals.players[local_player].faction_was_set = true;
+					globals->players[local_player].faction_was_set = true;
 				}
 			}
 		}
@@ -603,10 +599,11 @@ namespace hooks {
 		// Overwrite mnemonic hotkey text with grid hotkeys, if applicable
 		if (!stop_there && config.grid_hotkeys) {
 			for (BinDlg* dialog = current_dialog; dialog; dialog = dialog->next) {
-				if (dialog->index > 0 && dialog->index <= 9 &&
-					dialog->control_type == DialogControlTypes::Button &&
-					dialog->button_user && dialog->button_user->requirement_string_id) {					
-					char* label = helper::get_stat_txt_string(dialog->button_user->requirement_string_id);
+				if (dialog->index > 0 && dialog->index <= 9
+					&& dialog->control_type == DialogControlTypes::Button
+					&& dialog->button_user && dialog->button_user->requirement_string_id) {
+					// we normally want const string to avoid accidental overwrites, but here we intend to overwrite the hotkey character, that's why we cast to char*
+					char* label = (char*)helper::get_stat_txt_string(dialog->button_user->requirement_string_id); 
 					char* hotkey_char = find_hotkey_char(label + 2);
 					if (hotkey_char) {
 						u32 index = dialog->index - 1;
@@ -629,7 +626,7 @@ namespace hooks {
 					current_button_state = helper::req_check((u32)current_button->requirement_func, current_button->requirement_var, *g_local_nation_id, unit);
 					// Fight that lardcode, tony!
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons) {
-						if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva || buttonset_id == UnitId::Buttons_FactionSelect) {
+						if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva || buttonset_id_is_faction_selection(buttonset_id)) {
 							current_button_state = Button_State::Enabled;
 						}
 						if ((buttonset_id == UnitId::TerranMason || buttonset_id == UnitId::TerranTalos) && (unit->main_order_id != OrderId::ConstructingBuilding)) {
@@ -661,7 +658,9 @@ namespace hooks {
 							||	   current_button->requirement_var == TechId::LarvalSubmenuSelectAssault
 							||	   current_button->requirement_var == TechId::LarvalSubmenuSelectControl)
 						{
-							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit_id_is_larva(unit->id) || unit->id == UnitId::Omnivale) {
+							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
+								|| unit_id_is_larva(unit->id)
+								|| (unit->id == UnitId::Omnivale && globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
 								current_button_state = Button_State::Enabled;
 							} else {
 								current_button_state = Button_State::Invisible;
@@ -734,7 +733,9 @@ namespace hooks {
 					}
 
 					if (current_button->icon_id == IconId::Larva) {
-						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) || unit_id_is_larva(unit->id) || unit->id == UnitId::Omnivale) {
+						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
+							|| unit_id_is_larva(unit->id)
+							|| (unit->id == UnitId::Omnivale && globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
@@ -786,12 +787,14 @@ namespace hooks {
 					bool is_training = 0;
 					bool is_burrowed = 0;
 					bool is_adding_on = 0;
+					Faction faction = Faction_None;
 					if (unit) {
 						has_addon = units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon;
 						in_air = unit->status & UnitStatus::InAir;
 						is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 						is_burrowed = unit->status & UnitStatus::Burrowed;
 						is_adding_on = unit->current_build_unit && units_dat::base_property[unit->current_build_unit->id] & UnitProperty::Addon;
+						faction = globals->players[unit->player].faction;
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) {
@@ -800,7 +803,7 @@ namespace hooks {
 								switch (current_button->requirement_var) {
 									case UnitId::TerranCleric:
 									case UnitId::TerranShamanSupportMode: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranVestry) || scbw::unit_queue_full(unit)) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranVestry) || bw::unit_queue_full(unit)) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -808,7 +811,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranEidolon:
 									case UnitId::TerranSavant: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranCovenant) || scbw::unit_queue_full(unit)) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranCovenant) || bw::unit_queue_full(unit)) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -816,12 +819,12 @@ namespace hooks {
 									} break;
 
 									case UnitId::TerranCyprian: {
-										if (globals.players[unit->player].faction == Faction_TerranNydusTrinity) { current_button_state = Button_State::Invisible;
+										if (faction == Faction_TerranNydusTrinity) { current_button_state = Button_State::Invisible;
 										}
 									} break;
 
 									case UnitId::TerranCohort: {
-										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || globals.players[unit->player].faction != Faction_TerranNydusTrinity) {
+										if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction_TerranNydusTrinity) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -831,9 +834,33 @@ namespace hooks {
 							} break;
 							case UnitId::TerranCaptaincy: {
 								switch (current_button->requirement_var) {
+									case UnitId::TerranApostle:
+									{
+										if (faction != Faction_TerranHecatonCoalition) {
+											if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+												current_button_state = Button_State::Invisible;
+											} else {
+												current_button_state = Button_State::Enabled;
+											}
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::TerranAuriel:
+									{
+										if (faction == Faction_TerranHecatonCoalition) {
+											if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+												current_button_state = Button_State::Invisible;
+											} else {
+												current_button_state = Button_State::Enabled;
+											}
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
 									case UnitId::TerranSiren:
 									case UnitId::TerranStriga: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranTinkerersTower) || scbw::unit_queue_full(unit))
+										if (!bw::all_selected_units_have_addon(UnitId::TerranTinkerersTower) || bw::unit_queue_full(unit))
 										{
 											current_button_state = Button_State::Invisible;
 										} else {
@@ -842,7 +869,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranOlympian:
 									case UnitId::TerranAutocrat: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranGuildhall) || scbw::unit_queue_full(unit)) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranGuildhall) || bw::unit_queue_full(unit)) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -854,14 +881,14 @@ namespace hooks {
 								switch (current_button->requirement_var) {
 									case UnitId::TerranBlackjack:
 									case UnitId::TerranMatadorTankMode: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranScrapyard) || scbw::unit_queue_full(unit)) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit)) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
 									case UnitId::TerranMadrigalImperiosoMode: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranPalladium) || scbw::unit_queue_full(unit)) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranPalladium) || bw::unit_queue_full(unit)) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -869,14 +896,14 @@ namespace hooks {
 									} break;
 
 									case UnitId::TerranGoliath: {
-										if (globals.players[unit->player].faction == Faction_TerranGoldenRepublic
-										||	globals.players[unit->player].faction == Faction_TerranUpstart) {
+										if (faction == Faction_TerranGoldenRepublic
+										||	faction == Faction_TerranUpstart) {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
 									case UnitId::TerranPhalanxTankMode: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranPalladium) || scbw::unit_queue_full(unit)
-										||	 globals.players[unit->player].faction == Faction_TerranNydusTrinity) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranPalladium) || bw::unit_queue_full(unit)
+										||	 faction == Faction_TerranNydusTrinity) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -884,22 +911,22 @@ namespace hooks {
 									} break;
 
 									case UnitId::TerranSouthpaw: {
-										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || globals.players[unit->player].faction != Faction_TerranUpstart) {
+										if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction_TerranUpstart) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
 									case UnitId::TerranAspirant: {
-										if (scbw::unit_queue_full(unit) || is_adding_on || in_air || globals.players[unit->player].faction != Faction_TerranGoldenRepublic) {
+										if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction_TerranGoldenRepublic) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
 									case UnitId::TerranTarasque: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranPalladium) || scbw::unit_queue_full(unit)
-										||  globals.players[unit->player].faction != Faction_TerranNydusTrinity) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranPalladium) || bw::unit_queue_full(unit)
+										||  faction != Faction_TerranNydusTrinity) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -919,7 +946,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranClaymore:
 									case UnitId::TerranPenumbra: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranFutureStation) || scbw::unit_queue_full(unit) || is_adding_on) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranFutureStation) || bw::unit_queue_full(unit) || is_adding_on) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -927,7 +954,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranAnticthon:
 									case UnitId::TerranAion: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranBioticBastion) || scbw::unit_queue_full(unit) || is_adding_on) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranBioticBastion) || bw::unit_queue_full(unit) || is_adding_on) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -938,13 +965,25 @@ namespace hooks {
 							case UnitId::TerranStarpad: {
 								switch (current_button->requirement_var) {
 									case UnitId::TerranWraith: {
-										if (globals.players[unit->player].faction == Faction_TerranFuturistFederation) {
+										if (faction == Faction_TerranFuturistFederation) {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
 									case UnitId::TerranAncile: {
-										if (globals.players[unit->player].faction == Faction_TerranUpstart) {
+										if (faction == Faction_TerranUpstart) {
 											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::TerranTrojan: {
+										if (faction == Faction_TerranHecatonCoalition) {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::TerranQilin: {
+										if (faction == Faction_TerranHecatonCoalition) {
+											if (!in_air) {
+												current_button_state = Button_State::Enabled;
+											}
 										}
 									} break;
 								}
@@ -953,30 +992,30 @@ namespace hooks {
 								switch (current_button->requirement_var) {
 									case UnitId::TerranSalamander:
 									case UnitId::TerranSundog: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranRotary) || scbw::unit_queue_full(unit)) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranRotary) || bw::unit_queue_full(unit)) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
 									case UnitId::TerranAzazel: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranCommandment) || scbw::unit_queue_full(unit)) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranCommandment) || bw::unit_queue_full(unit)) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
 									case UnitId::TerranSeraph: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranCommandment) || scbw::unit_queue_full(unit)
-										||	 globals.players[unit->player].faction == Faction_TerranGoldenRepublic) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranCommandment) || bw::unit_queue_full(unit)
+										||	 faction == Faction_TerranGoldenRepublic) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
 									case UnitId::TerranLuminary: {
-										if (!scbw::all_selected_units_have_addon(UnitId::TerranCommandment) || scbw::unit_queue_full(unit)
-										|| 	 globals.players[unit->player].faction != Faction_TerranGoldenRepublic) {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranCommandment) || bw::unit_queue_full(unit)
+										|| 	 faction != Faction_TerranGoldenRepublic) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -997,7 +1036,7 @@ namespace hooks {
 									case UnitId::TerranMinotaur:
 									case UnitId::TerranMagnetar:
 									case UnitId::TerranPythean: {
-										if (scbw::unit_queue_full(unit) || is_adding_on || in_air) {
+										if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -1005,9 +1044,9 @@ namespace hooks {
 									} break;
 									case UnitId::TerranHippogriff:
 									case UnitId::TerranPhobos: {
-										if (scbw::unit_queue_full(unit) || is_adding_on || in_air) {
+										if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
 											current_button_state = Button_State::Invisible;
-										} else if (!scbw::all_selected_units_have_addon(UnitId::TerranHadron)) {
+										} else if (!bw::all_selected_units_have_addon(UnitId::TerranHadron)) {
 											current_button_state = Button_State::Disabled;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -1020,6 +1059,37 @@ namespace hooks {
 						// As of late 2022, we must force train/build icons for extended unit ids to show up using this very dumb method that
 						// inlines requirements in yet another position. Not sure how to fix! -Pr0nogo
 						switch (unit->id) {
+							case UnitId::Omnivale:
+							{
+								OmnipresenceState omni_state = globals->players[unit->player].omnipresence_state;
+								switch (current_button->requirement_var) {
+									case UnitId::TerranMason:
+									{
+										if (omni_state != OmnipresenceState_ProtossZerg) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::ProtossScribe:
+									{
+										if (omni_state != OmnipresenceState_ZergTerran) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::ZergDroleth:
+									{
+										if (omni_state != OmnipresenceState_TerranProtoss) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+								}
+							} break;
+
 							case UnitId::TerranMason:
 							case UnitId::TerranTalos: {
 								if (unit->main_order_id != OrderId::BuildTerran && unit->main_order_id != OrderId::ConstructingBuilding) {
@@ -1072,50 +1142,52 @@ namespace hooks {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
-									case UnitId::TerranLodestone: {
-										if (has_addon || is_training || is_adding_on) {
-											current_button_state = Button_State::Invisible;
-										} else {
-											current_button_state = Button_State::Enabled;
-										}
-									} break;
+									case UnitId::TerranLodestone:
 									case UnitId::TerranQuarry:
 									case UnitId::TerranAnvil: {
 										if (has_addon || is_training || is_adding_on) {
 											current_button_state = Button_State::Invisible;
-										} else if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtlas)) {
-											current_button_state = Button_State::Enabled;
 										} else {
-											current_button_state = Button_State::Disabled;
+											current_button_state = Button_State::Enabled;
 										}
 									} break;
 								}
 							} break;
 							case UnitId::TerranTreasury: {
 								switch (current_button->requirement_var) {
-									case UnitId::TerranLodestone: {
-										if (has_addon || is_training || is_adding_on) {
-											current_button_state = Button_State::Invisible;
-										} else {
-											current_button_state = Button_State::Enabled;
-										}
-									} break;
+									case UnitId::TerranLodestone:
 									case UnitId::TerranQuarry:
 									case UnitId::TerranAnvil: {
 										if (has_addon || is_training || is_adding_on) {
 											current_button_state = Button_State::Invisible;
-										} else if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranAtlas)) {
-											current_button_state = Button_State::Enabled;
 										} else {
-											current_button_state = Button_State::Disabled;
+											current_button_state = Button_State::Enabled;
 										}
 									} break;
 								}
 							} break;
-							case UnitId::TerranParthenon: {
+							case UnitId::TerranQuarry: {
 								switch (current_button->requirement_var) {
-									case UnitId::TerranArmistice: {
-										if (unit->status & UnitStatus::GroundedBuilding) {
+									case UnitId::TerranMason: {
+										if (!unit_ext->values[ValueAddonInactive]) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::TerranTalos: {
+										if (!unit_ext->values[ValueAddonInactive] && player_has_completed_landed_unit_id(unit->player, UnitId::TerranAtlas)) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
+								}
+							} break;
+							case UnitId::TerranAnvil: {
+								switch (current_button->requirement_var) {
+									case UnitId::TerranMorningstar: {
+										if (!unit_ext->values[ValueAddonInactive] && !unit->building.silo.nuke && !is_training) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Invisible;
@@ -1150,8 +1222,7 @@ namespace hooks {
 									} break;
 								}
 							} break;
-							case UnitId::ProtossScribe:
-							case UnitId::ProtossArtisan: {
+							case UnitId::ProtossScribe: {
 								switch (current_button->requirement_var) {
 									case UnitId::ProtossNexus:
 									case UnitId::ProtossPylon:
@@ -1197,6 +1268,26 @@ namespace hooks {
 									current_button_state = Button_State::Enabled;
 								} else {
 									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ProtossGateway: {
+								switch (current_button->requirement_var) {
+									case UnitId::ProtossZealot:
+									case UnitId::ProtossDracadin:
+									case UnitId::ProtossEcclesiast:
+									case UnitId::ProtossHierophant: {
+										current_button_state = Button_State::Enabled;
+									} break;
+									case UnitId::ProtossLegionnaire: {
+										if (faction != Faction_ProtossOrderOfTheSacredSaber) {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
+									case UnitId::ProtossAdherent: {
+										if (faction == Faction_ProtossOrderOfTheSacredSaber) {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
 								}
 							} break;
 							case UnitId::ProtossGrandLibrary: {
@@ -1314,20 +1405,52 @@ namespace hooks {
 										}
 									} break;
 									case UnitId::ZergZethrokor:
-									case UnitId::ZergQuazilisk:
-									case UnitId::ZergNathrokor: {
+									case UnitId::ZergQuazilisk: {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazethPool)
-										||  player_has_unit_id(unit->player, UnitId::ZergKalkiirPond)) {
+										||  player_has_unit_id(unit->player, UnitId::ZergVornathPond)
+										||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
+									case UnitId::ZergNathrokor: {
+										if (faction != Faction_ZergZorthosTendril) {	
+											if (player_has_completed_unit_id(unit->player, UnitId::ZergVornathPond)
+											||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+												current_button_state = Button_State::Enabled;
+											} else {
+												current_button_state = Button_State::Disabled;
+											}
+										} else {
+												current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::ZergNathrelisk: {
+										if (faction == Faction_ZergZorthosTendril) {	
+											if ((player_has_completed_unit_id(unit->player, UnitId::ZergVornathPond)
+											||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) && faction == Faction_ZergZorthosTendril) {
+												current_button_state = Button_State::Enabled;
+											} else {
+												current_button_state = Button_State::Disabled;
+											}
+										} else {
+												current_button_state = Button_State::Invisible;
+										}
+									} break;
 									case UnitId::ZergHydralisk:
-									case UnitId::ZergIzirokor:
-									case UnitId::ZergSkithrokor: {
+									case UnitId::ZergIzirokor: {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrithDen)
-										||  player_has_unit_id(unit->player, UnitId::ZergBactithSwamp)) {
+										||  player_has_unit_id(unit->player, UnitId::ZergSkibactScab)
+										||  player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergSkithrokor: {
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergSkibactScab)
+										||  player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
@@ -1357,7 +1480,7 @@ namespace hooks {
 									case UnitId::ZergEvigrilisk:
 									case UnitId::ZergAlmaksalisk: {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergAlkagIteth)
-										||  player_has_unit_id(unit->player, UnitId::ZergChokralgantChazsal)) {
+										||  player_has_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
@@ -1423,8 +1546,8 @@ namespace hooks {
 										}
 									} break;
 									case UnitId::ZergVorvrokor: {
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazethPool)
-										||  player_has_unit_id(unit->player, UnitId::ZergKalkiirPond)) {
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergVornathPond)
+										||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
@@ -1432,16 +1555,23 @@ namespace hooks {
 									} break;
 									case UnitId::ZergLiiralisk:
 									case UnitId::ZergKalkalisk: {
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergKalkiirPond)) {
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
-									case UnitId::ZergBactalisk:
+									case UnitId::ZergBactalisk: {
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergSkibactScab)
+										|| player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Disabled;
+										}
+								} break;
 									case UnitId::ZergTethzorokor:
 									case UnitId::ZergVithrilisk: {
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergBactithSwamp)) {
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
@@ -1468,14 +1598,14 @@ namespace hooks {
 									case UnitId::ZergCherbrathalor:
 									case UnitId::ZergOkrimnilisk:
 									case UnitId::ZergAlgoztalisk: {
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralgantChazsal)) {
+										if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
 									case UnitId::ZergTetcaerokor:
-									case UnitId::ZergSelkerilisk:
+									case UnitId::ZergIsthrathaleth:
 									case UnitId::ZergAkistrokor: {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergAlmakisAntre)) {
 											current_button_state = Button_State::Enabled;
@@ -1491,18 +1621,22 @@ namespace hooks {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
-									case UnitId::ZergOgroszaleth:
-									case UnitId::ZergRakzilisk: {
-										if (player_has_completed_unit_id(unit->player, UnitId::ZergRakzogthRoost)) {
-											current_button_state = Button_State::Enabled;
-										} else {
-											current_button_state = Button_State::Disabled;
-										}
-									} break;
 									default: {
 										current_button_state = Button_State::Invisible;
 									} break;
 								}
+							} break;
+							case UnitId::ZergZethrokor: {
+								if (current_button->requirement_var == UnitId::ZergVorvrokor) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergVornathPond)
+									||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								} break;
 							} break;
 							case UnitId::ZergMutalisk: {
 								if (current_button->requirement_var == UnitId::ZergTosgrilisk) {
@@ -1528,7 +1662,40 @@ namespace hooks {
 							} break;
 							case UnitId::ZergIzirokor: {
 								if (!is_burrowed && current_button->requirement_var == UnitId::ZergTethzorokor) {
-									if (player_has_completed_unit_id(unit->player, UnitId::ZergBactithSwamp)) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ZergKagralisk: {
+								if (current_button->requirement_var == UnitId::ZergCherbrathalor) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ZergEvigrilisk: {
+								if (current_button->requirement_var == UnitId::ZergOkrimnilisk) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ZergAlmaksalisk: {
+								if (current_button->requirement_var == UnitId::ZergAlgoztalisk) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergChokralChazsal)) {
 										current_button_state = Button_State::Enabled;
 									} else {
 										current_button_state = Button_State::Disabled;
@@ -1605,6 +1772,45 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
+							case UnitId::ZergQuazethPool: {
+								if (current_button->requirement_var == UnitId::ZergVornathPond) {
+									current_button_state = Button_State::Enabled;
+								} else if (current_button->requirement_var == UnitId::ZergKalkiirLake) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
+									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ZergHydrithDen: {
+								if (current_button->requirement_var == UnitId::ZergSkibactScab) {
+									current_button_state = Button_State::Enabled;
+								} else if (current_button->requirement_var == UnitId::ZergTethvithSwamp) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
+									||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case UnitId::ZergAlkagIteth: {
+								if (current_button->requirement_var == UnitId::ZergChokralChazsal) {
+									if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
+										current_button_state = Button_State::Enabled;
+									} else {
+										current_button_state = Button_State::Disabled;
+									}
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
 						}
 					}
 
@@ -1615,10 +1821,20 @@ namespace hooks {
 							current_button_state = Button_State::Invisible;
 						}
 
+						/* // Enable this when buttonsets.cpp doesn't have the selection order bug. -Pr0nogo
+						if (current_button->requirement_var == TechId::Stimpacks) {
+							if (unit_ext->timers[TimerStimpackDelay] > 1) {
+								current_button_state = Button_State::Disabled;
+							} else {
+							//	current_button_state = Button_State::Enabled;
+							}
+						}
+						*/
+
 						// Passive icons (yes, it's quite ugly)
 						if (current_button->requirement_var == TechId::Healing && current_button->icon_id != IconId::Heal) {
 							current_button_state = Button_State::Disabled;
-							if (scbw::client_selection_unit_id_count(unit->id) != *g_client_selection_count) {
+							if (bw::client_selection_unit_id_count(unit->id) != *g_client_selection_count) {
 								current_button_state = Button_State::Invisible;
 							}
 							switch (unit->id) {
@@ -1689,9 +1905,9 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::TerranSavant: {
-									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0) { // Savant - Entropy Gauntlets
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0) { // Savant - Entropy Gauntlets
 										current_button_state = Button_State::Enabled;
-									} else if (current_button->icon_id == IconId::IonThrusters && scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) > 0) { // Savant - Power Siphon
+									} else if (current_button->icon_id == IconId::IonThrusters && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) > 0) { // Savant - Power Siphon
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -1702,6 +1918,11 @@ namespace hooks {
 								} break;
 								case UnitId::TerranApostle: {
 									if (current_button->icon_id == IconId::Reclamation) { // Apostle - Reclamation
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranAuriel: {
+									if (current_button->icon_id == IconId::FlyerAttack) { // Auriel - Incineration
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -1735,7 +1956,7 @@ namespace hooks {
 									if (current_button->icon_id == IconId::DefensiveMatrix) { // Sevenstep - Curtain Call
 										current_button_state = Button_State::Enabled;
 									}
-								}
+								} break;
 								case UnitId::TerranLobotomyMine: {
 									if (current_button->icon_id == IconId::UseSpiderMines) { // Lobotomy Mine - Dazing Detonation
 										current_button_state = Button_State::Enabled;
@@ -1843,6 +2064,11 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::TerranQilin: {
+									if (current_button->icon_id == IconId::ColossusReactor) { // Qilin - Nanite Chambers
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::TerranAncile: {
 									if (current_button->icon_id == IconId::DefensiveMatrix) { // Ancile - Providence
 										current_button_state = Button_State::Enabled;
@@ -1937,7 +2163,7 @@ namespace hooks {
 								case UnitId::TerranIronFoundry:
 								case UnitId::TerranStarport: {
 									bool is_adding_on = units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon;
-									if (!unit->building.addon && !is_adding_on != OrderId::BuildAddon && !(unit->status & UnitStatus::InAir) && !scbw::unit_queue_full(unit)) {
+									if (!unit->building.addon && !is_adding_on != OrderId::BuildAddon && !(unit->status & UnitStatus::InAir) && !bw::unit_queue_full(unit)) {
 										current_button_state = Button_State::Disabled; // Still shows even when they are building an addon!
 									} else {
 										current_button_state = Button_State::Invisible;
@@ -1947,7 +2173,7 @@ namespace hooks {
 								// PROTOSS \\
 
 								case UnitId::ProtossArtisan: {
-									if (current_button->icon_id == IconId::KhaydarinCore) { // Artisan - Concordance Field
+									if (current_button->icon_id == IconId::KhaydarinCore) { // Artisan - Radiant Rifts
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -1957,7 +2183,7 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ProtossZealot: {
-									if (current_button->icon_id == IconId::LegEnhancements) { // Zealot - Deathless Procession
+									if (current_button->icon_id == IconId::PlasmaShields) { // Zealot - Imperious March
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -1969,6 +2195,12 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossLegionnaire: {
 									if (current_button->icon_id == IconId::PsiAssault) { // Legionnaire - Blade Vortex
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ProtossAdherent: {
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Adherent - Eternal Service
+									||	current_button->icon_id == IconId::LegEnhancements) {			// Adherent - Deathless Procession
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2003,7 +2235,7 @@ namespace hooks {
 								} break;
 								case UnitId::ProtossBarghest: {
 									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
-									||	current_button->icon_id == IconId::ApialSensors) {				// Barghest - Multi-Attack III
+									||	current_button->icon_id == IconId::ApialSensors) {				// Barghest - Repentant Chorus
 										current_button_state = Button_State::Enabled;
 									}
 									if (current_button->icon_id == IconId::ApialSensors) {
@@ -2147,7 +2379,7 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ProtossMatrix: {
-									if (current_button->icon_id == IconId::ApialSensors) { // Matrix - Multi-Attack IV
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Matrix - Astral Tether
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2169,9 +2401,13 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergNathrelisk: {
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Nathrelisk - Mitosal Fog
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergVorvrokor: {
-									if (current_button->icon_id == IconId::MetabolicBoost	// Vorvrokor - Adrenal Surge
-									||	current_button->icon_id == IconId::Ensnare) {		// Vorvrokor - Captivating Claws
+									if (current_button->icon_id == IconId::Ensnare) {		// Vorvrokor - Captivating Claws
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2200,8 +2436,9 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergTosgrilisk:
-								case UnitId::ZergIzirokor: {
-									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Izirokor - Crushing Tide
+								case UnitId::ZergIzirokor:
+								case UnitId::ZergCherbrathalor: {
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Crushing Tide
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2233,35 +2470,45 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergVithrilisk: {
-									if (current_button->icon_id == IconId::VenomUnused				// Vithrilisk - Corrosive Touch
-									||  current_button->icon_id == IconId::SuicideInfestedTerran) { // Vithrilisk - Critical Mass
+									if (current_button->icon_id == IconId::VenomUnused				// Corrosive Touch
+									||  current_button->icon_id == IconId::SuicideInfestedTerran) { // Critical Mass
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergEvigrilisk: {
-									if (current_button->icon_id == IconId::RilirokorToxicSpores) { // Evigrilisk - Lashing Limbs
+									if (current_button->icon_id == IconId::RilirokorToxicSpores) { // Lashing Limbs
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergOkrimnilisk: {
+									if (current_button->icon_id == IconId::Antennae) { // Endless Limbs
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::ZergAlgoztalisk: {
+									if (current_button->icon_id == IconId::ChitinousPlating) { // Escape Velocity
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergGeszithalor: {
-									if (current_button->icon_id == IconId::ZergFlyerAttacks) { // Geszithalor - Searing Acid
+									if (current_button->icon_id == IconId::ZergFlyerAttacks) { // Searing Acid
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergKeskathalor: {
-									if (current_button->icon_id == IconId::VenomUnused) { // Keskathalor - Caustic Discharge
+									if (current_button->icon_id == IconId::VenomUnused) { // Caustic Discharge
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergZoryusthaleth: {
-									if (current_button->icon_id == IconId::Rilirokor			// Zoryusthaleth - Mitosis
-									||	current_button->icon_id == IconId::MetabolicBoost) {	// Zoryusthaleth - Swarming Omen
+									if (current_button->icon_id == IconId::Rilirokor			// Mitosis
+									||	current_button->icon_id == IconId::MetabolicBoost) {	// Swarming Omen
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergRilirokor:
 								case UnitId::ZergRililisk: {
-									if (current_button->icon_id == IconId::RoarUnused) { // Broodspawn - Death Cycle
+									if (current_button->icon_id == IconId::RoarUnused) { // Death Cycle
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2273,7 +2520,7 @@ namespace hooks {
 											is_mixed = true;
 										}
 									}
-									if (current_button->icon_id == IconId::Attack) { // Lakizilisk - Burrowed attacker
+									if (current_button->icon_id == IconId::Attack) { // Burrowed attacker
 										if (is_mixed) {
 											current_button_state = Button_State::Enabled;
 										} else if (unit->status & UnitStatus::Burrowed && unit->main_order_id != OrderId::Unburrow) {
@@ -2281,67 +2528,69 @@ namespace hooks {
 										} else {
 											current_button_state = Button_State::Disabled;
 										}
-									} else if (current_button->icon_id == IconId::LakiziliskSubterraneanSpines) { // Lakizilisk - Seismic Spines
+									} else if (current_button->icon_id == IconId::LakiziliskSubterraneanSpines) { // Seismic Spines
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergKonvilisk: {
-									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle // Konvilisk - Fertile Spines
-									||	current_button->icon_id == IconId::GeszithalorAcidSpore) {			// Konvilisk - Crushing Tide
+									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle // Fertile Spines
+									||	current_button->icon_id == IconId::GeszithalorAcidSpore) {			// Crushing Tide
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergVilgorokor: {
-									if (current_button->icon_id == IconId::Radioactive_Zerg_Egg) { // Vilgorokor - Autophagy
+									if (current_button->icon_id == IconId::Dark_Swarm				// Reconstitution
+									||  current_button->icon_id == IconId::Radioactive_Zerg_Egg) {	// Autophagy
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergVilgoleth: {
-									if (current_button->icon_id == IconId::PneumatizedCaparace)	{ // Vilgoleth - Corpse Autophagy
+									if (current_button->icon_id == IconId::PneumatizedCaparace)	{ // Corpse Autophagy
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergMatraleth: {
-									if (current_button->icon_id == IconId::Ensnare) { // Matraleth - Ensnaring Brood
+									if (current_button->icon_id == IconId::Ensnare) { // Ensnaring Brood
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergUltrokor: {
-									if (current_button->icon_id == IconId::UltrokorKaiserBlades // Ultrokor - Saber Siphon
-									||  current_button->icon_id == IconId::AnabolicSynthesis) {	// Ultrokor - Kaiser Rampage
+									if (current_button->icon_id == IconId::UltrokorKaiserBlades // Saber Siphon
+									||  current_button->icon_id == IconId::AnabolicSynthesis) {	// Kaiser Rampage
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergZarcavrokor: {
-									if (current_button->icon_id == IconId::RoarUnused) { // Zarcavrokor - Fan of Teeth
+									if (current_button->icon_id == IconId::RoarUnused) { // Fan of Teeth
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergTetcaerokor: {
-									if (current_button->icon_id == IconId::RoarUnused) { // Tetcaerokor - Virile Coating
+									if (current_button->icon_id == IconId::RoarUnused) { // Virile Coating
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergAkistrokor: {
-									if (current_button->icon_id == IconId::Ensnare) { // Akistrokor - Captivating Claws
+									if (current_button->icon_id == IconId::Ensnare				// Captivating Claws
+									||	current_button->icon_id == IconId::SuicideScourge) {	// Devouring Instinct
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergHachirosk:
 								case UnitId::ZergLarvoskCesiant: {
-									if (current_button->icon_id == IconId::MetasynapticNode) { // Larvosk Cesiant - Larval Gestation
+									if (current_button->icon_id == IconId::MetasynapticNode) { // Larval Gestation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergCaphrolosk:
 								case UnitId::ZergGathtelosk:
 								case UnitId::ZergOcsalCesiant: {
-									if (current_button->icon_id == IconId::SuicideScourge) { // Caphrolosk, Gathtelosk - Ocsal Gestation, Swarmhold
+									if (current_button->icon_id == IconId::SuicideScourge) { // Ocsal Gestation / Swarmhold
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergSkortrithCesiant: {
-									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) { // Skortrith Colony - Tendril Amitosis
+									if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) { // Tendril Amitosis
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2358,7 +2607,7 @@ namespace hooks {
 							u32 loaded = 0;
 							for (u32 i = 0; i < 8; ++i) {								
 								Unit* bunker_unit = unit->get_loaded_unit(i);
-								if (bunker_unit && scbw::unit_is_ranged_attacker(bunker_unit)) {
+								if (bunker_unit && bw::unit_is_ranged_attacker(bunker_unit)) {
 									loaded++;
 								}
 							}
@@ -2376,7 +2625,7 @@ namespace hooks {
 						if (unit->id != UnitId::ProtossMindTyrant) {
 							for (s32 i = 0; i < generictoggles; i++) {
 								if (current_button->action_var == toggle_abilities[i]) {
-									if (scbw::get_generic_rust_value(unit, toggle_values[i]) == 1) {
+									if (bw::get_generic_rust_value(unit, toggle_values[i]) == 1) {
 										current_button->icon_id = button_toggle_off[i];
 										current_button->requirement_string_id = string_toggle_off[i];
 									} else {
@@ -2401,7 +2650,7 @@ namespace hooks {
 							bool can_cancel = false;
 							switch (unit->id) {
 								case UnitId::TerranApostle: {
-									if (scbw::get_generic_rust_value(unit, RustId::ToggleLazarusAgent) == 1) {
+									if (bw::get_generic_rust_value(unit, RustId::ToggleLazarusAgent) == 1) {
 										can_cancel = true;
 									}
 								} break;
@@ -2470,7 +2719,7 @@ namespace hooks {
 							current_dialog->graphic = current_button->icon_id;
 							if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
 								current_dialog->flags |= BinDlgFlags::Highlighted;
-								scbw::update_dialog(current_dialog);
+								bw::update_dialog(current_dialog);
 							}
 							stack_placeholder.not_allocated = 0;
 							stack_placeholder.not_allocated_2 = 0;
@@ -2485,9 +2734,9 @@ namespace hooks {
 							current_button_state = stack_placeholder.buttonState;
 						}
 						// 0045930B
-						scbw::show_dialog(current_dialog);
+						bw::show_dialog(current_dialog);
 						if (current_button_state == Button_State::Disabled) {
-							scbw::disable_dialog(current_dialog);
+							bw::disable_dialog(current_dialog);
 							// 0045931C
 							if (*g_last_internal_error == 0x15) {
 								current_button->action_string_id = 0x02FA; // Text: Not Implemented.
@@ -2513,7 +2762,7 @@ namespace hooks {
 			}
 			if (!stop_there && !jumpto5934E) {
 				// 0045933C
-				scbw::hide_dialog(current_dialog);
+				bw::hide_dialog(current_dialog);
 				current_dialog->graphic = 0xFFFF;
 				current_dialog->button_user = nullptr;
 			}

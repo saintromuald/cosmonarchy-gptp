@@ -1,7 +1,7 @@
 #include "weapon_cooldown.h"
-#include "../../SCBW/scbwdata.h"
-#include "../../SCBW/enumerations.h"
-#include "../../SCBW/api.h"
+#include "../../BW/bwdata.h"
+#include "../../BW/enumerations.h"
+#include "../../BW/api.h"
 #include "../../math_utils.h"
 #include "globals.h"
 
@@ -12,11 +12,20 @@ namespace hooks {
 			return armor_pen;
 		}
 
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit_ext->values[ValueTriggerArmorPenBaseSet]) {
+			armor_pen = unit_ext->values[ValueTriggerArmorPenBaseAmount];
+		}
+
+		if (unit_ext->unit_vectors[UnitVectorBarghests].size()) {
+			armor_pen += unit_ext->unit_vectors[UnitVectorBarghests].size();
+		}
+
 		switch (unit->id) {
 			case UnitId::TerranOlympian: {
 				// Olympian Dishonorable Discharge - add 3 armor pen to targets facing away from the Olympian
 				if (target && !units_dat::group_flags[target->id].is_building) {
-					if (scbw::unit_is_exposed_to_position(target, unit->position)) {
+					if (bw::unit_is_exposed_to_position(target, unit->position)) {
 						helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, target, 1, 0);
 						// TODO: Overlay
 						armor_pen += 3;
@@ -34,7 +43,7 @@ namespace hooks {
 
 		// Stimpack
 		if (unit->stim_timer) {
-			cooldown /= 2;
+			cooldown /= 2.5;
 		}
 
 		// Ensnare
@@ -43,17 +52,18 @@ namespace hooks {
 			{
 				case 1:
 				{
-					cooldown += cooldown / 4;
+					cooldown += cooldown / 3;
 				} break;
 				case 2:
 				{
-					cooldown += cooldown / 2;
+					cooldown += cooldown / 1.5;
 				} break;
 			}
 		}
 
 		// Crucible Aura
-		cooldown /= 1 + 0.25 * unit_ext->unit_vectors[UnitVectorCrucibles].size();
+		bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
+		cooldown /= 1 + (has_crucible * 0.23); // Divisor math is different
 
 		// Vithrilisk - Corrosive Spores: lower attack speed of victim
 		cooldown *= 1 + unit_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;

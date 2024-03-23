@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <dsound.h>
-#include <SCBW/api.h>
-#include <SCBW/structures.h>
-#include <SCBW/scbwdata.h>
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
 
 // These hooks facilitate a new DirectSound implementation, which will enable arbitrary new_sound channels and other features. -Pr0nogo
 namespace hooks

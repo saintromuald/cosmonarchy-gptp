@@ -1,6 +1,6 @@
 #include "psi_field.h"
-#include "../SCBW/scbwdata.h"
-#include "SCBW/api.h"
+#include "../BW/bwdata.h"
+#include "BW/api.h"
 #include "trigger_system/trigger_system.h"
 
 namespace hooks
@@ -12,10 +12,10 @@ namespace hooks
 
 	// Conditions on which the power field should be showed
 	bool unit_can_show_power_for(Unit* unit, u32 player) {
-		if (globals.players[player].witness_mode || *g_is_in_replay) {
+		if (globals->players[player].witness_mode || *g_is_in_replay) {
 			return true;
 		}
-		if (!scbw::is_allied_to(unit->player, player))
+		if (!bw::is_allied_to(unit->player, player))
 		{
 			return false;
 		}
@@ -60,7 +60,7 @@ namespace hooks
 			helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, 0);
 			return true;
 		}
-		if (*psi_unknown) {
+		if (*g_psi_aura_is_drawn) {
 			helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, *g_player_visions);
 			return true;
 		}

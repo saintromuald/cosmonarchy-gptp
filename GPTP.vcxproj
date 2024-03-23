@@ -36,7 +36,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -125,6 +125,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -159,6 +160,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -195,6 +197,7 @@
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -233,6 +236,7 @@
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -259,9 +263,12 @@
     <ClCompile Include="aise_signal.cpp" />
     <ClCompile Include="ai_layouts.cpp" />
     <ClCompile Include="bullet_extender.cpp" />
-    <ClCompile Include="CMBW\cmbw_behaviors.cpp" />
-    <ClCompile Include="CMBW\cmbw_ids.cpp" />
-    <ClCompile Include="CMBW\cmbw_utils.cpp" />
+    <ClCompile Include="BW\bwdata.cpp" />
+    <ClCompile Include="BW\bwhelper.cpp" />
+    <ClCompile Include="BW\Storm.cpp" />
+    <ClCompile Include="CM\cm_behaviors.cpp" />
+    <ClCompile Include="CM\cm_ids.cpp" />
+    <ClCompile Include="CM\cm_utils.cpp" />
     <ClCompile Include="color_palette.cpp" />
     <ClCompile Include="custom_ai.cpp" />
     <ClCompile Include="data_ext.cpp" />
@@ -282,6 +289,8 @@
     <ClCompile Include="hooks\DatExtend\dat_load_inject.cpp" />
     <ClCompile Include="hooks\grafting\grafting.cpp" />
     <ClCompile Include="hooks\grafting\grafting_inject.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\hotkeys.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\hotkeys_inject.cpp" />
     <ClCompile Include="hooks\limits\sfx_extender_inject.cpp" />
     <ClCompile Include="hooks\loading_hook.cpp" />
     <ClCompile Include="hooks\loading_hook_inject.cpp" />
@@ -289,12 +298,14 @@
     <ClCompile Include="hooks\orders\orders_root_inject.cpp" />
     <ClCompile Include="hooks\update_unit_sight.cpp" />
     <ClCompile Include="hooks\update_unit_sight_inject.cpp" />
+    <ClCompile Include="maths.cpp" />
+    <ClCompile Include="utility\RegConfig.cpp" />
     <ClCompile Include="req_table.cpp" />
-    <ClCompile Include="SCBW\extender\TileHeight_extender.cpp" />
-    <ClCompile Include="SCBW\ExtendSightLimit.cpp" />
-    <ClCompile Include="SCBW\scbwdata.cpp" />
-    <ClCompile Include="SCBW\Storm.cpp" />
+    <ClCompile Include="BW\extender\TileHeight_extender.cpp" />
+    <ClCompile Include="BW\ExtendSightLimit.cpp" />
+    <ClCompile Include="BW\structures.cpp" />
     <ClCompile Include="selection_extender.cpp" />
+    <ClCompile Include="collections.h" />
     <ClCompile Include="trigger_system\trigger_events.cpp" />
     <ClCompile Include="trigger_system\trigger_parser.cpp" />
     <ClCompile Include="threshold.cpp" />
@@ -320,8 +331,6 @@
     <ClCompile Include="hooks\interface\hpbars\hpbars_inject.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\lobby.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\lobby_inject.cpp" />
-    <ClCompile Include="hooks\interface\uifeatures\screen_hotkeys.cpp" />
-    <ClCompile Include="hooks\interface\uifeatures\screen_hotkeys_inject.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\ui_features.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\ui_features_inject.cpp" />
     <ClCompile Include="hooks\limits\ccmu_inject.cpp" />
@@ -463,8 +472,7 @@
     <ClCompile Include="hooks\orders\spells\nuke_orders.cpp" />
     <ClCompile Include="hooks\orders\spells\nuke_orders_inject.cpp" />
     <ClCompile Include="player_color.cpp" />
-    <ClCompile Include="SCBW\scbwhelper.cpp" />
-    <ClCompile Include="SCBW\structures\Player.cpp" />
+    <ClCompile Include="BW\structures\Player.cpp" />
     <ClCompile Include="Plugin.cpp" />
     <ClCompile Include="plugin_main.cpp" />
     <ClCompile Include="hooks\orders\spells\recall_spell.cpp" />
@@ -507,7 +515,7 @@
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
-    <ClCompile Include="SCBW\api.cpp" />
+    <ClCompile Include="BW\api.cpp" />
     <ClCompile Include="hooks\apply_upgrade_flags.cpp" />
     <ClCompile Include="hooks\apply_upgrade_flags_inject.cpp" />
     <ClCompile Include="hooks\unit_stats\armor_bonus.cpp" />
@@ -517,13 +525,13 @@
     <ClCompile Include="graphics\Bitmap.cpp" />
     <ClCompile Include="hooks\bunker_hooks.cpp" />
     <ClCompile Include="hooks\bunker_hooks_inject.cpp" />
-    <ClCompile Include="SCBW\structures\Image.cpp" />
+    <ClCompile Include="BW\structures\Image.cpp" />
     <ClCompile Include="hooks\cloak_nearby_units.cpp" />
     <ClCompile Include="hooks\cloak_nearby_units_inject.cpp" />
     <ClCompile Include="hooks\cloak_tech.cpp" />
     <ClCompile Include="hooks\cloak_tech_inject.cpp" />
-    <ClCompile Include="SCBW\structures\Sprite.cpp" />
-    <ClCompile Include="SCBW\structures\Unit.cpp" />
+    <ClCompile Include="BW\structures\Sprite.cpp" />
+    <ClCompile Include="BW\structures\Unit.cpp" />
     <ClCompile Include="AI\spells\dark_swarm.cpp" />
     <ClCompile Include="AI\spells\defensive_matrix.cpp" />
     <ClCompile Include="hooks\detector.cpp" />
@@ -588,7 +596,7 @@
     <ClCompile Include="hooks\unit_destructor_special.cpp" />
     <ClCompile Include="hooks\unit_speed.cpp" />
     <ClCompile Include="hooks\unit_speed_inject.cpp" />
-    <ClCompile Include="SCBW\UnitFinder.cpp" />
+    <ClCompile Include="BW\UnitFinder.cpp" />
     <ClCompile Include="hooks\update_status_effects.cpp" />
     <ClCompile Include="hooks\update_status_effects_inject.cpp" />
     <ClCompile Include="hooks\update_unit_state.cpp" />
@@ -622,10 +630,13 @@
     <ClInclude Include="aise_signal.h" />
     <ClInclude Include="ai_layouts.h" />
     <ClInclude Include="bullet_extender.h" />
-    <ClInclude Include="CMBW\cmbw.h" />
-    <ClInclude Include="CMBW\cmbw_behaviors.h" />
-    <ClInclude Include="CMBW\cmbw_ids.h" />
-    <ClInclude Include="CMBW\cmbw_utils.h" />
+    <ClInclude Include="BW\bwdata.h" />
+    <ClInclude Include="BW\bwhelper.h" />
+    <ClInclude Include="BW\Storm.h" />
+    <ClInclude Include="CM\cm.h" />
+    <ClInclude Include="CM\cm_behaviors.h" />
+    <ClInclude Include="CM\cm_ids.h" />
+    <ClInclude Include="CM\cm_utils.h" />
     <ClInclude Include="color_palette.h" />
     <ClInclude Include="custom_ai.h" />
     <ClInclude Include="data_ext.h" />
@@ -634,24 +645,26 @@
     <ClInclude Include="hooks\DatExtend\dat_load.h" />
     <ClInclude Include="hooks\grafting\button_functions.h" />
     <ClInclude Include="hooks\grafting\grafting.h" />
+    <ClInclude Include="hooks\interface\uifeatures\hotkeys.h" />
     <ClInclude Include="hooks\limits\sfx_extender.h" />
     <ClInclude Include="hooks\loading_hook.h" />
     <ClInclude Include="hooks\orders\orders_root.h" />
     <ClInclude Include="DatExtend\dat_limits.h" />
     <ClInclude Include="hooks\update_unit_sight.h" />
+    <ClInclude Include="maths.h" />
+    <ClInclude Include="utility\RegConfig.h" />
     <ClInclude Include="req_table.h" />
-    <ClInclude Include="SCBW\enumerations\PortraitId.h" />
-    <ClInclude Include="SCBW\extender\TileHeight_extender.h" />
-    <ClInclude Include="SCBW\Storm.h" />
+    <ClInclude Include="BW\enumerations\PortraitId.h" />
+    <ClInclude Include="BW\extender\TileHeight_extender.h" />
     <ClInclude Include="include\discord_game_sdk.h" />
     <ClInclude Include="selection_extender.h" />
     <ClInclude Include="trigger_system\trigger_events.h" />
+    <ClInclude Include="trigger_system\trigger_helper.h" />
     <ClInclude Include="trigger_system\trigger_parser.h" />
     <ClInclude Include="threshold.h" />
     <ClInclude Include="hooks\aiscript\ai_requests.h" />
     <ClInclude Include="hooks\orders\building_making\building_modifier.h" />
     <ClInclude Include="config.h" />
-    <ClInclude Include="config_utility.h" />
     <ClInclude Include="hooks\build_time.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
@@ -662,7 +675,6 @@
     <ClInclude Include="hooks\interface\briefing\briefing.h" />
     <ClInclude Include="hooks\interface\hpbars\hpbars.h" />
     <ClInclude Include="hooks\interface\mainmenu\lobby.h" />
-    <ClInclude Include="hooks\interface\uifeatures\screen_hotkeys.h" />
     <ClInclude Include="hooks\interface\uifeatures\ui_features.h" />
     <ClInclude Include="hooks\limits\misc_extenders.h" />
     <ClInclude Include="hooks\neutral_related.h" />
@@ -735,8 +747,7 @@
     <ClInclude Include="lib_src\yaml-cpp\tag.h" />
     <ClInclude Include="lib_src\yaml-cpp\token.h" />
     <ClInclude Include="player_color.h" />
-    <ClInclude Include="SCBW\scbwhelper.h" />
-    <ClInclude Include="SCBW\stat_txt_spec.h" />
+    <ClInclude Include="BW\stat_txt_spec.h" />
     <ClInclude Include="trigger_system\trigger_hooks.h" />
     <ClInclude Include="trigger_system\trigger_sound.h" />
     <ClInclude Include="trigger_system\trigger_objectives.h" />
@@ -783,11 +794,11 @@
     <ClInclude Include="hooks\use_tech.h" />
     <ClInclude Include="hooks\weapon_effect.h" />
     <ClInclude Include="math_utils.h" />
-    <ClInclude Include="SCBW\enumerations\FlingyId.h" />
+    <ClInclude Include="BW\enumerations\FlingyId.h" />
     <ClInclude Include="hooks\give_unit.h" />
     <ClInclude Include="hooks\orders\spells\hallucination_spell.h" />
     <ClInclude Include="hook_tools.h" />
-    <ClInclude Include="SCBW\enumerations\IconId.h" />
+    <ClInclude Include="BW\enumerations\IconId.h" />
     <ClInclude Include="hooks\orders\infestation.h" />
     <ClInclude Include="hooks\orders\larva_creep_spawn.h" />
     <ClInclude Include="hooks\orders\liftland.h" />
@@ -800,7 +811,7 @@
     <ClInclude Include="hooks\orders\spells\mindcontrol_spell.h" />
     <ClInclude Include="MPQDraftPlugin.h" />
     <ClInclude Include="hooks\orders\spells\nuke_orders.h" />
-    <ClInclude Include="SCBW\structures\Player.h" />
+    <ClInclude Include="BW\structures\Player.h" />
     <ClInclude Include="Plugin.h" />
     <ClInclude Include="hooks\recv_commands\receive_command.h" />
     <ClInclude Include="hooks\orders\repair_order.h" />
@@ -808,8 +819,8 @@
     <ClInclude Include="hooks\interface\select_larva.h" />
     <ClInclude Include="hooks\interface\selection.h" />
     <ClInclude Include="hooks\orders\siege_transform.h" />
-    <ClInclude Include="SCBW\enumerations\SoundId.h" />
-    <ClInclude Include="SCBW\enumerations\SpriteId.h" />
+    <ClInclude Include="BW\enumerations\SoundId.h" />
+    <ClInclude Include="BW\enumerations\SpriteId.h" />
     <ClInclude Include="hooks\interface\stats_panel_display.h" />
     <ClInclude Include="hooks\orders\base_orders\stopholdpos_orders.h" />
     <ClInclude Include="hooks\recv_commands\train_cmd_receive.h" />
@@ -820,65 +831,64 @@
     <ClInclude Include="hooks\interface\wireframe.h" />
     <ClInclude Include="hooks\weapons\weapon_spellhit.h" />
     <ClInclude Include="AI\ai_common.h" />
-    <ClInclude Include="SCBW\api.h" />
+    <ClInclude Include="BW\api.h" />
     <ClInclude Include="hooks\apply_upgrade_flags.h" />
     <ClInclude Include="hooks\unit_stats\armor_bonus.h" />
     <ClInclude Include="hooks\attack_priority.h" />
     <ClInclude Include="graphics\Bitmap.h" />
     <ClInclude Include="hooks\bunker_hooks.h" />
-    <ClInclude Include="SCBW\structures\Bullet.h" />
-    <ClInclude Include="SCBW\structures\Image.h" />
-    <ClInclude Include="SCBW\structures\List.h" />
+    <ClInclude Include="BW\structures\Bullet.h" />
+    <ClInclude Include="BW\structures\Image.h" />
+    <ClInclude Include="BW\structures\List.h" />
     <ClInclude Include="hooks\cloak_nearby_units.h" />
     <ClInclude Include="hooks\cloak_tech.h" />
-    <ClInclude Include="SCBW\structures\common.h" />
-    <ClInclude Include="SCBW\structures\Order.h" />
-    <ClInclude Include="SCBW\structures\Sprite.h" />
-    <ClInclude Include="SCBW\structures\Unit.h" />
-    <ClInclude Include="SCBW\structures\UnitLayout.h" />
+    <ClInclude Include="BW\structures\common.h" />
+    <ClInclude Include="BW\structures\Order.h" />
+    <ClInclude Include="BW\structures\Sprite.h" />
+    <ClInclude Include="BW\structures\Unit.h" />
+    <ClInclude Include="BW\structures\UnitLayout.h" />
     <ClInclude Include="AI\spells\defensive_matrix.h" />
     <ClInclude Include="hooks\detector.h" />
     <ClInclude Include="graphics\draw_hook.h" />
-    <ClInclude Include="SCBW\enumerations.h" />
-    <ClInclude Include="SCBW\ExtendSightLimit.h" />
+    <ClInclude Include="BW\enumerations.h" />
+    <ClInclude Include="BW\ExtendSightLimit.h" />
     <ClInclude Include="graphics\Font.h" />
     <ClInclude Include="hooks\game_hooks.h" />
     <ClInclude Include="graphics\graphics.h" />
     <ClInclude Include="graphics\graphics_errors.h" />
     <ClInclude Include="graphics\graphics_misc.h" />
     <ClInclude Include="hooks\harvest.h" />
-    <ClInclude Include="SCBW\enumerations\ImageId.h" />
-    <ClInclude Include="SCBW\structures\Layer.h" />
+    <ClInclude Include="BW\enumerations\ImageId.h" />
+    <ClInclude Include="BW\structures\Layer.h" />
     <ClInclude Include="hooks\unit_stats\max_energy.h" />
-    <ClInclude Include="SCBW\enumerations\OrderId.h" />
+    <ClInclude Include="BW\enumerations\OrderId.h" />
     <ClInclude Include="hooks\psi_field.h" />
     <ClInclude Include="hooks\rally_point.h" />
     <ClInclude Include="hooks\recharge_shields.h" />
-    <ClInclude Include="SCBW\scbwdata.h" />
     <ClInclude Include="graphics\Shape.h" />
     <ClInclude Include="hooks\unit_stats\sight_range.h" />
     <ClInclude Include="AI\spellcasting.h" />
     <ClInclude Include="AI\spells\spells.h" />
     <ClInclude Include="hooks\spider_mine.h" />
     <ClInclude Include="hooks\stim_packs.h" />
-    <ClInclude Include="SCBW\structures.h" />
-    <ClInclude Include="SCBW\structures\Target.h" />
+    <ClInclude Include="BW\structures.h" />
+    <ClInclude Include="BW\structures\Target.h" />
     <ClInclude Include="hooks\tech_target_check.h" />
-    <ClInclude Include="SCBW\enumerations\TechId.h" />
+    <ClInclude Include="BW\enumerations\TechId.h" />
     <ClInclude Include="hooks\transfer_tech_upgrades.h" />
     <ClInclude Include="hooks\unit_destructor_special.h" />
     <ClInclude Include="hooks\unit_speed.h" />
-    <ClInclude Include="SCBW\UnitFinder.h" />
-    <ClInclude Include="SCBW\enumerations\UnitId.h" />
+    <ClInclude Include="BW\UnitFinder.h" />
+    <ClInclude Include="BW\enumerations\UnitId.h" />
     <ClInclude Include="hooks\update_status_effects.h" />
     <ClInclude Include="hooks\update_unit_state.h" />
-    <ClInclude Include="SCBW\enumerations\UpgradeId.h" />
+    <ClInclude Include="BW\enumerations\UpgradeId.h" />
     <ClInclude Include="hooks\interface\weapon_armor_tooltip.h" />
     <ClInclude Include="hooks\weapons\weapon_cooldown.h" />
     <ClInclude Include="hooks\weapons\weapon_damage.h" />
     <ClInclude Include="hooks\weapons\weapon_fire.h" />
     <ClInclude Include="hooks\unit_stats\weapon_range.h" />
-    <ClInclude Include="SCBW\enumerations\WeaponId.h" />
+    <ClInclude Include="BW\enumerations\WeaponId.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

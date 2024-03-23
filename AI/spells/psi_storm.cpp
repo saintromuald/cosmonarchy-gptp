@@ -10,7 +10,7 @@ namespace AI
 			bounds = 32 * 16;
 		}
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->position.x - bounds,
 			caster->position.y - bounds,
 			caster->position.x + bounds,
@@ -23,7 +23,7 @@ namespace AI
 				return false;
 			}
 
-			if (!scbw::can_weapon_target_unit(WeaponId::PsiStorm, target, caster))
+			if (!bw::can_weapon_target_unit(WeaponId::PsiStorm, target, caster))
 			{
 				return false;
 			}

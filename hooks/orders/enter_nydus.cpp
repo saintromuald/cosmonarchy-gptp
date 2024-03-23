@@ -1,5 +1,5 @@
 #include "enter_nydus.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 
 namespace hooks
 {
@@ -16,7 +16,7 @@ namespace hooks
 		if (nydus->status & UnitStatus::InTransport || nydus_exit->status & UnitStatus::InTransport) {
 			return false;
 		}
-		if (!scbw::is_allied_to(unit->player, nydus->player)) {
+		if (!bw::is_allied_to(unit->player, nydus->player)) {
 			return false;
 		}
 		if ((units_dat::base_property[unit->id] & UnitProperty::Flyer)) {
@@ -37,13 +37,13 @@ namespace hooks
 		Point16 old_pos = { unit->position.x, unit->position.y };
 		Point16 aimed_pos = { (nydus->building.nydus_exit)->position.x, (nydus->building.nydus_exit)->position.y };
 		Point16 final_pos = {};
-		scbw::prepare_unit_move(unit, true);
-		scbw::set_unit_position(unit, aimed_pos.x, aimed_pos.y);
-		if (scbw::check_unit_collision_pos(unit, &aimed_pos, &final_pos, 0, false, 0))
+		bw::prepare_unit_move(unit, true);
+		bw::set_unit_position(unit, aimed_pos.x, aimed_pos.y);
+		if (bw::check_unit_collision_pos(unit, &aimed_pos, &final_pos, 0, false, 0))
 		{
 			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydus, 1, 0);
-			scbw::set_unit_position(unit, final_pos.x, final_pos.y);
-			scbw::refresh_unit_after_move(unit);
+			bw::set_unit_position(unit, final_pos.x, final_pos.y);
+			bw::refresh_unit_after_move(unit);
 			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydus->building.nydus_exit, 1, 0);
 			if (unit->order_queue_head)
 			{
@@ -59,8 +59,8 @@ namespace hooks
 			}
 		} else {
 			// collision detected, restore old position
-			scbw::set_unit_position(unit, old_pos.x, old_pos.y);
-			scbw::refresh_unit_after_move(unit);
+			bw::set_unit_position(unit, old_pos.x, old_pos.y);
+			bw::refresh_unit_after_move(unit);
 		}
 	}
 
@@ -71,7 +71,7 @@ namespace hooks
 		||  !(nydus->status & UnitStatus::Completed)
 		||   !nydus->building.nydus_exit
 		|| !((nydus->building.nydus_exit)->status & UnitStatus::Completed)
-		||  (!scbw::is_allied_to(unit->player, nydus->player))
+		||  (!bw::is_allied_to(unit->player, nydus->player))
 		||    units_dat::base_property[unit->id] & UnitProperty::Flyer)
 		{
 			if (unit->order_queue_head)

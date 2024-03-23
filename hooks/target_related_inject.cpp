@@ -1,6 +1,6 @@
 ﻿#include "target_related.h"
 #include "hook_tools.h"
-#include "SCBW/structures.h"
+#include "BW/structures.h"
 
 namespace
 {
@@ -477,7 +477,7 @@ namespace hooks
 		jump_patch(return_interceptor_if_cannot_attack_wrapper,			0x00465810, 1);
 		jump_patch(find_fow_target_wrapper,								0x00487A10, 5);
 		jump_patch(is_better_target_wrapper,							0x004769D0, 0);
-	//	jump_patch(do_targeted_order_wrapper,							0x0046F5B0, 1); // Crashes
+		jump_patch(do_targeted_order_wrapper,							0x0046F5B0, 1);
 		jump_patch(fow_refinery_check_wrapper,							0x00474500, 5);
 		jump_patch(pick_new_target_if_needed_wrapper,					0x00477510, 1);
 		jump_patch(change_direction_to_move_waypoint_wrapper,			0x00495840, 3);

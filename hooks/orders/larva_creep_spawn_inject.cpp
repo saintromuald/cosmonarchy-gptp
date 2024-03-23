@@ -1,6 +1,6 @@
 #include "larva_creep_spawn.h"
 #include <hook_tools.h>
-#include <SCBW/scbwdata.h>
+#include <BW/bwdata.h>
 
 namespace
 {	
@@ -66,7 +66,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::secondary_order_spawning_larva(unit, false);
+		hooks::secondary_order_spawning_larva(unit);
 		__asm
 		{
 			POPAD
@@ -281,6 +281,22 @@ namespace
 		}
 	}
 
+	void __declspec(naked) orders_larva_idle_wrapper() // 004E9F90
+	{
+		static Unit* unit;
+		__asm
+		{
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::orders_larva_idle(unit);
+		__asm
+		{
+			POPAD
+			RETN
+		}
+	}
+
 	void __declspec(naked) should_disappear_creep_unit_wrapper() {
 		static const u32 jmp_address = 0x0047DFC1 + 5;
 		static u32 result;
@@ -331,6 +347,7 @@ namespace hooks
 		jump_patch(spreads_creep_wrapper,					0x00413870);
 		jump_patch(run_creep_randomizer_wrapper,			0x004140A0);
 //		jump_patch(update_creep_disappearance_unit_wrapper, 0x0047DF90, 0); // broken
+//		jump_patch(orders_larva_idle_wrapper,				0x004E9F90, 0); // Larva don't move anywhere
 
 		jump_patch(bug_wrapper, 0x0047DCCA); // attempt to fix bug
 

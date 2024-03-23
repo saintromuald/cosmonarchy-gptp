@@ -1,8 +1,8 @@
 #include "use_tech.h"
-#include "SCBW/scbwdata.h"
-#include "SCBW/api.h"
+#include "BW/bwdata.h"
+#include "BW/api.h"
 #include "hook_tools.h"
-#include "SCBW/stat_txt_spec.h"
+#include "BW/stat_txt_spec.h"
 #include "hooks/interface/select_larva.h"
 #include <hooks/limits/sfx_extender.h>
 
@@ -44,7 +44,7 @@ namespace hooks
 		u8 buffer[12] = {}; // btw
 		buffer[0] = 99;
 		buffer[1] = NewGameCommand::GenericSwitchAbility;
-		buffer[2] = !scbw::get_generic_rust_value(unit, rust_id);
+		buffer[2] = !bw::get_generic_rust_value(unit, rust_id);
 		buffer[3] = *g_active_player_id;
 		buffer[4] = rust_id;
 		helper::queue_game_command(buffer, sizeof(buffer));
@@ -57,7 +57,7 @@ namespace hooks
 		if (unit) {
 			// Initial check for energy-based switch abilities
 			if (players_selections->unit[*g_active_nation_id][0]->id == UnitId::ProtossLanifect
-			&&  scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionField) == 1)
+			&&  bw::get_generic_rust_value(unit, RustId::ToggleDisruptionField) == 1)
 			{
 				tech_capable_unit = true;
 			}
@@ -72,7 +72,7 @@ namespace hooks
 			if (unit) {
 				/*
 				if (players_selections->unit[*g_active_nation_id][0]->id == UnitId::TerranAzazel
-					&& scbw::get_generic_rust_value(first_in_list, RustId::ToggleSublimeShepherd) == 1)
+					&& bw::get_generic_rust_value(first_in_list, RustId::ToggleSublimeShepherd) == 1)
 				{
 					tech_capable_unit = true;
 				}
@@ -103,22 +103,21 @@ namespace hooks
 				helper::issue_tri_target_order(OrderId::MagnaPulse, 0, 0);
 			} break;
 			case TechId::SavantOnhitToggle: {
-				s32 action = !scbw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
+				s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
 					u32 action_sound = action ? helper::get_random_sfx_between(SoundId::SavantSwitchPierce01, SoundId::SavantSwitchPierce03) : helper::get_random_sfx_between(SoundId::SavantSwitchSteal01, SoundId::SavantSwitchSteal03);
-					scbw::play_action_sound(action_sound, *g_active_portrait_unit);
+					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				queue_generic_ability(RustId::ToggleSavantOnhit, action);
 			} break;
 			case TechId::ApostleLazarusAgent: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
 					u32 action_sound = helper::get_random_sfx_between(SoundId::ApostleToggleLazarus01, SoundId::ApostleToggleLazarus03);
-					scbw::play_action_sound(action_sound, *g_active_portrait_unit);
+					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				queue_generic_ability(RustId::ToggleLazarusAgent, 1);
 			} break;
 			case TechId::HypnagogueThroughTheLookingGlass: {
-				scbw::print("select target");
 				helper::issue_tri_target_order(OrderId::CastThroughTheLookingGlass, 0, 0);
 			} break;
 			case TechId::SpiderMines: {
@@ -151,7 +150,7 @@ namespace hooks
 			case TechId::Infestation: {
 				helper::issue_tri_target_order(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
 			} break;
-			case TechId::AkistrokorBlissfulEmbrace: {
+			case TechId::ZergBlissfulEmbrace: {
 				helper::issue_tri_target_order(OrderId::CTFCOP1, 0, 0);
 			} break;
 			case TechId::CarapaceSwarm: {
@@ -163,21 +162,21 @@ namespace hooks
 			case TechId::PsionicStorm: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
 					u32 action_sound = helper::get_random_sfx_between(SoundId::Protoss_TEMPLAR_PTePss01_WAV, SoundId::Protoss_TEMPLAR_PTePss02_WAV);
-					scbw::play_action_sound(action_sound, *g_active_portrait_unit);
+					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				helper::issue_tri_target_order(OrderId::PsiStorm, 0, 0);
 			} break;
 			case TechId::Hallucination: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
 					u32 action_sound = SoundId::Protoss_TEMPLAR_PTePss03_WAV;
-					scbw::play_action_sound(action_sound, *g_active_portrait_unit);
+					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				helper::issue_tri_target_order(OrderId::Hallucination1, 0, 0);
 			} break;
 			case TechId::Tyranny: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
 					u32 action_sound = helper::get_random_sfx_between(SoundId::Protoss_DARCHON_PDaPss00_WAV, SoundId::Protoss_DARCHON_PDaPss01_WAV);
-					scbw::play_action_sound(action_sound, *g_active_portrait_unit);
+					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				helper::issue_tri_target_order(OrderId::CastTyranny, 0, 0);
 			} break;
@@ -190,7 +189,7 @@ namespace hooks
 			case TechId::DimensionalRecall: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
 					u32 action_sound = SoundId::Protoss_ARBITER_PAbPss00_WAV;
-					scbw::play_action_sound(action_sound, *g_active_portrait_unit);
+					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				helper::issue_tri_target_order(OrderId::Teleport, 0, 0);
 			} break;

@@ -1,5 +1,5 @@
 #include "CMDRECV_Build.h"
-#include <SCBW/api.h>
+#include <BW/api.h>
 #include "trigger_system/trigger_system.h"
 #include "hooks\limits\sfx_extender.h"
 
@@ -75,7 +75,7 @@ namespace hooks
 		if (!can_build)
 		{
 			addonPlaceX = (s16)units_dat::addon_placement[built_unit_id - UnitId::TerranMinistry].x;
-			scbw::adjust_addon_x(built_unit_id, builder->id, &addonPlaceX);
+			bw::adjust_addon_x(built_unit_id, builder->id, &addonPlaceX);
 			if (addonPlaceX < 0)
 			{
 				addonPlaceX += 31;
@@ -83,7 +83,7 @@ namespace hooks
 			addonPlaceX /= 32;
 			addonPlaceX = x - addonPlaceX;
 			addonPlaceY = (s16)units_dat::addon_placement[built_unit_id - UnitId::TerranMinistry].y;
-			scbw::adjust_addon_y(built_unit_id, builder->id, &addonPlaceY);
+			bw::adjust_addon_y(built_unit_id, builder->id, &addonPlaceY);
 			if (addonPlaceY < 0)
 			{
 				addonPlaceY += 31;
@@ -135,6 +135,7 @@ namespace hooks
 	}
 
 	// Hooked to try to allow for queueable build orders. -Pr0nogo
+	// Not injected. Status unknown as of Feb '24.
 	void process_building_placement(Unit* unit, u8 order_id, Point16 pos, u16 target_unit_id) // 0048DE70
 	{
 		if (order_id == OrderId::BuildingLand) {
@@ -183,7 +184,7 @@ namespace hooks
 		} else {
 			cmdrecv_place_building_normal(position.x, position.y, order_id, built_unit_id);
 		}
-		scbw::refresh_console();
+		bw::refresh_console();
 		return 0;
 	}
 
@@ -196,8 +197,8 @@ namespace hooks
 			} else {
 				if (notify) {
 					u32 sound_id = *g_console_index + 150;
-					if (scbw::has_custom_advisor(player)) {
-						sound_id = scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
+					if (bw::has_custom_advisor(player)) {
+						sound_id = bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
 					}
 					helper::display_error_message_id_with_sfx(player, 851, sound_id);
 				}
@@ -206,8 +207,8 @@ namespace hooks
 		} else {
 			if (notify) {
 				u32 sound_id = *g_console_index + 147;
-				if (scbw::has_custom_advisor(player)) {
-					sound_id = scbw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
+				if (bw::has_custom_advisor(player)) {
+					sound_id = bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
 				}
 				helper::display_error_message_id_with_sfx(player, 850, sound_id);
 			}
@@ -220,7 +221,7 @@ namespace hooks
 		if (player == *g_local_nation_id && !*g_is_in_replay) {
 			sound_id = (u16)sound_id;
 			if (sound_id && (*g_options_list).sfx) {
-				u32 new_sound_id = scbw::get_advisor_sound_from_message_id(player, message_id);
+				u32 new_sound_id = bw::get_advisor_sound_from_message_id(player, message_id);
 				if (new_sound_id) {
 					sound_id = new_sound_id;
 				}
@@ -234,14 +235,14 @@ namespace hooks
 						max_volume = 0;
 					}
 				}
-				if (*use_quiet_sounds) {
+				if (*g_use_quiet_sounds) {
 					max_volume /= 5;
 				}
 				if (max_volume > 10) {
 					u32 error_id = SoundId::ErrorZerg - *g_console_index;
 					helper::play_sound_global(error_id);
-					if (!scbw::has_custom_advisor(player) || !globals.advisor_state.cooldown) {
-						if (!globals.advisor_state.play_timer) {
+					if (!bw::has_custom_advisor(player) || !globals->advisor_state.cooldown) {
+						if (!globals->advisor_state.play_timer) {
 							u32 timer = 6;
 							switch (g_player_table[player].race) {
 								case RaceId::Protoss:
@@ -250,10 +251,10 @@ namespace hooks
 									timer = 4;
 								}
 							}
-							globals.advisor_state.play_timer = timer;
-							globals.advisor_state.sound_id = sound_id;
-							if (scbw::has_custom_advisor(player)) {
-								globals.advisor_state.cooldown = 54; // TODO: Replace with length of sound converted into w/e units
+							globals->advisor_state.play_timer = timer;
+							globals->advisor_state.sound_id = sound_id;
+							if (bw::has_custom_advisor(player)) {
+								globals->advisor_state.cooldown = 54; // TODO: Replace with length of sound converted into w/e units
 							}
 						}
 					}

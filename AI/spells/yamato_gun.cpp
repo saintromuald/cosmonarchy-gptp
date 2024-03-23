@@ -22,7 +22,7 @@ namespace AI
 				return true;
 			}
 
-			if (scbw::is_zerg_egg_new(target))
+			if (bw::is_zerg_egg_new(target))
 			{
 				return false;
 			}
@@ -40,7 +40,7 @@ namespace AI
 		if (isUnderAttack)
 		{
 			s32 bounds = 32 * 16;
-			return scbw::UnitFinder::get_nearest_target(
+			return bw::UnitFinder::get_nearest_target(
 				caster->get_x() - bounds,
 				caster->get_y() - bounds,
 				caster->get_x() + bounds,
@@ -52,7 +52,7 @@ namespace AI
 
 		else
 		{
-			return scbw::UnitFinder::get_nearest_target(caster, match);
+			return bw::UnitFinder::get_nearest_target(caster, match);
 		}
 	}
 }

@@ -13,7 +13,7 @@ namespace AI
 		else
 			bounds = 32 * 64;
 
-		return scbw::UnitFinder::get_nearest_target(
+		return bw::UnitFinder::get_nearest_target(
 			caster->get_x() - bounds,
 			caster->get_y() - bounds,
 			caster->get_x() + bounds,
@@ -56,13 +56,12 @@ namespace AI
 				return true;
 			}
 			if (target->id == UnitId::TerranWatchdog
-			||  target->id == UnitId::TerranAnchor
-		//	||  target->id == UnitId::TerranTencendur
 			||  target->id == UnitId::ZergSpraithCesiant
 			||  target->id == UnitId::ZergSkortrithCesiant
 			||  target->id == UnitId::ZergSpirtithCesiant
 			||  target->id == UnitId::ProtossWarden
-			||  target->id == UnitId::ProtossMatrix)
+			||  target->id == UnitId::ProtossMatrix
+			||	unit_id_is_garrison(target->id))
 			{
 				return true;
 			}

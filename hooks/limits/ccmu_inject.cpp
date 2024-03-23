@@ -1,9 +1,9 @@
 #include "ccmu.h"
 #include "hook_tools.h"
-#include "scbw/structures.h"
-#include "scbw/structures/Sprite.h"
-#include "scbw/structures/Order.h"
-#include "scbw/structures/Image.h"
+#include "BW/structures.h"
+#include "BW/structures/Sprite.h"
+#include "BW/structures/Order.h"
+#include "BW/structures/Image.h"
 
 CCMU_Extender ccmu_extender;
 
