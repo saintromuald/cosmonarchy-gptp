@@ -141,6 +141,7 @@ enum AdvisorType : u8 {
 	AdvisorType_Ackmed,
 	AdvisorType_HADRAL,
 	AdvisorType_ISN,
+	AdvisorType_Furen,
 
 	// Faction-specific
 
@@ -168,6 +169,7 @@ static const char* advisor_symbol_names[] = {
 	"Ackmed",
 	"HADRAL",
 	"ISN",
+	"Furen",
 
 	// Faction-specific
 

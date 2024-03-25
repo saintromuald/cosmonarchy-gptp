@@ -146,8 +146,7 @@ namespace hooks {
 										bw::move_unit(new_unit, spawn_point.x, spawn_point.y);
 									}
 									helper::ai_training_unit(new_unit, unit);
-									if (built_unit->id == UnitId::TerranMorningstar)
-									{
+									if (built_unit->id == UnitId::TerranMorningstar) {
 										helper::hide_and_disable_unit(new_unit);
 									} else {
 										helper::order_new_unit_to_rally(new_unit, unit);

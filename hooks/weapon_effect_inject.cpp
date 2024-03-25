@@ -16,8 +16,7 @@ namespace
 			MOV bullet, EBX
 			MOV weapon_id, ECX
 		}
-		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
-		{
+		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
 			hooks::lakizilisk_splash(bullet, weapon_id, SplashType::FriendlyNew);
 		} else {
 			hooks::splash(bullet, weapon_id, SplashType::FriendlyNew);
@@ -41,8 +40,7 @@ namespace
 			MOV bullet, EBX
 			MOV weapon_id, ECX
 		}
-		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
-		{
+		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
 			hooks::lakizilisk_splash(bullet, weapon_id, SplashType::Enemy);
 		} else {
 			hooks::splash(bullet, weapon_id, SplashType::Enemy);
@@ -65,8 +63,7 @@ namespace
 			MOV bullet, EBX
 			MOV weapon_id, ECX
 		}
-		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines)
-		{
+		if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
 			hooks::lakizilisk_splash(bullet, weapon_id, SplashType::Radial);
 		} else {
 			hooks::splash(bullet, weapon_id, SplashType::Radial);
