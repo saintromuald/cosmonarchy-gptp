@@ -44,6 +44,8 @@ void Discord::init() {
 		m_init_timeout = time(0) + 60; // Let's forget about discord for a while, if this fails
 		return;
 	}
+
+	m_timestamp = time(0);
 }
 
 void Discord::update(bool in_game) {
@@ -66,6 +68,11 @@ void Discord::update(bool in_game) {
 		}
 	}
 
+	if (m_was_in_game != in_game) {
+		m_was_in_game = in_game;
+		m_timestamp = time(0);
+	}
+
 	if (m_state != discord_state) {
 		m_state = discord_state;
 
@@ -76,7 +83,7 @@ void Discord::update(bool in_game) {
 			sprintf_s(activity.name, "Cosmonarchy");
 			sprintf_s(activity.assets.large_text, "Cosmonarchy");
 			sprintf_s(activity.assets.large_image, "cmbw");
-			activity.timestamps.start = time(0);
+			activity.timestamps.start = m_timestamp;
 			if (in_game) {
 				sprintf_s(activity.details, "%s", g_current_map_name);
 				switch (discord_state) {

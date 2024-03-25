@@ -18,7 +18,7 @@ public:
 	void update(bool in_game);
 
 	inline static Discord& instance() {
-		static Discord instance;
+		static Discord instance = {};
 		return instance;
 	}
 
@@ -27,7 +27,10 @@ private:
 	void init();
 
 private:
-	u32 m_init_timeout = 0;
-	DiscordState m_state = DiscordState::None;
-	IDiscordCore* m_core = 0;
+	u32 m_init_timeout;
+	IDiscordCore* m_core;
+
+	DiscordState m_state;
+	bool m_was_in_game;
+	u32 m_timestamp;
 };
