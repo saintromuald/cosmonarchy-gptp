@@ -46,6 +46,7 @@
 #include "hooks/update_unit_sight.h"
 #include "hooks/orders/larva_creep_spawn.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
+#include "Discord.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -54,96 +55,13 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	target->heal_hp(heal * 256, shaman);
 }
 
-#pragma pack(push, 8)
-#include <discord_game_sdk.h>
-#pragma pack(pop)
-
-#define DiscordClientId 972072419013558326
 namespace hooks {
-	HMODULE discord_dll;
-	typedef enum EDiscordResult discord_create_t(DiscordVersion version, struct DiscordCreateParams* params, struct IDiscordCore** result);
-	discord_create_t* discord_create;
-
-	static bool game_fully_started;
-	static u32 discord_init_timeout;
-	static bool discord_in_game;
-	static IDiscordCore* discord;
-
-	static void init_discord(bool in_game) {
-		if (discord) {
-			return;
-		}
-
-		if (discord_init_timeout) {
-			discord_init_timeout--;
-			return;
-		}
-
-		if (!discord_dll) {
-			discord_dll = LoadLibraryA("discord_game_sdk.dll");
-			if (!discord_dll) {
-				discord_init_timeout = 30 * 24; // Let's forget about discord for a while, if this fails
-				return;
-			}
-		}
-
-		if (!discord_create) {
-			discord_create = (discord_create_t*)GetProcAddress(discord_dll, "DiscordCreate");
-			if (!discord_create) {
-				discord_init_timeout = 30 * 24; // Let's forget about discord for a while, if this fails
-				return;
-			}
-		}
-
-		DiscordCreateParams params = {};
-		params.client_id = DiscordClientId;
-		params.flags = DiscordCreateFlags_NoRequireDiscord;
-		EDiscordResult result = discord_create(DISCORD_VERSION, &params, &discord);
-		if (result != DiscordResult_Ok) {
-			discord_init_timeout = 30 * 24; // Let's forget about discord for a while, if this fails
-			return;
-		}
-
-		discord_in_game = !in_game; // Let's force an update to activity, since we just init discord api
-	}
-
-	static void update_discord(bool in_game) {
-		init_discord(in_game);
-		if (!discord) {
-			return;
-		}
-
-		if (discord_in_game != in_game) {
-			discord_in_game = in_game;
-			IDiscordActivityManager* activity_manager = discord->get_activity_manager(discord);
-			if (activity_manager) {
-				DiscordActivity activity = {};
-				activity.type = DiscordActivityType_Playing;
-				sprintf_s(activity.name, "Cosmonarchy BW");
-				sprintf_s(activity.assets.large_text, "Cosmonarchy BW");
-				sprintf_s(activity.assets.large_image, "cmbw");
-				activity.timestamps.start = time(0);
-				if (in_game) {
-					sprintf_s(activity.details, "%s", g_current_map_name);
-					sprintf_s(activity.state, "In Game");
-					activity.instance = true;
-				} else {
-					sprintf_s(activity.details, "");
-					sprintf_s(activity.state, "In Menu");
-					activity.instance = false;
-				}
-				activity_manager->update_activity(activity_manager, &activity, 0, 0);
-			}
-		}
-
-		discord->run_callbacks(discord);
-	}
-
-	static bool game_inited;
+	static bool g_game_fully_started;
+	static bool g_game_inited;
 
 	void next_ui_frame() {
-		if (!game_inited) {
-			game_inited = true;
+		if (!g_game_inited) {
+			g_game_inited = true;
 			/*
 			Parser parser = new_parser(...);
 			while (parser_get_word(&parser)) {
@@ -154,7 +72,7 @@ namespace hooks {
 			}
 			*/
 		}
-		update_discord(false);
+		Discord::instance().update(false);
 		update_trigger_system(false);
 	}
 
@@ -722,10 +640,10 @@ namespace hooks {
 			g_options_list->speed = 6; // Lock game speed at fastest
 		}
 
-		update_discord(true);
+		Discord::instance().update(true);
 
-		if (!game_fully_started) {
-			game_fully_started = true;
+		if (!g_game_fully_started) {
+			g_game_fully_started = true;
 			init_hotkeys();
 		}
 		update_hotkeys();
@@ -3493,7 +3411,7 @@ namespace hooks {
 		init_omnipresence_state();
 
 		GPTP::logger << "Started a match!\n";
-		game_fully_started = false;
+		g_game_fully_started = false;
 		hotkeys.game_started = true;
 
 		return true;

@@ -285,6 +285,7 @@
     <ClCompile Include="DatExtend\upgrades_dat.cpp" />
     <ClCompile Include="DatExtend\weapons_dat.cpp" />
     <ClCompile Include="direct_sound.cpp" />
+    <ClCompile Include="Discord.cpp" />
     <ClCompile Include="hooks\DatExtend\dat_load.cpp" />
     <ClCompile Include="hooks\DatExtend\dat_load_inject.cpp" />
     <ClCompile Include="hooks\grafting\grafting.cpp" />
@@ -642,6 +643,7 @@
     <ClInclude Include="data_ext.h" />
     <ClInclude Include="DatExtend\datext.h" />
     <ClInclude Include="direct_sound.h" />
+    <ClInclude Include="Discord.h" />
     <ClInclude Include="hooks\DatExtend\dat_load.h" />
     <ClInclude Include="hooks\grafting\button_functions.h" />
     <ClInclude Include="hooks\grafting\grafting.h" />
