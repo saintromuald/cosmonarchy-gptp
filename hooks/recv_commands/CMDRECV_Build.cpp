@@ -67,52 +67,47 @@ namespace hooks
 
 	void cmdrecv_place_addon(s16 x, s16 y, u32 order_id, u32 built_unit_id) // 0048E0A0
 	{
-		u16 addonPlaceX = 0;
-		u16 addonPlaceY = 0;
+		u16 addon_place_x = 0;
+		u16 addon_place_y = 0;
 		*g_unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
 		s32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
 		if (!can_build)
 		{
-			addonPlaceX = (s16)units_dat::addon_placement[built_unit_id - UnitId::TerranMinistry].x;
-			bw::adjust_addon_x(built_unit_id, builder->id, &addonPlaceX);
-			if (addonPlaceX < 0)
-			{
-				addonPlaceX += 31;
+			addon_place_x = (s16)units_dat::addon_placement[built_unit_id - UnitId::TerranMinistry].x;
+			bw::adjust_addon_x(built_unit_id, builder->id, &addon_place_x);
+			if (addon_place_x < 0) {
+				addon_place_x += 31;
 			}
-			addonPlaceX /= 32;
-			addonPlaceX = x - addonPlaceX;
-			addonPlaceY = (s16)units_dat::addon_placement[built_unit_id - UnitId::TerranMinistry].y;
-			bw::adjust_addon_y(built_unit_id, builder->id, &addonPlaceY);
-			if (addonPlaceY < 0)
-			{
-				addonPlaceY += 31;
+			addon_place_x /= 32;
+			addon_place_x = x - addon_place_x;
+			addon_place_y = (s16)units_dat::addon_placement[built_unit_id - UnitId::TerranMinistry].y;
+			bw::adjust_addon_y(built_unit_id, builder->id, &addon_place_y);
+			if (addon_place_y < 0) {
+				addon_place_y += 31;
 			}
-			addonPlaceY /= 32;
-			addonPlaceY = y - addonPlaceY;
-			can_build = helper::can_build_on_tile_location(builder, builder->player, addonPlaceX, addonPlaceY, builder->id, 0, 0, 0, 0);
+			addon_place_y /= 32;
+			addon_place_y = y - addon_place_y;
+			can_build = helper::can_build_on_tile_location(builder, builder->player, addon_place_x, addon_place_y, builder->id, 0, 0, 0, 0);
 		}
 
-		if (helper::place_building_message(can_build))
-		{
-			s32 DimensionX, DimensionY;
-			DimensionX = (s16)units_dat::building_dimensions[builder->id].x;
-			if (DimensionX < 0)
-			{
-				DimensionX++;
+		if (helper::place_building_message(can_build)) {
+			s32 dim_x, dim_y;
+			dim_x = (s16)units_dat::building_dimensions[builder->id].x;
+			if (dim_x < 0) {
+				dim_x++;
 			}
-			DimensionX /= 2;
-			addonPlaceX *= 32;
-			DimensionX += addonPlaceX;
-			DimensionY = (s16)units_dat::building_dimensions[builder->id].y;
-			if (DimensionY < 0)
-			{
-				DimensionY++;
+			dim_x /= 2;
+			addon_place_x *= 32;
+			dim_x += addon_place_x;
+			dim_y = (s16)units_dat::building_dimensions[builder->id].y;
+			if (dim_y < 0) {
+				dim_y++;
 			}
-			DimensionY /= 2;
-			addonPlaceY *= 32;
-			DimensionY += addonPlaceY;
-			helper::process_building_placement(builder, order_id, DimensionX, DimensionY, built_unit_id);
+			dim_y /= 2;
+			addon_place_y *= 32;
+			dim_y += addon_place_y;
+			helper::process_building_placement(builder, order_id, dim_x, dim_y, built_unit_id);
 		}
 	}
 
@@ -122,12 +117,8 @@ namespace hooks
 		Unit* builder = get_active_player_next_selection();
 		if (builder)
 		{
-			if (!get_active_player_next_selection()) // multiple selection not allowed
-			{
-				if (x < g_map_tile_size->width
-				&&	y < g_map_tile_size->height
-				&&	helper::CMDRECV_place_building_allowed(builder, order_id, built_unit_id))
-				{
+			if (!get_active_player_next_selection()) { // multiple selection not allowed 
+				if (x < g_map_tile_size->width && y < g_map_tile_size->height && helper::CMDRECV_place_building_allowed(builder, order_id, built_unit_id)) {
 					helper::CMDRECV_place_building(x, y, order_id, built_unit_id);
 				}
 			}
@@ -145,17 +136,13 @@ namespace hooks
 			|| ((unit->main_order_id != OrderId::DroneLand) || !(unit->status & (UnitStatus::CanNotReceiveOrders|UnitStatus::NoBrkCodeStart)))
 			&&   unit->main_order_id != OrderId::DroneBuild)
 			{
-				if ((unit->id != UnitId::ZergNydusCesiant || order_id != OrderId::Build5) && order_id != OrderId::CTFCOP2)
-				{
+				if ((unit->id != UnitId::ZergNydusCesiant || order_id != OrderId::Build5) && order_id != OrderId::CTFCOP2) {
 					g_ai_minerals_reserve[unit->player] = units_dat::mineral_cost[target_unit_id];
 					g_ai_vespene_reserve[unit->player] = units_dat::vespene_cost[target_unit_id];
-					if (g_game_minerals[unit->player] >= g_ai_minerals_reserve[unit->player])
-					{
-						if (g_game_vespene[unit->player] >= g_ai_vespene_reserve[unit->player])
-						{
+					if (g_game_minerals[unit->player] >= g_ai_minerals_reserve[unit->player]) {
+						if (g_game_vespene[unit->player] >= g_ai_vespene_reserve[unit->player]) {
 							helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
-							if (units_dat::base_property[unit->id] & UnitProperty::Building && units_dat::base_property[target_unit_id] & UnitProperty::Addon)
-							{
+							if (units_dat::base_property[unit->id] & UnitProperty::Building && units_dat::base_property[target_unit_id] & UnitProperty::Addon) {
 								helper::refund_all_queue_slots(unit);
 								unit->building.addon_build_id = target_unit_id;
 							} else {
@@ -178,8 +165,7 @@ namespace hooks
 	// Hooked to debug Pylon-based construction. -Pr0nogo
 	u32 cmdrecv_place_building(u32 order_id, u16 built_unit_id, Point16 position) // 0048E190
 	{
-		if (units_dat::base_property[built_unit_id] & UnitProperty::Addon)
-		{
+		if (units_dat::base_property[built_unit_id] & UnitProperty::Addon) {
 			cmdrecv_place_addon(position.x, position.y, order_id, built_unit_id);
 		} else {
 			cmdrecv_place_building_normal(position.x, position.y, order_id, built_unit_id);
