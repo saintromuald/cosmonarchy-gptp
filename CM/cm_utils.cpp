@@ -118,3 +118,46 @@ u32 get_bullet_damage(Bullet* bullet, u32 weapon_id)
 	}
 	return weapons_dat::damage_amount[weapon_id];
 }
+
+const char* game_kind_to_string(u32 game_kind) { // setting the arg to GameKind causes a compiler error despite api.h being included. -Pr0nogo
+	switch (game_kind) {
+		case GameKind_Competitive: {
+			return "Competitive";
+		} break;
+		case GameKind_Debug:
+		case GameKind_DebugFog: {
+			return "Debug";
+		} break;
+		case GameKind_Scenario: {
+			return "Scenario";
+		} break;
+		case GameKind_FactionWars: {
+			return "Faction Wars";
+		} break;
+		case GameKind_Massacre: {
+			return "Massacre";
+		} break;
+		case GameKind_Omnipresence: {
+			return "Omnipresence";
+		} break;
+		case GameKind_TheTurning: {
+			return "The Turning";
+		} break;
+	}
+	return "Custom";
+}
+
+const char* race_to_string(u32 race) {
+	switch (race) {
+		case RaceId::Terran: {
+			return "Terran";
+		} break;
+		case RaceId::Protoss: {
+			return "Protoss";
+		} break;
+		case RaceId::Zerg: {
+			return "Zerg";
+		} break;
+	}
+	return "Custom";
+}

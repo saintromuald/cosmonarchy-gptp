@@ -12,3 +12,5 @@ u32 get_construction_graphic(Unit* unit);
 void init_omnipresence_state();
 void disconnect_addon_no_event(Unit* unit);
 u32 get_bullet_damage(Bullet* bullet, u32 weapon_id);
+const char* game_kind_to_string(u32 game_kind);
+const char* race_to_string(u32 race);
