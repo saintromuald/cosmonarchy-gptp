@@ -85,10 +85,48 @@ void Discord::update(bool in_game) {
 			sprintf_s(activity.assets.large_image, "cmbw");
 			activity.timestamps.start = m_timestamp;
 			if (in_game) {
-				sprintf_s(activity.details, "%s", g_current_map_name);
+				const char* game_kind = "Custom";
+				switch (bw::get_game_kind()) {
+					case GameKind_Competitive: {
+						game_kind = "Competitive";
+					} break;
+					case GameKind_Debug:
+					case GameKind_DebugFog: {
+						game_kind = "Debug";
+					} break;
+					case GameKind_Scenario: {
+						game_kind = "Scenario";
+					} break;
+					case GameKind_FactionWars: {
+						game_kind = "Faction Wars";
+					} break;
+					case GameKind_Massacre: {
+						game_kind = "Massacre";
+					} break;
+					case GameKind_Omnipresence: {
+						game_kind = "Omnipresence";
+					} break;
+					case GameKind_TheTurning: {
+						game_kind = "The Turning";
+					} break;
+				}
+				sprintf_s(activity.details, "%s (%s)", g_current_map_name, game_kind);
 				switch (discord_state) {
 					case DiscordState::InGamePlaying: {
-						sprintf_s(activity.state, "In Game");
+						switch (g_player_table[*g_local_nation_id].race) {
+							case RaceId::Terran: {
+								sprintf_s(activity.state, "In Game (Terran)");
+							} break;
+							case RaceId::Protoss: {
+								sprintf_s(activity.state, "In Game (Protoss)");
+							} break;
+							case RaceId::Zerg: {
+								sprintf_s(activity.state, "In Game (Zerg)");
+							} break;
+							default: {
+								sprintf_s(activity.state, "In Game");
+							}
+						}
 					} break;
 					case DiscordState::InGameWitness: {
 						sprintf_s(activity.state, "In Game (Witness)");
