@@ -119,7 +119,7 @@ u32 get_bullet_damage(Bullet* bullet, u32 weapon_id)
 	return weapons_dat::damage_amount[weapon_id];
 }
 
-const char* game_kind_to_string(u32 game_kind) { // setting the arg to GameKind causes a compiler error despite api.h being included. -Pr0nogo
+const char* game_kind_to_string(GameKind game_kind) {
 	switch (game_kind) {
 		case GameKind_Competitive: {
 			return "Competitive";
@@ -147,7 +147,7 @@ const char* game_kind_to_string(u32 game_kind) { // setting the arg to GameKind 
 	return "Custom";
 }
 
-const char* race_to_string(u32 race) {
+const char* race_to_string(RaceId::Enum race) {
 	switch (race) {
 		case RaceId::Terran: {
 			return "Terran";
