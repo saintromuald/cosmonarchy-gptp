@@ -253,6 +253,13 @@ u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 				portrait_id = PortraitId::AdvisorZorthos;
 			} break;
 		}
+	} else if (strcmp(g_current_map_name, "The Initiate") == 0) {
+		switch (portrait_id) {
+			case PortraitId::ProtossAdvisor:
+			{
+				portrait_id = PortraitId::Solarion;
+			} break;
+		}
 	}
 
 	return portrait_id;
