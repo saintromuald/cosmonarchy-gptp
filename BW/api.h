@@ -1,5 +1,4 @@
-// Contains wrappers for various SCBW internal functions, to be used in
-// hook functions.
+// Contains wrappers for various SCBW internal functions, to be used in hook functions.
 
 #pragma once
 #include <BW/bwdata.h>
@@ -64,6 +63,9 @@ enum GameKind {
 
 	GameKind_Count,
 };
+
+#define AssertSprite(sprite) __assert_sprite(sprite, __FUNCTION__, __FILE__, __LINE__)
+bool __assert_sprite(Sprite* sprite, const char* function, const char* file, u64 line);
 
 namespace bw {
 	inline bool harvester_is_waiting(Unit* unit) {

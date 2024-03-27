@@ -22,6 +22,14 @@
 #include <windows.h>
 #include <hooks\unit_movement.h>
 
+bool __assert_sprite(Sprite* sprite, const char* function, const char* file, u64 line) {
+	if (!sprite) {
+		bw::printf("Sprite Nullcheck failed at %s@%s:%llu", function, file, line);
+		return false;
+	}
+	return true;
+}
+
 namespace bw {
 	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt) {
 		Unit* target_unit = source->order_target.unit;
