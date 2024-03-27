@@ -24,7 +24,7 @@ DiscordState::DiscordState(bool in_game) : m_in_game(in_game) {
 		m_state = EDiscordState::InMenu;
 		m_activity_type = DiscordActivityType_Playing;
 	}
-	m_map_name = *g_current_map_name;
+	m_map_name = g_current_map_name;
 	m_race = (RaceId::Enum)g_player_table[*g_local_nation_id].race;
 	m_game_kind = bw::get_game_kind();
 }
@@ -39,7 +39,7 @@ DiscordActivity DiscordState::make_discord_activity(u32 timestamp) const {
 	activity.timestamps.start = timestamp;
 	if (m_in_game) {
 		const char* game_kind = game_kind_to_string(m_game_kind);
-		sprintf_s(activity.details, "%s (%s)", m_map_name, game_kind);
+		sprintf_s(activity.details, "%s (%s)", m_map_name.c_str(), game_kind);
 		switch (m_state) {
 			case EDiscordState::InGamePlaying: {
 				sprintf_s(activity.state, "In Game (%s)", race_to_string(m_race));
