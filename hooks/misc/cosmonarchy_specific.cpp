@@ -405,16 +405,15 @@ namespace hooks
 			unit->energy = 0;
 		}
 		unit->status = unit->status & ~UnitStatus::Frozen;
+
 		u32 new_hp = (hp * units_dat::max_hitpoints[unit->id]) / 256;
 		u32 max_hp = units_dat::max_hitpoints[unit->previous_unit_type] / 256;
 		u32 final_hp = 1;
-		if (max_hp)
-		{
+		if (max_hp) {
 			final_hp = (new_hp / max_hp) / 256;
 		}
 		unit->hitpoints = final_hp * 256;
-		if (!unit->hitpoints)
-		{
+		if (!unit->hitpoints) {
 			unit->hitpoints = 1;
 		}
 		unit->air_strength = helper::get_unit_strength(unit, max_hp, false);
@@ -423,16 +422,15 @@ namespace hooks
 		if (!orders_dat::can_be_interrupted[order_type]) {
 			unit->status |= UnitStatus::CanNotReceiveOrders;
 		}
-		if (sprite->player != player_id )
-		{
+
+		if (sprite->player != player_id ) {
 			sprite->player = player_id;
 			for (Image* image = sprite->images.head; image; image->link.next)
 			{
-			//	image->flags |= ImageFlags::Redraw;
+				image->flags |= ImageFlags::Redraw;
 			}
 		}
-		if (unit->status & UnitStatus::GroundedBuilding)
-		{
+		if (unit->status & UnitStatus::GroundedBuilding) {
 			unit->build_queue[unit->build_queue_slot] = UnitId::None;
 		}
 		unit->main_order_id = order_type;
@@ -440,22 +438,13 @@ namespace hooks
 		unit->order_target = order_target;
 
 		u32 temp_unit_id = unit_id;
-		if (!(unit->status & UnitStatus::Completed))
-		{
+		if (!(unit->status & UnitStatus::Completed)) {
 			temp_unit_id = UnitId::None;
 		}
-		if (!(unit->status & UnitStatus::Frozen) && !unit->lockdown_timer && !unit->stasis_timer && !unit->maelstrom_timer
-			|| units_dat::base_property[unit->id] & UnitProperty::Building
-			|| temp_unit_id == UnitId::None)
-		{
+		if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building || temp_unit_id == UnitId::None) {
 			unit->current_buttonset = temp_unit_id;
 		}
-
-		*g_force_button_refresh = 1;
-		g_portrait_redraw[0] = 1;
-		*g_status_screen_redraw = 1;
-		*g_control_under_mouse = 0;
-		*g_control_under_mouse_value = 0;
+		bw::refresh_console();
 	}
 
 	// Hooked to add nullcheck - Pr0nogo
