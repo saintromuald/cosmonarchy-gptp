@@ -72,7 +72,7 @@ namespace hooks {
 			}
 			*/
 		}
-		Discord::instance().update(false);
+		g_discord.update(false);
 		update_trigger_system(false);
 	}
 
@@ -640,7 +640,7 @@ namespace hooks {
 			g_options_list->speed = 6; // Lock game speed at fastest
 		}
 
-		Discord::instance().update(true);
+		g_discord.update(true);
 
 		if (!g_game_fully_started) {
 			g_game_fully_started = true;

@@ -57,6 +57,7 @@ DiscordActivity DiscordState::make_discord_activity(u32 timestamp) const {
 		sprintf_s(activity.state, "In Menu");
 		activity.instance = false;
 	}
+	return activity;
 }
 
 void Discord::init() {

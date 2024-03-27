@@ -33,13 +33,7 @@ class Discord {
 public:
 	void update(bool in_game);
 
-	inline static Discord& instance() {
-		static Discord instance = {};
-		return instance;
-	}
-
 private:
-	Discord() = default;
 	void init();
 
 private:
@@ -50,3 +44,5 @@ private:
 	bool m_was_in_game;
 	u32 m_timestamp;
 };
+
+inline Discord g_discord;
