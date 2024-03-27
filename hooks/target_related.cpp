@@ -248,43 +248,30 @@ namespace hooks
 	// Hooked to complete the cloak rewrite - Pr0nogo
 	s32 is_unit_cloaking(Unit* unit) // 004916E0
 	{
-		if (unit->is_cloaked)
-		{
+		if (unit->is_cloaked) {
 			return 0;
 		}
 
 		s32 redraw = 0;
-		if (*g_first_invisible_unit == unit)
-		{
+		if (*g_first_invisible_unit == unit) {
 			*g_first_invisible_unit = unit->invisible_link.next;
 			redraw = 1;
 		}
-
-		Unit* previousInvisibleUnit = unit->invisible_link.prev;
-		if (previousInvisibleUnit)
-		{
-			previousInvisibleUnit->invisible_link.next = unit->invisible_link.next;
+		Unit* previous_invisible_unit = unit->invisible_link.prev;
+		if (previous_invisible_unit) {
+			previous_invisible_unit->invisible_link.next = unit->invisible_link.next;
 			redraw = 1;
 		}
-
-		Unit* nextInvisibleUnit = unit->invisible_link.next;
-		if (nextInvisibleUnit)
-		{
-			nextInvisibleUnit->invisible_link.prev = unit->invisible_link.prev;
+		Unit* next_invisible_unit = unit->invisible_link.next;
+		if (next_invisible_unit) {
+			next_invisible_unit->invisible_link.prev = unit->invisible_link.prev;
 			redraw = 1;
 		}
-
 		unit->status &= 0xFFFFF7FF;
 		unit->invisible_link.prev = 0;
 		unit->invisible_link.next = 0;
-
-		if (redraw)
-		{
-			*g_force_button_refresh = 1;
-			g_portrait_redraw[0] = (s8)1;
-			*g_status_screen_redraw = 1;
-			*g_control_under_mouse = 0;
-			*g_control_under_mouse_value = 0;
+		if (redraw) {
+			bw::refresh_console();
 		}
 		return 1;
 	}
@@ -293,7 +280,7 @@ namespace hooks
 	{
 		if (attacker->is_frozen()
 		|| !target
-		|| !target->sprite // new
+		||  target->is_dead()
 		||  target->status & UnitStatus::Invincible
 		||  target->sprite->flags & SpriteFlags::Hidden
 		||  check_detection && helper::unit_can_see_cloaked_target(target, attacker))
@@ -301,8 +288,7 @@ namespace hooks
 			return false;
 		}
 
-		if (units_dat::base_property[attacker->id] & UnitProperty::Building)
-		{
+		if (units_dat::base_property[attacker->id] & UnitProperty::Building) {
 			if (!(attacker->status & UnitStatus::GroundedBuilding)) {
 				return false;
 			}
@@ -368,94 +354,69 @@ namespace hooks
 				return false;
 			}
 		}
-
 		return weapon != WeaponId::None;
 	}
 
 	// Hooked to help with the Titanic count game rule - Pr0nogo
 	void ai_attack_unit(Unit* unit) // 0043FFD0
 	{
-		if (!unit)
-		{
+		if (!unit) {
 			return;
 		}
 
-		u16 unit_id = unit->id;
-		if (!unit_id || unit_id == 32)
-		{
+		u32 unit_id = unit->id;
+		if (!unit_id || unit_id == UnitId::TerranHarakan) {
 			Unit* unit_target = unit->order_target.unit;
-			if (unit_target)
-			{
+			if (unit_target) {
 				s32 cooldown = 0;
-				if (unit->stim_timer)
-				{
+				if (unit->stim_timer) {
 					cooldown = 1;
 				}
-				if (unit->status & UnitStatus::SpeedUpgrade)
-				{
+				if (unit->status & UnitStatus::SpeedUpgrade) {
 					++cooldown;
 				}
-				if (unit->ensnare_timer)
-				{
+				if (unit->ensnare_timer) {
 					--cooldown;
 				}
-				if (cooldown <= 0)
-				{
+				if (cooldown <= 0) {
 					s32 unit_hp = units_dat::max_hitpoints[unit_id] >> 8;
-					if (!unit_hp)
-					{
+					if (!unit_hp) {
 						unit_hp = (unit->hitpoints + 255) >> 8;
-						if (!unit_hp)
-						{
+						if (!unit_hp) {
 							unit_hp = 1;
 						}
 					}
-					if ((unit->hitpoints + 255) >> 8 >= unit_hp / 2)
-					{
-						if (unit_can_attack_target(unit, unit_target, 1))
-						{
+					if ((unit->hitpoints + 255) >> 8 >= unit_hp / 2) {
+						if (unit_can_attack_target(unit, unit_target, 1)) {
 							unit_target = unit->order_target.unit;
-							if (!unit_target)
-							{
-								if (helper::tech_use_allowed(unit, 0, unit->player) == 1
-								&&  helper::get_current_hp_plus_shields(unit_target) >= 100)
-								{
+							if (!unit_target) {
+								if (helper::tech_use_allowed(unit, 0, unit->player) == 1 && helper::get_current_hp_plus_shields(unit_target) >= 100) {
 									helper::stimpack_proc(unit);
 								}
 								return;
 							}
-							if (helper::is_target_visible(unit, unit_target))
-							{
+							if (helper::is_target_visible(unit, unit_target)) {
 								Unit* subunit = unit->subunit;
-								if (!subunit || !(units_dat::base_property[subunit->id] & UnitProperty::Subunit))
-								{
+								if (!subunit || !(units_dat::base_property[subunit->id] & UnitProperty::Subunit)) {
 									subunit = unit;
 								}
-
 								u8 air_weapon;
-								if (unit_target->status & 4)
-								{
+								if (unit_target->status & UnitStatus::InAir) {
 									air_weapon = units_dat::air_weapon[subunit->id];
 								} else {
 									u16 subunit_id = subunit->id;
-									if (!unit_id_is_burrowed_attacker(subunit_id) || subunit->status & UnitStatus::Burrowed)
-									{
+									if (!unit_id_is_burrowed_attacker(subunit_id) || subunit->status & UnitStatus::Burrowed) {
 										air_weapon = units_dat::ground_weapon[subunit_id];
 									} else {
 										air_weapon = WeaponId::None;
 									}
 								}
-								if (air_weapon != WeaponId::None)
-								{
+								if (air_weapon != WeaponId::None) {
 									u32 air_min_range = weapons_dat::min_range[air_weapon];
-									if (!air_min_range || !(helper::is_target_within_min_range(subunit, air_min_range, unit_target)))
-									{
+									if (!air_min_range || !(helper::is_target_within_min_range(subunit, air_min_range, unit_target))) {
 										s32 air_max_range = weapons_dat::max_range[air_weapon];
-										if (helper::is_target_within_min_movement_range(unit_target, subunit, air_max_range))
-										{
-											if (helper::tech_use_allowed(unit, 0, unit->player) == 1
-											&&  helper::get_current_hp_plus_shields(unit_target) >= 100)
-											{
+										if (helper::is_target_within_min_movement_range(unit_target, subunit, air_max_range)) {
+											if (helper::tech_use_allowed(unit, 0, unit->player) == 1 && helper::get_current_hp_plus_shields(unit_target) >= 100) {
 												helper::stimpack_proc(unit);
 											}
 											return;
@@ -475,18 +436,15 @@ namespace hooks
 	{
 		s32 result = 0;
 		Unit* steward_target = hangar_unit->order_target.unit;
-		if (steward_target && !(steward_target->status & UnitStatus::Invincible) || helper::attack_recent_attacker(hangar_unit))
-		{
+		if (steward_target && !(steward_target->status & UnitStatus::Invincible) || helper::attack_recent_attacker(hangar_unit)) {
 			Unit* unit_with_hangar = hangar_unit->hangar_unit.parent;
 			steward_target = hangar_unit->order_target.unit;
 			hangar_unit->order_target.pt.x = steward_target->position.x;
 			hangar_unit->order_target.pt.y = steward_target->position.y;
-			if (!unit_with_hangar)
-			{
+			if (!unit_with_hangar) {
 				unit_with_hangar = hangar_unit;
 			}
-			if (!unit_with_hangar || helper::is_target_within_min_movement_range(steward_target, unit_with_hangar, 8 * 32))
-			{
+			if (!unit_with_hangar || helper::is_target_within_min_movement_range(steward_target, unit_with_hangar, 8 * 32)) {
 				result = 1;
 			} else {
 				helper::issue_order_targeting_nothing(hangar_unit, OrderId::Return);
@@ -495,17 +453,13 @@ namespace hooks
 		} else {
 			u8 steward_order_id = hangar_unit->main_order_id;
 			hangar_unit->user_action_flags |= 1;
-			if (steward_order_id)
-			{
-				while (1)
-				{
+			if (steward_order_id) {
+				while (1) {
 					Order* order_tail = hangar_unit->order_queue_tail;
-					if (!order_tail)
-					{
+					if (!order_tail) {
 						break;
 					}
-					if (!orders_dat::can_be_interrupted[order_tail->order_id] && order_tail->order_id != OrderId::Return)
-					{
+					if (!orders_dat::can_be_interrupted[order_tail->order_id] && order_tail->order_id != OrderId::Return) {
 						break;
 					}
 					helper::remove_order_from_unit_queue(order_tail, hangar_unit);
@@ -545,11 +499,9 @@ namespace hooks
 	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit) // 004769D0
 	{
 		bool result = 0;
-		if (compare_unit != auto_target)
-		{
+		if (compare_unit != auto_target) {
 			u32 compare_player = compare_unit->player == 11 ? compare_unit->sprite->player : compare_unit->player;
-			if (!bw::is_allied_to(self->player, compare_player))
-			{
+			if (!bw::is_allied_to(self->player, compare_player)) {
 				if (!auto_target
 				||  !helper::unit_can_attack_target(auto_target, self, 1)
 				||  !helper::is_unit_enemy(self, auto_target)
