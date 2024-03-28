@@ -418,7 +418,7 @@ namespace hooks
 			*g_active_iscript_entity = unit;
 			*g_active_iscript_unit   = unit;
 			helper::progress_dying_unit_frame(unit);
-			if (AssertSprite(unit->sprite)) {
+			if (unit->sprite) {
 				if (*g_vision_updated) {
 					if (g_player_table[unit->player].type == PlayerType::Human) {
 						hooks::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir);
