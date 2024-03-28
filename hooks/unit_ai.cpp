@@ -46,11 +46,10 @@ namespace hooks {
 		}
 
 		Point16 position = {};
-		if (unit->sprite) {
+		if (AssertSprite(unit->sprite)) {
 			position = unit->sprite->position;
 		} else {
 			position = unit->position;
-			bw::printf("null sprite of Create Broodling detected!");
 		}
 
 		s32 region_id = bw::get_region_id(position);

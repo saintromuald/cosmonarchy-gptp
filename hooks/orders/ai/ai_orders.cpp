@@ -310,7 +310,7 @@ namespace hooks {
 			s32 region_index = 2500;
 			AiRegion* ai_region = 0;
 			for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
-				if (!unit->sprite || !unit->main_order_id) {
+				if (!AssertSprite(unit->sprite) || !unit->main_order_id) {
 					continue;
 				}
 
@@ -449,7 +449,7 @@ namespace hooks {
 	}	
 
 	s16 get_region_id_from_unit(Unit* unit) { // 0049CB40
-		if (!unit || !unit->sprite) {
+		if (!unit || !AssertSprite(unit->sprite)) {
 			return false;
 		}
 		return helper::get_region_id(unit->position.x, unit->position.y);
@@ -471,7 +471,7 @@ namespace hooks {
 	// Hooked to add sprite nullcheck - Pr0nogo
 	b32 ai_military_should_wait_for_group(Unit* unit) { // 0043AA10
 		// New code
-		if (!unit || !unit->sprite) {
+		if (!unit || !AssertSprite(unit->sprite)) {
 			return false;
 		}
 
@@ -495,7 +495,7 @@ namespace hooks {
 		MilitaryAi* military_ai = unit_ai->region->military.first;
 		for (; military_ai; military_ai = military_ai->link.prev) {
 			Unit* unit_it = (Unit*)military_ai->unit;
-			if (unit_it && unit_it->sprite && unit_it != unit) {
+			if (unit_it && AssertSprite(unit_it->sprite) && unit_it != unit) {
 				u32 distance = helper::get_distance_fast(unit_it->position.x, unit->position.x, unit_it->position.y, unit->position.y);
 				if  (distance <= 384
 				&&   helper::ai_are_on_connected_regions(unit_it, unit)
@@ -769,16 +769,17 @@ namespace hooks {
 		}
 
 		AiRegion* region = militaryAi->region;
-		Unit* slowestUnitVar = region->slowest_unit;
-		if (!slowestUnitVar
-		||	!slowestUnitVar->sprite // new
-		||	slowestUnitVar->status & UnitStatus::InTransport
-		||	slowestUnitVar == unit
-		||	region->state == 2
-		||	(u16)(&(*g_sai_paths)->region_count + 32 * (helper::get_region_id_from_unit(region->slowest_unit) + 4392)) < 60u
-		||	!helper::ai_are_on_connected_regions(slowestUnitVar, unit)
-		||	helper::get_distance_fast(region->slowest_unit->sprite->position.x, unit->sprite->position.x, region->slowest_unit->sprite->position.y, unit->sprite->position.y) <= 0x80) {
-			return 1;
+		Unit* slowest_unit = region->slowest_unit;
+		if (!slowest_unit
+		||  !AssertSprite(slowest_unit->sprite)
+		|| 	 slowest_unit->status & UnitStatus::InTransport
+		|| 	 slowest_unit == unit
+		||	 region->state == RegionState::Attacking
+		||	 (u16)(&(*g_sai_paths)->region_count + 32 * (helper::get_region_id_from_unit(region->slowest_unit) + 4392)) < 60
+		||	!helper::ai_are_on_connected_regions(slowest_unit, unit)
+		||	 helper::get_distance_fast(region->slowest_unit->sprite->position.x, unit->sprite->position.x, region->slowest_unit->sprite->position.y, unit->sprite->position.y) <= 0x80)
+		{
+			 return 1;
 		}
 
 		u32 x2 = 0;

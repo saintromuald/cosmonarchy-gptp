@@ -647,8 +647,7 @@ namespace hooks
 					helper::add_overlay_below_main(data.attacker->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 				}
 
-				if (target_ext->timers[TimerTriumphantRiseDebuff])
-				{
+				if (target_ext->timers[TimerTriumphantRiseDebuff]) {
 					bw::astral_blessing_proc(data.target, data.attacking_player_id, WeaponId::HeraldStellarTorch);
 				}
 
@@ -661,9 +660,7 @@ namespace hooks
 					case WeaponId::SavantDiscoidRailgun:
 					{
 						// Power Siphon
-						if  (bw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit)
-						&&	unit_is_combatant(data.target))
-						{
+						if (bw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit) && unit_is_combatant(data.target)) {
 							attacker_ext->values[ValueSavantPowerSiphonBuff]++;
 							attacker_ext->timers[TimerSavantPowerSiphonBuff] = 2 * 24 + 1;
 
@@ -1162,7 +1159,7 @@ namespace hooks
 					}
 				}
 				helper::ai_unit_was_hit(victim, attacker, 1, 0);
-				if (reveal && attacker->sprite) {
+				if (reveal && AssertSprite(attacker->sprite)) {
 					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
 						bw::reveal_attacker(attacker, victim);
 						if (attacker->id == UnitId::ProtossSteward && attacker->hangar_unit.parent) {

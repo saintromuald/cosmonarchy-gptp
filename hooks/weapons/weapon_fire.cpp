@@ -394,7 +394,7 @@ namespace hooks {
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fire_weapon().
 	void fire_weapon(Unit* unit, u8 weapon_id) { // 00479C90
-		if (!unit || !unit->sprite) {
+		if (!unit || !AssertSprite(unit->sprite)) {
 			return;
 		}
 
@@ -1096,7 +1096,7 @@ namespace hooks {
 
 	void bullet_behavior_bounce(Bullet* bullet) { // 0048B2D0
 		Unit* target_unit = bullet->attack_target.unit;
-		if (target_unit && target_unit->sprite) {
+		if (target_unit && AssertSprite(target_unit->sprite)) {
 			if (!(bullet->hit_flags & 1)) {
 				helper::change_move_pos(bullet, target_unit->position.y, target_unit->position.x);
 			}
@@ -1159,55 +1159,43 @@ namespace hooks {
 	bool find_next_bounce_target_proc(Unit* target) // 0048AFD0
 	{
 		Unit* bounce_source = *g_bullet_bounce_missile_source;
-
 		// Previously disallowed bouncing if unit was disabled
-		if (!target)
-		{
+		if (!target) {
 			return 0;
 		}
-		if (target->status & UnitStatus::Invincible)
-		{
+		if (target->status & UnitStatus::Invincible) {
 			return 0;
 		}
-		if (target->sprite->flags & SpriteFlags::Hidden)
-		{
+		if (target->sprite->flags & SpriteFlags::Hidden) {
 			return 0;
 		}
-		if (*g_bullet_bounce_missile_source && helper::unit_can_see_cloaked_target(target, (*g_bullet_bounce_missile_source)))
-		{
+		if (*g_bullet_bounce_missile_source && helper::unit_can_see_cloaked_target(target, (*g_bullet_bounce_missile_source))) {
 			return 0;
 		}
 
 		Unit* bounce_source_unit = bounce_source;
-		if (bounce_source && bounce_source->subunit && helper::unit_is_subunit(bounce_source->subunit))
-		{
+		if (bounce_source && bounce_source->subunit && helper::unit_is_subunit(bounce_source->subunit)) {
 			bounce_source_unit = bounce_source->subunit;
 		}
-		if (!(helper::unit_is_carrier(bounce_source)))
-		{
+		if (!(helper::unit_is_carrier(bounce_source))) {
 			bool is_valid = true;
-			if (helper::unit_is_reaver(bounce_source))
-			{
-				if (target->status & UnitStatus::InAir)
-				{
+			if (helper::unit_is_reaver(bounce_source)) {
+				if (target->status & UnitStatus::InAir) {
 					return 0;
 				}
 				is_valid = helper::unit_has_path_to_target(bounce_source, target);
 			} else {
-				if (helper::unit_can_infest(bounce_source))
-				{
+				if (helper::unit_can_infest(bounce_source)) {
 					is_valid = helper::can_be_infested(0, target) != 0; // First arg is stupid?
 				} else {
-					if (target->status & UnitStatus::InAir)
-					{
+					if (target->status & UnitStatus::InAir) {
 						is_valid = units_dat::air_weapon[bounce_source_unit->id] != WeaponId::None;
 					} else {
 						is_valid = units_dat::ground_weapon[bounce_source_unit->id] != WeaponId::None;
 					}
 				}
 			}
-			if (!is_valid)
-			{
+			if (!is_valid) {
 				return 0;
 			}
 		}
@@ -1217,18 +1205,15 @@ namespace hooks {
 		}
 
 		u8 player = target->player == 11 ? target->sprite->player : target->player;
-		if (bw::is_allied_to(bounce_source->player, player) || *g_bullet_bounce_missile_target == target)
-		{
+		if (bw::is_allied_to(bounce_source->player, player) || *g_bullet_bounce_missile_target == target) {
 			return 0;
 		}
 
 		// Gladius Binding Plasma behavior
 		if (iquare_globals.bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 		{
-			if (target && *g_bullet_bounce_missile_next && (*g_bullet_bounce_missile_next)->sprite && target->sprite)
-			{
-				if (iquare_globals.was_already_hit_by_multihit_bullet(iquare_globals.bounce_bullet, target))
-				{
+			if (target && *g_bullet_bounce_missile_next && (*g_bullet_bounce_missile_next)->sprite && target->sprite) {
+				if (iquare_globals.was_already_hit_by_multihit_bullet(iquare_globals.bounce_bullet, target)) {
 					return false;
 				} else {
 					iquare_globals.add_bullet_multihit(iquare_globals.bounce_bullet, target);
@@ -1241,8 +1226,7 @@ namespace hooks {
 
 	Unit* find_next_bounce_target(Bullet* bullet) // 0048B1E0
 	{
-		if (!bullet->source_unit)
-		{
+		if (!bullet->source_unit) {
 			return 0;
 		}
 		Unit* next_bounce = bullet->next_bounce_unit;
@@ -1423,7 +1407,7 @@ namespace hooks {
 			if (invert_spin) {
 				launch_spin_variance = -(s8)launch_spin;
 			}
-			char launch_spin_direction = launch_spin_variance + bullet->velocity_direction_1;
+			u8 launch_spin_direction = launch_spin_variance + bullet->velocity_direction_1;
 			bullet->current_direction_1 = launch_spin_direction;
 			bullet->velocity_direction_1 = launch_spin_direction;
 			*g_last_bullet_creator = parent;
@@ -1443,7 +1427,7 @@ namespace hooks {
 
 		Unit* target_unit = parent->order_target.unit;
 		bullet->attack_target.unit = target_unit;
-		if (target_unit && target_unit->sprite) {
+		if (target_unit && AssertSprite(target_unit->sprite)) {
 			bullet->sprite->elevation = target_unit->sprite->elevation + 1;
 			bullet->attack_target.pt.x = target_unit->position.x;
 			bullet->attack_target.pt.y = target_unit->position.y;
@@ -1848,16 +1832,14 @@ namespace hooks {
 	void bullet_behavior_follow(Bullet* bullet) // 0048B500
 	{
 		Unit* target = bullet->attack_target.unit;
-		if (!target || !target->sprite)
-		{
+		if (!target || !AssertSprite(target->sprite)) {
 			bullet->behavior_type = 1;
 			bullet->attack_target.unit = 0;
 			bullet->main_order_state = 0;
 			bullet->order_unit_id = UnitId::None;
 			helper::bullet_behavior_fly(bullet);
 		} else {
-			if (!(bullet->hit_flags & 1)) // miss
-			{
+			if (!(bullet->hit_flags & 1)) { // miss
 				Bullet* changed_bullet = helper::change_move_pos(bullet, target->position.y, target->position.x);
 				helper::bullet_behavior_fly(changed_bullet);
 			} else {

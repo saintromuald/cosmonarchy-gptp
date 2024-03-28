@@ -1731,7 +1731,7 @@ namespace hooks {
 					unit->order_signal &= ~0x20;
 					helper::play_sound_from_unit(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
 				}
-				if (unit->sprite && unit->main_order_id != OrderId::Die && unit_ext->timers[TimerMissileReturnETA] == 1) {
+				if (!unit->is_dead() && unit_ext->timers[TimerMissileReturnETA] == 1) {
 					bw::launch_return_missile(unit, WeaponId::LakiziliskSubterraneanSpines);
 				}
 			} break;
@@ -2322,7 +2322,7 @@ namespace hooks {
 			} break;
 			case UnitId::ZergSkithrokor:
 			{
-				if (unit->sprite && unit->main_order_id != OrderId::Die && unit_ext->timers[TimerMissileReturnETA] == 1) {
+				if (!unit->is_dead() && unit_ext->timers[TimerMissileReturnETA] == 1) {
 					bw::launch_return_missile(unit, WeaponId::SkithrokorSkitteringSpores);
 				}
 			} break;

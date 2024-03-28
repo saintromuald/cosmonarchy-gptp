@@ -418,7 +418,7 @@ namespace hooks
 			*g_active_iscript_entity = unit;
 			*g_active_iscript_unit   = unit;
 			helper::progress_dying_unit_frame(unit);
-			if (unit->sprite) {
+			if (AssertSprite(unit->sprite)) {
 				if (*g_vision_updated) {
 					if (g_player_table[unit->player].type == PlayerType::Human) {
 						hooks::reveal_sight_at_location(1, player_vision->flags[unit->player], unit->position.x, unit->position.y, unit->status & UnitStatus::InAir);
@@ -568,7 +568,7 @@ namespace hooks
 	// Hooked to add nullcheck - Pr0nogo
 	void progress_unit_frame(Unit* unit) // 004ECF70
 	{
-		if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && unit->sprite) {
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && AssertSprite(unit->sprite)) {
 			if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 				helper::refresh_sprite(unit->sprite, g_selection_circle_color[unit->player]);
 			}
@@ -658,7 +658,7 @@ namespace hooks
 	// Hooked to improve functionality. -Pr0nogo
 	u8 replace_unit_with_id(Unit* unit, u32 new_id) // 0049FED0
 	{
-		if (!unit->sprite) {
+		if (!AssertSprite(unit->sprite)) {
 			return 0;
 		}
 
@@ -1041,9 +1041,8 @@ namespace hooks
 			}
 
 			*g_active_iscript_unit = old_active_iscript_unit;
-			if (!unit->sprite)
-			{
-				return false; // Did not exist in the original function. Added to avoid dereferencing null sprite.
+			if (!AssertSprite(unit->sprite)) {
+				return false; // New
 			}
 
 			unit->last_attacking_player = 8;

@@ -670,7 +670,7 @@ namespace hooks
 		u32 status = unit->status;
 		Unit* target_unit = unit->order_target.unit;
 		if (unit->is_frozen()
-		|| !target_unit || !target_unit->sprite // Nullcheck is new.
+		|| !target_unit || !AssertSprite(target_unit->sprite)
 		||  target_unit->status & UnitStatus::Invincible
 		||  target_unit->sprite->flags & SpriteFlags::Hidden
 		||  helper::unit_can_see_cloaked_target(target_unit, unit))
@@ -893,7 +893,7 @@ namespace hooks
 	{
 		helper::pick_new_target_if_needed(unit);
 		Unit* target = unit->order_target.unit;
-		if (target && target->sprite) { // sprite is new
+		if (target && AssertSprite(target->sprite)) { // sprite is new
 			unit->order_target.pt.x = target->sprite->position.x;
 			unit->order_target.pt.y = target->sprite->position.y;
 		}
@@ -904,7 +904,7 @@ namespace hooks
 		u32 order_id = 0;
 		u32 last_order = 0;
 
-		if (unit->is_frozen() || !target || !target->sprite) { // sprite is new
+		if (unit->is_frozen() || !target || !AssertSprite(target->sprite)) { // sprite is new
 			goto cannot_attack;
 		}
 		if (target->status & UnitStatus::Invincible || target->sprite->flags & SpriteFlags::Hidden || helper::unit_can_see_cloaked_target(target, unit)) {

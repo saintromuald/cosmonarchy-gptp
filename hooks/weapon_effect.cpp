@@ -54,7 +54,7 @@ namespace hooks {
 
 		Point16 pos = bullet->sprite->position;
 		Unit* unit = bullet->source_unit;
-		if (unit && unit->sprite) {
+		if (unit && AssertSprite(unit->sprite)) {
 			UnitExt* bullet_source_ext = get_unit_ext(unit);
 			if (unit->is_blind) {
 				splash = SplashType::Radial;

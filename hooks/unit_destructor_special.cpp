@@ -15,7 +15,7 @@ void augur_proc(Unit* augur, s32 radius) {
 		augur,
 	[&](Unit* unit) {
 		// Don't attack friendly / allied units
-		if (!unit->sprite) {
+		if (!AssertSprite(unit->sprite)) {
 			return false;
 		}
 		if (unit->player == augur->player) {

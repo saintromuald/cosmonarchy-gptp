@@ -24,7 +24,7 @@ namespace hooks
 		}
 
 		unit->main_order_state = 1;
-		if (unit->sprite) {
+		if (AssertSprite(unit->sprite)) {
 			if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 				if (!(unit->status & UnitStatus::IsHallucination) || unit->status & UnitStatus::IsSelfDestructing) {
 					unit->sprite->play_iscript_animation(IscriptAnimation::Death, true);

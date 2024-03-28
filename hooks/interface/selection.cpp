@@ -508,7 +508,7 @@ namespace hooks
 				continue;
 			}
 			Unit* unit = &g_unit_table[unit_index.index - 1];
-			if (!unit || !unit->sprite || unit->unique_id != unit_index.unique_id || !unit->main_order_id) {
+			if (!unit || !AssertSprite(unit->sprite) || unit->unique_id != unit_index.unique_id || !unit->main_order_id) {
 				continue;
 			}
 			if (units_dat::base_property[unit->id] & UnitProperty::Building) {
@@ -768,7 +768,7 @@ namespace hooks
 			helper::remove_from_selections_2(unit, iterations++);
 		} while (iterations < 8);
 		
-		if (!unit->sprite) {
+		if (!AssertSprite(unit->sprite)) {
 			return 0;
 		}
 		Sprite* sprite = unit->sprite;

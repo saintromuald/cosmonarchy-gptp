@@ -205,7 +205,7 @@ namespace hooks
 
 	// Hooked to help with cloak rewrite - Pr0nogo
 	void check_unit_visibility(Unit* unit) { // 00443390
-		if (!unit->sprite) {
+		if (!AssertSprite(unit->sprite)) {
 			return;
 		}
 		u32 detecting_players = helper::get_detecting_players(unit);
@@ -280,7 +280,7 @@ namespace hooks
 	{
 		if (attacker->is_frozen()
 		|| !target
-		||  target->is_dead()
+		|| !AssertSprite(target->sprite)
 		||  target->status & UnitStatus::Invincible
 		||  target->sprite->flags & SpriteFlags::Hidden
 		||  check_detection && helper::unit_can_see_cloaked_target(target, attacker))
@@ -943,7 +943,7 @@ namespace hooks
 	u32 is_target_visible(Unit* target, Unit* unit) // 004E5E30
 	{
 		s32 player_flag = 1 << unit->player;
-		if (!target || !target->sprite) // sprite is new
+		if (!target || !AssertSprite(target->sprite)) // sprite is new
 		{
 			ActiveTile* tile = bw::get_active_tile_at_coords(unit->order_target.pt);
 			return player_flag & ~(tile->vision_flags & 0xFF);
