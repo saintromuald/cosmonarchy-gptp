@@ -448,14 +448,12 @@ namespace hooks
 	}
 
 	// Hooked to add nullcheck - Pr0nogo
-	char ignore_iscript_and_go_to_idle(Unit* unit) // 00476550
+	u8 ignore_iscript_and_go_to_idle(Unit* unit) // 00476550
 	{
-		if (!unit)
-		{
+		if (!unit) {
 			return 0;
 		}
-		if (!unit->sprite)
-		{
+		if (!unit->sprite) {
 			return 0;
 		}
 

@@ -526,7 +526,7 @@ namespace hooks
 			if (g_hash_list[hash_struct_index].hash_type == 1) {
 				if (!warning_once_03_00) {
 					sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", *g_local_nation_id);
-					bw::print(buffer, GameTextColor::Yellow);
+					bw::print(buffer, GameTextColor::Red);
 					snprintf(buffer, sizeof(buffer), "Local Type: %u | Remote Type: %u\nLocal Hash: 0x%X | Remote Hash: 0x%X\nLocal nation id: %u | Active visions: %u | Explored visions: %u\nLast random number: %u\n\nUnmovable Hits:",
 						g_hash_list[hash_struct_index].hash_type, hash_type,
 						g_hash_list[hash_struct_index].hash , *(u16*)(data + 2),
@@ -761,15 +761,13 @@ namespace hooks
 	void __declspec(naked) ignore_iscript_and_go_to_idle_wrapper() // 00476550
 	{
 		static Unit* unit;
-		static char result;
-		__asm
-		{
+		static u8 result;
+		__asm {
 			MOV unit, ESI
 			PUSHAD
 		}
 		result = hooks::ignore_iscript_and_go_to_idle(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV AL, result
 			RETN
