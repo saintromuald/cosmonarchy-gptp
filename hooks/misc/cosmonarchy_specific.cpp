@@ -450,10 +450,10 @@ namespace hooks
 	// Hooked to add nullcheck - Pr0nogo
 	u8 ignore_iscript_and_go_to_idle(Unit* unit) // 00476550
 	{
-		if (!unit) {
+		if (!unit) { // New
 			return 0;
 		}
-		if (!unit->sprite) {
+		if (!AssertSprite(unit->sprite)) { // New
 			return 0;
 		}
 
