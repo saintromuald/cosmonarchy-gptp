@@ -419,11 +419,9 @@ namespace hooks {
 			}
 			*/
 
-			bool in_replay_or_witness = globals->players[*g_local_nation_id].witness_mode || *g_is_in_replay;
-
 			// Show auras
 			if (g_config.show_aura_circles && bw::can_show_custom_ui()
-			&& (bw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
+			&& (bw::are_mutual_allies(unit->player, *g_local_nation_id) || bw::in_replay_or_witness)) {
 				switch (unit->id) {
 					case UnitId::TerranShamanSupportMode:
 					{
@@ -466,14 +464,14 @@ namespace hooks {
 
 			// Show connected Nyduses
 			if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
-				if (bw::unit_is_allied_or_detected(unit, *g_local_nation_id) || in_replay_or_witness) {
+				if (bw::unit_is_allied_or_detected(unit, *g_local_nation_id) || bw::in_replay_or_witness()) {
 					draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
 				}
 			}
 
 			// Rally points
 			if (g_config.show_rally_lines && bw::can_show_custom_ui()
-			&& (bw::is_allied_to(*g_local_nation_id, unit->player) || in_replay_or_witness))
+			&& (bw::is_allied_to(*g_local_nation_id, unit->player) || bw::in_replay_or_witness()))
 			{
 				Point16 target = get_target_point(unit->rally);
 				if (target.x == unit->position.x && target.y == unit->position.y
@@ -549,8 +547,7 @@ namespace hooks {
 				}
 			}
 
-			if ((!in_replay_or_witness && g_config.show_order_lines && bw::is_allied_to(*g_local_nation_id, unit->player) && bw::can_show_custom_ui())
-			||   (in_replay_or_witness && g_config.witness_show_order_lines && bw::can_show_custom_ui())) {
+			if (g_config.show_order_lines && (bw::in_replay_or_witness() || bw::is_allied_to(*g_local_nation_id, unit->player)) && bw::can_show_custom_ui()) {
 				Unit* ignore_resource_unit = 0;
 
 				// Worker harvest links
@@ -574,7 +571,7 @@ namespace hooks {
 					ion_target.pt.y = unit_ext->values[ValueDiademTargetPosY];
 					source = draw_order_line(source, ion_target, graphics::RED, ignore_resource_unit);
 
-					if (g_config.show_queued_order_lines || in_replay_or_witness && g_config.witness_show_order_lines) {
+					if (g_config.show_queued_order_lines) {
 						ion_target.unit = unit_ext->units[UnitDiademTarget];
 						source = draw_order_line(source, ion_target, graphics::GREY, ignore_resource_unit);
 					}
@@ -610,8 +607,7 @@ namespace hooks {
 				}
 
 				// Queued orders
-				if ((g_config.show_queued_order_lines || in_replay_or_witness && g_config.witness_show_order_lines)
-				&&  !ignore_resource_unit) { // Queued orders never work when harvesting, therefore we will not show them
+				if (g_config.show_queued_order_lines && !ignore_resource_unit) { // Queued orders never work when harvesting, therefore we will not show them
 					for (Order* order = unit->order_queue_head; order; order = order->next) {
 						source = draw_order_line(source, order->target, graphics::GREY);
 					}

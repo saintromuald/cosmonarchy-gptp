@@ -612,48 +612,28 @@ namespace hooks
 		u32 local_player = *g_local_nation_id;
 		Point16 pos = { 434, 3 };//x is dialog->bounds.left of the third row element (from the right), minus 2. -DF
 
-		if (*g_is_in_replay || globals->players[local_player].witness_mode) {
-			/*bool can_show_apm = false;
-
-			if (config.witness_show_apm) {
-				for (u32 player = 0; player < PlayerLimit; ++player) {
-					if (g_player_table[player].type == PlayerType::Human && !globals->players[player].witness_mode) {
-						can_show_apm = true;
-						break;
-					}
-				}
-			}*/
-
+		if (bw::in_replay_or_witness()) {
 			for (u32 player = 0; player < PlayerLimit; ++player) {
 				PlayerVars player_vars = globals->players[player];
 				u32 player_type = g_player_table[player].type;
 				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !player_vars.witness_mode && !player_vars.hide_in_team_ui) {
 					draw_player_stats(&dialog, &pos, player,
-						true,						//use_player_color
-						g_config.witness_show_apm,	//can_show_apm
-						true,						//show_production
-						true,						//show_name
-						true,						//show_color_box
-						*g_is_holding_alt);			//count_in_production
+						true,				// use_player_color
+						g_config.show_apm,	// can_show_apm
+						true,				// show_production
+						true,				// show_name
+						true,				// show_color_box
+						*g_is_holding_alt);	// count_in_production
 				}
 			}
 		} else { // Normal player UI. -Veeq7
-			/*bool can_show_apm = config.show_apm;
-
-			for (u32 player = 0; player < PlayerLimit; ++player) {
-				if (g_player_table[player].type == PlayerType::Human && player != local_player && !globals->players[player].witness_mode) {
-					can_show_apm = true;
-					break;
-				}
-			}*/
-
 			draw_player_stats(&dialog, &pos, local_player,
-				false,													//use_player_color
-				g_config.show_team_ui_self && g_config.show_team_ui_apm,	//can_show_apm
-				false,													//show_production
-				g_config.show_team_ui_self && g_config.show_team_ui_names,	//show_name
-				g_config.show_team_ui_self,								//show_color_box
-				!*g_is_holding_alt);									//count_in_production
+				false,														// use_player_color
+				g_config.show_team_ui_self && g_config.show_team_ui_apm,	// can_show_apm
+				false,														// show_production
+				g_config.show_team_ui_self && g_config.show_team_ui_names,	// show_name
+				g_config.show_team_ui_self,									// show_color_box
+				!*g_is_holding_alt);										// count_in_production
 
 			if (g_config.show_team_ui) {
 				for (u32 player = 0; player < PlayerLimit; ++player) {
@@ -663,12 +643,12 @@ namespace hooks
 						&& !player_vars.hide_in_team_ui && bw::is_allied_to(player, local_player))
 					{
 						draw_player_stats(&dialog, &pos, player,
-							true,						//use_player_color
-							g_config.show_team_ui_apm,	//can_show_apm
-							false,						//show_production
-							g_config.show_team_ui_names,	//show_name
-							true,						//show_color_box
-							!*g_is_holding_alt);		//count_in_production
+							true,							// use_player_color
+							g_config.show_team_ui_apm,		// can_show_apm
+							false,							// show_production
+							g_config.show_team_ui_names,	// show_name
+							true,							// show_color_box
+							!*g_is_holding_alt);			// count_in_production
 					}
 				}
 			}
@@ -677,14 +657,14 @@ namespace hooks
 		while (dialog->index <= ResSize) {
 			if (dialog->flags & BinDlgFlags::Visible) {
 				helper::hide_dialog(dialog);
-				BinDlg* child = dialog->statRes.player_name;//dialog_name
+				BinDlg* child = dialog->statRes.player_name; // dialog_name
 
 				if (child) {
 					if (child->flags & BinDlgFlags::Visible) {
 						helper::hide_dialog(child);
 					}
 
-					child = dialog->child_dialog;//dialog_production
+					child = dialog->child_dialog; // dialog_production
 
 					for (u32 i_0 = RowSize; i_0; --i_0) {
 						if (child->flags & BinDlgFlags::Visible) {
@@ -698,8 +678,9 @@ namespace hooks
 
 			dialog = dialog->next;
 		}
-	}/*
-
+	}
+	
+	/*
 	bool __fastcall stat_res_text_interact(BinDlg* dialog, DialogEvent* dlg_event) {
 		if (dlg_event->number_order != DialogEventType_Dialog) {
 			return false;

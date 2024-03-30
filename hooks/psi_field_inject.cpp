@@ -24,7 +24,7 @@ void hide_all_psi_fields() {
 
 // If @p unit is a psi provider, make all psi field graphics visible.
 void show_all_psi_fields_on_select(Unit* unit) {
-	if (!bw::is_in_replay() && hooks::unit_can_show_power_for(unit, *g_local_nation_id)) {
+	if (!bw::in_replay() && hooks::unit_can_show_power_for(unit, *g_local_nation_id)) {
 		if ((unit->status & UnitStatus::Completed) && hooks::is_ready_to_make_psi_field(unit)) {
 			show_all_psi_fields();
 		}
@@ -33,7 +33,7 @@ void show_all_psi_fields_on_select(Unit* unit) {
 
 // If @p unit is a psi provider, make all psi field graphics invisible.
 void hide_all_psi_fields_on_unselect(Unit* unit) {
-	if (!bw::is_in_replay() && hooks::unit_can_show_power_for(unit, *g_local_nation_id)) {
+	if (!bw::in_replay() && hooks::unit_can_show_power_for(unit, *g_local_nation_id)) {
 		if ((unit->status & UnitStatus::Completed) && hooks::is_ready_to_make_psi_field(unit)) {
 			hide_all_psi_fields();
 		}

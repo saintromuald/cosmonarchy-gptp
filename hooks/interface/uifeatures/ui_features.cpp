@@ -502,7 +502,7 @@ LABEL_15:
 			}
 		}
 
-		if (g_config.show_team_camera) {
+		if (g_config.show_minimap_cameras) {
 			for (u8 player = 0; player < PlayerLimit; ++player) {
 				if (g_player_table[player].type != PlayerType::Human || globals->players[player].witness_mode) {
 					continue;

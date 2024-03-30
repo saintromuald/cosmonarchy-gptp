@@ -245,7 +245,7 @@ namespace hooks {
 	void update_buttonset() {
 		*g_buttonset_special_buttonset_id = UnitId::Buttons_Blank;
 		*g_active_portrait_buttonset_id = UnitId::Buttons_Blank;
-		if (bw::is_in_replay()) {
+		if (bw::in_replay()) {
 			if (*g_is_replay_paused) {
 				*g_buttonset_special_buttonset_id = UnitId::Buttons_ReplayPaused;
 			} else {

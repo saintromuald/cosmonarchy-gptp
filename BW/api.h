@@ -394,8 +394,14 @@ namespace bw {
 	}
 
 	/// Checks whether the game is in replay mode.
-	inline bool is_in_replay() {
+	inline bool in_replay() {
 		return (*g_is_in_replay) != 0;
+	}
+
+	bool is_witness();
+
+	inline bool in_replay_or_witness() {
+		return in_replay() || is_witness();
 	}
 
 	//////////////////////////////////////////////////////////////// @}

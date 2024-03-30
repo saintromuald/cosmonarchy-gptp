@@ -7,6 +7,9 @@
 #define NOMINMAX
 #include <Windows.h>
 
+#include <algorithm>
+#include <ranges>
+
 std::filesystem::path get_starcraft_path() {
 	wchar_t buffer[MAX_PATH] = {};
 	GetModuleFileNameW(NULL, buffer, MAX_PATH);
@@ -16,31 +19,69 @@ std::filesystem::path get_starcraft_path() {
 // Have to use std::vformat and no `const auto&...`, because of some obscure VS issue that makes it not compile for Pr0nogo.
 // It's sad, because it will make std::string allocate a copy, but it is what it is, we only do it once on a fail path anyways. -Veeq7
 static void config_error(const std::string_view message, auto... args) {
-    MessageBoxA(0, std::vformat(message, std::make_format_args(args...)).c_str(), "Invalid config.yml!", MB_OK | MB_ICONERROR);
-    exit(0);
+    MessageBoxA(0, std::vformat(message, std::make_format_args(args...)).c_str(), "Invalid cosmonarchy.yml!", MB_OK | MB_ICONERROR);
+    exit(-1);
 }
 
-template<typename T>
+template <typename T>
 static void load_field(const YAML::Node& node, const std::string& key, T& variable) {
 	if (node[key]) {
 		try {
 			variable = node[key].as<T>();
 		} catch (YAML::Exception exception) {
-			config_error("Invalid value for variable \"{}\"! Please correct your config.yml.\n\n{}", key, exception.what());
+			config_error("Invalid value for variable \"{}\"! Please correct your cosmonarchy.yml.\n\n{}", key, exception.what());
 		}
 	}
 }
 
-template<typename T>
+template <>
+static void load_field(const YAML::Node& node, const std::string& key, UiBool& variable) {
+	std::string temp;
+	load_field(node, key, temp);
+	std::ranges::transform(temp, temp.begin(), tolower);
+
+	if (temp == "true") {
+		variable = EUiBool::True;
+	} else if (temp == "ingame") {
+		variable = EUiBool::InGameOnly;
+	} else if (temp == "witness") {
+		variable = EUiBool::WitnessOnly;
+	} else if (temp == "false") {
+		variable = EUiBool::False;
+	} else if (!temp.empty()) {
+		config_error("Invalid config value \"{}\" for key \"{}\"!", temp, key);
+	}
+}
+
+template <typename T>
 static void write_field(YAML::Emitter& emitter, const std::string& key, const T& value) {
 	emitter << YAML::Key << key << YAML::Value << value;
+}
+
+template <>
+static void write_field(YAML::Emitter& emitter, const std::string& key, const UiBool& value) {
+	emitter << YAML::Key << key << YAML::Value;
+	switch (value.value()) {
+		case EUiBool::True: 
+			emitter << "true";
+			break;
+		case EUiBool::InGameOnly:
+			emitter << "ingame";
+			break;
+		case EUiBool::WitnessOnly:
+			emitter << "witness";
+			break;
+		case EUiBool::False:
+			emitter << "false";
+			break;
+	}
 }
 
 static AdvisorType parse_advisor_name(const char* name) {
 	Parser parser = new_parser(name);
 	AdvisorType advisor = (AdvisorType)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), CHAR_MAX);
 	if (advisor == CHAR_MAX) {
-		config_error("Advisor \"{}\" does not exist! Please remove it from your config.yml.", name);
+		config_error("Advisor \"{}\" does not exist! Please remove it from your cosmonarchy.yml.", name);
 	}
 	return advisor;
 }
@@ -65,7 +106,7 @@ static void validate_config() {
 					if (hotkey >= 'a' && hotkey <= 'z') {
 						hotkey = toupper(hotkey);
 					} else {
-						config_error("Grid hotkey '{}' is not valid! Please correct your config.yml to use hotkeys from the A-Z range.", hotkey);
+						config_error("Grid hotkey '{}' is not valid! Please correct your cosmonarchy.yml to use hotkeys from the A-Z range.", hotkey);
 					}
 				}
 				for (u32 k = 0; k < 6; k++) {
@@ -73,7 +114,7 @@ static void validate_config() {
 					static const char* invalid_hotkeys = "RFVTGB";
 					char invalid_ch = invalid_hotkeys[k];
 					if (hotkey == invalid_ch) {
-						config_error("Grid hotkey \"{}\" collides with extended control group \"{}\"! Please resolve the collision in config.yml.", hotkey, invalid_ch);
+						config_error("Grid hotkey \"{}\" collides with extended control group \"{}\"! Please resolve the collision in cosmonarchy.yml.", hotkey, invalid_ch);
 					}
 				}
 			}
@@ -109,17 +150,17 @@ void load_config() {
 	load_field(yaml, "always-show-condensed-selection", g_config.always_show_condensed_selection);
 	load_field(yaml, "use-alt-for-selection-ui", g_config.use_alt_for_selection_ui);
 
-	// Witness and replay UI
-	load_field(yaml, "witness-show-apm", g_config.witness_show_apm);
-	load_field(yaml, "witness-show-order-lines", g_config.witness_show_order_lines);
-	load_field(yaml, "show-replay-progress-bar", g_config.show_replay_progress_bar);
+	// Minimap UI
+	load_field(yaml, "show-minimap-cameras", g_config.show_minimap_cameras);
 
 	// Team UI
-	load_field(yaml, "show-team-camera", g_config.show_team_camera);
 	load_field(yaml, "show-team-ui", g_config.show_team_ui);
 	load_field(yaml, "show-team-ui-apm", g_config.show_team_ui_apm);
 	load_field(yaml, "show-team-ui-names", g_config.show_team_ui_names);
 	load_field(yaml, "show-team-ui-self", g_config.show_team_ui_self);
+
+	// Witness and replay UI
+	load_field(yaml, "show-replay-progress-bar", g_config.show_replay_progress_bar);
 
 	// Scrolling
 //	load_field(yaml, "use-spacebar-for-scrolling", config.use_spacebar_for_scrolling);
@@ -176,6 +217,7 @@ void save_config() {
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Selection UI");
+	yaml << YAML::Newline << YAML::Comment("Possible values: true, ingame, witness, false");
 	write_field(yaml, "show-rally-lines", g_config.show_rally_lines);
 	write_field(yaml, "show-order-lines", g_config.show_order_lines);
 	write_field(yaml, "show-queued-order-lines", g_config.show_queued_order_lines);
@@ -186,18 +228,20 @@ void save_config() {
 	write_field(yaml, "use-alt-for-selection-ui", g_config.use_alt_for_selection_ui);
 	yaml << YAML::Newline << YAML::Newline;
 
-	yaml << YAML::Comment("Witness and replay UI");
-	write_field(yaml, "witness-show-apm", g_config.witness_show_apm);
-	write_field(yaml, "witness-show-order-lines", g_config.witness_show_order_lines);
-	write_field(yaml, "show-replay-progress-bar", g_config.show_replay_progress_bar);
+	yaml << YAML::Comment("Minimap UI");
+	yaml << YAML::Newline << YAML::Comment("Possible values: true, ingame, witness, false");
+	write_field(yaml, "show-minimap-cameras", g_config.show_minimap_cameras);
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Team UI");
-	write_field(yaml, "show-team-camera", g_config.show_team_camera);
 	write_field(yaml, "show-team-ui", g_config.show_team_ui);
 	write_field(yaml, "show-team-ui-apm", g_config.show_team_ui_apm);
 	write_field(yaml, "show-team-ui-names", g_config.show_team_ui_names);
 	write_field(yaml, "show-team-ui-self", g_config.show_team_ui_self);
+	yaml << YAML::Newline << YAML::Newline;
+
+	yaml << YAML::Comment("Witness and replay UI");
+	write_field(yaml, "show-replay-progress-bar", g_config.show_replay_progress_bar);
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Scrolling");

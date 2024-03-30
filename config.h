@@ -14,6 +14,32 @@ struct AdvisorSetting {
 	std::vector<AdvisorType> types;
 };
 
+enum class EUiBool {
+	False, InGameOnly, WitnessOnly, True
+};
+
+class UiBool {
+public:
+	UiBool() = default;
+	UiBool(bool value) : m_value(value ? EUiBool::True : EUiBool::False) {}
+	UiBool(EUiBool value) : m_value(value) {}
+
+	operator bool() const {
+		switch (m_value) {
+			case EUiBool::False: return false;
+			case EUiBool::InGameOnly: return !bw::in_replay_or_witness();
+			case EUiBool::WitnessOnly: return bw::in_replay_or_witness();
+			case EUiBool::True: return true;
+		}
+	}
+
+	inline EUiBool value() const { return m_value; }
+	inline void set(EUiBool value) { m_value = value; }
+
+private:
+	EUiBool m_value = EUiBool::False;
+};
+
 struct Config {
 	// Launch settings
 	bool disable_wmode_prompt = true;
@@ -26,26 +52,26 @@ struct Config {
 	bool always_show_extended_tooltips = false;
 
 	// Selection UI
-	bool show_rally_lines = true;
-	bool show_order_lines = false;
-	bool show_queued_order_lines = false;
-	bool show_unique_gas_order_line_color = false;
-	bool show_aura_circles = false;
-	bool show_ability_ranges = true;
-	bool always_show_condensed_selection = false;
-	bool use_alt_for_selection_ui = false;
-
-	// Witness and replay UI
-	bool witness_show_apm = true;
-	bool witness_show_order_lines = true;
-	bool show_replay_progress_bar = true;
+	UiBool show_rally_lines = true;
+	UiBool show_order_lines = false;
+	UiBool show_queued_order_lines = false;
+	UiBool show_unique_gas_order_line_color = false;
+	UiBool show_aura_circles = false;
+	UiBool show_ability_ranges = true;
+	UiBool always_show_condensed_selection = false;
+	UiBool use_alt_for_selection_ui = false;
+	
+	// Minimap UI
+	UiBool show_minimap_cameras = true;
 
 	// Team UI
-	bool show_team_camera = true;
 	bool show_team_ui = true;
 	bool show_team_ui_apm = true;
 	bool show_team_ui_names = false;
 	bool show_team_ui_self = false;
+
+	// Witness and replay UI
+	bool show_replay_progress_bar = true;
 
 	// Scrolling
 //	bool use_spacebar_for_scrolling = false;
@@ -80,7 +106,7 @@ struct Config {
 	bool verbose = false;
 
 	// Map directory
-	std::string default_map_directory = "";
+	std::string default_map_directory = "CMBW-Root\\CMBW-maps";
 	bool auto_save_replays = true;
 };
 
