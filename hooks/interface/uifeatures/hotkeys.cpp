@@ -33,7 +33,7 @@ static int control_group_index_from_key(u32 key) {
 	if (key >= '0' && key <= '9') {
 		return key - '0';
 	}
-	if (config.extended_control_groups) {
+	if (g_config.extended_control_groups) {
 		const char* keys = "RFVTGB"; // NOTE: lower case letters do not work on some computers...
 		for (u32 i = 0; i < 6; i++) {
 			if (key == keys[i]) {
@@ -41,7 +41,7 @@ static int control_group_index_from_key(u32 key) {
 			}
 		}
 	}
-	if (config.tilde_control_group && key == 192) {
+	if (g_config.tilde_control_group && key == 192) {
 		return 16;
 	}
 	return -1;
@@ -88,7 +88,7 @@ static bool update_control_groups(const KeyEvent& ev) {
 	}
 
 	bool steal = false;
-	if (config.default_to_steal_hotkeys) {
+	if (g_config.default_to_steal_hotkeys) {
 		steal = ev.control_held || ev.shift_held;
 	} else {
 		steal = ev.alt_held;
@@ -123,7 +123,7 @@ static bool handle_key_event(const KeyEvent& ev) {
 		return true;
 	}
 	// Specifically ignore 1-6 for faction selection for non-grid hotkeys
-	if (!config.grid_hotkeys && buttonset_id_is_faction_selection(*g_current_buttonset_id)) {
+	if (!g_config.grid_hotkeys && buttonset_id_is_faction_selection(*g_current_buttonset_id)) {
 		if (ev.key >= '1' && ev.key <= '6' && !ev.control_held && !ev.shift_held && !ev.alt_held) {
 			return false;
 		}
@@ -135,7 +135,7 @@ static bool handle_key_event(const KeyEvent& ev) {
 	}
 
 	// Cameras
-	if (config.extended_camera_hotkeys) {
+	if (g_config.extended_camera_hotkeys) {
 		if (ev.key >= VK_F1 && ev.key < VK_F1 + CameraCap) {
 			Point16& screen = hotkeys.screens[ev.key - VK_F1];
 			if (ev.control_held || ev.shift_held) {

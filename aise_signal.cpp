@@ -70,7 +70,7 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 			return (u32)ccmu_extender.new_client_selection_group;
 		} break;
 		case AiseSignal_GetAltConsoleHotkey: {
-			return (u32)config.tilde_control_group;
+			return (u32)g_config.tilde_control_group;
 		} break;
 		case AiseSignal_SetConsoleVisible: {
 			aise_state.console_visible = v1;

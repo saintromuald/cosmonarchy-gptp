@@ -106,14 +106,14 @@ namespace hooks {
 			ui_text_pos.x += 80;
 		}
 
-		if (config.show_timer) {
+		if (g_config.show_timer) {
 			char buffer[48] = {};
 			format_time(buffer, 48, "", *g_elapsed_time_frames / 24, false);
 			draw_ui_text(buffer, 7);
 		}
 
 		bool is_replay_or_witness = *g_is_in_replay || globals->players[*g_local_nation_id].witness_mode;
-		if (!is_replay_or_witness && config.show_apm) {
+		if (!is_replay_or_witness && g_config.show_apm) {
 			char buffer[48] = {};
 			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
 			sprintf_s(buffer, "APM: %u", apm);
@@ -235,9 +235,9 @@ LABEL_15:
 			return 1;
 		}
 		
-		if (config.grid_hotkeys && dialog->index > 0) {
+		if (g_config.grid_hotkeys && dialog->index > 0) {
 			u32 index = dialog->index - 1;
-			char grid_hotkey = tolower(config.layout[index / 3].at(index % 3));
+			char grid_hotkey = tolower(g_config.layout[index / 3].at(index % 3));
 			return hotkey == grid_hotkey;
 		}
 
@@ -502,7 +502,7 @@ LABEL_15:
 			}
 		}
 
-		if (config.show_team_camera) {
+		if (g_config.show_team_camera) {
 			for (u8 player = 0; player < PlayerLimit; ++player) {
 				if (g_player_table[player].type != PlayerType::Human || globals->players[player].witness_mode) {
 					continue;
@@ -953,10 +953,10 @@ LABEL_15:
 		s32 dx = (s32)mouse.x - (s32)*g_mmb_pos_x;
 		s32 dy = (s32)mouse.y - (s32)*g_mmb_pos_y;
 
-		f32 sens = config.scroll_sensitivity;
+		f32 sens = g_config.scroll_sensitivity;
 		f32 sdx = dx * sens + mouse_error.x;
 		f32 sdy = dy * sens + mouse_error.y;
-		if (config.use_pan_scrolling) {
+		if (g_config.use_pan_scrolling) {
 			scroll_screen(sdx, sdy);
 		} else {
 			scroll_screen(-sdx, -sdy);

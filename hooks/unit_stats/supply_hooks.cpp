@@ -630,7 +630,7 @@ namespace hooks
 				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !player_vars.witness_mode && !player_vars.hide_in_team_ui) {
 					draw_player_stats(&dialog, &pos, player,
 						true,						//use_player_color
-						config.witness_show_apm,	//can_show_apm
+						g_config.witness_show_apm,	//can_show_apm
 						true,						//show_production
 						true,						//show_name
 						true,						//show_color_box
@@ -649,13 +649,13 @@ namespace hooks
 
 			draw_player_stats(&dialog, &pos, local_player,
 				false,													//use_player_color
-				config.show_team_ui_self && config.show_team_ui_apm,	//can_show_apm
+				g_config.show_team_ui_self && g_config.show_team_ui_apm,	//can_show_apm
 				false,													//show_production
-				config.show_team_ui_self && config.show_team_ui_names,	//show_name
-				config.show_team_ui_self,								//show_color_box
+				g_config.show_team_ui_self && g_config.show_team_ui_names,	//show_name
+				g_config.show_team_ui_self,								//show_color_box
 				!*g_is_holding_alt);									//count_in_production
 
-			if (config.show_team_ui) {
+			if (g_config.show_team_ui) {
 				for (u32 player = 0; player < PlayerLimit; ++player) {
 					PlayerVars player_vars = globals->players[player];
 					u32 player_type = g_player_table[player].type;
@@ -664,9 +664,9 @@ namespace hooks
 					{
 						draw_player_stats(&dialog, &pos, player,
 							true,						//use_player_color
-							config.show_team_ui_apm,	//can_show_apm
+							g_config.show_team_ui_apm,	//can_show_apm
 							false,						//show_production
-							config.show_team_ui_names,	//show_name
+							g_config.show_team_ui_names,	//show_name
 							true,						//show_color_box
 							!*g_is_holding_alt);		//count_in_production
 					}

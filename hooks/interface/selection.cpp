@@ -1138,7 +1138,7 @@ namespace hooks
 			BinDlg* current_dialog;
 			u32 count = *g_client_selection_count;
 
-			if (config.always_show_condensed_selection || count > GroupWireframesCap) {
+			if (g_config.always_show_condensed_selection || count > GroupWireframesCap) {
 				current_dialog = dialog;
 
 				if (current_dialog->flags & BinDlgFlags::Visible) {
@@ -1212,7 +1212,7 @@ namespace hooks
 			unit = (Unit*)*dialog->user;
 			u32 count = *g_client_selection_count;
 
-			if (config.always_show_condensed_selection || *g_is_holding_ctrl || count > GroupWireframesCap) {
+			if (g_config.always_show_condensed_selection || *g_is_holding_ctrl || count > GroupWireframesCap) {
 				memset(&unit_list, 0, sizeof(unit_list));
 				BinDlg* current_dialog = dialog->parent;
 
@@ -1234,7 +1234,7 @@ namespace hooks
 
 					u16 unit_id = unit->id;
 
-					if (config.always_show_condensed_selection || count > GroupWireframesCap) {
+					if (g_config.always_show_condensed_selection || count > GroupWireframesCap) {
 
 						if (current_dialog->flags & BinDlgFlags::Visible) {
 							u32 i_1 = 0;
@@ -1340,7 +1340,7 @@ namespace hooks
 			u32 selection_count = *g_client_selection_count;
 			u8 i_0 = 0;
 
-			if (selection_count > grpWire_count || config.always_show_condensed_selection) {
+			if (selection_count > grpWire_count || g_config.always_show_condensed_selection) {
 				WireList wire_list[GroupWireframesCap]{};
 				u32 i_1 = 0;
 				grpWire_count = 0;

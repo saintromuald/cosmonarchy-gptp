@@ -160,7 +160,7 @@ namespace {
 
 BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	load_config();
-	run_wmode(config.disable_wmode_prompt, config.prefer_wmode);
+	run_wmode(g_config.disable_wmode_prompt, g_config.prefer_wmode);
 	//StarCraft.exe version check
 	char exePath[300];
 	const DWORD pathLen = GetModuleFileName(nullptr, exePath, sizeof(exePath));

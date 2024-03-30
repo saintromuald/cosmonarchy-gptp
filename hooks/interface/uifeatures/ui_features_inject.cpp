@@ -519,7 +519,7 @@ namespace
 	const u32 replayStatBtns_27AE4 = 0x00427AE4;
 	const u32 show_dialog = 0x004186A0;
 	void __declspec(naked) replayStatBtns_patch_27AB0() {
-		static b32 cfg_value = config.show_replay_progress_bar;
+		static b32 cfg_value = g_config.show_replay_progress_bar;
 		__asm {
 			MOV		EAX, cfg_value
 			TEST	EAX, EAX

@@ -3,12 +3,17 @@
 #include <array>
 #include "trigger_system/trigger_system.h"
 
+#include <filesystem>
+
+std::filesystem::path get_starcraft_path();
+
+inline const std::filesystem::path g_config_path = get_starcraft_path() / "cosmonarchy.yml";
+
 struct AdvisorSetting {
 	std::vector<std::string> strings;
 	std::vector<AdvisorType> types;
 };
 
-const std::string CONFIG_FILENAME = "config.yml";
 struct Config {
 	// Launch settings
 	bool disable_wmode_prompt = true;
@@ -78,9 +83,8 @@ struct Config {
 	std::string default_map_directory = "";
 	bool auto_save_replays = true;
 };
-extern Config config;
+
+inline Config g_config{};
 
 void load_config();
 void save_config();
-
-bool file_exists(const std::string& file);

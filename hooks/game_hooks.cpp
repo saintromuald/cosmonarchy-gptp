@@ -84,7 +84,7 @@ namespace hooks {
 	}
 
 	static bool process_quickcasting() {
-		if (config.quick_casting && *g_is_targeting && !quickcasting_timeout) {
+		if (g_config.quick_casting && *g_is_targeting && !quickcasting_timeout) {
 			if (PtInRect(g_minimap_rect, *(POINT*)g_mouse)) {
 				u16 x = g_mouse->x;
 				u16 y = g_mouse->y;
@@ -105,7 +105,7 @@ namespace hooks {
 	}
 
 	static bool process_quickbuilding() {
-		if (config.quick_building && *g_is_placing_building && !quickbuilding_timeout) {
+		if (g_config.quick_building && *g_is_placing_building && !quickbuilding_timeout) {
 			bool not_held = true;
 			for (char c = 'A'; c <= 'Z'; ++c) {
 				if (g_is_keycode_used[c]) {
@@ -422,7 +422,7 @@ namespace hooks {
 			bool in_replay_or_witness = globals->players[*g_local_nation_id].witness_mode || *g_is_in_replay;
 
 			// Show auras
-			if (config.show_aura_circles && bw::can_show_custom_ui()
+			if (g_config.show_aura_circles && bw::can_show_custom_ui()
 			&& (bw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
 				switch (unit->id) {
 					case UnitId::TerranShamanSupportMode:
@@ -472,7 +472,7 @@ namespace hooks {
 			}
 
 			// Rally points
-			if (config.show_rally_lines && bw::can_show_custom_ui()
+			if (g_config.show_rally_lines && bw::can_show_custom_ui()
 			&& (bw::is_allied_to(*g_local_nation_id, unit->player) || in_replay_or_witness))
 			{
 				Point16 target = get_target_point(unit->rally);
@@ -490,7 +490,7 @@ namespace hooks {
 			}
 			
 			// Ability ranges - DF
-			if (config.show_ability_ranges && *g_is_targeting && bw::can_show_custom_ui()) {
+			if (g_config.show_ability_ranges && *g_is_targeting && bw::can_show_custom_ui()) {
 				u32 weapon = WeaponId::None;
 				switch (*g_order_id_ground)
 				{
@@ -549,8 +549,8 @@ namespace hooks {
 				}
 			}
 
-			if ((!in_replay_or_witness && config.show_order_lines && bw::is_allied_to(*g_local_nation_id, unit->player) && bw::can_show_custom_ui())
-			||   (in_replay_or_witness && config.witness_show_order_lines && bw::can_show_custom_ui())) {
+			if ((!in_replay_or_witness && g_config.show_order_lines && bw::is_allied_to(*g_local_nation_id, unit->player) && bw::can_show_custom_ui())
+			||   (in_replay_or_witness && g_config.witness_show_order_lines && bw::can_show_custom_ui())) {
 				Unit* ignore_resource_unit = 0;
 
 				// Worker harvest links
@@ -559,7 +559,7 @@ namespace hooks {
 					Unit* target_resource = unit->worker.target_resource.unit;
 					if (target_resource) {
 						graphics::ColorId color = graphics::CYAN;
-						if (config.show_unique_gas_order_line_color && unit_id_is_gas_structure(target_resource->id)) {
+						if (g_config.show_unique_gas_order_line_color && unit_id_is_gas_structure(target_resource->id)) {
 							color = graphics::GREEN;
 						}
 						draw_simple_line(source, target_resource->position, color);
@@ -574,7 +574,7 @@ namespace hooks {
 					ion_target.pt.y = unit_ext->values[ValueDiademTargetPosY];
 					source = draw_order_line(source, ion_target, graphics::RED, ignore_resource_unit);
 
-					if (config.show_queued_order_lines || in_replay_or_witness && config.witness_show_order_lines) {
+					if (g_config.show_queued_order_lines || in_replay_or_witness && g_config.witness_show_order_lines) {
 						ion_target.unit = unit_ext->units[UnitDiademTarget];
 						source = draw_order_line(source, ion_target, graphics::GREY, ignore_resource_unit);
 					}
@@ -610,7 +610,7 @@ namespace hooks {
 				}
 
 				// Queued orders
-				if ((config.show_queued_order_lines || in_replay_or_witness && config.witness_show_order_lines)
+				if ((g_config.show_queued_order_lines || in_replay_or_witness && g_config.witness_show_order_lines)
 				&&  !ignore_resource_unit) { // Queued orders never work when harvesting, therefore we will not show them
 					for (Order* order = unit->order_queue_head; order; order = order->next) {
 						source = draw_order_line(source, order->target, graphics::GREY);

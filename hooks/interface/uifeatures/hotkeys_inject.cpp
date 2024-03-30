@@ -83,7 +83,7 @@ namespace {
 
 namespace hooks {
 	void inject_hotkey_hooks() {
-		if (config.extended_camera_hotkeys) {
+		if (g_config.extended_camera_hotkeys) {
 			jump_patch(save_screen_location_wrapper,		0x00484360, 0);
 			jump_patch(recall_screen_location_wrapper,		0x00484500, 1);
 			jump_patch(help_menu_call_wrapper,				0x00484770, 0);
@@ -91,7 +91,7 @@ namespace hooks {
 			jump_patch(game_input_user_key_press_wrapper,	0x004846B0, 0);
 
 			// Remove Ctrl-R
-			if (config.extended_control_groups) {
+			if (g_config.extended_control_groups) {
 				nops(0x00484785, 5);
 			}
 		}

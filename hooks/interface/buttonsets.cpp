@@ -597,7 +597,7 @@ namespace hooks {
 		}
 
 		// Overwrite mnemonic hotkey text with grid hotkeys, if applicable
-		if (!stop_there && config.grid_hotkeys) {
+		if (!stop_there && g_config.grid_hotkeys) {
 			for (BinDlg* dialog = current_dialog; dialog; dialog = dialog->next) {
 				if (dialog->index > 0 && dialog->index <= 9
 					&& dialog->control_type == DialogControlTypes::Button
@@ -607,7 +607,7 @@ namespace hooks {
 					char* hotkey_char = find_hotkey_char(label + 2);
 					if (hotkey_char) {
 						u32 index = dialog->index - 1;
-						*hotkey_char = toupper(config.layout[index / 3].at(index % 3));
+						*hotkey_char = toupper(g_config.layout[index / 3].at(index % 3));
 					}
 				}
 			}

@@ -26,7 +26,7 @@ bool trigger_system_in_game;
 LazyInit<Globals> globals;
 
 static void init_auto_celebration() {
-	if (!config.celebrations_enabled) {
+	if (!g_config.celebrations_enabled) {
 		return;
 	}
 
@@ -47,16 +47,16 @@ static void init_auto_celebration() {
 }
 
 AdvisorType get_advisor_type_from_config(u32 race) {
-	std::vector<AdvisorType> advisors = config.common_advisors.types; // Note this is a copy
+	std::vector<AdvisorType> advisors = g_config.common_advisors.types; // Note this is a copy
 	switch (race) {
 		case RaceId::Terran: {
-			advisors.insert(advisors.end(), config.terran_advisors.types.begin(), config.terran_advisors.types.end());
+			advisors.insert(advisors.end(), g_config.terran_advisors.types.begin(), g_config.terran_advisors.types.end());
 		} break;
 		case RaceId::Protoss: {
-			advisors.insert(advisors.end(), config.protoss_advisors.types.begin(), config.protoss_advisors.types.end());
+			advisors.insert(advisors.end(), g_config.protoss_advisors.types.begin(), g_config.protoss_advisors.types.end());
 		} break;
 		case RaceId::Zerg: {
-			advisors.insert(advisors.end(), config.zerg_advisors.types.begin(), config.zerg_advisors.types.end());
+			advisors.insert(advisors.end(), g_config.zerg_advisors.types.begin(), g_config.zerg_advisors.types.end());
 		} break;
 	}
 	if (advisors.size()) {

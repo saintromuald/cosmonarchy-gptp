@@ -162,7 +162,7 @@ bool isGameOn = false;
 			PUSHAD
 		}
 		strcat(buffer, "\\");
-		strcat(buffer, config.default_map_directory.c_str());
+		strcat(buffer, g_config.default_map_directory.c_str());
 		__asm {
 			POPAD
 			JMP jmp_address
@@ -177,7 +177,7 @@ bool isGameOn = false;
 			PUSHAD
 		}
 		strcat(buffer, "\\");
-		strcat(buffer, config.default_map_directory.c_str());
+		strcat(buffer, g_config.default_map_directory.c_str());
 		__asm {
 			POPAD
 			JMP jmp_address
@@ -219,7 +219,7 @@ bool isGameOn = false;
 	}
 
 	void replay_save() {
-		if (!config.auto_save_replays) {
+		if (!g_config.auto_save_replays) {
 			return;
 		}
 

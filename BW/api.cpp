@@ -3828,7 +3828,7 @@ namespace bw {
 	}
 
 	bool can_show_custom_ui() {
-		if (config.use_alt_for_selection_ui) {
+		if (g_config.use_alt_for_selection_ui) {
 			if (g_is_keycode_used[VK_MENU]) {
 				return true;
 			}
