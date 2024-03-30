@@ -1225,14 +1225,12 @@ namespace hooks
 					}
 
 					UnitExt* victim_ext = get_unit_ext(victim);
-					if (bw::unit_can_flee(victim))
-					{
+					if (bw::unit_can_flee(victim)) {
 						Target flee_target = helper::ai_prepare_to_flee(victim, attacker);
 						helper::order_interrupt(victim, 0, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
 					}
 				}
-			} else if (units_dat::base_property[victim->id] & UnitProperty::Burrowable && g_player_table[victim->player].type == PlayerType::Computer)
-			{
+			} else if (units_dat::base_property[victim->id] & UnitProperty::Burrowable && g_player_table[victim->player].type == PlayerType::Computer) {
 				helper::unburrow(victim); // For now, we unburrow AI units only. -Pr0nogo
 			}
 		}
