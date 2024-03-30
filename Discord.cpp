@@ -8,6 +8,19 @@
 
 #define DiscordClientId 972072419013558326
 
+Discord::Discord() : m_thread(&Discord::update_thread, this) {
+	update(false);
+}
+
+Discord::~Discord() {
+	m_running = false;
+	m_thread.join();
+	if (m_core) {
+		m_core->destroy(m_core);
+		m_core = 0;
+	}
+}
+
 DiscordState::DiscordState(bool in_game) : m_in_game(in_game) {
 	if (in_game) {
 		if (*g_is_in_replay) {
@@ -116,12 +129,20 @@ void Discord::update(bool in_game) {
 	if (m_current_state != state) {
 		m_current_state = state;
 
+		std::lock_guard lock(m_mutex);
 		IDiscordActivityManager* activity_manager = m_core->get_activity_manager(m_core);
 		if (activity_manager) {
 			DiscordActivity activity = state.make_discord_activity(m_timestamp);
 			activity_manager->update_activity(activity_manager, &activity, 0, 0);
 		}
 	}
+}
 
-	m_core->run_callbacks(m_core);
+void Discord::update_thread() {
+	while (m_running) {
+		if (m_core) {
+			std::lock_guard lock(m_mutex);
+			m_core->run_callbacks(m_core);
+		}
+	}
 }

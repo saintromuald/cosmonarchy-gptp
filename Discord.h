@@ -1,6 +1,9 @@
 #pragma once
 #include "types.h"
 
+#include <thread>
+#include <mutex>
+
 #pragma pack(push, 8)
 #include <discord_game_sdk.h>
 #pragma pack(pop)
@@ -15,6 +18,7 @@ enum class EDiscordState {
 
 class DiscordState {
 public:
+	DiscordState() {}
 	explicit DiscordState(bool in_game);
 	bool operator==(const DiscordState&) const = default;
 
@@ -31,16 +35,23 @@ private:
 
 class Discord {
 public:
+	Discord();
+	~Discord();
 	void update(bool in_game);
 
 private:
 	void init();
+	void update_thread();
 
 private:
+	bool m_running = true;
+	std::thread m_thread;
+	std::mutex m_mutex;
+
 	u32 m_init_timeout;
 	IDiscordCore* m_core;
 
-	DiscordState m_current_state{false};
+	DiscordState m_current_state;
 	bool m_was_in_game;
 	u32 m_timestamp;
 };
