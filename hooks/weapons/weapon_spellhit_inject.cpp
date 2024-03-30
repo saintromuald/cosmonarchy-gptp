@@ -486,16 +486,14 @@ namespace
 
 	void __declspec(naked) disable_unit_wrapper() // 00492CC0
 	{
-		static char result;
+		static u8 result;
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
 		result = hooks::disable_unit(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV AL, result
 			RETN
@@ -507,15 +505,13 @@ namespace
 		static bool result;
 		static Unit* target;
 		static Unit* source;
-		__asm
-		{
+		__asm {
 			MOV source, EDX
 			MOV target, ECX
 			PUSHAD
 		}
 		result = hooks::maelstrom_proc(target, source);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV AL, result
 			RETN
@@ -583,8 +579,7 @@ namespace
 	{
 		static Unit* unit;
 		static u32 duration;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -595,13 +590,26 @@ namespace
 			PUSHAD
 		}
 		hooks::set_maelstrom_timer(unit, duration);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV AL, 0
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) unfreeze_unit_wrapper() // 004F62D0
+	{
+		static Unit* unit;
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+		hooks::unfreeze_unit(unit);
+		__asm {
+			POPAD
+			RETN
 		}
 	}
 }
@@ -635,6 +643,7 @@ namespace hooks
 	//	jump_patch(iterate_units_at_location_target_proc_wrapper,	0x004F6760, 0);
 	//	jump_patch(give_unit_to_player_wrapper,						0x004C8040, 2);
 		jump_patch(set_maelstrom_timer_wrapper,						0x004553F0, 4);
+		jump_patch(unfreeze_unit_wrapper,							0x004F62D0, 1);
 
 		// Remove optical flare target check
 		nops(0x0048BBC7, 2);

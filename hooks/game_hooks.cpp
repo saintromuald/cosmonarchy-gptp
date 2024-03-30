@@ -2476,6 +2476,9 @@ namespace hooks {
 			if (masters.count) {
 				if (unit_ext->timers[TimerMindControlRecede] <= 4 * 24) {
 					unit->unfreeze();
+					if (unit->subunit) {
+						unit->subunit->unfreeze();
+					}
 					u32 offset = bw::get_overlay_offset(unit->id, true);
 					bw::remove_unit_overlay(unit, ImageId::TyrannyStunSmall + offset);
 				}

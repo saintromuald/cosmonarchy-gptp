@@ -89,7 +89,7 @@ namespace hooks
 			}
 
 			// LABEL_35:
-			if (target->hitpoints < units_dat::max_hitpoints[target->id]) {
+			if (target->hitpoints < units_dat::max_hitpoints[target->id] - 128) { // The -128 is to avoid visual issues with HP drains. -Pr0nogo
 				if (target->new_repair_timer) {
 					target->new_repair_timer--;
 				} else {

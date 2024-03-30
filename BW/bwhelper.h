@@ -545,7 +545,7 @@ namespace helper {
 	bool can_target_self(Unit* unit, u8 order_id);																					// 0049A480
 
 	//// load_unload_proc
-	char ignore_iscript_go_to_idle(Unit* unit);																						// 00476550
+	u8 ignore_iscript_go_to_idle(Unit* unit);																						// 00476550
 	u32 can_unload(Unit* transport, Unit* loaded_unit, Point16* pos);																// 004E76C0
 	void unload_unit_ext(Unit* unit, u32 unk);																						// 004E7E10
 
@@ -759,6 +759,7 @@ namespace helper {
 
 	//// cloak_nearby_units
 	void secondary_order_cloak(Unit* unit);																			// 00491790
+	void remove_overlay_range(u32 from, u32 to, Unit* unit);														// 00492370
 
 	//// update_unit_state
 	bool unit_hp_is_in_redzone(Unit* unit);																			// 004022C0

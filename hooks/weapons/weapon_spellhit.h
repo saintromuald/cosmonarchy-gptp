@@ -29,13 +29,14 @@ namespace hooks
 	s32 ensnare_proc(Unit* target, Unit* attacker);									// 004F46C0
 	void create_scanner(Unit* unit);												// 00464E40
 	u8 stasis_field_overlay(Unit* unit, u8 timer);									// 004F67B0
-	char disable_unit(Unit* unit);													// 00492CC0
+	u8 disable_unit(Unit* unit);													// 00492CC0
 	bool maelstrom_proc(Unit* target, Unit* source);								// 004F6760
 	Unit* iterate_units_at_location_target_proc(Box16* location,					// 004E8280
 		Unit*(__fastcall* proc)(Unit*, Unit*),
 		Unit* unit);
 	b32 give_unit_to_player(Unit* unit, u32 player);								// 004C8040
 	void set_maelstrom_timer(Unit* unit, u8 duration);								// 004553F0
+	void unfreeze_unit(Unit* unit);													// 004F62D0
 
 	void inject_weapon_spell_hit_hooks();
 }

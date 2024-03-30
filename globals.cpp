@@ -1195,19 +1195,6 @@ namespace bw
 		}
 	}
 
-	void remove_overlays_2(u32 from, u32 to, Unit* unit)
-	{
-		const u32 Func_RemoveOverlays2 = 0x00492370;
-		__asm {
-			PUSHAD
-			MOV EAX, from
-			MOV EBX, unit
-			PUSH to
-			CALL Func_RemoveOverlays2
-			POPAD
-		}
-	}
-
 	void clear_clarion_links(Unit* unit)
 	{
 		UnitExt* unitExt = get_unit_ext(unit);

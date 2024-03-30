@@ -37,7 +37,7 @@ namespace hooks {
 
 	// Hooked to clean up lardcode - Pr0nogo
 	// Seems to be double-called from Maelstrom, no idea why
-	char disable_unit(Unit* unit) { // 00492CC0
+	u8 disable_unit(Unit* unit) { // 00492CC0
 		Unit* subunit = unit->subunit;
 		if (subunit) {
 			subunit->status |= UnitStatus::Frozen;
@@ -63,8 +63,7 @@ namespace hooks {
 		if (!orders_dat::disabling_keeps_target[order_id]) {
 			unit->order_target.unit = 0;
 		}
-		char result;
-		result = helper::ignore_iscript_go_to_idle(unit);
+		u8 result = helper::ignore_iscript_go_to_idle(unit);
 		Sprite* sprite = unit->sprite;
 		if (sprite->flags & SpriteFlags::Selected) {
 			if (*g_client_selection_count > 1) {
@@ -765,5 +764,22 @@ namespace hooks {
 			timer = duration;
 		}
 		unit_ext->timers[TimerMindTyrantMaelstromSlow] = timer;
+	}
+
+	// Hooked to unfreeze subunits too. -Pr0nogo
+	void unfreeze_unit(Unit* unit) // 004F62D0
+	{
+		unit->stasis_timer = 0;
+		if (!(unit->status & UnitStatus::Frozen) && !unit->lockdown_timer && !unit->maelstrom_timer) {
+			helper::change_unit_buttonset(unit, unit->id);
+			bw::refresh_console();
+		}
+		if (!(units_dat::base_property[unit->id] & UnitStatus::Invincible)) {
+			unit->status &= 0xFBFFFFFF;
+		}
+		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) { // New
+			unit->subunit->unfreeze();
+		}
+		helper::remove_overlay_range(ImageId::StasisField_Small, ImageId::StasisField_Large, unit);
 	}
 }

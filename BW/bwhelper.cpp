@@ -4369,8 +4369,8 @@ namespace helper {
 		return return_value;
 	}
 
-	char ignore_iscript_go_to_idle(Unit* unit) {
-		static char result;
+	u8 ignore_iscript_go_to_idle(Unit* unit) {
+		static u8 result;
 		const u32 func_address = 0x00476550;
 		__asm {
 			PUSHAD
@@ -5848,7 +5848,7 @@ namespace helper {
 		}
 	}
 
-	void removeOverlays2(u32 from, u32 to, Unit* unit) {
+	void remove_overlay_range(u32 from, u32 to, Unit* unit) {
 		const u32 func_address = 0x00492370;
 		__asm {
 			PUSHAD
