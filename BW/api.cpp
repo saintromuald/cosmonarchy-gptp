@@ -31,6 +31,12 @@ bool __assert_sprite(Sprite* sprite, const char* function, const char* file, u64
 }
 
 namespace bw {
+	std::filesystem::path get_starcraft_path() {
+		wchar_t buffer[MAX_PATH] = {};
+		GetModuleFileNameW(NULL, buffer, MAX_PATH);
+		return std::filesystem::path(buffer).parent_path();
+	}
+
 	bool is_witness() {
 		return globals->players[*g_local_nation_id].witness_mode;
 	}

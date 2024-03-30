@@ -5,9 +5,7 @@
 
 #include <filesystem>
 
-std::filesystem::path get_starcraft_path();
-
-inline const std::filesystem::path g_config_path = get_starcraft_path() / "cosmonarchy.yml";
+inline const std::filesystem::path g_config_path = bw::get_starcraft_path() / "cosmonarchy.yml";
 
 struct AdvisorSetting {
 	std::vector<std::string> strings;

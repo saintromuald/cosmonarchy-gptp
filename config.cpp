@@ -10,12 +10,6 @@
 #include <algorithm>
 #include <ranges>
 
-std::filesystem::path get_starcraft_path() {
-	wchar_t buffer[MAX_PATH] = {};
-	GetModuleFileNameW(NULL, buffer, MAX_PATH);
-	return std::filesystem::path(buffer).parent_path();
-}
-
 // Have to use std::vformat and no `const auto&...`, because of some obscure VS issue that makes it not compile for Pr0nogo.
 // It's sad, because it will make std::string allocate a copy, but it is what it is, we only do it once on a fail path anyways. -Veeq7
 static void config_error(const std::string_view message, auto... args) {

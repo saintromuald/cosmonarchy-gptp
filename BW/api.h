@@ -68,6 +68,8 @@ enum GameKind {
 bool __assert_sprite(Sprite* sprite, const char* function, const char* file, u64 line);
 
 namespace bw {
+	std::filesystem::path get_starcraft_path();
+
 	inline bool harvester_is_waiting(Unit* unit) {
 		return !unit->worker.is_harvesting && unit->worker.harvest_target;
 	}

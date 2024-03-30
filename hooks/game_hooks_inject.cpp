@@ -184,38 +184,30 @@ bool isGameOn = false;
 		}
 	}
 
-	static char* get_replay_path(const char* name) {
-		char module[MAX_PATH] = {};
-		if (GetModuleFileNameA(0, module, MAX_PATH) ) {
-			char* c = strrchr(module, '\\');
-			if (c) {
-				*c = 0;
-			}
-		}
-		static char path[MAX_PATH] = {};
-		sprintf_s(path, "%s\\maps\\replays\\%s.rep", module, name);
-		return path;
+	static std::filesystem::path get_replay_path() {
+		return bw::get_starcraft_path() / "maps" / "replays";
 	}
 
-	void copy_last_replay(char* name) {
-		FILE* from = fopen(get_replay_path("LastReplay"), "rb");
+	void copy_last_replay(const std::string& dir, const std::string& name) {
+		std::ifstream from(get_replay_path() / "LastReplay.rep", std::ios::binary);
 		if (!from) {
 			return;
 		}
 
-		FILE* to = fopen(get_replay_path(name), "wb");
+		std::filesystem::path to_path = get_replay_path() / "Autosave" / dir / name;
+		if (std::filesystem::exists(to_path)) {
+			return; // Do not overwrite existing files
+		}
+
+		std::error_code error;
+		std::filesystem::create_directories(to_path.parent_path(), error);
+
+		std::ofstream to(to_path, std::ios::binary);
 		if (!to) {
-			fclose(from);
 			return;
 		}
 
-		char buffer[4096] = {};
-		while (u32 bytes_read = fread(buffer, 1, 4096, from)) {
-			fwrite(buffer, 1, bytes_read, to);
-		}
-
-		fclose(from);
-		fclose(to);
+		to << from.rdbuf();
 	}
 
 	void replay_save() {
@@ -223,13 +215,17 @@ bool isGameOn = false;
 			return;
 		}
 
-		char date[28] = {};
 		time_t now = time(0);
 		tm* ltm = localtime(&now);
+
+		char short_date[28] = {};
+		strftime(short_date, 28, "%Y-%m-%d", ltm);
+
+		char date[28] = {};
 		strftime(date, 28, "%y-%m-%d_%H-%M", ltm);
 
 		char name[28] = {};
-		snprintf(name, 28, "%s_%s", date, g_current_map_name);
+		snprintf(name, 28, "%s_%s.rep", date, g_current_map_name);
 
 		/*
 		bool first = true;
@@ -250,9 +246,7 @@ bool isGameOn = false;
 		}
 		*/
 
-		if (!file_exists(get_replay_path(name))) {
-			copy_last_replay(name);
-		}
+		copy_last_replay(short_date, name);
 	}
 
 	void __declspec(naked) replay_save_wrapper() { // 004EEBEA
