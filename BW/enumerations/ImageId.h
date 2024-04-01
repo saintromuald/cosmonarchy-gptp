@@ -1225,6 +1225,9 @@ namespace ImageId {
 		SwarmingOmenXLarge							= 1826,
 		KalkaliskBirthEgg							= 1827,
 
+		TosgriliskBirthEgg							= 1835,
+		TosgriliskBirthCocoon						= 1836,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

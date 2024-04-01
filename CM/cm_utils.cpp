@@ -51,14 +51,23 @@ void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
 u32 get_construction_graphic(Unit* unit)
 {
 	UnitExt* unit_ext = get_unit_ext(unit);
+	bool is_ocsal = unit_ext->values[ValueOriginatedFromOcsalLarva];
 	switch (unit->id)
 	{
 		case UnitId::ZergKalkalisk:
 		{
-			if (unit_ext->values[ValueOriginatedFromOcsalLarva]) {
+			if (is_ocsal) {
 				return ImageId::KalkaliskBirthEgg;
 			} else {
 				return ImageId::KalkaliskBirthCocoon;
+			}
+		} break;
+		case UnitId::ZergTosgrilisk:
+		{
+			if (is_ocsal) {
+				return ImageId::TosgriliskBirthEgg;
+			} else {
+				return ImageId::TosgriliskBirthCocoon;
 			}
 		} break;
 	}
