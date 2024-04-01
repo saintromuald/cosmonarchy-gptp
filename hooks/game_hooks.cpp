@@ -1280,6 +1280,7 @@ namespace hooks {
 						bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, pos);
 						bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y - 12, unit->player, corpse->sprite->elevation + 1);
 						consume_corpse(corpse);
+						unit->sprite->create_overlay(ImageId::LazarusAgentCast);
 					}
 				}
 

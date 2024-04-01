@@ -280,7 +280,8 @@ namespace hooks
 	{
 		if (attacker->is_frozen()
 		|| !target
-		|| !AssertSprite(target->sprite)
+		|| !target->sprite
+	//	|| !AssertSprite(target->sprite)	// Disabled since it is now expected. -Pr0nogo
 		||  target->status & UnitStatus::Invincible
 		||  target->sprite->flags & SpriteFlags::Hidden
 		||  check_detection && helper::unit_can_see_cloaked_target(target, attacker))

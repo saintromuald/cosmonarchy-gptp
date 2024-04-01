@@ -407,7 +407,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 				return 0;
 			}
 
-			if (unit->id == UnitId::ZergVilgoleth) {
+			if (unit->id == UnitId::ZergVilgoleth) { // Currently does not leave a corpse
 				sprite->create_overlay(ImageId::ZergAirDeathExplosion_Small);
 				return 0;
 			}
