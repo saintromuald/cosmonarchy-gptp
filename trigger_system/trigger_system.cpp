@@ -68,6 +68,7 @@ void init_trigger_system() {
 	g_action_table[47] = (ActionPointer)parse_comment_action;
 
 	g_globals = std::make_unique<Globals>();
+	g_globals->current_advisor = get_advisor_type_from_config(g_player_table[*g_local_nation_id].race);
 
 	init_auto_celebration();
 	init_recolors();
@@ -76,8 +77,6 @@ void init_trigger_system() {
 	init_spawn();
 	init_trigger_vars();
 	init_trigger_events();
-	
-	g_globals->current_advisor = get_advisor_type_from_config(g_player_table[*g_local_nation_id].race);
 }
 
 static bool unit_can_change_sprite(Unit* unit) {
