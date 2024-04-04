@@ -19,11 +19,7 @@
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "graphics/graphics.h"
 
-bool trigger_game_paused;
-bool trigger_system_init;
-bool trigger_system_in_game;
-
-LazyInit<Globals> globals;
+#include <ranges>
 
 static void init_auto_celebration() {
 	if (!g_config.celebrations_enabled) {
@@ -35,13 +31,13 @@ static void init_auto_celebration() {
 	u32 month = ltm->tm_mon + 1;
 	switch (month) {
 		case 4: {
-			globals->celebration = Celebration_AprilFools;
+			g_globals->celebration = Celebration_AprilFools;
 		} break;
 		case 12: {
-			globals->celebration = Celebration_Christmas;
+			g_globals->celebration = Celebration_Christmas;
 		} break;
 		default: {
-			globals->celebration = Celebration_None;
+			g_globals->celebration = Celebration_None;
 		} break;
 	}
 }
@@ -67,11 +63,11 @@ AdvisorType get_advisor_type_from_config(u32 race) {
 }
 
 void init_trigger_system() {
-	trigger_system_init = true;
-	trigger_game_paused = false;
+	g_trigger.init = true;
+	g_trigger.game_paused = false;
 	g_action_table[47] = (ActionPointer)parse_comment_action;
 
-	globals.reset();
+	g_globals.reset();
 
 	init_auto_celebration();
 	init_recolors();
@@ -81,7 +77,7 @@ void init_trigger_system() {
 	init_trigger_vars();
 	init_trigger_events();
 	
-	globals->current_advisor = get_advisor_type_from_config(g_player_table[*g_local_nation_id].race);
+	g_globals->current_advisor = get_advisor_type_from_config(g_player_table[*g_local_nation_id].race);
 }
 
 static bool unit_can_change_sprite(Unit* unit) {
@@ -103,7 +99,7 @@ static bool unit_can_change_sprite(Unit* unit) {
 }
 
 static u32 unit_get_desired_sprite_id(Unit* unit) {
-	for (SpriteReplacement& sprite_replacement : globals->sprite_replacements) {
+	for (SpriteReplacement& sprite_replacement : g_globals->sprite_replacements) {
 		if (unit->player > PlayerLimit || !sprite_replacement.players.set[unit->player]) {
 			continue;
 		}
@@ -113,7 +109,7 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 		return sprite_replacement.sprite_id;
 	}
 
-	switch (globals->celebration) {
+	switch (g_globals->celebration) {
 		case Celebration_AprilFools:
 		{
 			switch (unit->id) {
@@ -184,13 +180,13 @@ static void replace_sprite(Unit* unit, u32 sprite_id) {
 }
 
 void update_trigger_system(bool in_game) {
-	if (!trigger_system_init) {
+	if (!g_trigger.init) {
 		init_trigger_system();
 	}
 
 	if (in_game) {
-		trigger_system_in_game = true;
-		for (auto& [trigger_action, trigger_ext] : globals->trigger_exts) {
+		g_trigger.in_game = true;
+		for (auto& [trigger_action, trigger_ext] : g_globals->trigger_exts) {
 			for (u32 player = 0; player < PlayerLimit; player++) {
 				OngoingWait& ongoing_wait = trigger_ext.ongoing_waits[player];
 				if (ongoing_wait.timer > 0) {
@@ -198,9 +194,9 @@ void update_trigger_system(bool in_game) {
 				}
 			}
 		}
-	} else if (trigger_system_in_game) {
+	} else if (g_trigger.in_game) {
 		// Leaving the game should reset music
-		trigger_system_in_game = false;
+		g_trigger.in_game = false;
 		init_trigger_system();
 	}
 
@@ -208,7 +204,7 @@ void update_trigger_system(bool in_game) {
 		update_sound();
 	}
 	bool paused = bw::is_game_paused();
-	if (trigger_game_paused && !paused) {
+	if (g_trigger.game_paused && !paused) {
 		set_palette_recolor(recolor_system.current_recolor.set);
 	}
 	if (in_game && !paused) {
@@ -226,30 +222,30 @@ void update_trigger_system(bool in_game) {
 			replace_sprite(unit, sprite_id);
 		}
 
-		if (globals->alert.own_cooldown) {
-			globals->alert.own_cooldown--;
+		if (g_globals->alert.own_cooldown) {
+			g_globals->alert.own_cooldown--;
 		}
-		if (globals->alert.ally_cooldown) {
-			globals->alert.ally_cooldown--;
+		if (g_globals->alert.ally_cooldown) {
+			g_globals->alert.ally_cooldown--;
 		}
-		if (globals->alert.play_timer) {
-			globals->alert.play_timer--;
-			if (!globals->alert.play_timer) {
-				helper::play_sound_from_unit(globals->alert.sound_id, 0);
+		if (g_globals->alert.play_timer) {
+			g_globals->alert.play_timer--;
+			if (!g_globals->alert.play_timer) {
+				helper::play_sound_from_unit(g_globals->alert.sound_id, 0);
 			}
 		}
 
-		if (globals->advisor_state.cooldown) {
-			globals->advisor_state.cooldown--;
+		if (g_globals->advisor_state.cooldown) {
+			g_globals->advisor_state.cooldown--;
 		}
-		if (globals->advisor_state.play_timer) {
-			globals->advisor_state.play_timer--;
-			if (!globals->advisor_state.play_timer) {
-				helper::play_sound_from_unit(globals->advisor_state.sound_id, 0);
+		if (g_globals->advisor_state.play_timer) {
+			g_globals->advisor_state.play_timer--;
+			if (!g_globals->advisor_state.play_timer) {
+				helper::play_sound_from_unit(g_globals->advisor_state.sound_id, 0);
 			}
 		}
 	}
-	trigger_game_paused = paused;
+	g_trigger.game_paused = paused;
 }
 
 Box16 button_rect(u32 index) {
@@ -267,7 +263,7 @@ static bool rect_is_hovered(Box16 rect) {
 }
 
 bool buttons_hovers() {
-	for (u32 i = 0; i < globals->trigger_buttons.size(); i++) {
+	for (u32 i = 0; i < g_globals->trigger_buttons.size(); i++) {
 		Box16 rect = button_rect(i);
 		if (rect_is_hovered(rect)) {
 			return true;
@@ -277,19 +273,19 @@ bool buttons_hovers() {
 }
 
 bool buttons_handle_input(const KeyEvent& key_event) {
-	for (u32 i = 0; i < globals->trigger_buttons.size(); i++) {
+	for (u32 i = 0; i < g_globals->trigger_buttons.size(); i++) {
 		Box16 rect = button_rect(i);
 		if (!rect_is_hovered(rect)) {
 			continue;
 		}
 
-		TriggerButton& button = globals->trigger_buttons[i];
+		TriggerButton& button = g_globals->trigger_buttons[i];
 		if (key_event.key == VK_LBUTTON && key_event.pressed()) {
 			TriggerVar* var = find_or_create_trigger_var(TriggerVarType_Var, button.id.data);
 			if (var) {
 				var->value = 1;
 			}
-			globals->trigger_buttons.remove(i--);
+			g_globals->trigger_buttons.erase(g_globals->trigger_buttons.begin() + i);
 			return true;
 		}
 	}
@@ -297,11 +293,11 @@ bool buttons_handle_input(const KeyEvent& key_event) {
 }
 
 void buttons_draw() {
-	for (u32 i = 0; i < globals->trigger_buttons.size(); i++) {
+	for (u32 i = 0; i < g_globals->trigger_buttons.size(); i++) {
 		Box16 rect = button_rect(i);
 		bool hovered = rect_is_hovered(rect);
 
-		TriggerButton& button = globals->trigger_buttons[i];
+		TriggerButton& button = g_globals->trigger_buttons[i];
 		graphics::draw_filled_box(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? graphics::GREY : graphics::BLACK);
 		graphics::draw_box(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? graphics::WHITE : graphics::GREY);
 
@@ -585,7 +581,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 	u32 trigger_player = *g_current_trigger_player_id;
 	bool is_local_player = trigger_player == *g_local_nation_id;
 
-	TriggerExt& trigger_ext = globals->trigger_exts[action];
+	TriggerExt& trigger_ext = g_globals->trigger_exts[action];
 	OngoingWait& ongoing_wait = trigger_ext.ongoing_waits[trigger_player];
 
 	Parser parser = new_parser(helper::get_chk_string(action->text_string));
@@ -651,20 +647,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Token display_name = parser_get_string(&parser);
 			s32 priority = parser_get_s32(&parser);
 
-			u32 insert_index = globals->trigger_buttons.size();
-			for (u32 i = 0; i < globals->trigger_buttons.size(); i++) {
-				TriggerButton& other = globals->trigger_buttons[i];
-				if (priority < other.priority) {
-					insert_index = i;
-					break;
-				}
-			}
-
 			TriggerButton trigger_button = {};
 			trigger_button.id = id;
 			trigger_button.display_name = display_name.size ? display_name : id;
 			trigger_button.priority = priority;
-			globals->trigger_buttons.insert(insert_index, trigger_button);
+			auto insert_it = std::ranges::upper_bound(g_globals->trigger_buttons, trigger_button, [](const auto& a, const auto& b) {
+				return a.priority > b.priority;	
+			});
+			g_globals->trigger_buttons.insert(insert_it, trigger_button);
 
 			TriggerVar* var = find_or_create_trigger_var(TriggerVarType_Var, id.data);
 			if (var) {
@@ -673,12 +663,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "hide_button")) {
 			Token id = parser_get_string(&parser);
 
-			for (u32 i = 0; i < globals->trigger_buttons.size(); i++) {
-				TriggerButton& button = globals->trigger_buttons[i];
-				if (button.id == id) {
-					globals->trigger_buttons.remove(i--);
-				}
-			}
+			std::erase_if(g_globals->trigger_buttons, [&](auto& button) { return button.id == id; });
 		// Local Only Triggers
 		} else if (parser_eq(&parser, "play_music") && is_local_player) {
 			Token filename = parser_get_string(&parser);
@@ -876,7 +861,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Token name = parser_get_string(&parser);
 			if (player && unit_id != UnitId::None) {
 				player -= 1;
-				globals->custom_unit_names[player][unit_id] = name;
+				g_globals->players[player].custom_unit_names[(UnitId::Enum)unit_id] = {name.data, name.size};
 			}
 		} else if (parser_eq(&parser, "set_player_race_name") && is_local_player) {
 			u32 player = parser_get_player(&parser);
@@ -886,25 +871,24 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			if (player) {
 				player -= 1;
+
+				auto& cm_player = g_globals->players[player];
 				for (u32 i = 0; i < UnitId::Count; ++i) {
 					if (!unit_ids.set[i]) {
 						continue;
 					}
-					if (!globals->custom_unit_names[player][i].size) {
-						const char* default_name = Unit::get_name(i);
-						u32 len = strlen(default_name);
-						if (len > MaxToken) {
-							len = MaxToken;
-						}
-						globals->custom_unit_names[player][i].size = len;
-						memset(globals->custom_unit_names[player][i].data, 0, MaxToken);
-						strncpy(globals->custom_unit_names[player][i].data, default_name, len);
+					const auto unit_id = (UnitId::Enum)i;
+					if (!cm_player.custom_unit_names.contains((UnitId::Enum)unit_id)) {
+						cm_player.custom_unit_names[unit_id] = Unit::get_name(unit_id);
 					}
 
-					if (old_race.size <= globals->custom_unit_names[player][i].size && strncmp(globals->custom_unit_names[player][i].data, old_race.data, old_race.size) == 0) {
-						Token copy = globals->custom_unit_names[player][i];
-						snprintf(globals->custom_unit_names[player][i].data, MaxToken, "%s%s", new_race.data, copy.data + old_race.size);
-						globals->custom_unit_names[player][i].size = strlen(globals->custom_unit_names[player][i].data);
+					auto& name = cm_player.custom_unit_names[unit_id];
+					const std::string_view name_sv{name};
+					const std::string_view old_race_sv{old_race.data, old_race.size};
+					if (name_sv.starts_with(old_race_sv)) {
+						std::stringstream ss;
+						ss << std::string_view{new_race.data, new_race.size} << std::string_view{name.begin() + old_race.size, name.end()};
+						name = ss.str();
 					}
 				}
 			}
@@ -912,9 +896,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			u32 player = parser_get_player(&parser);
 			if (player) {
 				player -= 1;
-				for (u32 i = 0; i < UnitId::Count; ++i) {
-					globals->custom_unit_names[player][i] = {};
-				}
+				g_globals->players[player].custom_unit_names.clear();
 			}
 		} else if (parser_eq(&parser, "unit_sound") && is_local_player) {
 			SoundReplacement sound_replacement = {};
@@ -934,13 +916,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			parser_get_word(&parser);
 			if (parser_eq(&parser, "clear")) {
-				for (u32 i = 0; i < globals->sound_replacements.size(); ++i) {
-					if (sound_replacement == globals->sound_replacements[i]) {
-						globals->sound_replacements.remove(i--);
-					}
-				}
+				std::erase_if(g_globals->sound_replacements, [&](auto& it) { return it == sound_replacement; });
 			} else {
-				globals->sound_replacements.append(sound_replacement);
+				g_globals->sound_replacements.push_back(sound_replacement);
 			}
 		// Bitset Local Only Triggers
 		} else if (parser_eq(&parser, "play_sound") && is_local_player) {
@@ -978,18 +956,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			u32 depleted_yield = parser_get_s32(&parser);
 			u32 yield = parser_get_s32(&parser);
 
-			globals->yields[YieldType_MineralDepleted] = depleted_yield;
-			globals->yields[YieldType_Mineral] = yield;
+			g_globals->yields[YieldType_MineralDepleted] = depleted_yield;
+			g_globals->yields[YieldType_Mineral] = yield;
 		} else if (parser_eq(&parser, "set_gas_yields")) {
 			u32 ridge_yield = parser_get_s32(&parser);
 			u32 geyser_yield = parser_get_s32(&parser);
 			u32 tier2_yield = parser_get_s32(&parser);
 			u32 tier3_yield = parser_get_s32(&parser);
 
-			globals->yields[YieldType_GasRidge] = ridge_yield;
-			globals->yields[YieldType_GasGeyser] = geyser_yield;
-			globals->yields[YieldType_GasTier2] = tier2_yield;
-			globals->yields[YieldType_GasTier3] = tier3_yield;
+			g_globals->yields[YieldType_GasRidge] = ridge_yield;
+			g_globals->yields[YieldType_GasGeyser] = geyser_yield;
+			g_globals->yields[YieldType_GasTier2] = tier2_yield;
+			g_globals->yields[YieldType_GasTier3] = tier3_yield;
 		} else if (parser_eq(&parser, "unit_sprite")) {
 			SpriteReplacement sprite_replacement = {};
 			sprite_replacement.players = parser_get_player_bitset(&parser);
@@ -1005,7 +983,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				continue;
 			}
 
-			globals->sprite_replacements.append(sprite_replacement);
+			g_globals->sprite_replacements.push_back(sprite_replacement);
 		} else if (parser_eq(&parser, "clear_unit_sprite")) {
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
@@ -1021,19 +999,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				continue;
 			}
 
-			for (u32 i = 0; i < globals->sprite_replacements.size(); ++i) {
-				SpriteReplacement* sprite_replacement = &globals->sprite_replacements[i];
-				if (sprite_replacement->players != players) {
-					continue;
-				}
-				if (sprite_replacement->unit_ids != unit_ids) {
-					continue;
-				}
-				if (sprite_replacement->sprite_id != sprite_id) {
-					continue;
-				}
-				globals->sprite_replacements.remove(i--);
-			}
+			std::erase_if(g_globals->sprite_replacements, [&](const auto& sprite_replacement) {
+				return sprite_replacement.players == players
+					&& sprite_replacement.unit_ids == unit_ids
+					&& sprite_replacement.sprite_id == sprite_id;
+			});
 		} else if (parser_eq(&parser, "clear_creep")) {
 			Area location = parser_get_area(&parser);
 			bw::clear_creep(location.box);
@@ -1228,7 +1198,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				player -= 1;
 				g_player_table[player].race = race;
 				if (player == *g_local_nation_id) {
-					globals->current_advisor = get_advisor_type_from_config(race);
+					g_globals->current_advisor = get_advisor_type_from_config(race);
 				}
 			}
 		} else if (parser_eq(&parser, "set_player_color")) {
@@ -1559,11 +1529,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (parser_eqi(&parser, "auto")) {
 				init_auto_celebration();
 			} else if (parser_eqi(&parser, "none")) {
-				globals->celebration = Celebration_None;
+				g_globals->celebration = Celebration_None;
 			} else if (parser_eqi(&parser, "april_fools")) {
-				globals->celebration = Celebration_AprilFools;
+				g_globals->celebration = Celebration_AprilFools;
 			} else if (parser_eqi(&parser, "christmas")) {
-				globals->celebration = Celebration_Christmas;
+				g_globals->celebration = Celebration_Christmas;
 			}
 		} else if (parser_eq(&parser, "spawn_cargo")) {
 			Area area = parser_get_area(&parser);
@@ -1624,10 +1594,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "witness_mode")) {
 			WitnessMode new_value = (WitnessMode)parser_get_s32(&parser);
 
-			PlayerVars* player_vars = &globals->players[trigger_player];
+			CmPlayer* player_vars = &g_globals->players[trigger_player];
 			WitnessMode old_value = player_vars->witness_mode;
 			if (old_value != new_value) {
-				globals->players[trigger_player].witness_mode = new_value;
+				g_globals->players[trigger_player].witness_mode = new_value;
 				graphics::reset_stat_res_graphics(); // Must call this to reset custom graphics data for statres display. -Veeq7
 				if (new_value == WitnessMode_Pure) {
 					// Hide Pure Witnesses from scoreboard
@@ -1642,7 +1612,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (new_value && *g_elapsed_time_frames == 0 && trigger_player == *g_local_nation_id) {
 					u32 first_player = 0;
 					for (u32 i = 0; i < PlayerLimit; ++i) {
-						if (globals->players[i].witness_mode) continue;
+						if (g_globals->players[i].witness_mode) continue;
 						if (g_player_table[i].type == PlayerType::Human) {
 							first_player = i + 1;
 							break;
@@ -1650,7 +1620,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 					if (!first_player) {
 						for (u32 i = 0; i < PlayerLimit; ++i) {
-							if (globals->players[i].witness_mode) continue;
+							if (g_globals->players[i].witness_mode) continue;
 							if (g_player_table[i].type == PlayerType::Computer) {
 								first_player = i + 1;
 								break;
@@ -1672,8 +1642,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			if (player) {
 				player -= 1;
-				globals->players[player].faction = faction;
-				globals->players[player].faction_was_set = true;
+				g_globals->players[player].faction = faction;
+				g_globals->players[player].faction_was_set = true;
 			}
 		} else if (parser_eq(&parser, "set_advisor")) {
 			u32 player = parser_get_player(&parser);
@@ -1682,12 +1652,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				if (player == *g_local_nation_id) {
-					globals->current_advisor = advisor;
+					g_globals->current_advisor = advisor;
 				}
 			}
 		} else if (parser_eq(&parser, "neutral_hostile")) {
 			bool state = (bool)parser_get_s32(&parser);
-			PlayerVars* player_vars = &globals->players[trigger_player];
+			CmPlayer* player_vars = &g_globals->players[trigger_player];
 			if (player_vars->neutral_hostile != state) {
 				player_vars->neutral_hostile = (bool)state;
 			}
@@ -1696,7 +1666,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			bool state = (bool)parser_get_s32(&parser);
 			if (player) {
 				player -= 1;
-				PlayerVars* player_vars = &globals->players[player];
+				CmPlayer* player_vars = &g_globals->players[player];
 				if (player_vars->hide_in_team_ui != state) {
 					player_vars->hide_in_team_ui = (bool)state;
 				}
@@ -1707,7 +1677,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			if (player) {
 				player -= 1;
-				PlayerVars* player_vars = &globals->players[player];
+				CmPlayer* player_vars = &g_globals->players[player];
 				player_vars->omnipresence_state = omni_state;
 				player_vars->omnipresence_state_was_set = true;
 			}

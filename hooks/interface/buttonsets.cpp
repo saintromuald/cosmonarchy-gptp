@@ -379,7 +379,7 @@ namespace hooks {
 		command.faction = 1; // Default case
 		auto buttonset_id = *g_active_portrait_buttonset_id;
 		u32 local_player = *g_local_human_id;
-		if (bw::get_game_kind() == GameKind_FactionWars && !globals->players[local_player].faction_was_set) {
+		if (bw::get_game_kind() == GameKind_FactionWars && !g_globals->players[local_player].faction_was_set) {
 			if (buttonset_id == UnitId::None) {
 				switch (g_player_table[local_player].race) {
 					case RaceId::Terran: {
@@ -421,7 +421,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
-					globals->players[local_player].faction_was_set = true;
+					g_globals->players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect2) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
@@ -437,7 +437,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
-					globals->players[local_player].faction_was_set = true;
+					g_globals->players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect3) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
@@ -453,7 +453,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
-					globals->players[local_player].faction_was_set = true;
+					g_globals->players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect4) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
@@ -469,7 +469,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
-					globals->players[local_player].faction_was_set = true;
+					g_globals->players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect5) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
@@ -485,7 +485,7 @@ namespace hooks {
 							helper::queue_game_command((u8*)&command, 0xc);
 						} break;
 					}
-					globals->players[local_player].faction_was_set = true;
+					g_globals->players[local_player].faction_was_set = true;
 				} else if (buttonset_id == UnitId::Buttons_FactionSelect6) {
 					switch (g_player_table[local_player].race) {
 						case RaceId::Terran: {
@@ -501,7 +501,7 @@ namespace hooks {
 						//	helper::queue_game_command((u8*)&command, 0xc);
 					//	} break;
 					}
-					globals->players[local_player].faction_was_set = true;
+					g_globals->players[local_player].faction_was_set = true;
 				}
 			}
 		}
@@ -660,7 +660,7 @@ namespace hooks {
 						{
 							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
 								|| unit_id_is_larva(unit->id)
-								|| (unit->id == UnitId::Omnivale && globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
+								|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
 								current_button_state = Button_State::Enabled;
 							} else {
 								current_button_state = Button_State::Invisible;
@@ -735,7 +735,7 @@ namespace hooks {
 					if (current_button->icon_id == IconId::Larva) {
 						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
 							|| unit_id_is_larva(unit->id)
-							|| (unit->id == UnitId::Omnivale && globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
+							|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
@@ -794,7 +794,7 @@ namespace hooks {
 						is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 						is_burrowed = unit->status & UnitStatus::Burrowed;
 						is_adding_on = unit->current_build_unit && units_dat::base_property[unit->current_build_unit->id] & UnitProperty::Addon;
-						faction = globals->players[unit->player].faction;
+						faction = g_globals->players[unit->player].faction;
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) {
@@ -1061,7 +1061,7 @@ namespace hooks {
 						switch (unit->id) {
 							case UnitId::Omnivale:
 							{
-								OmnipresenceState omni_state = globals->players[unit->player].omnipresence_state;
+								OmnipresenceState omni_state = g_globals->players[unit->player].omnipresence_state;
 								switch (current_button->requirement_var) {
 									case UnitId::TerranMason:
 									{

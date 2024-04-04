@@ -219,7 +219,7 @@ namespace hooks {
 				}
 
 				// Ignore allied units (new) -Veeq7		
-				if (target && bw::is_allied_to(unit->player, target->player) && !globals->players[target->player].neutral_hostile) {
+				if (target && bw::is_allied_to(unit->player, target->player) && !g_globals->players[target->player].neutral_hostile) {
 					UnitExt* unit_ext = get_unit_ext(unit);
 					u32 patience = unit_ext->timers[TimerAI_Patience];
 					unit_ext->timers[TimerAI_Patience] += 2 * 24;

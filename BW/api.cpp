@@ -38,7 +38,7 @@ namespace bw {
 	}
 
 	bool is_witness() {
-		return globals->players[*g_local_nation_id].witness_mode;
+		return g_globals->players[*g_local_nation_id].witness_mode;
 	}
 
 	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt) {
@@ -2097,7 +2097,7 @@ namespace bw {
 
 			case UnitId::ZergKalkalisk:
 			{
-				switch (globals->players[unit->player].faction) {
+				switch (g_globals->players[unit->player].faction) {
 					case Faction_ZergAtaltrethTendril: {
 						return UnitId::ZergNathrokor;
 					}
@@ -3161,7 +3161,7 @@ namespace bw {
 
 	u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) { 
 	/*	if (bw::has_custom_advisor(player)) */ {
-			AdvisorType advisor = globals->current_advisor;
+			AdvisorType advisor = g_globals->current_advisor;
 			if (advisor == AdvisorType_Default) {
 				switch (g_player_table[player].race)
 				{
@@ -3480,7 +3480,7 @@ namespace bw {
 		if (player != *g_local_nation_id) {
 			return false;
 		}
-		return globals->current_advisor != AdvisorType_Default;
+		return g_globals->current_advisor != AdvisorType_Default;
 	}
 
 	const Vector32f perimeter[] = {
@@ -3724,7 +3724,7 @@ namespace bw {
 	u32 get_witness_count() {
 		u32 count = 0;
 		for (u32 i = 0; i < PlayerLimit; i++) {
-			if (globals->players[i].witness_mode) {
+			if (g_globals->players[i].witness_mode) {
 				count++;
 			}
 		}
@@ -3848,6 +3848,6 @@ namespace bw {
 	}
 
 	bool player_is_witness(u32 player) {
-		return globals->players[player].witness_mode != WitnessMode_Disabled;
+		return g_globals->players[player].witness_mode != WitnessMode_Disabled;
 	}
 }

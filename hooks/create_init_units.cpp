@@ -218,7 +218,7 @@ namespace hooks {
 							pos.y -= dy;
 
 							if (is_omni) {
-								switch (globals->players[player].omnipresence_state)
+								switch (g_globals->players[player].omnipresence_state)
 								{
 									case OmnipresenceState_All:
 									{

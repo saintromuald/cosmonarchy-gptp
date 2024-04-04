@@ -28,7 +28,7 @@ bool is_hostile_or_neutral(u32 player, u32 other_player) {
 }
 
 void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
-	if (*g_is_in_replay || globals->players[*g_local_nation_id].witness_mode) {
+	if (*g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode) {
 		bool ping = true;
 		Point16 position = {};
 		switch (event_type) {
@@ -80,7 +80,7 @@ void init_omnipresence_state() {
 			if (g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot) {
 				continue;
 			}
-			if (globals->players[player].omnipresence_state_was_set == false) {
+			if (g_globals->players[player].omnipresence_state_was_set == false) {
 				OmnipresenceState omni_state = OmnipresenceState_None;
 				switch (g_player_table[player].race) {
 					case RaceId::Terran:
@@ -96,8 +96,8 @@ void init_omnipresence_state() {
 						omni_state = OmnipresenceState_ZergTerran;
 					} break;
 				}
-				globals->players[player].omnipresence_state = omni_state;
-				globals->players[player].omnipresence_state_was_set = true;
+				g_globals->players[player].omnipresence_state = omni_state;
+				g_globals->players[player].omnipresence_state_was_set = true;
 			}
 		}
 	}

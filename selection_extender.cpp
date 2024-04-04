@@ -2305,7 +2305,7 @@ void __declspec(naked) combine_lists_patch_6F2D1() {
 	__asm {
 		PUSHAD
 	}
-	is_witness_or_in_replay = globals->players[*g_local_human_id].witness_mode | *g_is_in_replay;
+	is_witness_or_in_replay = g_globals->players[*g_local_human_id].witness_mode | *g_is_in_replay;
 	__asm {
 		POPAD
 		MOV	EAX, is_witness_or_in_replay

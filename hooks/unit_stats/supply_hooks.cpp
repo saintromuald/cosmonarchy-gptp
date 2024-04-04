@@ -614,7 +614,7 @@ namespace hooks
 
 		if (bw::in_replay_or_witness()) {
 			for (u32 player = 0; player < PlayerLimit; ++player) {
-				PlayerVars player_vars = globals->players[player];
+				CmPlayer player_vars = g_globals->players[player];
 				u32 player_type = g_player_table[player].type;
 				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !player_vars.witness_mode && !player_vars.hide_in_team_ui) {
 					draw_player_stats(&dialog, &pos, player,
@@ -637,7 +637,7 @@ namespace hooks
 
 			if (g_config.show_team_ui) {
 				for (u32 player = 0; player < PlayerLimit; ++player) {
-					PlayerVars player_vars = globals->players[player];
+					CmPlayer player_vars = g_globals->players[player];
 					u32 player_type = g_player_table[player].type;
 					if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && player != local_player && !player_vars.witness_mode
 						&& !player_vars.hide_in_team_ui && bw::is_allied_to(player, local_player))

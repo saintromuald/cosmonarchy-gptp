@@ -661,7 +661,6 @@
     <ClInclude Include="include\discord_game_sdk.h" />
     <ClInclude Include="selection_extender.h" />
     <ClInclude Include="trigger_system\trigger_events.h" />
-    <ClInclude Include="trigger_system\trigger_helper.h" />
     <ClInclude Include="trigger_system\trigger_parser.h" />
     <ClInclude Include="threshold.h" />
     <ClInclude Include="hooks\aiscript\ai_requests.h" />

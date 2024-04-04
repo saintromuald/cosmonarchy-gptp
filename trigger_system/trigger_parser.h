@@ -38,15 +38,15 @@ struct Area {
 struct PlayerBitset {
 	bool set[FullPlayerLimit];
 
-	inline bool operator==(PlayerBitset& other) { return memcmp(this, &other, sizeof(*this)) == 0; }
-	inline bool operator!=(PlayerBitset& other) { return !(*this == other); }
+	inline bool operator==(const PlayerBitset& other) const { return memcmp(this, &other, sizeof(*this)) == 0; }
+	inline bool operator!=(const PlayerBitset& other) const { return !(*this == other); }
 };
 
 struct UnitIdBitset {
 	bool set[UnitId::Count];
 
-	inline bool operator==(UnitIdBitset& other) { return memcmp(this, &other, sizeof(*this)) == 0; }
-	inline bool operator!=(UnitIdBitset& other) { return !(*this == other); }
+	inline bool operator==(const UnitIdBitset& other) const { return memcmp(this, &other, sizeof(*this)) == 0; }
+	inline bool operator!=(const UnitIdBitset& other) const { return !(*this == other); }
 };
 
 enum QuotaType {

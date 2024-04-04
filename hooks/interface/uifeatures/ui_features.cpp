@@ -112,7 +112,7 @@ namespace hooks {
 			draw_ui_text(buffer, 7);
 		}
 
-		bool is_replay_or_witness = *g_is_in_replay || globals->players[*g_local_nation_id].witness_mode;
+		bool is_replay_or_witness = *g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode;
 		if (!is_replay_or_witness && g_config.show_apm) {
 			char buffer[48] = {};
 			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
@@ -504,16 +504,16 @@ LABEL_15:
 
 		if (g_config.show_minimap_cameras) {
 			for (u8 player = 0; player < PlayerLimit; ++player) {
-				if (g_player_table[player].type != PlayerType::Human || globals->players[player].witness_mode) {
+				if (g_player_table[player].type != PlayerType::Human || g_globals->players[player].witness_mode) {
 					continue;
 				}
 				if (!*g_is_in_replay && player == *g_local_nation_id) {
 					continue;
 				}
-				if (!*g_is_in_replay && !globals->players[*g_local_nation_id].witness_mode && !bw::is_allied_to(player, *g_local_nation_id)) {
+				if (!*g_is_in_replay && !g_globals->players[*g_local_nation_id].witness_mode && !bw::is_allied_to(player, *g_local_nation_id)) {
 					continue;
 				}
-				Point16 camera = globals->players[player].camera;
+				Point16 camera = g_globals->players[player].camera;
 				if (camera.x || camera.y) {
 					draw_camera_box(camera.x, camera.y, g_player_minimap_colors[player]);
 				}

@@ -1,7 +1,6 @@
 #pragma once
 #include "BW/api.h"
 #include "trigger_parser.h"
-#include "trigger_helper.h"
 #include "collections.h"
 
 struct Sound;
@@ -34,11 +33,13 @@ static const char* race_names[] = {
 	"Terran",
 };
 
-// TODO: Move to Globals (or new global struct if need be)
-extern bool trigger_game_paused;
-extern bool trigger_system_init;
-extern bool trigger_system_in_game;
-// END TODO
+struct TriggerSystemState {
+	bool game_paused;
+	bool init;
+	bool in_game;
+};
+
+inline TriggerSystemState g_trigger;
 
 enum WitnessMode: u8 {
 	WitnessMode_Disabled = 0,   // Normal Player	|	No witness mode && shown on scoreboard
@@ -177,7 +178,7 @@ static const char* advisor_symbol_names[] = {
 };
 C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == AdvisorType_Count);
 
-struct PlayerVars {
+struct CmPlayer {
 	Point16 camera;
 	WitnessMode witness_mode;
 	Faction faction;
@@ -186,6 +187,8 @@ struct PlayerVars {
 	bool hide_in_team_ui;
 	OmnipresenceState omnipresence_state;
 	bool omnipresence_state_was_set;
+
+	std::unordered_map<UnitId::Enum, std::string> custom_unit_names;
 };
 
 struct AlertState {
@@ -230,12 +233,11 @@ struct TriggerButton {
 };
 
 struct Globals {
-	PlayerVars players[PlayerLimit];
+	CmPlayer players[PlayerLimit];
 	u32 celebration;
 
-	AdvisorType current_advisor;
-
 	AlertState alert;
+	AdvisorType current_advisor;
 	AdvisorState advisor_state;
 
 	u8 yields[YieldType_Count];
@@ -244,13 +246,9 @@ struct Globals {
 	}
 
 	std::unordered_map<TriggerAction*, TriggerExt> trigger_exts;
-
-	StaticArray<SoundReplacement, 1600> sound_replacements;
-	StaticArray<SpriteReplacement, 800> sprite_replacements;
-
-	Token custom_unit_names[PlayerLimit][UnitId::Count];
-
-	StaticArray<TriggerButton, 32> trigger_buttons;
+	std::vector<SoundReplacement> sound_replacements;
+	std::vector<SpriteReplacement> sprite_replacements;
+	std::vector<TriggerButton> trigger_buttons;
 };
 
 enum TriggerStat : u8 {
@@ -293,7 +291,7 @@ static const char* trigger_behavior_names[] = {
 };
 C_ASSERT(ARRAY_SIZE(trigger_behavior_names) == TriggerBehavior_Count);
 
-extern LazyInit<Globals> globals;
+inline auto g_globals = std::make_unique<Globals>();
 
 void init_trigger_system();
 void update_trigger_system(bool in_game);

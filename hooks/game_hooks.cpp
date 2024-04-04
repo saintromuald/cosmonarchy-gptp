@@ -294,7 +294,7 @@ namespace hooks {
 
 		for (u32 i = 0; i < *g_client_selection_count; ++i) {
 			Unit* transport = g_client_selection_group->unit[i];
-			bool is_replay_or_witness = *g_is_in_replay || globals->players[*g_local_human_id].witness_mode;
+			bool is_replay_or_witness = *g_is_in_replay || g_globals->players[*g_local_human_id].witness_mode;
 			if (!bw::unit_is_allied_or_detected(transport, *g_local_nation_id) && !is_replay_or_witness) {
 				continue;
 			}
@@ -789,9 +789,9 @@ namespace hooks {
 
 			if (local_flags & VespeneDeaths_Ping) {
 				for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target) {
-					if (!globals->players[target].witness_mode) {
+					if (!g_globals->players[target].witness_mode) {
 						u32 color = 0; // red
-						if (globals->players[*g_local_nation_id].witness_mode) {
+						if (g_globals->players[*g_local_nation_id].witness_mode) {
 							color = 7; // yellow
 						} else if (bw::is_allied_to(*g_local_nation_id, target)) {
 							color = 8; // green
@@ -3274,7 +3274,7 @@ namespace hooks {
 			unit->update_speed();
 		}
 
-		if (globals->celebration == Celebration_Christmas) {
+		if (g_globals->celebration == Celebration_Christmas) {
 			if (unit->status & UnitStatus::Burrowed) {
 				unit->sprite->remove_overlay(ImageId::SantaHatSmall, ImageId::SantaHatXLarge17);
 			} else if (unit->id == UnitId::ZergEgg || unit->status & UnitStatus::Completed) {
@@ -3972,14 +3972,14 @@ namespace hooks {
 							case NewGameCommand::CameraSync: {
 								u32 player = buffer[2];
 								Point16 pos = *(Point16*)(buffer + 3);
-								globals->players[player].camera = pos;
+								g_globals->players[player].camera = pos;
 							} break;
 							case NewGameCommand::SelectFaction:
 							{
 								u32 player = buffer[2];
 								Faction faction = (Faction)buffer[3];
-								globals->players[player].faction = faction;
-								globals->players[player].faction_was_set = true;
+								g_globals->players[player].faction = faction;
+								g_globals->players[player].faction_was_set = true;
 								switch (g_player_table[player].race) {
 									case RaceId::Terran:
 									{

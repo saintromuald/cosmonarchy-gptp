@@ -227,8 +227,8 @@ namespace hooks
 				if (max_volume > 10) {
 					u32 error_id = SoundId::ErrorZerg - *g_console_index;
 					helper::play_sound_global(error_id);
-					if (!bw::has_custom_advisor(player) || !globals->advisor_state.cooldown) {
-						if (!globals->advisor_state.play_timer) {
+					if (!bw::has_custom_advisor(player) || !g_globals->advisor_state.cooldown) {
+						if (!g_globals->advisor_state.play_timer) {
 							u32 timer = 6;
 							switch (g_player_table[player].race) {
 								case RaceId::Protoss:
@@ -237,10 +237,10 @@ namespace hooks
 									timer = 4;
 								}
 							}
-							globals->advisor_state.play_timer = timer;
-							globals->advisor_state.sound_id = sound_id;
+							g_globals->advisor_state.play_timer = timer;
+							g_globals->advisor_state.sound_id = sound_id;
 							if (bw::has_custom_advisor(player)) {
-								globals->advisor_state.cooldown = 54; // TODO: Replace with length of sound converted into w/e units
+								g_globals->advisor_state.cooldown = 54; // TODO: Replace with length of sound converted into w/e units
 							}
 						}
 					}

@@ -166,8 +166,10 @@ const char* Unit::get_name() {
 	UnitExt* unit_ext = get_unit_ext(this);
 	if (unit_ext->custom_name) {
 		return unit_ext->custom_name;
-	} else if (this->player < PlayerLimit && this->id < UnitId::Count && globals->custom_unit_names[this->player][this->id].size) {
-		return globals->custom_unit_names[this->player][this->id].data;
+	}
+	const auto unit_id = (UnitId::Enum)this->id;
+	if (this->player < PlayerLimit && g_globals->players[this->player].custom_unit_names.contains(unit_id)) {
+		return g_globals->players[this->player].custom_unit_names[unit_id].data();
 	}
 	return get_name(this->id);
 }
