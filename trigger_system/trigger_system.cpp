@@ -46,13 +46,13 @@ AdvisorType get_advisor_type_from_config(u32 race) {
 	std::vector<AdvisorType> advisors = g_config.common_advisors.types; // Note this is a copy
 	switch (race) {
 		case RaceId::Terran: {
-			advisors.insert(advisors.end(), g_config.terran_advisors.types.begin(), g_config.terran_advisors.types.end());
+			advisors.insert_range(advisors.end(), g_config.terran_advisors.types);
 		} break;
 		case RaceId::Protoss: {
-			advisors.insert(advisors.end(), g_config.protoss_advisors.types.begin(), g_config.protoss_advisors.types.end());
+			advisors.insert_range(advisors.end(), g_config.protoss_advisors.types);
 		} break;
 		case RaceId::Zerg: {
-			advisors.insert(advisors.end(), g_config.zerg_advisors.types.begin(), g_config.zerg_advisors.types.end());
+			advisors.insert_range(advisors.end(), g_config.zerg_advisors.types);
 		} break;
 	}
 	if (advisors.size()) {
