@@ -67,7 +67,7 @@ void init_trigger_system() {
 	g_trigger.game_paused = false;
 	g_action_table[47] = (ActionPointer)parse_comment_action;
 
-	g_globals.reset();
+	g_globals = std::make_unique<Globals>();
 
 	init_auto_celebration();
 	init_recolors();
