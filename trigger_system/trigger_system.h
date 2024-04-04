@@ -56,7 +56,9 @@ enum Celebration : u8 {
 };
 
 enum OmnipresenceState : u8 {
+	OmnipresenceState_Default,
 	OmnipresenceState_None,
+
 	OmnipresenceState_TerranProtoss,
 	OmnipresenceState_ProtossZerg,
 	OmnipresenceState_ZergTerran,
@@ -67,6 +69,7 @@ enum OmnipresenceState : u8 {
 
 // NOTE: This is case insensitive for parsing
 static const char* omnipresence_state_symbol_names[] = {
+	"Default",
 	"None",
 
 	"TerranProtoss",
@@ -186,7 +189,6 @@ struct CmPlayer {
 	bool faction_was_set;
 	bool hide_in_team_ui;
 	OmnipresenceState omnipresence_state;
-	bool omnipresence_state_was_set;
 
 	std::unordered_map<UnitId::Enum, std::string> custom_unit_names;
 };

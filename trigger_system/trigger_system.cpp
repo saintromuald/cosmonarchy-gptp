@@ -1678,7 +1678,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				player -= 1;
 				CmPlayer* player_vars = &g_globals->players[player];
 				player_vars->omnipresence_state = omni_state;
-				player_vars->omnipresence_state_was_set = true;
 			}
 		} else if (parser_eq(&parser, "print")) {
 			Token text = parser_get_string(&parser);
