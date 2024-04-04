@@ -491,9 +491,7 @@ u32 parser_get_player(Parser* parser, bool allow_neutral) {
 }
 
 static PlayerBitset player_bitset_combine(PlayerBitset a, PlayerBitset b) {
-	for (u32 i = 0; i < FullPlayerLimit; ++i) {
-		a.set[i] = a.set[i] || b.set[i];
-	}
+	a |= b;
 	return a;
 }
 
@@ -502,7 +500,7 @@ static void player_bitset_set(PlayerBitset* bitset, u32 i, bool value, bool mask
 		value = !value;
 	}
 	if (value != mask) {
-		bitset->set[i] = value;
+		bitset[i] = value;
 	}
 }
 
@@ -633,23 +631,16 @@ u32 parser_get_unit_id(Parser* parser) {
 	return parser_get_s32(parser, UnitId::None);
 }
 
-static UnitIdBitset unit_id_bitset_combine(UnitIdBitset a, UnitIdBitset b) {
-	for (u32 i = 0; i < UnitId::Count; ++i) {
-		a.set[i] = a.set[i] || b.set[i];
-	}
-	return a;
-}
-
 static void unit_id_bitset_set(UnitIdBitset* bitset, u32 i, bool value, bool mask, bool negate) {
 	if (negate) {
 		value = !value;
 	}
 	if (value) {
 		if (!mask) {
-			bitset->set[i] = true;
+			bitset[i] = true;
 		}
 	} else if (mask) {
-		bitset->set[i] = false;
+		bitset[i] = false;
 	}
 }
 
@@ -751,10 +742,10 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			mask = true;
 		} else if (separator == '|') {
 			mask = false;
-			bitset = unit_id_bitset_combine(bitset, current_bitset);
+			bitset |= current_bitset;
 			current_bitset = {};
 		} else {
-			bitset = unit_id_bitset_combine(bitset, current_bitset);
+			bitset |= current_bitset;
 			break;
 		}
 	}

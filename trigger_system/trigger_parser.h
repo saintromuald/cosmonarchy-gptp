@@ -2,6 +2,8 @@
 #include "BW/api.h"
 #include "color_palette.h"
 
+#include <bitset>
+
 #define MaxToken 256
 struct Token {
 	u32 size;
@@ -35,19 +37,8 @@ struct Area {
 	u16 flags;
 };
 
-struct PlayerBitset {
-	bool set[FullPlayerLimit];
-
-	inline bool operator==(const PlayerBitset& other) const { return memcmp(this, &other, sizeof(*this)) == 0; }
-	inline bool operator!=(const PlayerBitset& other) const { return !(*this == other); }
-};
-
-struct UnitIdBitset {
-	bool set[UnitId::Count];
-
-	inline bool operator==(const UnitIdBitset& other) const { return memcmp(this, &other, sizeof(*this)) == 0; }
-	inline bool operator!=(const UnitIdBitset& other) const { return !(*this == other); }
-};
+using PlayerBitset = std::bitset<FullPlayerLimit>;
+using UnitIdBitset = std::bitset<UnitId::Count>;
 
 enum QuotaType {
 	QuotaType_Greater,

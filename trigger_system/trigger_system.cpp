@@ -99,10 +99,10 @@ static bool unit_can_change_sprite(Unit* unit) {
 
 static u32 unit_get_desired_sprite_id(Unit* unit) {
 	for (SpriteReplacement& sprite_replacement : g_globals->sprite_replacements) {
-		if (unit->player > PlayerLimit || !sprite_replacement.players.set[unit->player]) {
+		if (unit->player > PlayerLimit || !sprite_replacement.players[unit->player]) {
 			continue;
 		}
-		if (unit->id >= UnitId::Count || !sprite_replacement.unit_ids.set[unit->id]) {
+		if (unit->id >= UnitId::Count || !sprite_replacement.unit_ids[unit->id]) {
 			continue;
 		}
 		return sprite_replacement.sprite_id;
@@ -329,8 +329,8 @@ bool parse_condition(Parser* parser) {
 				if (event.source_player >= FullPlayerLimit || event.target_player >= FullPlayerLimit) {
 					continue;
 				}
-				if ((!source_players.set[event.source_player] || !source_unit_ids.set[event.source_unit_id] || !target_players.set[event.target_player] || !target_unit_ids.set[event.target_unit_id])
-				&&  (!source_players.set[event.target_player] || !source_unit_ids.set[event.target_unit_id] || !target_players.set[event.source_player] || !target_unit_ids.set[event.source_unit_id])) {
+				if ((!source_players[event.source_player] || !source_unit_ids[event.source_unit_id] || !target_players[event.target_player] || !target_unit_ids[event.target_unit_id])
+				&&  (!source_players[event.target_player] || !source_unit_ids[event.target_unit_id] || !target_players[event.source_player] || !target_unit_ids[event.source_unit_id])) {
 					continue;
 				}
 				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event.timestamp)) {
@@ -361,16 +361,16 @@ bool parse_condition(Parser* parser) {
 				if (!check_area(area, event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
 					continue;
 				}
-				if (event.source_player >= FullPlayerLimit || !source_players.set[event.source_player]) {
+				if (event.source_player >= FullPlayerLimit || !source_players[event.source_player]) {
 					continue;
 				}
-				if (!source_unit_ids.set[event.source_unit_id]) {
+				if (!source_unit_ids[event.source_unit_id]) {
 					continue;
 				}
-				if (event.target_player >= FullPlayerLimit || !target_players.set[event.target_player]) {
+				if (event.target_player >= FullPlayerLimit || !target_players[event.target_player]) {
 					continue;
 				}
-				if (!target_unit_ids.set[event.target_unit_id]) {
+				if (!target_unit_ids[event.target_unit_id]) {
 					continue;
 				}
 				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event.timestamp)) {
@@ -403,10 +403,10 @@ bool parse_condition(Parser* parser) {
 				if (!check_area(area, event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
 					continue;
 				}
-				if (event.target_player >= FullPlayerLimit || !players.set[event.target_player]) {
+				if (event.target_player >= FullPlayerLimit || !players[event.target_player]) {
 					continue;
 				}
-				if (!unit_ids.set[event.target_unit_id]) {
+				if (!unit_ids[event.target_unit_id]) {
 					continue;
 				}
 				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event.timestamp)) {
@@ -452,10 +452,10 @@ bool parse_condition(Parser* parser) {
 				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
-				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
 					continue;
 				}
-				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
 				if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota, unit_ext->last_seen_timer[scouting_player - 1])) {
@@ -523,10 +523,10 @@ bool parse_condition(Parser* parser) {
 				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
-				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
 					continue;
 				}
-				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
 				if (unit_ext->values[ValuePlayerColor] == color_id) {
@@ -546,10 +546,10 @@ bool parse_condition(Parser* parser) {
 			u32 count = 0;
 			for (u32 i = 0; i < units.count; ++i) { // TODO: Replace with selection. -Pr0nogo
 				Unit* unit = units.units[i];
-				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
 					continue;
 				}
-				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
 				count++;
@@ -849,7 +849,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			PlayerBitset players = parser_get_player_bitset(&parser);
 			s32 value = parser_get_s32(&parser);
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (!players.set[i]) {
+				if (!players[i]) {
 					continue;
 				}
 				show_player_layouts[i] = value;
@@ -873,7 +873,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 				auto& cm_player = g_globals->players[player];
 				for (u32 i = 0; i < UnitId::Count; ++i) {
-					if (!unit_ids.set[i]) {
+					if (!unit_ids[i]) {
 						continue;
 					}
 					const auto unit_id = (UnitId::Enum)i;
@@ -926,7 +926,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Point16 position = parser_get_position(&parser);
 			Token min_visibility = parser_get_word(&parser);
 
-			if (trigger_player < PlayerLimit && players.set[trigger_player]) {
+			if (trigger_player < PlayerLimit && players[trigger_player]) {
 				if (position.x == 0 && position.y == 0) {
 					play_sound(get_sound(path.data), get_sound_volume());
 				} else {
@@ -955,18 +955,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			u32 depleted_yield = parser_get_s32(&parser);
 			u32 yield = parser_get_s32(&parser);
 
-			g_globals->yields[YieldType_MineralDepleted] = depleted_yield;
-			g_globals->yields[YieldType_Mineral] = yield;
+			g_globals->yields[(size_t)YieldType::MineralDepleted] = depleted_yield;
+			g_globals->yields[(size_t)YieldType::Mineral] = yield;
 		} else if (parser_eq(&parser, "set_gas_yields")) {
 			u32 ridge_yield = parser_get_s32(&parser);
 			u32 geyser_yield = parser_get_s32(&parser);
 			u32 tier2_yield = parser_get_s32(&parser);
 			u32 tier3_yield = parser_get_s32(&parser);
 
-			g_globals->yields[YieldType_GasRidge] = ridge_yield;
-			g_globals->yields[YieldType_GasGeyser] = geyser_yield;
-			g_globals->yields[YieldType_GasTier2] = tier2_yield;
-			g_globals->yields[YieldType_GasTier3] = tier3_yield;
+			g_globals->yields[(size_t)YieldType::GasRidge] = ridge_yield;
+			g_globals->yields[(size_t)YieldType::GasGeyser] = geyser_yield;
+			g_globals->yields[(size_t)YieldType::GasTier2] = tier2_yield;
+			g_globals->yields[(size_t)YieldType::GasTier3] = tier3_yield;
 		} else if (parser_eq(&parser, "unit_sprite")) {
 			SpriteReplacement sprite_replacement = {};
 			sprite_replacement.players = parser_get_player_bitset(&parser);
@@ -1030,7 +1030,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 enable = parser_get_s32(&parser);
 
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (!players.set[i]) {
+				if (!players[i]) {
 					continue;
 				}
 				AiLayouts* layouts = &player_layouts[i];
@@ -1039,7 +1039,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (placeholder->unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
-					if (placeholder->unit_id == UnitId::None || !unit_ids.set[placeholder->unit_id]) {
+					if (placeholder->unit_id == UnitId::None || !unit_ids[placeholder->unit_id]) {
 						continue;
 					}
 					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
@@ -1056,7 +1056,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			if (priority) {
 				for (u32 i = 0; i < PlayerLimit; ++i) {
-					if (!players.set[i]) {
+					if (!players[i]) {
 						continue;
 					}
 					AiLayouts* layouts = &player_layouts[i];
@@ -1065,7 +1065,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						if (placeholder->unit_id == UnitId::TownCenterMarker) {
 							continue;
 						}
-						if (!unit_ids.set[placeholder->unit_id]) {
+						if (!unit_ids[placeholder->unit_id]) {
 							continue;
 						}
 						if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
@@ -1084,7 +1084,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			u8 new_priority = CLAMP(priority, 0, 255);
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (!players.set[i]) {
+				if (!players[i]) {
 					continue;
 				}
 				AiLayouts* layouts = &player_layouts[i];
@@ -1093,7 +1093,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (placeholder->unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
-					if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
+					if (placeholder->unit_id >= UnitId::Count || !unit_ids[placeholder->unit_id]) {
 						continue;
 					}
 					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
@@ -1113,7 +1113,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			u32 resarea = bw::get_closest_resarea(resarea_position);
 			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (!players.set[i]) {
+				if (!players[i]) {
 					continue;
 				}
 				AiLayouts* layouts = &player_layouts[i];
@@ -1122,7 +1122,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (placeholder->unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
-					if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
+					if (placeholder->unit_id >= UnitId::Count || !unit_ids[placeholder->unit_id]) {
 						continue;
 					}
 					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
@@ -1165,7 +1165,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						AiLayouts* layouts = &player_layouts[player];
 						for (u32 i = 0; i < layouts->placeholders_count; ++i) {
 							AiPlaceholder* placeholder = &layouts->placeholders[i];
-							if (placeholder->unit_id >= UnitId::Count || !unit_ids.set[placeholder->unit_id]) {
+							if (placeholder->unit_id >= UnitId::Count || !unit_ids[placeholder->unit_id]) {
 								continue;
 							}
 							if (!check_area(claim_placeholders_area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
@@ -1218,10 +1218,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			unit_search_rect(&units, area.box);
 			for (u32 i = 0; i < units.count; ++i) {
 				Unit* unit = units.units[i];
-				if (unit->player >= PlayerLimit || !players.set[unit->player]) {
+				if (unit->player >= PlayerLimit || !players[unit->player]) {
 					continue;
 				}
-				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
 				if (!check_area(area, unit->position, unit->status & UnitStatus::InAir)) {
@@ -1248,10 +1248,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
-				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
 					continue;
 				}
-				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
 				if (unit_count >= count) {
@@ -1289,10 +1289,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
-				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
 					continue;
 				}
-				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
 				if (count && unit_count >= count) {
@@ -1353,10 +1353,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
-				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
 					continue;
 				}
-				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
 				if (count && unit_count >= count) {
@@ -1404,10 +1404,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!check_area(area_init, position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
-				if (unit->player >= FullPlayerLimit || !players.set[unit->player]) {
+				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
 					continue;
 				}
-				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
 				if (count && unit_count >= count) {
@@ -1489,8 +1489,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			threshold_config.enabled = true;
 			for (u32 player = 0; player < PlayerLimit; ++player) {
-				threshold_config.fraud_allowed[player] = players.set[player];
-				if (players.set[player]) {
+				threshold_config.fraud_allowed[player] = players[player];
+				if (players[player]) {
 					threshold_config.witness_enabled[player] = false;
 				}
 			}
@@ -1498,8 +1498,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			PlayerBitset players = parser_get_player_bitset(&parser);
 
 			for (u32 player = 0; player < PlayerLimit; ++player) {
-				threshold_config.witness_enabled[player] = players.set[player];
-				if (players.set[player]) {
+				threshold_config.witness_enabled[player] = players[player];
+				if (players[player]) {
 					threshold_config.fraud_allowed[player] = false;
 				}
 			}
@@ -1547,10 +1547,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			unit_search_rect(&units, area.box);
 			for (u32 i = 0; i < units.count; ++i) {
 				Unit* unit = units.units[i];
-				if (unit->player >= PlayerLimit || !players.set[unit->player]) {
+				if (unit->player >= PlayerLimit || !players[unit->player]) {
 					continue;
 				}
-				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
 				if (!check_area(area, unit->position, unit->status & UnitStatus::InAir)) {
@@ -1579,10 +1579,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			unit_search_rect(&units, area.box);
 			for (u32 i = 0; i < units.count; ++i) {
 				Unit* unit = units.units[i];
-				if (unit->player >= PlayerLimit || !players.set[unit->player]) {
+				if (unit->player >= PlayerLimit || !players[unit->player]) {
 					continue;
 				}
-				if (unit->id >= UnitId::Count || !unit_ids.set[unit->id]) {
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
 				if (!check_area(area, unit->position, unit->status & UnitStatus::InAir)) {

@@ -41,13 +41,13 @@ struct TriggerSystemState {
 
 inline TriggerSystemState g_trigger;
 
-enum WitnessMode: u8 {
+enum WitnessMode : u8 {
 	WitnessMode_Disabled = 0,   // Normal Player	|	No witness mode && shown on scoreboard
 	WitnessMode_Pure,			// Pure Witness		|	Witness Mode && hidden on scoreboard
 	WitnessMode_Defeated,		// Defeated Player	|	Witness Mode && shown on scoreboard
 };
 
-enum Celebration: u8 {
+enum Celebration : u8 {
 	Celebration_None,
 	Celebration_AprilFools,
 	Celebration_Christmas,
@@ -55,7 +55,7 @@ enum Celebration: u8 {
 	Celebration_Count,
 };
 
-enum OmnipresenceState: u8 {
+enum OmnipresenceState : u8 {
 	OmnipresenceState_None,
 	OmnipresenceState_TerranProtoss,
 	OmnipresenceState_ProtossZerg,
@@ -204,18 +204,18 @@ struct AdvisorState {
 	u8 cooldown;
 };
 
-enum YieldType {
-	YieldType_MineralDepleted,
-	YieldType_Mineral,
-	YieldType_GasRidge,
-	YieldType_GasGeyser,
-	YieldType_GasTier2,
-	YieldType_GasTier3,
+enum class YieldType : u8 {
+	MineralDepleted,
+	Mineral,
+	GasRidge,
+	GasGeyser,
+	GasTier2,
+	GasTier3,
 
-	YieldType_Count,
+	Count,
 };
 
-static constexpr u8 default_yields[YieldType_Count] = { 3, 4, 2, 4, 5, 6 };
+static constexpr u8 default_yields[(size_t)YieldType::Count] = { 3, 4, 2, 4, 5, 6 };
 
 struct OngoingWait {
 	s32 timer;
@@ -240,9 +240,9 @@ struct Globals {
 	AdvisorType current_advisor;
 	AdvisorState advisor_state;
 
-	u8 yields[YieldType_Count];
+	u8 yields[(size_t)YieldType::Count];
 	u8 get_yield(YieldType type) {
-		return yields[type] ? yields[type] : default_yields[type];
+		return yields[(size_t)type] ? yields[(size_t)type] : default_yields[(size_t)type];
 	}
 
 	std::unordered_map<TriggerAction*, TriggerExt> trigger_exts;

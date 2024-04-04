@@ -52,8 +52,8 @@ s32 execute_trigger_conditions(TriggerLink* trigger_link) { // 00489200
 static bool sound_replacement_match(SoundReplacement* sound_replacement, Image* image, u32 sound_id, Unit* unit) {
 	return (sound_replacement->any_sound || sound_replacement->old_sound_id == sound_id)
 		&& (sound_replacement->any_animation || sound_replacement->animation == image->animation)
-		&& unit->id < UnitId::Count && sound_replacement->unit_ids.set[unit->id]
-		&& unit->player < PlayerLimit && sound_replacement->players.set[unit->player];
+		&& unit->id < UnitId::Count && sound_replacement->unit_ids[unit->id]
+		&& unit->player < PlayerLimit && sound_replacement->players[unit->player];
 }
 
 static u32 valid_sound_replacement_count(Image* image, u32 sound_id, Unit* unit) {

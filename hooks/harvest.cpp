@@ -35,14 +35,14 @@ u32 get_harvest_amount(Unit* unit) {
 		case UnitId::ResourceMineralField:
 		case UnitId::ResourceMineralFieldType2:
 		case UnitId::ResourceMineralFieldType3: {
-			return unit->building.resource.resource_amount > g_globals->get_yield(YieldType_MineralDepleted) ? g_globals->get_yield(YieldType_Mineral) : g_globals->get_yield(YieldType_MineralDepleted);
+			return unit->building.resource.resource_amount > g_globals->get_yield(YieldType::MineralDepleted) ? g_globals->get_yield(YieldType::Mineral) : g_globals->get_yield(YieldType::MineralDepleted);
 		} break;
 		default: {
 			switch (get_gas_tier(unit)) {
-				case 1: return g_globals->get_yield(YieldType_GasRidge);
-				case 2: return g_globals->get_yield(YieldType_GasGeyser);
-				case 3: return g_globals->get_yield(YieldType_GasTier2);
-				case 4: return g_globals->get_yield(YieldType_GasTier3);
+				case 1: return g_globals->get_yield(YieldType::GasRidge);
+				case 2: return g_globals->get_yield(YieldType::GasGeyser);
+				case 3: return g_globals->get_yield(YieldType::GasTier2);
+				case 4: return g_globals->get_yield(YieldType::GasTier3);
 			}
 		} break;
 	}
@@ -69,13 +69,13 @@ namespace hooks {
 	u8 harvest_resource_from(Unit* resource, bool is_mineral) {
 		u32 harvest_amount = get_harvest_amount(resource);
 		if (is_mineral) {
-			if (resource->building.resource.resource_amount < g_globals->get_yield(YieldType_Mineral)) {
-				resource->building.resource.resource_amount = g_globals->get_yield(YieldType_MineralDepleted);
+			if (resource->building.resource.resource_amount < g_globals->get_yield(YieldType::Mineral)) {
+				resource->building.resource.resource_amount = g_globals->get_yield(YieldType::MineralDepleted);
 				resource->status |= UnitStatus::NoCollide;
-			} else if (resource->building.resource.resource_amount -  harvest_amount > g_globals->get_yield(YieldType_MineralDepleted)) {
+			} else if (resource->building.resource.resource_amount -  harvest_amount > g_globals->get_yield(YieldType::MineralDepleted)) {
 				resource->building.resource.resource_amount -= harvest_amount;
 			} else {
-				resource->building.resource.resource_amount = g_globals->get_yield(YieldType_MineralDepleted);
+				resource->building.resource.resource_amount = g_globals->get_yield(YieldType::MineralDepleted);
 				resource->status |= UnitStatus::NoCollide; // Not sure if we should |= every time this function is called? -Pr0nogo
 			}
 			update_mineral_field_image(resource);
