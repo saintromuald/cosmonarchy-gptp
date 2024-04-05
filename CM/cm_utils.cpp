@@ -54,6 +54,14 @@ u32 get_construction_graphic(Unit* unit)
 	bool is_ocsal = unit_ext->values[ValueOriginatedFromOcsalLarva];
 	switch (unit->id)
 	{
+		case UnitId::ZergIroleth:
+		{
+			if (is_ocsal) {
+				return ImageId::IrolethBirthEgg;
+			} else {
+				return ImageId::IrolethBirthCocoon;
+			}
+		} break;
 		case UnitId::ZergKalkalisk:
 		{
 			if (is_ocsal) {

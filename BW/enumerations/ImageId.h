@@ -1033,6 +1033,7 @@ namespace ImageId {
 		PhaseLineBlast								= 1195,
 
 		KalkaliskBirthCocoon						= 1222,
+		IrolethBirthCocoon							= 1223,
 
 		SeraphRedOverlay							= 1230,
 		ObservanceOverlayLarge						= 1231,
@@ -1227,6 +1228,7 @@ namespace ImageId {
 
 		TosgriliskBirthEgg							= 1835,
 		TosgriliskBirthCocoon						= 1836,
+		IrolethBirthEgg								= 1837,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
