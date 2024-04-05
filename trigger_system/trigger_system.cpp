@@ -1593,8 +1593,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser_eq(&parser, "witness_mode")) {
 			WitnessMode new_value = (WitnessMode)parser_get_s32(&parser);
 
-			CmPlayer* player_vars = &g_globals->players[trigger_player];
-			WitnessMode old_value = player_vars->witness_mode;
+			const auto& cm_player = g_globals->players[trigger_player];
+			WitnessMode old_value = cm_player.witness_mode;
 			if (old_value != new_value) {
 				g_globals->players[trigger_player].witness_mode = new_value;
 				graphics::reset_stat_res_graphics(); // Must call this to reset custom graphics data for statres display. -Veeq7
@@ -1656,18 +1656,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser_eq(&parser, "neutral_hostile")) {
 			bool state = (bool)parser_get_s32(&parser);
-			CmPlayer* player_vars = &g_globals->players[trigger_player];
-			if (player_vars->neutral_hostile != state) {
-				player_vars->neutral_hostile = (bool)state;
+			auto& cm_player = g_globals->players[trigger_player];
+			if (cm_player.neutral_hostile != state) {
+				cm_player.neutral_hostile = (bool)state;
 			}
 		} else if (parser_eq(&parser, "set_player_team_ui")) {
 			u32 player = parser_get_player(&parser);
 			bool state = (bool)parser_get_s32(&parser);
 			if (player) {
 				player -= 1;
-				CmPlayer* player_vars = &g_globals->players[player];
-				if (player_vars->hide_in_team_ui != state) {
-					player_vars->hide_in_team_ui = (bool)state;
+				auto& cm_player = g_globals->players[player];
+				if (cm_player.hide_in_team_ui != state) {
+					cm_player.hide_in_team_ui = (bool)state;
 				}
 			}
 		} else if (parser_eq(&parser, "set_omnipresence_state")) {
@@ -1676,8 +1676,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			if (player) {
 				player -= 1;
-				CmPlayer* player_vars = &g_globals->players[player];
-				player_vars->omnipresence_state = omni_state;
+				auto& cm_player = g_globals->players[player];
+				cm_player.omnipresence_state = omni_state;
 			}
 		} else if (parser_eq(&parser, "print")) {
 			Token text = parser_get_string(&parser);

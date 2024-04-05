@@ -614,9 +614,9 @@ namespace hooks
 
 		if (bw::in_replay_or_witness()) {
 			for (u32 player = 0; player < PlayerLimit; ++player) {
-				CmPlayer player_vars = g_globals->players[player];
+				const auto& cm_player = g_globals->players[player];
 				u32 player_type = g_player_table[player].type;
-				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !player_vars.witness_mode && !player_vars.hide_in_team_ui) {
+				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !cm_player.witness_mode && !cm_player.hide_in_team_ui) {
 					draw_player_stats(&dialog, &pos, player,
 						true,				// use_player_color
 						g_config.show_apm,	// can_show_apm
@@ -637,10 +637,10 @@ namespace hooks
 
 			if (g_config.show_team_ui) {
 				for (u32 player = 0; player < PlayerLimit; ++player) {
-					CmPlayer player_vars = g_globals->players[player];
+					const auto& cm_player = g_globals->players[player];
 					u32 player_type = g_player_table[player].type;
-					if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && player != local_player && !player_vars.witness_mode
-						&& !player_vars.hide_in_team_ui && bw::is_allied_to(player, local_player))
+					if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && player != local_player && !cm_player.witness_mode
+						&& !cm_player.hide_in_team_ui && bw::is_allied_to(player, local_player))
 					{
 						draw_player_stats(&dialog, &pos, player,
 							true,							// use_player_color
