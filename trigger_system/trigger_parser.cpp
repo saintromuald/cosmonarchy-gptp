@@ -495,7 +495,7 @@ static PlayerBitset player_bitset_combine(PlayerBitset a, PlayerBitset b) {
 	return a;
 }
 
-static void player_bitset_set(PlayerBitset* bitset, u32 i, bool value, bool mask, bool negate) {
+static void player_bitset_set(PlayerBitset& bitset, u32 i, bool value, bool mask, bool negate) {
 	if (negate) {
 		value = !value;
 	}
@@ -514,37 +514,37 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 		s32 value = parser_get_s32(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, true, mask, negate);
+				player_bitset_set(current_bitset, i, true, mask, negate);
 			}
 		} else if (value == 14) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, bw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
+				player_bitset_set(current_bitset, i, bw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
 		} else if (value == 15) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, !bw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
+				player_bitset_set(current_bitset, i, !bw::is_allied_to(*g_current_trigger_player_id, i), mask, negate);
 			}
 		} else if (value == 16) {
 			// wasn't used in aise, but we can do something here later?
 		} else if (value == 17) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, true, mask, negate);
+				player_bitset_set(current_bitset, i, true, mask, negate);
 			}
 		} else if (value == 18) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, g_player_table[i].force == 1, mask, negate);
+				player_bitset_set(current_bitset, i, g_player_table[i].force == 1, mask, negate);
 			}
 		} else if (value == 19) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, g_player_table[i].force == 2, mask, negate);
+				player_bitset_set(current_bitset, i, g_player_table[i].force == 2, mask, negate);
 			}
 		} else if (value == 20) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, g_player_table[i].force == 3, mask, negate);
+				player_bitset_set(current_bitset, i, g_player_table[i].force == 3, mask, negate);
 			}
 		} else if (value == 21) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
-				player_bitset_set(&current_bitset, i, g_player_table[i].force == 4, mask, negate);
+				player_bitset_set(current_bitset, i, g_player_table[i].force == 4, mask, negate);
 			}
 		} else {
 			parser_unwind(parser, marker);
@@ -552,7 +552,7 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 			if (player) {
 				player -= 1;
 				for (u32 i = 0; i < FullPlayerLimit; ++i) {
-					player_bitset_set(&current_bitset, i, i == player, mask, negate);
+					player_bitset_set(current_bitset, i, i == player, mask, negate);
 				}
 			}
 		}
@@ -631,7 +631,7 @@ u32 parser_get_unit_id(Parser* parser) {
 	return parser_get_s32(parser, UnitId::None);
 }
 
-static void unit_id_bitset_set(UnitIdBitset* bitset, u32 i, bool value, bool mask, bool negate) {
+static void unit_id_bitset_set(UnitIdBitset& bitset, u32 i, bool value, bool mask, bool negate) {
 	if (negate) {
 		value = !value;
 	}
@@ -654,39 +654,39 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 		parser_get_string(parser);
 		if (parser_eq(parser, "*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, true, mask, negate);
+				unit_id_bitset_set(current_bitset, i, true, mask, negate);
 			}
 		} else if (parser_eqi(parser, "men")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_men, mask, negate);
+				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_men, mask, negate);
 			}
 		} else if (parser_eqi(parser, "buildings")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_building, mask, negate);
+				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_building, mask, negate);
 			}
 		} else if (parser_eqi(parser, "factories")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, units_dat::group_flags[i].is_factory, mask, negate);
+				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_factory, mask, negate);
 			}
 		} else if (parser_eqi(parser, "tech")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, unit_id_is_tech(i), mask, negate);
+				unit_id_bitset_set(current_bitset, i, unit_id_is_tech(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "tech_tier")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, unit_id_is_tech_tier_structure(i), mask, negate);
+				unit_id_bitset_set(current_bitset, i, unit_id_is_tech_tier_structure(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "terran")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, unit_id_race_check(i, RaceId::Terran), mask, negate);
+				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Terran), mask, negate);
 			}
 		} else if (parser_eqi(parser, "protoss")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, unit_id_race_check(i, RaceId::Protoss), mask, negate);
+				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Protoss), mask, negate);
 			}
 		} else if (parser_eqi(parser, "zerg")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, unit_id_race_check(i, RaceId::Zerg), mask, negate);
+				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Zerg), mask, negate);
 			}
 		} else if (parser_eqi(parser, "combatants")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
@@ -701,38 +701,38 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 				if (units_dat::base_property[i] & UnitProperty::Spellcaster && i != UnitId::TerranComsatStation) {
 					is_combatant = true;
 				}
-				unit_id_bitset_set(&current_bitset, i, is_combatant, mask, negate);
+				unit_id_bitset_set(current_bitset, i, is_combatant, mask, negate);
 			}
 		} else if (parser_eqi(parser, "transports")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, unit_id_is_transport(i), mask, negate);
+				unit_id_bitset_set(current_bitset, i, unit_id_is_transport(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "townhalls")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, unit_id_is_town_center(i), mask, negate);
+				unit_id_bitset_set(current_bitset, i, unit_id_is_town_center(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "depots")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceDepot, mask, negate);
+				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceDepot, mask, negate);
 			}
 		} else if (parser_eqi(parser, "nodes")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceContainer, mask, negate);
+				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceContainer, mask, negate);
 			}
 		} else if (parser_eqi(parser, "factional")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, unit_id_is_factional(i), mask, negate);
+				unit_id_bitset_set(current_bitset, i, unit_id_is_factional(i), mask, negate);
 			}
 		} else if (parser_eqi(parser, "workers")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(&current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
+				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
 			}
 		} else {
 			parser_unwind(parser, marker);
 			s32 unit_id = parser_get_unit_id(parser);
 			if (unit_id != UnitId::None) {
 				for (u32 i = 0; i < UnitId::Count; ++i) {
-					unit_id_bitset_set(&current_bitset, i, i == unit_id, mask, negate);
+					unit_id_bitset_set(current_bitset, i, i == unit_id, mask, negate);
 				}
 			}
 		}
