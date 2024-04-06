@@ -31,7 +31,7 @@ static void init_auto_celebration() {
 	u32 month = ltm->tm_mon + 1;
 	switch (month) {
 		case 4: {
-			g_globals->celebration = Celebration_AprilFools;
+		//	g_globals->celebration = Celebration_AprilFools; // Causes conflicts with replays atm. Will fix later. -Pr0nogo, April '24
 		} break;
 		case 12: {
 			g_globals->celebration = Celebration_Christmas;

@@ -245,6 +245,7 @@ static void init_player_colors() {
 		easter_egg_unit_names[UnitId::TerranCataphract].push_back("Terran Catfact");
 		easter_egg_unit_names[UnitId::TerranHadron].push_back("Terran Hardon");
 
+		easter_egg_unit_names[UnitId::ProtossLegionnaire].push_back("Protoss Purifier");
 		easter_egg_unit_names[UnitId::ProtossAccantor].push_back("Protoss iquare");
 		easter_egg_unit_names[UnitId::ProtossServitor].push_back("Protoss Shoevitor");
 
