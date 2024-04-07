@@ -198,7 +198,7 @@ Token parser_get_string(Parser* parser) {
 TriggerVar* parser_get_var(Parser* parser) {
 	if (parser_get_char(parser, '$')) {
 		Token name = parser_get_word(parser);
-		TriggerVar* var = find_trigger_var(TriggerVarType_Var, name.data);
+		TriggerVar* var = g_trigger_vars.find(TriggerVarType_Var, name.data);
 		return var;
 	}
 	return 0;

@@ -1,32 +1,44 @@
 #pragma once
 #include "BW/api.h"
+#include <unordered_map>
 
 enum TriggerVarType {
 	TriggerVarType_Var,
 	TriggerVarType_Timer,
+
 	TriggerVarType_Count,
 };
 
-struct TriggerVar {
-	TriggerVar* hash_next;
+struct TriggerVarKey {
+	std::string name;
+	TriggerVarType type;
+	
+	bool operator==(const TriggerVarKey&) const = default;
+};
 
-	char name[32];
+template <>
+struct std::hash<TriggerVarKey> {
+	size_t operator()(const TriggerVarKey& key) const {
+		return std::hash<std::string>{}(key.name) ^ (std::hash<u32>{}(key.type) << 1);
+	}
+};
+
+struct TriggerVar {
 	s32 value;
 };
 
-#define TriggerVarCap 1000
-#define TriggerVarHashCap 250
-struct TriggerVars {
-	u32 count;
-	TriggerVar vars[TriggerVarCap];
-	TriggerVar* hash[TriggerVarHashCap];
+class TriggerVars {
+public:
+	void init();
+	void update();
+
+	TriggerVar* find(TriggerVarType type, std::string_view name);
+	TriggerVar* find_or_create(TriggerVarType type, std::string_view name);
+	bool unset(TriggerVarType type, std::string_view name);
+
+private:
+	std::unordered_map<TriggerVarKey, TriggerVar> m_vars;
 };
 
-extern TriggerVars trigger_vars[TriggerVarType_Count];
+inline TriggerVars g_trigger_vars;
 
-void init_trigger_vars();
-void update_trigger_vars();
-
-TriggerVar* find_trigger_var(TriggerVarType type, char* name);
-TriggerVar* find_or_create_trigger_var(TriggerVarType type, char* name);
-bool unset_trigger_var(TriggerVarType type, char* name);
