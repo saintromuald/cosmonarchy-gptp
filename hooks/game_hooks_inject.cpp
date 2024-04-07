@@ -184,6 +184,10 @@ bool isGameOn = false;
 		}
 	}
 
+	constexpr std::string replay_ext = ".ext";
+	constexpr auto replay_full_size = 32; // Some weird magic BW const we would want to extend 
+	constexpr auto replay_name_size = replay_full_size - replay_ext.size();
+
 	static std::filesystem::path get_replay_path() {
 		return bw::get_starcraft_path() / "maps" / "replays";
 	}
@@ -218,14 +222,17 @@ bool isGameOn = false;
 		time_t now = time(0);
 		tm* ltm = localtime(&now);
 
-		char short_date[28] = {};
-		strftime(short_date, 28, "%Y-%m-%d", ltm);
+		constexpr std::string ext = ".rep";
+		constexpr auto full_size = 28;
 
-		char date[28] = {};
-		strftime(date, 28, "%y-%m-%d_%H-%M", ltm);
+		char short_date[replay_name_size] = {};
+		strftime(short_date, replay_name_size, "%Y-%m-%d", ltm);
 
-		char name[28] = {};
-		snprintf(name, 28, "%s_%s.rep", date, g_current_map_name);
+		char date[replay_name_size] = {};
+		strftime(date, replay_name_size, "%y-%m-%d_%H-%M", ltm);
+
+		char name[replay_name_size] = {};
+		snprintf(name, replay_name_size, "%s_%s", date, g_current_map_name, ext.c_str());
 
 		/*
 		bool first = true;
@@ -237,16 +244,16 @@ bool isGameOn = false;
 				continue;
 			}
 			if (first) {
+				first = false;
 				strcat_s(name, ", ");
 			} else {
 				strcat_s(name, " - ");
 			}
 			strcat_s(name, player_data.full_player_names[i].data);
-			first = false;
 		}
 		*/
 
-		copy_last_replay(short_date, name);
+		copy_last_replay(short_date, name + ext);
 	}
 
 	void __declspec(naked) replay_save_wrapper() { // 004EEBEA

@@ -37,18 +37,18 @@ class Discord {
 public:
 	Discord();
 	~Discord();
-	void update(bool in_game);
+	void update_status_if_needed(bool in_game);
 
 private:
-	void init();
-	void update_thread();
+	bool init();
+	void update_loop();
 
 private:
 	bool m_running = true;
-	std::thread m_thread;
+	std::atomic<bool> m_should_update_status;
 	std::mutex m_mutex;
+	std::thread m_thread;
 
-	u32 m_init_timeout;
 	IDiscordCore* m_core;
 
 	DiscordState m_current_state;

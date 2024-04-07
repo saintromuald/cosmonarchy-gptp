@@ -8,19 +8,6 @@
 
 #define DiscordClientId 972072419013558326
 
-Discord::Discord() : m_thread(&Discord::update_thread, this) {
-	update(false);
-}
-
-Discord::~Discord() {
-	m_running = false;
-	m_thread.join();
-	if (m_core) {
-		m_core->destroy(m_core);
-		m_core = 0;
-	}
-}
-
 DiscordState::DiscordState(bool in_game) : m_in_game(in_game) {
 	if (in_game) {
 		if (*g_is_in_replay) {
@@ -73,22 +60,29 @@ DiscordActivity DiscordState::make_discord_activity(u32 timestamp) const {
 	return activity;
 }
 
-void Discord::init() {
-	if (m_core) {
-		return;
-	}
+Discord::Discord() : m_thread(&Discord::update_loop, this) {
+	update_status_if_needed(false);
+}
 
-	// If we have failed to initialize, we should forget about discord for a while...
-	if (time(0) < m_init_timeout) {
-		return;
+Discord::~Discord() {
+	m_running = false;
+	m_thread.join();
+	if (m_core) {
+		m_core->destroy(m_core);
+		m_core = 0;
+	}
+}
+
+bool Discord::init() {
+	if (m_core) {
+		return true;
 	}
 
 	static HMODULE discord_dll;
 	if (!discord_dll) {
 		discord_dll = LoadLibraryA("discord_game_sdk.dll");
 		if (!discord_dll) {
-			m_init_timeout = time(0) + 60;
-			return;
+			return false;
 		}
 	}
 
@@ -97,8 +91,7 @@ void Discord::init() {
 	if (!discord_create) {
 		discord_create = (discord_create_t*)GetProcAddress(discord_dll, "DiscordCreate");
 		if (!discord_create) {
-			m_init_timeout = time(0) + 60;
-			return;
+			return false;
 		}
 	}
 
@@ -107,15 +100,14 @@ void Discord::init() {
 	params.flags = DiscordCreateFlags_NoRequireDiscord;
 	EDiscordResult result = discord_create(DISCORD_VERSION, &params, &m_core);
 	if (result != DiscordResult_Ok) {
-		m_init_timeout = time(0) + 60;
-		return;
+		return false;
 	}
 
 	m_timestamp = time(0);
+	return true;
 }
 
-void Discord::update(bool in_game) {
-	init();
+void Discord::update_status_if_needed(bool in_game) {
 	if (!m_core) {
 		return;
 	}
@@ -127,22 +119,30 @@ void Discord::update(bool in_game) {
 
 	DiscordState state(in_game);
 	if (m_current_state != state) {
+		std::lock_guard lock{m_mutex};
+		m_should_update_status = true;
 		m_current_state = state;
-
-		std::lock_guard lock(m_mutex);
-		IDiscordActivityManager* activity_manager = m_core->get_activity_manager(m_core);
-		if (activity_manager) {
-			DiscordActivity activity = state.make_discord_activity(m_timestamp);
-			activity_manager->update_activity(activity_manager, &activity, 0, 0);
-		}
 	}
 }
 
-void Discord::update_thread() {
+void Discord::update_loop() {
 	while (m_running) {
-		if (m_core) {
-			std::lock_guard lock(m_mutex);
-			m_core->run_callbacks(m_core);
+		if (!m_core) {
+			if (!init()) {
+				std::this_thread::sleep_for(std::chrono::seconds(60));
+				continue;
+			}
 		}
+
+		if (m_should_update_status) {
+			std::lock_guard lock{m_mutex};
+			IDiscordActivityManager* activity_manager = m_core->get_activity_manager(m_core);
+			if (activity_manager) {
+				DiscordActivity activity = m_current_state.make_discord_activity(m_timestamp);
+				activity_manager->update_activity(activity_manager, &activity, 0, 0);
+			}
+		}
+
+		m_core->run_callbacks(m_core);
 	}
 }
