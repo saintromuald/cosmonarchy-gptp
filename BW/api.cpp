@@ -3791,9 +3791,9 @@ namespace bw {
 			case UnitId::TerranSavant:
 			{
 				if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
-					return helper::get_random_sfx_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
-				} else {
 					return helper::get_random_sfx_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
+				} else {
+					return helper::get_random_sfx_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
 				}
 			}
 		}
