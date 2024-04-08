@@ -16,24 +16,44 @@ namespace PaletteType
 {
 	enum Enum : u8
 	{
-		RLE_NORMAL = 0,
-		RLE_1 = 1,
-		RLE_2 = 2,
-		RLE_3 = 3,
-		RLE_4 = 4,
-		RLE_CLOAK = 5,
-		RLE_CLOAKED = 6,
-		RLE_DECLOAK = 7,
-		RLE_8 = 8,
-		RLE_EFFECT = 9,
-		RLE_SHADOW = 10,
-		RLE_HPFLOATDRAW = 11,
-		RLE_WARP = 12,
+		Normal = 0,
+		NoCloak = 1,
+		HiddenCloaking = 2,
+		HiddenCloaked = 3,
+		HiddenDecloaking = 4,
+		VisibleCloaking = 5,
+		VisibleCloaked = 6,
+		VisibleDecloaking = 7,
+		EMP = 8,
+		UseRemapping = 9,
+		Shadow = 10,
+		HPBar = 11,
+		WarpTexture = 12,
 		RLE_OUTLINE = 13,
 		RLE_PLAYER_SIDE = 14,
-		RLE_15 = 15,
-		RLE_SHIFT = 16,
-		RLE_FIRE = 17
+		ImageBounds = 15,
+		Hallucination = 16,
+		WarpFlash = 17,
+		WarpAnchor = 18,
+		ShadowCloak = 19,
+		HiddenCloaking_WA = 20,
+		HiddenCloaked_WA = 21,
+		HiddenDecloaking_WA = 22,
+		VisibleCloaking_WA = 23,
+		VisibleCloaked_WA = 24,
+		VisibleDecloaking_WA = 25,
+		HiddenCloaking_WT = 26,
+		HiddenCloaked_WT = 27,
+		HiddenDecloaking_WT = 28,
+		VisibleCloaking_WT = 29,
+		VisibleCloaked_WT = 30,
+		VisibleDecloaking_WT = 31,
+		HiddenCloaking_WF = 32,
+		HiddenCloaked_WF = 33,
+		HiddenDecloaking_WF = 34,
+		VisibleCloaking_WF = 35,
+		VisibleCloaked_WF = 36,
+		VisibleDecloaking_WF = 37
 	};
 }
 
@@ -107,9 +127,11 @@ struct Image
 	/*0x30*/  void* draw_func_param;
 		} standard;
 		struct {
-	/*0x30*/  u8 timer;
-	/*0x31*/  u8 param;
-		} warp;
+	/*0x30*/  u8 frame;
+	/*0x31*/  u8 step0;
+	/*0x32*/  u8 step1;
+	/*0x33*/  u8 step2;
+		} draw_fxn;
 	};
 	/*0x34*/  void*						render_fxn;
 	/*0x38*/  void*						update_fxn;
@@ -128,7 +150,7 @@ namespace hooks
 	void play_image_iscript(Image* image, u8 animation);																// 004D8470
 	void show_cursor_marker(u16 pos_x, u16 pos_y);																		// 00488660
 	void play_warp_in_overlay(Image* image, u32 unused);																// 004D8500
-	void image_update_warp_flash(Image* image);																			// 004D8590
+	//void image_update_warp_flash(Image* image);																			// 004D8590
 	void iscript_opcode_cases(Image* image, IscriptProgram* program_state, u32 noop, u32* distance_moved);				// 004D74C0
 
 	void inject_image_hooks();

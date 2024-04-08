@@ -161,7 +161,7 @@ static void replace_sprite(Unit* unit, u32 sprite_id) {
 	Image* next_image = 0;
 	for (Image* image = unit->sprite->images.head; image; image = next_image) {
 		next_image = image->link.next;
-		if (image->palette_type == PaletteType::RLE_SHADOW) {
+		if (image->palette_type == PaletteType::Shadow) {
 			image->free();
 		}
 	}

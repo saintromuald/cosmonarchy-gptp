@@ -148,9 +148,9 @@ static void inherit_image_palette(Unit* unit, Image* image, Image* main_image) {
 		if (unit->status & UnitStatus::IsHallucination
 		&& (unit->player == *g_local_nation_id || *g_is_in_replay))
 		{
-			image->palette_type = PaletteType::RLE_SHIFT;
-			image->update_fxn = g_sg_update_funcs[PaletteType::RLE_SHIFT].function;
-			image->render_fxn = image->flags & 2 ? g_sg_draw_funcs[PaletteType::RLE_SHIFT].function_2 : g_sg_draw_funcs[PaletteType::RLE_SHIFT].function_1;
+			image->palette_type = PaletteType::Hallucination;
+			image->update_fxn = g_sg_update_funcs[PaletteType::Hallucination].function;
+			image->render_fxn = image->flags & 2 ? g_sg_draw_funcs[PaletteType::Hallucination].function_2 : g_sg_draw_funcs[PaletteType::Hallucination].function_1;
 			image->flags |= 1;
 			image->standard.draw_func_param = 0;
 		}

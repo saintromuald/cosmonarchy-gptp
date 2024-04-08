@@ -166,7 +166,7 @@ namespace hooks {
 					vertical_offset = 42;
 				}
 
-				if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW && unit->sprite->images.tail->vertical_offset != vertical_offset) {
+				if (unit->sprite->images.tail->palette_type == PaletteType::Shadow && unit->sprite->images.tail->vertical_offset != vertical_offset) {
 					unit->sprite->images.tail->flags |= ImageFlags::Redraw;
 					unit->sprite->images.tail->vertical_offset = vertical_offset;
 				}

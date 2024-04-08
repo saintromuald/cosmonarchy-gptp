@@ -4298,17 +4298,14 @@ namespace helper {
 		return (char)result;
 	}
 
-	Image* make_sprite_invisible(Sprite* sprite) {
+	void make_sprite_invisible(Sprite* sprite) {
 		const u32 func_address = 0x00498A10;
-		static Image* result;
 		__asm {
 			PUSHAD
 			MOV EAX, sprite
 			CALL func_address
-			MOV result, EAX
 			POPAD
 		}
-		return result;
 	}
 
 	void function_004756B0(Unit* unit, u8 order_id, u32 unk1, u32 unk2, u32 command_type) {
@@ -5522,7 +5519,7 @@ namespace helper {
 		for (Image* current_image = sprite->images.head;
 			current_image != nullptr;
 			current_image = current_image->link.next) {
-			if (current_image->palette_type == PaletteType::RLE_HPFLOATDRAW) {
+			if (current_image->palette_type == PaletteType::HPBar) {
 				current_image->flags |= ImageFlags::Redraw;
 			}
 		}
@@ -15060,6 +15057,16 @@ namespace helper {
 			MOV EDX, 0 // unused arg
 			MOV ESI, unit
 			CALL func_address
+			POPAD
+		}
+	}
+
+	void refreshAllVisibleSprites(Sprite* sprite) {
+		const u32 func_address = 0x004976C0;
+		__asm {
+			PUSHAD
+			MOV		EAX, sprite
+			CALL	func_address
 			POPAD
 		}
 	}

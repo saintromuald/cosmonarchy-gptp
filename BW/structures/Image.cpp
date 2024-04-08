@@ -113,7 +113,7 @@ namespace hooks
 		if (images_dat::rle_function[image_id] == PaletteType::RLE_PLAYER_SIDE) {
 			*(u32*)(&image->standard.draw_func_param) = parent->player;
 		}
-		if (images_dat::rle_function[image_id] == PaletteType::RLE_EFFECT) {
+		if (images_dat::rle_function[image_id] == PaletteType::UseRemapping) {
 			image->standard.draw_func_param = g_color_shift[images_dat::remapping[image_id]].data;
 		}
 	}
@@ -275,7 +275,8 @@ namespace hooks
 	}
 
 	// Hooked to extend iscript.bin. -Pr0nogo
-	void image_update_warp_flash(Image* image) { // 004D8590
+	// Reimplemented in image_render.cpp. -DF
+	/*void image_update_warp_flash(Image* image) { // 004D8590
 		u8 param = image->warp.param;
 		if (image->warp.param) {
 			--image->warp.param;
@@ -299,7 +300,7 @@ namespace hooks
 				image->flags |= ImageFlags::Redraw;
 			}
 		}
-	}
+	}*/
 
 	// STUPID
 	template<typename T>
@@ -1162,7 +1163,7 @@ namespace hooks
 						break;
 					}
 					image->flags |= ImageFlags::Redraw;
-					image->standard.draw_func_param = (void*)arg;
+					image->draw_fxn.frame = (u8)arg;//DF: Originally a u16. Changed to a u8 to fit the new struct.
 					break;
 				}
 				case IscriptOpcodes::opc_orderdone:
@@ -1335,7 +1336,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) image_update_warp_flash_wrapper() { // 004D8590
+	/*void __declspec(naked) image_update_warp_flash_wrapper() { // 004D8590
 		static Image* image;
 		__asm {
 			MOV image, ECX
@@ -1346,7 +1347,7 @@ namespace hooks
 			POPAD
 			RETN
 		}
-	}
+	}*/
 
 	void __declspec(naked) iscript_opcode_cases_wrapper() { // 004D74C0
 		static Image* image;
@@ -1458,7 +1459,7 @@ namespace hooks
 		jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
 		jump_patch(show_cursor_marker_wrapper,		0x00488660, 3);
 		jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
-		jump_patch(image_update_warp_flash_wrapper,	0x004D8590, 1);
+	//	jump_patch(image_update_warp_flash_wrapper,	0x004D8590, 1);
 	//	jump_patch(iscript_opcode_cases_wrapper,	0x004D74C0, 1);
 		jump_patch(iscript_fireweapon_wrapper,		0x00479D40, 4);
 		jump_patch(iscript_attackwith_wrapper,		0x00479D60, 1);

@@ -536,7 +536,7 @@ namespace helper {
 	void make_sprite_visible(Sprite* sprite);																						// 00497ED0
 	s32 update_building_land_unit_selection(u32 detection_status, Unit* selection);													// 004C3B40
 	char remove_selection_circle(Sprite* sprite);																					// 004975D0
-	Image* make_sprite_invisible(Sprite* sprite);																					// 00498A10
+	void make_sprite_invisible(Sprite* sprite);																						// 00498A10
 
 	//// receive_command
 	void function_004756B0(Unit* unit, u8 order_id, u32 unk1, u32 unk2, u32 command_type);											// 004756B0
@@ -1738,4 +1738,7 @@ namespace helper {
 	Image* make_cloaked(u8 param, Sprite* sprite, u8 status, u8 timer);			// 00497FD0
 	void unit_refund_partial_technology(Unit* unit);							// 00453DD0
 	void unit_refund_partial_upgrade(Unit* unit);								// 00454220
+
+	void refreshAllVisibleSprites(Sprite* sprite);								//0x004976C0
+	void drawFunc_WarpTexture_colorData(Box32* grpRect, u32 frame);				//0x004D53F0
 }

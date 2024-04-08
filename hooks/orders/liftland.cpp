@@ -75,7 +75,7 @@ namespace hooks
 
 					// Plan movement again after latest updates
 					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-					if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW)
+					if (unit->sprite->images.tail->palette_type == PaletteType::Shadow)
 					{
 						unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 					}
@@ -126,7 +126,7 @@ namespace hooks
 				}
 
 				helper::set_shadow_y(unit->sprite, 0);
-				if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW)
+				if (unit->sprite->images.tail->palette_type == PaletteType::Shadow)
 				{
 					unit->sprite->images.tail->flags &= ~ImageFlags::DontUpdate;
 				}
@@ -238,7 +238,7 @@ namespace hooks
 			helper::set_unit_pathing(unit, 1);
 			helper::start_collision_tracking(unit); // Maybe update orders targetting the unit, set repulse for units in surroundings, and some others things?
 
-			if (unit->sprite->images.tail->palette_type == PaletteType::RLE_SHADOW) {
+			if (unit->sprite->images.tail->palette_type == PaletteType::Shadow) {
 				unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 			}
 

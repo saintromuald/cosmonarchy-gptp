@@ -636,14 +636,14 @@ namespace hooks {
 	// Hooked to change construction animations contextually, for Zerg morphs. -Pr0nogo
 	Image* unit_completion_init(Unit* unit, u32 has_construction_anim) // 004E65E0
 	{
-		u32 status = ((unit->status) >> 8) & 3; // Idk what this is
+		u32 status = ((unit->status) >> 8) & 3; // UnitStatus::RequiresDetection | UnitStatus::Cloaked
 		u8 draw_func1 = 0;
 		u8 draw_func2 = 0;
 		Image* main_graphic;
 		if (status) {
 			main_graphic = unit->sprite->main_graphic;
-			draw_func1 = main_graphic->warp.timer;
-			draw_func2 = main_graphic->warp.param;
+			draw_func1 = main_graphic->draw_fxn.step0;
+			draw_func2 = main_graphic->draw_fxn.step1;
 		}
 
 		Unit* iscript_unit = *g_active_iscript_unit;

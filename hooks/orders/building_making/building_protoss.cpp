@@ -2,6 +2,7 @@
 #include "building_modifier.h"
 #include <BW/api.h>
 #include <globals.h>
+#include <hooks/audiovisuals/image_render.h>
 #include <hooks/limits/sfx_extender.h>
 namespace hooks {
 	void orders_scribe_build(Unit* unit) { // 004E4D00
@@ -63,7 +64,11 @@ namespace hooks {
 									built_unit->sprite->create_underlay(ImageId::VespeneGeyser, 0, 0, 0);
 								}
 
-								built_unit->sprite->create_top_underlay(ImageId::WarpAnchorUnderlay, 0, 0, 0);
+								Image* main_grp = built_unit->sprite->main_graphic;
+								main_grp->iscript_offset = *(u16*)(*g_iscript_data + main_grp->iscript_header_offset + 8);
+								main_grp->return_address = 0;
+								main_grp->animation = IscriptAnimation::Init;
+								main_grp->wait = 0;
 								unit->order_target.unit = built_unit;
 								helper::ai_training_overlord(built_unit, unit);
 								built_unit->order_computer(OrderId::BuildSelf2);
@@ -145,8 +150,20 @@ namespace hooks {
 			case 1: {
 				if (building->order_signal & 1) {
 					building->order_signal &= ~1;
-					helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->id], 0);
-					helper::switch_to_warp_texture(building->sprite->main_graphic);
+					u8 status = (building->status >> 8) & 3;
+					Sprite* sprite = building->sprite;
+					u8 step0 = sprite->main_graphic->draw_fxn.step0;
+					helper::replace_sprite_images(sprite, sprites_dat::image_id[sprite->id], 0);
+					helper::switch_to_warp_texture(sprite->main_graphic);
+
+					if (status) {
+						make_cloaked(0, sprite, status, step0);
+
+						if (*g_player_visions & building->detection_status) {
+							make_sprite_visible(sprite);
+						}
+					}
+
 					++building->main_order_state;
 
 					if (!(*g_is_in_replay) && building->player == *g_local_nation_id) {
@@ -167,13 +184,17 @@ namespace hooks {
 			case 2: {
 				if (building->order_signal & 1) {
 					building->order_signal &= ~1;
-					helper::replace_sprite_images(building->sprite, sprites_dat::image_id[building->sprite->id], 0);
-					building->sprite->main_graphic->flags &= ~ImageFlags::Invisible; // Clear invisible flag if it exists, to prevent silliness with warping cloaked buildings.
+					u8 status = (building->status >> 8) & 3;
+					Sprite* sprite = building->sprite;
+					u8 step0 = sprite->main_graphic->draw_fxn.step0;
+					helper::replace_sprite_images(sprite, sprites_dat::image_id[sprite->id], 0);
+					building->status |= status << 8;
+					sprite->main_graphic->draw_fxn.step0 = step0;
 					helper::update_unit_stats_and_finish_building(building);
 					helper::update_unit_strength(building);
 					helper::check_unstack(building);
 					
-					for (Image* image = building->sprite->images.head; image; image = image->link.next) {
+					for (Image* image = sprite->images.head; image; image = image->link.next) {
 						if (image->flags & ImageFlags::UseFullIscript) {
 							image->animation = IscriptAnimation::WarpIn;
 							image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 0x32);
@@ -184,7 +205,7 @@ namespace hooks {
 					}
 
 					if (building->status & UnitStatus::Frozen) {
-						for (Image* image = building->sprite->images.head; image; image = image->link.next) {
+						for (Image* image = sprite->images.head; image; image = image->link.next) {
 							if (image->flags & ImageFlags::UseFullIscript) {
 								image->animation = IscriptAnimation::Disable;
 								image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 0x38);

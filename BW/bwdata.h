@@ -1252,6 +1252,9 @@ SCBW_DATA(u8*,				g_audio_something,						0x006D1A98);
 // For unit_die
 SCBW_DATA(u32*,				g_ignore_unit_flag80_clear_subcount,	0x006D5BD0);
 
+// For image_render
+SCBW_DATA(u8*,				UnkRGBMashup,						0x005993D8);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

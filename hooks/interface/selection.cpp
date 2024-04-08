@@ -690,7 +690,7 @@ namespace hooks
 		next_free_circle = 0;
 
 		Image* tail = sprite->images.tail;
-		if (tail->palette_type == 10) {
+		if (tail->palette_type == PaletteType::Shadow || tail->palette_type == PaletteType::ShadowCloak) {
 			if (sprite->images.head == tail) {
 				sprite->images.head = last_free_circle;
 			}

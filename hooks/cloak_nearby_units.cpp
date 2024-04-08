@@ -32,7 +32,7 @@ namespace hooks
 		while (current_unit) {
 			UnitExt* unit_ext = get_unit_ext(current_unit);
 			if  (current_unit != cloaker
-			&&	 current_unit->status & UnitStatus::Completed
+			/*&&	 current_unit->status & UnitStatus::Completed*/
 			&& !(units_dat::base_property[current_unit->id] & UnitProperty::NeutralAccessories)
 			&&   current_unit->id != UnitId::TerranMorningstar
 			&&   bw::are_mutual_allies(current_unit->player, cloaker->player)
