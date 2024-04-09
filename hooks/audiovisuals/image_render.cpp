@@ -281,7 +281,7 @@ namespace drawFunc {
 
 		if (type == PaletteType::HiddenCloaked || type == PaletteType::VisibleCloaked) {
 			image->flags |= ImageFlags::Invisible;
-		} else {
+		} else if (!(image->parent_sprite->flags & SpriteFlags::Burrowed)) {
 			if (type < PaletteType::HiddenCloaking || type > PaletteType::VisibleDecloaking) {
 				image->palette_type = PaletteType::Shadow;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[PaletteType::Shadow].fxn_mirror : sgRenderFuncs[PaletteType::Shadow].fxn;
@@ -408,6 +408,33 @@ namespace hooks {
 		}
 	}
 
+	void updateSpriteFlagOnPalette(Sprite* sprite) {
+		for (Image* image = sprite->images.head; image; image = image->link.next) {
+			u8 type = image->palette_type;
+			u8 type_offset = get_type_offset(type);
+			type -= type_offset;
+
+			if (type >= PaletteType::HiddenCloaking && type <= PaletteType::VisibleDecloaking) {
+				image->palette_type = type_offset;
+				image->flags |= ImageFlags::Redraw;
+				image->draw_fxn.step0 = 0;
+				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type_offset].fxn_mirror : sgRenderFuncs[type_offset].fxn;
+				image->update_fxn = sgUpdateFuncs[type_offset].fxn;
+			} else {
+				u16 flags = image->flags;
+
+				if (type == PaletteType::Shadow || (type == PaletteType::ShadowCloak && (flags |= ImageFlags::Invisible))) {
+					flags |= ImageFlags::Redraw;
+					image->palette_type = PaletteType::Shadow;
+					image->flags = flags;
+					image->draw_fxn.step0 = 0;
+					image->render_fxn = flags & ImageFlags::Mirrored ? sgRenderFuncs[PaletteType::Shadow].fxn_mirror : sgRenderFuncs[PaletteType::Shadow].fxn;
+					image->update_fxn = sgUpdateFuncs[PaletteType::Shadow].fxn;
+				}
+			}
+		}
+	}
+
 	void make_sprite_visible(Sprite* sprite) {
 		for (Image* image = sprite->images.head; image; image = image->link.next) {
 			u8 type = image->palette_type;
@@ -424,8 +451,15 @@ namespace hooks {
 				type = get_new_type(type_offset) + PaletteType::VisibleCloaked;
 				image->palette_type = type;
 				image->flags |= ImageFlags::Redraw;
+				image->draw_fxn.step0 = 33;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
 				image->update_fxn = sgUpdateFuncs[type].fxn;
+			} else if (type == PaletteType::Shadow) {
+				image->palette_type = PaletteType::ShadowCloak;
+				image->flags |= ImageFlags::Redraw;
+				image->draw_fxn.step0 = 13;
+				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[PaletteType::ShadowCloak].fxn_mirror : sgRenderFuncs[PaletteType::ShadowCloak].fxn;
+				image->update_fxn = sgUpdateFuncs[PaletteType::ShadowCloak].fxn;
 			}
 		}
 	}
@@ -519,6 +553,15 @@ namespace hooks {
 				image->flags |= ImageFlags::Redraw;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[PaletteType::ShadowCloak].fxn_mirror : sgRenderFuncs[PaletteType::ShadowCloak].fxn;
 				image->update_fxn = sgUpdateFuncs[PaletteType::ShadowCloak].fxn;
+			}
+		}
+	}
+
+	void showImagesHiddenByCloak(Sprite* sprite) {
+		for (Image* image = sprite->images.head; image; image = image->link.next) {
+			if ((!images_dat::draw_if_cloaked[image->id] || image->palette_type == PaletteType::Shadow) && image->flags & ImageFlags::Invisible) {
+				image->flags &= ~ImageFlags::Invisible;
+				image->flags |= ImageFlags::Redraw;
 			}
 		}
 	}

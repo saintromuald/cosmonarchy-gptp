@@ -7,6 +7,20 @@ namespace {
 	static int var2;
 	static int var3;
 
+	void __declspec(naked) updateSpriteFlagOnPalette_wrapper() {
+		__asm {
+			MOV		var0, EAX//sprite
+			PUSHAD
+		}
+
+		hooks::updateSpriteFlagOnPalette((Sprite*)var0);
+
+		__asm {
+			POPAD
+			RET
+		}
+	}
+
 	void __declspec(naked) make_sprite_visible_wrapper() {
 		__asm {
 			MOV		var0, EAX//sprite
@@ -50,6 +64,20 @@ namespace {
 		}
 
 		hooks::sub_4980F0((Sprite*)var0);
+
+		__asm {
+			POPAD
+			RET
+		}
+	}
+
+	void __declspec(naked) showImagesHiddenByCloak_wrapper() {
+		__asm {
+			MOV		var0, EAX//sprite
+			PUSHAD
+		}
+
+		hooks::showImagesHiddenByCloak((Sprite*)var0);
 
 		__asm {
 			POPAD
@@ -134,17 +162,16 @@ namespace {
 
 namespace hooks {
 	void inject_image_render_hooks() {
+		jump_patch(updateSpriteFlagOnPalette_wrapper, 0x00497E80);
 		jump_patch(make_sprite_visible_wrapper, 0x00497EDB, 1);
 		jump_patch(make_cloaked_wrapper, 0x00497FD0, 1);
 		jump_patch(sub_4980F0_wrapper, 0x004980F0, 2);
+		jump_patch(showImagesHiddenByCloak_wrapper, 0x00498170);
 		jump_patch(make_sprite_invisible_wrapper, 0x00498A10, 2);
 		jump_patch(UpdateSpriteImagesForCloak_wrapper, 0x00498A90);
 		jump_patch(sub_498B50_wrapper, 0x00498B50, 1);
 		jump_patch(sub_4BCD70_wrapper, 0x004BCD70);
 
-		memory_patch(0x00497E9A, &sgUpdateFuncs[0].fxn);//updateSpriteFlagOnPalette @ 0x00497E80
-		memory_patch(0x00497EAA, &sgRenderFuncs[0].fxn_mirror);
-		memory_patch(0x00497EB2, &sgRenderFuncs[0].fxn);
 		call_patch(drawSprite_patch_98C84, 0x00498C84);//drawSprite @ 0x00498C50
 		memory_patch(0x00499305, &sgUpdateFuncs[0].fxn);//duplicate_sprite @ 0x00499210
 		memory_patch(0x00499314, &sgRenderFuncs[0].fxn_mirror);
