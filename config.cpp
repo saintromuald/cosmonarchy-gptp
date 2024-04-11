@@ -1,7 +1,6 @@
 #include "config.h"
 #include <fstream>
 #include <format>
-#include <yaml-cpp/yaml.h>
 #include "logger.h"
 
 #define NOMINMAX
@@ -12,8 +11,8 @@
 
 // Have to use std::vformat and no `const auto&...`, because of some obscure VS issue that makes it not compile for Pr0nogo.
 // It's sad, because it will make std::string allocate a copy, but it is what it is, we only do it once on a fail path anyways. -Veeq7
-static void config_error(const std::string_view message, auto... args) {
-    MessageBoxA(0, std::vformat(message, std::make_format_args(args...)).c_str(), "Invalid cosmonarchy.yml!", MB_OK | MB_ICONERROR);
+static void config_error(const std::string_view message, auto&&... args) {
+    MessageBoxA(0, std::vformat(message, std::make_format_args(std::forward<decltype(args)>(args)...)).c_str(), "Invalid cosmonarchy.yml!", MB_OK | MB_ICONERROR);
     exit(-1);
 }
 
@@ -28,47 +27,9 @@ static void load_field(const YAML::Node& node, const std::string& key, T& variab
 	}
 }
 
-template <>
-static void load_field(const YAML::Node& node, const std::string& key, UiBool& variable) {
-	std::string temp;
-	load_field(node, key, temp);
-	std::ranges::transform(temp, temp.begin(), tolower);
-
-	if (temp == "true") {
-		variable = EUiBool::True;
-	} else if (temp == "ingame") {
-		variable = EUiBool::InGameOnly;
-	} else if (temp == "witness") {
-		variable = EUiBool::WitnessOnly;
-	} else if (temp == "false") {
-		variable = EUiBool::False;
-	} else if (!temp.empty()) {
-		config_error("Invalid config value \"{}\" for key \"{}\"!", temp, key);
-	}
-}
-
 template <typename T>
 static void write_field(YAML::Emitter& emitter, const std::string& key, const T& value) {
 	emitter << YAML::Key << key << YAML::Value << value;
-}
-
-template <>
-static void write_field(YAML::Emitter& emitter, const std::string& key, const UiBool& value) {
-	emitter << YAML::Key << key << YAML::Value;
-	switch (value.value()) {
-		case EUiBool::True: 
-			emitter << "true";
-			break;
-		case EUiBool::InGameOnly:
-			emitter << "ingame";
-			break;
-		case EUiBool::WitnessOnly:
-			emitter << "witness";
-			break;
-		case EUiBool::False:
-			emitter << "false";
-			break;
-	}
 }
 
 static AdvisorType parse_advisor_name(const char* name) {

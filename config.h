@@ -1,9 +1,11 @@
 #pragma once
 #include <string>
 #include <array>
-#include "trigger_system/trigger_system.h"
-
 #include <filesystem>
+
+#include <yaml-cpp/yaml.h>
+
+#include "trigger_system/trigger_system.h"
 
 inline const std::filesystem::path g_config_path = bw::get_starcraft_path() / "cosmonarchy.yml";
 
@@ -13,29 +15,49 @@ struct AdvisorSetting {
 };
 
 enum class EUiBool {
-	False, InGameOnly, WitnessOnly, True
+	False, InGameOnly, WitnessOnly, True, Count
 };
 
-class UiBool {
-public:
+inline constexpr std::array<const char*, (size_t)EUiBool::Count> ui_bool_names { "false", "ingame", "witness", "true" };
+
+struct UiBool {
+	EUiBool value = EUiBool::False;
+
 	UiBool() = default;
-	UiBool(bool value) : m_value(value ? EUiBool::True : EUiBool::False) {}
-	UiBool(EUiBool value) : m_value(value) {}
+	UiBool(bool value) : value(value ? EUiBool::True : EUiBool::False) {}
+	UiBool(EUiBool value) : value(value) {}
 
 	operator bool() const {
-		switch (m_value) {
+		switch (value) {
 			case EUiBool::False: return false;
 			case EUiBool::InGameOnly: return !bw::in_replay_or_witness();
 			case EUiBool::WitnessOnly: return bw::in_replay_or_witness();
 			case EUiBool::True: return true;
 		}
 	}
+};
 
-	inline EUiBool value() const { return m_value; }
-	inline void set(EUiBool value) { m_value = value; }
+template <>
+struct YAML::convert<UiBool> {
+	static YAML::Node encode(const UiBool& value) {
+		auto index = static_cast<size_t>(value.value);
+		return YAML::Node{ui_bool_names[index < ui_bool_names.size() ? index : 0]};
+	}
 
-private:
-	EUiBool m_value = EUiBool::False;
+	static bool decode(const YAML::Node& node, UiBool& value) {
+		if (!node) {
+			return false;
+		}
+
+		const auto it = std::ranges::find(ui_bool_names, node.as<std::string>());
+		if (it == ui_bool_names.end()) {
+			return false;
+		}
+
+		const auto index = it - ui_bool_names.begin();
+		value = (EUiBool)index;
+		return true;
+	}
 };
 
 struct Config {

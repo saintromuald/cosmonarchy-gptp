@@ -38,7 +38,7 @@ namespace bw {
 	}
 
 	bool is_witness() {
-		return g_globals->players[*g_local_nation_id].witness_mode;
+		return !bw::in_replay() && g_globals->players[*g_local_nation_id].witness_mode;
 	}
 
 	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt) {
