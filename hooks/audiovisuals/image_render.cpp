@@ -653,7 +653,7 @@ namespace hooks {
 		}
 	}
 
-	Sprite* __stdcall duplicate_sprite(Sprite* sprite) {
+	Sprite* /*__stdcall*/ duplicate_sprite(Sprite* sprite) {
 		Sprite* new_sprite = helper::create_sprite(sprite->id, sprite->position.x, sprite->position.y, sprite->player);
 
 		if (!new_sprite)
@@ -692,7 +692,7 @@ namespace hooks {
 			u16 new_flags = new_image->flags;
 			u8 flip_state = image->flags & ImageFlags::Mirrored;
 
-			if ((new_flags & ImageFlags::Mirrored) != flip_state) {//I don't know why this entire block exists, everything within it is already handled by createImage.
+			if ((new_flags & ImageFlags::Mirrored) != flip_state) {//I don't know why this entire block exists, everything within it is already handled by create_image.
 				type = new_image->palette_type;
 				new_flags = (new_flags & ~ImageFlags::Mirrored) | flip_state | ImageFlags::Redraw;
 				new_image->flags = new_flags;

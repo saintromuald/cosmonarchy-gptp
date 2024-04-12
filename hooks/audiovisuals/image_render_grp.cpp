@@ -203,7 +203,6 @@ namespace drawFunc {
 						u32 cur = *surf_buff | idx;
 						cur = pcx_imageBuffer[cur];
 
-						//if ((u8)UnkRGBMashup[(u8)g_palette_remap[cur]] > ct) {
 						if ((u8)threshold_map[cur] > ct) {
 							*surf_buff = cur;
 						}
@@ -223,7 +222,6 @@ namespace drawFunc {
 						cur = *surf_buff | (cur << 8);
 						cur = pcx_imageBuffer[cur];
 
-						//if ((u8)UnkRGBMashup[(u8)g_palette_remap[cur]] > ct) {
 						if ((u8)threshold_map[cur] > ct) {
 							*surf_buff = cur;
 						}
@@ -361,9 +359,9 @@ namespace drawFunc {
 		image_draw_palette_index = (u8*)pFrame->data_offset;
 		u8* img_drw_pal_idx = &image_draw_palette_index[2 * grpRect->top];
 		s32 rect_right = grpRect->right;
-		u8* surf_buff = &surface->buffer[screenX + screenY * surface->width];//&surface->buffer[screenX + screenY * surface->width + rect_right];
-		grp_width = surface->width - rect_right;//surface->width + rect_right;
-		current_draw_left = grpRect->left;//(s32)pFrame->width - rect_right - grpRect->left;
+		u8* surf_buff = &surface->buffer[screenX + screenY * surface->width];
+		grp_width = surface->width - rect_right;
+		current_draw_left = grpRect->left;
 		current_draw_right = rect_right;
 		current_draw_bottom = grpRect->bottom;
 		u32 i_0;
@@ -382,7 +380,7 @@ namespace drawFunc {
 						break;
 
 					if (cur_drw_left < 0) {
-						surf_buff -= cur_drw_left;//surf_buff += cur_drw_left;
+						surf_buff -= cur_drw_left;
 						cur_drw_right += cur_drw_left;
 						break;
 					}
@@ -419,7 +417,7 @@ namespace drawFunc {
 						i_0 += cur_drw_right;
 					}
 
-					surf_buff += i_0;//surf_buff -= i_0;
+					surf_buff += i_0;
 					continue;
 				} else if (i_0 & 0x40) {
 					i_0 &= 0xBF;
@@ -440,9 +438,9 @@ namespace drawFunc {
 				}
 
 				do {
-					u32 i_2 = *surf_buff;//*(--surf_buff);
+					u32 i_2 = *surf_buff;
 					*surf_buff = pcx_imageBuffer[i_2];
-					++surf_buff;//
+					++surf_buff;
 				} while (--i_0);
 			}
 
@@ -535,8 +533,7 @@ namespace drawFunc {
 				}
 
 				do {
-					*(--surf_buff);
-					u32 i_2 = *surf_buff;
+					u32 i_2 = *(--surf_buff);
 					*surf_buff = pcx_imageBuffer[i_2];
 				} while (--i_0);
 			}

@@ -132,7 +132,7 @@ namespace {
 		}
 	}
 
-	/*void __declspec(naked) duplicate_sprite_wrapper() {
+	void __declspec(naked) duplicate_sprite_wrapper() {
 		__asm {
 			PUSH	EBP
 			MOV		EBP, ESP
@@ -141,15 +141,16 @@ namespace {
 			PUSHAD
 		}
 
-		hooks::duplicate_sprite((Sprite*)var0);
+		var0 = (int)hooks::duplicate_sprite((Sprite*)var0);
 
 		__asm {
 			POPAD
+			MOV		EAX, var0
 			MOV		ESP, EBP
 			POP		EBP
 			RETN	4
 		}
-	}*/
+	}
 
 	void __declspec(naked) sub_4BCD70_wrapper() {
 		__asm {
@@ -189,16 +190,10 @@ namespace hooks {
 		jump_patch(make_sprite_invisible_wrapper, 0x00498A10, 2);
 		jump_patch(UpdateSpriteImagesForCloak_wrapper, 0x00498A90);
 		jump_patch(sub_498B50_wrapper, 0x00498B50, 1);
-		//TODO: Wrapper for duplicate_sprite produces a weird crash when revealing fog sprites. Will investigate another time.
-		call_patch(duplicate_sprite, 0x00488466);//jump_patch(duplicate_sprite_wrapper, 0x00499210, 2);
+		jump_patch(duplicate_sprite_wrapper, 0x00499210, 2);
 		jump_patch(sub_4BCD70_wrapper, 0x004BCD70);
 
 		call_patch(drawSprite_patch_98C84, 0x00498C84);//drawSprite @ 0x00498C50
-		memory_patch(0x00499305, &sgUpdateFuncs[0].fxn);//duplicate_sprite @ 0x00499210
-		memory_patch(0x00499314, &sgRenderFuncs[0].fxn_mirror);
-		memory_patch(0x0049931D, &sgRenderFuncs[0].fxn);
-		memory_patch(0x0049932B, (u8)0x32);
-		memory_patch(0x0049932F, (u8)0x33);
 		memory_patch(0x0040B0D7, &threshold_map);//drawFunc_CloakThreshold @ 0x0040AFD5
 		memory_patch(0x0040B10E, &threshold_map);
 		memory_patch(0x0040B92D, &threshold_map);//drawFunc_CloakThreshold2 @ 0x0040B824
