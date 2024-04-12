@@ -132,6 +132,25 @@ namespace {
 		}
 	}
 
+	/*void __declspec(naked) duplicate_sprite_wrapper() {
+		__asm {
+			PUSH	EBP
+			MOV		EBP, ESP
+			MOV		EAX, [EBP + 0x08]
+			MOV		var0, EAX//sprite
+			PUSHAD
+		}
+
+		hooks::duplicate_sprite((Sprite*)var0);
+
+		__asm {
+			POPAD
+			MOV		ESP, EBP
+			POP		EBP
+			RETN	4
+		}
+	}*/
+
 	void __declspec(naked) sub_4BCD70_wrapper() {
 		__asm {
 			MOV		var0, EAX//paletteEntry
@@ -170,6 +189,8 @@ namespace hooks {
 		jump_patch(make_sprite_invisible_wrapper, 0x00498A10, 2);
 		jump_patch(UpdateSpriteImagesForCloak_wrapper, 0x00498A90);
 		jump_patch(sub_498B50_wrapper, 0x00498B50, 1);
+		//TODO: Wrapper for duplicate_sprite produces a weird crash when revealing fog sprites. Will investigate another time.
+		call_patch(duplicate_sprite, 0x00488466);//jump_patch(duplicate_sprite_wrapper, 0x00499210, 2);
 		jump_patch(sub_4BCD70_wrapper, 0x004BCD70);
 
 		call_patch(drawSprite_patch_98C84, 0x00498C84);//drawSprite @ 0x00498C50

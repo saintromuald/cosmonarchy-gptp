@@ -1285,6 +1285,7 @@ namespace helper {
 
 	bool place_building_resource_restriction_check(u32 check_vision, u16 tile_x, u16 tile_y);				// 00473990
 
+	Image* create_image(Sprite* sprite, u32 id, s32 h_offset, s32 v_offset, u32 direction);					// 00498F40
 	Sprite* create_sprite(u32 sprite_id, u32 x, u32 y, u32 player);											// 004990F0
 
 	void refresh_all_visible_images_at_screen_position(Sprite* sprite, u8 vision_filter);					// 00497480
@@ -1739,6 +1740,6 @@ namespace helper {
 	void unit_refund_partial_technology(Unit* unit);							// 00453DD0
 	void unit_refund_partial_upgrade(Unit* unit);								// 00454220
 
-	void refreshAllVisibleSprites(Sprite* sprite);								//0x004976C0
-	void drawFunc_WarpTexture_colorData(Box32* grpRect, u32 frame);				//0x004D53F0
+	void refreshAllVisibleSprites(Sprite* sprite);								// 004976C0
+	void update_image_draw_data(Image* image);									// 004D57B0
 }

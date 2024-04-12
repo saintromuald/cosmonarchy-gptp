@@ -110,6 +110,7 @@ namespace hooks {
 	void make_sprite_invisible(Sprite* sprite);									//0x00498A10
 	void UpdateSpriteImagesForCloak(Sprite* sprite);							//0x00498A90
 	void sub_498B50(Sprite* sprite, bool flipped);								//0x00498B50
+	Sprite* __stdcall duplicate_sprite(Sprite* sprite);							//0x00499210
 	void sub_4BCD70(u8* paletteEntry);											//0x004BCD70
 
 	void inject_image_render_hooks();
@@ -117,4 +118,5 @@ namespace hooks {
 
 namespace helper {
 	void drawFunc(int function, s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+	void drawFunc_WarpTexture_colorData(Box32* grpRect, u32 frame);				//0x004D53F0
 }

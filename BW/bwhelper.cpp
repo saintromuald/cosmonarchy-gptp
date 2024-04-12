@@ -10546,6 +10546,25 @@ namespace helper {
 		return result;
 	}
 
+	Image* create_image(Sprite* sprite, u32 id, s32 h_offset, s32 v_offset, u32 direction) {
+		static Image* result;
+		const u32 func_address = 0x00498F40;
+
+		__asm {
+			PUSHAD
+			PUSH direction
+			PUSH v_offset
+			PUSH h_offset
+			PUSH id
+			MOV EAX, sprite
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+
+		return result;
+	}
+
 	Sprite* create_sprite(u32 sprite_id, u32 x, u32 y, u32 player) {
 		static Sprite* result;
 		const u32 func_address = 0x004990F0;
@@ -15067,6 +15086,17 @@ namespace helper {
 			PUSHAD
 			MOV		EAX, sprite
 			CALL	func_address
+			POPAD
+		}
+	}
+
+	void update_image_draw_data(Image* image) {
+		const u32 function = 0x004D57B0;
+
+		__asm {
+			PUSHAD
+			MOV EAX, image
+			CALL function
 			POPAD
 		}
 	}
