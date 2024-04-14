@@ -35,40 +35,14 @@ namespace hooks
 	// Hooked to fix crash after removing game speed settings. -Pr0nogo
 	void cmdact_game_speed(BinDlg* control) // 00481EF0
 	{
-		BinDlg* control_var = control;
-		if (*last_control_index == -2) {
-			if (control->control_type) {
-				control = control->parent;
-			}
-			BinDlg* child = control->child_dialog;
-			if (child) {
-				while (child->index != 1)
-				{
-					child = child->next;
-					if (!child) {
-						goto LABEL_7;
-					}
-				}
-			} else {
-			LABEL_7:
-				child = 0;
-			}
-			if (child && !(child->flags & 2)) {
-				char min_value = child->scrollDialog0x36.scrollMinValue;
-				u8 game_command = 15;
-				helper::queue_game_command(&game_command, 2u);
-			}
-		} else {
-			*cpu_throttle = *temp_cpu_throttle;
-		}
-		helper::process_options_change(control_var);
+		helper::process_options_change(control);
 		char interacting_bin = (*bin_interact)-- - 1;
 		if (*bin_interact) {
 			*bin_interact = interacting_bin - 1;
 			*last_bindlg_menu_function = helper::main_menu_options_custom_interact;
 			helper::load_dialog("rez\\options.bin", helper::game_menu_dialog_interact);
 		} else {
-			helper::destroy_dialog(control_var);
+			helper::destroy_dialog(control);
 		}
 	}
 
@@ -76,7 +50,7 @@ namespace hooks
 	// Currently identical to IDA. -Pr0nogo
 	void hide_dialog(BinDlg* dialog) // 00418700
 	{
-		if (dialog->flags & 8) {
+		if (dialog->flags & BinDlgFlags::Visible) {
 			DialogEvent dlg_event = {};
 			dlg_event.current.y = g_mouse->y;
 			dlg_event.number_order = 14;
@@ -91,8 +65,8 @@ namespace hooks
 				dlg_event.current.y = g_mouse->y;
 				((void(__fastcall*)(BinDlg*, DialogEvent*, s32, s32))dialog->fxn_interact)(dialog, &dlg_event, 6, 0);
 				u32 dialog_flags = dialog->flags;
-				if (!(dialog_flags & 1)) {
-					dialog->flags = dialog_flags | 1; // CTRL_UPDATE
+				if (!(dialog_flags & BinDlgFlags::Highlighted)) {
+					dialog->flags = dialog_flags | BinDlgFlags::Highlighted;
 					helper::update_dialog(dialog);
 				}
 			}
