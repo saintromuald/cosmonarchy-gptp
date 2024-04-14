@@ -8,36 +8,25 @@ namespace hooks
 {
 	void display_establishing_shot() // 004D9200, hooked by X405
 	{
-		// This is the original original function which loads the establishing shots in campaigns:
-		if (!*g_multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && *campaign_index)
-		{
+		// This is the original original function which loads the establishing shots in campaigns
+		if (!*g_multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && *campaign_index) {
 			for (s32 i = 0; i < 65; i++)
 			{
-				if (campaignMissions[i].mission_index == *campaign_index)
-				{
+				if (campaignMissions[i].mission_index == *campaign_index) {
 					helper::load_init_credits_bin(campaignMissions[i].mission_name);
 				}
 			}
-		}
-
-		// This addition enables establishing shots in custom scenarios:
-		else if (*campaign_index == 0 && g_current_map_filename)
-		{
+		} else if (*campaign_index == 0 && g_current_map_filename) { // This addition enables establishing shots in custom scenarios
 			helper::SFileOpenArchive(g_current_map_filename, 0, 0, map_archive_handle);
 			HANDLE* handle;
 			bool shot_exists = helper::sfile_open_file_ex(*map_archive_handle, "rez\\est.txt", 0, &handle);
-			if (handle)
-			{
+			if (handle) {
 				helper::SFileCloseFile(handle);
 			}
-
-			if (shot_exists)
-			{
+			if (shot_exists) {
 				helper::load_init_credits_bin("est");
 			}
-
-			if (*map_archive_handle)
-			{
+			if (*map_archive_handle) {
 				helper::SFileCloseArchive(*map_archive_handle);
 			}
 		}
@@ -47,50 +36,38 @@ namespace hooks
 	void cmdact_game_speed(BinDlg* control) // 00481EF0
 	{
 		BinDlg* control_var = control;
-		if (*last_control_index == -2)
-		{
-			if (control->control_type)
-			{
+		if (*last_control_index == -2) {
+			if (control->control_type) {
 				control = control->parent;
 			}
 			BinDlg* child = control->child_dialog;
-			if (child)
-			{
+			if (child) {
 				while (child->index != 1)
 				{
 					child = child->next;
-					if (!child)
-					{
+					if (!child) {
 						goto LABEL_7;
 					}
 				}
-			}
-			else
-			{
+			} else {
 			LABEL_7:
 				child = 0;
 			}
-			if (child && !(child->flags & 2))
-			{
+			if (child && !(child->flags & 2)) {
 				char min_value = child->scrollDialog0x36.scrollMinValue;
 				u8 game_command = 15;
 				helper::queue_game_command(&game_command, 2u);
 			}
-		}
-		else
-		{
+		} else {
 			*cpu_throttle = *temp_cpu_throttle;
 		}
 		helper::process_options_change(control_var);
 		char interacting_bin = (*bin_interact)-- - 1;
-		if (*bin_interact)
-		{
+		if (*bin_interact) {
 			*bin_interact = interacting_bin - 1;
 			*last_bindlg_menu_function = helper::main_menu_options_custom_interact;
 			helper::load_dialog("rez\\options.bin", helper::game_menu_dialog_interact);
-		}
-		else
-		{
+		} else {
 			helper::destroy_dialog(control_var);
 		}
 	}
@@ -99,16 +76,14 @@ namespace hooks
 	// Currently identical to IDA. -Pr0nogo
 	void hide_dialog(BinDlg* dialog) // 00418700
 	{
-		if (dialog->flags & 8)
-		{
+		if (dialog->flags & 8) {
 			DialogEvent dlg_event = {};
 			dlg_event.current.y = g_mouse->y;
 			dlg_event.number_order = 14;
 			dlg_event.user = 14;
 			dlg_event.field_4 = 0;
 			dlg_event.current.x = g_mouse->x;
-			if (((u32(__fastcall*)(BinDlg*, DialogEvent*, s32, s32))dialog->fxn_interact)(dialog, &dlg_event, 14, 0))
-			{
+			if (((u32(__fastcall*)(BinDlg*, DialogEvent*, s32, s32))dialog->fxn_interact)(dialog, &dlg_event, 14, 0)) {
 				dlg_event.current.x = g_mouse->x;
 				dlg_event.number_order = 14;
 				dlg_event.user = 6;
@@ -116,8 +91,7 @@ namespace hooks
 				dlg_event.current.y = g_mouse->y;
 				((void(__fastcall*)(BinDlg*, DialogEvent*, s32, s32))dialog->fxn_interact)(dialog, &dlg_event, 6, 0);
 				u32 dialog_flags = dialog->flags;
-				if (!(dialog_flags & 1))
-				{
+				if (!(dialog_flags & 1)) {
 					dialog->flags = dialog_flags | 1; // CTRL_UPDATE
 					helper::update_dialog(dialog);
 				}
@@ -637,10 +611,10 @@ namespace hooks
 			TEST	CL, CL
 			JE		offset off_1
 
-			off_0:
+		off_0:
 			XOR		EAX, EAX
 
-				off_1:
+		off_1:
 			RETN
 		}
 	}
@@ -790,8 +764,7 @@ namespace hooks
 
 	char __fastcall glu_main_dialog_interact(BinDlg* text_message, DialogEvent* dlg_event) // 004DB7A0
 	{
-		if (dlg_event->number_order == DialogEventType_Dialog)
-		{
+		if (dlg_event->number_order == DialogEventType_Dialog) {
 			switch (dlg_event->user)
 			{
 				case DialogUserType_Create:
@@ -816,20 +789,16 @@ namespace hooks
 					{
 						case 3:
 						{
-							if (*g_is_demo)
-							{
-								if (g_network_table_df->get_string_count() > 102)
-								{
+							if (*g_is_demo) {
+								if (g_network_table_df->get_string_count() > 102) {
 									helper::load_glu_pok_bindlg(g_network_table_df->get_string(103));
 								} else {
 									helper::load_glu_pok_bindlg("");
 								}
 								return 1;
 							}
-							if (*g_is_broodwar)
-							{
-								if (!helper::select_game_mode(0))
-								{
+							if (*g_is_broodwar) {
+								if (!helper::select_game_mode(0)) {
 									goto LABEL_17;
 								}
 								return helper::dialog_swish_out(text_message);
@@ -837,16 +806,13 @@ namespace hooks
 						} break;
 						case 4:
 						{
-							if (*g_is_broodwar)
-							{
-								if (!helper::select_game_mode(1))
-								{
+							if (*g_is_broodwar) {
+								if (!helper::select_game_mode(1)) {
 									return 1;
 								}
 								return helper::dialog_swish_out(text_message);
 							}
-							if (*g_is_demo)
-							{
+							if (*g_is_demo) {
 							LABEL_28:
 								*g_is_expansion = 0;
 								return helper::dialog_swish_out(text_message);
@@ -862,8 +828,7 @@ namespace hooks
 							return helper::dialog_swish_out(text_message);
 						}
 					}
-					if (!helper::glu_main_display_cdrom_error_bindlg())
-					{
+					if (!helper::glu_main_display_cdrom_error_bindlg()) {
 						goto LABEL_17;
 					}
 					goto LABEL_28;
@@ -879,8 +844,7 @@ namespace hooks
 			}
 		}
 
-		if (dlg_event->number_order == DialogEventType_Spacebar && dlg_event->virtual_key == VK_SPACE)
-		{
+		if (dlg_event->number_order == DialogEventType_Spacebar && dlg_event->virtual_key == VK_SPACE) {
 		LABEL_17:
 			return 1;
 		} else {
