@@ -23,15 +23,12 @@ namespace AI
 			case UnitId::TerranPhobos:
 			{
 				// Yamato Cannon
-				if (can_cast_spell_order(unit, TechId::YamatoGun, OrderId::FireYamatoGun1))
-				{
+				if (can_cast_spell_order(unit, TechId::YamatoGun, OrderId::FireYamatoGun1)) {
 					Unit* target = find_best_yamato_gun_target(unit, is_unit_being_attacked);
-					if (unit->main_order_id == OrderId::FireYamatoGun1 && unit->order_target.unit == target)
-					{
+					if (unit->main_order_id == OrderId::FireYamatoGun1 && unit->order_target.unit == target) {
 						return false;
 					}
-					if (ai_cast_spell_order(unit, target, OrderId::FireYamatoGun1))
-					{
+					if (ai_cast_spell_order(unit, target, OrderId::FireYamatoGun1)) {
 						return true;
 					}
 				}

@@ -3791,9 +3791,9 @@ namespace bw {
 			case UnitId::TerranSavant:
 			{
 				if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
-					return helper::get_random_sfx_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
+					return helper::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05, 31);
 				} else {
-					return helper::get_random_sfx_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
+					return helper::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05, 31);
 				}
 			}
 		}
@@ -3806,7 +3806,7 @@ namespace bw {
 		{
 			case WeaponId::DemiurgeGalacticWeaver:
 			{
-				return helper::get_random_sfx_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
+				return helper::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03, 31);
 			}
 			default:
 			{

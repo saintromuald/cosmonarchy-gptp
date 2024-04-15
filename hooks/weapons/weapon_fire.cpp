@@ -434,7 +434,12 @@ namespace hooks {
 
 		if (weapons_dat::flingy_id[weapon_id] != 0) {
 			if (unit->id == UnitId::TerranSavant) {
-				helper::play_sound_from_unit(bw::get_manual_unit_weapon_sound(unit, WeaponId::None), unit, 1, 0);
+				u32 sound_id = bw::get_manual_unit_weapon_sound(unit, WeaponId::None);
+				Unit* final_unit = unit;
+				if (unit->status & UnitStatus::InBuilding && unit->connected_unit) { // Nullchecking to protect against attacks firing on the same frame as the garrison's death.
+					final_unit = unit->connected_unit;
+				}
+				helper::play_sound_from_unit(sound_id, final_unit, 1, 0);
 			}
 
 			// Lakizilisk Seismic Spines behavior
@@ -542,7 +547,12 @@ namespace hooks {
 					case WeaponId::SavantDiscoidRailgun: {
 						// Entropy Gauntlets
 						if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
-							helper::create_thingy(SpriteId::EntropyGauntletsOverlay, unit->position.x, unit->position.y, unit->player);
+							Unit* final_unit = unit;
+							if (unit->status & UnitStatus::InBuilding && unit->connected_unit) { // Nullchecking to protect against attacks firing on the same frame as the garrison's death.
+								final_unit = unit->connected_unit;
+							}
+							Thingy* overlay = helper::create_thingy(SpriteId::EntropyGauntletsOverlay, final_unit->position.x, final_unit->position.y, final_unit->player);
+							overlay->sprite->elevation = final_unit->sprite->elevation + 1;
 							fire_bullet(unit, WeaponId::SavantDiscoidRailgunPiercing, unit->order_target);
 						} else {
 							fire_bullet(unit, weapon_id, unit->order_target);
@@ -1832,7 +1842,7 @@ namespace hooks {
 	void bullet_behavior_follow(Bullet* bullet) // 0048B500
 	{
 		Unit* target = bullet->attack_target.unit;
-		if (!target || !AssertSprite(target->sprite)) {
+		if (!target || target->is_dead()) {
 			bullet->behavior_type = 1;
 			bullet->attack_target.unit = 0;
 			bullet->main_order_state = 0;
@@ -1852,6 +1862,4 @@ namespace hooks {
 			}
 		}
 	}
-
-
 }

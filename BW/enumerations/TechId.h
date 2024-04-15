@@ -51,20 +51,20 @@ namespace TechId {
 		Burrowing				= 11,
 		Infestation				= 12, // (default)
 		SpawnBroodlings			= 13,
-		CarapaceSwarm				= 14, // (default)
+		CarapaceSwarm			= 14, // (default)
 		Plague					= 15,
 		Consume					= 16,
 		Ensnare					= 17,
-		MatralethParasite				= 18, // (default)
+		MatralethParasite		= 18, // (default)
 		PsionicStorm			= 19,
 		Hallucination			= 20,
-		DimensionalRecall					= 21,
+		DimensionalRecall		= 21,
 		StasisField				= 22,
 		ArchonWarp				= 23, // (default)
 		Restoration				= 24,
-		LanifectDisruptionField			= 25,
+		LanifectDisruptionField	= 25,
 		UnusedTech26			= 26, // (unused)
-		Tyranny				= 27,
+		Tyranny					= 27,
 		DarkArchonMeld			= 28, // (default)
 		Feedback				= 29, // (default)
 		LuminaryAuralAssault	= 30,
@@ -91,56 +91,56 @@ namespace TechId {
 // For use with techdata_dat::AvailableSC[] and techdata_dat::ResearchedBw[]
 namespace ScTech {
 	enum Enum {
-		Stimpacks         =  0,
-		Lockdown          =  1,
-		EMPShockwave      =  2,
-		SpiderMines       =  3,
-		ScannerSweep      =  4,	// (default)
-		TankSiegeMode     =  5,
-		DefensiveMatrix   =  6,	// (default)
-		Irradiate         =  7,
-		YamatoGun         =  8,
-		CloakingField     =  9,
-		PersonnelCloaking = 10,
-		Burrowing         = 11,
-		Infestation       = 12,	// (default)
-		SpawnBroodlings   = 13,
-		CarapaceSwarm         = 14,	// (default)
-		Plague            = 15,
-		Consume           = 16,
-		Ensnare           = 17,
-		MatralethParasite          = 18,	// (default)
-		PsionicStorm      = 19,
-		Hallucination     = 20,
-		DimensionalRecall            = 21,
-		StasisField       = 22,
-		ArchonWarp        = 23,	// (default)
+		Stimpacks			=  0,
+		Lockdown			=  1,
+		EMPShockwave		=  2,
+		SpiderMines			=  3,
+		ScannerSweep		=  4,	// (default)
+		TankSiegeMode		=  5,
+		DefensiveMatrix		=  6,	// (default)
+		Irradiate			=  7,
+		YamatoGun			=  8,
+		CloakingField		=  9,
+		PersonnelCloaking	= 10,
+		Burrowing			= 11,
+		Infestation			= 12,	// (default)
+		SpawnBroodlings		= 13,
+		CarapaceSwarm		= 14,	// (default)
+		Plague				= 15,
+		Consume				= 16,
+		Ensnare				= 17,
+		MatralethParasite	= 18,	// (default)
+		PsionicStorm		= 19,
+		Hallucination		= 20,
+		DimensionalRecall	= 21,
+		StasisField			= 22,
+		ArchonWarp			= 23,	// (default)
 	};
 }
 
 //For use with techdata_dat::AvailableBW[] and techdata_dat::ResearchedBw[]
 namespace BwTech {
 	enum Enum {
-		Restoration       =  0,
+		Restoration					=  0,
 		LanifectDisruptionField     =  1,
-		UnusedTech26      =  2,	// (unused)
-		Tyranny       =  3,
-		DarkArchonMeld    =  4,	// (default)
-		Feedback          =  5,	// (default)
-		LuminaryAuralAssault      =  6,
+		UnusedTech26				=  2,	// (unused)
+		Tyranny						=  3,
+		DarkArchonMeld				=  4,	// (default)
+		Feedback					=  5,	// (default)
+		LuminaryAuralAssault		=  6,
 		MindTyrantMaelstrom         =  7,
-		LurkerAspect      =  8,
-		UnusedTech33      =  9,	// (default; possibly liftoff)
-		Healing           = 10,	// (default)
-		UnusedTech35      = 11,	// (unused)
-		UnusedTech36      = 12,	// (unused)
-		UnusedTech37      = 13,	// (unused)
-		UnusedTech38      = 14,	// (unused)
-		UnusedTech39      = 15,	// (unused)
-		UnusedTech40      = 16,	// (unused)
-		UnusedTech41      = 17,	// (unused)
-		UnusedTech42      = 18,	// (unused)
-		UnusedTech43      = 19,	// (unused)
+		LurkerAspect				=  8,
+		UnusedTech33				=  9,	// (default; possibly liftoff)
+		Healing						= 10,	// (default)
+		UnusedTech35				= 11,	// (unused)
+		UnusedTech36				= 12,	// (unused)
+		UnusedTech37				= 13,	// (unused)
+		UnusedTech38				= 14,	// (unused)
+		UnusedTech39				= 15,	// (unused)
+		UnusedTech40				= 16,	// (unused)
+		UnusedTech41				= 17,	// (unused)
+		UnusedTech42				= 18,	// (unused)
+		UnusedTech43				= 19,	// (unused)
 	};
 }
 

@@ -27,7 +27,6 @@ namespace hooks
 						helper::set_move_target_xy(caster, target_pos.x, target_pos.y);
 						return 0;
 					}
-
 					helper::set_move_target_xy(caster, caster->position.x, caster->position.y);
 					if (!helper::is_angle_in_attack_angle(target_pos.y, target_pos.x, caster, TechId::Hallucination)) {
 						helper::turn_unit(caster, bw::get_angle(caster->position, target_pos));
@@ -109,8 +108,7 @@ namespace hooks
 								error_stat_string = (u32)helper::get_target_unit_ability_error_stat_string(target, caster->player, tech_id);
 							} else {
 								error_stat_string = helper::can_target_spell_on_fow_unit((s32)tech_id, fow_unit_id);
-							}
-							
+							}							
 							if (error_stat_string) {
 								if (error) {
 									*error = error_stat_string;
@@ -247,8 +245,7 @@ namespace hooks
 							bool idiot = false;
 							// in case it was modified by a previous function, relinking
 							target = unit->order_target.unit;
-							if (unit->unit_ai && target)
-							{
+							if (unit->unit_ai && target) {
 								if (order_weapon_id <= WeaponId::MindTyrantMaelstrom
 								||  order_weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) // Maelstrom is the last spell-related weapon, by default
 								{
@@ -341,8 +338,7 @@ namespace hooks
 		*g_order_id_obstructed = order_2;
 		*g_order_id_ground = order_3;
 		const char* error = "";
-		if (g_network_table_DF->get_string_count() > 62)
-		{
+		if (g_network_table_DF->get_string_count() > 62) {
 			error = g_network_table_DF->get_string(63);
 		}
 		helper::send_message_something(order_3, error);
@@ -356,13 +352,11 @@ namespace hooks
 	void orders_defensive_matrix(Unit* caster) // 004550A0
 	{
 		u16 energy_cost;
-		if (helper::spell_order(caster, TechId::DefensiveMatrix, &energy_cost, 8 * 32, 880))
-		{
+		if (helper::spell_order(caster, TechId::DefensiveMatrix, &energy_cost, 8 * 32, 880)) {
 			caster->spend_unit_energy(energy_cost);
 			helper::create_defensive_matrix(caster->order_target.unit);
-			helper::play_sound_from_unit(349, caster, 1, 0);
-			if (caster->order_queue_head)
-			{
+			helper::play_sound_from_unit(SoundId::Terran_VESSEL_TVeDef00_WAV, caster, 1, 0);
+			if (caster->order_queue_head) {
 				caster->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 				helper::do_next_queued_order(caster);
 			} else if (caster->unit_ai) {

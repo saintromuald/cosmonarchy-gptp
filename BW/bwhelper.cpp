@@ -2277,7 +2277,7 @@ namespace helper {
 		return (result != 0);
 	}
 
-	Thingy* create_thingy(u32 spriteId, s16 x, s16 y, u32 player) {
+	Thingy* create_thingy(u32 sprite_id, s16 x, s16 y, u32 player) {
 		const u32 func_address = 0x00488210;
 		static Thingy* thingy;
 		s32 x_xd = x;
@@ -2286,7 +2286,7 @@ namespace helper {
 			PUSH player
 			MOVSX EDI, y
 			PUSH x_xd
-			PUSH spriteId
+			PUSH sprite_id
 			CALL func_address
 			MOV thingy, EAX
 			POPAD

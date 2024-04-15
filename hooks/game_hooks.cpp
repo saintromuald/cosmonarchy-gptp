@@ -1837,6 +1837,10 @@ namespace hooks {
 						bw::add_unit_overlay(target, ImageId::EnsnaringBroodOverlay);
 					}
 				}
+				if (unit->id == UnitId::ZergMatraleth && unit->order_signal & 32) {
+					unit->order_signal &= ~32;
+					bw::decloak_passive_proc(unit);
+				}
 			} break;
 			case UnitId::ProtossClarion:
 			{
@@ -1997,6 +2001,10 @@ namespace hooks {
 			} break;
 			case UnitId::ZergIsthrathaleth:
 			{
+				if (unit->order_signal & 32) {
+					unit->order_signal &= ~32;
+					bw::decloak_passive_proc(unit);
+				}
 				if (unit->get_overlay(ImageId::PlagueChannelOverlay)) {
 					if (unit->main_order_id != OrderId::Plague) {
 						unit->remove_overlay(ImageId::PlagueChannelOverlay);
@@ -2359,6 +2367,10 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossCantavis:
 			{
+				if (unit->order_signal & 64) {
+					unit->order_signal &= ~64;
+					bw::decloak_passive_proc(unit);
+				}
 				if (unit_ext->values[ValueJustCastedHallucination] && unit->order_signal & 32) {
 					unit_ext->values[ValueJustCastedHallucination] = 0;
 				}
@@ -2421,6 +2433,20 @@ namespace hooks {
 							}
 						}
 					}
+				}
+			} break;
+			case UnitId::ProtossDidact:
+			{
+				if (unit->order_signal & 32) {
+					unit->order_signal &= ~32;
+					bw::decloak_passive_proc(unit);
+				}
+			} break;
+			case UnitId::TerranMagnetar:
+			{
+				if (unit->order_signal & 32) {
+					unit->order_signal &= ~32;
+					bw::decloak_passive_proc(unit);
 				}
 			} break;
 		}
@@ -2814,6 +2840,7 @@ namespace hooks {
 					}
 					if (unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
 						mark_infesting(unit->player, target);
+						bw::decloak_passive_proc(unit);
 					}
 				} else {
 					helper::force_order_done(unit);
