@@ -2797,7 +2797,13 @@ namespace hooks {
 		if (unit_ext->timers[TimerPetrification] == 1) {
 			unit_ext->values[ValuePetrificationStacks] = 0;
 			should_update_speed = true;
+			if (unit->get_overlay(ImageId::GorgonPetrification)) {
+				bw::remove_unit_overlay(unit, ImageId::GorgonPetrification);
+			}
 		} else if (unit_ext->timers[TimerPetrification] > 1) {
+			if (!unit->get_overlay(ImageId::GorgonPetrification)) {
+				bw::add_unit_overlay(unit, ImageId::GorgonPetrification);
+			}
 			should_update_speed = true;
 		}
 
@@ -3200,6 +3206,11 @@ namespace hooks {
 		if (unit_ext->timers[TimerAutocratControlledOpposition] == 1) {
 			unit_ext->values[ValueAutocratControlledOppositionStacks] = 0;
 			unit_ext->values[ValueAutocratControlledOppositionPlayer] = 0;
+			if (unit->get_overlay(ImageId::AutocratControlledOpposition)) {
+				bw::remove_unit_overlay(unit, ImageId::AutocratControlledOpposition);
+			}
+		} else if (unit_ext->values[ValueAutocratControlledOppositionStacks] && !unit->get_overlay(ImageId::AutocratControlledOpposition)) {
+			bw::add_unit_overlay(unit, ImageId::AutocratControlledOpposition);
 		}
 
 		// Clear Empress - Anodyne Annex

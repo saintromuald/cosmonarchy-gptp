@@ -1237,6 +1237,8 @@ namespace ImageId {
 		ZarcavrokorBirthCocoon						= 1841,
 		AlgoztaliskBirthEgg							= 1842,
 		AlgoztaliskBirthCocoon						= 1843,
+		GorgonPetrification							= 1844,
+		AutocratControlledOpposition				= 1845,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
