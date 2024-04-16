@@ -30,7 +30,7 @@ void augur_proc(Unit* augur, s32 radius) {
 		return true;
 	});
 	Thingy* thingy = helper::create_thingy(SpriteId::AugurDeathExplosion, augur->get_x(), augur->get_y(), augur->player);
-	helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AugurDeath01, SoundId::AugurDeath04), (Unit*)thingy, 1, 0);
+	helper::play_sound_from_unit(helper::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04, 31), (Unit*)thingy, 1, 0);
 	if (target) {
 		augur->order_target.unit = target;
 		helper::create_bullet(WeaponId::AugurFinalHour, augur, augur->get_x(), augur->get_y(), augur->player, bw::get_angle(augur->get_x(), augur->get_y(), target->get_x(), target->get_y()));

@@ -1235,6 +1235,8 @@ namespace ImageId {
 		AlkajeliskBirthCocoon						= 1839,
 		ZarcavrokorBirthEgg							= 1840,
 		ZarcavrokorBirthCocoon						= 1841,
+		AlgoztaliskBirthEgg							= 1842,
+		AlgoztaliskBirthCocoon						= 1843,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

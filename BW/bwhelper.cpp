@@ -1011,7 +1011,7 @@ namespace helper {
 	}
 
 	// For get_random_yes_unit_response
-	u32 get_random_sfx_between(u32 min, u32 max) {
+	u32 get_random_unit_response(u32 min, u32 max) {
 		const u32 func_address = 0x0048E940;
 		static s32 result;
 		__asm {

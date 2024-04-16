@@ -1333,7 +1333,7 @@ namespace hooks {
 					options.ignore_main = true;
 					options.use_weapon_factor = false;
 					if (fire_multiple(unit, weapon_id, 4, FilterEnemy, options)) {
-						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03), unit, 1, 0);
+						helper::play_sound_from_unit(helper::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03, 31), unit, 1, 0);
 					}
 				}
 			} break;
@@ -1545,7 +1545,7 @@ namespace hooks {
 							unit->order_target.pt.x = polar_x;
 							unit->order_target.pt.y = polar_y;
 							helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player, bw::dir_saturate(unit->current_direction_1, offset_direction));
-							helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::StarSovereignMissileFire01, SoundId::StarSovereignMissileFire03), unit, 1, 0);
+							helper::play_sound_from_unit(helper::rand_between(SoundId::StarSovereignMissileFire01, SoundId::StarSovereignMissileFire03, 31), unit, 1, 0);
 							unit->order_target.unit = target_unit;
 							unit->order_target.pt = target_pos;
 						}
@@ -1794,7 +1794,7 @@ namespace hooks {
 							unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::CentaurSunchaserMissiles);
 							unit_ext->values[ValueCentaurSecondaryWeaponCount] = 4;
 							unit_ext->units[UnitCentaurSecondaryWeaponTarget] = target;
-							helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::CentaurSunchaserMissilesFire01, SoundId::CentaurSunchaserMissilesFire04), unit);
+							helper::play_sound_from_unit(helper::rand_between(SoundId::CentaurSunchaserMissilesFire01, SoundId::CentaurSunchaserMissilesFire04, 31), unit);
 						}
 					} break;
 				}
@@ -1919,7 +1919,7 @@ namespace hooks {
 					if (attacked) {
 						unit_ext->timers[TimerAnthelionAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::AnthelionEventHorizon);
 						unit->sprite->create_underlay(ImageId::OpticalFlareHit_Large);
-						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03), unit, 1, 0);
+						helper::play_sound_from_unit(helper::rand_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03, 31), unit, 1, 0);
 					}
 				}
 				if (unit->main_order_id == OrderId::Follow || unit->main_order_id == OrderId::AttackUnit) {
@@ -1933,7 +1933,7 @@ namespace hooks {
 					} else {
 						if (unit_ext->anthelion_last_move_target != target) {
 							if (unit_ext->timers[TimerAnthelionEndlessEclipse] > 1) {
-								helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02), unit, 1, 0);
+								helper::play_sound_from_unit(helper::rand_between(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02, 31), unit, 1, 0);
 							}
 							unit_ext->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 						}
@@ -1944,7 +1944,7 @@ namespace hooks {
 							bool teleport = bw::teleport_to_point(unit, unit->move_target.pt, 0, true);
 							if (teleport) {
 								bw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, old_pos.x, old_pos.y, unit->player, 11);
-								helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03), unit, 1, 0);
+								helper::play_sound_from_unit(helper::rand_between(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03, 31), unit, 1, 0);
 								unit->sprite->create_top_overlay(ImageId::AnthelionTeleportArrival, 0, 0, 0);
 							}
 						}
@@ -1979,15 +1979,6 @@ namespace hooks {
 						}
 					}
 				});
-			} break;
-			case UnitId::ZergAxitrilisk:
-			{
-				// Axitrilisk - play new_sound on shield loss, timer of 5 seconds per unit
-				if (unit->shields < 1
-				&& !unit_ext->timers[TimerAxitriliskShieldLossSFX]) {
-					unit_ext->timers[TimerAxitriliskShieldLossSFX] = AxitriliskShieldLossSFXTimer;
-					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AxitriliskShieldLoss01, SoundId::AxitriliskShieldLoss03), unit, 1, 0);
-				}
 			} break;
 			case UnitId::TerranPhalanxSiegeMode:
 			{
@@ -2099,7 +2090,7 @@ namespace hooks {
 						if (weapon_id_is_standard_weapon(bullet->weapon_id)) {
 							unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
 						}
-						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+						helper::play_sound_from_unit(helper::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03, 31), unit, 1, 0);
 
 						if (unit->energy < 1 * 256) {
 							break;
@@ -2118,7 +2109,7 @@ namespace hooks {
 					options.apply_cooldown = false;
 					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, options)) {
 						unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
-						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03), unit, 1, 0);
+						helper::play_sound_from_unit(helper::rand_between(SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03, 31), unit, 1, 0);
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
@@ -2173,7 +2164,7 @@ namespace hooks {
 					options.apply_cooldown = false;
 					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, FilterEnemy | FilterNoGround, options)) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OptectonSkybondRay);
-						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::OptectonWeaponfireSecondary01, SoundId::OptectonWeaponfireSecondary03), unit, 1, 0);
+						helper::play_sound_from_unit(helper::rand_between(SoundId::OptectonWeaponfireSecondary01, SoundId::OptectonWeaponfireSecondary03, 31), unit, 1, 0);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
 					}
@@ -2192,7 +2183,7 @@ namespace hooks {
 						options.ignore_main = false;
 						options.use_weapon_factor = true;
 						if (fire_multiple(unit, weapon_id, 1, FilterEnemy | FilterNoAir, options)) {
-							helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03), unit, 1, 0);
+							helper::play_sound_from_unit(helper::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03, 31), unit, 1, 0);
 						}
 					}
 					if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
@@ -2202,7 +2193,7 @@ namespace hooks {
 						if (fire_multiple(unit, WeaponId::OkrimniliskOmnispores, 0, FilterEnemy, options)) {
 							unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OkrimniliskOmnispores);
 							unit->sprite->create_top_overlay(ImageId::OkrimniliskOmnisporesFire);
-							helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SpirtithWeaponfire01, SoundId::SpirtithWeaponfire03), unit, 1, 0);
+							helper::play_sound_from_unit(helper::rand_between(SoundId::SpirtithWeaponfire01, SoundId::SpirtithWeaponfire03, 31), unit, 1, 0);
 						} else {
 							unit_ext->timers[TimerSecondaryWeaponCooldown] = 3;
 						}
@@ -2734,7 +2725,7 @@ namespace hooks {
 				y_offset = MathUtils::clamp(y_offset, -127, 128);
 
 				unit->sprite->create_overlay(ImageId::AddonWeldOverlay, x_offset, y_offset);
-				helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::AddonConstruction01, SoundId::AddonConstruction04), unit, 1, 0);
+				helper::play_sound_from_unit(helper::rand_between(SoundId::AddonConstruction01, SoundId::AddonConstruction04, 31), unit, 1, 0);
 				unit_ext->timers[TimerAddonAnimation] = bw::rand_between(16, 20);
 			}
 		}

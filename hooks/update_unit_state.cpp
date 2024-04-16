@@ -138,7 +138,7 @@ namespace hooks
 					u32 targ_y = unit_ext->values[ValueWyvernLandGrabY];
 					s32 direction = bw::get_angle(x, y, targ_x, targ_y);
 					if (bw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
-						u32 sound = helper::get_random_sfx_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02);
+						u32 sound = helper::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02, 31);
 						helper::play_sound_from_unit(sound, unit, 1, 0);
 						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, 0, targ_x, targ_y);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
@@ -185,7 +185,7 @@ namespace hooks
 					
 					if (target && wyvern_can_fire_at(unit, target)) {
 						s32 direction = bw::get_angle(x, y, target->get_x(), target->get_y());
-						helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02), unit, 1, 0);
+						helper::play_sound_from_unit(helper::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02, 31), unit, 1, 0);
 						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 					}

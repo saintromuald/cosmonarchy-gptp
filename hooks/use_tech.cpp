@@ -105,14 +105,14 @@ namespace hooks
 			case TechId::SavantOnhitToggle: {
 				s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
-					u32 action_sound = action ? helper::get_random_sfx_between(SoundId::SavantSwitchPierce01, SoundId::SavantSwitchPierce03) : helper::get_random_sfx_between(SoundId::SavantSwitchSteal01, SoundId::SavantSwitchSteal03);
+					u32 action_sound = action ? helper::get_random_unit_response(SoundId::SavantSwitchPierce01, SoundId::SavantSwitchPierce03) : helper::get_random_unit_response(SoundId::SavantSwitchSteal01, SoundId::SavantSwitchSteal03);
 					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				queue_generic_ability(RustId::ToggleSavantOnhit, action);
 			} break;
 			case TechId::ApostleLazarusAgent: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
-					u32 action_sound = helper::get_random_sfx_between(SoundId::ApostleToggleLazarus01, SoundId::ApostleToggleLazarus03);
+					u32 action_sound = helper::get_random_unit_response(SoundId::ApostleToggleLazarus01, SoundId::ApostleToggleLazarus03);
 					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				queue_generic_ability(RustId::ToggleLazarusAgent, 1);
@@ -161,7 +161,7 @@ namespace hooks
 			} break;
 			case TechId::PsionicStorm: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
-					u32 action_sound = helper::get_random_sfx_between(SoundId::Protoss_TEMPLAR_PTePss01_WAV, SoundId::Protoss_TEMPLAR_PTePss02_WAV);
+					u32 action_sound = helper::get_random_unit_response(SoundId::Protoss_TEMPLAR_PTePss01_WAV, SoundId::Protoss_TEMPLAR_PTePss02_WAV);
 					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				helper::issue_tri_target_order(OrderId::PsiStorm, 0, 0);
@@ -175,7 +175,7 @@ namespace hooks
 			} break;
 			case TechId::Tyranny: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
-					u32 action_sound = helper::get_random_sfx_between(SoundId::Protoss_DARCHON_PDaPss00_WAV, SoundId::Protoss_DARCHON_PDaPss01_WAV);
+					u32 action_sound = helper::get_random_unit_response(SoundId::Protoss_DARCHON_PDaPss00_WAV, SoundId::Protoss_DARCHON_PDaPss01_WAV);
 					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				helper::issue_tri_target_order(OrderId::CastTyranny, 0, 0);

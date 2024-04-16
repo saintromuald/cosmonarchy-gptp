@@ -95,7 +95,7 @@ namespace hooks
 				}
 				if (!unit_ext->timers[TimerSwarmingOmenAudio]) {
 					unit_ext->timers[TimerSwarmingOmenAudio] = 36;
-					helper::play_sound_from_unit(helper::get_random_sfx_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02), unit, 1, 0);
+					helper::play_sound_from_unit(helper::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02, 31), unit, 1, 0);
 				}
 			}
 		}

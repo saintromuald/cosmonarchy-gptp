@@ -78,6 +78,14 @@ u32 get_construction_graphic(Unit* unit)
 				return ImageId::TosgriliskBirthCocoon;
 			}
 		} break;
+		case UnitId::ZergAlgoztalisk:
+		{
+			if (is_ocsal) {
+				return ImageId::AlgoztaliskBirthEgg;
+			} else {
+				return ImageId::AlgoztaliskBirthCocoon;
+			}
+		} break;
 		case UnitId::ZergAlkajelisk:
 		{
 			if (is_ocsal) {
@@ -91,7 +99,7 @@ u32 get_construction_graphic(Unit* unit)
 			if (is_ocsal) {
 				return ImageId::ZarcavrokorBirthEgg;
 			} else {
-				return ImageId::ZarcavrokorBirthEgg; // Cocoon birth was not made yet. -Pr0nogo
+				return ImageId::ZarcavrokorBirthCocoon;
 			}
 		} break;
 	}

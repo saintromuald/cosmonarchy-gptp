@@ -136,7 +136,7 @@ namespace helper {
 	s32 dataTransfer06(s32 a1);
 
 	// For get_random_yes_unit_response
-	u32 get_random_sfx_between(u32 min, u32 max);													// 0048E940
+	u32 get_random_unit_response(u32 min, u32 max);													// 0048E940
 	s16 get_region_id(s32 x, s32 y);																// 0049C9F0
 
 	// For ai_train_unit
