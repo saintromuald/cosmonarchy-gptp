@@ -328,6 +328,7 @@ static KiterType get_kiter_type(u32 unit_id) {
 	switch(unit_id) {
 		case UnitId::TerranPhalanxSiegeMode:
 		case UnitId::TerranPhalanxSiegeModeTurret:
+		case UnitId::TerranDilettante:
 		case UnitId::ZergLakizilisk: {
 			// No kiting; Just smart targeting
 			return KiterType_TargetingOnly;
