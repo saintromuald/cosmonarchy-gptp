@@ -104,7 +104,7 @@ namespace {
 		__asm {
 			MOV		ESI, EAX
 			MOV		byte ptr[ESI + 0x85], 0
-			MOVZX	EAX, byte ptr[ESI + 0x4E]//unit->main_order_state
+			MOVZX	EAX, byte ptr[ESI + 0x4E] // unit->main_order_state
 			JMP		perform_orders_E9E67
 		}
 	}
@@ -112,13 +112,13 @@ namespace {
 	const u32 setUnitStatTxtErrorMsg_8CCB9 = 0x0048CCB9;
 	void __declspec(naked) set_unit_stat_txt_error_message_patch_8CCB4() {
 		__asm {
-			MOV        ECX, ds: [0x006D0F14]//g_is_in_replay
-			TEST    ECX, ECX
-			JNE        offset is_in_replay
-			PUSH    218
-			JMP        setUnitStatTxtErrorMsg_8CCB9
+			MOV		ECX, ds: [0x006D0F14] // g_is_in_replay
+			TEST	ECX, ECX
+			JNE		offset is_in_replay
+			PUSH	218
+			JMP		setUnitStatTxtErrorMsg_8CCB9
 
-			is_in_replay :
+			is_in_replay:
 			RET
 		}
 	}
@@ -128,7 +128,7 @@ namespace hooks {
 	void inject_orders_root_hooks() {
 	//	jump_patch(orders_id_cases_wrapper,			0x004EBED0,	5);
 	//	jump_patch(secondary_orders_root_wrapper,	0x004EC170,	1);
-	//	jump_patch(main_orders_root_wrapper,		0x004EC4D0,	3);
+		jump_patch(main_orders_root_wrapper,		0x004EC4D0,	3);
 		jump_patch(do_next_queued_order_wrapper,	0x00475000,	1);
 		jump_patch(orders_stay_in_range_wrapper,	0x0047C4F0,	0);
 		jump_patch(partial_order_handling_wrapper,	0x004EBED0,	5);

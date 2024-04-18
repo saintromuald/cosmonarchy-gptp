@@ -3184,12 +3184,11 @@ namespace hooks {
 		}
 
 		// Clear speed buffs for currently-moving flingy units. -Pr0nogo
-		if (unit_ext->timers[TimerTerminalSurge] == 1 || unit_ext->timers[TimerCausticDischargeSpeed] == 1)
-		{
+		if (unit_ext->timers[TimerTerminalSurge] == 1) {
 			should_update_speed = true;
 		}
 
-		if (unit_ext->timers[TimerCausticDischargeSpeed] > 1) {
+		if (unit_ext->timers[TimerCausticDischargeSpeed] >= 1) {
 			should_update_speed = true;
 		}
 

@@ -17,7 +17,7 @@ namespace Func_Type {
 	};
 }
 
-static u32 mainOrder_func_offsets[][3] {
+static u32 main_order_func_offsets[][3] {
 	{ 0x00479480,	/*OrderId::Die*/					Func_Type::PUSH,0},
 	{ 0x0047BBA0,	/*OrderId::Stop*/					Func_Type::EAX,	2},
 	{ 0x00475B90,	/*OrderId::Guard*/					Func_Type::ESI,	2},
@@ -75,7 +75,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x004F6FA0,	/*OrderId::CarrierAttack2*/			Func_Type::EAX,	2},
 	{ 0x00466720,	/*OrderId::CarrierIgnore2*/			Func_Type::EAX,	2},
 	{ 0x004666A0,	/*OrderId::CarrierFight*/			Func_Type::EDI,	2},
-	{ 0x004666A0,	/*OrderId::HoldPositionSolarion*/			Func_Type::EDI,	2},
+	{ 0x004666A0,	/*OrderId::HoldPositionSolarion*/	Func_Type::EDI,	2},
 	{ 0x004665D0,	/*OrderId::Reaver*/					Func_Type::EDI,	2},
 	{ 0x00465690,	/*OrderId::ReaverAttack1*/			Func_Type::EAX,	2},
 	{ 0x004F6FA0,	/*OrderId::ReaverAttack2*/			Func_Type::EAX,	2},
@@ -114,7 +114,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x004E7300,	/*OrderId::Pickup1*/				Func_Type::EAX,	2},
 	{ 0x004E75D0,	/*OrderId::Pickup2*/				Func_Type::EDI,	2},
 	{ 0x004E73B0,	/*OrderId::BunkerLoad*/				Func_Type::EDI,	2},
-	{ 0x004E7B70,	/*OrderId::TransportLoad*/				Func_Type::EAX,	2},
+	{ 0x004E7B70,	/*OrderId::TransportLoad*/			Func_Type::EAX,	2},
 	{ 0x004F3E10,	/*OrderId::Powerup2*/				Func_Type::EAX,	2},
 	{ 0x00464BD0,	/*OrderId::SiegeMode*/				Func_Type::EDI,	1},
 	{ 0x00464AE0,	/*OrderId::TankMode*/				Func_Type::EAX,	1},
@@ -125,8 +125,8 @@ static u32 mainOrder_func_offsets[][3] {
 	{ NOTVALID,		/*OrderId::GuardianAspect*/			Func_Type::EAX,	0},
 	{ 0x004948B0,	/*OrderId::WarpingArchon*/			Func_Type::EAX,	1},
 	{ 0x00493B10,	/*OrderId::CompletingArchonSummon*/	Func_Type::ESI,	1},
-	{ 0x00478D10,	/*OrderId::HoldPositionNormal*/			Func_Type::EAX,	2},
-	{ 0x004EB5B0,	/*OrderId::HoldPositionMatraleth*/			Func_Type::ESI,	2},
+	{ 0x00478D10,	/*OrderId::HoldPositionNormal*/		Func_Type::EAX,	2},
+	{ 0x004EB5B0,	/*OrderId::HoldPositionMatraleth*/	Func_Type::ESI,	2},
 	{ NOTVALID,		/*OrderId::Cloak*/					Func_Type::EAX,	0},
 	{ NOTVALID,		/*OrderId::Decloak*/				Func_Type::EAX,	0},
 	{ 0x004E80D0,	/*OrderId::Unload*/					Func_Type::EAX,	2},
@@ -154,7 +154,7 @@ static u32 mainOrder_func_offsets[][3] {
 	{ 0x004F6EF0,	/*OrderId::Rightclickaction*/		Func_Type::EAX,	2},
 	{ 0x004788E0,	/*OrderId::SapUnit*/				Func_Type::EAX,	2},
 	{ 0x00478A40,	/*OrderId::SapLocation*/			Func_Type::EAX,	2},
-	{ 0x004EB5B0,	/*OrderId::HoldPositionSuicide*/			Func_Type::ESI,	2},
+	{ 0x004EB5B0,	/*OrderId::HoldPositionSuicide*/	Func_Type::ESI,	2},
 	{ 0x00494470,	/*OrderId::Teleport*/				Func_Type::PUSH,2},
 	{ NOTVALID,		/*OrderId::TeleporttoLocation*/		Func_Type::EAX,	0},
 	{ 0x00464E40,	/*OrderId::PlaceScanner*/			Func_Type::EAX,	2},
@@ -210,15 +210,14 @@ static u32 mainOrder_func_offsets[][3] {
 };
 
 namespace hooks {
-	// Called from a global unitUpdate function
-	// Deal with some automatic orders like being in a bunker
+	// Called from a global unitUpdate function. Deals with some automatic orders like being in a bunker. -GPTP
 	void orders_id_cases(Unit* unit)
 	{
 		switch (unit->main_order_id)
 		{
 			case OrderId::Die:
 			{
-				helper::PUSH_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
+				helper::PUSH_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 			} break;	
 			case OrderId::TurretAttack:
 			case OrderId::Nothing2:
@@ -232,12 +231,9 @@ namespace hooks {
 			case OrderId::StayInRange:
 			case OrderId::EnterTransport:
 			{
-				if (unit->status & UnitStatus::InBuilding)
-				{
+				if (unit->status & UnitStatus::InBuilding) {
 					unit->order_computer(OrderId::BunkerGuard);
-				}
-				else
-				{
+				} else {
 					unit->order_computer(OrderId::Nothing2);
 				}
 			} break;
@@ -249,52 +245,37 @@ namespace hooks {
 			case OrderId::Powerup1:
 			case OrderId::Powerup2:
 			{
-				helper::EAX_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
+				helper::EAX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 			} break;
 			default:
 			{
-				if (unit->order_queue_timer != 0)
-				{
+				if (unit->order_queue_timer != 0) {
 					unit->order_queue_timer--;
-				}
-				else
-				{
+				} else {
 					unit->order_queue_timer = 8;
-					if (unit->main_order_id == OrderId::BunkerGuard)
-					{
+					if (unit->main_order_id == OrderId::BunkerGuard) {
 						helper::EAX_order(unit, 0x004790A0);
-					}	
-					else if (unit->main_order_id == OrderId::TransportLoad)
-					{
-						helper::EAX_order(unit, mainOrder_func_offsets[OrderId::TransportLoad][0]);
-					}
-					else if (unit->main_order_id == OrderId::ComputerAI)
-					{
-						if (unit->status & UnitStatus::InBuilding)
-						{
-							helper::EAX_order(unit, 0x004790A0);	//OrderId::BunkerGuard
+					}	 else if (unit->main_order_id == OrderId::TransportLoad) {
+						helper::EAX_order(unit, main_order_func_offsets[OrderId::TransportLoad][0]);
+					} else if (unit->main_order_id == OrderId::ComputerAI) {
+						if (unit->status & UnitStatus::InBuilding) {
+							helper::EAX_order(unit, 0x004790A0);	// OrderId::BunkerGuard
 						}
-					}
-					else if (unit->main_order_id == OrderId::RescuePassive)
-					{
-						helper::EAX_order(unit, mainOrder_func_offsets[OrderId::RescuePassive][0]);
+					} else if (unit->main_order_id == OrderId::RescuePassive) {
+						helper::EAX_order(unit, main_order_func_offsets[OrderId::RescuePassive][0]);
 					}
 				}
 			} break;
 		}	
 	}
 
-	//Also known as 004EC170 performSecondaryOrders
-	//Less complex than the one about main orders, so
-	//not using any array. Still using a switch though.
+	// Also known as 004EC170 perform_secondary_orders
+	// Less complex than the one about main orders, so not using any array. Still using a switch though. -GPTP
 	void secondary_orders_root(Unit* unit)
 	{
-		if (unit->secondary_order_id == OrderId::Hallucination2)
-		{
+		if (unit->secondary_order_id == OrderId::Hallucination2) {
 			helper::EAX_order(unit, 0x004F63A0);
-		}
-		else if (!unit->is_frozen())
-		{
+		} else if (!unit->is_frozen()) {
 			switch (unit->secondary_order_id)
 			{
 				case OrderId::BuildAddon:
@@ -345,111 +326,120 @@ namespace hooks {
 	// Implementation quite different from original because hard to manipulate.
 	void main_orders_root(Unit* unit)
 	{
-		// 1st part is functions that ignore disabled/stunned/other status
-		// Not implemented through an array like original, since there are only 4 valid cases.	
-		if (unit->main_order_id == OrderId::Die)
+		// 1st part is functions that ignore disabled/stunned/other statuses.
+		// Not implemented through an array like original, since there are only 4 valid cases. -GPTP
+		switch (unit->main_order_id)
 		{
-			helper::PUSH_order(unit, mainOrder_func_offsets[OrderId::Die][0]);
-		} else if (unit->main_order_id == OrderId::BuildSelf2) {
-			helper::EAX_order(unit, mainOrder_func_offsets[OrderId::BuildSelf2][0]);
-		} else if (unit->main_order_id == OrderId::NukeTrack) {
-			helper::EBX_order(unit, mainOrder_func_offsets[OrderId::NukeTrack][0]);
-		} else if (unit->main_order_id == OrderId::Warpin) {
-			helper::EDI_order(unit, mainOrder_func_offsets[OrderId::Warpin][0]);
-		} else if (unit->is_frozen() || (!(unit->status & UnitStatus::Reacts) && unit->status & UnitStatus::CanNotAttack)) {
-			helper::EAX_order(unit, 0x0043FF00); //known as "getMaelstromTarget", though don't make much sense in this context
-		} else {
-			// 2nd part is functions that are used if not one of those of the 1st part and not disabled unit.
-			// Ignore orderQueueTimer, and if they change the mainOrderId to something that can be used in the 3rd part, then both the 2nd and 3rd part functions would indeed be used.
-			if (mainOrder_func_offsets[unit->main_order_id][2] == 1 && mainOrder_func_offsets[unit->main_order_id][0] != NOTVALID)
+			case OrderId::Die:
 			{
-				switch (mainOrder_func_offsets[unit->main_order_id][1])
-				{
-					case Func_Type::EAX:
-					{
-						helper::EAX_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-					} break;
-					case Func_Type::EBX:
-					{
-						helper::EBX_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-					} break;
-					case Func_Type::ECX:
-					{
-						helper::ECX_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-					} break;
-					case Func_Type::EDI:
-					{
-						helper::EDI_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-					} break;
-					case Func_Type::ESI:
-					{
-						helper::ESI_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-					} break;
-					case Func_Type::PUSH:
-					{
-						helper::PUSH_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-					} break;	
+				helper::PUSH_order(unit, main_order_func_offsets[OrderId::Die][0]);
+			} break;
+			case OrderId::BuildSelf2:
+			{
+				helper::EAX_order(unit, main_order_func_offsets[OrderId::BuildSelf2][0]);
+			} break;
+			case OrderId::NukeTrack:
+			{
+				helper::EBX_order(unit, main_order_func_offsets[OrderId::NukeTrack][0]);
+			} break;
+			case OrderId::Warpin:
+			{
+				helper::EDI_order(unit, main_order_func_offsets[OrderId::Warpin][0]);
+			} break;
+			default: {
+				if (unit->is_frozen() || (!(unit->status & UnitStatus::Reacts) && unit->status & UnitStatus::CanNotAttack)) {
+					helper::EAX_order(unit, 0x0043FF00); //known as "get_maelstrom_target", though don't make much sense in this context
+				} else {
+					// 2nd part is functions that are used if not one of those of the 1st part and not disabled unit.
+					// Ignore order_queue_timer, and if they change the main_order_id to something that can be used
+					// in the 3rd part, then both the 2nd and 3rd part functions would indeed be used. -GPTP
+					if (main_order_func_offsets[unit->main_order_id][2] == 1 && main_order_func_offsets[unit->main_order_id][0] != NOTVALID) {
+						switch (main_order_func_offsets[unit->main_order_id][1])
+						{
+							case Func_Type::EAX:
+							{
+								helper::EAX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+							} break;
+							case Func_Type::EBX:
+							{
+								helper::EBX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+							} break;
+							case Func_Type::ECX:
+							{
+								helper::ECX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+							} break;
+							case Func_Type::EDI:
+							{
+								helper::EDI_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+							} break;
+							case Func_Type::ESI:
+							{
+								helper::ESI_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+							} break;
+							case Func_Type::PUSH:
+							{
+								helper::PUSH_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+							} break;	
+						}
+					}
+	
+					if (unit->order_queue_timer != 0) {
+						unit->order_queue_timer--;
+					} else if (unit->movement_state != UnitMovement_CheckIllegal && unit->movement_state != UnitMovement_MoveToLegal) {
+						// movement_state checks are new, to prevent units from procesesing orders when they should be decolliding. -Pr0nogo
+						
+						// 3rd part, executed after the 2nd part (whether it did something or not) only if unit->order_queue_timer was 0.
+						// Execute "get_target_something" before, and has some special cases, otherwise work pretty much like 2nd part. -GPTP
+	
+						unit->order_queue_timer = 8;
+						helper::EAX_order(unit, 0x0043FF90); // known as "get_target_something"
+						unit->ai_action_flags = 0;
+	
+						if (unit->main_order_id == OrderId::HoldPositionMatraleth || unit->main_order_id == OrderId::HoldPositionSuicide) {
+							if (unit->main_order_state == 0) {
+								helper::ESI_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+								unit->main_order_state = 1;
+							}
+							if (unit->order_queue_head) {
+								helper::ECX_order(unit, main_order_func_offsets[OrderId::Nothing2][0]);
+							}
+						} else if (unit->main_order_id == OrderId::Nothing2) {
+							if (unit->order_queue_head) {
+								helper::ECX_order(unit, main_order_func_offsets[OrderId::Nothing2][0]);
+							}
+						} else if (main_order_func_offsets[unit->main_order_id][2] == 2) {
+							switch (main_order_func_offsets[unit->main_order_id][1])
+							{
+								case Func_Type::EAX:
+								{
+									helper::EAX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+								} break;
+								case Func_Type::EBX:
+								{
+									helper::EBX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+								} break;
+								case Func_Type::ECX:
+								{
+									helper::ECX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+								} break;
+								case Func_Type::EDI:
+								{
+									helper::EDI_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+								} break;
+								case Func_Type::ESI:
+								{
+									helper::ESI_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+								} break;
+								case Func_Type::PUSH:
+								{
+									helper::PUSH_order(unit, main_order_func_offsets[unit->main_order_id][0]);
+								} break;
+							}
+						}
+					}
 				}
 			}
-	
-			if (unit->order_queue_timer != 0)
-			{
-				unit->order_queue_timer--;
-			} else {	
-				// 3rd part, executed after the 2nd part (whether it did something or not) only if unit->orderQueueTimer was 0.
-				// Execute "getTargetSomething" before, and has some special cases, otherwise work pretty much like 2nd part
-	
-				unit->order_queue_timer = 8;
-				helper::EAX_order(unit, 0x0043FF90); //known as "getTargetSomething"
-				unit->ai_action_flags = 0;
-	
-				if (unit->main_order_id == OrderId::HoldPositionMatraleth || unit->main_order_id == OrderId::HoldPositionSuicide)
-				{	
-					if (unit->main_order_state == 0)
-					{
-						helper::ESI_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-						unit->main_order_state = 1;
-					}	
-					if (unit->order_queue_head)
-					{
-						helper::ECX_order(unit, mainOrder_func_offsets[OrderId::Nothing2][0]);
-					}	
-				} else if (unit->main_order_id == OrderId::Nothing2) {
-					if (unit->order_queue_head)
-					{
-						helper::ECX_order(unit, mainOrder_func_offsets[OrderId::Nothing2][0]);
-					}
-				} else if (mainOrder_func_offsets[unit->main_order_id][2] == 2) {
-					switch (mainOrder_func_offsets[unit->main_order_id][1])
-					{
-						case Func_Type::EAX:
-						{
-							helper::EAX_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-						} break;
-						case Func_Type::EBX:
-						{
-							helper::EBX_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-						} break;
-						case Func_Type::ECX:
-						{
-							helper::ECX_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-						} break;
-						case Func_Type::EDI:
-						{
-							helper::EDI_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-						} break;
-						case Func_Type::ESI:
-						{
-							helper::ESI_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-						} break;
-						case Func_Type::PUSH:
-						{
-							helper::PUSH_order(unit, mainOrder_func_offsets[unit->main_order_id][0]);
-						} break;
-					}
-				}	
-			}	
-		}	
+		}
 	}
 
 	// Hooked to refund queued structures. -Pr0nogo
@@ -689,8 +679,7 @@ namespace hooks {
 			case OrderId::NukeLaunch:
 			{
 				u32 order_state = unit->main_order_state;
-				if (order_state >= 5 || unit->connected_unit)
-				{
+				if (order_state >= 5 || unit->connected_unit) {
 					switch (order_state)
 					{
 						case 0:
@@ -724,27 +713,23 @@ namespace hooks {
 						} break;
 						case 3:
 						{
-							if (!(unit->movement_flags & MovementFlags_Accelerating))
-							{
-								helper::play_sprite_iscript(unit->sprite, 21, 1);
+							if (!(unit->movement_flags & MovementFlags_Accelerating)) {
+								helper::play_sprite_iscript(unit->sprite, IscriptAnimation::WarpIn, 1);
 								unit->main_order_state = 4;
 							}
 						} break;
 						case 4:
 						{
 							u32 order_signal = unit->order_signal;
-							if (order_signal & 2)
-							{
+							if (order_signal & 2) {
 								unit->order_signal = order_signal & 0xFD;
 
 								u32 bounds_x = unit->order_target.pt.x;
-								if (units_dat::unit_bounds[UnitId::TerranMorningstar].x > bounds_x)
-								{
+								if (units_dat::unit_bounds[UnitId::TerranMorningstar].x > bounds_x) {
 									bounds_x = units_dat::unit_bounds[14].x;
 								}
 								u32 bounds_y = units_dat::unit_bounds[UnitId::TerranMorningstar].y;
-								if (units_dat::unit_bounds[UnitId::TerranMorningstar].y <= unit->order_target.pt.y - 320)
-								{
+								if (units_dat::unit_bounds[UnitId::TerranMorningstar].y <= unit->order_target.pt.y - 320) {
 									bounds_y = unit->order_target.pt.y - 320;
 								}
 
@@ -757,8 +742,7 @@ namespace hooks {
 						} break;
 						case 5:
 						{
-							if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 10))
-							{
+							if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 10)) {
 								unit->order_target.unit = unit;
 								for (Image* image = unit->sprite->images.head; image; image = image->link.next)
 								{
@@ -770,8 +754,7 @@ namespace hooks {
 						case 6:
 						{
 							u32 order_signal_2 = unit->order_signal;
-							if (order_signal_2 & 1)
-							{
+							if (order_signal_2 & 1) {
 								unit->order_signal = order_signal_2 & 0xFE;
 								unit->user_action_flags |= 4;
 								helper::orders_self_destructing(unit);
@@ -798,28 +781,23 @@ namespace hooks {
 			{
 				u32 timer = unit->order_queue_timer;
 				unit->order_queue_timer = timer - 1;
-				if (!timer)
-				{
+				if (!timer) {
 					unit->order_queue_timer = 8;
 					switch (unit->main_order_id)
 					{
 						case OrderId::BunkerGuard:
 						case OrderId::ComputerAI:
 						{
-							if (unit->main_order_id == OrderId::BunkerGuard || unit->status & UnitStatus::InBuilding) // This seems tautolougus but it's to omit a stupid jump. -Pr0nogo
-							{
+							if (unit->main_order_id == OrderId::BunkerGuard || unit->status & UnitStatus::InBuilding) { // This seems tautologous but it's to omit a stupid jump. -Pr0nogo
 								Unit* garrisoned_unit = unit;
 								u32 garrisoned_unit_id = unit->id;
-								if (bw::unit_is_ranged_attacker(garrisoned_unit))
-								{
+								if (bw::unit_is_ranged_attacker(garrisoned_unit)) {
 									garrisoned_unit->status |= UnitStatus::AttackMove;
 									Unit* subunit_in_bunker = garrisoned_unit->subunit;
-									if (subunit_in_bunker)
-									{
+									if (subunit_in_bunker) {
 										subunit_in_bunker->status |= UnitStatus::AttackMove;
 									}
-									if (helper::attack_apply_cooldown(garrisoned_unit))
-									{
+									if (helper::attack_apply_cooldown(garrisoned_unit)) {
 										u32 bunker_x_pos = garrisoned_unit->order_target.pt.x;
 										u32 bunker_y_pos = garrisoned_unit->order_target.pt.y;
 										if (bunker_x_pos != garrisoned_unit->next_target_waypoint.x
