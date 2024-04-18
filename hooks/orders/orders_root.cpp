@@ -678,16 +678,15 @@ namespace hooks {
 			} break;
 			case OrderId::NukeLaunch:
 			{
-				u32 order_state = unit->main_order_state;
-				if (order_state >= 5 || unit->connected_unit) {
-					switch (order_state)
+				if (unit->main_order_state >= 5 || unit->connected_unit) {
+					switch (unit->main_order_state)
 					{
 						case 0:
 						{
-						//	helper::play_sound_from_unit(SoundId::Bullet_TNsFir00_wav, unit, 1, 0);
-						//	helper::change_movement_target_move_target_2(unit, unit->position.x, units_dat::unit_bounds[UnitId::TerranMorningstar].y);
-						//	unit->main_order_timer = 90;
-						//	unit->main_order_state = 1;
+							helper::play_sound_from_unit(SoundId::Bullet_TNsFir00_wav, unit, 1, 0);
+							helper::change_movement_target_move_target_2(unit, unit->position.x, units_dat::unit_bounds[UnitId::TerranMorningstar].y);
+							unit->main_order_timer = 90;
+							unit->main_order_state = 1;
 						} break;
 						case 1:
 						{
