@@ -750,7 +750,7 @@ namespace helper {
 	bool unit_is_unselectable(u16 unit_id);																			// 0046ED80
 	void function_0046F040(Unit* current_unit, Unit** unit_list, Unit* clicked_unit, u32 list_length);				// 0046F040
 	u32 combine_lists(Unit* unit, Unit** unit_list_1, Unit** unit_list_2, u32 list_length);							// 0046F290
-	void select_units_if_alt_not_held(Unit** unit_list, u32 unit_list_length, char play_sound, u32 send_command);	// 0046FA00
+	void select_units_if_alt_not_held(Unit** unit_list, u32 unit_list_length, u8 play_sound, u32 send_command);		// 0046FA00
 	u32 unit_to_unit_id(Unit* unit);																				// 0047B1D0
 	bool unit_is_standard_and_movable(Unit* unit); 																	// 0047B770
 	void select_building_sfx(Unit* unit);																			// 0048F910
@@ -811,7 +811,7 @@ namespace helper {
 
 	// For select_units
 	s32 select_single_unit_from_id(s32 index);																		// 00496D30
-	s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, char play_sound, u32 send_command);	// 0049AEF0
+	s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, u8 play_sound, u32 send_command);	// 0049AEF0
 	s32 snet_get_turns_in_transit(u32* turns);																		// 00410274
 	u8 send_turn();
 	s32 serr_get_last_error();

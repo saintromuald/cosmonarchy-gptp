@@ -5758,7 +5758,7 @@ namespace helper {
 		return return_value;
 	}
 
-	void select_units_if_alt_not_held(Unit** unit_list, u32 unit_list_length, char play_sound, u32 send_command) {
+	void select_units_if_alt_not_held(Unit** unit_list, u32 unit_list_length, u8 play_sound, u32 send_command) {
 		const u32 func_address = 0x0046FA00;
 		static u32 play_sound_xd = play_sound;
 		__asm {
@@ -6169,7 +6169,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, char play_sound, u32 send_command) {
+	s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, u8 play_sound, u32 send_command) {
 		const u32 func_address = 0x0049AEF0;
 		static s32 result;
 		static u32 play_sound_xd = play_sound;

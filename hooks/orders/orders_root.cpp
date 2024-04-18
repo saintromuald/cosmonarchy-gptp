@@ -684,10 +684,10 @@ namespace hooks {
 					{
 						case 0:
 						{
-							helper::play_sound_from_unit(SoundId::Bullet_TNsFir00_wav_2, unit, 1, 0);
-							helper::change_movement_target_move_target_2(unit, unit->position.x, units_dat::unit_bounds[UnitId::TerranMorningstar].y);
-							unit->main_order_timer = 90;
-							unit->main_order_state = 1;
+						//	helper::play_sound_from_unit(SoundId::Bullet_TNsFir00_wav, unit, 1, 0);
+						//	helper::change_movement_target_move_target_2(unit, unit->position.x, units_dat::unit_bounds[UnitId::TerranMorningstar].y);
+						//	unit->main_order_timer = 90;
+						//	unit->main_order_state = 1;
 						} break;
 						case 1:
 						{

@@ -192,6 +192,10 @@ namespace hooks {
 			if (unit_id != UnitId::ProtossSteward && unit_id != UnitId::ProtossPlasmaShell) {
 				u32 ready_sound = units_dat::sound_ready[unit_id];
 				switch (unit_id) {
+					case UnitId::TerranMorningstar:
+					{
+						ready_sound = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_MissileComplete);
+					} break;
 					case UnitId::TerranTalos: {
 						ready_sound = helper::get_random_unit_response(SoundId::TalosReady01, SoundId::TalosReady03);
 					} break;
