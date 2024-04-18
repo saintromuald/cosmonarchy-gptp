@@ -42,9 +42,9 @@ struct TriggerSystemState {
 inline TriggerSystemState g_trigger;
 
 enum WitnessMode : u8 {
-	WitnessMode_Disabled = 0,   // Normal Player	|	No witness mode && shown on scoreboard
-	WitnessMode_Pure,			// Pure Witness		|	Witness Mode && hidden on scoreboard
-	WitnessMode_Defeated,		// Defeated Player	|	Witness Mode && shown on scoreboard
+	WitnessMode_Disabled = 0,   // Normal Player	|	No witness mode && shown on scorescreen
+	WitnessMode_Pure,			// Pure Witness		|	Witness Mode && hidden on scorescreen
+	WitnessMode_Defeated,		// Defeated Player	|	Witness Mode && shown on scorescreen
 };
 
 enum Celebration : u8 {

@@ -958,7 +958,7 @@ namespace hooks
 					bw::add_massacre_resource(data.target->player);
 				}
 
-				u32 sound = helper::get_random_unit_response(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
+				u32 sound = helper::rand_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04, 31);
 				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99)
 				&& !*g_is_in_replay && data.target->player == *g_local_nation_id) {
 					helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);

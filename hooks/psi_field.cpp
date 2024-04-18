@@ -5,24 +5,23 @@
 
 namespace hooks
 {
-	// Actual state check whether a unit can generate a psi field
+	// Actual state check for whether a unit can generate a psi field.
 	bool is_ready_to_make_psi_field(Unit* unit) {
 		return unit_id_is_psi_provider(unit->id);
 	}
 
-	// Conditions on which the power field should be showed
+	// Conditions on which the power field should be shown.
 	bool unit_can_show_power_for(Unit* unit, u32 player) {
-		if (g_globals->players[player].witness_mode || *g_is_in_replay) {
+		if (bw::player_is_witness(player) || bw::in_replay()) {
 			return true;
 		}
-		if (!bw::is_allied_to(unit->player, player))
-		{
+		if (!bw::is_allied_to(unit->player, player)) {
 			return false;
 		}
 		return true;
 	}
 
-	// Hooked to allow allies to benefit from power -Veeq7
+	// Hooked to allow allies to benefit from power. -Veeq7
 	bool unit_has_power(u32 unit_id, s32 x, s32 y, u8 player) { // 004936B0
 		if (!(units_dat::base_property[unit_id] & UnitProperty::RequiredPsi)) {
 			return true;

@@ -134,7 +134,7 @@ namespace hooks
 					{
 						case UnitId::TerranEidolon:
 						{
-							action_sound = helper::get_random_unit_response(SoundId::Terran_GHOST_TGhPss00_wav, SoundId::Terran_GHOST_TGhPss01_wav);
+							action_sound = helper::rand_between(SoundId::Terran_GHOST_TGhPss00_wav, SoundId::Terran_GHOST_TGhPss01_wav, 31);
 						} break;
 					}
 

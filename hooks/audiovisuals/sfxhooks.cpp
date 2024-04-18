@@ -9,24 +9,7 @@ namespace hooks {
 	// Hooked to allow more unit ids to have "annoyed" lines.
 	// Updated 22 July 2022 to remove "annoyed" lines, as they are now used for "under attack" lines. -Pr0nogo
 	u32 get_unit_response_id(s32 unit_id, s32 last_sound_id) { // 0048EA20
-		/*
-		if (!(units_dat::group_flags[unit_id].is_building)) { // original check was unit_id <= DisruptionWeb, now checks for existance of annoyed lines
-			u32 sound = bw::get_unit_data(UnitsDatEntries::SndPssFirst, unit_id);
-			if (sound) {
-				if (last_sound_id <= bw::get_unit_data(UnitsDatEntries::SndPssLast, unit_id) - sound + 1) {
-					if (last_sound_id) {
-						return sound + last_sound_id - 1;
-					}
-				} else {
-					*selection_sound_counter = 0;
-				}
-			}
-		}
-		*/
-
-		u32 what_start = units_dat::sound_what_first[unit_id];
-		u32 what_end   = units_dat::sound_what_last [unit_id];
-		return helper::get_random_unit_response(what_start, what_end);
+		return helper::get_random_unit_response(units_dat::sound_what_first[unit_id], units_dat::sound_what_last[unit_id]);
 	}
 	
 	// Hooked to allow for aggressive order unit responses. -Pr0nogo

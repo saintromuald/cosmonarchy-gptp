@@ -3831,8 +3831,7 @@ namespace bw {
 		return factor;
 	}
 
-	bool unit_has_shields(Unit* unit)
-	{
+	bool unit_has_shields(Unit* unit) {
 		// This will potentially allow for more flexible shield crigs and behaviors. -Pr0nogo
 		return units_dat::shields_enabled[unit->id];
 	}
@@ -3848,6 +3847,6 @@ namespace bw {
 	}
 
 	bool player_is_witness(u32 player) {
-		return g_globals->players[player].witness_mode != WitnessMode_Disabled;
+		return *g_is_in_game && g_globals->players[player].witness_mode;
 	}
 }
