@@ -15080,23 +15080,33 @@ namespace helper {
 		}
 	}
 
-	void refreshAllVisibleSprites(Sprite* sprite) {
+	void refresh_all_visible_sprites(Sprite* sprite) {
 		const u32 func_address = 0x004976C0;
 		__asm {
 			PUSHAD
-			MOV		EAX, sprite
-			CALL	func_address
+			MOV EAX, sprite
+			CALL func_address
 			POPAD
 		}
 	}
 
 	void update_image_draw_data(Image* image) {
 		const u32 function = 0x004D57B0;
-
 		__asm {
 			PUSHAD
 			MOV EAX, image
 			CALL function
+			POPAD
+		}
+	}
+
+	void orders_nuke_launch(Unit* unit)
+	{
+		const u32 func_address = 0x00464730;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
 			POPAD
 		}
 	}

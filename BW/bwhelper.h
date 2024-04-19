@@ -1740,6 +1740,7 @@ namespace helper {
 	void unit_refund_partial_technology(Unit* unit);							// 00453DD0
 	void unit_refund_partial_upgrade(Unit* unit);								// 00454220
 
-	void refreshAllVisibleSprites(Sprite* sprite);								// 004976C0
+	void refresh_all_visible_sprites(Sprite* sprite);							// 004976C0
 	void update_image_draw_data(Image* image);									// 004D57B0
+	void orders_nuke_launch(Unit* unit);										// 00464730
 }

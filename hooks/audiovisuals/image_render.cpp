@@ -466,7 +466,7 @@ namespace hooks {
 
 	//Parameter "cloakH" is now deprecated here.
 	void make_cloaked(u8 cloakH, Sprite* sprite, u8 cloakedStatus, u8 cloakL) {
-		helper::refreshAllVisibleSprites(sprite);
+		helper::refresh_all_visible_sprites(sprite);
 
 		if (cloakedStatus == 1) {
 			for (Image* image = sprite->images.head; image; image = image->link.next) {
@@ -535,7 +535,7 @@ namespace hooks {
 	}
 
 	void sub_4980F0(Sprite* sprite) {
-		helper::refreshAllVisibleSprites(sprite);
+		helper::refresh_all_visible_sprites(sprite);
 
 		for (Image* image = sprite->images.head; image; image = image->link.next) {
 			u8 type = image->palette_type;
