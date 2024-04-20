@@ -1029,6 +1029,7 @@ namespace ImageId {
 		EntropyGauntletsOverlaySmall				= 1107,
 		EntropyGauntletsOverlayMedium				= 1108,
 		EntropyGauntletsOverlayLarge				= 1109,
+		SavantFormSwitchPower						= 1110,
 		ShamanNaniteField							= 1158,
 		PhaseLineBlast								= 1195,
 
@@ -1239,6 +1240,10 @@ namespace ImageId {
 		AlgoztaliskBirthCocoon						= 1843,
 		GorgonPetrification							= 1844,
 		AutocratControlledOpposition				= 1845,
+		SavantFormSwitchEntropy						= 1846,
+		MaverickStimpackInject						= 1847,
+		MaverickStimpackProc						= 1848,
+		MaverickStimpackExpire						= 1849,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

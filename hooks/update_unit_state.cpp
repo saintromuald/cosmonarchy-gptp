@@ -535,17 +535,14 @@ namespace hooks
 	// Hooked for cloak rewrite animations - Pr0nogo
 	void do_cloak(Unit* unit, s32 sound_id) // 0049B440
 	{
-		if (!(unit->status & UnitStatus::Burrowed))
-		{
+		if (!(unit->status & UnitStatus::Burrowed)) {
 			helper::play_sound_from_unit(sound_id, unit, 1, 0);
 		}
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id)
-		{
+		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
 			bw::refresh_console();
 		}
 
-		if (unit->status & UnitStatus::Burrowed)
-		{
+		if (unit->status & UnitStatus::Burrowed) {
 			helper::update_sprite_flag_on_palette(unit->sprite);
 			helper::show_images_hidden_by_cloak(unit->sprite);
 			unit->status &= 0xFFFFFCFF;
@@ -553,8 +550,7 @@ namespace hooks
 			helper::update_sprite_images_for_cloak(unit->sprite);
 			unit->status = unit->status & 0xFFFFFEFF | UnitStatus::Cloaked;
 			Unit* subunit = unit->subunit;
-			if (subunit)
-			{
+			if (subunit) {
 				helper::update_sprite_images_for_cloak(subunit->sprite);
 				subunit->status = subunit->status & 0xFFFFFEFF | UnitStatus::Cloaked;
 			}

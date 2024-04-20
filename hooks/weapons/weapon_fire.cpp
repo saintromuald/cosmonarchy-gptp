@@ -477,8 +477,10 @@ namespace hooks {
 				// Madcap - Maverick Feeders passive
 				if (unit->id == UnitId::TerranMadcap) {
 					s32 stacks = unit_ext->values[ValueMadcapStacks];
-					if (stacks == 108) { // 9 stacks
+					if (stacks >= 108 && !unit_ext->values[ValueMadcapFullChargeRead]) { // 9 stacks
 						helper::play_sound_from_unit(helper::rand_between(SoundId::MadcapPassiveCharge01, SoundId::MadcapPassiveCharge03, 31), unit, 1, 0);
+						unit->sprite->create_top_overlay(ImageId::MaverickStimpackInject);
+						unit_ext->values[ValueMadcapFullChargeRead] = 1;
 					}
 					unit_ext->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
 				}

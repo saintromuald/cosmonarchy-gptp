@@ -81,7 +81,7 @@ namespace {
 	}
 
 	void __declspec(naked) can_harvest_gas_wrapper() { // 00469000
-		static const u32 jmp_address = 0x004690B0;
+		static const u32 jmp_address = 0x004690B1;
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX

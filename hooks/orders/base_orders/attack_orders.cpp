@@ -670,7 +670,7 @@ namespace hooks
 		u32 status = unit->status;
 		Unit* target_unit = unit->order_target.unit;
 		if (unit->is_frozen()
-		|| !target_unit || !AssertSprite(target_unit->sprite)
+		|| !target_unit || !target_unit->sprite // Sprite is new; for dying Lakizilisks
 		||  target_unit->status & UnitStatus::Invincible
 		||  target_unit->sprite->flags & SpriteFlags::Hidden
 		||  helper::unit_can_see_cloaked_target(target_unit, unit))

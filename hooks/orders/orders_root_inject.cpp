@@ -141,7 +141,7 @@ namespace hooks {
 	void inject_orders_root_hooks() {
 	//	jump_patch(orders_id_cases_wrapper,			0x004EBED0,	5);
 	//	jump_patch(secondary_orders_root_wrapper,	0x004EC170,	1);
-	//	jump_patch(main_orders_root_wrapper,		0x004EC4D0,	3);
+		jump_patch(main_orders_root_wrapper,		0x004EC4D0,	3);
 		jump_patch(do_next_queued_order_wrapper,	0x00475000,	1);
 		jump_patch(orders_stay_in_range_wrapper,	0x0047C4F0,	0);
 		jump_patch(partial_order_handling_wrapper,	0x004EBED0,	5);

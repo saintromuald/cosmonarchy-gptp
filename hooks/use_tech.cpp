@@ -103,12 +103,22 @@ namespace hooks
 				helper::issue_tri_target_order(OrderId::MagnaPulse, 0, 0);
 			} break;
 			case TechId::SavantOnhitToggle: {
-				s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
-				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
-					u32 action_sound = action ? helper::rand_between(SoundId::SavantSwitchPierce01, SoundId::SavantSwitchPierce03, 31) : helper::rand_between(SoundId::SavantSwitchSteal01, SoundId::SavantSwitchSteal03, 31);
-					bw::play_action_sound(action_sound, *g_active_portrait_unit);
+				UnitExt* unit_ext = get_unit_ext(unit);
+				if (unit_ext->timers[TimerSavantFormSwitchCooldown] < 1) {
+					s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
+					if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
+						u32 action_sound = action ? helper::rand_between(SoundId::SavantSwitchPierce01, SoundId::SavantSwitchPierce03, 31) : helper::rand_between(SoundId::SavantSwitchSteal01, SoundId::SavantSwitchSteal03, 31);
+						bw::play_action_sound(action_sound, *g_active_portrait_unit);
+					}
+					u32 sound = action ? SoundId::SavantSwitchA01 : SoundId::SavantSwitchB01;
+					helper::play_sound_from_unit(sound, unit, 1, 0);
+
+					u32 image_id = action ? ImageId::SavantFormSwitchPower : ImageId::SavantFormSwitchEntropy;
+					bw::add_unit_overlay(unit, image_id);
+
+					unit_ext->timers[TimerSavantFormSwitchCooldown] = 49;
+					queue_generic_ability(RustId::ToggleSavantOnhit, action);
 				}
-				queue_generic_ability(RustId::ToggleSavantOnhit, action);
 			} break;
 			case TechId::ApostleLazarusAgent: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {

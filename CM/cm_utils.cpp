@@ -199,3 +199,8 @@ const char* race_to_string(RaceId::Enum race) {
 	}
 	return "Custom";
 }
+
+bool order_id_ignores_collision(u32 order_id) {
+	return order_id == OrderId::Burrow
+		|| order_id == OrderId::Unburrow;
+}

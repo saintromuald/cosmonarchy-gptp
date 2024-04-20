@@ -1865,5 +1865,9 @@ namespace SoundId
 		FurenAdvisor_Tech01							= 3047,
 		FurenAdvisor_NoVespene01					= 3048,
 		FurenAdvisor_Warp01							= 3049,
+
+		SavantSwitchA01								= 3077,
+		SavantSwitchB01								= 3078,
+		StimpackExpire01							= 3079,
 	};
 }

@@ -385,8 +385,8 @@ namespace hooks {
 	
 					if (unit->order_queue_timer != 0) {
 						unit->order_queue_timer--;
-					} else if (unit->movement_state != UnitMovement_CheckIllegal && unit->movement_state != UnitMovement_MoveToLegal) {
-						// movement_state checks are new, to prevent units from procesesing orders when they should be decolliding. -Pr0nogo
+					} else if ((unit->movement_state != UnitMovement_CheckIllegal && unit->movement_state != UnitMovement_MoveToLegal) || order_id_ignores_collision(unit->main_order_id)) {
+						// the above checks are new, to prevent units from procesesing orders when they should be decolliding. -Pr0nogo
 						
 						// 3rd part, executed after the 2nd part (whether it did something or not) only if unit->order_queue_timer was 0.
 						// Execute "get_target_something" before, and has some special cases, otherwise work pretty much like 2nd part. -GPTP

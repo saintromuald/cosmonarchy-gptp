@@ -191,6 +191,8 @@ enum ExtValueId {
 	ValueInfestingPlayer,
 	ValueRepentantChorus,
 	ValueDemiurgePlayer,
+	ValueMadcapFullChargeRead,
+	ValueHasStimpack,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -318,6 +320,7 @@ enum ExtTimerId {
 	TimerRepentantChorus,
 	TimerSwarmingOmenAudio,
 	TimerTurningRoam,
+	TimerSavantFormSwitchCooldown,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

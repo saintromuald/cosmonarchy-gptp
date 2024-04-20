@@ -1661,6 +1661,7 @@ namespace hooks {
 				if (unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving) {
 					if (unit_ext->values[ValueMadcapStacks] > 0) {
 						unit_ext->values[ValueMadcapStacks]--;
+						unit_ext->values[ValueMadcapFullChargeRead] = 0;
 					}
 				}
 			} break;
@@ -2289,9 +2290,12 @@ namespace hooks {
 			} break;
 			case UnitId::TerranSavant:
 			{
-				// Clear Power Siphon buff
 				if (unit_ext->timers[TimerSavantPowerSiphonBuff] == 1) {
 					unit_ext->values[ValueSavantPowerSiphonBuff] = 0;
+				}
+				if (unit_ext->timers[TimerSavantFormSwitchCooldown] == 1) {
+					bw::remove_unit_overlay(unit, ImageId::SavantFormSwitchPower);
+					bw::remove_unit_overlay(unit, ImageId::SavantFormSwitchEntropy);
 				}
 			} break;
 			case UnitId::ZergGhitorokor:
@@ -2446,7 +2450,15 @@ namespace hooks {
 		if (unit_ext->timers[TimerStimpackDelay] == 1) {
 			helper::play_sound_from_unit(helper::rand_between(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit, 1, 0);
 			unit->stim_timer = StimpackTimer;
+			unit_ext->values[ValueHasStimpack] = 1;
+			unit->sprite->create_top_overlay(ImageId::MaverickStimpackProc);
 			should_update_speed = true;
+		}
+
+		if (unit_ext->values[ValueHasStimpack] && !unit->stim_timer) {
+			unit_ext->values[ValueHasStimpack] = 0;
+			helper::play_sound_from_unit(SoundId::StimpackExpire01, unit, 1, 0);
+			unit->sprite->create_top_overlay(ImageId::MaverickStimpackExpire);
 		}
 
 		// Protoss - Binding Plasma
