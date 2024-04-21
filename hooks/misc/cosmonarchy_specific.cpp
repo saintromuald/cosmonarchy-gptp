@@ -10,27 +10,22 @@
 
 namespace hooks
 {
-	bool debug_damage_overlay(Sprite* sprite) {
-		
-		if (sprite->main_graphic == nullptr)
-		{
+	bool debug_damage_overlay(Sprite* sprite)
+	{
+		if (sprite->main_graphic == nullptr) {
 			return false;
 		}
 		const LO_Header* overlay = lo_files->damage_overlays[sprite->main_graphic->id];
-		if (overlay == nullptr)
-		{
+		if (overlay == nullptr) {
 			return false;
 		}
 		for (Image* image = sprite->images.head; image; image = image->link.next)
 		{
-			if (image->id >= ImageId::FirstMinorDamageOverlay
-				&& image->id <= ImageId::LastMinorDamageOverlay)
-			{
+			if (image->id >= ImageId::FirstMinorDamageOverlay && image->id <= ImageId::LastMinorDamageOverlay) {
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
 				if (sprite->main_graphic->frame_index >= overlay->frame_count)
 				{
-					bw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
-					{
+					bw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id); {
 						return false;
 					}
 				}
@@ -38,8 +33,7 @@ namespace hooks
 		}
 		std::array<s32, 22> results;
 		auto result_pos = results.begin();
-		if (sprite->main_graphic->frame_index >= overlay->frame_count)
-		{
+		if (sprite->main_graphic->frame_index >= overlay->frame_count) {
 			bw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
 			return false;
 		}
@@ -48,26 +42,20 @@ namespace hooks
 
 	void create_damage_overlay(Sprite* sprite)
 	{
-		if (sprite->main_graphic == nullptr)
-		{
+		if (sprite->main_graphic == nullptr) {
 			return;
 		}
 		const LO_Header* overlay = lo_files->damage_overlays[sprite->main_graphic->id];
-		if (overlay == nullptr)
-		{
+		if (overlay == nullptr) {
 			return; // return if there's no overlay defined
 		}
 		for (Image* image = sprite->images.head; image; image = image->link.next)
 		{
-			if (image->id >= ImageId::FirstMinorDamageOverlay
-				&& image->id <= ImageId::LastMinorDamageOverlay)
-			{
+			if (image->id >= ImageId::FirstMinorDamageOverlay && image->id <= ImageId::LastMinorDamageOverlay) {
 				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
 				image->free();
-				if (sprite->main_graphic->frame_index >= overlay->frame_count)
-				{
-					bw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id);
-					{
+				if (sprite->main_graphic->frame_index >= overlay->frame_count) {
+					bw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d", sprite->main_graphic->frame_index, sprite->main_graphic->id); {
 						return; 
 					}
 				}
@@ -77,15 +65,13 @@ namespace hooks
 		}
 		std::array<s32, 22> results;
 		auto result_pos = results.begin();
-		if (sprite->main_graphic->frame_index >= overlay->frame_count)
-		{
+		if (sprite->main_graphic->frame_index >= overlay->frame_count) {
 			return;
 		}
 		for (s32 i = 0; i < 22; i++)
 		{
 			Point8 offset = overlay->get_offset(sprite->main_graphic->frame_index, i);
-			if (offset.x == 127 && offset.y == 127)
-			{
+			if (offset.x == 127 && offset.y == 127) {
 				continue;
 			}
 			bw::printf("Overlay: %d", i);
@@ -93,19 +79,16 @@ namespace hooks
 			bool found = false;
 			for (Image* image = sprite->images.head; image; image = image->link.next)
 			{
-				if (image->id == overlay_id)
-				{
+				if (image->id == overlay_id) {
 					found = true;
 					break;
 				}
 			}
-			if (!found)
-			{
+			if (!found) {
 				*result_pos++ = i;
 			}
 		}
-		if (result_pos != results.begin())
-		{
+		if (result_pos != results.begin()) {
 			s32 variation = results[bw::rand_between(0, result_pos - results.begin() - 1)];
 			Point8 offset = overlay->get_offset(sprite->main_graphic->frame_index, variation);
 			sprite->create_top_overlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
@@ -149,18 +132,15 @@ namespace hooks
 
 	u32 get_flingy_halt_distance(Flingy* flingy)
 	{
-		auto speed = flingy->current_speed_2;
-		if (speed == 0 || flingy->flingy_movement_type != 0)
-		{
+		u32 speed = flingy->current_speed_2;
+		if (speed == 0 || flingy->flingy_movement_type != 0) {
 			return 0;
 		}
-		auto flingy_id = flingy->flingy_id;
-		if (speed != real_top_speed(flingy, flingy_id) || flingy->flingy_acceleration != real_acceleration(flingy, flingy_id))
-		{
+
+		u32 flingy_id = flingy->flingy_id;
+		if (speed != real_top_speed(flingy, flingy_id) || flingy->flingy_acceleration != real_acceleration(flingy, flingy_id)) {
 			return speed * speed / (2 * (u16)flingy->flingy_acceleration);
-		}
-		else
-		{
+		} else {
 			return flingy_dat::halt_distance[flingy_id];
 		}
 	}
@@ -194,83 +174,26 @@ namespace hooks
 
 	u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId)
 	{
-		if (orig_result == 0) // Valid target
-		{
+		if (orig_result == 0) { // Valid target 
 			bw::print("Can cast");
-			if (techId == TechId::Lockdown)
-			{
+			if (techId == TechId::Lockdown) {
 				bw::printf("Lockdown %d %d", caster->order_target.pt.x, caster->order_target.pt.y);
 			}
 		}
 		return orig_result;
 	}
 
-	// replaces CTFCop2 order
-	void order_phase_link(Unit* unit) {
-		if (unit->id != UnitId::ProtossStarSovereign) {
-			return;
-		}
-		bw::decloak_passive_proc(unit);
-		unit->order_target.pt = unit->position;
-
-		UnitExt* unit_ext = get_unit_ext(unit);
-		switch (unit_ext->values[ValueProtossSwitchOrderState]) {
-			case 0: {
-				if (unit->movement_flags & MovementFlags_Accelerating) {
-					bw::make_to_hold_position(unit);
-				}
-				unit_ext->values[ValueProtossSwitchOrderState] = 1;
-			} break;
-			case 1: {
-				if (!(unit->movement_flags & MovementFlags_Accelerating)
-				&&    unit->sprite->main_graphic->animation != IscriptAnimation::Walking
-				&&    unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle
-				&&    unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] == 0)
-				{
-					unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] = 24;
-					unit->status |= UnitStatus::CanNotReceiveOrders;
-					unit->status |= UnitStatus::CanNotAttack;
-					unit_ext->values[ValueProtossSwitchOrderState] = 2;
-					helper::play_sound_from_unit(SoundId::StarSovereignGriefOfAllGodsChannel, unit, 1, 0);
-				}
-			} break;
-			case 2: {
-				unit->play_iscript_animation(IscriptAnimation::CastSpell);
-				unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] = 121;
-				unit_ext->values[ValueProtossSwitchOrderState] = 3;
-			} break;
-			case 3: {
-				if (unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] != 0 && unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] == 0 && unit->sprite->main_graphic->animation != IscriptAnimation::CastSpell) {
-					unit->play_iscript_animation(IscriptAnimation::CastSpell);
-					unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] = 121;
-				} else if (unit->order_signal & 4) {
-					unit->order_signal &= ~0x4;
-					unit->status &= ~UnitStatus::CanNotReceiveOrders;
-					unit->status &= ~UnitStatus::CanNotAttack;
-					unit_ext->values[ValueProtossSwitchOrderState] = 0;
-					unit->order_to_idle();
-				}
-			} break;
-		}
-	}
-
 	bool can_attack_target_end_chunk(Unit* source, u32 target_flags)
 	{
-		if (source->id == UnitId::ProtossClarion && bw::get_aise_value(source, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
-		{
+		if (source->id == UnitId::ProtossClarion && bw::get_aise_value(source, 0, AiseId::SendClarionValue, 0, 0) == 1) {
 			return false;
 		}
-		if (target_flags & UnitStatus::InAir)
-		{
-			if (source->get_air_weapon() != WeaponId::None)
-			{
+		if (target_flags & UnitStatus::InAir) {
+			if (source->get_air_weapon() != WeaponId::None) {
 				return true;
 			}
-		}
-		else
-		{
-			if (source->get_ground_weapon() != WeaponId::None)
-			{
+		} else {
+			if (source->get_ground_weapon() != WeaponId::None) {
 				return true;
 			}
 		}

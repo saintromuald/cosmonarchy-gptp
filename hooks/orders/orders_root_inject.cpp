@@ -135,6 +135,21 @@ namespace {
 			RET
 		}
 	}
+
+	const u32 progressOrder_jmp = 0x004EC6F1;
+	void __declspec(naked) orders_grief_of_all_gods_wrapper()
+	{
+		static Unit* unit;
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+		hooks::orders_grief_of_all_gods(unit);
+		__asm {
+			POPAD
+			JMP progressOrder_jmp
+		}
+	}
 }
 
 namespace hooks {
@@ -150,5 +165,6 @@ namespace hooks {
 
 		jump_patch(perform_orders_patch_E9E61,					0x004E9E61, 1);	
 		jump_patch(set_unit_stat_txt_error_message_patch_8CCB4,	0x0048CCB4);	// Prevents "unit's waypoint list is full" in replays. -DF
+		jump_patch(orders_grief_of_all_gods_wrapper,			0x004EC629, 2); // Replaces CTFCOP2
 	}
 }

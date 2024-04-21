@@ -302,26 +302,6 @@ namespace hooks
 		memory_patch(0x0047BDCB, jmpp3); // JNZ
 	}
 
-	const u32 progressOrder_jmp = 0x004EC6F1;
-	void __declspec(naked) phase_link_order_wrapper()
-	{
-		static Unit* unit;
-		__asm {
-			MOV unit, ESI
-			PUSHAD
-		}
-		hooks::order_phase_link(unit);
-		__asm {
-			POPAD
-			JMP progressOrder_jmp
-		}
-	}
-
-	void phase_link_patches()
-	{
-		jump_patch(phase_link_order_wrapper, 0x004EC629, 2);
-	}
-
 	void __declspec(naked) can_attack_target_tail_wrapper()
 	{
 		static u32 target_flags;
@@ -837,7 +817,6 @@ namespace hooks
 		// start of spell order code
 		// default case of switch 004EC4FF
 		unused_order_patches();
-		phase_link_patches(); // replaces CTFCop2 order
 		lobotomy_mine_patches();
 		trap_jump_wrappers();
 		clarion_wrappers();

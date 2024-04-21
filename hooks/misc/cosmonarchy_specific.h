@@ -4,8 +4,7 @@
 #include <BW/enumerations.h>
 #include <BW/bwdata.h>
 
-namespace hooks
-{
+namespace hooks {
 	u32 real_top_speed(Flingy* flingy, u32 flingy_id);
 	u16 real_acceleration(Flingy* flingy, u32 flingy_id);
 	bool is_high_templar_conduit(u16 unit_id);
@@ -14,7 +13,6 @@ namespace hooks
 	bool is_unused_order(u8 order_id);
 	void set_up_spider_mines(Unit* unit);
 	u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId);
-	void order_phase_link(Unit* unit);
 	bool can_attack_target_end_chunk(Unit* source, u32 target_flags);
 	void create_damage_overlay(Sprite* sprite);
 	bool debug_damage_overlay(Sprite* sprite);
@@ -30,7 +28,6 @@ namespace hooks
 	Thingy* create_thingy(u32 sprite_id, Point16 position, u8 player);								// 00488210
 }
 
-namespace hooks
-{
+namespace hooks {
 	void inject_cosmonarchy_specific();
 }

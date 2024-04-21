@@ -321,7 +321,7 @@ namespace hooks {
 		}
 	}
 
-	// Also known as 004EC4D0 ordersEntries
+	// Also known as 004EC4D0 ordersEntries | perform_orders
 	// Called between updateUnitState() (see hooks\update_unit_state) and performSecondaryOrders() (see secondary_orders_root)
 	// Implementation quite different from original because hard to manipulate.
 	void main_orders_root(Unit* unit)
@@ -346,9 +346,13 @@ namespace hooks {
 			{
 				helper::EDI_order(unit, main_order_func_offsets[OrderId::Warpin][0]);
 			} break;
+			case OrderId::CTFCOP2: // Grief of All Gods
+			{
+				hooks::orders_grief_of_all_gods(unit);
+			} break;
 			default: {
 				if (unit->is_frozen() || (!(unit->status & UnitStatus::Reacts) && unit->status & UnitStatus::CanNotAttack)) {
-					helper::EAX_order(unit, 0x0043FF00); //known as "get_maelstrom_target", though don't make much sense in this context
+					helper::EAX_order(unit, 0x0043FF00); // known as "get_maelstrom_target", though don't make much sense in this context
 				} else {
 					// 2nd part is functions that are used if not one of those of the 1st part and not disabled unit.
 					// Ignore order_queue_timer, and if they change the main_order_id to something that can be used
@@ -854,6 +858,55 @@ namespace hooks {
 			}
 		} else {
 			helper::orders_self_destructing(unit);
+		}
+	}
+	
+	// replaces CTFCop2 order
+	void orders_grief_of_all_gods(Unit* unit) { // Patch for 004EC629
+		if (unit->id != UnitId::ProtossStarSovereign) {
+			return;
+		}
+		bw::decloak_passive_proc(unit);
+		unit->order_target.pt = unit->position;
+
+		UnitExt* unit_ext = get_unit_ext(unit);
+		switch (unit_ext->values[ValueProtossSwitchOrderState]) {
+			case 0: {
+				if (unit->movement_flags & MovementFlags_Accelerating) {
+					bw::make_to_hold_position(unit);
+				}
+				unit_ext->values[ValueProtossSwitchOrderState] = 1;
+			} break;
+			case 1: {
+				if (!(unit->movement_flags & MovementFlags_Accelerating)
+				&&    unit->sprite->main_graphic->animation != IscriptAnimation::Walking
+				&&    unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle
+				&&    unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] == 0)
+				{
+					unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] = 24;
+					unit->status |= UnitStatus::CanNotReceiveOrders;
+					unit->status |= UnitStatus::CanNotAttack;
+					unit_ext->values[ValueProtossSwitchOrderState] = 2;
+					helper::play_sound_from_unit(SoundId::StarSovereignGriefOfAllGodsChannel, unit, 1, 0);
+				}
+			} break;
+			case 2: {
+				unit->play_iscript_animation(IscriptAnimation::CastSpell);
+				unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] = 121;
+				unit_ext->values[ValueProtossSwitchOrderState] = 3;
+			} break;
+			case 3: {
+				if (unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] != 0 && unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] == 0 && unit->sprite->main_graphic->animation != IscriptAnimation::CastSpell) {
+					unit->play_iscript_animation(IscriptAnimation::CastSpell);
+					unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] = 121;
+				} else if (unit->order_signal & 4) {
+					unit->order_signal &= ~0x4;
+					unit->status &= ~UnitStatus::CanNotReceiveOrders;
+					unit->status &= ~UnitStatus::CanNotAttack;
+					unit_ext->values[ValueProtossSwitchOrderState] = 0;
+					unit->order_to_idle();
+				}
+			} break;
 		}
 	}
 }

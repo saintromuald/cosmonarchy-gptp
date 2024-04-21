@@ -10,6 +10,8 @@ namespace hooks {
 	void partial_order_handling(Unit* unit);				// 004EBED0
 	s32 order_to_move_to_target(Unit* target, Unit* unit);	// 004EB980
 	void orders_nuke_launch(Unit* unit);					// 00464730
+	void orders_grief_of_all_gods(Unit* unit);
+
 
 	void inject_orders_root_hooks();
 }
