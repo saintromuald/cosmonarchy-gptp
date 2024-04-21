@@ -426,6 +426,14 @@ struct UnitExt {
 	std::vector<u32>		value_vectors[ValueVectorCount];
 	std::vector<Unit*>		unit_vectors[UnitVectorCount];
 	std::vector<u32>		timer_vectors[TimerVectorCount];
+
+	inline bool try_reset_timer(ExtTimerId timer, u32 time) {
+		if (timers[timer] != 0) {
+			return false;
+		}
+		timers[timer] = time;
+		return true;
+	}
 };
 
 struct TileExt {

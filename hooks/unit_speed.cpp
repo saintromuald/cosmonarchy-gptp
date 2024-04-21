@@ -72,12 +72,10 @@ namespace hooks
 
 		// Zoryusthaleth - Swarming Omen - 133% movement speed when moving towards Zoryusthaleth
 		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
-			bool accelerate = false;
 			EntryArray targets = {};
 			unit_search_radial(&targets, unit->position, 10 * 32);
-			unit_search_filter(&targets, unit, FilterFrontalArc);
-			for (u32 i = 0; i < targets.count; ++i) {
-				Unit* target = targets.units[i];
+			unit_search_filter(&targets, unit, 0);
+			for (Unit* target : targets.units) {
 				UnitExt* target_ext = get_unit_ext(target);
 				if (!target_ext->timers[TimerSwarmingOmenDebuff]) {
 					continue;
@@ -85,18 +83,18 @@ namespace hooks
 				if (bw::is_allied_to(target->player, unit->player)) {
 					continue;
 				}
-				accelerate = true;
-			}
-			if (accelerate) {
+				if (!bw::unit_is_facing_position(unit, target->position)) {
+					continue;
+				}
+
 				speed *= 1.33;
-				if (!unit_ext->timers[TimerSwarmingOmenVisuals]) {
-					unit_ext->timers[TimerSwarmingOmenVisuals] = 12;
+				if (unit_ext->try_reset_timer(TimerSwarmingOmenVisuals, 12)) {
 					bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
 				}
-				if (!unit_ext->timers[TimerSwarmingOmenAudio]) {
-					unit_ext->timers[TimerSwarmingOmenAudio] = 36;
-					helper::play_sound_from_unit(helper::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02, 31), unit, 1, 0);
+				if (unit_ext->try_reset_timer(TimerSwarmingOmenAudio, 36)) {
+					helper::play_sound_from_unit(bw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02), unit, 1, 0);
 				}
+				break;
 			}
 		}
 
