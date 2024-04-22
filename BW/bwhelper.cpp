@@ -1010,7 +1010,7 @@ namespace helper {
 		return result;
 	}
 
-	// For get_random_yes_unit_response
+	// For get_random_yes_unit_response_local
 	u32 get_random_unit_response(u32 min, u32 max) {
 		const u32 func_address = 0x0048E940;
 		static s32 result;
@@ -15006,7 +15006,7 @@ namespace helper {
 		}
 	}
 
-	u32 get_random_yes_unit_response(u32 unit_id)
+	u32 get_random_yes_unit_response_local(u32 unit_id)
 	{
 		const u32 func_address = 0x0048EAB0;
 		static u32 result;

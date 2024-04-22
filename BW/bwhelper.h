@@ -135,7 +135,7 @@ namespace helper {
 	VectorHead* vectorTransfer(char a1, char a2);
 	s32 dataTransfer06(s32 a1);
 
-	// For get_random_yes_unit_response
+	// For get_random_yes_unit_response_local
 	u32 get_random_unit_response(u32 min, u32 max);													// 0048E940
 	s16 get_region_id(s32 x, s32 y);																// 0049C9F0
 
@@ -1734,7 +1734,7 @@ namespace helper {
 	void unit_movement_instant_stop(Unit* unit);								// 0046BF00
 	void progress_flingy(Unit* unit);											// 00495EE0
 	void finish_unit_movement(Unit* unit);										// 0046AD90
-	u32 get_random_yes_unit_response(u32 unit_id);								// 0048EAB0
+	u32 get_random_yes_unit_response_local(u32 unit_id);								// 0048EAB0
 	s32 bw_refresh(s32 left, s32 height, s32 top, s32 width);					// 0041E0D0
 	Image* make_cloaked(u8 param, Sprite* sprite, u8 status, u8 timer);			// 00497FD0
 	void unit_refund_partial_technology(Unit* unit);							// 00453DD0

@@ -19,7 +19,7 @@ namespace hooks {
 			if (!*g_is_in_replay && unit && unit->player == *g_local_nation_id) { // unit nullcheck is new, resolves rare minimap crash
 				if (!unit->is_frozen()) {
 					u32 last_rand = *g_last_random_sfx_id;
-					u32 sound_id = helper::get_random_yes_unit_response(unit->id);
+					u32 sound_id = helper::get_random_yes_unit_response_local(unit->id);
 					if (helper::play_sound_from_unit(sound_id, unit, (g_options_list->flags >> 1) & 1, 99)) {
 						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 0, sound_id);
 					} else {
@@ -150,7 +150,7 @@ namespace hooks {
 				} break;
 			}
 		}
-		return get_random_yes_unit_response(unit->id);
+		return get_random_yes_unit_response_local(unit->id);
 	}
 
 	// Written for aggressive order unit responses. -Pr0nogo
@@ -174,7 +174,7 @@ namespace hooks {
 
 	// Hooked to allow more unit ids to process passive order unit responses. -Pr0nogo
 	// Can disable injection once the internal version is working.
-	u32 get_random_yes_unit_response(u32 unit_id) { // 0048EAB0
+	u32 get_random_yes_unit_response_local(u32 unit_id) { // 0048EAB0
 		if (!(units_dat::group_flags[unit_id].is_building)) {
 			u32 yes_first = units_dat::sound_yes_first[unit_id];
 			u32 yes_last = units_dat::sound_yes_last[unit_id];

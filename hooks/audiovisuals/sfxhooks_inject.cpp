@@ -44,7 +44,7 @@ namespace
 			MOV unit_id, ECX
 			PUSHAD
 		}
-		result = hooks::get_random_yes_unit_response(unit_id);
+		result = hooks::get_random_yes_unit_response_local(unit_id);
 		__asm {
 			POPAD
 			MOV EAX, result
