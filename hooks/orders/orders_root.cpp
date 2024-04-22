@@ -880,7 +880,6 @@ namespace hooks {
 			case 1: {
 				if (!(unit->movement_flags & MovementFlags_Accelerating)
 				&&    unit->sprite->main_graphic->animation != IscriptAnimation::Walking
-				&&    unit->sprite->main_graphic->animation != IscriptAnimation::WalkingToIdle
 				&&    unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] == 0)
 				{
 					unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] = 24;
