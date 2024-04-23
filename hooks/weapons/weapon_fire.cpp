@@ -992,25 +992,15 @@ namespace hooks {
 					bullet->source_unit->sprite->position = bullet->position;
 					bullet->source_unit->position = bullet->position;
 					u32 radius = 3 * 32;
-					bw::UnitFinder units_in_splash(
-						main_target->position.x - radius,
-						main_target->position.y - radius,
-						main_target->position.x + radius,
-						main_target->position.y + radius);
+
+					EntryArray bonus_targets = {};
+					unit_search_radial(&bonus_targets, main_target->position, radius);
+					unit_search_filter(&bonus_targets, bullet->source_unit, FilterEnemy | FilterVisible);
 					iquare_globals.add_multihit_empty_bullet(bullet, 1);
 					u32 fired = 0;
-					for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
-						Unit* target = units_in_splash.get_unit(i);
-						if (!target) {
-							continue;
-						}
+					for (u32 i = 0; i < bonus_targets.count; ++i) {
+						Unit* target = bonus_targets.units[i];
 						if (target == main_target) {
-							continue;
-						}
-						if (!bullet->source_unit->can_attack_target(target)) { // Check detection status
-							continue;
-						}
-						if (!alkajelisk_spore_match(bullet, target)) {
 							continue;
 						}
 						bullet->source_unit->order_target.unit = target;
