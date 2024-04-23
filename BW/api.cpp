@@ -3185,7 +3185,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
-						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr00_WAV_2;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoMinerals01;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_NoMinerals01, SoundId::MeskAdvisor_NoMinerals04);
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoMinerals01, SoundId::AckmedAdvisor_NoMinerals04);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoMinerals01;
@@ -3196,7 +3196,7 @@ namespace bw {
 				} break;
 				case AdvisorEvent_NoVespene: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr01_WAV;
+						case AdvisorType_Terran:	return SoundId::AtaltrethAdvisor_NoVespene01;
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr01_WAV;
 						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr01_WAV;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_NoVespene01, SoundId::MeskAdvisor_NoVespene05);
@@ -3211,7 +3211,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr06_WAV;
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr06_WAV;
-						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr06_WAV;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoEnergy01;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_NoEnergy01, SoundId::MeskAdvisor_NoEnergy05);
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoEnergy01, SoundId::AckmedAdvisor_NoEnergy04);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoEnergy01;
@@ -3225,7 +3225,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Terran_SCV_TSCErr01_WAV;
 						case AdvisorType_Protoss:	return SoundId::Terran_SCV_TSCErr01_WAV;
-						case AdvisorType_Zerg:		return SoundId::Terran_SCV_TSCErr01_WAV;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoBuild01;
 						case AdvisorType_Mesk:		return SoundId::Terran_SCV_TSCErr01_WAV;
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
@@ -3238,7 +3238,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::ProtossAdvisorErrorPlacement;
 						case AdvisorType_Protoss:	return SoundId::ProtossAdvisorErrorPlacement;
-						case AdvisorType_Zerg:		return SoundId::ProtossAdvisorErrorPlacement;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoWarp01;
 						case AdvisorType_Mesk:		return SoundId::ProtossAdvisorErrorPlacement;
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoWarp01, SoundId::AckmedAdvisor_NoWarp01);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoWarp01;
@@ -3251,7 +3251,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Zerg_DRONE_ZDrErr00;
 						case AdvisorType_Protoss:	return SoundId::Zerg_DRONE_ZDrErr00;
-						case AdvisorType_Zerg:		return SoundId::Zerg_DRONE_ZDrErr00;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoBuild01;
 						case AdvisorType_Mesk:		return SoundId::Zerg_DRONE_ZDrErr00;
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
@@ -3261,13 +3261,23 @@ namespace bw {
 					}
 				} break;
 				case AdvisorEvent_NoLanding: {
-					// TODO: fill in
+					switch (advisor) {
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr04_WAV_1; // Fill in
+						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_tAdErr04_WAV_1; // Fill in
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoLand01;
+						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_tAdErr04_WAV_1; // Fill in
+						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoLand01, SoundId::AckmedAdvisor_NoLand02);
+						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoLand01;
+						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoLand01;
+						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoLand01, SoundId::ISNAdvisor_NoLand02);
+						case AdvisorType_Furen:		return SoundId::FurenAdvisor_NoLand01;
+					}
 				} break;
 				case AdvisorEvent_LandingInterrupted: {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr03_WAV_1;
 						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_tAdErr03_WAV_1;
-						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_tAdErr03_WAV_1;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_LandingInterrupt01;
 						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_tAdErr03_WAV_1;
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_LandingInterrupt01, SoundId::AckmedAdvisor_LandingInterrupt02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_LandingInterrupt01;
@@ -3296,7 +3306,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::ProtossAdvisorUpdateStructure; // Todo: replace
 						case AdvisorType_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
-						case AdvisorType_Zerg:		return SoundId::ProtossAdvisorUpdateStructure; // Todo: replace
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_Warp01;
 						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Warp01;
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_Warp01, SoundId::AckmedAdvisor_Warp02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Warp01;
@@ -3312,7 +3322,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd03_WAV;
 						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_TAdUpd03_WAV; // Todo: replace
-						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_TAdUpd03_WAV; // Todo: replace
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_Addon01;
 						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Addon01;
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_Addon01, SoundId::AckmedAdvisor_Addon02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Addon01;
@@ -3325,7 +3335,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd06_WAV;
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd06_WAV;
-						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_ZAdUpd06_WAV;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_Tech01;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_Tech01, SoundId::MeskAdvisor_Tech02);
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_Tech01, SoundId::AckmedAdvisor_Tech02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Tech01;
@@ -3334,11 +3344,11 @@ namespace bw {
 						case AdvisorType_Furen:		return SoundId::FurenAdvisor_Tech01;
 					}
 				} break;
-				case AdvisorEvent_MissileComplete: {
+				case AdvisorEvent_MissileArmed: {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd07_WAV;
 						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_TAdUpd07_WAV;
-						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_TAdUpd07_WAV;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_MissileArmed01;
 						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_TAdUpd07_WAV;
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_MissileArmed01, SoundId::AckmedAdvisor_MissileArmed02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_MissileArmed01;
@@ -3351,7 +3361,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::ForcesUnderAttack_Terran;
 						case AdvisorType_Protoss:	return SoundId::ForcesUnderAttack_Protoss;
-						case AdvisorType_Zerg:		return SoundId::ForcesUnderAttack_Zerg;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_ArmyUnderAttack01;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_ArmyUnderAttack01, SoundId::MeskAdvisor_ArmyUnderAttack02);
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_ArmyUnderAttack01, SoundId::AckmedAdvisor_ArmyUnderAttack03);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_ArmyUnderAttack01;
@@ -3364,7 +3374,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::BaseUnderAttack_Terran;
 						case AdvisorType_Protoss:	return SoundId::BaseUnderAttack_Protoss;
-						case AdvisorType_Zerg:		return SoundId::BaseUnderAttack_Zerg;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_BaseUnderAttack01;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_BaseUnderAttack01, SoundId::MeskAdvisor_BaseUnderAttack05);
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_BaseUnderAttack01, SoundId::AckmedAdvisor_BaseUnderAttack03);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_BaseUnderAttack01;
@@ -3377,7 +3387,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd04_WAV;
-						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdUpd04_WAV;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_MissileLaunch01;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_MissileLaunch01, SoundId::MeskAdvisor_MissileLaunch02);
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_MissileLaunch01, SoundId::AckmedAdvisor_MissileLaunch02);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_MissileLaunch01;
@@ -3390,7 +3400,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::AdvisorTerranUnderAttackTerran;
 						case AdvisorType_Protoss:	return SoundId::AdvisorProtossUnderAttackTerran;
-						case AdvisorType_Zerg:		return SoundId::AdvisorZergUnderAttackTerran;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_AllyUnderAttack_Terran01;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_AllyUnderAttack_Terran01, SoundId::MeskAdvisor_AllyUnderAttack_Terran02);
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_AllyUnderAttack_Terran01, SoundId::AckmedAdvisor_AllyUnderAttack_Terran03);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Terran01;
@@ -3403,7 +3413,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::AdvisorTerranUnderAttackProtoss;
 						case AdvisorType_Protoss:	return SoundId::AdvisorProtossUnderAttackProtoss;
-						case AdvisorType_Zerg:		return SoundId::AdvisorZergUnderAttackProtoss;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_AllyUnderAttack_Protoss01;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_AllyUnderAttack_Protoss01, SoundId::MeskAdvisor_AllyUnderAttack_Protoss02);
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_AllyUnderAttack_Protoss01, SoundId::AckmedAdvisor_AllyUnderAttack_Protoss03);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Protoss01;
@@ -3416,7 +3426,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::AdvisorTerranUnderAttackZerg;
 						case AdvisorType_Protoss:	return SoundId::AdvisorProtossUnderAttackZerg;
-						case AdvisorType_Zerg:		return SoundId::AdvisorZergUnderAttackZerg;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_AllyUnderAttack_Zerg01;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_AllyUnderAttack_Zerg01, SoundId::MeskAdvisor_AllyUnderAttack_Zerg03);
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_AllyUnderAttack_Zerg01, SoundId::AckmedAdvisor_AllyUnderAttack_Zerg03);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Zerg01;
@@ -3429,7 +3439,7 @@ namespace bw {
 					switch (advisor) {
 						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
 						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
-						case AdvisorType_Zerg:		return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_AddonAbandon01;
 						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_TAdUpd05_WAV;
 						case AdvisorType_Ackmed:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
 						case AdvisorType_HADRAL:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
@@ -3444,34 +3454,33 @@ namespace bw {
 	}
 
 	u32 get_advisor_sound_from_message_id(u32 player, u32 message_id) {
-		if (bw::has_custom_advisor(player)) {
-			switch (message_id) {
-				case AdvisorMessageId_NoMinerals:     return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
-				case AdvisorMessageId_NoVespene:      return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
-				case AdvisorMessageId_NoBuildZerg:    return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
-				case AdvisorMessageId_NoBuildProtoss: return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
-				case AdvisorMessageId_NoLanding:      return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoLanding);
+		switch (message_id) {
+			case AdvisorMessageId_NoMinerals:     return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
+			case AdvisorMessageId_NoVespene:      return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
+			case AdvisorMessageId_NoBuildZerg:    return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
+			case AdvisorMessageId_NoBuildProtoss: return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
+			case AdvisorMessageId_NoLanding:      return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoLanding);
 
-				case AdvisorMessageId_NoEnergy:
-				case AdvisorMessageId_NoEnergy2:
-				case AdvisorMessageId_NoEnergy3:
-					return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoEnergy);
+			case AdvisorMessageId_NoEnergy:
+			case AdvisorMessageId_NoEnergy2:
+			case AdvisorMessageId_NoEnergy3:
+			case 1639266:
+				return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoEnergy);
 
-				case AdvisorMessageId_NoBuildResources:
-				case AdvisorMessageId_NoBuildOffMap:
-				case AdvisorMessageId_NoBuildMapEdge:
-				case AdvisorMessageId_NoBuildStandard:
-				case AdvisorMessageId_NoBuildExplore:
-				case AdvisorMessageId_NoBuildGeyser:
-				case AdvisorMessageId_NoBuildCouldntReach: {
-					switch (g_player_table[player].race) {
-						case RaceId::Terran:  return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
-						case RaceId::Protoss: return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
-						case RaceId::Zerg:    return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
-					}
-					return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
-				} break;
-			}
+			case AdvisorMessageId_NoBuildResources:
+			case AdvisorMessageId_NoBuildOffMap:
+			case AdvisorMessageId_NoBuildMapEdge:
+			case AdvisorMessageId_NoBuildStandard:
+			case AdvisorMessageId_NoBuildExplore:
+			case AdvisorMessageId_NoBuildGeyser:
+			case AdvisorMessageId_NoBuildCouldntReach: {
+				switch (g_player_table[player].race) {
+					case RaceId::Terran:  return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
+					case RaceId::Protoss: return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
+					case RaceId::Zerg:    return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
+				}
+				return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
+			} break;
 		}
 		return 0; // This actually means reverting to original, instead of no sound
 	}

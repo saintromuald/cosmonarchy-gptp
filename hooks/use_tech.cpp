@@ -56,12 +56,7 @@ namespace hooks
 		Unit* unit = players_selections->unit[*g_active_nation_id][0];
 		if (unit) {
 			// Initial check for energy-based switch abilities
-			if (players_selections->unit[*g_active_nation_id][0]->id == UnitId::ProtossLanifect
-			&&  bw::get_generic_rust_value(unit, RustId::ToggleDisruptionField) == 1)
-			{
-				tech_capable_unit = true;
-			}
-			if (tech == TechId::UnusedLobotomyMine) {
+			if (players_selections->unit[*g_active_nation_id][0]->id == UnitId::ProtossLanifect && bw::get_generic_rust_value(unit, RustId::ToggleDisruptionField) == 1) {
 				tech_capable_unit = true;
 			}
 		}
@@ -69,17 +64,7 @@ namespace hooks
 			if (helper::check_energy_for_tech_use(tech)) {
 				tech_capable_unit = true;
 			}
-			if (unit) {
-				/*
-				if (players_selections->unit[*g_active_nation_id][0]->id == UnitId::TerranAzazel
-					&& bw::get_generic_rust_value(first_in_list, RustId::ToggleSublimeShepherd) == 1)
-				{
-					tech_capable_unit = true;
-				}
-				*/
-			}
-			if (!tech_capable_unit)
-			{
+			if (!tech_capable_unit) {
 				char* message = (char*)g_stat_txt_tbl_new->get_string(864);
 				Unit* portrait_unit = players_selections->unit[*g_active_nation_id][0];
 				helper::get_stat_txt_string(*g_active_portrait_unit, (*g_active_portrait_unit)->player, message);

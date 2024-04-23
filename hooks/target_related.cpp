@@ -619,7 +619,7 @@ namespace hooks
 			}
 		check_energy:
 			if (energy_cost && not_enough_energy) {
-				helper::display_error_message_id_with_sfx(active_unit->player, race + 864, race + 156);
+				helper::display_error_message_id_with_sfx(active_unit->player, race + 864, bw::get_advisor_sound_from_event_type(active_unit->player, AdvisorEvent_NoEnergy));
 				return;
 			}
 		} else {

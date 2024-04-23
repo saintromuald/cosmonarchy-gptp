@@ -32,14 +32,12 @@ namespace
 	{
 		static Unit* result;
 		static s32 a1;
-		__asm
-		{
+		__asm {
 			MOV a1, EDI
 			PUSHAD
 		}
 		result = hooks::cmdrecv_hold_position(a1);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
@@ -51,8 +49,7 @@ namespace
 		static Unit* target;
 		static Unit* unit;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -63,8 +60,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::unit_can_see_cloaked_target(target, unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -77,14 +73,12 @@ namespace
 	{
 		static u32 result;
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, ESI
 			PUSHAD
 		}
 		result = hooks::is_unit_visible(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
@@ -94,14 +88,12 @@ namespace
 	void __declspec(naked) check_unit_visibility_wrapper() // 00443390
 	{
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
 		hooks::check_unit_visibility(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
