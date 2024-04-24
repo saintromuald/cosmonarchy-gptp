@@ -3196,9 +3196,9 @@ namespace bw {
 				} break;
 				case AdvisorEvent_NoVespene: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::AtaltrethAdvisor_NoVespene01;
+						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr01_WAV;
 						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr01_WAV;
-						case AdvisorType_Zerg:		return SoundId::Zerg_Advisor_ZAdErr01_WAV;
+						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoVespene01;
 						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_NoVespene01, SoundId::MeskAdvisor_NoVespene05);
 						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoVespene01, SoundId::AckmedAdvisor_NoVespene04);
 						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoVespene01;
