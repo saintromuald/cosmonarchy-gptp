@@ -2300,19 +2300,18 @@ namespace bw {
 		{
 			Unit* unit = units.units[i];
 			if (heal_source_player != unit->player && !is_allied_to(heal_source_player, unit->player)) {
-				return;
+				continue;
 			}
-
-			if (bw::unit_has_shields(unit) && unit->shields < units_dat::max_shield_points[unit->id] * 256) {
+			bool has_shields = bw::unit_has_shields(unit);
+			if (has_shields && unit->shields < units_dat::max_shield_points[unit->id] * 256) {
 				// Shield check for default behavior
 				helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 				helper::add_overlay_below_main(heal_source->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 			} else {
-				// Return if both checks failed
-				return;
+				continue;
 			}
 
-			if (bw::unit_has_shields(unit)) {
+			if (has_shields) {
 				// Shield heal
 				unit->heal_shields(heal_amount * 256, heal_source);
 			}
