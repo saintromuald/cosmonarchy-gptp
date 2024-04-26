@@ -75,7 +75,7 @@ void init_trigger_system() {
 	init_objectives();
 	init_sound();
 	init_spawn();
-	g_trigger_vars.init();
+	g_trigger_vars.reset();
 	init_trigger_events();
 }
 

@@ -77,7 +77,7 @@ private:
 
 class TriggerVars {
 public:
-	void init();
+	void reset();
 	void update();
 
 	TriggerVar* find(TriggerVarType type, std::string_view name);
@@ -94,8 +94,8 @@ public:
 	}
 
 private:
-	std::map<std::string, VarBank> m_banks; // Note: we need std::map's stable addresses for trigger vars to keep track of the banks
 	std::unordered_map<TriggerVarKey, TriggerVar> m_vars;
+	std::map<std::string, VarBank> m_banks; // Note: we need std::map's stable addresses for trigger vars to keep track of the banks
 };
 
 inline TriggerVars g_trigger_vars;

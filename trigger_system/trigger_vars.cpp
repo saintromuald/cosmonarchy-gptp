@@ -56,8 +56,9 @@ void VarBank::save() {
 	m_dirty = false;
 }
 
-void TriggerVars::init() {
+void TriggerVars::reset() {
 	m_vars.clear();
+	m_banks.clear();
 }
 
 void TriggerVars::update() {
