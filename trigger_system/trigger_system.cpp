@@ -492,8 +492,7 @@ bool parse_condition(Parser& parser) {
 			TriggerVar* var = parser.get_char('=') ? &g_trigger_vars.find_or_create(var_type, name.sv) : g_trigger_vars.find(var_type, name.sv);
 			s32 quota_value = is_timer ? parser.get_time_ticks() : parser.get_s32();
 			if (var) {
-				Quota quota{quota_type, quota_value};
-				return quota.check(var->value());
+				return Quota{quota_type, quota_value}.check(var->value());
 			}
 			return false;
 		} else if (parser.equals("unit_color")) {
