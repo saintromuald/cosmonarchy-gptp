@@ -1423,7 +1423,7 @@ namespace hooks {
 			bullet->source_unit = parent->hangar_unit.parent;
 		}
 		if (parent->status & UnitStatus::IsHallucination) {
-			bullet->hit_flags |= 2u;
+			bullet->hit_flags |= 2;
 		}
 		bullet->next_bounce_unit = 0;
 

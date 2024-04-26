@@ -1734,7 +1734,7 @@ namespace helper {
 	void unit_movement_instant_stop(Unit* unit);								// 0046BF00
 	void progress_flingy(Unit* unit);											// 00495EE0
 	void finish_unit_movement(Unit* unit);										// 0046AD90
-	u32 get_random_yes_unit_response_local(u32 unit_id);								// 0048EAB0
+	u32 get_random_yes_unit_response_local(u32 unit_id);						// 0048EAB0
 	s32 bw_refresh(s32 left, s32 height, s32 top, s32 width);					// 0041E0D0
 	Image* make_cloaked(u8 param, Sprite* sprite, u8 status, u8 timer);			// 00497FD0
 	void unit_refund_partial_technology(Unit* unit);							// 00453DD0
@@ -1743,4 +1743,5 @@ namespace helper {
 	void refresh_all_visible_sprites(Sprite* sprite);							// 004976C0
 	void update_image_draw_data(Image* image);									// 004D57B0
 	void orders_nuke_launch(Unit* unit);										// 00464730
+	bool unit_can_have_rally(Unit* unit);										// 0047B2E0
 }

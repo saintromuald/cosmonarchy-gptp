@@ -47,6 +47,7 @@
 #include "hooks/orders/larva_creep_spawn.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "Discord.h"
+#include "hooks/rally_point.h"
 
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
@@ -474,9 +475,7 @@ namespace hooks {
 			&& (bw::is_allied_to(*g_local_nation_id, unit->player) || bw::in_replay_or_witness()))
 			{
 				Point16 target = get_target_point(unit->rally);
-				if (target.x == unit->position.x && target.y == unit->position.y
-				||	(unit->rally.unit && !helper::is_target_visible(unit, unit->rally.unit)))
-				{
+				if (target.x == unit->position.x && target.y == unit->position.y) {
 					target.x = 0;
 					target.y = 0;
 				}
@@ -2606,6 +2605,12 @@ namespace hooks {
 			} else if (unit_ext->timers[TimerSwarmingOmenDebuff == 1]) {
 				bw::remove_unit_overlay(unit, overlay_id);
 			}
+		}
+
+		if (hooks::unit_can_have_rally(unit) && unit->rally.unit && !helper::is_target_visible(unit, unit->rally.unit)) {
+			unit->rally.unit = 0;
+			unit->rally.pt.x = 0;
+			unit->rally.pt.y = 0;
 		}
 
 		// Azazel - Sublime Shepherd

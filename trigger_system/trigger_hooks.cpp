@@ -190,12 +190,10 @@ u32 is_unit_at_height(Unit* unit, u32 height) // 0045F8D0
 	if (!unit) {
 		return 0;
 	}
-
 	bool is_ground = (unit->status & UnitStatus::InAir) == 0;
 	u32 ground_height = helper::get_ground_height_at_px(unit->position.y, unit->position.x);
 	u32 ground_height_zeroed = ground_height--;
 	u32 result = 0;
-
 	if (is_ground) {
 		if (ground_height) {
 			if (ground_height_zeroed) {
@@ -215,9 +213,9 @@ u32 is_unit_at_height(Unit* unit, u32 height) // 0045F8D0
 				if (ground_height_zeroed != 1) {
 					return 0;
 				}
-				result = height & 0x20;
+				result = height & 32;
 			} else {
-				result = height & 0x10;
+				result = height & 16;
 			}
 		} else {
 			result = height & 8;

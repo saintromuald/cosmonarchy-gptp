@@ -15110,4 +15110,17 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	bool unit_can_have_rally(Unit* unit) {
+		const u32 func_address = 0x0047B2E0;
+		static bool result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
 }
