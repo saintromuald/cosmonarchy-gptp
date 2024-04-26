@@ -48,11 +48,16 @@ enum QuotaType {
 
 class TriggerVar;
 
+struct ParserMarker {
+	const char* at;
+	Token token;
+};
+
 class Parser {
 public:
 	Parser(const char* at);
-	const char* marker();
-	void unwind(const char* marker);
+	ParserMarker marker();
+	void unwind(const ParserMarker& marker);
 
 	bool get_char(char c);
 	Token get_word(bool is_command = false);

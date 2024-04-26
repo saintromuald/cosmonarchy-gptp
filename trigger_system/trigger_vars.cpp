@@ -2,7 +2,7 @@
 #include <ranges>
 #include <fstream>
 
-VarBank::VarBank(const std::string& name) : m_path{(bw::get_starcraft_path() / "banks" / name).replace_extension(".bank")} {
+VarBank::VarBank(const std::string& name) : m_path{(bw::get_starcraft_path() / "banks" / (name + ".bank"))} {
 	load();
 }
 

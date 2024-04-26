@@ -25,7 +25,7 @@ static bool is_word_char(char c) {
 }
 
 void Parser::clear_token() {
-	memset(&m_token, 0, sizeof(m_token));
+	m_token = {};
 }
 
 bool Parser::skip_whitespace() {
@@ -85,13 +85,13 @@ char Parser::get_relative_op() {
 Parser::Parser(const char* at) : m_start(at), m_at(at) {
 }
 
-const char* Parser::marker() {
-	return m_at;
+ParserMarker Parser::marker() {
+	return {m_at, m_token};
 }
 
-void Parser::unwind(const char* marker) {
-	clear_token(); // TODO: Isn't this a problem? We might be relying on what token was after unwinding? Maybe Marker should be a struct that has marker and token, and token should eventually be a char slice, instead of a small char buffer
-	m_at = marker;
+void Parser::unwind(const ParserMarker& marker) {
+	m_at = marker.at;
+	m_token = marker.token;
 }
 
 bool Parser::get_char(char c) {
@@ -166,7 +166,7 @@ bool Parser::get_command() {
 }
 
 bool Parser::get_keyword(const char* keyword) {
-	const char* marker = this->marker();
+	const auto marker = this->marker();
 	get_word();
 	if (equals(keyword)) {
 		return true;
@@ -381,7 +381,7 @@ Area Parser::get_area(Area default_value) {
 		return area;
 	}
 
-	const char* marker = this->marker();
+	const auto marker = this->marker();
 	Token string = get_string();
 	if (equals("*")) {
 		area.box = g_location_table[63].dimensions;
@@ -441,7 +441,7 @@ Point16 Parser::get_position(Point16 default_value) {
 		return pos;
 	}
 
-	const char* marker = this->marker();
+	const auto marker = this->marker();
 	Token string = get_string();
 	if (equals("*")) {
 		return box_center(g_location_table[63].dimensions);
@@ -507,7 +507,7 @@ PlayerBitset Parser::get_player_bitset() {
 	PlayerBitset current_bitset = {};
 	while (true) {
 		bool negate = get_negation();
-		const char* marker = this->marker();
+		const auto marker = this->marker();
 		s32 value = get_s32();
 		if (equals("*")) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
@@ -607,7 +607,7 @@ static bool str_equals_lazy(const char* a, const char* b) {
 }
 
 u32 Parser::get_unit_id() {
-	const char* marker = this->marker();
+	const auto marker = this->marker();
 	Token token = get_string();
 	for (u32 i = 0; i < UnitId::Count; ++i) {
 		if (sv_lazy_equals(token.sv, get_short_unit_name(i).sv)) {
@@ -637,7 +637,7 @@ UnitIdBitset Parser::get_unit_id_bitset() {
 	UnitIdBitset current_bitset = {};
 	while (true) {
 		bool negate = get_negation();
-		const char* marker = this->marker();
+		const auto marker = this->marker();
 		get_string();
 		if (equals("*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
@@ -745,7 +745,7 @@ QuotaType Parser::get_quota_type(QuotaType default_type) {
 	}
 
 	if (*m_at == '>' || *m_at == '<' || *m_at == '!' || *m_at == '=' || *m_at == '*') {
-		const char* marker = this->marker();
+		const auto marker = this->marker();
 		char op = *m_at++;
 
 		bool equals = get_char('=');
