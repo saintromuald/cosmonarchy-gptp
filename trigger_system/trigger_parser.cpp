@@ -408,20 +408,20 @@ Area Parser::get_area(Area default_value) {
 	return default_value;
 }
 
-bool check_area(Area area, Point16 position, bool air) {
-	if (position.x >= area.box.left && position.x <= area.box.right &&
-		position.y >= area.box.top  && position.y <= area.box.bottom) {
+bool Area::check(Point16 position, bool air) {
+	if (position.x >= this->box.left && position.x <= this->box.right &&
+		position.y >= this->box.top  && position.y <= this->box.bottom) {
 		ActiveTile* tile = bw::get_active_tile_at_coords(position.x, position.y);
 		u32 height = tile->ground_height / 2;
 		if (height == 0) {
 			// Low
-			return air ? area.flags & LocationFlags_LowAir : area.flags & LocationFlags_LowGround;
+			return air ? this->flags & LocationFlags_LowAir : this->flags & LocationFlags_LowGround;
 		} else if (height == 1) {
 			// Mid
-			return air ? area.flags & LocationFlags_MidAir : area.flags & LocationFlags_MidGround;
+			return air ? this->flags & LocationFlags_MidAir : this->flags & LocationFlags_MidGround;
 		} else if (height == 2) {
 			// High
-			return air ? area.flags & LocationFlags_HighAir : area.flags & LocationFlags_HighGround;
+			return air ? this->flags & LocationFlags_HighAir : this->flags & LocationFlags_HighGround;
 		}
 		return false;
 	}
@@ -764,14 +764,28 @@ QuotaType Parser::get_quota_type(QuotaType default_type) {
 	return default_type;
 }
 
-bool check_quota(QuotaType type, s32 quota, s32 value) {
-	switch (type) {
-		case QuotaType_Greater:			return value >  quota;
-		case QuotaType_Less:			return value <  quota;
-		case QuotaType_GreaterOrEqual:	return value >= quota;
-		case QuotaType_LessOrEqual:		return value <= quota;
-		case QuotaType_Equal:			return value == quota; 
-		case QuotaType_NotEqual:		return value != quota; 
+Quota Parser::get_quota(QuotaType default_type, s32 default_value) {
+	Quota quota{};
+	quota.type = get_quota_type(default_type);
+	quota.value = get_s32(default_value);
+	return quota;
+}
+
+Quota Parser::get_time_quota(QuotaType default_type) {
+	Quota quota{};
+	quota.type = get_quota_type(default_type);
+	quota.value = get_time_ticks();
+	return quota;
+}
+
+bool Quota::check(s32 value) {
+	switch (this->type) {
+		case QuotaType_Greater:			return value >  this->value;
+		case QuotaType_Less:			return value <  this->value;
+		case QuotaType_GreaterOrEqual:	return value >= this->value;
+		case QuotaType_LessOrEqual:		return value <= this->value;
+		case QuotaType_Equal:			return value == this->value; 
+		case QuotaType_NotEqual:		return value != this->value; 
 		case QuotaType_Anything:		return true; 
 	}
 	return false;
@@ -832,16 +846,4 @@ bool sv_iequals(std::string_view a, std::string_view b) {
 
 bool sv_lazy_equals(std::string_view a, std::string_view b) {
 	return std::ranges::equal(a, b, [](char a, char b) { return tolazy(a) == tolazy(b); });
-}
-
-bool Parser::equals(std::string_view sv) {
-	return sv_equals(m_token.sv, sv);
-}
-
-bool Parser::iequals(std::string_view sv) {
-	return sv_iequals(m_token.sv, sv);
-}
-
-bool Parser::lazy_equals(std::string_view sv) {
-	return sv_lazy_equals(m_token.sv, sv);
 }

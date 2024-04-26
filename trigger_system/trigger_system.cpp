@@ -316,12 +316,11 @@ bool parse_condition(Parser& parser) {
 			UnitIdBitset source_unit_ids = parser.get_unit_id_bitset();
 			PlayerBitset target_players = parser.get_player_bitset();
 			UnitIdBitset target_unit_ids = parser.get_unit_id_bitset();
-			QuotaType time_quota_type = parser.get_quota_type(QuotaType_LessOrEqual);
-			u32 time_quota = parser.get_time_ticks();
+			Quota time_quota = parser.get_time_quota(QuotaType_LessOrEqual);
 			u32 scouting_player = parser.get_player();
 
 			for (const TriggerEvent& event : combat_events) {
-				if (!check_area(area, event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
+				if (!area.check(event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
 					continue;
 				}
 				if (event.source_player >= FullPlayerLimit || event.target_player >= FullPlayerLimit) {
@@ -331,7 +330,7 @@ bool parse_condition(Parser& parser) {
 				&&  (!source_players[event.target_player] || !source_unit_ids[event.target_unit_id] || !target_players[event.source_player] || !target_unit_ids[event.source_unit_id])) {
 					continue;
 				}
-				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event.timestamp)) {
+				if (!time_quota.check(*g_elapsed_time_frames - event.timestamp)) {
 					continue;
 				}
 				if (scouting_player) {
@@ -348,15 +347,13 @@ bool parse_condition(Parser& parser) {
 			UnitIdBitset source_unit_ids = parser.get_unit_id_bitset();
 			PlayerBitset target_players = parser.get_player_bitset();
 			UnitIdBitset target_unit_ids = parser.get_unit_id_bitset();
-			QuotaType quota_type = parser.get_quota_type(QuotaType_GreaterOrEqual);
-			u32 quota = parser.get_s32();
-			QuotaType time_quota_type = parser.get_quota_type(QuotaType_LessOrEqual);
-			u32 time_quota = parser.get_time_ticks();
+			Quota quota = parser.get_quota(QuotaType_GreaterOrEqual);
+			Quota time_quota = parser.get_time_quota(QuotaType_LessOrEqual);
 			u32 scouting_player = parser.get_player();
 
 			u32 count = 0;
 			for (const TriggerEvent& event : kill_events) {
-				if (!check_area(area, event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
+				if (!area.check(event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
 					continue;
 				}
 				if (event.source_player >= FullPlayerLimit || !source_players[event.source_player]) {
@@ -371,7 +368,7 @@ bool parse_condition(Parser& parser) {
 				if (!target_unit_ids[event.target_unit_id]) {
 					continue;
 				}
-				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event.timestamp)) {
+				if (!time_quota.check(*g_elapsed_time_frames - event.timestamp)) {
 					continue;
 				}
 				if (scouting_player) {
@@ -382,7 +379,7 @@ bool parse_condition(Parser& parser) {
 				count += 1;
 			}
 
-			if (check_quota(quota_type, quota, count)) {
+			if (quota.check(count)) {
 				return true;
 			}
 			return false;
@@ -390,15 +387,13 @@ bool parse_condition(Parser& parser) {
 			Area area = parser.get_area();
 			PlayerBitset players = parser.get_player_bitset();
 			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
-			QuotaType quota_type = parser.get_quota_type(QuotaType_GreaterOrEqual);
-			u32 quota = parser.get_s32();
-			QuotaType time_quota_type = parser.get_quota_type(QuotaType_LessOrEqual);
-			u32 time_quota = parser.get_time_ticks();
+			Quota quota = parser.get_quota();
+			Quota time_quota = parser.get_time_quota();
 			u32 scouting_player = parser.get_player();
 
 			u32 count = 0;
 			for (TriggerEvent& event : kill_events) {
-				if (!check_area(area, event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
+				if (!area.check(event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
 					continue;
 				}
 				if (event.target_player >= FullPlayerLimit || !players[event.target_player]) {
@@ -407,7 +402,7 @@ bool parse_condition(Parser& parser) {
 				if (!unit_ids[event.target_unit_id]) {
 					continue;
 				}
-				if (!check_quota(time_quota_type, time_quota, *g_elapsed_time_frames - event.timestamp)) {
+				if (!time_quota.check(*g_elapsed_time_frames - event.timestamp)) {
 					continue;
 				}
 				if (scouting_player) {
@@ -418,7 +413,7 @@ bool parse_condition(Parser& parser) {
 				count += 1;
 			}
 
-			if (check_quota(quota_type, quota, count)) {
+			if (quota.check(count)) {
 				return true;
 			}
 			return false;
@@ -426,11 +421,9 @@ bool parse_condition(Parser& parser) {
 			Area area = parser.get_area();
 			PlayerBitset players = parser.get_player_bitset();
 			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
-			QuotaType quota_type = parser.get_quota_type(QuotaType_GreaterOrEqual);
-			u32 quota = parser.get_s32();
+			Quota quota = parser.get_quota();
 			u32 scouting_player = parser.get_player();
-			QuotaType scouting_time_quota_type = parser.get_quota_type(QuotaType_LessOrEqual);
-			u32 scouting_time_quota = parser.get_time_ticks();
+			Quota scouting_time_quota = parser.get_time_quota();
 
 			EntryArray units = {};
 			if (scouting_player) {
@@ -447,7 +440,7 @@ bool parse_condition(Parser& parser) {
 				if (scouting_player) {
 					position = unit_ext->last_seen_position[scouting_player - 1];
 				}
-				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+				if (!area.check(position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
 				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
@@ -456,12 +449,12 @@ bool parse_condition(Parser& parser) {
 				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
-				if (!scouting_player || !scouting_time_quota || check_quota(scouting_time_quota_type, scouting_time_quota, unit_ext->last_seen_timer[scouting_player - 1])) {
+				if (!scouting_player || !scouting_time_quota.value || scouting_time_quota.check(unit_ext->last_seen_timer[scouting_player - 1])) {
 					count++;
 				}
 			}
 
-			if (check_quota(quota_type, quota, count)) {
+			if (quota.check(count)) {
 				return true;
 			}
 			return false;
@@ -497,17 +490,17 @@ bool parse_condition(Parser& parser) {
 			Token name = parser.get_string();
 			QuotaType quota_type = parser.get_quota_type(QuotaType_Equal);
 			TriggerVar* var = parser.get_char('=') ? &g_trigger_vars.find_or_create(var_type, name.sv) : g_trigger_vars.find(var_type, name.sv);
-			s32 quota = is_timer ? parser.get_time_ticks() : parser.get_s32();
+			s32 quota_value = is_timer ? parser.get_time_ticks() : parser.get_s32();
 			if (var) {
-				return check_quota(quota_type, quota, var->value());
+				Quota quota{quota_type, quota_value};
+				return quota.check(var->value());
 			}
 			return false;
 		} else if (parser.equals("unit_color")) {
 			Area area = parser.get_area();
 			PlayerBitset players = parser.get_player_bitset();
 			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
-			QuotaType quota_type = parser.get_quota_type(QuotaType_GreaterOrEqual);
-			u32 quota = parser.get_s32();
+			Quota quota = parser.get_quota();
 			u32 color_id = parser.get_s32(); // Currently naive; need a way to get multiple pcolors and match them. -Pr0nogo
 
 			EntryArray units = {};
@@ -518,7 +511,7 @@ bool parse_condition(Parser& parser) {
 				Unit* unit = units.units[i];
 				UnitExt* unit_ext = get_unit_ext(unit);
 				Point16 position = unit->position;
-				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+				if (!area.check(position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
 				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
@@ -531,7 +524,7 @@ bool parse_condition(Parser& parser) {
 					count++;
 				}
 			}
-			if (check_quota(quota_type, quota, count)) {
+			if (quota.check(count)) {
 				return true;
 			}
 			return false;
@@ -1038,7 +1031,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (placeholder->unit_id == UnitId::None || !unit_ids[placeholder->unit_id]) {
 						continue;
 					}
-					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+					if (!area.check(placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
 						continue;
 					}
 					placeholder->disabled = !enable;
@@ -1064,7 +1057,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						if (!unit_ids[placeholder->unit_id]) {
 							continue;
 						}
-						if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+						if (!area.check(placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
 							continue;
 						}
 						placeholder->priority = CLAMP(placeholder->priority + priority, 0, 255);
@@ -1092,7 +1085,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (placeholder->unit_id >= UnitId::Count || !unit_ids[placeholder->unit_id]) {
 						continue;
 					}
-					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+					if (!area.check(placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
 						continue;
 					}
 					if (placeholder->priority != new_priority) {
@@ -1121,7 +1114,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (placeholder->unit_id >= UnitId::Count || !unit_ids[placeholder->unit_id]) {
 						continue;
 					}
-					if (!check_area(area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+					if (!area.check(placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
 						continue;
 					}
 					if (placeholder->resarea != resarea) {
@@ -1164,7 +1157,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 							if (placeholder->unit_id >= UnitId::Count || !unit_ids[placeholder->unit_id]) {
 								continue;
 							}
-							if (!check_area(claim_placeholders_area, placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+							if (!claim_placeholders_area.check(placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
 								continue;
 							}
 							if (!placeholder->town) {
@@ -1220,7 +1213,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
-				if (!check_area(area, unit->position, unit->status & UnitStatus::InAir)) {
+				if (!area.check(unit->position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
 				UnitExt* unit_ext = get_unit_ext(unit);
@@ -1241,7 +1234,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				Unit* unit = units.units[i];
 				UnitExt* unit_ext = get_unit_ext(unit);
 				Point16 position = unit->position;
-				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+				if (!area.check(position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
 				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
@@ -1282,7 +1275,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				Unit* unit = units.units[i];
 				UnitExt* unit_ext = get_unit_ext(unit);
 				Point16 position = unit->position;
-				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+				if (!area.check(position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
 				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
@@ -1346,7 +1339,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				Unit* unit = units.units[i];
 				UnitExt* unit_ext = get_unit_ext(unit);
 				Point16 position = unit->position;
-				if (!check_area(area, position, unit->status & UnitStatus::InAir)) {
+				if (!area.check(position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
 				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
@@ -1397,7 +1390,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				Unit* unit = units.units[i];
 				UnitExt* unit_ext = get_unit_ext(unit);
 				Point16 position = unit->position;
-				if (!check_area(area_init, position, unit->status & UnitStatus::InAir)) {
+				if (!area_init.check(position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
 				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
@@ -1553,7 +1546,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
-				if (!check_area(area, unit->position, unit->status & UnitStatus::InAir)) {
+				if (!area.check(unit->position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
 				for (u32 j = 0; j < count; ++j) {
@@ -1585,7 +1578,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
 					continue;
 				}
-				if (!check_area(area, unit->position, unit->status & UnitStatus::InAir)) {
+				if (!area.check(unit->position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
 				blissful_embrace(unit, infesting_player ? infesting_player - 1 : unit->player, true);

@@ -5,6 +5,10 @@
 #include <bitset>
 #include <charconv>
 
+bool sv_equals(std::string_view a, std::string_view b);
+bool sv_iequals(std::string_view a, std::string_view b);
+bool sv_lazy_equals(std::string_view a, std::string_view b);
+
 struct Token {
 	std::string_view sv;
 
@@ -15,6 +19,10 @@ struct Token {
 	std::string string() const { return std::string{sv}; }
 	operator bool() { return !sv.empty(); }
 	bool operator==(const Token&) const = default;
+
+	bool equals(std::string_view other) { return sv_equals(sv, other); }
+	bool iequals(std::string_view other) { return sv_iequals(sv, other); }
+	bool lazy_equals(std::string_view other) { return sv_lazy_equals(sv, other); }
 };
 
 enum LocationFlags {
@@ -29,6 +37,8 @@ enum LocationFlags {
 struct Area {
 	Box32 box;
 	u16 flags;
+
+	bool check(Point16 position, bool air);
 };
 
 using PlayerBitset = std::bitset<FullPlayerLimit>;
@@ -44,6 +54,13 @@ enum QuotaType {
 	QuotaType_Anything,
 
 	QuotaType_Count
+};
+
+struct Quota {
+	QuotaType type;
+	s32 value;
+
+	bool check(s32 value);
 };
 
 class TriggerVar;
@@ -86,14 +103,16 @@ public:
 	UnitIdBitset get_unit_id_bitset();
 
 	QuotaType get_quota_type(QuotaType default_type);
+	Quota get_quota(QuotaType default_type = QuotaType_GreaterOrEqual, s32 default_value = 0);
+	Quota get_time_quota(QuotaType default_type = QuotaType_LessOrEqual);
 
 	bool has_recolor();
 	Recolor get_recolor();
 	RecolorSet get_recolor_set();
 
-	bool equals(std::string_view sv);
-	bool iequals(std::string_view sv);
-	bool lazy_equals(std::string_view sv);
+	bool equals(std::string_view sv) { return m_token.equals(sv); }
+	bool iequals(std::string_view sv) { return m_token.iequals(sv); }
+	bool lazy_equals(std::string_view sv) { return m_token.lazy_equals(sv); }
 
 	Token token() const { return m_token; }
 	u32 command_start_pos() const { return m_command_start_pos; }
@@ -120,14 +139,7 @@ private:
 };
 
 Point16 box_center(Box32 box);
-bool check_area(Area area, Point16 position, bool air);
-Token token_from_str(const char* str);
 Token get_short_unit_name(u32 unit_id);
-bool check_quota(QuotaType type, s32 quota, s32 value);
-
-bool sv_equals(std::string_view a, std::string_view b);
-bool sv_iequals(std::string_view a, std::string_view b);
-bool sv_lazy_equals(std::string_view a, std::string_view b);
 
 template <typename T>
 std::optional<T> sv_convert_to(std::string_view sv) {
