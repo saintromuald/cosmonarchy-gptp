@@ -266,6 +266,7 @@ f32 Parser::get_time_seconds() {
 	while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at)) {
 		if (isdigit(*m_at) || *m_at == '.') {
 			expand_token();
+			continue;
 		} else if (*m_at == 'h') {
 			time_type = TimeType_Hours;
 			add_to_total = true;
