@@ -15,6 +15,7 @@ s32 VarBank::get(const std::string& name, s32 default_value) {
 	if (it != m_json.end()) {
 		return *it;
 	}
+	m_dirty = true;
 	return m_json[name] = default_value;
 }
 
