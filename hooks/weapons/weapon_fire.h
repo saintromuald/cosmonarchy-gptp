@@ -45,7 +45,7 @@ namespace hooks
 	Unit* find_next_bounce_target(Bullet* a1);																	// 0048B1E0
 	Bullet* delete_bullet(Bullet* bullet);																		// 0048A560
 	Bullet* create_bullet(s32 weapon_id, Unit* parent, s32 x, s16 y, u8 player, s32 angle);						// 0048C260
-	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle);	// 0048BEC0
+	s32 initialize_bullet(u8 player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle);		// 0048BEC0
 	void progress_bullet_frames();																				// 0048C3D0
 	void bullet_behavior_reassign(Bullet* bullet);																// 0048BD50
 	void get_weapon_iscript_init(Unit* unit, char iscript_anim);												// 00476ED0

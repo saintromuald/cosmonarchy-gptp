@@ -9,7 +9,6 @@ namespace
 	{
 		static Unit* unit;
 		static u8 weapon_id;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -18,9 +17,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-
 		hooks::fire_weapon(unit, weapon_id);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
@@ -147,7 +144,7 @@ namespace
 
 	void __declspec(naked) initialize_bullet_wrapper()
 	{
-		static char player;
+		static u8 player;
 		static Unit* parent;
 		static s16 y;
 		static Bullet* bullet;

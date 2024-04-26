@@ -41,7 +41,7 @@ namespace bw {
 		return !bw::in_replay() && g_globals->players[*g_local_nation_id].witness_mode;
 	}
 
-	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt) {
+	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt, Point16 origin_pt) {
 		Unit* target_unit = source->order_target.unit;
 		Point16 target_pos = source->order_target.pt;
 		source->order_target.unit = target;
@@ -51,8 +51,12 @@ namespace bw {
 		} else {
 			source->order_target.pt = target_pt;
 		}
-		helper::create_bullet(weapon_id, source, source->position.x, source->position.y, player,
-			get_angle(source->position.x, source->position.y, source->order_target.pt.x, source->order_target.pt.y));
+		Point16 bullet_source_pos = { source->position.x, source->position.y };
+		if (origin_pt.x != 0 || origin_pt.y != 0) {
+			bullet_source_pos = origin_pt;
+		}
+		helper::create_bullet(weapon_id, source, bullet_source_pos.x, bullet_source_pos.y, player,
+			get_angle(bullet_source_pos.x, bullet_source_pos.y, source->order_target.pt.x, source->order_target.pt.y));
 		source->order_target.unit = target_unit;
 		source->order_target.pt = target_pos;
 	}

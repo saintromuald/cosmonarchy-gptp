@@ -686,15 +686,15 @@ namespace hooks
 						target_ext->timers[TimerAutocratControlledOpposition] = 24 * 2 + 1;
 					} break;
 					case WeaponId::SevenstepGeometricRifle:
-					case WeaponId::SevenstepGeometricRiflePiercing: {
-						if (!target_ext->timers[TimerSevenstepMindMatter])
-						{
-							target_ext->timers[TimerSevenstepMindMatter] = 24 + 1;
-						}
-						if (attacker_ext->units[UnitSevenstepMindMatterSource]) {
-							target_ext->units[UnitSevenstepMindMatterSource] = attacker_ext->units[UnitSevenstepMindMatterSource];
-						} else {
-							target_ext->units[UnitSevenstepMindMatterSource] = data.attacker;
+					{
+						iquare_globals.create_effect(EffectId_SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
+							data.target->sprite->elevation + 1, data.attacker->player, data.attacker, data.target);
+					} break;
+					case WeaponId::SevenstepGeometricRiflePiercing:
+					{
+						if (!target_ext->timers[TimerSevenstepMindMatterCarrier]) {
+							iquare_globals.create_effect(EffectId_SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
+								data.target->sprite->elevation + 1, data.attacker->player, data.attacker, data.target);
 						}
 					} break;
 					case WeaponId::PazuzuJupiterDriver:

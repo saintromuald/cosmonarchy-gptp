@@ -541,6 +541,16 @@ void tick_effect(Effect* effect) {
 					helper::create_thingy(SpriteId::FragmentaryExplosion, effect->position.x, effect->position.y, effect->player);
 				}
 			} break;
+			case EffectId_SevenstepMindMatter:
+			{
+				if (effect->source && effect->source->sprite && !effect->current_time) {
+					if (effect->origin && effect->origin->sprite) {
+						UnitExt* origin_ext = get_unit_ext(effect->origin);
+						origin_ext->timers[TimerSevenstepMindMatterCarrier] = 2;
+					}
+					bw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, effect->player, effect->source, 0, effect->source->position, effect->position);
+				}
+			} break;
 		}
 	}
 }

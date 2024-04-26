@@ -799,6 +799,8 @@ namespace SpriteId
 
 		FusionCutterHitDamageless	= 901,
 
+		SevenstepMindMatterOverlay	= 906,
+
 		// CORPSE \\
 			
 		Corpse_Aspirant				= 685,

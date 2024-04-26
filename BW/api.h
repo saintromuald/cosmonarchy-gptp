@@ -88,7 +88,7 @@ namespace bw {
 	bool is_larval_egg(Unit* unit);
 	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
 	bool is_zerg_egg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt);
+	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt, Point16 origin_pt = {});
 	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y);
 	std::string read_samase_file(char* name);
 	bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id = 0, bool preserve_order = false);

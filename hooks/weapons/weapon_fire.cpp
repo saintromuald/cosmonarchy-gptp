@@ -1365,8 +1365,8 @@ namespace hooks {
 	}
 
 	// Hooked so we don't need aise for Bactalisks. - Pr0nogo
-	s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle) { // 0048BEC0
-		if (!helper::initialize_flingy(weapons_dat::flingy_id[weapon_id], y, x, (Flingy*)bullet, player, angle)) { // Unit/Bullet/Flingy have a shared header, so this is presumably fine
+	s32 initialize_bullet(u8 player, Unit* parent, s16 pos_y, Bullet* bullet, s32 weapon_id, s32 pos_x, s32 angle) { // 0048BEC0
+		if (!helper::initialize_flingy(weapons_dat::flingy_id[weapon_id], pos_y, pos_x, (Flingy*)bullet, player, angle)) { // Unit/Bullet/Flingy have a shared header; casting it here is fine. -Pr0nogo
 			return 0;
 		}
 
@@ -1478,7 +1478,7 @@ namespace hooks {
 					return 1;
 				}
 				bullet->source_unit->status |= UnitStatus::IsSelfDestructing;
-				bullet->source_unit->user_action_flags |= 0x4;
+				bullet->source_unit->user_action_flags |= UserActionFlags_HideUnit;
 				helper::orders_self_destructing(bullet->source_unit);
 				return 1;
 			}
@@ -1490,14 +1490,13 @@ namespace hooks {
 					{
 						bullet->remaining_bounces = 1; // Additional bounces added later. -Veeq7
 					} break;
-					case WeaponId::IzirokorEnergizedBioplasma:
-					case WeaponId::TosgriliskExplosiveSpores:
-					{
-						bullet->remaining_bounces = 2;
-					} break;
 					default:
 					{
-						bullet->remaining_bounces = 3;
+						if (weapon_id_bounces_crushing_tide(weapon_id)) {
+							bullet->remaining_bounces = 2;
+						} else {
+							bullet->remaining_bounces = 3;
+						}
 					}
 				}
 				if (target_unit) {

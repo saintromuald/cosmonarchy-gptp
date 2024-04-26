@@ -40,6 +40,7 @@ enum EffectId {
 	EffectId_AionReclamationField,
 	EffectId_VilgolethHeal,
 	EffectId_CyclopsRecursionRound,
+	EffectId_SevenstepMindMatter,
 
 	EffectId_Count,
 };

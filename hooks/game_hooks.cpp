@@ -3235,14 +3235,6 @@ namespace hooks {
 			unit_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
 			unit_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = 0;
 		}
-		
-		// Sevenstep - Mind Matter - Discharge projectile
-		{
-			Unit* sevenstep = unit_ext->units[UnitSevenstepMindMatterSource];
-			if (sevenstep && unit_ext->timers[TimerSevenstepMindMatter] == 1) {
-				bw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, sevenstep->player, unit, 0, sevenstep->position);
-			}
-		}
 
 		// Claymore - Kelvin Munitions - Create overlays
 		if ((unit_ext->timers[TimerKelvinMunitions] > 1 || unit_ext->timers[TimerLobotomySlow] > 1)) // Piggybacking overlay from Claymore, for now. -Pr0nogo
