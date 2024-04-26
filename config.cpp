@@ -33,8 +33,8 @@ static void write_field(YAML::Emitter& emitter, const std::string& key, const T&
 }
 
 static AdvisorType parse_advisor_name(const char* name) {
-	Parser parser = new_parser(name);
-	AdvisorType advisor = (AdvisorType)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), CHAR_MAX);
+	Parser parser{name};
+	AdvisorType advisor = (AdvisorType)parser.get_enum(advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), CHAR_MAX);
 	if (advisor == CHAR_MAX) {
 		config_error("Advisor \"{}\" does not exist! Please remove it from your cosmonarchy.yml.", name);
 	}

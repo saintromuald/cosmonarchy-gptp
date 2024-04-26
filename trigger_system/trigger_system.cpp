@@ -308,17 +308,17 @@ void buttons_draw() {
 	}
 }
 
-bool parse_condition(Parser* parser) {
-	if (parser_get_word(parser).size) {
-		if (parser_eq(parser, "combat")) {
-			Area area = parser_get_area(parser);
-			PlayerBitset source_players = parser_get_player_bitset(parser);
-			UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(parser);
-			PlayerBitset target_players = parser_get_player_bitset(parser);
-			UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(parser);
-			QuotaType time_quota_type = parser_get_quota_type(parser, QuotaType_LessOrEqual);
-			u32 time_quota = parser_get_time_ticks(parser);
-			u32 scouting_player = parser_get_player(parser);
+bool parse_condition(Parser& parser) {
+	if (parser.get_word().size) {
+		if (parser.eq("combat")) {
+			Area area = parser.get_area();
+			PlayerBitset source_players = parser.get_player_bitset();
+			UnitIdBitset source_unit_ids = parser.get_unit_id_bitset();
+			PlayerBitset target_players = parser.get_player_bitset();
+			UnitIdBitset target_unit_ids = parser.get_unit_id_bitset();
+			QuotaType time_quota_type = parser.get_quota_type(QuotaType_LessOrEqual);
+			u32 time_quota = parser.get_time_ticks();
+			u32 scouting_player = parser.get_player();
 
 			for (const TriggerEvent& event : combat_events) {
 				if (!check_area(area, event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
@@ -342,17 +342,17 @@ bool parse_condition(Parser* parser) {
 				return true;
 			}
 			return false;
-		} else if (parser_eq(parser, "kills")) {
-			Area area = parser_get_area(parser);
-			PlayerBitset source_players = parser_get_player_bitset(parser);
-			UnitIdBitset source_unit_ids = parser_get_unit_id_bitset(parser);
-			PlayerBitset target_players = parser_get_player_bitset(parser);
-			UnitIdBitset target_unit_ids = parser_get_unit_id_bitset(parser);
-			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_GreaterOrEqual);
-			u32 quota = parser_get_s32(parser);
-			QuotaType time_quota_type = parser_get_quota_type(parser, QuotaType_LessOrEqual);
-			u32 time_quota = parser_get_time_ticks(parser);
-			u32 scouting_player = parser_get_player(parser);
+		} else if (parser.eq("kills")) {
+			Area area = parser.get_area();
+			PlayerBitset source_players = parser.get_player_bitset();
+			UnitIdBitset source_unit_ids = parser.get_unit_id_bitset();
+			PlayerBitset target_players = parser.get_player_bitset();
+			UnitIdBitset target_unit_ids = parser.get_unit_id_bitset();
+			QuotaType quota_type = parser.get_quota_type(QuotaType_GreaterOrEqual);
+			u32 quota = parser.get_s32();
+			QuotaType time_quota_type = parser.get_quota_type(QuotaType_LessOrEqual);
+			u32 time_quota = parser.get_time_ticks();
+			u32 scouting_player = parser.get_player();
 
 			u32 count = 0;
 			for (const TriggerEvent& event : kill_events) {
@@ -386,15 +386,15 @@ bool parse_condition(Parser* parser) {
 				return true;
 			}
 			return false;
-		} else if (parser_eq(parser, "deaths")) {
-			Area area = parser_get_area(parser);
-			PlayerBitset players = parser_get_player_bitset(parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(parser);
-			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_GreaterOrEqual);
-			u32 quota = parser_get_s32(parser);
-			QuotaType time_quota_type = parser_get_quota_type(parser, QuotaType_LessOrEqual);
-			u32 time_quota = parser_get_time_ticks(parser);
-			u32 scouting_player = parser_get_player(parser);
+		} else if (parser.eq("deaths")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			QuotaType quota_type = parser.get_quota_type(QuotaType_GreaterOrEqual);
+			u32 quota = parser.get_s32();
+			QuotaType time_quota_type = parser.get_quota_type(QuotaType_LessOrEqual);
+			u32 time_quota = parser.get_time_ticks();
+			u32 scouting_player = parser.get_player();
 
 			u32 count = 0;
 			for (TriggerEvent& event : kill_events) {
@@ -422,15 +422,15 @@ bool parse_condition(Parser* parser) {
 				return true;
 			}
 			return false;
-		} else if (parser_eq(parser, "unit_count")) {
-			Area area = parser_get_area(parser);
-			PlayerBitset players = parser_get_player_bitset(parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(parser);
-			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_GreaterOrEqual);
-			u32 quota = parser_get_s32(parser);
-			u32 scouting_player = parser_get_player(parser);
-			QuotaType scouting_time_quota_type = parser_get_quota_type(parser, QuotaType_LessOrEqual);
-			u32 scouting_time_quota = parser_get_time_ticks(parser);
+		} else if (parser.eq("unit_count")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			QuotaType quota_type = parser.get_quota_type(QuotaType_GreaterOrEqual);
+			u32 quota = parser.get_s32();
+			u32 scouting_player = parser.get_player();
+			QuotaType scouting_time_quota_type = parser.get_quota_type(QuotaType_LessOrEqual);
+			u32 scouting_time_quota = parser.get_time_ticks();
 
 			EntryArray units = {};
 			if (scouting_player) {
@@ -465,9 +465,9 @@ bool parse_condition(Parser* parser) {
 				return true;
 			}
 			return false;
-		} else if (parser_eq(parser, "local_camera")) {
-			Area area = parser_get_area(parser);
-			Token min_visibility = parser_get_word(parser);
+		} else if (parser.eq("local_camera")) {
+			Area area = parser.get_area();
+			Token min_visibility = parser.get_word();
 
 			Point16 center = {};
 			center.x = *g_move_to_x + 320;
@@ -490,25 +490,25 @@ bool parse_condition(Parser* parser) {
 				}
 			}
 			return false;
-		} else if (parser_eq(parser, "var") || parser_eq(parser, "timer")) {
-			bool is_timer = parser_eq(parser, "timer");
+		} else if (parser.eq("var") || parser.eq("timer")) {
+			bool is_timer = parser.eq("timer");
 			TriggerVarType var_type = is_timer ? TriggerVarType_Timer : TriggerVarType_Var;
 
-			Token name = parser_get_string(parser);
-			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_Equal);
-			TriggerVar* var = parser_get_char(parser, '=') ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
-			s32 quota = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
+			Token name = parser.get_string();
+			QuotaType quota_type = parser.get_quota_type(QuotaType_Equal);
+			TriggerVar* var = parser.get_char('=') ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+			s32 quota = is_timer ? parser.get_time_ticks() : parser.get_s32();
 			if (var) {
 				return check_quota(quota_type, quota, var->value());
 			}
 			return false;
-		} else if (parser_eq(parser, "unit_color")) {
-			Area area = parser_get_area(parser);
-			PlayerBitset players = parser_get_player_bitset(parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(parser);
-			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_GreaterOrEqual);
-			u32 quota = parser_get_s32(parser);
-			u32 color_id = parser_get_s32(parser); // Currently naive; need a way to get multiple pcolors and match them. -Pr0nogo
+		} else if (parser.eq("unit_color")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			QuotaType quota_type = parser.get_quota_type(QuotaType_GreaterOrEqual);
+			u32 quota = parser.get_s32();
+			u32 color_id = parser.get_s32(); // Currently naive; need a way to get multiple pcolors and match them. -Pr0nogo
 
 			EntryArray units = {};
 			unit_search_rect(&units, area.box);
@@ -535,11 +535,11 @@ bool parse_condition(Parser* parser) {
 				return true;
 			}
 			return false;
-		}/* else if (parser_eq(parser, "selected")) {
-			PlayerBitset players = parser_get_player_bitset(parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(parser);
-			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_GreaterOrEqual);
-			u32 quota = parser_get_s32(parser);
+		}/* else if (parser.eq("selected")) {
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			QuotaType quota_type = parser.get_quota_type(QuotaType_GreaterOrEqual);
+			u32 quota = parser.get_s32();
 
 			u32 count = 0;
 			for (u32 i = 0; i < units.count; ++i) { // TODO: Replace with selection. -Pr0nogo
@@ -562,10 +562,10 @@ bool parse_condition(Parser* parser) {
 }
 
 b32 parse_comment_condition(TriggerAction* action) {
-	Parser parser = new_parser(helper::get_chk_string(action->text_string));
-	while (parser_get_command(&parser)) {
-		if (parser_eq(&parser, "condition")) {
-			if (!parse_condition(&parser)) {
+	Parser parser{helper::get_chk_string(action->text_string)};
+	while (parser.get_command()) {
+		if (parser.eq("condition")) {
+			if (!parse_condition(parser)) {
 				return false;
 			}
 		}
@@ -581,17 +581,17 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 	TriggerExt& trigger_ext = g_globals->trigger_exts[action];
 	OngoingWait& ongoing_wait = trigger_ext.ongoing_waits[trigger_player];
 
-	Parser parser = new_parser(helper::get_chk_string(action->text_string));
-	parser_load_command_pos(&parser, ongoing_wait.parser_position);
-	while (parser_get_command(&parser)) {
+	Parser parser{helper::get_chk_string(action->text_string)};
+	parser.load_command_pos(ongoing_wait.parser_position);
+	while (parser.get_command()) {
 		// Wait 
-		if (parser_eq(&parser, "wait")) {
-			u32 time = parser_get_time_ticks(&parser);
+		if (parser.eq("wait")) {
+			u32 time = parser.get_time_ticks();
 
 			bool init = action->flags & 1;
 			if (!init) {
 				ongoing_wait.timer = time;
-				ongoing_wait.parser_position = parser.command_start_pos;
+				ongoing_wait.parser_position = parser.command_start_pos();
 				action->flags |= 1;
 				return false;
 			} else if (ongoing_wait.timer > 0) {
@@ -601,48 +601,48 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				action->flags &= ~1;
 			}
 		// Conditional Waits
-		} else if (parser_eq(&parser, "wait_if")) {
-			if (parse_condition(&parser)) {
-				ongoing_wait.parser_position = parser.command_start_pos;
+		} else if (parser.eq("wait_if")) {
+			if (parse_condition(parser)) {
+				ongoing_wait.parser_position = parser.command_start_pos();
 				return false;
 			} else {
 				ongoing_wait.parser_position = 0;
 			}
-		} else if (parser_eq(&parser, "wait_until")) {
-			if (!parse_condition(&parser)) {
-				ongoing_wait.parser_position = parser.command_start_pos;
+		} else if (parser.eq("wait_until")) {
+			if (!parse_condition(parser)) {
+				ongoing_wait.parser_position = parser.command_start_pos();
 				return false;
 			} else {
 				ongoing_wait.parser_position = 0;
 			}
 		// Conditional Exits
-		} else if (parser_eq(&parser, "exit_if")) {
-			if (parse_condition(&parser)) {
+		} else if (parser.eq("exit_if")) {
+			if (parse_condition(parser)) {
 				trigger.current_action_index = 64;
 				return false;
 			}
-		} else if (parser_eq(&parser, "exit_unless")) {
-			if (!parse_condition(&parser)) {
+		} else if (parser.eq("exit_unless")) {
+			if (!parse_condition(parser)) {
 				trigger.current_action_index = 64;
 				return false;
 			}
-		} else if (parser_eq(&parser, "exit_preserve_if")) {
-			if (parse_condition(&parser)) {
+		} else if (parser.eq("exit_preserve_if")) {
+			if (parse_condition(parser)) {
 				trigger.flags |= 0x4;
 				trigger.current_action_index = 64;
 				return false;
 			}
-		} else if (parser_eq(&parser, "exit_preserve_unless")) {
-			if (!parse_condition(&parser)) {
+		} else if (parser.eq("exit_preserve_unless")) {
+			if (!parse_condition(parser)) {
 				trigger.flags |= 0x4;
 				trigger.current_action_index = 64;
 				return false;
 			}
 		// Buttons
-		} else if (parser_eq(&parser, "show_button")) {
-			Token id = parser_get_string(&parser);
-			Token display_name = parser_get_string(&parser);
-			s32 priority = parser_get_s32(&parser);
+		} else if (parser.eq("show_button")) {
+			Token id = parser.get_string();
+			Token display_name = parser.get_string();
+			s32 priority = parser.get_s32();
 
 			TriggerButton trigger_button = {};
 			trigger_button.id = id;
@@ -655,42 +655,42 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			TriggerVar& var = g_trigger_vars.find_or_create(TriggerVarType_Var, id.data);
 			var.set(0);
-		} else if (parser_eq(&parser, "hide_button")) {
-			Token id = parser_get_string(&parser);
+		} else if (parser.eq("hide_button")) {
+			Token id = parser.get_string();
 
 			std::erase_if(g_globals->trigger_buttons, [&](auto& button) { return button.id == id; });
 		// Local Only Triggers
-		} else if (parser_eq(&parser, "play_music") && is_local_player) {
-			Token filename = parser_get_string(&parser);
+		} else if (parser.eq("play_music") && is_local_player) {
+			Token filename = parser.get_string();
 			playback.next_music = get_sound(filename.data);
 			playback.target_fade = 0;
-		} else if (parser_eq(&parser, "stop_music") && is_local_player) {
+		} else if (parser.eq("stop_music") && is_local_player) {
 			playback.target_fade = 0;
-		} else if (parser_eq(&parser, "pause_music") && is_local_player) {
+		} else if (parser.eq("pause_music") && is_local_player) {
 			playback.target_fade = 0;
 			playback.paused = true;
-		} else if (parser_eq(&parser, "resume_music") && is_local_player) {
+		} else if (parser.eq("resume_music") && is_local_player) {
 			playback.target_fade = 1;
 			playback.paused = false;
 			play_music(true);
-		} else if (parser_eq(&parser, "music_fade_in") && is_local_player) {
-			f32 fade_in = parser_get_time_seconds(&parser);
+		} else if (parser.eq("music_fade_in") && is_local_player) {
+			f32 fade_in = parser.get_time_seconds();
 			playback.fade_in = fade_in;
-		} else if (parser_eq(&parser, "music_fade_out") && is_local_player) {
-			f32 fade_out = parser_get_time_seconds(&parser);
+		} else if (parser.eq("music_fade_out") && is_local_player) {
+			f32 fade_out = parser.get_time_seconds();
 			playback.fade_out = fade_out;
-		} else if (parser_eq(&parser, "music_volume") && is_local_player) {
-			f32 volume = parser_get_f32(&parser);
-			f32 time = parser_get_time_seconds(&parser);
+		} else if (parser.eq("music_volume") && is_local_player) {
+			f32 volume = parser.get_f32();
+			f32 time = parser.get_time_seconds();
 			if (time == 0) {
 				playback.volume = 0;
 			}
 			playback.target_volume = volume;
 			playback.volume_time = time;
-		} else if (parser_eq(&parser, "playlist_clear") && is_local_player) {
+		} else if (parser.eq("playlist_clear") && is_local_player) {
 			memset(&current_playlist, 0, sizeof(current_playlist));
-		} else if (parser_eq(&parser, "playlist_add") && is_local_player) {
-			Token filename = parser_get_string(&parser);
+		} else if (parser.eq("playlist_add") && is_local_player) {
+			Token filename = parser.get_string();
 			if (current_playlist.size < MaxSound) {
 				Sound* music = get_sound(filename.data);
 				if (music) {
@@ -699,13 +699,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			} else {
 				bw::printf("Error: Playlist already full! (%s)", filename.data);
 			}
-		} else if (parser_eq(&parser, "playlist_shuffle") && is_local_player) {
-			s32 do_shuffle = parser_get_s32(&parser); // 0 - false, 1 - true
+		} else if (parser.eq("playlist_shuffle") && is_local_player) {
+			s32 do_shuffle = parser.get_s32(); // 0 - false, 1 - true
 			current_playlist.shuffle = do_shuffle;
-		} else if (parser_eq(&parser, "set_player_name") && is_local_player) {
-			u32 player = parser_get_player(&parser);
-			Token name = parser_get_string(&parser);
-			s32 ignore_human_name = parser_get_s32(&parser);
+		} else if (parser.eq("set_player_name") && is_local_player) {
+			u32 player = parser.get_player();
+			Token name = parser.get_string();
+			s32 ignore_human_name = parser.get_s32();
 			if (player) {
 				player -= 1;
 				if (!ignore_human_name && (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated)) {
@@ -716,17 +716,17 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					set_player_name(player, name.data, true);
 				}
 			}
-		} else if (parser_eq(&parser, "set_force_name") && is_local_player) {
-			u32 player = parser_get_player(&parser);
-			Token name = parser_get_string(&parser);
+		} else if (parser.eq("set_force_name") && is_local_player) {
+			u32 player = parser.get_player();
+			Token name = parser.get_string();
 			if (player) {
 				player -= 1;
 				set_player_force_name(player, name.data);
 			}
-		} else if (parser_eq(&parser, "recolor") && is_local_player) {
+		} else if (parser.eq("recolor") && is_local_player) {
 			TimedRecolor recolor = {};
-			recolor.set  = parser_get_recolor_set(&parser);
-			recolor.time = parser_get_time_seconds(&parser);
+			recolor.set  = parser.get_recolor_set();
+			recolor.time = parser.get_time_seconds();
 
 			recolor_system.recolor_time = 0;
 			recolor_system.source_recolor = recolor_system.current_recolor;
@@ -735,50 +735,50 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				recolor_system.current_recolor = recolor;
 				set_palette_recolor(recolor.set);
 			}
-		} else if (parser_eq(&parser, "recolor_loop_add") && is_local_player) {
+		} else if (parser.eq("recolor_loop_add") && is_local_player) {
 			TimedRecolor recolor = {};
-			recolor.set  = parser_get_recolor_set(&parser);
-			recolor.time = parser_get_time_seconds(&parser);
+			recolor.set  = parser.get_recolor_set();
+			recolor.time = parser.get_time_seconds();
 
 			if (recolor_system.recolor_list.count < MaxRecolors) {
 				recolor_system.recolor_list.recolors[recolor_system.recolor_list.count++] = recolor;
 			}
-		} else if (parser_eq(&parser, "recolor_loop_clear") && is_local_player) {
+		} else if (parser.eq("recolor_loop_clear") && is_local_player) {
 			memset(&recolor_system.recolor_list, 0, sizeof(recolor_system.recolor_list));
-		} else if (parser_eq(&parser, "objective_set") && is_local_player) {
-			s32 key = parser_get_s32(&parser);
-			Token text = parser_get_string(&parser);
+		} else if (parser.eq("objective_set") && is_local_player) {
+			s32 key = parser.get_s32();
+			Token text = parser.get_string();
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
 				sprintf_s(objective->text, "%s", text.data);
 				objective->show = true;
 			}
-		} else if (parser_eq(&parser, "objective_text") && is_local_player) {
-			s32 key = parser_get_s32(&parser);
-			Token text = parser_get_string(&parser);
+		} else if (parser.eq("objective_text") && is_local_player) {
+			s32 key = parser.get_s32();
+			Token text = parser.get_string();
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
 				sprintf_s(objective->text, "%s", text.data);
 			}
-		} else if (parser_eq(&parser, "objective_desc") && is_local_player) {
-			s32 key = parser_get_s32(&parser);
-			Token text = parser_get_string(&parser);
+		} else if (parser.eq("objective_desc") && is_local_player) {
+			s32 key = parser.get_s32();
+			Token text = parser.get_string();
 
 			// TODO: set objective description
-		} else if (parser_eq(&parser, "objective_show") && is_local_player) {
-			s32 key = parser_get_s32(&parser);
-			s32 show = parser_get_s32(&parser);
+		} else if (parser.eq("objective_show") && is_local_player) {
+			s32 key = parser.get_s32();
+			s32 show = parser.get_s32();
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
 				objective->show = show;
 			}
-		} else if (parser_eq(&parser, "objective_score") && is_local_player) {
-			s32 key = parser_get_s32(&parser);
-			s32 score = parser_get_s32(&parser);
-			s32 max_score = parser_get_s32(&parser);
+		} else if (parser.eq("objective_score") && is_local_player) {
+			s32 key = parser.get_s32();
+			s32 score = parser.get_s32();
+			s32 max_score = parser.get_s32();
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
@@ -791,10 +791,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					objective->score = objective->max_score;
 				}
 			}
-		} else if (parser_eq(&parser, "objective_score_add") && is_local_player) {
-			s32 key = parser_get_s32(&parser);
-			s32 score = parser_get_s32(&parser);
-			s32 max_score = parser_get_s32(&parser);
+		} else if (parser.eq("objective_score_add") && is_local_player) {
+			s32 key = parser.get_s32();
+			s32 score = parser.get_s32();
+			s32 max_score = parser.get_s32();
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
@@ -807,10 +807,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					objective->score = objective->max_score;
 				}
 			}
-		} else if (parser_eq(&parser, "objective_score_subtract") && is_local_player) {
-			s32 key = parser_get_s32(&parser);
-			s32 score = parser_get_s32(&parser);
-			s32 max_score = parser_get_s32(&parser);
+		} else if (parser.eq("objective_score_subtract") && is_local_player) {
+			s32 key = parser.get_s32();
+			s32 score = parser.get_s32();
+			s32 max_score = parser.get_s32();
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
@@ -823,46 +823,46 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					objective->score = objective->max_score;
 				}
 			}
-		} else if (parser_eq(&parser, "objective_timer") && is_local_player) {
-			s32 key = parser_get_s32(&parser);
-			u32 time = parser_get_time_ticks(&parser);
+		} else if (parser.eq("objective_timer") && is_local_player) {
+			s32 key = parser.get_s32();
+			u32 time = parser.get_time_ticks();
 
 			Objective* objective = find_or_create_objective(key);
 			if (objective) {
 				objective->timer = time;
 			}
-		} else if (parser_eq(&parser, "objective_remove") && is_local_player) {
-			s32 key = parser_get_s32(&parser);
+		} else if (parser.eq("objective_remove") && is_local_player) {
+			s32 key = parser.get_s32();
 			Objective* objective = find_objective(key);
 			if (objective) {
 				remove_objective(objective);
 			}
-		} else if (parser_eq(&parser, "objectives_sync") && is_local_player) {
+		} else if (parser.eq("objectives_sync") && is_local_player) {
 			// TODO: sync objectives to mission objectives menu
-		} else if (parser_eq(&parser, "objectives_clear") && is_local_player) {
+		} else if (parser.eq("objectives_clear") && is_local_player) {
 			memset(&objectives, 0, sizeof(objectives));
-		} else if (parser_eq(&parser, "show_player_layouts") && is_local_player) {
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			s32 value = parser_get_s32(&parser);
+		} else if (parser.eq("show_player_layouts") && is_local_player) {
+			PlayerBitset players = parser.get_player_bitset();
+			s32 value = parser.get_s32();
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (!players[i]) {
 					continue;
 				}
 				show_player_layouts[i] = value;
 			}
-		} else if (parser_eq(&parser, "set_player_unit_name") && is_local_player) {
-			u32 player = parser_get_player(&parser);
-			u32 unit_id = parser_get_unit_id(&parser);
-			Token name = parser_get_string(&parser);
+		} else if (parser.eq("set_player_unit_name") && is_local_player) {
+			u32 player = parser.get_player();
+			u32 unit_id = parser.get_unit_id();
+			Token name = parser.get_string();
 			if (player && unit_id != UnitId::None) {
 				player -= 1;
 				g_globals->players[player].custom_unit_names[(UnitId::Enum)unit_id] = {name.data, name.size};
 			}
-		} else if (parser_eq(&parser, "set_player_race_name") && is_local_player) {
-			u32 player = parser_get_player(&parser);
-			Token old_race = parser_get_string(&parser);
-			Token new_race = parser_get_string(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+		} else if (parser.eq("set_player_race_name") && is_local_player) {
+			u32 player = parser.get_player();
+			Token old_race = parser.get_string();
+			Token new_race = parser.get_string();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
 
 			if (player) {
 				player -= 1;
@@ -887,40 +887,40 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
-		} else if (parser_eq(&parser, "reset_player_unit_names") && is_local_player) {
-			u32 player = parser_get_player(&parser);
+		} else if (parser.eq("reset_player_unit_names") && is_local_player) {
+			u32 player = parser.get_player();
 			if (player) {
 				player -= 1;
 				g_globals->players[player].custom_unit_names.clear();
 			}
-		} else if (parser_eq(&parser, "unit_sound") && is_local_player) {
+		} else if (parser.eq("unit_sound") && is_local_player) {
 			SoundReplacement sound_replacement = {};
-			sound_replacement.players = parser_get_player_bitset(&parser);
-			sound_replacement.unit_ids = parser_get_unit_id_bitset(&parser);
-			sound_replacement.animation = parser_get_enum(&parser, animation_type_names, ARRAY_SIZE(animation_type_names));
-			if (parser_eq(&parser, "*")) {
+			sound_replacement.players = parser.get_player_bitset();
+			sound_replacement.unit_ids = parser.get_unit_id_bitset();
+			sound_replacement.animation = parser.get_enum(animation_type_names, ARRAY_SIZE(animation_type_names));
+			if (parser.eq("*")) {
 				sound_replacement.any_animation = true;
 			}
-			sound_replacement.old_sound_id = parser_get_s32(&parser);
-			if (parser_eq(&parser, "*")) {
+			sound_replacement.old_sound_id = parser.get_s32();
+			if (parser.eq("*")) {
 				sound_replacement.any_sound = true;
 			}
-			Token path = parser_get_string(&parser);
+			Token path = parser.get_string();
 			sound_replacement.new_sound = get_sound(path.data);
-			sound_replacement.replace = parser_get_s32(&parser);
+			sound_replacement.replace = parser.get_s32();
 
-			parser_get_word(&parser);
-			if (parser_eq(&parser, "clear")) {
+			parser.get_word();
+			if (parser.eq("clear")) {
 				std::erase_if(g_globals->sound_replacements, [&](auto& it) { return it == sound_replacement; });
 			} else {
 				g_globals->sound_replacements.push_back(sound_replacement);
 			}
 		// Bitset Local Only Triggers
-		} else if (parser_eq(&parser, "play_sound") && is_local_player) {
-			Token path = parser_get_string(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			Point16 position = parser_get_position(&parser);
-			Token min_visibility = parser_get_word(&parser);
+		} else if (parser.eq("play_sound") && is_local_player) {
+			Token path = parser.get_string();
+			PlayerBitset players = parser.get_player_bitset();
+			Point16 position = parser.get_position();
+			Token min_visibility = parser.get_word();
 
 			if (trigger_player < PlayerLimit && players[trigger_player]) {
 				if (position.x == 0 && position.y == 0) {
@@ -947,31 +947,31 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		// Gameplay Actions
-		} else if (parser_eq(&parser, "set_mineral_yields")) {
-			u32 depleted_yield = parser_get_s32(&parser);
-			u32 yield = parser_get_s32(&parser);
+		} else if (parser.eq("set_mineral_yields")) {
+			u32 depleted_yield = parser.get_s32();
+			u32 yield = parser.get_s32();
 
 			g_globals->yields[(size_t)YieldType::MineralDepleted] = depleted_yield;
 			g_globals->yields[(size_t)YieldType::Mineral] = yield;
-		} else if (parser_eq(&parser, "set_gas_yields")) {
-			u32 ridge_yield = parser_get_s32(&parser);
-			u32 geyser_yield = parser_get_s32(&parser);
-			u32 tier2_yield = parser_get_s32(&parser);
-			u32 tier3_yield = parser_get_s32(&parser);
+		} else if (parser.eq("set_gas_yields")) {
+			u32 ridge_yield = parser.get_s32();
+			u32 geyser_yield = parser.get_s32();
+			u32 tier2_yield = parser.get_s32();
+			u32 tier3_yield = parser.get_s32();
 
 			g_globals->yields[(size_t)YieldType::GasRidge] = ridge_yield;
 			g_globals->yields[(size_t)YieldType::GasGeyser] = geyser_yield;
 			g_globals->yields[(size_t)YieldType::GasTier2] = tier2_yield;
 			g_globals->yields[(size_t)YieldType::GasTier3] = tier3_yield;
-		} else if (parser_eq(&parser, "unit_sprite")) {
+		} else if (parser.eq("unit_sprite")) {
 			SpriteReplacement sprite_replacement = {};
-			sprite_replacement.players = parser_get_player_bitset(&parser);
-			sprite_replacement.unit_ids = parser_get_unit_id_bitset(&parser);
-			parser_get_word(&parser);
-			if (parser_eq(&parser, "sprite_id")) {
-				sprite_replacement.sprite_id = parser_get_s32(&parser);
-			} else if (parser_eq(&parser, "unit_id")) {
-				u32 unit_id = parser_get_unit_id(&parser);
+			sprite_replacement.players = parser.get_player_bitset();
+			sprite_replacement.unit_ids = parser.get_unit_id_bitset();
+			parser.get_word();
+			if (parser.eq("sprite_id")) {
+				sprite_replacement.sprite_id = parser.get_s32();
+			} else if (parser.eq("unit_id")) {
+				u32 unit_id = parser.get_unit_id();
 				u32 flingy_id = units_dat::graphic[unit_id];
 				sprite_replacement.sprite_id = flingy_dat::sprite_id[flingy_id];
 			} else {
@@ -979,15 +979,15 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 
 			g_globals->sprite_replacements.push_back(sprite_replacement);
-		} else if (parser_eq(&parser, "clear_unit_sprite")) {
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+		} else if (parser.eq("clear_unit_sprite")) {
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
 			u32 sprite_id = 0;
-			parser_get_word(&parser);
-			if (parser_eq(&parser, "sprite_id")) {
-				sprite_id = parser_get_s32(&parser);
-			} else if (parser_eq(&parser, "unit_id")) {
-				u32 unit_id = parser_get_unit_id(&parser);
+			parser.get_word();
+			if (parser.eq("sprite_id")) {
+				sprite_id = parser.get_s32();
+			} else if (parser.eq("unit_id")) {
+				u32 unit_id = parser.get_unit_id();
 				u32 flingy_id = units_dat::graphic[unit_id];
 				sprite_id = flingy_dat::sprite_id[flingy_id];
 			} else {
@@ -999,19 +999,19 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					&& sprite_replacement.unit_ids == unit_ids
 					&& sprite_replacement.sprite_id == sprite_id;
 			});
-		} else if (parser_eq(&parser, "clear_creep")) {
-			Area location = parser_get_area(&parser);
+		} else if (parser.eq("clear_creep")) {
+			Area location = parser.get_area();
 			bw::clear_creep(location.box);
-		} else if (parser_eq(&parser, "spawn")) {
+		} else if (parser.eq("spawn")) {
 			SpawnSequence sequence = {};
-			sequence.count = parser_get_s32(&parser);
-			sequence.unit_id = parser_get_unit_id(&parser);
-			sequence.player = parser_get_player(&parser, true);
-			sequence.type = parser_get_enum(&parser, spawn_type_names, SpawnType_Count);
-			sequence.delay = parser_get_time_ticks(&parser);
-			sequence.stagger = parser_get_time_ticks(&parser);
-			sequence.source_pos = parser_get_position(&parser);
-			sequence.move_pos = parser_get_position(&parser);
+			sequence.count = parser.get_s32();
+			sequence.unit_id = parser.get_unit_id();
+			sequence.player = parser.get_player(true);
+			sequence.type = parser.get_enum(spawn_type_names, SpawnType_Count);
+			sequence.delay = parser.get_time_ticks();
+			sequence.stagger = parser.get_time_ticks();
+			sequence.source_pos = parser.get_position();
+			sequence.move_pos = parser.get_position();
 			
 			if (sequence.player) {
 				sequence.player -= 1;
@@ -1019,11 +1019,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					spawn_sequences[spawn_sequence_count++] = sequence;
 				}
 			}
-		} else if (parser_eq(&parser, "layouts_enable")) {
-			Area area = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			s32 enable = parser_get_s32(&parser);
+		} else if (parser.eq("layouts_enable")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			s32 enable = parser.get_s32();
 
 			for (u32 i = 0; i < PlayerLimit; ++i) {
 				if (!players[i]) {
@@ -1044,11 +1044,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					placeholder->disabled = !enable;
 				}
 			}
-		} else if (parser_eq(&parser, "layouts_priority_add")) {
-			Area area = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			s32 priority = parser_get_s32(&parser);
+		} else if (parser.eq("layouts_priority_add")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			s32 priority = parser.get_s32();
 
 			if (priority) {
 				for (u32 i = 0; i < PlayerLimit; ++i) {
@@ -1072,11 +1072,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
-		} else if (parser_eq(&parser, "layouts_priority_set")) {
-			Area area = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			s32 priority = parser_get_s32(&parser);
+		} else if (parser.eq("layouts_priority_set")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			s32 priority = parser.get_s32();
 
 			u8 new_priority = CLAMP(priority, 0, 255);
 			for (u32 i = 0; i < PlayerLimit; ++i) {
@@ -1101,11 +1101,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
-		} else if (parser_eq(&parser, "layouts_assign")) {
-			Area area = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			Point16 resarea_position = parser_get_position(&parser, box_center(area.box));
+		} else if (parser.eq("layouts_assign")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			Point16 resarea_position = parser.get_position(box_center(area.box));
 
 			u32 resarea = bw::get_closest_resarea(resarea_position);
 			for (u32 i = 0; i < PlayerLimit; ++i) {
@@ -1130,13 +1130,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
-		} else if (parser_eq(&parser, "create_town")) {
-			u32 player = parser_get_player(&parser);
-			Point16 pos = parser_get_position(&parser);
-			s32 worker_count = parser_get_s32(&parser);
-			s32 attach_to_nearest_resarea = parser_get_s32(&parser);
-			Area claim_placeholders_area = parser_get_area(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
+		} else if (parser.eq("create_town")) {
+			u32 player = parser.get_player();
+			Point16 pos = parser.get_position();
+			s32 worker_count = parser.get_s32();
+			s32 attach_to_nearest_resarea = parser.get_s32();
+			Area claim_placeholders_area = parser.get_area();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
 
 			if (player) {
 				player -= 1;
@@ -1177,17 +1177,17 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
-		} else if (parser_eq(&parser, "set_start_location")) {
-			u32 player = parser_get_player(&parser);
-			Point16 position = parser_get_position(&parser);
+		} else if (parser.eq("set_start_location")) {
+			u32 player = parser.get_player();
+			Point16 position = parser.get_position();
 
 			if (player) {
 				player -= 1;
 				g_start_positions[player] = position;
 			}
-		} else if (parser_eq(&parser, "set_race")) {
-			u32 player = parser_get_player(&parser);
-			u32 race = parser_get_enum(&parser, race_names, ARRAY_SIZE(race_names));
+		} else if (parser.eq("set_race")) {
+			u32 player = parser.get_player();
+			u32 race = parser.get_enum(race_names, ARRAY_SIZE(race_names));
 
 			if (player) {
 				player -= 1;
@@ -1196,19 +1196,19 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					g_globals->current_advisor = get_advisor_type_from_config(race);
 				}
 			}
-		} else if (parser_eq(&parser, "set_player_color")) {
-			u32 player = parser_get_player(&parser);
-			u32 player_color = parser_get_enum(&parser, player_color_names, ARRAY_SIZE(player_color_names));
+		} else if (parser.eq("set_player_color")) {
+			u32 player = parser.get_player();
+			u32 player_color = parser.get_enum(player_color_names, ARRAY_SIZE(player_color_names));
 
 			if (player) {
 				player -= 1;
 				set_player_color(player, player_color);
 			}
-		} else if (parser_eq(&parser, "set_ai_auto_burrow")) {
-			Area area = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			s32 enable = parser_get_s32(&parser);
+		} else if (parser.eq("set_ai_auto_burrow")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			s32 enable = parser.get_s32();
 
 			EntryArray units = {};
 			unit_search_rect(&units, area.box);
@@ -1226,12 +1226,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				UnitExt* unit_ext = get_unit_ext(unit);
 				unit_ext->values[ValueDisableAutoBurrow] = !enable;
 			}
-		} else if (parser_eq(&parser, "kill")) {
-			Area area = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			u32 count = parser_get_s32(&parser);
-			bool remove = parser_get_s32(&parser);
+		} else if (parser.eq("kill")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			u32 count = parser.get_s32();
+			bool remove = parser.get_s32();
 
 			EntryArray units = {};
 			unit_search_rect(&units, area.box);
@@ -1259,19 +1259,19 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 				unit->remove();
 			}
-		} else if (parser_eq(&parser, "set_unit_stat")) {
-			Area area = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			u32 count = parser_get_s32(&parser);
-			TriggerStat trigger_stat = (TriggerStat)parser_get_enum(&parser, trigger_stat_names, ARRAY_SIZE(trigger_stat_names));
+		} else if (parser.eq("set_unit_stat")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			u32 count = parser.get_s32();
+			TriggerStat trigger_stat = (TriggerStat)parser.get_enum(trigger_stat_names, ARRAY_SIZE(trigger_stat_names));
 			// We should separately make "modify_unit_stat" and have operator parsing for stat amount. -Pr0nogo
 			// Not really... We would just have assign operators before value i.e. =|+=|-=|*=|/= -Veeq7
 			s32 value = 0;
 			if (trigger_stat == TriggerStat_TimedLife) {
-				value = parser_get_time_ticks(&parser);
+				value = parser.get_time_ticks();
 			} else {
-				value = parser_get_s32(&parser);
+				value = parser.get_s32();
 			}
 
 			EntryArray units = {};
@@ -1330,13 +1330,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					} break;
 				}
 			}
-		} else if (parser_eq(&parser, "set_unit_behavior")) {
-			Area area = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			u32 count = parser_get_s32(&parser);
-			TriggerBehavior trigger_behavior = (TriggerBehavior)parser_get_enum(&parser, trigger_behavior_names, ARRAY_SIZE(trigger_stat_names));
-			b32 enable = parser_get_s32(&parser);
+		} else if (parser.eq("set_unit_behavior")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			u32 count = parser.get_s32();
+			TriggerBehavior trigger_behavior = (TriggerBehavior)parser.get_enum(trigger_behavior_names, ARRAY_SIZE(trigger_stat_names));
+			b32 enable = parser.get_s32();
 
 			EntryArray units = {};
 			unit_search_rect(&units, area.box);
@@ -1379,13 +1379,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					} break;
 				}
 			}
-		} else if (parser_eq(&parser, "move_unit")) {
-			Area area_init = parser_get_area(&parser);
-			Area area_dest = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			u32 count = parser_get_s32(&parser);
-			b32 overlay = parser_get_s32(&parser);
+		} else if (parser.eq("move_unit")) {
+			Area area_init = parser.get_area();
+			Area area_dest = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			u32 count = parser.get_s32();
+			b32 overlay = parser.get_s32();
 
 			EntryArray units = {};
 			unit_search_rect(&units, area_init.box);
@@ -1421,44 +1421,44 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
-		} else if (parser_eq(&parser, "var") || parser_eq(&parser, "timer")) {
-			bool is_timer = parser_eq(&parser, "timer");
+		} else if (parser.eq("var") || parser.eq("timer")) {
+			bool is_timer = parser.eq("timer");
 			TriggerVarType var_type = is_timer ? TriggerVarType_Timer : TriggerVarType_Var;
 
-			Token name = parser_get_string(&parser);
-			Token var_operator = parser_get_string(&parser);
+			Token name = parser.get_string();
+			Token var_operator = parser.get_string();
 
 			if (token_eq(&var_operator, "=")) {
-				s32 value = parser_get_var_value(&parser, is_timer);
+				s32 value = parser.get_var_value(is_timer);
 				TriggerVar& var = g_trigger_vars.find_or_create(var_type, name.data);
 				var.set(value);
 			} else if (token_eq(&var_operator, "+=") || token_eq(&var_operator, "+==")) {
-				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = parser.token.size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+				s32 value = parser.get_var_value(is_timer);
+				TriggerVar* var = parser.token().size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 				if (var) {
 					var->set(var->value() + value);
 				}
 			} else if (token_eq(&var_operator, "-=") || token_eq(&var_operator, "-==")) {
-				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = parser.token.size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+				s32 value = parser.get_var_value(is_timer);
+				TriggerVar* var = parser.token().size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 				if (var) {
 					var->set(var->value() - value);
 				}
 			} else if (token_eq(&var_operator, "*=") || token_eq(&var_operator, "*==")) {
-				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = parser.token.size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+				s32 value = parser.get_var_value(is_timer);
+				TriggerVar* var = parser.token().size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 				if (var) {
 					var->set(var->value() * value);
 				}
 			} else if (token_eq(&var_operator, "/=") || token_eq(&var_operator, "/==")) {
-				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = parser.token.size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+				s32 value = parser.get_var_value(is_timer);
+				TriggerVar* var = parser.token().size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 				if (var) {
 					var->set(var->value() / value);
 				}
 			} else if (token_eq(&var_operator, "%=") || token_eq(&var_operator, "%==")) {
-				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = parser.token.size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+				s32 value = parser.get_var_value(is_timer);
+				TriggerVar* var = parser.token().size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 				if (var) {
 					var->set(var->value() % value);
 				}
@@ -1468,23 +1468,23 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			} else if (token_eq(&var_operator, "unset")) {
 				g_trigger_vars.unset(var_type, name.data);
 			}
-		} else if (parser_eq(&parser, "bank_link_var")) {
-			Token bank = parser_get_identifier(&parser);
-			Token var = parser_get_identifier(&parser);
+		} else if (parser.eq("bank_link_var")) {
+			Token bank = parser.get_identifier();
+			Token var = parser.get_identifier();
 			g_trigger_vars.bank_link_var(bank.data, var.data);
-		} else if (parser_eq(&parser, "bank_clear")) {
-			Token bank = parser_get_identifier(&parser);
+		} else if (parser.eq("bank_clear")) {
+			Token bank = parser.get_identifier();
 			g_trigger_vars.get_bank(bank.data).clear();
-		} else if (parser_eq(&parser, "convert_to_ai")) {
-			u32 player = parser_get_player(&parser);
+		} else if (parser.eq("convert_to_ai")) {
+			u32 player = parser.get_player();
 
 			if (player) {
 				player -= 1;
 				g_player_table[player].type = PlayerType::Computer;
 				bw::run_default_ai(player, g_start_positions[player]);
 			};
-		} else if (parser_eq(&parser, "threshold_set_fraud_slots")) {
-			PlayerBitset players = parser_get_player_bitset(&parser);
+		} else if (parser.eq("threshold_set_fraud_slots")) {
+			PlayerBitset players = parser.get_player_bitset();
 
 			threshold_config.enabled = true;
 			for (u32 player = 0; player < PlayerLimit; ++player) {
@@ -1493,8 +1493,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					threshold_config.witness_enabled[player] = false;
 				}
 			}
-		} else if (parser_eq(&parser, "threshold_set_witness_slots")) {
-			PlayerBitset players = parser_get_player_bitset(&parser);
+		} else if (parser.eq("threshold_set_witness_slots")) {
+			PlayerBitset players = parser.get_player_bitset();
 
 			for (u32 player = 0; player < PlayerLimit; ++player) {
 				threshold_config.witness_enabled[player] = players[player];
@@ -1502,45 +1502,45 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					threshold_config.fraud_allowed[player] = false;
 				}
 			}
-		} else if (parser_eq(&parser, "threshold_autoscale")) {
-			f32 value = parser_get_f32(&parser);
+		} else if (parser.eq("threshold_autoscale")) {
+			f32 value = parser.get_f32();
 
 			threshold_config.auto_scale = value;
-		} else if (parser_eq(&parser, "threshold_initial_count")) {
-			u32 count = parser_get_s32(&parser);
+		} else if (parser.eq("threshold_initial_count")) {
+			u32 count = parser.get_s32();
 
 			threshold_config.initial_count = count;
-		} else if (parser_eq(&parser, "threshold_min_count")) {
-			u32 count = parser_get_s32(&parser);
+		} else if (parser.eq("threshold_min_count")) {
+			u32 count = parser.get_s32();
 
 			threshold_config.min_count = count;
-		} else if (parser_eq(&parser, "threshold_total_count")) {
-			u32 count = parser_get_s32(&parser);
+		} else if (parser.eq("threshold_total_count")) {
+			u32 count = parser.get_s32();
 
 			threshold_config.total_count = count;
-		} else if (parser_eq(&parser, "threshold_timer")) {
-			u32 timer = parser_get_time_ticks(&parser);
+		} else if (parser.eq("threshold_timer")) {
+			u32 timer = parser.get_time_ticks();
 
 			threshold_config.timer = timer;
-		} else if (parser_eq(&parser, "set_celebration")) {
-			parser_get_word(&parser);
-			if (parser_eqi(&parser, "auto")) {
+		} else if (parser.eq("set_celebration")) {
+			parser.get_word();
+			if (parser.eqi("auto")) {
 				init_auto_celebration();
-			} else if (parser_eqi(&parser, "none")) {
+			} else if (parser.eqi("none")) {
 				g_globals->celebration = Celebration_None;
-			} else if (parser_eqi(&parser, "april_fools")) {
+			} else if (parser.eqi("april_fools")) {
 				g_globals->celebration = Celebration_AprilFools;
-			} else if (parser_eqi(&parser, "christmas")) {
+			} else if (parser.eqi("christmas")) {
 				g_globals->celebration = Celebration_Christmas;
 			}
-		} else if (parser_eq(&parser, "spawn_cargo")) {
-			Area area = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			s32 count = parser_get_s32(&parser, 0);
-			u32 unit_id = parser_get_unit_id(&parser);
-			s32 player = parser_get_s32(&parser, 0);
-			bool force = parser_get_s32(&parser, 0);
+		} else if (parser.eq("spawn_cargo")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			s32 count = parser.get_s32(0);
+			u32 unit_id = parser.get_unit_id();
+			s32 player = parser.get_s32(0);
+			bool force = parser.get_s32(0);
 
 			EntryArray units = {};
 			unit_search_rect(&units, area.box);
@@ -1568,11 +1568,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
-		} else if (parser_eq(&parser, "blissful_embrace")) {
-			Area area = parser_get_area(&parser);
-			PlayerBitset players = parser_get_player_bitset(&parser);
-			UnitIdBitset unit_ids = parser_get_unit_id_bitset(&parser);
-			s32 infesting_player = parser_get_s32(&parser, 0);
+		} else if (parser.eq("blissful_embrace")) {
+			Area area = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			s32 infesting_player = parser.get_s32(0);
 
 			EntryArray units = {};
 			unit_search_rect(&units, area.box);
@@ -1589,8 +1589,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 				blissful_embrace(unit, infesting_player ? infesting_player - 1 : unit->player, true);
 			}
-		} else if (parser_eq(&parser, "witness_mode")) {
-			WitnessMode new_value = (WitnessMode)parser_get_s32(&parser);
+		} else if (parser.eq("witness_mode")) {
+			WitnessMode new_value = (WitnessMode)parser.get_s32();
 
 			const auto& cm_player = g_globals->players[trigger_player];
 			WitnessMode old_value = cm_player.witness_mode;
@@ -1634,18 +1634,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
-		} else if (parser_eq(&parser, "set_faction")) {
-			u32 player = parser_get_player(&parser);
-			Faction faction = (Faction)parser_get_enum(&parser, faction_symbol_names, ARRAY_SIZE(faction_symbol_names));
+		} else if (parser.eq("set_faction")) {
+			u32 player = parser.get_player();
+			Faction faction = (Faction)parser.get_enum(faction_symbol_names, ARRAY_SIZE(faction_symbol_names));
 
 			if (player) {
 				player -= 1;
 				g_globals->players[player].faction = faction;
 				g_globals->players[player].faction_was_set = true;
 			}
-		} else if (parser_eq(&parser, "set_advisor")) {
-			u32 player = parser_get_player(&parser);
-			AdvisorType advisor = (AdvisorType)parser_get_enum(&parser, advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names));
+		} else if (parser.eq("set_advisor")) {
+			u32 player = parser.get_player();
+			AdvisorType advisor = (AdvisorType)parser.get_enum(advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names));
 
 			if (player) {
 				player -= 1;
@@ -1653,15 +1653,15 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					g_globals->current_advisor = advisor;
 				}
 			}
-		} else if (parser_eq(&parser, "neutral_hostile")) {
-			bool state = (bool)parser_get_s32(&parser);
+		} else if (parser.eq("neutral_hostile")) {
+			bool state = (bool)parser.get_s32();
 			auto& cm_player = g_globals->players[trigger_player];
 			if (cm_player.neutral_hostile != state) {
 				cm_player.neutral_hostile = (bool)state;
 			}
-		} else if (parser_eq(&parser, "set_player_team_ui")) {
-			u32 player = parser_get_player(&parser);
-			bool state = (bool)parser_get_s32(&parser);
+		} else if (parser.eq("set_player_team_ui")) {
+			u32 player = parser.get_player();
+			bool state = (bool)parser.get_s32();
 			if (player) {
 				player -= 1;
 				auto& cm_player = g_globals->players[player];
@@ -1669,17 +1669,17 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					cm_player.hide_in_team_ui = (bool)state;
 				}
 			}
-		} else if (parser_eq(&parser, "set_omnipresence_state")) {
-			u32 player = parser_get_player(&parser);
-			OmnipresenceState omni_state = (OmnipresenceState)parser_get_enum(&parser, omnipresence_state_symbol_names, ARRAY_SIZE(omnipresence_state_symbol_names));
+		} else if (parser.eq("set_omnipresence_state")) {
+			u32 player = parser.get_player();
+			OmnipresenceState omni_state = (OmnipresenceState)parser.get_enum(omnipresence_state_symbol_names, ARRAY_SIZE(omnipresence_state_symbol_names));
 
 			if (player) {
 				player -= 1;
 				auto& cm_player = g_globals->players[player];
 				cm_player.omnipresence_state = omni_state;
 			}
-		} else if (parser_eq(&parser, "print")) {
-			Token text = parser_get_string(&parser);
+		} else if (parser.eq("print")) {
+			Token text = parser.get_string();
 			bw::print(text.data);
 		}
 	}
