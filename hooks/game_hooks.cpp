@@ -48,6 +48,8 @@
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "Discord.h"
 
+#include <format>
+
 void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
 		bw::add_unit_overlay(target, ImageId::ShamanNaniteField);
@@ -342,8 +344,7 @@ namespace hooks {
 
 			{
 				Token short_unit_name = get_short_unit_name(transport->id);
-				char unit_name[MaxToken] = {};
-				snprintf(unit_name, MaxToken, "%s%s [%u/%u]:", bw::get_player_color_code(transport->player, true).data, short_unit_name.data, space_used, units_dat::space_provided[transport->id]);
+				std::string unit_name = std::format("{}{} [{}/{}]:", bw::get_player_color_code(transport->player, true).data, short_unit_name.string().c_str(), space_used, units_dat::space_provided[transport->id]);
 				graphics::draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
 				local_pos.y += 13;
 			}
@@ -352,18 +353,17 @@ namespace hooks {
 			for (u32 j = 0; j < cargo_slots_count; ++j) {
 				CargoSlot cargo_slot = cargo_slots[j];
 
-				Token short_unit_name = get_short_unit_name(cargo_slot.unit->id);
+				std::string short_unit_name = get_short_unit_name(cargo_slot.unit->id).string();
 				if (cargo_slot.unit->id == UnitId::TerranPhalanxSiegeMode) {
-					strcat_s(short_unit_name.data, " (Sieged)");
-					short_unit_name.size = strlen(short_unit_name.data);
+					short_unit_name += " (Sieged)";
 				}
-				char unit_name[MaxToken] = {};
+				std::string unit_name = "";
 				if (cargo_slot.count > 1) {
-					snprintf(unit_name, MaxToken, "%s%s (%u)", bw::get_player_color_code(cargo_slot.unit->player, true).data, short_unit_name.data, cargo_slot.count);
+					unit_name = std::format("{}{} ({})", bw::get_player_color_code(cargo_slot.unit->player, true).data, short_unit_name, cargo_slot.count);
 				} else {
-					snprintf(unit_name, MaxToken, "%s%s", bw::get_player_color_code(cargo_slot.unit->player, true).data, short_unit_name.data);
+					unit_name = std::format("{}{}", bw::get_player_color_code(cargo_slot.unit->player, true).data, short_unit_name);
 				}
-				u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(unit_name);
+				u32 width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(unit_name.c_str());
 
 				RECT rect = {};
 				rect.left = local_pos.x;
@@ -373,11 +373,11 @@ namespace hooks {
 				bool hover = (*g_local_nation_id == transport->player || *g_local_nation_id == cargo_slot.unit->player) && !*g_is_in_replay && PtInRect(&rect, *(POINT*) g_mouse);
 				if (hover) {
 					if (cargo_slot.count > 1) {
-						snprintf(unit_name, MaxToken, BWTC_WHITE "%s (%u)", short_unit_name.data, cargo_slot.count);
+						unit_name = std::format(BWTC_WHITE "{} ({})", short_unit_name, cargo_slot.count);
 					} else {
-						snprintf(unit_name, MaxToken, BWTC_WHITE "%s", short_unit_name.data);
+						unit_name = std::format(BWTC_WHITE "{}", short_unit_name);
 					}
-					width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(unit_name);
+					width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(unit_name.c_str());
 				}
 
 				graphics::draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);

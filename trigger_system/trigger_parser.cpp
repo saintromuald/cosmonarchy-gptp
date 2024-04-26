@@ -102,14 +102,24 @@ bool Parser::get_char(char c) {
 	return false;
 }
 
-Token Parser::eat_word() {
-	while (is_word_char(*m_at)) {
-		if (m_token.size < MaxToken) {
-			m_token.data[m_token.size++] = *m_at;
-		}
-		++m_at;
-	}
+void Parser::start_token() {
+	m_token.sv = {m_at, 0};
+}
 
+void Parser::expand_token() {
+	if (m_token.sv.data()) {
+		m_token.sv = {m_token.sv.data(), m_token.sv.size() + 1};
+	} else {
+		assert(false);
+	}
+	m_at++;
+}
+
+Token Parser::eat_word() {
+	start_token();
+	while (is_word_char(*m_at)) {
+		expand_token();
+	}
 	return m_token;
 }
 
@@ -135,7 +145,7 @@ bool Parser::get_command() {
 	if (m_should_load_pos) {
 		m_should_load_pos = false;
 		m_parsed_first_command = true;
-		return eat_word().size != 0;
+		return !eat_word().sv.empty();
 	}
 
 	// Skip to end of line
@@ -152,13 +162,13 @@ bool Parser::get_command() {
 		++m_at;
 	}
 
-	return get_word(true).size != 0;
+	return !get_word(true).sv.empty();
 }
 
 bool Parser::get_keyword(const char* keyword) {
 	const char* marker = this->marker();
 	get_word();
-	if (eq(keyword)) {
+	if (equals(keyword)) {
 		return true;
 	}
 	unwind(marker);
@@ -171,19 +181,15 @@ Token Parser::get_string() {
 	}
 
 	if (get_char('"')) {
+		start_token();
 		while (*m_at && *m_at != '"' && !is_newline(*m_at)) {
-			if (m_token.size < MaxToken) {
-				m_token.data[m_token.size++] = *m_at;
-			}
-			++m_at;
+			expand_token();
 		}
 		get_char('"');
 	} else {
+		start_token();
 		while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at) && *m_at != '"') {
-			if (m_token.size < MaxToken) {
-				m_token.data[m_token.size++] = *m_at;
-			}
-			++m_at;
+			expand_token();
 		}
 	}
 
@@ -195,11 +201,9 @@ Token Parser::get_identifier() {
 		return m_token;
 	}
 
+	start_token();
 	while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at) && *m_at != '"') {
-		if (m_token.size < MaxToken) {
-			m_token.data[m_token.size++] = *m_at;
-		}
-		++m_at;
+		expand_token();
 	}
 
 	return m_token;
@@ -208,7 +212,7 @@ Token Parser::get_identifier() {
 TriggerVar* Parser::maybe_get_var() {
 	if (get_char('$')) {
 		Token name = get_word();
-		TriggerVar* var = g_trigger_vars.find(TriggerVarType_Var, name.data);
+		TriggerVar* var = g_trigger_vars.find(TriggerVarType_Var, name.sv);
 		return var;
 	}
 	return 0;
@@ -221,30 +225,22 @@ s32 Parser::get_s32(s32 default_value) {
 	}
 
 	get_word();
-	if (eqi("true")) {
+	if (iequals("true")) {
 		return 1;
 	}
-	if (eqi("false")) {
+	if (iequals("false")) {
 		return 0;
 	}
 
-	char* end = 0;
-	s32 value = strtol(m_token.data, &end, 10);
-	if (end != m_token.data + m_token.size) {
-		return default_value;
-	}
-	return value;
+	const auto value = sv_convert_to<s32>(m_token.sv);
+	return value ? *value : default_value;
 }
 
 f32 Parser::get_f32(f32 default_value) {
 	get_word();
 
-	char* end = 0;
-	f32 value = strtof(m_token.data, &end);
-	if (end != m_token.data + m_token.size) {
-		return default_value;
-	}
-	return value;
+	const auto value = sv_convert_to<f32>(m_token.sv);
+	return value ? *value : default_value;
 }
 
 enum TimeType {
@@ -266,13 +262,10 @@ f32 Parser::get_time_seconds() {
 	f32 time = 0;
 	u32 time_type = TimeType_Seconds;
 
-	u32 buffer_index = 0;
-	char buffer[MaxToken + 1] = {};
+	start_token();
 	while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at)) {
 		if (isdigit(*m_at) || *m_at == '.') {
-			if (buffer_index < MaxToken) {
-				buffer[buffer_index++] = *m_at;
-			}
+			expand_token();
 		} else if (*m_at == 'h') {
 			time_type = TimeType_Hours;
 			add_to_total = true;
@@ -281,10 +274,7 @@ f32 Parser::get_time_seconds() {
 				time_type = TimeType_Milliseconds;
 				add_to_total = true;
 
-				if (m_token.size < MaxToken) {
-					m_token.data[m_token.size++] = *m_at;
-				}
-				++m_at;
+				expand_token();
 			} else {
 				time_type = TimeType_Minutes;
 				add_to_total = true;
@@ -299,7 +289,7 @@ f32 Parser::get_time_seconds() {
 
 		if (add_to_total) {
 			add_to_total = false;
-			time = strtof(buffer, 0);
+			time = sv_convert_to<f32>(m_token.sv).value_or(0);
 			switch (time_type) {
 				case TimeType_Hours: {
 					total_time += time * 60 * 60;
@@ -317,20 +307,16 @@ f32 Parser::get_time_seconds() {
 					total_time += time / 24;
 				} break;
 			}
-			buffer_index = 0;
-			memset(buffer, 0, sizeof(buffer));
+			start_token();
 			time = 0;
 		}
 
-		if (m_token.size < MaxToken) {
-			m_token.data[m_token.size++] = *m_at;
-		}
-		++m_at;
+		expand_token();
 	}
 
 	// add seconds by default if anything without type was left
-	if (buffer_index) {
-		time = strtof(buffer, 0);
+	if (!m_token.sv.empty()) {
+		time = sv_convert_to<f32>(m_token.sv).value_or(0);
 		total_time += ceil(time);
 	}
 	return total_time;
@@ -396,14 +382,14 @@ Area Parser::get_area(Area default_value) {
 
 	const char* marker = this->marker();
 	Token string = get_string();
-	if (eq("*")) {
+	if (equals("*")) {
 		area.box = g_location_table[63].dimensions;
 		area.flags = ~g_location_table[63].flags;
 		return area;
 	}
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
-		if (name && name[0] && strcmp(name, string.data) == 0) {
+		if (name && name[0] && sv_equals(name, string.sv)) {
 			area.box = g_location_table[i].dimensions;
 			area.flags = ~g_location_table[i].flags;
 			return area;
@@ -456,12 +442,12 @@ Point16 Parser::get_position(Point16 default_value) {
 
 	const char* marker = this->marker();
 	Token string = get_string();
-	if (eq("*")) {
+	if (equals("*")) {
 		return box_center(g_location_table[63].dimensions);
 	}
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
-		if (name && name[0] && strcmp(name, string.data) == 0) {
+		if (name && name[0] && sv_equals(name, string.sv)) {
 			return box_center(g_location_table[i].dimensions);
 		}
 	}
@@ -479,7 +465,7 @@ s32 Parser::get_enum(const char** enum_names, u32 count, s32 default_value) {
 	Token token = get_string();
 
 	for (u32 i = 0; i < count; ++i) {
-		if (stricmp(token.data, enum_names[i]) == 0) {
+		if (sv_iequals(token.sv, enum_names[i]) == 0) {
 			return i;
 		}
 	}
@@ -522,7 +508,7 @@ PlayerBitset Parser::get_player_bitset() {
 		bool negate = get_negation();
 		const char* marker = this->marker();
 		s32 value = get_s32();
-		if (eq("*")) {
+		if (equals("*")) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
 				player_bitset_set(current_bitset, i, true, mask, negate);
 			}
@@ -582,35 +568,25 @@ PlayerBitset Parser::get_player_bitset() {
 	return bitset;
 }
 
-static const char* remove_prefix(const char* string, const char* prefix) {
-	u32 len = strlen(prefix);
-	if (strnicmp(string, prefix, len) == 0) {
-		string += len;
-		for (const char* c = string; *c == ' '; ++c) {
-			++string;
-		}
-	}
-	return string;
-}
+static void remove_prefix(std::string_view& string, std::string_view prefix) {
+	const auto string_prefix = string.substr(0, prefix.size());
+	if (sv_iequals(string_prefix, prefix)) {
+		string.remove_prefix(prefix.size());
+	
+		for (const char c : string) {
+			if (!isspace(c)) break;
 
-Token token_from_str(const char* str) {
-	Token token = {};
-	for (const char* c = str; *c; ++c) {
-		if (token.size < MaxToken) {
-			token.data[token.size++] = *c;
-		} else {
-			break;
+			string.remove_prefix(1);
 		}
 	}
-	return token;
 }
 
 Token get_short_unit_name(u32 unit_id) {
-	const char* name = Unit::get_name(unit_id);
-	name = remove_prefix(name, "terran");
-	name = remove_prefix(name, "protoss");
-	name = remove_prefix(name, "zerg");
-	return token_from_str(name);
+	std::string_view name = Unit::get_name(unit_id);
+	remove_prefix(name, "terran");
+	remove_prefix(name, "protoss");
+	remove_prefix(name, "zerg");
+	return {name};
 }
 
 static char tolazy(char c) {
@@ -633,7 +609,7 @@ u32 Parser::get_unit_id() {
 	const char* marker = this->marker();
 	Token token = get_string();
 	for (u32 i = 0; i < UnitId::Count; ++i) {
-		if (str_equals_lazy(token.data, get_short_unit_name(i).data)) {
+		if (sv_lazy_equals(token.sv, get_short_unit_name(i).sv)) {
 			return i;
 		}
 	}
@@ -662,43 +638,43 @@ UnitIdBitset Parser::get_unit_id_bitset() {
 		bool negate = get_negation();
 		const char* marker = this->marker();
 		get_string();
-		if (eq("*")) {
+		if (equals("*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, true, mask, negate);
 			}
-		} else if (eqi("men")) {
+		} else if (iequals("men")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_men, mask, negate);
 			}
-		} else if (eqi("buildings")) {
+		} else if (iequals("buildings")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_building, mask, negate);
 			}
-		} else if (eqi("factories")) {
+		} else if (iequals("factories")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_factory, mask, negate);
 			}
-		} else if (eqi("tech")) {
+		} else if (iequals("tech")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_is_tech(i), mask, negate);
 			}
-		} else if (eqi("tech_tier")) {
+		} else if (iequals("tech_tier")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_is_tech_tier_structure(i), mask, negate);
 			}
-		} else if (eqi("terran")) {
+		} else if (iequals("terran")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Terran), mask, negate);
 			}
-		} else if (eqi("protoss")) {
+		} else if (iequals("protoss")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Protoss), mask, negate);
 			}
-		} else if (eqi("zerg")) {
+		} else if (iequals("zerg")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Zerg), mask, negate);
 			}
-		} else if (eqi("combatants")) {
+		} else if (iequals("combatants")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				bool is_combatant = false;
 				u32 subunit_id = units_dat::subunit[i];
@@ -713,27 +689,27 @@ UnitIdBitset Parser::get_unit_id_bitset() {
 				}
 				unit_id_bitset_set(current_bitset, i, is_combatant, mask, negate);
 			}
-		} else if (eqi("transports")) {
+		} else if (iequals("transports")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_is_transport(i), mask, negate);
 			}
-		} else if (eqi("townhalls")) {
+		} else if (iequals("townhalls")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_is_town_center(i), mask, negate);
 			}
-		} else if (eqi("depots")) {
+		} else if (iequals("depots")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceDepot, mask, negate);
 			}
-		} else if (eqi("nodes")) {
+		} else if (iequals("nodes")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceContainer, mask, negate);
 			}
-		} else if (eqi("factional")) {
+		} else if (iequals("factional")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_is_factional(i), mask, negate);
 			}
-		} else if (eqi("workers")) {
+		} else if (iequals("workers")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
 			}
@@ -845,25 +821,26 @@ Point16 box_center(Box32 box) {
 	return point;
 }
 
-bool token_eq(Token* token, const char* string) {
-	if (!string) return false;
-	return strcmp(token->data, string) == 0;
+bool sv_equals(std::string_view a, std::string_view b) {
+	return std::ranges::equal(a, b);
 }
 
-bool token_eqi(Token* token, const char* string) {
-	if (!string) return false;
-	return stricmp(token->data, string) == 0;
+bool sv_iequals(std::string_view a, std::string_view b) {
+	return std::ranges::equal(a, b, [](char a, char b) { return tolower(a) == tolower(b); });
 }
 
-bool token_eql(Token* token, const char* string) {
-	if (!string) return false;
-	return str_equals_lazy(token->data, string);
+bool sv_lazy_equals(std::string_view a, std::string_view b) {
+	return std::ranges::equal(a, b, [](char a, char b) { return tolazy(a) == tolazy(b); });
 }
 
-bool Parser::eq(const char* string) {
-	return token_eq(&m_token, string);
+bool Parser::equals(std::string_view sv) {
+	return sv_equals(m_token.sv, sv);
 }
 
-bool Parser::eqi(const char* string) {
-	return token_eqi(&m_token, string);
+bool Parser::iequals(std::string_view sv) {
+	return sv_iequals(m_token.sv, sv);
+}
+
+bool Parser::lazy_equals(std::string_view sv) {
+	return sv_lazy_equals(m_token.sv, sv);
 }

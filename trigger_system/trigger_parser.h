@@ -3,14 +3,18 @@
 #include "color_palette.h"
 
 #include <bitset>
+#include <charconv>
 
-#define MaxToken 256
 struct Token {
-	u32 size;
-	char data[MaxToken + 1];
+	std::string_view sv;
 
-	inline bool operator==(Token& other) { return size == other.size && memcmp(data, other.data, size) == 0; }
-	inline bool operator!=(Token& other) { return !(*this == other); }
+	Token() = default;
+	Token(const char* cstr) : sv{cstr} {}
+	Token(std::string_view sv) : sv{sv} {}
+
+	std::string string() const { return std::string{sv}; }
+	operator bool() { return !sv.empty(); }
+	bool operator==(const Token&) const = default;
 };
 
 enum LocationFlags {
@@ -82,13 +86,17 @@ public:
 	Recolor get_recolor();
 	RecolorSet get_recolor_set();
 
-	bool eq(const char* string);
-	bool eqi(const char* string);
+	bool equals(std::string_view sv);
+	bool iequals(std::string_view sv);
+	bool lazy_equals(std::string_view sv);
 
 	Token token() const { return m_token; }
 	u32 command_start_pos() const { return m_command_start_pos; }
 
 private:
+	void start_token();
+	void expand_token();
+
 	Token eat_word();
 	void clear_token();
 	bool skip_whitespace();
@@ -112,5 +120,13 @@ Token token_from_str(const char* str);
 Token get_short_unit_name(u32 unit_id);
 bool check_quota(QuotaType type, s32 quota, s32 value);
 
-bool token_eq(Token* token, const char* string);
-bool token_eqi(Token* token, const char* string);
+bool sv_equals(std::string_view a, std::string_view b);
+bool sv_iequals(std::string_view a, std::string_view b);
+bool sv_lazy_equals(std::string_view a, std::string_view b);
+
+template <typename T>
+std::optional<T> sv_convert_to(std::string_view sv) {
+	T value{};
+	const auto result = std::from_chars(sv.data(), sv.data() + sv.size(), value);
+	return (bool)result.ec ? std::nullopt : std::make_optional(value);
+}
