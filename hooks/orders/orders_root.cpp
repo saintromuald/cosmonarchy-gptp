@@ -537,7 +537,7 @@ namespace hooks {
 	void orders_stay_in_range(Unit* unit) // 0047C4F0
 	{
 		Unit* target = unit->order_target.unit;
-		if (target && AssertSprite(target->sprite)) { // sprite is new
+		if (target && target->sprite) { // sprite is new
 			unit->order_target.pt = target->position;
 			if (!helper::unit_can_attack_target(target, unit, true)) {
 				if (!(unit->status & UnitStatus::AttackMove) && !unit->unit_ai) {
