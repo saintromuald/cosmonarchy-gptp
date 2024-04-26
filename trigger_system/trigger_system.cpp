@@ -280,10 +280,8 @@ bool buttons_handle_input(const KeyEvent& key_event) {
 
 		TriggerButton& button = g_globals->trigger_buttons[i];
 		if (key_event.key == VK_LBUTTON && key_event.pressed()) {
-			TriggerVar* var = g_trigger_vars.find_or_create(TriggerVarType_Var, button.id.data);
-			if (var) {
-				var->value = 1;
-			}
+			TriggerVar& var = g_trigger_vars.find_or_create(TriggerVarType_Var, button.id.data);
+			var.set(1);
 			g_globals->trigger_buttons.erase(g_globals->trigger_buttons.begin() + i);
 			return true;
 		}
@@ -498,10 +496,10 @@ bool parse_condition(Parser* parser) {
 
 			Token name = parser_get_string(parser);
 			QuotaType quota_type = parser_get_quota_type(parser, QuotaType_Equal);
-			TriggerVar* var = parser_get_char(parser, '=') ? g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+			TriggerVar* var = parser_get_char(parser, '=') ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 			s32 quota = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
 			if (var) {
-				return check_quota(quota_type, quota, var->value);
+				return check_quota(quota_type, quota, var->value());
 			}
 			return false;
 		} else if (parser_eq(parser, "unit_color")) {
@@ -655,10 +653,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			});
 			g_globals->trigger_buttons.insert(insert_it, trigger_button);
 
-			TriggerVar* var = g_trigger_vars.find_or_create(TriggerVarType_Var, id.data);
-			if (var) {
-				var->value = 0;
-			}
+			TriggerVar& var = g_trigger_vars.find_or_create(TriggerVarType_Var, id.data);
+			var.set(0);
 		} else if (parser_eq(&parser, "hide_button")) {
 			Token id = parser_get_string(&parser);
 
@@ -1434,48 +1430,51 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			if (token_eq(&var_operator, "=")) {
 				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = g_trigger_vars.find_or_create(var_type, name.data);
-				if (var) {
-					var->value = value;
-				}
+				TriggerVar& var = g_trigger_vars.find_or_create(var_type, name.data);
+				var.set(value);
 			} else if (token_eq(&var_operator, "+=") || token_eq(&var_operator, "+==")) {
 				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = parser.token.size == 3 ? g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+				TriggerVar* var = parser.token.size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 				if (var) {
-					var->value += value;
+					var->set(var->value() + value);
 				}
 			} else if (token_eq(&var_operator, "-=") || token_eq(&var_operator, "-==")) {
 				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = parser.token.size == 3 ? g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+				TriggerVar* var = parser.token.size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 				if (var) {
-					var->value -= value;
+					var->set(var->value() - value);
 				}
 			} else if (token_eq(&var_operator, "*=") || token_eq(&var_operator, "*==")) {
 				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = parser.token.size == 3 ? g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+				TriggerVar* var = parser.token.size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 				if (var) {
-					var->value *= value;
+					var->set(var->value() * value);
 				}
 			} else if (token_eq(&var_operator, "/=") || token_eq(&var_operator, "/==")) {
 				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = parser.token.size == 3 ? g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+				TriggerVar* var = parser.token.size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 				if (var) {
-					var->value /= value;
+					var->set(var->value() / value);
 				}
 			} else if (token_eq(&var_operator, "%=") || token_eq(&var_operator, "%==")) {
 				s32 value = parser_get_var_value(&parser, is_timer);
-				TriggerVar* var = parser.token.size == 3 ? g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
+				TriggerVar* var = parser.token.size == 3 ? &g_trigger_vars.find_or_create(var_type, name.data) : g_trigger_vars.find(var_type, name.data);
 				if (var) {
-					var->value %= value;
+					var->set(var->value() % value);
 				}
 			} else if (token_eq(&var_operator, "toggle")) {
-				TriggerVar* var = g_trigger_vars.find_or_create(var_type, name.data);
-				if (var) {
-					var->value = !var->value;
-				}
+				TriggerVar& var = g_trigger_vars.find_or_create(var_type, name.data);
+				var.set(!var.value());
 			} else if (token_eq(&var_operator, "unset")) {
 				g_trigger_vars.unset(var_type, name.data);
 			}
+		} else if (parser_eq(&parser, "bank_link_var")) {
+			Token bank = parser_get_identifier(&parser);
+			Token var = parser_get_identifier(&parser);
+			g_trigger_vars.bank_link_var(bank.data, var.data);
+		} else if (parser_eq(&parser, "bank_clear")) {
+			Token bank = parser_get_identifier(&parser);
+			g_trigger_vars.get_bank(bank.data).clear();
 		} else if (parser_eq(&parser, "convert_to_ai")) {
 			u32 player = parser_get_player(&parser);
 

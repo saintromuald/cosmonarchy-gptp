@@ -174,7 +174,6 @@ Token parser_get_string(Parser* parser) {
 		return parser->token;
 	}
 
-	bool is_string = false;
 	if (parser_get_char(parser, '"')) {
 		while (*parser->at && *parser->at != '"' && !is_newline(*parser->at)) {
 			if (parser->token.size < MaxToken) {
@@ -184,12 +183,27 @@ Token parser_get_string(Parser* parser) {
 		}
 		parser_get_char(parser, '"');
 	} else {
-		while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
+		while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at) && *parser->at != '"') {
 			if (parser->token.size < MaxToken) {
 				parser->token.data[parser->token.size++] = *parser->at;
 			}
 			++parser->at;
 		}
+	}
+
+	return parser->token;
+}
+
+Token parser_get_identifier(Parser* parser) {
+	if (!parser_skip_whitespace(parser)) {
+		return parser->token;
+	}
+
+	while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at) && *parser->at != '"') {
+		if (parser->token.size < MaxToken) {
+			parser->token.data[parser->token.size++] = *parser->at;
+		}
+		++parser->at;
 	}
 
 	return parser->token;
@@ -207,7 +221,7 @@ TriggerVar* parser_get_var(Parser* parser) {
 s32 parser_get_s32(Parser* parser, s32 default_value) {
 	TriggerVar* var = parser_get_var(parser);
 	if (var) {
-		return var->value;
+		return var->value();
 	}
 
 	parser_get_word(parser);

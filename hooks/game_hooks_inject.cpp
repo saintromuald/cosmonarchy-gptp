@@ -188,7 +188,7 @@ bool isGameOn = false;
 	constexpr auto replay_full_size = 32; // Some weird magic BW const we would want to extend 
 	constexpr auto replay_name_size = replay_full_size - replay_ext.size();
 
-	static std::filesystem::path get_replay_path() {
+	static fs::path get_replay_path() {
 		return bw::get_starcraft_path() / "maps" / "replays";
 	}
 
@@ -198,13 +198,13 @@ bool isGameOn = false;
 			return;
 		}
 
-		std::filesystem::path to_path = get_replay_path() / "Autosave" / dir / name;
-		if (std::filesystem::exists(to_path)) {
+		fs::path to_path = get_replay_path() / "Autosave" / dir / name;
+		if (fs::exists(to_path)) {
 			return; // Do not overwrite existing files
 		}
 
 		std::error_code error;
-		std::filesystem::create_directories(to_path.parent_path(), error);
+		fs::create_directories(to_path.parent_path(), error);
 
 		std::ofstream to(to_path, std::ios::binary);
 		if (!to) {

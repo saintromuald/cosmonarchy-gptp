@@ -63,6 +63,7 @@ void parser_load_command_pos(Parser* parser, u32 position);
 bool parser_get_command(Parser* parser);
 bool parser_get_keyword(Parser* parser, const char* keyword);
 Token parser_get_string(Parser* parser);
+Token parser_get_identifier(Parser* parser);
 
 s32 parser_get_s32(Parser* parser, s32 default_value = 0);
 f32 parser_get_f32(Parser* parser, f32 default_value = 0);
