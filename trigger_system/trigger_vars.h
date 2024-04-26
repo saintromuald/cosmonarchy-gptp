@@ -30,16 +30,19 @@ struct std::hash<TriggerVarKey> {
 class VarBank {
 public:
 	explicit VarBank(const std::string& name);
+	~VarBank();
 
-	s32 get(const std::string& name);
+	s32 get(const std::string& name, s32 default_value);
 	void set(const std::string& name, s32 value);
 	void clear();
+	void save_if_dirty();
 
 private:
 	void load();
 	void save();
 
 private:
+	bool m_dirty{false};
 	fs::path m_path;
 	json m_json;
 };
@@ -57,12 +60,12 @@ public:
 		m_value = value;
 	}
 
-	void link_bank(VarBank* bank) {
+	void link_bank(VarBank* bank, s32 default_value) {
 		m_bank = bank;
 		if (bank) {
-			m_value = bank->get(m_name);
+			m_value = bank->get(m_name, default_value);
 		} else {
-			m_value = 0;
+			m_value = default_value;
 		}
 	}
 
@@ -79,7 +82,7 @@ public:
 
 	TriggerVar* find(TriggerVarType type, std::string_view name);
 	TriggerVar& find_or_create(TriggerVarType type, std::string_view name);
-	void bank_link_var(const std::string& bank_name, const std::string& name);
+	void bank_link_var(const std::string& bank_name, const std::string& name, s32 default_value);
 	bool unset(TriggerVarType type, std::string_view name);
 
 	VarBank& get_bank(const std::string& name) {

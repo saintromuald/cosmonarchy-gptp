@@ -1471,7 +1471,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser.equals("bank_link_var")) {
 			Token bank = parser.get_identifier();
 			Token var = parser.get_identifier();
-			g_trigger_vars.bank_link_var(bank.string(), var.string());
+			s32 default_value = parser.get_s32();
+			g_trigger_vars.bank_link_var(bank.string(), var.string(), default_value);
 		} else if (parser.equals("bank_clear")) {
 			Token bank = parser.get_identifier();
 			g_trigger_vars.get_bank(bank.string()).clear();
@@ -1681,6 +1682,16 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		} else if (parser.equals("print")) {
 			Token text = parser.get_string();
 			bw::print(text.string().c_str());
+		} else if (parser.equals("print_var")) {
+			Token identifier = parser.get_identifier();
+
+			const auto var = g_trigger_vars.find(TriggerVarType_Var, identifier.sv);
+			bw::printf("Variable %s = %s", identifier.string().c_str(), var ? std::to_string(var->value()).c_str() : "unset");
+		} else if (parser.equals("print_timer")) {
+			Token identifier = parser.get_identifier();
+
+			const auto timer = g_trigger_vars.find(TriggerVarType_Timer, identifier.sv);
+			bw::printf("Timer %s = %s", identifier.string().c_str(), timer ? std::to_string(timer->value()).c_str() : "unset");
 		}
 	}
 	return true;
