@@ -3237,12 +3237,10 @@ namespace hooks {
 		}
 
 		// Claymore - Kelvin Munitions - Create overlays
-		if ((unit_ext->timers[TimerKelvinMunitions] > 1 || unit_ext->timers[TimerLobotomySlow] > 1)) // Piggybacking overlay from Claymore, for now. -Pr0nogo
-		{
+		if ((unit_ext->timers[TimerKelvinMunitions] > 1 || unit_ext->timers[TimerLobotomySlow] > 1)) { // Piggybacking overlay from Claymore, for now. -Pr0nogo
 			should_update_speed = true;
 			// Overlay
-			if (!unit_ext->timers[TimerClaymoreKelvinMunitionsZap])
-			{
+			if (!unit_ext->timers[TimerClaymoreKelvinMunitionsZap]) {
 				u32 width = units_dat::unit_bounds[unit->id].x * 0.75;
 				u32 height = units_dat::unit_bounds[unit->id].y * 0.75;
 

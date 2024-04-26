@@ -654,6 +654,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	// Pr0nogo, start
 	// Enable "archon mode" based on map name
 	jump_patch(team_game_check_wrapper, 0x004A9DC2);	
+
+	call_patch(create_next_campaign_game_4DC1F7, 0x004DC1F7);
 	// Pr0nogo, end
 
 	// FaRTy1billion, start

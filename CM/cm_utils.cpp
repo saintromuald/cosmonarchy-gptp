@@ -185,6 +185,33 @@ const char* game_kind_to_string(GameKind game_kind) {
 	return "Custom";
 }
 
+const char* game_kind_to_filename_string(GameKind game_kind) {
+	switch (game_kind) {
+		case GameKind_Competitive: {
+			return "Competitive(1)";
+		} break;
+		case GameKind_Debug:
+		case GameKind_DebugFog: {
+			return "Debug(1)";
+		} break;
+		case GameKind_Scenario: {
+			return "Scenario(1)";
+		} break;
+		case GameKind_FactionWars: {
+			return "Faction Wars(1)";
+		} break;
+		case GameKind_Massacre: {
+			return "Massacre(1)";
+		} break;
+		case GameKind_Omnipresence: {
+			return "Omnipresence(1)";
+		} break;
+		case GameKind_TheTurning: {
+			return "The Turning(1)";
+		} break;
+	}
+}
+
 const char* race_to_string(RaceId::Enum race) {
 	switch (race) {
 		case RaceId::Terran: {

@@ -684,6 +684,10 @@ void __declspec(naked) dialog_music_fade_wrapper() { // 004A6310
 	}
 }
 
+const char* create_next_campaign_game_4DC1F7() {
+	return game_kind_to_filename_string(bw::get_game_kind());
+}
+
 void inject_trigger_system_hooks() {
 	jump_patch(execute_trigger_conditions_wrapper,			0x00489200, 1);
 	jump_patch(iscript_play_sound_wrapper,					0x004D6610, 2);
