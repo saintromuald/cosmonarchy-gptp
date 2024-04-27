@@ -1095,11 +1095,14 @@ namespace hooks {
 		if (unit_ext->values[ValueNoCorpse] && !unit->sprite->get_overlay(ImageId::RevivedDecayingOverlay)) {
 			unit->sprite->create_overlay(ImageId::RevivedDecayingOverlay);
 		}
-		
-		// Overlay for units which do not regress on death
-		if (unit_ext->values[ValueOriginatedFromOcsalLarva] && !unit->sprite->get_overlay(ImageId::OcsalRegressionOverlay)) {
-			if (unit->id != UnitId::ZergOcsalLarva && unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
-				bw::add_unit_overlay(unit, ImageId::OcsalRegressionOverlay);
+
+		// Handle behaviors related to Ocsal origins
+		if (unit_ext->values[ValueOriginatedFromOcsalLarva]) {
+			// Overlay for units which do not regress on death
+			if (!unit->sprite->get_overlay(ImageId::OcsalRegressionOverlay)) {
+				if (unit->id != UnitId::ZergOcsalLarva && unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
+					bw::add_unit_overlay(unit, ImageId::OcsalRegressionOverlay);
+				}
 			}
 		}
 		

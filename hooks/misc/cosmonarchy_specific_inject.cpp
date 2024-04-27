@@ -117,6 +117,8 @@ namespace hooks
 		if (unit->id == UnitId::TerranDiadem) {
 			// Required for Diadem to shoot properly
 			unit->order_queue_timer = 4;
+		} else if (flingy_dat::movement_control[units_dat::graphic[unit->id]] == 2) { // Iscript
+			unit->order_queue_timer = 1;
 		}
 		if (hooks::is_unused_order(order_id)) {
 			__asm {
