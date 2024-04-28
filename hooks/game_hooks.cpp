@@ -3277,8 +3277,7 @@ namespace hooks {
 		}
 
 		// Remove Maelstrom overlays
-		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] == 1)
-		{
+		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] == 1) {
 			unit->sprite->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
 			if (unit->subunit) {
 				unit->subunit->sprite->remove_overlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
@@ -3288,8 +3287,7 @@ namespace hooks {
 		}
 
 		// Generic speed timers
-		if (unit_ext->timers[TimerAvenge] == 1
-		||	unit_ext->timers[TimerZergAdrenalFrenzy] == 1) {
+		if (unit_ext->timers[TimerAvenge] == 1 || unit_ext->timers[TimerZergAdrenalFrenzy] == 1) {
 			should_update_speed = true;
 		}
 
@@ -3298,9 +3296,7 @@ namespace hooks {
 		}
 
 		// Meme to make lifted buildings use their flingy speed. -Pr0nogo
-		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
-		&&	unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding && unit->status & UnitStatus::InAir && unit_ext->timers[TimerLiftLandDelay] == 1) {
 			should_update_speed = false;
 			unit->update_speed(); // Have to do this here because of the Diadem bandage. -Pr0nogo
 			if (unit->id == UnitId::TerranDiadem) {

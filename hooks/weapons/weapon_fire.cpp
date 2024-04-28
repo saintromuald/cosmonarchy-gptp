@@ -1300,38 +1300,30 @@ namespace hooks {
 	Bullet* create_bullet(s32 weapon_id, Unit* parent, s32 x, s16 y, u8 player, s32 angle) // 0048C260
 	{
 		Bullet* free_bullet = *first_free_bullet;
-		if (!*first_free_bullet)
-		{
+		if (!*first_free_bullet) {
 			return 0;
 		}
-		if (parent->status & UnitStatus::CanNotAttack)
-		{
+		if (parent->status & UnitStatus::CanNotAttack) {
 			return 0;
 		}
-		if (!*first_free_bullet)
-		{
+		if (!*first_free_bullet) {
 			return 0;
 		}
-		if (!hooks::initialize_bullet(player, parent, y, *first_free_bullet, weapon_id, x, angle))
-		{
+		if (!hooks::initialize_bullet(player, parent, y, *first_free_bullet, weapon_id, x, angle)) {
 			return 0;
 		}
-		if (*first_free_bullet == free_bullet)
-		{
+		if (*first_free_bullet == free_bullet) {
 			*first_free_bullet = free_bullet->next;
 		}
-		if (*last_free_bullet == free_bullet)
-		{
+		if (*last_free_bullet == free_bullet) {
 			*last_free_bullet = free_bullet->previous;
 		}
-		if (free_bullet->previous)
-		{
+		if (free_bullet->previous) {
 			free_bullet->previous->next = free_bullet->next;
 		}
 		
 		Bullet* next_bullet = free_bullet->next;
-		if (next_bullet)
-		{
+		if (next_bullet) {
 			next_bullet->previous = free_bullet->previous;
 		}
 		free_bullet->previous = 0;
@@ -1339,17 +1331,14 @@ namespace hooks {
 		Bullet* result = 0;
 		
 		Bullet* first_bullet_var = *first_bullet;
-		if (*first_bullet)
-		{
-			if (*last_bullet == *first_bullet)
-			{
+		if (*first_bullet) {
+			if (*last_bullet == *first_bullet) {
 				*last_bullet = free_bullet;
 			}
 			free_bullet->previous = *first_bullet;
 			free_bullet->next = first_bullet_var->next;
 			Bullet* next_bullet_var = first_bullet_var->next;
-			if (next_bullet_var)
-			{
+			if (next_bullet_var) {
 				next_bullet_var->previous = free_bullet;
 			}
 			first_bullet_var->next = free_bullet;
