@@ -236,7 +236,6 @@ u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 	portrait_id = get_player_portrait_id_override(portrait_id, player);
 
 	if (strcmp(g_current_map_name, "Anad's Greatsword") == 0) {
-		// Temporary, for mapcrap
 		switch (portrait_id) {
 			case PortraitId::Maverick:
 			{
@@ -256,6 +255,13 @@ u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 			case PortraitId::ProtossAdvisor:
 			{
 				portrait_id = PortraitId::Solarion;
+			} break;
+		}
+	} else if (strcmp(g_current_map_name, "Autophagy") == 0) {
+		switch (portrait_id) {
+			case PortraitId::Scribe:
+			{
+				portrait_id = PortraitId::AdvisorZorthos;
 			} break;
 		}
 	}
@@ -303,8 +309,7 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) // 0046
 	}
 
 	u16 portrait_id = helper::get_unit_portrait_override(unit_id);
-	if (!strcmp(g_current_map_name, "Anad's Greatsword")) {
-		// Temporary, for mapcrap
+	if (strcmp(g_current_map_name, "Anad's Greatsword") == 0) {
 		switch (portrait_id) {
 			case PortraitId::AdvisorOrionImperium:
 			{
@@ -328,6 +333,13 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) // 0046
 			case PortraitId::Cyprian:
 			{
 				portrait_id = PortraitId::Hotshot;
+			} break;
+		}
+	} else if (strcmp(g_current_map_name, "Autophagy") == 0) {
+		switch (portrait_id) {
+			case PortraitId::Scribe:
+			{
+				portrait_id = PortraitId::AdvisorZorthos;
 			} break;
 		}
 	}
