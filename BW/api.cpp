@@ -2598,7 +2598,7 @@ namespace bw {
 		}
 	}
 
-	void binding_plasma_proc(Unit* victim) {
+	bool binding_plasma_proc(Unit* victim) {
 		UnitExt* victim_ext = get_unit_ext(victim);
 		u32 player = victim_ext->values[ValueGladiusBindingPlasmaPlayer];
 
@@ -2616,10 +2616,11 @@ namespace bw {
 		}
 		unit_search_sort_by_distance(&targets, victim->position);
 
+		bool procced = false;
 		if (!targets.count) {
 			victim_ext->timers[TimerBindingPlasma] = 0;
 			victim_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
-			return;
+			return procced;
 		}
 
 		u32 target_index = 0;
@@ -2632,8 +2633,8 @@ namespace bw {
 			if (!bullet) {
 				break;
 			}
+			procced = true;
 
-			helper::play_sound_from_unit(helper::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03, 31), victim, 1, 0);
 			bw::set_bullet_target(bullet, target);
 			victim_ext->values[ValueGladiusBindingPlasmaStacks]--;
 		}
@@ -2641,6 +2642,7 @@ namespace bw {
 		if (!victim_ext->values[ValueGladiusBindingPlasmaStacks]) {
 			victim_ext->timers[TimerBindingPlasma] = 0;
 		}
+		return procced;
 	}
 
 	bool player_has_transport(u32 player) {

@@ -2505,7 +2505,9 @@ namespace hooks {
 					bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay); // TODO: Audio
 				}
 				if (unit_ext->timers[TimerBindingPlasma] == 1) {
-					bw::binding_plasma_proc(unit);
+					if (bw::binding_plasma_proc(unit)) {
+						helper::play_sound_from_unit(helper::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03, 31), unit, 1, 0);
+					}
 				}
 			} else {
 				unit_ext->timers[TimerBindingPlasma] = 0;

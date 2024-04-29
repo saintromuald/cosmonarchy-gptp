@@ -787,7 +787,7 @@ namespace bw {
 	void delete_ai_script(AiScript* ai_script);
 	void delete_town(AiTown* ai_town);
 	void delete_fow_sprite(Thingy* thingy);
-	void binding_plasma_proc(Unit* victim);
+	bool binding_plasma_proc(Unit* victim);
 	bool player_has_transport(u32 player);
 	bool unit_in_combat_within_seconds(Unit* unit, u32 seconds);
 	void update_on_damage_dealt(Unit* unit, u32 damage);

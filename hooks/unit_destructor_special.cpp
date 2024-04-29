@@ -320,7 +320,9 @@ void unit_on_death_behaviors(Unit* unit) {
 
 	// Gladius - Binding Plasma - proc on death
 	if (unit_ext->timers[TimerBindingPlasma]) {
-		bw::binding_plasma_proc(unit);
+		if (bw::binding_plasma_proc(unit)); {
+			helper::play_sound_from_unit(helper::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03, 31), unit, 1, 0);
+		}
 		// TODO: Preserve timer and source position of dying unit, instead of immediately bouncing. -Pr0nogo
 	}
 }
