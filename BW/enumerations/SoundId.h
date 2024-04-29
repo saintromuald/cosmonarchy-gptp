@@ -1890,5 +1890,8 @@ namespace SoundId
 		AtaltrethAdvisor_Tech01							= 3097,
 		AtaltrethAdvisor_NoVespene01					= 3098,
 		AtaltrethAdvisor_Warp01							= 3099,
+		GladiusBindingPlasmaProc01						= 3100,
+		GladiusBindingPlasmaProc02						= 3101,
+		GladiusBindingPlasmaProc03						= 3102,
 	};
 }

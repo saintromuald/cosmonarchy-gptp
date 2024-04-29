@@ -2453,6 +2453,19 @@ namespace hooks {
 					unit->building.resource.is_mining = 0;
 				}
 			} break;
+			case UnitId::ProtossGladius:
+			{
+				if (unit_ext->timers[TimerBindingPlasmaChargeOverlay]) {
+					if (!unit->get_overlay(ImageId::GladiusCharge)) {
+						bw::add_unit_overlay(unit, ImageId::GladiusCharge);
+					}
+				} else {
+					Image* overlay = unit->get_overlay(ImageId::GladiusCharge);
+					if (overlay) {
+						overlay->play_iscript_animation(IscriptAnimation::Death);
+					}
+				}
+			} break;
 		}
 
 		// Stimpack - Delayed buff handling
@@ -2477,11 +2490,13 @@ namespace hooks {
 			bool has_source = false;
 			EntryArray sources = {};
 			unit_search_radial(&sources, unit->position, 8 * 32);
+			unit_search_filter(&sources, unit, 0, {UnitId::ProtossGladius});
 			for (u32 i = 0; i < sources.count; ++i) {
 				Unit* source = sources.units[i];
-				if (source->id == UnitId::ProtossGladius && bw::is_allied_to(source->player, source_player)) {
+				if (bw::is_allied_to(source->player, source_player)) {
 					has_source = true;
-					break;
+					UnitExt* source_ext = get_unit_ext(source);
+					source_ext->timers[TimerBindingPlasmaChargeOverlay] = 3;
 				}
 			}
 

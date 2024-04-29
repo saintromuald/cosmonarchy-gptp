@@ -1245,6 +1245,8 @@ namespace ImageId {
 		MaverickStimpackProc						= 1848,
 		MaverickStimpackExpire						= 1849,
 
+		GladiusCharge								= 1854,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

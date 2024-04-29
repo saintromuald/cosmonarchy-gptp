@@ -2630,9 +2630,10 @@ namespace bw {
 			u32 angle = bw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
 			Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, victim, victim->position.x, victim->position.y, player, angle);
 			if (!bullet) {
-				break; 
+				break;
 			}
 
+			helper::play_sound_from_unit(helper::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03, 31), victim, 1, 0);
 			bw::set_bullet_target(bullet, target);
 			victim_ext->values[ValueGladiusBindingPlasmaStacks]--;
 		}
