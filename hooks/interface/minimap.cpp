@@ -3,15 +3,14 @@
 
 #define DIV_ROUND_UP(n, d) n / d + (n % d != 0)
 
-static u16 box_width;
-static u16 box_height;
+u16 box_width;
+u16 box_height;
 
 namespace hooks {
 	void minimapVisionUpdate_256() {
 		u32 pos_y = *g_map_height;
 
 		if (pos_y) {
-			u16* map_tileset_handle = (u16*)*megatileArray;
 			u8* surf_buff = g_minimap_surface->buffer;
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
 			ActiveTile* active_tile = *g_active_tile_array;
@@ -29,11 +28,11 @@ namespace hooks {
 						if (*g_replay_reveal_all) {
 							cur_vision = 1;
 						} else {
-							cur_filter = ((ActiveTile*)*g_replay_visions)->explored_flags;
+							cur_filter = (u8)*g_replay_visions;
 							u32 tile_vision = ~(*active_tile).vision_flags;
 
-							if (cur_filter & tile_vision) {
-								if ((u8)tile_vision & (u8)*g_replay_visions) {
+							if ((cur_filter << 8) & tile_vision) {
+								if ((u8)tile_vision & cur_filter) {
 									cur_vision = 1;
 									cur_filter = 0;
 								} else {
@@ -60,7 +59,6 @@ namespace hooks {
 		u32 pos = (*g_map_height) * (*g_map_width);
 
 		if (pos) {
-			u16* map_tileset_handle = (u16*)*megatileArray;
 			u8* surf_buff = g_minimap_surface->buffer;
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
 			ActiveTile* active_tile = *g_active_tile_array;
@@ -75,11 +73,11 @@ namespace hooks {
 					if (*g_replay_reveal_all) {
 						cur_vision = 1;
 					} else {
-						cur_filter = ((ActiveTile*)*g_replay_visions)->explored_flags;
+						cur_filter = (u8)*g_replay_visions;
 						u32 tile_vision = ~(*active_tile).vision_flags;
 
-						if (cur_filter & tile_vision) {
-							if ((u8)tile_vision & (u8)*g_replay_visions) {
+						if ((cur_filter << 8) & tile_vision) {
+							if ((u8)tile_vision & cur_filter) {
 								cur_vision = 1;
 								cur_filter = 0;
 							} else {
@@ -103,7 +101,6 @@ namespace hooks {
 		u32 pos_y = *g_map_height >> 1;
 
 		if (pos_y) {
-			u16* map_tileset_handle = (u16*)*megatileArray;
 			u8* surf_buff = g_minimap_surface->buffer;
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
 			u32 map_width = *g_map_width;
@@ -124,11 +121,11 @@ namespace hooks {
 						if (*g_replay_reveal_all) {
 							cur_vision = 1;
 						} else {
-							cur_filter = ((ActiveTile*)*g_replay_visions)->explored_flags;
+							cur_filter = (u8)*g_replay_visions;
 							u32 tile_vision = ~(*active_tile).vision_flags;
 
-							if (cur_filter & tile_vision) {
-								if ((u8)tile_vision & (u8)*g_replay_visions) {
+							if ((cur_filter << 8) & tile_vision) {
+								if ((u8)tile_vision & cur_filter) {
 									cur_vision = 1;
 									cur_filter = 0;
 								} else {
@@ -162,7 +159,6 @@ namespace hooks {
 		u32 pos_y = *g_map_height;
 
 		if (pos_y) {
-			u16* map_tileset_handle = (u16*)*megatileArray;
 			u8* surf_buff = g_minimap_surface->buffer;
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
 			ActiveTile* active_tile = *g_active_tile_array;
@@ -184,11 +180,11 @@ namespace hooks {
 						if (*g_replay_reveal_all) {
 							cur_vision = 1;
 						} else {
-							cur_filter = ((ActiveTile*)*g_replay_visions)->explored_flags;
+							cur_filter = (u8)*g_replay_visions;
 							u32 tile_vision = ~cur_active_tile.vision_flags;
 
-							if (cur_filter & tile_vision) {
-								if ((u8)tile_vision & (u8)*g_replay_visions) {
+							if ((cur_filter << 8) & tile_vision) {
+								if ((u8)tile_vision & cur_filter) {
 									cur_vision = 1;
 									cur_filter = 0;
 								} else {

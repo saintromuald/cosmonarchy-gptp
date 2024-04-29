@@ -1,6 +1,9 @@
 #pragma once
 #include "BW/bwdata.h"
 
+extern u16 box_width;
+extern u16 box_height;
+
 namespace hooks {
 	void minimapVisionUpdate_256();																//0x004A3A40
 	void minimapVisionUpdate_128();																//0x004A3B30

@@ -9,6 +9,7 @@
 #include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/game_hooks.h"
 #include "trigger_system/trigger_system.h"
+#include <hooks\interface\minimap.h>
 
 ApmCounter local_apm_counter;
 ApmCounter player_apm_counter[PlayerLimit];
@@ -415,23 +416,23 @@ LABEL_15:
 
 	// Mirrored from IDA to draw camera positions. -Pr0nogo
 	static void draw_camera_box(u32 x, u32 y, u8 color) { // based on 004A3EE0
-		u32 w = 640;
-		u32 h = 400;
-
 		Box32 box = {};
 		u32 zoom_level = *g_minimap_zoom_level;
-		box.x = x       / zoom_level / 32;
-		box.y = y       / zoom_level / 32;
-		box.w = (x + w) / zoom_level / 32;
-		box.h = (y + h) / zoom_level / 32;
+		box.x = x / zoom_level;
+		box.y = y / zoom_level;
+		box.w = box_width;
+		box.h = box_height;
 
 		box.x = Clamp(box.x, 0, *g_map_width);
 		box.y = Clamp(box.y, 0, *g_map_height);
-		box.w = Clamp(box.w, 0, *g_map_width);
-		box.h = Clamp(box.h, 0, *g_map_height);
 
-		box.w -= box.x;
-		box.h -= box.y;
+		if (box.x + box.w >= *g_map_width) {
+			box.w = *g_map_width - box.x;
+		}
+
+		if (box.y + box.h >= *g_map_height) {
+			box.h = *g_map_height - box.y;
+		}
 
 		*g_draw_color_index = color;
 		helper::draw_box(box.x,             box.y,             box.w, 1);
