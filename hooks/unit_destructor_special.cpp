@@ -74,8 +74,7 @@ void kill_hangar_units(Unit* unit) {
 				*g_last_random_number = (*g_last_random_number * 0x015A4E35) + 1;
 				// number between 0 and 32766
 				random_value = (*g_last_random_number / 65536) & 0x7FFF;
-			}
-			else {
+			} else {
 				random_value = 0;
 			}
 			// should produce a number between 15 and 45 (or maybe 46)
@@ -119,7 +118,6 @@ void free_resource_container(Unit* resource) {
 
 void unit_on_death_behaviors(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
-
 	// These do not require the unit to be completed
 	switch (unit->id) {
 		case UnitId::ProtossHerald:
@@ -488,7 +486,7 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	if (!sprite || sprite->flags & SpriteFlags::Hidden) {
 		return 0;
 	}
-	if (id != UnitId::TerranReservoir && id != UnitId::TerranWellbore) {
+	if (id != UnitId::TerranReservoir && id != UnitId::TerranWellbore && id != UnitId::ZergEzigrisant) {
 		if (id == UnitId::ZergExcisant) {
 			helper::remove_creep_at_unit(sprite->position.x, sprite->position.y, id);
 		} else if (id != UnitId::ProtossAquifer) {

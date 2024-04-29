@@ -2966,7 +2966,7 @@ namespace bw {
 		// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
 		if (unit) {
 			bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
-			is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes
+			is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes.
 			u32 old_id = unit->id;
 			u32 regress_to = regression_id;
 			if (!is_building) {
@@ -2987,7 +2987,7 @@ namespace bw {
 					new_unit_ext->timers[TimerStun] = 1 * 24;
 					// TODO: Add stun audio visuals. -Veeq7
 				} else {
-					set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes -Veeq7
+					set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes. -Veeq7
 				}
 			}
 

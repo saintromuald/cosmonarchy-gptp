@@ -2446,6 +2446,13 @@ namespace hooks {
 					bw::decloak_passive_proc(unit);
 				}
 			} break;
+			case UnitId::ZergExcisant:
+			{
+				// Bandage fix for Ezigrisant regression. Not sure why this field gets maxxed out. -Pr0nogo
+				if (unit->building.resource.is_mining == 255) {
+					unit->building.resource.is_mining = 0;
+				}
+			} break;
 		}
 
 		// Stimpack - Delayed buff handling
