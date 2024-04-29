@@ -11448,23 +11448,20 @@ namespace helper {
 		}
 	}
 
-	u32 draw_unit_box(u32 x_pos, u32 y_pos, u8 x_dims, u8 y_dims, char color, char is_building) {
-		static u32 result;
+	void draw_unit_box(s32 x_pos, s32 y_pos, u32 x_dims, u32 y_dims, u8 color, bool is_building) {
 		const u32 func_address = 0x004A3FD0;
-		s32 is_building_xd = is_building;
 		__asm {
 			PUSHAD
-			PUSH is_building_xd
+			MOVZX EAX, is_building
+			PUSH EAX
 			PUSH y_dims
 			PUSH x_dims
 			PUSH y_pos
 			MOVZX ECX, color
 			MOV EAX, x_pos
 			CALL func_address
-			MOV result, EAX
 			POPAD
 		}
-		return result;
 	}
 
 	void draw_minimap_unit_box_2(u32 player) {
@@ -15109,5 +15106,20 @@ namespace helper {
 			POPAD
 		}
 		return result;
+	}
+
+	void blit_surface(Bounds* drawbounds, Bitmap* surface, s16 x, s16 y) {
+		const u32 function = 0x0041D260;
+		__asm {
+			PUSHAD
+			MOVSX EAX, y
+			PUSH EAX
+			MOVSX EAX, x
+			PUSH EAX
+			MOV EAX, drawbounds
+			MOV ECX, surface
+			CALL function
+			POPAD
+		}
 	}
 }

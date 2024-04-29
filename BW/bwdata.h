@@ -189,6 +189,7 @@ SCBW_DATA_REF(_uavail*, g_unit_availability,	0x0057F27C);
 
 // Ping data
 SCBW_DATA(Ping*, ping_array, 0x0059C1B8); // 16
+SCBW_DATA(PingArray*, minimap_ping_array, 0x0059C1B8); // 16
 
 	// -- Added for various hooks used by Cosmonarchy BW! -- \\
 
@@ -1162,10 +1163,21 @@ SCBW_DATA(u32*,				g_score_screen_player_count,	0x0059A0E0);
 SCBW_DATA(Box16*,			g_full_map_pixel_dimensions,	0x006284A0);
 
 // For draw_unit_box
+SCBW_DATA(Bitmap*,			g_minimap_surface,					0x0059C18C);
+SCBW_DATA(Bitmap*,			g_minimap_surface_fog,				0x0059C194);
+SCBW_DATA(void**,			g_minimap_vision_CB,				0x0059C188);
+SCBW_DATA(void**,			g_minimap_surface_CB,				0x0059C1A0);
 SCBW_DATA(u16*,				g_ping_zoom_div,					0x0059CC68);
 SCBW_DATA(u16*,				g_ping_zoom_lshift,					0x0059C1B0);
 SCBW_DATA(u16*,				g_map_width,						0x0059CC74);
 SCBW_DATA(u16*,				g_map_height,						0x0059CC64);
+SCBW_DATA(u8*,				g_minimap59C2C0,					0x0059C2C0);
+SCBW_DATA(u8*,				g_minimap59CB60,					0x0059CB60);
+SCBW_DATA(BinDlg**,			g_minimap_dlg,						0x0059CC60);
+SCBW_DATA(u16*,				g_minimap_zoom_level,				0x0059CC6C);
+SCBW_DATA(u32*,				g_minimap_move_tile_x,				0x0059CC70);
+SCBW_DATA(const VR4**,		vr4FileHandle,						0x00628444);
+SCBW_DATA(const VX4**,		vx4FileHandle,						0x00628458);
 
 // For replay autosaves
 SCBW_DATA(u8*,				g_is_league_game,					0x00629268);

@@ -293,6 +293,8 @@
     <ClCompile Include="hooks\DatExtend\dat_load_inject.cpp" />
     <ClCompile Include="hooks\grafting\grafting.cpp" />
     <ClCompile Include="hooks\grafting\grafting_inject.cpp" />
+    <ClCompile Include="hooks\interface\minimap.cpp" />
+    <ClCompile Include="hooks\interface\minimap_inject.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\hotkeys.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\hotkeys_inject.cpp" />
     <ClCompile Include="hooks\limits\sfx_extender_inject.cpp" />
@@ -651,6 +653,7 @@
     <ClInclude Include="hooks\DatExtend\dat_load.h" />
     <ClInclude Include="hooks\grafting\button_functions.h" />
     <ClInclude Include="hooks\grafting\grafting.h" />
+    <ClInclude Include="hooks\interface\minimap.h" />
     <ClInclude Include="hooks\interface\uifeatures\hotkeys.h" />
     <ClInclude Include="hooks\limits\sfx_extender.h" />
     <ClInclude Include="hooks\loading_hook.h" />

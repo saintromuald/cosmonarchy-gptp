@@ -1387,7 +1387,7 @@ namespace helper {
 
 	void create_bunker_attack_overlay(Unit* unit);															// 00477FD0
 	
-	u32 draw_unit_box(u32 x_pos, u32 y_pos, u8 x_dims, u8 y_dims, char color, char draw_in_fog);			// 004A3FD0
+	void draw_unit_box(s32 x_pos, s32 y_pos, u32 x_dims, u32 y_dims, u8 color, bool is_building);			// 004A3FD0
 
 	void draw_minimap_unit_box_2(u32 player);																// 004A47B0
 	char draw_minimap_unit_box(u32 player);																	// 004A4650
@@ -1743,4 +1743,6 @@ namespace helper {
 	void update_image_draw_data(Image* image);									// 004D57B0
 	void orders_nuke_launch(Unit* unit);										// 00464730
 	bool unit_can_have_rally(Unit* unit);										// 0047B2E0
+
+	void blit_surface(Bounds* drawbounds, Bitmap* surface, s16 x, s16 y);		// 0041D260
 }

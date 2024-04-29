@@ -1495,6 +1495,19 @@ struct VF4 {
 	vf4 tile[1][16];
 };
 
+struct vx4 {//u32 with vx4ex, u16 without
+	u32 flipped	: 1;
+	u32 vr4_id	: 31;//31 with vx4ex, 15 without
+};
+
+struct VX4 {
+	vx4 tile[1][16];
+};
+
+struct VR4 {
+	u8 minitile[1][64];
+};
+
 struct MTXM {
 	u16 tile[1];
 };
@@ -1505,6 +1518,10 @@ struct MusicStruct {
 	u8	flags;
 	u8	next_index;
 	u8	field_7;
+};
+
+struct PingArray {
+	Ping ping_array[16];
 };
 
 #pragma pack()

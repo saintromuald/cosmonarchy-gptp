@@ -121,6 +121,7 @@
 #include "hooks/update_unit_sight.h"
 #include "utility/RegConfig.h"
 #include "hooks/audiovisuals/image_render.h"
+#include "hooks/interface/minimap.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -850,6 +851,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	inject_trigger_system_hooks();
 	hooks::inject_hp_bars_hooks();
 	hooks::inject_image_render_hooks();
+	hooks::inject_minimap_hooks();
 
 	// Limits - most likely needs to be patched in aise, aice, and mtl
 	hooks::inject_unit_extender();
