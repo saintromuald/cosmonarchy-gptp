@@ -162,7 +162,7 @@ namespace hooks
 	// Ported from public GPTP, and partially-unfucked, to remove randomness from attacks. -Pr0nogo
 	b32 attack_apply_cooldown(Unit* unit) { // 00478B40
 		Unit* target = unit->order_target.unit;
-		if (!target) {
+		if (!target && !target->sprite) { // Sprite is new.
 			return false;
 		}
 

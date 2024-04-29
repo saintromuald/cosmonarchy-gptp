@@ -189,7 +189,7 @@ namespace helper {
 	bool unit_can_see_cloaked_target(Unit* target, Unit* unit);
 	void ai_respond_to_cloaked_threat(Unit* threat, Unit* unit);
 	bool unit_can_attack_target(Unit* target, Unit* unit, b32 check_detection);
-	s32 ai_update_attack_target(Unit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach);
+	b32 ai_update_attack_target(Unit* unit, s32 accept_if_sieged, s32 accept_critters, s32 must_reach);
 
 	// for iterate_building_ai
 	u16 ai_remove_from_towns(Unit* worker);
@@ -651,7 +651,6 @@ namespace helper {
 	void ai_unload_failure(Unit* unit);																								// 0043DF30
 	void insert_order_before(Unit* unit, Order* order, u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId);					// 00474540
 	void do_order(Unit* unit, u32 order_id, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
-	b32 ai_update_attack_target(Unit* unit, u32 unk1, u32 unk2, u32 unk3);															// 00477160
 	Unit* get_loaded_unit_from_index(Unit* transport, s32 index);																	// 004E6C40
 	b32 get_first_loaded_worker(Unit* transport);																					// 004E6D90
 	b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0

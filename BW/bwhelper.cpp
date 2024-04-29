@@ -1483,14 +1483,14 @@ namespace helper {
 		}
 	}
 
-	s32 ai_update_attack_target(Unit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach) {
+	b32 ai_update_attack_target(Unit* unit, s32 accept_if_sieged, s32 accept_critters, s32 must_reach) {
 		const u32 func_address = 0x00477160;
-		static s32 result;
+		static b32 result;
 		__asm {
 			PUSHAD
-			PUSH mustReach
-			PUSH acceptCritters
-			PUSH acceptIfSieged
+			PUSH must_reach
+			PUSH accept_critters
+			PUSH accept_if_sieged
 			MOV ECX, unit
 			CALL func_address
 			MOV result, EAX
@@ -5076,19 +5076,6 @@ namespace helper {
 			PUSH x
 			PUSH order_id
 			PUSH unit
-			CALL func_address
-			POPAD
-		}
-	}
-
-	b32 ai_update_attack_target(Unit* unit, u32 unk1, u32 unk2, u32 unk3) {
-		const u32 func_address = 0x00477160;
-		__asm {
-			PUSHAD
-			PUSH unk1
-			PUSH unk2
-			PUSH unk3
-			MOV ECX, unit
 			CALL func_address
 			POPAD
 		}
