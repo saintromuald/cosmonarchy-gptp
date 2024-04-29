@@ -26,7 +26,11 @@ namespace hooks {
 				// Olympian Dishonorable Discharge - add 3 armor pen to targets facing away from the Olympian
 				if (target && !units_dat::group_flags[target->id].is_building) {
 					if (bw::unit_is_exposed_to_position(target, unit->position)) {
-						helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, target, 1, 0);
+						UnitExt* target_ext = get_unit_ext(target);
+						if (!target_ext->timers[TimerOlympianMythicalMightSFX]) {
+							helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, target, 1, 0);
+							target_ext->timers[TimerOlympianMythicalMightSFX] = 3;
+						}
 						// TODO: Overlay
 						armor_pen += 3;
 					}
