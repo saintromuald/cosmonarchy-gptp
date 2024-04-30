@@ -220,7 +220,7 @@ namespace hooks {
 				u32 pos_x = *g_map_width;
 
 				do {
-					u32 i_0 = *map_tileset_handle & 0x7FFF;
+					u32 i_0 = *map_tileset_handle;
 					map_tileset_handle += 2;
 					i_0 = vx4_handle->tile[i_0][0].vr4_id;
 					i_0 = vr4_handle->minitile[i_0][55];
@@ -242,7 +242,7 @@ namespace hooks {
 			VR4* vr4_handle = (VR4*)(*vr4FileHandle);
 
 			do {
-				u32 i_0 = *map_tileset_handle & 0x7FFF;
+				u32 i_0 = *map_tileset_handle;
 				++map_tileset_handle;
 				i_0 = vx4_handle->tile[i_0][0].vr4_id;
 				i_0 = vr4_handle->minitile[i_0][55];
@@ -267,7 +267,7 @@ namespace hooks {
 				u32 pos_x = map_width_2;
 
 				do {
-					u32 i_0 = *map_tileset_handle & 0x7FFF;
+					u32 i_0 = *map_tileset_handle;
 					++map_tileset_handle;
 					vx4* tile = vx4_handle->tile[i_0];
 					i_0 = tile[0].vr4_id;
@@ -307,7 +307,7 @@ namespace hooks {
 				u8 _pos_y = ((tile_y >> 3) & 3) * 4;
 
 				do {
-					u32 i_0 = map_tileset_handle[(tile_x >> 5) + _tile_y] & 0x7FFF;
+					u32 i_0 = map_tileset_handle[(tile_x >> 5) + _tile_y];
 					i_0 = vx4_handle->tile[i_0][((tile_x >> 3) & 3) + _pos_y].vr4_id;
 					i_0 = vr4_handle->minitile[i_0][55];
 					*surf_buff++ = g_minimap59CB60[i_0];
