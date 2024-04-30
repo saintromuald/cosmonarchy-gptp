@@ -509,11 +509,12 @@ namespace hooks {
 			sizeY = 2;
 		}
 
-		if ((posX -= size_x) < 0) {
+		posX -= size_x;
+		if (posX < 0) {
 			posX = 0;
 		}
-
-		if ((posY -= size_y) < 0) {
+		posY -= size_y;
+		if (posY < 0) {
 			posY = 0;
 		}
 
