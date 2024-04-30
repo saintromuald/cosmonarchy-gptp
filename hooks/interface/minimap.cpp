@@ -363,8 +363,10 @@ namespace hooks {
 
 		u32 zoom_level = DIV_ROUND_UP(map_size, 4);
 		*g_minimap_zoom_level = zoom_level;
-		box_width = DIV_ROUND_UP(640, zoom_level);
-		box_height = DIV_ROUND_UP(416, zoom_level);
+		u32 width = DIV_ROUND_UP(640, zoom_level);
+		box_width = width >= 2 ? width : 2;
+		u32 height = DIV_ROUND_UP(416, zoom_level);
+		box_height = height >= 1 ? height : 1;
 		*g_map_width = map_width;
 		*g_map_height = map_height;
 		BinDlg* minimap_dlg = *g_minimap_dlg;
@@ -483,77 +485,70 @@ namespace hooks {
 
 	void draw_unit_box(s32 posX, u8 color, s32 posY, u32 sizeX, u32 sizeY, bool isBuilding) {
 		++*g_minimap_unit_box_count;
-		s32 size_x = sizeX >> 1;
-
-		if (posX < size_x) {
-			posX = size_x;
-		}
-
-		s32 size_y = sizeY >> 1;
-
-		if (posY < size_y) {
-			posY = size_y;
-		}
-
+		s32 size_x;
+		s32 size_y;
 		u32 zoom_level = *g_minimap_zoom_level;
 
 		if (isBuilding) {
-			posX = DIV_ROUND_UP((posX - size_x), zoom_level);
-			posY = DIV_ROUND_UP((posY - size_y), zoom_level);
+			size_x = sizeX >> 1;
+			size_y = sizeY >> 1;
 			sizeX = DIV_ROUND_UP(sizeX, zoom_level);
 			sizeY = DIV_ROUND_UP(sizeY, zoom_level);
+
+			if (sizeX < 2) {
+				sizeX = 2;
+			}
+
+			if (sizeY < 2) {
+				sizeY = 2;
+			}
 		} else {
-			posX = DIV_ROUND_UP((posX - 32), zoom_level);
-			posY = DIV_ROUND_UP((posY - 32), zoom_level);
+			size_x = 32;
+			size_y = 32;
 			sizeX = 2;
 			sizeY = 2;
 		}
 
-		if (sizeX < 2) {
-			sizeX = 2;
-		}
-
-		if (sizeY < 2) {
-			sizeY = 2;
-		}
-
-		if (posX < 0) {
+		if ((posX -= size_x) < 0) {
 			posX = 0;
-		} else if (sizeX + posX - 1 >= *g_map_width) {
-			sizeX = *g_map_width - posX;
 		}
 
-		if (posY < 0) {
+		if ((posY -= size_y) < 0) {
 			posY = 0;
-		} else if (sizeY + posY - 1 >= *g_map_height) {
-			sizeY = *g_map_height - posY;
+		}
+
+		u32 pos_x = DIV_ROUND_UP(posX, zoom_level);
+		u32 pos_y = DIV_ROUND_UP(posY, zoom_level);
+
+		if (pos_x + sizeX >= *g_map_width) {
+			pos_x = *g_map_width - sizeX;
+		}
+
+		if (pos_y + sizeY >= *g_map_height) {
+			pos_y = *g_map_height - sizeY;
 		}
 
 		//inline and simplification of DrawBox @ 0x004E1D20
-		if ((sizeX | sizeY) != 0) {
-			u32 surf_w = ((Bitmap*)(*g_current_surface))->width;
-			u8* surf_buff = ((Bitmap*)(*g_current_surface))->buffer + surf_w * posY + posX;
-			u8 remainder = sizeX & 1;
-			u32 width = sizeX >> 1;
-			u16 _color = (color << 8) | color;
-			s32 i_0 = sizeY - 1;
+		u32 surf_w = ((Bitmap*)(*g_current_surface))->width;
+		u8* surf_buff = ((Bitmap*)(*g_current_surface))->buffer + surf_w * pos_y + pos_x;
+		u8 remainder = sizeX & 1;
+		u32 width = sizeX >> 1;
+		u16 _color = (color << 8) | color;
+		s32 i_0 = sizeY - 1;
+
+		do {
+			u8* dest = &surf_buff[i_0 * surf_w];
+
+			if (remainder) {
+				dest[width * 2] = (u8)_color;
+			}
+
+			u32 rep = width;
 
 			do {
-				u8* dest = &surf_buff[i_0 * surf_w];
-
-				if (remainder) {
-					dest[width * 2] = (u8)_color;
-				}
-
-				u32 rep = width;
-
-				do {
-					(u16&)dest[--rep * 2] = _color;
-				} while (rep);
-			} while (--i_0 >= 0);
-		} else {
-			bw::printf("minimap box %u has size 0", g_minimap_unit_box_count);
-		}
+				(u16&)dest[--rep * 2] = _color;
+			} while (rep);
+		} while (--i_0 >= 0);
 	}
 
 	void minimapGameMouseUpdate(BinDlg* minimap) {
