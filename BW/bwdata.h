@@ -89,6 +89,10 @@ SCBW_DATA(HWND*,			g_main_window,					0x0051BFB0);
 SCBW_DATA(s32*,				g_music_volume,					0x006D5BB4);
 SCBW_DATA(b8*,				g_music_playing,				0x006D5BBC);
 
+SCBW_DATA(BinDlg**,			g_main_dlg,						0x0057F0DC);
+SCBW_DATA(HINSTANCE*,		g_main_hinstance,				0x0051BFAC);
+SCBW_DATA(HIMC*,			g_app_context,					0x006D6438);
+
 //////////////////////////////////////////////////////////////// @}
 /// @name Data Variables and Constants
 //////////////////////////////////////////////////////////////// @{

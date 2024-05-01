@@ -15122,4 +15122,43 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	void fatal_error(char* error_type)
+	{
+		const u32 function = 0x004215D0;
+		__asm {
+			PUSHAD
+			PUSH error_type
+			CALL function
+			POPAD
+		}
+	}
+
+	HIMC ImmGetContextBW(HWND hwnd)
+	{
+		const u32 func_address = 0x0041003A;
+		static HIMC result;
+		__asm {
+			PUSHAD
+			PUSH hwnd
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	HIMC ImmAssociateContextBW(HWND hwnd, HIMC himc) {
+		const u32 func_address = 0x00410052;
+		static HIMC result;
+		__asm {
+			PUSHAD
+			PUSH himc
+			PUSH hwnd
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

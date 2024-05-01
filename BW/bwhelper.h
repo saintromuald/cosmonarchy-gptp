@@ -28,6 +28,8 @@ namespace helper {
 	SCBW_FUNC(0x004BE0B0, char __cdecl, refresh_cursor_0);
 	SCBW_FUNC(0x004BE060, s32 __cdecl, cursor_refresh);
 	SCBW_FUNC(0x0049BFD0, char __cdecl, update_screen_position);
+	SCBW_FUNC(0x004D4960, bool __fastcall, title_dlg_proc, BinDlg* dialog, DialogEvent* dlg_event);
+	SCBW_FUNC(0x004D1D70, s32, main_window_proc, void* main_window, HWND hwnd, UINT msg, u32* wparam, u32* lparam);
 
 	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
@@ -1745,4 +1747,7 @@ namespace helper {
 	bool unit_can_have_rally(Unit* unit);										// 0047B2E0
 
 	void blit_surface(Bounds* drawbounds, Bitmap* surface, s16 x, s16 y);		// 0041D260
+	void fatal_error(char* error_type);											// 004215D0
+	HIMC ImmGetContextBW(HWND hwnd);											// 0041003A
+	HIMC ImmAssociateContextBW(HWND hwnd, HIMC himc);							// 00410052
 }

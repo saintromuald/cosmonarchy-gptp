@@ -832,4 +832,87 @@ namespace hooks
 			return helper::generic_dialog_interact(text_message, dlg_event);
 		}
 	}
+
+	// Hooked to change window name. -Pr0nogo
+	void load_title() // 004D49A0
+	{
+		HANDLE* file_1 = 0;
+		if (!helper::sfile_open_file_ex(0, "rez\\titledlg.bin", 0, &file_1)) {
+			u32 last_error = helper::serr_get_last_error();
+			helper::syswarn_file_not_found(last_error, "rez\\titledlg.bin");
+		}
+
+		HANDLE* file_2 = file_1;
+		u32 file_size_1 = helper::SFileGetFileSize(file_1, 0);
+		u32 file_size_2 = file_size_1;
+		if (file_size_1 == -1) {
+			u32 last_error_2 = GetLastError();
+			helper::file_fatal(file_2, last_error_2);
+		}
+		if (!file_size_1) {
+			helper::syswarn_file_not_found(0x18u, "rez\\titledlg.bin");
+		}
+		BinDlg* gamedata_dlg = (BinDlg*)helper::SMemAlloc(file_size_1, "Starcraft\\SWAR\\lang\\gamedata.cpp", 210, 0);
+		HANDLE* file_3 = file_1;
+
+		u32 read = 0;
+		if (!helper::sfile_read_file((HANDLE*)file_1, gamedata_dlg, file_size_2, &read, 0)) {
+			if (GetLastError() == ERROR_HANDLE_EOF) {
+				helper::file_fatal(file_3, ERROR_BAD_LENGTH);
+			}
+			u32 last_error_3 = GetLastError();
+			helper::file_fatal(file_3, last_error_3);
+		}
+		if (read != file_size_2) {
+			helper::file_fatal(file_3, ERROR_BAD_LENGTH);
+		}
+		helper::SFileCloseFile(file_1);
+
+		BinDlg* main_dlg = 0;
+		if (gamedata_dlg) {
+			gamedata_dlg->flags |= BinDlgFlags::Active;
+			helper::alloc_init_dialog_data(gamedata_dlg, (void(__fastcall*)(u32, u32, u32, u32, u32))helper::alloc_background_image, "Starcraft\\SWAR\\lang\\title.cpp", 190);
+			main_dlg = gamedata_dlg;
+		}
+		*g_main_dlg = main_dlg;
+		helper::initialize_dialog((u32(__fastcall*)(BinDlg*, DialogEvent*))helper::title_dlg_proc, main_dlg);
+	}
+
+	// Hooked to change window name. -Pr0nogo
+	void __cdecl create_main_window() // 004E05B0
+	{
+		WNDCLASSEXA wclass;
+		memset(&wclass, 0, sizeof(wclass));
+		wclass.cbSize = 48;
+		wclass.style = 8;
+		wclass.lpfnWndProc = (WNDPROC)helper::main_window_proc;
+		wclass.hInstance = *g_main_hinstance;
+		wclass.hIcon = LoadIconA(*g_main_hinstance, (LPCSTR)0x66);
+		wclass.hIconSm = (HICON)LoadImageA(*g_main_hinstance, (LPCSTR)0x66, 1, 16, 16, 0x8000u);
+		wclass.hCursor = LoadCursorA(0, (LPCSTR)IDC_ARROW);
+		wclass.hbrBackground = (HBRUSH)GetStockObject(5);
+		wclass.lpszClassName = "SWarClass";
+		if (!RegisterClassExA(&wclass)) {
+			helper::fatal_error((char*)"RegisterClass");
+		}
+		const char* title = "Cosmonarchy";
+		HINSTANCE instance = *g_main_hinstance;
+		int height = GetSystemMetrics(SM_CYSCREEN);
+		int width = GetSystemMetrics(SM_CXSCREEN);
+		HWND hwnd = CreateWindowExA(0, "SWarClass", title, 0x90080000, 0, 0, width, height, NULL, NULL, instance, NULL);
+		*g_main_window = hwnd;
+		if (!hwnd) {
+			helper::fatal_error((char*)"CreateWindowEx");
+			hwnd = *g_main_window;
+		}
+		UpdateWindow(hwnd);
+		SetFocus(*g_main_window);
+		SetCursor(NULL);
+		if (GetUserDefaultLangID() == 0x412) {
+			if (!*g_app_context) {
+				*g_app_context = helper::ImmGetContextBW(*g_main_window);
+			}
+			*g_app_context = helper::ImmAssociateContextBW(*g_main_window, 0);
+		}
+	}
 }
