@@ -741,14 +741,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 key = parser.get_s32();
 			Token text = parser.get_string();
 
-			Objective& objective = g_objectives.find_or_create(key);
+			Objective& objective = g_objectives.get(key);
 			objective.text = text.string();
 			objective.show = true;
 		} else if (parser.equals("objective_text") && is_local_player) {
 			s32 key = parser.get_s32();
 			Token text = parser.get_string();
 
-			Objective& objective = g_objectives.find_or_create(key);
+			Objective& objective = g_objectives.get(key);
 			objective.text = text.string();
 		} else if (parser.equals("objective_desc") && is_local_player) {
 			s32 key = parser.get_s32();
@@ -759,14 +759,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 key = parser.get_s32();
 			s32 show = parser.get_s32();
 
-			Objective& objective = g_objectives.find_or_create(key);
+			Objective& objective = g_objectives.get(key);
 			objective.show = show;
 		} else if (parser.equals("objective_score") && is_local_player) {
 			s32 key = parser.get_s32();
 			s32 score = parser.get_s32();
 			s32 max_score = parser.get_s32();
 
-			Objective& objective = g_objectives.find_or_create(key);
+			Objective& objective = g_objectives.get(key);
 			objective.score = std::clamp(score, 0, max_score);
 			objective.max_score = max_score;
 		} else if (parser.equals("objective_score_add") && is_local_player) {
@@ -774,7 +774,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 score = parser.get_s32();
 			s32 max_score = parser.get_s32();
 
-			Objective& objective = g_objectives.find_or_create(key);
+			Objective& objective = g_objectives.get(key);
 			objective.score = std::clamp(objective.score + score, 0, max_score);
 			objective.max_score = max_score;
 		} else if (parser.equals("objective_score_subtract") && is_local_player) {
@@ -782,14 +782,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 score = parser.get_s32();
 			s32 max_score = parser.get_s32();
 
-			Objective& objective = g_objectives.find_or_create(key);
+			Objective& objective = g_objectives.get(key);
 			objective.score = std::clamp(objective.score - score, 0, max_score);
 			objective.max_score = max_score;
 		} else if (parser.equals("objective_timer") && is_local_player) {
 			s32 key = parser.get_s32();
 			u32 time = parser.get_time_ticks();
 
-			Objective& objective = g_objectives.find_or_create(key);
+			Objective& objective = g_objectives.get(key);
 			objective.timer = time;
 		} else if (parser.equals("objective_remove") && is_local_player) {
 			s32 key = parser.get_s32();

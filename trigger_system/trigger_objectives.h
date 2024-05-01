@@ -4,11 +4,11 @@
 #include <map>
 
 struct Objective {
-	bool show;
-	s32 score;
-	u32 max_score;
-	u32 timer;
-	std::string text;
+	bool show = false;
+	s32 score = 0;
+	u32 max_score = 0;
+	u32 timer = 0;
+	std::string text = "Unnamed Objective";
 };
 
 class Objectives {
@@ -16,8 +16,7 @@ public:
 	void reset();
 	void update();
 
-	Objective* find(s32 key);
-	Objective& find_or_create(s32 key);
+	Objective& get(s32 key);
 	void remove(s32 key);
 	void clear();
 

@@ -12,18 +12,10 @@ void Objectives::update() {
 	}
 }
 
-Objective* Objectives::find(s32 key) {
+Objective& Objectives::get(s32 key) {
 	auto it = m_objectives.find(key);
 	if (it != m_objectives.end()) {
-		return &it->second;
-	}
-	return nullptr;
-}
-
-Objective& Objectives::find_or_create(s32 key) {
-	Objective* found_objective = find(key);
-	if (found_objective) {
-		return *found_objective;
+		return it->second;
 	}
 	return m_objectives[key] = {};
 }
