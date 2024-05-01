@@ -120,23 +120,22 @@ namespace hooks {
 			draw_ui_text(buffer, 7);
 		}
 
-		for (u32 i = 0; i < objectives_count; ++i) {
-			Objective* objective = &objectives[i];
-			if (objective->show) {
+		for (const auto& [key, objective] : g_objectives) {
+			if (objective.show) {
 				char buffer[256] = {};
 				char* pos = buffer;
 				s32 size = 256;
 
 				appendf(&pos, &size, "- ");
-				if (objective->max_score == 1) {
-					appendf(&pos, &size, "[%c] ", objective->score ? 'X' : ' ', objective->text);
-				} else if (objective->max_score) {
-					appendf(&pos, &size, "[%u/%u] ", objective->score, objective->max_score);
+				if (objective.max_score == 1) {
+					appendf(&pos, &size, "[%c] ", objective.score ? 'X' : ' ', objective.text.c_str());
+				} else if (objective.max_score) {
+					appendf(&pos, &size, "[%u/%u] ", objective.score, objective.max_score);
 				}
-				appendf(&pos, &size, "%s", objective->text);
-				if (objective->timer) {
+				appendf(&pos, &size, "%s", objective.text.c_str());
+				if (objective.timer) {
 					char time[256] = {};
-					format_time(time, 256, "", objective->timer / 24, true);
+					format_time(time, 256, "", objective.timer / 24, true);
 					appendf(&pos, &size, " (%s)", time);
 				}
 				draw_ui_text(buffer, 7);

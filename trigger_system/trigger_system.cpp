@@ -72,7 +72,7 @@ void init_trigger_system() {
 
 	init_auto_celebration();
 	init_recolors();
-	init_objectives();
+	g_objectives.reset();
 	init_sound();
 	init_spawn();
 	g_trigger_vars.reset();
@@ -210,7 +210,7 @@ void update_trigger_system(bool in_game) {
 		update_recolors();
 		update_spawn();
 		g_trigger_vars.update();
-		tick_objectives();
+		g_objectives.update();
 		buttons_draw();
 
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
@@ -741,19 +741,15 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 key = parser.get_s32();
 			Token text = parser.get_string();
 
-			Objective* objective = find_or_create_objective(key);
-			if (objective) {
-				sprintf_s(objective->text, "%s", text.string().c_str());
-				objective->show = true;
-			}
+			Objective& objective = g_objectives.find_or_create(key);
+			objective.text = text.string();
+			objective.show = true;
 		} else if (parser.equals("objective_text") && is_local_player) {
 			s32 key = parser.get_s32();
 			Token text = parser.get_string();
 
-			Objective* objective = find_or_create_objective(key);
-			if (objective) {
-				sprintf_s(objective->text, "%s", text.string().c_str());
-			}
+			Objective& objective = g_objectives.find_or_create(key);
+			objective.text = text.string();
 		} else if (parser.equals("objective_desc") && is_local_player) {
 			s32 key = parser.get_s32();
 			Token text = parser.get_string();
@@ -763,76 +759,46 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 key = parser.get_s32();
 			s32 show = parser.get_s32();
 
-			Objective* objective = find_or_create_objective(key);
-			if (objective) {
-				objective->show = show;
-			}
+			Objective& objective = g_objectives.find_or_create(key);
+			objective.show = show;
 		} else if (parser.equals("objective_score") && is_local_player) {
 			s32 key = parser.get_s32();
 			s32 score = parser.get_s32();
 			s32 max_score = parser.get_s32();
 
-			Objective* objective = find_or_create_objective(key);
-			if (objective) {
-				objective->score = score;
-				objective->max_score = max_score;
-				if (objective->score < 0) {
-					objective->score = 0;
-				}
-				if (objective->score > objective->max_score) {
-					objective->score = objective->max_score;
-				}
-			}
+			Objective& objective = g_objectives.find_or_create(key);
+			objective.score = std::clamp(score, 0, max_score);
+			objective.max_score = max_score;
 		} else if (parser.equals("objective_score_add") && is_local_player) {
 			s32 key = parser.get_s32();
 			s32 score = parser.get_s32();
 			s32 max_score = parser.get_s32();
 
-			Objective* objective = find_or_create_objective(key);
-			if (objective) {
-				objective->score += score;
-				objective->max_score += max_score;
-				if (objective->score < 0) {
-					objective->score = 0;
-				}
-				if (objective->score > objective->max_score) {
-					objective->score = objective->max_score;
-				}
-			}
+			Objective& objective = g_objectives.find_or_create(key);
+			objective.score = std::clamp(objective.score + score, 0, max_score);
+			objective.max_score = max_score;
 		} else if (parser.equals("objective_score_subtract") && is_local_player) {
 			s32 key = parser.get_s32();
 			s32 score = parser.get_s32();
 			s32 max_score = parser.get_s32();
 
-			Objective* objective = find_or_create_objective(key);
-			if (objective) {
-				objective->score -= score;
-				objective->max_score -= max_score;
-				if (objective->score < 0) {
-					objective->score = 0;
-				}
-				if (objective->score > objective->max_score) {
-					objective->score = objective->max_score;
-				}
-			}
+			Objective& objective = g_objectives.find_or_create(key);
+			objective.score = std::clamp(objective.score - score, 0, max_score);
+			objective.max_score = max_score;
 		} else if (parser.equals("objective_timer") && is_local_player) {
 			s32 key = parser.get_s32();
 			u32 time = parser.get_time_ticks();
 
-			Objective* objective = find_or_create_objective(key);
-			if (objective) {
-				objective->timer = time;
-			}
+			Objective& objective = g_objectives.find_or_create(key);
+			objective.timer = time;
 		} else if (parser.equals("objective_remove") && is_local_player) {
 			s32 key = parser.get_s32();
-			Objective* objective = find_objective(key);
-			if (objective) {
-				remove_objective(objective);
-			}
+
+			g_objectives.remove(key);
 		} else if (parser.equals("objectives_sync") && is_local_player) {
 			// TODO: sync objectives to mission objectives menu
 		} else if (parser.equals("objectives_clear") && is_local_player) {
-			memset(&objectives, 0, sizeof(objectives));
+			g_objectives.clear();
 		} else if (parser.equals("show_player_layouts") && is_local_player) {
 			PlayerBitset players = parser.get_player_bitset();
 			s32 value = parser.get_s32();
