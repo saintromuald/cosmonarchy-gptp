@@ -879,7 +879,7 @@ namespace hooks
 	}
 
 	// Hooked to change window name. -Pr0nogo
-	void __cdecl create_main_window() // 004E05B0
+	void create_main_window() // 004E05B0
 	{
 		WNDCLASSEXA wclass;
 		memset(&wclass, 0, sizeof(wclass));

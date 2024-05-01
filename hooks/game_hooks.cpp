@@ -3440,11 +3440,6 @@ namespace hooks {
 	}
 
 	bool game_init() {
-		char window_name[12] = { 0 };
-		sprintf_s(window_name, sizeof(window_name), "Cosmonarchy", window_name);
-		LPCSTR window_name_new = string_convert(window_name);
-		SetWindowText(*g_main_window, window_name_new);
-
 		set_max_sight_range();
 
 		// Update harvest time for mineral fields

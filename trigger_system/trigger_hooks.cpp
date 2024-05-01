@@ -421,8 +421,7 @@ void dialog_music_fade(u32 music_id) // 004A6310
 			} break;
 		}
 
-		if (g_music_bank[music_id].flags)
-		{
+		if (g_music_bank[music_id].flags) {
 			u32 volume = *g_music_volume;
 			*g_music_volume = -10000;
 			helper::play_music(music_id);

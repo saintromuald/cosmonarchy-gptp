@@ -29,7 +29,7 @@ namespace helper {
 	SCBW_FUNC(0x004BE060, s32 __cdecl, cursor_refresh);
 	SCBW_FUNC(0x0049BFD0, char __cdecl, update_screen_position);
 	SCBW_FUNC(0x004D4960, bool __fastcall, title_dlg_proc, BinDlg* dialog, DialogEvent* dlg_event);
-	SCBW_FUNC(0x004D1D70, s32, main_window_proc, void* main_window, HWND hwnd, UINT msg, u32* wparam, u32* lparam);
+	SCBW_FUNC(0x004D1D70, s32 __fastcall, main_window_proc, void* main_window, HWND hwnd, UINT msg, u32* wparam, u32* lparam);
 
 	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
