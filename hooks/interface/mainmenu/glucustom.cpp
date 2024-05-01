@@ -881,6 +881,7 @@ namespace hooks
 	// Hooked to change window name. -Pr0nogo
 	void create_main_window() // 004E05B0
 	{
+	//	Sleep(5000); // For debugging.
 		WNDCLASSEXA wclass;
 		memset(&wclass, 0, sizeof(wclass));
 		wclass.cbSize = 48;
