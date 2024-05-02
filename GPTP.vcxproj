@@ -644,6 +644,7 @@
     <ClInclude Include="CM\cm_ids.h" />
     <ClInclude Include="CM\cm_utils.h" />
     <ClInclude Include="color_palette.h" />
+    <ClInclude Include="config_utils.h" />
     <ClInclude Include="custom_ai.h" />
     <ClInclude Include="data_ext.h" />
     <ClInclude Include="DatExtend\datext.h" />

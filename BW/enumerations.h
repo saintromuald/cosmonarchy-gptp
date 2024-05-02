@@ -945,8 +945,7 @@ namespace PlayerColor
 	};
 }
 
-static const char* player_color_names[] =
-{
+inline const char* player_color_names[PlayerColor::Count] = {
 	"Red",
 	"Blue",
 	"Teal",

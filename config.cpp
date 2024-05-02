@@ -141,6 +141,9 @@ void load_config() {
 	load_field(yaml, "default-to-steal-hotkeys", g_config.default_to_steal_hotkeys);
 	load_field(yaml, "tilde-control-group", g_config.tilde_control_group);
 
+	// Player Color
+	load_field(yaml, "preferred-colors", g_config.preferred_colors);
+
 	// Debug
 	load_field(yaml, "verbose", g_config.verbose);
 	GPTP::logger.set_enabled(g_config.verbose);
@@ -151,6 +154,27 @@ void load_config() {
 
 	validate_config();
 	save_config();
+}
+
+static std::string make_valid_colors_string() {
+	std::stringstream ss;
+	ss << "Valid colors are:\n";
+	
+	size_t i = 0;
+	bool first = true;
+	for (const auto& color : player_color_identifiers) {
+		if (i > 0) {
+			ss << ", ";
+		}
+		if (i % 10 == 9) {
+			ss << "\n";
+		}
+		i++;
+
+		ss << color;
+	}
+
+	return ss.str();
 }
 
 void save_config() {
@@ -241,6 +265,11 @@ void save_config() {
 	write_field (yaml, "default-to-steal-hotkeys", g_config.default_to_steal_hotkeys);
 	yaml << YAML::Newline << YAML::Comment("Replaces tilde with an additional control group, moves console to F12");
 	write_field(yaml, "tilde-control-group", g_config.tilde_control_group);
+	yaml << YAML::Newline << YAML::Newline;
+
+	yaml << YAML::Comment("Player Color");
+	yaml << YAML::Newline << YAML::Comment(make_valid_colors_string());
+	write_field(yaml, "preferred-colors", g_config.preferred_colors);
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Debug");
