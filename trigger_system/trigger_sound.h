@@ -101,8 +101,8 @@ void init_sound();
 void init_direct_sound();
 void update_sound();
 
-Sound* load_sound(char* filename);
-Sound* get_sound(char* filename);
+Sound* load_sound(const char* filename);
+Sound* get_sound(const char* filename); // Note: currently passing `token.stinrg().c_str()`, would be nice to not have to do that
 void free_sound(Sound* sound);
 
 bool play_sound(Sound* sound, s32 volume, s32 pan = 0, s32 unit_id = -1);

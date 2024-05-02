@@ -24,217 +24,223 @@ static bool is_word_char(char c) {
 	return isalnum(c) || c == '.' || c == '_' || c == '*';
 }
 
-static void parser_clear_token(Parser* parser) {
-	memset(&parser->token, 0, sizeof(parser->token));
+void Parser::clear_token() {
+	m_token = {};
 }
 
-static bool parser_skip_whitespace(Parser* parser) {
-	parser_clear_token(parser);
-	while (*parser->at && is_any_space(*parser->at)) {
-		if (is_newline(*parser->at)) {
+bool Parser::skip_whitespace() {
+	clear_token();
+	while (*m_at && is_any_space(*m_at)) {
+		if (is_newline(*m_at)) {
 			return false;
 		}
-		++parser->at;
+		++m_at;
 	}
 	return true;
 }
 
-static bool parser_skip_non_word_chars(Parser* parser) {
-	parser_clear_token(parser);
-	while (*parser->at && !is_word_char(*parser->at)) {
-		if (is_newline(*parser->at)) {
+bool Parser::skip_non_word_chars() {
+	clear_token();
+	while (*m_at && !is_word_char(*m_at)) {
+		if (is_newline(*m_at)) {
 			return false;
 		}
-		++parser->at;
+		++m_at;
 	}
 	return true;
 }
 
-static bool parser_get_negation(Parser* parser) {
-	if (!parser_skip_whitespace(parser)) {
+bool Parser::get_negation() {
+	if (!skip_whitespace()) {
 		return false;
 	}
-	return parser_get_char(parser, '!');
+	return get_char('!');
 }
 
-static char parser_get_separator(Parser* parser) {
-	if (!parser_skip_whitespace(parser)) {
+char Parser::get_separator() {
+	if (!skip_whitespace()) {
 		return 0;
 	}
 
-	if (is_separator(*parser->at)) {
-		return *parser->at++;
+	if (is_separator(*m_at)) {
+		return *m_at++;
 	}
 	return 0;
 }
 
-static char parser_get_relative_op(Parser* parser) {
-	if (!parser_skip_whitespace(parser)) {
+char Parser::get_relative_op() {
+	if (!skip_whitespace()) {
 		return 0;
 	}
 
-	switch (*parser->at) {
+	switch (*m_at) {
 		case '-':
 		case '+':
 		case '~':
-			return *parser->at++;
+			return *m_at++;
 	}
 	return 0;
 }
 
-Parser new_parser(const char* at) {
-	return {
-		.start = at,
-		.at = at,
-	};
+Parser::Parser(const char* at) : m_start(at), m_at(at) {
 }
 
-const char* parser_marker(Parser* parser) {
-	return parser->at;
+ParserMarker Parser::marker() {
+	return {m_at, m_token};
 }
 
-void parser_unwind(Parser* parser, const char* marker) {
-	parser_clear_token(parser); // TODO: Isn't this a problem? We might be relying on what token was after unwinding? Maybe Marker should be a struct that has marker and token, and token should eventually be a char slice, instead of a small char buffer
-	parser->at = marker;
+void Parser::unwind(const ParserMarker& marker) {
+	m_at = marker.at;
+	m_token = marker.token;
 }
 
-bool parser_get_char(Parser* parser, char c) {
-	if (*parser->at == c) {
-		++parser->at;
+bool Parser::get_char(char c) {
+	if (*m_at == c) {
+		++m_at;
 		return true;
 	}
 	return false;
 }
 
-static Token parser_eat_word(Parser* parser) {
-	while (is_word_char(*parser->at)) {
-		if (parser->token.size < MaxToken) {
-			parser->token.data[parser->token.size++] = *parser->at;
-		}
-		++parser->at;
-	}
-
-	return parser->token;
+void Parser::start_token() {
+	m_token.sv = {m_at, 0};
 }
 
-Token parser_get_word(Parser* parser, bool is_command) {
-	if (!parser_skip_non_word_chars(parser)) {
+void Parser::expand_token() {
+	if (m_token.sv.data()) {
+		m_token.sv = {m_token.sv.data(), m_token.sv.size() + 1};
+	} else {
+		assert(false);
+	}
+	m_at++;
+}
+
+Token Parser::eat_word() {
+	start_token();
+	while (is_word_char(*m_at)) {
+		expand_token();
+	}
+	return m_token;
+}
+
+Token Parser::get_word(bool is_command) {
+	if (!skip_non_word_chars()) {
 		return {};
 	}
 
 	if (is_command) {
-		parser->command_start_pos = parser->at - parser->start;
+		m_command_start_pos = m_at - m_start;
 	}
-	return parser_eat_word(parser);
+	return eat_word();
 }
 
-void parser_load_command_pos(Parser* parser, u32 position) {
+void Parser::load_command_pos(u32 position) {
 	if (position) {
-		parser->should_load_pos = true;
-		parser->at = parser->start + position;
+		m_should_load_pos = true;
+		m_at = m_start + position;
 	}
 }
 
-bool parser_get_command(Parser* parser) {
-	if (parser->should_load_pos) {
-		parser->should_load_pos = false;
-		parser->parsed_first_command = true;
-		return parser_eat_word(parser).size != 0;
+bool Parser::get_command() {
+	if (m_should_load_pos) {
+		m_should_load_pos = false;
+		m_parsed_first_command = true;
+		return !eat_word().sv.empty();
 	}
 
 	// Skip to end of line
-	if (!parser->parsed_first_command) {
-		parser->parsed_first_command = true;
+	if (!m_parsed_first_command) {
+		m_parsed_first_command = true;
 	} else {
-		while (*parser->at && !is_newline(*parser->at)) {
-			++parser->at;
+		while (*m_at && !is_newline(*m_at)) {
+			++m_at;
 		}
 	}
 
 	// Skip newlines
-	while (*parser->at && is_newline(*parser->at)) {
-		++parser->at;
+	while (*m_at && is_newline(*m_at)) {
+		++m_at;
 	}
 
-	return parser_get_word(parser, true).size != 0;
+	return !get_word(true).sv.empty();
 }
 
-bool parser_get_keyword(Parser* parser, const char* keyword) {
-	const char* marker = parser_marker(parser);
-	parser_get_word(parser);
-	if (parser_eq(parser, keyword)) {
+bool Parser::get_keyword(const char* keyword) {
+	const auto marker = this->marker();
+	get_word();
+	if (equals(keyword)) {
 		return true;
 	}
-	parser_unwind(parser, marker);
+	unwind(marker);
 	return false;
 }
 
-Token parser_get_string(Parser* parser) {
-	if (!parser_skip_whitespace(parser)) {
-		return parser->token;
+Token Parser::get_string() {
+	if (!skip_whitespace()) {
+		return m_token;
 	}
 
-	bool is_string = false;
-	if (parser_get_char(parser, '"')) {
-		while (*parser->at && *parser->at != '"' && !is_newline(*parser->at)) {
-			if (parser->token.size < MaxToken) {
-				parser->token.data[parser->token.size++] = *parser->at;
-			}
-			++parser->at;
+	if (get_char('"')) {
+		start_token();
+		while (*m_at && *m_at != '"' && !is_newline(*m_at)) {
+			expand_token();
 		}
-		parser_get_char(parser, '"');
+		get_char('"');
 	} else {
-		while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
-			if (parser->token.size < MaxToken) {
-				parser->token.data[parser->token.size++] = *parser->at;
-			}
-			++parser->at;
+		start_token();
+		while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at) && *m_at != '"') {
+			expand_token();
 		}
 	}
 
-	return parser->token;
+	return m_token;
 }
 
-TriggerVar* parser_get_var(Parser* parser) {
-	if (parser_get_char(parser, '$')) {
-		Token name = parser_get_word(parser);
-		TriggerVar* var = g_trigger_vars.find(TriggerVarType_Var, name.data);
+Token Parser::get_identifier() {
+	if (!skip_whitespace()) {
+		return m_token;
+	}
+
+	start_token();
+	while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at) && *m_at != '"') {
+		expand_token();
+	}
+
+	return m_token;
+}
+
+TriggerVar* Parser::maybe_get_var() {
+	if (get_char('$')) {
+		Token name = get_word();
+		TriggerVar* var = g_trigger_vars.find(TriggerVarType_Var, name.sv);
 		return var;
 	}
 	return 0;
 }
 
-s32 parser_get_s32(Parser* parser, s32 default_value) {
-	TriggerVar* var = parser_get_var(parser);
+s32 Parser::get_s32(s32 default_value) {
+	TriggerVar* var = maybe_get_var();
 	if (var) {
-		return var->value;
+		return var->value();
 	}
 
-	parser_get_word(parser);
-	if (parser_eqi(parser, "true")) {
+	get_word();
+	if (iequals("true")) {
 		return 1;
 	}
-	if (parser_eqi(parser, "false")) {
+	if (iequals("false")) {
 		return 0;
 	}
 
-	char* end = 0;
-	s32 value = strtol(parser->token.data, &end, 10);
-	if (end != parser->token.data + parser->token.size) {
-		return default_value;
-	}
-	return value;
+	const auto value = sv_convert_to<s32>(m_token.sv);
+	return value ? *value : default_value;
 }
 
-f32 parser_get_f32(Parser* parser, f32 default_value) {
-	parser_get_word(parser);
+f32 Parser::get_f32(f32 default_value) {
+	get_word();
 
-	char* end = 0;
-	f32 value = strtof(parser->token.data, &end);
-	if (end != parser->token.data + parser->token.size) {
-		return default_value;
-	}
-	return value;
+	const auto value = sv_convert_to<f32>(m_token.sv);
+	return value ? *value : default_value;
 }
 
 enum TimeType {
@@ -246,8 +252,8 @@ enum TimeType {
 	TimeType_Count,
 };
 
-f32 parser_get_time_seconds(Parser* parser) {
-	if (!parser_skip_whitespace(parser)) {
+f32 Parser::get_time_seconds() {
+	if (!skip_whitespace()) {
 		return false;
 	}
 
@@ -256,40 +262,35 @@ f32 parser_get_time_seconds(Parser* parser) {
 	f32 time = 0;
 	u32 time_type = TimeType_Seconds;
 
-	u32 buffer_index = 0;
-	char buffer[MaxToken + 1] = {};
-	while (*parser->at && !is_any_space(*parser->at) && !is_separator(*parser->at)) {
-		if (isdigit(*parser->at) || *parser->at == '.') {
-			if (buffer_index < MaxToken) {
-				buffer[buffer_index++] = *parser->at;
-			}
-		} else if (*parser->at == 'h') {
+	start_token();
+	while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at)) {
+		if (isdigit(*m_at) || *m_at == '.') {
+			expand_token();
+			continue;
+		} else if (*m_at == 'h') {
 			time_type = TimeType_Hours;
 			add_to_total = true;
-		} else if (*parser->at == 'm') {
-			if (parser->at[1] == 's') {
+		} else if (*m_at == 'm') {
+			if (m_at[1] == 's') {
 				time_type = TimeType_Milliseconds;
 				add_to_total = true;
 
-				if (parser->token.size < MaxToken) {
-					parser->token.data[parser->token.size++] = *parser->at;
-				}
-				++parser->at;
+				expand_token();
 			} else {
 				time_type = TimeType_Minutes;
 				add_to_total = true;
 			}
-		} else if (*parser->at == 's') {
+		} else if (*m_at == 's') {
 			time_type = TimeType_Seconds;
 			add_to_total = true;
-		} else if (*parser->at == 't') {
+		} else if (*m_at == 't') {
 			time_type = TimeType_Ticks;
 			add_to_total = true;
 		}
 
 		if (add_to_total) {
 			add_to_total = false;
-			time = strtof(buffer, 0);
+			time = sv_convert_to<f32>(m_token.sv).value_or(0);
 			switch (time_type) {
 				case TimeType_Hours: {
 					total_time += time * 60 * 60;
@@ -307,51 +308,47 @@ f32 parser_get_time_seconds(Parser* parser) {
 					total_time += time / 24;
 				} break;
 			}
-			buffer_index = 0;
-			memset(buffer, 0, sizeof(buffer));
+			start_token();
 			time = 0;
 		}
 
-		if (parser->token.size < MaxToken) {
-			parser->token.data[parser->token.size++] = *parser->at;
-		}
-		++parser->at;
+		expand_token();
 	}
 
 	// add seconds by default if anything without type was left
-	if (buffer_index) {
-		time = strtof(buffer, 0);
+	if (!m_token.sv.empty()) {
+		time = sv_convert_to<f32>(m_token.sv).value_or(0);
 		total_time += ceil(time);
 	}
 	return total_time;
 }
 
-u32 parser_get_time_ticks(Parser* parser) {
-	return ceil(parser_get_time_seconds(parser) * 24);
+u32 Parser::get_time_ticks() {
+	return ceil(get_time_seconds() * 24);
 }
 
-s32 parser_get_var_value(Parser* parser, bool is_timer) {
-	if (parser_get_keyword(parser, "random")) {
-		s32 min_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
-		s32 max_value = is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
+s32 Parser::get_var_value(bool is_timer) {
+	if (get_keyword("random")) {
+		s32 min_value = is_timer ? get_time_ticks() : get_s32();
+		s32 max_value = is_timer ? get_time_ticks() : get_s32();
 		return bw::rand_between(min_value, max_value);
 	}
-	return is_timer ? parser_get_time_ticks(parser) : parser_get_s32(parser);
+	return is_timer ? get_time_ticks() : get_s32();
 }
 
-Area parser_get_area(Parser* parser, Area default_value) {
+Area Parser::get_area(Area default_value) {
 	Area area = {};
-	if (!parser_skip_whitespace(parser)) {
+	if (!skip_whitespace()) {
 		return area;
 	}
 
-	if (parser_get_char(parser, '(')) {
+	if (get_char('(')) {
 		area.flags = ~0;
-		area.box.left = parser_get_s32(parser);
-		area.box.top  = parser_get_s32(parser);
+		area.box.left = get_s32();
+		area.box.top  = get_s32();
 		{
-			u32 relative_op = parser_get_relative_op(parser);
-			u32 w = parser_get_s32(parser);
+			u32 relative_op = get_relative_op();
+			u32 w = get_s32();
 			if (relative_op == '+') {
 				area.box.right = area.box.left + w;
 			} else if (relative_op == '-') {
@@ -365,8 +362,8 @@ Area parser_get_area(Parser* parser, Area default_value) {
 			}
 		}
 		{
-			u32 relative_op = parser_get_relative_op(parser);
-			u32 h = parser_get_s32(parser);
+			u32 relative_op = get_relative_op();
+			u32 h = get_s32();
 			if (relative_op == '+') {
 				area.box.bottom = area.box.top + h;
 			} else if (relative_op == '-') {
@@ -380,28 +377,28 @@ Area parser_get_area(Parser* parser, Area default_value) {
 			}
 		}
 
-		parser_get_char(parser, ')');
+		get_char(')');
 		return area;
 	}
 
-	const char* marker = parser_marker(parser);
-	Token string = parser_get_string(parser);
-	if (parser_eq(parser, "*")) {
+	const auto marker = this->marker();
+	Token string = get_string();
+	if (equals("*")) {
 		area.box = g_location_table[63].dimensions;
 		area.flags = ~g_location_table[63].flags;
 		return area;
 	}
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
-		if (name && name[0] && strcmp(name, string.data) == 0) {
+		if (name && name[0] && sv_equals(name, string.sv)) {
 			area.box = g_location_table[i].dimensions;
 			area.flags = ~g_location_table[i].flags;
 			return area;
 		}
 	}
-	parser_unwind(parser, marker); // string wasn't valid, let's unwind and try an int
+	unwind(marker); // string wasn't valid, let's unwind and try an int
 
-	s32 i = parser_get_s32(parser, -1);
+	s32 i = get_s32(-1);
 	if (i >= 0 && i < 256) {
 		area.box = g_location_table[i].dimensions;
 		area.flags = ~g_location_table[i].flags;
@@ -411,53 +408,53 @@ Area parser_get_area(Parser* parser, Area default_value) {
 	return default_value;
 }
 
-bool check_area(Area area, Point16 position, bool air) {
-	if (position.x >= area.box.left && position.x <= area.box.right &&
-		position.y >= area.box.top  && position.y <= area.box.bottom) {
+bool Area::check(Point16 position, bool air) {
+	if (position.x >= this->box.left && position.x <= this->box.right &&
+		position.y >= this->box.top  && position.y <= this->box.bottom) {
 		ActiveTile* tile = bw::get_active_tile_at_coords(position.x, position.y);
 		u32 height = tile->ground_height / 2;
 		if (height == 0) {
 			// Low
-			return air ? area.flags & LocationFlags_LowAir : area.flags & LocationFlags_LowGround;
+			return air ? this->flags & LocationFlags_LowAir : this->flags & LocationFlags_LowGround;
 		} else if (height == 1) {
 			// Mid
-			return air ? area.flags & LocationFlags_MidAir : area.flags & LocationFlags_MidGround;
+			return air ? this->flags & LocationFlags_MidAir : this->flags & LocationFlags_MidGround;
 		} else if (height == 2) {
 			// High
-			return air ? area.flags & LocationFlags_HighAir : area.flags & LocationFlags_HighGround;
+			return air ? this->flags & LocationFlags_HighAir : this->flags & LocationFlags_HighGround;
 		}
 		return false;
 	}
 	return false;
 }
 
-Point16 parser_get_position(Parser* parser, Point16 default_value) {
-	if (!parser_skip_whitespace(parser)) {
+Point16 Parser::get_position(Point16 default_value) {
+	if (!skip_whitespace()) {
 		return {};
 	}
 
-	if (parser_get_char(parser, '(')) {
+	if (get_char('(')) {
 		Point16 pos = {};
-		pos.x = parser_get_s32(parser);
-		pos.y = parser_get_s32(parser);
-		parser_get_char(parser, ')');
+		pos.x = get_s32();
+		pos.y = get_s32();
+		get_char(')');
 		return pos;
 	}
 
-	const char* marker = parser_marker(parser);
-	Token string = parser_get_string(parser);
-	if (parser_eq(parser, "*")) {
+	const auto marker = this->marker();
+	Token string = get_string();
+	if (equals("*")) {
 		return box_center(g_location_table[63].dimensions);
 	}
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
-		if (name && name[0] && strcmp(name, string.data) == 0) {
+		if (name && name[0] && sv_equals(name, string.sv)) {
 			return box_center(g_location_table[i].dimensions);
 		}
 	}
-	parser_unwind(parser, marker); // string wasn't valid, let's unwind and try an int
+	unwind(marker); // string wasn't valid, let's unwind and try an int
 
-	s32 i = parser_get_s32(parser);
+	s32 i = get_s32();
 	if (i >= 0 && i < 256) {
 		return box_center(g_location_table[i].dimensions);
 	}
@@ -465,11 +462,11 @@ Point16 parser_get_position(Parser* parser, Point16 default_value) {
 	return default_value;
 }
 
-s32 parser_get_enum(Parser* parser, const char** enum_names, u32 count, s32 default_value) {
-	Token token = parser_get_string(parser);
+s32 Parser::get_enum(const char** enum_names, u32 count, s32 default_value) {
+	Token token = get_string();
 
 	for (u32 i = 0; i < count; ++i) {
-		if (stricmp(token.data, enum_names[i]) == 0) {
+		if (sv_iequals(token.sv, enum_names[i]) == 0) {
 			return i;
 		}
 	}
@@ -477,8 +474,8 @@ s32 parser_get_enum(Parser* parser, const char** enum_names, u32 count, s32 defa
 	return default_value;
 }
 
-u32 parser_get_player(Parser* parser, bool allow_neutral) {
-	s32 player = parser_get_s32(parser, -1);
+u32 Parser::get_player(bool allow_neutral) {
+	s32 player = get_s32(-1);
 	if (player >= 0) {
 		if (player <= 8 || (allow_neutral && player == 12)) {
 			return player;
@@ -504,15 +501,15 @@ static void player_bitset_set(PlayerBitset& bitset, u32 i, bool value, bool mask
 	}
 }
 
-PlayerBitset parser_get_player_bitset(Parser* parser) {
+PlayerBitset Parser::get_player_bitset() {
 	bool mask = false;
 	PlayerBitset bitset = {};
 	PlayerBitset current_bitset = {};
 	while (true) {
-		bool negate = parser_get_negation(parser);
-		const char* marker = parser_marker(parser);
-		s32 value = parser_get_s32(parser);
-		if (parser_eq(parser, "*")) {
+		bool negate = get_negation();
+		const auto marker = this->marker();
+		s32 value = get_s32();
+		if (equals("*")) {
 			for (u32 i = 0; i < FullPlayerLimit; ++i) {
 				player_bitset_set(current_bitset, i, true, mask, negate);
 			}
@@ -547,8 +544,8 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 				player_bitset_set(current_bitset, i, g_player_table[i].force == 4, mask, negate);
 			}
 		} else {
-			parser_unwind(parser, marker);
-			s32 player = parser_get_player(parser, true);
+			unwind(marker);
+			s32 player = get_player(true);
 			if (player) {
 				player -= 1;
 				for (u32 i = 0; i < FullPlayerLimit; ++i) {
@@ -557,7 +554,7 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 			}
 		}
 
-		char separator = parser_get_separator(parser);
+		char separator = get_separator();
 		if (separator == '&') {
 			mask = true;
 		} else if (separator == '|') {
@@ -572,35 +569,25 @@ PlayerBitset parser_get_player_bitset(Parser* parser) {
 	return bitset;
 }
 
-static const char* remove_prefix(const char* string, const char* prefix) {
-	u32 len = strlen(prefix);
-	if (strnicmp(string, prefix, len) == 0) {
-		string += len;
-		for (const char* c = string; *c == ' '; ++c) {
-			++string;
-		}
-	}
-	return string;
-}
+static void remove_prefix(std::string_view& string, std::string_view prefix) {
+	const auto string_prefix = string.substr(0, prefix.size());
+	if (sv_iequals(string_prefix, prefix)) {
+		string.remove_prefix(prefix.size());
+	
+		for (const char c : string) {
+			if (!isspace(c)) break;
 
-Token token_from_str(const char* str) {
-	Token token = {};
-	for (const char* c = str; *c; ++c) {
-		if (token.size < MaxToken) {
-			token.data[token.size++] = *c;
-		} else {
-			break;
+			string.remove_prefix(1);
 		}
 	}
-	return token;
 }
 
 Token get_short_unit_name(u32 unit_id) {
-	const char* name = Unit::get_name(unit_id);
-	name = remove_prefix(name, "terran");
-	name = remove_prefix(name, "protoss");
-	name = remove_prefix(name, "zerg");
-	return token_from_str(name);
+	std::string_view name = Unit::get_name(unit_id);
+	remove_prefix(name, "terran");
+	remove_prefix(name, "protoss");
+	remove_prefix(name, "zerg");
+	return {name};
 }
 
 static char tolazy(char c) {
@@ -619,16 +606,16 @@ static bool str_equals_lazy(const char* a, const char* b) {
 	return *a == *b;
 }
 
-u32 parser_get_unit_id(Parser* parser) {
-	const char* marker = parser_marker(parser);
-	Token token = parser_get_string(parser);
+u32 Parser::get_unit_id() {
+	const auto marker = this->marker();
+	Token token = get_string();
 	for (u32 i = 0; i < UnitId::Count; ++i) {
-		if (str_equals_lazy(token.data, get_short_unit_name(i).data)) {
+		if (sv_lazy_equals(token.sv, get_short_unit_name(i).sv)) {
 			return i;
 		}
 	}
-	parser_unwind(parser, marker);
-	return parser_get_s32(parser, UnitId::None);
+	unwind(marker);
+	return get_s32(UnitId::None);
 }
 
 static void unit_id_bitset_set(UnitIdBitset& bitset, u32 i, bool value, bool mask, bool negate) {
@@ -644,51 +631,51 @@ static void unit_id_bitset_set(UnitIdBitset& bitset, u32 i, bool value, bool mas
 	}
 }
 
-UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
+UnitIdBitset Parser::get_unit_id_bitset() {
 	bool mask = false;
 	UnitIdBitset bitset = {};
 	UnitIdBitset current_bitset = {};
 	while (true) {
-		bool negate = parser_get_negation(parser);
-		const char* marker = parser_marker(parser);
-		parser_get_string(parser);
-		if (parser_eq(parser, "*")) {
+		bool negate = get_negation();
+		const auto marker = this->marker();
+		get_string();
+		if (equals("*")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, true, mask, negate);
 			}
-		} else if (parser_eqi(parser, "men")) {
+		} else if (iequals("men")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_men, mask, negate);
 			}
-		} else if (parser_eqi(parser, "buildings")) {
+		} else if (iequals("buildings")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_building, mask, negate);
 			}
-		} else if (parser_eqi(parser, "factories")) {
+		} else if (iequals("factories")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_factory, mask, negate);
 			}
-		} else if (parser_eqi(parser, "tech")) {
+		} else if (iequals("tech")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_is_tech(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "tech_tier")) {
+		} else if (iequals("tech_tier")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_is_tech_tier_structure(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "terran")) {
+		} else if (iequals("terran")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Terran), mask, negate);
 			}
-		} else if (parser_eqi(parser, "protoss")) {
+		} else if (iequals("protoss")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Protoss), mask, negate);
 			}
-		} else if (parser_eqi(parser, "zerg")) {
+		} else if (iequals("zerg")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Zerg), mask, negate);
 			}
-		} else if (parser_eqi(parser, "combatants")) {
+		} else if (iequals("combatants")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				bool is_combatant = false;
 				u32 subunit_id = units_dat::subunit[i];
@@ -703,33 +690,33 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 				}
 				unit_id_bitset_set(current_bitset, i, is_combatant, mask, negate);
 			}
-		} else if (parser_eqi(parser, "transports")) {
+		} else if (iequals("transports")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_is_transport(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "townhalls")) {
+		} else if (iequals("townhalls")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_is_town_center(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "depots")) {
+		} else if (iequals("depots")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceDepot, mask, negate);
 			}
-		} else if (parser_eqi(parser, "nodes")) {
+		} else if (iequals("nodes")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceContainer, mask, negate);
 			}
-		} else if (parser_eqi(parser, "factional")) {
+		} else if (iequals("factional")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, unit_id_is_factional(i), mask, negate);
 			}
-		} else if (parser_eqi(parser, "workers")) {
+		} else if (iequals("workers")) {
 			for (u32 i = 0; i < UnitId::Count; ++i) {
 				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
 			}
 		} else {
-			parser_unwind(parser, marker);
-			s32 unit_id = parser_get_unit_id(parser);
+			unwind(marker);
+			s32 unit_id = get_unit_id();
 			if (unit_id != UnitId::None) {
 				for (u32 i = 0; i < UnitId::Count; ++i) {
 					unit_id_bitset_set(current_bitset, i, i == unit_id, mask, negate);
@@ -737,7 +724,7 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 			}
 		}
 
-		char separator = parser_get_separator(parser);
+		char separator = get_separator();
 		if (separator == '&') {
 			mask = true;
 		} else if (separator == '|') {
@@ -752,24 +739,24 @@ UnitIdBitset parser_get_unit_id_bitset(Parser* parser) {
 	return bitset;
 }
 
-QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
-	if (!parser_skip_whitespace(parser)) {
+QuotaType Parser::get_quota_type(QuotaType default_type) {
+	if (!skip_whitespace()) {
 		return default_type;
 	}
 
-	if (*parser->at == '>' || *parser->at == '<' || *parser->at == '!' || *parser->at == '=' || *parser->at == '*') {
-		const char* marker = parser_marker(parser);
-		char op = *parser->at++;
+	if (*m_at == '>' || *m_at == '<' || *m_at == '!' || *m_at == '=' || *m_at == '*') {
+		const auto marker = this->marker();
+		char op = *m_at++;
 
-		bool equals = parser_get_char(parser, '=');
+		bool equals = get_char('=');
 		switch (op) {
 			case '>': return equals ? QuotaType_GreaterOrEqual : QuotaType_Greater; break;
 			case '<': return equals ? QuotaType_LessOrEqual : QuotaType_Less; break;
 			case '=': return QuotaType_Equal; break;
 			case '!': return QuotaType_NotEqual; break;
 			case '*': {
-				// We pop since we don't want next parser_get to consume next argument
-				parser_unwind(parser, marker);
+				// We pop since we don't want next get to consume next argument
+				unwind(marker);
 				return QuotaType_Anything;
 			} break;
 		}
@@ -777,50 +764,64 @@ QuotaType parser_get_quota_type(Parser* parser, QuotaType default_type) {
 	return default_type;
 }
 
-bool check_quota(QuotaType type, s32 quota, s32 value) {
-	switch (type) {
-		case QuotaType_Greater:			return value >  quota;
-		case QuotaType_Less:			return value <  quota;
-		case QuotaType_GreaterOrEqual:	return value >= quota;
-		case QuotaType_LessOrEqual:		return value <= quota;
-		case QuotaType_Equal:			return value == quota; 
-		case QuotaType_NotEqual:		return value != quota; 
+Quota Parser::get_quota(QuotaType default_type, s32 default_value) {
+	Quota quota{};
+	quota.type = get_quota_type(default_type);
+	quota.value = get_s32(default_value);
+	return quota;
+}
+
+Quota Parser::get_time_quota(QuotaType default_type) {
+	Quota quota{};
+	quota.type = get_quota_type(default_type);
+	quota.value = get_time_ticks();
+	return quota;
+}
+
+bool Quota::check(s32 value) {
+	switch (this->type) {
+		case QuotaType_Greater:			return value >  this->value;
+		case QuotaType_Less:			return value <  this->value;
+		case QuotaType_GreaterOrEqual:	return value >= this->value;
+		case QuotaType_LessOrEqual:		return value <= this->value;
+		case QuotaType_Equal:			return value == this->value; 
+		case QuotaType_NotEqual:		return value != this->value; 
 		case QuotaType_Anything:		return true; 
 	}
 	return false;
 }
 
-bool parser_has_recolor(Parser* parser) {
-	if (!parser_skip_whitespace(parser)) {
+bool Parser::has_recolor() {
+	if (!skip_whitespace()) {
 		return false;
 	}
-	return *parser->at == '(';
+	return *m_at == '(';
 }
 
-Recolor parser_get_recolor(Parser* parser) {
+Recolor Parser::get_recolor() {
 	Recolor recolor = default_recolor();
-	if (!parser_skip_whitespace(parser)) {
+	if (!skip_whitespace()) {
 		return recolor;
 	}
 
-	if (parser_get_char(parser, '(')) {
-		recolor.r          = parser_get_f32(parser, recolor.r);
-		recolor.g          = parser_get_f32(parser, recolor.g);
-		recolor.b          = parser_get_f32(parser, recolor.b);
-		recolor.gamma      = parser_get_f32(parser, recolor.gamma);
-		recolor.saturation = parser_get_f32(parser, recolor.saturation);
-		parser_get_char(parser, ')');
+	if (get_char('(')) {
+		recolor.r          = get_f32(recolor.r);
+		recolor.g          = get_f32(recolor.g);
+		recolor.b          = get_f32(recolor.b);
+		recolor.gamma      = get_f32(recolor.gamma);
+		recolor.saturation = get_f32(recolor.saturation);
+		get_char(')');
 	}
 	return recolor;
 }
 
-RecolorSet parser_get_recolor_set(Parser* parser) {
+RecolorSet Parser::get_recolor_set() {
 	RecolorSet set = {};
 	while (set.count < RecolorCap) {
-		if (!parser_has_recolor(parser)) {
+		if (!has_recolor()) {
 			break;
 		}
-		set.recolors[set.count++] = parser_get_recolor(parser);
+		set.recolors[set.count++] = get_recolor();
 	}
 	if (!set.count) {
 		set = default_recolor_set();
@@ -835,25 +836,14 @@ Point16 box_center(Box32 box) {
 	return point;
 }
 
-bool token_eq(Token* token, const char* string) {
-	if (!string) return false;
-	return strcmp(token->data, string) == 0;
+bool sv_equals(std::string_view a, std::string_view b) {
+	return std::ranges::equal(a, b);
 }
 
-bool token_eqi(Token* token, const char* string) {
-	if (!string) return false;
-	return stricmp(token->data, string) == 0;
+bool sv_iequals(std::string_view a, std::string_view b) {
+	return std::ranges::equal(a, b, [](char a, char b) { return tolower(a) == tolower(b); });
 }
 
-bool token_eql(Token* token, const char* string) {
-	if (!string) return false;
-	return str_equals_lazy(token->data, string);
-}
-
-bool parser_eq(Parser* parser, const char* string) {
-	return token_eq(&parser->token, string);
-}
-
-bool parser_eqi(Parser* parser, const char* string) {
-	return token_eqi(&parser->token, string);
+bool sv_lazy_equals(std::string_view a, std::string_view b) {
+	return std::ranges::equal(a, b, [](char a, char b) { return tolazy(a) == tolazy(b); });
 }

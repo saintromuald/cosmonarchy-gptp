@@ -282,7 +282,7 @@ void update_layouts() {
 					pos.x = unit_box.left + 5;
 					pos.y = unit_box.top + 5;
 
-					snprintf(buffer, 256, "%s (%u)", get_short_unit_name(placeholder->unit_id).data, player + 1);
+					snprintf(buffer, 256, "%s (%u)", get_short_unit_name(placeholder->unit_id).string().c_str(), player + 1);
 					graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
 					pos.y += 10;
 

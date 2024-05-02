@@ -1,5 +1,6 @@
 .vs/
 .vscode/
+enc_temp_folder/
 *Debug/
 *FastDebug/
 *Release/

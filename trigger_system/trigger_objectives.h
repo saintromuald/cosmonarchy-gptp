@@ -1,22 +1,30 @@
 #pragma once
 #include "BW/api.h"
 
+#include <map>
+
 struct Objective {
-	bool show;
-	s32 score;
-	u32 max_score;
-	s32 key;
-	u32 timer;
-	char text[256];
+	bool show = false;
+	s32 score = 0;
+	u32 max_score = 0;
+	u32 timer = 0;
+	std::string text = "Unnamed Objective";
 };
 
-#define ObjectivesCap 64
-extern u32 objectives_count;
-extern Objective objectives[ObjectivesCap];
+class Objectives {
+public:
+	void reset();
+	void update();
 
-void init_objectives();
-void tick_objectives();
+	Objective& get(s32 key);
+	void remove(s32 key);
+	void clear();
 
-Objective* find_objective(s32 key);
-Objective* find_or_create_objective(s32 key);
-void remove_objective(Objective* objective);
+	std::map<s32, Objective>::iterator begin() { return m_objectives.begin(); }
+	std::map<s32, Objective>::iterator end()   { return m_objectives.end(); }
+
+private:
+	std::map<s32, Objective> m_objectives;
+};
+
+inline Objectives g_objectives;

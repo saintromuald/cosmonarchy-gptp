@@ -14,6 +14,9 @@
 #define NOMINMAX
 #include <windows.h>
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 // Text colors
 #define BWTC_RESET		"\002"
 #define BWTC_TEAL		"\017"

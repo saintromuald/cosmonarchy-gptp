@@ -275,7 +275,7 @@ static bool load_ds_buffer(Sound* sound) {
 	return false;
 }
 
-Sound* load_sound(char* filename) {
+Sound* load_sound(const char* filename) {
 	if (!filename) {
 		return 0;
 	}
@@ -296,7 +296,7 @@ Sound* load_sound(char* filename) {
 	return 0;
 }
 
-Sound* get_sound(char* filename) {
+Sound* get_sound(const char* filename) {
 	u32 hash_index = hash_string(filename) % MaxSoundHash;
 	Sound* sound = loaded_sounds_hash_table[hash_index];
 	while (sound && strcmp(sound->path, filename) != 0) {
