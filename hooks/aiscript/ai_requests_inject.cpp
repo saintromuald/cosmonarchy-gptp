@@ -238,12 +238,14 @@ namespace
 		if (unit_id_is_tech_tier_structure(unit_id)) {
 			return 140;
 		}
-		if (unit_id_is_tech(unit_id)) {
+		if (unit_id_is_tech(unit_id, false)) {
+			return 120;
+		}
+		if (units_dat::group_flags[unit_id].is_factory) {
 			return 110;
 		}
-		if (units_dat::group_flags[unit_id].is_factory)
-		{
-			return 100;
+		if (unit_id_is_tech(unit_id, false)) {
+			return 109;
 		}
 		return 80;
 	}

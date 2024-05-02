@@ -25,8 +25,7 @@ bool unit_id_is_uncapped_gas_node(u16 unit_id)
 }
 
 bool unit_id_is_smaller_building(u16 unit_id) {
-	return (units_dat::base_property[unit_id] & UnitProperty::Addon &&
-		(unit_id != UnitId::TerranFountainhead && unit_id != UnitId::TerranAtelier && unit_id != UnitId::TerranHadron))
+	return (units_dat::base_property[unit_id] & UnitProperty::Addon && unit_id != UnitId::TerranHadron)
 		|| unit_id == UnitId::TerranSupplyDepot
 		|| unit_id == UnitId::TerranWatchdog
 		|| unit_id == UnitId::TerranAnchor
@@ -45,8 +44,8 @@ bool unit_id_is_smaller_building(u16 unit_id) {
 		|| unit_id == UnitId::ZergOcsalCesiant;
 }
 
-b32 unit_id_is_tech(u32 unit_id) {
-	if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
+b32 unit_id_is_tech(u32 unit_id, bool allow_addons) {
+	if (units_dat::base_property[unit_id] & UnitProperty::Addon && allow_addons) {
 		switch (unit_id) {
 			case UnitId::TerranComsatStation:
 			case UnitId::TerranAnvil:
@@ -59,9 +58,7 @@ b32 unit_id_is_tech(u32 unit_id) {
 	switch (unit_id) {
 		// Terran
 		case UnitId::TerranAtlas:
-		case UnitId::TerranFountainhead:
 		case UnitId::TerranDaedala:
-		case UnitId::TerranAtelier:
 
 			// Zerg
 		case UnitId::ZergIrolIris:
@@ -94,9 +91,7 @@ b32 unit_id_is_tech_tier_structure(u32 unit_id) {
 	switch (unit_id) {
 		// Terran
 		case UnitId::TerranAtlas:
-		case UnitId::TerranFountainhead:
 		case UnitId::TerranDaedala:
-		case UnitId::TerranAtelier:
 
 		// Zerg
 		case UnitId::ZergIrolIris:
