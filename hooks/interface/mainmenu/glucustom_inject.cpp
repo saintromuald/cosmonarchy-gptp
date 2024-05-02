@@ -79,6 +79,6 @@ namespace hooks
 	//	jump_patch(hide_dialog_wrapper,					0x00418700, 1); // Not actually necessary for the change.
 		jump_patch(glu_main_dialog_interact,			0x004DB7A0, 3);
 	//	jump_patch(load_title_wrapper,					0x004D49A0, 1); // Crashes related to alloc background image.
-	//	jump_patch(create_main_window_wrapper,			0x004E05B0, 1); // Does not create a visible window.
+	//	jump_patch(create_main_window_wrapper,			0x004E05B0, 1); // Does not support Xenotron wmode.
 	}
 }

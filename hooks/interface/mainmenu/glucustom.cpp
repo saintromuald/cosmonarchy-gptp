@@ -879,28 +879,28 @@ namespace hooks
 	}
 
 	// Hooked to change window name. -Pr0nogo
+	// Currently doesn't support Xenotron wmode...
 	void create_main_window() // 004E05B0
 	{
-	//	Sleep(5000); // For debugging.
+	//	Sleep(3000); // For debugging.
 		WNDCLASSEXA wclass;
 		memset(&wclass, 0, sizeof(wclass));
-		wclass.cbSize = 48;
+		wclass.cbSize = sizeof(wclass);
 		wclass.style = 8;
 		wclass.lpfnWndProc = (WNDPROC)helper::main_window_proc;
 		wclass.hInstance = *g_main_hinstance;
 		wclass.hIcon = LoadIconA(*g_main_hinstance, (LPCSTR)0x66);
-		wclass.hIconSm = (HICON)LoadImageA(*g_main_hinstance, (LPCSTR)0x66, 1, 16, 16, 0x8000u);
+		wclass.hIconSm = (HICON)LoadImageA(*g_main_hinstance, (LPCSTR)0x66, 1, 16, 16, 0x8000);
 		wclass.hCursor = LoadCursorA(0, (LPCSTR)IDC_ARROW);
 		wclass.hbrBackground = (HBRUSH)GetStockObject(5);
 		wclass.lpszClassName = "SWarClass";
 		if (!RegisterClassExA(&wclass)) {
 			helper::fatal_error((char*)"RegisterClass");
 		}
-		const char* title = "Cosmonarchy";
 		HINSTANCE instance = *g_main_hinstance;
 		int height = GetSystemMetrics(SM_CYSCREEN);
 		int width = GetSystemMetrics(SM_CXSCREEN);
-		HWND hwnd = CreateWindowExA(0, "SWarClass", title, 0x90080000, 0, 0, width, height, NULL, NULL, instance, NULL);
+		HWND hwnd = CreateWindowExA(0, "SWarClass", "Cosmonarchy", 0x90080000, 0, 0, width, height, NULL, NULL, instance, NULL);
 		*g_main_window = hwnd;
 		if (!hwnd) {
 			helper::fatal_error((char*)"CreateWindowEx");

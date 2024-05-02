@@ -391,7 +391,8 @@ bool unit_id_is_zerg_supply(u16 unit_id) {
 
 bool unit_paths_over_small_units(Unit* unit) {
 	// Keeping arg as unit in case we want to add status effects later. -Pr0nogo
-	return unit->id == UnitId::TerranPenumbra;
+	return unit->id == UnitId::TerranPenumbra
+		|| unit->id == UnitId::ProtossOptecton;
 }
 
 bool unit_collides_with_titanic(Unit* unit) {

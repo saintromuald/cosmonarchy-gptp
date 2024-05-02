@@ -995,7 +995,7 @@ namespace hooks {
 
 					EntryArray bonus_targets = {};
 					unit_search_radial(&bonus_targets, main_target->position, radius);
-					unit_search_filter(&bonus_targets, bullet->source_unit, FilterEnemy | FilterVisible);
+					unit_search_filter(&bonus_targets, bullet->source_unit, FilterEnemy | FilterVisible | FilterNoAir);
 					iquare_globals.add_multihit_empty_bullet(bullet, 1);
 					u32 fired = 0;
 					for (u32 i = 0; i < bonus_targets.count; ++i) {

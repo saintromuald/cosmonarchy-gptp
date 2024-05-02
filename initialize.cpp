@@ -138,8 +138,8 @@ namespace {
 	void run_wmode(bool hide_prompt, bool prefer_wmode) {
 		if (!hide_prompt) {
 			// KYSXD windowed mode
-			s32 msgboxID = MessageBoxA(nullptr, "Do you want to play in windowed mode?", PLUGIN_NAME, MB_YESNOCANCEL);
-			switch (msgboxID) {
+			s32 msgbox_id = MessageBoxA(nullptr, "Do you want to play in windowed mode?", PLUGIN_NAME, MB_YESNOCANCEL);
+			switch (msgbox_id) {
 				case IDYES: {
 					load_wmode();
 				} break;
@@ -157,15 +157,15 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	load_config();
 	run_wmode(g_config.disable_wmode_prompt, g_config.prefer_wmode);
 	// StarCraft.exe version check
-	char exePath[300];
-	const DWORD pathLen = GetModuleFileNameA(nullptr, exePath, sizeof(exePath));
+	char exe_path[300];
+	const DWORD pathLen = GetModuleFileNameA(nullptr, exe_path, sizeof(exe_path));
 
-	if (pathLen == sizeof(exePath)) {
+	if (pathLen == sizeof(exe_path)) {
 		MessageBoxA(nullptr, "Error: Cannot check version of StarCraft.exe. The file path is too long.", nullptr, MB_OK);
 		return FALSE;
 	}
 
-	if (!check_starcraft_exe_version(exePath)) {
+	if (!check_starcraft_exe_version(exe_path)) {
 		return FALSE;
 	}
 
