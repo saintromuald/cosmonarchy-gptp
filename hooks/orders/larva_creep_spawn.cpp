@@ -290,8 +290,7 @@ namespace hooks
 	}
 
 	u32 btsncond_zerg_building_rally(u32 unused, u32 player, Unit* unit) { // 00429740
-		if (unit_id_is_zerg_production(unit->id) || unit_id_is_zerg_production(unit->build_queue[unit->build_queue_slot]))
-		{
+		if (unit_id_is_zerg_production(unit->id) || unit_id_is_zerg_production(unit->build_queue[unit->build_queue_slot])) {
 			return helper::btnscond_rally(unused, player, unit);
 		} else {
 			return 0;
@@ -366,8 +365,7 @@ namespace hooks
 		if (move_x == unit_x && move_y == unit_y
 		||  move_target && (move_x != move_target->position.x || move_y != move_target->position.y) && !helper::pixel_pos_has_cagra(move_x, move_y))
 		{
-			if ((!spawner || move_target != spawner) && !(bw::get_active_tile_at_coords(unit->position)->has_cagra)) // Guessed flag
-			{
+			if (!spawner && !(bw::get_active_tile_at_coords(unit->position)->has_cagra)) { // Guessed flag
 				helper::orders_self_destructing(unit);
 				return;
 			}
@@ -381,9 +379,8 @@ namespace hooks
 			}
 
 			u32 pos_x = unit->position.x + ((random & 8) != 0 ? 10 : -10);
-			u32 pos_y = unit->position.y + ((random & 120) != 0 ? 10 : -10);
-			if (pos_x < *g_map_width_pixels && pos_y < *g_map_height_pixels && helper::pixel_pos_has_cagra(pos_x, pos_y))
-			{
+			u32 pos_y = unit->position.y + ((random & 128) != 0 ? 10 : -10);
+			if (pos_x < *g_map_width_pixels && pos_y < *g_map_height_pixels && helper::pixel_pos_has_cagra(pos_x, pos_y)) {
 				if (!helper::chk_larva_stray(unit, pos_x, pos_y)) {
 					if (helper::chk_larva_stray(unit, unit->sprite->position.x, unit->sprite->position.y)) {
 						return;
