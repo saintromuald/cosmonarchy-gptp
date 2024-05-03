@@ -271,7 +271,6 @@ void save_config() {
 	yaml << YAML::Newline << YAML::Comment("");
 	yaml << YAML::Newline << YAML::Comment(make_valid_colors_string());
 	write_field(yaml, "preferred-colors", g_config.preferred_colors);
-	yaml << YAML::Key << "some-color" << YAML::Value << PlayerColor::Aero;
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Debug");

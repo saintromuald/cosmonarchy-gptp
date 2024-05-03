@@ -489,7 +489,7 @@ struct FraudInfo {
 	u32 personality;
 	u32 build_type;
 	u32 build_order;
-	u32 color;
+	PlayerColor color;
 
 	u8 deaths[UnitId::Count];
 };

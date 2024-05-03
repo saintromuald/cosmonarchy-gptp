@@ -1002,7 +1002,7 @@ namespace hooks {
 		unit->velocity_direction_2 = unit->velocity_direction_1;
 
 		if (unit->player < PlayerLimit) {
-			unit_ext->values[ValuePlayerColor] = g_player_data.player_color_list[unit->player];
+			unit_ext->values[ValuePlayerColor] = (u32)g_player_data.player_color_list[unit->player];
 		}
 
 		if (bw::get_game_kind() == GameKind_Massacre) {

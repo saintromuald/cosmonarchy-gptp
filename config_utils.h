@@ -13,8 +13,8 @@ inline std::string to_lower_snake_case(const std::string& str) {
 	return result;
 }
 
-inline std::array<std::string, PlayerColor::Count> make_player_color_identifiers() {
-	std::array<std::string, PlayerColor::Count> result;
+inline std::array<std::string, (size_t)PlayerColor::Count> make_player_color_identifiers() {
+	std::array<std::string, (size_t)PlayerColor::Count> result;
 	size_t i = 0;
 	for (const char* str : player_color_names) {
 		result[i++] = to_lower_snake_case(str);
@@ -58,7 +58,6 @@ std::optional<T> yaml_try_cast(const YAML::Node& node) {
 
 template <typename T>
 YAML::Emitter& operator<<(YAML::Emitter& out, const T& data) {
-	MessageBoxA(0, YAML::convert<T>::encode(data).as<std::string>().c_str(), "", 0);
 	out << YAML::convert<T>::encode(data);
 	return out;
 }
@@ -90,13 +89,13 @@ struct YAML::convert<UiBool> {
 };
 
 template <>
-struct YAML::convert<PlayerColor::Enum> {
-	static YAML::Node encode(PlayerColor::Enum value) {
+struct YAML::convert<PlayerColor> {
+	static YAML::Node encode(PlayerColor value) {
 		auto index = static_cast<size_t>(value);
-		return YAML::Node{index < PlayerColor::Count ? player_color_identifiers[index] : "invalid_color"};
+		return YAML::Node{index < (size_t)PlayerColor::Count ? player_color_identifiers[index] : "invalid_color"};
 	}
 
-	static bool decode(const YAML::Node& node, PlayerColor::Enum& value) {
+	static bool decode(const YAML::Node& node, PlayerColor& value) {
 		if (!node) {
 			return false;
 		}
@@ -104,13 +103,13 @@ struct YAML::convert<PlayerColor::Enum> {
 		if (const auto name = yaml_try_cast<std::string>(node)) {
 			const auto it = std::ranges::find(player_color_identifiers, *name);
 			if (it != player_color_identifiers.end()) {
-				value = (PlayerColor::Enum)(it - player_color_identifiers.begin());
+				value = (PlayerColor)(it - player_color_identifiers.begin());
 				return true;
 			}
 		}
 		
 		if (const auto index = yaml_try_cast<s32>(node)) {
-			value = (PlayerColor::Enum)*index;
+			value = (PlayerColor)*index;
 			return true;
 		}
 

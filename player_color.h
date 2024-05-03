@@ -31,7 +31,7 @@ enum {
 
 // TODO: Remove std::vector
 
-const std::vector<std::vector<u32>> player_tints = {
+const std::vector<std::vector<PlayerColor>> player_tints = {
 	{	// Dark Red
 		PlayerColor::Maroon,
 		PlayerColor::Blood,
@@ -224,7 +224,7 @@ const std::vector<std::vector<u32>> banned_race_tints = {
 	},
 };
 
-const std::vector<u32> banned_colors = {
+const std::vector<PlayerColor> banned_colors = {
 	PlayerColor::Harlequin,
 	PlayerColor::Rainbow,
 	PlayerColor::Magenta,
@@ -237,7 +237,7 @@ const std::vector<u32> banned_colors = {
 	PlayerColor::MetzenicProzac,
 };
 
-const std::vector<std::vector<std::vector<u32>>> personality_colors = {
+const std::vector<std::vector<std::vector<PlayerColor>>> personality_colors = {
 	{ // Zerg
 		{ // Assault
 			PlayerColor::Red,
@@ -622,8 +622,8 @@ const char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][Play
 struct PlayerData {
 	bool has_custom_color[PlayerLimit];
 	bool has_custom_player_name[PlayerLimit];
-	bool color_used[PlayerColor::Count];
-	u8 player_color_list[PlayerLimit];
+	bool color_used[(size_t)PlayerColor::Count];
+	PlayerColor player_color_list[PlayerLimit];
 
 	std::string full_player_names[PlayerLimit];
 	std::string full_force_names[PlayerLimit];
@@ -639,7 +639,7 @@ inline std::vector<const char*> g_easter_egg_unit_names[UnitsIdLimit];
 const char* get_random_easter_egg_unit_name(u16 unit_id);
 
 u8 get_player_color_index(u32 player, u32 index);
-bool set_player_color(u32 player, u32 color);
+bool set_player_color(u32 player, PlayerColor color);
 void init_player_colors();
 void load_player_colors();
 

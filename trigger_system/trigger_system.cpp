@@ -1155,7 +1155,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser.equals("set_player_color")) {
 			u32 player = parser.get_player();
-			u32 player_color = parser.get_enum(player_color_names, ARRAY_SIZE(player_color_names));
+			PlayerColor player_color = (PlayerColor)parser.get_enum(player_color_names, ARRAY_SIZE(player_color_names));
 
 			if (player) {
 				player -= 1;

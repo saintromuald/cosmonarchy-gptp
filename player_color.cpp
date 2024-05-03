@@ -2,10 +2,10 @@
 #include "trigger_system/trigger_system.h"
 #include "color_palette.h"
 
-static std::vector<u32> get_player_tints_from_color(u32 color);
-static bool can_use_player_color(u32 color, u32 last_player);
+static std::vector<u32> get_player_tints_from_color(PlayerColor color);
+static bool can_use_player_color(PlayerColor color, u32 last_player);
 static bool can_use_player_tint(u32 color_tint, u32 last_player);
-static u32 get_color_for_personality(u32 player);
+static PlayerColor get_color_for_personality(u32 player);
 
 static bool player_wants_to_randomize(u32 player) {
 	if (g_player_data.has_custom_color[player]) {
@@ -29,7 +29,7 @@ static bool player_can_randomize(u32 player) {
 	return true;
 }
 
-static std::vector<u32> get_player_tints_from_color(u32 color) {
+static std::vector<u32> get_player_tints_from_color(PlayerColor color) {
 	std::vector<u32> tints = {};
 	for (u32 tint = 0; tint < player_tints.size(); ++tint) {
 		for (u32 color_index = 0; color_index < player_tints[tint].size(); color_index++) {
@@ -67,13 +67,13 @@ static bool should_check_color_overlap(u32 player, u32 other_player) {
 	return other_player != player && !g_globals->players[other_player].witness_mode && (other_player < player || !player_wants_to_randomize(other_player));
 }
 
-static bool can_use_player_color(u32 color, u32 player) {
+static bool can_use_player_color(PlayerColor color, u32 player) {
 	for (u32 player_tint : get_player_tints_from_color(color)) {
 		if (!can_use_player_tint(player_tint, player)) {
 			return false;
 		}
 	}
-	for (u32 banned_color : banned_colors) {
+	for (PlayerColor banned_color : banned_colors) {
 		if (color == banned_color) {
 			return false;
 		}
@@ -91,9 +91,9 @@ static bool can_use_player_color(u32 color, u32 player) {
 
 #define Square(X) ((X) * (X))
 
-static u32 get_color_delta_srgb(u32 a, u32 b) {
-	RGBA a_rgba = init_palette->colors[g_tminimap_colors[a + ColorSetCount * *g_current_tileset]];
-	RGBA b_rgba = init_palette->colors[g_tminimap_colors[b + ColorSetCount * *g_current_tileset]];
+static u32 get_color_delta_srgb(PlayerColor a, PlayerColor b) {
+	RGBA a_rgba = init_palette->colors[g_tminimap_colors[(size_t)a + ColorSetCount * *g_current_tileset]];
+	RGBA b_rgba = init_palette->colors[g_tminimap_colors[(size_t)b + ColorSetCount * *g_current_tileset]];
 
 	RGBA delta_rgba = {};
 	delta_rgba.a = abs(a_rgba.r - b_rgba.r);
@@ -111,17 +111,17 @@ static u32 get_color_delta_srgb(u32 a, u32 b) {
 }
 
 struct ColorMatch {
-	u32 color;
+	PlayerColor color;
 	u32 min_distance;
 };
 
-static ColorMatch make_color_match(u32 player, u32 color) {
+static ColorMatch make_color_match(u32 player, PlayerColor color) {
 	ColorMatch match = {color, UINT_MAX};
 	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 		if (!should_check_color_overlap(player, other_player)) {
 			continue;
 		}
-		u32 other_color = g_player_data.player_color_list[other_player];
+		PlayerColor other_color = g_player_data.player_color_list[other_player];
 		u32 distance = get_color_delta_srgb(color, other_color);
 		if (distance < match.min_distance) {
 			match.min_distance = distance;
@@ -130,11 +130,11 @@ static ColorMatch make_color_match(u32 player, u32 color) {
 	return match;
 }
 
-static u32 get_best_color(std::vector<ColorMatch>& matches, bool return_backup_color) {
+static PlayerColor get_best_color(std::vector<ColorMatch>& matches, bool return_backup_color) {
 	std::sort(matches.begin(), matches.end(), [](ColorMatch& a, ColorMatch& b) { return a.min_distance > b.min_distance; });
 	// Try filtering out colors that obviously don't work
 	bool any_distance = false;
-	ColorMatch best_match = ColorMatch{(u32)PlayerColor::Invalid};
+	ColorMatch best_match = ColorMatch{PlayerColor::Invalid};
 	if (matches.size() && return_backup_color) {
 		best_match = matches[0];
 	}
@@ -157,23 +157,23 @@ static u32 get_best_color(std::vector<ColorMatch>& matches, bool return_backup_c
 	return best_match.color;
 }
 
-static u32 get_next_best_color(u32 player) {
-	std::vector<ColorMatch> matches; // Auch, use of std is gross. Can we do better?
-	for (u32 color = 0; color < PlayerColor::Count; ++color) {
-		if (!can_use_player_color(color, player)) continue;
-		matches.push_back(make_color_match(player, color));
+static PlayerColor get_next_best_color(u32 player) {
+	std::vector<ColorMatch> matches;
+	for (u32 color = 0; color < (u32)PlayerColor::Count; ++color) {
+		if (!can_use_player_color((PlayerColor)color, player)) continue;
+		matches.push_back(make_color_match(player, (PlayerColor)color));
 	}
 	return get_best_color(matches, true);
 }
 
-static u32 get_color_for_personality(u32 player) {
+static PlayerColor get_color_for_personality(u32 player) {
 	const u32 race = g_player_table[player].race;
 	const u32 build = g_unit_deaths_table[UnitId::Spell_CarapaceSwarmSmall].player[player] - 1;
 	if (build >= 0
 		&& personality_colors.size() > race
 		&& personality_colors[race].size() > build) {
-		std::vector<ColorMatch> matches; // Auch, use of std is gross. Can we do better?
-		for (u32 color : personality_colors[race][build]) {
+		std::vector<ColorMatch> matches;
+		for (PlayerColor color : personality_colors[race][build]) {
 			if (!can_use_player_color(color, player)) continue;
 			matches.push_back(make_color_match(player, color));
 		}
@@ -201,7 +201,7 @@ static void match_color_of(u32 player) {
 			}
 		}
 		if (match) {
-			set_player_color(player, color);
+			set_player_color(player, (PlayerColor)color);
 			g_player_data.has_custom_color[player] = false;
 			break;
 		}
@@ -213,16 +213,16 @@ u8 get_player_color_index(u32 player, u32 index) {
 	return g_player_in_game_colors[player * ColorSetSize + index];
 }
 
-bool set_player_color(u32 player, u32 color) {
+bool set_player_color(u32 player, PlayerColor color) {
 	if (color == PlayerColor::Invalid) {
 		return false;
 	}
 	g_player_data.has_custom_color[player] = true;
 	g_player_data.player_color_list[player] = color;
-	g_player_minimap_colors[player] = g_tminimap_colors[color + ColorSetCount * *g_current_tileset];
-	g_player_color_ids[player] = color;
+	g_player_minimap_colors[player] = g_tminimap_colors[(size_t)color + ColorSetCount * *g_current_tileset];
+	g_player_color_ids[player] = (u8)color;
 	for (u32 i = 0; i < ColorSetSize; i++) {
-		g_player_in_game_colors[player * ColorSetSize + i] = g_tunit_colors[color * ColorSetSize + i];
+		g_player_in_game_colors[player * ColorSetSize + i] = g_tunit_colors[(size_t)color * ColorSetSize + i];
 	}
 	return true;
 }

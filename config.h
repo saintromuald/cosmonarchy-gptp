@@ -78,7 +78,7 @@ struct Config {
 	bool tilde_control_group = true;
 
 	// Player Color
-	std::vector<PlayerColor::Enum> preferred_colors;
+	std::vector<PlayerColor> preferred_colors;
 
 	// Debug
 	bool verbose = false;
