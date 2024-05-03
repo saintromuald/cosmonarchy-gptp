@@ -399,6 +399,7 @@ bool unit_collides_with_titanic(Unit* unit) {
 		|| unit->id == UnitId::TerranClaymore
 		|| unit->id == UnitId::TerranPenumbra
 		|| unit->id == UnitId::TerranAion
+		|| unit->id == UnitId::ProtossPariah
 		|| unit->id == UnitId::ProtossOptecton
 		|| unit->id == UnitId::ProtossArchitect
 		|| unit->id == UnitId::ProtossDemiurge
