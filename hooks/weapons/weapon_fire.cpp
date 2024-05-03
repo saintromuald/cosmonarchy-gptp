@@ -610,7 +610,7 @@ namespace hooks {
 					case WeaponId::IzirokorEnergizedBioplasma:
 					case WeaponId::KonviliskSowingSpines: {
 						// Crushing Tide - Tosgrilisk, Izirokor, Konvilisk
-						fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
+						fire_multiple(unit, weapon_id, 2, FilterEnemy, {});
 					} break;
 					case WeaponId::CherbrathalorVenemousBursts:
 					{
