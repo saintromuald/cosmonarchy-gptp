@@ -536,7 +536,7 @@ namespace hooks
 
 		if (extended) {
 			if (unit->player < PlayerLimit) {
-				text += "\nColor: " + std::string(bw::get_player_color_code(unit->player, false).data) + std::string(player_color_names[player_data.player_color_list[unit->player]]) + "\002"; // TODO: move to rank text
+				text += "\nColor: " + std::string(bw::get_player_color_code(unit->player, false).data) + std::string(player_color_names[g_player_data.player_color_list[unit->player]]) + "\002"; // TODO: move to rank text
 			}
 			text += "\nPlane: " + plane;
 			text += "\nFlags: " + flag;

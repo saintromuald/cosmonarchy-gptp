@@ -155,7 +155,7 @@ enum AdvisorType : u8 {
 };
 
 // NOTE: This is case insensitive for parsing
-static const char* advisor_symbol_names[] = {
+static const char* advisor_symbol_names[AdvisorType_Count] = {
 	"Default",
 
 	// Races

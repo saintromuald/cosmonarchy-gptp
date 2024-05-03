@@ -72,7 +72,7 @@ struct Config {
 	bool quick_casting = false;
 	bool quick_building = false;
 	bool grid_hotkeys = true;
-	std::array<std::string, 3> layout = {"QWE", "ASD", "ZXC"};
+	std::array<std::string, 3> grid_layout = {"QWE", "ASD", "ZXC"};
 	bool extended_control_groups = true;
 	bool default_to_steal_hotkeys = false;
 	bool tilde_control_group = true;

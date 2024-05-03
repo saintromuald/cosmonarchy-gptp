@@ -619,26 +619,22 @@ const char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][Play
 #define MinimapColorCount (ColorSetCount * TilesetType::Count)
 #define UnitColorCount 2048
 
-#define FullNameCap 64
-struct FullName {
-	char data[FullNameCap];
-};
-
 struct PlayerData {
 	bool has_custom_color[PlayerLimit];
 	bool has_custom_player_name[PlayerLimit];
 	bool color_used[PlayerColor::Count];
-	u8 player_color_list[PLAYABLE_PLAYER_COUNT];
+	u8 player_color_list[PlayerLimit];
 
-	FullName full_player_names[PlayerLimit];
-	FullName full_force_names[PlayerLimit];
+	std::string full_player_names[PlayerLimit];
+	std::string full_force_names[PlayerLimit];
 };
 
-extern u8 tminimap_colors[MinimapColorCount];
-extern u8 tunit_colors[UnitColorCount];
+inline bool g_loaded_colors;
+inline u8 g_tminimap_colors[MinimapColorCount];
+inline u8 g_tunit_colors[UnitColorCount];
 
-extern PlayerData player_data;
-extern std::vector<const char*> easter_egg_unit_names[UnitsIdLimit];
+inline PlayerData g_player_data;
+inline std::vector<const char*> g_easter_egg_unit_names[UnitsIdLimit];
 
 const char* get_random_easter_egg_unit_name(u16 unit_id);
 

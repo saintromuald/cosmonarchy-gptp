@@ -237,7 +237,7 @@ LABEL_15:
 		
 		if (g_config.grid_hotkeys && dialog->index > 0) {
 			u32 index = dialog->index - 1;
-			char grid_hotkey = tolower(g_config.layout[index / 3].at(index % 3));
+			char grid_hotkey = tolower(g_config.grid_layout[index / 3].at(index % 3));
 			return hotkey == grid_hotkey;
 		}
 

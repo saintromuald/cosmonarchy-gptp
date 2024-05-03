@@ -241,7 +241,7 @@ namespace hooks
 			return "";
 		}
 		if (unit->player < PlayerLimit) {
-			return player_data.full_player_names[unit->player].data;
+			return g_player_data.full_player_names[unit->player].c_str();
 		}
 		return "";
 
@@ -274,7 +274,7 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
 		} else if (!bw::game_kind_supports_kills(bw::get_game_kind())) {
 			if (unit->player < PlayerLimit) {
-				helper::add_text_to_dialog(dialog, -21, player_data.full_force_names[unit->player].data);
+				helper::add_text_to_dialog(dialog, -21, g_player_data.full_force_names[unit->player].c_str());
 			}
 		} else if (unit->kill_count) {
 			const char* text = "";

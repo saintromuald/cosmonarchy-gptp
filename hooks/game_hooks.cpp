@@ -1002,7 +1002,7 @@ namespace hooks {
 		unit->velocity_direction_2 = unit->velocity_direction_1;
 
 		if (unit->player < PlayerLimit) {
-			unit_ext->values[ValuePlayerColor] = player_data.player_color_list[unit->player];
+			unit_ext->values[ValuePlayerColor] = g_player_data.player_color_list[unit->player];
 		}
 
 		if (bw::get_game_kind() == GameKind_Massacre) {
@@ -3475,6 +3475,20 @@ namespace hooks {
 		GPTP::logger << "Started a match!\n";
 		g_game_fully_started = false;
 		hotkeys.game_started = true;
+
+		const auto& colors = g_config.preferred_colors;
+		if (colors.empty()) {
+			SyncPlayerColorPreferenceCommand command{(u8)*g_local_nation_id};
+			queue_game_command((u8*)&command, sizeof(command));
+		} else {
+			for (size_t i = 0; i < colors.size(); i += 9) {
+				SyncPlayerColorPreferenceCommand command{(u8)*g_local_nation_id};
+				for (size_t j = 0; j < 9 && i + j < colors.size(); j++) {
+					command.colors[i % 9] = g_config.preferred_colors[i];
+				}
+				queue_game_command((u8*)&command, sizeof(command));
+			}
+		}
 
 		return true;
 	}
