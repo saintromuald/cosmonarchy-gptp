@@ -1274,6 +1274,9 @@ SCBW_DATA(BinDlg**,			g_main_dlg,							0x0057F0DC);
 SCBW_DATA(HINSTANCE*,		g_main_hinstance,					0x0051BFAC);
 SCBW_DATA(HIMC*,			g_app_context,						0x006D6438);
 
+// For show_or_hide_minimap
+SCBW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 SCBW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

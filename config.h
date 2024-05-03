@@ -83,6 +83,7 @@ struct Config {
 	
 	// Minimap UI
 	UiBool show_minimap_cameras = true;
+	UiBool can_toggle_minimap_terrain = true;
 
 	// Team UI
 	bool show_team_ui = true;

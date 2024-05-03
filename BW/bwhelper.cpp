@@ -15161,4 +15161,13 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void dark_minimap_related() {
+		const u32 func_address = 0x004A3A00;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
 }

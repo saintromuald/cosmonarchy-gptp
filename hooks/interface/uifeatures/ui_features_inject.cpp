@@ -583,6 +583,8 @@ namespace hooks
 	//	jump_patch(statport_dlg_interact_wrapper,			0x0045F290, 2);
 		jump_patch(CMDRECV_minimap_ping_wrapper,			0x004BF7A0, 0);
 
+	//	jump_patch(show_or_hide_minimap,					0x004A4150, 2);
+
 		call_patch(get_scroll_directions_partial,			0x0047F155, 0);
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 

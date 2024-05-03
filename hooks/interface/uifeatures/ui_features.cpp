@@ -1074,4 +1074,17 @@ LABEL_15:
 		}
 		return *buffer;
 	}
+
+	// Hooked to add config option blocking the toggle. -Pr0nogo
+	void __cdecl show_or_hide_minimap() // 004A4150
+	{
+		if (*g_minimap_draw_neutrals != 1 && *g_hide_minimap_terrain && g_config.can_toggle_minimap_terrain) {
+			Bitmap* current_surface = *g_current_surface;
+			memset(g_minimap_surface_2->buffer, 0, (s16)g_minimap_surface_2->height * (s16)g_minimap_surface_2->width);
+			*g_current_surface = current_surface;
+		} else {
+			helper::dark_minimap_related();
+			*g_minimap_vision_CB;
+		}
+	}
 }

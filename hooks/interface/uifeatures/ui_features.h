@@ -57,6 +57,7 @@ namespace hooks {
 
 	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event);					// 0045F290
 	char CMDRECV_minimap_ping(char* buffer);											// 004BF7A0
+	void __cdecl show_or_hide_minimap();												// 004A4150
 }
 
 #define tIconCount 7

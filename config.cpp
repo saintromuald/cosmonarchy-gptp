@@ -107,6 +107,7 @@ void load_config() {
 
 	// Minimap UI
 	load_field(yaml, "show-minimap-cameras", g_config.show_minimap_cameras);
+	load_field(yaml, "allow-minimap-terrain-toggle", g_config.can_toggle_minimap_terrain);
 
 	// Team UI
 	load_field(yaml, "show-team-ui", g_config.show_team_ui);
@@ -186,6 +187,7 @@ void save_config() {
 	yaml << YAML::Comment("Minimap UI");
 	yaml << YAML::Newline << YAML::Comment("Possible values: true, ingame, witness, false");
 	write_field(yaml, "show-minimap-cameras", g_config.show_minimap_cameras);
+	write_field(yaml, "allow-minimap-terrain-toggle", g_config.can_toggle_minimap_terrain);
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Team UI");

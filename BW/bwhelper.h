@@ -1750,4 +1750,5 @@ namespace helper {
 	void fatal_error(char* error_type);											// 004215D0
 	HIMC ImmGetContextBW(HWND hwnd);											// 0041003A
 	HIMC ImmAssociateContextBW(HWND hwnd, HIMC himc);							// 00410052
+	void dark_minimap_related();												// 004A3A00
 }
