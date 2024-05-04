@@ -619,24 +619,26 @@ namespace hooks {
 	}
 
 	static void first_frame() {
-		if (g_config.preferred_colors.empty()) {
-			SyncColorPrefCommand command{(u8)*g_local_nation_id};
-			queue_game_command((u8*)&command, sizeof(command));
-		} else {
-			auto colors = g_config.preferred_colors;
-
-			if (g_config.shuffle_preferred_colors) {
-				std::random_device rd;
-				std::mt19937 mt{rd()};
-				std::ranges::shuffle(colors, mt);
-			}
-
-			for (size_t i = 0; i < colors.size(); i += 9) {
+		if (!bw::in_replay_or_witness()) {
+			if (g_config.preferred_colors.empty()) {
 				SyncColorPrefCommand command{(u8)*g_local_nation_id};
-				for (size_t j = 0; j < 9 && i + j < colors.size(); j++) {
-					command.colors[j % 9] = colors[i + j];
-				}
 				queue_game_command((u8*)&command, sizeof(command));
+			} else {
+				auto colors = g_config.preferred_colors;
+
+				if (g_config.shuffle_preferred_colors) {
+					std::random_device rd;
+					std::mt19937 mt{rd()};
+					std::ranges::shuffle(colors, mt);
+				}
+
+				for (size_t i = 0; i < colors.size(); i += 9) {
+					SyncColorPrefCommand command{(u8)*g_local_nation_id};
+					for (size_t j = 0; j < 9 && i + j < colors.size(); j++) {
+						command.colors[j % 9] = colors[i + j];
+					}
+					queue_game_command((u8*)&command, sizeof(command));
+				}
 			}
 		}
 	}
