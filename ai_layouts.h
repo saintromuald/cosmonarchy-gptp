@@ -51,7 +51,7 @@ struct AiUnitEquivalent {
 	u32 from;
 	u32 to;
 	s32 priority_decrease;
-	b32 merge_requests;
+	bool merge_requests;
 };
 
 inline const AiUnitEquivalent equivalents[] = {
