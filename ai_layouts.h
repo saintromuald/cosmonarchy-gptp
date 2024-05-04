@@ -118,24 +118,7 @@ inline const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergElthrazalisk, UnitId::ZergRakzilisk},
 };
 
-struct ChkCache {
-	static constexpr size_t Capacity = UnitLimit;
-
-	u32 size;
-	CHKUnit units[Capacity];
-
-	void add(const CHKUnit& unit) {
-		if (size < Capacity) {
-			units[size++] = unit;
-		}
-	}
-
-	void clear() { size = 0; }
-	CHKUnit* begin() { return units; }
-	CHKUnit* end() { return units + size; }
-};
-
-inline ChkCache g_chk_cache;
+inline std::vector<CHKUnit> g_chk_cache;
 
 inline bool show_player_layouts[PlayerLimit];
 inline u32 default_ai_expansion_block[PlayerLimit];

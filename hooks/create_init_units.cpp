@@ -378,7 +378,7 @@ namespace hooks {
 		if (init_threshold_spawn(chkunit, flags)) {
 			return 0;
 		}
-		g_chk_cache.add(*chkunit);
+		g_chk_cache.push_back(*chkunit);
 		// Requires changes to player select so they actually spawn units
 		//if (flags & ChkUnitFlags_Lifted) {
 		//	if (!bw::unit_id_race_check(chkunit->unit_id, g_player_table[chkunit->player].race)) {
