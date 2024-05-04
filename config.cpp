@@ -161,18 +161,21 @@ static std::string make_valid_colors_string() {
 	std::stringstream ss;
 	ss << "Valid colors are:\n";
 
+	bool first = true;
 	size_t i = 0;
 	size_t line_w = 0;
 	for (const auto& color : player_color_identifiers) {
-		if (is_color_banned((PlayerColor)i)) {
+		if (is_color_banned((PlayerColor)i++)) {
 			continue;
 		}
 
-		if (i++ != 0) {
+		if (first) {
+			first = false;
+		} else {
 			ss << ", ";
 			line_w += 2;
 		}
-		if (line_w > 60) {
+		if (line_w > 80) {
 			ss << "\n";
 			line_w = 0;
 		}

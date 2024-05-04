@@ -53,9 +53,10 @@ bool any_player_can_randomize_color() {
 bool is_color_banned(PlayerColor color) {
 	for (PlayerColor banned_color : banned_colors) {
 		if (color == banned_color) {
-			return false;
+			return true;
 		}
 	}
+	return false;
 }
 
 static std::vector<u32> get_player_tints_from_color(PlayerColor color) {
@@ -102,7 +103,9 @@ static bool can_use_player_color(PlayerColor color, u32 player) {
 			return false;
 		}
 	}
-	is_color_banned(color);
+	if (is_color_banned(color)) {
+		return false;
+	}
 	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 		if (!should_check_color_overlap(player, other_player)) {
 			continue;
