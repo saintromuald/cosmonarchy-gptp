@@ -14774,11 +14774,11 @@ namespace helper {
 	{
 		static u32 result;
 		const u32 func_address = 0x004E8BC0;
-		static s32 pos_y_xd = pos_y;
 		__asm {
 			PUSHAD
-			PUSH pos_y_xd
 			MOV AX, pos_x
+			PUSH EAX
+			MOV AX, pos_y
 			CALL func_address
 			MOV result, EAX
 			POPAD
