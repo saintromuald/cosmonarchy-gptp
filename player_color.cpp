@@ -2,6 +2,15 @@
 #include "trigger_system/trigger_system.h"
 #include "color_palette.h"
 
+#define ColorSetCount 256
+#define MinimapColorCount (ColorSetCount * TilesetType::Count)
+#define UnitColorCount 2048
+
+static bool g_loaded_colors;
+static u8 g_tminimap_colors[MinimapColorCount];
+static u8 g_tunit_colors[UnitColorCount];
+static std::vector<const char*> g_easter_egg_unit_names[UnitsIdLimit];
+
 static std::vector<u32> get_player_tints_from_color(PlayerColor color);
 static bool can_use_player_color(PlayerColor color, u32 last_player);
 static bool can_use_player_tint(u32 color_tint, u32 last_player);
@@ -26,7 +35,27 @@ static bool player_can_randomize(u32 player) {
 	if (g_globals->players[player].witness_mode) {
 		return false;
 	}
+	if (g_player_table[player].type == PlayerType::Human && !g_globals->preferred_colors_set) {
+		return false;
+	}
 	return true;
+}
+
+bool any_player_can_randomize_color() {
+	for (u32 player = 0; player < PlayerLimit; player++) {
+		if (player_wants_to_randomize(player) && player_can_randomize(player)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool is_color_banned(PlayerColor color) {
+	for (PlayerColor banned_color : banned_colors) {
+		if (color == banned_color) {
+			return false;
+		}
+	}
 }
 
 static std::vector<u32> get_player_tints_from_color(PlayerColor color) {
@@ -73,11 +102,7 @@ static bool can_use_player_color(PlayerColor color, u32 player) {
 			return false;
 		}
 	}
-	for (PlayerColor banned_color : banned_colors) {
-		if (color == banned_color) {
-			return false;
-		}
-	}
+	is_color_banned(color);
 	for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 		if (!should_check_color_overlap(player, other_player)) {
 			continue;
@@ -158,6 +183,11 @@ static PlayerColor get_best_color(std::vector<ColorMatch>& matches, bool return_
 }
 
 static PlayerColor get_next_best_color(u32 player) {
+	for (PlayerColor color : g_globals->players[player].preferred_colors) {
+		if (can_use_player_color(color, player)) {
+			return color;
+		}
+	}
 	std::vector<ColorMatch> matches;
 	for (u32 color = 0; color < (u32)PlayerColor::Count; ++color) {
 		if (!can_use_player_color((PlayerColor)color, player)) continue;
@@ -252,7 +282,7 @@ static void init_player_colors() {
 		g_easter_egg_unit_names[UnitId::ZergMatraleth].push_back("Zerg Nekrathaleth");
 		g_easter_egg_unit_names[UnitId::ZergTosgrilisk].push_back("Zerg Todgrilisk");
 	}
-	memset(&g_player_data, 0, sizeof(g_player_data));
+	g_player_data = {};
 }
 
 const char* get_random_easter_egg_unit_name(u16 unit_id) {
@@ -268,7 +298,7 @@ void load_player_colors() {
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (player_wants_to_randomize(player) && player_can_randomize(player)) {
 			randomize_player_color(player);
-		} else {
+		} else if (!g_player_data.has_custom_color[player]) {
 			match_color_of(player);
 		}
 	}
@@ -308,7 +338,7 @@ static u32 get_name_count(u32 race, u32 personality) {
 	return count;
 }
 
-void safe_strcpy(char* to, const char* from, size_t capacity) {
+static void safe_strcpy(char* to, const char* from, size_t capacity) {
 	strncpy(to, from, capacity - 1);
 	to[capacity - 1] = 0;
 }
@@ -350,7 +380,7 @@ static void update_player_name(u32 player) {
 }
 
 void load_player_names() {
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		update_player_name(i);
+	for (u32 player = 0; player < PlayerLimit; ++player) {
+		update_player_name(player);
 	}
 }

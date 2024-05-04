@@ -29,9 +29,7 @@ enum {
 	PlayerTintCount,
 };
 
-// TODO: Remove std::vector
-
-const std::vector<std::vector<PlayerColor>> player_tints = {
+inline const std::vector<std::vector<PlayerColor>> player_tints = {
 	{	// Dark Red
 		PlayerColor::Maroon,
 		PlayerColor::Blood,
@@ -175,7 +173,7 @@ const std::vector<std::vector<PlayerColor>> player_tints = {
 	},
 };
 
-const std::vector<std::vector<u32>> banned_tileset_tints = {
+inline const std::vector<std::vector<u32>> banned_tileset_tints = {
 	{ // Badlands
 		PlayerTintCycleDependent,
 		PlayerTintDarkAchromatic,
@@ -211,7 +209,7 @@ const std::vector<std::vector<u32>> banned_tileset_tints = {
 	},
 };
 
-const std::vector<std::vector<u32>> banned_race_tints = {
+inline const std::vector<std::vector<u32>> banned_race_tints = {
 	{ // Zerg
 		PlayerTintDarkBlue,
 		PlayerTintLightBlue,
@@ -224,7 +222,7 @@ const std::vector<std::vector<u32>> banned_race_tints = {
 	},
 };
 
-const std::vector<PlayerColor> banned_colors = {
+inline const std::vector<PlayerColor> banned_colors = {
 	PlayerColor::Harlequin,
 	PlayerColor::Rainbow,
 	PlayerColor::Magenta,
@@ -237,7 +235,7 @@ const std::vector<PlayerColor> banned_colors = {
 	PlayerColor::MetzenicProzac,
 };
 
-const std::vector<std::vector<std::vector<PlayerColor>>> personality_colors = {
+inline const std::vector<std::vector<std::vector<PlayerColor>>> personality_colors = {
 	{ // Zerg
 		{ // Assault
 			PlayerColor::Red,
@@ -435,7 +433,7 @@ const std::vector<std::vector<std::vector<PlayerColor>>> personality_colors = {
 // Feel free to modify this to suit your needed amount of names per personality
 // (you can also specify less names than this maximum)
 #define PlayerPesonalityMaxNames 20
-const char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPesonalityMaxNames] = {
+inline const char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPesonalityMaxNames] = {
 	// Zerg
 	{
 		{},
@@ -614,11 +612,6 @@ const char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][Play
 	},
 };
 
-#define ColorSetCount 256
-#define ColorSetSize 8
-#define MinimapColorCount (ColorSetCount * TilesetType::Count)
-#define UnitColorCount 2048
-
 struct PlayerData {
 	bool has_custom_color[PlayerLimit];
 	bool has_custom_player_name[PlayerLimit];
@@ -629,12 +622,9 @@ struct PlayerData {
 	std::string full_force_names[PlayerLimit];
 };
 
-inline bool g_loaded_colors;
-inline u8 g_tminimap_colors[MinimapColorCount];
-inline u8 g_tunit_colors[UnitColorCount];
+#define ColorSetSize 8
 
 inline PlayerData g_player_data;
-inline std::vector<const char*> g_easter_egg_unit_names[UnitsIdLimit];
 
 const char* get_random_easter_egg_unit_name(u16 unit_id);
 
@@ -642,6 +632,8 @@ u8 get_player_color_index(u32 player, u32 index);
 bool set_player_color(u32 player, PlayerColor color);
 void init_player_colors();
 void load_player_colors();
+bool any_player_can_randomize_color();
+bool is_color_banned(PlayerColor color);
 
 void load_player_names();
 void set_player_name(u32 player, const char* name, bool prevent_overwrites);

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <format>
 #include "logger.h"
+#include "player_color.h"
 
 #define NOMINMAX
 #include <Windows.h>
@@ -159,19 +160,25 @@ void load_config() {
 static std::string make_valid_colors_string() {
 	std::stringstream ss;
 	ss << "Valid colors are:\n";
-	
+
 	size_t i = 0;
-	bool first = true;
+	size_t line_w = 0;
 	for (const auto& color : player_color_identifiers) {
-		if (i > 0) {
+		if (is_color_banned((PlayerColor)i)) {
+			continue;
+		}
+
+		if (i++ != 0) {
 			ss << ", ";
+			line_w += 2;
 		}
-		if (i % 10 == 9) {
+		if (line_w > 60) {
 			ss << "\n";
+			line_w = 0;
 		}
-		i++;
 
 		ss << color;
+		line_w += color.size();
 	}
 
 	return ss.str();
