@@ -402,10 +402,10 @@ bool AiLayouts::can_build_placeholder(AiTown* town, AiPlaceholder& placeholder) 
 
 	// Check tech availability
 	u32 base_unit_id = find_unit_root_merge(unit_id);
-	if (!hooks::create_unit_id_allowed(base_unit_id, town->player, true)) {
+	if (!hooks::create_unit_id_allowed(base_unit_id, town->player, false)) {
 		return false;
 	}
-	if (unit_id != base_unit_id && !hooks::create_unit_id_allowed(unit_id, town->player, false)) {
+	if (unit_id != base_unit_id && !hooks::create_unit_id_allowed(unit_id, town->player, true)) {
 		return false;
 	}
 

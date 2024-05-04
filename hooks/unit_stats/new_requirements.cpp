@@ -40,7 +40,7 @@ namespace hooks {
 			Tier2,
 			Tier3,
 		};
-		bool TierUnlocked[3][5];
+		bool TierUnlocked[3][5]{};
 
 		TierUnlocked[RaceId::Zerg][Tier1] = true;
 		TierUnlocked[RaceId::Zerg][Tier2] = player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)
@@ -1351,7 +1351,7 @@ namespace hooks {
 			Tier3,
 		};
 
-		bool TierUnlocked[3][5];
+		bool TierUnlocked[3][3]{};
 		TierUnlocked[RaceId::Zerg][Tier1] = true;
 		TierUnlocked[RaceId::Zerg][Tier2] = player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)
 										||  player_has_unit_id(player_id, UnitId::ZergOthstolOviform);
