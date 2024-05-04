@@ -823,7 +823,6 @@
     <ClInclude Include="hooks\game_hooks.h" />
     <ClInclude Include="graphics\graphics.h" />
     <ClInclude Include="graphics\graphics_errors.h" />
-    <ClInclude Include="graphics\graphics_misc.h" />
     <ClInclude Include="hooks\harvest.h" />
     <ClInclude Include="BW\enumerations\ImageId.h" />
     <ClInclude Include="BW\structures\Layer.h" />

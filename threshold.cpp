@@ -1164,28 +1164,28 @@ static void draw_fraud_ui() {
 	static char buffer[64] = {};
 	if (threshold.used_type_count[FraudClass_God]) {
 		sprintf_s(buffer, sizeof(buffer), "Hands remaining: %u", 6 - threshold.used_type_count[FraudClass_God]);
-		graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
+		g_graphics.draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 		ui_text_pos.y += ui_text_height;
 
 		if (threshold.used_type_count[FraudClass_God] < 6) {
 			format_time(buffer, sizeof(buffer), "Next Hand: ", threshold.timer / 24, false);
-			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
+			g_graphics.draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 		}
 		ui_text_pos.y += ui_text_height;
 	} else if (threshold.used_count < threshold_config.total_count) {
 		sprintf_s(buffer, sizeof(buffer), "Frauds remaining: %u", threshold_config.total_count - threshold.used_count);
-		graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
+		g_graphics.draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 		ui_text_pos.y += ui_text_height;
 
 		if (threshold.used_count < threshold_config.total_count) {
 			format_time(buffer, sizeof(buffer), "Next Fraud: ", threshold.timer / 24, false);
-			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
+			g_graphics.draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 			ui_text_pos.y += ui_text_height;
 		}
 	}
 
 	sprintf_s(buffer, sizeof(buffer), "Active Frauds:");
-	graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
+	g_graphics.draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 	ui_text_pos.y += ui_text_height;
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		if (!threshold.fraud_enabled[player]) {
@@ -1194,7 +1194,7 @@ static void draw_fraud_ui() {
 		FraudSpawnSequence* sequence = &threshold.sequence[player];
 		if (sequence->fraud) {
 			sprintf_s(buffer, sizeof(buffer), "%s\x02 [%s\x02]", fraud_names[sequence->fraud], fraud_class_names[sequence->fraud_class]);
-			graphics::draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
+			g_graphics.draw_text(ui_text_pos.x, ui_text_pos.y, buffer);
 			ui_text_pos.y += ui_text_height;
 		}
 	}

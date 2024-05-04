@@ -295,8 +295,8 @@ void buttons_draw() {
 		bool hovered = rect_is_hovered(rect);
 
 		TriggerButton& button = g_globals->trigger_buttons[i];
-		graphics::draw_filled_box(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? graphics::GREY : graphics::BLACK);
-		graphics::draw_box(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? graphics::WHITE : graphics::GREY);
+		g_graphics.draw_filled_box(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? graphics::GREY : graphics::BLACK);
+		g_graphics.draw_box(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, hovered ? graphics::WHITE : graphics::GREY);
 
 		const std::string text{button.display_name.sv};
 		graphics::FontSize font_size = graphics::FONT_MEDIUM;
@@ -304,7 +304,7 @@ void buttons_draw() {
 		graphics::Font* font = font_base[font_size];
 		s32 w = font->getTextWidth(text.c_str());
 		s32 h = font->getTextHeight(text.c_str());
-		graphics::draw_text(rect.x + rect.w / 2 - w / 2, rect.y + rect.h / 2 - h / 2, text, font_size); // TODO: center
+		g_graphics.draw_text(rect.x + rect.w / 2 - w / 2, rect.y + rect.h / 2 - h / 2, text, font_size); // TODO: center
 	}
 }
 
@@ -1554,7 +1554,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			WitnessMode old_value = cm_player.witness_mode;
 			if (old_value != new_value) {
 				g_globals->players[trigger_player].witness_mode = new_value;
-				graphics::reset_stat_res_graphics(); // Must call this to reset custom graphics data for statres display. -Veeq7
+				g_graphics.reset_stat_res_graphics(); // Must call this to reset custom graphics data for statres display. -Veeq7
 				if (new_value == WitnessMode_Pure) {
 					// Hide Pure Witnesses from scoreboard
 					g_player_name_list->player[trigger_player].type = 0;

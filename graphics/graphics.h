@@ -1,58 +1,50 @@
 #pragma once
-#include <string>
 #include "../types.h"
+#include "Shape.h"
+
+#include <vector>
+#include <string>
 
 namespace graphics {
-    // Based on BWAPI's ColorId.h and ColorId.cpp
-    // No strongly typed enum because we're at pre-C++11
-    typedef u8 ColorId;
-    const ColorId RED     = 111;  // Player 1 color					    (0x67)
-    const ColorId BLUE    = 165;  // Player 2 color					    (0xA5)
-    const ColorId TEAL    = 159;  // Player 3 color					    (0x9F)
-    const ColorId PURPLE  = 164;  // Player 4 color					    (0xA4)
-    const ColorId ORANGE  = 179;  // Player 5 color					    (0xB3)
-    const ColorId BROWN   = 19;   // Player 6 color					    (0x13)
-    const ColorId WHITE   = 255;  // Player 7 color					    (0xFF)
-    const ColorId YELLOW  = 135;  // Player 8 color					    (0x87)
-    const ColorId GREEN   = 117;  // Player 7 color for Ice tilesets	(0x75)
-    const ColorId CYAN    = 128;  // Neutral player color			    (0x80)
-    const ColorId BLACK   = 0;	  //								    (0x00)
-    const ColorId GREY    = 74;	  //								    (0x4A)
 
-    /// For use with get_faction_color() functions, max index is PLAYER_COUNT-1
-    const static ColorId standardColors[] = { RED , BLUE, TEAL, PURPLE, ORANGE, BROWN, WHITE, YELLOW, GREEN, CYAN, BLACK, GREY };
+class Graphics {
+public:
+	// Resets all previous graphics and clears error messages. This should be
+	// called every frame in game_hooks.cpp.
+	void reset_all_graphics();
+	void reset_stat_res_graphics();
 
-    // Font sizes accepted by graphics::drawTextOnScreen() and drawTextOnMap().
-    enum FontSize {
-        FONT_SMALL    = 0,
-        FONT_MEDIUM   = 1,
-        FONT_LARGE    = 2,
-        FONT_LARGEST  = 3,
-    };
+	void draw_text(s32 x, s32 y, const std::string& str, FontSize fontSize = FONT_MEDIUM, CoordType ct = ON_SCREEN);
+	void draw_dot(s32 x, s32 y, ColorId color, CoordType ct = ON_SCREEN);
+	void draw_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
+	void draw_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
+	void draw_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType ct = ON_SCREEN);
+	void draw_filled_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
+	void draw_filled_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType ct = ON_SCREEN);
+	void draw_ellipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
+	void draw_dotted_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
+	void draw_dotted_elipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 
-    // Coordinate types
-    enum CoordType {
-        ON_SCREEN,
-        ON_MAP,
-        ON_MOUSE,  // Shapes drawn this way are positioned relative to the mouse
-    };
+	void draw_statres_bar(s32 x1, s32 x2, s32 y, ColorId color);
+	void draw_statres_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
+	void draw_statres_text(s32 x, s32 y, const std::string& str);
 
-    // Resets all previous graphics and clears error messages. This should be
-    // called every frame in game_hooks.cpp.
-    void reset_all_graphics();
+	s32 draw_all_shapes();
+	s32 draw_stat_res_shapes();
 
-    void draw_text(s32 x, s32 y, const std::string& str, FontSize fontSize = FONT_MEDIUM, CoordType ct = ON_SCREEN);
-    void draw_dot(s32 x, s32 y, ColorId color, CoordType ct = ON_SCREEN);
-    void draw_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
-    void draw_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
-    void draw_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType ct = ON_SCREEN);
-    void draw_filled_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
-    void draw_filled_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType ct = ON_SCREEN);
-    void draw_ellipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
-    void draw_dotted_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
-    void draw_dotted_elipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
-    void reset_stat_res_graphics();
-	void add_statres_bar(s32 x1, s32 x2, s32 y, ColorId color);
-	void add_statres_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
-    //void add_statres_text(s32 x, s32 y, const std::string& str);
+	const std::string& get_string_from_index(s32 index);
+	const std::string& get_statres_string_from_index(s32 index);
+
+private:
+	std::vector<Shape> m_shapes;
+	std::vector<std::string> m_strings;
+
+	std::vector<Shape> m_statres_bars;
+	std::vector<Shape> m_statres_boxes;
+	std::vector<Shape> m_statres_shapes;
+	std::vector<std::string> m_statres_strings;
+};
+
 }
+
+inline graphics::Graphics g_graphics;

@@ -2,42 +2,28 @@
 #include "Bitmap.h"
 #include "../BW/bwdata.h"
 
-namespace graphics
-{
-	s32 errorFlags;
-	void set_error(GraphicsErrorId error)
-	{
-		errorFlags |= error;
-	}
+namespace graphics {
 
-	void clear_errors()
-	{
-		errorFlags = 0;
-	}
+static s32 g_error_flags;
 
-	void draw_error_messages()
-	{
+void set_error(GraphicsErrorId error) {
+	g_error_flags |= error;
+}
+
+void clear_errors() {
+	g_error_flags = 0;
+}
+
+void draw_error_messages() {
 #ifndef NDEBUG
-		if (errorFlags & ERR_TOO_MANY_SHAPES)
-		{
-			g_game_screen_buffer->blitString("Error: Too many shapes!", 10, 10, 2);
-		}
-
-		if (errorFlags & ERR_TOO_MANY_STRINGS)
-		{
-			g_game_screen_buffer->blitString("Error: Too many strings!", 10, 40, 2);
-		}
-
-		if (errorFlags & ERR_UNKNOWN_SHAPE)
-		{
-			g_game_screen_buffer->blitString("Error: Unknown shape found.", 10, 70, 2);
-		}
-
-		if (errorFlags & ERR_UNKNOWN_COORD_TYPE)
-		{
-			g_game_screen_buffer->blitString("Error: Unknown coordinate flingy_id found.", 10, 100, 2);
-		}
-#endif
-
+	if (g_error_flags & ERR_UNKNOWN_SHAPE) {
+		g_game_screen_buffer->blitString("Error: Unknown shape found.", 10, 70, 2);
 	}
+
+	if (g_error_flags & ERR_UNKNOWN_COORD_TYPE) {
+		g_game_screen_buffer->blitString("Error: Unknown coordinate flingy_id found.", 10, 100, 2);
+	}
+#endif
+}
+
 }

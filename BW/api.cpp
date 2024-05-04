@@ -3509,8 +3509,9 @@ namespace bw {
 	void draw_shape(u32 i_0, float scale, Point32* offset, u8 color) {
 		do {
 			Point32 line_head = { (s32)(perimeter[i_0].x * scale) + offset[i_0].x, (s32)(perimeter[i_0].y * scale) + offset[i_0].y };
-			Point32 line_tail = { (s32)(perimeter[--i_0].x * scale) + offset[i_0].x, (s32)(perimeter[i_0].y * scale) + offset[i_0].y };
-			graphics::draw_line(line_head.x, line_head.y, line_tail.x, line_tail.y, color, graphics::ON_MAP);
+			i_0--;
+			Point32 line_tail = { (s32)(perimeter[i_0].x * scale) + offset[i_0].x, (s32)(perimeter[i_0].y * scale) + offset[i_0].y };
+			g_graphics.draw_line(line_head.x, line_head.y, line_tail.x, line_tail.y, color, graphics::ON_MAP);
 		} while (i_0);
 	}
 	

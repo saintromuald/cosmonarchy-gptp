@@ -269,7 +269,7 @@ namespace hooks {
 
 	static bool draw_simple_line(Point16 source, Point16 target, graphics::ColorId color) {
 		if (target.x != 0 || target.y != 0) {
-			graphics::draw_line(source.x, source.y, target.x, target.y, color, graphics::ON_MAP);
+			g_graphics.draw_line(source.x, source.y, target.x, target.y, color, graphics::ON_MAP);
 			return true;
 		}
 		return false;
@@ -279,7 +279,7 @@ namespace hooks {
 		Point16 target_pos = get_target_point(target);
 		if (target_pos.x != 0 || target_pos.y != 0) {
 			if (!ignore_draw_unit || target.unit != ignore_draw_unit) {
-				graphics::draw_line(source.x, source.y, target_pos.x, target_pos.y, color, graphics::ON_MAP);
+				g_graphics.draw_line(source.x, source.y, target_pos.x, target_pos.y, color, graphics::ON_MAP);
 			}
 			return target_pos;
 		}
@@ -346,7 +346,7 @@ namespace hooks {
 			{
 				Token short_unit_name = get_short_unit_name(transport->id);
 				std::string unit_name = std::format("{}{} [{}/{}]:", bw::get_player_color_code(transport->player, true).data, short_unit_name.string().c_str(), space_used, units_dat::space_provided[transport->id]);
-				graphics::draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
+				g_graphics.draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
 				local_pos.y += 13;
 			}
 
@@ -381,7 +381,7 @@ namespace hooks {
 					width = font_base[(u32)graphics::FONT_SMALL]->getTextWidth(unit_name.c_str());
 				}
 
-				graphics::draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
+				g_graphics.draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
 				if (hover && !transport_ui_unit) {
 					transport_ui_unit = cargo_slot.unit;
 					helper::set_ingame_input_procs();
@@ -426,39 +426,39 @@ namespace hooks {
 				switch (unit->id) {
 					case UnitId::TerranShamanSupportMode:
 					{
-						graphics::draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranShamanVisionaryMode:
 					{
-						graphics::draw_circle(source.x, source.y, 6 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 6 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranAncile:
 					{
-						graphics::draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranAzazel:
 					{
-						graphics::draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::ProtossClarion:
 					{
-						graphics::draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::ProtossCrucible:
 					{
-						graphics::draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::ProtossDidact:
 					{
-						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::ZergMatraleth:
 					{
-						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::ZergVilgoleth:
 					{
-						graphics::draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 				}
 			}
@@ -733,7 +733,7 @@ namespace hooks {
 		}
 
 		if (!bw::is_game_paused()) {
-			graphics::reset_all_graphics();
+			g_graphics.reset_all_graphics();
 		}
 
 		// Update extended features
@@ -3477,8 +3477,8 @@ namespace hooks {
 
 		weapon_damage_current_bullet = 0;
 
-		graphics::reset_all_graphics();
-		graphics::reset_stat_res_graphics();
+		g_graphics.reset_all_graphics();
+		g_graphics.reset_stat_res_graphics();
 
 		buttonset_context.reset();
 
@@ -3501,7 +3501,7 @@ namespace hooks {
 
 	bool game_end() {
 		end_threshold();
-		graphics::reset_stat_res_graphics();
+		g_graphics.reset_stat_res_graphics();
 		for (u32 player = 0; player < PlayerLimit; player++)
 		{
 			g_factions_colors_ordering[player] = g_player_color_ids[player];

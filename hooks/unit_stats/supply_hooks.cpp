@@ -489,7 +489,7 @@ namespace hooks
 				u32 progress = ((time_cost - remaining_time) * 15) / time_cost;
 
 				if (progress) {
-					graphics::add_statres_bar(x, --progress + x, y, 117);
+					g_graphics.draw_statres_bar(x, --progress + x, y, 117);
 				}
 			}
 			
@@ -570,7 +570,7 @@ namespace hooks
 
 		if (show_color_box) {
 			local_pos.x -= 12;
-			graphics::add_statres_box(local_pos.x + 2, local_pos.y + 2, local_pos.x + 11, local_pos.y + 11, g_player_minimap_colors[player]);
+			g_graphics.draw_statres_box(local_pos.x + 2, local_pos.y + 2, local_pos.x + 11, local_pos.y + 11, g_player_minimap_colors[player]);
 		}
 
 		if (show_production) {
@@ -608,7 +608,7 @@ namespace hooks
 			break;
 		} while (true);
 
-		graphics::reset_stat_res_graphics();
+		g_graphics.reset_stat_res_graphics();
 		u32 local_player = *g_local_nation_id;
 		Point16 pos = { 434, 3 };//x is dialog->bounds.left of the third row element (from the right), minus 2. -DF
 

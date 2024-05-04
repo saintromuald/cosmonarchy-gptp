@@ -274,7 +274,7 @@ void update_layouts() {
 
 				if (unit_box.left <= camera.right && unit_box.right >= camera.left &&
 					unit_box.top <= camera.bottom && unit_box.bottom >= camera.top) {
-					graphics::draw_box(unit_box.left, unit_box.top, unit_box.right, unit_box.bottom, placeholder->color, graphics::CoordType::ON_MAP);
+					g_graphics.draw_box(unit_box.left, unit_box.top, unit_box.right, unit_box.bottom, placeholder->color, graphics::CoordType::ON_MAP);
 
 					char buffer[256] = {};
 
@@ -283,11 +283,11 @@ void update_layouts() {
 					pos.y = unit_box.top + 5;
 
 					snprintf(buffer, 256, "%s (%u)", get_short_unit_name(placeholder->unit_id).string().c_str(), player + 1);
-					graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
+					g_graphics.draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
 					pos.y += 10;
 
 					snprintf(buffer, 256, "Prio: %u", placeholder->priority);
-					graphics::draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
+					g_graphics.draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
 					pos.y += 10;
 				}
 			}
