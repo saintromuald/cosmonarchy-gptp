@@ -67,7 +67,7 @@ void AiLayouts::update() {
 		}
 		if (town->inited && !layouts_town.inited && (town->resarea || layouts_town.wants_no_resarea)) {
 			layouts_town.inited = true;
-			memset(layouts_town.request_count, 0, sizeof(layouts_town.request_count));
+			layouts_town.request_count.clear();
 
 			PlayerLayouts& layouts = m_player_layouts[town->player];
 			if (!layouts_town.wants_no_resarea) {
@@ -95,7 +95,7 @@ void AiLayouts::update() {
 			}
 		}
 		if (layouts_town.inited) {
-			memset(layouts_town.request_count, 0, sizeof(layouts_town.request_count)); // Have to reset it every frame, but it's pretty costly
+			layouts_town.request_count.clear(); // Have to reset it every frame, but it's pretty costly. Maybe not anymore with unordered_map?
 			if (town->worker_limit < layouts_town.worker_limit) {
 				town->worker_limit = layouts_town.worker_limit;
 			}
@@ -181,7 +181,7 @@ void AiLayouts::update() {
 			TownLayouts& layouts_town = get_town_layouts(town);
 			u32 base_unit_id = find_unit_root_merge(placeholder.unit_id);
 
-			layouts_town.request_count[placeholder.unit_id] += 1;
+			layouts_town.request_count[(UnitId::Enum)placeholder.unit_id] += 1;
 			if (can_build_placeholder(town, placeholder)) {
 				if (can_place_unit(base_unit_id, placeholder.position, player)) {
 					if (!placeholder.requested) {
@@ -194,7 +194,7 @@ void AiLayouts::update() {
 					bool is_building = units_dat::base_property[placeholder.unit_id] & UnitProperty::Building;
 					bool not_guard = units_dat::computer_ai_internal[placeholder.unit_id] & 2;
 					if (is_building || not_guard) {
-						if (town_count_up_equivalents(town, placeholder.unit_id) < layouts_town.request_count[placeholder.unit_id]) {
+						if (town_count_up_equivalents(town, placeholder.unit_id) < layouts_town.request_count[(UnitId::Enum)placeholder.unit_id]) {
 							request_placeholder(town, layouts_town, placeholder);
 							placeholder.color = graphics::ORANGE;
 							if (is_building && town_has_down_equivalent(town, base_unit_id)) {

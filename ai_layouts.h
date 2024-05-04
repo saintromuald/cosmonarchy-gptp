@@ -44,7 +44,7 @@ struct TownLayouts {
 	bool wants_no_resarea;
 	u32 worker_limit;
 	u32 worker_maynard;
-	u32 request_count[UnitId::Count]; // First used to set wait_build_start_count, then used to track request counts
+	std::unordered_map<UnitId::Enum, u32> request_count; // First used to set wait_build_start_count, then used to track request counts
 };
 
 struct AiUnitEquivalent {
