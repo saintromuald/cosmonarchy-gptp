@@ -982,23 +982,23 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
 			s32 enable = parser.get_s32();
 
-			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (!players[i]) {
+			for (u32 player = 0; player < PlayerLimit; ++player) {
+				if (!players[player]) {
 					continue;
 				}
-				PlayerLayouts* layouts = &player_layouts[i];
-				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-					AiPlaceholder* placeholder = &layouts->placeholders[j];
-					if (placeholder->unit_id == UnitId::TownCenterMarker) {
+				PlayerLayouts& layouts = g_ai_layouts.get_player_layouts(player);
+				for (u32 j = 0; j < layouts.placeholders_count; ++j) {
+					AiPlaceholder& placeholder = layouts.placeholders[j];
+					if (placeholder.unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
-					if (placeholder->unit_id == UnitId::None || !unit_ids[placeholder->unit_id]) {
+					if (placeholder.unit_id == UnitId::None || !unit_ids[placeholder.unit_id]) {
 						continue;
 					}
-					if (!area.check(placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+					if (!area.check(placeholder.position, units_dat::base_property[placeholder.unit_id] & UnitProperty::Flyer)) {
 						continue;
 					}
-					placeholder->disabled = !enable;
+					placeholder.disabled = !enable;
 				}
 			}
 		} else if (parser.equals("layouts_priority_add")) {
@@ -1008,24 +1008,24 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 priority = parser.get_s32();
 
 			if (priority) {
-				for (u32 i = 0; i < PlayerLimit; ++i) {
-					if (!players[i]) {
+				for (u32 player = 0; player < PlayerLimit; ++player) {
+					if (!players[player]) {
 						continue;
 					}
-					PlayerLayouts* layouts = &player_layouts[i];
-					for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-						AiPlaceholder* placeholder = &layouts->placeholders[j];
-						if (placeholder->unit_id == UnitId::TownCenterMarker) {
+					PlayerLayouts& layouts = g_ai_layouts.get_player_layouts(player);
+					for (u32 j = 0; j < layouts.placeholders_count; ++j) {
+						AiPlaceholder& placeholder = layouts.placeholders[j];
+						if (placeholder.unit_id == UnitId::TownCenterMarker) {
 							continue;
 						}
-						if (!unit_ids[placeholder->unit_id]) {
+						if (!unit_ids[placeholder.unit_id]) {
 							continue;
 						}
-						if (!area.check(placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+						if (!area.check(placeholder.position, units_dat::base_property[placeholder.unit_id] & UnitProperty::Flyer)) {
 							continue;
 						}
-						placeholder->priority = CLAMP(placeholder->priority + priority, 0, 255);
-						layouts->should_sort = true;
+						placeholder.priority = CLAMP(placeholder.priority + priority, 0, 255);
+						layouts.should_sort = true;
 					}
 				}
 			}
@@ -1036,25 +1036,25 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			s32 priority = parser.get_s32();
 
 			u8 new_priority = CLAMP(priority, 0, 255);
-			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (!players[i]) {
+			for (u32 player = 0; player < PlayerLimit; ++player) {
+				if (!players[player]) {
 					continue;
 				}
-				PlayerLayouts* layouts = &player_layouts[i];
-				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-					AiPlaceholder* placeholder = &layouts->placeholders[j];
-					if (placeholder->unit_id == UnitId::TownCenterMarker) {
+				PlayerLayouts& layouts = g_ai_layouts.get_player_layouts(player);
+				for (u32 j = 0; j < layouts.placeholders_count; ++j) {
+					AiPlaceholder& placeholder = layouts.placeholders[j];
+					if (placeholder.unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
-					if (placeholder->unit_id >= UnitId::Count || !unit_ids[placeholder->unit_id]) {
+					if (placeholder.unit_id >= UnitId::Count || !unit_ids[placeholder.unit_id]) {
 						continue;
 					}
-					if (!area.check(placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+					if (!area.check(placeholder.position, units_dat::base_property[placeholder.unit_id] & UnitProperty::Flyer)) {
 						continue;
 					}
-					if (placeholder->priority != new_priority) {
-						placeholder->priority = new_priority;
-						layouts->should_sort = true;
+					if (placeholder.priority != new_priority) {
+						placeholder.priority = new_priority;
+						layouts.should_sort = true;
 					}
 				}
 			}
@@ -1065,25 +1065,25 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			Point16 resarea_position = parser.get_position(box_center(area.box));
 
 			u32 resarea = bw::get_closest_resarea(resarea_position);
-			for (u32 i = 0; i < PlayerLimit; ++i) {
-				if (!players[i]) {
+			for (u32 player = 0; player < PlayerLimit; ++player) {
+				if (!players[player]) {
 					continue;
 				}
-				PlayerLayouts* layouts = &player_layouts[i];
-				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
-					AiPlaceholder* placeholder = &layouts->placeholders[j];
-					if (placeholder->unit_id == UnitId::TownCenterMarker) {
+				PlayerLayouts& layouts = g_ai_layouts.get_player_layouts(player);
+				for (u32 j = 0; j < layouts.placeholders_count; ++j) {
+					AiPlaceholder& placeholder = layouts.placeholders[j];
+					if (placeholder.unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
-					if (placeholder->unit_id >= UnitId::Count || !unit_ids[placeholder->unit_id]) {
+					if (placeholder.unit_id >= UnitId::Count || !unit_ids[placeholder.unit_id]) {
 						continue;
 					}
-					if (!area.check(placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+					if (!area.check(placeholder.position, units_dat::base_property[placeholder.unit_id] & UnitProperty::Flyer)) {
 						continue;
 					}
-					if (placeholder->resarea != resarea) {
-						placeholder->resarea = resarea;
-						layouts->should_sort = true;
+					if (placeholder.resarea != resarea) {
+						placeholder.resarea = resarea;
+						layouts.should_sort = true;
 					}
 				}
 			}
@@ -1100,7 +1100,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				AiTown* town = helper::create_ai_town(player, pos.x, pos.y);
 				if (town) {
 					town->inited = true;
-					TownLayouts& layouts_town = get_layouts_town(town);
+					TownLayouts& layouts_town = g_ai_layouts.get_layouts_town(town);
 					layouts_town.worker_limit = worker_count;
 					layouts_town.worker_maynard = worker_count;
 					if (worker_count) {
@@ -1115,19 +1115,19 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 					town->resource_units_not_set = town->resarea != 0;
 					if (claim_placeholders_area.box.w && claim_placeholders_area.box.h) {
-						PlayerLayouts* layouts = &player_layouts[player];
-						for (u32 i = 0; i < layouts->placeholders_count; ++i) {
-							AiPlaceholder* placeholder = &layouts->placeholders[i];
-							if (placeholder->unit_id >= UnitId::Count || !unit_ids[placeholder->unit_id]) {
+						PlayerLayouts& layouts = g_ai_layouts.get_player_layouts(player);
+						for (u32 i = 0; i < layouts.placeholders_count; ++i) {
+							AiPlaceholder& placeholder = layouts.placeholders[i];
+							if (placeholder.unit_id >= UnitId::Count || !unit_ids[placeholder.unit_id]) {
 								continue;
 							}
-							if (!claim_placeholders_area.check(placeholder->position, units_dat::base_property[placeholder->unit_id] & UnitProperty::Flyer)) {
+							if (!claim_placeholders_area.check(placeholder.position, units_dat::base_property[placeholder.unit_id] & UnitProperty::Flyer)) {
 								continue;
 							}
-							if (!placeholder->town) {
-								placeholder->town = town;
+							if (!placeholder.town) {
+								placeholder.town = town;
 								if (show_player_layouts[player]) {
-									bw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder->unit_id), i, placeholder->resarea);
+									bw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder.unit_id), i, placeholder.resarea);
 								}
 							}
 						}

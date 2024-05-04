@@ -694,7 +694,7 @@ namespace hooks {
 			update_search_index();
 			init_player_colors();
 			init_trigger_system();
-			init_layouts();
+			g_ai_layouts.init();
 			init_custom_ai();
 			for (u32 i = 0; i < 16; i++) {
 				unmovable_hits[i] = 0;
@@ -740,7 +740,7 @@ namespace hooks {
 		bw::set_ingame_loop_state(true);
 		update_trigger_system(true);
 		if (!bw::is_game_paused()) {
-			update_layouts();
+			g_ai_layouts.update();
 			update_custom_ai();
 			hooks::update_actions();
 		}

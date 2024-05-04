@@ -6,10 +6,11 @@
 #include "trigger_system/trigger_parser.h"
 
 static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 townhall_index);
+static u32 ai_mining_base_count(u32 player);
 static u32 get_unit_priority_class(u32 unit_id);
 static u32 get_unit_total_cost(u32 unit_id);
 
-void init_layouts() {
+void AiLayouts::init() {
 	memset(show_player_layouts, 0, sizeof(show_player_layouts));
 	memset(default_ai_expansion_block, 0, sizeof(default_ai_expansion_block));
 	memset(player_layouts, 0, sizeof(player_layouts));
@@ -27,16 +28,16 @@ void init_layouts() {
 			u32 flags = chk_unit.valid_state_flags & chk_unit.state_flags;
 			if (flags & ChkUnitFlags_Cloaked || chk_unit.unit_id == UnitId::TownCenterMarker) {
 				for (u32 i = 0; i < 8; ++i) {
-					add_placeholder(chk_unit, i);
+					add_placeholder_chk(chk_unit, i);
 				}
 			}
 		} else {
-			add_placeholder(chk_unit, chk_unit.player);
+			add_placeholder_chk(chk_unit, chk_unit.player);
 		}
 	}
 
 	for (u32 i = 0; i < PlayerLimit; ++i) {
-		AiLayouts& layouts = player_layouts[i];
+		PlayerLayouts& layouts = player_layouts[i];
 		sort_layouts(layouts);
 
 		for (u32 j = 0; j < layouts.placeholders_count; ++j) {
@@ -54,11 +55,11 @@ void init_layouts() {
 	}
 }
 
-void update_layouts() {
+void AiLayouts::update() {
 	// Update Layouts Towns
 	for (u32 town_id = 0; town_id < AiTownLimit; ++town_id) {
 		AiTown* town = &g_ai_town_array[town_id];
-		AiLayoutsTown& layouts_town = layouts_towns[town_id];
+		TownLayouts& layouts_town = layouts_towns[town_id];
 		if (!town->inited) {
 			layouts_town.inited = false;
 			layouts_town.wants_no_resarea = false;
@@ -69,7 +70,7 @@ void update_layouts() {
 			layouts_town.inited = true;
 			memset(layouts_town.request_count, 0, sizeof(layouts_town.request_count));
 
-			AiLayouts& layouts = player_layouts[town->player];
+			PlayerLayouts& layouts = player_layouts[town->player];
 			if (!layouts_town.wants_no_resarea) {
 				// Claim ownership of invincible placeholders
 				for (u32 j = 0; j < layouts.placeholders_count; ++j) {
@@ -111,7 +112,7 @@ void update_layouts() {
 
 	// Update Layouts
 	for (u32 player = 0; player < PlayerLimit; ++player) {
-		AiLayouts& layouts = player_layouts[player];
+		PlayerLayouts& layouts = player_layouts[player];
 
 		// Update State
 		bool is_expanding = has_expanding_town(player);
@@ -181,7 +182,7 @@ void update_layouts() {
 			if (!town) {
 				continue;
 			}
-			AiLayoutsTown& layouts_town = get_layouts_town(town);
+			TownLayouts& layouts_town = get_layouts_town(town);
 			u32 base_unit_id = find_unit_root_merge(placeholder.unit_id);
 
 			layouts_town.request_count[placeholder.unit_id] += 1;
@@ -261,6 +262,207 @@ void update_layouts() {
 	}
 }
 
+void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& placeholder, u32 unit_id) {
+	if (unit_id == UnitId::TownCenterMarker) {
+		placeholder.is_townhall_marker = true;
+		placeholder.was_preplaced = false;
+
+		// Initial values, will be updated later
+		// Priority needs to be the same for correct sorting
+		placeholder.should_request = true;
+		placeholder.priority = 180;
+		placeholder.yield_score = 0;
+
+		u32 resarea = bw::get_closest_resarea(placeholder.position);
+		EntryArray found = {};
+		unit_search_radial(&found, placeholder.position, 12 * 32);
+		for (u32 i = 0; i < found.count; ++i) {
+			Unit* unit = found.units[i];
+			if (!unit_id_is_resource_node(unit->id, false)) {
+				continue;
+			}
+			if (unit->building.resource.resarea != resarea) {
+				continue;
+			}
+
+			u32 score = get_harvest_amount(unit);
+			if (unit_id_is_uncapped_gas_node(unit->id)) {
+				score *= 3;
+			}
+			u32 distance = bw::get_distance_fast(placeholder.position, unit->position) / 32;
+			if (distance) {
+				score /= distance;
+			}
+			placeholder.yield_score += score;
+		}
+	}
+
+	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);
+	if (equivalent.from != UnitId::None) {
+		add_placeholder_unit_id(layouts, placeholder, equivalent.from);
+	}
+
+	for (u32 i = 0; i < layouts.placeholders_count; ++i) {
+		AiPlaceholder& other = layouts.placeholders[i];
+		if (unit_id == layouts.placeholders[i].unit_id && placeholder.position == other.position) {
+			if (other.priority < placeholder.priority) {
+				other.priority = placeholder.priority;
+			}
+			placeholder.priority -= equivalent.priority_decrease;
+			return;
+		}
+	}
+
+	placeholder.unit_id = unit_id;
+	if (layouts.placeholders_count < PlaceholderLimit) {
+		layouts.placeholders[layouts.placeholders_count++] = placeholder;
+	}
+	placeholder.priority -= equivalent.priority_decrease;
+}
+
+void AiLayouts::add_placeholder_chk(const CHKUnit& unit, u32 player) {
+	AiPlaceholder placeholder = {};
+	placeholder.position.x = unit.x;
+	placeholder.position.y = unit.y;
+	placeholder.priority = unit.hp;
+	placeholder.guard_rebuilds = unit.energy == 100 ? 0 : unit.energy + 1;
+	u32 flags = unit.valid_state_flags & unit.state_flags;
+	placeholder.was_preplaced = !(flags & ChkUnitFlags_Cloaked);
+	placeholder.should_request = !(flags & ChkUnitFlags_Hallucinated);
+	if (!(flags & ChkUnitFlags_Invincible)) {
+		placeholder.resarea = bw::get_closest_resarea(placeholder.position);
+	}
+	add_placeholder_unit_id(player_layouts[player], placeholder, unit.unit_id);
+}
+
+Point16 AiLayouts::get_ai_town_position(AiTown* town) {
+	PlayerLayouts& layouts = player_layouts[town->player];
+	for (u32 placeholder_id = 0; placeholder_id < layouts.placeholders_count; ++placeholder_id) {
+		AiPlaceholder& placeholder = layouts.placeholders[placeholder_id];
+		if (placeholder.resarea == town->resarea && placeholder.is_townhall_marker) {
+			return placeholder.position;
+		}
+	}
+	return town->position;
+}
+
+PlayerLayouts& AiLayouts::get_player_layouts(u32 player) {
+	assert(player >= 0 && player < PlayerLimit);
+	return player_layouts[player];
+}
+
+TownLayouts& AiLayouts::get_layouts_town(AiTown* town) {
+	s32 index = town - g_ai_town_array;
+	assert(index >= 0 && index <= AiTownLimit);
+	return layouts_towns[index];
+}
+
+u32 AiLayouts::ai_get_next_custom_expo(AiTown* main_town) {
+	u32 best_priority = 0;
+	u32 best_distance = UINT_MAX;
+	u32 best_resarea = 0;
+
+	bool has_transport = bw::player_has_transport(main_town->player);
+
+	PlayerLayouts& layouts = player_layouts[main_town->player];
+	for (u32 j = 0; j < layouts.placeholders_count; ++j) {
+		AiPlaceholder& placeholder = layouts.placeholders[j];
+		// Check if resarea is available
+		if (!hooks::ai_resarea_valid_for_expo(main_town->player, placeholder.resarea, main_town, has_transport, 0)) {
+			continue;
+		}
+		// Skip disabled placeholders
+		if (placeholder.disabled) {
+			continue;
+		}
+		// See if it's an optimal expansion
+		if (placeholder.should_request && !placeholder.is_townhall_marker && units_dat::base_property[placeholder.unit_id] & UnitProperty::Building) {
+			u32 distance = bw::get_distance_fast(main_town->position, g_resource_areas->areas[placeholder.resarea].position);
+			if (placeholder.priority > best_priority || (placeholder.priority == best_priority && distance < best_distance)) {
+				best_priority = placeholder.priority;
+				best_distance = distance;
+				best_resarea = placeholder.resarea;
+			} else if (placeholder.priority < best_priority) {
+				break;
+			}
+		}
+	}
+
+	return best_resarea;
+}
+
+bool AiLayouts::has_expanding_town(u32 player) {
+	if (ai_mining_base_count(player) > 2) {
+		return false;
+	}
+	for (u32 i = 0; i <= AiTownLimit; ++i) {
+		AiTown* town = &g_ai_town_array[i];
+		TownLayouts& layouts_town = layouts_towns[i];
+		if (town->player == player && !layouts_town.wants_no_resarea && !town->main_building && layouts_town.inited) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AiLayouts::can_build_placeholder(AiTown* town, AiPlaceholder& placeholder) {
+	u32 unit_id = placeholder.unit_id;
+
+	// Check tech availability
+	u32 base_unit_id = find_unit_root_merge(unit_id);
+	if (!hooks::create_unit_id_allowed(base_unit_id, town->player, false) ||
+		(unit_id != base_unit_id && !hooks::create_unit_id_allowed(unit_id, town->player, true))) {
+		return false;
+	}
+
+	return true;
+}
+
+void AiLayouts::init_placeholder(AiTown* town, AiPlaceholder& placeholder) {
+	if (placeholder.inited) {
+		return;
+	}
+
+	u32 merge = find_unit_merge(placeholder.unit_id);
+	if (merge != UnitId::None) {
+		AiPlaceholder copy = placeholder;
+		copy.unit_id = merge;
+		init_placeholder(town, copy);
+	}
+
+	placeholder.inited = true;
+	if (units_dat::base_property[placeholder.unit_id] & UnitProperty::Building) {
+		bw::send_gptp_aise_command((Unit*)&placeholder, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
+	}
+}
+
+void AiLayouts::request_placeholder(AiTown* town, TownLayouts& layouts_town, AiPlaceholder& placeholder) {
+	if (units_dat::base_property[placeholder.unit_id] & UnitProperty::Building) {
+		// Requesting the base unit currently handled in town_add_spending_request
+		/*
+		u32 merge = find_unit_merge(unit_id);
+		if (merge != UnitId::None) {
+			AiPlaceholder copy = *placeholder;
+			copy.unit_id = merge;
+			request_placeholder(town, layouts_town, &copy);
+		}
+		*/
+
+		bw::town_add_spending_request(town, 1, placeholder.unit_id, placeholder.priority);
+	} else if (units_dat::computer_ai_internal[placeholder.unit_id] & 2) {
+		bw::military_add_spending_request(town->player, placeholder.unit_id, placeholder.position, placeholder.priority);
+	} else {
+		if (!placeholder.guard_ai) {
+			placeholder.guard_ai = bw::create_guard_ai(town->player, placeholder.unit_id, placeholder.position);
+		}
+		if (placeholder.guard_ai && !placeholder.guard_ai->parent) {
+			bw::guard_add_spending_request(town->player, placeholder.guard_ai, placeholder.priority);
+		}
+		// We no longer use Aise for guards...
+	//	bw::send_gptp_aise_command((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
+	}
+}
+
 static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 townhall_index) {
 	switch (g_player_table[player].race) {
 		case RaceId::Terran: {
@@ -287,57 +489,6 @@ static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 t
 		placeholder.priority = 180;
 	}
 	return old_priority != placeholder.priority;
-}
-
-Point16 get_ai_town_position(AiTown* town) {
-	AiLayouts& layouts = player_layouts[town->player];
-	for (u32 placeholder_id = 0; placeholder_id < layouts.placeholders_count; ++placeholder_id) {
-		AiPlaceholder& placeholder = layouts.placeholders[placeholder_id];
-		if (placeholder.resarea == town->resarea && placeholder.is_townhall_marker) {
-			return placeholder.position;
-		}
-	}
-	return town->position;
-}
-
-AiLayoutsTown& get_layouts_town(AiTown* town) {
-	s32 index = town - g_ai_town_array;
-	assert(index >= 0 && index <= AiTownLimit);
-	return layouts_towns[index];
-}
-
-u32 ai_get_next_custom_expo(AiTown* main_town) {
-	u32 best_priority = 0;
-	u32 best_distance = UINT_MAX;
-	u32 best_resarea = 0;
-
-	bool has_transport = bw::player_has_transport(main_town->player);
-
-	AiLayouts& layouts = player_layouts[main_town->player];
-	for (u32 j = 0; j < layouts.placeholders_count; ++j) {
-		AiPlaceholder& placeholder = layouts.placeholders[j];
-		// Check if resarea is available
-		if (!hooks::ai_resarea_valid_for_expo(main_town->player, placeholder.resarea, main_town, has_transport, 0)) {
-			continue;
-		}
-		// Skip disabled placeholders
-		if (placeholder.disabled) {
-			continue;
-		}
-		// See if it's an optimal expansion
-		if (placeholder.should_request && !placeholder.is_townhall_marker && units_dat::base_property[placeholder.unit_id] & UnitProperty::Building) {
-			u32 distance = bw::get_distance_fast(main_town->position, g_resource_areas->areas[placeholder.resarea].position);
-			if (placeholder.priority > best_priority || (placeholder.priority == best_priority && distance < best_distance)) {
-				best_priority = placeholder.priority;
-				best_distance = distance;
-				best_resarea = placeholder.resarea;
-			} else if (placeholder.priority < best_priority) {
-				break;
-			}
-		}
-	}
-
-	return best_resarea;
 }
 
 u32 find_unit_base(u32 unit_id) {
@@ -456,79 +607,6 @@ u32 player_count_up_equivalents(u32 player, u32 unit_id) {
 	return count;
 }
 
-void add_placeholder_by_unit_id(AiLayouts& layouts, AiPlaceholder& placeholder, u32 unit_id) {
-	if (unit_id == UnitId::TownCenterMarker) {
-		placeholder.is_townhall_marker = true;
-		placeholder.was_preplaced = false;
-
-		// Initial values, will be updated later
-		// Priority needs to be the same for correct sorting
-		placeholder.should_request = true;
-		placeholder.priority = 180;
-		placeholder.yield_score = 0;
-
-		u32 resarea = bw::get_closest_resarea(placeholder.position);
-		EntryArray found = {};
-		unit_search_radial(&found, placeholder.position, 12 * 32);
-		for (u32 i = 0; i < found.count; ++i) {
-			Unit* unit = found.units[i];
-			if (!unit_id_is_resource_node(unit->id, false)) {
-				continue;
-			}
-			if (unit->building.resource.resarea != resarea) {
-				continue;
-			}
-
-			u32 score = get_harvest_amount(unit);
-			if (unit_id_is_uncapped_gas_node(unit->id)) {
-				score *= 3;
-			}
-			u32 distance = bw::get_distance_fast(placeholder.position, unit->position) / 32;
-			if (distance) {
-				score /= distance;
-			}
-			placeholder.yield_score += score;
-		}
-	}
-
-	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);
-	if (equivalent.from != UnitId::None) {
-		add_placeholder_by_unit_id(layouts, placeholder, equivalent.from);
-	}
-
-	for (u32 i = 0; i < layouts.placeholders_count; ++i) {
-		AiPlaceholder& other = layouts.placeholders[i];
-		if (unit_id == layouts.placeholders[i].unit_id && placeholder.position == other.position) {
-			if (other.priority < placeholder.priority) {
-				other.priority = placeholder.priority;
-			}
-			placeholder.priority -= equivalent.priority_decrease;
-			return;
-		}
-	}
-
-	placeholder.unit_id = unit_id;
-	if (layouts.placeholders_count < PlaceholderLimit) {
-		layouts.placeholders[layouts.placeholders_count++] = placeholder;
-	}
-	placeholder.priority -= equivalent.priority_decrease;
-}
-
-void add_placeholder(const CHKUnit& unit, u32 player) {
-	AiPlaceholder placeholder = {};
-	placeholder.position.x = unit.x;
-	placeholder.position.y = unit.y;
-	placeholder.priority = unit.hp;
-	placeholder.guard_rebuilds = unit.energy == 100 ? 0 : unit.energy + 1;
-	u32 flags = unit.valid_state_flags & unit.state_flags;
-	placeholder.was_preplaced = !(flags & ChkUnitFlags_Cloaked);
-	placeholder.should_request = !(flags & ChkUnitFlags_Hallucinated);
-	if (!(flags & ChkUnitFlags_Invincible)) {
-		placeholder.resarea = bw::get_closest_resarea(placeholder.position);
-	}
-	add_placeholder_by_unit_id(player_layouts[player], placeholder, unit.unit_id);
-}
-
 static u32 get_unit_priority_class(u32 unit_id) {
 	if (unit_id == UnitId::ProtossPylon || !(units_dat::base_property[unit_id] & UnitProperty::Building)) {
 		return 3;
@@ -552,7 +630,7 @@ static u32 get_unit_total_cost(u32 unit_id) {
 	return units_dat::mineral_cost[unit_id] + units_dat::vespene_cost[unit_id];
 }
 
-void sort_layouts(AiLayouts& layouts) {
+void sort_layouts(PlayerLayouts& layouts) {
 	std::sort(layouts.placeholders, layouts.placeholders + layouts.placeholders_count, [](AiPlaceholder& a, AiPlaceholder& b) {
 		s32 priority_diff = b.priority - a.priority;
 		if (priority_diff) return priority_diff < 0;
@@ -640,20 +718,7 @@ bool can_place_unit(u32 unit_id, Point16 position, u32 player) {
 	return true;
 }
 
-bool can_build_placeholder(AiTown* town, AiPlaceholder& placeholder) {
-	u32 unit_id = placeholder.unit_id;
-
-	// Check tech availability
-	u32 base_unit_id = find_unit_root_merge(unit_id);
-	if (!hooks::create_unit_id_allowed(base_unit_id, town->player, false) ||
-		(unit_id != base_unit_id && !hooks::create_unit_id_allowed(unit_id, town->player, true))) {
-		return false;
-	}
-
-	return true;
-}
-
-u32 ai_mining_base_count(u32 player) {
+static u32 ai_mining_base_count(u32 player) {
 	u32 count = 0;
 	for (u32 i = 0; i < AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
@@ -662,63 +727,4 @@ u32 ai_mining_base_count(u32 player) {
 		}
 	}
 	return count;
-}
-
-bool has_expanding_town(u32 player) {
-	if (ai_mining_base_count(player) > 2) {
-		return false;
-	}
-	for (u32 i = 0; i <= AiTownLimit; ++i) {
-		AiTown* town = &g_ai_town_array[i];
-		AiLayoutsTown& layouts_town = layouts_towns[i];
-		if (town->player == player && !layouts_town.wants_no_resarea && !town->main_building && layouts_town.inited) {
-			return true;
-		}
-	}
-	return false;
-}
-
-void init_placeholder(AiTown* town, AiPlaceholder& placeholder) {
-	if (placeholder.inited) {
-		return;
-	}
-
-	u32 merge = find_unit_merge(placeholder.unit_id);
-	if (merge != UnitId::None) {
-		AiPlaceholder copy = placeholder;
-		copy.unit_id = merge;
-		init_placeholder(town, copy);
-	}
-
-	placeholder.inited = true;
-	if (units_dat::base_property[placeholder.unit_id] & UnitProperty::Building) {
-		bw::send_gptp_aise_command((Unit*)&placeholder, (Unit*)town, GptpId::SetBaseLayout, town->player, 0, 0);
-	}
-}
-
-void request_placeholder(AiTown* town, AiLayoutsTown& layouts_town, AiPlaceholder& placeholder) {
-	if (units_dat::base_property[placeholder.unit_id] & UnitProperty::Building) {
-		// Requesting the base unit currently handled in town_add_spending_request
-		/*
-		u32 merge = find_unit_merge(unit_id);
-		if (merge != UnitId::None) {
-			AiPlaceholder copy = *placeholder;
-			copy.unit_id = merge;
-			request_placeholder(town, layouts_town, &copy);
-		}
-		*/
-
-		bw::town_add_spending_request(town, 1, placeholder.unit_id, placeholder.priority);
-	} else if (units_dat::computer_ai_internal[placeholder.unit_id] & 2) {
-		bw::military_add_spending_request(town->player, placeholder.unit_id, placeholder.position, placeholder.priority);
-	} else {
-		if (!placeholder.guard_ai) {
-			placeholder.guard_ai = bw::create_guard_ai(town->player, placeholder.unit_id, placeholder.position);
-		}
-		if (placeholder.guard_ai && !placeholder.guard_ai->parent) {
-			bw::guard_add_spending_request(town->player, placeholder.guard_ai, placeholder.priority);
-		}
-		// We no longer use Aise for guards...
-	//	bw::send_gptp_aise_command((Unit*)placeholder, (Unit*)town, GptpId::SetGuard, town->player, 0, 0);
-	}
 }

@@ -225,7 +225,7 @@ namespace hooks {
 					unit->unit_ai = (UnitAi*)ai;
 					++town->worker_count;
 
-					TownLayouts& layouts_town = get_layouts_town(town);
+					TownLayouts& layouts_town = g_ai_layouts.get_layouts_town(town);
 					UnitExt* unit_ext = get_unit_ext(unit);
 					if (!town->inited) {
 						town->inited = 1;
@@ -236,13 +236,13 @@ namespace hooks {
 						if (layouts_town.worker_maynard) {
 							layouts_town.worker_maynard--;
 						}
-						Point16 position = get_ai_town_position(town);
+						Point16 position = g_ai_layouts.get_ai_town_position(town);
 						unit_ext->values[ValueAI_WorkerChosenForExpansion] = true;
 						unit_ext->values[ValueAI_WorkerChosenX] = position.x;
 						unit_ext->values[ValueAI_WorkerChosenY] = position.y;
 					} else if (layouts_town.worker_maynard) {
 						layouts_town.worker_maynard--;
-						Point16 position = get_ai_town_position(town);
+						Point16 position = g_ai_layouts.get_ai_town_position(town);
 						unit_ext->values[ValueAI_WorkerChosenForExpansion] = true;
 						unit_ext->values[ValueAI_WorkerChosenX] = position.x;
 						unit_ext->values[ValueAI_WorkerChosenY] = position.y;

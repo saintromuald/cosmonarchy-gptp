@@ -1107,7 +1107,7 @@ namespace hooks {
 		u8 result = 0;
 		if (town->inited) {
 			if (!town->resarea) {
-				TownLayouts& layouts_town = get_layouts_town(town);
+				TownLayouts& layouts_town = g_ai_layouts.get_layouts_town(town);
 				if (!layouts_town.inited || !layouts_town.wants_no_resarea) {
 					town->resarea = helper::get_closest_base_from_startloc(town->player, town->position.x, town->position.y);
 					town->resource_units_not_set = 1;
@@ -1539,7 +1539,7 @@ namespace hooks {
 	void ai_expand(AiScript* aiscript, u32 block, u32 amount) { // 0045B530
 		default_ai_expansion_block[aiscript->player] = block;
 		if (aiscript->town->resarea) { 
-			u32 base_id = ai_get_next_custom_expo(aiscript->town);
+			u32 base_id = g_ai_layouts.ai_get_next_custom_expo(aiscript->town);
 			if (!base_id || !helper::ai_try_expanding_to(base_id)) {
 				base_id = ai_find_expansion_custom(aiscript->player, aiscript->town);
 			}
