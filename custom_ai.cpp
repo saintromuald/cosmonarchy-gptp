@@ -32,8 +32,8 @@ static void update_custom_player(CustomAiPlayer* custom_ai_player, u32 player) {
 }
 
 static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
-	AiTown* ai_town = &g_ai_town_array[town];
-	if (ai_town->main_building && ai_town->main_building->status & UnitStatus::Completed) {
+	AiTown& ai_town = g_ai_town_array[town];
+	if (ai_town.main_building && ai_town.main_building->status & UnitStatus::Completed) {
 		if (custom_ai_town->gas_cap < 3) {
 			if (custom_ai_town->gas_timer < 30 * 24) {
 				custom_ai_town->gas_timer++;
@@ -43,12 +43,12 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 			}
 		}
 
-		u32 capped_id = get_refinery_id_from_race(ai_town->player);
+		u32 capped_id = get_refinery_id_from_race(ai_town.player);
 		if (capped_id != UnitId::None) {
 			u32 total_gas = 0;
 			u32 harvestable_gas = 0;
 			u32 unupgradeable_gas = 0;
-			AiTownExt* town_ext = get_town_ext(ai_town);
+			AiTownExt* town_ext = get_town_ext(&ai_town);
 			for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
 				Unit* unit = town_ext->gas_buildings[i];
 				if (unit) {
@@ -70,8 +70,8 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 			}
 
 			if ((harvestable_gas || total_gas == 1)
-			&&   g_game_minerals[ai_town->player] >= mineral_threshold
-			&&   g_aiscript_controller[ai_town->player].vespene_needed >= needed_threshold)
+			&&   g_game_minerals[ai_town.player] >= mineral_threshold
+			&&   g_aiscript_controller[ai_town.player].vespene_needed >= needed_threshold)
 			{
 				s32 request_count = std::min(total_gas - unupgradeable_gas, custom_ai_town->gas_cap) - requested_count;
 				if (request_count > 0) {

@@ -1096,7 +1096,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				AiTown* town = helper::create_ai_town(player, pos.x, pos.y);
 				if (town) {
 					town->inited = true;
-					TownLayouts& layouts_town = g_ai_layouts.get_town_layouts(town);
+					TownLayouts& layouts_town = g_ai_layouts.get_town_layouts(*town);
 					layouts_town.worker_limit = worker_count;
 					layouts_town.worker_maynard = worker_count;
 					if (worker_count) {

@@ -887,7 +887,7 @@ namespace hooks
 				} else if (request.only_if_needed) {
 					existing_count = player_count_up_equivalents(player, request.id);
 				} else {
-					existing_count = town_count_up_equivalents(town, request.id);
+					existing_count = town_count_up_equivalents(*town, request.id);
 				}
 
 				u32 requested_count = request.count;
@@ -915,7 +915,7 @@ namespace hooks
 						}
 					} else {
 						bool request_base = request.only_if_needed ? false : true;
-						bw::town_add_spending_request(town, count, request.id, request.priority, request_base);
+						bw::town_add_spending_request(*town, count, request.id, request.priority, request_base);
 					}
 				}
 			}

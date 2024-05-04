@@ -782,7 +782,7 @@ namespace bw {
 	void shield_heal_proc(Unit* healer, u32 heal_source_player, u32 range, u32 heal_amount);
 	bool is_attack_region(AiRegion* ai_region);
 	void prepare_building_area(Point16 pos, u32 unit_id, Unit* ignore = 0);
-	void town_add_spending_request(AiTown* town, u32 count, u32 unit_id, u32 priority, bool request_base = true);
+	void town_add_spending_request(AiTown& town, u32 count, u32 unit_id, u32 priority, bool request_base = true);
 	void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority, bool request_base = true);
 	void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority, bool request_base = true);
 	GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position);

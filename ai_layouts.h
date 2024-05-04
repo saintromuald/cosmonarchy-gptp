@@ -131,16 +131,16 @@ public:
 	void add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& placeholder, u32 unit_id);
 	void add_placeholder_chk(const CHKUnit& unit, u32 player);
 
-	Point16 get_ai_town_position(AiTown* town);
+	Point16 get_ai_town_position(AiTown& town);
 	PlayerLayouts& get_player_layouts(u32 player);
-	TownLayouts& get_town_layouts(AiTown* town);
-	u32 ai_get_next_custom_expo(AiTown* main_town);
+	TownLayouts& get_town_layouts(AiTown& town);
+	u32 ai_get_next_custom_expo(AiTown& main_town);
 	bool has_expanding_town(u32 player);
 
 private:
-	bool can_build_placeholder(AiTown* town, AiPlaceholder& placeholder);
-	void init_placeholder(AiTown* town, AiPlaceholder& placeholder);
-	void request_placeholder(AiTown* town, TownLayouts& layouts_town, AiPlaceholder& placeholder);
+	bool can_build_placeholder(AiTown& town, AiPlaceholder& placeholder);
+	void init_placeholder(AiTown& town, AiPlaceholder& placeholder);
+	void request_placeholder(AiTown& town, TownLayouts& layouts_town, AiPlaceholder& placeholder);
 	void sort_layouts(PlayerLayouts& layouts);
 
 private:
@@ -156,9 +156,9 @@ AiUnitEquivalent find_unit_equivalent_up(u32 unit_id, u32* index = 0);
 u32 find_unit_merge(u32 unit_id);
 u32 find_unit_root_merge(u32 unit_id);
 
-u32 town_count_units(AiTown* town, u32 unit_id, bool completed);
-u32 town_has_down_equivalent(AiTown* town, u32 unit_id);
-u32 town_count_up_equivalents(AiTown* town, u32 unit_id);
+u32 town_count_units(AiTown& town, u32 unit_id, bool completed);
+u32 town_has_down_equivalent(AiTown& town, u32 unit_id);
+u32 town_count_up_equivalents(AiTown& town, u32 unit_id);
 
 u32 player_count_units(u32 player, u32 unit_id, bool completed);
 u32 player_count_up_equivalents(u32 player, u32 unit_id);
