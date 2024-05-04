@@ -1107,7 +1107,7 @@ namespace hooks {
 		u8 result = 0;
 		if (town->inited) {
 			if (!town->resarea) {
-				AiLayoutsTown& layouts_town = get_layouts_town(town);
+				TownLayouts& layouts_town = get_layouts_town(town);
 				if (!layouts_town.inited || !layouts_town.wants_no_resarea) {
 					town->resarea = helper::get_closest_base_from_startloc(town->player, town->position.x, town->position.y);
 					town->resource_units_not_set = 1;

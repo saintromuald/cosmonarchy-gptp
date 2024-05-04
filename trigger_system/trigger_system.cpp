@@ -986,7 +986,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!players[i]) {
 					continue;
 				}
-				AiLayouts* layouts = &player_layouts[i];
+				PlayerLayouts* layouts = &player_layouts[i];
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
 					if (placeholder->unit_id == UnitId::TownCenterMarker) {
@@ -1012,7 +1012,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (!players[i]) {
 						continue;
 					}
-					AiLayouts* layouts = &player_layouts[i];
+					PlayerLayouts* layouts = &player_layouts[i];
 					for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 						AiPlaceholder* placeholder = &layouts->placeholders[j];
 						if (placeholder->unit_id == UnitId::TownCenterMarker) {
@@ -1040,7 +1040,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!players[i]) {
 					continue;
 				}
-				AiLayouts* layouts = &player_layouts[i];
+				PlayerLayouts* layouts = &player_layouts[i];
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
 					if (placeholder->unit_id == UnitId::TownCenterMarker) {
@@ -1069,7 +1069,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!players[i]) {
 					continue;
 				}
-				AiLayouts* layouts = &player_layouts[i];
+				PlayerLayouts* layouts = &player_layouts[i];
 				for (u32 j = 0; j < layouts->placeholders_count; ++j) {
 					AiPlaceholder* placeholder = &layouts->placeholders[j];
 					if (placeholder->unit_id == UnitId::TownCenterMarker) {
@@ -1100,7 +1100,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				AiTown* town = helper::create_ai_town(player, pos.x, pos.y);
 				if (town) {
 					town->inited = true;
-					AiLayoutsTown& layouts_town = get_layouts_town(town);
+					TownLayouts& layouts_town = get_layouts_town(town);
 					layouts_town.worker_limit = worker_count;
 					layouts_town.worker_maynard = worker_count;
 					if (worker_count) {
@@ -1115,7 +1115,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 					town->resource_units_not_set = town->resarea != 0;
 					if (claim_placeholders_area.box.w && claim_placeholders_area.box.h) {
-						AiLayouts* layouts = &player_layouts[player];
+						PlayerLayouts* layouts = &player_layouts[player];
 						for (u32 i = 0; i < layouts->placeholders_count; ++i) {
 							AiPlaceholder* placeholder = &layouts->placeholders[i];
 							if (placeholder->unit_id >= UnitId::Count || !unit_ids[placeholder->unit_id]) {
