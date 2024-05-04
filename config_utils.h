@@ -22,7 +22,7 @@ inline std::array<std::string, (size_t)PlayerColor::Count> make_player_color_ide
 	return result;
 }
 
-inline auto player_color_identifiers = make_player_color_identifiers();
+inline const auto player_color_identifiers = make_player_color_identifiers();
 
 enum class EUiBool {
 	False, InGameOnly, WitnessOnly, True, Count

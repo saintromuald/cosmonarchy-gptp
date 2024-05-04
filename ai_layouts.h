@@ -140,7 +140,6 @@ inline ChkCache g_chk_cache;
 inline bool show_player_layouts[PlayerLimit];
 inline u32 default_ai_expansion_block[PlayerLimit];
 
-
 class AiLayouts {
 public:
 	void init();

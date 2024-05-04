@@ -80,6 +80,7 @@ struct Config {
 
 	// Player Color
 	std::vector<PlayerColor> preferred_colors;
+	bool shuffle_preferred_colors = false;
 
 	// Debug
 	bool verbose = false;

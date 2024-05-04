@@ -145,6 +145,7 @@ void load_config() {
 
 	// Player Color
 	load_field(yaml, "preferred-colors", g_config.preferred_colors);
+	load_field(yaml, "shuffle-preferred-colors", g_config.shuffle_preferred_colors);
 
 	// Debug
 	load_field(yaml, "verbose", g_config.verbose);
@@ -283,6 +284,7 @@ void save_config() {
 	yaml << YAML::Newline << YAML::Comment("");
 	yaml << YAML::Newline << YAML::Comment(make_valid_colors_string());
 	write_field(yaml, "preferred-colors", g_config.preferred_colors);
+	write_field(yaml, "shuffle-preferred-colors", g_config.shuffle_preferred_colors);
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Debug");
