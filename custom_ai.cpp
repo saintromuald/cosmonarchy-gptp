@@ -2,12 +2,27 @@
 #include "ai_layouts.h"
 #include "hooks/aiscript/ai_requests.h"
 
-CustomAiPlayer custom_ai_players[PlayerLimit];
-CustomAiTown custom_ai_towns[AiTownLimit];
+static void update_custom_player(CustomAiPlayer* custom_ai_player, u32 player);
+static void update_custom_town(CustomAiTown* custom_ai_town, u32 town);
 
 void init_custom_ai() {
 	memset(custom_ai_players, 0, sizeof(custom_ai_players));
 	memset(custom_ai_towns, 0, sizeof(custom_ai_towns));
+}
+
+void update_custom_ai() {
+	for (u32 i = 0; i < PlayerLimit; ++i) {
+		update_custom_player(&custom_ai_players[i], i);
+	}
+
+	for (u32 i = 0; i < AiTownLimit; ++i) {
+		if (g_ai_town_array[i].inited) {
+			custom_ai_towns[i].active = true;
+			update_custom_town(&custom_ai_towns[i], i);
+		} else if (custom_ai_towns[i].active) {
+			custom_ai_towns[i] = {};
+		}
+	}
 }
 
 static void update_custom_player(CustomAiPlayer* custom_ai_player, u32 player) {
@@ -67,21 +82,6 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 					}
 				}
 			}
-		}
-	}
-}
-
-void update_custom_ai() {
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		update_custom_player(&custom_ai_players[i], i);
-	}
-
-	for (u32 i = 0; i < AiTownLimit; ++i) {
-		if (g_ai_town_array[i].inited) {
-			custom_ai_towns[i].active = true;
-			update_custom_town(&custom_ai_towns[i], i);
-		} else if (custom_ai_towns[i].active) {
-			custom_ai_towns[i] = {};
 		}
 	}
 }

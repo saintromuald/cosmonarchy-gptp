@@ -5,14 +5,10 @@
 #include "data_ext.h"
 #include "trigger_system/trigger_parser.h"
 
-u32 chk_cache_size;
-CHKUnit chk_cache[ChkCacheLimit];
-
-bool show_player_layouts[PlayerLimit];
-u32 default_ai_expansion_block[PlayerLimit];
-
-AiLayouts player_layouts[PlayerLimit];
-AiLayoutsTown layouts_towns[AiTownLimit];
+static bool update_townhall_marker(AiPlaceholder* placeholder, u32 player, u32 townhall_index);
+static u32 get_unit_class(u32 unit_id);
+static u32 get_unit_cost(u32 unit_id);
+static s32 compare_base_layout(const void* a, const void* b);
 
 void init_layouts() {
 	memset(show_player_layouts, 0, sizeof(show_player_layouts));
@@ -58,34 +54,6 @@ void init_layouts() {
 			}
 		}
 	}
-}
-
-static bool update_townhall_marker(AiPlaceholder* placeholder, u32 player, u32 townhall_index) {
-	switch (g_player_table[player].race) {
-		case RaceId::Terran: {
-			if (townhall_index && hooks::create_unit_id_allowed(UnitId::TerranTreasury, player, true)) {
-				placeholder->unit_id = UnitId::TerranTreasury;
-			} else {
-				placeholder->unit_id = UnitId::TerranMinistry;
-			}
-		} break;
-		case RaceId::Protoss: {
-			placeholder->unit_id = UnitId::ProtossNexus;
-		} break;
-		case RaceId::Zerg: {
-			placeholder->unit_id = UnitId::ZergHachirosk;
-		} break;
-	}
-
-	u32 old_priority = placeholder->priority;
-	if (townhall_index) {
-		placeholder->should_request = true;
-		placeholder->priority = 170; // this should be lower (probably 130 or 140), but it needs to be high due to what I assume is some aise bug with spending requests -Veeq7
-	} else {
-		placeholder->should_request = false;
-		placeholder->priority = 180;
-	}
-	return old_priority != placeholder->priority;
 }
 
 void update_layouts() {
@@ -293,6 +261,34 @@ void update_layouts() {
 			}
 		}
 	}
+}
+
+static bool update_townhall_marker(AiPlaceholder* placeholder, u32 player, u32 townhall_index) {
+	switch (g_player_table[player].race) {
+		case RaceId::Terran: {
+			if (townhall_index && hooks::create_unit_id_allowed(UnitId::TerranTreasury, player, true)) {
+				placeholder->unit_id = UnitId::TerranTreasury;
+			} else {
+				placeholder->unit_id = UnitId::TerranMinistry;
+			}
+		} break;
+		case RaceId::Protoss: {
+			placeholder->unit_id = UnitId::ProtossNexus;
+		} break;
+		case RaceId::Zerg: {
+			placeholder->unit_id = UnitId::ZergHachirosk;
+		} break;
+	}
+
+	u32 old_priority = placeholder->priority;
+	if (townhall_index) {
+		placeholder->should_request = true;
+		placeholder->priority = 170; // this should be lower (probably 130 or 140), but it needs to be high due to what I assume is some aise bug with spending requests -Veeq7
+	} else {
+		placeholder->should_request = false;
+		placeholder->priority = 180;
+	}
+	return old_priority != placeholder->priority;
 }
 
 Point16 get_ai_town_position(AiTown* town) {

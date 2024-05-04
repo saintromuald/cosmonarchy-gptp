@@ -119,14 +119,14 @@ const AiUnitEquivalent equivalents[] = {
 };
 
 #define ChkCacheLimit UNIT_ARRAY_LENGTH
-extern u32 chk_cache_size;
-extern CHKUnit chk_cache[ChkCacheLimit];
+inline u32 chk_cache_size;
+inline CHKUnit chk_cache[ChkCacheLimit];
 
-extern bool show_player_layouts[PlayerLimit];
-extern u32 default_ai_expansion_block[PlayerLimit];
+inline bool show_player_layouts[PlayerLimit];
+inline u32 default_ai_expansion_block[PlayerLimit];
 
-extern AiLayouts player_layouts[PlayerLimit];
-extern AiLayoutsTown layouts_towns[AiTownLimit];
+inline AiLayouts player_layouts[PlayerLimit];
+inline AiLayoutsTown layouts_towns[AiTownLimit];
 
 void init_layouts();
 void update_layouts();
