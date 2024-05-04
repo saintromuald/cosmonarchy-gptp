@@ -1717,7 +1717,7 @@ namespace helper {
 
 	u32 pixel_pos_has_cagra(s16 pos_x, s16 pos_y);										// 004E8BC0
 	b32 chk_larva_stray(Unit* larva, u32 pos_x, u32 pos_y);								// 004E93E0
-	void chk_larva_stray0(Unit* larva, u32 pos_x, u32 pos_y);							// 004E94B0
+	void chk_larva_stray0(Unit* larva, u32* pos_x, u32* pos_y);							// 004E94B0
 
 	void issue_queued_order_target(Unit* target, Unit* attacker, u8 order_id, u32 stop_previous);	// 00474D10
 

@@ -385,7 +385,7 @@ namespace hooks
 					if (helper::chk_larva_stray(unit, unit->sprite->position.x, unit->sprite->position.y)) {
 						return;
 					}
-					helper::chk_larva_stray0(unit, pos_x, pos_y);
+					helper::chk_larva_stray0(unit, &pos_x, &pos_y);
 				}
 				helper::change_movement_target_move_target_2(unit, pos_x, pos_y);
 			}

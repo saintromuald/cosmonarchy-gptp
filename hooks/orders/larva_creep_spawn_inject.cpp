@@ -347,7 +347,7 @@ namespace hooks
 		jump_patch(spreads_creep_wrapper,					0x00413870);
 		jump_patch(run_creep_randomizer_wrapper,			0x004140A0);
 //		jump_patch(update_creep_disappearance_unit_wrapper, 0x0047DF90, 0); // broken
-//		jump_patch(orders_larva_idle_wrapper,				0x004E9F90, 0); // Larva don't move anywhere
+		jump_patch(orders_larva_idle_wrapper,				0x004E9F90, 0); // Larva don't move anywhere
 
 		jump_patch(bug_wrapper, 0x0047DCCA); // attempt to fix bug
 

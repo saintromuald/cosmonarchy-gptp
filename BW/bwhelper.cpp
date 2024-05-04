@@ -14802,7 +14802,7 @@ namespace helper {
 		return result;
 	}
 
-	void chk_larva_stray0(Unit* larva, u32 pos_x, u32 pos_y)
+	void chk_larva_stray0(Unit* larva, u32* pos_x, u32* pos_y)
 	{
 		const u32 func_address = 0x004E94B0;
 		__asm {
