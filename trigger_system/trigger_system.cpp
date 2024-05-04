@@ -701,9 +701,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				if (!ignore_human_name && (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated)) {
-					FullName buffer = {};
-					snprintf(buffer.data, FullNameCap, "%s (%s)", name.string().c_str(), g_player_table[player].name);
-					set_player_name(player, buffer.data, true);
+					std::string player_name = std::format("{} ({})", name.string(), g_player_table[player].name);
+					set_player_name(player, player_name.c_str(), true);
 				} else {
 					set_player_name(player, name.string().c_str(), true);
 				}
@@ -1156,7 +1155,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser.equals("set_player_color")) {
 			u32 player = parser.get_player();
-			u32 player_color = parser.get_enum(player_color_names, ARRAY_SIZE(player_color_names));
+			PlayerColor player_color = (PlayerColor)parser.get_enum(player_color_names, ARRAY_SIZE(player_color_names));
 
 			if (player) {
 				player -= 1;

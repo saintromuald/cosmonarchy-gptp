@@ -155,7 +155,7 @@ enum AdvisorType : u8 {
 };
 
 // NOTE: This is case insensitive for parsing
-static const char* advisor_symbol_names[] = {
+static const char* advisor_symbol_names[AdvisorType_Count] = {
 	"Default",
 
 	// Races
@@ -190,6 +190,7 @@ struct CmPlayer {
 	bool hide_in_team_ui;
 	OmnipresenceState omnipresence_state;
 
+	std::vector<PlayerColor> preferred_colors;
 	std::unordered_map<UnitId::Enum, std::string> custom_unit_names;
 };
 
@@ -235,6 +236,7 @@ struct TriggerButton {
 };
 
 struct Globals {
+	bool preferred_colors_set;
 	CmPlayer players[PlayerLimit];
 	u32 celebration;
 

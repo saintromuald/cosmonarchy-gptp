@@ -2,6 +2,7 @@
 #include <fstream>
 #include <format>
 #include "logger.h"
+#include "player_color.h"
 
 #define NOMINMAX
 #include <Windows.h>
@@ -56,7 +57,7 @@ static void validate_config() {
 		}
 		for (u32 i = 0; i < 3; i++) {
 			for (u32 j = 0; j < 3; j++) {
-				char& hotkey = g_config.layout[i][j];
+				char& hotkey = g_config.grid_layout[i][j];
 				if (hotkey < 'A' || hotkey > 'Z') {
 					if (hotkey >= 'a' && hotkey <= 'z') {
 						hotkey = toupper(hotkey);
@@ -136,11 +137,14 @@ void load_config() {
 	auto yaml_grid = yaml["grid-hotkeys"];
 	if (yaml_grid) {
 		load_field(yaml_grid, "enabled", g_config.grid_hotkeys);
-		load_field(yaml_grid, "layout", g_config.layout);
+		load_field(yaml_grid, "layout", g_config.grid_layout);
 	}
 	load_field(yaml, "extended-control-groups", g_config.extended_control_groups);
 	load_field(yaml, "default-to-steal-hotkeys", g_config.default_to_steal_hotkeys);
 	load_field(yaml, "tilde-control-group", g_config.tilde_control_group);
+
+	// Player Color
+	load_field(yaml, "preferred-colors", g_config.preferred_colors);
 
 	// Debug
 	load_field(yaml, "verbose", g_config.verbose);
@@ -152,6 +156,36 @@ void load_config() {
 
 	validate_config();
 	save_config();
+}
+
+static std::string make_valid_colors_string() {
+	std::stringstream ss;
+	ss << "Valid colors are:\n";
+
+	bool first = true;
+	size_t i = 0;
+	size_t line_w = 0;
+	for (const auto& color : player_color_identifiers) {
+		if (is_color_banned((PlayerColor)i++)) {
+			continue;
+		}
+
+		if (first) {
+			first = false;
+		} else {
+			ss << ", ";
+			line_w += 2;
+		}
+		if (line_w > 80) {
+			ss << "\n";
+			line_w = 0;
+		}
+
+		ss << color;
+		line_w += color.size();
+	}
+
+	return ss.str();
 }
 
 void save_config() {
@@ -234,15 +268,21 @@ void save_config() {
 	write_field(yaml, "grid-hotkeys", YAML::BeginMap);
 	write_field(yaml, "enabled", g_config.grid_hotkeys);
 	write_field(yaml, "layout", YAML::BeginSeq);
-	for (const std::string& str : g_config.layout) {
+	for (const std::string& str : g_config.grid_layout) {
 		yaml << str;
 	}
 	yaml << YAML::EndSeq << YAML::EndMap;
 	yaml << YAML::Newline << YAML::Comment("Adds extra control groups at R, F, V, T, G, B. Must be used with grid hotkeys!");
-	write_field (yaml, "extended-control-groups", g_config.extended_control_groups);
-	write_field (yaml, "default-to-steal-hotkeys", g_config.default_to_steal_hotkeys);
+	write_field(yaml, "extended-control-groups", g_config.extended_control_groups);
+	write_field(yaml, "default-to-steal-hotkeys", g_config.default_to_steal_hotkeys);
 	yaml << YAML::Newline << YAML::Comment("Replaces tilde with an additional control group, moves console to F12");
 	write_field(yaml, "tilde-control-group", g_config.tilde_control_group);
+	yaml << YAML::Newline << YAML::Newline;
+
+	yaml << YAML::Comment("Player Color");
+	yaml << YAML::Newline << YAML::Comment("");
+	yaml << YAML::Newline << YAML::Comment(make_valid_colors_string());
+	write_field(yaml, "preferred-colors", g_config.preferred_colors);
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Debug");
@@ -259,7 +299,7 @@ void save_config() {
 
 	yaml << YAML::EndMap;
 
-	std::ofstream config_file(g_config_path.string());
+	std::ofstream config_file{g_config_path.string()};
 	config_file << yaml.c_str();
 }
 

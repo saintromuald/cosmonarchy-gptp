@@ -617,6 +617,22 @@ namespace hooks {
 		draw_transport_ui();
 	}
 
+	static void first_frame() {
+		const auto& colors = g_config.preferred_colors;
+		if (colors.empty()) {
+			SyncColorPrefCommand command{(u8)*g_local_nation_id};
+			queue_game_command((u8*)&command, sizeof(command));
+		} else {
+			for (size_t i = 0; i < colors.size(); i += 9) {
+				SyncColorPrefCommand command{(u8)*g_local_nation_id};
+				for (size_t j = 0; j < 9 && i + j < colors.size(); j++) {
+					command.colors[j % 9] = g_config.preferred_colors[i + j];
+				}
+				queue_game_command((u8*)&command, sizeof(command));
+			}
+		}
+	}
+
 	/// This hook is called every frame
 	bool next_frame() {
 		// Force disable cpu throttling, since on modern CPU it hurts more than helps
@@ -640,6 +656,8 @@ namespace hooks {
 		if (!g_game_fully_started) {
 			g_game_fully_started = true;
 			init_hotkeys();
+
+			first_frame();
 		}
 		update_hotkeys();
 
@@ -740,8 +758,12 @@ namespace hooks {
 		// Map Features
 		if (*g_elapsed_time_frames == 0 || *g_elapsed_time_frames == 15) {
 			bw::set_ingame_loop_state(true);
-			load_player_colors();
 			load_player_names();
+			bw::set_ingame_loop_state(false);
+		}
+		if (*g_elapsed_time_frames == 0 || any_player_can_randomize_color()) {
+			bw::set_ingame_loop_state(true);
+			load_player_colors();
 			bw::set_ingame_loop_state(false);
 		}
 
@@ -849,8 +871,8 @@ namespace hooks {
 
 		// Sync camera
 		struct SyncCameraCommand {
-			u8 type;
-			u8 subtype;
+			u8 type = GameCommand_Custom;
+			u8 subtype = NewGameCommand::CameraSync;
 			u8 player;
 			Point16 pos;
 			u8 padding[5];
@@ -862,8 +884,6 @@ namespace hooks {
 		camera.y = *g_move_to_y;
 
 		SyncCameraCommand command = {};
-		command.type = GameCommand_Custom;
-		command.subtype = NewGameCommand::CameraSync;
 		command.player = *g_local_human_id;
 		command.pos = camera;
 		helper::queue_game_command((u8*)&command, 0xc);
@@ -1002,7 +1022,7 @@ namespace hooks {
 		unit->velocity_direction_2 = unit->velocity_direction_1;
 
 		if (unit->player < PlayerLimit) {
-			unit_ext->values[ValuePlayerColor] = player_data.player_color_list[unit->player];
+			unit_ext->values[ValuePlayerColor] = (u32)g_player_data.player_color_list[unit->player];
 		}
 
 		if (bw::get_game_kind() == GameKind_Massacre) {
@@ -4101,6 +4121,15 @@ namespace hooks {
 									} break;
 								}
 								helper::play_sound_global(SoundId::Misc_button_wav);
+							} break;
+							case NewGameCommand::SyncColorPref: {
+								auto command = (SyncColorPrefCommand*)buffer;
+								g_globals->preferred_colors_set = true;
+								for (PlayerColor color : command->colors) {
+									if (color < PlayerColor::Count) {
+										g_globals->players[command->player].preferred_colors.push_back(color);
+									}
+								}
 							} break;
 						}
 						goto next_command;

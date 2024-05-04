@@ -25,6 +25,7 @@ namespace NewGameCommand
 		IssueCTFCop2,
 		CameraSync,
 		SelectFaction,
+		SyncColorPref,
 	};
 }
 

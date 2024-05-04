@@ -607,7 +607,7 @@ namespace hooks {
 					char* hotkey_char = find_hotkey_char(label + 2);
 					if (hotkey_char) {
 						u32 index = dialog->index - 1;
-						*hotkey_char = toupper(g_config.layout[index / 3].at(index % 3));
+						*hotkey_char = toupper(g_config.grid_layout[index / 3].at(index % 3));
 					}
 				}
 			}

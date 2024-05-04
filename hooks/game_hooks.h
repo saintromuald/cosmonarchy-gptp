@@ -3,6 +3,20 @@
 
 struct GameVersion;
 
+struct SyncColorPrefCommand {
+	u8 custom = GameCommand_Custom;
+	u8 type = NewGameCommand::SyncColorPref;
+	u8 player;
+	PlayerColor colors[9];
+
+	SyncColorPrefCommand(u8 player) : player{player} {
+		for (u32 i = 0; i < 9; i++) {
+			colors[i] = PlayerColor::Invalid;
+		}
+	}
+};
+static_assert(sizeof(SyncColorPrefCommand) == 12);
+
 namespace hooks {
 	extern u8 quickcasting_timeout;
 	extern u8 quickbuilding_timeout;

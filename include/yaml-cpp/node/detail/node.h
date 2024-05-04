@@ -13,12 +13,18 @@
 #include "yaml-cpp/node/ptr.h"
 #include "yaml-cpp/node/type.h"
 #include <set>
+#include <atomic>
 
 namespace YAML {
 namespace detail {
 class node {
+ private:
+  struct less {
+    bool operator ()(const node* l, const node* r) const {return l->m_index < r->m_index;}
+  };
+
  public:
-  node() : m_pRef(new node_ref), m_dependencies{} {}
+  node() : m_pRef(new node_ref), m_dependencies{}, m_index{} {}
   node(const node&) = delete;
   node& operator=(const node&) = delete;
 
@@ -42,9 +48,8 @@ class node {
       return;
 
     m_pRef->mark_defined();
-    for (nodes::iterator it = m_dependencies.begin();
-         it != m_dependencies.end(); ++it)
-      (*it)->mark_defined();
+    for (node* dependency : m_dependencies)
+      dependency->mark_defined();
     m_dependencies.clear();
   }
 
@@ -92,7 +97,7 @@ class node {
     m_pRef->set_style(style);
   }
 
-  // count/iterator
+  // size/iterator
   std::size_t size() const { return m_pRef->size(); }
 
   const_node_iterator begin() const {
@@ -109,6 +114,7 @@ class node {
   void push_back(node& input, shared_memory_holder pMemory) {
     m_pRef->push_back(input, pMemory);
     input.add_dependency(*this);
+    m_index = m_amount.fetch_add(1);
   }
   void insert(node& key, node& value, shared_memory_holder pMemory) {
     m_pRef->insert(key, value, pMemory);
@@ -160,8 +166,10 @@ class node {
 
  private:
   shared_node_ref m_pRef;
-  typedef std::set<node*> nodes;
+  using nodes = std::set<node*, less>;
   nodes m_dependencies;
+  size_t m_index;
+  static YAML_CPP_API std::atomic<size_t> m_amount;
 };
 }  // namespace detail
 }  // namespace YAML
