@@ -455,6 +455,35 @@ void AiLayouts::request_placeholder(AiTown* town, TownLayouts& layouts_town, AiP
 	}
 }
 
+void AiLayouts::sort_layouts(PlayerLayouts& layouts) {
+	std::ranges::sort(layouts.placeholders, [](AiPlaceholder& a, AiPlaceholder& b) {
+		s32 priority_diff = b.priority - a.priority;
+		if (priority_diff) return priority_diff < 0;
+
+		if (a.is_townhall_marker && b.is_townhall_marker) {
+			s32 yield_diff = b.yield_score - a.yield_score;
+			if (yield_diff) return yield_diff < 0;
+		}
+
+		s32 class_diff = get_unit_priority_class(b.unit_id) - get_unit_priority_class(a.unit_id);
+		if (class_diff) return class_diff < 0;
+
+		s32 cost_diff = get_unit_total_cost(a.unit_id) - get_unit_total_cost(b.unit_id);
+		if (cost_diff) return cost_diff < 0;
+
+		if (a.resarea && b.resarea) {
+			Point16 point_a = g_resource_areas->areas[a.resarea].position;
+			Point16 point_b = g_resource_areas->areas[b.resarea].position;
+
+			s32 pos_diff = bw::get_distance_fast(a.position, point_a) - bw::get_distance_fast(b.position, point_b);
+			if (pos_diff) return pos_diff < 0;
+		}
+
+		return false;
+	});
+}
+
+
 static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 townhall_index) {
 	switch (g_player_table[player].race) {
 		case RaceId::Terran: {
@@ -622,34 +651,6 @@ static u32 get_unit_total_cost(u32 unit_id) {
 	return units_dat::mineral_cost[unit_id] + units_dat::vespene_cost[unit_id];
 }
 
-void sort_layouts(PlayerLayouts& layouts) {
-	std::ranges::sort(layouts.placeholders, [](AiPlaceholder& a, AiPlaceholder& b) {
-		s32 priority_diff = b.priority - a.priority;
-		if (priority_diff) return priority_diff < 0;
-
-		if (a.is_townhall_marker && b.is_townhall_marker) {
-			s32 yield_diff = b.yield_score - a.yield_score;
-			if (yield_diff) return yield_diff < 0;
-		}
-
-		s32 class_diff = get_unit_priority_class(b.unit_id) - get_unit_priority_class(a.unit_id);
-		if (class_diff) return class_diff < 0;
-
-		s32 cost_diff = get_unit_total_cost(a.unit_id) - get_unit_total_cost(b.unit_id);
-		if (cost_diff) return cost_diff < 0;
-
-		if (a.resarea && b.resarea) {
-			Point16 point_a = g_resource_areas->areas[a.resarea].position;
-			Point16 point_b = g_resource_areas->areas[b.resarea].position;
-
-			s32 pos_diff = bw::get_distance_fast(a.position, point_a) - bw::get_distance_fast(b.position, point_b);
-			if (pos_diff) return pos_diff < 0;
-		}
-
-		return false;
-	});
-}
-
 bool unit_has_creep(u32 unit_id, u32 x, u32 y) {
 	Box32 area = {};
 	area.w = units_dat::building_dimensions[unit_id].x;
@@ -683,12 +684,6 @@ bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 		}
 	}
 	return true;
-}
-
-bool is_basic_townhall(u32 unit_id) {
-	return unit_id == UnitId::TerranMinistry
-		|| unit_id == UnitId::ProtossNexus
-		|| unit_id == UnitId::ZergHachirosk;
 }
 
 bool can_place_unit(u32 unit_id, Point16 position, u32 player) {

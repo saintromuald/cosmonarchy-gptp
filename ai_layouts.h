@@ -34,7 +34,6 @@ struct AiPlaceholder {
 	graphics::ColorId color;
 };
 
-#define PlaceholderLimit 2048
 struct PlayerLayouts {
 	std::vector<AiPlaceholder> placeholders;
 	bool should_sort;
@@ -160,6 +159,7 @@ private:
 	bool can_build_placeholder(AiTown* town, AiPlaceholder& placeholder);
 	void init_placeholder(AiTown* town, AiPlaceholder& placeholder);
 	void request_placeholder(AiTown* town, TownLayouts& layouts_town, AiPlaceholder& placeholder);
+	void sort_layouts(PlayerLayouts& layouts);
 
 private:
 	std::array<PlayerLayouts, PlayerLimit> m_player_layouts;
@@ -181,10 +181,6 @@ u32 town_count_up_equivalents(AiTown* town, u32 unit_id);
 u32 player_count_units(u32 player, u32 unit_id, bool completed);
 u32 player_count_up_equivalents(u32 player, u32 unit_id);
 
-void sort_layouts(PlayerLayouts& layouts);
-
 bool unit_has_creep(u32 unit_id, u32 x, u32 y);
 bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player);
-bool is_basic_townhall(u32 unit_id);
-
 bool can_place_unit(u32 unit_id, Point16 position, u32 player);
