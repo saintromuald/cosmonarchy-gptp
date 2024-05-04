@@ -329,8 +329,8 @@ u32 Unit::get_movable_state() {
 	if (this->move_target.pt != this->position) {
 		return MovableState_NotReachedDestination;
 	} else {
-		++unmovable_hits[0];
-		unmovable_lastframe[0] = *g_elapsed_time_frames;
+		++g_unmovable_hits[0];
+		g_unmovable_lastframe[0] = *g_elapsed_time_frames;
 		if (!(this->status & UnitStatus::Unmovable)) {
 			return MovableState_ReachedDestination;
 		} else {

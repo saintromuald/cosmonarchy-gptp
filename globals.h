@@ -178,5 +178,5 @@ namespace bw
 }
 
 extern const char* unmovable_names[16];
-extern u32 unmovable_hits[16];
-extern u32 unmovable_lastframe[16];
+extern u32 g_unmovable_hits[16];
+extern u32 g_unmovable_lastframe[16];

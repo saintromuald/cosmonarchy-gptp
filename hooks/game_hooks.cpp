@@ -60,7 +60,7 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 }
 
 namespace hooks {
-	static bool g_game_fully_started;
+	static bool g_game_was_init;
 	static bool g_game_inited;
 
 	void next_ui_frame() {
@@ -618,7 +618,68 @@ namespace hooks {
 		draw_transport_ui();
 	}
 
-	static void first_frame() {
+	void game_init_first_frame() {
+		init_hotkeys();
+		init_player_data();
+
+#ifdef CM_DEBUG
+		helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
+		bw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
+#endif
+		bw::init_weapon_tile_heights();
+		hooks::init_actions();
+		iquare_globals.reset();
+
+		for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+			bw::set_upgrade_level(i, UpgradeId::VentralSacs, 1); // Zerg AI may require this to function properly
+		}
+
+		// Connect addons
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			if (units_dat::base_property[unit->id] & UnitProperty::Building && !unit->building.addon) {
+				Unit* addon = helper::connect_addon_check(unit);
+				if (addon) {
+					helper::complete_addon(unit, addon);
+				}
+			}
+		}
+		
+		// Init extended features
+		reset_search_index();
+		update_search_index();
+		init_player_data();
+		init_trigger_system();
+		g_ai_layouts.init();
+		init_custom_ai();
+		for (u32 i = 0; i < 16; i++) {
+			g_unmovable_hits[i] = 0;
+			g_unmovable_lastframe[i] = 0;
+		}
+
+		if (bw::get_game_kind() == GameKind_Debug) {
+			for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+				g_game_minerals[i] = 999999;
+				g_total_minerals[i] = 999999;
+				g_game_vespene[i] = 999999;
+				g_total_vespene[i] = 999999;
+			}
+		} else if (bw::get_game_kind() == GameKind_DebugFog) {
+			ActiveTile* active_tile = *g_active_tile_array;
+			for (u32 tile_size = g_map_tile_size->width * g_map_tile_size->height; tile_size; --tile_size) {
+				active_tile->visibility_flags = 0;
+				active_tile->explored_flags = 0;
+				++active_tile;
+			}
+			if (!(g_game_layer->has_been_refreshed & 1)) {
+				g_game_layer->has_been_refreshed |= 1;
+				helper::bw_refresh((s16)g_game_layer->left, (s16)g_game_layer->height + (s16)g_game_layer->top  - 1,
+								   (s16)g_game_layer->top,  (s16)g_game_layer->width  + (s16)g_game_layer->left - 1);
+			}
+		}
+
+		// Required to do this here since the globals reset happens after the first call of this util func, but create_init_units needs the first call, too. -Pr0nogo
+		init_omnipresence_state();
+
 		if (!bw::in_replay_or_witness()) {
 			if (g_config.preferred_colors.empty()) {
 				SyncColorPrefCommand command{(u8)*g_local_nation_id};
@@ -663,11 +724,9 @@ namespace hooks {
 
 		g_discord.update_status_if_needed(true);
 
-		if (!g_game_fully_started) {
-			g_game_fully_started = true;
-			init_hotkeys();
-
-			first_frame();
+		if (!g_game_was_init) {
+			g_game_was_init = true;
+			game_init_first_frame();
 		}
 		update_hotkeys();
 
@@ -675,85 +734,21 @@ namespace hooks {
 			return true;
 		}
 
-		// This block is executed once every game
+		// Execute triggers before frame 0
 		if (*g_elapsed_time_frames == 0) {
-#ifdef CM_DEBUG
-			helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
-			bw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
-#endif
-			bw::weapon_tile_heights();
-			hooks::init_actions();
-			iquare_globals.reset();
-
-			for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-				bw::set_upgrade_level(i, UpgradeId::VentralSacs, 1); // Zerg AI may require this to function properly
-			}
-
-			// Connect addons
-			for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-				if (units_dat::base_property[unit->id] & UnitProperty::Building && !unit->building.addon) {
-					Unit* addon = helper::connect_addon_check(unit);
-					if (addon) {
-						helper::complete_addon(unit, addon);
-					}
-				}
-			}
-			
-			// Init extended features
-			reset_search_index();
-			update_search_index();
-			init_player_colors();
-			init_trigger_system();
-			g_ai_layouts.init();
-			init_custom_ai();
-			for (u32 i = 0; i < 16; i++) {
-				unmovable_hits[i] = 0;
-				unmovable_lastframe[i] = 0;
-			}
-
-			// Execute triggers before frame 0
 			bw::set_ingame_loop_state(true);
 			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
 			bw::set_ingame_loop_state(false);
-
-			if (bw::get_game_kind() == GameKind_Debug) {
-				for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-					g_game_minerals[i] = 999999;
-					g_total_minerals[i] = 999999;
-					g_game_vespene[i] = 999999;
-					g_total_vespene[i] = 999999;
-				}
-			} else if (bw::get_game_kind() == GameKind_DebugFog) {
-				ActiveTile* active_tile = *g_active_tile_array;
-				for (u32 tile_size = g_map_tile_size->width * g_map_tile_size->height; tile_size; --tile_size)
-				{
-					active_tile->visibility_flags = 0;
-					active_tile->explored_flags = 0;
-					++active_tile;
-				}
-				if (!(g_game_layer->has_been_refreshed & 1)) {
-					g_game_layer->has_been_refreshed |= 1;
-					helper::bw_refresh((s16)g_game_layer->left, (s16)g_game_layer->height + (s16)g_game_layer->top  - 1,
-									   (s16)g_game_layer->top,  (s16)g_game_layer->width  + (s16)g_game_layer->left - 1);
-				}
-			}
-
-			// Required to do this here since the globals reset happens after the first call of this util func, but create_init_units needs the first call, too. -Pr0nogo
-			init_omnipresence_state();
 		}
 
-		if (!bw::is_game_paused()) {
-			g_graphics.reset_all_graphics();
-		}
+		g_graphics.reset_all_graphics();
 
 		// Update extended features
 		bw::set_ingame_loop_state(true);
 		update_trigger_system(true);
-		if (!bw::is_game_paused()) {
-			g_ai_layouts.update();
-			update_custom_ai();
-			hooks::update_actions();
-		}
+		g_ai_layouts.update();
+		update_custom_ai();
+		hooks::update_actions();
 		bw::set_ingame_loop_state(false);
 
 		if (*g_elapsed_time_frames % 2 == 0) {
@@ -1172,8 +1167,8 @@ namespace hooks {
 			if (unit_ext->timers[TimerStun] > 1) {
 				unit->status &= ~UnitStatus::Invincible;
 			} else {
-				++unmovable_hits[2];
-				unmovable_lastframe[2] = *g_elapsed_time_frames;
+				++g_unmovable_hits[2];
+				g_unmovable_lastframe[2] = *g_elapsed_time_frames;
 				unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 			}
 			unit_ext->timers[TimerReviveFlagClearMin] = 0;
@@ -1251,12 +1246,12 @@ namespace hooks {
 		}
 
 		if (unit_ext->timers[TimerStun] > 1) {
-			++unmovable_hits[3];
-			unmovable_lastframe[3] = *g_elapsed_time_frames;
+			++g_unmovable_hits[3];
+			g_unmovable_lastframe[3] = *g_elapsed_time_frames;
 			unit->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 		} else if (unit_ext->timers[TimerStun] == 1) {
-			++unmovable_hits[4];
-			unmovable_lastframe[4] = *g_elapsed_time_frames;
+			++g_unmovable_hits[4];
+			g_unmovable_lastframe[4] = *g_elapsed_time_frames;
 			unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 		}
 
@@ -1705,8 +1700,8 @@ namespace hooks {
 						unit->hitpoints = unit->get_max_hp_raw();
 						bw::restore_func(unit);
 						unit->order_computer(OrderId::Stop);
-						++unmovable_hits[5];
-						unmovable_lastframe[5] = *g_elapsed_time_frames;
+						++g_unmovable_hits[5];
+						g_unmovable_lastframe[5] = *g_elapsed_time_frames;
 						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 						helper::play_sound_from_unit(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
 					} else {
@@ -2627,8 +2622,8 @@ namespace hooks {
 		&& !unit->movement_flags
 		&&  unit->movement_state == UnitMovement::UnitMovement_Dormant)
 		{
-			++unmovable_hits[6];
-			unmovable_lastframe[6] = *g_elapsed_time_frames;
+			++g_unmovable_hits[6];
+			g_unmovable_lastframe[6] = *g_elapsed_time_frames;
 			unit->status ^= UnitStatus::Unmovable;
 		}
 
@@ -3502,7 +3497,7 @@ namespace hooks {
 		init_omnipresence_state();
 
 		GPTP::logger << "Started a match!\n";
-		g_game_fully_started = false;
+		g_game_was_init = false;
 		hotkeys.game_started = true;
 
 		return true;

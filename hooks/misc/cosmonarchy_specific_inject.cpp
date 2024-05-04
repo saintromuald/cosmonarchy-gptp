@@ -515,7 +515,7 @@ namespace hooks
 					GPTP::critical_logger << buffer;
 
 					for (u32 i = 0; i < 16; i++) {
-						snprintf(buffer, sizeof(buffer), "\n %u - %s: %u / %u", i, unmovable_names[i], unmovable_hits[i], unmovable_lastframe[i]);
+						snprintf(buffer, sizeof(buffer), "\n %u - %s: %u / %u", i, unmovable_names[i], g_unmovable_hits[i], g_unmovable_lastframe[i]);
 						GPTP::critical_logger << buffer;
 					}
 

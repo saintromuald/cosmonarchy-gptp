@@ -630,7 +630,7 @@ const char* get_random_easter_egg_unit_name(u16 unit_id);
 
 u8 get_player_color_index(u32 player, u32 index);
 bool set_player_color(u32 player, PlayerColor color);
-void init_player_colors();
+void init_player_data();
 void load_player_colors();
 bool any_player_can_randomize_color();
 bool is_color_banned(PlayerColor color);

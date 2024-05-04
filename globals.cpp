@@ -1352,5 +1352,5 @@ const char* unmovable_names[] = {
 	"repulse_unit",
 	"orders_place_mine state1",
 	"weapon_damage_fatal cuirass" };
-u32 unmovable_hits[16];
-u32 unmovable_lastframe[16];
+u32 g_unmovable_hits[16];
+u32 g_unmovable_lastframe[16];

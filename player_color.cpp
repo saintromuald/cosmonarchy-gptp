@@ -260,9 +260,10 @@ bool set_player_color(u32 player, PlayerColor color) {
 	return true;
 }
 
-static void init_player_colors() {
+void init_player_data() {
 	if (!g_loaded_colors) {
 		g_loaded_colors = true;
+
 		helper::SBmpLoadImage("game\\tminimap.pcx", 0, g_tminimap_colors, MinimapColorCount, 0, 0, 0);
 		helper::SBmpLoadImage("game\\tunit.pcx", 0, g_tunit_colors, UnitColorCount, 0, 0, 0);
 
@@ -285,7 +286,12 @@ static void init_player_colors() {
 		g_easter_egg_unit_names[UnitId::ZergMatraleth].push_back("Zerg Nekrathaleth");
 		g_easter_egg_unit_names[UnitId::ZergTosgrilisk].push_back("Zerg Todgrilisk");
 	}
+
 	g_player_data = {};
+	for (u32 player = 0; player < PlayerLimit; player++) {
+		set_player_name(player, g_player_name_list->player[player].player_name, false);
+		set_player_force_name(player, g_player_name_list->player[player].force_name);
+	}
 }
 
 const char* get_random_easter_egg_unit_name(u16 unit_id) {
@@ -361,8 +367,6 @@ void set_player_force_name(u32 player, const char* name) {
 }
 
 static void update_player_name(u32 player) {
-	set_player_name(player, g_player_name_list->player[player].player_name, false);
-	set_player_force_name(player, g_player_name_list->player[player].force_name);
 	if (!can_get_player_name(player)) {
 		return;
 	}

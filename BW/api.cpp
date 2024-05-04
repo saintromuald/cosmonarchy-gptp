@@ -1049,13 +1049,13 @@ namespace bw {
 		} else {
 			unit_pos = unit->position;
 		}
-		s32 source_height = xHeight_table[g_map_tile_size->width * (unit_pos.y >> 5) + (unit_pos.x >> 5)];
+		s32 source_height = g_height_table[g_map_tile_size->width * (unit_pos.y >> 5) + (unit_pos.x >> 5)];
 		if (!target_unit) {
 			return std::max(source_height, 0) * 2;
 		} else if (target_unit->status & UnitStatus::InAir) {
 			return 0;
 		}
-		s32 target_height = xHeight_table[g_map_tile_size->width * (target_unit->position.y >> 5) + (target_unit->position.x >> 5)];
+		s32 target_height = g_height_table[g_map_tile_size->width * (target_unit->position.y >> 5) + (target_unit->position.x >> 5)];
 		return std::max(source_height - target_height, 0) * 2;
 	}
 

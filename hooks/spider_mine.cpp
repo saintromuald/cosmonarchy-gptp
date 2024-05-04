@@ -158,8 +158,8 @@ namespace hooks
 
 		if (unit->main_order_state) {
 			Sprite* unit_sprite = unit->sprite;
-			++unmovable_hits[14];
-			unmovable_lastframe[14] = *g_elapsed_time_frames;
+			++g_unmovable_hits[14];
+			g_unmovable_lastframe[14] = *g_elapsed_time_frames;
 			if  (helper::tech_use_allowed(unit, TechId::SpiderMines, unit->player)
 			&&  (unit->move_target.pt.x != unit->position.x) || unit->move_target.pt.y != unit->position.y || !(unit->status & UnitStatus::Unmovable))
 			{

@@ -51,7 +51,7 @@ namespace hooks {
 
 					if (!(relFlags & test_tile->visibility_mask)
 						&& bw::tile_is_equal_or_lower(tmpHeight, rel_tile_pos)
-						&& (!(xHeight_table[rel_tile_pos] == xHeight_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000))) {
+						&& (!(g_height_table[rel_tile_pos] == g_height_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000))) {
 						refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
 						sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
 						break;
@@ -88,7 +88,7 @@ namespace hooks {
 
 				if (!(relFlags & test_tile->visibility_mask)
 				&&    bw::tile_is_equal_or_lower(tmpHeight, rel_tile_pos)
-				&& (!(xHeight_table[rel_tile_pos] == xHeight_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000)))
+				&& (!(g_height_table[rel_tile_pos] == g_height_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000)))
 				{
 					refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
 					sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;

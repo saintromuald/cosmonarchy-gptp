@@ -160,7 +160,6 @@ void AiLayouts::update() {
 
 		// Sort Layouts - if there've been any updates
 		if (layouts.should_sort) {
-			layouts.should_sort = false;
 			sort_layouts(layouts);
 		}
 
@@ -308,6 +307,7 @@ void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& p
 
 	placeholder.unit_id = unit_id;
 	layouts.placeholders.push_back(placeholder);
+	layouts.should_sort = true;
 	placeholder.priority -= equivalent.priority_decrease;
 }
 
@@ -455,6 +455,7 @@ void AiLayouts::request_placeholder(AiTown& town, TownLayouts& layouts_town, AiP
 }
 
 void AiLayouts::sort_layouts(PlayerLayouts& layouts) {
+	layouts.should_sort = false;
 	std::ranges::sort(layouts.placeholders, [](AiPlaceholder& a, AiPlaceholder& b) {
 		s32 priority_diff = b.priority - a.priority;
 		if (priority_diff) return priority_diff < 0;
