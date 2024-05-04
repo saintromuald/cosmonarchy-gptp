@@ -987,8 +987,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					continue;
 				}
 				PlayerLayouts& layouts = g_ai_layouts.get_player_layouts(player);
-				for (u32 j = 0; j < layouts.placeholders_count; ++j) {
-					AiPlaceholder& placeholder = layouts.placeholders[j];
+				for (AiPlaceholder& placeholder : layouts.placeholders) {
 					if (placeholder.unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
@@ -1013,8 +1012,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						continue;
 					}
 					PlayerLayouts& layouts = g_ai_layouts.get_player_layouts(player);
-					for (u32 j = 0; j < layouts.placeholders_count; ++j) {
-						AiPlaceholder& placeholder = layouts.placeholders[j];
+					for (AiPlaceholder& placeholder : layouts.placeholders) {
 						if (placeholder.unit_id == UnitId::TownCenterMarker) {
 							continue;
 						}
@@ -1041,8 +1039,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					continue;
 				}
 				PlayerLayouts& layouts = g_ai_layouts.get_player_layouts(player);
-				for (u32 j = 0; j < layouts.placeholders_count; ++j) {
-					AiPlaceholder& placeholder = layouts.placeholders[j];
+				for (AiPlaceholder& placeholder : layouts.placeholders) {
 					if (placeholder.unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
@@ -1070,8 +1067,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					continue;
 				}
 				PlayerLayouts& layouts = g_ai_layouts.get_player_layouts(player);
-				for (u32 j = 0; j < layouts.placeholders_count; ++j) {
-					AiPlaceholder& placeholder = layouts.placeholders[j];
+				for (AiPlaceholder& placeholder : layouts.placeholders) {
 					if (placeholder.unit_id == UnitId::TownCenterMarker) {
 						continue;
 					}
@@ -1100,7 +1096,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				AiTown* town = helper::create_ai_town(player, pos.x, pos.y);
 				if (town) {
 					town->inited = true;
-					TownLayouts& layouts_town = g_ai_layouts.get_layouts_town(town);
+					TownLayouts& layouts_town = g_ai_layouts.get_town_layouts(town);
 					layouts_town.worker_limit = worker_count;
 					layouts_town.worker_maynard = worker_count;
 					if (worker_count) {
@@ -1116,8 +1112,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					town->resource_units_not_set = town->resarea != 0;
 					if (claim_placeholders_area.box.w && claim_placeholders_area.box.h) {
 						PlayerLayouts& layouts = g_ai_layouts.get_player_layouts(player);
-						for (u32 i = 0; i < layouts.placeholders_count; ++i) {
-							AiPlaceholder& placeholder = layouts.placeholders[i];
+						s32 idx = -1;
+						for (AiPlaceholder& placeholder : layouts.placeholders) {
+							idx++;
 							if (placeholder.unit_id >= UnitId::Count || !unit_ids[placeholder.unit_id]) {
 								continue;
 							}
@@ -1127,7 +1124,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 							if (!placeholder.town) {
 								placeholder.town = town;
 								if (show_player_layouts[player]) {
-									bw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder.unit_id), i, placeholder.resarea);
+									bw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder.unit_id), (u32)idx, placeholder.resarea);
 								}
 							}
 						}

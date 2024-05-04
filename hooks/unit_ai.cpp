@@ -225,7 +225,7 @@ namespace hooks {
 					unit->unit_ai = (UnitAi*)ai;
 					++town->worker_count;
 
-					TownLayouts& layouts_town = g_ai_layouts.get_layouts_town(town);
+					TownLayouts& layouts_town = g_ai_layouts.get_town_layouts(town);
 					UnitExt* unit_ext = get_unit_ext(unit);
 					if (!town->inited) {
 						town->inited = 1;

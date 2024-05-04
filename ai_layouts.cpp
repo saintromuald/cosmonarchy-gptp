@@ -13,8 +13,8 @@ static u32 get_unit_total_cost(u32 unit_id);
 void AiLayouts::init() {
 	memset(show_player_layouts, 0, sizeof(show_player_layouts));
 	memset(default_ai_expansion_block, 0, sizeof(default_ai_expansion_block));
-	memset(player_layouts, 0, sizeof(player_layouts));
-	memset(layouts_towns, 0, sizeof(layouts_towns));
+	m_player_layouts = {};
+	m_town_layouts = {};
 
 	for (const CHKUnit& chk_unit : g_chk_cache) {
 		if (chk_unit.player > PlayerLimit && chk_unit.player != 11) {
@@ -36,14 +36,13 @@ void AiLayouts::init() {
 		}
 	}
 
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		PlayerLayouts& layouts = player_layouts[i];
+	for (u32 player = 0; player < PlayerLimit; ++player) {
+		PlayerLayouts& layouts = m_player_layouts[player];
 		sort_layouts(layouts);
 
-		for (u32 j = 0; j < layouts.placeholders_count; ++j) {
-			AiPlaceholder& placeholder = layouts.placeholders[j];
+		for (AiPlaceholder& placeholder : layouts.placeholders) {
 			if (!(units_dat::base_property[placeholder.unit_id] & UnitProperty::Building)) {
-				for (GuardAi* guard_ai = g_player_guard_list->player[i].first; guard_ai; guard_ai = guard_ai->link.prev) {
+				for (GuardAi* guard_ai = g_player_guard_list->player[player].first; guard_ai; guard_ai = guard_ai->link.prev) {
 					if (guard_ai->original_home.x == placeholder.position.x &&
 						guard_ai->original_home.y == placeholder.position.y &&
 						guard_ai->unit_id == placeholder.unit_id) {
@@ -59,7 +58,7 @@ void AiLayouts::update() {
 	// Update Layouts Towns
 	for (u32 town_id = 0; town_id < AiTownLimit; ++town_id) {
 		AiTown* town = &g_ai_town_array[town_id];
-		TownLayouts& layouts_town = layouts_towns[town_id];
+		TownLayouts& layouts_town = m_town_layouts[town_id];
 		if (!town->inited) {
 			layouts_town.inited = false;
 			layouts_town.wants_no_resarea = false;
@@ -70,11 +69,10 @@ void AiLayouts::update() {
 			layouts_town.inited = true;
 			memset(layouts_town.request_count, 0, sizeof(layouts_town.request_count));
 
-			PlayerLayouts& layouts = player_layouts[town->player];
+			PlayerLayouts& layouts = m_player_layouts[town->player];
 			if (!layouts_town.wants_no_resarea) {
 				// Claim ownership of invincible placeholders
-				for (u32 j = 0; j < layouts.placeholders_count; ++j) {
-					AiPlaceholder& placeholder = layouts.placeholders[j];
+				for (AiPlaceholder& placeholder : layouts.placeholders) {
 					if (!placeholder.resarea) {
 						placeholder.resarea = town->resarea;
 						layouts.should_sort = true;
@@ -83,8 +81,7 @@ void AiLayouts::update() {
 			}
 
 			// Init placeholders
-			for (u32 placeholder_id = 0; placeholder_id < layouts.placeholders_count; ++placeholder_id) {
-				AiPlaceholder& placeholder = layouts.placeholders[placeholder_id];
+			for (AiPlaceholder& placeholder : layouts.placeholders) {
 				if ((!placeholder.town && placeholder.resarea == town->resarea) || (placeholder.town && placeholder.town == town)) {
 					placeholder.inited = false;
 					placeholder.requested = false;
@@ -112,14 +109,12 @@ void AiLayouts::update() {
 
 	// Update Layouts
 	for (u32 player = 0; player < PlayerLimit; ++player) {
-		PlayerLayouts& layouts = player_layouts[player];
+		PlayerLayouts& layouts = m_player_layouts[player];
 
 		// Update State
 		bool is_expanding = has_expanding_town(player);
 		u32 townhall_index = 0;
-		for (u32 j = 0; j < layouts.placeholders_count; ++j) {
-			AiPlaceholder& placeholder = layouts.placeholders[j];
-
+		for (AiPlaceholder& placeholder : layouts.placeholders) {
 			// Update town
 			if (placeholder.town) {
 				AiTown* town = placeholder.town;
@@ -170,11 +165,12 @@ void AiLayouts::update() {
 		}
 
 		// Request Layouts
-		for (u32 placeholder_id = 0; placeholder_id < layouts.placeholders_count; ++placeholder_id) {
+		s32 idx = -1;
+		for (AiPlaceholder& placeholder : layouts.placeholders) {
+			idx++;
 			if (is_expanding) {
 				break;
 			}
-			AiPlaceholder& placeholder = layouts.placeholders[placeholder_id];
 			if (placeholder.disabled || !placeholder.should_request) {
 				continue;
 			}
@@ -182,7 +178,7 @@ void AiLayouts::update() {
 			if (!town) {
 				continue;
 			}
-			TownLayouts& layouts_town = get_layouts_town(town);
+			TownLayouts& layouts_town = get_town_layouts(town);
 			u32 base_unit_id = find_unit_root_merge(placeholder.unit_id);
 
 			layouts_town.request_count[placeholder.unit_id] += 1;
@@ -191,7 +187,7 @@ void AiLayouts::update() {
 					if (!placeholder.requested) {
 						placeholder.requested = true;
 						if (show_player_layouts[town->player]) {
-							bw::printf("Player %u requested %s #%u at resarea %u", player + 1, Unit::get_name(placeholder.unit_id), placeholder_id, placeholder.resarea);
+							bw::printf("Player %u requested %s #%u at resarea %u", player + 1, Unit::get_name(placeholder.unit_id), idx, placeholder.resarea);
 						}
 					}
 
@@ -220,8 +216,9 @@ void AiLayouts::update() {
 
 		// Draw layouts
 		if (show_player_layouts[player]) {
-			for (u32 j = 0; j < layouts.placeholders_count; ++j) {
-				AiPlaceholder& placeholder = layouts.placeholders[j];
+			s32 idx = -1;
+			for (AiPlaceholder& placeholder : layouts.placeholders) {
+				idx++;
 				if (placeholder.is_townhall_marker) {
 					continue;
 				}
@@ -249,7 +246,7 @@ void AiLayouts::update() {
 					pos.x = unit_box.left + 5;
 					pos.y = unit_box.top + 5;
 
-					snprintf(buffer, 256, "%s (%u)", get_short_unit_name(placeholder.unit_id).string().c_str(), player + 1);
+					snprintf(buffer, 256, "#%u %s (%u)", (u32)idx, get_short_unit_name(placeholder.unit_id).string().c_str(), player + 1);
 					g_graphics.draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
 					pos.y += 10;
 
@@ -302,9 +299,8 @@ void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& p
 		add_placeholder_unit_id(layouts, placeholder, equivalent.from);
 	}
 
-	for (u32 i = 0; i < layouts.placeholders_count; ++i) {
-		AiPlaceholder& other = layouts.placeholders[i];
-		if (unit_id == layouts.placeholders[i].unit_id && placeholder.position == other.position) {
+	for (AiPlaceholder& other : layouts.placeholders) {
+		if (unit_id == other.unit_id && placeholder.position == other.position) {
 			if (other.priority < placeholder.priority) {
 				other.priority = placeholder.priority;
 			}
@@ -314,9 +310,7 @@ void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& p
 	}
 
 	placeholder.unit_id = unit_id;
-	if (layouts.placeholders_count < PlaceholderLimit) {
-		layouts.placeholders[layouts.placeholders_count++] = placeholder;
-	}
+	layouts.placeholders.push_back(placeholder);
 	placeholder.priority -= equivalent.priority_decrease;
 }
 
@@ -332,13 +326,12 @@ void AiLayouts::add_placeholder_chk(const CHKUnit& unit, u32 player) {
 	if (!(flags & ChkUnitFlags_Invincible)) {
 		placeholder.resarea = bw::get_closest_resarea(placeholder.position);
 	}
-	add_placeholder_unit_id(player_layouts[player], placeholder, unit.unit_id);
+	add_placeholder_unit_id(m_player_layouts[player], placeholder, unit.unit_id);
 }
 
 Point16 AiLayouts::get_ai_town_position(AiTown* town) {
-	PlayerLayouts& layouts = player_layouts[town->player];
-	for (u32 placeholder_id = 0; placeholder_id < layouts.placeholders_count; ++placeholder_id) {
-		AiPlaceholder& placeholder = layouts.placeholders[placeholder_id];
+	PlayerLayouts& layouts = m_player_layouts[town->player];
+	for (AiPlaceholder& placeholder : layouts.placeholders) {
 		if (placeholder.resarea == town->resarea && placeholder.is_townhall_marker) {
 			return placeholder.position;
 		}
@@ -348,13 +341,13 @@ Point16 AiLayouts::get_ai_town_position(AiTown* town) {
 
 PlayerLayouts& AiLayouts::get_player_layouts(u32 player) {
 	assert(player >= 0 && player < PlayerLimit);
-	return player_layouts[player];
+	return m_player_layouts[player];
 }
 
-TownLayouts& AiLayouts::get_layouts_town(AiTown* town) {
+TownLayouts& AiLayouts::get_town_layouts(AiTown* town) {
 	s32 index = town - g_ai_town_array;
 	assert(index >= 0 && index <= AiTownLimit);
-	return layouts_towns[index];
+	return m_town_layouts[index];
 }
 
 u32 AiLayouts::ai_get_next_custom_expo(AiTown* main_town) {
@@ -364,9 +357,8 @@ u32 AiLayouts::ai_get_next_custom_expo(AiTown* main_town) {
 
 	bool has_transport = bw::player_has_transport(main_town->player);
 
-	PlayerLayouts& layouts = player_layouts[main_town->player];
-	for (u32 j = 0; j < layouts.placeholders_count; ++j) {
-		AiPlaceholder& placeholder = layouts.placeholders[j];
+	PlayerLayouts& layouts = m_player_layouts[main_town->player];
+	for (AiPlaceholder& placeholder : layouts.placeholders) {
 		// Check if resarea is available
 		if (!hooks::ai_resarea_valid_for_expo(main_town->player, placeholder.resarea, main_town, has_transport, 0)) {
 			continue;
@@ -397,7 +389,7 @@ bool AiLayouts::has_expanding_town(u32 player) {
 	}
 	for (u32 i = 0; i <= AiTownLimit; ++i) {
 		AiTown* town = &g_ai_town_array[i];
-		TownLayouts& layouts_town = layouts_towns[i];
+		TownLayouts& layouts_town = m_town_layouts[i];
 		if (town->player == player && !layouts_town.wants_no_resarea && !town->main_building && layouts_town.inited) {
 			return true;
 		}
@@ -631,7 +623,7 @@ static u32 get_unit_total_cost(u32 unit_id) {
 }
 
 void sort_layouts(PlayerLayouts& layouts) {
-	std::sort(layouts.placeholders, layouts.placeholders + layouts.placeholders_count, [](AiPlaceholder& a, AiPlaceholder& b) {
+	std::ranges::sort(layouts.placeholders, [](AiPlaceholder& a, AiPlaceholder& b) {
 		s32 priority_diff = b.priority - a.priority;
 		if (priority_diff) return priority_diff < 0;
 

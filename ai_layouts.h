@@ -1,6 +1,7 @@
 #pragma once
 #include "BW\api.h"
 #include "unit_constants.h"
+#include <array>
 
 enum ChkUnitFlags {
 	ChkUnitFlags_Cloaked      = 0x01, // Ai Layout
@@ -35,8 +36,7 @@ struct AiPlaceholder {
 
 #define PlaceholderLimit 2048
 struct PlayerLayouts {
-	u32 placeholders_count;
-	AiPlaceholder placeholders[PlaceholderLimit];
+	std::vector<AiPlaceholder> placeholders;
 	bool should_sort;
 };
 
@@ -152,7 +152,7 @@ public:
 
 	Point16 get_ai_town_position(AiTown* town);
 	PlayerLayouts& get_player_layouts(u32 player);
-	TownLayouts& get_layouts_town(AiTown* town);
+	TownLayouts& get_town_layouts(AiTown* town);
 	u32 ai_get_next_custom_expo(AiTown* main_town);
 	bool has_expanding_town(u32 player);
 
@@ -162,8 +162,8 @@ private:
 	void request_placeholder(AiTown* town, TownLayouts& layouts_town, AiPlaceholder& placeholder);
 
 private:
-	PlayerLayouts player_layouts[PlayerLimit];
-	TownLayouts layouts_towns[AiTownLimit];
+	std::array<PlayerLayouts, PlayerLimit> m_player_layouts;
+	std::array<TownLayouts, AiTownLimit> m_town_layouts;
 };
 
 inline AiLayouts g_ai_layouts;
