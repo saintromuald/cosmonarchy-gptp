@@ -626,7 +626,7 @@ namespace hooks {
 			for (size_t i = 0; i < colors.size(); i += 9) {
 				SyncColorPrefCommand command{(u8)*g_local_nation_id};
 				for (size_t j = 0; j < 9 && i + j < colors.size(); j++) {
-					command.colors[i % 9] = g_config.preferred_colors[i + j];
+					command.colors[j % 9] = g_config.preferred_colors[i + j];
 				}
 				queue_game_command((u8*)&command, sizeof(command));
 			}
