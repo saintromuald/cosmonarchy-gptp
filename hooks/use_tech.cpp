@@ -8,6 +8,8 @@
 
 namespace hooks
 {
+	static bool can_play_local_sound = (*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay;
+
 	static void select_larva_type(u32 buttonset, u32 ocsal_buttonset) {
 		Unit* unit = *g_active_portrait_unit;
 		if (!unit) {
@@ -93,14 +95,14 @@ namespace hooks
 			} break;
 			case TechId::SavantOnhitToggle: {
 				s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
-				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
+				if (can_play_local_sound) {
 					u32 action_sound = action ? helper::rand_between(SoundId::SavantSwitchPierce01, SoundId::SavantSwitchPierce03, 31) : helper::rand_between(SoundId::SavantSwitchSteal01, SoundId::SavantSwitchSteal03, 31);
 					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				queue_generic_ability(RustId::ToggleSavantOnhit, action);
 			} break;
 			case TechId::ApostleLazarusAgent: {
-				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
+				if (can_play_local_sound) {
 					u32 action_sound = helper::rand_between(SoundId::ApostleToggleLazarus01, SoundId::ApostleToggleLazarus03, 31);
 					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
@@ -149,22 +151,22 @@ namespace hooks
 				helper::issue_tri_target_order(OrderId::Plague, 0, 0);
 			} break;
 			case TechId::PsionicStorm: {
-				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
-					u32 action_sound = helper::rand_between(SoundId::Protoss_TEMPLAR_PTePss01_WAV, SoundId::Protoss_TEMPLAR_PTePss02_WAV, 31);
+				if (can_play_local_sound) {
+					u32 action_sound = bw::rand_between_local(SoundId::Protoss_TEMPLAR_PTePss01_WAV, SoundId::Protoss_TEMPLAR_PTePss02_WAV);
 					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				helper::issue_tri_target_order(OrderId::PsiStorm, 0, 0);
 			} break;
 			case TechId::Hallucination: {
-				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
+				if (can_play_local_sound) {
 					u32 action_sound = SoundId::Protoss_TEMPLAR_PTePss03_WAV;
 					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				helper::issue_tri_target_order(OrderId::Hallucination1, 0, 0);
 			} break;
 			case TechId::Tyranny: {
-				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
-					u32 action_sound = helper::rand_between(SoundId::Protoss_DARCHON_PDaPss00_WAV, SoundId::Protoss_DARCHON_PDaPss01_WAV, 31);
+				if (can_play_local_sound) {
+					u32 action_sound = bw::rand_between_local(SoundId::Protoss_DARCHON_PDaPss00_WAV, SoundId::Protoss_DARCHON_PDaPss01_WAV);
 					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
 				helper::issue_tri_target_order(OrderId::CastTyranny, 0, 0);
@@ -176,9 +178,8 @@ namespace hooks
 				queue_toggle_ability(RustId::ToggleDisruptionField, unit);
 			} break;
 			case TechId::DimensionalRecall: {
-				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
-					u32 action_sound = SoundId::Protoss_ARBITER_PAbPss00_WAV;
-					bw::play_action_sound(action_sound, *g_active_portrait_unit);
+				if (can_play_local_sound) {
+					bw::play_action_sound(SoundId::Protoss_ARBITER_PAbPss00_WAV, *g_active_portrait_unit);
 				}
 				helper::issue_tri_target_order(OrderId::Teleport, 0, 0);
 			} break;
@@ -204,9 +205,6 @@ namespace hooks
 			case TechId::LarvalSubmenuSelectControl: {
 				select_larva_type(UnitId::Buttons_LarvaControl, UnitId::Buttons_OcsalLarvaControl);
 			} break;
-		//	case TechId::LarvalSubmenuSelectShared: {
-		//		select_larva_type(UnitId::Buttons_LarvaShared);
-		//	} break;
 			case TechId::CancelNewAbility: {
 				Unit* selected = *g_active_portrait_unit;
 				if (selected) {
