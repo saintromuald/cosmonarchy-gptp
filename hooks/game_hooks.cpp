@@ -3469,8 +3469,7 @@ namespace hooks {
 		memory_patch(0x004EBF50 + 6, (u8)OrderQueueTimer);
 	//	memory_patch(0x004EC70B + 6, (u8)OrderQueueTimer); // hooked within unused_order_patch_wrapper in cosmonarchy_specific_inject.cpp 
 
-		chk_cache_size = 0;
-		memset(chk_cache, 0, sizeof(chk_cache));
+		g_chk_cache.clear();
 
 		quickcasting_signal = false;
 		quickcasting_command_card = 0;

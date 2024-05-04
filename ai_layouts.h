@@ -11,6 +11,7 @@ enum ChkUnitFlags {
 };
 
 // This structure is mirrored in aise, be careful when you change it 
+// TODO: Make a SetBaseLayoutRequest type instead, and allow this to be modified freely
 struct AiPlaceholder {
 	Point16 position;
 	u16 unit_id;
@@ -118,9 +119,24 @@ const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergElthrazalisk, UnitId::ZergRakzilisk},
 };
 
-#define ChkCacheLimit UNIT_ARRAY_LENGTH
-inline u32 chk_cache_size;
-inline CHKUnit chk_cache[ChkCacheLimit];
+struct ChkCache {
+	static constexpr size_t Capacity = UnitLimit;
+
+	u32 size;
+	CHKUnit units[Capacity];
+
+	void add(const CHKUnit& unit) {
+		if (size < Capacity) {
+			units[size++] = unit;
+		}
+	}
+
+	void clear() { size = 0; }
+	CHKUnit* begin() { return units; }
+	CHKUnit* end() { return units + size; }
+};
+
+inline ChkCache g_chk_cache;
 
 inline bool show_player_layouts[PlayerLimit];
 inline u32 default_ai_expansion_block[PlayerLimit];
@@ -132,7 +148,7 @@ void init_layouts();
 void update_layouts();
 
 Point16 get_ai_town_position(AiTown* town);
-AiLayoutsTown* get_layouts_town(AiTown* town);
+AiLayoutsTown& get_layouts_town(AiTown* town);
 u32 ai_get_next_custom_expo(AiTown* main_town);
 
 u32 find_unit_base(u32 unit_id);
@@ -148,16 +164,16 @@ u32 town_count_up_equivalents(AiTown* town, u32 unit_id);
 u32 player_count_units(u32 player, u32 unit_id, bool completed);
 u32 player_count_up_equivalents(u32 player, u32 unit_id);
 
-void add_placeholder_by_unit_id(AiLayouts* layouts, AiPlaceholder* placeholder, u32 unit_id);
-void add_placeholder(CHKUnit* unit, u32 player);
-void sort_layouts(AiLayouts* layouts);
+void add_placeholder_by_unit_id(AiLayouts& layouts, AiPlaceholder& placeholder, u32 unit_id);
+void add_placeholder(const CHKUnit& unit, u32 player);
+void sort_layouts(AiLayouts& layouts);
 
 bool unit_has_creep(u32 unit_id, u32 x, u32 y);
 bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player);
 bool is_basic_townhall(u32 unit_id);
 
 bool can_place_unit(u32 unit_id, Point16 position, u32 player);
-bool can_build_placeholder(AiLayouts* layouts, AiTown* town, AiPlaceholder* placeholder);
+bool can_build_placeholder(AiTown* town, AiPlaceholder& placeholder);
 bool has_expanding_town(u32 player);
-void init_placeholder(AiTown* town, AiPlaceholder* placeholder);
-void request_placeholder(AiTown* town, AiLayoutsTown* layouts_town, AiPlaceholder* placeholder);
+void init_placeholder(AiTown* town, AiPlaceholder& placeholder);
+void request_placeholder(AiTown* town, AiLayoutsTown& layouts_town, AiPlaceholder& placeholder);

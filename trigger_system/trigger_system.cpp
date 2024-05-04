@@ -1100,18 +1100,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				AiTown* town = helper::create_ai_town(player, pos.x, pos.y);
 				if (town) {
 					town->inited = true;
-					AiLayoutsTown* layouts_town = get_layouts_town(town);
-					layouts_town->worker_limit = worker_count;
-					layouts_town->worker_maynard = worker_count;
+					AiLayoutsTown& layouts_town = get_layouts_town(town);
+					layouts_town.worker_limit = worker_count;
+					layouts_town.worker_maynard = worker_count;
 					if (worker_count) {
 						helper::ai_get_old_peons(town, worker_count);
 					}
 					if (attach_to_nearest_resarea) {
 						town->resarea = bw::get_closest_resarea(pos);
-						layouts_town->wants_no_resarea = false;
+						layouts_town.wants_no_resarea = false;
 					} else {
 						town->resarea = 0;
-						layouts_town->wants_no_resarea = true;
+						layouts_town.wants_no_resarea = true;
 					}
 					town->resource_units_not_set = town->resarea != 0;
 					if (claim_placeholders_area.box.w && claim_placeholders_area.box.h) {
