@@ -118,13 +118,12 @@ namespace hooks
 					{
 						case UnitId::TerranEidolon:
 						{
-							action_sound = helper::rand_between(SoundId::Terran_GHOST_TGhPss00_wav, SoundId::Terran_GHOST_TGhPss01_wav, 31);
+							action_sound = SoundId::Terran_GHOST_TGhPss00_wav;
 						} break;
 					}
 
 					if (action_sound) {
-						if (helper::play_sound_from_unit(action_sound, unit, g_options_list->flags & 1, 99)
-						&& !*g_is_in_replay && unit->player == *g_local_nation_id) {
+						if (helper::play_sound_from_unit(SoundId::Terran_GHOST_TGhPss00_wav, unit, g_options_list->flags & 1, 99)) {
 							helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 						}
 					}

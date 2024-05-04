@@ -8,8 +8,6 @@
 
 namespace hooks
 {
-	static bool can_play_local_sound = (*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay;
-
 	static void select_larva_type(u32 buttonset, u32 ocsal_buttonset) {
 		Unit* unit = *g_active_portrait_unit;
 		if (!unit) {
@@ -55,7 +53,8 @@ namespace hooks
 	// Replacement for proc @ 00423660. -iquare
 	void btnsact_use_tech(u16 tech, GrpHead* head) { // 00423F70
 		bool tech_capable_unit = false;
-
+		bool can_play_local_sound = (*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay;
+		
 		// Only taking the first unit has bad implications for toggles, since we toggle based on the first unit's state, which is not guaranteed
 		// to be the same state as all other units in the selection.
 		// We should think of a way to fix this! -Pr0nogo

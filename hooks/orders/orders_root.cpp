@@ -1,5 +1,6 @@
 #include "orders_root.h"
 #include <BW/api.h>
+#include <hooks/limits/sfx_extender.h>
 
 #ifndef NOTVALID
 #define NOTVALID 0
@@ -829,6 +830,24 @@ namespace hooks {
 						helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 						helper::show_and_enable_unit(unit);
 						unit->main_order_state = 5;
+
+						Unit* nuker = unit->connected_unit;
+						if (nuker) {
+							u32 action_sound = SoundId::No_sound;
+							switch (nuker->id)
+							{
+								case UnitId::TerranEidolon:
+								{
+									action_sound = SoundId::Terran_GHOST_TGhPss01_wav;
+								} break;
+							}
+
+							if (action_sound) {
+								if (helper::play_sound_from_unit(action_sound, nuker, g_options_list->flags & 1, 99)) {
+									helper::do_unit_event_notification(nuker, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
+								}
+							}
+						}
 					}
 				} break;
 				case 5:
