@@ -4164,7 +4164,7 @@ namespace hooks {
 		version->game_title = "Cosmonarchy";
 
 		version->game_description = "internal version unknown";
-		version->version_id = comptime(hash_string(__TIMESTAMP__));
+		version->version_id = VersionHash;
 		version->max_players = 8;
 		version->category_bits = 255;
 		helper::get_cd_key_info(&version->key_owner, &version->key);

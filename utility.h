@@ -13,9 +13,7 @@ constexpr u32 hash_string(const char* string) {
 	return result;
 }
 
-consteval auto comptime(auto value) {
-	return value;
-}
+inline constinit const u32 VersionHash = hash_string(__TIMESTAMP__);
 
 struct StringBuilder {
 	u32 capacity;
