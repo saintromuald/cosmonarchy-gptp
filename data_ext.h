@@ -1,8 +1,6 @@
 #pragma once
 #include "BW/api.h"
 
-// TODO: move unit ext handling here (from iquare_globals)
-
 enum ExtValueId {
 	ValueUnitInit,
 	ValueUnitIdName,
