@@ -50,9 +50,13 @@ namespace hooks
 		helper::queue_game_command(buffer, sizeof(buffer));
 	}
 
+	// Replacement for proc @ 00423660. -iquare
 	void btnsact_use_tech(u16 tech, GrpHead* head) { // 00423F70
-		// Replacement for proc @ 00423660. -iquare
 		bool tech_capable_unit = false;
+
+		// Only taking the first unit has bad implications for toggles, since we toggle based on the first unit's state, which is not guaranteed
+		// to be the same state as all other units in the selection.
+		// We should think of a way to fix this! -Pr0nogo
 		Unit* unit = players_selections->unit[*g_active_nation_id][0];
 		if (unit) {
 			// Initial check for energy-based switch abilities
@@ -88,22 +92,12 @@ namespace hooks
 				helper::issue_tri_target_order(OrderId::MagnaPulse, 0, 0);
 			} break;
 			case TechId::SavantOnhitToggle: {
-				UnitExt* unit_ext = get_unit_ext(unit);
-				if (unit_ext->timers[TimerSavantFormSwitchCooldown] < 1) {
-					s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
-					if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
-						u32 action_sound = action ? helper::rand_between(SoundId::SavantSwitchPierce01, SoundId::SavantSwitchPierce03, 31) : helper::rand_between(SoundId::SavantSwitchSteal01, SoundId::SavantSwitchSteal03, 31);
-						bw::play_action_sound(action_sound, *g_active_portrait_unit);
-					}
-					u32 sound = action ? SoundId::SavantSwitchA01 : SoundId::SavantSwitchB01;
-					helper::play_sound_from_unit(sound, unit, 1, 0);
-
-					u32 image_id = action ? ImageId::SavantFormSwitchPower : ImageId::SavantFormSwitchEntropy;
-					bw::add_unit_overlay(unit, image_id);
-
-					unit_ext->timers[TimerSavantFormSwitchCooldown] = 49;
-					queue_generic_ability(RustId::ToggleSavantOnhit, action);
+				s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
+				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {
+					u32 action_sound = action ? helper::rand_between(SoundId::SavantSwitchPierce01, SoundId::SavantSwitchPierce03, 31) : helper::rand_between(SoundId::SavantSwitchSteal01, SoundId::SavantSwitchSteal03, 31);
+					bw::play_action_sound(action_sound, *g_active_portrait_unit);
 				}
+				queue_generic_ability(RustId::ToggleSavantOnhit, action);
 			} break;
 			case TechId::ApostleLazarusAgent: {
 				if ((*g_active_portrait_unit)->player == *g_local_nation_id && !*g_is_in_replay) {

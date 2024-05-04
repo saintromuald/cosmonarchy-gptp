@@ -2636,7 +2636,15 @@ namespace hooks {
 							}
 						}
 
-						// Hide recall, since cancel is the same slot
+						if (unit->id == UnitId::TerranSavant) {
+							if (unit_ext->timers[TimerSavantFormSwitchCooldown] > 1) {
+								current_button_state = Button_State::Disabled;
+							} else {
+								current_button_state = Button_State::Enabled;
+							}
+						}
+
+						// Hide Recall, since cancel is the same slot
 						if (unit->id == UnitId::ProtossDidact && current_button->action_var == TechId::DimensionalRecall) {
 							if (unit_ext->values[ValueDidactRecalling]) {
 								current_button_state = Button_State::Invisible;

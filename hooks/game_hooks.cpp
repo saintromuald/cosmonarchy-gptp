@@ -4045,7 +4045,29 @@ namespace hooks {
 									if (!unit) {
 										continue;
 									}
-									bw::set_generic_rust_value(unit, rust_id, value);
+
+									UnitExt* unit_ext = get_unit_ext(unit);
+									bool set_value = true;
+									switch (unit->id) // Synced reads and conditions
+									{
+										case UnitId::TerranSavant:
+										{
+											if (unit_ext->timers[TimerSavantFormSwitchCooldown] > 1) {
+												set_value = false;
+												break;
+											}
+											u32 sound = value ? SoundId::SavantSwitchA01 : SoundId::SavantSwitchB01;
+											helper::play_sound_from_unit(sound, unit, 1, 0);
+
+											u32 image_id = value ? ImageId::SavantFormSwitchPower : ImageId::SavantFormSwitchEntropy;
+											bw::add_unit_overlay(unit, image_id);
+
+											unit_ext->timers[TimerSavantFormSwitchCooldown] = 49;
+										} break;
+									}
+									if (set_value) {
+										bw::set_generic_rust_value(unit, rust_id, value);
+									}
 								}
 							} break;
 							case NewGameCommand::IssueCTFCop2: {
