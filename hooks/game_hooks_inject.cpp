@@ -184,7 +184,7 @@ bool isGameOn = false;
 		}
 	}
 
-	constexpr std::string replay_ext = ".ext";
+	constexpr std::string_view replay_ext = ".ext";
 	constexpr auto replay_full_size = 32; // Some weird magic BW const we would want to extend 
 	constexpr auto replay_name_size = replay_full_size - replay_ext.size();
 
@@ -222,7 +222,7 @@ bool isGameOn = false;
 		time_t now = time(0);
 		tm* ltm = localtime(&now);
 
-		constexpr std::string ext = ".rep";
+		constexpr std::string_view ext = ".rep";
 		constexpr auto full_size = 28;
 
 		char short_date[replay_name_size] = {};
@@ -232,7 +232,7 @@ bool isGameOn = false;
 		strftime(date, replay_name_size, "%y-%m-%d_%H-%M", ltm);
 
 		char name[replay_name_size] = {};
-		snprintf(name, replay_name_size, "%s_%s", date, g_current_map_name, ext.c_str());
+		snprintf(name, replay_name_size, "%s_%s", date, g_current_map_name, ext.data());
 
 		/*
 		bool first = true;
@@ -253,7 +253,7 @@ bool isGameOn = false;
 		}
 		*/
 
-		copy_last_replay(short_date, name + ext);
+		copy_last_replay(short_date, name + std::string{ext});
 	}
 
 	void __declspec(naked) replay_save_wrapper() { // 004EEBEA
