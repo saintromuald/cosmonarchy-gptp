@@ -42,7 +42,7 @@ static void init_auto_celebration() {
 	}
 }
 
-Advisor get_advisor_type_from_config(u32 race) {
+static Advisor get_advisor_type_from_config(u32 race) {
 	std::vector<Advisor> advisors = g_config.common_advisors; // Note this is a copy
 	switch (race) {
 		case RaceId::Terran: {
