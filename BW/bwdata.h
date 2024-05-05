@@ -803,6 +803,7 @@ SCBW_DATA(u32*,		g_image_overlay_special,	0x00667B00);
 
 SCBW_DATA(u8*, g_unit_iterator_pos, 0x006284B6);
 SCBW_DATA(UnitsSel*, active_player_selection, ccmu_extender.new_active_selection);
+
 typedef Unit* (__cdecl* GetActivePlayerNextSelectionFunc)();
 SCBW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x0049A850);
 
@@ -1276,6 +1277,9 @@ SCBW_DATA(HIMC*,			g_app_context,						0x006D6438);
 
 // For show_or_hide_minimap
 SCBW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
+
+typedef int (__fastcall MinimapVisionCallback)();
+SCBW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

@@ -1084,7 +1084,7 @@ LABEL_15:
 			*g_current_surface = current_surface;
 		} else {
 			helper::dark_minimap_related();
-			*g_minimap_vision_CB;
+			g_minimap_vision_callback();
 		}
 	}
 }
