@@ -346,6 +346,7 @@ bool unit_id_is_factional(u16 unit_id) {
 bool unit_id_uses_xlarge_overlays(u16 unit_id) {
 	return unit_id == UnitId::TerranPenumbra
 		|| unit_id == UnitId::TerranPhobos
+		|| unit_id == UnitId::ProtossOptecton
 		|| unit_id == UnitId::ProtossStarSovereign
 		|| unit_id == UnitId::ZergOthstoleth
 		|| unit_id == UnitId::ZergAlkajelisk;

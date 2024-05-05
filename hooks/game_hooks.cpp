@@ -2554,6 +2554,34 @@ namespace hooks {
 			unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
 		}
 
+		if (unit_ext->timers[TimerAvenge] > 1) {
+			u32 ascend_overlay_id = ImageId::Avenge_Small + bw::get_overlay_offset(unit->id, true);
+			if (!unit->get_overlay(ascend_overlay_id)) {
+				bw::add_unit_overlay(unit, ascend_overlay_id);
+			}
+		}
+
+		if (unit_ext->timers[TimerAscend]) {
+			u32 ascend_overlay_id = ImageId::Ascension_Small + bw::get_overlay_offset(unit->id, true);
+			if (!unit->get_overlay(ascend_overlay_id)) {
+				bw::add_unit_overlay(unit, ascend_overlay_id);
+			}
+		}
+
+		{
+			u32 shield_bleed_overlay = ImageId::AstralRule_Small + bw::get_overlay_offset(unit->id, true);
+			if (unit_ext->timers[TimerTriumphantRiseDebuff] || unit_ext->timers[TimerPatriarchAstralRule] > 1) {
+				if (!unit->get_overlay(shield_bleed_overlay)) {
+					bw::add_unit_overlay(unit, shield_bleed_overlay);
+				}
+			} else {
+				Image* overlay = unit->get_overlay(shield_bleed_overlay);
+				if (overlay) {
+					overlay->play_iscript_animation(IscriptAnimation::Death);
+				}
+			}
+		}
+
 		// Tyranny
 		if (unit_ext->values[ValueMindControlPlayer]) {
 			EntryArray masters = {};

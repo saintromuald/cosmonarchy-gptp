@@ -162,7 +162,6 @@ void ascend_in_area(u32 player, Point16 position, u32 range) {
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->timers[TimerAscend] = 3 * 24;
-		unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 	}
 }
 

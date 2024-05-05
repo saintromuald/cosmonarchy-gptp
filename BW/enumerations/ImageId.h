@@ -1247,6 +1247,19 @@ namespace ImageId {
 
 		GladiusCharge								= 1854,
 
+		Avenge_Small								= 1856,
+		Avenge_Medium								= 1857,
+		Avenge_Large								= 1858,
+		Avenge_XLarge								= 1859,
+		Ascension_Small								= 1860,
+		Ascension_Medium							= 1861,
+		Ascension_Large								= 1862,
+		Ascension_XLarge							= 1863,
+		AstralRule_Small							= 1864,
+		AstralRule_Medium							= 1865,
+		AstralRule_Large							= 1866,
+		AstralRule_XLarge							= 1867,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,
