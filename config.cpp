@@ -33,23 +33,6 @@ static void write_field(YAML::Emitter& emitter, const std::string& key, const T&
 	emitter << YAML::Key << key << YAML::Value << value;
 }
 
-static AdvisorType parse_advisor_name(const char* name) {
-	Parser parser{name};
-	AdvisorType advisor = (AdvisorType)parser.get_enum(advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names), CHAR_MAX);
-	if (advisor == CHAR_MAX) {
-		config_error("Advisor \"{}\" does not exist! Please remove it from your cosmonarchy.yml.", name);
-	}
-	return advisor;
-}
-
-static void load_advisors(const YAML::Node& yaml, const char* name, AdvisorSetting* advisor) {
-	load_field(yaml, name, advisor->strings);
-	advisor->types.clear();
-	for (const std::string& name : advisor->strings) {
-		advisor->types.push_back(parse_advisor_name(name.c_str()));
-	}
-}
-
 static void validate_config() {
 	if (g_config.extended_control_groups) {
 		if (!g_config.grid_hotkeys) {
@@ -125,10 +108,10 @@ void load_config() {
 	load_field(yaml, "scroll-sensitivity", g_config.scroll_sensitivity);
 
 	// Audiovisuals
-	load_advisors(yaml, "common-advisors", &g_config.common_advisors);
-	load_advisors(yaml, "terran-advisors", &g_config.terran_advisors);
-	load_advisors(yaml, "protoss-advisors", &g_config.protoss_advisors);
-	load_advisors(yaml, "zerg-advisors", &g_config.zerg_advisors);
+	load_field(yaml, "common-advisors", g_config.common_advisors);
+	load_field(yaml, "terran-advisors", g_config.terran_advisors);
+	load_field(yaml, "protoss-advisors", g_config.protoss_advisors);
+	load_field(yaml, "zerg-advisors", g_config.zerg_advisors);
 	load_field(yaml, "celebrations-enabled", g_config.celebrations_enabled);
 
 	// Hotkeys
@@ -245,9 +228,9 @@ void save_config() {
 	yaml << YAML::Comment("Audiovisuals");
 	std::stringstream available_advisors;
 	available_advisors << "Available Advisors are: ";
-	for (u32 i = 0; i < AdvisorType_Count; ++i) {
-		available_advisors << advisor_symbol_names[i];
-		if (i != AdvisorType_Count - 1) {
+	for (u32 i = 0; i < Advisor_Count; ++i) {
+		available_advisors << advisor_names[i];
+		if (i != Advisor_Count - 1) {
 			available_advisors << ", ";
 		}
 	}
@@ -255,10 +238,10 @@ void save_config() {
 	yaml << YAML::Newline << YAML::Comment("You can use [] to make a list empty. e.g. terran-advisors: []");
 	yaml << YAML::Newline << YAML::Comment("Which is probably what you will want to do, if you want to just use common-advisors.");
 	yaml << YAML::Newline << YAML::Comment(available_advisors.str());
-	write_field(yaml, "common-advisors", g_config.common_advisors.strings);
-	write_field(yaml, "terran-advisors", g_config.terran_advisors.strings);
-	write_field(yaml, "protoss-advisors", g_config.protoss_advisors.strings);
-	write_field(yaml, "zerg-advisors", g_config.zerg_advisors.strings);
+	write_field(yaml, "common-advisors", g_config.common_advisors);
+	write_field(yaml, "terran-advisors", g_config.terran_advisors);
+	write_field(yaml, "protoss-advisors", g_config.protoss_advisors);
+	write_field(yaml, "zerg-advisors", g_config.zerg_advisors);
 	yaml << YAML::Newline << YAML::Newline;
 	write_field(yaml, "celebrations-enabled", g_config.celebrations_enabled);
 	yaml << YAML::Newline << YAML::Newline;

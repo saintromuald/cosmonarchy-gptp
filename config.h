@@ -1,19 +1,7 @@
 #pragma once
-#include <string>
-#include <array>
-#include <filesystem>
-
-#include <yaml-cpp/yaml.h>
-
-#include "trigger_system/trigger_system.h"
 #include "config_utils.h"
 
 inline const std::filesystem::path g_config_path = bw::get_starcraft_path() / "cosmonarchy.yml";
-
-struct AdvisorSetting {
-	std::vector<std::string> strings;
-	std::vector<AdvisorType> types;
-};
 
 struct Config {
 	// Launch settings
@@ -55,18 +43,10 @@ struct Config {
 	f32 scroll_sensitivity = 1.0;
 
 	// Audiovisuals
-	AdvisorSetting common_advisors{
-		{ advisor_symbol_names[AdvisorType_Default] },
-	};
-	AdvisorSetting terran_advisors{
-		{ advisor_symbol_names[AdvisorType_Terran] },
-	};
-	AdvisorSetting protoss_advisors{
-		{ advisor_symbol_names[AdvisorType_Protoss] },
-	};
-	AdvisorSetting zerg_advisors{
-		{ advisor_symbol_names[AdvisorType_Zerg] },
-	};
+	std::vector<Advisor> common_advisors{ Advisor_Default };
+	std::vector<Advisor> terran_advisors{ Advisor_Terran };
+	std::vector<Advisor> protoss_advisors{ Advisor_Protoss };
+	std::vector<Advisor> zerg_advisors{ Advisor_Zerg };
 	bool celebrations_enabled = true;
 
 	// Hotkeys

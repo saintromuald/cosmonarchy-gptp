@@ -42,24 +42,24 @@ static void init_auto_celebration() {
 	}
 }
 
-AdvisorType get_advisor_type_from_config(u32 race) {
-	std::vector<AdvisorType> advisors = g_config.common_advisors.types; // Note this is a copy
+Advisor get_advisor_type_from_config(u32 race) {
+	std::vector<Advisor> advisors = g_config.common_advisors; // Note this is a copy
 	switch (race) {
 		case RaceId::Terran: {
-			advisors.insert_range(advisors.end(), g_config.terran_advisors.types);
+			advisors.insert_range(advisors.end(), g_config.terran_advisors);
 		} break;
 		case RaceId::Protoss: {
-			advisors.insert_range(advisors.end(), g_config.protoss_advisors.types);
+			advisors.insert_range(advisors.end(), g_config.protoss_advisors);
 		} break;
 		case RaceId::Zerg: {
-			advisors.insert_range(advisors.end(), g_config.zerg_advisors.types);
+			advisors.insert_range(advisors.end(), g_config.zerg_advisors);
 		} break;
 	}
 	if (advisors.size()) {
 		u32 index = bw::rand_between_local(0, advisors.size() - 1);
 		return advisors[index];
 	}
-	return AdvisorType_Default;
+	return Advisor_Default;
 }
 
 void init_trigger_system() {
@@ -1591,7 +1591,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser.equals("set_faction")) {
 			u32 player = parser.get_player();
-			Faction faction = (Faction)parser.get_enum(faction_symbol_names, ARRAY_SIZE(faction_symbol_names));
+			Faction faction = (Faction)parser.get_enum(faction_identifiers, ARRAY_SIZE(faction_identifiers));
 
 			if (player) {
 				player -= 1;
@@ -1600,7 +1600,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser.equals("set_advisor")) {
 			u32 player = parser.get_player();
-			AdvisorType advisor = (AdvisorType)parser.get_enum(advisor_symbol_names, ARRAY_SIZE(advisor_symbol_names));
+			Advisor advisor = (Advisor)parser.get_enum(advisor_names, ARRAY_SIZE(advisor_names));
 
 			if (player) {
 				player -= 1;

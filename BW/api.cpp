@@ -3167,21 +3167,21 @@ namespace bw {
 
 	u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) { 
 	/*	if (bw::has_custom_advisor(player)) */ {
-			AdvisorType advisor = g_globals->current_advisor;
-			if (advisor == AdvisorType_Default) {
+			Advisor advisor = g_globals->current_advisor;
+			if (advisor == Advisor_Default) {
 				switch (g_player_table[player].race)
 				{
 					case RaceId::Terran:
 					{
-						advisor = AdvisorType_Terran;
+						advisor = Advisor_Terran;
 					} break;
 					case RaceId::Protoss:
 					{
-						advisor = AdvisorType_Protoss;
+						advisor = Advisor_Protoss;
 					} break;
 					case RaceId::Zerg:
 					{
-						advisor = AdvisorType_Zerg;
+						advisor = Advisor_Zerg;
 					} break;
 				}
 			}
@@ -3189,120 +3189,120 @@ namespace bw {
 			switch (event_type) {
 				case AdvisorEvent_NoMinerals: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
-						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoMinerals01;
-						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_NoMinerals01, SoundId::MeskAdvisor_NoMinerals04);
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoMinerals01, SoundId::AckmedAdvisor_NoMinerals04);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoMinerals01;
-						case AdvisorType_Artemis:	return helper::get_random_unit_response(SoundId::ArtemisAdvisor_NoMinerals01, SoundId::ArtemisAdvisor_NoMinerals02);
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoMinerals01, SoundId::ISNAdvisor_NoMinerals04);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_NoMinerals01;
+						case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr00_WAV;
+						case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr00_WAV;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_NoMinerals01;
+						case Advisor_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_NoMinerals01, SoundId::MeskAdvisor_NoMinerals04);
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoMinerals01, SoundId::AckmedAdvisor_NoMinerals04);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_NoMinerals01;
+						case Advisor_Artemis:	return helper::get_random_unit_response(SoundId::ArtemisAdvisor_NoMinerals01, SoundId::ArtemisAdvisor_NoMinerals02);
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoMinerals01, SoundId::ISNAdvisor_NoMinerals04);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_NoMinerals01;
 					}
 				} break;
 				case AdvisorEvent_NoVespene: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr01_WAV;
-						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr01_WAV;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoVespene01;
-						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_NoVespene01, SoundId::MeskAdvisor_NoVespene05);
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoVespene01, SoundId::AckmedAdvisor_NoVespene04);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoVespene01;
-						case AdvisorType_Artemis:	return helper::get_random_unit_response(SoundId::ArtemisAdvisor_NoVespene01, SoundId::ArtemisAdvisor_NoVespene02);
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoVespene01, SoundId::ISNAdvisor_NoVespene04);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_NoVespene01;
+						case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr01_WAV;
+						case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr01_WAV;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_NoVespene01;
+						case Advisor_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_NoVespene01, SoundId::MeskAdvisor_NoVespene05);
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoVespene01, SoundId::AckmedAdvisor_NoVespene04);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_NoVespene01;
+						case Advisor_Artemis:	return helper::get_random_unit_response(SoundId::ArtemisAdvisor_NoVespene01, SoundId::ArtemisAdvisor_NoVespene02);
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoVespene01, SoundId::ISNAdvisor_NoVespene04);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_NoVespene01;
 					}
 				} break;
 				case AdvisorEvent_NoEnergy: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr06_WAV;
-						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdErr06_WAV;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoEnergy01;
-						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_NoEnergy01, SoundId::MeskAdvisor_NoEnergy05);
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoEnergy01, SoundId::AckmedAdvisor_NoEnergy04);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoEnergy01;
-						case AdvisorType_Artemis:	return helper::get_random_unit_response(SoundId::ArtemisAdvisor_NoEnergy01, SoundId::ArtemisAdvisor_NoEnergy02);
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoEnergy01, SoundId::ISNAdvisor_NoEnergy04);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_NoEnergy01;
+						case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr06_WAV;
+						case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdErr06_WAV;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_NoEnergy01;
+						case Advisor_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_NoEnergy01, SoundId::MeskAdvisor_NoEnergy05);
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoEnergy01, SoundId::AckmedAdvisor_NoEnergy04);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_NoEnergy01;
+						case Advisor_Artemis:	return helper::get_random_unit_response(SoundId::ArtemisAdvisor_NoEnergy01, SoundId::ArtemisAdvisor_NoEnergy02);
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoEnergy01, SoundId::ISNAdvisor_NoEnergy04);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_NoEnergy01;
 
 					}
 				} break;
 				case AdvisorEvent_NoBuildTerran: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_SCV_TSCErr01_WAV;
-						case AdvisorType_Protoss:	return SoundId::Terran_SCV_TSCErr01_WAV;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoBuild01;
-						case AdvisorType_Mesk:		return SoundId::Terran_SCV_TSCErr01_WAV;
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_NoBuild01;
+						case Advisor_Terran:	return SoundId::Terran_SCV_TSCErr01_WAV;
+						case Advisor_Protoss:	return SoundId::Terran_SCV_TSCErr01_WAV;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_NoBuild01;
+						case Advisor_Mesk:		return SoundId::Terran_SCV_TSCErr01_WAV;
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_NoBuild01;
 					}
 				} break;
 				case AdvisorEvent_NoBuildProtoss: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::ProtossAdvisorErrorPlacement;
-						case AdvisorType_Protoss:	return SoundId::ProtossAdvisorErrorPlacement;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoWarp01;
-						case AdvisorType_Mesk:		return SoundId::ProtossAdvisorErrorPlacement;
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoWarp01, SoundId::AckmedAdvisor_NoWarp01);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoWarp01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoWarp01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoWarp01, SoundId::ISNAdvisor_NoWarp02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_NoWarp01;
+						case Advisor_Terran:	return SoundId::ProtossAdvisorErrorPlacement;
+						case Advisor_Protoss:	return SoundId::ProtossAdvisorErrorPlacement;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_NoWarp01;
+						case Advisor_Mesk:		return SoundId::ProtossAdvisorErrorPlacement;
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoWarp01, SoundId::AckmedAdvisor_NoWarp01);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_NoWarp01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_NoWarp01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoWarp01, SoundId::ISNAdvisor_NoWarp02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_NoWarp01;
 					}
 				} break;
 				case AdvisorEvent_NoBuildZerg: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Zerg_DRONE_ZDrErr00;
-						case AdvisorType_Protoss:	return SoundId::Zerg_DRONE_ZDrErr00;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoBuild01;
-						case AdvisorType_Mesk:		return SoundId::Zerg_DRONE_ZDrErr00;
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_NoBuild01;
+						case Advisor_Terran:	return SoundId::Zerg_DRONE_ZDrErr00;
+						case Advisor_Protoss:	return SoundId::Zerg_DRONE_ZDrErr00;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_NoBuild01;
+						case Advisor_Mesk:		return SoundId::Zerg_DRONE_ZDrErr00;
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_NoBuild01;
 					}
 				} break;
 				case AdvisorEvent_NoLanding: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr04_WAV_1; // Fill in
-						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_tAdErr04_WAV_1; // Fill in
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_NoLand01;
-						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_tAdErr04_WAV_1; // Fill in
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoLand01, SoundId::AckmedAdvisor_NoLand02);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoLand01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoLand01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoLand01, SoundId::ISNAdvisor_NoLand02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_NoLand01;
+						case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr04_WAV_1; // Fill in
+						case Advisor_Protoss:	return SoundId::Terran_Advisor_tAdErr04_WAV_1; // Fill in
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_NoLand01;
+						case Advisor_Mesk:		return SoundId::Terran_Advisor_tAdErr04_WAV_1; // Fill in
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoLand01, SoundId::AckmedAdvisor_NoLand02);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_NoLand01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_NoLand01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoLand01, SoundId::ISNAdvisor_NoLand02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_NoLand01;
 					}
 				} break;
 				case AdvisorEvent_LandingInterrupted: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_tAdErr03_WAV_1;
-						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_tAdErr03_WAV_1;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_LandingInterrupt01;
-						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_tAdErr03_WAV_1;
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_LandingInterrupt01, SoundId::AckmedAdvisor_LandingInterrupt02);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_LandingInterrupt01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_LandingInterrupt01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_LandingInterrupt01, SoundId::ISNAdvisor_LandingInterrupt02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_LandingInterrupt01;
+						case Advisor_Terran:	return SoundId::Terran_Advisor_tAdErr03_WAV_1;
+						case Advisor_Protoss:	return SoundId::Terran_Advisor_tAdErr03_WAV_1;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_LandingInterrupt01;
+						case Advisor_Mesk:		return SoundId::Terran_Advisor_tAdErr03_WAV_1;
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_LandingInterrupt01, SoundId::AckmedAdvisor_LandingInterrupt02);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_LandingInterrupt01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_LandingInterrupt01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_LandingInterrupt01, SoundId::ISNAdvisor_LandingInterrupt02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_LandingInterrupt01;
 					}
 				} break;
 				case AdvisorEvent_PlacementInterrupted: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_SCV_TSCErr00_WAV;
-						case AdvisorType_Protoss:	return SoundId::Protoss_PROBE_PPrErr00_WAV;
-						case AdvisorType_Zerg:		return SoundId::Zerg_DRONE_ZDrErr00;
-						case AdvisorType_Mesk:		return SoundId::Terran_SCV_TSCErr00_WAV;
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_NoBuild01;
+						case Advisor_Terran:	return SoundId::Terran_SCV_TSCErr00_WAV;
+						case Advisor_Protoss:	return SoundId::Protoss_PROBE_PPrErr00_WAV;
+						case Advisor_Zerg:		return SoundId::Zerg_DRONE_ZDrErr00;
+						case Advisor_Mesk:		return SoundId::Terran_SCV_TSCErr00_WAV;
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_NoBuild01, SoundId::AckmedAdvisor_NoBuild01);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_NoBuild01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_NoBuild01;
 					}
 				} break;
 				case AdvisorEvent_StructureComplete_T: {
@@ -3310,15 +3310,15 @@ namespace bw {
 				} break;
 				case AdvisorEvent_StructureComplete_P: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::ProtossAdvisorUpdateStructure; // Todo: replace
-						case AdvisorType_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_Warp01;
-						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Warp01;
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_Warp01, SoundId::AckmedAdvisor_Warp02);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Warp01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_Warp01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_Warp01, SoundId::ISNAdvisor_Warp02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_Warp01;
+						case Advisor_Terran:	return SoundId::ProtossAdvisorUpdateStructure; // Todo: replace
+						case Advisor_Protoss:	return SoundId::ProtossAdvisorUpdateStructure;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_Warp01;
+						case Advisor_Mesk:		return SoundId::MeskAdvisor_Warp01;
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_Warp01, SoundId::AckmedAdvisor_Warp02);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_Warp01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_Warp01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_Warp01, SoundId::ISNAdvisor_Warp02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_Warp01;
 					}
 				} break;
 				case AdvisorEvent_StructureComplete_Z: {
@@ -3326,132 +3326,132 @@ namespace bw {
 				} break;
 				case AdvisorEvent_AddonComplete: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd03_WAV;
-						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_TAdUpd03_WAV; // Todo: replace
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_Addon01;
-						case AdvisorType_Mesk:		return SoundId::MeskAdvisor_Addon01;
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_Addon01, SoundId::AckmedAdvisor_Addon02);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Addon01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_Addon01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_Addon01, SoundId::ISNAdvisor_Addon02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_Addon01;
+						case Advisor_Terran:	return SoundId::Terran_Advisor_TAdUpd03_WAV;
+						case Advisor_Protoss:	return SoundId::Terran_Advisor_TAdUpd03_WAV; // Todo: replace
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_Addon01;
+						case Advisor_Mesk:		return SoundId::MeskAdvisor_Addon01;
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_Addon01, SoundId::AckmedAdvisor_Addon02);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_Addon01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_Addon01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_Addon01, SoundId::ISNAdvisor_Addon02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_Addon01;
 					}
 				} break;
 				case AdvisorEvent_TechUpComplete: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd06_WAV;
-						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd06_WAV;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_Tech01;
-						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_Tech01, SoundId::MeskAdvisor_Tech02);
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_Tech01, SoundId::AckmedAdvisor_Tech02);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_Tech01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_Tech01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_Tech01, SoundId::ISNAdvisor_Tech02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_Tech01;
+						case Advisor_Terran:	return SoundId::Terran_Advisor_TAdUpd06_WAV;
+						case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdUpd06_WAV;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_Tech01;
+						case Advisor_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_Tech01, SoundId::MeskAdvisor_Tech02);
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_Tech01, SoundId::AckmedAdvisor_Tech02);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_Tech01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_Tech01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_Tech01, SoundId::ISNAdvisor_Tech02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_Tech01;
 					}
 				} break;
 				case AdvisorEvent_MissileArmed: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd07_WAV;
-						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_TAdUpd07_WAV;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_MissileArmed01;
-						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_TAdUpd07_WAV;
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_MissileArmed01, SoundId::AckmedAdvisor_MissileArmed02);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_MissileArmed01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_MissileArmed01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_MissileArmed01, SoundId::ISNAdvisor_MissileArmed02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_MissileArmed01;
+						case Advisor_Terran:	return SoundId::Terran_Advisor_TAdUpd07_WAV;
+						case Advisor_Protoss:	return SoundId::Terran_Advisor_TAdUpd07_WAV;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_MissileArmed01;
+						case Advisor_Mesk:		return SoundId::Terran_Advisor_TAdUpd07_WAV;
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_MissileArmed01, SoundId::AckmedAdvisor_MissileArmed02);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_MissileArmed01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_MissileArmed01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_MissileArmed01, SoundId::ISNAdvisor_MissileArmed02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_MissileArmed01;
 					}
 				} break;
 				case AdvisorEvent_ArmyUnderAttack: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::ForcesUnderAttack_Terran;
-						case AdvisorType_Protoss:	return SoundId::ForcesUnderAttack_Protoss;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_ArmyUnderAttack01;
-						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_ArmyUnderAttack01, SoundId::MeskAdvisor_ArmyUnderAttack02);
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_ArmyUnderAttack01, SoundId::AckmedAdvisor_ArmyUnderAttack03);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_ArmyUnderAttack01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_ArmyUnderAttack01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_ArmyUnderAttack01, SoundId::ISNAdvisor_ArmyUnderAttack04);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_ArmyUnderAttack01;
+						case Advisor_Terran:	return SoundId::ForcesUnderAttack_Terran;
+						case Advisor_Protoss:	return SoundId::ForcesUnderAttack_Protoss;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_ArmyUnderAttack01;
+						case Advisor_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_ArmyUnderAttack01, SoundId::MeskAdvisor_ArmyUnderAttack02);
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_ArmyUnderAttack01, SoundId::AckmedAdvisor_ArmyUnderAttack03);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_ArmyUnderAttack01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_ArmyUnderAttack01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_ArmyUnderAttack01, SoundId::ISNAdvisor_ArmyUnderAttack04);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_ArmyUnderAttack01;
 					}
 				} break;
 				case AdvisorEvent_BaseUnderAttack: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::BaseUnderAttack_Terran;
-						case AdvisorType_Protoss:	return SoundId::BaseUnderAttack_Protoss;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_BaseUnderAttack01;
-						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_BaseUnderAttack01, SoundId::MeskAdvisor_BaseUnderAttack05);
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_BaseUnderAttack01, SoundId::AckmedAdvisor_BaseUnderAttack03);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_BaseUnderAttack01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_BaseUnderAttack01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_BaseUnderAttack01, SoundId::ISNAdvisor_BaseUnderAttack01);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_BaseUnderAttack01;
+						case Advisor_Terran:	return SoundId::BaseUnderAttack_Terran;
+						case Advisor_Protoss:	return SoundId::BaseUnderAttack_Protoss;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_BaseUnderAttack01;
+						case Advisor_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_BaseUnderAttack01, SoundId::MeskAdvisor_BaseUnderAttack05);
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_BaseUnderAttack01, SoundId::AckmedAdvisor_BaseUnderAttack03);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_BaseUnderAttack01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_BaseUnderAttack01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_BaseUnderAttack01, SoundId::ISNAdvisor_BaseUnderAttack01);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_BaseUnderAttack01;
 					}
 				} break;
 				case AdvisorEvent_MissileLaunch: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
-						case AdvisorType_Protoss:	return SoundId::Protoss_Advisor_PAdUpd04_WAV;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_MissileLaunch01;
-						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_MissileLaunch01, SoundId::MeskAdvisor_MissileLaunch02);
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_MissileLaunch01, SoundId::AckmedAdvisor_MissileLaunch02);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_MissileLaunch01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_MissileLaunch01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_MissileLaunch01, SoundId::ISNAdvisor_MissileLaunch02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_MissileLaunch01;
+						case Advisor_Terran:	return SoundId::Terran_Advisor_TAdUpd04_WAV;
+						case Advisor_Protoss:	return SoundId::Protoss_Advisor_PAdUpd04_WAV;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_MissileLaunch01;
+						case Advisor_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_MissileLaunch01, SoundId::MeskAdvisor_MissileLaunch02);
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_MissileLaunch01, SoundId::AckmedAdvisor_MissileLaunch02);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_MissileLaunch01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_MissileLaunch01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_MissileLaunch01, SoundId::ISNAdvisor_MissileLaunch02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_MissileLaunch01;
 					}
 				} break;
 				case AdvisorEvent_AllyUnderAttack_T: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::AdvisorTerranUnderAttackTerran;
-						case AdvisorType_Protoss:	return SoundId::AdvisorProtossUnderAttackTerran;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_AllyUnderAttack_Terran01;
-						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_AllyUnderAttack_Terran01, SoundId::MeskAdvisor_AllyUnderAttack_Terran02);
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_AllyUnderAttack_Terran01, SoundId::AckmedAdvisor_AllyUnderAttack_Terran03);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Terran01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Terran01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AllyUnderAttack_Terran01, SoundId::ISNAdvisor_AllyUnderAttack_Terran03);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_AllyUnderAttack_Terran01;
+						case Advisor_Terran:	return SoundId::AdvisorTerranUnderAttackTerran;
+						case Advisor_Protoss:	return SoundId::AdvisorProtossUnderAttackTerran;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_AllyUnderAttack_Terran01;
+						case Advisor_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_AllyUnderAttack_Terran01, SoundId::MeskAdvisor_AllyUnderAttack_Terran02);
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_AllyUnderAttack_Terran01, SoundId::AckmedAdvisor_AllyUnderAttack_Terran03);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Terran01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Terran01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AllyUnderAttack_Terran01, SoundId::ISNAdvisor_AllyUnderAttack_Terran03);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_AllyUnderAttack_Terran01;
 					}
 				} break;
 				case AdvisorEvent_AllyUnderAttack_P: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::AdvisorTerranUnderAttackProtoss;
-						case AdvisorType_Protoss:	return SoundId::AdvisorProtossUnderAttackProtoss;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_AllyUnderAttack_Protoss01;
-						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_AllyUnderAttack_Protoss01, SoundId::MeskAdvisor_AllyUnderAttack_Protoss02);
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_AllyUnderAttack_Protoss01, SoundId::AckmedAdvisor_AllyUnderAttack_Protoss03);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Protoss01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Protoss01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AllyUnderAttack_Protoss01, SoundId::ISNAdvisor_AllyUnderAttack_Protoss03);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_AllyUnderAttack_Protoss01;
+						case Advisor_Terran:	return SoundId::AdvisorTerranUnderAttackProtoss;
+						case Advisor_Protoss:	return SoundId::AdvisorProtossUnderAttackProtoss;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_AllyUnderAttack_Protoss01;
+						case Advisor_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_AllyUnderAttack_Protoss01, SoundId::MeskAdvisor_AllyUnderAttack_Protoss02);
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_AllyUnderAttack_Protoss01, SoundId::AckmedAdvisor_AllyUnderAttack_Protoss03);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Protoss01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Protoss01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AllyUnderAttack_Protoss01, SoundId::ISNAdvisor_AllyUnderAttack_Protoss03);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_AllyUnderAttack_Protoss01;
 					}
 				} break;
 				case AdvisorEvent_AllyUnderAttack_Z: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::AdvisorTerranUnderAttackZerg;
-						case AdvisorType_Protoss:	return SoundId::AdvisorProtossUnderAttackZerg;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_AllyUnderAttack_Zerg01;
-						case AdvisorType_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_AllyUnderAttack_Zerg01, SoundId::MeskAdvisor_AllyUnderAttack_Zerg03);
-						case AdvisorType_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_AllyUnderAttack_Zerg01, SoundId::AckmedAdvisor_AllyUnderAttack_Zerg03);
-						case AdvisorType_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Zerg01;
-						case AdvisorType_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Zerg01;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AllyUnderAttack_Zerg01, SoundId::ISNAdvisor_AllyUnderAttack_Zerg01);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_AllyUnderAttack_Zerg01;
+						case Advisor_Terran:	return SoundId::AdvisorTerranUnderAttackZerg;
+						case Advisor_Protoss:	return SoundId::AdvisorProtossUnderAttackZerg;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_AllyUnderAttack_Zerg01;
+						case Advisor_Mesk:		return helper::get_random_unit_response(SoundId::MeskAdvisor_AllyUnderAttack_Zerg01, SoundId::MeskAdvisor_AllyUnderAttack_Zerg03);
+						case Advisor_Ackmed:	return helper::get_random_unit_response(SoundId::AckmedAdvisor_AllyUnderAttack_Zerg01, SoundId::AckmedAdvisor_AllyUnderAttack_Zerg03);
+						case Advisor_HADRAL:	return SoundId::HADRALAdvisor_AllyUnderAttack_Zerg01;
+						case Advisor_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Zerg01;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AllyUnderAttack_Zerg01, SoundId::ISNAdvisor_AllyUnderAttack_Zerg01);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_AllyUnderAttack_Zerg01;
 					}
 				} break;
 				case AdvisorEvent_AbandonAddon: {
 					switch (advisor) {
-						case AdvisorType_Terran:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
-						case AdvisorType_Protoss:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
-						case AdvisorType_Zerg:		return SoundId::AtaltrethAdvisor_AddonAbandon01;
-						case AdvisorType_Mesk:		return SoundId::Terran_Advisor_TAdUpd05_WAV;
-						case AdvisorType_Ackmed:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
-						case AdvisorType_HADRAL:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
-						case AdvisorType_Artemis:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
-						case AdvisorType_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AddonAbandon01, SoundId::ISNAdvisor_AddonAbandon02);
-						case AdvisorType_Furen:		return SoundId::FurenAdvisor_AddonAbandon01;
+						case Advisor_Terran:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case Advisor_Protoss:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_AddonAbandon01;
+						case Advisor_Mesk:		return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case Advisor_Ackmed:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case Advisor_HADRAL:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case Advisor_Artemis:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
+						case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AddonAbandon01, SoundId::ISNAdvisor_AddonAbandon02);
+						case Advisor_Furen:		return SoundId::FurenAdvisor_AddonAbandon01;
 					}
 				} break;
 			}
@@ -3495,7 +3495,7 @@ namespace bw {
 		if (player != *g_local_nation_id) {
 			return false;
 		}
-		return g_globals->current_advisor != AdvisorType_Default;
+		return g_globals->current_advisor != Advisor_Default;
 	}
 
 	const Vector32f perimeter[] = {

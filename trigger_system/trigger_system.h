@@ -80,7 +80,7 @@ static const char* omnipresence_state_symbol_names[] = {
 };
 C_ASSERT(ARRAY_SIZE(omnipresence_state_symbol_names) == OmnipresenceState_Count);
 
-enum Faction: u8 {
+enum Faction : u8 {
 	Faction_None,
 
 	Faction_TerranOrionImperium,
@@ -104,7 +104,7 @@ enum Faction: u8 {
 	Faction_Count,
 };
 
-static const char* faction_symbol_names[] = { // This array needs to the same size and order as Faction enum
+static const char* faction_identifiers[] = { // This array needs to the same size and order as Faction enum
 	"none",
 
 	"orion_imperium",
@@ -125,61 +125,53 @@ static const char* faction_symbol_names[] = { // This array needs to the same si
 	"orkoti",
 	"zorthos",
 };
-C_ASSERT(ARRAY_SIZE(faction_symbol_names) == Faction_Count);
+C_ASSERT(ARRAY_SIZE(faction_identifiers) == Faction_Count);
 
-enum AdvisorType : u8 {
-	AdvisorType_Default,
+enum Advisor : u8 {
+	Advisor_Default,
 
 	// Races
-
-	AdvisorType_Terran,
-	AdvisorType_Protoss,
-	AdvisorType_Zerg,
+	Advisor_Terran,
+	Advisor_Protoss,
+	Advisor_Zerg,
 
 	// Community
-
-	AdvisorType_Mesk,
+	Advisor_Mesk,
 
 	// Characters
-
-	AdvisorType_Ackmed,
-	AdvisorType_HADRAL,
-	AdvisorType_ISN,
-	AdvisorType_Furen,
+	Advisor_Ackmed,
+	Advisor_HADRAL,
+	Advisor_ISN,
+	Advisor_Furen,
 
 	// Faction-specific
+	Advisor_Artemis,
 
-	AdvisorType_Artemis,
-
-	AdvisorType_Count,
+	Advisor_Count,
 };
 
 // NOTE: This is case insensitive for parsing
-static const char* advisor_symbol_names[AdvisorType_Count] = {
+static const char* advisor_names[]{
 	"Default",
 
 	// Races
-
 	"Terran",
 	"Protoss",
 	"Zerg",
 
 	// Community
-
 	"Mesk",
 
 	// Characters
-
 	"Ackmed",
 	"HADRAL",
 	"ISN",
 	"Furen",
 
 	// Faction-specific
-
 	"Artemis",
 };
-C_ASSERT(ARRAY_SIZE(advisor_symbol_names) == AdvisorType_Count);
+static_assert(std::size(advisor_names) == Advisor_Count);
 
 struct CmPlayer {
 	Point16 camera;
@@ -241,7 +233,7 @@ struct Globals {
 	u32 celebration;
 
 	AlertState alert;
-	AdvisorType current_advisor;
+	Advisor current_advisor;
 	AdvisorState advisor_state;
 
 	u8 yields[(size_t)YieldType::Count];

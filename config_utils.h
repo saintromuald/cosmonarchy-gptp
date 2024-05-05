@@ -1,4 +1,11 @@
 #pragma once
+#include <string>
+#include <array>
+#include <filesystem>
+
+#include <yaml-cpp/yaml.h>
+
+#include "trigger_system/trigger_system.h"
 
 inline std::string to_lower_snake_case(const std::string& str) {
 	std::string result;
@@ -110,6 +117,36 @@ struct YAML::convert<PlayerColor> {
 		
 		if (const auto index = yaml_try_cast<s32>(node)) {
 			value = (PlayerColor)*index;
+			return true;
+		}
+
+		return false;
+	}
+};
+
+template <>
+struct YAML::convert<Advisor> {
+	static YAML::Node encode(Advisor value) {
+		auto index = static_cast<size_t>(value);
+		return YAML::Node{index < (size_t)Advisor_Count ? advisor_names[index] : "invalid_color"};
+	}
+
+	static bool decode(const YAML::Node& node, Advisor& value) {
+		if (!node) {
+			return false;
+		}
+
+		if (const auto name = yaml_try_cast<std::string>(node)) {
+			const auto it = std::ranges::find(advisor_names,
+				to_lower_snake_case(*name), [](const char* name) { return to_lower_snake_case(name); });
+			if (it != std::end(advisor_names)) {
+				value = (Advisor)(it - std::begin(advisor_names));
+				return true;
+			}
+		}
+		
+		if (const auto index = yaml_try_cast<s32>(node)) {
+			value = (Advisor)*index;
 			return true;
 		}
 
