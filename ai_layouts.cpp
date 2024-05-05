@@ -384,7 +384,7 @@ bool AiLayouts::has_expanding_town(u32 player) {
 	if (ai_mining_base_count(player) > 2) {
 		return false;
 	}
-	for (u32 i = 0; i <= AiTownLimit; ++i) {
+	for (u32 i = 0; i < AiTownLimit; ++i) {
 		AiTown& town = g_ai_town_array[i];
 		TownLayouts& layouts_town = m_town_layouts[i];
 		if (town.player == player && !layouts_town.wants_no_resarea && !town.main_building && layouts_town.inited) {
