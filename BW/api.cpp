@@ -3006,6 +3006,13 @@ namespace bw {
 				sound_id = SoundId::Zerg_Bldg_ZBldgDth_WAV;
 			}
 			helper::play_sound_from_unit(sound_id, unit, true, 0);
+
+			if (unit->irradiate_timer) {
+				u32 irradiate_image_id = ImageId::IrradiateNew_Small + bw::get_overlay_offset(unit->id);
+				if (!unit->get_overlay(irradiate_image_id)) {
+					bw::add_unit_overlay(unit, irradiate_image_id);
+				}
+			}
 		}
 	}
 
