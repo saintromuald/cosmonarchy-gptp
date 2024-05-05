@@ -44,22 +44,25 @@ struct Config {
 
 	// Audiovisuals
 	std::vector<Advisor> common_advisors{ Advisor_Default };
-	std::vector<Advisor> terran_advisors{ Advisor_Terran };
-	std::vector<Advisor> protoss_advisors{ Advisor_Protoss };
-	std::vector<Advisor> zerg_advisors{ Advisor_Zerg };
+	std::vector<Advisor> terran_advisors{};
+	std::vector<Advisor> protoss_advisors{};
+	std::vector<Advisor> zerg_advisors{};
 	bool celebrations_enabled = true;
 
 	// Hotkeys
 	bool quick_casting = false;
 	bool quick_building = false;
 	bool grid_hotkeys = true;
-	std::array<std::string, 3> grid_layout = {"QWE", "ASD", "ZXC"};
+	std::array<std::string, 3> grid_layout{"QWE", "ASD", "ZXC"};
 	bool extended_control_groups = true;
 	bool default_to_steal_hotkeys = false;
 	bool tilde_control_group = true;
 
 	// Player Color
-	std::vector<PlayerColor> preferred_colors;
+	std::vector<PlayerColor> common_preferred_colors{};
+	std::vector<PlayerColor> terran_preferred_colors{};
+	std::vector<PlayerColor> protoss_preferred_colors{};
+	std::vector<PlayerColor> zerg_preferred_colors{};
 	bool shuffle_preferred_colors = false;
 
 	// Debug

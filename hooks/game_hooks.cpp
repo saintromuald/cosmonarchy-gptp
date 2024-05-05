@@ -681,12 +681,24 @@ namespace hooks {
 		init_omnipresence_state();
 
 		if (!bw::in_replay_or_witness()) {
-			if (g_config.preferred_colors.empty()) {
+			std::vector<PlayerColor> colors{};
+			switch (g_player_table[*g_local_nation_id].race) {
+				case RaceId::Terran: {
+					colors = g_config.terran_preferred_colors;
+				} break;
+				case RaceId::Protoss: {
+					colors = g_config.protoss_preferred_colors;
+				} break;
+				case RaceId::Zerg: {
+					colors = g_config.zerg_preferred_colors;
+				} break;
+			}
+			colors.insert_range(colors.end(), g_config.common_preferred_colors);
+
+			if (colors.empty()) {
 				SyncColorPrefCommand command{(u8)*g_local_nation_id};
 				queue_game_command((u8*)&command, sizeof(command));
 			} else {
-				auto colors = g_config.preferred_colors;
-
 				if (g_config.shuffle_preferred_colors) {
 					std::random_device rd;
 					std::mt19937 mt{rd()};

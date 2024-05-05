@@ -108,11 +108,14 @@ void load_config() {
 	load_field(yaml, "scroll-sensitivity", g_config.scroll_sensitivity);
 
 	// Audiovisuals
-	load_field(yaml, "common-advisors", g_config.common_advisors);
-	load_field(yaml, "terran-advisors", g_config.terran_advisors);
-	load_field(yaml, "protoss-advisors", g_config.protoss_advisors);
-	load_field(yaml, "zerg-advisors", g_config.zerg_advisors);
-	load_field(yaml, "celebrations-enabled", g_config.celebrations_enabled);
+	auto yaml_advisors = yaml["advisors"];
+	if (yaml_advisors) {
+		load_field(yaml_advisors, "common", g_config.common_advisors);
+		load_field(yaml_advisors, "terran", g_config.terran_advisors);
+		load_field(yaml_advisors, "protoss", g_config.protoss_advisors);
+		load_field(yaml_advisors, "zerg", g_config.zerg_advisors);
+	}
+	load_field(yaml_advisors, "celebrations-enabled", g_config.celebrations_enabled);
 
 	// Hotkeys
 	load_field(yaml, "quick-casting", g_config.quick_casting);
@@ -127,8 +130,14 @@ void load_config() {
 	load_field(yaml, "tilde-control-group", g_config.tilde_control_group);
 
 	// Player Color
-	load_field(yaml, "preferred-colors", g_config.preferred_colors);
-	load_field(yaml, "shuffle-preferred-colors", g_config.shuffle_preferred_colors);
+	auto yaml_colors = yaml["preferred-colors"];
+	if (yaml_colors) {
+		load_field(yaml_colors, "common", g_config.common_preferred_colors);
+		load_field(yaml_colors, "terran", g_config.terran_preferred_colors);
+		load_field(yaml_colors, "protoss", g_config.protoss_preferred_colors);
+		load_field(yaml_colors, "zerg", g_config.zerg_preferred_colors);
+		load_field(yaml_colors, "shuffle", g_config.shuffle_preferred_colors);
+	}
 
 	// Debug
 	load_field(yaml, "verbose", g_config.verbose);
@@ -235,13 +244,15 @@ void save_config() {
 		}
 	}
 	yaml << YAML::Newline << YAML::Comment("Advisors will be randomized from the common list combined with the list of the race you are playing.");
-	yaml << YAML::Newline << YAML::Comment("You can use [] to make a list empty. e.g. terran-advisors: []");
-	yaml << YAML::Newline << YAML::Comment("Which is probably what you will want to do, if you want to just use common-advisors.");
+	yaml << YAML::Newline << YAML::Comment("You can use [] to make a list empty. e.g.\nterran:\n  []");
+	yaml << YAML::Newline << YAML::Comment("Which is probably what you will want to do, if you want to just use the same advisors for every race.");
 	yaml << YAML::Newline << YAML::Comment(available_advisors.str());
-	write_field(yaml, "common-advisors", g_config.common_advisors);
-	write_field(yaml, "terran-advisors", g_config.terran_advisors);
-	write_field(yaml, "protoss-advisors", g_config.protoss_advisors);
-	write_field(yaml, "zerg-advisors", g_config.zerg_advisors);
+	write_field(yaml, "advisors", YAML::BeginMap);
+	write_field(yaml, "common", g_config.common_advisors);
+	write_field(yaml, "terran", g_config.terran_advisors);
+	write_field(yaml, "protoss", g_config.protoss_advisors);
+	write_field(yaml, "zerg", g_config.zerg_advisors);
+	yaml << YAML::EndMap;
 	yaml << YAML::Newline << YAML::Newline;
 	write_field(yaml, "celebrations-enabled", g_config.celebrations_enabled);
 	yaml << YAML::Newline << YAML::Newline;
@@ -266,8 +277,13 @@ void save_config() {
 	yaml << YAML::Comment("Player Color");
 	yaml << YAML::Newline << YAML::Comment("");
 	yaml << YAML::Newline << YAML::Comment(make_valid_colors_string());
-	write_field(yaml, "preferred-colors", g_config.preferred_colors);
-	write_field(yaml, "shuffle-preferred-colors", g_config.shuffle_preferred_colors);
+	write_field(yaml, "preferred-colors", YAML::BeginMap);
+	write_field(yaml, "common", g_config.common_preferred_colors);
+	write_field(yaml, "terran", g_config.terran_preferred_colors);
+	write_field(yaml, "protoss", g_config.protoss_preferred_colors);
+	write_field(yaml, "zerg", g_config.zerg_preferred_colors);
+	write_field(yaml, "shuffle", g_config.shuffle_preferred_colors);
+	yaml << YAML::EndMap;
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Debug");
