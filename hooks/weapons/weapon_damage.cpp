@@ -748,6 +748,9 @@ namespace hooks
 							displacement.y *= 2 * 32.0 / displacement_time;
 							target_ext->timers[TimerMagnetarAttraction] = displacement_time;
 							target_ext->repulsion_vector = displacement;
+
+							u32 overlay_id = bw::rand_between(SpriteId::MagnetarLawOfAttraction1, SpriteId::MagnetarLawOfAttraction3);
+							bw::create_and_init_thingy(overlay_id, data.target->position.x, data.target->position.y, data.attacker->player, data.target->sprite->elevation + 1);
 						}
 					} break;
 					case WeaponId::HeraldStellarTorch:

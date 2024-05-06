@@ -4234,7 +4234,6 @@ namespace helper {
 
 	// For check_unit_visibility
 	u32 get_detecting_players(Unit* unit) {
-		// There can be a nullsprite crash in this func despite being nullchecked previously. I am not sure how this is possible, nor how to fix it. -Pr0nogo
 		const u32 func_address = 0x00441130;
 		static u32 result;
 		__asm {
@@ -11884,7 +11883,7 @@ namespace helper {
 		return result;
 	}
 
-	u16 is_valid_script(Image* image, u32 iscript_id) {
+	u16 set_iscript(Image* image, u32 iscript_id) {
 		static u32 result;
 		const u32 func_address = 0x004D6640;
 		__asm {
@@ -15169,5 +15168,24 @@ namespace helper {
 			CALL func_address
 			POPAD
 		}
+	}
+
+	Thingy* iscript_create_sprite(Image* image, u16 sprite_id, u32 x, u32 y, s8 elevation) {
+		const u32 func_address = 0x004D7120;
+		static s32 elevation_xd = elevation;
+		static u32 sprite_id_xd = sprite_id;
+		static Thingy* result;
+		__asm {
+			PUSHAD
+			PUSH elevation_xd
+			PUSH y
+			PUSH x
+			PUSH sprite_id_xd
+			MOV EAX, image
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

@@ -1893,5 +1893,8 @@ namespace SoundId
 		GladiusBindingPlasmaProc01						= 3100,
 		GladiusBindingPlasmaProc02						= 3101,
 		GladiusBindingPlasmaProc03						= 3102,
+		HierophantBanterB01								= 3103,
+		HierophantBanterB02								= 3104,
+		HierophantBanterB03								= 3105,
 	};
 }

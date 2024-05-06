@@ -1260,6 +1260,10 @@ namespace ImageId {
 		AstralRule_Large							= 1866,
 		AstralRule_XLarge							= 1867,
 
+		OlympianDishonorableDischarge1				= 1869,
+		OlympianDishonorableDischarge2				= 1870,
+		OlympianDishonorableDischarge3				= 1871,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

@@ -801,6 +801,13 @@ namespace SpriteId
 
 		SevenstepMindMatterOverlay	= 906,
 
+		OlympianDishonorableDischarge1	= 909,
+		OlympianDishonorableDischarge2	= 910,
+		OlympianDishonorableDischarge3	= 911,
+		MagnetarLawOfAttraction1		= 912,
+		MagnetarLawOfAttraction2		= 913,
+		MagnetarLawOfAttraction3		= 914,
+
 		// CORPSE \\
 			
 		Corpse_Aspirant				= 685,

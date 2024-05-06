@@ -220,7 +220,7 @@ namespace
 
 	bool show_fow_unit_check(Unit* unit) {
 		if (unit->status & (UnitStatus::Burrowed | UnitStatus::Cloaked | UnitStatus::CloakingForFree)) {
-			if (helper::get_detecting_players(unit) & *g_player_visions) {
+			if (unit->sprite && helper::get_detecting_players(unit) & *g_player_visions) {
 				return true;
 			}
 			return false;

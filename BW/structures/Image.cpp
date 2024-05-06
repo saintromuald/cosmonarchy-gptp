@@ -253,7 +253,7 @@ namespace hooks
 	// Hooked to extend iscript.bin. -Pr0nogo
 	void play_warp_in_overlay(Image* image, u32 a2) { // 004D8500
 	//	void(__fastcall *function)(u32, u32, GrpFrame*, Rect32*, u32);
-		helper::is_valid_script(image, 193);
+		helper::set_iscript(image, 193);
 		u32 offset = image->iscript_header_offset;
 		char* data = *g_iscript_data;
 		image->animation = 0;
@@ -261,7 +261,7 @@ namespace hooks
 		image->wait = 0;
 		image->return_address = 0;
 		helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
-		helper::is_valid_script(image, images_dat::iscript_id[image->id]);
+		helper::set_iscript(image, images_dat::iscript_id[image->id]);
 		image->palette_type = 12;
 		image->update_fxn = g_sg_update_funcs[12].function;
 		u16 flags = image->flags;

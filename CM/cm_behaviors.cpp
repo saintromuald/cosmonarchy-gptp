@@ -125,7 +125,7 @@ void avenge_corpse(Thingy* corpse, u32 player) {
 	unit_search_radial(&units, corpse->sprite->position, corpse_ext->sight_range_before_death);
 	for (u32 i = 0; i < units.count; ++i) {
 		Unit* unit = units.units[i];
-		if (!bw::is_allied_to(player, unit->player)) {
+		if (!bw::is_allied_to(player, unit->player) || unit->player == 11) {
 			continue;
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -157,7 +157,7 @@ void ascend_in_area(u32 player, Point16 position, u32 range) {
 	unit_search_radial(&units, position, range);
 	for (u32 i = 0; i < units.count; ++i) {
 		Unit* unit = units.units[i];
-		if (!bw::is_allied_to(player, unit->player)) {
+		if (!bw::is_allied_to(player, unit->player) || unit->player == 11) {
 			continue;
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);

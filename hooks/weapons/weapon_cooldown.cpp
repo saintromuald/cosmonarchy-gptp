@@ -24,6 +24,7 @@ namespace hooks {
 		switch (unit->id) {
 			case UnitId::TerranOlympian: {
 				// Olympian Dishonorable Discharge - add 3 armor pen to targets facing away from the Olympian
+				// Audiovisuals should be handled in weapon_damage eventually to account for behaviors that make attacks miss, redirect, etc
 				if (target && !units_dat::group_flags[target->id].is_building) {
 					if (bw::unit_is_exposed_to_position(target, unit->position)) {
 						UnitExt* target_ext = get_unit_ext(target);
@@ -31,7 +32,8 @@ namespace hooks {
 							helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, target, 1, 0);
 							target_ext->timers[TimerOlympianMythicalMightSFX] = 3;
 						}
-						// TODO: Overlay
+						u32 overlay_id = bw::rand_between(SpriteId::OlympianDishonorableDischarge1, SpriteId::OlympianDishonorableDischarge3);
+						bw::create_and_init_thingy(overlay_id, target->position.x, target->position.y, unit->player, target->sprite->elevation + 1);
 						armor_pen += 3;
 					}
 				}

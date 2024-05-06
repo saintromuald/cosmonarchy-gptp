@@ -5,6 +5,7 @@
 #include "logger.h"
 #include <BW/UnitFinder.h>
 #include "globals.h"
+#include <hooks/limits/sfx_extender.h>
 
 void augur_proc(Unit* augur, s32 radius) {
 	Unit* target = bw::UnitFinder::get_nearest_target(
@@ -324,6 +325,32 @@ void unit_on_death_behaviors(Unit* unit) {
 			helper::play_sound_from_unit(helper::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03, 31), unit, 1, 0);
 		}
 		// TODO: Preserve timer and source position of dying unit, instead of immediately bouncing. -Pr0nogo
+	}
+
+	// Banter
+	if (unit_ext->values[ValueSignifyStacks] >= 5) {
+		// Hierophant
+		EntryArray unit_array = {};
+		unit_search_radial(&unit_array, unit->position, unit->get_sight_range() * 32);
+		unit_search_filter(&unit_array, unit, FilterEnemy, { UnitId::ProtossHierophant });
+		bool success = false;
+		for (u32 i = 0; i < unit_array.count; ++i) {
+			Unit* hierophant = unit_array.units[i];
+			if (bw::get_distance_fast(unit->position, hierophant->position) <= hierophant->get_sight_range() * 32) {
+				UnitExt* unit_ext = get_unit_ext(hierophant);
+				if (success) {
+					unit_ext->timers[TimerUnitBanter] = 24 * 60;
+					continue;
+				} else if (!unit_ext->timers[TimerUnitBanter]) {
+					unit_ext->timers[TimerUnitBanter] = 24 * 60;
+					u32 banter_sound = bw::rand_between(SoundId::HierophantBanterB01, SoundId::HierophantBanterB03);
+					if (helper::play_sound_from_unit(banter_sound, unit, g_options_list->flags & 1, 99)) {
+						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[banter_sound] + 1000 * (sfx_dat::sound_data[banter_sound].duration_ms / 1000), 0, banter_sound);
+					}
+					success = true;
+				}
+			}
+		}
 	}
 }
 

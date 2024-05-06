@@ -2115,6 +2115,9 @@ namespace bw {
 	}
 
 	bool unit_is_allied_or_detected(Unit* unit, u32 player) {
+		if (!unit->sprite) {
+			return false;
+		}
 		if (bw::is_allied_to(unit->player, player)) {
 			 return true;
 		}

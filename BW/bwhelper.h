@@ -1436,7 +1436,7 @@ namespace helper {
 
 	Image* set_image_palette_type(Image* out_image, u8 palette_type);										// 004D58B0
 
-	u16 is_valid_script(Image* image, u32 iscript_id);														// 004D6640
+	u16 set_iscript(Image* image, u32 iscript_id);															// 004D6640
 
 	Image* update_image_frame_index(Image* image);															// 004D5940
 	u32 get_path_distance_to(Unit* unit, Point16 position);													// 0042FA30
@@ -1751,4 +1751,6 @@ namespace helper {
 	HIMC ImmGetContextBW(HWND hwnd);											// 0041003A
 	HIMC ImmAssociateContextBW(HWND hwnd, HIMC himc);							// 00410052
 	void dark_minimap_related();												// 004A3A00
+
+	Thingy* iscript_create_sprite(Image* image, u16 sprite_id, u32 x, u32 y, s8 elevation);	// 004D7120
 }

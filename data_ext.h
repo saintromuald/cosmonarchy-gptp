@@ -321,6 +321,7 @@ enum ExtTimerId {
 	TimerSevenstepMindMatterCarrier,
 	TimerOlympianMythicalMightSFX,
 	TimerBindingPlasmaChargeOverlay,
+	TimerUnitBanter,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
