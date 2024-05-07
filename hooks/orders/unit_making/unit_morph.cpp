@@ -658,8 +658,7 @@ namespace hooks {
 
 		if (status) {
 			helper::make_cloaked(draw_func2, unit->sprite, status, draw_func1);
-			if (*g_player_visions & unit->detection_status)
-			{
+			if (*g_player_visions & unit->detection_status) {
 				helper::make_sprite_visible(unit->sprite);
 			}
 		}

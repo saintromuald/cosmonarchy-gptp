@@ -138,7 +138,7 @@ namespace hooks
 					u32 targ_y = unit_ext->values[ValueWyvernLandGrabY];
 					s32 direction = bw::get_angle(x, y, targ_x, targ_y);
 					if (bw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
-						u32 sound = helper::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02, 31);
+						u32 sound = bw::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02);
 						helper::play_sound_from_unit(sound, unit, 1, 0);
 						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, 0, targ_x, targ_y);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
@@ -185,7 +185,7 @@ namespace hooks
 					
 					if (target && wyvern_can_fire_at(unit, target)) {
 						s32 direction = bw::get_angle(x, y, target->get_x(), target->get_y());
-						helper::play_sound_from_unit(helper::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02, 31), unit, 1, 0);
+						helper::play_sound_from_unit(bw::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02), unit, 1, 0);
 						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 					}
@@ -416,7 +416,7 @@ namespace hooks
 		for (Unit* unit = *g_first_dying_unit; unit; unit = next_unit) {
 			next_unit = unit->link.next;
 			*g_active_iscript_entity = unit;
-			*g_active_iscript_unit   = unit;
+			*g_active_iscript_unit = unit;
 			helper::progress_dying_unit_frame(unit);
 			if (unit->sprite) {
 				if (*g_vision_updated) {
@@ -982,20 +982,13 @@ namespace hooks
 	b32 set_thingy_visibility_flags(Thingy* thingy) // 004878F0
 	{
 		Sprite* thingy_sprite = thingy->sprite;
-		if (thingy_sprite)
-		{
-			if (!(thingy_sprite->flags & SpriteFlags::Hidden))
-			{
-				u8 status = ~(g_active_tile_array[thingy_sprite->position.x / 32 + g_map_tile_size->width * (thingy_sprite->position.y / 32)]->visibility_flags);
-				if (thingy_sprite->visibility_status != status)
-				{
-					helper::refresh_all_visible_images_at_screen_pos(thingy_sprite, status);
-					if ((u8)*g_player_visions & thingy_sprite->visibility_status)
-					{
-						if (!(*g_player_visions & thingy->sprite->visibility_status))
-						{
-							return 1;
-						}
+		if (thingy_sprite && !(thingy_sprite->flags & SpriteFlags::Hidden)) {
+			u8 status = ~(g_active_tile_array[thingy_sprite->position.x / 32 + g_map_tile_size->width * (thingy_sprite->position.y / 32)]->visibility_flags);
+			if (thingy_sprite->visibility_status != status) {
+				helper::refresh_all_visible_images_at_screen_pos(thingy_sprite, status);
+				if ((u8)*g_player_visions & thingy_sprite->visibility_status) {
+					if (!(*g_player_visions & thingy->sprite->visibility_status)) {
+						return 1;
 					}
 				}
 			}
@@ -1003,7 +996,7 @@ namespace hooks
 		return 0;
 	}
 
-	// Hooked to improve functionality and fix a few CMBW-specific bugs. -DF
+	// Hooked to improve functionality and fix a few CM-specific bugs. -DF
 	b32 initialize_unit(Unit* unit, s32 pos_y, u16 unit_id, s32 pos_x, u8 player_id) { // 0049ECF0
 		Unit* old_active_iscript_unit = *g_active_iscript_unit;
 		*g_active_iscript_unit = unit;

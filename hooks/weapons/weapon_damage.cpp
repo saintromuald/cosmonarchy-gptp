@@ -225,7 +225,7 @@ namespace hooks
 					if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && bw::is_allied_to(unit->player, data.target->player)) {
 						bw::create_shield_overlay(data.target, data.direction);
 						unit->spend_unit_energy(data.damage);
-						helper::play_sound_from_unit(helper::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03, 31), unit, 1, 0);
+						helper::play_sound_from_unit(bw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
 						ignore_alert = true;
 						unit_attack_notify(unit);
 						ignore_alert = false;
@@ -961,7 +961,7 @@ namespace hooks
 					bw::add_massacre_resource(data.target->player);
 				}
 
-				u32 sound = helper::rand_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04, 31);
+				u32 sound = bw::rand_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
 				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99)
 				&& !*g_is_in_replay && data.target->player == *g_local_nation_id) {
 					helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);

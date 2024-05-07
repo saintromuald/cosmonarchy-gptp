@@ -350,7 +350,7 @@ namespace hooks
 				{
 					Image* loop_image = unit->sprite->main_graphic;
 					*g_active_iscript_unit = unit;
-				//	helper::iscript_opcode_cases(loop_image, g_temp_iscript_header, 1, (u32)&opcode_value); // This is probably wrong, compare to IDA (our helper has 1 less arg)
+				//	helper::iscript_opcode_cases(loop_image, *g_temp_iscript_header, 1, (u32)&opcode_value); // This is probably wrong, compare to IDA (our helper has 1 less arg)
 					u8 stim_timer = unit->stim_timer;
 					u32 opcode_value_final = opcode_value;
 
