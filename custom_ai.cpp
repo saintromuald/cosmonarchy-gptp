@@ -62,7 +62,7 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 				}
 			}
 
-			u32 requested_count = town_count_units(ai_town, capped_id, false);
+			u32 requested_count = town_count_units(ai_town, (UnitId::Enum)capped_id, false);
 			u32 mineral_threshold = requested_count ? 100 : 500;
 			u32 needed_threshold = 75 * (1 + requested_count);
 			if (total_gas == 1) {

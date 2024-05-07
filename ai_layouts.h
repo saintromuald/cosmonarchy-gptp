@@ -15,7 +15,7 @@ enum ChkUnitFlags {
 // TODO: Make a SetBaseLayoutRequest type instead, and allow this to be modified freely
 struct AiPlaceholder {
 	Point16 position;
-	u16 unit_id;
+	UnitId::Enum unit_id;
 	u8 priority;
 	u8 guard_rebuilds;
 	u8 resarea;
@@ -48,10 +48,10 @@ struct TownLayouts {
 };
 
 struct AiUnitEquivalent {
-	u32 from;
-	u32 to;
-	s32 priority_decrease;
-	bool merge_requests;
+	UnitId::Enum from{UnitId::None};
+	UnitId::Enum to{UnitId::None};
+	s32 priority_decrease{0};
+	bool merge_requests{false};
 };
 
 inline const AiUnitEquivalent equivalents[] = {
@@ -128,7 +128,7 @@ public:
 	void init();
 	void update();
 
-	void add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& placeholder, u32 unit_id);
+	void add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& placeholder, UnitId::Enum unit_id);
 	void add_placeholder_chk(const CHKUnit& unit, u32 player);
 
 	Point16 get_ai_town_position(AiTown& town);
@@ -150,19 +150,19 @@ private:
 
 inline AiLayouts g_ai_layouts;
 
-u32 find_unit_base(u32 unit_id);
-AiUnitEquivalent find_unit_equivalent_down(u32 unit_id);
-AiUnitEquivalent find_unit_equivalent_up(u32 unit_id, u32* index = 0);
-u32 find_unit_merge(u32 unit_id);
-u32 find_unit_root_merge(u32 unit_id);
+UnitId::Enum find_equivalent(UnitId::Enum unit_id);
+UnitId::Enum find_equivalent_merge(UnitId::Enum unit_id);
+UnitId::Enum find_equivalent_root_merge(UnitId::Enum unit_id);
+AiUnitEquivalent find_unit_equivalent_down(UnitId::Enum unit_id);
+AiUnitEquivalent find_unit_equivalent_up(UnitId::Enum unit_id, u32* index = 0);
 
-u32 town_count_units(AiTown& town, u32 unit_id, bool completed);
-u32 town_has_down_equivalent(AiTown& town, u32 unit_id);
-u32 town_count_up_equivalents(AiTown& town, u32 unit_id);
+u32 town_count_units(AiTown& town, UnitId::Enum unit_id, bool completed);
+u32 town_has_down_equivalent(AiTown& town, UnitId::Enum unit_id);
+u32 town_count_up_equivalents(AiTown& town, UnitId::Enum unit_id);
 
-u32 player_count_units(u32 player, u32 unit_id, bool completed);
-u32 player_count_up_equivalents(u32 player, u32 unit_id);
+u32 player_count_units(u32 player, UnitId::Enum unit_id, bool completed);
+u32 player_count_up_equivalents(u32 player, UnitId::Enum unit_id);
 
-bool unit_has_creep(u32 unit_id, u32 x, u32 y);
-bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player);
-bool can_place_unit(u32 unit_id, Point16 position, u32 player);
+bool unit_has_creep(UnitId::Enum unit_id, u32 x, u32 y);
+bool unit_has_no_or_allied_creep(UnitId::Enum unit_id, u32 x, u32 y, u32 player);
+bool can_place_unit(UnitId::Enum unit_id, Point16 position, u32 player);

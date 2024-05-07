@@ -2384,7 +2384,7 @@ namespace bw {
 		if (count < 0) return;
 
 		if (request_base) {
-			u32 base_unit_id = find_unit_base(unit_id);
+			UnitId::Enum base_unit_id = find_equivalent((UnitId::Enum)unit_id);
 			if (base_unit_id != UnitId::None) {
 				u32 base_count = town_count_units(town, base_unit_id, false);
 				if (base_count < count) {
@@ -2411,11 +2411,13 @@ namespace bw {
 			unit_id = UnitId::TerranPhalanxTankMode;
 		}
 		if (request_base) {
-			u32 base_unit_id = find_unit_base(unit_id);
+			UnitId::Enum base_unit_id = find_equivalent((UnitId::Enum)unit_id);
 			if (base_unit_id != UnitId::None && !player_count_units(player, base_unit_id, false)) {
 				military_add_spending_request(player, unit_id, position, priority, request_base);
 			}
 		}
+		g_aiscript_controller[player].minerals_needed += units_dat::mineral_cost[unit_id];
+		g_aiscript_controller[player].vespene_needed += units_dat::vespene_cost[unit_id];
 		helper::ai_add_spending_request(unit_id, player, RequestType::Military, priority, bw::get_ai_region(player, bw::get_region_id(position)));
 	}
 
@@ -2425,11 +2427,13 @@ namespace bw {
 			unit_id = UnitId::TerranPhalanxTankMode;
 		}
 		if (request_base) {
-			u32 base_unit_id = find_unit_base(unit_id);
+			UnitId::Enum base_unit_id = find_equivalent((UnitId::Enum)unit_id);
 			if (base_unit_id != UnitId::None && !player_count_units(player, base_unit_id, false)) {
 				military_add_spending_request(player, unit_id, guard_ai->current_home, priority, request_base); // Intentionally using military, since we don't want the base unit to take over the guard
 			}
 		}
+		g_aiscript_controller[player].minerals_needed += units_dat::mineral_cost[unit_id];
+		g_aiscript_controller[player].vespene_needed += units_dat::vespene_cost[unit_id];
 		helper::ai_add_spending_request(unit_id, player, RequestType::Guard, priority, guard_ai);
 	}
 

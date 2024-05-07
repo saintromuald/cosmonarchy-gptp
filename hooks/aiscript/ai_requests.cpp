@@ -885,9 +885,9 @@ namespace hooks
 				} else if (request.is_tech) {
 					existing_count = helper::get_tech_count(town, request.id);
 				} else if (request.only_if_needed) {
-					existing_count = player_count_up_equivalents(player, request.id);
+					existing_count = player_count_up_equivalents(player, (UnitId::Enum)request.id);
 				} else {
-					existing_count = town_count_up_equivalents(*town, request.id);
+					existing_count = town_count_up_equivalents(*town, (UnitId::Enum)request.id);
 				}
 
 				u32 requested_count = request.count;

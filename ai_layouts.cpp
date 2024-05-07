@@ -7,8 +7,8 @@
 
 static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 townhall_index);
 static u32 ai_mining_base_count(u32 player);
-static u32 get_unit_priority_class(u32 unit_id);
-static u32 get_unit_total_cost(u32 unit_id);
+static u32 get_unit_priority_class(UnitId::Enum unit_id);
+static u32 get_unit_total_cost(UnitId::Enum unit_id);
 
 void AiLayouts::init() {
 	memset(show_player_layouts, 0, sizeof(show_player_layouts));
@@ -175,7 +175,7 @@ void AiLayouts::update() {
 			}
 			AiTown& town = *placeholder.town;
 			TownLayouts& layouts_town = get_town_layouts(town);
-			u32 base_unit_id = find_unit_root_merge(placeholder.unit_id);
+			UnitId::Enum base_unit_id = find_equivalent_root_merge(placeholder.unit_id);
 
 			layouts_town.request_count[(UnitId::Enum)placeholder.unit_id] += 1;
 			if (can_build_placeholder(town, placeholder)) {
@@ -255,7 +255,7 @@ void AiLayouts::update() {
 	}
 }
 
-void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& placeholder, u32 unit_id) {
+void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& placeholder, UnitId::Enum unit_id) {
 	if (unit_id == UnitId::TownCenterMarker) {
 		placeholder.is_townhall_marker = true;
 		placeholder.was_preplaced = false;
@@ -278,7 +278,7 @@ void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& p
 				continue;
 			}
 
-			u32 score = get_harvest_amount(unit);
+			u32 score = 10000 * get_harvest_amount(unit);
 			if (unit_id_is_uncapped_gas_node(unit->id)) {
 				score *= 3;
 			}
@@ -323,7 +323,7 @@ void AiLayouts::add_placeholder_chk(const CHKUnit& unit, u32 player) {
 	if (!(flags & ChkUnitFlags_Invincible)) {
 		placeholder.resarea = bw::get_closest_resarea(placeholder.position);
 	}
-	add_placeholder_unit_id(m_player_layouts[player], placeholder, unit.unit_id);
+	add_placeholder_unit_id(m_player_layouts[player], placeholder, (UnitId::Enum)unit.unit_id);
 }
 
 Point16 AiLayouts::get_ai_town_position(AiTown& town) {
@@ -395,13 +395,13 @@ bool AiLayouts::has_expanding_town(u32 player) {
 }
 
 bool AiLayouts::can_build_placeholder(AiTown& town, AiPlaceholder& placeholder) {
-	u32 unit_id = placeholder.unit_id;
+	UnitId::Enum unit_id = placeholder.unit_id;
 
 	// Check tech availability
-	u32 base_unit_id = find_unit_root_merge(unit_id);
+	u32 base_unit_id = find_equivalent_root_merge(unit_id);
 	if (!hooks::create_unit_id_allowed(base_unit_id, town.player, false)) {
 		return false;
-	}{}
+	}
 	if (unit_id != base_unit_id && !hooks::create_unit_id_allowed(unit_id, town.player, true)) {
 		return false;
 	}
@@ -414,7 +414,7 @@ void AiLayouts::init_placeholder(AiTown& town, AiPlaceholder& placeholder) {
 		return;
 	}
 
-	u32 merge = find_unit_merge(placeholder.unit_id);
+	UnitId::Enum merge = find_equivalent_merge(placeholder.unit_id);
 	if (merge != UnitId::None) {
 		AiPlaceholder copy = placeholder;
 		copy.unit_id = merge;
@@ -429,16 +429,7 @@ void AiLayouts::init_placeholder(AiTown& town, AiPlaceholder& placeholder) {
 
 void AiLayouts::request_placeholder(AiTown& town, TownLayouts& layouts_town, AiPlaceholder& placeholder) {
 	if (units_dat::base_property[placeholder.unit_id] & UnitProperty::Building) {
-		// Requesting the base unit currently handled in town_add_spending_request
-		/*
-		u32 merge = find_unit_merge(unit_id);
-		if (merge != UnitId::None) {
-			AiPlaceholder copy = *placeholder;
-			copy.unit_id = merge;
-			request_placeholder(town, layouts_town, &copy);
-		}
-		*/
-
+		// NOTE: Requesting of the base unit is handled in town_add_spending_request
 		bw::town_add_spending_request(town, 1, placeholder.unit_id, placeholder.priority);
 	} else if (units_dat::computer_ai_internal[placeholder.unit_id] & 2) {
 		bw::military_add_spending_request(town.player, placeholder.unit_id, placeholder.position, placeholder.priority);
@@ -483,7 +474,6 @@ void AiLayouts::sort_layouts(PlayerLayouts& layouts) {
 	});
 }
 
-
 static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 townhall_index) {
 	switch (g_player_table[player].race) {
 		case RaceId::Terran: {
@@ -512,7 +502,7 @@ static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 t
 	return old_priority != placeholder.priority;
 }
 
-u32 find_unit_base(u32 unit_id) {
+UnitId::Enum find_equivalent(UnitId::Enum unit_id) {
 	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
 		if (unit_id == equivalents[i].to) {
 			return equivalents[i].from;
@@ -521,26 +511,7 @@ u32 find_unit_base(u32 unit_id) {
 	return UnitId::None;
 }
 
-AiUnitEquivalent find_unit_equivalent_down(u32 unit_id) {
-	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
-		if (unit_id == equivalents[i].to && !equivalents[i].merge_requests) {
-			return equivalents[i];
-		}
-	}
-	return {UnitId::None, UnitId::None, 0};
-}
-
-AiUnitEquivalent find_unit_equivalent_up(u32 unit_id, u32* index) {
-	for (u32 i = index ? *index : 0; i < ARRAY_SIZE(equivalents); ++i) {
-		if (index) *index += 1;
-		if (unit_id == equivalents[i].from) {
-			return equivalents[i];
-		}
-	}
-	return {UnitId::None, UnitId::None, 0};
-}
-
-u32 find_unit_merge(u32 unit_id) {
+UnitId::Enum find_equivalent_merge(UnitId::Enum unit_id) {
 	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
 		if (unit_id == equivalents[i].to && equivalents[i].merge_requests) {
 			return equivalents[i].from;
@@ -549,16 +520,35 @@ u32 find_unit_merge(u32 unit_id) {
 	return UnitId::None;
 }
 
-u32 find_unit_root_merge(u32 unit_id) {
+UnitId::Enum find_equivalent_root_merge(UnitId::Enum unit_id) {
 	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
 		if (unit_id == equivalents[i].to && equivalents[i].merge_requests) {
-			return find_unit_root_merge(equivalents[i].from);
+			return find_equivalent_root_merge(equivalents[i].from);
 		}
 	}
 	return unit_id;
 }
 
-u32 town_count_units(AiTown& town, u32 unit_id, bool completed) {
+AiUnitEquivalent find_unit_equivalent_down(UnitId::Enum unit_id) {
+	for (u32 i = 0; i < ARRAY_SIZE(equivalents); ++i) {
+		if (unit_id == equivalents[i].to && !equivalents[i].merge_requests) {
+			return equivalents[i];
+		}
+	}
+	return {};
+}
+
+AiUnitEquivalent find_unit_equivalent_up(UnitId::Enum unit_id, u32* index) {
+	for (u32 i = index ? *index : 0; i < ARRAY_SIZE(equivalents); ++i) {
+		if (index) *index += 1;
+		if (unit_id == equivalents[i].from) {
+			return equivalents[i];
+		}
+	}
+	return {};
+}
+
+u32 town_count_units(AiTown& town, UnitId::Enum unit_id, bool completed) {
 	u32 count = 0;
 	for (Unit* unit = first_player_unit->unit[town.player]; unit; unit = unit->player_link.next) {
 		if (completed) {
@@ -578,7 +568,7 @@ u32 town_count_units(AiTown& town, u32 unit_id, bool completed) {
 	return count;
 }
 
-u32 town_has_down_equivalent(AiTown& town, u32 unit_id) {
+u32 town_has_down_equivalent(AiTown& town, UnitId::Enum unit_id) {
 	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);
 	if (equivalent.from != UnitId::None) {
 		return town_count_units(town, equivalent.from, true);
@@ -586,7 +576,7 @@ u32 town_has_down_equivalent(AiTown& town, u32 unit_id) {
 	return true;
 }
 
-u32 town_count_up_equivalents(AiTown& town, u32 unit_id) {
+u32 town_count_up_equivalents(AiTown& town, UnitId::Enum unit_id) {
 	u32 count = town_count_units(town, unit_id, false);
 	u32 index = 0;
 	AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id, &index);
@@ -597,7 +587,7 @@ u32 town_count_up_equivalents(AiTown& town, u32 unit_id) {
 	return count;
 }
 
-u32 player_count_units(u32 player, u32 unit_id, bool completed) {
+u32 player_count_units(u32 player, UnitId::Enum unit_id, bool completed) {
 	u32 count = 0;
 	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 		if (completed) {
@@ -617,7 +607,7 @@ u32 player_count_units(u32 player, u32 unit_id, bool completed) {
 	return count;
 }
 
-u32 player_count_up_equivalents(u32 player, u32 unit_id) {
+u32 player_count_up_equivalents(u32 player, UnitId::Enum unit_id) {
 	u32 count = player_count_units(player, unit_id, false);
 	u32 index = 0;
 	AiUnitEquivalent equivalent = find_unit_equivalent_up(unit_id, &index);
@@ -628,7 +618,7 @@ u32 player_count_up_equivalents(u32 player, u32 unit_id) {
 	return count;
 }
 
-static u32 get_unit_priority_class(u32 unit_id) {
+static u32 get_unit_priority_class(UnitId::Enum unit_id) {
 	if (unit_id == UnitId::ProtossPylon || !(units_dat::base_property[unit_id] & UnitProperty::Building)) {
 		return 3;
 	}
@@ -647,11 +637,11 @@ static u32 get_unit_priority_class(u32 unit_id) {
 	return 0;
 } 
 
-static u32 get_unit_total_cost(u32 unit_id) {
+static u32 get_unit_total_cost(UnitId::Enum unit_id) {
 	return units_dat::mineral_cost[unit_id] + units_dat::vespene_cost[unit_id];
 }
 
-bool unit_has_creep(u32 unit_id, u32 x, u32 y) {
+bool unit_has_creep(UnitId::Enum unit_id, u32 x, u32 y) {
 	Box32 area = {};
 	area.w = units_dat::building_dimensions[unit_id].x;
 	area.h = units_dat::building_dimensions[unit_id].y;
@@ -668,7 +658,7 @@ bool unit_has_creep(u32 unit_id, u32 x, u32 y) {
 	return true;
 }
 
-bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
+bool unit_has_no_or_allied_creep(UnitId::Enum unit_id, u32 x, u32 y, u32 player) {
 	Box32 area = {};
 	area.w = units_dat::building_dimensions[unit_id].x;
 	area.h = units_dat::building_dimensions[unit_id].y;
@@ -686,7 +676,7 @@ bool unit_has_no_or_allied_creep(u32 unit_id, u32 x, u32 y, u32 player) {
 	return true;
 }
 
-bool can_place_unit(u32 unit_id, Point16 position, u32 player) {
+bool can_place_unit(UnitId::Enum unit_id, Point16 position, u32 player) {
 	if (find_unit_equivalent_down(unit_id).from != UnitId::None) {
 		return true; // If we are requesting an structure upgrade that is not merged into one request, we don't actually place it
 	}
