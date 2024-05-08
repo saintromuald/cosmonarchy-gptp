@@ -9,22 +9,17 @@ u16 box_height;
 namespace hooks {
 	void minimapVisionUpdate_256() {
 		u32 pos_y = *g_map_height;
-
 		if (pos_y) {
 			u8* surf_buff = g_minimap_surface->buffer;
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
 			ActiveTile* active_tile = *g_active_tile_array;
-
 			do {
 				u32 pos_x = *g_map_width;
-
 				do {
 					u32 cur_vision = (*g_player_visions & (*active_tile).vision_flags) == 0;
 					u32 cur_filter = (*g_player_explored_visions & (*active_tile).vision_flags) == 0;
-
-					if (*g_is_in_replay) {
+					if (g_is_in_replay) {
 						cur_filter = 0;
-
 						if (*g_replay_reveal_all) {
 							cur_vision = 1;
 						} else {
@@ -45,7 +40,6 @@ namespace hooks {
 							}
 						}
 					}
-
 					*surf_buff_fog++ = g_minimap59C2C0[256 * (cur_filter | 2 * cur_vision) + *surf_buff++];
 					active_tile += 2;
 				} while (--pos_x);
@@ -57,19 +51,15 @@ namespace hooks {
 
 	void minimapVisionUpdate_128() {
 		u32 pos = (*g_map_height) * (*g_map_width);
-
 		if (pos) {
 			u8* surf_buff = g_minimap_surface->buffer;
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
 			ActiveTile* active_tile = *g_active_tile_array;
-
 			do {
 				u32 cur_vision = (*g_player_visions & (*active_tile).vision_flags) == 0;
 				u32 cur_filter = (*g_player_explored_visions & (*active_tile).vision_flags) == 0;
-
-				if (*g_is_in_replay) {
+				if (g_is_in_replay) {
 					cur_filter = 0;
-
 					if (*g_replay_reveal_all) {
 						cur_vision = 1;
 					} else {
@@ -90,7 +80,6 @@ namespace hooks {
 						}
 					}
 				}
-
 				*surf_buff_fog++ = g_minimap59C2C0[256 * (cur_filter | 2 * cur_vision) + *surf_buff++];
 				++active_tile;
 			} while (--pos);
@@ -115,7 +104,7 @@ namespace hooks {
 					u32 cur_vision = (*g_player_visions & (*active_tile).vision_flags) == 0;
 					u32 cur_filter = (*g_player_explored_visions & (*active_tile).vision_flags) == 0;
 
-					if (*g_is_in_replay) {
+					if (g_is_in_replay) {
 						cur_filter = 0;
 
 						if (*g_replay_reveal_all) {
@@ -174,7 +163,7 @@ namespace hooks {
 					u32 cur_vision = (*g_player_visions & cur_active_tile.vision_flags) == 0;
 					u32 cur_filter = (*g_player_explored_visions & cur_active_tile.vision_flags) == 0;
 
-					if (*g_is_in_replay) {
+					if (g_is_in_replay) {
 						cur_filter = 0;
 
 						if (*g_replay_reveal_all) {

@@ -204,7 +204,7 @@ namespace hooks
 
 	// Hooked to enable custom advisor lines. -Pr0nogo
 	void display_error_message_id_with_sfx(u32 player, u32 message_id, u32 sound_id) { // 0048EE30
-		if (player == *g_local_nation_id && !*g_is_in_replay) {
+		if (player == *g_local_nation_id && !g_is_in_replay) {
 			sound_id = (u16)sound_id;
 			if (sound_id && (*g_options_list).sfx) {
 				u32 new_sound_id = bw::get_advisor_sound_from_message_id(player, message_id);

@@ -28,7 +28,7 @@ bool is_hostile_or_neutral(u32 player, u32 other_player) {
 }
 
 void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
-	if (*g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode) {
+	if (g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode) {
 		bool ping = true;
 		Point16 position = {};
 		switch (event_type) {

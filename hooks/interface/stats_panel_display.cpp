@@ -18,7 +18,7 @@ namespace hooks
 		Unit* active_unit = *g_active_portrait_unit;
 		u32 index = 0;
 
-		if (!(active_unit->status & UnitStatus::IsHallucination) || (!*g_is_in_replay && active_unit->player != *g_local_nation_id))
+		if (!(active_unit->status & UnitStatus::IsHallucination) || (!g_is_in_replay && active_unit->player != *g_local_nation_id))
 		{
 			bool no_air_weapon_display;
 			u32 air_weapon;
@@ -284,7 +284,7 @@ namespace hooks
 
 			sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
 			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
-		} else if (unit->player == *g_local_nation_id && !*g_is_in_replay) {
+		} else if (unit->player == *g_local_nation_id && !g_is_in_replay) {
 			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
 			BinDlg* child = actual_dialog->child_dialog;
 			while (child && child->index != 65515) {
@@ -322,7 +322,7 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		if (!*g_is_in_replay && !bw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
+		if (!g_is_in_replay && !bw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
 			if (*g_status_screen_func != 4) {
 				helper::hide_optional_status_screen_controls(dialog);
 				*g_status_screen_func = 4;
@@ -855,7 +855,7 @@ namespace hooks
 	// Hooked to show progress bars on allied and detected eggs. -Pr0nogo
 	void unit_stat_act_egg(BinDlg* dialog) { // 00427260
 		Unit* unit = *g_active_portrait_unit;
-		if (!*g_is_in_replay && !bw::unit_is_allied_or_detected(unit, *g_local_nation_id) || unit->status & UnitStatus::IsHallucination) {
+		if (!g_is_in_replay && !bw::unit_is_allied_or_detected(unit, *g_local_nation_id) || unit->status & UnitStatus::IsHallucination) {
 			helper::unit_stat_act_standard(dialog);
 		} else {
 			if (*g_status_screen_func != 10) {
@@ -914,7 +914,7 @@ namespace hooks
 	{
 		BinDlg* current_dialog;
 		Unit* unit = *g_active_portrait_unit;
-		if (*g_is_in_replay != 0 || unit->player == *g_local_nation_id)
+		if (g_is_in_replay != 0 || unit->player == *g_local_nation_id)
 		{
 			if (*g_status_screen_func != 9)
 			{
@@ -994,7 +994,7 @@ namespace hooks
 			current_dialog = current_dialog->next;
 		}
 
-		if (*g_is_in_replay || unit->player == *g_local_nation_id)
+		if (g_is_in_replay || unit->player == *g_local_nation_id)
 		{
 			if (*g_status_screen_func != 5)
 			{
@@ -1317,7 +1317,7 @@ namespace hooks
 	void unit_stat_act_archon(BinDlg* dialog) // 004273E0
 	{
 		Unit* unit = *g_active_portrait_unit;
-		if ((*g_is_in_replay == 0 && unit->player != *g_local_nation_id) || unit->main_order_id != OrderId::CompletingArchonSummon)
+		if ((g_is_in_replay == 0 && unit->player != *g_local_nation_id) || unit->main_order_id != OrderId::CompletingArchonSummon)
 		{
 			helper::unit_stat_act_standard(dialog);
 		} else {
@@ -1347,10 +1347,10 @@ namespace hooks
 		Unit* unit = *g_active_portrait_unit;
 		if (!(units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
 		||	  unit->status & UnitStatus::IsHallucination
-		||	(*g_is_in_replay == 0 && unit->player != *g_local_nation_id))
+		||	(g_is_in_replay == 0 && unit->player != *g_local_nation_id))
 		{
 			if ((unit->status & UnitStatus::IsHallucination || unit_id_is_broodspawn(unit->id))
-			&&	(*g_is_in_replay != 0 || unit->player == *g_local_nation_id))
+			&&	(g_is_in_replay != 0 || unit->player == *g_local_nation_id))
 			{
 				u32 timer_max = 0; // 1/10 of internal value for display
 				if (unit->status & UnitStatus::IsHallucination)

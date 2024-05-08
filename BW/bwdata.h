@@ -915,7 +915,7 @@ SCBW_DATA(ResourceAreaArray*,	g_resource_areas,		0x00692688);
 SCBW_DATA(b32*, g_is_game_paused,				0x006509C4);  // See bw::g_is_game_paused()
 SCBW_DATA(b8*,  g_is_brood_war,					0x0058F440);  // See bw::is_brood_war_mode()
 SCBW_DATA(u32*, g_cheat_state,					0x006D5A6C);  // See bw::is_cheat_enabled()
-SCBW_DATA(b32*, g_is_in_replay,					0x006D0F14);  // See bw::is_in_replay()
+SCBW_REF(b32,	g_is_in_replay,					0x006D0F14);  // See bw::is_in_replay()
 SCBW_DATA(b32*, g_is_replay_paused,				0x006D11B0);
 SCBW_DATA(s32*, g_max_unit_width,				0x006BEE68);
 SCBW_DATA(s32*, g_max_unit_height,				0x006BB930);

@@ -538,7 +538,7 @@ namespace hooks
 		if (!(unit->status & UnitStatus::Burrowed)) {
 			helper::play_sound_from_unit(sound_id, unit, 1, 0);
 		}
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
+		if (!g_is_in_replay && unit->player == *g_local_nation_id) {
 			bw::refresh_console();
 		}
 

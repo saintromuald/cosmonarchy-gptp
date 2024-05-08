@@ -270,7 +270,7 @@ namespace hooks
 	// Hooked for custom advisor handling. -Pr0nogo
 	void play_landing_interrupt_sound(Unit* unit) // 0048F5A0
 	{
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
+		if (!g_is_in_replay && unit->player == *g_local_nation_id) {
 			AdvisorEvent event_type = AdvisorEvent_LandingInterrupted;
 			switch (unit->get_race()) {
 				case RaceId::Terran:

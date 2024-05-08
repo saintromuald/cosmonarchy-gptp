@@ -51,9 +51,8 @@ namespace hooks
 		return result;
 	}
 
-	// 2
-	s32 loadMap(s32 a1, char* a2, s32 a3)
-	{                                             // 004BF520
+	s32 loadMap(s32 a1, char* a2, s32 a3) // 004BF520
+	{
 		s32 v3; // esi
 		void* v4; // edi
 		s32 result; // eax
@@ -61,8 +60,7 @@ namespace hooks
 		s32 v7; // [esp+0h] [ebp-4h]
 
 		v7 = a1;
-		if (*g_is_in_replay)
-		{
+		if (g_is_in_replay) {
 			v3 = *scenarioCHKSize;
 			v4 = scenario_chk;
 			v7 = 0;

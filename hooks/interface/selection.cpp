@@ -5,7 +5,7 @@
 #include "config.h"
 
 bool unit_is_owned_by_current_player_new(Unit* unit) {
-	if (!*g_is_in_replay && !g_globals->players[*g_local_nation_id].witness_mode) {
+	if (!g_is_in_replay && !g_globals->players[*g_local_nation_id].witness_mode) {
 		return unit->player == *g_local_nation_id;
 	}
 	return unit->player == active_player_selection->unit[0]->player;
@@ -135,7 +135,7 @@ namespace hooks
 							dont_add_to_list = true;
 						} else if (!helper::unit_is_standard_and_movable(current_unit)) {
 							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
-						} else if (*g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode) {
+						} else if (g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode) {
 							goto new_replay_logic; // New from DF
 						} else if (current_unit->player != *g_local_nation_id) {
 							keep_for_empty_list_case = true;
@@ -655,7 +655,7 @@ namespace hooks
 					}
 				}
 			}
-			if (!*g_is_in_replay && unit->player == *g_local_nation_id)
+			if (!g_is_in_replay && unit->player == *g_local_nation_id)
 			{
 				if (unit->status & UnitStatus::Completed)
 				{
@@ -726,7 +726,7 @@ namespace hooks
 				return true;
 			}
 		}
-		if (*g_is_in_replay || g_globals->players[*g_local_human_id].witness_mode) {
+		if (g_is_in_replay || g_globals->players[*g_local_human_id].witness_mode) {
 			return true;
 		}
 		return false;
@@ -750,7 +750,7 @@ namespace hooks
 
 	// Hooked to forbid witness selections from showing. -Pr0nogo
 	void create_dashed_selection_main(Unit* unit, u32 selecting_player) { // 004E65CD
-		if (!*g_is_in_replay && *g_local_human_id == selecting_player) {
+		if (!g_is_in_replay && *g_local_human_id == selecting_player) {
 			return;
 		}
 		if (selecting_player < PlayerLimit && g_globals->players[selecting_player].witness_mode) {
@@ -903,7 +903,7 @@ namespace hooks
 			{
 				break;
 			}
-			if (*g_is_in_replay || unit_from_selection->player != *g_local_nation_id)
+			if (g_is_in_replay || unit_from_selection->player != *g_local_nation_id)
 			{
 				if (units_dat::base_property[unit_from_selection->id] & UnitProperty::Subunit)
 				{
@@ -939,7 +939,7 @@ namespace hooks
 								{
 									break;
 								}
-								if (*g_is_in_replay || previous_unit->player != *g_local_nation_id)
+								if (g_is_in_replay || previous_unit->player != *g_local_nation_id)
 								{
 									Sprite* previous_sprite = previous_unit->sprite;
 									u32 sprite_flags = previous_sprite->flags >> 1;

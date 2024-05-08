@@ -285,7 +285,7 @@ namespace hooks {
 		u16 buttonset_id = *g_buttonset_special_buttonset_id;
 		b32 refresh = *g_force_button_refresh;
 		Unit* active_unit = *g_active_portrait_unit;
-		if (*g_force_button_refresh && (*g_buttonset_special_buttonset_id == UnitId::None || *g_is_in_replay)) {
+		if (*g_force_button_refresh && (*g_buttonset_special_buttonset_id == UnitId::None || g_is_in_replay)) {
 			helper::update_buttonset();
 			buttonset_id = *g_buttonset_special_buttonset_id;
 		}
@@ -318,7 +318,7 @@ namespace hooks {
 				*g_buttonset_subunit_order_id = subunit_order_id;
 				highlight_button();
 			}
-			if (*g_is_in_replay) {
+			if (g_is_in_replay) {
 				helper::replay_stat_buttons(*g_buttonset_dialog);
 			}
 			*g_force_button_refresh = false;
@@ -2700,7 +2700,7 @@ namespace hooks {
 
 			// 00459278
 			if (!stop_there && !jumpto5934E) {
-				jumpto5933C = (!*g_is_in_replay) && (*g_active_portrait_unit != nullptr) && ((*g_active_portrait_unit)->player != *g_local_nation_id);
+				jumpto5933C = (!g_is_in_replay) && (*g_active_portrait_unit != nullptr) && ((*g_active_portrait_unit)->player != *g_local_nation_id);
 				// TODO: Reenable and test
 				// jumpto5933C = false;
 				if (!jumpto5933C) {

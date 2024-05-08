@@ -624,7 +624,7 @@ void unit_die(Unit* unit) // 004A0740
 		if (unit->status & UnitStatus::Completed) {
 			helper::increment_unit_scores_ex(unit, -1, 0);
 		}
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id && *g_is_placing_building
+		if (!g_is_in_replay && unit->player == *g_local_nation_id && *g_is_placing_building
 			&& !helper::CMDRECV_place_building_allowed(*g_active_portrait_unit, *g_place_building_order_id, *g_place_building_unit_id))
 		{
 			helper::refresh_layers_3_and_4();

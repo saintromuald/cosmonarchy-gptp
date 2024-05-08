@@ -10,7 +10,7 @@
 
 DiscordState::DiscordState(bool in_game) : m_in_game(in_game) {
 	if (in_game) {
-		if (*g_is_in_replay) {
+		if (g_is_in_replay) {
 			m_state = EDiscordState::InReplay;
 			m_activity_type = DiscordActivityType_Watching;
 		} else if (g_globals->players[*g_local_nation_id].witness_mode) {

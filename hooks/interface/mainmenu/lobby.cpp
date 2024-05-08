@@ -62,7 +62,7 @@ namespace hooks
 		}
 
 		// Replay-specific
-		if (*g_is_in_replay) {
+		if (g_is_in_replay) {
 			for (s32 i = 0; i < 12; i++) {
 				g_player_replay_watchers[i] = g_player_table[i];
 			}

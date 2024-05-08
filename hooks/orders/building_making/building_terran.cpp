@@ -404,7 +404,7 @@ namespace hooks
 
 	// Hooked to play the correct new_sound when Taloses complete a structure. -Pr0nogo
 	void play_building_complete_sound(Unit* unit) { // 0048F310
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
+		if (!g_is_in_replay && unit->player == *g_local_nation_id) {
 			u32 race = unit->get_race();
 			switch (race) {
 				case RaceId::Zerg: {
@@ -673,7 +673,7 @@ namespace hooks
 	// Hooked to add custom advisor handling. -Pr0nogo
 	void play_addon_detach_sound(Unit* unit) // 0048F8A0
 	{
-		if (!*g_is_in_replay && unit->player == *g_local_nation_id) {
+		if (!g_is_in_replay && unit->player == *g_local_nation_id) {
 			u32 sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_AbandonAddon);
 			helper::play_sound_from_unit(sound_id, unit, (g_options_list->flags >> 2) & 1, 99);
 			helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (*g_audio_something / 1000), 1, 130);

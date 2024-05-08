@@ -239,7 +239,7 @@ namespace hooks {
 		}
 
 		u8 visibility_mask = 0;
-		if (*g_is_in_replay && *g_replay_reveal_all) {
+		if (g_is_in_replay && *g_replay_reveal_all) {
 			visibility_mask = 0xff;
 		} else {
 			visibility_mask = helper::get_visibility_mask_from_position_and_size(tile_x, tile_y, tile_w, tile_h);
@@ -298,7 +298,7 @@ namespace hooks {
 
 		for (u32 i = 0; i < *g_client_selection_count; ++i) {
 			Unit* transport = g_client_selection_group->unit[i];
-			bool is_replay_or_witness = *g_is_in_replay || g_globals->players[*g_local_human_id].witness_mode;
+			bool is_replay_or_witness = g_is_in_replay || g_globals->players[*g_local_human_id].witness_mode;
 			if (!bw::unit_is_allied_or_detected(transport, *g_local_nation_id) && !is_replay_or_witness) {
 				continue;
 			}
@@ -372,7 +372,7 @@ namespace hooks {
 				rect.top = local_pos.y;
 				rect.right = rect.left + width;
 				rect.bottom = rect.top + 11;
-				bool hover = (*g_local_nation_id == transport->player || *g_local_nation_id == cargo_slot.unit->player) && !*g_is_in_replay && PtInRect(&rect, *(POINT*) g_mouse);
+				bool hover = (*g_local_nation_id == transport->player || *g_local_nation_id == cargo_slot.unit->player) && !g_is_in_replay && PtInRect(&rect, *(POINT*) g_mouse);
 				if (hover) {
 					if (cargo_slot.count > 1) {
 						unit_name = std::format(BWTC_WHITE "{} ({})", short_unit_name, cargo_slot.count);
@@ -730,7 +730,7 @@ namespace hooks {
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
-		if (!*g_is_in_replay || *g_elapsed_time_frames == 0) {
+		if (!g_is_in_replay || *g_elapsed_time_frames == 0) {
 			g_options_list->speed = 6; // Lock game speed at fastest
 		}
 
@@ -3559,12 +3559,12 @@ namespace hooks {
 	void game_recv(char* buffer, s32 size, bool in_replay) { // 004865D0
 		// Size needs to be s32 to support less than 0 comparison...
 		if (size) {
-			bool is_in_replay = *g_is_in_replay;
+			bool is_in_replay = g_is_in_replay;
 			u32 command_id = 0;
 			u32 command_size = 0;
 			while (true) {
 				command_id = *buffer;
-				if (!*g_is_in_replay || in_replay) {
+				if (!g_is_in_replay || in_replay) {
 					break;
 				}
 				switch (command_id) {
@@ -4198,7 +4198,7 @@ namespace hooks {
 						helper::save_replay_action(*g_replay_data, buffer, command_size, *g_active_storm_id);
 						size -= command_size;
 						buffer += command_size;
-						is_in_replay = *g_is_in_replay;
+						is_in_replay = g_is_in_replay;
 						goto maybe_process_command;
 					}
 				} break;

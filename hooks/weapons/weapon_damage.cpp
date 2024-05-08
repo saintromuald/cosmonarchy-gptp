@@ -79,7 +79,7 @@ namespace hooks
 		if (unit->player == 11) {
 			return;
 		}
-		bool witness_or_replay = *g_is_in_replay || g_globals->players[local_player].witness_mode;
+		bool witness_or_replay = g_is_in_replay || g_globals->players[local_player].witness_mode;
 		if (unit->player == local_player || witness_or_replay) {
 			unit->last_event_color = g_palette_index_reference[20];
 			unit->last_event_timer = 20;
@@ -963,7 +963,7 @@ namespace hooks
 
 				u32 sound = bw::rand_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
 				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99)
-				&& !*g_is_in_replay && data.target->player == *g_local_nation_id) {
+				&& !g_is_in_replay && data.target->player == *g_local_nation_id) {
 					helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
 				}
 				fatal_deal_damage = false;

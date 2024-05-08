@@ -113,7 +113,7 @@ namespace hooks {
 			draw_ui_text(buffer, 7);
 		}
 
-		bool is_replay_or_witness = *g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode;
+		bool is_replay_or_witness = g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode;
 		if (!is_replay_or_witness && g_config.show_apm) {
 			char buffer[48] = {};
 			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
@@ -383,7 +383,7 @@ LABEL_15:
 				}
 
 				vision = 0;
-				if (*g_is_in_replay) {
+				if (g_is_in_replay) {
 					if (visibility & *g_replay_visions) {
 						break;
 					}
@@ -451,21 +451,21 @@ LABEL_15:
 		u32 index = 12;
 		while (index) {
 			if (--index < PlayerLimit) {
-				if (player != index || *g_is_in_replay) {
+				if (player != index || g_is_in_replay) {
 					helper::draw_minimap_unit_box_2(index);
 				}
 			} else {
 				helper::draw_minimap_unit_box(index);
 			}
 		}
-		if (!*g_is_in_replay) {
+		if (!g_is_in_replay) {
 			helper::draw_all_minimap_unit_boxes(player);
 		}
 		
 		for (Thingy* thingy = *g_first_fow_sprite; thingy; thingy = thingy->next) {
 			if (thingy->unit_id != UnitId::Spell_CarapaceSwarm) {
 				bool not_visible = helper::thingy_visiblity_check(1, thingy) && !unit_id_is_resource_node(thingy->unit_id, true);
-				if (!*g_is_in_replay || !not_visible) {
+				if (!g_is_in_replay || !not_visible) {
 					Sprite* sprite = thingy->sprite;
 
 					char color = g_palette_index_reference[25];
@@ -508,10 +508,10 @@ LABEL_15:
 				if (g_player_table[player].type != PlayerType::Human || g_globals->players[player].witness_mode) {
 					continue;
 				}
-				if (!*g_is_in_replay && player == *g_local_nation_id) {
+				if (!g_is_in_replay && player == *g_local_nation_id) {
 					continue;
 				}
-				if (!*g_is_in_replay && !g_globals->players[*g_local_nation_id].witness_mode && !bw::is_allied_to(player, *g_local_nation_id)) {
+				if (!g_is_in_replay && !g_globals->players[*g_local_nation_id].witness_mode && !bw::is_allied_to(player, *g_local_nation_id)) {
 					continue;
 				}
 				Point16 camera = g_globals->players[player].camera;
@@ -761,7 +761,7 @@ LABEL_15:
 
 		Box32 rect = {};
 		SetRect((LPRECT)&rect, 0, 0, bound_horizontal, bound_vertical);
-		if (!*g_is_in_replay) {
+		if (!g_is_in_replay) {
 			helper::image_render_fxn_0_0(button->bounds.left, button->bounds.top, &image_data - 1, &rect, 0);
 		}
 
@@ -791,7 +791,7 @@ LABEL_15:
 		SetRect((LPRECT)&rect, 0, 0, frame->w, frame->h);
 		s32 offset_x = 0;
 		s32 offset_y = 0;
-		if (*g_is_in_replay) {
+		if (g_is_in_replay) {
 			switch (button_graphic) {
 			case IconId::PlayReplay:
 			case IconId::PauseReplay:
@@ -837,7 +837,7 @@ LABEL_15:
 		}
 
 		char n_u;
-		if (*g_is_in_replay)
+		if (g_is_in_replay)
 		{
 			n_u = 'n';
 		} else {
