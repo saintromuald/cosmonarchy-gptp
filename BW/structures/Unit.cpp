@@ -212,9 +212,7 @@ RaceId::Enum Unit::get_race(u16 unit_id) {
 u8 Unit::get_seek_range() const {
 	static u32 func_address = 0x00476000;
 	assert(this);
-
 	static u8 seek_range;
-
 	__asm {
 		PUSHAD
 		MOV EDX, this
@@ -222,7 +220,6 @@ u8 Unit::get_seek_range() const {
 		MOV seek_range, AL
 		POPAD
 	}
-
 	return seek_range;
 }
 

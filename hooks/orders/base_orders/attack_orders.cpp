@@ -1,4 +1,5 @@
 #include "attack_orders.h"
+#include "hooks/unit_stats/weapon_range.h"
 #include <BW/api.h>
 
 #ifndef TRUE
@@ -863,8 +864,7 @@ namespace hooks
 	// Hooked to fix Optectons when they have edge targets. -Pr0nogo
 	void order_attack_move_try_pick_target(Unit* unit, u8 order_id) // 00477820
 	{
-		if (helper::get_target_acquisition_range_upgrade(unit))
-		{
+		if (helper::get_seek_range(unit)) {
 			if (unit->unit_ai) {
 				helper::ai_update_attack_target(unit, 0, 0, 0);
 			} else {
@@ -1024,6 +1024,107 @@ namespace hooks
 					helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
 				}
 			}
+		}
+	}
+
+	// Hooked to nullcheck sprites (Lakizilisk crash case). -Pr0nogo
+	void orders_patrol(Unit* unit) { // 004780F0
+		if (!unit->main_order_state) {
+			Order* order = unit->order_queue_head;
+			if (!order || order->order_id != OrderId::Patrol) {
+				unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+				if (unit->main_order_id != OrderId::Die) {
+					while (1)
+					{
+						Order* tail = unit->order_queue_tail;
+						if (!tail) {
+							break;
+						}
+						if (!orders_dat::can_be_interrupted[tail->order_id] && tail->order_id != OrderId::Patrol) {
+							break;
+						}
+						helper::remove_order_from_unit_queue(tail, unit);
+					}
+					helper::perform_another_order(OrderId::Patrol, 0, unit, UnitId::None, unit->order_target.pt, unit->order_target.unit);
+				}
+				helper::do_next_queued_order(unit);
+				helper::perform_another_order(OrderId::Patrol, 0, unit, UnitId::None, unit->sprite->position, 0);
+				return;
+			}
+
+			s32 pt_x = unit->order_target.pt.x;
+			s32 pt_y = unit->order_target.pt.y;
+			bool set_move_tgt = helper::set_move_target_xy(unit, pt_x, pt_y);
+			if (pt_x != unit->next_target_waypoint.x || pt_y != unit->next_target_waypoint.y) {
+				unit->next_target_waypoint.x = pt_x;
+				unit->next_target_waypoint.y = pt_y;
+			}
+			if (!set_move_tgt) {
+				return;
+			}
+			unit->main_order_state = 1;
+		}
+
+		Unit* target = unit->auto_target_unit;
+		if (target && target->sprite) { // Sprite check is new.
+			u32 target_player = target->player == 11 ? target->sprite->player : target->player; // Gets sprite player in case the original player was defeated.
+
+			if (!bw::is_allied_to(unit->player, target_player) && !(target->sprite->flags & SpriteFlags::Hidden) && !(target->status & UnitStatus::Invincible)) {
+				if (!helper::unit_can_see_cloaked_target(target, unit)) {
+					u32 tgt_x = unit->order_target.pt.x;
+					u32 tgt_y = unit->order_target.pt.y;
+					helper::insert_order_before(unit, unit->order_queue_head, OrderId::Patrol, tgt_x, tgt_y, unit->order_target.unit, UnitId::None);
+					helper::insert_order_targeting_unit_before(unit->auto_target_unit, units_dat::attack_unit_order[unit->id], unit->order_queue_head, unit);
+					unit->auto_target_unit = 0;
+					helper::force_order_done(unit);
+					helper::set_flag_attack_move(unit);
+					return;
+				}
+			}
+		}
+		if (unit->main_order_timer) {
+			return;
+		}
+
+		if (unit_id_has_auto_healing(unit->id)) {
+			Unit* heal_target = helper::acquire_medic_heal_target(unit);
+			if (heal_target) {
+				if (!unit->order_target.unit) {
+					u32 tgt_x = unit->order_target.pt.x;
+					u32 tgt_y = unit->order_target.pt.y;
+					helper::insert_order_before(unit, unit->order_queue_head, OrderId::Patrol, tgt_x, tgt_y, 0, UnitId::None);
+					helper::insert_order_targeting_unit_before(heal_target, OrderId::MedicHeal1, unit->order_queue_head, unit);
+					unit->auto_target_unit = 0;
+					helper::force_order_done(unit);
+					helper::set_flag_attack_move(unit);
+					return;
+				}
+			}
+		}
+
+		Sprite* sprite = unit->sprite;
+		u32 pos_x = sprite->position.x;
+		u32 pos_y = sprite->position.y;
+		if (unit->move_target.pt.x != pos_x || unit->move_target.pt.y != pos_y || ((unit->status & UnitStatus::Unmovable) != 0) == -1) {
+			if (helper::get_seek_range(unit)) {
+				Unit* best_attack_target = helper::find_best_attack_target(unit);
+				if (best_attack_target) {
+					u32 tgt_x = unit->order_target.pt.x;
+					u32 tgt_y = unit->order_target.pt.y;
+					helper::insert_order_before(unit, unit->order_queue_head, OrderId::Patrol, tgt_x, tgt_y, unit->order_target.unit, UnitId::None);
+					helper::insert_order_targeting_unit_before(best_attack_target, units_dat::attack_unit_order[unit->id], unit->order_queue_head, unit);
+					helper::force_order_done(unit);
+					helper::set_flag_attack_move(unit);
+					return;
+				}
+			}
+		} else {
+			if (unit->get_movable_state() == MovableState_UnmovableAtDestination) {
+				helper::perform_another_order_at_coords(unit, unit->order_target.pt.x, unit->order_target.pt.y, OrderId::Patrol);
+			} else {
+				helper::perform_another_order_at_coords(unit, pos_x, pos_y, OrderId::Patrol);
+			}
+			helper::force_order_done(unit);
 		}
 	}
 }

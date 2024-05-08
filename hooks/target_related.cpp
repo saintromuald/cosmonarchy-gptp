@@ -784,30 +784,24 @@ namespace hooks
 		Unit* subunit = unit->subunit;
 		u32 waypoint_y = subunit->next_target_waypoint.y;
 		u32 waypoint_x = subunit->next_target_waypoint.x;
-		if (waypoint_x != unit->next_target_waypoint.x || waypoint_y != unit->next_target_waypoint.y)
-		{
+		if (waypoint_x != unit->next_target_waypoint.x || waypoint_y != unit->next_target_waypoint.y) {
 			unit->next_target_waypoint.x = waypoint_x;
 			unit->next_target_waypoint.y = waypoint_y;
 		}
-		if (!helper::attack_recent_attacker(unit) && !unit->main_order_timer)
-		{
+		if (!helper::attack_recent_attacker(unit) && !unit->main_order_timer) {
 			u32 unit_id = unit->id;
-			if (units_dat::base_property[unit_id] & UnitProperty::Subunit)
-			{
+			if (units_dat::base_property[unit_id] & UnitProperty::Subunit) {
 				Unit* main_unit = unit->subunit;
 				u32 main_waypoint_y = main_unit->next_target_waypoint.y;
 				u32 main_waypoint_x = main_unit->next_target_waypoint.x;
-				if (main_waypoint_x != unit->next_target_waypoint.x || main_waypoint_y != unit->next_target_waypoint.y)
-				{
+				if (main_waypoint_x != unit->next_target_waypoint.x || main_waypoint_y != unit->next_target_waypoint.y) {
 					unit->next_target_waypoint.x = main_waypoint_x;
 					unit->next_target_waypoint.y = main_waypoint_y;
 				}
 			}
-			if (helper::get_target_acquisition_range_upgrade(unit))
-			{
+			if (helper::get_seek_range(unit)) {
 				Unit* target = helper::find_best_attack_target(unit);
-				if (target)
-				{
+				if (target) {
 					helper::order_to_attack_target(unit, target, 1, 0);
 				}
 			}
@@ -849,12 +843,11 @@ namespace hooks
 	}
 
 	// Hooked to use non-sprite positions. -Pr0nogo
-	Unit* unit_order_move_to_target_reset_order_state(Unit* unit, char order_id, Unit* target) // 00479FA0
+	Unit* unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target) // 00479FA0
 	{
 		unit->main_order_id = order_id;
 		unit->order_target.unit = target;
-		if (target)
-		{
+		if (target) {
 			unit->order_target.pt.x = target->position.x;
 			unit->order_target.pt.y = target->position.y;
 		} else {

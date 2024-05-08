@@ -448,7 +448,7 @@ namespace hooks {
 	}
 
 	// Hooked to refund queued structures. -Pr0nogo
-	void do_next_queued_order(Unit* unit) // 0047500
+	void do_next_queued_order(Unit* unit) // 00475000
 	{
 		Order* queue_head = unit->order_queue_head;
 		if (unit->unit_ai) {
@@ -483,7 +483,6 @@ namespace hooks {
 				bool cannot_be_interrupted = orders_dat::can_be_interrupted[order_id] == 0;
 
 				status = unit->status & ~(UnitStatus::AttackMove | UnitStatus::CanNotReceiveOrders | UnitStatus::Disabled);
-				Unit* order_target_var = order_target;
 				unit->order_queue_timer = 0;
 				unit->recent_order_timer = 0;
 				unit->user_action_flags &= ~UserActionFlags_IscriptGoToIdle;
@@ -522,8 +521,8 @@ namespace hooks {
 								return;
 							}
 
-							if (order_target_var) {
-								helper::order_interrupt(subunit, order_target_var, order_position.x, order_position.y, final_order_id);
+							if (order_target) {
+								helper::order_interrupt(subunit, order_target, order_position.x, order_position.y, final_order_id);
 							} else {
 								helper::issue_order_targeting_fow(subunit, final_order_id, order_unit_id, order_position.x, order_position.y);
 							}

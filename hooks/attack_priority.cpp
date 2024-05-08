@@ -24,8 +24,8 @@ struct AttackPriorityData
 };
 
 // Global variables (bad practice, but it's faster)
-AttackPriorityData attackPriorityData;
-bw::UnitFinder attackTargetFinder;
+AttackPriorityData attack_priority_data;
+bw::UnitFinder attack_target_finder;
 
 namespace
 {
@@ -118,22 +118,18 @@ namespace
 namespace hooks
 {
 	// Calculates the attack priority of the @p target for the @p attacker.
-	u32 get_attack_priority(Unit* target, Unit* attacker)
-	{
+	u32 get_attack_priority(Unit* target, Unit* attacker) {
 		Unit* actual_target = target;
 
-		if (unit_id_is_garrison(target->id))
-		{
+		if (unit_id_is_garrison(target->id)) {
 			Unit* first_loaded_unit = target->get_first_loaded_unit();
-			if (first_loaded_unit)
-			{
+			if (first_loaded_unit) {
 				actual_target = first_loaded_unit;
 			}
 		}
 
 		// Units that are not important
-		if (bw::is_zerg_egg(target->id))
-		{
+		if (bw::is_zerg_egg(target->id)) {
 			return 5;
 		}
 
@@ -141,8 +137,7 @@ namespace hooks
 		u32 attack_priority = 4;
 
 		// Workers
-		if (units_dat::base_property[actual_target->id] & UnitProperty::Worker)
-		{
+		if (units_dat::base_property[actual_target->id] & UnitProperty::Worker) {
 			attack_priority = 2;
 		} else if (actual_target->can_attack_target(attacker)) {
 			attack_priority = 0;
@@ -152,19 +147,16 @@ namespace hooks
 			attack_priority = 3;
 		}
 
-		if (!(actual_target->status & UnitStatus::Completed) || actual_target != target)
-		{
+		if (!(actual_target->status & UnitStatus::Completed) || actual_target != target) {
 			attack_priority += 1;
 		}
 
-		// Units under Disruption Field are less important
-		if (attack_priority == 0 && actual_target->status & UnitStatus::CanNotAttack)
-		{
+		// Units that cannot attack are less important
+		if (attack_priority == 0 && actual_target->status & UnitStatus::CanNotAttack) {
 			attack_priority = 1;
 		}
 
-		if (actual_target->id == UnitId::ProtossPlasmaShell)
-		{
+		if (actual_target->id == UnitId::ProtossPlasmaShell) {
 			attack_priority = 2;
 		}
 
@@ -173,40 +165,36 @@ namespace hooks
 
 	// Searches for the best attack target nearby for the @p unit.
 	Unit* find_best_attack_target(Unit* unit) {
-		attackPriorityData.reset();
+		attack_priority_data.reset();
 		s32 seek_range = unit->get_seek_range() * 32;
 
 		// Garrison bonus
 		s32 offset = 0;
-		if (unit->status & UnitStatus::InBuilding)
-		{
+		if (unit->status & UnitStatus::InBuilding) {
 			offset += 64;
-		}
-		// AI units have use default sight distance if it is bigger
-		else if (unit->unit_ai)
-		{
+		} else if (unit->unit_ai) { // CPU units use default sight distance if it is bigger
 			seek_range = std::max(seek_range, units_dat::sight_range[unit->id] * 32);
 		}
 
 		s32 search_range = seek_range + offset + 64;
 		u32 min_range = get_minimum_range(unit);
-		attackTargetFinder.search(
+		attack_target_finder.search(
 			unit->get_x() - search_range, unit->get_y() - search_range,
 			unit->get_x() + search_range, unit->get_y() + search_range);
 
-		attackTargetFinder.for_each([&](Unit* target) {
+		attack_target_finder.for_each([&](Unit* target) {
 			s32 target_seek_range = hooks::get_seek_range(unit, target) * 32;
 			if (check_attackable_target(unit, target, target_seek_range + offset, min_range)) {
-				attackPriorityData.add_target(target, get_attack_priority(target, unit));
+				attack_priority_data.add_target(target, get_attack_priority(target, unit));
 			}
 		});
-		return attackPriorityData.find_best_target(unit);
+		return attack_priority_data.find_best_target(unit);
 	}
 
 	// Searches for a random attack target nearby for the @p unit.
 	Unit* find_random_attack_target(Unit* unit)
 	{
-		attackPriorityData.reset();
+		attack_priority_data.reset();
 		s32 seek_range = unit->get_seek_range() * 32;
 
 		// Bunker bonus
@@ -217,18 +205,18 @@ namespace hooks
 		}
 
 		s32 search_range = seek_range + offset + 64;
-		attackTargetFinder.search(
+		attack_target_finder.search(
 			unit->get_x() - search_range, unit->get_y() - search_range,
 			unit->get_x() + search_range, unit->get_y() + search_range);
 
-		attackTargetFinder.for_each([&](Unit* target)
+		attack_target_finder.for_each([&](Unit* target)
 		{
 			s32 target_seek_range = hooks::get_seek_range(unit, target) * 32;
 			if (check_attackable_target(unit, target, target_seek_range + offset)) {
-				attackPriorityData.add_target(target, get_attack_priority(target, unit));
+				attack_priority_data.add_target(target, get_attack_priority(target, unit));
 			}
 		});
-		return attackPriorityData.find_random_target();
+		return attack_priority_data.find_random_target();
 	}
 }
 

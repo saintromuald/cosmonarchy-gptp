@@ -1308,3 +1308,7 @@ bool unit_id_is_spell(u32 unit_id) {
 		|| unit_id == UnitId::Spell_CarapaceSwarmSmall
 		|| unit_id == UnitId::Spell_ScannerSweep;
 }
+
+bool unit_id_has_auto_healing(u32 unit_id) {
+	return unit_id == UnitId::TerranCleric; // In case we want to add more later. -Pr0nogo
+}

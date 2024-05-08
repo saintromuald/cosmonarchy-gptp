@@ -470,7 +470,7 @@ namespace helper {
 	void begin_cloak(Unit* unit, s32 sound_id);																						// 0049B5B0
 	void refresh_unit_vision(Unit* unit);																								// 004E5F30
 	void init_unit_trap_doodad(Unit* unit);																							// 004E6490
-	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, s16 fow_unit_id, Point16 position_xy, Unit* target);		// 004745F0
+	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, u16 fow_unit_id, Point16 position_xy, Unit* target);		// 004745F0
 	void order(s32 some_bool, Unit* unit, s8 order_id, Point16 pos, Unit* target_unit, u32 fow_unit_id);							// 00474810
 	u32 get_unit_strength(Unit* a1, s32 a2, bool a3);																				// 00431800
 
@@ -1267,7 +1267,7 @@ namespace helper {
 
 	b32 ai_try_expanding_to(u32 resarea);																	// 00443A00
 
-	char get_target_acquisition_range_upgrade(Unit* unit);													// 00476000
+	u8 get_seek_range(Unit* unit);													// 00476000
 
 	Unit* let_next_unit_mine(Unit* worker);																	// 00468970
 	s32 begin_harvest(Unit* worker, Unit* node);															// 00468C70

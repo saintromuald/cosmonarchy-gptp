@@ -1814,13 +1814,13 @@ namespace helper {
 	}
 
 	bool unit_cant_see_cloaked_target(Unit* unit, Unit* target) {
-		const u32 Func_unitCantSeeCloakedTarget = 0x00401D60;
+		const u32 func_address = 0x00401D60;
 		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH unit
 			MOV EAX, target
-			CALL Func_unitCantSeeCloakedTarget
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1828,12 +1828,12 @@ namespace helper {
 	}
 
 	bool unit_can_infest(Unit* unit) {
-		const u32 Func_CanInfest = 0x00402750;
+		const u32 func_address = 0x00402750;
 		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_CanInfest
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1841,22 +1841,22 @@ namespace helper {
 	}
 
 	void ai_attack_unit(Unit* unit) {
-		const u32 Func_AI_AttackUnit = 0x0043FFD0;
+		const u32 func_address = 0x0043FFD0;
 		__asm {
 			PUSHAD
 			PUSH unit
-			CALL Func_AI_AttackUnit
+			CALL func_address
 			POPAD
 		}
 	}
 
 	Unit* find_best_attack_target(Unit* unit) {
-		const u32 Func_Sub443080 = 0x00443080;
+		const u32 func_address = 0x00443080;
 		static Unit* result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub443080
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1903,26 +1903,26 @@ namespace helper {
 	}
 
 	void prepend_order_targeting_unit(Unit* unit, Unit* target, u8 order_id) {
-		const u32 Func_prependOrderTargetingUnit = 0x00474A70;
+		const u32 func_address = 0x00474A70;
 		__asm {
 			PUSHAD
 			MOVZX ECX, order_id
 			MOV EDX, unit
 			MOV EAX, target
-			CALL Func_prependOrderTargetingUnit
+			CALL func_address
 			POPAD
 		}
 	}
 
 	bool is_target_within_min_movement_range(Unit* unit, Unit* target, u32 range) {
-		const u32 Func_isTargetWithinMinMovementRange = 0x004763D0;
+		const u32 func_address = 0x004763D0;
 		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
 			MOV EAX, target
 			MOV ECX, range
-			CALL Func_isTargetWithinMinMovementRange
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1930,14 +1930,14 @@ namespace helper {
 	}
 
 	bool ai_is_unreachable_position(Unit* unit, s32 x, s32 y) {
-		const u32 Func_Sub476610 = 0x00476610;
+		const u32 func_address = 0x00476610;
 		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			MOV EBX, x
 			MOV EDI, y
-			CALL Func_Sub476610
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -1945,13 +1945,13 @@ namespace helper {
 	}
 
 	bool is_unit_in_weapon_range(Unit* unit, Unit* target) {
-		const u32 Func_isUnitInWeaponRange = 0x00476870;
+		const u32 func_address = 0x00476870;
 		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH unit
 			MOV EAX, target
-			CALL Func_isUnitInWeaponRange
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -3726,17 +3726,17 @@ namespace helper {
 		}
 	}
 
-	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, s16 fow_unit_id, Point16 position_xy, Unit* target) {
+	Order* perform_another_order(u8 order_id, Order* order, Unit* unit, u16 fow_unit_id, Point16 position_xy, Unit* target) {
 		const u32 func_address = 0x004745F0;
 		static Order* result;
 		__asm {
 			PUSHAD
-			MOVZX BL, order_id
-			MOV EDI, order
-			MOV ESI, unit
-			MOVZX DX, fow_unit_id
-			PUSH position_xy
 			PUSH target
+			PUSH position_xy
+			MOVZX DX, fow_unit_id
+			MOV ESI, unit
+			MOV EDI, order
+			MOVZX BL, order_id
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -10398,8 +10398,8 @@ namespace helper {
 		return result;
 	}
 
-	char get_target_acquisition_range_upgrade(Unit* unit) {
-		static char result;
+	u8 get_seek_range(Unit* unit) {
+		static u8 result;
 		const u32 func_address = 0x00476000;
 		__asm {
 			PUSHAD

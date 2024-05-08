@@ -3,39 +3,35 @@
 
 namespace
 {
-	void __declspec(naked) get_attack_priority_wrapper()
+	void __declspec(naked) get_attack_priority_wrapper() // 00442160
 	{
 		static Unit* target, * attacker;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			MOV target, EDI
 			MOV attacker, EBX
 			PUSHAD
 		}
 		result = hooks::get_attack_priority(target, attacker);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) find_best_attack_target_wrapper()
+	void __declspec(naked) find_best_attack_target_wrapper() // 00443080
 	{
 		static Unit* unit;
 		static Unit* target;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
 		target = hooks::find_best_attack_target(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, target
 			MOV ESP, EBP
@@ -44,20 +40,18 @@ namespace
 		}
 	}
 
-	void __declspec(naked) find_random_attack_target_wrapper()
+	void __declspec(naked) find_random_attack_target_wrapper() // 00442FC0
 	{
 		static Unit* unit;
 		static Unit* target;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, ESI
 			PUSHAD
 		}
 		target = hooks::find_random_attack_target(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, target
 			MOV ESP, EBP

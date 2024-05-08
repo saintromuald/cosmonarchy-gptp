@@ -22,7 +22,7 @@ namespace hooks
 	void change_direction_to_move_waypoint(Unit* unit);																	// 00495840
 	void orders_turret_guard(Unit* unit);																				// 004777F0
 	void get_closest_point_of_target(Unit* unit, s32* out_x, s32* out_y);												// 004762C0
-	Unit* unit_order_move_to_target_reset_order_state(Unit* unit, char order_id, Unit* target);							// 00479FA0
+	Unit* unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target);							// 00479FA0
 	b32 is_target_within_min_range(Unit* unit, u32 min_range, Unit* target);											// 00430F10
 	u32 is_target_visible(Unit* target, Unit* unit);																	// 004E5E30
 

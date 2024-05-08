@@ -1375,7 +1375,6 @@ namespace hooks {
 		}
 		helper::do_next_queued_order(repairman);
 		repair_target->connected_unit = repairman;
-		bw::print("ai_worker_repair_controller returned 1");
 		return 1;
 	}
 
