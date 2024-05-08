@@ -124,7 +124,7 @@ static u32 get_color_delta_srgb(PlayerColor a, PlayerColor b) {
 	RGBA b_rgba = init_palette->colors[g_tminimap_colors[(size_t)b + ColorSetCount * *g_current_tileset]];
 
 	RGBA delta_rgba = {};
-	delta_rgba.a = abs(a_rgba.r - b_rgba.r);
+	delta_rgba.r = abs(a_rgba.r - b_rgba.r);
 	delta_rgba.g = abs(a_rgba.g - b_rgba.g);
 	delta_rgba.b = abs(a_rgba.b - b_rgba.b);
 
