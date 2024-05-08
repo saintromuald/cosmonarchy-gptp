@@ -4,32 +4,32 @@
 #define NOMINMAX
 #include <windows.h>
 
-#define SCBW_FUNC(address, return_and_convention, name, ...) \
+#define BW_FUNC(address, return_and_convention, name, ...) \
 typedef return_and_convention name##_func(__VA_ARGS__); \
 name##_func* const name = (name##_func*) address;
 
 namespace helper {
-	SCBW_FUNC(0x0045B440, void __stdcall, ai_expand_to, AiScript* aiscript, u32 resarea, u32 block);
-	SCBW_FUNC(0x004A1E50, void __fastcall, remove_unit_ai, Unit* unit, b32 unit_was_killed);
-	SCBW_FUNC(0x00487B00, Thingy* __stdcall, find_blocking_fow_resource, u32 x, u32 y, u32 radius);
-	SCBW_FUNC(0x00493640, void __cdecl, create_pylon_aura);
-	SCBW_FUNC(0x004845F0, void __cdecl, input_target_order_right_mouse_click);
-	SCBW_FUNC(0x00484600, void __cdecl, input_place_building_right_mouse_click);
-	SCBW_FUNC(0x00425B50, void __stdcall, draw_unit_status_string, BinDlg* dialog);
-	SCBW_FUNC(0x0048A460, void __stdcall, execute_all_game_triggers, u32 ms_per_frame);
-	SCBW_FUNC(0x0045D040, s32 __stdcall, select_new_unit, Unit* unit);
-	SCBW_FUNC(0x0049B870, bool __cdecl, update_alliances);
-	SCBW_FUNC(0x00437250, bool __fastcall, player_has_transports, u32 player);
-	SCBW_FUNC(0x00440FA0, bool __fastcall, return_cargo_to_best_depot_proc, Unit* depot, Unit* worker);
-	SCBW_FUNC(0x004D27A0, void* __fastcall, alloc_background_image, const char* filename, Bitmap* bitmap, u32 buffer, u32 arg4, u32 arg5);
-	SCBW_FUNC(0x00459B00, char __fastcall, statbtn_dialog_interact, BinDlg* dialog, DialogEvent* dlg_event);
-	SCBW_FUNC(0x00410154, b32 __stdcall, sbmp_load_image, const char* filename, PaletteEntry* palette, const char* buffer, u32 buffer_size, u32* width, u32* height, u32* bpp);
-	SCBW_FUNC(0x004B5220, char __fastcall, glu_expcampaign_custom_ctrl_id, BinDlg* dialog, DialogEvent* dlg_event);
-	SCBW_FUNC(0x004BE0B0, char __cdecl, refresh_cursor_0);
-	SCBW_FUNC(0x004BE060, s32 __cdecl, cursor_refresh);
-	SCBW_FUNC(0x0049BFD0, char __cdecl, update_screen_position);
-	SCBW_FUNC(0x004D4960, bool __fastcall, title_dlg_proc, BinDlg* dialog, DialogEvent* dlg_event);
-	SCBW_FUNC(0x004D1D70, s32 __fastcall, main_window_proc, void* main_window, HWND hwnd, UINT msg, u32* wparam, u32* lparam);
+	BW_FUNC(0x0045B440, void __stdcall, ai_expand_to, AiScript* aiscript, u32 resarea, u32 block);
+	BW_FUNC(0x004A1E50, void __fastcall, remove_unit_ai, Unit* unit, b32 unit_was_killed);
+	BW_FUNC(0x00487B00, Thingy* __stdcall, find_blocking_fow_resource, u32 x, u32 y, u32 radius);
+	BW_FUNC(0x00493640, void __cdecl, create_pylon_aura);
+	BW_FUNC(0x004845F0, void __cdecl, input_target_order_right_mouse_click);
+	BW_FUNC(0x00484600, void __cdecl, input_place_building_right_mouse_click);
+	BW_FUNC(0x00425B50, void __stdcall, draw_unit_status_string, BinDlg* dialog);
+	BW_FUNC(0x0048A460, void __stdcall, execute_all_game_triggers, u32 ms_per_frame);
+	BW_FUNC(0x0045D040, s32 __stdcall, select_new_unit, Unit* unit);
+	BW_FUNC(0x0049B870, bool __cdecl, update_alliances);
+	BW_FUNC(0x00437250, bool __fastcall, player_has_transports, u32 player);
+	BW_FUNC(0x00440FA0, bool __fastcall, return_cargo_to_best_depot_proc, Unit* depot, Unit* worker);
+	BW_FUNC(0x004D27A0, void* __fastcall, alloc_background_image, const char* filename, Bitmap* bitmap, u32 buffer, u32 arg4, u32 arg5);
+	BW_FUNC(0x00459B00, char __fastcall, statbtn_dialog_interact, BinDlg* dialog, DialogEvent* dlg_event);
+	BW_FUNC(0x00410154, b32 __stdcall, sbmp_load_image, const char* filename, PaletteEntry* palette, const char* buffer, u32 buffer_size, u32* width, u32* height, u32* bpp);
+	BW_FUNC(0x004B5220, char __fastcall, glu_expcampaign_custom_ctrl_id, BinDlg* dialog, DialogEvent* dlg_event);
+	BW_FUNC(0x004BE0B0, char __cdecl, refresh_cursor_0);
+	BW_FUNC(0x004BE060, s32 __cdecl, cursor_refresh);
+	BW_FUNC(0x0049BFD0, char __cdecl, update_screen_position);
+	BW_FUNC(0x004D4960, bool __fastcall, title_dlg_proc, BinDlg* dialog, DialogEvent* dlg_event);
+	BW_FUNC(0x004D1D70, s32 __fastcall, main_window_proc, void* main_window, HWND hwnd, UINT msg, u32* wparam, u32* lparam);
 
 	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
