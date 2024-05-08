@@ -405,7 +405,7 @@ namespace hooks
 							// tell the GUI to update stuff
 							*g_control_under_mouse = 0;
 							*g_control_under_mouse_value = 0;
-							*g_client_selection_changed = 1;
+							g_client_selection_changed = 1;
 							*g_force_button_refresh = 1;
 							*g_portrait_redraw = 1;
 							*g_status_screen_redraw = 1;
@@ -444,7 +444,7 @@ namespace hooks
 				helper::cmdact_select(&clicked_unit, 1);
 
 				// tell the GUI to update stuff
-				*g_client_selection_changed = 1;
+				g_client_selection_changed = 1;
 				*g_force_button_refresh = 1;
 				*g_portrait_redraw = 1;
 				*g_status_screen_redraw = 1;
@@ -551,7 +551,7 @@ namespace hooks
 		if (send_command) {
 			helper::cmdact_select(unit_list, count);
 		}
-		*g_client_selection_changed = 1;
+		g_client_selection_changed = 1;
 		bw::refresh_console();
 		return 1;
 	}
@@ -868,7 +868,7 @@ namespace hooks
 			helper::create_new_unit_selections_from_list((Unit**)selection_array, result + 1);
 			helper::cmdact_select(selection_array, selection_index);
 			result = 1;
-			*g_client_selection_changed = 1;
+			g_client_selection_changed = 1;
 			bw::refresh_console();
 		}
 		return result;
@@ -1269,7 +1269,7 @@ namespace hooks
 				if (!*g_is_holding_alt || helper::select_single_unit_from_id(helper::unit_to_unit_id(unit))) {//wtf??? why???
 					helper::create_new_unit_selections_from_list(&unit, 1);
 					helper::cmdact_select(&unit, 1);
-					*g_client_selection_changed = 1;//client_selection_changed
+					g_client_selection_changed = 1;//client_selection_changed
 					bw::refresh_console();
 				}
 
@@ -1299,7 +1299,7 @@ namespace hooks
 
 		helper::create_new_unit_selections_from_list(unit_list, i_0);
 		helper::cmdact_select(unit_list, i_0);
-		*g_client_selection_changed = 1; //client_selection_changed
+		g_client_selection_changed = 1; //client_selection_changed
 		bw::refresh_console();
 	}
 

@@ -29,7 +29,7 @@ namespace hooks
 				{
 					if (!(target->status & UnitStatus::Completed)) {
 						unit->order_to(OrderId::ConstructingBuilding, target);
-						if (*g_is_placing_building && !helper::can_still_place_building()) {
+						if (g_is_placing_building && !helper::can_still_place_building()) {
 							helper::refresh_layers_3_and_4();
 							helper::end_building_placement();
 						}

@@ -546,7 +546,7 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	unit->status |= UnitStatus::Completed;
 	helper::increment_unit_scores_ex(unit, 1, 1);
 
-	if (*g_is_placing_building) {
+	if (g_is_placing_building) {
 		helper::place_building_refinery_check(unit);
 	}
 	return 1;
@@ -624,7 +624,7 @@ void unit_die(Unit* unit) // 004A0740
 		if (unit->status & UnitStatus::Completed) {
 			helper::increment_unit_scores_ex(unit, -1, 0);
 		}
-		if (!g_is_in_replay && unit->player == *g_local_nation_id && *g_is_placing_building
+		if (!g_is_in_replay && unit->player == *g_local_nation_id && g_is_placing_building
 			&& !helper::CMDRECV_place_building_allowed(*g_active_portrait_unit, *g_place_building_order_id, *g_place_building_unit_id))
 		{
 			helper::refresh_layers_3_and_4();
@@ -723,7 +723,7 @@ void building_death(Unit* unit, Sprite* sprite) // 0049FD00
 		if (build_queue_id != UnitId::None && !(units_dat::base_property[build_queue_id] & UnitProperty::Building)) {
 			helper::refund_all_queue_slots(unit);
 		}
-		if (*g_is_placing_building) {
+		if (g_is_placing_building) {
 			helper::place_building_proc();
 		}
 		if (units_dat::group_flags[unit->id].is_zerg) {

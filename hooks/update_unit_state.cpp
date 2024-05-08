@@ -391,13 +391,7 @@ namespace hooks
 		*g_interceptor_focused_this_frame = 0;
 
 		if (helper::is_selected_unit_group_enabled()) {
-			if (*g_is_placing_building) {
-				helper::refresh_layers_3_and_4();
-				helper::end_building_placement();
-			}
-			if (*g_is_targeting) {
-				helper::cancel_target_order();
-			}
+			bw::cancel_targeting_and_place_building();
 		}
 
 		// Originally had code related to order timers and Disruption Web; removed former, handled latter in globals
@@ -949,7 +943,7 @@ namespace hooks
 				}
 				helper::unit_completion_init(unit, 1);
 				helper::refresh_all_visible_images_at_screen_pos(unit->sprite, 0);
-				if (*g_is_placing_building)
+				if (g_is_placing_building)
 				{
 					helper::place_building_proc();
 				}

@@ -189,7 +189,7 @@ namespace hooks
 					}
 				}
 
-				if (*g_is_placing_building) {
+				if (g_is_placing_building) {
 					helper::place_building_proc();
 
 					// Add the last minute occupation info of landing building to update an ongoing attempt to choose a building or landing location?
@@ -251,7 +251,7 @@ namespace hooks
 			// Originally called update_creep_disappearance_unit when lifting off Infested Command Centers
 			bw::update_custom_creep_disappearance(unit);
 
-			if (*g_is_placing_building) {
+			if (g_is_placing_building) {
 				helper::place_building_proc();
 			}
 			unit->main_order_id = OrderId::Liftoff;

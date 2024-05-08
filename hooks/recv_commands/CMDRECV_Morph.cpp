@@ -147,7 +147,7 @@ namespace hooks
 	void btnsact_rally_point(u32 xd) { // 004244A0
 		*g_order_id_ground = OrderId::RallyPointToTile;
 		*g_order_id_obstructed = OrderId::RallyPointToTile;
-		*g_is_targeting = 1;
+		g_is_targeting = 1;
 		*g_order_id_unit = OrderId::RallyPointToVisibleUnit;
 
 		const char* string = g_network_table_DF->get_string(63);

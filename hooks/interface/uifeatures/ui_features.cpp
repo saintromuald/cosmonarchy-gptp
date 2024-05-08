@@ -559,11 +559,11 @@ LABEL_15:
 		if (*g_is_drag_selecting) {
 			return CursorType_DragSelect;
 		}
-		if (*g_is_placing_building) {
+		if (g_is_placing_building) {
 			return CursorType_Normal;
 		}
 		Unit* unit_at_point = helper::find_unit_at_point(g_mouse->x + *g_move_to_x, *g_move_to_y + g_mouse->y);
-		if (*g_is_targeting) {
+		if (g_is_targeting) {
 			if (!unit_at_point) {
 				return CursorType_TargetingNoUnit;
 			}

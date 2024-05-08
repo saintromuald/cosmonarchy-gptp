@@ -333,7 +333,7 @@ namespace hooks
 	// We will likely need to hook all calls to this if order ids ever exceed 256.
 	void issue_tri_target_order(u8 order_1, u8 order_2, u8 order_3) // 0048CAF0
 	{
-		*g_is_targeting = 1;
+		g_is_targeting = 1;
 		*g_order_id_unit = order_1;
 		*g_order_id_obstructed = order_2;
 		*g_order_id_ground = order_3;

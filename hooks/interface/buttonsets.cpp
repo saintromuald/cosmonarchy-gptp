@@ -255,9 +255,9 @@ namespace hooks {
 			return;
 		}
 		if (*g_client_selection_count > 0) {
-			if (*g_is_targeting) {
+			if (g_is_targeting) {
 				*g_buttonset_special_buttonset_id = UnitId::Buttons_Cancel;
-			} else if (*g_is_placing_building) {
+			} else if (g_is_placing_building) {
 				*g_buttonset_special_buttonset_id = UnitId::Buttons_CancelPlaceBuilding;
 			}
 		}

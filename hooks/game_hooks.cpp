@@ -88,7 +88,7 @@ namespace hooks {
 	}
 
 	static bool process_quickcasting() {
-		if (g_config.quick_casting && *g_is_targeting && !quickcasting_timeout) {
+		if (g_config.quick_casting && g_is_targeting && !quickcasting_timeout) {
 			if (PtInRect(g_minimap_rect, *(POINT*)g_mouse)) {
 				u16 x = g_mouse->x;
 				u16 y = g_mouse->y;
@@ -100,7 +100,7 @@ namespace hooks {
 				event.y_pos = g_mouse->y;
 				helper::input_target_order_left_mouse_click(&event);
 			}
-			if (*g_is_targeting) {
+			if (g_is_targeting) {
 				helper::input_target_order_right_mouse_click();
 			}
 			return true;
@@ -109,7 +109,7 @@ namespace hooks {
 	}
 
 	static bool process_quickbuilding() {
-		if (g_config.quick_building && *g_is_placing_building && !quickbuilding_timeout) {
+		if (g_config.quick_building && g_is_placing_building && !quickbuilding_timeout) {
 			bool not_held = true;
 			for (char c = 'A'; c <= 'Z'; ++c) {
 				if (g_is_keycode_used[c]) {
@@ -127,7 +127,7 @@ namespace hooks {
 				event.y_pos = position.y;
 
 				helper::input_place_building_left_mouse_click(&event, 0, position);
-				if (*g_is_placing_building) {
+				if (g_is_placing_building) {
 					helper::input_place_building_right_mouse_click();
 				}
 			}
@@ -183,10 +183,10 @@ namespace hooks {
 		if (transport_ui_unit) {
 			*left_click_proc  = (InputProcsFunc*)transport_ui_click;
 			*right_click_proc = (InputProcsFunc*)nop_click;
-		} else if (*g_is_placing_building) {
+		} else if (g_is_placing_building) {
 			*left_click_proc  = (InputProcsFunc*)0x0048E5D0; // input_place_building_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x00484600; // input_place_building_right_mouse_click;
-		} else if (*g_is_targeting) {
+		} else if (g_is_targeting) {
 			*left_click_proc  = (InputProcsFunc*)0x004BD500; // input_target_order_left_mouse_click;
 			*right_click_proc = (InputProcsFunc*)0x004845F0; // input_target_order_right_mouse_click;
 		} else {
@@ -488,7 +488,7 @@ namespace hooks {
 			}
 			
 			// Ability ranges - DF
-			if (g_config.show_ability_ranges && *g_is_targeting && bw::can_show_custom_ui()) {
+			if (g_config.show_ability_ranges && g_is_targeting && bw::can_show_custom_ui()) {
 				u32 weapon = WeaponId::None;
 				switch (*g_order_id_ground)
 				{
@@ -721,10 +721,10 @@ namespace hooks {
 		// Force disable cpu throttling, since on modern CPU it hurts more than helps
 		*cpu_throttle = false;
 
-		if (quickcasting_timeout && !*g_is_targeting) {
+		if (quickcasting_timeout && !g_is_targeting) {
 			quickcasting_timeout--;
 		}
-		if (quickbuilding_timeout && !*g_is_placing_building) {
+		if (quickbuilding_timeout && !g_is_placing_building) {
 			quickbuilding_timeout--;
 		}
 

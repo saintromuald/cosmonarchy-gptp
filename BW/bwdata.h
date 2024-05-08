@@ -418,7 +418,7 @@ SCBW_DATA(BinDlg**,	g_control_under_mouse_value,	0x0068C1EC); // void* in Neiv's
 
 // For update_units
 SCBW_DATA(s32*,		g_interceptor_focused_this_frame,		0x006957D0);
-SCBW_DATA(b8*,		g_is_targeting,							0x00641694);
+SCBW_REF(b8,		g_is_targeting,							0x00641694);
 SCBW_DATA(s32*,		g_order_timer_reassign_count,			0x0059CCA4);
 SCBW_DATA(s32*,		g_secondary_order_timer_reassign_count,	0x006283E8);
 SCBW_DATA(Unit**,	g_active_iscript_entity,				0x006D11F4);
@@ -922,7 +922,7 @@ SCBW_DATA(s32*, g_max_unit_height,				0x006BB930);
 SCBW_DATA(b32*, g_is_in_game_loop,				0x006D11C8);
 SCBW_DATA(u32*, g_last_random_number,			0x0051CA14);  // See bw::random(), bw::rand_between()
 SCBW_DATA(b32*, g_can_update_powered_status,	0x0063FF44);
-SCBW_DATA(b32*, g_is_placing_building,			0x00640880);
+SCBW_REF(b32, g_is_placing_building,			0x00640880);
 
 //-------- Tech levels --------//
 
@@ -999,7 +999,7 @@ SCBW_DATA(char*,	g_order_id_unit,					0x00641692);
 SCBW_DATA(u16*,		g_buttonset_special_buttonset_id,	0x0068C1C8);
 
 // For select_multiple_units_from_unit_list
-SCBW_DATA(char*,	g_client_selection_changed,			0x0059723C);
+SCBW_REF(char,	g_client_selection_changed,			0x0059723C);
 
 // For set_ingame_input_procs
 SCBW_DATA(HACCEL*,				common_accelerator,		0x006D120C);

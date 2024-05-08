@@ -277,7 +277,7 @@ namespace hooks
 							unit->main_order_state = 3;
 							unit->order_target.unit = built_unit;
 
-							if (*g_is_placing_building) {
+							if (g_is_placing_building) {
 								if (!helper::can_still_place_building()) {
 									helper::refresh_layers_3_and_4();
 									helper::end_building_placement();
@@ -324,8 +324,8 @@ namespace hooks
 
 	char refresh_screen(s32 ecx0) { // 0048DDC0
 		auto v6 = ecx0;
-		auto result = *g_is_placing_building;
-		if (*g_is_placing_building) {
+		auto result = g_is_placing_building;
+		if (g_is_placing_building) {
 			auto y = g_mouse->y;
 			auto x = g_mouse->x;
 			auto mouse_pos = Point16{ (u16)g_mouse->x, (u16)g_mouse->y };

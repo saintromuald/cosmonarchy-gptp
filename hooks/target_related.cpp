@@ -520,7 +520,7 @@ namespace hooks
 	// TODO: Figure out how to properly access g_client_selection_group in this context
 	void do_targeted_order(void* unused, u32 sound_offset, u32 pos_x, u32 pos_y, Unit* target, u32 fow_unit_id) // 0046F5B0
 	{
-		if (!*g_is_targeting) {
+		if (!g_is_targeting) {
 			return;
 		}
 		s32 error = 0xFFFF;

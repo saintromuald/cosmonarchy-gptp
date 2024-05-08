@@ -24,7 +24,7 @@ namespace hooks
 
 	u8 draw_placement_box(Point16 unused) { // 0048DDC0
 		Point16 placement_pos = unused;
-		u8 result = *g_is_placing_building;
+		u8 result = g_is_placing_building;
 		if (!result) {
 			return result;
 		}
@@ -307,7 +307,7 @@ namespace hooks
 	// Hooked to enable more refinery types. -Pr0nogo
 	char issue_place_building_order(char* unused, u16 unit_id, u8 order_id) // 0048E730
 	{
-		*g_is_placing_building = 1;
+		g_is_placing_building = 1;
 		*g_buttonset_special_buttonset_id = 230;
 		helper::update_current_buttonset();
 		*g_place_building_message_id = 0;

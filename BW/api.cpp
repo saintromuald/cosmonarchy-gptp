@@ -3792,26 +3792,39 @@ namespace bw {
 		}
 	}
 
-	void select(std::vector<Unit*>& units, bool play_response) {
-		if (units.size()) {
-			if (play_response) {
-				Unit* response_unit = 0;
-				for (Unit* unit : units) {
-					if (unit->player == *g_active_nation_id && hooks::unit_can_rally(unit)) {
-						helper::show_rally_target(unit);
-					}
-					if (!response_unit || helper::compare_unit_rank(unit, response_unit)) {
-						response_unit = unit;
-					}
-				}
-				helper::select_building_sfx(response_unit);
-			}
-
-			helper::create_new_unit_selections_from_list(units.data(), units.size());
-			helper::cmdact_select(units.data(), units.size());
-			*g_client_selection_changed = true;
-			bw::refresh_console();
+	void cancel_targeting_and_place_building() {
+		if (g_is_targeting) {
+			helper::cancel_target_order();
 		}
+		if (g_is_placing_building) {
+			helper::refresh_layers_3_and_4();
+			helper::end_building_placement();
+		}
+	}
+
+	void select(std::vector<Unit*>& units, bool play_response) {
+		if (!units.size()) {
+			return;
+		}
+
+		if (play_response) {
+			Unit* response_unit = 0;
+			for (Unit* unit : units) {
+				if (unit->player == *g_active_nation_id && hooks::unit_can_rally(unit)) {
+					helper::show_rally_target(unit);
+				}
+				if (!response_unit || helper::compare_unit_rank(unit, response_unit)) {
+					response_unit = unit;
+				}
+			}
+			helper::select_building_sfx(response_unit);
+		}
+
+		cancel_targeting_and_place_building();
+		helper::create_new_unit_selections_from_list(units.data(), units.size());
+		helper::cmdact_select(units.data(), units.size());
+		g_client_selection_changed = true;
+		bw::refresh_console();
 	}
 
 	u32 get_manual_unit_weapon_sound(Unit* unit, u32 weapon_id)
