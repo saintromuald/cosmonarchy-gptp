@@ -1126,9 +1126,9 @@ namespace ImageId {
 		InfestedOverlay_Large						= 1489,
 		GasRaw										= 1490,
 		GasRaw2										= 1491,
-		Worship_Small								= 1492,
-		Worship_Medium								= 1493,
-		Worship_Large								= 1494,
+		DemiurgeWorshipProc_Small					= 1492,
+		DemiurgeWorshipProc_Medium					= 1493,
+		DemiurgeWorshipProc_Large					= 1494,
 		ControlledDemolition						= 1495,
 		EmergencyDetonation							= 1496,
 		MadrigalDeath								= 1497,
@@ -1263,6 +1263,12 @@ namespace ImageId {
 		OlympianDishonorableDischarge1				= 1869,
 		OlympianDishonorableDischarge2				= 1870,
 		OlympianDishonorableDischarge3				= 1871,
+
+		DemiurgeWorshipOverlay_Small				= 1877,
+		DemiurgeWorshipOverlay_Medium				= 1878,
+		DemiurgeWorshipOverlay_Large				= 1879,
+		DemiurgeWorshipOverlay_XLarge				= 1880,
+		DemiurgeWorshipProc_XLarge					= 1881,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

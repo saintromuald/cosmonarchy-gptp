@@ -449,8 +449,11 @@ void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target) {
 
 	// Audiovisuals
 	if (mind_controller_unit_id == UnitId::ProtossDemiurge) {
-		bw::add_unit_overlay(target, ImageId::Worship_Small + bw::get_overlay_offset(target->id));
+		bw::remove_unit_overlay(target, ImageId::Malediction_Small + bw::get_overlay_offset(target->id));
+		bw::add_unit_overlay(target, ImageId::DemiurgeWorshipProc_Small + bw::get_overlay_offset(target->id, true));
 		helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
+		target_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 43;
+		target_ext->values[ValueControlledByDemiurge] = 1;
 	} else if (mind_controller_unit_id == UnitId::ProtossMindTyrant) {
 		bw::add_unit_overlay(target, ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
 	}
@@ -464,6 +467,9 @@ void recede_mind_control(Unit* target) {
 	UnitExt* target_ext = get_unit_ext(target);
 	if (target_ext->values[ValueMindControlOriginalPlayer]) {
 		target->give_to(target_ext->values[ValueMindControlOriginalPlayer] - 1);
+	}
+	if (target_ext->values[ValueControlledByDemiurge]) {
+		target_ext->values[ValueControlledByDemiurge] = 0;
 	}
 	target_ext->values[ValueMindControlOriginalPlayer] = 0;
 	target_ext->values[ValueMindControlPlayer] = 0;

@@ -767,11 +767,9 @@ namespace hooks
 							target_ext->values[ValueDemiurgePlayer] = data.attacking_player_id;
 							if (target_ext->timers[TimerDemiurgeWorship] == 0) {
 								target_ext->timers[TimerDemiurgeWorship] = 10 * 24 + 1;
-							}
-							else if (target_ext->timers[TimerDemiurgeWorship] > 24) {
+							} else if (target_ext->timers[TimerDemiurgeWorship] > 24) {
 								target_ext->timers[TimerDemiurgeWorship] -= 24;
-							}
-							else if (target_ext->timers[TimerDemiurgeWorship] < 24) {
+							} else if (target_ext->timers[TimerDemiurgeWorship] < 24) {
 								target_ext->timers[TimerDemiurgeWorship] = 2;
 							}
 						}

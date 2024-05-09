@@ -1144,7 +1144,9 @@ namespace hooks {
 		}
 		
 		// Overlay for units which are mind-controlled
-		if ((unit_ext->values[ValueMindControlPlayer] || unit_ext->timers[TimerEmpressAnodyneAnnex]) && !unit->sprite->get_overlay(ImageId::TyrannyOverlay)) {
+		if ((unit_ext->values[ValueMindControlPlayer] || unit_ext->timers[TimerEmpressAnodyneAnnex])
+			&& !unit_ext->values[ValueControlledByDemiurge] && !unit->sprite->get_overlay(ImageId::TyrannyOverlay))
+		{
 			bw::add_unit_overlay(unit, ImageId::TyrannyOverlay);
 		}
 
@@ -2582,7 +2584,7 @@ namespace hooks {
 			}
 		}
 
-		// Tyranny
+		// Tyranny and Worship
 		if (unit_ext->values[ValueMindControlPlayer]) {
 			EntryArray masters = {};
 			unit_search_radial(&masters, unit->position, 8 * 32);
@@ -2619,7 +2621,7 @@ namespace hooks {
 				recede_mind_control(unit);
 				unit_ext->values[ValueMindControlPlayer] = 0;
 
-				u32 worship_overlay_id = ImageId::Malediction_Small + offset;
+				u32 worship_overlay_id = ImageId::DemiurgeWorshipOverlay_Small + offset;
 				if (unit->get_overlay(worship_overlay_id)) {
 					bw::remove_unit_overlay(unit, worship_overlay_id);
 				}
@@ -2645,6 +2647,15 @@ namespace hooks {
 			} else if (!unit->get_overlay(overlay_id)) {
 				bw::add_unit_overlay(unit, overlay_id);
 			}
+		}
+
+		if (unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] == 1) {
+			u32 overlay_id = ImageId::DemiurgeWorshipOverlay_Small + bw::get_overlay_offset(unit->id, true);
+			if (overlay_id == ImageId::ControlledDemolition) {
+				ImageId::DemiurgeWorshipOverlay_XLarge; // Stupid workaround because XLarge was added out of sequence. -Pr0nogo
+			}
+			bw::add_unit_overlay(unit, overlay_id);
+			unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 49;
 		}
 
 		// Fix animation bug with acceleration movement flag

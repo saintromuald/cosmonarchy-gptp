@@ -191,6 +191,7 @@ enum ExtValueId {
 	ValueDemiurgePlayer,
 	ValueMadcapFullChargeRead,
 	ValueHasStimpack,
+	ValueControlledByDemiurge,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -322,6 +323,7 @@ enum ExtTimerId {
 	TimerOlympianMythicalMightSFX,
 	TimerBindingPlasmaChargeOverlay,
 	TimerUnitBanter,
+	TimerDemiurgeWorshipOverlayDelay,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
