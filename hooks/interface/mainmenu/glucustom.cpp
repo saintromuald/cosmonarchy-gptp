@@ -925,20 +925,16 @@ namespace hooks
 		if (list_item_count) {
 			u8 result = 0;
 			if (!*g_multiplayer_mode && !last_game_type) {
-				BinDlg* child = list->child_dialog;
-				while (1)
-				{
-					u8 list_item_count_dec = list_item_count - 1;
-					int v6 = (int)(child->next + list_item_count_dec);
-					result = list_item_count_dec;
-					if (helper::is_melee_game(v6 + 1, 1, v6)) {
+				int* child = (int*)list->child_smk;
+				while (1) {
+					int got_template = child[--list_item_count];
+					if (helper::is_melee_game(got_template >> 8, 1, got_template)) {
 						break;
 					}
-					if (!result) {
+					if (!list_item_count) {
 						helper::unk_list_related(list);
 						return;
 					}
-					list_item_count = result;
 				}
 				helper::dialog_set_selected_immediate(result, list);
 			}
