@@ -691,7 +691,7 @@ struct BinDlg
 		} onInitDialog0x46;
 		struct
 		{
-			/*0x46*/  u8		unk46;
+			/*0x46*/  u8		item_count;
 			/*0x47*/  u8		unk47;					// unverified filler
 			/*0x48*/  u8		unk48;
 			/*0x49*/  u8		unk49;

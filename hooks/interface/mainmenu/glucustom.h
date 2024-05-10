@@ -11,6 +11,7 @@ namespace hooks
 	char __fastcall glu_main_dialog_interact(BinDlg* text_message, DialogEvent* dlg_event); // 004DB7A0
 	void load_title();									// 004D49A0
 	void __cdecl create_main_window();					// 004E05B0
+	void initialize_game_type_list(BinDlg* list);		// 004AF400
 
 	void inject_glucustom_hooks();
 

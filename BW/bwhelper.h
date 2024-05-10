@@ -30,6 +30,7 @@ namespace helper {
 	BW_FUNC(0x0049BFD0, char __cdecl, update_screen_position);
 	BW_FUNC(0x004D4960, bool __fastcall, title_dlg_proc, BinDlg* dialog, DialogEvent* dlg_event);
 	BW_FUNC(0x004D1D70, s32 __fastcall, main_window_proc, void* main_window, HWND hwnd, UINT msg, u32* wparam, u32* lparam);
+	BW_FUNC(0x004ADEA0, s32 __fastcall, compile_list_callback, s32 this_thing, char* string, s32 a3, s32 a4, s32 a5);
 
 	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
@@ -1753,4 +1754,9 @@ namespace helper {
 	void dark_minimap_related();												// 004A3A00
 
 	Thingy* iscript_create_sprite(Image* image, u16 sprite_id, u32 x, u32 y, s8 elevation);	// 004D7120
+
+	char compile_list(s32(__stdcall* callback)(u32, u32, u32, u32));			// 004AAD00
+	s32 get_last_game_type_from_registry(BinDlg* dialog);						// 004AD5B0
+	void unk_list_related(BinDlg* dialog);										// 004AEED0
+	void dialog_set_selected_immediate(u8 id, BinDlg* dialog);					// 0041A850
 }

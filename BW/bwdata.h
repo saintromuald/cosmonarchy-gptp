@@ -188,41 +188,41 @@ BW_DATA(char*,		g_current_map_name,		0x0057FE40);
 BW_DATA_REF(_uavail*, g_unit_availability,	0x0057F27C);
 
 // Ping data
-BW_DATA(Ping*, ping_array, 0x0059C1B8); // 16
-BW_DATA(PingArray*, minimap_ping_array, 0x0059C1B8); // 16
+BW_DATA(Ping*,			ping_array,					0x0059C1B8); // 16
+BW_DATA(PingArray*,		minimap_ping_array,			0x0059C1B8); // 16
 
-	// -- Added for various hooks used by Cosmonarchy BW! -- \\
+	// -- Added for various hooks used by Cosmonarchy -- \\
 
 // For race_dropdown
 BW_DATA(StringMap_b*,	single_race_select,			0x0051AAA0);
 BW_DATA(StringMap_w*,	single_type_select,			0x0051AAA8);
 BW_DATA(u16*,			g_network_table,			0x006D1220);
-BW_DATA(StringTbl*,	g_network_table_df,			0x006D1220);
+BW_DATA(StringTbl*,		g_network_table_df,			0x006D1220);
 
 // For init_singleplayer_custom
 BW_DATA(u32*,			g_selected_game_type,			0x0059BA64);
 BW_DATA(u16*,			g_selected_game_type_param,		0x0059BA5C);
-BW_DATA(char*,		g_selected_singleplayer_race,	0x0057F266);
-BW_DATA(char*,		g_custom_singleplayer,			0x0057F1E3);
+BW_DATA(char*,			g_selected_singleplayer_race,	0x0057F266);
+BW_DATA(char*,			g_custom_singleplayer,			0x0057F1E3);
 
 // For Lobotomy Mine
-BW_DATA(char**,		g_status_screen_info_button_unk,	0x00519F40);
-BW_DATA(GrpHead**,	g_cmdicons_grp,						0x0068C1E0);
+BW_DATA(char**,			g_status_screen_info_button_unk,	0x00519F40);
+BW_DATA(GrpHead**,		g_cmdicons_grp,						0x0068C1E0);
 
 // For init_game_load
-BW_DATA(void*,		scenario_chk,				0x006D0F24);
+BW_DATA(void*,			scenario_chk,				0x006D0F24);
 BW_DATA(ForceFlags*,	g_player_force_flags,		0x0058D5B8); // array of 0x4
 BW_DATA(u8*,			g_player_force,				0x0059BDA8); // array of 0x8
 BW_DATA(u8*,			g_player_force_replay_sth,	0x006D11A1); // array of 0x8
-BW_DATA(FILE*,		load_game_file_handle,		0x006D1218);
+BW_DATA(FILE*,			load_game_file_handle,		0x006D1218);
 BW_DATA(u8*,			g_multiplayer_mode,			0x0057F0B4);
 BW_DATA(u32*,			g_initial_random_seed,		0x0051CA10);
 BW_DATA(u32*,			g_replay_random_seed,		0x006D0F38);
 BW_DATA(u32*,			g_random_counts,			0x0051C610); // count of 0x400
 BW_DATA(u32*,			g_total_random_counts,		0x0051CA18);
 BW_DATA(u16*,			campaign_index,				0x0057F244);
-BW_DATA(void**,		map_archive_handle,			0x00596BC4);
-BW_DATA(GameData*,	game_data,					0x005967F8);
+BW_DATA(void**,			map_archive_handle,			0x00596BC4);
+BW_DATA(GameData*,		game_data,					0x005967F8);
 BW_DATA(u8*,			map_started,				0x006D121C);
 BW_DATA(u8*,			player_has_left,			0x00581D62); // array of 0x8
 BW_DATA(u8*,			loss_type,					0x00581D61);

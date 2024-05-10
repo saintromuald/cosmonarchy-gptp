@@ -916,4 +916,35 @@ namespace hooks
 			*g_app_context = helper::ImmAssociateContextBW(*g_main_window, 0);
 		}
 	}
+
+	// Hooked to set Scenario as the default game type. -Pr0nogo
+	void initialize_game_type_list(BinDlg* list) { // 004AF400
+		helper::compile_list((s32(__stdcall*)(u32, u32, u32, u32))helper::compile_list_callback);
+		s32 last_game_type = helper::get_last_game_type_from_registry(list);
+		u8 list_item_count = list->alternateVersion0x46.item_count;
+		if (list_item_count) {
+			u8 result = 0;
+			if (!*g_multiplayer_mode && !last_game_type) {
+				BinDlg* child = list->child_dialog;
+				while (1)
+				{
+					u8 list_item_count_dec = list_item_count - 1;
+					int v6 = (int)(child->next + list_item_count_dec);
+					result = list_item_count_dec;
+					if (helper::is_melee_game(v6 + 1, 1, v6)) {
+						break;
+					}
+					if (!result) {
+						helper::unk_list_related(list);
+						return;
+					}
+					list_item_count = result;
+				}
+				helper::dialog_set_selected_immediate(result, list);
+			}
+			helper::unk_list_related(list);
+		} else {
+			helper::disable_dialog(list);
+		}
+	}
 }

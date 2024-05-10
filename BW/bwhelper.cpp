@@ -15188,4 +15188,51 @@ namespace helper {
 		}
 		return result;
 	}
+
+	char compile_list(s32(__stdcall* callback)(u32, u32, u32, u32)) {
+		const u32 func_address = 0x004AAD00;
+		static char result;
+		__asm {
+			PUSHAD
+			MOV EDI, callback
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	s32 get_last_game_type_from_registry(BinDlg* dialog) {
+		const u32 func_address = 0x004AD5B0;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, dialog
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void unk_list_related(BinDlg* dialog) {
+		const u32 func_address = 0x004AEED0;
+		__asm {
+			PUSHAD
+			PUSH dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void dialog_set_selected_immediate(u8 id, BinDlg* dialog) {
+		const u32 func_address = 0x0041A850;
+		__asm {
+			PUSHAD
+			MOV ECX, dialog
+			MOV AL, id
+			CALL func_address
+			POPAD
+		}
+	}
 }
