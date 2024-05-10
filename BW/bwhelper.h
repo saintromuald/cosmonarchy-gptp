@@ -30,7 +30,7 @@ namespace helper {
 	BW_FUNC(0x0049BFD0, char __cdecl, update_screen_position);
 	BW_FUNC(0x004D4960, bool __fastcall, title_dlg_proc, BinDlg* dialog, DialogEvent* dlg_event);
 	BW_FUNC(0x004D1D70, s32 __fastcall, main_window_proc, void* main_window, HWND hwnd, UINT msg, u32* wparam, u32* lparam);
-	BW_FUNC(0x004ADEA0, s32 __fastcall, compile_list_callback, s32 this_thing, char* string, s32 a3, s32 a4, s32 a5);
+	BW_FUNC(0x004ADEA0, s32 __stdcall, compile_list_callback, char* string, s32 a3, s32 a4, s32 a5);
 
 	bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
