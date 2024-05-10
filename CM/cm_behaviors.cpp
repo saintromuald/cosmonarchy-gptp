@@ -470,9 +470,11 @@ void recede_mind_control(Unit* target) {
 	}
 	if (target_ext->values[ValueControlledByDemiurge]) {
 		target_ext->values[ValueControlledByDemiurge] = 0;
+		target_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 0;
 	}
 	target_ext->values[ValueMindControlOriginalPlayer] = 0;
 	target_ext->values[ValueMindControlPlayer] = 0;
+	target_ext->values[ValueMindControllerUnitId] = UnitId::None; // Or should it be 0? -Pr0nogo
 }
 
 void spread_debuffs(Unit* from, Unit* to) {

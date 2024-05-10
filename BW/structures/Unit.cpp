@@ -10,6 +10,7 @@
 #include <DatExtend/datext.h>
 #include "math_utils.h"
 #include "hooks/unit_stats/armor_bonus.h"
+#include "hooks/target_related.h"
 
 //-------- Unit stats and properties --------//
 
@@ -1247,7 +1248,7 @@ bool Unit::is_dead() const {
 // Probably equivalent to function @ 0047B910
 bool Unit::is_target_enemy(Unit* target) const {
 	assert(this);
-	return bw::is_unit_enemy(this->player, target);
+	return hooks::is_unit_enemy((Unit*)this, target);
 }
 
 bool Unit::is_visible_to(u8 player) const {

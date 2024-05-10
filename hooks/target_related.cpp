@@ -913,20 +913,16 @@ namespace hooks
 		targ_left = targ_pos_x - target_bounds->x;
 		targ_bottom = targ_pos_y + target_bounds->h + 1;
 		x2 = bounds_left - (signed __int16)(targ_pos_x + target_bounds->w + 1);
-		if (x2 < 0)
-		{
+		if (x2 < 0) {
 			x2 = targ_left - x_1;
-			if (x2 < 0)
-			{
+			if (x2 < 0) {
 				x2 = 0;
 			}
 		}
 		y2 = bounds_top - targ_bottom;
-		if (y2 < 0)
-		{
+		if (y2 < 0) {
 			y2 = targ_top - y_bot;
-			if (y2 < 0)
-			{
+			if (y2 < 0) {
 				y2 = 0;
 			}
 		}
@@ -950,5 +946,19 @@ namespace hooks
 		{
 			return (u8)(player_flag & target->sprite->visibility_status);
 		}
+	}
+
+	// Hooked to prevent auto acquisition for units with receding mind control effects. -Pr0nogo
+	b32 is_unit_enemy(Unit* self, Unit* target) { // 0047B910
+		// New!
+		if (!unit_should_be_autoattacked_by_player(target, self->player)) {
+			return false;
+		}
+
+		u8 target_player = target->player;
+		if (target_player == 11) {
+			target_player = target->sprite->player;
+		}
+		return !bw::is_allied_to(self->player, target_player);
 	}
 }

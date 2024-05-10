@@ -39,46 +39,38 @@ namespace
 	bool check_attackable_target(Unit* unit, Unit* target, u32 seekRange, u32 minRange = 0)
 	{
 		// Shouldn't be necessary
-		if (!unit || !target)
-		{
+		if (!unit || !target) {
 			return false;
 		}
 
 		// Don't attack if the target is the unit itself.
-		if (unit == target)
-		{
+		if (unit == target) {
 			return false;
 		}
 
 		// Don't attack if the target is covered by fog of war.
-		if (!target->sprite->is_visible_to(unit->player))
-		{
+		if (!target->sprite->is_visible_to(unit->player)) {
 			return false;
 		}
 
 		// Check if the target can be attacked.
-		if (!unit->can_attack_target(target))
-		{
+		if (!unit->can_attack_target(target)) {
 			return false;
 		}
 
 		// Check if the target is an enemy
 		bool is_enemy = unit->is_target_enemy(target);
-		if (unit->is_blind)
-		{
+		if (unit->is_blind) {
 			is_enemy = true;
 		}
 
-		if (!is_enemy)
-		{
+		if (!is_enemy) {
 			return false;
 		}
 
 		// Check if the target is within the minimum weapon distance
-		if (minRange != 0)
-		{
-			if (unit->get_distance_to_target(target) <= minRange)
-			{
+		if (minRange != 0) {
+			if (unit->get_distance_to_target(target) <= minRange) {
 				return false;
 			}
 		}
@@ -86,8 +78,7 @@ namespace
 		Unit* final_unit = unit->subunit->is_subunit() ? unit->subunit : unit;
 
 		// Check if the target is within the seek distance
-		if (!(unit->get_distance_to_target(target) <= seekRange))
-		{
+		if (!(unit->get_distance_to_target(target) <= seekRange)) {
 			return false;
 		}
 
@@ -96,18 +87,18 @@ namespace
 		}
 
 		// If the unit can't turn around, check if the target is within the attack angle.
-		if (!(final_unit->status & UnitStatus::CanTurnAroundToAttack))
-		{
-			if (!is_target_pos_within_attack_angle(target->get_x(), target->get_y(),
-				final_unit, units_dat::ground_weapon[final_unit->id]))
-			{
+		if (!(final_unit->status & UnitStatus::CanTurnAroundToAttack)) {
+			if (!is_target_pos_within_attack_angle(target->get_x(), target->get_y(), final_unit, units_dat::ground_weapon[final_unit->id])) {
 				return false;
 			}
 		}
 
 		// If the target cannot be chased (i.e. inside vs edge, is out of distance), don't bother
-		if (cannot_chase_target(unit, target))
-		{
+		if (cannot_chase_target(unit, target)) {
+			return false;
+		}
+
+		if (!unit_should_be_autoattacked_by_player(target, unit->player)) {
 			return false;
 		}
 
@@ -118,7 +109,7 @@ namespace
 namespace hooks
 {
 	// Calculates the attack priority of the @p target for the @p attacker.
-	u32 get_attack_priority(Unit* target, Unit* attacker) {
+	u32 get_attack_priority(Unit* target, Unit* attacker) { // 00442160
 		Unit* actual_target = target;
 
 		if (unit_id_is_garrison(target->id)) {
@@ -158,6 +149,10 @@ namespace hooks
 
 		if (actual_target->id == UnitId::ProtossPlasmaShell) {
 			attack_priority = 2;
+		}
+
+		if (!unit_should_be_autoattacked_by_player(target, attacker->player)) {
+			attack_priority = 0;
 		}
 
 		return attack_priority;
@@ -250,21 +245,19 @@ Unit* AttackPriorityData::find_best_target(Unit* attacker) const
 	while (target_counts[priority] == 0)
 	{
 		++priority;
-		if (priority >= countof(target_counts))
-		{
+		if (priority >= countof(target_counts)) {
 			return 0;
 		}
 	}
 
-	if (target_counts[priority] == 1)
-	{
+	if (target_counts[priority] == 1) {
 		return targets[priority][0];
 	}
 
 	// Prepare for search
 	Unit* best_target = targets[priority][0];
 
-	// AI auto-targeted units with high shields/hp when using Skrylings, but we don't have them anymore, and we already handle that in tactical_ai! -Pr0nogo
+	// AI auto-targeted units with high shields/hp when using Skryrokors, but we don't have them anymore, and we already handle that in tactical_ai! -Pr0nogo
 	
 	// Find the nearest target (don't use unit box sizes)
 	u32 best_target_distance = bw::get_distance_fast(attacker->get_x(), attacker->get_y(), best_target->get_x(), best_target->get_y());
@@ -274,8 +267,7 @@ Unit* AttackPriorityData::find_best_target(Unit* attacker) const
 		Unit* current_target = targets[priority][i];
 		const u32 current_target_distance = bw::get_distance_fast(attacker->get_x(), attacker->get_y(), current_target->get_x(), current_target->get_y());
 
-		if (current_target_distance < best_target_distance)
-		{
+		if (current_target_distance < best_target_distance) {
 			best_target = current_target;
 			best_target_distance = current_target_distance;
 		}

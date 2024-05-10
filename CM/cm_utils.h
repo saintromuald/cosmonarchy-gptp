@@ -16,3 +16,4 @@ const char* game_kind_to_string(GameKind game_kind);
 const char* game_kind_to_filename_string(GameKind game_kind);
 const char* race_to_string(RaceId::Enum race);
 bool order_id_ignores_collision(u32 order_id);
+bool unit_should_be_autoattacked_by_player(Unit* unit, u32 player);

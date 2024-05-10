@@ -411,6 +411,23 @@ namespace
 		}
 	}
 
+	void __declspec(naked) is_unit_enemy_wrapper() { // 0047B910
+		static b32 result;
+		static Unit* self;
+		static Unit* target;
+		__asm {
+			MOV target, ECX
+			MOV self, EAX
+			PUSHAD
+		}
+		result = hooks::is_unit_enemy(self, target);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	// Patches \\
 
 	const u32 GetClosestReachable_2F155 = 0x0042F155;
@@ -478,6 +495,7 @@ namespace hooks
 		jump_patch(unit_order_move_to_target_reset_order_state_wrapper,	0x00479FA0, 0);
 		jump_patch(is_target_within_min_range_wrapper,					0x00430F10, 1);
 		jump_patch(is_target_visible_wrapper,							0x004E5E30, 4);
+		jump_patch(is_unit_enemy_wrapper,								0x0047B910, 1);
 
 		// Patches \\
 

@@ -842,7 +842,8 @@ namespace hooks
 			u8 target_player = auto_target->player == 11 ? auto_target->sprite->player : auto_target->player;
 			if (!bw::is_allied_to(unit->player, target_player)
 			&& !(auto_target->sprite->flags & SpriteFlags::Hidden)
-			&& !(auto_target->status & UnitStatus::Invincible))
+			&& !(auto_target->status & UnitStatus::Invincible)
+			&&   unit_should_be_autoattacked_by_player(auto_target, unit->player))
 			{
 				if (!helper::unit_can_see_cloaked_target(auto_target, unit)) {
 					if (unit->unit_ai) {
