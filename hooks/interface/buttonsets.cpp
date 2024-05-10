@@ -2628,9 +2628,11 @@ namespace hooks {
 									if (bw::get_generic_rust_value(unit, toggle_values[i]) == 1) {
 										current_button->icon_id = button_toggle_off[i];
 										current_button->requirement_string_id = string_toggle_off[i];
+										current_button->action_string_id = string_disabled_off[i];
 									} else {
 										current_button->icon_id = button_toggle_on[i];
 										current_button->requirement_string_id = string_toggle_on[i];
+										current_button->action_string_id = string_disabled_on[i];
 									}
 								}
 							}

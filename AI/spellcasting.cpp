@@ -236,16 +236,12 @@ namespace AI
 			case UnitId::ProtossMindTyrant:
 			{
 				// Tyranny
-				if (can_cast_spell_order(unit, TechId::Tyranny, OrderId::CastTyranny))
-				{
+				if (can_cast_spell_order(unit, TechId::Tyranny, OrderId::CastTyranny)) {
 					Unit* target = find_best_tyranny_target(unit, is_unit_being_attacked);
-					if (unit->main_order_id == OrderId::CastTyranny
-						&& unit->order_target.unit == target)
-					{
+					if (unit->main_order_id == OrderId::CastTyranny && unit->order_target.unit == target) {
 						return false;
 					}
-					if (ai_cast_spell_order(unit, target, OrderId::CastTyranny))
-					{
+					if (ai_cast_spell_order(unit, target, OrderId::CastTyranny)) {
 						return true;
 					}
 				}
@@ -254,17 +250,12 @@ namespace AI
 				energy_reserve = get_order_energy_cost(OrderId::CastMaelstrom) + (get_order_energy_cost(OrderId::CastTyranny) / 2);
 				energy_reserve = std::min(energy_reserve, unit->get_max_energy());
 
-				if ((unit->energy >= energy_reserve)
-					&& unit->can_use_tech(TechId::MindTyrantMaelstrom, unit->player) != 1)
-				{
+				if ((unit->energy >= energy_reserve) && unit->can_use_tech(TechId::MindTyrantMaelstrom, unit->player) != 1) {
 					Unit* target = find_best_maelstrom_target(unit, is_unit_being_attacked);
-					if (unit->main_order_id == OrderId::CastMaelstrom
-						&& unit->order_target.unit == target)
-					{
+					if (unit->main_order_id == OrderId::CastMaelstrom && unit->order_target.unit == target) {
 						return false;
 					}
-					if (ai_cast_spell_order(unit, target, OrderId::CastMaelstrom))
-					{
+					if (ai_cast_spell_order(unit, target, OrderId::CastMaelstrom)) {
 						return true;
 					}
 				}

@@ -381,8 +381,8 @@ struct Button
 	/*08*/  ActFunc* action_func;
 	/*0C*/  u16		 requirement_var;
 	/*0E*/  u16		 action_var;
-	/*10*/  u16		 requirement_string_id;
-	/*12*/  u16		 action_string_id;
+	/*10*/  u16		 requirement_string_id; // Seems like this should be action,
+	/*12*/  u16		 action_string_id;		// and this should be requirement. -Pr0nogo
 };
 
 struct StatusScreenState

@@ -277,22 +277,16 @@ namespace hooks
 	}
 
 	// Hooked to investigate Repair crashes. - Pr0nogo
-	s32 order_allowed(Unit* unit, u16 order_id, s32 player) // 0046DC20
-	{
+	s32 order_allowed(Unit* unit, u16 order_id, s32 player) { // 0046DC20
 		s32 result = 0;
 		*g_last_internal_error = 0;
-		if (order_id != OrderId::None)
-		{
-			if (orders_dat::req_offset[order_id] == -1)
-			{
+		if (order_id != OrderId::None) {
+			if (orders_dat::req_offset[order_id] == -1) {
 				helper::parse_orders_dat_requirements();
 			}
-			if (player == unit->player)
-			{
-				if (order_id == OrderId::RallyPointToVisibleUnit || order_id == OrderId::RallyPointToTile || unit->status & UnitStatus::Completed)
-				{
-					if (unit->is_frozen())
-					{
+			if (player == unit->player) {
+				if (order_id == OrderId::RallyPointToVisibleUnit || order_id == OrderId::RallyPointToTile || unit->status & UnitStatus::Completed) {
+					if (unit->is_frozen()) {
 						*g_last_internal_error = 10;
 						result = 0;
 					} else if (unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(unit->id) && order_id != OrderId::Unburrow) {
@@ -307,8 +301,7 @@ namespace hooks
 							*g_last_internal_error = 8;
 							result = 0;
 						} else {
-							if (orders_dat::req_offset[order_id])
-							{
+							if (orders_dat::req_offset[order_id]) {
 								result = helper::parse_requirement_opcodes(unit, order_id, player, g_orders_requirement_tree, orders_dat::req_offset[order_id]);
 							} else {
 								*g_last_internal_error = 23;

@@ -150,6 +150,8 @@ namespace RustId
 #include "BW\enumerations\TechId.h"
 const u32 string_toggle_on[] = {1265, 1355};
 const u32 string_toggle_off[] = {1270, 1351};
+const u32 string_disabled_on[] = {1265, 1146};
+const u32 string_disabled_off[] = {1265, 1146};
 const u32 button_toggle_on[] = {IconId::DisruptionWeb2, IconId::RechargeShields};
 const u32 button_toggle_off[] = {IconId::Cancel, IconId::Feedback};
 const u32 toggle_values[] = {RustId::ToggleDisruptionField, RustId::ToggleSavantOnhit};

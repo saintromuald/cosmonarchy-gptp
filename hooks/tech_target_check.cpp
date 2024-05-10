@@ -39,15 +39,11 @@ namespace hooks
 					}
 				} break;
 				case TechId::Tyranny: {
-					if (target->player == castingPlayerId)
-					{
+					if (target->player == castingPlayerId) {
 						stringId = 1327; // Must target enemy units<0>
-					}
-					else if (units_dat::base_property[target->id] & UnitProperty::Building)
-					{
+					} else if (units_dat::base_property[target->id] & UnitProperty::Building) {
 						stringId = 877; // Unable to target structure.<0>
-					}
-					else if (unit_id_is_trap(target->id)
+					} else if (unit_id_is_trap(target->id)
 					||		 target->id == UnitId::ZergLarva
 					||		 target->id == UnitId::ZergOcsalLarva
 					||		 target->id == UnitId::ZergEgg
@@ -56,9 +52,7 @@ namespace hooks
 					||		 target->id == UnitId::ProtossPlasmaShell)
 					{
 						stringId = 876; // Invalid target.<0>
-					}
-					else
-					{
+					} else {
 						stringId = 0; // valid target
 					}
 				} break;

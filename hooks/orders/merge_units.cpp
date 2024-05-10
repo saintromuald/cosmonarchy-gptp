@@ -281,7 +281,6 @@ namespace hooks
 			} //if(distanceBetweenUnits > 20)
 			else
 			{
-
 				//9479C:
 				helper::merge_status_into_unit(unit, targetUnit);
 				helper::replace_unit_with_id(unit, UnitId::ProtossMindTyrant);

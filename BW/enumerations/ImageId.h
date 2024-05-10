@@ -1269,6 +1269,7 @@ namespace ImageId {
 		DemiurgeWorshipOverlay_Large				= 1879,
 		DemiurgeWorshipOverlay_XLarge				= 1880,
 		DemiurgeWorshipProc_XLarge					= 1881,
+		MindTyrantTyrannyCastOverlay				= 1882,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
