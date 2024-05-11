@@ -1029,13 +1029,14 @@ namespace bw {
 		return initial;
 	}
 
-	bool can_use_cliff_advantage(Unit* unit, u8 weapon) {
+	bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
 		return !(unit->status & UnitStatus::InAir)
-			&& (!weapon || weapons_dat::max_range[weapon] > 32)
+			&& (weapon_id == WeaponId::None || weapons_dat::max_range[weapon_id] > 32)
 			&& unit->id != UnitId::TerranHarakan
+			&& unit->id != UnitId::TerranStriga
 			&& unit->id != UnitId::TerranMatadorCinderMode
 			&& unit->id != UnitId::TerranMatadorTurretCinderMode
-			&& weapon   != WeaponId::DurendalAbaddonFlamethrowers
+			&& weapon_id != WeaponId::DurendalAbaddonFlamethrowers
 			&& unit->id != UnitId::ZergIzirokor;
 	}
 

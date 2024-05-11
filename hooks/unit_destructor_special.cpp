@@ -704,8 +704,7 @@ void building_death(Unit* unit, Sprite* sprite) // 0049FD00
 		if (unit->secondary_order_id == OrderId::BuildAddon) {
 			Unit* current_build_unit = unit->current_build_unit;
 			if (current_build_unit) {
-				if (!(current_build_unit->status & UnitStatus::Completed))
-				{
+				if (!(current_build_unit->status & UnitStatus::Completed)) {
 					helper::cancel_unit(current_build_unit);
 				}
 			}

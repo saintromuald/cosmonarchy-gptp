@@ -117,23 +117,22 @@ namespace hooks
 						}
 						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding
 							|| bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
-							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)	{
+							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
+						{
 							*g_last_internal_error = 8;
 						} else if (orders_dat::req_offset[OrderId::BuildingLiftoff]) {
-						//	if (helper::parse_requirement_opcodes(unit, OrderId::BuildingLiftoff, *g_active_nation_id, g_orders_requirement_tree, orders_dat::req_offset[OrderId::BuildingLiftoff]) == 1) {
-								u16* buffer_u16 = (u16*)(buffer + 1);
-								u16 x = buffer_u16[0];
-								u16 y = buffer_u16[1];
-								if (x < *g_map_width_pixels && y < *g_map_height_pixels) {
-									UnitExt* unit_ext = get_unit_ext(unit);
-									if (!unit_ext->timers[TimerLiftoffDelay]) {
-										unit_ext->timers[TimerLiftoffDelay] = 12 + 1;
-										helper::play_sound_from_unit(SoundId::TerranLiftoffStart, unit, 1, 0);
-									}
-									helper::issue_order_targeting_ground(unit, OrderId::BuildingLiftoff, x, y);
-									helper::do_order(unit, units_dat::return_to_idle_order[unit->id], x, y - 42, 0);
+							u16* buffer_u16 = (u16*)(buffer + 1);
+							u16 x = buffer_u16[0];
+							u16 y = buffer_u16[1];
+							if (x < *g_map_width_pixels && y < *g_map_height_pixels) {
+								UnitExt* unit_ext = get_unit_ext(unit);
+								if (!unit_ext->timers[TimerLiftoffDelay]) {
+									unit_ext->timers[TimerLiftoffDelay] = 12 + 1;
+									helper::play_sound_from_unit(SoundId::TerranLiftoffStart, unit, 1, 0);
 								}
-						//	}
+								helper::issue_order_targeting_ground(unit, OrderId::BuildingLiftoff, x, y);
+								helper::do_order(unit, units_dat::return_to_idle_order[unit->id], x, y - 42, 0);
+							}
 						} else {
 							*g_last_internal_error = 20;
 						}
@@ -158,7 +157,7 @@ namespace hooks
 		helper::send_message_something(xd, string);
 		helper::set_ingame_input_procs();
 		*g_minimap_cursor = 2;
-		*g_buttonset_special_buttonset_id = 229;
+		*g_buttonset_special_buttonset_id = UnitId::Buttons_Cancel;
 		helper::update_current_buttonset();
 	}
 

@@ -242,3 +242,17 @@ bool unit_should_be_autoattacked_by_player(Unit* unit, u32 player) {
 	}
 	return true;
 }
+
+void cancel_all_training(Unit* unit) {
+	u32 offset = 0;
+	for (u32 i = 1; i < 5; ++i) {
+		u32 slot = i + unit->build_queue_slot - offset;
+		u32 unit_id = unit->build_queue[slot];
+		if (unit_id == UnitId::None) {
+			continue;
+		}
+		helper::refund_queue_slot(unit, slot);
+		offset++;
+	}
+	helper::cancel_last_training(unit);
+}

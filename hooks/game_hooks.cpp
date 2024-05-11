@@ -3386,6 +3386,12 @@ namespace hooks {
 			should_update_speed = true;
 		}
 
+		if (unit_ext->timers[TimerAddonDisconnectDelay] == 1) {
+			for (Image* i = unit->sprite->images.head; i; i = i->link.next) {
+				play_image_iscript(i, IscriptAnimation::LiftOff);
+			}
+		}
+
 		// Generic speed timers
 		if (unit_ext->timers[TimerAvenge] == 1 || unit_ext->timers[TimerZergAdrenalFrenzy] == 1) {
 			should_update_speed = true;

@@ -16,7 +16,7 @@ namespace hooks
 		coords.y = 0;
 
 		if (unit->status & UnitStatus::GroundedBuilding) {
-			unit->user_action_flags |= 1;
+			unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 			if (unit->main_order_id != OrderId::Die) {
 				bool break_loop = false;
 				while (unit->order_queue_tail && !break_loop) {
@@ -60,9 +60,7 @@ namespace hooks
 					// Play "landing sequence interrupted".
 					helper::play_landing_interrupt_sound(unit);
 
-					if (unit->order_queue_head
-					&&	unit->order_queue_head->order_id == OrderId::PlaceAddon)
-					{
+					if (unit->order_queue_head && unit->order_queue_head->order_id == OrderId::PlaceAddon) {
 						helper::remove_order_from_unit_queue(unit->order_queue_head, unit);
 					}
 					unit->order_to_idle();
@@ -75,8 +73,7 @@ namespace hooks
 
 					// Plan movement again after latest updates
 					helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-					if (unit->sprite->images.tail->palette_type == PaletteType::Shadow)
-					{
+					if (unit->sprite->images.tail->palette_type == PaletteType::Shadow) {
 						unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 					}
 					unit->status |= UnitStatus::CanNotReceiveOrders;
@@ -214,6 +211,12 @@ namespace hooks
 		if ((unit->status & UnitStatus::GroundedBuilding) && (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)) {
 			Unit* addon = unit->building.addon;
 			if (addon) {
+				if (units_dat::group_flags[addon->id].is_factory) {
+					cancel_all_training(addon);
+					UnitExt* addon_ext = get_unit_ext(addon);
+					addon_ext->timers[TimerAddonDisconnectDelay] = 4; // Cancelling the units makes the graphic play "WorkingToIdle", so we delay playing "LiftOff" by a few frames. -Pr0nogo
+				}
+				/*
 				if (addon->id == UnitId::TerranLodestone) {
 					UnitExt* addon_ext = get_unit_ext(addon);
 					for (u32 i = 0; i < TransportCap; ++i) {
@@ -225,6 +228,7 @@ namespace hooks
 						addon_ext->loaded_unit[i].value = 0;
 					}
 				}
+				*/
 				helper::disconnect_addon(unit);
 			}
 			if (unit->is_factory()) {

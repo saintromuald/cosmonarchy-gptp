@@ -324,6 +324,7 @@ enum ExtTimerId {
 	TimerBindingPlasmaChargeOverlay,
 	TimerUnitBanter,
 	TimerDemiurgeWorshipOverlayDelay,
+	TimerAddonDisconnectDelay,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
