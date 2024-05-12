@@ -2585,10 +2585,10 @@ namespace hooks {
 		}
 
 		// Tyranny and Worship
-		if (unit_ext->values[ValueMindControlPlayer]) {
+		if (unit_ext->values[ValueMindControlPlayer] && !unit_ext->values[ValueControlledByDemiurge]) {
 			EntryArray masters = {};
 			unit_search_radial(&masters, unit->position, 8 * 32);
-			unit_search_filter(&masters, unit, 0, {UnitId::ProtossMindTyrant, UnitId::ProtossDemiurge, UnitId::ProtossEmpress});
+			unit_search_filter(&masters, unit, 0, {UnitId::ProtossMindTyrant});
 			unit_search_custom_filter(&masters, [=](Unit* master) {
 				if (bw::is_allied_to(master->player, unit_ext->values[ValueMindControlPlayer] - 1)) {
 					return true;
@@ -2628,24 +2628,35 @@ namespace hooks {
 			}
 		}
 
-		// Crisis of Faith (precursor to Worship)
-		if (unit_ext->timers[TimerDemiurgeWorship]) {
+		{
 			EntryArray masters = {};
-			unit_search_radial(&masters, unit->position, 8 * 32);
+			unit_search_radial(&masters, unit->position, 6 * 32);
 			unit_search_filter(&masters, unit, 0, { UnitId::ProtossDemiurge });
 			unit_search_custom_filter(&masters, [=](Unit* master) {
-				if (bw::is_allied_to(master->player, unit_ext->values[ValueDemiurgePlayer])) {
+				if (!bw::is_allied_to(unit->player, master->player)) {
 					return true;
 				}
 				return false;
 			});
 
-			u32 overlay_id = ImageId::Malediction_Small + bw::get_overlay_offset(unit->id);
-			if (!masters.count) {
-				unit_ext->timers[TimerDemiurgeWorship] = 0;
-				bw::remove_unit_overlay(unit, overlay_id);
-			} else if (!unit->get_overlay(overlay_id)) {
-				bw::add_unit_overlay(unit, overlay_id);
+			if (masters.count) {
+				if (units_dat::base_property[unit->id] & UnitProperty::Building && !unit_ext->timers[TimerDemiurgeWorshipOverlayDelay]) {
+					unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 1;
+				}
+			}
+
+			if (unit_ext->timers[TimerDemiurgeWorship]) {
+				if (unit_ext->timers[TimerDemiurgeWorship] == 1) {
+					if (!masters.count) {
+						unit->remove();
+					} else {
+						mind_control(masters.units[0]->player, UnitId::ProtossDemiurge, unit);
+						unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 0;
+						unit->unfreeze();
+						unit->set_hitpoints(100 * 256 + units_dat::max_hitpoints[unit->id] / 3);
+						unit->status &= ~UnitStatus::Invincible; // Could cause collisions with stasis, should check.
+					}
+				}
 			}
 		}
 

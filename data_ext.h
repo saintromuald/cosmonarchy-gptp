@@ -325,6 +325,7 @@ enum ExtTimerId {
 	TimerUnitBanter,
 	TimerDemiurgeWorshipOverlayDelay,
 	TimerAddonDisconnectDelay,
+	TimerMindTyrantTyranny,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

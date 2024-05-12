@@ -197,7 +197,7 @@ namespace hooks
 		}
 
 		UnitExt* target_ext = get_unit_ext(data.target);
-		if (target_ext->values[ValueTakingDeconstructionDamage]) {
+		if (target_ext->values[ValueTakingDeconstructionDamage] || !weapon_id_procs_onhits(data.weapon_id)) {
 			data.dont_proc_link_damage = true;
 		}
 
@@ -522,8 +522,7 @@ namespace hooks
 			}
 
 			// Ensnaring Brood - Matraleth enchantment ability
-			if (unit_applies_ensnare(data.attacker) && unit_can_be_ensnared(data.target))
-			{
+			if (unit_applies_ensnare(data.attacker) && unit_can_be_ensnared(data.target)) {
 				 apply_ensnare_internal(data.target, bw::get_ensnare_factor(data.attacker));
 			}
 
@@ -760,20 +759,6 @@ namespace hooks
 							target_ext->timers[TimerTriumphantRiseDebuff] = 36;
 						}
 					} break;
-					case WeaponId::DemiurgeGalacticWeaver:
-					{
-						// Demiurge - Worship
-						if (is_hostile_or_neutral(data.attacking_player_id, data.target->player)) {
-							target_ext->values[ValueDemiurgePlayer] = data.attacking_player_id;
-							if (target_ext->timers[TimerDemiurgeWorship] == 0) {
-								target_ext->timers[TimerDemiurgeWorship] = 10 * 24 + 1;
-							} else if (target_ext->timers[TimerDemiurgeWorship] > 24) {
-								target_ext->timers[TimerDemiurgeWorship] -= 24;
-							} else if (target_ext->timers[TimerDemiurgeWorship] < 24) {
-								target_ext->timers[TimerDemiurgeWorship] = 2;
-							}
-						}
-					} break;
 					case WeaponId::EmpressFadingBioplasma:
 					{
 						// Empress - Anodyne Annex - add stack
@@ -916,10 +901,11 @@ namespace hooks
 		// Note that the order here matters a lot
 		//
 		// 1. Plague
-		// 2. Unit Specific Behaviors
+		// 2. Unit-specific behaviors
 		// 3. Infestation
 		// 4. Regression
-		// 5. Zombification
+		// 5. Tyranny of the Sun
+		// 6. Zombification
 		//
 		// We exit early to not trigger multiple different fatal damage handling at once
 
@@ -1079,6 +1065,34 @@ namespace hooks
 
 				return fatal_deal_damage;
 			}
+
+			// TODO: Mind Tyrant Tyranny port
+			if (target_ext->timers[TimerMindTyrantTyranny]) {
+				fatal_deal_damage = false;
+
+				return fatal_deal_damage;
+			}
+
+			EntryArray masters = {};
+			unit_search_radial(&masters, data.target->position, 6 * 32);
+			unit_search_filter(&masters, data.target, 0, { UnitId::ProtossDemiurge });
+			unit_search_custom_filter(&masters, [=](Unit* master) {
+				if (!bw::is_allied_to(data.target->player, master->player)) {
+					return true;
+				}
+				return false;
+				});
+			if (!(units_dat::base_property[data.target->id] & UnitProperty::Building) && masters.count) {
+				fatal_deal_damage = false;
+				target_ext->timers[TimerDemiurgeWorship] = 5 * 24 + 1;
+				bw::remove_unit_overlay(data.target, ImageId::Malediction_Small + bw::get_overlay_offset(data.target->id));
+				bw::add_unit_overlay(data.target, ImageId::DemiurgeWorshipProc_Small + bw::get_overlay_offset(data.target->id, true));
+				helper::play_sound_from_unit(SoundId::DemiurgeWorship01, data.target, 1, 0);
+				target_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 43;
+				data.target->freeze();
+				data.target->status |= UnitStatus::Invincible;
+				return fatal_deal_damage;
+			}
 			
 			// Empress - Anodyne Annex - zombify target
 			if (target_ext->values[ValueEmpressAnodyneAnnexStacks] && !target_ext->values[ValueIsZombified]) {
@@ -1160,7 +1174,7 @@ namespace hooks
 					}
 				}
 				helper::ai_unit_was_hit(victim, attacker, 1, 0);
-				if (reveal && AssertSprite(attacker->sprite)) {
+				if (reveal && attacker->sprite) {
 					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
 						bw::reveal_attacker(attacker, victim);
 						if (attacker->id == UnitId::ProtossSteward && attacker->hangar_unit.parent) {

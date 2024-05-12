@@ -11,29 +11,23 @@
 
 namespace hooks
 {
-	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target) // 00476430
-	{
-		if (!helper::is_target_visible(unit, target))
-		{
+	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target) { // 00476430
+		if (!helper::is_target_visible(unit, target)) {
 			return 1;
 		}
 		Unit* final_unit = unit->subunit;
-		if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit))
-		{
+		if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
 			final_unit = unit;
 		}
 
 		u32 weapon_id = WeaponId::None;
-		if (target->status & UnitStatus::InAir)
-		{
+		if (target->status & UnitStatus::InAir) {
 			weapon_id = units_dat::air_weapon[final_unit->id];
-		} else if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed)
-		{
+		} else if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed) {
 			weapon_id = units_dat::ground_weapon[final_unit->id];
 		}
 
-		if (weapon_id == WeaponId::None)
-		{
+		if (weapon_id == WeaponId::None) {
 			return 0;
 		}
 
@@ -41,8 +35,7 @@ namespace hooks
 		return !helper::is_target_within_min_movement_range(final_unit, target, max_range);
 	}
 
-	s32 is_ready_to_attack(Unit* unit, u8 weapon_id) // 00476640
-	{
+	s32 is_ready_to_attack(Unit* unit, u8 weapon_id) { // 00476640
 		if (unit->movement_flags & MovementFlags_StartingAttack) {
 			return 0;
 		}
@@ -73,31 +66,25 @@ namespace hooks
 	}
 	
 	// Hooked to fix hold position and cliff advantage. -Pr0nogo
-	bool is_unit_in_weapon_range(Unit* target, Unit* attacker) // 00476870
-	{
+	bool is_unit_in_weapon_range(Unit* target, Unit* attacker) { // 00476870
 		Unit* final_target = target;
-		if (!target)
-		{
+		if (!target) {
 			final_target = attacker->order_target.unit;
-			if (!final_target)
-			{
+			if (!final_target) {
 				return 1;
 			}
 		}
-		if (!helper::is_target_visible(attacker, final_target))
-		{
+		if (!helper::is_target_visible(attacker, final_target)) {
 			return 0;
 		}
 
 		Unit* final_attacker = attacker->subunit;
-		if (!final_attacker || !(units_dat::base_property[final_attacker->id] & UnitProperty::Subunit))
-		{
+		if (!final_attacker || !(units_dat::base_property[final_attacker->id] & UnitProperty::Subunit)) {
 			final_attacker = attacker;
 		}
 
 		u32 weapon_id = WeaponId::None;
-		if (final_target->status & UnitStatus::InAir)
-		{
+		if (final_target->status & UnitStatus::InAir) {
 			weapon_id = units_dat::air_weapon[final_attacker->id];
 		} else {
 			u32 attacker_id = final_attacker->id;
@@ -109,15 +96,12 @@ namespace hooks
 			}
 		}
 
-		if (weapon_id == WeaponId::None)
-		{
+		if (weapon_id == WeaponId::None) {
 			return 0;
 		}
 		u32 min_range = weapons_dat::min_range[weapon_id];
-		if (min_range)
-		{
-			if (helper::is_target_within_min_range(final_attacker, min_range, final_target))
-			{
+		if (min_range) {
+			if (helper::is_target_within_min_range(final_attacker, min_range, final_target)) {
 				return 0;
 			}
 		}
@@ -125,20 +109,16 @@ namespace hooks
 		return helper::is_target_within_min_movement_range(final_target, final_attacker, max_range);
 	}
 
-	Unit* cmdrecv_hold_position(s32 a1) // 004C20C0
-	{
+	Unit* cmdrecv_hold_position(s32 a1) { // 004C20C0
 		*((s8*)&g_map_height_pixels + 2) = 0;
 		Unit* result = helper::get_active_player_next_selection();
 		for (Unit* i = result; result; i = result)
 		{
 			u32 unit_id = i->id;
 			u32 order_id = 0;
-			if (unit_id != UnitId::ProtossSolarion)
-			{
-				if (unit_id != UnitId::ProtossAccantorOld)
-				{
-					if (unit_id == UnitId::TerranCleric)
-					{
+			if (unit_id != UnitId::ProtossSolarion) {
+				if (unit_id != UnitId::ProtossAccantorOld) {
+					if (unit_id == UnitId::TerranCleric) {
 						order_id = OrderId::MedicHoldPosition;
 					} else {
 						order_id = OrderId::HoldPositionSuicide;
@@ -149,8 +129,8 @@ namespace hooks
 			} else {
 				order_id = OrderId::HoldPositionSolarion;
 			}
-			if (helper::order_allowed(i, order_id, *g_active_nation_id) == 1)
-			{
+
+			if (helper::order_allowed(i, order_id, *g_active_nation_id) == 1) {
 				helper::targeted_order(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, order_id, 0, *g_order_type_4_position, *g_order_type_4_target);
 			}
 			result = helper::get_active_player_next_selection();
@@ -165,8 +145,7 @@ namespace hooks
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	u32 is_unit_visible(Unit* unit) // 004E5DB0
-	{
+	u32 is_unit_visible(Unit* unit) { // 004E5DB0
 		Unit* target = unit->order_target.unit;
 		s32 player = 1 << unit->player;
 		if (!target)
@@ -246,8 +225,7 @@ namespace hooks
 	}
 
 	// Hooked to complete the cloak rewrite - Pr0nogo
-	s32 is_unit_cloaking(Unit* unit) // 004916E0
-	{
+	s32 is_unit_cloaking(Unit* unit) { // 004916E0
 		if (unit->is_cloaked) {
 			return 0;
 		}
@@ -276,8 +254,7 @@ namespace hooks
 		return 1;
 	}
 
-	bool unit_can_attack_target(Unit* target, Unit* attacker, int check_detection) // 00476730
-	{
+	bool unit_can_attack_target(Unit* target, Unit* attacker, int check_detection) { // 00476730
 		if (attacker->is_frozen()
 		|| !target
 		|| !target->sprite
@@ -359,8 +336,7 @@ namespace hooks
 	}
 
 	// Hooked to help with the Titanic count game rule - Pr0nogo
-	void ai_attack_unit(Unit* unit) // 0043FFD0
-	{
+	void ai_attack_unit(Unit* unit) { // 0043FFD0
 		if (!unit) {
 			return;
 		}
@@ -433,8 +409,7 @@ namespace hooks
 	}
 
 	// Hooked to add nullcheck. -Pr0nogo
-	s32 return_interceptor_if_cannot_attack(Unit* hangar_unit) // 00465810
-	{
+	s32 return_interceptor_if_cannot_attack(Unit* hangar_unit) { // 00465810
 		s32 result = 0;
 		Unit* steward_target = hangar_unit->order_target.unit;
 		if (steward_target && !(steward_target->status & UnitStatus::Invincible) || helper::attack_recent_attacker(hangar_unit)) {
@@ -497,8 +472,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes. -Pr0nogo
-	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit) // 004769D0
-	{
+	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit) { // 004769D0
 		bool result = 0;
 		if (compare_unit != auto_target) {
 			u32 compare_player = compare_unit->player == 11 ? compare_unit->sprite->player : compare_unit->player;
@@ -518,8 +492,7 @@ namespace hooks
 	// Hooked to allow for aggressive unit responses. -Pr0nogo
 	// Arg sound_offset was cucko'd by IDA, but we don't need the arg anyway since it gets written to before being used in both cases.
 	// TODO: Figure out how to properly access g_client_selection_group in this context
-	void do_targeted_order(void* unused, u32 sound_offset, u32 pos_x, u32 pos_y, Unit* target, u32 fow_unit_id) // 0046F5B0
-	{
+	void do_targeted_order(void* unused, u32 sound_offset, u32 pos_x, u32 pos_y, Unit* target, u32 fow_unit_id) { // 0046F5B0
 		if (!g_is_targeting) {
 			return;
 		}
@@ -667,8 +640,7 @@ namespace hooks
 	}
 
 	// Hooked to add support for new refineries. -Pr0nogo
-	b32 fow_refinery_check(Unit* self, u16 fow_id) // 00474500
-	{
+	b32 fow_refinery_check(Unit* self, u16 fow_id) { // 00474500
 		char race = self->get_race(); // TODO: Add support for custom races
 		switch (race)
 		{
@@ -759,16 +731,12 @@ namespace hooks
 	}
 
 	// Hooked to make units like the Paladin not turn to face targets after starting their attacks. -Pr0nogo
-	void change_direction_to_move_waypoint(Unit* unit) // 00495840
-	{
-		if (unit->next_movement_waypoint.x == unit->position.x && unit->next_movement_waypoint.y == unit->position.y)
-		{
-			if (unit->next_target_waypoint.x == unit->position.x && unit->next_target_waypoint.y == unit->position.y)
-			{
+	void change_direction_to_move_waypoint(Unit* unit) { // 00495840
+		if (unit->next_movement_waypoint.x == unit->position.x && unit->next_movement_waypoint.y == unit->position.y) {
+			if (unit->next_target_waypoint.x == unit->position.x && unit->next_target_waypoint.y == unit->position.y) {
 				unit->velocity_direction_2 = unit->current_direction_1;
 				helper::set_unit_movement_speed_ex(unit);
-			} else if (unit->id != UnitId::TerranPaladin || !(unit->movement_flags & MovementFlags_StartingAttack))
-			{
+			} else if (unit->id != UnitId::TerranPaladin || !(unit->movement_flags & MovementFlags_StartingAttack)) {
 				unit->velocity_direction_2 = helper::get_direction_from_points(unit->next_target_waypoint.y, unit->position.x, unit->next_target_waypoint.x, unit->position.y);
 				helper::set_unit_movement_speed_ex(unit);
 			}
@@ -779,8 +747,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes. -Pr0nogo
-	void orders_turret_guard(Unit* unit) // 004777F0
-	{
+	void orders_turret_guard(Unit* unit) { // 004777F0
 		Unit* subunit = unit->subunit;
 		u32 waypoint_y = subunit->next_target_waypoint.y;
 		u32 waypoint_x = subunit->next_target_waypoint.x;
@@ -809,8 +776,7 @@ namespace hooks
 	}
 
 	// Hooked to use non-sprite positions. -Pr0nogo
-	void get_closest_point_of_target(Unit* unit, s32* out_x, s32* out_y) // 004762C0
-	{
+	void get_closest_point_of_target(Unit* unit, s32* out_x, s32* out_y) { // 004762C0
 		Unit* target = unit->order_target.unit;
 		u16 target_x = target->position.x;
 		u16 target_y = target->position.y;
@@ -843,8 +809,7 @@ namespace hooks
 	}
 
 	// Hooked to use non-sprite positions. -Pr0nogo
-	Unit* unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target) // 00479FA0
-	{
+	Unit* unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target) { // 00479FA0
 		unit->main_order_id = order_id;
 		unit->order_target.unit = target;
 		if (target) {
@@ -860,8 +825,7 @@ namespace hooks
 	}
 
 	// Hooked to use non-sprite positions. -Pr0nogo
-	b32 is_target_within_min_range(Unit* unit, u32 min_range, Unit* target) // 00430F10
-	{
+	b32 is_target_within_min_range(Unit* unit, u32 min_range, Unit* target) { // 00430F10
 		// TODO: Cleanup
 		__int16 width; // ax
 		__int16 bounds_left; // cx
@@ -930,11 +894,9 @@ namespace hooks
 	}
 
 	// Hooked to protect against nullsprite crashes. -Pr0nogo
-	u32 is_target_visible(Unit* target, Unit* unit) // 004E5E30
-	{
+	u32 is_target_visible(Unit* target, Unit* unit) { // 004E5E30
 		s32 player_flag = 1 << unit->player;
-		if (!target || !AssertSprite(target->sprite)) // sprite is new
-		{
+		if (!target || !target->sprite) { // sprite is new
 			ActiveTile* tile = bw::get_active_tile_at_coords(unit->order_target.pt);
 			return player_flag & ~(tile->vision_flags & 0xFF);
 		}
@@ -942,8 +904,7 @@ namespace hooks
 		if (player_id_is_extended(unit->player)) {
 			return true;
 		}
-		if (!(target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) || player_flag & target->detection_status)
-		{
+		if (!(target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) || player_flag & target->detection_status) {
 			return (u8)(player_flag & target->sprite->visibility_status);
 		}
 	}

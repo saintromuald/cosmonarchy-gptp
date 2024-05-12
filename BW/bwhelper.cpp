@@ -11743,7 +11743,7 @@ namespace helper {
 
 	Target ai_prepare_to_flee(Unit* target, Unit* attacker) {
 		static Target result;
-		if (!AssertSprite(target->sprite) || !AssertSprite(attacker->sprite)) { // Protecting against nullsprite crashes! -Pr0nogo
+		if (!target->sprite || !attacker->sprite) { // Protecting against nullsprite crashes! -Pr0nogo
 			result.pt = attacker->position;
 			result.unit = 0;
 			return result;
