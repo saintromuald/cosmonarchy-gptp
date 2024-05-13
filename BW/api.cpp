@@ -2964,8 +2964,9 @@ namespace bw {
 	}
 
 	void play_action_sound(u32 sound_id, Unit* unit) {
-		helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
-		helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 0, sound_id);
+		if (helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99)) {
+			helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 0, sound_id);
+		}
 	}
 
 	u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target) {

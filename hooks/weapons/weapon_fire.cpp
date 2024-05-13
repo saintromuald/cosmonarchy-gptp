@@ -1098,7 +1098,7 @@ namespace hooks {
 
 	void bullet_behavior_bounce(Bullet* bullet) { // 0048B2D0
 		Unit* target_unit = bullet->attack_target.unit;
-		if (target_unit && AssertSprite(target_unit->sprite)) {
+		if (target_unit && target_unit->sprite) {
 			if (!(bullet->hit_flags & 1)) {
 				helper::change_move_pos(bullet, target_unit->position.y, target_unit->position.x);
 			}
