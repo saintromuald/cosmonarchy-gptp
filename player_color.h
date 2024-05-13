@@ -612,17 +612,21 @@ inline const char* player_personality_names[RaceId::Count][AiPersonality_AnyCoun
 	},
 };
 
+#define ColorSetSize 8
+#define NameCap 64
+
 struct PlayerData {
 	bool has_custom_color[PlayerLimit];
 	bool has_custom_player_name[PlayerLimit];
 	bool color_used[(size_t)PlayerColor::Count];
 	PlayerColor player_color_list[PlayerLimit];
 
-	std::string full_player_names[PlayerLimit];
-	std::string full_force_names[PlayerLimit];
+	// Note these have to be statically addressed buffers,
+	// because retarded tism lard dialog code simply doesn't function 
+	// and should never be used, when using graphics is possible -Veeq7
+	char full_player_names[PlayerLimit][NameCap];
+	char full_force_names[PlayerLimit][NameCap];
 };
-
-#define ColorSetSize 8
 
 inline PlayerData g_player_data;
 

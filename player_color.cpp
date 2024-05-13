@@ -347,23 +347,25 @@ static u32 get_name_count(u32 race, u32 personality) {
 	return count;
 }
 
-static void safe_strcpy(char* to, const char* from, size_t capacity) {
-	strncpy(to, from, capacity - 1);
-	to[capacity - 1] = 0;
+template <size_t Capacity>
+static void safe_copy(char (&to)[Capacity], const char* from) {
+	strncpy(to, from, Capacity - 1);
 }
 
 void set_player_name(u32 player, const char* name, bool prevent_overwrites) {
 	if (prevent_overwrites) {
 		g_player_data.has_custom_player_name[player] = true;
 	}
-	safe_strcpy(g_player_table[player].name, name, 25);
-	safe_strcpy(g_player_name_list->player[player].player_name, name, 25);
-	g_player_data.full_player_names[player] = name;
+	std::string copy = name; // For the case when source name is one of the arrays we write to
+	safe_copy(g_player_table[player].name, copy.c_str());
+	safe_copy(g_player_name_list->player[player].player_name, copy.c_str());
+	safe_copy(g_player_data.full_player_names[player], copy.c_str());
 }
 
 void set_player_force_name(u32 player, const char* name) {
-	safe_strcpy(g_player_name_list->player[player].force_name, name, 30);
-	g_player_data.full_force_names[player] = name;
+	std::string copy = name; // For the case when source name is one of the arrays we write to
+	safe_copy(g_player_name_list->player[player].force_name, copy.c_str());
+	safe_copy(g_player_data.full_force_names[player], copy.c_str());
 }
 
 static void update_player_name(u32 player) {

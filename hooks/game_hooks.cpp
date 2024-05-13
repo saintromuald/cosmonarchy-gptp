@@ -619,9 +619,6 @@ namespace hooks {
 	}
 
 	void game_init_first_frame() {
-		init_hotkeys();
-		init_player_data();
-
 #ifdef CM_DEBUG
 		helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
 		bw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
@@ -653,6 +650,9 @@ namespace hooks {
 		init_trigger_system();
 		g_ai_layouts.init();
 		init_custom_ai();
+		init_hotkeys();
+
+		// Init unmovable data
 		for (u32 i = 0; i < 16; i++) {
 			g_unmovable_hits[i] = 0;
 			g_unmovable_lastframe[i] = 0;

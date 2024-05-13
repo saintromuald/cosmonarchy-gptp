@@ -519,8 +519,9 @@ namespace hooks
 
 		if (dialog->non_user_value != user_value || !dialog->text) {
 			dialog->non_user_value = user_value;
-			dialog->bounds.right = (u16)user_value;
-			dialog->text = g_player_data.full_player_names[user_value >> 24].data();
+			dialog->bounds.right = user_value & 0xffff;
+			u32 player = user_value >> 24;
+			dialog->text = g_player_data.full_player_names[player];
 
 			if (!(dialog->flags & BinDlgFlags::Highlighted)) {
 				dialog->flags |= BinDlgFlags::Highlighted;
