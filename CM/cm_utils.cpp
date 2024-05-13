@@ -107,26 +107,24 @@ u32 get_construction_graphic(Unit* unit)
 }
 
 void init_omnipresence_state() {
-	if (bw::get_game_kind() == GameKind_Omnipresence) {
-		for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
-			if (g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot) {
-				continue;
-			}
+	for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
+		if (g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot) {
+			continue;
+		}
 
-			auto& omni_state = g_globals->players[player].omnipresence_state;
-			if (omni_state == OmnipresenceState_Default) {
-				OmnipresenceState omni_state = OmnipresenceState_None;
-				switch (g_player_table[player].race) {
-					case RaceId::Terran: {
-						omni_state = OmnipresenceState_TerranProtoss;
-					} break;
-					case RaceId::Protoss: {
-						omni_state = OmnipresenceState_ProtossZerg;
-					} break;
-					case RaceId::Zerg: {
-						omni_state = OmnipresenceState_ZergTerran;
-					} break;
-				}
+		auto& omni_state = g_globals->players[player].omnipresence_state;
+		if (omni_state == OmnipresenceState_Default) {
+			OmnipresenceState omni_state = OmnipresenceState_None;
+			switch (g_player_table[player].race) {
+				case RaceId::Terran: {
+					omni_state = OmnipresenceState_TerranProtoss;
+				} break;
+				case RaceId::Protoss: {
+					omni_state = OmnipresenceState_ProtossZerg;
+				} break;
+				case RaceId::Zerg: {
+					omni_state = OmnipresenceState_ZergTerran;
+				} break;
 			}
 		}
 	}

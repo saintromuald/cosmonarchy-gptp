@@ -630,8 +630,10 @@ namespace hooks {
 		hooks::init_actions();
 		iquare_globals.reset();
 
-		for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-			bw::set_upgrade_level(i, UpgradeId::VentralSacs, 1); // Zerg AI may require this to function properly
+		for (s32 i = 0; i < PlayerLimit; i++) {
+			// internal Zerg AI handling requires this to function properly
+			// TODO: hook all the references of this in original bw
+			bw::set_upgrade_level(i, UpgradeId::VentralSacs, 1);
 		}
 
 		// Connect addons
@@ -656,29 +658,37 @@ namespace hooks {
 			g_unmovable_lastframe[i] = 0;
 		}
 
-		if (bw::get_game_kind() == GameKind_Debug) {
-			for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-				g_game_minerals[i] = 999999;
-				g_total_minerals[i] = 999999;
-				g_game_vespene[i] = 999999;
-				g_total_vespene[i] = 999999;
-			}
-		} else if (bw::get_game_kind() == GameKind_DebugFog) {
-			ActiveTile* active_tile = *g_active_tile_array;
-			for (u32 tile_size = g_map_tile_size->width * g_map_tile_size->height; tile_size; --tile_size) {
-				active_tile->visibility_flags = 0;
-				active_tile->explored_flags = 0;
-				++active_tile;
-			}
-			if (!(g_game_layer->has_been_refreshed & 1)) {
-				g_game_layer->has_been_refreshed |= 1;
-				helper::bw_refresh((s16)g_game_layer->left, (s16)g_game_layer->height + (s16)g_game_layer->top  - 1,
-								   (s16)g_game_layer->top,  (s16)g_game_layer->width  + (s16)g_game_layer->left - 1);
-			}
-		}
+		// Execute triggers before first frame update
+		bw::set_ingame_loop_state(true);
+		helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
+		bw::set_ingame_loop_state(false);
 
-		// Required to do this here since the globals reset happens after the first call of this util func, but create_init_units needs the first call, too. -Pr0nogo
-		init_omnipresence_state();
+		switch (bw::get_game_kind()) {
+			case GameKind_Debug: {
+				for (s32 i = 0; i < PlayerLimit; i++) {
+					g_game_minerals[i] = 999999;
+					g_total_minerals[i] = 999999;
+					g_game_vespene[i] = 999999;
+					g_total_vespene[i] = 999999;
+				}
+			} break;
+			case GameKind_DebugFog: {
+				ActiveTile* active_tile = *g_active_tile_array;
+				for (u32 tile_size = g_map_tile_size->width * g_map_tile_size->height; tile_size; tile_size--) {
+					active_tile->visibility_flags = 0;
+					active_tile->explored_flags = 0;
+					active_tile++;
+				}
+				if (!(g_game_layer->has_been_refreshed & 1)) {
+					g_game_layer->has_been_refreshed |= 1;
+					helper::bw_refresh((s16)g_game_layer->left, (s16)g_game_layer->height + (s16)g_game_layer->top  - 1,
+									   (s16)g_game_layer->top,  (s16)g_game_layer->width  + (s16)g_game_layer->left - 1);
+				}
+			} break;
+			case GameKind_Omnipresence: {
+				init_omnipresence_state();
+			} break;
+		}
 
 		if (!bw::in_replay_or_witness()) {
 			std::vector<PlayerColor> colors{};
@@ -738,12 +748,6 @@ namespace hooks {
 
 		if (!g_game_was_init) {
 			g_game_was_init = true;
-
-			// Execute triggers before frame 0
-			bw::set_ingame_loop_state(true);
-			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
-			bw::set_ingame_loop_state(false);
-
 			game_init_first_frame();
 		}
 		update_hotkeys();
