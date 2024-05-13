@@ -4,7 +4,7 @@
 #include <logger.h>
 #include "globals.h"
 #include "hooks\limits\ccmu.h"
-#define WRITE_TO_LOG(x)GPTP::logger<<x<<std::endl
+#define WRITE_TO_LOG(x)gptp::g_logger<<x<<std::endl
 
 namespace hooks
 {

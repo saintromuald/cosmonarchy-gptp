@@ -6,6 +6,7 @@
 #include <string>
 #include <math.h>
 #include <unit_search.h>
+#include <source_location>
 
 #include "CM/cm.h"
 
@@ -605,16 +606,16 @@ namespace bw {
 	/// identical to the function used internally by StarCraft, and is guaranteed to
 	/// generate the same sequence in a replay.
 	/// NOTE: The RNG has a maximum distance of 0 - 32767.
-	u32 rand_between(u32 min, u32 max);
+	u32 rand_between(u32 min, u32 max, std::source_location src = std::source_location::current());
 
 	// Similar to above, but isn't synced, meaning it should be used for local only code
 	// Uses C stdlib rand
-	u32 rand_between_local(u32 min, u32 max);
+	u32 rand_between_local(u32 min, u32 max, std::source_location src = std::source_location::current());
 
 	/// Generates a pseudorandom number between 0 and 32767, inclusive. This is
 	/// identical to the function used internally by StarCraft, and is guaranteed to
 	/// generate the same sequence in a replay.
-	u16 random();
+	u16 random(std::source_location src = std::source_location::current());
 
 	//////////////////////////////////////////////////////////////// @}
 

@@ -12,6 +12,7 @@
 #include "ai_layouts.h"
 #include "config.h"
 #include <string>
+#include <random>
 #include <hooks/limits/sfx_extender.h>
 #include "hooks/update_unit_sight.h"
 #include "hooks/rally_point.h"
@@ -922,23 +923,34 @@ namespace bw {
 		memset(g_refresh_regions, 1, 1200);
 	}
 
-	/* /!\ Not working like 004DC550 rand_between /!\ */
-	u32 rand_between(u32 min, u32 max) {
-		assert(min <= max);
-		return min + ((max - min + 1) * random() >> 15);
+	static u32 log_random(gptp::GameLogger& logger, u32 value, std::source_location src) {
+		if (g_config.log_randoms) {
+			logger << src.function_name() << "\n";
+			logger << src.file_name() << ":" << src.line() << "\n";
+			logger << "randomized " << value << "\n\n";
+		}
+		return value;
 	}
 
-	// using C stdlib rand
-	u32 rand_between_local(u32 min, u32 max) {
+	u32 rand_between(u32 min, u32 max, std::source_location src) {
 		assert(min <= max);
-		return rand() % (max - min + 1) + min;
+		return min + ((max - min + 1) * random(src) >> 15);
 	}
 
-	// Similar to 004DC4A0 randomize_short, but doesn't update the RNG and doesn't use a parameter among possible differences.
-	u16 random() {
+	u32 rand_between_local(u32 min, u32 max, std::source_location src) {
+		assert(min <= max);
+		struct LocalRandomContext {
+			std::random_device rd;
+			std::mt19937 mt{rd()};
+		};
+		static LocalRandomContext context;
+		return log_random(gptp::g_local_random_logger, context.mt() % (max - min + 1) + min, src);
+	}
+
+	u16 random(std::source_location src) {
 		if (g_is_in_game_loop) {
-			g_last_random_number = 22695477 * (g_last_random_number) + 1;
-			return (g_last_random_number >> 16) % 32768; // Make a number between 0 and 32767
+			g_last_random_number = 22695477 * g_last_random_number + 1;
+			return log_random(gptp::g_sync_random_logger, (g_last_random_number >> 16) % 32768, src);
 		}
 		return 0;
 	}

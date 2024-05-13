@@ -512,19 +512,19 @@ namespace hooks
 						g_hash_list[hash_struct_index].hash , *(u16*)(data + 2),
 						*g_local_nation_id, *g_player_visions, *g_player_explored_visions,
 						g_last_random_number);
-					GPTP::critical_logger << buffer;
+					gptp::g_critical_logger << buffer;
 
 					for (u32 i = 0; i < 16; i++) {
 						snprintf(buffer, sizeof(buffer), "\n %u - %s: %u / %u", i, unmovable_names[i], g_unmovable_hits[i], g_unmovable_lastframe[i]);
-						GPTP::critical_logger << buffer;
+						gptp::g_critical_logger << buffer;
 					}
 
-					GPTP::critical_logger << "\n\nLocal selections:";
+					gptp::g_critical_logger << "\n\nLocal selections:";
 					for (u32 i = 0; i < SelectionLimit; i++) {
 						Unit* unit = g_client_selection_group->unit[i];
 						if (unit) {
 							snprintf(buffer, sizeof(buffer), "\n id:%04u, index:0x%08X", unit->id, unit->get_unit_index());
-							GPTP::critical_logger << buffer;
+							gptp::g_critical_logger << buffer;
 						}
 					}
 
@@ -546,26 +546,26 @@ namespace hooks
 					//This value is incremented *after* generating the mask_hash, so we use the previous value to get the tiles pertinent to the hash.
 					s32 y = (*g_mask_hash_current_y ? *g_mask_hash_current_y : g_map_tile_size->height) - 1;
 					snprintf(buffer, sizeof(buffer), "\n\nActive tiles (%u):", y);
-					GPTP::critical_logger << buffer;
+					gptp::g_critical_logger << buffer;
 
 					for (u32 x = 0; x < g_map_tile_size->width; x++) {
 						if (!(x % 16)) {
-							GPTP::critical_logger << "\n";
+							gptp::g_critical_logger << "\n";
 						}
 						u32 tile = bw::get_active_tile_at_tile(x, y)->vision_flags;
 						snprintf(buffer, sizeof(buffer), " %08X", tile & ~0x40000000);//'temporary_cagra' isn't part of the GameHash indexing, so it's not useful.
-						GPTP::critical_logger << buffer;
+						gptp::g_critical_logger << buffer;
 					}
 
-					GPTP::critical_logger << "\n\nActive units:";
+					gptp::g_critical_logger << "\n\nActive units:";
 
 					for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 						snprintf(buffer, sizeof(buffer), "\n[%03X] hp:0x%08X sh:0x%08X id:%04u en:0x%04X pos:0x%04X%04X | u:%02u o:0x%02X%02X%02X%02X s:0x%08X",
 							((u32)unit - (u32)&ccmu_extender.unit_table) / 336, unit->hitpoints, unit->shields, unit->id, unit->energy, unit->sprite->position.x, unit->sprite->position.y,//Unit data used for GameHash indexing.
 							unit->unique_id, unit->main_order_id, unit->main_order_state, unit->order_signal, unit->main_order_timer, unit->status);//Extra info, not associated with the hash code.
-						GPTP::critical_logger << buffer;
+						gptp::g_critical_logger << buffer;
 					}
-					GPTP::critical_logger << "\n";
+					gptp::g_critical_logger << "\n";
 					warning_once_03_00 = true;
 				}
 			} else if (!warning_once_03_01) {

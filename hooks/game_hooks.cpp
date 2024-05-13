@@ -3564,7 +3564,7 @@ namespace hooks {
 		init_ext_variables();
 		init_omnipresence_state();
 
-		GPTP::logger << "Started a match!\n";
+		gptp::g_logger << "Started a match!\n";
 		g_game_was_init = false;
 		hotkeys.game_started = true;
 

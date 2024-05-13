@@ -7,39 +7,43 @@
 #include "BW/bwdata.h"
 #include "config.h"
 
-namespace GPTP {
-	class GameLogger {
-	public:
-		GameLogger(bool critical) : enabled(critical), critical(critical) {}
+namespace gptp {
 
-		void start_game();
-		void end_game();
+class GameLogger {
+public:
+	GameLogger(const char* name, bool enabled)
+		: m_name{name}, m_enabled{enabled} {}
 
-		template <typename T>
-		GameLogger& operator<<(const T& t);
-		GameLogger& operator<<(std::ostream& (*func)(std::ostream&));
-		inline void set_enabled(bool enabled) { this->enabled = enabled; }
-
-	private:
-		bool try_open_log_file();
-		void print_frame();
-		
-	private:
-		bool enabled;
-		bool critical;
-		std::ofstream log_file;
-		s32 last_updated_frame;
-	};
-
-	extern GameLogger logger;
-	extern GameLogger critical_logger;
+	void log_game_start();
+	void log_game_end();
+	void log_end();
 
 	template <typename T>
-	GameLogger& GameLogger::operator<<(const T& t) {
+	GameLogger& operator<<(const T& t) {
 		if (try_open_log_file()) {
 			print_frame();
 			log_file << t;
 		}
 		return *this;
 	}
+
+	GameLogger& operator<<(std::ostream& (*func)(std::ostream&));
+	inline void set_enabled(bool enabled) { this->m_enabled = enabled; }
+
+private:
+	bool try_open_log_file();
+	void print_frame();
+	
+private:
+	const char* m_name;
+	bool m_enabled;
+	s32 m_last_updated_frame = -1; // So logging is possible on frame 0
+	std::ofstream log_file;
+};
+
+inline GameLogger g_logger{"Game", false};
+inline GameLogger g_critical_logger{"Critical", true};
+inline GameLogger g_sync_random_logger{"Sync Randoms", false};
+inline GameLogger g_local_random_logger{"Local Randoms", false};
+
 }

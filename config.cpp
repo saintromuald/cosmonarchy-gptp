@@ -141,7 +141,10 @@ void load_config() {
 
 	// Debug
 	load_field(yaml, "verbose", g_config.verbose);
-	GPTP::logger.set_enabled(g_config.verbose);
+	gptp::g_logger.set_enabled(g_config.verbose);
+	load_field(yaml, "log-randoms", g_config.log_randoms);
+	gptp::g_local_random_logger.set_enabled(g_config.log_randoms);
+	gptp::g_sync_random_logger.set_enabled(g_config.log_randoms);
 
 	// Map directory
 	load_field(yaml, "default-map-directory", g_config.default_map_directory);
@@ -288,6 +291,7 @@ void save_config() {
 
 	yaml << YAML::Comment("Debug");
 	write_field(yaml, "verbose", g_config.verbose);
+	write_field(yaml, "log-randoms", g_config.log_randoms);
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Maps");

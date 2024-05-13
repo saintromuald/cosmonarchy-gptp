@@ -19,7 +19,7 @@ bool isGameOn = false;
 		{
 			isGameOn = true;
 			hooks::game_init();
-			GPTP::logger.start_game();
+			gptp::g_logger.log_game_start();
 		}
 		__asm {
 			POPAD
@@ -37,7 +37,9 @@ bool isGameOn = false;
 		{
 			isGameOn = false;
 			hooks::game_end();
-			GPTP::logger.end_game();
+			gptp::g_logger.log_game_end();
+			gptp::g_local_random_logger.log_end();
+			gptp::g_sync_random_logger.log_end();
 		}
 		__asm {
 			POPAD

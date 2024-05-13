@@ -9,12 +9,15 @@ namespace hooks
 	// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
 	u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in tiles, unfortunately
 		UnitExt* unit_ext = get_unit_ext(unit);
-		UnitExt* target_ext = get_unit_ext(target);
 		u8 bonus_amount = 0;
 
-		// Stellar Enforcement - Magister behavior
-		if (!target || target_ext->timers[TimerStellarEnforcement]) {
-			bonus_amount += 2;
+		if (target) {
+			UnitExt* target_ext = get_unit_ext(target);
+
+			// Stellar Enforcement - Magister behavior
+			if (target_ext->timers[TimerStellarEnforcement]) {
+				bonus_amount += 2;
+			}
 		}
 
 		f32 scale = 1;
