@@ -2205,9 +2205,6 @@ namespace bw {
 			case UnitId::TerranCentaur: {
 				return WeaponId::CentaurSunchaserMissiles;
 			}
-			case UnitId::ProtossOptecton: {
-				return WeaponId::OptectonSkybondRay;
-			}
 			case UnitId::ZergOkrimnilisk: {
 				return WeaponId::OkrimniliskOmnispores;
 			}

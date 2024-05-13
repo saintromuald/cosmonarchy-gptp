@@ -2200,21 +2200,6 @@ namespace hooks {
 					bw::teleport_to_point(unit, target_pos);
 				}
 			} break;
-			case UnitId::ProtossOptecton:
-			{
-				// Optecton - Forward March
-				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
-					FireMultipleOptions options = {};
-					options.use_weapon_factor = false;
-					options.apply_cooldown = false;
-					if (fire_multiple(unit, WeaponId::OptectonSkybondRay, 4, FilterEnemy | FilterNoGround, options)) {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OptectonSkybondRay);
-						helper::play_sound_from_unit(bw::rand_between(SoundId::OptectonWeaponfireSecondary01, SoundId::OptectonWeaponfireSecondary03), unit, 1, 0);
-					} else {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
-					}
-				}
-			} break;
 			case UnitId::ZergOkrimnilisk:
 			{
 				// Endless Limbs
@@ -3232,11 +3217,6 @@ namespace hooks {
 			});
 			helper::create_thingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->player);
 			unit->remove();
-		}
-
-		// Demiurge - Worship - Control unit when timer is up
-		if (unit_ext->timers[TimerDemiurgeWorship] == 1) {
-			mind_control(unit_ext->values[ValueDemiurgePlayer], UnitId::ProtossDemiurge, unit);
 		}
 
 		// Silly way of pathing workers to expansion site

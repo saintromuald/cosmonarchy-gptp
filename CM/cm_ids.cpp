@@ -1062,7 +1062,6 @@ u32 weapon_id_is_secondary(u32 weapon_id) {
 
 bool unit_id_has_custom_air_weapon(u32 unit_id) {
 	return unit_id == UnitId::TerranDurendal
-		|| unit_id == UnitId::ProtossOptecton
 		|| unit_id == UnitId::ZergOkrimnilisk;
 }
 

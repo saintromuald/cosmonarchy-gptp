@@ -2271,8 +2271,7 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ProtossOptecton: {
-									if (current_button->icon_id == IconId::AntimatterMissiles   // Optecton - Interception
-									||	current_button->icon_id == IconId::TerranShipWeapons) { // Optecton - Forward March
+									if (current_button->icon_id == IconId::AntimatterMissiles) { // Optecton - Interception
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
