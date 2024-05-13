@@ -936,9 +936,9 @@ namespace bw {
 
 	// Similar to 004DC4A0 randomize_short, but doesn't update the RNG and doesn't use a parameter among possible differences.
 	u16 random() {
-		if (*g_is_in_game_loop) {
-			*g_last_random_number = 22695477 * (*g_last_random_number) + 1;
-			return (*g_last_random_number >> 16) % 32768; // Make a number between 0 and 32767
+		if (g_is_in_game_loop) {
+			g_last_random_number = 22695477 * (g_last_random_number) + 1;
+			return (g_last_random_number >> 16) % 32768; // Make a number between 0 and 32767
 		}
 		return 0;
 	}
@@ -3835,9 +3835,9 @@ namespace bw {
 			case UnitId::TerranSavant:
 			{
 				if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
-					return helper::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05, 31);
+					return bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
 				} else {
-					return helper::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05, 31);
+					return bw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
 				}
 			}
 		}
@@ -3850,7 +3850,7 @@ namespace bw {
 		{
 			case WeaponId::DemiurgeGalacticWeaver:
 			{
-				return helper::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03, 31);
+				return bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
 			}
 			default:
 			{

@@ -673,8 +673,8 @@ namespace bw {
 	inline bool set_ingame_loop_state(bool new_state)
 	{
 		//Identical to function @ 0x004DC540
-		b32 previous_state = *g_is_in_game_loop;
-		*g_is_in_game_loop = (new_state ? 1 : 0);
+		b32 previous_state = g_is_in_game_loop;
+		g_is_in_game_loop = (new_state ? 1 : 0);
 		return previous_state != 0;
 	}
 

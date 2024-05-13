@@ -478,7 +478,7 @@ namespace hooks {
 				if (unit->id == UnitId::TerranMadcap) {
 					s32 stacks = unit_ext->values[ValueMadcapStacks];
 					if (stacks >= 108 && !unit_ext->values[ValueMadcapFullChargeRead]) { // 9 stacks
-						helper::play_sound_from_unit(helper::rand_between(SoundId::MadcapPassiveCharge01, SoundId::MadcapPassiveCharge03, 31), unit, 1, 0);
+						helper::play_sound_from_unit(bw::rand_between(SoundId::MadcapPassiveCharge01, SoundId::MadcapPassiveCharge03), unit, 1, 0);
 						unit->sprite->create_top_overlay(ImageId::MaverickStimpackInject);
 						unit_ext->values[ValueMadcapFullChargeRead] = 1;
 					}
@@ -766,7 +766,7 @@ namespace hooks {
 				// pierce targets
 				iquare_globals.add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
-				helper::play_sound_from_unit(helper::rand_between(SoundId::ClaymoreWeaponHit01, SoundId::ClaymoreWeaponHit02, 31), target, 1, 0);
+				helper::play_sound_from_unit(bw::rand_between(SoundId::ClaymoreWeaponHit01, SoundId::ClaymoreWeaponHit02), target, 1, 0);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 
 				// slow pierced targets
@@ -938,7 +938,7 @@ namespace hooks {
 			u32 period = 1 * 32;
 			if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
 				bw::create_and_init_thingy(SpriteId::AntiMatterMissileHit, bullet->position.x, bullet->position.y, bullet->player, bullet->sprite->elevation - 1);
-				helper::play_sound_at_pos(helper::rand_between(SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03, 31), bullet->position, 1, 0);
+				helper::play_sound_at_pos(bw::rand_between(SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03), bullet->position, 1, 0);
 				EntryArray targets = {};
 				unit_search_radial(&targets, bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]);
 				unit_search_filter(&targets, 0, 0); // Let's filter with no flags, since that should remove untargetable stuff and what not

@@ -67,14 +67,14 @@ void kill_hangar_units(Unit* unit) {
 			u16 random_death_timer;
 			// TODO: Remove RNG, make farthest Stewards detonate first
 			// hardcoded RNG management
-			if (*g_is_in_game_loop) {
+			if (g_is_in_game_loop) {
 				static u32* randomnessCounter_0051C6AC = (u32*)0x0051C6AC;
 				static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
 				*randomnessCounter_0051C6AC = *randomnessCounter_0051C6AC + 1;
 				*randomnessCounter_0051CA18 = *randomnessCounter_0051CA18 + 1;
-				*g_last_random_number = (*g_last_random_number * 0x015A4E35) + 1;
+				g_last_random_number = (g_last_random_number * 0x015A4E35) + 1;
 				// number between 0 and 32766
-				random_value = (*g_last_random_number / 65536) & 0x7FFF;
+				random_value = (g_last_random_number / 65536) & 0x7FFF;
 			} else {
 				random_value = 0;
 			}

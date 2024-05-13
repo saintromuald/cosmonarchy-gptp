@@ -270,20 +270,20 @@ namespace hooks
 		}
 
 		u16 creep_tile = 0;
-		if ((*g_last_random_number % 100) >= 4) {
-			creep_tile = *g_last_random_number % 6; // normal tiles
+		if ((g_last_random_number % 100) >= 4) {
+			creep_tile = g_last_random_number % 6; // normal tiles
 		} else {
-			creep_tile = (*g_last_random_number % 7) + 6;
+			creep_tile = (g_last_random_number % 7) + 6;
 		}
 		*tile = creep_tile + 0x10; // tile in creep group
 		*return_value = 0;
 
 		// Change random number
-		if (*g_is_in_game_loop) {
-			u32 random = (22695477 * *g_last_random_number + 1) >> 16;
+		if (g_is_in_game_loop) {
+			u32 random = (22695477 * g_last_random_number + 1) >> 16;
 			++g_random_counts[20];
 			++*g_total_random_counts;
-			*g_last_random_number = 22695477 * (*g_last_random_number) + 1;
+			g_last_random_number = 22695477 * (g_last_random_number) + 1;
 		}
 
 		return true;
@@ -371,11 +371,11 @@ namespace hooks
 			}
 
 			u32 random = 0;
-			if (*g_is_in_game_loop) {
-				random = (22695477 * *g_last_random_number + 1) >> 16;
+			if (g_is_in_game_loop) {
+				random = (22695477 * g_last_random_number + 1) >> 16;
 				++g_random_counts[20];
 				++*g_total_random_counts;
-				*g_last_random_number = 22695477 * (*g_last_random_number) + 1;
+				g_last_random_number = 22695477 * (g_last_random_number) + 1;
 			}
 
 			u32 pos_x = unit->position.x + ((random & 8) != 0 ? 10 : -10);

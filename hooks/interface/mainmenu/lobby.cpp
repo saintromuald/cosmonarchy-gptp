@@ -16,7 +16,7 @@ namespace hooks
 			if (game_data->victory_condition || game_data->starting_units || game_data->use_standard_unit_stats)
 			{
 				*g_initial_random_seed = time(0);
-				*g_last_random_number = *g_initial_random_seed;
+				g_last_random_number = *g_initial_random_seed;
 				srand(*g_initial_random_seed);
 
 				helper::switch_all_available_computer_slots_to_open();
@@ -148,17 +148,16 @@ namespace hooks
 				} while (result);
 			}
 		} else if (dropdown->flags & 8) {
-			if (dropdown->initial_version_0x46.text_pos.x && dropdown->initial_version_0x46.text_pos.y != -1)
-			{
+			if (dropdown->initial_version_0x46.text_pos.x && dropdown->initial_version_0x46.text_pos.y != -1) {
 				g_player_table[*g_local_nation_id].race = dropdown->child_dialog->bounds.x * dropdown->initial_version_0x46.text_pos.y; // I don't think this is correct
-				*g_is_in_game_loop = 1;
+				g_is_in_game_loop = 1;
 				result = helper::randomize_player_slot();
-				*g_is_in_game_loop = 0;
+				g_is_in_game_loop = 0;
 			} else {
 				g_player_table[*g_local_nation_id].race = 6;
-				*g_is_in_game_loop = 1;
+				g_is_in_game_loop = 1;
 				result = helper::randomize_player_slot();
-				*g_is_in_game_loop = 0;
+				g_is_in_game_loop = 0;
 			}
 		}
 		return result;

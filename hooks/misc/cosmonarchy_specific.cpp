@@ -247,11 +247,11 @@ namespace hooks
 	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) 
 	{
 		Vector32 attack_frame = {};
-		if (*g_is_in_game_loop) {
+		if (g_is_in_game_loop) {
 			++g_random_counts[14];
-			*g_last_random_number = 0x15A4E35 * *g_last_random_number + 1;
+			g_last_random_number = 0x15A4E35 * g_last_random_number + 1;
 			++(*g_total_random_counts);
-			attack_frame.y = (*g_last_random_number >> 16) & 0x7FFF;
+			attack_frame.y = (g_last_random_number >> 16) & 0x7FFF;
 		}
 
 		Unit* unit = helper::unit_constructor(x, y, unit_id, player, attack_frame.y);

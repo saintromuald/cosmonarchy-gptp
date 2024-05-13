@@ -857,26 +857,22 @@ namespace hooks
 			u8 unique_id_something = unit->secondary_order_id & OrderId::BuildProtoss1;// secondary_order_special
 			unit->build_queue_slot = 0;
 			unit->unique_id = unique_id_something;
-			if (!units_dat::group_flags[unit->id].is_factory)
-			{
-				if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building)
-				{
+			if (!units_dat::group_flags[unit->id].is_factory) {
+				if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building) {
 					unit->current_buttonset = UnitId::Buildings;
 				}
 			} else {
-				if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building)
-				{
+				if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building) {
 					unit->current_buttonset = UnitId::Factories;
 				}
 			}
 
 			u32 random;
-			if (*g_is_in_game_loop)
-			{
+			if (g_is_in_game_loop) {
 				++g_random_counts[15];
-				random = (22695477 * *g_last_random_number + 1) >> 16;
+				random = (22695477 * g_last_random_number + 1) >> 16;
 				++(*g_total_random_counts);
-				*g_last_random_number = 22695477 * *g_last_random_number + 1;
+				g_last_random_number = 22695477 * g_last_random_number + 1;
 			} else {
 				random = 0;
 			}

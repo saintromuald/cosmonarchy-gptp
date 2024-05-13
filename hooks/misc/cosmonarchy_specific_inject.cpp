@@ -511,7 +511,7 @@ namespace hooks
 						g_hash_list[hash_struct_index].hash_type, hash_type,
 						g_hash_list[hash_struct_index].hash , *(u16*)(data + 2),
 						*g_local_nation_id, *g_player_visions, *g_player_explored_visions,
-						*g_last_random_number);
+						g_last_random_number);
 					GPTP::critical_logger << buffer;
 
 					for (u32 i = 0; i < 16; i++) {

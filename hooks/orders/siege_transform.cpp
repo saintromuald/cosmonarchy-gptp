@@ -130,7 +130,7 @@ namespace hooks
 					{
 						case UnitId::TerranShamanSupportMode:
 						{
-							action_sound = helper::rand_between(SoundId::ShamanVisionary01, SoundId::ShamanVisionary02, 31);
+							action_sound = bw::rand_between(SoundId::ShamanVisionary01, SoundId::ShamanVisionary02);
 						} break;
 						case UnitId::TerranMatadorTankMode:
 						{

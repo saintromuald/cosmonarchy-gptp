@@ -913,14 +913,14 @@ BW_DATA(ResourceAreaArray*,	g_resource_areas,		0x00692688);
 //-------- Internal constants --------//
 
 BW_DATA(b32*, g_is_game_paused,				0x006509C4);  // See bw::g_is_game_paused()
-BW_DATA(b8*,  g_is_brood_war,					0x0058F440);  // See bw::is_brood_war_mode()
-BW_DATA(u32*, g_cheat_state,					0x006D5A6C);  // See bw::is_cheat_enabled()
+BW_DATA(b8*,  g_is_brood_war,				0x0058F440);  // See bw::is_brood_war_mode()
+BW_DATA(u32*, g_cheat_state,				0x006D5A6C);  // See bw::is_cheat_enabled()
 BW_REF(b32,	g_is_in_replay,					0x006D0F14);  // See bw::is_in_replay()
-BW_DATA(b32*, g_is_replay_paused,				0x006D11B0);
+BW_DATA(b32*, g_is_replay_paused,			0x006D11B0);
 BW_DATA(s32*, g_max_unit_width,				0x006BEE68);
-BW_DATA(s32*, g_max_unit_height,				0x006BB930);
-BW_DATA(b32*, g_is_in_game_loop,				0x006D11C8);
-BW_DATA(u32*, g_last_random_number,			0x0051CA14);  // See bw::random(), bw::rand_between()
+BW_DATA(s32*, g_max_unit_height,			0x006BB930);
+BW_REF(b32, g_is_in_game_loop,				0x006D11C8);
+BW_REF(u32, g_last_random_number,			0x0051CA14);  // See bw::random(), bw::rand_between()
 BW_DATA(b32*, g_can_update_powered_status,	0x0063FF44);
 BW_REF(b32, g_is_placing_building,			0x00640880);
 

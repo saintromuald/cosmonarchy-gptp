@@ -537,7 +537,7 @@ void tick_effect(Effect* effect) {
 						target->damage_with_custom(8 * 256, 0, effect->source, effect->player);
 						target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
 					}
-					helper::play_sound_at_pos(helper::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04, 31), effect->position, 1, 0);
+					helper::play_sound_at_pos(bw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), effect->position, 1, 0);
 					helper::create_thingy(SpriteId::FragmentaryExplosion, effect->position.x, effect->position.y, effect->player);
 				}
 			} break;
