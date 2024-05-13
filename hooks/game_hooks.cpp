@@ -738,19 +738,18 @@ namespace hooks {
 
 		if (!g_game_was_init) {
 			g_game_was_init = true;
+
+			// Execute triggers before frame 0
+			bw::set_ingame_loop_state(true);
+			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
+			bw::set_ingame_loop_state(false);
+
 			game_init_first_frame();
 		}
 		update_hotkeys();
 
 		if (bw::is_game_paused()) {
 			return true;
-		}
-
-		// Execute triggers before frame 0
-		if (*g_elapsed_time_frames == 0) {
-			bw::set_ingame_loop_state(true);
-			helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
-			bw::set_ingame_loop_state(false);
 		}
 
 		g_graphics.reset_all_graphics();
