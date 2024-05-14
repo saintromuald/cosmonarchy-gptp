@@ -2203,8 +2203,7 @@ namespace hooks {
 			case UnitId::ZergOkrimnilisk:
 			{
 				// Endless Limbs
-				if (!(unit->status & UnitStatus::InTransport))
-				{
+				if (!(unit->status & UnitStatus::InTransport)) {
 					bool is_moving = unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving;
 					bool can_fire = !unit->ground_weapon_cooldown && !(unit->status & UnitStatus::Burrowed);
 					u32 weapon_id = WeaponId::OkrimniliskRelentlessTendrils;
@@ -2628,7 +2627,7 @@ namespace hooks {
 			});
 
 			if (masters.count) {
-				if (units_dat::base_property[unit->id] & UnitProperty::Building && !unit_ext->timers[TimerDemiurgeWorshipOverlayDelay]) {
+				if (!(units_dat::base_property[unit->id] & UnitProperty::Building) && !unit_ext->timers[TimerDemiurgeWorshipOverlayDelay]) {
 					unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 1;
 				}
 			}
@@ -3223,6 +3222,11 @@ namespace hooks {
 		if (unit_ext->values[ValueAI_WorkerChosenForExpansion] && unit->resource_type == ResourceType::None) {
 			unit_ext->values[ValueAI_WorkerChosenForExpansion] = false;
 			unit->order_to(OrderId::Move, unit_ext->values[ValueAI_WorkerChosenX], unit_ext->values[ValueAI_WorkerChosenY]);
+		}
+
+		if (unit_ext->timers[TimerZergArmorRend] == 1) {
+			unit_ext->values[ValueZergArmorRend] = 0;
+			// TODO: Overlay
 		}
 
 		// Legionnaire - Blade Vortex - Handle debuff overlay

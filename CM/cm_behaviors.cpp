@@ -230,8 +230,6 @@ u32 unit_avenges_or_ascends(Unit* unit) {
 	s32 ascend_player = -1;
 	if (unit_ext->values[ValueSignifyStacks] >= 5) {
 		ascend_player = unit_ext->values[ValueSignifyPlayer];
-	} else if (unit_ext->timers[TimerPatriarchAstralRule]) {
-		ascend_player = unit_ext->values[ValuePatriarchAstralRulePlayer];
 	} else if (unit_ext->timers[TimerPariahHit]) {
 		ascend_player = unit_ext->values[ValuePariahHitPlayer];
 	}

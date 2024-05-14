@@ -808,6 +808,8 @@ namespace SpriteId
 		MagnetarLawOfAttraction2		= 913,
 		MagnetarLawOfAttraction3		= 914,
 
+		GladiusBindingPlasmaOverlay		= 916,
+
 		// CORPSE \\
 			
 		Corpse_Aspirant				= 685,

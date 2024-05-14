@@ -50,6 +50,7 @@ namespace hooks
 		armor -= unit_ext->values[ValueApollyoidAdhesiveStacks];
 		armor -= unit_ext->values[ValueAutocratControlledOppositionStacks];
 		armor -= unit_ext->values[ValueObservanceRend];
+		armor -= unit_ext->values[ValueZergArmorRend];
 		armor -= unit_ext->values[ValueCorrosiveTouchStacks];
 		armor -= unit_ext->values[ValueWendigoShatteredWindsStacks];
 

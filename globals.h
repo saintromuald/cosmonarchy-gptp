@@ -41,6 +41,7 @@ enum EffectId {
 	EffectId_VilgolethHeal,
 	EffectId_CyclopsRecursionRound,
 	EffectId_SevenstepMindMatter,
+	EffectId_GladiusBindingPlasma,
 
 	EffectId_Count,
 };

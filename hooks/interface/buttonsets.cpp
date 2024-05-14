@@ -2396,7 +2396,8 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergNathrokor: {
-									if (current_button->icon_id == IconId::AdrenalGlands) { // Nathrokor - Adrenal Frenzy
+									if (current_button->icon_id == IconId::AdrenalGlands	// Nathrokor - Adrenal Frenzy
+									||	current_button->icon_id == IconId::RoarUnused) {	// Nathrokor - Hidebreaker
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2406,7 +2407,8 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergVorvrokor: {
-									if (current_button->icon_id == IconId::Ensnare) {		// Vorvrokor - Captivating Claws
+									if (current_button->icon_id == IconId::Ensnare			// Vorvrokor - Captivating Claws
+									||	current_button->icon_id == IconId::RoarUnused) {	// Vorvrokor - Hidebreaker
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

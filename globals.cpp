@@ -551,6 +551,42 @@ void tick_effect(Effect* effect) {
 					bw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, effect->player, effect->source, 0, effect->source->position, effect->position);
 				}
 			} break;
+			case EffectId_GladiusBindingPlasma:
+			{
+				if (!effect->current_time) {
+					EntryArray gladiuses = {};
+					unit_search_radial(&gladiuses, effect->position, 8 * 32);
+					unit_search_filter(&gladiuses, nullptr, 0, { UnitId::ProtossGladius });
+					for (u32 i = 0; i < gladiuses.count; ++i) {
+						Unit* gladius = gladiuses.units[i];
+						if (!bw::is_allied_to(gladius->player, effect->player)) {
+							entry_array_remove(&gladiuses, i--);
+						}
+					}
+					if (gladiuses.count) {
+						Unit* gladius = gladiuses.units[0];
+
+						EntryArray targets = {};
+						unit_search_radial(&targets, effect->position, 3 * 32);
+						unit_search_filter(&targets, nullptr, FilterNotSubunit);
+						for (u32 i = 0; i < targets.count; ++i) {
+							Unit* target = targets.units[i];
+							if (bw::is_allied_to(target->player, effect->player)) {
+								entry_array_remove(&targets, i--);
+							}
+							if (!target->is_visible_to(effect->player)) {
+								entry_array_remove(&targets, i--);
+							}
+						}
+						unit_search_sort_by_distance(&targets, effect->position);
+						if (targets.count) {
+							Unit* target = targets.units[0];
+							bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect->player, gladius, target, target->position, effect->position);
+							helper::play_sound_at_pos(bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03), effect->position, 1, 0);
+						}
+					}
+				}
+			}
 		}
 	}
 }

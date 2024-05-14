@@ -537,6 +537,15 @@ namespace hooks
 				{
 					helper::mind_control_hit(data.attacker, data.target);
 				} break;
+				case WeaponId::VorvalClaws:
+				case WeaponId::NathrokorNathrokClaws:
+				{
+					if (!target_ext->values[ValueZergArmorRend]) {
+						target_ext->values[ValueZergArmorRend] = 1;
+						// TODO: Overlay
+					}
+					target_ext->timers[TimerZergArmorRend] = 2 * 24 + 1;
+				} break;
 			}
 			// Ignore Carapace Swarm!
 			// END
