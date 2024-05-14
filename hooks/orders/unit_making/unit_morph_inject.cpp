@@ -159,6 +159,9 @@ namespace
 
 		if (unit->status & UnitStatus::GroundedBuilding) {
 			if (unit->get_race() == RaceId::Zerg) {
+				if (unit->id == UnitId::ZergExcisant) {
+					unit->building.resource.is_mining = 0;
+				}
 				cancel_zerg_building(unit);
 				if (unit->rally.pt.x || unit->rally.pt.y) {
 					unit->rally.pt.x = 0;
@@ -180,34 +183,40 @@ namespace
 		}
 
 		u16 cancel_change_unit_id = hooks::get_cancel_morph_revert_id(unit);
-		if (cancel_change_unit_id == UnitId::None)
-		{
-			if (unit->get_race() == RaceId::Protoss) {
-				if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-					helper::play_sound_from_unit(SoundId::CancelStructureProtoss, unit, 1, 0);
-					helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player);
-				}
-				unit->remove();
-			} else if (unit->get_race() == RaceId::Terran) {
-				if (unit->id == UnitId::TerranMorningstar)
+		if (cancel_change_unit_id == UnitId::None) {
+			if (unit_id_is_gas_structure(unit->id)) {
+				unit->building.resource.is_mining = 0;
+			}
+			switch (unit->get_race()) {
+				case RaceId::Protoss:
 				{
-					Unit* silo = unit->connected_unit;
-					if (silo)
-					{
-						silo->building.silo.nuke = 0;
-						silo->main_order_state = 0;
+					if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+						helper::play_sound_from_unit(SoundId::CancelStructureProtoss, unit, 1, 0);
+						helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player);
 					}
 					unit->remove();
-					bw::refresh_console();
-				} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-					helper::play_sound_from_unit(SoundId::Misc_Explo1_wav, unit, 1, 0);
-					helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player); // TODO: Find working Terran-themed overlay
-					unit->remove();
-				} else {
+				} break;
+				case RaceId::Terran:
+				{
+					if (unit->id == UnitId::TerranMorningstar) {
+						Unit* silo = unit->connected_unit;
+						if (silo) {
+							silo->building.silo.nuke = 0;
+							silo->main_order_state = 0;
+						}
+						unit->remove();
+						bw::refresh_console();
+					} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+						helper::play_sound_from_unit(SoundId::Misc_Explo1_wav, unit, 1, 0);
+						helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player); // TODO: Find working Terran-themed overlay
+						unit->remove();
+					} else {
+						unit->remove();
+					}
+				} break;
+				default: {
 					unit->remove();
 				}
-			} else {
-				unit->remove();
 			}
 		} else {
 			change_unit_type(unit, cancel_change_unit_id);
