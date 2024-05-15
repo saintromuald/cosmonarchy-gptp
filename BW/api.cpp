@@ -2673,8 +2673,7 @@ namespace bw {
 
 	bool unit_in_combat_within_seconds(Unit* unit, u32 seconds) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->damage_dealt_timer >= seconds * 24
-		&&	unit_ext->damage_taken_timer >= seconds * 24) {
+		if (unit_ext->damage_dealt_timer >= seconds * 24 && unit_ext->damage_taken_timer >= seconds * 24) {
 			return false;
 		}
 		return true;
