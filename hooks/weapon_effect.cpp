@@ -54,7 +54,7 @@ namespace hooks {
 
 		Point16 pos = bullet->sprite->position;
 		Unit* unit = bullet->source_unit;
-		if (unit && AssertSprite(unit->sprite)) {
+		if (unit && unit->sprite) { // Sprite is new.
 			UnitExt* bullet_source_ext = get_unit_ext(unit);
 			if (unit->is_blind) {
 				splash = SplashType::Radial;
@@ -99,12 +99,15 @@ namespace hooks {
 			return;
 		}
 
+		BulletExt* bullet_ext = get_bullet_ext(bullet);
+
 		EntryArray units_in_splash = {};
 		unit_search_rect(&units_in_splash, box32_rect(pos, get_splash_width_from_weapon_id(weapon_id), get_splash_height_from_weapon_id(weapon_id)));
 		unit_search_filter(&units_in_splash, unit, FilterIncludingSelf);
 		for (s32 i = 0; i < units_in_splash.count; i++) {
 			Unit* target = units_in_splash.units[i];
 			if (guaranteed_hit && target == guaranteed_hit) { // skips target check if has_guaranteed_hit_unit is unset, just for little bit of performance
+				bullet_ext->hit_count++;
 				continue; // guaranteed hit unit was already damaged before splash!
 			}
 
@@ -133,15 +136,21 @@ namespace hooks {
 
 			if (helper::is_unit_distance_within(target, bullet, inner)) {
 				helper::weapon_bullet_shot(target, bullet, 1); // 100% damage
+				bullet_ext->hit_count++;
 				continue;
 			}
 
 			if (helper::is_unit_distance_within(target, bullet, medium)) {
 				helper::weapon_bullet_shot(target, bullet, 2); // 50% damage
+				bullet_ext->hit_count++;
 				continue;
 			}
 
 			helper::weapon_bullet_shot(target, bullet, 4); // 25% damage
+			bullet_ext->hit_count++;
+		}
+		if (bullet->weapon_id == WeaponId::PatriarchIronhandWeaver && bullet_ext->hit_count >= 8) {
+			do_unit_banter(bullet->attack_target.unit, UnitId::ProtossPatriarch);
 		}
 	}
 

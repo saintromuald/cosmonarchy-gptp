@@ -1,6 +1,7 @@
 #include "cm_utils.h"
 #include "BW\api.h"
 #include "trigger_system/trigger_system.h"
+#include "hooks/limits/sfx_extender.h"
 
 Box32 box32_rect(Point16 pos, u32 w, u32 h) {
 	Box32 box = {};
@@ -253,4 +254,41 @@ void cancel_all_training(Unit* unit) {
 		offset++;
 	}
 	helper::cancel_last_training(unit);
+}
+
+bool do_unit_banter(Unit* victim, u16 speaker_id) {
+	EntryArray unit_array = {};
+	unit_search_radial(&unit_array, victim->position, victim->get_sight_range() * 32);
+	unit_search_filter(&unit_array, victim, FilterEnemy, { speaker_id });
+	bool success = false; // Might use this later. -Pr0nogo
+
+	for (u32 i = 0; i < unit_array.count; ++i) {
+		Unit* speaker = unit_array.units[i];
+		if (bw::get_distance_fast(victim->position, speaker->position) <= speaker->get_sight_range() * 32) {
+			UnitExt* unit_ext = get_unit_ext(speaker);
+			if (success) {
+				unit_ext->timers[TimerUnitBanter] = 24 * 60;
+				continue;
+			} else if (!unit_ext->timers[TimerUnitBanter]) {
+				unit_ext->timers[TimerUnitBanter] = 24 * 60;
+				u32 banter_sound = SoundId::No_sound;
+
+				switch (speaker_id) {
+					case UnitId::ProtossHierophant:
+					{
+						banter_sound = bw::rand_between(SoundId::HierophantBanterB01, SoundId::HierophantBanterB03);
+					} break;
+					case UnitId::ProtossPatriarch:
+					{
+						banter_sound = bw::rand_between(SoundId::PatriarchBanter01, SoundId::PatriarchBanter04);
+					} break;
+				}
+				if (helper::play_sound_from_unit(banter_sound, speaker, g_options_list->flags & 1, 99)) {
+					helper::do_unit_event_notification(speaker, 17, sfx_dat::portrait_duration[banter_sound] + 1000 * (sfx_dat::sound_data[banter_sound].duration_ms / 1000), 0, banter_sound);
+				}
+				success = true;
+			}
+		}
+	}
+	return success;
 }

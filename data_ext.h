@@ -453,6 +453,7 @@ struct BulletExt {
 	u32 divisor_multiplier = 1;
 	u32 current_z_displacement;
 	u32 damage_override = 0;
+	u32 hit_count;
 	bool bounced;
 	bool is_phantom;
 	bool did_pierce;

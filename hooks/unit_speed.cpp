@@ -225,6 +225,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranHarakan:
 			case UnitId::TerranHeracles:
+			case UnitId::TerranMatadorTankMode:
 			case UnitId::ProtossSycophant:
 			case UnitId::ZergZethrokor:
 			case UnitId::ZergVorvrokor:

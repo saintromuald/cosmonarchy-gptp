@@ -136,6 +136,9 @@ namespace hooks {
 				case UnitId::ProtossOptecton: {
 					return helper::get_random_unit_response(SoundId::OptectonOrderAggressive01, SoundId::OptectonOrderAggressive04);
 				} break;
+				case UnitId::ProtossPatriarch: {
+					return helper::get_random_unit_response(SoundId::PatriarchOrderAggressive01, SoundId::PatriarchOrderAggressive04);
+				} break;
 				case UnitId::ProtossGolem: {
 					return helper::get_random_unit_response(SoundId::GolemOrderAggressive01, SoundId::GolemOrderAggressive02);
 				} break;
@@ -278,8 +281,7 @@ namespace hooks {
 					case UnitId::ProtossZealot: {
 						ready_sound = helper::get_random_unit_response(SoundId::ZealotReady01, SoundId::ZealotReady02);
 					} break;
-					case UnitId::ProtossEcclesiast:
-					case UnitId::ProtossPatriarch: { // TODO: Own lines
+					case UnitId::ProtossEcclesiast: {
 						ready_sound = helper::get_random_unit_response(SoundId::EcclesiastReady01, SoundId::EcclesiastReady03);
 					} break;
 					case UnitId::ProtossDracadin: {
@@ -302,6 +304,9 @@ namespace hooks {
 					} break;
 					case UnitId::ProtossOptecton: {
 						ready_sound = helper::get_random_unit_response(SoundId::OptectonReady01, SoundId::OptectonReady03);
+					} break;
+					case UnitId::ProtossPatriarch: {
+						ready_sound = helper::get_random_unit_response(SoundId::PatriarchReady01, SoundId::PatriarchReady03);
 					} break;
 					case UnitId::ProtossGolem: {
 						ready_sound = helper::get_random_unit_response(SoundId::GolemReady01, SoundId::GolemReady02);

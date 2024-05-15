@@ -1896,5 +1896,18 @@ namespace SoundId
 		HierophantBanterB01								= 3103,
 		HierophantBanterB02								= 3104,
 		HierophantBanterB03								= 3105,
+		PatriarchReady01								= 3106,
+		PatriarchReady02								= 3107,
+		PatriarchReady03								= 3108,
+
+		PatriarchOrderAggressive01						= 3117,
+		PatriarchOrderAggressive02						= 3118,
+		PatriarchOrderAggressive03						= 3119,
+		PatriarchOrderAggressive04						= 3120,
+
+		PatriarchBanter01								= 3125,
+		PatriarchBanter02								= 3126,
+		PatriarchBanter03								= 3127,
+		PatriarchBanter04								= 3128,
 	};
 }
