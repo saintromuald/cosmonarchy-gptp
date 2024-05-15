@@ -76,7 +76,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 	if (unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		++g_unmovable_hits[1];
-		g_unmovable_lastframe[1] = *g_elapsed_time_frames;
+		g_unmovable_lastframe[1] = g_elapsed_time_frames;
 		unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 		unit->play_iscript_animation(IscriptAnimation::Unused1);
 		unit_ext->values[ValueReviveStarted] = 1;
@@ -102,7 +102,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		if (player != original_player) {
 			unit_ext->values[ValueDecaying] = true;
 		}
-		if (bw::get_game_kind() == GameKind_TheTurning && player == TheTurningZombiePlayerId) {
+		if (bw::get_game_kind() == GameKind_TheTurning && player == NeutralHostilePlayerId) {
 			unit_ext->values[ValueDecaying] = false;
 			unit_ext->values[ValueNoCorpse] = true;
 		}

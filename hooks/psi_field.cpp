@@ -30,6 +30,7 @@ namespace hooks
 		u32 w = *psi_field_grp_width;
 		u32 h = *psi_field_grp_height;
 		for (Unit* unit = *first_psi_field_provider; unit; unit = unit->psi_link.next) {
+			UnitExt* unit_ext = get_unit_ext(unit);
 			if (unit->status & UnitStatus::InTransport) {
 				continue;
 			}
@@ -40,6 +41,9 @@ namespace hooks
 				continue;
 			}
 			if ((*psi_field_mask)[2 * w / 32 * ((y + h - unit->sprite->position.y) / 32) + (x + w - unit->sprite->position.x) / 32]) {
+				return true;
+			}
+			if (unit_ext->values[ValueUprisingSpawner]) {
 				return true;
 			}
 		}

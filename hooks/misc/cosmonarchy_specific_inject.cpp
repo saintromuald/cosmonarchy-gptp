@@ -575,7 +575,7 @@ namespace hooks
 					g_hash_list[hash_struct_index].hash,
 					hash_type & 0x0F,
 					*(u16*)(data + 2),
-					*g_elapsed_time_frames);
+					g_elapsed_time_frames);
 				bw::print(buffer, GameTextColor::Yellow);
 				warning_once_03_01 = true;
 			}

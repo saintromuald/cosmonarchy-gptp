@@ -540,11 +540,11 @@ namespace hooks
 				case WeaponId::VorvalClaws:
 				case WeaponId::NathrokorNathrokClaws:
 				{
-					if (!target_ext->values[ValueZergArmorRend]) {
-						target_ext->values[ValueZergArmorRend] = 1;
+					if (!target_ext->values[ValueHidebreaker]) {
+						target_ext->values[ValueHidebreaker] = 1;
 						// TODO: Overlay
 					}
-					target_ext->timers[TimerZergArmorRend] = 2 * 24 + 1;
+					target_ext->timers[TimerHidebreaker] = 2 * 24 + 1;
 				} break;
 			}
 			// Ignore Carapace Swarm!
@@ -937,7 +937,7 @@ namespace hooks
 					fatal_deal_damage = false;
 					data.target->order_computer(OrderId::Stop);
 					++g_unmovable_hits[15];
-					g_unmovable_lastframe[15] = *g_elapsed_time_frames;
+					g_unmovable_lastframe[15] = g_elapsed_time_frames;
 					data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 					helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
 				}

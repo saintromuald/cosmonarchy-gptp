@@ -112,7 +112,7 @@ void update_ext_variables() {
 
 		if (bw::get_game_kind() == GameKind_TheTurning && thingy_ext->activity_timer >= 24) {
 			if (!(units_dat::base_property[thingy_ext->unit_id] & UnitProperty::Building)) {
-				reclaim_corpse(thingy, TheTurningZombiePlayerId);
+				reclaim_corpse(thingy, NeutralHostilePlayerId);
 			}
 		}
 

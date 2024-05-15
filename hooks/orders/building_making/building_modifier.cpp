@@ -27,11 +27,11 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 	}
 
 	// First time this is called in a frame, update the value
-	if (building_ext->building_tick_last_update != *g_elapsed_time_frames) {
+	if (building_ext->building_tick_last_update != g_elapsed_time_frames) {
 		building_ext->building_tick_progress += (modifier.multiplier - 1);
 		building_ext->building_tick_last_progress = building_ext->building_tick_progress;
 	}
-	building_ext->building_tick_last_update = *g_elapsed_time_frames;
+	building_ext->building_tick_last_update = g_elapsed_time_frames;
 
 	// Recall the value to calculate the new one and return properly
 	building_ext->building_tick_progress = building_ext->building_tick_last_progress;

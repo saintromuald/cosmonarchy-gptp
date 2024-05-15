@@ -3118,6 +3118,9 @@ namespace bw {
 			case GameType::TheTurning:
 				return GameKind_TheTurning;
 
+			case GameType::Uprising:
+				return GameKind_Uprising;
+
 			case GameType::Debug:
 				return GameKind_Debug;
 		}
@@ -3901,5 +3904,9 @@ namespace bw {
 
 	bool player_is_witness(u32 player) {
 		return *g_is_in_game && g_globals->players[player].witness_mode;
+	}
+
+	bool player_is_active(u32 player) {
+		return g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::Computer;
 	}
 }

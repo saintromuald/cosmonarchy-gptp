@@ -2,6 +2,7 @@
 #include "BW\api.h"
 #include "trigger_system/trigger_system.h"
 #include "hooks/limits/sfx_extender.h"
+#include "ai_layouts.h"
 
 Box32 box32_rect(Point16 pos, u32 w, u32 h) {
 	Box32 box = {};
@@ -180,6 +181,9 @@ const char* game_kind_to_string(GameKind game_kind) {
 		case GameKind_TheTurning: {
 			return "The Turning";
 		} break;
+		case GameKind_Uprising: {
+			return "Uprising";
+		} break;
 	}
 	return "Custom";
 }
@@ -207,6 +211,9 @@ const char* game_kind_to_filename_string(GameKind game_kind) {
 		} break;
 		case GameKind_TheTurning: {
 			return "The Turning(1)";
+		} break;
+		case GameKind_Uprising: {
+			return "Uprising(1)";
 		} break;
 	}
 }

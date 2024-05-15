@@ -24,7 +24,7 @@ const s32 HealthMultiplier = 256;
 const s32 StimpackOffset = 5 * 256;
 const s32 StimpackTimer = 14;
 const s32 MindControlEnergyGain = 5 * 256;
-const u32 TheTurningZombiePlayerId = 9;
+const u32 NeutralHostilePlayerId = 9;
 
 // Factional
 const s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;

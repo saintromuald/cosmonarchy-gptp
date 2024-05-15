@@ -5,6 +5,7 @@
 #include "threshold.h"
 #include "hooks/game_hooks.h"
 #include "trigger_system/trigger_system.h"
+#include "uprising_mode.h"
 
 u32 get_racial_townhall(u32 race_id)
 {
@@ -375,9 +376,12 @@ namespace hooks {
 
 	Unit* create_preplaced_unit(CHKUnit* chkunit) {
 		u32 flags = chkunit->valid_state_flags & chkunit->state_flags;
+
 		if (init_threshold_spawn(chkunit, flags)) {
 			return 0;
 		}
+		init_upstart_spawn(chkunit, flags);
+
 		g_chk_cache.push_back(*chkunit);
 		// Requires changes to player select so they actually spawn units
 		//if (flags & ChkUnitFlags_Lifted) {

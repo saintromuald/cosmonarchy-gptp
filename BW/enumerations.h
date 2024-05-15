@@ -592,7 +592,8 @@ namespace GameType
 		FactionWars = 33,
 		Massacre = 34,
 		TheTurning = 35,
-		Debug = 36,
+		Uprising = 36,
+		Debug = 37,
 	};
 }
 

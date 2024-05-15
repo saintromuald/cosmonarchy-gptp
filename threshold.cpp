@@ -815,19 +815,19 @@ static u32 get_fraud_class(u32 fraud) {
 }
 
 static u32 get_fraud_race(u32 fraud) {
-	if (fraud >= Fraud_TerranFirst && fraud <= Fraud_TerranLast
-		|| fraud >= FraudHero_TerranFirst && fraud <= FraudHero_TerranLast
-		|| fraud >= FraudSuper_TerranFirst && fraud <= FraudSuper_TerranLast) {
+	if (fraud >= Fraud_TerranFirst			&& fraud <= Fraud_TerranLast
+	||  fraud >= FraudHero_TerranFirst		&& fraud <= FraudHero_TerranLast
+	||  fraud >= FraudSuper_TerranFirst		&& fraud <= FraudSuper_TerranLast) {
 		return RaceId::Terran;
 	}
-	if (fraud >= Fraud_ProtossFirst && fraud <= Fraud_ProtossLast
-		|| fraud >= FraudHero_ProtossFirst && fraud <= FraudHero_ProtossLast
-		|| fraud >= FraudSuper_ProtossFirst && fraud <= FraudSuper_ProtossLast) {
+	if (fraud >= Fraud_ProtossFirst			&& fraud <= Fraud_ProtossLast
+	||  fraud >= FraudHero_ProtossFirst		&& fraud <= FraudHero_ProtossLast
+	||  fraud >= FraudSuper_ProtossFirst	&& fraud <= FraudSuper_ProtossLast) {
 		return RaceId::Protoss;
 	}
-	if (fraud >= Fraud_ZergFirst && fraud <= Fraud_ZergLast
-		|| fraud >= FraudHero_ZergFirst && fraud <= FraudHero_ZergLast
-		|| fraud >= FraudSuper_ZergFirst && fraud <= FraudSuper_ZergLast) {
+	if (fraud >= Fraud_ZergFirst			&& fraud <= Fraud_ZergLast
+	||  fraud >= FraudHero_ZergFirst		&& fraud <= FraudHero_ZergLast
+	||  fraud >= FraudSuper_ZergFirst		&& fraud <= FraudSuper_ZergLast) {
 		return RaceId::Zerg;
 	}
 	return bw::rand_between(0, 2);
@@ -840,7 +840,7 @@ static void clear_player_slot(u32 player, bool map_start) {
 		unit_next = unit->player_link.next;
 		if (map_start) {
 			helper::remove_creep_at_unit(unit->position.x, unit->position.y, unit->id);
-			unit->user_action_flags |= 4; // silent remove
+			unit->user_action_flags |= UserActionFlags_HideUnit;
 		}
 		unit->remove();
 	}
@@ -1329,7 +1329,7 @@ static void spawn_sequence_units() {
 			continue;
 		}
 		FraudSpawnSequence* sequence = &threshold.sequence[player];
-		if (sequence->temp_townhall && *g_elapsed_time_frames > 1) {
+		if (sequence->temp_townhall && g_elapsed_time_frames > 1) {
 			Unit* unit = sequence->temp_townhall;
 			helper::set_building_tile_flag(unit, unit->get_x(), unit->get_y());
 			sequence->temp_townhall = 0;

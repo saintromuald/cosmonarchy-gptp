@@ -62,7 +62,9 @@ enum GameKind {
 	GameKind_FactionWars,
 	GameKind_Massacre,
 	GameKind_TheTurning,
+	GameKind_Uprising,
 	GameKind_Debug,
+
 	GameKind_DebugFog,
 
 	GameKind_Count,
@@ -850,4 +852,5 @@ namespace bw {
 	bool unit_has_shields(Unit* unit);
 	bool can_show_custom_ui();
 	bool player_is_witness(u32 player);
+	bool player_is_active(u32 player);
 }

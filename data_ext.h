@@ -192,7 +192,8 @@ enum ExtValueId {
 	ValueMadcapFullChargeRead,
 	ValueHasStimpack,
 	ValueControlledByDemiurge,
-	ValueZergArmorRend,
+	ValueHidebreaker,
+	ValueUprisingSpawner,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -327,7 +328,8 @@ enum ExtTimerId {
 	TimerDemiurgeWorshipOverlayDelay,
 	TimerAddonDisconnectDelay,
 	TimerMindTyrantTyranny,
-	TimerZergArmorRend,
+	TimerHidebreaker,
+	TimerUprisingSpawn,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

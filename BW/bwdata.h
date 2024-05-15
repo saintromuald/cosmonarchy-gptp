@@ -154,7 +154,7 @@ struct SupplyData {
 };
 BW_DATA(SupplyData*,	g_race_supply,			0x00582144);	// Array; Use Unit::get_race() to get the index.
 
-BW_DATA(u32*,		g_elapsed_time_frames,		0x0057F23C);
+BW_REF(u32,			g_elapsed_time_frames,		0x0057F23C);
 BW_DATA(u32*,		g_countdown_timer,			0x0058D6F4);	// Vanilla trigger actions/conditions (From BWAPI Offsets.h)
 BW_DATA(u32*,		g_elapsed_time_seconds,		0x0058D6F8);
 BW_DATA(u8*,		g_game_type,				0x00596820);	// Compare with GameType::Enum
@@ -166,7 +166,7 @@ BW_DATA(u8*,		g_current_tileset,			0x00596828);	// Tileset of current map - comp
 BW_DATA(s32*,		g_provider_max_buffer,		0x0057F0D8);
 BW_DATA(u32*,		g_provider_latency_calls,	0x0057F090);
 BW_DATA(u32*,		g_command_queue_size,		0x00654AA0);
-BW_DATA(char*,	g_turn_buffer,				0x00654880);
+BW_DATA(char*,		g_turn_buffer,				0x00654880);
 
 // For reset_tooltip_info, set_tooltip_info, set_tooltip_info_unit_case5, etc
 BW_DATA(u16*,		tooltip_ore_cost,			0x0068C1D0);

@@ -1146,6 +1146,9 @@ bool unit_could_spread_custom_creep(Unit* unit) {
 	if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::GroundedBuilding) {
 		return true;
 	}
+	if (unit_ext->values[ValueUprisingSpawner] && unit->get_race() == RaceId::Zerg) {
+		return true;
+	}
 	return false;
 }
 

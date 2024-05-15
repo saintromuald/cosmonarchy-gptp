@@ -393,7 +393,7 @@ namespace hooks
 		s32 difference = resource_amount - *display_amount;
 
 		if (difference) {
-			*display_amount += *g_elapsed_time_frames > 1 ? (((difference > 0) * 2) - 1) + (difference / 16) : difference;
+			*display_amount += g_elapsed_time_frames > 1 ? (((difference > 0) * 2) - 1) + (difference / 16) : difference;
 		}
 
 		if (dialog->non_user_value != difference || dialog->graphic != graphic || !dialog->text) {

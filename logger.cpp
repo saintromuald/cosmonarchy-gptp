@@ -56,7 +56,7 @@ void GameLogger::print_frame() {
 		return;
 	}
 
-	const u32 current_frame = *g_elapsed_time_frames;
+	const u32 current_frame = g_elapsed_time_frames;
 	if (current_frame > m_last_updated_frame) {
 		m_last_updated_frame = current_frame;
 		log_file << "Frame " << current_frame << ":\n";

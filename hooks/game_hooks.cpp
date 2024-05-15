@@ -48,6 +48,7 @@
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "Discord.h"
 #include "hooks/rally_point.h"
+#include "uprising_mode.h"
 
 #include <random>
 #include <format>
@@ -740,7 +741,7 @@ namespace hooks {
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
-		if (!g_is_in_replay || *g_elapsed_time_frames == 0) {
+		if (!g_is_in_replay || g_elapsed_time_frames == 0) {
 			g_options_list->speed = 6; // Lock game speed at fastest
 		}
 
@@ -766,7 +767,7 @@ namespace hooks {
 		hooks::update_actions();
 		bw::set_ingame_loop_state(false);
 
-		if (*g_elapsed_time_frames % 2 == 0) {
+		if (g_elapsed_time_frames % 2 == 0) {
 			for (u32 i = 0; i < 16; ++i) {
 				Ping* ping = ping_array + i;
 				if (ping->timer < 8) {
@@ -776,18 +777,18 @@ namespace hooks {
 		}
 
 		// Map Features
-		if (*g_elapsed_time_frames == 0 || *g_elapsed_time_frames == 15) {
+		if (g_elapsed_time_frames == 0 || g_elapsed_time_frames == 15) {
 			bw::set_ingame_loop_state(true);
 			load_player_names();
 			bw::set_ingame_loop_state(false);
 		}
-		if (*g_elapsed_time_frames == 0 || any_player_can_randomize_color()) {
+		if (g_elapsed_time_frames == 0 || any_player_can_randomize_color()) {
 			bw::set_ingame_loop_state(true);
 			load_player_colors();
 			bw::set_ingame_loop_state(false);
 		}
 
-		if (*g_elapsed_time_frames == 1) {
+		if (g_elapsed_time_frames == 1) {
 			u32 local_flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
@@ -840,6 +841,12 @@ namespace hooks {
 						bw::minimap_ping(g_start_positions[target].x, g_start_positions[target].y, color, *g_local_nation_id);
 					}
 				}
+			}
+		}
+
+		if (g_elapsed_time_frames == 12) {
+			if (bw::get_game_kind() == GameKind_Uprising) {
+				spawn_upstarts();
 			}
 		}
 
@@ -1185,7 +1192,7 @@ namespace hooks {
 				unit->status &= ~UnitStatus::Invincible;
 			} else {
 				++g_unmovable_hits[2];
-				g_unmovable_lastframe[2] = *g_elapsed_time_frames;
+				g_unmovable_lastframe[2] = g_elapsed_time_frames;
 				unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 			}
 			unit_ext->timers[TimerReviveFlagClearMin] = 0;
@@ -1195,7 +1202,7 @@ namespace hooks {
 		}
 
 		// Random movement for The Turning zombies
-		if (bw::get_game_kind() == GameKind_TheTurning && unit->player == TheTurningZombiePlayerId) {
+		if (bw::get_game_kind() == GameKind_TheTurning && unit->player == NeutralHostilePlayerId) {
 			if (unit->main_order_id == OrderId::PlayerGuard) {
 				unit->order_to_idle();
 			}
@@ -1264,11 +1271,11 @@ namespace hooks {
 
 		if (unit_ext->timers[TimerStun] > 1) {
 			++g_unmovable_hits[3];
-			g_unmovable_lastframe[3] = *g_elapsed_time_frames;
+			g_unmovable_lastframe[3] = g_elapsed_time_frames;
 			unit->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 		} else if (unit_ext->timers[TimerStun] == 1) {
 			++g_unmovable_hits[4];
-			g_unmovable_lastframe[4] = *g_elapsed_time_frames;
+			g_unmovable_lastframe[4] = g_elapsed_time_frames;
 			unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 		}
 
@@ -1718,7 +1725,7 @@ namespace hooks {
 						bw::restore_func(unit);
 						unit->order_computer(OrderId::Stop);
 						++g_unmovable_hits[5];
-						g_unmovable_lastframe[5] = *g_elapsed_time_frames;
+						g_unmovable_lastframe[5] = g_elapsed_time_frames;
 						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 						helper::play_sound_from_unit(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
 					} else {
@@ -2672,7 +2679,7 @@ namespace hooks {
 		&&  unit->movement_state == UnitMovement::UnitMovement_Dormant)
 		{
 			++g_unmovable_hits[6];
-			g_unmovable_lastframe[6] = *g_elapsed_time_frames;
+			g_unmovable_lastframe[6] = g_elapsed_time_frames;
 			unit->status ^= UnitStatus::Unmovable;
 		}
 
@@ -2756,7 +2763,7 @@ namespace hooks {
 		*/
 
 		// Periodic overlays
-		if (*g_elapsed_time_frames % 10 == 0) {
+		if (g_elapsed_time_frames % 10 == 0) {
 			if (unit_ext->unit_vectors[UnitVectorBarghests].size()) {
 				bw::add_unit_overlay(unit, ImageId::RepentantChorusSmall + bw::get_overlay_offset(unit->id));
 			}
@@ -2934,7 +2941,7 @@ namespace hooks {
 
 		// Custom Creep Spread
 		if (unit_spreads_custom_creep(unit)) {
-			if (*g_elapsed_time_frames % 15 == 0) {
+			if (g_elapsed_time_frames % 15 == 0) {
 				bw::spread_custom_creep(unit);
 			}
 		}
@@ -3224,8 +3231,8 @@ namespace hooks {
 			unit->order_to(OrderId::Move, unit_ext->values[ValueAI_WorkerChosenX], unit_ext->values[ValueAI_WorkerChosenY]);
 		}
 
-		if (unit_ext->timers[TimerZergArmorRend] == 1) {
-			unit_ext->values[ValueZergArmorRend] = 0;
+		if (unit_ext->timers[TimerHidebreaker] == 1) {
+			unit_ext->values[ValueHidebreaker] = 0;
 			// TODO: Overlay
 		}
 
@@ -3326,7 +3333,8 @@ namespace hooks {
 			if (unit->get_overlay(ImageId::AutocratControlledOpposition)) {
 				bw::remove_unit_overlay(unit, ImageId::AutocratControlledOpposition);
 			}
-		} else if (unit_ext->values[ValueAutocratControlledOppositionStacks] && !unit->get_overlay(ImageId::AutocratControlledOpposition)) {
+		}
+		else if (unit_ext->values[ValueAutocratControlledOppositionStacks] && !unit->get_overlay(ImageId::AutocratControlledOpposition)) {
 			bw::add_unit_overlay(unit, ImageId::AutocratControlledOpposition);
 		}
 
@@ -3359,12 +3367,12 @@ namespace hooks {
 				unit_ext->timers[TimerClaymoreKelvinMunitionsZap] = 7;
 			}
 		}
-		
+
 		if (unit_ext->timers[TimerKelvinMunitions] == 1) {
 			unit_ext->timers[TimerKelvinMunitions] = 0;
 			should_update_speed = true;
 		}
-		
+
 		if (unit_ext->timers[TimerLobotomySlow] == 1) {
 			unit_ext->timers[TimerLobotomySlow] = 0;
 			should_update_speed = true;
@@ -3408,10 +3416,31 @@ namespace hooks {
 			}
 		}
 
+		if (unit_ext->timers[TimerUprisingSpawn] == 1) {
+			EntryArray upstarts = {};
+			unit_search_radial(&upstarts, unit->position, unit->get_sight_range() * 32);
+			unit_search_filter(&upstarts, unit, FilterOwn);
+			if (upstarts.count < 10) {
+				u32 spawn_id = upstart_spawn_basic(unit->id);
+				u32 spawn_count = 1;
+				if (units_dat::base_property[spawn_id] & UnitProperty::TwoUnitsIn1Egg) {
+					spawn_count = 2;
+				}
+				while (spawn_count) {
+					bw::create_unit_in_game(spawn_id, NeutralHostilePlayerId, unit->position.x, unit->position.y, unit);
+					--spawn_count;
+				}
+				unit_ext->timers[TimerUprisingSpawn] = units_dat::time_cost[spawn_id];
+			} else {
+				unit_ext->timers[TimerUprisingSpawn] = 3;
+			}
+		}
+
 		if (should_update_speed) {
 			unit->update_speed();
 		}
 
+		// CELEBRATIONS
 		if (g_globals->celebration == Celebration_Christmas) {
 			if (unit->status & UnitStatus::Burrowed) {
 				unit->sprite->remove_overlay(ImageId::SantaHatSmall, ImageId::SantaHatXLarge17);
@@ -3542,6 +3571,9 @@ namespace hooks {
 		buttonset_context.reset();
 
 		init_threshold();
+		if (bw::get_game_kind() == GameKind_Uprising) {
+			init_upstart_mode();
+		}
 		if (!grp_wire_Font) {
 			init_grp_wire_font("font_wire");
 		}
@@ -3560,6 +3592,9 @@ namespace hooks {
 
 	bool game_end() {
 		end_threshold();
+		if (bw::get_game_kind() == GameKind_Uprising) {
+			end_upstart_mode();
+		}
 		g_graphics.reset_stat_res_graphics();
 		for (u32 player = 0; player < PlayerLimit; player++)
 		{

@@ -328,7 +328,7 @@ u32 Unit::get_movable_state() {
 		return MovableState_NotReachedDestination;
 	} else {
 		++g_unmovable_hits[0];
-		g_unmovable_lastframe[0] = *g_elapsed_time_frames;
+		g_unmovable_lastframe[0] = g_elapsed_time_frames;
 		if (!(this->status & UnitStatus::Unmovable)) {
 			return MovableState_ReachedDestination;
 		} else {
@@ -587,7 +587,7 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 		event.target_player = this->player;
 		event.source_unit_id = attacker->id;
 		event.target_unit_id = this->id;
-		event.timestamp = *g_elapsed_time_frames;
+		event.timestamp = g_elapsed_time_frames;
 		combat_events.append(event);
 	}
 
@@ -616,7 +616,7 @@ void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notif
 		event.target_player = this->player;
 		event.source_unit_id = attacker ? attacker->id : UnitId::None;
 		event.target_unit_id = this->id;
-		event.timestamp = *g_elapsed_time_frames;
+		event.timestamp = g_elapsed_time_frames;
 		kill_events.append(event);
 	}
 }

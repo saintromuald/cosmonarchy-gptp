@@ -330,7 +330,7 @@ bool parse_condition(Parser& parser) {
 				&&  (!source_players[event.target_player] || !source_unit_ids[event.target_unit_id] || !target_players[event.source_player] || !target_unit_ids[event.source_unit_id])) {
 					continue;
 				}
-				if (!time_quota.check(*g_elapsed_time_frames - event.timestamp)) {
+				if (!time_quota.check(g_elapsed_time_frames - event.timestamp)) {
 					continue;
 				}
 				if (scouting_player) {
@@ -368,7 +368,7 @@ bool parse_condition(Parser& parser) {
 				if (!target_unit_ids[event.target_unit_id]) {
 					continue;
 				}
-				if (!time_quota.check(*g_elapsed_time_frames - event.timestamp)) {
+				if (!time_quota.check(g_elapsed_time_frames - event.timestamp)) {
 					continue;
 				}
 				if (scouting_player) {
@@ -402,7 +402,7 @@ bool parse_condition(Parser& parser) {
 				if (!unit_ids[event.target_unit_id]) {
 					continue;
 				}
-				if (!time_quota.check(*g_elapsed_time_frames - event.timestamp)) {
+				if (!time_quota.check(g_elapsed_time_frames - event.timestamp)) {
 					continue;
 				}
 				if (scouting_player) {
@@ -1562,7 +1562,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					*g_score_screen_player_count += 1;
 				}
 
-				if (new_value && *g_elapsed_time_frames == 0 && trigger_player == *g_local_nation_id) {
+				if (new_value && g_elapsed_time_frames == 0 && trigger_player == *g_local_nation_id) {
 					u32 first_player = 0;
 					for (u32 i = 0; i < PlayerLimit; ++i) {
 						if (g_globals->players[i].witness_mode) continue;

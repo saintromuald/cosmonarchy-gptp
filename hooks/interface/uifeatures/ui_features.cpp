@@ -62,7 +62,7 @@ namespace hooks {
 				if (buffer[1] == NewGameCommand::CameraSync) return;
 		}
 		if (counter->action_count < MaxActions) {
-			counter->action_time[counter->action_count++] = *g_elapsed_time_frames;
+			counter->action_time[counter->action_count++] = g_elapsed_time_frames;
 		}
 	}
 
@@ -73,7 +73,7 @@ namespace hooks {
 
 	void update_apm_counter(ApmCounter* counter) {
 		for (u32 i = 0; i < counter->action_count; ++i) {
-			s32 delta = *g_elapsed_time_frames - counter->action_time[i];
+			s32 delta = g_elapsed_time_frames - counter->action_time[i];
 			if (delta >= ActionSampleTime * 24) {
 				counter->action_time[i--] = counter->action_time[--counter->action_count];
 			}
@@ -109,7 +109,7 @@ namespace hooks {
 
 		if (g_config.show_timer) {
 			char buffer[48] = {};
-			format_time(buffer, 48, "", *g_elapsed_time_frames / 24, false);
+			format_time(buffer, 48, "", g_elapsed_time_frames / 24, false);
 			draw_ui_text(buffer, 7);
 		}
 

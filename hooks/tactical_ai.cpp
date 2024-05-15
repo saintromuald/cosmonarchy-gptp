@@ -131,7 +131,7 @@ static bool unit_has_min_range(Unit* unit) {
 
 static u8 get_current_weapon_cooldown(Unit* unit) {
 	if (unit->id == UnitId::ProtossSolarion) {
-		if (unit->main_order_timer == 0 && (unit->unit_with_hangar.in_hangar_count || (*g_elapsed_time_frames) % 24 == 0)) {
+		if (unit->main_order_timer == 0 && (unit->unit_with_hangar.in_hangar_count || (g_elapsed_time_frames) % 24 == 0)) {
 			return 0;
 		}
 		return 2;
