@@ -15,7 +15,7 @@ struct RequireUnit {
 #define RequireUnitCap 4
 struct ReqEntry {
 	u16 unit_id;
-	u8 require_faction;
+	Faction require_faction;
 	u8 require_units_count;
 	RequireUnit require_units[RequireUnitCap];
 };

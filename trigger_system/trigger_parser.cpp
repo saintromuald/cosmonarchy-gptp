@@ -462,11 +462,11 @@ Point16 Parser::get_position(Point16 default_value) {
 	return default_value;
 }
 
-s32 Parser::get_enum(const char** enum_names, u32 count, s32 default_value) {
+s32 Parser::get_enum(const char** enum_names, size_t count, s32 default_value) {
 	Token token = get_string();
 
-	for (u32 i = 0; i < count; ++i) {
-		if (sv_iequals(token.sv, enum_names[i]) == 0) {
+	for (size_t i = 0; i < count; i++) {
+		if (sv_iequals(token.sv, enum_names[i])) {
 			return i;
 		}
 	}

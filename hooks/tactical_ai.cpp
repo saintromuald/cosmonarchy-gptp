@@ -374,7 +374,7 @@ static KiterType get_kiter_type(u32 unit_id) {
 	return KiterType_Ranged;
 }
 
-static s32 get_effect_value(Unit* unit, Effect* effect) {
+static s32 get_effect_value(Unit* unit, EffectField* effect) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	s32 value = 0;
 
@@ -384,22 +384,22 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 
 	KiterType type = get_kiter_type(unit->id);
 	switch (effect->id) {
-		case EffectId_SalamanderFire: {
+		case EffectId::SalamanderFire: {
 			if (!flyer) {
 				value -= 50;
 			}
 		} break;
-		case EffectId_CyclopsRecursionRound: {
+		case EffectId::CyclopsRecursionRound: {
 			if (!bw::is_allied_to(unit->player, effect->player) && effect->current_time < 25) {
 				value -= 100;
 			}
 		} break;
-		case EffectId_StarSovereignTheGriefOfAllGods: {
+		case EffectId::StarSovereignTheGriefOfAllGods: {
 			if (!flyer) {
 				value -= 1000;
 			}
 		} break;
-		case EffectId_DiademIonField: {
+		case EffectId::DiademIonField: {
 			if (!flyer) {
 				if (total_hp > 50 && hp_percentage > 0.5 && unit_ext->timers[TimerIonFieldAttackSpeed] < 1 * 24) {
 					value += 100;
@@ -408,12 +408,12 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 				}
 			}
 		} break;
-		case EffectId_AspirantCriticality: {
+		case EffectId::AspirantCriticality: {
 			if (!flyer && hp_percentage < 1) {
 				value += 100;
 			}
 		} break;
-		case EffectId_KeskathalorCausticDischarge: {
+		case EffectId::KeskathalorCausticDischarge: {
 			if (!flyer) {
 				if (total_hp > 50 && hp_percentage > 0.5 && type == KiterType_Melee && unit_ext->timers[TimerCausticDischargeSpeed] < 1 * 24) {
 					value += 100;
@@ -422,21 +422,21 @@ static s32 get_effect_value(Unit* unit, Effect* effect) {
 				}
 			}
 		} break;
-		case EffectId_Irradiate: {
+		case EffectId::Irradiate: {
 			value -= 100;
 		} break;
-		case EffectId_HallucinatingField: {
+		case EffectId::HallucinatingField: {
 			value -= 100;
 		} break;
-		case EffectId_MorningstarGroundZero: {
+		case EffectId::MorningstarGroundZero: {
 			value -= 100;
 		} break;
-		case EffectId_LanifectDisruptionField: {
+		case EffectId::LanifectDisruptionField: {
 			if (unit->has_weapon()) {
 				value -= 100;
 			}
 		} break;
-		case EffectId_IsthrathalethPlagueField: {
+		case EffectId::IsthrathalethPlagueField: {
 			value -= 100;
 		} break;
 	}
@@ -549,7 +549,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 	EntryArray effects = {};
 	effect_search_square(&effects, unit->position, GroupRadius);
 	for (u32 i = 0; i < effects.count; ++i) {
-		Effect* effect = effects.effects[i];
+		EffectField* effect = effects.effects[i];
 		s32 value = get_effect_value(unit, effect);
 		if (value) {
 			result.targets_found = true;

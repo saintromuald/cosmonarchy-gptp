@@ -1235,65 +1235,27 @@ bool portrait_id_is_default_advisor(u32 portrait_id) {
 }
 
 u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
-	const auto& player_vars = g_globals->players[player];
-	bool faction_set = player_vars.faction_was_set;
-
+	const auto faction = g_globals->players[player].faction;
 	switch (portrait_id) {
-		case PortraitId::AdvisorOrionImperium:
-		{
-			if (faction_set) {
-				switch (player_vars.faction) {
-					case Faction_TerranHecatonCoalition:
-					{
-						portrait_id = PortraitId::HADRAL; // Temporary
-					} break;
-					case Faction_TerranFuturistFederation:
-					{
-						portrait_id = PortraitId::AdvisorFuturistFederation;
-					} break;
-					case Faction_TerranGoldenRepublic:
-					{
-						portrait_id = PortraitId::AdvisorGoldenRepublic;
-					} break;
-					case Faction_TerranNydusTrinity:
-					{
-						portrait_id = PortraitId::AdvisorNydusTrinity;
-					} break;
-					case Faction_TerranUpstart:
-					{
-						portrait_id = PortraitId::AdvisorUpstartTerran;
-					} break;
-				}
+		case PortraitId::AdvisorOrionImperium: {
+			switch (faction) {
+				case Faction::TerranHecatonCoalition:   return PortraitId::HADRAL; // Temporary
+				case Faction::TerranFuturistFederation: return PortraitId::AdvisorFuturistFederation;
+				case Faction::TerranGoldenRepublic:     return PortraitId::AdvisorGoldenRepublic;
+				case Faction::TerranNydusTrinity:       return PortraitId::AdvisorNydusTrinity;
+				case Faction::TerranUpstart:            return PortraitId::AdvisorUpstartTerran;
 			}
 		} break;
-		case PortraitId::ProtossAdvisor:
-		{
-			if (faction_set) {
-				switch (player_vars.faction) {
-					case Faction_ProtossOrderOfTheSacredSaber:
-					{
-						portrait_id = PortraitId::Patriarch; // Temporary
-					} break;
-					case Faction_ProtossStarbound:
-					{
-						portrait_id = PortraitId::AdvisorStarbound;
-					} break;
-				}
+		case PortraitId::ProtossAdvisor: {
+			switch (faction) {
+				case Faction::ProtossOrderOfTheSacredSaber: return PortraitId::Patriarch; // Temporary
+				case Faction::ProtossStarbound:             return PortraitId::AdvisorStarbound;
 			}
 		} break;
-		case PortraitId::AdvisorAtaltreth:
-		{
-			if (faction_set) {
-				switch (player_vars.faction) {
-					case Faction_ZergImicrenTendril:
-					{
-						portrait_id = PortraitId::AdvisorImicren;
-					} break;
-					case Faction_ZergZorthosTendril:
-					{
-						portrait_id = PortraitId::AdvisorZorthos;
-					} break;
-				}
+		case PortraitId::AdvisorAtaltreth: {
+			switch (faction) {
+				case Faction::ZergImicrenTendril: return PortraitId::AdvisorImicren;
+				case Faction::ZergZorthosTendril: return PortraitId::AdvisorZorthos;
 			}
 		} break;
 	}
