@@ -4,6 +4,7 @@
 #include <BW/bwdata.h>
 #include <BW/enumerations.h>
 #include <string>
+#include <map>
 #include <math.h>
 #include <unit_search.h>
 #include <source_location>
