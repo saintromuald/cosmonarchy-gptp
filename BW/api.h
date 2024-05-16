@@ -94,8 +94,8 @@ namespace bw {
 	bool is_larval_egg(Unit* unit);
 	bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
 	bool is_zerg_egg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt, Point16 origin_pt = {});
-	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y);
+	Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt, Point16 origin_pt = {});
+	Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y);
 	std::string read_samase_file(char* name);
 	bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id = 0, bool preserve_order = false);
 	bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, u16 sprite_id = 0, bool preserve_order = false);
@@ -793,6 +793,7 @@ namespace bw {
 	void delete_ai_script(AiScript* ai_script);
 	void delete_town(AiTown* ai_town);
 	void delete_fow_sprite(Thingy* thingy);
+	std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks);
 	bool binding_plasma_proc(Unit* victim);
 	bool player_has_transport(u32 player);
 	bool unit_in_combat_within_seconds(Unit* unit, u32 seconds);

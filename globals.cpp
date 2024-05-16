@@ -550,38 +550,35 @@ void tick_effect(EffectField& effect) {
 				}
 			} break;
 			case EffectId::GladiusBindingPlasma: {
-				if (!effect.current_time) {
-					EntryArray gladiuses = {};
-					unit_search_radial(&gladiuses, effect.position, 8 * 32);
-					unit_search_filter(&gladiuses, nullptr, 0, { UnitId::ProtossGladius });
-					for (u32 i = 0; i < gladiuses.count; ++i) {
-						Unit* gladius = gladiuses.units[i];
-						if (!bw::is_allied_to(gladius->player, effect.player)) {
-							entry_array_remove(&gladiuses, i--);
-						}
-					}
-					if (gladiuses.count) {
-						Unit* gladius = gladiuses.units[0];
+				if (effect.current_time) {
+					break;
+				}
 
-						EntryArray targets = {};
-						unit_search_radial(&targets, effect.position, 3 * 32);
-						unit_search_filter(&targets, nullptr, FilterNotSubunit);
-						for (u32 i = 0; i < targets.count; ++i) {
-							Unit* target = targets.units[i];
-							if (bw::is_allied_to(target->player, effect.player)) {
-								entry_array_remove(&targets, i--);
-							}
-							if (!target->is_visible_to(effect.player)) {
-								entry_array_remove(&targets, i--);
-							}
-						}
-						unit_search_sort_by_distance(&targets, effect.position);
-						if (targets.count) {
-							Unit* target = targets.units[0];
-							bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, gladius, target, target->position, effect.position);
-							helper::play_sound_at_pos(bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03), effect.position, 1, 0);
-						}
+				EntryArray gladiuses = {};
+				unit_search_radial(&gladiuses, effect.position, 8 * 32);
+				unit_search_filter(&gladiuses, nullptr, 0, { UnitId::ProtossGladius });
+				for (u32 i = 0; i < gladiuses.count; ++i) {
+					Unit* gladius = gladiuses.units[i];
+					if (bw::is_allied_to(gladius->player, effect.player)) {
+						continue;
 					}
+					entry_array_remove(&gladiuses, i--);
+				}
+				if (!gladiuses.count) {
+					effect.destroy();
+					break;
+				}
+
+				Unit* gladius = gladiuses.units[0];
+				auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.repeats);
+				if (targets.empty()) {
+					effect.destroy();
+					break;
+				}
+				for (Unit* target : targets) {
+					bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, gladius, target, target->position, effect.position);
+					helper::play_sound_at_pos(bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03), effect.position, 1, 0);
+					effect.repeats--;
 				}
 			}
 		}
@@ -627,7 +624,8 @@ void IquareGlobals::frame_hook() {
 
 			if (effect.repeats) {
 				effect.repeats--;
-			} else {
+			}
+			if (!effect.repeats) {
 				m_effects.erase(it--);
 			}
 		}
