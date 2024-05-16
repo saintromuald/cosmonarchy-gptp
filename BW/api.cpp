@@ -2111,18 +2111,12 @@ namespace bw {
 			case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
 			case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
 			case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
-
-			case UnitId::ZergKalkalisk:
-			{
+			case UnitId::ZergKalkalisk: {
 				switch (g_globals->players[unit->player].faction) {
-					case Faction_ZergAtaltrethTendril: {
-						return UnitId::ZergNathrokor;
-					}
-					case Faction_ZergZorthosTendril: {
-						return UnitId::ZergNathrelisk;
-					}
+					case Faction::ZergAtaltrethTendril: return UnitId::ZergNathrokor;
+					case Faction::ZergZorthosTendril:   return UnitId::ZergNathrelisk;
 				}
-			}
+			} break;
 		}
 		return UnitId::None;
 	}

@@ -190,13 +190,13 @@ namespace hooks {
 				} break;
 				case UnitId::TerranMaverick:
 				{
-					if (faction != Faction_TerranHecatonCoalition) {
+					if (faction != Faction::TerranHecatonCoalition) {
 						return true;
 					}
 				} break;
 				case UnitId::TerranHotshot:
 				{
-					if (faction == Faction_TerranHecatonCoalition) {
+					if (faction == Faction::TerranHecatonCoalition) {
 						return true;
 					}
 				} break;
@@ -206,13 +206,13 @@ namespace hooks {
 				} break;
 				case UnitId::TerranCyprian:
 				{
-					if (faction != Faction_TerranNydusTrinity) {
+					if (faction != Faction::TerranNydusTrinity) {
 						return true;
 					}
 				} break;
 				case UnitId::TerranCohort:
 				{
-					if (faction == Faction_TerranNydusTrinity) {
+					if (faction == Faction::TerranNydusTrinity) {
 						return true;
 					}
 				} break;
@@ -247,13 +247,13 @@ namespace hooks {
 				} break;
 				case UnitId::TerranApostle:
 				{
-					if (faction != Faction_TerranHecatonCoalition) {
+					if (faction != Faction::TerranHecatonCoalition) {
 						return true;
 					}
 				} break;
 				case UnitId::TerranAuriel:
 				{
-					if (faction == Faction_TerranHecatonCoalition) {
+					if (faction == Faction::TerranHecatonCoalition) {
 						return true;
 					}
 				} break;
@@ -301,19 +301,19 @@ namespace hooks {
 				} break;
 				case UnitId::TerranGoliath:
 				{
-					if (faction != Faction_TerranUpstart && faction != Faction_TerranGoldenRepublic) {
+					if (faction != Faction::TerranUpstart && faction != Faction::TerranGoldenRepublic) {
 						return true;
 					}
 				} break;
 				case UnitId::TerranAspirant:
 				{
-					if (faction == Faction_TerranGoldenRepublic) {
+					if (faction == Faction::TerranGoldenRepublic) {
 						return true;
 					}
 				} break;
 				case UnitId::TerranSouthpaw:
 				{
-					if (faction == Faction_TerranUpstart) {
+					if (faction == Faction::TerranUpstart) {
 						return true;
 					}
 				} break;
@@ -326,7 +326,7 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranPhalanxTankMode:
-					if (faction != Faction_TerranNydusTrinity) {
+					if (faction != Faction::TerranNydusTrinity) {
 						if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
 						{
 							return true;
@@ -341,7 +341,7 @@ namespace hooks {
 				} break;
 				case UnitId::TerranTarasque:
 				{
-					if (faction == Faction_TerranNydusTrinity) {
+					if (faction == Faction::TerranNydusTrinity) {
 						if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
 						{
 							return true;
@@ -398,42 +398,42 @@ namespace hooks {
 			{
 				case UnitId::TerranWraith:
 				{
-					if (faction != Faction_TerranFuturistFederation) {
+					if (faction != Faction::TerranFuturistFederation) {
 						return true;
 					}
 					return false;
 				}
 				case UnitId::TerranAncile:
 				{
-					if (faction != Faction_TerranUpstart) {
+					if (faction != Faction::TerranUpstart) {
 						return true;
 					}
 					return false;
 				}
 				case UnitId::TerranTrojan:
 				{
-					if (faction != Faction_TerranHecatonCoalition) {
+					if (faction != Faction::TerranHecatonCoalition) {
 						return true;
 					}
 					return false;
 				}
 				case UnitId::TerranPhiloc:
 				{
-					if (faction == Faction_TerranFuturistFederation) {
+					if (faction == Faction::TerranFuturistFederation) {
 						return true;
 					}
 					return false;
 				}
 				case UnitId::TerranWendigo:
 				{
-					if (faction == Faction_TerranUpstart) {
+					if (faction == Faction::TerranUpstart) {
 						return true;
 					}
 					return false;
 				} break;
 				case UnitId::TerranQilin:
 				{
-					if (faction == Faction_TerranHecatonCoalition) {
+					if (faction == Faction::TerranHecatonCoalition) {
 						return true;
 					}
 					return false;
@@ -462,7 +462,7 @@ namespace hooks {
 				} break;
 				case UnitId::TerranSeraph:
 				{
-					if (faction != Faction_TerranGoldenRepublic) {
+					if (faction != Faction::TerranGoldenRepublic) {
 						if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
 						{
 							return true;
@@ -478,7 +478,7 @@ namespace hooks {
 				} break;
 				case UnitId::TerranLuminary:
 				{
-					if (faction == Faction_TerranGoldenRepublic) {
+					if (faction == Faction::TerranGoldenRepublic) {
 						if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
 						{
 							return true;
@@ -1547,7 +1547,7 @@ namespace hooks {
 					}
 					case UnitId::TerranMaverick:
 					{
-						if (faction != Faction_TerranHecatonCoalition) {
+						if (faction != Faction::TerranHecatonCoalition) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
@@ -1564,7 +1564,7 @@ namespace hooks {
 					}
 					case UnitId::TerranCyprian:
 					{
-						if (faction != Faction_TerranNydusTrinity) {
+						if (faction != Faction::TerranNydusTrinity) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
@@ -1596,7 +1596,7 @@ namespace hooks {
 					}
 					case UnitId::TerranHotshot:
 					{
-						if (faction == Faction_TerranHecatonCoalition) {
+						if (faction == Faction::TerranHecatonCoalition) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
@@ -1606,7 +1606,7 @@ namespace hooks {
 					}
 					case UnitId::TerranCohort:
 					{
-						if (faction == Faction_TerranNydusTrinity) {
+						if (faction == Faction::TerranNydusTrinity) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
@@ -1639,7 +1639,7 @@ namespace hooks {
 					}
 					case UnitId::TerranApostle:
 					{
-						if (faction != Faction_TerranHecatonCoalition) {
+						if (faction != Faction::TerranHecatonCoalition) {
 							if (in_air) {
 								return TECH_HIDDEN;
 							}
@@ -1649,7 +1649,7 @@ namespace hooks {
 					}
 					case UnitId::TerranAuriel:
 					{
-						if (faction == Faction_TerranHecatonCoalition) {
+						if (faction == Faction::TerranHecatonCoalition) {
 							if (in_air) {
 								return TECH_HIDDEN;
 							}
@@ -1719,7 +1719,7 @@ namespace hooks {
 					}
 					case UnitId::TerranGoliath:
 					{
-						if (faction != Faction_TerranUpstart && faction != Faction_TerranGoldenRepublic) {
+						if (faction != Faction::TerranUpstart && faction != Faction::TerranGoldenRepublic) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
@@ -1740,7 +1740,7 @@ namespace hooks {
 					}
 					case UnitId::TerranPhalanxTankMode:
 					{
-						if (faction != Faction_TerranNydusTrinity) {
+						if (faction != Faction::TerranNydusTrinity) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
@@ -1762,7 +1762,7 @@ namespace hooks {
 					}
 					case UnitId::TerranAspirant:
 					{
-						if (faction == Faction_TerranGoldenRepublic) {
+						if (faction == Faction::TerranGoldenRepublic) {
 							if (in_air) {
 								return TECH_HIDDEN;
 							}
@@ -1772,7 +1772,7 @@ namespace hooks {
 					}
 					case UnitId::TerranSouthpaw:
 					{
-						if (faction == Faction_TerranUpstart) {
+						if (faction == Faction::TerranUpstart) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
@@ -1782,7 +1782,7 @@ namespace hooks {
 					}
 					case UnitId::TerranTarasque:
 					{
-						if (faction == Faction_TerranNydusTrinity) {
+						if (faction == Faction::TerranNydusTrinity) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
 							}
@@ -1860,7 +1860,7 @@ namespace hooks {
 				{
 					case UnitId::TerranWraith:
 					{
-						if (faction != Faction_TerranFuturistFederation) {
+						if (faction != Faction::TerranFuturistFederation) {
 							if (in_air) {
 								return TECH_HIDDEN;
 							}
@@ -1870,7 +1870,7 @@ namespace hooks {
 					}
 					case UnitId::TerranTrojan:
 					{
-						if (faction != Faction_TerranHecatonCoalition) {
+						if (faction != Faction::TerranHecatonCoalition) {
 							if (in_air) {
 								return TECH_HIDDEN;
 							}
@@ -1880,7 +1880,7 @@ namespace hooks {
 					}
 					case UnitId::TerranAncile:
 					{
-						if (faction != Faction_TerranUpstart) {
+						if (faction != Faction::TerranUpstart) {
 							if (in_air) {
 								return TECH_HIDDEN;
 							}
@@ -1890,7 +1890,7 @@ namespace hooks {
 					}
 					case UnitId::TerranPhiloc:
 					{
-						if (faction == Faction_TerranFuturistFederation) {
+						if (faction == Faction::TerranFuturistFederation) {
 							if (in_air) {
 								return TECH_HIDDEN;
 							}
@@ -1900,7 +1900,7 @@ namespace hooks {
 					}
 					case UnitId::TerranWendigo:
 					{
-						if (faction == Faction_TerranUpstart) {
+						if (faction == Faction::TerranUpstart) {
 							if (in_air) {
 								return TECH_HIDDEN;
 							}
@@ -1910,7 +1910,7 @@ namespace hooks {
 					}
 					case UnitId::TerranQilin:
 					{
-						if (faction == Faction_TerranHecatonCoalition) {
+						if (faction == Faction::TerranHecatonCoalition) {
 							if (in_air) {
 								return TECH_HIDDEN;
 							}
@@ -1970,7 +1970,7 @@ namespace hooks {
 					}
 					case UnitId::TerranSeraph:
 					{
-						if (in_air || is_adding_on || faction == Faction_TerranGoldenRepublic)
+						if (in_air || is_adding_on || faction == Faction::TerranGoldenRepublic)
 						{
 							return TECH_HIDDEN;
 						}
@@ -1982,7 +1982,7 @@ namespace hooks {
 					}
 					case UnitId::TerranLuminary:
 					{
-						if (in_air || is_adding_on || faction != Faction_TerranGoldenRepublic)
+						if (in_air || is_adding_on || faction != Faction::TerranGoldenRepublic)
 						{
 							return TECH_HIDDEN;
 						}
@@ -2083,14 +2083,14 @@ namespace hooks {
 					}
 					case UnitId::ProtossLegionnaire:
 					{
-						if (faction == Faction_ProtossOrderOfTheSacredSaber) {
+						if (faction == Faction::ProtossOrderOfTheSacredSaber) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
 					}
 					case UnitId::ProtossAdherent:
 					{
-						if (faction != Faction_ProtossOrderOfTheSacredSaber) {
+						if (faction != Faction::ProtossOrderOfTheSacredSaber) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -2355,7 +2355,7 @@ namespace hooks {
 					}
 					case UnitId::ZergNathrokor:
 					{
-						if (faction == Faction_ZergZorthosTendril) {
+						if (faction == Faction::ZergZorthosTendril) {
 							return TECH_HIDDEN;
 						}
 						if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))
@@ -2366,7 +2366,7 @@ namespace hooks {
 					}
 					case UnitId::ZergNathrelisk:
 					{
-						if (faction != Faction_ZergZorthosTendril) {
+						if (faction != Faction::ZergZorthosTendril) {
 							return TECH_HIDDEN;
 						}
 						if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))

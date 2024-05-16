@@ -4178,42 +4178,42 @@ namespace hooks {
 								switch (g_player_table[player].race) {
 									case RaceId::Terran: {
 										switch (faction) {
-											case Faction_TerranOrionImperium: {
+											case Faction::TerranOrionImperium: {
 												bw::printf("\tPlayer %u has chosen the Orion Imperium.", player + 1, GameTextColor::White);
 											} break;
-											case Faction_TerranHecatonCoalition: {
+											case Faction::TerranHecatonCoalition: {
 												bw::printf("\tPlayer %u has chosen the Hecaton Coalition.", player + 1, GameTextColor::White);
 											} break;
-											case Faction_TerranFuturistFederation: {
+											case Faction::TerranFuturistFederation: {
 												bw::printf("\tPlayer %u has chosen the Futurist Federation.", player + 1, GameTextColor::White);
 											} break;
-											case Faction_TerranGoldenRepublic: {
+											case Faction::TerranGoldenRepublic: {
 												bw::printf("\tPlayer %u has chosen the Golden Republic.", player + 1, GameTextColor::White);
 											} break;
-											case Faction_TerranNydusTrinity: {
+											case Faction::TerranNydusTrinity: {
 												bw::printf("\tPlayer %u has chosen the Nydus Trinity.", player + 1, GameTextColor::White);
 											} break;
-											case Faction_TerranUpstart: {
+											case Faction::TerranUpstart: {
 												bw::printf("\tPlayer %u has chosen the Terran Upstarts.", player + 1, GameTextColor::White);
 											} break;
 										}
 									} break;
 									case RaceId::Protoss: {
 										switch (faction) {
-											case Faction_ProtossDivinePrimacy: {
+											case Faction::ProtossDivinePrimacy: {
 												bw::printf("\tPlayer %u has chosen the Divine Primacy.", player + 1, GameTextColor::White);
 											} break;
-											case Faction_ProtossOrderOfTheSacredSaber: {
+											case Faction::ProtossOrderOfTheSacredSaber: {
 												bw::printf("\tPlayer %u has chosen the Order of the Sacred Saber.", player + 1, GameTextColor::White);
 											} break;
 										}
 									} break;
 									case RaceId::Zerg: {
 										switch (faction) {
-											case Faction_ZergAtaltrethTendril: {
+											case Faction::ZergAtaltrethTendril: {
 												bw::printf("\tPlayer %u has chosen the Ataltreth Tendril.", player + 1, GameTextColor::White);
 											} break;
-											case Faction_ZergZorthosTendril: {
+											case Faction::ZergZorthosTendril: {
 												bw::printf("\tPlayer %u has chosen the Zorthos Tendril.", player + 1, GameTextColor::White);
 											} break;
 										}
