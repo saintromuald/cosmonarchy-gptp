@@ -33,11 +33,11 @@ void IquareGlobals::aise_save()
 	stream.write(reinterpret_cast<const char*>(&tbl_extender), sizeof(tbl_extender));
 	stream.write(reinterpret_cast<const char*>(&unitid_extender), sizeof(unitid_extender));
 
-	u32 effects_size = effects.size();
+	u32 effects_size = m_effects.size();
 	stream.write(reinterpret_cast<const char*>(&effects_size), sizeof(effects_size));
 	for (s32 i = 0; i < effects_size; i++)
 	{
-		Effect* effect = &effects[i];
+		EffectField* effect = &m_effects[i];
 		stream.write(reinterpret_cast<const char*>(&effect->id), sizeof(effect->id));
 		stream.write(reinterpret_cast<const char*>(&effect->position.x), sizeof(effect->position.x));
 		stream.write(reinterpret_cast<const char*>(&effect->position.y), sizeof(effect->position.y));
@@ -169,7 +169,7 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 	stream.read(reinterpret_cast<char*>(&impactsSize), sizeof(impactsSize));
 	for (s32 i = 0; i < impactsSize; i++)
 	{
-		Effect effect = {};
+		EffectField effect = {};
 		stream.read(reinterpret_cast<char*>(&effect.id), sizeof(effect.id));
 		stream.read(reinterpret_cast<char*>(&effect.position.x), sizeof(effect.position.x));
 		stream.read(reinterpret_cast<char*>(&effect.position.y), sizeof(effect.position.y));
@@ -181,7 +181,7 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 		stream.read(reinterpret_cast<char*>(&effect.player), sizeof(effect.player));
 		// should find a way on how to serialize thingy, since pointers won't match after save / load
 		//stream.read(reinterpret_cast<char*>(&effect.thingy), sizeof(effect.thingy));
-		effects.push_back(effect);
+		m_effects.push_back(effect);
 	}
 
 	u32 line_attack_hits_count = 0;
@@ -274,20 +274,19 @@ void IquareGlobals::aise_load(const char* ptr, u32 len)
 }
 
 void IquareGlobals::reset() {
-	effects.clear();
+	m_effects.clear();
 	line_attack_hits.clear();
 	multihit_bullets.clear();
 	lakizilisk_spine_hits.clear();
 }
 
 void IquareGlobals::unit_death(Unit* unit) {
-	for (s32 i = 0; i < this->effects.size(); i++) {
-		Effect* effect = &effects[i];
-		if (effect->source == unit) {
-			effect->source = nullptr;
+	for (auto& effect : m_effects) {
+		if (effect.source == unit) {
+			effect.source = nullptr;
 		}
-		if (effect->origin == unit) {
-			effect->origin = nullptr;
+		if (effect.origin == unit) {
+			effect.origin = nullptr;
 		}
 	}
 
@@ -320,37 +319,37 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 	ignore_alert = false;
 }
 
-void tick_effect(Effect* effect) {
-	if (effect->current_time && effect->sprite_id >= 0) {
-		if (!effect->thingy || !effect->thingy->sprite) {
-			effect->thingy = bw::create_and_init_thingy(effect->sprite_id, effect->position.x, effect->position.y, effect->player, effect->elevation);
+void tick_effect(EffectField& effect) {
+	if (effect.current_time && effect.sprite_id != SpriteId::None) {
+		if (!effect.thingy || !effect.thingy->sprite) {
+			effect.thingy = bw::create_and_init_thingy(effect.sprite_id, effect.position.x, effect.position.y, effect.player, effect.elevation);
 		}
 	}
 	const s32 effect_period = 6;
-	if (effect->current_time % effect_period == 0) {
+	if (effect.current_time % effect_period == 0) {
 		const f64 tick_scalar  = 256.0 * (f64)effect_period / 24;
-		const f64 total_scalar = 256.0 * (f64)effect_period / effect->max_time;
-		switch (effect->id) {
-			case EffectId_StarSovereignTheGriefOfAllGods: {
-				if (!effect->origin) {
-					effect->current_time = 0;
+		const f64 total_scalar = 256.0 * (f64)effect_period / effect.max_time;
+		switch (effect.id) {
+			case EffectId::StarSovereignTheGriefOfAllGods: {
+				if (!effect.origin) {
+					effect.current_time = 0;
 					return;
 				}
 
 				bw::UnitFinder(
-					effect->position.x - effect->radius,
-					effect->position.y - effect->radius,
-					effect->position.x + effect->radius,
-					effect->position.y + effect->radius
+					effect.position.x - effect.radius,
+					effect.position.y - effect.radius,
+					effect.position.x + effect.radius,
+					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					unit->damage_with_custom(2500 * total_scalar, -1, effect->source, effect->player);
+					unit->damage_with_custom(2500 * total_scalar, -1, effect.source, effect.player);
 				});
 				
-				avenge_or_ascend_corpses_in_area(effect->position, effect->radius, effect->player);
+				avenge_or_ascend_corpses_in_area(effect.position, effect.radius, effect.player);
 			} break;
-			case EffectId_SalamanderFire: {
+			case EffectId::SalamanderFire: {
 				EntryArray unit_array = {};
-				unit_search_radial(&unit_array, effect->position, effect->radius);
+				unit_search_radial(&unit_array, effect.position, effect.radius);
 				unit_search_filter(&unit_array, 0, FilterNoAir);
 
 				for (u32 j = 0; j < unit_array.count; j++) {
@@ -363,114 +362,114 @@ void tick_effect(Effect* effect) {
 					}
 				}
 			} break;
-			case EffectId_AspirantCriticality: {
+			case EffectId::AspirantCriticality: {
 				bw::UnitFinder(
-					effect->position.x - effect->radius,
-					effect->position.y - effect->radius,
-					effect->position.x + effect->radius,
-					effect->position.y + effect->radius
+					effect.position.x - effect.radius,
+					effect.position.y - effect.radius,
+					effect.position.x + effect.radius,
+					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
 						return;
 					}
-					unit->heal_shields_then_hp(4 * 256 / 24 * effect_period, effect->source, true);
+					unit->heal_shields_then_hp(4 * 256 / 24 * effect_period, effect.source, true);
 				});
 			} break;
-			case EffectId_KeskathalorCausticDischarge: {
+			case EffectId::KeskathalorCausticDischarge: {
 				bw::UnitFinder(
-					effect->position.x - effect->radius,
-					effect->position.y - effect->radius,
-					effect->position.x + effect->radius,
-					effect->position.y + effect->radius
+					effect.position.x - effect.radius,
+					effect.position.y - effect.radius,
+					effect.position.x + effect.radius,
+					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
 						return;
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
-					unit->damage_with_custom(30 * total_scalar, -1, effect->source, effect->player);
+					unit->damage_with_custom(30 * total_scalar, -1, effect.source, effect.player);
 					unit_ext->timers[TimerCausticDischargeSpeed] = 3 * 24 + 1;
 				});
 			} break;
-			case EffectId_DiademIonField: {
+			case EffectId::DiademIonField: {
 				bw::UnitFinder(
-					effect->position.x - effect->radius,
-					effect->position.y - effect->radius,
-					effect->position.x + effect->radius,
-					effect->position.y + effect->radius
+					effect.position.x - effect.radius,
+					effect.position.y - effect.radius,
+					effect.position.x + effect.radius,
+					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
 						return;
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
-					unit->damage_with_custom(100 * total_scalar, -1, effect->source, effect->player);
+					unit->damage_with_custom(100 * total_scalar, -1, effect.source, effect.player);
 					unit_ext->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
 				});
 			} break;
-			case EffectId_HallucinatingField: {
+			case EffectId::HallucinatingField: {
 				bw::UnitFinder(
-					effect->position.x - effect->radius,
-					effect->position.y - effect->radius,
-					effect->position.x + effect->radius,
-					effect->position.y + effect->radius
+					effect.position.x - effect.radius,
+					effect.position.y - effect.radius,
+					effect.position.x + effect.radius,
+					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
 						return;
 					}
-					bw::apply_hallucinating(unit, effect->player, 3 * 24 + 1);
+					bw::apply_hallucinating(unit, effect.player, 3 * 24 + 1);
 				});
 			} break;
-			case EffectId_Irradiate: {
+			case EffectId::Irradiate: {
 				bw::UnitFinder(
-					effect->position.x - effect->radius,
-					effect->position.y - effect->radius,
-					effect->position.x + effect->radius,
-					effect->position.y + effect->radius
+					effect.position.x - effect.radius,
+					effect.position.y - effect.radius,
+					effect.position.x + effect.radius,
+					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					if (bw::get_distance_fast(effect->position.x, effect->position.y, unit->get_x(), unit->get_y()) > effect->radius) {
+					if (bw::get_distance_fast(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
 						return;
 					}
-					apply_irradiate(unit, effect->player, 15);
+					apply_irradiate(unit, effect.player, 15);
 				});
 			} break;
-			case EffectId_MorningstarGroundZero: {
-				const u32 delta = effect->max_time - effect->current_time;
+			case EffectId::MorningstarGroundZero: {
+				const u32 delta = effect.max_time - effect.current_time;
 				const u32 stage = delta / effect_period;
 
 				switch (stage) {
 					case 0: {
-						iquare_globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, effect->position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+						iquare_globals.create_effect(EffectId::Irradiate, 20 * 24 - delta, effect.position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect.player, effect.source);
 					} break;
 					case 1:
 					case 2: {
 						f32 distance = stage * 2 * 32;
 						u32 count = stage * 8;
 
-						Point16 new_pos = effect->position;
+						Point16 new_pos = effect.position;
 						new_pos.x += distance;
 						for (u32 j = 0; j < count; ++j) {
-							new_pos = bw::rotate_point(effect->position, new_pos, (360.0 / count));
-							iquare_globals.create_effect(EffectId_Irradiate, 20 * 24 - delta, new_pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect->player, effect->source);
+							new_pos = bw::rotate_point(effect.position, new_pos, (360.0 / count));
+							iquare_globals.create_effect(EffectId::Irradiate, 20 * 24 - delta, new_pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect.player, effect.source);
 						}
 					} break;
 				}
 			} break;
-			case EffectId_LanifectDisruptionField: {
-				if (!effect->origin) {
-					effect->current_time = 0;
+			case EffectId::LanifectDisruptionField: {
+				if (!effect.origin) {
+					effect.current_time = 0;
 					break;
 				}
 
-				UnitExt* parent_ext = get_unit_ext(effect->origin);
+				UnitExt* parent_ext = get_unit_ext(effect.origin);
 				if (!parent_ext->values[ValueDisruptionFieldOn]) {
-					effect->current_time = 0;
+					effect.current_time = 0;
 					break;
 				}
 
 				bw::UnitFinder(
-					effect->position.x - 60,
-					effect->position.y - 40,
-					effect->position.x + 60,
-					effect->position.y + 40
+					effect.position.x - 60,
+					effect.position.y - 40,
+					effect.position.x + 60,
+					effect.position.y + 40
 				).for_each_in_match(cosmonarchy_finder_match(0, 0, {}), [&](Unit* unit) {
 					UnitExt* unit_ext = get_unit_ext(unit);
 					unit_ext->timers[TimerUnderDisruptionField] = 8;
@@ -493,29 +492,29 @@ void tick_effect(Effect* effect) {
 					}
 				});
 			} break;
-			case EffectId_IsthrathalethPlagueField: {
+			case EffectId::IsthrathalethPlagueField: {
 				bw::UnitFinder(
-					effect->position.x - 1.5 * 32,
-					effect->position.y - 1 * 32,
-					effect->position.x + 1.5 * 32,
-					effect->position.y + 1 * 32
+					effect.position.x - 1.5 * 32,
+					effect.position.y - 1 * 32,
+					effect.position.x + 1.5 * 32,
+					effect.position.y + 1 * 32
 				).for_each([&](Unit* unit) {
 					helper::plague_proc(unit, 0);
 				});
 			} break;
-			case EffectId_AionReclamationField: {
-				if (effect->current_time > 1) {
-					Thingy* corpse = get_closest_active_corpse(effect->position, effect->radius);
+			case EffectId::AionReclamationField: {
+				if (effect.current_time > 1) {
+					Thingy* corpse = get_closest_active_corpse(effect.position, effect.radius);
 					if (corpse) {
-						reclaim_corpse(corpse, effect->player);
-						effect->current_time = 1;
+						reclaim_corpse(corpse, effect.player);
+						effect.current_time = 1;
 						break;
 					}
 				}
 			} break;
-			case EffectId_VilgolethHeal: {
+			case EffectId::VilgolethHeal: {
 				EntryArray unit_array = {};
-				unit_search_radial(&unit_array, effect->position, effect->radius);
+				unit_search_radial(&unit_array, effect.position, effect.radius);
 				unit_search_filter(&unit_array, 0, FilterNoAir);
 
 				for (u32 j = 0; j < unit_array.count; j++) {
@@ -524,111 +523,111 @@ void tick_effect(Effect* effect) {
 					target_ext->timers[TimerNathreliskMitosalFog] = 24;
 				}
 			} break;
-			case EffectId_CyclopsRecursionRound: {
-				if (!effect->current_time) {
+			case EffectId::CyclopsRecursionRound: {
+				if (!effect.current_time) {
 					EntryArray unit_array = {};
-					unit_search_radial(&unit_array, effect->position, effect->radius);
-					unit_search_filter(&unit_array, effect->source, FilterEnemy);
+					unit_search_radial(&unit_array, effect.position, effect.radius);
+					unit_search_filter(&unit_array, effect.source, FilterEnemy);
 					for (u32 j = 0; j < unit_array.count; j++) {
 						Unit* target = unit_array.units[j];
-						if (bw::is_allied_to(effect->player, target->player)) {
+						if (bw::is_allied_to(effect.player, target->player)) {
 							continue;
 						}
-						target->damage_with_custom(8 * 256, 0, effect->source, effect->player);
+						target->damage_with_custom(8 * 256, 0, effect.source, effect.player);
 						target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
 					}
-					helper::play_sound_at_pos(bw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), effect->position, 1, 0);
-					helper::create_thingy(SpriteId::FragmentaryExplosion, effect->position.x, effect->position.y, effect->player);
+					helper::play_sound_at_pos(bw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), effect.position, 1, 0);
+					helper::create_thingy(SpriteId::FragmentaryExplosion, effect.position.x, effect.position.y, effect.player);
 				}
 			} break;
-			case EffectId_SevenstepMindMatter:
-			{
-				if (effect->source && effect->source->sprite && !effect->current_time) {
-					if (effect->origin && effect->origin->sprite) {
-						UnitExt* origin_ext = get_unit_ext(effect->origin);
+			case EffectId::SevenstepMindMatter: {
+				if (effect.source && effect.source->sprite && !effect.current_time) {
+					if (effect.origin && effect.origin->sprite) {
+						UnitExt* origin_ext = get_unit_ext(effect.origin);
 						origin_ext->timers[TimerSevenstepMindMatterCarrier] = 2;
 					}
-					bw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, effect->player, effect->source, 0, effect->source->position, effect->position);
+					bw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, effect.player, effect.source, 0, effect.source->position, effect.position);
 				}
 			} break;
-			case EffectId_GladiusBindingPlasma:
-			{
-				if (!effect->current_time) {
-					EntryArray gladiuses = {};
-					unit_search_radial(&gladiuses, effect->position, 8 * 32);
-					unit_search_filter(&gladiuses, nullptr, 0, { UnitId::ProtossGladius });
-					for (u32 i = 0; i < gladiuses.count; ++i) {
-						Unit* gladius = gladiuses.units[i];
-						if (!bw::is_allied_to(gladius->player, effect->player)) {
-							entry_array_remove(&gladiuses, i--);
-						}
-					}
-					if (gladiuses.count) {
-						Unit* gladius = gladiuses.units[0];
+			case EffectId::GladiusBindingPlasma: {
+				if (effect.current_time) {
+					break;
+				}
 
-						EntryArray targets = {};
-						unit_search_radial(&targets, effect->position, 3 * 32);
-						unit_search_filter(&targets, nullptr, FilterNotSubunit);
-						for (u32 i = 0; i < targets.count; ++i) {
-							Unit* target = targets.units[i];
-							if (bw::is_allied_to(target->player, effect->player)) {
-								entry_array_remove(&targets, i--);
-							}
-							if (!target->is_visible_to(effect->player)) {
-								entry_array_remove(&targets, i--);
-							}
-						}
-						unit_search_sort_by_distance(&targets, effect->position);
-						if (targets.count) {
-							Unit* target = targets.units[0];
-							bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect->player, gladius, target, target->position, effect->position);
-							helper::play_sound_at_pos(bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03), effect->position, 1, 0);
-						}
+				EntryArray gladiuses = {};
+				unit_search_radial(&gladiuses, effect.position, 8 * 32);
+				unit_search_filter(&gladiuses, nullptr, 0, { UnitId::ProtossGladius });
+				for (u32 i = 0; i < gladiuses.count; ++i) {
+					Unit* gladius = gladiuses.units[i];
+					if (bw::is_allied_to(gladius->player, effect.player)) {
+						continue;
 					}
+					entry_array_remove(&gladiuses, i--);
+				}
+				if (!gladiuses.count) {
+					effect.destroy();
+					break;
+				}
+
+				Unit* gladius = gladiuses.units[0];
+				auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.repeats);
+				if (targets.empty()) {
+					effect.destroy();
+					break;
+				}
+				for (Unit* target : targets) {
+					bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, gladius, target, target->position, effect.position);
+					helper::play_sound_at_pos(bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03), effect.position, 1, 0);
+					effect.repeats--;
 				}
 			}
 		}
 	}
 }
 
-void IquareGlobals::create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent) {
-	Effect effect = {};
-	effect.id = id;
-	effect.position = position;
-	effect.radius = radius;
-	effect.current_time = time;
-	effect.max_time = time;
-	effect.sprite_id = sprite_id;
-	effect.elevation = elevation;
-	effect.player = player;
-	effect.thingy = 0;
-	effect.source = source;
-	effect.origin = parent;
-
-	tick_effect(&effect);
-	effects.push_back(effect);
+void IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, EffectFieldExtras extras) {
+	auto& effect = m_effects.emplace_back(EffectField{
+		.id = id,
+		.position = position,
+		.radius = radius,
+		.current_time = time,
+		.max_time = time,
+		.sprite_id = sprite_id,
+		.elevation = elevation,
+		.player = player,
+		.thingy = nullptr,
+		.source = source,
+		.origin = extras.origin,
+		.repeats = extras.repeats,
+	});
+	tick_effect(effect);
 }
 
 void IquareGlobals::frame_hook() {
-	for (s32 i = 0; i < effects.size(); i++) {
-		Effect* effect = &effects[i];
-		effect->current_time--;
-		if (effect->origin) {
-			effect->position = {effect->origin->position.x, effect->origin->position.y};
-			if (effect->thingy)
-			{
-				effect->thingy->sprite->set_position(effect->origin->position.x, effect->origin->position.y);
+	for (auto it = m_effects.begin(); it != m_effects.end(); it++) {
+		EffectField& effect = *it;
+		effect.current_time--;
+		if (effect.origin) {
+			effect.position = {effect.origin->position.x, effect.origin->position.y};
+			if (effect.thingy) {
+				effect.thingy->sprite->set_position(effect.origin->position.x, effect.origin->position.y);
 			}
 		}
+
 		tick_effect(effect);
-		if (effect->current_time == 0) {
-			if (effect->thingy && effect->thingy->sprite) {
-				effect->thingy->sprite->flags |= SpriteFlags::RemoveAfterDeath;
-				effect->thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
+		if (effect.current_time == 0) {
+			if (effect.thingy && effect.thingy->sprite) {
+				effect.thingy->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+				effect.thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
+				effect.thingy = nullptr;
 			}
 
-			effects.erase(effects.begin() + i);
-			i--;
+			if (effect.repeats) {
+				effect.repeats--;
+			}
+			if (!effect.repeats) {
+				m_effects.erase(it--);
+			}
 		}
 	}
 }
@@ -1370,23 +1369,3 @@ namespace bw
 		return std::vector<Unit*>(links.begin(), links.end());
 	}
 }
-
-const char* unmovable_names[] = {
-	"get_movable_state",
-	"reclaim_corpse",
-	"tick_unit revive",
-	"tick_unit stun on",
-	"tick_unit stun off",
-	"tick_unit cuirass",
-	"melee units freeze fix",
-	"orders_sap_location state1",
-	"orders_drone_land state1",
-	"orders_drone_land state0",
-	"orders_scv_build state1",
-	"move_to_target arrived",
-	"move_to_target moving",
-	"repulse_unit",
-	"orders_place_mine state1",
-	"weapon_damage_fatal cuirass" };
-u32 g_unmovable_hits[16];
-u32 g_unmovable_lastframe[16];

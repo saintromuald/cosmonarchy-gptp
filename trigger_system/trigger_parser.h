@@ -94,7 +94,12 @@ public:
 	Area get_area(Area default_value = {});
 	Point16 get_position(Point16 default_value = {});
 
-	s32 get_enum(const char** enum_names, u32 count, s32 default_value = 0);
+	s32 get_enum(const char** enum_names, size_t count, s32 default_value = 0);
+
+	template <typename T>
+	T get_typed_enum(const char* enum_names[(size_t)T::Count], T default_value = T::None) {
+		return (T)get_enum(enum_names, (size_t)T::Count, (s32)default_value);
+	}
 
 	u32 get_player(bool allow_neutral = false); // 1 - 8
 	PlayerBitset get_player_bitset();

@@ -132,7 +132,7 @@ Button_State::Enum get_button_state(Button* button, Unit* unit, Button_State::En
 		}
 	}
 
-	if (unit_entry->require_faction && g_globals->players[unit->player].faction != unit_entry->require_faction) {
+	if (unit_entry->require_faction != Faction::None && g_globals->players[unit->player].faction != unit_entry->require_faction) {
 		update_button_state_result(&result, Button_State::Invisible);
 	}
 

@@ -217,6 +217,8 @@ namespace RaceId
 		Random = 6,
 		None = 7, // also called Inactive
 
+		Askosi = 69, // temp
+
 		Count = 3,
 	};
 }

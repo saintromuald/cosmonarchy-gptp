@@ -1591,7 +1591,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			}
 		} else if (parser.equals("set_faction")) {
 			u32 player = parser.get_player();
-			Faction faction = (Faction)parser.get_enum(faction_identifiers, ARRAY_SIZE(faction_identifiers));
+			const auto faction = parser.get_typed_enum<Faction>(faction_identifiers);
 
 			if (player) {
 				player -= 1;

@@ -80,28 +80,28 @@ static const char* omnipresence_state_symbol_names[] = {
 };
 C_ASSERT(ARRAY_SIZE(omnipresence_state_symbol_names) == OmnipresenceState_Count);
 
-enum Faction : u8 {
-	Faction_None,
+enum class Faction : u8 {
+	None,
 
-	Faction_TerranOrionImperium,
-	Faction_TerranHecatonCoalition,
-	Faction_TerranFuturistFederation,
-	Faction_TerranGoldenRepublic,
-	Faction_TerranNydusTrinity,
-	Faction_TerranUpstart,
+	TerranOrionImperium,
+	TerranHecatonCoalition,
+	TerranFuturistFederation,
+	TerranGoldenRepublic,
+	TerranNydusTrinity,
+	TerranUpstart,
 
-	Faction_ProtossDivinePrimacy,
-	Faction_ProtossOrderOfTheSacredSaber,
-	Faction_ProtossKhalendricKnights,
-	Faction_ProtossStarbound,
+	ProtossDivinePrimacy,
+	ProtossOrderOfTheSacredSaber,
+	ProtossKhalendricKnights,
+	ProtossStarbound,
 
-	Faction_ZergAtaltrethTendril,
-	Faction_ZergImicrenTendril,
-	Faction_ZergOrkotiTendril,
-	Faction_ZergGoszirithTendril,
-	Faction_ZergZorthosTendril,
+	ZergAtaltrethTendril,
+	ZergImicrenTendril,
+	ZergOrkotiTendril,
+	ZergGoszirithTendril,
+	ZergZorthosTendril,
 
-	Faction_Count,
+	Count,
 };
 
 static const char* faction_identifiers[] = { // This array needs to the same size and order as Faction enum
@@ -125,7 +125,7 @@ static const char* faction_identifiers[] = { // This array needs to the same siz
 	"orkoti",
 	"zorthos",
 };
-C_ASSERT(ARRAY_SIZE(faction_identifiers) == Faction_Count);
+static_assert(std::size(faction_identifiers) == (size_t)Faction::Count);
 
 enum Advisor : u8 {
 	Advisor_Default,

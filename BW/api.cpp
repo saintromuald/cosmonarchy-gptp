@@ -42,7 +42,7 @@ namespace bw {
 		return !bw::in_replay() && g_globals->players[*g_local_nation_id].witness_mode;
 	}
 
-	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt, Point16 origin_pt) {
+	Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt, Point16 origin_pt) {
 		Unit* target_unit = source->order_target.unit;
 		Point16 target_pos = source->order_target.pt;
 		source->order_target.unit = target;
@@ -56,17 +56,15 @@ namespace bw {
 		if (origin_pt.x != 0 || origin_pt.y != 0) {
 			bullet_source_pos = origin_pt;
 		}
-		helper::create_bullet(weapon_id, source, bullet_source_pos.x, bullet_source_pos.y, player,
+		Bullet* bullet = helper::create_bullet(weapon_id, source, bullet_source_pos.x, bullet_source_pos.y, player,
 			get_angle(bullet_source_pos.x, bullet_source_pos.y, source->order_target.pt.x, source->order_target.pt.y));
 		source->order_target.unit = target_unit;
 		source->order_target.pt = target_pos;
+		return bullet;
 	}
 
-	void artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y) {
-		Point16 tgt;
-		tgt.x = x;
-		tgt.y = y;
-		artificial_bullet_from(weapon_id, player, source, target, tgt);
+	Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y) {
+		return artificial_bullet_from(weapon_id, player, source, target, { x, y });
 	}
 
 	void teleport_internal(Unit* unit, Point16 target, u16 sprite_id, bool preserve_order) {
@@ -2111,18 +2109,12 @@ namespace bw {
 			case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
 			case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
 			case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
-
-			case UnitId::ZergKalkalisk:
-			{
+			case UnitId::ZergKalkalisk: {
 				switch (g_globals->players[unit->player].faction) {
-					case Faction_ZergAtaltrethTendril: {
-						return UnitId::ZergNathrokor;
-					}
-					case Faction_ZergZorthosTendril: {
-						return UnitId::ZergNathrelisk;
-					}
+					case Faction::ZergAtaltrethTendril: return UnitId::ZergNathrokor;
+					case Faction::ZergZorthosTendril:   return UnitId::ZergNathrelisk;
 				}
-			}
+			} break;
 		}
 		return UnitId::None;
 	}
@@ -2615,45 +2607,62 @@ namespace bw {
 		}
 	}
 
-	bool binding_plasma_proc(Unit* victim) {
-		UnitExt* victim_ext = get_unit_ext(victim);
-		u32 player = victim_ext->values[ValueGladiusBindingPlasmaPlayer];
-
-		EntryArray targets = {};
-		unit_search_radial(&targets, victim->position, 3 * 32);
-		unit_search_filter(&targets, victim, FilterNotSelf | FilterNotSubunit);
+	std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks) {
+		EntryArray targets;
+		unit_search_radial(&targets, position, 3 * 32);
+		unit_search_filter(&targets, reference, FilterNotSelf | FilterNotSubunit);
 		for (u32 i = 0; i < targets.count; ++i) {
 			Unit* target = targets.units[i];
 			if (bw::is_allied_to(player, target->player)) {
 				entry_array_remove(&targets, i--);
+				continue;
 			}
 			if (!target->is_visible_to(player)) {
 				entry_array_remove(&targets, i--);
+				continue;
 			}
 		}
-		unit_search_sort_by_distance(&targets, victim->position);
-
-		bool procced = false;
+		unit_search_sort_by_distance(&targets, position);
 		if (!targets.count) {
-			victim_ext->timers[TimerBindingPlasma] = 0;
-			victim_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
-			return procced;
+			return {};
 		}
 
+		std::vector<Unit*> result;
 		u32 target_index = 0;
-		while (victim_ext->values[ValueGladiusBindingPlasmaStacks]) {
+		while (stacks) {
 			Unit* target = targets.units[target_index];
-			target_index = (target_index + 1) % targets.count;
+			if (target_index > targets.count) {
+				break;
+			}
+			target_index++;
 
+			result.push_back(target);
+			stacks--;
+		}
+		return result;
+	}
+
+	bool binding_plasma_proc(Unit* victim) {
+		UnitExt* victim_ext = get_unit_ext(victim);
+		u32 player = victim_ext->values[ValueGladiusBindingPlasmaPlayer];
+
+		const auto targets = binding_plasma_find_targets(victim->position, victim, player, victim_ext->values[ValueGladiusBindingPlasmaStacks]);
+		if (targets.empty()) {
+			victim_ext->timers[TimerBindingPlasma] = 0;
+			victim_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
+			return false;
+		}
+
+		bool procced = false;
+		for (Unit* target : targets) {
 			u32 angle = bw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
 			Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, victim, victim->position.x, victim->position.y, player, angle);
 			if (!bullet) {
 				break;
 			}
-			procced = true;
-
 			bw::set_bullet_target(bullet, target);
 			victim_ext->values[ValueGladiusBindingPlasmaStacks]--;
+			procced = true;
 		}
 
 		if (!victim_ext->values[ValueGladiusBindingPlasmaStacks]) {

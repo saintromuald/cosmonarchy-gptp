@@ -501,7 +501,7 @@ namespace hooks
 				}
 				transport_unit_id_1 = UnitId::TerranTrojan;
 				transport_unit_id_2 = UnitId::TerranTrojan;
-				if (g_globals->players[player_id].faction == Faction_TerranHecatonCoalition) {
+				if (g_globals->players[player_id].faction == Faction::TerranHecatonCoalition) {
 					transport_unit_id_1 = UnitId::TerranQilin;
 					transport_unit_id_2 = UnitId::TerranQilin;
 				}
