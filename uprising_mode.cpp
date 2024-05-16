@@ -11,10 +11,8 @@
 	* GENERAL
 		* Move these files into CM directory, or maybe some other directory.
 	* FIXES
-		* Randomness for spawner always returns 1. Why?
-		--	Tried moving it away from game_init_first_frame and into next_frame with checks for frame count being 3 or 12, no dice.
-		* Upstarts can't see anyone because they're an extended player, just like Turned (zombies).
-		* AI expands into Upstart camps.
+		* Upstarts can't see anyone because they're an extended player, just like Turned (zombies)
+		* AI expands into Upstart camps
 	* NEW FEATURES
 		* When 10 upstarts are near the spawner, they should go on an attack
 		* Terran spawners should add addons
@@ -25,7 +23,6 @@
 
 
 #define UpstartSpawnCap 100
-
 struct UpstartSpawnLocation {
 	Point16 pos;
 	u32 resarea;
@@ -146,15 +143,15 @@ u32 upstart_spawn_basic(u32 spawner_id) {
 		case UnitId::ZergQuazethPool:
 		{
 			switch (random_index) {
-				case 0: return UnitId::ZergZethrokor;
-				case 1: return UnitId::ZergQuazilisk;
+				case 1: return UnitId::ZergZethrokor;
+				case 2: return UnitId::ZergQuazilisk;
 			}
 		} break;
 		case UnitId::ZergHydrithDen:
 		{
 			switch (random_index) {
-				case 0: return UnitId::ZergHydralisk;
-				case 1: return UnitId::ZergIzirokor;
+				case 1: return UnitId::ZergHydralisk;
+				case 2: return UnitId::ZergIzirokor;
 			}
 		} break;
 	}
