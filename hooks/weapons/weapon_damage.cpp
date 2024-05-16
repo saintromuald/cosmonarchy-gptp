@@ -696,13 +696,13 @@ namespace hooks
 					case WeaponId::SevenstepGeometricRifle:
 					{
 						iquare_globals.create_effect(EffectId::SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
-							data.target->sprite->elevation + 1, data.attacker->player, data.attacker, data.target);
+							data.target->sprite->elevation + 1, data.attacker->player, data.attacker, { .origin = data.target });
 					} break;
 					case WeaponId::SevenstepGeometricRiflePiercing:
 					{
 						if (!target_ext->timers[TimerSevenstepMindMatterCarrier]) {
 							iquare_globals.create_effect(EffectId::SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
-								data.target->sprite->elevation + 1, data.attacker->player, data.attacker, data.target);
+								data.target->sprite->elevation + 1, data.attacker->player, data.attacker, { .origin = data.target });
 						}
 					} break;
 					case WeaponId::PazuzuJupiterDriver:

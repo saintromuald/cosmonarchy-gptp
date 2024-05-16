@@ -1603,7 +1603,7 @@ namespace hooks {
 
 				// Star Sovereign - Grief of All Gods
 				if (unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] == 1) {
-					iquare_globals.create_effect(EffectId::StarSovereignTheGriefOfAllGods, 360, unit->position, 8 * 32, SpriteId::None, unit->sprite->elevation, unit->player, unit, unit);
+					iquare_globals.create_effect(EffectId::StarSovereignTheGriefOfAllGods, 360, unit->position, 8 * 32, SpriteId::None, unit->sprite->elevation, unit->player, unit, { .origin = unit });
 				}
 
 				// blast effects
@@ -1693,7 +1693,7 @@ namespace hooks {
 				if (bw::get_generic_rust_value(unit, RustId::ToggleDisruptionField)) {
 					if (!unit_ext->values[ValueDisruptionFieldOn]) {
 						unit_ext->values[ValueDisruptionFieldOn] = 1;
-						iquare_globals.create_effect(EffectId::LanifectDisruptionField, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, unit);
+						iquare_globals.create_effect(EffectId::LanifectDisruptionField, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, { .origin = unit });
 					} else if (unit->is_frozen()) {
 						bw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
 					}

@@ -588,7 +588,7 @@ void tick_effect(EffectField& effect) {
 	}
 }
 
-void IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, Unit* parent) {
+void IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, EffectFieldExtras extras) {
 	auto& effect = m_effects.emplace_back(EffectField{
 		.id = id,
 		.position = position,
@@ -600,7 +600,8 @@ void IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 r
 		.player = player,
 		.thingy = nullptr,
 		.source = source,
-		.origin = parent,
+		.origin = extras.origin,
+		.repeats = extras.repeats,
 	});
 	tick_effect(effect);
 }
@@ -621,9 +622,14 @@ void IquareGlobals::frame_hook() {
 			if (effect.thingy && effect.thingy->sprite) {
 				effect.thingy->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 				effect.thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
+				effect.thingy = nullptr;
 			}
 
-			m_effects.erase(it--);
+			if (effect.repeats) {
+				effect.repeats--;
+			} else {
+				m_effects.erase(it--);
+			}
 		}
 	}
 }

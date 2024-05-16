@@ -58,6 +58,12 @@ struct EffectField {
 	Thingy* thingy;
 	Unit* source;
 	Unit* origin;
+	u32 repeats;
+};
+
+struct EffectFieldExtras {
+	Unit* origin = nullptr;
+	u32 repeats = 0;
 };
 
 struct LineAttackHit {
@@ -77,13 +83,10 @@ struct MultihitBullet {
 struct AttackExtender {
 	//	std::vector<std::vector<u16>> attacks;
 	u16 attacks[PLAYABLE_PLAYER_COUNT][ATTACK_LIMIT];
-	AttackExtender()
-	{
 
-		for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
-		{
-			for (s32 j = 0; j < ATTACK_LIMIT; j++)
-			{
+	AttackExtender() {
+		for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+			for (s32 j = 0; j < ATTACK_LIMIT; j++) {
 				attacks[i][j] = 0;
 			}
 		}
@@ -137,7 +140,7 @@ struct IquareGlobals {
 	bool was_hit_by_flamethrower(Unit* source, Unit* target);
 	void register_flamethrower_hit(Unit* source, Unit* target);
 
-	void create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, Unit* parent = nullptr);
+	void create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, EffectFieldExtras extras = {});
 	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
 	bool multihit_bullet_is_set(Bullet* bullet);
 	u32 get_multihit_count(Bullet* bullet);
