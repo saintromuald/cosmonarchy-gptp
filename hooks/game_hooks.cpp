@@ -662,9 +662,13 @@ namespace hooks {
 		// Execute triggers before first frame update
 		bw::set_ingame_loop_state(true);
 		helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
+		u32 game_kind = bw::get_game_kind();
+		if (game_kind == GameKind_Uprising) {
+			spawn_upstarts();
+		}
 		bw::set_ingame_loop_state(false);
 
-		switch (bw::get_game_kind()) {
+		switch (game_kind) {
 			case GameKind_Debug: {
 				for (s32 i = 0; i < PlayerLimit; i++) {
 					g_game_minerals[i] = 999999;
@@ -841,12 +845,6 @@ namespace hooks {
 						bw::minimap_ping(g_start_positions[target].x, g_start_positions[target].y, color, *g_local_nation_id);
 					}
 				}
-			}
-		}
-
-		if (g_elapsed_time_frames == 12) {
-			if (bw::get_game_kind() == GameKind_Uprising) {
-				spawn_upstarts();
 			}
 		}
 

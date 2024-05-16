@@ -126,7 +126,7 @@ u32 upstart_spawn_basic(u32 spawner_id) {
 		case UnitId::ProtossGateway:
 		{
 			switch (random_index) {
-				case 1: return UnitId::TerranGoliath;
+				case 1: return UnitId::ProtossZealot;
 				case 2: return UnitId::ProtossDracadin;
 				case 3: return UnitId::ProtossEcclesiast;
 				case 4: return UnitId::ProtossLegionnaire;
@@ -169,6 +169,9 @@ void spawn_upstarts() {
 			UnitExt* spawner_ext = get_unit_ext(spawner);
 			spawner_ext->values[ValueUprisingSpawner] = 1;
 			spawner_ext->timers[TimerUprisingSpawn] = 3;
+			if (spawner->get_race() == RaceId::Zerg) {
+				bw::spawn_custom_creep(spawner);
+			}
 		}
 	}
 }
