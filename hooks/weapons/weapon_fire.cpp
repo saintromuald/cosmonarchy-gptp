@@ -653,7 +653,7 @@ namespace hooks {
 					} break;
 					case WeaponId::NathreliskSignalingSpores:
 					{
-						iquare_globals.create_effect(EffectId_VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
+						iquare_globals.create_effect(EffectId::VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
 					} // Fallthrough intended, for now.
 					default: {
 						u32 sound_id = bw::get_manual_weapon_id_sound(weapon_id);

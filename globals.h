@@ -26,33 +26,33 @@ struct SaveState
 	}
 };
 
-enum EffectId {
-	EffectId_MorningstarGroundZero,
-	EffectId_DiademIonField,
-	EffectId_SalamanderFire,
-	EffectId_Irradiate,
-	EffectId_AspirantCriticality,
-	EffectId_HallucinatingField,
-	EffectId_LanifectDisruptionField,
-	EffectId_StarSovereignTheGriefOfAllGods,
-	EffectId_KeskathalorCausticDischarge,
-	EffectId_IsthrathalethPlagueField,
-	EffectId_AionReclamationField,
-	EffectId_VilgolethHeal,
-	EffectId_CyclopsRecursionRound,
-	EffectId_SevenstepMindMatter,
-	EffectId_GladiusBindingPlasma,
+enum class EffectId {
+	MorningstarGroundZero,
+	DiademIonField,
+	SalamanderFire,
+	Irradiate,
+	AspirantCriticality,
+	HallucinatingField,
+	LanifectDisruptionField,
+	StarSovereignTheGriefOfAllGods,
+	KeskathalorCausticDischarge,
+	IsthrathalethPlagueField,
+	AionReclamationField,
+	VilgolethHeal,
+	CyclopsRecursionRound,
+	SevenstepMindMatter,
+	GladiusBindingPlasma,
 
-	EffectId_Count,
+	Count,
 };
 
-struct Effect {
-	u32 id;
+struct EffectField {
+	EffectId id;
 	Point16 position;
 	u32 radius;
 	u32 current_time;
 	u32 max_time;
-	s32 sprite_id;
+	SpriteId::Enum sprite_id;
 	u32 elevation;
 	u32 player;
 	Thingy* thingy;
@@ -103,7 +103,7 @@ struct IquareGlobals {
 	bool tbl_extender;
 	bool unitid_extender;
 
-	std::vector<Effect> effects;
+	std::vector<EffectField> m_effects;
 	std::vector<LineAttackHit> line_attack_hits;
 	std::vector<MultihitBullet> multihit_bullets;
 	std::unordered_map<Unit*, std::vector<Unit*>> lakizilisk_spine_hits;
@@ -137,7 +137,7 @@ struct IquareGlobals {
 	bool was_hit_by_flamethrower(Unit* source, Unit* target);
 	void register_flamethrower_hit(Unit* source, Unit* target);
 
-	void create_effect(u8 id, u32 time, Point16 position, u32 radius, s32 sprite_id, u8 elevation, u8 player, Unit* source, Unit* parent = 0);
+	void create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, Unit* parent = nullptr);
 	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
 	bool multihit_bullet_is_set(Bullet* bullet);
 	u32 get_multihit_count(Bullet* bullet);
@@ -178,6 +178,23 @@ namespace bw
 	void spread_clarion_damage(hooks::WeaponDamageData& data);
 }
 
-extern const char* unmovable_names[16];
-extern u32 g_unmovable_hits[16];
-extern u32 g_unmovable_lastframe[16];
+inline const char* unmovable_names[]{
+	"get_movable_state",
+	"reclaim_corpse",
+	"tick_unit revive",
+	"tick_unit stun on",
+	"tick_unit stun off",
+	"tick_unit cuirass",
+	"melee units freeze fix",
+	"orders_sap_location state1",
+	"orders_drone_land state1",
+	"orders_drone_land state0",
+	"orders_scv_build state1",
+	"move_to_target arrived",
+	"move_to_target moving",
+	"repulse_unit",
+	"orders_place_mine state1",
+	"weapon_damage_fatal cuirass",
+};
+inline u32 g_unmovable_hits[16];
+inline u32 g_unmovable_lastframe[16];

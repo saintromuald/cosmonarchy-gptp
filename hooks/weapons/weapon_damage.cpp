@@ -640,7 +640,7 @@ namespace hooks
 				} break;
 				case WeaponId::CyclopsFlakCannons:
 				{
-					iquare_globals.create_effect(EffectId_CyclopsRecursionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
+					iquare_globals.create_effect(EffectId::CyclopsRecursionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
 												 data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
 				} break;
 			}
@@ -695,13 +695,13 @@ namespace hooks
 					} break;
 					case WeaponId::SevenstepGeometricRifle:
 					{
-						iquare_globals.create_effect(EffectId_SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
+						iquare_globals.create_effect(EffectId::SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
 							data.target->sprite->elevation + 1, data.attacker->player, data.attacker, data.target);
 					} break;
 					case WeaponId::SevenstepGeometricRiflePiercing:
 					{
 						if (!target_ext->timers[TimerSevenstepMindMatterCarrier]) {
-							iquare_globals.create_effect(EffectId_SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
+							iquare_globals.create_effect(EffectId::SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
 								data.target->sprite->elevation + 1, data.attacker->player, data.attacker, data.target);
 						}
 					} break;

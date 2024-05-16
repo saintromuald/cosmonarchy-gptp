@@ -65,7 +65,7 @@ union EntryArray {
 	EntryArrayInternal<Unit*> units;
 	EntryArrayInternal<Bullet*> bullets;
 	EntryArrayInternal<Thingy*> corpses;
-	EntryArrayInternal<Effect*> effects;
+	EntryArrayInternal<EffectField*> effects;
 };
 
 void entry_array_add(EntryArray* array, void* data);
