@@ -48,7 +48,8 @@
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "Discord.h"
 #include "hooks/rally_point.h"
-#include "uprising_mode.h"
+#include "game_modes/IGameMode.h"
+#include "game_modes/UprisingGameMode.h"
 
 #include <random>
 #include <format>
@@ -662,13 +663,10 @@ namespace hooks {
 		// Execute triggers before first frame update
 		bw::set_ingame_loop_state(true);
 		helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
-		u32 game_kind = bw::get_game_kind();
-		if (game_kind == GameKind_Uprising) {
-			spawn_upstarts();
-		}
 		bw::set_ingame_loop_state(false);
 
-		switch (game_kind) {
+		g_active_game_mode.release();
+		switch (bw::get_game_kind()) {
 			case GameKind_Debug: {
 				for (s32 i = 0; i < PlayerLimit; i++) {
 					g_game_minerals[i] = 999999;
@@ -692,6 +690,9 @@ namespace hooks {
 			} break;
 			case GameKind_Omnipresence: {
 				init_omnipresence_state();
+			} break;
+			case GameKind_Uprising: {
+				g_active_game_mode = std::make_unique<UprisingGameMode>();
 			} break;
 		}
 
@@ -863,6 +864,9 @@ namespace hooks {
 		update_search_index_effects();
 		update_ext_variables();
 		update_threshold();
+		if (g_active_game_mode) {
+			g_active_game_mode->tick();
+		}
 
 		bw::refresh_screen();
 
@@ -1095,6 +1099,10 @@ namespace hooks {
 
 		if (!(unit->movement_flags & MovementFlags_StartingAttack)) {
 			unit_ext->values[ValueProjectilePattern] = 0;
+		}
+
+		if (g_active_game_mode) {
+			g_active_game_mode->tick_unit(unit);
 		}
 
 		/*
@@ -3414,26 +3422,6 @@ namespace hooks {
 			}
 		}
 
-		if (unit_ext->timers[TimerUprisingSpawn] == 1) {
-			EntryArray upstarts = {};
-			unit_search_radial(&upstarts, unit->position, unit->get_sight_range() * 32);
-			unit_search_filter(&upstarts, unit, FilterOwn);
-			if (upstarts.count < 10) {
-				u32 spawn_id = upstart_spawn_basic(unit->id);
-				u32 spawn_count = 1;
-				if (units_dat::base_property[spawn_id] & UnitProperty::TwoUnitsIn1Egg) {
-					spawn_count = 2;
-				}
-				while (spawn_count) {
-					bw::create_unit_in_game(spawn_id, NeutralHostilePlayerId, unit->position.x, unit->position.y, unit);
-					--spawn_count;
-				}
-				unit_ext->timers[TimerUprisingSpawn] = units_dat::time_cost[spawn_id];
-			} else {
-				unit_ext->timers[TimerUprisingSpawn] = 3;
-			}
-		}
-
 		if (should_update_speed) {
 			unit->update_speed();
 		}
@@ -3569,9 +3557,6 @@ namespace hooks {
 		buttonset_context.reset();
 
 		init_threshold();
-		if (bw::get_game_kind() == GameKind_Uprising) {
-			init_upstart_mode();
-		}
 		if (!grp_wire_Font) {
 			init_grp_wire_font("font_wire");
 		}
@@ -3590,9 +3575,6 @@ namespace hooks {
 
 	bool game_end() {
 		end_threshold();
-		if (bw::get_game_kind() == GameKind_Uprising) {
-			end_upstart_mode();
-		}
 		g_graphics.reset_stat_res_graphics();
 		for (u32 player = 0; player < PlayerLimit; player++)
 		{

@@ -604,8 +604,7 @@ void IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 r
 }
 
 void IquareGlobals::frame_hook() {
-	for (auto it = m_effects.begin(); it != m_effects.end(); it++) {
-		EffectField& effect = *it;
+	for (EffectField& effect : m_effects) {
 		effect.current_time--;
 		if (effect.origin) {
 			effect.position = {effect.origin->position.x, effect.origin->position.y};
@@ -625,11 +624,12 @@ void IquareGlobals::frame_hook() {
 			if (effect.repeats) {
 				effect.repeats--;
 			}
-			if (!effect.repeats) {
-				m_effects.erase(it--);
+			if (effect.repeats) {
+				effect.current_time = effect.max_time;
 			}
 		}
 	}
+	std::erase_if(m_effects, [](EffectField& effect) { return !effect.current_time && !effect.repeats; });
 }
 
 void IquareGlobals::remove_unit_from_line_attack_table(Unit* unit, bool source_only)
