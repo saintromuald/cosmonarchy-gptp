@@ -378,7 +378,6 @@ namespace hooks {
 
 	void nuke(Bullet* bullet, u32 weapon_id) {
 		iquare_globals.create_effect(EffectId::MorningstarGroundZero, 24, bullet->position, 0, SpriteId::None, 5, bullet->player, bullet->source_unit);
-
 		splash(bullet, weapon_id, SplashType::Radial);
 	}
 

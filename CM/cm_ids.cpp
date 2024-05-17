@@ -577,6 +577,12 @@ ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
 }
 
 bool weapon_id_procs_onhits(u32 weapon_id) {
+	// A value of false makes the weapon ignore the following:
+	// * Ancile Providence
+	// * Clarion Phase Link
+	// * Analogue Empathy Core
+	// * Custom trigger damage overrides
+
 	return weapon_id != WeaponId::HypnagogueThroughTheLookingGlass
 		&& weapon_id != WeaponId::SpiderMines
 		&& weapon_id != WeaponId::LobotomyMineExplosion
@@ -589,7 +595,8 @@ bool weapon_id_procs_onhits(u32 weapon_id) {
 		&& weapon_id != WeaponId::StasisField
 		&& weapon_id != WeaponId::MatralethParasite
 		&& weapon_id != WeaponId::Plague
-		&& weapon_id != WeaponId::Custom;
+		&& weapon_id != WeaponId::Custom
+		&& weapon_id != WeaponId::NuclearMissile;
 }
 
 WeaponOffsets* get_weapon_offsets(u32 weapon_id) {

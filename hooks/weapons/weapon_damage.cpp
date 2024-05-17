@@ -197,7 +197,8 @@ namespace hooks
 		}
 
 		UnitExt* target_ext = get_unit_ext(data.target);
-		if (target_ext->values[ValueTakingDeconstructionDamage] || !weapon_id_procs_onhits(data.weapon_id)) {
+		bool proc_onhits = weapon_id_procs_onhits(data.weapon_id);
+		if (target_ext->values[ValueTakingDeconstructionDamage] || proc_onhits) {
 			data.dont_proc_link_damage = true;
 		}
 
@@ -213,28 +214,31 @@ namespace hooks
 		}
 
 		// Ancile - Providence - Hitscan handling
-		switch (weapons_dat::behavior[data.weapon_id]) {
-			case WeaponBehavior_AppearOnAttacker:
-			case WeaponBehavior_AppearOnTargetSite:
-			case WeaponBehavior_AppearOnTargetUnit:
-			{
-				EntryArray units = {}; // @Veeq7, can't we filter for Ancile ids instead of checking for it later? Is that more or less performant? -Pr0nogo
-				unit_search_radial(&units, data.target->position, 2 * 32);
-				for (u32 i = 0; i < units.count; ++i) {
-					Unit* unit = units.units[i];
-					if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && bw::is_allied_to(unit->player, data.target->player)) {
-						bw::create_shield_overlay(data.target, data.direction);
-						unit->spend_unit_energy(data.damage);
-						helper::play_sound_from_unit(bw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
-						ignore_alert = true;
-						unit_attack_notify(unit);
-						ignore_alert = false;
-						bw::reveal_attacker(data.attacker, unit);
-						return;
+		if (proc_onhits) {
+			switch (weapons_dat::behavior[data.weapon_id]) {
+				case WeaponBehavior_AppearOnAttacker:
+				case WeaponBehavior_AppearOnTargetSite:
+				case WeaponBehavior_AppearOnTargetUnit:
+				{
+					EntryArray units = {}; // @Veeq7, can't we filter for Ancile ids instead of checking for it later? Is that more or less performant? -Pr0nogo
+					unit_search_radial(&units, data.target->position, 2 * 32);
+					for (u32 i = 0; i < units.count; ++i) {
+						Unit* unit = units.units[i];
+						if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && bw::is_allied_to(unit->player, data.target->player)) {
+							bw::create_shield_overlay(data.target, data.direction);
+							unit->spend_unit_energy(data.damage);
+							helper::play_sound_from_unit(bw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+							ignore_alert = true;
+							unit_attack_notify(unit);
+							ignore_alert = false;
+							bw::reveal_attacker(data.attacker, unit);
+							return;
+						}
 					}
-				}
-			} break;
+				} break;
+			}
 		}
+
 
 		// Ai_ReactToHit crash - null town
 		if (data.target->unit_ai) {
