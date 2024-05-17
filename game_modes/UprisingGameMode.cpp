@@ -8,8 +8,6 @@
 
 // TODO: 
 //  * FIXES
-//	  * Randomness for spawner always returns 1. Why?
-//	 --	Tried moving it away from game_init_first_frame and into next_frame with checks for frame count being 3 or 12, no dice.
 //	  * Upstarts can't see anyone because they're an extended player, just like Turned (zombies).
 //	  * AI expands into Upstart camps.
 //  * NEW FEATURES
