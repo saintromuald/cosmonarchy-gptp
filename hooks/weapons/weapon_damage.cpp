@@ -882,6 +882,12 @@ namespace hooks
 	static void weapon_damage_lifesteal(const WeaponDamageData& data) {
 		u32 damage_dealt = data.damage + data.shield_reduce_amount;
 		UnitExt* attacker_ext = get_unit_ext(data.attacker);
+
+		f32 lifesteal_factor = 0;
+		if (attacker_ext->timers[TimerLucilleriPheremones]) {
+			lifesteal_factor += 1;
+		}
+
 		switch (data.weapon_id) {
 			case WeaponId::GhitorokorGnashingTendrils:
 			case WeaponId::TethzorokorSaberArray:
@@ -890,13 +896,13 @@ namespace hooks
 			case WeaponId::UltrokorKaiserBlades:
 			{
 				// Broodspawn Death Cycle, Ghitorokor / Tethzorokor / Ultrokor Saber Siphon
-				data.attacker->heal_hp(damage_dealt, data.attacker);
+				lifesteal_factor += 1;
 			} break;
 			case WeaponId::MortothrokorWickedIncisors:
 			{
 				// Mortothrokor Whetted Appetite
-				u32 percentage = attacker_ext->values[ValueMortothrokorStacks] * 0.05;
-				data.attacker->heal_hp(damage_dealt * percentage, data.attacker);
+				f32 percentage = attacker_ext->values[ValueMortothrokorStacks] * 0.05;
+				lifesteal_factor += percentage;
 			} break;
 			case WeaponId::AdherentPhaseBlade:
 			case WeaponId::AmaranthPsiCleaver:
@@ -904,6 +910,14 @@ namespace hooks
 				// Eternal Service - Amaranth behavior
 				data.attacker->heal_shields(damage_dealt, data.attacker);
 			} break;
+		}
+
+		if (lifesteal_factor) {
+			if (data.weapon_id != WeaponId::MortothrokorWickedIncisors) {
+				lifesteal_factor += 1; // Add back the base number
+			}
+			u32 life_to_steal = damage_dealt * lifesteal_factor;
+			data.attacker->heal_hp(life_to_steal, data.attacker);
 		}
 	}
 

@@ -418,12 +418,12 @@ namespace hooks
 		add_status(statuses, "Sublime Shepherd", unit_ext->values[ValueHasSublimeShepherd], 1);
 		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueCuirassIsSelfReviving], 0);
 		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);
-		add_status(statuses, "Repentent Chorus", unit_ext->values[ValueRepententChorus], 0);
 		add_status(statuses, "Controlled Opposition", unit_ext->values[ValueAutocratControlledOppositionStacks], 0);
 		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0, 0);
 		add_status(statuses, "Decaying", unit_ext->values[ValueDecaying], 1);
 		add_status(statuses, "Repentant Chorus", unit_ext->unit_vectors[UnitVectorBarghests].size(), 0);
+		add_status(statuses, "Lucilleri Pheremones", unit_ext->timers[TimerLucilleriPheremones], 1);
 
 		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
 		add_status(statuses, "Decided Reach", unit_ext->values[ValueTriggerWeaponRangeBaseAmount] / 32);

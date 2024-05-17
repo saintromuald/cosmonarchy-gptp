@@ -1502,8 +1502,9 @@ namespace hooks {
 											current_button_state = Button_State::Disabled;
 										}
 									} break;
+									case UnitId::ZergMortothrokor:
 									case UnitId::ZergAxitrilisk:
-									case UnitId::ZergMortothrokor: {
+									case UnitId::ZergSasyrvoleth: {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergAxtothAxis)
 										||  player_has_unit_id(unit->player, UnitId::ZergBegrozithBarrow)) {
 											current_button_state = Button_State::Enabled;
@@ -2449,14 +2450,19 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergMortothrokor: {
+									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Mortothrokor - Whetted Appetite
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergAxitrilisk:
 								case UnitId::ZergAxitriliskWeaponless: {
 									if (current_button->icon_id == IconId::RoarUnused) { // Axitrilisk - Perpetual Wind
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::ZergMortothrokor: {
-									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Mortothrokor - Whetted Appetite
+								case UnitId::ZergSasyrvoleth: {
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Sasyrvoleth - Lucilleri Pheremones
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

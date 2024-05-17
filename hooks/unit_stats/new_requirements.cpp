@@ -810,11 +810,11 @@ namespace hooks {
 						return true;
 					}
 				} break;
-				case UnitId::ZergAxitrilisk:
 				case UnitId::ZergMortothrokor:
+				case UnitId::ZergAxitrilisk:
+				case UnitId::ZergSasyrvoleth:
 				{
-					if (player_has_unit_id(player_id, UnitId::ZergAxtothAxis) || player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow))
-					{
+					if (player_has_unit_id(player_id, UnitId::ZergAxtothAxis) || player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow)) {
 						return true;
 					}
 				} break;
@@ -2424,8 +2424,9 @@ namespace hooks {
 						}
 						return TECH_LOCKED;
 					}
-					case UnitId::ZergAxitrilisk:
 					case UnitId::ZergMortothrokor:
+					case UnitId::ZergAxitrilisk:
+					case UnitId::ZergSasyrvoleth:
 					{
 						if (player_has_unit_id(player_id, UnitId::ZergAxtothAxis)
 						||  player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow))

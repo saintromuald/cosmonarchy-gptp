@@ -250,6 +250,7 @@ namespace UnitId
 		ZergOcsalLarva										= 353,
 		ZergAxitriliskWeaponless							= 377,
 		ZergVilgoleth										= 378,
+		ZergSasyrvoleth										= 407,
 
 	// Zerg-Unit-Factional
 		ZergNathrelisk										= 402,

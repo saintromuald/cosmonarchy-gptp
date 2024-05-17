@@ -39,7 +39,7 @@ enum ExtValueId {
 	ValueIncubationUnitId,
 	ValueIncubationPlayer,
 	ValueCentaurLaunchPos,
-	ValueRepententChorus,
+	ValueRepententChorus, // unused
 	ValueMagnetarLaunchPos,
 	ValueAlkajeliskSpores,
 	ValueAlkajeliskSporesPlayer,
@@ -330,6 +330,7 @@ enum ExtTimerId {
 	TimerMindTyrantTyranny,
 	TimerHidebreaker,
 	TimerUprisingSpawn,
+	TimerLucilleriPheremones,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

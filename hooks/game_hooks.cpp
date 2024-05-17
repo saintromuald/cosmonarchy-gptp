@@ -1900,6 +1900,26 @@ namespace hooks {
 					bw::decloak_passive_proc(unit);
 				}
 			} break;
+			case UnitId::ZergSasyrvoleth:
+			{
+				// Sasyrvoleth - Lucilleri Pheremones
+				EntryArray unit_array = {};
+				unit_search_radial(&unit_array, unit->position, 5 * 32);
+				unit_search_filter(&unit_array, unit, FilterAlly | FilterNoBuilding | FilterCompleted);
+				for (u32 i = 0; i < unit_array.count; ++i) {
+					Unit* target = unit_array.units[i];
+					if (!unit_is_combatant(target)) {
+						continue;
+					}
+
+					UnitExt* target_ext = get_unit_ext(target);
+					target_ext->timers[TimerLucilleriPheremones] = 3;
+					u32 overlay_id = ImageId::DermalAccelerantSmall + bw::get_overlay_offset(target->id, true);
+					if (!(target->status & UnitStatus::Burrowed) && !target->get_overlay(overlay_id)) {
+						bw::add_unit_overlay(target, overlay_id);
+					}
+				}
+			} break;
 			case UnitId::ProtossClarion:
 			{
 				// Clarion Phase Link
@@ -3141,6 +3161,11 @@ namespace hooks {
 		// Remove Ensnaring Brood overlay
 		if (unit_ext->timers[TimerEnsnaringBrood] == 1 || (unit_ext->timers[TimerEnsnaringBrood] > 1 && unit->status & UnitStatus::Burrowed)) {
 			bw::remove_unit_overlay(unit, ImageId::EnsnaringBroodOverlay);
+		}
+
+		// Remove Lucilerri Pheremones overlay
+		if (unit_ext->timers[TimerLucilleriPheremones] == 1 || (unit_ext->timers[TimerLucilleriPheremones] > 1 && unit->status & UnitStatus::Burrowed)) {
+			bw::remove_unit_overlay(unit, ImageId::DermalAccelerantSmall + bw::get_overlay_offset(unit->id, true));
 		}
 
 		// Crucible stacks clear
