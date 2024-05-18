@@ -2629,13 +2629,8 @@ namespace bw {
 
 		std::vector<Unit*> result;
 		u32 target_index = 0;
-		while (stacks) {
-			Unit* target = targets.units[target_index];
-			if (target_index > targets.count) {
-				break;
-			}
-			target_index++;
-
+		while (stacks && target_index < targets.count) {
+			Unit* target = targets.units[target_index++];
 			result.push_back(target);
 			stacks--;
 		}
