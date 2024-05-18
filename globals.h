@@ -58,17 +58,17 @@ struct EffectField {
 	Thingy* thingy;
 	Unit* source;
 	Unit* origin;
-	u32 repeats;
+	u32 intervals;
 
 	void destroy() {
 		current_time = 0;
-		repeats = 0;
+		intervals = 0;
 	}
 };
 
 struct EffectFieldExtras {
 	Unit* origin = nullptr;
-	u32 repeats = 1;
+	u32 intervals = 1;
 };
 
 struct LineAttackHit {

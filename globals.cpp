@@ -557,28 +557,30 @@ void tick_effect(EffectField& effect) {
 				EntryArray gladiuses = {};
 				unit_search_radial(&gladiuses, effect.position, 8 * 32);
 				unit_search_filter(&gladiuses, nullptr, 0, { UnitId::ProtossGladius });
-				for (u32 i = 0; i < gladiuses.count; ++i) {
+				for (u32 i = 0; i < gladiuses.count; i++) {
 					Unit* gladius = gladiuses.units[i];
 					if (bw::is_allied_to(gladius->player, effect.player)) {
 						continue;
 					}
 					entry_array_remove(&gladiuses, i--);
 				}
+				unit_search_sort_by_distance(&gladiuses, effect.position);
 				if (!gladiuses.count) {
 					effect.destroy();
 					break;
 				}
 
 				Unit* gladius = gladiuses.units[0];
-				auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.repeats);
+				const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals);
 				if (targets.empty()) {
 					effect.destroy();
 					break;
 				}
+				assert(target.size() <= effect.intervals);
 				for (Unit* target : targets) {
 					bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, gladius, target, target->position, effect.position);
 					helper::play_sound_at_pos(bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03), effect.position, 1, 0);
-					effect.repeats--;
+					effect.intervals--;
 				}
 			}
 		}
@@ -598,7 +600,7 @@ void IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 r
 		.thingy = nullptr,
 		.source = source,
 		.origin = extras.origin,
-		.repeats = extras.repeats,
+		.intervals = extras.intervals,
 	});
 	tick_effect(effect);
 }
@@ -621,15 +623,15 @@ void IquareGlobals::frame_hook() {
 				effect.thingy = nullptr;
 			}
 
-			if (effect.repeats) {
-				effect.repeats--;
+			if (effect.intervals) {
+				effect.intervals--;
 			}
-			if (effect.repeats) {
+			if (effect.intervals) {
 				effect.current_time = effect.max_time;
 			}
 		}
 	}
-	std::erase_if(m_effects, [](EffectField& effect) { return !effect.current_time && !effect.repeats; });
+	std::erase_if(m_effects, [](EffectField& effect) { return !effect.current_time && !effect.intervals; });
 }
 
 void IquareGlobals::remove_unit_from_line_attack_table(Unit* unit, bool source_only)
