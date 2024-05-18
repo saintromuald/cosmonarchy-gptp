@@ -321,7 +321,7 @@ void unit_on_death_behaviors(Unit* unit) {
 
 	// Gladius - Binding Plasma - proc on death
 	if (unit_ext->timers[TimerBindingPlasma]) {
-		iquare_globals.create_effect(EffectId::GladiusBindingPlasma, unit_ext->timers[TimerBindingPlasma], unit->position, 4,
+		iquare_globals.create_effect(EffectId::GladiusBindingPlasma, unit_ext->timers[TimerBindingPlasma], unit->position, BindingPlasmaRadius,
 			SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext->values[ValueGladiusBindingPlasmaPlayer], 0, { .intervals = unit_ext->values[ValueGladiusBindingPlasmaStacks] });
 	}
 
