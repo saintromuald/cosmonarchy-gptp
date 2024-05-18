@@ -1084,13 +1084,17 @@ namespace hooks {
 			}
 
 			switch (bullet->weapon_id) {
-				case WeaponId::Irradiate:
-				{
+				case WeaponId::Irradiate: {
 					hooks::irradiate_hit_internal(bullet->source_unit, bullet->position, bullet->player);
 				} break;
-				case WeaponId::StasisField:
-				{
+				case WeaponId::StasisField: {
 					hooks::stasis_field_hit_internal(bullet->source_unit, bullet->position, bullet);
+				} break;
+				case WeaponId::GladiusPlasmaFlurry: {
+					if (!bullet->attack_target.unit) {
+						iquare_globals.create_effect(EffectId::GladiusBindingPlasma, BindingPlasmaTimer, bullet->position, BindingPlasmaRadius,
+							SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
+					}
 				} break;
 			}
 		}

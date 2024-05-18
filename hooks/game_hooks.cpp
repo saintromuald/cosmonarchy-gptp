@@ -2560,7 +2560,7 @@ namespace hooks {
 			}
 
 			if (has_source) {
-				if (unit_ext->timers[TimerBindingPlasma] % 12 == 11) {
+				if (unit_ext->timers[TimerBindingPlasma] % BindingPlasmaTimer == BindingPlasmaTimer - 1) {
 					bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay); // TODO: Audio
 				}
 				if (unit_ext->timers[TimerBindingPlasma] == 1) {
