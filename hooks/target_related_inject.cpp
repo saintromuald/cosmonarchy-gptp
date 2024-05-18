@@ -428,6 +428,30 @@ namespace
 		}
 	}
 
+	void __declspec(naked) is_ready_to_attack_wrapper() { // 00476640
+		static b32 result;
+		static Unit* unit;
+		static u8 weapon_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV weapon_id, AL
+			POP EAX
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::is_ready_to_attack(unit, weapon_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
 	// Patches \\
 
 	const u32 GetClosestReachable_2F155 = 0x0042F155;
@@ -496,6 +520,7 @@ namespace hooks
 		jump_patch(is_target_within_min_range_wrapper,					0x00430F10, 1);
 		jump_patch(is_target_visible_wrapper,							0x004E5E30, 4);
 		jump_patch(is_unit_enemy_wrapper,								0x0047B910, 1);
+		jump_patch(is_ready_to_attack_wrapper,							0x00476640, 1);
 
 		// Patches \\
 

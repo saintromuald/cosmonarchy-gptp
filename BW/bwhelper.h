@@ -506,7 +506,7 @@ namespace helper {
 	// for is_ready_to_attack
 	u32 get_distance_to_unit(Unit* unit_1, Unit* unit_2);																			// 00430D30
 	u32 distance_from_dbox_corner(Unit* a1, __int16 a2, __int16 a3);
-	bool is_angle_in_attack_angle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4);
+	b32 is_angle_in_attack_angle(s32 pos_x, s32 pos_y, Unit* unit, u8 weapon_id);
 
 	// for can_cast_ordered_spell_now
 	bool is_target_within_min_range(Unit* unit, u32 min_range, Unit* target);														// 00430F10

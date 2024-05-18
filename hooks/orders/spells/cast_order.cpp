@@ -28,7 +28,7 @@ namespace hooks
 						return 0;
 					}
 					helper::set_move_target_xy(caster, caster->position.x, caster->position.y);
-					if (!helper::is_angle_in_attack_angle(target_pos.y, target_pos.x, caster, TechId::Hallucination)) {
+					if (!helper::is_angle_in_attack_angle(target_pos.x, target_pos.y, caster, TechId::Hallucination)) {
 						helper::turn_unit(caster, bw::get_angle(caster->position, target_pos));
 						return 0;
 					}

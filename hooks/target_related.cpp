@@ -34,36 +34,6 @@ namespace hooks
 		u32 max_range = helper::get_unit_max_weapon_range(unit, weapon_id);
 		return !helper::is_target_within_min_movement_range(final_unit, target, max_range);
 	}
-
-	s32 is_ready_to_attack(Unit* unit, u8 weapon_id) { // 00476640
-		if (unit->movement_flags & MovementFlags_StartingAttack) {
-			return 0;
-		}
-
-		u32 distance = 0;
-		Unit* target = unit->order_target.unit;
-		if (target && target->sprite) { // sprite is new
-			distance = helper::get_distance_to_unit(unit, target);
-		} else {
-			distance = helper::distance_from_box_corner(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-		}
-
-		u32 min_range = weapons_dat::min_range[weapon_id];
-		if (min_range && distance < min_range
-		||  distance > helper::get_unit_max_weapon_range(unit, weapon_id)
-		||  unit->pathing_flags & PathingFlags_IsStacked)
-		{
-			return 0;
-		}
-
-		if ((unit->next_target_waypoint.x != unit->position.x || unit->next_target_waypoint.y != unit->position.y)
-		&&  !helper::is_angle_in_attack_angle(unit->next_target_waypoint.y, unit->next_target_waypoint.x, unit, weapon_id))
-		{
-			unit->order_queue_timer = 0;
-			return 0;
-		}
-		return 1;
-	}
 	
 	// Hooked to fix hold position and cliff advantage. -Pr0nogo
 	bool is_unit_in_weapon_range(Unit* target, Unit* attacker) { // 00476870
@@ -921,5 +891,31 @@ namespace hooks
 			target_player = target->sprite->player;
 		}
 		return !bw::is_allied_to(self->player, target_player);
+	}
+
+	// Hooked to patch nullsprite crash. -Pr0nogo
+	b32 is_ready_to_attack(Unit* unit, u8 weapon_id) { // 00476640
+		if (unit->movement_flags & MovementFlags_StartingAttack) {
+			return 0;
+		}
+
+		Unit* target = unit->order_target.unit;
+		u32 distance = 0;
+		if (target && target->sprite) { // Sprite is new.
+			distance = helper::get_distance_to_unit(unit, target);
+		} else {
+			distance = helper::distance_from_box_corner(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+		}
+		u32 min_range = weapons_dat::min_range[weapon_id];
+		if (min_range && distance < min_range || distance > helper::get_unit_max_weapon_range(unit, weapon_id) || unit->pathing_flags & PathingFlags_IsStacked) {
+			return 0;
+		}
+		if ((unit->next_target_waypoint.x != unit->position.x || unit->next_target_waypoint.y != unit->position.y)
+		 && !helper::is_angle_in_attack_angle(unit->next_target_waypoint.x, unit->next_target_waypoint.y, unit, weapon_id))
+		{
+			unit->order_queue_timer = 0;
+			return 0;
+		}
+		return 1;
 	}
 }

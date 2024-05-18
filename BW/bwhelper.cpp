@@ -4010,22 +4010,21 @@ namespace helper {
 		return result;
 	}
 
-	bool is_angle_in_attack_angle(s32 a1, s32 a2, Unit* a3, unsigned __int8 a4) {
+	b32 is_angle_in_attack_angle(s32 pos_x, s32 pos_y, Unit* unit, u8 weapon_id) {
 		const u32 func_address = 0x00475BE0;
-		static s32 result;
-		static bool result2;
-		u32 a4_xd = a4;
+		static b32 result;
+		u32 weapon_id_xd = weapon_id;
 		__asm {
 			PUSHAD
-			PUSH a4_xd
-			MOV EAX, a1
-			MOV ECX, a2
-			MOV ESI, a3
+			PUSH weapon_id_xd
+			MOV ESI, unit
+			MOV ECX, pos_x
+			MOV EAX, pos_y
 			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
-		return result2 = (bool)result;
+		return result;
 	}
 
 	// for can_cast_ordered_spell_now

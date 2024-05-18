@@ -26,6 +26,7 @@ namespace hooks
 	b32 is_target_within_min_range(Unit* unit, u32 min_range, Unit* target);											// 00430F10
 	u32 is_target_visible(Unit* target, Unit* unit);																	// 004E5E30
 	b32 is_unit_enemy(Unit* self, Unit* target);																		// 0047B910
+	b32 is_ready_to_attack(Unit* unit, u8 weapon_id);																	// 00476640
 
 	void inject_target_related_hooks();
 }
