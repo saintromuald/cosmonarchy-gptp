@@ -620,8 +620,8 @@ void IquareGlobals::frame_hook() {
 			if (effect.thingy && effect.thingy->sprite) {
 				effect.thingy->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 				effect.thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
-				effect.thingy = nullptr;
 			}
+			effect.thingy = nullptr;
 
 			if (effect.intervals) {
 				effect.intervals--;
