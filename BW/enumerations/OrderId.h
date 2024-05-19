@@ -389,10 +389,10 @@ enum Enum {
 	TalosSalvage				= 13,   // Hover                    | Savant energy siphon ability			| unused
 	EnergyDecay					= 104,  // Guardian Aspect          | Savant anti-specialist ability		| unused
 	Observance					= 122,  // EMP Shockwave            | Seraph armor rend ability				| unused
+	WyvernLandGrab				= 153,	// CTF COP (Initialize)		| Wyvern switch							| unused
 	CastThroughTheLookingGlass	= 180,	// Restoration				| Hypnagogue transportation ability
 	
 	// Protoss
-	WyvernLandGrab				= 153,	// CTF COP (Initialize)		| Wyvern switch							| unused
 	KhaydarinEclipse			= 155,  // CTF COP 2                | Exemplar/Clarion switch				| unused
 	
 	// Zerg

@@ -396,11 +396,11 @@ BW_DATA(s32*,		dword_5994DC,			0x005994DC);
 // For loadMap
 BW_DATA(ScenarioFormat*, stru_500574,		0x00500574);
 BW_DATA(ScenarioFormat*, stru_50057C,		0x0050057C);
-BW_DATA(s32*, scenarioCHKSize,			0x006D0F20);
+BW_DATA(s32*,		scenarioCHKSize,			0x006D0F20);
 
 // For game_loop
-BW_DATA(s32*, visionUpdateCount,			0x0051CE98);
-BW_DATA(s8*, g_vision_updated,				0x0051CE9C);
+BW_DATA(s32*,		visionUpdateCount,			0x0051CE98);
+BW_DATA(s8*,		g_vision_updated,				0x0051CE9C);
 
 // X405: For displayEstablishing Shot
 BW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
@@ -409,7 +409,7 @@ BW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
 BW_DATA(s16*, g_unk_upgrade_count,			0x006CA940); // Seems to be unused. Only ever written to.
 
 // For isUnitCloaked
-BW_DATA(Unit**,	g_first_invisible_unit,			0x0063FF5C);
+BW_DATA(Unit**,		g_first_invisible_unit,			0x0063FF5C);
 BW_DATA(s32*,		g_force_button_refresh,			0x0068C1B0);
 BW_DATA(s8*,		g_portrait_redraw,				0x0068AC74); // sizeof 4
 BW_DATA(s8*,		g_status_screen_redraw,			0x0068C1F8);
@@ -418,14 +418,14 @@ BW_DATA(BinDlg**,	g_control_under_mouse_value,	0x0068C1EC); // void* in Neiv's l
 
 // For update_units
 BW_DATA(s32*,		g_interceptor_focused_this_frame,		0x006957D0);
-BW_REF(b8,		g_is_targeting,							0x00641694);
+BW_REF(b8,			g_is_targeting,							0x00641694);
 BW_DATA(s32*,		g_order_timer_reassign_count,			0x0059CCA4);
 BW_DATA(s32*,		g_secondary_order_timer_reassign_count,	0x006283E8);
-BW_DATA(Unit**,	g_active_iscript_entity,				0x006D11F4);
+BW_DATA(Unit**,		g_active_iscript_entity,				0x006D11F4);
 BW_DATA(Bullet**,	g_active_iscript_bullet,				0x006D11F8);
-BW_DATA(Unit**,	g_active_iscript_unit,					0x006D11FC);
-BW_DATA(Unit**,	g_first_dying_unit,						0x0062842C);
-BW_DATA(Unit**,	g_lurker_splash_list,					0x0064DEC8); // sizeof 400
+BW_DATA(Unit**,		g_active_iscript_unit,					0x006D11FC);
+BW_DATA(Unit**,		g_first_dying_unit,						0x0062842C);
+BW_DATA(Unit**,		g_lurker_splash_list,					0x0064DEC8); // sizeof 400
 BW_DATA(s32*,		g_lurker_splash_list_index,				0x0064EEC8);
 BW_DATA(s32*,		g_last_bullet_index,					0x0064DEA8);
 

@@ -576,7 +576,7 @@ void tick_effect(EffectField& effect) {
 					effect.destroy();
 					break;
 				}
-				assert(target.size() <= effect.intervals);
+				assert(targets.size() <= effect.intervals);
 				for (Unit* target : targets) {
 					bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, gladius, target, target->position, effect.position);
 					helper::play_sound_at_pos(bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03), effect.position, 1, 0);

@@ -351,6 +351,15 @@ namespace hooks {
 			{
 				hooks::orders_grief_of_all_gods(unit);
 			} break;
+			case OrderId::WyvernLandGrab:
+			{
+				if (unit->id == UnitId::TerranWyvern) {
+					UnitExt* unit_ext = get_unit_ext(unit);
+					unit_ext->values[ValueWyvernLandGrabOn] = 1;
+					unit_ext->values[ValueWyvernLandGrabX] = unit->order_target.pt.x;
+					unit_ext->values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
+				}
+			} break;
 			default: {
 				if (unit->is_frozen() || (!(unit->status & UnitStatus::Reacts) && unit->status & UnitStatus::CanNotAttack)) {
 					helper::EAX_order(unit, 0x0043FF00); // known as "get_maelstrom_target", though don't make much sense in this context

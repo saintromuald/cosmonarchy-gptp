@@ -324,7 +324,7 @@ namespace hooks
 		if (!unit) {
 			return;
 		}
-		unit->user_action_flags |= 1;
+		unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 		unit->order(id, coord_x, coord_y, 0, UnitId::None, true);
 		helper::do_next_queued_order(unit);
 	}

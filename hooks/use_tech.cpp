@@ -131,11 +131,11 @@ namespace hooks
 			case TechId::Consume: {
 				helper::issue_tri_target_order(OrderId::Consume, 0, 0);
 			} break;
+			case TechId::TargetGround: {
+				helper::issue_tri_target_order(OrderId::WyvernLandGrab, 0, 0);
+			} break;
 			case TechId::MatralethParasite: {
 				helper::issue_tri_target_order(OrderId::CastParasite, 0, 0);
-			} break;
-			case TechId::Ensnare: { // TODO: Remove? -Pr0nogo
-				helper::issue_tri_target_order(OrderId::CTFCOPInit, 0, 0);
 			} break;
 			case TechId::Infestation: {
 				helper::issue_tri_target_order(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
