@@ -55,7 +55,7 @@ bool weapon_id_cleaves(u32 weapon_id);
 
 bool order_id_is_harvest_related(u32 order_id);
 
-bool tech_id_needs_target(u32 tech_id);
+bool tech_id_has_custom_targeting(u32 tech_id);
 
 bool image_id_is_powerup(u32 image_id);
 ImageId::Enum analogue_image_id_overwrite(u32 weapon_id);

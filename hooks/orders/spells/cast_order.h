@@ -9,6 +9,8 @@ namespace hooks
 	void issue_order_targeting_ground(Unit* unit, u32 id, u16 coord_x, u16 coord_y);							// 00475260
 	void issue_tri_target_order(u8 order_1, u8 order_2, u8 order_3);
 	void orders_defensive_matrix(Unit* caster);																	// 004550A0
+	b32 can_cast_spell(Unit* unit);																				// 00492140
+	b32 spell_order_move_towards_target(Unit* caster, u32 range);												// 00492450
 
 	void inject_cast_order_hooks();
 }

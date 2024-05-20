@@ -11,7 +11,7 @@ namespace hooks
 	{
 		Unit* order_target = caster->order_target.unit;
 		u16 meme = (u16)default_order_string;
-		if (!tech_id_needs_target(tech_id)
+		if (!tech_id_has_custom_targeting(tech_id)
 		||	(order_target && hooks::can_target_spell(tech_id, order_target, UnitId::None, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
 		{
 			u16 tech_cost = techdata_dat::energy_cost[tech_id] << 8;
@@ -36,9 +36,7 @@ namespace hooks
 				}
 				return helper::spell_order_move_towards_target(caster, range);
 			}
-
-			u8 caster_race = caster->get_race();
-			const char* string = helper::get_stat_txt_string(caster_race + 864);
+			const char* string = helper::get_stat_txt_string(caster->get_race() + 864);
 			if (string) {
 				if (*g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(string);
@@ -209,24 +207,22 @@ namespace hooks
 					u8 race_id = unit->get_race();
 					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + race_id); // Not enough energy
 					if (message) {
-						if (*g_local_nation_id == unit->player && *g_active_player_id == *g_local_human_id)
-						{
-							helper::set_unit_stat_txt_error_message(message); // display an error message only for the owner of the unit
+						if (*g_local_nation_id == unit->player && *g_active_player_id == *g_local_human_id) {
+							helper::set_unit_stat_txt_error_message(message);
 						}
 					}
 					unit->order_to_idle();
 				} else {
-					u32 progress_moving; // may initiate movement from unit depending on main_order_state
-					if (unit->main_order_state == 0)
-					{
+					u32 progress_moving = 0;
+					if (unit->main_order_state == 0) {
 						progress_moving = helper::ordered_spell_progress_moving(unit, 1);
 					} else {
 						progress_moving = helper::ordered_spell_progress_moving(unit, 0);
 					}
-
 					if (unit->main_order_state == 0) {
 						unit->main_order_state = 1;
 					}
+
 					bool gcd_condition = true;
 					if (unit->id == UnitId::TerranWyvern && unit->ground_weapon_cooldown > 0) {
 						gcd_condition = false; // new
@@ -238,7 +234,7 @@ namespace hooks
 					} else {
 						if (unit->get_spell_countdown() == 0
 						&&	gcd_condition // new
-						&&	helper::is_ready_to_attack(unit, order_weapon_id) // is ready to fire weapon (angle, distance...) maybe?
+						&&	helper::is_ready_to_attack(unit, order_weapon_id)
 						&&	!(unit->movement_flags & MovementFlags_Accelerating)
 						&&	unit->get_movable_state() != 0)
 						{
@@ -283,7 +279,6 @@ namespace hooks
 
 							if (!idiot) {
 								unit->spend_unit_energy(spell_cost);
-
 								u8 cooldown = helper::get_weapon_cooldown(unit, order_weapon_id);
 								unit->spell_cooldown = cooldown;
 								if (unit->id == UnitId::TerranWyvern) {
@@ -365,5 +360,174 @@ namespace hooks
 				helper::issue_order_targeting_nothing(caster, units_dat::return_to_idle_order[caster->id]);
 			}
 		}
+	}
+
+	// Hooked to handle new ability cases. -Pr0nogo
+	b32 can_cast_spell(Unit* unit) { // 00492140
+		u32 order_id = unit->main_order_id;
+		u32 order_weapon_id = orders_dat::order_weapon_id[order_id];
+		u32 order_target_x = unit->order_target.pt.x;
+		u32 order_target_y = unit->order_target.pt.y;
+		Unit* order_target_unit = unit->order_target.unit;
+		b32 result = 0;
+		if (unit->unit_ai) {
+			switch (order_id)
+			{
+				// Stasis Field logic was originally also used for Lockdown (aka Magna Pulse)
+				case OrderId::StasisField:
+				{
+					if (order_target_unit && !order_target_unit->is_frozen()) {
+						goto continue_processing_order;
+					}
+					result = 1;
+				} break;
+				// Originally had Parasite code here
+				// Originally had EMP Shockwave code here
+				case OrderId::Irradiate:
+				{
+					if (order_target_unit && !order_target_unit->irradiate_timer) {
+						goto continue_processing_order;
+					}
+					result = 1;
+				} break;
+				case OrderId::Plague:
+				{
+					if (order_target_unit && !order_target_unit->plague_timer) {
+						goto continue_processing_order;
+					}
+					result = 1;
+				} break;
+				// Originally had Ensnare code here
+				default:
+				{
+					goto continue_processing_order;
+				} break;
+			}
+		} else {
+		continue_processing_order:
+			if (orders_dat::use_weapon_targeting[order_id]) {
+				if (!helper::can_weapon_target_unit(order_weapon_id, order_target_unit, unit)) {
+					return 1;
+				}
+			} else {
+				u32 tech_id = orders_dat::tech_used[order_id];
+				if (tech_id != TechId::None) {
+					switch (tech_id)
+					{
+						case TechId::ScannerSweep:
+						case TechId::CarapaceSwarm:
+						case TechId::Plague:
+						case TechId::PsionicStorm:
+						case TechId::DimensionalRecall:
+						case TechId::StasisField:
+						case TechId::MindTyrantMaelstrom:
+						case TechId::HypnagogueThroughTheLookingGlass:
+						{
+						} break;
+						default:
+						{
+							b32 can_cast_on_tile = 0;
+							if (tech_id == TechId::SpiderMines) {
+								can_cast_on_tile = get_active_tile_flag(order_target_y, order_target_x, 0x410000, 0);
+							} else {
+								if (!order_target_unit || order_target_unit->status & UnitStatus::Invincible) {
+									return 1;
+								}
+								can_cast_on_tile = (u16)helper::get_target_unit_ability_error_stat_string(order_target_unit, unit->player, tech_id) == 0;
+							}
+							if (!can_cast_on_tile) {
+								return 1;
+							}
+						} break;
+					}
+				}
+			}
+			return 0;
+		}
+		return result;
+	}
+
+	// Hooked to handle new ability cases. -Pr0nogo
+	b32 spell_order_move_towards_target(Unit* caster, u32 range) { // 00492450
+		b32 result = 0;
+		u32 final_range = range;
+		Unit* target = caster->order_target.unit;
+		if (target && target->sprite) { // Sprite check is new.
+			u32 tgt_pos_x = target->sprite->position.x;
+			u32 tgt_pos_y = target->sprite->position.y;
+			caster->order_target.pt.x = tgt_pos_x;
+			caster->order_target.pt.y = tgt_pos_y;
+			if (tgt_pos_x != caster->next_target_waypoint.x || tgt_pos_y != caster->next_target_waypoint.y) {
+				caster->next_target_waypoint.x = tgt_pos_x;
+				caster->next_target_waypoint.y = tgt_pos_y;
+			}
+			if (!helper::is_unit_visible(caster)) {
+				goto move_to_terrain;
+			}
+			if (caster->movement_flags & MovementFlags_Accelerating) {
+				if (!(target->movement_flags & MovementFlags_Accelerating)) {
+					final_range = range + (helper::get_flingy_halt_distance(caster) >> 8);
+				}
+
+				u32 velocity_diff = (u8)(target->velocity_direction_1 - caster->velocity_direction_1);
+				if (velocity_diff > 128) {
+					velocity_diff = 256 - velocity_diff;
+				}
+				if (velocity_diff > 32) {
+					final_range = range + (helper::get_flingy_halt_distance(caster) >> 8);
+				}
+			}
+
+			if (helper::is_target_within_min_range(caster, final_range, target)) {
+				helper::set_resource_target(caster);
+				if (caster->next_target_waypoint.x == caster->position.x && caster->next_target_waypoint.y == caster->position.y) {
+					return 1;
+				}
+				u32 curr_dir1 = (u8)caster->current_direction_1 - helper::get_direction_from_points(caster->next_target_waypoint.y, caster->sprite->position.x, caster->next_target_waypoint.x, caster->sprite->position.y);
+				u32 curr_dir_2 = curr_dir1 + ((s8)-(curr_dir1 < 0) & 0x100);
+				if (curr_dir_2 > 128) {
+					curr_dir_2 = 256 - curr_dir_2;
+				}
+				if (curr_dir_2 <= 5) {
+					return 1;
+				}
+			} else {
+			move_to_terrain:
+				Sprite* sprite = caster->sprite;
+				if (caster->move_target.pt.x == sprite->position.x && caster->move_target.pt.y == sprite->position.y && ((caster->status & UnitStatus::Unmovable) != 0) == 1) {
+					helper::set_resource_target(caster);
+					helper::to_idle(caster);
+					return 0;
+				}
+				if (target) {
+					helper::move_towards(target, caster);
+					return 0;
+				}
+				if (!caster->recent_order_timer) {
+					helper::set_move_target_xy(caster, caster->order_target.pt.x, caster->order_target.pt.y);
+				}
+			}
+			result = 0;
+		} else if (!tech_id_has_custom_targeting(orders_dat::tech_used[caster->main_order_id])) {
+			if (bw::get_distance_fast(caster->position, caster->order_target.pt) >= range) {
+				helper::set_move_target_xy(caster, caster->order_target.pt.x, caster->order_target.pt.y);
+			}
+			return true;
+		} else {
+			helper::set_resource_target(caster);
+			if (caster->order_queue_head) {
+				caster->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+				helper::do_next_queued_order(caster);
+				result = 0;
+			} else {
+				if (caster->unit_ai) {
+					helper::issue_order_targeting_nothing(caster, OrderId::ComputerAI);
+				} else {
+					helper::issue_order_targeting_nothing(caster, units_dat::return_to_idle_order[caster->id]);
+				}
+				result = 0;
+			}
+		}
+		return result;
 	}
 }

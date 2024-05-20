@@ -194,6 +194,7 @@ enum ExtValueId {
 	ValueControlledByDemiurge,
 	ValueHidebreaker,
 	ValueUprisingSpawner,
+	ValueTryCastCustomSpell,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -331,6 +332,7 @@ enum ExtTimerId {
 	TimerHidebreaker,
 	TimerUprisingSpawn,
 	TimerLucilleriPheremones,
+	TimerTryCastCustomSpell,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

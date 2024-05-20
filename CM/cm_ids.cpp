@@ -542,7 +542,7 @@ bool order_id_is_harvest_related(u32 order_id) {
 		|| order_id == OrderId::MoveToHarvestObscured;
 }
 
-bool tech_id_needs_target(u32 tech_id) {
+bool tech_id_has_custom_targeting(u32 tech_id) {
 	return tech_id != TechId::Hallucination
 		&& tech_id != TechId::LuminaryAuralAssault
 		&& tech_id != TechId::HypnagogueThroughTheLookingGlass;

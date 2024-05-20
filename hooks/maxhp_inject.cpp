@@ -749,22 +749,6 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) can_cast_spell_wrapper()
-	{
-		static Unit* unit;
-		static s32 result;
-		__asm {
-			MOV unit, EDI
-			PUSHAD
-		}
-		result = hooks::can_cast_spell(unit);
-		__asm {
-			POPAD
-			MOV EAX, result
-			RETN
-		}
-	}
-
 	void __declspec(naked) ai_find_best_transport_wrapper()
 	{
 		static Unit* unit;
@@ -825,7 +809,6 @@ namespace hooks
 		//	jump_patch(drawImageHPBar_0_Wrapper,							0x0047A820, 1);
 		//	jump_patch(update_building_construct_shields_amount_wrapper,	0x0047B6A0, 0);
 		//	jump_patch(get_unit_bullet_damage_wrapper,						0x0048ACD0, 1);
-		//	jump_patch(can_cast_spell_wrapper,								0x00492140, 1);
 		//	jump_patch(modify_unit_shields,									0x004C5A20, 2);
 		//	jump_patch(ai_find_best_transport_wrapper,						0x004E6EF0, 1);
 		//	jump_patch(mapDataTransfer_Wrapper,								0x004EAFE0, 1);

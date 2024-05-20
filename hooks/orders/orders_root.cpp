@@ -360,6 +360,13 @@ namespace hooks {
 					unit_ext->values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
 				}
 			} break;
+			case OrderId::CastThroughTheLookingGlass:
+			{
+				UnitExt* unit_ext = get_unit_ext(unit);
+				if (!unit_ext->timers[TimerHypnagogueChannel] && !unit_ext->values[ValueTryCastCustomSpell]) {
+					unit_ext->values[ValueTryCastCustomSpell] = 1;
+				}
+			} break;
 			default: {
 				if (unit->is_frozen() || (!(unit->status & UnitStatus::Reacts) && unit->status & UnitStatus::CanNotAttack)) {
 					helper::EAX_order(unit, 0x0043FF00); // known as "get_maelstrom_target", though don't make much sense in this context

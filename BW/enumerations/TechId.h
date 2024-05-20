@@ -19,11 +19,10 @@ namespace TechId {
 		EmergencyDetonation					= 39, // Unused Tech 39
 		AzazelSublimeShepherd				= 40, // Unused Tech 40
 		TalosSalvage						= 41, // Unused Tech 41
-		HypnagogueThroughTheLookingGlass	= 45,
+		HypnagogueThroughTheLookingGlass	= 42, // Unused Tech 42
 
 	// Protoss
 		StarSovereignTheGriefOfAllGods		= 29, // Feedback
-		DemiurgeGodsMadeFlesh				= 42, // Unused Tech 42
 
 	// Zerg
 		MatralethEnsnaringBrood				= 13, // Spawn Broodlings

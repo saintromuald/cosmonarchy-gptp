@@ -513,14 +513,14 @@ namespace helper {
 
 	// For AI_RestorationRequirementsProc
 
-	s32 can_weapon_target_unit(u8 a1, Unit* a2, Unit* a3) {
+	s32 can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker) {
 		const u32 Func_canWeaponTargetUnit = 0x00475CE0;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOVZX EAX, a1
-			MOV EDX, a2
-			PUSH a3
+			MOVZX EAX, weapon_id
+			MOV EDX, target
+			PUSH attacker
 			CALL Func_canWeaponTargetUnit
 			MOV result, EAX
 			POPAD
@@ -3588,12 +3588,12 @@ namespace helper {
 	}
 
 	bool can_cast_spell(Unit* unit) {
-		const u32 Func_canCastSpell_0 = 0x00492140;
+		const u32 func_address = 0x00492140;
 		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
-			CALL Func_canCastSpell_0
+			CALL func_address
 			MOV result, EAX
 			POPAD
 		}
@@ -7151,7 +7151,7 @@ namespace helper {
 		return (bool)result;
 	}
 
-	s32 spell_order_move_towards_target(Unit* caster, u32 range) {
+	b32 spell_order_move_towards_target(Unit* caster, u32 range) {
 		const u32 func_address = 0x00492450;
 		static s32 result;
 		__asm {

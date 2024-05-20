@@ -149,8 +149,7 @@ namespace
 	void __declspec(naked) orders_defensive_matrix_wrapper() // 004550A0
 	{
 		static Unit* caster;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -160,12 +159,45 @@ namespace
 			PUSHAD
 		}
 		hooks::orders_defensive_matrix(caster);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x4
+		}
+	}
+
+	void __declspec(naked) can_cast_spell_wrapper() // 00492140
+	{
+		static Unit* unit;
+		static b32 result;
+		__asm {
+			MOV unit, EDI
+			PUSHAD
+		}
+		result = hooks::can_cast_spell(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) spell_order_move_towards_target_wrapper() // 00492450
+	{
+		static Unit* caster;
+		static u32 range;
+		static b32 result;
+		__asm {
+			MOV caster, ECX
+			MOV range, EAX
+			PUSHAD
+		}
+		result = hooks::spell_order_move_towards_target(caster, range);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
 		}
 	}
 
@@ -238,5 +270,7 @@ namespace hooks
 		jump_patch(issue_order_targeting_ground_wrapper,		0x00475260, 1);
 		jump_patch(issue_tri_target_order_wrapper,				0x0048CAF0, 0);
 		jump_patch(orders_defensive_matrix_wrapper,				0x004550A0, 0);
+		jump_patch(can_cast_spell_wrapper,						0x00492140, 0);
+		jump_patch(spell_order_move_towards_target_wrapper,		0x00492450, 0);
 	}
 }

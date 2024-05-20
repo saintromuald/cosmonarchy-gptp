@@ -2199,21 +2199,41 @@ namespace hooks {
 			case UnitId::TerranHypnagogue:
 			{
 				// Hypnagogue - Through the Looking Glass
-				if (unit->main_order_id == OrderId::CastThroughTheLookingGlass) {
-					bw::decloak_passive_proc(unit);
+				bool try_cast = unit_ext->values[ValueTryCastCustomSpell] != 0;
+				if (try_cast && (unit->main_order_id != OrderId::CastThroughTheLookingGlass || unit->is_frozen())) {
+					unit_ext->values[ValueTryCastCustomSpell] = 0;
+				}
+				if (try_cast && !unit_ext->timers[TimerTryCastCustomSpell] && !unit_ext->timers[TimerHypnagogueChannel]) {
 					Point16 target_pos = {};
-					if (unit->order_target.pt.x && unit->order_target.pt.y) {
-						target_pos = unit->order_target.pt;
-					} else if (unit->order_target.unit) {
+					if (unit->order_target.unit) {
 						target_pos.x = unit->order_target.unit->get_x();
 						target_pos.y = unit->order_target.unit->get_y();
+					} else if (unit->order_target.pt.x && unit->order_target.pt.y) {
+						target_pos = unit->order_target.pt;
 					}
-					unit_ext->timers[TimerHypnagogueChannel] = 48 + 1;
-					unit_ext->values[ValueThroughTheLookingGlassX] = target_pos.x;
-					unit_ext->values[ValueThroughTheLookingGlassY] = target_pos.y;
-					if (unit->has_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256)) {
-						unit->spend_unit_energy(techdata_dat::energy_cost[TechId::HypnagogueThroughTheLookingGlass] * 256);
+					u32 range = 160;
+					if (bw::get_distance_fast(unit->position, target_pos) > range) {
+						if (unit->order_target.unit) {
+							helper::spell_order_move_towards_target(unit, range);
+						} else {
+							helper::set_move_target_xy(unit, target_pos.x, target_pos.y);
+						}
+						unit_ext->timers[TimerTryCastCustomSpell] = 3;
+					} else {
+						u16 energy_cost = 0;
+						if (helper::spell_order(unit, TechId::HypnagogueThroughTheLookingGlass, &energy_cost, range, 1330)) {
+							unit->spend_unit_energy(energy_cost);
+							unit_ext->timers[TimerHypnagogueChannel] = 48 + 1;
+							unit_ext->values[ValueThroughTheLookingGlassX] = target_pos.x;
+							unit_ext->values[ValueThroughTheLookingGlassY] = target_pos.y;
+							unit->freeze();
+							unit_ext->values[ValueTryCastCustomSpell] = 0;
+						}
 					}
+				}
+
+				if (unit_ext->timers[TimerHypnagogueChannel]) {
+					bw::decloak_passive_proc(unit);
 				}
 				if (unit_ext->timers[TimerHypnagogueChannel] == 1) {
 					Point16 target_pos = {};
@@ -2233,6 +2253,7 @@ namespace hooks {
 						bw::teleport_to_point(target, target_pos);
 					});
 					bw::teleport_to_point(unit, target_pos);
+					unit->unfreeze();
 				}
 			} break;
 			case UnitId::ZergOkrimnilisk:

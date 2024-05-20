@@ -89,7 +89,7 @@ namespace helper {
 	s32 get_base_strength(s32 a1, Unit* a2);
 
 	// For AI_RestorationRequirementsProc
-	s32 can_weapon_target_unit(u8 a1, Unit* a2, Unit* a3);
+	s32 can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker);
 
 	// For AI_EMPShieldRequirementsProc
 	s32 ai_target_unit_is_worth_hitting(Unit* a1, Unit* a2);
@@ -452,7 +452,7 @@ namespace helper {
 
 	// For spell_order
 	bool can_target_spell(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s32* a7);												// 00492020
-	s32 spell_order_move_towards_target(Unit* caster, u32 range);																	// 00492450
+	b32 spell_order_move_towards_target(Unit* caster, u32 range);																	// 00492450
 
 	// For can_target_spell
 	s16 can_target_spell_on_fow_unit(s32 techId, s16 unit_id);																		// 004914B0
