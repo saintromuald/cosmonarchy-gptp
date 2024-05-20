@@ -1066,6 +1066,7 @@ namespace hooks {
 		init_unit(unit);
 
 		UnitExt* unit_ext = get_unit_ext(unit);
+		/*
 		if (unit_ext->values[ValueUnitIdName] != unit->id + 1) {
 			unit_ext->values[ValueUnitIdName] = unit->id + 1;
 
@@ -1073,6 +1074,7 @@ namespace hooks {
 				unit_ext->custom_name = get_random_easter_egg_unit_name(unit->id);
 			}
 		}
+		*/
 
 		Unit* overlay_unit = unit;
 		if (unit->status & UnitStatus::InTransport && unit->connected_unit) {
