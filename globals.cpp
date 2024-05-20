@@ -554,7 +554,7 @@ void tick_effect(EffectField& effect) {
 					break;
 				}
 
-				EntryArray gladiuses = {};
+				EntryArray gladiuses{};
 				unit_search_radial(&gladiuses, effect.position, 8 * 32);
 				unit_search_filter(&gladiuses, nullptr, 0, { UnitId::ProtossGladius });
 				for (u32 i = 0; i < gladiuses.count; i++) {
