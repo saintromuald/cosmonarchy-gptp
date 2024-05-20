@@ -2608,7 +2608,7 @@ namespace bw {
 	}
 
 	std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks) {
-		EntryArray targets;
+		EntryArray targets{};
 		unit_search_radial(&targets, position, BindingPlasmaRadius);
 		unit_search_filter(&targets, reference, FilterNotSelf | FilterNotSubunit);
 		for (u32 i = 0; i < targets.count; ++i) {
