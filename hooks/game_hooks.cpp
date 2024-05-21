@@ -540,6 +540,10 @@ namespace hooks {
 					{
 						bw::draw_aura_range(unit, 8, 164); //#88409C
 					} break;
+					case OrderId::CastThroughTheLookingGlass:
+					{
+						bw::draw_aura_range(unit, ThroughTheLookingGlassRange / 32, 164);
+					} break;
 					default:
 					{
 					} break;
@@ -2211,7 +2215,7 @@ namespace hooks {
 					} else if (unit->order_target.pt.x && unit->order_target.pt.y) {
 						target_pos = unit->order_target.pt;
 					}
-					u32 range = 160;
+					u32 range = ThroughTheLookingGlassRange;
 					if (bw::get_distance_fast(unit->position, target_pos) > range) {
 						if (unit->order_target.unit) {
 							helper::spell_order_move_towards_target(unit, range);
@@ -2234,26 +2238,42 @@ namespace hooks {
 
 				if (unit_ext->timers[TimerHypnagogueChannel]) {
 					bw::decloak_passive_proc(unit);
-				}
-				if (unit_ext->timers[TimerHypnagogueChannel] == 1) {
-					Point16 target_pos = {};
-					target_pos.x = unit_ext->values[ValueThroughTheLookingGlassX];
-					target_pos.y = unit_ext->values[ValueThroughTheLookingGlassY];
-					Point16 pos = unit->position;
-					s32 radius = 2 * 32;
-					bw::UnitFinder(
-						pos.x - radius,
-						pos.y - radius,
-						pos.x + radius,
-						pos.y + radius
-					).for_each([&](Unit* target) {
-						if (units_dat::base_property[target->id] & UnitProperty::Building || !(target->status & UnitStatus::Completed)) {
-							return;
-						}
-						bw::teleport_to_point(target, target_pos);
-					});
-					bw::teleport_to_point(unit, target_pos);
-					unit->unfreeze();
+					switch (unit_ext->timers[TimerHypnagogueChannel])
+					{
+						case 48:
+						case 36:
+						case 24:
+						case 12:
+						{
+							Point16 target_pos = {};
+							target_pos.x = unit_ext->values[ValueThroughTheLookingGlassX];
+							target_pos.y = unit_ext->values[ValueThroughTheLookingGlassY];
+							Point16 pos = unit->position;
+							helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, pos.x,		  pos.y, unit->player);
+							helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, target_pos.x, target_pos.y, unit->player);
+						} break;
+						case 1:
+						{
+							Point16 target_pos = {};
+							target_pos.x = unit_ext->values[ValueThroughTheLookingGlassX];
+							target_pos.y = unit_ext->values[ValueThroughTheLookingGlassY];
+							Point16 pos = unit->position;
+
+							EntryArray units = {};
+							unit_search_radial(&units, pos, 2 * 32);
+							unit_search_filter(&units, unit, FilterAlly | FilterNoBuilding | FilterCompleted);
+							for (u32 index = 0; index < units.count; ++index) {
+								Unit* target = units.units[index];
+								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, target->position.x, target->position.y, unit->player);
+								bw::teleport_to_point(target, target_pos);
+								bw::add_unit_overlay(target, ImageId::LegionnaireTeleportEffect);
+							}
+							helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
+							bw::teleport_to_point(unit, target_pos);
+							bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
+							unit->unfreeze();
+						} break;
+					}
 				}
 			} break;
 			case UnitId::ZergOkrimnilisk:

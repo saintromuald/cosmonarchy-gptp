@@ -809,6 +809,8 @@ namespace SpriteId
 		MagnetarLawOfAttraction3		= 914,
 
 		GladiusBindingPlasmaOverlay		= 916,
+		Sasyrvoleth						= 917,
+		ThroughTheLookingGlassCast		= 918,
 
 		// CORPSE \\
 			

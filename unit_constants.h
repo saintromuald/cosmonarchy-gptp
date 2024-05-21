@@ -48,6 +48,9 @@ constexpr s32 ApostleAILazarusAgentTimer = 24;
 // Olympian
 constexpr s32 OlympianMeleeDistance = 30;
 
+// Hypnagogue
+constexpr u32 ThroughTheLookingGlassRange = 6 * 32;
+
 // Mines
 constexpr s32 MineBurrowTime = 72;
 constexpr s32 MineSeekRange = 576;
