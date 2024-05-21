@@ -580,7 +580,7 @@ void unit_die(Unit* unit) // 004A0740
 		Unit* building_unit = unit->current_build_unit;
 		if (building_unit) {
 			u32 secondary_id = unit->secondary_order_id;
-			if (secondary_id == OrderId::Train || secondary_id == OrderId::TrainFighter) {
+			if (secondary_id == OrderId::TrainUnit || secondary_id == OrderId::TrainFighter) {
 				helper::orders_self_destructing(building_unit);
 			}
 		}

@@ -1375,6 +1375,59 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 				}
 			}
+		} else if (parser.equals("issue_order")) {
+			Area area_init = parser.get_area();
+			Area area_dest = parser.get_area();
+			PlayerBitset players = parser.get_player_bitset();
+			UnitIdBitset source_unit_ids = parser.get_unit_id_bitset();
+			UnitIdBitset target_unit_ids = parser.get_unit_id_bitset();
+			u32 count = parser.get_s32();
+			u32 order_id = parser.get_s32();
+			u32 secondary_unit_id = parser.get_s32();
+
+			EntryArray source_units = {};
+			unit_search_rect(&source_units, area_init.box);
+		//	EntryArray target_units = {};
+		//	unit_search_rect(&target_units, area_dest.box);
+
+			Point16 dest = { area_dest.box.left + ((area_dest.box.right - area_dest.box.left) / 2), area_dest.box.top + ((area_dest.box.bottom - area_dest.box.top) / 2) };
+
+			u32 unit_count = 0;
+			for (u32 i = 0; i < source_units.count; ++i) {
+				Unit* unit = source_units.units[i];
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Point16 position = unit->position;
+				if (!area_init.check(position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !source_unit_ids[unit->id]) {
+					continue;
+				}
+				if (count && unit_count >= count) {
+					return true;
+				}
+				unit_count++;
+				if (secondary_unit_id != UnitId::None) {
+					switch (order_id) {
+						case OrderId::BuildTerran:
+						case OrderId::BuildProtoss1:
+						case OrderId::DroneStartBuild:
+						case OrderId::MorphUnit:
+						case OrderId::MorphStructure:
+						case OrderId::TrainUnit:
+						case OrderId::TrainFighter:
+						case OrderId::BuildNydusExit:
+						{
+							unit->build_queue[unit->build_queue_slot] = secondary_unit_id;
+							helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
+						} break;
+					}
+				}
+				
+			}
 		} else if (parser.equals("var") || parser.equals("timer")) {
 			bool is_timer = parser.equals("timer");
 			TriggerVarType var_type = is_timer ? TriggerVarType_Timer : TriggerVarType_Var;

@@ -10,11 +10,11 @@ namespace hooks
 		while (Unit* unit = helper::get_active_player_next_selection()) {
 			if (unit->id != UnitId::None
 			&&	unit->can_make_unit(unit_id, *g_active_nation_id) == 1
-			&&	unit->main_order_id != OrderId::Morph2
+			&&	unit->main_order_id != OrderId::MorphStructure
 			&&	helper::has_money_can_make(unit, unit_id))
 			{
 				// start construction if successful
-				unit->order_computer(OrderId::Morph2);
+				unit->order_computer(OrderId::MorphStructure);
 				bw::refresh_console();
 			}
 		}
@@ -24,18 +24,18 @@ namespace hooks
 		*g_unit_iterator_pos = 0;
 		while (Unit* current_unit = helper::get_active_player_next_selection()) {
 			if (current_unit->can_make_unit(unit_id, *g_active_nation_id)
-				&& current_unit->main_order_id != OrderId::Morph1
+				&& current_unit->main_order_id != OrderId::MorphUnit
 				&& helper::has_money_can_make(current_unit, unit_id)) { // start construction if successful
 				current_unit->user_action_flags |= 1;
 				if (current_unit->main_order_id != OrderId::Die) {
 					while (current_unit->order_queue_tail) {
-						if (orders_dat::can_be_interrupted[current_unit->order_queue_tail->order_id] || current_unit->order_queue_tail->order_id == OrderId::Morph1) {
+						if (orders_dat::can_be_interrupted[current_unit->order_queue_tail->order_id] || current_unit->order_queue_tail->order_id == OrderId::MorphUnit) {
 							helper::remove_order_from_unit_queue(current_unit->order_queue_tail, current_unit);
 						} else {
 							break;
 						}
 					}
-					current_unit->perform_another_order(OrderId::Morph1, 0, 0, nullptr, UnitId::None, 0);
+					current_unit->perform_another_order(OrderId::MorphUnit, 0, 0, nullptr, UnitId::None, 0);
 				}
 				prepare_for_next_order(current_unit);
 			}
@@ -80,7 +80,7 @@ namespace hooks
 			if (!unit_ext->timers[TimerLiftoffDelay]) {
 				if (helper::create_unit_allowed(unit_id, unit, *g_active_nation_id) == 1) {
 					if (helper::has_money_can_make(unit, unit_id)) {
-						helper::set_secondary_order(unit, OrderId::Train);
+						helper::set_secondary_order(unit, OrderId::TrainUnit);
 					}
 					bw::refresh_console();
 				}

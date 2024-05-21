@@ -380,12 +380,12 @@ namespace hooks
 		helper::ai_pop_spending_request(player);
 		if (bw::is_conventional_unit_morph_source(unit_copy->id))
 		{
-			helper::issue_order_targeting_nothing(unit_copy, OrderId::Morph1);
+			helper::issue_order_targeting_nothing(unit_copy, OrderId::MorphUnit);
 			return 1;
 		}
 		else
 		{
-			helper::set_secondary_order(unit_copy, OrderId::Train);
+			helper::set_secondary_order(unit_copy, OrderId::TrainUnit);
 			return 1;
 		}
 	}
@@ -1162,7 +1162,7 @@ namespace hooks
 						return 0;
 					}
 					if (helper::ai_train_unit(unit, UnitId::ProtossWitness, 5, 0)) {
-						helper::set_secondary_order(unit, OrderId::Train);
+						helper::set_secondary_order(unit, OrderId::TrainUnit);
 						helper::ai_reserve(player_id, 1);
 						helper::ai_pop_spending_request(player_id);
 						return 1;
@@ -1279,7 +1279,7 @@ namespace hooks
 				build_unit = builder->order_target.unit;
 			} else {
 				u32 secondary_order = builder->secondary_order_id;
-				if (secondary_order != OrderId::Train && secondary_order != OrderId::TrainFighter && !helper::is_constructing_addon(builder))
+				if (secondary_order != OrderId::TrainUnit && secondary_order != OrderId::TrainFighter && !helper::is_constructing_addon(builder))
 				{
 					if (builder->build_queue[builder->build_queue_slot % 5] == unit_id && order_id_is_build_order(main_order))
 					{
@@ -1312,7 +1312,7 @@ namespace hooks
 			}
 		}
 
-		if (main_order == OrderId::Morph2 || main_order == OrderId::ZergBuildSelf)
+		if (main_order == OrderId::MorphStructure || main_order == OrderId::ZergBuildSelf)
 		{
 			return unit_id == builder->build_queue[builder->build_queue_slot];
 		}

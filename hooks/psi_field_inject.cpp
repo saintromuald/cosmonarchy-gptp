@@ -165,7 +165,7 @@ b32 is_repowered_building_working() {
 	Unit* unit = (Unit*)esi();
 
 	if (unit->status & UnitStatus::GroundedBuilding) {
-		return unit->secondary_order_id == OrderId::Train || unit->building.tech_id != TechId::None || unit->building.upgrade_id != UpgradeId::None;
+		return unit->secondary_order_id == OrderId::TrainUnit || unit->building.tech_id != TechId::None || unit->building.upgrade_id != UpgradeId::None;
 	}
 
 	return false;

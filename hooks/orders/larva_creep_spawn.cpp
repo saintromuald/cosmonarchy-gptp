@@ -89,7 +89,7 @@ namespace hooks
 					unit->building.larva_timer = LarvaSpawnRate;
 
 					u32 unit_id = unit->id;
-					if (unit->main_order_id == OrderId::Morph2) {
+					if (unit->main_order_id == OrderId::MorphStructure) {
 						unit_id = unit->previous_unit_type;
 					}
 					create_building_larva(unit);

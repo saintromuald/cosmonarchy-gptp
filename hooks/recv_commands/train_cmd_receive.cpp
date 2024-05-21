@@ -50,7 +50,7 @@ namespace hooks
 			// Originally also checked for a lardcoded ID distance, disabled for training units with high IDs. -Pr0nogo
 			if (builder->can_make_unit(unit_id, *g_active_nation_id) == 1) {
 				if (helper::has_money_can_make(builder, unit_id))
-					builder->set_secondary_order(OrderId::Train);
+					builder->set_secondary_order(OrderId::TrainUnit);
 			}
 			bw::refresh_console();
 		}

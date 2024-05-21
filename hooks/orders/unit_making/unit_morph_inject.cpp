@@ -35,10 +35,10 @@ namespace
 		while (Unit* unit = get_active_player_next_selection())
 		{
 			if (hooks::unit_can_morph(unit, morph_unit_id)
-				&& unit->main_order_id != OrderId::Morph1
+				&& unit->main_order_id != OrderId::MorphUnit
 				&& add_unit_to_build_queue(unit, morph_unit_id))
 			{
-				unit->order_to(OrderId::Morph1);
+				unit->order_to(OrderId::MorphUnit);
 			}
 		}
 		bw::refresh_console();

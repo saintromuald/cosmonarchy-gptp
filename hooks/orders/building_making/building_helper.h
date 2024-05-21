@@ -25,7 +25,7 @@ namespace BuildingHelper
 		{
 			return unit->order_target.unit;
 		}
-		if (unit->secondary_order_id == OrderId::Train
+		if (unit->secondary_order_id == OrderId::TrainUnit
 			|| unit->secondary_order_id == OrderId::TrainFighter
 			|| helper::is_constructing_addon(unit))
 		{
@@ -56,7 +56,7 @@ namespace BuildingHelper
 		}
 
 		if (bw::is_zerg_egg(unit->id, true, false)
-			|| unit->main_order_id == OrderId::Morph2
+			|| unit->main_order_id == OrderId::MorphStructure
 			|| unit->main_order_id == OrderId::ZergBuildSelf)
 			return (unit->build_queue[unit->build_queue_slot % 5] == unit_id) ? 1 : 0;
 

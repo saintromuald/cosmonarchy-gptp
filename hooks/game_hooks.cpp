@@ -1375,7 +1375,7 @@ namespace hooks {
 				if (unit->id == UnitId::ZergDroleth) {
 					// Temporary? fix for order queue insanity. -Pr0nogo
 					// DOES NOT FIX AI!
-					if (unit->main_order_id == OrderId::Morph1
+					if (unit->main_order_id == OrderId::MorphUnit
 					&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
 					&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth)
 					{

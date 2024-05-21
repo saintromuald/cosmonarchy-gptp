@@ -78,7 +78,7 @@ enum Enum {
 					* Default Requirements: Blank. */
 	BuildAddon             = 0x25, /**< Building Addon.
 					* Default Requirements: Unused. */
-	Train                  = 0x26, /**< Training Unit.
+	TrainUnit              = 0x26, /**< Training Unit.
 					* Default Requirements: Unused. */
 	RallyPointToVisibleUnit= 0x27, /**< Rally to Visible Unit. Causes units to follow the selected unit.
 					* Default Requirements: Unit is able to set Rally Point. */
@@ -86,15 +86,15 @@ enum Enum {
 					* Default Requirements: Unit is able to set Rally Point. */
 	ZergBirth              = 0x29, /**< Unit is being born.
 					* Default Requirements: Unit must be Zerg Egg or Zerg Cocoon. */
-	Morph1                 = 0x2A, /**< Unit Morph
+	MorphUnit              = 0x2A, /**< Unit Morph
 					* Default Requirements: Unused. */
-	Morph2                 = 0x2B, /**< Building Morph
+	MorphStructure         = 0x2B, /**< Building Morph
 					* Default Requirements: Unused */
 	BuildSelf1             = 0x2C, /**< Terran Building, Is being built.
 					* Default Requirements: Unused */
 	ZergBuildSelf          = 0x2D, /**< Zerg Building build order.
 					* Default Requirements: Unused. */
-	Build5                 = 0x2E, /**< Nydus canal exit build order.
+	BuildNydusExit         = 0x2E, /**< Nydus canal exit build order.
 					* Default Requirements: Unit must be Zerg Nydus Canal and must not have exit. */
 	EnterNydusCanal        = 0x2F, /**< Enter/transport through nydus canal
 					* Default Requirements: Unused. */

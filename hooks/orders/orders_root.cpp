@@ -57,15 +57,15 @@ static u32 main_order_func_offsets[][3] {
 	{ 0x004F6FA0,	/*OrderId::Repair2*/				Func_Type::EAX,	2},
 	{ 0x004E6880,	/*OrderId::PlaceAddon*/				Func_Type::PUSH,2},
 	{ NOTVALID,		/*OrderId::BuildAddon*/				Func_Type::EAX,	0},
-	{ NOTVALID,		/*OrderId::Train*/					Func_Type::EAX,	0},
+	{ NOTVALID,		/*OrderId::TrainUnit*/					Func_Type::EAX,	0},
 	{ NOTVALID,		/*OrderId::RallyPoint1*/			Func_Type::EAX,	0},
 	{ NOTVALID,		/*OrderId::RallyPoint2*/			Func_Type::EAX,	0},
 	{ 0x0045DD60,	/*OrderId::ZergBirth*/				Func_Type::EAX,	1},
-	{ 0x0045DEA0,	/*OrderId::Morph1*/					Func_Type::EAX,	1},
-	{ 0x0045D0D0,	/*OrderId::Morph2*/					Func_Type::PUSH,2},
+	{ 0x0045DEA0,	/*OrderId::MorphUnit*/					Func_Type::EAX,	1},
+	{ 0x0045D0D0,	/*OrderId::MorphStructure*/					Func_Type::PUSH,2},
 	{ 0x00467760,	/*OrderId::BuildSelf1*/				Func_Type::EAX,	1},
 	{ 0x0045D500,	/*OrderId::ZergBuildSelf*/			Func_Type::EAX,	1},
-	{ 0x0045DC20,	/*OrderId::Build5*/					Func_Type::EBX,	2},
+	{ 0x0045DC20,	/*OrderId::BuildNydusExit*/					Func_Type::EBX,	2},
 	{ 0x004EA3E0,	/*OrderId::Enternyduscanal*/		Func_Type::EAX,	2},
 	{ 0x004E4F40,	/*OrderId::BuildSelf2*/				Func_Type::EAX,	0},
 	{ 0x0047C7B0,	/*OrderId::Follow*/					Func_Type::EAX,	2},
@@ -311,7 +311,7 @@ namespace hooks {
 				{
 					helper::EAX_order(unit, 0x00466790);
 				} break;
-				case OrderId::Train:
+				case OrderId::TrainUnit:
 				{
 					helper::EAX_order(unit, 0x00468420);
 				} break;

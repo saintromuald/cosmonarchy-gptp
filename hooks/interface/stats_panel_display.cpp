@@ -925,7 +925,7 @@ namespace hooks
 			||	helper::is_attempting_protoss_build(unit))
 			{
 				built_unit = unit->order_target.unit;
-			} else if (unit->secondary_order_id == OrderId::Train || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
+			} else if (unit->secondary_order_id == OrderId::TrainUnit || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
 				built_unit = unit->current_build_unit;
 			}
 
@@ -1005,7 +1005,7 @@ namespace hooks
 			||	helper::is_attempting_protoss_build(unit))
 			{
 				built_unit = unit->order_target.unit;
-			} else if (unit->secondary_order_id == OrderId::Train || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
+			} else if (unit->secondary_order_id == OrderId::TrainUnit || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
 				built_unit = unit->current_build_unit;
 			} else {
 				built_unit = 0;
@@ -1275,7 +1275,7 @@ namespace hooks
 			||	helper::is_attempting_protoss_build(unit))
 			{
 				target = unit->order_target.unit;
-			} else if (unit->secondary_order_id == OrderId::Train || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
+			} else if (unit->secondary_order_id == OrderId::TrainUnit || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
 				target = unit->current_build_unit;
 			}
 

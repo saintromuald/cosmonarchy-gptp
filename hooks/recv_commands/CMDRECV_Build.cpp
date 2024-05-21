@@ -20,7 +20,7 @@ namespace hooks
 				{
 					is_allowed = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
 				}
-			} else if (order_id == OrderId::Build5			// Build Nydus Exit
+			} else if (order_id == OrderId::BuildNydusExit			// Build Nydus Exit
 			||		   order_id == OrderId::BuildingLand)
 			{
 				if (builder->id == built_unit_id)
@@ -136,7 +136,7 @@ namespace hooks
 			|| ((unit->main_order_id != OrderId::DroneLand) || !(unit->status & (UnitStatus::CanNotReceiveOrders|UnitStatus::NoBrkCodeStart)))
 			&&   unit->main_order_id != OrderId::DroneBuild)
 			{
-				if ((unit->id != UnitId::ZergNydusCesiant || order_id != OrderId::Build5) && order_id != OrderId::CTFCOP2) {
+				if ((unit->id != UnitId::ZergNydusCesiant || order_id != OrderId::BuildNydusExit) && order_id != OrderId::CTFCOP2) {
 					g_ai_minerals_reserve[unit->player] = units_dat::mineral_cost[target_unit_id];
 					g_ai_vespene_reserve[unit->player] = units_dat::vespene_cost[target_unit_id];
 					if (g_game_minerals[unit->player] >= g_ai_minerals_reserve[unit->player]) {
