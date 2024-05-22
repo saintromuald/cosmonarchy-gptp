@@ -650,6 +650,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	// Show score screen after singleplayer quit
 	memory_patch(0x004C9600, (u8)7);
+
+	// Display rank string on structures
+	nops(0x00425D99, 2);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
