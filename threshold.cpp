@@ -830,7 +830,8 @@ static u32 get_fraud_race(u32 fraud) {
 	||  fraud >= FraudSuper_ZergFirst		&& fraud <= FraudSuper_ZergLast) {
 		return RaceId::Zerg;
 	}
-	return bw::rand_between(0, 2);
+	u32 rand_result = bw::rand_between(0, 2);
+	return rand_result;
 }
 
 static void clear_player_slot(u32 player, bool map_start) {
@@ -1021,7 +1022,8 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 					sequence->temp_townhall = unit;
 					if (unit) {
 						bw::create_and_init_thingy(SpriteId::AugurDeathExplosion, pos.x, pos.y, player, unit->sprite->elevation + 1);
-						helper::play_sound_at_pos(bw::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04), pos);
+						u32 sound_id = bw::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04);
+						helper::play_sound_at_pos(sound_id, pos);
 					}
 				}
 			}
@@ -1365,7 +1367,8 @@ static void spawn_sequence_units() {
 						Unit* unit = bw::create_unit_in_game(unit_id, player, source_pos.x, source_pos.y);
 						if (unit) {
 							bw::create_and_init_thingy(SpriteId::AugurDeathExplosion, source_pos.x, source_pos.y, unit->player, unit->sprite->elevation + 1);
-							helper::play_sound_at_pos(bw::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04), source_pos);
+							u32 sound_id = bw::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04);
+							helper::play_sound_at_pos(sound_id, source_pos);
 							if (!(units_dat::base_property[unit_id] & UnitProperty::Worker)) {
 								unit->order_to(OrderId::AttackMove, rally.x, rally.y);
 							}

@@ -92,7 +92,8 @@ namespace hooks
 					bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
 				}
 				if (unit_ext->try_reset_timer(TimerSwarmingOmenAudio, 36)) {
-					helper::play_sound_from_unit(bw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02), unit, 1, 0);
+					u32 sound_id = bw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02);
+					helper::play_sound_from_unit(sound_id, unit, 1, 0);
 				}
 				break;
 			}

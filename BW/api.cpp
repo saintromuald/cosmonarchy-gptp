@@ -3846,33 +3846,35 @@ namespace bw {
 
 	u32 get_manual_unit_weapon_sound(Unit* unit, u32 weapon_id)
 	{
+		u32 sound_id = SoundId::No_sound;
 		switch (unit->id)
 		{
 			case UnitId::TerranSavant:
 			{
 				if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
-					return bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
+					sound_id = bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
 				} else {
-					return bw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
+					sound_id = bw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
 				}
 			}
 		}
-		return get_manual_weapon_id_sound(weapon_id);
+		if (!sound_id) {
+			sound_id = get_manual_weapon_id_sound(weapon_id);
+		}
+		return sound_id;
 	}
 
 	u32 get_manual_weapon_id_sound(u32 weapon_id)
 	{
+		u32 sound_id = SoundId::No_sound;
 		switch (weapon_id)
 		{
 			case WeaponId::DemiurgeGalacticWeaver:
 			{
-				return bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
-			}
-			default:
-			{
-				return 0; // No sound
+				sound_id = bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
 			}
 		}
+		return sound_id;
 	}
 
 	bool unit_regenerates_hp(Unit* unit) {

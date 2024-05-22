@@ -404,7 +404,8 @@ void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
 
 	// Audiovisuals
 	target->sprite->create_overlay(ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
-	helper::play_sound_from_unit(bw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03), target);
+	u32 sound_id = bw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03);
+	helper::play_sound_from_unit(sound_id, target);
 }
 
 void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target) {

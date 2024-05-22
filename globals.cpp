@@ -536,7 +536,8 @@ void tick_effect(EffectField& effect) {
 						target->damage_with_custom(8 * 256, 0, effect.source, effect.player);
 						target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
 					}
-					helper::play_sound_at_pos(bw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04), effect.position, 1, 0);
+					u32 sound_id = bw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04);
+					helper::play_sound_at_pos(sound_id, effect.position, 1, 0);
 					helper::create_thingy(SpriteId::FragmentaryExplosion, effect.position.x, effect.position.y, effect.player);
 				}
 			} break;
@@ -579,7 +580,8 @@ void tick_effect(EffectField& effect) {
 				assert(targets.size() <= effect.intervals);
 				for (Unit* target : targets) {
 					bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, gladius, target, target->position, effect.position);
-					helper::play_sound_at_pos(bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03), effect.position, 1, 0);
+					u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
+					helper::play_sound_at_pos(sound_id, effect.position, 1, 0);
 					effect.intervals--;
 				}
 			}

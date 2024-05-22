@@ -185,7 +185,8 @@ namespace hooks
 					
 					if (target && wyvern_can_fire_at(unit, target)) {
 						s32 direction = bw::get_angle(x, y, target->get_x(), target->get_y());
-						helper::play_sound_from_unit(bw::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02), unit, 1, 0);
+						u32 sound_id = bw::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02);
+						helper::play_sound_from_unit(sound_id, unit, 1, 0);
 						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
 						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 					}

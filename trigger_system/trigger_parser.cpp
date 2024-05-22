@@ -331,7 +331,8 @@ s32 Parser::get_var_value(bool is_timer) {
 	if (get_keyword("random")) {
 		s32 min_value = is_timer ? get_time_ticks() : get_s32();
 		s32 max_value = is_timer ? get_time_ticks() : get_s32();
-		return bw::rand_between(min_value, max_value);
+		s32 rand_result = bw::rand_between(min_value, max_value);
+		return rand_result;
 	}
 	return is_timer ? get_time_ticks() : get_s32();
 }

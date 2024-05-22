@@ -227,7 +227,8 @@ namespace hooks
 						if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && bw::is_allied_to(unit->player, data.target->player)) {
 							bw::create_shield_overlay(data.target, data.direction);
 							unit->spend_unit_energy(data.damage);
-							helper::play_sound_from_unit(bw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03), unit, 1, 0);
+							u32 sound_id = bw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03);
+							helper::play_sound_from_unit(sound_id, unit, 1, 0);
 							ignore_alert = true;
 							unit_attack_notify(unit);
 							ignore_alert = false;

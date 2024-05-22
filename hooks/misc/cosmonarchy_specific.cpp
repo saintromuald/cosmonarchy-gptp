@@ -89,7 +89,8 @@ namespace hooks
 			}
 		}
 		if (result_pos != results.begin()) {
-			s32 variation = results[bw::rand_between(0, result_pos - results.begin() - 1)];
+			u32 rand_amount = bw::rand_between(0, result_pos - results.begin() - 1);
+			s32 variation = results[rand_amount];
 			Point8 offset = overlay->get_offset(sprite->main_graphic->frame_index, variation);
 			sprite->create_top_overlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 		}

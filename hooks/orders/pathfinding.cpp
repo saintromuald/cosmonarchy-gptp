@@ -175,7 +175,8 @@ namespace hooks
             repulsion = bw::get_normalized_vector(repulsion);
 
             if (abs(repulsion.x) < 0.001 && abs(repulsion.y) < 0.001) {
-                Vector32 random_repulse = g_angle_distance[bw::rand_between(0, 255)];
+                u32 rand_amount = bw::rand_between(0, 255);
+                Vector32 random_repulse = g_angle_distance[rand_amount];
                 repulsion.x = random_repulse.x / 256.0;
                 repulsion.y = random_repulse.y / 256.0;
             }
