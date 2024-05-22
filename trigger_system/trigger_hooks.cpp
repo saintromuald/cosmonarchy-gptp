@@ -438,6 +438,65 @@ void dialog_music_fade(u32 music_id) // 004A6310
 	}
 }
 
+// Hooked to investigate adding a rescue unit crig action. -Pr0nogo
+void orders_rescue_passive(Unit* unit) // 004A1EF0
+{
+	if (!unit->main_order_timer) {
+		Sprite* sprite = unit->sprite;
+		unit->main_order_timer = 1;
+		u32 pos_x = sprite->position.x;
+		u32 pos_y = sprite->position.y;
+		
+		EntryArray units = {};
+		unit_search_radial(&units, unit->sprite->position, 64);
+		for (u32 i = 0; i < units.count; ++i) {
+			Unit* unit = units.units[i];
+			if (g_player_table[unit->player].type != PlayerType::Human) {
+				entry_array_remove(&units, i--);
+				continue;
+			}
+		}
+		if (units.count) {
+			bool is_valid_town_center = false;
+			if (unit_id_is_town_center(unit->id)) {
+				if (unit->id == UnitId::ZergHachirosk && unit->unit_is_training_or_morphing()) {
+					is_valid_town_center = true;
+				} else if (unit->status & (UnitStatus::Completed | UnitStatus::GroundedBuilding)) {
+					is_valid_town_center = true;
+				}
+			}
+
+			u32 idle_order = OrderId::Die;
+			if (is_valid_town_center) {
+				Unit* first_unit = first_player_unit->unit[unit->player];
+				if (first_unit) {
+					Unit* next_unit = unit;
+					do
+					{
+						Sprite* first_sprite = first_unit->sprite;
+						next_unit = first_unit->player_link.next;
+						if (first_sprite && first_unit->main_order_id) {
+							rescue_unit(first_unit, units.units[0]->player);
+							next_unit = first_unit->player_link.next;
+						}
+						first_unit = next_unit;
+					} while (next_unit);
+				}
+			} else {
+				rescue_unit(unit, units.units[0]->player);
+			}
+			if (!g_is_in_replay && unit->player == *g_local_nation_id) {
+				unit->sprite->selection_timer = 45;
+				helper::play_sound_from_unit(*g_console_index + 32, unit, 1, 0);
+			}
+			bw::refresh_console();
+		}
+		u32 temp_array = g_temp_units_list_arrays_counts_list_last_index[g_temp_units_list_arrays_counts_list_last_index[0]];
+		--g_temp_units_list_arrays_counts_list_last_index[0];
+		*g_temp_units_list_current_array_count = temp_array;
+	}
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
@@ -695,6 +754,19 @@ void __declspec(naked) dialog_music_fade_wrapper() { // 004A6310
 	}
 }
 
+void __declspec(naked) orders_rescue_passive_wrapper() { // 004A6310
+	static Unit* unit;
+	__asm {
+		MOV unit, EAX
+		PUSHAD
+	}
+	orders_rescue_passive(unit);
+	__asm {
+		POPAD
+		RETN
+	}
+}
+
 const char* create_next_campaign_game_4DC1F7() {
 	return game_kind_to_filename_string(bw::get_game_kind());
 }
@@ -713,4 +785,5 @@ void inject_trigger_system_hooks() {
 	jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
 	jump_patch(update_selected_unit_portrait_wrapper,		0x0045EBC0, 0);
 	jump_patch(dialog_music_fade_wrapper,					0x004A6310, 3);
+	jump_patch(orders_rescue_passive_wrapper,				0x004A1EF0, 1);
 }

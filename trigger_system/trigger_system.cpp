@@ -1387,6 +1387,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			EntryArray source_units = {};
 			unit_search_rect(&source_units, area_init.box);
+			// TODO: Handle finding & filtering target units, and actually targeting said units. -Pr0nogo
 		//	EntryArray target_units = {};
 		//	unit_search_rect(&target_units, area_dest.box);
 
@@ -1410,6 +1411,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					return true;
 				}
 				unit_count++;
+				// TODO: Handle orders other than build / train. -Pr0nogo
 				if (secondary_unit_id != UnitId::None) {
 					switch (order_id) {
 						case OrderId::BuildTerran:
@@ -1426,7 +1428,38 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						} break;
 					}
 				}
-				
+			}
+		} else if (parser.equals("rescue_unit")) {
+			Area area = parser.get_area();
+			PlayerBitset source_players = parser.get_player_bitset();
+			UnitIdBitset source_unit_ids = parser.get_unit_id_bitset();
+			u32 count = parser.get_s32();
+			u32 target_player = parser.get_s32();
+
+			EntryArray source_units = {};
+			unit_search_rect(&source_units, area.box);
+		//	EntryArray target_units = {};
+		//	unit_search_rect(&target_units, area_dest.box);
+
+			u32 unit_count = 0;
+			for (u32 i = 0; i < source_units.count; ++i) {
+				Unit* unit = source_units.units[i];
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Point16 position = unit->position;
+				if (!area.check(position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				if (unit->player >= FullPlayerLimit || !source_players[unit->player]) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !source_unit_ids[unit->id]) {
+					continue;
+				}
+				if (count && unit_count >= count) {
+					return true;
+				}
+				unit_count++;
+				rescue_unit(unit, target_player);
 			}
 		} else if (parser.equals("var") || parser.equals("timer")) {
 			bool is_timer = parser.equals("timer");

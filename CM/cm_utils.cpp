@@ -299,3 +299,16 @@ bool do_unit_banter(Unit* victim, u16 speaker_id) {
 	}
 	return success;
 }
+
+void rescue_unit(Unit* unit, u32 player) {
+	u32 idle_order = OrderId::Die;
+	helper::give_unit(unit, player, 1);
+	if (unit->status & UnitStatus::InBuilding) {
+		idle_order = OrderId::BunkerGuard;
+	} else {
+		idle_order = units_dat::human_idle_order[unit->id];
+	}
+	unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+	helper::order(1, unit, idle_order, {}, 0, UnitId::None);
+	helper::do_next_queued_order(unit);
+}
