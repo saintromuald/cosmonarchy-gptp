@@ -98,6 +98,7 @@ constexpr s32 CantavisHallucinatingFieldTimer = 10 * 24 + 1;
 constexpr s32 ArchonAstralAegisShieldHeal = 50 * 256;
 
 // Mind Tyrant
+constexpr s32 TyrannyMaxStacks = 48;
 constexpr s32 MindTyrantMaelstromTimer = 16; // 5 seconds
 
 // Demiurge

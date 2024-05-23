@@ -48,8 +48,7 @@ namespace hooks
 		}
 
 		// Gorgon - Petrification - slow
-		if (unit_ext->timers[TimerPetrification])
-		{
+		if (unit_ext->timers[TimerPetrification]) {
 			speed *= 1 - (0.10 * unit_ext->values[ValuePetrificationStacks]);
 		}
 
@@ -97,6 +96,11 @@ namespace hooks
 				}
 				break;
 			}
+		}
+
+		u32 tyranny_stacks = unit_ext->values[ValueMindTyrantTyranny];
+		if (tyranny_stacks > 1 && tyranny_stacks < TyrannyMaxStacks) {
+			speed *= 1 - (0.042 * unit_ext->values[ValueMindTyrantTyranny]);
 		}
 
 		// Crucible - speed up

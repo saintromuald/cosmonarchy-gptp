@@ -1094,10 +1094,12 @@ namespace hooks
 				return fatal_deal_damage;
 			}
 
-			// TODO: Mind Tyrant Tyranny port
-			if (target_ext->timers[TimerMindTyrantTyranny]) {
+			if (target_ext->units[UnitMindTyrantLink] != nullptr && target_ext->values[ValueMindTyrantTyranny] == TyrannyMaxStacks) {
 				fatal_deal_damage = false;
-
+				mind_control(data.attacker->player, UnitId::ProtossMindTyrant, data.target);
+				data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);
+				data.target->unfreeze();
+				clear_tyranny(data.attacker, data.target);
 				return fatal_deal_damage;
 			}
 

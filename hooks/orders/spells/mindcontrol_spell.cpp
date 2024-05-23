@@ -6,16 +6,16 @@
 namespace hooks
 {
 	void orders_cast_tyranny(Unit* unit) {
-		bw::decloak_passive_proc(unit);
 		UnitExt* unit_ext = get_unit_ext(unit);
 		Unit* target = unit->order_target.unit;
 		if (!target || unit->player == target->player || bw::is_allied_to(unit->player, target->player)) {
 			unit->status &= ~UnitStatus::CanNotReceiveOrders;
 			unit->order_to_idle();
 		} else {
+			bw::decloak_passive_proc(unit);
 			u16 tech_energy_cost = 0;
 			if (!unit->main_order_state) {
-				if (helper::spell_order(unit, TechId::Tyranny, &tech_energy_cost, unit->get_sight_range(true) * 32, 0x052E)) {
+				if (helper::spell_order(unit, TechId::Tyranny, &tech_energy_cost, weapons_dat::max_range[orders_dat::order_weapon_id[OrderId::CastTyranny]], 0x052E)) {
 					// Start the channel
 					bw::add_unit_overlay(unit, ImageId::MindTyrantTyrannyCastOverlay);
 					unit->play_iscript_animation(IscriptAnimation::Unused2);
@@ -27,7 +27,7 @@ namespace hooks
 			} else {
 				// Cancel when way out of range or lost sight of target
 				u32 distance = bw::get_distance_fast(unit->position, target->position);
-				if (distance > unit->get_sight_range(true) * 32 * 2 || !target->is_visible_to(unit->player)) {
+				if (distance > weapons_dat::max_range[orders_dat::order_weapon_id[OrderId::CastTyranny]] * 2 || !target->is_visible_to(unit->player)) {
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->order_to_idle();
 					return;

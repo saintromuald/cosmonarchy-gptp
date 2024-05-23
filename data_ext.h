@@ -195,6 +195,7 @@ enum ExtValueId {
 	ValueHidebreaker,
 	ValueUprisingSpawner,
 	ValueTryCastCustomSpell,
+	ValueMindTyrantTyranny,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -369,6 +370,8 @@ enum ExtUnitId {
 	UnitCentaurSecondaryWeaponTarget,
 	UnitDiademTarget,
 	UnitPennant,
+	UnitMindTyrantLink,
+	UnitMindTyrantVictim,
 
 	UnitCount,
 };

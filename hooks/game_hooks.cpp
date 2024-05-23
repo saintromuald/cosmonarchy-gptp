@@ -530,9 +530,12 @@ namespace hooks {
 					{
 						weapon = WeaponId::LuminaryAuralAssault; 
 					} break;
+					case OrderId::CastTyranny:
+					{
+						weapon = WeaponId::MindTyrantTyranny;
+					} break;
 					case OrderId::Hallucination1:
 					case OrderId::NukePaint:
-					case OrderId::CastTyranny:
 					{
 						bw::draw_aura_range(unit, units_dat::sight_range[unit->id], 164); //#88409C
 					} break;
@@ -1163,13 +1166,6 @@ namespace hooks {
 					bw::add_unit_overlay(unit, ImageId::OcsalRegressionOverlay);
 				}
 			}
-		}
-		
-		// Overlay for units which are mind-controlled
-		if ((unit_ext->values[ValueMindControlPlayer] || unit_ext->timers[TimerEmpressAnodyneAnnex])
-			&& !unit_ext->values[ValueControlledByDemiurge] && !unit->sprite->get_overlay(ImageId::TyrannyOverlay))
-		{
-			bw::add_unit_overlay(unit, ImageId::TyrannyOverlay);
 		}
 
 		// Reclamation - Decaying
@@ -2579,6 +2575,16 @@ namespace hooks {
 					}
 				}
 			} break;
+			case UnitId::ProtossMindTyrant:
+			{
+				// Tyranny - escape when outside 8 range of the Tyrant
+				if (unit_ext->units[UnitMindTyrantVictim]) {
+					Unit* victim = unit_ext->units[UnitMindTyrantVictim];
+					if (bw::get_distance_fast(unit->position, victim->position) > 8 * 32) {
+						clear_tyranny(unit, victim);
+					}
+				}
+			} break;
 		}
 
 		// Stimpack - Delayed buff handling
@@ -2660,48 +2666,30 @@ namespace hooks {
 			}
 		}
 
-		// Tyranny and Worship
-		if (unit_ext->values[ValueMindControlPlayer] && !unit_ext->values[ValueControlledByDemiurge]) {
-			EntryArray masters = {};
-			unit_search_radial(&masters, unit->position, 8 * 32);
-			unit_search_filter(&masters, unit, 0, {UnitId::ProtossMindTyrant});
-			unit_search_custom_filter(&masters, [=](Unit* master) {
-				if (bw::is_allied_to(master->player, unit_ext->values[ValueMindControlPlayer] - 1)) {
-					return true;
+		// Tyranny - increase stacks
+		if (unit_ext->units[UnitMindTyrantLink] != nullptr) {
+			if (unit_ext->values[ValueMindTyrantTyranny] < TyrannyMaxStacks) {
+				unit_ext->values[ValueMindTyrantTyranny]++;
+				should_update_speed = true;
+			} else {
+				if (!(unit->status & UnitStatus::Frozen)) {
+					unit->freeze();
+					u32 overlay_id = ImageId::MindControlHit_Small + bw::get_overlay_offset(unit->id);
+					bw::add_unit_overlay(unit, overlay_id);
 				}
-				return false;
-			});
+			}
+			u32 overlay_id = ImageId::TyrannyStunSmall + bw::get_overlay_offset(unit->id);
+			if (!unit->get_overlay(overlay_id)) {
+				bw::add_unit_overlay(unit, overlay_id);
+			}
+		} else if (unit_ext->values[ValueMindTyrantTyranny]) {
+			u32 overlay_id = ImageId::MindControlHit_Small + bw::get_overlay_offset(unit->id);
+			bw::add_unit_overlay(unit, overlay_id);
+			unit_ext->values[ValueMindTyrantTyranny] = 0;
+			unit->unfreeze();
 
-			if (masters.count) {
-				if (unit_ext->timers[TimerMindControlRecede] <= 4 * 24) {
-					unit->unfreeze();
-					if (unit->subunit) {
-						unit->subunit->unfreeze();
-					}
-					u32 offset = bw::get_overlay_offset(unit->id, true);
-					bw::remove_unit_overlay(unit, ImageId::TyrannyStunSmall + offset);
-				}
-				unit_ext->timers[TimerMindControlRecede] = 5 * 24;
-			}
-			if (unit_ext->timers[TimerMindControlRecede] <= 4 * 24) {
-				unit->freeze();
-				u32 offset = bw::get_overlay_offset(unit->id, true);
-				if (!unit->get_overlay(ImageId::TyrannyStunSmall + offset)) {
-					bw::add_unit_overlay(unit, ImageId::TyrannyStunSmall + offset);
-				}
-			}
-			if (!unit_ext->timers[TimerMindControlRecede]) {
-				unit->unfreeze();
-				u32 offset = bw::get_overlay_offset(unit->id, true);
-				bw::remove_unit_overlay(unit, ImageId::TyrannyStunSmall + offset);
-				recede_mind_control(unit);
-				unit_ext->values[ValueMindControlPlayer] = 0;
-
-				u32 worship_overlay_id = ImageId::DemiurgeWorshipOverlay_Small + offset;
-				if (unit->get_overlay(worship_overlay_id)) {
-					bw::remove_unit_overlay(unit, worship_overlay_id);
-				}
-			}
+			overlay_id = ImageId::TyrannyStunSmall + bw::get_overlay_offset(unit->id);
+			unit->remove_overlay(overlay_id);
 		}
 
 		{
@@ -2719,6 +2707,15 @@ namespace hooks {
 				if (!(units_dat::base_property[unit->id] & UnitProperty::Building) && !unit_ext->timers[TimerDemiurgeWorshipOverlayDelay]) {
 					unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 1;
 				}
+
+				if (unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] == 1) {
+					u32 overlay_id = ImageId::DemiurgeWorshipOverlay_Small + bw::get_overlay_offset(unit->id, true);
+					if (overlay_id == ImageId::ControlledDemolition) {
+						ImageId::DemiurgeWorshipOverlay_XLarge; // Stupid workaround because XLarge was added out of sequence. -Pr0nogo
+					}
+					bw::add_unit_overlay(unit, overlay_id);
+					unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 49;
+				}
 			}
 
 			if (unit_ext->timers[TimerDemiurgeWorship]) {
@@ -2734,15 +2731,6 @@ namespace hooks {
 					}
 				}
 			}
-		}
-
-		if (unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] == 1) {
-			u32 overlay_id = ImageId::DemiurgeWorshipOverlay_Small + bw::get_overlay_offset(unit->id, true);
-			if (overlay_id == ImageId::ControlledDemolition) {
-				ImageId::DemiurgeWorshipOverlay_XLarge; // Stupid workaround because XLarge was added out of sequence. -Pr0nogo
-			}
-			bw::add_unit_overlay(unit, overlay_id);
-			unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 49;
 		}
 
 		// Fix animation bug with acceleration movement flag

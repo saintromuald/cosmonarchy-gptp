@@ -480,11 +480,11 @@ namespace hooks
 
 			if (helper::is_target_within_min_range(caster, final_range, target)) {
 				helper::set_resource_target(caster);
-				if (caster->next_target_waypoint.x == caster->position.x && caster->next_target_waypoint.y == caster->position.y) {
+				if (caster->next_target_waypoint == caster->position) {
 					return 1;
 				}
-				u32 curr_dir1 = (u8)caster->current_direction_1 - helper::get_direction_from_points(caster->next_target_waypoint.y, caster->sprite->position.x, caster->next_target_waypoint.x, caster->sprite->position.y);
-				u32 curr_dir_2 = curr_dir1 + ((s8)-(curr_dir1 < 0) & 0x100);
+				u32 curr_dir1 = (u8)caster->current_direction_1 - helper::get_direction_from_points(caster->sprite->position, caster->next_target_waypoint);
+				u32 curr_dir_2 = curr_dir1 + ((s8)-(curr_dir1 < 0) & 256);
 				if (curr_dir_2 > 128) {
 					curr_dir_2 = 256 - curr_dir_2;
 				}
@@ -500,7 +500,7 @@ namespace hooks
 					return 0;
 				}
 				if (target) {
-					helper::move_towards(target, caster);
+					helper::move_towards(caster, target);
 					return 0;
 				}
 				if (!caster->recent_order_timer) {

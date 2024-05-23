@@ -460,6 +460,13 @@ void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target) {
 	}
 }
 
+void clear_tyranny(Unit* tyrant, Unit* victim) {
+	UnitExt* tyrant_ext = get_unit_ext(tyrant);
+	UnitExt* victim_ext = get_unit_ext(victim);
+	victim_ext->units[UnitMindTyrantLink] = nullptr;
+	tyrant_ext->units[UnitMindTyrantVictim] = nullptr;
+}
+
 void recede_mind_control(Unit* target) {
 	if (!target) {
 		return;

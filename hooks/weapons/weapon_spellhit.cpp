@@ -532,20 +532,20 @@ namespace hooks {
 	// No bullet because this function is called in another context without the bullet.
 	void mind_control_hit(Unit* attacker, Unit* target) { // 004F6910
 		bw::decloak_passive_proc(attacker);
-		if (target->status & UnitStatus::IsHallucination) {
-			target->remove();
-		} else {
-			u32 overlay_id = bw::overlay_size(target) + ImageId::MindControlHit_Small;
-			if (target->subunit) {
-				target->subunit->sprite->create_top_overlay(overlay_id, 0, 0, 0);
-			} else {
-				target->sprite->create_top_overlay(overlay_id, 0, 0, 0);
-			}
-			target->order_to_idle();
-			mind_control(attacker->player, UnitId::ProtossMindTyrant, target);
+		UnitExt* attacker_ext = get_unit_ext(attacker);
+		Unit* old_victim = attacker_ext->units[UnitMindTyrantVictim];
+		if (old_victim) {
+			clear_tyranny(attacker, old_victim);
+		}
+		UnitExt* target_ext = get_unit_ext(target);
+		if (target_ext->units[UnitMindTyrantLink] == nullptr) {
+			target_ext->values[ValueMindTyrantTyranny] = 1;
+			target_ext->units[UnitMindTyrantLink] = attacker;
+
+			UnitExt* attacker_ext = get_unit_ext(attacker);
+			attacker_ext->units[UnitMindTyrantVictim] = target;
 		}
 		helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
-		target->order_to_idle();
 	}
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
