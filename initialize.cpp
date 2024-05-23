@@ -652,7 +652,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memory_patch(0x004C9600, (u8)7);
 
 	// Display rank string on structures
-	nops(0x00425D99, 2);
+//	nops(0x00425D99, 2); // Needs more robust handling.
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start

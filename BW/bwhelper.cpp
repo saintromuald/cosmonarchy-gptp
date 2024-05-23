@@ -7130,20 +7130,20 @@ namespace helper {
 	}
 
 	// For spell_order
-	bool can_target_spell(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s32* a7) {
+	bool can_target_spell(u16 tech_id, Unit* target, u16 fow_unit_id, Unit* caster, u16 pos_x, u16 pos_y, s32* error) {
 		const u32 func_address = 0x00492020;
-		static s32 result;
-		s32 a5_xd = a5;
-		s32 a6_xd = a6;
+		static b32 result;
+		u32 pos_x_xd = pos_x;
+		u32 pos_y_xd = pos_y;
 		__asm {
 			PUSHAD
-			PUSH a7
-			PUSH a6_xd
-			PUSH a5_xd
-			PUSH a4
-			MOVZX SI, a3
-			MOV EDI, a2
-			MOVZX DX, a1
+			PUSH error
+			PUSH pos_y_xd
+			PUSH pos_x_xd
+			PUSH caster
+			MOVZX SI, fow_unit_id
+			MOV EDI, target
+			MOVZX DX, tech_id
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -9416,7 +9416,7 @@ namespace helper {
 			PUSHAD
 			PUSH only_if_needed
 			PUSH priority
- 			PUSH id
+			PUSH id
 			PUSH count
 			PUSH method
 			MOV ESI, town
