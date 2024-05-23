@@ -2587,6 +2587,29 @@ namespace hooks {
 			} break;
 		}
 
+		// Reclamation regeneraetion
+		if (unit_ext->values[ValueReclaimed]) {
+			u32 overlay_id = ImageId::RevivedDecayingOverlay;
+			auto& reclamation_regen = unit_ext->values[ValueReclamationRegen];
+			if (reclamation_regen) {
+				static constexpr u32 HealPerTick = 2 * 256 / 24;
+				auto heal = HealPerTick;
+				if (unit_ext->damage_taken_timer > 2 * 24) {
+					heal -= unit->heal_hp(heal);
+					reclamation_regen = std::max((s32)(reclamation_regen - heal), 0);
+				} else {
+					static constexpr u32 HealFade = HealPerTick / 2;
+					reclamation_regen = std::max((s32)(reclamation_regen - HealFade), 0);
+				}
+
+				if (!unit->get_overlay(overlay_id)) {
+					bw::add_unit_overlay(unit, overlay_id);
+				}
+			} else if (unit->get_overlay(overlay_id)) {
+				bw::remove_unit_overlay(unit, overlay_id);
+			}
+		}
+
 		// Stimpack - Delayed buff handling
 		if (unit_ext->timers[TimerStimpackDelay] == 1) {
 			u32 sound_id = bw::rand_between(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV);

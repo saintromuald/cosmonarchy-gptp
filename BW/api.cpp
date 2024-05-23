@@ -3888,7 +3888,7 @@ namespace bw {
 		u32 factor = 0;
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit_ext->timers[TimerNathreliskMitosalFog]) {
-			factor = 2;
+			factor += 2;
 		}
 		return factor;
 	}

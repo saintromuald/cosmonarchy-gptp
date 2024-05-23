@@ -93,17 +93,13 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		consume_corpse(corpse);
 
 		unit->shields = 0;
-		unit->set_hitpoints(25 * 256);
+		unit->set_hitpoints(100 * 256 + units_dat::max_hitpoints[unit->id] / 3);
 		unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
 		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
-		unit_ext->timers[TimerReclaiming]     = 2 * 24;
-		unit_ext->timers[TimerStun]           = 2 * 24;
-		unit_ext->values[ValueNoCorpse] = true;
-		if (player != original_player) {
-			unit_ext->values[ValueDecaying] = true;
-		}
+		unit_ext->timers[TimerReclaiming] = 2 * 24;
+		unit_ext->timers[TimerStun]       = 2 * 24;
+		unit_ext->values[ValueReclaimed]  = 1;
 		if (bw::get_game_kind() == GameKind_TheTurning && player == NeutralHostilePlayerId) {
-			unit_ext->values[ValueDecaying] = false;
 			unit_ext->values[ValueNoCorpse] = true;
 		}
 	}

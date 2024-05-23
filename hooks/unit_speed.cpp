@@ -153,7 +153,7 @@ namespace hooks
 		}
 
 		// Infestation - Slow
-		if (unit_ext->values[ValueInfested]) {
+		if (unit_ext->values[ValueReclaimed] || unit_ext->values[ValueInfested]) {
 			speed *= 0.75;
 		}
 

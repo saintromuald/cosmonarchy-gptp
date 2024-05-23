@@ -455,6 +455,18 @@ namespace hooks
 
 		// No attacker here
 		switch (data.weapon_id) {
+			case WeaponId::ApostleCharonRifle:
+			case WeaponId::AutocratEminenceRifle:
+			{
+				if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+					EntryArray corpses = {};
+					corpse_search_radial(&corpses, data.target->position, 3 * 32);
+					corpse_search_sort_by_distance(&corpses, data.target->position);
+					if (corpses.count) {
+						reclaim_corpse(corpses.corpses[0], data.attacking_player_id);
+					}
+				}
+			} break;
 			case WeaponId::AurielQuarternaryRifle:
 			{
 				target_ext->values[ValueAurielIncinerationPlayer] = data.attacking_player_id;
@@ -506,6 +518,10 @@ namespace hooks
 					helper::play_sound_from_unit(SoundId::Zerg_Ultra_ZUlRor00_WAV, data.target, 1, 0);
 				}
 			} break;
+		}
+
+		if (target_ext->values[ValueReclaimed]) {
+			target_ext->values[ValueReclamationRegen] += data.damage / 2;
 		}
 
 		if (data.attacker) {
@@ -690,13 +706,6 @@ namespace hooks
 							}
 							helper::create_thingy(SpriteId::Feedback_Hit_Small + bw::get_overlay_offset(data.target->id), data.target->position.x, data.target->position.y, data.attacking_player_id);
 						}
-					} break;
-					case WeaponId::AutocratEminenceRifle:
-					{
-						// Apply Controlled Opposition
-						target_ext->values[ValueAutocratControlledOppositionStacks]++;
-						target_ext->values[ValueAutocratControlledOppositionPlayer] = data.attacking_player_id;
-						target_ext->timers[TimerAutocratControlledOpposition] = 24 * 2 + 1;
 					} break;
 					case WeaponId::SevenstepGeometricRifle:
 					{

@@ -196,6 +196,8 @@ enum ExtValueId {
 	ValueUprisingSpawner,
 	ValueTryCastCustomSpell,
 	ValueMindTyrantTyranny,
+	ValueReclaimed,
+	ValueReclamationRegen,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
