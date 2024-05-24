@@ -485,8 +485,8 @@ void spread_debuffs(Unit* from, Unit* to) {
 	UnitExt* from_ext = get_unit_ext(from);
 	UnitExt* to_ext = get_unit_ext(to);
 
-	if (from_ext->values[ValueDecaying]) {
-		to_ext->values[ValueDecaying] = true;
+	if (from_ext->values[ValueReclaimed]) {
+		to_ext->values[ValueReclaimed] = true;
 	}
 	if (from_ext->values[ValueInfested]) {
 		to_ext->values[ValueInfested] = true;

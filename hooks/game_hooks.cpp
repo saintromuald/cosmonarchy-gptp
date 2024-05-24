@@ -1169,6 +1169,7 @@ namespace hooks {
 		}
 
 		// Reclamation - Decaying
+		// Not currently active!
 		if (unit_ext->values[ValueDecaying]) {
 			if (!(unit->status & UnitStatus::Cloaked)) {
 				if (!unit->sprite->get_overlay(ImageId::RevivedDecayingOverlay)) {
