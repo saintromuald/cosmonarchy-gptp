@@ -2587,9 +2587,9 @@ namespace hooks {
 			} break;
 		}
 
-		// Reclamation regeneraetion
+		// Reclamation regeneration
 		if (unit_ext->values[ValueReclaimed]) {
-			u32 overlay_id = ImageId::RevivedDecayingOverlay;
+			should_update_speed = true;
 			auto& reclamation_regen = unit_ext->values[ValueReclamationRegen];
 			if (reclamation_regen) {
 				static constexpr u32 HealPerTick = 2 * 256 / 24;
@@ -2601,12 +2601,11 @@ namespace hooks {
 					static constexpr u32 HealFade = HealPerTick / 2;
 					reclamation_regen = std::max((s32)(reclamation_regen - HealFade), 0);
 				}
+			}
 
-				if (!unit->get_overlay(overlay_id)) {
-					bw::add_unit_overlay(unit, overlay_id);
-				}
-			} else if (unit->get_overlay(overlay_id)) {
-				bw::remove_unit_overlay(unit, overlay_id);
+			u32 overlay_id = ImageId::RevivedDecayingOverlay;
+			if (!unit->get_overlay(overlay_id)) {
+				bw::add_unit_overlay(unit, overlay_id);
 			}
 		}
 

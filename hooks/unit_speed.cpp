@@ -147,7 +147,7 @@ namespace hooks
 			}
 		}
 
-		// Mind Tyrant - Malestrom - slow
+		// Mind Tyrant - Maelstrom - slow
 		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] > 1) {
 			speed *= 0.5;
 		}

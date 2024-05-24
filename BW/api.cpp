@@ -2959,7 +2959,6 @@ namespace bw {
 		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
 			unit = unit->subunit->id != UnitId::TerranWyvernTurret ? unit->subunit : unit;
 		}
-
 		unit->sprite->remove_overlay(image_id);
 	}
 
@@ -2975,8 +2974,7 @@ namespace bw {
 		{
 			weapon_id = units_dat::air_weapon[attacker->id];
 		} else {
-			if (!unit_id_is_burrowed_attacker(attacker->id) || attacker->status & UnitStatus::Burrowed)
-			{
+			if (!unit_id_is_burrowed_attacker(attacker->id) || attacker->status & UnitStatus::Burrowed) {
 				weapon_id = units_dat::ground_weapon[attacker->id];
 			}
 		}

@@ -1438,8 +1438,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			EntryArray source_units = {};
 			unit_search_rect(&source_units, area.box);
-		//	EntryArray target_units = {};
-		//	unit_search_rect(&target_units, area_dest.box);
 
 			u32 unit_count = 0;
 			for (u32 i = 0; i < source_units.count; ++i) {
@@ -1459,7 +1457,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					return true;
 				}
 				unit_count++;
-				rescue_unit(unit, target_player);
+				rescue_unit(unit, target_player - 1);
 			}
 		} else if (parser.equals("var") || parser.equals("timer")) {
 			bool is_timer = parser.equals("timer");
