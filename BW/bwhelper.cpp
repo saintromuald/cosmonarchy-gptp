@@ -11341,8 +11341,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 game_talking_portrait(u32 x_pos, u32 time, u32 unit_id, u32 y_pos) {
-		static s32 result;
+	void game_talking_portrait(u32 x_pos, u32 time, u32 unit_id, u32 y_pos) {
 		const u32 func_address = 0x0045EDD0;
 		__asm {
 			PUSHAD
@@ -11351,10 +11350,8 @@ namespace helper {
 			MOV ESI, time
 			MOV EDI, x_pos
 			CALL func_address
-			MOV result, EAX
 			POPAD
 		}
-		return result;
 	}
 
 	void create_text_message_with_timer(const char* string, u32 timer) {

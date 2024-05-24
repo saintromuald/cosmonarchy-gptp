@@ -2734,7 +2734,7 @@ namespace hooks {
 				if (unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] == 1) {
 					u32 overlay_id = ImageId::DemiurgeWorshipOverlay_Small + bw::get_overlay_offset(unit->id, true);
 					if (overlay_id == ImageId::ControlledDemolition) {
-						ImageId::DemiurgeWorshipOverlay_XLarge; // Stupid workaround because XLarge was added out of sequence. -Pr0nogo
+						overlay_id = ImageId::DemiurgeWorshipOverlay_XLarge; // Stupid workaround because XLarge was added out of sequence. -Pr0nogo
 					}
 					bw::add_unit_overlay(unit, overlay_id);
 					unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 49;

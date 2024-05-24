@@ -270,18 +270,21 @@ u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 }
 
 // Hooked to add support for factional and crig-based advisors. -Pr0nogo
-s32 game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) // 0045EDD0
+void game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) // 0045EDD0
 {
 	*g_trigger_portrait_active = 1;
 	helper::set_callback_timer(*g_portrait, 4, time, 0x0045E610);
-	u32 portrait_id = helper::get_unit_portrait_override(unit_id);
+	GameKind game_kind = bw::get_game_kind();
+	u32 portrait_id = units_dat::portrait_id[unit_id];
+	if (game_kind == GameKind_Scenario || game_kind == GameKind_FactionWars) {
+		portrait_id = helper::get_unit_portrait_override(unit_id);
+	}
 	helper::display_update_portrait(portrait_id, 0, 2);
 	helper::set_callback_timer(*g_portrait, 3, time, 0x0045EC40);
 	if (x_pos != -1) {
 		g_last_event_position->x = (x_pos - 320) & ((x_pos - 320 < 0) - 1);
 		g_last_event_position->y = (y_pos - 200) & ((y_pos - 200 < 0) - 1);
 	}
-	return 1;
 }
 
 // Hooked to add support for factional and crig-based advisors. -Pr0nogo
@@ -674,7 +677,6 @@ void __declspec(naked) game_talking_portrait_wrapper() { // 0045EDD0
 	static u32 time;
 	static u32 unit_id;
 	static s32 y_pos;
-	static s32 result;
 	__asm {
 		PUSH EBP
 		MOV EBP, ESP
@@ -688,10 +690,10 @@ void __declspec(naked) game_talking_portrait_wrapper() { // 0045EDD0
 		MOV time, ESI
 		PUSHAD
 	}
-	result = game_talking_portrait(x_pos, time, unit_id, y_pos);
+	game_talking_portrait(x_pos, time, unit_id, y_pos);
 	__asm {
 		POPAD
-		MOV EAX, result
+		MOV EAX, 1 // return value unused
 		MOV ESP, EBP
 		POP EBP
 		RETN 0x08
