@@ -311,4 +311,11 @@ void rescue_unit(Unit* unit, u32 player) {
 	unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 	helper::order(1, unit, idle_order, {}, 0, UnitId::None);
 	helper::do_next_queued_order(unit);
+
+	// Audiovisuals
+	if (!g_is_in_replay && unit->player == *g_local_nation_id) {
+		unit->sprite->selection_timer = 45;
+		helper::play_sound_from_unit(*g_console_index + 32, unit, 1, 0);
+	}
+	bw::refresh_console();
 }

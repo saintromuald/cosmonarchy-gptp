@@ -485,10 +485,7 @@ void orders_rescue_passive(Unit* unit) // 004A1EF0
 			} else {
 				rescue_unit(unit, units.units[0]->player);
 			}
-			if (!g_is_in_replay && unit->player == *g_local_nation_id) {
-				unit->sprite->selection_timer = 45;
-				helper::play_sound_from_unit(*g_console_index + 32, unit, 1, 0);
-			}
+			// Audiovisuals were here -- now handled in rescue_unit
 			bw::refresh_console();
 		}
 		u32 temp_array = g_temp_units_list_arrays_counts_list_last_index[g_temp_units_list_arrays_counts_list_last_index[0]];
