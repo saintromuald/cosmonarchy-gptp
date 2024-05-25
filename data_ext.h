@@ -196,7 +196,6 @@ enum ExtValueId {
 	ValueMindTyrantTyranny,
 	ValueReclaimed,
 	ValueReclamationRegen,
-	UnitInfestingMatraleth,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -374,6 +373,7 @@ enum ExtUnitId {
 	UnitPennant,
 	UnitMindTyrantLink,
 	UnitMindTyrantVictim,
+	UnitInfestingMatraleth,
 
 	UnitCount,
 };

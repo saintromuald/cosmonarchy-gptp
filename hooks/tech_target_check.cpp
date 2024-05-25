@@ -51,6 +51,7 @@ namespace hooks
 				case TechId::EmergencyDetonation:
 				case TechId::Irradiate:
 				case TechId::Hallucination:
+				case TechId::PsionicStorm:
 				{
 					return 0;
 				} break;

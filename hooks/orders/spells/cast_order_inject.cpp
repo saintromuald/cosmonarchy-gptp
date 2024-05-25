@@ -167,7 +167,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) can_cast_spell_wrapper() // 00492140
+	void __declspec(naked) cannot_cast_spell_wrapper() // 00492140
 	{
 		static Unit* unit;
 		static b32 result;
@@ -175,7 +175,7 @@ namespace
 			MOV unit, EDI
 			PUSHAD
 		}
-		result = hooks::can_cast_spell(unit);
+		result = hooks::cannot_cast_spell(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -270,7 +270,7 @@ namespace hooks
 		jump_patch(issue_order_targeting_ground_wrapper,		0x00475260, 1);
 		jump_patch(issue_tri_target_order_wrapper,				0x0048CAF0, 0);
 		jump_patch(orders_defensive_matrix_wrapper,				0x004550A0, 0);
-		jump_patch(can_cast_spell_wrapper,						0x00492140, 0);
+		jump_patch(cannot_cast_spell_wrapper,					0x00492140, 0);
 		jump_patch(spell_order_move_towards_target_wrapper,		0x00492450, 0);
 	}
 }

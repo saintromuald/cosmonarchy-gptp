@@ -726,7 +726,7 @@ namespace helper {
 		return result;
 	}
 
-	// For can_cast_spell
+	// For cannot_cast_spell
 
 	bool unitIsFrozen(Unit* a1) {
 		const u32 func_address = 0x004020B0;

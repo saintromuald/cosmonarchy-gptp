@@ -363,8 +363,7 @@ namespace hooks
 	}
 
 	// Hooked to handle new ability cases. -Pr0nogo
-	b32 can_cast_spell(Unit* unit) { // 00492140
-		b32 result = 0;
+	b32 cannot_cast_spell(Unit* unit) { // 00492140
 		u32 order_id = unit->main_order_id;
 		u32 order_weapon_id = orders_dat::order_weapon_id[order_id];
 		Unit* order_target_unit = unit->order_target.unit;
@@ -374,73 +373,63 @@ namespace hooks
 				// Stasis Field logic was originally also used for Lockdown (aka Magna Pulse)
 				case OrderId::StasisField:
 				{
-					if (order_target_unit && !order_target_unit->is_frozen()) {
-						goto continue_processing_order;
+					if (!order_target_unit || order_target_unit->is_frozen()) {
+						return true;
 					}
-					result = 1;
 				} break;
 				// Originally had Parasite code here
 				// Originally had EMP Shockwave code here
 				case OrderId::Irradiate:
 				{
-					if (order_target_unit && !order_target_unit->irradiate_timer) {
-						goto continue_processing_order;
+					if (!order_target_unit || order_target_unit->irradiate_timer) {
+						return true;
 					}
-					result = 1;
 				} break;
 				case OrderId::Plague:
 				{
-					if (order_target_unit && !order_target_unit->plague_timer) {
-						goto continue_processing_order;
+					if (!order_target_unit || order_target_unit->plague_timer) {
+						return true;
 					}
-					result = 1;
 				} break;
 				// Originally had Ensnare code here
-				default:
-				{
-					goto continue_processing_order;
-				} break;
 			}
-		} else {
-		continue_processing_order:
-			if (orders_dat::use_weapon_targeting[order_id]) {
-				if (!helper::can_weapon_target_unit(order_weapon_id, order_target_unit, unit)) {
-					return 1;
-				}
-			} else {
-				u32 tech_id = orders_dat::tech_used[order_id];
-				switch (tech_id) {
-					case TechId::None:
-					case TechId::ScannerSweep:
-					case TechId::CarapaceSwarm:
-					case TechId::Plague:
-					case TechId::PsionicStorm:
-					case TechId::DimensionalRecall:
-					case TechId::StasisField:
-					case TechId::MindTyrantMaelstrom:
-					case TechId::HypnagogueThroughTheLookingGlass: {
-					} break;
-					default: {
-						b32 can_cast_on_tile = 0;
-						if (tech_id == TechId::SpiderMines) {
-							u32 order_target_x = unit->order_target.pt.x;
-							u32 order_target_y = unit->order_target.pt.y;
-							can_cast_on_tile = get_active_tile_flag(order_target_y, order_target_x, 0x410000, 0);
-						} else {
-							if (!order_target_unit || order_target_unit->status & UnitStatus::Invincible) {
-								return 1;
-							}
-							can_cast_on_tile = (u16)helper::get_target_unit_ability_error_stat_string(order_target_unit, unit->player, tech_id) == 0;
-						}
-						if (!can_cast_on_tile) {
-							return 1;
-						}
-					} break;
-				}
-			}
-			return 0;
 		}
-		return result;
+		if (orders_dat::use_weapon_targeting[order_id]) {
+			if (!helper::can_weapon_target_unit(order_weapon_id, order_target_unit, unit)) {
+				return true;
+			}
+		}
+		u32 tech_id = orders_dat::tech_used[order_id];
+		switch (tech_id) {
+			case TechId::None:
+			case TechId::ScannerSweep:
+			case TechId::CarapaceSwarm:
+			case TechId::Plague:
+			case TechId::PsionicStorm:
+			case TechId::DimensionalRecall:
+			case TechId::StasisField:
+			case TechId::MindTyrantMaelstrom:
+			case TechId::HypnagogueThroughTheLookingGlass:
+			case TechId::Irradiate: {
+			} break;
+			default: {
+				b32 can_cast_on_tile = false;
+				if (tech_id == TechId::SpiderMines) {
+					u32 order_target_x = unit->order_target.pt.x;
+					u32 order_target_y = unit->order_target.pt.y;
+					can_cast_on_tile = get_active_tile_flag(order_target_y, order_target_x, 0x410000, 0);
+				} else {
+					if (!order_target_unit || order_target_unit->status & UnitStatus::Invincible) {
+						return true;
+					}
+					can_cast_on_tile = (u16)helper::get_target_unit_ability_error_stat_string(order_target_unit, unit->player, tech_id) == 0;
+				}
+				if (can_cast_on_tile) {
+					return false;
+				}
+			} break;
+		}
+		return false;
 	}
 
 	// Hooked to handle new ability cases. -Pr0nogo

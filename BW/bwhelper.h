@@ -111,7 +111,7 @@ namespace helper {
 	s32 get_unit_max_energy(Unit* a1);
 	s32 getHpBarDrawSizes(s32 a1, s32 a2, s32 a3, s32 a4);
 
-	// For can_cast_spell
+	// For cannot_cast_spell
 	bool unitIsFrozen(Unit* a1);
 	bool isUnitCasterNotHallucination(Unit* a1);
 	b32 get_active_tile_flag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags);

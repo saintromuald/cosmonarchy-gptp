@@ -16,7 +16,6 @@ namespace hooks
 	u32 get_unit_bullet_damage(Unit* victim, Bullet* bullet);													// 0048ACD0
 	b32 __stdcall modify_unit_shields(Unit* unit, s32 new_amount);												// 004C5A20
 	b32 ai_find_best_transport(Unit* unit, Unit* result_unit);													// 004E6EF0
-	b32 can_cast_spell(Unit* unit);																				// 00492140
 
 	// Needs hooking:
 	void __stdcall stats_panel_draw_health_shields(BinDlg* dialog);												// 004263E0
