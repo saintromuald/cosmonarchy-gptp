@@ -500,4 +500,3 @@ void spread_debuffs(Unit* from, Unit* to) {
 		mind_control(from_ext->values[ValueMindControlPlayer] - 1, from_ext->values[ValueMindControllerUnitId], to);
 	}
 }
-
