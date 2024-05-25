@@ -457,8 +457,7 @@ namespace hooks
 				caster->next_target_waypoint.y = tgt_pos_y;
 			}
 			if (!helper::is_unit_visible(caster)) {
-				Point16 sprite_pos = caster->sprite->position;
-				if (caster->move_target.pt.x == sprite_pos.x && caster->move_target.pt.y == sprite_pos.y && ((caster->status & UnitStatus::Unmovable) != 0) == 1) {
+				if (caster->move_target.pt.x == caster->sprite->position.x && caster->move_target.pt.y == caster->sprite->position.y && caster->status & UnitStatus::Unmovable) {
 					helper::set_resource_target(caster);
 					helper::to_idle(caster);
 					return false;
