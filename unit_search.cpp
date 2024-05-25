@@ -243,6 +243,16 @@ void unit_search_filter(EntryArray* unit_array, Unit* reference, u32 flags, std:
 	}
 }
 
+void corpse_search_filter(EntryArray* corpse_array, Thingy* reference, u32 flags, std::unordered_set<u16> allowed_unit_ids) {
+	for (u32 i = 0; i < corpse_array->count; i++) {
+		Thingy* corpse = corpse_array->corpses[i];
+		if (!corpse_flag_match(corpse, reference, flags, allowed_unit_ids)) {
+			entry_array_remove(corpse_array, i--);
+			continue;
+		}
+	}
+}
+
 void unit_search_custom_filter(EntryArray* unit_array, SearchFilterFunc filter) {
 	for (u32 i = 0; i < unit_array->count; i++) {
 		Unit* unit = unit_array->units.data[i];
@@ -429,6 +439,9 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 		if (!bw::is_allied_to(target->player, center->player) && flags & FilterAlly) {
 			return false;
 		}
+		if (flags & FilterVisible && !target->is_visible_to(center->player)) {
+			return false;
+		}
 	}
 	if (allowed_unit_ids.size() && allowed_unit_ids.find(target->id) == allowed_unit_ids.end()) {
 		return false;
@@ -472,7 +485,79 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	if (flags & FilterNoHangar && (target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward)) {
 		return false;
 	}
-	if (flags & FilterVisible && !target->is_visible_to(center->player)) {
+	return true;
+}
+
+bool corpse_flag_match(Thingy* target, Thingy* center, u32 flags, const std::unordered_set<u16>& allowed_unit_ids) {
+	if (!(flags & CorpseFilterIncludingSelf) && target == center) {
+		return false;
+	}
+	if (flags & CorpseFilterNotSelf && target == center) {
+		return false;
+	}
+	ThingyExt* target_ext = get_thingy_ext(target);
+	u32 target_unit_id = target_ext->unit_id;
+	u32 target_properties = units_dat::base_property[target_unit_id];
+	if (flags & CorpseFilterNoAir && target_properties & UnitProperty::Flyer) {
+		return false;
+	}
+	if (flags & CorpseFilterNoGround && !(target_properties & UnitProperty::Flyer)) {
+		return false;
+	}
+	if (flags & CorpseFilterSpellcaster) {
+		if (!(target_properties & UnitProperty::Spellcaster)) {
+			return false;
+		}
+	}
+	if (flags & CorpseFilterShielded) {
+		if (!units_dat::shields_enabled[target_unit_id]) {
+			return false;
+		}
+	}
+	if (flags & CorpseFilterNoTrap) {
+		if (unit_id_is_trap(target_unit_id)) {
+			return false;
+		}
+	}
+	if (center) {
+		u32 target_player = target_ext->player;
+		ThingyExt* center_ext = get_thingy_ext(center);
+		u32 center_player = center_ext->player;
+		if (flags & CorpseFilterOwn && target_player != center_player) {
+			return false;
+		}
+		if (bw::is_allied_to(target_player, center_player) && flags & CorpseFilterEnemy) {
+			return false;
+		}
+		if (!bw::is_allied_to(target_player, center_player) && flags & CorpseFilterAlly) {
+			return false;
+		}
+		if (flags & CorpseFilterVisible && !target->sprite->is_visible_to(center_player)) { // Dunno if this is even legal for Thingy sprites... -Pr0nogo
+			return false;
+		}
+	}
+	if (allowed_unit_ids.size() && allowed_unit_ids.find(target_unit_id) == allowed_unit_ids.end()) {
+		return false;
+	}
+	if (units_dat::base_property[target_unit_id] & UnitProperty::Building && flags & CorpseFilterNoBuilding) {
+		return false;
+	}
+	if (!(units_dat::base_property[target_unit_id] & UnitProperty::Building) && flags & CorpseFilterBuilding) {
+		return false;
+	}
+	if (flags & CorpseFilterNotWorker && units_dat::base_property[target_unit_id] & UnitProperty::Worker) {
+		return false;
+	}
+	if (flags & CorpseFilterNotSubunit && units_dat::base_property[target_unit_id] & UnitProperty::Subunit) {
+		return false;
+	}
+	if (flags & CorpseFilterNoEgg && (target_unit_id == UnitId::ZergEgg || target_unit_id == UnitId::ZergCocoon)) {
+		return false;
+	}
+	if (flags & CorpseFilterNoLarva && (target_unit_id == UnitId::ZergLarva || target_unit_id == UnitId::ZergOcsalLarva)) {
+		return false;
+	}
+	if (flags & CorpseFilterNoHangar && (target_unit_id == UnitId::ProtossPlasmaShell || target_unit_id == UnitId::ProtossSteward)) {
 		return false;
 	}
 	return true;
