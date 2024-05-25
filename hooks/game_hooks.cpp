@@ -4308,6 +4308,7 @@ namespace hooks {
 		version->game_title = "Cosmonarchy";
 
 		version->game_description = "internal version unknown";
+		static constinit const u32 VersionHash = hash_string(__TIMESTAMP__);
 		version->version_id = VersionHash;
 		version->max_players = 8;
 		version->category_bits = 255;
