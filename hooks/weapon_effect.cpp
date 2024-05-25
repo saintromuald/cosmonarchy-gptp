@@ -150,7 +150,7 @@ namespace hooks {
 			bullet_ext->hit_count++;
 		}
 		if (bullet->weapon_id == WeaponId::PatriarchIronhandWeaver && bullet_ext->hit_count >= 8) {
-			do_unit_banter(bullet->attack_target.unit, UnitId::ProtossPatriarch);
+			play_unit_banter(bullet->attack_target.unit, UnitId::ProtossPatriarch);
 		}
 	}
 

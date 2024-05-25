@@ -18,5 +18,5 @@ const char* race_to_string(RaceId::Enum race);
 bool order_id_ignores_collision(u32 order_id);
 bool unit_should_be_autoattacked_by_player(Unit* unit, u32 player);
 void cancel_all_training(Unit* unit);
-bool do_unit_banter(Unit* victim, u16 speaker_id);
+bool play_unit_banter(Unit* victim, u16 speaker_id);
 void rescue_unit(Unit* unit, u32 player);

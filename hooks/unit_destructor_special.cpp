@@ -328,7 +328,7 @@ void unit_on_death_behaviors(Unit* unit) {
 
 	// Banter
 	if (unit_ext->values[ValueSignifyStacks] >= 5) {
-		do_unit_banter(unit, UnitId::ProtossHierophant);
+		play_unit_banter(unit, UnitId::ProtossHierophant);
 	}
 }
 

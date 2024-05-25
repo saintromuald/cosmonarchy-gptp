@@ -263,41 +263,43 @@ void cancel_all_training(Unit* unit) {
 	helper::cancel_last_training(unit);
 }
 
-bool do_unit_banter(Unit* victim, u16 speaker_id) {
-	EntryArray unit_array = {};
-	unit_search_radial(&unit_array, victim->position, victim->get_sight_range() * 32);
-	unit_search_filter(&unit_array, victim, FilterEnemy, { speaker_id });
-	bool success = false; // Might use this later. -Pr0nogo
+bool play_unit_banter(Unit* victim, u16 speaker_unit_id) {
+	EntryArray speakers = {};
+	unit_search_radial(&speakers, victim->position, victim->get_sight_range() * 32);
+	unit_search_filter(&speakers, victim, FilterEnemy, { speaker_unit_id });
 
-	for (u32 i = 0; i < unit_array.count; ++i) {
-		Unit* speaker = unit_array.units[i];
-		if (bw::get_distance_fast(victim->position, speaker->position) <= speaker->get_sight_range() * 32) {
-			UnitExt* unit_ext = get_unit_ext(speaker);
-			if (success) {
-				unit_ext->timers[TimerUnitBanter] = 24 * 60;
-				continue;
-			} else if (!unit_ext->timers[TimerUnitBanter]) {
-				unit_ext->timers[TimerUnitBanter] = 24 * 60;
-				u32 banter_sound = SoundId::None;
-
-				switch (speaker_id) {
-					case UnitId::ProtossHierophant:
-					{
-						banter_sound = bw::rand_between(SoundId::HierophantBanterB01, SoundId::HierophantBanterB03);
-					} break;
-					case UnitId::ProtossPatriarch:
-					{
-						banter_sound = bw::rand_between(SoundId::PatriarchBanter01, SoundId::PatriarchBanter04);
-					} break;
-				}
-				if (helper::play_sound_from_unit(banter_sound, speaker, g_options_list->flags & 1, 99)) {
-					helper::do_unit_event_notification(speaker, 17, sfx_dat::portrait_duration[banter_sound] + 1000 * (sfx_dat::sound_data[banter_sound].duration_ms / 1000), 0, banter_sound);
-				}
-				success = true;
-			}
+	for (Unit* speaker : speakers.units) {
+		// Checks
+		if (bw::get_distance_fast(victim->position, speaker->position) > speaker->get_sight_range() * 32) {
+			continue;
 		}
+		UnitExt* speaker_ext = get_unit_ext(speaker);
+		if (speaker_ext->timers[TimerUnitBanter]) {
+			continue;
+		}
+
+		// Play banter
+		u32 banter_sound = SoundId::None;
+		switch (speaker_unit_id) {
+			case UnitId::ProtossHierophant: {
+				banter_sound = bw::rand_between(SoundId::HierophantBanterB01, SoundId::HierophantBanterB03);
+			} break;
+			case UnitId::ProtossPatriarch: {
+				banter_sound = bw::rand_between(SoundId::PatriarchBanter01, SoundId::PatriarchBanter04);
+			} break;
+		}
+		if (helper::play_sound_from_unit(banter_sound, speaker, g_options_list->flags & 1, 99)) {
+			helper::do_unit_event_notification(speaker, 17, sfx_dat::portrait_duration[banter_sound] + 1000 * (sfx_dat::sound_data[banter_sound].duration_ms / 1000), 0, banter_sound);
+		}
+
+		// Cooldown
+		for (Unit* unit : speakers.units) {
+			UnitExt* unit_ext = get_unit_ext(unit);
+			unit_ext->timers[TimerUnitBanter] = 24 * 60;
+		}
+		return true;
 	}
-	return success;
+	return false;
 }
 
 void rescue_unit(Unit* unit, u32 player) {
