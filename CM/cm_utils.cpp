@@ -305,11 +305,10 @@ bool play_unit_banter(Unit* victim, u16 speaker_unit_id) {
 void rescue_unit(Unit* unit, u32 player) {
 	u32 idle_order = unit->status & UnitStatus::InBuilding ? idle_order = OrderId::BunkerGuard : idle_order = units_dat::human_idle_order[unit->id];
 	helper::give_unit(unit, player, 1);
-	unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 	unit->order_to(idle_order);
 
 	// Audiovisuals
-	if (!g_is_in_replay && unit->player == *g_local_nation_id) {
+	if (bw::in_replay_or_witness()) {
 		unit->sprite->selection_timer = 45;
 		helper::play_sound_from_unit(*g_console_index + 32, unit, 1, 0);
 	}
