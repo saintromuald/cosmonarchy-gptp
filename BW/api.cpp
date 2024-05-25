@@ -978,11 +978,14 @@ namespace bw {
 				return;
 			}
 			bw::give_ai_ex(unit);
-			if (creator && creator->status & UnitStatus::IsHallucination) {
-				helper::apply_hallucination_stats(unit);
-				unit->status |= UnitStatus::IsHallucination;
-				unit->remove_timer = 1350;
-				unit->sprite->create_overlay(ImageId::HallucinationDeath3);
+			if (creator) {
+				spread_debuffs(creator, unit);
+				if (creator->status & UnitStatus::IsHallucination) {
+					helper::apply_hallucination_stats(unit);
+					unit->status |= UnitStatus::IsHallucination;
+					unit->remove_timer = 1350;
+					unit->sprite->create_overlay(ImageId::HallucinationDeath3);
+				}
 			}
 			UnitExt* unit_ext = get_unit_ext(unit);
 
