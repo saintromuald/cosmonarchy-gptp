@@ -198,8 +198,8 @@ namespace hooks
 
 		UnitExt* target_ext = get_unit_ext(data.target);
 		bool proc_onhits = weapon_id_procs_onhits(data.weapon_id);
-		if (target_ext->values[ValueTakingDeconstructionDamage] || proc_onhits) {
-			data.dont_proc_link_damage = true;
+		if (target_ext->values[ValueTakingDeconstructionDamage] || !proc_onhits) {
+ 			data.dont_proc_link_damage = true;
 		}
 
 		if (data.attacker) {
@@ -390,6 +390,7 @@ namespace hooks
 		// Isthrathaleth Carapace Swarm
 		if (carapace_swarm_blocks_damage(data.target, data.weapon_id, data.damage_divisor)) {
 			data.damage_type = DamageType::Independent;
+			bw::print("blocked");
 		}
 
 		switch (data.weapon_id) { // Damage divisor calc
@@ -541,11 +542,6 @@ namespace hooks
 				} break;
 			}
 
-			// Ensnaring Brood - Matraleth enchantment ability
-			if (unit_applies_ensnare(data.attacker) && unit_can_be_ensnared(data.target)) {
-				 apply_ensnare_internal(data.target, bw::get_ensnare_factor(data.attacker));
-			}
-
 			switch (data.weapon_id) {
 				case WeaponId::PotentatePhaseSaber:
 				{
@@ -569,6 +565,11 @@ namespace hooks
 			}
 			// Ignore Carapace Swarm!
 			// END
+
+			// Ensnaring Brood - Matraleth enchantment ability
+			if (unit_applies_ensnare(data.attacker) && unit_can_be_ensnared(data.target) && !carapace_swarm_blocks_damage(data.target, data.weapon_id, data.damage_divisor)) {
+				apply_ensnare_internal(data.target, bw::get_ensnare_factor(data.attacker));
+			}
 
 			switch (data.target->id) {
 				case UnitId::TerranStriga:

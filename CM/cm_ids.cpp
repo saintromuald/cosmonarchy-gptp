@@ -979,11 +979,7 @@ bool unit_applies_ensnare(Unit* unit) {
 }
 
 bool unit_can_be_ensnared(Unit* unit) {
-	if (bw::is_under_carapace_swarm(unit)) {
-		return false;
-	}
-	if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding || unit_is_tower(unit))
-	{
+	if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding || unit_is_tower(unit)) {
 		return true;
 	}
 	if (units_dat::base_property[unit->id] & UnitProperty::Building) {
