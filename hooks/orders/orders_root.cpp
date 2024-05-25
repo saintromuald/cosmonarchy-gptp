@@ -348,7 +348,7 @@ namespace hooks {
 				Unit* target = unit->order_target.unit;
 				if (target && can_infest(unit->player, target)) {
 					if (helper::get_distance_to_unit(unit, target) > 16) {
-						helper::move_towards(unit, target);
+						helper::spell_order_move_towards_target(unit, 12);
 					} else if (!(unit->movement_flags & MovementFlags_Moving) && !unit_ext->timers[TimerGenericAbilityAnimation]) {
 						mark_infesting(unit->player, target);
 						bw::decloak_passive_proc(unit);
@@ -359,6 +359,8 @@ namespace hooks {
 						unit_ext->timers[TimerGenericAbilityAnimation] = 12;
 					}
 				} else {
+					unit->order_target.unit = 0;
+					unit->order_target.pt = unit->position;
 					unit->order_to_idle();
 				}
 			} break;

@@ -901,13 +901,18 @@ namespace hooks
 
 		Unit* target = unit->order_target.unit;
 		u32 distance = 0;
+		bool should_move_towards_target = false;
 		if (target && target->sprite) { // Sprite is new.
 			distance = helper::get_distance_to_unit(unit, target);
 		} else {
-			distance = helper::distance_from_box_corner(unit, unit->order_target.pt.x, unit->order_target.pt.y) / 2;
+			distance = helper::get_distance_fast(unit->position.x, unit->order_target.pt.x, unit->position.y, unit->order_target.pt.y);
 		}
 		u32 min_range = weapons_dat::min_range[weapon_id];
-		if ((min_range && distance < min_range) || distance > helper::get_unit_max_weapon_range(unit, weapon_id) || unit->pathing_flags & PathingFlags_IsStacked) {
+		if ((min_range && distance < min_range) || unit->pathing_flags & PathingFlags_IsStacked) {
+			return false;
+		}
+		u32 range = helper::get_unit_max_weapon_range(unit, weapon_id);
+		if (distance > range) {
 			return false;
 		}
 		if ((unit->next_target_waypoint.x != unit->position.x || unit->next_target_waypoint.y != unit->position.y)
