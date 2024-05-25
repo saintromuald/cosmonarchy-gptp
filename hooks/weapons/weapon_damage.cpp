@@ -89,7 +89,7 @@ namespace hooks
 						reset_all_unit_attack_notify_timers_in_range(unit);
 						g_globals->alert.own_cooldown = 100;
 						bool is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-						u32 sound_id = SoundId::No_sound;
+						u32 sound_id = SoundId::None;
 						AdvisorEvent type = is_building ? AdvisorEvent_BaseUnderAttack : AdvisorEvent_ArmyUnderAttack;
 						if (!is_building) {
 							u32 sound_first = units_dat::sound_annoyed_first[unit->id];
@@ -1103,7 +1103,7 @@ namespace hooks
 				return fatal_deal_damage;
 			}
 
-			if (target_ext->units[UnitMindTyrantLink] != nullptr && target_ext->values[ValueMindTyrantTyranny] == TyrannyMaxStacks) {
+			if (target_ext->units[UnitMindTyrantLink] && target_ext->values[ValueMindTyrantTyranny] == TyrannyMaxStacks) {
 				fatal_deal_damage = false;
 				mind_control(data.attacker->player, UnitId::ProtossMindTyrant, data.target);
 				data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);

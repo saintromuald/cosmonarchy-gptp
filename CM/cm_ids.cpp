@@ -1057,7 +1057,7 @@ u32 get_death_sfx_id(u32 unit_id) {
 		case UnitId::ZergTetcaerokor:	return SoundId::Zerg_Hydra_ZHyDth00_WAV;
 		case UnitId::ZergAkistrokor:	return SoundId::Zerg_Queen_ZQuDth00_WAV;
 
-		default:						return SoundId::No_sound;
+		default:						return SoundId::None;
 	}
 }
 

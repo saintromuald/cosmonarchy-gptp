@@ -1376,7 +1376,7 @@ namespace helper {
 	s32 trigact_play_wav(TriggerAction* action, char* unused);												// 004C77D0
 	Unit* get_doodad_for_unit_state(u8 location, u16 unit_id, u32 player);									// 004C7380
 	u8 minimap_ping(u32 x_pos, u32 y_pos, u32 color);														// 004A34C0
-	void game_talking_portrait(u32 x_pos, u32 time, u32 unit_id, u32 y_pos);									// 0045EDD0
+	void game_talking_portrait(u32 x_pos, u32 time, u32 unit_id, u32 y_pos);								// 0045EDD0
 	void create_text_message_with_timer(const char* string, u32 timer);										// 0048CF20
 
 	// For select_unit_initial

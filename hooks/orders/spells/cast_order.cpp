@@ -364,12 +364,10 @@ namespace hooks
 
 	// Hooked to handle new ability cases. -Pr0nogo
 	b32 can_cast_spell(Unit* unit) { // 00492140
+		b32 result = 0;
 		u32 order_id = unit->main_order_id;
 		u32 order_weapon_id = orders_dat::order_weapon_id[order_id];
-		u32 order_target_x = unit->order_target.pt.x;
-		u32 order_target_y = unit->order_target.pt.y;
 		Unit* order_target_unit = unit->order_target.unit;
-		b32 result = 0;
 		if (unit->unit_ai) {
 			switch (order_id)
 			{
@@ -411,35 +409,33 @@ namespace hooks
 				}
 			} else {
 				u32 tech_id = orders_dat::tech_used[order_id];
-				if (tech_id != TechId::None) {
-					switch (tech_id)
-					{
-						case TechId::ScannerSweep:
-						case TechId::CarapaceSwarm:
-						case TechId::Plague:
-						case TechId::PsionicStorm:
-						case TechId::DimensionalRecall:
-						case TechId::StasisField:
-						case TechId::MindTyrantMaelstrom:
-						case TechId::HypnagogueThroughTheLookingGlass:
-						{
-						} break;
-						default:
-						{
-							b32 can_cast_on_tile = 0;
-							if (tech_id == TechId::SpiderMines) {
-								can_cast_on_tile = get_active_tile_flag(order_target_y, order_target_x, 0x410000, 0);
-							} else {
-								if (!order_target_unit || order_target_unit->status & UnitStatus::Invincible) {
-									return 1;
-								}
-								can_cast_on_tile = (u16)helper::get_target_unit_ability_error_stat_string(order_target_unit, unit->player, tech_id) == 0;
-							}
-							if (!can_cast_on_tile) {
+				switch (tech_id) {
+					case TechId::None:
+					case TechId::ScannerSweep:
+					case TechId::CarapaceSwarm:
+					case TechId::Plague:
+					case TechId::PsionicStorm:
+					case TechId::DimensionalRecall:
+					case TechId::StasisField:
+					case TechId::MindTyrantMaelstrom:
+					case TechId::HypnagogueThroughTheLookingGlass: {
+					} break;
+					default: {
+						b32 can_cast_on_tile = 0;
+						if (tech_id == TechId::SpiderMines) {
+							u32 order_target_x = unit->order_target.pt.x;
+							u32 order_target_y = unit->order_target.pt.y;
+							can_cast_on_tile = get_active_tile_flag(order_target_y, order_target_x, 0x410000, 0);
+						} else {
+							if (!order_target_unit || order_target_unit->status & UnitStatus::Invincible) {
 								return 1;
 							}
-						} break;
-					}
+							can_cast_on_tile = (u16)helper::get_target_unit_ability_error_stat_string(order_target_unit, unit->player, tech_id) == 0;
+						}
+						if (!can_cast_on_tile) {
+							return 1;
+						}
+					} break;
 				}
 			}
 			return 0;
@@ -449,7 +445,6 @@ namespace hooks
 
 	// Hooked to handle new ability cases. -Pr0nogo
 	b32 spell_order_move_towards_target(Unit* caster, u32 range) { // 00492450
-		b32 result = 0;
 		u32 final_range = range;
 		Unit* target = caster->order_target.unit;
 		if (target && target->sprite) { // Sprite check is new.
@@ -462,7 +457,20 @@ namespace hooks
 				caster->next_target_waypoint.y = tgt_pos_y;
 			}
 			if (!helper::is_unit_visible(caster)) {
-				goto move_to_terrain;
+				Point16 sprite_pos = caster->sprite->position;
+				if (caster->move_target.pt.x == sprite_pos.x && caster->move_target.pt.y == sprite_pos.y && ((caster->status & UnitStatus::Unmovable) != 0) == 1) {
+					helper::set_resource_target(caster);
+					helper::to_idle(caster);
+					return false;
+				}
+				if (target) {
+					helper::move_towards(caster, target);
+					return false;
+				}
+				if (!caster->recent_order_timer) {
+					helper::set_move_target_xy(caster, caster->order_target.pt.x, caster->order_target.pt.y);
+					return false;
+				}
 			}
 			if (caster->movement_flags & MovementFlags_Accelerating) {
 				if (!(target->movement_flags & MovementFlags_Accelerating)) {
@@ -481,7 +489,7 @@ namespace hooks
 			if (helper::is_target_within_min_range(caster, final_range, target)) {
 				helper::set_resource_target(caster);
 				if (caster->next_target_waypoint == caster->position) {
-					return 1;
+					return true;
 				}
 				u32 curr_dir1 = (u8)caster->current_direction_1 - helper::get_direction_from_points(caster->sprite->position, caster->next_target_waypoint);
 				u32 curr_dir_2 = curr_dir1 + ((s8)-(curr_dir1 < 0) & 256);
@@ -489,25 +497,25 @@ namespace hooks
 					curr_dir_2 = 256 - curr_dir_2;
 				}
 				if (curr_dir_2 <= 5) {
-					return 1;
+					return true;
 				}
 			} else {
-			move_to_terrain:
-				Sprite* sprite = caster->sprite;
-				if (caster->move_target.pt.x == sprite->position.x && caster->move_target.pt.y == sprite->position.y && ((caster->status & UnitStatus::Unmovable) != 0) == 1) {
+				Point16 sprite_pos = caster->sprite->position;
+				if (caster->move_target.pt.x == sprite_pos.x && caster->move_target.pt.y == sprite_pos.y && ((caster->status & UnitStatus::Unmovable) != 0) == 1) {
 					helper::set_resource_target(caster);
 					helper::to_idle(caster);
-					return 0;
+					return false;
 				}
 				if (target) {
 					helper::move_towards(caster, target);
-					return 0;
+					return false;
 				}
 				if (!caster->recent_order_timer) {
 					helper::set_move_target_xy(caster, caster->order_target.pt.x, caster->order_target.pt.y);
+					return false;
 				}
 			}
-			result = 0;
+			return false;
 		} else if (!tech_id_has_custom_targeting(orders_dat::tech_used[caster->main_order_id])) {
 			if (bw::get_distance_fast(caster->position, caster->order_target.pt) >= range) {
 				helper::set_move_target_xy(caster, caster->order_target.pt.x, caster->order_target.pt.y);
@@ -518,16 +526,15 @@ namespace hooks
 			if (caster->order_queue_head) {
 				caster->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 				helper::do_next_queued_order(caster);
-				result = 0;
+				return false;
 			} else {
 				if (caster->unit_ai) {
 					helper::issue_order_targeting_nothing(caster, OrderId::ComputerAI);
 				} else {
 					helper::issue_order_targeting_nothing(caster, units_dat::return_to_idle_order[caster->id]);
 				}
-				result = 0;
+				return false;
 			}
 		}
-		return result;
 	}
 }

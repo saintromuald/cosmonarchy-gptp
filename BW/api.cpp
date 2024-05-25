@@ -3844,11 +3844,9 @@ namespace bw {
 
 	u32 get_manual_unit_weapon_sound(Unit* unit, u32 weapon_id)
 	{
-		u32 sound_id = SoundId::No_sound;
-		switch (unit->id)
-		{
-			case UnitId::TerranSavant:
-			{
+		u32 sound_id = SoundId::None;
+		switch (unit->id) {
+			case UnitId::TerranSavant: {
 				if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
 					sound_id = bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
 				} else {
@@ -3864,11 +3862,9 @@ namespace bw {
 
 	u32 get_manual_weapon_id_sound(u32 weapon_id)
 	{
-		u32 sound_id = SoundId::No_sound;
-		switch (weapon_id)
-		{
-			case WeaponId::DemiurgeGalacticWeaver:
-			{
+		u32 sound_id = SoundId::None;
+		switch (weapon_id) {
+			case WeaponId::DemiurgeGalacticWeaver: {
 				sound_id = bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
 			}
 		}

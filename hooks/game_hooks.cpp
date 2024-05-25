@@ -2690,7 +2690,7 @@ namespace hooks {
 		}
 
 		// Tyranny - increase stacks
-		if (unit_ext->units[UnitMindTyrantLink] != nullptr) {
+		if (unit_ext->units[UnitMindTyrantLink]) {
 			if (unit_ext->values[ValueMindTyrantTyranny] < TyrannyMaxStacks) {
 				unit_ext->values[ValueMindTyrantTyranny]++;
 				should_update_speed = true;

@@ -278,7 +278,7 @@ bool do_unit_banter(Unit* victim, u16 speaker_id) {
 				continue;
 			} else if (!unit_ext->timers[TimerUnitBanter]) {
 				unit_ext->timers[TimerUnitBanter] = 24 * 60;
-				u32 banter_sound = SoundId::No_sound;
+				u32 banter_sound = SoundId::None;
 
 				switch (speaker_id) {
 					case UnitId::ProtossHierophant:
@@ -301,15 +301,10 @@ bool do_unit_banter(Unit* victim, u16 speaker_id) {
 }
 
 void rescue_unit(Unit* unit, u32 player) {
-	u32 idle_order = OrderId::Die;
+	u32 idle_order = unit->status & UnitStatus::InBuilding ? idle_order = OrderId::BunkerGuard : idle_order = units_dat::human_idle_order[unit->id];
 	helper::give_unit(unit, player, 1);
-	if (unit->status & UnitStatus::InBuilding) {
-		idle_order = OrderId::BunkerGuard;
-	} else {
-		idle_order = units_dat::human_idle_order[unit->id];
-	}
 	unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
-	helper::order(1, unit, idle_order, {}, 0, UnitId::None);
+	unit->order(idle_order, 0, 0, 0, UnitId::None, true);
 	helper::do_next_queued_order(unit);
 
 	// Audiovisuals

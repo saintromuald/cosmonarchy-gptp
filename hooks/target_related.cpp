@@ -896,7 +896,7 @@ namespace hooks
 	// Hooked to patch nullsprite crash. -Pr0nogo
 	b32 is_ready_to_attack(Unit* unit, u8 weapon_id) { // 00476640
 		if (unit->movement_flags & MovementFlags_StartingAttack) {
-			return 0;
+			return false;
 		}
 
 		Unit* target = unit->order_target.unit;
@@ -908,14 +908,14 @@ namespace hooks
 		}
 		u32 min_range = weapons_dat::min_range[weapon_id];
 		if (min_range && distance < min_range || distance > helper::get_unit_max_weapon_range(unit, weapon_id) || unit->pathing_flags & PathingFlags_IsStacked) {
-			return 0;
+			return false;
 		}
 		if ((unit->next_target_waypoint.x != unit->position.x || unit->next_target_waypoint.y != unit->position.y)
 		 && !helper::is_angle_in_attack_angle(unit->next_target_waypoint.x, unit->next_target_waypoint.y, unit, weapon_id))
 		{
 			unit->order_queue_timer = 0;
-			return 0;
+			return false;
 		}
-		return 1;
+		return true;
 	}
 }

@@ -848,7 +848,7 @@ namespace hooks {
 
 						Unit* nuker = unit->connected_unit;
 						if (nuker) {
-							u32 action_sound = SoundId::No_sound;
+							u32 action_sound = SoundId::None;
 							switch (nuker->id)
 							{
 								case UnitId::TerranEidolon:

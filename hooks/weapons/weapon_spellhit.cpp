@@ -538,7 +538,7 @@ namespace hooks {
 			clear_tyranny(attacker, old_victim);
 		}
 		UnitExt* target_ext = get_unit_ext(target);
-		if (target_ext->units[UnitMindTyrantLink] == nullptr) {
+		if (target_ext->units[UnitMindTyrantLink]) {
 			target_ext->values[ValueMindTyrantTyranny] = 1;
 			target_ext->units[UnitMindTyrantLink] = attacker;
 

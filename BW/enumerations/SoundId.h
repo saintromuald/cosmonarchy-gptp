@@ -4,7 +4,7 @@ namespace SoundId
 {
 	enum Enum
 	{
-		No_sound							= 0,
+		None								= 0,
 		Zerg_Drone_ZDrErr00_WAV				= 1,
 		Misc_Buzz_wav_1						= 2,
 		Misc_PError_WAV						= 3,

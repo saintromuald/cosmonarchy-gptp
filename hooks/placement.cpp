@@ -380,7 +380,7 @@ namespace hooks
 	void set_worker_error(Unit* unit, u32 error_string) // 0048F7B0
 	{
 		if (!(g_is_in_replay) && unit->player == *g_local_nation_id) {
-			u32 sound_id = SoundId::No_sound;
+			u32 sound_id = SoundId::None;
 			switch (unit->get_race()) {
 				case RaceId::Terran:
 				{
@@ -422,7 +422,7 @@ namespace hooks
 	void play_worker_error_sound(Unit* unit, u32 error_text_index) // 0048F6C0
 	{
 		if (!(g_is_in_replay) && unit->player == *g_local_nation_id) {
-			u32 sound_id = SoundId::No_sound;
+			u32 sound_id = SoundId::None;
 			switch (unit->get_race()) {
 				case RaceId::Terran:
 				{

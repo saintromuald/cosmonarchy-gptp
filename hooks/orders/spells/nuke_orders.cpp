@@ -113,7 +113,7 @@ namespace hooks
 						unit->current_buttonset = UnitId::Buttons_CancelNukeStrike;
 					}
 
-					u32 action_sound = SoundId::No_sound;
+					u32 action_sound = SoundId::None;
 					switch (unit->id)
 					{
 						case UnitId::TerranEidolon:
