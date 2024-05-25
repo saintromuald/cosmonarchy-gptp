@@ -361,7 +361,7 @@ namespace hooks
 	}
 
 	// Hooked to handle new ability cases. -Pr0nogo
-	b32 cannot_cast_spell(Unit* unit) { // 00492140
+	bool cannot_cast_spell(Unit* unit) { // 00492140
 		u32 order_id = unit->main_order_id;
 		u32 order_weapon_id = orders_dat::order_weapon_id[order_id];
 		Unit* order_target_unit = unit->order_target.unit;

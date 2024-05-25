@@ -224,17 +224,18 @@ namespace hooks
 					unit_search_radial(&units, data.target->position, 2 * 32);
 					for (u32 i = 0; i < units.count; ++i) {
 						Unit* unit = units.units[i];
-						if (unit->id == UnitId::TerranAncile && unit->energy >= 1 * 256 && bw::is_allied_to(unit->player, data.target->player)) {
-							bw::create_shield_overlay(data.target, data.direction);
-							unit->spend_unit_energy(data.damage);
-							u32 sound_id = bw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03);
-							helper::play_sound_from_unit(sound_id, unit, 1, 0);
-							ignore_alert = true;
-							unit_attack_notify(unit);
-							ignore_alert = false;
-							bw::reveal_attacker(data.attacker, unit);
-							return;
+						if (unit->id != UnitId::TerranAncile || unit->energy >= 1 * 256 || bw::is_allied_to(unit->player, data.target->player)) {
+							continue;
 						}
+						bw::create_shield_overlay(data.target, data.direction);
+						unit->spend_unit_energy(data.damage);
+						u32 sound_id = bw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03);
+						helper::play_sound_from_unit(sound_id, unit, 1, 0);
+						ignore_alert = true;
+						unit_attack_notify(unit);
+						ignore_alert = false;
+						bw::reveal_attacker(data.attacker, unit);
+						return;
 					}
 				} break;
 			}

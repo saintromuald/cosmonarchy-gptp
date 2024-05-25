@@ -1777,9 +1777,7 @@ namespace hooks {
 
 					if (do_teleport) {
 						if (bw::teleport_to_unit(unit, target, min_radius, 0, true)) {
-							if (!unit->get_overlay(image_id)) {
-								bw::add_unit_overlay(unit, image_id);
-							}
+							bw::add_unit_overlay(unit, image_id);
 							bw::decloak_passive_proc(unit);
 						}
 					}
@@ -1898,7 +1896,7 @@ namespace hooks {
 
 					UnitExt* target_ext = get_unit_ext(target);
 					target_ext->timers[TimerEnsnaringBrood] = 3;
-					if (!(target->status & UnitStatus::Burrowed) && !target->get_overlay(ImageId::EnsnaringBroodOverlay)) {
+					if (!(target->status & UnitStatus::Burrowed)) {
 						bw::add_unit_overlay(target, ImageId::EnsnaringBroodOverlay);
 					}
 				}
@@ -1922,7 +1920,7 @@ namespace hooks {
 					UnitExt* target_ext = get_unit_ext(target);
 					target_ext->timers[TimerLucilleriPheremones] = 3;
 					u32 overlay_id = ImageId::DermalAccelerantSmall + bw::get_overlay_offset(target->id, true);
-					if (!(target->status & UnitStatus::Burrowed) && !target->get_overlay(overlay_id)) {
+					if (!(target->status & UnitStatus::Burrowed)) {
 						bw::add_unit_overlay(target, overlay_id);
 					}
 				}
@@ -2110,9 +2108,7 @@ namespace hooks {
 			case UnitId::TerranAncile: {
 				// Ancile - Providence - Projectile handling
 				if (unit->energy >= 1 * 256) {
-					if (!unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) { // TODO: Own overlays
-						bw::add_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge);
-					}
+					bw::add_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge); // TODO: Own overlays
 
 					const u32 radius = 2 * 32;
 					EntryArray bullets = {};
@@ -2603,10 +2599,11 @@ namespace hooks {
 					reclamation_regen = std::max((s32)(reclamation_regen - HealFade), 0);
 				}
 			}
-
 			u32 overlay_id = ImageId::RevivedDecayingOverlay;
-			if (!unit->get_overlay(overlay_id)) {
+			if (!(unit->status & UnitStatus::Burrowed)) {
 				bw::add_unit_overlay(unit, overlay_id);
+			} else {
+				bw::remove_unit_overlay(unit, overlay_id);
 			}
 		}
 
@@ -2663,24 +2660,19 @@ namespace hooks {
 
 		if (unit_ext->timers[TimerAvenge] > 1) {
 			u32 ascend_overlay_id = ImageId::Avenge_Small + bw::get_overlay_offset(unit->id, true);
-			if (!unit->get_overlay(ascend_overlay_id)) {
-				bw::add_unit_overlay(unit, ascend_overlay_id);
-			}
+			bw::add_unit_overlay(unit, ascend_overlay_id);
+
 		}
 
 		if (unit_ext->timers[TimerAscend]) {
 			u32 ascend_overlay_id = ImageId::Ascension_Small + bw::get_overlay_offset(unit->id, true);
-			if (!unit->get_overlay(ascend_overlay_id)) {
-				bw::add_unit_overlay(unit, ascend_overlay_id);
-			}
+			bw::add_unit_overlay(unit, ascend_overlay_id);
 		}
 
 		{
 			u32 shield_bleed_overlay = ImageId::AstralRule_Small + bw::get_overlay_offset(unit->id, true);
 			if (unit_ext->timers[TimerTriumphantRiseDebuff] || unit_ext->timers[TimerPatriarchAstralRule] > 1) {
-				if (!unit->get_overlay(shield_bleed_overlay)) {
-					bw::add_unit_overlay(unit, shield_bleed_overlay);
-				}
+				bw::add_unit_overlay(unit, shield_bleed_overlay);
 			} else {
 				Image* overlay = unit->get_overlay(shield_bleed_overlay);
 				if (overlay) {
@@ -2702,9 +2694,7 @@ namespace hooks {
 				}
 			}
 			u32 overlay_id = ImageId::TyrannyStunSmall + bw::get_overlay_offset(unit->id);
-			if (!unit->get_overlay(overlay_id)) {
-				bw::add_unit_overlay(unit, overlay_id);
-			}
+			bw::add_unit_overlay(unit, overlay_id);
 		} else if (unit_ext->values[ValueMindTyrantTyranny]) {
 			u32 overlay_id = ImageId::MindControlHit_Small + bw::get_overlay_offset(unit->id);
 			bw::add_unit_overlay(unit, overlay_id);
@@ -2736,7 +2726,9 @@ namespace hooks {
 					if (overlay_id == ImageId::ControlledDemolition) {
 						overlay_id = ImageId::DemiurgeWorshipOverlay_XLarge; // Stupid workaround because XLarge was added out of sequence. -Pr0nogo
 					}
-					bw::add_unit_overlay(unit, overlay_id);
+					if (!(unit->status & UnitStatus::Burrowed)) {
+						bw::add_unit_overlay(unit, overlay_id);
+					}
 					unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 49;
 				}
 			}
@@ -2789,9 +2781,7 @@ namespace hooks {
 		{
 			u32 overlay_id = ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true);
 			if (unit_ext->timers[TimerSwarmingOmenDebuff] > 1) {
-				if (!unit->get_overlay(overlay_id)) {
-					bw::add_unit_overlay(unit, overlay_id);
-				}
+				bw::add_unit_overlay(unit, overlay_id);
 
 				EntryArray targets = {};
 				unit_search_radial(&targets, unit->position, 10 * 32);
@@ -3024,9 +3014,7 @@ namespace hooks {
 				bw::remove_unit_overlay(unit, ImageId::GorgonPetrification);
 			}
 		} else if (unit_ext->timers[TimerPetrification] > 1) {
-			if (!unit->get_overlay(ImageId::GorgonPetrification)) {
-				bw::add_unit_overlay(unit, ImageId::GorgonPetrification);
-			}
+			bw::add_unit_overlay(unit, ImageId::GorgonPetrification);
 			should_update_speed = true;
 		}
 
@@ -3158,9 +3146,7 @@ namespace hooks {
 			unit->freeze();
 
 			u32 offset = bw::get_overlay_offset(unit->id);
-			if (!unit->get_overlay(ImageId::SalvageDisableSmall + offset)) {
-				bw::add_unit_overlay(unit, ImageId::SalvageDisableSmall + offset);
-			}
+			bw::add_unit_overlay(unit, ImageId::SalvageDisableSmall + offset);
 			if (!unit_ext->timers[TimerTalosSoundLoopTimer]) {
 				helper::play_sound_from_unit(SoundId::TalosSalvageLoop, unit, 1, 0);
 				unit_ext->timers[TimerTalosSoundLoopTimer] = 63;
@@ -3356,9 +3342,7 @@ namespace hooks {
 		{
 			u32 image_id = ImageId::HarakanApollyoidAdhesiveOverlay;
 			if (unit_ext->timers[TimerApollyoidAdhesive] >= 1) {
-				if (!unit->sprite->get_overlay(image_id)) {
-					bw::add_unit_overlay(unit, image_id);
-				}
+				bw::add_unit_overlay(unit, image_id);
 				if (!unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod]) {
 					unit_ext->timers[TimerApollyoidAdhesiveDamagePeriod] = 24;
 				}
@@ -3418,8 +3402,7 @@ namespace hooks {
 			if (unit->get_overlay(ImageId::AutocratControlledOpposition)) {
 				bw::remove_unit_overlay(unit, ImageId::AutocratControlledOpposition);
 			}
-		}
-		else if (unit_ext->values[ValueAutocratControlledOppositionStacks] && !unit->get_overlay(ImageId::AutocratControlledOpposition)) {
+		} else if (unit_ext->values[ValueAutocratControlledOppositionStacks] && !unit->get_overlay(ImageId::AutocratControlledOpposition)) {
 			bw::add_unit_overlay(unit, ImageId::AutocratControlledOpposition);
 		}
 

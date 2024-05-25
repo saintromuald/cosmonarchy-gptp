@@ -304,8 +304,7 @@ void rescue_unit(Unit* unit, u32 player) {
 	u32 idle_order = unit->status & UnitStatus::InBuilding ? idle_order = OrderId::BunkerGuard : idle_order = units_dat::human_idle_order[unit->id];
 	helper::give_unit(unit, player, 1);
 	unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
-	unit->order(idle_order, 0, 0, 0, UnitId::None, true);
-	helper::do_next_queued_order(unit);
+	unit->order_to(idle_order);
 
 	// Audiovisuals
 	if (!g_is_in_replay && unit->player == *g_local_nation_id) {

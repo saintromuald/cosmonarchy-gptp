@@ -783,7 +783,7 @@ s32 Unit::is_unit_ai_non_building() {
 // [ebp+08] = order_id
 void Unit::order_to(u8 order_id, Unit* target) {
 	assert(this);
-	this->user_action_flags |= 0x1;
+	this->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 	if (target) {
 		this->order(order_id, target->get_x(), target->get_y(), target, UnitId::None, true);
 	} else {
@@ -795,7 +795,7 @@ void Unit::order_to(u8 order_id, Unit* target) {
 // Logically equivalent to function @ 0x00475260
 void Unit::order_to(u8 order_id, u16 x, u16 y) {
 	assert(this);
-	this->user_action_flags |= 0x1;
+	this->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 	this->order(order_id, x, y, 0, UnitId::None, true);
 	prepare_for_next_order(this);
 }
@@ -803,7 +803,7 @@ void Unit::order_to(u8 order_id, u16 x, u16 y) {
 // Logically equivalent to function orderComputer_cl @ 0x00475310
 // used in hooks so not doing assert, mind it if used in mods
 void Unit::order_computer(u8 order_id) {
-	this->user_action_flags |= 0x1;
+	this->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 	this->order(order_id, 0, 0, 0, UnitId::None, true);
 	prepare_for_next_order(this);
 }

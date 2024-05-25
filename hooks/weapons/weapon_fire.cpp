@@ -478,7 +478,7 @@ namespace hooks {
 				if (unit->id == UnitId::TerranMadcap) {
 					s32 stacks = unit_ext->values[ValueMadcapStacks];
 					if (stacks >= 108 && !unit_ext->values[ValueMadcapFullChargeRead]) { // 9 stacks
-						auto sound_id = bw::rand_between(SoundId::MadcapPassiveCharge01, SoundId::MadcapPassiveCharge03);
+						const auto sound_id = bw::rand_between(SoundId::MadcapPassiveCharge01, SoundId::MadcapPassiveCharge03);
 						helper::play_sound_from_unit(sound_id, unit, 1, 0);
 						unit->sprite->create_top_overlay(ImageId::MaverickStimpackInject);
 						unit_ext->values[ValueMadcapFullChargeRead] = 1;
