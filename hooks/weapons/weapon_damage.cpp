@@ -459,11 +459,9 @@ namespace hooks
 			case WeaponId::AutocratEminenceRifle:
 			{
 				if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
-					EntryArray corpses = {};
-					corpse_search_radial(&corpses, data.target->position, 3 * 32);
-					corpse_search_sort_by_distance(&corpses, data.target->position);
-					if (corpses.count) {
-						reclaim_corpse(corpses.corpses[0], data.attacking_player_id);
+					Thingy* corpse = get_closest_active_corpse(data.target->position, 3 * 32);
+					if (corpse) {
+						reclaim_corpse(corpse, data.attacking_player_id);
 					}
 				}
 			} break;
