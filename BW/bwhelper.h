@@ -115,7 +115,7 @@ namespace helper {
 	bool unitIsFrozen(Unit* a1);
 	bool isUnitCasterNotHallucination(Unit* a1);
 	b32 get_active_tile_flag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags);
-	Unit* get_target_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3);
+	u32 get_target_unit_ability_error_stat_string(Unit* target, u8 player, u32 tech_id);			// 00491E80
 
 	// For modify_unit_shields
 	s32 SErrSetLastError(char a1);
@@ -447,7 +447,7 @@ namespace helper {
 	u32 get_weapon_cooldown(Unit* unit, u8 weapon_id);																				// 00475DC0
 	bool is_ready_to_attack(Unit* unit, u32 weapon_id);																				// 00476640
 	u32 get_stat_txt_string(Unit* unit, u32 player, const char* message);															// 0048EF30
-	bool can_cast_spell(Unit* unit);																								// 00492140
+	bool cannot_cast_spell(Unit* unit);																								// 00492140
 	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero);														// 00492620
 
 	// For spell_order

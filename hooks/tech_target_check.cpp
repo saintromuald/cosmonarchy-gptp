@@ -5,7 +5,7 @@
 
 namespace hooks
 {
-	u16 get_tech_use_error_message_hook(Unit* target, u8 player, u16 tech_id) // 00491E80
+	u32 get_tech_use_error_message_hook(Unit* target, u8 player, u16 tech_id) // 00491E80
 	{
 		if (target->stasis_timer != 0) {
 			return 900; // Units in stasis can't be targeted.<0>
@@ -38,15 +38,7 @@ namespace hooks
 						return 0; // valid target
 					}
 				} break;
-				case TechId::TalosSalvage: {
-					if (!target
-						|| !bw::is_allied_to(target->player, player)
-						|| !(target->status & UnitStatus::Completed)) {
-						return 876; // Invalid target.<0>
-					} else {
-						return 0; // valid target
-					}
-				} break;
+				case TechId::MatralethParasite:
 				case TechId::ControlledDemolition:
 				case TechId::EmergencyDetonation:
 				case TechId::Irradiate:

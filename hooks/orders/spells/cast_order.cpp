@@ -91,6 +91,7 @@ namespace hooks
 			case TechId::MindTyrantMaelstrom:
 			case TechId::LuminaryAuralAssault:
 			case TechId::HypnagogueThroughTheLookingGlass:
+			case TechId::MatralethParasite:
 			{
 				return true;
 			}
@@ -179,17 +180,14 @@ namespace hooks
 				if (target) {
 					unit->order_target.pt.x = target->sprite->position.x;
 					unit->order_target.pt.y = target->sprite->position.y;
-
-					if (target->sprite->position.x != unit->next_target_waypoint.x
-					||	target->sprite->position.y != unit->next_target_waypoint.y)
-					{
+					if (target->sprite->position.x != unit->next_target_waypoint.x || target->sprite->position.y != unit->next_target_waypoint.y) {
 						unit->next_target_waypoint.x = target->sprite->position.x;
 						unit->next_target_waypoint.y = target->sprite->position.y;
 					}
 				}
 			}
 		} else {
-			if (!helper::can_cast_spell(unit)) {
+			if (helper::cannot_cast_spell(unit)) {
 				char* message = (char*)g_stat_txt_tbl_new->get_string(876); // Invalid target
 				helper::get_stat_txt_string(unit, unit->player, message); // do the actual transmission corresponding to the message
 				helper::set_resource_target(unit); // make the unit stop since the order failed
@@ -410,7 +408,9 @@ namespace hooks
 			case TechId::StasisField:
 			case TechId::MindTyrantMaelstrom:
 			case TechId::HypnagogueThroughTheLookingGlass:
+			case TechId::MatralethParasite:
 			case TechId::Irradiate: {
+				return false;
 			} break;
 			default: {
 				b32 can_cast_on_tile = false;
@@ -429,7 +429,6 @@ namespace hooks
 				}
 			} break;
 		}
-		return false;
 	}
 
 	// Hooked to handle new ability cases. -Pr0nogo

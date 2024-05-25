@@ -189,8 +189,8 @@ namespace
 		static u32 range;
 		static b32 result;
 		__asm {
-			MOV caster, ECX
 			MOV range, EAX
+			MOV caster, ECX
 			PUSHAD
 		}
 		result = hooks::spell_order_move_towards_target(caster, range);

@@ -771,14 +771,14 @@ namespace helper {
 		return result;
 	}
 
-	Unit* get_target_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3) {
+	u32 get_target_unit_ability_error_stat_string(Unit* target, u8 player, u32 tech_id) {
 		const u32 func_address = 0x00491E80;
-		static Unit* result;
+		static u32 result;
 		__asm {
 			PUSHAD
-			PUSH a3
-			MOV EAX, a1
-			MOVZX BL, a2
+			PUSH tech_id
+			MOVZX BL, player
+			MOV EAX, target
 			CALL func_address
 			MOV result, EAX
 			POPAD
@@ -3587,7 +3587,7 @@ namespace helper {
 		return return_value;
 	}
 
-	bool can_cast_spell(Unit* unit) {
+	bool cannot_cast_spell(Unit* unit) {
 		const u32 func_address = 0x00492140;
 		static b32 result;
 		__asm {
@@ -3597,8 +3597,7 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		// 0 means "can cast spell"
-		return (result == 0);
+		return result == 1;
 	}
 
 	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero) {

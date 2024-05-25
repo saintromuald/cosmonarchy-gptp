@@ -877,7 +877,7 @@ namespace hooks
 					{
 						break;
 					}
-					if (orders_dat::order_weapon_id[(*g_active_iscript_unit)->main_order_id] != WeaponId::None && !helper::can_cast_spell(*g_active_iscript_unit))
+					if (orders_dat::order_weapon_id[(*g_active_iscript_unit)->main_order_id] != WeaponId::None && !helper::cannot_cast_spell(*g_active_iscript_unit))
 					{
 						helper::iscript_fireweapon(*g_active_iscript_unit, orders_dat::order_weapon_id[(*g_active_iscript_unit)->main_order_id]);
 					}
