@@ -338,9 +338,7 @@ namespace hooks
 				helper::unk_building_placement_related(1, &buildPoint);
 				if (*g_is_placing_addon) {
 					u32 unit_id = *g_place_building_unit_id - UnitId::TerranMinistry;
-					Point16 addon_point;
-					addon_point.x = units_dat::addon_placement[unit_id].x;
-					addon_point.y = units_dat::addon_placement[unit_id].y;
+					Point16 addon_point = { units_dat::addon_placement[unit_id].x , units_dat::addon_placement[unit_id].y };
 					bw::adjust_addon_coordinates(*g_place_building_unit_id, 0, &addon_point.x, &addon_point.y);
 					helper::unk_building_placement_related(0, &addon_point);
 				}
@@ -541,10 +539,8 @@ namespace hooks
 	// Hooked to enable more refinery types. -Pr0nogo
 	b32 unit_is_geyser(Unit* unit) // 004688B0
 	{
-		if (unit->status & UnitStatus::Completed)
-		{
-			if (unit_id_is_capped_gas_structure(unit->id))
-			{
+		if (unit->status & UnitStatus::Completed) {
+			if (unit_id_is_capped_gas_structure(unit->id)) {
 				return 1;
 			}
 		}
@@ -555,15 +551,11 @@ namespace hooks
 	b32 is_constructing_addon(Unit* unit) // 004E66B0
 	{
 		b32 result = 0;
-		if (unit->secondary_order_id == OrderId::BuildAddon)
-		{
-			if (unit->status & UnitStatus::GroundedBuilding)
-			{
+		if (unit->secondary_order_id == OrderId::BuildAddon) {
+			if (unit->status & UnitStatus::GroundedBuilding) {
 				Unit* build_unit = unit->current_build_unit;
-				if (build_unit)
-				{
-					if (!(build_unit->status & UnitStatus::Completed))
-					{
+				if (build_unit) {
+					if (!(build_unit->status & UnitStatus::Completed)) {
 						result = 1;
 					}
 				}
@@ -577,8 +569,7 @@ namespace hooks
 	{
 		helper::set_unit_hp(unit, hp_gain + unit->hitpoints);
 		u32 build_time = unit->remaining_build_time;
-		if (build_time)
-		{
+		if (build_time) {
 			BuildingModifier modifier = get_building_modifier(unit, unit->connected_unit, true);
 			if (modifier.decrease) {
 				if (unit->remaining_build_time > modifier.decrease) {
@@ -592,36 +583,30 @@ namespace hooks
 			} else {
 				unit->remaining_build_time -= 1;
 			}
-			return 1;
+			return true;
 		}
-
-		b32 result; // required by C++20 mode goto
-		if (!is_incomplete)
-		{
+		if (!is_incomplete) {
 			helper::update_unit_stats_and_finish_building(unit);
 			goto finish;
 		}
 		helper::update_unit_stats_and_finish_building(unit);
 
-		result = helper::show_finished_unit(unit);
-		if (result) {
+		if (helper::show_finished_unit(unit)) {
 		finish:
 			helper::update_unit_strength_and_apply_default_orders(unit);
-			if (!(unit->status & UnitStatus::GroundedBuilding))
-			{
+			if (!(unit->status & UnitStatus::GroundedBuilding)) {
 				helper::play_unit_ready_sound(unit);
-				return 1;
+				return true;
 			}
-			if (units_dat::group_flags[unit->id].is_terran)
-			{
+			if (units_dat::group_flags[unit->id].is_terran) {
 				Unit* addon = helper::connect_addon_check(unit);
 				if (addon) {
 					helper::complete_addon(unit, addon);
 				}
 			}
-			return 1;
+			return true;
 		}
-		return result;
+		return false;
 	}
 
 	// Hooked to stop giving addons to neutral. -Pr0nogo
@@ -646,6 +631,7 @@ namespace hooks
 	// Hooked to stop giving addons to neutral. -Pr0nogo
 	void complete_addon(Unit* addon, Unit* parent) // 00463D50
 	{
+		spread_debuffs(parent, addon);
 		u32 player = parent->player;
 		parent->building.addon = addon;
 		helper::give_unit(addon, player, 0);
