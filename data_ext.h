@@ -39,7 +39,6 @@ enum ExtValueId {
 	ValueIncubationUnitId,
 	ValueIncubationPlayer,
 	ValueCentaurLaunchPos,
-	ValueRepententChorus, // unused
 	ValueMagnetarLaunchPos,
 	ValueAlkajeliskSpores,
 	ValueAlkajeliskSporesPlayer,
@@ -139,7 +138,6 @@ enum ExtValueId {
 	ValueDiademTargeting,
 	ValueDiademTargetPosX,
 	ValueDiademTargetPosY,
-	ValueWorshipStack,	// unused
 	ValueCyprianLaunchPos,
 	ValueSavantEntropyGauntlets,
 	ValueSavantPowerSiphonBuff,
@@ -198,6 +196,7 @@ enum ExtValueId {
 	ValueMindTyrantTyranny,
 	ValueReclaimed,
 	ValueReclamationRegen,
+	UnitInfestingMatraleth,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -336,6 +335,8 @@ enum ExtTimerId {
 	TimerUprisingSpawn,
 	TimerLucilleriPheremones,
 	TimerTryCastCustomSpell,
+	TimerGenericAbilityAnimation,
+	TimerAnthelionTurn,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -344,7 +345,6 @@ enum ExtTimerId {
 	TimerAI_Skyfall,
 	TimerAI_GriefOfAllGods,
 	TimerAI_DisruptionField,
-	TimerAI_MadrigalTempoChangeTimer, // unused
 	TimerAI_MadrigalTempoChangeCooldown,
 
 	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities

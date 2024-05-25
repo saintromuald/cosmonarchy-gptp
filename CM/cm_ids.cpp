@@ -1283,3 +1283,11 @@ bool unit_id_is_spell(u32 unit_id) {
 bool unit_id_has_auto_healing(u32 unit_id) {
 	return unit_id == UnitId::TerranCleric; // In case we want to add more later. -Pr0nogo
 }
+
+bool unit_id_is_valid_for_most_abilities(u32 unit_id) {
+	return unit_id != UnitId::ZergLarva
+		|| unit_id != UnitId::ZergOcsalLarva
+		|| unit_id != UnitId::ZergEgg
+		|| unit_id != UnitId::ZergCocoon
+		|| unit_id != UnitId::ProtossSteward;
+}

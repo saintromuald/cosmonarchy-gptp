@@ -1166,7 +1166,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				&& (unit->hitpoints + unit->shields) * 2 >=	(units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id])) {
 				unit_ext->timers[TimerAI_GriefOfAllGods] = 612;
 				unit_ext->timers[TimerAI_KitingCooldown] = 5 * 24;
-				unit->order_computer(OrderId::KhaydarinEclipse);
+				unit->order_computer(OrderId::GriefOfAllGods);
 				unit->order_target.pt = unit->sprite->position;
 				unit->main_order_state = 0;
 			}
@@ -1187,7 +1187,6 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					}
 				}
 			}
-
 			if (best_target) {
 				unit->order_to(OrderId::BlissfulEmbrace, best_target);
 			}

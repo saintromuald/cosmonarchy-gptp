@@ -370,6 +370,11 @@ void blissful_embrace(Unit* target, u32 player, bool force) {
 	target->give_to(player);
 	target_ext->values[ValueInfested] = true;
 
+	Unit* matraleth = target_ext->units[UnitInfestingMatraleth];
+	if (matraleth) {
+		matraleth->order_to_idle();
+	}
+
 	// Init infestation
 	blissful_embrace_tick(target);
 }

@@ -92,7 +92,7 @@ namespace hooks
 			case TechId::LuminaryAuralAssault:
 			case TechId::HypnagogueThroughTheLookingGlass:
 			{
-				return 1;
+				return true;
 			}
 			default:
 			{
@@ -124,7 +124,7 @@ namespace hooks
 							return 0;
 						}
 					}
-					if (!has_target || !(~(units_dat::base_property[fow_unit_id] >> 29) & 1)) {
+					if (!has_target || units_dat::base_property[fow_unit_id] & UnitProperty::Invincible) {
 						if (error) {
 							*error = 876; // Invalid target.<0>
 						}

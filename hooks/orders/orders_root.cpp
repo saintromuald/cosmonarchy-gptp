@@ -331,28 +331,41 @@ namespace hooks {
 		// Not implemented through an array like original, since there are only 4 valid cases. -GPTP
 		switch (unit->main_order_id)
 		{
-			case OrderId::Die:
-			{
+			case OrderId::Die: {
 				helper::PUSH_order(unit, main_order_func_offsets[OrderId::Die][0]);
 			} break;
-			case OrderId::BuildSelf2:
-			{
+			case OrderId::BuildSelf2: {
 				helper::EAX_order(unit, main_order_func_offsets[OrderId::BuildSelf2][0]);
 			} break;
-			case OrderId::NukeTrack:
-			{
+			case OrderId::NukeTrack: {
 				helper::EBX_order(unit, main_order_func_offsets[OrderId::NukeTrack][0]);
 			} break;
-			case OrderId::Warpin:
-			{
+			case OrderId::Warpin: {
 				helper::EDI_order(unit, main_order_func_offsets[OrderId::Warpin][0]);
 			} break;
-			case OrderId::CTFCOP2: // Grief of All Gods
-			{
+			case OrderId::BlissfulEmbrace: {
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Unit* target = unit->order_target.unit;
+				if (target && can_infest(unit->player, target)) {
+					if (helper::get_distance_to_unit(unit, target) > 16) {
+						helper::move_towards(unit, target);
+					} else if (!(unit->movement_flags & MovementFlags_Moving) && !unit_ext->timers[TimerGenericAbilityAnimation]) {
+						mark_infesting(unit->player, target);
+						bw::decloak_passive_proc(unit);
+						UnitExt* target_ext = get_unit_ext(target);
+						target_ext->units[UnitInfestingMatraleth] = unit;
+
+						unit->play_iscript_animation(IscriptAnimation::CastSpell);
+						unit_ext->timers[TimerGenericAbilityAnimation] = 12;
+					}
+				} else {
+					unit->order_to_idle();
+				}
+			} break;
+			case OrderId::GriefOfAllGods: {
 				hooks::orders_grief_of_all_gods(unit);
 			} break;
-			case OrderId::WyvernLandGrab:
-			{
+			case OrderId::WyvernLandGrab: {
 				if (unit->id == UnitId::TerranWyvern) {
 					UnitExt* unit_ext = get_unit_ext(unit);
 					unit_ext->values[ValueWyvernLandGrabOn] = 1;
@@ -360,8 +373,7 @@ namespace hooks {
 					unit_ext->values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
 				}
 			} break;
-			case OrderId::CastThroughTheLookingGlass:
-			{
+			case OrderId::CastThroughTheLookingGlass: {
 				UnitExt* unit_ext = get_unit_ext(unit);
 				if (!unit_ext->timers[TimerHypnagogueChannel] && !unit_ext->values[ValueTryCastCustomSpell]) {
 					unit_ext->values[ValueTryCastCustomSpell] = 1;

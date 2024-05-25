@@ -5,126 +5,71 @@
 
 namespace hooks
 {
-	u16 get_tech_use_error_message_hook(Unit* target, u8 castingPlayerId, u16 techId) // 00491E80
+	u16 get_tech_use_error_message_hook(Unit* target, u8 player, u16 tech_id) // 00491E80
 	{
-		u16 stringId;
-		if (target->stasis_timer != 0)
-		{
-			stringId = 900; // Units in stasis can't be targeted.<0>
-		}
-		else if (techId == TechId::EmergencyDetonation)
-		{
-			return 0;
-		}
-		else if (techId < TechId::DefensiveMatrix || techId > TechId::LuminaryAuralAssault)
-		{
-			stringId = 876; // Invalid target.<0>
-		}
-		else
-		{
+		if (target->stasis_timer != 0) {
+			return 900; // Units in stasis can't be targeted.<0>
+		} else {
 			// GPTP mongomin were here
-			switch (techId) {
-				case TechId::Feedback: {
-					if (units_dat::base_property[target->id] & UnitProperty::Building)
-					{
-						stringId = 877; // Unable to target structure.<0>
-					}
-					else if (!target->is_valid_caster())
-					{
-						stringId = 1330; // Must target units with energy.<0>
-					}
-					else
-					{
-						stringId = 0; // valid target
-					}
-				} break;
+			switch (tech_id) {
 				case TechId::Tyranny: {
-					if (target->player == castingPlayerId) {
-						stringId = 1327; // Must target enemy units<0>
+					if (target->player == player) {
+						return 1327; // Must target enemy units<0>
 					} else if (units_dat::base_property[target->id] & UnitProperty::Building) {
-						stringId = 877; // Unable to target structure.<0>
-					} else if (unit_id_is_trap(target->id)
-					||		 target->id == UnitId::ZergLarva
-					||		 target->id == UnitId::ZergOcsalLarva
-					||		 target->id == UnitId::ZergEgg
-					||		 target->id == UnitId::ZergCocoon
-					||		 target->id == UnitId::ProtossSteward
-					||		 target->id == UnitId::ProtossPlasmaShell)
-					{
-						stringId = 876; // Invalid target.<0>
+						return 877; // Unable to target structure.<0>
+					} else if (unit_id_is_trap(target->id) || !unit_id_is_valid_for_most_abilities(target->id)) {
+						return 876; // Invalid target.<0>
 					} else {
-						stringId = 0; // valid target
-					}
-				} break;
-				case TechId::Hallucination: {
-					if (target->id == UnitId::ProtossSteward)
-					{
-						stringId = 876; // Invalid target.<0>
-					}
-					else if (units_dat::base_property[target->id] & UnitProperty::Building)
-					{
-						stringId = 877; // Unable to target structure.<0>
-					}
-					else if (bw::is_allied_to(target->player, castingPlayerId) || target->player == castingPlayerId)
-					{
-						stringId = 1327; // Must target enemy units<0>
-					}
-					else
-					{
-						stringId = 0; // valid target
+						return 0; // valid target
 					}
 				} break;
 				case TechId::DefensiveMatrix:
-				case TechId::Irradiate:
-				case TechId::Restoration:
 				case TechId::LuminaryAuralAssault: {
-					if (units_dat::base_property[target->id] & UnitProperty::Building)
-					{
-						stringId = 877; // Unable to target structure.<0>
-					}
-					else
-					{
-						stringId = 0; // valid target
-					}
-				} break;
-				case TechId::Infestation:
-				{
-					if (!helper::is_infestable_unit(target))
-					{
-						stringId = 870;	// Must target severely damaged Terran Command Center.<0>
-					}
-					else
-					{
-						stringId = 0; // valid target
+					if (units_dat::base_property[target->id] & UnitProperty::Building) {
+						return 877; // Unable to target structure.<0>
+					} else {
+						return 0; // valid target
 					}
 				} break;
 				case TechId::Consume: {
-					if (units_dat::base_property[target->id] & UnitProperty::Building
-						|| !bw::is_allied_to(target->player, castingPlayerId)
-						|| bw::is_zerg_egg_new(target))
-					{
-						stringId = 876; // Invalid target.<0>
-					}
-					else
-					{
-						stringId = 0; // valid target
+					if (units_dat::base_property[target->id] & UnitProperty::Building || !bw::is_allied_to(target->player, player) || bw::is_zerg_egg_new(target)) {
+						return 876; // Invalid target.<0>
+					} else {
+						return 0; // valid target
 					}
 				} break;
 				case TechId::TalosSalvage: {
 					if (!target
-						|| !bw::is_allied_to(target->player, castingPlayerId)
+						|| !bw::is_allied_to(target->player, player)
 						|| !(target->status & UnitStatus::Completed)) {
-						stringId = 876; // Invalid target.<0>
+						return 876; // Invalid target.<0>
+					} else {
+						return 0; // valid target
 					}
-					else {
-						stringId = 0;
+				} break;
+				case TechId::ControlledDemolition:
+				case TechId::EmergencyDetonation:
+				case TechId::Irradiate:
+				case TechId::Hallucination:
+				{
+					return 0;
+				} break;
+				case TechId::ZergBlissfulEmbrace:
+				{
+					if (target->player == player) {
+						return 1327; // Must target enemy units<0>
+					}
+					if (unit_id_is_trap(target->id) || !unit_id_is_valid_for_most_abilities(target->id)) {
+						return 876; // Invalid target.<0>
+					} else {
+						return 0; // valid target
 					}
 				} break;
 				default: {
-					stringId = 876; // Invalid target.<0>
+					return 876; // Invalid target.<0>
 				}
 			}
 		}
-		return stringId;
+		return 876; // Invalid target.<0>
 	}
 }

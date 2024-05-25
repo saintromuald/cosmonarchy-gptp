@@ -3008,7 +3008,10 @@ namespace hooks {
 					final_pos = bw::clamp_point(final_pos);
 
 					bw::move_unit_improved(unit, final_pos.x, final_pos.y);
-					helper::turn_unit(unit, bw::get_angle(unit->position, target_pos));
+					if (!unit_ext->timers[TimerAnthelionTurn]) {
+						helper::turn_unit(unit, bw::get_angle(unit->position, target_pos));
+						unit_ext->timers[TimerAnthelionTurn] = 3;
+					}
 				}
 			}
 		}
@@ -3045,24 +3048,6 @@ namespace hooks {
 		if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::Completed) {
 			blissful_embrace_tick(unit);
 			should_update_speed = true;
-		}
-
-		// Matraleth - Blissful Embrace ability
-		if (unit->id == UnitId::ZergMatraleth) {
-			if (unit->main_order_id == OrderId::BlissfulEmbrace) {
-				Unit* target = unit->order_target.unit;
-				if (target && can_infest(unit->player, target)) {
-					if (helper::get_distance_to_unit(unit, target) > 16) {
-						helper::spell_order_move_towards_target(unit, 16);
-					}
-					if (unit->sprite->main_graphic->animation == IscriptAnimation::CastSpell) {
-						mark_infesting(unit->player, target);
-						bw::decloak_passive_proc(unit);
-					}
-				} else {
-					helper::force_order_done(unit);
-				}
-			}
 		}
 
 		// Clear Barghest vector

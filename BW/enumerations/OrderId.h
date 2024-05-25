@@ -393,7 +393,7 @@ enum Enum {
 	CastThroughTheLookingGlass	= 180,	// Restoration				| Hypnagogue transportation ability
 	
 	// Protoss
-	KhaydarinEclipse			= 155,  // CTF COP 2                | Exemplar/Clarion switch				| unused
+	GriefOfAllGods				= 155,  // CTF COP 2				| Star Sovereign glassing ability
 	
 	// Zerg
 	BlissfulEmbrace				= 154,  // Idle CTF COP             | Matraleth infestation ability
