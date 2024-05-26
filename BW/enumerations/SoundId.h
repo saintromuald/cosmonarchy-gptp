@@ -1,9 +1,7 @@
 #pragma once
 
-namespace SoundId
-{
-	enum Enum
-	{
+namespace SoundId {
+	enum Enum {
 		None								= 0,
 		Zerg_Drone_ZDrErr00_WAV				= 1,
 		Misc_Buzz_wav_1						= 2,
