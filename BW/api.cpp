@@ -326,25 +326,22 @@ namespace bw {
 	Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees) {
 		f64 x1 = point.x - anchor.x;
 		f64 y1 = point.y - anchor.y;
-		auto radians = angle_degrees / 57.296;
+		f64 radians = angle_degrees / 57.296;
 		f64 x2 = x1 * cos(radians) - y1 * sin(radians);
 		f64 y2 = x1 * sin(radians) + y1 * cos(radians);
-		Point16 product = {};
-		product.x = x2 + anchor.x;
-		product.y = y2 + anchor.y;
-		return product;
+		return {u16(x2 + anchor.x), u16(y2 + anchor.y)};
 	}
 
 	Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees) {
 		f64 x1 = point.x - anchor.x;
 		f64 y1 = point.y - anchor.y;
-		auto radians = angle_degrees / 57.296;
+		f64 radians = angle_degrees / 57.296;
 		f64 x2 = x1 * cos(radians) - y1 * sin(radians);
 		f64 y2 = x1 * sin(radians) + y1 * cos(radians);
 		Vector32 product = {};
 		product.x = x2 + anchor.x;
 		product.y = y2 + anchor.y;
-		return product;
+		return {s32(x2 + anchor.x), s32(y2 + anchor.y)};
 	}
 
 	f64 bw_angle_to_normal(s32 bw_angle) {

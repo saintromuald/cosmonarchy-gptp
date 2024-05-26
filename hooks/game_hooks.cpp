@@ -867,7 +867,7 @@ namespace hooks {
 
 		reset_search_index();
 		update_search_index();
-		iquare_globals.frame_hook();
+		iquare_globals.tick();
 		update_search_index_effects();
 		update_ext_variables();
 		update_threshold();
