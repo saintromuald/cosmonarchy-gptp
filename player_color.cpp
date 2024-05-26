@@ -159,7 +159,7 @@ static ColorMatch make_color_match(u32 player, PlayerColor color) {
 }
 
 static PlayerColor get_best_color(std::vector<ColorMatch>& matches, bool return_backup_color) {
-	std::sort(matches.begin(), matches.end(), [](ColorMatch& a, ColorMatch& b) { return a.min_distance > b.min_distance; });
+	std::ranges::stable_sort(matches, [](const ColorMatch& a, const ColorMatch& b) { return a.min_distance > b.min_distance; });
 	// Try filtering out colors that obviously don't work
 	bool any_distance = false;
 	ColorMatch best_match = ColorMatch{PlayerColor::Invalid};
