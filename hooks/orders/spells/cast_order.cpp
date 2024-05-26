@@ -366,25 +366,21 @@ namespace hooks
 		u32 order_weapon_id = orders_dat::order_weapon_id[order_id];
 		Unit* order_target_unit = unit->order_target.unit;
 		if (unit->unit_ai) {
-			switch (order_id)
-			{
+			switch (order_id) {
 				// Stasis Field logic was originally also used for Lockdown (aka Magna Pulse)
-				case OrderId::StasisField:
-				{
+				case OrderId::StasisField: {
 					if (!order_target_unit || order_target_unit->is_frozen()) {
 						return true;
 					}
 				} break;
 				// Originally had Parasite code here
 				// Originally had EMP Shockwave code here
-				case OrderId::Irradiate:
-				{
+				case OrderId::Irradiate: {
 					if (!order_target_unit || order_target_unit->irradiate_timer) {
 						return true;
 					}
 				} break;
-				case OrderId::Plague:
-				{
+				case OrderId::Plague: {
 					if (!order_target_unit || order_target_unit->plague_timer) {
 						return true;
 					}
@@ -409,6 +405,7 @@ namespace hooks
 			case TechId::MindTyrantMaelstrom:
 			case TechId::HypnagogueThroughTheLookingGlass:
 			case TechId::MatralethParasite:
+			case TechId::Hallucination:
 			case TechId::Irradiate: {
 				return false;
 			} break;

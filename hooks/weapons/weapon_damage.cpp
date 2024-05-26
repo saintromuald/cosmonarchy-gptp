@@ -220,11 +220,12 @@ namespace hooks
 				case WeaponBehavior_AppearOnTargetSite:
 				case WeaponBehavior_AppearOnTargetUnit:
 				{
-					EntryArray units = {}; // @Veeq7, can't we filter for Ancile ids instead of checking for it later? Is that more or less performant? -Pr0nogo
+					EntryArray units = {};
 					unit_search_radial(&units, data.target->position, 2 * 32);
+					unit_search_filter(&units, data.target, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile });
 					for (u32 i = 0; i < units.count; ++i) {
 						Unit* unit = units.units[i];
-						if (unit->id != UnitId::TerranAncile || unit->energy >= 1 * 256 || bw::is_allied_to(unit->player, data.target->player)) {
+						if (unit->energy < 1 * 256) {
 							continue;
 						}
 						bw::create_shield_overlay(data.target, data.direction);
