@@ -2200,12 +2200,11 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranHypnagogue:
-			{
+			case UnitId::TerranHypnagogue: {
 				// Hypnagogue - Through the Looking Glass
-				bool try_cast = unit_ext->values[ValueTryCastCustomSpell] != 0;
+				auto& try_cast = unit_ext->values[ValueTryCastCustomSpell];
 				if (try_cast && (unit->main_order_id != OrderId::CastThroughTheLookingGlass || unit->is_frozen())) {
-					unit_ext->values[ValueTryCastCustomSpell] = 0;
+					try_cast = false;
 				}
 				if (try_cast && !unit_ext->timers[TimerTryCastCustomSpell] && !unit_ext->timers[TimerHypnagogueChannel]) {
 					Point16 target_pos = {};
@@ -2231,20 +2230,18 @@ namespace hooks {
 							unit_ext->values[ValueThroughTheLookingGlassX] = target_pos.x;
 							unit_ext->values[ValueThroughTheLookingGlassY] = target_pos.y;
 							unit->freeze();
-							unit_ext->values[ValueTryCastCustomSpell] = 0;
+							try_cast = false;
 						}
 					}
 				}
 
 				if (unit_ext->timers[TimerHypnagogueChannel]) {
 					bw::decloak_passive_proc(unit);
-					switch (unit_ext->timers[TimerHypnagogueChannel])
-					{
+					switch (unit_ext->timers[TimerHypnagogueChannel]) {
 						case 48:
 						case 36:
 						case 24:
-						case 12:
-						{
+						case 12: {
 							Point16 target_pos = {};
 							target_pos.x = unit_ext->values[ValueThroughTheLookingGlassX];
 							target_pos.y = unit_ext->values[ValueThroughTheLookingGlassY];
@@ -2252,25 +2249,29 @@ namespace hooks {
 							helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, pos.x,		  pos.y, unit->player);
 							helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, target_pos.x, target_pos.y, unit->player);
 						} break;
-						case 1:
-						{
-							Point16 target_pos = {};
-							target_pos.x = unit_ext->values[ValueThroughTheLookingGlassX];
-							target_pos.y = unit_ext->values[ValueThroughTheLookingGlassY];
+						case 1: {
+							Point16 target_center_pos{
+								.x = u16(unit_ext->values[ValueThroughTheLookingGlassX]),
+								.y = u16(unit_ext->values[ValueThroughTheLookingGlassY]),
+							};
 							Point16 pos = unit->position;
 
-							EntryArray units = {};
-							unit_search_radial(&units, pos, 2 * 32);
-							unit_search_filter(&units, unit, FilterAlly | FilterNoBuilding | FilterCompleted);
-							for (u32 index = 0; index < units.count; ++index) {
-								Unit* target = units.units[index];
+							helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
+							bw::teleport_to_point(unit, target_center_pos);
+							bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
+
+							EntryArray targets = {};
+							unit_search_radial(&targets, pos, 2 * 32);
+							unit_search_filter(&targets, unit, FilterAlly | FilterNoBuilding | FilterCompleted);
+							for (Unit* target : targets.units) {
+								Point16 target_pos{
+									.x = u16(target_center_pos.x + (pos.x - target->position.x)),
+									.y = u16(target_center_pos.y + (pos.y - target->position.y)),
+								};
 								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, target->position.x, target->position.y, unit->player);
 								bw::teleport_to_point(target, target_pos);
 								bw::add_unit_overlay(target, ImageId::LegionnaireTeleportEffect);
 							}
-							helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
-							bw::teleport_to_point(unit, target_pos);
-							bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 							unit->unfreeze();
 						} break;
 					}
