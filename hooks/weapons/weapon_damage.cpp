@@ -391,7 +391,6 @@ namespace hooks
 		// Isthrathaleth Carapace Swarm
 		if (carapace_swarm_blocks_damage(data.target, data.weapon_id, data.damage_divisor)) {
 			data.damage_type = DamageType::Independent;
-			bw::print("blocked");
 		}
 
 		switch (data.weapon_id) { // Damage divisor calc
