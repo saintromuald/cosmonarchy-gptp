@@ -86,7 +86,7 @@ u32 rand_between(u32 min, u32 max, std::source_location src = std::source_locati
 
 // Similar to above, but isn't synced, meaning it should be used for local only code
 // Uses C stdlib rand
-u32 rand_between_local(u32 min, u32 max, std::source_location src = std::source_location::current()); // forward declared (with defaults) at the top of file 
+u32 rand_between_local(u32 min, u32 max, std::source_location src = std::source_location::current());
 
 template <typename T, T T_None>
 struct GraphicsSet {
@@ -168,6 +168,14 @@ struct OverlaySettings {
 	bool underlay = false;
 	SoundSet add_sound = SoundId::None;
 	SoundSet remove_sound = SoundId::None;
+};
+
+auto rand_one(const std::ranges::range auto& range, std::source_location src = std::source_location::current()) -> decltype(*std::ranges::begin(range)) {
+	return *std::ranges::next(std::ranges::begin(range), bw::rand_between(0, std::ranges::size(range) - 1, src));
+};
+
+auto rand_one_local(const std::ranges::range auto& range, std::source_location src = std::source_location::current()) -> decltype(*std::ranges::begin(range)) {
+	return *std::ranges::next(std::ranges::begin(range), bw::rand_between_local(0, std::ranges::size(range) - 1, src));
 };
 
 inline bool harvester_is_waiting(Unit* unit) {

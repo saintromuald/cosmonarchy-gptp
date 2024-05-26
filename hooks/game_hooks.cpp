@@ -668,9 +668,7 @@ namespace hooks {
 		}
 
 		// Execute triggers before first frame update
-		bw::set_ingame_loop_state(true);
 		helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
-		bw::set_ingame_loop_state(false);
 
 		g_active_game_mode.release();
 		switch (bw::get_game_kind()) {
@@ -761,7 +759,9 @@ namespace hooks {
 
 		if (!g_game_was_init) {
 			g_game_was_init = true;
+			bw::set_ingame_loop_state(true);
 			game_init_first_frame();
+			bw::set_ingame_loop_state(false);
 		}
 		update_hotkeys();
 
