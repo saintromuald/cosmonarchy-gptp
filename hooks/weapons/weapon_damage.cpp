@@ -230,8 +230,7 @@ namespace hooks
 						}
 						bw::create_shield_overlay(data.target, data.direction);
 						unit->spend_unit_energy(data.damage);
-						u32 sound_id = bw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03);
-						helper::play_sound_from_unit(sound_id, unit, 1, 0);
+						bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
 						ignore_alert = true;
 						unit_attack_notify(unit);
 						ignore_alert = false;

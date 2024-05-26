@@ -2107,83 +2107,81 @@ namespace hooks {
 			} break;
 			case UnitId::TerranAncile: {
 				// Ancile - Providence - Projectile handling
-				if (unit->energy >= 1 * 256) {
-					bw::add_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge); // TODO: Own overlays
+				bool active = unit->energy >= 1 * 256;
+				bw::set_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge, active, { // TODO: Own overlays?
+					.remove_sound = SoundId::AncileProvidenceDeactivate,
+				});
 
-					const u32 radius = 2 * 32;
-					EntryArray bullets = {};
-					bullet_search_radial(&bullets, unit->position, radius);
-					for (u32 i = 0; i < bullets.count; i++) {
-						Bullet* bullet = bullets.bullets[i];
+				if (!active) {
+					break;
+				}
 
-						// Check if the weapon should be interacted with
-						if (!weapon_id_procs_onhits(bullet->weapon_id)) {
-							continue;
-						}
-
-						// Check if the bullet is friendly
-						if (bw::are_mutual_allies(unit->player, bullet->player)
-						&&  weapons_dat::explosion_type[bullet->weapon_id] != WeaponEffect::SplashRadial
-						&&  weapons_dat::explosion_type[bullet->weapon_id] != WeaponEffect::SplashAir)
-						{
-							continue;
-						}
-
-						// Check if the unit can be shielded
-						Unit* target = bullet->attack_target.unit;
-						if ((target && (!bw::is_allied_to(unit->player, target->player) || target->player == NeutralPlayer)) || bullet->hit_flags & 1) {
-							// We skip flagged bullets, so we don't have an infinite cycle of redirecting
-							continue;
-						}
-
-						// Check if the target is actually shielded (in area)
-						Point16 target_position = bullet->attack_target.unit ? bullet->attack_target.unit->position : bullet->attack_target.pt;
-						if (bw::get_distance_fast(unit->position, target_position) > radius) {
-							continue;
-						}
-
-						// Redirect the hitscan bullet, hitscan attacks themselves are handled in weapon damage
-						switch (weapons_dat::behavior[bullet->weapon_id]) {
-							case WeaponBehavior_AppearOnAttacker:
-							case WeaponBehavior_AppearOnTargetSite:
-							case WeaponBehavior_AppearOnTargetUnit:
-							{
-								bullet->position = unit->position;
-								if (bullet->sprite) {
-									bullet->sprite->set_position(unit->position.x, unit->position.y);
-									bullet->sprite->elevation = unit->sprite->elevation + 1;
-								}
-								continue;
-							} break;
-						}
-
-						// Redirect
-						ignore_alert = true;
-						hooks::unit_attack_notify(unit);
-						ignore_alert = false;
-						if (bullet->source_unit) {
-							bw::reveal_attacker(bullet->source_unit, unit);
-						}
-
-						if (target) {
-							bw::create_shield_overlay(target, bullet->current_direction_1);
-						}
-						bw::set_bullet_target(bullet, unit);
-						bw::set_bullet_direction(bullet, unit);
-						bullet->hit_flags |= 1; // We set missed flag, so the bullet doesn't deal hp damage (this doesn't help with hitscan or melee)
-						if (weapon_id_is_standard_weapon(bullet->weapon_id)) {
-							unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
-						}
-						u32 sound_id = bw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03);
-						helper::play_sound_from_unit(sound_id, unit, 1, 0);
-
-						if (unit->energy < 1 * 256) {
-							break;
-						}
+				static constexpr u32 radius = 2 * 32;
+				EntryArray bullets = {};
+				bullet_search_radial(&bullets, unit->position, radius);
+				for (Bullet* bullet : bullets.bullets) {
+					// Check if the weapon should be interacted with
+					if (!weapon_id_procs_onhits(bullet->weapon_id)) {
+						continue;
 					}
-				} else if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) { // TODO: Own overlays
-					bw::remove_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge);
-					helper::play_sound_from_unit(SoundId::AncileProvidenceDeactivate, unit, 1, 0);
+
+					// Check if the bullet is friendly
+					if (bw::are_mutual_allies(unit->player, bullet->player)
+					&&  weapons_dat::explosion_type[bullet->weapon_id] != WeaponEffect::SplashRadial
+					&&  weapons_dat::explosion_type[bullet->weapon_id] != WeaponEffect::SplashAir) {
+						continue;
+					}
+
+					// Check if the unit can be shielded
+					Unit* target = bullet->attack_target.unit;
+					if ((target && (!bw::is_allied_to(unit->player, target->player) || target->player == NeutralPlayer)) || bullet->hit_flags & 1) {
+						// We skip flagged bullets, so we don't have an infinite cycle of redirecting
+						continue;
+					}
+
+					// Check if the target is actually shielded (in area)
+					Point16 target_position = bullet->attack_target.unit ? bullet->attack_target.unit->position : bullet->attack_target.pt;
+					if (bw::get_distance_fast(unit->position, target_position) > radius) {
+						continue;
+					}
+
+					// Redirect the hitscan bullet, hitscan attacks themselves are handled in weapon damage
+					switch (weapons_dat::behavior[bullet->weapon_id]) {
+						case WeaponBehavior_AppearOnAttacker:
+						case WeaponBehavior_AppearOnTargetSite:
+						case WeaponBehavior_AppearOnTargetUnit:
+						{
+							bullet->position = unit->position;
+							if (bullet->sprite) {
+								bullet->sprite->set_position(unit->position.x, unit->position.y);
+								bullet->sprite->elevation = unit->sprite->elevation + 1;
+							}
+							continue;
+						} break;
+					}
+
+					// Redirect
+					ignore_alert = true;
+					hooks::unit_attack_notify(unit);
+					ignore_alert = false;
+					if (bullet->source_unit) {
+						bw::reveal_attacker(bullet->source_unit, unit);
+					}
+
+					if (target) {
+						bw::create_shield_overlay(target, bullet->current_direction_1);
+					}
+					bw::set_bullet_target(bullet, unit);
+					bw::set_bullet_direction(bullet, unit);
+					bullet->hit_flags |= 1; // We set missed flag, so the bullet doesn't deal hp damage (this doesn't help with hitscan or melee)
+					if (weapon_id_is_standard_weapon(bullet->weapon_id)) {
+						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
+					}
+
+					bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
+					if (unit->energy < 1 * 256) {
+						break;
+					}
 				}
 			} break;
 			case UnitId::TerranDurendal:
@@ -2512,7 +2510,7 @@ namespace hooks {
 							target->update_speed();
 						}
 						if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
-							bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, true);
+							bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, { .underlay = true });
 						}
 					}
 				}
@@ -2661,7 +2659,6 @@ namespace hooks {
 		if (unit_ext->timers[TimerAvenge] > 1) {
 			u32 ascend_overlay_id = ImageId::Avenge_Small + bw::get_overlay_offset(unit->id, true);
 			bw::add_unit_overlay(unit, ascend_overlay_id);
-
 		}
 
 		if (unit_ext->timers[TimerAscend]) {

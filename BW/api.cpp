@@ -2940,26 +2940,66 @@ namespace bw {
 		}
 	}
 
-	void add_unit_overlay(Unit* unit, u32 image_id, bool underlay) {
-		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
-			unit = unit->subunit->id != UnitId::TerranWyvernTurret ? unit->subunit : unit;
+	static Unit* get_overlay_unit(Unit* unit) {
+		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit
+			&& unit->subunit->id != UnitId::TerranWyvernTurret) {
+			return unit->subunit;
 		}
+		return unit;
+	}
+
+	void add_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings) {
+		unit = get_overlay_unit(unit);
+		const auto image_id = image_set.get_for(unit);
 		if (unit->get_overlay(image_id)) {
 			return;
 		}
 
-		if (underlay) {
+		if (settings.underlay) {
 			unit->sprite->create_underlay(image_id);
 		} else {
 			unit->sprite->create_top_overlay(image_id);
 		}
+		if (settings.add_sound) {
+			helper::play_sound_from_unit(settings.add_sound.rand(), unit);
+		}
 	}
 
-	void remove_unit_overlay(Unit* unit, u32 image_id) {
-		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
-			unit = unit->subunit->id != UnitId::TerranWyvernTurret ? unit->subunit : unit;
+	void remove_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings) {
+		unit = get_overlay_unit(unit);
+		const auto image_id = image_set.get_for(unit);
+		if (!unit->get_overlay(image_id)) {
+			return;
 		}
+
 		unit->sprite->remove_overlay(image_id);
+		if (settings.remove_sound) {
+			helper::play_sound_from_unit(settings.remove_sound.rand(), unit);
+		}
+	}
+
+	void set_unit_overlay(Unit* unit, ImageSet image_set, bool active, const OverlaySettings& settings) {
+		if (active) {
+			add_unit_overlay(unit, image_set.get_for(unit), settings);
+		} else {
+			remove_unit_overlay(unit, image_set.get_for(unit), settings);
+		}
+	}
+
+	void play_sound(Unit* unit, SoundSet sound_set, u32 min_volume) {
+		helper::play_sound_from_unit(sound_set.rand(), unit, true, min_volume);
+	}
+
+	void play_sound(Point16 pos, SoundSet sound_set, u32 min_volume) {
+		helper::play_sound_at_pos(sound_set.rand(), pos, true, min_volume);
+	}
+
+	void play_sound_local(Unit* unit, SoundSet sound_set, u32 min_volume) {
+		helper::play_sound_from_unit(sound_set.rand_local(), unit, true, min_volume);
+	}
+
+	void play_sound_local(Point16 pos, SoundSet sound_set, u32 min_volume) {
+		helper::play_sound_at_pos(sound_set.rand_local(), pos, true, min_volume);
 	}
 
 	void play_action_sound(u32 sound_id, Unit* unit) {

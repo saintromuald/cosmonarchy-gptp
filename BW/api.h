@@ -75,6 +75,102 @@ enum GameKind {
 bool __assert_sprite(Sprite* sprite, const char* function, const char* file, u64 line);
 
 namespace bw {
+	s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed = false);
+
+	/// Generates a pseudorandom number between min and max, inclusive. This is
+	/// identical to the function used internally by StarCraft, and is guaranteed to
+	/// generate the same sequence in a replay.
+	/// NOTE: The RNG has a maximum distance of 0 - 32767.
+	u32 rand_between(u32 min, u32 max, std::source_location src = std::source_location::current());
+
+	// Similar to above, but isn't synced, meaning it should be used for local only code
+	// Uses C stdlib rand
+	u32 rand_between_local(u32 min, u32 max, std::source_location src = std::source_location::current()); // forward declared (with defaults) at the top of file 
+};
+
+template <typename T, T T_None>
+struct GraphicsSet {
+	T first = T_None; // Smallest Overlay
+	T last = T_None;  // Largest Overlay
+
+	GraphicsSet() = default;
+	GraphicsSet(int id) : first{T(id)}, last{T(id)} {}
+	GraphicsSet(T id) : first{id}, last{id} {}
+	GraphicsSet(T smallest_size, T largest_size) : first{smallest_size}, last{largest_size} {}
+
+	operator bool() const {
+		return first != T_None;
+	}
+	bool operator==(const GraphicsSet&) const = default;
+
+	T get_small() const {
+		return get(0);
+	}
+
+	T get_medium() const {
+		return get(1);
+	}
+
+	T get_large() const {
+		return get(2);
+	}
+
+	T get_xlarge() const {
+		return get(3);
+	}
+
+	T get_for(Unit* unit) const {
+		return get(bw::get_overlay_offset(unit->id, true));
+	}
+
+private:
+	T get(u32 index) const {
+		if (first > last) {
+			return std::clamp<T>(T(s32(first) - s32(index)), last, first);
+		} else {
+			return std::clamp<T>(T(s32(first) + s32(index)), first, last);
+		}
+	}
+};
+using ImageSet = GraphicsSet<ImageId::Enum, ImageId::None>;
+using SpriteSet = GraphicsSet<SpriteId::Enum, SpriteId::None>;
+
+struct SoundSet {
+	SoundId::Enum first = SoundId::None;
+	SoundId::Enum last = SoundId::None;
+
+	SoundSet() = default;
+	SoundSet(s32 id) : first{SoundId::Enum(id)}, last{SoundId::Enum(id)} {}
+	SoundSet(SoundId::Enum id) : first{id}, last{id} {}
+	SoundSet(SoundId::Enum smallest_size, SoundId::Enum last) : first{first}, last{last} {
+		if (first > last) {
+			std::swap(this->first, this->last);
+		}
+	}
+
+	operator bool() const {
+		return first != SoundId::None;
+	}
+	bool operator==(const SoundSet&) const = default;
+
+	SoundId::Enum rand(std::source_location src = std::source_location::current()) const {
+		if (first == last) return first;
+		return (SoundId::Enum)bw::rand_between(first, last, src);
+	}
+
+	SoundId::Enum rand_local(std::source_location src = std::source_location::current()) const {
+		if (first == last) return first;
+		return (SoundId::Enum)bw::rand_between_local(first, last, src);
+	}
+};
+
+struct OverlaySettings {
+	bool underlay = false;
+	SoundSet add_sound = SoundId::None;
+	SoundSet remove_sound = SoundId::None;
+};
+
+namespace bw {
 	std::filesystem::path get_starcraft_path();
 
 	inline bool harvester_is_waiting(Unit* unit) {
@@ -437,10 +533,11 @@ namespace bw {
 	/// @see Unit::is_target_enemy().
 	inline bool is_unit_enemy(u8 player, Unit* unit) {
 		//Identical to function @ 0x0047B740
-		u8 unitOwner = unit->player;
-		if (unitOwner == 11)
-			unitOwner = unit->sprite->player;
-		return 0 == player_alliance[player].flags[unitOwner];
+		u8 owner = unit->player;
+		if (owner == NeutralPlayer) {
+			owner = unit->sprite->player;
+		}
+		return player_alliance[player].flags[owner] == 0;
 	}
 
 	u32 get_sized_overlay(Unit* unit, u32 initial);
@@ -518,8 +615,7 @@ namespace bw {
 		return &(*g_active_tile_array)[tile_x + tile_y * g_map_tile_size->width];
 	}
 
-	inline u16& getTileIdAt(s32 x, s32 y)
-	{
+	inline u16& getTileIdAt(s32 x, s32 y) {
 		return (*tileIdArray)[(x / 32) + g_map_tile_size->width * (y / 32)];
 	}
 
@@ -605,16 +701,6 @@ namespace bw {
 	/// Refreshes the entire screen.
 	void refresh_screen();
 
-	/// Generates a pseudorandom number between min and max, inclusive. This is
-	/// identical to the function used internally by StarCraft, and is guaranteed to
-	/// generate the same sequence in a replay.
-	/// NOTE: The RNG has a maximum distance of 0 - 32767.
-	u32 rand_between(u32 min, u32 max, std::source_location src = std::source_location::current());
-
-	// Similar to above, but isn't synced, meaning it should be used for local only code
-	// Uses C stdlib rand
-	u32 rand_between_local(u32 min, u32 max, std::source_location src = std::source_location::current());
-
 	/// Generates a pseudorandom number between 0 and 32767, inclusive. This is
 	/// identical to the function used internally by StarCraft, and is guaranteed to
 	/// generate the same sequence in a replay.
@@ -636,10 +722,8 @@ namespace bw {
 	void minimap_ping(u32 x, u32 y, s32 color, u32 player = 8);
 
 	// Functionally identical to the [playfram] opcode in iscript.bin.
-	inline void playFrame(Image* image, u16 frameset)
-	{
-		if (image->frameset != frameset)
-		{
+	inline void play_frame(Image* image, u16 frameset) {
+		if (image->frameset != frameset) {
 			image->frameset = frameset;
 			u16 frameIndex = frameset + image->direction;
 			if (image->frame_index != frameIndex)
@@ -650,20 +734,8 @@ namespace bw {
 		}
 	}
 
-	/// Sets the data of the Anywhere location.
-	inline void setAnywhereLocation()
-	{
-		Location* location = &g_location_table[63];
-		location->dimensions.left = 0;
-		location->dimensions.top = 0;
-		location->dimensions.right = 32 * g_map_tile_size->width;
-		location->dimensions.bottom = 32 * g_map_tile_size->height;
-		location->flags = 63;
-	}
-
 	/// Sets the data of location @p locNumber.
-	inline void setLocation(s32 locNumber, s32 left, s32 top, s32 right, s32 bottom, s32 flags)
-	{
+	inline void set_location(s32 locNumber, s32 left, s32 top, s32 right, s32 bottom, s32 flags) {
 		Location* location = &g_location_table[locNumber];
 		location->dimensions.left = left;
 		location->dimensions.top = top;
@@ -672,11 +744,16 @@ namespace bw {
 		location->flags = flags;
 	}
 
+	/// Sets the data of the Anywhere location.
+	inline void set_anywhere_location() {
+		static constexpr auto AnywhereLocation = 63;
+		set_location(AnywhereLocation, 0, 0, 32 * g_map_tile_size->width, 32 * g_map_tile_size->height, 63);
+	}
+
 	/// Sets or clears the "is currently inside the game loop" property.
 	/// This must be called in next_frame() to use bw::random() there.
-	inline bool set_ingame_loop_state(bool new_state)
-	{
-		//Identical to function @ 0x004DC540
+	inline bool set_ingame_loop_state(bool new_state) {
+		// Identical to function @ 0x004DC540
 		b32 previous_state = g_is_in_game_loop;
 		g_is_in_game_loop = (new_state ? 1 : 0);
 		return previous_state != 0;
@@ -700,7 +777,6 @@ namespace bw {
 	bool is_enabled(Unit* unit);
 	bool is_debuffed(Unit* unit);
 	s32 get_upgrade_type(Unit* unit);
-	s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed = false);
 	s32 get_final_damage(Unit* unit, u16 weapon_id);
 	bool order_is_spell(s32 order_id);
 	void create_shield_overlay(Unit* unit, u32 attack_direction);
@@ -812,8 +888,13 @@ namespace bw {
 	f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector32f* out_cp);
 	bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
 	void transform_unit(Unit* unit, u16 unit_id);
-	void add_unit_overlay(Unit* unit, u32 image_id, bool underlay = false); // Does NOT calculate overlay offset!
-	void remove_unit_overlay(Unit* unit, u32 image_id);						// Does NOT calculate overlay offset!
+	void add_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});              // Does NOT calculate overlay offset!
+	void remove_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});           // Does NOT calculate overlay offset!
+	void set_unit_overlay(Unit* unit, ImageSet image_set, bool active, const OverlaySettings& settings = {}); // Does NOT calculate overlay offset!
+	void play_sound(Unit* unit, SoundSet sound_set, u32 min_volume = 0);
+	void play_sound(Point16 pos, SoundSet sound_set, u32 min_volume = 0);
+	void play_sound_local(Unit* unit, SoundSet sound_set, u32 min_volume = 0);
+	void play_sound_local(Point16 pos, SoundSet sound_set, u32 min_volume = 0);
 	void play_action_sound(u32 sound_id, Unit* unit);
 	u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target);
 	void regress(Unit* unit, u32 regression_id);
