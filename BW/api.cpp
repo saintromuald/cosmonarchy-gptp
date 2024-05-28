@@ -2067,7 +2067,7 @@ namespace bw {
 			case UnitId::ZergTethvithSwamp:			return UnitId::ZergSkibactScab;
 			case UnitId::ZergBegrozithBarrow:		return UnitId::ZergAxtothAxis;
 			case UnitId::ZergAlkajChasm:			return UnitId::ZergGeszkathGrotto;
-			case UnitId::ZergChokralChazsal:	return UnitId::ZergAlkagIteth;
+			case UnitId::ZergChokralChazsal:		return UnitId::ZergAlkagIteth;
 			case UnitId::ZergUltravCavern:			return UnitId::ZergZorkizShroud;
 			case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
 			case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
@@ -2093,7 +2093,8 @@ namespace bw {
 			case UnitId::ZergIroleth:				return UnitId::ZergOvileth;
 			case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
 			case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
-			case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
+		//	case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;	// Do not regress air -> ground
+		//	case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;	// Do not regress air -> ground | Do not regress dual birth
 			case UnitId::ZergTosgrilisk:			return UnitId::ZergMutalisk;
 			case UnitId::ZergBactalisk:				return UnitId::ZergHydralisk;
 			case UnitId::ZergTethzorokor:			return UnitId::ZergIzirokor;
@@ -2106,13 +2107,13 @@ namespace bw {
 			case UnitId::ZergUltrokor:				return UnitId::ZergZoryusthaleth;
 			case UnitId::ZergZobriolisk:			return UnitId::ZergLakizilisk;
 			case UnitId::ZergZarcavrokor:			return UnitId::ZergGorgrokor;
-			case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
+		//	case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;	// Do not regress air -> ground
 			case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
 			case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
 			case UnitId::ZergKalkalisk: {
 				switch (g_globals->players[unit->player].faction) {
-					case Faction::ZergAtaltrethTendril: return UnitId::ZergNathrokor;
 					case Faction::ZergZorthosTendril:   return UnitId::ZergNathrelisk;
+					default:							return UnitId::ZergNathrokor;
 				}
 			} break;
 		}
