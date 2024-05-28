@@ -142,7 +142,7 @@ struct SoundSet {
 	SoundSet() = default;
 	SoundSet(s32 id) : first{SoundId::Enum(id)}, last{SoundId::Enum(id)} {}
 	SoundSet(SoundId::Enum id) : first{id}, last{id} {}
-	SoundSet(SoundId::Enum smallest_size, SoundId::Enum last) : first{first}, last{last} {
+	SoundSet(SoundId::Enum first, SoundId::Enum last) : first{first}, last{last} {
 		if (first > last) {
 			std::swap(this->first, this->last);
 		}
