@@ -19,7 +19,7 @@ private:
 	// NOTE: not using unordered_map, since ordering could be different and desync
 	inline static std::map<UnitId::Enum, std::vector<UnitId::Enum>> s_spawner_types{
 		{
-			UnitId::TerranStockade, 
+			UnitId::TerranStockade,
 			{
 				UnitId::TerranMaverick,
 				UnitId::TerranHarakan,

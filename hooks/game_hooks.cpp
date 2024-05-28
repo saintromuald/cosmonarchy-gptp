@@ -668,9 +668,7 @@ namespace hooks {
 		}
 
 		// Execute triggers before first frame update
-		bw::set_ingame_loop_state(true);
 		helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
-		bw::set_ingame_loop_state(false);
 
 		g_active_game_mode.release();
 		switch (bw::get_game_kind()) {
@@ -761,7 +759,9 @@ namespace hooks {
 
 		if (!g_game_was_init) {
 			g_game_was_init = true;
+			bw::set_ingame_loop_state(true);
 			game_init_first_frame();
+			bw::set_ingame_loop_state(false);
 		}
 		update_hotkeys();
 
@@ -2107,83 +2107,81 @@ namespace hooks {
 			} break;
 			case UnitId::TerranAncile: {
 				// Ancile - Providence - Projectile handling
-				if (unit->energy >= 1 * 256) {
-					bw::add_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge); // TODO: Own overlays
+				bool active = unit->energy >= 1 * 256;
+				bw::set_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge, active, { // TODO: Own overlays?
+					.remove_sound = SoundId::AncileProvidenceDeactivate,
+				});
 
-					const u32 radius = 2 * 32;
-					EntryArray bullets = {};
-					bullet_search_radial(&bullets, unit->position, radius);
-					for (u32 i = 0; i < bullets.count; i++) {
-						Bullet* bullet = bullets.bullets[i];
+				if (!active) {
+					break;
+				}
 
-						// Check if the weapon should be interacted with
-						if (!weapon_id_procs_onhits(bullet->weapon_id)) {
-							continue;
-						}
-
-						// Check if the bullet is friendly
-						if (bw::are_mutual_allies(unit->player, bullet->player)
-						&&  weapons_dat::explosion_type[bullet->weapon_id] != WeaponEffect::SplashRadial
-						&&  weapons_dat::explosion_type[bullet->weapon_id] != WeaponEffect::SplashAir)
-						{
-							continue;
-						}
-
-						// Check if the unit can be shielded
-						Unit* target = bullet->attack_target.unit;
-						if ((target && (!bw::is_allied_to(unit->player, target->player) || target->player == NeutralPlayer)) || bullet->hit_flags & 1) {
-							// We skip flagged bullets, so we don't have an infinite cycle of redirecting
-							continue;
-						}
-
-						// Check if the target is actually shielded (in area)
-						Point16 target_position = bullet->attack_target.unit ? bullet->attack_target.unit->position : bullet->attack_target.pt;
-						if (bw::get_distance_fast(unit->position, target_position) > radius) {
-							continue;
-						}
-
-						// Redirect the hitscan bullet, hitscan attacks themselves are handled in weapon damage
-						switch (weapons_dat::behavior[bullet->weapon_id]) {
-							case WeaponBehavior_AppearOnAttacker:
-							case WeaponBehavior_AppearOnTargetSite:
-							case WeaponBehavior_AppearOnTargetUnit:
-							{
-								bullet->position = unit->position;
-								if (bullet->sprite) {
-									bullet->sprite->set_position(unit->position.x, unit->position.y);
-									bullet->sprite->elevation = unit->sprite->elevation + 1;
-								}
-								continue;
-							} break;
-						}
-
-						// Redirect
-						ignore_alert = true;
-						hooks::unit_attack_notify(unit);
-						ignore_alert = false;
-						if (bullet->source_unit) {
-							bw::reveal_attacker(bullet->source_unit, unit);
-						}
-
-						if (target) {
-							bw::create_shield_overlay(target, bullet->current_direction_1);
-						}
-						bw::set_bullet_target(bullet, unit);
-						bw::set_bullet_direction(bullet, unit);
-						bullet->hit_flags |= 1; // We set missed flag, so the bullet doesn't deal hp damage (this doesn't help with hitscan or melee)
-						if (weapon_id_is_standard_weapon(bullet->weapon_id)) {
-							unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
-						}
-						u32 sound_id = bw::rand_between(SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03);
-						helper::play_sound_from_unit(sound_id, unit, 1, 0);
-
-						if (unit->energy < 1 * 256) {
-							break;
-						}
+				static constexpr u32 radius = 2 * 32;
+				EntryArray bullets = {};
+				bullet_search_radial(&bullets, unit->position, radius);
+				for (Bullet* bullet : bullets.bullets) {
+					// Check if the weapon should be interacted with
+					if (!weapon_id_procs_onhits(bullet->weapon_id)) {
+						continue;
 					}
-				} else if (unit->get_overlay(ImageId::SublimeShepherdOverlayLarge)) { // TODO: Own overlays
-					bw::remove_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge);
-					helper::play_sound_from_unit(SoundId::AncileProvidenceDeactivate, unit, 1, 0);
+
+					// Check if the bullet is friendly
+					if (bw::are_mutual_allies(unit->player, bullet->player)
+					&&  weapons_dat::explosion_type[bullet->weapon_id] != WeaponEffect::SplashRadial
+					&&  weapons_dat::explosion_type[bullet->weapon_id] != WeaponEffect::SplashAir) {
+						continue;
+					}
+
+					// Check if the unit can be shielded
+					Unit* target = bullet->attack_target.unit;
+					if ((target && (!bw::is_allied_to(unit->player, target->player) || target->player == NeutralPlayer)) || bullet->hit_flags & 1) {
+						// We skip flagged bullets, so we don't have an infinite cycle of redirecting
+						continue;
+					}
+
+					// Check if the target is actually shielded (in area)
+					Point16 target_position = bullet->attack_target.unit ? bullet->attack_target.unit->position : bullet->attack_target.pt;
+					if (bw::get_distance_fast(unit->position, target_position) > radius) {
+						continue;
+					}
+
+					// Redirect the hitscan bullet, hitscan attacks themselves are handled in weapon damage
+					switch (weapons_dat::behavior[bullet->weapon_id]) {
+						case WeaponBehavior_AppearOnAttacker:
+						case WeaponBehavior_AppearOnTargetSite:
+						case WeaponBehavior_AppearOnTargetUnit:
+						{
+							bullet->position = unit->position;
+							if (bullet->sprite) {
+								bullet->sprite->set_position(unit->position.x, unit->position.y);
+								bullet->sprite->elevation = unit->sprite->elevation + 1;
+							}
+							continue;
+						} break;
+					}
+
+					// Redirect
+					ignore_alert = true;
+					hooks::unit_attack_notify(unit);
+					ignore_alert = false;
+					if (bullet->source_unit) {
+						bw::reveal_attacker(bullet->source_unit, unit);
+					}
+
+					if (target) {
+						bw::create_shield_overlay(target, bullet->current_direction_1);
+					}
+					bw::set_bullet_target(bullet, unit);
+					bw::set_bullet_direction(bullet, unit);
+					bullet->hit_flags |= 1; // We set missed flag, so the bullet doesn't deal hp damage (this doesn't help with hitscan or melee)
+					if (weapon_id_is_standard_weapon(bullet->weapon_id)) {
+						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
+					}
+
+					bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
+					if (unit->energy < 1 * 256) {
+						break;
+					}
 				}
 			} break;
 			case UnitId::TerranDurendal:
@@ -2202,12 +2200,11 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranHypnagogue:
-			{
+			case UnitId::TerranHypnagogue: {
 				// Hypnagogue - Through the Looking Glass
-				bool try_cast = unit_ext->values[ValueTryCastCustomSpell] != 0;
+				auto& try_cast = unit_ext->values[ValueTryCastCustomSpell];
 				if (try_cast && (unit->main_order_id != OrderId::CastThroughTheLookingGlass || unit->is_frozen())) {
-					unit_ext->values[ValueTryCastCustomSpell] = 0;
+					try_cast = false;
 				}
 				if (try_cast && !unit_ext->timers[TimerTryCastCustomSpell] && !unit_ext->timers[TimerHypnagogueChannel]) {
 					Point16 target_pos = {};
@@ -2233,20 +2230,18 @@ namespace hooks {
 							unit_ext->values[ValueThroughTheLookingGlassX] = target_pos.x;
 							unit_ext->values[ValueThroughTheLookingGlassY] = target_pos.y;
 							unit->freeze();
-							unit_ext->values[ValueTryCastCustomSpell] = 0;
+							try_cast = false;
 						}
 					}
 				}
 
 				if (unit_ext->timers[TimerHypnagogueChannel]) {
 					bw::decloak_passive_proc(unit);
-					switch (unit_ext->timers[TimerHypnagogueChannel])
-					{
+					switch (unit_ext->timers[TimerHypnagogueChannel]) {
 						case 48:
 						case 36:
 						case 24:
-						case 12:
-						{
+						case 12: {
 							Point16 target_pos = {};
 							target_pos.x = unit_ext->values[ValueThroughTheLookingGlassX];
 							target_pos.y = unit_ext->values[ValueThroughTheLookingGlassY];
@@ -2254,25 +2249,29 @@ namespace hooks {
 							helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, pos.x,		  pos.y, unit->player);
 							helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, target_pos.x, target_pos.y, unit->player);
 						} break;
-						case 1:
-						{
-							Point16 target_pos = {};
-							target_pos.x = unit_ext->values[ValueThroughTheLookingGlassX];
-							target_pos.y = unit_ext->values[ValueThroughTheLookingGlassY];
+						case 1: {
+							Point16 target_center_pos{
+								.x = u16(unit_ext->values[ValueThroughTheLookingGlassX]),
+								.y = u16(unit_ext->values[ValueThroughTheLookingGlassY]),
+							};
 							Point16 pos = unit->position;
 
-							EntryArray units = {};
-							unit_search_radial(&units, pos, 2 * 32);
-							unit_search_filter(&units, unit, FilterAlly | FilterNoBuilding | FilterCompleted);
-							for (u32 index = 0; index < units.count; ++index) {
-								Unit* target = units.units[index];
+							helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
+							bw::teleport_to_point(unit, target_center_pos);
+							bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
+
+							EntryArray targets = {};
+							unit_search_radial(&targets, pos, 2 * 32);
+							unit_search_filter(&targets, unit, FilterAlly | FilterNoBuilding | FilterCompleted);
+							for (Unit* target : targets.units) {
+								Point16 target_pos{
+									.x = u16(target_center_pos.x + (pos.x - target->position.x)),
+									.y = u16(target_center_pos.y + (pos.y - target->position.y)),
+								};
 								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, target->position.x, target->position.y, unit->player);
 								bw::teleport_to_point(target, target_pos);
 								bw::add_unit_overlay(target, ImageId::LegionnaireTeleportEffect);
 							}
-							helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
-							bw::teleport_to_point(unit, target_pos);
-							bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 							unit->unfreeze();
 						} break;
 					}
@@ -2512,7 +2511,7 @@ namespace hooks {
 							target->update_speed();
 						}
 						if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
-							bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, true);
+							bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, { .underlay = true });
 						}
 					}
 				}
@@ -2661,7 +2660,6 @@ namespace hooks {
 		if (unit_ext->timers[TimerAvenge] > 1) {
 			u32 ascend_overlay_id = ImageId::Avenge_Small + bw::get_overlay_offset(unit->id, true);
 			bw::add_unit_overlay(unit, ascend_overlay_id);
-
 		}
 
 		if (unit_ext->timers[TimerAscend]) {
