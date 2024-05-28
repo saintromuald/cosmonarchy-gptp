@@ -1079,7 +1079,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 						group.push_back(std::make_pair(u, priority));
 						supply += units_dat::supply_required[u->id];
 					});
-					std::sort(group.begin(), group.end(), [](auto& left, auto& right)
+					std::stable_sort(group.begin(), group.end(), [](auto& left, auto& right)
 					{
 						return left.second > right.second;
 					});

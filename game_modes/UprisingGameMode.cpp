@@ -17,11 +17,6 @@
 //	  * Protoss spawners should warp into successor options
 //    * All camps should set up defensive structures over time
 
-template <typename Seq>
-static auto& get_sync_random_from(Seq&& sequence) {
-	return *std::next(std::begin(sequence), bw::rand_between(0, std::size(sequence) - 1));
-}
-
 UprisingGameMode::UprisingGameMode() {
 	for (auto& unit : g_chk_cache) {
 		if (unit.player != NeutralPlayer) {
@@ -32,7 +27,7 @@ UprisingGameMode::UprisingGameMode() {
 			continue;
 		}
 
-		Point16 position = { unit.x, unit.y };
+		Point16 position = {unit.x, unit.y};
 		switch (unit.unit_id) {
 			case UnitId::TownCenterMarker: {
 				UpstartSpawnLocation spawn{
@@ -47,8 +42,8 @@ UprisingGameMode::UprisingGameMode() {
 					}
 				}
 
-				const auto& [unit_id, spawns] = get_sync_random_from(s_spawner_types);
-				Unit* unit = bw::create_unit_in_game((u16)unit_id, NeutralHostilePlayerId, spawn.position.x, spawn.position.y);
+				const auto& [unit_id, spawns] = bw::rand_one(s_spawner_types);
+				Unit* unit = bw::create_unit_in_game((u16) unit_id, NeutralHostilePlayerId, spawn.position.x, spawn.position.y);
 				if (!unit) {
 					break;
 				}
@@ -72,13 +67,13 @@ void UprisingGameMode::tick_unit(Unit* unit) {
 	}
 
 	if (unit_ext->timers[TimerUprisingSpawn] == 1) {
-		const auto& units = s_spawner_types[(UnitId::Enum)unit->id];
+		const auto& units = s_spawner_types[(UnitId::Enum) unit->id];
 
 		EntryArray upstarts = {};
 		unit_search_radial(&upstarts, unit->position, unit->get_sight_range() * 32);
 		unit_search_filter(&upstarts, unit, FilterOwn | FilterNoBuilding);
 		if (upstarts.count < 10) {
-			UnitId::Enum spawn_id = get_sync_random_from(units);
+			UnitId::Enum spawn_id = bw::rand_one(units);
 			bool two_per_egg = units_dat::base_property[spawn_id] & UnitProperty::TwoUnitsIn1Egg;
 			u32 spawn_count = two_per_egg ? 2 : 1;
 			for (u32 i = 0; i < spawn_count; i++) {

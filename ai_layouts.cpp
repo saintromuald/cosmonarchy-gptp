@@ -447,7 +447,7 @@ void AiLayouts::request_placeholder(AiTown& town, TownLayouts& layouts_town, AiP
 
 void AiLayouts::sort_layouts(PlayerLayouts& layouts) {
 	layouts.should_sort = false;
-	std::ranges::sort(layouts.placeholders, [](AiPlaceholder& a, AiPlaceholder& b) {
+	std::ranges::stable_sort(layouts.placeholders, [](const AiPlaceholder& a, const AiPlaceholder& b) {
 		s32 priority_diff = b.priority - a.priority;
 		if (priority_diff) return priority_diff < 0;
 

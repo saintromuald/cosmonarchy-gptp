@@ -264,9 +264,7 @@ void unit_search_custom_filter(EntryArray* unit_array, SearchFilterFunc filter) 
 }
 
 void unit_search_sort(EntryArray* unit_array, SearchScoreFunc score_func) {
-	// not a fan of std::sort, probably should replace with own qsort
-	// qsort from C can't work with lambdas
-	std::sort(unit_array->units.data, unit_array->units.data + unit_array->count, [&](Unit* a, Unit* b) {
+	std::ranges::stable_sort(unit_array->units, [&](Unit* a, Unit* b) {
 		return score_func(a) > score_func(b);	
 	});
 }

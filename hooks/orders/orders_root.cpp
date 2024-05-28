@@ -378,7 +378,7 @@ namespace hooks {
 			case OrderId::CastThroughTheLookingGlass: {
 				UnitExt* unit_ext = get_unit_ext(unit);
 				if (!unit_ext->timers[TimerHypnagogueChannel] && !unit_ext->values[ValueTryCastCustomSpell]) {
-					unit_ext->values[ValueTryCastCustomSpell] = 1;
+					unit_ext->values[ValueTryCastCustomSpell] = true;
 				}
 			} break;
 			default: {
