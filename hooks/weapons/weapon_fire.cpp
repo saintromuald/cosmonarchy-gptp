@@ -741,29 +741,24 @@ namespace hooks {
 			case WeaponId::RamessesPharoahCannons:
 			case WeaponId::WyvernJacksonCannon:
 			case WeaponId::MagnetarNewtonianShockCannon:
-			case WeaponId::HippogriffChimeraCannons:
-			{
+			case WeaponId::HippogriffChimeraCannons: {
 				iquare_globals.add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
 			// Same as default, but red effect
-			case WeaponId::SavantDiscoidRailgunPiercing:
-			{
+			case WeaponId::SavantDiscoidRailgunPiercing: {
 				iquare_globals.add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
-			case WeaponId::PenumbraErebolShockCannon:
-			{
+			case WeaponId::PenumbraErebolShockCannon: {
 				// Penumbra - Shroud Piercer
 				iquare_globals.add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, bullet->attack_target.unit == target ? 1 : 2);
 			} break;
-			case WeaponId::ClaymoreHarpoonRailgun:
-			{
-				// Claymore - Kelvin Munitions
+			case WeaponId::ClaymoreHarpoonRailgun: {
 				// pierce targets
 				iquare_globals.add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
@@ -771,30 +766,26 @@ namespace hooks {
 				helper::play_sound_from_unit(sound_id, target, 1, 0);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 
-				// slow pierced targets
+				// Claymore - Kelvin Munitions - slow pierced targets
 				UnitExt* collision_target_ext = get_unit_ext(target);
 				if (!collision_target_ext->timers[TimerKelvinMunitions]) {
 					collision_target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
 				}
 			} break;
-			case WeaponId::KalkaliskViscousAcid:
-			{
+			case WeaponId::KalkaliskViscousAcid: {
 				// Kalkalisk - Ablative Spores
 				bw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
 			} break;
-			case WeaponId::SkithrokorSkitteringSpores:
-			{
+			case WeaponId::SkithrokorSkitteringSpores: {
 				// Skithrokor - Ablative Whiplash
 				bw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
 			} break;
-			case WeaponId::ZarcavrokorBonesofReflection:
-			{
+			case WeaponId::ZarcavrokorBonesofReflection: {
 				iquare_globals.add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
-			default:
-			{
+			default: {
 				iquare_globals.add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
@@ -1044,20 +1035,16 @@ namespace hooks {
 		} else if (weapon_id_pierces(bullet->weapon_id)) {
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
-				case WeaponId::WyvernJacksonCannon:
-				{
-					line_width = 24;
-				} break;
 				case WeaponId::SavantDiscoidRailgunPiercing:
+				case WeaponId::AutocratEminenceRifle:
 				case WeaponId::ClaymoreHarpoonRailgun:
-				case WeaponId::SentinelCerberusRailgun:
-				{
+				case WeaponId::WyvernJacksonCannon:
+				case WeaponId::SentinelCerberusRailgun: {
 					line_width = 32;
 				} break;
 				case WeaponId::PenumbraErebolShockCannon:
 				case WeaponId::MagnetarNewtonianShockCannon:
-				case WeaponId::HippogriffChimeraCannons:
-				{
+				case WeaponId::HippogriffChimeraCannons: {
 					line_width = 48;
 				} break;
 			}

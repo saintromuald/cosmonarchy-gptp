@@ -457,8 +457,7 @@ namespace hooks
 		// No attacker here
 		switch (data.weapon_id) {
 			case WeaponId::ApostleCharonRifle:
-			case WeaponId::AutocratEminenceRifle:
-			{
+			case WeaponId::AutocratEminenceRifle: {
 				if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
 					Thingy* corpse = get_closest_active_corpse(data.target->position, 3 * 32);
 					if (corpse) {
@@ -466,13 +465,11 @@ namespace hooks
 					}
 				}
 			} break;
-			case WeaponId::AurielQuarternaryRifle:
-			{
+			case WeaponId::AurielQuarternaryRifle: {
 				target_ext->values[ValueAurielIncinerationPlayer] = data.attacking_player_id;
 				target_ext->timers[TimerAurielIncineration] = 2 * 24 + 1;
 			} break;
-			case WeaponId::WendigoFusionSaw:
-			{
+			case WeaponId::WendigoFusionSaw: {
 				target_ext->values[ValueWendigoShatteredWindsStacks]++;
 				target_ext->timers[TimerWendigoShatteredWinds] = 2 * 24 + 1;
 			} break;
