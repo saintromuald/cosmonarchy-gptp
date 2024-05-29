@@ -945,6 +945,12 @@ u32 get_mutate_image_id(u32 unit_id) {
 		case UnitId::ZergProtathalor: {
 			return ImageId::ProtathalorMutate;
 		}
+		case UnitId::ZergIzirokor: {
+			return ImageId::IzirokorMutate;
+		}
+		case UnitId::ZergSkithrokor: {
+			return ImageId::SkithrokorMutate;
+		}
 		default: {
 			return 0;
 		}
