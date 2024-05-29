@@ -1125,13 +1125,13 @@ s32 get_final_damage(Unit* unit, u16 weapon_id) {
 bool order_is_spell(s32 order_id) {
 	return order_id == OrderId::Plague
 		|| order_id == OrderId::CarapaceSwarm
-		//			|| order_id == OrderId::Ensnare				// Land Grab
+	//	|| order_id == OrderId::Ensnare				// Land Grab
 		|| order_id == OrderId::Irradiate
 		|| order_id == OrderId::StasisField
 		|| order_id == OrderId::EMPShockwave		// Observance	 (unused)
 		|| order_id == OrderId::MagnaPulse			// Lobotomy Mine (unused)
 		|| order_id == OrderId::PsiStorm
-		//			|| order_id == OrderId::SummonBroodlings	// unused
+	//	|| order_id == OrderId::SummonBroodlings	// unused
 		|| order_id == OrderId::FireYamatoGun1;
 }
 
@@ -2024,8 +2024,8 @@ void dump_sync_data() {
 u32 get_zerg_regression(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	if (unit_ext->values[ValueOriginatedFromOcsalLarva]
-		|| unit_ext->values[ValueIsNydusExit]
-		|| unit_ext->values[ValueIsNeutralNydus]) {
+	||	unit_ext->values[ValueIsNydusExit]
+	||	unit_ext->values[ValueIsNeutralNydus]) {
 		// The above cases do not regress!
 		return UnitId::None;
 	}
@@ -2051,33 +2051,34 @@ u32 get_zerg_regression(Unit* unit) {
 		case UnitId::ZergTethvithSwamp:			return UnitId::ZergSkibactScab;
 		case UnitId::ZergBegrozithBarrow:		return UnitId::ZergAxtothAxis;
 		case UnitId::ZergAlkajChasm:			return UnitId::ZergGeszkathGrotto;
-		case UnitId::ZergChokralChazsal:	    return UnitId::ZergAlkagIteth;
+		case UnitId::ZergChokralChazsal:		return UnitId::ZergAlkagIteth;
 		case UnitId::ZergUltravCavern:			return UnitId::ZergZorkizShroud;
 		case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
 		case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
 
-			// Base Structures
-		case UnitId::ZergHachirosk:
-		case UnitId::ZergCagrantCesiant:
-		case UnitId::ZergExcisant:
-		case UnitId::ZergIrolIris:
-		case UnitId::ZergQuazethPool:
-		case UnitId::ZergMutathSpire:
-		case UnitId::ZergAxtothAxis:
-		case UnitId::ZergHydrithDen:
-		case UnitId::ZergAlkagIteth:
-		case UnitId::ZergGeszkathGrotto:
-		case UnitId::ZergZorkizShroud:
-		case UnitId::ZergMatravilNest:
-		case UnitId::ZergElthisthMound:
-			return UnitId::None;			// Bugs: Larva don't unlink, cagra doesn't recede
-			//	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
+		// Base Structures
+	case UnitId::ZergHachirosk:
+	case UnitId::ZergCagrantCesiant:
+	case UnitId::ZergExcisant:
+	case UnitId::ZergIrolIris:
+	case UnitId::ZergQuazethPool:
+	case UnitId::ZergMutathSpire:
+	case UnitId::ZergAxtothAxis:
+	case UnitId::ZergHydrithDen:
+	case UnitId::ZergAlkagIteth:
+	case UnitId::ZergGeszkathGrotto:
+	case UnitId::ZergZorkizShroud:
+	case UnitId::ZergMatravilNest:
+	case UnitId::ZergElthisthMound:
+		return UnitId::None;			// Bugs: Larva don't unlink, cagra doesn't recede
+		//	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
-			// Unit Morphs
+		// Unit Morphs
 		case UnitId::ZergIroleth:				return UnitId::ZergOvileth;
 		case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
 		case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
-		case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
+	//	case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;	// Do not regress air -> ground
+	//	case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;	// Do not regress air -> ground | Do not regress dual birth
 		case UnitId::ZergTosgrilisk:			return UnitId::ZergMutalisk;
 		case UnitId::ZergBactalisk:				return UnitId::ZergHydralisk;
 		case UnitId::ZergTethzorokor:			return UnitId::ZergIzirokor;
@@ -2090,14 +2091,13 @@ u32 get_zerg_regression(Unit* unit) {
 		case UnitId::ZergUltrokor:				return UnitId::ZergZoryusthaleth;
 		case UnitId::ZergZobriolisk:			return UnitId::ZergLakizilisk;
 		case UnitId::ZergZarcavrokor:			return UnitId::ZergGorgrokor;
-		case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
+	//	case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;	// Do not regress air -> ground
 		case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
 		case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
-		case UnitId::ZergKalkalisk:
-		{
+		case UnitId::ZergKalkalisk: {
 			switch (g_globals->players[unit->player].faction) {
-				case Faction::ZergAtaltrethTendril: return UnitId::ZergNathrokor;
 				case Faction::ZergZorthosTendril:   return UnitId::ZergNathrelisk;
+				default:							return UnitId::ZergNathrokor;
 			}
 		} break;
 	}
