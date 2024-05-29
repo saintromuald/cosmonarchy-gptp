@@ -935,18 +935,17 @@ bool unit_id_is_larva(u32 unit_id) {
 }
 
 u32 get_mutate_image_id(u32 unit_id) {
-	switch (unit_id)
-	{
-		case UnitId::ZergQuazilisk:
-		{
+	switch (unit_id) {
+		case UnitId::ZergQuazilisk: {
 			return ImageId::QuaziliskMutate;
 		}
-		case UnitId::ZergNathrokor:
-		{
+		case UnitId::ZergNathrokor: {
 			return ImageId::NathrokorMutate;
 		}
-		default:
-		{
+		case UnitId::ZergProtathalor: {
+			return ImageId::ProtathalorMutate;
+		}
+		default: {
 			return 0;
 		}
 	}
