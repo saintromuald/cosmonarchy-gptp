@@ -1184,7 +1184,8 @@ namespace hooks {
 
 		// Reclamation - Reclaiming
 		if (unit_ext->timers[TimerReclaiming]) {
-			unit->heal_hp((25 * 256) / (2 * 24));
+			s32 heal_amount = 95 * 256 + units_dat::max_hitpoints[unit->id] / 3; // 5 is set on initial reclamation, 95 is left over, plus 33% of max HP
+			unit->heal_hp(heal_amount / Reclamation::ReviveTimer);
 			if (unit_ext->timers[TimerReclaiming] == 1) {
 				unit->sprite->create_overlay(ImageId::LazarusAgentCast);
 				// Play sound for the end of healing and stun
