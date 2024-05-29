@@ -1271,6 +1271,8 @@ namespace ImageId {
 		DemiurgeWorshipProc_XLarge					= 1881,
 		MindTyrantTyrannyCastOverlay				= 1882,
 
+		ProtathalorMutate							= 1887,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,
