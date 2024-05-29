@@ -143,7 +143,7 @@ enum ExtValueId {
 	ValueSavantPowerSiphonBuff,
 	ValueSavantPowerSiphonDebuff,
 	ValuePhalanxSiegeModeLaunchPos,
-	ValueOriginatedFromOcsalLarva,
+	ValueRegressionUnstable,
 	ValueOriginatedFromGosvileth,
 	ValueCustomEggActive,
 	ValueCustomEggHatchMax,

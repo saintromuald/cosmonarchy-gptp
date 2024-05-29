@@ -1159,7 +1159,7 @@ namespace hooks {
 		}
 
 		// Handle behaviors related to Ocsal origins
-		if (unit_ext->values[ValueOriginatedFromOcsalLarva]) {
+		if (unit_ext->values[ValueRegressionUnstable]) {
 			// Overlay for units which do not regress on death
 			if (!unit->sprite->get_overlay(ImageId::OcsalRegressionOverlay)) {
 				if (unit->id != UnitId::ZergOcsalLarva && unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
@@ -1362,7 +1362,7 @@ namespace hooks {
 					}
 				}
 
-				unit_ext->values[ValueOriginatedFromOcsalLarva] = unit->id == UnitId::ZergOcsalLarva;
+				unit_ext->values[ValueRegressionUnstable] = unit->id == UnitId::ZergOcsalLarva;
 			} break;
 			case UnitId::ZergDroleth:
 			case UnitId::ZergGosvileth:

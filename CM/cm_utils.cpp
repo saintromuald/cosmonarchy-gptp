@@ -53,7 +53,7 @@ void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
 u32 get_construction_graphic(Unit* unit)
 {
 	UnitExt* unit_ext = get_unit_ext(unit);
-	bool is_ocsal = unit_ext->values[ValueOriginatedFromOcsalLarva];
+	bool is_ocsal = unit_ext->values[ValueRegressionUnstable];
 	switch (unit->id)
 	{
 		case UnitId::ZergIroleth:

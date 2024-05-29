@@ -65,10 +65,18 @@ namespace hooks {
 			//	extra_count++;
 			}
 
+			u32 stable_count = extra_count;
 			Unit* twin_unit = 0;
 			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units) {
 				twin_unit = helper::zerg_dual_birth(unit);
 				if (twin_unit) {
+					UnitExt* twin_unit_ext = get_unit_ext(twin_unit);
+					if (stable_count) {
+						stable_count--;
+						twin_unit_ext->values[ValueRegressionUnstable] = unit_ext->values[ValueRegressionUnstable];
+					} else {
+						twin_unit_ext->values[ValueRegressionUnstable] = bw::get_zerg_regression(twin_unit) != UnitId::None ? true : false;
+					}
 					spread_debuffs(unit, twin_unit);
 					twin_unit->rally = unit->rally;
 					helper::ai_training_unit(twin_unit, unit);
@@ -83,7 +91,12 @@ namespace hooks {
 					spread_debuffs(unit, new_unit);
 					new_unit->rally = unit->rally;
 					UnitExt* new_ext = get_unit_ext(new_unit);
-					new_ext->values[ValueOriginatedFromOcsalLarva] = unit_ext->values[ValueOriginatedFromOcsalLarva];
+					if (stable_count) {
+						stable_count--;
+						new_ext->values[ValueRegressionUnstable] = unit_ext->values[ValueRegressionUnstable];
+					} else {
+						new_ext->values[ValueRegressionUnstable] = bw::get_zerg_regression(twin_unit) != UnitId::None ? true : false;
+					}
 					helper::order_new_unit_to_rally(new_unit, factory);
 					if (*g_active_player_id == *g_local_human_id && unit->sprite->flags & SpriteFlags::Selected) {
 						helper::select_new_unit(new_unit);

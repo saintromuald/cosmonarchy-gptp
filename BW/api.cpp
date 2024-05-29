@@ -2023,7 +2023,7 @@ void dump_sync_data() {
 
 u32 get_zerg_regression(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
-	if (unit_ext->values[ValueOriginatedFromOcsalLarva]
+	if (unit_ext->values[ValueRegressionUnstable]
 	||	unit_ext->values[ValueIsNydusExit]
 	||	unit_ext->values[ValueIsNeutralNydus]) {
 		// The above cases do not regress!
@@ -2077,8 +2077,8 @@ u32 get_zerg_regression(Unit* unit) {
 		case UnitId::ZergIroleth:				return UnitId::ZergOvileth;
 		case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
 		case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
-	//	case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;	// Do not regress air -> ground
-	//	case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;	// Do not regress air -> ground | Do not regress dual birth
+		case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
+		case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;
 		case UnitId::ZergTosgrilisk:			return UnitId::ZergMutalisk;
 		case UnitId::ZergBactalisk:				return UnitId::ZergHydralisk;
 		case UnitId::ZergTethzorokor:			return UnitId::ZergIzirokor;
@@ -2091,7 +2091,7 @@ u32 get_zerg_regression(Unit* unit) {
 		case UnitId::ZergUltrokor:				return UnitId::ZergZoryusthaleth;
 		case UnitId::ZergZobriolisk:			return UnitId::ZergLakizilisk;
 		case UnitId::ZergZarcavrokor:			return UnitId::ZergGorgrokor;
-	//	case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;	// Do not regress air -> ground
+		case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
 		case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
 		case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
 		case UnitId::ZergKalkalisk: {
@@ -2992,7 +2992,6 @@ u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target) {
 }
 
 void regress(Unit* unit, u32 regression_id) {
-	bool fatal_deal_damage = true; // Seems to be unused.
 	helper::cancel_unit(unit);
 	// We first cancel any on-going morphs, that could technically delete the unit, but that shouldn't happen for current unit id cases
 	// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
@@ -3011,12 +3010,26 @@ void regress(Unit* unit, u32 regression_id) {
 		} else {
 			helper::replace_unit_with_id(unit, regress_to);
 			unit->set_hitpoints(unit->get_max_hp_raw());
+
+			bool was_flyer = units_dat::base_property[old_id] & UnitProperty::Flyer;
+			bool is_flyer = units_dat::base_property[regress_to] & UnitProperty::Flyer;
+			if (was_flyer && !is_flyer) {
+				Point16 old_pos = unit->position;
+				Point16 new_pos = unit->position;
+
+				helper::fix_target_location(&new_pos, regress_to);
+				if (bw::distance_between(old_pos, new_pos) <= 2 * 32) {
+					bw::set_unit_position(unit, new_pos);
+				} else {
+					unit->remove();
+				}
+			}
 		}
 		if (new_unit) {
 			if (is_building) {
-				// TODO: Try calling a cagra-related function to stop regression from ruining cagra spread. -Pr0nogo
 				UnitExt* new_unit_ext = get_unit_ext(new_unit);
 				new_unit_ext->timers[TimerStun] = 1 * 24;
+				// TODO: Try calling a cagra-related function to stop regression from ruining cagra spread. -Pr0nogo
 				// TODO: Add stun audio visuals. -Veeq7
 			} else {
 				set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes. -Veeq7
