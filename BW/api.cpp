@@ -261,7 +261,7 @@ Unit* get_dark_swarm_from_position(u16 x, u16 y, u16 radius) {
 // Improved code from BWAPI's include/BWAPI/Position.h: getApproxDistance()
 // Logically same as function @ 0x0040C360
 // x1 = ECX;x2 = EDX;y1 = [EBP+08];y2 = [EBP+0C];
-u32 get_distance_fast(s32 x1, s32 y1, s32 x2, s32 y2) {
+u32 distance_between(s32 x1, s32 y1, s32 x2, s32 y2) {
 	s32 dMax = abs(x1 - x2), dMin = abs(y1 - y2);
 	if (dMax < dMin) {
 		std::swap(dMax, dMin);
@@ -272,7 +272,7 @@ u32 get_distance_fast(s32 x1, s32 y1, s32 x2, s32 y2) {
 	return (dMin * 3 >> 3) + (dMin * 3 >> 8) + dMax - (dMax >> 4) - (dMax >> 6);
 }
 
-u32 get_distance_square(s32 x1, s32 y1, s32 x2, s32 y2) {
+u32 distance_rectangular(s32 x1, s32 y1, s32 x2, s32 y2) {
 	return std::max(abs(x1 - x2), abs(y1 - y2));
 }
 
@@ -1711,7 +1711,7 @@ u32 get_closest_resarea(Point16 position) {
 	u32 best_resarea = 0;
 	for (u32 i = 1; i <= g_resource_areas->count; ++i) {
 		ResourceArea* resarea = &g_resource_areas->areas[i];
-		u32 distance = bw::get_distance_fast(position, resarea->position);
+		u32 distance = bw::distance_between(position, resarea->position);
 		if (distance < min_distance) {
 			min_distance = distance;
 			best_resarea = i;
@@ -1727,7 +1727,7 @@ AiTown* get_closest_town(u32 player, Point16 position) {
 		if (!town->inited) {
 			continue;
 		}
-		u32 distance = bw::get_distance_fast(position, town->position);
+		u32 distance = bw::distance_between(position, town->position);
 		if (distance < min_distance) {
 			min_distance = distance;
 			best_town = town;
@@ -2023,7 +2023,7 @@ void dump_sync_data() {
 
 u32 get_zerg_regression(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
-	if (unit_ext->values[ValueOriginatedFromOcsalLarva]
+	if (unit_ext->values[ValueRegressionUnstable]
 	||	unit_ext->values[ValueIsNydusExit]
 	||	unit_ext->values[ValueIsNeutralNydus]) {
 		// The above cases do not regress!
@@ -2077,8 +2077,8 @@ u32 get_zerg_regression(Unit* unit) {
 		case UnitId::ZergIroleth:				return UnitId::ZergOvileth;
 		case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
 		case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
-	//	case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;	// Do not regress air -> ground
-	//	case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;	// Do not regress air -> ground | Do not regress dual birth
+		case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
+		case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;
 		case UnitId::ZergTosgrilisk:			return UnitId::ZergMutalisk;
 		case UnitId::ZergBactalisk:				return UnitId::ZergHydralisk;
 		case UnitId::ZergTethzorokor:			return UnitId::ZergIzirokor;
@@ -2091,7 +2091,7 @@ u32 get_zerg_regression(Unit* unit) {
 		case UnitId::ZergUltrokor:				return UnitId::ZergZoryusthaleth;
 		case UnitId::ZergZobriolisk:			return UnitId::ZergLakizilisk;
 		case UnitId::ZergZarcavrokor:			return UnitId::ZergGorgrokor;
-	//	case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;	// Do not regress air -> ground
+		case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
 		case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
 		case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
 		case UnitId::ZergKalkalisk: {
@@ -2748,7 +2748,7 @@ void move_camera(Point16 pos) {
 }
 
 Quad quad_from_line(Point16 from, Point16 to, f32 line_width) {
-	Vector32f line_diff = get_normalized_vector(get_vector_between(from, to));
+	Vector32f line_diff = normalized_vector(vector_between(from, to));
 	Vector32f p = {-line_diff.y * line_width / 2, line_diff.x * line_width / 2};
 	Quad quad = {};
 	quad.corners[0].x = from.x - p.x;
@@ -2777,7 +2777,7 @@ Quad quad_from_rect(Box16 rect) {
 
 static bool sat_collision_internal(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
 	for (u32 i = 0; i < a_count; ++i) {
-		Vector32f diff = bw::get_vectorf_between(a[i], a[(i + 1) % a_count]);
+		Vector32f diff = bw::vectorf_between(a[i], a[(i + 1) % a_count]);
 		Vector32f proj = {-diff.y, diff.x};
 
 		f32 a_min = INFINITY;
@@ -2808,8 +2808,8 @@ bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
 }
 
 f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector32f* out_cp) {
-	Vector32f ab = bw::get_vectorf_between(from, to);
-	Vector32f ap = bw::get_vectorf_between(from, point);
+	Vector32f ab = bw::vectorf_between(from, to);
+	Vector32f ap = bw::vectorf_between(from, point);
 
 	f32 dot = bw::dot_product(ab, ap);
 	dot /= bw::dot_product(ab, ab);
@@ -2822,7 +2822,7 @@ f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector
 		*out_cp = cp;
 	}
 
-	return bw::get_distance_between(cp, point);
+	return bw::distance_between(cp, point);
 }
 
 static void line_intersects_rect_internal(Quad quad_a, Quad quad_b, Vector32f axis, f32* best_distance, Vector32f* best_cp, f32* best_t) {
@@ -2857,7 +2857,7 @@ bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, 
 			return true;
 		}
 
-		Vector32f axis = bw::get_vectorf_between(from, to);
+		Vector32f axis = bw::vectorf_between(from, to);
 		f32 best_distance = INFINITY;
 		Vector32f best_cp = {};
 		best_cp.x = rect.left + (rect.right - rect.left) / 2;
@@ -2992,7 +2992,6 @@ u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target) {
 }
 
 void regress(Unit* unit, u32 regression_id) {
-	bool fatal_deal_damage = true; // Seems to be unused.
 	helper::cancel_unit(unit);
 	// We first cancel any on-going morphs, that could technically delete the unit, but that shouldn't happen for current unit id cases
 	// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
@@ -3011,12 +3010,26 @@ void regress(Unit* unit, u32 regression_id) {
 		} else {
 			helper::replace_unit_with_id(unit, regress_to);
 			unit->set_hitpoints(unit->get_max_hp_raw());
+
+			bool was_flyer = units_dat::base_property[old_id] & UnitProperty::Flyer;
+			bool is_flyer = units_dat::base_property[regress_to] & UnitProperty::Flyer;
+			if (was_flyer && !is_flyer) {
+				Point16 old_pos = unit->position;
+				Point16 new_pos = unit->position;
+
+				helper::fix_target_location(&new_pos, regress_to);
+				if (bw::distance_between(old_pos, new_pos) <= 2 * 32) {
+					bw::set_unit_position(unit, new_pos);
+				} else {
+					unit->remove();
+				}
+			}
 		}
 		if (new_unit) {
 			if (is_building) {
-				// TODO: Try calling a cagra-related function to stop regression from ruining cagra spread. -Pr0nogo
 				UnitExt* new_unit_ext = get_unit_ext(new_unit);
 				new_unit_ext->timers[TimerStun] = 1 * 24;
+				// TODO: Try calling a cagra-related function to stop regression from ruining cagra spread. -Pr0nogo
 				// TODO: Add stun audio visuals. -Veeq7
 			} else {
 				set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes. -Veeq7
@@ -3131,7 +3144,7 @@ GameKind get_game_kind() {
 }
 
 u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
-	u32 distance = bw::get_distance_fast(unit->position, target);
+	u32 distance = bw::distance_between(unit->position, target);
 	if (!(unit->pathing_flags & 1)) {
 		return distance;
 	}
@@ -3151,7 +3164,7 @@ u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
 }
 
 Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target) {
-	Vector32f shift = bw::get_normalized_vector(bw::get_vector_between(pos, target));
+	Vector32f shift = bw::normalized_vector(bw::vector_between(pos, target));
 	f32 max_distance = std::max(abs(shift.x), abs(shift.y));
 	if (max_distance) {
 		shift.x /= max_distance;

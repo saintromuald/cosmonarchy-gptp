@@ -59,13 +59,13 @@ namespace hooks
 		u32 distance = 0;
 		u32 sight_range = unit->get_sight_range(false) * 32;
 		if (unit->unit_ai) {
-			distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
+			distance = bw::distance_between(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 			if (distance / 256 <= sight_range * 3) {
 				helper::ai_order_unit_cloaking(unit);
 			}
 		}
 
-		distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
+		distance = bw::distance_between(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 		if (distance / 256 > sight_range) {
 			if (unit->recent_order_timer == 0) {
 				helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);

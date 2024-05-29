@@ -163,7 +163,7 @@ namespace hooks
                 }
 
                 Vector32f diff = {};
-                diff = bw::get_normalized_vector(bw::get_vector_between(target->position, unit->position));
+                diff = bw::normalized_vector(bw::vector_between(target->position, unit->position));
                 if (abs(diff.x) < 0.001 && abs(diff.y) < 0.001) {
                     continue;
                 }
@@ -172,7 +172,7 @@ namespace hooks
                 repulsion.y += diff.y;
             }
 
-            repulsion = bw::get_normalized_vector(repulsion);
+            repulsion = bw::normalized_vector(repulsion);
 
             if (abs(repulsion.x) < 0.001 && abs(repulsion.y) < 0.001) {
                 u32 rand_amount = bw::rand_between(0, 255);

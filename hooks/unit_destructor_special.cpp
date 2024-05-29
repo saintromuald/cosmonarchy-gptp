@@ -186,15 +186,14 @@ void unit_on_death_behaviors(Unit* unit) {
 			// end hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
 			*g_can_update_powered_status = true;
 		} break;
-		case UnitId::ZergNydusCesiant:
-		{
+		case UnitId::ZergNydusCesiant: {
 			Unit* nydus_exit = unit->building.nydus_exit;
 			if (nydus_exit) {
 				unit->building.nydus_exit = 0;
 				nydus_exit->building.nydus_exit = 0;
 
-				if (unit_ext->values[ValueIsNydusExit] == 1) {
-					bw::regress(nydus_exit, UnitId::ZergCagrantCesiant); // Lame hardcode
+				if (unit_ext->values[ValueIsNydusExit]) {
+					bw::regress(nydus_exit, UnitId::ZergCagrantCesiant);
 				} else {
 					nydus_exit->remove();
 				}
@@ -286,7 +285,7 @@ void unit_on_death_behaviors(Unit* unit) {
 
 		for (u32 i = 0; i < unit_array.count; ++i) {
 			Unit* caster = unit_array.units[i];
-			if (bw::get_distance_fast(unit->position, caster->position) <= caster->get_sight_range() * 32) {
+			if (bw::distance_between(unit->position, caster->position) <= caster->get_sight_range() * 32) {
 				caster->heal_energy(5 * 256);
 				caster->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
@@ -300,7 +299,7 @@ void unit_on_death_behaviors(Unit* unit) {
 
 		for (u32 i = 0; i < unit_array.count; ++i) {
 			Unit* mortothrokor = unit_array.units[i];
-			if (bw::get_distance_fast(unit->position, mortothrokor->position) <= mortothrokor->get_sight_range() * 32) {
+			if (bw::distance_between(unit->position, mortothrokor->position) <= mortothrokor->get_sight_range() * 32) {
 				UnitExt* unit_ext = get_unit_ext(mortothrokor);
 				unit_ext->values[ValueMortothrokorStacks]++;
 				unit_ext->timers[TimerMortothrokorPassive] = 2 * 24;

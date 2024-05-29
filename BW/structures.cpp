@@ -128,7 +128,7 @@ void ControlGroup::center_camera() {
 					continue;
 				}
 
-				if (bw::get_distance_fast(unit->position, other->position) <= distance_quota) {
+				if (bw::distance_between(unit->position, other->position) <= distance_quota) {
 					score += 1;
 				}
 			}
@@ -147,7 +147,7 @@ void ControlGroup::center_camera() {
 	Vector32 avg_pos = {};
 	for (u32 i = 0; i < SelectionCap; ++i) {
 		Unit* unit = unit_index[i].get_for_selection(false);
-		if (!unit || bw::get_distance_fast(unit->position, anchor->position) > distance_quota) {
+		if (!unit || bw::distance_between(unit->position, anchor->position) > distance_quota) {
 			continue;
 		}
 

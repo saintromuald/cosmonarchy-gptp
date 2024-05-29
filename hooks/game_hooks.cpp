@@ -1159,7 +1159,7 @@ namespace hooks {
 		}
 
 		// Handle behaviors related to Ocsal origins
-		if (unit_ext->values[ValueOriginatedFromOcsalLarva]) {
+		if (unit_ext->values[ValueRegressionUnstable]) {
 			// Overlay for units which do not regress on death
 			if (!unit->sprite->get_overlay(ImageId::OcsalRegressionOverlay)) {
 				if (unit->id != UnitId::ZergOcsalLarva && unit->id != UnitId::ZergEgg && unit->id != UnitId::ZergCocoon) {
@@ -1362,7 +1362,7 @@ namespace hooks {
 					}
 				}
 
-				unit_ext->values[ValueOriginatedFromOcsalLarva] = unit->id == UnitId::ZergOcsalLarva;
+				unit_ext->values[ValueRegressionUnstable] = unit->id == UnitId::ZergOcsalLarva;
 			} break;
 			case UnitId::ZergDroleth:
 			case UnitId::ZergGosvileth:
@@ -1980,7 +1980,7 @@ namespace hooks {
 					unit_search_filter(&targets, unit, FilterEnemy);
 					for (u32 i = 0; i < targets.count; ++i) {
 						Unit* target = targets.units[i];
-						u32 dist = bw::get_distance_fast(unit->position, target->position);
+						u32 dist = bw::distance_between(unit->position, target->position);
 						if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon] && unit->can_attack_target(target)) {
 							UnitExt* target_ext = get_unit_ext(target);
 							if (!(units_dat::base_property[target->id] & UnitProperty::Building)) {
@@ -2141,7 +2141,7 @@ namespace hooks {
 
 					// Check if the target is actually shielded (in area)
 					Point16 target_position = bullet->attack_target.unit ? bullet->attack_target.unit->position : bullet->attack_target.pt;
-					if (bw::get_distance_fast(unit->position, target_position) > radius) {
+					if (bw::distance_between(unit->position, target_position) > radius) {
 						continue;
 					}
 
@@ -2214,7 +2214,7 @@ namespace hooks {
 						target_pos = unit->order_target.pt;
 					}
 					u32 range = ThroughTheLookingGlassRange;
-					if (bw::get_distance_fast(unit->position, target_pos) > range) {
+					if (bw::distance_between(unit->position, target_pos) > range) {
 						if (unit->order_target.unit) {
 							helper::spell_order_move_towards_target(unit, range);
 						} else {
@@ -2575,7 +2575,7 @@ namespace hooks {
 				// Tyranny - escape when outside 8 range of the Tyrant
 				if (unit_ext->units[UnitMindTyrantVictim]) {
 					Unit* victim = unit_ext->units[UnitMindTyrantVictim];
-					if (bw::get_distance_fast(unit->position, victim->position) > 8 * 32) {
+					if (bw::distance_between(unit->position, victim->position) > 8 * 32) {
 						clear_tyranny(unit, victim);
 					}
 				}
@@ -2981,11 +2981,11 @@ namespace hooks {
 		if (unit_ext->timers[TimerAnthelionGravityWell] && unit_ext->units[UnitAnthelionGravityWellSource]) {
 			Point16 target_pos = unit_ext->units[UnitAnthelionGravityWellSource]->position;
 			if (unit->position != target_pos && !(unit->status & UnitStatus::Burrowed)) {
-				Vector32 diff = bw::get_vector_between(unit->position, target_pos);
-				if (bw::get_vector_distance(diff) < 2) {
+				Vector32 diff = bw::vector_between(unit->position, target_pos);
+				if (bw::vector_distance(diff) < 2) {
 					bw::move_unit_improved(unit, target_pos.x, target_pos.y);
 				} else {
-					Vector32f displacement = bw::get_normalized_vector(diff);
+					Vector32f displacement = bw::normalized_vector(diff);
 					displacement.x *= 2;
 					displacement.y *= 2;
 
@@ -3041,7 +3041,7 @@ namespace hooks {
 			for (auto it = barghests.begin(); it != barghests.end(); ++it) {
 				Unit* barghest = *it;
 				UnitExt* barghest_ext = get_unit_ext(barghest);
-				if (barghest_ext->timers[TimerDecloak] < 2 || bw::get_distance_fast(unit->position, barghest->position) > 5 * 32) {
+				if (barghest_ext->timers[TimerDecloak] < 2 || bw::distance_between(unit->position, barghest->position) > 5 * 32) {
 					barghests.erase(it);
 					--it;
 				}
@@ -3210,7 +3210,7 @@ namespace hooks {
 			auto& crucibles = unit_ext->unit_vectors[UnitVectorCrucibles];
 			for (auto it = crucibles.begin(); it != crucibles.end(); ++it) {
 				Unit* target = *it;
-				if (bw::get_distance_fast(unit->position, target->position) > 8 * 32) {
+				if (bw::distance_between(unit->position, target->position) > 8 * 32) {
 					bw::remove_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay);
 					crucibles.erase(it);
 					--it;
@@ -3285,7 +3285,7 @@ namespace hooks {
 				unit->get_x() + radius,
 				unit->get_y() + radius
 			).for_each_in_match(match, [&](Unit* target) {
-				if (bw::get_distance_fast(unit->position, target->position) <= radius) {
+				if (bw::distance_between(unit->position, target->position) <= radius) {
 					target->damage_with_custom(250 * 256, 0, unit, unit->player);
 				}
 			});

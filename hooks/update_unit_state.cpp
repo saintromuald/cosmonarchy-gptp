@@ -89,7 +89,7 @@ namespace hooks
 		if (target->sprite) {
 			const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
 			return bw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
-				&& bw::get_distance_fast(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
+				&& bw::distance_between(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
 				&& unit->can_attack_target(target);
 		}
 		return false;
@@ -137,7 +137,7 @@ namespace hooks
 					u32 targ_x = unit_ext->values[ValueWyvernLandGrabX];
 					u32 targ_y = unit_ext->values[ValueWyvernLandGrabY];
 					s32 direction = bw::get_angle(x, y, targ_x, targ_y);
-					if (bw::get_distance_fast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
+					if (bw::distance_between(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						u32 sound = bw::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02);
 						helper::play_sound_from_unit(sound, unit, 1, 0);
 						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, 0, targ_x, targ_y);
@@ -346,7 +346,7 @@ namespace hooks
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora) {
 				if (unit_ext->values[ValueLastOrdersInit] == 1) {
-					auto distance = bw::get_distance_fast(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
+					auto distance = bw::distance_between(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
 					if (distance < 32) {
 						unit->status |= UnitStatus::Invincible;
 						// TODO: unit search radial
@@ -358,7 +358,7 @@ namespace hooks
 							unit->get_x() + radius,
 							unit->get_y() + radius
 						).for_each_in_match(match, [&](Unit* target) {
-							u32 dist = bw::get_distance_fast(unit->position, target->position);
+							u32 dist = bw::distance_between(unit->position, target->position);
 							u32 damage = 25 * 256;
 							if (dist > 48) {
 								damage /= 4;

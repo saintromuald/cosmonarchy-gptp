@@ -282,7 +282,7 @@ void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& p
 			if (unit_id_is_uncapped_gas_node(unit->id)) {
 				score *= 3;
 			}
-			u32 distance = bw::get_distance_fast(placeholder.position, unit->position) / 32;
+			u32 distance = bw::distance_between(placeholder.position, unit->position) / 32;
 			if (distance) {
 				score /= distance;
 			}
@@ -366,7 +366,7 @@ u32 AiLayouts::ai_get_next_custom_expo(AiTown& main_town) {
 		}
 		// See if it's an optimal expansion
 		if (placeholder.should_request && !placeholder.is_townhall_marker && units_dat::base_property[placeholder.unit_id] & UnitProperty::Building) {
-			u32 distance = bw::get_distance_fast(main_town.position, g_resource_areas->areas[placeholder.resarea].position);
+			u32 distance = bw::distance_between(main_town.position, g_resource_areas->areas[placeholder.resarea].position);
 			if (placeholder.priority > best_priority || (placeholder.priority == best_priority && distance < best_distance)) {
 				best_priority = placeholder.priority;
 				best_distance = distance;
@@ -466,7 +466,7 @@ void AiLayouts::sort_layouts(PlayerLayouts& layouts) {
 			Point16 point_a = g_resource_areas->areas[a.resarea].position;
 			Point16 point_b = g_resource_areas->areas[b.resarea].position;
 
-			s32 pos_diff = bw::get_distance_fast(a.position, point_a) - bw::get_distance_fast(b.position, point_b);
+			s32 pos_diff = bw::distance_between(a.position, point_a) - bw::distance_between(b.position, point_b);
 			if (pos_diff) return pos_diff < 0;
 		}
 

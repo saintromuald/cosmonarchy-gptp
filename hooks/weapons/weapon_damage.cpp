@@ -578,11 +578,11 @@ namespace hooks
 					&&	!(data.attacker->status & UnitStatus::Burrowed)
 					&&   !bw::is_under_carapace_swarm(data.target))
 					{
-						const u32 dist = bw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
+						const u32 dist = bw::distance_between(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
 							const u32 displacement_time = 5;
-							Vector32 diff = bw::get_vector_between(data.target->sprite->position, data.attacker->sprite->position);
-							Vector32f displacement = bw::get_normalized_vector(diff);
+							Vector32 diff = bw::vector_between(data.target->sprite->position, data.attacker->sprite->position);
+							Vector32f displacement = bw::normalized_vector(diff);
 							displacement.x *= 1 * 32.0 / displacement_time;
 							displacement.y *= 1 * 32.0 / displacement_time;
 
@@ -761,10 +761,10 @@ namespace hooks
 						||    (data.target->status & UnitStatus::InAir && data.target->main_order_id != OrderId::Liftoff && data.target->main_order_id != OrderId::BuildingLand))
 						&& !(data.target->status & UnitStatus::Burrowed))
 						{
-							const u32 dist = bw::get_distance_fast(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
+							const u32 dist = bw::distance_between(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 							const u32 displacement_time = 5;
-							Vector32 diff = bw::get_vector_between(data.target->sprite->position, data.attacker->sprite->position);
-							Vector32f displacement = bw::get_normalized_vector(diff);
+							Vector32 diff = bw::vector_between(data.target->sprite->position, data.attacker->sprite->position);
+							Vector32f displacement = bw::normalized_vector(diff);
 							displacement.x *= 2 * 32.0 / displacement_time;
 							displacement.y *= 2 * 32.0 / displacement_time;
 							target_ext->timers[TimerMagnetarAttraction] = displacement_time;
@@ -1031,7 +1031,7 @@ namespace hooks
 						if (!unit->is_visible_to(data.target->player)) {
 							return false;
 						}
-						if (bw::get_distance_fast(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 9 * 32) {
+						if (bw::distance_between(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 9 * 32) {
 							return false;
 						}
 						return true;

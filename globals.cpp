@@ -115,7 +115,7 @@ void tick_effect(EffectField& effect) {
 					effect.position.x + effect.radius,
 					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (bw::get_distance_fast(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
+					if (bw::distance_between(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
 						return;
 					}
 					unit->heal_shields_then_hp(4 * tick_scalar, effect.source, true);
@@ -128,7 +128,7 @@ void tick_effect(EffectField& effect) {
 					effect.position.x + effect.radius,
 					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (bw::get_distance_fast(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
+					if (bw::distance_between(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
 						return;
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
@@ -143,7 +143,7 @@ void tick_effect(EffectField& effect) {
 					effect.position.x + effect.radius,
 					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (bw::get_distance_fast(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
+					if (bw::distance_between(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
 						return;
 					}
 					UnitExt* unit_ext = get_unit_ext(unit);
@@ -158,7 +158,7 @@ void tick_effect(EffectField& effect) {
 					effect.position.x + effect.radius,
 					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					if (bw::get_distance_fast(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
+					if (bw::distance_between(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
 						return;
 					}
 					bw::apply_hallucinating(unit, effect.player, 3 * 24 + 1);
@@ -171,7 +171,7 @@ void tick_effect(EffectField& effect) {
 					effect.position.x + effect.radius,
 					effect.position.y + effect.radius
 				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					if (bw::get_distance_fast(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
+					if (bw::distance_between(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
 						return;
 					}
 					apply_irradiate(unit, effect.player, 15);
@@ -984,7 +984,7 @@ void place_clarion_links(Unit* unit) {
 		if (target->shields < 256) {
 			return false;
 		}
-		if (bw::get_distance_fast(target->get_x(), target->get_y(), unit->get_x(), unit->get_y()) > radius) {
+		if (bw::distance_between(target->get_x(), target->get_y(), unit->get_x(), unit->get_y()) > radius) {
 			return false;
 		}
 		return true;

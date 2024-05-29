@@ -23,7 +23,7 @@ namespace hooks
 						return 0;
 					}
 					Point16 target_pos = caster->order_target.pt;
-					if (bw::get_distance_fast(caster->position, target_pos) > range) {
+					if (bw::distance_between(caster->position, target_pos) > range) {
 						helper::set_move_target_xy(caster, target_pos.x, target_pos.y);
 						return 0;
 					}
@@ -502,7 +502,7 @@ namespace hooks
 			}
 			return false;
 		} else if (!tech_id_has_custom_targeting(orders_dat::tech_used[caster->main_order_id])) {
-			if (bw::get_distance_fast(caster->position, caster->order_target.pt) >= range) {
+			if (bw::distance_between(caster->position, caster->order_target.pt) >= range) {
 				helper::set_move_target_xy(caster, caster->order_target.pt.x, caster->order_target.pt.y);
 			}
 			return true;

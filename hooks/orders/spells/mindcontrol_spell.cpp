@@ -26,7 +26,7 @@ namespace hooks
 				}
 			} else {
 				// Cancel when way out of range or lost sight of target
-				u32 distance = bw::get_distance_fast(unit->position, target->position);
+				u32 distance = bw::distance_between(unit->position, target->position);
 				if (distance > weapons_dat::max_range[orders_dat::order_weapon_id[OrderId::CastTyranny]] * 2 || !target->is_visible_to(unit->player)) {
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->order_to_idle();

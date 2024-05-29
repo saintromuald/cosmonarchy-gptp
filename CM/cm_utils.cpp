@@ -53,7 +53,7 @@ void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
 u32 get_construction_graphic(Unit* unit)
 {
 	UnitExt* unit_ext = get_unit_ext(unit);
-	bool is_ocsal = unit_ext->values[ValueOriginatedFromOcsalLarva];
+	bool is_ocsal = unit_ext->values[ValueRegressionUnstable];
 	switch (unit->id)
 	{
 		case UnitId::ZergIroleth:
@@ -270,7 +270,7 @@ bool play_unit_banter(Unit* victim, u16 speaker_unit_id) {
 
 	for (Unit* speaker : speakers.units) {
 		// Checks
-		if (bw::get_distance_fast(victim->position, speaker->position) > speaker->get_sight_range() * 32) {
+		if (bw::distance_between(victim->position, speaker->position) > speaker->get_sight_range() * 32) {
 			continue;
 		}
 		UnitExt* speaker_ext = get_unit_ext(speaker);

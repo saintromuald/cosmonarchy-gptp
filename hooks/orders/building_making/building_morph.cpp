@@ -89,10 +89,10 @@ namespace hooks {
 						if (worker) {
 							worker->set_hitpoints(building->previous_hitpoints << 8);
 						}
-						if (building_ext->values[ValueOriginatedFromOcsalLarva]) {
+						if (building_ext->values[ValueRegressionUnstable]) {
 							UnitExt* worker_ext = get_unit_ext(worker);
-							worker_ext->values[ValueOriginatedFromOcsalLarva] = 1;
-							building_ext->values[ValueOriginatedFromOcsalLarva] = 0;
+							worker_ext->values[ValueRegressionUnstable] = true;
+							building_ext->values[ValueRegressionUnstable] = false;
 						}
 					}
 

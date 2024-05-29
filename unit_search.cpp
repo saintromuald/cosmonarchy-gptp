@@ -123,10 +123,10 @@ static void index_search_radial(EntryArray* entry_array, SearchIndex* index, Poi
 				x * CELL_PX_SIZE + CELL_PX_SIZE / 2,
 				y * CELL_PX_SIZE + CELL_PX_SIZE / 2
 			};
-			bool is_fully_covered = bw::get_distance_fast(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
+			bool is_fully_covered = bw::distance_between(center, tile_center) + CELL_PX_SIZE * 1.414 <= radius;
 
 			for (SearchEntry* entry = index->grid[x][y]; entry; entry = entry->next) {
-				if (is_fully_covered || bw::get_distance_fast(center, entry->position) <= radius) {
+				if (is_fully_covered || bw::distance_between(center, entry->position) <= radius) {
 					entry_array_add(entry_array, entry->data);
 				}
 			}
@@ -271,12 +271,12 @@ void unit_search_sort(EntryArray* unit_array, SearchScoreFunc score_func) {
 
 static Point16 temp_center;
 static s32 unit_distance_compare_func(void const* a, void const* b) {
-	return bw::get_distance_fast(temp_center, ((Unit*)a)->position) > bw::get_distance_fast(temp_center, ((Unit*)b)->position);	
+	return bw::distance_between(temp_center, ((Unit*)a)->position) > bw::distance_between(temp_center, ((Unit*)b)->position);	
 }
 
 static s32 corpse_distance_compare_func(void const* a, void const* b) {
 	if (!((Thingy*)a)->sprite || !((Thingy*)b)->sprite) return 0;
-	return bw::get_distance_fast(temp_center, ((Thingy*)a)->sprite->position) > bw::get_distance_fast(temp_center, ((Thingy*)b)->sprite->position);	
+	return bw::distance_between(temp_center, ((Thingy*)a)->sprite->position) > bw::distance_between(temp_center, ((Thingy*)b)->sprite->position);	
 }
 
 void unit_search_sort_by_distance(EntryArray* unit_array, Point16 center) {

@@ -260,12 +260,12 @@ Unit* AttackPriorityData::find_best_target(Unit* attacker) const
 	// AI auto-targeted units with high shields/hp when using Skryrokors, but we don't have them anymore, and we already handle that in tactical_ai! -Pr0nogo
 	
 	// Find the nearest target (don't use unit box sizes)
-	u32 best_target_distance = bw::get_distance_fast(attacker->get_x(), attacker->get_y(), best_target->get_x(), best_target->get_y());
+	u32 best_target_distance = bw::distance_between(attacker->get_x(), attacker->get_y(), best_target->get_x(), best_target->get_y());
 
 	for (u32 i = 1; i < target_counts[priority]; ++i)
 	{
 		Unit* current_target = targets[priority][i];
-		const u32 current_target_distance = bw::get_distance_fast(attacker->get_x(), attacker->get_y(), current_target->get_x(), current_target->get_y());
+		const u32 current_target_distance = bw::distance_between(attacker->get_x(), attacker->get_y(), current_target->get_x(), current_target->get_y());
 
 		if (current_target_distance < best_target_distance) {
 			best_target = current_target;
