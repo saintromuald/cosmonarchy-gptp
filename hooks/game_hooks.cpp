@@ -2177,7 +2177,6 @@ namespace hooks {
 					if (weapon_id_is_standard_weapon(bullet->weapon_id)) {
 						unit->spend_unit_energy(helper::get_unit_bullet_damage(bullet, unit));
 					}
-
 					bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
 					if (unit->energy < 1 * 256) {
 						break;

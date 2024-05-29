@@ -406,6 +406,7 @@ namespace hooks
 			case TechId::HypnagogueThroughTheLookingGlass:
 			case TechId::MatralethParasite:
 			case TechId::Hallucination:
+			case TechId::YamatoGun:
 			case TechId::Irradiate: {
 				return false;
 			} break;
