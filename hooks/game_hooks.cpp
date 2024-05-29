@@ -1499,8 +1499,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ZergSovroleth:
-			{
+			case UnitId::ZergSovroleth: {
 				{	
 					EntryArray sovroleths = {};
 					unit_search_radial(&sovroleths, unit->position, 8 * 32);
@@ -1521,6 +1520,7 @@ namespace hooks {
 						}
 						UnitExt* egg_ext = get_unit_ext(egg);
 						egg_ext->values[ValueNoCorpse] = true;
+						egg_ext->values[ValueRegressionUnstable] = true;
 						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 					}
