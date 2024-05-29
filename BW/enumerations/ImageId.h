@@ -1272,6 +1272,8 @@ namespace ImageId {
 		MindTyrantTyrannyCastOverlay				= 1882,
 
 		ProtathalorMutate							= 1887,
+		IzirokorMutate								= 1888,
+		SkithrokorMutate							= 1889,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

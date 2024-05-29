@@ -281,7 +281,9 @@ namespace hooks {
 						// New mutation animation handling! Everything will eventually use this. -Pr0nogo
 						case UnitId::ZergQuazilisk:
 						case UnitId::ZergNathrokor:
-						case UnitId::ZergProtathalor: {
+						case UnitId::ZergProtathalor:
+						case UnitId::ZergIzirokor:
+						case UnitId::ZergSkithrokor: {
 							animation = IscriptAnimation::SpecialState1;
 						} break;
 						case UnitId::ZergZoryusthaleth: {
