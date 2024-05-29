@@ -115,7 +115,7 @@ namespace hooks
 		// Hierophant Signify: Cowardice
 		if (unit_ext->values[ValueSignifyStacks]) {
 			auto match = cosmonarchy_finder_match(unit, 0, {});
-			Vector32f dir = bw::get_unit_direction_vector(unit);
+			Vector32f dir = bw::unit_direction_vector(unit);
 
 			// TODO: unit search / optimize
 			const u32 radius = 6 * 32;
@@ -133,8 +133,8 @@ namespace hooks
 					return false;
 				}
 
-				Vector32 diff = bw::get_vector_between(enemy->position, unit->position);
-				Vector32f target = bw::get_normalized_vector(diff);
+				Vector32 diff = bw::vector_between(enemy->position, unit->position);
+				Vector32f target = bw::normalized_vector(diff);
 				f32 dot = bw::dot_product(dir, target);
 				if (dot < 0) {
 					return false;

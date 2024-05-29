@@ -286,7 +286,7 @@ void unit_on_death_behaviors(Unit* unit) {
 
 		for (u32 i = 0; i < unit_array.count; ++i) {
 			Unit* caster = unit_array.units[i];
-			if (bw::get_distance_fast(unit->position, caster->position) <= caster->get_sight_range() * 32) {
+			if (bw::distance_between(unit->position, caster->position) <= caster->get_sight_range() * 32) {
 				caster->heal_energy(5 * 256);
 				caster->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 			}
@@ -300,7 +300,7 @@ void unit_on_death_behaviors(Unit* unit) {
 
 		for (u32 i = 0; i < unit_array.count; ++i) {
 			Unit* mortothrokor = unit_array.units[i];
-			if (bw::get_distance_fast(unit->position, mortothrokor->position) <= mortothrokor->get_sight_range() * 32) {
+			if (bw::distance_between(unit->position, mortothrokor->position) <= mortothrokor->get_sight_range() * 32) {
 				UnitExt* unit_ext = get_unit_ext(mortothrokor);
 				unit_ext->values[ValueMortothrokorStacks]++;
 				unit_ext->timers[TimerMortothrokorPassive] = 2 * 24;

@@ -144,7 +144,7 @@ namespace hooks
 			unit->order_target.unit = 0;
 		}
 
-		distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
+		distance = bw::distance_between(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 		distance &= 0xFFFFFF00;
 		if (distance <= 0x1000)
 		{
@@ -168,7 +168,7 @@ namespace hooks
 				u32 ground_height_at_pos_1 = bw::get_ground_height_at_pos(unit->sprite->position.x, unit->sprite->position.y);
 				if (ground_height_at_pos_1 != bw::get_ground_height_at_pos(unit->order_target.pt.x, unit->order_target.pt.y))
 				{
-					distance = bw::get_distance_fast(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
+					distance = bw::distance_between(unit->order_target.pt.x * 256, unit->order_target.pt.y * 256, unit->halt.x, unit->halt.y);
 					distance &= 0xFFFFFF00;
 					if (distance <= 0xCA000
 					&&  helper::ai_are_on_connected_regions(unit, unit->order_target.pt.x, unit->order_target.pt.y) != 0

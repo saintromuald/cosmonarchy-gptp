@@ -270,7 +270,7 @@ bool play_unit_banter(Unit* victim, u16 speaker_unit_id) {
 
 	for (Unit* speaker : speakers.units) {
 		// Checks
-		if (bw::get_distance_fast(victim->position, speaker->position) > speaker->get_sight_range() * 32) {
+		if (bw::distance_between(victim->position, speaker->position) > speaker->get_sight_range() * 32) {
 			continue;
 		}
 		UnitExt* speaker_ext = get_unit_ext(speaker);

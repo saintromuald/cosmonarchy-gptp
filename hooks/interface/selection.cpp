@@ -21,8 +21,8 @@ namespace hooks
 		mouse_pos.x = *g_move_to_x + g_selection_start->x;
 		mouse_pos.y = *g_move_to_y + g_selection_start->y;
 
-		s32 distance_a = bw::get_distance_fast(ua->position, mouse_pos);
-		s32 distance_b = bw::get_distance_fast(ub->position, mouse_pos);
+		s32 distance_a = bw::distance_between(ua->position, mouse_pos);
+		s32 distance_b = bw::distance_between(ub->position, mouse_pos);
 		return distance_a - distance_b;
 	}
 

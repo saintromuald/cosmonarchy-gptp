@@ -39,7 +39,7 @@ namespace hooks
 			if (!target->is_visible_to(mine->player)) {
 				return false;
 			}
-			if (bw::get_distance_fast(mine->position, target->position) > range) {
+			if (bw::distance_between(mine->position, target->position) > range) {
 				return false;
 			}
 			return true;

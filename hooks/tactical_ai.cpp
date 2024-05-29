@@ -99,7 +99,7 @@ static bool is_melee_attacker(u32 unit_id) {
 }
 
 static void adjust_vector(Vector32f* vector, Unit* unit, Point16 position, s32 value) {
-	Vector32f delta = bw::get_normalized_vector(bw::get_vector_between(unit->position, position));
+	Vector32f delta = bw::normalized_vector(bw::vector_between(unit->position, position));
 	delta.x *= value;
 	delta.y *= value;
 	vector->x += delta.x;
@@ -271,7 +271,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 	cost -= get_dps_against(target, source);
 
 	// Value attacking units with smaller pathing cost more
-	s32 dist = (s32)bw::get_distance_fast(source->position, target->position) - get_max_range(source->id);
+	s32 dist = (s32)bw::distance_between(source->position, target->position) - get_max_range(source->id);
 	if (dist > 0) {
 		cost += dist / 32.0;
 	}
@@ -508,7 +508,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 		}
 		result.hostile_strength += strength; 
 
-		u32 distance = bw::get_distance_fast(unit->position, hostile->position);
+		u32 distance = bw::distance_between(unit->position, hostile->position);
 		if (distance < result.distance) {
 			result.distance = distance;
 		}
@@ -582,7 +582,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 		forward_pos.y += hostile_vector.y;
 		forward_pos.x -= effect_vector.x;
 		forward_pos.y -= effect_vector.y;
-		forward_pos = bw::get_normalized_vector(forward_pos);
+		forward_pos = bw::normalized_vector(forward_pos);
 		forward_pos.x *= MoveRadius;
 		forward_pos.y *= MoveRadius;
 		forward_pos.x += unit->position.x;
@@ -594,7 +594,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 		backward_pos.y -= hostile_vector.y;
 		backward_pos.x -= effect_vector.x;
 		backward_pos.y -= effect_vector.y;
-		backward_pos = bw::get_normalized_vector(backward_pos);
+		backward_pos = bw::normalized_vector(backward_pos);
 		backward_pos.x *= MoveRadius;
 		backward_pos.y *= MoveRadius;
 		backward_pos.x += unit->position.x;
@@ -658,7 +658,7 @@ static bool unit_kiting_can_attack(Unit* unit) {
 void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 	if (unit_could_kite(unit) && unit_ext->timers[TimerAI_KitingLeash]) {
 		bool should_leash = unit_ext->timers[TimerAI_KitingLeash] == 1;
-		if (units_dat::base_property[unit->id] & UnitProperty::Worker && bw::get_distance_fast(unit->position, unit_ext->ai_kiting_origin) > GroupRadius) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker && bw::distance_between(unit->position, unit_ext->ai_kiting_origin) > GroupRadius) {
 			should_leash = true;
 		}
 		if (should_leash) {
@@ -739,7 +739,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 
 				if (!(unit->status & UnitStatus::InAir)) {
-					u32 distance = bw::get_distance_fast(unit->position, target->position);
+					u32 distance = bw::distance_between(unit->position, target->position);
 					u32 range = get_max_range(unit->id);
 					if (distance > range && bw::get_region(bw::get_region_id(unit->position))->group_index != bw::get_region(bw::get_region_id(target->position))->group_index) {
 						return;
@@ -915,7 +915,7 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	cost -= hooks::get_current_dps(target, weapon_id) * multiplier;
 
 	// Value attacking units with smaller pathing cost more
-	s32 dist = (s32)bw::get_distance_fast(source->position, target->position) - get_max_range(source->id);
+	s32 dist = (s32)bw::distance_between(source->position, target->position) - get_max_range(source->id);
 	if (dist > 0) {
 		cost += dist / 32.0;
 	}
@@ -1122,7 +1122,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					if (valid) {
 						s32 score = cosmonarchy_unit_count(unit, target->position, AILanifectCheckRange, Flags::Enemy, {});
 						score -= cosmonarchy_unit_count(unit, target->position, AILanifectCheckRange, Flags::Ally, {});
-						score -= bw::get_distance_fast(unit->position, target->position) / 128;
+						score -= bw::distance_between(unit->position, target->position) / 128;
 						if (score > max_score) {
 							max_score = score;
 							best_target = target;

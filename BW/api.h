@@ -287,17 +287,17 @@ inline f64 bw_angle_to_normal(s32 bw_angle);
 /// StarCraft's internal function used to quickly calculate distances between
 /// two points (x1, y1) and (x2, y2).
 /// Warning: This function is inaccurate for long distances.
-u32 get_distance_fast(s32 x1, s32 y1, s32 x2, s32 y2);
+u32 distance_between(s32 x1, s32 y1, s32 x2, s32 y2);
 
-inline u32 get_distance_fast(Point16 p1, Point16 p2) {
-	return get_distance_fast(p1.x, p1.y, p2.x, p2.y);
+inline u32 distance_between(Point16 p1, Point16 p2) {
+	return distance_between(p1.x, p1.y, p2.x, p2.y);
 }
 
-/// Distance, but in a square instead of circle (max of x dist and y dist)
-u32 get_distance_square(s32 x1, s32 y1, s32 x2, s32 y2);
+/// Distance, but rectangular instead of circular (max of x dist and y dist)
+u32 distance_rectangular(s32 x1, s32 y1, s32 x2, s32 y2);
 
-inline u32 get_distance_square(Point16 p1, Point16 p2) {
-	return get_distance_square(p1.x, p1.y, p2.x, p2.y);
+inline u32 distance_rectangular(Point16 p1, Point16 p2) {
+	return distance_rectangular(p1.x, p1.y, p2.x, p2.y);
 }
 
 /// Calculates the X Cartesian coordinate from the given polar coordinates
@@ -387,39 +387,39 @@ inline Box32 clamp_box32(Box32 rect) {
 	return rect;
 }
 
-inline Vector32f get_direction_vector_from_unit(Unit* unit) {
+inline Vector32f direction_vector_from_unit(Unit* unit) {
 	Vector32f vec = {};
 	vec.x = g_angle_distance[unit->current_direction_1].x / 256.0;
 	vec.y = g_angle_distance[unit->current_direction_1].y / 256.0;
 	return vec;
 }
 
-inline Vector32 get_vector_between(Point16 source, Point16 target) {
+inline Vector32 vector_between(Point16 source, Point16 target) {
 	Vector32 diff = {target.x, target.y};
 	diff.x -= source.x;
 	diff.y -= source.y;
 	return diff;
 }
 
-inline Vector32f get_vectorf_between(Point16 source, Point16 target) {
+inline Vector32f vectorf_between(Point16 source, Point16 target) {
 	Vector32f diff = {target.x, target.y};
 	diff.x -= source.x;
 	diff.y -= source.y;
 	return diff;
 }
 
-inline Vector32f get_vectorf_between(Vector32f source, Vector32f target) {
+inline Vector32f vectorf_between(Vector32f source, Vector32f target) {
 	Vector32f diff = {target.x, target.y};
 	diff.x -= source.x;
 	diff.y -= source.y;
 	return diff;
 }
 
-inline f32 get_distance_between(Vector32f a, Vector32f b) {
+inline f32 distance_between(Vector32f a, Vector32f b) {
 	return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
 }
 
-inline Vector32f get_normalized_vector(Vector32 vector) {
+inline Vector32f normalized_vector(Vector32 vector) {
 	f32 dist = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	if (!dist) {
 		return {};
@@ -427,7 +427,7 @@ inline Vector32f get_normalized_vector(Vector32 vector) {
 	return {vector.x / dist, vector.y / dist};
 }
 
-inline Vector32f get_normalized_vector(Vector32f vector) {
+inline Vector32f normalized_vector(Vector32f vector) {
 	f32 dist = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	if (!dist) {
 		return {};
@@ -435,18 +435,18 @@ inline Vector32f get_normalized_vector(Vector32f vector) {
 	return {vector.x / dist, vector.y / dist};
 }
 
-inline Vector32f get_normalized_vector_between(Point16 source, Point16 target) {
+inline Vector32f normalized_vector_between(Point16 source, Point16 target) {
 	Vector32f diff = {target.x, target.y};
 	diff.x -= source.x;
 	diff.y -= source.y;
-	return bw::get_normalized_vector(diff);
+	return bw::normalized_vector(diff);
 }
 
-inline Vector32f get_normalized_vector_between(Vector32f source, Vector32f target) {
+inline Vector32f normalized_vector_between(Vector32f source, Vector32f target) {
 	Vector32f diff = {target.x, target.y};
 	diff.x -= source.x;
 	diff.y -= source.y;
-	return bw::get_normalized_vector(diff);
+	return bw::normalized_vector(diff);
 }
 
 inline f32 dot_product(Vector32f a, Vector32f b) {
@@ -454,28 +454,28 @@ inline f32 dot_product(Vector32f a, Vector32f b) {
 }
 
 inline bool unit_is_facing_position(Unit* unit, Point16 position) {
-	Vector32f angle = bw::get_direction_vector_from_unit(unit);
-	Vector32f diff = bw::get_normalized_vector(bw::get_vector_between(unit->position, position));
+	Vector32f angle = bw::direction_vector_from_unit(unit);
+	Vector32f diff = bw::normalized_vector(bw::vector_between(unit->position, position));
 	f32 dot = bw::dot_product(angle, diff);
 	return dot >= 0.5;
 }
 
 inline bool unit_is_exposed_to_position(Unit* unit, Point16 position) {
-	Vector32f angle = bw::get_direction_vector_from_unit(unit);
-	Vector32f diff = bw::get_normalized_vector(bw::get_vector_between(unit->position, position));
+	Vector32f angle = bw::direction_vector_from_unit(unit);
+	Vector32f diff = bw::normalized_vector(bw::vector_between(unit->position, position));
 	f32 dot = bw::dot_product(angle, diff);
 	return dot <= -0.5;
 }
 
-inline f32 get_vector_distance(Vector32 vector) {
+inline f32 vector_distance(Vector32 vector) {
 	return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 }
 
-inline f32 get_vector_distance(Vector32f vector) {
+inline f32 vector_distance(Vector32f vector) {
 	return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 }
 
-inline Vector32f get_unit_direction_vector(Unit* unit) {
+inline Vector32f unit_direction_vector(Unit* unit) {
 	return {
 		(f32) sin(bw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f),
 		(f32) -cos(bw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f)
@@ -672,6 +672,7 @@ bool check_unit_collision_pos(Unit* unit, const Point16* in_pos, Point16* out_po
 /// the target position is on unwalkable terrain, this function moves the unit
 /// to the nearest walkable tile instead.
 void set_unit_position(Unit* unit, u16 x, u16 y);
+inline void set_unit_position(Unit* unit, Point16 point) { set_unit_position(unit, point.x, point.y); }
 
 /// Updates pathing data and various information related to the @p unit.
 /// Details not understood.  See the source for move_unit().

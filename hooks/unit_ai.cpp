@@ -873,7 +873,7 @@ namespace hooks {
 				{
 					goto next;
 				}
-				distance = bw::get_distance_fast(x1, unit->sprite->position.x, y1, unit->sprite->position.y);
+				distance = bw::distance_between(x1, unit->sprite->position.x, y1, unit->sprite->position.y);
 				if ( distance >= min_distance )
 				{
 					goto next;

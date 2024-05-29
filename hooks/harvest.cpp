@@ -588,7 +588,7 @@ namespace hooks {
 			if (node == current_node || !unit_id_is_minerals(node->id)) {
 				continue;
 			}
-			if (townhall && bw::get_distance_square(node->position, townhall->position) > 10 * 32) {
+			if (townhall && bw::distance_rectangular(node->position, townhall->position) > 10 * 32) {
 				continue;
 			}
 			if (is_pathing) {

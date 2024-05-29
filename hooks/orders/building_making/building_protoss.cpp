@@ -17,7 +17,7 @@ namespace hooks {
 				}
 			} break;
 			case 1: {
-				u32 distance = bw::get_distance_fast(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
+				u32 distance = bw::distance_between(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
 				u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
 
 				if (distance / 256 > distance_wanted) {

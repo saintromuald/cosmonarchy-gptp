@@ -603,7 +603,7 @@ static FraudSpawnLocation* get_closest_spawn(Point16 pos) {
 	f32 lowest_distance = 999999999;
 	for (u32 i = 0; i < threshold.spawn_count; ++i) {
 		FraudSpawnLocation* loc = &threshold.spawns[i];
-		f32 distance = bw::get_distance_fast(loc->pos, pos);
+		f32 distance = bw::distance_between(loc->pos, pos);
 		if (distance < lowest_distance) {
 			closest_loc = loc;
 			lowest_distance = distance;
@@ -617,7 +617,7 @@ static FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point1
 	f32 lowest_distance = 999999999;
 	for (u32 i = 0; i < location->source_count; ++i) {
 		FraudSpawnSource* loc = &location->sources[i];
-		f32 distance = bw::get_distance_fast(loc->pos, pos);
+		f32 distance = bw::distance_between(loc->pos, pos);
 		if (distance < lowest_distance) {
 			closest_loc = loc;
 			lowest_distance = distance;

@@ -90,7 +90,7 @@ Point16 make_launch_pos(Point16 unit_position, Point8 offset) {
 
 u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, Point16 other_pos) {
 	Point16 edge_point = bw::get_rect_edge_point_towards(unit_pos, units_dat::unit_bounds[unit_id], other_pos);
-	return bw::get_distance_fast(source_pos, edge_point);
+	return bw::distance_between(source_pos, edge_point);
 }
 
 Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown, bool ignore_max_range, bool dont_follow) {
@@ -114,7 +114,7 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 		launch_pos = make_launch_pos(launch_pos, get_next_bullet_offset(unit, weapon_offsets));
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
-		Vector32f diff = bw::get_normalized_vector(bw::get_vector_between(launch_pos, target.pt));
+		Vector32f diff = bw::normalized_vector(bw::vector_between(launch_pos, target.pt));
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 16;
 		max_range += get_correction_distance(unit->position, unit->id, launch_pos, target.pt);
 		Vector32f target_pos = { launch_pos.x + (diff.x * max_range), launch_pos.y + (diff.y * max_range) };
@@ -177,8 +177,8 @@ Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_
 }
 
 static Point16 set_target_range(Point16 origin, Point16 point, f32 distance) {
-	Vector32f vector = bw::get_vectorf_between(origin, point);
-	f32 old_distance = bw::get_vector_distance(vector);
+	Vector32f vector = bw::vectorf_between(origin, point);
+	f32 old_distance = bw::vector_distance(vector);
 
 	vector.x *= distance / old_distance;
 	vector.y *= distance / old_distance;
@@ -221,7 +221,7 @@ void fire_line(Unit* unit, u32 weapon_id, u32 total_count, u32 forward_spread, u
 void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets) {
 	Target target = unit->order_target;
 
-	u32 max_range = bw::get_distance_fast(unit->position, target.pt);
+	u32 max_range = bw::distance_between(unit->position, target.pt);
 	if (weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
 	}
@@ -921,11 +921,11 @@ namespace hooks {
 
 		// Simulate Z
 		u32 old_distance_traveled = bullet_ext->distance_traveled;
-		bullet_ext->distance_traveled += bw::get_distance_fast(old_position, bullet->position);
+		bullet_ext->distance_traveled += bw::distance_between(old_position, bullet->position);
 		bullet_ext->time_traveled += 1;
 		if (z_climb) {
-			f32 distance_from_source = bw::get_distance_fast(bullet_ext->bullet_source, bullet->position);
-			f32 distance_to_target = bw::get_distance_fast(bullet->position, bullet->target_position_1);
+			f32 distance_from_source = bw::distance_between(bullet_ext->bullet_source, bullet->position);
+			f32 distance_to_target = bw::distance_between(bullet->position, bullet->target_position_1);
 			f32 total_distance = distance_from_source + distance_to_target;
 			f32 factor = distance_to_target / total_distance;
 
@@ -950,7 +950,7 @@ namespace hooks {
 					if (bw::is_allied_to(bullet->player, target->player) || target == bullet->attack_target.unit) {
 						continue;
 					}
-					u32 distance = bw::get_distance_fast(bullet->position, target->position);
+					u32 distance = bw::distance_between(bullet->position, target->position);
 					u32 divisor = 1;
 					if (distance <= weapons_dat::inner_splash_radius[bullet->weapon_id]) {
 						divisor = 4;
@@ -986,7 +986,7 @@ namespace hooks {
 			Unit* main_target = bullet->attack_target.unit;
 			UnitExt* unit_ext = get_unit_ext(bullet->source_unit);
 			const u32 distance_from_source = bullet_ext->distance_traveled;
-			const u32 distance_from_target = bw::get_distance_fast(bullet->position, main_target->position);
+			const u32 distance_from_target = bw::distance_between(bullet->position, main_target->position);
 			if (distance_from_source > 5 * 32 && distance_from_target < 3 * 32) {
 				if (!iquare_globals.multihit_bullet_is_set(bullet)) {
 					Unit* old_target = bullet->source_unit->order_target.unit;
@@ -1116,7 +1116,7 @@ namespace hooks {
 
 		BulletExt* bullet_ext = get_bullet_ext(bullet);
 		u32 old_distance_traveled = bullet_ext->distance_traveled;
-		bullet_ext->distance_traveled += bw::get_distance_fast(old_position, bullet->position);
+		bullet_ext->distance_traveled += bw::distance_between(old_position, bullet->position);
 		bullet_ext->time_traveled += 1;
 		if (weapon_id_bounces_caustic_fission(bullet->weapon_id) && !bullet_ext->bounced) {
 			u32 period = 4 * 32;

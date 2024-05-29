@@ -438,7 +438,7 @@ namespace hooks {
 		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (unit->main_order_id && unit->status & UnitStatus::GroundedBuilding) {
 				if (!bw::is_allied_to(player, unit->player)) {
-					u32 distance = bw::get_distance_fast(region_center, unit->position);
+					u32 distance = bw::distance_between(region_center, unit->position);
 					if (distance < max_distance) {
 						max_distance = distance;
 						best_unit = unit;
@@ -964,7 +964,7 @@ namespace hooks {
 				score /= 2;
 			}
 
-			u32 distance = ai_town->main_building ? bw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
+			u32 distance = ai_town->main_building ? bw::distance_between(ai_town->main_building->position, unit->position) : 0;
 			if (score > best_score || (score == best_score && distance < best_distance)) {
 				best_score = score;
 				best_distance = distance;
@@ -998,7 +998,7 @@ namespace hooks {
 				score /= 2;
 			}
 
-			u32 distance = ai_town->main_building ? bw::get_distance_fast(ai_town->main_building->position, unit->position) : 0;
+			u32 distance = ai_town->main_building ? bw::distance_between(ai_town->main_building->position, unit->position) : 0;
 			if (score > best_score || (score == best_score && distance < best_distance)) {
 				best_score = score;
 				best_distance = distance;
@@ -1397,7 +1397,7 @@ namespace hooks {
 		for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 			if (bw::is_allied_to(player, other_player) && g_player_table[other_player].type == PlayerType::Computer) {
 				for (AiTown* town = g_ai_town_list[other_player].first; town; town = town->prev) {
-					if (bw::get_distance_fast(town->position, area->position) <= 12 * 32) {
+					if (bw::distance_between(town->position, area->position) <= 12 * 32) {
 						return false;
 					}
 				}
@@ -1449,7 +1449,7 @@ namespace hooks {
 
 		for (u32 i = 0; i < PlayerLimit; ++i) {
 			for (Unit* unit = first_player_unit->unit[i]; unit; unit = unit->player_link.next) {
-				f32 distance = bw::get_distance_fast(area->position, unit->position) / 32.0;
+				f32 distance = bw::distance_between(area->position, unit->position) / 32.0;
 				if (player == i) {
 					own_count++;
 					average_own_distance += distance;
@@ -1462,7 +1462,7 @@ namespace hooks {
 				}
 			}
 			if (player != i && first_player_unit->unit[i]) {
-				f32 distance = bw::get_distance_fast(area->position, g_start_positions[i]) / 32.0;
+				f32 distance = bw::distance_between(area->position, g_start_positions[i]) / 32.0;
 				start_location_count++;
 				average_start_location_distance += distance;
 			}
@@ -1718,7 +1718,7 @@ namespace hooks {
 		Unit* slowest_unit = ai_region->slowest_unit;
 		if (slowest_unit) {
 			if (is_valid_grouping_unit(slowest_unit)) {
-				u32 speed = bw::get_distance_fast(slowest_unit->position, center); // Used to divide by flingy_top_speed, but we just want to group around the closest unit
+				u32 speed = bw::distance_between(slowest_unit->position, center); // Used to divide by flingy_top_speed, but we just want to group around the closest unit
 				if (slowest_unit->status & UnitStatus::InAir) {
 					slowest_air_unit = ai_region->slowest_unit;
 					slowest_air_speed = speed;
@@ -1732,7 +1732,7 @@ namespace hooks {
 		for (MilitaryAi* military_ai = ai_region->military.first; military_ai; military_ai = military_ai->link.prev) {
 			Unit* unit = military_ai->unit;
 			if (is_valid_grouping_unit(unit)) {
-				u32 speed = bw::get_distance_fast(unit->position, center); // Used to divide by flingy_top_speed, but we just want to group around the closest unit
+				u32 speed = bw::distance_between(unit->position, center); // Used to divide by flingy_top_speed, but we just want to group around the closest unit
 				if (unit->status & UnitStatus::InAir) {
 					if (speed < slowest_air_speed) {
 						slowest_air_speed = speed;
@@ -2234,7 +2234,7 @@ namespace hooks {
 
 	static u32 attack_distance(Point16 a, Point16 b, bool air_only_attack) {
 		if (air_only_attack) {
-			return bw::get_distance_fast(a, b) / 32;
+			return bw::distance_between(a, b) / 32;
 		}
 		return bw::get_ground_path_distance_tiles(a, b);
 	}

@@ -1020,7 +1020,7 @@ u32 Unit::get_distance_to_target(Unit* target) const {
 			dy = 0;
 		}
 	}
-	return bw::get_distance_fast(0, 0, dx, dy);
+	return bw::distance_between(0, 0, dx, dy);
 }
 
 u32 Unit::get_distance_to_point(Point16 point) const {
@@ -1043,7 +1043,7 @@ u32 Unit::get_distance_to_point(Point16 point) const {
 			dy = 0;
 		}
 	}
-	return bw::get_distance_fast(0, 0, dx, dy);
+	return bw::distance_between(0, 0, dx, dy);
 }
 
 bool Unit::has_path_to_pos(u32 x, u32 y) const {
