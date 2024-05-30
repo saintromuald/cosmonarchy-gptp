@@ -1196,19 +1196,23 @@ namespace hooks {
 		}
 
 		// Revive
-		if (((!unit_ext->timers[TimerReviveFlagClearMin] && !(unit->status & UnitStatus::NoBrkCodeStart))
-			|| !unit_ext->timers[TimerReviveFlagClearMax]) && unit_ext->values[ValueReviveStarted]) {
-			if (unit_ext->timers[TimerStun] > 1) {
-				unit->status &= ~UnitStatus::Invincible;
-			} else {
-				++g_unmovable_hits[2];
-				g_unmovable_lastframe[2] = g_elapsed_time_frames;
-				unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
+		{
+			auto& clear_min = unit_ext->timers[TimerReviveFlagClearMin];
+			auto& clear_max = unit_ext->timers[TimerReviveFlagClearMax];
+			auto& revive_started = unit_ext->values[ValueReviveStarted];
+			if (((!clear_min && !(unit->status & UnitStatus::NoBrkCodeStart)) || !clear_max) && revive_started) {
+				if (unit_ext->timers[TimerStun] > 1) {
+					unit->status &= ~UnitStatus::Invincible;
+				} else {
+					++g_unmovable_hits[2];
+					g_unmovable_lastframe[2] = g_elapsed_time_frames;
+					unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
+				}
+				clear_min = 0;
+				clear_max = 0;
+				revive_started = 0;
+				bw::give_ai_ex(unit);
 			}
-			unit_ext->timers[TimerReviveFlagClearMin] = 0;
-			unit_ext->timers[TimerReviveFlagClearMax] = 0;
-			unit_ext->values[ValueReviveStarted] = 0;
-			bw::give_ai_ex(unit);
 		}
 
 		// Random movement for The Turning zombies
