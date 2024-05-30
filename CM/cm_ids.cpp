@@ -936,25 +936,13 @@ bool unit_id_is_larva(u32 unit_id) {
 
 u32 get_mutate_image_id(u32 unit_id) {
 	switch (unit_id) {
-		case UnitId::ZergQuazilisk: {
-			return ImageId::QuaziliskMutate;
-		}
-		case UnitId::ZergNathrokor: {
-			return ImageId::NathrokorMutate;
-		}
-		case UnitId::ZergProtathalor: {
-			return ImageId::ProtathalorMutate;
-		}
-		case UnitId::ZergIzirokor: {
-			return ImageId::IzirokorMutate;
-		}
-		case UnitId::ZergSkithrokor: {
-			return ImageId::SkithrokorMutate;
-		}
-		default: {
-			return 0;
-		}
+		case UnitId::ZergQuazilisk:		return ImageId::QuaziliskMutate;
+		case UnitId::ZergNathrokor:		return ImageId::NathrokorMutate;
+		case UnitId::ZergProtathalor:	return ImageId::ProtathalorMutate;
+		case UnitId::ZergIzirokor:		return ImageId::IzirokorMutate;
+		case UnitId::ZergSkithrokor:	return ImageId::SkithrokorMutate;
 	}
+	return ImageId::None;
 }
 
 bool unit_is_tower(Unit* unit) {
