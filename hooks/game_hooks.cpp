@@ -1197,7 +1197,8 @@ namespace hooks {
 
 		// Revive
 		if (((!unit_ext->timers[TimerReviveFlagClearMin] && !(unit->status & UnitStatus::NoBrkCodeStart)) || !unit_ext->timers[TimerReviveFlagClearMax])
-			&& unit_ext->values[ValueReviveStarted]) {
+			&& unit_ext->values[ValueReviveStarted])
+		{
 			if (unit_ext->timers[TimerStun] > 1) {
 				unit->status &= ~UnitStatus::Invincible;
 			} else {

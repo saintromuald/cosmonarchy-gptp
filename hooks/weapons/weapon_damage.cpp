@@ -952,8 +952,7 @@ namespace hooks
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
-			case UnitId::TerranCuirassTankMode:
-			{
+			case UnitId::TerranCuirassTankMode: {
 				// Cuirass - Stonewall Protocol
 				if (!target_ext->values[ValueCuirassIsSelfReviving]) {
 					target_ext->values[ValueCuirassIsSelfReviving] = 1;
@@ -966,8 +965,7 @@ namespace hooks
 					helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
 				}
 			} break;
-			case UnitId::ProtossVagrant:
-			{
+			case UnitId::ProtossVagrant: {
 				helper::increment_unit_death_scores(data.target, data.target->player);
 				helper::replace_unit_with_id(data.target, UnitId::ProtossVagrantShade);
 				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
@@ -979,14 +977,12 @@ namespace hooks
 				}
 
 				u32 sound = bw::rand_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
-				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99)
-				&& !g_is_in_replay && data.target->player == *g_local_nation_id) {
+				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99) && !g_is_in_replay && data.target->player == *g_local_nation_id) {
 					helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
 				}
 				fatal_deal_damage = false;
 			} break;
-			case UnitId::ProtossArchon:
-			{
+			case UnitId::ProtossArchon: {
 				// Archon - Astral Aegis
 				bw::UnitFinder(
 					data.target->get_x() - 96,
@@ -1001,8 +997,7 @@ namespace hooks
 					unit->heal_shields(value, data.target);
 				});
 			} break;
-			case UnitId::ProtossAurora:
-			{
+			case UnitId::ProtossAurora: {
 				// Last Orders - Aurora behavior
 				if (target_ext->values[ValueLastOrdersInit] == 0) {
 					target_ext->values[ValueLastOrdersInit] = 1;
@@ -1042,8 +1037,7 @@ namespace hooks
 					}
 				}
 			} break;
-			case UnitId::ZergAxitrilisk:
-			{
+			case UnitId::ZergAxitrilisk: {
 				helper::increment_unit_death_scores(data.target, data.target->player);
 				helper::replace_unit_with_id(data.target, UnitId::ZergAxitriliskWeaponless);
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
@@ -1056,7 +1050,6 @@ namespace hooks
 				// Vilgorokor - On Death behavior
 				bw::create_unit_from_ability(UnitId::ZergVilgoleth, 1, data.target->player, data.target->position);
 				bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
-			//	bw::transform_unit(data.target, UnitId::ZergVilgoleth);
 			} break;
 		}
 
