@@ -165,6 +165,7 @@ namespace hooks {
 		return 0;
 	}
 
+	// @TODO (code quality) -- big function, but usually good to invert the ifs and return early, rather than having lots of nesting and complex branching. -Veeq7
 	void orders_morph_1(Unit* unit) { // 0045DEA0
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->main_order_state == 0) {
@@ -261,7 +262,7 @@ namespace hooks {
 					u32 origin = unit->create_origin;
 					if (egg_id == UnitId::ZergEgg || egg_id == UnitId::ZergCocoon) {
 						u32 egg_image_id = get_mutate_image_id(origin);
-						if (egg_image_id) {
+						if (egg_image_id != ImageId::None) {
 							helper::replace_sprite_images(unit->sprite, egg_image_id, 0);
 						}
 					}
