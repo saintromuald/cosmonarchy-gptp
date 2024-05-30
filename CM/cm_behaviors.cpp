@@ -85,8 +85,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit_ext->values[ValueRegressionUnstable] = corpse_ext->create_origin == UnitId::ZergOcsalLarva;
 		switch (unit->id) {
 			case UnitId::ZergRililisk:
-			case UnitId::ZergRilirokor:
-			{
+			case UnitId::ZergRilirokor: {
 				unit->remove_timer = BroodspawnTimer;
 			} break;
 		}
