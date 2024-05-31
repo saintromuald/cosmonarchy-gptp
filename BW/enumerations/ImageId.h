@@ -1169,13 +1169,13 @@ namespace ImageId {
 		RechargeShieldsCustom_Medium				= 1548,
 		RechargeShieldsCustom_XLarge				= 1549,
 
-		BladeVortexDebuffSmall						= 1556,
-		BladeVortexDebuffMedium						= 1557,
-		BladeVortexDebuffLarge						= 1558,
-		StellarEnforcementDebuffSmall				= 1559,
-		StellarEnforcementDebuffMedium				= 1560,
-		StellarEnforcementDebuffLarge				= 1561,
-		StellarEnforcementDebuffXLarge				= 1562,
+		BladeVortexDebuff_Small						= 1556,
+		BladeVortexDebuff_Medium					= 1557,
+		BladeVortexDebuff_Large						= 1558,
+		StellarEnforcementDebuff_Small				= 1559,
+		StellarEnforcementDebuff_Medium				= 1560,
+		StellarEnforcementDebuff_Large				= 1561,
+		StellarEnforcementDebuff_XLarge				= 1562,
 
 		BindingPlasmaOverlay						= 1588,
 
@@ -1274,6 +1274,11 @@ namespace ImageId {
 		ProtathalorMutate							= 1887,
 		IzirokorMutate								= 1888,
 		SkithrokorMutate							= 1889,
+		BladeVortexDebuff_XLarge					= 1890,
+		LazarusAgentProc_Small						= 1891,
+		LazarusAgentProc_Medium						= 1892,
+		LazarusAgentProc_Large						= 1893,
+		LazarusAgentProc_XLarge						= 1894,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

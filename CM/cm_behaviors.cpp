@@ -93,7 +93,8 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 
 		unit->shields = 0;
 		unit->set_hitpoints(5 * 256);
-		unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+		u32 image_id = ImageId::LazarusAgentProc_Small + bw::get_overlay_offset(unit->id, true);
+		unit->sprite->create_top_overlay(image_id);
 		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
 		unit_ext->timers[TimerReclaiming] = Reclamation::ReviveTimer;
 		unit_ext->timers[TimerStun]       = Reclamation::ReviveTimer;
