@@ -1279,6 +1279,8 @@ namespace ImageId {
 		LazarusAgentProc_Medium						= 1892,
 		LazarusAgentProc_Large						= 1893,
 		LazarusAgentProc_XLarge						= 1894,
+		GeszithalorMutate							= 1895,
+		EvigriliskMutate							= 1896,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
