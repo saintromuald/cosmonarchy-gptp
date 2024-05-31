@@ -2662,23 +2662,8 @@ namespace hooks {
 		}
 
 		{
-			bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] > 1, {});
-			if (unit_ext->timers[TimerAvenge] == 1) {
-				Image* overlay = unit->get_overlay(ImageId::Avenge_Small + bw::get_overlay_offset(unit->id, true));
-				if (overlay) {
-					overlay->play_iscript_animation(IscriptAnimation::Death);
-				}
-			}
-		}
-
-		{
-			bw::set_unit_overlay(unit, { ImageId::Ascension_Small, ImageId::Ascension_XLarge }, unit_ext->timers[TimerAscend] > 1, {});
-			if (unit_ext->timers[TimerAscend] == 1) {
-				Image* overlay = unit->get_overlay(ImageId::Ascension_Small + bw::get_overlay_offset(unit->id, true));
-				if (overlay) {
-					overlay->play_iscript_animation(IscriptAnimation::Death);
-				}
-			}
+			bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] >= 1, { .play_death = true });
+			bw::set_unit_overlay(unit, { ImageId::Ascension_Small, ImageId::Ascension_XLarge }, unit_ext->timers[TimerAscend] >= 1, { .play_death = true });
 		}
 
 		{
