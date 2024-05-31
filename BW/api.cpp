@@ -921,7 +921,7 @@ static u32 log_random(gptp::GameLogger& logger, u32 value, std::source_location 
 	if (g_config.log_randoms) {
 		logger << src.function_name() << "\n";
 		logger << src.file_name() << ":" << src.line() << "\n";
-		logger << "randomized " << value << "\n\n";
+		logger << "randomized " << value << " on frame " << g_elapsed_time_frames << "\n\n";
 	}
 	return value;
 }
@@ -3867,8 +3867,7 @@ u32 get_manual_unit_weapon_sound(Unit* unit, u32 weapon_id) {
 u32 get_manual_weapon_id_sound(u32 weapon_id) {
 	u32 sound_id = SoundId::None;
 	switch (weapon_id) {
-		case WeaponId::DemiurgeGalacticWeaver:
-		{
+		case WeaponId::DemiurgeGalacticWeaver: {
 			sound_id = bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
 		}
 	}

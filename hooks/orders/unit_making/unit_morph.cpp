@@ -284,7 +284,9 @@ namespace hooks {
 						case UnitId::ZergNathrokor:
 						case UnitId::ZergProtathalor:
 						case UnitId::ZergIzirokor:
-						case UnitId::ZergSkithrokor: {
+						case UnitId::ZergSkithrokor:
+						case UnitId::ZergEvigrilisk:
+						case UnitId::ZergGeszithalor: {
 							animation = IscriptAnimation::SpecialState1;
 						} break;
 						case UnitId::ZergZoryusthaleth: {
