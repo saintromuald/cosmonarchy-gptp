@@ -2671,9 +2671,14 @@ namespace hooks {
 			}
 		}
 
-		if (unit_ext->timers[TimerAscend]) {
-			u32 ascend_overlay_id = ImageId::Ascension_Small + bw::get_overlay_offset(unit->id, true);
-			bw::add_unit_overlay(unit, ascend_overlay_id);
+		{
+			bw::set_unit_overlay(unit, { ImageId::Ascension_Small, ImageId::Ascension_XLarge }, unit_ext->timers[TimerAscend] > 1, {});
+			if (unit_ext->timers[TimerAscend] == 1) {
+				Image* overlay = unit->get_overlay(ImageId::Ascension_Small + bw::get_overlay_offset(unit->id, true));
+				if (overlay) {
+					overlay->play_iscript_animation(IscriptAnimation::Death);
+				}
+			}
 		}
 
 		{
