@@ -1072,6 +1072,7 @@ namespace hooks {
 	void tick_unit(Unit* unit, bool unit_is_hidden) {
 		init_unit(unit);
 
+		bool should_update_speed = false;
 		UnitExt* unit_ext = get_unit_ext(unit);
 		/*
 		if (unit_ext->values[ValueUnitIdName] != unit->id + 1) {
@@ -1182,19 +1183,6 @@ namespace hooks {
 			}
 		}
 
-		// Reclamation - Reclaiming
-		if (unit_ext->timers[TimerReclaiming]) {
-			const u32 heal_amount = (100 * 256) + (units_dat::max_hitpoints[unit->id] / 3) - (5 * 256); // minus 5, which is set on initial reclamation
-			unit->heal_hp(heal_amount / Reclamation::ReviveTimer);
-			if (unit_ext->timers[TimerReclaiming] == 1) {
-				unit->sprite->create_overlay(ImageId::LazarusAgentCast);
-				// Play sound for the end of healing and stun
-			} else if (unit_ext->timers[TimerReclaiming] % 12 == 1) {
-				unit->sprite->create_overlay(ImageId::LazarusAgentCast);
-				// Play sound for healing and stun
-			}
-		}
-
 		// Revive
 		{
 			auto& clear_min = unit_ext->timers[TimerReviveFlagClearMin];
@@ -1212,6 +1200,42 @@ namespace hooks {
 				clear_max = 0;
 				revive_started = 0;
 				bw::give_ai_ex(unit);
+			}
+		}
+
+		// Reclamation - Initial healing
+		if (unit_ext->timers[TimerReclaiming]) {
+			const u32 heal_amount = (100 * 256) + (units_dat::max_hitpoints[unit->id] / 3) - (5 * 256); // minus 5, which is set on initial reclamation
+			unit->heal_hp(heal_amount / Reclamation::ReviveTimer);
+			if (unit_ext->timers[TimerReclaiming] == 1) {
+				unit->sprite->create_overlay(ImageId::LazarusAgentCast);
+				// Play sound for the end of healing and stun
+			} else if (unit_ext->timers[TimerReclaiming] % 12 == 1) {
+				unit->sprite->create_overlay(ImageId::LazarusAgentCast);
+				// Play sound for healing and stun
+			}
+		}
+
+		// Reclamation - Regeneration, speed update
+		if (unit_ext->values[ValueReclaimed] && !unit_ext->timers[TimerReclaiming]) {
+			should_update_speed = true;
+			auto& reclamation_regen = unit_ext->values[ValueReclamationRegen];
+			if (reclamation_regen) {
+				static constexpr u32 HealPerTick = 2 * 256 / 24;
+				auto heal = HealPerTick;
+				if (unit_ext->damage_taken_timer > 2 * 24) {
+					heal -= unit->heal_hp(heal);
+					reclamation_regen = std::max((s32)(reclamation_regen - heal), 0);
+				} else {
+					static constexpr u32 HealFade = HealPerTick / 2;
+					reclamation_regen = std::max((s32)(reclamation_regen - HealFade), 0);
+				}
+			}
+			u32 overlay_id = ImageId::RevivedDecayingOverlay;
+			if (!(unit->status & UnitStatus::Burrowed)) {
+				bw::add_unit_overlay(unit, overlay_id);
+			} else {
+				bw::remove_unit_overlay(unit, overlay_id);
 			}
 		}
 
@@ -1320,8 +1344,6 @@ namespace hooks {
 				}
 			} break;
 		}
-
-		bool should_update_speed = false;
 
 		// Unit-specific
 		switch (unit->id) {
@@ -2585,29 +2607,6 @@ namespace hooks {
 					}
 				}
 			} break;
-		}
-
-		// Reclamation regeneration
-		if (unit_ext->values[ValueReclaimed]) {
-			should_update_speed = true;
-			auto& reclamation_regen = unit_ext->values[ValueReclamationRegen];
-			if (reclamation_regen) {
-				static constexpr u32 HealPerTick = 2 * 256 / 24;
-				auto heal = HealPerTick;
-				if (unit_ext->damage_taken_timer > 2 * 24) {
-					heal -= unit->heal_hp(heal);
-					reclamation_regen = std::max((s32)(reclamation_regen - heal), 0);
-				} else {
-					static constexpr u32 HealFade = HealPerTick / 2;
-					reclamation_regen = std::max((s32)(reclamation_regen - HealFade), 0);
-				}
-			}
-			u32 overlay_id = ImageId::RevivedDecayingOverlay;
-			if (!(unit->status & UnitStatus::Burrowed)) {
-				bw::add_unit_overlay(unit, overlay_id);
-			} else {
-				bw::remove_unit_overlay(unit, overlay_id);
-			}
 		}
 
 		// Stimpack - Delayed buff handling

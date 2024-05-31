@@ -890,11 +890,10 @@ namespace hooks
 	}
 
 	// Hooked to protect against nullsprite crashes. -Pr0nogo
-	void orders_turret_attack(Unit* unit) // 00477980
-	{
+	void orders_turret_attack(Unit* unit) { // 00477980
 		helper::pick_new_target_if_needed(unit);
 		Unit* target = unit->order_target.unit;
-		if (target && AssertSprite(target->sprite)) { // sprite is new
+		if (target && target->sprite) { // sprite is new
 			unit->order_target.pt.x = target->sprite->position.x;
 			unit->order_target.pt.y = target->sprite->position.y;
 		}
@@ -905,7 +904,7 @@ namespace hooks
 		u32 order_id = 0;
 		u32 last_order = 0;
 
-		if (unit->is_frozen() || !target || !AssertSprite(target->sprite)) { // sprite is new
+		if (unit->is_frozen() || !target || !target->sprite) { // sprite is new
 			goto cannot_attack;
 		}
 		if (target->status & UnitStatus::Invincible || target->sprite->flags & SpriteFlags::Hidden || helper::unit_can_see_cloaked_target(target, unit)) {
