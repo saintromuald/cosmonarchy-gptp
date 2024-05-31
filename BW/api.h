@@ -165,7 +165,8 @@ struct SoundSet {
 };
 
 struct OverlaySettings {
-	bool underlay = false;
+	bool underlay   : 1 = false;
+	bool play_death : 1 = false;
 	SoundSet add_sound = SoundId::None;
 	SoundSet remove_sound = SoundId::None;
 };

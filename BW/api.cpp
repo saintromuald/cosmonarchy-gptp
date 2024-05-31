@@ -2943,7 +2943,16 @@ void remove_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& 
 		return;
 	}
 
-	unit->sprite->remove_overlay(image_id);
+	if (settings.play_death) {
+		for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
+			if (image->id != image_id) {
+				continue;
+			}
+			image->play_iscript_animation(IscriptAnimation::Death);
+		}
+	} else {
+		unit->remove_overlay(image_id);
+	}
 	if (settings.remove_sound) {
 		helper::play_sound_from_unit(settings.remove_sound.rand(), unit);
 	}
