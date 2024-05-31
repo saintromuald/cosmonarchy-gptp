@@ -1207,11 +1207,12 @@ namespace hooks {
 		if (unit_ext->timers[TimerReclaiming]) {
 			const u32 heal_amount = (100 * 256) + (units_dat::max_hitpoints[unit->id] / 3) - (5 * 256); // minus 5, which is set on initial reclamation
 			unit->heal_hp(heal_amount / Reclamation::ReviveTimer);
+			u32 image_id = ImageId::LazarusAgentProc_Small + bw::get_overlay_offset(unit->id, true);
 			if (unit_ext->timers[TimerReclaiming] == 1) {
-				unit->sprite->create_overlay(ImageId::LazarusAgentCast);
+				unit->sprite->create_overlay(image_id);
 				// Play sound for the end of healing and stun
 			} else if (unit_ext->timers[TimerReclaiming] % 12 == 1) {
-				unit->sprite->create_overlay(ImageId::LazarusAgentCast);
+				unit->sprite->create_overlay(image_id);
 				// Play sound for healing and stun
 			}
 		}
@@ -1367,7 +1368,7 @@ namespace hooks {
 						bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, pos);
 						bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y - 12, unit->player, corpse->sprite->elevation + 1);
 						consume_corpse(corpse);
-						unit->sprite->create_overlay(ImageId::LazarusAgentCast);
+						unit->sprite->create_overlay(ImageId::LazarusAgentProc_Large);
 					}
 				}
 
@@ -1714,7 +1715,7 @@ namespace hooks {
 							unit_ext->timers[TimerReclaimInterval] = 24;
 							bw::decloak_passive_proc(unit);
 							unit->spend_unit_energy(energy);
-							unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+							unit->sprite->create_top_overlay(ImageId::LazarusAgentProc_Large);
 							helper::play_sound_from_unit(SoundId::LazarusAgentCastTick, unit, 1, 0); // TODO: Use Start and End when applicable
 
 							Thingy* corpse = get_closest_active_corpse(unit->position, 3 * 32);
@@ -2660,9 +2661,14 @@ namespace hooks {
 			unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
 		}
 
-		if (unit_ext->timers[TimerAvenge] > 1) {
-			u32 ascend_overlay_id = ImageId::Avenge_Small + bw::get_overlay_offset(unit->id, true);
-			bw::add_unit_overlay(unit, ascend_overlay_id);
+		{
+			bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] > 1, {});
+			if (unit_ext->timers[TimerAvenge] == 1) {
+				Image* overlay = unit->get_overlay(ImageId::Avenge_Small + bw::get_overlay_offset(unit->id, true));
+				if (overlay) {
+					overlay->play_iscript_animation(IscriptAnimation::Death);
+				}
+			}
 		}
 
 		if (unit_ext->timers[TimerAscend]) {
@@ -3311,7 +3317,10 @@ namespace hooks {
 		// Legionnaire - Blade Vortex - Handle debuff overlay
 		{
 			u32 blade_vortex = unit_ext->timers[TimerBladeVortex];
-			u32 image_id = ImageId::BladeVortexDebuffSmall + bw::get_overlay_offset(unit->id);
+			u32 image_id = ImageId::BladeVortexDebuff_Small + bw::get_overlay_offset(unit->id, true);
+			if (image_id == ImageId::StellarEnforcementDebuff_Small) {
+				image_id = ImageId::BladeVortexDebuff_XLarge; // Stupid workaround since XLarge was added later
+			}
 			if (blade_vortex > 1 && !unit->get_overlay(image_id)) {
 				bw::add_unit_overlay(unit, image_id);
 			} else if (blade_vortex <= 1 && unit->get_overlay(image_id)) {
@@ -3321,7 +3330,7 @@ namespace hooks {
 
 		// Magister - Stellar Enforcement - Handle overlay looping
 		{
-			u32 overlay_id = ImageId::StellarEnforcementDebuffSmall + bw::get_overlay_offset(unit->id, true);
+			u32 overlay_id = ImageId::StellarEnforcementDebuff_Small + bw::get_overlay_offset(unit->id, true);
 			if (unit_ext->timers[TimerStellarEnforcement] > 1 && unit_ext->timers[TimerStellarEnforcementOverlay] <= 1) {
 				unit_ext->timers[TimerStellarEnforcementOverlay] = 30;
 				bw::add_unit_overlay(unit, overlay_id);
