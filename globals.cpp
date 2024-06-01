@@ -26,6 +26,14 @@ void IquareGlobals::reset() {
 }
 
 void IquareGlobals::unit_death(Unit* unit) {
+	for (auto& effect : m_effects_to_add) {
+		if (effect.source == unit) {
+			effect.source = nullptr;
+		}
+		if (effect.origin == unit) {
+			effect.origin = nullptr;
+		}
+	}
 	for (auto& effect : m_effects) {
 		if (effect.source == unit) {
 			effect.source = nullptr;
@@ -78,7 +86,7 @@ void tick_effect(EffectField& effect) {
 		switch (effect.id) {
 			case EffectId::StarSovereignTheGriefOfAllGods: {
 				if (!effect.origin) {
-					effect.current_time = 0;
+					effect.destroy();
 					return;
 				}
 
@@ -198,13 +206,13 @@ void tick_effect(EffectField& effect) {
 			} break;
 			case EffectId::LanifectDisruptionField: {
 				if (!effect.origin) {
-					effect.current_time = 0;
+					effect.destroy();
 					break;
 				}
 
-				UnitExt* parent_ext = get_unit_ext(effect.origin);
-				if (!parent_ext->values[ValueDisruptionFieldOn]) {
-					effect.current_time = 0;
+				UnitExt* origin_ext = get_unit_ext(effect.origin);
+				if (!origin_ext->values[ValueDisruptionFieldOn]) {
+					effect.destroy();
 					break;
 				}
 
@@ -245,13 +253,11 @@ void tick_effect(EffectField& effect) {
 				});
 			} break;
 			case EffectId::AionReclamationField: {
-				if (effect.current_time > 1) {
-					Thingy* corpse = get_closest_active_corpse(effect.position, effect.radius);
-					if (corpse) {
-						reclaim_corpse(corpse, effect.player);
-						effect.current_time = 1;
-						break;
-					}
+				Thingy* corpse = get_closest_active_corpse(effect.position, effect.radius);
+				if (corpse) {
+					reclaim_corpse(corpse, effect.player);
+					effect.destroy();
+					break;
 				}
 			} break;
 			case EffectId::VilgolethHeal: {
@@ -336,7 +342,7 @@ void IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 r
 		.id = id,
 		.position = position,
 		.radius = radius,
-		.current_time = time,
+		.current_time = time + 1, // We decrement before tick, so first tick will have current_time == max_time
 		.max_time = time,
 		.sprite_id = sprite_id,
 		.elevation = elevation,
@@ -349,6 +355,8 @@ void IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 r
 }
 
 void IquareGlobals::tick() {
+	// Adds a frame of delay, but is necessary for effects spawning effects, where vector iterator would get invalidated otherwise
+	m_effects.reserve(m_effects_to_add.size());
 	std::ranges::move(m_effects_to_add, std::back_inserter(m_effects));
 	m_effects_to_add.clear();
 
@@ -360,9 +368,9 @@ void IquareGlobals::tick() {
 			}
 		}
 
+		effect.current_time--;
 		tick_effect(effect);
 
-		effect.current_time--;
 		if (!effect.current_time) {
 			if (effect.thingy && effect.thingy->sprite) {
 				effect.thingy->sprite->flags |= SpriteFlags::RemoveAfterDeath;
@@ -790,7 +798,7 @@ void restore_func(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 
 	Unit* overlayTargetUnit = unit;
-	if (unit->subunit != nullptr) {
+	if (unit->subunit) {
 		overlayTargetUnit = unit->subunit;
 	}
 	u32 overlayImageId = ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id);;
