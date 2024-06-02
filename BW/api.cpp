@@ -1129,7 +1129,7 @@ bool order_is_spell(s32 order_id) {
 		|| order_id == OrderId::Irradiate
 		|| order_id == OrderId::StasisField
 		|| order_id == OrderId::EMPShockwave		// Observance	 (unused)
-		|| order_id == OrderId::MagnaPulse			// Lobotomy Mine (unused)
+		|| order_id == OrderId::Lockdown			// Lobotomy Mine (unused)
 		|| order_id == OrderId::PsiStorm
 	//	|| order_id == OrderId::SummonBroodlings	// unused
 		|| order_id == OrderId::FireYamatoGun1;
