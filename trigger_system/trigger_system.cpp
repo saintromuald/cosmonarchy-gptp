@@ -1315,21 +1315,21 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				unit_count++;
 
 				switch (trigger_behavior) {
-					case TriggerBehavior_CloakProximity:
-					{
+					case TriggerBehavior_CloakProximity: {
 						unit_ext->values[ValueTriggerBehaviorProximityCloak] = enable;
 					} break;
-					case TriggerBehavior_CloakSteady:
-					{
+					case TriggerBehavior_CloakSteady: {
 						unit_ext->values[ValueTriggerBehaviorSteadyShroud] = enable;
 					} break;
-					case TriggerBehavior_Hallucination:
-					{
+					case TriggerBehavior_Hallucination: {
 						if (enable && !(unit->status & UnitStatus::IsHallucination)) {
 							unit->status |= UnitStatus::IsHallucination;
 						} else if (!enable && unit->status & UnitStatus::IsHallucination) {
 							unit->status &= ~UnitStatus::IsHallucination;
 						}
+					} break;
+					case TriggerBehavior_DisablePassive: {
+						unit_ext->values[ValueDisablePassive] = enable == 1;
 					} break;
 				}
 			}
@@ -1374,6 +1374,39 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 					}
 				}
+			}
+		} else if (parser.equals("give_unit")) {
+			Area area = parser.get_area();
+			PlayerBitset source_players = parser.get_player_bitset();
+			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			u32 count = parser.get_s32();
+			u32 target_player = parser.get_s32();
+
+			EntryArray units = {};
+			unit_search_rect(&units, area.box);
+
+			u32 unit_count = 0;
+			for (u32 i = 0; i < units.count; ++i) {
+				Unit* unit = units.units[i];
+				UnitExt* unit_ext = get_unit_ext(unit);
+				Point16 position = unit->position;
+				if (!area.check(position, unit->status & UnitStatus::InAir)) {
+					continue;
+				}
+				if (unit->player >= FullPlayerLimit || !source_players[unit->player]) {
+					continue;
+				}
+				if (unit->player == target_player) {
+					continue;
+				}
+				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
+					continue;
+				}
+				if (count && unit_count >= count) {
+					return true;
+				}
+				unit_count++;
+				helper::give_unit(unit, target_player, 1);
 			}
 		} else if (parser.equals("issue_order")) {
 			Area area_init = parser.get_area();

@@ -1826,7 +1826,7 @@ namespace hooks {
 			case UnitId::TerranShamanVisionaryMode:
 			{
 				// Shaman - Nanite Field
-				if (unit->is_frozen() || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport) {
+				if (unit->is_frozen() || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport || unit_ext->values[ValueDisablePassive]) {
 					break;
 				}
 				u32 timer = unit_ext->timers[TimerNaniteField];

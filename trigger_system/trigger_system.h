@@ -276,6 +276,7 @@ enum TriggerBehavior : u8 {
 	TriggerBehavior_CloakProximity,
 	TriggerBehavior_CloakSteady,
 	TriggerBehavior_Hallucination,
+	TriggerBehavior_DisablePassive,
 
 	TriggerBehavior_Count,
 };
@@ -284,6 +285,7 @@ static const char* trigger_behavior_names[] = {
 	"cloak_proximity",
 	"cloak_steady",
 	"hallucination",
+	"disable_passive,"
 };
 C_ASSERT(ARRAY_SIZE(trigger_behavior_names) == TriggerBehavior_Count);
 
