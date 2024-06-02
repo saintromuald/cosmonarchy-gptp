@@ -314,3 +314,8 @@ void rescue_unit(Unit* unit, u32 player) {
 	}
 	bw::refresh_console();
 }
+
+bool can_auto_heal(Unit* unit) {
+	UnitExt* unit_ext = get_unit_ext(unit);
+	return !unit_ext->values[ValueReviveStarted] && !unit->is_frozen() && !unit_ext->values[ValueDisablePassive];
+}

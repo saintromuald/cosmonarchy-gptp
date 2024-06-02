@@ -10,6 +10,6 @@ namespace hooks
 	bool ai_acquire_heal_target(Unit* cleric, Unit* target);	// 00463530
 	u32 do_medic_heal(Unit* medic, Unit* target);				// 00463C40
 
-//	void orders_medic_hold_position(Unit* unit);		// Now located in base_orders/stopholdpos_orders.h
+//	void orders_medic_hold_position(Unit* unit);				// Now located in base_orders/stopholdpos_orders.h
 	void inject_medic_orders_hooks();
 }
