@@ -26,7 +26,7 @@ void update_spawn() {
 			case SpawnType_AugurDamage: {
 				Unit* augur = bw::create_unit_in_game(UnitId::ProtossAugur, seq->player, seq->source_pos.x, seq->source_pos.y);
 				if (augur) {
-					augur->user_action_flags |= 4;
+					augur->user_action_flags |= UserActionFlags_HideUnit;
 					augur_sacrifice(augur, 10 * 32);
 				}
 			} break;
@@ -38,6 +38,12 @@ void update_spawn() {
 
 		Unit* unit = bw::create_unit_in_game(seq->unit_id, seq->player, seq->source_pos.x, seq->source_pos.y);
 		if (unit) {
+			if (seq->type == SpawnType_Burrow) {
+				u8 flag = 0;
+				flag |= 0x2;
+				helper::chk_unit_apply_burrow_flag(unit, flag, true);
+			}
+
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Building) && (seq->move_pos.x || seq->move_pos.y)) {
 				if (unit->unit_ai) {
 					unit->order_to(OrderId::AttackMoveComputer, seq->move_pos.x, seq->move_pos.y);

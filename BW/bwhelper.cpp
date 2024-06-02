@@ -15230,4 +15230,17 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	void chk_unit_apply_burrow_flag(Unit* unit, u8 flag, b32 try_burrow) {
+		const u32 func_address = 0x004CCF20;
+		static u32 flag_xd = flag;
+		__asm {
+			PUSHAD
+			PUSH try_burrow
+			PUSH flag_xd
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }

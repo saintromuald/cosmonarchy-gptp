@@ -1759,4 +1759,6 @@ namespace helper {
 	s32 get_last_game_type_from_registry(BinDlg* dialog);						// 004AD5B0
 	void unk_list_related(BinDlg* dialog);										// 004AEED0
 	void dialog_set_selected_immediate(u8 id, BinDlg* dialog);					// 0041A850
+
+	void chk_unit_apply_burrow_flag(Unit* unit, u8 flag, b32 try_burrow);		// 004CCF20
 }
