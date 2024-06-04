@@ -1281,6 +1281,8 @@ namespace ImageId {
 		LazarusAgentProc_XLarge						= 1894,
 		GeszithalorMutate							= 1895,
 		EvigriliskMutate							= 1896,
+		VilgorokorMutate							= 1897,
+		GorgrokorMutate								= 1898,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

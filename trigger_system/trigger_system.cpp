@@ -1750,6 +1750,15 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				auto& cm_player = g_globals->players[player];
 				cm_player.omnipresence_state = omni_state;
 			}
+		} else if (parser.equals("set_player_build_multiplier")) {
+			u32 player = parser.get_player();
+			u32 multiplier = parser.get_s32();
+
+			if (player) {
+				player -= 1;
+				auto& cm_player = g_globals->players[player];
+				cm_player.build_multiplier = multiplier;
+			}
 		} else if (parser.equals("print")) {
 			Token text = parser.get_string();
 			bw::print(text.string().c_str());

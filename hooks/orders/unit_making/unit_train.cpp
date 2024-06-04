@@ -112,7 +112,7 @@ namespace hooks {
 							built_unit->remaining_build_time -= modifier.decrease;
 						} else {
 							built_unit->remaining_build_time = 0;
-							if (bw::get_game_kind() == GameKind_Debug) {
+							if (unit_needs_hp_train_workaround(built_unit)) {
 								helper::set_unit_hp(built_unit, built_unit->get_max_hp_raw());
 							}
 						}

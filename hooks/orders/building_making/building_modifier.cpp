@@ -1,5 +1,6 @@
 #include "building_modifier.h"
 #include <globals.h>
+#include "trigger_system\trigger_system.h"
 
 BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool constructing) {
 	BuildingModifier modifier = {};
@@ -21,7 +22,11 @@ BuildingModifier get_building_modifier(Unit* building, Unit* builder, bool const
 	} else if (building_ext->unit_vectors[UnitVectorCrucibles].size()) {
 		modifier.multiplier *= 1.5;
 	}
-
+	
+	const auto& cm_player = g_globals->players[building->player];
+	if (cm_player.build_multiplier) {
+		modifier.multiplier *= cm_player.build_multiplier;
+	}
 	if (bw::get_game_kind() == GameKind_Debug) {
 		modifier.multiplier *= 32;
 	}

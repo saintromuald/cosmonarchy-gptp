@@ -3,6 +3,7 @@
 #include <BW/api.h>
 #include <globals.h>
 #include <hooks/limits/sfx_extender.h>
+#include "trigger_system/trigger_system.h"
 
 namespace hooks
 {
@@ -576,7 +577,7 @@ namespace hooks
 					unit->remaining_build_time -= modifier.decrease;
 				} else {
 					unit->remaining_build_time = 0;
-					if (bw::get_game_kind() == GameKind_Debug) {
+					if (unit_needs_hp_train_workaround(unit)) {
 						helper::set_unit_hp(unit, unit->get_max_hp_raw());
 					}
 				}

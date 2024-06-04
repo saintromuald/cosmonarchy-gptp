@@ -149,7 +149,7 @@ namespace hooks {
 		if (!unit->remaining_build_time) {
 			return 1;
 		}
-		if (bw::get_game_kind() == GameKind_Debug) {
+		if (unit_needs_hp_train_workaround(unit)) {
 			if (unit->remaining_build_time < 32) {
 				unit->remaining_build_time = 0;
 				helper::set_unit_hp(unit, unit->get_max_hp_raw());
@@ -286,6 +286,8 @@ namespace hooks {
 						case UnitId::ZergIzirokor:
 						case UnitId::ZergSkithrokor:
 						case UnitId::ZergEvigrilisk:
+						case UnitId::ZergGorgrokor:
+						case UnitId::ZergVilgorokor:
 						case UnitId::ZergGeszithalor: {
 							animation = IscriptAnimation::SpecialState1;
 						} break;
