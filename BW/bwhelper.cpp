@@ -15243,4 +15243,16 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	// Moves the unit's position to @p (x, y). If the unit is a inside unit and the the target position is on unwalkable terrain,
+	// this function moves the unit to the nearest walkable tile instead.
+	void refresh_unit_after_move(Unit* unit) {
+		const u32 func_address = 0x00494160;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
 }

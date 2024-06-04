@@ -74,8 +74,8 @@ void teleport_internal(Unit* unit, Point16 target, u16 sprite_id, bool preserve_
 	if (!preserve_order) {
 		unit->order_target.unit = 0;
 	}
-	bw::set_unit_position(unit, target.x, target.y);
-	bw::refresh_unit_after_move(unit);
+	helper::move_unit(unit, target.x, target.y);
+	helper::refresh_unit_after_move(unit);
 
 	// Stop some currently active orders
 	if (unit->id != UnitId::ZergCocoon && !preserve_order) {
@@ -770,15 +770,15 @@ bool move_unit(Unit* unit, s16 x, s16 y) {
 	Point16 prevPos = unit->sprite->position;
 
 	// Based on the code for DimensionalRecall/Nydus Canal/Move Unit trigger
-	set_unit_position(unit, x, y);
+	helper::move_unit(unit, x, y);
 
 	if (check_unit_collision_pos(unit, &targetPos, &actualPos)) {
 		prepare_unit_move(unit);
-		set_unit_position(unit, actualPos.x, actualPos.y);
-		refresh_unit_after_move(unit);
+		helper::move_unit(unit, actualPos.x, actualPos.y);
+		helper::refresh_unit_after_move(unit);
 		return true;
 	} else {
-		set_unit_position(unit, prevPos.x, prevPos.y);
+		helper::move_unit(unit, prevPos.x, prevPos.y);
 		return false;
 	}
 }
@@ -811,8 +811,8 @@ bool move_unit_improved(Unit* unit, s16 x, s16 y) {
 	}
 
 	prepare_unit_move_custom(unit);
-	set_unit_position(unit, x, y);
-	refresh_unit_after_move(unit);
+	helper::move_unit(unit, x, y);
+	helper::refresh_unit_after_move(unit);
 	return true;
 }
 
@@ -917,11 +917,12 @@ void refresh_screen() {
 	memset(g_refresh_regions, 1, 1200);
 }
 
-static u32 log_random(gptp::GameLogger& logger, u32 value, std::source_location src) {
+static u32 log_random(gptp::GameLogger& logger, u32 value, std::source_location src, u32 old_last_random) {
 	if (g_config.log_randoms) {
 		logger << src.function_name() << "\n";
 		logger << src.file_name() << ":" << src.line() << "\n";
-		logger << "randomized " << value << " on frame " << g_elapsed_time_frames << "\n\n";
+		logger << "g_last_random_number was " << old_last_random << "\n";
+		logger << "Randomized " << value << " on frame " << g_elapsed_time_frames << "\n\n";
 	}
 	return value;
 }
@@ -938,13 +939,14 @@ u32 rand_between_local(u32 min, u32 max, std::source_location src) {
 		std::mt19937 mt{rd()};
 	};
 	static LocalRandomContext context;
-	return log_random(gptp::g_local_random_logger, context.mt() % (max - min + 1) + min, src);
+	return log_random(gptp::g_local_random_logger, context.mt() % (max - min + 1) + min, src, 3);
 }
 
 u16 random(std::source_location src) {
 	if (g_is_in_game_loop) {
+		u32 old_last_random = g_last_random_number;
 		g_last_random_number = 22695477 * g_last_random_number + 1;
-		return log_random(gptp::g_sync_random_logger, (g_last_random_number >> 16) % 32768, src);
+		return log_random(gptp::g_sync_random_logger, (g_last_random_number >> 16) % 32768, src, old_last_random);
 	}
 	return 0;
 }
@@ -1506,30 +1508,6 @@ bool check_unit_collision_pos(Unit* unit, const Point16* in_pos, Point16* out_po
 	return result != 0;
 }
 
-void set_unit_position(Unit* unit, u16 x, u16 y) {
-	const u32 Func_SetUnitPosition = 0x004EB9F0;
-	assert(unit);
-	__asm {
-		PUSHAD
-		MOV CX, y
-		MOV AX, x
-		MOV EDX, unit
-		CALL Func_SetUnitPosition
-		POPAD
-	}
-}
-
-void refresh_unit_after_move(Unit* unit) {
-	const u32 Func_RefreshRevealUnitAfterMove = 0x00494160;
-	assert(unit);
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_RefreshRevealUnitAfterMove
-		POPAD
-	}
-}
-
 void make_to_hold_position(Unit* unit) {
 	const u32 func_address = 0x004EB5B0;
 	__asm
@@ -2009,7 +1987,7 @@ bool unit_is_stunned(Unit* unit) {
 
 void dump_sync_data() {
 	FILE* file = fopen("desync.text", "wb");
-	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+	for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 		fprintf(file, "Unit %s #%u", unit->get_name(), unit->get_unit_index() - 1);
 		fprintf(file, "\tPlayer %u", unit->player);
 
@@ -2515,7 +2493,7 @@ void delete_ai_script(AiScript* ai_script) {
 
 void delete_town(AiTown* ai_town) {
 	helper::delete_aiscripts_using_town(ai_town);
-	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+	for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 		if (unit->sprite && unit->main_order_id && units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
 			unit->building.resource.resarea = 0;
 		}
@@ -3028,7 +3006,7 @@ void regress(Unit* unit, u32 regression_id) {
 
 				helper::fix_target_location(&new_pos, regress_to);
 				if (bw::distance_between(old_pos, new_pos) <= 2 * 32) {
-					bw::set_unit_position(unit, new_pos);
+					helper::move_unit(unit, new_pos.x, new_pos.y);
 				} else {
 					unit->remove();
 				}

@@ -132,7 +132,7 @@ namespace hooks {
 			helper::fix_target_location(&pos, unit->id);
 			if (pos.x != unit->sprite->position.x ||
 				pos.y != unit->sprite->position.y) {
-				bw::set_unit_position(unit, pos.x, pos.y);
+				helper::move_unit(unit, pos.x, pos.y);
 			}
 			if (!bw::is_zerg_egg_new(unit, true, false)) {
 				helper::order_new_unit_to_rally(unit, factory);

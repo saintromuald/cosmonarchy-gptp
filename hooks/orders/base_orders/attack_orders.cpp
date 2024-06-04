@@ -651,7 +651,7 @@ namespace hooks
 				unit->unit_with_hangar.out_hangar_child = launched_unit;
 				unit->unit_with_hangar.out_hangar_count++;
 
-				bw::set_unit_position(launched_unit, x, y);
+				helper::move_unit(launched_unit, x, y);
 				//void showAndEnableUnit(Unit* unit) @ 004E6490
 				__asm {
 					PUSHAD

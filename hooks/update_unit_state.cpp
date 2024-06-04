@@ -400,7 +400,7 @@ namespace hooks
 
 		Unit* next_unit; // caching next unit instead of a direct read, since some functions might actually modify the link.next
 						 // (especially when the unit dies or gets hidden etc)
-		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = next_unit) {
 			next_unit = unit->link.next;
 			*g_active_iscript_entity = unit;
 			*g_active_iscript_unit = unit;
@@ -434,7 +434,7 @@ namespace hooks
 			}
 		}
 
-		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = next_unit) {
 			next_unit = unit->link.next;
 			UnitExt* unit_ext = get_unit_ext(unit);
 			helper::update_visibility(unit);
@@ -444,7 +444,7 @@ namespace hooks
 			}
 		}
 
-		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = next_unit) {
 			next_unit = unit->link.next;
 			*g_active_iscript_entity = unit;
 			*g_active_iscript_unit = unit;

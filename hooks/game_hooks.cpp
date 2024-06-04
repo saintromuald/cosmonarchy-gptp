@@ -643,7 +643,7 @@ namespace hooks {
 		}
 
 		// Connect addons
-		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 			if (units_dat::base_property[unit->id] & UnitProperty::Building && !unit->building.addon) {
 				Unit* addon = helper::connect_addon_check(unit);
 				if (addon) {
@@ -834,7 +834,7 @@ namespace hooks {
 				*/
 
 				// Reveal resources
-				for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+				for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 					if (unit_id_is_resource_node(unit->id, false)) {
 						unit->sprite->visibility_status |= reveal_flag;
 					}
@@ -925,7 +925,7 @@ namespace hooks {
 		helper::queue_game_command((u8*)&command, 0xc);
 
 		// Count workers
-		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 			if (unit_id_is_resource_node(unit->id, true)) {
 				UnitExt* unit_ext = get_unit_ext(unit);
 				unit_ext->values[ValueAssignedHarvesters] = 0;
@@ -933,7 +933,7 @@ namespace hooks {
 				unit_ext->values[ValueAssignedAiGasHarvesters] = 0;
 			}
 		}
-		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
 				continue;
 			}
@@ -972,7 +972,7 @@ namespace hooks {
 		}
 
 		// Loop through all visible units in the game.
-		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 			tick_unit(unit, false);
 		}
 		for (Unit* unit = *g_first_hidden_unit; unit; unit = unit->link.next) {
@@ -1811,8 +1811,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ZergLakizilisk:
-			{
+			case UnitId::ZergLakizilisk: {
 				// Lakizilisk - play sound on attack, hardcoded here to facilitate a different sound on return
 				if (unit->order_signal & 0x20) {
 					unit->order_signal &= ~0x20;
@@ -1823,8 +1822,7 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::TerranShamanSupportMode:
-			case UnitId::TerranShamanVisionaryMode:
-			{
+			case UnitId::TerranShamanVisionaryMode: {
 				// Shaman - Nanite Field
 				if (unit->is_frozen() || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport || unit_ext->values[ValueDisablePassive]) {
 					break;
@@ -1846,8 +1844,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranQilin:
-			{
+			case UnitId::TerranQilin: {
 				if (unit->is_frozen() || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport) {
 					break;
 				}
@@ -1869,8 +1866,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranCentaur:
-			{
+			case UnitId::TerranCentaur: {
 				// Centaur - Sunchaser Missiles
 				// Start the sequence
 				Unit* target = unit->order_target.unit;
@@ -1900,17 +1896,14 @@ namespace hooks {
 					fire_bullet(unit, WeaponId::CentaurSunchaserMissiles, make_target(target), &offsets, false);
 				}
 			} break;
-			case UnitId::TerranOlympian:
-			{
+			case UnitId::TerranOlympian: {
 				fire_secondary_melee_weapon_if_needed(unit, WeaponId::OlympianTitansFist);
 			} break;
-			case UnitId::ProtossPotentate:
-			{
+			case UnitId::ProtossPotentate: {
 				fire_secondary_melee_weapon_if_needed(unit, WeaponId::PotentatePhaseSaber);
 			} break;
 			case UnitId::ZergMatraleth:
-			case UnitId::InfestedKerriganExt:
-			{
+			case UnitId::InfestedKerriganExt: {
 				// Matraleth - Ensnaring Brood
 				EntryArray unit_array = {};
 				unit_search_radial(&unit_array, unit->position, 4 * 32);
@@ -1933,8 +1926,7 @@ namespace hooks {
 					bw::decloak_passive_proc(unit);
 				}
 			} break;
-			case UnitId::ZergSasyrvoleth:
-			{
+			case UnitId::ZergSasyrvoleth: {
 				// Sasyrvoleth - Lucilleri Pheremones
 				EntryArray unit_array = {};
 				unit_search_radial(&unit_array, unit->position, 5 * 32);
@@ -1953,29 +1945,19 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ProtossClarion:
-			{
-				// Clarion Phase Link
-				if (bw::get_aise_value(unit, 0, AiseId::SendClarionValue, 0, 0) == 0) {
-					bw::send_gptp_aise_command(unit, 0, GptpId::SetPhaseLinkStatus, 1, 0, 0);
-				}
-			} break;
-			case UnitId::TerranMaverick:
-			{
+			case UnitId::TerranMaverick: {
 				// Decloak on Stimpack activation
 				if (unit->stim_timer == StimpackTimer) {
 					bw::decloak_passive_proc(unit);
 				}
 			} break;
-			case UnitId::TerranWyvern:
-			{
+			case UnitId::TerranWyvern: {
 				if (bw::get_generic_rust_value(unit, RustId::CancelLandGrab)) {
 					bw::set_generic_rust_value(unit, RustId::CancelLandGrab, 0);
 					unit_ext->values[ValueWyvernLandGrabOn] = 0;
 				}
 			} break;
-			case UnitId::TerranTarasque:
-			{
+			case UnitId::TerranTarasque: {
 				// Forward March
 				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 					FireMultipleOptions options = {};
@@ -1987,8 +1969,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranAnticthon:
-			{
+			case UnitId::TerranAnticthon: {
 				// Revive status
 				if (!unit_ext->values[ValueReviveStarted] && !unit_ext->timers[TimerReclaimInterval]) {
 					unit_ext->timers[TimerReclaimInterval] = 24;
@@ -1999,8 +1980,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ProtossAnthelion:
-			{
+			case UnitId::ProtossAnthelion: {
 				if (!unit_ext->timers[TimerAnthelionAttackCooldown]) {
 					bool attacked = false;
 					EntryArray targets = {};
@@ -2012,8 +1992,16 @@ namespace hooks {
 						if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon] && unit->can_attack_target(target)) {
 							UnitExt* target_ext = get_unit_ext(target);
 							if (!(units_dat::base_property[target->id] & UnitProperty::Building)) {
-								target_ext->timers[TimerAnthelionGravityWell] = 24;
 								target_ext->units[UnitAnthelionGravityWellSource] = unit;
+								const u32 displacement_time = 5;
+								Vector32 diff = bw::vector_between(unit->sprite->position, target->sprite->position);
+								if (bw::vector_distance(diff) > 12) {
+									Vector32f displacement = bw::normalized_vector(diff);
+									displacement.x *= -1 * 32.0 / displacement_time;
+									displacement.y *= -1 * 32.0 / displacement_time;
+									target_ext->timers[TimerAnthelionGravityWell] = displacement_time;
+									target_ext->repulsion_vector = displacement;
+								}
 							}
 
 							u32 divisor = 4;
@@ -2027,6 +2015,8 @@ namespace hooks {
 							attacked = true;
 						}
 					}
+
+					// Cooldown and reads - Anthelion
 					if (attacked) {
 						unit_ext->timers[TimerAnthelionAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::AnthelionEventHorizon);
 						unit->sprite->create_underlay(ImageId::OpticalFlareHit_Large);
@@ -2067,8 +2057,7 @@ namespace hooks {
 					unit_ext->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 				}
 			} break;
-			case UnitId::TerranSeraph:
-			{
+			case UnitId::TerranSeraph: {
 				// Observance - Seraph ability
 				// TODO: unit search
 				u32 radius = 6 * 32;
@@ -2094,8 +2083,7 @@ namespace hooks {
 					}
 				});
 			} break;
-			case UnitId::TerranPhalanxSiegeMode:
-			{
+			case UnitId::TerranPhalanxSiegeMode: {
 				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, originally from DarkenedFantasies.
 				// TODO: Find a solution that works, the code below does not. -Pr0nogo
 				/*
@@ -2104,8 +2092,7 @@ namespace hooks {
 				}
 				*/
 			} break;
-			case UnitId::ZergIsthrathaleth:
-			{
+			case UnitId::ZergIsthrathaleth: {
 				if (unit->order_signal & 32) {
 					unit->order_signal &= ~32;
 					bw::decloak_passive_proc(unit);
@@ -2120,8 +2107,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranAnvil:
-			{
+			case UnitId::TerranAnvil: {
 				// Light up yellow when missile is loaded. -Pr0nogo
 				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {
 					if (!unit_ext->values[ValueMissileSiloLoaded] && unit->building.silo.nuke) {
@@ -2211,8 +2197,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranDurendal:
-			{
+			case UnitId::TerranDurendal: {
 				// Durendal - Forward March
 				if (!unit_ext->timers[TimerSecondaryWeaponCooldown] && bw::unit_can_fire_secondary_weapon(unit)) {
 					FireMultipleOptions options = {};
@@ -2304,8 +2289,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ZergOkrimnilisk:
-			{
+			case UnitId::ZergOkrimnilisk: {
 				// Endless Limbs
 				if (!(unit->status & UnitStatus::InTransport)) {
 					bool is_moving = unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving;
@@ -2335,8 +2319,7 @@ namespace hooks {
 					}
 				} 
 			} break;
-			case UnitId::ProtossSycophant:
-			{
+			case UnitId::ProtossSycophant: {
 				if (unit->shields) {
 					EntryArray unit_array = {};
 					unit_search_radial(&unit_array, unit->position, 3 * 32);
@@ -2365,8 +2348,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ZergMortothrokor:
-			{
+			case UnitId::ZergMortothrokor: {
 				if (unit->status & UnitStatus::Burrowed || unit_ext->timers[TimerMortothrokorPassive] == 0) {
 					unit_ext->values[ValueMortothrokorStacks] = 0;
 					if (unit->get_overlay(ImageId::MortothrokorPassiveOverlay)) {
@@ -2379,27 +2361,22 @@ namespace hooks {
 				}
 				should_update_speed = true;
 			} break;
-			case UnitId::ProtossSteward:
-			{
+			case UnitId::ProtossSteward: {
 				// Evasive Maneuvers - Return to Solarion
 				if (unit->hangar_unit.parent && unit->hitpoints < 30 * 256)
 				{
 					helper::issue_order_targeting_nothing(unit, OrderId::Return);
 				}
 			} break;
-			case UnitId::ProtossSolarion:
-			{
+			case UnitId::ProtossSolarion: {
 				// Auto-train Stewards
-				if (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count < 12
-					&& unit->build_queue[unit->build_queue_slot] != UnitId::ProtossSteward)
-				{
+				if (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count < 12 && unit->build_queue[unit->build_queue_slot] != UnitId::ProtossSteward) {
 					unit->build_queue[unit->build_queue_slot] = UnitId::ProtossSteward;
 					unit->set_secondary_order(OrderId::TrainFighter);
 					unit->secondary_order_state = 0;
 				}
 			} break;
-			case UnitId::TerranAnchor:
-			{
+			case UnitId::TerranAnchor: {
 				if (unit->status & UnitStatus::InAir) {
 					for (u32 i = 0; i < TransportCap; ++i) {
 						Unit* cargo_unit = unit->get_loaded_unit(i);
@@ -2412,8 +2389,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranDiadem:
-			{
+			case UnitId::TerranDiadem: {
 				// Fire Hammerfall Beacon for weapon targeting
 				if (unit->order_signal & 0x20) {
 					unit->order_signal &= ~0x20;
@@ -2422,8 +2398,7 @@ namespace hooks {
 					helper::create_bullet(WeaponId::DiademHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
 				}
 			} break;
-			case UnitId::TerranSavant:
-			{
+			case UnitId::TerranSavant: {
 				if (unit_ext->timers[TimerSavantPowerSiphonBuff] == 1) {
 					unit_ext->values[ValueSavantPowerSiphonBuff] = 0;
 				}
@@ -2432,15 +2407,13 @@ namespace hooks {
 					bw::remove_unit_overlay(unit, ImageId::SavantFormSwitchEntropy);
 				}
 			} break;
-			case UnitId::ZergGhitorokor:
-			{
+			case UnitId::ZergGhitorokor: {
 				// Clear Relentless Aggression
 				if (unit_ext->timers[TimerGhitorokorRelentlessAggression] == 1) {
 					unit_ext->values[ValueGhitorokorRelentlessAggressionStacks] = 0;
 				}
 			} break;
-			case UnitId::ZergAxitriliskWeaponless:
-			{
+			case UnitId::ZergAxitriliskWeaponless: {
 				// Perpetual Wind
 				if (unit_ext->timers[TimerAxitriliskPerpetualWind] == 1) {
 					unit->sprite->create_top_overlay(ImageId::ZergAirExplosionSmall_Reversed);
@@ -2448,31 +2421,25 @@ namespace hooks {
 					helper::replace_unit_with_id(unit, UnitId::ZergAxitrilisk);
 				}
 			} break;
-			case UnitId::TerranVulture:
-			{
+			case UnitId::TerranVulture: {
 				if (unit->mine_carrier.mine_count > 2) {
 					unit->mine_carrier.mine_count = 2;
 				}
 			} break;
-			case UnitId::ZergSkithrokor:
-			{
+			case UnitId::ZergSkithrokor: {
 				if (!unit->is_dead() && unit_ext->timers[TimerMissileReturnETA] == 1) {
 					bw::launch_return_missile(unit, WeaponId::SkithrokorSkitteringSpores);
 				}
 			} break;
-			case UnitId::ProtossArtisan:
-			{
-				switch (unit_ext->timers[TimerArtisanReturn])
-				{
+			case UnitId::ProtossArtisan: {
+				switch (unit_ext->timers[TimerArtisanReturn]) {
 					case 48:
 					case 36:
 					case 24:
-					case 12:
-					{
+					case 12: {
 						unit->sprite->create_top_overlay(ImageId::ArtisanResourceChannel);
 					} break;
-					case 1:
-					{
+					case 1: {
 						unit->unfreeze();
 						unit->sprite->create_top_overlay(ImageId::ArtisanResourceProc);
 						helper::play_sound_from_unit(SoundId::ArtisanRadiantProc, unit, 1, 0);
@@ -2488,14 +2455,12 @@ namespace hooks {
 					} break;
 				}
 			} break;
-			case UnitId::ZergVilgorokor:
-			{
+			case UnitId::ZergVilgorokor: {
 				if (unit_ext->timers[TimerReconstitutionDelay] == 1) {
 					hooks::carapace_swarm_hit_internal(unit->position.x, unit->position.y, unit->player, UnitId::Spell_CarapaceSwarmSmall);
 				}
 			} break;
-			case UnitId::ProtossCantavis:
-			{
+			case UnitId::ProtossCantavis: {
 				if (unit->order_signal & 64) {
 					unit->order_signal &= ~64;
 					bw::decloak_passive_proc(unit);
@@ -2504,8 +2469,7 @@ namespace hooks {
 					unit_ext->values[ValueJustCastedHallucination] = 0;
 				}
 			} break;
-			case UnitId::ProtossCrucible:
-			{
+			case UnitId::ProtossCrucible: {
 				// Crucible - Khaydarin Charge stacks
 				if (unit->status & UnitStatus::Completed) {
 					EntryArray units = {};
@@ -2543,8 +2507,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ProtossBarghest:
-			{
+			case UnitId::ProtossBarghest: {
 				if (unit_ext->timers[TimerDecloak] >= 2) {
 					if (unit->status & UnitStatus::Completed) {
 						EntryArray units = {};
@@ -2564,29 +2527,25 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ProtossDidact:
-			{
+			case UnitId::ProtossDidact: {
 				if (unit->order_signal & 32) {
 					unit->order_signal &= ~32;
 					bw::decloak_passive_proc(unit);
 				}
 			} break;
-			case UnitId::TerranMagnetar:
-			{
+			case UnitId::TerranMagnetar: {
 				if (unit->order_signal & 32) {
 					unit->order_signal &= ~32;
 					bw::decloak_passive_proc(unit);
 				}
 			} break;
-			case UnitId::ZergExcisant:
-			{
+			case UnitId::ZergExcisant: {
 				// Bandage fix for Ezigrisant regression. Not sure why this field gets maxxed out. -Pr0nogo
 				if (unit->building.resource.is_mining == 255) {
 					unit->building.resource.is_mining = 0;
 				}
 			} break;
-			case UnitId::ProtossGladius:
-			{
+			case UnitId::ProtossGladius: {
 				if (unit_ext->timers[TimerBindingPlasmaChargeOverlay]) {
 					if (!unit->get_overlay(ImageId::GladiusCharge)) {
 						bw::add_unit_overlay(unit, ImageId::GladiusCharge);
@@ -2598,8 +2557,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ProtossMindTyrant:
-			{
+			case UnitId::ProtossMindTyrant: {
 				// Tyranny - escape when outside 8 range of the Tyrant
 				if (unit_ext->units[UnitMindTyrantVictim]) {
 					Unit* victim = unit_ext->units[UnitMindTyrantVictim];
@@ -2906,7 +2864,7 @@ namespace hooks {
 		}
 
 		// Decloak on stun
-		if (unit->is_frozen() || unit_ext->timers[TimerStrigaRepulsion] || unit_ext->timers[TimerAnthelionGravityWell]) {
+		if (unit->is_frozen() || unit_ext->timers[TimerStrigaRepulsion] || unit_ext->timers[TimerMagnetarAttraction] || unit_ext->timers[TimerAnthelionGravityWell]) {
 			bw::decloak_passive_proc(unit);
 		}
 
@@ -2997,24 +2955,13 @@ namespace hooks {
 		if (unit_ext->timers[TimerAnthelionGravityWell] && unit_ext->units[UnitAnthelionGravityWellSource]) {
 			Point16 target_pos = unit_ext->units[UnitAnthelionGravityWellSource]->position;
 			if (unit->position != target_pos && !(unit->status & UnitStatus::Burrowed)) {
-				Vector32 diff = bw::vector_between(unit->position, target_pos);
-				if (bw::vector_distance(diff) < 2) {
-					bw::move_unit_improved(unit, target_pos.x, target_pos.y);
-				} else {
-					Vector32f displacement = bw::normalized_vector(diff);
-					displacement.x *= 2;
-					displacement.y *= 2;
+				Point16 final_pos = unit->position;
+				final_pos.x += unit_ext->repulsion_vector.x;
+				final_pos.y += unit_ext->repulsion_vector.y;
+				final_pos = bw::clamp_point(final_pos);
 
-					Point16 final_pos = unit->position;
-					final_pos.x += displacement.x;
-					final_pos.y += displacement.y;
-					final_pos = bw::clamp_point(final_pos);
-
-					bw::move_unit_improved(unit, final_pos.x, final_pos.y);
-					if (!unit_ext->timers[TimerAnthelionTurn]) {
-						helper::turn_unit(unit, bw::get_angle(unit->position, target_pos));
-						unit_ext->timers[TimerAnthelionTurn] = 3;
-					}
+				if (!bw::move_unit_improved(unit, final_pos.x, final_pos.y)) {
+					unit_ext->timers[TimerAnthelionGravityWell] = 0;
 				}
 			}
 		}

@@ -147,29 +147,22 @@ namespace hooks
 	}
 
 	// Based on and replace 004EA290 orders_InfestMine4
-	void unit_infest_order(Unit* unitInfesting)
-	{
+	void unit_infest_order(Unit* unitInfesting) {
 		Unit* unitInfested = unitInfesting->order_target.unit;
 		bool bBuildTimeReachedZero = false;
 		bool bStopFunction = false;
 		bool bReturnToIdle = false;
 		Point16 actualpos;
 
-		if (unitInfesting->main_order_state == 3)
-		{
+		if (unitInfesting->main_order_state == 3) {
 			//infesting in progress, dealing with timer			
-			if (unitInfesting->remaining_build_time != 0)
-			{
+			if (unitInfesting->remaining_build_time != 0) {
 				unitInfesting->remaining_build_time--;
 				bStopFunction = true;
-			}
-			else
-			{
+			} else {
 				bBuildTimeReachedZero = true;
 			}
-		}
-		else if (unitInfesting->main_order_state != 0) // if ==0, wait for EA33F to start infestation logic
-		{
+		} else if (unitInfesting->main_order_state != 0) { // if ==0, wait for EA33F to start infestation logic
 			bStopFunction = true;
 		}
 
@@ -181,34 +174,25 @@ namespace hooks
 			// using unitInfesting->sprite->position because the queen and command center are
 			// indeed at the same location, and more importantly, if the infested unit got
 			// destroyed, then access to unitInfested->sprite->position would cause a crash
-			if (bw::check_unit_collision_pos(unitInfesting, &unitInfesting->sprite->position, &actualpos))
-			{
-				bw::set_unit_position(unitInfesting, actualpos.x, actualpos.y);
+			if (bw::check_unit_collision_pos(unitInfesting, &unitInfesting->sprite->position, &actualpos)) {
+				helper::move_unit(unitInfesting, actualpos.x, actualpos.y);
 				helper::make_to_hold_position(unitInfesting);
 				helper::show_and_enable_unit(unitInfesting);
 
-				if (unitInfesting->order_queue_head == nullptr)
-				{
+				if (unitInfesting->order_queue_head == 0) {
 					unitInfesting->order_simple(units_dat::return_to_idle_order[unitInfesting->id], false);
 					bReturnToIdle = true;
-				}
-				else
-				{
+				} else {
 					bReturnToIdle = true;
 				}
-			}
-			else
-			{
+			} else {
 				bStopFunction = true;
 			}
 		}
 
-		if (bReturnToIdle)
-		{
+		if (bReturnToIdle) {
 			helper::force_order_done(unitInfesting);
-		}
-		else if (!bStopFunction)
-		{ // EA33F
+		} else if (!bStopFunction) { // EA33F
 			// not started the infestation logic yet, doing it here
 			if (unitInfested != nullptr
 				&& unit_can_be_infested(unitInfested)

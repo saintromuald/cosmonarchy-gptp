@@ -669,12 +669,6 @@ void prepare_unit_move_custom(Unit* unit);
 ///         to a nearby non-colliding position.
 bool check_unit_collision_pos(Unit* unit, const Point16* in_pos, Point16* out_pos, Box16* move_area = 0, bool hide_error_message = false, u32 some_flag = 0);
 
-/// Moves the unit's position to @p (x, y). If the unit is a inside unit and the
-/// the target position is on unwalkable terrain, this function moves the unit
-/// to the nearest walkable tile instead.
-void set_unit_position(Unit* unit, u16 x, u16 y);
-inline void set_unit_position(Unit* unit, Point16 point) { set_unit_position(unit, point.x, point.y); }
-
 /// Updates pathing data and various information related to the @p unit.
 /// Details not understood.  See the source for move_unit().
 void refresh_unit_after_move(Unit* unit);

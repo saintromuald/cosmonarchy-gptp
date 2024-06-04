@@ -1761,4 +1761,6 @@ namespace helper {
 	void dialog_set_selected_immediate(u8 id, BinDlg* dialog);					// 0041A850
 
 	void chk_unit_apply_burrow_flag(Unit* unit, u8 flag, b32 try_burrow);		// 004CCF20
+
+	void refresh_unit_after_move(Unit* unit);									// 00494160
 }

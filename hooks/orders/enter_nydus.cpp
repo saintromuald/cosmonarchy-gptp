@@ -26,8 +26,7 @@ namespace hooks
 	}
 
 	// Perform the Nydus Cesiant teleport effect on an unit that validated the conditions within the orders_enter_nydus function
-	void enter_nydus_effect(Unit* unit, Unit* nydus) // 004EA180
-	{
+	void enter_nydus_effect(Unit* unit, Unit* nydus) { // 004EA180
 		if (!AssertSprite(nydus->building.nydus_exit->sprite)) {
 			nydus->building.nydus_exit = 0;
 			return;
@@ -37,11 +36,11 @@ namespace hooks
 		Point16 aimed_pos = { (nydus->building.nydus_exit)->position.x, (nydus->building.nydus_exit)->position.y };
 		Point16 final_pos = {};
 		bw::prepare_unit_move(unit, true);
-		bw::set_unit_position(unit, aimed_pos.x, aimed_pos.y);
+		helper::move_unit(unit, aimed_pos.x, aimed_pos.y);
 		if (bw::check_unit_collision_pos(unit, &aimed_pos, &final_pos, 0, false, 0)) {
 			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydus, 1, 0);
-			bw::set_unit_position(unit, final_pos.x, final_pos.y);
-			bw::refresh_unit_after_move(unit);
+			helper::move_unit(unit, final_pos.x, final_pos.y);
+			helper::refresh_unit_after_move(unit);
 			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydus->building.nydus_exit, 1, 0);
 			if (unit->order_queue_head) {
 				unit->user_action_flags |= 1;
@@ -55,8 +54,8 @@ namespace hooks
 			}
 		} else {
 			// collision detected, restore old position
-			bw::set_unit_position(unit, old_pos.x, old_pos.y);
-			bw::refresh_unit_after_move(unit);
+			helper::move_unit(unit, old_pos.x, old_pos.y);
+			helper::refresh_unit_after_move(unit);
 		}
 	}
 

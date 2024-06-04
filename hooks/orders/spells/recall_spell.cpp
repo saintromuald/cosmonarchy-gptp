@@ -22,13 +22,13 @@ namespace hooks
 
 		if (!bw::check_unit_collision_pos(target, &(caster->sprite->position), &new_pos, 0, false, 0)) {
 			// Collision detected, cancel the movement
-			bw::set_unit_position(target, previous_pos.x, previous_pos.y);
+			helper::move_unit(target, previous_pos.x, previous_pos.y);
 		} else {
 			// Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
 			bw::prepare_unit_move(target, false);
 			target->order_target.unit = 0;
-			bw::set_unit_position(target, new_pos.x, new_pos.y);
-			bw::refresh_unit_after_move(target);
+			helper::move_unit(target, new_pos.x, new_pos.y);
+			helper::refresh_unit_after_move(target);
 
 			// Stop some currently active orders
 			if (target->id != UnitId::ZergCocoon) {
