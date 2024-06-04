@@ -314,3 +314,13 @@ void rescue_unit(Unit* unit, u32 player) {
 	}
 	bw::refresh_console();
 }
+
+bool can_auto_heal(Unit* unit) {
+	UnitExt* unit_ext = get_unit_ext(unit);
+	return !unit_ext->values[ValueReviveStarted] && !unit->is_frozen() && !unit_ext->values[ValueDisablePassive];
+}
+
+bool unit_needs_hp_train_workaround(Unit* unit) {
+	const auto& cm_player = g_globals->players[unit->player];
+	return bw::get_game_kind() == GameKind_Debug || cm_player.build_multiplier > 24;
+}

@@ -85,19 +85,19 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit_ext->values[ValueRegressionUnstable] = corpse_ext->create_origin == UnitId::ZergOcsalLarva;
 		switch (unit->id) {
 			case UnitId::ZergRililisk:
-			case UnitId::ZergRilirokor:
-			{
+			case UnitId::ZergRilirokor: {
 				unit->remove_timer = BroodspawnTimer;
 			} break;
 		}
 		consume_corpse(corpse);
 
 		unit->shields = 0;
-		unit->set_hitpoints(100 * 256 + units_dat::max_hitpoints[unit->id] / 3);
-		unit->sprite->create_top_overlay(ImageId::LazarusAgentCast);
+		unit->set_hitpoints(5 * 256);
+		u32 image_id = ImageId::LazarusAgentProc_Small + bw::get_overlay_offset(unit->id, true);
+		unit->sprite->create_top_overlay(image_id);
 		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
-		unit_ext->timers[TimerReclaiming] = 2 * 24;
-		unit_ext->timers[TimerStun]       = 2 * 24;
+		unit_ext->timers[TimerReclaiming] = Reclamation::ReviveTimer;
+		unit_ext->timers[TimerStun]       = Reclamation::ReviveTimer;
 		unit_ext->values[ValueReclaimed]  = 1;
 		if (bw::get_game_kind() == GameKind_TheTurning && player == NeutralHostilePlayerId) {
 			unit_ext->values[ValueNoCorpse] = true;

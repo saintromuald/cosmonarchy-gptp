@@ -8,6 +8,7 @@ enum SpawnType {
 	SpawnType_Terran,
 	SpawnType_Zerg,
 	SpawnType_Teleport,
+	SpawnType_Burrow,
 
 	SpawnType_Count,
 };
@@ -19,6 +20,7 @@ const char* spawn_type_names[SpawnType_Count] = {
 	"Terran",
 	"Zerg",
 	"Teleport",
+	"Burrow",
 };
 
 struct SpawnSequence {

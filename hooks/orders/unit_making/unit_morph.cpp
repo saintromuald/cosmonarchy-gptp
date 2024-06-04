@@ -132,7 +132,7 @@ namespace hooks {
 			helper::fix_target_location(&pos, unit->id);
 			if (pos.x != unit->sprite->position.x ||
 				pos.y != unit->sprite->position.y) {
-				bw::set_unit_position(unit, pos.x, pos.y);
+				helper::move_unit(unit, pos.x, pos.y);
 			}
 			if (!bw::is_zerg_egg_new(unit, true, false)) {
 				helper::order_new_unit_to_rally(unit, factory);
@@ -149,7 +149,7 @@ namespace hooks {
 		if (!unit->remaining_build_time) {
 			return 1;
 		}
-		if (bw::get_game_kind() == GameKind_Debug) {
+		if (unit_needs_hp_train_workaround(unit)) {
 			if (unit->remaining_build_time < 32) {
 				unit->remaining_build_time = 0;
 				helper::set_unit_hp(unit, unit->get_max_hp_raw());
@@ -165,40 +165,32 @@ namespace hooks {
 		return 0;
 	}
 
-	void orders_morph_1(Unit* unit)
-	{
+	// @TODO (code quality) -- big function, but usually good to invert the ifs and return early, rather than having lots of nesting and complex branching. -Veeq7
+	void orders_morph_1(Unit* unit) { // 0045DEA0
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit->main_order_state == 0)
-		{
-			if (bw::is_conventional_unit_morph_source(unit->id, true))
-			{
-				if (!helper::has_supplies_for_unit(unit->build_queue[unit->build_queue_slot], unit->player, 1))
-				{
+		if (unit->main_order_state == 0) {
+			if (bw::is_conventional_unit_morph_source(unit->id, true)) {
+				if (!helper::has_supplies_for_unit(unit->build_queue[unit->build_queue_slot], unit->player, 1)) {
 					helper::refund_all_queue_slots(unit);
 					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 				} else {
-					switch (unit->id)
-					{
+					switch (unit->id) {
 						case UnitId::ZergOvileth:
 						case UnitId::ZergIroleth:
-						case UnitId::ZergOthstoleth:
-						{
+						case UnitId::ZergOthstoleth: {
 							break;
 						}
-						default:
-						{
+						default: {
 							helper::increment_unit_scores_ex(unit, -1, 0);
 						} break;
 					}
 
-					if (unit->status & UnitStatus::Completed)
-					{
+					if (unit->status & UnitStatus::Completed) {
 						unit->status -= UnitStatus::Completed;
 					}
 
 					u16 egg_id = UnitId::None;
-					switch (unit->id)
-					{
+					switch (unit->id) {
 						case UnitId::ZergLarva:
 						case UnitId::ZergOcsalLarva:
 						case UnitId::ZergDroleth:
@@ -218,8 +210,7 @@ namespace hooks {
 						case UnitId::ZergKonvilisk:
 						case UnitId::ZergVilgorokor:
 						case UnitId::ZergIsthrathaleth:
-						case UnitId::ZergElthrazalisk:
-						{
+						case UnitId::ZergElthrazalisk: {
 							egg_id = UnitId::ZergEgg;
 						} break;
 						case UnitId::ZergOvileth:
@@ -231,18 +222,15 @@ namespace hooks {
 						case UnitId::ZergAlmaksalisk:
 						case UnitId::ZergGeszithalor:
 						case UnitId::ZergGorgrokor:
-						case UnitId::ZergMatraleth:
-						{
+						case UnitId::ZergMatraleth: {
 							egg_id = UnitId::ZergCocoon;
 						} break;
-						default:
-						{
+						default: {
 							return;
 						}  break;
 					}
 
-					if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
-					{
+					if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster) {
 						unit_ext->values[ValuePreMorphEnergy] = unit->energy;
 					} else {
 						unit_ext->values[ValuePreMorphEnergy] = hooks::get_unit_max_energy(unit); // New starting amount
@@ -274,51 +262,51 @@ namespace hooks {
 					u32 origin = unit->create_origin;
 					if (egg_id == UnitId::ZergEgg || egg_id == UnitId::ZergCocoon) {
 						u32 egg_image_id = get_mutate_image_id(origin);
-						if (egg_image_id) {
+						if (egg_image_id != ImageId::None) {
 							helper::replace_sprite_images(unit->sprite, egg_image_id, 0);
 						}
 					}
 
+					// TODO: Replace the switch statement with unit->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
+					// Requires all units to use separate grps for mutation animations. -Pr0nogo
 					IscriptAnimation::Enum animation = IscriptAnimation::Init;
 					switch (origin) {
 						case UnitId::ZergLarva:
-						case UnitId::ZergOcsalLarva:
-						{
+						case UnitId::ZergOcsalLarva: {
 							animation = IscriptAnimation::Walking;
 						} break;
-						case UnitId::ZergDroleth:
-						{
+						case UnitId::ZergDroleth: {
 							animation = IscriptAnimation::AirAttkInit;
 						} break;
-						case UnitId::ZergZethrokor:
-						{
+						case UnitId::ZergZethrokor: {
 							animation = IscriptAnimation::Unused1;
 						} break;
 						// New mutation animation handling! Everything will eventually use this. -Pr0nogo
 						case UnitId::ZergQuazilisk:
 						case UnitId::ZergNathrokor:
-						{
+						case UnitId::ZergProtathalor:
+						case UnitId::ZergIzirokor:
+						case UnitId::ZergSkithrokor:
+						case UnitId::ZergEvigrilisk:
+						case UnitId::ZergGorgrokor:
+						case UnitId::ZergVilgorokor:
+						case UnitId::ZergGeszithalor: {
 							animation = IscriptAnimation::SpecialState1;
 						} break;
-						case UnitId::ZergZoryusthaleth:
-						{
+						case UnitId::ZergZoryusthaleth: {
 							animation = IscriptAnimation::Built;
 						} break;
 						case UnitId::ZergUltrokor:
-						case UnitId::ZergOvileth:
-						{
+						case UnitId::ZergOvileth: {
 							animation = IscriptAnimation::AlmostBuilt;
 						} break;
-						case UnitId::ZergKonvilisk:
-						{
+						case UnitId::ZergKonvilisk: {
 							animation = IscriptAnimation::Landing;
 						} break;
-						case UnitId::ZergKeskathalor:
-						{
+						case UnitId::ZergKeskathalor: {
 							animation = IscriptAnimation::LiftOff;
 						} break;
-						default:
-						{
+						default: {
 							animation = IscriptAnimation::Init;
 						} break;
 					}
@@ -326,18 +314,15 @@ namespace hooks {
 				}
 			}
 		} else if (unit->main_order_state == 1) {
-			if (unit->id == UnitId::ZergEgg && unit->remaining_build_time < 19)
-			{
+			if (unit->id == UnitId::ZergEgg && unit->remaining_build_time < 19) {
 				unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
 				unit->remaining_build_time = 0;
 			}
-			if (unit->id == UnitId::ZergCocoon && unit->remaining_build_time < 12)
-			{
+			if (unit->id == UnitId::ZergCocoon && unit->remaining_build_time < 12) {
 				unit->play_iscript_animation(IscriptAnimation::SpecialState1);
 				unit->remaining_build_time = 0;
 			}
-			if (advance_remaining_build_time_custom(unit))
-			{
+			if (advance_remaining_build_time_custom(unit)) {
 				unit->main_order_state = 2;
 			}
 		} else if (unit->main_order_state == 2) {

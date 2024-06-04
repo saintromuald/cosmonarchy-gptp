@@ -232,7 +232,7 @@ enum Enum {
 					* Default Requirements: Unused. */
 	FireYamatoGun2         = 0x72, /**< Move to cast spell on shrouded building.
 					* Default Requirements: Unused. */
-	MagnaPulse             = 0x73, /**< Cast Spell: Lockdown.
+	Lockdown             = 0x73, /**< Cast Spell: Lockdown.
 					* Default Requirements: Unused. */
 	Burrow                 = 0x74, /**< Burrow Unit.
 					* Default Requirements: Unused. */

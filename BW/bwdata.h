@@ -23,23 +23,23 @@
 //////////////////////////////////////////////////////////////// @{
 
 /// The first nodes in StarCraft's internal linked lists (taken from BWAPI's Offsets.h)
-BW_DATA(Unit**,			g_first_visible_unit,			0x00628430);
+BW_REF(Unit*,			g_first_visible_unit,			0x00628430);
 BW_DATA(Unit**,			g_first_hidden_unit,			0x006283EC);	// Includes units in transports/bunkers, worker inside gas buildings, nukes in silos, and units in production.
 BW_DATA(Unit**,			g_last_hidden_unit,				0x00628428);	// Same as above.
-BW_DATA(Bullet**,			g_first_active_bullet,			0x0064DEC4);
+BW_DATA(Bullet**,		g_first_active_bullet,			0x0064DEC4);
 BW_DATA(Unit**,			g_first_scanner_sweep,			0x006283F4);
 BW_DATA(Unit**,			g_last_scanner_sweep,			0x00628434);
 BW_DATA(Unit**,			first_psi_field_provider,		0x0063FF54);
-BW_DATA(u32*,				psi_field_grp_width,			0x0063FF4C);
-BW_DATA(u32*,				psi_field_grp_height,			0x0063FF58);
-BW_DATA(u8**,				psi_field_mask,					0x006D5BD8);
-BW_DATA(u32*,				g_psi_aura_is_drawn,			0x0063FF48);
-BW_DATA(u32*,				g_player_visions,				0x0057F0B0);
-BW_DATA(Bullet**,			first_bullet,					0x0064DEC4);
-BW_DATA(Bullet**,			last_bullet,					0x0064DEAC);
-BW_DATA(Bullet**,			first_free_bullet,				0x0064EED8);
-BW_DATA(Bullet**,			last_free_bullet,				0x0064EEDC);
-BW_DATA(u32*,				bullet_count,					0x0064DEBC);
+BW_DATA(u32*,			psi_field_grp_width,			0x0063FF4C);
+BW_DATA(u32*,			psi_field_grp_height,			0x0063FF58);
+BW_DATA(u8**,			psi_field_mask,					0x006D5BD8);
+BW_DATA(u32*,			g_psi_aura_is_drawn,			0x0063FF48);
+BW_DATA(u32*,			g_player_visions,				0x0057F0B0);
+BW_DATA(Bullet**,		first_bullet,					0x0064DEC4);
+BW_DATA(Bullet**,		last_bullet,					0x0064DEAC);
+BW_DATA(Bullet**,		first_free_bullet,				0x0064EED8);
+BW_DATA(Bullet**,		last_free_bullet,				0x0064EEDC);
+BW_DATA(u32*,			bullet_count,					0x0064DEBC);
 
 struct Units12 {
 	Unit* unit[12];
@@ -1280,6 +1280,9 @@ BW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
 
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);
+
+BW_REF(Unit*,				g_first_active_unit,				0x00628430);
+BW_REF(Unit*,				g_last_active_unit,					0x0059CC9C);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

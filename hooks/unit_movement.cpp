@@ -3,8 +3,7 @@
 
 namespace hooks
 {
-	b32 unit_movement_dormant(Unit* unit) // 0046A8D0
-	{
+	b32 unit_movement_dormant(Unit* unit) { // 0046A8D0 
 		if (!(unit->status & UnitStatus::IgnoreTileCollision) || !(unit->status & UnitStatus::IsNormal)) {
 			if (AssertSprite(unit->sprite)
             &&  unit->move_target.pt.x == unit->sprite->position.x
@@ -19,8 +18,7 @@ namespace hooks
 		return 1;
 	}
 
-	void move_unit(Unit* unit, s16 x, s16 y, bool ignore_collision) // 004EB9F0
-	{
+	void move_unit(Unit* unit, s16 x, s16 y, bool ignore_collision) { // 004EB9F0
 		Point16 old_pos = { unit->sprite->position.x, unit->sprite->position.y };
 		Point16 new_pos = { x, y };
 		helper::fix_target_location(&new_pos, unit->id);
@@ -47,8 +45,7 @@ namespace hooks
 	}
 
 	// Hooked by DarkenendFantasies to allow selectively enabling or disabling new collisions.
-	bool can_collide_with(Unit* unit, Unit* colliding_unit) // 0042DEE0
-	{
+	bool can_collide_with(Unit* unit, Unit* colliding_unit) { // 0042DEE0
 		u32 collider_status = colliding_unit->status;
 		if (collider_status & UnitStatus::UNKNOWN5) {
 			u8 player = colliding_unit->player;
@@ -60,8 +57,7 @@ namespace hooks
 				return false;
 			}
 		}
-		if (unit_paths_over_small_units(unit) || unit_paths_over_small_units(colliding_unit))
-		{
+		if (unit_paths_over_small_units(unit) || unit_paths_over_small_units(colliding_unit)) {
 			if ((unit_collides_with_titanic(colliding_unit) && !unit_collides_with_titanic(unit))
 			||   unit_collides_with_titanic(unit)		    && !unit_collides_with_titanic(colliding_unit)) {
 				return false;
@@ -91,14 +87,11 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes. -Pr0nogo
-	s32 unit_movement_start_path(Unit* unit) // 0046BD90
-	{
+	s32 unit_movement_start_path(Unit* unit) { // 0046BD90
 		s32 result = helper::unit_movement_another_path(unit, unit->move_target.pt);
-		if (result)
-		{
+		if (result) {
 			u8 action_flags = unit->user_action_flags;
-			if (action_flags & UserActionFlags_UMStartPath
-			&& (unit->user_action_flags = action_flags & 0xFD, unit->flingy_movement_type == MovementType_Iscript))
+			if (action_flags & UserActionFlags_UMStartPath && (unit->user_action_flags = action_flags & 0xFD, unit->flingy_movement_type == MovementType_Iscript))
 			{
 				if (!unit->path) { // New
 					return 0;
@@ -117,8 +110,7 @@ namespace hooks
 	}
 
 	// Hooked to resolve a nullsprite crash. -Pr0nogo
-	b32 move_towards(Unit* target, Unit* unit) // 004EB900
-	{
+	b32 move_towards(Unit* target, Unit* unit) { // 004EB900
 		if (!AssertSprite(unit->sprite) || !AssertSprite(target->sprite)) { // New
 			return 0;
 		}
@@ -136,8 +128,7 @@ namespace hooks
 	}
 
 	// Hooked to troubleshoot nullsprite crashes. -Pr0nogo
-	s32 unit_movement_initialize(Unit* unit) // 0046C320
-	{
+	s32 unit_movement_initialize(Unit* unit) { // 0046C320
 		Sprite* sprite = unit->sprite;
 		u32 pathing_flags = unit->pathing_flags;
 		unit->contour_bounds.y = 0;
@@ -196,5 +187,65 @@ namespace hooks
 		}
 		unit->movement_state = UnitMovement_Hidden;
 		return 1;
+	}
+
+	// Hooked to troubleshoot issues with moving units a la Anthelion. -Pr0nogo
+	void refresh_unit_after_move(Unit* unit) { // 00494160
+		Unit* subunit = unit->subunit;
+		if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
+			s32 x_halt = unit->halt.x;
+			s32 y_halt = unit->halt.y;
+			subunit->halt.x = x_halt;
+			subunit->halt.y = y_halt;
+			subunit->position.x = x_halt >> 8;
+			subunit->position.y = y_halt >> 8;
+			helper::move_sprite(subunit->sprite, x_halt >> 8, y_halt >> 8);
+		}
+		
+		Sprite* sprite = unit->sprite;
+		if (sprite->flags & SpriteFlags::Hidden) {
+			sprite->flags &= 0xDF;
+			if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
+				subunit->sprite->flags &= 0xDF;
+			}
+			helper::clist_remove_hidden_unit_entry(unit);
+			Unit* visible_unit = g_first_visible_unit;
+			if (visible_unit) {
+				if (g_last_active_unit == visible_unit) {
+					g_last_active_unit = unit;
+				}
+				unit->link.prev = visible_unit;
+				unit->link.next = visible_unit->link.next;
+				Unit* next_visible_unit = visible_unit->link.next;
+				if (next_visible_unit) {
+					next_visible_unit->link.prev = unit;
+				}
+				visible_unit->link.next = unit;
+			} else {
+				g_last_active_unit = unit;
+				g_first_visible_unit = unit;
+			}
+		}
+
+		helper::refresh_unit_vision(unit);
+		helper::update_visibility(unit);
+		helper::update_unit_order_finder(unit);
+		if (unit->status & UnitStatus::GroundedBuilding) {
+			helper::set_building_tile_flag(unit, unit->sprite->position.x, unit->sprite->position.y);
+		}
+
+		helper::check_unstack(unit);
+		if (unit->status & UnitStatus::InAir) {
+			helper::set_repulse_angle(unit);
+		}
+		helper::toggle_unit_path(unit);
+		unit->movement_state = UnitMovement_Init;
+		u8 pathing_flags = unit->pathing_flags;
+		unit->pathing_flags = (pathing_flags ^ (sprite->elevation < 12)) & 1 ^ pathing_flags;
+		if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
+			helper::toggle_unit_path(subunit);
+			subunit->movement_state = 0;
+			subunit->pathing_flags ^= (subunit->pathing_flags ^ (subunit->sprite->elevation < 12)) & 1;
+		}
 	}
 }

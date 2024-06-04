@@ -196,6 +196,7 @@ enum ExtValueId {
 	ValueMindTyrantTyranny,
 	ValueReclaimed,
 	ValueReclamationRegen,
+	ValueDisablePassive,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

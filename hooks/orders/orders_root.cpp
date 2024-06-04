@@ -134,7 +134,7 @@ static u32 main_order_func_offsets[][3] {
 	{ 0x004E7700,	/*OrderId::MoveUnload*/				Func_Type::PUSH,2},
 	{ 0x00492850,	/*OrderId::FireYamatoGun1*/			Func_Type::EAX,	2},
 	{ 0x004F6FA0,	/*OrderId::FireYamatoGun2*/			Func_Type::EAX,	2},
-	{ 0x00492850,	/*OrderId::MagnaPulse*/				Func_Type::EAX,	2},
+	{ 0x00492850,	/*OrderId::Lockdown*/				Func_Type::EAX,	2},
 	{ 0x004E9E60,	/*OrderId::Burrow*/					Func_Type::EAX,	2},
 	{ 0x004E9860,	/*OrderId::Burrowed*/				Func_Type::EAX,	2},
 	{ 0x004EA670,	/*OrderId::Unburrow*/				Func_Type::EAX,	2},

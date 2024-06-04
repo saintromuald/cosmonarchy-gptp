@@ -435,7 +435,7 @@ namespace hooks {
 		Point16 region_center = bw::get_region_center(bw::get_region(helper::get_region_id(x, y)));
 		u32 max_distance = 99999999;
 		Unit* best_unit = 0;
-		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 			if (unit->main_order_id && unit->status & UnitStatus::GroundedBuilding) {
 				if (!bw::is_allied_to(player, unit->player)) {
 					u32 distance = bw::distance_between(region_center, unit->position);
@@ -520,7 +520,7 @@ namespace hooks {
 		AiTown* result = helper::try_begin_delete_town(town);
 		if (result) {
 			helper::delete_aiscripts_using_town(town);
-			for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+			for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 				if (unit->sprite) {
 					if (unit->main_order_id) {
 						if (units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
@@ -946,7 +946,7 @@ namespace hooks {
 		u32 best_score = 0;
 		u32 best_distance = UINT_MAX;
 		Unit* best_mineral_field = 0;
-		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 			if (!unit_id_is_minerals(unit->id)) {
 				continue;
 			}
@@ -1090,7 +1090,7 @@ namespace hooks {
 		town_ext->gas_buildings_count = 0;
 
 		ResourceArea* resarea = &g_base_array[resarea_id];
-		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 			if (unit->sprite && unit->main_order_id && units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
 				if (!unit_id_is_minerals(unit->id) && unit->building.resource.resarea == resarea_id) {
 					if (town_ext->gas_buildings_count < GasBuildingsCap) {
@@ -1483,7 +1483,7 @@ namespace hooks {
 		f32 distance_from_main = bw::get_ground_path_distance_tiles(main_town->position, area->position);
 		score += distance_from_main * distance_bias;
 
-		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 			if (unit_id_is_minerals(unit->id)) {
 				score += get_harvest_amount(unit) * mineral_bias;
 			}

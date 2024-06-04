@@ -1,34 +1,28 @@
 #include "unit_movement.h"
 #include <hook_tools.h>
 
-namespace
-{
-	void __declspec(naked) unit_movement_dormant_wrapper() // 0046A8D0
-	{
+namespace {
+	void __declspec(naked) unit_movement_dormant_wrapper() { // 0046A8D0
 		static Unit* unit;
 		static b32 result;
-		__asm
-		{
+		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
 		result = hooks::unit_movement_dormant(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) move_unit_wrapper() // 004EB9F0
-	{
+	void __declspec(naked) move_unit_wrapper() { // 004EB9F0
 		static Unit* unit;
 		static s16 x;
 		static s16 y;
 		static s32 result;
-		__asm
-		{
+		__asm {
 			MOV unit, EDX
 			MOV x, AX
 			MOV y, CX
@@ -42,19 +36,16 @@ namespace
 		}
 	}
 
-	void __declspec(naked) can_collide_with_wrapper() {
+	void __declspec(naked) can_collide_with_wrapper() { // 0042DEE0
 		static Unit* unit;
 		static Unit* colliding_unit;
 		static bool result;
-
 		__asm {
 			MOV unit, EDX
 			MOV colliding_unit, ESI
 			PUSHAD
 		}
-
 		result = hooks::can_collide_with(unit, colliding_unit);
-
 		__asm {
 			POPAD
 			MOVZX EAX, result
@@ -62,10 +53,9 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unit_movement_start_path_wrapper() {
+	void __declspec(naked) unit_movement_start_path_wrapper() { // 0046BD90
 		static Unit* unit;
 		static s32 result;
-
 		__asm {
 			MOV unit, ESI
 			PUSHAD
@@ -78,11 +68,10 @@ namespace
 		}
 	}
 
-	void __declspec(naked) move_towards_wrapper() {
+	void __declspec(naked) move_towards_wrapper() { // 004EB900
 		static Unit* target;
 		static Unit* unit;
 		static b32 result;
-
 		__asm {
 			MOV target, EAX
 			MOV unit, ECX
@@ -96,10 +85,9 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unit_movement_initialize_wrapper() {
+	void __declspec(naked) unit_movement_initialize_wrapper() { // 0046C320
 		static Unit* unit;
 		static s32 result;
-
 		__asm {
 			MOV unit, ESI
 			PUSHAD
@@ -108,6 +96,19 @@ namespace
 		__asm {
 			POPAD
 			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) refresh_unit_after_move_wrapper() { // 00494160
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::refresh_unit_after_move(unit);
+		__asm {
+			POPAD
 			RETN
 		}
 	}
@@ -127,16 +128,15 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_unit_movement_hooks()
-	{
+namespace hooks {
+	void inject_unit_movement_hooks() {
 		jump_patch(unit_movement_dormant_wrapper,		0x0046A8D0, 1);
 	//	jump_patch(move_unit_wrapper,					0x004EB9F0, 1); // breaks sprite sorting
 		jump_patch(can_collide_with_wrapper,			0x0042DEE0, 2);
 	//	jump_patch(unit_movement_start_path_wrapper,	0x0046BD90, 1);
 		jump_patch(move_towards_wrapper,				0x004EB900, 1);
 	//	jump_patch(unit_movement_initialize_wrapper,	0x0046C320, 4); // Not tested yet
+		jump_patch(refresh_unit_after_move_wrapper,		0x00494160,	2);
 
 	//	jump_patch(play_idle_iscript_patch_978D3,	0x004978D3); // DF - Fix animation bug with acceleration movement flag
 	}

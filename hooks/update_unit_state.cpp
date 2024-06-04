@@ -400,7 +400,7 @@ namespace hooks
 
 		Unit* next_unit; // caching next unit instead of a direct read, since some functions might actually modify the link.next
 						 // (especially when the unit dies or gets hidden etc)
-		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = next_unit) {
 			next_unit = unit->link.next;
 			*g_active_iscript_entity = unit;
 			*g_active_iscript_unit = unit;
@@ -434,7 +434,7 @@ namespace hooks
 			}
 		}
 
-		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = next_unit) {
 			next_unit = unit->link.next;
 			UnitExt* unit_ext = get_unit_ext(unit);
 			helper::update_visibility(unit);
@@ -444,7 +444,7 @@ namespace hooks
 			}
 		}
 
-		for (Unit* unit = *g_first_visible_unit; unit; unit = next_unit) {
+		for (Unit* unit = g_first_visible_unit; unit; unit = next_unit) {
 			next_unit = unit->link.next;
 			*g_active_iscript_entity = unit;
 			*g_active_iscript_unit = unit;
@@ -643,10 +643,9 @@ namespace hooks
 	}
 
 	// Hooked to improve functionality. -Pr0nogo
-	u8 replace_unit_with_id(Unit* unit, u32 new_id) // 0049FED0
-	{
+	u8 replace_unit_with_id(Unit* unit, u32 new_id) { // 0049FED0
 		if (!AssertSprite(unit->sprite)) {
-			return 0;
+			return false;
 		}
 
 		if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
@@ -779,8 +778,7 @@ namespace hooks
 			u32 main_order_id = unit->main_order_id;
 			unit->user_action_flags |= UserActionFlags::UserActionFlags_IscriptGoToIdle;
 			if (main_order_id) {
-				while (1)
-				{
+				while (1) {
 					Order* tail = unit->order_queue_tail;
 					if (!tail) {
 						break;
@@ -823,8 +821,7 @@ namespace hooks
 
 	// Hooked to investigate crashes. -Pr0nogo
 	// Not tested yet. Low-priority, because the only time it crashes is when you spawn units for a player that has no start location.
-	u32 initialize_unit_base(Unit* unit, u32 unit_id, u32 pos_x, u32 pos_y, u32 player) // 004A0320
-	{
+	u32 initialize_unit_base(Unit* unit, u32 unit_id, u32 pos_x, u32 pos_y, u32 player) { // 004A0320
 		unit->powerup_origin.x = 0;
 		unit->powerup_origin.y = 0;
 		unit->rally.pt.x = 0;
@@ -880,8 +877,7 @@ namespace hooks
 
 			s32 current_hp;
 			unit->wireframe_randomizer = random;
-			if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
-			{
+			if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
 				current_hp = 1;
 			} else {
 				current_hp = units_dat::max_hitpoints[unit_id] / 10;
@@ -889,8 +885,7 @@ namespace hooks
 			unit->hitpoints = current_hp;
 
 			u32 main_order_id;
-			if ((unit->status & UnitStatus::GroundedBuilding) == 0)
-			{
+			if ((unit->status & UnitStatus::GroundedBuilding) == 0) {
 				main_order_id = OrderId::Nothing2;
 			} else {
 				main_order_id = units_dat::human_idle_order[unit_id];
@@ -902,8 +897,7 @@ namespace hooks
 			unit->order_target.pt.x = 0;
 			unit->main_order_state = 0;
 			unit->order_unit_id = UnitId::None;
-			if (unit->secondary_order_id != OrderId::Nothing2)
-			{
+			if (unit->secondary_order_id != OrderId::Nothing2) {
 				unit->secondary_order_id = OrderId::Nothing2;
 				*(u32*)(unit+0xEA) = 0; // secondary_order_unk in Neiv's list
 				unit->secondary_order_pos.x = 0;
@@ -926,11 +920,9 @@ namespace hooks
 			first_player_unit->unit[player] = unit;
 			helper::increment_unit_scores(unit, 1);
 
-			if (unit->status & UnitStatus::GroundedBuilding)
-			{
+			if (unit->status & UnitStatus::GroundedBuilding) {
 				helper::update_unit_order_finder(unit);
-				if (unit->status & UnitStatus::GroundedBuilding)
-				{
+				if (unit->status & UnitStatus::GroundedBuilding) {
 					helper::set_building_tile_flag(unit, unit->sprite->position.x, unit->sprite->position.y);
 				}
 				helper::check_unstack(unit);
@@ -940,13 +932,11 @@ namespace hooks
 				}
 				helper::unit_completion_init(unit, 1);
 				helper::refresh_all_visible_images_at_screen_pos(unit->sprite, 0);
-				if (g_is_placing_building)
-				{
+				if (g_is_placing_building) {
 					helper::place_building_proc();
 				}
 			} else {
-				if (unit->id == UnitId::TerranVulture)
-				{
+				if (unit->id == UnitId::TerranVulture) {
 					unit->mine_carrier.mine_count = 2;
 				}
 				unit->sprite->flags |= SpriteFlags::Hidden;
@@ -954,16 +944,14 @@ namespace hooks
 			}
 
 			unit->detection_status = -1;
-			if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
-			{
+			if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
 				unit->sprite->flags |= SpriteFlags::RemoveAfterDeath;
-				return 1;
+				return true;
 			} else {
-				if (!(unit->sprite->flags & SpriteFlags::Hidden))
-				{
+				if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 					helper::refresh_unit_vision(unit);
 				}
-				return 1;
+				return true;
 			}
 		}
 		return initialized;

@@ -346,8 +346,13 @@ bool unit_id_is_factional(u16 unit_id) {
 bool unit_id_uses_xlarge_overlays(u16 unit_id) {
 	return unit_id == UnitId::TerranPenumbra
 		|| unit_id == UnitId::TerranPhobos
+		|| unit_id == UnitId::TerranDiadem
+		|| unit_id == UnitId::TerranIronFoundry
+		|| unit_id == UnitId::TerranNaniteAssembly
 		|| unit_id == UnitId::ProtossOptecton
 		|| unit_id == UnitId::ProtossStarSovereign
+		|| unit_id == UnitId::ProtossAncestralArchives
+		|| unit_id == UnitId::ProtossMonumentOfSin
 		|| unit_id == UnitId::ZergOthstoleth
 		|| unit_id == UnitId::ZergAlkajelisk;
 }
@@ -935,21 +940,18 @@ bool unit_id_is_larva(u32 unit_id) {
 }
 
 u32 get_mutate_image_id(u32 unit_id) {
-	switch (unit_id)
-	{
-		case UnitId::ZergQuazilisk:
-		{
-			return ImageId::QuaziliskMutate;
-		}
-		case UnitId::ZergNathrokor:
-		{
-			return ImageId::NathrokorMutate;
-		}
-		default:
-		{
-			return 0;
-		}
+	switch (unit_id) {
+		case UnitId::ZergQuazilisk:		return ImageId::QuaziliskMutate;
+		case UnitId::ZergNathrokor:		return ImageId::NathrokorMutate;
+		case UnitId::ZergProtathalor:	return ImageId::ProtathalorMutate;
+		case UnitId::ZergIzirokor:		return ImageId::IzirokorMutate;
+		case UnitId::ZergSkithrokor:	return ImageId::SkithrokorMutate;
+		case UnitId::ZergEvigrilisk:	return ImageId::EvigriliskMutate;
+		case UnitId::ZergGorgrokor:		return ImageId::GorgrokorMutate;
+		case UnitId::ZergVilgorokor:	return ImageId::VilgorokorMutate;
+		case UnitId::ZergGeszithalor:	return ImageId::GeszithalorMutate;
 	}
+	return ImageId::None;
 }
 
 bool unit_is_tower(Unit* unit) {

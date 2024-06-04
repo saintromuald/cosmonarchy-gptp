@@ -334,7 +334,7 @@ void reset_search_index() {
 
 void update_search_index() {
 	// Add units
-	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+	for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 		search_index_add(&unit_index, unit->position, unit);
 
 		UnitExt* unit_ext = get_unit_ext(unit);

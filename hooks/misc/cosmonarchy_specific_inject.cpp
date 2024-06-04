@@ -558,7 +558,7 @@ namespace hooks
 
 					gptp::g_critical_logger << "\n\nActive units:";
 
-					for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+					for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
 						snprintf(buffer, sizeof(buffer), "\n[%03X] hp:0x%08X sh:0x%08X id:%04u en:0x%04X pos:0x%04X%04X | u:%02u o:0x%02X%02X%02X%02X s:0x%08X",
 							((u32)unit - (u32)&ccmu_extender.unit_table) / 336, unit->hitpoints, unit->shields, unit->id, unit->energy, unit->sprite->position.x, unit->sprite->position.y,//Unit data used for GameHash indexing.
 							unit->unique_id, unit->main_order_id, unit->main_order_state, unit->order_signal, unit->main_order_timer, unit->status);//Extra info, not associated with the hash code.

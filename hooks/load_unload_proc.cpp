@@ -141,17 +141,14 @@ namespace hooks
 				cargo_unit->pathing_flags &= ~1;
 			}
 
-			if (cargo_unit->subunit && units_dat::base_property[cargo_unit->subunit->id] & UnitProperty::Subunit)
-			{
+			if (cargo_unit->subunit && units_dat::base_property[cargo_unit->subunit->id] & UnitProperty::Subunit) {
 				Unit* subunit = cargo_unit->subunit;
-				bw::set_unit_position(subunit, transport->sprite->position.x, transport->sprite->position.y);
+				helper::move_unit(subunit, transport->sprite->position.x, transport->sprite->position.y);
 				subunit->status = (subunit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
-				if (subunit->path)
-				{
+				if (subunit->path) {
 					u32* path_0x4 = (u32*)((u32)subunit->path->next);
 					*path_0x4 = (subunit->path - *g_path_array_start) / 128 + 1;
-					if (*g_first_free_path == 0)
-					{
+					if (*g_first_free_path == 0) {
 						subunit->path = 0;
 					} else {
 						subunit->path = (UnitPath*)((*g_first_free_path - *g_path_array_start) / 128 + 1);
@@ -161,14 +158,13 @@ namespace hooks
 				}
 
 				subunit->movement_state = 0;
-				if (subunit->sprite->elevation < 12)
-				{
+				if (subunit->sprite->elevation < 12) {
 					subunit->pathing_flags |= 1;
 				} else {
 					subunit->pathing_flags &= ~1;
 				}
 			} else {
-				bw::set_unit_position(cargo_unit, transport->sprite->position.x, transport->sprite->position.y);
+				helper::move_unit(cargo_unit, transport->sprite->position.x, transport->sprite->position.y);
 			}
 		}
 	}
@@ -202,9 +198,9 @@ namespace hooks
 					bw::decloak_passive_proc(transport);
 
 					special_unload_unit(unit, transport, &pos);
-					bw::set_unit_position(unit, pos.x, pos.y);
+					helper::move_unit(unit, pos.x, pos.y);
 					if (unit->subunit) {
-						bw::set_unit_position(unit->subunit, pos.x, pos.y);
+						helper::move_unit(unit->subunit, pos.x, pos.y);
 					}
 
 					helper::ignore_iscript_go_to_idle(unit);

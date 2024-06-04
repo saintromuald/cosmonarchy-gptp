@@ -112,7 +112,7 @@ namespace hooks
 
 				unit->sprite->elevation = 4;
 				helper::set_unit_pathing(unit, 0);
-				bw::set_unit_position(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+				helper::move_unit(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 
 				helper::start_collision_tracking(unit); // Maybe update orders targeting the unit, set repulse for units in surroundings, and some other things?
 
@@ -179,9 +179,9 @@ namespace hooks
 					{
 						Unit* cargo_unit = unit->get_loaded_unit(i);
 						if (!cargo_unit) continue;
-					//	bw::set_unit_position(cargo_unit, unit->position.x, unit->position.y);
+					//	helper::move_unit(cargo_unit, unit->position.x, unit->position.y);
 						if (cargo_unit->subunit) {
-							bw::set_unit_position(cargo_unit->subunit, unit->position.x, unit->position.y);
+							helper::move_unit(cargo_unit->subunit, unit->position.x, unit->position.y);
 						}
 					}
 				}

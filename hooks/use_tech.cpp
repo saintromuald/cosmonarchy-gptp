@@ -90,7 +90,7 @@ namespace hooks
 				helper::issue_tri_target_order(OrderId::TalosSalvage, 0, 0);
 			} break;
 			case TechId::Lockdown: {
-				helper::issue_tri_target_order(OrderId::MagnaPulse, 0, 0);
+				helper::issue_tri_target_order(OrderId::Lockdown, 0, 0);
 			} break;
 			case TechId::SavantOnhitToggle: {
 				s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);

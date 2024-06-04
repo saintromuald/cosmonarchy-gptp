@@ -42,8 +42,9 @@ constexpr s32 MadcapPassiveDecayTime = 0.5 * 24;
 constexpr s32 MadcapMaxStacks = 10;
 
 // Apostle
-constexpr s32 ApostleLastBreathEnergyGain = 5 * 256;
-constexpr s32 ApostleAILazarusAgentTimer = 24;
+namespace Reclamation {
+inline constexpr u32 ReviveTimer = 3 * 24;
+}
 
 // Olympian
 constexpr s32 OlympianMeleeDistance = 30;
