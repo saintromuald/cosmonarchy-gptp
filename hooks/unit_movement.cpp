@@ -91,17 +91,16 @@ namespace hooks
 		s32 result = helper::unit_movement_another_path(unit, unit->move_target.pt);
 		if (result) {
 			u8 action_flags = unit->user_action_flags;
-			if (action_flags & UserActionFlags_UMStartPath && (unit->user_action_flags = action_flags & 0xFD, unit->flingy_movement_type == MovementType_Iscript))
-			{
+			if (action_flags & UserActionFlags_UMStartPath && (unit->user_action_flags = action_flags & 0xFD, unit->flingy_movement_type == MovementType_Iscript)) {
 				if (!unit->path) { // New
-					return 0;
+					return false;
 				}
 				unit->path->collision_recheck_timer = 2;
 				unit->movement_state = UnitMovement_UIOrderDelay;
-				result = 1;
+				result = true;
 			} else {
 				unit->movement_state = UnitMovement_FollowPath;
-				result = 1;
+				result = true;
 			}
 		} else {
 			unit->movement_state = UnitMovement_FailedPath;

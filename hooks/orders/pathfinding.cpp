@@ -107,7 +107,7 @@ namespace hooks
         return bw::get_region(unit->position)->group_index == bw::get_region(target->position)->group_index;
     }
 
-    // Hooked to OoooooO. -Pr0nogo
+    // Hooked to disable functionality. Hook is not used, pending our reimplementation. -Pr0nogo
     void set_repulse_angle(Unit* unit) { // 00453300
         // Empty
     }

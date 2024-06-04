@@ -489,7 +489,7 @@ namespace hooks
 					if (noop) {
 						break;
 					}
-					u8 v16 = helper::randomize_short(3);
+					u8 v16 = bw::random();
 					program_state->wait = min + v16 % (max - min + 1) - 1;
 					return;
 				}
@@ -724,7 +724,7 @@ namespace hooks
 					{
 						break;
 					}
-					helper::iscript_play_sound(image, (min + helper::randomize_short(5) % ((u32)max - min + 1)));
+					helper::iscript_play_sound(image, (min + bw::random() % ((u32)max - min + 1)));
 					break;
 				}
 				case IscriptOpcodes::opc_domissiledmg:
@@ -749,7 +749,7 @@ namespace hooks
 					{
 						break;
 					}
-					helper::iscript_play_sound(image, args[helper::randomize_short(4) % arg_count]);
+					helper::iscript_play_sound(image, args[bw::random() % arg_count]);
 					break;
 				}
 				case IscriptOpcodes::opc_followmaingraphic:
@@ -775,7 +775,7 @@ namespace hooks
 				{
 					u8 chance = take_iscript_datum<char>(program_state);
 					u16 new_pc = take_iscript_datum<unsigned short>(program_state);
-					if ((u8)helper::randomize_short(7) <= (u32)chance)
+					if ((u8)bw::random() <= (u32)chance)
 					{
 						program_state->program_counter = new_pc;
 					}
@@ -818,7 +818,7 @@ namespace hooks
 					{
 						break;
 					}
-					if ((helper::randomize_short(6) & 3) == 1)
+					if ((bw::random() & 3) == 1)
 					{
 						helper::turn_unit_left(*g_active_iscript_unit, arg);
 					}

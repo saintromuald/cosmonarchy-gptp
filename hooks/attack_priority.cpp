@@ -217,20 +217,16 @@ namespace hooks
 
 // Returns a random target selected from the attack target groups.
 // Based on 0x004401B0
-Unit* AttackPriorityData::find_random_target() const
-{
+Unit* AttackPriorityData::find_random_target() const {
 	s32 priority = 0;
-	while (target_counts[priority] == 0)
-	{
+	while (target_counts[priority] == 0) {
 		++priority;
-		if (priority >= countof(target_counts))
-		{
+		if (priority >= countof(target_counts)) {
 			return 0;
 		}
 	}
 
-	if (target_counts[priority] == 1)
-	{
+	if (target_counts[priority] == 1) {
 		return targets[priority][0];
 	} else {
 		return targets[priority][bw::random() % target_counts[priority]];
@@ -239,11 +235,9 @@ Unit* AttackPriorityData::find_random_target() const
 
 // Returns the best target selected from the attack target groups.
 // Based on 0x004405E0
-Unit* AttackPriorityData::find_best_target(Unit* attacker) const
-{
+Unit* AttackPriorityData::find_best_target(Unit* attacker) const {
 	s32 priority = 0;
-	while (target_counts[priority] == 0)
-	{
+	while (target_counts[priority] == 0) {
 		++priority;
 		if (priority >= countof(target_counts)) {
 			return 0;
@@ -262,8 +256,7 @@ Unit* AttackPriorityData::find_best_target(Unit* attacker) const
 	// Find the nearest target (don't use unit box sizes)
 	u32 best_target_distance = bw::distance_between(attacker->get_x(), attacker->get_y(), best_target->get_x(), best_target->get_y());
 
-	for (u32 i = 1; i < target_counts[priority]; ++i)
-	{
+	for (u32 i = 1; i < target_counts[priority]; ++i) {
 		Unit* current_target = targets[priority][i];
 		const u32 current_target_distance = bw::distance_between(attacker->get_x(), attacker->get_y(), current_target->get_x(), current_target->get_y());
 

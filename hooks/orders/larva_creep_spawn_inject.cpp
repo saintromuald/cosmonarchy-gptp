@@ -4,11 +4,9 @@
 
 namespace
 {	
-	void __declspec(naked) create_building_larva_wrapper() // 0x0049D660
-	{
+	void __declspec(naked) create_building_larva_wrapper() { // 0x0049D660
 		static Unit* main_building;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			SUB ESP, 0x08
@@ -16,8 +14,7 @@ namespace
 			PUSHAD
 		}
 		hooks::create_building_larva(main_building);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -25,29 +22,24 @@ namespace
 		}
 	}
 
-	void __declspec(naked) iterate_units_at_location_target_proc_larva_count_wrapper() // 0x004E8C80
-	{
+	void __declspec(naked) iterate_units_at_location_target_proc_larva_count_wrapper() { // 004E8C80
 		static Unit* main_building;
 		static Unit* unit;
 		static bool result;
-		__asm
-		{
+		__asm {
 			MOV unit, ECX
 			MOV main_building, EDX
 			PUSHAD
 		}
 		result = hooks::iterate_units_at_location_target_proc_larva_count(unit, main_building);
-		if (result)
-		{
-			__asm
-			{
+		if (result) {
+			__asm {
 				POPAD
 				MOV EAX, 0x00000001
 				RET
 			}
 		} else {
-			__asm
-			{
+			__asm {
 				POPAD
 				XOR EAX, EAX
 				RET
@@ -55,11 +47,9 @@ namespace
 		}
 	}
 		
-	void __declspec(naked) secondary_order_spawning_larva_wrapper() // 0x004EA780
-	{
+	void __declspec(naked) secondary_order_spawning_larva_wrapper() { // 004EA780
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			SUB ESP, 0x08
@@ -67,8 +57,7 @@ namespace
 			PUSHAD
 		}
 		hooks::secondary_order_spawning_larva(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -76,32 +65,27 @@ namespace
 		}
 	}
 
-	void __declspec(naked) secondary_order_spread_creep_spawning_larva_wrapper() // 0x004EA880
-	{
+	void __declspec(naked) secondary_order_spread_creep_spawning_larva_wrapper() { // 004EA880
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
 		hooks::secondary_order_spread_creep_spawning_larva(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			RET
 		}
 	}
 
-	void __declspec(naked) get_creep_region_wrapper() // 0x00413DB0
-	{
+	void __declspec(naked) get_creep_region_wrapper() { // 00413DB0
 		static Box32* rect;
 		static u16 unit_id;
 		static s32 x;
 		static s32 y;
 		static u32 isComplete;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV rect, ECX
@@ -114,8 +98,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::get_creep_region(rect, unit_id, x, y, isComplete);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			POP EBP
@@ -123,13 +106,11 @@ namespace
 		}
 	}
 
-	void __declspec(naked) spreads_creep_wrapper() // 0x00413870
-	{
+	void __declspec(naked) spreads_creep_wrapper() { // 00413870
 		static u16 unit_id;
 		static u32 isComplete;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit_id, AX
@@ -138,8 +119,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::spreads_creep(unit_id, isComplete);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			POP EBP
@@ -147,16 +127,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) run_creep_randomizer_wrapper() // 0x004140A0
-	{
+	void __declspec(naked) run_creep_randomizer_wrapper() { // 004140A0
 		static u16* tile_backup;
 		static u8* creep_overlay_value;
 		static u32* retval;
 		static u16* tile;
 		static u32 arg;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
@@ -172,8 +150,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::run_creep_randomizer(tile_backup, creep_overlay_value, retval, tile, arg);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			POP EBP
@@ -181,19 +158,16 @@ namespace
 		}
 	}
 
-	void __declspec(naked) in_creep_area_call()
-	{
+	void __declspec(naked) in_creep_area_call() {
 		static s32 x, y;
 		static u32 r;
-		__asm
-		{
+		__asm {
 			MOV x, EDX
 			MOV y, EAX
 			PUSHAD
 		}
 		r = hooks::in_creep_area(x, y);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EDX, r
 			RET
@@ -203,25 +177,21 @@ namespace
 	const u32 func_ret = 0x0047DD48;
 	const u32 func_call = 0x00414290;
 	const u32 func_cont = 0x0047DCD3;
-	void __declspec(naked) bug_wrapper()
-	{
+	void __declspec(naked) bug_wrapper() {
 		static void* disappearing_creep;
-		__asm
-		{
+		__asm {
 			CALL func_call
 			MOV disappearing_creep, ESI
 			PUSHAD
 		}
-		if (!disappearing_creep)
-		{
+		if (!disappearing_creep) {
 			__asm
 			{
 				POPAD
 				JMP func_ret
 			}
 		} else {
-			__asm
-			{
+			__asm {
 				POPAD
 				MOVZX ECX, [ESI + 0x12]
 				JMP func_cont
@@ -235,8 +205,7 @@ namespace
 		static u32 player;
 		static Unit* unit;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
@@ -247,8 +216,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::btsncond_zerg_building_rally(unused, player, unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -257,12 +225,10 @@ namespace
 		}
 	}
 
-	void __declspec(naked) update_creep_disappearance_unit_wrapper() // 0047DF90
-	{
+	void __declspec(naked) update_creep_disappearance_unit_wrapper() { // 0047DF90
 		static Unit* unit;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
@@ -271,8 +237,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::update_creep_disappearance_unit(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -281,17 +246,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_larva_idle_wrapper() // 004E9F90
-	{
+	void __declspec(naked) orders_larva_idle_wrapper() { // 004E9F90
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
 		hooks::orders_larva_idle(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}

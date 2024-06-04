@@ -368,7 +368,7 @@ namespace hooks {
 			if (*g_air_splash_list_count == 1) {
 				list = 0;
 			} else {
-				list = helper::randomize_short(58) % *g_air_splash_list_count;
+				list = bw::random() % *g_air_splash_list_count;
 			}
 			helper::weapon_bullet_shot(target, bullet, (s32)g_air_splash_list[list]);
 		}

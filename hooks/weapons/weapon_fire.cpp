@@ -1383,7 +1383,7 @@ namespace hooks {
 			if (parent == *g_last_bullet_creator) {
 				launch_spin_variance = *g_launch_spin_random == 0;
 			} else {
-				launch_spin_variance = helper::randomize_short(0) & 1;
+				launch_spin_variance = bw::random() & 1;
 			}
 
 			*g_launch_spin_random = launch_spin_variance;
@@ -1424,8 +1424,7 @@ namespace hooks {
 
 		switch (weapons_dat::behavior[weapon_id]) {
 			case WeaponBehavior_FlyDoNotFollowTarget:
-			case WeaponBehavior_FlyFollowTarget:
-			{
+			case WeaponBehavior_FlyFollowTarget: {
 				if (target_unit) {
 					if (parent) {
 						helper::weapon_behavior_can_hit_target_check(target_unit, parent);
@@ -1435,8 +1434,7 @@ namespace hooks {
 				return 1;
 			}
 			case WeaponBehavior_AppearOnTargetUnit:
-			case WeaponBehavior_AppearOnTargetSite:
-			{
+			case WeaponBehavior_AppearOnTargetSite: {
 				if (!target_unit) {
 					return 1;
 				}
@@ -1446,17 +1444,14 @@ namespace hooks {
 				helper::weapon_behavior_can_hit_target_check(target_unit, bullet->source_unit);
 				return 1;
 			}
-			case WeaponBehavior_PersistOnTargetSite:
-			{
+			case WeaponBehavior_PersistOnTargetSite: {
 				helper::appear_on_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
-			case WeaponBehavior_AppearOnAttacker:
-			{
+			case WeaponBehavior_AppearOnAttacker: {
 				return 1;
 			}
-			case WeaponBehavior_AttackAndSelfDestruct:
-			{
+			case WeaponBehavior_AttackAndSelfDestruct: {
 				if (!bullet->source_unit) {
 					return 1;
 				}
@@ -1465,8 +1460,7 @@ namespace hooks {
 				helper::orders_self_destructing(bullet->source_unit);
 				return 1;
 			}
-			case WeaponBehavior_Bounce:
-			{
+			case WeaponBehavior_Bounce: {
 				switch (weapon_id) {
 					case WeaponId::BactaliskCorrosiveAcid:
 					case WeaponId::AlkajeliskPlasmidSpores:
@@ -1490,8 +1484,7 @@ namespace hooks {
 				helper::attack_fly_to_target(bullet, bullet->attack_target.pt.x, bullet->attack_target.pt.y);
 				return 1;
 			}
-			case WeaponBehavior_AttackNearbyArea:
-			{
+			case WeaponBehavior_AttackNearbyArea: {
 				bullet->cyclic_missile_index = parent->offset_index_3_by_3;
 				bullet->attack_target.pt.x -= (s16)g_attack_curve[parent->offset_index_3_by_3].x;
 				bullet->attack_target.pt.y -= (s16)g_attack_curve[parent->offset_index_3_by_3].y;
@@ -1504,8 +1497,7 @@ namespace hooks {
 				parent->offset_index_3_by_3 = final_offset;
 				return 1;
 			}
-			case WeaponBehavior_GoToMaxRange:
-			{
+			case WeaponBehavior_GoToMaxRange: {
 				s32 max_range_var;
 				if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
 					max_range_var = get_unit_ext(parent)->values[ValueHasFiredReturnAttack];

@@ -278,13 +278,8 @@ namespace hooks
 		*tile = creep_tile + 0x10; // tile in creep group
 		*return_value = 0;
 
-		// Change random number
-		if (g_is_in_game_loop) {
-			u32 random = (22695477 * g_last_random_number + 1) >> 16;
-			++g_random_counts[20];
-			++*g_total_random_counts;
-			g_last_random_number = 22695477 * (g_last_random_number) + 1;
-		}
+		// Change random number; it's used weirdly here, original func can protentially call bw::random() twice. -Pr0nogo
+		bw::random();
 
 		return true;
 	}
@@ -344,8 +339,7 @@ namespace hooks
 	}
 
 	// Hooked to make Larvae move towards the spawner's rally angle. -Pr0nogo
-	void orders_larva_idle(Unit* unit) // 004E9F90
-	{
+	void orders_larva_idle(Unit* unit) { // 004E9F90
 		Unit* spawner = unit->connected_unit;
 		if (spawner && !helper::is_target_within_min_range(unit, 10, spawner)) {
 			helper::move_to_target(spawner, unit);
@@ -370,14 +364,7 @@ namespace hooks
 				return;
 			}
 
-			u32 random = 0;
-			if (g_is_in_game_loop) {
-				random = (22695477 * g_last_random_number + 1) >> 16;
-				++g_random_counts[20];
-				++*g_total_random_counts;
-				g_last_random_number = 22695477 * (g_last_random_number) + 1;
-			}
-
+			u32 random = bw::random();
 			u32 pos_x = unit->position.x + ((random & 8) != 0 ? 10 : -10);
 			u32 pos_y = unit->position.y + ((random & 128) != 0 ? 10 : -10);
 			if (pos_x < *g_map_width_pixels && pos_y < *g_map_height_pixels && helper::pixel_pos_has_cagra(pos_x, pos_y)) {

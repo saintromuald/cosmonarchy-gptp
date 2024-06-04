@@ -223,14 +223,9 @@ s32 game_loop() // 004D94B0 - hooked for lag testing - Pr0nogo
 // Now used to set starting energy to a new amount - Veeq7
 Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) {
 	Vector32 attack_frame = {};
-	if (g_is_in_game_loop) {
-		++g_random_counts[14];
-		g_last_random_number = 0x15A4E35 * g_last_random_number + 1;
-		++(*g_total_random_counts);
-		attack_frame.y = (g_last_random_number >> 16) & 0x7FFF;
-	}
+	u32 facing_angle = bw::random();
 
-	Unit* unit = helper::unit_constructor(x, y, unit_id, player, attack_frame.y);
+	Unit* unit = helper::unit_constructor(x, y, unit_id, player, facing_angle);
 	if (!unit) {
 		return 0;
 	}
@@ -252,7 +247,7 @@ Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) {
 		return unit;
 	}
 
-	Unit* subunit = helper::unit_constructor(x, y, units_dat::subunit[unit_id], player, attack_frame.y);
+	Unit* subunit = helper::unit_constructor(x, y, units_dat::subunit[unit_id], player, facing_angle);
 	if (!subunit) {
 		helper::unit_destructor(unit);
 		return 0;
@@ -260,7 +255,7 @@ Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) {
 
 	unit->subunit = subunit;
 	subunit->subunit = unit;
-	helper::get_image_attack_frame(&attack_frame, unit->sprite, 0, 2u);
+	helper::get_image_attack_frame(&attack_frame, unit->sprite, 0, 2);
 	helper::set_sprite_main_image_offset(subunit->sprite, attack_frame.x, attack_frame.y);
 
 	// New

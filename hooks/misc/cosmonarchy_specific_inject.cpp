@@ -614,8 +614,7 @@ namespace hooks
 		jump_patch(drop_debugging_03, Hook_DropDebugging03);
 	}
 
-	void __declspec(naked) create_damage_overlay_wrapper() // 004993C0
-	{
+	void __declspec(naked) create_damage_overlay_wrapper() { // 004993C0
 		static Sprite* sprite;
 		__asm {
 			PUSH EBP
@@ -651,8 +650,7 @@ namespace hooks
 				POPAD
 				JMP DmgOverlay_JmpBack
 			}
-		}
-		else {
+		} else {
 			__asm {
 				POPAD
 				JMP DmgOverlay_JmpEnd
