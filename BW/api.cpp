@@ -824,7 +824,7 @@ void prepare_unit_move_custom(Unit* unit) {
 	}
 
 	helper::toggle_unit_path(unit);
-	char pathing_flags = unit->pathing_flags;
+	u8 pathing_flags = unit->pathing_flags;
 	unit->movement_state = 0;
 	unit->pathing_flags = (pathing_flags ^ (unit->sprite->elevation < 12)) & 1 ^ pathing_flags;
 }
@@ -3083,7 +3083,8 @@ bool unit_can_flee(Unit* unit) {
 				return false;
 			}
 		} break;
-		case UnitId::ProtossAnalogue: {
+		case UnitId::ProtossAnalogue:
+		case UnitId::ProtossAnthelion: {
 			return false;
 		} break;
 		case UnitId::ProtossLanifect: {
