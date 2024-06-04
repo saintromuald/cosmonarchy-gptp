@@ -267,6 +267,8 @@ namespace hooks {
 						}
 					}
 
+					// TODO: Replace the switch statement with unit->sprite->play_iscript_animation(IscriptAnimation::SpecialState1, true);
+					// Requires all units to use separate grps for mutation animations. -Pr0nogo
 					IscriptAnimation::Enum animation = IscriptAnimation::Init;
 					switch (origin) {
 						case UnitId::ZergLarva:

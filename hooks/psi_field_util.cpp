@@ -131,7 +131,7 @@ namespace hooks {
 			}
 		}
 
-		if (!(g_is_placing_building)) {
+		if (!g_is_placing_building) {
 			Unit* selected_unit;
 			for (s32 i = 0; i < SelectionCap; i++) {
 				selected_unit = g_client_selection_group->unit[i];

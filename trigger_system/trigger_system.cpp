@@ -1393,10 +1393,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!area.check(position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
-				if (unit->player >= FullPlayerLimit || !source_players[unit->player]) {
-					continue;
-				}
-				if (unit->player == target_player) {
+				if (unit->player >= FullPlayerLimit || !source_players[unit->player] || unit->player == target_player) {
 					continue;
 				}
 				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {

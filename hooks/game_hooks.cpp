@@ -1185,21 +1185,23 @@ namespace hooks {
 
 		// Revive
 		{
-			auto& clear_min = unit_ext->timers[TimerReviveFlagClearMin];
-			auto& clear_max = unit_ext->timers[TimerReviveFlagClearMax];
-			auto& revive_started = unit_ext->values[ValueReviveStarted];
-			if (((!clear_min && !(unit->status & UnitStatus::NoBrkCodeStart)) || !clear_max) && revive_started) {
-				if (unit_ext->timers[TimerStun] > 1) {
-					unit->status &= ~UnitStatus::Invincible;
-				} else {
-					++g_unmovable_hits[2];
-					g_unmovable_lastframe[2] = g_elapsed_time_frames;
-					unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
+			auto& value_revive_started = unit_ext->values[ValueReviveStarted];
+			if (value_revive_started) {
+				auto& timer_clear_min = unit_ext->timers[TimerReviveFlagClearMin];
+				auto& timer_clear_max = unit_ext->timers[TimerReviveFlagClearMax];
+				if ((!timer_clear_min && !(unit->status & UnitStatus::NoBrkCodeStart)) || !timer_clear_max) {
+					if (unit_ext->timers[TimerStun] > 1) {
+						unit->status &= ~UnitStatus::Invincible;
+					} else {
+						g_unmovable_hits[2]++;
+						g_unmovable_lastframe[2] = g_elapsed_time_frames;
+						unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
+					}
+					timer_clear_min = 0;
+					timer_clear_max = 0;
+					value_revive_started = 0;
+					bw::give_ai_ex(unit);
 				}
-				clear_min = 0;
-				clear_max = 0;
-				revive_started = 0;
-				bw::give_ai_ex(unit);
 			}
 		}
 
@@ -1222,14 +1224,13 @@ namespace hooks {
 			should_update_speed = true;
 			auto& reclamation_regen = unit_ext->values[ValueReclamationRegen];
 			if (reclamation_regen) {
-				static constexpr u32 HealPerTick = 2 * 256 / 24;
-				auto heal = HealPerTick;
+				u32 heal = 2 * 256 / 24;
 				if (unit_ext->damage_taken_timer > 2 * 24) {
 					heal -= unit->heal_hp(heal);
 					reclamation_regen = std::max((s32)(reclamation_regen - heal), 0);
 				} else {
-					static constexpr u32 HealFade = HealPerTick / 2;
-					reclamation_regen = std::max((s32)(reclamation_regen - HealFade), 0);
+					u32 heal_fade = heal / 2;
+					reclamation_regen = std::max((s32)(reclamation_regen - heal_fade), 0);
 				}
 			}
 			u32 overlay_id = ImageId::RevivedDecayingOverlay;
@@ -1705,8 +1706,7 @@ namespace hooks {
 				// Manually handle the reset if stunned during channel
 				bw::unfreeze_channeling_unit(unit);
 			} break;
-			case UnitId::TerranApostle:
-			{
+			case UnitId::TerranApostle: {
 				// Apostle - Lazarus Agent cast
 				if (bw::get_generic_rust_value(unit, RustId::ToggleLazarusAgent) == 1) {
 					u32 energy = techdata_dat::energy_cost[TechId::ApostleLazarusAgent] * 256;
@@ -1729,14 +1729,13 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::ProtossLanifect:
-			{
+			case UnitId::ProtossLanifect: {
 				// Disruption Field - Lanifect ability
 				if (bw::get_generic_rust_value(unit, RustId::ToggleDisruptionField)) {
 					if (!unit_ext->values[ValueDisruptionFieldOn]) {
 						unit_ext->values[ValueDisruptionFieldOn] = 1;
 						iquare_globals.create_effect(EffectId::LanifectDisruptionField, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, { .origin = unit });
-					} else if (unit->is_frozen()) {
+					} else if (bw::unit_is_stunned(unit)) {
 						bw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
 					}
 				} else {
@@ -1746,8 +1745,7 @@ namespace hooks {
 					bw::decloak_passive_proc(unit);
 				}
 			} break;
-			case UnitId::TerranMadcap:
-			{
+			case UnitId::TerranMadcap: {
 				// Madcap Cabeirus Feeders - subtract stacks while moving
 				if (unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving) {
 					if (unit_ext->values[ValueMadcapStacks] > 0) {
@@ -1756,8 +1754,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranCuirassTankMode:
-			{
+			case UnitId::TerranCuirassTankMode: {
 				if (unit_ext->values[ValueCuirassIsSelfReviving]) {
 					if (unit->hitpoints + CuirassSelfHeal >= unit->get_max_hp_raw()) {
 						unit_ext->values[ValueCuirassIsSelfReviving] = 0;
@@ -1777,10 +1774,8 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ProtossLegionnaire:
-			case UnitId::ProtossCabalist:
-			{
-				// Legionnaire - Blade Vortex
-				// Cabalist - Silent Strides
+			case UnitId::ProtossCabalist: {
+				// Legionnaire - Blade Vortex || Cabalist - Silent Strides
 				// Striga was here - removed 7 February 2023. -Pr0nogo
 				Unit* target = unit->order_target.unit;
 				if (target && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit) && !unit->ground_weapon_cooldown) {
@@ -1824,7 +1819,7 @@ namespace hooks {
 			case UnitId::TerranShamanSupportMode:
 			case UnitId::TerranShamanVisionaryMode: {
 				// Shaman - Nanite Field
-				if (unit->is_frozen() || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport || unit_ext->values[ValueDisablePassive]) {
+				if (bw::unit_is_stunned(unit) || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport || unit_ext->values[ValueDisablePassive]) {
 					break;
 				}
 				u32 timer = unit_ext->timers[TimerNaniteField];
@@ -1845,7 +1840,7 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::TerranQilin: {
-				if (unit->is_frozen() || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport) {
+				if (bw::unit_is_stunned(unit) || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport) {
 					break;
 				}
 				u32 timer = unit_ext->timers[TimerNaniteField];
@@ -2215,7 +2210,7 @@ namespace hooks {
 			case UnitId::TerranHypnagogue: {
 				// Hypnagogue - Through the Looking Glass
 				auto& try_cast = unit_ext->values[ValueTryCastCustomSpell];
-				if (try_cast && (unit->main_order_id != OrderId::CastThroughTheLookingGlass || unit->is_frozen())) {
+				if (try_cast && (unit->main_order_id != OrderId::CastThroughTheLookingGlass || bw::unit_is_stunned(unit))) {
 					try_cast = false;
 				}
 				if (try_cast && !unit_ext->timers[TimerTryCastCustomSpell] && !unit_ext->timers[TimerHypnagogueChannel]) {
@@ -2619,26 +2614,9 @@ namespace hooks {
 			unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
 		}
 
-		{
-			bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] > 1, {});
-			if (unit_ext->timers[TimerAvenge] == 1) {
-				Image* overlay = unit->get_overlay(ImageId::Avenge_Small + bw::get_overlay_offset(unit->id, true));
-				if (overlay) {
-					overlay->play_iscript_animation(IscriptAnimation::Death);
-				}
-			}
-		}
+		bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] >= 1, {.play_death = true});
 
-		{
-			bw::set_unit_overlay(unit, { ImageId::Ascension_Small, ImageId::Ascension_XLarge }, unit_ext->timers[TimerAscend] > 1, {});
-			if (unit_ext->timers[TimerAscend] == 1) {
-				Image* overlay = unit->get_overlay(ImageId::Ascension_Small + bw::get_overlay_offset(unit->id, true));
-				if (overlay) {
-					overlay->play_iscript_animation(IscriptAnimation::Death);
-				}
-			}
-		}
-
+		bw::set_unit_overlay(unit, { ImageId::Ascension_Small, ImageId::Ascension_XLarge }, unit_ext->timers[TimerAscend] >= 1, {.play_death = true});
 
 		{
 			u32 shield_bleed_overlay = ImageId::AstralRule_Small + bw::get_overlay_offset(unit->id, true);
@@ -2864,7 +2842,7 @@ namespace hooks {
 		}
 
 		// Decloak on stun
-		if (unit->is_frozen() || unit_ext->timers[TimerStrigaRepulsion] || unit_ext->timers[TimerMagnetarAttraction] || unit_ext->timers[TimerAnthelionGravityWell]) {
+		if (bw::unit_is_stunned(unit) || unit_ext->timers[TimerStrigaRepulsion] || unit_ext->timers[TimerMagnetarAttraction] || unit_ext->timers[TimerAnthelionGravityWell]) {
 			bw::decloak_passive_proc(unit);
 		}
 
@@ -2893,7 +2871,7 @@ namespace hooks {
 		}
 
 		if (units_dat::base_property[unit->id] & UnitProperty::Addon && !(unit->status & UnitStatus::Completed)) {
-			if (unit->connected_unit && !unit->connected_unit->is_frozen() && !unit_ext->timers[TimerAddonAnimation]) {
+			if (unit->connected_unit && !bw::unit_is_stunned(unit->connected_unit) && !unit_ext->timers[TimerAddonAnimation]) {
 				u32 width  = units_dat::building_dimensions[unit->id].x * 0.5;
 				u32 height = units_dat::building_dimensions[unit->id].y * 0.5;
 

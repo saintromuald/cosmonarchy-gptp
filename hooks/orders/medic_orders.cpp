@@ -188,6 +188,7 @@ namespace hooks
 		return true;
 	}
 
+	// TODO: Figure out what these return values are used for, and make an enum. -Pr0nogo
 	u32 do_medic_heal(Unit* cleric, Unit* target) { // 00463C40
 		UnitExt* unit_ext = get_unit_ext(cleric);
 		if (!can_auto_heal(cleric)) {

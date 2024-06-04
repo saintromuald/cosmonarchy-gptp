@@ -242,12 +242,10 @@ namespace hooks
 		unit->movement_state = UnitMovement_Init;
 		u8 pathing_flags = unit->pathing_flags;
 		unit->pathing_flags = (pathing_flags ^ (sprite->elevation < 12)) & 1 ^ pathing_flags;
-		if (subunit) {
-			if (units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
-				helper::toggle_unit_path(subunit);
-				subunit->movement_state = 0;
-				subunit->pathing_flags ^= (subunit->pathing_flags ^ (subunit->sprite->elevation < 12)) & 1;
-			}
+		if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
+			helper::toggle_unit_path(subunit);
+			subunit->movement_state = 0;
+			subunit->pathing_flags ^= (subunit->pathing_flags ^ (subunit->sprite->elevation < 12)) & 1;
 		}
 	}
 }
