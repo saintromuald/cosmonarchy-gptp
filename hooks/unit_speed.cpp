@@ -69,7 +69,7 @@ namespace hooks
 			speed *= 1.5;
 		}
 
-		// Zoryusthaleth - Swarming Omen - 133% movement speed when moving towards Zoryusthaleth
+		// Zoryusthaleth - Swarming Omen - 133% movement speed when moving towards Zoryusthaleth victims
 		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
 			EntryArray targets = {};
 			unit_search_radial(&targets, unit->position, 10 * 32);
@@ -94,6 +94,21 @@ namespace hooks
 					u32 sound_id = bw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02);
 					helper::play_sound_from_unit(sound_id, unit, 1, 0);
 				}
+				break;
+			}
+		}
+
+		if (unit_ext->values[ValueMindControllerUnitId]) {
+			EntryArray targets = {};
+			unit_search_radial(&targets, unit->position, unit->get_sight_range() * 32);
+			unit_search_filter(&targets, unit, 0);
+			for (Unit* target : targets.units) {
+				if (bw::is_allied_to(target->player, unit->player)) {
+					continue;
+				}
+				speed *= 1.33;
+				bw::set_unit_overlay(unit, { ImageId::DemiurgeWorshipOverlay_Small, ImageId::DemiurgeWorshipOverlay_XLarge }, targets.count > 0, {});
+				// TODO: make this overlay work when not moving (probably move to game_hooks). -Pr0nogo
 				break;
 			}
 		}

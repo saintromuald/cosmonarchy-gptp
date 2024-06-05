@@ -2,15 +2,14 @@
 #include <BW/api.h>
 #include "globals.h"
 
-namespace hooks
-{
+namespace hooks {
 	void orders_hallucination1(Unit* unit) {
-		s32 sight_range = unit->get_sight_range(true);
+		s32 sight_range = unit->get_sight_range(true) * 32;
 		u16 tech_cost = 0;
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit_ext->values[ValueJustCastedHallucination]) {
 			unit->order_to_idle();
-		} else if (helper::spell_order(unit, TechId::Hallucination, &tech_cost, sight_range * 32, 2201)) {
+		} else if (helper::spell_order(unit, TechId::Hallucination, &tech_cost, sight_range, 2201)) {
 			Vector32 hit = {unit->order_target.pt.x, unit->order_target.pt.y};
 			if (Unit* target = unit->order_target.unit) {
 				hit = {target->get_x(), target->get_y()};
