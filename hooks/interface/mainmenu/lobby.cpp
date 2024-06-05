@@ -6,8 +6,7 @@
 
 namespace hooks
 {
-	s32 init_game() // 004EE110
-	{
+	s32 init_game() { // 004EE110
 		if (*g_multiplayer_mode) {
 			return 0;
 		}

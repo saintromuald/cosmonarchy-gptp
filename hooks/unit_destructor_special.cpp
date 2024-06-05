@@ -59,34 +59,25 @@ void kill_hangar_units(Unit* unit) {
 		child_inside->remove();
 		unit->unit_with_hangar.in_hangar_count--;
 	}
+
 	Unit* child_outside = unit->unit_with_hangar.out_hangar_child;
 	while (unit->unit_with_hangar.out_hangar_count != 0) {
 		child_outside->hangar_unit.parent = 0;
 
 		// Kill Stewards only (Plasma Shells will defuse anyway)
 		if (child_outside->id != UnitId::ProtossPlasmaShell) {
-			u16 random_death_timer;
-			// TODO: Remove RNG, make farthest Stewards detonate first
-			// hardcoded RNG management
-			if (g_is_in_game_loop) {
-				static u32* randomnessCounter_0051C6AC = (u32*)0x0051C6AC;
-				static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
-				*randomnessCounter_0051C6AC = *randomnessCounter_0051C6AC + 1;
-				*randomnessCounter_0051CA18 = *randomnessCounter_0051CA18 + 1;
-				g_last_random_number = (g_last_random_number * 0x015A4E35) + 1;
-				// number between 0 and 32766
-				random_value = (g_last_random_number / 65536) & 0x7FFF;
-			} else {
-				random_value = 0;
+			child_outside->status |= UnitStatus::CanNotAttack;
+			u32 distance = bw::distance_between(child_outside->position, unit->position);
+			u16 new_death_timer = bw::rand_between(15, 24);
+			if (distance <= 96) {
+				new_death_timer = bw::rand_between(3, 6);
+			} else if (distance <= 192) {
+				new_death_timer = bw::rand_between(7, 14);
 			}
-			// should produce a number between 15 and 45 (or maybe 46)
-			random_death_timer = ((random_value * 31) / 32768) + 15;
-			if (child_outside->remove_timer == 0
-				|| random_death_timer < child_outside->remove_timer) {
-				child_outside->remove_timer = random_death_timer;
+			if (child_outside->remove_timer == 0 || new_death_timer < child_outside->remove_timer) {
+				child_outside->remove_timer = new_death_timer;
 			}
 		}
-		// 00466239
 		Unit* child_outside_old = child_outside;
 		child_outside = child_outside->hangar_unit.hangar_link.prev;
 		child_outside_old->hangar_unit.hangar_link.prev = 0;

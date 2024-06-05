@@ -865,25 +865,14 @@ namespace hooks
 				}
 			}
 
-			u32 random;
-			if (g_is_in_game_loop) {
-				++g_random_counts[15];
-				random = (22695477 * g_last_random_number + 1) >> 16;
-				++(*g_total_random_counts);
-				g_last_random_number = 22695477 * g_last_random_number + 1;
-			} else {
-				random = 0;
-			}
-
-			s32 current_hp;
+			u32 random = bw::random();
+			s32 current_hp = units_dat::max_hitpoints[unit_id] / 10;
 			unit->wireframe_randomizer = random;
 			if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
 				current_hp = 1;
-			} else {
-				current_hp = units_dat::max_hitpoints[unit_id] / 10;
 			}
 			unit->hitpoints = current_hp;
-
+			
 			u32 main_order_id;
 			if ((unit->status & UnitStatus::GroundedBuilding) == 0) {
 				main_order_id = OrderId::Nothing2;

@@ -355,13 +355,13 @@ BW_DATA(unk_61*,		struct_5140D8,				0x005140D8);
 BW_DATA(unk_62*,		struct_5140E8,				0x005140E8);
 
 // For get_unit_bullet_damage
-BW_DATA(char*,		g_upgrades_level_sc,		0x0058D2B0);
-BW_DATA(char*,		g_upgrades_level_bw,		0x0058F2FE);
+BW_DATA(u8*,		g_upgrades_level_sc,		0x0058D2B0);
+BW_DATA(u8*,		g_upgrades_level_bw,		0x0058F2FE);
 
 // For find_next_bounce_target_proc
-BW_DATA(Unit**,	g_bullet_bounce_missile_source,	0x0064EECC);
-BW_DATA(Unit**,	g_bullet_bounce_missile_target,	0x0064EED0);
-BW_DATA(Unit**,	g_bullet_bounce_missile_next,	0x0064EED4);
+BW_DATA(Unit**,		g_bullet_bounce_missile_source,	0x0064EECC);
+BW_DATA(Unit**,		g_bullet_bounce_missile_target,	0x0064EED0);
+BW_DATA(Unit**,		g_bullet_bounce_missile_next,	0x0064EED4);
 
 // For start_game
 BW_DATA(s8*,		g_game_state,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
@@ -374,12 +374,12 @@ BW_DATA(s32*,		g_is_in_game,					0x006D5BC8);
 BW_DATA(s32*,		g_countdown_time_remaining,		0x0059CC78);
 
 // For air_splash
-BW_DATA(Unit**,	g_air_splash_list,				ccmu_extender.air_splash_list);
-BW_DATA(s32*,		g_air_splash_list_count,		0x0046DEB4);
-BW_DATA(s32*,		g_is_in_ground_splash_proc,		0x0064DEB8);
+BW_DATA(Unit**,		g_air_splash_list,				ccmu_extender.air_splash_list);
+BW_REF(s32,			g_air_splash_list_count,		0x0046DEB4);
+BW_REF(s32,			g_is_in_ground_splash_proc,		0x0064DEB8);
 
 // For ai_add_military
-BW_DATA(RegionArray**,	g_sai_paths,				0x006D5BFC);
+BW_DATA(RegionArray**,		g_sai_paths,				0x006D5BFC);
 BW_DATA(AiTown*,			g_ai_town_array,			0x006AA090);
 BW_DATA(AiTownList*,		g_ai_town_list,				0x006AA050); // sizeof 0x64[0x8]
 
@@ -410,11 +410,11 @@ BW_DATA(s16*, g_unk_upgrade_count,			0x006CA940); // Seems to be unused. Only ev
 
 // For isUnitCloaked
 BW_DATA(Unit**,		g_first_invisible_unit,			0x0063FF5C);
-BW_DATA(s32*,		g_force_button_refresh,			0x0068C1B0);
-BW_DATA(s8*,		g_portrait_redraw,				0x0068AC74); // sizeof 4
-BW_DATA(s8*,		g_status_screen_redraw,			0x0068C1F8);
-BW_DATA(BinDlg**,	g_control_under_mouse,			0x0068C1E8);
-BW_DATA(BinDlg**,	g_control_under_mouse_value,	0x0068C1EC); // void* in Neiv's list
+BW_REF(s32,			g_force_button_refresh,			0x0068C1B0);
+BW_REF(s8,			g_portrait_redraw,				0x0068AC74); // sizeof 4
+BW_REF(s8,			g_status_screen_redraw,			0x0068C1F8);
+BW_REF(BinDlg*,		g_control_under_mouse,			0x0068C1E8);
+BW_REF(BinDlg*,		g_control_under_mouse_value,	0x0068C1EC); // void* in Neiv's list
 
 // For update_units
 BW_DATA(s32*,		g_interceptor_focused_this_frame,		0x006957D0);

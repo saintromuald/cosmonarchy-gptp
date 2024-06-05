@@ -245,24 +245,18 @@ namespace hooks
 	}
 
 	// Function used by Click on unit (possibly with key pressed)
-	void unit_selection_click(Unit* clicked_unit) // 0046FB40
-	{
+	void unit_selection_click(Unit* clicked_unit) { // 0046FB40
 		Unit* local_temp_array_1[SelectionCap];	// used instead of an array starting from [EBP-3C]
 		Unit* local_temp_array_2[SelectionCap];	// used instead of an array starting from [EBP-6C]
 		Box16 local_temp_box16_structure;		// used instead of using from [EBP-0C] to [EBP-06]
 		bool holding_ctrl_or_double_clicking = *g_is_holding_ctrl || (*g_is_double_clicking && (clicked_unit->sprite->flags & SpriteFlags::Selected));
-		for (s32 i = 0; i < SelectionCap; i++)
-		{
+		for (s32 i = 0; i < SelectionCap; i++) {
 			local_temp_array_1[i] = 0;
 		}
 
-		if (holding_ctrl_or_double_clicking || (*g_is_holding_shift && active_player_selection->unit[0]))
-		{
-			if (!*g_is_holding_shift)
-			{
-				// 0046FE07
-				if (holding_ctrl_or_double_clicking)
-				{
+		if (holding_ctrl_or_double_clicking || (*g_is_holding_shift && active_player_selection->unit[0])) {
+			if (!*g_is_holding_shift) {
+				if (holding_ctrl_or_double_clicking) {
 					// Ctrl+click on unit or f64-click on already
 					// it unit without other key
 					// =>	select surrounding units with same type as clicked unit, making them the current unit_list
@@ -282,24 +276,19 @@ namespace hooks
 					*g_temp_units_list_arrays_counts_list_last_index = *g_temp_units_list_arrays_counts_list_last_index - 1;
 					*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[*g_temp_units_list_arrays_counts_list_last_index];
 
-					if (sorted_list_length != 0)
-					{
+					if (sorted_list_length != 0) {
 						// turn the local array as the newly applied unit_list
 						helper::select_units_if_alt_not_held(local_temp_array_1, sorted_list_length, 1, 1);
 
 						// This is what make the rally point briefly appear when selecting a building with one. Maybe can do other things?
-						if (sorted_list_length == 1
-							&& clicked_unit->player == *g_active_nation_id
-							&& clicked_unit->is_factory())
-						{
+						if (sorted_list_length == 1 && clicked_unit->player == *g_active_nation_id && clicked_unit->is_factory()) {
 							helper::show_rally_target(clicked_unit);
 						}
 					}
 				}
 			} else {
 				// holding SHIFT (if not holding CTRL, then there's an active unit_list too)
-				if (holding_ctrl_or_double_clicking)
-				{
+				if (holding_ctrl_or_double_clicking) {
 					// {Ctrl+Shift+click on unit} OR {Shift+f64-click on 
 					// it unit WHILE having an active unit_list}
 					// select units same type as clicked unit, adding them to the
@@ -315,8 +304,7 @@ namespace hooks
 					local_temp_box16_structure.bottom = *g_move_to_y + 400;
 
 					// save existing unit_list to a temporary array
-					for (s32 i = 0; i < SelectionCap; i++)
-					{
+					for (s32 i = 0; i < SelectionCap; i++) {
 						local_temp_array_2[i] = active_player_selection->unit[i];
 					}
 
@@ -328,27 +316,21 @@ namespace hooks
 					*g_temp_units_list_arrays_counts_list_last_index = *g_temp_units_list_arrays_counts_list_last_index - 1;
 					*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[*g_temp_units_list_arrays_counts_list_last_index];
 
-					if (sorted_list_length != 0)
-					{
-						// 0046FCD4
+					if (sorted_list_length != 0) {
 						// recombine current unit_list and newly selectable items in local_temp_array_2
 						u32 list_remixed_length = helper::combine_lists(clicked_unit, local_temp_array_1, local_temp_array_2, sorted_list_length);
 						// turn local_temp_array_2 as the newly applied unit_list
 						helper::select_units_if_alt_not_held(local_temp_array_2, list_remixed_length, 1, 1);
 					}
 				} else {
-					// 0046FCF6
-
 					// Shift + click while there's an existing unit_list (because hold on CTRL case was already dealt with so there's an existing unit_list at this point) add/remove unit from unit_list
 					s32 array_index;
 					// copy the existing unit_list into the local array
-					for (array_index = 0; array_index < SelectionCap && active_player_selection->unit[array_index]; array_index++)
-					{
+					for (array_index = 0; array_index < SelectionCap && active_player_selection->unit[array_index]; array_index++) {
 						local_temp_array_1[array_index] = active_player_selection->unit[array_index];
 					}
 
-					if (!(clicked_unit->sprite->flags & SpriteFlags::Selected))
-					{
+					if (!(clicked_unit->sprite->flags & SpriteFlags::Selected)) {
 						// 0x0046FD13 (getting unit sprite) and 0x0046FD18 (middle of the test with the flag)
 						// unit not it, so it's added to current unit_list if valid
 						if (array_index < SelectionCap
@@ -378,64 +360,46 @@ namespace hooks
 
 						// either erase the element to delete or one that was repeated after memcpy
 						local_temp_array_1[array_index] = 0;
-						if (array_index == 1)
-						{
-							if (*g_is_holding_alt)
-							{
+						if (array_index == 1) {
+							if (*g_is_holding_alt) {
 								// It seems you can unselect things with Shift+Alt like
 								// with shift alone, UNTIL you have 2 units it.
 								// It is the code below that is causing the
 								// deselection to fail where simple shift+click would
 								// continue to deselect.
 								u32 unit_index = helper::unit_to_unit_id(local_temp_array_1[0]);
-								if (helper::select_single_unit_from_id(unit_index) != 0)
-								{
+								if (helper::select_single_unit_from_id(unit_index) != 0) {
 									bUpdateSelection = false;
 								}
 							}
 						}
 
-						if (bUpdateSelection)
-						{
+						if (bUpdateSelection) {
 							// Create a new unit unit_list (since the clicked unit is unselected)
 							// and choose it as current unit_list)
 							helper::create_new_unit_selections_from_list(local_temp_array_1, array_index);
 							helper::cmdact_select(local_temp_array_1, array_index);
 
-							// tell the GUI to update stuff
-							*g_control_under_mouse = 0;
-							*g_control_under_mouse_value = 0;
 							g_client_selection_changed = 1;
-							*g_force_button_refresh = 1;
-							*g_portrait_redraw = 1;
-							*g_status_screen_redraw = 1;
-
+							bw::refresh_console();
 						}
 					}
 				}
 			}
-		}
-
-		else
-		{
-			// 0046FBB7
+		} else {
 			// Simple click...almost (there's still ALT key)
 			bool recreated_selection_via_alt_click = false;
-			if (*g_is_holding_alt)
-			{
+			if (*g_is_holding_alt) {
 				// Recall the unit_list the unit belong to if there's one
 				// In this case, skip the code for a single unit handling
 
 				u32 temp_unit_index = helper::unit_to_unit_id(clicked_unit);
-				if (helper::select_single_unit_from_id(temp_unit_index) != 0)
-				{
+				if (helper::select_single_unit_from_id(temp_unit_index) != 0) {
 					recreated_selection_via_alt_click = true;
 				}
 			}
 
-			if (!recreated_selection_via_alt_click)
-			{
-				// 0046FBD1
+			if (!recreated_selection_via_alt_click) {
 				// Create a new unit_list containing only the clicked unit
 				helper::create_new_unit_selections_from_list(&clicked_unit, 1);
 				// play the new_sound of the unit (don't need to be a building)
@@ -443,22 +407,15 @@ namespace hooks
 				// select the unit
 				helper::cmdact_select(&clicked_unit, 1);
 
-				// tell the GUI to update stuff
+				bw::refresh_console();
 				g_client_selection_changed = 1;
-				*g_force_button_refresh = 1;
-				*g_portrait_redraw = 1;
-				*g_status_screen_redraw = 1;
-				*g_control_under_mouse = 0;
-				*g_control_under_mouse_value = 0;
 			}
 
 			// 0046FC2C
 			// this is what make the rally point briefly appear when
 			// selecting a building with one.
 			// maybe can do others things?
-			if (clicked_unit->player == *g_active_nation_id
-				&& clicked_unit->is_factory())
-			{
+			if (clicked_unit->player == *g_active_nation_id && clicked_unit->is_factory()) {
 				helper::show_rally_target(clicked_unit);
 			}
 		}

@@ -365,8 +365,7 @@ namespace hooks
 	}
 
 	// Ported from public GPTP to fix the Plasma Shell launch sound. -Pr0nogo
-	void orders_strafe_unit2(Unit* unit) // 00465E00
-	{
+	void orders_strafe_unit2(Unit* unit) { // 00465E00
 		if (unit->main_order_state <= 6) {
 			if (unit->main_order_state == 0) {
 				if (unit->remove_timer == 0 || unit->remove_timer > 90) {
@@ -376,7 +375,7 @@ namespace hooks
 				unit->status |= UnitStatus::NoCollide;
 				unit->main_order_timer = 7;
 				if (unit->order_target.unit) {
-					u8 rand_value = helper::randomize_short(0) & 1;
+					u8 rand_value = bw::rand_between(0, 1);
 					helper::play_sound_from_unit(SoundId::Bullet_pTrFir00_wav + rand_value, unit, 1, 0);
 					helper::move_to_target(unit, unit->order_target.unit);
 					unit->main_order_state = 2;

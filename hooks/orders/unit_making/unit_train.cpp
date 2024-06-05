@@ -237,7 +237,7 @@ namespace hooks {
 			if (unit->status & UnitStatus::CanTurnAroundToAttack) {
 				u32 start_dir = units_dat::start_direction[unit->id];
 				if (start_dir == 32) {
-					start_dir = helper::randomize_short(36) & 0x1F;
+					start_dir = bw::rand_between(0, 31);
 				}
 				helper::turn_unit(unit, 8 * start_dir);
 			}

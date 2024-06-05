@@ -230,8 +230,7 @@ namespace hooks
 			unit->order_target.unit = 0;
 		}
 		if (unit->status & UnitStatus::InBuilding) {
-			if (unit->subunit)
-			{
+			if (unit->subunit) {
 				if (unit->subunit->connected_unit && unit->subunit->connected_unit->status & UnitStatus::InAir) {
 					return false;
 				}

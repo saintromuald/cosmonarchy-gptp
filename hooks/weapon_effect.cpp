@@ -308,8 +308,7 @@ namespace hooks {
 	}
 
 	// case WPNEffect_Splash_Air:
-	void air_splash(Bullet* bullet, u32 weapon_id) // 0048B790
-	{
+	void air_splash(Bullet* bullet, u32 weapon_id) { // 0048B790
 		Unit* target = bullet->attack_target.unit;
 		if (!target || !target->sprite) {
 			return;
@@ -322,7 +321,7 @@ namespace hooks {
 		s32 list;
 		Box16* search_radius = {};
 
-		*g_air_splash_list_count = 0;
+		g_air_splash_list_count = 0;
 		search_radius->left = pos_x - radius;
 		search_radius->top = pos_y - radius;
 		search_radius->right = radius + pos_x;
@@ -337,8 +336,7 @@ namespace hooks {
 		carapace_swarm_damage(x, y, r, bullet, weapon_id);
 
 		s32 result;
-		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++)
-		{
+		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 			// air_splash_proc
 			s8 weapon_id_loop;
 			s32 list_count;
@@ -353,22 +351,22 @@ namespace hooks {
 						{
 							g_air_splash_list[0] = target;
 							result = 1;
-							*g_air_splash_list_count = 1;
+							g_air_splash_list_count = 1;
 							break;
 						}
-						list_count = *g_air_splash_list_count;
-						g_air_splash_list[*g_air_splash_list_count] = target;
-						*g_air_splash_list_count = list_count + 1;
+						list_count = g_air_splash_list_count;
+						g_air_splash_list[g_air_splash_list_count] = target;
+						g_air_splash_list_count = list_count + 1;
 					}
 				}
 			}
 		}
 
-		if (*g_air_splash_list_count) {
-			if (*g_air_splash_list_count == 1) {
+		if (g_air_splash_list_count) {
+			if (g_air_splash_list_count == 1) {
 				list = 0;
 			} else {
-				list = helper::randomize_short(58) % *g_air_splash_list_count;
+				list = bw::rand_between(0, g_air_splash_list_count - 1);
 			}
 			helper::weapon_bullet_shot(target, bullet, (s32)g_air_splash_list[list]);
 		}
@@ -382,10 +380,8 @@ namespace hooks {
 	}
 
 	// clone of 'Yamato' damage for reference
-	void yamato_damage(Bullet* bullet, u32 weapon_id)
-	{
-		if (!bullet->attack_target.unit)
-		{
+	void yamato_damage(Bullet* bullet, u32 weapon_id) {
+		if (!bullet->attack_target.unit) {
 			return;
 		}
 		carapace_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
@@ -401,24 +397,20 @@ namespace hooks {
 		unit_ext->timers[TimerVilgolethSpawn] = 24;
 	}
 
-	void broodlings(Bullet* bullet, u32 weapon_id)
-	{
-		if (!bullet->source_unit)
-		{
+	void broodlings(Bullet* bullet, u32 weapon_id) {
+		if (!bullet->source_unit) {
 			return;
 		}
 		Unit* target = bullet->attack_target.unit;
 		hooks::broodling_hit(bullet->source_unit, target, bullet);
 	}
 
-	void lockdown(Bullet* bullet, u32 weapon_id)
-	{
+	void lockdown(Bullet* bullet, u32 weapon_id) {
 		s16 x = bullet->sprite->position.x;
 		s16 y = bullet->sprite->position.y;
 		s16 r = weapons_dat::outer_splash_radius[WeaponId::LobotomyMineExplosion];
 		bw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
-		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++)
-		{
+		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 			Unit* target = units_in_splash.get_unit(i);
 			if (!target->is_dead() && !units_dat::group_flags[target->id].is_building
 			&& !(units_dat::base_property[target->id] & UnitProperty::ResourceContainer) && !unit_id_is_trap(target->id))

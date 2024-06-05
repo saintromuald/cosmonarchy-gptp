@@ -777,8 +777,7 @@ namespace hooks
 				} break;
 				case 1: {
 					void* user = dialog->user;
-					if (user)
-					{
+					if (user) {
 						helper::SMemFree(user, "Starcraft\\SWAR\\lang\\statdata.cpp", 780, 0);
 					}
 				} break;
@@ -787,17 +786,15 @@ namespace hooks
 					return 1;
 				} break;
 				case 4: {
-					if (!(dialog->flags & 8))
-					{
+					if (!(dialog->flags & BinDlgFlags::Visible)) {
 						break;
 					}
 					return 1;
 				} break;
 				case 6: {
-					if (dialog == *g_control_under_mouse)
-					{
+					if (dialog == g_control_under_mouse) {
 						helper::refresh_selection_screen();
-						*g_control_under_mouse = 0;
+						g_control_under_mouse = 0;
 					}
 				} break;
 			}
@@ -806,15 +803,12 @@ namespace hooks
 	}
 
 	// Hooked to correct errors and replace building morph id checks. -Pr0nogo
-	u16 get_last_queue_slot_id(Unit* unit) // 0047B270
-	{
-		if (unit->status & UnitStatus::Completed)
-		{
+	u16 get_last_queue_slot_id(Unit* unit) { // 0047B270
+		if (unit->status & UnitStatus::Completed) {
 			return unit->id;
 		}
 		u16 queued_id = unit->build_queue[unit->build_queue_slot];
-		if (!bw::is_zerg_building_morph_result(queued_id))
-		{
+		if (!bw::is_zerg_building_morph_result(queued_id)) {
 			return unit->id;
 		}
 		return queued_id;

@@ -539,8 +539,7 @@ namespace WeaponEffect
 }
 
 // Use with weapons_dat::behavior[]
-enum Enum
-{
+enum Enum {
 	WeaponBehavior_FlyDoNotFollowTarget		= 0,
 	WeaponBehavior_FlyFollowTarget			= 1,
 	WeaponBehavior_AppearOnTargetUnit		= 2,
@@ -554,10 +553,8 @@ enum Enum
 };
 
 // Use with g_color_shift
-namespace ColorRemapping
-{
-	enum Enum
-	{
+namespace ColorRemapping {
+	enum Enum {
 		None			= 0,
 		OFire			= 1,
 		GFire			= 2,
@@ -570,10 +567,8 @@ namespace ColorRemapping
 }
 
 // Compare with (*g_game_type)
-namespace GameType
-{
-	enum Enum
-	{
+namespace GameType {
+	enum Enum {
 		Melee = 2,
 		FreeForAll = 3,
 		OneOnOne = 4,
@@ -600,10 +595,8 @@ namespace GameType
 }
 
 // Compare with (*g_current_tileset)
-namespace TilesetType
-{
-	enum Enum
-	{
+namespace TilesetType {
+	enum Enum {
 		Badlands = 0,
 		Space_Platform = 1,
 		Installation = 2,
@@ -617,17 +610,14 @@ namespace TilesetType
 	};
 }
 
-enum MovableState
-{
+enum MovableState {
 	MovableState_NotReachedDestination = 0,
 	MovableState_ReachedDestination = 1,
 	MovableState_UnmovableAtDestination = 2
 };
 
-namespace BinDlgFlags
-{
-	enum Enum
-	{
+namespace BinDlgFlags {
+	enum Enum {
 		Highlighted					= 0x00000001,
 		Disabled					= 0x00000002,
 		Active						= 0x00000004,
@@ -663,10 +653,8 @@ namespace BinDlgFlags
 	};
 }
 
-namespace SmkFlags
-{
-	enum Enum
-	{
+namespace SmkFlags {
+	enum Enum {
 		FadeIn = 0x0001,
 		Dark = 0x0002,
 		RepeatForever = 0x0004,
@@ -686,10 +674,8 @@ namespace SmkFlags
 	};
 }
 
-namespace DialogControlTypes
-{
-	enum Enum
-	{
+namespace DialogControlTypes {
+	enum Enum {
 		DialogBoxDC = 0x00000000, // DialogBox cannot be used, since it's used in winapi
 		DefaultButton = 0x00000001,
 		Button = 0x00000002,
@@ -709,10 +695,8 @@ namespace DialogControlTypes
 }
 
 // Use with units_dat::RightClickActions
-namespace RightClickActions
-{
-	enum Enum : u8
-	{
+namespace RightClickActions {
+	enum Enum : u8 {
 		NoCommand_AutoAttack = 0,
 		NormalMove_NormalAttack = 1,
 		NormalMove_NoAttack = 2,
@@ -724,10 +708,8 @@ namespace RightClickActions
 }
 
 // List of opcodes used to set whether a given unit can use build or train a unit, technology, research technology, upgrade or perform an order
-namespace RequirementOpcodes
-{
-	enum Enum
-	{
+namespace RequirementOpcodes {
+	enum Enum {
 		None = 0x0FF00,
 		Or = 0x0FF01,
 		CurrentUnitIs = 0x0FF02,
@@ -773,36 +755,34 @@ namespace RequirementOpcodes
 
 // Contains Internal error codes returned from functions (hooks\requirements\)
 // Apparently used to signal to the AI when requirements fail
-namespace InternalErrors
-{
-	enum Enum
-	{
-		UnknownError0 = 0,
-		UnknownError1 = 1,
-		UnknownError2 = 2,
-		UnknownError3 = 3,
-		UnknownError4 = 4,
-		UnknownError5 = 5,
-		UnknownError6 = 6,
-		UnknownError7 = 7,
-		UnitBusyOrIncompatible = 8,
-		UnknownError9 = 9,
-		UnitFrozen = 10,
-		UnitBurrowed = 11,
-		UnknownError12 = 12,
-		UnknownError13 = 13,
-		UnknownError14 = 14,
-		UnknownError15 = 15,
-		UnknownError16 = 16,
-		UnknownError17 = 17,
-		UnknownError18 = 18,
-		UnknownError19 = 19,
-		UnknownError20 = 20,
-		UnknownError21 = 21,
-		UnknownError22 = 22,
-		MissingRequirement = 23,
-		UnknownError25 = 25,
-		UnknownError26 = 26,
+namespace InternalErrors {
+	enum Enum {
+		UnknownError0			= 0,
+		UnknownError1			= 1,
+		UnknownError2			= 2,
+		UnknownError3			= 3,
+		UnknownError4			= 4,
+		UnknownError5			= 5,
+		UnknownError6			= 6,
+		UnknownError7			= 7,
+		UnitBusyOrIncompatible	= 8,
+		UnknownError9			= 9,
+		UnitFrozen				= 10,
+		UnitBurrowed			= 11,
+		UnknownError12			= 12,
+		UnknownError13			= 13,
+		UnknownError14			= 14,
+		UnknownError15			= 15,
+		UnknownError16			= 16,
+		UnknownError17			= 17,
+		UnknownError18			= 18,
+		UnknownError19			= 19,
+		UnknownError20			= 20,
+		UnknownError21			= 21,
+		UnknownError22			= 22,
+		MissingRequirement		= 23,
+		UnknownError25			= 25,
+		UnknownError26			= 26,
 	};
 }
 
@@ -815,10 +795,8 @@ enum DatSoundFlags {
 	DatSoundFlags_NeverPreempt         = 0x20,
 };
 
-namespace ResourceType
-{
-	enum Enum
-	{
+namespace ResourceType {
+	enum Enum {
 		None = 0,
 		VespeneGas = 1,
 		Minerals = 2,
@@ -826,8 +804,7 @@ namespace ResourceType
 	};
 }
 
-enum class PlayerColor : u8
-{
+enum class PlayerColor : u8 {
 	Invalid = -1,
 
 	Red,
@@ -1059,16 +1036,14 @@ inline const char* player_color_names[(size_t)PlayerColor::Count] = {
 	"Metzenic Prozac",
 };
 
-enum VespeneDeaths
-{
+enum VespeneDeaths {
 	VespeneDeaths_Reveal				= 0x01,
 	VespeneDeaths_Ping					= 0x02,
 	VespeneDeaths_ToggleRandomizeColor	= 0x04,
 	VespeneDeaths_DisableQuasifog		= 0x08,
 };
 
-enum AiPersonality // disruption_web_unit
-{
+enum AiPersonality { // disruption_web_unit
 	AiPersonality_None = 0,
 	AiPersonality_TerranArmor = 1,
 	AiPersonality_TerranRaider,
@@ -1091,8 +1066,7 @@ enum AiPersonality // disruption_web_unit
 	AiPersonality_AnyCount = std::max(std::max(AiPersonality_TerranCount, AiPersonality_ProtossCount), AiPersonality_ZergCount),
 };
 
-enum AiBuildType // plasma_shell, does not include combos
-{
+enum AiBuildType { // plasma_shell, does not include combos
 	AiBuildType_None = 0,
 	AiBuildType_Timing = 1,
 	AiBuildType_Rush,
@@ -1100,8 +1074,7 @@ enum AiBuildType // plasma_shell, does not include combos
 	AiBuildType_Count,
 };
 
-enum AiBuildOrder // dark_swarm_unit
-{
+enum AiBuildOrder { // dark_swarm_unit
 	AiBuildOrder_None = 0,
 	AiBuildOrder_TerranArmor_PhalanxTiming = 1,
 	AiBuildOrder_TerranArmor_FE5Fulc,
@@ -1207,10 +1180,8 @@ enum UnitResponseContext {
 };
 
 // From public gptp, note "may be wrong" -Pr0nogo
-namespace PanelTooltipTypes
-{
-	enum Enum
-	{
+namespace PanelTooltipTypes {
+	enum Enum {
 		WeaponPanelTooltip		= 0,	// set in getWeaponTooltipString
 		ArmorPanelTooltip		= 1,	// set in getArmorTooltipString
 		ShieldPanelTooltip		= 2,	// set in getShieldTooltipString
@@ -1221,10 +1192,8 @@ namespace PanelTooltipTypes
 	};
 }
 
-namespace ButtonsetId
-{
-	enum Enum
-	{
+namespace ButtonsetId {
+	enum Enum {
 		TerranStructuresBasic		= 71,
 		TerranStructuresAdvanced	= 72,
 		TerranStructuresSupreme		= 248,
@@ -1244,10 +1213,8 @@ namespace ButtonsetId
 	};
 }
 
-namespace IscriptOpcodes
-{
-	enum Enum
-	{
+namespace IscriptOpcodes {
+	enum Enum {
 		opc_playfram				= 0x00,
 		opc_playframtile			= 0x01,
 		opc_sethorpos				= 0x02,

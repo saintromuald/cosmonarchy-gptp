@@ -73,10 +73,8 @@ namespace hooks
 	}
 
 	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
-	bool can_target_spell(u16 tech_id, Unit* target, s16 fow_unit_id, Unit* caster, s16 x, s16 y, u16* error) // 00492020
-	{
-		switch (tech_id)
-		{
+	bool can_target_spell(u16 tech_id, Unit* target, s16 fow_unit_id, Unit* caster, s16 x, s16 y, u16* error) { // 00492020
+		switch (tech_id) {
 			// Targeting inside; added many new cases
 			case TechId::Irradiate:
 			case TechId::EMPShockwave:
@@ -91,12 +89,10 @@ namespace hooks
 			case TechId::MindTyrantMaelstrom:
 			case TechId::LuminaryAuralAssault:
 			case TechId::HypnagogueThroughTheLookingGlass:
-			case TechId::MatralethParasite:
-			{
+			case TechId::MatralethParasite: {
 				return true;
 			}
-			default:
-			{
+			default: {
 				if (tech_id != TechId::SpiderMines && tech_id != TechId::UnusedLobotomyMine) {
 					bool has_target = false;
 					u16 error_stat_string = 0;
@@ -144,7 +140,7 @@ namespace hooks
 		}
 	}
 
-	void orders_spell(Unit* unit) {
+	void orders_spell(Unit* unit) { // 00492850
 		UnitExt* unit_ext = get_unit_ext(unit);
 		u32 order_weapon_id = orders_dat::order_weapon_id[unit->main_order_id];
 		Unit* target = unit->order_target.unit;
