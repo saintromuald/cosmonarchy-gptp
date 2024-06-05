@@ -1,16 +1,13 @@
 #include "feedback_spell.h"
 #include <BW/api.h>
 
-namespace hooks
-{
-	void orders_feedback(Unit* unit) // 004F6D40
-	{
+namespace hooks {
+	void orders_feedback(Unit* unit) { // 004F6D40
 		Unit* target = unit->order_target.unit;
-		if (target && units_dat::base_property[target->id] & UnitProperty::Spellcaster && !(target->status & UnitStatus::IsHallucination))
-		{
+		if (target && units_dat::base_property[target->id] & UnitProperty::Spellcaster && !(target->status & UnitStatus::IsHallucination)) {
 			u16 tech_cost;
-			s32 sight_range = unit->get_sight_range(true);
-			if (helper::spell_order(unit, TechId::Feedback, &tech_cost, sight_range * 32, 0x532)) { // Must target units with energy
+			s32 sight_range = unit->get_sight_range(true) * 32;
+			if (helper::spell_order(unit, TechId::Feedback, &tech_cost, sight_range, 0x532)) { // Must target units with energy
 				if (target->status & UnitStatus::IsHallucination) {
 					u8 overlay_size = bw::overlay_size(target);
 					helper::replace_feedback_sprite(target, overlay_size + SpriteId::Feedback_Hit_Small);
