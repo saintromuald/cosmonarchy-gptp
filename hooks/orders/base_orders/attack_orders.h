@@ -1,8 +1,7 @@
 #pragma once
 #include "../../../BW/structures/Unit.h"
 
-namespace hooks
-{
+namespace hooks {
 	void orders_reaver_attack(Unit* unit);											// 00465690
 	void orders_carrier_attack(Unit* unit);											// 00465950
 	void orders_attack_fixed_range(Unit* unit);										// 00477D00

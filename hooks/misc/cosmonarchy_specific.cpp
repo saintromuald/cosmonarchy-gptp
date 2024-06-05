@@ -223,7 +223,7 @@ s32 game_loop() // 004D94B0 - hooked for lag testing - Pr0nogo
 // Now used to set starting energy to a new amount - Veeq7
 Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) {
 	Vector32 attack_frame = {};
-	u32 facing_angle = bw::random();
+	u32 facing_angle = bw::rand_between(0, 31);
 
 	Unit* unit = helper::unit_constructor(x, y, unit_id, player, facing_angle);
 	if (!unit) {

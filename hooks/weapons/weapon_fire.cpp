@@ -1383,7 +1383,7 @@ namespace hooks {
 			if (parent == *g_last_bullet_creator) {
 				launch_spin_variance = *g_launch_spin_random == 0;
 			} else {
-				launch_spin_variance = bw::random() & 1;
+				launch_spin_variance = bw::rand_between(0, 1);
 			}
 
 			*g_launch_spin_random = launch_spin_variance;

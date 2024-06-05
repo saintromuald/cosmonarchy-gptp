@@ -364,7 +364,7 @@ namespace hooks
 				return;
 			}
 
-			u32 random = bw::random();
+			u32 random = bw::rand_between(0, 1);
 			u32 pos_x = unit->position.x + ((random & 8) != 0 ? 10 : -10);
 			u32 pos_y = unit->position.y + ((random & 128) != 0 ? 10 : -10);
 			if (pos_x < *g_map_width_pixels && pos_y < *g_map_height_pixels && helper::pixel_pos_has_cagra(pos_x, pos_y)) {

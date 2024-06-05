@@ -68,13 +68,11 @@ void kill_hangar_units(Unit* unit) {
 		if (child_outside->id != UnitId::ProtossPlasmaShell) {
 			child_outside->status |= UnitStatus::CanNotAttack;
 			u32 distance = bw::distance_between(child_outside->position, unit->position);
-			u16 new_death_timer = 15;
+			u16 new_death_timer = bw::rand_between(15, 24);
 			if (distance <= 96) {
 				new_death_timer = bw::rand_between(3, 6);
 			} else if (distance <= 192) {
 				new_death_timer = bw::rand_between(7, 14);
-			} else {
-				new_death_timer = bw::rand_between(15, 24); // Else'd to prevent double-calling random, seemed inefficient (and would bloat logs). -Pr0nogo
 			}
 			if (child_outside->remove_timer == 0 || new_death_timer < child_outside->remove_timer) {
 				child_outside->remove_timer = new_death_timer;
