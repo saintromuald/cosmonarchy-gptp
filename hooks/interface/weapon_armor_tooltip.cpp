@@ -443,9 +443,8 @@ namespace hooks
 		add_status(statuses, "Blissfully Embraced", unit_ext->values[ValueInfested], 1);
 
 		switch (unit_ext->values[ValueMindControllerUnitId]) {
-			// @Veeq7 so what do you think of this? -Pr0nogo
-			case UnitId::ProtossMindTyrant: add_status(statuses, "Tyranny", 1, 1);		break;
-			case UnitId::ProtossDemiurge:	add_status(statuses, "Worshiping", 1, 1);	break;
+			case UnitId::ProtossMindTyrant: add_status(statuses, "Tyranny", 1, 1); break;
+			case UnitId::ProtossDemiurge:	add_status(statuses, "Worshiping", 1, 1); break;
 		}
 		if (unit_ext->values[ValueIsZombified]) {
 			add_status(statuses, "Zombified", 1, 1);
