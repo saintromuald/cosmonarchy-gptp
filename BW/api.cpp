@@ -952,11 +952,11 @@ u16 random(std::source_location src) {
 }
 
 void refresh_console() { // 004C36C0
-	*g_force_button_refresh = 1;
-	*g_portrait_redraw = 1;
-	*g_status_screen_redraw = 1;
-	*g_control_under_mouse = 0;
-	*g_control_under_mouse_value = 0;
+	g_force_button_refresh = 1;
+	g_portrait_redraw = 1;
+	g_status_screen_redraw = 1;
+	g_control_under_mouse = 0;
+	g_control_under_mouse_value = 0;
 }
 
 void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator) {

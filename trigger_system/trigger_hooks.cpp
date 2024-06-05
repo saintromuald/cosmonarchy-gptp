@@ -380,12 +380,9 @@ void do_unit_event_notification(Unit* unit, u8 event, u32 timer, bool ping, u32 
 }
 
 // Hooked to add support for crig-based portrait overrides. -Pr0nogo
-void update_selected_unit_portrait() // 0045EBC0
-{
-	if (*g_portrait_redraw)
-	{
-		if (!*g_unk_portrait)
-		{
+void update_selected_unit_portrait() { // 0045EBC0
+	if (g_portrait_redraw) {
+		if (!*g_unk_portrait) {
 			BinDlg* portrait_dlg = *g_portrait;
 			Unit* portrait_unit = portrait_dlg->unit_user;
 			Unit* active_unit = *g_active_portrait_unit;
@@ -394,18 +391,16 @@ void update_selected_unit_portrait() // 0045EBC0
 				portrait_dlg->unit_user = active_unit;
 				portrait_dlg->graphic = -1;
 				helper::hide_dialog(portrait_dlg);
-				*g_portrait_redraw = 0;
+				g_portrait_redraw = false;
 				return;
 			}
 
 			u32 active_unit_id = helper::get_last_queue_slot_id(active_unit);
-			if (portrait_unit != active_unit
-			||  portrait_unit && helper::get_last_queue_slot_id(portrait_unit) != active_unit_id)
-			{
+			if (portrait_unit != active_unit || portrait_unit && helper::get_last_queue_slot_id(portrait_unit) != active_unit_id) {
 				helper::display_update_portrait(helper::get_unit_portrait_override(active_unit_id), active_unit, 1);
 			}
 		}
-		*g_portrait_redraw = 0;
+		g_portrait_redraw = false;
 	}
 }
 

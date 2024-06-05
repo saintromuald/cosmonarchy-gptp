@@ -279,6 +279,7 @@ namespace hooks
 		*return_value = 0;
 
 		// Change random number; it's used weirdly here, original func can protentially call bw::random() twice. -Pr0nogo
+		// TODO: Figure out whether this is actually necessary.
 		bw::random();
 
 		return true;

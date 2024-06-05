@@ -283,9 +283,9 @@ namespace hooks {
 		}
 
 		u16 buttonset_id = *g_buttonset_special_buttonset_id;
-		b32 refresh = *g_force_button_refresh;
+		b32 refresh = g_force_button_refresh;
 		Unit* active_unit = *g_active_portrait_unit;
-		if (*g_force_button_refresh && (*g_buttonset_special_buttonset_id == UnitId::None || g_is_in_replay)) {
+		if (g_force_button_refresh && (*g_buttonset_special_buttonset_id == UnitId::None || g_is_in_replay)) {
 			helper::update_buttonset();
 			buttonset_id = *g_buttonset_special_buttonset_id;
 		}
@@ -300,7 +300,7 @@ namespace hooks {
 		}
 		if (*g_active_portrait_buttonset_id != buttonset_id) {
 			*g_active_portrait_buttonset_id = buttonset_id;
-			*g_force_button_refresh = true;
+			g_force_button_refresh = true;
 		BLOCK_update_then_highlight:
 			helper::update_command_card();
 			helper::refresh_button_tooltip();
@@ -321,7 +321,7 @@ namespace hooks {
 			if (g_is_in_replay) {
 				helper::replay_stat_buttons(*g_buttonset_dialog);
 			}
-			*g_force_button_refresh = false;
+			g_force_button_refresh = false;
 			return;
 		}
 	BLOCK_highlight:

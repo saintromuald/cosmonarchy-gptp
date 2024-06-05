@@ -410,11 +410,11 @@ BW_DATA(s16*, g_unk_upgrade_count,			0x006CA940); // Seems to be unused. Only ev
 
 // For isUnitCloaked
 BW_DATA(Unit**,		g_first_invisible_unit,			0x0063FF5C);
-BW_DATA(s32*,		g_force_button_refresh,			0x0068C1B0);
-BW_DATA(s8*,		g_portrait_redraw,				0x0068AC74); // sizeof 4
-BW_DATA(s8*,		g_status_screen_redraw,			0x0068C1F8);
-BW_DATA(BinDlg**,	g_control_under_mouse,			0x0068C1E8);
-BW_DATA(BinDlg**,	g_control_under_mouse_value,	0x0068C1EC); // void* in Neiv's list
+BW_REF(s32,			g_force_button_refresh,			0x0068C1B0);
+BW_REF(s8,			g_portrait_redraw,				0x0068AC74); // sizeof 4
+BW_REF(s8,			g_status_screen_redraw,			0x0068C1F8);
+BW_REF(BinDlg*,		g_control_under_mouse,			0x0068C1E8);
+BW_REF(BinDlg*,		g_control_under_mouse_value,	0x0068C1EC); // void* in Neiv's list
 
 // For update_units
 BW_DATA(s32*,		g_interceptor_focused_this_frame,		0x006957D0);
