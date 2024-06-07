@@ -3,6 +3,7 @@
 #include <BW/api.h>
 #include <globals.h>
 #include <hooks/limits/sfx_extender.h>
+#include <hooks/orders/building_making/building_modifier.h>
 #include "trigger_system/trigger_system.h"
 
 namespace hooks
@@ -54,7 +55,6 @@ namespace hooks
 	// Resume construction on an existing structure
 	void orders_scv_build_2(Unit* unit) { // 00467A70
 		Unit* built_unit = unit->order_target.unit;
-		BuildingModifier modifier = get_building_modifier(built_unit, unit, true);
 		UnitExt* builder_ext = get_unit_ext(unit);
 
 		if (built_unit && !(built_unit->status & UnitStatus::Completed)) {
@@ -176,21 +176,15 @@ namespace hooks
 				} break;
 			}
 
-			u32 hp_gain = built_unit->build_repair_hp_gain * modifier.multiplier;
-			if (*g_cheat_state & CheatFlags::OperationCwal) {
-				hp_gain *= 16;
-			}
+			u16 hp_gain = built_unit->build_repair_hp_gain;
+			cm::progress_build(built_unit, {
+				.builder = unit,
+				.is_constructing = true,
+				.already_ticked = true,
+				.hp_gain = hp_gain,
+			});
 
-			helper::progress_build(built_unit, hp_gain, false);
-			if (modifier.decrease) {
-				if (built_unit->remaining_build_time > modifier.decrease) {
-					built_unit->remaining_build_time -= modifier.decrease;
-				} else {
-					built_unit->remaining_build_time = 0;
-					helper::set_unit_hp(built_unit, built_unit->get_max_hp_raw());
-				}
-			}
-
+			helper::generic_progress_build(built_unit, hp_gain, false);
 			if (!(built_unit->status & UnitStatus::Completed)) {
 				return;
 			}
@@ -549,50 +543,29 @@ namespace hooks
 	}
 
 	// Hooked by mistake. -Pr0nogo
-	b32 is_constructing_addon(Unit* unit) // 004E66B0
-	{
-		b32 result = 0;
-		if (unit->secondary_order_id == OrderId::BuildAddon) {
-			if (unit->status & UnitStatus::GroundedBuilding) {
-				Unit* build_unit = unit->current_build_unit;
-				if (build_unit) {
-					if (!(build_unit->status & UnitStatus::Completed)) {
-						result = 1;
-					}
-				}
+	b32 is_constructing_addon(Unit* unit) { // 004E66B0
+		if (unit->secondary_order_id == OrderId::BuildAddon && unit->status & UnitStatus::GroundedBuilding) {
+			Unit* build_unit = unit->current_build_unit;
+			if (build_unit && !(build_unit->status & UnitStatus::Completed)) {
+				return true;
 			}
 		}
-		return result;
+		return false;
 	}
 
 	// Hooked to modify addon construction speed based on building modifier (for e.g. Crucible speed boosts) -Pr0nogo
-	b32 building_addon(Unit* unit, u32 hp_gain, b32 is_incomplete) { // 004679A0
-		helper::set_unit_hp(unit, hp_gain + unit->hitpoints);
-		u32 build_time = unit->remaining_build_time;
-		if (build_time) {
-			BuildingModifier modifier = get_building_modifier(unit, unit->connected_unit, true);
-			if (modifier.decrease) {
-				if (unit->remaining_build_time > modifier.decrease) {
-					unit->remaining_build_time -= modifier.decrease;
-				} else {
-					unit->remaining_build_time = 0;
-					if (unit_needs_hp_train_workaround(unit)) {
-						helper::set_unit_hp(unit, unit->get_max_hp_raw());
-					}
-				}
-			} else {
-				unit->remaining_build_time -= 1;
-			}
+	// This is a generic progress build applied not only to addons! -Veeq7
+	bool generic_progress_build(Unit* unit, u32 hp_gain, bool is_incomplete) { // 004679A0
+		if (!cm::progress_build(unit, {
+			.builder = unit->connected_unit,
+			.use_stock_speed = !unit->connected_unit, // For non-addons only want to tick once, we already call cm::progress_build for them individually, together with the actual builder unit
+			.hp_gain = hp_gain,
+		})) {
 			return true;
 		}
-		if (!is_incomplete) {
-			helper::update_unit_stats_and_finish_building(unit);
-			goto finish;
-		}
-		helper::update_unit_stats_and_finish_building(unit);
 
-		if (helper::show_finished_unit(unit)) {
-		finish:
+		helper::update_unit_stats_and_finish_building(unit);
+		if (!is_incomplete || helper::show_finished_unit(unit)) {
 			helper::update_unit_strength_and_apply_default_orders(unit);
 			if (!(unit->status & UnitStatus::GroundedBuilding)) {
 				helper::play_unit_ready_sound(unit);

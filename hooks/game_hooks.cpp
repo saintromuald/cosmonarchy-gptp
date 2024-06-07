@@ -2461,22 +2461,19 @@ namespace hooks {
 			case UnitId::ProtossCrucible: {
 				// Crucible - Khaydarin Charge stacks
 				if (unit->status & UnitStatus::Completed) {
-					EntryArray units = {};
-					unit_search_radial(&units, unit->position, 8 * 32);
-					unit_search_filter(&units, unit, FilterAlly | FilterBuilding);
-					for (u32 i = 0; i < units.count; i++) {
-						Unit* target = units.units[i];
+					EntryArray targets = {};
+					unit_search_radial(&targets, unit->position, 8 * 32);
+					unit_search_filter(&targets, unit, FilterAlly | FilterBuilding);
+					for (Unit* target : targets.units) {
 						UnitExt* target_ext = get_unit_ext(target);
-						if (unit_id_is_tech(target->id)) {
-							if (units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueInfested]) {
-								continue;
-							}
+						if (unit_id_is_tech(target->id) && units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueInfested]) {
+							continue;
 						}
 						switch (target->id) {
 							case UnitId::TerranSupplyDepot:
 							case UnitId::TerranAnchor:
-							case UnitId::TerranReservoir: { // @Veeq7: What are these edge cases? -Pr0nogo
-								if (!target_ext->values[ValueInfested]) {
+							case UnitId::TerranReservoir: {
+								if (!target_ext->values[ValueInfested] && target->status & UnitStatus::GroundedBuilding) {
 									continue;
 								}
 							} break;
@@ -2485,9 +2482,9 @@ namespace hooks {
 							continue;
 						}
 
-						auto& vec = target_ext->unit_vectors[UnitVectorCrucibles];
-						if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
-							vec.push_back(unit);
+						auto& crucibles = target_ext->unit_vectors[UnitVectorCrucibles];
+						if (!std::ranges::contains(crucibles, unit)) {
+							crucibles.push_back(unit);
 							target->update_speed();
 						}
 						if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
@@ -3147,8 +3144,7 @@ namespace hooks {
 				Unit* target = *it;
 				if (bw::distance_between(unit->position, target->position) > 8 * 32) {
 					bw::remove_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay);
-					crucibles.erase(it);
-					--it;
+					crucibles.erase(it--);
 					should_update_speed = true;
 				}
 			}

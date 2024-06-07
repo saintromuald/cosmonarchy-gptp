@@ -16,8 +16,6 @@ namespace hooks {
 	void orders_zerg_build_self(Unit* building) {
 		UnitExt* building_ext = get_unit_ext(building);
 		u16 building_id = building->build_queue[building->build_queue_slot];
-		BuildingModifier modifier = get_building_modifier(building, 0, helper::is_valid_building_morph(building->id) ? false : true);
-
 		if (!bw::is_zerg_building_morph_result(building_id)) {
 			building_id = building->id;
 		}
@@ -35,7 +33,7 @@ namespace hooks {
 				if (unit_id_is_tech_tier_structure(building_id)) {
 					replay_witness_event(building, SpectatorEvent_Tech);
 				}
-			} // fall
+			} // fallthrough
 			case 1: {
 				if (building->remaining_build_time < 3 * units_dat::time_cost[building_id] >> 2) {
 					if (building->id == UnitId::ZergExcisant) {
@@ -112,22 +110,14 @@ namespace hooks {
 			} break;
 		}
 
-		u16 hp_gain = building->build_repair_hp_gain * modifier.multiplier;
-		if (building->remaining_build_time) {
-			--building->remaining_build_time;
-
-			if (modifier.decrease) {
-				if (building->remaining_build_time > modifier.decrease) {
-					building->remaining_build_time -= modifier.decrease;
-				} else {
-					building->remaining_build_time = 0;
-				}
-			}
-		}
-
+		u32 hp_gain = 0;
 		if (!bw::is_zerg_building_morph_result(building_id) || building_ext->values[ValueIsNydusExit]) {
-			building->set_hitpoints(building->hitpoints + hp_gain);
+			hp_gain = building->build_repair_hp_gain;
 		}
+		cm::progress_build(building, {
+			.is_constructing = !helper::is_valid_building_morph(building->id),
+			.hp_gain = hp_gain,
+		});
 	}
 
 	void cancel_zerg_building(Unit* unit) { // 0045DA40

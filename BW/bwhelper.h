@@ -316,7 +316,7 @@ namespace helper {
 	bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance);					// 00401240
 	void fix_target_location(Point16* coords, u32 unit_id);								                    // 00401FA0
 	bool is_unit_positions_2_equal(Unit* unit);																// 00402160
-	b32 progress_build(Unit* unit, u32 hpGain, b32 showHidden);												// 004679A0
+	b32 generic_progress_build(Unit* unit, u32 hp_gain, b32 show_hidden);									// 004679A0
 	void prepend_order_targeting_nothing(Unit* unit, Order* order, u8 order_id);							// 00474760
 	void add_order_targeting_nothing(Unit* unit, Order* order, u8 order_id);								// 004749A0
 	bool can_still_place_building();														                // 0048DDA0
@@ -669,7 +669,7 @@ namespace helper {
 	void play_subunit_iscript(Unit* unit, IscriptAnimation::Enum anim);																// 00474380
 
 	//// unit_train
-	u32 get_hp_gain_for_repair(Unit* unit);																							// 00402C40
+	u32 progress_build_get_hp_gain(Unit* unit);																							// 00402C40
 	void refund_unit_train_cost(u32 unit_id, u8 player);																			// 0042CEC0
 	void clear_building_ai_queue_slot(Unit* unit, u32 build_queue_slot);																		// 00432430
 	void add_hangar_unit(Unit* main_unit, Unit* added_unit);																		// 00466300

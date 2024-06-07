@@ -2,38 +2,89 @@
 #include <globals.h>
 #include "trigger_system\trigger_system.h"
 
-BuildingModifier get_building_modifier(Unit* unit, Unit* builder, bool constructing) {
-    BuildingModifier modifier = {};
-    modifier.multiplier = 1;
-    if (!unit) {
-        return modifier;
-    }
+namespace cm {
 
-    UnitExt* building_ext = get_unit_ext(unit);
-    if (constructing) {
-        /*
-        if ((builder && builder->id == UnitId::TerranTalos)
-            || building->create_origin == UnitId::ProtossArtisan
-            || building->create_origin == UnitId::ZergGosvileth) {
-            modifier.multiplier *= 1.5;
-        }
-        */
-    } else if (building_ext->unit_vectors[UnitVectorCrucibles].size()) {
-        modifier.multiplier *= 1.5;
-    }
-    
-    const auto& cm_player = g_globals->players[unit->player];
-    modifier.multiplier *= cm_player.build_multiplier;
-    if (bw::get_game_kind() == GameKind_Debug) {
-        modifier.multiplier *= 32;
-    }
+BuildingModifier get_building_modifier(Unit* unit, const ProgressBuildOptions& options) {
+	BuildingModifier modifier{.factor = 1, .integer_step = 1};
+	if (unit && !options.use_stock_speed) {
+		UnitExt* unit_ext = get_unit_ext(unit);
 
-    if (building_ext->building_tick_last_update != g_elapsed_time_frames) {
-        building_ext->building_tick_last_update = g_elapsed_time_frames;
-        building_ext->building_tick_progress += (modifier.multiplier - 1);
-    }
-    modifier.decrease = floor(building_ext->building_tick_progress);
-    building_ext->building_tick_progress -= modifier.decrease;
+		Unit* builder = options.builder;
+		if (options.is_constructing) {
+			/*
+			if ((builder && builder->id == UnitId::TerranTalos)
+				|| unit->create_origin == UnitId::ProtossArtisan
+				|| unit->create_origin == UnitId::ZergGosvileth) {
+				modifier.factor *= 1.5;
+			}
+			*/
+		}
 
-    return modifier;
+		bool crucible_active = !unit_ext->unit_vectors[UnitVectorCrucibles].empty();
+		if (!crucible_active && builder) {
+			UnitExt* builder_ext = get_unit_ext(builder);
+			if (!builder_ext->unit_vectors[UnitVectorCrucibles].empty()) {
+				crucible_active = true;
+			}
+		}
+		if (crucible_active) {
+			modifier.factor *= 1.5;
+		}
+
+		const auto& cm_player = g_globals->players[unit->player];
+		modifier.factor *= cm_player.build_multiplier;
+		if (bw::get_game_kind() == GameKind_Debug) {
+			modifier.factor *= 32;
+		}
+
+		if (unit_ext->build_progress_last_update_tick != g_elapsed_time_frames) {
+			unit_ext->build_progress_last_update_tick = g_elapsed_time_frames;
+
+			unit_ext->build_progress_float += modifier.factor;
+			unit_ext->build_progress_integer = floor(unit_ext->build_progress_float);
+			unit_ext->build_progress_float -= unit_ext->build_progress_integer;
+		}
+		modifier.integer_step = unit_ext->build_progress_integer;
+	}
+
+	if (options.already_ticked) {
+		modifier.factor -= 1;
+		modifier.integer_step -= 1;
+	}
+	return modifier;
+}
+
+bool progress_build(Unit* unit, const ProgressBuildOptions& options) {
+	if (!unit) {
+		return false;
+	}
+	if (!unit->remaining_build_time) {
+		return true;
+	}
+
+	const auto modifier = get_building_modifier(unit, options);
+	if (unit->remaining_build_time >= modifier.integer_step) {
+		unit->remaining_build_time -= modifier.integer_step;
+	} else {
+		unit->remaining_build_time = 0;
+	}
+
+	if (modifier.factor) {
+		if (options.shield_gain) {
+			u32 max_shields = units_dat::max_shield_points[unit->id] << 8;
+			if (unit->shields + options.shield_gain < max_shields) {
+				unit->shields += options.shield_gain;
+			} else {
+				unit->shields = max_shields;
+			}
+		}
+		// Need to call set_hitpoints for shield case, regardless of hp_gain, to update unit force value and etc
+		if (options.hp_gain || options.shield_gain) {
+			unit->set_hitpoints(unit->hitpoints + options.hp_gain * modifier.factor);
+		}
+	}
+
+	return false;
+}
+
 }

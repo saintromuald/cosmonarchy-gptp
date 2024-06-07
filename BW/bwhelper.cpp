@@ -2629,14 +2629,14 @@ namespace helper {
 
 	// if canBeAborted is TRUE, the unit can be aborted because there's
 	// no room around the constructing building
-	b32 progress_build(Unit* unit, u32 hpGain, b32 showHidden) {
+	b32 generic_progress_build(Unit* unit, u32 hp_gain, b32 show_hidden) {
 		const u32 func_address = 0x004679A0;
 		static b32 bResult;
 		__asm {
 			PUSHAD
-			MOV EDX, hpGain
+			MOV EDX, hp_gain
 			MOV EAX, unit
-			PUSH showHidden
+			PUSH show_hidden
 			CALL func_address
 			MOV bResult, EAX
 			POPAD
@@ -5206,11 +5206,10 @@ namespace helper {
 	}
 
 	// Identical to get_hp_gain_for_repair @ 0x00402C40
-	u32 get_hp_gain_for_repair(Unit* unit) {
+	u32 progress_build_get_hp_gain(Unit* unit) {
 		if (*g_cheat_state & CheatFlags::OperationCwal) {
 			return unit->build_repair_hp_gain * 16;
-		}
-		else {
+		} else {
 			return unit->build_repair_hp_gain;
 		}
 	}
