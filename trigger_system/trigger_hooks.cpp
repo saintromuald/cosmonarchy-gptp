@@ -185,48 +185,27 @@ void stop_sounds_partial() {
 	}
 }
 
-u32 is_unit_at_height(Unit* unit, u32 height) // 0045F8D0
-{
+u32 is_unit_at_height(Unit* unit, u32 height) { // 0045F8D0
 	if (!unit) {
 		return 0;
 	}
-	bool is_ground = (unit->status & UnitStatus::InAir) == 0;
-	u32 ground_height = helper::get_ground_height_at_px(unit->position.y, unit->position.x);
-	u32 ground_height_zeroed = ground_height--;
-	u32 result = 0;
-	if (is_ground) {
-		if (ground_height) {
-			if (ground_height_zeroed) {
-				if (ground_height_zeroed != 1) {
-					return 0;
-				}
-				result = height & 4;
-			} else {
-				result = height & 2;
-			}
-		} else {
-			result = height & 1;
-		}
-	} else {
-		if (ground_height) {
-			if (ground_height_zeroed) {
-				if (ground_height_zeroed != 1) {
-					return 0;
-				}
-				result = height & 32;
-			} else {
-				result = height & 16;
-			}
-		} else {
-			result = height & 8;
-		}
+	
+	s32 ground_height = helper::get_ground_height_at_px(unit->position.y, unit->position.x);
+	if (ground_height < 0) {
+		ground_height = 0;
+	} else if (ground_height >= 2) {
+		ground_height = 3;
 	}
-	return result;
+
+	++ground_height;
+	if (unit->status & UnitStatus::InAir) {
+		ground_height <<= 3;
+	}
+	return height & ground_height;
 }
 
 // Hooked to add support for factional and crig-based advisors. -Pr0nogo
-u16 get_unit_portrait_override(u16 unit_id) // 0045E320
-{
+u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
 	u32 portrait_id = units_dat::portrait_id[unit_id];
 	u32 player = *g_local_nation_id;
 	Unit* active_unit = *g_active_portrait_unit;
@@ -270,9 +249,8 @@ u16 get_unit_portrait_override(u16 unit_id) // 0045E320
 }
 
 // Hooked to add support for factional and crig-based advisors. -Pr0nogo
-void game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) // 0045EDD0
-{
-	*g_trigger_portrait_active = 1;
+void game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) { // 0045EDD0
+	g_trigger_portrait_active = 1;
 	helper::set_callback_timer(*g_portrait, 4, time, 0x0045E610);
 	GameKind game_kind = bw::get_game_kind();
 	u32 portrait_id = units_dat::portrait_id[unit_id];
@@ -358,10 +336,8 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) // 0046
 }
 
 // Hooked to add support for factional and crig-based advisors. -Pr0nogo
-void do_unit_event_notification(Unit* unit, u8 event, u32 timer, bool ping, u32 message_id) // 0045EFE0
-{
-	if (!(*g_trigger_portrait_active))
-	{
+void do_unit_event_notification(Unit* unit, u8 event, u32 timer, bool ping, u32 message_id) { // 0045EFE0
+	if (!g_trigger_portrait_active) {
 		u32 portrait_id = helper::get_unit_portrait_override(helper::get_last_queue_slot_id(unit));
 		helper::display_update_portrait(portrait_id, unit, 2);
 		if (timer || message_id >= SoundIdLimit) {
@@ -405,13 +381,10 @@ void update_selected_unit_portrait() { // 0045EBC0
 }
 
 // Hooked to enable crig-based briefing music. -Pr0nogo
-void dialog_music_fade(u32 music_id) // 004A6310
-{
-	if (!*g_direct_sound_handle || !*g_music_playing)
-	{
+void dialog_music_fade(u32 music_id) { // 004A6310
+	if (!g_direct_sound_handle || !g_music_playing) {
 		switch (music_id) {
-			case MusicId_TRdyRoom:
-			{
+			case MusicId_TRdyRoom: {
 				if (!strcmp(g_current_map_name, "Anad's Greatsword")) {
 					// Temporary, for mapcrap
 					music_id = MusicId_None;
@@ -420,13 +393,12 @@ void dialog_music_fade(u32 music_id) // 004A6310
 		}
 
 		if (g_music_bank[music_id].flags) {
-			u32 volume = *g_music_volume;
-			*g_music_volume = -10000;
+			u32 volume = g_music_volume;
+			g_music_volume = -10000;
 			helper::play_music(music_id);
-			*g_music_volume = volume;
-			if (g_options_list->music)
-			{
-				*g_big_music_volume = 4294963900;
+			g_music_volume = volume;
+			if (g_options_list->music) {
+				g_big_music_volume = 4294963900;
 				KillTimer(*g_main_window, 3);
 				SetTimer(*g_main_window, 3, 0x14, (TIMERPROC)0x004A6030);
 			}

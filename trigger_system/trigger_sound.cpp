@@ -145,12 +145,12 @@ void update_sound() {
 	}
 
 	if (playback.current_music || playback.paused) {
-		if (*g_music_playing) {
-			*g_music_playing = false; // So we don't do retarded lard fade which freezes the game
+		if (g_music_playing) {
+			g_music_playing = false; // So we don't do retarded lard fade which freezes the game
 			helper::stop_bw_music();
 		}
-	} else if (!*g_music_playing) {
-		*g_music_playing = true; // So we actually play the vanilla music
+	} else if (!g_music_playing) {
+		g_music_playing = true; // So we actually play the vanilla music
 		helper::play_next_bw_music();
 	}
 
