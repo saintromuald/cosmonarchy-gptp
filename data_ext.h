@@ -197,6 +197,8 @@ enum ExtValueId {
 	ValueReclaimed,
 	ValueReclamationRegen,
 	ValueDisablePassive,
+	ValueDidactRecallX,
+	ValueDidactRecallY,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

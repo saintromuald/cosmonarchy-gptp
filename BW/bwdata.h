@@ -390,17 +390,17 @@ BW_DATA(u32*,		g_order_type_4_position,			0x006D5C20);
 BW_DATA(u32*,		g_order_type_4_target,				0x006D5C24);
 
 // For openMapFile
-BW_DATA(char*,	g_maps_folder,			0x0066FC08);
-BW_DATA(s32*,		dword_5994DC,			0x005994DC);
+BW_DATA(char*,		g_maps_folder,						0x0066FC08);
+BW_DATA(s32*,		dword_5994DC,						0x005994DC);
 
 // For loadMap
-BW_DATA(ScenarioFormat*, stru_500574,		0x00500574);
-BW_DATA(ScenarioFormat*, stru_50057C,		0x0050057C);
-BW_DATA(s32*,		scenarioCHKSize,			0x006D0F20);
+BW_DATA(ScenarioFormat*, stru_500574,					0x00500574);
+BW_DATA(ScenarioFormat*, stru_50057C,					0x0050057C);
+BW_DATA(s32*,		scenarioCHKSize,					0x006D0F20);
 
 // For game_loop
-BW_DATA(s32*,		visionUpdateCount,			0x0051CE98);
-BW_DATA(s8*,		g_vision_updated,				0x0051CE9C);
+BW_DATA(s32*,		visionUpdateCount,					0x0051CE98);
+BW_DATA(s8*,		g_vision_updated,					0x0051CE9C);
 
 // X405: For displayEstablishing Shot
 BW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);

@@ -566,8 +566,7 @@ namespace hooks
 	}
 
 	// Hooked to modify addon construction speed based on building modifier (for e.g. Crucible speed boosts) -Pr0nogo
-	b32 building_addon(Unit* unit, u32 hp_gain, b32 is_incomplete) // 004679A0
-	{
+	b32 building_addon(Unit* unit, u32 hp_gain, b32 is_incomplete) { // 004679A0
 		helper::set_unit_hp(unit, hp_gain + unit->hitpoints);
 		u32 build_time = unit->remaining_build_time;
 		if (build_time) {

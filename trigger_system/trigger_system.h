@@ -181,7 +181,7 @@ struct CmPlayer {
 	bool faction_was_set;
 	bool hide_in_team_ui;
 	OmnipresenceState omnipresence_state;
-	u32 build_multiplier;
+	u32 build_multiplier = 1;
 
 	std::vector<PlayerColor> preferred_colors;
 	std::unordered_map<UnitId::Enum, std::string> custom_unit_names;
