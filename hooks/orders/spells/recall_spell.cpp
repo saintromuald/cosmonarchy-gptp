@@ -78,7 +78,7 @@ namespace hooks {
 		unit_ext->values[ValueDidactChannelIndex] += 1;
 
 		Point16 source_origin = {unit->position.x, unit->position.y};
-		Point16 target_origin = {unit_ext->values[ValueDidactRecallX, unit_ext->values[ValueDidactRecallY]]};
+		Point16 target_origin = unit_ext->recall_pos;
 
 		Point16 source = source_origin;
 		Point16 target = target_origin;
@@ -163,7 +163,8 @@ namespace hooks {
 				tick_recall_channel_anim(unit);
 			}
 		} else {
-			if (unit->energy < techdata_dat::energy_cost[TechId::DimensionalRecall] * 256) {
+			u32 energy_cost = techdata_dat::energy_cost[TechId::DimensionalRecall] * 256;
+			if (!unit->has_energy(energy_cost)) {
 				u8 raceId = unit->get_race();
 				char* message = (char*)g_stat_txt_tbl_new->get_string(864 + raceId);	//"Not enough energy" text
 				if (message && unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
@@ -171,7 +172,7 @@ namespace hooks {
 				}
 				unit->order_to_idle();
 			} else {
-				unit->spend_unit_energy(techdata_dat::energy_cost[TechId::DimensionalRecall] * 256);
+				unit->spend_unit_energy(energy_cost);
 				if (unit->order_target.unit) {
 					unit->order_target.pt.x = unit->order_target.unit->position.x;
 					unit->order_target.pt.y = unit->order_target.unit->position.y;
@@ -182,8 +183,7 @@ namespace hooks {
 				helper::make_to_hold_position(unit);
 				unit_ext->values[ValueDidactChannelIndex] = 0;
 				unit_ext->values[ValueDidactRecalling] = false;
-				unit_ext->values[ValueDidactRecallX] = unit->order_target.pt.x;
-				unit_ext->values[ValueDidactRecallY] = unit->order_target.pt.y;
+				unit_ext->recall_pos = unit->order_target.pt;
 				tick_recall_channel_anim(unit);
 			}
 		}
