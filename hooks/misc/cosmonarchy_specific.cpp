@@ -319,7 +319,7 @@ void transform_unit_main(Unit* unit, u32 unit_id) { // 0049F170
 	sprite = unit->sprite; // Reassigning since it's different after calling initialize_unit. -Pr0nogo
 	if (sprite->player != player_id) {
 		sprite->player = player_id;
-		for (Image* image = sprite->images.head; image; image->link.next) {
+		for (Image* image = sprite->images.head; image; image = image->link.next) {
 			image->flags |= ImageFlags::Redraw;
 		}
 	}
