@@ -286,7 +286,7 @@ static const char* trigger_behavior_names[] = {
 	"cloak_proximity",
 	"cloak_steady",
 	"hallucination",
-	"disable_passive,"
+	"disable_passive",
 };
 C_ASSERT(ARRAY_SIZE(trigger_behavior_names) == TriggerBehavior_Count);
 

@@ -1290,7 +1290,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			PlayerBitset players = parser.get_player_bitset();
 			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
 			u32 count = parser.get_s32();
-			TriggerBehavior trigger_behavior = (TriggerBehavior)parser.get_enum(trigger_behavior_names, ARRAY_SIZE(trigger_stat_names));
+			TriggerBehavior trigger_behavior = (TriggerBehavior)parser.get_enum(trigger_behavior_names, ARRAY_SIZE(trigger_behavior_names));
 			b32 enable = parser.get_s32();
 
 			EntryArray units = {};
