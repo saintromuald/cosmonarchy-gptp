@@ -308,7 +308,7 @@ void rescue_unit(Unit* unit, u32 player) {
 	unit->order_to(idle_order);
 
 	// Audiovisuals
-	if (bw::in_replay_or_witness()) {
+	if (!bw::in_replay_or_witness()) {
 		unit->sprite->selection_timer = 45;
 		helper::play_sound_from_unit(*g_console_index + 32, unit, 1, 0);
 	}
