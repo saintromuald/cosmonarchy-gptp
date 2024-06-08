@@ -1330,7 +1330,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						}
 					} break;
 					case TriggerBehavior_DisablePassive: {
-						unit_ext->values[ValueDisablePassive] = enable == 1;
+						unit_ext->values[ValueDisablePassive] = enable != false;
 					} break;
 				}
 			}
@@ -1452,11 +1452,22 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						case OrderId::MorphStructure:
 						case OrderId::TrainUnit:
 						case OrderId::TrainFighter:
-						case OrderId::BuildNydusExit:
-						{
+						case OrderId::BuildNydusExit: {
 							unit->build_queue[unit->build_queue_slot] = secondary_unit_id;
 							helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
 						} break;
+					}
+				} else {
+					switch (order_id) {
+						case OrderId::Move:
+						case OrderId::AttackMove:
+						case OrderId::Patrol: {
+							helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
+						}
+						case OrderId::Burrow:
+						case OrderId::Unburrow: {
+							helper::perform_another_order(order_id, 0, unit, UnitId::None, {}, 0);
+						}
 					}
 				}
 			}

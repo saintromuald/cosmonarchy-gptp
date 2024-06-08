@@ -185,7 +185,7 @@ void stop_sounds_partial() {
 	}
 }
 
-u32 is_unit_at_height(Unit* unit, u32 height) { // 0045F8D0
+u32 unit_is_at_height(Unit* unit, u32 height) { // 0045F8D0
 	if (!unit) {
 		return 0;
 	}
@@ -194,7 +194,7 @@ u32 is_unit_at_height(Unit* unit, u32 height) { // 0045F8D0
 	if (ground_height < 0) {
 		ground_height = 0;
 	} else if (ground_height >= 2) {
-		ground_height = 3;
+		ground_height = 3; // Incrementing here is intentional; matches with high elevation flag bit. -DF
 	}
 
 	++ground_height;
@@ -607,7 +607,7 @@ void __declspec(naked) team_game_check_wrapper() {
 	}
 }
 
-void __declspec(naked) is_unit_at_height_wrapper() { // 0045F8D0
+void __declspec(naked) unit_is_at_height_wrapper() { // 0045F8D0
 	static Unit* unit;
 	static u32 height;
 	static u32 result;
@@ -616,7 +616,7 @@ void __declspec(naked) is_unit_at_height_wrapper() { // 0045F8D0
 		MOV height, ESI
 		PUSHAD
 	}
-	result = is_unit_at_height(unit, height);
+	result = unit_is_at_height(unit, height);
 	__asm {
 		POPAD
 		MOV EAX, result
@@ -744,7 +744,7 @@ void inject_trigger_system_hooks() {
 	call_patch(stop_sounds_partial_wrapper,					0x004BBF5C, 0);
 //	jump_patch(pylon_placement_wrapper,						0x00446775, 1);
 //	jump_patch(free_sound_buffer_wrapper,					0x004BB8E0, 1);
-	jump_patch(is_unit_at_height_wrapper,					0x0045F8D0, 2);
+	jump_patch(unit_is_at_height_wrapper,					0x0045F8D0, 2);
 	jump_patch(get_unit_portrait_override_wrapper,			0x0045E320, 6);
 	jump_patch(game_talking_portrait_wrapper,				0x0045EDD0, 4);
 	jump_patch(show_portrait,								0x0046CF30, 3);

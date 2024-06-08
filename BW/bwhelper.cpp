@@ -10766,7 +10766,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 is_unit_at_height(Unit* unit, u32 height) {
+	u32 unit_is_at_height(Unit* unit, u32 height) {
 		static u32 result;
 		const u32 func_address = 0x0045F8D0;
 		__asm {
@@ -15251,6 +15251,16 @@ namespace helper {
 		__asm {
 			PUSHAD
 			MOV EAX, unit
+			CALL func_address
+			POPAD
+		}
+	}
+
+	void orders_attack_move(Unit* unit) {
+		const u32 func_address = 0x00479040;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
 			CALL func_address
 			POPAD
 		}
