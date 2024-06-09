@@ -74,7 +74,7 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 			g_aise_state.console_visible = v1;
 		} break;
 		case AiseSignal::AreCheatsAllowed: {
-			return g_aise_state.cheats_allowed;
+			return bw::in_replay_or_witness() || g_aise_state.cheats_allowed;
 		} break;
 	}
 	return 0;
