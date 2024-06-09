@@ -243,6 +243,10 @@ f32 Parser::get_f32(f32 default_value) {
 	return value ? *value : default_value;
 }
 
+bool Parser::get_bool(bool default_value) {
+	return get_s32(default_value);
+}
+
 enum TimeType {
 	TimeType_Hours,
 	TimeType_Minutes,

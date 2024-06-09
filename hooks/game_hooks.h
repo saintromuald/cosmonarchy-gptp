@@ -33,7 +33,7 @@ namespace hooks {
 
 	void ui_button_click(BinDlg* dialog);
 	u32 __cdecl set_ingame_input_procs();							// 00484CC0
-	bool game_init();
+	bool game_preinit();
 	void game_init_first_frame();
 	bool game_end();
 	void next_ui_frame();

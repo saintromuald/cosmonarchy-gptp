@@ -50,6 +50,7 @@
 #include "hooks/rally_point.h"
 #include "game_modes/IGameMode.h"
 #include "game_modes/UprisingGameMode.h"
+#include "aise_signal.h"
 
 #include <random>
 #include <format>
@@ -669,6 +670,8 @@ namespace hooks {
 
 		// Execute triggers before first frame update
 		helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
+
+		g_aise_state.cheats_allowed = bw::get_game_kind() != GameKind_Scenario;
 
 		g_active_game_mode.release();
 		switch (bw::get_game_kind()) {
@@ -3537,7 +3540,7 @@ namespace hooks {
 		return aString;
 	}
 
-	bool game_init() {
+	bool game_preinit() {
 		set_max_sight_range();
 
 		// Update harvest time for mineral fields

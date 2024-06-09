@@ -18,6 +18,7 @@
 #include "hooks/harvest.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "graphics/graphics.h"
+#include "aise_signal.h"
 
 #include <ranges>
 
@@ -1769,6 +1770,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			const auto timer = g_trigger_vars.find(TriggerVarType_Timer, identifier.sv);
 			bw::printf("Timer %s = %s", identifier.string().c_str(), timer ? std::to_string(timer->value()).c_str() : "unset");
+		} else if (parser.equals("set_cheats_allowed")) {
+			const auto value = parser.get_bool();
+
+			g_aise_state.cheats_allowed = value;
 		}
 	}
 	return true;
