@@ -2,39 +2,32 @@
 #include "BW/api.h"
 #include "unit_ai.h"
 
-namespace
-{
-	void __declspec(naked) ai_training_unit_wrapper() // 004A2830
-	{
+namespace {
+	void __declspec(naked) ai_training_unit_wrapper() { // 004A2830
 		static Unit* result;
 		static Unit* parent;
-		__asm
-		{
+		__asm {
 			MOV result, EAX
 			MOV parent, ECX
 			PUSHAD
 		}
 		hooks::ai_training_unit(result, parent);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) ai_create_nuke_wrapper() // 0045B7A0
-	{
+	void __declspec(naked) ai_create_nuke_wrapper() { // 0045B7A0
 		static Unit* silo;
 		static Unit* result;
-		__asm
-		{
+		__asm {
 			MOV silo, EDI
 			MOV result, EAX
 			PUSHAD
 		}
 		hooks::ai_create_nuke(silo, result);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
@@ -67,12 +60,10 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ai_training_simple_military_wrapper() // 0043E280
-	{
+	void __declspec(naked) ai_training_simple_military_wrapper() { // 0043E280
 		static Unit* parent;
 		static Unit* result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -84,8 +75,7 @@ namespace
 			PUSHAD
 		}
 		hooks::ai_training_simple_military(result, parent);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -94,94 +84,54 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ai_training_worker_wrapper() // 00435700
-	{
-		static Unit* newUnit;
-		static Unit* otherUnit;
-		__asm
-		{
-			MOV otherUnit, ECX
-			MOV newUnit, EAX
+	void __declspec(naked) ai_training_worker_wrapper() { // 00435700
+		static Unit* new_unit;
+		static Unit* other_unit;
+		__asm {
+			MOV other_unit, ECX
+			MOV new_unit, EAX
 			PUSHAD
 		}
-		hooks::ai_training_worker(newUnit, otherUnit);
-		__asm
-		{
+		hooks::ai_training_worker(new_unit, other_unit);
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) ai_training_normal_wrapper() // 00435DB0
-	{
-		static Unit* newUnit;
-		static Unit* parentUnit;
-		__asm
-		{
-			MOV parentUnit, ECX
-			MOV newUnit, EAX
+	void __declspec(naked) ai_training_normal_wrapper() { // 00435DB0
+		static Unit* new_unit;
+		static Unit* parent;
+		__asm {
+			MOV parent, ECX
+			MOV new_unit, EAX
 			PUSHAD
 		}
-		hooks::ai_training_normal(newUnit, parentUnit);
-		__asm
-		{
+		hooks::ai_training_normal(new_unit, parent);
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) add_worker_structure_ai_wrapper() // 00433DD0
-	{
+	void __declspec(naked) add_worker_structure_ai_wrapper() { // 00433DD0
 		static void* result;
 		static Unit* unit;
 		static AiTown* town;
-		__asm
-		{
+		__asm {
 			MOV town, EDI
 			MOV unit, EBX
 			PUSHAD
 		}
 		result = hooks::add_worker_structure_ai(unit, town);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	const u32 addUnitAiShortJump = 0x00433DED;
-	void __declspec(naked) add_unit_ai_free_worker_check_jump_wrapper()
-	{
-		static WorkerAiArray* free;
-		__asm
-		{
-			MOV free, EDX
-			PUSHAD
-		}
-		if ((u32)free <= 0x100000)
-		{
-			bw::print("Corrupted pointer in AddUnitAi!");
-			__asm
-			{
-				POPAD
-				POP ESI
-				RETN
-			}
-		}
-		else
-		{
-			__asm
-			{
-				POPAD
-				MOV EAX, [EDX + 0x5DC0]
-				JMP addUnitAiShortJump
-			}
-		}
-	}
-
-	void __declspec(naked) iterate_building_ai_wrapper() // 00435770
-	{
+	void __declspec(naked) iterate_building_ai_wrapper() { // 00435770
 		static Unit* result;
 		static Unit* parent;
 		__asm {
@@ -241,31 +191,26 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ai_remove_unit_ai_wrapper() // 004A1E50
-	{
+	void __declspec(naked) ai_remove_unit_ai_wrapper() { // 004A1E50
 		static Unit* unit;
 		static UnitAi* unit_ai;
-		__asm
-		{
+		__asm {
 			MOV unit_ai, EDX
 			MOV unit, ECX
 			PUSHAD
 		}
 		hooks::remove_unit_ai(unit, unit_ai);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) ai_remove_worker_or_building_ai_wrapper() // 00434C90
-	{
+	void __declspec(naked) ai_remove_worker_or_building_ai_wrapper() { // 00434C90
 		static s32 result;
 		static Unit* unit;
 		static b32 always_building;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -276,8 +221,7 @@ namespace
 			PUSHAD
 		}
 		hooks::remove_worker_or_building_ai(unit, always_building);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, 0
 			MOV ESP, EBP
@@ -286,35 +230,29 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ai_training_overlord_wrapper() // 00435770
-	{
+	void __declspec(naked) ai_training_overlord_wrapper() { // 00435770
 		static Unit* newUnit;
 		static Unit* oldUnit;
-		__asm
-		{
+		__asm {
 			MOV newUnit, EAX
 			MOV oldUnit, ECX
 			PUSHAD
 		}
 		hooks::ai_training_overlord(newUnit, oldUnit);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) ai_order_lurker_burrow_wrapper() // 0043C230
-	{
+	void __declspec(naked) ai_order_lurker_burrow_wrapper() { // 0043C230
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
 		hooks::ai_order_lurker_burrow(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
@@ -374,6 +312,31 @@ namespace
 			RETN
 		}
 	}
+
+	// PATCHES \\
+	
+	const u32 addUnitAiShortJump = 0x00433DED;
+	void __declspec(naked) add_unit_ai_free_worker_check_jump_wrapper() {
+		static WorkerAiArray* free;
+		__asm {
+			MOV free, EDX
+			PUSHAD
+		}
+		if ((u32)free <= 0x100000) {
+			bw::print("Corrupted pointer in AddUnitAi!");
+			__asm {
+				POPAD
+				POP ESI
+				RETN
+			}
+		} else {
+			__asm {
+				POPAD
+				MOV EAX, [EDX + 0x5DC0]
+				JMP addUnitAiShortJump
+			}
+		}
+	}
 }
 
 namespace hooks {
@@ -385,7 +348,6 @@ namespace hooks {
 		jump_patch(ai_training_worker_wrapper,					0x00435700, 0);
 	//	jump_patch(ai_training_normal_wrapper,					0x00435DB0, 0);
 		jump_patch(add_worker_structure_ai_wrapper,				0x00433DD0, 2);
-	//	jump_patch(add_unit_ai_free_worker_check_jump_wrapper,	0x00433DE7, 1);
 	//	jump_patch(iterate_building_ai_wrapper,					0x00435770, 1);
 
 		jump_patch(delete_worker_ai_wrapper,					0x00404470, 0);
@@ -402,5 +364,7 @@ namespace hooks {
 		jump_patch(ai_remove_cleric_wrapper,					0x004477C0,	0);
 
 	//	jump_patch(hooks::find_nearest_military_or_guard_ai,	0x0043BAC0, 0);
+
+	//	jump_patch(add_unit_ai_free_worker_check_jump_wrapper,	0x00433DE7, 1);
 	}
 }
