@@ -668,10 +668,10 @@ namespace hooks {
 			g_unmovable_lastframe[i] = 0;
 		}
 
+		g_aise_state.cheats_allowed = bw::get_game_kind() != GameKind_Scenario;
+
 		// Execute triggers before first frame update
 		helper::execute_all_game_triggers(g_game_speed_replay_modifiers[g_options_list->speed]);
-
-		g_aise_state.cheats_allowed = bw::get_game_kind() != GameKind_Scenario;
 
 		g_active_game_mode.release();
 		switch (bw::get_game_kind()) {
