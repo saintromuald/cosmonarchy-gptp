@@ -361,6 +361,19 @@ namespace
 			RETN 0x04
 		}
 	}
+
+	void __declspec(naked) ai_remove_cleric_wrapper() { // 004477C0
+		static Unit* unit;
+		__asm {
+			MOV unit, EDX
+			PUSHAD
+		}
+		hooks::ai_remove_cleric(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -386,6 +399,7 @@ namespace hooks {
 	//	jump_patch(create_building_ai_wrapper,					0x004044C0,	4);
 	//	jump_patch(is_valid_for_wrapper,						0x0043B6D0,	5);
 		jump_patch(add_guard_ai_to_unit,						0x00462960,	2);
+		jump_patch(ai_remove_cleric_wrapper,					0x004477C0,	0);
 
 	//	jump_patch(hooks::find_nearest_military_or_guard_ai,	0x0043BAC0, 0);
 	}

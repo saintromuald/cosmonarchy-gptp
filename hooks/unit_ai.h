@@ -24,6 +24,7 @@ namespace hooks
 	BuildingAi* create_building_ai(BuildingAiArray* ai_array);													// 004044C0
 	bool is_valid_for(u32 unit_id, Unit* unit, u32 must_be_active);												// 0043B6D0
 	void __stdcall add_guard_ai_to_unit(Unit* unit);															// 00462960
+	void ai_remove_cleric(Unit* unit);																			// 004477C0
 
 	void inject_unit_ai_hooks();
 }
