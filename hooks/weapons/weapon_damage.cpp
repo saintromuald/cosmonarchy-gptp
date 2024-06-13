@@ -197,11 +197,6 @@ namespace hooks
 		}
 
 		UnitExt* target_ext = get_unit_ext(data.target);
-		bool proc_onhits = weapon_id_procs_onhits(data.weapon_id);
-		if (target_ext->values[ValueTakingDeconstructionDamage] || !proc_onhits) {
- 			data.dont_proc_link_damage = true;
-		}
-
 		if (target_ext->values[ValueMindControllerUnitId]) {
 			data.damage *= 1.5;
 		}
@@ -218,12 +213,11 @@ namespace hooks
 		}
 
 		// Ancile - Providence - Hitscan handling
-		if (proc_onhits) {
+		if (weapon_id_procs_onhits(data.weapon_id)) {
 			switch (weapons_dat::behavior[data.weapon_id]) {
 				case WeaponBehavior_AppearOnAttacker:
 				case WeaponBehavior_AppearOnTargetSite:
-				case WeaponBehavior_AppearOnTargetUnit:
-				{
+				case WeaponBehavior_AppearOnTargetUnit: {
 					EntryArray units = {};
 					unit_search_radial(&units, data.target->position, 2 * 32);
 					unit_search_filter(&units, data.target, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile });
@@ -260,11 +254,8 @@ namespace hooks
 			}
 		}
 
-		if (!data.dont_proc_link_damage) { // damage from links was already calculated
-			weapon_damage_damage_modifiers(data);
-		}
-
-		if (!data.dont_proc_link_damage && bw::has_clarion_links(data.target)) {
+		weapon_damage_damage_modifiers(data);
+		if (!data.is_phase_link_damage_instance && bw::has_clarion_links(data.target)) {
 			data.damage = bw::spread_clarion_damage(data, 0.5);
 		}
 
@@ -381,6 +372,7 @@ namespace hooks
 	}
 
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
+		// Target based calcs
 		UnitExt* target_ext = get_unit_ext(data.target);
 
 		// Allied invincibility frames (for e.g. Blissful Embrace)
@@ -395,6 +387,11 @@ namespace hooks
 			data.damage_type = DamageType::Independent;
 		}
 
+		if (data.is_phase_link_damage_instance) {
+			return; // Skip Weapon & Attacker based calcs, since we already did those for phase link
+		}
+
+		// Weapon & Attacker based calcs
 		switch (data.weapon_id) { // Damage divisor calc
 			case WeaponId::ArchitectDispersiveSalvo:
 			{
@@ -428,13 +425,8 @@ namespace hooks
 			}
 		}
 
-		switch (data.weapon_id) {
-			// Cabalist was here
-		}
-
 		// Hallucinating targets - fire a phantom strike
-		if (data.attacker && weapon_id_procs_onhits(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !bw::is_allied_to(data.attacker->player, data.target->player))
-		{
+		if (data.attacker && weapon_id_procs_onhits(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !bw::is_allied_to(data.attacker->player, data.target->player)) {
 			if (weapon_damage_current_bullet && data.weapon_id != WeaponId::GladiusPlasmaFlurry && data.weapon_id != WeaponId::PaladinCrusaderMissiles) {
 				BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
 				if (!current_bullet_ext->is_phantom) {
