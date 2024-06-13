@@ -3,28 +3,32 @@
 
 // This file is responsible for communication from Aise/Aize to GPTP
 
-enum AiseSignal {
-	AiseSignal_None = 0,
-	AiseSignal_GetTransportCargoCount = 1,
-	AiseSignal_GetAiMain = 2,
-	AiseSignal_GetAllUnitsCount = 3,
-	AiseSignal_GetCompleteUnitsCount = 4,
-	AiseSignal_GetKilledUnitsTable = 5,
-	AiseSignal_GetDeathTable = 6,
-	AiseSignal_GetUnitAvailabilityTable = 7,
-	AiseSignal_GetUnitTbl = 8,
-	AiseSignal_GetUnitReq = 9,
-	AiseSignal_GetUpgradesReq = 10,
-	AiseSignal_GetResearchReq = 11,
-	AiseSignal_GetClientSelection = 12,
-	AiseSignal_GetAltConsoleHotkey = 13,
-	AiseSignal_SetConsoleVisible = 14,
+enum class AiseSignal {
+	None                      = 0,
+
+	GetTransportCargoCount    = 1,
+	GetAiMain                 = 2,
+	GetAllUnitsCount          = 3,
+	GetCompleteUnitsCount     = 4,
+	GetKilledUnitsTable       = 5,
+	GetDeathTable             = 6,
+	GetUnitAvailabilityTable  = 7,
+	GetUnitTbl                = 8,
+	GetUnitReq                = 9,
+	GetUpgradesReq            = 10,
+	GetResearchReq            = 11,
+	GetClientSelection        = 12,
+	GetAltConsoleHotkey       = 13,
+	SetConsoleVisible         = 14,
+	AreCheatsAllowed          = 15,
+	InReplayOrWitness         = 16,
 };
 
 struct AiseState {
 	bool console_visible;
+	bool cheats_allowed;
 };
 
-extern AiseState aise_state;
+inline AiseState g_aise_state;
 
 u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2, u32 v3);

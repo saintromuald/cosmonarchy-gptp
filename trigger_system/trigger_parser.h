@@ -87,6 +87,7 @@ public:
 	TriggerVar* maybe_get_var();
 	s32 get_s32(s32 default_value = 0);
 	f32 get_f32(f32 default_value = 0);
+	bool get_bool(bool default_value = false);
 	f32 get_time_seconds();
 	u32 get_time_ticks();
 	s32 get_var_value(bool is_timer);

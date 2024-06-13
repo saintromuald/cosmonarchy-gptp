@@ -3,8 +3,6 @@
 #include "hooks/grafting/grafting.h"
 #include "config.h"
 
-AiseState aise_state = {};
-
 static u16* find_req_id(u16* req_table, u32 req_id) {
 	u16* current = req_table + 1;
 	while (true) {
@@ -24,7 +22,7 @@ static u16* find_req_id(u16* req_table, u32 req_id) {
 
 u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2, u32 v3) {
 	switch (type) {
-		case AiseSignal_GetTransportCargoCount: {
+		case AiseSignal::GetTransportCargoCount: {
 			u32 count = 0;
 			for (u32 i = 0; i < TransportCap; ++i) {
 				if (unit1->get_loaded_unit(i)) {
@@ -33,47 +31,53 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 			}
 			return count;
 		} break;
-		case AiseSignal_GetAiMain: {
+		case AiseSignal::GetAiMain: {
 			return (u32)g_aiscript_controller;
 		} break;
-		case AiseSignal_GetAllUnitsCount: {
+		case AiseSignal::GetAllUnitsCount: {
 			return (u32)g_all_unit_count_table;
 		} break;
-		case AiseSignal_GetCompleteUnitsCount: {
+		case AiseSignal::GetCompleteUnitsCount: {
 			return (u32)g_completed_unit_count_table;
 		} break;
-		case AiseSignal_GetKilledUnitsTable: {
+		case AiseSignal::GetKilledUnitsTable: {
 			return (u32)g_unit_killed_table;
 		} break;
-		case AiseSignal_GetDeathTable: {
+		case AiseSignal::GetDeathTable: {
 			return (u32)g_unit_deaths_table;
 		} break;
-		case AiseSignal_GetUnitAvailabilityTable: {
+		case AiseSignal::GetUnitAvailabilityTable: {
 			return (u32)g_unit_availability->available[0];
 		} break;
-		case AiseSignal_GetUnitTbl: {
+		case AiseSignal::GetUnitTbl: {
 			if (DatExt::unitNamesTbl) {
 				return (u32)DatExt::unitNamesTbl;
 			}
 			return (u32)g_stat_txt_tbl;
 		} break;
-		case AiseSignal_GetUnitReq: {
+		case AiseSignal::GetUnitReq: {
 			return (u32)find_req_id(requirements::units, v1);
 		} break;
-		case AiseSignal_GetUpgradesReq: {
+		case AiseSignal::GetUpgradesReq: {
 			return (u32)find_req_id(requirements::upgrade, v1);
 		} break;
-		case AiseSignal_GetResearchReq: {
+		case AiseSignal::GetResearchReq: {
 			return (u32)find_req_id(requirements::research, v1);
 		} break;
-		case AiseSignal_GetClientSelection: {
+		case AiseSignal::GetClientSelection: {
 			return (u32)ccmu_extender.new_client_selection_group;
 		} break;
-		case AiseSignal_GetAltConsoleHotkey: {
+		case AiseSignal::GetAltConsoleHotkey: {
 			return (u32)g_config.tilde_control_group;
 		} break;
-		case AiseSignal_SetConsoleVisible: {
-			aise_state.console_visible = v1;
+		case AiseSignal::SetConsoleVisible: {
+			g_aise_state.console_visible = v1;
+		} break;
+		case AiseSignal::AreCheatsAllowed: {
+			return g_aise_state.cheats_allowed;
+		} break;
+		case AiseSignal::InReplayOrWitness: {
+			return bw::in_replay_or_witness();
 		} break;
 	}
 	return 0;
