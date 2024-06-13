@@ -11,6 +11,7 @@
 #include "math_utils.h"
 #include "hooks/unit_stats/armor_bonus.h"
 #include "hooks/target_related.h"
+#include "data_ext.h"
 
 //-------- Unit stats and properties --------//
 
@@ -1414,4 +1415,8 @@ u8 Unit::get_right_click_action_order() {
 		}
 	}
 	return result;
+}
+
+UnitExt& Unit::ext() {
+	return *get_unit_ext(this);
 }

@@ -123,10 +123,13 @@ void inject_globals_hooks();
 inline IquareGlobals iquare_globals;
 
 namespace hooks {
+
 struct WeaponDamageData;
+
 }
 
 namespace bw {
+
 bool is_slowed(Unit* unit);
 void refresh_debuffs(Unit* unit);
 void inherit_debuffs(Unit* parent, Unit* child);
@@ -138,7 +141,10 @@ void clear_clarion_links(Unit* unit);
 void place_clarion_links(Unit* unit);
 bool has_clarion_links(Unit* unit);
 std::vector<Unit*> get_clarion_links(Unit* unit);
-void spread_clarion_damage(hooks::WeaponDamageData& data);
+
+// Returns damage left after spread
+s32 spread_clarion_damage(const hooks::WeaponDamageData& data, f32 factor);
+
 }
 
 inline const char* unmovable_names[]{

@@ -265,8 +265,7 @@ namespace hooks
 		}
 
 		if (!data.dont_proc_link_damage && bw::has_clarion_links(data.target)) {
-			data.damage /= 2;
-			bw::spread_clarion_damage(data);
+			data.damage = bw::spread_clarion_damage(data, 0.5);
 		}
 
 		// Minimum amount of damage that can be dealt.

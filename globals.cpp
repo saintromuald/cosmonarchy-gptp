@@ -953,33 +953,28 @@ void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool play_sound) {
 }
 
 void clear_clarion_links(Unit* unit) {
-	UnitExt* unitExt = get_unit_ext(unit);
+	UnitExt* unit_ext = get_unit_ext(unit);
 
-	auto& vec = unitExt->unit_vectors[UnitVectorPhaseLink];
-	for (Unit* vecUnit : vec) {
-		UnitExt* vecUnitExt = get_unit_ext(vecUnit);
-		auto& clarions = vecUnitExt->unit_vectors[UnitVectorPhaseLinkClarions];
-		clarions.erase(std::remove_if(clarions.begin(), clarions.end(),
-			[&](Unit* target) {
-			return target == unit;
-		}), clarions.end());
+	auto& links = unit_ext->unit_vectors[UnitVectorPhaseLink];
+	for (Unit* link_unit : links) {
+		UnitExt* link_unit_ext = get_unit_ext(link_unit);
+		auto& clarions = link_unit_ext->unit_vectors[UnitVectorPhaseLinkClarions];
+		std::erase_if(clarions, [&](Unit* target) { return target == unit; });
 	}
-	vec.clear();
-	unitExt->unit_vectors[UnitVectorPhaseLinkClarions].clear();
+	links.clear();
+	unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].clear();
 }
 
 void place_clarion_links(Unit* unit) {
-	UnitExt* unitExt = get_unit_ext(unit);
-	auto& link = unitExt->unit_vectors[UnitVectorPhaseLink];
-
 	clear_clarion_links(unit);
-	const s32 radius = 5 * 32;
-	bw::UnitFinder(
-		unit->get_x() - radius,
-		unit->get_y() - radius,
-		unit->get_x() + radius,
-		unit->get_y() + radius
-	).filter([&](Unit* target) {
+
+	UnitExt* unit_ext = get_unit_ext(unit);
+	auto& links = unit_ext->unit_vectors[UnitVectorPhaseLink];
+
+	EntryArray units{};
+	unit_search_radial(&units, unit->position, 5 * 32);
+	unit_search_filter(&units, nullptr);
+	unit_search_custom_filter(&units, [unit](Unit* target) {
 		if (!bw::is_allied_to(unit->player, target->player)) {
 			return false;
 		}
@@ -992,86 +987,69 @@ void place_clarion_links(Unit* unit) {
 		if (target->shields < 256) {
 			return false;
 		}
-		if (bw::distance_between(target->get_x(), target->get_y(), unit->get_x(), unit->get_y()) > radius) {
-			return false;
-		}
 		return true;
-	}).for_each([&](Unit* target) {
-		auto it = std::find(link.begin(), link.end(), target);
-		if (it == link.end()) {
-			link.push_back(target);
+	});
+
+	for (Unit* target : units.units) {
+		if (!std::ranges::contains(links, target)) {
+			links.push_back(target);
 		}
 
-		UnitExt* targetExt = get_unit_ext(target);
-		auto& vec = targetExt->unit_vectors[UnitVectorPhaseLinkClarions];
-		it = std::find(vec.begin(), vec.end(), unit);
-		if (it == vec.end()) {
-			vec.push_back(unit);
+		UnitExt* target_ext = get_unit_ext(target);
+		auto& target_links = target_ext->unit_vectors[UnitVectorPhaseLinkClarions];
+		if (!std::ranges::contains(target_links, unit)) {
+			target_links.push_back(unit);
 		}
-	});
+	}
 }
 
 bool has_clarion_links(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
-	return unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size();
+	return !unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].empty();
 }
 
-void link_damage(Unit* unit, s32 damage, hooks::WeaponDamageData& data) {
+static void link_damage(Unit* unit, s32 damage, s8 direction, const hooks::WeaponDamageData& data) {
 	hooks::WeaponDamageData new_data = data;
 	new_data.damage = damage;
+	new_data.direction = direction;
 	new_data.shield_reduce_amount = 0;
 	new_data.target = unit;
 	new_data.dont_proc_link_damage = true;
 	hooks::weapon_damage_root(new_data);
 }
 
-void spread_clarion_damage(hooks::WeaponDamageData& data) {
-	Unit* unit = data.target;
-	auto links = get_clarion_links(unit); // has to be copy
-	links.erase(std::remove(links.begin(), links.end(), unit), links.end());
+s32 spread_clarion_damage(const hooks::WeaponDamageData& data, f32 factor) {
+	Unit* target = data.target;
+
+	auto links = get_clarion_links(target); // Has to be copy
+	std::erase(links, target);
+	std::erase_if(links, [](Unit* unit) { return unit->shields < 256; }); // Min damage is 256, and we don't want to overflow to health
+
 	s32 damage = data.damage;
-	if (links.size() == 0 || unit->shields < 256) {
-		link_damage(unit, damage, data);
-	} else {
-		links.erase(std::remove_if(links.begin(), links.end(), [](Unit* link_unit) {
-			return link_unit->shields < 256;
-		}), links.end());
-		if (links.size()) {
-			s32 divided = damage / links.size();
-			auto it = std::find(links.begin(), links.end(), unit);
-			if (it != links.end()) {
-				links.erase(it);
-			}
-			Unit* damage_origin = data.attacker;
-			if (!damage_origin) {
-				damage_origin = unit;
-			}
-			s8 old_direction = data.direction;
-			for (Unit* linked_unit : links) {
-				s32 unit_damage = std::min(divided, linked_unit->shields);
-				damage -= unit_damage;
-				data.direction = bw::get_angle(damage_origin->get_x(), damage_origin->get_y(), linked_unit->get_x(), linked_unit->get_y());
-				link_damage(linked_unit, unit_damage, data);
-			}
-			data.direction = old_direction;
-		}
-		link_damage(unit, damage, data);
+	s32 damage_to_spread = std::min(s32(damage * factor), target->shields);
+	s32 damage_per_unit = damage_to_spread / links.size();
+	Unit* damage_origin = data.attacker ? data.attacker : target;
+
+	for (Unit* unit : links) {
+		s32 unit_damage = std::min(damage_per_unit, unit->shields);
+		damage -= unit_damage;
+		link_damage(unit, unit_damage, bw::get_angle(damage_origin->position, unit->position), data);
 	}
+
+	return damage;
 }
 
 std::vector<Unit*> get_clarion_links(Unit* unit) {
-	UnitExt* unitExt = get_unit_ext(unit);
-
 	std::unordered_set<Unit*> links = {};
-	auto& clarions = unitExt->unit_vectors[UnitVectorPhaseLinkClarions];
-	for (Unit* clarion : clarions) {
+	UnitExt* unit_ext = get_unit_ext(unit);
+	for (Unit* clarion : unit_ext->unit_vectors[UnitVectorPhaseLinkClarions]) {
 		if (!clarion) {
 			continue;
 		}
+
 		UnitExt* clarion_ext = get_unit_ext(clarion);
-		auto link = clarion_ext->unit_vectors[UnitVectorPhaseLink];
-		links.insert(link.begin(), link.end());
+		links.insert_range(clarion_ext->unit_vectors[UnitVectorPhaseLink]);
 	}
-	return std::vector<Unit*>(links.begin(), links.end());
+	return std::vector<Unit*>{links.begin(), links.end()};
 }
 }
