@@ -1290,7 +1290,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			PlayerBitset players = parser.get_player_bitset();
 			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
 			u32 count = parser.get_s32();
-			TriggerBehavior trigger_behavior = (TriggerBehavior)parser.get_enum(trigger_behavior_names, ARRAY_SIZE(trigger_stat_names));
+			TriggerBehavior trigger_behavior = (TriggerBehavior)parser.get_enum(trigger_behavior_names, ARRAY_SIZE(trigger_behavior_names));
 			b32 enable = parser.get_s32();
 
 			EntryArray units = {};
@@ -1330,7 +1330,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						}
 					} break;
 					case TriggerBehavior_DisablePassive: {
-						unit_ext->values[ValueDisablePassive] = enable == 1;
+						unit_ext->values[ValueDisablePassive] = enable != false;
 					} break;
 				}
 			}
@@ -1381,7 +1381,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			PlayerBitset source_players = parser.get_player_bitset();
 			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
 			u32 count = parser.get_s32();
-			u32 target_player = parser.get_s32();
+			u32 target_player = parser.get_player(true);
 
 			EntryArray units = {};
 			unit_search_rect(&units, area.box);
@@ -1394,7 +1394,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!area.check(position, unit->status & UnitStatus::InAir)) {
 					continue;
 				}
-				if (unit->player >= FullPlayerLimit || !source_players[unit->player] || unit->player == target_player) {
+				if (unit->player >= FullPlayerLimit || !source_players[unit->player] || unit->player == target_player - 1) {
 					continue;
 				}
 				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
@@ -1404,7 +1404,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					return true;
 				}
 				unit_count++;
-				helper::give_unit(unit, target_player, 1);
+				helper::give_unit(unit, target_player - 1, 1);
 			}
 		} else if (parser.equals("issue_order")) {
 			Area area_init = parser.get_area();
@@ -1452,10 +1452,21 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 						case OrderId::MorphStructure:
 						case OrderId::TrainUnit:
 						case OrderId::TrainFighter:
-						case OrderId::BuildNydusExit:
-						{
+						case OrderId::BuildNydusExit: {
 							unit->build_queue[unit->build_queue_slot] = secondary_unit_id;
 							helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
+						} break;
+					}
+				} else {
+					switch (order_id) {
+						case OrderId::Move:
+						case OrderId::AttackMove:
+						case OrderId::Patrol: {
+							helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
+						} break;
+						case OrderId::Burrow:
+						case OrderId::Unburrow: {
+							helper::perform_another_order(order_id, 0, unit, UnitId::None, {}, 0);
 						} break;
 					}
 				}

@@ -2,22 +2,23 @@
 #include <BW/api.h>
 #include "BW/stat_txt_spec.h"
 
-namespace hooks
-{
-
-	// Originally known as sub_4942D0
-	// Function performed on each target of DimensionalRecall
-	// by iterate_units_at_location_target_proc_recall_targets
-	// that was validated throug spells_recall_action_on_target_in_range
-	// Do the actual unit movement
-	void spells_recall_action_on_valid_target_for_recall(Unit* target, Unit* caster) {
+namespace hooks {
+	// Function performed on each target of Dimensional Recall by iterate_units_at_location_target_proc_recall_targets
+	// that was validated through spells_recall_action_on_target_in_range
+	// Do the actual unit movement -GPTP
+	void spells_recall_action_on_valid_target_for_recall(Unit* target, Unit* caster) { // 004942D0
 		static b32* const at_least_1_unit_was_recalled = (b32*)(0x0063FF50);
 		Point16 previous_pos = {};
 		Point16 new_pos = {};
 		previous_pos.x = target->sprite->position.x;
 		previous_pos.y = target->sprite->position.y;
 
-		// Identical code to set_unit_position(), but for some reason, is using another function to do exactly the same thing
+		UnitExt* caster_ext = get_unit_ext(caster);
+		if (!caster_ext->values[ValueDidactRecalling]) {
+			return;
+		}
+
+		// Identical code to helper::move_unit(), but for some reason, is using another function to do exactly the same thing
 		helper::move_unit_duplicate(target, caster->sprite->position.x, caster->sprite->position.y);
 
 		if (!bw::check_unit_collision_pos(target, &(caster->sprite->position), &new_pos, 0, false, 0)) {
@@ -77,7 +78,7 @@ namespace hooks
 		unit_ext->values[ValueDidactChannelIndex] += 1;
 
 		Point16 source_origin = {unit->position.x, unit->position.y};
-		Point16 target_origin = {unit->order_target.pt.x, unit->order_target.pt.y};
+		Point16 target_origin = unit_ext->recall_pos;
 
 		Point16 source = source_origin;
 		Point16 target = target_origin;
@@ -162,7 +163,8 @@ namespace hooks
 				tick_recall_channel_anim(unit);
 			}
 		} else {
-			if (!bw::is_cheat_enabled(CheatFlags::TheGathering) && unit->energy < techdata_dat::energy_cost[TechId::DimensionalRecall] * 256) {
+			u32 energy_cost = techdata_dat::energy_cost[TechId::DimensionalRecall] * 256;
+			if (!unit->has_energy(energy_cost)) {
 				u8 raceId = unit->get_race();
 				char* message = (char*)g_stat_txt_tbl_new->get_string(864 + raceId);	//"Not enough energy" text
 				if (message && unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
@@ -170,21 +172,18 @@ namespace hooks
 				}
 				unit->order_to_idle();
 			} else {
-				if (!bw::is_cheat_enabled(CheatFlags::TheGathering)) {
-					unit->spend_unit_energy(techdata_dat::energy_cost[TechId::DimensionalRecall] * 256);
-				}
-
+				unit->spend_unit_energy(energy_cost);
 				if (unit->order_target.unit) {
 					unit->order_target.pt.x = unit->order_target.unit->position.x;
 					unit->order_target.pt.y = unit->order_target.unit->position.y;
 				}
-
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 				unit->main_order_state = 1;
 				unit->main_order_timer = 2.25 * 24;
 				helper::make_to_hold_position(unit);
 				unit_ext->values[ValueDidactChannelIndex] = 0;
 				unit_ext->values[ValueDidactRecalling] = false;
+				unit_ext->recall_pos = unit->order_target.pt;
 				tick_recall_channel_anim(unit);
 			}
 		}

@@ -86,8 +86,8 @@ BW_DATA(ActionPointer*,	g_action_table,					0x00512800); // From triggers.cpp
 BW_DATA(ActionPointer*,	g_briefing_action_table,		0x00512800);
 BW_DATA(char**,			g_chk_string_table,				0x005993D4);
 BW_DATA(HWND*,			g_main_window,					0x0051BFB0);
-BW_DATA(s32*,				g_music_volume,					0x006D5BB4);
-BW_DATA(b8*,				g_music_playing,				0x006D5BBC);
+BW_REF(s32,				g_music_volume,					0x006D5BB4);
+BW_REF(b8,				g_music_playing,				0x006D5BBC);
 
 //////////////////////////////////////////////////////////////// @}
 /// @name Data Variables and Constants
@@ -390,17 +390,17 @@ BW_DATA(u32*,		g_order_type_4_position,			0x006D5C20);
 BW_DATA(u32*,		g_order_type_4_target,				0x006D5C24);
 
 // For openMapFile
-BW_DATA(char*,	g_maps_folder,			0x0066FC08);
-BW_DATA(s32*,		dword_5994DC,			0x005994DC);
+BW_DATA(char*,		g_maps_folder,						0x0066FC08);
+BW_DATA(s32*,		dword_5994DC,						0x005994DC);
 
 // For loadMap
-BW_DATA(ScenarioFormat*, stru_500574,		0x00500574);
-BW_DATA(ScenarioFormat*, stru_50057C,		0x0050057C);
-BW_DATA(s32*,		scenarioCHKSize,			0x006D0F20);
+BW_DATA(ScenarioFormat*, stru_500574,					0x00500574);
+BW_DATA(ScenarioFormat*, stru_50057C,					0x0050057C);
+BW_DATA(s32*,		scenarioCHKSize,					0x006D0F20);
 
 // For game_loop
-BW_DATA(s32*,		visionUpdateCount,			0x0051CE98);
-BW_DATA(s8*,		g_vision_updated,				0x0051CE9C);
+BW_DATA(s32*,		visionUpdateCount,					0x0051CE98);
+BW_DATA(s8*,		g_vision_updated,					0x0051CE9C);
 
 // X405: For displayEstablishing Shot
 BW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
@@ -1242,7 +1242,7 @@ BW_DATA(glu_main_function**, glu_main_functions, 0x0051A388);
 BW_DATA(u16*,				g_campaign_index,					0x0057F244);
 
 // For game_talking_portrait
-BW_DATA(u32*,				g_trigger_portrait_active,			0x0068AC4C);
+BW_REF(u32,					g_trigger_portrait_active,			0x0068AC4C);
 
 // For do_unit_event_notification
 BW_DATA(u32*,				g_notification_message_id,			0x0068ACA0);
@@ -1251,9 +1251,9 @@ BW_DATA(u32*,				g_notification_message_id,			0x0068ACA0);
 BW_DATA(u32*,				g_unk_portrait,						0x0068AC60);
 
 // For dialog_music_fade
-BW_DATA(HANDLE**,			g_direct_sound_handle,				0x006D5BAC);
+BW_REF(HANDLE*,				g_direct_sound_handle,				0x006D5BAC);
 BW_DATA(MusicStruct*,		g_music_bank,						0x00512BB8);
-BW_DATA(u32*,				g_big_music_volume,					0x006D5BB8);
+BW_REF(u32,					g_big_music_volume,					0x006D5BB8);
 
 // For ignoring inputs in menu
 BW_DATA(BinDlg**,         g_popup_dialog,                     0x006D5BF4);

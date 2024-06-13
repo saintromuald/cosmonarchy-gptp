@@ -342,7 +342,7 @@ namespace hooks
 		u32* player_id = &parameter->player;
 		u32 do_check_height = parameter->check_height;
 		FindUnitLocationParam* parameter_var = parameter;
-		if (do_check_height && helper::is_unit_at_height(unit, parameter->location_flags)) {
+		if (do_check_height && helper::unit_is_at_height(unit, parameter->location_flags)) {
 			return 0;
 		}
 
@@ -454,7 +454,7 @@ namespace hooks
 		if (!unit) {
 			return 0;
 		}
-		if (args->check_height && helper::is_unit_at_height(unit, args->flags)) {
+		if (args->check_height && helper::unit_is_at_height(unit, args->flags)) {
 			return 0;
 		}
 

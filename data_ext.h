@@ -432,6 +432,7 @@ struct UnitExt {
 	f32						salvage_gas;
 
 	Point16					terran_build_pos;
+	Point16					recall_pos;
 
 	u32						ai_timer_avoid_targeting[PlayerLimit];
 

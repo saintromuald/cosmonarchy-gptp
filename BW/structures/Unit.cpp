@@ -243,7 +243,7 @@ u32 Unit::get_sight_range(bool is_for_spellcasting) const {
 // Similar to function Unit__HasEnergy @ 0x00491480
 // The original function returned 0 when got energy or code
 bool Unit::has_energy(u32 energy) const {
-	if (bw::is_cheat_enabled(CheatFlags::TheGathering) || this->energy >= energy) {
+	if (this->energy >= energy) {
 		return true;
 	}
 	return false;

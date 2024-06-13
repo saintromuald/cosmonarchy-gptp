@@ -1312,7 +1312,7 @@ namespace helper {
 
 	char toggle_unit_pathing_properties(Unit* unit);														// 004030D0
 
-	u32 is_unit_at_height(Unit* unit, u32 height);															// 0045F8D0
+	u32 unit_is_at_height(Unit* unit, u32 height);															// 0045F8D0
 	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args);										// 004C7E20
 	void kill_powerup(Unit* unit);																			// 004F3C60
 
@@ -1763,4 +1763,6 @@ namespace helper {
 	void chk_unit_apply_burrow_flag(Unit* unit, u8 flag, b32 try_burrow);		// 004CCF20
 
 	void refresh_unit_after_move(Unit* unit);									// 00494160
+
+	void orders_attack_move(Unit* unit);										// 00479040
 }
