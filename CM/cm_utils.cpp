@@ -50,54 +50,46 @@ void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
 	}
 }
 
-u32 get_construction_graphic(Unit* unit)
-{
+u32 get_construction_graphic(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	bool is_ocsal = unit_ext->values[ValueRegressionUnstable];
-	switch (unit->id)
-	{
-		case UnitId::ZergIroleth:
-		{
+	switch (unit->id) {
+		case UnitId::ZergIroleth: {
 			if (is_ocsal) {
 				return ImageId::IrolethBirthEgg;
 			} else {
 				return ImageId::IrolethBirthCocoon;
 			}
 		} break;
-		case UnitId::ZergKalkalisk:
-		{
+		case UnitId::ZergKalkalisk: {
 			if (is_ocsal) {
 				return ImageId::KalkaliskBirthEgg;
 			} else {
 				return ImageId::KalkaliskBirthCocoon;
 			}
 		} break;
-		case UnitId::ZergTosgrilisk:
-		{
+		case UnitId::ZergTosgrilisk: {
 			if (is_ocsal) {
 				return ImageId::TosgriliskBirthEgg;
 			} else {
 				return ImageId::TosgriliskBirthCocoon;
 			}
 		} break;
-		case UnitId::ZergAlgoztalisk:
-		{
+		case UnitId::ZergAlgoztalisk: {
 			if (is_ocsal) {
 				return ImageId::AlgoztaliskBirthEgg;
 			} else {
 				return ImageId::AlgoztaliskBirthCocoon;
 			}
 		} break;
-		case UnitId::ZergAlkajelisk:
-		{
+		case UnitId::ZergAlkajelisk: {
 			if (is_ocsal) {
 				return ImageId::AlkajeliskBirthEgg;
 			} else {
 				return ImageId::AlkajeliskBirthCocoon;
 			}
 		} break;
-		case UnitId::ZergZarcavrokor:
-		{
+		case UnitId::ZergZarcavrokor: {
 			if (is_ocsal) {
 				return ImageId::ZarcavrokorBirthEgg;
 			} else {
