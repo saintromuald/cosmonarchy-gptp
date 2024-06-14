@@ -1014,7 +1014,7 @@ static void link_damage(Unit* unit, s32 damage, s8 direction, const hooks::Weapo
 	new_data.direction = direction;
 	new_data.shield_reduce_amount = 0;
 	new_data.target = unit;
-	new_data.dont_proc_link_damage = true;
+	new_data.is_phase_link_damage_instance = true;
 	hooks::weapon_damage_root(new_data);
 }
 

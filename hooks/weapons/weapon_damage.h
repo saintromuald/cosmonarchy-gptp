@@ -41,7 +41,7 @@ namespace hooks {
 		Unit* target;
 		Unit* attacker;
 		u8 attacking_player_id;
-		bool dont_proc_link_damage;
+		bool is_phase_link_damage_instance;
 		bool ignore_flat_armor;
 	};
 
