@@ -1028,9 +1028,6 @@ namespace hooks
 						if (unit->status & UnitStatus::Invincible) {
 							return false;
 						}
-						if (unit->status & UnitStatus::InAir) {
-							return false;
-						}
 						if (!unit->is_visible_to(data.target->player)) {
 							return false;
 						}
