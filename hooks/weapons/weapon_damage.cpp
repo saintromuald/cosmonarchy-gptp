@@ -460,7 +460,6 @@ namespace hooks
 
 		// No attacker here
 		switch (data.weapon_id) {
-			case WeaponId::ApostleCharonRifle:
 			case WeaponId::AutocratEminenceRifle: {
 				if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
 					Thingy* corpse = get_closest_active_corpse(data.target->position, 3 * 32);
@@ -849,6 +848,14 @@ namespace hooks
 						target_ext->timers[TimerSignify] = 3 * 24 + 1;
 						target_ext->values[ValueSignifyPlayer] = data.attacking_player_id;
 						bw::update_signify_status(data.target, target_ext);
+					} break;
+					case WeaponId::ApostleCharonRifle: {
+						if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+							Thingy* corpse = get_closest_active_corpse(data.attacker->position, 3 * 32);
+							if (corpse) {
+								reclaim_corpse(corpse, data.attacking_player_id);
+							}
+						}
 					} break;
 					case WeaponId::EcclesiastAstralBlaster:
 					case WeaponId::MatrixKhaydarinRay:
