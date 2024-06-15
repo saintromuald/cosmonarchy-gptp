@@ -146,9 +146,6 @@ namespace hooks
 					if (target->status & UnitStatus::InAir) {
 						current_weapon_id = current_unit->get_air_weapon();
 					}
-					if (current_unit->id == UnitId::ProtossClarion && bw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
-						current_weapon_id = WeaponId::None;
-					}
 					if (current_weapon_id != WeaponId::None) {
 						jump_to_77E99 = true;
 					} else {

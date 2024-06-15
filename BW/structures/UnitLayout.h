@@ -87,7 +87,7 @@ namespace AiseId
 		GenericSwitch				= 9,
 		GenericValue				= 10,
 		SendWarpRelayValue			= 11,
-		SendClarionValue			= 12,
+	//	SendClarionValue			= 12,
 		SendStarSovereignValue		= 13,
 		LinkedToWarpRelay			= 14,
 	//	HasClarionLink				= 15,

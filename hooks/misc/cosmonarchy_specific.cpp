@@ -164,9 +164,6 @@ u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 tec
 }
 
 bool can_attack_target_end_chunk(Unit* source, u32 target_flags) {
-	if (source->id == UnitId::ProtossClarion && bw::get_aise_value(source, 0, AiseId::SendClarionValue, 0, 0) == 1) {
-		return false;
-	}
 	if (target_flags & UnitStatus::InAir) {
 		if (source->get_air_weapon() != WeaponId::None) {
 			return true;

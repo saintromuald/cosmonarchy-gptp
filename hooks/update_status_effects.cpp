@@ -146,7 +146,7 @@ namespace hooks
 			}
 		}
 
-		if (unit->id == UnitId::ProtossClarion && bw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
+		if (unit->id == UnitId::ProtossClarion) {
 			bw::place_clarion_links(unit); // Clears, then places all Clarion links
 		}
 

@@ -426,42 +426,33 @@ namespace hooks {
 
 			// Show auras
 			if (g_config.show_aura_circles && bw::can_show_custom_ui()
-			&& (bw::are_mutual_allies(unit->player, *g_local_nation_id) || bw::in_replay_or_witness)) {
+			&& (bw::are_mutual_allies(unit->player, *g_local_nation_id) || bw::in_replay_or_witness())) {
 				switch (unit->id) {
-					case UnitId::TerranShamanSupportMode:
-					{
+					case UnitId::TerranShamanSupportMode: {
 						g_graphics.draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
-					case UnitId::TerranShamanVisionaryMode:
-					{
+					case UnitId::TerranShamanVisionaryMode: {
 						g_graphics.draw_circle(source.x, source.y, 6 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
-					case UnitId::TerranAncile:
-					{
+					case UnitId::TerranAncile: {
 						g_graphics.draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
-					case UnitId::TerranAzazel:
-					{
+					case UnitId::TerranAzazel: {
 						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
-					case UnitId::ProtossClarion:
-					{
+					case UnitId::ProtossClarion: {
 						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
-					case UnitId::ProtossCrucible:
-					{
+					case UnitId::ProtossCrucible: {
 						g_graphics.draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
-					case UnitId::ProtossDidact:
-					{
+					case UnitId::ProtossDidact: {
 						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
-					case UnitId::ZergMatraleth:
-					{
+					case UnitId::ZergMatraleth: {
 						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
-					case UnitId::ZergVilgoleth:
-					{
+					case UnitId::ZergVilgoleth: {
 						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 				}
