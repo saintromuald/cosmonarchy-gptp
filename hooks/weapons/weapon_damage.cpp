@@ -239,7 +239,6 @@ namespace hooks
 			}
 		}
 
-
 		// Ai_ReactToHit crash - null town
 		if (data.target->unit_ai) {
 			// Ai_ReactToHit crash - null town
@@ -322,7 +321,10 @@ namespace hooks
 			data.damage = 256;
 		}
 
-		weapon_damage_behaviors(data);
+		// Phase Link: No On-hits
+		if (!data.is_phase_link_damage_instance) {
+			weapon_damage_behaviors(data);
+		}
 		if (data.attacker) {
 			weapon_damage_lifesteal(data);
 		}
@@ -387,6 +389,7 @@ namespace hooks
 			data.damage_type = DamageType::Independent;
 		}
 
+		// Phase Link: No On-hits
 		if (data.is_phase_link_damage_instance) {
 			return; // Skip Weapon & Attacker based calcs, since we already did those for phase link
 		}
