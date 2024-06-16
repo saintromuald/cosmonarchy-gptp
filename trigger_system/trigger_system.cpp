@@ -1785,7 +1785,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			const auto value = parser.get_bool();
 
 			g_aise_state.cheats_allowed = value;
-		} else if (parser.equals("set_liftoff_enabled")) {
+		} else if (parser.equals("set_liftoff_disabled")) {
 			const auto players = parser.get_player_bitset();
 			const auto value = parser.get_bool();
 
@@ -1793,9 +1793,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			for (u32 player = 0; player < PlayerLimit; player++) {
 				if (!players[player]) continue;
 				auto& cm_player = g_globals->players[player];
-				cm_player.disable_liftoff = !value;
+				cm_player.disable_liftoff = value;
 			}
-		} else if (parser.equals("set_burrow_enabled")) {
+		} else if (parser.equals("set_burrow_disabled")) {
 			const auto players = parser.get_player_bitset();
 			const auto value = parser.get_bool();
 
@@ -1803,7 +1803,17 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			for (u32 player = 0; player < PlayerLimit; player++) {
 				if (!players[player]) continue;
 				auto& cm_player = g_globals->players[player];
-				cm_player.disable_burrow = !value;
+				cm_player.disable_burrow = value;
+			}
+		} else if (parser.equals("set_units_disabled")) {
+			const auto players = parser.get_player_bitset();
+			const auto unit_ids = parser.get_unit_id_bitset();
+
+			// Currently only disables burrow buttons, ergo won't work on AI and on hackers
+			for (u32 player = 0; player < PlayerLimit; player++) {
+				if (!players[player]) continue;
+				auto& cm_player = g_globals->players[player];
+				cm_player.disabled_units = unit_ids;
 			}
 		}
 	}

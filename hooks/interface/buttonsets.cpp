@@ -736,18 +736,6 @@ namespace hooks {
 						}
 					}
 
-					auto disable_button = [&](IconId::Enum icon_id) {
-						if (current_button->icon_id != icon_id) return;
-						if (current_button_state == Button_State::Invisible) return;
-						current_button_state = Button_State::Disabled;
-					};
-                    auto disable_buttons_if = [&](bool condition, auto... icon_ids) {
-						if (!condition) return;
-						(disable_button(icon_ids), ...);
-					};
-					disable_buttons_if(cm_player.disable_liftoff, IconId::Liftoff, IconId::Land);
-					disable_buttons_if(cm_player.disable_burrow, IconId::Burrow, IconId::Unburrow);
-
 					if (current_button->icon_id == IconId::Larva) {
 						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
 							|| unit_id_is_larva(unit->id)
@@ -2711,6 +2699,25 @@ namespace hooks {
 							}
 						}
 					}
+
+					// Crig overwrites
+					auto disable_button = [&]() {
+						if (current_button_state == Button_State::Invisible) return false;
+						current_button_state = Button_State::Disabled;
+						return true;
+					};
+                    auto disable_buttons_if = [&](bool condition, auto... icon_ids) {
+						if (!condition) return;
+						((current_button->icon_id == icon_ids && disable_button()), ...);
+					};
+					auto disable_buttons_unit_ids = [&](UnitIdBitset unit_id_bitset) {
+						if (current_button->requirement_func != (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) return;
+						if (!unit_id_bitset[current_button->requirement_var]) return;
+                        disable_button();
+					};
+					disable_buttons_if(cm_player.disable_liftoff, IconId::Liftoff, IconId::Land);
+					disable_buttons_if(cm_player.disable_burrow, IconId::Burrow, IconId::Unburrow);
+					disable_buttons_unit_ids(cm_player.disabled_units);
 
 					// TODO: Reenable and test
 					//if ((*g_active_portrait_unit)->player != *g_local_nation_id && current_button_state == Button_State::Enabled) {
