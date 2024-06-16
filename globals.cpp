@@ -1020,20 +1020,26 @@ static void link_damage(Unit* unit, s32 damage, s8 direction, const hooks::Weapo
 
 s32 spread_clarion_damage(const hooks::WeaponDamageData& data, f32 factor) {
 	Unit* target = data.target;
-
-	auto links = get_clarion_links(target); // Has to be copy
-	std::erase(links, target);
-	std::erase_if(links, [](Unit* unit) { return unit->shields < 256; }); // Min damage is 256, and we don't want to overflow to health
-
 	s32 damage = data.damage;
 	s32 damage_to_spread = std::min(s32(damage * factor), target->shields);
-	s32 damage_per_unit = damage_to_spread / links.size();
-	Unit* damage_origin = data.attacker ? data.attacker : target;
 
-	for (Unit* unit : links) {
-		s32 unit_damage = std::min(damage_per_unit, unit->shields);
-		damage -= unit_damage;
-		link_damage(unit, unit_damage, bw::get_angle(damage_origin->position, unit->position), data);
+	// Min damage to main target
+	s32 estimated_damage = damage - damage_to_spread;
+	if (estimated_damage < 256) {
+		s32 missing_damage = 256 - estimated_damage;
+		damage += missing_damage;
+		damage_to_spread -= missing_damage;
+	}
+
+	if (damage_to_spread > 0) {
+		auto links = get_clarion_links(target); // Has to be copy
+		s32 damage_per_unit = damage_to_spread / links.size();
+		Unit* damage_origin = data.attacker ? data.attacker : target;
+		for (Unit* unit : links) {
+			s32 unit_damage = std::min(damage_per_unit, unit->shields);
+			damage -= unit_damage;
+			link_damage(unit, unit_damage, bw::get_angle(damage_origin->position, unit->position), data);
+		}
 	}
 
 	return damage;
@@ -1050,6 +1056,7 @@ std::vector<Unit*> get_clarion_links(Unit* unit) {
 		UnitExt* clarion_ext = get_unit_ext(clarion);
 		links.insert_range(clarion_ext->unit_vectors[UnitVectorPhaseLink]);
 	}
+	links.erase(unit);
 	return std::vector<Unit*>{links.begin(), links.end()};
 }
 }
