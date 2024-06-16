@@ -304,7 +304,7 @@ namespace hooks
 
 		// Phase Link: spread the damage before dealing it to shields
 		if (!data.is_phase_link_damage_instance && bw::has_clarion_links(data.target)) {
-			data.damage = bw::spread_clarion_damage(data, 0.5);
+			data.damage = bw::spread_clarion_damage(data, 0.75);
 		}
 
 		// Reduce shields
