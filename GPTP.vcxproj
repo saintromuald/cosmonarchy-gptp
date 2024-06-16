@@ -356,8 +356,8 @@
     <ClCompile Include="hooks\orders\base_orders\attack_orders_inject.cpp" />
     <ClCompile Include="hooks\interface\btns_cond.cpp" />
     <ClCompile Include="hooks\interface\btns_cond_inject.cpp" />
-    <ClCompile Include="hooks\orders\building_making\building_morph.cpp" />
-    <ClCompile Include="hooks\orders\building_making\building_morph_inject.cpp" />
+    <ClCompile Include="hooks\orders\building_making\building_zerg.cpp" />
+    <ClCompile Include="hooks\orders\building_making\building_zerg_inject.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_protoss.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_protoss_inject.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_terran.cpp" />
@@ -746,7 +746,7 @@
     <ClInclude Include="hooks\orders\spells\recall_spell.h" />
     <ClInclude Include="hooks\orders\base_orders\attack_orders.h" />
     <ClInclude Include="hooks\interface\btns_cond.h" />
-    <ClInclude Include="hooks\orders\building_making\building_morph.h" />
+    <ClInclude Include="hooks\orders\building_making\building_zerg.h" />
     <ClInclude Include="hooks\orders\building_making\building_protoss.h" />
     <ClInclude Include="hooks\orders\building_making\building_terran.h" />
     <ClInclude Include="hooks\recv_commands\burrow_tech.h" />

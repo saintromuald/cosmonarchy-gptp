@@ -487,7 +487,7 @@ namespace
 
 namespace hooks
 {
-	void inject_building_morph_hooks()
+	void inject_building_zerg_hooks()
 	{
 		jump_patch(orders_is_morphing_wrapper,											0x0045CD00, 2);
 		jump_patch(orders_zerg_build_self_wrapper,										0x0045D500, 0);
