@@ -2,7 +2,7 @@
 #include "building_modifier.h"
 #include <BW/enumerations.h>
 #include <BW/bwdata.h>
-#include "hooks\orders\building_making\building_morph.h"
+#include "hooks\orders\building_making\building_zerg.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include "hooks\orders\building_making\building_helper.h"
 #include "logger.h"
@@ -106,8 +106,7 @@ void orders_zerg_build_self(Unit* building) {
 			}
 			return;
 		} break;
-		default:
-		{
+		default: {
 			return;
 		} break;
 	}
@@ -119,7 +118,7 @@ void orders_zerg_build_self(Unit* building) {
 	cm::progress_build(building, {
 		.is_constructing = !helper::is_valid_building_morph(building->id),
 		.hp_gain = hp_gain,
-		});
+	});
 }
 
 void cancel_zerg_building(Unit* unit) { // 0045DA40

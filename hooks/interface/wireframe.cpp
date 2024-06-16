@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	// Was initially in building_morph. The rest of the function this fragment is from use too many unknowns, thus this is only a fragment.
+	// Was initially in building_zerg. The rest of the function this fragment is from use too many unknowns, thus this is only a fragment.
 	// This allows to change the wireframe displayed for the unit, the special case being that zerg morphing buildings show the wireframe of the new building before construction is complete.
 	// -iquare
 	u16 stat_data_unit_wireframe_update_fragment(Unit* unit)
