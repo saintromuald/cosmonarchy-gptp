@@ -99,6 +99,9 @@ struct ParserMarker {
 	Token token;
 };
 
+Point16 box_center(Box32 box);
+Token get_short_unit_name(u32 unit_id);
+
 // Parses and handles <area> <players> <unit_ids>
 struct Designator {
 	Area area;
@@ -207,9 +210,6 @@ private:
 	u32 m_command_start_pos{};
 	Token m_token{};
 };
-
-Point16 box_center(Box32 box);
-Token get_short_unit_name(u32 unit_id);
 
 template <typename T>
 std::optional<T> sv_convert_to(std::string_view sv) {
