@@ -115,7 +115,12 @@ void orders_zerg_build_self(Unit* building) {
 	if (!bw::is_zerg_building_morph_result(building_id) || building_ext->values[ValueIsNydusExit]) {
 		hp_gain = building->build_repair_hp_gain;
 	}
+	Unit* builder = nullptr;
+	if (building_ext->values[ValueIsNydusExit]) {
+		builder = building->building.nydus_exit;
+	}
 	cm::progress_build(building, {
+		.builder = builder,
 		.is_constructing = !helper::is_valid_building_morph(building->id),
 		.hp_gain = hp_gain,
 	});

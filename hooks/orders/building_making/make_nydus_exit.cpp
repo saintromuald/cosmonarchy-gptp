@@ -3,8 +3,7 @@
 
 namespace hooks
 {
-	void orders_build5(Unit* nydus_canal) // 0045DC20
-	{
+	void orders_build5(Unit* nydus_canal) { // 0045DC20
 		// Fix coordinates if off-map (wasn't present in original function)
 		s32 x = units_dat::building_dimensions[UnitId::ZergNydusCesiant].x;
 		s32 y = units_dat::building_dimensions[UnitId::ZergNydusCesiant].y;
@@ -17,12 +16,10 @@ namespace hooks
 
 		x = nydus_canal->order_target.pt.x - (x / 2);
 		y = nydus_canal->order_target.pt.y - (y / 2);
-		if (x < 0)
-		{
+		if (x < 0) {
 			x += 31;
 		}
-		if (y < 0)
-		{
+		if (y < 0) {
 			y += 31;
 		}
 		x /= 32;
@@ -53,7 +50,7 @@ namespace hooks
 				nydus_exit->sprite->player = nydus_canal->sprite->player;
 
 				UnitExt* exit_ext = get_unit_ext(nydus_exit);
-				exit_ext->values[ValueIsNydusExit] = 1;
+				exit_ext->values[ValueIsNydusExit] = true;
 			}
 			nydus_canal->order_to_idle();
 		}
