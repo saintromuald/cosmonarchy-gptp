@@ -3625,16 +3625,14 @@ namespace hooks {
 			}
 		process_command:
 			switch (command_id) {
-				case GameCommand_Sequence:
-				{
+				case GameCommand_Sequence: {
 					command_size = 1;
 					if (size >= command_size) {
 						++*g_sequence;
 						goto next_command;
 					}
 				} break;
-				case GameCommand_SaveGame:
-				{
+				case GameCommand_SaveGame: {
 					command_size = 5;
 					if (size >= command_size) {
 						s32 string_size = helper::get_recv_string(28u, size - command_size, 0, buffer + 5, 0);
@@ -3645,8 +3643,7 @@ namespace hooks {
 						}
 					}
 				} break;
-				case GameCommand_LoadGame:
-				{
+				case GameCommand_LoadGame: {
 					command_size = 5;
 					if (size >= command_size) {
 						s32 string_size = helper::get_recv_string(28u, size - command_size, 0, buffer + 5, 0);
@@ -3659,16 +3656,14 @@ namespace hooks {
 						}
 					}
 				} break;
-				case GameCommand_RestartGame:
-				{
+				case GameCommand_RestartGame: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_restart_game();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Select:
-				{
+				case GameCommand_Select: {
 					command_size = 2;
 					if (size >= command_size) {
 						command_size += 2 * (u8)buffer[1];
@@ -3678,8 +3673,7 @@ namespace hooks {
 						}
 					}
 				} break;
-				case GameCommand_ShiftSelect:
-				{
+				case GameCommand_ShiftSelect: {
 					command_size = 2;
 					if (size >= command_size) {
 						command_size += 2 * (u8)buffer[1];
@@ -3689,8 +3683,7 @@ namespace hooks {
 						}
 					}
 				} break;
-				case GameCommand_ShiftDeselect:
-				{
+				case GameCommand_ShiftDeselect: {
 					command_size = 2;
 					if (size >= command_size) {
 						command_size += 2 * (u8)buffer[1];
@@ -3700,32 +3693,28 @@ namespace hooks {
 						}
 					}
 				} break;
-				case GameCommand_Build:
-				{
+				case GameCommand_Build: {
 					command_size = 8;
 					if (size >= command_size) {
 						helper::CMDRECV_build(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Vision:
-				{
+				case GameCommand_Vision: {
 					command_size = 3;
 					if (size >= command_size) {
 						helper::CMDRECV_vision(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Ally:
-				{
+				case GameCommand_Ally: {
 					command_size = 5;
 					if (size >= command_size) {
 						helper::CMDRECV_ally(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_GameSpeed:
-				{
+				case GameCommand_GameSpeed: {
 					command_size = 2;
 					if (size >= command_size) {
 						u32 speed = buffer[1];
@@ -3735,296 +3724,259 @@ namespace hooks {
 						goto next_command;
 					}
 				} break;
-				case GameCommand_PauseGame:
-				{
+				case GameCommand_PauseGame: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_pause_game();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_ResumeGame:
-				{
+				case GameCommand_ResumeGame: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_resume_game();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_UseCheat:
-				{
+				case GameCommand_UseCheat: {
 					command_size = 5;
 					if (size >= command_size) {
 						helper::CMDRECV_use_cheat(buffer, (char*)g_is_in_replay);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Hotkey:
-				{
+				case GameCommand_Hotkey: {
 					command_size = 3;
 					if (size >= command_size) {
 						helper::CMDRECV_hotkey(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_RightClick:
-				{
+				case GameCommand_RightClick: {
 					command_size = 10;
 					if (size >= command_size) {
 						helper::CMDRECV_right_click((Unit*)buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_TargetCommand:
-				{
+				case GameCommand_TargetCommand: {
 					command_size = 11;
 					if (size >= command_size) {
 						helper::CMDRECV_target_command(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_CancelConstruction:
-				{
+				case GameCommand_CancelConstruction: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_cancel_construction();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_CancelUnitMorph:
-				{
+				case GameCommand_CancelUnitMorph: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_cancel_unit_morph();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Stop:
-				{
+				case GameCommand_Stop: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_stop(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_CarrierStop:
-				{
+				case GameCommand_CarrierStop: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_carrier_stop();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_ReaverStop:
-				{
+				case GameCommand_ReaverStop: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_reaver_stop();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Nothing:
-				{
+				case GameCommand_Nothing: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_nothing();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_ReturnCargo:
-				{
+				case GameCommand_ReturnCargo: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_return_cargo(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Train:
-				{
+				case GameCommand_Train: {
 					command_size = 3;
 					if (size >= command_size) {
 						helper::CMDRECV_train(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_CancelTrain:
-				{
+				case GameCommand_CancelTrain: {
 					command_size = 3;
 					if (size >= command_size) {
 						helper::CMDRECV_cancel_train(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Cloak:
-				{
+				case GameCommand_Cloak: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_cloak();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Decloak:
-				{
+				case GameCommand_Decloak: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_decloak();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_UnitMorph:
-				{
+				case GameCommand_UnitMorph: {
 					command_size = 3;
 					if (size >= command_size) {
 						helper::CMDRECV_unit_morph(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Unsiege:
-				{
+				case GameCommand_Unsiege: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_unsiege(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Siege:
-				{
+				case GameCommand_Siege: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_siege(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_TrainFighter:
-				{
+				case GameCommand_TrainFighter: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_train_fighter();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_UnloadAll:
-				{
+				case GameCommand_UnloadAll: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_unload_all(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Unload:
-				{
+				case GameCommand_Unload: {
 					command_size = 3;
 					if (size >= command_size) {
 						helper::CMDRECV_unload((Unit*)buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_MergeArchon:
-				{
+				case GameCommand_MergeArchon: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_merge_archon();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_HoldPosition:
-				{
+				case GameCommand_HoldPosition: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_hold_position(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Burrow:
-				{
+				case GameCommand_Burrow: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_burrow(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Unburrow:
-				{
+				case GameCommand_Unburrow: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_unburrow();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_CancelNuke:
-				{
+				case GameCommand_CancelNuke: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_cancel_nuke();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Liftoff:
-				{
+				case GameCommand_Liftoff: {
 					command_size = 5;
 					if (size >= command_size) {
 						helper::CMDRECV_liftoff(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Research:
-				{
+				case GameCommand_Research: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_research(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_CancelResearch:
-				{
+				case GameCommand_CancelResearch: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_cancel_research();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Upgrade:
-				{
+				case GameCommand_Upgrade: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_upgrade(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_CancelUpgrade:
-				{
+				case GameCommand_CancelUpgrade: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_cancel_upgrade();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_CancelAddon:
-				{
+				case GameCommand_CancelAddon: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_cancel_addon();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_BuildingMorph:
-				{
+				case GameCommand_BuildingMorph: {
 					command_size = 3;
 					if (size >= command_size) {
 						helper::CMDRECV_building_morph(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Stimpack:
-				{
+				case GameCommand_Stimpack: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_stim_pack();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Hash:
-				{
+				case GameCommand_Hash: {
 					command_size = 7;
 					if (size >= command_size) {
 						if (!is_in_replay && !helper::CMD_game_hash((HashPacket*)buffer)) {
@@ -4036,8 +3988,7 @@ namespace hooks {
 					}
 				} break;
 				case GameCommand_VoiceEnable1:
-				case GameCommand_VoiceEnable2:
-				{
+				case GameCommand_VoiceEnable2: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_voice_enable(buffer);
@@ -4045,23 +3996,20 @@ namespace hooks {
 					}
 				} break;
 				case GameCommand_Unused1:
-				case GameCommand_Unused2:
-				{
+				case GameCommand_Unused2: {
 					command_size = 2;
 					if (size >= command_size) {
 						goto next_command;
 					}
 				} break;
-				case GameCommand_SetLatency:
-				{
+				case GameCommand_SetLatency: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_set_latency(buffer, 0);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_SetReplaySpeed:
-				{
+				case GameCommand_SetReplaySpeed: {
 					command_size = 10;
 					if (size >= command_size) {
 						if (is_in_replay) {
@@ -4070,32 +4018,28 @@ namespace hooks {
 						goto next_command;
 					}
 				} break;
-				case GameCommand_LeaveGame:
-				{
+				case GameCommand_LeaveGame: {
 					command_size = 2;
 					if (size >= command_size) {
 						helper::CMDRECV_leave_game(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_MinimapPing:
-				{
+				case GameCommand_MinimapPing: {
 					command_size = 5;
 					if (size >= command_size) {
 						helper::CMDRECV_minimap_ping(buffer);
 						goto next_command;
 					}
 				} break;
-				case GameCommand_MergeDarkArchon:
-				{
+				case GameCommand_MergeDarkArchon: {
 					command_size = 1;
 					if (size >= command_size) {
 						helper::CMDRECV_merge_dark_archon();
 						goto next_command;
 					}
 				} break;
-				case GameCommand_Custom:
-				{
+				case GameCommand_Custom: {
 					command_size = 12;
 					if (size >= command_size) {
 						u32 type = buffer[1];
@@ -4112,20 +4056,18 @@ namespace hooks {
 
 									UnitExt* unit_ext = get_unit_ext(unit);
 									bool set_value = true;
-									switch (unit->id) // Synced reads and conditions
-									{
-										case UnitId::TerranSavant:
-										{
+									switch (unit->id) {
+										case UnitId::TerranSavant: {
 											if (unit_ext->timers[TimerSavantFormSwitchCooldown] > 1) {
 												set_value = false;
 												break;
 											}
 											u32 sound = value ? SoundId::SavantSwitchA01 : SoundId::SavantSwitchB01;
 											helper::play_sound_from_unit(sound, unit, 1, 0);
-
+											
 											u32 image_id = value ? ImageId::SavantFormSwitchPower : ImageId::SavantFormSwitchEntropy;
 											bw::add_unit_overlay(unit, image_id);
-
+											
 											unit_ext->timers[TimerSavantFormSwitchCooldown] = 49;
 										} break;
 									}
@@ -4213,8 +4155,7 @@ namespace hooks {
 						goto next_command;
 					}
 				} break;
-				case GameCommand_DisplaySomeText:
-				{
+				case GameCommand_DisplaySomeText: {
 					command_size = 82;
 					if (size >= command_size) {
 						helper::bwfxn_display_text(buffer[1], (s32)(buffer + 2), in_replay);
@@ -4250,5 +4191,53 @@ namespace hooks {
 		helper::get_cd_key_info(&version->key_owner, &version->key);
 		version->is_demo = *g_is_demo;
 		version->lang = helper::local_get_lang();
+	}
+
+	// Hooked to improve Crownlink end-of-game experience by moving back to game selection. -Pr0nogo
+	s32 __cdecl network_set_return_menu() { // 004DC5B0
+		s32 network_mode = g_current_network_mode;
+		bool current_mode = false;
+
+		if (network_mode == 'CNLK' || network_mode == 'CNDB') {
+			g_gl_glues_mode = MenuId::GlueGameSel;
+			return network_mode;
+		}
+
+		if (network_mode <= 'MDMX') {
+			if (network_mode != 'MDMX') {
+				if (network_mode <= 'IPXN') {
+					if (network_mode != 'IPXN' && network_mode != 'ATLK') {
+						if (network_mode == 'BNET') {
+							g_gl_glues_mode = MenuId::GlueBattlenet;
+							return network_mode;
+						}
+						goto LABEL_13;
+					}
+				LABEL_14:
+					g_gl_glues_mode = MenuId::GlueGameSel;
+					return network_mode;
+				}
+				current_mode = network_mode == 'IPXX';
+			LABEL_12:
+				if (!current_mode) {
+				LABEL_13:
+					g_gl_glues_mode = MenuId::GlueMainMenu;
+					return network_mode;
+				}
+				goto LABEL_14;
+			}
+			goto LABEL_16;
+		}
+		if (network_mode == 'MODM') {
+		LABEL_16:
+			g_gl_glues_mode = MenuId::GlueModem;
+			return network_mode;
+		}
+		if (network_mode != 'SCBL') {
+			current_mode = network_mode == 'UDPN';
+			goto LABEL_12;
+		}
+		g_gl_glues_mode = MenuId::GlueDirect;
+		return network_mode;
 	}
 }

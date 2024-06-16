@@ -41,4 +41,5 @@ namespace hooks {
 	void inject_game_hooks();
 
 	void initialize_provider_version(GameVersion* version);			// 00472770
+	s32 __cdecl network_set_return_menu();							// 004DC5B0
 }

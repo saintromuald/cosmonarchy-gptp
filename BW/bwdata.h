@@ -1206,10 +1206,10 @@ BW_DATA(bool*,			g_is_expansion,						0x0058F440);
 BW_DATA(u32*,				g_is_demo,							0x005124D0);
 
 // For print_stat_res_info
-BW_DATA(char**,			g_countdown_timer_strings,			0x0068C240);
+BW_DATA(char**,				g_countdown_timer_strings,			0x0068C240);
 
 // For load_menu_glu_expcampaign
-BW_DATA(u32*,				g_gl_glues_mode,					0x006D11BC);
+BW_REF(u32,					g_gl_glues_mode,					0x006D11BC);
 
 // For weapon_behavior_can_hit_target_check
 BW_DATA(u32*,				g_neutral_carapace_swarm,			0x005873F0);
@@ -1223,7 +1223,7 @@ BW_DATA(const CV5**,		cv5FileHandle,						0x006D5EC8);
 
 // For on_player_join
 BW_DATA(u32*,				g_local_storm_id,					0x0051268C);
-BW_DATA(u32*,				g_current_network_mode,				0x0059688C);
+BW_REF(u32,					g_current_network_mode,				0x0059688C);
 
 // For update_visibility_hash
 BW_DATA(u8*,				g_region_vision_filter,				0x00629C90);

@@ -1532,3 +1532,34 @@ enum SpectatorEvent {
 	SpectatorEvent_Combat		= 1,
 	SpectatorEvent_Tech			= 0,
 };
+
+namespace MenuId {
+	enum Enum {
+		GlueMainMenu	=  0,
+		GlueSimulate	=  1,
+		GlueSelConn		=  2,
+		GlueChatroom	=  3,
+		GlueBattlenet	=  4,
+		GlueLogin		=  5,
+		GlueCampaign	=  6,
+		GlueReadyT		=  7,
+		GlueReadyZ		=  8,
+		GlueReadyP		=  9,
+		GlueGameSel		= 10,
+		GlueCreate		= 11,
+		GlueCreate2		= 12,
+		GlueLoad		= 13,
+		GlueScoreZd		= 14,
+		GlueScoreZv		= 15,
+		GlueScoreTd		= 16,
+		GlueScoreTv		= 17,
+		GlueScorePd		= 18,
+		GlueScorePv		= 19,
+		GlueModem		= 20,
+		GlueDirect		= 21,
+		GlueCampaign2	= 22,
+		GlueGamemode	= 23,
+		GlueGamemode2	= 24,
+		GlueGeneric		= 25,
+	};
+}

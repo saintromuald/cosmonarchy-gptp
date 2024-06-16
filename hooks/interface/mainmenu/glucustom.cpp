@@ -691,78 +691,61 @@ namespace hooks
 		}
 	}
 
-	void glu_expcampaign_custom_ctrl_id()
-	{
+	void glu_expcampaign_custom_ctrl_id() {
 		*g_ophelia_enabled = 0;
 		*g_multiplayer_mode = 0;
 		helper::load_campaign_progress();
 		BinDlg* campaign_dialog = 0; // helper::load_full_menu_dialog("rez\\gluExpCmpgn.bin");
 
-		switch (helper::glu_load_bin_dialog(campaign_dialog, helper::glu_expcampaign_custom_ctrl_id))
-		{
-			case 5:
-			{
-				*g_gl_glues_mode = 13; // GLUE_LOAD;
+		switch (helper::glu_load_bin_dialog(campaign_dialog, helper::glu_expcampaign_custom_ctrl_id)) {
+			case 5: {
+				g_gl_glues_mode = 13; // GLUE_LOAD;
 			} break;
-			case 6:
-			{
-				*g_gl_glues_mode = 9; // GLUE_READY_P;
+			case 6: {
+				g_gl_glues_mode = 9; // GLUE_READY_P;
 			} break;
-			case 7:
-			{
-				*g_gl_glues_mode = 7; // GLUE_READY_T;
+			case 7: {
+				g_gl_glues_mode = 7; // GLUE_READY_T;
 			} break;
-			case 8:
-			{
-				*g_gl_glues_mode = 8; // GLUE_READY_Z;
+			case 8: {
+				g_gl_glues_mode = 8; // GLUE_READY_Z;
 			} break;
-			case 9:
-			{
-				*g_gl_glues_mode = 5; // GLUE_LOGIN;
+			case 9: {
+				g_gl_glues_mode = 5; // GLUE_LOGIN;
 			} break;
-			case 10:
-			{
-				*g_gl_glues_mode = 11; // GLUE_CREATE;
+			case 10: {
+				g_gl_glues_mode = 11; // GLUE_CREATE;
 			} break;
-			case 11:
-			{
-				*g_gl_glues_mode = 12; // GLUE_CREATE_MULTI;
+			case 11: {
+				g_gl_glues_mode = 12; // GLUE_CREATE_MULTI;
 			} break;
-			default:
-			{
-				*g_gl_glues_mode = 0; // GLUE_MAIN_MENU;
+			default: {
+				g_gl_glues_mode = 0; // GLUE_MAIN_MENU;
 			} break;
 		}
 		helper::change_menu();
 	}
 
-	char __fastcall glu_main_dialog_interact(BinDlg* text_message, DialogEvent* dlg_event) // 004DB7A0
-	{
+	char __fastcall glu_main_dialog_interact(BinDlg* text_message, DialogEvent* dlg_event) { // 004DB7A0
 		if (dlg_event->number_order == DialogEventType_Dialog) {
-			switch (dlg_event->user)
-			{
-				case DialogUserType_Create:
-				{
+			switch (dlg_event->user) {
+				case DialogUserType_Create: {
 					helper::glu_main_create(text_message);
 					helper::dialog_swish_in(text_message);
 					helper::generic_dialog_interact(text_message, dlg_event);
-					if (g_music_playing)
-					{
+					if (g_music_playing) {
 						goto LABEL_17;
 					}
 					helper::dialog_music_fade(0x16); // music_title_wav
 					return 1;
 				}
-				case DialogUserType_Destroy:
-				{
+				case DialogUserType_Destroy: {
 					helper::glu_main_destroy(text_message);
 					return helper::generic_dialog_interact(text_message, dlg_event);
 				}
 				case DialogUserType_Activate:
-					switch (*last_control_index)
-					{
-						case 3:
-						{
+					switch (*last_control_index) {
+						case 3: {
 							if (*g_is_demo) {
 								if (g_network_table_df->get_string_count() > 102) {
 									helper::load_glu_pok_bindlg(g_network_table_df->get_string(103));
@@ -778,8 +761,7 @@ namespace hooks
 								return helper::dialog_swish_out(text_message);
 							}
 						} break;
-						case 4:
-						{
+						case 4: {
 							if (*g_is_broodwar) {
 								if (!helper::select_game_mode(1)) {
 									return 1;
@@ -792,13 +774,11 @@ namespace hooks
 								return helper::dialog_swish_out(text_message);
 							}
 						} break;
-						case 5:
-						{
+						case 5: {
 							helper::load_staredit_process(text_message);
 							return 1;
 						}
-						default:
-						{
+						default: {
 							return helper::dialog_swish_out(text_message);
 						}
 					}
@@ -806,13 +786,11 @@ namespace hooks
 						goto LABEL_17;
 					}
 					goto LABEL_28;
-				case DialogUserType_InitChildren:
-				{
+				case DialogUserType_InitChildren: {
 					helper::register_menu_functions(glu_main_functions, text_message, 0x2Cu, 0);
 					return helper::generic_dialog_interact(text_message, dlg_event);
 				}
-				default:
-				{
+				default: {
 					goto LABEL_4;
 				}
 			}

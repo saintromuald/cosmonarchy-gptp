@@ -14210,9 +14210,8 @@ namespace helper {
 		}
 	}
 
-	b32 is_multiplayer_mode_bnet()
-	{
-		return *g_multiplayer_mode && *g_current_network_mode == 'BNET';
+	b32 is_multiplayer_mode_bnet() {
+		return *g_multiplayer_mode && g_current_network_mode == 'BNET';
 	}
 
 	u32 snet_send_server_chat_command(char string)
