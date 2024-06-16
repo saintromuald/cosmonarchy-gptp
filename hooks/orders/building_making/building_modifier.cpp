@@ -71,12 +71,8 @@ bool progress_build(Unit* unit, const ProgressBuildOptions& options) {
 
 	if (modifier.factor) {
 		if (options.shield_gain) {
-			u32 max_shields = units_dat::max_shield_points[unit->id] << 8;
-			if (unit->shields + options.shield_gain < max_shields) {
-				unit->shields += options.shield_gain;
-			} else {
-				unit->shields = max_shields;
-			}
+			s32 max_shields = units_dat::max_shield_points[unit->id] << 8;
+			unit->shields = std::min<s32>(unit->shields + options.shield_gain * modifier.factor, max_shields);
 		}
 		// Need to call set_hitpoints for shield case, regardless of hp_gain, to update unit force value and etc
 		if (options.hp_gain || options.shield_gain) {
