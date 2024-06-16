@@ -4193,12 +4193,10 @@ namespace hooks {
 		version->lang = helper::local_get_lang();
 	}
 
-	// Hooked to improve Crownlink end-of-game experience by moving back to game selection. -Pr0nogo
+	// Hooked to improve CrownLink end-of-game experience by moving back to game selection. -Pr0nogo
 	s32 __cdecl network_set_return_menu() { // 004DC5B0
 		s32 network_mode = g_current_network_mode;
-		bool current_mode = false;
-
-		if (network_mode == 'CNLK' || network_mode == 'CNDB') {
+		if (network_mode == 'CNLK' || network_mode == 'CNDB') { // CrownLink and CrownLink Double Brain Cells
 			g_gl_glues_mode = MenuId::GlueGameSel;
 			return network_mode;
 		}
@@ -4211,31 +4209,35 @@ namespace hooks {
 							g_gl_glues_mode = MenuId::GlueBattlenet;
 							return network_mode;
 						}
-						goto LABEL_13;
+						g_gl_glues_mode = MenuId::GlueMainMenu;
+						return network_mode;
 					}
-				LABEL_14:
 					g_gl_glues_mode = MenuId::GlueGameSel;
 					return network_mode;
 				}
-				current_mode = network_mode == 'IPXX';
-			LABEL_12:
-				if (!current_mode) {
-				LABEL_13:
+				if (network_mode != 'IPXX') {
 					g_gl_glues_mode = MenuId::GlueMainMenu;
 					return network_mode;
 				}
-				goto LABEL_14;
+				g_gl_glues_mode = MenuId::GlueGameSel;
+				return network_mode;
 			}
-			goto LABEL_16;
-		}
-		if (network_mode == 'MODM') {
-		LABEL_16:
 			g_gl_glues_mode = MenuId::GlueModem;
 			return network_mode;
 		}
+
+		if (network_mode == 'MODM') {
+			g_gl_glues_mode = MenuId::GlueModem;
+			return network_mode;
+		}
+
 		if (network_mode != 'SCBL') {
-			current_mode = network_mode == 'UDPN';
-			goto LABEL_12;
+			if (network_mode != 'UDPN') {
+				g_gl_glues_mode = MenuId::GlueMainMenu;
+				return network_mode;
+			}
+			g_gl_glues_mode = MenuId::GlueGameSel;
+			return network_mode;
 		}
 		g_gl_glues_mode = MenuId::GlueDirect;
 		return network_mode;
