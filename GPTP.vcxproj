@@ -107,6 +107,7 @@
       <MinUnityFiles>1</MinUnityFiles>
       <MaxFilesInUnityFile>
       </MaxFilesInUnityFile>
+      <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -147,6 +148,7 @@
       <MinUnityFiles>1</MinUnityFiles>
       <MaxFilesInUnityFile>
       </MaxFilesInUnityFile>
+      <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -189,6 +191,7 @@
       <MinUnityFiles>1</MinUnityFiles>
       <MaxFilesInUnityFile>
       </MaxFilesInUnityFile>
+      <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
