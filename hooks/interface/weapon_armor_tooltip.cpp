@@ -531,8 +531,9 @@ namespace hooks
 		text += "\nStatus: " + status;
 
 		if (extended) {
-			if (unit->player < PlayerLimit) {
-				text += "\nColor: " + std::string(bw::get_player_color_code(unit->player, false).data) + std::string(player_color_names[(size_t)g_player_data.player_color_list[unit->player]]) + "\002"; // TODO: move to rank text
+			u32 color_player = unit->sprite ? unit->sprite->player : unit->player;
+			if (color_player < PlayerLimit) {
+				text += "\nColor: " + std::string{bw::get_player_color_code(color_player, false).data} + std::string{player_color_names[(size_t)g_player_data.player_color_list[color_player]]} + "\002";
 			}
 			text += "\nPlane: " + plane;
 			text += "\nFlags: " + flag;
