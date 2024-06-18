@@ -180,6 +180,9 @@ struct CmPlayer {
 	bool neutral_hostile;
 	bool faction_was_set;
 	bool hide_in_team_ui;
+	bool disable_liftoff;
+	bool disable_burrow;
+	UnitIdBitset disabled_units;
 	OmnipresenceState omnipresence_state;
 	u32 build_multiplier = 1;
 
