@@ -605,7 +605,8 @@ namespace hooks {
 					} break;
 					case WeaponId::ValkyrieHaloRockets: {
 						// Offset: Cone
-						fire_shotgun(unit, weapon_id, 1, 3, 10);
+						fire_shotgun(unit, weapon_id, 1, 10, 10);
+						// @Veeq7 -- would be nice to achieve staggered fire for shotgun (cone) patterns. Not sure how feasible that is with the current stack. -Pr0nogo
 					} break;
 					case WeaponId::TosgriliskExplosiveSpores:
 					case WeaponId::IzirokorEnergizedBioplasma:
