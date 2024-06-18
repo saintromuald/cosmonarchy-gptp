@@ -254,13 +254,10 @@ namespace hooks
 		}
 
 		weapon_damage_damage_modifiers(data);
-		if (!data.is_phase_link_damage_instance && bw::has_clarion_links(data.target)) {
-			data.damage = bw::spread_clarion_damage(data, 0.5);
-		}
-
 		// Minimum amount of damage that can be dealt.
+		// Phase Link: only apply min damage on main target
 		// @Veeq7 - should this be above the Ancile code, to prevent dealing less than 1 damage to Ancile energy? -Pr0nogo
-		if (data.damage < 256) {
+		if (!data.is_phase_link_damage_instance && data.damage < 256) {
 			data.damage = 256;
 		}
 
@@ -275,8 +272,9 @@ namespace hooks
 		}
 
 		// Apply armor
+		// Phase Link: Only count armor of target unit
 		bool shield_overlay = false;
-		if (data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
+		if (!data.is_phase_link_damage_instance && data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
 			s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.target, data.weapon_id) + data.bonus_armor_pen;
 			if (weapon_damage_current_bullet && weapon_damage_current_bullet->weapon_id == WeaponId::AlgoztaliskBottomlessSpinestacks) {
 				BulletExt* bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
@@ -304,10 +302,16 @@ namespace hooks
 			}
 		}
 
+		// Phase Link: spread the damage before dealing it to shields
+		if (!data.is_phase_link_damage_instance && bw::has_clarion_links(data.target)) {
+			data.damage = bw::spread_clarion_damage(data, 0.75);
+		}
+
 		// Reduce shields
 		if (units_dat::shields_enabled[data.target->id] && data.target->shields >= 256) {
 			data.shield_reduce_amount = std::min(data.damage, data.target->shields);
-			if (data.shield_reduce_amount < 256) {
+			// Phase Link: only apply min damage on main target
+			if (!data.is_phase_link_damage_instance && data.shield_reduce_amount < 256) {
 				data.shield_reduce_amount = 256;
 			}
 			data.damage -= data.shield_reduce_amount;
@@ -317,7 +321,8 @@ namespace hooks
 		}
 
 		// Set min damage
-		if (data.shield_reduce_amount == 0 && data.damage < 256) {
+		// Phase Link: only apply min damage on main target
+		if (!data.is_phase_link_damage_instance && data.shield_reduce_amount == 0 && data.damage < 256) {
 			data.damage = 256;
 		}
 
