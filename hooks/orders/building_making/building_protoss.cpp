@@ -108,7 +108,12 @@ namespace hooks {
 	void orders_build_self_2(Unit* building) { // 004E4F40
 		switch (building->main_order_state) {
 			case 0: {
-				if (!building->remaining_build_time) {
+				bool completed = cm::progress_build(building, {
+					.is_constructing = true,
+					.hp_gain = building->build_repair_hp_gain,
+					.shield_gain = building->shield_gain,
+				});
+				if (completed) {
 					for (Image* image = building->sprite->images.head; image; image = image->link.next) {
 						if (image->flags & ImageFlags::UseFullIscript) {
 							image->animation = IscriptAnimation::SpecialState1;
@@ -121,30 +126,6 @@ namespace hooks {
 
 					helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld03_wav, building, 1, 0);
 					++building->main_order_state;
-				}
-
-				BuildingModifier modifier = get_building_modifier(building, 0, true);
-				u16 hp_gain = building->build_repair_hp_gain * modifier.multiplier;
-				u16 shield_gain = building->shield_gain * modifier.multiplier;
-				s32 max_shields = units_dat::max_shield_points[building->id] << 8;
-
-				if (building->remaining_build_time) {
-					--building->remaining_build_time;
-
-					if (modifier.decrease) {
-						if (building->remaining_build_time > modifier.decrease) {
-							building->remaining_build_time -= modifier.decrease;
-						} else {
-							building->remaining_build_time = 0;
-						}
-					}
-				}
-
-				building->set_hitpoints(building->hitpoints + hp_gain);
-				if (building->shields + shield_gain >= max_shields) {
-					building->shields = max_shields;
-				} else {
-					building->shields += shield_gain;
 				}
 			} break;
 			case 1: {

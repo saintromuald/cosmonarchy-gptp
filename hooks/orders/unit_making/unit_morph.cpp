@@ -3,12 +3,13 @@
 #include <BW/bwdata.h>
 #include <BW/enumerations/TechId.h>
 #include <cassert>
-#include "hooks\orders\building_making\building_morph.h"
+#include "hooks\orders\building_making\building_zerg.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include "hooks\orders\ai\ai_orders.h"
 #include "hooks\unit_stats\max_energy.h"
 #include "globals.h"
 #include "hooks\interface\uifeatures\hotkeys.h"
+#include "hooks\orders\building_making\building_modifier.h"
 
 namespace hooks {
 	void orders_zerg_birth(Unit* unit) {
@@ -145,27 +146,7 @@ namespace hooks {
 		}
 	}
 
-	bool advance_remaining_build_time_custom(Unit* unit) {
-		if (!unit->remaining_build_time) {
-			return 1;
-		}
-		if (unit_needs_hp_train_workaround(unit)) {
-			if (unit->remaining_build_time < 32) {
-				unit->remaining_build_time = 0;
-				helper::set_unit_hp(unit, unit->get_max_hp_raw());
-			} else {
-				unit->remaining_build_time -= 32;
-			}
-		} else {
-			unit->remaining_build_time -= 1;
-		}
-		if (unit->remaining_build_time < 0) {
-			unit->remaining_build_time = 0;
-		}
-		return 0;
-	}
-
-	// @TODO (code quality) -- big function, but usually good to invert the ifs and return early, rather than having lots of nesting and complex branching. -Veeq7
+	// TODO: Use switch -Veeq7
 	void orders_morph_1(Unit* unit) { // 0045DEA0
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->main_order_state == 0) {
@@ -322,7 +303,7 @@ namespace hooks {
 				unit->play_iscript_animation(IscriptAnimation::SpecialState1);
 				unit->remaining_build_time = 0;
 			}
-			if (advance_remaining_build_time_custom(unit)) {
+			if (cm::progress_build(unit)) {
 				unit->main_order_state = 2;
 			}
 		} else if (unit->main_order_state == 2) {

@@ -36,8 +36,13 @@ namespace hooks {
 			} else if (unit->secondary_order_state == 2) {
 				Unit* built_unit = unit->current_build_unit;
 				if (built_unit) {
-					u32 hp_gain = helper::get_hp_gain_for_repair(built_unit);
-					helper::progress_build(built_unit, hp_gain, FALSE);
+					u32 hp_gain = helper::progress_build_get_hp_gain(built_unit);
+					cm::progress_build(built_unit, {
+						.builder = unit,
+						.already_ticked = true,
+						.hp_gain = hp_gain,
+					});
+					helper::generic_progress_build(built_unit, hp_gain, false);
 					if (built_unit->status & UnitStatus::Completed) {
 						helper::add_hangar_unit(unit, built_unit);
 						if (unit->status & UnitStatus::IsHallucination) {
@@ -104,20 +109,13 @@ namespace hooks {
 				Unit* built_unit = unit->current_build_unit;
 				if (built_unit) {
 					UnitExt* built_unit_ext = get_unit_ext(built_unit);
-					bool extra_build = false;
-					BuildingModifier modifier = get_building_modifier(unit, 0, false);
-					u32 hp_gain = helper::get_hp_gain_for_repair(built_unit) * modifier.multiplier;
-					if (modifier.decrease) {
-						if (built_unit->remaining_build_time > modifier.decrease) {
-							built_unit->remaining_build_time -= modifier.decrease;
-						} else {
-							built_unit->remaining_build_time = 0;
-							if (unit_needs_hp_train_workaround(built_unit)) {
-								helper::set_unit_hp(built_unit, built_unit->get_max_hp_raw());
-							}
-						}
-					}
-					if (extra_build || helper::progress_build(built_unit, hp_gain, true)) {
+					u32 hp_gain = helper::progress_build_get_hp_gain(built_unit);
+					cm::progress_build(built_unit, {
+						.builder = unit,
+						.already_ticked = true,
+						.hp_gain = hp_gain,
+					});
+					if (helper::generic_progress_build(built_unit, hp_gain, true)) {
 						if (built_unit->status & UnitStatus::Completed) {
 							u32 count = 1;
 							Unit* built_units[2] = {built_unit, 0};
@@ -209,8 +207,7 @@ namespace hooks {
 	}
 
 	// Hooked to try a different approach for Massacre resources. -Pr0nogo
-	void update_unit_stats_and_finish_building(Unit* unit) // 004A01F0
-	{
+	void update_unit_stats_and_finish_building(Unit* unit) { // 004A01F0
 		if (unit->remaining_build_time) {
 			unit->hitpoints = units_dat::max_hitpoints[unit->id];
 			unit->shields = units_dat::max_shield_points[unit->id] << 8;

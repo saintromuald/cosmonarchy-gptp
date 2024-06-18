@@ -423,9 +423,9 @@ struct UnitExt {
 	Point16					last_seen_position[PlayerLimit];
 	u32						last_seen_timer[PlayerLimit];
 
-	f32						building_tick_progress;
-	f32						building_tick_last_progress;
-	u32						building_tick_last_update;
+	f32						build_progress_float;
+	u32						build_progress_integer;
+	u32						build_progress_last_update_tick;
 
 	u32						salvage_time;
 	f32						salvage_minerals;

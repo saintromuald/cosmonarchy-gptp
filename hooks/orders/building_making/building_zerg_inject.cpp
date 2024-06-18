@@ -1,4 +1,4 @@
-#include "hooks\orders\building_making\building_morph.h"
+#include "hooks\orders\building_making\building_zerg.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include <hook_tools.h>
 #include "BW\structures\Unit.h"
@@ -487,7 +487,7 @@ namespace
 
 namespace hooks
 {
-	void inject_building_morph_hooks()
+	void inject_building_zerg_hooks()
 	{
 		jump_patch(orders_is_morphing_wrapper,											0x0045CD00, 2);
 		jump_patch(orders_zerg_build_self_wrapper,										0x0045D500, 0);

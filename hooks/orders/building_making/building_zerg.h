@@ -20,5 +20,5 @@ namespace hooks
 	void orders_morph2(Unit* unit);								// 0045D0D0
 	void droleth_build_excisant(Unit* builder);					// 0045D790
 
-	void inject_building_morph_hooks();
+	void inject_building_zerg_hooks();
 }

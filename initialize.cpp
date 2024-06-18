@@ -39,7 +39,7 @@
 #include "hooks/orders/ai/ai_orders.h"
 #include "hooks/orders/base_orders/attack_orders.h"
 #include "hooks/interface/btns_cond.h"
-#include "hooks/orders/building_making/building_morph.h"
+#include "hooks/orders/building_making/building_zerg.h"
 #include "hooks/interface/buttonsets.h"
 #include "hooks/orders/building_making/building_protoss.h"
 #include "hooks/orders/building_making/building_terran.h"
@@ -756,7 +756,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::inject_enter_nydus_hooks();
 	hooks::inject_cast_order_hooks();
 	hooks::inject_weapon_spell_hit_hooks();
-	hooks::inject_building_morph_hooks();
+	hooks::inject_building_zerg_hooks();
 	hooks::inject_make_nydus_exit_hooks();
 	hooks::inject_unit_morph_hooks();
 	hooks::inject_wireframe_hooks();

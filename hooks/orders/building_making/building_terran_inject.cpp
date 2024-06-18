@@ -159,7 +159,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) building_addon_wrapper() { // 004679A0
+	void __declspec(naked) generic_progress_build_wrapper() { // 004679A0
 		static b32 result;
 		static Unit* unit;
 		static u32 hp_gain;
@@ -175,7 +175,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::building_addon(unit, hp_gain, is_incomplete);
+		result = hooks::generic_progress_build(unit, hp_gain, is_incomplete);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -291,7 +291,7 @@ namespace hooks
 	//	jump_patch(orders_place_addon_wrapper,				0x004E6880, 1); // bugged, patched instead
 		jump_patch(unit_is_geyser_wrapper,					0x004688B0, 2);
 	//	jump_patch(is_constructing_addon_wrapper,			0x004E66B0, 2); // Probably fine, but not necessary
-		jump_patch(building_addon_wrapper,					0x004679A0,	1);
+		jump_patch(generic_progress_build_wrapper,			0x004679A0,	1);
 		jump_patch(disconnect_addon_wrapper,				0x00464930,	5);
 		jump_patch(complete_addon_wrapper,					0x00463D50,	1);
 		jump_patch(play_addon_detach_sound_wrapper,			0x0048F8A0,	2);

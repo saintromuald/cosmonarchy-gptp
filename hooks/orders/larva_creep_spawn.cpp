@@ -72,20 +72,14 @@ namespace hooks
 			// Count existing larvas in LARVA_COUNTER
 			helper::iterate_units_at_location_target_proc_larva_count(unit, &coords);
 			if (*g_larva_counter < 3 && !(unit->status & UnitStatus::InAir)) {
-				if (unit->building.larva_timer != 0) {
-					unit->building.larva_timer--;
-
-					BuildingModifier modifier = get_building_modifier(unit, 0, false);
-					if (modifier.decrease) {
-						if (unit->building.larva_timer > modifier.decrease) {
-							unit->building.larva_timer -= modifier.decrease;
-						} else {
-							unit->building.larva_timer = 0;
-						}
-					}
+				const auto modifier = cm::get_building_modifier(unit);
+				if (unit->building.larva_timer > modifier.integer_step) {
+					unit->building.larva_timer -= modifier.integer_step;
+				} else {
+					unit->building.larva_timer = 0;
 				}
 
-				if (unit->building.larva_timer == 0) {
+				if (!unit->building.larva_timer) {
 					unit->building.larva_timer = LarvaSpawnRate;
 
 					u32 unit_id = unit->id;
@@ -106,13 +100,11 @@ namespace hooks
 			if (unit->building.creep_timer >= 2) {
 				unit->building.creep_timer -= 2;
 
-				BuildingModifier modifier = get_building_modifier(unit, 0, false);
-				if (modifier.decrease) {
-					if (unit->building.creep_timer > modifier.decrease) {
-						unit->building.creep_timer -= modifier.decrease;
-					} else {
-						unit->building.creep_timer = 0;
-					}
+				const auto modifier = cm::get_building_modifier(unit, { .already_ticked = true });
+				if (unit->building.creep_timer > modifier.integer_step) {
+					unit->building.creep_timer -= modifier.integer_step;
+				} else {
+					unit->building.creep_timer = 0;
 				}
 			} else {
 				unit->building.creep_timer = 0;
