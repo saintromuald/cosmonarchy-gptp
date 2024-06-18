@@ -307,5 +307,6 @@ namespace hooks {
 		jump_patch(replay_save_wrapper,					0x004EEBEA, 1);
 
 		jump_patch(initialize_provider_version_wrapper, 0x00472770, 1);
+		jump_patch(network_set_return_menu,				0x004DC5B0, 0);
 	}
 }
