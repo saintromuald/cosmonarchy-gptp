@@ -2621,11 +2621,15 @@ namespace hooks {
 			}
 		}
 
+		// Update speed for Tyrannized units
+		if (unit_ext->values[ValueMindControllerUnitId]) {
+			should_update_speed = true;
+		}
+
 		// Tyranny - increase stacks
 		if (unit_ext->units[UnitMindTyrantLink]) {
 			if (unit_ext->values[ValueMindTyrantTyranny] < TyrannyMaxStacks) {
 				unit_ext->values[ValueMindTyrantTyranny]++;
-				should_update_speed = true;
 			} else {
 				if (!(unit->status & UnitStatus::Frozen)) {
 					unit->freeze();
@@ -2635,6 +2639,7 @@ namespace hooks {
 			}
 			u32 overlay_id = ImageId::TyrannyStunSmall + bw::get_overlay_offset(unit->id);
 			bw::add_unit_overlay(unit, overlay_id);
+			should_update_speed = true;
 		} else if (unit_ext->values[ValueMindTyrantTyranny]) {
 			u32 overlay_id = ImageId::MindControlHit_Small + bw::get_overlay_offset(unit->id);
 			bw::add_unit_overlay(unit, overlay_id);
