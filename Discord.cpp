@@ -13,7 +13,7 @@ DiscordState::DiscordState(bool in_game) : m_in_game(in_game) {
 		if (g_is_in_replay) {
 			m_state = EDiscordState::InReplay;
 			m_activity_type = DiscordActivityType_Watching;
-		} else if (g_globals->players[*g_local_nation_id].witness_mode) {
+		} else if (g_globals->players[g_local_nation_id].witness_mode) {
 			m_state = EDiscordState::InGameWitness;
 			m_activity_type = DiscordActivityType_Watching;
 		} else {
@@ -25,7 +25,7 @@ DiscordState::DiscordState(bool in_game) : m_in_game(in_game) {
 		m_activity_type = DiscordActivityType_Playing;
 	}
 	m_map_name = g_current_map_name;
-	m_race = (RaceId::Enum)g_player_table[*g_local_nation_id].race;
+	m_race = (RaceId::Enum)g_player_table[g_local_nation_id].race;
 	m_game_kind = bw::get_game_kind();
 }
 

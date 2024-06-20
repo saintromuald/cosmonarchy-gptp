@@ -117,27 +117,25 @@ namespace hooks
 		BufferStr* v8; // [esp-8h] [ebp-10h]
 
 		Unit* active_unit = *g_active_portrait_unit;
-		*g_supplies_available_temp = active_unit->building.resource.resource_amount;
-		if (*g_status_screen_func != 15)
-		{
+		g_supplies_available_temp = active_unit->building.resource.resource_amount;
+		if (g_status_screen_func != 15) {
 			helper::hide_optional_status_screen_controls(dialog);
 			helper::show_control_group(dialog, -10, -13);
-			*g_status_screen_func = 15;
+			g_status_screen_func = 15;
 		}
 		helper::add_text_to_dialog(dialog, -10, 0);
 		helper::add_text_to_dialog(dialog, -12, 0);
 		helper::add_text_to_dialog(dialog, -13, 0);
 		v2 = active_unit->id;
-		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u)
-		{
+		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u) {
 			if (*g_stat_txt_tbl > 0x31Bu)
 				v3 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[796];
 			else
 				v3 = "";
 			v7 = (u16)active_unit->building.resource.resource_amount;
 LABEL_14:
-			sprintf_s(g_struct_char->buf, 260, "%s %d", v3, v7);
-			v8 = g_struct_char;
+			sprintf_s(g_struct_char.buf, 260, "%s %d", v3, v7);
+			v8 = &g_struct_char;
 			goto LABEL_19;
 		}
 		v4 = active_unit->building.resource.resource_amount;
@@ -415,7 +413,7 @@ LABEL_26:
 			|| (v23 = (*(s32*)(v5 + 220) >> 30) & 1) != 0
 			|| v21 == 40)
 		{
-			if (*(u8*)(v5 + 76) == *g_local_nation_id)
+			if (*(u8*)(v5 + 76) == g_local_nation_id)
 			{
 				if (v22)
 				{

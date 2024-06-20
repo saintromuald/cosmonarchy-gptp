@@ -16,7 +16,7 @@ public:
 	void update() { // TODO: call when user (on client side) selects a new group of units
 		reset();
 
-		for (u32 i = 0; i < *g_client_selection_count; i++) {
+		for (u32 i = 0; i < g_client_selection_count; i++) {
 			Unit* unit = g_client_selection_group->unit[i];
 			if (std::find(buttonsets.begin(), buttonsets.end(), unit->id) != buttonsets.end()) {
 				buttonsets.push_back(unit->id);

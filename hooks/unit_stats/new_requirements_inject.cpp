@@ -82,15 +82,12 @@ namespace
 	void __declspec(naked) do_place_building_checking_patch_wrapper() {
 		static u32 dat_req_offset;
 		static u16 unit_id;
-
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV dat_req_offset, EAX
 		}
-
-		unit_id = hooks::addon_datreq_fix(dat_req_offset, *g_place_building_unit_id);
-
+		unit_id = hooks::addon_datreq_fix(dat_req_offset, g_place_building_unit_id);
 		__asm {
 			POPAD
 			MOV AX, unit_id

@@ -5,8 +5,8 @@
 #include "config.h"
 
 bool unit_is_owned_by_current_player_new(Unit* unit) {
-	if (!g_is_in_replay && !g_globals->players[*g_local_nation_id].witness_mode) {
-		return unit->player == *g_local_nation_id;
+	if (!g_is_in_replay && !g_globals->players[g_local_nation_id].witness_mode) {
+		return unit->player == g_local_nation_id;
 	}
 	return unit->player == active_player_selection->unit[0]->player;
 }
@@ -18,8 +18,8 @@ namespace hooks
 		Unit* ub = *(Unit**)b;
 
 		Point16 mouse_pos = {};
-		mouse_pos.x = *g_move_to_x + g_selection_start->x;
-		mouse_pos.y = *g_move_to_y + g_selection_start->y;
+		mouse_pos.x = g_move_to_x + g_selection_start->x;
+		mouse_pos.y = g_move_to_y + g_selection_start->y;
 
 		s32 distance_a = bw::distance_between(ua->position, mouse_pos);
 		s32 distance_b = bw::distance_between(ub->position, mouse_pos);
@@ -35,8 +35,7 @@ namespace hooks
 	}
 
 	// Function used by Ctrl+Click (select all units of same type)
-	u32 sort_all_units(Unit* unit, Unit** unit_list, Unit** units_in_bounds) // 0046F0F0
-	{
+	u32 sort_all_units(Unit* unit, Unit** unit_list, Unit** units_in_bounds) { // 0046F0F0
 		sort_unit_selection(units_in_bounds);
 		Unit* backup_current_unit = 0;
 		bool stop_big_loop = false;
@@ -135,9 +134,9 @@ namespace hooks
 							dont_add_to_list = true;
 						} else if (!helper::unit_is_standard_and_movable(current_unit)) {
 							keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
-						} else if (g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode) {
+						} else if (g_is_in_replay || g_globals->players[g_local_nation_id].witness_mode) {
 							goto new_replay_logic; // New from DF
-						} else if (current_unit->player != *g_local_nation_id) {
+						} else if (current_unit->player != g_local_nation_id) {
 							keep_for_empty_list_case = true;
 						} else {
 						new_replay_logic:
@@ -265,10 +264,10 @@ namespace hooks
 					u32 sorted_list_length;
 
 					// locate surrounding units for unit_list
-					local_temp_box16_structure.left = *g_move_to_x;
-					local_temp_box16_structure.top = *g_move_to_y;
-					local_temp_box16_structure.right = *g_move_to_x + 640;
-					local_temp_box16_structure.bottom = *g_move_to_y + 400;
+					local_temp_box16_structure.left = g_move_to_x;
+					local_temp_box16_structure.top = g_move_to_y;
+					local_temp_box16_structure.right = g_move_to_x + 640;
+					local_temp_box16_structure.bottom = g_move_to_y + 400;
 					units_in_bounds = helper::get_all_units_in_bounds(&local_temp_box16_structure);
 					sorted_list_length = sort_all_units(clicked_unit, local_temp_array_1, units_in_bounds);
 
@@ -298,10 +297,10 @@ namespace hooks
 					u32 sorted_list_length;
 
 					// prepare to locate surrounding units for unit_list
-					local_temp_box16_structure.left = *g_move_to_x;
-					local_temp_box16_structure.top = *g_move_to_y;
-					local_temp_box16_structure.right = *g_move_to_x + 640;
-					local_temp_box16_structure.bottom = *g_move_to_y + 400;
+					local_temp_box16_structure.left = g_move_to_x;
+					local_temp_box16_structure.top = g_move_to_y;
+					local_temp_box16_structure.right = g_move_to_x + 640;
+					local_temp_box16_structure.bottom = g_move_to_y + 400;
 
 					// save existing unit_list to a temporary array
 					for (s32 i = 0; i < SelectionCap; i++) {
@@ -579,28 +578,21 @@ namespace hooks
 	}
 
 	// Hooked to help debug hpbars.cpp hooks. -Pr0nogo
-	void create_unit_selection(Unit* unit, char index) // 004E6180
-	{
+	void create_unit_selection(Unit* unit, char index) { // 004E6180
 		Sprite* sprite = unit->sprite;
-		if (units_dat::base_property[unit->id] & UnitStatus::Invincible)
-		{
-			if (!(sprite->flags & SpriteFlags::DrawSelCircle))
-			{
-				if (helper::create_selection_circle(sprite, g_selection_circle_color[(unsigned __int8)unit->player], ImageId::SelectionCircleDashed_22pixels))
-				{
+		if (units_dat::base_property[unit->id] & UnitStatus::Invincible) {
+			if (!(sprite->flags & SpriteFlags::DrawSelCircle)) {
+				if (helper::create_selection_circle(sprite, g_selection_circle_color[unit->player], ImageId::SelectionCircleDashed_22pixels)) {
 					sprite->flags |= SpriteFlags::DrawSelCircle;
 				}
 			}
 			Sprite* sprite_copy = unit->sprite;
 			sprite_copy->flags |= SpriteFlags::Selected;
 			sprite_copy->selection_index = index;
-		}
-		else
-		{
-			u8 sprite_id = g_selection_circle_color[(unsigned __int8)unit->player];
+		} else {
+			u8 sprite_id = g_selection_circle_color[unit->player];
 			u8 sprite_flags = sprite->flags;
-			if (!(sprite_flags & SpriteFlags::Selected))
-			{
+			if (!(sprite_flags & SpriteFlags::Selected)) {
 				sprite->selection_index = index;
 				sprite->flags = sprite_flags | SpriteFlags::Selected;
 				helper::create_healthbar(sprite);
@@ -612,12 +604,9 @@ namespace hooks
 					}
 				}
 			}
-			if (!g_is_in_replay && unit->player == *g_local_nation_id)
-			{
-				if (unit->status & UnitStatus::Completed)
-				{
-					if (unit_id_is_power_generator(unit->id))
-					{
+			if (!g_is_in_replay && unit->player == g_local_nation_id) {
+				if (unit->status & UnitStatus::Completed) {
+					if (unit_id_is_power_generator(unit->id)) {
 						helper::create_pylon_aura();
 					}
 				}
@@ -850,20 +839,15 @@ namespace hooks
 	}
 
 	// Hooked as part of the selection extender. Unfinished. -Pr0nogo
-	char select_unit_initial() // 0049B690
-	{
+	char select_unit_initial() { // 0049B690
 		char result = 0;
-		for (u32 i = 0; i < SelectionCap; ++i)
-		{
+		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit_from_selection = active_player_selection->unit[i];
-			if (!unit_from_selection)
-			{
+			if (!unit_from_selection) {
 				break;
 			}
-			if (g_is_in_replay || unit_from_selection->player != *g_local_nation_id)
-			{
-				if (units_dat::base_property[unit_from_selection->id] & UnitProperty::Subunit)
-				{
+			if (g_is_in_replay || unit_from_selection->player != g_local_nation_id) {
+				if (units_dat::base_property[unit_from_selection->id] & UnitProperty::Subunit) {
 					helper::destroy_unit_selection(unit_from_selection->subunit);
 					helper::create_unit_selection(unit_from_selection->subunit, i);
 					active_player_selection->unit[i] = unit_from_selection->subunit;
@@ -874,51 +858,36 @@ namespace hooks
 			}
 		}
 
-		if (*g_multiplayer_mode)
-		{
-			if (game_data->teams_enabled)
-			{
+		if (*g_multiplayer_mode) {
+			if (game_data->teams_enabled) {
 				Unit* player_selection = *players_selections->unit[0];
 				Unit* player_selection_2 = *players_selections->unit[0];
 				u32 force_offset = 0;
 				u32 iterations_2 = 0;
-				for (u32 force_offset = 0; force_offset < 0x120; force_offset += 36)
-				{
+				for (u32 force_offset = 0; force_offset < 0x120; force_offset += 36) {
 					result = *g_local_human_id;
-					if (iterations_2 != result)
-					{
-						if (g_player_table[result].force == (g_player_table[0].force + force_offset))
-						{
-							for (u32 i_3 = 0; i_3 < SelectionCap; ++i_3)
-							{
+					if (iterations_2 != result) {
+						if (g_player_table[result].force == (g_player_table[0].force + force_offset)) {
+							for (u32 i_3 = 0; i_3 < SelectionCap; ++i_3) {
 								Unit* previous_unit = player_selection->link.prev;
-								if (!player_selection->link.prev)
-								{
+								if (!player_selection->link.prev) {
 									break;
 								}
-								if (g_is_in_replay || previous_unit->player != *g_local_nation_id)
-								{
+								if (g_is_in_replay || previous_unit->player != g_local_nation_id) {
 									Sprite* previous_sprite = previous_unit->sprite;
 									u32 sprite_flags = previous_sprite->flags >> 1;
-									if (sprite_flags & (SpriteFlags::DrawSelCircle | SpriteFlags::Flag01))
-									{
+									if (sprite_flags & (SpriteFlags::DrawSelCircle | SpriteFlags::Flag01)) {
 										u32 sprite_flags_2 = previous_sprite->flags ^ (previous_sprite->flags ^ 2 * (sprite_flags - 1)) & 6;
 										previous_sprite->flags = sprite_flags_2;
-										if (!(sprite_flags_2 & (SpriteFlags::Flag01 | SpriteFlags::Flag02)))
-										{
+										if (!(sprite_flags_2 & (SpriteFlags::Flag01 | SpriteFlags::Flag02))) {
 											Image* underlay = previous_sprite->images.tail;
-											if (underlay)
-											{
-												while (1)
-												{
-													if (underlay->id >= ImageId::SelectionCircleDashed_22pixels
-														&& underlay->id <= ImageId::SelectionCircleDashed_224pixels)
-													{
+											if (underlay) {
+												while (1) {
+													if (underlay->id >= ImageId::SelectionCircleDashed_22pixels && underlay->id <= ImageId::SelectionCircleDashed_224pixels) {
 														break;
 													}
 													underlay = underlay->link.prev;
-													if (!underlay)
-													{
+													if (!underlay) {
 														goto LABEL_29;
 													}
 												}
@@ -930,8 +899,7 @@ namespace hooks
 									u32 previous_player = previous_unit->player;
 									Sprite* previous_sprite_2 = previous_unit->sprite;
 									u32 sprite_flags_3 = previous_sprite_2->flags;
-									if (((sprite_flags_3 >> 1) & (SpriteFlags::DrawSelCircle | SpriteFlags::Flag01)) != helper::illegal_team_check(player_selection) - 1)
-									{
+									if (((sprite_flags_3 >> 1) & (SpriteFlags::DrawSelCircle | SpriteFlags::Flag01)) != helper::illegal_team_check(player_selection) - 1) {
 										u32 sprite_flags_4 = sprite_flags_3 ^ (sprite_flags_3 ^ ((sprite_flags_3 & 0xFE) + 2)) & 6;
 										previous_sprite_2->flags = sprite_flags_4;
 										if ((sprite_flags_4 & (SpriteFlags::Flag01 | SpriteFlags::Flag02)) <= 2
@@ -960,12 +928,10 @@ namespace hooks
 	{
 		for (s32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit_from_selection = active_player_selection->unit[i];
-			if (!unit_from_selection)
-			{
+			if (!unit_from_selection) {
 				break;
 			}
-			if (units_dat::base_property[unit_from_selection->id] & UnitProperty::Subunit)
-			{
+			if (units_dat::base_property[unit_from_selection->id] & UnitProperty::Subunit) {
 				helper::create_unit_selection(unit_from_selection->subunit, i);
 				active_player_selection->unit[i] = unit_from_selection->subunit;
 			} else {
@@ -974,17 +940,14 @@ namespace hooks
 		}
 
 		u32 player_zeroed = 0;
-		if (*g_multiplayer_mode)
-		{
-			if (game_data->teams_enabled)
-			{
+		if (*g_multiplayer_mode) {
+			if (game_data->teams_enabled) {
 				u32 local_player = *g_local_human_id;
 				u32 local_force = g_player_table[*g_local_human_id].force;
 				u32 player_iterator = 8;
 				char* game_result_text_var = *game_result_text; // Actually a unit var
 				u8 last_player_force = g_player_table[8].force;
-				while (1)
-				{
+				while (1) {
 					Player* player_from_force = 0;						// Avoids compiler errors, obviously not final
 				//	Player* player_from_force = last_player_force - 36; // Some struct nonsense
 					Player* player_from_force_2 = player_from_force;
@@ -996,8 +959,7 @@ namespace hooks
 						player_zeroed = player_from_force->id;
 						bool iterations_2 = 0;
 						bool iterations_3 = 0;
-						if (player_zeroed == local_force)
-						{
+						if (player_zeroed == local_force) {
 							/*
 							for (u32 i = 0; iterations_2 ^ iterations_3; ++i) {
 
@@ -1005,23 +967,18 @@ namespace hooks
 							*/
 
 							u8 iterations = 0;
-							do
-							{
+							do {
 								Unit* unit_from_selection = *selection;
-								if (!*selection)
-								{
+								if (!*selection) {
 									break;
 								}
 								Sprite* sprite = unit_from_selection->sprite;
 								u8 sprite_flags = sprite->flags;
 								u8 color = g_selection_circle_color[unit_from_selection->player];
-								if (((sprite_flags >> 1) & 3) != helper::illegal_team_check(*selection) - 1)
-								{
+								if (((sprite_flags >> 1) & 3) != helper::illegal_team_check(*selection) - 1) {
 									u8 sprite_flags_2 = sprite_flags ^ (sprite_flags ^ ((sprite_flags & 0xFE) + 2)) & 6; // xd
 									sprite->flags = sprite_flags_2;
-									if ((sprite_flags_2 & 6u) <= 2
-										&& !helper::create_selection_circle(sprite, color, ImageId::SelectionCircleDashed_22pixels))
-									{
+									if ((sprite_flags_2 & 6u) <= 2 && !helper::create_selection_circle(sprite, color, ImageId::SelectionCircleDashed_22pixels)) {
 										sprite->flags &= 0xF9u;
 									}
 								}
@@ -1052,32 +1009,28 @@ namespace hooks
 	void update_selected_unit_data() { // 004C38B0
 		Unit** current_unit_offset = (Unit**)g_client_selection_group;
 		Unit* unit_at_selection_top = 0;
-		for (u32 i = 0; i < SelectionCap; i++)
-		{
+		for (u32 i = 0; i < SelectionCap; i++) {
 			g_client_selection_group->unit[i] = active_player_selection->unit[i];
 		}
 
-		*g_client_selection_count = 0;
+		g_client_selection_count = 0;
 		*g_active_portrait_unit = 0;
 		while (*current_unit_offset < g_client_selection_group_end) {
 			Unit* current_unit = *current_unit_offset;
 
 			if (current_unit) {
-				if (helper::compare_unit_rank(current_unit, unit_at_selection_top) != 0)
-				{
+				if (helper::compare_unit_rank(current_unit, unit_at_selection_top) != 0) {
 					unit_at_selection_top = current_unit;
 				}
-				(*g_client_selection_count)++;
+				g_client_selection_count++;
 			}
 			current_unit_offset++;
 		}
 
 		*g_active_portrait_unit = unit_at_selection_top;
-		if (*g_client_selection_count == 1)
-		{
+		if (g_client_selection_count == 1) {
 			g_client_selection_group->unit[0] = *g_active_portrait_unit;
-			for (u32 i = 1; i < SelectionCap; i++)
-			{
+			for (u32 i = 1; i < SelectionCap; i++) {
 				g_client_selection_group->unit[i] = 0;
 			}
 		}
@@ -1093,7 +1046,7 @@ namespace hooks
 		if (*g_is_holding_shift) {
 			memset(&unit_list, 0, sizeof(unit_list));
 			BinDlg* current_dialog;
-			u32 count = *g_client_selection_count;
+			u32 count = g_client_selection_count;
 
 			if (g_config.always_show_condensed_selection || count > GroupWireframesCap) {
 				current_dialog = dialog;
@@ -1167,7 +1120,7 @@ namespace hooks
 			}
 		} else {
 			unit = (Unit*)*dialog->user;
-			u32 count = *g_client_selection_count;
+			u32 count = g_client_selection_count;
 
 			if (g_config.always_show_condensed_selection || *g_is_holding_ctrl || count > GroupWireframesCap) {
 				memset(&unit_list, 0, sizeof(unit_list));
@@ -1261,7 +1214,7 @@ namespace hooks
 	}
 
 	void generate_group_wireframes(BinDlg* dialog) {
-		if (*g_status_screen_func != 1) {
+		if (g_status_screen_func != 1) {
 			BinDlg* current_dialog = dialog;
 
 			if (!current_dialog->control_type) {
@@ -1273,7 +1226,7 @@ namespace hooks
 				current_dialog = current_dialog->next;
 			}
 
-			*g_status_screen_func = 1;
+			g_status_screen_func = 1;
 		}
 
 		helper::store_selection_group_hp_and_type();
@@ -1294,7 +1247,7 @@ namespace hooks
 			}
 
 			u32 grpWire_count = GroupWireframesCap;
-			u32 selection_count = *g_client_selection_count;
+			u32 selection_count = g_client_selection_count;
 			u8 i_0 = 0;
 
 			if (selection_count > grpWire_count || g_config.always_show_condensed_selection) {

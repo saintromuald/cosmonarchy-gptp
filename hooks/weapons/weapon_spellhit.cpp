@@ -66,7 +66,7 @@ namespace hooks {
 		u8 result = helper::ignore_iscript_go_to_idle(unit);
 		Sprite* sprite = unit->sprite;
 		if (sprite->flags & SpriteFlags::Selected) {
-			if (*g_client_selection_count > 1) {
+			if (g_client_selection_count > 1) {
 				result = helper::update_building_land_unit_selection(*(u32*)sprite, unit);
 			}
 		}
@@ -639,8 +639,8 @@ namespace hooks {
 				if (!v6) {
 					goto LABEL_15;
 				}
-				if (v7 < g_stat_txt_buffer->get_string_count()) {
-					v8 = g_stat_txt_buffer->get_string(v7 + 1);
+				if (v7 < g_stat_txt_buffer.get_string_count()) {
+					v8 = g_stat_txt_buffer.get_string(v7 + 1);
 					if (!v8) {
 				LABEL_15:
 						if (v1->order_queue_head) {
@@ -656,7 +656,7 @@ namespace hooks {
 				} else {
 					v8 = "";
 				}
-				if ((u8)v1->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
+				if ((u8)v1->player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(v8);
 				}
 				goto LABEL_15;

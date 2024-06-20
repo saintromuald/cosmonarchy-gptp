@@ -70,7 +70,7 @@ void append_tooltip_value(std::string& text, f32 value, f32 bonus, bool extended
 
 const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string_index) {
 	const bool extended = *g_is_holding_shift || g_config.always_show_extended_tooltips;
-	bool in_replay_or_witness = g_globals->players[*g_local_nation_id].witness_mode || g_is_in_replay;
+	bool in_replay_or_witness = g_globals->players[g_local_nation_id].witness_mode || g_is_in_replay;
 
 	// Get game strings
 	const char* entry_name = g_stat_txt_tbl_new->get_string(entry_string_index);
@@ -194,7 +194,7 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string
 			text += builder.str();
 		}
 		append_tooltip_value(text, range, bonus_range, extended);
-		if (extended && (bw::are_mutual_allies(unit->player, *g_local_nation_id) || in_replay_or_witness)) {
+		if (extended && (bw::are_mutual_allies(unit->player, g_local_nation_id) || in_replay_or_witness)) {
 			bw::draw_weapon_range(unit, weapon_id, 174);
 		}
 	}
@@ -315,7 +315,7 @@ namespace hooks
 		UnitExt* unit_ext = get_unit_ext(unit);
 
 		const bool extended = *g_is_holding_shift || g_config.always_show_extended_tooltips;
-		bool in_replay_or_witness = g_globals->players[*g_local_nation_id].witness_mode || g_is_in_replay;
+		bool in_replay_or_witness = g_globals->players[g_local_nation_id].witness_mode || g_is_in_replay;
 
 		const u16 label_id = upgrades_dat::label[units_dat::armor_upgrade[unit->id]];
 		const char* armor_upgrade_name = g_stat_txt_tbl_new->get_string(label_id);

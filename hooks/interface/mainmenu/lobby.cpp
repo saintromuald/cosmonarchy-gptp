@@ -19,7 +19,7 @@ namespace hooks
 				srand(*g_initial_random_seed);
 
 				helper::switch_all_available_computer_slots_to_open();
-				g_player_table[*g_local_nation_id].race = g_selected_singleplayer_race[0];
+				g_player_table[g_local_nation_id].race = g_selected_singleplayer_race[0];
 				for (s32 player = 0; player < 8; player++) {
 					if (g_selected_singleplayer_race[player + 1] != RaceId::None)
 					{
@@ -148,12 +148,12 @@ namespace hooks
 			}
 		} else if (dropdown->flags & 8) {
 			if (dropdown->initial_version_0x46.text_pos.x && dropdown->initial_version_0x46.text_pos.y != -1) {
-				g_player_table[*g_local_nation_id].race = dropdown->child_dialog->bounds.x * dropdown->initial_version_0x46.text_pos.y; // I don't think this is correct
+				g_player_table[g_local_nation_id].race = dropdown->child_dialog->bounds.x * dropdown->initial_version_0x46.text_pos.y; // I don't think this is correct
 				g_is_in_game_loop = 1;
 				result = helper::randomize_player_slot();
 				g_is_in_game_loop = 0;
 			} else {
-				g_player_table[*g_local_nation_id].race = 6;
+				g_player_table[g_local_nation_id].race = 6;
 				g_is_in_game_loop = 1;
 				result = helper::randomize_player_slot();
 				g_is_in_game_loop = 0;

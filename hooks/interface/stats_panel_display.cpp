@@ -18,7 +18,7 @@ namespace hooks
 		Unit* active_unit = *g_active_portrait_unit;
 		u32 index = 0;
 
-		if (!(active_unit->status & UnitStatus::IsHallucination) || (!g_is_in_replay && active_unit->player != *g_local_nation_id))
+		if (!(active_unit->status & UnitStatus::IsHallucination) || (!g_is_in_replay && active_unit->player != g_local_nation_id))
 		{
 			bool no_air_weapon_display;
 			u32 air_weapon;
@@ -273,13 +273,13 @@ namespace hooks
 			}
 		} else if (unit->kill_count) {
 			const char* text = "";
-			if (g_stat_txt_buffer->get_string_count() > 763) {
-				text = g_stat_txt_buffer->get_string(764);
+			if (g_stat_txt_buffer.get_string_count() > 763) {
+				text = g_stat_txt_buffer.get_string(764);
 			}
 
 			sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
 			helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
-		} else if (unit->player == *g_local_nation_id && !g_is_in_replay) {
+		} else if (unit->player == g_local_nation_id && !g_is_in_replay) {
 			BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
 			BinDlg* child = actual_dialog->child_dialog;
 			while (child && child->index != 65515) {
@@ -317,10 +317,10 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		if (!g_is_in_replay && !bw::unit_is_allied_or_detected(unit, *g_local_nation_id)) {
-			if (*g_status_screen_func != 4) {
+		if (!g_is_in_replay && !bw::unit_is_allied_or_detected(unit, g_local_nation_id)) {
+			if (g_status_screen_func != 4) {
 				helper::hide_optional_status_screen_controls(dialog);
-				*g_status_screen_func = 4;
+				g_status_screen_func = 4;
 			}
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
@@ -348,10 +348,9 @@ namespace hooks
 			return;
 		}
 		if (helper::unit_is_active_transport(unit)) {
-			if (*g_status_screen_func != 4)
-			{
+			if (g_status_screen_func != 4) {
 				helper::hide_optional_status_screen_controls(dialog);
-				*g_status_screen_func = 4;
+				g_status_screen_func = 4;
 			}
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
@@ -407,9 +406,9 @@ namespace hooks
 		&&  units_dat::ground_weapon[helper::get_last_queue_slot_id(unit)] == WeaponId::None
 		&& !units_dat::shields_enabled[unit->id])
 		{
-			if (*g_status_screen_func != 4) {
+			if (g_status_screen_func != 4) {
 				helper::hide_optional_status_screen_controls(dialog);
-				*g_status_screen_func = 4;
+				g_status_screen_func = 4;
 			}
 			helper::set_text_string(dialog);
 			helper::set_unit_status_string_text(dialog);
@@ -417,10 +416,10 @@ namespace hooks
 			helper::add_text_to_dialog(dialog, -5, unit->get_name());
 			return;
 		}
-		if (*g_status_screen_func != 3) {
+		if (g_status_screen_func != 3) {
 			helper::hide_optional_status_screen_controls(dialog);
 			helper::show_control_group(dialog, -20, 12);
-			*g_status_screen_func = 3;
+			g_status_screen_func = 3;
 		}
 		helper::draw_display_buttons(dialog);
 		helper::hide_dialog(helper::get_control_from_index(dialog, -21));
@@ -721,7 +720,7 @@ namespace hooks
 			if (value) {
 				u8 stat_icon = grp_stat_res_icon_mapping[i];
 				if (stat_icon == 1) {
-					stat_icon = *g_console_index + 1;
+					stat_icon = g_console_index + 1;
 				}
 				if (stat_icon >= icons_grp->frame_count) {
 					stat_icon = 0;
@@ -844,14 +843,14 @@ namespace hooks
 	// Hooked to show progress bars on allied and detected eggs. -Pr0nogo
 	void unit_stat_act_egg(BinDlg* dialog) { // 00427260
 		Unit* unit = *g_active_portrait_unit;
-		if (!g_is_in_replay && !bw::unit_is_allied_or_detected(unit, *g_local_nation_id) || unit->status & UnitStatus::IsHallucination) {
+		if (!g_is_in_replay && !bw::unit_is_allied_or_detected(unit, g_local_nation_id) || unit->status & UnitStatus::IsHallucination) {
 			helper::unit_stat_act_standard(dialog);
 		} else {
-			if (*g_status_screen_func != 10) {
+			if (g_status_screen_func != 10) {
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -40, 17);
 				unit = *g_active_portrait_unit;
-				*g_status_screen_func = 10;
+				g_status_screen_func = 10;
 			}
 			u16 build_time = helper::get_remaining_build_time_percentage(unit);
 			helper::dialog_set_progress_bar_value(dialog, 16, build_time);
@@ -882,8 +881,8 @@ namespace hooks
 			u32 race_string_2 = race + 770;
 			const char* text = "";
 			if (race_string_1) {
-				if (race_string_2 < g_stat_txt_buffer->get_string_count()) {
-					text = g_stat_txt_buffer->get_string(race_string_2 + 1);
+				if (race_string_2 < g_stat_txt_buffer.get_string_count()) {
+					text = g_stat_txt_buffer.get_string(race_string_2 + 1);
 				} else {
 					text = "";
 				}
@@ -903,13 +902,11 @@ namespace hooks
 	{
 		BinDlg* current_dialog;
 		Unit* unit = *g_active_portrait_unit;
-		if (g_is_in_replay != 0 || unit->player == *g_local_nation_id)
-		{
-			if (*g_status_screen_func != 9)
-			{
+		if (g_is_in_replay != 0 || unit->player == g_local_nation_id) {
+			if (g_status_screen_func != 9) {
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -40, 17);
-				*g_status_screen_func = 9;
+				g_status_screen_func = 9;
 			}
 
 			Unit* built_unit = 0;
@@ -952,14 +949,12 @@ namespace hooks
 	}
 
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
-	void stats_incomplete_unit(BinDlg* dialog) // 004260C0
-	{
+	void stats_incomplete_unit(BinDlg* dialog) { // 004260C0
 		Unit* unit = *g_active_portrait_unit;
 		helper::show_control_group(dialog, -30, 13);
-		if (*g_status_screen_func != 6)
-		{
+		if (g_status_screen_func != 6) {
 			helper::hide_optional_status_screen_controls(dialog);
-			*g_status_screen_func = 6;
+			g_status_screen_func = 6;
 		}
 
 		helper::dialog_set_progress_bar_value(dialog, 13, helper::get_remaining_build_time_percentage(unit));
@@ -978,18 +973,16 @@ namespace hooks
 		} else {
 			current_dialog = dialog->parent->child_dialog;
 		}
-		while (current_dialog && current_dialog->index != 2)
-		{
+
+		while (current_dialog && current_dialog->index != 2) {
 			current_dialog = current_dialog->next;
 		}
 
-		if (g_is_in_replay || unit->player == *g_local_nation_id)
-		{
-			if (*g_status_screen_func != 5)
-			{
+		if (g_is_in_replay || unit->player == g_local_nation_id) {
+			if (g_status_screen_func != 5) {
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -15, 8);
-				*g_status_screen_func = 5;
+				g_status_screen_func = 5;
 			}
 
 			Unit* built_unit = 0;
@@ -1212,54 +1205,49 @@ namespace hooks
 		BinDlg* current_dialog;
 		if (units_dat::base_property[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building) // Originally checked for a Disruption Web ID range
 		{
-			if (*g_status_screen_func != 3)
-			{
+			if (g_status_screen_func != 3) {
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -20, 12);
-				*g_status_screen_func = 3;
+				g_status_screen_func = 3;
 			}
 
 			helper::draw_display_buttons(dialog);
-			if (dialog->control_type == DialogControlTypes::DialogBoxDC)
-			{
+			if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
 				current_dialog = dialog->child_dialog;
 			} else {
 				current_dialog = dialog->parent->child_dialog;
 			}
 
-			while (current_dialog && (s16)current_dialog->index != -20)
-			{
+			while (current_dialog && (s16)current_dialog->index != -20) {
 				current_dialog = current_dialog->next;
 			}
+
 			helper::hide_dialog(current_dialog);
-			if (dialog->control_type == DialogControlTypes::DialogBoxDC)
-			{
+			if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
 				current_dialog = dialog->child_dialog;
 			} else {
 				current_dialog = dialog->parent->child_dialog;
 			}
 
-			while (current_dialog && (s16)current_dialog->index != -21)
-			{
+			while (current_dialog && (s16)current_dialog->index != -21) {
 				current_dialog = current_dialog->next;
 			}
+
 			helper::hide_dialog(current_dialog);
 		} else { // TODO: Something in this half of the hook is cucko. -Pr0nogo
-			if (dialog->control_type == DialogControlTypes::DialogBoxDC)
-			{
+			if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
 				current_dialog = dialog->child_dialog;
 			} else {
 				current_dialog = dialog->parent->child_dialog;
 			}
-			while (current_dialog && (s16)current_dialog->index != 2)
-			{
+
+			while (current_dialog && (s16)current_dialog->index != 2) {
 				current_dialog = current_dialog->next;
 			}
 
-			if (*g_status_screen_func != 14)
-			{
+			if (g_status_screen_func != 14) {
 				helper::hide_optional_status_screen_controls(dialog);
-				*g_status_screen_func = 14;
+				g_status_screen_func = 14;
 			}
 
 			Unit* target = 0;
@@ -1275,8 +1263,7 @@ namespace hooks
 
 			u32 progress = 0;
 			u16 built_unit_id = 0;
-			if (target)
-			{
+			if (target) {
 				progress = helper::get_remaining_build_time_percentage(target);
 				built_unit_id = target->id;
 			}
@@ -1306,15 +1293,14 @@ namespace hooks
 	void unit_stat_act_archon(BinDlg* dialog) // 004273E0
 	{
 		Unit* unit = *g_active_portrait_unit;
-		if ((g_is_in_replay == 0 && unit->player != *g_local_nation_id) || unit->main_order_id != OrderId::CompletingArchonSummon)
+		if ((g_is_in_replay == 0 && unit->player != g_local_nation_id) || unit->main_order_id != OrderId::CompletingArchonSummon)
 		{
 			helper::unit_stat_act_standard(dialog);
 		} else {
 			helper::show_control_group(dialog, -30, 13);
-			if (*g_status_screen_func != 6)
-			{
+			if (g_status_screen_func != 6) {
 				helper::hide_optional_status_screen_controls(dialog);
-				*g_status_screen_func = 6;
+				g_status_screen_func = 6;
 			}
 			helper::dialog_set_progress_bar_value(dialog, 13, helper::get_remaining_build_time_percentage(unit));
 
@@ -1336,26 +1322,21 @@ namespace hooks
 		Unit* unit = *g_active_portrait_unit;
 		if (!(units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
 		||	  unit->status & UnitStatus::IsHallucination
-		||	(g_is_in_replay == 0 && unit->player != *g_local_nation_id))
+		||	(g_is_in_replay == 0 && unit->player != g_local_nation_id))
 		{
-			if ((unit->status & UnitStatus::IsHallucination || unit_id_is_broodspawn(unit->id))
-			&&	(g_is_in_replay != 0 || unit->player == *g_local_nation_id))
-			{
+			if ((unit->status & UnitStatus::IsHallucination || unit_id_is_broodspawn(unit->id)) && (g_is_in_replay != 0 || unit->player == g_local_nation_id)) {
 				u32 timer_max = 0; // 1/10 of internal value for display
-				if (unit->status & UnitStatus::IsHallucination)
-				{
+				if (unit->status & UnitStatus::IsHallucination) {
 					timer_max = 135;
 				} else if (unit_id_is_broodspawn(unit->id)) {
 					timer_max = 11;
 				}
 
 				u32 current_timer = unit->remove_timer / 10;
-				if (current_timer < 0)
-				{
+				if (current_timer < 0) {
 					current_timer++;
 				}
-				if (timer_max < 0)
-				{
+				if (timer_max < 0) {
 					timer_max++;
 				}
 
@@ -1373,12 +1354,12 @@ namespace hooks
 
 	// Hooked for 1/256 chance of BETTER unit names. -Pr0nogo
 	void unit_stat_act_default(BinDlg* dialog) { // 00425EE0
-		*g_status_screen_func = 0;
-
+		g_status_screen_func = 0;
 		BinDlg* final_dialog = dialog;
 		if (dialog->control_type == 0) {
 			final_dialog = *(BinDlg**)&dialog->child_dialog;
 		}
+
 		for (; final_dialog; final_dialog = final_dialog->next) {
 			helper::hide_dialog(final_dialog);
 		}
@@ -1394,10 +1375,10 @@ namespace hooks
 		*g_ui_shields = unit->shields >> 8;
 		*g_ui_energy = unit->energy >> 8;
 		helper::generic_status_update_drawn_values();
-		if (*g_status_screen_func != 2) {
+		if (g_status_screen_func != 2) {
 			helper::hide_optional_status_screen_controls(dialog);
 			helper::show_control_group(dialog, -20, 12);
-			*g_status_screen_func = 2;
+			g_status_screen_func = 2;
 		}
 		*g_unk_upgrade_count = 1;
 		helper::draw_display_buttons(dialog);

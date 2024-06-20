@@ -207,7 +207,7 @@ u32 unit_is_at_height(Unit* unit, u32 height) { // 0045F8D0
 // Hooked to add support for factional and crig-based advisors. -Pr0nogo
 u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
 	u32 portrait_id = units_dat::portrait_id[unit_id];
-	u32 player = *g_local_nation_id;
+	u32 player = g_local_nation_id;
 	Unit* active_unit = *g_active_portrait_unit;
 	if (active_unit) {
 		player = active_unit->player;

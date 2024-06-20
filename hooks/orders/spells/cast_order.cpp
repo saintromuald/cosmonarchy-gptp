@@ -49,8 +49,8 @@ namespace hooks
 		s16 order_string_index = default_order_string - 1;
 		const char* final_string;
 		if (default_order_string) {
-			if (order_string_index < g_stat_txt_buffer->get_string_count()) {
-				final_string = g_stat_txt_buffer->get_string(order_string_index + 1);
+			if (order_string_index < g_stat_txt_buffer.get_string_count()) {
+				final_string = g_stat_txt_buffer.get_string(order_string_index + 1);
 			} else {
 				final_string = "";
 			}
@@ -201,7 +201,7 @@ namespace hooks
 					u8 race_id = unit->get_race();
 					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + race_id); // Not enough energy
 					if (message) {
-						if (*g_local_nation_id == unit->player && *g_active_player_id == *g_local_human_id) {
+						if (g_local_nation_id == unit->player && *g_active_player_id == *g_local_human_id) {
 							helper::set_unit_stat_txt_error_message(message);
 						}
 					}

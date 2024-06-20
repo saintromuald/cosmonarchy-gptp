@@ -139,8 +139,8 @@ static bool handle_key_event(const KeyEvent& ev) {
 		if (ev.key >= VK_F1 && ev.key < VK_F1 + CameraCap) {
 			Point16& screen = hotkeys.screens[ev.key - VK_F1];
 			if (ev.control_held || ev.shift_held) {
-				screen.x = *g_move_to_x;
-				screen.y = *g_move_to_y;
+				screen.x = g_move_to_x;
+				screen.y = g_move_to_y;
 			} else {
 				helper::move_screen(screen);
 			}
@@ -215,8 +215,8 @@ void init_hotkeys() {
 	hotkeys = {};
 	hotkeys.game_started = true;
 	for (u32 i = 0; i < CameraCap; ++i) {
-		hotkeys.screens[i].x = *g_move_to_x;
-		hotkeys.screens[i].y = *g_move_to_y;
+		hotkeys.screens[i].x = g_move_to_x;
+		hotkeys.screens[i].y = g_move_to_y;
 	}
 }
 

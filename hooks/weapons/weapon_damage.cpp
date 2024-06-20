@@ -45,15 +45,14 @@ bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_diviso
 		&& weapon_id != WeaponId::Custom;
 }
 
-bool irradiate_target(Unit* unit)
-{
+bool irradiate_target(Unit* unit) {
 	return true; // Originally prohibited targeting eggs
 }
 
 namespace hooks
 {
 	static void play_alert(Unit* unit, u32 sound_id) {
-		u32 alert_id = SoundId::AlertZerg - *g_console_index;
+		u32 alert_id = SoundId::AlertZerg - g_console_index;
 		helper::play_sound_from_unit(alert_id, 0, g_options_list->flags & 1, 0);
 		helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);
 
@@ -75,7 +74,7 @@ namespace hooks
 		if (!ignore_alert) {
 			return;
 		}
-		u32 local_player = *g_local_nation_id;
+		u32 local_player = g_local_nation_id;
 		if (unit->player == 11) {
 			return;
 		}
@@ -950,7 +949,7 @@ namespace hooks
 				}
 
 				u32 sound = bw::rand_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
-				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99) && !g_is_in_replay && data.target->player == *g_local_nation_id) {
+				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99) && !g_is_in_replay && data.target->player == g_local_nation_id) {
 					helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
 				}
 				fatal_deal_damage = false;

@@ -40,7 +40,7 @@ std::filesystem::path get_starcraft_path() {
 }
 
 bool is_witness() {
-	return !bw::in_replay() && g_globals->players[*g_local_nation_id].witness_mode;
+	return !bw::in_replay() && g_globals->players[g_local_nation_id].witness_mode;
 }
 
 Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt, Point16 origin_pt) {
@@ -1522,7 +1522,7 @@ void make_to_hold_position(Unit* unit) {
 // Player check added based on how others functions test it. Values above or equal to 8 means all players.
 void move_screen_to_unit(Unit* unit, u32 player) { // 004E6020
 	const u32 func_address = 0x0049C440;
-	if (player >= PlayerLimit || player == *g_local_nation_id) {
+	if (player >= PlayerLimit || player == g_local_nation_id) {
 		s32 x = unit->sprite->position.x;
 		s32 y = unit->sprite->position.y;
 		if (x < 0) {
@@ -1548,7 +1548,7 @@ void move_screen_to_unit(Unit* unit, u32 player) { // 004E6020
 // x and y are coords as gotten from unit->sprite->position
 void minimap_ping(u32 x, u32 y, s32 color, u32 player) {
 	const u32 func_address = 0x004A34C0;
-	if (player >= PlayerLimit || player == *g_local_nation_id) {
+	if (player >= PlayerLimit || player == g_local_nation_id) {
 		__asm {
 			PUSHAD
 			PUSH color
@@ -2702,7 +2702,7 @@ Image* get_addon_connector_image(Unit* unit) {
 
 PlayerColorCode get_player_color_code(u32 player, bool use_green_for_self) {
 	PlayerColorCode code = {};
-	if (use_green_for_self && player == *g_local_nation_id) {
+	if (use_green_for_self && player == g_local_nation_id) {
 		code.data[0] = BWTC_GREEN[0];
 	} else {
 		code.data[0] = PlayerColorByte;
@@ -3520,7 +3520,7 @@ u32 get_advisor_sound_from_message_id(u32 player, u32 message_id) {
 }
 
 bool has_custom_advisor(u32 player) {
-	if (player != *g_local_nation_id) {
+	if (player != g_local_nation_id) {
 		return false;
 	}
 	return g_globals->current_advisor != Advisor_Default;

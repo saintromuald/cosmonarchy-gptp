@@ -201,7 +201,7 @@ namespace hooks {
 
 	// Hooked to support quasi-fog on the minimap. -Veeq7
 	void __cdecl update_minimap_colors() { // 004A3A00
-		u32 local_flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
+		u32 local_flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[g_local_nation_id];
 		for (u32 i = 0; i < 256; ++i) {
 			if (local_flags & VespeneDeaths_DisableQuasifog) {
 				minimap_colors->index[MinimapColor_Unexplored][i] = palette_index_ref[15];
@@ -299,10 +299,10 @@ namespace hooks {
 			helper::set_ingame_input_procs();
 		}
 
-		for (u32 i = 0; i < *g_client_selection_count; ++i) {
+		for (u32 i = 0; i < g_client_selection_count; ++i) {
 			Unit* transport = g_client_selection_group->unit[i];
 			bool is_replay_or_witness = g_is_in_replay || g_globals->players[*g_local_human_id].witness_mode;
-			if (!bw::unit_is_allied_or_detected(transport, *g_local_nation_id) && !is_replay_or_witness) {
+			if (!bw::unit_is_allied_or_detected(transport, g_local_nation_id) && !is_replay_or_witness) {
 				continue;
 			}
 
@@ -319,7 +319,7 @@ namespace hooks {
 				if (cargo_unit) {
 					space_used += units_dat::space_required[cargo_unit->id];
 
-					bool own_unit = cargo_unit->player == *g_local_nation_id;
+					bool own_unit = cargo_unit->player == g_local_nation_id;
 					for (u32 k = 0; k < cargo_slots_count; ++k) {
 						if (cargo_slots[k].unit->id == cargo_unit->id &&
 							cargo_slots[k].unit->player == cargo_unit->player) {
@@ -375,7 +375,7 @@ namespace hooks {
 				rect.top = local_pos.y;
 				rect.right = rect.left + width;
 				rect.bottom = rect.top + 11;
-				bool hover = (*g_local_nation_id == transport->player || *g_local_nation_id == cargo_slot.unit->player) && !g_is_in_replay && PtInRect(&rect, *(POINT*) g_mouse);
+				bool hover = (g_local_nation_id == transport->player || g_local_nation_id == cargo_slot.unit->player) && !g_is_in_replay && PtInRect(&rect, *(POINT*) g_mouse);
 				if (hover) {
 					if (cargo_slot.count > 1) {
 						unit_name = std::format(BWTC_WHITE "{} ({})", short_unit_name, cargo_slot.count);
@@ -404,7 +404,7 @@ namespace hooks {
 
 	static void draw_custom_ui() {
 		// Draw selection info
-		for (u32 i = 0; i < *g_client_selection_count; ++i) {
+		for (u32 i = 0; i < g_client_selection_count; ++i) {
 			Unit* unit = g_client_selection_group->unit[i];
 			UnitExt* unit_ext = get_unit_ext(unit);
 			Point16 source = unit->position;
@@ -426,7 +426,7 @@ namespace hooks {
 
 			// Show auras
 			if (g_config.show_aura_circles && bw::can_show_custom_ui()
-			&& (bw::are_mutual_allies(unit->player, *g_local_nation_id) || bw::in_replay_or_witness())) {
+			&& (bw::are_mutual_allies(unit->player, g_local_nation_id) || bw::in_replay_or_witness())) {
 				switch (unit->id) {
 					case UnitId::TerranShamanSupportMode: {
 						g_graphics.draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
@@ -460,14 +460,14 @@ namespace hooks {
 
 			// Show connected Nyduses
 			if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
-				if (bw::unit_is_allied_or_detected(unit, *g_local_nation_id) || bw::in_replay_or_witness()) {
+				if (bw::unit_is_allied_or_detected(unit, g_local_nation_id) || bw::in_replay_or_witness()) {
 					draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
 				}
 			}
 
 			// Rally points
 			if (g_config.show_rally_lines && bw::can_show_custom_ui()
-			&& (bw::is_allied_to(*g_local_nation_id, unit->player) || bw::in_replay_or_witness()))
+			&& (bw::is_allied_to(g_local_nation_id, unit->player) || bw::in_replay_or_witness()))
 			{
 				Point16 target = get_target_point(unit->rally);
 				if (target.x == unit->position.x && target.y == unit->position.y) {
@@ -548,7 +548,7 @@ namespace hooks {
 				}
 			}
 
-			if (g_config.show_order_lines && (bw::in_replay_or_witness() || bw::is_allied_to(*g_local_nation_id, unit->player)) && bw::can_show_custom_ui()) {
+			if (g_config.show_order_lines && (bw::in_replay_or_witness() || bw::is_allied_to(g_local_nation_id, unit->player)) && bw::can_show_custom_ui()) {
 				Unit* ignore_resource_unit = 0;
 
 				// Worker harvest links
@@ -697,7 +697,7 @@ namespace hooks {
 
 		if (!bw::in_replay_or_witness()) {
 			std::vector<PlayerColor> colors{};
-			switch (g_player_table[*g_local_nation_id].race) {
+			switch (g_player_table[g_local_nation_id].race) {
 				case RaceId::Terran: {
 					colors = g_config.terran_preferred_colors;
 				} break;
@@ -711,7 +711,7 @@ namespace hooks {
 			colors.insert_range(colors.end(), g_config.common_preferred_colors);
 
 			if (colors.empty()) {
-				SyncColorPrefCommand command{(u8)*g_local_nation_id};
+				SyncColorPrefCommand command{(u8)g_local_nation_id};
 				queue_game_command((u8*)&command, sizeof(command));
 			} else {
 				if (g_config.shuffle_preferred_colors) {
@@ -721,7 +721,7 @@ namespace hooks {
 				}
 
 				for (size_t i = 0; i < colors.size(); i += 9) {
-					SyncColorPrefCommand command{(u8)*g_local_nation_id};
+					SyncColorPrefCommand command{(u8)g_local_nation_id};
 					for (size_t j = 0; j < 9 && i + j < colors.size(); j++) {
 						command.colors[j % 9] = colors[i + j];
 					}
@@ -795,7 +795,7 @@ namespace hooks {
 		}
 
 		if (g_elapsed_time_frames == 1) {
-			u32 local_flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[*g_local_nation_id];
+			u32 local_flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[g_local_nation_id];
 			if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
 				// Default maps to "semi-explored", from DarkenedFantasies
 				for (s32 i = 0; i < 4092; i++) {
@@ -839,12 +839,12 @@ namespace hooks {
 				for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target) {
 					if (!g_globals->players[target].witness_mode) {
 						u32 color = 0; // red
-						if (g_globals->players[*g_local_nation_id].witness_mode) {
+						if (g_globals->players[g_local_nation_id].witness_mode) {
 							color = 7; // yellow
-						} else if (bw::is_allied_to(*g_local_nation_id, target)) {
+						} else if (bw::is_allied_to(g_local_nation_id, target)) {
 							color = 8; // green
 						}
-						bw::minimap_ping(g_start_positions[target].x, g_start_positions[target].y, color, *g_local_nation_id);
+						bw::minimap_ping(g_start_positions[target].x, g_start_positions[target].y, color, g_local_nation_id);
 					}
 				}
 			}
@@ -910,8 +910,8 @@ namespace hooks {
 		assert(sizeof(SyncCameraCommand) == 0xc);
 
 		Point16 camera = {};
-		camera.x = *g_move_to_x;
-		camera.y = *g_move_to_y;
+		camera.x = g_move_to_x;
+		camera.y = g_move_to_y;
 
 		SyncCameraCommand command = {};
 		command.player = *g_local_human_id;

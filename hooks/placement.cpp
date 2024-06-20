@@ -11,14 +11,14 @@ namespace hooks
 		}
 
 		Vec32 pos = *g_mouse;
-		Point16 dims = units_dat::building_dimensions[*g_place_building_unit_id];
+		Point16 dims = units_dat::building_dimensions[g_place_building_unit_id];
 		pos.x -= dims.x / 2;
 		pos.y -= dims.y / 2;
 
-		*place_building_x = (*g_move_to_x + pos.x + 16) / 32;
-		*place_building_y = (*g_move_to_y + pos.y + 16) / 32;
-		placement_pos->x = *place_building_x * 32 - *g_move_to_x;
-		placement_pos->y = *place_building_y * 32 - *g_move_to_y;
+		g_place_building_x = (g_move_to_x + pos.x + 16) / 32;
+		g_place_building_y = (g_move_to_y + pos.y + 16) / 32;
+		placement_pos->x = g_place_building_x * 32 - g_move_to_x;
+		placement_pos->y = g_place_building_y * 32 - g_move_to_y;
 		return 1;
 	}
 
@@ -30,12 +30,12 @@ namespace hooks
 		}
 		unused.x = g_mouse->y;
 		if (helper::init_placement_box_pos(&placement_pos)) {
-			*g_place_building_message_id = helper::update_placement_state_for_placement_box();
+			g_place_building_message_id = helper::update_placement_state_for_placement_box();
 			helper::refresh_layers_3_and_4();
 			helper::unk_building_placement_related(1, &placement_pos);
-			if (*g_is_placing_addon) {
-				placement_pos.x -= units_dat::addon_placement[*g_place_building_unit_id].x;
-				placement_pos.y -= units_dat::addon_placement[*g_place_building_unit_id].y;
+			if (g_is_placing_addon) {
+				placement_pos.x -= units_dat::addon_placement[g_place_building_unit_id].x;
+				placement_pos.y -= units_dat::addon_placement[g_place_building_unit_id].y;
 				helper::unk_building_placement_related(0, &placement_pos);
 			}
 			return helper::refresh_layers_3_and_4();
@@ -50,16 +50,16 @@ namespace hooks
 			return 0;
 		}
 
-		u32 source = *g_place_building_base_type;
-		u32 target = *g_place_building_unit_id;
-		u16 addon_x = (*place_building_x - units_dat::addon_placement[2 * *g_place_building_unit_id - 212].x / 32);
-		u16 addon_y = (*place_building_y - units_dat::addon_placement[2 * *g_place_building_unit_id - 211].y / 32);
+		u32 source = g_place_building_base_type;
+		u32 target = g_place_building_unit_id;
+		u16 addon_x = (g_place_building_x - units_dat::addon_placement[2 * g_place_building_unit_id - 212].x / 32);
+		u16 addon_y = (g_place_building_y - units_dat::addon_placement[2 * g_place_building_unit_id - 211].y / 32);
 		bw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
 
-		s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, *g_placing_player, *place_building_x, *place_building_y, *g_place_building_unit_id, 1, 1, 0, 0);
-		s32 result = helper::can_build_on_tile_location(*g_active_portrait_unit, *g_placing_player, addon_x, addon_y, *g_place_building_base_type, 0, 1, 0, 0);
+		s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, g_placing_player, g_place_building_x, g_place_building_y, g_place_building_unit_id, 1, 1, 0, 0);
+		s32 result = helper::can_build_on_tile_location(*g_active_portrait_unit, g_placing_player, addon_x, addon_y, g_place_building_base_type, 0, 1, 0, 0);
 		// ^ this call might be needed, even if the result isn't returned, untested
-		if (!*g_is_placing_addon || can_build) {
+		if (!g_is_placing_addon || can_build) {
 			result = can_build;
 		}
 		return result;
@@ -198,11 +198,11 @@ namespace hooks
 
 		// Originally had code checking for supplies.
 		if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
-			helper::display_error_message_id_with_sfx(player, 850, (s32)*g_console_index + 147); // Not enough minerals...mine more minerals.<0>
+			helper::display_error_message_id_with_sfx(player, 850, (s32)g_console_index + 147); // Not enough minerals...mine more minerals.<0>
 			return 0;
 		}
 		if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
-			helper::display_error_message_id_with_sfx(player, 851, (s32)*g_console_index + 150); // Not enough Vespene gases....harvest more gas.<0>
+			helper::display_error_message_id_with_sfx(player, 851, (s32)g_console_index + 150); // Not enough Vespene gases....harvest more gas.<0>
 			return 0;
 		}
 		if (helper::can_build_on_tile_location(builder, player, (builder->order_target.pt.x - units_dat::building_dimensions[building_id].x / 2) / 32, (builder->order_target.pt.y - units_dat::building_dimensions[building_id].y / 2) / 32, building_id, 0, 0, 1, 0)) {
@@ -218,30 +218,22 @@ namespace hooks
 	}
 
 	// Hooked to enable more refinery types. -Pr0nogo
-	void place_building_refinery_check(Unit* result) // 0048E1E0
-	{
-		if (unit_id_is_capped_gas_structure(*g_place_building_unit_id))
-		{
-			if (helper::can_draw_placement_rect_maybe(*g_place_building_unit_id, result))
-			{
+	void place_building_refinery_check(Unit* result) { // 0048E1E0
+		if (unit_id_is_capped_gas_structure(g_place_building_unit_id)) {
+			if (helper::can_draw_placement_rect_maybe(g_place_building_unit_id, result)) {
 				*can_draw_placement_preview = 1;
 			}
 		}
 	}
 
 	// Hooked to enable more refinery types. -Pr0nogo
-	void place_building_refinery_proc() // 0048E430
-	{
+	void place_building_refinery_proc() { // 0048E430
 		Unit* geyser = first_player_unit->unit[11];
-		if (geyser)
-		{
-			u16 id = *g_place_building_unit_id;
-			do
-			{
-				if (geyser->id == UnitId::ResourceVespeneGeyser && unit_id_is_capped_gas_structure(id) && id != UnitId::ZergEzigrisant)
-				{
-					if (helper::can_draw_placement_rect_maybe(id, geyser))
-					{
+		if (geyser) {
+			u16 id = g_place_building_unit_id;
+			do {
+				if (geyser->id == UnitId::ResourceVespeneGeyser && unit_id_is_capped_gas_structure(id) && id != UnitId::ZergEzigrisant) {
+					if (helper::can_draw_placement_rect_maybe(id, geyser)) {
 						*can_draw_placement_preview = 1;
 					}
 				}
@@ -251,22 +243,18 @@ namespace hooks
 	}
 
 	// Local function to explore Dedications. -Pr0nogo
-	void place_custom_building_proc() // 0048E430
-	{
-		u32 player = *g_local_nation_id;
+	void place_custom_building_proc() { // 0048E430
+		u32 player = g_local_nation_id;
 		Unit* parent = 0;
-		switch (*g_place_building_unit_id)
-		{
-			case UnitId::ProtossPylon:
-			{
+		switch (g_place_building_unit_id) {
+			case UnitId::ProtossPylon: {
 				parent = first_player_unit->unit[player];
 				if (parent) {
 					UnitExt* parent_ext = get_unit_ext(parent);
-					u16 id = *g_place_building_unit_id;
+					u16 id = g_place_building_unit_id;
 					do {
 						if (parent->id == UnitId::ProtossGateway) {
-							if (helper::can_draw_placement_rect_maybe(id, parent))
-							{
+							if (helper::can_draw_placement_rect_maybe(id, parent)) {
 								*can_draw_placement_preview = 1;
 							}
 						}
@@ -279,17 +267,14 @@ namespace hooks
 	// Hooked to enable more refinery types. -Pr0nogo
 	void place_building_proc() // 0048E6E0
 	{
-		if (!(*g_is_placing_addon))
-		{
-			if (*can_draw_placement_preview)
-			{
+		if (!(g_is_placing_addon)) {
+			if (*can_draw_placement_preview) {
 				helper::prepare_placement_preview();
 				*can_draw_placement_preview = 0;
 			}
 
-			if (!unit_id_is_capped_gas_structure(*g_place_building_unit_id) && *g_place_building_unit_id != UnitId::ZergEzigrisant) {
-				if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
-				{
+			if (!unit_id_is_capped_gas_structure(g_place_building_unit_id) && g_place_building_unit_id != UnitId::ZergEzigrisant) {
+				if (units_dat::group_flags[g_place_building_unit_id].is_terran) {
 					helper::place_building_normal_proc();
 				}
 			} else {
@@ -305,23 +290,20 @@ namespace hooks
 	}
 
 	// Hooked to enable more refinery types. -Pr0nogo
-	char issue_place_building_order(char* unused, u16 unit_id, u8 order_id) // 0048E730
-	{
+	char issue_place_building_order(char* unused, u16 unit_id, u8 order_id) { // 0048E730
 		g_is_placing_building = 1;
 		*g_buttonset_special_buttonset_id = 230;
 		helper::update_current_buttonset();
-		*g_place_building_message_id = 0;
+		g_place_building_message_id = 0;
 		*g_place_building_order_id = order_id;
 		helper::prepare_placement_box(1, unit_id);
 		u32 message_thing = 2;
 
-		if (units_dat::base_property[unit_id] & UnitProperty::Addon)
-		{
+		if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
 			helper::prepare_placement_box(0, (*g_active_portrait_unit)->id);
-			*g_is_placing_addon = 1;
-		} else if (!unit_id_is_capped_gas_structure(*g_place_building_unit_id)) {
-			if (units_dat::group_flags[*g_place_building_unit_id].is_terran)
-			{
+			g_is_placing_addon = 1;
+		} else if (!unit_id_is_capped_gas_structure(g_place_building_unit_id)) {
+			if (units_dat::group_flags[g_place_building_unit_id].is_terran) {
 				helper::place_building_normal_proc();
 			}
 		} else {
@@ -329,34 +311,30 @@ namespace hooks
 		}
 
 		const char* string = "";
-		if (g_network_table_DF->get_string_count() > 63)
-		{
+		if (g_network_table_DF->get_string_count() > 63) {
 			string = (char*)g_network_table_DF->get_string(64);
 		}
 
 		helper::send_message_something(message_thing, string);
 		helper::set_ingame_input_procs();
 		Unit* active_unit = *g_active_portrait_unit;
-		if (!active_unit)
-		{
-			*g_placing_player = -1;
+		if (!active_unit) {
+			g_placing_player = -1;
 			*g_minimap_cursor = 0;
 			return helper::refresh_screen(UnitId::None); // Guessed
 		}
 
-		if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi || unit_id_is_psi_provider(unit_id))
-		{
+		if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi || unit_id_is_psi_provider(unit_id)) {
 			helper::create_pylon_aura();
 			active_unit = *g_active_portrait_unit;
 		}
 
 		char result = helper::refresh_screen(active_unit->id);
 		*g_minimap_cursor = 0;
-		if (active_unit)
-		{
-			*g_placing_player = active_unit->player;
+		if (active_unit) {
+			g_placing_player = active_unit->player;
 		} else {
-			*g_placing_player = -1;
+			g_placing_player = -1;
 		}
 		return result;
 	}
@@ -365,7 +343,7 @@ namespace hooks
 	// Hooked to add support for custom races. -Pr0nogo
 	void play_building_placement_sound(Unit* unit) // 0048F630
 	{
-		if (!(g_is_in_replay) && unit->player == *g_local_nation_id)
+		if (!(g_is_in_replay) && unit->player == g_local_nation_id)
 		{
 			u8 race = unit->get_race();
 			u32 sound_id = race + 141;
@@ -379,7 +357,7 @@ namespace hooks
 	// Hooked to improve functionality, and later add handling for new races. -Pr0nogo
 	void set_worker_error(Unit* unit, u32 error_string) // 0048F7B0
 	{
-		if (!(g_is_in_replay) && unit->player == *g_local_nation_id) {
+		if (!(g_is_in_replay) && unit->player == g_local_nation_id) {
 			u32 sound_id = SoundId::None;
 			switch (unit->get_race()) {
 				case RaceId::Terran:
@@ -402,8 +380,8 @@ namespace hooks
 
 			if (error_string) {
 				const char* string = 0;
-				if ((u16)(error_string - 1) < g_stat_txt_buffer->get_string_count()) {
-					string = g_stat_txt_buffer->get_string(error_string);
+				if ((u16)(error_string - 1) < g_stat_txt_buffer.get_string_count()) {
+					string = g_stat_txt_buffer.get_string(error_string);
 					if (!string) {
 						return;
 					}
@@ -411,7 +389,7 @@ namespace hooks
 					string = "";
 				}
 
-				if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
+				if (unit->player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(string);
 				}
 			}
@@ -419,9 +397,8 @@ namespace hooks
 	}
 
 	// Hooked to improve functionality, and later add handling for new races. -Pr0nogo
-	void play_worker_error_sound(Unit* unit, u32 error_text_index) // 0048F6C0
-	{
-		if (!(g_is_in_replay) && unit->player == *g_local_nation_id) {
+	void play_worker_error_sound(Unit* unit, u32 error_text_index) { // 0048F6C0
+		if (!(g_is_in_replay) && unit->player == g_local_nation_id) {
 			u32 sound_id = SoundId::None;
 			switch (unit->get_race()) {
 				case RaceId::Terran:
@@ -442,8 +419,8 @@ namespace hooks
 				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 			}
 
-			if (unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
-				char* string = (char*)g_stat_txt_buffer->get_string(856);
+			if (unit->player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
+				char* string = (char*)g_stat_txt_buffer.get_string(856);
 				helper::set_unit_stat_txt_error_message(string);
 			}
 		}

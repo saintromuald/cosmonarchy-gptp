@@ -156,24 +156,24 @@ namespace hooks {
 				}
 			}
 		}
-		if (count_larva && count_larva + count_eggs == *g_client_selection_count) {
+		if (count_larva && count_larva + count_eggs == g_client_selection_count) {
 			*g_current_buttonset_id = UnitId::ZergLarva;
 		}
-		if (count_ocsal_larva && count_ocsal_larva + count_eggs == *g_client_selection_count) {
+		if (count_ocsal_larva && count_ocsal_larva + count_eggs == g_client_selection_count) {
 			*g_current_buttonset_id = UnitId::ZergOcsalLarva;
 		}
 		if (*g_current_buttonset_id != UnitId::Buttons_Blank) {
-			if (count_repairmen == *g_client_selection_count) {
+			if (count_repairmen == g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::Buttons_MixedRepairmen;
-			} else if (count_workers == *g_client_selection_count) {
+			} else if (count_workers == g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::Buttons_GroupWorkers;
 			} else if (count_burrowables) {
 				*g_current_buttonset_id = UnitId::Buttons_GroupBurrower;
-			} else if (count_zerg_production == *g_client_selection_count) {
+			} else if (count_zerg_production == g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::ZergHachirosk;
-			} else if (count_mason_sources == *g_client_selection_count) {
+			} else if (count_mason_sources == g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::Buttons_MixedMasonTraining;
-			} else if (count_scribe_sources == *g_client_selection_count) {
+			} else if (count_scribe_sources == g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::Buttons_MixedScribeTraining;
 			} else if (count_lifted_buildings) {
 				*g_current_buttonset_id = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
@@ -254,7 +254,7 @@ namespace hooks {
 			*g_current_buttonset_id = UnitId::Buttons_Blank;
 			return;
 		}
-		if (*g_client_selection_count > 0) {
+		if (g_client_selection_count > 0) {
 			if (g_is_targeting) {
 				*g_buttonset_special_buttonset_id = UnitId::Buttons_Cancel;
 			} else if (g_is_placing_building) {
@@ -262,7 +262,7 @@ namespace hooks {
 			}
 		}
 		*g_current_buttonset_id = UnitId::Buttons_Blank;
-		if (*g_client_selection_count > 1) {
+		if (g_client_selection_count > 1) {
 			update_buttonset_ex();
 		}
 	}
@@ -627,14 +627,14 @@ namespace hooks {
 			} else { // loop to ignore the first unused/disabled buttons
 				current_button_state = Button_State::Invisible;
 				while (current_button_state == Button_State::Invisible && (buttons_count < current_buttonset->buttons_in_set)) {
-					current_button_state = helper::req_check((u32)current_button->requirement_func, current_button->requirement_var, *g_local_nation_id, unit);
+					current_button_state = helper::req_check((u32)current_button->requirement_func, current_button->requirement_var, g_local_nation_id, unit);
 					// Fight that lardcode, tony!
 					if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons) {
 						if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva || buttonset_id_is_faction_selection(buttonset_id)) {
 							current_button_state = Button_State::Enabled;
 						}
 						if ((buttonset_id == UnitId::TerranMason || buttonset_id == UnitId::TerranTalos) && (unit->main_order_id != OrderId::ConstructingBuilding)) {
-							if (!(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit) && *g_client_selection_count == 1)
+							if (!(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit) && g_client_selection_count == 1)
 							{
 								current_button_state = Button_State::Enabled;
 							}
@@ -674,7 +674,7 @@ namespace hooks {
 
 					if (current_button->icon_id == IconId::Liftoff) {
 						bool hide = true;
-						for (u32 i = 0; i < *g_client_selection_count; ++i) {
+						for (u32 i = 0; i < g_client_selection_count; ++i) {
 							Unit* unit = g_client_selection_group->unit[i];
 							UnitExt* unit_ext = get_unit_ext(unit);
 							if (!unit_ext->values[ValueIsNeutralBunker]) {
@@ -700,7 +700,7 @@ namespace hooks {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
 
-						for (u32 i = 0; i < *g_client_selection_count; ++i) {
+						for (u32 i = 0; i < g_client_selection_count; ++i) {
 							Unit* unit = g_client_selection_group->unit[i];
 							if (unit->status & UnitStatus::Burrowed) {
 								has_burrowed = true;
@@ -720,7 +720,7 @@ namespace hooks {
 						bool has_burrowed = false;
 						bool has_unburrowed = false;
 
-						for (u32 i = 0; i < *g_client_selection_count; ++i) {
+						for (u32 i = 0; i < g_client_selection_count; ++i) {
 							Unit* unit = g_client_selection_group->unit[i];
 							if (unit->status & UnitStatus::Burrowed) {
 								has_burrowed = true;
@@ -754,7 +754,7 @@ namespace hooks {
 						current_button_state = Button_State::Invisible;
 					}
 
-					if (current_button->action_func == (ActFunc*)ButtonActions::Create_AddOn && *g_client_selection_count > 1) {
+					if (current_button->action_func == (ActFunc*)ButtonActions::Create_AddOn && g_client_selection_count > 1) {
 						current_button_state = Button_State::Invisible;
 					}
 
@@ -766,7 +766,7 @@ namespace hooks {
 						current_button_state = Button_State::Invisible;
 					}
 
-					if (current_button->icon_id == IconId::Land && *g_client_selection_count > 1) {
+					if (current_button->icon_id == IconId::Land && g_client_selection_count > 1) {
 						current_button_state = Button_State::Invisible;
 					}
 
@@ -1840,7 +1840,7 @@ namespace hooks {
 						// Passive icons (yes, it's quite ugly)
 						if (current_button->requirement_var == TechId::Healing && current_button->icon_id != IconId::Heal) {
 							current_button_state = Button_State::Disabled;
-							if (bw::client_selection_unit_id_count(unit->id) != *g_client_selection_count) {
+							if (bw::client_selection_unit_id_count(unit->id) != g_client_selection_count) {
 								current_button_state = Button_State::Invisible;
 							}
 							switch (unit->id) {
@@ -2531,7 +2531,7 @@ namespace hooks {
 								} break;
 								case UnitId::ZergLakizilisk: {
 									bool is_mixed = false;
-									for (u32 i = 0; i < *g_client_selection_count; ++i) {
+									for (u32 i = 0; i < g_client_selection_count; ++i) {
 										Unit* selected = g_client_selection_group->unit[i];
 										if (selected->id != unit->id) {
 											is_mixed = true;
@@ -2738,7 +2738,7 @@ namespace hooks {
 
 			// 00459278
 			if (!stop_there && !jumpto5934E) {
-				jumpto5933C = (!g_is_in_replay) && (*g_active_portrait_unit != nullptr) && ((*g_active_portrait_unit)->player != *g_local_nation_id);
+				jumpto5933C = (!g_is_in_replay) && (*g_active_portrait_unit != nullptr) && ((*g_active_portrait_unit)->player != g_local_nation_id);
 				// TODO: Reenable and test
 				// jumpto5933C = false;
 				if (!jumpto5933C) {

@@ -69,7 +69,7 @@ void init_trigger_system() {
 	g_action_table[47] = (ActionPointer)parse_comment_action;
 
 	g_globals = std::make_unique<Globals>();
-	g_globals->current_advisor = get_advisor_type_from_config(g_player_table[*g_local_nation_id].race);
+	g_globals->current_advisor = get_advisor_type_from_config(g_player_table[g_local_nation_id].race);
 
 	init_auto_celebration();
 	init_recolors();
@@ -464,8 +464,8 @@ bool parse_condition(Parser& parser) {
 			Token min_visibility = parser.get_word();
 
 			Point16 center = {};
-			center.x = *g_move_to_x + 320;
-			center.y = *g_move_to_y + 200;
+			center.x = g_move_to_x + 320;
+			center.y = g_move_to_y + 200;
 
 			if (center.x >= area.box.left && center.x <= area.box.right &&
 				center.y >= area.box.top  && center.y <= area.box.bottom) {
@@ -474,11 +474,11 @@ bool parse_condition(Parser& parser) {
 				if (sv_iequals(min_visibility.sv, "unexplored")) {
 					return true;
 				} else if (sv_iequals(min_visibility.sv, "explored")) {
-					if (!(tile->explored_flags & (1 << *g_local_nation_id))) {
+					if (!(tile->explored_flags & (1 << g_local_nation_id))) {
 						return true;
 					}
 				} else if (sv_iequals(min_visibility.sv, "visible") || true) {
-					if (!(tile->visibility_flags & (1 << *g_local_nation_id))) {
+					if (!(tile->visibility_flags & (1 << g_local_nation_id))) {
 						return true;
 					}
 				}
@@ -569,7 +569,7 @@ b32 parse_comment_condition(TriggerAction* action) {
 b32 __fastcall parse_comment_action(TriggerAction* action) {
 	Trigger& trigger = g_current_trigger_node->trigger;
 	u32 trigger_player = *g_current_trigger_player_id;
-	bool is_local_player = trigger_player == *g_local_nation_id;
+	bool is_local_player = trigger_player == g_local_nation_id;
 
 	TriggerExt& trigger_ext = g_globals->trigger_exts[action];
 	OngoingWait& ongoing_wait = trigger_ext.ongoing_waits[trigger_player];
@@ -890,11 +890,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					if (sv_iequals(min_visibility.sv, "unexplored")) {
 						play = true;
 					} else if (sv_iequals(min_visibility.sv, "explored")) {
-						if (!(tile->explored_flags & (1 << *g_local_nation_id))) {
+						if (!(tile->explored_flags & (1 << g_local_nation_id))) {
 							play = true;
 						}
 					} else if (sv_iequals(min_visibility.sv, "visible") || true) {
-						if (!(tile->visibility_flags & (1 << *g_local_nation_id))) {
+						if (!(tile->visibility_flags & (1 << g_local_nation_id))) {
 							play = true;
 						}
 					}
@@ -1147,7 +1147,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			if (player) {
 				player -= 1;
 				g_player_table[player].race = race;
-				if (player == *g_local_nation_id) {
+				if (player == g_local_nation_id) {
 					g_globals->current_advisor = get_advisor_type_from_config(race);
 				}
 			}
@@ -1700,7 +1700,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					*g_score_screen_player_count += 1;
 				}
 
-				if (new_value && g_elapsed_time_frames == 0 && trigger_player == *g_local_nation_id) {
+				if (new_value && g_elapsed_time_frames == 0 && trigger_player == g_local_nation_id) {
 					u32 first_player = 0;
 					for (u32 i = 0; i < PlayerLimit; ++i) {
 						if (g_globals->players[i].witness_mode) continue;
@@ -1742,7 +1742,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			if (player) {
 				player -= 1;
-				if (player == *g_local_nation_id) {
+				if (player == g_local_nation_id) {
 					g_globals->current_advisor = advisor;
 				}
 			}

@@ -150,10 +150,10 @@ namespace hooks
 								helper::has_money_can_make(unit, target_unit_id);
 							}
 						} else {
-							helper::display_error_message_id_with_sfx(unit->player, 851, *g_console_index + 0x96);
+							helper::display_error_message_id_with_sfx(unit->player, 851, g_console_index + 0x96);
 						}
 					} else {
-						helper::display_error_message_id_with_sfx(unit->player, 850, *g_console_index + 0x93);
+						helper::display_error_message_id_with_sfx(unit->player, 850, g_console_index + 0x93);
 					}
 				} else {
 					helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
@@ -182,7 +182,7 @@ namespace hooks
 				return 1;
 			} else {
 				if (notify) {
-					u32 sound_id = *g_console_index + 150;
+					u32 sound_id = g_console_index + 150;
 					if (bw::has_custom_advisor(player)) {
 						sound_id = bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
 					}
@@ -192,7 +192,7 @@ namespace hooks
 			}
 		} else {
 			if (notify) {
-				u32 sound_id = *g_console_index + 147;
+				u32 sound_id = g_console_index + 147;
 				if (bw::has_custom_advisor(player)) {
 					sound_id = bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
 				}
@@ -204,7 +204,7 @@ namespace hooks
 
 	// Hooked to enable custom advisor lines. -Pr0nogo
 	void display_error_message_id_with_sfx(u32 player, u32 message_id, u32 sound_id) { // 0048EE30
-		if (player == *g_local_nation_id && !g_is_in_replay) {
+		if (player == g_local_nation_id && !g_is_in_replay) {
 			sound_id = (u16)sound_id;
 			if (sound_id && (*g_options_list).sfx) {
 				u32 new_sound_id = bw::get_advisor_sound_from_message_id(player, message_id);
@@ -225,7 +225,7 @@ namespace hooks
 					max_volume /= 5;
 				}
 				if (max_volume > 10) {
-					u32 error_id = SoundId::ErrorZerg - *g_console_index;
+					u32 error_id = SoundId::ErrorZerg - g_console_index;
 					helper::play_sound_global(error_id);
 					if (!bw::has_custom_advisor(player) || !g_globals->advisor_state.cooldown) {
 						if (!g_globals->advisor_state.play_timer) {
@@ -250,8 +250,8 @@ namespace hooks
 			char* message_string;
 			u32 final_message_id = message_id - 1;
 			if ((u16)message_id) {
-				message_string = (char*)g_stat_txt_buffer->get_string(message_id);
-				if (player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
+				message_string = (char*)g_stat_txt_buffer.get_string(message_id);
+				if (player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(message_string);
 				}
 			}

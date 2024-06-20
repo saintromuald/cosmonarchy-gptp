@@ -592,8 +592,8 @@ void unit_die(Unit* unit) // 004A0740
 		if (unit->status & UnitStatus::Completed) {
 			helper::increment_unit_scores_ex(unit, -1, 0);
 		}
-		if (!g_is_in_replay && unit->player == *g_local_nation_id && g_is_placing_building
-			&& !helper::CMDRECV_place_building_allowed(*g_active_portrait_unit, *g_place_building_order_id, *g_place_building_unit_id))
+		if (!g_is_in_replay && unit->player == g_local_nation_id && g_is_placing_building
+			&& !helper::CMDRECV_place_building_allowed(*g_active_portrait_unit, *g_place_building_order_id, g_place_building_unit_id))
 		{
 			helper::refresh_layers_3_and_4();
 			helper::end_building_placement();
@@ -604,8 +604,7 @@ void unit_die(Unit* unit) // 004A0740
 }
 
 // Hooked to troubleshoot Map Revealer crash. -Pr0nogo
-Unit* remove_unit_from_lists(Unit* unit) // 0049E3F0
-{
+Unit* remove_unit_from_lists(Unit* unit) { // 0049E3F0
 	Unit* prev_unit = unit->player_link.prev;
 	if (prev_unit) {
 		prev_unit->player_link.next = unit->player_link.next;
@@ -638,8 +637,7 @@ Unit* remove_unit_from_lists(Unit* unit) // 0049E3F0
 		}
 		unit->link.prev = 0;
 		unit->link.next = 0;
-	} else if (unit->sprite->flags & SpriteFlags::Hidden)
-	{
+	} else if (unit->sprite->flags & SpriteFlags::Hidden) {
 		unit = helper::hidden_units_remove(unit);
 	} else {
 		unit = helper::clist_remove_used_unit_entry(unit);
@@ -666,8 +664,7 @@ Unit* remove_unit_from_lists(Unit* unit) // 0049E3F0
 }
 
 // Hooked to fix abandon addon transmission playing when structure dies. -Pr0nogo
-void building_death(Unit* unit, Sprite* sprite) // 0049FD00
-{
+void building_death(Unit* unit, Sprite* sprite) { // 0049FD00
 	if (unit->status & UnitStatus::GroundedBuilding) {
 		if (unit->secondary_order_id == OrderId::BuildAddon) {
 			Unit* current_build_unit = unit->current_build_unit;
@@ -706,8 +703,7 @@ void building_death(Unit* unit, Sprite* sprite) // 0049FD00
 
 //-------- Actual hooking --------//
 
-void __declspec(naked) unit_destructor_special_cases_wrapper()
-{
+void __declspec(naked) unit_destructor_special_cases_wrapper() {
 	static Unit* unit;
 	__asm {
 		MOV unit, EAX

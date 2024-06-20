@@ -33,7 +33,7 @@ namespace hooks
 			unit->order_signal &= ~1;
 			++unit->main_order_state;
 
-			if (unit->player == *g_local_nation_id && !g_is_in_replay) {
+			if (unit->player == g_local_nation_id && !g_is_in_replay) {
 				u32 action_sound = 0;
 				switch (unit_id) {
 					case UnitId::TerranShamanVisionaryMode: {
@@ -108,7 +108,7 @@ namespace hooks
 				}
 			} // fallthrough
 			case 2: {
-				if (unit->player == *g_local_nation_id && !g_is_in_replay) {
+				if (unit->player == g_local_nation_id && !g_is_in_replay) {
 					u32 action_sound = 0;
 					switch (unit_id) {
 						case UnitId::TerranShamanSupportMode: {

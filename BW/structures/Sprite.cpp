@@ -145,9 +145,7 @@ void update_image_direction(Image* image, u32 direction)
 
 static void inherit_image_palette(Unit* unit, Image* image, Image* main_image) {
 	if (!image->palette_type && unit) {
-		if (unit->status & UnitStatus::IsHallucination
-		&& (unit->player == *g_local_nation_id || g_is_in_replay))
-		{
+		if (unit->status & UnitStatus::IsHallucination && (unit->player == g_local_nation_id || g_is_in_replay)) {
 			image->palette_type = PaletteType::Hallucination;
 			image->update_fxn = g_sg_update_funcs[PaletteType::Hallucination].function;
 			image->render_fxn = image->flags & 2 ? g_sg_draw_funcs[PaletteType::Hallucination].function_2 : g_sg_draw_funcs[PaletteType::Hallucination].function_1;

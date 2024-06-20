@@ -533,7 +533,7 @@ namespace hooks
 		if (!(unit->status & UnitStatus::Burrowed)) {
 			helper::play_sound_from_unit(sound_id, unit, 1, 0);
 		}
-		if (!g_is_in_replay && unit->player == *g_local_nation_id) {
+		if (!g_is_in_replay && unit->player == g_local_nation_id) {
 			bw::refresh_console();
 		}
 
@@ -675,7 +675,7 @@ namespace hooks
 		}
 
 		if (unit->sprite->flags & SpriteFlags::Selected) {
-			if (!helper::unit_is_standard_and_movable(unit) && *g_client_selection_count > 1 && new_id != UnitId::ZergEgg) {
+			if (!helper::unit_is_standard_and_movable(unit) && g_client_selection_count > 1 && new_id != UnitId::ZergEgg) {
 				helper::update_building_land_unit_selection(0, unit);
 				helper::remove_from_client_selection_3(unit);
 			}

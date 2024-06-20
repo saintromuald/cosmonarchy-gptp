@@ -48,7 +48,7 @@ namespace
 
 	s32 __fastcall unit_morph_wrapper_btnscond_can_build_unit(u16 build_unit_id, s32 player, Unit* unit)
 	{
-		if (*g_client_selection_count <= 1 || hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]) != UnitId::None) {
+		if (g_client_selection_count <= 1 || hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]) != UnitId::None) {
 			return unit->can_make_unit(build_unit_id, player);
 		}
 		return 0;
