@@ -3410,7 +3410,6 @@ namespace hooks {
 		}
 
 		if (unit_ext->timers[TimerLobotomySlow] >= 1) {
-			unit_ext->timers[TimerLobotomySlow] = 0;
 			should_update_speed = true;
 		}
 
