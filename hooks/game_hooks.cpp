@@ -2821,7 +2821,6 @@ namespace hooks {
 			}
 		}
 		
-
 		// Incubation
 		if (unit_ext->timers[TimerIncubationArm] == 1) {
 			for (u32 i = 0; i < unit_ext->values[ValueIncubationCount]; ++i) {

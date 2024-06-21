@@ -191,7 +191,7 @@ namespace hooks
 	// Hooked to troubleshoot issues with moving units a la Anthelion. -Pr0nogo
 	void refresh_unit_after_move(Unit* unit) { // 00494160
 		Unit* subunit = unit->subunit;
-		if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
+		if (subunit && subunit->is_subunit()) {
 			s32 x_halt = unit->halt.x;
 			s32 y_halt = unit->halt.y;
 			subunit->halt.x = x_halt;
@@ -201,10 +201,9 @@ namespace hooks
 			helper::move_sprite(subunit->sprite, x_halt >> 8, y_halt >> 8);
 		}
 		
-		Sprite* sprite = unit->sprite;
-		if (sprite->flags & SpriteFlags::Hidden) {
-			sprite->flags &= 0xDF;
-			if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
+		if (unit->sprite->flags & SpriteFlags::Hidden) {
+			unit->sprite->flags &= 0xDF;
+			if (subunit && subunit->is_subunit()) {
 				subunit->sprite->flags &= 0xDF;
 			}
 			helper::clist_remove_hidden_unit_entry(unit);
@@ -213,9 +212,9 @@ namespace hooks
 				if (g_last_active_unit == visible_unit) {
 					g_last_active_unit = unit;
 				}
-				unit->link.prev = visible_unit;
-				unit->link.next = visible_unit->link.next;
 				Unit* next_visible_unit = visible_unit->link.next;
+				unit->link.prev = visible_unit;
+				unit->link.next = next_visible_unit;
 				if (next_visible_unit) {
 					next_visible_unit->link.prev = unit;
 				}
@@ -240,7 +239,7 @@ namespace hooks
 		helper::toggle_unit_path(unit);
 		unit->movement_state = UnitMovement_Init;
 		u8 pathing_flags = unit->pathing_flags;
-		unit->pathing_flags = (pathing_flags ^ (sprite->elevation < 12)) & 1 ^ pathing_flags;
+		unit->pathing_flags = (pathing_flags ^ (unit->sprite->elevation < 12)) & 1 ^ pathing_flags;
 		if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
 			helper::toggle_unit_path(subunit);
 			subunit->movement_state = 0;

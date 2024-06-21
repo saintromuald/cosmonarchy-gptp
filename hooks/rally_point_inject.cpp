@@ -1,10 +1,8 @@
 #include "rally_point.h"
 #include "../hook_tools.h"
 
-namespace
-{
-	void __declspec(naked) order_new_unit_to_rally_wrapper()
-	{
+namespace {
+	void __declspec(naked) order_new_unit_to_rally_wrapper() {
 		static Unit* unit;
 		static Unit* factory;
 		__asm {
@@ -19,8 +17,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) set_rally_position_wrapper()
-	{
+	void __declspec(naked) set_rally_position_wrapper() {
 		static Unit* unit;
 		static u16 x;
 		static u16 y;
@@ -42,8 +39,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) set_rally_unit_wrapper()
-	{
+	void __declspec(naked) set_rally_unit_wrapper() {
 		static Unit* unit;
 		static Unit* target;
 		__asm {
@@ -59,8 +55,7 @@ namespace
 	}
 
 	// Additional wrappers for uses of the logic that would be hardcoded instead of using the functions
-	void __declspec(naked) set_rally_position_wrapper_jump1()
-	{
+	void __declspec(naked) set_rally_position_wrapper_jump1() {
 		static const u32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
 		static Unit* unit;
 		static u16 x;
@@ -78,8 +73,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) set_rally_position_wrapper_jump2()
-	{
+	void __declspec(naked) set_rally_position_wrapper_jump2() {
 		static const u32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
 		static Unit* unit;
 		static u16 x;
@@ -114,8 +108,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) set_rally_unit_wrapper_jump2()
-	{
+	void __declspec(naked) set_rally_unit_wrapper_jump2() {
 		static const u32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
 		static Unit* unit;
 		static Unit* target;
@@ -125,7 +118,6 @@ namespace
 			PUSHAD
 		}
 		hooks::set_rally_unit(unit, target);
-
 		__asm {
 			POPAD
 			JMP Hook_SetRallyGenericJmpBack2
@@ -136,8 +128,7 @@ namespace
 		static Unit* unit;
 		static Unit* dying;
 		static Order* result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -148,8 +139,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::remove_references(unit, dying);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -165,8 +155,7 @@ namespace
 		static s32 fow_unit_id;
 		static s8 queued;
 		static Unit* result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -184,8 +173,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::right_click_command(x, y, unit, fow_unit_id, queued);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -194,14 +182,12 @@ namespace
 		}
 	}
 
-	void __declspec(naked) btnscond_rally_wrapper() // 00429520
-	{
+	void __declspec(naked) btnscond_rally_wrapper() { // 00429520
 		static u32 unused;
 		static u32 player;
 		static Unit* unit;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
@@ -212,8 +198,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::btnscond_rally(unused, player, unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -404,8 +389,7 @@ namespace
 	}
 }
 
-namespace hooks
-{
+namespace hooks {
 	void inject_rally_hooks() {
 	//	jump_patch(set_rally_position_wrapper,				0x00466910, 2);
 	//	jump_patch(set_rally_unit_wrapper,					0x00466B40, 1);
