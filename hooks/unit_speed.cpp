@@ -222,6 +222,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranCyprian:
 			case UnitId::TerranSevenstep:
+			case UnitId::ProtossAtreus:
 			case UnitId::ProtossCabalist:
 			case UnitId::ZergLiiralisk:
 			case UnitId::ZergIzirokor:
