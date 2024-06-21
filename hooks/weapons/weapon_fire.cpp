@@ -430,7 +430,7 @@ namespace hooks {
 		}
 
 		if (unit->id == UnitId::ProtossManifold) {
-			unit_ext->timers[TimerManifoldConcurringChorus] = 49;
+			unit_ext->timers[TimerManifoldConcurringChorus] = 25;
 		}
 
 		if (weapons_dat::flingy_id[weapon_id] != 0) {

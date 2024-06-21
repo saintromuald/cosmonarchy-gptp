@@ -2813,7 +2813,7 @@ namespace hooks {
 
 		// Periodic overlays
 		if (g_elapsed_time_frames % 10 == 0) {
-			if (unit_ext->unit_vectors[UnitVectorBarghests].size() || unit_ext->unit_vectors[UnitVectorManifolds].size()) {
+			if (unit_ext->unit_vectors[UnitVectorBarghests].size() || unit_ext->unit_vectors[UnitVectorManifolds].size() || unit_ext->timers[TimerManifoldConcurringChorus] > 1) {
 				bw::add_unit_overlay(unit, ImageId::RepentantChorusSmall + bw::get_overlay_offset(unit->id));
 			}
 			if (unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size()) {
