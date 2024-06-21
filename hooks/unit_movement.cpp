@@ -206,18 +206,17 @@ namespace hooks {
 				subunit->sprite->flags &= ~SpriteFlags::Hidden;
 			}
 			helper::clist_remove_hidden_unit_entry(unit);
-			Unit* visible_unit = g_first_visible_unit;
-			if (visible_unit) {
-				if (g_last_active_unit == visible_unit) {
+			if (g_first_visible_unit) {
+				if (g_last_active_unit == g_first_visible_unit) {
 					g_last_active_unit = unit;
 				}
-				Unit* next_visible_unit = visible_unit->link.next;
-				unit->link.prev = visible_unit;
+				Unit* next_visible_unit = g_first_visible_unit->link.next;
+				unit->link.prev = g_first_visible_unit;
 				unit->link.next = next_visible_unit;
 				if (next_visible_unit) {
 					next_visible_unit->link.prev = unit;
 				}
-				visible_unit->link.next = unit;
+				g_first_visible_unit->link.next = unit;
 			} else {
 				g_last_active_unit = unit;
 				g_first_visible_unit = unit;
