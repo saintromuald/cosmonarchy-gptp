@@ -1240,7 +1240,7 @@ bool portrait_id_is_default_advisor(u32 portrait_id) {
 }
 
 u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
-	if (player < PlayerLimit) {
+	if (player >= PlayerLimit) {
 		return portrait_id;
 	}
 	const auto faction = g_globals->players[player].faction;

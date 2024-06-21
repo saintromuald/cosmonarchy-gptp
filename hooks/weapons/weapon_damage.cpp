@@ -528,8 +528,7 @@ namespace hooks
 			// Ignore Carapace Swarm!
 			// START
 			switch (data.attacker->id) {
-				case UnitId::ZergNathrokor:
-				{
+				case UnitId::ZergNathrokor: {
 					attacker_ext->timers[TimerZergAdrenalFrenzy] = 2 * 24 + 1;
 					data.attacker->update_speed();
 				} break;
@@ -541,19 +540,17 @@ namespace hooks
 			}
 
 			switch (data.weapon_id) {
-				case WeaponId::PotentatePhaseSaber:
-				{
+				case WeaponId::PotentatePhaseSaber: {
 					if (!bw::is_allied_to(data.target->player, data.attacker->player)) {
 						ascend_in_area(data.attacker->player, data.attacker->position, 4 * 32);
 					}
 				} break;
-				case WeaponId::MindTyrantTyranny:
-				{
+				case WeaponId::MindTyrantTyranny: {
 					helper::mind_control_hit(data.attacker, data.target);
 				} break;
 				case WeaponId::VorvalClaws:
-				case WeaponId::NathrokorNathrokClaws:
-				{
+				case WeaponId::NathrokorVestigialStrike:
+				case WeaponId::NathrokorNathrokClaws: {
 					if (!target_ext->values[ValueHidebreaker]) {
 						target_ext->values[ValueHidebreaker] = 1;
 						// TODO: Overlay
@@ -570,13 +567,9 @@ namespace hooks
 			}
 
 			switch (data.target->id) {
-				case UnitId::TerranStriga:
-				{
+				case UnitId::TerranStriga: {
 					// Striga - Fleeting Focus
-					if (!(units_dat::base_property[data.attacker->id] & UnitProperty::Building)
-					&&	!(data.attacker->status & UnitStatus::Burrowed)
-					&&   !bw::is_under_carapace_swarm(data.target))
-					{
+					if (unit_can_be_repulsed(data.attacker) && !bw::is_under_carapace_swarm(data.target)) {
 						const u32 dist = bw::distance_between(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
 							const u32 displacement_time = 5;

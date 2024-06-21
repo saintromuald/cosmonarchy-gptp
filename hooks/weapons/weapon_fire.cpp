@@ -13,14 +13,11 @@
 #include "weapon_spellhit.h"
 #include "weapon_cooldown.h"
 
-static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit)
-{
-	if (unit->status & UnitStatus::Invincible)
-	{
+static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit) {
+	if (unit->status & UnitStatus::Invincible) {
 		return false;
 	}
-	if (bw::is_allied_to(bullet->player, unit->player))
-	{
+	if (bw::is_allied_to(bullet->player, unit->player)) {
 		return false;
 	}
 	return true;
