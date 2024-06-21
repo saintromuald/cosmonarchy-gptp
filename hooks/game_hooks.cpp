@@ -3413,7 +3413,7 @@ namespace hooks {
 			should_update_speed = true;
 		}
 
-		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] > 1) {
+		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] >= 1) {
 			should_update_speed = true;
 		}
 
