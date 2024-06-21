@@ -3405,12 +3405,11 @@ namespace hooks {
 			}
 		}
 
-		if (unit_ext->timers[TimerKelvinMunitions] <= 1) {
-			unit_ext->timers[TimerKelvinMunitions] = 0;
+		if (unit_ext->timers[TimerKelvinMunitions] >= 1) {
 			should_update_speed = true;
 		}
 
-		if (unit_ext->timers[TimerLobotomySlow] <= 1) {
+		if (unit_ext->timers[TimerLobotomySlow] >= 1) {
 			unit_ext->timers[TimerLobotomySlow] = 0;
 			should_update_speed = true;
 		}
