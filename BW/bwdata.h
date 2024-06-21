@@ -1256,11 +1256,11 @@ BW_DATA(MusicStruct*,		g_music_bank,						0x00512BB8);
 BW_REF(u32,					g_big_music_volume,					0x006D5BB8);
 
 // For ignoring inputs in menu
-BW_DATA(BinDlg**,         g_popup_dialog,                     0x006D5BF4);
-BW_DATA(u8*,              g_chat_message_type,                0x0068C144);
+BW_DATA(BinDlg**,			g_popup_dialog,                     0x006D5BF4);
+BW_DATA(u8*,				g_chat_message_type,                0x0068C144);
 
 // For play_addon_detach_sound
-BW_DATA(u8*,				g_audio_something,						0x006D1A98);
+BW_DATA(u8*,				g_audio_something,					0x006D1A98);
 
 // For unit_die
 BW_DATA(u32*,				g_ignore_unit_flag80_clear_subcount,	0x006D5BD0);
@@ -1272,8 +1272,8 @@ BW_DATA(u8*,				UnkRGBMashup,						0x005993D8);
 BW_DATA(BinDlg**,			g_main_dlg,							0x0057F0DC);
 
 // For create_main_window
-BW_DATA(HINSTANCE*,		g_main_hinstance,					0x0051BFAC);
-BW_DATA(HIMC*,			g_app_context,						0x006D6438);
+BW_DATA(HINSTANCE*,			g_main_hinstance,					0x0051BFAC);
+BW_DATA(HIMC*,				g_app_context,						0x006D6438);
 
 // For show_or_hide_minimap
 BW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
@@ -1281,7 +1281,6 @@ BW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);
 
-BW_REF(Unit*,				g_first_active_unit,				0x00628430);
 BW_REF(Unit*,				g_last_active_unit,					0x0059CC9C);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
