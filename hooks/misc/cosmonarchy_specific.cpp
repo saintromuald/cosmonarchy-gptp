@@ -234,7 +234,7 @@ Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) {
 	}
 
 	if (unit->status & UnitStatus::GroundedBuilding) {
-		helper::list_push_back_used_unit_entry(unit);
+		helper::visible_units_add(unit);
 	} else {
 		helper::list_push_back_hidden_unit_entry(unit);
 	}

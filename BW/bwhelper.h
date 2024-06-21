@@ -842,7 +842,7 @@ namespace helper {
 
 	// create_unit
 	Unit* unit_constructor(s32 x, s32 y, u16 unit_id, s32 player, s32 unused);										// 004A06C0
-	Unit* list_push_back_used_unit_entry(Unit* unit);																// 0049DCA0
+	Unit* visible_units_add(Unit* unit);																// 0049DCA0
 	Unit* list_push_back_hidden_unit_entry(Unit* unit);																// 0049DCE0
 	Sprite* unit_destructor(Unit* unit);																			// 004A0990
 	void* get_image_attack_frame(void* result_arg, Sprite* sprite, s32 index, u32 overlay_type);					// 00401DF0
@@ -1731,7 +1731,7 @@ namespace helper {
 	Bullet* clear_bullet_targets(Unit* unit);									// 0048AAC0
 	void building_death(Unit* unit, Sprite* sprite);							// 0049FD00
 	Unit* remove_unit_from_lists(Unit* unit);									// 0049E3F0
-	Unit* clist_remove_hidden_unit_entry(Unit* unit);							// 0049DE50
+	Unit* hidden_units_remove(Unit* unit);							// 0049DE50
 	Unit* clist_remove_used_unit_entry(Unit* unit);								// 0049DEA0
 	void unit_movement_instant_stop(Unit* unit);								// 0046BF00
 	void progress_flingy(Unit* unit);											// 00495EE0

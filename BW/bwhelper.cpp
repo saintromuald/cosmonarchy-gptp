@@ -7247,7 +7247,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* list_push_back_used_unit_entry(Unit* unit) {
+	Unit* visible_units_add(Unit* unit) {
 		const u32 func_address = 0x0049DCA0;
 		static Unit* result;
 		__asm {
@@ -14921,8 +14921,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* clist_remove_hidden_unit_entry(Unit* unit)
-	{
+	Unit* hidden_units_remove(Unit* unit) {
 		const u32 func_address = 0x0049DE50;
 		static Unit* result;
 		__asm {
@@ -14935,8 +14934,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* clist_remove_used_unit_entry(Unit* unit)
-	{
+	Unit* clist_remove_used_unit_entry(Unit* unit) {
 		const u32 func_address = 0x0049DEA0;
 		static Unit* result;
 		__asm {
@@ -14949,8 +14947,7 @@ namespace helper {
 		return result;
 	}
 
-	void unit_movement_instant_stop(Unit* unit)
-	{
+	void unit_movement_instant_stop(Unit* unit) {
 		const u32 func_address = 0x0046BF00;
 		__asm {
 			PUSHAD
@@ -14960,8 +14957,7 @@ namespace helper {
 		}
 	}
 
-	void progress_flingy(Unit* unit)
-	{
+	void progress_flingy(Unit* unit) {
 		const u32 func_address = 0x00495EE0;
 		__asm {
 			PUSHAD

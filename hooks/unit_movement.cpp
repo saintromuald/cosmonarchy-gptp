@@ -205,22 +205,8 @@ namespace hooks {
 			if (subunit && subunit->is_subunit()) {
 				subunit->sprite->flags &= ~SpriteFlags::Hidden;
 			}
-			helper::clist_remove_hidden_unit_entry(unit);
-			if (g_first_visible_unit) {
-				if (g_last_active_unit == g_first_visible_unit) {
-					g_last_active_unit = unit;
-				}
-				Unit* next_visible_unit = g_first_visible_unit->link.next;
-				unit->link.prev = g_first_visible_unit;
-				unit->link.next = next_visible_unit;
-				if (next_visible_unit) {
-					next_visible_unit->link.prev = unit;
-				}
-				g_first_visible_unit->link.next = unit;
-			} else {
-				g_last_active_unit = unit;
-				g_first_visible_unit = unit;
-			}
+			helper::hidden_units_remove(unit);
+			helper::visible_units_add(unit);
 		}
 
 		helper::refresh_unit_vision(unit);
@@ -240,7 +226,7 @@ namespace hooks {
 		unit->pathing_flags = (pathing_flags ^ (unit->sprite->elevation < 12)) & 1 ^ pathing_flags;
 		if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
 			helper::toggle_unit_path(subunit);
-			subunit->movement_state = 0;
+			subunit->movement_state = UnitMovement_Init;
 			subunit->pathing_flags ^= (subunit->pathing_flags ^ (subunit->sprite->elevation < 12)) & 1;
 		}
 	}
