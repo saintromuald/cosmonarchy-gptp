@@ -338,6 +338,7 @@ enum ExtTimerId {
 	TimerTryCastCustomSpell,
 	TimerGenericAbilityAnimation,
 	TimerAnthelionTurn,
+	TimerManifoldConcurringChorus,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,
@@ -393,6 +394,7 @@ enum ExtUnitVectorId {
 	UnitVectorCrucibles,
 	UnitVectorStaggerBlacklist,
 	UnitVectorBarghests,
+	UnitVectorManifolds,
 
 	UnitVectorCount,
 };

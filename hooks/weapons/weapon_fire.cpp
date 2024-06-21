@@ -429,6 +429,10 @@ namespace hooks {
 			bw::decloak_passive_proc(unit->hangar_unit.parent);
 		}
 
+		if (unit->id == UnitId::ProtossManifold) {
+			unit_ext->timers[TimerManifoldConcurringChorus] = 49;
+		}
+
 		if (weapons_dat::flingy_id[weapon_id] != 0) {
 			if (unit->id == UnitId::TerranSavant) {
 				u32 sound_id = bw::get_manual_unit_weapon_sound(unit, WeaponId::None);
@@ -521,12 +525,10 @@ namespace hooks {
 					case WeaponId::AxitriliskSearingVenom:
 					case WeaponId::SkithrokorSkitteringSpores:
 					case WeaponId::BactaliskCorrosiveAcid:
-					case WeaponId::KeskathalorScreamingVenom:
-					{
+					case WeaponId::KeskathalorScreamingVenom: {
 						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
 					} break;
-					case WeaponId::PhobosArgosLaserBatteries:
-					{
+					case WeaponId::PhobosArgosLaserBatteries: {
 						// Phobos - Argent Capacitors passive
 						if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] == 0) {
 							unit->add_unit_energy(5 * 256);

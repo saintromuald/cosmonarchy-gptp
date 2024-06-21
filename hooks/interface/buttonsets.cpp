@@ -2298,6 +2298,11 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossManifold: {
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Manifold - Concurring Chorus
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossGolem: {
 									if (current_button->icon_id == IconId::PlasmaShields) { // Golem - Tranquility Array
 										current_button_state = Button_State::Enabled;

@@ -423,6 +423,7 @@ namespace hooks
 		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0, 0);
 		add_status(statuses, "Reclaimed", unit_ext->values[ValueReclaimed], 1);
 		add_status(statuses, "Repentant Chorus", unit_ext->unit_vectors[UnitVectorBarghests].size(), 0);
+		add_status(statuses, "Concurring Chorus", unit_ext->unit_vectors[UnitVectorManifolds].size(), 0);
 		add_status(statuses, "Lucilleri Pheremones", unit_ext->timers[TimerLucilleriPheremones], 1);
 
 		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
