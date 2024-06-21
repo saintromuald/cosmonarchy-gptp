@@ -120,7 +120,7 @@ void apply_irradiate(Unit* unit, u8 player, u32 time);
 
 void inject_globals_hooks();
 
-inline IquareGlobals iquare_globals;
+inline IquareGlobals g_iquare_globals;
 
 namespace hooks {
 

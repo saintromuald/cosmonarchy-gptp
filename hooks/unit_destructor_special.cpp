@@ -193,7 +193,7 @@ void unit_on_death_behaviors(Unit* unit) {
 	}
 
 	if (unit_ext->timers[TimerAurielIncineration] >= 1) {
-		iquare_globals.create_effect(EffectId::SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext->values[ValueAurielIncinerationPlayer], 0);
+		g_iquare_globals.create_effect(EffectId::SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext->values[ValueAurielIncinerationPlayer], 0);
 		unit_ext->timers[TimerAurielIncineration] = 0;
 		unit_ext->values[ValueNoCorpse] = 1;
 	}
@@ -211,7 +211,7 @@ void unit_on_death_behaviors(Unit* unit) {
 			} break;
 			case UnitId::TerranAspirant:
 			{
-				iquare_globals.create_effect(EffectId::AspirantCriticality, 5 * 24, { unit->position.x, unit->position.y }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
+				g_iquare_globals.create_effect(EffectId::AspirantCriticality, 5 * 24, { unit->position.x, unit->position.y }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
 			} break;
 			case UnitId::ProtossClarion:
 			{
@@ -312,7 +312,7 @@ void unit_on_death_behaviors(Unit* unit) {
 
 	// Gladius - Binding Plasma - proc on death
 	if (unit_ext->timers[TimerBindingPlasma]) {
-		iquare_globals.create_effect(EffectId::GladiusBindingPlasma, unit_ext->timers[TimerBindingPlasma], unit->position, BindingPlasmaRadius,
+		g_iquare_globals.create_effect(EffectId::GladiusBindingPlasma, unit_ext->timers[TimerBindingPlasma], unit->position, BindingPlasmaRadius,
 			SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext->values[ValueGladiusBindingPlasmaPlayer], 0, { .intervals = unit_ext->values[ValueGladiusBindingPlasmaStacks] });
 	}
 
@@ -371,8 +371,8 @@ void unit_destructor_special_cases(Unit* unit) {
 	helper::kill_all_loaded_units(unit);
 
 	// Globals memory management
-	iquare_globals.remove_unit_from_line_attack_table(unit, false);
-	iquare_globals.unit_death(unit);
+	g_iquare_globals.remove_unit_from_line_attack_table(unit, false);
+	g_iquare_globals.unit_death(unit);
 	unit_death_start(unit);
 }
 

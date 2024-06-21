@@ -963,7 +963,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 	}
 	void inject_tbl_extender()
 	{
-		iquare_globals.tbl_extender = true;
+		g_iquare_globals.tbl_extender = true;
 		auto ptr_list = offset_list();
 		//DATA MUST BE INITIALIZED
 		/*for (s32 i = 0; i < ptr_list.count(); i++) {

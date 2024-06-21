@@ -63,19 +63,19 @@ namespace hooks {
 			// Create effect fields
 			switch (weapon_id) {
 				case WeaponId::DiademIonCannon: {
-					iquare_globals.create_effect(EffectId::DiademIonField, 10 * 24, pos, 3 * 32, SpriteId::IonField, 5, bullet->player, unit);
+					g_iquare_globals.create_effect(EffectId::DiademIonField, 10 * 24, pos, 3 * 32, SpriteId::IonField, 5, bullet->player, unit);
 				} break;
 				case WeaponId::AionLazarusSalvo: {
-					iquare_globals.create_effect(EffectId::AionReclamationField, 5 * 24, pos, 2 * 32, SpriteId::CausticDischarge, 5, bullet->player, unit);
+					g_iquare_globals.create_effect(EffectId::AionReclamationField, 5 * 24, pos, 2 * 32, SpriteId::CausticDischarge, 5, bullet->player, unit);
 				} break;
 				case WeaponId::SalamanderPerditionBarrage: {
-					iquare_globals.create_effect(EffectId::SalamanderFire, 5 * 24, pos, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->player, unit);
+					g_iquare_globals.create_effect(EffectId::SalamanderFire, 5 * 24, pos, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->player, unit);
 				} break;
 				case WeaponId::CantavisHallucinationCast: {
-					iquare_globals.create_effect(EffectId::HallucinatingField, 10 * 24, pos, 1.5 * 32, SpriteId::ProtossHallucinationEffect, 5, bullet->player, unit);
+					g_iquare_globals.create_effect(EffectId::HallucinatingField, 10 * 24, pos, 1.5 * 32, SpriteId::ProtossHallucinationEffect, 5, bullet->player, unit);
 				} break;
 				case WeaponId::KeskathalorScreamingVenom: {
-					iquare_globals.create_effect(EffectId::KeskathalorCausticDischarge, 5 * 24, pos, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->player, unit);
+					g_iquare_globals.create_effect(EffectId::KeskathalorCausticDischarge, 5 * 24, pos, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->player, unit);
 				} break;
 			}
 
@@ -196,12 +196,12 @@ namespace hooks {
 			if (bullet->source_unit) {
 				bool skip = false;
 
-				if (iquare_globals.spine_pair_exists(bullet->source_unit, target)) {
+				if (g_iquare_globals.spine_pair_exists(bullet->source_unit, target)) {
 					skip = true;
 					break;
 				}
 				if (skip) continue;
-				iquare_globals.add_lakizilisk_spine_pair(bullet->source_unit, target);
+				g_iquare_globals.add_lakizilisk_spine_pair(bullet->source_unit, target);
 			}
 			helper::weapon_bullet_shot(target, bullet, 1);
 		}
@@ -268,15 +268,15 @@ namespace hooks {
 
 		// Kalkalisk behavior
 		if (weapon_id_is_incremental(bullet->weapon_id)) {
-			iquare_globals.add_incremental_bullet_multihit(bullet, target);
-			u32 count = iquare_globals.get_multihit_count(bullet);
+			g_iquare_globals.add_incremental_bullet_multihit(bullet, target);
+			u32 count = g_iquare_globals.get_multihit_count(bullet);
 			target->damage_with(bullet->weapon_id, (weapons_dat::damage_amount[bullet->weapon_id] - count) * 256, bullet->source_unit, bullet->player);
 			return;
 		}
 
 		u8 divisor = 1;
 		if (weapon_id == WeaponId::ArchitectDispersiveSalvo) {
-			divisor = iquare_globals.get_divider(bullet);
+			divisor = g_iquare_globals.get_divider(bullet);
 		} else if (weapon_id == WeaponId::GeszithalorAcidSpore) {
 			// Searing Acid - Geszithalor behavior
 			BulletExt* bullet_ext = get_bullet_ext(bullet);
@@ -375,7 +375,7 @@ namespace hooks {
 	}
 
 	void nuke(Bullet* bullet, u32 weapon_id) {
-		iquare_globals.create_effect(EffectId::MorningstarGroundZero, 24, bullet->position, 0, SpriteId::None, 5, bullet->player, bullet->source_unit);
+		g_iquare_globals.create_effect(EffectId::MorningstarGroundZero, 24, bullet->position, 0, SpriteId::None, 5, bullet->player, bullet->source_unit);
 		splash(bullet, weapon_id, SplashType::Radial);
 	}
 
