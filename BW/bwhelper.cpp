@@ -4601,13 +4601,13 @@ namespace helper {
 	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 damage_divisor) {
 		const u32 func_address = 0x00479AE0;
 		if (bullet && target && bullet->source_unit && weapon_id_is_line_attack(bullet->weapon_id)) {
-			if (!g_iquare_globals.was_hit_by_line_attack(bullet->source_unit, target)) {
-				g_iquare_globals.register_line_attack_hit(bullet->source_unit, target);
+			if (!g_iquare_globals->was_hit_by_line_attack(bullet->source_unit, target)) {
+				g_iquare_globals->register_line_attack_hit(bullet->source_unit, target);
 			} else {
 				return;
 			}
 		}
-		if (g_iquare_globals.was_already_hit_by_multihit_bullet(bullet, target)) {
+		if (g_iquare_globals->was_already_hit_by_multihit_bullet(bullet, target)) {
 			return;
 		}
 		__asm {

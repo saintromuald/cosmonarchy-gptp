@@ -360,7 +360,7 @@ void update_search_index() {
 
 void update_search_index_effects() {
 	// Add effects
-	for (EffectField& effect : g_iquare_globals.m_effects) {
+	for (EffectField& effect : g_iquare_globals->m_effects) {
 		Point16 position = {};
 		position.x = effect.position.x;
 		position.y = effect.position.y;
