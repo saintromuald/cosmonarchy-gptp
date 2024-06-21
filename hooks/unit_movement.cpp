@@ -1,8 +1,7 @@
 #include "unit_movement.h"
 #include <BW/api.h>
 
-namespace hooks
-{
+namespace hooks {
 	b32 unit_movement_dormant(Unit* unit) { // 0046A8D0 
 		if (!(unit->status & UnitStatus::IgnoreTileCollision) || !(unit->status & UnitStatus::IsNormal)) {
 			if (AssertSprite(unit->sprite)
@@ -202,9 +201,9 @@ namespace hooks
 		}
 		
 		if (unit->sprite->flags & SpriteFlags::Hidden) {
-			unit->sprite->flags &= 0xDF;
+			unit->sprite->flags &= ~SpriteFlags::Hidden;
 			if (subunit && subunit->is_subunit()) {
-				subunit->sprite->flags &= 0xDF;
+				subunit->sprite->flags &= ~SpriteFlags::Hidden;
 			}
 			helper::clist_remove_hidden_unit_entry(unit);
 			Unit* visible_unit = g_first_visible_unit;
