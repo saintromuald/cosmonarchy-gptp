@@ -94,7 +94,6 @@ struct IquareGlobals {
 
 	void aise_save();
 	void aise_load(const char* ptr, u32 len);
-	void reset();
 	void tick();
 	void unit_death(Unit* unit);
 	void remove_unit_from_line_attack_table(Unit* unit, bool source_only);
@@ -120,7 +119,7 @@ void apply_irradiate(Unit* unit, u8 player, u32 time);
 
 void inject_globals_hooks();
 
-inline IquareGlobals iquare_globals;
+inline std::unique_ptr<IquareGlobals> g_iquare_globals;
 
 namespace hooks {
 

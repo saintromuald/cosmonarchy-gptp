@@ -659,7 +659,7 @@ namespace hooks
 				} break;
 				case WeaponId::CyclopsFlakCannons:
 				{
-					iquare_globals.create_effect(EffectId::CyclopsRecursionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
+					g_iquare_globals->create_effect(EffectId::CyclopsRecursionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
 												 data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
 				} break;
 			}
@@ -707,13 +707,13 @@ namespace hooks
 					} break;
 					case WeaponId::SevenstepGeometricRifle:
 					{
-						iquare_globals.create_effect(EffectId::SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
+						g_iquare_globals->create_effect(EffectId::SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
 							data.target->sprite->elevation + 1, data.attacker->player, data.attacker, { .origin = data.target });
 					} break;
 					case WeaponId::SevenstepGeometricRiflePiercing:
 					{
 						if (!target_ext->timers[TimerSevenstepMindMatterCarrier]) {
-							iquare_globals.create_effect(EffectId::SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
+							g_iquare_globals->create_effect(EffectId::SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
 								data.target->sprite->elevation + 1, data.attacker->player, data.attacker, { .origin = data.target });
 						}
 					} break;
@@ -897,43 +897,38 @@ namespace hooks
 
 	static void weapon_damage_lifesteal(const WeaponDamageData& data) {
 		u32 damage_dealt = data.damage + data.shield_reduce_amount;
+		f32 hp_factor = 0;
+		f32 shields_factor = 0;
+
 		UnitExt* attacker_ext = get_unit_ext(data.attacker);
-
-		f32 lifesteal_factor = 0;
 		if (attacker_ext->timers[TimerLucilleriPheremones]) {
-			lifesteal_factor += 1;
+			hp_factor += 1;
 		}
-
 		switch (data.weapon_id) {
 			case WeaponId::GhitorokorGnashingTendrils:
 			case WeaponId::TethzorokorSaberArray:
 			case WeaponId::RilirokorToxicSpores:
 			case WeaponId::RililiskSwarmingSpores:
-			case WeaponId::UltrokorKaiserBlades:
-			{
+			case WeaponId::UltrokorKaiserBlades: {
 				// Broodspawn Death Cycle, Ghitorokor / Tethzorokor / Ultrokor Saber Siphon
-				lifesteal_factor += 1;
+				hp_factor += 1;
 			} break;
-			case WeaponId::MortothrokorWickedIncisors:
-			{
+			case WeaponId::MortothrokorWickedIncisors: {
 				// Mortothrokor Whetted Appetite
-				f32 percentage = attacker_ext->values[ValueMortothrokorStacks] * 0.05;
-				lifesteal_factor += percentage;
+				hp_factor += attacker_ext->values[ValueMortothrokorStacks] * 0.05;
 			} break;
 			case WeaponId::AdherentPhaseBlade:
-			case WeaponId::AmaranthPsiCleaver:
-			{
+			case WeaponId::AmaranthPsiCleaver: {
 				// Eternal Service - Amaranth behavior
-				data.attacker->heal_shields(damage_dealt, data.attacker);
+				shields_factor += 1;
 			} break;
 		}
 
-		if (lifesteal_factor) {
-			if (data.weapon_id != WeaponId::MortothrokorWickedIncisors) {
-				lifesteal_factor += 1; // Add back the base number
-			}
-			u32 life_to_steal = damage_dealt * lifesteal_factor;
-			data.attacker->heal_hp(life_to_steal, data.attacker);
+		if (hp_factor) {
+			data.attacker->heal_hp(damage_dealt * hp_factor, data.attacker);
+		}
+		if (shields_factor) {
+            data.attacker->heal_shields(damage_dealt * shields_factor, data.attacker);
 		}
 	}
 

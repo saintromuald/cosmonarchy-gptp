@@ -13,7 +13,7 @@ struct StatTxtStringTbl
 	}
 	const char* get_string(u32 index) const
 	{
-		if (iquare_globals.tbl_extender)
+		if (g_iquare_globals->tbl_extender)
 		{
 			if (index == 0) return nullptr;
 			else if (index <= getStringCountExt())

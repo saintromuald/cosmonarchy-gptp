@@ -469,7 +469,7 @@ namespace hooks {
 					unit_ext->values[ValueMissileReturnTarget] = (u32)unit->order_target.unit;
 				}
 				if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
-					iquare_globals.clear_lakizilisk(unit);
+					g_iquare_globals->clear_lakizilisk(unit);
 				}
 			}
 
@@ -654,7 +654,7 @@ namespace hooks {
 					} break;
 					case WeaponId::NathreliskSignalingSpores:
 					{
-						iquare_globals.create_effect(EffectId::VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
+						g_iquare_globals->create_effect(EffectId::VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
 					} // Fallthrough intended, for now.
 					default: {
 						u32 sound_id = bw::get_manual_weapon_id_sound(weapon_id);
@@ -742,25 +742,25 @@ namespace hooks {
 			case WeaponId::WyvernJacksonCannon:
 			case WeaponId::MagnetarNewtonianShockCannon:
 			case WeaponId::HippogriffChimeraCannons: {
-				iquare_globals.add_bullet_multihit(bullet, target);
+				g_iquare_globals->add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
 			// Same as default, but red effect
 			case WeaponId::SavantDiscoidRailgunPiercing: {
-				iquare_globals.add_bullet_multihit(bullet, target);
+				g_iquare_globals->add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
 			case WeaponId::PenumbraErebolShockCannon: {
 				// Penumbra - Shroud Piercer
-				iquare_globals.add_bullet_multihit(bullet, target);
+				g_iquare_globals->add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, bullet->attack_target.unit == target ? 1 : 2);
 			} break;
 			case WeaponId::ClaymoreHarpoonRailgun: {
 				// pierce targets
-				iquare_globals.add_bullet_multihit(bullet, target);
+				g_iquare_globals->add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
 				u32 sound_id = bw::rand_between(SoundId::ClaymoreWeaponHit01, SoundId::ClaymoreWeaponHit02);
 				helper::play_sound_from_unit(sound_id, target, 1, 0);
@@ -781,12 +781,12 @@ namespace hooks {
 				bw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
 			} break;
 			case WeaponId::ZarcavrokorBonesofReflection: {
-				iquare_globals.add_bullet_multihit(bullet, target);
+				g_iquare_globals->add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			} break;
 			default: {
-				iquare_globals.add_bullet_multihit(bullet, target);
+				g_iquare_globals->add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactBlue_Damageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
 			}
@@ -824,7 +824,7 @@ namespace hooks {
 			if (!bw::can_weapon_target_unit(bullet->weapon_id, unit)) {
 				continue;
 			}
-			if (iquare_globals.was_already_hit_by_multihit_bullet(bullet, unit)) {
+			if (g_iquare_globals->was_already_hit_by_multihit_bullet(bullet, unit)) {
 				continue;
 			}
 			if (bullet->hit_flags & 1) {
@@ -979,7 +979,7 @@ namespace hooks {
 			const u32 distance_from_source = bullet_ext->distance_traveled;
 			const u32 distance_from_target = bw::distance_between(bullet->position, main_target->position);
 			if (distance_from_source > 5 * 32 && distance_from_target < 3 * 32) {
-				if (!iquare_globals.multihit_bullet_is_set(bullet)) {
+				if (!g_iquare_globals->multihit_bullet_is_set(bullet)) {
 					Unit* old_target = bullet->source_unit->order_target.unit;
 					Point16 old_sprite_pos = bullet->source_unit->sprite->position;
 					Point16 old_pos = bullet->source_unit->position;
@@ -990,7 +990,7 @@ namespace hooks {
 					EntryArray bonus_targets = {};
 					unit_search_radial(&bonus_targets, main_target->position, radius);
 					unit_search_filter(&bonus_targets, bullet->source_unit, FilterEnemy | FilterVisible | FilterNoAir);
-					iquare_globals.add_multihit_empty_bullet(bullet, 1);
+					g_iquare_globals->add_multihit_empty_bullet(bullet, 1);
 					u32 fired = 0;
 					for (u32 i = 0; i < bonus_targets.count; ++i) {
 						Unit* target = bonus_targets.units[i];
@@ -1004,7 +1004,7 @@ namespace hooks {
 						if (new_bullet) {
 							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
 							new_bullet->position = bullet->position;
-							iquare_globals.add_multihit_empty_bullet(new_bullet, 1);
+							g_iquare_globals->add_multihit_empty_bullet(new_bullet, 1);
 							if (++fired == 2) {
 								break;
 							}
@@ -1082,7 +1082,7 @@ namespace hooks {
 				} break;
 				case WeaponId::GladiusPlasmaFlurry: {
 					if (!bullet->attack_target.unit) {
-						iquare_globals.create_effect(EffectId::GladiusBindingPlasma, BindingPlasmaTimer, bullet->position, BindingPlasmaRadius,
+						g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, BindingPlasmaTimer, bullet->position, BindingPlasmaRadius,
 							SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
 					}
 				} break;
@@ -1121,7 +1121,7 @@ namespace hooks {
 			}
 
 			bullet->remaining_bounces = next_bounce;
-			iquare_globals.bounce_bullet = bullet;
+			g_iquare_globals->bounce_bullet = bullet;
 			Unit* target = helper::find_next_bounce_target(bullet);
 			bullet->next_bounce_unit = bullet->attack_target.unit;
 			if (next_bounce && target) {
@@ -1131,7 +1131,7 @@ namespace hooks {
 				bullet->attack_target.unit = target;
 			} else {
 				if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry) {
-					iquare_globals.remove_multihit_bullet(bullet);
+					g_iquare_globals->remove_multihit_bullet(bullet);
 				}
 				target_unit = bullet->attack_target.unit;
 				bullet->behavior_type = 5;
@@ -1206,13 +1206,13 @@ namespace hooks {
 		}
 
 		// Gladius Binding Plasma behavior
-		if (iquare_globals.bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
+		if (g_iquare_globals->bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
 		{
 			if (target && *g_bullet_bounce_missile_next && (*g_bullet_bounce_missile_next)->sprite && target->sprite) {
-				if (iquare_globals.was_already_hit_by_multihit_bullet(iquare_globals.bounce_bullet, target)) {
+				if (g_iquare_globals->was_already_hit_by_multihit_bullet(g_iquare_globals->bounce_bullet, target)) {
 					return false;
 				} else {
-					iquare_globals.add_bullet_multihit(iquare_globals.bounce_bullet, target);
+					g_iquare_globals->add_bullet_multihit(g_iquare_globals->bounce_bullet, target);
 					return *g_bullet_bounce_missile_next != target;
 				}
 			}
@@ -1285,7 +1285,7 @@ namespace hooks {
 				*first_free_bullet = bullet;
 				*bullet_count -= 1;
 			}
-			iquare_globals.remove_multihit_bullet(bullet);
+			g_iquare_globals->remove_multihit_bullet(bullet);
 		}
 		return bullet;
 	}

@@ -3683,13 +3683,13 @@ void launch_return_missile(Unit* unit, u32 weapon_id) {
 	unit->position = position;
 	unit->sprite->position = spr_position;
 	if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
-		iquare_globals.clear_lakizilisk(unit);
+		g_iquare_globals->clear_lakizilisk(unit);
 	}
 }
 
 void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, Point16 position) {
-	iquare_globals.add_incremental_bullet_multihit(bullet, target);
-	s32 count = iquare_globals.get_multihit_count(bullet) - 1;
+	g_iquare_globals->add_incremental_bullet_multihit(bullet, target);
+	s32 count = g_iquare_globals->get_multihit_count(bullet) - 1;
 	bw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, position.x, position.y, bullet->player);
 
 	u32 base_damage = get_bullet_damage(bullet, weapon_id);

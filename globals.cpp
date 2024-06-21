@@ -14,15 +14,7 @@ void IquareGlobals::aise_save() {
 }
 
 void IquareGlobals::aise_load(const char* ptr, u32 len) {
-	this->reset();
 	return;
-}
-
-void IquareGlobals::reset() {
-	m_effects.clear();
-	m_line_attack_hits.clear();
-	m_multihit_bullets.clear();
-	m_lakizilisk_spine_hits.clear();
 }
 
 void IquareGlobals::unit_death(Unit* unit) {
@@ -188,7 +180,7 @@ void tick_effect(EffectField& effect) {
 			case EffectId::MorningstarGroundZero: {
 				switch (effect.tick) {
 					case 0: {
-						iquare_globals.create_effect(EffectId::Irradiate, 20 * 24 - elapsed, effect.position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect.player, effect.source);
+						g_iquare_globals->create_effect(EffectId::Irradiate, 20 * 24 - elapsed, effect.position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect.player, effect.source);
 					} break;
 					case 1:
 					case 2: {
@@ -199,7 +191,7 @@ void tick_effect(EffectField& effect) {
 						pos.x += distance;
 						for (u32 i = 0; i < count; i++) {
 							pos = bw::rotate_point(effect.position, pos, (360.0 / count));
-							iquare_globals.create_effect(EffectId::Irradiate, 20 * 24 - elapsed, pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect.player, effect.source);
+							g_iquare_globals->create_effect(EffectId::Irradiate, 20 * 24 - elapsed, pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect.player, effect.source);
 						}
 					} break;
 				}
@@ -522,7 +514,7 @@ void __declspec(naked) globals_save_state_wrapper() {
 	__asm {
 		PUSHAD
 	}
-	iquare_globals.aise_save();
+	g_iquare_globals->aise_save();
 	__asm {
 		POPAD
 		MOV EAX, state
@@ -538,7 +530,7 @@ void __declspec(naked) globals_load_state_wrapper() {
 		MOV pointer, EAX
 		PUSHAD
 	}
-	iquare_globals.aise_load(pointer, len);
+	g_iquare_globals->aise_load(pointer, len);
 	__asm {
 		POPAD
 		RETN
