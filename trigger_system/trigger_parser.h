@@ -38,7 +38,25 @@ struct Area {
 	Box32 box;
 	u16 flags;
 
-	bool check(Point16 position, bool air);
+	bool check(Point16 position, bool air) const {
+		if (position.x >= this->box.left && position.x <= this->box.right &&
+			position.y >= this->box.top && position.y <= this->box.bottom) {
+			ActiveTile* tile = bw::get_active_tile_at_coords(position.x, position.y);
+			u32 height = tile->ground_height / 2;
+			if (height == 0) {
+				// Low
+				return air ? this->flags & LocationFlags_LowAir : this->flags & LocationFlags_LowGround;
+			} else if (height == 1) {
+				// Mid
+				return air ? this->flags & LocationFlags_MidAir : this->flags & LocationFlags_MidGround;
+			} else if (height == 2) {
+				// High
+				return air ? this->flags & LocationFlags_HighAir : this->flags & LocationFlags_HighGround;
+			}
+			return false;
+		}
+		return false;
+	}
 };
 
 using PlayerBitset = std::bitset<FullPlayerLimit>;
@@ -60,7 +78,18 @@ struct Quota {
 	QuotaType type;
 	s32 value;
 
-	bool check(s32 value);
+	bool check(s32 value) const {
+		switch (this->type) {
+			case QuotaType_Greater:			return value >  this->value;
+			case QuotaType_Less:			return value <  this->value;
+			case QuotaType_GreaterOrEqual:	return value >= this->value;
+			case QuotaType_LessOrEqual:		return value <= this->value;
+			case QuotaType_Equal:			return value == this->value; 
+			case QuotaType_NotEqual:		return value != this->value; 
+			case QuotaType_Anything:		return true; 
+		}
+		return false;
+	}
 };
 
 class TriggerVar;
@@ -68,6 +97,41 @@ class TriggerVar;
 struct ParserMarker {
 	const char* at;
 	Token token;
+};
+
+Point16 box_center(Box32 box);
+Token get_short_unit_name(u32 unit_id);
+
+// Parses and handles <area> <players> <unit_ids>
+struct Designator {
+	Area area;
+	PlayerBitset players;
+	UnitIdBitset unit_ids;
+
+	void search(EntryArray* entry_array, u32 limit = UINT_MAX) const {
+		unit_search_rect(entry_array, area.box);
+		if (limit != UINT_MAX) {
+			unit_search_sort_by_distance(entry_array, box_center(area.box));
+		}
+
+		u32 idx = 0;
+		unit_search_custom_filter(entry_array, [this, limit, &idx](Unit* unit) {
+			idx++;
+			if (idx > limit) {
+				return false;
+			}
+			if (!area.check(unit->position, unit->status & UnitStatus::InAir)) {
+				return false;
+			}
+			if (unit->player >= PlayerLimit || !players[unit->player]) {
+				return false;
+			}
+			if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
+				return false;
+			}
+			return true;
+		});
+	}
 };
 
 class Parser {
@@ -86,6 +150,7 @@ public:
 
 	TriggerVar* maybe_get_var();
 	s32 get_s32(s32 default_value = 0);
+	u32 get_count(u32 default_value = UINT_MAX);
 	f32 get_f32(f32 default_value = 0);
 	bool get_bool(bool default_value = false);
 	f32 get_time_seconds();
@@ -107,6 +172,8 @@ public:
 
 	u32 get_unit_id();
 	UnitIdBitset get_unit_id_bitset();
+
+	Designator get_designator();
 
 	QuotaType get_quota_type(QuotaType default_type);
 	Quota get_quota(QuotaType default_type = QuotaType_GreaterOrEqual, s32 default_value = 0);
@@ -143,9 +210,6 @@ private:
 	u32 m_command_start_pos{};
 	Token m_token{};
 };
-
-Point16 box_center(Box32 box);
-Token get_short_unit_name(u32 unit_id);
 
 template <typename T>
 std::optional<T> sv_convert_to(std::string_view sv) {

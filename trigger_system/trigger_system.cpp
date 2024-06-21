@@ -1670,6 +1670,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 				blissful_embrace(unit, infesting_player ? infesting_player - 1 : unit->player, true);
 			}
+		} else if (parser.equals("set_sprite_player")) {
+			const auto designator = parser.get_designator();
+			const auto player = parser.get_player();
+			const auto count = parser.get_count();
+
+			if (player != -1) {
+				EntryArray units = {};
+				designator.search(&units, count);
+				for (Unit* unit : units.units) {
+					unit->sprite->player = player;
+				}
+			}
 		} else if (parser.equals("witness_mode")) {
 			WitnessMode new_value = (WitnessMode)parser.get_s32();
 
