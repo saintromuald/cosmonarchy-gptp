@@ -692,7 +692,7 @@ namespace hooks {
 	// Hooked to investigate obscure Vespene issue. -Pr0nogo
 	void remove_stunned_worker_from_node(Unit* unit) { // 00468DB0
 		Unit* harvest_target = unit->worker.harvest_target;
-		if (unit->is_frozen() || !harvest_target) {
+		if (!harvest_target || unit->is_frozen()) {
 			return;
 		}
 		if (!(units_dat::base_property[harvest_target->id] & UnitProperty::ResourceContainer) || unit->worker.is_harvesting) {
