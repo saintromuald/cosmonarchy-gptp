@@ -103,13 +103,13 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) orders_harvestfinish_wrapper() { // 00468ED0
+	void __declspec(naked) orders_harvest_finish_wrapper() { // 00468ED0
 		static Unit* worker;
 		__asm {
 			MOV worker, EAX
 			PUSHAD
 		}
-		hooks::orders_harvestfinish(worker);
+		hooks::orders_harvest_finish(worker);
 		__asm {
 			POPAD
 			RETN
@@ -335,7 +335,7 @@ namespace hooks {
 		jump_patch(order_enter_exit_gas_wrapper,							0x00469980, 1);
 		jump_patch(can_harvest_gas_wrapper,									0x00469000, 1);
 		jump_patch(order_acquire_generic_right_click_harvest_proc_wrapper,	0x004557C0, 2);
-		jump_patch(orders_harvestfinish_wrapper,							0x00468ED0, 1);
+		jump_patch(orders_harvest_finish_wrapper,							0x00468ED0, 1);
 		jump_patch(begin_harvest_wrapper,									0x00468C70, 4);
 		jump_patch(let_next_unit_mine_wrapper,								0x00468970, 1);
 		jump_patch(orders_entries_move_to_harvest_obscured_wrapper,			0x00469500, 4);

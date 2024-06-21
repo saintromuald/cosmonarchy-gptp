@@ -40,7 +40,7 @@ namespace hooks {
 		}
 
 		// Claymore - Kelvin Munitions - slow
-		if (unit_ext->timers[TimerKelvinMunitions] >= 1) {
+		if (unit_ext->timers[TimerKelvinMunitions] > 1) {
 			speed *= 0.666;
 		}
 
