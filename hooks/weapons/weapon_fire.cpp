@@ -583,8 +583,8 @@ namespace hooks {
 					} break;
 					case WeaponId::ValkyrieHaloRockets: {
 						// Offset: Cone
-						u32 angle = 2 + index * 4;
-						u32 scatter = index * -5;
+						u32 angle = 10 - index * 4;
+						u32 scatter = -10 + index * 5;
 						fire_sideways(unit, weapon_id, angle, scatter, {});
 					} break;
 					case WeaponId::TosgriliskExplosiveSpores:
