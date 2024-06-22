@@ -4104,7 +4104,7 @@ namespace hooks {
 										case UnitId::Stroluum: {
 											bool set_value = false;
 											if (unit->has_energy_for(TechId::StroluumSkryspawn)) {
-												unit->spend_energy(TechId::energy_cost(TechId::StroluumSkryspawn));
+												unit->spend_energy(TechId::energy_cost(TechId::StroluumSkryspawn);
 												if (!unit_ext->timers[TimerSkryspawn]) {
 													unit_ext->timers[TimerSkryspawn] = 3 * 24 + 1;
 													unit->freeze();
