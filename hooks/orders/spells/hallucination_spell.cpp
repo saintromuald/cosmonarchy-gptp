@@ -16,7 +16,7 @@ namespace hooks {
 			}
 			bw::decloak_passive_proc(unit);
 			unit->play_iscript_animation(IscriptAnimation::Unused2);
-			unit->spend_unit_energy(tech_cost);
+			unit->spend_energy(tech_cost);
 
 			unit_ext->values[ValueJustCastedHallucination] = 1;
 			unit->order_to_idle();

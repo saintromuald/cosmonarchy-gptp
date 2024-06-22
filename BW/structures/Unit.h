@@ -233,7 +233,7 @@ struct Unit : public UnitLayout
 	void remove_acid_spores();
 
 	/// Spend an amount of energy, if no THE GATHERING cheat.
-	void spend_unit_energy(u32 energy);
+	void spend_energy(u32 energy);
 	void add_unit_energy(u32 energy);
 	void add_unit_energy_capped(u32 energy, u32 max);
 
@@ -386,7 +386,7 @@ struct Unit : public UnitLayout
 	}
 
 	struct UnitExt& ext();
-	bool has_energy_for_ability(u32 tech_id);
+	bool has_energy_for(u32 tech_id);
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

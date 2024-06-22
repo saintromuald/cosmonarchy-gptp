@@ -115,7 +115,7 @@ namespace hooks {
 					bw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
 				}
 
-				unit->spend_unit_energy(5 * 256 / 24);
+				unit->spend_energy(5 * 256 / 24);
 				if (unit->energy == 0 || bw::get_generic_rust_value(unit, RustId::CancelRecall)) {
 					bw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
 					unit_ext->values[ValueDidactRecalling] = false;
@@ -172,7 +172,7 @@ namespace hooks {
 				}
 				unit->order_to_idle();
 			} else {
-				unit->spend_unit_energy(energy_cost);
+				unit->spend_energy(energy_cost);
 				if (unit->order_target.unit) {
 					unit->order_target.pt.x = unit->order_target.unit->position.x;
 					unit->order_target.pt.y = unit->order_target.unit->position.y;

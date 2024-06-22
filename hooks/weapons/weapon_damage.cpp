@@ -224,7 +224,7 @@ namespace hooks
 							continue;
 						}
 						bw::create_shield_overlay(data.target, data.direction);
-						unit->spend_unit_energy(data.damage);
+						unit->spend_energy(data.damage);
 						bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
 						ignore_alert = true;
 						unit_attack_notify(unit);
@@ -375,7 +375,7 @@ namespace hooks
 		data.target->ground_strength = helper::get_unit_strength(data.target, true);
 
 		if (data.weapon_id == WeaponId::Lockdown) {
-			helper::play_sound_at_pos(SoundId::GoskaGrenadeImpact, weapon_damage_current_bullet->position, 1, 0);
+			bw::play_sound(weapon_damage_current_bullet->position, SoundId::GoskaGrenadeImpact);
 		}
 	}
 
@@ -607,7 +607,7 @@ namespace hooks
 						break;
 					}
 					if (data.target->energy >= 10 * 256) {
-						data.target->spend_unit_energy(10 * 256);
+						data.target->spend_energy(10 * 256);
 
 						u32 damage = data.damage + data.shield_reduce_amount;
 						u32 image_id = analogue_image_id_overwrite(data.weapon_id);

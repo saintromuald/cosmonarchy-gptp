@@ -22,7 +22,7 @@ namespace hooks
 					unit->main_order_state = 1;
 					unit->main_order_timer = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
-					unit->spend_unit_energy(tech_energy_cost);
+					unit->spend_energy(tech_energy_cost);
 				}
 			} else {
 				// Cancel when way out of range or lost sight of target

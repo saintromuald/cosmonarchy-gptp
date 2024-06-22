@@ -640,7 +640,7 @@ Unit* remove_unit_from_lists(Unit* unit) { // 0049E3F0
 	} else if (unit->sprite->flags & SpriteFlags::Hidden) {
 		unit = helper::hidden_units_remove(unit);
 	} else {
-		unit = helper::clist_remove_used_unit_entry(unit);
+		unit = helper::visible_units_remove(unit);
 	}
 
 	Unit* dying_unit = *g_first_dying_unit;

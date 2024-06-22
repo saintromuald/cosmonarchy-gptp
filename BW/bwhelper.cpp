@@ -14934,7 +14934,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* clist_remove_used_unit_entry(Unit* unit) {
+	Unit* visible_units_remove(Unit* unit) {
 		const u32 func_address = 0x0049DEA0;
 		static Unit* result;
 		__asm {

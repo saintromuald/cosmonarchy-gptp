@@ -107,7 +107,7 @@ namespace
 				}
 				if (spend)
 				{
-					unit->spend_unit_energy(energyCost);
+					unit->spend_energy(energyCost);
 				}
 			}
 			// original code is hardcoded instead of using a function like set_secondary_order

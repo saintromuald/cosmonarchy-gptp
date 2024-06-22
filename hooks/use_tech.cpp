@@ -6,8 +6,7 @@
 #include "hooks/interface/select_larva.h"
 #include <hooks/limits/sfx_extender.h>
 
-namespace hooks
-{
+namespace hooks {
 	static void select_larva_type(u32 buttonset, u32 ocsal_buttonset) {
 		Unit* unit = *g_active_portrait_unit;
 		if (!unit) {
@@ -48,6 +47,10 @@ namespace hooks
 		buffer[3] = *g_active_player_id;
 		buffer[4] = rust_id;
 		helper::queue_game_command(buffer, sizeof(buffer));
+	}
+
+	static void queue_generic_ability_simple() {
+		queue_generic_ability(0, 0);
 	}
 
 	// Replacement for proc @ 00423660. -iquare
@@ -205,7 +208,7 @@ namespace hooks
 				select_larva_type(UnitId::Buttons_LarvaControl, UnitId::Buttons_OcsalLarvaControl);
 			} break;
 			case TechId::StroluumSkryspawn: {
-				queue_generic_ability(RustId::ToggleSavantOnhit, 1); // Args don't matter here, which is ugly. -Pr0nogo
+				queue_generic_ability_simple();
 			} break;
 			case TechId::CancelNewAbility: {
 				Unit* selected = *g_active_portrait_unit;
@@ -222,7 +225,6 @@ namespace hooks
 							queue_generic_ability(RustId::CancelRecall, 1);
 						} break;
 					}
-
 					if (unit_id_can_do_controlled_demolition(selected->id)) {
 						queue_generic_ability(RustId::CancelControlledDemolition, 1);
 					}

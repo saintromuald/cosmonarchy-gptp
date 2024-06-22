@@ -311,14 +311,23 @@ bool can_auto_heal(Unit* unit) {
 
 bool unit_can_be_repulsed(Unit* unit) {
 	if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-		return unit->status & UnitStatus::InAir;
+		if (unit->status & UnitStatus::InAir) {
+			return true;
+		}
+		return false;
 	}
-	return !(unit->status & UnitStatus::Burrowed);
+	if (unit->status & UnitStatus::Burrowed) {
+		return true;
+	}
+	return true;
 }
 
 void specialist_energy_error(Unit* unit) {
-	const char* string = helper::get_stat_txt_string(unit->get_race() + 864);
-	if (string && *g_active_player_id == *g_local_human_id && !bw::in_replay_or_witness()) {
+	if (bw::in_replay_or_witness() || *g_active_player_id != *g_local_human_id) {
+		return;
+	}
+	if (const char* string = helper::get_stat_txt_string(unit->get_race() + 864)) {
 		helper::set_unit_stat_txt_error_message(string);
 	}
+
 }

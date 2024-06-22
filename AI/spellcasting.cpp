@@ -233,8 +233,7 @@ namespace AI
 					}
 				}
 			} break;
-			case UnitId::ProtossMindTyrant:
-			{
+			case UnitId::ProtossMindTyrant: {
 				// Tyranny
 				if (can_cast_spell_order(unit, TechId::Tyranny, OrderId::CastTyranny)) {
 					Unit* target = find_best_tyranny_target(unit, is_unit_being_attacked);
@@ -249,7 +248,6 @@ namespace AI
 				// Maelstrom
 				energy_reserve = get_order_energy_cost(OrderId::CastMaelstrom) + (get_order_energy_cost(OrderId::CastTyranny) / 2);
 				energy_reserve = std::min(energy_reserve, unit->get_max_energy());
-
 				if ((unit->energy >= energy_reserve) && unit->can_use_tech(TechId::MindTyrantMaelstrom, unit->player) != 1) {
 					Unit* target = find_best_maelstrom_target(unit, is_unit_being_attacked);
 					if (unit->main_order_id == OrderId::CastMaelstrom && unit->order_target.unit == target) {
@@ -265,18 +263,14 @@ namespace AI
 	}
 }
 
-namespace
-{
+namespace {
 	// Logically equivalent to function @ 0x004A11E0
-	bool can_cast_spell_order(Unit* unit, u8 tech_id, u8 order_id)
-	{
+	bool can_cast_spell_order(Unit* unit, u8 tech_id, u8 order_id) {
 		u16 energy_cost = 0;
-		if (orders_dat::tech_used[order_id] != TechId::None)
-		{
+		if (orders_dat::tech_used[order_id] != TechId::None) {
 			energy_cost = techdata_dat::energy_cost[orders_dat::tech_used[order_id]] * 256;
 		}
-		if (unit->energy >= energy_cost)
-		{
+		if (unit->energy >= energy_cost) {
 			return unit->can_use_tech(tech_id, unit->player) == 1;
 		}
 		return false;
@@ -313,29 +307,21 @@ namespace
 	}
 
 	// Logically equivalent to function @ 0x00446E50
-	bool is_nuke_timer_ready(u8 player)
-	{
+	bool is_nuke_timer_ready(u8 player) {
 		return *g_elapsed_time_seconds >= g_aiscript_controller[player].ai_last_nuke_time + 60 * g_aiscript_controller[player].ai_nuke_rate;
 	}
 
 	// Logically equivalent to function @ 0x00463360
 	// check_nuke_available_for_nuker is 1 by default
 	// if check_nuke_available_for_nuker is 0, only check for a loaded silo without checking if the nuke is already linked to another nuker
-	Unit* get_loaded_silo(Unit* nuker, b32 check_nuke_available_for_nuker)
-	{
+	Unit* get_loaded_silo(Unit* nuker, b32 check_nuke_available_for_nuker) {
 		Unit* silo = 0;
 		Unit* current_unit = first_player_unit->unit[nuker->player];
-		while (current_unit && !silo)
-		{
-			if (current_unit->id == UnitId::TerranAnvil && current_unit->building.silo.is_ready)
-			{
-				if (!check_nuke_available_for_nuker)
-				{
+		while (current_unit && !silo) {
+			if (current_unit->id == UnitId::TerranAnvil && current_unit->building.silo.is_ready) {
+				if (!check_nuke_available_for_nuker) {
 					Unit* nuke = current_unit->building.silo.nuke;
-					if (!nuke->connected_unit
-					||   nuke->connected_unit == nuker
-					||   nuke->connected_unit->id == UnitId::TerranAnvil)
-					{
+					if (!nuke->connected_unit || nuke->connected_unit == nuker || nuke->connected_unit->id == UnitId::TerranAnvil) {
 						silo = current_unit;
 					}
 				} else {

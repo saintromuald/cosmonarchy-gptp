@@ -23,7 +23,7 @@ void recharge_shields_proc(Unit* target, Unit* battery) // 004934B0
 		shield_gain = energy_spent * 2;
 	}
 	target->heal_shields(shield_gain, battery);
-	battery->spend_unit_energy(energy_spent);
+	battery->spend_energy(energy_spent);
 }
 
 //-------- Actual hook functions --------//

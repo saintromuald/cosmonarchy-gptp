@@ -674,7 +674,7 @@ namespace hooks {
 			helper::play_sound_from_unit(388, v1, 1, 0);
 			if (!(*g_cheat_state & 0x800))
 			{
-				v1->spend_unit_energy(techdata_dat::energy_cost[4] * 256);
+				v1->spend_energy(techdata_dat::energy_cost[4] * 256);
 			}
 			helper::to_idle(v1);
 		} else {

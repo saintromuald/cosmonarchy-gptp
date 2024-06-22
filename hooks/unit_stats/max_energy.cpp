@@ -1,12 +1,10 @@
 #include "max_energy.h"
 #include <BW/api.h>
 
-namespace hooks
-{
+namespace hooks {
 	// Replaces the Unit::get_max_energy() function. Returns the amount of maximum energy that a unit can have.
 	// Note: 1 energy displayed in-game equals 256 energy, and energy cannot be more than 255.
-	u16 get_unit_max_energy(Unit* const unit) // 00491870
-	{
+	u16 get_unit_max_energy(Unit* const unit) { // 00491870 
 		u32 energy = 200;
 		switch (unit->id) {
 			case UnitId::TerranPhobos: {

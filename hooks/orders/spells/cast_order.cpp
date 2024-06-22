@@ -267,7 +267,7 @@ namespace hooks
 							}
 
 							if (!idiot) {
-								unit->spend_unit_energy(spell_cost);
+								unit->spend_energy(spell_cost);
 								u8 cooldown = helper::get_weapon_cooldown(unit, order_weapon_id);
 								unit->spell_cooldown = cooldown;
 								if (unit->id == UnitId::TerranWyvern) {
@@ -337,7 +337,7 @@ namespace hooks
 	{
 		u16 energy_cost;
 		if (helper::spell_order(caster, TechId::DefensiveMatrix, &energy_cost, 8 * 32, 880)) {
-			caster->spend_unit_energy(energy_cost);
+			caster->spend_energy(energy_cost);
 			helper::create_defensive_matrix(caster->order_target.unit);
 			helper::play_sound_from_unit(SoundId::Terran_VESSEL_TVeDef00_WAV, caster, 1, 0);
 			if (caster->order_queue_head) {

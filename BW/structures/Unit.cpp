@@ -724,7 +724,7 @@ void Unit::remove_acid_spores() {
 
 /// Identical to Unit__SpendEnergy @ 0x00491460
 /// May underflow if alone
-void Unit::spend_unit_energy(u32 energy_spent) {
+void Unit::spend_energy(u32 energy_spent) {
 	if (this->energy > energy_spent) {
 		this->energy -= energy_spent;
 	} else {
@@ -1421,7 +1421,7 @@ UnitExt& Unit::ext() {
 	return *get_unit_ext(this);
 }
 
-bool Unit::has_energy_for_ability(u32 tech_id) {
+bool Unit::has_energy_for(u32 tech_id) {
 	assert(this);
 	return this->energy >= techdata_dat::energy_cost[tech_id] * 256;
 }

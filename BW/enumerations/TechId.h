@@ -87,7 +87,6 @@ namespace TechId {
 	};
 }
 
-
 // For use with techdata_dat::AvailableSC[] and techdata_dat::ResearchedBw[]
 namespace ScTech {
 	enum Enum {
@@ -143,4 +142,3 @@ namespace BwTech {
 		UnusedTech43				= 19,	// (unused)
 	};
 }
-

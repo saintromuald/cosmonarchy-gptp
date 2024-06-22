@@ -50,7 +50,7 @@ namespace hooks {
 		}
 
 		// Vorvrokor - Captivating Claws - reduces movement speed by 25% per unique attacker
-		if (captivating_claws_get_timer(unit) > 0) {
+		if (captivating_claws_get_timer(unit) > 1) {
 			speed *= 1 - 0.25 * captivating_claws_get_stacks(unit);
 		}
 

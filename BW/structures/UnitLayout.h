@@ -17,10 +17,8 @@ struct Unit;
 struct UnitAi;
 struct UnitPath;
 
-namespace NewGameCommand
-{
-	enum
-	{
+namespace NewGameCommand {
+	enum {
 		GenericSwitchAbility,
 		IssueCTFCop2,
 		CameraSync,
@@ -29,10 +27,8 @@ namespace NewGameCommand
 	};
 }
 
-namespace GptpId
-{
-	enum
-	{
+namespace GptpId {
+	enum {
 		NoOpcode					= 0,
 		AddCyprianSwitch			= 1,
 		SetCyprianStatus			= 2,
@@ -71,10 +67,8 @@ namespace GptpId
 	};
 }
 
-namespace AiseId
-{
-	enum
-	{
+namespace AiseId {
+	enum {
 		NoOpcodeAise				= 0,
 		SendCyprianValue			= 1,
 		RecvEscalationValue			= 2,
@@ -109,10 +103,8 @@ namespace AiseId
 	};
 }
 
-namespace OverlayOffset
-{
-	enum
-	{
+namespace OverlayOffset {
+	enum {
 		Orange	= 0,
 		Green	= 25,
 		Red		= 50,
@@ -120,10 +112,8 @@ namespace OverlayOffset
 	};
 }
 
-namespace RustId
-{
-	enum
-	{
+namespace RustId {
+	enum {
 		CastEnsnaringBrood,
 		CastGodsMadeFlesh,
 		CastEnthrallingAssault,
@@ -160,10 +150,8 @@ const u32 generictoggles = ARRAY_SIZE(toggle_values);
 
 C_ASSERT(ARRAY_SIZE(toggle_values) == ARRAY_SIZE(toggle_abilities));
 
-namespace CosmonarchyFlags1
-{
-	enum
-	{
+namespace CosmonarchyFlags1 {
+	enum {
 		BasiliskBurrowed = 1 << 0,
 		VorvalingProc = 1 << 1,
 		VorvalingEgg = 1 << 2,
@@ -178,8 +166,7 @@ namespace CosmonarchyFlags1
 // From BWAPI/Source/BW/movement_flags.h
 // Definition of sound_flags specifying movement type - used in BW#Unit#movement_flags
 
-enum MovementFlags
-{
+enum MovementFlags {
 	MovementFlags_OrderedAtLeastOnce	= 0x01,	// Set to 0 after the first move-involved command - sometimes set to 1 again
 	MovementFlags_Accelerating			= 0x02,	// Unit is accelerating
 	MovementFlags_Braking				= 0x04,	// Not when unit reaches destination, just when you hit stop, or building is finished 
@@ -203,8 +190,7 @@ union CargoUnit {
 
 // Layout of the Unit structure
 // Comments marked with ++ added by RavenWolf
-struct UnitLayout
-{
+struct UnitLayout {
 	/*0x000*/ Link<Unit> link;
 	/*0x008*/ s32       hitpoints;						// Hit points of unit, note that the displayed value in broodwar is ceil(healthPoints/256). Officially called "xLife"
 	/*0x00C*/ Sprite*	sprite;
@@ -306,33 +292,26 @@ struct UnitLayout
 	/*0x0AC*/ u16       remaining_build_time;			// Remaining bulding time; also used by powerups (flags) as the timer for returning to their original location.
 	/*0x0AE*/ u16       previous_hitpoints;				// The HP of the unit before it changed (example Droleth->Hachirosk, the Droleths's HP will be stored here)
 	/*0x0B0*/ CargoUnit loaded_unit_old[OldTransportCap]; // officially called "uwTransport[8]"
-	/*0x0C0*/ union
-	{
-		struct
-		{
+	/*0x0C0*/ union {
+		struct {
 			/*0x0C0*/     u8 mine_count;				// Used for Eidolon Lobotomy Mines
 		} mine_carrier;
-		struct
-		{
+		struct {
 			/*0x0C0*/     Unit* in_hangar_child;		// First child inside the hangar
 			/*0x0C4*/     Unit* out_hangar_child;		// First child outside the hangar
 			/*0x0C8*/     u8    in_hangar_count;		// Number inside the hangar
 			/*0x0C9*/     u8    out_hangar_count;		// Number outside the hangar
-		} unit_with_hangar;		// Solarion
-		struct
-		{
+		} unit_with_hangar;		// (Old) Accantor, Solarion
+		struct {
 			/*0x0C0*/     Unit*			parent;
 			/*0x0C4*/     Link<Unit>	hangar_link;
 			/*0x0CC*/     bool			is_outside_hangar;
 		} hangar_unit;			// Plasma Shell, Steward
-
-		struct
-		{
+		struct {
 			/*0x0C0*/     u32 _unknown_00;
 			/*0x0C4*/     u32 _unknown_04;
 			/*0x0C8*/     u32 flag_spawn_frame;			// flag beacons, the frame that the flag will spawn
 		} beacon;
-
 		struct {
 			/*0x0C0*/     Unit*		addon;
 			/*0x0C4*/     u16		addon_build_id;
@@ -388,8 +367,7 @@ struct UnitLayout
 //	/*0x0EA*/ u32		secondary_order_unk;			// From neiv's list
 	/*0x0EC*/ Unit*		current_build_unit;				// tied to secondary order according to BWAPI
 	/*0x0F0*/ Link<Unit>invisible_link;
-	/*0x0F8*/ union
-	{
+	/*0x0F8*/ union {
 		Target		rally;
 		Link<Unit>	psi_link;
 	};
@@ -432,8 +410,7 @@ struct UnitLayout
 	/*0x134*/ UnitAi*	unit_ai;
 	/*0x138*/ u16       air_strength;
 	/*0x13A*/ u16       ground_strength;
-	/*0x13C*/ struct
-	{
+	/*0x13C*/ struct {
 		u32 left, right, top, bottom;
 	} finder_index;										// Ordering for unit boundries in unit finder for binary search
 	/*0x14C*/ u8        repulse_unk;

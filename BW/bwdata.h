@@ -24,6 +24,7 @@
 
 /// The first nodes in StarCraft's internal linked lists (taken from BWAPI's Offsets.h)
 BW_REF(Unit*,			g_first_visible_unit,			0x00628430);
+BW_REF(Unit*,			g_last_visible_unit,			0x0059CC9C);
 BW_DATA(Unit**,			g_first_hidden_unit,			0x006283EC);	// Includes units in transports/bunkers, worker inside gas buildings, nukes in silos, and units in production.
 BW_DATA(Unit**,			g_last_hidden_unit,				0x00628428);	// Same as above.
 BW_DATA(Bullet**,		g_first_active_bullet,			0x0064DEC4);
@@ -1280,9 +1281,6 @@ BW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
 
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);
-
-BW_REF(Unit*,				g_last_active_unit,					0x0059CC9C);
-
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 BW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"
