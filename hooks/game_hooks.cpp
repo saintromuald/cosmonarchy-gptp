@@ -1066,8 +1066,10 @@ namespace hooks {
 	void tick_unit(Unit* unit, bool unit_is_hidden) {
 		init_unit(unit);
 
-		bool should_update_speed = false;
 		UnitExt* unit_ext = get_unit_ext(unit);
+		bool should_update_speed = unit_ext->values[ValueRefreshSpeedNextFrame];
+		unit_ext->values[ValueRefreshSpeedNextFrame] = false;
+
 		/*
 		if (unit_ext->values[ValueUnitIdName] != unit->id + 1) {
 			unit_ext->values[ValueUnitIdName] = unit->id + 1;
@@ -1081,11 +1083,9 @@ namespace hooks {
 		Unit* overlay_unit = unit;
 		if (unit->status & UnitStatus::InTransport && unit->connected_unit) {
 			Unit* transport = unit->connected_unit;
-
 			if (unit->position.x != transport->position.x || unit->position.y != transport->position.y) {
 				bw::move_unit_force(unit, transport->position.x, transport->position.y);
 			}
-
 			if (unit_is_hidden) {
 				overlay_unit = transport;
 			}
@@ -2621,11 +2621,16 @@ namespace hooks {
 			}
 		}
 
+		// Update speed for Tyrannized units
+		if (unit_ext->values[ValueMindControllerUnitId]) {
+			should_update_speed = true;
+			unit_ext->values[ValueRefreshSpeedNextFrame] = true;
+		}
+
 		// Tyranny - increase stacks
 		if (unit_ext->units[UnitMindTyrantLink]) {
 			if (unit_ext->values[ValueMindTyrantTyranny] < TyrannyMaxStacks) {
 				unit_ext->values[ValueMindTyrantTyranny]++;
-				should_update_speed = true;
 			} else {
 				if (!(unit->status & UnitStatus::Frozen)) {
 					unit->freeze();
@@ -2635,6 +2640,7 @@ namespace hooks {
 			}
 			u32 overlay_id = ImageId::TyrannyStunSmall + bw::get_overlay_offset(unit->id);
 			bw::add_unit_overlay(unit, overlay_id);
+			should_update_speed = true;
 		} else if (unit_ext->values[ValueMindTyrantTyranny]) {
 			u32 overlay_id = ImageId::MindControlHit_Small + bw::get_overlay_offset(unit->id);
 			bw::add_unit_overlay(unit, overlay_id);

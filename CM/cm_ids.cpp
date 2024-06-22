@@ -1240,7 +1240,7 @@ bool portrait_id_is_default_advisor(u32 portrait_id) {
 }
 
 u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
-	const auto faction = g_globals->players[player].faction;
+	const auto faction = g_globals->players[player].faction; // There is some very rare crash that can occur here, and I could not reproduce it at will. -Pr0nogo
 	switch (portrait_id) {
 		case PortraitId::AdvisorOrionImperium: {
 			switch (faction) {
