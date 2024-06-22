@@ -351,7 +351,7 @@ namespace hooks
 					}
 				}
 
-				bool is_neutral = units_dat::base_property[target->id] & UnitProperty::NeutralAccessories;
+				bool is_neutral = target && units_dat::base_property[target->id] & UnitProperty::NeutralAccessories;
 				switch (action) {
 					case RightClickActions::NormalMove_NormalAttack:
 						if (!target || !helper::is_unit_enemy(*g_active_portrait_unit, target) || is_neutral || helper::unit_can_attack_target(target, unit, 1)) {
