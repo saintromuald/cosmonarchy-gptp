@@ -11,7 +11,7 @@ namespace hooks {
 	void order_enter_exit_gas(Unit* unit);														// 00469980
 	void can_harvest_gas(Unit* unit);															// 00469000
 	u32 order_acquire_generic_right_click_harvest_proc(Unit* node, Unit* worker);				// 004557C0
-	void orders_harvest4(Unit* worker);															// 00468ED0
+	void orders_harvest_finish(Unit* worker);													// 00468ED0
 	s32 begin_harvest(Unit* worker, Unit* node);												// 00468CAA
 	Unit* let_next_unit_mine(Unit* worker);														// 00468970
 	void orders_entries_move_to_harvest_obscured(Unit* worker);									// 00469500
@@ -23,6 +23,7 @@ namespace hooks {
 	b32 return_cargo_to_best_depot_proc(Unit* depot, Unit* worker);								// 00440FA0
 	Unit* find_best_return_cargo_target(Unit* worker);											// 00441310
 	u8 mine_resources(Unit* node, bool is_minerals);											// 00469650
+	void remove_stunned_worker_from_node(Unit* unit);											// 00468DB0
 
 	void inject_harvest_resource();
 }

@@ -108,8 +108,7 @@ namespace hooks
 		return result;
 	}
 
-	Order* remove_references(Unit* unit, Unit* dying) // 0049E590
-	{
+	Order* remove_references(Unit* unit, Unit* dying) { // 0049E590
 		if (unit->current_build_unit == dying) {
 			unit->current_build_unit = 0;
 		}

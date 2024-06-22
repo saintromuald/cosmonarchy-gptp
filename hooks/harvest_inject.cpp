@@ -3,28 +3,23 @@
 #include "BW/api.h"
 
 namespace {
-	void __declspec(naked) remove_powerup_image_overlay_wrapper() // 004F3900
-	{
+	void __declspec(naked) remove_powerup_image_overlay_wrapper() { // 004F3900
 		static Unit* worker;
-		__asm
-		{
+		__asm {
 			MOV worker, EAX
 			PUSHAD
 		}
 		hooks::remove_powerup_image_overlay(worker);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) transfer_resource_to_worker_wrapper() // 004696D0
-	{
+	void __declspec(naked) transfer_resource_to_worker_wrapper() { // 004696D0
 		static Unit* worker;
 		static Unit* resource;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV worker, ECX
@@ -32,8 +27,7 @@ namespace {
 			PUSHAD
 		}
 		hooks::transfer_resource_to_worker(worker, resource);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -41,8 +35,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) unit_is_geyser_ex_wrapper() // 00468930
-	{
+	void __declspec(naked) unit_is_geyser_ex_wrapper() { // 00468930
 		static Unit* resource_node;
 		static Unit* worker;
 		static bool result;
@@ -66,8 +59,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) order_enter_exit_gas_wrapper() // 00469980
-	{
+	void __declspec(naked) order_enter_exit_gas_wrapper() { // 00469980
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
@@ -111,13 +103,13 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) orders_harvest4_wrapper() { // 00468ED0
+	void __declspec(naked) orders_harvest_finish_wrapper() { // 00468ED0
 		static Unit* worker;
 		__asm {
 			MOV worker, EAX
 			PUSHAD
 		}
-		hooks::orders_harvest4(worker);
+		hooks::orders_harvest_finish(worker);
 		__asm {
 			POPAD
 			RETN
@@ -318,6 +310,20 @@ namespace {
 			JMP jump_address
 		}
 	}
+
+	void __declspec(naked) remove_stunned_worker_from_node_wrapper() { // 00468970
+		static Unit* unit;
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+		hooks::remove_stunned_worker_from_node(unit);
+		__asm {
+			POPAD
+			MOV EAX, 0 // unused return value
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -329,7 +335,7 @@ namespace hooks {
 		jump_patch(order_enter_exit_gas_wrapper,							0x00469980, 1);
 		jump_patch(can_harvest_gas_wrapper,									0x00469000, 1);
 		jump_patch(order_acquire_generic_right_click_harvest_proc_wrapper,	0x004557C0, 2);
-		jump_patch(orders_harvest4_wrapper,									0x00468ED0, 1);
+		jump_patch(orders_harvest_finish_wrapper,							0x00468ED0, 1);
 		jump_patch(begin_harvest_wrapper,									0x00468C70, 4);
 		jump_patch(let_next_unit_mine_wrapper,								0x00468970, 1);
 		jump_patch(orders_entries_move_to_harvest_obscured_wrapper,			0x00469500, 4);
@@ -341,6 +347,7 @@ namespace hooks {
 		jump_patch(return_cargo_to_best_depot_proc_wrapper,					0x00440FA0,	1);
 		jump_patch(find_best_return_cargo_target_wrapper,					0x00441310,	2);
 		jump_patch(mine_resources_wrapper,									0x00469650,	0);
+		jump_patch(remove_stunned_worker_from_node_wrapper,					0x00468DB0,	1);
 
 		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
 		jump_patch(worker_wandering_wrapper,								0x00469393,	1);

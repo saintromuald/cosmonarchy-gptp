@@ -311,3 +311,10 @@ bool can_auto_heal(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	return !unit_ext->values[ValueReviveStarted] && !unit->is_frozen() && !unit_ext->values[ValueDisablePassive];
 }
+
+bool unit_can_be_repulsed(Unit* unit) {
+	if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+		return unit->status & UnitStatus::InAir;
+	}
+	return !(unit->status & UnitStatus::Burrowed);
+}

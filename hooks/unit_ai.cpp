@@ -973,6 +973,9 @@ namespace hooks {
 	void ai_remove_cleric(Unit* unit) { // 004477C0
 		if (unit->id == UnitId::TerranCleric) {
 			u32 player = unit->player;
+			if (player > PlayerLimit) {
+				return;
+			}
 			if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::ComputerDefeated) {
 				return;
 			}

@@ -324,16 +324,12 @@ namespace hooks {
 					return result;
 				}
 				worker_resource_type = worker->resource_type;
-				if (worker_resource_type & ResourceType::Minerals)
-				{
+				if (worker_resource_type & ResourceType::Minerals) {
 					return OrderId::ReturnMinerals;
 				}
-				if (worker_resource_type & ResourceType::VespeneGas)
-				{
+				if (worker_resource_type & ResourceType::VespeneGas) {
 					result = OrderId::ReturnGas;
-				}
-				else
-				{
+				} else {
 					result = OrderId::None;
 				}
 			}
@@ -349,7 +345,7 @@ namespace hooks {
 	}
 
 	// Hooked to resolve delay on initial multi-worker vespene harvesting. -Pr0nogo
-	void orders_harvest4(Unit* worker) { // 00468ED0
+	void orders_harvest_finish(Unit* worker) { // 00468ED0
 		if (worker->worker.harvest_target) {
 			worker = helper::remove_from_current_harvesters(worker, worker->worker.harvest_target);
 		}
@@ -477,31 +473,24 @@ namespace hooks {
 	}
 
 	// Hooked to investigate obscure linked list crash. -Pr0nogo
-	Unit* remove_references_node_worker(Unit* node, Unit* worker) // 00468EF0
-	{
+	Unit* remove_references_node_worker(Unit* node, Unit* worker) { // 00468EF0
 		Unit* result = 0;
-		if (worker->worker.is_harvesting)
-		{
+		if (worker->worker.is_harvesting) {
 			worker->worker.is_harvesting = 0;
 			worker->worker.harvest_target = 0;
-			if (node)
-			{
+			if (node) {
 				node->building.resource.is_mining = 0;
 				Unit* next_harvester = helper::let_next_unit_mine(node);
-				if (next_harvester)
-				{
+				if (next_harvester) {
 					return (Unit*)helper::begin_harvest(next_harvester, node);
 				}
 			}
 		} else {
 			Unit* next_gatherer = node->building.resource.next_gatherer;
-			if (next_gatherer)
-			{
-				while (next_gatherer != worker)
-				{
+			if (next_gatherer) {
+				while (next_gatherer != worker) {
 					next_gatherer = next_gatherer->worker.harvest_link.next;
-					if (!next_gatherer)
-					{
+					if (!next_gatherer) {
 						return 0;
 					}
 				}
@@ -543,9 +532,9 @@ namespace hooks {
 			if (next_worker) {
 				next_worker->worker.harvest_link.prev = worker->worker.harvest_link.prev;
 			}
+			worker->worker.harvest_target = 0;
 			worker->worker.harvest_link.prev = 0;
 			worker->worker.harvest_link.next = 0;
-			worker->worker.harvest_target = 0;
 		}
 	}
 
@@ -679,12 +668,10 @@ namespace hooks {
 	}
 
 	// Hooked to investigate depleted mineral messages. Not currently called from anywhere. -Pr0nogo
-	u8 mine_resources(Unit* node, bool is_minerals) // 00469650
-	{
+	u8 mine_resources(Unit* node, bool is_minerals) { // 00469650
 		u8 resources_returned = get_harvest_amount(node);
 		u32 node_resources = node->building.resource.resource_amount;
-		if (is_minerals)
-		{
+		if (is_minerals) {
 			if (node_resources <= 4) {
 				node->building.resource.resource_amount = 2;
 			} else {
@@ -700,5 +687,25 @@ namespace hooks {
 			*/
 		}
 		return resources_returned;
+	}
+
+	// Hooked to investigate obscure Vespene issue. -Pr0nogo
+	void remove_stunned_worker_from_node(Unit* unit) { // 00468DB0
+		Unit* harvest_target = unit->worker.harvest_target;
+		if (!harvest_target || unit->is_frozen()) {
+			return;
+		}
+		if (!(units_dat::base_property[harvest_target->id] & UnitProperty::ResourceContainer) || unit->worker.is_harvesting) {
+			return;
+		}
+		if (harvest_target->building.resource.is_mining || unit->main_order_state != 2) {
+			return;
+		}
+
+		if ((unit->main_order_id == OrderId::CanHarvestOre || unit->main_order_id == OrderId::CanEnterGasMine)) {
+			remove_from_current_harvesters(unit, harvest_target);
+			helper::delete_order(unit, OrderId::HarvestFinish);
+			helper::begin_harvest(unit, harvest_target);
+		}
 	}
 }

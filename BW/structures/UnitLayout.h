@@ -318,7 +318,7 @@ struct UnitLayout
 			/*0x0C4*/     Unit* out_hangar_child;		// First child outside the hangar
 			/*0x0C8*/     u8    in_hangar_count;		// Number inside the hangar
 			/*0x0C9*/     u8    out_hangar_count;		// Number outside the hangar
-		} unit_with_hangar;		// Accantor, Solarion
+		} unit_with_hangar;		// Solarion
 		struct
 		{
 			/*0x0C0*/     Unit*			parent;

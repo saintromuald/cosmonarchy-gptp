@@ -1240,15 +1240,18 @@ bool portrait_id_is_default_advisor(u32 portrait_id) {
 }
 
 u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
-	const auto faction = g_globals->players[player].faction; // There is some very rare crash that can occur here, and I could not reproduce it at will. -Pr0nogo
+	if (player >= PlayerLimit) {
+		return portrait_id;
+	}
+	const auto faction = g_globals->players[player].faction;
 	switch (portrait_id) {
 		case PortraitId::AdvisorOrionImperium: {
 			switch (faction) {
-				case Faction::TerranHecatonCoalition:   return PortraitId::HADRAL; // Temporary
-				case Faction::TerranFuturistFederation: return PortraitId::AdvisorFuturistFederation;
-				case Faction::TerranGoldenRepublic:     return PortraitId::AdvisorGoldenRepublic;
-				case Faction::TerranNydusTrinity:       return PortraitId::AdvisorNydusTrinity;
-				case Faction::TerranUpstart:            return PortraitId::AdvisorUpstartTerran;
+				case Faction::TerranHecatonCoalition:		return PortraitId::HADRAL; // Temporary
+				case Faction::TerranFuturistFederation:		return PortraitId::AdvisorFuturistFederation;
+				case Faction::TerranGoldenRepublic:			return PortraitId::AdvisorGoldenRepublic;
+				case Faction::TerranNydusTrinity:			return PortraitId::AdvisorNydusTrinity;
+				case Faction::TerranUpstart:				return PortraitId::AdvisorUpstartTerran;
 			}
 		} break;
 		case PortraitId::ProtossAdvisor: {
@@ -1259,8 +1262,8 @@ u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
 		} break;
 		case PortraitId::AdvisorAtaltreth: {
 			switch (faction) {
-				case Faction::ZergImicrenTendril: return PortraitId::AdvisorImicren;
-				case Faction::ZergZorthosTendril: return PortraitId::AdvisorZorthos;
+				case Faction::ZergImicrenTendril:			return PortraitId::AdvisorImicren;
+				case Faction::ZergZorthosTendril:			return PortraitId::AdvisorZorthos;
 			}
 		} break;
 	}

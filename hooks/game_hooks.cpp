@@ -2513,6 +2513,26 @@ namespace hooks {
 					}
 				}
 			} break;
+			case UnitId::ProtossManifold: {
+				if (unit_ext->timers[TimerManifoldConcurringChorus] >= 2) {
+					if (unit->status & UnitStatus::Completed) {
+						EntryArray units = {};
+						unit_search_radial(&units, unit->position, 2 * 32);
+						unit_search_filter(&units, unit, FilterAlly);
+						for (u32 i = 0; i < units.count; i++) {
+							Unit* target = units.units[i];
+							UnitExt* target_ext = get_unit_ext(target);
+							if (!(target->status & UnitStatus::Completed) || !target->has_weapon()) {
+								continue;
+							}
+							auto& vec = target_ext->unit_vectors[UnitVectorManifolds];
+							if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
+								vec.push_back(unit);
+							}
+						}
+					}
+				}
+			} break;
 			case UnitId::ProtossDidact: {
 				if (unit->order_signal & 32) {
 					unit->order_signal &= ~32;
@@ -2793,7 +2813,7 @@ namespace hooks {
 
 		// Periodic overlays
 		if (g_elapsed_time_frames % 10 == 0) {
-			if (unit_ext->unit_vectors[UnitVectorBarghests].size()) {
+			if (unit_ext->unit_vectors[UnitVectorBarghests].size() || unit_ext->unit_vectors[UnitVectorManifolds].size() || unit_ext->timers[TimerManifoldConcurringChorus] > 1) {
 				bw::add_unit_overlay(unit, ImageId::RepentantChorusSmall + bw::get_overlay_offset(unit->id));
 			}
 			if (unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size()) {
@@ -2801,7 +2821,6 @@ namespace hooks {
 			}
 		}
 		
-
 		// Incubation
 		if (unit_ext->timers[TimerIncubationArm] == 1) {
 			for (u32 i = 0; i < unit_ext->values[ValueIncubationCount]; ++i) {
@@ -2981,6 +3000,19 @@ namespace hooks {
 				UnitExt* barghest_ext = get_unit_ext(barghest);
 				if (barghest_ext->timers[TimerDecloak] < 2 || bw::distance_between(unit->position, barghest->position) > 5 * 32) {
 					barghests.erase(it);
+					--it;
+				}
+			}
+		}
+
+		// Clear Manifold vector
+		{
+			auto& manifolds = unit_ext->unit_vectors[UnitVectorManifolds];
+			for (auto it = manifolds.begin(); it != manifolds.end(); ++it) {
+				Unit* manifold = *it;
+				UnitExt* manifold_ext = get_unit_ext(manifold);
+				if (manifold_ext->timers[TimerManifoldConcurringChorus] < 2 || bw::distance_between(unit->position, manifold->position) > 2 * 32) {
+					manifolds.erase(it);
 					--it;
 				}
 			}
@@ -3373,17 +3405,15 @@ namespace hooks {
 			}
 		}
 
-		if (unit_ext->timers[TimerKelvinMunitions] == 1) {
-			unit_ext->timers[TimerKelvinMunitions] = 0;
+		if (unit_ext->timers[TimerKelvinMunitions] >= 1) {
 			should_update_speed = true;
 		}
 
-		if (unit_ext->timers[TimerLobotomySlow] == 1) {
-			unit_ext->timers[TimerLobotomySlow] = 0;
+		if (unit_ext->timers[TimerLobotomySlow] >= 1) {
 			should_update_speed = true;
 		}
 
-		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] > 1) {
+		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] >= 1) {
 			should_update_speed = true;
 		}
 

@@ -1,8 +1,7 @@
 #include "unit_movement.h"
 #include <BW/api.h>
 
-namespace hooks
-{
+namespace hooks {
 	b32 unit_movement_dormant(Unit* unit) { // 0046A8D0 
 		if (!(unit->status & UnitStatus::IgnoreTileCollision) || !(unit->status & UnitStatus::IsNormal)) {
 			if (AssertSprite(unit->sprite)
@@ -191,7 +190,7 @@ namespace hooks
 	// Hooked to troubleshoot issues with moving units a la Anthelion. -Pr0nogo
 	void refresh_unit_after_move(Unit* unit) { // 00494160
 		Unit* subunit = unit->subunit;
-		if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
+		if (subunit && subunit->is_subunit()) {
 			s32 x_halt = unit->halt.x;
 			s32 y_halt = unit->halt.y;
 			subunit->halt.x = x_halt;
@@ -201,29 +200,13 @@ namespace hooks
 			helper::move_sprite(subunit->sprite, x_halt >> 8, y_halt >> 8);
 		}
 		
-		Sprite* sprite = unit->sprite;
-		if (sprite->flags & SpriteFlags::Hidden) {
-			sprite->flags &= 0xDF;
-			if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
-				subunit->sprite->flags &= 0xDF;
+		if (unit->sprite->flags & SpriteFlags::Hidden) {
+			unit->sprite->flags &= ~SpriteFlags::Hidden;
+			if (subunit && subunit->is_subunit()) {
+				subunit->sprite->flags &= ~SpriteFlags::Hidden;
 			}
-			helper::clist_remove_hidden_unit_entry(unit);
-			Unit* visible_unit = g_first_visible_unit;
-			if (visible_unit) {
-				if (g_last_active_unit == visible_unit) {
-					g_last_active_unit = unit;
-				}
-				unit->link.prev = visible_unit;
-				unit->link.next = visible_unit->link.next;
-				Unit* next_visible_unit = visible_unit->link.next;
-				if (next_visible_unit) {
-					next_visible_unit->link.prev = unit;
-				}
-				visible_unit->link.next = unit;
-			} else {
-				g_last_active_unit = unit;
-				g_first_visible_unit = unit;
-			}
+			helper::hidden_units_remove(unit);
+			helper::visible_units_add(unit);
 		}
 
 		helper::refresh_unit_vision(unit);
@@ -240,10 +223,10 @@ namespace hooks
 		helper::toggle_unit_path(unit);
 		unit->movement_state = UnitMovement_Init;
 		u8 pathing_flags = unit->pathing_flags;
-		unit->pathing_flags = (pathing_flags ^ (sprite->elevation < 12)) & 1 ^ pathing_flags;
+		unit->pathing_flags = (pathing_flags ^ (unit->sprite->elevation < 12)) & 1 ^ pathing_flags;
 		if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
 			helper::toggle_unit_path(subunit);
-			subunit->movement_state = 0;
+			subunit->movement_state = UnitMovement_Init;
 			subunit->pathing_flags ^= (subunit->pathing_flags ^ (subunit->sprite->elevation < 12)) & 1;
 		}
 	}
