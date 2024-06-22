@@ -29,16 +29,16 @@ Target make_target(Unit* unit, Point16 pos = {});
 Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets);
 Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets);
 Point16 make_launch_pos(Point16 unit_position, Point8 offset);
-Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets = 0, bool apply_cooldown = true, bool ignore_max_range = false, bool dont_follow = false);
-void apply_weapon_cooldown(Unit* unit, u8 weapon_id);
-Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown = true);
-void fire_line(Unit* unit, u32 weapon_id, u32 count, u32 forward_spread, u32 lines, u32 side_spread, WeaponOffsets* weapon_offsets = 0);
-void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets = 0);
-bool fire_multiple(Unit* attacker, u32 weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options);
+Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponOffsets* weapon_offsets = 0, bool apply_cooldown = true, bool ignore_max_range = false, bool dont_follow = false);
+void apply_weapon_cooldown(Unit* unit, WeaponId::Enum weapon_id);
+Bullet* create_bullet_ex(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown = true);
+void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 count, u32 forward_spread, u32 lines, u32 side_spread, WeaponOffsets* weapon_offsets = 0);
+void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets = 0);
+bool fire_multiple(Unit* attacker, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options);
 
 namespace hooks
 {
-	void fire_weapon(Unit* unit, u8 weapon_id);																	// 00479C90
+	void fire_weapon(Unit* unit, WeaponId::Enum weapon_id);														// 00479C90
 	void progress_bullet_flight(Bullet* a1);																	// 0048B3B0
 	void bullet_behavior_bounce(Bullet* a1);																	// 0048B2D0
 	bool find_next_bounce_target_proc(Unit* pIterator);															// 0048AFD0

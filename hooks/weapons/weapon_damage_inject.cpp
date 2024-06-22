@@ -32,9 +32,9 @@ namespace
 			PUSHAD
 		}
 		if (direction == 33333) {
-			result = parse_aise_signal(attacker, target, (AiseSignal)damage_divisor, weapon_id, attacking_player_id, damage);
+			result = parse_aise_signal(attacker, target, (AiseSignal)damage_divisor, (WeaponId::Enum)weapon_id, attacking_player_id, damage);
 		} else {
-			hooks::weapon_damage(damage, target, weapon_id, attacker, attacking_player_id, direction, damage_divisor);
+			hooks::weapon_damage(damage, target, (WeaponId::Enum)weapon_id, attacker, attacking_player_id, direction, damage_divisor);
 			result = 0;
 		}
 		__asm {

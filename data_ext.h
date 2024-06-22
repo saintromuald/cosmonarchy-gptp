@@ -148,6 +148,7 @@ enum ExtValueId {
 	ValueCustomEggActive,
 	ValueCustomEggHatchMax,
 	ValueCustomEggHpMax,
+	ValueWeaponFireIndex,
 	ValueProjectilePattern,
 	ValueProjectileAngle,
 	ValueGhitorokorRelentlessAggressionStacks,
