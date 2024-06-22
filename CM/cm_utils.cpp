@@ -314,7 +314,7 @@ bool unit_can_be_repulsed(Unit* unit) {
 		return false;
 	}
 	if (unit->status & UnitStatus::Burrowed) {
-		return true;
+		return false;
 	}
 	return true;
 }
@@ -326,4 +326,5 @@ void specialist_energy_error(Unit* unit) {
 	if (const char* string = helper::get_stat_txt_string(unit->get_race() + 864)) {
 		helper::set_unit_stat_txt_error_message(string);
 	}
+
 }
