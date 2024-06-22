@@ -187,7 +187,7 @@ static Point16 set_target_range(Point16 origin, Point16 point, f32 distance) {
 }
 
 // Fly & Follow is unsupported
-void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 total_count, u32 forward_spread, u32 lines, u32 side_spread, WeaponOffsets* weapon_offsets) {
+void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 total_count, s32 forward_spread, u32 lines, s32 side_spread, WeaponOffsets* weapon_offsets) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	u32 index = unit_ext->values[ValueProjectilePattern];
 	if (index == 0) {
@@ -229,7 +229,7 @@ static std::pair<Target, u32> calculate_target(Unit* unit, WeaponId::Enum weapon
 	return {target, max_range};
 }
 
-static void fire_angled(Unit* unit, WeaponId::Enum weapon_id, Target target, s32 angle, u32 range, WeaponOffsets* offsets) {
+static void fire_angled(Unit* unit, WeaponId::Enum weapon_id, Target target, s32 angle, s32 range, WeaponOffsets* offsets) {
     Point16 launch_pos = unit->position;
     if (offsets) {
         launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, offsets));
@@ -238,18 +238,18 @@ static void fire_angled(Unit* unit, WeaponId::Enum weapon_id, Target target, s32
     fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), offsets, true, true, true);
 }
 
-static void fire_sideways(Unit* unit, WeaponId::Enum weapon_id, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* offsets) {
+void fire_sideways(Unit* unit, WeaponId::Enum weapon_id, s32 angle_spread, s32 vertical_scatter, WeaponOffsets* offsets) {
 	auto [target, max_range] = calculate_target(unit, weapon_id, offsets);
 
 	s32 angle = angle_spread;
-	u32 range = max_range + vertical_scatter;
+	s32 range = max_range + vertical_scatter;
     for (u32 i = 0; i < 2; ++i) {
 		fire_angled(unit, weapon_id, target, angle, range, offsets);
         angle = 360 - angle;
     }
 }
 
-void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* offsets) {
+void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, s32 angle_spread, s32 vertical_scatter, WeaponOffsets* offsets) {
 	auto [target, max_range] = calculate_target(unit, weapon_id, offsets);
     fire_bullet(unit, weapon_id, target, offsets);
 
@@ -260,7 +260,7 @@ void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, u32 angl
 		}
 
         s32 angle = i * angle_spread;
-		u32 range = max_range + scatter;
+		s32 range = max_range + scatter;
 		for (u32 j = 0; j < 2; ++j) {
 			fire_angled(unit, weapon_id, target, angle, range, offsets);
             angle = 360 - angle;
@@ -585,7 +585,7 @@ namespace hooks {
 						// Offset: Cone
 						u32 angle = 10 - index * 4;
 						u32 scatter = -10 + index * 5;
-						fire_sideways(unit, weapon_id, angle, scatter, {});
+						fire_sideways(unit, weapon_id, angle, scatter);
 					} break;
 					case WeaponId::TosgriliskExplosiveSpores:
 					case WeaponId::IzirokorEnergizedBioplasma:
