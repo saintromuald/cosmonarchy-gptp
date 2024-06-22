@@ -315,3 +315,10 @@ bool unit_can_be_repulsed(Unit* unit) {
 	}
 	return !(unit->status & UnitStatus::Burrowed);
 }
+
+void specialist_energy_error(Unit* unit) {
+	const char* string = helper::get_stat_txt_string(unit->get_race() + 864);
+	if (string && *g_active_player_id == *g_local_human_id && !bw::in_replay_or_witness()) {
+		helper::set_unit_stat_txt_error_message(string);
+	}
+}

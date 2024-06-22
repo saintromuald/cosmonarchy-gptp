@@ -373,6 +373,10 @@ namespace hooks
 		// Update unit strength data
 		data.target->air_strength = helper::get_unit_strength(data.target, false);
 		data.target->ground_strength = helper::get_unit_strength(data.target, true);
+
+		if (data.weapon_id == WeaponId::Lockdown) {
+			helper::play_sound_at_pos(SoundId::GoskaGrenadeImpact, weapon_damage_current_bullet->position, 1, 0);
+		}
 	}
 
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
@@ -857,6 +861,9 @@ namespace hooks
 							bw::add_unit_overlay(data.target, ImageId::StellarEnforcementDebuff_Small + bw::get_overlay_offset(data.target->id, true));  // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
 						}
 					} break;
+					case WeaponId::GoskaMedusaRifle: {
+						bw::refresh_debuffs(data.target);
+					}
 				}
 			}
 		}

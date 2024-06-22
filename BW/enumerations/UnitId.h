@@ -19,6 +19,11 @@ namespace UnitId
 	//	Campaign mission player								= 6,		// Phalanx Turret (Tank Mode)
 	//	Campaign mission dialogue event						= 207,		// Left Pit Door
 
+	// Heroes
+		Goska												= 500,
+		Stroluum											= 501,
+		Tuzor												= 502,
+
 	// Special
 		Omnivale											= 383,
 		TerranLodestoneStandalone							= 387,
@@ -251,6 +256,7 @@ namespace UnitId
 		ZergAxitriliskWeaponless							= 377,
 		ZergVilgoleth										= 378,
 		ZergSasyrvoleth										= 407,
+		ZergSkryrokor										= 503,
 
 	// Zerg-Unit-Factional
 		ZergNathrelisk										= 402,

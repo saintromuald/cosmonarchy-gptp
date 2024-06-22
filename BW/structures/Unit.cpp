@@ -1420,3 +1420,8 @@ u8 Unit::get_right_click_action_order() {
 UnitExt& Unit::ext() {
 	return *get_unit_ext(this);
 }
+
+bool Unit::has_energy_for_ability(u32 tech_id) {
+	assert(this);
+	return this->energy >= techdata_dat::energy_cost[tech_id] * 256;
+}

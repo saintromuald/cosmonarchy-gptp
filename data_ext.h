@@ -340,6 +340,7 @@ enum ExtTimerId {
 	TimerGenericAbilityAnimation,
 	TimerAnthelionTurn,
 	TimerManifoldConcurringChorus,
+	TimerSkryspawn,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

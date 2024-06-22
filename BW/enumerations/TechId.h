@@ -10,7 +10,7 @@ namespace TechId {
 		CancelNewAbility					= 26, // Unused Tech 26 | used for: Wyvern Land Grab, Didact Dimensional Recall, Controlled Demolition
 
 	// Terran
-		UnusedLobotomyMine					=  1, // Lockdown, unused
+		GoskaLobotomyGrenade				=  1, // Lockdown
 		ControlledDemolition				=  2, // EMP Shockwave
 		SavantOnhitToggle					= 24, // Restoration
 		ApostleLazarusAgent					= 32, // Lurker Aspect
@@ -20,6 +20,7 @@ namespace TechId {
 		AzazelSublimeShepherd				= 40, // Unused Tech 40
 		TalosSalvage						= 41, // Unused Tech 41
 		HypnagogueThroughTheLookingGlass	= 42, // Unused Tech 42
+		StroluumSkryspawn					= 51,
 
 	// Protoss
 		StarSovereignTheGriefOfAllGods		= 29, // Feedback

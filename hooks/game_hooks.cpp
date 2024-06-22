@@ -991,8 +991,7 @@ namespace hooks {
 		unit_ext->values[ValueUnitInit] = unit->id + 1;
 
 		switch (unit->id) {
-			case UnitId::Omnivale:
-			{
+			case UnitId::Omnivale: {
 				// Spread initial creep
 				if (unit_spreads_custom_creep(unit)) {
 					bw::spawn_custom_creep(unit);
@@ -2573,6 +2572,26 @@ namespace hooks {
 					}
 				}
 			} break;
+			case UnitId::Stroluum: {
+				switch (unit_ext->timers[TimerSkryspawn]) {
+					case 60:
+					case 48:
+					case 36:
+					case 24:
+					case 12: {
+						bw::add_unit_overlay(unit, ImageId::DevourerDeath);
+						bw::play_sound(unit->position, {SoundId::Zerg_AVENGER_ZAvRdy00_WAV});
+						bw::create_unit_from_ability(UnitId::ZergSkryrokor, 1, unit->player, unit->position, unit);
+					} break;
+					case 1: {
+						bw::add_unit_overlay(unit, ImageId::DevourerDeath);
+						bw::play_sound(unit->position, { SoundId::Zerg_AVENGER_ZAvRdy00_WAV });
+						bw::create_unit_from_ability(UnitId::ZergSkryrokor, 1, unit->player, unit->position, unit);
+						unit->unfreeze();
+					} break;
+				}
+			} break;
+
 		}
 
 		// Stimpack - Delayed buff handling
@@ -4102,6 +4121,19 @@ namespace hooks {
 											bw::add_unit_overlay(unit, image_id);
 											
 											unit_ext->timers[TimerSavantFormSwitchCooldown] = 49;
+										} break;
+										case UnitId::Stroluum: {
+											bool set_value = false;
+											if (unit->has_energy_for_ability(TechId::StroluumSkryspawn)) {
+												unit->spend_unit_energy(techdata_dat::energy_cost[TechId::StroluumSkryspawn] * 256);
+												if (!unit_ext->timers[TimerSkryspawn]) {
+													unit_ext->timers[TimerSkryspawn] = 3 * 24 + 1;
+													unit->freeze();
+												}
+											} else {
+												specialist_energy_error(unit);
+												helper::to_idle(unit);
+											}
 										} break;
 									}
 									if (set_value) {

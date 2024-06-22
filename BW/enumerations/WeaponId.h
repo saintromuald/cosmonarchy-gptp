@@ -136,7 +136,12 @@ namespace WeaponId {
 		// Internal entries, not real IDs
 		Custom = 0x100,
 
-		// Cosmonarchy BW \\
+		// Cosmonarchy \\
+		
+		// Heroes \\
+
+		GoskaMedusaRifle					= 249,
+		StroluumMagnatesMaw					= 251,
 
 		// Factional \\
 			

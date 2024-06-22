@@ -89,9 +89,6 @@ namespace hooks
 			case TechId::TalosSalvage: {
 				helper::issue_tri_target_order(OrderId::TalosSalvage, 0, 0);
 			} break;
-			case TechId::Lockdown: {
-				helper::issue_tri_target_order(OrderId::Lockdown, 0, 0);
-			} break;
 			case TechId::SavantOnhitToggle: {
 				s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
 				if (can_play_local_sound) {
@@ -112,6 +109,9 @@ namespace hooks
 			} break;
 			case TechId::SpiderMines: {
 				helper::issue_tri_target_order(OrderId::PlaceMine, 0, 0);
+			} break;
+			case TechId::GoskaLobotomyGrenade: {
+				helper::issue_tri_target_order(OrderId::Lockdown, 0, 0);
 			} break;
 			case TechId::MadrigalTempoChange: {
 				queue_generic_ability(RustId::CastToggleTempoChange, 1);
@@ -203,6 +203,9 @@ namespace hooks
 			} break;
 			case TechId::LarvalSubmenuSelectControl: {
 				select_larva_type(UnitId::Buttons_LarvaControl, UnitId::Buttons_OcsalLarvaControl);
+			} break;
+			case TechId::StroluumSkryspawn: {
+				queue_generic_ability(RustId::ToggleSavantOnhit, 1); // Args don't matter here, which is ugly. -Pr0nogo
 			} break;
 			case TechId::CancelNewAbility: {
 				Unit* selected = *g_active_portrait_unit;

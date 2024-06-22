@@ -1907,5 +1907,7 @@ namespace SoundId {
 		PatriarchBanter02								= 3126,
 		PatriarchBanter03								= 3127,
 		PatriarchBanter04								= 3128,
+
+		GoskaGrenadeImpact								= 4011,
 	};
 }

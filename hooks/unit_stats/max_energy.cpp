@@ -8,10 +8,8 @@ namespace hooks
 	u16 get_unit_max_energy(Unit* const unit) // 00491870
 	{
 		u32 energy = 200;
-		switch (unit->id)
-		{
-			case UnitId::TerranPhobos:
-			{
+		switch (unit->id) {
+			case UnitId::TerranPhobos: {
 				energy = 100;
 			} break;
 			case UnitId::TerranHypnagogue:
@@ -19,12 +17,11 @@ namespace hooks
 			case UnitId::TerranSeraph:
 			case UnitId::TerranLuminary:
 			case UnitId::ProtossCantavis:
-			case UnitId::ProtossAnalogue:
-			{
+			case UnitId::ProtossAnalogue: {
 				energy = 150;
 			} break;
 			case UnitId::ProtossMindTyrant:
-			{
+			case UnitId::Goska: {
 				energy = 250;
 			} break;
 		}

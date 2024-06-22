@@ -644,30 +644,40 @@ namespace hooks {
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched) {
 						UnitExt* unit_ext = get_unit_ext(unit);
 						// Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
-						if (current_button->requirement_var == TechId::ControlledDemolition) {
-							if (unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
-								current_button_state = Button_State::Invisible;
-							} else {
+
+						switch (current_button->requirement_var) {
+							case TechId::ControlledDemolition: {
+								if (unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
+									current_button_state = Button_State::Invisible;
+								} else {
+									current_button_state = Button_State::Enabled;
+								}
+							} break;
+							case TechId::EmergencyDetonation: {
+								if (!unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
+									current_button_state = Button_State::Invisible;
+								} else {
+									current_button_state = Button_State::Enabled;
+								}
+							} break;
+							case TechId::HypnagogueThroughTheLookingGlass: {
 								current_button_state = Button_State::Enabled;
-							}
-						} else if (current_button->requirement_var == TechId::EmergencyDetonation) {
-							if (!unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
-								current_button_state = Button_State::Invisible;
-							} else {
-								current_button_state = Button_State::Enabled;
-							}
-						} else if (current_button->requirement_var == TechId::HypnagogueThroughTheLookingGlass) {
-							current_button_state = Button_State::Enabled;
-						} else if (current_button->requirement_var == TechId::LarvalSubmenuSelectSwarm
-							||	   current_button->requirement_var == TechId::LarvalSubmenuSelectAssault
-							||	   current_button->requirement_var == TechId::LarvalSubmenuSelectControl)
-						{
-							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
-								|| unit_id_is_larva(unit->id)
-								|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
-								current_button_state = Button_State::Enabled;
-							} else {
-								current_button_state = Button_State::Invisible;
+							} break;
+							case TechId::LarvalSubmenuSelectSwarm:
+							case TechId::LarvalSubmenuSelectAssault:
+							case TechId::LarvalSubmenuSelectControl: {
+								if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
+									|| unit_id_is_larva(unit->id)
+									|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
+									current_button_state = Button_State::Enabled;
+								} else {
+									current_button_state = Button_State::Invisible;
+								}
+							} break;
+							case TechId::GoskaLobotomyGrenade: {
+								if (unit->id == UnitId::Goska && bw::client_selection_count() == 1) {
+									current_button_state = Button_State::Enabled;
+								}
 							}
 						}
 					}
@@ -1859,6 +1869,15 @@ namespace hooks {
 									}
 								} break;
 
+								// HEROES \\
+									
+								case UnitId::Goska: {
+									if (current_button->icon_id == IconId::U238_Shells		// Fossilizer Rounds
+									||  current_button->icon_id == IconId::SensorArray) {	// Proximity Cloak
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+
 								// FACTIONAL \\
 
 								case UnitId::TerranCohort: {
@@ -2702,6 +2721,14 @@ namespace hooks {
 							} else {
 								current_button_state = Button_State::Invisible;
 							}
+						}
+					}
+
+					if (current_button->action_var == TechId::StroluumSkryspawn) {
+						if (unit_ext->timers[TimerSkryspawn]) {
+							current_button_state = Button_State::Disabled;
+						} else {
+							current_button_state = Button_State::Enabled;
 						}
 					}
 

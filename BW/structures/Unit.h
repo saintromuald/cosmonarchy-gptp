@@ -386,6 +386,7 @@ struct Unit : public UnitLayout
 	}
 
 	struct UnitExt& ext();
+	bool has_energy_for_ability(u32 tech_id);
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

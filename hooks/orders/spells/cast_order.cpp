@@ -7,8 +7,7 @@
 namespace hooks
 {
 	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
-	s32 spell_order(s32 default_order_string, Unit* caster, u16 tech_id, s32 range, u16* energy_cost) // 004926D0
-	{
+	s32 spell_order(s32 default_order_string, Unit* caster, u16 tech_id, s32 range, u16* energy_cost) { // 004926D0
 		Unit* order_target = caster->order_target.unit;
 		u16 meme = (u16)default_order_string;
 		if (!tech_id_has_custom_targeting(tech_id)
@@ -36,12 +35,7 @@ namespace hooks
 				}
 				return helper::spell_order_move_towards_target(caster, range);
 			}
-			const char* string = helper::get_stat_txt_string(caster->get_race() + 864);
-			if (string) {
-				if (*g_active_player_id == *g_local_human_id) {
-					helper::set_unit_stat_txt_error_message(string);
-				}
-			}
+			specialist_energy_error(caster);
 			helper::to_idle(caster);
 			return 0;
 		}
@@ -75,7 +69,7 @@ namespace hooks
 	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
 	bool can_target_spell(u16 tech_id, Unit* target, s16 fow_unit_id, Unit* caster, s16 x, s16 y, u16* error) { // 00492020
 		switch (tech_id) {
-			// Targeting inside; added many new cases
+			// Targeting terrain; added many new cases
 			case TechId::Irradiate:
 			case TechId::EMPShockwave:
 			case TechId::ScannerSweep:
@@ -89,11 +83,12 @@ namespace hooks
 			case TechId::MindTyrantMaelstrom:
 			case TechId::LuminaryAuralAssault:
 			case TechId::HypnagogueThroughTheLookingGlass:
-			case TechId::MatralethParasite: {
+			case TechId::MatralethParasite:
+			case TechId::GoskaLobotomyGrenade: {
 				return true;
 			}
 			default: {
-				if (tech_id != TechId::SpiderMines && tech_id != TechId::UnusedLobotomyMine) {
+				if (tech_id != TechId::SpiderMines) {
 					bool has_target = false;
 					u16 error_stat_string = 0;
 					if (target) {
@@ -403,7 +398,8 @@ namespace hooks
 			case TechId::MatralethParasite:
 			case TechId::Hallucination:
 			case TechId::YamatoGun:
-			case TechId::Irradiate: {
+			case TechId::Irradiate:
+			case TechId::GoskaLobotomyGrenade: {
 				return false;
 			} break;
 			default: {
