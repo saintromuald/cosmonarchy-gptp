@@ -153,16 +153,17 @@ namespace hooks
 	}
 
 	/// Hooks into the Unit::damage_with() function.
-	void weapon_damage(s32 damage, Unit* target, u8 weapon_id, Unit* attacker, u8 attacking_player_id, s8 direction, u8 damage_divisor) {
-		WeaponDamageData data = {};
-		data.damage					= damage;
-		data.damage_type			= weapons_dat::damage_type[weapon_id];
-		data.damage_divisor			= damage_divisor;
-		data.weapon_id				= weapon_id;
-		data.direction				= direction;
-		data.target					= target;
-		data.attacker				= attacker;
-		data.attacking_player_id	= attacking_player_id;
+	void weapon_damage(s32 damage, Unit* target, WeaponId::Enum weapon_id, Unit* attacker, u8 attacking_player_id, s8 direction, u8 damage_divisor) {
+		WeaponDamageData data{
+            .damage					= damage,
+            .damage_type			= weapons_dat::damage_type[weapon_id],
+            .damage_divisor			= damage_divisor,
+            .weapon_id				= weapon_id,
+            .direction				= direction,
+            .target					= target,
+            .attacker				= attacker,
+            .attacking_player_id	= attacking_player_id,
+		};
 		weapon_damage_root(data);
 	}
 
@@ -176,17 +177,18 @@ namespace hooks
 		u8 damage_divisor,
 		bool ignore_flat_armor
 	) {
-		WeaponDamageData data = {};
-		data.damage					= damage;
-		data.damage_type			= DamageType::Impact;
-		data.damage_divisor			= damage_divisor;
-		data.weapon_id				= WeaponId::Custom;
-		data.bonus_armor_pen		= armor_pen;
-		data.direction				= direction;
-		data.target					= target;
-		data.attacker				= attacker;
-		data.attacking_player_id	= attacking_player_id;
-		data.ignore_flat_armor		= ignore_flat_armor;
+		WeaponDamageData data{
+            .damage					= damage,
+            .bonus_armor_pen		= armor_pen,
+            .damage_type			= DamageType::Impact,
+            .damage_divisor			= damage_divisor,
+            .weapon_id				= WeaponId::Custom,
+            .direction				= direction,
+            .target					= target,
+            .attacker				= attacker,
+            .attacking_player_id	= attacking_player_id,
+            .ignore_flat_armor		= ignore_flat_armor,
+		};
 		weapon_damage_root(data);
 	}
 

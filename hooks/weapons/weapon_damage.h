@@ -11,7 +11,7 @@ namespace hooks {
 	void weapon_damage(
 		s32 damage,
 		Unit* target,
-		u8 weapon_id,
+		WeaponId::Enum weapon_id,
 		Unit* attacker,
 		u8 attacking_player_id,
 		s8 direction,
@@ -35,7 +35,7 @@ namespace hooks {
 		u32 bonus_armor_pen;
 		u8 damage_type;
 		u8 damage_divisor;
-		u16 weapon_id;
+		WeaponId::Enum weapon_id;
 		s8 direction;
 
 		Unit* target;

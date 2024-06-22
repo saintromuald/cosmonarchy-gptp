@@ -17,7 +17,7 @@ namespace
 			MOV unit, ESI
 			PUSHAD
 		}
-		hooks::fire_weapon(unit, weapon_id);
+		hooks::fire_weapon(unit, (WeaponId::Enum)weapon_id);
 		__asm {
 			POPAD
 			MOV ESP, EBP

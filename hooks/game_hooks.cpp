@@ -1102,6 +1102,7 @@ namespace hooks {
 		}
 
 		if (!(unit->movement_flags & MovementFlags_StartingAttack)) {
+			unit_ext->values[ValueWeaponFireIndex] = 0;
 			unit_ext->values[ValueProjectilePattern] = 0;
 		}
 
@@ -1269,7 +1270,7 @@ namespace hooks {
 		if (unit_ext->timers[TimerClearStaggerBlacklist]) {
 			unit_ext->unit_vectors[UnitVectorStaggerBlacklist].clear();
 			unit_ext->values[ValueStaggerCount] = 0;
-			apply_weapon_cooldown(unit, unit_ext->values[ValueStaggerWeaponId]);
+			apply_weapon_cooldown(unit, (WeaponId::Enum)unit_ext->values[ValueStaggerWeaponId]);
 		}
 
 		// Projection (line attack) handling
@@ -1410,7 +1411,7 @@ namespace hooks {
 			case UnitId::ZergEvigrilisk: {
 				bool is_moving = unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving;
 				bool can_fire = !unit->ground_weapon_cooldown;
-				u32 weapon_id = WeaponId::EvigriliskBrutishTendrils;
+				WeaponId::Enum weapon_id = WeaponId::EvigriliskBrutishTendrils;
 				if (is_moving && can_fire) {
 					FireMultipleOptions options = {};
 					options.ignore_main = true;
@@ -2283,7 +2284,7 @@ namespace hooks {
 				if (!(unit->status & UnitStatus::InTransport)) {
 					bool is_moving = unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving;
 					bool can_fire = !unit->ground_weapon_cooldown && !(unit->status & UnitStatus::Burrowed);
-					u32 weapon_id = WeaponId::OkrimniliskRelentlessTendrils;
+					WeaponId::Enum weapon_id = WeaponId::OkrimniliskRelentlessTendrils;
 					if (is_moving && can_fire) {
 						FireMultipleOptions options = {};
 						options.ignore_main = false;

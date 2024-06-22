@@ -187,19 +187,16 @@ namespace hooks {
 		UnitExt* attacker_ext = get_unit_ext(attacker);
 		Unit* target = attacker->order_target.unit;
 		if (target) {
-			u32 weapon_id;
+			WeaponId::Enum weapon_id = WeaponId::None;
 			// Lakizilisks can only attack while burrowed even if given a melee attack, according to this code.
 			if (!unit_id_is_burrowed_attacker(attacker->id)
 			|| (attacker->status & UnitStatus::Burrowed
-			||  attacker->status & UnitStatus::InBuilding)) // Attempt to allow Lakizilisks to attack from within Bunkers. Didn't work, but may still be part of the solution. -Pr0nogo
-			{
+			||  attacker->status & UnitStatus::InBuilding)) { // Attempt to allow Lakizilisks to attack from within Bunkers. Didn't work, but may still be part of the solution. -Pr0nogo
 				if (target->status & UnitStatus::InAir && units_dat::air_weapon[attacker->id] != WeaponId::None) {
-					weapon_id = units_dat::air_weapon[attacker->id];
+					weapon_id = (WeaponId::Enum)units_dat::air_weapon[attacker->id];
 				} else {
-					weapon_id = units_dat::ground_weapon[attacker->id];
+					weapon_id = (WeaponId::Enum)units_dat::ground_weapon[attacker->id];
 				}
-			} else {
-				weapon_id = WeaponId::None;
 			}
 			attacker_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
 			attacker_ext->values[ValueAI_PreventTargeting] = 0;

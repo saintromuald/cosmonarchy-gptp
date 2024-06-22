@@ -90,7 +90,7 @@ u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, P
 	return bw::distance_between(source_pos, edge_point);
 }
 
-Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown, bool ignore_max_range, bool dont_follow) {
+Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponOffsets* weapon_offsets, bool apply_cooldown, bool ignore_max_range, bool dont_follow) {
 	if (!unit->sprite) {
 		return 0;
 	}
@@ -151,13 +151,13 @@ Bullet* fire_bullet(Unit* unit, u32 weapon_id, Target target, WeaponOffsets* wea
 	return bullet;
 }
 
-void apply_weapon_cooldown(Unit* unit, u8 weapon_id) {
+void apply_weapon_cooldown(Unit* unit, WeaponId::Enum weapon_id) {
 	u32 cooldown = helper::get_weapon_cooldown(unit, weapon_id);
 	unit->ground_weapon_cooldown = cooldown;
 	unit->air_weapon_cooldown = cooldown;
 }
 
-Bullet* create_bullet_ex(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown) {
+Bullet* create_bullet_ex(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown) {
 	Bullet* bullet = helper::create_bullet(weapon_id, source, x, y, attacking_player, direction);
 	if (bullet) {
 		bw::decloak_passive_proc(source);
@@ -187,7 +187,7 @@ static Point16 set_target_range(Point16 origin, Point16 point, f32 distance) {
 }
 
 // Fly & Follow is unsupported
-void fire_line(Unit* unit, u32 weapon_id, u32 total_count, u32 forward_spread, u32 lines, u32 side_spread, WeaponOffsets* weapon_offsets) {
+void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 total_count, u32 forward_spread, u32 lines, u32 side_spread, WeaponOffsets* weapon_offsets) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	u32 index = unit_ext->values[ValueProjectilePattern];
 	if (index == 0) {
@@ -215,45 +215,60 @@ void fire_line(Unit* unit, u32 weapon_id, u32 total_count, u32 forward_spread, u
 	unit_ext->values[ValueProjectilePattern] = (index + 1) % total_count;
 }
 
-void fire_shotgun(Unit* unit, u32 weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* weapon_offsets) {
+static std::pair<Target, u32> calculate_target(Unit* unit, WeaponId::Enum weapon_id, WeaponOffsets* offsets) {
 	Target target = unit->order_target;
-
 	u32 max_range = bw::distance_between(unit->position, target.pt);
 	if (weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
 	}
-	{
-		Point16 launch_pos = unit->position;
-		if (weapon_offsets) {
-			launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, weapon_offsets));
-		}
-		target.pt = set_target_range(launch_pos, target.pt, max_range);
-		fire_bullet(unit, weapon_id, target, weapon_offsets);
-	}
+    Point16 launch_pos = unit->position;
+    if (offsets) {
+        launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, offsets));
+    }
+    target.pt = set_target_range(launch_pos, target.pt, max_range);
+	return {target, max_range};
+}
+
+static void fire_angled(Unit* unit, WeaponId::Enum weapon_id, Target target, s32 angle, u32 range, WeaponOffsets* offsets) {
+    Point16 launch_pos = unit->position;
+    if (offsets) {
+        launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, offsets));
+    }
+    Point16 target_pt = bw::rotate_point(launch_pos, set_target_range(launch_pos, target.pt, range), angle);
+    fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), offsets, true, true, true);
+}
+
+static void fire_sideways(Unit* unit, WeaponId::Enum weapon_id, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* offsets) {
+	auto [target, max_range] = calculate_target(unit, weapon_id, offsets);
+
+	s32 angle = angle_spread;
+	u32 range = max_range + vertical_scatter;
+    for (u32 i = 0; i < 2; ++i) {
+		fire_angled(unit, weapon_id, target, angle, range, offsets);
+        angle = 360 - angle;
+    }
+}
+
+void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, u32 angle_spread, u32 vertical_scatter, WeaponOffsets* offsets) {
+	auto [target, max_range] = calculate_target(unit, weapon_id, offsets);
+    fire_bullet(unit, weapon_id, target, offsets);
 
 	for (s32 i = 1; i <= side_count; ++i) {
-		s32 current_scatter = vertical_scatter * i;
+		s32 scatter = vertical_scatter * i;
 		if (i % 2 == 1) {
-			current_scatter *= -1;
+			scatter *= -1;
 		}
-		u32 current_range = max_range + current_scatter;
 
+        s32 angle = i * angle_spread;
+		u32 range = max_range + scatter;
 		for (u32 j = 0; j < 2; ++j) {
-			Point16 launch_pos = unit->position;
-			if (weapon_offsets) {
-				launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, weapon_offsets));
-			}
-			f64 angle = i * angle_spread;
-			if (j == 0) {
-				angle = 360 - angle;
-			}
-			Point16 target_pt = bw::rotate_point(launch_pos, set_target_range(launch_pos, target.pt, current_range), angle);
-			fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), weapon_offsets, true, true, true);
+			fire_angled(unit, weapon_id, target, angle, range, offsets);
+            angle = 360 - angle;
 		}
 	}
 }
 
-static bool internal_fired_stagger(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options, Unit* fired_at) {
+static bool internal_fired_stagger(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options, Unit* fired_at) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	auto& blacklist = unit_ext->unit_vectors[UnitVectorStaggerBlacklist];
 
@@ -282,7 +297,7 @@ static bool internal_fired_stagger(Unit* unit, u32 weapon_id, u32 max_targets, u
 	return fired_at != 0;
 }
 
-bool fire_multiple(Unit* unit, u32 weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options) {
+bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options) {
 	u32 max_attack_range = options.range_overwrite ? options.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
 	u32 factor = options.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 
@@ -390,7 +405,7 @@ namespace
 namespace hooks {
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fire_weapon().
-	void fire_weapon(Unit* unit, u8 weapon_id) { // 00479C90
+	void fire_weapon(Unit* unit, WeaponId::Enum weapon_id) { // 00479C90
 		if (!unit || !AssertSprite(unit->sprite)) {
 			return;
 		}
@@ -398,6 +413,7 @@ namespace hooks {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
 		unit_ext->values[ValueAI_PreventTargeting] = 0;
+		u32 index = unit_ext->values[ValueWeaponFireIndex]++;
 
 		// Retrieve the spawning position for the bullet.
 		s32 x = 0;
@@ -492,42 +508,6 @@ namespace hooks {
 
 				Target weapon_target = make_target(unit->order_target.unit);
 				switch (weapon_id) {
-					case WeaponId::CyprianTwinRailguns:
-					case WeaponId::VultureFragmentationGrenade:
-					case WeaponId::GoliathContenderMissiles:
-					case WeaponId::PhalanxArcliteShockCannon:
-					case WeaponId::RamessesPharoahCannons:
-					case WeaponId::ClaymoreHarpoonRailgun:
-					case WeaponId::PenumbraErebolShockCannon:
-					case WeaponId::WraithBurstLasers:
-					case WeaponId::SundogBlindsideRockets:
-					case WeaponId::CentaurSunchaserMissiles:
-					case WeaponId::MagnetarNewtonianShockCannon:
-					case WeaponId::HippogriffChimeraCannons:
-					case WeaponId::HippogriffPegasusMissiles:
-					case WeaponId::SentinelCerberusRailgun:
-					case WeaponId::DiademIonCannon:
-					case WeaponId::DiademHammerfallBeacon:
-					case WeaponId::WardenPrismaticCannon:
-					case WeaponId::DracadinPhaseDisruptor:
-					case WeaponId::CharlatanFerventBlaster:
-					case WeaponId::OptectonSunsplitBeam:
-					case WeaponId::PositronAntimatterMissile:
-					case WeaponId::AccantorPlasmaShell:
-					case WeaponId::PanoptusPlasmaMissiles:
-					case WeaponId::ExemplarPlasmaTorpedo:
-					case WeaponId::EpigraphLitanyCannons:
-					case WeaponId::EmpyreanPlasmaBarrage:
-					case WeaponId::StarSovereignCelestialCannon:
-					case WeaponId::SpraithColonySeekerSpores:
-					case WeaponId::LiiraliskHollowedSpores:
-					case WeaponId::KalkaliskViscousAcid:
-					case WeaponId::AxitriliskSearingVenom:
-					case WeaponId::SkithrokorSkitteringSpores:
-					case WeaponId::BactaliskCorrosiveAcid:
-					case WeaponId::KeskathalorScreamingVenom: {
-						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
-					} break;
 					case WeaponId::PhobosArgosLaserBatteries: {
 						// Phobos - Argent Capacitors passive
 						if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] == 0) {
@@ -565,12 +545,11 @@ namespace hooks {
 						fire_line(unit, weapon_id, 3, 24, 1, 0);
 					} break;
 					case WeaponId::CataphractLonginiusCannons: {
-						FireMultipleOptions options = {};
-						options.weapon_offsets = get_weapon_offsets(weapon_id);
-						options.stagger = -1;
-
 						// Multi-Attack IV
-						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, options);
+						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, {
+                            .weapon_offsets = get_weapon_offsets(weapon_id),
+                            .stagger = -1,
+                        });
 					} break;
 					case WeaponId::PaladinCrusaderMissiles: {
 						// Paladin - Offset: Linear
@@ -598,14 +577,15 @@ namespace hooks {
 					} break;
 					case WeaponId::MadrigalFuriaMissiles: {
 						// Madrigal Furia Salvo
-						FireMultipleOptions options = {};
-						options.stagger = 2;
-						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy, options);
+						fire_multiple(unit, WeaponId::MadrigalFuriaMissiles, 0, FilterEnemy, {
+							.stagger = 2,
+						});
 					} break;
 					case WeaponId::ValkyrieHaloRockets: {
 						// Offset: Cone
-						fire_shotgun(unit, weapon_id, 1, 10, 10);
-						// @Veeq7 -- would be nice to achieve staggered fire for shotgun (cone) patterns. Not sure how feasible that is with the current stack. -Pr0nogo
+						u32 angle = 2 + index * 4;
+						u32 scatter = index * -5;
+						fire_sideways(unit, weapon_id, angle, scatter, {});
 					} break;
 					case WeaponId::TosgriliskExplosiveSpores:
 					case WeaponId::IzirokorEnergizedBioplasma:
@@ -613,25 +593,21 @@ namespace hooks {
 						// Crushing Tide - Tosgrilisk, Izirokor, Konvilisk
 						fire_multiple(unit, weapon_id, 2, FilterEnemy, {});
 					} break;
-					case WeaponId::CherbrathalorVenemousBursts:
-					{
+					case WeaponId::CherbrathalorVenemousBursts: {
 						// Crushing Tide - Cherbrathalor
-						FireMultipleOptions options = {};
-						options.ignore_main = false;
-						options.use_weapon_factor = false;
-						options.apply_cooldown = true;
-						options.weapon_offsets = get_weapon_offsets(weapon_id);
-						options.range_overwrite = 0;
-						options.divisor_multiplier = 1;
-						options.stagger = -1;
-						options.center_on_target = false;
-						options.center_on_target_range_overwrite = 0;
-						fire_multiple(unit, weapon_id, 3, FilterEnemy, options);
+						fire_multiple(unit, weapon_id, 3, FilterEnemy, {
+                            .ignore_main = false,
+                            .use_weapon_factor = false,
+                            .apply_cooldown = true,
+                            .weapon_offsets = get_weapon_offsets(weapon_id),
+                            .range_overwrite = 0,
+                            .divisor_multiplier = 1,
+                            .stagger = -1,
+                            .center_on_target = false,
+                            .center_on_target_range_overwrite = 0,
+                        });
 					} break;
 					case WeaponId::MatrixKhaydarinRay: {
-						FireMultipleOptions options = {};
-						options.stagger = -1;
-						options.weapon_offsets = get_weapon_offsets(weapon_id);
 						fire_bullet(unit, weapon_id, weapon_target, get_weapon_offsets(weapon_id));
 						Unit* target = unit->order_target.unit;
 						if (target && unit->player != target->player && !bw::is_allied_to(unit->player, target->player)) {
@@ -639,29 +615,31 @@ namespace hooks {
 						}
 					} break;
 					case WeaponId::SkortrithColonySkortraTendril: {
-						FireMultipleOptions options = {};
-						options.weapon_offsets = get_weapon_offsets(weapon_id);
-						options.ignore_main = true;
-						options.use_weapon_factor = false;
-						options.apply_cooldown = false;
-						options.center_on_target = true;
-						options.center_on_target_range_overwrite = 2 * 32;
-						options.divisor_multiplier = 2;
-						options.stagger = -1;
-
 						fire_bullet(unit, weapon_id, unit->order_target);
-						fire_multiple(unit, weapon_id, 2, FilterEnemy, options);
+						fire_multiple(unit, weapon_id, 2, FilterEnemy, {
+                            .ignore_main = true,
+                            .use_weapon_factor = false,
+                            .apply_cooldown = false,
+                            .weapon_offsets = get_weapon_offsets(weapon_id),
+                            .divisor_multiplier = 2,
+                            .stagger = -1,
+                            .center_on_target = true,
+                            .center_on_target_range_overwrite = 2 * 32,
+                        });
 					} break;
-					case WeaponId::NathreliskSignalingSpores:
-					{
+					case WeaponId::NathreliskSignalingSpores: {
 						g_iquare_globals->create_effect(EffectId::VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
 					} // Fallthrough intended, for now.
 					default: {
-						u32 sound_id = bw::get_manual_weapon_id_sound(weapon_id);
-						if (sound_id) {
-							helper::play_sound_from_unit(sound_id, unit, 1, 0);
+						if (auto offsets = get_weapon_offsets(weapon_id)) {
+                            fire_bullet(unit, weapon_id, weapon_target, offsets);
+						} else {
+                            u32 sound_id = bw::get_manual_weapon_id_sound(weapon_id);
+                            if (sound_id) {
+                                helper::play_sound_from_unit(sound_id, unit, 1, 0);
+                            }
+                            create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 						}
-						create_bullet_ex(weapon_id, unit, x, y, unit->player, unit->current_direction_1);
 					} break;
 				}
 			}
