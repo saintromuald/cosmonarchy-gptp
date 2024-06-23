@@ -1,7 +1,7 @@
 #pragma once
 
 namespace WeaponId {
-	enum Enum {
+	enum Enum : u8 {
 		MaverickGaussRifle = 0x00,
 		GaussRifle_JimRaynor_Marine = 0x01,
 		EidolonCanisterRifle = 0x02,
