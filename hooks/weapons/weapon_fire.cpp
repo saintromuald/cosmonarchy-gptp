@@ -465,12 +465,10 @@ namespace hooks {
 				u32 timer = 0;
 				u32 max_range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit);
 				switch (weapon_id) {
-					case WeaponId::SkithrokorSkitteringSpores:
-					{
+					case WeaponId::SkithrokorSkitteringSpores: {
 						timer = 9;
 					} break;
-					case WeaponId::LakiziliskSubterraneanSpines:
-					{
+					case WeaponId::LakiziliskSubterraneanSpines: {
 						timer = 2 + ((max_range / 32) * 3);
 						unit_ext->values[ValueHasFiredReturnAttack] = max_range + 16;
 					} break;

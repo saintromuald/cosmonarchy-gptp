@@ -140,13 +140,12 @@ void disconnect_addon_no_event(Unit* unit) {
 	*g_active_iscript_unit = active_unit;
 }
 
-u32 get_bullet_damage(Bullet* bullet, u32 weapon_id)
-{
+u32 get_bullet_damage(Bullet* bullet, u32 weapon_id) {
 	BulletExt* bullet_ext = get_bullet_ext(bullet);
 	if (bullet_ext->damage_override) {
 		return bullet_ext->damage_override;
 	}
-	return weapons_dat::damage_amount[weapon_id];
+	return weapons_dat::damage_amount[weapon_id] * 256;
 }
 
 const char* game_kind_to_string(GameKind game_kind) {

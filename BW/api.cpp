@@ -3693,7 +3693,7 @@ void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, Point1
 	bw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, position.x, position.y, bullet->player);
 
 	u32 base_damage = get_bullet_damage(bullet, weapon_id);
-	target->damage_with(weapon_id, (base_damage - count) * 256, bullet->source_unit, bullet->player);
+	target->damage_with(weapon_id, base_damage - count * 256, bullet->source_unit, bullet->player);
 
 	if (count >= weapons_dat::damage_amount[weapon_id]) {
 		bullet->remove_timer = 0;
