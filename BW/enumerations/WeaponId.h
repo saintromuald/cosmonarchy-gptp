@@ -140,6 +140,7 @@ namespace WeaponId {
 		
 		// Heroes \\
 
+		GoskaLobotomyGrenade				= 32,
 		GoskaMedusaRifle					= 249,
 		StroluumMagnatesMaw					= 251,
 
