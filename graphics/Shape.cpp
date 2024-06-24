@@ -105,7 +105,7 @@ void Shape::set_filled_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType
 //-------- Drawing --------//
 
 void Shape::draw(bool is_statres) const {
-	Vector32 p1 = this->p1, p2 = this->p2;
+	Vec32 p1 = this->p1, p2 = this->p2;
 	switch (this->coordType) {
 		case ON_SCREEN:
 			break;

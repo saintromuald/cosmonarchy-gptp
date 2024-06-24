@@ -272,7 +272,7 @@ u32 distance_between(s32 x1, s32 y1, s32 x2, s32 y2) {
 	return (dMin * 3 >> 3) + (dMin * 3 >> 8) + dMax - (dMax >> 4) - (dMax >> 6);
 }
 
-u32 distance_rectangular(s32 x1, s32 y1, s32 x2, s32 y2) {
+u32 distance_manhattan_between(s32 x1, s32 y1, s32 x2, s32 y2) {
 	return std::max(abs(x1 - x2), abs(y1 - y2));
 }
 
@@ -333,13 +333,13 @@ Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees) {
 	return {u16(x2 + anchor.x), u16(y2 + anchor.y)};
 }
 
-Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees) {
+Vec32 rotate_point(Vec32 anchor, Vec32 point, f64 angle_degrees) {
 	f64 x1 = point.x - anchor.x;
 	f64 y1 = point.y - anchor.y;
 	f64 radians = angle_degrees / 57.296;
 	f64 x2 = x1 * cos(radians) - y1 * sin(radians);
 	f64 y2 = x1 * sin(radians) + y1 * cos(radians);
-	Vector32 product = {};
+	Vec32 product = {};
 	product.x = x2 + anchor.x;
 	product.y = y2 + anchor.y;
 	return {s32(x2 + anchor.x), s32(y2 + anchor.y)};
@@ -2726,8 +2726,8 @@ void move_camera(Point16 pos) {
 }
 
 Quad quad_from_line(Point16 from, Point16 to, f32 line_width) {
-	Vector32f line_diff = normalized_vector(vector_between(from, to));
-	Vector32f p = {-line_diff.y * line_width / 2, line_diff.x * line_width / 2};
+	Vec32f line_diff = normalize_vec(vec_between(from, to));
+	Vec32f p = {-line_diff.y * line_width / 2, line_diff.x * line_width / 2};
 	Quad quad = {};
 	quad.corners[0].x = from.x - p.x;
 	quad.corners[0].y = from.y - p.y;
@@ -2753,10 +2753,10 @@ Quad quad_from_rect(Box16 rect) {
 	return box_quad;
 }
 
-static bool sat_collision_internal(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
+static bool sat_collision_internal(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count) {
 	for (u32 i = 0; i < a_count; ++i) {
-		Vector32f diff = bw::vectorf_between(a[i], a[(i + 1) % a_count]);
-		Vector32f proj = {-diff.y, diff.x};
+		Vec32f diff = bw::vecf_between(a[i], a[(i + 1) % a_count]);
+		Vec32f proj = {-diff.y, diff.x};
 
 		f32 a_min = INFINITY;
 		f32 a_max = -INFINITY;
@@ -2781,19 +2781,19 @@ static bool sat_collision_internal(Vector32f* a, u32 a_count, Vector32f* b, u32 
 	return true;
 }
 
-bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count) {
+bool sat_collision(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count) {
 	return sat_collision_internal(a, a_count, b, b_count) && sat_collision_internal(b, b_count, a, a_count);
 }
 
-f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector32f* out_cp) {
-	Vector32f ab = bw::vectorf_between(from, to);
-	Vector32f ap = bw::vectorf_between(from, point);
+f32 line_to_point_distance(Vec32f from, Vec32f to, Vec32f point, Vec32f* out_cp) {
+	Vec32f ab = bw::vecf_between(from, to);
+	Vec32f ap = bw::vecf_between(from, point);
 
 	f32 dot = bw::dot_product(ab, ap);
 	dot /= bw::dot_product(ab, ab);
 	dot = Clamp(dot, 0, 1);
 
-	Vector32f cp = from;
+	Vec32f cp = from;
 	cp.x += ab.x * dot;
 	cp.y += ab.y * dot;
 	if (out_cp) {
@@ -2803,13 +2803,13 @@ f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector
 	return bw::distance_between(cp, point);
 }
 
-static void line_intersects_rect_internal(Quad quad_a, Quad quad_b, Vector32f axis, f32* best_distance, Vector32f* best_cp, f32* best_t) {
+static void line_intersects_rect_internal(Quad quad_a, Quad quad_b, Vec32f axis, f32* best_distance, Vec32f* best_cp, f32* best_t) {
 	for (u32 i = 0; i < 4; ++i) {
-		Vector32f line0 = quad_a.corners[i];
-		Vector32f line1 = quad_a.corners[(i + 1) % 4];
+		Vec32f line0 = quad_a.corners[i];
+		Vec32f line1 = quad_a.corners[(i + 1) % 4];
 		for (u32 j = 0; j < 4; ++j) {
-			Vector32f point = quad_b.corners[j];
-			Vector32f cp = {};
+			Vec32f point = quad_b.corners[j];
+			Vec32f cp = {};
 			f32 distance = line_to_point_distance(line0, line1, point, &cp);
 			f32 t = bw::dot_product(cp, axis);
 			if (abs(distance - *best_distance) < 1) {
@@ -2835,9 +2835,9 @@ bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, 
 			return true;
 		}
 
-		Vector32f axis = bw::vectorf_between(from, to);
+		Vec32f axis = bw::vecf_between(from, to);
 		f32 best_distance = INFINITY;
-		Vector32f best_cp = {};
+		Vec32f best_cp = {};
 		best_cp.x = rect.left + (rect.right - rect.left) / 2;
 		best_cp.y = rect.bottom + (rect.top - rect.bottom) / 2;
 		f32 best_t = INFINITY;
@@ -3152,7 +3152,7 @@ u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
 }
 
 Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target) {
-	Vector32f shift = bw::normalized_vector(bw::vector_between(pos, target));
+	Vec32f shift = bw::normalize_vec(bw::vec_between(pos, target));
 	f32 max_distance = std::max(abs(shift.x), abs(shift.y));
 	if (max_distance) {
 		shift.x /= max_distance;
@@ -3526,7 +3526,7 @@ bool has_custom_advisor(u32 player) {
 	return g_globals->current_advisor != Advisor_Default;
 }
 
-const Vector32f perimeter[] = {
+const Vec32f perimeter[] = {
 	{64, -258}, {64, -252}, {198, -198}, {250, -66}, {258, -66},
 	{258, 66}, {250, 66}, {198, 198}, {64, 252}, {64, 258},
 	{-64, 258}, {-64, 252}, {-198, 198}, {-250, 66}, {-258, 66},
@@ -3661,7 +3661,7 @@ void launch_return_missile(Unit* unit, u32 weapon_id) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	Point16 position = unit->position;
 	Point16 spr_position = unit->sprite->position;
-	Vector32 pos = {(s32) unit_ext->values[ValueMissileReturnX], (s32) unit_ext->values[ValueMissileReturnY]};
+	Vec32 pos = {(s32) unit_ext->values[ValueMissileReturnX], (s32) unit_ext->values[ValueMissileReturnY]};
 	if (pos.x < 0) {
 		pos.y = (1 - abs(pos.x / (pos.x - (s32) position.x))) * (pos.y - (s32) position.y) + (s32) position.y;
 		pos.x = 0;

@@ -415,11 +415,11 @@ struct UnitExt {
 	u32                     total_damage_taken;
 	u32                     total_damage_dealt;
 	Point16					anthelion_last_move_target;
-	Vector32f				repulsion_vector;
+	Vec32f				repulsion_vector;
 	Point16					last_bullet_launch_position;
 	Point16					ai_kiting_origin;
 	Target                  projectile_pattern_target;
-	Vector32f				last_repulsion;
+	Vec32f				last_repulsion;
 //	Target					rally;
 	const char*				custom_name;
 

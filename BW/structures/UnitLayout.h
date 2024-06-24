@@ -224,11 +224,11 @@ struct UnitLayout
 	/*0x026*/ u8        new_flags_1;					// Enum NewFlags1 | was unused
 	/*0x027*/ u8        flingy_movement_type;
 	/*0x028*/ Point16   position;						// Current position of the unit
-	/*0x02C*/ Vector32  halt;
+	/*0x02C*/ Vec32  halt;
 	/*0x034*/ u32       flingy_top_speed;				// top speed
 	/*0x038*/ u32       current_speed_1;				// current speed
 	/*0x03C*/ u32       current_speed_2;				// not sure if there are any differences with these 2 variables, they always have the same value
-	/*0x040*/ Vector32  current_velocity;
+	/*0x040*/ Vec32  current_velocity;
 	/*0x048*/ u16       flingy_acceleration;
 	/*0x04A*/ u8        current_direction_2;			// ?
 	/*0x04B*/ u8        velocity_direction_2;			// pathing related, BWAPI has more info

@@ -381,14 +381,14 @@ namespace helper {
 	void update_unit_strength(Unit* unit);																							// 0049FA40
 	u32 iterate_units_at_location_target_proc_larva_count(Unit* unit, Box16* coords);												// 004E8280
 	void set_larva_order_state(Unit* unit);																							// 004E8DA0
-	bool get_larva_spawn_pos(Unit* unit, Vector32* coords);																			// 004E8E10
+	bool get_larva_spawn_pos(Unit* unit, Vec32* coords);																			// 004E8E10
 
 	// TODO: move somewhere else?
 	// SC Variables and Buffers used in this file
 	u32* const mapTileBufWidth = (u32*)(0x006D0F08);
 	u32* const mapTileBufHeight = (u32*)(0x006D0C6C);
 	u16** const mapTileBuf = (u16**)(0x006D0E84);
-	Vector32* const someCreepPointBuf = (Vector32*)(0x006D7578);
+	Vec32* const someCreepPointBuf = (Vec32*)(0x006D7578);
 	typedef u32(*isTileVisible_func)(u32 x, u32 y);
 	typedef bool(*SetCreepRelationalData_callback)(u16* tileBackup, u8* creepOverlayVal, u32* retval, u16* tile, u32 arg);
 	isTileVisible_func* const isTileVisible_ptr = (isTileVisible_func*)(0x006D0C78);
@@ -807,9 +807,9 @@ namespace helper {
 	void set_font_handle(u32* font);																				// 0041FB30
 
 	// For targeted_order
-	Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9);		// 00474B90
+	Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vec32* a8, Unit* a9);		// 00474B90
 	s32 show_stat_txt_to_player(s32 a1, s32 a2);																	// 0048CF00
-	void set_order_target(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vector32* a8, Unit* a9);		    // 00475470
+	void set_order_target(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vec32* a8, Unit* a9);		    // 00475470
 
 	// For select_units
 	s32 select_single_unit_from_id(s32 index);																		// 00496D30

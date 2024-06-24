@@ -144,7 +144,7 @@ void ControlGroup::center_camera() {
 		return;
 	}
 	u32 avg_count = 0;
-	Vector32 avg_pos = {};
+	Vec32 avg_pos = {};
 	for (u32 i = 0; i < SelectionCap; ++i) {
 		Unit* unit = unit_index[i].get_for_selection(false);
 		if (!unit || bw::distance_between(unit->position, anchor->position) > distance_quota) {

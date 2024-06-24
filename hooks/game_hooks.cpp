@@ -1984,9 +1984,9 @@ namespace hooks {
 							if (!(units_dat::base_property[target->id] & UnitProperty::Building)) {
 								target_ext->units[UnitAnthelionGravityWellSource] = unit;
 								const u32 displacement_time = 5;
-								Vector32 diff = bw::vector_between(unit->sprite->position, target->sprite->position);
-								if (bw::vector_distance(diff) > 12) {
-									Vector32f displacement = bw::normalized_vector(diff);
+								Vec32 diff = bw::vec_between(unit->sprite->position, target->sprite->position);
+								if (bw::vec_distance(diff) > 12) {
+									Vec32f displacement = bw::normalize_vec(diff);
 									displacement.x *= -1 * 32.0 / displacement_time;
 									displacement.y *= -1 * 32.0 / displacement_time;
 									target_ext->timers[TimerAnthelionGravityWell] = displacement_time;

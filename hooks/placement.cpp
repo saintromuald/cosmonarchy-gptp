@@ -10,7 +10,7 @@ namespace hooks
 			return 0;
 		}
 
-		Vector32 pos = *g_mouse;
+		Vec32 pos = *g_mouse;
 		Point16 dims = units_dat::building_dimensions[*g_place_building_unit_id];
 		pos.x -= dims.x / 2;
 		pos.y -= dims.y / 2;

@@ -72,7 +72,7 @@ namespace bw {
 		static Unit* get_nearest_target(s32 left, s32 top, s32 right, s32 bottom,
 			Bullet* sourceBullet, CallbackMatch match);
 		static Unit* get_nearest_target(s32 left, s32 top, s32 right, s32 bottom,
-			Vector32 position, CallbackMatch match);
+			Vec32 position, CallbackMatch match);
 		/// Searches the entire map, returning the nearest unit to @p source_unit
 		/// for which match(unit) evaluates to true. If there are no matches,
 		/// returns nullptr.
@@ -95,7 +95,7 @@ namespace bw {
 			s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 			UnitFinderData* left, UnitFinderData* top,
 			UnitFinderData* right, UnitFinderData* bottom,
-			CallbackMatch match, Vector32 sourcePosition);
+			CallbackMatch match, Vec32 sourcePosition);
 		static UnitFinderData* get_start_x();
 		static UnitFinderData* get_start_y();
 		static UnitFinderData* get_end_x();

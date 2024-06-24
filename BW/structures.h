@@ -1023,7 +1023,7 @@ struct AiScript {
 	s32					sleep;			// 0xC
 	s32					player;			// 0x10
 	Box32				loc_bounds;		// 0x14
-	Vector32			loc_center;		// 0x24
+	Vec32			loc_center;		// 0x24
 	AiTown*				town;			// 0x2C
 	s32					flags;			// 0x30
 };

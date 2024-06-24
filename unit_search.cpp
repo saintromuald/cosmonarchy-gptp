@@ -424,7 +424,7 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	}
 	if (center) {
 		if (flags & FilterFrontalArc) {
-			if (!bw::unit_is_facing_position(center, target->position)) {
+			if (!bw::unit_is_facing(center, target->position)) {
 				return false;
 			}
 		}

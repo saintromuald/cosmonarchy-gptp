@@ -128,7 +128,7 @@ BW_DATA(s32*,				g_screen_y,				0x00628470);
 BW_DATA(Point16*,			g_start_positions,		0x0058D720);
 
 // Mouse position relative to the screen
-BW_DATA(const Vector32*,	g_mouse,				0x006CDDC4);
+BW_DATA(const Vec32*,	g_mouse,				0x006CDDC4);
 
 BW_DATA(u32*,				g_mmb_pos_x,            0x006556F8);
 BW_DATA(u32*,				g_mmb_pos_y,            0x006556F4);
@@ -831,7 +831,7 @@ BW_DATA(UnitFinderData*,	g_unit_ordering_x,		ccmu_extender.unit_finder_x);
 BW_DATA(UnitFinderData*,	g_unit_ordering_y,		ccmu_extender.unit_finder_y);
 BW_DATA(u32*,				g_unit_ordering_count,	0x0066FF74);
 
-BW_DATA(Vector32*,		g_angle_distance,		0x00512D28);
+BW_DATA(Vec32*,		g_angle_distance,		0x00512D28);
 BW_DATA(u16*,				g_megatile_count,		0x005998E0);
 
 // Used internally by Starcraft to manage temporary units lists

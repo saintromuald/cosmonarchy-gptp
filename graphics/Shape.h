@@ -70,8 +70,8 @@ struct Shape {
 
     ShapeType type;
     CoordType coordType;
-    Vector32 p1;
-    Vector32 p2;
+    Vec32 p1;
+    Vec32 p2;
     s32 radius;
     ColorId color;
     FontSize fontSize;

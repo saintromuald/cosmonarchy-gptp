@@ -25,7 +25,7 @@ namespace hooks {
 				// Olympian Dishonorable Discharge - add 3 armor pen to targets facing away from the Olympian
 				// Audiovisuals should be handled in weapon_damage eventually to account for behaviors that make attacks miss, redirect, etc
 				if (target && !units_dat::group_flags[target->id].is_building) {
-					if (bw::unit_is_exposed_to_position(target, unit->position)) {
+					if (bw::unit_is_exposed_to(target, unit->position)) {
 						UnitExt* target_ext = get_unit_ext(target);
 						if (!target_ext->timers[TimerOlympianMythicalMightSFX]) {
 							helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, target, 1, 0);

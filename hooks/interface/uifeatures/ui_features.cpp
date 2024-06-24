@@ -187,7 +187,7 @@ namespace hooks {
 				default:
 					if (a3->order_queue_count < 8u) {
 						if (*g_order_count < 1800) {
-							helper::queue_new_order((Order*)a5, a1, a4, a3, a7, a8, a2, (Vector32*)a9, (Unit*)a10);
+							helper::queue_new_order((Order*)a5, a1, a4, a3, a7, a8, a2, (Vec32*)a9, (Unit*)a10);
 						} else {
 							u8 v11 = a3->player;
 							if (g_stat_txt_buffer->get_string_count() > 872) {
@@ -208,7 +208,7 @@ namespace hooks {
 			}
 		} else {
 LABEL_15:
-			helper::set_order_target(a7, a1, a4, a5, (s32)a3, (Unit*)a8, (u16)a2, (Vector32*)a9, (Unit*)a10);
+			helper::set_order_target(a7, a1, a4, a5, (s32)a3, (Unit*)a8, (u16)a2, (Vec32*)a9, (Unit*)a10);
 		}
 	}
 
@@ -946,7 +946,7 @@ LABEL_15:
 		helper::update_screen_position();
 	}
 
-	static Vector32f mouse_error;
+	static Vec32f mouse_error;
 
 	void __cdecl input_mmb_move() {
 		POINT mouse = {};

@@ -569,8 +569,8 @@ namespace hooks
 						const u32 dist = bw::distance_between(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
 							const u32 displacement_time = 5;
-							Vector32 diff = bw::vector_between(data.target->sprite->position, data.attacker->sprite->position);
-							Vector32f displacement = bw::normalized_vector(diff);
+							Vec32 diff = bw::vec_between(data.target->sprite->position, data.attacker->sprite->position);
+							Vec32f displacement = bw::normalize_vec(diff);
 							displacement.x *= 1 * 32.0 / displacement_time;
 							displacement.y *= 1 * 32.0 / displacement_time;
 
@@ -739,8 +739,8 @@ namespace hooks
 						{
 							const u32 dist = bw::distance_between(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 							const u32 displacement_time = 5;
-							Vector32 diff = bw::vector_between(data.target->sprite->position, data.attacker->sprite->position);
-							Vector32f displacement = bw::normalized_vector(diff);
+							Vec32 diff = bw::vec_between(data.target->sprite->position, data.attacker->sprite->position);
+							Vec32f displacement = bw::normalize_vec(diff);
 							displacement.x *= 2 * 32.0 / displacement_time;
 							displacement.y *= 2 * 32.0 / displacement_time;
 							target_ext->timers[TimerMagnetarAttraction] = displacement_time;

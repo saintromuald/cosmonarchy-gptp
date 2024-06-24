@@ -42,7 +42,7 @@ Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds
 	return a;
 }
 
-Unit* rangeMatchPosition(Vector32 position, u32 r, u32 context, std::vector<u16> allowedIds)
+Unit* rangeMatchPosition(Vec32 position, u32 r, u32 context, std::vector<u16> allowedIds)
 {
 	bw::UnitFinder unitsInSplash(position.x - r, position.y - r, position.x + r, position.x + r);
 	auto a = bw::UnitFinder::get_nearest_target(
@@ -137,7 +137,7 @@ bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context
 		{
 			if (context & Flags::FrontalArc)
 			{
-				if (!bw::unit_is_facing_position(center, target->position)) {
+				if (!bw::unit_is_facing(center, target->position)) {
 					return false;
 				}
 			}

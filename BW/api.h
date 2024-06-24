@@ -8,6 +8,7 @@
 #include <math.h>
 #include <unit_search.h>
 #include <source_location>
+#include <numbers>
 
 #include "CM/cm.h"
 
@@ -28,7 +29,7 @@ namespace fs = std::filesystem;
 #define BWTC_RED		"\006"
 #define BWTC_WHITE		"\004"
 
-#define PI 3.14159
+constexpr auto PI = std::numbers::pi_v<f64>;
 
 #define Min(a, b) ((a) < (b) ? a : b)
 #define Max(a, b) ((a) > (b) ? a : b)
@@ -205,7 +206,7 @@ bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id = 0, bool prese
 bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, u16 sprite_id = 0, bool preserve_order = false);
 Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player = 11, s32 elevation_level = 11);
 Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees);
-Vector32 rotate_point(Vector32 anchor, Vector32 point, f64 angle_degrees);
+Vec32 rotate_point(Vec32 anchor, Vec32 point, f64 angle_degrees);
 
 /// @name Output functions
 //////////////////////////////////////////////////////////////// @{
@@ -280,7 +281,7 @@ inline s32 get_angle(Point16 start, Point16 end) {
 	return get_angle(start.x, start.y, end.x, end.y);
 }
 
-inline s32 get_angle(Vector32 start, Vector32 end) {
+inline s32 get_angle(Vec32 start, Vec32 end) {
 	return get_angle(start.x, start.y, end.x, end.y);
 }
 
@@ -295,10 +296,10 @@ inline u32 distance_between(Point16 p1, Point16 p2) {
 }
 
 /// Distance, but rectangular instead of circular (max of x dist and y dist)
-u32 distance_rectangular(s32 x1, s32 y1, s32 x2, s32 y2);
+u32 distance_manhattan_between(s32 x1, s32 y1, s32 x2, s32 y2);
 
-inline u32 distance_rectangular(Point16 p1, Point16 p2) {
-	return distance_rectangular(p1.x, p1.y, p2.x, p2.y);
+inline u32 distance_manhattan_between(Point16 p1, Point16 p2) {
+	return distance_manhattan_between(p1.x, p1.y, p2.x, p2.y);
 }
 
 /// Calculates the X Cartesian coordinate from the given polar coordinates
@@ -325,10 +326,10 @@ inline Point16 clamp_point(Point16 point) {
 	return point;
 }
 
-inline Point16 to_point16(Vector32f vector) {
+inline Point16 to_point16(Vec32f vec) {
 	Point16 point = {};
-	point.x = Clamp(vector.x, 0, g_map_tile_size->width * 32);
-	point.y = Clamp(vector.y, 0, g_map_tile_size->height * 32);
+	point.x = Clamp(vec.x, 0, g_map_tile_size->width * 32);
+	point.y = Clamp(vec.y, 0, g_map_tile_size->height * 32);
 	return point;
 }
 
@@ -388,99 +389,104 @@ inline Box32 clamp_box32(Box32 rect) {
 	return rect;
 }
 
-inline Vector32f direction_vector_from_unit(Unit* unit) {
-	Vector32f vec = {};
-	vec.x = g_angle_distance[unit->current_direction_1].x / 256.0;
-	vec.y = g_angle_distance[unit->current_direction_1].y / 256.0;
-	return vec;
-}
-
-inline Vector32 vector_between(Point16 source, Point16 target) {
-	Vector32 diff = {target.x, target.y};
+inline Vec32 vec_between(Point16 source, Point16 target) {
+	Vec32 diff = {target.x, target.y};
 	diff.x -= source.x;
 	diff.y -= source.y;
 	return diff;
 }
 
-inline Vector32f vectorf_between(Point16 source, Point16 target) {
-	Vector32f diff = {target.x, target.y};
+inline Vec32f vecf_between(Point16 source, Point16 target) {
+	Vec32f diff = {target.x, target.y};
 	diff.x -= source.x;
 	diff.y -= source.y;
 	return diff;
 }
 
-inline Vector32f vectorf_between(Vector32f source, Vector32f target) {
-	Vector32f diff = {target.x, target.y};
+inline Vec32f vecf_between(Vec32f source, Vec32f target) {
+	Vec32f diff = {target.x, target.y};
 	diff.x -= source.x;
 	diff.y -= source.y;
 	return diff;
 }
 
-inline f32 distance_between(Vector32f a, Vector32f b) {
+inline f32 distance_between(Vec32f a, Vec32f b) {
 	return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
 }
 
-inline Vector32f normalized_vector(Vector32 vector) {
-	f32 dist = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
+inline Vec32f normalize_vec(Vec32 vec) {
+	f32 dist = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 	if (!dist) {
 		return {};
 	}
-	return {vector.x / dist, vector.y / dist};
+	return {vec.x / dist, vec.y / dist};
 }
 
-inline Vector32f normalized_vector(Vector32f vector) {
-	f32 dist = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
+inline Vec32f normalize_vec(Vec32f vec) {
+	f32 dist = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 	if (!dist) {
 		return {};
 	}
-	return {vector.x / dist, vector.y / dist};
+	return {vec.x / dist, vec.y / dist};
 }
 
-inline Vector32f normalized_vector_between(Point16 source, Point16 target) {
-	Vector32f diff = {target.x, target.y};
+inline Vec32f norm_vec_between(Point16 source, Point16 target) {
+	Vec32f diff = {target.x, target.y};
 	diff.x -= source.x;
 	diff.y -= source.y;
-	return bw::normalized_vector(diff);
+	return bw::normalize_vec(diff);
 }
 
-inline Vector32f normalized_vector_between(Vector32f source, Vector32f target) {
-	Vector32f diff = {target.x, target.y};
+inline Vec32f norm_vec_between(Vec32f source, Vec32f target) {
+	Vec32f diff = {target.x, target.y};
 	diff.x -= source.x;
 	diff.y -= source.y;
-	return bw::normalized_vector(diff);
+	return bw::normalize_vec(diff);
 }
 
-inline f32 dot_product(Vector32f a, Vector32f b) {
+inline Vec32f unit_facing_dir(Unit* unit) {
+	Vec32f vec = {};
+	vec.x = g_angle_distance[unit->current_direction_1].x / 256.0;
+	vec.y = g_angle_distance[unit->current_direction_1].y / 256.0;
+	return normalize_vec(vec);
+}
+
+inline f32 angle_to_dot(f32 angle) {
+	return cosf(angle / 180 * PI);
+}
+
+inline f32 dot_to_angle(f32 dot) {
+	return acosf(dot) / PI * 180;
+}
+
+inline f32 dot_product(Vec32f a, Vec32f b) {
 	return a.x * b.x + a.y * b.y;
 }
 
-inline bool unit_is_facing_position(Unit* unit, Point16 position) {
-	Vector32f angle = bw::direction_vector_from_unit(unit);
-	Vector32f diff = bw::normalized_vector(bw::vector_between(unit->position, position));
+inline bool unit_is_facing(Unit* unit, Point16 position) {
+	Vec32f angle = bw::unit_facing_dir(unit);
+	Vec32f diff = bw::normalize_vec(bw::vec_between(unit->position, position));
 	f32 dot = bw::dot_product(angle, diff);
-	return dot >= 0.5;
+	return dot >= 0.5; // absolute angle diff <= 60 deg
 }
 
-inline bool unit_is_exposed_to_position(Unit* unit, Point16 position) {
-	Vector32f angle = bw::direction_vector_from_unit(unit);
-	Vector32f diff = bw::normalized_vector(bw::vector_between(unit->position, position));
+inline bool unit_is_exposed_to(Unit* unit, Point16 position) {
+	Vec32f angle = bw::unit_facing_dir(unit);
+	Vec32f diff = bw::normalize_vec(bw::vec_between(unit->position, position));
 	f32 dot = bw::dot_product(angle, diff);
-	return dot <= -0.5;
+	return dot <= -0.5; // absolute angle diff >= 60 deg
 }
 
-inline f32 vector_distance(Vector32 vector) {
-	return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
+inline f32 vec_distance(Vec32 vec) {
+	return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 }
 
-inline f32 vector_distance(Vector32f vector) {
-	return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
+inline f32 vec_distance(Vec32f vec) {
+	return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 }
 
-inline Vector32f unit_direction_vector(Unit* unit) {
-	return {
-		(f32) sin(bw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f),
-		(f32) -cos(bw::bw_angle_to_normal(unit->current_direction_1) * 3.14159f / 180.0f)
-	};
+inline Vec32f vec_perpendicular(Vec32f vec) {
+
 }
 
 //////////////////////////////////////////////////////////////// @}
@@ -883,8 +889,8 @@ void move_camera(Point16 pos);
 bool are_mutual_allies(u32 player1, u32 player2);
 Quad quad_from_line(Point16 from, Point16 to, f32 line_width);
 Quad quad_from_rect(Box16 rect);
-bool sat_collision(Vector32f* a, u32 a_count, Vector32f* b, u32 b_count);
-f32 line_to_point_distance(Vector32f from, Vector32f to, Vector32f point, Vector32f* out_cp);
+bool sat_collision(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count);
+f32 line_to_point_distance(Vec32f from, Vec32f to, Vec32f point, Vec32f* out_cp);
 bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
 void transform_unit(Unit* unit, u16 unit_id);
 void add_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});              // Does NOT calculate overlay offset!

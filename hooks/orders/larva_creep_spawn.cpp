@@ -13,7 +13,7 @@ namespace hooks
 			return;
 		}
 
-		Vector32 coords = {};
+		Vec32 coords = {};
 		if (helper::get_larva_spawn_pos(building, &coords)) {
 			Unit* unit = helper::create_unit(unit_id, coords.x, coords.y, building->player);
 			if (unit) {

@@ -21,24 +21,24 @@ struct Point16 {
 	}
 };
 
-struct Vector32 {
+struct Vec32 {
 	s32 x;
 	s32 y;
 };
 
-struct Vector32f {
+struct Vec32f {
 	f32 x;
 	f32 y;
 };
 
 union Quad {
 	struct {
-		Vector32f top_left;
-		Vector32f top_right;
-		Vector32f bottom_right;
-		Vector32f bottom_left;
+		Vec32f top_left;
+		Vec32f top_right;
+		Vec32f bottom_right;
+		Vec32f bottom_left;
 	};
-	Vector32f corners[4]; // Should be clockwise!
+	Vec32f corners[4]; // Should be clockwise!
 };
 
 union Box16 {
@@ -92,7 +92,7 @@ struct Bounds {
 
 C_ASSERT(sizeof(Point8) == 2);
 C_ASSERT(sizeof(Point16) == 4);
-C_ASSERT(sizeof(Vector32) == 8);
+C_ASSERT(sizeof(Vec32) == 8);
 C_ASSERT(sizeof(Box16) == 8);
 C_ASSERT(sizeof(Box32) == 16);
 C_ASSERT(sizeof(Bounds) == 12);

@@ -111,10 +111,10 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponO
 		launch_pos = make_launch_pos(launch_pos, get_next_bullet_offset(unit, weapon_offsets));
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
-		Vector32f diff = bw::normalized_vector(bw::vector_between(launch_pos, target.pt));
+		Vec32f diff = bw::normalize_vec(bw::vec_between(launch_pos, target.pt));
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 16;
 		max_range += get_correction_distance(unit->position, unit->id, launch_pos, target.pt);
-		Vector32f target_pos = { launch_pos.x + (diff.x * max_range), launch_pos.y + (diff.y * max_range) };
+		Vec32f target_pos = { launch_pos.x + (diff.x * max_range), launch_pos.y + (diff.y * max_range) };
 
 		if (target_pos.x < 0) {
 			target_pos.y = (1 - abs(target_pos.x / (target_pos.x - target.pt.x))) * (target_pos.y - target.pt.y) + target.pt.y;
@@ -174,8 +174,8 @@ Bullet* create_bullet_ex(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u
 }
 
 static Point16 set_target_range(Point16 origin, Point16 point, f32 distance) {
-	Vector32f vector = bw::vectorf_between(origin, point);
-	f32 old_distance = bw::vector_distance(vector);
+	Vec32f vector = bw::vecf_between(origin, point);
+	f32 old_distance = bw::vec_distance(vector);
 
 	vector.x *= distance / old_distance;
 	vector.y *= distance / old_distance;
@@ -1484,7 +1484,7 @@ namespace hooks {
 				} else {
 					max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
 				}
-				Vector32 target_pos = {};
+				Vec32 target_pos = {};
 				target_pos.x = (s32)(parent->position.x + ((max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16));
 				target_pos.y = (s32)(parent->position.y + ((max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16));
 				if (target_pos.x < 0) {

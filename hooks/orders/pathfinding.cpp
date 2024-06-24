@@ -139,7 +139,7 @@ namespace hooks
         search_box.h += dist * 2;
         unit_search_rect(&units, search_box);
 
-        Vector32f repulsion = {};
+        Vec32f repulsion = {};
         bool collides = false;
         if (unit_ext->timers[TimerUseLastRepulsion]) {
             repulsion = unit_ext->last_repulsion;
@@ -162,8 +162,8 @@ namespace hooks
                     collides = true;
                 }
 
-                Vector32f diff = {};
-                diff = bw::normalized_vector(bw::vector_between(target->position, unit->position));
+                Vec32f diff = {};
+                diff = bw::normalize_vec(bw::vec_between(target->position, unit->position));
                 if (abs(diff.x) < 0.001 && abs(diff.y) < 0.001) {
                     continue;
                 }
@@ -172,11 +172,11 @@ namespace hooks
                 repulsion.y += diff.y;
             }
 
-            repulsion = bw::normalized_vector(repulsion);
+            repulsion = bw::normalize_vec(repulsion);
 
             if (abs(repulsion.x) < 0.001 && abs(repulsion.y) < 0.001) {
                 u32 rand_amount = bw::rand_between(0, 255);
-                Vector32 random_repulse = g_angle_distance[rand_amount];
+                Vec32 random_repulse = g_angle_distance[rand_amount];
                 repulsion.x = random_repulse.x / 256.0;
                 repulsion.y = random_repulse.y / 256.0;
             }

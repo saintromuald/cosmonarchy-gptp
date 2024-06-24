@@ -1499,7 +1499,7 @@ namespace helper {
 		return result;
 	}
 
-	void order_interrupt(Unit* unit, u8 order_id, Vector32* pos, Unit* target) {
+	void order_interrupt(Unit* unit, u8 order_id, Vec32* pos, Unit* target) {
 		const u32 func_address = 0x00474C30;
 		static u32 order_id_xd = order_id;
 		__asm {
@@ -3166,7 +3166,7 @@ namespace helper {
 		}
 	}
 
-	bool get_larva_spawn_pos(Unit* unit, Vector32* coords) {
+	bool get_larva_spawn_pos(Unit* unit, Vec32* coords) {
 		const u32 func_address = 0x004E8E10;
 		static b32 return_pre_value;
 		__asm {
@@ -6082,7 +6082,7 @@ namespace helper {
 	}
 
 	// For targeted_order
-	Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vector32* a8, Unit* a9) {
+	Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vec32* a8, Unit* a9) {
 		const u32 func_address = 0x00474B90;
 		s32 a7_xd = a7;
 		u32 a5_xd = a5;
@@ -6119,7 +6119,7 @@ namespace helper {
 		return result;
 	}
 
-	void set_order_target(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vector32* a8, Unit* a9) {
+	void set_order_target(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vec32* a8, Unit* a9) {
 		const u32 func_address = 0x00475470;
 		__asm {
 			PUSHAD

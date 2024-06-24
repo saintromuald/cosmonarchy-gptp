@@ -98,8 +98,8 @@ static bool is_melee_attacker(u32 unit_id) {
 	return get_max_range(unit_id) <= 32;
 }
 
-static void adjust_vector(Vector32f* vector, Unit* unit, Point16 position, s32 value) {
-	Vector32f delta = bw::normalized_vector(bw::vector_between(unit->position, position));
+static void adjust_vector(Vec32f* vector, Unit* unit, Point16 position, s32 value) {
+	Vec32f delta = bw::normalize_vec(bw::vec_between(unit->position, position));
 	delta.x *= value;
 	delta.y *= value;
 	vector->x += delta.x;
@@ -487,10 +487,10 @@ static KitePositions get_kite_positions(Unit* unit) {
 	KitePositions result = {};
 	result.distance = get_max_range(unit->id);
 
-	Vector32f hostile_vector = {};
-	Vector32f forward_vector = {};
-	Vector32f backward_vector = {};
-	Vector32f effect_vector = {};
+	Vec32f hostile_vector = {};
+	Vec32f forward_vector = {};
+	Vec32f backward_vector = {};
+	Vec32f effect_vector = {};
 
 	EntryArray hostiles = {};
 	unit_search_square(&hostiles, unit->position, GroupRadius);
@@ -577,24 +577,24 @@ static KitePositions get_kite_positions(Unit* unit) {
 	}
 
 	if (result.targets_found) {
-		Vector32f forward_pos = forward_vector;
+		Vec32f forward_pos = forward_vector;
 		forward_pos.x += hostile_vector.x;
 		forward_pos.y += hostile_vector.y;
 		forward_pos.x -= effect_vector.x;
 		forward_pos.y -= effect_vector.y;
-		forward_pos = bw::normalized_vector(forward_pos);
+		forward_pos = bw::normalize_vec(forward_pos);
 		forward_pos.x *= MoveRadius;
 		forward_pos.y *= MoveRadius;
 		forward_pos.x += unit->position.x;
 		forward_pos.y += unit->position.y;
 		result.forward_pos = bw::to_point16(forward_pos);
 
-		Vector32f backward_pos = backward_vector;
+		Vec32f backward_pos = backward_vector;
 		backward_pos.x -= hostile_vector.x;
 		backward_pos.y -= hostile_vector.y;
 		backward_pos.x -= effect_vector.x;
 		backward_pos.y -= effect_vector.y;
-		backward_pos = bw::normalized_vector(backward_pos);
+		backward_pos = bw::normalize_vec(backward_pos);
 		backward_pos.x *= MoveRadius;
 		backward_pos.y *= MoveRadius;
 		backward_pos.x += unit->position.x;

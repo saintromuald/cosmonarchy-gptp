@@ -23,11 +23,11 @@ struct Bullet // With several 2023 contributions by DarkenedFantasies
 	/*0x26*/ u8           unknown_0x26;
 	/*0x27*/ u8           flingy_move_control;
 	/*0x28*/ Point16      position;
-	/*0x2C*/ Vector32     halt;
+	/*0x2C*/ Vec32     halt;
 	/*0x34*/ u32          flingy_top_speed;
 	/*0x38*/ u32          current_speed_1;
 	/*0x3C*/ u32          current_speed_2;
-	/*0x40*/ Vector32     current_velocity;
+	/*0x40*/ Vec32     current_velocity;
 	/*0x48*/ u16          flingy_acceleration;
 	/*0x4A*/ u8           current_direction_2;
 	/*0x4B*/ u8           velocity_direction_2;
