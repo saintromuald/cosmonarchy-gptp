@@ -11,7 +11,7 @@ namespace hooks {
 				if (target->status & UnitStatus::IsHallucination) {
 					u8 overlay_size = bw::overlay_size(target);
 					helper::replace_feedback_sprite(target, overlay_size + SpriteId::Feedback_Hit_Small);
-					unit->spend_unit_energy(tech_cost);
+					unit->spend_energy(tech_cost);
 					target->remove();
 					unit->order_to_idle();
 				} else {
@@ -19,8 +19,8 @@ namespace hooks {
 						unit->order_to_idle();
 					} else {
 						target->damage_with(WeaponId::Feedback, target->energy, unit, unit->player, 1, 1);
-						target->spend_unit_energy(target->energy);
-						unit->spend_unit_energy(tech_cost);
+						target->spend_energy(target->energy);
+						unit->spend_energy(tech_cost);
 						helper::play_sound_from_unit(SoundId::Protoss_Darchon_feedback_wav, target, 1, 0);
 
 						if (!target->is_dead()) {

@@ -1732,7 +1732,7 @@ namespace helper {
 	void building_death(Unit* unit, Sprite* sprite);							// 0049FD00
 	Unit* remove_unit_from_lists(Unit* unit);									// 0049E3F0
 	Unit* hidden_units_remove(Unit* unit);							// 0049DE50
-	Unit* clist_remove_used_unit_entry(Unit* unit);								// 0049DEA0
+	Unit* visible_units_remove(Unit* unit);								// 0049DEA0
 	void unit_movement_instant_stop(Unit* unit);								// 0046BF00
 	void progress_flingy(Unit* unit);											// 00495EE0
 	void finish_unit_movement(Unit* unit);										// 0046AD90

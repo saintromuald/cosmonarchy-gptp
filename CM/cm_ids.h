@@ -109,3 +109,4 @@ bool unit_id_is_tiny_unit(u32 unit_id);
 bool unit_id_is_spell(u32 unit_id);
 bool unit_id_has_auto_healing(u32 unit_id);
 bool unit_id_is_valid_for_most_abilities(u32 unit_id);
+bool unit_id_is_hero(u32 unit_id);

@@ -594,6 +594,7 @@
     <ClInclude Include="aise_signal.h" />
     <ClInclude Include="ai_layouts.h" />
     <ClInclude Include="bullet_extender.h" />
+    <ClInclude Include="bwutils.h" />
     <ClInclude Include="BW\bwdata.h" />
     <ClInclude Include="BW\bwhelper.h" />
     <ClInclude Include="BW\Storm.h" />

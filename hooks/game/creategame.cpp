@@ -53,22 +53,22 @@ namespace hooks
 			return 1;
 		if (loadSave() && initSingleplayerHuman())
 		{
-			is_host = 0;
+			g_is_host = 0;
 			result = createGame((s32)&game_data, a2);
 		}
 		else
 		{
-			if (!out_of_game)
+			if (!g_out_of_game)
 			{
 				leaveGame(3);
-				out_of_game = 1;
+				g_out_of_game = 1;
 				setNetTblError(0, 0, 0, a2, 97);
-				if (sc_main_state == 3)
+				if (g_sc_main_state == 3)
 				{
 					g_game_active = 0;
-					next_sc_main_state = 4;
+					g_next_sc_main_state = 4;
 					if (!is_in_replay)
-						replay_end_frame = g_elapsed_time_frames;
+						g_replay_end_frame = g_elapsed_time_frames;
 				}
 				nextLeaveGameMenu(v3);
 			}
@@ -103,7 +103,7 @@ namespace hooks
 		if ( !g_ophelia_enabled )
 		return 1;
 		g_ophelia_enabled = 0;
-		if ( !player_name[0] )
+		if ( !g_player_name[0] )
 		{
 		if ( *g_network_table > 0x47u )
 			v3 = (char *)g_network_table + g_network_table[72];
@@ -116,10 +116,10 @@ namespace hooks
 		sStrCopy(&source, g_current_map_filename, 0x104u);
 		if ( !readMapData((s32)&v21, &source, (s32 *)&v21, 0) )
 		{
-			if ( !out_of_game )
+			if ( !g_out_of_game )
 			{
 			leaveGame(3);
-			out_of_game = 1;
+			g_out_of_game = 1;
 			setNetTblError(0, 0, 0, a1, 97);
 			if ( gwGameMode == 3 )
 			{
@@ -158,15 +158,15 @@ namespace hooks
 			SMemFree(v7, "Starcraft\\SWAR\\lang\\game.cpp", 342, 0);
 			if ( sub_4DBE50() )
 			{
-			is_host = 0;
+			g_is_host = 0;
 			result = CreateGame((s32)&a1, v20);
 			}
 			else
 			{
-			if ( !out_of_game )
+			if ( !g_out_of_game )
 			{
 				leaveGame(3);
-				out_of_game = 1;
+				g_out_of_game = 1;
 				setNetTblError(0, 0, 0, v20, 97);
 				if ( gwGameMode == 3 )
 				{
@@ -182,10 +182,10 @@ namespace hooks
 		}
 		else
 		{
-			if ( !out_of_game )
+			if ( !g_out_of_game )
 			{
 			leaveGame(3);
-			out_of_game = 1;
+			g_out_of_game = 1;
 			setNetTblError(0, 0, 0, v20, 102);
 			if ( gwGameMode == 3 )
 			{
@@ -203,10 +203,10 @@ namespace hooks
 		}
 		return result;
 		}
-		if ( !out_of_game )
+		if ( !g_out_of_game )
 		{
 		leaveGame(3);
-		out_of_game = 1;
+		g_out_of_game = 1;
 		setNetTblError(0, 0, 0, a1, 97);
 		if ( gwGameMode == 3 )
 		{

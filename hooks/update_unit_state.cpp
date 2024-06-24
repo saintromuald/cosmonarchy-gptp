@@ -27,7 +27,7 @@ namespace hooks
 			&& !(unit->status & UnitStatus::CloakingForFree)) {
 			u16 cloaking_energy_cost = 0;
 			if (unit->has_energy(cloaking_energy_cost)) {
-				unit->spend_unit_energy(cloaking_energy_cost); // The function prevents energy consumption if THE GATHERING is enabled
+				unit->spend_energy(cloaking_energy_cost); // The function prevents energy consumption if THE GATHERING is enabled
 				dont_regen = true;
 			} else if (unit->secondary_order_id == OrderId::Cloak) {
 				unit->set_secondary_order(OrderId::Nothing2);  // Supposedly, immediately decloaks the unit.
@@ -37,13 +37,13 @@ namespace hooks
 
 		// Spend energy for Gods Made Flesh
 	//	if (unit_ext->values[ValueGodsMadeFleshActive]) {
-	//		unit->spend_unit_energy(GodsMadeFleshEnergyDrain);
+	//		unit->spend_energy(GodsMadeFleshEnergyDrain);
 	//		dont_regen = true;
 	//	}
 
 		// Spend energy for Phobos Discharge
 		if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] > 0) {
-			unit->spend_unit_energy((200 * 256) / (5 * 24));
+			unit->spend_energy((200 * 256) / (5 * 24));
 			dont_regen = true;
 			if (unit->energy == 0) {
 				unit_ext->values[ValuePhobosDischarge] = 0;
@@ -533,7 +533,7 @@ namespace hooks
 		if (!(unit->status & UnitStatus::Burrowed)) {
 			helper::play_sound_from_unit(sound_id, unit, 1, 0);
 		}
-		if (!g_is_in_replay && unit->player == *g_local_nation_id) {
+		if (!g_is_in_replay && unit->player == g_local_nation_id) {
 			bw::refresh_console();
 		}
 
@@ -675,7 +675,7 @@ namespace hooks
 		}
 
 		if (unit->sprite->flags & SpriteFlags::Selected) {
-			if (!helper::unit_is_standard_and_movable(unit) && *g_client_selection_count > 1 && new_id != UnitId::ZergEgg) {
+			if (!helper::unit_is_standard_and_movable(unit) && g_client_selection_count > 1 && new_id != UnitId::ZergEgg) {
 				helper::update_building_land_unit_selection(0, unit);
 				helper::remove_from_client_selection_3(unit);
 			}

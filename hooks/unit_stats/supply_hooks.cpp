@@ -121,20 +121,18 @@ namespace hooks
 		return result;
 	}
 
-	s32 get_supplies_temp() // 004246D0
-	{
+	s32 get_supplies_temp() { // 004246D0
 		Unit* activeUnit = *g_active_portrait_unit;
 		GroupFlag groupFlags = units_dat::group_flags[activeUnit->id];
-		*g_supplies_available_temp = get_supplies_available(activeUnit->player, RaceId::Terran);
+		g_supplies_available_temp = get_supplies_available(activeUnit->player, RaceId::Terran);
 		u8 player = activeUnit->player;
 		s32 result = g_supplies_used_terran[player];
 		*g_supplies_used_temp = g_supplies_used_terran[player];
 		return result;
 	}
 
-	bool redraw_supply_info() // 00425230 // Guessed name
-	{
-		if (!g_is_in_replay && (u8)(*g_active_portrait_unit)->player != *g_local_nation_id) {
+	bool redraw_supply_info() { // 00425230 // Guessed name
+		if (!g_is_in_replay && (u8)(*g_active_portrait_unit)->player != g_local_nation_id) {
 			return helper::unit_stat_cond_standard();
 		}
 
@@ -145,20 +143,20 @@ namespace hooks
 		if ((u16)g_supplies_available_temp == get_supplies_available(activePlayer, race)) {
 			s32 suppliesVar = g_supplies_used_terran[activePlayer];
 			if ((u16)g_supplies_used_temp == suppliesVar) {
-				return 0;
+				return false;
 			}
 		}
-		return 1;
+		return true;
 	}
 
 	void draw_supply_unit_status(BinDlg* dialog) {
 		Unit* unit = *g_active_portrait_unit;
-		if (g_is_in_replay || unit->player == *g_local_nation_id) {
+		if (g_is_in_replay || unit->player == g_local_nation_id) {
 			get_supplies_temp();
-			if (*g_status_screen_func != 12) {
+			if (g_status_screen_func != 12) {
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -10, -13);
-				*g_status_screen_func = 12;
+				g_status_screen_func = 12;
 			}
 
 			/*
@@ -264,16 +262,16 @@ namespace hooks
 
         GroupFlag group_flags = units_dat::group_flags[unit->id];
         if (group_flags.is_factory) {
-            factories_produced_owned_total[unit->player] += count;
+            g_factories_produced_owned_total[unit->player] += count;
         }
         if (group_flags.is_men) {
-            units_produced_owned_total[unit->player] += count;
+            g_units_produced_owned_total[unit->player] += count;
         }
         if (group_flags.is_building) {
-            structures_produced_owned_total[unit->player] += count;
+            g_structures_produced_owned_total[unit->player] += count;
         }
         if (unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
-            units_produced_owned_total[unit->player] += count;
+            g_units_produced_owned_total[unit->player] += count;
         }
 
         if (g_all_unit_count_table[unit->id].player[unit->player] < 0) {
@@ -298,25 +296,25 @@ namespace hooks
             g_race_supply[RaceId::Terran].provided[player] += count * unit->get_supply_provided();
         }
         if (units_dat::group_flags[unit_id].is_factory) {
-            factories_owned[unit->player] += count;
+            g_factories_owned[unit->player] += count;
         }
         if (units_dat::group_flags[unit_id].is_building) {
-            buildings_owned[unit->player] += count;
+            g_buildings_owned[unit->player] += count;
         }
         if (units_dat::group_flags[unit_id].is_men) {
-            units_produced[unit->player] += count;
+            g_units_produced[unit->player] += count;
         }
         if (increment_scores) {
             if (units_dat::group_flags[unit_id].is_men) {
                 if (!bw::is_any_morph_result(unit_id))  {
-                    units_owned[unit->player] += count;
+                    g_units_owned[unit->player] += count;
                 }
-                unit_score[unit->player] += count;
+                g_unit_score[unit->player] += count;
             } else if (units_dat::group_flags[unit_id].is_building)  {
                 if (!bw::is_zerg_building_morph_result(unit_id)) {
-                    buildings_owned[unit->player] += count;
+                    g_buildings_owned[unit->player] += count;
                 }
-                building_score[unit->player] += count * units_dat::build_score[unit_id];
+                g_building_score[unit->player] += count * units_dat::build_score[unit_id];
             }
         }
         if (g_completed_unit_count_table[unit_id].player[unit->player] < 0)  {
@@ -610,7 +608,7 @@ namespace hooks
 		} while (true);
 
 		g_graphics.reset_stat_res_graphics();
-		u32 local_player = *g_local_nation_id;
+		u32 local_player = g_local_nation_id;
 		Point16 pos = { 434, 3 };//x is dialog->bounds.left of the third row element (from the right), minus 2. -DF
 
 		if (bw::in_replay_or_witness()) {

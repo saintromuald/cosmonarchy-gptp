@@ -692,7 +692,7 @@ namespace hooks
 	}
 
 	void glu_expcampaign_custom_ctrl_id() {
-		*g_ophelia_enabled = 0;
+		g_ophelia_enabled = 0;
 		*g_multiplayer_mode = 0;
 		helper::load_campaign_progress();
 		BinDlg* campaign_dialog = 0; // helper::load_full_menu_dialog("rez\\gluExpCmpgn.bin");

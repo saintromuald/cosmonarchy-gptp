@@ -7,8 +7,7 @@
 namespace hooks
 {
 	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
-	s32 spell_order(s32 default_order_string, Unit* caster, u16 tech_id, s32 range, u16* energy_cost) // 004926D0
-	{
+	s32 spell_order(s32 default_order_string, Unit* caster, u16 tech_id, s32 range, u16* energy_cost) { // 004926D0
 		Unit* order_target = caster->order_target.unit;
 		u16 meme = (u16)default_order_string;
 		if (!tech_id_has_custom_targeting(tech_id)
@@ -36,12 +35,7 @@ namespace hooks
 				}
 				return helper::spell_order_move_towards_target(caster, range);
 			}
-			const char* string = helper::get_stat_txt_string(caster->get_race() + 864);
-			if (string) {
-				if (*g_active_player_id == *g_local_human_id) {
-					helper::set_unit_stat_txt_error_message(string);
-				}
-			}
+			specialist_energy_error(caster);
 			helper::to_idle(caster);
 			return 0;
 		}
@@ -49,8 +43,8 @@ namespace hooks
 		s16 order_string_index = default_order_string - 1;
 		const char* final_string;
 		if (default_order_string) {
-			if (order_string_index < g_stat_txt_buffer->get_string_count()) {
-				final_string = g_stat_txt_buffer->get_string(order_string_index + 1);
+			if (order_string_index < g_stat_txt_buffer.get_string_count()) {
+				final_string = g_stat_txt_buffer.get_string(order_string_index + 1);
 			} else {
 				final_string = "";
 			}
@@ -75,7 +69,7 @@ namespace hooks
 	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
 	bool can_target_spell(u16 tech_id, Unit* target, s16 fow_unit_id, Unit* caster, s16 x, s16 y, u16* error) { // 00492020
 		switch (tech_id) {
-			// Targeting inside; added many new cases
+			// Targeting terrain; added many new cases
 			case TechId::Irradiate:
 			case TechId::EMPShockwave:
 			case TechId::ScannerSweep:
@@ -89,11 +83,12 @@ namespace hooks
 			case TechId::MindTyrantMaelstrom:
 			case TechId::LuminaryAuralAssault:
 			case TechId::HypnagogueThroughTheLookingGlass:
-			case TechId::MatralethParasite: {
+			case TechId::MatralethParasite:
+			case TechId::GoskaLobotomyGrenade: {
 				return true;
 			}
 			default: {
-				if (tech_id != TechId::SpiderMines && tech_id != TechId::UnusedLobotomyMine) {
+				if (tech_id != TechId::SpiderMines) {
 					bool has_target = false;
 					u16 error_stat_string = 0;
 					if (target) {
@@ -201,7 +196,7 @@ namespace hooks
 					u8 race_id = unit->get_race();
 					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + race_id); // Not enough energy
 					if (message) {
-						if (*g_local_nation_id == unit->player && *g_active_player_id == *g_local_human_id) {
+						if (g_local_nation_id == unit->player && *g_active_player_id == *g_local_human_id) {
 							helper::set_unit_stat_txt_error_message(message);
 						}
 					}
@@ -272,7 +267,7 @@ namespace hooks
 							}
 
 							if (!idiot) {
-								unit->spend_unit_energy(spell_cost);
+								unit->spend_energy(spell_cost);
 								u8 cooldown = helper::get_weapon_cooldown(unit, order_weapon_id);
 								unit->spell_cooldown = cooldown;
 								if (unit->id == UnitId::TerranWyvern) {
@@ -342,7 +337,7 @@ namespace hooks
 	{
 		u16 energy_cost;
 		if (helper::spell_order(caster, TechId::DefensiveMatrix, &energy_cost, 8 * 32, 880)) {
-			caster->spend_unit_energy(energy_cost);
+			caster->spend_energy(energy_cost);
 			helper::create_defensive_matrix(caster->order_target.unit);
 			helper::play_sound_from_unit(SoundId::Terran_VESSEL_TVeDef00_WAV, caster, 1, 0);
 			if (caster->order_queue_head) {
@@ -403,7 +398,8 @@ namespace hooks
 			case TechId::MatralethParasite:
 			case TechId::Hallucination:
 			case TechId::YamatoGun:
-			case TechId::Irradiate: {
+			case TechId::Irradiate:
+			case TechId::GoskaLobotomyGrenade: {
 				return false;
 			} break;
 			default: {

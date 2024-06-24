@@ -117,7 +117,7 @@ namespace hooks
 				helper::start_collision_tracking(unit); // Maybe update orders targeting the unit, set repulse for units in surroundings, and some other things?
 
 				// Maybe the landing unit would get excluded from multi-units selection if that could happen in normal Starcraft gameplay? That may be what this function does.
-				if (unit->sprite->flags & SpriteFlags::Selected && *g_client_selection_count > 1)
+				if (unit->sprite->flags & SpriteFlags::Selected && g_client_selection_count > 1)
 				{
 					helper::update_building_land_unit_selection(0, unit);
 				}
@@ -274,7 +274,7 @@ namespace hooks
 	// Hooked for custom advisor handling. -Pr0nogo
 	void play_landing_interrupt_sound(Unit* unit) // 0048F5A0
 	{
-		if (!g_is_in_replay && unit->player == *g_local_nation_id) {
+		if (!g_is_in_replay && unit->player == g_local_nation_id) {
 			AdvisorEvent event_type = AdvisorEvent_LandingInterrupted;
 			switch (unit->get_race()) {
 				case RaceId::Terran:

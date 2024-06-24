@@ -113,7 +113,7 @@ namespace hooks {
 			draw_ui_text(buffer, 7);
 		}
 
-		bool is_replay_or_witness = g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode;
+		bool is_replay_or_witness = g_is_in_replay || g_globals->players[g_local_nation_id].witness_mode;
 		if (!is_replay_or_witness && g_config.show_apm) {
 			char buffer[48] = {};
 			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
@@ -152,7 +152,7 @@ namespace hooks {
 			return;
 		}
 
-		if (*sc_main_state == 4) {
+		if (g_sc_main_state == 4) {
 			return;
 		}
 
@@ -168,7 +168,7 @@ namespace hooks {
 			return;
 		}
 
-		if (!*out_of_game) {
+		if (!g_out_of_game) {
 			u32 error = helper::serr_get_last_error();
 			helper::packet_error_handle(error, 81, "Starcraft\\SWAR\\lang\\net_mgr.cpp", 225, 1);
 		}
@@ -186,20 +186,20 @@ namespace hooks {
 					goto LABEL_15;
 				default:
 					if (a3->order_queue_count < 8u) {
-						if (*g_order_count < 1800) {
+						if (g_order_count < 1800) {
 							helper::queue_new_order((Order*)a5, a1, a4, a3, a7, a8, a2, (Vec32*)a9, (Unit*)a10);
 						} else {
 							u8 v11 = a3->player;
-							if (g_stat_txt_buffer->get_string_count() > 872) {
-								helper::show_stat_txt_to_player((s32)g_stat_txt_buffer->get_string(873), v11);
+							if (g_stat_txt_buffer.get_string_count() > 872) {
+								helper::show_stat_txt_to_player((s32)g_stat_txt_buffer.get_string(873), v11);
 							} else {
 								helper::show_stat_txt_to_player((s32)"", v11);
 							}
 						}
 					} else {
 						u8 v10 = a3->player;
-						if (g_stat_txt_buffer->get_string_count() > 870) {
-							helper::show_stat_txt_to_player((s32)g_stat_txt_buffer->get_string(871), v10);
+						if (g_stat_txt_buffer.get_string_count() > 870) {
+							helper::show_stat_txt_to_player((s32)g_stat_txt_buffer.get_string(871), v10);
 						} else {
 							helper::show_stat_txt_to_player((s32)"", v10);
 						}
@@ -207,7 +207,7 @@ namespace hooks {
 					break;
 			}
 		} else {
-LABEL_15:
+	LABEL_15:
 			helper::set_order_target(a7, a1, a4, a5, (s32)a3, (Unit*)a8, (u16)a2, (Vec32*)a9, (Unit*)a10);
 		}
 	}
@@ -245,7 +245,7 @@ LABEL_15:
 	}
 
 	char create_upgrade_level_tooltip(char* text) {
-		if (!*g_upgrade_level_tooltip) {
+		if (!g_upgrade_level_tooltip) {
 			if (text) {
 				return helper::create_tooltip(text);
 			}
@@ -255,13 +255,13 @@ LABEL_15:
 			return helper::refresh_selection_screen();
 		}
 		const char* description;
-		if (g_stat_txt_buffer->get_string_count() > 794) {
-			description = (char*)g_stat_txt_buffer->get_string(795);
+		if (g_stat_txt_buffer.get_string_count() > 794) {
+			description = (char*)g_stat_txt_buffer.get_string(795);
 		} else {
 			description = "";
 		}
 		char buffer[128];
-		sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)*g_upgrade_level_tooltip);
+		sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)g_upgrade_level_tooltip);
 		bw::printf("%s", buffer);
 		return helper::create_tooltip(buffer);
 	}
@@ -318,7 +318,7 @@ LABEL_15:
 			u32 multiplayer_time = *g_multiplayer_mode ? trigger_time : -1;
 			g_trigger_wait[player_id] = multiplayer_time;
 			g_is_executing_wait[player_id] = 1;
-			if (player_id == *g_local_nation_id) {
+			if (player_id == g_local_nation_id) {
 				helper::trigact_play_wav(trigger_var, a2);
 				Unit* doodad = helper::get_doodad_for_unit_state(LOBYTE(trigger_var->source_location) - 1, trigger_var->type, 17);
 				Unit* doodad_var = doodad; // Probably not necessary. -Pr0nogo
@@ -350,7 +350,7 @@ LABEL_15:
 		char index_ref = 0;
 		if (*g_minimap_state) {
 			color_mod = g_palette_index_reference[20];
-			if (bw::is_allied_to(*g_local_nation_id, player)) {
+			if (bw::is_allied_to(g_local_nation_id, player)) {
 				index_ref = g_palette_index_reference[17];
 			} else {
 				index_ref = color_mod;
@@ -443,7 +443,7 @@ LABEL_15:
 	// Hooked to add features and color Vespene Ridges cyan. -Pr0nogo
 	void draw_all_minimap_boxes() { // 004A4AC0
 		Bitmap* surface = *g_current_surface;
-		u32 player = *g_local_nation_id;
+		u32 player = g_local_nation_id;
 		*g_current_surface = g_minimap_surface_2;
 		*g_minimap_unit_box_count = 0;
 		*g_minimap_box_checksum = 0;
@@ -508,10 +508,10 @@ LABEL_15:
 				if (g_player_table[player].type != PlayerType::Human || g_globals->players[player].witness_mode) {
 					continue;
 				}
-				if (!g_is_in_replay && player == *g_local_nation_id) {
+				if (!g_is_in_replay && player == g_local_nation_id) {
 					continue;
 				}
-				if (!g_is_in_replay && !g_globals->players[*g_local_nation_id].witness_mode && !bw::is_allied_to(player, *g_local_nation_id)) {
+				if (!g_is_in_replay && !g_globals->players[g_local_nation_id].witness_mode && !bw::is_allied_to(player, g_local_nation_id)) {
 					continue;
 				}
 				Point16 camera = g_globals->players[player].camera;
@@ -562,7 +562,7 @@ LABEL_15:
 		if (g_is_placing_building) {
 			return CursorType_Normal;
 		}
-		Unit* unit_at_point = helper::find_unit_at_point(g_mouse->x + *g_move_to_x, *g_move_to_y + g_mouse->y);
+		Unit* unit_at_point = helper::find_unit_at_point(g_mouse->x + g_move_to_x, g_move_to_y + g_mouse->y);
 		if (g_is_targeting) {
 			if (!unit_at_point) {
 				return CursorType_TargetingNoUnit;
@@ -590,7 +590,7 @@ LABEL_15:
 	// Hooked to allow for aggressive unit responses. -Pr0nogo
 	void cmdact_right_click_minimap(DialogEvent* dlg_event) // 004563A0
 	{
-		if (*g_active_portrait_unit && (*g_active_portrait_unit)->player == *g_local_nation_id) {
+		if (*g_active_portrait_unit && (*g_active_portrait_unit)->player == g_local_nation_id) {
 			u32 selection = 0;
 			while (1)
 			{
@@ -823,7 +823,7 @@ LABEL_15:
 		*g_active_portrait_buttonset_id = 228;
 		*g_buttonset_special_buttonset_id = 228;
 		*g_current_buttonset_id = 228;
-		u32 console_offset = aztp[*g_console_index];
+		u32 console_offset = aztp[g_console_index];
 		*g_highlighted_icon = -1;
 
 		char filename;
@@ -841,7 +841,7 @@ LABEL_15:
 		{
 			n_u = 'n';
 		} else {
-			n_u = aztp[*g_console_index];
+			n_u = aztp[g_console_index];
 		}
 
 		sprintf_s(&filename, 260, "rez\\statbtn%c.bin", n_u);
@@ -930,18 +930,18 @@ LABEL_15:
 
 	int __cdecl input_mmb_up() {
 		disable_mouse_scroll = false;
-		*g_move_to_x = Clamp(round(*g_move_to_x / 4.0) * 4, 0, *g_map_width_pixels  - 640);
-		*g_move_to_y = Clamp(round(*g_move_to_y / 4.0) * 4, 0, *g_map_height_pixels - 376);
+		g_move_to_x = Clamp(round(g_move_to_x / 4.0) * 4, 0, *g_map_width_pixels  - 640);
+		g_move_to_y = Clamp(round(g_move_to_y / 4.0) * 4, 0, *g_map_height_pixels - 376);
 		g_input_procs->funcs[3] = (InputProcsFunc*) 0;
 		return helper::cursor_refresh();
 	}
 
 	static void scroll_screen(s32 dx, s32 dy) {
-		*g_move_to_x = Clamp((s32)*g_move_to_x + dx, 0, *g_map_width_pixels  - 640);
-		*g_move_to_y = Clamp((s32)*g_move_to_y + dy, 0, *g_map_height_pixels - 376);
+		g_move_to_x = Clamp((s32)g_move_to_x + dx, 0, *g_map_width_pixels  - 640);
+		g_move_to_y = Clamp((s32)g_move_to_y + dy, 0, *g_map_height_pixels - 376);
 
-		*g_move_to_tile_x = *g_move_to_x >> 5;
-		*g_move_to_tile_y = *g_move_to_y >> 5;
+		g_move_to_tile_x = g_move_to_x >> 5;
+		g_move_to_tile_y = g_move_to_y >> 5;
 
 		helper::update_screen_position();
 	}
@@ -971,79 +971,63 @@ LABEL_15:
 	}
 
 	// Hooked to disable functionality when using space for drag. -Pr0nogo
-	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event) // 0045F290
-	{
+	bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event) { // 0045F290
 		bool result = 0;
-		switch (dlg_event->number_order)
-		{
+		switch (dlg_event->number_order) {
 			case DialogEventType_KeyDown:
 			case DialogEventType_KeyRepeat:
-			case DialogEventType_MouseMove:
-			{
+			case DialogEventType_MouseMove: {
 				result = 0;
 			} break;
-			case DialogEventType_Dialog:
-			{
-				switch (dlg_event->user)
-				{
-					case 0:
-					{
+			case DialogEventType_Dialog: {
+				switch (dlg_event->user) {
+					case 0: {
 						helper::statport_button_press(dialog, dialog);
-						goto LABEL_10;
+						goto Interact;
 					}
-					case 1:
-					{
+					case 1: {
 						helper::statport_alloc();
 						result = helper::generic_dialog_interact(dialog, dlg_event);
 					} break;
-					case 4:
-					{
+					case 4: {
 						result = 1;
 					} break;
-					default:
-					{
-						goto LABEL_10;
+					default: {
+						goto Interact;
 					}
 				}
 			} break;
-			case DialogEventType_Spacebar:
-			{
+			case DialogEventType_Spacebar: {
 			//	if (config.use_spacebar_for_scrolling) {
-				{
-					goto LABEL_15;
-				}
+					goto EarlyExit;
+			//	}
 				goto RespondToPortraitEvent;
 			} break;
 			case DialogEventType_MWheelDown:
 			{
 			//	if (!config.use_spacebar_for_scrolling) {
-				{
 				RespondToPortraitEvent:
 					if (*g_dialog_key)
 					{
 						s8* key_pressed = *g_dialog_key;
 						s8 virtual_key = *(*g_dialog_key);
-						while (virtual_key != dlg_event->virtual_key)
-						{
+						while (virtual_key != dlg_event->virtual_key) {
 							virtual_key = (key_pressed++)[1];
-							if (!virtual_key)
-							{
-								goto LABEL_15;
+							if (!virtual_key) {
+								goto EarlyExit;
 							}
 						}
 						Point16 event_position = { g_last_event_position->x, g_last_event_position->y };
 						helper::move_screen(event_position);
 						result = 1;
-					}
-					else {
-					LABEL_15:
+					} else {
+					EarlyExit:
 						result = 0;
 					}
-				}
+			//	}
 			} break;
-			default:
-			{
-			LABEL_10:
+			default: {
+			Interact:
 				result = helper::generic_dialog_interact(dialog, dlg_event);
 				break;
 			}
@@ -1052,8 +1036,7 @@ LABEL_15:
 	}
 
 	// Hooked to prevent witness pings from showing for non-witnesses. -Pr0nogo
-	char CMDRECV_minimap_ping(char* buffer) // 004BF7A0
-	{
+	char CMDRECV_minimap_ping(char* buffer) { // 004BF7A0
 		u16 pos_x = *(u16*)(buffer + 1);
 		if (pos_x < *g_map_width_pixels)
 		{
@@ -1061,14 +1044,14 @@ LABEL_15:
 			if (pos_y < *g_map_height_pixels)
 			{
 				*buffer = *g_active_nation_id;
-				if (bw::player_is_witness(*g_active_nation_id) && !bw::player_is_witness(*g_local_nation_id)
-				|| !bw::player_is_witness(*g_active_nation_id) &&  bw::player_is_witness(*g_local_nation_id)) {
+				if (bw::player_is_witness(*g_active_nation_id) && !bw::player_is_witness(g_local_nation_id)
+				|| !bw::player_is_witness(*g_active_nation_id) &&  bw::player_is_witness(g_local_nation_id)) {
 					return *buffer;
 				}
 
-				if (bw::is_allied_to(*g_active_nation_id, *g_local_nation_id)
-				||	bw::player_is_witness(*g_active_nation_id) && bw::player_is_witness(*g_local_nation_id)) {
-					*buffer = helper::minimap_ping(pos_x, pos_y, (*g_active_nation_id != *g_local_nation_id) + 17);
+				if (bw::is_allied_to(*g_active_nation_id, g_local_nation_id)
+				||	bw::player_is_witness(*g_active_nation_id) && bw::player_is_witness(g_local_nation_id)) {
+					*buffer = helper::minimap_ping(pos_x, pos_y, (*g_active_nation_id != g_local_nation_id) + 17);
 				}
 			}
 		}
@@ -1076,8 +1059,7 @@ LABEL_15:
 	}
 
 	// Hooked to add config option blocking the toggle. -Pr0nogo
-	void __cdecl show_or_hide_minimap() // 004A4150
-	{
+	void __cdecl show_or_hide_minimap() { // 004A4150
 		if (*g_minimap_draw_neutrals != 1 && *g_hide_minimap_terrain && g_config.can_toggle_minimap_terrain) {
 			Bitmap* current_surface = *g_current_surface;
 			memset(g_minimap_surface_2->buffer, 0, (s16)g_minimap_surface_2->height * (s16)g_minimap_surface_2->width);

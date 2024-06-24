@@ -748,7 +748,7 @@ static void set_ally(u32 a, u32 b, bool ally) {
 		player_vision->flags[a] &= ~(1 << b);
 		player_vision->flags[b] &= ~(1 << a);
 	}
-	if (a == *g_local_nation_id || b == *g_local_nation_id) {
+	if (a == g_local_nation_id || b == g_local_nation_id) {
 		helper::update_alliances();
 	}
 }
@@ -1044,7 +1044,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 				}
 			}
 
-			bw::minimap_ping(spawn_location->pos.x, spawn_location->pos.y, 0, *g_local_nation_id);
+			bw::minimap_ping(spawn_location->pos.x, spawn_location->pos.y, 0, g_local_nation_id);
 			
 			for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
 				if (!threshold.fraud_enabled[other_player] || threshold_config.witness_enabled[other_player]) {

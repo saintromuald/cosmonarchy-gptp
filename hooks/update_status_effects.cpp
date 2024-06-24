@@ -99,7 +99,7 @@ namespace hooks
 		// Redraw console and UI elements
 		if (unit == *g_active_portrait_unit) {
 			if (unit->is_valid_caster()) {
-				if (!bw::is_allied_to(*g_local_nation_id, unit->player)) {
+				if (!bw::is_allied_to(g_local_nation_id, unit->player)) {
 					bw::refresh_console();
 				}
 			}

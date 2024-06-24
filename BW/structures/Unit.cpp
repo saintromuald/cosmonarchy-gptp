@@ -481,7 +481,7 @@ u32 Unit::heal_energy_then_shields(s32 value, Unit* source, bool restore, bool p
 	return heal_shields(heal_energy(value, source), source, restore, proc_flash_shielding);
 }
 
-void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attackingPlayer, s8 direction, u8 damage_divisor) {
+void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attacking_player, s8 direction, u8 damage_divisor) {
 	const u32 func_address = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
 	assert(this);
 	assert(weapon_id < WeaponsIdLimit);
@@ -493,7 +493,7 @@ void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attackingPla
 		PUSHAD
 		MOV EDI, this
 		MOV EAX, damage
-		PUSH attackingPlayer
+		PUSH attacking_player
 		PUSH attacker
 		PUSH direction
 		PUSH damage_divisor
@@ -503,14 +503,7 @@ void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attackingPla
 	}
 }
 
-void Unit::damage_with_custom(
-	s32 damage,
-	s32 armor_pen,
-	Unit* attacker,
-	u8 attacking_player_id,
-	s8 direction,
-	u8 damage_divisor
-) {
+void Unit::damage_with_custom(s32 damage, s32 armor_pen, Unit* attacker, u8 attacking_player_id, s8 direction, u8 damage_divisor) {
 	assert(this);
 
 	bool ignore_armor = false;
@@ -518,20 +511,10 @@ void Unit::damage_with_custom(
 		armor_pen = 0;
 		ignore_armor = true;
 	}
-
-	hooks::weapon_damage_custom(
-		damage,
-		this,
-		armor_pen,
-		attacker,
-		attacking_player_id,
-		direction,
-		damage_divisor,
-		ignore_armor
-	);
+	hooks::weapon_damage_custom(damage, this, armor_pen, attacker, attacking_player_id, direction, damage_divisor, ignore_armor);
 }
 
-void Unit::inflict_damage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction, bool ignore_damage_128_overflow) {
+void Unit::inflict_damage(s32 dmg, Unit* attacker, s32 attacking_player, bool notify, bool shield_overlay, s32 direction, bool ignore_damage_128_overflow) {
 	UnitExt* unit_ext = get_unit_ext(this);
 	auto damage = dmg;
 	s32 shield_reduce_amount = 0;
@@ -555,7 +538,7 @@ void Unit::inflict_damage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool not
 		Point8 offset = shield_lo->get_offset(this->sprite->main_graphic->direction, frame_angle);
 		this->sprite->create_overlay(ImageId::ShieldOverlay, offset.x, offset.y, frame_angle);
 	}
-	damage_hp(damage, attacker, attackingPlayer, notify);
+	damage_hp(damage, attacker, attacking_player, notify);
 }
 
 void Unit::damage_hp(s32 damage, Unit* attacker, s32 attackingPlayer, bool notify) {
@@ -634,9 +617,8 @@ void Unit::reduce_defensive_matrix_hp(s32 amount) {
 		this->remove_overlay(ImageId::DefensiveMatrixFront_Small, ImageId::DefensiveMatrixFront_Large);
 		current_image = this->sprite->images.head;
 
-		while (current_image != nullptr) {
-			if (current_image->id < ImageId::DefensiveMatrixBack_Small
-				|| current_image->id > ImageId::DefensiveMatrixBack_Large) {
+		while (current_image) {
+			if (current_image->id < ImageId::DefensiveMatrixBack_Small || current_image->id > ImageId::DefensiveMatrixBack_Large) {
 				current_image = current_image->link.next;
 			} else {
 				current_image->free();
@@ -724,7 +706,7 @@ void Unit::remove_acid_spores() {
 
 /// Identical to Unit__SpendEnergy @ 0x00491460
 /// May underflow if alone
-void Unit::spend_unit_energy(u32 energy_spent) {
+void Unit::spend_energy(u32 energy_spent) {
 	if (this->energy > energy_spent) {
 		this->energy -= energy_spent;
 	} else {
@@ -1419,4 +1401,9 @@ u8 Unit::get_right_click_action_order() {
 
 UnitExt& Unit::ext() {
 	return *get_unit_ext(this);
+}
+
+bool Unit::has_energy_for(u32 tech_id) {
+	assert(this);
+	return this->energy >= techdata_dat::energy_cost[tech_id] * 256;
 }

@@ -115,7 +115,7 @@ namespace hooks {
 					bw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
 				}
 
-				unit->spend_unit_energy(5 * 256 / 24);
+				unit->spend_energy(5 * 256 / 24);
 				if (unit->energy == 0 || bw::get_generic_rust_value(unit, RustId::CancelRecall)) {
 					bw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
 					unit_ext->values[ValueDidactRecalling] = false;
@@ -167,12 +167,12 @@ namespace hooks {
 			if (!unit->has_energy(energy_cost)) {
 				u8 raceId = unit->get_race();
 				char* message = (char*)g_stat_txt_tbl_new->get_string(864 + raceId);	//"Not enough energy" text
-				if (message && unit->player == *g_local_nation_id && *g_active_player_id == *g_local_human_id) {
+				if (message && unit->player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(message);
 				}
 				unit->order_to_idle();
 			} else {
-				unit->spend_unit_energy(energy_cost);
+				unit->spend_energy(energy_cost);
 				if (unit->order_target.unit) {
 					unit->order_target.pt.x = unit->order_target.unit->position.x;
 					unit->order_target.pt.y = unit->order_target.unit->position.y;

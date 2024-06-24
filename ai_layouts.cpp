@@ -227,10 +227,10 @@ void AiLayouts::update() {
 				unit_box.bottom = placeholder.position.y + bounds.bottom;
 
 				Box16 camera = {};
-				camera.left = *g_move_to_x;
-				camera.top = *g_move_to_y;
-				camera.right = *g_move_to_x + 640;
-				camera.bottom = *g_move_to_y + 400;
+				camera.left = g_move_to_x;
+				camera.top = g_move_to_y;
+				camera.right = g_move_to_x + 640;
+				camera.bottom = g_move_to_y + 400;
 
 				if (unit_box.left <= camera.right && unit_box.right >= camera.left &&
 					unit_box.top <= camera.bottom && unit_box.bottom >= camera.top) {

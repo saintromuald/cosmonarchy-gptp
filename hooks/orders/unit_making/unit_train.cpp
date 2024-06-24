@@ -227,7 +227,7 @@ namespace hooks {
 				play_image_iscript(image, IscriptAnimation::Built);
 			}
 
-			if (!g_is_in_replay && unit->player == *g_local_nation_id) {
+			if (!g_is_in_replay && unit->player == g_local_nation_id) {
 				bw::refresh_console();
 			}
 		} else {

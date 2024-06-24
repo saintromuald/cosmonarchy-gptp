@@ -24,6 +24,7 @@
 
 /// The first nodes in StarCraft's internal linked lists (taken from BWAPI's Offsets.h)
 BW_REF(Unit*,			g_first_visible_unit,			0x00628430);
+BW_REF(Unit*,			g_last_visible_unit,			0x0059CC9C);
 BW_DATA(Unit**,			g_first_hidden_unit,			0x006283EC);	// Includes units in transports/bunkers, worker inside gas buildings, nukes in silos, and units in production.
 BW_DATA(Unit**,			g_last_hidden_unit,				0x00628428);	// Same as above.
 BW_DATA(Bullet**,		g_first_active_bullet,			0x0064DEC4);
@@ -116,8 +117,8 @@ struct UnitsSel {
 };
 BW_DATA(UnitsSel*,		g_client_selection_group,		ccmu_extender.new_client_selection_group);
 BW_DATA(Unit*,			g_client_selection_group_end,	0x00597238);
-BW_DATA(u8*,				g_client_selection_count,		0x0059723D);
-BW_DATA(Point16*,			g_selection_start,				0x0066FF4C);
+BW_REF(u8,				g_client_selection_count,		0x0059723D);
+BW_DATA(Point16*,		g_selection_start,				0x0066FF4C);
 BW_DATA(Box16*,			g_selection_box,				0x0066FF50);
 
 // Screen position relative to the map
@@ -136,13 +137,13 @@ BW_DATA(u32*,				g_mmb_pos_y,            0x006556F4);
 // Booleans indicating which keyboard buttons are held
 // use g_is_keycode_used[VK_param] where VK_param is one of the Virtual-Key Codes of Windows as seen in msdn here: https://msdn.microsoft.com/fr-fr/library/windows/desktop/dd375731%28v=vs.85%29.aspx
 BW_DATA(const b8*, g_is_keycode_used,		0x00596A18);
-BW_DATA(const b8*, g_is_holding_shift,	0x00596A28);
+BW_DATA(const b8*, g_is_holding_shift,		0x00596A28);
 BW_DATA(const b8*, g_is_holding_ctrl,		0x00596A29);
 BW_DATA(const b8*, g_is_holding_alt,		0x00596A2A);
 
 // Maybe used by Map triggers to init a progressive movement toward the corresponding location, see GameImpl::setScreenPosition of BWAPI
-BW_DATA(u32*,		g_move_to_x,			0x0062848C);
-BW_DATA(u32*,		g_move_to_y,			0x006284A8);
+BW_REF(u32,			g_move_to_x,			0x0062848C);
+BW_REF(u32,			g_move_to_y,			0x006284A8);
 
 // Contains various information (names, player types, race types, and associated forces) of each player in the current game
 BW_DATA(Player*,	g_player_table,			0x0057EEE0);
@@ -160,7 +161,7 @@ BW_DATA(u32*,		g_elapsed_time_seconds,		0x0058D6F8);
 BW_DATA(u8*,		g_game_type,				0x00596820);	// Compare with GameType::Enum
 BW_DATA(s32*,		g_active_nation_id,			0x00512678);
 BW_DATA(s32*,		g_active_player_id,			0x0051267C);	// Used by get_active_player_next_selection
-BW_DATA(s32*,		g_local_nation_id,			0x00512684);	// Actually stores the player ID, shared in team games
+BW_REF(s32,			g_local_nation_id,			0x00512684);	// Actually stores the player ID, shared in team games
 BW_DATA(s32*,		g_local_human_id,			0x00512688);	// Invalid in replays, unique even in team games
 BW_DATA(u8*,		g_current_tileset,			0x00596828);	// Tileset of current map - compare with TilesetType::Enum
 BW_DATA(s32*,		g_provider_max_buffer,		0x0057F0D8);
@@ -261,81 +262,81 @@ BW_DATA(DarkMap*,			dark_pcx_image_map, 0x005973A0);
 BW_DATA(u8*,				palette_index_ref,  0x006CEB20);
 
 // For get_response_sfx
-BW_DATA(u32*,			selection_sound_counter,	0x00640548);
-BW_DATA(u32*,			g_last_random_sfx_id,		0x006D5BE0);
+BW_REF(u32,					g_selection_sound_counter,	0x00640548);
+BW_REF(u32,					g_last_random_sfx_id,		0x006D5BE0);
 
 // For load_race_ui
-BW_DATA(u8*,			g_console_index,				0x0057F1E2);
-BW_DATA(u16*,			g_current_music_id,				0x0057F1DE);
-BW_DATA(char*,		g_campaign_first_mission_bw,	0x005122C0);
-BW_DATA(char*,		g_campaign_first_mission,		0x005122BC);
-BW_DATA(u32*,			g_console_race_specific,		0x0051A3B4);
+BW_REF(u8,				g_console_index,				0x0057F1E2);
+BW_REF(u16,				g_current_music_id,				0x0057F1DE);
+BW_REF(char,			g_campaign_first_mission_bw,	0x005122C0);
+BW_REF(char,			g_campaign_first_mission,		0x005122BC);
+BW_REF(u32,				g_console_race_specific,		0x0051A3B4);
 
 // For load_game_create
-BW_DATA(u32*,			is_host,					0x00596888);
-BW_DATA(u8*,			out_of_game,				0x006D5A10);
-BW_DATA(u32*,			sc_main_state,				0x00596904);
-BW_DATA(u8*,			g_game_active,				0x006D11EC);
-BW_DATA(u16*,			next_sc_main_state,			0x0051CE90);
-BW_DATA(u32*,			replay_end_frame,			0x006D0F31);
+BW_REF(u32,				g_is_host,					0x00596888);
+BW_REF(u8,				g_out_of_game,				0x006D5A10);
+BW_REF(u32,				g_sc_main_state,			0x00596904);
+BW_REF(u8,				g_game_active,				0x006D11EC);
+BW_REF(u16,				g_next_sc_main_state,		0x0051CE90);
+BW_REF(u32,				g_replay_end_frame,			0x006D0F31);
 
 // For level_cheat_create
-BW_DATA(u32*,			g_ophelia_enabled,			0x006D11C0);
-BW_DATA(char*,		player_name,				0x0057EEB5);
+BW_REF(u32,				g_ophelia_enabled,			0x006D11C0);
+BW_REF(char,			g_player_name,				0x0057EEB5);
 
 // For update_placement_state_for_placement_box
-BW_DATA(u8*,		g_placing_player,				0x0064088C);
-BW_DATA(u16*,		place_building_x,				0x00640890);
-BW_DATA(u16*,		place_building_y,				0x00640892);
-BW_DATA(u32*,		g_is_placing_addon,				0x00640884);
-BW_DATA(u16*,		g_place_building_unit_id,		0x0064088A);
-BW_DATA(u32*,		g_place_building_base_type,		0x00640888);
+BW_REF(u8,			g_placing_player,				0x0064088C);
+BW_REF(u16,			g_place_building_x,				0x00640890);
+BW_REF(u16,			g_place_building_y,				0x00640892);
+BW_REF(u32,			g_is_placing_addon,				0x00640884);
+BW_REF(u16,			g_place_building_unit_id,		0x0064088A);
+BW_REF(u32,			g_place_building_base_type,		0x00640888);
 
-BW_DATA(u16*,		g_move_to_tile_x,					0x0057F1D0);
-BW_DATA(u16*,		g_move_to_tile_y,					0x0057F1D2);
+BW_REF(u16,			g_move_to_tile_x,				0x0057F1D0);
+BW_REF(u16,			g_move_to_tile_y,				0x0057F1D2);
 
 // For increment_unit_scores_ex
-BW_DATA(u32*,		factories_owned,				0x005820B4); // Array of 12	btw
-BW_DATA(u32*,		units_produced,					0x00581E14); // Array of 12	btw
-BW_DATA(u32*,		structures_built,				0x00581F64); // Array of 12	btw
-BW_DATA(u32*,		unit_score,						0x00581ED4); // Array of 12	btw
-BW_DATA(u32*,		building_score,					0x00582024); // Array of 12	btw
-BW_DATA(u32*,		units_owned,					0x00581E44); // Array of 12	btw
-BW_DATA(u32*,		buildings_owned,				0x00581F94); // Array of 12	btw
+BW_DATA(u32*,		g_factories_owned,				0x005820B4); // Array of 12	btw
+BW_DATA(u32*,		g_units_produced,				0x00581E14); // Array of 12	btw
+BW_DATA(u32*,		g_structures_built,				0x00581F64); // Array of 12	btw
+BW_DATA(u32*,		g_unit_score,					0x00581ED4); // Array of 12	btw
+BW_DATA(u32*,		g_building_score,				0x00582024); // Array of 12	btw
+BW_DATA(u32*,		g_units_owned,					0x00581E44); // Array of 12	btw
+BW_DATA(u32*,		g_buildings_owned,				0x00581F94); // Array of 12	btw
 
 // For increment_unit_scores
-BW_DATA(u32*,		factories_produced_owned_total,	0x00582084); // Array of 12	btw
-BW_DATA(u32*,		structures_produced_owned_total,0x00581F34); // Array of 12	btw
-BW_DATA(u32*,		units_produced_owned_total,		0x00581DE4); // Array of 12	btw
+BW_DATA(u32*,		g_factories_produced_owned_total,	0x00582084); // Array of 12	btw
+BW_DATA(u32*,		g_structures_produced_owned_total,	0x00581F34); // Array of 12	btw
+BW_DATA(u32*,		g_units_produced_owned_total,		0x00581DE4); // Array of 12	btw
 
 // For refresh_screen
-BW_DATA(u32*,		g_place_building_message_id,	0x00640958);
+BW_REF(u32,			g_place_building_message_id,	0x00640958);
 
 // For targeted_order
-BW_DATA(u32*,		g_order_count,					0x00641698);
+BW_REF(u32,				g_order_count,				0x00641698);
 
 // For create_upgrade_level_tooltip
-BW_DATA(u16*,			g_upgrade_level_tooltip,	0x0068C1CC);
-BW_DATA(StringTbl*,	g_stat_txt_buffer,			0x006D1238);
+BW_REF(u16,				g_upgrade_level_tooltip,	0x0068C1CC);
+BW_REF(StringTbl,		g_stat_txt_buffer,			0x006D1238);
 
 struct BufferStr {
 	char buf[260];
 };
 
 // For draw_unit_info
-BW_DATA(u16*,			g_supplies_available_temp,	0x006CA93C);
-BW_DATA(u8*,			g_status_screen_func,		0x0068C1E5);
-BW_DATA(BufferStr*,	g_struct_char,				0x006CA9F8);
+BW_REF(u16,				g_supplies_available_temp,	0x006CA93C);
+BW_REF(u8,				g_status_screen_func,		0x0068C1E5);
+BW_REF(BufferStr,		g_struct_char,				0x006CA9F8);
 
 // For draw_supply_unit_info
-BW_DATA(BufferStr*,	g_struct_char_2,			0x006CAB08);
-BW_DATA(char*,		g_unk_string_char,			0x006CA668);
+BW_DATA(BufferStr*,		g_struct_char_2,			0x006CAB08);
+BW_DATA(char*,			g_unk_string_char,			0x006CA668);
 
 // For draw_wireframe_shield
-BW_DATA(char*,		g_char_buffer,				0x0068C208);
-BW_DATA(char*,		g_byte_shield_string,		0x0068C20A); // count of 22
+BW_DATA(char*,			g_char_buffer,				0x0068C208);
+BW_DATA(char*,			g_byte_shield_string,		0x0068C20A); // count of 22
 BW_DATA(u8*,			g_wireframe_constants,		0x00515280); // count of 40
-BW_DATA(char**,		g_image_draw_palette_index,	0x0050CEC1); // count of 256
+BW_DATA(char**,			g_image_draw_palette_index,	0x0050CEC1); // count of 256
 BW_DATA(u8*,			off_50CE81,					0x0050CE81);
 BW_DATA(u8*,			off_50CE82,					0x0050CE82);
 
@@ -343,7 +344,7 @@ BW_DATA(u8*,			off_50CE82,					0x0050CE82);
 BW_DATA(s32*,			g_selection_group_hp,		ccmu_extender.new_selGroupHp);
 BW_DATA(s16*,			g_ui_energy,				0x006CAC0C);
 BW_DATA(s32*,			g_ui_shields,				0x006CA9EC);
-BW_DATA(char*,		g_redraw_transport_ui,		0x006CA9F0);
+BW_DATA(char*,			g_redraw_transport_ui,		0x006CA9F0);
 
 // For AI_EMPShieldRequirementsProc
 BW_DATA(s32*,			g_temp_hp_shields,			0x00695798);
@@ -355,8 +356,8 @@ BW_DATA(unk_61*,		struct_5140D8,				0x005140D8);
 BW_DATA(unk_62*,		struct_5140E8,				0x005140E8);
 
 // For get_unit_bullet_damage
-BW_DATA(u8*,		g_upgrades_level_sc,		0x0058D2B0);
-BW_DATA(u8*,		g_upgrades_level_bw,		0x0058F2FE);
+BW_DATA(u8*,			g_upgrades_level_sc,		0x0058D2B0);
+BW_DATA(u8*,			g_upgrades_level_bw,		0x0058F2FE);
 
 // For find_next_bounce_target_proc
 BW_DATA(Unit**,		g_bullet_bounce_missile_source,	0x0064EECC);
@@ -1280,9 +1281,6 @@ BW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
 
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);
-
-BW_REF(Unit*,				g_last_active_unit,					0x0059CC9C);
-
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 BW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

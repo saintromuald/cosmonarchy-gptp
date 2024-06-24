@@ -6,8 +6,7 @@
 #include "hooks/interface/select_larva.h"
 #include <hooks/limits/sfx_extender.h>
 
-namespace hooks
-{
+namespace hooks {
 	static void select_larva_type(u32 buttonset, u32 ocsal_buttonset) {
 		Unit* unit = *g_active_portrait_unit;
 		if (!unit) {
@@ -50,10 +49,14 @@ namespace hooks
 		helper::queue_game_command(buffer, sizeof(buffer));
 	}
 
+	static void queue_generic_ability_simple() {
+		queue_generic_ability(0, 0);
+	}
+
 	// Replacement for proc @ 00423660. -iquare
 	void btnsact_use_tech(u16 tech, GrpHead* head) { // 00423F70
 		bool tech_capable_unit = false;
-		bool can_play_local_sound = (*g_active_portrait_unit)->player == *g_local_nation_id && !g_is_in_replay;
+		bool can_play_local_sound = (*g_active_portrait_unit)->player == g_local_nation_id && !g_is_in_replay;
 		
 		// Only taking the first unit has bad implications for toggles, since we toggle based on the first unit's state, which is not guaranteed
 		// to be the same state as all other units in the selection.
@@ -89,9 +92,6 @@ namespace hooks
 			case TechId::TalosSalvage: {
 				helper::issue_tri_target_order(OrderId::TalosSalvage, 0, 0);
 			} break;
-			case TechId::Lockdown: {
-				helper::issue_tri_target_order(OrderId::Lockdown, 0, 0);
-			} break;
 			case TechId::SavantOnhitToggle: {
 				s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
 				if (can_play_local_sound) {
@@ -112,6 +112,9 @@ namespace hooks
 			} break;
 			case TechId::SpiderMines: {
 				helper::issue_tri_target_order(OrderId::PlaceMine, 0, 0);
+			} break;
+			case TechId::GoskaLobotomyGrenade: {
+				helper::issue_tri_target_order(OrderId::Lockdown, 0, 0);
 			} break;
 			case TechId::MadrigalTempoChange: {
 				queue_generic_ability(RustId::CastToggleTempoChange, 1);
@@ -204,6 +207,9 @@ namespace hooks
 			case TechId::LarvalSubmenuSelectControl: {
 				select_larva_type(UnitId::Buttons_LarvaControl, UnitId::Buttons_OcsalLarvaControl);
 			} break;
+			case TechId::StroluumSkryspawn: {
+				queue_generic_ability_simple();
+			} break;
 			case TechId::CancelNewAbility: {
 				Unit* selected = *g_active_portrait_unit;
 				if (selected) {
@@ -219,7 +225,6 @@ namespace hooks
 							queue_generic_ability(RustId::CancelRecall, 1);
 						} break;
 					}
-
 					if (unit_id_can_do_controlled_demolition(selected->id)) {
 						queue_generic_ability(RustId::CancelControlledDemolition, 1);
 					}

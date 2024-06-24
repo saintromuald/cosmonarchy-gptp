@@ -798,33 +798,28 @@ namespace hooks {
 		return result;
 	}
 
-	void orders_nuke_launch(Unit* unit) // 00464730
-	{
+	void orders_nuke_launch(Unit* unit) { // 00464730
 		if (unit->main_order_state >= 5 || unit->connected_unit) {
-			switch (unit->main_order_state)
-			{
-				case 0:
-				{
+			switch (unit->main_order_state) {
+				case 0: {
 					helper::play_sound_from_unit(SoundId::Bullet_TNsFir00_wav, unit, 1, 0);
 					helper::change_movement_target_move_target_2(unit, unit->position.x, units_dat::unit_bounds[UnitId::TerranMorningstar].y);
 					unit->main_order_timer = 90;
 					unit->main_order_state = 1;
 				} break;
-				case 1:
-				{
+				case 1: {
 					if (unit->main_order_timer <= 45 || helper::is_unit_movable(unit)) {
-						u32 sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_MissileLaunch);
+						u32 sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_MissileLaunch);
 						helper::play_sound_from_unit(sound_id, 0, 1, 0);
-						if (g_stat_txt_buffer->get_string_count() > 1046) {
-							helper::show_stat_txt_to_player((s32)g_stat_txt_buffer->get_string(1047), *g_local_nation_id);
+						if (g_stat_txt_buffer.get_string_count() > 1046) {
+							helper::show_stat_txt_to_player((s32)g_stat_txt_buffer.get_string(1047), g_local_nation_id);
 						} else {
-							helper::show_stat_txt_to_player((s32)"", *g_local_nation_id);
+							helper::show_stat_txt_to_player((s32)"", g_local_nation_id);
 						}
 						unit->main_order_state = 2;
 					}
 				} break;
-				case 2:
-				{
+				case 2: {
 					if (!unit->main_order_timer || helper::is_unit_movable(unit)) {
 						helper::hide_unit(unit);
 						unit->connected_unit->connected_unit = unit;
@@ -832,15 +827,13 @@ namespace hooks {
 						unit->main_order_state = 3;
 					}
 				} break;
-				case 3:
-				{
+				case 3: {
 					if (!(unit->movement_flags & MovementFlags_Accelerating)) {
 						helper::play_sprite_iscript(unit->sprite, IscriptAnimation::WarpIn, 1);
 						unit->main_order_state = 4;
 					}
 				} break;
-				case 4:
-				{
+				case 4: {
 					u32 order_signal = unit->order_signal;
 					if (order_signal & 2) {
 						unit->order_signal = order_signal & 0xFD;
@@ -879,8 +872,7 @@ namespace hooks {
 						}
 					}
 				} break;
-				case 5:
-				{
+				case 5: {
 					if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 10)) {
 						unit->order_target.unit = unit;
 						for (Image* image = unit->sprite->images.head; image; image = image->link.next)
@@ -890,8 +882,7 @@ namespace hooks {
 						unit->main_order_state = 6;
 					}
 				} break;
-				case 6:
-				{
+				case 6: {
 					u32 order_signal_2 = unit->order_signal;
 					if (order_signal_2 & 1) {
 						unit->order_signal = order_signal_2 & 0xFE;
@@ -899,8 +890,7 @@ namespace hooks {
 						helper::orders_self_destructing(unit);
 					}
 				} break;
-				default:
-				{
+				default: {
 					return;
 				}
 			}

@@ -45,15 +45,14 @@ bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_diviso
 		&& weapon_id != WeaponId::Custom;
 }
 
-bool irradiate_target(Unit* unit)
-{
+bool irradiate_target(Unit* unit) {
 	return true; // Originally prohibited targeting eggs
 }
 
 namespace hooks
 {
 	static void play_alert(Unit* unit, u32 sound_id) {
-		u32 alert_id = SoundId::AlertZerg - *g_console_index;
+		u32 alert_id = SoundId::AlertZerg - g_console_index;
 		helper::play_sound_from_unit(alert_id, 0, g_options_list->flags & 1, 0);
 		helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);
 
@@ -75,7 +74,7 @@ namespace hooks
 		if (!ignore_alert) {
 			return;
 		}
-		u32 local_player = *g_local_nation_id;
+		u32 local_player = g_local_nation_id;
 		if (unit->player == 11) {
 			return;
 		}
@@ -225,7 +224,7 @@ namespace hooks
 							continue;
 						}
 						bw::create_shield_overlay(data.target, data.direction);
-						unit->spend_unit_energy(data.damage);
+						unit->spend_energy(data.damage);
 						bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
 						ignore_alert = true;
 						unit_attack_notify(unit);
@@ -374,6 +373,10 @@ namespace hooks
 		// Update unit strength data
 		data.target->air_strength = helper::get_unit_strength(data.target, false);
 		data.target->ground_strength = helper::get_unit_strength(data.target, true);
+
+		if (data.weapon_id == WeaponId::Lockdown) {
+			bw::play_sound(weapon_damage_current_bullet->position, SoundId::GoskaGrenadeImpact);
+		}
 	}
 
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
@@ -604,7 +607,7 @@ namespace hooks
 						break;
 					}
 					if (data.target->energy >= 10 * 256) {
-						data.target->spend_unit_energy(10 * 256);
+						data.target->spend_energy(10 * 256);
 
 						u32 damage = data.damage + data.shield_reduce_amount;
 						u32 image_id = analogue_image_id_overwrite(data.weapon_id);
@@ -858,6 +861,9 @@ namespace hooks
 							bw::add_unit_overlay(data.target, ImageId::StellarEnforcementDebuff_Small + bw::get_overlay_offset(data.target->id, true));  // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
 						}
 					} break;
+					case WeaponId::GoskaMedusaRifle: {
+						bw::refresh_debuffs(data.target);
+					}
 				}
 			}
 		}
@@ -950,7 +956,7 @@ namespace hooks
 				}
 
 				u32 sound = bw::rand_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
-				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99) && !g_is_in_replay && data.target->player == *g_local_nation_id) {
+				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99) && !g_is_in_replay && data.target->player == g_local_nation_id) {
 					helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
 				}
 				fatal_deal_damage = false;

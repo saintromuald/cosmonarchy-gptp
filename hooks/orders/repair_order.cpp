@@ -324,165 +324,112 @@ namespace hooks
 	}
 
 	// Hooked to remove right-click error message on harvesting from geysers. -Pr0nogo
-	s32 show_right_click_error_if_needed(Unit* target) // 00455A00
-	{
+	s32 show_right_click_error_if_needed(Unit* target) { // 00455A00
 		s32 sfx_id = -1;
 		s32 text_id = -1;
 		Unit** selected_units = &g_client_selection_group->unit[11];
 		Unit** selected_units_2 = &g_client_selection_group->unit[11];
-		do
-		{
+		do {
 			Unit* unit = *selected_units;
 			if (*selected_units) {
 				u8 action = RightClickActions::NoCommand_AutoAttack;
 				u16 unit_id = unit->id;
-				if (unit_id_is_burrowed_attacker(unit_id) && unit->status & UnitStatus::Burrowed)
-				{
+				if (unit_id_is_burrowed_attacker(unit_id) && unit->status & UnitStatus::Burrowed) {
 					action = RightClickActions::NoMove_NormalAttack;
 				} else {
 					char right_click_order = helper::get_right_click_action_order(unit);
-					if (!right_click_order)
-					{
+					if (!right_click_order) {
 						if (hooks::unit_can_rally(unit)) {
 							right_click_order = RightClickActions::NormalMove_NoAttack;
 						}
 					}
 					action = right_click_order;
 				}
-				if (unit->status & UnitStatus::IsHallucination)
-				{
-					if (action == RightClickActions::Harvest || action == RightClickActions::HarvestAndRepair)
-					{
+				if (unit->status & UnitStatus::IsHallucination) {
+					if (action == RightClickActions::Harvest || action == RightClickActions::HarvestAndRepair) {
 						action = RightClickActions::NormalMove_NormalAttack;
 					}
 				}
 
-				switch (action)
-				{
-				case RightClickActions::NormalMove_NormalAttack:
-					if (!target)
-					{
-						return 1;
-					}
-					if (!helper::is_unit_enemy(*g_active_portrait_unit, target))
-					{
-						return 1;
-					}
-					if (units_dat::base_property[target->id] & UnitProperty::NeutralAccessories)
-					{
-						return 1;
-					}
-					if (helper::unit_can_attack_target(target, unit, 1))
-					{
-						return 1;
-					}
-					text_id = 879;
-					sfx_id = unit->get_race() + 138;
-				case RightClickActions::NoMove_NormalAttack:
-					if (!target)
-					{
-						break;
-					}
-					if (units_dat::base_property[target->id] & UnitProperty::NeutralAccessories)
-					{
-						break;
-					}
-
-					if (helper::unit_can_attack_target(target, unit, 1))
-					{
-						if (helper::is_unit_target_out_of_max_range(unit, target))
-						{
-							text_id = 888;
-						}
-						else
-						{
-							if (!helper::target_is_inside_minimum_range(unit, target))
-							{
-								return 1;
-							}
-							text_id = 889;
-						}
-					} else {
-						text_id = 879;
-					}
-					sfx_id = unit->get_race() + 138;
-				case RightClickActions::Harvest:
-				case RightClickActions::HarvestAndRepair:
-					if (!target)
-					{
-						return 1;
-					}
-					if (units_dat::base_property[target->id] & UnitProperty::NeutralAccessories)
-					{
-						return 1;
-					}
-					if (target->id == UnitId::ResourceVespeneGeyser)
-					{
-					//	sfx_id = unit->get_race() + 1;
-					//	text_id = unit->get_race()  + 893;
-					} else {
-						if (!helper::is_unit_enemy(*g_active_portrait_unit, target))
-						{
-							return 1;
-						}
-						if (units_dat::base_property[target->id] & UnitProperty::NeutralAccessories)
-						{
-							return 1;
-						}
-						if (helper::unit_can_attack_target(target, unit, 1))
-						{
-							return 1;
+				bool is_neutral = target && units_dat::base_property[target->id] & UnitProperty::NeutralAccessories;
+				switch (action) {
+					case RightClickActions::NormalMove_NormalAttack:
+						if (!target || !helper::is_unit_enemy(*g_active_portrait_unit, target) || is_neutral || helper::unit_can_attack_target(target, unit, 1)) {
+							return true;
 						}
 						text_id = 879;
 						sfx_id = unit->get_race() + 138;
+					case RightClickActions::NoMove_NormalAttack:
+						if (!target || is_neutral) {
+							break;
+						}
+
+						if (helper::unit_can_attack_target(target, unit, 1)) {
+							if (helper::is_unit_target_out_of_max_range(unit, target)) {
+								text_id = 888;
+							} else {
+								if (!helper::target_is_inside_minimum_range(unit, target)) {
+									return true;
+								}
+								text_id = 889;
+							}
+						} else {
+							text_id = 879;
+						}
+						sfx_id = unit->get_race() + 138;
+					case RightClickActions::Harvest:
+					case RightClickActions::HarvestAndRepair:
+						if (!target || is_neutral) {
+							return true;
+						}
+						if (target->id == UnitId::ResourceVespeneGeyser) {
+						//	sfx_id = unit->get_race() + 1;
+						//	text_id = unit->get_race()  + 893;
+						} else {
+							if (!helper::is_unit_enemy(*g_active_portrait_unit, target) || is_neutral || helper::unit_can_attack_target(target, unit, 1)) {
+								return true;
+							}
+							text_id = 879;
+							sfx_id = unit->get_race() + 138;
+						}
+						break;
+					default: {
+						return true;
 					}
-					break;
-				default:
-					return 1;
 				}
 			}
 			selected_units = selected_units_2 - 1;
 			--selected_units_2;
 		} while (selected_units_2 >= g_client_selection_group->unit);
-		if (sfx_id != -1)
-		{
-			if (sfx_id)
-			{
-				if (g_options_list->sfx)
-				{
+		if (sfx_id != -1) {
+			if (sfx_id) {
+				if (g_options_list->sfx) {
 					s32 sfx_volume = sfx_dat::volume[sfx_id];
 					u32 max_volume = 99;
-					if (sfx_volume >= 99)
-					{
-						if (sfx_volume >= 0)
-						{
-							if (sfx_volume >= 99)
-							{
+					if (sfx_volume >= 99) {
+						if (sfx_volume >= 0) {
+							if (sfx_volume >= 99) {
 								max_volume = sfx_dat::volume[sfx_id];
 							}
 						} else {
 							max_volume = 0;
 						}
 					}
-					if (*g_use_quiet_sounds)
-					{
+					if (*g_use_quiet_sounds) {
 						max_volume /= 5;
 					}
-					if (max_volume > 10)
-					{
+					if (max_volume > 10) {
 						helper::play_transmission_from_location(sfx_id, max_volume, 0, 0);
 					}
 				}
 			}
 		}
-		if (text_id != -1)
-		{
+		if (text_id != -1) {
 			u32 text_id_zeroed = text_id - 1;
-			if (text_id)
-			{
+			if (text_id) {
 				char* text_string = 0;
-				if (text_id_zeroed < g_stat_txt_buffer->get_string_count()) {
-					text_string = (char*)g_stat_txt_buffer->get_string(text_id_zeroed + 1);
+				if (text_id_zeroed < g_stat_txt_buffer.get_string_count()) {
+					text_string = (char*)g_stat_txt_buffer.get_string(text_id_zeroed + 1);
 				}
 				if (text_string) {
 					if (*g_active_player_id == *g_local_human_id)
@@ -492,10 +439,10 @@ namespace hooks
 						*unit_stat_update_timer = GetTickCount() + 7000;
 						helper::update_text_display(12);
 					}
-					return 0;
+					return false;
 				}
 			}
 		}
-		return 0;
+		return false;
 	}
 }

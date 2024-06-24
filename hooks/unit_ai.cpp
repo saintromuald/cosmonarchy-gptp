@@ -971,27 +971,29 @@ namespace hooks {
 
 	// Hooked to stop this function from iterating for human players. -Pr0nogo
 	void ai_remove_cleric(Unit* unit) { // 004477C0
-		if (unit->id == UnitId::TerranCleric) {
-			u32 player = unit->player;
-			if (player > PlayerLimit) {
-				return;
-			}
-			if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::ComputerDefeated) {
-				return;
-			}
-			Unit* first_cleric = g_aiscript_controller[player].main_medic;
-			if (first_cleric == unit) {
-				Unit* first_unit = first_player_unit->unit[player];
-				first_cleric->link.prev = 0;
-				if (first_unit) {
-					while (first_unit->id != UnitId::TerranCleric) {
-						first_unit = first_unit->player_link.next;
-						if (!first_unit) {
-							return;
-						}
+		if (unit->id != UnitId::TerranCleric) {
+			return;
+		}
+		u32 player = unit->player;
+		if (player > PlayerLimit) {
+			return;
+		}
+		if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::ComputerDefeated) {
+			return;
+		}
+
+		Unit* first_cleric = g_aiscript_controller[player].main_medic;
+		if (first_cleric == unit) {
+			Unit* first_unit = first_player_unit->unit[player];
+			first_cleric->link.prev = 0;
+			if (first_unit) {
+				while (first_unit->id != UnitId::TerranCleric) {
+					first_unit = first_unit->player_link.next;
+					if (!first_unit) {
+						return;
 					}
-					first_cleric->link.prev = first_unit;
 				}
+				first_cleric->link.prev = first_unit;
 			}
 		}
 	}

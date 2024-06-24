@@ -22,3 +22,4 @@ bool play_unit_banter(Unit* victim, u16 speaker_id);
 void rescue_unit(Unit* unit, u32 player);
 bool can_auto_heal(Unit* unit);
 bool unit_can_be_repulsed(Unit* unit);
+void specialist_energy_error(Unit* unit);

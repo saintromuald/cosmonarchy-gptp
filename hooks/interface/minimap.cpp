@@ -422,8 +422,8 @@ namespace hooks {
 
 		if (!*g_minimap_draw_neutrals) {
 			u32 zoom_level = *g_minimap_zoom_level;
-			u32 box_y = (u32)minimap->bounds.top + *g_move_to_y / zoom_level;
-			u32 box_x = (u32)minimap->bounds.left + *g_move_to_x / zoom_level;
+			u32 box_y = (u32)minimap->bounds.top + g_move_to_y / zoom_level;
+			u32 box_x = (u32)minimap->bounds.left + g_move_to_x / zoom_level;
 			
 			//inline and simplification of DrawRectangle @ 0x004A37A0
 			u32 surf_w = ((Bitmap*)(*g_current_surface))->width;
@@ -547,7 +547,7 @@ namespace hooks {
 		u16 pos_y = (*g_mouse).y - (box_height >> 1);
 		helper::get_minimap_cursor_pos(&pos_x, &pos_y);
 
-		if ((pos_x & -8) != *g_move_to_x || (pos_y & -8) != *g_move_to_y) {
+		if ((pos_x & -8) != g_move_to_x || (pos_y & -8) != g_move_to_y) {
 			helper::move_screen({pos_x, pos_y});
 		}
 

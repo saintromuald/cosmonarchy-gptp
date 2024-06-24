@@ -30,16 +30,14 @@ bool is_hostile_or_neutral(u32 player, u32 other_player) {
 }
 
 void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
-	if (g_is_in_replay || g_globals->players[*g_local_nation_id].witness_mode) {
+	if (g_is_in_replay || g_globals->players[g_local_nation_id].witness_mode) {
 		bool ping = true;
 		Point16 position = {};
 		switch (event_type) {
-			case SpectatorEvent_Combat:
-			{
+			case SpectatorEvent_Combat: {
 				position = { unit->position.x, unit->position.y };
 			} break;
-			case SpectatorEvent_Tech:
-			{
+			case SpectatorEvent_Tech: {
 				position = { unit->position.x, unit->position.y };
 			//	helper::play_sound_global(units_dat::sound_yes_first[unit->id]);
 			} break;
@@ -301,7 +299,7 @@ void rescue_unit(Unit* unit, u32 player) {
 	// Audiovisuals
 	if (!bw::in_replay_or_witness()) {
 		unit->sprite->selection_timer = 45;
-		helper::play_sound_from_unit(*g_console_index + 32, unit, 1, 0);
+		helper::play_sound_from_unit(g_console_index + 32, unit, 1, 0);
 	}
 	bw::refresh_console();
 }
@@ -313,7 +311,23 @@ bool can_auto_heal(Unit* unit) {
 
 bool unit_can_be_repulsed(Unit* unit) {
 	if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-		return unit->status & UnitStatus::InAir;
+		if (unit->status & UnitStatus::InAir) {
+			return true;
+		}
+		return false;
 	}
-	return !(unit->status & UnitStatus::Burrowed);
+	if (unit->status & UnitStatus::Burrowed) {
+		return true;
+	}
+	return true;
+}
+
+void specialist_energy_error(Unit* unit) {
+	if (bw::in_replay_or_witness() || *g_active_player_id != *g_local_human_id) {
+		return;
+	}
+	if (const char* string = helper::get_stat_txt_string(unit->get_race() + 864)) {
+		helper::set_unit_stat_txt_error_message(string);
+	}
+
 }

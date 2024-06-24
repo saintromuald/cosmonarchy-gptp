@@ -5661,7 +5661,7 @@ namespace helper {
 	// 0x00401170
 	bool unit_is_owned_by_current_player(Unit* unit) {
 		bool return_value;
-		if (g_is_in_replay != 0 || unit->player != *g_local_nation_id) {
+		if (g_is_in_replay != 0 || unit->player != g_local_nation_id) {
 			return_value = false;
 		} else {
 			return_value = true;
@@ -14934,7 +14934,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* clist_remove_used_unit_entry(Unit* unit) {
+	Unit* visible_units_remove(Unit* unit) {
 		const u32 func_address = 0x0049DEA0;
 		static Unit* result;
 		__asm {

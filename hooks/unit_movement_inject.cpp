@@ -136,7 +136,7 @@ namespace hooks {
 	//	jump_patch(unit_movement_start_path_wrapper,	0x0046BD90, 1);
 		jump_patch(move_towards_wrapper,				0x004EB900, 1);
 	//	jump_patch(unit_movement_initialize_wrapper,	0x0046C320, 4); // Not tested yet
-		jump_patch(refresh_unit_after_move_wrapper,		0x00494160,	2);
+	//	jump_patch(refresh_unit_after_move_wrapper,		0x00494160,	2); // Causes common freeze
 
 	//	jump_patch(play_idle_iscript_patch_978D3,	0x004978D3); // DF - Fix animation bug with acceleration movement flag
 	}

@@ -129,8 +129,8 @@ void orders_zerg_build_self(Unit* building) {
 void cancel_zerg_building(Unit* unit) { // 0045DA40
 	if (unit->status & UnitStatus::Completed || !helper::is_valid_building_morph(unit->build_queue[unit->build_queue_slot])) {
 		helper::refund_building_cost(unit->id, unit->player);
-		unit_score[unit->player] -= units_dat::build_score[UnitId::ZergDroleth]; // TODO: Check if a Gosvileth is the builder and do nothing to score
-		--units_owned[unit->player];
+		g_unit_score[unit->player] -= units_dat::build_score[UnitId::ZergDroleth]; // TODO: Check if a Gosvileth is the builder and do nothing to score
+		--g_units_owned[unit->player];
 
 		if (unit->id == UnitId::ZergExcisant) {
 			Unit* worker = helper::create_unit(unit->create_origin, unit->get_x(), unit->get_y(), unit->player);
@@ -385,14 +385,14 @@ void orders_drone_build(Unit* builder) { // 0045E090
 
 		// @Todo: Tidy this into not being inlined
 		if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
-			helper::display_error_message_id_with_sfx(player, 850, *g_console_index + 147);
+			helper::display_error_message_id_with_sfx(player, 850, g_console_index + 147);
 			helper::set_shadow_y(builder->sprite, 7);
 			helper::refresh_sprite_data(builder->sprite);
 			helper::order_immediate(builder, OrderId::ResetCollision1);
 			helper::force_order_done(builder);
 		}
 		if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
-			helper::display_error_message_id_with_sfx(player, 851, *g_console_index + 150);
+			helper::display_error_message_id_with_sfx(player, 851, g_console_index + 150);
 			helper::set_shadow_y(builder->sprite, 7);
 			helper::refresh_sprite_data(builder->sprite);
 			helper::order_immediate(builder, OrderId::ResetCollision1);
@@ -584,7 +584,7 @@ void orders_morph2(Unit* unit) { // 0045D0D0
 	}
 	if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
 		u32 err_string_id = 850;
-		u32 err_reason = *g_console_index + 0x93;
+		u32 err_reason = g_console_index + 0x93;
 		helper::display_error_message_id_with_sfx(player, err_string_id, err_reason);
 
 		unit->build_queue[unit->build_queue_slot] = UnitId::None;
@@ -593,7 +593,7 @@ void orders_morph2(Unit* unit) { // 0045D0D0
 	}
 	if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
 		u32 err_string_id = 851;
-		u32 err_reason = *g_console_index + 0x96;
+		u32 err_reason = g_console_index + 0x96;
 		helper::display_error_message_id_with_sfx(player, err_string_id, err_reason);
 
 		unit->build_queue[unit->build_queue_slot] = UnitId::None;

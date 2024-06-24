@@ -408,7 +408,7 @@ namespace hooks
 	void input_game_right_mouse_click(DialogEvent* dialog_event) { // 004564E0
 		if (!helper::is_outside_of_game_screen(dialog_event->current.x, dialog_event->current.y)) {
 			u8 local_group_owner = local_selection_group_2[0] ? local_selection_group_2[0]->player : 255;
-			if (local_group_owner == *g_local_nation_id) {
+			if (local_group_owner == g_local_nation_id) {
 				if (*g_active_portrait_unit) {
 					if (helper::unit_is_owned_by_current_player(*g_active_portrait_unit)) {
 						s32 selection_iterator = 0;
@@ -425,10 +425,10 @@ namespace hooks
 							}
 						}
 						if (selection_iterator < SelectionCap) {
-							u32 find_x = *g_move_to_x + dialog_event->current.x;
-							u32 find_y = *g_move_to_y + dialog_event->current.y;
+							u32 find_x = g_move_to_x + dialog_event->current.x;
+							u32 find_y = g_move_to_y + dialog_event->current.y;
 							Unit* unit_at_point = helper::find_unit_at_point(find_x, find_y);
-							if (*g_client_selection_count != 1
+							if (g_client_selection_count != 1
 							|| *g_active_portrait_unit != unit_at_point
 							|| unit_at_point && hooks::unit_can_rally(unit_at_point)) {
 								u32 i; // :(

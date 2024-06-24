@@ -16,64 +16,44 @@ namespace hooks
 		u8 conrace; // cl
 
 		helper::get_race_sound_list(1);
-		if (g_console_index)
-		{
-			if (*g_console_index == 1)
-			{
-				helper::dialog_grp_construct(
-					178,
-					(s32)"Starcraft\\SWAR\\lang\\game.cpp",
-					(s32)"dlgs\\terran.grp",
-					(s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
-				*g_current_music_id = 4;
+		if (g_console_index) {
+			if (g_console_index == 1) {
+				helper::dialog_grp_construct(178, (s32)"Starcraft\\SWAR\\lang\\game.cpp", (s32)"dlgs\\terran.grp", (s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
+				g_current_music_id = 4;
+			} else if (g_console_index == 2) {
+				helper::dialog_grp_construct(183, (s32)"Starcraft\\SWAR\\lang\\game.cpp", (s32)"dlgs\\protoss.grp", (s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
+				g_current_music_id = 7;
 			}
-			else if (*g_console_index == 2)
-			{
-				helper::dialog_grp_construct(
-					183,
-					(s32)"Starcraft\\SWAR\\lang\\game.cpp",
-					(s32)"dlgs\\protoss.grp",
-					(s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
-				*g_current_music_id = 7;
-			}
-		}
-		else
-		{
+		} else {
 			helper::dialog_grp_construct(173, (s32)"Starcraft\\SWAR\\lang\\game.cpp", (s32)"dlgs\\zerg.grp", (s32(__fastcall*)(s32, s32, s32, s32))helper::load_graphic);
-			*g_current_music_id = 1;
+			g_current_music_id = 1;
 		}
 		v0 = *campaign_index;
-		if (campaign_index)
-		{
-			if (*campaign_index > (u16)0x1F)
-			{
-				conrace = g_campaign_first_mission_bw[*g_console_index];
-			}
-			else
-			{
-				conrace = g_campaign_first_mission[*g_console_index];
+		if (campaign_index) {
+			if (*campaign_index > (u16)0x1F) {
+				conrace = g_campaign_first_mission_bw + g_console_index;
+			} else {
+				conrace = g_campaign_first_mission + g_console_index;
 			}
 			v0 = (*campaign_index - conrace) / 3;
 			v4 = (*campaign_index - conrace) % 3;
-			*g_current_music_id += v4;
+			g_current_music_id += v4;
 			return v0;
 		}
-		v1 = *g_console_race_specific;
-		if (*g_console_race_specific == -1)
-		{
+		v1 = g_console_race_specific;
+		if (g_console_race_specific == -1) {
 			v2 = helper::rand_func();
 			v3 = v2;
 			v0 = v2 / 3;
 			v1 = v3 % 3;
 		}
 		v4 = v1 + 1;
-		*g_console_race_specific = v4;
-		if (v4 < 3)
-		{
-			*g_current_music_id += v4;
+		g_console_race_specific = v4;
+		if (v4 < 3) {
+			g_current_music_id += v4;
 			return v0;
 		}
-		*g_console_race_specific = 0;
+		g_console_race_specific = 0;
 		return v0;
 	}
 

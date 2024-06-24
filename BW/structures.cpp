@@ -26,7 +26,7 @@ Unit* UnitIndex::get(bool allow_non_standard_units) {
 
 Unit* UnitIndex::get_for_selection(bool allow_non_standard_units) {
 	Unit* unit = get(allow_non_standard_units);
-	if (unit && unit->player == *g_local_nation_id) {
+	if (unit && unit->player == g_local_nation_id) {
 		return unit;
 	}
 	return 0;

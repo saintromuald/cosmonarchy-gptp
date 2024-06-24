@@ -96,18 +96,13 @@ namespace hooks
 	{
 		AiTown* result = g_ai_town_list[player].first;
 		AiTown* first_town = g_ai_town_list[player].first;
-		if (result)
-		{
-			do
-			{
+		if (result) {
+			do {
 				WorkerAi* first_worker = first_town->workers.first;
-				if (first_town->workers.first)
-				{
-					do
-					{
+				if (first_town->workers.first) {
+					do {
 						Unit* worker = first_worker->parent; // This was null during a crash
-						if (!worker)
-						{
+						if (!worker) {
 							bw::print("null unit in AI_progressBuild");
 							return result;
 						}
@@ -118,7 +113,6 @@ namespace hooks
 						  || build_order_id == OrderId::DroneBuild
 						  || build_order_id == OrderId::DroneStartBuild)
 						{
-							u8* console_var = nullptr;
 							s32 player_var = (u8)player;
 							u16 target_unit_queue = worker->build_queue[worker->build_queue_slot % 5];
 							s32 target_unit_queue2 = target_unit_queue;
@@ -128,23 +122,15 @@ namespace hooks
 							g_ai_vespene_reserve[player_var] = target_queue_gas_cost;
 							if (helper::has_supplies_for_unit(target_unit_queue, player, 1))
 							{
-								if (g_game_minerals[(u8)player] >= (s32)g_ai_minerals_reserve[(u8)player])
-								{
-									if (g_game_vespene[(u8)player] >= (s32)g_ai_vespene_reserve[(u8)player])
-									{
+								if (g_game_minerals[(u8)player] >= (s32)g_ai_minerals_reserve[(u8)player]) {
+									if (g_game_vespene[(u8)player] >= (s32)g_ai_vespene_reserve[(u8)player]) {
 										*minerals -= g_ai_minerals_reserve[player];
 										*gas -= g_ai_vespene_reserve[player];
+									} else {
+										helper::display_error_message_id_with_sfx((u8)player, 851, g_console_index + 150);
 									}
-									else
-									{
-										console_var = g_console_index;
-										helper::display_error_message_id_with_sfx((u8)player, 851, *console_var + 150);
-									}
-								}
-								else
-								{
-									console_var = g_console_index;
-									helper::display_error_message_id_with_sfx((u8)player, 850, *console_var + 147);
+								} else {
+									helper::display_error_message_id_with_sfx((u8)player, 850, g_console_index + 147);
 								}
 							}
 						}
@@ -164,16 +150,13 @@ namespace hooks
 		switch (unit->id) {
 			case UnitId::ZergOvileth:
 			case UnitId::ZergIroleth:
-			case UnitId::ZergOthstoleth:
-			{
+			case UnitId::ZergOthstoleth: {
 				helper::ai_overlord_behavior(unit);
 			} break;
-			case UnitId::TerranComsatStation:
-			{
+			case UnitId::TerranComsatStation: {
 				helper::ai_cast_spell_behavior(unit, 0);
 			} break;
-			case UnitId::TerranAnvil:
-			{
+			case UnitId::TerranAnvil: {
 				helper::ai_nuke_silo_behavior(unit);
 			} break;
 		}
@@ -199,8 +182,7 @@ namespace hooks
 		}
 
 		switch (request_type) {
-			case RequestType::None:
-			{
+			case RequestType::None: {
 				if (!helper::ai_unit_construction_behavior(player, unit, 50))
 				{
 					return true;
@@ -209,36 +191,29 @@ namespace hooks
 				return helper::ai_plan_do_merge_morph(player, unit, recurse);
 			}
 			case RequestType::Military:
-			case RequestType::Guard:
-			{
+			case RequestType::Guard: {
 				return helper::ai_plan_do_merge_morph(player, unit, recurse);
 			}
-			case RequestType::Building:
-			{
+			case RequestType::Building: {
 				return helper::ai_morph_behavior(player, unit, unit->unit_ai);
 			}
-			case RequestType::Worker:
-			{
+			case RequestType::Worker: {
 				helper::ai_train_behavior(unit, unit->unit_ai, player);
 				return true;
 			} break;
-			case RequestType::Upgrade:
-			{
+			case RequestType::Upgrade: {
 				helper::ai_upgrade_behavior(unit, player);
 				return true;
 			} break;
-			case RequestType::Tech:
-			{
+			case RequestType::Tech: {
 				helper::ai_research_behavior(unit, player);
 				return true;
 			} break;
-			case RequestType::Addon:
-			{
+			case RequestType::Addon: {
 				helper::ai_construct_behavior(unit, unit->unit_ai, player);
 				return true;
 			} break;
-			case RequestType::Witness:
-			{
+			case RequestType::Witness: {
 				return helper::ai_make_detectors_behavior(unit, player);
 			} break;
 		}
@@ -250,21 +225,18 @@ namespace hooks
 		Unit* unit_copy = unit;
 		s32 next_build_type = g_aiscript_controller[player].requests->type;
 		Unit* dummy = nullptr;
-		switch (next_build_type)
-		{
+		switch (next_build_type) {
 			case UnitId::ZergGeszithalor:
 			case UnitId::ZergVithrilisk:
 				unit_copy = helper::ai_get_mutalisk_for_morph(player);
-				if (!unit_copy)
-				{
+				if (!unit_copy) {
 					helper::ai_reserve(player, 0);
 					helper::ai_pop_spending_request(player);
 					return 0;
 				}
 				break;
 			case UnitId::ProtossArchon:
-				if (helper::ai_get_high_templar_for_summon(player, &unit, &dummy))
-				{
+				if (helper::ai_get_high_templar_for_summon(player, &unit, &dummy)) {
 					helper::assign_order_with_target(dummy, unit, OrderId::WarpingArchon);
 					helper::assign_order_with_target(unit, dummy, OrderId::WarpingArchon);
 					helper::ai_reserve(player, 1);
@@ -272,8 +244,7 @@ namespace hooks
 					return 0;
 				}
 			case UnitId::ProtossMindTyrant:
-				if (helper::ai_get_dark_templar_for_summon(player, &dummy, &unit))
-				{
+				if (helper::ai_get_dark_templar_for_summon(player, &dummy, &unit)) {
 					helper::assign_order_with_target(dummy, unit, OrderId::WarpingDarkArchon);
 					helper::assign_order_with_target(unit, dummy, OrderId::WarpingDarkArchon);
 					helper::ai_reserve(player, 1);
@@ -285,8 +256,7 @@ namespace hooks
 				return 0;
 			case UnitId::ZergLakizilisk:
 				unit_copy = helper::AI_GetHydraliskForMorph(player);
-				if (!unit_copy)
-				{
+				if (!unit_copy) {
 					helper::ai_reserve(player, 0);
 					helper::ai_pop_spending_request(player);
 					return 0;
@@ -294,8 +264,7 @@ namespace hooks
 				break;
 		}
 
-		if (!helper::is_unit_id_race_equal_to_unit_race(next_build_type, unit_copy) || helper::create_unit_allowed(next_build_type, unit_copy, player) != 1)
-		{
+		if (!helper::is_unit_id_race_equal_to_unit_race(next_build_type, unit_copy) || helper::create_unit_allowed(next_build_type, unit_copy, player) != 1) {
 			if (*g_last_internal_error == 2
 			  || *g_last_internal_error == 23
 			  || *g_last_internal_error == 21
@@ -304,62 +273,49 @@ namespace hooks
 			{
 				helper::ai_reserve(player, 0);
 				helper::ai_pop_spending_request(player);
-				if (!boolSomething)
-				{
+				if (!boolSomething) {
 					helper::ai_perform_task(unit);
 				}
 				return 0;
 			}
-			if (*g_last_internal_error == 13)
-			{
+			if (*g_last_internal_error == 13) {
 				helper::ai_reserve(player, 0);
 				helper::ai_pop_spending_request(player);
-				if (!boolSomething)
-				{
+				if (!boolSomething) {
 					helper::ai_perform_task(unit);
 				}
 				return 0;
 			}
 		}
 
-		if (!helper::has_resources_for_unit(next_build_type, player))
-		{
-			if ((g_aiscript_controller[player].ai_flags.is_use_map_settings) == 0)
-			{
+		if (!helper::has_resources_for_unit(next_build_type, player)) {
+			if ((g_aiscript_controller[player].ai_flags.is_use_map_settings) == 0) {
 				helper::ai_reserve(player, 0);
 				helper::ai_pop_spending_request(player);
-				if (!boolSomething)
-				{
+				if (!boolSomething) {
 					helper::ai_perform_task(unit);
 				}
 			}
 			return 0;
 		}
 
-		if (helper::ai_isnt_at_define_max(player, next_build_type))
-		{
+		if (helper::ai_isnt_at_define_max(player, next_build_type)) {
 			helper::ai_reserve(player, 0);
 			helper::ai_pop_spending_request(player);
 			return 0;
 		}
 
-		if (unit == unit_copy)
-		{
+		if (unit == unit_copy) {
 			u32 requested_build_id = helper::ai_get_request_build_type(player);
-			if (!helper::ai_train_unit(unit_copy, next_build_type, requested_build_id, g_aiscript_controller[player].requests->value))
-			{
+			if (!helper::ai_train_unit(unit_copy, next_build_type, requested_build_id, g_aiscript_controller[player].requests->value)) {
 				return 0;
 			}
-		}
-		else
-		{
-			if (!helper::has_money_can_make(unit_copy, next_build_type))
-			{
+		} else {
+			if (!helper::has_money_can_make(unit_copy, next_build_type)) {
 				return 0;
 			}
 			helper::remove_unit_ai(unit_copy, 0);
-			if (helper::ai_get_request_build_type(player) == 2)
-			{
+			if (helper::ai_get_request_build_type(player) == 2) {
 				/*
 				BuildingAi* unitAI = (BuildingAi*)g_aiscript_controller[player].requests->val;
 				mainTownTown = unitAI->town;
@@ -369,30 +325,24 @@ namespace hooks
 				unitAI->town = unitAIQueues;
 				unit_copy->pAI = unitAI;
 				*/
-			}
-			else
-			{
+			} else {
 				helper::add_military_ai((AiRegion*)g_aiscript_controller[player].requests->value, unit_copy, 1);
 			}
 		}
 
 		helper::ai_reserve(player, 1);
 		helper::ai_pop_spending_request(player);
-		if (bw::is_conventional_unit_morph_source(unit_copy->id))
-		{
+		if (bw::is_conventional_unit_morph_source(unit_copy->id)) {
 			helper::issue_order_targeting_nothing(unit_copy, OrderId::MorphUnit);
 			return 1;
-		}
-		else
-		{
+		} else {
 			helper::set_secondary_order(unit_copy, OrderId::TrainUnit);
 			return 1;
 		}
 	}
 
 	// Hooked to add more transport calls and hopefully improve AI defense logic. -Pr0nogo
-	void ai_train_defensive_military(u8 player_id) // 0043F990
-	{
+	void ai_train_defensive_military(u8 player_id) { // 0043F990
 		u32 region_count;
 		s32 v2;
 		u8 v3;
@@ -1190,11 +1140,11 @@ namespace hooks
 		g_ai_supply_reserved[player] = 0;
 		// Originally also checked supplies.
 		if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
-			helper::display_error_message_id_with_sfx(player, 850, *g_console_index + 147);
+			helper::display_error_message_id_with_sfx(player, 850, g_console_index + 147);
 			return false;
 		}
 		if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
-			helper::display_error_message_id_with_sfx(player, 851, *g_console_index + 150);
+			helper::display_error_message_id_with_sfx(player, 851, g_console_index + 150);
 			return false;
 		}
 		if (g_aiscript_controller[player].minerals_available < g_ai_minerals_reserve[player]

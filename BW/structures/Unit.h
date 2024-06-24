@@ -185,29 +185,28 @@ struct Unit : public UnitLayout
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.
 	void damage_with(
-		u8 weapon_id,              ///< weapons.dat ID to use.
-		s32 damage = -1,			 ///< Amount of damage dealt to this unit. -1 = inherit from weapon_id
-		Unit* attacker = 0,   ///< Attacking unit (for increasing kill count)
-		u8 attacking_player_id = -1,  ///< Attacking player (for increasing kill score)
-		s8 direction = 0,          ///< Attacked direction (for shield flicker overlays)
-		u8 damage_divisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
+		u8 weapon_id,				///< weapons.dat ID to use.
+		s32 damage = -1,			///< Amount of damage dealt to this unit. -1 = inherit from weapon_id
+		Unit* attacker = 0,			///< Attacking unit (for increasing kill count)
+		u8 attacking_player = -1,	///< Attacking player (for increasing kill score)
+		s8 direction = 0,			///< Attacked direction (for shield flicker overlays)
+		u8 damage_divisor = 1		///< Damage divisor (for splash damage / glave wurm calculations)
 	);
 
 	void damage_with_custom(
 		s32 damage,
-		s32 armor_pen = -1,		// -1 = ignore all armor
+		s32 armor_pen = -1,			// -1 = ignore all armor
 		Unit* attacker = 0,
-		u8 attacking_player_id = -1,
+		u8 attacking_player = -1,
 		s8 direction = 0,
 		u8 damage_divisor = 1
 	);
 
 	/// Deals damage directly to unit HP, killing it if possible.
-	void damage_hp(s32 damage, Unit* attacker = nullptr,
-		s32 attackingPlayer = -1, bool notify = true);
+	void damage_hp(s32 damage, Unit* attacker = nullptr, s32 attacking_player = -1, bool notify = true);
 
 	/// Deals damage to shields and hp
-	void inflict_damage(s32 damage, Unit* attacker = nullptr, s32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, s32 direction = 0, bool ignore_damage_128_overflow = false);
+	void inflict_damage(s32 damage, Unit* attacker = nullptr, s32 attacking_player = -1, bool notify = true, bool shield_overlay = false, s32 direction = 0, bool ignore_damage_128_overflow = false);
 
 	/// Reduces Defensive Matrix by @p amount, removing it if possible.
 	void reduce_defensive_matrix_hp(s32 amount);
@@ -233,7 +232,7 @@ struct Unit : public UnitLayout
 	void remove_acid_spores();
 
 	/// Spend an amount of energy, if no THE GATHERING cheat.
-	void spend_unit_energy(u32 energy);
+	void spend_energy(u32 energy);
 	void add_unit_energy(u32 energy);
 	void add_unit_energy_capped(u32 energy, u32 max);
 
@@ -386,6 +385,7 @@ struct Unit : public UnitLayout
 	}
 
 	struct UnitExt& ext();
+	bool has_energy_for(u32 tech_id);
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

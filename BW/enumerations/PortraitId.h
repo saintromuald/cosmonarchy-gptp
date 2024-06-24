@@ -191,6 +191,12 @@ namespace PortraitId {
 		Hypnagogue					= 179,
 		Apostle						= 180,
 
+		Goska						= 250,
+		Stroluum					= 251,
+		Tuzor						= 252,
+		Gorn						= 253,
+
+
 		/*0xFFFF*/	None = 0xFFFF
 	};
 }

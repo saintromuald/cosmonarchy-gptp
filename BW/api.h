@@ -9,6 +9,7 @@
 #include <unit_search.h>
 #include <source_location>
 #include <numbers>
+#include "bwutils.h"
 
 #include "CM/cm.h"
 

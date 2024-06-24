@@ -1048,7 +1048,8 @@ bool weapon_id_is_incremental(u32 weapon_id) {
 bool unit_id_has_proximity_cloak(u32 unit_id) {
 	return unit_id == UnitId::TerranEidolon
 		|| unit_id == UnitId::TerranWraith
-		|| unit_id == UnitId::TerranSundog;
+		|| unit_id == UnitId::TerranSundog
+		|| unit_id == UnitId::Goska;
 }
 
 bool unit_id_is_ridge_refinery(u32 unit_id) {
@@ -1252,8 +1253,12 @@ bool unit_id_has_auto_healing(u32 unit_id) {
 
 bool unit_id_is_valid_for_most_abilities(u32 unit_id) {
 	return unit_id != UnitId::ZergLarva
-		|| unit_id != UnitId::ZergOcsalLarva
-		|| unit_id != UnitId::ZergEgg
-		|| unit_id != UnitId::ZergCocoon
-		|| unit_id != UnitId::ProtossSteward;
+		&& unit_id != UnitId::ZergOcsalLarva
+		&& unit_id != UnitId::ZergEgg
+		&& unit_id != UnitId::ZergCocoon
+		&& unit_id != UnitId::ProtossSteward;
+}
+
+bool unit_id_is_hero(u32 unit_id) {
+	return unit_id == UnitId::Goska || unit_id == UnitId::Stroluum;
 }

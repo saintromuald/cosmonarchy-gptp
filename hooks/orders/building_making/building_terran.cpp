@@ -325,16 +325,16 @@ namespace hooks
 			auto x = g_mouse->x;
 			auto mouse_pos = Point16{ (u16)g_mouse->x, (u16)g_mouse->y };
 			if (helper::init_placement_box_pos(&mouse_pos)) {
-				*g_place_building_message_id = helper::update_placement_state_for_placement_box();
+				g_place_building_message_id = helper::update_placement_state_for_placement_box();
 				helper::refresh_layers_3_and_4();
 				Point16 buildPoint;
 				buildPoint.x = x;
 				buildPoint.y = y;
 				helper::unk_building_placement_related(1, &buildPoint);
-				if (*g_is_placing_addon) {
-					u32 unit_id = *g_place_building_unit_id - UnitId::TerranMinistry;
+				if (g_is_placing_addon) {
+					u32 unit_id = g_place_building_unit_id - UnitId::TerranMinistry;
 					Point16 addon_point = { units_dat::addon_placement[unit_id].x , units_dat::addon_placement[unit_id].y };
-					bw::adjust_addon_coordinates(*g_place_building_unit_id, 0, &addon_point.x, &addon_point.y);
+					bw::adjust_addon_coordinates(g_place_building_unit_id, 0, &addon_point.x, &addon_point.y);
 					helper::unk_building_placement_related(0, &addon_point);
 				}
 				result = helper::refresh_layers_3_and_4();
@@ -385,11 +385,11 @@ namespace hooks
 						*/
 					} else if (!errored) {
 						errored = true;
-						helper::display_error_message_id_with_sfx(player, 851, g_console_index[150]);
+						helper::display_error_message_id_with_sfx(player, 851, g_console_index + 150);
 					}
 				} else if (!errored) {
 					errored = true;
-					helper::display_error_message_id_with_sfx(player, 850, g_console_index[147]);
+					helper::display_error_message_id_with_sfx(player, 850, g_console_index + 147);
 				}
 			}
 		}
@@ -397,13 +397,13 @@ namespace hooks
 
 	// Hooked to play the correct new_sound when Taloses complete a structure. -Pr0nogo
 	void play_building_complete_sound(Unit* unit) { // 0048F310
-		if (!g_is_in_replay && unit->player == *g_local_nation_id) {
+		if (!g_is_in_replay && unit->player == g_local_nation_id) {
 			u32 race = unit->get_race();
 			switch (race) {
 				case RaceId::Zerg: {
 					u32 sound_id = 0;
 					if (unit_id_is_tech_tier_structure(unit->id)) {
-						sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
+						sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_TechUpComplete);
 					}
 					if (unit->create_origin == UnitId::ZergDroleth) {
 						if (sound_id) {
@@ -430,7 +430,7 @@ namespace hooks
 					UnitExt* builder_ext = get_unit_ext(unit);
 					u32 sound_id = 0;
 					if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-						sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_AddonComplete);
+						sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_AddonComplete);
 						if (!sound_id) {
 							sound_id = SoundId::Terran_Advisor_TAdUpd03_WAV;
 						}
@@ -439,7 +439,7 @@ namespace hooks
 					}
 
 					if (unit_id_is_tech_tier_structure(builder_ext->values[ValueTerranConstruction])) {
-						sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_TechUpComplete);
+						sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_TechUpComplete);
 					}
 
 					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
@@ -447,7 +447,7 @@ namespace hooks
 				} break;
 				case RaceId::Protoss:
 				default: {
-					u32 sound_id = bw::get_advisor_sound_from_event_type(*g_local_nation_id, AdvisorEvent_StructureComplete_P);
+					u32 sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_StructureComplete_P);
 					helper::play_sound_from_unit(sound_id, unit, 1, 99);
 					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
 				} break;
@@ -495,13 +495,13 @@ namespace hooks
 			g_ai_vespene_reserve[player] = units_dat::vespene_cost[addon_id];
 			if (g_game_minerals[player] < g_ai_minerals_reserve[player])
 			{
-				helper::display_error_message_id_with_sfx(player, 850, *g_console_index + 147);
+				helper::display_error_message_id_with_sfx(player, 850, g_console_index + 147);
 				helper::to_idle(unit);
 				return;
 			}
 			if (g_game_vespene[player] < g_ai_vespene_reserve[player])
 			{
-				helper::display_error_message_id_with_sfx(player, 851, *g_console_index + 150);
+				helper::display_error_message_id_with_sfx(player, 851, g_console_index + 150);
 				helper::to_idle(unit);
 				return;
 			}
@@ -630,9 +630,8 @@ namespace hooks
 	}
 
 	// Hooked to add custom advisor handling. -Pr0nogo
-	void play_addon_detach_sound(Unit* unit) // 0048F8A0
-	{
-		if (!g_is_in_replay && unit->player == *g_local_nation_id) {
+	void play_addon_detach_sound(Unit* unit) { // 0048F8A0
+		if (!g_is_in_replay && unit->player == g_local_nation_id) {
 			u32 sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_AbandonAddon);
 			helper::play_sound_from_unit(sound_id, unit, (g_options_list->flags >> 2) & 1, 99);
 			helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (*g_audio_something / 1000), 1, 130);
