@@ -312,107 +312,35 @@ s32 get_polar_x(s32 distance, u8 angle);
 s32 get_polar_y(s32 distance, u8 angle);
 
 inline Point16 clamp_point(Point16 point) {
-	if (point.x < 0) {
-		point.x = 0;
-	} else if (point.x > g_map_tile_size->width * 32) {
-		point.x = g_map_tile_size->width * 32;
-	}
-
-	if (point.y < 0) {
-		point.y = 0;
-	} else if (point.y > g_map_tile_size->height * 32) {
-		point.y = g_map_tile_size->height * 32;
-	}
-
-	return point;
+	return {
+		std::clamp<u16>(point.x, 0, g_map_tile_size->width * 32),
+		std::clamp<u16>(point.y, 0, g_map_tile_size->height * 32),
+	};
 }
 
 inline Point16 to_point16(Vec32f vec) {
-	Point16 point = {};
-	point.x = Clamp(vec.x, 0, g_map_tile_size->width * 32);
-	point.y = Clamp(vec.y, 0, g_map_tile_size->height * 32);
-	return point;
+	return {
+        (u16)std::clamp<f32>(vec.x, 0, g_map_tile_size->width * 32),
+        (u16)std::clamp<f32>(vec.y, 0, g_map_tile_size->height * 32),
+	};
 }
 
 inline Box16 clamp_box16(Box16 rect) {
-	if (rect.left < 0) {
-		rect.left = 0;
-	} else if (rect.left > g_map_tile_size->width * 32) {
-		rect.left = g_map_tile_size->width * 32;
-	}
-
-	if (rect.right < 0) {
-		rect.right = 0;
-	} else if (rect.right > g_map_tile_size->width * 32) {
-		rect.right = g_map_tile_size->width * 32;
-	}
-
-	if (rect.top < 0) {
-		rect.top = 0;
-	} else if (rect.top > g_map_tile_size->height * 32) {
-		rect.top = g_map_tile_size->height * 32;
-	}
-
-	if (rect.bottom < 0) {
-		rect.bottom = 0;
-	} else if (rect.bottom > g_map_tile_size->height * 32) {
-		rect.bottom = g_map_tile_size->height * 32;
-	}
-
-	return rect;
+	return {
+		std::clamp<s16>(rect.left, 0, g_map_tile_size->width * 32),
+		std::clamp<s16>(rect.right, 0, g_map_tile_size->width * 32),
+		std::clamp<s16>(rect.top, 0, g_map_tile_size->height * 32),
+		std::clamp<s16>(rect.bottom, 0, g_map_tile_size->height * 32),
+	};
 }
 
 inline Box32 clamp_box32(Box32 rect) {
-	if (rect.left < 0) {
-		rect.left = 0;
-	} else if (rect.left > g_map_tile_size->width * 32) {
-		rect.left = g_map_tile_size->width * 32;
-	}
-
-	if (rect.right < 0) {
-		rect.right = 0;
-	} else if (rect.right > g_map_tile_size->width * 32) {
-		rect.right = g_map_tile_size->width * 32;
-	}
-
-	if (rect.top < 0) {
-		rect.top = 0;
-	} else if (rect.top > g_map_tile_size->height * 32) {
-		rect.top = g_map_tile_size->height * 32;
-	}
-
-	if (rect.bottom < 0) {
-		rect.bottom = 0;
-	} else if (rect.bottom > g_map_tile_size->height * 32) {
-		rect.bottom = g_map_tile_size->height * 32;
-	}
-
-	return rect;
-}
-
-inline Vec32 vec_between(Point16 source, Point16 target) {
-	Vec32 diff = {target.x, target.y};
-	diff.x -= source.x;
-	diff.y -= source.y;
-	return diff;
-}
-
-inline Vec32f vecf_between(Point16 source, Point16 target) {
-	Vec32f diff = {target.x, target.y};
-	diff.x -= source.x;
-	diff.y -= source.y;
-	return diff;
-}
-
-inline Vec32f vecf_between(Vec32f source, Vec32f target) {
-	Vec32f diff = {target.x, target.y};
-	diff.x -= source.x;
-	diff.y -= source.y;
-	return diff;
-}
-
-inline f32 distance_between(Vec32f a, Vec32f b) {
-	return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
+	return {
+		std::clamp<s32>(rect.left, 0, g_map_tile_size->width * 32),
+		std::clamp<s32>(rect.right, 0, g_map_tile_size->width * 32),
+		std::clamp<s32>(rect.top, 0, g_map_tile_size->height * 32),
+		std::clamp<s32>(rect.bottom, 0, g_map_tile_size->height * 32),
+	};
 }
 
 inline Vec32f normalize_vec(Vec32 vec) {
@@ -431,32 +359,59 @@ inline Vec32f normalize_vec(Vec32f vec) {
 	return {vec.x / dist, vec.y / dist};
 }
 
+inline Vec32 vec_between(Point16 source, Point16 target) {
+	return {
+		target.x - source.x,
+		target.y - source.y,
+	};
+}
+
+inline Vec32f vecf_between(Point16 source, Point16 target) {
+	return {
+		(f32)target.x - (f32)source.x,
+		(f32)target.y - (f32)source.y,
+	};
+}
+
+inline Vec32f vecf_between(Vec32f source, Vec32f target) {
+	return {
+		target.x - source.x,
+		target.y - source.y,
+	};
+}
+
+inline Vec32f dir_between(Point16 source, Point16 target) {
+	return normalize_vec(vecf_between(source, target));
+}
+
+inline Vec32f dir_between(Vec32f source, Vec32f target) {
+	return normalize_vec(vecf_between(source, target));
+}
+
+inline f32 distance_between(Vec32f a, Vec32f b) {
+	return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
+}
+
 inline Vec32f norm_vec_between(Point16 source, Point16 target) {
-	Vec32f diff = {target.x, target.y};
-	diff.x -= source.x;
-	diff.y -= source.y;
-	return bw::normalize_vec(diff);
+	return normalize_vec(vecf_between(source, target));
 }
 
 inline Vec32f norm_vec_between(Vec32f source, Vec32f target) {
-	Vec32f diff = {target.x, target.y};
-	diff.x -= source.x;
-	diff.y -= source.y;
-	return bw::normalize_vec(diff);
+	return normalize_vec(vecf_between(source, target));
 }
 
 inline Vec32f unit_facing_dir(Unit* unit) {
-	Vec32f vec = {};
-	vec.x = g_angle_distance[unit->current_direction_1].x / 256.0;
-	vec.y = g_angle_distance[unit->current_direction_1].y / 256.0;
-	return normalize_vec(vec);
+	return normalize_vec(Vec32f{
+        g_angle_distance[unit->current_direction_1].x / 256.0f,
+        g_angle_distance[unit->current_direction_1].y / 256.0f,
+	});
 }
 
-inline f32 angle_to_dot(f32 angle) {
+inline f32 degree_to_dot(f32 angle) {
 	return cosf(angle / 180 * PI);
 }
 
-inline f32 dot_to_angle(f32 dot) {
+inline f32 dot_to_degree(f32 dot) {
 	return acosf(dot) / PI * 180;
 }
 
@@ -465,24 +420,24 @@ inline f32 dot_product(Vec32f a, Vec32f b) {
 }
 
 inline bool unit_is_facing(Unit* unit, Point16 position) {
-	Vec32f angle = bw::unit_facing_dir(unit);
-	Vec32f diff = bw::normalize_vec(bw::vec_between(unit->position, position));
-	f32 dot = bw::dot_product(angle, diff);
+	Vec32f angle = unit_facing_dir(unit);
+	Vec32f dir = dir_between(unit->position, position);
+	f32 dot = dot_product(angle, dir);
 	return dot >= 0.5; // absolute angle diff <= 60 deg
 }
 
 inline bool unit_is_exposed_to(Unit* unit, Point16 position) {
-	Vec32f angle = bw::unit_facing_dir(unit);
-	Vec32f diff = bw::normalize_vec(bw::vec_between(unit->position, position));
-	f32 dot = bw::dot_product(angle, diff);
+	Vec32f angle = unit_facing_dir(unit);
+	Vec32f dir = dir_between(unit->position, position);
+	f32 dot = dot_product(angle, dir);
 	return dot <= -0.5; // absolute angle diff >= 60 deg
 }
 
-inline f32 vec_distance(Vec32 vec) {
+inline f32 vec_length(Vec32 vec) {
 	return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 }
 
-inline f32 vec_distance(Vec32f vec) {
+inline f32 vec_length(Vec32f vec) {
 	return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 }
 

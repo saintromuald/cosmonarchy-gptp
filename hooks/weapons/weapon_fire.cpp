@@ -175,7 +175,7 @@ Bullet* create_bullet_ex(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u
 
 static Point16 set_target_range(Point16 origin, Point16 point, f32 distance) {
 	Vec32f vector = bw::vecf_between(origin, point);
-	f32 old_distance = bw::vec_distance(vector);
+	f32 old_distance = bw::vec_length(vector);
 
 	vector.x *= distance / old_distance;
 	vector.y *= distance / old_distance;
