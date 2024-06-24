@@ -1404,6 +1404,5 @@ UnitExt& Unit::ext() {
 }
 
 bool Unit::has_energy_for(u32 tech_id) {
-	assert(this);
 	return this->energy >= techdata_dat::energy_cost[tech_id] * 256;
 }

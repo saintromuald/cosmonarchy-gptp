@@ -484,63 +484,51 @@ namespace hooks {
 			// Ability ranges - DF
 			if (g_config.show_ability_ranges && g_is_targeting && bw::can_show_custom_ui()) {
 				u32 weapon = WeaponId::None;
-				switch (*g_order_id_ground)
-				{
-					case OrderId::FireYamatoGun1:
-					{
+				switch (*g_order_id_ground) {
+					case OrderId::FireYamatoGun1: {
 						weapon = WeaponId::YamatoGun;
 					} break;
-					case OrderId::CarapaceSwarm:
-					{
+					case OrderId::CarapaceSwarm: {
 						weapon = WeaponId::CarapaceSwarm;
 					} break;
-					case OrderId::CastParasite:
-					{
+					case OrderId::CastParasite: {
 						weapon = WeaponId::MatralethParasite;
 					} break;
-					case OrderId::PsiStorm:
-					{
+					case OrderId::PsiStorm: {
 						weapon = WeaponId::PsiStorm;
 					} break;
-					case OrderId::Irradiate:
-					{
+					case OrderId::Irradiate: {
 						weapon = WeaponId::Irradiate;
 					} break;
-					case OrderId::Plague:
-					{
+					case OrderId::Plague: {
 						weapon = WeaponId::Plague;
 					} break;
-					case OrderId::StasisField:
-					{
+					case OrderId::StasisField: {
 						weapon = WeaponId::StasisField; 
 					} break;
-					case OrderId::CastMaelstrom:
-					{
+					case OrderId::CastMaelstrom: {
 						weapon = WeaponId::MindTyrantMaelstrom; 
 					} break;
-					case OrderId::CastOpticalFlare:
-					{
+					case OrderId::CastOpticalFlare: {
 						weapon = WeaponId::LuminaryAuralAssault; 
 					} break;
-					case OrderId::CastTyranny:
-					{
+					case OrderId::CastTyranny: {
 						weapon = WeaponId::MindTyrantTyranny;
 					} break;
+					case OrderId::Lockdown: {
+						weapon = WeaponId::GoskaLobotomyGrenade;
+					} break;
 					case OrderId::Hallucination1:
-					case OrderId::NukePaint:
-					{
+					case OrderId::NukePaint: {
 						bw::draw_aura_range(unit, units_dat::sight_range[unit->id], 164); //#88409C
 					} break;
-					case OrderId::DefensiveMatrix:
-					{
+					case OrderId::DefensiveMatrix: {
 						bw::draw_aura_range(unit, 8, 164); //#88409C
 					} break;
-					case OrderId::CastThroughTheLookingGlass:
-					{
+					case OrderId::CastThroughTheLookingGlass: {
 						bw::draw_aura_range(unit, ThroughTheLookingGlassRange / 32, 164);
 					} break;
-					default:
-					{
+					default: {
 					} break;
 				}
 				if (weapon != WeaponId::None) {
@@ -692,6 +680,14 @@ namespace hooks {
 			} break;
 			case GameKind_Uprising: {
 				g_active_game_mode = std::make_unique<UprisingGameMode>();
+			} break;
+			case GameKind_Massacre: {
+				for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+					if (unit_id_is_vespene_node(unit->id)) {
+						unit->user_action_flags |= UserActionFlags_HideUnit;
+						unit->remove();
+					}
+				}
 			} break;
 		}
 
@@ -1052,13 +1048,6 @@ namespace hooks {
 
 		if (unit->player < PlayerLimit) {
 			unit_ext->values[ValuePlayerColor] = (u32)g_player_data.player_color_list[unit->player];
-		}
-
-		if (bw::get_game_kind() == GameKind_Massacre) {
-			if (unit_id_is_vespene_node(unit->id)) {
-				unit->remove();
-				return;
-			}
 		}
 	}
 
@@ -2496,7 +2485,7 @@ namespace hooks {
 			case UnitId::ProtossBarghest: {
 				if (unit_ext->timers[TimerDecloak] >= 2) {
 					if (unit->status & UnitStatus::Completed) {
-						EntryArray units = {};
+						EntryArray units{};
 						unit_search_radial(&units, unit->position, 5 * 32);
 						unit_search_filter(&units, unit, FilterAlly);
 						for (u32 i = 0; i < units.count; i++) {
@@ -2516,7 +2505,7 @@ namespace hooks {
 			case UnitId::ProtossManifold: {
 				if (unit_ext->timers[TimerManifoldConcurringChorus] > 1) {
 					if (unit->status & UnitStatus::Completed) {
-						EntryArray units = {};
+						EntryArray units{};
 						unit_search_radial(&units, unit->position, 2 * 32);
 						unit_search_filter(&units, unit, FilterAlly);
 						for (u32 i = 0; i < units.count; i++) {
@@ -2579,9 +2568,6 @@ namespace hooks {
 					bw::play_sound(unit->position, SoundId::Zerg_AVENGER_ZAvRdy00_WAV);
 					bw::create_unit_from_ability(UnitId::ZergSkryrokor, 1, unit->player, unit->position, unit);
 				} else if (skryspawn_timer == 1) {
-					bw::add_unit_overlay(unit, ImageId::DevourerDeath);
-					bw::play_sound(unit->position, SoundId::Zerg_AVENGER_ZAvRdy00_WAV);
-					bw::create_unit_from_ability(UnitId::ZergSkryrokor, 1, unit->player, unit->position, unit);
 					unit->unfreeze();
 				}
 			} break;
@@ -3021,12 +3007,13 @@ namespace hooks {
 		// Clear Manifold vector
 		{
 			auto& manifolds = unit_ext->unit_vectors[UnitVectorManifolds];
-			for (auto it = manifolds.begin(); it != manifolds.end(); ++it) {
+			for (auto it = manifolds.begin(); it != manifolds.end();) {
 				Unit* manifold = *it;
 				UnitExt* manifold_ext = get_unit_ext(manifold);
-				if (manifold_ext->timers[TimerManifoldConcurringChorus] < 2 || bw::distance_between(unit->position, manifold->position) > 2 * 32) {
-					manifolds.erase(it);
-					--it;
+				if (manifold_ext->timers[TimerManifoldConcurringChorus] <= 1 || bw::distance_between(unit->position, manifold->position) > 2 * 32) {
+					it = manifolds.erase(it);
+				} else {
+					it++;
 				}
 			}
 		}
@@ -3174,7 +3161,7 @@ namespace hooks {
 		}
 
 		// Autovitality - Simulacrum behavior
-		if (unit_ext->timers[TimerSimulacrumClone] == 1) {
+		if (unit_ext->timers[TimerSimulacrumClone] == 1 && !unit->is_frozen()) {
 			bw::create_unit_from_ability(UnitId::ProtossSimulacrum, 1, unit->player, unit->position, unit);
 		}
 
