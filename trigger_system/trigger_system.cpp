@@ -214,7 +214,7 @@ void update_trigger_system(bool in_game) {
 		g_objectives.update();
 		buttons_draw();
 
-		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (!unit_can_change_sprite(unit)) {
 				continue;
 			}

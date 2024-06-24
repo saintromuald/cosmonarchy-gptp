@@ -623,7 +623,7 @@ namespace hooks {
 		}
 
 		// Connect addons
-		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (units_dat::base_property[unit->id] & UnitProperty::Building && !unit->building.addon) {
 				Unit* addon = helper::connect_addon_check(unit);
 				if (addon) {
@@ -682,7 +682,7 @@ namespace hooks {
 				g_active_game_mode = std::make_unique<UprisingGameMode>();
 			} break;
 			case GameKind_Massacre: {
-				for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+				for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 					if (unit_id_is_vespene_node(unit->id)) {
 						unit->user_action_flags |= UserActionFlags_HideUnit;
 						unit->remove();
@@ -824,7 +824,7 @@ namespace hooks {
 				*/
 
 				// Reveal resources
-				for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+				for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 					if (unit_id_is_resource_node(unit->id, false)) {
 						unit->sprite->visibility_status |= reveal_flag;
 					}
@@ -915,7 +915,7 @@ namespace hooks {
 		helper::queue_game_command((u8*)&command, 0xc);
 
 		// Count workers
-		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (unit_id_is_resource_node(unit->id, true)) {
 				UnitExt* unit_ext = get_unit_ext(unit);
 				unit_ext->values[ValueAssignedHarvesters] = 0;
@@ -923,7 +923,7 @@ namespace hooks {
 				unit_ext->values[ValueAssignedAiGasHarvesters] = 0;
 			}
 		}
-		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (!(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
 				continue;
 			}
@@ -962,7 +962,7 @@ namespace hooks {
 		}
 
 		// Loop through all visible units in the game.
-		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			tick_unit(unit, false);
 		}
 		for (Unit* unit = *g_first_hidden_unit; unit; unit = unit->link.next) {

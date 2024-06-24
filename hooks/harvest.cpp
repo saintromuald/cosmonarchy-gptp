@@ -653,7 +653,7 @@ namespace hooks {
 
 		Unit* best_depot = 0;
 		u32 best_distance = UINT_MAX;
-		for (Unit* depot = g_first_visible_unit; depot; depot = depot->link.next) {
+		for (Unit* depot = *g_first_visible_unit; depot; depot = depot->link.next) {
 			if (!return_cargo_to_best_depot_proc(depot, worker)) {
 				continue;
 			}
