@@ -681,6 +681,14 @@ namespace hooks {
 			case GameKind_Uprising: {
 				g_active_game_mode = std::make_unique<UprisingGameMode>();
 			} break;
+			case GameKind_Massacre: {
+				for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+					if (unit_id_is_vespene_node(unit->id)) {
+						unit->user_action_flags |= UserActionFlags_HideUnit;
+						unit->remove();
+					}
+				}
+			} break;
 		}
 
 		if (!bw::in_replay_or_witness()) {
@@ -1040,13 +1048,6 @@ namespace hooks {
 
 		if (unit->player < PlayerLimit) {
 			unit_ext->values[ValuePlayerColor] = (u32)g_player_data.player_color_list[unit->player];
-		}
-
-		if (bw::get_game_kind() == GameKind_Massacre) {
-			if (unit_id_is_vespene_node(unit->id)) {
-				unit->remove();
-				return;
-			}
 		}
 	}
 
