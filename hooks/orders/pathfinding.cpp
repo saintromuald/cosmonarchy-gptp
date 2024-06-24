@@ -156,14 +156,13 @@ namespace hooks
                     collides = true;
                 }
 
-                Vec32f diff = {};
-                diff = bw::normalize_vec(bw::vec_between(target->position, unit->position));
-                if (abs(diff.x) < 0.001 && abs(diff.y) < 0.001) {
+                Vec32f dir = bw::dir_between(target->position, unit->position);
+                if (abs(dir.x) < 0.001 && abs(dir.y) < 0.001) {
                     continue;
                 }
 
-                repulsion.x += diff.x;
-                repulsion.y += diff.y;
+                repulsion.x += dir.x;
+                repulsion.y += dir.y;
             }
 
             repulsion = bw::normalize_vec(repulsion);

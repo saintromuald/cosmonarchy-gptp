@@ -2716,8 +2716,8 @@ void move_camera(Point16 pos) {
 }
 
 Quad quad_from_line(Point16 from, Point16 to, f32 line_width) {
-	Vec32f line_diff = normalize_vec(vec_between(from, to));
-	Vec32f p = {-line_diff.y * line_width / 2, line_diff.x * line_width / 2};
+	Vec32f line_dir = dir_between(from, to);
+	Vec32f p = {-line_dir.y * line_width / 2, line_dir.x * line_width / 2};
 	Quad quad = {};
 	quad.corners[0].x = from.x - p.x;
 	quad.corners[0].y = from.y - p.y;

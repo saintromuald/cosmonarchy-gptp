@@ -111,10 +111,10 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponO
 		launch_pos = make_launch_pos(launch_pos, get_next_bullet_offset(unit, weapon_offsets));
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
-		Vec32f diff = bw::normalize_vec(bw::vec_between(launch_pos, target.pt));
+		Vec32f dir = bw::dir_between(launch_pos, target.pt);
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 16;
 		max_range += get_correction_distance(unit->position, unit->id, launch_pos, target.pt);
-		Vec32f target_pos = { launch_pos.x + (diff.x * max_range), launch_pos.y + (diff.y * max_range) };
+		Vec32f target_pos = { launch_pos.x + (dir.x * max_range), launch_pos.y + (dir.y * max_range) };
 
 		if (target_pos.x < 0) {
 			target_pos.y = (1 - abs(target_pos.x / (target_pos.x - target.pt.x))) * (target_pos.y - target.pt.y) + target.pt.y;

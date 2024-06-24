@@ -392,14 +392,6 @@ inline f32 distance_between(Vec32f a, Vec32f b) {
 	return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
 }
 
-inline Vec32f norm_vec_between(Point16 source, Point16 target) {
-	return normalize_vec(vecf_between(source, target));
-}
-
-inline Vec32f norm_vec_between(Vec32f source, Vec32f target) {
-	return normalize_vec(vecf_between(source, target));
-}
-
 inline Vec32f unit_facing_dir(Unit* unit) {
 	return normalize_vec(Vec32f{
         g_angle_distance[unit->current_direction_1].x / 256.0f,

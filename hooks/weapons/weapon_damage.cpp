@@ -574,8 +574,7 @@ namespace hooks {
 						const u32 dist = bw::distance_between(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
 						if (dist < 2 * 32) {
 							const u32 displacement_time = 5;
-							Vec32 diff = bw::vec_between(data.target->sprite->position, data.attacker->sprite->position);
-							Vec32f displacement = bw::normalize_vec(diff);
+							Vec32f displacement = bw::dir_between(data.target->position, data.attacker->position);
 							displacement.x *= 1 * 32.0 / displacement_time;
 							displacement.y *= 1 * 32.0 / displacement_time;
 
@@ -657,9 +656,8 @@ namespace hooks {
 			if (!bw::is_under_carapace_swarm(data.target)) {
 				// Astral Rule - Patriarch behavior
 				if (target_ext->timers[TimerPatriarchAstralRule] > 1
-				&&  units_dat::shields_enabled[data.attacker->id]
-				&&	data.attacker->shields < units_dat::max_shield_points[data.attacker->id] * 256)
-				{
+				&& units_dat::shields_enabled[data.attacker->id]
+				&& data.attacker->shields < units_dat::max_shield_points[data.attacker->id] * 256) {
 					data.attacker->heal_shields(5 * 256);
 					helper::add_overlay_below_main(data.attacker->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 				}
@@ -740,12 +738,9 @@ namespace hooks {
 						// Magnetar - Law of Attraction - Pull target to attacker
 						if ((!(units_dat::base_property[data.target->id] & UnitProperty::Building)
 						||    (data.target->status & UnitStatus::InAir && data.target->main_order_id != OrderId::Liftoff && data.target->main_order_id != OrderId::BuildingLand))
-						&& !(data.target->status & UnitStatus::Burrowed))
-						{
-							const u32 dist = bw::distance_between(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
+						&& !(data.target->status & UnitStatus::Burrowed)) {
 							const u32 displacement_time = 5;
-							Vec32 diff = bw::vec_between(data.target->sprite->position, data.attacker->sprite->position);
-							Vec32f displacement = bw::normalize_vec(diff);
+							Vec32f displacement = bw::dir_between(data.target->sprite->position, data.attacker->sprite->position);
 							displacement.x *= 2 * 32.0 / displacement_time;
 							displacement.y *= 2 * 32.0 / displacement_time;
 							target_ext->timers[TimerMagnetarAttraction] = displacement_time;
