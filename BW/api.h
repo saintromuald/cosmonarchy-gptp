@@ -343,7 +343,7 @@ inline Box32 clamp_box32(Box32 rect) {
 	};
 }
 
-inline Vec32f normalize_vec(Vec32 vec) {
+inline Vec32f normalize(Vec32 vec) {
 	f32 dist = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 	if (!dist) {
 		return {};
@@ -351,7 +351,7 @@ inline Vec32f normalize_vec(Vec32 vec) {
 	return {vec.x / dist, vec.y / dist};
 }
 
-inline Vec32f normalize_vec(Vec32f vec) {
+inline Vec32f normalize(Vec32f vec) {
 	f32 dist = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 	if (!dist) {
 		return {};
@@ -381,11 +381,11 @@ inline Vec32f vecf_between(Vec32f source, Vec32f target) {
 }
 
 inline Vec32f dir_between(Point16 source, Point16 target) {
-	return normalize_vec(vecf_between(source, target));
+	return normalize(vecf_between(source, target));
 }
 
 inline Vec32f dir_between(Vec32f source, Vec32f target) {
-	return normalize_vec(vecf_between(source, target));
+	return normalize(vecf_between(source, target));
 }
 
 inline f32 distance_between(Vec32f a, Vec32f b) {
@@ -393,7 +393,7 @@ inline f32 distance_between(Vec32f a, Vec32f b) {
 }
 
 inline Vec32f unit_facing_dir(Unit* unit) {
-	return normalize_vec(Vec32f{
+	return normalize(Vec32f{
         g_angle_distance[unit->current_direction_1].x / 256.0f,
         g_angle_distance[unit->current_direction_1].y / 256.0f,
 	});
@@ -409,6 +409,26 @@ inline f32 dot_to_degree(f32 dot) {
 
 inline f32 dot_product(Vec32f a, Vec32f b) {
 	return a.x * b.x + a.y * b.y;
+}
+
+inline f32 dot_norm(Vec32f a, Vec32f b) {
+	return dot_norm(normalize(a), normalize(b));
+}
+
+inline f32 determinant(Vec32f a, Vec32f b) {
+	return a.x * b.y - a.y * b.x;
+}
+
+inline f32 determinant_norm(Vec32f a, Vec32f b) {
+	return determinant_norm(normalize(a), normalize(b));
+}
+
+inline Vec32f vec_perpendicular(Vec32f vec) {
+	return {-vec.y, vec.x};
+}
+
+inline Vec32f vec_reversed(Vec32f vec) {
+	return {-vec.x, -vec.y};
 }
 
 inline bool unit_is_facing(Unit* unit, Point16 position) {

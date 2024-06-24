@@ -165,7 +165,7 @@ namespace hooks
                 repulsion.y += dir.y;
             }
 
-            repulsion = bw::normalize_vec(repulsion);
+            repulsion = bw::normalize(repulsion);
 
             if (abs(repulsion.x) < 0.001 && abs(repulsion.y) < 0.001) {
                 u32 rand_amount = bw::rand_between(0, 255);

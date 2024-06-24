@@ -1960,7 +1960,7 @@ namespace hooks {
 								const u32 displacement_time = 5;
 								Vec32 diff = bw::vec_between(unit->sprite->position, target->sprite->position);
 								if (bw::vec_length(diff) > 12) {
-									Vec32f displacement = bw::normalize_vec(diff);
+									Vec32f displacement = bw::normalize(diff);
 									displacement.x *= -1 * 32.0 / displacement_time;
 									displacement.y *= -1 * 32.0 / displacement_time;
 									target_ext->timers[TimerAnthelionGravityWell] = displacement_time;

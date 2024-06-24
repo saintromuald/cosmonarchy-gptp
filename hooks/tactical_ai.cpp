@@ -99,7 +99,7 @@ static bool is_melee_attacker(u32 unit_id) {
 }
 
 static void adjust_vector(Vec32f* vector, Unit* unit, Point16 position, s32 value) {
-	Vec32f delta = bw::normalize_vec(bw::vec_between(unit->position, position));
+	Vec32f delta = bw::normalize(bw::vec_between(unit->position, position));
 	delta.x *= value;
 	delta.y *= value;
 	vector->x += delta.x;
@@ -582,7 +582,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 		forward_pos.y += hostile_vector.y;
 		forward_pos.x -= effect_vector.x;
 		forward_pos.y -= effect_vector.y;
-		forward_pos = bw::normalize_vec(forward_pos);
+		forward_pos = bw::normalize(forward_pos);
 		forward_pos.x *= MoveRadius;
 		forward_pos.y *= MoveRadius;
 		forward_pos.x += unit->position.x;
@@ -594,7 +594,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 		backward_pos.y -= hostile_vector.y;
 		backward_pos.x -= effect_vector.x;
 		backward_pos.y -= effect_vector.y;
-		backward_pos = bw::normalize_vec(backward_pos);
+		backward_pos = bw::normalize(backward_pos);
 		backward_pos.x *= MoveRadius;
 		backward_pos.y *= MoveRadius;
 		backward_pos.x += unit->position.x;
