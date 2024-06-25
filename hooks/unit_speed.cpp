@@ -233,13 +233,15 @@ namespace hooks {
 			case UnitId::TerranHeracles:
 			case UnitId::TerranMatadorTankMode:
 			case UnitId::ProtossSycophant:
-			case UnitId::ZergZethrokor:
-			case UnitId::ZergVorvrokor:
 			case UnitId::ZergAxitrilisk: {
 				speed *= 1.25;
 			} break;
+			case UnitId::ZergVorvrokor: {
+				speed *= 1.3;
+			} break;
 			case UnitId::TerranStriga:
-			case UnitId::ProtossZealot: {
+			case UnitId::ProtossZealot:
+			case UnitId::ZergZethrokor: {
 				speed *= 1.35;
 			} break;
 			case UnitId::ProtossAmaranth: {
