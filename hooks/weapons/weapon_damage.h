@@ -2,7 +2,7 @@
 #include "../../BW/structures/Unit.h"
 
 extern Bullet* weapon_damage_current_bullet;
-static bool ignore_alert;
+static bool g_ignore_alert;
 
 void apply_ensnare_internal(Unit* unit, u32 ensnare_factor);
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor);

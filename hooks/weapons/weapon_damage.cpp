@@ -211,28 +211,27 @@ namespace hooks
 
 		// Ancile - Providence - Hitscan handling
 		if (weapon_id_procs_onhits(data.weapon_id)) {
-			switch (weapons_dat::behavior[data.weapon_id]) {
-				case WeaponBehavior_AppearOnAttacker:
-				case WeaponBehavior_AppearOnTargetSite:
-				case WeaponBehavior_AppearOnTargetUnit: {
-					EntryArray units = {};
-					unit_search_radial(&units, data.target->position, 2 * 32);
-					unit_search_filter(&units, data.target, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile });
-					for (u32 i = 0; i < units.count; ++i) {
-						Unit* unit = units.units[i];
-						if (unit->energy < 1 * 256) {
-							continue;
-						}
-						bw::create_shield_overlay(data.target, data.direction);
-						unit->spend_energy(data.damage);
-						bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
-						ignore_alert = true;
-						unit_attack_notify(unit);
-						ignore_alert = false;
-						bw::reveal_attacker(data.attacker, unit);
-						return;
-					}
-				} break;
+			bool target_is_active_ancile = data.target->id == UnitId::TerranAncile
+										&& data.target->energy >= 1 * 256;
+			if (!target_is_active_ancile) {
+                EntryArray units = {};
+                unit_search_radial(&units, data.target->position, 2 * 32);
+                unit_search_filter(&units, data.target, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile });
+                for (u32 i = 0; i < units.count; ++i) {
+                    Unit* unit = units.units[i];
+                    if (unit->energy < 1 * 256) {
+                        continue;
+                    }
+
+                    bw::create_shield_overlay(data.target, data.direction);
+                    unit->spend_energy(data.damage);
+                    bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
+                    ignore_alert = true;
+                    unit_attack_notify(unit);
+                    ignore_alert = false;
+                    bw::reveal_attacker(data.attacker, unit);
+                    return;
+                }
 			}
 		}
 
