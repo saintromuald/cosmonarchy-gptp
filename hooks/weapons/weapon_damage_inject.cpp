@@ -86,7 +86,7 @@ namespace
 			POP EAX
 			PUSHAD
 		}
-		hooks::unit_attack_notify(unit);
+		hooks::unit_attack_notify_hook(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP

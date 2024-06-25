@@ -2153,9 +2153,7 @@ namespace hooks {
 					}
 
 					// Redirect
-					ignore_alert = true;
-					hooks::unit_attack_notify(unit);
-					ignore_alert = false;
+					hooks::play_attack_notification(unit);
 					if (bullet->source_unit) {
 						bw::reveal_attacker(bullet->source_unit, unit);
 					}

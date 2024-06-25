@@ -98,7 +98,7 @@ namespace helper {
 
 	// For hallucinationHit
 	void unit_was_hit(Unit* a1, Unit* a2, s32 a3);
-	void unit_attack_notify(Unit* unit);
+	void unit_attack_notify_noop(Unit* unit);
 	Image* create_shield_overlay(s32 a1, Unit* a2);
 
 	// For draw_image_hp_bar

@@ -270,15 +270,14 @@ LABEL_26:
 	}
 
 	// Hooked to improve functionality and extend max HP / shields. -Pr0nogo
-	void attack_overlay_and_notify(Unit* victim, Unit* attacker, u8 weapon_id, u8 direction) // 00479730
-	{
+	void attack_overlay_and_notify(Unit* victim, Unit* attacker, u8 weapon_id, u8 direction) { // 00479730
 		s32 hitpoints = victim->hitpoints;
 		if (hitpoints && !(victim->status & UnitStatus::Invincible))
 		{
 			if (attacker) {
 				helper::unit_was_hit(victim, attacker, weapon_id != WeaponId::Irradiate);
 				if (weapon_id != WeaponId::Irradiate && victim->player != attacker->player) {
-					helper::unit_attack_notify(victim);
+					helper::unit_attack_notify_noop(victim);
 				}
 			}
 			if (bw::unit_has_shields(victim)) {
