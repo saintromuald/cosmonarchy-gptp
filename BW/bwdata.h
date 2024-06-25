@@ -23,8 +23,8 @@
 //////////////////////////////////////////////////////////////// @{
 
 /// The first nodes in StarCraft's internal linked lists (taken from BWAPI's Offsets.h)
-BW_REF(Unit*,			g_first_visible_unit,			0x00628430);
-BW_REF(Unit*,			g_last_visible_unit,			0x0059CC9C);
+BW_DATA(Unit**,			g_first_visible_unit,			0x00628430);
+BW_DATA(Unit**,			g_last_visible_unit,			0x0059CC9C);
 BW_DATA(Unit**,			g_first_hidden_unit,			0x006283EC);	// Includes units in transports/bunkers, worker inside gas buildings, nukes in silos, and units in production.
 BW_DATA(Unit**,			g_last_hidden_unit,				0x00628428);	// Same as above.
 BW_DATA(Bullet**,		g_first_active_bullet,			0x0064DEC4);

@@ -1987,7 +1987,7 @@ bool unit_is_stunned(Unit* unit) {
 
 void dump_sync_data() {
 	FILE* file = fopen("desync.text", "wb");
-	for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 		fprintf(file, "Unit %s #%u", unit->get_name(), unit->get_unit_index() - 1);
 		fprintf(file, "\tPlayer %u", unit->player);
 
@@ -2493,7 +2493,7 @@ void delete_ai_script(AiScript* ai_script) {
 
 void delete_town(AiTown* ai_town) {
 	helper::delete_aiscripts_using_town(ai_town);
-	for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 		if (unit->sprite && unit->main_order_id && units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
 			unit->building.resource.resarea = 0;
 		}

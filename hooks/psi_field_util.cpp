@@ -117,7 +117,7 @@ void hide_all_psi_fields();
 
 namespace hooks {
 	void update_psi_field_providers() {
-		for (Unit* unit = g_first_visible_unit; unit; unit = unit->link.next) {
+		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 			if (unit_id_is_psi_provider(unit->id)) {
 				assert(is_valid_psi_provider_type(unit->id));
 				if (unit->status & UnitStatus::Completed) {
