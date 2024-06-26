@@ -2,7 +2,6 @@
 #include "../../BW/structures/Unit.h"
 
 extern Bullet* weapon_damage_current_bullet;
-static bool ignore_alert;
 
 void apply_ensnare_internal(Unit* unit, u32 ensnare_factor);
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor);
@@ -50,7 +49,11 @@ namespace hooks {
 	void apply_ensnare(Unit* unit);									// 004F45E0
 	u16 get_spores_overlay_id(Unit* target);
 	s32 apply_spores_hook(Unit* target);							// 004F4480
-	void unit_attack_notify(Unit* unit);							// 0048F230
+
+	// Important: this one is patched to do nothing by default (to noop the game code)! Use the latter instead
+	void unit_attack_notify_hook(Unit* unit);						// 0048F230
+	void play_attack_notification(Unit* unit);
+
 	void unit_was_hit(Unit* victim, Unit* attacker, u32 reveal);	// 004795D0
 	u32 ask_for_help(Unit* attacker, Unit* helper);					// 00476E60
 	void react_to_hit(Unit* attacker, Unit* victim);				// 004776C0

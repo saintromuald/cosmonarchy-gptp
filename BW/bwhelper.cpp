@@ -588,7 +588,7 @@ namespace helper {
 		}
 	}
 
-	void unit_attack_notify(Unit* unit) {
+	void unit_attack_notify_noop(Unit* unit) {
 		const u32 func_address = 0x0048F230;
 		__asm {
 			PUSHAD

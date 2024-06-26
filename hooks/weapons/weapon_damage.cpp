@@ -69,9 +69,17 @@ namespace hooks
 		}
 	}
 
+    static bool g_should_play_alert;
+
+	void play_attack_notification(Unit* unit) {
+		g_should_play_alert = true;
+		unit_attack_notify_hook(unit);
+		g_should_play_alert = false;
+	}
+
 	// Hooked to fix one-shots not notifying owners. -Pr0nogo
-	void unit_attack_notify(Unit* unit) { // 0048F230
-		if (!ignore_alert) {
+	void unit_attack_notify_hook(Unit* unit) { // 0048F230
+		if (!g_should_play_alert) {
 			return;
 		}
 		u32 local_player = g_local_nation_id;
@@ -211,28 +219,25 @@ namespace hooks
 
 		// Ancile - Providence - Hitscan handling
 		if (weapon_id_procs_onhits(data.weapon_id)) {
-			switch (weapons_dat::behavior[data.weapon_id]) {
-				case WeaponBehavior_AppearOnAttacker:
-				case WeaponBehavior_AppearOnTargetSite:
-				case WeaponBehavior_AppearOnTargetUnit: {
-					EntryArray units = {};
-					unit_search_radial(&units, data.target->position, 2 * 32);
-					unit_search_filter(&units, data.target, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile });
-					for (u32 i = 0; i < units.count; ++i) {
-						Unit* unit = units.units[i];
-						if (unit->energy < 1 * 256) {
-							continue;
-						}
-						bw::create_shield_overlay(data.target, data.direction);
-						unit->spend_energy(data.damage);
-						bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
-						ignore_alert = true;
-						unit_attack_notify(unit);
-						ignore_alert = false;
-						bw::reveal_attacker(data.attacker, unit);
-						return;
-					}
-				} break;
+			bool target_is_active_ancile = data.target->id == UnitId::TerranAncile
+										&& data.target->energy >= 1 * 256;
+			if (!target_is_active_ancile) {
+                EntryArray units = {};
+                unit_search_radial(&units, data.target->position, 2 * 32);
+                unit_search_filter(&units, data.target, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile });
+                for (u32 i = 0; i < units.count; ++i) {
+                    Unit* unit = units.units[i];
+                    if (unit->energy < 1 * 256) {
+                        continue;
+                    }
+
+                    bw::create_shield_overlay(data.target, data.direction);
+                    unit->spend_energy(data.damage);
+                    bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
+					play_attack_notification(unit);
+                    bw::reveal_attacker(data.attacker, unit);
+                    return;
+                }
 			}
 		}
 
@@ -345,10 +350,10 @@ namespace hooks
 			if (data.target->status & UnitStatus::IsHallucination) {
 				data.damage = data.target->hitpoints; // Increasing the damage, so we insta kill, but don't inflate other damage calcs
 			}
-			ignore_alert = true;
 			data.target->damage_hp(data.damage, data.attacker, data.attacking_player_id, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
-			ignore_alert = false;
-			unit_attack_notify(data.target); // Previously excluded WeaponId::Irradiate
+			g_should_play_alert = true;
+			play_attack_notification(data.target); // Previously excluded WeaponId::Irradiate
+			g_should_play_alert = false;
 		}
 
 		// New AI defense logic -Veeq7

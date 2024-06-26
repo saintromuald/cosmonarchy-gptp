@@ -58,9 +58,7 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 	unit->irradiate_caster = 0;
 	unit->irradiate_player_id = player;
 	unit->irradiate_timer = time;
-	ignore_alert = true;
-	hooks::unit_attack_notify(unit);
-	ignore_alert = false;
+	hooks::play_attack_notification(unit);
 }
 
 void tick_effect(EffectField& effect) {
