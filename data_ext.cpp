@@ -1,37 +1,41 @@
 #include "data_ext.h"
+#include <array>
 
 #define AiTownCap 100
 
-static UnitExt unit_ext_array[UNIT_ARRAY_LENGTH];
-static TileExt tile_ext_array[256][256];
-static BulletExt bullet_ext_array[BULLET_ARRAY_LENGTH];
-static ImageExt image_ext_array[IMAGE_ARRAY_LENGTH];
-static SpriteExt sprite_ext_array[SPRITE_ARRAY_LENGTH];
-static ThingyExt thingy_ext_array[THINGY_ARRAY_LENGTH];
-static AiTownExt ai_town_ext_array[PlayerLimit][AiTownCap];
+struct DataExt {
+    template <typename T, size_t N>
+	using array = std::array<T, N>;
+	
+    template <typename T, size_t N, size_t M>
+    using array2d = std::array<std::array<T, M>, N>;
+
+	// Need to use vector, since static array would be too big and the struct would not compile
+	std::vector<UnitExt>                       units{};
+	array2d<TileExt, 256, 256>                 tiles{};
+	array<BulletExt, BULLET_ARRAY_LENGTH>      bullets{};
+	array<ImageExt, IMAGE_ARRAY_LENGTH>        images{};
+	array<SpriteExt, SPRITE_ARRAY_LENGTH>      sprites{};
+	array<ThingyExt, THINGY_ARRAY_LENGTH>      thingies{};
+	array2d<AiTownExt, PlayerLimit, AiTownCap> ai_towns{};
+
+	DataExt() {
+		units.resize(UNIT_ARRAY_LENGTH);
+	}
+};
+
+// This is a hack, we will discard any data from before init_ext_variables,
+// ideally we would call init_ext_variables before first access, and not construct inline here
+static std::unique_ptr<DataExt> g_ext = std::make_unique<DataExt>();
 
 void init_ext_variables() {
-	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) {
-		reset_unit_ext(&unit_ext_array[i]);
-	}
-	memset(tile_ext_array, 0, sizeof(tile_ext_array));
-	// TODO: reset tiles?
-	for (u32 i = 0; i < IMAGE_ARRAY_LENGTH; ++i) {
-		reset_image_ext(&g_image_table[i]);
-	}
-	for (u32 i = 0; i < SPRITE_ARRAY_LENGTH; ++i) {
-		reset_sprite_ext(&g_sprite_table[i]);
-	}
-	for (u32 i = 0; i < THINGY_ARRAY_LENGTH; ++i) {
-		reset_thingy_ext(&g_thingy_table[i]);
-	}
-	// TODO: reset ai towns?
+	g_ext = std::make_unique<DataExt>();
 }
 
 void update_ext_variables() {
 	// Units
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) {
-		UnitExt* unit_ext = &unit_ext_array[i];
+		UnitExt* unit_ext = &g_ext->units[i];
 		if (unit_ext->pause_timers) {
 			continue;
 		}
@@ -125,23 +129,16 @@ void update_ext_variables() {
 UnitExt* get_unit_ext(Unit* unit) {
 	u32 index = unit - g_unit_table;
 	assert(unit && index >= 0 && index < UNIT_ARRAY_LENGTH);
-	return &unit_ext_array[index];
+	return &g_ext->units[index];
 }
 
 void reset_unit_ext(UnitExt* unit_ext) {
 	*unit_ext = {};
-	// every unit will start being out of combat
-	unit_ext->shield_regen_timer = UINT_MAX;
-	unit_ext->damage_taken_timer = UINT_MAX;
-	unit_ext->damage_dealt_timer = UINT_MAX;
-	for (u32 i = 0; i < PlayerLimit; ++i) {
-		unit_ext->last_seen_timer[i] = UINT_MAX;
-	}
 }
 
 void unit_death_start(Unit* unit) {
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) { // set dead unit pointers to nullptr and erase them from unit vectors
-		UnitExt* other_ext = &unit_ext_array[i];
+		UnitExt* other_ext = &g_ext->units[i];
 		for (u32 i = 0; i < UnitCount; ++i) {
 			if (other_ext->units[i] == unit) {
 				other_ext->units[i] = nullptr;
@@ -175,17 +172,17 @@ void unit_death_end(Unit* unit) {
 }
 
 TileExt* get_tile_ext_at_tile(u32 tile_x, u32 tile_y) {
-	return &tile_ext_array[tile_y][tile_x];
+	return &g_ext->tiles[tile_y][tile_x];
 }
 
 TileExt* get_tile_ext_at_coords(u32 x, u32 y) {
-	return &tile_ext_array[y / 32][x / 32];
+	return &g_ext->tiles[y / 32][x / 32];
 }
 
 BulletExt* get_bullet_ext(Bullet* bullet) {
 	u32 index = bullet - g_bullet_table;
 	assert(bullet && index >= 0 && index < BULLET_ARRAY_LENGTH);
-	return &bullet_ext_array[index];
+	return &g_ext->bullets[index];
 }
 
 void reset_bullet_ext(Bullet* bullet) {
@@ -196,7 +193,7 @@ void reset_bullet_ext(Bullet* bullet) {
 SpriteExt* get_sprite_ext(Sprite* sprite) {
 	s32 index = sprite - g_sprite_table;
 	assert(sprite && index >= 0 && index < SPRITE_ARRAY_LENGTH);
-	return &sprite_ext_array[index];
+	return &g_ext->sprites[index];
 }
 
 void reset_sprite_ext(Sprite* sprite) {
@@ -207,7 +204,7 @@ void reset_sprite_ext(Sprite* sprite) {
 ImageExt* get_image_ext(Image* image) {
 	s32 index = image - g_image_table;
 	assert(image && index >= 0 && index < IMAGE_ARRAY_LENGTH);
-	return &image_ext_array[index];
+	return &g_ext->images[index];
 }
 
 void reset_image_ext(Image* image) {
@@ -218,7 +215,7 @@ void reset_image_ext(Image* image) {
 ThingyExt* get_thingy_ext(Thingy* thingy) {
 	s32 index = thingy - g_thingy_table;
 	assert(thingy && index >= 0 && index < THINGY_ARRAY_LENGTH);
-	return &thingy_ext_array[index];
+	return &g_ext->thingies[index];
 }
 
 void reset_thingy_ext(Thingy* thingy) {
@@ -230,7 +227,7 @@ AiTownExt* get_town_ext(AiTown* town) {
 	s32 player = town->player;
 	s32 index = town - g_ai_town_list[player].array->towns;
 	assert(town && player >= 0 && player < PlayerLimit && index >= 0 && index < AiTownCap);
-	return &ai_town_ext_array[player][index];
+	return &g_ext->ai_towns[player][index];
 }
 
 void reset_town_ext(AiTown* town) {
