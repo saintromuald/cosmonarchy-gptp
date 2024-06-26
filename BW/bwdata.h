@@ -56,15 +56,15 @@ BW_DATA(Units12*,			g_trigger_factory_counts,		0x0068A9A8);
 
 BW_DATA(Thingy*,			g_thingy_table,					ccmu_extender.thingy_table); // lone sprites, not fow sprites!
 
-BW_DATA(Unit*,			g_unit_table,					ccmu_extender.unit_table);
-BW_DATA(Order*,			g_order_table,					ccmu_extender.order_table);
+BW_DATA(Unit*,				g_unit_table,					ccmu_extender.unit_table);
+BW_DATA(Order*,				g_order_table,					ccmu_extender.order_table);
 BW_DATA(u32*,				g_unit_count,					0x006283F0);
 BW_DATA(Bullet*,			g_bullet_table,					new_bullet_table);				// previously 0064B2E8
 BW_DATA_REF(UnitDeaths*,	g_unit_deaths_table,			0x0058A364);
 BW_DATA(Sprite*,			g_sprite_table,					ccmu_extender.sprite_table);	// previously 00629D98
 BW_DATA(u32*,				g_sprite_count,					0x006C4A2C);
 BW_DATA(Sprite**,			g_sprite_refs,					ccmu_extender.sprite_list_pointers);
-BW_DATA(Image*,			g_image_table,					ccmu_extender.image_table);
+BW_DATA(Image*,				g_image_table,					ccmu_extender.image_table);
 BW_DATA_REF(UnitDeaths*,	g_unit_killed_table,			0x005878A4);
 
 BW_DATA_REF(UnitDeaths*,	g_completed_unit_count_table,	0x00584DE4);
@@ -77,11 +77,11 @@ BW_DATA(Thingy**,			g_last_thingy,					0x0065291C);
 
 // From locations.cpp
 BW_DATA(MapSize*,			g_map_tile_size,				0x0057F1D4);
-BW_DATA(Location*,		g_location_table,				0x0058DC60);
+BW_DATA(Location*,			g_location_table,				0x0058DC60);
 
 // For buttonsets
-BW_DATA_REF(ButtonSet*,	g_buttonset_table,				0x005187E8);
-BW_DATA_REF(UnitStatFuncArrayEntry*, unitStatFuncs,		0x005193A0);
+BW_DATA_REF(ButtonSet*,					g_buttonset_table,	0x005187E8);
+BW_DATA_REF(UnitStatFuncArrayEntry*,	unitStatFuncs,		0x005193A0);
 
 BW_DATA(ActionPointer*,	g_action_table,					0x00512800); // From triggers.cpp
 BW_DATA(ActionPointer*,	g_briefing_action_table,		0x00512800);
@@ -129,7 +129,7 @@ BW_DATA(s32*,				g_screen_y,				0x00628470);
 BW_DATA(Point16*,			g_start_positions,		0x0058D720);
 
 // Mouse position relative to the screen
-BW_DATA(const Vec32*,	g_mouse,				0x006CDDC4);
+BW_DATA(const Vec32*,		g_mouse,				0x006CDDC4);
 
 BW_DATA(u32*,				g_mmb_pos_x,            0x006556F8);
 BW_DATA(u32*,				g_mmb_pos_y,            0x006556F4);
@@ -404,10 +404,10 @@ BW_DATA(s32*,		visionUpdateCount,					0x0051CE98);
 BW_DATA(s8*,		g_vision_updated,					0x0051CE9C);
 
 // X405: For displayEstablishing Shot
-BW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
+BW_DATA(CampaignMission*, campaignMissions,				0x004FFF60);
 
 // For stats_weapon_level / stats_armor_level
-BW_DATA(s16*, g_unk_upgrade_count,			0x006CA940); // Seems to be unused. Only ever written to.
+BW_DATA(s16*,		g_unk_upgrade_count,			0x006CA940); // Seems to be unused. Only ever written to.
 
 // For isUnitCloaked
 BW_DATA(Unit**,		g_first_invisible_unit,			0x0063FF5C);
@@ -444,7 +444,7 @@ BW_DATA(s8*,		g_building_placement_state,		0x006408F8);
 BW_DATA(s8*,		g_selection_circle_color,		0x00581D6A);
 
 // For initializeBulet
-BW_DATA(Unit**,	g_last_bullet_creator,			0x0064DEB0);
+BW_DATA(Unit**,		g_last_bullet_creator,			0x0064DEB0);
 BW_DATA(s32*,		g_launch_spin_random,			0x0064DEC0);
 BW_DATA(Point16*, g_attack_curve,					0x00513650);
 
@@ -457,12 +457,12 @@ BW_DATA(s32*,		g_ai_minerals_reserve,			0x006CA51C);
 BW_DATA(s32*,		g_ai_vespene_reserve,			0x006CA4EC);
 
 // For updateBriefingRoomObjectives
-BW_DATA(BinDlg**, g_ready_room_dialog,				0x0066FF6C);
+BW_DATA(BinDlg**,	g_ready_room_dialog,				0x0066FF6C);
 BW_DATA(s32*,		g_mission_objectives_string_index,	0x0058D6C4);
 
 // For ai_manage_building_placement
-BW_DATA(Unit**,	g_disabled_unit_array,			0x00692660);
-BW_DATA(Unit**,	g_ai_builder_unk,				0x006D5DCC);
+BW_DATA(Unit**,		g_disabled_unit_array,			0x00692660);
+BW_DATA(Unit**,		g_ai_builder_unk,				0x006D5DCC);
 
 // For get_supplies_available
 BW_DATA(s32*,		g_supplies_available_protoss,	0x00582264);
@@ -490,12 +490,12 @@ BW_DATA(u32*,		unknown_68C230,					0x0068C230);
 BW_DATA(s16*,		g_supplies_used_temp,			0x006CA93E);
 
 // For draw_supply_unit_status
-BW_DATA(char*,	g_supply_available_buffer,		0x006CA668);
-BW_DATA(char*,	g_supply_used_buffer,			0x006CA9F8);
-BW_DATA(char*,	g_supply_max_buffer,			0x006CAB08);
-BW_DATA(char*,	g_supply_provided_buffer,		0x006CAC78);
+BW_DATA(char*,		g_supply_available_buffer,		0x006CA668);
+BW_DATA(char*,		g_supply_used_buffer,			0x006CA9F8);
+BW_DATA(char*,		g_supply_max_buffer,			0x006CAB08);
+BW_DATA(char*,		g_supply_provided_buffer,		0x006CAC78);
 
-BW_DATA(char*,	g_kills_buffer,					0x006CAC78);
+BW_DATA(char*,		g_kills_buffer,					0x006CAC78);
 
 // For give_unit_to_player
 BW_DATA(s32*,		g_current_trigger_player_id,	0x006509B0);
@@ -509,9 +509,9 @@ BW_DATA(u16*,		g_region_ids,					0x0069262C);
 
 BW_DATA(u8*,		unk_order_array,				0x0068C300);
 
-BW_DATA(u32**,	g_active_tile_array_int,		0x006D1260);
+BW_DATA(u32**,		g_active_tile_array_int,		0x006D1260);
 
-BW_DATA(void**,	g_get_right_click_order_array,	0x005153FC);
+BW_DATA(void**,		g_get_right_click_order_array,	0x005153FC);
 
 // For prepare_unit_move_custom
 BW_DATA(BinDlg**,	g_portrait,						0x0068AC98);
@@ -530,10 +530,10 @@ BW_DATA(s32*,			g_sound_volume,				0x00599900);
 BW_DATA(s32*,			g_volume_reduction,			0x006D5A0C);
 BW_DATA(DSound*,		g_direct_sound_interface,	0x006D59F4);
 BW_DATA(s32*,			g_unk_sound_core_2,			0x005999C0);
-BW_DATA(CritSect*,	g_sound_lock,				0x006D5F4C);
+BW_DATA(CritSect*,		g_sound_lock,				0x006D5F4C);
 
 // For soundInit
-BW_DATA(SoundChannel*,g_sound_channels,			0x005998F0);
+BW_DATA(SoundChannel*	,g_sound_channels,			0x005998F0);
 BW_DATA(HMODULE*,		g_hd_sound_module,			0x006D59F0);
 BW_DATA(s8*,			g_dda_initialized,			0x006D1265);
 BW_DATA(s8*,			g_vid_initialized,			0x006D1266);
@@ -541,9 +541,9 @@ BW_DATA(s32*,			g_sound_memory_cache,		0x005129B8);
 BW_DATA(HANDLE*,		g_sound_handle,				0x006D5A04);
 BW_DATA(s32*,			g_unk_sound_core_3,			0x005998E4);
 BW_DATA(s8*,			g_unk_sound_bool_core,		0x006D1264);
-BW_DATA(char**,		g_current_sound_memory,		0x006D59FC);
+BW_DATA(char**,			g_current_sound_memory,		0x006D59FC);
 
-BW_DATA(void*,		g_sfx_tbl_handle,			0x005999B0);
+BW_DATA(void*,			g_sfx_tbl_handle,			0x005999B0);
 
 // For handle_window_messages
 typedef void __fastcall InputProcsFunc(s32 arg);
@@ -558,8 +558,8 @@ BW_DATA(s32*,		g_max_range_in_px,			0x006957A4);
 
 // For show_right_click_error_if_needed
 BW_DATA(u32*,		g_use_quiet_sounds,			0x0064086C);
-BW_DATA(char*,	draw_out_text_left,			0x00641598);
-BW_DATA(char*,	text_bytes,					0x00641674); // sizeof 13
+BW_DATA(char*,		draw_out_text_left,			0x00641598);
+BW_DATA(char*,		text_bytes,					0x00641674); // sizeof 13
 BW_DATA(s32*,		unit_stat_update_timer,		0x00640B54);
 
 // For cmdact_game_speed
@@ -567,8 +567,8 @@ BW_DATA(s32*,		last_control_index,			0x006D051C);
 BW_DATA(b32*,		cpu_throttle,				0x006D5C00);
 BW_DATA(b32*,		wants_redraw,				0x005968EC);
 BW_DATA(s32*,		temp_cpu_throttle,			0x00655C3C);
-BW_DATA(char*,	bin_interact,				0x006D1224);
-BW_DATA(void**,	last_bindlg_menu_function,	0x006D1234);
+BW_DATA(char*,		bin_interact,				0x006D1224);
+BW_DATA(void**,		last_bindlg_menu_function,	0x006D1234);
 
 // For statport_dlg_interact
 BW_DATA(s8**,		g_dialog_key,				0x0068AC88);
@@ -630,13 +630,13 @@ namespace units_dat {
 	BW_DATA_REF(u16*,			sound_yes_last,			unitsDat[35].address);	// 00661440
 	BW_DATA_REF(Point16*,		building_dimensions,	unitsDat[36].address);	// 00662860	// Placement Box in PyDAT
 	BW_DATA_REF(Point16*,		addon_placement,		unitsDat[37].address);	// 006626E0 // Addon Position in PyDAT
-	BW_DATA_REF(Box16*,		unit_bounds,			unitsDat[38].address);	// 006617C8	// Unit Dimensions in PyDAT
+	BW_DATA_REF(Box16*,			unit_bounds,			unitsDat[38].address);	// 006617C8	// Unit Dimensions in PyDAT
 	BW_DATA_REF(u16*,			portrait_id,			unitsDat[39].address);	// 00662F88
 	BW_DATA_REF(u16*,			mineral_cost,			unitsDat[40].address);	// 00663888
 	BW_DATA_REF(u16*,			vespene_cost,			unitsDat[41].address);	// 0065FD00
 	BW_DATA_REF(u16*,			time_cost,				unitsDat[42].address);	// 00660428
 	BW_DATA_REF(u16*,			requirement_offsets,	unitsDat[43].address);	// 00660A70 // "Restriction Address" according to EUDDB
-	BW_DATA_REF(GroupFlag*,	group_flags,			unitsDat[44].address);	// 006637A0
+	BW_DATA_REF(GroupFlag*,		group_flags,			unitsDat[44].address);	// 006637A0
 	BW_DATA_REF(u8*,			supply_provided,		unitsDat[45].address);	// 006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
 	BW_DATA_REF(u8*,			supply_required,		unitsDat[46].address);	// 00663CE8
 	BW_DATA_REF(u8*,			space_required,			unitsDat[47].address);	// 00664410
@@ -823,8 +823,8 @@ BW_DATA(PrepareForNextOrderFunc, prepare_for_next_order, 0x00475000);
 
 // Contains various tile info.
 BW_DATA(ActiveTile**,		g_active_tile_array,	0x006D1260);
-BW_DATA(u16**,			tileIdArray,			0x005993C4);
-BW_DATA(u16**,			megatileArray,			0x00628494);
+BW_DATA(u16**,				tileIdArray,			0x005993C4);
+BW_DATA(u16**,				megatileArray,			0x00628494);
 //BW_DATA(u16**,			megatileExtArrayFlags,	0x00628494+0x20000); // extender only
 
 // Stores an ordered list of all units currently in the game.
@@ -832,28 +832,28 @@ BW_DATA(UnitFinderData*,	g_unit_ordering_x,		ccmu_extender.unit_finder_x);
 BW_DATA(UnitFinderData*,	g_unit_ordering_y,		ccmu_extender.unit_finder_y);
 BW_DATA(u32*,				g_unit_ordering_count,	0x0066FF74);
 
-BW_DATA(Vec32*,		g_angle_distance,		0x00512D28);
+BW_DATA(Vec32*,				g_angle_distance,		0x00512D28);
 BW_DATA(u16*,				g_megatile_count,		0x005998E0);
 
 // Used internally by Starcraft to manage temporary units lists
-BW_DATA(Unit***, g_temp_units_lists_array, ccmu_extender.get_all_units_in_bounds_list);
-BW_DATA(u32*, g_temp_units_list_current_array_count, 0x006BEE64);
-BW_DATA(u32*, g_temp_units_list_arrays_counts_list_last_index, 0x006BEE6C);
-BW_DATA(u32*, g_temp_units_list_arrays_counts_list, ccmu_extender.get_all_units_in_bounds_index);
+BW_DATA(Unit***,			g_temp_units_lists_array,							ccmu_extender.get_all_units_in_bounds_list);
+BW_DATA(u32*,				g_temp_units_list_current_array_count,				0x006BEE64);
+BW_DATA(u32*,				g_temp_units_list_arrays_counts_list_last_index,	0x006BEE6C);
+BW_DATA(u32*,				g_temp_units_list_arrays_counts_list,				ccmu_extender.get_all_units_in_bounds_index);
 
 // Font & Drawing
 namespace graphics {
 	struct Font; struct Bitmap;
 }
 BW_DATA(graphics::Font**,		font_base,				0x006CE0F4);
-BW_DATA(graphics::Bitmap*,	g_game_screen_buffer,	0x006CEFF0);
+BW_DATA(graphics::Bitmap*,		g_game_screen_buffer,	0x006CEFF0);
 BW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // 640 x 480 divided into 1200 squares of 16x16
 BW_DATA(Layers*,				g_screen_layers,		0x006CEF50);
 typedef void(__stdcall* DrawGameProc)(graphics::Bitmap* surface, Bounds* bounds);
-static DrawGameProc const g_old_draw_game_proc = (DrawGameProc)0x004BD580;
+static DrawGameProc const		g_old_draw_game_proc = (DrawGameProc)0x004BD580;
 BW_DATA(u32*,					g_current_font_color,	0x006CE0C0);
 BW_DATA(u8*,					g_font_spacing,			0x006CE0C4);
-BW_DATA(Box16*,				g_draw_text,			0x006CE0C8);/*
+BW_DATA(Box16*,					g_draw_text,			0x006CE0C8);/*
 BW_DATA(u16*,					g_draw_text_left,		0x006CE0C8);
 BW_DATA(u16*,					g_draw_text_top,		0x006CE0CA);
 BW_DATA(u16*,					g_draw_text_right,		0x006CE0CC);
@@ -869,7 +869,7 @@ BW_DATA(s32*, g_factions_colors_ordering, 0x0057F21C);
 // Max index is PLAYER_COUNT-1
 BW_DATA(u8*, g_player_minimap_colors,	0x00581DD6);
 BW_DATA(u8*, g_player_color_ids,		0x0058F442);
-BW_DATA(u8*, g_player_in_game_colors, 0x00581D76);
+BW_DATA(u8*, g_player_in_game_colors,	0x00581D76);
 
 const ListExtern<Image, &Image::link> unusedImages(0x0057EB68, 0x0057EB70);
 BW_DATA(List<Sprite>*, g_free_sprites, 0x0063FE30);
@@ -888,10 +888,10 @@ struct ImagesDatExtraOverlayLO_Files {
 	LO_Header** landing_dust_overlays;
 	LO_Header** liftoff_dust_overlays;
 };
-BW_DATA_REF(ImagesDatExtraOverlayLO_Files*,		lo_files,				0x0051F2A8);
+BW_DATA_REF(ImagesDatExtraOverlayLO_Files*,			lo_files,				0x0051F2A8);
 BW_DATA_REF(const LO_Header* const*,				g_shield_overlays,		0x0052E5C8);
 
-BW_DATA(const ColorShiftData*,					g_color_shift,			0x005128F8); // Use ColorRemapping::Enum as index
+BW_DATA(const ColorShiftData*,						g_color_shift,			0x005128F8); // Use ColorRemapping::Enum as index
 BW_DATA_REF(GrpHead* const*,						g_image_grp_graphics,	0x0051CED0);
 
 template <typename T>
@@ -899,31 +899,31 @@ struct PlayerFlags {
 	T flags[PLAYER_COUNT];
 };
 BW_DATA(PlayerFlags<u8>*,		player_alliance,			0x0058D634); // See bw::is_allied_to()
-BW_DATA(PlayerFlags<u32>*,	player_vision,				0x0057F1EC);
+BW_DATA(PlayerFlags<u32>*,		player_vision,				0x0057F1EC);
 
-BW_DATA(Unit**,				g_active_portrait_unit,		0x00597248);
+BW_DATA(Unit**,					g_active_portrait_unit,		0x00597248);
 
 BW_DATA_REF(AI_Main*,			g_aiscript_controller,		0x0068FEE8);
-BW_DATA(AiRegion**,			g_ai_region_captains,		0x0069A604);
+BW_DATA(AiRegion**,				g_ai_region_captains,		0x0069A604);
 BW_DATA(u32*,					g_ai_supply_reserved,		0x006CA4BC);
-BW_DATA(AiScript**,			g_first_active_aiscript,	0x0068C100);
-BW_DATA(AiScriptArray*,		g_aiscript_array,			0x0068C0FC);
+BW_DATA(AiScript**,				g_first_active_aiscript,	0x0068C100);
+BW_DATA(AiScriptArray*,			g_aiscript_array,			0x0068C0FC);
 
-BW_DATA(ResourceAreaArray*,	g_resource_areas,		0x00692688);
+BW_DATA(ResourceAreaArray*,		g_resource_areas,			0x00692688);
 
 //-------- Internal constants --------//
 
-BW_DATA(b32*, g_is_game_paused,				0x006509C4);  // See bw::g_is_game_paused()
-BW_DATA(b8*,  g_is_brood_war,				0x0058F440);  // See bw::is_brood_war_mode()
-BW_DATA(u32*, g_cheat_state,				0x006D5A6C);  // See bw::is_cheat_enabled()
-BW_REF(b32,	g_is_in_replay,					0x006D0F14);  // See bw::is_in_replay()
-BW_DATA(b32*, g_is_replay_paused,			0x006D11B0);
-BW_DATA(s32*, g_max_unit_width,				0x006BEE68);
-BW_DATA(s32*, g_max_unit_height,			0x006BB930);
-BW_REF(b32, g_is_in_game_loop,				0x006D11C8);
-BW_REF(u32, g_last_random_number,			0x0051CA14);  // See bw::random(), bw::rand_between()
-BW_DATA(b32*, g_can_update_powered_status,	0x0063FF44);
-BW_REF(b32, g_is_placing_building,			0x00640880);
+BW_DATA(b32*,	g_is_game_paused,				0x006509C4);  // See bw::g_is_game_paused()
+BW_DATA(b8*,	g_is_brood_war,					0x0058F440);  // See bw::is_brood_war_mode()
+BW_DATA(u32*,	g_cheat_state,					0x006D5A6C);  // See bw::is_cheat_enabled()
+BW_REF(b32,		g_is_in_replay,					0x006D0F14);  // See bw::is_in_replay()
+BW_DATA(b32*,	g_is_replay_paused,				0x006D11B0);
+BW_DATA(s32*,	g_max_unit_width,				0x006BEE68);
+BW_DATA(s32*,	g_max_unit_height,				0x006BB930);
+BW_REF(b32,		g_is_in_game_loop,				0x006D11C8);
+BW_REF(u32,		g_last_random_number,			0x0051CA14);  // See bw::random(), bw::rand_between()
+BW_DATA(b32*,	g_can_update_powered_status,	0x0063FF44);
+BW_REF(b32,		g_is_placing_building,			0x00640880);
 
 //-------- Tech levels --------//
 
@@ -958,12 +958,12 @@ namespace requirements
 {
 	BW_DATA_REF(u16*, units,		0x00514178);
 	BW_DATA_REF(u16*, orders,		0x00514CF8);
-	BW_DATA_REF(u16*, research,	0x00514908);
-	BW_DATA_REF(u16*, upgrade,	0x005145C0);
-	BW_DATA_REF(u16*, tech,		0x00514A48);
+	BW_DATA_REF(u16*, research,		0x00514908);
+	BW_DATA_REF(u16*, upgrade,		0x005145C0);
+	BW_DATA_REF(u16*, tech,			0x00514A48);
 }
 
-BW_DATA(GuardAiArray*,       g_guard_array,			0x0067D400);
+BW_DATA(GuardAiArray*,       g_guard_array,				0x0067D400);
 BW_DATA(GuardAiListPlayers*, g_player_guard_list,		0x00685108);
 
 BW_DATA(u32*,			g_ai_update_cooldown,			0x0059CC94);
@@ -971,22 +971,22 @@ BW_DATA(u32*,			g_ai_update_cooldown,			0x0059CC94);
 // For update_creep_disappearance_unit
 BW_DATA(u32*,			g_map_creep_width,						0x006D0F08);
 BW_DATA(u32*,			g_dying_unit_creep_disappearance_count, 0x00658AE4);
-BW_DATA(u32**,		g_current_tiles,						0x006D0E84);
+BW_DATA(u32**,			g_current_tiles,						0x006D0E84);
 
 // For draw_tooltip_with_icon
-BW_DATA(char*,		grp_stat_res_icon_mapping,		0x00515228); // sizeof 8
+BW_DATA(char*,			grp_stat_res_icon_mapping,		0x00515228); // sizeof 8
 BW_DATA(GrpHead*,		icons_grp,						0x0068C238); // This is wrong. -DF
-BW_DATA(GrpHead**,	g_icons_grp,					0x0068C238);
-BW_DATA(Box16*,		tooltip_required_area,			0x006CE0D8);
+BW_DATA(GrpHead**,		g_icons_grp,					0x0068C238);
+BW_DATA(Box16*,			tooltip_required_area,			0x006CE0D8);
 
 // For do_attack_notify_unit
-BW_DATA(char*,		g_palette_index_reference,		0x006CEB20); // sizeof at least 20
+BW_DATA(char*,			g_palette_index_reference,		0x006CEB20); // sizeof at least 20
 BW_DATA(u32*,			notify_cooldown,				0x00640870);
 //BW_DATA(SoundData*,	g_sound_data,					0x006D1270); // THIS IS NOT EXTENDED!!!
 
 // For stat_data_unit_wireframe_select_update
-BW_DATA(char**,	off_68C1FC,							0x0068C1FC);
-BW_DATA(char*,	g_palette_remap,					0x0050CDC1);
+BW_DATA(char**,			off_68C1FC,						0x0068C1FC);
+BW_DATA(char*,			g_palette_remap,				0x0050CDC1);
 
 // For kill_units_at_location_proc
 BW_DATA(u32*,		trig_remove_unit_active,			0x005971DC);
@@ -995,8 +995,8 @@ BW_DATA(u32*,		trig_kill_unit_count,				0x005971E0);
 
 // For btnsact_rally_point
 BW_DATA(u8*,		g_order_id_ground,					0x00641691);
-BW_DATA(char*,	g_order_id_obstructed,				0x00641693);
-BW_DATA(char*,	g_order_id_unit,					0x00641692);
+BW_DATA(char*,		g_order_id_obstructed,				0x00641693);
+BW_DATA(char*,		g_order_id_unit,					0x00641692);
 BW_DATA(u16*,		g_buttonset_special_buttonset_id,	0x0068C1C8);
 
 // For select_multiple_units_from_unit_list
@@ -1009,20 +1009,20 @@ BW_DATA(InputProcsFunc**,		left_click_proc,		0x006556EC);
 BW_DATA(InputProcsFunc**,		right_click_proc,		0x006556F0);
 
 BW_DATA(u16*,					g_minimap_cursor,		0x006556FC);
-BW_DATA(RECT*,				g_minimap_rect,			0x00512D00);
+BW_DATA(RECT*,					g_minimap_rect,			0x00512D00);
 
 // For process_right_click_action
-BW_DATA(u16*,			is_unit_in_point_x_pos,			0x006509CC);
-BW_DATA(u16*,			is_unit_in_point_y_pos,			0x006509CE);
+BW_DATA(u16*,		is_unit_in_point_x_pos,			0x006509CC);
+BW_DATA(u16*,		is_unit_in_point_y_pos,			0x006509CE);
 
 // For input_game_right_mouse_click
 BW_DATA(Unit**,		local_selection_group_2,		ccmu_extender.new_local_selection_group);
 
 // For init_damage_overlay_counts
-BW_DATA_REF(u8*,		g_building_overlay_state_max,	0x005240D0);
+BW_DATA_REF(u8*,	g_building_overlay_state_max,	0x005240D0);
 
 // To move in-game timer while leaderboard is active
-BW_DATA(BinDlg**,		leaderboard_dialog,				0x00597284);
+BW_DATA(BinDlg**,	leaderboard_dialog,				0x00597284);
 BW_DATA(char*,		leaderboard_type,				0x0058D70C);
 
 // For begin_gas_building
@@ -1042,29 +1042,29 @@ BW_DATA(u32*,			building_complete_something,	0x006D1AE8);
 
 // For trigact_transmission
 BW_DATA(char*,			g_is_executing_wait,		0x006509B8);
-BW_REF(TriggerLink*,		g_current_trigger_node,		0x006509AC);
-BW_DATA(u32*,				g_trigger_wait,				0x00650980);
+BW_REF(TriggerLink*,	g_current_trigger_node,		0x006509AC);
+BW_DATA(u32*,			g_trigger_wait,				0x00650980);
 
 // For draw_minimap_box
 BW_DATA(char*,			g_minimap_state,			0x006D5BBE);
-BW_DATA(u32*,				g_minimap_box_checksum,		0x0059C1A8);
-BW_DATA(u32*,				g_minimap_draw_neutrals,	0x005993AC);
+BW_DATA(u32*,			g_minimap_box_checksum,		0x0059C1A8);
+BW_DATA(u32*,			g_minimap_draw_neutrals,	0x005993AC);
 
 // For draw_train_progress
 BW_DATA(GrpHead**,		g_cmdbtns_handle,			0x0068C1C0);
 
 // For draw_all_minimap_boxes
-BW_DATA(Bitmap**,			g_current_surface,			0x006CF4A8);
-BW_DATA(Bitmap*,			g_minimap_surface_2,		0x0059C194);
-BW_DATA(u32*,				g_minimap_unit_box_count,	0x0059C2B8);
+BW_DATA(Bitmap**,		g_current_surface,			0x006CF4A8);
+BW_DATA(Bitmap*,		g_minimap_surface_2,		0x0059C194);
+BW_DATA(u32*,			g_minimap_unit_box_count,	0x0059C2B8);
 
 // For execute_trigger_conditions
 BW_DATA(void**,			g_trigger_condition_list,	0x00515A98);
 
 // For play_sound trigger
-BW_DATA(s32*,				g_big_volume_array,			0x005008F0);
+BW_DATA(s32*,			g_big_volume_array,			0x005008F0);
 
-BW_DATA(u32*,				g_game_speed_replay_modifiers,	0x005124D8);
+BW_DATA(u32*,			g_game_speed_replay_modifiers,	0x005124D8);
 
 // For play_yes_unit_responses
 BW_DATA(Unit**,			g_place_building_parent_unit,	0x00640874);
@@ -1075,11 +1075,11 @@ BW_DATA(Sprite**,		g_horizontal_sprite_lines_begin,	0x00629688);
 BW_DATA(Sprite**,		g_horizontal_sprite_lines_end,		0x00629288);
 
 // For get_cursor_type
-BW_DATA(RECT*,		g_cursor_limit_rect,				0x005993B0);
-BW_DATA(char*,		g_is_drag_selecting,				0x0066FF5C);
+BW_DATA(RECT*,			g_cursor_limit_rect,				0x005993B0);
+BW_DATA(char*,			g_is_drag_selecting,				0x0066FF5C);
 
 // For stats_panel_display hooks
-BW_DATA(char**,		g_queues_buffers,					0x00519F40);
+BW_DATA(char**,			g_queues_buffers,					0x00519F40);
 
 // For adding implicit ESC to submenus
 BW_DATA(u32*,			g_active_portrait_buttonset_id,		0x0068C14C);
@@ -1092,14 +1092,14 @@ BW_DATA_REF(u32*,		ai_strength_ground,					0x006BB5A0);
 // For show_cursor_marker
 BW_DATA(Thingy**,		g_first_used_thingy_1,				0x00652918);
 BW_DATA(u8*,			g_can_draw_thingy,					0x00652920);
-BW_DATA(char**,		g_iscript_data,						0x006D1200);
+BW_DATA(char**,			g_iscript_data,						0x006D1200);
 
 // For play_warp_in_overlay
 BW_DATA(UpdateFunction*,	g_sg_update_funcs,				0x00512510);
-BW_DATA(DrawFunction*,	g_sg_draw_funcs,				0x005125A0);
+BW_DATA(DrawFunction*,		g_sg_draw_funcs,				0x005125A0);
 
 // For iscript_opcode_cases
-BW_DATA(char*,		cbullet_damage,						0x0050434C);
+BW_DATA(char*,			cbullet_damage,						0x0050434C);
 
 // For create_unit_building_sprite_validity_array
 BW_DATA(u32*,			g_current_visibility_hash,			0x0063FD30);
@@ -1110,7 +1110,7 @@ BW_DATA(u32*,			g_current_hash_offset,				0x0063FD28);
 BW_DATA(ControlGroupPlayerArray*, control_group_array,	ccmu_extender.new_saved_selections);
 
 // For remove_healthbar
-BW_DATA(Layer*,		g_game_layer,						0x006CEFB4);
+BW_DATA(Layer*,			g_game_layer,						0x006CEFB4);
 BW_DATA(Image**,		g_first_free_healthbar,				0x0057EB6C);
 BW_DATA(Image**,		g_last_free_healthbar,				0x005254B8);
 
@@ -1153,7 +1153,7 @@ BW_DATA(Thingy**,			g_first_free_thingy,			0x00654878);
 BW_DATA(Thingy**,			g_last_free_thingy,				0x0065487C);
 
 // For remove_subunit_or_gas_container
-BW_DATA(Unit**,			g_last_dying_unit,				0x0059CC98);
+BW_DATA(Unit**,				g_last_dying_unit,				0x0059CC98);
 
 // For unit_selection_click
 BW_DATA(b32*,				g_is_double_clicking,			0x0066FF58);
@@ -1162,13 +1162,13 @@ BW_DATA(b32*,				g_is_double_clicking,			0x0066FF58);
 BW_DATA(u32*,				g_score_screen_player_count,	0x0059A0E0);
 
 // For find_best_cargo_return_to_target
-BW_DATA(Box16*,			g_full_map_pixel_dimensions,	0x006284A0);
+BW_DATA(Box16*,				g_full_map_pixel_dimensions,	0x006284A0);
 
 // For draw_unit_box
 BW_DATA(Bitmap*,			g_minimap_surface,					0x0059C18C);
 BW_DATA(Bitmap*,			g_minimap_surface_fog,				0x0059C194);
-BW_DATA(void**,			g_minimap_vision_CB,				0x0059C188);
-BW_DATA(void**,			g_minimap_surface_CB,				0x0059C1A0);
+BW_DATA(void**,				g_minimap_vision_CB,				0x0059C188);
+BW_DATA(void**,				g_minimap_surface_CB,				0x0059C1A0);
 BW_DATA(u16*,				g_ping_zoom_div,					0x0059CC68);
 BW_DATA(u16*,				g_ping_zoom_lshift,					0x0059C1B0);
 BW_DATA(u16*,				g_map_width,						0x0059CC74);
@@ -1185,25 +1185,25 @@ BW_DATA(const VX4**,		vx4FileHandle,						0x00628458);
 BW_DATA(u8*,				g_is_league_game,					0x00629268);
 
 // For draw_standard_button_graphic
-BW_DATA(char*,			g_print_xy_alignment,				0x006CE110);
+BW_DATA(char*,				g_print_xy_alignment,				0x006CE110);
 
 // For draw_stat_button_image
-BW_DATA(CmdBtnPalette*,	g_cmdbtn_palette,					0x0068C150);
+BW_DATA(CmdBtnPalette*,		g_cmdbtn_palette,					0x0068C150);
 
 // For load_statdata_bin
-BW_DATA(char*,			aztp,								0x00512700);
+BW_DATA(char*,				aztp,								0x00512700);
 
 // For ai_prepare_to_flee
 BW_DATA(u32*,				unk_static,							0x0051ABFC);
 
-BW_DATA(char*,			g_text_buffer,						0x006CA76C);
+BW_DATA(char*,				g_text_buffer,						0x006CA76C);
 
 // For load_unload_proc 
-BW_DATA(UnitPath**,		g_first_free_path,					0x006BEE84);
-BW_DATA(UnitPath**,		g_path_array_start,					0x006BEE8C);
+BW_DATA(UnitPath**,			g_first_free_path,					0x006BEE84);
+BW_DATA(UnitPath**,			g_path_array_start,					0x006BEE8C);
 
 // For initialize_provider_version
-BW_DATA(bool*,			g_is_expansion,						0x0058F440);
+BW_DATA(bool*,				g_is_expansion,						0x0058F440);
 BW_DATA(u32*,				g_is_demo,							0x005124D0);
 
 // For print_stat_res_info
