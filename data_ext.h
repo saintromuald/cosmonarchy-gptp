@@ -410,9 +410,12 @@ enum ExtTimerVectorId {
 struct UnitExt {
 	bool					pause_timers;
 	u32						energy_regen_timer;
-	u32						shield_regen_timer;
-	u32						damage_taken_timer;
-	u32						damage_dealt_timer;
+
+	// Every unit will starts counted as out of combat
+	u32						shield_regen_timer = UINT_MAX;
+	u32						damage_taken_timer = UINT_MAX;
+	u32						damage_dealt_timer = UINT_MAX;
+
 	u32                     total_damage_taken;
 	u32                     total_damage_dealt;
 	Point16					anthelion_last_move_target;
@@ -426,7 +429,9 @@ struct UnitExt {
 
 	u8						seen_by_flags;
 	Point16					last_seen_position[PlayerLimit];
-	u32						last_seen_timer[PlayerLimit];
+	u32						last_seen_timer[PlayerLimit]{
+		UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX
+	};
 
 	f32						build_progress_float;
 	u32						build_progress_integer;

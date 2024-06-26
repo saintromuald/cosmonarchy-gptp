@@ -3503,6 +3503,7 @@ namespace hooks {
 	//	memory_patch(0x004EC70B + 6, (u8)OrderQueueTimer); // hooked within unused_order_patch_wrapper in cosmonarchy_specific_inject.cpp 
 
 		g_chk_cache.clear();
+		init_ext_variables();
 
 		quickcasting_signal = false;
 		quickcasting_command_card = 0;
@@ -3521,7 +3522,6 @@ namespace hooks {
 
 		memset(vision_timers, 0, 8*256*256);
 
-		init_ext_variables();
 		init_omnipresence_state();
 
 		gptp::g_logger << "Started a match!\n";
