@@ -2151,21 +2151,11 @@ bool buttonset_id_is_submenu(u32 buttonset_id) {
 
 u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
 	switch (unit_id) {
-		case UnitId::TerranTarasque: {
-			return WeaponId::TarasqueAcceleratedPlasmid;
-		}
-		case UnitId::TerranDurendal: {
-			return WeaponId::DurendalPhilistineAutogun;
-		}
-		case UnitId::TerranCentaur: {
-			return WeaponId::CentaurSunchaserMissiles;
-		}
-		case UnitId::ZergOkrimnilisk: {
-			return WeaponId::OkrimniliskOmnispores;
-		}
-		case UnitId::ZergZarcavrokor: {
-			return WeaponId::ZarcavrokorBonesofReflection;
-		}
+		case UnitId::TerranTarasque:	return WeaponId::TarasqueAcceleratedPlasmid;
+		case UnitId::TerranDurendal:	return WeaponId::DurendalPhilistineAutogun;
+		case UnitId::TerranCentaur:		return WeaponId::CentaurSunchaserMissiles;
+		case UnitId::ZergOkrimnilisk:	return WeaponId::OkrimniliskOmnispores;
+		case UnitId::ZergZarcavrokor:	return WeaponId::ZarcavrokorBonesofReflection;
 	}
 	return WeaponId::None;
 }
@@ -2991,6 +2981,10 @@ void regress(Unit* unit, u32 regression_id) {
 			regress_to = units_dat::base_property[regression_id] & UnitProperty::Flyer ? UnitId::ZergCocoon : UnitId::ZergEgg;
 		}
 
+		if (unit_id_is_transport(old_id)) {
+			helper::kill_all_loaded_units(unit); // @TODO: Get the difference between transport cargo space of new and old ids, and kill excess units. -Pr0nogo
+		}
+
 		Unit* new_unit = unit;
 		if (unit->id == UnitId::ZergExcisant) {
 			new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
@@ -3789,14 +3783,11 @@ bool game_kind_supports_kills(GameKind game_kind) {
 }
 
 bool unit_can_fire_secondary_weapon(Unit* unit) {
-	if (unit->status & UnitStatus::InTransport) {
-		if (unit->status & UnitStatus::InBuilding && unit->connected_unit && !(unit->connected_unit->status & UnitStatus::InAir)) {
-			return true;
-		}
+	UnitExt* unit_ext = &unit->ext();
+	if (unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 		return false;
-	} else {
-		return true;
 	}
+	return unit->can_attack_from_transport();
 }
 
 void cancel_targeting_and_place_building() {
