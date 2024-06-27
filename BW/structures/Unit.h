@@ -386,7 +386,7 @@ struct Unit : public UnitLayout
 
 	struct UnitExt& ext();
 	bool has_energy_for(u32 tech_id);
-	bool can_attack_from_transport();
+	bool can_attack_transport_checks();
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

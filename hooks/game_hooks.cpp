@@ -2197,7 +2197,7 @@ namespace hooks {
 			} break;
 			case UnitId::ZergOkrimnilisk: {
 				// Endless Limbs
-				if (unit->can_attack_from_transport()) {
+				if (unit->can_attack_transport_checks()) {
 					bool is_moving = unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving;
 					bool can_fire = !unit->ground_weapon_cooldown && !(unit->status & UnitStatus::Burrowed);
 					WeaponId::Enum weapon_id = WeaponId::OkrimniliskRelentlessTendrils;

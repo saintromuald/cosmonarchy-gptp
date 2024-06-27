@@ -1407,7 +1407,7 @@ bool Unit::has_energy_for(u32 tech_id) {
 	return this->energy >= techdata_dat::energy_cost[tech_id] * 256;
 }
 
-bool Unit::can_attack_from_transport() {
+bool Unit::can_attack_transport_checks() {
 	if (!(this->status & UnitStatus::InTransport)) {
 		return true;
 	}

@@ -3787,7 +3787,7 @@ bool unit_can_fire_secondary_weapon(Unit* unit) {
 	if (unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 		return false;
 	}
-	return unit->can_attack_from_transport();
+	return unit->can_attack_transport_checks();
 }
 
 void cancel_targeting_and_place_building() {
