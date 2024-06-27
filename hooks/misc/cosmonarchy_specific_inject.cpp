@@ -514,11 +514,6 @@ namespace hooks
 						g_last_random_number);
 					gptp::g_critical_logger << buffer;
 
-					for (u32 i = 0; i < 16; i++) {
-						snprintf(buffer, sizeof(buffer), "\n %u - %s: %u / %u", i, unmovable_names[i], g_unmovable_hits[i], g_unmovable_lastframe[i]);
-						gptp::g_critical_logger << buffer;
-					}
-
 					gptp::g_critical_logger << "\n\nLocal selections:";
 					for (u32 i = 0; i < SelectionLimit; i++) {
 						Unit* unit = g_client_selection_group->unit[i];

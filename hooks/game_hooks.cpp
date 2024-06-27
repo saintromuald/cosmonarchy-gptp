@@ -641,12 +641,6 @@ namespace hooks {
 		init_custom_ai();
 		init_hotkeys();
 
-		// Init unmovable data
-		for (u32 i = 0; i < 16; i++) {
-			g_unmovable_hits[i] = 0;
-			g_unmovable_lastframe[i] = 0;
-		}
-
 		g_aise_state.cheats_allowed = bw::get_game_kind() != GameKind_Scenario;
 
 		// Execute triggers before first frame update
@@ -1176,8 +1170,6 @@ namespace hooks {
 					if (unit_ext->timers[TimerStun] > 1) {
 						unit->status &= ~UnitStatus::Invincible;
 					} else {
-						g_unmovable_hits[2]++;
-						g_unmovable_lastframe[2] = g_elapsed_time_frames;
 						unit->status &= ~(UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 					}
 					timer_clear_min = 0;
@@ -1293,12 +1285,8 @@ namespace hooks {
 		}
 
 		if (unit_ext->timers[TimerStun] > 1) {
-			++g_unmovable_hits[3];
-			g_unmovable_lastframe[3] = g_elapsed_time_frames;
 			unit->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 		} else if (unit_ext->timers[TimerStun] == 1) {
-			++g_unmovable_hits[4];
-			g_unmovable_lastframe[4] = g_elapsed_time_frames;
 			unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 		}
 
@@ -1744,8 +1732,6 @@ namespace hooks {
 						unit->hitpoints = unit->get_max_hp_raw();
 						bw::restore_func(unit);
 						unit->order_computer(OrderId::Stop);
-						++g_unmovable_hits[5];
-						g_unmovable_lastframe[5] = g_elapsed_time_frames;
 						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 						helper::play_sound_from_unit(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
 					} else {
@@ -2656,8 +2642,6 @@ namespace hooks {
 		&& !unit->movement_flags
 		&&  unit->movement_state == UnitMovement::UnitMovement_Dormant)
 		{
-			++g_unmovable_hits[6];
-			g_unmovable_lastframe[6] = g_elapsed_time_frames;
 			unit->status ^= UnitStatus::Unmovable;
 		}
 

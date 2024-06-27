@@ -143,26 +143,4 @@ std::vector<Unit*> get_clarion_links(Unit* unit);
 
 // Returns damage left after spread
 s32 spread_clarion_damage(const hooks::WeaponDamageData& data, f32 factor);
-
 }
-
-inline const char* unmovable_names[]{
-	"get_movable_state",
-	"reclaim_corpse",
-	"tick_unit revive",
-	"tick_unit stun on",
-	"tick_unit stun off",
-	"tick_unit cuirass",
-	"melee units freeze fix",
-	"orders_sap_location state1",
-	"orders_drone_land state1",
-	"orders_drone_land state0",
-	"orders_scv_build state1",
-	"move_to_target arrived",
-	"move_to_target moving",
-	"repulse_unit",
-	"orders_place_mine state1",
-	"weapon_damage_fatal cuirass",
-};
-inline u32 g_unmovable_hits[16];
-inline u32 g_unmovable_lastframe[16];

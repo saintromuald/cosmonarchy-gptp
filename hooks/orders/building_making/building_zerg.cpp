@@ -427,8 +427,6 @@ void orders_drone_land(Unit* unit) { // 004E9AA0
 			if (order_state == 1) {
 				Sprite* unit_sprite = unit->sprite;
 				if (unit->move_target.pt.x == unit_sprite->position.x && unit->move_target.pt.y == unit_sprite->position.y) {
-					++g_unmovable_hits[8];
-					g_unmovable_lastframe[8] = g_elapsed_time_frames;
 					u32 unmovable = ((unit->status & UnitStatus::Unmovable) != 0) + 1;
 
 					Image* underlay = unit_sprite->images.tail;
@@ -485,8 +483,6 @@ void orders_drone_land(Unit* unit) { // 004E9AA0
 		}
 
 		if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y) {
-			++g_unmovable_hits[9];
-			g_unmovable_lastframe[9] = g_elapsed_time_frames;
 			u32 unmovable = ((unit->status & UnitStatus::Unmovable) != 0) + 1;
 			u32 queue_slot_id = unit->build_queue[unit->build_queue_slot];
 

@@ -75,8 +75,6 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 	Unit* unit = bw::create_unit_in_game(unit_id, player, pos.x, pos.y);
 	if (unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		++g_unmovable_hits[1];
-		g_unmovable_lastframe[1] = g_elapsed_time_frames;
 		unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 		unit->play_iscript_animation(IscriptAnimation::Unused1);
 		unit_ext->values[ValueReviveStarted] = 1;

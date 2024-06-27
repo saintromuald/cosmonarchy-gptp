@@ -940,8 +940,6 @@ namespace hooks {
 					data.target->hitpoints = CuirassSelfReviveHP;
 					fatal_deal_damage = false;
 					data.target->order_computer(OrderId::Stop);
-					++g_unmovable_hits[15];
-					g_unmovable_lastframe[15] = g_elapsed_time_frames;
 					data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 					helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
 				}
