@@ -452,10 +452,10 @@ namespace hooks
 	// Hooked to extend transports. -Pr0nogo
 	bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) { // 004C7E20
 		if (!unit) {
-			return 0;
+			return false;
 		}
 		if (args->check_height && helper::unit_is_at_height(unit, args->flags)) {
-			return 0;
+			return false;
 		}
 
 		KillUnitArgs* args_func = (KillUnitArgs*)&args->func;
@@ -478,14 +478,11 @@ namespace hooks
 				*trig_killing_additional_unit = 0;
 			}
 		}
-		if (!unit->sprite) {
-			return 0;
-		}
-		if (!unit->main_order_id) {
-			return 0;
+		if (!unit->sprite || !unit->main_order_id) {
+			return false;
 		}
 		if (!call_kill_unit_args_func(args->func, args->player, args->unit_id, unit)) {
-			return 0;
+			return false;
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories && unit->powerup_carrier) {
 			helper::kill_powerup(unit->powerup_carrier);

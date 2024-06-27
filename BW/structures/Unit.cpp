@@ -1406,3 +1406,20 @@ UnitExt& Unit::ext() {
 bool Unit::has_energy_for(u32 tech_id) {
 	return this->energy >= techdata_dat::energy_cost[tech_id] * 256;
 }
+
+bool Unit::can_attack_transport_checks() {
+	if (!(this->status & UnitStatus::InTransport)) {
+		return true;
+	}
+
+	if (this->status & UnitStatus::InBuilding && this->connected_unit) {
+		if (this->connected_unit->id == UnitId::TerranTencendur) {
+			return true;
+		}
+		if (this->connected_unit->status & UnitStatus::InAir) {
+			return false;
+		}
+		return true;
+	}
+	return false;
+}

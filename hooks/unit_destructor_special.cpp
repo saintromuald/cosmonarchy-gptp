@@ -201,31 +201,26 @@ void unit_on_death_behaviors(Unit* unit) {
 	// These require the unit to be completed
 	if (unit->status & UnitStatus::Completed) {
 		switch (unit->id) {
-			case UnitId::TerranAnvil:
-			{
+			case UnitId::TerranAnvil: {
 				// Anvil - death while armed
 				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerSalvageStunTimer]) {
 					bw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->position.x, unit->position.y, 11, 12);
 					helper::create_bullet(WeaponId::NuclearMissile, unit, unit->position.x, unit->position.y, unit->player, 0);
 				}
 			} break;
-			case UnitId::TerranAspirant:
-			{
+			case UnitId::TerranAspirant: {
 				g_iquare_globals->create_effect(EffectId::AspirantCriticality, 5 * 24, { unit->position.x, unit->position.y }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
 			} break;
-			case UnitId::ProtossClarion:
-			{
+			case UnitId::ProtossClarion: {
 				// Phase Link
 				bw::clear_clarion_links(unit);
 			} break;
 			case UnitId::ProtossAccantorOld:
-			case UnitId::ProtossSolarion:
-			{
+			case UnitId::ProtossSolarion: {
 				kill_hangar_units(unit);
 			} break;
 			case UnitId::ProtossPlasmaShell:
-			case UnitId::ProtossSteward:
-			{
+			case UnitId::ProtossSteward: {
 				if (unit->hangar_unit.parent) {
 					if (unit->hangar_unit.hangar_link.next) { // untie the next hangar_unit/scarab from current hangar_unit/scarab (tie it to previous)
 						unit->hangar_unit.hangar_link.next->hangar_unit.hangar_link.prev = unit->hangar_unit.hangar_link.prev;
@@ -258,12 +253,10 @@ void unit_on_death_behaviors(Unit* unit) {
 			case UnitId::TerranWellbore:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::ZergEzigrisant:
-			{
+			case UnitId::ZergEzigrisant: {
 				free_resource_container(unit);
 			} break;
-			case UnitId::ProtossAugur:
-			{
+			case UnitId::ProtossAugur: {
 				augur_sacrifice(unit);
 			} break;
 		}

@@ -1,11 +1,9 @@
 #include "weapon_damage.h"
 #include "../../hook_tools.h"
 
-extern const u32 Func_DoWeaponDamage; // Defined in Unit.cpp
-namespace
-{
-	void __declspec(naked) weapon_damage_wrapper()
-	{
+extern const u32 Func_DoWeaponDamage;
+namespace {
+	void __declspec(naked) weapon_damage_wrapper() {
 		static u32 result;
 		static Unit* target;
 		static Unit* attacker;
@@ -167,10 +165,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_weapon_damage_hooks()
-	{
+namespace hooks {
+	void inject_weapon_damage_hooks() {
 		jump_patch(weapon_damage_wrapper,				0x00479930, 1);
 		jump_patch(apply_ensnare_wrapper,				0x004F45E0, 2);
 		jump_patch(update_corrosive_spores_wrapper,		0x004F4480, 1);

@@ -583,12 +583,12 @@ namespace hooks
 	}
 
 	// Hooked to stop giving addons to neutral. -Pr0nogo
-	void disconnect_addon(Unit* unit) // 00464930
-	{
+	void disconnect_addon(Unit* unit) { // 00464930
 		Unit* addon = unit->building.addon;
 		unit->building.addon = 0;
 		helper::play_addon_detach_sound(addon);
 
+		helper::refund_all_queue_slots(addon);
 		UnitExt* addon_ext = get_unit_ext(addon);
 		addon_ext->values[ValueAddonInactive] = 1;
 		bw::refresh_console();
@@ -602,8 +602,7 @@ namespace hooks
 	}
 
 	// Hooked to stop giving addons to neutral. -Pr0nogo
-	void complete_addon(Unit* addon, Unit* parent) // 00463D50
-	{
+	void complete_addon(Unit* addon, Unit* parent) { // 00463D50
 		spread_debuffs(parent, addon);
 		u32 player = parent->player;
 		parent->building.addon = addon;
