@@ -49,8 +49,7 @@ bool irradiate_target(Unit* unit) {
 	return true; // Originally prohibited targeting eggs
 }
 
-namespace hooks
-{
+namespace hooks {
 	static void play_alert(Unit* unit, u32 sound_id) {
 		u32 alert_id = SoundId::AlertZerg - g_console_index;
 		helper::play_sound_from_unit(alert_id, 0, g_options_list->flags & 1, 0);
