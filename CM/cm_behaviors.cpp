@@ -2,7 +2,7 @@
 #include "BW\api.h"
 
 bool is_any_corpse(Thingy* thingy) {
-	if (thingy->sprite && bw::sprite_id_is_corpse(thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
+	if (thingy->sprite && sprite_id_is_corpse(thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
 		ThingyExt* corpse_ext = get_thingy_ext(thingy);
 		u32 unit_id = corpse_ext->unit_id;
 		if (units_dat::base_property[unit_id] & UnitProperty::Building

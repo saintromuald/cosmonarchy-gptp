@@ -352,7 +352,7 @@ void update_search_index() {
 
 	// Add corpses
 	for (Thingy* thingy = *g_first_thingy; thingy; thingy = thingy->next) {
-		if (thingy->sprite && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath) && bw::sprite_id_is_corpse(thingy->sprite->id)) {
+		if (thingy->sprite && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath) && sprite_id_is_corpse(thingy->sprite->id)) {
 			search_index_add(&corpse_index, thingy->sprite->position, thingy);
 		}
 	}
