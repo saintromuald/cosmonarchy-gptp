@@ -2106,7 +2106,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranDurendal: {
 				// Durendal - Forward March
-				if (!unit_ext->timers[TimerSecondaryWeaponCooldown] && bw::unit_can_fire_secondary_weapon(unit)) {
+				if (bw::unit_can_fire_secondary_weapon(unit)) {
 					FireMultipleOptions options = {};
 					options.apply_cooldown = false;
 					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, options)) {
@@ -2115,7 +2115,7 @@ namespace hooks {
 						helper::play_sound_from_unit(sound_id, unit, 1, 0);
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
 					} else {
-						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3;
 					}
 				}
 			} break;
@@ -2153,7 +2153,6 @@ namespace hooks {
 						}
 					}
 				}
-
 				if (unit_ext->timers[TimerHypnagogueChannel]) {
 					bw::decloak_passive_proc(unit);
 					switch (unit_ext->timers[TimerHypnagogueChannel]) {
@@ -2198,7 +2197,7 @@ namespace hooks {
 			} break;
 			case UnitId::ZergOkrimnilisk: {
 				// Endless Limbs
-				if (!(unit->status & UnitStatus::InTransport)) {
+				if (unit->can_attack_from_transport()) {
 					bool is_moving = unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving;
 					bool can_fire = !unit->ground_weapon_cooldown && !(unit->status & UnitStatus::Burrowed);
 					WeaponId::Enum weapon_id = WeaponId::OkrimniliskRelentlessTendrils;
@@ -2211,20 +2210,20 @@ namespace hooks {
 							helper::play_sound_from_unit(sound_id, unit, 1, 0);
 						}
 					}
-					if (!unit_ext->timers[TimerSecondaryWeaponCooldown]) {
-						FireMultipleOptions options = {};
-						options.use_weapon_factor = false;
-						options.apply_cooldown = false;
-						if (fire_multiple(unit, WeaponId::OkrimniliskOmnispores, 0, FilterEnemy, options)) {
-							unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OkrimniliskOmnispores);
-							unit->sprite->create_top_overlay(ImageId::OkrimniliskOmnisporesFire);
-							u32 sound_id = bw::rand_between(SoundId::SpirtithWeaponfire01, SoundId::SpirtithWeaponfire03);
-							helper::play_sound_from_unit(sound_id, unit, 1, 0);
-						} else {
-							unit_ext->timers[TimerSecondaryWeaponCooldown] = 3;
-						}
+				}
+				if (bw::unit_can_fire_secondary_weapon(unit)) {
+					FireMultipleOptions options = {};
+					options.use_weapon_factor = false;
+					options.apply_cooldown = false;
+					if (fire_multiple(unit, WeaponId::OkrimniliskOmnispores, 0, FilterEnemy, options)) {
+						unit->sprite->create_top_overlay(ImageId::OkrimniliskOmnisporesFire);
+						u32 sound_id = bw::rand_between(SoundId::SpirtithWeaponfire01, SoundId::SpirtithWeaponfire03);
+						helper::play_sound_from_unit(sound_id, unit, 1, 0);
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::OkrimniliskOmnispores);
+					} else {
+						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3;
 					}
-				} 
+				}
 			} break;
 			case UnitId::ProtossSycophant: {
 				if (unit->shields) {
@@ -4013,6 +4012,12 @@ namespace hooks {
 									Unit* unit = players_selections->unit[player][i];
 									if (!unit) {
 										continue;
+									}
+
+									if (rust_id == RustId::CastControlledDemolition || rust_id == RustId::CastEmergencyDetonation) {
+										if (!unit_id_can_do_controlled_demolition(unit->id)) {
+											continue;
+										}
 									}
 
 									UnitExt* unit_ext = get_unit_ext(unit);
