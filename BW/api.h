@@ -627,6 +627,18 @@ inline ActiveTile* get_active_tile_at_tile(u32 tile_x, u32 tile_y) {
 	return &(*g_active_tile_array)[tile_x + tile_y * g_map_tile_size->width];
 }
 
+inline ActiveTile& get_tile_at_coords(u32 x, u32 y) {
+	return (*g_active_tile_array)[(x / 32) + (y / 32) * g_map_tile_size->width];
+}
+
+inline ActiveTile& get_tile_at_coords(Point16 point) {
+	return get_tile_at_coords(point.x, point.y);
+}
+
+inline ActiveTile& get_tile_at_tile(u32 tile_x, u32 tile_y) {
+	return (*g_active_tile_array)[tile_x + tile_y * g_map_tile_size->width];
+}
+
 inline u16& getTileIdAt(s32 x, s32 y) {
 	return (*tileIdArray)[(x / 32) + g_map_tile_size->width * (y / 32)];
 }

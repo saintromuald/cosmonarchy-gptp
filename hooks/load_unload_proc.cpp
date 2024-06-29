@@ -10,17 +10,66 @@ static void special_load_unit(Unit* unit, Unit* transport) {
     }
 }
 
-static void special_unload_unit(Unit* unit, Unit* transport, Point16* pos) {
-    if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-        Point16 size = units_dat::building_dimensions[unit->id];
-        pos->x = (u16)(pos->x + 16) / 32 * 32;
-        pos->y = (u16)(pos->y + 16) / 32 * 32;
-    }
-
+static void special_unload_unit(Unit* unit, Unit* transport) {
     if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
-        bw::spawn_custom_creep_at(*pos, unit->id, false);
+        bw::spawn_custom_creep_at(unit->position, unit->id, false);
         helper::set_secondary_order(unit, OrderId::SpreadCreep);
     }
+}
+
+static Point16 align_to_tile_grid(Point16 pos) {
+    return {
+        static_cast<u16>((pos.x + 16) / 32 * 32),
+        static_cast<u16>((pos.y + 16) / 32 * 32),
+    };
+}
+
+static bool check_building_collision(UnitId::Enum unit_id, Point16 pos) {
+    Point16 size = units_dat::building_dimensions[unit_id];
+    u32 tx0 =  pos.x / 32;
+    u32 tx1 = (pos.x + size.x + 31) / 32;
+    u32 ty0 =  pos.y / 32;
+    u32 ty1 = (pos.y + size.y + 31) / 32;
+
+    for (u32 x = 0; x < tx1; x++) {
+        if (x >= g_map_tile_size->width) {
+            return false;
+        }
+        for (u32 y = 0; y < ty1; y++) {
+            if (y >= g_map_tile_size->height) {
+                return false;
+            }
+
+            const auto& tile = bw::get_tile_at_tile(x, y);
+            if (tile.always_unbuildable || tile.currently_occupied) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+static bool fix_unload_pos(Unit* unit, Point16* pos) {
+    Box16 valid_area = {};
+    valid_area.left   = static_cast<s16>(unit->position.x - 32);
+    valid_area.top    = static_cast<s16>(unit->position.y - 32);
+    valid_area.right  = static_cast<s16>(unit->position.x + 32);
+    valid_area.bottom = static_cast<s16>(unit->position.y + 32);
+
+    if (!bw::check_unit_collision_pos(unit, pos, pos, &valid_area, true)) {
+        return false;
+    }
+
+    if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+        *pos = align_to_tile_grid(*pos);
+        
+        if (check_building_collision((UnitId::Enum)unit->id, *pos)) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
@@ -174,15 +223,10 @@ b32 unload_unit_proc(Unit* unit) { // 004E7F70
     if (!helper::can_unload(transport, unit, &pos)) {
         return false;
     }
-
-    bool cargo_is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-    if (cargo_is_building && !units_dat::group_flags[unit->id].is_zerg != RaceId::Zerg) {
-        ActiveTile* tile = bw::get_active_tile_at_coords(pos);
-        TileExt* tile_ext = get_tile_ext_at_tile(pos.x, pos.y);
-        if (tile->has_cagra /*&& !can_place_on_creep_tile(tile_ext, unit->player)*/) {
-            return 0;
-        }
+    if (!fix_unload_pos(unit, &pos)) {
+        return false;
     }
+
     if (transport->id == UnitId::TerranTrojan) {
         transport->main_order_timer = 7;
     } else {
@@ -192,11 +236,11 @@ b32 unload_unit_proc(Unit* unit) { // 004E7F70
     bw::decloak_passive_proc(unit);
     bw::decloak_passive_proc(transport);
 
-    special_unload_unit(unit, transport, &pos);
     helper::move_unit(unit, pos.x, pos.y);
     if (unit->subunit) {
         helper::move_unit(unit->subunit, pos.x, pos.y);
     }
+    special_unload_unit(unit, transport);
 
     helper::ignore_iscript_go_to_idle(unit);
     helper::unload_unit_ext(unit, 0);

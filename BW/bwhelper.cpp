@@ -2167,6 +2167,19 @@ namespace helper {
 		}
 	}
 
+	Unit* check_collision(Unit* unit) {
+		const u32 func_address = 0x0042D9A0;
+		static Unit* result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 	bool begin_building(Unit* unit) {
 		const u32 func_address = 0x00467030;
 		static b32 result;

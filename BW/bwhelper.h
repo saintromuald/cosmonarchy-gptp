@@ -265,6 +265,7 @@ namespace helper {
 
 	bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance);					// 00401240
 	void check_unstack(Unit* unit);												                            // 0042D9A0
+	Unit* check_collision(Unit* unit);												                        // 0042D9A0
 	bool begin_building(Unit* unit);																		// 00467030
 	Unit* begin_gas_building(Unit* unit, u32 unit_id);														// 004678A0
 	void add_overlay_below_main(Sprite* sprite, u32 imageId, u32 x_offset, u32 y_offset, u32 direction);	// 00498D70
