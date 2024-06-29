@@ -359,82 +359,54 @@ void orders_enter_transport(Unit* unit) {
 }
 
 void orders_unload(Unit* unit) {
-    if (unit->status & UnitStatus::GroundedBuilding || unit->main_order_timer == 0) {
-        u32 result_E7F70 = 0;
-        bool bEndLoop = false;
-        bool bFoundUnitToUnload = false;
-        u32* loadedUnitOffset;
-        bool jump_to_E8191 = false;
-        bool jump_to_E8195 = false;
-        bool jump_to_E81AD = false;
+    if (!(unit->status & UnitStatus::GroundedBuilding) && unit->main_order_timer != 0) {
+        return;
+    }
 
-        for (u32 i = 0; i < TransportCap; ++i) {
-            Unit* cargo = get_loaded_unit_from_index(unit, i);
-            if (cargo) {
-                bFoundUnitToUnload = true;
-                result_E7F70 = helper::unload_unit_proc(cargo);
-                if (!(unit->status & UnitStatus::GroundedBuilding)) {
-                    break;
-                }
+    bool unit_unloaded = false;
+    for (u32 i = 0; i < TransportCap; ++i) {
+        Unit* cargo = get_loaded_unit_from_index(unit, i);
+        if (cargo) {
+            unit_unloaded = helper::unload_unit_proc(cargo);
+            if (!(unit->status & UnitStatus::GroundedBuilding)) {
+                break;
             }
+        }
+    }
+
+    if (unit_unloaded) {
+        if (!(unit->status & UnitStatus::GroundedBuilding) && unit->has_loaded_unit()) {
+            return;
+        }
+    } else if (unit->unit_ai && !(unit->status & UnitStatus::GroundedBuilding)) {
+        helper::ai_unload_failure(unit);
+        return;
+    }
+
+    if (unit->order_queue_head) {
+        unit->user_action_flags |= 1;
+        prepare_for_next_order(unit);
+        return;
+    }
+    
+    if (unit->unit_ai) {
+        if (unit->main_order_id == OrderId::Die) {
+            unit->user_action_flags |= 1;
+            prepare_for_next_order(unit);
+            return;
         }
 
-        if (!bFoundUnitToUnload) {
-            jump_to_E8191 = true;
-        }
-
-        if (!jump_to_E8191) {
-            if (result_E7F70 != 0) {
-                jump_to_E8195 = true;
-            } else if (unit->unit_ai == nullptr
-                || unit->status & UnitStatus::GroundedBuilding) {
-                jump_to_E81AD = true;
+        while (unit->order_queue_tail) {
+            if (orders_dat::can_be_interrupted[unit->order_queue_tail->order_id]
+                || unit->order_queue_tail->order_id == OrderId::ComputerAI) {
+                helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
             } else {
-                helper::ai_unload_failure(unit);
+                break;
             }
         }
-        if (jump_to_E8191) {
-            if (result_E7F70 == 0) {
-                jump_to_E81AD = true;
-            } else {
-                jump_to_E8195 = true;
-            }
-        }
-        if (jump_to_E8195) {
-            if (unit->status & UnitStatus::GroundedBuilding
-                || !unit->has_loaded_unit())
-                jump_to_E81AD = true;
-        }
-        if (jump_to_E81AD) {
-            if (unit->order_queue_head != nullptr) {
-                unit->user_action_flags |= 1;
-                prepare_for_next_order(unit);
-            } else if (unit->unit_ai != nullptr) {
-                unit->user_action_flags |= 1;
-                if (unit->main_order_id == OrderId::Die) {
-                    prepare_for_next_order(unit);
-                } else {
-                    bEndLoop = (unit->order_queue_tail == nullptr);
-                    while (!bEndLoop) {
-                        if (orders_dat::can_be_interrupted[(unit->order_queue_tail)->order_id]
-                            || unit->order_queue_tail->order_id == OrderId::ComputerAI) {
-                            helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
-                        } else {
-                            bEndLoop = true;
-                        }
-                        if (!bEndLoop) {
-                            bEndLoop = (unit->order_queue_tail == nullptr);
-                        }
-                    }
-                    unit->perform_another_order(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
-                    prepare_for_next_order(unit);
-                }
-            } else {
-                unit->user_action_flags |= 1;
-                unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, true);
-                prepare_for_next_order(unit);
-            }
-        }
+        unit->order_to(OrderId::ComputerAI);
+    } else {
+        unit->order_to_idle();
     }
 }
 
