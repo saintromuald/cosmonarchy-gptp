@@ -342,15 +342,13 @@ void orders_enter_transport(Unit* unit) {
         if (unit->is_target_within_min_range(target, 1)) {
             helper::load_unit_proc(target, unit);
         }
+    } else if (unit->order_queue_head) {
+        unit->user_action_flags |= 1;
+        prepare_for_next_order(unit);
+    } else if (unit->unit_ai) {
+        unit->order_computer(OrderId::ComputerAI);
     } else {
-        if (unit->order_queue_head) {
-            unit->user_action_flags |= 1;
-            prepare_for_next_order(unit);
-        } else if (unit->unit_ai) {
-            unit->order_computer(OrderId::ComputerAI);
-        } else {
-            unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-        }
+        unit->order_computer(units_dat::return_to_idle_order[unit->id]);
     }
 }
 
@@ -363,9 +361,11 @@ void orders_unload(Unit* unit) {
     for (u32 i = 0; i < TransportCap; ++i) {
         Unit* cargo = get_loaded_unit_from_index(unit, i);
         if (cargo) {
-            unit_unloaded = helper::unload_unit_proc(cargo);
-            if (!(unit->status & UnitStatus::GroundedBuilding)) {
-                break;
+            if (helper::unload_unit_proc(cargo)) {
+                unit_unloaded = true;
+                if (!(unit->status & UnitStatus::GroundedBuilding)) {
+                    break;
+                }
             }
         }
     }
@@ -380,14 +380,14 @@ void orders_unload(Unit* unit) {
     }
 
     if (unit->order_queue_head) {
-        unit->user_action_flags |= 1;
+        unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
         prepare_for_next_order(unit);
         return;
     }
     
     if (unit->unit_ai) {
         if (unit->main_order_id == OrderId::Die) {
-            unit->user_action_flags |= 1;
+            unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
             prepare_for_next_order(unit);
             return;
         }
