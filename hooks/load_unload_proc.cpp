@@ -72,8 +72,7 @@ static bool fix_unload_pos(Unit* unit, Point16* pos) {
     return true;
 }
 
-void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
-{
+void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     s32 counter = 0;
     UnitExt* transport_ext = get_unit_ext(transport);
     if (units_dat::space_provided[transport->id] != 0) {
@@ -102,8 +101,7 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
     u32 loaded_index;
     auto new_table = g_unit_table;
 
-    __asm
-    {
+    __asm {
         PUSHAD
         MOV ECX, cargo_unit
         SUB ECX, new_table

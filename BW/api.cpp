@@ -1981,8 +1981,8 @@ bool all_selected_units_have_addon(u32 unit_id) {
 
 bool unit_is_stunned(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
-	return  unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer
-		|| unit_ext->timers[TimerStun] > 1;
+    return  unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer
+        || unit_ext->timers[TimerStun] > 1;
 }
 
 void dump_sync_data() {
