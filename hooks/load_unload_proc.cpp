@@ -161,95 +161,88 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) // 004E78E0
     }
 }
 
-b32 unload_unit_proc(Unit* unit) // 004E7F70
-{
-    b32 return_value = 0;
-    if (unit->connected_unit) {
-        bool cargo_is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
-        Unit* transport = unit->connected_unit;
-        if ((transport->main_order_timer == 0
-            || (units_dat::base_property[transport->id] & UnitProperty::Building && !(transport->status & UnitStatus::InAir))) // For Bunkers
-            && !transport->is_frozen()) {
-            Point16 pos = {0, 0};
-            if (helper::can_unload(transport, unit, &pos)) {
-                if (cargo_is_building && !units_dat::group_flags[unit->id].is_zerg != RaceId::Zerg) {
-                    ActiveTile* tile = bw::get_active_tile_at_coords(pos);
-                    TileExt* tile_ext = get_tile_ext_at_tile(pos.x, pos.y);
-                    if (tile->has_cagra /*&& !can_place_on_creep_tile(tile_ext, unit->player)*/) {
-                        return 0;
-                    }
-                }
-                if (transport->id == UnitId::TerranTrojan) {
-                    transport->main_order_timer = 7;
-                } else {
-                    transport->main_order_timer = 15;
-                }
+b32 unload_unit_proc(Unit* unit) { // 004E7F70
+    Unit* transport = unit->connected_unit;
+    if (!transport || transport->is_frozen()) {
+        return false;
+    }
+    if (transport->main_order_timer != 0 && !(unit->status & UnitStatus::GroundedBuilding)) {
+        return false;
+    }
 
-                bw::decloak_passive_proc(unit);
-                bw::decloak_passive_proc(transport);
+    Point16 pos = {0, 0};
+    if (!helper::can_unload(transport, unit, &pos)) {
+        return false;
+    }
 
-                special_unload_unit(unit, transport, &pos);
-                helper::move_unit(unit, pos.x, pos.y);
-                if (unit->subunit) {
-                    helper::move_unit(unit->subunit, pos.x, pos.y);
-                }
-
-                helper::ignore_iscript_go_to_idle(unit);
-                helper::unload_unit_ext(unit, 0);
-                if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
-                    if (!unit->unit_ai) {
-                        unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-                    } else {
-                        unit->order_computer(OrderId::ComputerAI);
-                    }
-                }
-
-                UnitExt* transport_ext = get_unit_ext(transport);
-                if (transport_ext->values[ValueIsNeutralBunker]) {
-                    if (!transport->get_first_loaded_unit()) {
-                        transport->give_to(11);
-                        transport->sprite->player = 11;
-                    } else {
-                        bool is_owner_valid = true;
-                        for (u32 i = 0; i < 4; ++i) {
-                            Unit* cargo_unit = transport->get_loaded_unit(i);
-                            if (cargo_unit && cargo_unit->player != unit->player) {
-                                is_owner_valid = false;
-                            }
-                        }
-                        if (!is_owner_valid) {
-                            transport->give_to(transport->get_first_loaded_unit()->player);
-                        }
-                    }
-                }
-
-                bw::refresh_console();
-                return_value = 1;
-
-                auto apply_unload_delay = [](Unit* unit) {
-                    if (!unit) return;
-                    auto update_delay = [](auto& var) {
-                        if (var < UnloadDelay) {
-                            var = UnloadDelay;
-                        }
-                    };
-                    u32 ground_weapon_id = unit->get_ground_weapon();
-                    if (ground_weapon_id != WeaponId::None) {
-                        update_delay(unit->ground_weapon_cooldown);
-                    }
-                    u32 air_weapon_id = unit->get_air_weapon();
-                    if (air_weapon_id != WeaponId::None) {
-                        update_delay(unit->air_weapon_cooldown);
-                    }
-                    update_delay(unit->spell_cooldown);
-                };
-
-                apply_unload_delay(unit);
-                apply_unload_delay(unit->subunit);
-            }
+    bool cargo_is_building = units_dat::base_property[unit->id] & UnitProperty::Building;
+    if (cargo_is_building && !units_dat::group_flags[unit->id].is_zerg != RaceId::Zerg) {
+        ActiveTile* tile = bw::get_active_tile_at_coords(pos);
+        TileExt* tile_ext = get_tile_ext_at_tile(pos.x, pos.y);
+        if (tile->has_cagra /*&& !can_place_on_creep_tile(tile_ext, unit->player)*/) {
+            return 0;
         }
     }
-    return return_value;
+    if (transport->id == UnitId::TerranTrojan) {
+        transport->main_order_timer = 7;
+    } else {
+        transport->main_order_timer = 15;
+    }
+
+    bw::decloak_passive_proc(unit);
+    bw::decloak_passive_proc(transport);
+
+    special_unload_unit(unit, transport, &pos);
+    helper::move_unit(unit, pos.x, pos.y);
+    if (unit->subunit) {
+        helper::move_unit(unit->subunit, pos.x, pos.y);
+    }
+
+    helper::ignore_iscript_go_to_idle(unit);
+    helper::unload_unit_ext(unit, 0);
+    if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+        if (!unit->unit_ai) {
+            unit->order_computer(units_dat::return_to_idle_order[unit->id]);
+        } else {
+            unit->order_computer(OrderId::ComputerAI);
+        }
+    }
+
+    UnitExt* transport_ext = get_unit_ext(transport);
+    if (transport_ext->values[ValueIsNeutralBunker]) {
+        Unit* first_unit = transport->get_first_loaded_unit();
+        if (first_unit) {
+            if (first_unit->player != unit->player) {
+                transport->give_to(first_unit->player);
+            }
+        } else {
+            transport->give_to(NeutralPlayer);
+            transport->sprite->player = NeutralPlayer;
+        }
+    }
+    bw::refresh_console();
+
+    const auto apply_unload_delay = [](Unit* unit) {
+        if (!unit) return;
+        const auto update_delay = [](auto& var) {
+            if (var < UnloadDelay) {
+                var = UnloadDelay;
+            }
+        };
+        u32 ground_weapon_id = unit->get_ground_weapon();
+        if (ground_weapon_id != WeaponId::None) {
+            update_delay(unit->ground_weapon_cooldown);
+        }
+        u32 air_weapon_id = unit->get_air_weapon();
+        if (air_weapon_id != WeaponId::None) {
+            update_delay(unit->air_weapon_cooldown);
+        }
+        update_delay(unit->spell_cooldown);
+    };
+
+    apply_unload_delay(unit);
+    apply_unload_delay(unit->subunit);
+    return true;
 }
 
 // Hooked to extend transports. -Pr0nogo
