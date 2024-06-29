@@ -323,12 +323,8 @@ void orders_pickup_4(Unit* unit) {
 // Unit is a unit trying to enter a transport
 void orders_enter_transport(Unit* unit) {
     Unit* target = unit->order_target.unit;
-    if (target
-        && !(target->status & UnitStatus::IsHallucination)
-        && units_dat::space_provided[target->id] != 0
-        && bw::can_be_entered_by(target, unit)) {
-        if (unit->main_order_state == 0
-            && target->main_order_id != OrderId::Pickup2) {
+    if (target && !(target->status & UnitStatus::IsHallucination) && units_dat::space_provided[target->id] != 0 && bw::can_be_entered_by(target, unit)) {
+        if (unit->main_order_state == 0 && target->main_order_id != OrderId::Pickup2) {
             if (target->status & UnitStatus::Reacts) {
                 helper::prepend_order_targeting_unit(target, unit, OrderId::Pickup2);
                 prepare_for_next_order(target);
