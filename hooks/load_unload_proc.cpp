@@ -24,7 +24,8 @@ static Point16 align_to_tile_grid(Point16 pos) {
     };
 }
 
-static bool check_building_collision(UnitId::Enum unit_id, Point16 pos) {
+static bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos) {
+    bool is_zerg = units_dat::group_flags[unit_id].is_zerg;
     Point16 size = units_dat::building_dimensions[unit_id];
     u32 tx0 =  pos.x / 32;
     u32 tx1 = (pos.x + size.x + 31) / 32;
@@ -43,6 +44,13 @@ static bool check_building_collision(UnitId::Enum unit_id, Point16 pos) {
             const auto& tile = bw::get_tile_at_tile(x, y);
             if (tile.always_unbuildable || tile.currently_occupied) {
                 return false;
+            }
+
+            if (!is_zerg) {
+                const auto tile_ext = get_tile_ext_at_tile(x, y);
+                if (!can_place_on_creep_tile(tile_ext, player)) {
+                    return false;
+                }
             }
         }
     }
@@ -64,7 +72,7 @@ static bool fix_unload_pos(Unit* unit, Point16* pos) {
     if (units_dat::base_property[unit->id] & UnitProperty::Building) {
         *pos = align_to_tile_grid(*pos);
         
-        if (check_building_collision((UnitId::Enum)unit->id, *pos)) {
+        if (check_building_collision((UnitId::Enum)unit->id, unit->player, *pos)) {
             return false;
         }
     }
