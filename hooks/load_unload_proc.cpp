@@ -27,16 +27,16 @@ static Point16 align_to_tile_grid(Point16 pos) {
 static bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos) {
     bool is_zerg = units_dat::group_flags[unit_id].is_zerg;
     Point16 size = units_dat::building_dimensions[unit_id];
-    u32 tx0 =  pos.x / 32;
-    u32 tx1 = (pos.x + size.x + 31) / 32;
-    u32 ty0 =  pos.y / 32;
-    u32 ty1 = (pos.y + size.y + 31) / 32;
+    u32 tx0 = (pos.x - size.x / 2) / 32;
+    u32 tx1 = (pos.x + size.x / 2) / 32;
+    u32 ty0 = (pos.y - size.y / 2) / 32;
+    u32 ty1 = (pos.y + size.y / 2) / 32;
 
-    for (u32 x = 0; x < tx1; x++) {
+    for (u32 x = tx0; x <= tx1; x++) {
         if (x >= g_map_tile_size->width) {
             return false;
         }
-        for (u32 y = 0; y < ty1; y++) {
+        for (u32 y = ty0; y <= ty1; y++) {
             if (y >= g_map_tile_size->height) {
                 return false;
             }
@@ -72,7 +72,7 @@ static bool fix_unload_pos(Unit* unit, Point16* pos) {
     if (units_dat::base_property[unit->id] & UnitProperty::Building) {
         *pos = align_to_tile_grid(*pos);
         
-        if (check_building_collision((UnitId::Enum)unit->id, unit->player, *pos)) {
+        if (!check_building_collision((UnitId::Enum)unit->id, unit->player, *pos)) {
             return false;
         }
     }
