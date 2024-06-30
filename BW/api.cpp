@@ -2686,8 +2686,8 @@ Quad quad_from_rect(Box16 rect) {
 
 static bool sat_collision_internal(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count) {
 	for (u32 i = 0; i < a_count; ++i) {
-		Vec32f diff = bw::norm_vec_between(a[i], a[(i + 1) % a_count]);
-		Vec32f proj = {-diff.y, diff.x};
+		Vec32f dir = dir_between(a[i], a[(i + 1) % a_count]);
+		Vec32f proj = {-dir.y, dir.x};
 
 		f32 a_min = INFINITY;
 		f32 a_max = -INFINITY;
@@ -2822,7 +2822,7 @@ bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t
 
 	Vec32f line0 = {f32(from.x), f32(from.y)};
 	Vec32f line1 = {f32(to.x),   f32(to.y)};
-	Vec32f axis = norm_vec_between(line0, line1);
+	Vec32f axis = dir_between(line0, line1);
 	Quad quad = quad_from_rect(rect);
 	for (u32 i = 0; i < 4; i++) {
 		Vec32f rect0 = quad.corners[i];

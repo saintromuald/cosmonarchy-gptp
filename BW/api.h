@@ -453,10 +453,6 @@ inline f32 vec_length(Vec32f vec) {
 	return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 }
 
-inline Vec32f vec_perpendicular(Vec32f vec) {
-
-}
-
 //////////////////////////////////////////////////////////////// @}
 
 /// @name Game information
