@@ -68,7 +68,7 @@ void append_tooltip_value(std::string& text, f32 value, f32 bonus, bool extended
 	text += BWTC_RESET;
 }
 
-const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string_index) {
+const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 entry_string_index) {
 	const bool extended = *g_is_holding_shift || g_config.always_show_extended_tooltips;
 	bool in_replay_or_witness = g_globals->players[g_local_nation_id].witness_mode || g_is_in_replay;
 
@@ -100,11 +100,14 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string
 	f32 bonus_range = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit, true) / 32.0 - range;
 
 	std::string damage_modifiers = "";
-	f64 attack_cooldown = (f64)weapons_dat::cooldown[weapon_id] / 24;
-	f64 attack_cooldown_modifier = ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24) - attack_cooldown;
 
-	f64 attack_speed = 1.0 / attack_cooldown;
-	f64 attack_speed_modifier = (1.0 / ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24)) - attack_speed;
+	f32 current_cooldown = hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24.0f + WeaponId::get_tooltip_cooldown_offset(weapon_id);
+
+	f32 attack_cooldown = WeaponId::get_tooltip_cooldown(weapon_id);
+	f32 attack_cooldown_modifier = current_cooldown - attack_cooldown;
+
+	f32 attack_speed = 1.0f / attack_cooldown;
+	f32 attack_speed_modifier = (1.0f / current_cooldown) - attack_speed;
 
 	s32 splash_inner = weapons_dat::inner_splash_radius[weapon_id];
 	s32 splash_medium = weapons_dat::medium_splash_radius[weapon_id];
@@ -177,9 +180,9 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string
 	builder << std::setprecision(4);
 	if (extended) {
 		std::string dps_color = attack_speed_modifier < 0 ? BWTC_RED : attack_speed_modifier > 0 ? BWTC_GREEN : BWTC_RESET;
-		f64 total_cooldown = (attack_cooldown + attack_cooldown_modifier);
+		f32 total_cooldown = (attack_cooldown + attack_cooldown_modifier);
 		builder.str("");
-		builder << ((f64)damage_factor * base_damage / total_cooldown);
+		builder << damage_factor * base_damage / total_cooldown;
 		text += "\nDPS: " + dps_color + builder.str() + BWTC_RESET;
 	}
 
@@ -229,7 +232,7 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string
 namespace hooks
 {
 	// Returns the C-string for the tooltip text of the unit's weapon grp_frame.
-	const char* get_weapon_tooltip_string(u8 weapon_id, Unit* unit) {
+	const char* get_weapon_tooltip_string(WeaponId::Enum weapon_id, Unit* unit) {
 		return get_damage_tootlip_string(weapon_id, unit, weapons_dat::label[weapon_id]);
 	}
 
@@ -414,7 +417,7 @@ namespace hooks
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
-		add_status(statuses, "Cabeirus Feeders", ceil((f64)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
+		add_status(statuses, "Cabeirus Feeders", ceil((f32)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
 		add_status(statuses, "Sublime Shepherd", unit_ext->values[ValueHasSublimeShepherd], 1);
 		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueCuirassIsSelfReviving], 0);
 		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);

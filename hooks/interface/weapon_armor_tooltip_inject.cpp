@@ -32,7 +32,7 @@ namespace
 		{
 			case 0:
 			{
-				create_context_help_from_dialog(consoleIcon, hooks::get_weapon_tooltip_string((u8)gui->id, *g_active_portrait_unit));
+				create_context_help_from_dialog(consoleIcon, hooks::get_weapon_tooltip_string((WeaponId::Enum)(gui->id & 0xff), *g_active_portrait_unit));
 			} break;
 			case 1:
 			{
