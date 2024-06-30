@@ -691,7 +691,7 @@ namespace hooks {
 
 			f32 t = 0;
 			Point16 cp = {};
-			if (!bw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
+			if (!bw::line_trace(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
 				continue;
 			}
 			if (t < best_t) {
@@ -801,7 +801,7 @@ namespace hooks {
 
 			f32 t = 0;
 			Point16 cp = {};
-			if (!bw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
+			if (!bw::line_trace(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
 				continue;
 			}
 

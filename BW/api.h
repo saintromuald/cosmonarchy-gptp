@@ -883,10 +883,9 @@ struct LineLineIntersect {
 Quad quad_from_line(Point16 from, Point16 to, f32 line_width);
 Quad quad_from_rect(Box16 rect);
 bool sat_collision(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count);
-f32 line_to_point_distance(Vec32f from, Vec32f to, Vec32f point, f32* out_t = 0, Vec32f* out_cp = 0);
-bool old_line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
+void find_closest_point_to_line(Vec32f from, Vec32f to, Vec32f point, f32* out_distance = 0, f32* out_t = 0, Vec32f* out_cp = 0);
 std::optional<LineLineIntersect> line_line_intersection(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1);
-bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
+bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
 
 void transform_unit(Unit* unit, u16 unit_id);
 void add_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});              // Does NOT calculate overlay offset!
