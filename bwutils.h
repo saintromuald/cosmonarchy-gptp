@@ -79,7 +79,7 @@ namespace SpriteId {
 namespace WeaponId {
 	namespace dat = weapons_dat;
 
-	inline f32 get_tooltip_cooldown_offset(WeaponId::Enum id) {
+	inline f32 get_tooltip_cooldown_offset(Enum id) {
 		f32 offset = 0;
 		switch (id) {
 			case WeaponId::OptectonSunsplitBeam:
@@ -90,7 +90,7 @@ namespace WeaponId {
 		return offset;
 	}
 
-	inline f32 get_tooltip_cooldown(WeaponId::Enum id) {
+	inline f32 get_tooltip_cooldown(Enum id) {
 		return dat::cooldown[id] / 24.0f + get_tooltip_cooldown_offset(id);
 	}
 }
