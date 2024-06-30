@@ -124,7 +124,7 @@ namespace hooks {
 		// Hierophant Signify: Cowardice
 		if (unit_ext->values[ValueSignifyStacks]) {
 			auto match = cosmonarchy_finder_match(unit, 0, {});
-			Vec32f dir = bw::unit_facing_dir(unit);
+			Vec32f facing_dir = bw::unit_facing_dir(unit);
 
 			// TODO: unit search / optimize
 			const u32 radius = 6 * 32;
@@ -134,18 +134,16 @@ namespace hooks {
 				unit->get_x() + radius,
 				unit->get_y() + radius,
 				unit,
-			[&](Unit* enemy) {
-				if (!match(enemy)) {
+			[&](Unit* hostile) {
+				if (!match(hostile)) {
 					return false;
 				}
-				if (!bw::is_allied_to(unit_ext->values[ValueSignifyPlayer], enemy->player)) {
+				if (!bw::is_allied_to(unit_ext->values[ValueSignifyPlayer], hostile->player)) {
 					return false;
 				}
 
-				Vec32 diff = bw::vec_between(enemy->position, unit->position);
-				Vec32f target = bw::normalize_vec(diff);
-				f32 dot = bw::dot_product(dir, target);
-				if (dot < 0) {
+				Vec32f dir_from_hostile = bw::dir_between(hostile->position, unit->position);
+				if (bw::dot_product(facing_dir, dir_from_hostile) < 0) {
 					return false;
 				}
 				return true;

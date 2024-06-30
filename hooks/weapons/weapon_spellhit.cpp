@@ -172,12 +172,12 @@ namespace hooks {
 		u16 target_x = target->position.x;
 		u16 target_y = target->position.y;
 
-		u16 h_diff = abs(source_x - target_x);
-		u16 v_diff = abs(source_y - target_y);
-		u16 h_range = range + get_unit_width(source) / 2 + get_unit_width(target) / 2 + 1;
-		u16 v_range = range + get_unit_height(source) / 2 + get_unit_height(target) / 2 + 1;
+		u16 x_diff = abs(source_x - target_x);
+		u16 y_diff = abs(source_y - target_y);
+		u16 x_range = range + get_unit_width(source) / 2 + get_unit_width(target) / 2 + 1;
+		u16 y_range = range + get_unit_height(source) / 2 + get_unit_height(target) / 2 + 1;
 
-		if (h_diff > h_range || v_diff > v_range) {
+		if (x_diff > x_range || y_diff > y_range) {
 			return false;
 		}
 		return true;

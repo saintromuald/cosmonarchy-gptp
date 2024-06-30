@@ -2716,8 +2716,8 @@ void move_camera(Point16 pos) {
 }
 
 Quad quad_from_line(Point16 from, Point16 to, f32 line_width) {
-	Vec32f line_diff = normalize_vec(vec_between(from, to));
-	Vec32f p = {-line_diff.y * line_width / 2, line_diff.x * line_width / 2};
+	Vec32f line_dir = dir_between(from, to);
+	Vec32f p = {-line_dir.y * line_width / 2, line_dir.x * line_width / 2};
 	Quad quad = {};
 	quad.corners[0].x = from.x - p.x;
 	quad.corners[0].y = from.y - p.y;
@@ -3146,7 +3146,7 @@ u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
 }
 
 Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target) {
-	Vec32f shift = bw::normalize_vec(bw::vec_between(pos, target));
+	Vec32f shift = bw::normalize(bw::vec_between(pos, target));
 	f32 max_distance = std::max(abs(shift.x), abs(shift.y));
 	if (max_distance) {
 		shift.x /= max_distance;

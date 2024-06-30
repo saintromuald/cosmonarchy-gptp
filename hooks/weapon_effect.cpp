@@ -215,7 +215,7 @@ namespace hooks {
 
 		Unit* attack_target = bullet->attack_target.unit;
 		Point16 forward_pos = attack_target ? attack_target->position : bullet->position;
-		Vec32f forward_diff = bw::norm_vec_between(attacker->position, forward_pos);
+		Vec32f dir_forward = bw::dir_between(attacker->position, forward_pos);
 
 		f32 outer    = weapons_dat::outer_splash_radius[weapon_id];
 		f32 inner_t  = 1 - weapons_dat::inner_splash_radius[weapon_id] / outer;
@@ -236,8 +236,8 @@ namespace hooks {
 				continue;
 			}
 
-			Vec32f target_diff = bw::norm_vec_between(attacker->position, target->position);
-			f32 t = bw::dot_product(forward_diff, target_diff);
+			Vec32f dir_to_target = bw::dir_between(attacker->position, target->position);
+			f32 t = bw::dot_product(dir_forward, dir_to_target);
 			if (t >= inner_t) {
 				helper::weapon_bullet_shot(target, bullet, 1); // 100% damage
 			} else if (t >= medium_t) {
