@@ -389,9 +389,7 @@ namespace hooks
                 }
 			} break;
 			case AttackTargetingType::RemembersTarget: {
-                if (unit->order_target.unit) {
-					// pass
-                } else if (unit_ext->last_unit_target) {
+                if (unit_ext->last_unit_target) {
 					unit->order_target = *unit_ext->last_unit_target;
 				} else {
 					return;
