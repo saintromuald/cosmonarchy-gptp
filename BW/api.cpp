@@ -2739,7 +2739,7 @@ f32 line_to_point_distance(Vec32f from, Vec32f to, Vec32f point, f32* out_t, Vec
 }
 
 // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
-LineLineIntersectionResult line_line_intersection(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1) {
+std::optional<LineLineIntersect> line_line_intersection(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1) {
 	f32 x1 = a0.x;
 	f32 x2 = a1.x;
 	f32 x3 = b0.x;
@@ -2750,9 +2750,12 @@ LineLineIntersectionResult line_line_intersection(Vec32f a0, Vec32f a1, Vec32f b
 	f32 y3 = b0.y;
 	f32 y4 = b1.y;
 
-	LineLineIntersectionResult result = {};
-	result.t =  ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-	result.u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+	f32 denom = ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+	if (!denom) return {};
+
+	LineLineIntersect result = {};
+	result.t =  ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+	result.u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom;
 	result.clamped_t = Clamp(result.t, 0, 1);
 	result.clamped_u = Clamp(result.u, 0, 1);
     result.cp = {
@@ -2783,17 +2786,18 @@ bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, 
 	Quad quad = quad_from_rect(rect);
 	for (u32 i = 0; i < 4; i++) {
 		const auto intersect = line_line_intersection(line0, line1, quad.corners[i], quad.corners[(i + 1) % 4]);
-		if (intersect.on_second_line) {
-			f32 distance = distance_between(intersect.clamped_first_cp, intersect.clamped_second_cp);
+		// Note that parallel line to line intersection is impossible, however this should not be a problem for any real shapes
+		if (intersect && intersect->on_second_line) {
+			f32 distance = distance_between(intersect->clamped_first_cp, intersect->clamped_second_cp);
 			if (abs(distance - best_distance) < 1) {
-				if (intersect.t < best_t) {
-                    best_cp = intersect.clamped_second_cp;
-                    best_t = intersect.t;
+				if (intersect->t < best_t) {
+                    best_cp = intersect->clamped_second_cp;
+                    best_t = intersect->t;
                     best_distance = distance;
 				}
 			} else if (distance < best_distance) {
-                best_cp = intersect.clamped_second_cp;
-                best_t = intersect.t;
+                best_cp = intersect->clamped_second_cp;
+                best_t = intersect->t;
                 best_distance = distance;
 			}
 		}

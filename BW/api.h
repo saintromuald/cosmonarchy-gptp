@@ -867,7 +867,7 @@ PlayerColorCode get_player_color_code(u32 player, bool use_green_for_self);
 void move_camera(Point16 pos);
 bool are_mutual_allies(u32 player1, u32 player2);
 
-struct LineLineIntersectionResult {
+struct LineLineIntersect {
 	f32 t;
 	f32 u;
 	f32 clamped_t;
@@ -885,7 +885,7 @@ Quad quad_from_rect(Box16 rect);
 bool sat_collision(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count);
 f32 line_to_point_distance(Vec32f from, Vec32f to, Vec32f point, f32* out_t = 0, Vec32f* out_cp = 0);
 bool old_line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
-LineLineIntersectionResult line_line_intersection(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1);
+std::optional<LineLineIntersect> line_line_intersection(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1);
 bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
 
 void transform_unit(Unit* unit, u16 unit_id);
