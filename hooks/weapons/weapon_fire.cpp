@@ -769,21 +769,13 @@ namespace hooks {
 		}
 	}
 
-	struct UnitPiercingEntry {
-		Unit* unit;
-		Point16 cp;
-		f32 t;
-	};
-
-	static s32 compare_unit_entry(const void* va, const void* vb) {
-		UnitPiercingEntry* a = (UnitPiercingEntry*)va;
-		UnitPiercingEntry* b = (UnitPiercingEntry*)vb;
-		return a->t - b->t;
-	}
-
 	static bool apply_bullet_piercing(Bullet* bullet, Point16 old_position, f32 line_width) {
-		u32 targets_count = 0;
-		UnitPiercingEntry targets[32] = {};
+        struct UnitPiercingEntry {
+            Unit* unit;
+            Point16 cp;
+            f32 t;
+        };
+		std::vector<UnitPiercingEntry> targets;
 
 		Box32 search_area = get_line_search_area(bullet, old_position);
 		EntryArray units = {};
@@ -813,26 +805,22 @@ namespace hooks {
 				continue;
 			}
 
-			if (targets_count < 32) {
-				targets[targets_count++] = {unit, cp, t};
-			} else {
-				break;
-			}
+			targets.emplace_back(unit, cp, t);
 		}
 
-		for (u32 i = 0; i < targets_count; ++i) {
-			UnitPiercingEntry* target = &targets[i];
+		std::ranges::stable_sort(targets, [](const auto& a, const auto& b) { return a.t < b.t; });
+		for (const auto& target : targets) {
 			bool stops_on_armor = weapon_id_piercing_stops_on_armor(bullet->weapon_id);
 			if (stops_on_armor) {
-				u32 armor = hooks::get_armor_internal(target->unit);
-				u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target->unit, bullet->weapon_id);
+				u32 armor = hooks::get_armor_internal(target.unit);
+				u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target.unit, bullet->weapon_id);
 				if (armor >= armor_pen) {
-					bullet->attack_target.pt = target->cp;
-					bullet->attack_target.unit = target->unit;
+					bullet->attack_target.pt = target.cp;
+					bullet->attack_target.unit = target.unit;
 					return true;
 				}
 			}
-			apply_bullet_effect(bullet, target->cp, target->unit);
+			apply_bullet_effect(bullet, target.cp, target.unit);
 			
 			if (stops_on_armor) {
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
