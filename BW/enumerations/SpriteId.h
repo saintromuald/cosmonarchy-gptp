@@ -873,6 +873,11 @@ namespace SpriteId
 		Corpse_Mortothrokor			= 868,
 		Corpse_Lanifect				= 887,
 
+		Corpse_Ancile				= 919,
+		Corpse_Trojan				= 920,
+		Corpse_Envoy				= 921,
+		Corpse_Ovileth				= 922,
+
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
 	};

@@ -823,7 +823,6 @@ AiScript* run_ai(u32 player, Point16 pos, s32 name);
 AiScript* run_default_ai(u32 player, Point16 pos);
 void give_ai_ex(Unit* unit);
 u32 unit_get_creep_spreader_id(Unit* unit);
-bool sprite_id_is_corpse(u32 sprite_id);
 bool unit_queue_full(Unit* unit);
 bool all_selected_units_have_addon(u32 unit_id);
 bool unit_is_stunned(Unit* unit);
