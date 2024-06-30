@@ -2686,7 +2686,7 @@ Quad quad_from_rect(Box16 rect) {
 
 static bool sat_collision_internal(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count) {
 	for (u32 i = 0; i < a_count; ++i) {
-		Vec32f diff = bw::vecf_between(a[i], a[(i + 1) % a_count]);
+		Vec32f diff = bw::norm_vec_between(a[i], a[(i + 1) % a_count]);
 		Vec32f proj = {-diff.y, diff.x};
 
 		f32 a_min = INFINITY;
@@ -2734,27 +2734,33 @@ f32 line_to_point_distance(Vec32f from, Vec32f to, Vec32f point, Vec32f* out_cp)
 	return bw::distance_between(cp, point);
 }
 
-static void line_intersects_rect_internal(Quad quad_a, Quad quad_b, Vec32f axis, f32* best_distance, Vec32f* best_cp, f32* best_t) {
+static void line_find_best_cp(Quad quad, Vec32f line[2], Vec32f axis, f32* best_distance, Vec32f* best_cp, f32* best_t) {
+    for (u32 j = 0; j < 4; ++j) {
+        Vec32f point = quad.corners[j];
+        Vec32f cp = {};
+        f32 distance = line_to_point_distance(line[0], line[1], point, &cp);
+        f32 t = bw::dot_product(cp, axis);
+        if (abs(distance - *best_distance) < 1) {
+            if (t < *best_t) {
+                *best_distance = distance;
+                *best_cp = cp;
+                *best_t = t;
+            }
+        } else if (distance < *best_distance) {
+            *best_distance = distance;
+            *best_cp = cp;
+            *best_t = t;
+        }
+    }
+}
+
+static void quad_find_best_cp(Quad quad_a, Quad quad_b, Vec32f axis, f32* best_distance, Vec32f* best_cp, f32* best_t) {
 	for (u32 i = 0; i < 4; ++i) {
-		Vec32f line0 = quad_a.corners[i];
-		Vec32f line1 = quad_a.corners[(i + 1) % 4];
-		for (u32 j = 0; j < 4; ++j) {
-			Vec32f point = quad_b.corners[j];
-			Vec32f cp = {};
-			f32 distance = line_to_point_distance(line0, line1, point, &cp);
-			f32 t = bw::dot_product(cp, axis);
-			if (abs(distance - *best_distance) < 1) {
-				if (t < *best_t) {
-					*best_distance = distance;
-					*best_cp = cp;
-					*best_t = t;
-				}
-			} else if (distance < *best_distance) {
-				*best_distance = distance;
-				*best_cp = cp;
-				*best_t = t;
-			}
-		}
+		Vec32f line[2]{
+			quad_a.corners[i],
+			quad_a.corners[(i + 1) % 4],
+		};
+		line_find_best_cp(quad_b, line, axis, best_distance, best_cp, best_t);
 	}
 }
 
@@ -2766,22 +2772,27 @@ bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, 
 			return true;
 		}
 
-		Vec32f axis = bw::vecf_between(from, to);
+		Vec32f axis = bw::norm_vec_between(from, to);
 		f32 best_distance = INFINITY;
 		Vec32f best_cp = {};
 		best_cp.x = rect.left + (rect.right - rect.left) / 2;
 		best_cp.y = rect.bottom + (rect.top - rect.bottom) / 2;
 		f32 best_t = INFINITY;
 
-		line_intersects_rect_internal(line_quad, box_quad, axis, &best_distance, &best_cp, &best_t);
-		line_intersects_rect_internal(box_quad, line_quad, axis, &best_distance, &best_cp, &best_t);
+		Vec32f center_line[2]{
+			{from.x, from.y},
+			{to.x,   to.y},
+		};
+		line_find_best_cp(box_quad, center_line, axis, &best_distance, &best_cp, &best_t);
+		quad_find_best_cp(line_quad, box_quad, axis, &best_distance, &best_cp, &best_t);
+		quad_find_best_cp(box_quad, line_quad, axis, &best_distance, &best_cp, &best_t);
 
 		if (out_cp) {
 			out_cp->x = best_cp.x;
 			out_cp->y = best_cp.y;
 		}
 		if (out_t) {
-			*out_t = bw::dot_product(best_cp, axis);
+			*out_t = best_t;
 		}
 
 		return true;
