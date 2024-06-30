@@ -453,10 +453,6 @@ inline f32 vec_length(Vec32f vec) {
 	return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 }
 
-inline Vec32f vec_perpendicular(Vec32f vec) {
-
-}
-
 //////////////////////////////////////////////////////////////// @}
 
 /// @name Game information
@@ -866,11 +862,27 @@ Image* get_addon_connector_image(Unit* unit);
 PlayerColorCode get_player_color_code(u32 player, bool use_green_for_self);
 void move_camera(Point16 pos);
 bool are_mutual_allies(u32 player1, u32 player2);
+
+struct LineLineIntersect {
+	f32 t;
+	f32 u;
+	f32 clamped_t;
+	f32 clamped_u;
+	Vec32f cp;
+	Vec32f clamped_first_cp;
+	Vec32f clamped_second_cp;
+	bool on_first_line;
+	bool on_second_line;
+	bool on_both_lines;
+};
+
 Quad quad_from_line(Point16 from, Point16 to, f32 line_width);
 Quad quad_from_rect(Box16 rect);
 bool sat_collision(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count);
-f32 line_to_point_distance(Vec32f from, Vec32f to, Vec32f point, Vec32f* out_cp);
-bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
+void find_closest_point_to_line(Vec32f from, Vec32f to, Vec32f point, f32* out_distance = 0, f32* out_t = 0, Vec32f* out_cp = 0);
+std::optional<LineLineIntersect> line_line_intersection(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1);
+bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
+
 void transform_unit(Unit* unit, u16 unit_id);
 void add_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});              // Does NOT calculate overlay offset!
 void remove_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});           // Does NOT calculate overlay offset!

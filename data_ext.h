@@ -448,6 +448,8 @@ struct UnitExt {
 
 	CargoUnit				loaded_unit[TransportCap];
 
+	std::optional<Target>   last_unit_target;
+
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
 	Unit*					units[UnitCount];
@@ -512,6 +514,7 @@ void update_ext_variables();
 
 UnitExt* get_unit_ext(Unit* unit);
 void reset_unit_ext(UnitExt* unit_ext);
+void unit_ext_remove_references_to(Unit* unit);
 
 void unit_death_start(Unit* unit);
 void unit_death_end(Unit* unit);

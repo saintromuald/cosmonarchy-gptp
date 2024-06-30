@@ -2686,8 +2686,8 @@ Quad quad_from_rect(Box16 rect) {
 
 static bool sat_collision_internal(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count) {
 	for (u32 i = 0; i < a_count; ++i) {
-		Vec32f diff = bw::vecf_between(a[i], a[(i + 1) % a_count]);
-		Vec32f proj = {-diff.y, diff.x};
+		Vec32f dir = dir_between(a[i], a[(i + 1) % a_count]);
+		Vec32f proj = {-dir.y, dir.x};
 
 		f32 a_min = INFINITY;
 		f32 a_max = -INFINITY;
@@ -2716,74 +2716,140 @@ bool sat_collision(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count) {
 	return sat_collision_internal(a, a_count, b, b_count) && sat_collision_internal(b, b_count, a, a_count);
 }
 
-f32 line_to_point_distance(Vec32f from, Vec32f to, Vec32f point, Vec32f* out_cp) {
+void find_closest_point_to_line(Vec32f from, Vec32f to, Vec32f point, f32* out_distance, f32* out_t, Vec32f* out_cp) {
 	Vec32f ab = bw::vecf_between(from, to);
 	Vec32f ap = bw::vecf_between(from, point);
 
-	f32 dot = bw::dot_product(ab, ap);
-	dot /= bw::dot_product(ab, ab);
-	dot = Clamp(dot, 0, 1);
+	f32 t = bw::dot_product(ab, ap);
+	t /= bw::dot_product(ab, ab);
+    t = Clamp(t, 0, 1);
 
 	Vec32f cp = from;
-	cp.x += ab.x * dot;
-	cp.y += ab.y * dot;
+	cp.x += ab.x * t;
+	cp.y += ab.y * t;
+
+	if (out_distance) {
+        *out_distance = bw::distance_between(cp, point);
+	}
+	if (out_t) {
+		*out_t = t;
+	}
 	if (out_cp) {
 		*out_cp = cp;
 	}
-
-	return bw::distance_between(cp, point);
 }
 
-static void line_intersects_rect_internal(Quad quad_a, Quad quad_b, Vec32f axis, f32* best_distance, Vec32f* best_cp, f32* best_t) {
-	for (u32 i = 0; i < 4; ++i) {
-		Vec32f line0 = quad_a.corners[i];
-		Vec32f line1 = quad_a.corners[(i + 1) % 4];
-		for (u32 j = 0; j < 4; ++j) {
-			Vec32f point = quad_b.corners[j];
-			Vec32f cp = {};
-			f32 distance = line_to_point_distance(line0, line1, point, &cp);
-			f32 t = bw::dot_product(cp, axis);
-			if (abs(distance - *best_distance) < 1) {
-				if (t < *best_t) {
-					*best_distance = distance;
-					*best_cp = cp;
-					*best_t = t;
+// https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
+std::optional<LineLineIntersect> line_line_intersection(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1) {
+	f32 x1 = a0.x;
+	f32 x2 = a1.x;
+	f32 x3 = b0.x;
+	f32 x4 = b1.x;
+
+	f32 y1 = a0.y;
+	f32 y2 = a1.y;
+	f32 y3 = b0.y;
+	f32 y4 = b1.y;
+
+	f32 denom = ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+	if (!denom) return {};
+
+	LineLineIntersect result = {};
+	result.t =  ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+	result.u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom;
+	result.clamped_t = Clamp(result.t, 0, 1);
+	result.clamped_u = Clamp(result.u, 0, 1);
+    result.cp = {
+        x1 + (x2 - x1) * result.t,
+        y1 + (y2 - y1) * result.t,
+    };
+    result.clamped_first_cp = {
+        x1 + (x2 - x1) * result.clamped_t,
+        y1 + (y2 - y1) * result.clamped_t,
+    };
+    result.clamped_second_cp = {
+        x3 + (x4 - x3) * result.clamped_u,
+        y3 + (y4 - y3) * result.clamped_u,
+    };
+    result.on_first_line = result.t >= 0 && result.t <= 1;
+    result.on_second_line = result.u >= 0 && result.u <= 1;
+    result.on_both_lines = result.on_first_line && result.on_second_line;
+    return result;
+}
+
+// https://math.stackexchange.com/questions/846054/closest-points-on-two-line-segments/4289668#4289668
+static std::pair<Vec32f, Vec32f> closest_points_on_segments(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1) {
+	Vec32f P1 = a0;
+    Vec32f P2 = b0;
+    Vec32f V1 = vecf_between(a0, a1);
+    Vec32f V2 = vecf_between(b0, b1);
+    Vec32f V21 = vecf_between(P1, P2);
+
+    f32 v22 = dot_product(V2, V2);
+    f32 v11 = dot_product(V1, V1);
+    f32 v21 = dot_product(V2, V1);
+    f32 v21_1 = dot_product(V21, V1);
+    f32 v21_2 = dot_product(V21, V2);
+    f32 denom = v21 * v21 - v22 * v11;
+
+	f32 s, t;
+	if (abs(denom) < 0.00000001) {
+        s = 0;
+        t = (v11 * s - v21_1) / v21;
+	} else {
+        s = (v21_2 * v21 - v22 * v21_1) / denom;
+        t = (-v21_1 * v21 + v11 * v21_2) / denom;
+	}
+	s = Clamp(s, 0, 1);
+	t = Clamp(t, 0, 1);
+
+	Vec32f cp0 = {
+		P1.x + V1.x * s,
+		P1.y + V1.y * s,
+	};
+	Vec32f cp1 = {
+		P2.x + V2.x * t,
+		P2.y + V2.y * t,
+	};
+
+	return {cp0, cp1};
+}
+
+bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t, Point16* out_cp) {
+	Vec32f best_cp = {};
+	f32 best_t = INFINITY;
+	f32 best_distance = INFINITY;
+
+	Vec32f line0 = {f32(from.x), f32(from.y)};
+	Vec32f line1 = {f32(to.x),   f32(to.y)};
+	Vec32f axis = dir_between(line0, line1);
+	Quad quad = quad_from_rect(rect);
+	for (u32 i = 0; i < 4; i++) {
+		Vec32f rect0 = quad.corners[i];
+		Vec32f rect1 = quad.corners[(i + 1) % 4];
+
+		const auto intersect = line_line_intersection(line0, line1, rect0, rect1);
+		// Note that parallel line to line intersection is impossible, however this should not be a problem for any real shapes
+		if (intersect) {
+            const auto [line_pt, rect_pt] = closest_points_on_segments(line0, line1, rect0, rect1);
+            f32 distance = distance_between(line_pt, rect_pt);
+			if (abs(distance - best_distance) < 1) {
+				if (intersect->t < best_t) {
+                    best_cp = intersect->clamped_second_cp;
+                    best_t = intersect->t;
+                    best_distance = distance;
 				}
-			} else if (distance < *best_distance) {
-				*best_distance = distance;
-				*best_cp = cp;
-				*best_t = t;
+			} else if (distance < best_distance) {
+                best_cp = intersect->clamped_second_cp;
+                best_t = intersect->t;
+                best_distance = distance;
 			}
 		}
 	}
-}
 
-bool line_intersects_rect(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t, Point16* out_cp) {
-	Quad line_quad = quad_from_line(from, to, line_width);
-	Quad box_quad = quad_from_rect(rect);
-	if (sat_collision(line_quad.corners, 4, box_quad.corners, 4)) {
-		if (!out_t && !out_cp) {
-			return true;
-		}
-
-		Vec32f axis = bw::vecf_between(from, to);
-		f32 best_distance = INFINITY;
-		Vec32f best_cp = {};
-		best_cp.x = rect.left + (rect.right - rect.left) / 2;
-		best_cp.y = rect.bottom + (rect.top - rect.bottom) / 2;
-		f32 best_t = INFINITY;
-
-		line_intersects_rect_internal(line_quad, box_quad, axis, &best_distance, &best_cp, &best_t);
-		line_intersects_rect_internal(box_quad, line_quad, axis, &best_distance, &best_cp, &best_t);
-
-		if (out_cp) {
-			out_cp->x = best_cp.x;
-			out_cp->y = best_cp.y;
-		}
-		if (out_t) {
-			*out_t = bw::dot_product(best_cp, axis);
-		}
-
+	if (best_distance <= line_width / 2) {
+		*out_t = best_t;
+		*out_cp = {u16(best_cp.x), u16(best_cp.y)};
 		return true;
 	}
 	return false;

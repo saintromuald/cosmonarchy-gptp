@@ -691,7 +691,7 @@ namespace hooks {
 
 			f32 t = 0;
 			Point16 cp = {};
-			if (!bw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
+			if (!bw::line_trace(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
 				continue;
 			}
 			if (t < best_t) {
@@ -769,21 +769,13 @@ namespace hooks {
 		}
 	}
 
-	struct UnitPiercingEntry {
-		Unit* unit;
-		Point16 cp;
-		f32 t;
-	};
-
-	static s32 compare_unit_entry(const void* va, const void* vb) {
-		UnitPiercingEntry* a = (UnitPiercingEntry*)va;
-		UnitPiercingEntry* b = (UnitPiercingEntry*)vb;
-		return a->t - b->t;
-	}
-
 	static bool apply_bullet_piercing(Bullet* bullet, Point16 old_position, f32 line_width) {
-		u32 targets_count = 0;
-		UnitPiercingEntry targets[32] = {};
+        struct UnitPiercingEntry {
+            Unit* unit;
+            Point16 cp;
+            f32 t;
+        };
+		std::vector<UnitPiercingEntry> targets;
 
 		Box32 search_area = get_line_search_area(bullet, old_position);
 		EntryArray units = {};
@@ -809,30 +801,26 @@ namespace hooks {
 
 			f32 t = 0;
 			Point16 cp = {};
-			if (!bw::line_intersects_rect(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
+			if (!bw::line_trace(old_position, bullet->position, line_width, unit->get_box(), &t, &cp)) {
 				continue;
 			}
 
-			if (targets_count < 32) {
-				targets[targets_count++] = {unit, cp, t};
-			} else {
-				break;
-			}
+			targets.emplace_back(unit, cp, t);
 		}
 
-		for (u32 i = 0; i < targets_count; ++i) {
-			UnitPiercingEntry* target = &targets[i];
+		std::ranges::stable_sort(targets, [](const auto& a, const auto& b) { return a.t < b.t; });
+		for (const auto& target : targets) {
 			bool stops_on_armor = weapon_id_piercing_stops_on_armor(bullet->weapon_id);
 			if (stops_on_armor) {
-				u32 armor = hooks::get_armor_internal(target->unit);
-				u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target->unit, bullet->weapon_id);
+				u32 armor = hooks::get_armor_internal(target.unit);
+				u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target.unit, bullet->weapon_id);
 				if (armor >= armor_pen) {
-					bullet->attack_target.pt = target->cp;
-					bullet->attack_target.unit = target->unit;
+					bullet->attack_target.pt = target.cp;
+					bullet->attack_target.unit = target.unit;
 					return true;
 				}
 			}
-			apply_bullet_effect(bullet, target->cp, target->unit);
+			apply_bullet_effect(bullet, target.cp, target.unit);
 			
 			if (stops_on_armor) {
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
@@ -1034,7 +1022,11 @@ namespace hooks {
 		if (despawn_bullet) {
 			Unit* target = bullet->attack_target.unit;
 			bullet->behavior_type = 5;
-			if (!despawn_bullet_special) {
+			if (despawn_bullet_special) {
+				Point16 move_pt = bullet->attack_target.pt;
+				bullet->position = move_pt;
+				bullet->sprite->set_position(move_pt.x, move_pt.y);
+			} else {
 				if (target && !target->is_dead() && weapons_dat::behavior[bullet->weapon_id] != WeaponBehavior_GoToMaxRange) {
 					bullet->attack_target.pt.x = target->position.x;
 					bullet->attack_target.pt.y = target->position.y;
@@ -1514,43 +1506,33 @@ namespace hooks {
 			*g_active_iscript_bullet = bullet;
 			helper::set_thingy_visibility_flags((Thingy*)bullet);
 			Sprite* bullet_sprite = bullet->sprite;
-			if (bullet_sprite)
-			{
+			if (bullet_sprite) {
 				helper::sprite_to_iscript_loop(bullet_sprite);
-				if (!bullet->sprite->images.head)
-				{
+				if (!bullet->sprite->images.head) {
 					bullet->sprite = 0;
 				}
 			}
 			u32 bullet_behavior = (u8)bullet->behavior_type;
-			switch (bullet_behavior)
-			{
-				case 0:
-				{
+			switch (bullet_behavior) {
+				case 0: {
 					helper::bullet_behavior_reassign(bullet);
 				} break;
-				case 1:
-				{
+				case 1: {
 					helper::bullet_behavior_fly(bullet);
 				} break;
-				case 2:
-				{
+				case 2: {
 					helper::bullet_behavior_follow(bullet);
 				} break;
-				case 3:
-				{
+				case 3: {
 					helper::bullet_behavior_bounce(bullet);
 				} break;
-				case 4:
-				{
+				case 4: {
 					helper::bullet_behavior_persist(bullet);
 				} break;
-				case 5:
-				{
+				case 5: {
 					helper::bullet_behavior_instant(bullet);
 				} break;
-				case 6:
-				{
+				case 6: {
 					helper::bullet_behavior_area(bullet);
 				} break;
 			}

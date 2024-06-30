@@ -525,6 +525,7 @@ void unit_die(Unit* unit) // 004A0740
 	helper::clear_bullet_targets(unit);
 	helper::remove_from_ai_structs(unit, (UnitAi*)1);
 	helper::remove_worker_or_building_ai(unit, 0);
+	unit_ext_remove_references_to(unit);
 
 	UnitAi* unit_ai = unit->unit_ai;
 	if (unit_ai) {
