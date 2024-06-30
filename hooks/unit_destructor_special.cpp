@@ -387,7 +387,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 	u32 pos_x = x + image->horizontal_offset + sprite->position.x;
 	u32 pos_y = y + image->vertical_offset   + sprite->position.y;
 
-	if (sprite_id_is_corpse(id)) {
+	if (SpriteId::is_corpse((SpriteId::Enum)id)) {
 		Unit* unit = *g_active_iscript_unit;
 		if (unit) {
 			UnitExt* unit_ext = get_unit_ext(unit);
@@ -406,7 +406,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 	if (thingy) {
 		if (id == SpriteId::Egg_Spawn) {
 			thingy->sprite->player = sprite->player;
-		} else if (sprite_id_is_corpse(id)) {
+		} else if (SpriteId::is_corpse((SpriteId::Enum)id)) {
 			thingy->sprite->player = sprite->player;
 
 			Unit* unit = *g_active_iscript_unit;
