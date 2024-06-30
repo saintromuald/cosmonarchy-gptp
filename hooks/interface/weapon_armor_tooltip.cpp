@@ -100,7 +100,7 @@ const char* get_damage_tootlip_string(u8 weapon_id, Unit* unit, u16 entry_string
 	f32 bonus_range = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit, true) / 32.0 - range;
 
 	std::string damage_modifiers = "";
-	f64 attack_cooldown = (f64)weapons_dat::cooldown[weapon_id] / 24;
+	f64 attack_cooldown = WeaponId::get_tooltip_cooldown(WeaponId::Enum(weapon_id));
 	f64 attack_cooldown_modifier = ((f64)hooks::get_modified_weapon_cooldown(unit, weapon_id) / 24) - attack_cooldown;
 
 	f64 attack_speed = 1.0 / attack_cooldown;

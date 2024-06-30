@@ -75,3 +75,19 @@ namespace SpriteId {
 		return false;
 	}
 }
+
+namespace WeaponId {
+	namespace dat = weapons_dat;
+
+	inline f64 get_tooltip_cooldown(WeaponId::Enum id) {
+		u32 cooldown = weapons_dat::cooldown[id];
+		u32 added_delay = 0;
+		switch (id) {
+			case WeaponId::ArchitectDispersiveSalvo:
+			case WeaponId::OptectonSunsplitBeam: {
+				added_delay = 1;
+			}
+		}
+		return (f64)(cooldown + added_delay / 24);
+	}
+}
