@@ -352,34 +352,84 @@ namespace hooks
 	}
 
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
-	void iscript_fireweapon(Unit* unit, u8 weapon_id) // 00479D40
-	{
+	void iscript_fireweapon(Unit* unit, u8 weapon_id) { // 00479D40
 		helper::fire_unit_weapon(unit, weapon_id);
-		if (weapons_dat::damage_factor[weapon_id] == 2)
-		{
+		if (weapons_dat::damage_factor[weapon_id] == 2) {
 			helper::fire_unit_weapon(unit, weapon_id);
 		}
 	}
 
-	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
-	void iscript_attackwith(Unit* attacker, u8 is_ground_weapon) // 00479D60
-	{
-		if (attacker->order_target.unit || attacker->id == UnitId::TerranDiadem) {
-			u32 weapon_id;
-			if (is_ground_weapon != 1) {
-				weapon_id = units_dat::air_weapon[attacker->id];
-			} else if (!unit_id_is_burrowed_attacker(attacker->id) || (attacker->status & UnitStatus::Burrowed)) {
-				weapon_id = units_dat::ground_weapon[attacker->id];
-			} else {
-				weapon_id = WeaponId::None;
-			}
-			helper::iscript_fireweapon(attacker, weapon_id);
+	enum class AttackTargetingType {
+		RequiresTarget,					// If target doesn't exist, attack will not fire (default)
+		RemembersTarget,				// If target doesn't exist, fallback on the position of last target
+		AcquiresNewTargets,				// If target doesn't exist, try to find a new target, otherwise will not fire
+		AcquiresNewTargetsAndRemembers, // If target doesn't exist, try to find a new target, otherwise fallback on the position of last target
+
+		Diadem,							// Hardcoded Diadem handling
+	};
+
+	static AttackTargetingType attack_targeting_type_of(Unit* unit) {
+		switch (unit->id) {
+			case UnitId::TerranDiadem:
+				return AttackTargetingType::Diadem;
+
+			case UnitId::ProtossOptecton:
+				return AttackTargetingType::RemembersTarget;
 		}
+		return AttackTargetingType::RequiresTarget;
 	}
 
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
-	void iscript_useweapon(Unit* unit, u8 weapon_id) // 00479C30
-	{
+	void iscript_attackwith(Unit* unit, u8 is_ground_weapon) { // 00479D60
+        UnitExt* unit_ext = get_unit_ext(unit);
+		switch (attack_targeting_type_of(unit)) {
+			case AttackTargetingType::RequiresTarget: {
+                if (!unit->order_target.unit) {
+                    return;
+                }
+			} break;
+			case AttackTargetingType::RemembersTarget: {
+                if (unit->order_target.unit) {
+					// pass
+                } else if (unit_ext->last_unit_target) {
+					unit->order_target = *unit_ext->last_unit_target;
+				} else {
+					return;
+				}
+			} break;
+			case AttackTargetingType::AcquiresNewTargets: {
+                if (!unit->order_target.unit) {
+                    helper::pick_new_target_if_needed(unit);
+                    if (!unit->order_target.unit) {
+                        return;
+                    }
+				}
+			} break;
+			case AttackTargetingType::AcquiresNewTargetsAndRemembers: {
+                if (!unit->order_target.unit) {
+                    helper::pick_new_target_if_needed(unit);
+                    if (unit->order_target.unit) {
+                        // pass
+                    } else if (unit_ext->last_unit_target) {
+                        unit->order_target = *unit_ext->last_unit_target;
+                    } else {
+                        return;
+                    }
+				}
+			} break;
+			case AttackTargetingType::Diadem: break;
+		}
+        u32 weapon_id = WeaponId::None;
+        if (is_ground_weapon != 1) {
+            weapon_id = units_dat::air_weapon[unit->id];
+        } else if (!unit_id_is_burrowed_attacker(unit->id) || (unit->status & UnitStatus::Burrowed)) {
+            weapon_id = units_dat::ground_weapon[unit->id];
+        }
+        helper::iscript_fireweapon(unit, weapon_id);
+	}
+
+	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
+	void iscript_useweapon(Unit* unit, u8 weapon_id) { // 00479C30
 		if (weapons_dat::flingy_id[weapon_id]) {
 			helper::create_bullet(weapon_id, unit, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->current_direction_1);
 			if (weapons_dat::damage_factor[weapon_id] == 2) {

@@ -1514,43 +1514,33 @@ namespace hooks {
 			*g_active_iscript_bullet = bullet;
 			helper::set_thingy_visibility_flags((Thingy*)bullet);
 			Sprite* bullet_sprite = bullet->sprite;
-			if (bullet_sprite)
-			{
+			if (bullet_sprite) {
 				helper::sprite_to_iscript_loop(bullet_sprite);
-				if (!bullet->sprite->images.head)
-				{
+				if (!bullet->sprite->images.head) {
 					bullet->sprite = 0;
 				}
 			}
 			u32 bullet_behavior = (u8)bullet->behavior_type;
-			switch (bullet_behavior)
-			{
-				case 0:
-				{
+			switch (bullet_behavior) {
+				case 0: {
 					helper::bullet_behavior_reassign(bullet);
 				} break;
-				case 1:
-				{
+				case 1: {
 					helper::bullet_behavior_fly(bullet);
 				} break;
-				case 2:
-				{
+				case 2: {
 					helper::bullet_behavior_follow(bullet);
 				} break;
-				case 3:
-				{
+				case 3: {
 					helper::bullet_behavior_bounce(bullet);
 				} break;
-				case 4:
-				{
+				case 4: {
 					helper::bullet_behavior_persist(bullet);
 				} break;
-				case 5:
-				{
+				case 5: {
 					helper::bullet_behavior_instant(bullet);
 				} break;
-				case 6:
-				{
+				case 6: {
 					helper::bullet_behavior_area(bullet);
 				} break;
 			}

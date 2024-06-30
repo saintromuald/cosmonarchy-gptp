@@ -136,6 +136,14 @@ void reset_unit_ext(UnitExt* unit_ext) {
 	*unit_ext = {};
 }
 
+void unit_ext_remove_references_to(Unit* unit) {
+	for (UnitExt& unit_ext : g_ext->units) {
+		if (unit_ext.last_unit_target && unit_ext.last_unit_target->unit == unit) {
+			unit_ext.last_unit_target->unit = nullptr;
+		}
+	}
+}
+
 void unit_death_start(Unit* unit) {
 	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i) { // set dead unit pointers to nullptr and erase them from unit vectors
 		UnitExt* other_ext = &g_ext->units[i];

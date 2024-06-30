@@ -1083,9 +1083,14 @@ namespace hooks {
 			addon_ext->units[UnitAddonParent] = unit;
 		}
 
-		if (!(unit->movement_flags & MovementFlags_StartingAttack)) {
+		if (unit->movement_flags & MovementFlags_StartingAttack) {
+			if (unit->order_target.unit) {
+                unit_ext->last_unit_target = unit->order_target;
+			}
+		} else {
 			unit_ext->values[ValueWeaponFireIndex] = 0;
 			unit_ext->values[ValueProjectilePattern] = 0;
+			unit_ext->last_unit_target = std::nullopt;
 		}
 
 		if (g_active_game_mode) {
