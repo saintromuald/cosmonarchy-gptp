@@ -110,13 +110,12 @@ namespace hooks
 				unit->building.creep_timer = 0;
 			}
 		} else {
-			u8 result_00414680;
 			unit->building.creep_timer = 15;
 			// look for a place to spawn creep on
 			// return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
 			// Replace UnitId::ZergGathtelosk with unit->id if giving specific buildings different creep bounding rectangles in get_creep_region
-			result_00414680 = helper::spread_creep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
-			if (unit->id == 180 && result_00414680 != 0) {
+			u8 did_spread_cagra = helper::spread_creep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
+			if (unit->id == 180 && did_spread_cagra != 0) {
 				u32 current_tile_x = unit->sprite->position.x / 32;
 				u32 current_tile_y = unit->sprite->position.y / 32;
 				s32 width_x = 6;
@@ -164,10 +163,10 @@ namespace hooks
 					}
 				}
 				if (!mustspread) {
-					result_00414680 = 0;
+					did_spread_cagra = 0;
 				}
 			}
-			if (result_00414680 == 0) {
+			if (did_spread_cagra == 0) {
 				u8 order_id = unit_id_spawns_larva_by_order(unit->id) ? OrderId::SpawningLarva : OrderId::Nothing2;
 				if (unit->secondary_order_id != order_id) {
 					unit->secondary_order_id = order_id;
