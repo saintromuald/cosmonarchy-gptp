@@ -79,15 +79,18 @@ namespace SpriteId {
 namespace WeaponId {
 	namespace dat = weapons_dat;
 
-	inline f32 get_tooltip_cooldown(WeaponId::Enum id) {
-		f32 cooldown = weapons_dat::cooldown[id] / 24.0f;
-		f32 added_delay = 0;
+	inline f32 get_tooltip_cooldown_offset(WeaponId::Enum id) {
+		f32 offset = 0;
 		switch (id) {
 			case WeaponId::OptectonSunsplitBeam:
 			case WeaponId::ArchitectDispersiveSalvo: {
-				added_delay = 1;
+				offset += 1;
 			}
 		}
-		return cooldown + added_delay;
+		return offset;
+	}
+
+	inline f32 get_tooltip_cooldown(WeaponId::Enum id) {
+		return dat::cooldown[id] / 24.0f + get_tooltip_cooldown_offset(id);
 	}
 }
