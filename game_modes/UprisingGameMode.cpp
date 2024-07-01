@@ -69,10 +69,8 @@ void UprisingGameMode::tick_unit(Unit* unit) {
 	if (unit_ext->timers[TimerUprisingSpawn] == 1) {
 		const auto& units = s_spawner_types[(UnitId::Enum) unit->id];
 
-		EntryArray upstarts = {};
-		unit_search_radial(&upstarts, unit->position, unit->get_sight_range() * 32);
-		unit_search_filter(&upstarts, unit, FilterOwn | FilterNoBuilding);
-		if (upstarts.count < 10) {
+		auto upstarts = g_unit_search.radial_ex(unit, unit->get_sight_range() * 32, FilterOwn | FilterNoBuilding);
+		if (upstarts.size() < 10) {
 			UnitId::Enum spawn_id = bw::rand_one(units);
 			bool two_per_egg = units_dat::base_property[spawn_id] & UnitProperty::TwoUnitsIn1Egg;
 			u32 spawn_count = two_per_egg ? 2 : 1;

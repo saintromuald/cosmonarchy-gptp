@@ -253,11 +253,8 @@ void cancel_all_training(Unit* unit) {
 }
 
 bool play_unit_banter(Unit* victim, u16 speaker_unit_id) {
-	EntryArray speakers = {};
-	unit_search_radial(&speakers, victim->position, victim->get_sight_range() * 32);
-	unit_search_filter(&speakers, victim, FilterEnemy, { speaker_unit_id });
-
-	for (Unit* speaker : speakers.units) {
+	auto speakers = g_unit_search.radial_ex(victim, victim->get_sight_range() * 32, FilterEnemy, {speaker_unit_id});
+	for (Unit* speaker : speakers) {
 		// Checks
 		if (bw::distance_between(victim->position, speaker->position) > speaker->get_sight_range() * 32) {
 			continue;
@@ -282,7 +279,7 @@ bool play_unit_banter(Unit* victim, u16 speaker_unit_id) {
 		}
 
 		// Cooldown
-		for (Unit* unit : speakers.units) {
+		for (Unit* unit : speakers) {
 			UnitExt* unit_ext = get_unit_ext(unit);
 			unit_ext->timers[TimerUnitBanter] = 24 * 60;
 		}

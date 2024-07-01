@@ -108,14 +108,14 @@ struct Designator {
 	PlayerBitset players;
 	UnitIdBitset unit_ids;
 
-	void search(EntryArray* entry_array, u32 limit = UINT_MAX) const {
-		unit_search_rect(entry_array, area.box);
+	EntryArray<Unit> search(u32 limit = UINT_MAX) const {
+		auto result = g_unit_search.rect(area.box);
 		if (limit != UINT_MAX) {
-			unit_search_sort_by_distance(entry_array, box_center(area.box));
+			result.sort_by_distance(box_center(area.box));
 		}
 
 		u32 idx = 0;
-		unit_search_custom_filter(entry_array, [this, limit, &idx](Unit* unit) {
+		result.filter_by([this, limit, &idx](Unit* unit) {
 			idx++;
 			if (idx > limit) {
 				return false;

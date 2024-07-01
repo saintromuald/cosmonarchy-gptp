@@ -44,16 +44,10 @@ void consume_corpse(Thingy* corpse) {
 }
 
 Thingy* get_closest_active_corpse(Point16 position, u32 radius) {
-	EntryArray corpses = {};
-	corpse_search_radial(&corpses, position, radius);
-	corpse_search_sort_by_distance(&corpses, position);
-	for (u32 i = 0; i < corpses.count; ++i) {
-		Thingy* corpse = corpses.corpses[i];
-		if (is_active_corpse(corpse)) {
-			return corpse;
-		}
-	}
-	return 0;
+	return g_corpse_search
+		.radial(position, radius)
+		.sort_by_distance(position)
+		.first([](Thingy* corpse) { return is_active_corpse(corpse); });
 }
 
 Unit* reclaim_corpse(Thingy* corpse, u32 player) {
@@ -115,10 +109,7 @@ void avenge_corpse(Thingy* corpse, u32 player) {
 	bw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
 	helper::play_sound_at_pos(SoundId::ZealotRevive01, pos);
 		
-	EntryArray units = {};
-	unit_search_radial(&units, corpse->sprite->position, corpse_ext->sight_range_before_death);
-	for (u32 i = 0; i < units.count; ++i) {
-		Unit* unit = units.units[i];
+	for (Unit* unit : g_unit_search.radial(corpse->sprite->position, corpse_ext->sight_range_before_death)) {
 		if (!bw::is_allied_to(player, unit->player) || unit->player == 11) {
 			continue;
 		}
@@ -147,10 +138,7 @@ void ascend_corpse(Thingy* corpse, u32 player) {
 void ascend_in_area(u32 player, Point16 position, u32 range) {
 	helper::play_sound_at_pos(SoundId::Protoss_ZEALOT_PZeRag00_wav, position);
 
-	EntryArray units = {};
-	unit_search_radial(&units, position, range);
-	for (u32 i = 0; i < units.count; ++i) {
-		Unit* unit = units.units[i];
+	for (Unit* unit : g_unit_search.radial(position, range)) {
 		if (!bw::is_allied_to(player, unit->player) || unit->player == 11) {
 			continue;
 		}
@@ -173,28 +161,19 @@ void avenge_or_ascend_corpse(Thingy* corpse, u32 player) {
 }
 
 void avenge_corpses_in_area(Point16 position, u32 radius, u32 player) {
-	EntryArray corpses = {};
-	corpse_search_radial(&corpses, position, radius);
-	for (u32 i = 0; i < corpses.count; ++i) {
-		Thingy* corpse = corpses.corpses[i];
+	for (Thingy* corpse : g_corpse_search.radial(position, radius)) {
 		avenge_corpse(corpse, player);
 	}
 }
 
 void ascend_corpses_in_area(Point16 position, u32 radius, u32 player) {
-	EntryArray corpses = {};
-	corpse_search_radial(&corpses, position, radius);
-	for (u32 i = 0; i < corpses.count; ++i) {
-		Thingy* corpse = corpses.corpses[i];
+	for (Thingy* corpse : g_corpse_search.radial(position, radius)) {
 		ascend_corpse(corpse, player);
 	}
 }
 
 void avenge_or_ascend_corpses_in_area(Point16 position, u32 radius, u32 player) {
-	EntryArray corpses = {};
-	corpse_search_radial(&corpses, position, radius);
-	for (u32 i = 0; i < corpses.count; ++i) {
-		Thingy* corpse = corpses.corpses[i];
+	for (Thingy* corpse : g_corpse_search.radial(position, radius)) {
 		avenge_or_ascend_corpse(corpse, player);
 	}
 }
@@ -354,11 +333,7 @@ void blissful_embrace(Unit* target, u32 player, bool force) {
 	if (target->id == UnitId::ZergCaphrolosk || target->id == UnitId::ZergOcsalCesiant) {
 		larva_id = UnitId::ZergOcsalLarva;
 	}
-	EntryArray larvae = {};
-	unit_search_radial(&larvae, target->position, 4 * 32);
-	unit_search_filter(&larvae, target, 0, {larva_id});
-	for (u32 i = 0; i < larvae.count; ++i) {
-		Unit* larva = larvae.units[i];
+	for (Unit* larva : g_unit_search.radial_ex(target, 4 * 32, 0, {larva_id})) {
 		if (larva->connected_unit == target) {
 			larva->connected_unit = 0;
 		}

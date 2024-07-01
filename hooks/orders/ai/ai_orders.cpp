@@ -388,24 +388,18 @@ namespace hooks {
 		}
 		
 		// Also count in allied non-AI force
-		{
-			EntryArray region_units = {};
-			unit_search_rect(&region_units, bw::get_region_area(bw::get_region(ai_region->region)));
-			unit_search_filter(&region_units, 0, FilterCanAttackOrCast | FilterNotWorker | FilterNoTrap);
-			for (u32 i = 0; i < region_units.count; ++i) {
-				Unit* unit = region_units.units[i];
-				if (!bw::is_allied_to(ai_region->player, unit->player)) {
-					continue;
-				}
-				if (unit->unit_ai && unit->unit_ai->type == AiType::Military) {
-					continue;
-				}
-				ai_region->ground_strength_full += unit->ground_strength;
-				ai_region->air_strength_full += unit->air_strength;
-				ai_region->ground_strength += unit->ground_strength;
-				ai_region->air_strength += unit->air_strength;
-			}
-		}
+        for (Unit* unit : g_unit_search.rect(bw::get_region_area(bw::get_region(ai_region->region))).filter(0, FilterCanAttackOrCast | FilterNotWorker | FilterNoTrap)) {
+            if (!bw::is_allied_to(ai_region->player, unit->player)) {
+                continue;
+            }
+            if (unit->unit_ai && unit->unit_ai->type == AiType::Military) {
+                continue;
+            }
+            ai_region->ground_strength_full += unit->ground_strength;
+            ai_region->air_strength_full += unit->air_strength;
+            ai_region->ground_strength += unit->ground_strength;
+            ai_region->air_strength += unit->air_strength;
+        }
 
 		// Removed a Campaign AI only block, which was causing a crash and an unwanted feature
 		// No longer Melee AI only, also times 2 instead of times 1.5
@@ -1379,7 +1373,7 @@ namespace hooks {
 		return 1;
 	}
 
-	bool ai_resarea_valid_for_expo(u32 player, u32 resarea, AiTown* main_town, bool has_transport, EntryArray* out_units) {
+	bool ai_resarea_valid_for_expo(u32 player, u32 resarea, AiTown* main_town, bool has_transport, EntryArray<Unit>* out_units) {
 		ResourceArea* area = &g_resource_areas->areas[resarea];
 		if (area->flags & 2) { // Already taken by an AI, maybe we shouldn't care and allow them both to compete for the expo? -Veeq7
 			return false;
@@ -1405,13 +1399,12 @@ namespace hooks {
 		}
 
 		// A bit annoying to have to this like that, but it's better than doing the same search twice (ai_resarea_valid_for_expo and get_resarea_score)
-		EntryArray local_units = {};
+		EntryArray<Unit> local_units = {};
 		if (!out_units) {
 			out_units = &local_units;
 		}
-		unit_search_radial(out_units, area->position, 12 * 32);
-		for (u32 j = 0; j < out_units->count; ++j) {
-			Unit* unit = out_units->units[j];
+		*out_units = g_unit_search.radial(area->position, 12 * 32);
+		for (Unit* unit : *out_units) {
 			if (unit->player < PlayerLimit) {
 				if (player != unit->player && bw::is_allied_to(player, unit->player)
 					&& (units_dat::group_flags[unit->id].is_factory

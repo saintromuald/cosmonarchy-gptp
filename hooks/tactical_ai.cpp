@@ -492,12 +492,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 	Vec32f backward_vector = {};
 	Vec32f effect_vector = {};
 
-	EntryArray hostiles = {};
-	unit_search_square(&hostiles, unit->position, GroupRadius);
-	unit_search_filter(&hostiles, unit, FilterEnemy | FilterCanAttackOrCast);
-	for (u32 i = 0; i < hostiles.count; ++i) {
-		Unit* hostile = hostiles.units[i];
-
+	for (Unit* hostile : g_unit_search.square_ex(unit, GroupRadius, FilterEnemy | FilterCanAttackOrCast)) {
 		s32 strength = 0;
 		if (hostile->can_attack_target(unit, true)) {
 			if (unit->status & UnitStatus::InAir) {
@@ -531,12 +526,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 		}
 	}
 
-	EntryArray allies = {};
-	unit_search_square(&allies, unit->position, GroupRadius);
-	unit_search_filter(&allies, unit, FilterAlly | FilterCanAttackOrCast);
-	for (u32 i = 0; i < allies.count; ++i) {
-		Unit* ally = allies.units[i];
-
+	for (Unit* ally : g_unit_search.square_ex(unit, GroupRadius, FilterAlly | FilterCanAttackOrCast)) {
 		u32 strength = 0;
 		if (ally->air_strength > ally->ground_strength) {
 			strength = ally->air_strength;
@@ -546,10 +536,7 @@ static KitePositions get_kite_positions(Unit* unit) {
 		result.ally_strength += strength; 
 	}
 
-	EntryArray effects = {};
-	effect_search_square(&effects, unit->position, GroupRadius);
-	for (u32 i = 0; i < effects.count; ++i) {
-		EffectField* effect = effects.effects[i];
+	for (EffectField* effect : g_effect_search.square(unit->position, GroupRadius)) {
 		s32 value = get_effect_value(unit, effect);
 		if (value) {
 			result.targets_found = true;
@@ -561,18 +548,13 @@ static KitePositions get_kite_positions(Unit* unit) {
 	}
 
 	if (unit->id == UnitId::ZergSovroleth) {
-		EntryArray corpses = {};
-		corpse_search_radial(&corpses, unit->position, GroupRadius);
-		for (u32 i = 0; i < corpses.count; ++i) {
-			Thingy* corpse = corpses.corpses[i];
-			if (corpse->sprite) {
-				result.targets_found = true;
-				Point16 position = {};
-				position.x = corpse->sprite->position.x;
-				position.y = corpse->sprite->position.y;
-				result.forward_found = true;
-				adjust_vector(&forward_vector, unit, position, 100);
-			}
+		for (Thingy* corpse : g_corpse_search.radial(unit->position, GroupRadius)) {
+            result.targets_found = true;
+            Point16 position = {};
+            position.x = corpse->sprite->position.x;
+            position.y = corpse->sprite->position.y;
+            result.forward_found = true;
+            adjust_vector(&forward_vector, unit, position, 100);
 		}
 	}
 
@@ -670,12 +652,8 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
 	if (unit_could_kite(unit)) {
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker && !unit_ext->timers[TimerAI_KitingCombat]) {
-			EntryArray allies = {};
-			unit_search_square(&allies, unit->position, GroupRadius);
-			unit_search_filter(&allies, unit, FilterAlly | FilterCanAttackOrCast);
 			u32 allied_combat_strength = 0;
-			for (u32 i = 0; i < allies.count; ++i) {
-				Unit* ally = allies.units[i];
+			for (Unit* ally : g_unit_search.square_ex(unit, GroupRadius, FilterAlly | FilterCanAttackOrCast)) {
 				if (unit_in_combat(ally, true)) {
 					u32 strength = 0;
 					if (ally->air_strength > ally->ground_strength) {
@@ -687,12 +665,8 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			}
 
-			EntryArray hostiles = {};
-			unit_search_square(&hostiles, unit->position, GroupRadius);
-			unit_search_filter(&hostiles, unit, FilterEnemy | FilterCanAttackOrCast);
 			u32 hostile_combat_strength = 0;
-			for (u32 i = 0; i < hostiles.count; ++i) {
-				Unit* hostile = hostiles.units[i];
+			for (Unit* hostile : g_unit_search.square_ex(unit, GroupRadius, FilterEnemy | FilterCanAttackOrCast)) {
 				if (unit_in_combat(hostile, true)) {
 					u32 strength = 0;
 					if (hostile->air_strength > hostile->ground_strength) {
@@ -944,17 +918,9 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 	if (unit_id_is_garrison(unit->id) && !unit_ext->timers[TimerAI_GenericAbilityCooldown]) {
 		const u32 bunker_capacity = units_dat::space_provided[unit->id];
 
-		EntryArray allies = {};
-		unit_search_square(&allies, unit->position, unit->get_sight_range(false) * 32);
-		EntryArray enemies = allies;
-
-		unit_search_filter(&allies, unit, FilterAlly);
-		unit_search_sort_by_distance(&allies, unit->position);
-
-		unit_search_filter(&enemies, unit, unit->player == 11 ? 0 : FilterEnemy);
-		unit_search_sort_by_distance(&enemies, unit->position);
-
-		if (enemies.count) {
+		auto allies = g_unit_search.square_ex(unit, unit->get_sight_range(false) * 32, FilterAlly).sort_by_distance(unit->position);
+		auto enemies = g_unit_search.square_ex(unit, unit->get_sight_range(false) * 32, unit->player == 11 ? 0 : FilterEnemy);
+		if (enemies.size()) {
 			u32 counter = 0;
 			for (u32 i = 0; i < bunker_capacity; ++i) {
 				Unit* target = unit->get_loaded_unit(i);
@@ -962,8 +928,8 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					counter += units_dat::space_required[target->id];
 				}
 			}
-			for (u32 i = 0; i < allies.count && counter <= bunker_capacity; ++i) {
-				Unit* target = allies.units[i];
+			for (u32 i = 0; i < allies.size() && counter <= bunker_capacity; ++i) {
+				Unit* target = allies[i];
 
 				if (target->unit_ai && helper::can_enter_transport(unit, target)
 					&& !is_melee_attacker(target->id) && !(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
@@ -1171,14 +1137,9 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				unit->main_order_state = 0;
 			}
 		} else if (unit->id == UnitId::ZergMatraleth && unit->main_order_id != OrderId::BlissfulEmbrace) {
-			EntryArray targets = {};
-			unit_search_radial(&targets, unit->position, 512 * 32);
-			unit_search_filter(&targets, unit, FilterEnemy | FilterBuilding);
-
 			f32 min_cost = FLT_MAX;
 			Unit* best_target = 0;
-			for (u32 i = 0; i < targets.count; ++i) {
-				Unit* target = targets.units[i];
+			for (Unit* target : g_unit_search.radial_ex(unit, 512 * 32, FilterEnemy | FilterBuilding)) {
 				if (can_infest(unit->player, target)) {
 					f32 cost = get_blissful_embrace_target_cost(unit, target);
 					if (cost < min_cost) {

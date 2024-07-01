@@ -58,6 +58,8 @@ enum SearchFilterCorpse {
 	CorpseFilterVisible			= 1 << 18,
 };
 
+struct EffectField;
+
 namespace bw {
 Box32 clamp_box32(Box32 rect);
 u32 distance_between(Point16 p1, Point16 p2);
@@ -67,8 +69,8 @@ void reset_search_index();
 void update_search_index(); // must be done once per frame
 void update_search_index_effects(); // must be done once per frame after effects are updated
 
-bool unit_flag_match(Unit* unit, Unit* center, u32 flags, const std::unordered_set<u16>& allowed_unit_ids = {});
-bool corpse_flag_match(Thingy* target, Thingy* center, u32 flags, const std::unordered_set<u16>& allowed_unit_ids);
+bool unit_flag_match(Unit* unit, Unit* center = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_unit_ids = {});
+bool corpse_flag_match(Thingy* target, Thingy* center = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_unit_ids = {});
 
 bool is_point_in_rect(Point16 point, Box32 rect);
 bool is_rect_in_rect(Box32 inner, Box32 outer);
@@ -80,9 +82,10 @@ public:
 	void add(T* data) { m_data.push_back(data); }
 	void clear() { return m_data.clear(); }
 	size_t size() const { return m_data.size(); }
+    T*& operator[](u32 index) { return m_data[index]; }
 
-	std::vector<T*>::iterator begin() const { return std::begin(m_data); }
-	std::vector<T*>::iterator end() const { return std::begin(m_data); }
+	std::vector<T*>::iterator begin() { return std::begin(m_data); }
+	std::vector<T*>::iterator end() { return std::end(m_data); }
 
     template <typename ScoreFunc>
     EntryArray& sort(ScoreFunc&& score_func) {
@@ -106,19 +109,21 @@ public:
         });
     }
 
-    EntryArray& filter(Unit* reference, u32 flags = 0, std::unordered_set<u16> allowed_ids = {}) requires std::same_as<T, Unit> {
+    EntryArray& filter(Unit* reference = nullptr, u32 flags = 0, std::unordered_set<u16> allowed_ids = {}) requires std::same_as<T, Unit> {
         filter_by([reference, flags, &allowed_ids](Unit* unit) {
             return unit_flag_match(unit, reference, flags, allowed_ids);
         });
         return *this;
     }
 
-    EntryArray& filter(Thingy* reference, u32 flags = 0, std::unordered_set<u16> allowed_ids = {}) requires std::same_as<T, Thingy> {
+    EntryArray& filter(Thingy* reference = nullptr, u32 flags = 0, std::unordered_set<u16> allowed_ids = {}) requires std::same_as<T, Thingy> {
         filter_by([reference, flags, &allowed_ids](Thingy* corpse) {
             return corpse_flag_match(corpse, reference, flags, allowed_ids);
         });
         return *this;
     }
+
+    // TODO: add filter methods: owned_by, not_owned_by, allied_to, hostile_to
 
     template <typename ScoreFunc>
     T* best(ScoreFunc&& score_func) {
@@ -219,8 +224,8 @@ public:
         m_grid[x][y] = &entry;
     }
 
-    EntryArray<T*> rect(Box32 rect) {
-		EntryArray<T*> result;
+    EntryArray<T> rect(Box32 rect) {
+		EntryArray<T> result;
 
         rect = bw::clamp_box32(rect);
         const u32 x0 = rect.left / CellPxSize;
@@ -249,7 +254,7 @@ public:
         return result;
     }
 
-    EntryArray<T*> square(Point16 center, u32 radius) {
+    EntryArray<T> square(Point16 center, u32 radius) {
         return rect({
             center.x - (s32)radius,
             center.y - (s32)radius,
@@ -258,8 +263,8 @@ public:
         });
     }
 
-    EntryArray<T*> radial(Point16 center, u32 radius) {
-		EntryArray<T*> result;
+    EntryArray<T> radial(Point16 center, u32 radius) {
+		EntryArray<T> result;
 
         Box32 rect = {
             center.x - (s32)radius,
@@ -293,9 +298,23 @@ public:
 		return result;
     }
     
-    // TODO: rect_ex, square_ex, radial_ex for search + default filters
+    EntryArray<Unit> square_ex(Unit* unit, u32 radius, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
+        return square(unit->position, radius).filter(unit, filter, allowed_unit_ids);
+    }
 
-    void filter_junk(EntryArray<T*>& array) {}
+    EntryArray<T> radial_ex(Unit* unit, u32 radius, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
+        return radial(unit->position, radius).filter(unit, filter, allowed_unit_ids);
+    }
+
+    EntryArray<Unit> square_ex(const EffectField& effect, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
+        return square(effect.position, effect.radius).filter(effect.source, filter, allowed_unit_ids);
+    }
+
+    EntryArray<T> radial_ex(const EffectField& effect, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
+        return radial(effect.position, effect.radius).filter(effect.source, filter, allowed_unit_ids);
+    }
+
+    void filter_junk(EntryArray<T>& array) {}
 
 private:
 	u32 m_size;
@@ -310,22 +329,22 @@ inline SearchIndex<Thingy>      g_corpse_search;
 inline SearchIndex<EffectField> g_effect_search;
 
 template <>
-void SearchIndex<Unit>::filter_junk(EntryArray<Unit*>& entry_array) {
+void SearchIndex<Unit>::filter_junk(EntryArray<Unit>& entry_array) {
     entry_array.filter_by([](Unit* unit) {
         return !unit->is_dead();
     });
 }
 
 template <>
-void SearchIndex<Bullet>::filter_junk(EntryArray<Bullet*>& entry_array) {
+void SearchIndex<Bullet>::filter_junk(EntryArray<Bullet>& entry_array) {
     entry_array.filter_by([](Bullet* bullet) {
         return bullet->hitpoints;
     });
 }
 
 template <>
-void SearchIndex<Thingy>::filter_junk(EntryArray<Thingy*>& entry_array) {
+void SearchIndex<Thingy>::filter_junk(EntryArray<Thingy>& entry_array) {
     entry_array.filter_by([](Thingy* corpse) {
-        return !(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath);
+        return corpse->sprite && !(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath);
     });
 }

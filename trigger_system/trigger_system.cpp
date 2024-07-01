@@ -1676,9 +1676,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			const auto count = parser.get_count();
 
 			if (player != -1) {
-				EntryArray units = {};
-				designator.search(&units, count);
-				for (Unit* unit : units.units) {
+				for (Unit* unit : designator.search(count)) {
 					unit->sprite->player = player;
 				}
 			}
