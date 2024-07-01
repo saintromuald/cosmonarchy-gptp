@@ -2793,7 +2793,7 @@ static std::pair<Vec32f, Vec32f> closest_points_on_segments(Vec32f a0, Vec32f a1
     f32 denom = v21 * v21 - v22 * v11;
 
 	f32 s, t;
-	if (abs(denom) < 0.00000001) {
+	if (abs(denom) < 0.000001) {
         s = 0;
         t = (v11 * s - v21_1) / v21;
 	} else {
@@ -2817,6 +2817,8 @@ static std::pair<Vec32f, Vec32f> closest_points_on_segments(Vec32f a0, Vec32f a1
 
 bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t, Point16* out_cp) {
 	Vec32f best_cp = {};
+	Vec32f best_line_pt = {};
+	Vec32f best_rect_pt = {};
 	f32 best_t = INFINITY;
 	f32 best_distance = INFINITY;
 
@@ -2832,20 +2834,34 @@ bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t
 		// Note that parallel line to line intersection is impossible, however this should not be a problem for any real shapes
 		if (intersect) {
             const auto [line_pt, rect_pt] = closest_points_on_segments(line0, line1, rect0, rect1);
-            f32 distance = distance_between(line_pt, rect_pt);
+            f32 distance = std::min(distance_between(line_pt, rect_pt), distance_between(intersect->clamped_first_cp, intersect->clamped_second_cp));
 			if (abs(distance - best_distance) < 1) {
 				if (intersect->t < best_t) {
                     best_cp = intersect->clamped_second_cp;
+					best_line_pt = line_pt;
+					best_rect_pt = rect_pt;
                     best_t = intersect->t;
                     best_distance = distance;
 				}
 			} else if (distance < best_distance) {
                 best_cp = intersect->clamped_second_cp;
+                best_line_pt = line_pt;
+                best_rect_pt = rect_pt;
                 best_t = intersect->t;
                 best_distance = distance;
 			}
 		}
 	}
+
+    g_graphics.draw_box(rect.left, rect.top, rect.right, rect.bottom, graphics::WHITE, graphics::ON_MAP);
+	for (f32 t = 0; t <= 1.0; t += 0.05) {
+		Vec32f pt = {
+			line0.x + (line1.x - line0.x) * t,
+			line0.y + (line1.y - line0.y) * t,
+		};
+		g_graphics.draw_circle(pt.x, pt.y, line_width / 2, graphics::WHITE, graphics::ON_MAP);
+	}
+	g_graphics.draw_line(best_line_pt.x, best_line_pt.y, best_rect_pt.x, best_rect_pt.y, graphics::YELLOW, graphics::ON_MAP);
 
 	if (best_distance <= line_width / 2) {
 		*out_t = best_t;

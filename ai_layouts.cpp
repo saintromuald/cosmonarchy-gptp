@@ -267,10 +267,7 @@ void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& p
 		placeholder.yield_score = 0;
 
 		u32 resarea = bw::get_closest_resarea(placeholder.position);
-		EntryArray found = {};
-		unit_search_radial(&found, placeholder.position, 12 * 32);
-		for (u32 i = 0; i < found.count; ++i) {
-			Unit* unit = found.units[i];
+		for (Unit* unit : g_unit_search.radial(placeholder.position, 12 * 32)) {
 			if (!unit_id_is_resource_node(unit->id, false)) {
 				continue;
 			}

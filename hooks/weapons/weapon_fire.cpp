@@ -645,7 +645,7 @@ namespace hooks {
 	}
 
 	static Box32 get_line_search_area(Bullet* bullet, Point16 old_position) {
-		u32 search_margin = 6 * 32;
+		u32 search_margin = 20 * 32;
 		Box32 search_area = {};
 		search_area.left   = Min(old_position.x, bullet->position.x) - search_margin;
 		search_area.top    = Min(old_position.y, bullet->position.y) - search_margin;
@@ -660,6 +660,12 @@ namespace hooks {
 		Unit* best_unit = 0;
 		f32 best_t = INFINITY;
 		Point16 best_cp = {};
+
+		g_graphics.draw_filled_circle(bullet->position.x, bullet->position.y, 8, graphics::RED, graphics::ON_MAP);
+		Unit* selected_unit = *g_active_portrait_unit;
+		if (selected_unit) {
+            g_graphics.draw_filled_circle(selected_unit->position.x, selected_unit->position.y, 8, graphics::RED, graphics::ON_MAP);
+		}
 
 		Box32 search_area = get_line_search_area(bullet, old_position);
 		EntryArray units = {};
