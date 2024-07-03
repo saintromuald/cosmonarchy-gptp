@@ -3304,14 +3304,14 @@ namespace hooks {
 			should_update_speed = true;
 			// Overlay
 			if (!unit_ext->timers[TimerClaymoreKelvinMunitionsZap]) {
-				u32 width = units_dat::unit_bounds[unit->id].x * 0.75;
-				u32 height = units_dat::unit_bounds[unit->id].y * 0.75;
+				u32 width = units_dat::unit_bounds[unit->id].x * 3 / 4;
+				u32 height = units_dat::unit_bounds[unit->id].y * 3 / 4;
 
 				s32 x_offset = bw::random() % width - width / 2;
 				s32 y_offset = bw::random() % height - height / 2;
 
-				x_offset = MathUtils::clamp(x_offset, -127, 128);
-				y_offset = MathUtils::clamp(y_offset, -127, 128);
+				x_offset = MathUtils::clamp(x_offset, -128, 127);
+				y_offset = MathUtils::clamp(y_offset, -128, 127);
 
 				Unit* final_unit = unit;
 				if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
