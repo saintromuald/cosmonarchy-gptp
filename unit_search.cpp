@@ -17,8 +17,8 @@ bool is_rect_in_rect(Box32 inner, Box32 outer) {
 
 void reset_search_index() {
 	g_unit_search.reset();
-	for (u32 i = 0; i < 8; ++i) {
-		g_seen_unit_search[i].reset();
+	for (u32 player = 0; player < PlayerLimit; ++player) {
+		g_seen_unit_search[player].reset();
 	}
 	g_bullet_search.reset();
 	g_corpse_search.reset();
@@ -31,9 +31,9 @@ void update_search_index() {
 		g_unit_search.add(unit, unit->position);
 
 		UnitExt* unit_ext = get_unit_ext(unit);
-		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (unit_ext->seen_by_flags & (1 << i)) {
-				g_seen_unit_search[i].add(unit, unit_ext->last_seen_position[i]);
+		for (u32 player = 0; player < PlayerLimit; ++player) {
+			if (unit_ext->seen_by_flags & (1 << player)) {
+				g_seen_unit_search[player].add(unit, unit_ext->last_seen_position[player]);
 			}
 		}
 	}

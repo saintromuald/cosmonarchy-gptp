@@ -112,14 +112,14 @@ public:
         return *this;
     }
 
-    EntryArray& filter(Unit* reference = nullptr, u32 flags = 0, std::unordered_set<u16> allowed_ids = {}) requires std::same_as<T, Unit> {
+    EntryArray& filter(Unit* reference = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_ids = {}) requires std::same_as<T, Unit> {
         filter_by([reference, flags, &allowed_ids](Unit* unit) {
             return unit_flag_match(unit, reference, flags, allowed_ids);
         });
         return *this;
     }
 
-    EntryArray& filter(Thingy* reference = nullptr, u32 flags = 0, std::unordered_set<u16> allowed_ids = {}) requires std::same_as<T, Thingy> {
+    EntryArray& filter(Thingy* reference = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_ids = {}) requires std::same_as<T, Thingy> {
         filter_by([reference, flags, &allowed_ids](Thingy* corpse) {
             return corpse_flag_match(corpse, reference, flags, allowed_ids);
         });
@@ -195,7 +195,6 @@ private:
 
 template <>
 inline EntryArray<Thingy>& EntryArray<Thingy>::sort_by_distance(Point16 center) {
-    std::erase_if(m_data, [](Thingy* a) { return !a->sprite; });
     std::ranges::stable_sort(m_data, [center](Thingy* a, Thingy* b) {
         return bw::distance_between(a->sprite->position, center) < bw::distance_between(b->sprite->position, center);	
     });
