@@ -164,6 +164,7 @@ struct Unit : public UnitLayout
 	s16 get_bottom() const;
 
 	Box16 get_box() const;
+	Box32 get_box32() const;
 
 	//////////////////////////////////////////////////////////////// @}
 

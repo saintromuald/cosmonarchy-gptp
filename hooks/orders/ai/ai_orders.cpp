@@ -1290,16 +1290,12 @@ namespace hooks {
 
 	// Hooked to replace old functionality with new, to prioritize Taloses over Masons for AI repairs and to allow more than 1 repairer. -Pr0nogo
 	Unit* ai_find_best_repair_target(Unit* repairman) { // 00443160
-		EntryArray repair_targets = {};
-		unit_search_radial(&repair_targets, repairman->position, 1024 * 32);
-		unit_search_filter(&repair_targets, repairman, FilterAlly);
-		Unit* best_target = unit_search_find_best(&repair_targets, [=](Unit* repair_target) {
+		Unit* best_target = g_unit_search.radial_ex(repairman, 1024 * 32, FilterAlly).best([repairman](Unit* repair_target) {
 			if (!repairman->has_path_to_unit(repair_target)
 			||	 repairman->order_target.unit == repair_target
 			||   bw::is_allied_to(repair_target->player, repairman->player)
-			||  !helper::is_order_valid(OrderId::Repair1, repairman, 0, repair_target, 0))
-			{
-				return ScoreInvalidUnit;
+			||  !helper::is_order_valid(OrderId::Repair1, repairman, 0, repair_target, 0)) {
+				return std::numeric_limits<s32>::min();
 			}
 			s32 max_hp = units_dat::max_hitpoints[repair_target->id] / 256;
 			if (!max_hp) {
@@ -1309,6 +1305,7 @@ namespace hooks {
 				}
 			}
 			s32 score = max_hp - ((repair_target->hitpoints + 255) / 256);
+			return score;
 		});
 		return best_target;
 	}
@@ -1420,7 +1417,7 @@ namespace hooks {
 		return true;
 	}
 
-	static f32 get_resarea_score(u32 player, AiTown* main_town, ResourceArea* area, EntryArray* units, bool use_absolute_path) {
+	static f32 get_resarea_score(u32 player, AiTown* main_town, ResourceArea* area, const EntryArray<Unit>& units, bool use_absolute_path) {
 		f32 score = 0;
 
 		// TODO: make trigger customizable (and probably convert all biases to 1.0, so it's always the default)
@@ -1485,8 +1482,7 @@ namespace hooks {
 			}
 		}
 
-		for (u32 j = 0; j < units->count; ++j) {
-			Unit* unit = units->units[j];
+		for (Unit* unit : units) {
 			if (unit->player < PlayerLimit) {
 				if (player != unit->player && bw::is_allied_to(player, unit->player) && units_dat::group_flags[unit->id].is_building) {
 					score -= 10;
@@ -1505,7 +1501,7 @@ namespace hooks {
 		Region* main_region = bw::get_region(bw::get_region_id(main_town->position));
 		for (u32 i = 1; i <= g_resource_areas->count; ++i) {
 			ResourceArea* area = &g_resource_areas->areas[i];
-			EntryArray units = {};
+			EntryArray<Unit> units = {};
 			if (!ai_resarea_valid_for_expo(player, i, main_town, has_transport, &units)) {
 				continue;
 			}
@@ -1515,7 +1511,7 @@ namespace hooks {
 				use_absolute_path = true;
 			}
 
-			f32 score = get_resarea_score(player, main_town, area, &units, use_absolute_path);
+			f32 score = get_resarea_score(player, main_town, area, units, use_absolute_path);
 			if (score > best_score) {
 				best_score = score;
 				best_resarea = i;
@@ -2321,10 +2317,8 @@ namespace hooks {
 			}
 
 			bool valid_region = false;
-			EntryArray units = {};
-			unit_search_rect(&units, bw::get_region_area(region)); // TODO: consider radial search of more distance
-			for (u32 j = 0; j < units.count; ++j) {
-				Unit* unit = units.units[j];
+			// TODO: consider radial search of more distance
+			for (Unit* unit : g_unit_search.rect(bw::get_region_area(region))) {
 				if (unit->player > PlayerLimit) {
 					continue;
 				}
@@ -2459,10 +2453,8 @@ namespace hooks {
 			UnitExt* unit_ext = get_unit_ext(unit);
 			if (unit_ext->damage_dealt_timer <= 4 * 24
 			||  unit_ext->damage_taken_timer <= 4 * 24) {
-				EntryArray units = {};
-				unit_search_radial(&units, unit->position, 20 * 32);
-				unit_search_filter(&units, unit, FilterEnemy | FilterBuilding);
-				if (units.count) {
+				EntryArray units = 	g_unit_search.radial_ex(unit, 20 * 32, FilterEnemy | FilterBuilding);
+				if (units.count()) {
 					return true;
 				}
 			}

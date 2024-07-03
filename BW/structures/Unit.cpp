@@ -379,8 +379,16 @@ s16 Unit::get_bottom() const {
 }
 
 Box16 Unit::get_box() const {
-	assert(this);
 	Box16 box = {};
+	box.left   = this->get_left();
+	box.top    = this->get_top();
+	box.right  = this->get_right();
+	box.bottom = this->get_bottom();
+	return box;
+}
+
+Box32 Unit::get_box32() const {
+	Box32 box = {};
 	box.left   = this->get_left();
 	box.top    = this->get_top();
 	box.right  = this->get_right();

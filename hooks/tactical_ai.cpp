@@ -920,7 +920,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 
 		auto allies = g_unit_search.square_ex(unit, unit->get_sight_range(false) * 32, FilterAlly).sort_by_distance(unit->position);
 		auto enemies = g_unit_search.square_ex(unit, unit->get_sight_range(false) * 32, unit->player == 11 ? 0 : FilterEnemy);
-		if (enemies.size()) {
+		if (enemies.count()) {
 			u32 counter = 0;
 			for (u32 i = 0; i < bunker_capacity; ++i) {
 				Unit* target = unit->get_loaded_unit(i);
@@ -928,7 +928,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 					counter += units_dat::space_required[target->id];
 				}
 			}
-			for (u32 i = 0; i < allies.size() && counter <= bunker_capacity; ++i) {
+			for (u32 i = 0; i < allies.count() && counter <= bunker_capacity; ++i) {
 				Unit* target = allies[i];
 
 				if (target->unit_ai && helper::can_enter_transport(unit, target)

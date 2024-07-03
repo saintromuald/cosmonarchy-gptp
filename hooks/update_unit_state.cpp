@@ -163,21 +163,17 @@ namespace hooks
 					}
 					Unit* target = unit_ext->units[UnitWyvernTargetLock];
 					if (!target || !wyvern_can_fire_at(unit, target)) {
-						EntryArray units = {};
-						unit_search_radial(&units, unit->position, range);
-						unit_search_sort_by_distance(&units, unit->position);
+						auto targets = g_unit_search.radial_ex(unit, range, FilterEnemy)
+                            .sort_by_distance(unit->position);
 
-						for (u32 i = 0; i < units.count; ++i) {
-							Unit* it = units.units[i];
+						for (Unit* it : targets) {
 							if (it == unit) {
-								continue;
-							}
-							if (bw::is_allied_to(unit->player, it->player)) {
 								continue;
 							}
 							if (!wyvern_can_fire_at(unit, it)) {
 								continue;
 							}
+							// TODO: add direction check
 							target = unit;
 							break;
 						}

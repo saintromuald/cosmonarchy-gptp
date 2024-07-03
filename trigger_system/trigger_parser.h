@@ -8,6 +8,7 @@
 bool sv_equals(std::string_view a, std::string_view b);
 bool sv_iequals(std::string_view a, std::string_view b);
 bool sv_lazy_equals(std::string_view a, std::string_view b);
+Point16 box_center(Box32 box);
 
 struct Token {
 	std::string_view sv;
@@ -24,6 +25,7 @@ struct Token {
 	bool iequals(std::string_view other) { return sv_iequals(sv, other); }
 	bool lazy_equals(std::string_view other) { return sv_lazy_equals(sv, other); }
 };
+Token get_short_unit_name(u32 unit_id);
 
 enum LocationFlags {
 	LocationFlags_LowGround  = 0x01,
@@ -56,6 +58,10 @@ struct Area {
 			return false;
 		}
 		return false;
+	}
+
+	Point16 center() const {
+		return box_center(box);
 	}
 };
 
@@ -99,38 +105,35 @@ struct ParserMarker {
 	Token token;
 };
 
-Point16 box_center(Box32 box);
-Token get_short_unit_name(u32 unit_id);
-
 // Parses and handles <area> <players> <unit_ids>
 struct Designator {
 	Area area;
 	PlayerBitset players;
 	UnitIdBitset unit_ids;
 
-	EntryArray<Unit> search(u32 limit = UINT_MAX) const {
-		auto result = g_unit_search.rect(area.box);
-		if (limit != UINT_MAX) {
-			result.sort_by_distance(box_center(area.box));
-		}
+	bool check(Unit* unit) const {
+        if (!area.check(unit->position, unit->status & UnitStatus::InAir)) {
+            return false;
+        }
+        if (unit->player >= PlayerLimit || !players[unit->player]) {
+            return false;
+        }
+        if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
+            return false;
+        }
+        return true;
+	}
 
-		u32 idx = 0;
-		result.filter_by([this, limit, &idx](Unit* unit) {
-			idx++;
-			if (idx > limit) {
-				return false;
-			}
-			if (!area.check(unit->position, unit->status & UnitStatus::InAir)) {
-				return false;
-			}
-			if (unit->player >= PlayerLimit || !players[unit->player]) {
-				return false;
-			}
-			if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-				return false;
-			}
-			return true;
-		});
+	EntryArray<Unit> search() const {
+		return g_unit_search.rect(area.box)
+			.sort_by_distance(box_center(area.box))
+            .filter_by([this](Unit* unit) { return check(unit); });
+	}
+
+	EntryArray<Unit> search_seen(u32 player) const {
+		return g_seen_unit_search[player].rect(area.box)
+			.sort_by_distance(box_center(area.box))
+            .filter_by([this](Unit* unit) { return check(unit); });
 	}
 };
 

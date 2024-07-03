@@ -288,7 +288,7 @@ void tick_effect(EffectField& effect) {
 						return bw::is_allied_to(unit->player, effect.player);
 					})
 					.sort_by_distance(effect.position);
-				if (!gladiuses.size()) {
+				if (!gladiuses.count()) {
 					effect.destroy();
 					break;
 				}

@@ -129,10 +129,7 @@ namespace hooks {
 
 					static b32* const recall_successful = (b32*)(0x0063FF50);
 					*recall_successful = false;
-					EntryArray targets = {};
-					unit_search_radial(&targets, unit->order_target.pt, 2 * 32);
-					for (u32 i = 0; i < targets.count; ++i) {
-						Unit* target = targets.units[i];
+					for (Unit* target : g_unit_search.radial(unit->order_target.pt, 2 * 32)) {
 						spells_recall_action_on_target_in_range(target, unit);
 					}
 					if (*recall_successful) {

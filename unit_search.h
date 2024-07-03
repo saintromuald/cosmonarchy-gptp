@@ -81,9 +81,11 @@ class EntryArray {
 public:
 	void add(T* data) { m_data.push_back(data); }
 	void clear() { return m_data.clear(); }
-	size_t size() const { return m_data.size(); }
+	size_t count() const { return m_data.size(); }
     T*& operator[](u32 index) { return m_data[index]; }
 
+	std::vector<T*>::const_iterator begin() const { return std::begin(m_data); }
+	std::vector<T*>::const_iterator end() const { return std::end(m_data); }
 	std::vector<T*>::iterator begin() { return std::begin(m_data); }
 	std::vector<T*>::iterator end() { return std::end(m_data); }
 
@@ -107,6 +109,7 @@ public:
         std::erase_if(m_data, [&filter_func](T* data) {
             return !filter_func(data);
         });
+        return *this;
     }
 
     EntryArray& filter(Unit* reference = nullptr, u32 flags = 0, std::unordered_set<u16> allowed_ids = {}) requires std::same_as<T, Unit> {
@@ -123,7 +126,11 @@ public:
         return *this;
     }
 
-    // TODO: add filter methods: owned_by, not_owned_by, allied_to, hostile_to
+    // TODO: add filter methods (to eventually simplify filter to just flags):
+    // owned_by(player), not_owned_by(player), allied_to(player), hostile_to(player),
+    // facing(dir, angle_deg), not_facing(dir, angle_deg),
+    // including(unit), excluding(unit),
+    // allowed_unit_ids(unit_ids), excluded_unit_ids(unit_ids),
 
     template <typename ScoreFunc>
     T* best(ScoreFunc&& score_func) {
@@ -149,6 +156,12 @@ public:
         return nullptr;
     }
 
+    EntryArray& take(u32 count) {
+        return filter_by([count, idx = 0](Unit* unit) mutable {
+            return idx++ < count;
+        });
+    }
+
     template <typename FilterFunc>
     T* first(FilterFunc&& filter_func) {
         for (T* elem : m_data) {
@@ -161,7 +174,7 @@ public:
 
     EntryArray& add_units_from_connected_transport(Unit* unit) requires std::same_as<T, Unit> {
         if (!(unit->status & UnitStatus::InTransport) || !unit->connected_unit) {
-            return;
+            return *this;
         }
 
         Unit* transport = unit->connected_unit;
@@ -181,7 +194,7 @@ private:
 };
 
 template <>
-EntryArray<Thingy>& EntryArray<Thingy>::sort_by_distance(Point16 center) {
+inline EntryArray<Thingy>& EntryArray<Thingy>::sort_by_distance(Point16 center) {
     std::erase_if(m_data, [](Thingy* a) { return !a->sprite; });
     std::ranges::stable_sort(m_data, [center](Thingy* a, Thingy* b) {
         return bw::distance_between(a->sprite->position, center) < bw::distance_between(b->sprite->position, center);	
@@ -242,9 +255,9 @@ public:
                 };
                 bool is_fully_covered = is_rect_in_rect(tile_rect, rect);
 
-                for (Entry& entry = m_grid[x][y]; entry; entry = entry->next) {
-                    if (is_fully_covered || is_point_in_rect(entry.position, rect)) {
-						result.push_back(entry.data);
+                for (Entry* entry = m_grid[x][y]; entry; entry = entry->next) {
+                    if (is_fully_covered || is_point_in_rect(entry->position, rect)) {
+						result.add(entry->data);
                     }
                 }
             }
@@ -286,9 +299,9 @@ public:
                 };
                 bool is_fully_covered = bw::distance_between(center, tile_center) + CellPxSize * 1.414 <= radius;
 
-                for (Entry& entry = m_grid[x][y]; entry; entry = entry->next) {
+                for (Entry* entry = m_grid[x][y]; entry; entry = entry->next) {
                     if (is_fully_covered || bw::distance_between(center, entry->position) <= radius) {
-						result.push_back(entry.data);
+						result.add(entry->data);
                     }
                 }
             }
@@ -329,21 +342,21 @@ inline SearchIndex<Thingy>      g_corpse_search;
 inline SearchIndex<EffectField> g_effect_search;
 
 template <>
-void SearchIndex<Unit>::filter_junk(EntryArray<Unit>& entry_array) {
+inline void SearchIndex<Unit>::filter_junk(EntryArray<Unit>& entry_array) {
     entry_array.filter_by([](Unit* unit) {
         return !unit->is_dead();
     });
 }
 
 template <>
-void SearchIndex<Bullet>::filter_junk(EntryArray<Bullet>& entry_array) {
+inline void SearchIndex<Bullet>::filter_junk(EntryArray<Bullet>& entry_array) {
     entry_array.filter_by([](Bullet* bullet) {
         return bullet->hitpoints;
     });
 }
 
 template <>
-void SearchIndex<Thingy>::filter_junk(EntryArray<Thingy>& entry_array) {
+inline void SearchIndex<Thingy>::filter_junk(EntryArray<Thingy>& entry_array) {
     entry_array.filter_by([](Thingy* corpse) {
         return corpse->sprite && !(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath);
     });

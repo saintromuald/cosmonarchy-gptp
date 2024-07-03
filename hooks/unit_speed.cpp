@@ -66,10 +66,7 @@ namespace hooks {
 
 		// Zoryusthaleth - Swarming Omen - 133% movement speed when moving towards Zoryusthaleth victims
 		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
-			EntryArray targets = {};
-			unit_search_radial(&targets, unit->position, 10 * 32);
-			unit_search_filter(&targets, unit, 0);
-			for (Unit* target : targets.units) {
+			for (Unit* target : g_unit_search.radial_ex(unit, 10 * 32)) {
 				UnitExt* target_ext = get_unit_ext(target);
 				if (!target_ext->timers[TimerSwarmingOmenDebuff]) {
 					continue;
@@ -93,16 +90,14 @@ namespace hooks {
 		}
 
 		if (unit_ext->values[ValueMindControllerUnitId]) {
-			EntryArray targets = {};
-			unit_search_radial(&targets, unit->position, unit->get_sight_range() * 32);
-			unit_search_filter(&targets, unit, 0);
-			for (Unit* target : targets.units) {
+			for (Unit* target : g_unit_search.radial_ex(unit, unit->get_sight_range() * 32)) {
 				if (bw::is_allied_to(target->player, unit->player)) {
 					continue;
 				}
 				speed *= 1.33;
-				bw::set_unit_overlay(unit, { ImageId::DemiurgeWorshipOverlay_Small, ImageId::DemiurgeWorshipOverlay_XLarge }, targets.count > 0, {});
+				bw::set_unit_overlay(unit, { ImageId::DemiurgeWorshipOverlay_Small, ImageId::DemiurgeWorshipOverlay_XLarge }, true);
 				// TODO: make this overlay work when not moving (probably move to game_hooks). -Pr0nogo
+				// TODO: might need to remove the overlay externally
 				break;
 			}
 		}

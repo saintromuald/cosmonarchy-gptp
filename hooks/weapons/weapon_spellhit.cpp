@@ -304,11 +304,7 @@ namespace hooks {
 		if (target && !(target->status & UnitStatus::Invincible) && helper::get_spell_stat_string(target, TechId::Consume, attacker->player) == 0) { // returning a value != 0 means there was an error
 			helper::increment_unit_death_scores(target, attacker->player);
 			if (!(target->status & UnitStatus::IsHallucination)) {
-				EntryArray units = {};
-				unit_search_radial(&units, attacker->position, 3 * 32);
-				unit_search_filter(&units, attacker, FilterAlly | FilterIncludingSelf);
-				for (u32 i = 0; i < units.count; ++i) {
-					Unit* unit = units.units[i];
+				for (Unit* unit : g_unit_search.radial_ex(attacker, 3 * 32, FilterAlly | FilterIncludingSelf)) {
 					unit->heal_hp_then_shields(target->hitpoints, attacker);
 					unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 				}

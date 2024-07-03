@@ -1305,11 +1305,7 @@ namespace hooks {
 			case UnitId::ZergMatraleth:
 			case UnitId::ZergTetcaerokor:
 			{
-				EntryArray broodspawns = {};
-				unit_search_radial(&broodspawns, unit->position, unit->get_sight_range() * 32);
-				unit_search_filter(&broodspawns, unit, FilterAlly, {UnitId::ZergRilirokor, UnitId::ZergRililisk});
-				for (u32 i = 0; i < broodspawns.count; ++i) {
-					Unit* broodspawn = broodspawns.units[i];
+				for (Unit* broodspawn : g_unit_search.radial_ex(unit, unit->get_sight_range() * 32, FilterAlly, {UnitId::ZergRilirokor, UnitId::ZergRililisk})) {
 					broodspawn->remove_timer = broodspawn_max_time;
 				}
 			} break;
@@ -1326,12 +1322,7 @@ namespace hooks {
 		// Unit-specific
 		switch (unit->id) {
 			case UnitId::ProtossHerald: {
-				EntryArray allies = {};
-				unit_search_radial(&allies, unit->position, 2 * 32);
-				unit_search_filter(&allies, unit, FilterAlly);
-
-				for (u32 i = 0; i < allies.count; ++i) {
-					Unit* ally = allies.units[i];
+				for (Unit* ally : g_unit_search.radial_ex(unit, 2 * 32, FilterAlly)) {
 					UnitExt* ally_ext = get_unit_ext(ally);
 					ally_ext->timers[TimerHeraldAvenge] = 12;
 				}
@@ -1489,10 +1480,7 @@ namespace hooks {
 				// Kaiser Rampage - Ultrokor behavior
 				if (!unit_ext->timers[TimerKaiserRampageTimeout]) {
 					u32 radius = 1 * 32;
-					EntryArray corpses = {};
-					corpse_search_radial(&corpses, unit->position, radius);
-					for (u32 i = 0; i < corpses.count; ++i) {
-						Thingy* corpse = corpses.corpses[i];
+					for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
 						unit_ext->timers[TimerKaiserRampageTimeout] = 0.5 * 24;
 						unit_ext->timers[TimerKaiserRampage] = 1 + (2 * 24);
 						should_update_speed = true;
@@ -1506,18 +1494,13 @@ namespace hooks {
 			} break;
 			case UnitId::ZergSovroleth: {
 				{	
-					EntryArray sovroleths = {};
-					unit_search_radial(&sovroleths, unit->position, 8 * 32);
-					unit_search_filter(&sovroleths, unit, FilterAlly, {UnitId::ZergSovroleth}); 
-					unit_ext->values[ValueSovrolethLinkCount] = sovroleths.count;
+					EntryArray sovroleths = g_unit_search.radial_ex(unit, 8 * 32, FilterAlly, {UnitId::ZergSovroleth}); 
+					unit_ext->values[ValueSovrolethLinkCount] = sovroleths.count();
 				}
 				should_update_speed = true;
 
 				// Corpse Cocoon
-				EntryArray corpses = {};
-				corpse_search_rect(&corpses, {unit->get_left(), unit->get_top(), unit->get_right(), unit->get_bottom()});
-				for (u32 i = 0; i < corpses.count; ++i) {
-					Thingy* corpse = corpses.corpses[i];
+                for (Thingy* corpse : g_corpse_search.rect(unit->get_box32())) {
 					if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
 						Unit* egg = bw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
 						if (egg) {
@@ -1801,14 +1784,8 @@ namespace hooks {
 					unit_ext->timers[TimerNaniteField] = 24;
 					bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
 
-					EntryArray unit_array = {};
 					u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? 6 : 3;
-					unit_search_radial(&unit_array, unit->position, range * 32);
-					unit_search_add_units_from_connected_transport(&unit_array, unit);
-					unit_search_filter(&unit_array, unit, FilterAlly | FilterNoBuilding);
-
-					for (u32 i = 0; i < unit_array.count; ++i) {
-						Unit* target = unit_array.units[i];
+					for (Unit* target : g_unit_search.radial(unit->position, range * 32).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterNoBuilding)) {
 						shaman_nanite_field_proc(unit, 4, target);
 					}
 				}
@@ -1874,12 +1851,7 @@ namespace hooks {
 			case UnitId::ZergMatraleth:
 			case UnitId::InfestedKerriganExt: {
 				// Matraleth - Ensnaring Brood
-				EntryArray unit_array = {};
-				unit_search_radial(&unit_array, unit->position, 4 * 32);
-				unit_search_filter(&unit_array, unit, FilterAlly | FilterNoBuilding | FilterCompleted);
-
-				for (u32 i = 0; i < unit_array.count; ++i) {
-					Unit* target = unit_array.units[i];
+				for (Unit* target : g_unit_search.radial_ex(unit, 4 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
 					if (!unit_is_combatant(target)) {
 						continue;
 					}
@@ -1897,11 +1869,7 @@ namespace hooks {
 			} break;
 			case UnitId::ZergSasyrvoleth: {
 				// Sasyrvoleth - Lucilleri Pheremones
-				EntryArray unit_array = {};
-				unit_search_radial(&unit_array, unit->position, 5 * 32);
-				unit_search_filter(&unit_array, unit, FilterAlly | FilterNoBuilding | FilterCompleted);
-				for (u32 i = 0; i < unit_array.count; ++i) {
-					Unit* target = unit_array.units[i];
+				for (Unit* target : g_unit_search.radial_ex(unit, 5 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
 					if (!unit_is_combatant(target)) {
 						continue;
 					}
@@ -1952,11 +1920,7 @@ namespace hooks {
 			case UnitId::ProtossAnthelion: {
 				if (!unit_ext->timers[TimerAnthelionAttackCooldown]) {
 					bool attacked = false;
-					EntryArray targets = {};
-					unit_search_radial(&targets, unit->position, weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon]);
-					unit_search_filter(&targets, unit, FilterEnemy);
-					for (u32 i = 0; i < targets.count; ++i) {
-						Unit* target = targets.units[i];
+					for (Unit* target : g_unit_search.radial_ex(unit, weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon], FilterEnemy)) {
 						u32 dist = bw::distance_between(unit->position, target->position);
 						if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon] && unit->can_attack_target(target)) {
 							UnitExt* target_ext = get_unit_ext(target);
@@ -2169,10 +2133,7 @@ namespace hooks {
 							bw::teleport_to_point(unit, target_center_pos);
 							bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 
-							EntryArray targets = {};
-							unit_search_radial(&targets, pos, 2 * 32);
-							unit_search_filter(&targets, unit, FilterAlly | FilterNoBuilding | FilterCompleted);
-							for (Unit* target : targets.units) {
+							for (Unit* target : g_unit_search.radial_ex(unit, 2 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
 								Point16 target_pos{
 									.x = u16(target_center_pos.x + (pos.x - target->position.x)),
 									.y = u16(target_center_pos.y + (pos.y - target->position.y)),
@@ -2218,18 +2179,17 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossSycophant: {
 				if (unit->shields) {
-					EntryArray unit_array = {};
-					unit_search_radial(&unit_array, unit->position, 3 * 32);
-					unit_search_add_units_from_connected_transport(&unit_array, unit);
-					unit_search_filter(&unit_array, unit, FilterAlly | FilterNotSelf | FilterCompleted);
-					unit_search_sort_by_distance(&unit_array, unit->position);
-
 					u32 shields = 6 * 256 / 24;
 					if (shields > unit->shields) {
 						shields = unit->shields;
 					} 
-					for (u32 i = 0; i < unit_array.count; ++i) {
-						Unit* target = unit_array.units[i];
+
+					auto targets = g_unit_search
+						.radial(unit->position, 3 * 32)
+                        .add_units_from_connected_transport(unit)
+                        .filter(unit, FilterAlly | FilterNotSelf | FilterCompleted)
+                        .sort_by_distance(unit->position);
+					for (Unit* target : targets) {
 						UnitExt* target_ext = get_unit_ext(target);
 						if (target_ext->shield_regen_timer > 2 * 24 || target->id == UnitId::ProtossSycophant) {
 							continue;
@@ -2369,10 +2329,7 @@ namespace hooks {
 			case UnitId::ProtossCrucible: {
 				// Crucible - Khaydarin Charge stacks
 				if (unit->status & UnitStatus::Completed) {
-					EntryArray targets = {};
-					unit_search_radial(&targets, unit->position, 8 * 32);
-					unit_search_filter(&targets, unit, FilterAlly | FilterBuilding);
-					for (Unit* target : targets.units) {
+					for (Unit* target : g_unit_search.radial_ex(unit, 8 * 32, FilterAlly | FilterBuilding)) {
 						UnitExt* target_ext = get_unit_ext(target);
 						if (unit_id_is_tech(target->id) && units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueInfested]) {
 							continue;
@@ -2404,11 +2361,7 @@ namespace hooks {
 			case UnitId::ProtossBarghest: {
 				if (unit_ext->timers[TimerDecloak] >= 2) {
 					if (unit->status & UnitStatus::Completed) {
-						EntryArray units{};
-						unit_search_radial(&units, unit->position, 5 * 32);
-						unit_search_filter(&units, unit, FilterAlly);
-						for (u32 i = 0; i < units.count; i++) {
-							Unit* target = units.units[i];
+						for (Unit* target : g_unit_search.radial_ex(unit, 5 * 32, FilterAlly)) {
 							UnitExt* target_ext = get_unit_ext(target);
 							if (!(target->status & UnitStatus::Completed) || !target->has_weapon()) {
 								continue;
@@ -2424,11 +2377,7 @@ namespace hooks {
 			case UnitId::ProtossManifold: {
 				if (unit_ext->timers[TimerManifoldConcurringChorus] > 1) {
 					if (unit->status & UnitStatus::Completed) {
-						EntryArray units{};
-						unit_search_radial(&units, unit->position, 2 * 32);
-						unit_search_filter(&units, unit, FilterAlly);
-						for (u32 i = 0; i < units.count; i++) {
-							Unit* target = units.units[i];
+						for (Unit* target : g_unit_search.radial_ex(unit, 2 * 32, FilterAlly)) {
 							UnitExt* target_ext = get_unit_ext(target);
 							if (!(target->status & UnitStatus::Completed) || !target->has_weapon()) {
 								continue;
@@ -2513,11 +2462,7 @@ namespace hooks {
 			u32 source_player = unit_ext->values[ValueGladiusBindingPlasmaPlayer];
 
 			bool has_source = false;
-			EntryArray sources = {};
-			unit_search_radial(&sources, unit->position, 8 * 32);
-			unit_search_filter(&sources, unit, 0, {UnitId::ProtossGladius});
-			for (u32 i = 0; i < sources.count; ++i) {
-				Unit* source = sources.units[i];
+			for (Unit* source : g_unit_search.radial_ex(unit, 8 * 32, 0, {UnitId::ProtossGladius})) {
 				if (bw::is_allied_to(source->player, source_player)) {
 					has_source = true;
 					UnitExt* source_ext = get_unit_ext(source);
@@ -2590,17 +2535,18 @@ namespace hooks {
 		}
 
 		{
-			EntryArray masters = {};
-			unit_search_radial(&masters, unit->position, 6 * 32);
-			unit_search_filter(&masters, unit, 0, { UnitId::ProtossDemiurge });
-			unit_search_custom_filter(&masters, [=](Unit* master) {
-				if (!bw::is_allied_to(unit->player, master->player)) {
-					return true;
-				}
-				return false;
-			});
+			Unit* master = g_unit_search
+				.radial_ex(unit, 6 * 32, 0, { UnitId::ProtossDemiurge })
+                .filter_by([unit](Unit* master) {
+                    if (!bw::is_allied_to(unit->player, master->player)) {
+                        return true;
+                    }
+                    return false;
+                })
+				.sort_by_distance(unit->position)
+				.first();
 
-			if (masters.count) {
+			if (master) {
 				if (!(units_dat::base_property[unit->id] & UnitProperty::Building) && !unit_ext->timers[TimerDemiurgeWorshipOverlayDelay]) {
 					unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 1;
 				}
@@ -2617,19 +2563,17 @@ namespace hooks {
 				}
 			}
 
-			if (unit_ext->timers[TimerDemiurgeWorship]) {
-				if (unit_ext->timers[TimerDemiurgeWorship] == 1) {
-					if (!masters.count) {
-						unit->remove();
-					} else {
-						mind_control(masters.units[0]->player, UnitId::ProtossDemiurge, unit);
-						unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 0;
-						unit->unfreeze();
-						unit->set_hitpoints(100 * 256 + units_dat::max_hitpoints[unit->id] / 3);
-						unit->status &= ~UnitStatus::Invincible; // Could cause collisions with stasis, should check.
-					}
-				}
-			}
+            if (unit_ext->timers[TimerDemiurgeWorship] == 1) {
+                if (!master) {
+                    unit->remove();
+                } else {
+                    mind_control(master->player, UnitId::ProtossDemiurge, unit);
+                    unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 0;
+                    unit->unfreeze();
+                    unit->set_hitpoints(100 * 256 + units_dat::max_hitpoints[unit->id] / 3);
+                    unit->status &= ~UnitStatus::Invincible; // Could cause collisions with stasis, should check.
+                }
+            }
 		}
 
 		// Fix animation bug with acceleration movement flag
@@ -2665,10 +2609,7 @@ namespace hooks {
 			if (unit_ext->timers[TimerSwarmingOmenDebuff] > 1) {
 				bw::add_unit_overlay(unit, overlay_id);
 
-				EntryArray targets = {};
-				unit_search_radial(&targets, unit->position, 10 * 32);
-				for (u32 i = 0; i < targets.count; ++i) {
-					Unit* target = targets.units[i];
+				for (Unit* target : g_unit_search.radial(unit->position, 10 * 32)) {
 					if (bw::is_allied_to(unit->player, target->player)) {
 						continue;
 					}
@@ -2688,10 +2629,8 @@ namespace hooks {
 
 		// Azazel - Sublime Shepherd
 		if (!unit_id_is_resource_node(unit->id, false)) {
-			EntryArray azazels = {};
-			unit_search_radial(&azazels, unit->position, 4 * 32);
-			unit_search_filter(&azazels, unit, FilterAlly, {UnitId::TerranAzazel});
-			if (!azazels.count) {
+			auto azazels = g_unit_search.radial_ex(unit, 4 * 32, FilterAlly, {UnitId::TerranAzazel});
+			if (!azazels.count()) {
 				if (unit_ext->values[ValueHasSublimeShepherd]) {
 					unit_ext->values[ValueHasSublimeShepherd] = 0;
 					if (unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - bw::get_overlay_offset(unit->id))) {
@@ -3047,17 +2986,17 @@ namespace hooks {
 
 		// Proximity cloaking - recloak after 2 seconds of no nearby enemies
 		if (bw::is_proximity_decloakable(unit)) {
-			EntryArray units = {};
 			u32 search_margin = 4 * 32;
 			Box32 search_area = {};
 			search_area.left = unit->position.x - search_margin;
 			search_area.top = unit->position.y - search_margin;
 			search_area.right = unit->position.x + search_margin;
 			search_area.bottom = unit->position.y + search_margin;
-			unit_search_rect(&units, search_area);
-			unit_search_filter(&units, unit, FilterEnemy);
+			auto units = g_unit_search
+				.rect(search_area)
+                .filter(unit, FilterEnemy);
 
-			if (units.count) {
+			if (units.count()) {
 				if (unit_ext->timers[TimerDecloak] < 2) {
 					bw::decloak_proximity_proc(unit);
 				} else {

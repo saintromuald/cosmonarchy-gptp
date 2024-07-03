@@ -60,10 +60,7 @@ namespace hooks {
 	}
 
 	static void reset_all_unit_attack_notify_timers_in_range(Unit* unit) {
-		EntryArray units = {};
-		unit_search_radial(&units, unit->position, 11 * 32);
-		for (u32 i = 0; i < units.count; ++i) {
-			Unit* other = units.units[i];
+		for (Unit* other : g_unit_search.radial(unit->position, 11 * 32)) {
 			other->attack_notify_timer = other->player == unit->player ? 100 : 1000;
 		}
 	}
@@ -218,13 +215,11 @@ namespace hooks {
 
 		// Ancile - Providence - Hitscan handling
 		if (weapon_id_procs_onhits(data.weapon_id)) {
-            EntryArray units = {};
-            unit_search_radial(&units, data.target->position, 2 * 32);
-            unit_search_filter(&units, data.target, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile });
-			unit_search_sort_by_distance(&units, data.target->position);
+            auto units = g_unit_search
+				.radial_ex(data.target, 2 * 32, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile })
+                .sort_by_distance(data.target->position);
 
-            for (u32 i = 0; i < units.count; ++i) {
-                Unit* unit = units.units[i];
+			for (Unit* unit : units) {
                 if (unit->energy < 1 * 256) {
                     continue;
                 }
@@ -1073,16 +1068,15 @@ namespace hooks {
 				return fatal_deal_damage;
 			}
 
-			EntryArray masters = {};
-			unit_search_radial(&masters, data.target->position, 6 * 32);
-			unit_search_filter(&masters, data.target, 0, { UnitId::ProtossDemiurge });
-			unit_search_custom_filter(&masters, [=](Unit* master) {
-				if (!bw::is_allied_to(data.target->player, master->player)) {
-					return true;
-				}
-				return false;
-				});
-			if (!(units_dat::base_property[data.target->id] & UnitProperty::Building) && masters.count) {
+			EntryArray masters = g_unit_search
+				.radial_ex(data.target, 6 * 32, 0, { UnitId::ProtossDemiurge })
+                .filter_by([&data](Unit* master) {
+                    if (bw::is_allied_to(data.target->player, master->player)) {
+                        return false;
+                    }
+                    return true;
+                });
+			if (!(units_dat::base_property[data.target->id] & UnitProperty::Building) && masters.count()) {
 				fatal_deal_damage = false;
 				target_ext->timers[TimerDemiurgeWorship] = 5 * 24 + 1;
 				bw::remove_unit_overlay(data.target, ImageId::Malediction_Small + bw::get_overlay_offset(data.target->id));
@@ -1189,10 +1183,7 @@ namespace hooks {
 					helper::react_to_hit(attacker, victim);
 				}
 				if (!victim->unit_ai) {
-					EntryArray units_in_bounds = {};
-					unit_search_radial(&units_in_bounds, victim->position, 96);
-					for (u32 i = 0; i < units_in_bounds.count; ++i) {
-						Unit* unit = units_in_bounds.units[i];
+					for (Unit* unit : g_unit_search.radial(victim->position, 96)) {
 						if (unit != victim && unit->player == victim->player) {
 							helper::ask_for_help(attacker, unit);
 						}

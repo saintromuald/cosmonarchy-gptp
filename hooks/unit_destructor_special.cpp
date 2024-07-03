@@ -127,10 +127,7 @@ void unit_on_death_behaviors(Unit* unit) {
 		} break;
 		case UnitId::TerranLobotomyMine:
 		{
-			EntryArray targets = {};
-			unit_search_radial(&targets, unit->position, 2 * 32);
-			for (u32 i = 0; i < targets.count; ++i) {
-				Unit* victim = targets.units[i];
+			for (Unit* victim : g_unit_search.radial(unit->position, 2 * 32)) {
 				UnitExt* victim_ext = get_unit_ext(victim);
 				if (victim_ext->timers[TimerLobotomySlow] < 3 * 24 + 1) {
 					victim_ext->timers[TimerLobotomySlow] = 3 * 24 + 1;
@@ -263,12 +260,9 @@ void unit_on_death_behaviors(Unit* unit) {
 	}
 
 	{ // Spellcaster - restore energy on enemy death
-		EntryArray unit_array = {};
-		unit_search_radial(&unit_array, unit->position, unit->get_sight_range() * 32);
-		unit_search_filter(&unit_array, unit, FilterEnemy | FilterSpellcaster); // TODO: Remove Rilirokor, Rililisk
+		auto casters = g_unit_search.radial_ex(unit, unit->get_sight_range() * 32, FilterEnemy | FilterSpellcaster); // TODO: Remove Rilirokor, Rililisk
 
-		for (u32 i = 0; i < unit_array.count; ++i) {
-			Unit* caster = unit_array.units[i];
+		for (Unit* caster : casters) {
 			if (bw::distance_between(unit->position, caster->position) <= caster->get_sight_range() * 32) {
 				caster->heal_energy(5 * 256);
 				caster->sprite->create_underlay(ImageId::SmallExplosion_Unused);
@@ -277,12 +271,9 @@ void unit_on_death_behaviors(Unit* unit) {
 	}
 
 	if (!unit_id_is_spell(unit->id)) { // Mortothrokor - Whetted Appetite - Add stacks when in vision
-		EntryArray unit_array = {};
-		unit_search_radial(&unit_array, unit->position, units_dat::sight_range[UnitId::ZergMortothrokor] * 32);
-		unit_search_filter(&unit_array, unit, 0, {UnitId::ZergMortothrokor});
+		auto mortothrokors = g_unit_search.radial_ex(unit, units_dat::sight_range[UnitId::ZergMortothrokor] * 32, 0, {UnitId::ZergMortothrokor});
 
-		for (u32 i = 0; i < unit_array.count; ++i) {
-			Unit* mortothrokor = unit_array.units[i];
+		for (Unit* mortothrokor : mortothrokors) {
 			if (bw::distance_between(unit->position, mortothrokor->position) <= mortothrokor->get_sight_range() * 32) {
 				UnitExt* unit_ext = get_unit_ext(mortothrokor);
 				unit_ext->values[ValueMortothrokorStacks]++;
