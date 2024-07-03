@@ -10,8 +10,10 @@ namespace hooks {
 			case UnitId::TerranPhobos: {
 				energy = 100;
 			} break;
+			case UnitId::TerranAncile: {
+				energy = 125;
+			} break;
 			case UnitId::TerranHypnagogue:
-			case UnitId::TerranAncile:
 			case UnitId::TerranSeraph:
 			case UnitId::TerranLuminary:
 			case UnitId::ProtossCantavis:

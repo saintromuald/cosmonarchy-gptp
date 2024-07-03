@@ -222,6 +222,7 @@ namespace WeaponId {
 		SavantDiscoidRailgunPiercing		= 199,
 		SevenstepGeometricRiflePiercing		= 200,
 		MatadorTwinstrikeCannons			= 201,
+		SalamanderAngeltearRockets			= 216,
 
 		// Protoss \\
 		

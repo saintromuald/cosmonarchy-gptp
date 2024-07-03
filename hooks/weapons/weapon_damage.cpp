@@ -643,7 +643,8 @@ namespace hooks {
 				case WeaponId::HarakanFlamethrower:
 				case WeaponId::StrigaPhaseSaber:
 				case WeaponId::MatadorTwinstrikeFlamethrowers:
-				case WeaponId::DurendalAbaddonFlamethrowers: {
+				case WeaponId::DurendalAbaddonFlamethrowers:
+				case WeaponId::SalamanderAngeltearRockets: {
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
 					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24 + 1;
 				} break;
