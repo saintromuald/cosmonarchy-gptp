@@ -86,11 +86,12 @@ namespace hooks
 	}
 
 	static bool wyvern_can_fire_at(Unit* unit, Unit* target) {
-		if (target->sprite) {
-			const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
-			return bw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit)
-				&& bw::distance_between(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset
-				&& unit->can_attack_target(target);
+		if (!target->sprite || !bw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit) || !unit->can_attack_target(target)) {
+			return false;
+		}
+		const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
+		if (bw::distance_between(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset) {
+			return true;
 		}
 		return false;
 	}
@@ -119,8 +120,7 @@ namespace hooks
 			if (unit_ext->units[UnitWyvernTargetLock]) {
 				Unit* target = unit_ext->units[UnitWyvernTargetLock];
 				UnitExt* target_ext = get_unit_ext(target);
-				if (target_ext->timers[TimerOwnerChangedRecently]
-				&&  bw::is_allied_to(unit->player, target->player)) {
+				if (target_ext->timers[TimerOwnerChangedRecently] && bw::is_allied_to(unit->player, target->player)) {
 					unit_ext->units[UnitWyvernTargetLock] = 0;
 				}
 			}
@@ -184,11 +184,20 @@ namespace hooks
 					}
 					
 					if (target && wyvern_can_fire_at(unit, target)) {
-						s32 direction = bw::get_angle(x, y, target->get_x(), target->get_y());
-						u32 sound_id = bw::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02);
-						helper::play_sound_from_unit(sound_id, unit, 1, 0);
-						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
-						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+						if (unit_ext->values[ValueWyvernWeaponCharging]) {
+							if (!unit_ext->timers[TimerWyvernWeaponCharge]) {
+								unit_ext->values[ValueWyvernWeaponCharging] = false;
+
+								s32 direction = bw::get_angle(x, y, target->get_x(), target->get_y());
+								bw::play_sound(unit->position, {SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02});
+								bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
+								unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+							}
+						} else {
+							unit_ext->values[ValueWyvernWeaponCharging] = true;
+							unit_ext->timers[TimerWyvernWeaponCharge] = 12;
+							bw::play_sound(unit->position, {SoundId::WyvernWeaponCharge01, SoundId::WyvernWeaponCharge03});
+						}
 					}
 				}
 			}

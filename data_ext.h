@@ -199,6 +199,7 @@ enum ExtValueId {
 	ValueReclamationRegen,
 	ValueDisablePassive,
 	ValueRefreshSpeedNextFrame,
+	ValueWyvernWeaponCharging,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -341,6 +342,7 @@ enum ExtTimerId {
 	TimerAnthelionTurn,
 	TimerManifoldConcurringChorus,
 	TimerSkryspawn,
+	TimerWyvernWeaponCharge,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

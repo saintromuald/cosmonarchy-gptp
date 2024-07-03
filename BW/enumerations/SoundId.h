@@ -1908,6 +1908,10 @@ namespace SoundId {
 		PatriarchBanter03								= 3127,
 		PatriarchBanter04								= 3128,
 
+		WyvernWeaponCharge01							= 3135,
+		WyvernWeaponCharge02							= 3136,
+		WyvernWeaponCharge03							= 3137,
+
 		GoskaGrenadeImpact								= 4011,
 	};
 }
