@@ -877,6 +877,9 @@ namespace SpriteId
 		Corpse_Trojan				= 920,
 		Corpse_Envoy				= 921,
 		Corpse_Ovileth				= 922,
+		Corpse_PhalanxTank			= 923,
+		Corpse_PhalanxSiege			= 924,
+		Corpse_Hierophant			= 925,
 
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
