@@ -331,25 +331,22 @@ namespace hooks
 		}
 	}
 
-	void orders_attack_move(Unit* unit) // 00479040
-	{
+	void orders_attack_move(Unit* unit) { // 00479040
 		if (helper::attack_move_react_to_attack(unit, unit->main_order_id) != 0 && unit->main_order_timer == 0) {
 			unit->main_order_timer = 0; // used to be 15
 			if (unit->move_target.pt.x != unit->position.x || unit->move_target.pt.y != unit->position.y) {
-				helper::attack_move_try_pick_target(unit, unit->main_order_id);
+                helper::attack_move_try_pick_target(unit, unit->main_order_id);
 			} else {
 				unit->order_to_idle();
 			}
 		}
 	}
 
-	void orders_attack_unit(Unit* unit) // 00479BD0
-	{
+	void orders_attack_unit(Unit* unit) { // 00479BD0
 		if (g_player_table[unit->player].type != PlayerType::Computer
-		|| (unit->order_target.unit && units_dat::base_property[(unit->order_target.unit)->id] & UnitProperty::Building)
-		|| !helper::ai_try_return_home(unit, 0))
-		{
-			helper::pick_new_target_if_needed(unit);
+        || (unit->order_target.unit && units_dat::base_property[(unit->order_target.unit)->id] & UnitProperty::Building)
+        || !helper::ai_try_return_home(unit, 0)) {
+            helper::pick_new_target_if_needed(unit);
 			if (helper::attack_unit_main(unit)) {
 				if (unit->unit_ai) {
 					helper::ai_attack_unit(unit);
@@ -857,12 +854,11 @@ namespace hooks
 	}
 
 	// Hooked to fix Optectons when they have edge targets. -Pr0nogo
-	void order_attack_move_try_pick_target(Unit* unit, u8 order_id) // 00477820
-	{
+	void order_attack_move_try_pick_target(Unit* unit, u8 order_id) { // 00477820
 		if (helper::get_seek_range(unit)) {
 			if (unit->unit_ai) {
 				helper::ai_update_attack_target(unit, 0, 0, 0);
-			} else {
+			} else if (can_pick_new_target(unit)) {
 				Unit* target = helper::find_best_attack_target(unit);
 				if (target) {
 					if (unit_id_has_custom_air_weapon(unit->id) && target->status & UnitStatus::InAir) {

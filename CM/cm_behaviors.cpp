@@ -478,3 +478,23 @@ void spread_debuffs(Unit* from, Unit* to) {
 		mind_control(from_ext->values[ValueMindControlPlayer] - 1, from_ext->values[ValueMindControllerUnitId], to);
 	}
 }
+
+AttackTargetingType attack_targeting_type_of(Unit* unit) {
+    switch (unit->id) {
+        case UnitId::TerranDiadem:
+            return AttackTargetingType::Diadem;
+
+        case UnitId::ProtossOptecton:
+            return AttackTargetingType::RemembersTarget;
+    }
+    return AttackTargetingType::RequiresTarget;
+}
+
+bool can_pick_new_target(Unit* unit) {
+	if (attack_targeting_type_of(unit) == AttackTargetingType::RemembersTarget) {
+		if (unit->movement_flags & MovementFlags_StartingAttack) {
+            return false;
+		}
+	}
+	return true;
+}

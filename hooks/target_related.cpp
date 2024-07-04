@@ -632,6 +632,10 @@ namespace hooks
 
 	// Hooked to fix infinite attack range on hold position. -Pr0nogo
 	void pick_new_target_if_needed(Unit* unit) { // 00477510, unused Unit* arg1
+		if (!can_pick_new_target(unit)) {
+			return;
+		}
+
 		if (unit->status & UnitStatus::AttackMove) {
 			Unit* best_target = 0;
 			s32 best_score = INT_MAX;
