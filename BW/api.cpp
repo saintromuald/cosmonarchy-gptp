@@ -2842,16 +2842,6 @@ bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t
 		}
 	}
 
-    g_graphics.draw_box(rect.left, rect.top, rect.right, rect.bottom, graphics::WHITE, graphics::ON_MAP);
-	for (f32 t = 0; t <= 1.0; t += 0.05) {
-		Vec32f pt = {
-			line0.x + (line1.x - line0.x) * t,
-			line0.y + (line1.y - line0.y) * t,
-		};
-		g_graphics.draw_circle(pt.x, pt.y, line_width / 2, graphics::WHITE, graphics::ON_MAP);
-	}
-	g_graphics.draw_line(best_line_pt.x, best_line_pt.y, best_rect_pt.x, best_rect_pt.y, graphics::YELLOW, graphics::ON_MAP);
-
 	if (best_distance <= line_width / 2) {
 		*out_t = best_t;
 		*out_cp = {u16(best_cp.x), u16(best_cp.y)};
