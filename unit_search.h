@@ -89,41 +89,52 @@ public:
 	std::vector<T*>::iterator begin() { return std::begin(m_data); }
 	std::vector<T*>::iterator end() { return std::end(m_data); }
 
+    // We need to use "deducing this", otherwise it would destruct the vector in chains in for each loops
+    // since otherwise we are implicitly converting to lvalue reference, and losing rvalue category
+    //
+    // This implementation means returning a move of self on each chain call on a temporary (rvalue),
+    // and means returning a reference to self on each call otherwise
+
     template <typename ScoreFunc>
-    EntryArray& sort(ScoreFunc&& score_func) {
-        std::ranges::stable_sort(m_data, [&score_func](T* a, T* b) {
+    auto sort(this auto&& self, ScoreFunc&& score_func) {
+        std::ranges::stable_sort(self.m_data, [&score_func](T* a, T* b) {
             return score_func(a) > score_func(b);	
         });
-        return *this;
+        return self;
     }
 
-    EntryArray& sort_by_distance(Point16 center) {
-        std::ranges::stable_sort(m_data, [center](T* a, T* b) {
-            return bw::distance_between(a->position, center) < bw::distance_between(b->position, center);	
-        });
-        return *this;
+    auto sort_by_distance(this auto&& self, Point16 center) {
+        if constexpr (std::same_as<T, Thingy>) {
+            std::ranges::stable_sort(self.m_data, [center](Thingy* a, Thingy* b) {
+                return bw::distance_between(a->sprite->position, center) < bw::distance_between(b->sprite->position, center);	
+            });
+            return self;
+        } else {
+            std::ranges::stable_sort(self.m_data, [center](T* a, T* b) {
+                return bw::distance_between(a->position, center) < bw::distance_between(b->position, center);	
+            });
+            return self;
+        }
     }
 
     template <typename FilterFunc>
-    EntryArray& filter_by(FilterFunc&& filter_func) {
-        std::erase_if(m_data, [&filter_func](T* data) {
+    auto filter_by(this auto&& self, FilterFunc&& filter_func) {
+        std::erase_if(self.m_data, [&filter_func](T* data) {
             return !filter_func(data);
         });
-        return *this;
+        return self;
     }
 
-    EntryArray& filter(Unit* reference = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_ids = {}) requires std::same_as<T, Unit> {
-        filter_by([reference, flags, &allowed_ids](Unit* unit) {
+    auto filter(this auto&& self, Unit* reference = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_ids = {}) requires std::same_as<T, Unit> {
+        return self.filter_by([reference, flags, &allowed_ids](Unit* unit) {
             return unit_flag_match(unit, reference, flags, allowed_ids);
         });
-        return *this;
     }
 
-    EntryArray& filter(Thingy* reference = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_ids = {}) requires std::same_as<T, Thingy> {
-        filter_by([reference, flags, &allowed_ids](Thingy* corpse) {
+    auto filter(this auto&& self, Thingy* reference = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_ids = {}) requires std::same_as<T, Thingy> {
+        return self.filter_by([reference, flags, &allowed_ids](Thingy* corpse) {
             return corpse_flag_match(corpse, reference, flags, allowed_ids);
         });
-        return *this;
     }
 
     // TODO: add filter methods (to eventually simplify filter to just flags):
@@ -156,8 +167,8 @@ public:
         return nullptr;
     }
 
-    EntryArray& take(u32 count) {
-        return filter_by([count, idx = 0](Unit* unit) mutable {
+    auto take(this auto&& self, u32 count) {
+        return self.filter_by([count, idx = 0](Unit* unit) mutable {
             return idx++ < count;
         });
     }
@@ -172,9 +183,9 @@ public:
         return nullptr;
     }
 
-    EntryArray& add_units_from_connected_transport(Unit* unit) requires std::same_as<T, Unit> {
+    auto add_units_from_connected_transport(this auto&& self, Unit* unit) requires std::same_as<T, Unit> {
         if (!(unit->status & UnitStatus::InTransport) || !unit->connected_unit) {
-            return *this;
+            return self;
         }
 
         Unit* transport = unit->connected_unit;
@@ -183,23 +194,15 @@ public:
             if (!cargo_unit) {
                 continue;
             }
-            add(cargo_unit);
+            self.add(cargo_unit);
         }
 
-        return *this;
+        return self;
     }
 
 private:
 	std::vector<T*> m_data;
 };
-
-template <>
-inline EntryArray<Thingy>& EntryArray<Thingy>::sort_by_distance(Point16 center) {
-    std::ranges::stable_sort(m_data, [center](Thingy* a, Thingy* b) {
-        return bw::distance_between(a->sprite->position, center) < bw::distance_between(b->sprite->position, center);	
-    });
-    return *this;
-}
 
 template <typename T>
 class SearchIndex {
