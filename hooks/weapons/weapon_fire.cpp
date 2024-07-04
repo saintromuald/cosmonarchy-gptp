@@ -111,15 +111,15 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponO
 		launch_pos = make_launch_pos(launch_pos, get_next_bullet_offset(unit, weapon_offsets));
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
-		Vec32f facing_dir = bw::unit_facing_dir(unit);
+		Vec32f unit_dir = bw::dir_between(unit->position, target.pt);
 		Vec32f dir = bw::dir_between(launch_pos, target.pt);
 
 		// Angle clamping
 		f32 max_angle = bw::bw_angle_to_normal(weapons_dat::attack_angle[weapon_id]);
-		f32 angle = bw::rad_to_deg(atan2f(bw::determinant(facing_dir, dir), bw::dot_product(facing_dir, dir)));
+		f32 angle = bw::rad_to_deg(atan2f(bw::determinant(unit_dir, dir), bw::dot_product(unit_dir, dir)));
 		if (abs(angle) > max_angle) {
             angle = std::clamp<f32>(angle, -max_angle, max_angle);
-            dir = bw::rotate_point({}, facing_dir, angle);
+            dir = bw::rotate_point({}, unit_dir, angle);
 		}
 
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 20;
