@@ -75,6 +75,9 @@ bool corpse_flag_match(Thingy* target, Thingy* center = nullptr, u32 flags = 0, 
 bool is_point_in_rect(Point16 point, Box32 rect);
 bool is_rect_in_rect(Box32 inner, Box32 outer);
 
+template <typename... Ts>
+struct Overloaded : Ts... { using Ts::operator()...; };
+
 // TODO: rename to SearchResults
 template <typename T>
 class EntryArray {
@@ -244,6 +247,7 @@ public:
         const u32 y0 = rect.top / CellPxSize;
         const u32 x1 = (rect.right + CellPxSize - 1) / CellPxSize;
         const u32 y1 = (rect.bottom + CellPxSize - 1) / CellPxSize;
+
         for (u32 x = x0; x <= x1; x++) {
             for (u32 y = y0; y <= y1; y++) {
                 Box32 tile_rect = {
@@ -326,7 +330,22 @@ public:
         return radial(effect.position, effect.radius).filter(effect.source, filter, allowed_unit_ids);
     }
 
-    void filter_junk(EntryArray<T>& array) {}
+    void filter_junk(EntryArray<T>& array) {
+        array.filter_by(Overloaded {
+            [](Unit* unit) {
+                return !unit->is_dead();
+            },
+            [](Bullet* bullet) {
+                return bullet->hitpoints;
+            },
+            [](Thingy* corpse) {
+                return corpse->sprite && !(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath);
+            },
+            [](auto*) {
+                return true;
+            },
+        });
+    }
 
 private:
 	u32 m_size;
@@ -339,24 +358,3 @@ inline SearchIndex<Unit>        g_seen_unit_search[PlayerLimit];
 inline SearchIndex<Bullet>      g_bullet_search;
 inline SearchIndex<Thingy>      g_corpse_search;
 inline SearchIndex<EffectField> g_effect_search;
-
-template <>
-inline void SearchIndex<Unit>::filter_junk(EntryArray<Unit>& entry_array) {
-    entry_array.filter_by([](Unit* unit) {
-        return !unit->is_dead();
-    });
-}
-
-template <>
-inline void SearchIndex<Bullet>::filter_junk(EntryArray<Bullet>& entry_array) {
-    entry_array.filter_by([](Bullet* bullet) {
-        return bullet->hitpoints;
-    });
-}
-
-template <>
-inline void SearchIndex<Thingy>::filter_junk(EntryArray<Thingy>& entry_array) {
-    entry_array.filter_by([](Thingy* corpse) {
-        return corpse->sprite && !(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath);
-    });
-}

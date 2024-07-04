@@ -328,8 +328,8 @@ inline Point16 to_point16(Vec32f vec) {
 inline Box16 clamp_box16(Box16 rect) {
 	return {
 		std::clamp<s16>(rect.left, 0, g_map_tile_size->width * 32),
-		std::clamp<s16>(rect.right, 0, g_map_tile_size->width * 32),
 		std::clamp<s16>(rect.top, 0, g_map_tile_size->height * 32),
+		std::clamp<s16>(rect.right, 0, g_map_tile_size->width * 32),
 		std::clamp<s16>(rect.bottom, 0, g_map_tile_size->height * 32),
 	};
 }
@@ -337,8 +337,8 @@ inline Box16 clamp_box16(Box16 rect) {
 inline Box32 clamp_box32(Box32 rect) {
 	return {
 		std::clamp<s32>(rect.left, 0, g_map_tile_size->width * 32),
-		std::clamp<s32>(rect.right, 0, g_map_tile_size->width * 32),
 		std::clamp<s32>(rect.top, 0, g_map_tile_size->height * 32),
+		std::clamp<s32>(rect.right, 0, g_map_tile_size->width * 32),
 		std::clamp<s32>(rect.bottom, 0, g_map_tile_size->height * 32),
 	};
 }

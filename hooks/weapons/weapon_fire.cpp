@@ -660,13 +660,6 @@ namespace hooks {
 		f32 best_t = INFINITY;
 		Point16 best_cp = {};
 
-		// TODO: remove
-		g_graphics.draw_filled_circle(bullet->position.x, bullet->position.y, 8, graphics::RED, graphics::ON_MAP);
-		Unit* selected_unit = *g_active_portrait_unit;
-		if (selected_unit) {
-            g_graphics.draw_filled_circle(selected_unit->position.x, selected_unit->position.y, 8, graphics::RED, graphics::ON_MAP);
-		}
-
 		Box32 search_area = get_line_search_area(bullet, old_position);
 		for (Unit* unit : g_unit_search.rect(search_area).filter()) {
 			if (unit_id_ignores_ground_collision(unit->id)) {
