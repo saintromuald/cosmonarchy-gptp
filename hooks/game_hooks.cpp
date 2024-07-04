@@ -3327,8 +3327,7 @@ namespace hooks {
 					case UnitId::TerranHarakan:
 					case UnitId::ProtossArtisan:
 					case UnitId::ProtossSimulacrum:
-					case UnitId::ZergEgg:
-					{
+					case UnitId::ZergEgg: {
 						image_id = ImageId::SantaHatSmall17;
 						if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
 							image_id -= 4;
@@ -3337,49 +3336,40 @@ namespace hooks {
 					} break;
 					case UnitId::ZergQuazilisk:
 					case UnitId::ZergHydralisk:
-					case UnitId::ZergKagralisk:
-					{
+					case UnitId::ZergKagralisk: {
 						image_id = ImageId::SantaHatSmall17;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 9;
 					} break;
-					case UnitId::ProtossPylon:
-					{
+					case UnitId::ProtossPylon: {
 						image_id = ImageId::SantaHatMedium17;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 12;
 					} break;
-					case UnitId::ProtossCenotaph:
-					{
+					case UnitId::ProtossCenotaph: {
 						image_id = ImageId::SantaHatXLarge17;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 17;
 					} break;
-					case UnitId::ProtossGladius:
-					{
+					case UnitId::ProtossGladius: {
 						image_id = ImageId::SantaHatLarge;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2;
 					} break;
-					case UnitId::ProtossAnthelion:
-					{
+					case UnitId::ProtossAnthelion: {
 						image_id = ImageId::SantaHatXLarge;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 46;
 					} break;
 					case UnitId::ProtossAccantor:
-					case UnitId::ZergOvileth:
-					{
+					case UnitId::ZergOvileth: {
 						image_id = ImageId::SantaHatLarge17;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 8;
 					} break;
-					case UnitId::ZergLarvoskCesiant:
-					{
+					case UnitId::ZergLarvoskCesiant: {
 						image_id = ImageId::SantaHatLarge17;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 6;
 					} break;
-					case UnitId::ZergMatravilNest:
-					{
+					case UnitId::ZergMatravilNest: {
 						image_id = ImageId::SantaHatXLarge17;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 14;
 					} break;
-					case UnitId::ZergGosvileth:
-					{
+					case UnitId::ZergGosvileth: {
 						image_id = ImageId::SantaHatSmall;
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 4;
 					} break;
@@ -3396,8 +3386,7 @@ namespace hooks {
 					case UnitId::ZergGeszithalor:
 					case UnitId::ZergRilirokor:
 					case UnitId::ZergRililisk:
-					case UnitId::ZergIsthrathaleth:
-					{
+					case UnitId::ZergIsthrathaleth: {
 						image_id = ImageId::SantaHatSmall17 + bw::get_overlay_offset(unit->id, true);
 						offset_y = units_dat::unit_bounds[unit->id].top / 2;
 						if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
