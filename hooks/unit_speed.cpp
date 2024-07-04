@@ -190,7 +190,6 @@ namespace hooks {
 			} break;
 			case UnitId::TerranSiren:
 			case UnitId::TerranPhalanxTankMode:
-			case UnitId::TerranDurendal:
 			case UnitId::ZergEvigrilisk: {
 				speed *= 0.9;
 			} break;
@@ -206,17 +205,18 @@ namespace hooks {
 			case UnitId::TerranApostle:
 			case UnitId::TerranOlympian:
 			case UnitId::TerranCataphract:
-			case UnitId::ProtossSimulacrum:
 			case UnitId::ZergZoryusthaleth: {
 				speed *= 1.1;
 			} break;
-			case UnitId::TerranCyclops: {
+			case UnitId::TerranCyclops:
+			case UnitId::TerranDurendal: {
 				speed *= 1.15;
 			} break;
 			case UnitId::TerranCyprian:
 			case UnitId::TerranSevenstep:
 			case UnitId::ProtossAtreus:
 			case UnitId::ProtossCabalist:
+			case UnitId::ProtossSimulacrum:
 			case UnitId::ZergLiiralisk:
 			case UnitId::ZergIzirokor:
 			case UnitId::ZergKagralisk: {
