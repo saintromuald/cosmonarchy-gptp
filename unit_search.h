@@ -117,8 +117,7 @@ public:
         }
     }
 
-    template <typename FilterFunc>
-    auto filter_by(this auto&& self, FilterFunc&& filter_func) {
+    auto filter_by(this auto&& self, auto&& filter_func) {
         std::erase_if(self.m_data, [&filter_func](T* data) {
             return !filter_func(data);
         });
@@ -143,10 +142,9 @@ public:
     // including(unit), excluding(unit),
     // allowed_unit_ids(unit_ids), excluded_unit_ids(unit_ids),
 
-    template <typename ScoreFunc>
-    T* best(ScoreFunc&& score_func) {
+    T* best(auto&& score_func) {
         T* best = nullptr;
-        using Score = std::invoke_result_t<ScoreFunc, T*>;
+        using Score = std::invoke_result_t<decltype(score_func), T*>;
         Score best_score = std::numeric_limits<Score>::min();
 
         for (T* elem : m_data) {
@@ -173,8 +171,7 @@ public:
         });
     }
 
-    template <typename FilterFunc>
-    T* first(FilterFunc&& filter_func) {
+    T* first(auto&& filter_func) {
         for (T* elem : m_data) {
             if (filter_func(elem)) {
                 return elem;
