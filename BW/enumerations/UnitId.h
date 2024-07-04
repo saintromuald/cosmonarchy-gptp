@@ -20,6 +20,7 @@ namespace UnitId
 	//	Campaign mission dialogue event						= 207,		// Left Pit Door
 
 	// Heroes
+		Ackmed												= 409,
 		Goska												= 500,
 		Stroluum											= 501,
 		Tuzor												= 502,

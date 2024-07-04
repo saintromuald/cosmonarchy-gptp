@@ -283,7 +283,8 @@ bool unit_id_is_psi_provider(u16 unit_id) {
 bool unit_id_can_do_controlled_demolition(u32 unit_id) {
 	return units_dat::base_property[unit_id] & UnitProperty::Addon
 		|| unit_id == UnitId::TerranReservoir
-		|| unit_id == UnitId::TerranWellbore;
+		|| unit_id == UnitId::TerranWellbore
+		|| unit_id == UnitId::TerranLobotomyMine;
 }
 
 bool unit_id_is_siege_mode(u32 unit_id) {
@@ -577,6 +578,7 @@ ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
 		case WeaponId::DurendalAbaddonFlamethrowers:	return ImageId::HarakanFlamethrower;
 		case WeaponId::StrigaPhaseSaber:				return ImageId::PhaseLineBlast;
 		case WeaponId::PariahIconoclastBlades:			return ImageId::PhaseLineBlast;
+		case WeaponId::AckmedMickenMelter:				return ImageId::HarakanFlamethrower;
 	}
 	return ImageId::None;
 }
@@ -897,7 +899,8 @@ bool unit_id_can_repair(u32 unit_id) {
 bool weapon_id_is_flamethrower(u32 weapon_id) {
 	return weapon_id == WeaponId::HarakanFlamethrower
 		|| weapon_id == WeaponId::MatadorTwinstrikeFlamethrowers
-		|| weapon_id == WeaponId::DurendalAbaddonFlamethrowers;
+		|| weapon_id == WeaponId::DurendalAbaddonFlamethrowers
+		|| weapon_id == WeaponId::AckmedMickenMelter;
 }
 
 bool unit_id_is_larva(u32 unit_id) {
@@ -1159,7 +1162,8 @@ bool unit_id_has_projection_attack(u32 unit_id) {
 		|| unit_id == UnitId::TerranMatadorCinderMode
 		|| unit_id == UnitId::TerranMatadorTurretCinderMode
 		|| unit_id == UnitId::TerranDurendal
-		|| unit_id == UnitId::ProtossPariah;
+		|| unit_id == UnitId::ProtossPariah
+		|| unit_id == UnitId::Ackmed;
 }
 
 bool player_id_is_extended(u32 player_id) {

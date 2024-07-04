@@ -1058,7 +1058,8 @@ bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
 		&& unit->id != UnitId::TerranMatadorCinderMode
 		&& unit->id != UnitId::TerranMatadorTurretCinderMode
 		&& weapon_id != WeaponId::DurendalAbaddonFlamethrowers
-		&& unit->id != UnitId::ZergIzirokor;
+		&& unit->id != UnitId::ZergIzirokor
+		&& unit->id != UnitId::Ackmed;
 }
 
 s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {
@@ -1265,7 +1266,8 @@ bool unit_is_ranged_attacker(Unit* unit) {
 		case UnitId::TerranMadrigalImperiosoMode:
 		case UnitId::TerranMadrigalFuriaMode:
 		case UnitId::TerranMadrigalTurretImperiosoMode:
-		case UnitId::TerranMadrigalTurretFuriaMode: {
+		case UnitId::TerranMadrigalTurretFuriaMode:
+		case UnitId::Ackmed: {
 			return true;
 		} break;
 	}

@@ -141,6 +141,7 @@ namespace WeaponId {
 		// Heroes \\
 
 		GoskaLobotomyGrenade				= 32,
+		AckmedMickenMelter					= 248,
 		GoskaMedusaRifle					= 249,
 		StroluumMagnatesMaw					= 251,
 

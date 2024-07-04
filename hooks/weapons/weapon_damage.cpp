@@ -38,9 +38,7 @@ bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_diviso
 	return bw::is_under_carapace_swarm(target)
 		&& weapons_dat::max_range[weapon_id] > 32
 		&& (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
-		&& weapon_id != WeaponId::HarakanFlamethrower
-		&& weapon_id != WeaponId::MatadorTwinstrikeFlamethrowers
-		&& weapon_id != WeaponId::DurendalAbaddonFlamethrowers
+		&& !weapon_id_is_flamethrower(weapon_id)
 		&& weapon_id != WeaponId::LakiziliskSubterraneanSpines
 		&& weapon_id != WeaponId::Custom;
 }
@@ -639,7 +637,8 @@ namespace hooks {
 				case WeaponId::StrigaPhaseSaber:
 				case WeaponId::MatadorTwinstrikeFlamethrowers:
 				case WeaponId::DurendalAbaddonFlamethrowers:
-				case WeaponId::SalamanderAngeltearRockets: {
+				case WeaponId::SalamanderAngeltearRockets:
+				case WeaponId::AckmedMickenMelter: {
 					target_ext->values[ValueApollyoidAdhesiveStacks]++;
 					target_ext->timers[TimerApollyoidAdhesive] = 2 * 24 + 1;
 				} break;
@@ -719,8 +718,9 @@ namespace hooks {
 							}
 						}
 					} break;
+					case WeaponId::HeraclesJavelinCannons:
 					case WeaponId::ClaymoreHarpoonRailgun: {
-						// Claymore - Kelvin Munitions - Slow primary target
+						// Kelvin Munitions - Slow targets
 						target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
 					} break;
 					case WeaponId::GorgonArtificeBattery: {

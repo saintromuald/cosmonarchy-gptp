@@ -1948,7 +1948,8 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranHarakan: {
+								case UnitId::TerranHarakan:
+								case UnitId::Ackmed: {
 									if (current_button->icon_id == IconId::FlyerAttack) { // Harakan - Apollyoid Adhesive
 										current_button_state = Button_State::Enabled;
 									}
@@ -1973,6 +1974,11 @@ namespace hooks {
 								} break;
 								case UnitId::TerranMadcap: {
 									if (current_button->icon_id == IconId::GoliathTwinAutocannons) { // Madcap Maverick Feeders
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
+								case UnitId::TerranHeracles: {
+									if (current_button->icon_id == IconId::FusionCutterHarvest) { // Heracles - Kelvin Munitions
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
