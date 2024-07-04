@@ -451,6 +451,7 @@ struct UnitExt {
 	CargoUnit				loaded_unit[TransportCap];
 
 	std::optional<Target>   last_unit_target;
+	std::optional<Point16>  target_pos_override;
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];

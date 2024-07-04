@@ -36,16 +36,13 @@ Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 
 	Image* image = unit->sprite->main_graphic;
 	switch (unit->id) {
-		case UnitId::TerranWatchdog:
-		{
+		case UnitId::TerranWatchdog: {
 			image = unit->get_overlay(ImageId::MissileTurret_Turret);
 		} break;
-		case UnitId::TerranSentinel:
-		{
+		case UnitId::TerranSentinel: {
 			image = unit->get_overlay(ImageId::SentinelTurret);
 		} break;
-		case UnitId::TerranDiadem:
-		{
+		case UnitId::TerranDiadem: {
 			image = unit->get_overlay(ImageId::DiademTurret);
 		} break;
 	}
@@ -124,21 +121,21 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponO
 
 		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 20;
 		max_range += get_correction_distance(unit->position, unit->id, launch_pos, target.pt);
-		Vec32f target_pos = { launch_pos.x + (dir.x * max_range), launch_pos.y + (dir.y * max_range) };
+		Vec32f target_pos = {launch_pos.x + (dir.x * max_range), launch_pos.y + (dir.y * max_range)};
 
 		if (target_pos.x < 0) {
-			target_pos.y = (1 - abs(target_pos.x / (target_pos.x - target.pt.x))) * (target_pos.y - target.pt.y) + target.pt.y;
+			target_pos.y = (1 - abs(target_pos.x / (target_pos.x - unit->position.x))) * (target_pos.y - unit->position.y) + unit->position.y;
 			target_pos.x = 0;
 		}
 		if (target_pos.y < 0) {
-			target_pos.x = (1 - abs(target_pos.y / (target_pos.y - target.pt.y))) * (target_pos.x - target.pt.x) + target.pt.x;
+			target_pos.x = (1 - abs(target_pos.y / (target_pos.y - unit->position.y))) * (target_pos.x - unit->position.x) + unit->position.x;
 			target_pos.y = 0;
 		}
 		target.pt.x = target_pos.x;
 		target.pt.y = target_pos.y;
 	}
-	s32 angle = bw::get_angle(launch_pos.x, launch_pos.y, target.pt.x, target.pt.y);
 
+	s32 angle = bw::get_angle(launch_pos.x, launch_pos.y, target.pt.x, target.pt.y);
 	Target original_target = unit->order_target;
 	unit->order_target = target;
 	Bullet* bullet = create_bullet_ex(weapon_id, unit, launch_pos.x, launch_pos.y, unit->player, angle, apply_cooldown);
@@ -513,7 +510,12 @@ namespace hooks {
 				// Track launch position
 				unit_ext->last_bullet_launch_position = unit->position;
 
+                // I am not sure why we are always centering on the unit, but I won't change it yet,
+				// since not sure how much we rely on that -Veeq7
 				Target weapon_target = make_target(unit->order_target.unit);
+				if (unit_ext->target_pos_override) {
+					weapon_target.pt = *unit_ext->target_pos_override;
+				}
 				switch (weapon_id) {
 					case WeaponId::PhobosArgosLaserBatteries: {
 						// Phobos - Argent Capacitors passive
@@ -1470,11 +1472,11 @@ namespace hooks {
 				target_pos.x = (s32)(parent->position.x + ((max_range * g_angle_distance[bullet->current_direction_1].x) >> 16));
 				target_pos.y = (s32)(parent->position.y + ((max_range * g_angle_distance[bullet->current_direction_1].y) >> 16));
 				if (target_pos.x < 0) {
-					target_pos.y = (1 - abs(target_pos.x / (target_pos.x - target_unit->position.x))) * (target_pos.y - target_unit->position.y) + target_unit->position.y;
+					target_pos.y = (1 - abs(target_pos.x / (target_pos.x - parent->position.x))) * (target_pos.y - parent->position.y) + parent->position.y;
 					target_pos.x = 0;
 				}
 				if (target_pos.y < 0) {
-					target_pos.x = (1 - abs(target_pos.y / (target_pos.y - target_unit->position.y))) * (target_pos.x - target_unit->position.x) + target_unit->position.x;
+					target_pos.x = (1 - abs(target_pos.y / (target_pos.y - parent->position.y))) * (target_pos.x - parent->position.x) + parent->position.x;
 					target_pos.y = 0;
 				}
 				bullet->attack_target.pt.x = target_pos.x;

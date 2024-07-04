@@ -368,6 +368,12 @@ namespace hooks
                     return;
                 }
 			} break;
+			case AttackTargetingType::FireGround: {
+				if (!unit_ext->target_pos_override && unit_ext->last_unit_target) {
+					auto target = *unit_ext->last_unit_target;
+                    unit_ext->target_pos_override = target.unit ? target.unit->position : target.pt;
+				}
+			} // fallthrough
 			case AttackTargetingType::RemembersTarget: {
                 if (unit_ext->last_unit_target) {
 					unit->order_target = *unit_ext->last_unit_target;

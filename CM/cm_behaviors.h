@@ -2,7 +2,8 @@
 #include "BW\bwdata.h"
 
 enum class AttackTargetingType {
-    RequiresTarget,					// If target doesn't exist, attack will not fire (default)
+    RequiresTarget,					// If target doesn't exist, attack will stop firing (default)
+    FireGround,		                // Regardless of target, fires at ground
     RemembersTarget,				// If target doesn't exist, fallback on the position of last target
     AcquiresNewTargets,				// If target doesn't exist, try to find a new target, otherwise will not fire
     AcquiresNewTargetsAndRemembers, // If target doesn't exist, try to find a new target, otherwise fallback on the position of last target

@@ -1090,6 +1090,7 @@ namespace hooks {
 		} else {
 			unit_ext->values[ValueWeaponFireIndex] = 0;
 			unit_ext->values[ValueProjectilePattern] = 0;
+            unit_ext->target_pos_override = std::nullopt;
 			unit_ext->last_unit_target = std::nullopt;
 		}
 

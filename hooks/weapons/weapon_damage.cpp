@@ -202,7 +202,7 @@ namespace hooks {
 
 		if (data.attacker) {
 			UnitExt* attacker_ext = get_unit_ext(data.attacker);
-			if (!attacker_ext->values[ValueTakingDeconstructionDamage] && attacker_ext->values[ValueTriggerDamageBaseSet] && weapon_id_procs_onhits(data.weapon_id)) {
+			if (!attacker_ext->values[ValueTakingDeconstructionDamage] && attacker_ext->values[ValueTriggerDamageBaseSet] && weapon_id_can_proc_onhits(data.weapon_id)) {
 				data.damage = attacker_ext->values[ValueTriggerDamageBaseAmount];
 			}
 
@@ -212,7 +212,7 @@ namespace hooks {
 		}
 
 		// Ancile - Providence - Hitscan handling
-		if (weapon_id_procs_onhits(data.weapon_id)) {
+		if (weapon_id_can_proc_onhits(data.weapon_id)) {
             auto units = g_unit_search
 				.radial_ex(data.target, 2 * 32, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile })
                 .sort_by_distance(data.target->position);
@@ -222,12 +222,17 @@ namespace hooks {
                     continue;
                 }
 
+				u32 energy_to_spend = std::min<u32>(unit->energy, data.damage);
+                unit->spend_energy(energy_to_spend);
                 bw::create_shield_overlay(data.target, data.direction);
-                unit->spend_energy(data.damage);
                 bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
                 play_attack_notification(unit);
                 bw::reveal_attacker(data.attacker, unit);
-                return;
+
+				data.damage -= energy_to_spend;
+				if (data.damage == 0) {
+                    return;
+				}
             }
 		}
 
@@ -428,7 +433,7 @@ namespace hooks {
 		}
 
 		// Hallucinating targets - fire a phantom strike
-		if (data.attacker && weapon_id_procs_onhits(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !bw::is_allied_to(data.attacker->player, data.target->player)) {
+		if (data.attacker && weapon_id_can_proc_onhits(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !bw::is_allied_to(data.attacker->player, data.target->player)) {
 			if (weapon_damage_current_bullet && data.weapon_id != WeaponId::GladiusPlasmaFlurry && data.weapon_id != WeaponId::PaladinCrusaderMissiles) {
 				BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
 				if (!current_bullet_ext->is_phantom) {
@@ -597,7 +602,7 @@ namespace hooks {
 							break;
 						}
 					}
-					if (!weapon_id_procs_onhits(data.weapon_id) || weapon_damage_is_lethal(data)) {
+					if (!weapon_id_can_proc_onhits(data.weapon_id) || weapon_damage_is_lethal(data)) {
 						break;
 					}
 					if (data.target->energy >= 10 * 256) {

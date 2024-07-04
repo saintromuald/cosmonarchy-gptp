@@ -583,7 +583,7 @@ ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
 	return ImageId::None;
 }
 
-bool weapon_id_procs_onhits(u32 weapon_id) {
+bool weapon_id_can_proc_onhits(u32 weapon_id) {
 	// A value of false makes the weapon ignore the following:
 	// * Ancile Providence
 	// * Clarion Phase Link

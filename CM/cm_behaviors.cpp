@@ -485,16 +485,19 @@ AttackTargetingType attack_targeting_type_of(Unit* unit) {
             return AttackTargetingType::Diadem;
 
         case UnitId::ProtossOptecton:
-            return AttackTargetingType::RemembersTarget;
+            return AttackTargetingType::FireGround;
     }
     return AttackTargetingType::RequiresTarget;
 }
 
 bool can_pick_new_target(Unit* unit) {
-	if (attack_targeting_type_of(unit) == AttackTargetingType::RemembersTarget) {
-		if (unit->movement_flags & MovementFlags_StartingAttack) {
-            return false;
-		}
+	switch (attack_targeting_type_of(unit)) {
+		case AttackTargetingType::FireGround:
+		case AttackTargetingType::RemembersTarget: {
+            if (unit->movement_flags & MovementFlags_StartingAttack) {
+                return false;
+            }
+		} break;
 	}
 	return true;
 }
