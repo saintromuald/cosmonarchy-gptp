@@ -165,10 +165,7 @@ namespace hooks
 			rect.top	= unit->get_top()	 - 20;
 			rect.bottom = unit->get_bottom() + 20;
 
-			EntryArray units = {};
-			unit_search_rect(&units, rect);
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* found_unit = units.units[i];
+			for (Unit* found_unit : g_unit_search.rect(rect)) {
 				if (found_unit->status & UnitStatus::InAir || found_unit->player > PlayerLimit) {
 					continue;
 				}

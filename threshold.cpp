@@ -584,11 +584,10 @@ static FraudSpawnLocation* get_random_spawn() {
 			continue;
 		}
 
-		EntryArray units = {};
-		unit_search_radial(&units, threshold.spawns[location].pos, 12 * 32);
-		u32 cost = units.count;
-		unit_search_filter(&units, 0, FilterBuilding);
-		cost += units.count;
+		auto units = g_unit_search.radial(threshold.spawns[location].pos, 12 * 32).filter();
+		u32 cost = units.count();
+		units.filter(0, FilterBuilding);
+		cost += units.count();
 
 		if (cost < best_cost) {
 			best_cost = cost;

@@ -198,10 +198,8 @@ namespace hooks
 						}
 						if (can_burrow) {
 							if (!unit_id_is_burrowed_attacker(unit->id)) {
-								EntryArray array = {};
-								unit_search_radial(&array, unit->position, 10 * 32);
-								unit_search_filter(&array, unit, FilterAlly | FilterBuilding);
-								if (array.count) {
+								auto units = g_unit_search.radial_ex(unit, 10 * 32, FilterAlly | FilterBuilding);
+								if (units.count()) {
 									return; // Disable idle burrowing close to infrastructure
 								}
 							}

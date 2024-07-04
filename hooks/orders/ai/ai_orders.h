@@ -33,7 +33,7 @@ namespace hooks {
 	Unit* ai_find_best_repair_target(Unit* repairman);																	// 00443160
 	b32 ai_worker_repair_controller(Unit* repairmain, AiTown* town);													// 00433C70
 
-	bool ai_resarea_valid_for_expo(u32 player, u32 resarea, AiTown* main_town, bool has_transport, EntryArray* out_units); // utility
+	bool ai_resarea_valid_for_expo(u32 player, u32 resarea, AiTown* main_town, bool has_transport, EntryArray<Unit>* out_units); // utility
 	void ai_expand(AiScript* aiscript, u32 block, u32 amount);															// 0045B530
 
 	struct PlacementData {

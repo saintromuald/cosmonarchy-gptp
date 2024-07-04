@@ -339,12 +339,12 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 		}
 	}
 
-	EntryArray targets = {};
+	EntryArray<Unit> targets;
 	if (options.center_on_target) {
 		if (!order_target_unit) {
 			return fired_at != 0;
 		}
-		unit_search_radial(&targets, order_target_unit->position, options.center_on_target_range_overwrite ? options.center_on_target_range_overwrite : max_attack_range);
+		targets = g_unit_search.radial(order_target_unit->position, options.center_on_target_range_overwrite ? options.center_on_target_range_overwrite : max_attack_range);
 	} else {
 		Box32 area = {
 			unit->get_left()   - max_attack_range - 8 * 32, // We can't account for size of all possible other units, but we want border to border search,
@@ -352,19 +352,18 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 			unit->get_right()  + max_attack_range + 8 * 32, // This is not really meant to be a rect area, more like rect extended circle, just like normal weapons,
 			unit->get_bottom() + max_attack_range + 8 * 32,	// for both of those reasons we later check the min range between units -Veeq7
 		};
-		unit_search_rect(&targets, area);
+		targets = g_unit_search.rect(area);
 	}
-	unit_search_filter(&targets, unit, filters);
+	targets.filter(unit, filters);
 	Point16 sort_center = order_target_unit ? order_target_unit->position : unit->position;
-	unit_search_sort_by_distance(&targets, sort_center);
+	targets.sort_by_distance(sort_center);
 
-	u32 count = targets.count;
+	u32 count = targets.count();
 	if (max_targets && count > max_targets) {
 		count = max_targets;
 	}
 	
-	for (u32 i = 0; i < count; ++i) {
-		Unit* target = targets.units[i];
+	for (Unit* target : targets) {
 		if  (target == unit
 		||   target == order_target_unit
 		||   bw::is_allied_to(unit->player, target->player)
@@ -645,7 +644,7 @@ namespace hooks {
 	}
 
 	static Box32 get_line_search_area(Bullet* bullet, Point16 old_position) {
-		u32 search_margin = 6 * 32;
+		u32 search_margin = 20 * 32;
 		Box32 search_area = {};
 		search_area.left   = Min(old_position.x, bullet->position.x) - search_margin;
 		search_area.top    = Min(old_position.y, bullet->position.y) - search_margin;
@@ -662,14 +661,7 @@ namespace hooks {
 		Point16 best_cp = {};
 
 		Box32 search_area = get_line_search_area(bullet, old_position);
-		EntryArray units = {};
-		unit_search_rect(&units, search_area);
-		unit_search_filter(&units, 0);
-		for (u32 i = 0; i < units.count; ++i) {
-			Unit* unit = units.units[i];
-			if (unit->status & UnitStatus::Invincible) {
-				continue;
-			}
+		for (Unit* unit : g_unit_search.rect(search_area).filter()) {
 			if (unit_id_ignores_ground_collision(unit->id)) {
 				continue;
 			}
@@ -778,14 +770,7 @@ namespace hooks {
 		std::vector<UnitPiercingEntry> targets;
 
 		Box32 search_area = get_line_search_area(bullet, old_position);
-		EntryArray units = {};
-		unit_search_rect(&units, search_area);
-		unit_search_filter(&units, 0);
-		for (u32 i = 0; i < units.count; ++i) {
-			Unit* unit = units.units[i];
-			if (unit->status & UnitStatus::Invincible) {
-				continue;
-			}
+		for (Unit* unit : g_unit_search.rect(search_area).filter()) {
 			if (bullet->attack_target.unit != unit && bw::is_allied_to(bullet->player, unit->player)) {
 				continue;
 			}
@@ -897,11 +882,9 @@ namespace hooks {
 				bw::create_and_init_thingy(SpriteId::AntiMatterMissileHit, bullet->position.x, bullet->position.y, bullet->player, bullet->sprite->elevation - 1);
 				u32 sound_id = bw::rand_between(SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03);
 				helper::play_sound_at_pos(sound_id, bullet->position, 1, 0);
-				EntryArray targets = {};
-				unit_search_radial(&targets, bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]);
-				unit_search_filter(&targets, 0, 0); // Let's filter with no flags, since that should remove untargetable stuff and what not
-				for (u32 i = 0; i < targets.count; ++i) {
-					Unit* target = targets.units[i];
+
+				// Let's filter with no flags, since that should remove untargetable stuff and what not
+				for (Unit* target : g_unit_search.radial(bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]).filter()) {
 					if (bw::is_allied_to(bullet->player, target->player) || target == bullet->attack_target.unit) {
 						continue;
 					}
@@ -951,13 +934,9 @@ namespace hooks {
 					bullet->source_unit->position = bullet->position;
 					u32 radius = 3 * 32;
 
-					EntryArray bonus_targets = {};
-					unit_search_radial(&bonus_targets, main_target->position, radius);
-					unit_search_filter(&bonus_targets, bullet->source_unit, FilterEnemy | FilterVisible | FilterNoAir);
 					g_iquare_globals->add_multihit_empty_bullet(bullet, 1);
 					u32 fired = 0;
-					for (u32 i = 0; i < bonus_targets.count; ++i) {
-						Unit* target = bonus_targets.units[i];
+					for (Unit* target : g_unit_search.radial(main_target->position, radius).filter(bullet->source_unit, FilterEnemy | FilterVisible | FilterNoAir)) {
 						if (target == main_target) {
 							continue;
 						}

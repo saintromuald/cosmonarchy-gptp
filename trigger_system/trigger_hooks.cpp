@@ -417,16 +417,15 @@ void orders_rescue_passive(Unit* unit) // 004A1EF0
 		u32 pos_x = sprite->position.x;
 		u32 pos_y = sprite->position.y;
 		
-		EntryArray units = {};
-		unit_search_radial(&units, unit->sprite->position, 64);
-		for (u32 i = 0; i < units.count; ++i) {
-			Unit* unit = units.units[i];
-			if (g_player_table[unit->player].type != PlayerType::Human) {
-				entry_array_remove(&units, i--);
-				continue;
-			}
-		}
-		if (units.count) {
+		Unit* rescuer = g_unit_search
+			.radial(unit->position, 64)
+			.filter_by([](Unit* unit) {
+				return g_player_table[unit->player].type == PlayerType::Human;
+            })
+			.sort_by_distance(unit->position)
+			.first();
+
+		if (rescuer) {
 			bool is_valid_town_center = false;
 			if (unit_id_is_town_center(unit->id)) {
 				if (unit->id == UnitId::ZergHachirosk && unit->unit_is_training_or_morphing()) {
@@ -446,14 +445,14 @@ void orders_rescue_passive(Unit* unit) // 004A1EF0
 						Sprite* first_sprite = first_unit->sprite;
 						next_unit = first_unit->player_link.next;
 						if (first_sprite && first_unit->main_order_id) {
-							rescue_unit(first_unit, units.units[0]->player);
+							rescue_unit(first_unit, rescuer->player);
 							next_unit = first_unit->player_link.next;
 						}
 						first_unit = next_unit;
 					} while (next_unit);
 				}
 			} else {
-				rescue_unit(unit, units.units[0]->player);
+				rescue_unit(unit, rescuer->player);
 			}
 			// Audiovisuals were here -- now handled in rescue_unit
 			bw::refresh_console();

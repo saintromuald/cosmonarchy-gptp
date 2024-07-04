@@ -123,7 +123,6 @@ namespace hooks
             return;
         }
 
-        EntryArray units = {};
         Box32 unit_box = get_unit_box(unit);
         u32 dist = 8;
         Box32 search_box = unit_box;
@@ -131,14 +130,13 @@ namespace hooks
         search_box.y -= dist;
         search_box.w += dist * 2;
         search_box.h += dist * 2;
-        unit_search_rect(&units, search_box);
+        auto target = g_unit_search.rect(search_box);
 
         Vec32f repulsion = {};
         bool collides = false;
         if (unit_ext->timers[TimerUseLastRepulsion]) {
             repulsion = unit_ext->last_repulsion;
-            for (u32 i = 0; i < units.count; ++i) {
-                Unit* target = units.units[i];
+            for (Unit* target : target) {
                 if (unit == target || target->pathing_flags & 1) {
                     continue;
                 }
@@ -147,8 +145,7 @@ namespace hooks
                 }
             }
         } else {
-            for (u32 i = 0; i < units.count; ++i) {
-                Unit* target = units.units[i];
+            for (Unit* target : target) {
                 if (unit == target || target->pathing_flags & 1) {
                     continue;
                 }

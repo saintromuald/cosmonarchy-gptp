@@ -101,11 +101,8 @@ namespace hooks {
 
 		BulletExt* bullet_ext = get_bullet_ext(bullet);
 
-		EntryArray units_in_splash = {};
-		unit_search_rect(&units_in_splash, box32_rect(pos, get_splash_width_from_weapon_id(weapon_id), get_splash_height_from_weapon_id(weapon_id)));
-		unit_search_filter(&units_in_splash, unit, FilterIncludingSelf);
-		for (s32 i = 0; i < units_in_splash.count; i++) {
-			Unit* target = units_in_splash.units[i];
+		const auto area = box32_rect(pos, get_splash_width_from_weapon_id(weapon_id), get_splash_height_from_weapon_id(weapon_id));
+		for (Unit* target : g_unit_search.rect(area).filter(unit, FilterIncludingSelf)) {
 			if (guaranteed_hit && target == guaranteed_hit) { // skips target check if has_guaranteed_hit_unit is unset, just for little bit of performance
 				bullet_ext->hit_count++;
 				continue; // guaranteed hit unit was already damaged before splash!
@@ -161,7 +158,6 @@ namespace hooks {
 
 		// Get units within the outer splash radius
 		bw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
-
 		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 			Unit* target = units_in_splash.get_unit(i);
 
@@ -222,10 +218,8 @@ namespace hooks {
 		f32 medium_t = 1 - weapons_dat::medium_splash_radius[weapon_id] / outer;
 		f32 outer_t  = 0;
 
-		EntryArray units_in_splash = {};
-		unit_search_rect(&units_in_splash, box32_rect(attacker->position, get_splash_width_from_weapon_id(weapon_id), get_splash_height_from_weapon_id(weapon_id)));
-		unit_search_filter(&units_in_splash, attacker, 0);
-		for (Unit* target : units_in_splash.units) {
+		const auto area = box32_rect(attacker->position, get_splash_width_from_weapon_id(weapon_id), get_splash_height_from_weapon_id(weapon_id));
+		for (Unit* target : g_unit_search.rect(area).filter()) {
 			if (!helper::is_unit_distance_within(target, bullet, outer)) {
 				continue;
 			}

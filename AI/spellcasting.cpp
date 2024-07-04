@@ -117,10 +117,7 @@ namespace AI
 						Thingy* target = 0;
 						u32 radius = is_unit_being_attacked ? 9 * 32 : 64 * 32;
 
-						EntryArray corpses = {};
-						corpse_search_radial(&corpses, unit->position, radius);
-						for (u32 i = 0; i < corpses.count; ++i) {
-							Thingy* corpse = corpses.corpses[i];
+						for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
 							if (is_active_corpse(corpse)) {
 								target = corpse;
 								break;

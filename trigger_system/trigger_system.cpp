@@ -419,36 +419,18 @@ bool parse_condition(Parser& parser) {
 			}
 			return false;
 		} else if (parser.equals("unit_count")) {
-			Area area = parser.get_area();
-			PlayerBitset players = parser.get_player_bitset();
-			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			Designator designator = parser.get_designator();
 			Quota quota = parser.get_quota();
 			u32 scouting_player = parser.get_player();
 			Quota scouting_time_quota = parser.get_time_quota();
 
-			EntryArray units = {};
-			if (scouting_player) {
-				seen_unit_search_rect(&units, scouting_player - 1, area.box);
-			} else {
-				unit_search_rect(&units, area.box);
-			}
-
 			u32 count = 0;
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
+			EntryArray<Unit> units = scouting_player ? designator.search_seen(scouting_player - 1) : designator.search();
+			for (Unit* unit : units) {
 				UnitExt* unit_ext = get_unit_ext(unit);
 				Point16 position = unit->position;
 				if (scouting_player) {
 					position = unit_ext->last_seen_position[scouting_player - 1];
-				}
-				if (!area.check(position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
-				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-					continue;
 				}
 				if (!scouting_player || !scouting_time_quota.value || scouting_time_quota.check(unit_ext->last_seen_timer[scouting_player - 1])) {
 					count++;
@@ -497,33 +479,17 @@ bool parse_condition(Parser& parser) {
 			}
 			return false;
 		} else if (parser.equals("unit_color")) {
-			Area area = parser.get_area();
-			PlayerBitset players = parser.get_player_bitset();
-			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			Designator designator = parser.get_designator();
 			Quota quota = parser.get_quota();
 			u32 color_id = parser.get_s32(); // Currently naive; need a way to get multiple pcolors and match them. -Pr0nogo
 
-			EntryArray units = {};
-			unit_search_rect(&units, area.box);
+			u32 count = designator.search()
+				.filter_by([color_id](Unit* unit) {
+                    UnitExt* unit_ext = get_unit_ext(unit);
+                    return unit_ext->values[ValuePlayerColor] == color_id;
+                })
+				.count();
 
-			u32 count = 0;
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
-				UnitExt* unit_ext = get_unit_ext(unit);
-				Point16 position = unit->position;
-				if (!area.check(position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
-				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-					continue;
-				}
-				if (unit_ext->values[ValuePlayerColor] == color_id) {
-					count++;
-				}
-			}
 			if (quota.check(count)) {
 				return true;
 			}
@@ -1160,64 +1126,26 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				set_player_color(player, player_color);
 			}
 		} else if (parser.equals("set_ai_auto_burrow")) {
-			Area area = parser.get_area();
-			PlayerBitset players = parser.get_player_bitset();
-			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			Designator designator = parser.get_designator();
 			s32 enable = parser.get_s32();
 
-			EntryArray units = {};
-			unit_search_rect(&units, area.box);
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
-				if (unit->player >= PlayerLimit || !players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-					continue;
-				}
-				if (!area.check(unit->position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
+			for (Unit* unit : designator.search()) {
 				UnitExt* unit_ext = get_unit_ext(unit);
 				unit_ext->values[ValueDisableAutoBurrow] = !enable;
 			}
 		} else if (parser.equals("kill")) {
-			Area area = parser.get_area();
-			PlayerBitset players = parser.get_player_bitset();
-			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			Designator designator = parser.get_designator();
 			u32 count = parser.get_s32();
 			bool remove = parser.get_s32();
 
-			EntryArray units = {};
-			unit_search_rect(&units, area.box);
-
-			u32 unit_count = 0;
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
-				UnitExt* unit_ext = get_unit_ext(unit);
-				Point16 position = unit->position;
-				if (!area.check(position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
-				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-					continue;
-				}
-				if (unit_count >= count) {
-					break;
-				}
-				unit_count++;
+			for (Unit* unit : designator.search().take(count)) {
 				if (remove) {
 					unit->user_action_flags |= UserActionFlags_HideUnit;
 				}
 				unit->remove();
 			}
 		} else if (parser.equals("set_unit_stat")) {
-			Area area = parser.get_area();
-			PlayerBitset players = parser.get_player_bitset();
-			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			Designator designator = parser.get_designator();
 			u32 count = parser.get_s32();
 			TriggerStat trigger_stat = (TriggerStat)parser.get_enum(trigger_stat_names, ARRAY_SIZE(trigger_stat_names));
 			// We should separately make "modify_unit_stat" and have operator parsing for stat amount. -Pr0nogo
@@ -1229,28 +1157,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				value = parser.get_s32();
 			}
 
-			EntryArray units = {};
-			unit_search_rect(&units, area.box);
-
-			u32 unit_count = 0;
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
+			for (Unit* unit : designator.search().take(count)) {
 				UnitExt* unit_ext = get_unit_ext(unit);
-				Point16 position = unit->position;
-				if (!area.check(position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
-				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-					continue;
-				}
-				if (count && unit_count >= count) {
-					break;
-				}
-				unit_count++;
-
 				switch (trigger_stat) {
 					case TriggerStat_Armor: {
 						unit_ext->values[ValueTriggerArmorBaseSet] = 1;
@@ -1286,35 +1194,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser.equals("set_unit_behavior")) {
-			Area area = parser.get_area();
-			PlayerBitset players = parser.get_player_bitset();
-			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			Designator designator = parser.get_designator();
 			u32 count = parser.get_s32();
 			TriggerBehavior trigger_behavior = (TriggerBehavior)parser.get_enum(trigger_behavior_names, ARRAY_SIZE(trigger_behavior_names));
 			b32 enable = parser.get_s32();
 
-			EntryArray units = {};
-			unit_search_rect(&units, area.box);
-
-			u32 unit_count = 0;
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
+			for (Unit* unit : designator.search().take(count)) {
 				UnitExt* unit_ext = get_unit_ext(unit);
-				Point16 position = unit->position;
-				if (!area.check(position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
-				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-					continue;
-				}
-				if (count && unit_count >= count) {
-					return true;
-				}
-				unit_count++;
-
 				switch (trigger_behavior) {
 					case TriggerBehavior_CloakProximity: {
 						unit_ext->values[ValueTriggerBehaviorProximityCloak] = enable;
@@ -1335,36 +1221,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser.equals("move_unit")) {
-			Area area_init = parser.get_area();
+			Designator designator = parser.get_designator();
 			Area area_dest = parser.get_area();
-			PlayerBitset players = parser.get_player_bitset();
-			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
 			u32 count = parser.get_s32();
 			b32 overlay = parser.get_s32();
 
-			EntryArray units = {};
-			unit_search_rect(&units, area_init.box);
-
-			Point16 dest = { area_dest.box.left + ((area_dest.box.right - area_dest.box.left) / 2), area_dest.box.top + ((area_dest.box.bottom - area_dest.box.top) / 2) };
-
-			u32 unit_count = 0;
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
-				UnitExt* unit_ext = get_unit_ext(unit);
-				Point16 position = unit->position;
-				if (!area_init.check(position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
-				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-					continue;
-				}
-				if (count && unit_count >= count) {
-					return true;
-				}
-				unit_count++;
+			Point16 dest = area_dest.center();
+			for (Unit* unit : designator.search().take(count)) {
 				Point16 origin = unit->position;
 				if (!bw::teleport_to_point(unit, dest)) {
 					bw::printf("move_unit: Failed to move unit with id %u to coordinates %u, %u", unit->id, dest.x, dest.y);
@@ -1377,71 +1240,27 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser.equals("give_unit")) {
-			Area area = parser.get_area();
-			PlayerBitset source_players = parser.get_player_bitset();
-			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			Designator designator = parser.get_designator();
 			u32 count = parser.get_s32();
 			u32 target_player = parser.get_player(true);
 
-			EntryArray units = {};
-			unit_search_rect(&units, area.box);
-
-			u32 unit_count = 0;
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
-				UnitExt* unit_ext = get_unit_ext(unit);
-				Point16 position = unit->position;
-				if (!area.check(position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
-				if (unit->player >= FullPlayerLimit || !source_players[unit->player] || unit->player == target_player - 1) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-					continue;
-				}
-				if (count && unit_count >= count) {
-					return true;
-				}
-				unit_count++;
+			for (Unit* unit : designator.search().take(count)) {
 				helper::give_unit(unit, target_player - 1, 1);
 			}
 		} else if (parser.equals("issue_order")) {
-			Area area_init = parser.get_area();
-			Area area_dest = parser.get_area();
-			PlayerBitset players = parser.get_player_bitset();
-			UnitIdBitset source_unit_ids = parser.get_unit_id_bitset();
-			UnitIdBitset target_unit_ids = parser.get_unit_id_bitset();
+			Designator source = parser.get_designator();
+			Designator target = parser.get_designator();
 			u32 count = parser.get_s32();
 			u32 order_id = parser.get_s32();
 			u32 secondary_unit_id = parser.get_s32();
 
-			EntryArray source_units = {};
-			unit_search_rect(&source_units, area_init.box);
 			// TODO: Handle finding & filtering target units, and actually targeting said units. -Pr0nogo
 		//	EntryArray target_units = {};
 		//	unit_search_rect(&target_units, area_dest.box);
 
-			Point16 dest = { area_dest.box.left + ((area_dest.box.right - area_dest.box.left) / 2), area_dest.box.top + ((area_dest.box.bottom - area_dest.box.top) / 2) };
-
-			u32 unit_count = 0;
-			for (u32 i = 0; i < source_units.count; ++i) {
-				Unit* unit = source_units.units[i];
+			Point16 dest = target.area.center();
+			for (Unit* unit : source.search().take(count)) {
 				UnitExt* unit_ext = get_unit_ext(unit);
-				Point16 position = unit->position;
-				if (!area_init.check(position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
-				if (unit->player >= FullPlayerLimit || !players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !source_unit_ids[unit->id]) {
-					continue;
-				}
-				if (count && unit_count >= count) {
-					return true;
-				}
-				unit_count++;
 				// TODO: Handle orders other than build / train. -Pr0nogo
 				if (secondary_unit_id != UnitId::None) {
 					switch (order_id) {
@@ -1472,33 +1291,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser.equals("rescue_unit")) {
-			Area area = parser.get_area();
-			PlayerBitset source_players = parser.get_player_bitset();
-			UnitIdBitset source_unit_ids = parser.get_unit_id_bitset();
+			Designator designator = parser.get_designator();
 			u32 count = parser.get_s32();
 			u32 target_player = parser.get_s32();
 
-			EntryArray source_units = {};
-			unit_search_rect(&source_units, area.box);
-
-			u32 unit_count = 0;
-			for (u32 i = 0; i < source_units.count; ++i) {
-				Unit* unit = source_units.units[i];
-				UnitExt* unit_ext = get_unit_ext(unit);
-				Point16 position = unit->position;
-				if (!area.check(position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
-				if (unit->player >= FullPlayerLimit || !source_players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !source_unit_ids[unit->id]) {
-					continue;
-				}
-				if (count && unit_count >= count) {
-					return true;
-				}
-				unit_count++;
+			for (Unit* unit : designator.search().take(count)) {
 				rescue_unit(unit, target_player - 1);
 			}
 		} else if (parser.equals("var") || parser.equals("timer")) {
@@ -1615,28 +1412,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				g_globals->celebration = Celebration_Christmas;
 			}
 		} else if (parser.equals("spawn_cargo")) {
-			Area area = parser.get_area();
-			PlayerBitset players = parser.get_player_bitset();
-			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			Designator designator = parser.get_designator();
 			s32 count = parser.get_s32(0);
 			u32 unit_id = parser.get_unit_id();
 			s32 player = parser.get_s32(0);
 			bool force = parser.get_s32(0);
 
-			EntryArray units = {};
-			unit_search_rect(&units, area.box);
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
-				if (unit->player >= PlayerLimit || !players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-					continue;
-				}
-				if (!area.check(unit->position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
-				for (u32 j = 0; j < count; ++j) {
+			for (Unit* unit : designator.search()) {
+				for (u32 i = 0; i < count; ++i) {
 					Unit* cargo_unit = bw::create_unit_in_game(unit_id, player ? player : unit->player, 0, 0);
 					if (cargo_unit) {
 						if (force ? !bw::transport_is_full(unit) : bw::can_be_entered_by(unit, cargo_unit)) {
@@ -1650,24 +1433,10 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				}
 			}
 		} else if (parser.equals("blissful_embrace")) {
-			Area area = parser.get_area();
-			PlayerBitset players = parser.get_player_bitset();
-			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
+			Designator designator = parser.get_designator();
 			s32 infesting_player = parser.get_s32(0);
 
-			EntryArray units = {};
-			unit_search_rect(&units, area.box);
-			for (u32 i = 0; i < units.count; ++i) {
-				Unit* unit = units.units[i];
-				if (unit->player >= PlayerLimit || !players[unit->player]) {
-					continue;
-				}
-				if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-					continue;
-				}
-				if (!area.check(unit->position, unit->status & UnitStatus::InAir)) {
-					continue;
-				}
+			for (Unit* unit : designator.search()) {
 				blissful_embrace(unit, infesting_player ? infesting_player - 1 : unit->player, true);
 			}
 		} else if (parser.equals("set_sprite_player")) {
@@ -1676,9 +1445,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			const auto count = parser.get_count();
 
 			if (player != -1) {
-				EntryArray units = {};
-				designator.search(&units, count);
-				for (Unit* unit : units.units) {
+				for (Unit* unit : designator.search().take(count)) {
 					unit->sprite->player = player;
 				}
 			}

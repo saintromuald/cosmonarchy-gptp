@@ -1759,10 +1759,8 @@ void ask_for_ai_help(Unit* victim, Unit* attacker) {
 		return;
 	}
 
-	EntryArray allied_structures = {};
-	unit_search_radial(&allied_structures, victim->position, 20 * 32);
-	unit_search_filter(&allied_structures, victim, FilterIncludingSelf | FilterAlly | FilterBuilding);
-	if (allied_structures.count) {
+	auto allied_structures = g_unit_search.radial_ex(victim, 20 * 32, FilterIncludingSelf | FilterAlly | FilterBuilding);
+	if (allied_structures.count()) {
 		for (u32 ai_player = 0; ai_player < 8; ++ai_player) {
 			if (g_player_table[ai_player].type == PlayerType::Computer && victim->is_visible_to(ai_player) &&
 				!bw::is_allied_to(ai_player, attacker->player) && bw::is_allied_to(ai_player, victim->player)) {
@@ -2191,16 +2189,13 @@ void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id) 
 }
 
 void shield_heal_proc(Unit* heal_source, u32 heal_source_player, u32 range, u32 heal_amount) {
-	EntryArray units = {};
 	Box32 search_area = {};
 	search_area.left = heal_source->position.x - range;
 	search_area.top = heal_source->position.y - range;
 	search_area.right = heal_source->position.x + range;
 	search_area.bottom = heal_source->position.y + range;
-	unit_search_rect(&units, search_area);
-	unit_search_filter(&units, heal_source);
-	for (u32 i = 0; i < units.count; ++i) {
-		Unit* unit = units.units[i];
+
+	for (Unit* unit : g_unit_search.rect(search_area).filter(heal_source)) {
 		if (heal_source_player != unit->player && !is_allied_to(heal_source_player, unit->player)) {
 			continue;
 		}
@@ -2239,10 +2234,7 @@ void prepare_building_area(Point16 pos, u32 unit_id, Unit* builder) {
 	rect.w = pos.x + units_dat::building_dimensions[unit_id].x / 2;
 	rect.h = pos.y + units_dat::building_dimensions[unit_id].y / 2;
 
-	EntryArray units = {};
-	unit_search_rect(&units, rect);
-	for (u32 i = 0; i < units.count; ++i) {
-		Unit* unit = units.units[i];
+	for (Unit* unit : g_unit_search.rect(rect)) {
 		if (unit == builder) {
 			continue;
 		}
@@ -2492,29 +2484,26 @@ void delete_fow_sprite(Thingy* thingy) {
 }
 
 std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks) {
-	EntryArray targets{};
-	unit_search_radial(&targets, position, BindingPlasmaRadius);
-	unit_search_filter(&targets, reference, FilterNotSelf | FilterNotSubunit);
-	for (u32 i = 0; i < targets.count; ++i) {
-		Unit* target = targets.units[i];
-		if (bw::is_allied_to(player, target->player)) {
-			entry_array_remove(&targets, i--);
-			continue;
-		}
-		if (!target->is_visible_to(player)) {
-			entry_array_remove(&targets, i--);
-			continue;
-		}
-	}
-	unit_search_sort_by_distance(&targets, position);
-	if (!targets.count) {
+	EntryArray targets = g_unit_search.radial(position, BindingPlasmaRadius)
+        .filter(reference, FilterNotSelf | FilterNotSubunit)
+        .filter_by([player](Unit* target) {
+            if (bw::is_allied_to(player, target->player)) {
+				return false;
+            }
+            if (!target->is_visible_to(player)) {
+				return false;
+            }
+			return true;
+		})
+        .sort_by_distance(position);
+	if (!targets.count()) {
 		return {};
 	}
 
 	std::vector<Unit*> result;
 	u32 target_index = 0;
-	while (stacks && target_index < targets.count) {
-		Unit* target = targets.units[target_index++];
+	while (stacks && target_index < targets.count()) {
+		Unit* target = targets[target_index++];
 		result.push_back(target);
 		stacks--;
 	}
@@ -2793,7 +2782,7 @@ static std::pair<Vec32f, Vec32f> closest_points_on_segments(Vec32f a0, Vec32f a1
     f32 denom = v21 * v21 - v22 * v11;
 
 	f32 s, t;
-	if (abs(denom) < 0.00000001) {
+	if (abs(denom) < 0.000001) {
         s = 0;
         t = (v11 * s - v21_1) / v21;
 	} else {
@@ -2817,6 +2806,8 @@ static std::pair<Vec32f, Vec32f> closest_points_on_segments(Vec32f a0, Vec32f a1
 
 bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t, Point16* out_cp) {
 	Vec32f best_cp = {};
+	Vec32f best_line_pt = {};
+	Vec32f best_rect_pt = {};
 	f32 best_t = INFINITY;
 	f32 best_distance = INFINITY;
 
@@ -2832,15 +2823,19 @@ bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t
 		// Note that parallel line to line intersection is impossible, however this should not be a problem for any real shapes
 		if (intersect) {
             const auto [line_pt, rect_pt] = closest_points_on_segments(line0, line1, rect0, rect1);
-            f32 distance = distance_between(line_pt, rect_pt);
+            f32 distance = std::min(distance_between(line_pt, rect_pt), distance_between(intersect->clamped_first_cp, intersect->clamped_second_cp));
 			if (abs(distance - best_distance) < 1) {
 				if (intersect->t < best_t) {
                     best_cp = intersect->clamped_second_cp;
+					best_line_pt = line_pt;
+					best_rect_pt = rect_pt;
                     best_t = intersect->t;
                     best_distance = distance;
 				}
 			} else if (distance < best_distance) {
                 best_cp = intersect->clamped_second_cp;
+                best_line_pt = line_pt;
+                best_rect_pt = rect_pt;
                 best_t = intersect->t;
                 best_distance = distance;
 			}

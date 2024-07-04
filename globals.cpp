@@ -92,12 +92,7 @@ void tick_effect(EffectField& effect) {
 				avenge_or_ascend_corpses_in_area(effect.position, effect.radius, effect.player);
 			} break;
 			case EffectId::SalamanderFire: {
-				EntryArray unit_array = {};
-				unit_search_radial(&unit_array, effect.position, effect.radius);
-				unit_search_filter(&unit_array, 0, FilterNoAir);
-
-				for (u32 j = 0; j < unit_array.count; j++) {
-					Unit* target = unit_array.units[j];
+				for (Unit* target : g_unit_search.radial_ex(effect, FilterNoAir)) {
 					UnitExt* target_ext = get_unit_ext(target);
 					if (!target_ext->timers[TimerSalamanderFire]) { // So it only applies to the same unit once every second.
 						target_ext->values[ValueApollyoidAdhesiveStacks]++;
@@ -251,33 +246,26 @@ void tick_effect(EffectField& effect) {
 				}
 			} break;
 			case EffectId::VilgolethHeal: {
-				EntryArray unit_array = {};
-				unit_search_radial(&unit_array, effect.position, effect.radius);
-				unit_search_filter(&unit_array, 0, FilterNoAir);
-
-				for (u32 j = 0; j < unit_array.count; j++) {
-					Unit* target = unit_array.units[j];
+				for (Unit* target : g_unit_search.radial_ex(effect, FilterNoAir)) {
 					UnitExt* target_ext = get_unit_ext(target);
 					target_ext->timers[TimerNathreliskMitosalFog] = 24;
 				}
 			} break;
 			case EffectId::CyclopsRecursionRound: {
-				if (!effect.current_time) {
-					EntryArray unit_array = {};
-					unit_search_radial(&unit_array, effect.position, effect.radius);
-					unit_search_filter(&unit_array, effect.source, FilterEnemy);
-					for (u32 j = 0; j < unit_array.count; j++) {
-						Unit* target = unit_array.units[j];
-						if (bw::is_allied_to(effect.player, target->player)) {
-							continue;
-						}
-						target->damage_with_custom(8 * 256, 0, effect.source, effect.player);
-						target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
-					}
-					u32 sound_id = bw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04);
-					helper::play_sound_at_pos(sound_id, effect.position, 1, 0);
-					helper::create_thingy(SpriteId::FragmentaryExplosion, effect.position.x, effect.position.y, effect.player);
+				if (effect.current_time) {
+					break;
 				}
+
+                for (Unit* target : g_unit_search.radial_ex(effect, FilterEnemy)) {
+                    if (bw::is_allied_to(effect.player, target->player)) {
+                        continue;
+                    }
+                    target->damage_with_custom(8 * 256, 0, effect.source, effect.player);
+                    target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
+                }
+                u32 sound_id = bw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04);
+                helper::play_sound_at_pos(sound_id, effect.position, 1, 0);
+                helper::create_thingy(SpriteId::FragmentaryExplosion, effect.position.x, effect.position.y, effect.player);
 			} break;
 			case EffectId::SevenstepMindMatter: {
 				if (effect.source && effect.source->sprite && !effect.current_time) {
@@ -293,23 +281,19 @@ void tick_effect(EffectField& effect) {
 					break;
 				}
 
-				EntryArray gladiuses{};
-				unit_search_radial(&gladiuses, effect.position, 8 * 32);
-				unit_search_filter(&gladiuses, nullptr, 0, {UnitId::ProtossGladius});
-				for (u32 i = 0; i < gladiuses.count; i++) {
-					Unit* gladius = gladiuses.units[i];
-					if (bw::is_allied_to(gladius->player, effect.player)) {
-						continue;
-					}
-					entry_array_remove(&gladiuses, i--);
-				}
-				unit_search_sort_by_distance(&gladiuses, effect.position);
-				if (!gladiuses.count) {
+				EntryArray gladiuses = g_unit_search
+					.radial(effect.position, 8 * 32)
+					.filter(nullptr, 0, {UnitId::ProtossGladius})
+                    .filter_by([&effect](Unit* unit) {
+						return bw::is_allied_to(unit->player, effect.player);
+					})
+					.sort_by_distance(effect.position);
+				if (!gladiuses.count()) {
 					effect.destroy();
 					break;
 				}
 
-				Unit* gladius = gladiuses.units[0];
+				Unit* gladius = gladiuses.first();
 				const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals);
 				if (targets.empty()) {
 					effect.destroy();
@@ -961,26 +945,25 @@ void place_clarion_links(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	auto& links = unit_ext->unit_vectors[UnitVectorPhaseLink];
 
-	EntryArray units{};
-	unit_search_radial(&units, unit->position, 5 * 32);
-	unit_search_filter(&units, nullptr);
-	unit_search_custom_filter(&units, [unit](Unit* target) {
-		if (!bw::is_allied_to(unit->player, target->player)) {
-			return false;
-		}
-		if (units_dat::base_property[target->id] & UnitProperty::Building) {
-			return false;
-		}
-		if (!target->shields_enabled()) {
-			return false;
-		}
-		if (target->shields < 256) {
-			return false;
-		}
-		return true;
-	});
+	auto targets = g_unit_search
+		.radial_ex(unit, 5 * 32)
+		.filter_by([unit](Unit* target) {
+            if (!bw::is_allied_to(unit->player, target->player)) {
+                return false;
+            }
+            if (units_dat::base_property[target->id] & UnitProperty::Building) {
+                return false;
+            }
+            if (!target->shields_enabled()) {
+                return false;
+            }
+            if (target->shields < 256) {
+                return false;
+            }
+            return true;
+        });
 
-	for (Unit* target : units.units) {
+	for (Unit* target : targets) {
 		if (!std::ranges::contains(links, target)) {
 			links.push_back(target);
 		}
