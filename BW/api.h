@@ -399,12 +399,20 @@ inline Vec32f unit_facing_dir(Unit* unit) {
 	});
 }
 
+inline f32 deg_to_rad(f32 degrees) {
+	return degrees * PI / 180;
+}
+
+inline f32 rad_to_deg(f32 radians) {
+	return radians * 180 / PI;
+}
+
 inline f32 degree_to_dot(f32 angle) {
-	return cosf(angle / 180 * PI);
+	return cosf(deg_to_rad(angle));
 }
 
 inline f32 dot_to_degree(f32 dot) {
-	return acosf(dot) / PI * 180;
+	return rad_to_deg(acosf(dot));
 }
 
 inline f32 dot_product(Vec32f a, Vec32f b) {

@@ -89,11 +89,18 @@ namespace hooks
 		if (!target->sprite || !bw::can_weapon_target_unit(WeaponId::WyvernJacksonCannon, target, unit) || !unit->can_attack_target(target)) {
 			return false;
 		}
-		const u32 unit_offset = std::max(unit->get_right() - unit->get_left(), unit->get_bottom() - unit->get_top()) + 32;
-		if (bw::distance_between(target->position.x, target->position.y, unit->position.x, unit->position.y) <= weapons_dat::max_range[WeaponId::WyvernJacksonCannon] + unit_offset) {
-			return true;
+        if (unit->get_distance_to_target(target) > weapons_dat::max_range[WeaponId::WyvernJacksonCannon]) {
+			return false;
 		}
-		return false;
+
+		const Vec32f facing_dir = bw::unit_facing_dir(unit);
+		const Vec32f dir_to_target = bw::dir_between(unit->position, target->position);
+		const f32 dot = bw::dot_product(facing_dir, dir_to_target);
+		if (dot < bw::degree_to_dot(225.0 / 2)) { // 225 in total, 112.5 degrees in both directions 
+			return false;
+		}
+
+		return true;
 	}
 
 	// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
