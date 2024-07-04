@@ -881,6 +881,10 @@ namespace SpriteId
 		Corpse_PhalanxSiege			= 924,
 		Corpse_Hierophant			= 925,
 
+		Corpse_Simulacrum			= 929,
+		Corpse_Vassal				= 930,
+		Corpse_Nathrokor			= 931,
+
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
 	};

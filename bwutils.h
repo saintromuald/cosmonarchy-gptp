@@ -71,7 +71,10 @@ namespace SpriteId {
 			case SpriteId::Corpse_Ovileth:
 			case SpriteId::Corpse_PhalanxTank:
 			case SpriteId::Corpse_PhalanxSiege:
-			case SpriteId::Corpse_Hierophant: {
+			case SpriteId::Corpse_Hierophant:
+			case SpriteId::Corpse_Simulacrum: 
+			case SpriteId::Corpse_Vassal: 
+			case SpriteId::Corpse_Nathrokor: {
 				return true;
 			} break;
 		}

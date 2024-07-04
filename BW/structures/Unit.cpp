@@ -1429,3 +1429,15 @@ bool Unit::can_attack_transport_checks() {
 	}
 	return false;
 }
+
+void Unit::issue_custom_order(u32 order_id) {
+	switch (order_id) {
+		case OrderId::GriefOfAllGods: {
+			if (this->id == UnitId::ProtossStarSovereign) {
+				this->order_computer(OrderId::GriefOfAllGods);
+				this->order_target.pt = this->sprite->position;
+				this->main_order_state = 0;
+			}
+		} break;
+	}
+}
