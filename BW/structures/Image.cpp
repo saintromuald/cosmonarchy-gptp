@@ -359,26 +359,6 @@ namespace hooks
 		}
 	}
 
-	enum class AttackTargetingType {
-		RequiresTarget,					// If target doesn't exist, attack will not fire (default)
-		RemembersTarget,				// If target doesn't exist, fallback on the position of last target
-		AcquiresNewTargets,				// If target doesn't exist, try to find a new target, otherwise will not fire
-		AcquiresNewTargetsAndRemembers, // If target doesn't exist, try to find a new target, otherwise fallback on the position of last target
-
-		Diadem,							// Hardcoded Diadem handling
-	};
-
-	static AttackTargetingType attack_targeting_type_of(Unit* unit) {
-		switch (unit->id) {
-			case UnitId::TerranDiadem:
-				return AttackTargetingType::Diadem;
-
-			case UnitId::ProtossOptecton:
-				return AttackTargetingType::RemembersTarget;
-		}
-		return AttackTargetingType::RequiresTarget;
-	}
-
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
 	void iscript_attackwith(Unit* unit, u8 is_ground_weapon) { // 00479D60
         UnitExt* unit_ext = get_unit_ext(unit);

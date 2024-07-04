@@ -345,9 +345,24 @@ Vec32 rotate_point(Vec32 anchor, Vec32 point, f64 angle_degrees) {
 	return {s32(x2 + anchor.x), s32(y2 + anchor.y)};
 }
 
+Vec32f rotate_point(Vec32f anchor, Vec32f point, f64 angle_degrees) {
+	f64 x1 = point.x - anchor.x;
+	f64 y1 = point.y - anchor.y;
+	f64 radians = angle_degrees / 57.296;
+	f64 x2 = x1 * cos(radians) - y1 * sin(radians);
+	f64 y2 = x1 * sin(radians) + y1 * cos(radians);
+	Vec32f product = {};
+	product.x = x2 + anchor.x;
+	product.y = y2 + anchor.y;
+	return {f32(x2 + anchor.x), f32(y2 + anchor.y)};
+}
+
 f64 bw_angle_to_normal(s32 bw_angle) {
-	f64 angle = (f64) bw_angle * 1.40625;
-	return angle;
+	return (f64)bw_angle * 1.40625;
+}
+
+s32 degrees_to_bw_angle(f64 degrees) {
+	return degrees / 1.40625;
 }
 
 s32 get_polar_x(s32 distance, u8 angle) {
