@@ -1262,32 +1262,33 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 			for (Unit* unit : source.search().take(count)) {
 				UnitExt* unit_ext = get_unit_ext(unit);
 				// TODO: Handle orders other than build / train. -Pr0nogo
-				if (secondary_unit_id != UnitId::None) {
-					switch (order_id) {
-						case OrderId::BuildTerran:
-						case OrderId::BuildProtoss1:
-						case OrderId::DroneStartBuild:
-						case OrderId::MorphUnit:
-						case OrderId::MorphStructure:
-						case OrderId::TrainUnit:
-						case OrderId::TrainFighter:
-						case OrderId::BuildNydusExit: {
-							unit->build_queue[unit->build_queue_slot] = secondary_unit_id;
-							helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
-						} break;
-					}
-				} else {
-					switch (order_id) {
-						case OrderId::Move:
-						case OrderId::AttackMove:
-						case OrderId::Patrol: {
-							helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
-						} break;
-						case OrderId::Burrow:
-						case OrderId::Unburrow: {
-							helper::perform_another_order(order_id, 0, unit, UnitId::None, {}, 0);
-						} break;
-					}
+				switch (order_id) {
+					case OrderId::BuildTerran:
+					case OrderId::BuildProtoss1:
+					case OrderId::DroneStartBuild:
+					case OrderId::MorphUnit:
+					case OrderId::MorphStructure:
+					case OrderId::TrainUnit:
+					case OrderId::TrainFighter:
+					case OrderId::BuildNydusExit: {
+						if (secondary_unit_id == UnitId::None) {
+							continue;
+						}
+						unit->build_queue[unit->build_queue_slot] = secondary_unit_id;
+						helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
+					} break;
+					case OrderId::Move:
+					case OrderId::AttackMove:
+					case OrderId::Patrol: {
+						helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
+					} break;
+					case OrderId::Burrow:
+					case OrderId::Unburrow: {
+						helper::perform_another_order(order_id, 0, unit, UnitId::None, {}, 0);
+					} break;
+					case OrderId::GriefOfAllGods: {
+						unit->issue_custom_order(order_id);
+					} break;
 				}
 			}
 		} else if (parser.equals("rescue_unit")) {
