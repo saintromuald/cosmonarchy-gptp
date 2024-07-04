@@ -208,6 +208,7 @@ bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, u16 sprite_id = 0, b
 Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player = 11, s32 elevation_level = 11);
 Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees);
 Vec32 rotate_point(Vec32 anchor, Vec32 point, f64 angle_degrees);
+Vec32f rotate_point(Vec32f anchor, Vec32f point, f64 angle_degrees);
 
 /// @name Output functions
 //////////////////////////////////////////////////////////////// @{

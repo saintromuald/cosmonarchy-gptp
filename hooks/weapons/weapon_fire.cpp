@@ -111,8 +111,18 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponO
 		launch_pos = make_launch_pos(launch_pos, get_next_bullet_offset(unit, weapon_offsets));
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
+		Vec32f facing_dir = bw::unit_facing_dir(unit);
 		Vec32f dir = bw::dir_between(launch_pos, target.pt);
-		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 16;
+
+		// Angle clamping
+		f32 max_angle = bw::bw_angle_to_normal(weapons_dat::attack_angle[weapon_id]);
+		f32 angle = bw::rad_to_deg(atan2f(bw::determinant(facing_dir, dir), bw::dot_product(facing_dir, dir)));
+		if (abs(angle) > max_angle) {
+            angle = std::clamp<f32>(angle, -max_angle, max_angle);
+            dir = bw::rotate_point({}, facing_dir, angle);
+		}
+
+		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 20;
 		max_range += get_correction_distance(unit->position, unit->id, launch_pos, target.pt);
 		Vec32f target_pos = { launch_pos.x + (dir.x * max_range), launch_pos.y + (dir.y * max_range) };
 
@@ -1445,19 +1455,20 @@ namespace hooks {
 				return 1;
 			}
 			case WeaponBehavior_GoToMaxRange: {
-				s32 max_range_var;
+				s32 max_range;
 				if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
-					max_range_var = get_unit_ext(parent)->values[ValueHasFiredReturnAttack];
-					if (!max_range_var) {
-						max_range_var = get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16;
+					UnitExt* parent_ext = get_unit_ext(parent);
+					max_range = parent_ext->values[ValueHasFiredReturnAttack];
+					if (!max_range) {
+						max_range = get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16;
 					}
-					max_range_var *= 256;
+					max_range *= 256;
 				} else {
-					max_range_var = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
+					max_range = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
 				}
 				Vec32 target_pos = {};
-				target_pos.x = (s32)(parent->position.x + ((max_range_var * g_angle_distance[bullet->current_direction_1].x) >> 16));
-				target_pos.y = (s32)(parent->position.y + ((max_range_var * g_angle_distance[bullet->current_direction_1].y) >> 16));
+				target_pos.x = (s32)(parent->position.x + ((max_range * g_angle_distance[bullet->current_direction_1].x) >> 16));
+				target_pos.y = (s32)(parent->position.y + ((max_range * g_angle_distance[bullet->current_direction_1].y) >> 16));
 				if (target_pos.x < 0) {
 					target_pos.y = (1 - abs(target_pos.x / (target_pos.x - target_unit->position.x))) * (target_pos.y - target_unit->position.y) + target_unit->position.y;
 					target_pos.x = 0;
