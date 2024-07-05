@@ -148,7 +148,9 @@ enum ExtValueId {
 	ValueCustomEggActive,
 	ValueCustomEggHatchMax,
 	ValueCustomEggHpMax,
-	ValueWeaponFireIndex,
+	ValueWeaponFireIndex,        // Index of fire event
+	ValueWeaponBulletLocalIndex, // Index of bullet in one fire event
+	ValueWeaponBulletTotalIndex, // Index of bullet in the whole fire sequence
 	ValueProjectilePattern,
 	ValueProjectileAngle,
 	ValueGhitorokorRelentlessAggressionStacks,
@@ -476,11 +478,18 @@ struct TileExt {
 struct BulletExt {
 	Point16 bullet_source;
 	u32 distance_traveled;
-	u32 time_traveled;
+	u32 ticks_traveled;
 	u32 divisor_multiplier = 1;
-	u32 current_z_displacement;
 	u32 damage_override = 0;
 	u32 hit_count;
+
+	f32 t;
+	Vec32f displacement;
+
+	u32 fire_index;
+	u32 bullet_local_index;
+	u32 bullet_total_index;
+
 	bool bounced;
 	bool is_phantom;
 	bool did_pierce;

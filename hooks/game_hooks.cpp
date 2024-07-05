@@ -878,7 +878,7 @@ namespace hooks {
 		draw_custom_ui();
 
 		// Loop through bullets
-		for (Bullet* bullet = *first_bullet; bullet; bullet = bullet->next) {
+		for (Bullet* bullet = *g_first_bullet; bullet; bullet = bullet->next) {
 			if (weapon_id_is_incremental(bullet->weapon_id)) {
 				if (bullet->order_signal & 0x80) {
 					bullet->order_signal &= ~0x80;
@@ -1089,6 +1089,8 @@ namespace hooks {
 			}
 		} else {
 			unit_ext->values[ValueWeaponFireIndex] = 0;
+            unit_ext->values[ValueWeaponBulletLocalIndex] = 0;
+            unit_ext->values[ValueWeaponBulletTotalIndex] = 0;
 			unit_ext->values[ValueProjectilePattern] = 0;
             unit_ext->target_pos_override = std::nullopt;
 			unit_ext->last_unit_target = std::nullopt;
@@ -1837,10 +1839,7 @@ namespace hooks {
 				if (target && unit_ext->values[ValueCentaurSecondaryWeaponCount] && !unit_ext->timers[TimerCentaurSecondaryWeaponStagger]) {
 					unit_ext->values[ValueCentaurSecondaryWeaponCount]--;
 					unit_ext->timers[TimerCentaurSecondaryWeaponStagger] = hooks::get_modified_cooldown(unit, 4, false);
-					WeaponOffsets offsets = {};
-					offsets.value_id = ValueCentaurLaunchPos;
-					offsets.count = 4;
-					fire_bullet(unit, WeaponId::CentaurSunchaserMissiles, make_target(target), &offsets, false);
+					fire_bullet(unit, WeaponId::CentaurSunchaserMissiles, make_target(target), false);
 				}
 			} break;
 			case UnitId::TerranOlympian: {

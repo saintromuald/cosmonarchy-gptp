@@ -93,7 +93,7 @@ namespace hooks
 			return false;
 		}
 
-		const Vec32f facing_dir = bw::unit_facing_dir(unit);
+		const Vec32f facing_dir = bw::facing_dir(unit);
 		const Vec32f dir_to_target = bw::dir_between(unit->position, target->position);
 		const f32 dot = bw::dot_product(facing_dir, dir_to_target);
 		if (dot < bw::degree_to_dot(225.0 / 2)) { // 225 in total, 112.5 degrees in both directions 
