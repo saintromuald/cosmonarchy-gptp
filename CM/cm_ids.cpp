@@ -911,10 +911,13 @@ u32 get_mutate_image_id(u32 unit_id) {
 	switch (unit_id) {
 		case UnitId::ZergQuazilisk:		return ImageId::QuaziliskMutate;
 		case UnitId::ZergNathrokor:		return ImageId::NathrokorMutate;
+		case UnitId::ZergCikralisk:		return ImageId::CikraliskMutate;
 		case UnitId::ZergProtathalor:	return ImageId::ProtathalorMutate;
 		case UnitId::ZergIzirokor:		return ImageId::IzirokorMutate;
 		case UnitId::ZergSkithrokor:	return ImageId::SkithrokorMutate;
+		case UnitId::ZergKagralisk:		return ImageId::KagraliskMutate;
 		case UnitId::ZergEvigrilisk:	return ImageId::EvigriliskMutate;
+		case UnitId::ZergAlmaksalisk:	return ImageId::AlmaksaliskMutate;
 		case UnitId::ZergGorgrokor:		return ImageId::GorgrokorMutate;
 		case UnitId::ZergVilgorokor:	return ImageId::VilgorokorMutate;
 		case UnitId::ZergGeszithalor:	return ImageId::GeszithalorMutate;
