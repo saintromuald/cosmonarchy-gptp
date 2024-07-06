@@ -885,6 +885,8 @@ namespace SpriteId
 		Corpse_Vassal				= 930,
 		Corpse_Nathrokor			= 931,
 
+		Corpse_Vorvrokor			= 942,
+
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
 	};
