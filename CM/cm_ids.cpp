@@ -245,8 +245,8 @@ bool unit_id_is_ground_garrison(u32 unit_id) {
 	return unit_id == UnitId::TerranAnchor
 		|| unit_id == UnitId::TerranLodestone
 		|| unit_id == UnitId::TerranLodestoneStandalone
-		|| unit_id == UnitId::TerranAnchorGrounded;
-	//	|| unit_id == UnitId::TerranTencendur;
+		|| unit_id == UnitId::TerranAnchorGrounded
+		|| unit_id == UnitId::TerranTencendur;
 }
 
 bool unit_id_is_garrison(u32 unit_id) {
@@ -259,6 +259,7 @@ bool unit_id_is_melee_air_unit(u32 unit_id) {
 		|| unit_id == UnitId::ZergTetcaerokor
 		|| unit_id == UnitId::ZergAkistrokor
 		|| unit_id == UnitId::ZergZarcavrokor
+		|| unit_id == UnitId::ZergSkryrokor
 		|| unit_id == UnitId::TerranTalos
 		|| unit_id == UnitId::TerranWendigo;
 }

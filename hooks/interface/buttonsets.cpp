@@ -683,6 +683,8 @@ namespace hooks {
 							case TechId::StroluumSkryspawn: {
 								if (unit_ext->timers[TimerSkryspawn]) {
 									current_button_state = Button_State::Disabled;
+								} else if (unit->status & UnitStatus::Burrowed) {
+									current_button_state = Button_State::Invisible;
 								} else {
 									current_button_state = Button_State::Enabled;
 								}
