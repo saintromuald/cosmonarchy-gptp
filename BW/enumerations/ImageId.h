@@ -1284,6 +1284,10 @@ namespace ImageId {
 		VilgorokorMutate							= 1897,
 		GorgrokorMutate								= 1898,
 
+		KagraliskMutate								= 1927,
+		AlmaksaliskMutate							= 1928,
+		CikraliskMutate								= 1929,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

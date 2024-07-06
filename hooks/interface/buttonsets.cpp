@@ -683,6 +683,8 @@ namespace hooks {
 							case TechId::StroluumSkryspawn: {
 								if (unit_ext->timers[TimerSkryspawn]) {
 									current_button_state = Button_State::Disabled;
+								} else if (unit->status & UnitStatus::Burrowed) {
+									current_button_state = Button_State::Invisible;
 								} else {
 									current_button_state = Button_State::Enabled;
 								}
@@ -843,7 +845,9 @@ namespace hooks {
 						is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 						is_burrowed = unit->status & UnitStatus::Burrowed;
 						is_adding_on = unit->current_build_unit && units_dat::base_property[unit->current_build_unit->id] & UnitProperty::Addon;
-						faction = g_globals->players[unit->player].faction;
+						if (unit->player <= PLAYABLE_PLAYER_COUNT) {
+							faction = g_globals->players[unit->player].faction;
+						}
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) {
@@ -1983,7 +1987,8 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::TerranApostle: {
-									if (current_button->icon_id == IconId::Reclamation) { // Apostle - Reclamation
+									if (current_button->icon_id == IconId::RechargeShields	// Apostle - Lazarus Agent
+									||  current_button->icon_id == IconId::Reclamation) {	// Apostle - Reclamation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2012,8 +2017,9 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::TerranAutocrat: {
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon	// Autocrat - Kinetic Penetration
-									|| current_button->icon_id == IconId::Reclamation) {					// Autocrat - Reclamation
+									if (current_button->icon_id == IconId::RechargeShields					// Autocrat - Reclamation Fields
+									||  current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon	// Autocrat - Kinetic Penetration
+									||  current_button->icon_id == IconId::Reclamation) {					// Autocrat - Reclamation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

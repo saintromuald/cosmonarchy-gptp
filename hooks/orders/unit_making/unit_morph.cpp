@@ -265,10 +265,13 @@ namespace hooks {
 						// New mutation animation handling! Everything will eventually use this. -Pr0nogo
 						case UnitId::ZergQuazilisk:
 						case UnitId::ZergNathrokor:
+						case UnitId::ZergCikralisk:
 						case UnitId::ZergProtathalor:
 						case UnitId::ZergIzirokor:
 						case UnitId::ZergSkithrokor:
+						case UnitId::ZergKagralisk:
 						case UnitId::ZergEvigrilisk:
+						case UnitId::ZergAlmaksalisk:
 						case UnitId::ZergGorgrokor:
 						case UnitId::ZergVilgorokor:
 						case UnitId::ZergGeszithalor: {

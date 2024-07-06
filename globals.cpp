@@ -237,7 +237,11 @@ void tick_effect(EffectField& effect) {
 					helper::plague_proc(unit, 0);
 				});
 			} break;
-			case EffectId::AionReclamationField: {
+			case EffectId::ReclamationField: {
+				if (effect.current_time) {
+					break;
+				}
+
 				Thingy* corpse = get_closest_active_corpse(effect.position, effect.radius);
 				if (corpse) {
 					reclaim_corpse(corpse, effect.player);

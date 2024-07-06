@@ -459,12 +459,8 @@ namespace hooks {
 		// No attacker here
 		switch (data.weapon_id) {
 			case WeaponId::AutocratEminenceRifle: {
-				if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
-					Thingy* corpse = get_closest_active_corpse(data.target->position, 3 * 32);
-					if (corpse) {
-						reclaim_corpse(corpse, data.attacking_player_id);
-					}
-				}
+				g_iquare_globals->create_effect(EffectId::ReclamationField, 36, data.target->position, 2 * 32, SpriteId::CausticDischarge,
+					data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
 			} break;
 			case WeaponId::AurielQuarternaryRifle: {
 				target_ext->values[ValueAurielIncinerationPlayer] = data.attacking_player_id;

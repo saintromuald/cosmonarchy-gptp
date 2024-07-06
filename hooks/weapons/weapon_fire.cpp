@@ -324,6 +324,8 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 	        && order_target_unit
 	        && unit->main_order_id != OrderId::Follow
 	        && unit->main_order_id != OrderId::Patrol
+	        && unit->main_order_id != OrderId::EnterTransport
+	        && unit->main_order_id != OrderId::EnterNydusCanal
 			&& can_fire_at(order_target_unit)
 	        && unit->can_attack_target(order_target_unit)) {
 		if (weapon_id_is_secondary(weapon_id) && bw::is_allied_to(unit->player, order_target_unit->player)) {

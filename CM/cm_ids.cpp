@@ -245,8 +245,8 @@ bool unit_id_is_ground_garrison(u32 unit_id) {
 	return unit_id == UnitId::TerranAnchor
 		|| unit_id == UnitId::TerranLodestone
 		|| unit_id == UnitId::TerranLodestoneStandalone
-		|| unit_id == UnitId::TerranAnchorGrounded;
-	//	|| unit_id == UnitId::TerranTencendur;
+		|| unit_id == UnitId::TerranAnchorGrounded
+		|| unit_id == UnitId::TerranTencendur;
 }
 
 bool unit_id_is_garrison(u32 unit_id) {
@@ -259,6 +259,7 @@ bool unit_id_is_melee_air_unit(u32 unit_id) {
 		|| unit_id == UnitId::ZergTetcaerokor
 		|| unit_id == UnitId::ZergAkistrokor
 		|| unit_id == UnitId::ZergZarcavrokor
+		|| unit_id == UnitId::ZergSkryrokor
 		|| unit_id == UnitId::TerranTalos
 		|| unit_id == UnitId::TerranWendigo;
 }
@@ -911,10 +912,13 @@ u32 get_mutate_image_id(u32 unit_id) {
 	switch (unit_id) {
 		case UnitId::ZergQuazilisk:		return ImageId::QuaziliskMutate;
 		case UnitId::ZergNathrokor:		return ImageId::NathrokorMutate;
+		case UnitId::ZergCikralisk:		return ImageId::CikraliskMutate;
 		case UnitId::ZergProtathalor:	return ImageId::ProtathalorMutate;
 		case UnitId::ZergIzirokor:		return ImageId::IzirokorMutate;
 		case UnitId::ZergSkithrokor:	return ImageId::SkithrokorMutate;
+		case UnitId::ZergKagralisk:		return ImageId::KagraliskMutate;
 		case UnitId::ZergEvigrilisk:	return ImageId::EvigriliskMutate;
+		case UnitId::ZergAlmaksalisk:	return ImageId::AlmaksaliskMutate;
 		case UnitId::ZergGorgrokor:		return ImageId::GorgrokorMutate;
 		case UnitId::ZergVilgorokor:	return ImageId::VilgorokorMutate;
 		case UnitId::ZergGeszithalor:	return ImageId::GeszithalorMutate;
@@ -1210,7 +1214,7 @@ bool portrait_id_is_default_advisor(u32 portrait_id) {
 }
 
 u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
-	if (player >= PlayerLimit) {
+	if (player >= PLAYABLE_PLAYER_COUNT) {
 		return portrait_id;
 	}
 	const auto faction = g_globals->players[player].faction;

@@ -25,7 +25,7 @@ enum class EffectId {
 	StarSovereignTheGriefOfAllGods,
 	KeskathalorCausticDischarge,
 	IsthrathalethPlagueField,
-	AionReclamationField,
+	ReclamationField,
 	VilgolethHeal,
 	CyclopsRecursionRound,
 	SevenstepMindMatter,
