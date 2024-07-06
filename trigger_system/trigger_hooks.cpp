@@ -216,30 +216,25 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
 
 	if (strcmp(g_current_map_name, "Anad's Greatsword") == 0) {
 		switch (portrait_id) {
-			case PortraitId::Maverick:
-			{
+			case PortraitId::Maverick: {
 				portrait_id = PortraitId::AnadThyron;
 			} break;
-			case PortraitId::Legionnaire:
-			{
+			case PortraitId::Legionnaire: {
 				portrait_id = PortraitId::Patriarch;
 			} break;
-			case PortraitId::Apostle:
-			{
+			case PortraitId::Apostle: {
 				portrait_id = PortraitId::AdvisorZorthos;
 			} break;
 		}
 	} else if (strcmp(g_current_map_name, "The Initiate") == 0) {
 		switch (portrait_id) {
-			case PortraitId::ProtossAdvisor:
-			{
+			case PortraitId::ProtossAdvisor: {
 				portrait_id = PortraitId::Solarion;
 			} break;
 		}
 	} else if (strcmp(g_current_map_name, "Autophagy") == 0) {
 		switch (portrait_id) {
-			case PortraitId::Scribe:
-			{
+			case PortraitId::Scribe: {
 				portrait_id = PortraitId::AdvisorZorthos;
 			} break;
 		}
