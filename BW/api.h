@@ -393,10 +393,17 @@ inline f32 distance_between(Vec32f a, Vec32f b) {
 	return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
 }
 
-inline Vec32f unit_facing_dir(Unit* unit) {
+inline Vec32f facing_dir(Unit* unit) {
 	return normalize(Vec32f{
         g_angle_distance[unit->current_direction_1].x / 256.0f,
         g_angle_distance[unit->current_direction_1].y / 256.0f,
+	});
+}
+
+inline Vec32f facing_dir(Bullet* bullet) {
+	return normalize(Vec32f{
+        g_angle_distance[bullet->current_direction_1].x / 256.0f,
+        g_angle_distance[bullet->current_direction_1].y / 256.0f,
 	});
 }
 
@@ -441,14 +448,14 @@ inline Vec32f vec_reversed(Vec32f vec) {
 }
 
 inline bool unit_is_facing(Unit* unit, Point16 position) {
-	Vec32f angle = unit_facing_dir(unit);
+	Vec32f angle = facing_dir(unit);
 	Vec32f dir = dir_between(unit->position, position);
 	f32 dot = dot_product(angle, dir);
 	return dot >= 0.5; // absolute angle diff <= 60 deg
 }
 
 inline bool unit_is_exposed_to(Unit* unit, Point16 position) {
-	Vec32f angle = unit_facing_dir(unit);
+	Vec32f angle = facing_dir(unit);
 	Vec32f dir = dir_between(unit->position, position);
 	f32 dot = dot_product(angle, dir);
 	return dot <= -0.5; // absolute angle diff >= 60 deg

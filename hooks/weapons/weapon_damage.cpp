@@ -439,7 +439,7 @@ namespace hooks {
 				if (!current_bullet_ext->is_phantom) {
 					data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
 				//	WeaponOffsets offsets = get_weapon_offsets(data.weapon_id);
-					Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, 0, false);
+					Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, false);
 					if (phantom_strike) {
 						BulletExt* phantom_ext = get_bullet_ext(phantom_strike);
 						phantom_ext->is_phantom = true;
@@ -626,7 +626,7 @@ namespace hooks {
 				case UnitId::ZergZarcavrokor: {
 					// Fan of Teeth - Zarcavrokor behavior
 					if (data.target != data.attacker && !target_ext->timers[TimerZarcavrokorSecondaryFire]) {
-						fire_bullet(data.target, WeaponId::ZarcavrokorBonesofReflection, make_target(data.attacker), 0, false);
+						fire_bullet(data.target, WeaponId::ZarcavrokorBonesofReflection, make_target(data.attacker), false);
 						target_ext->timers[TimerZarcavrokorSecondaryFire] = weapons_dat::cooldown[WeaponId::ZarcavrokorBonesofReflection] - 1;
 					}
 				} break;

@@ -15,8 +15,6 @@ struct FireMultipleOptions {
 	bool use_weapon_factor = true;
 	bool apply_cooldown = true;
 
-	WeaponOffsets* weapon_offsets = 0;
-
 	u32 range_overwrite = 0;
 	u32 divisor_multiplier = 1;
 	s32 stagger = -1; // -1 = no stagger, 0 = animation stagger, 3 = animation stagger + 3 extra frames
@@ -27,14 +25,14 @@ struct FireMultipleOptions {
 
 Target make_target(Unit* unit, Point16 pos = {});
 Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets);
-Point8 get_next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets);
+Point8 next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets);
 Point16 make_launch_pos(Point16 unit_position, Point8 offset);
-Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponOffsets* weapon_offsets = 0, bool apply_cooldown = true, bool ignore_max_range = false, bool dont_follow = false);
+Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, bool apply_cooldown = true, bool ignore_max_range = false, bool dont_follow = false);
 void apply_weapon_cooldown(Unit* unit, WeaponId::Enum weapon_id);
 Bullet* create_bullet_ex(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown = true);
-void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 count, s32 forward_spread, u32 lines, s32 side_spread, WeaponOffsets* weapon_offsets = 0);
-void fire_sideways(Unit* unit, WeaponId::Enum weapon_id, s32 angle_spread, s32 vertical_scatter, WeaponOffsets* offsets = 0);
-void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, s32 angle_spread, s32 vertical_scatter, WeaponOffsets* weapon_offsets = 0);
+void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 count, s32 forward_spread, u32 lines, s32 side_spread);
+void fire_sideways(Unit* unit, WeaponId::Enum weapon_id, s32 angle_spread, s32 vertical_scatter);
+void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, s32 angle_spread, s32 vertical_scatter);
 bool fire_multiple(Unit* attacker, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options);
 
 namespace hooks

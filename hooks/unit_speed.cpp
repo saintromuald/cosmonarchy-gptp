@@ -119,7 +119,7 @@ namespace hooks {
 		// Hierophant Signify: Cowardice
 		if (unit_ext->values[ValueSignifyStacks]) {
 			auto match = cosmonarchy_finder_match(unit, 0, {});
-			Vec32f facing_dir = bw::unit_facing_dir(unit);
+			Vec32f facing_dir = bw::facing_dir(unit);
 
 			// TODO: unit search / optimize
 			const u32 radius = 6 * 32;
