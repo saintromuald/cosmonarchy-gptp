@@ -845,7 +845,9 @@ namespace hooks {
 						is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 						is_burrowed = unit->status & UnitStatus::Burrowed;
 						is_adding_on = unit->current_build_unit && units_dat::base_property[unit->current_build_unit->id] & UnitProperty::Addon;
-						faction = g_globals->players[unit->player].faction;
+						if (unit->player <= PLAYABLE_PLAYER_COUNT) {
+							faction = g_globals->players[unit->player].faction;
+						}
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) {
