@@ -2179,7 +2179,7 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ProtossSycophant: {
-				if (unit->shields) {
+				if (!(unit->status & UnitStatus::InTransport) && unit->shields) {
 					u32 shields = 6 * 256 / 24;
 					if (shields > unit->shields) {
 						shields = unit->shields;
@@ -2221,8 +2221,7 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossSteward: {
 				// Evasive Maneuvers - Return to Solarion
-				if (unit->hangar_unit.parent && unit->hitpoints < 30 * 256)
-				{
+				if (unit->hangar_unit.parent && unit->hitpoints < 30 * 256) {
 					helper::issue_order_targeting_nothing(unit, OrderId::Return);
 				}
 			} break;
