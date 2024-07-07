@@ -51,6 +51,7 @@
 #include "game_modes/IGameMode.h"
 #include "game_modes/UprisingGameMode.h"
 #include "aise_signal.h"
+#include "game.h"
 
 #include <random>
 #include <format>
@@ -64,11 +65,11 @@ void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 
 namespace hooks {
 	static bool g_game_was_init;
-	static bool g_game_inited;
 
 	void next_ui_frame() {
-		if (!g_game_inited) {
-			g_game_inited = true;
+        static bool game_inited;
+		if (!game_inited) {
+			game_inited = true;
 			/*
 			Parser parser = new_parser(...);
 			while (parser_get_word(&parser)) {
@@ -85,13 +86,13 @@ namespace hooks {
 
 	void ui_button_click(BinDlg* dialog) {
 		if (dialog->parent && dialog->parent->text && strcmp(dialog->parent->text, "StatBtn") == 0) {
-			hooks::quickcasting_timeout  = 5;
-			hooks::quickbuilding_timeout = 5;
+			g_game->quick_casting.timeout          = 5;
+			g_game->quick_casting.building_timeout = 5;
 		}
 	}
 
 	static bool process_quickcasting() {
-		if (g_config.quick_casting && g_is_targeting && !quickcasting_timeout) {
+		if (g_config.quick_casting && g_is_targeting && !g_game->quick_casting.timeout) {
 			if (PtInRect(g_minimap_rect, *(POINT*)g_mouse)) {
 				u16 x = g_mouse->x;
 				u16 y = g_mouse->y;
@@ -112,7 +113,7 @@ namespace hooks {
 	}
 
 	static bool process_quickbuilding() {
-		if (g_config.quick_building && g_is_placing_building && !quickbuilding_timeout) {
+		if (g_config.quick_building && g_is_placing_building && !g_game->quick_casting.building_timeout) {
 			bool not_held = true;
 			for (char c = 'A'; c <= 'Z'; ++c) {
 				if (g_is_keycode_used[c]) {
@@ -139,14 +140,8 @@ namespace hooks {
 		return false;
 	}
 
-	u8 quickcasting_timeout;
-	u8 quickbuilding_timeout;
-	bool quickcasting_signal;
-	u32 quickcasting_command_card;
-	Unit* transport_ui_unit;
-
 	int transport_ui_click() {
-		helper::cmdact_unload(transport_ui_unit);
+		helper::cmdact_unload(g_game->transport_ui_unit);
 		return 0;
 	}
 
@@ -178,12 +173,12 @@ namespace hooks {
 		g_input_procs->funcs[17] = 0;
 		g_input_procs->funcs[18] = 0;
 
-		if (process_quickcasting()) {
-			quickcasting_signal = true;
-			quickcasting_command_card = *g_buttonset_special_buttonset_id;
+		if (g_game && process_quickcasting()) {
+			g_game->quick_casting.signal = true;
+			g_game->quick_casting.command_card = *g_buttonset_special_buttonset_id;
 		}
 
-		if (transport_ui_unit) {
+		if (g_game && g_game->transport_ui_unit) {
 			*left_click_proc  = (InputProcsFunc*)transport_ui_click;
 			*right_click_proc = (InputProcsFunc*)nop_click;
 		} else if (g_is_placing_building) {
@@ -294,8 +289,8 @@ namespace hooks {
 		Point16 start_pos = {179, 346};
 		Point16 pos = start_pos;
 
-		if (transport_ui_unit) {
-			transport_ui_unit = 0;
+		if (g_game->transport_ui_unit) {
+			g_game->transport_ui_unit = nullptr;
 			helper::set_ingame_input_procs();
 		}
 
@@ -386,8 +381,8 @@ namespace hooks {
 				}
 
 				g_graphics.draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
-				if (hover && !transport_ui_unit) {
-					transport_ui_unit = cargo_slot.unit;
+				if (hover && !g_game->transport_ui_unit) {
+					g_game->transport_ui_unit = cargo_slot.unit;
 					helper::set_ingame_input_procs();
 				}
 
@@ -726,12 +721,7 @@ namespace hooks {
 		// Force disable cpu throttling, since on modern CPU it hurts more than helps
 		*cpu_throttle = false;
 
-		if (quickcasting_timeout && !g_is_targeting) {
-			quickcasting_timeout--;
-		}
-		if (quickbuilding_timeout && !g_is_placing_building) {
-			quickbuilding_timeout--;
-		}
+		g_game->tick();
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
@@ -3408,6 +3398,8 @@ namespace hooks {
 	}
 
 	bool game_preinit() {
+		g_game = std::make_unique<Game>();
+
 		set_max_sight_range();
 
 		// Update harvest time for mineral fields
@@ -3419,9 +3411,6 @@ namespace hooks {
 
 		g_chk_cache.clear();
 		init_ext_variables();
-
-		quickcasting_signal = false;
-		quickcasting_command_card = 0;
 
 		weapon_damage_current_bullet = 0;
 
@@ -3455,6 +3444,7 @@ namespace hooks {
 			g_player_color_ids[player] = 0;
 		}
 		hotkeys.game_started = false;
+		g_game.reset();
 		return true;
 	}
 

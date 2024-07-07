@@ -18,12 +18,6 @@ struct SyncColorPrefCommand {
 static_assert(sizeof(SyncColorPrefCommand) == 12);
 
 namespace hooks {
-	extern u8 quickcasting_timeout;
-	extern u8 quickbuilding_timeout;
-	extern bool quickcasting_signal;
-	extern u32 quickcasting_command_card;
-	extern Unit* transport_ui_unit;
-
 	void __cdecl update_minimap_colors();							// 004A3A00
 	b32 update_doodad_visibility(Thingy* thingy);					// 00487690
 	void game_recv(char* buffer, s32 size, bool as_replay);			// 004865D0
