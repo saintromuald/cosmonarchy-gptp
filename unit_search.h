@@ -318,7 +318,7 @@ public:
         return square(unit->position, radius).filter(unit, filter, allowed_unit_ids);
     }
 
-    EntryArray<T> radial_ex(Unit* unit, u32 radius, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
+    EntryArray<Unit> radial_ex(Unit* unit, u32 radius, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
         return radial(unit->position, radius).filter(unit, filter, allowed_unit_ids);
     }
 
@@ -326,7 +326,7 @@ public:
         return square(effect.position, effect.radius).filter(effect.source, filter, allowed_unit_ids);
     }
 
-    EntryArray<T> radial_ex(const EffectField& effect, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
+    EntryArray<Unit> radial_ex(const EffectField& effect, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
         return radial(effect.position, effect.radius).filter(effect.source, filter, allowed_unit_ids);
     }
 
