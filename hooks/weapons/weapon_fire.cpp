@@ -513,15 +513,14 @@ namespace hooks {
 					unit_ext->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
 				}
 
-				// Track launch position
-				unit_ext->last_bullet_launch_position = unit->position;
-
-                // I am not sure why we are always centering on the unit, but I won't change it yet,
-				// since not sure how much we rely on that -Veeq7
-				Target weapon_target = make_target(unit->order_target.unit);
-				if (unit_ext->target_pos_override) {
-					weapon_target.pt = *unit_ext->target_pos_override;
+				if (unit->order_target.unit) {
+                    // I am not sure why we are always centering on the unit, but I won't change it yet, since not sure how much we rely on that -Veeq7
+					unit->order_target = make_target(unit->order_target.unit);
 				}
+				if (unit_ext->target_pos_override) {
+					unit->order_target.pt = *unit_ext->target_pos_override;
+				}
+				Target weapon_target = unit->order_target;
 				switch (weapon_id) {
 					case WeaponId::PhobosArgosLaserBatteries: {
 						// Phobos - Argent Capacitors passive

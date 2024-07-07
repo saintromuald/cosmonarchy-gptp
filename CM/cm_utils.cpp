@@ -253,39 +253,40 @@ void cancel_all_training(Unit* unit) {
 }
 
 bool play_unit_banter(Unit* victim, u16 speaker_unit_id) {
-	auto speakers = g_unit_search.radial_ex(victim, victim->get_sight_range() * 32, FilterEnemy, {speaker_unit_id});
-	for (Unit* speaker : speakers) {
-		// Checks
+	auto speakers = g_unit_search.radial_ex(victim, 16 * 32, FilterEnemy, {speaker_unit_id}).sort_by_distance(victim->position);
+
+	Unit* speaker = speakers.first([victim](Unit* speaker) {
 		if (bw::distance_between(victim->position, speaker->position) > speaker->get_sight_range() * 32) {
-			continue;
+			return false;
 		}
 		UnitExt* speaker_ext = get_unit_ext(speaker);
 		if (speaker_ext->timers[TimerUnitBanter]) {
-			continue;
-		}
-
-		// Play banter
-		u32 banter_sound = SoundId::None;
-		switch (speaker_unit_id) {
-			case UnitId::ProtossHierophant: {
-				banter_sound = bw::rand_between(SoundId::HierophantBanterB01, SoundId::HierophantBanterB03);
-			} break;
-			case UnitId::ProtossPatriarch: {
-				banter_sound = bw::rand_between(SoundId::PatriarchBanter01, SoundId::PatriarchBanter04);
-			} break;
-		}
-		if (helper::play_sound_from_unit(banter_sound, speaker, g_options_list->flags & 1, 99)) {
-			helper::do_unit_event_notification(speaker, 17, sfx_dat::portrait_duration[banter_sound] + 1000 * (sfx_dat::sound_data[banter_sound].duration_ms / 1000), 0, banter_sound);
-		}
-
-		// Cooldown
-		for (Unit* unit : speakers) {
-			UnitExt* unit_ext = get_unit_ext(unit);
-			unit_ext->timers[TimerUnitBanter] = 24 * 60;
+			return false;
 		}
 		return true;
+	});
+
+	if (!speaker) {
+		return false;
 	}
-	return false;
+
+    // Play banter
+    switch (speaker_unit_id) {
+        case UnitId::ProtossHierophant: {
+            bw::play_sound(speaker, {SoundId::HierophantBanterB01, SoundId::HierophantBanterB03});
+        } break;
+        case UnitId::ProtossPatriarch: {
+            bw::play_sound(speaker, {SoundId::PatriarchBanter01, SoundId::PatriarchBanter04});
+        } break;
+    }
+
+    // Cooldown
+    for (Unit* unit : speakers) {
+        UnitExt* unit_ext = get_unit_ext(unit);
+        unit_ext->timers[TimerUnitBanter] = 24 * 60;
+    }
+
+    return true;
 }
 
 void rescue_unit(Unit* unit, u32 player) {

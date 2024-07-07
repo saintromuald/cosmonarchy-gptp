@@ -244,6 +244,7 @@
     <ClCompile Include="DatExtend\weapons_dat.cpp" />
     <ClCompile Include="direct_sound.cpp" />
     <ClCompile Include="Discord.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="hooks\audiovisuals\image_render.cpp" />
     <ClCompile Include="hooks\audiovisuals\image_render_grp.cpp" />
     <ClCompile Include="hooks\audiovisuals\image_render_inject.cpp" />
@@ -612,6 +613,7 @@
     <ClInclude Include="DatExtend\datext.h" />
     <ClInclude Include="direct_sound.h" />
     <ClInclude Include="Discord.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="game_modes\IGameMode.h" />
     <ClInclude Include="hooks\audiovisuals\image_render.h" />
     <ClInclude Include="hooks\DatExtend\dat_load.h" />

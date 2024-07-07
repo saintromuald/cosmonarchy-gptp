@@ -10,6 +10,7 @@
 #include "hooks/game_hooks.h"
 #include "trigger_system/trigger_system.h"
 #include <hooks\interface\minimap.h>
+#include "game.h"
 
 ApmCounter local_apm_counter;
 ApmCounter player_apm_counter[PlayerLimit];
@@ -541,11 +542,11 @@ namespace hooks {
 		if (buttons_hovers()) {
 			return CursorType_HoveringAlly;
 		}
-		if (transport_ui_unit) {
-			if (transport_ui_unit->player == 11) {
+		if (g_game && g_game->transport_ui_unit) {
+			if (g_game->transport_ui_unit->player == 11) {
 				return CursorType_HoveringNeutral;
 			}
-			if (helper::unit_is_enemy(transport_ui_unit)) {
+			if (helper::unit_is_enemy(g_game->transport_ui_unit)) {
 				return CursorType_HoveringEnemy;
 			}
 			return CursorType_HoveringAlly;
