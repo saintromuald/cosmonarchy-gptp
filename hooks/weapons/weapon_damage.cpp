@@ -458,10 +458,6 @@ namespace hooks {
 
 		// No attacker here
 		switch (data.weapon_id) {
-			case WeaponId::AutocratEminenceRifle: {
-				g_iquare_globals->create_effect(EffectId::ReclamationField, 36, data.target->position, 2 * 32, SpriteId::CausticDischarge,
-					data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
-			} break;
 			case WeaponId::AurielQuarternaryRifle: {
 				target_ext->values[ValueAurielIncinerationPlayer] = data.attacking_player_id;
 				target_ext->timers[TimerAurielIncineration] = 2 * 24 + 1;
@@ -535,6 +531,10 @@ namespace hooks {
 			}
 
 			switch (data.weapon_id) {
+				case WeaponId::AutocratEminenceRifle: {
+					g_iquare_globals->create_effect(EffectId::ReclamationField, 36, data.target->position, 2 * 32, SpriteId::CausticDischarge,
+						data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
+				} break;
 				case WeaponId::PotentatePhaseSaber: {
 					if (!bw::is_allied_to(data.target->player, data.attacker->player)) {
 						ascend_in_area(data.attacker->player, data.attacker->position, 4 * 32);
