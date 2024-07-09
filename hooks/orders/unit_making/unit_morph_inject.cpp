@@ -6,13 +6,11 @@
 #include "globals.h"
 #include "math_utils.h"
 
-namespace
-{
+namespace {
 	//-------- cmdrecv_unit_morph --------//
 
 	const u32 Func_AddUnitToBuildQueue = 0x00467250;
-	bool add_unit_to_build_queue(Unit* unit, u16 unit_id)
-	{
+	bool add_unit_to_build_queue(Unit* unit, u16 unit_id) {
 		static u32 result;
 		static u32 unitId_;
 		unitId_ = unit_id;
@@ -28,8 +26,7 @@ namespace
 		return result != 0;
 	}
 
-	void __stdcall unit_morph_wrapper_cmdrecv_unit_morph(u8* commandData)
-	{
+	void __stdcall unit_morph_wrapper_cmdrecv_unit_morph(u8* commandData) {
 		const u16 morph_unit_id = *((u16*)&commandData[1]);
 		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection())
@@ -46,8 +43,7 @@ namespace
 
 	//-------- BTNSCOND_CanBuildUnit --------//
 
-	s32 __fastcall unit_morph_wrapper_btnscond_can_build_unit(u16 build_unit_id, s32 player, Unit* unit)
-	{
+	s32 __fastcall unit_morph_wrapper_btnscond_can_build_unit(u16 build_unit_id, s32 player, Unit* unit) {
 		if (g_client_selection_count <= 1 || hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]) != UnitId::None) {
 			return unit->can_make_unit(build_unit_id, player);
 		}
@@ -57,8 +53,7 @@ namespace
 	//-------- Orders_Morph1 --------//
 
 	const u32 Hook_Orders_Morph1_Check_Success = 0x0045DFCA;
-	void __declspec(naked) unit_morph_wrapper_orders_morph_1_check()
-	{
+	void __declspec(naked) unit_morph_wrapper_orders_morph_1_check() {
 		static Unit* unit;
 		__asm {
 			PUSHAD
@@ -70,8 +65,7 @@ namespace
 				POPAD
 				JMP Hook_Orders_Morph1_Check_Success
 			}
-		}
-		else {
+		} else {
 			__asm {
 				POPAD
 				POP EDI
@@ -84,12 +78,10 @@ namespace
 	}
 
 	const u32 Hook_Orders_Morph1_EggType_Return = 0x0045E048;
-	void __declspec(naked) unit_morph_wrapper_orders_morph1_egg_type()
-	{
+	void __declspec(naked) unit_morph_wrapper_orders_morph1_egg_type() {
 		static Unit* unit;
 		static u32 morphEggType;
-		__asm
-		{
+		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit, ESI
@@ -97,8 +89,7 @@ namespace
 		unit->status &= ~(UnitStatus::Completed);
 		morphEggType = hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]);
 		assert(bw::is_zerg_egg_new(unit, true, false, morphEggType));
-		__asm
-		{
+		__asm {
 			POPAD
 			PUSH morphEggType
 			JMP Hook_Orders_Morph1_EggType_Return
@@ -111,8 +102,7 @@ namespace
 	CancelZergBuildingFunc cancel_zerg_building = (CancelZergBuildingFunc)0x0045DA40;
 
 	const u32 Func_ChangeUnitType = 0x0049FED0;
-	void change_unit_type(Unit* unit, u16 newUnitId)
-	{
+	void change_unit_type(Unit* unit, u16 newUnitId) {
 		static u32 newUnitId_ = newUnitId;
 		newUnitId_ = newUnitId;
 		__asm {
@@ -125,8 +115,7 @@ namespace
 	}
 
 	const u32 Func_ReplaceSpriteImages = 0x00499BB0;
-	void replace_sprite_images(Sprite* sprite, u16 imageId, u8 imageDirection)
-	{
+	void replace_sprite_images(Sprite* sprite, u16 imageId, u8 imageDirection) {
 		static u32 imageId_;
 		static u32 imageDirection_;
 		imageId_ = imageId;
@@ -143,13 +132,9 @@ namespace
 
 	//-------- cancel_unit --------//
 
-	void __fastcall cancel_unit_wrapper(Unit* unit)
-	{
+	void __fastcall cancel_unit_wrapper(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit->is_dead()
-		||	unit->status & UnitStatus::Completed
-		||	unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit)
-		{
+		if (unit->is_dead() || unit->status & UnitStatus::Completed || (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit)) {
 			return;
 		}
 
@@ -188,16 +173,14 @@ namespace
 				unit->building.resource.is_mining = 0;
 			}
 			switch (unit->get_race()) {
-				case RaceId::Protoss:
-				{
+				case RaceId::Protoss: {
 					if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 						helper::play_sound_from_unit(SoundId::CancelStructureProtoss, unit, 1, 0);
 						helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player);
 					}
 					unit->remove();
 				} break;
-				case RaceId::Terran:
-				{
+				case RaceId::Terran: {
 					if (unit->id == UnitId::TerranMorningstar) {
 						Unit* silo = unit->connected_unit;
 						if (silo) {
@@ -248,19 +231,16 @@ namespace
 
 	//-------- getRemainingBuildTimePct --------//
 
-	s32 get_remaining_build_time_pct(Unit* unit)
-	{
+	s32 get_remaining_build_time_pct(Unit* unit) {
 		u16 unit_id = unit->id;
-		if (bw::is_zerg_egg_new(unit, true, false) || unit->is_remorphing_building())
-		{
+		if (bw::is_zerg_egg_new(unit, true, false) || unit->is_remorphing_building()) {
 			unit_id = unit->build_queue[unit->build_queue_slot];
 		}
 		return 100 * (units_dat::time_cost[unit_id] - unit->remaining_build_time) / units_dat::time_cost[unit_id];
 	}
 
 	// Inject @ 0x004669E0
-	void __declspec(naked) get_remaining_build_time_pct_wrapper()
-	{
+	void __declspec(naked) get_remaining_build_time_pct_wrapper() {
 		static Unit* unit;
 		static s32 percentage;
 		__asm {
@@ -280,8 +260,7 @@ namespace
 
 	// Inject @ 0x0045DE00
 	const u32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
-	void __declspec(naked) get_unit_vertical_offset_on_birth_wrapper()
-	{
+	void __declspec(naked) get_unit_vertical_offset_on_birth_wrapper() {
 		static Unit* unit;
 		static s16 yOffset;
 		__asm {
@@ -321,10 +300,8 @@ namespace
 	}
 }
 
-namespace
-{
-	void __declspec(naked) orders_zerg_birth_wrapper()
-	{
+namespace {
+	void __declspec(naked) orders_zerg_birth_wrapper() {
 		static Unit* unit;
 		__asm {
 			PUSH EBP
@@ -341,8 +318,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_morph_1_wrapper()
-	{
+	void __declspec(naked) orders_morph_1_wrapper() {
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
@@ -381,8 +357,7 @@ namespace
 
 	const u32 Jmp_IsEgg = 0x00434CF1;
 	const u32 Jmp_IsNotEgg = 0x00434CD6;
-	void __declspec(naked) delete_building_worker_ai_egg_jump_wrapper()
-	{
+	void __declspec(naked) delete_building_worker_ai_egg_jump_wrapper() {
 		static Unit* unit;
 		__asm {
 			MOV unit, EDI
@@ -403,8 +378,7 @@ namespace
 
 	const u32 Jmp_UnitAi_IsEgg = 0x00433E74;
 	const u32 Jmp_UnitAi_IsNotEgg = 0x00433E6A;
-	void __declspec(naked) add_unit_ai_egg_jump_wrapper()
-	{
+	void __declspec(naked) add_unit_ai_egg_jump_wrapper() {
 		static Unit* unit;
 		__asm {
 			MOV unit, EBX
@@ -423,8 +397,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) begin_train_wrapper()
-	{
+	void __declspec(naked) begin_train_wrapper() {
 		static u32 notify_error;
 		static Unit* unit;
 		static Unit* result;
@@ -452,8 +425,7 @@ namespace
 
 	const u32 Jmp_UnitTask_IsEgg = 0x00434CF1;
 	const u32 Jmp_UnitTask_IsNotEgg = 0x00434CD6;
-	void __declspec(naked) detach_unit_task_egg_jump_wrapper()
-	{
+	void __declspec(naked) detach_unit_task_egg_jump_wrapper() {
 		static Unit* unit;
 		__asm {
 			MOV unit, EDI
@@ -474,8 +446,7 @@ namespace
 
 	const u32 Jmp_PrepSuicide_IsEgg = 0x0043D218;
 	const u32 Jmp_PrepSuicide_IsNotEgg = 0x0043D212;
-	void __declspec(naked) prep_suicide_egg_jump_wrapper()
-	{
+	void __declspec(naked) prep_suicide_egg_jump_wrapper() {
 		static Unit* unit;
 		__asm {
 			MOV unit, ESI
@@ -495,10 +466,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_unit_morph_hooks()
-	{
+namespace hooks {
+	void inject_unit_morph_hooks() {
 		jump_patch(orders_zerg_birth_wrapper,					0x0045DD60, 1);
 		jump_patch(orders_morph_1_wrapper,						0x0045DEA0, 0);
 		call_patch(unit_morph_wrapper_cmdrecv_unit_morph,		0x00486B50, 0);		// jmp	004C1990  cmdrecv_unit_morph
