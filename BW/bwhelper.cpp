@@ -7179,9 +7179,10 @@ namespace helper {
 	s16 can_target_spell_on_fow_unit(s32 techId, s16 unit_id) {
 		const u32 func_address = 0x004914B0;
 		static s32 result;
+		static u32 unit_id_xd = unit_id;
 		__asm {
 			PUSHAD
-			PUSH unit_id
+			PUSH unit_id_xd
 			MOV EAX, techId
 			CALL func_address
 			MOV result, EAX
