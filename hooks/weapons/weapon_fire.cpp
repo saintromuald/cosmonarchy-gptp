@@ -31,6 +31,10 @@ Target make_target(Unit* unit, Point16 pos) {
 }
 
 Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
+	if (!weapon_offsets) {
+		return {};
+	}
+
 	UnitExt* unit_ext = get_unit_ext(unit);
 	u32 rotate = unit_ext->values[weapon_offsets->value_id];
 
