@@ -1829,7 +1829,7 @@ namespace hooks {
 				if (target && unit_ext->values[ValueCentaurSecondaryWeaponCount] && !unit_ext->timers[TimerCentaurSecondaryWeaponStagger]) {
 					unit_ext->values[ValueCentaurSecondaryWeaponCount]--;
 					unit_ext->timers[TimerCentaurSecondaryWeaponStagger] = hooks::get_modified_cooldown(unit, 4, false);
-					fire_bullet(unit, WeaponId::CentaurSunchaserMissiles, make_target(target), false);
+					fire_bullet(unit, WeaponId::CentaurSunchaserMissiles, make_target(target), {.apply_cooldown = false});
 				}
 			} break;
 			case UnitId::TerranOlympian: {

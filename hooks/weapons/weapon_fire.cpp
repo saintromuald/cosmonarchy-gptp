@@ -91,7 +91,7 @@ u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, P
 	return bw::distance_between(source_pos, edge_point);
 }
 
-Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, bool apply_cooldown, bool ignore_max_range, bool dont_follow, bool is_phantom) {
+Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, FireBulletOptions& options) {
 	if (!unit->sprite) {
 		return 0;
 	}
@@ -109,10 +109,10 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, bool ap
 		launch_pos = target.pt;
 	}
 	auto* offsets = get_weapon_offsets(weapon_id);
-	if (offsets && !is_phantom) {
+	if (offsets && !options.ignore_weapon_offsets) {
 		launch_pos = make_launch_pos(launch_pos, next_bullet_offset(unit, offsets));
 	}
-	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
+	if (!options.ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 		Vec32f unit_dir = bw::dir_between(unit->position, target.pt);
 		Vec32f dir = bw::dir_between(launch_pos, target.pt);
 
@@ -143,10 +143,10 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, bool ap
 	s32 angle = bw::get_angle(launch_pos.x, launch_pos.y, target.pt.x, target.pt.y);
 	Target original_target = unit->order_target;
 	unit->order_target = target;
-	Bullet* bullet = create_bullet_ex(weapon_id, unit, launch_pos.x, launch_pos.y, unit->player, angle, apply_cooldown);
+	Bullet* bullet = create_bullet_ex(weapon_id, unit, launch_pos.x, launch_pos.y, unit->player, angle, options.apply_cooldown);
 	unit->order_target = original_target;
 	if (bullet) {
-		if (dont_follow || weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
+		if (options.dont_follow || weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 			bw::set_bullet_target_absolute(bullet, target);
 		} else {
 			bw::set_bullet_target_follow(bullet, target);
@@ -223,7 +223,7 @@ void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 total_count, s32 forwar
 		target.pt.y -= bw::get_polar_y(side_offset, side_angle);
 	}
 
-	fire_bullet(unit, weapon_id, target, true, false, true);
+	fire_bullet(unit, weapon_id, target, {.dont_follow = true});
 	unit_ext->values[ValueProjectilePattern] = (index + 1) % total_count;
 }
 
@@ -249,7 +249,7 @@ static void fire_angled(Unit* unit, WeaponId::Enum weapon_id, Target target, s32
         launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, offsets));
     }
     Point16 target_pt = bw::rotate_point(launch_pos, set_target_range(launch_pos, target.pt, range), angle);
-    fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), true, true, true);
+	fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), {.ignore_max_range = true, .dont_follow = true});
 }
 
 void fire_sideways(Unit* unit, WeaponId::Enum weapon_id, s32 angle_spread, s32 vertical_scatter) {
@@ -341,7 +341,7 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
 			if (!(has_stagger && std::find(blacklist.begin(), blacklist.end(), order_target_unit) != blacklist.end())) {
 				for (u32 i = 0; i < factor; i++) {
-					Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), apply_cooldown);
+					Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), {.apply_cooldown = apply_cooldown});
 					if (bullet) {
 						fired_at = order_target_unit;
 						BulletExt* bullet_ext = get_bullet_ext(bullet);
@@ -393,7 +393,7 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 		}
 
 		for (u32 i = 0; i < factor; i++) {
-			Bullet* bullet = fire_bullet(unit, weapon_id, make_target(target), apply_cooldown);
+			Bullet* bullet = fire_bullet(unit, weapon_id, make_target(target), {.apply_cooldown = apply_cooldown});
 			if (bullet) {
 				fired_at = target;
 				BulletExt* bullet_ext = get_bullet_ext(bullet);

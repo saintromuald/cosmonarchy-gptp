@@ -439,7 +439,7 @@ namespace hooks {
 				if (!current_bullet_ext->is_phantom) {
 					data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
 				//	WeaponOffsets offsets = get_weapon_offsets(data.weapon_id);
-					Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, false);
+					Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, {.apply_cooldown = false});
 					if (phantom_strike) {
 						BulletExt* phantom_ext = get_bullet_ext(phantom_strike);
 						phantom_ext->is_phantom = true;
@@ -607,7 +607,7 @@ namespace hooks {
 						u32 damage = data.damage + data.shield_reduce_amount;
 						u32 image_id = analogue_image_id_overwrite(data.weapon_id);
 						if (image_id == ImageId::None) {
-							Bullet* phantom = fire_bullet(data.target, data.weapon_id, make_target(data.attacker), true, false, false, true);
+							Bullet* phantom = fire_bullet(data.target, data.weapon_id, make_target(data.attacker), {.ignore_weapon_offsets = true});
 							if (phantom) {
 								BulletExt* phantom_ext = get_bullet_ext(phantom);
 								phantom_ext->is_phantom = true;
@@ -626,7 +626,7 @@ namespace hooks {
 				case UnitId::ZergZarcavrokor: {
 					// Fan of Teeth - Zarcavrokor behavior
 					if (data.target != data.attacker && !target_ext->timers[TimerZarcavrokorSecondaryFire]) {
-						fire_bullet(data.target, WeaponId::ZarcavrokorBonesofReflection, make_target(data.attacker), false);
+						fire_bullet(data.target, WeaponId::ZarcavrokorBonesofReflection, make_target(data.attacker), {.apply_cooldown = false});
 						target_ext->timers[TimerZarcavrokorSecondaryFire] = weapons_dat::cooldown[WeaponId::ZarcavrokorBonesofReflection] - 1;
 					}
 				} break;
