@@ -607,7 +607,7 @@ namespace hooks {
 						u32 damage = data.damage + data.shield_reduce_amount;
 						u32 image_id = analogue_image_id_overwrite(data.weapon_id);
 						if (image_id == ImageId::None) {
-							Bullet* phantom = fire_bullet(data.target, data.weapon_id, make_target(data.attacker));
+							Bullet* phantom = fire_bullet(data.target, data.weapon_id, make_target(data.attacker), true, false, false, true);
 							if (phantom) {
 								BulletExt* phantom_ext = get_bullet_ext(phantom);
 								phantom_ext->is_phantom = true;

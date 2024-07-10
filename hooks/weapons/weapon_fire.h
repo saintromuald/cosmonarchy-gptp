@@ -27,7 +27,7 @@ Target make_target(Unit* unit, Point16 pos = {});
 Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets);
 Point8 next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets);
 Point16 make_launch_pos(Point16 unit_position, Point8 offset);
-Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, bool apply_cooldown = true, bool ignore_max_range = false, bool dont_follow = false);
+Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, bool apply_cooldown = true, bool ignore_max_range = false, bool dont_follow = false, bool is_phantom = false);
 void apply_weapon_cooldown(Unit* unit, WeaponId::Enum weapon_id);
 Bullet* create_bullet_ex(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown = true);
 void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 count, s32 forward_spread, u32 lines, s32 side_spread);

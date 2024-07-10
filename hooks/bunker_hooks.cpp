@@ -125,21 +125,18 @@ namespace hooks
 
 		u8 frame_angle = frame_direction * 32;
 		u16 sprite_id = SpriteId::BunkerAttackOverlay_Orange; // Bunker attack overlay
-		switch (final_unit->get_race())
-		{
-			case RaceId::Zerg:
-			{
+		switch (final_unit->get_race()) {
+			case RaceId::Zerg: {
 				sprite_id = SpriteId::BunkerAttackOverlay_Green;
 			} break;
-			case RaceId::Protoss:
-			{
+			case RaceId::Protoss: {
 				sprite_id = SpriteId::BunkerAttackOverlay_Blue;
 			} break;
 			default:
 			{
 			} break;
 		}
-		if (weapon_id_is_flamethrower(unit->get_ground_weapon())) { // TODO: Find a way to make this work with Durendal Philistine Autogun
+		if (weapon_id_is_flamethrower(unit->get_ground_weapon())) {
 			frame_angle = ((final_unit->current_direction_1 + 8) / 16 % 16) * 16;
 			sprite_id = SpriteId::HarakanFlamethrower;
 		}

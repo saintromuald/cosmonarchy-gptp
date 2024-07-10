@@ -91,7 +91,7 @@ u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, P
 	return bw::distance_between(source_pos, edge_point);
 }
 
-Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, bool apply_cooldown, bool ignore_max_range, bool dont_follow) {
+Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, bool apply_cooldown, bool ignore_max_range, bool dont_follow, bool is_phantom) {
 	if (!unit->sprite) {
 		return 0;
 	}
@@ -109,7 +109,7 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, bool ap
 		launch_pos = target.pt;
 	}
 	auto* offsets = get_weapon_offsets(weapon_id);
-	if (offsets) {
+	if (offsets && !is_phantom) {
 		launch_pos = make_launch_pos(launch_pos, next_bullet_offset(unit, offsets));
 	}
 	if (!ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
