@@ -50,7 +50,10 @@ inline constexpr u32 ReviveTimer = 3 * 24;
 constexpr s32 OlympianMeleeDistance = 30;
 
 // Hypnagogue
-constexpr u32 ThroughTheLookingGlassRange = 6 * 32;
+namespace ThroughTheLookingGlass {
+inline constexpr u32 CastRange = 6 * 32;
+inline constexpr u32 TargetSearchRange = 6 * 32;
+}
 
 // Mines
 constexpr s32 MineBurrowTime = 72;
