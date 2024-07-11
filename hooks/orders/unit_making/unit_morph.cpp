@@ -141,7 +141,9 @@ namespace hooks {
 			}
 			helper::force_order_done(unit);
 			unit->connected_unit = unit_ext->units[UnitMorphConnectedUnit];
-			helper::update_buttonset();
+			if (!unit_id_is_larva(unit->id)) {
+				helper::update_buttonset();
+			}
 		}
 	}
 
