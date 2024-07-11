@@ -221,7 +221,7 @@ b32 unload_unit_proc(Unit* unit) { // 004E7F70
     if (!transport || transport->is_frozen()) {
         return false;
     }
-    if (transport->main_order_timer != 0 && !(unit->status & UnitStatus::GroundedBuilding)) {
+    if (transport->main_order_timer != 0 && !(transport->status & UnitStatus::GroundedBuilding)) {
         return false;
     }
 
