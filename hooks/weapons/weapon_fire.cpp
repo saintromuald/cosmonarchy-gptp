@@ -98,25 +98,29 @@ static u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source
 	return bw::distance_between(source_pos, edge_point);
 }
 
-static std::optional<Point16> get_launch_pos(Unit* unit, WeaponId::Enum weapon_id, WeaponOffsets* offsets) {
+static std::optional<Point16> get_launch_pos(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponOffsets* offsets) {
     auto behavior = weapons_dat::behavior[weapon_id];
     if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) {
         behavior = WeaponBehavior_AppearOnTargetSite;
     }
 	
     if (behavior == WeaponBehavior_AppearOnTargetUnit) {
-        if (!unit->order_target.unit) {
+        if (!target.unit) {
 			return {};
         }
 
-        s32 x = 0;
-        s32 y = 0;
-        get_weapon_hit_pos(unit, &x, &y);
-		return Point16(x, y);
+		if (target == unit->order_target) {
+            s32 x = 0;
+            s32 y = 0;
+            get_weapon_hit_pos(unit, &x, &y);
+            return Point16(x, y);
+		} else {
+			return target.unit ? target.unit->position : target.pt;
+		}
     }
 
 	if (behavior == WeaponBehavior_AppearOnTargetSite) {
-		return unit->order_target.pt;
+		return target.pt;
     }
 
     if (offsets) {
@@ -144,7 +148,7 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const F
 	}
 
 	auto offsets = !opts.ignore_weapon_offsets ? get_weapon_offsets(weapon_id) : nullptr;
-	auto maybe_launch_pos = get_launch_pos(unit, weapon_id, offsets);
+	auto maybe_launch_pos = get_launch_pos(unit, weapon_id, target, offsets);
 	if (!maybe_launch_pos) {
 		return 0;
 	}

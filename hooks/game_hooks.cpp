@@ -1378,10 +1378,7 @@ namespace hooks {
 				bool can_fire = !unit->ground_weapon_cooldown;
 				WeaponId::Enum weapon_id = WeaponId::EvigriliskBrutishTendrils;
 				if (is_moving && can_fire) {
-					FireMultipleOpts options = {};
-					options.ignore_main = true;
-					options.use_weapon_factor = false;
-					if (fire_multiple(unit, weapon_id, 4, FilterEnemy, options)) {
+					if (fire_multiple(unit, weapon_id, 4, FilterEnemy, {.ignore_main = true, .use_weapon_factor = false})) {
 						u32 sound_id = bw::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03);
 						helper::play_sound_from_unit(sound_id, unit, 1, 0);
 					}
