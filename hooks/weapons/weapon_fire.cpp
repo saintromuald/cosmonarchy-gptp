@@ -373,10 +373,8 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 	targets.filter(unit, filters);
 	Point16 sort_center = order_target_unit ? order_target_unit->position : unit->position;
 	targets.sort_by_distance(sort_center);
-
-	u32 count = targets.count();
-	if (max_targets && count > max_targets) {
-		count = max_targets;
+	if (max_targets) {
+        targets.take(max_targets);
 	}
 	
 	for (Unit* target : targets) {
