@@ -415,7 +415,7 @@ inline f32 rad_to_deg(f32 radians) {
 	return radians * 180 / PI;
 }
 
-inline f32 degree_to_dot(f32 angle) {
+inline f32 deg_to_dot(f32 angle) {
 	return cosf(deg_to_rad(angle));
 }
 
@@ -451,14 +451,14 @@ inline bool unit_is_facing(Unit* unit, Point16 position) {
 	Vec32f angle = facing_dir(unit);
 	Vec32f dir = dir_between(unit->position, position);
 	f32 dot = dot_product(angle, dir);
-	return dot >= 0.5; // absolute angle diff <= 60 deg
+	return dot >= deg_to_dot(120.0 / 2);
 }
 
 inline bool unit_is_exposed_to(Unit* unit, Point16 position) {
 	Vec32f angle = facing_dir(unit);
 	Vec32f dir = dir_between(unit->position, position);
 	f32 dot = dot_product(angle, dir);
-	return dot <= -0.5; // absolute angle diff >= 60 deg
+	return dot <= deg_to_dot(120.0 / 2);
 }
 
 inline f32 vec_length(Vec32 vec) {
@@ -915,7 +915,7 @@ bool unit_can_flee(Unit* unit);
 GameKind get_game_kind();
 u32 get_worker_harvest_distance(Unit* unit, Point16 target);
 Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target);
-u32 get_fore_castle_factor(Unit* unit);
+u32 get_fore_castle_armor_bonus(Unit* unit);
 u32 get_ensnare_factor(Unit* unit);
 u32 get_advisor_sound_from_event_type(u32 player, u32 event_type);
 u32 get_advisor_sound_from_message_id(u32 player, u32 message_id);

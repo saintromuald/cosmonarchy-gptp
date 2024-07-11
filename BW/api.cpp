@@ -3180,18 +3180,18 @@ Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target) {
 	return pos;
 }
 
-u32 get_fore_castle_factor(Unit* unit) {
-	u32 factor = 0;
+u32 get_fore_castle_armor_bonus(Unit* unit) {
+	u32 bonus = 0;
 	switch (unit->id) {
 		case UnitId::TerranMinotaur: {
-			factor += 2;
+			bonus += 2;
 		}
 	}
 	UnitExt* unit_ext = get_unit_ext(unit);
 	if (unit_ext->values[ValueHasSublimeShepherd]) {
-		factor += 2;
+		bonus += 2;
 	}
-	return factor;
+	return bonus;
 }
 
 u32 get_ensnare_factor(Unit* unit) {

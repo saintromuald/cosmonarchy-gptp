@@ -280,14 +280,11 @@ namespace hooks {
 			s32 armor_total = (hooks::get_armor_internal(data.target) - armor_pen);
 
 			if (data.attacker) {
-				u32 fore_castle_factor = bw::get_fore_castle_factor(data.target);
+				u32 fore_castle_factor = bw::get_fore_castle_armor_bonus(data.target);
 				if (fore_castle_factor) {
-					u16 angle = bw::get_angle(data.target->position.x, data.target->position.y, data.attacker->position.x, data.attacker->position.y);
-					u16 unit_angle = data.target->velocity_direction_1;
-					s32 arc = (f64)45 / 1.40625; // 90 degrees
-					s32 delta = unit_angle - angle;
-					delta = abs((delta + 128) % 256 - 128);
-					if (delta <= arc) {
+					Vec32f dir = bw::dir_between(data.target->position, data.attacker->position);
+					Vec32f facing_dir = bw::facing_dir(data.target);
+					if (bw::dot_product(dir, facing_dir) >= bw::deg_to_dot(120.0 / 2)) {
 						armor_total += fore_castle_factor;
 						shield_overlay = true;
 					}
