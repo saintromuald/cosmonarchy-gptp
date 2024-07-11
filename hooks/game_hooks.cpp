@@ -1378,7 +1378,7 @@ namespace hooks {
 				bool can_fire = !unit->ground_weapon_cooldown;
 				WeaponId::Enum weapon_id = WeaponId::EvigriliskBrutishTendrils;
 				if (is_moving && can_fire) {
-					FireMultipleOptions options = {};
+					FireMultipleOpts options = {};
 					options.ignore_main = true;
 					options.use_weapon_factor = false;
 					if (fire_multiple(unit, weapon_id, 4, FilterEnemy, options)) {
@@ -1887,9 +1887,7 @@ namespace hooks {
 			case UnitId::TerranTarasque: {
 				// Forward March
 				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
-					FireMultipleOptions options = {};
-					options.apply_cooldown = false;
-					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, FilterEnemy, options)) {
+					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, FilterEnemy, {.fire_opts = {.apply_cooldown = false}})) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
@@ -2052,9 +2050,7 @@ namespace hooks {
 			case UnitId::TerranDurendal: {
 				// Durendal - Forward March
 				if (bw::unit_can_fire_secondary_weapon(unit)) {
-					FireMultipleOptions options = {};
-					options.apply_cooldown = false;
-					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, options)) {
+					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, {.fire_opts = {.apply_cooldown = false}})) {
 						unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
 						u32 sound_id = bw::rand_between(SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03);
 						helper::play_sound_from_unit(sound_id, unit, 1, 0);
@@ -2144,7 +2140,7 @@ namespace hooks {
 					bool can_fire = !unit->ground_weapon_cooldown && !(unit->status & UnitStatus::Burrowed);
 					WeaponId::Enum weapon_id = WeaponId::OkrimniliskRelentlessTendrils;
 					if (is_moving && can_fire) {
-						FireMultipleOptions options = {};
+						FireMultipleOpts options = {};
 						options.ignore_main = false;
 						options.use_weapon_factor = true;
 						if (fire_multiple(unit, weapon_id, 1, FilterEnemy | FilterNoAir, options)) {
@@ -2154,10 +2150,7 @@ namespace hooks {
 					}
 				}
 				if (bw::unit_can_fire_secondary_weapon(unit)) {
-					FireMultipleOptions options = {};
-					options.use_weapon_factor = false;
-					options.apply_cooldown = false;
-					if (fire_multiple(unit, WeaponId::OkrimniliskOmnispores, 0, FilterEnemy, options)) {
+					if (fire_multiple(unit, WeaponId::OkrimniliskOmnispores, 0, FilterEnemy, {.fire_opts = {.apply_cooldown = false}, .use_weapon_factor = false})) {
 						unit->sprite->create_top_overlay(ImageId::OkrimniliskOmnisporesFire);
 						u32 sound_id = bw::rand_between(SoundId::SpirtithWeaponfire01, SoundId::SpirtithWeaponfire03);
 						helper::play_sound_from_unit(sound_id, unit, 1, 0);
