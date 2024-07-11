@@ -1020,7 +1020,7 @@ namespace hooks {
 
 		if (fatal_deal_damage) {
 			// Matraleth, Akistokor - Blissful Embrace - infest target
-			if (target_ext->timers[TimerInfesting] && !target_ext->values[ValueInfested]) {
+			if (target_ext->timers[TimerInfesting]) {
 				fatal_deal_damage = false;
 				blissful_embrace(data.target, target_ext->values[ValueInfestingPlayer]);
 				data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);
