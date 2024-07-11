@@ -521,7 +521,7 @@ namespace hooks {
 						bw::draw_aura_range(unit, 8, 164); //#88409C
 					} break;
 					case OrderId::CastThroughTheLookingGlass: {
-						bw::draw_aura_range(unit, ThroughTheLookingGlassRange / 32, 164);
+						bw::draw_aura_range(unit, ThroughTheLookingGlass::CastRange / 32, 164);
 					} break;
 					default: {
 					} break;
@@ -2074,7 +2074,7 @@ namespace hooks {
 					} else if (unit->order_target.pt.x && unit->order_target.pt.y) {
 						target_pos = unit->order_target.pt;
 					}
-					u32 range = ThroughTheLookingGlassRange;
+					u32 range = ThroughTheLookingGlass::CastRange;
 					if (bw::distance_between(unit->position, target_pos) > range) {
 						if (unit->order_target.unit) {
 							helper::spell_order_move_towards_target(unit, range);
@@ -2115,11 +2115,7 @@ namespace hooks {
 							};
 							Point16 pos = unit->position;
 
-							helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
-							bw::teleport_to_point(unit, target_center_pos);
-							bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
-
-							for (Unit* target : g_unit_search.radial_ex(unit, 2 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
+							for (Unit* target : g_unit_search.radial_ex(unit, ThroughTheLookingGlass::TargetSearchRange, FilterAlly | FilterNoBuilding | FilterCompleted)) {
 								Point16 target_pos{
 									.x = u16(target_center_pos.x + (pos.x - target->position.x)),
 									.y = u16(target_center_pos.y + (pos.y - target->position.y)),
@@ -2127,6 +2123,10 @@ namespace hooks {
 								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, target->position.x, target->position.y, unit->player);
 								bw::teleport_to_point(target, target_pos);
 								bw::add_unit_overlay(target, ImageId::LegionnaireTeleportEffect);
+
+								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
+								bw::teleport_to_point(unit, target_center_pos);
+								bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 							}
 							unit->unfreeze();
 						} break;
