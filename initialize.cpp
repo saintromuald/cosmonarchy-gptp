@@ -800,7 +800,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	hooks::inject_rally_hooks();
 	hooks::inject_infestation_hooks();
-//	hooks::inject_receive_command_hooks();
 
 	hooks::inject_recharge_shields_hooks();
 	hooks::inject_spider_mine_hooks();
