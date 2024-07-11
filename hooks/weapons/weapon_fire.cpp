@@ -13,6 +13,13 @@
 #include "weapon_spellhit.h"
 #include "weapon_cooldown.h"
 
+namespace {
+
+typedef void(__stdcall* GetWeaponHitPosFunc)(Unit* unit, s32* x, s32* y);
+GetWeaponHitPosFunc const get_weapon_hit_pos = (GetWeaponHitPosFunc)0x004762C0;
+
+}
+
 static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit) {
 	if (unit->status & UnitStatus::Invincible) {
 		return false;
@@ -86,9 +93,41 @@ Point16 make_launch_pos(Point16 unit_position, Point8 offset) {
 	return unit_position;
 }
 
-u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, Point16 other_pos) {
+static u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, Point16 other_pos) {
 	Point16 edge_point = bw::get_rect_edge_point_towards(unit_pos, units_dat::unit_bounds[unit_id], other_pos);
 	return bw::distance_between(source_pos, edge_point);
+}
+
+static std::optional<Point16> get_launch_pos(Unit* unit, WeaponId::Enum weapon_id, WeaponOffsets* offsets) {
+    auto behavior = weapons_dat::behavior[weapon_id];
+    if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) {
+        behavior = WeaponBehavior_AppearOnTargetSite;
+    }
+	
+    if (behavior == WeaponBehavior_AppearOnTargetUnit) {
+        if (!unit->order_target.unit) {
+			return {};
+        }
+
+        s32 x = 0;
+        s32 y = 0;
+        get_weapon_hit_pos(unit, &x, &y);
+		return Point16(x, y);
+    }
+
+	if (behavior == WeaponBehavior_AppearOnTargetSite) {
+		return unit->order_target.pt;
+    }
+
+    if (offsets) {
+        return make_launch_pos(unit->position, next_bullet_offset(unit, offsets));
+    }
+
+    s32 forward_offset = weapons_dat::forward_offset[weapon_id];
+    s32 vertical_offset = weapons_dat::vertical_offset[weapon_id];
+    s32 x = unit->position.x + bw::get_polar_x(forward_offset, unit->current_direction_1);
+    s32 y = unit->position.y + bw::get_polar_y(forward_offset, unit->current_direction_1) - vertical_offset;
+    return Point16(x, y);
 }
 
 Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const FireBulletOpts& opts) {
@@ -104,14 +143,13 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const F
 		target.pt.y = unit_ext->values[ValueDiademTargetPosY];
 	}
 
-	Point16 launch_pos = unit->position;
-	if (weapons_dat::behavior[weapon_id] == WeaponBehavior_AppearOnTargetUnit) {
-		launch_pos = target.pt;
+	auto offsets = !opts.ignore_weapon_offsets ? get_weapon_offsets(weapon_id) : nullptr;
+	auto maybe_launch_pos = get_launch_pos(unit, weapon_id, offsets);
+	if (!maybe_launch_pos) {
+		return 0;
 	}
-	auto* offsets = get_weapon_offsets(weapon_id);
-	if (offsets && !opts.ignore_weapon_offsets) {
-		launch_pos = make_launch_pos(launch_pos, next_bullet_offset(unit, offsets));
-	}
+
+	Point16 launch_pos = *maybe_launch_pos;
 	if (!opts.ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 		Vec32f unit_dir = bw::dir_between(unit->position, target.pt);
 		Vec32f dir = bw::dir_between(launch_pos, target.pt);
@@ -143,7 +181,7 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const F
 	s32 angle = bw::get_angle(launch_pos.x, launch_pos.y, target.pt.x, target.pt.y);
 	Target original_target = unit->order_target;
 	unit->order_target = target;
-	Bullet* bullet = create_bullet_ex(weapon_id, unit, launch_pos.x, launch_pos.y, unit->player, angle, opts.apply_cooldown);
+    Bullet* bullet = create_bullet_ex(weapon_id, unit, launch_pos.x, launch_pos.y, unit->player, angle, opts.apply_cooldown);
 	unit->order_target = original_target;
 	if (bullet) {
 		if (opts.dont_follow || weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
@@ -156,9 +194,9 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const F
 			unit_ext->values[ValueDiademTargeting] = false;
 			unit->order_target.unit = unit_ext->units[UnitDiademTarget]; // Restore original target
 		}
-		if (offsets && unit_ext->values[offsets->value_id] < offsets->fake_count) {
-			bullet->hit_flags |= 0x1;
-		}
+        if (offsets && unit_ext->values[offsets->value_id] < offsets->fake_count) {
+            bullet->hit_flags |= 0x1;
+        }
 	}
 	return bullet;
 }
@@ -409,11 +447,6 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 	return fired_at != 0;
 }
 
-namespace {
-	typedef void(__stdcall* GetWeaponHitPosFunc)(Unit* unit, s32* x, s32* y);
-	GetWeaponHitPosFunc const get_weapon_hit_pos = (GetWeaponHitPosFunc)0x004762C0;
-}
-
 namespace hooks {
 	// This hook affects the following iscript opcodes: attackwith, attack, castspell
 	// This also affects Unit::fire_weapon().
@@ -422,32 +455,18 @@ namespace hooks {
 			return;
 		}
 
+        u8 behavior = weapons_dat::behavior[weapon_id];
+        if (behavior == WeaponBehavior_AppearOnTargetUnit) {
+            if (!unit->order_target.unit) {
+                return;
+            }
+        }
+
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
 		unit_ext->values[ValueAI_PreventTargeting] = 0;
 		u32 index = unit_ext->values[ValueWeaponFireIndex]++;
         unit_ext->values[ValueWeaponBulletLocalIndex] = 0;
-
-		// Retrieve the spawning position for the bullet.
-		s32 x = 0;
-		s32 y = 0;
-		u8 behavior = weapons_dat::behavior[weapon_id];
-		if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) {
-			behavior = WeaponBehavior_AppearOnTargetSite;
-		}
-		if (behavior == WeaponBehavior_AppearOnTargetUnit) {
-			if (!unit->order_target.unit) {
-				return;
-			}
-			get_weapon_hit_pos(unit, &x, &y);
-		} else if (behavior == WeaponBehavior_AppearOnTargetSite) {
-			x = unit->order_target.pt.x;
-			y = unit->order_target.pt.y;
-		} else {
-			s32 forward_offset = weapons_dat::forward_offset[weapon_id];
-			x = unit->position.x + bw::get_polar_x(forward_offset, unit->current_direction_1);
-			y = unit->position.y + bw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[weapon_id];
-		}
 
 		// Cloaked units - decloak
 		// Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
