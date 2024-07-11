@@ -3165,17 +3165,17 @@ u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
 }
 
 Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target) {
-	Vec32f shift = bw::normalize(bw::vec_between(pos, target));
-	f32 max_distance = std::max(abs(shift.x), abs(shift.y));
-	if (max_distance) {
-		shift.x /= max_distance;
-		shift.y /= max_distance;
+	Vec32f dir = bw::dir_between(pos, target);
+	f32 max_axis = std::max(abs(dir.x), abs(dir.y));
+	if (max_axis) {
+		dir.x /= max_axis;
+		dir.y /= max_axis;
 
-		u32 w = shift.x < 0 ? (rect.left + rect.right) : (rect.right + rect.left);
-		u32 h = shift.y < 0 ? (rect.top + rect.bottom) : (rect.bottom + rect.top);
+		u32 w = dir.x < 0 ? rect.left : rect.right;
+		u32 h = dir.y < 0 ? rect.top  : rect.bottom;
 
-		pos.x += shift.x * w / 2;
-		pos.y += shift.y * h / 2;
+		pos.x += dir.x * w;
+		pos.y += dir.y * h;
 	}
 	return pos;
 }
