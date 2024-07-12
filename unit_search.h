@@ -169,9 +169,10 @@ public:
     }
 
     auto take(this auto&& self, u32 count) {
-        return self.filter_by([count, idx = 0](Unit* unit) mutable {
-            return idx++ < count;
-        });
+        if (self.m_data.size() > count) {
+            self.m_data.resize(count);
+        }
+        return self;
     }
 
     T* first(auto&& filter_func) {

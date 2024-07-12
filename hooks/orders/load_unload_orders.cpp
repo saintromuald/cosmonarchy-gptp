@@ -370,13 +370,15 @@ void orders_unload(Unit* unit) {
         }
     }
 
-    if (unit_unloaded) {
-        if (!(unit->status & UnitStatus::GroundedBuilding) && unit->has_loaded_unit()) {
+    if (!(unit->status & UnitStatus::GroundedBuilding)) {
+        if (unit_unloaded) {
+            if (unit->has_loaded_unit()) {
+                return;
+            }
+        } else if (unit->unit_ai) {
+            helper::ai_unload_failure(unit);
             return;
         }
-    } else if (unit->unit_ai && !(unit->status & UnitStatus::GroundedBuilding)) {
-        helper::ai_unload_failure(unit);
-        return;
     }
 
     if (unit->order_queue_head) {

@@ -521,7 +521,7 @@ namespace hooks {
 						bw::draw_aura_range(unit, 8, 164); //#88409C
 					} break;
 					case OrderId::CastThroughTheLookingGlass: {
-						bw::draw_aura_range(unit, ThroughTheLookingGlassRange / 32, 164);
+						bw::draw_aura_range(unit, ThroughTheLookingGlass::CastRange / 32, 164);
 					} break;
 					default: {
 					} break;
@@ -1378,10 +1378,7 @@ namespace hooks {
 				bool can_fire = !unit->ground_weapon_cooldown;
 				WeaponId::Enum weapon_id = WeaponId::EvigriliskBrutishTendrils;
 				if (is_moving && can_fire) {
-					FireMultipleOptions options = {};
-					options.ignore_main = true;
-					options.use_weapon_factor = false;
-					if (fire_multiple(unit, weapon_id, 4, FilterEnemy, options)) {
+					if (fire_multiple(unit, weapon_id, 4, FilterEnemy, {.ignore_main = true, .use_weapon_factor = false})) {
 						u32 sound_id = bw::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03);
 						helper::play_sound_from_unit(sound_id, unit, 1, 0);
 					}
@@ -1887,9 +1884,7 @@ namespace hooks {
 			case UnitId::TerranTarasque: {
 				// Forward March
 				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
-					FireMultipleOptions options = {};
-					options.apply_cooldown = false;
-					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, FilterEnemy, options)) {
+					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, FilterEnemy, {.fire_opts = {.apply_cooldown = false}})) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid);
 					} else {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = 3; // performance
@@ -2052,9 +2047,7 @@ namespace hooks {
 			case UnitId::TerranDurendal: {
 				// Durendal - Forward March
 				if (bw::unit_can_fire_secondary_weapon(unit)) {
-					FireMultipleOptions options = {};
-					options.apply_cooldown = false;
-					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, options)) {
+					if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, {.fire_opts = {.apply_cooldown = false}})) {
 						unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
 						u32 sound_id = bw::rand_between(SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03);
 						helper::play_sound_from_unit(sound_id, unit, 1, 0);
@@ -2078,7 +2071,7 @@ namespace hooks {
 					} else if (unit->order_target.pt.x && unit->order_target.pt.y) {
 						target_pos = unit->order_target.pt;
 					}
-					u32 range = ThroughTheLookingGlassRange;
+					u32 range = ThroughTheLookingGlass::CastRange;
 					if (bw::distance_between(unit->position, target_pos) > range) {
 						if (unit->order_target.unit) {
 							helper::spell_order_move_towards_target(unit, range);
@@ -2119,11 +2112,7 @@ namespace hooks {
 							};
 							Point16 pos = unit->position;
 
-							helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
-							bw::teleport_to_point(unit, target_center_pos);
-							bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
-
-							for (Unit* target : g_unit_search.radial_ex(unit, 2 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
+							for (Unit* target : g_unit_search.radial_ex(unit, ThroughTheLookingGlass::TargetSearchRange, FilterAlly | FilterNoBuilding | FilterCompleted)) {
 								Point16 target_pos{
 									.x = u16(target_center_pos.x + (pos.x - target->position.x)),
 									.y = u16(target_center_pos.y + (pos.y - target->position.y)),
@@ -2131,6 +2120,10 @@ namespace hooks {
 								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, target->position.x, target->position.y, unit->player);
 								bw::teleport_to_point(target, target_pos);
 								bw::add_unit_overlay(target, ImageId::LegionnaireTeleportEffect);
+
+								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
+								bw::teleport_to_point(unit, target_center_pos);
+								bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 							}
 							unit->unfreeze();
 						} break;
@@ -2144,7 +2137,7 @@ namespace hooks {
 					bool can_fire = !unit->ground_weapon_cooldown && !(unit->status & UnitStatus::Burrowed);
 					WeaponId::Enum weapon_id = WeaponId::OkrimniliskRelentlessTendrils;
 					if (is_moving && can_fire) {
-						FireMultipleOptions options = {};
+						FireMultipleOpts options = {};
 						options.ignore_main = false;
 						options.use_weapon_factor = true;
 						if (fire_multiple(unit, weapon_id, 1, FilterEnemy | FilterNoAir, options)) {
@@ -2154,10 +2147,7 @@ namespace hooks {
 					}
 				}
 				if (bw::unit_can_fire_secondary_weapon(unit)) {
-					FireMultipleOptions options = {};
-					options.use_weapon_factor = false;
-					options.apply_cooldown = false;
-					if (fire_multiple(unit, WeaponId::OkrimniliskOmnispores, 0, FilterEnemy, options)) {
+					if (fire_multiple(unit, WeaponId::OkrimniliskOmnispores, 0, FilterEnemy, {.fire_opts = {.apply_cooldown = false}, .use_weapon_factor = false})) {
 						unit->sprite->create_top_overlay(ImageId::OkrimniliskOmnisporesFire);
 						u32 sound_id = bw::rand_between(SoundId::SpirtithWeaponfire01, SoundId::SpirtithWeaponfire03);
 						helper::play_sound_from_unit(sound_id, unit, 1, 0);

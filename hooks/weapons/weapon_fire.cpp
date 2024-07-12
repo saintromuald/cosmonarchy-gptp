@@ -13,6 +13,13 @@
 #include "weapon_spellhit.h"
 #include "weapon_cooldown.h"
 
+namespace {
+
+typedef void(__stdcall* GetWeaponHitPosFunc)(Unit* unit, s32* x, s32* y);
+GetWeaponHitPosFunc const get_weapon_hit_pos = (GetWeaponHitPosFunc)0x004762C0;
+
+}
+
 static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit) {
 	if (unit->status & UnitStatus::Invincible) {
 		return false;
@@ -86,12 +93,48 @@ Point16 make_launch_pos(Point16 unit_position, Point8 offset) {
 	return unit_position;
 }
 
-u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, Point16 other_pos) {
+static u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source_pos, Point16 other_pos) {
 	Point16 edge_point = bw::get_rect_edge_point_towards(unit_pos, units_dat::unit_bounds[unit_id], other_pos);
 	return bw::distance_between(source_pos, edge_point);
 }
 
-Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const FireBulletOptions& options) {
+static std::optional<Point16> get_launch_pos(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponOffsets* offsets) {
+    auto behavior = weapons_dat::behavior[weapon_id];
+    if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) {
+        behavior = WeaponBehavior_AppearOnTargetSite;
+    }
+	
+    if (behavior == WeaponBehavior_AppearOnTargetUnit) {
+        if (!target.unit) {
+			return {};
+        }
+
+		if (target == unit->order_target) {
+            s32 x = 0;
+            s32 y = 0;
+            get_weapon_hit_pos(unit, &x, &y);
+            return Point16(x, y);
+		} else {
+			return target.unit ? target.unit->position : target.pt;
+		}
+    }
+
+	if (behavior == WeaponBehavior_AppearOnTargetSite) {
+		return target.pt;
+    }
+
+    if (offsets) {
+        return make_launch_pos(unit->position, next_bullet_offset(unit, offsets));
+    }
+
+    s32 forward_offset = weapons_dat::forward_offset[weapon_id];
+    s32 vertical_offset = weapons_dat::vertical_offset[weapon_id];
+    s32 x = unit->position.x + bw::get_polar_x(forward_offset, unit->current_direction_1);
+    s32 y = unit->position.y + bw::get_polar_y(forward_offset, unit->current_direction_1) - vertical_offset;
+    return Point16(x, y);
+}
+
+Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const FireBulletOpts& opts) {
 	if (!unit->sprite) {
 		return 0;
 	}
@@ -104,15 +147,14 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const F
 		target.pt.y = unit_ext->values[ValueDiademTargetPosY];
 	}
 
-	Point16 launch_pos = unit->position;
-	if (weapons_dat::behavior[weapon_id] == WeaponBehavior_AppearOnTargetUnit) {
-		launch_pos = target.pt;
+	auto offsets = !opts.ignore_weapon_offsets ? get_weapon_offsets(weapon_id) : nullptr;
+	auto maybe_launch_pos = get_launch_pos(unit, weapon_id, target, offsets);
+	if (!maybe_launch_pos) {
+		return 0;
 	}
-	auto* offsets = get_weapon_offsets(weapon_id);
-	if (offsets && !options.ignore_weapon_offsets) {
-		launch_pos = make_launch_pos(launch_pos, next_bullet_offset(unit, offsets));
-	}
-	if (!options.ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
+
+	Point16 launch_pos = *maybe_launch_pos;
+	if (!opts.ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 		Vec32f unit_dir = bw::dir_between(unit->position, target.pt);
 		Vec32f dir = bw::dir_between(launch_pos, target.pt);
 
@@ -143,10 +185,10 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const F
 	s32 angle = bw::get_angle(launch_pos.x, launch_pos.y, target.pt.x, target.pt.y);
 	Target original_target = unit->order_target;
 	unit->order_target = target;
-	Bullet* bullet = create_bullet_ex(weapon_id, unit, launch_pos.x, launch_pos.y, unit->player, angle, options.apply_cooldown);
+    Bullet* bullet = create_bullet_ex(weapon_id, unit, launch_pos.x, launch_pos.y, unit->player, angle, opts.apply_cooldown);
 	unit->order_target = original_target;
 	if (bullet) {
-		if (options.dont_follow || weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
+		if (opts.dont_follow || weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
 			bw::set_bullet_target_absolute(bullet, target);
 		} else {
 			bw::set_bullet_target_follow(bullet, target);
@@ -156,9 +198,9 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const F
 			unit_ext->values[ValueDiademTargeting] = false;
 			unit->order_target.unit = unit_ext->units[UnitDiademTarget]; // Restore original target
 		}
-		if (offsets && unit_ext->values[offsets->value_id] < offsets->fake_count) {
-			bullet->hit_flags |= 0x1;
-		}
+        if (offsets && unit_ext->values[offsets->value_id] < offsets->fake_count) {
+            bullet->hit_flags |= 0x1;
+        }
 	}
 	return bullet;
 }
@@ -282,16 +324,16 @@ void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, s32 angl
 	}
 }
 
-static bool internal_fired_stagger(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options, Unit* fired_at) {
+static bool internal_fired_stagger(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOpts& opts, Unit* fired_at) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	auto& blacklist = unit_ext->unit_vectors[UnitVectorStaggerBlacklist];
 
 	bool apply_cooldown = false;
 	if (fired_at) {
 		blacklist.push_back(fired_at);
-		unit->ground_weapon_cooldown = options.stagger;
-		unit->air_weapon_cooldown = options.stagger;
-		unit_ext->timers[TimerClearStaggerBlacklist] = options.stagger + 6; // Ideally we would get attack animation time instead of hardcoding 6. -Veeq7
+		unit->ground_weapon_cooldown = opts.stagger;
+		unit->air_weapon_cooldown = opts.stagger;
+		unit_ext->timers[TimerClearStaggerBlacklist] = opts.stagger + 6; // Ideally we would get attack animation time instead of hardcoding 6. -Veeq7
 		unit_ext->values[ValueStaggerWeaponId] = weapon_id;
 		unit_ext->values[ValueStaggerCount] += 1;
 		if (max_targets && unit_ext->values[ValueStaggerCount] >= max_targets) {
@@ -311,23 +353,23 @@ static bool internal_fired_stagger(Unit* unit, WeaponId::Enum weapon_id, u32 max
 	return fired_at != 0;
 }
 
-bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOptions& options) {
-	u32 max_attack_range = options.range_overwrite ? options.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
-	u32 factor = options.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
+bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOpts& opts) {
+	u32 max_attack_range = opts.range_overwrite ? opts.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
+	u32 factor = opts.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
 
-	auto can_fire_at = [unit, weapon_id, &options](Unit* target) {
-		u32 attack_range = options.range_overwrite ? options.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, target);
+	auto can_fire_at = [unit, weapon_id, &opts](Unit* target) {
+		u32 attack_range = opts.range_overwrite ? opts.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, target);
 	    return unit->is_target_within_min_range(target, attack_range);
 	};
 
 	UnitExt* unit_ext = get_unit_ext(unit);
-	bool has_stagger = options.stagger >= 0;
+	bool has_stagger = opts.stagger >= 0;
 	auto& blacklist = unit_ext->unit_vectors[UnitVectorStaggerBlacklist];
-	bool apply_cooldown = has_stagger ? false : options.apply_cooldown;
+	bool apply_cooldown = has_stagger ? false : opts.fire_opts.apply_cooldown;
 
 	Unit* fired_at = 0;
 	Unit* order_target_unit = unit->order_target.unit;
-	if (!options.ignore_main
+	if (!opts.ignore_main
 	        && order_target_unit
 	        && unit->main_order_id != OrderId::Follow
 	        && unit->main_order_id != OrderId::Patrol
@@ -345,9 +387,9 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 					if (bullet) {
 						fired_at = order_target_unit;
 						BulletExt* bullet_ext = get_bullet_ext(bullet);
-						bullet_ext->divisor_multiplier = options.divisor_multiplier;
+						bullet_ext->divisor_multiplier = opts.divisor_multiplier;
 						if (has_stagger) {
-							return internal_fired_stagger(unit, weapon_id, max_targets, filters, options, fired_at);
+							return internal_fired_stagger(unit, weapon_id, max_targets, filters, opts, fired_at);
 						}
 					}
 				}
@@ -356,11 +398,11 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 	}
 
 	EntryArray<Unit> targets;
-	if (options.center_on_target) {
+	if (opts.center_on_target) {
 		if (!order_target_unit) {
 			return fired_at != 0;
 		}
-		targets = g_unit_search.radial(order_target_unit->position, options.center_on_target_range_overwrite ? options.center_on_target_range_overwrite : max_attack_range);
+		targets = g_unit_search.radial(order_target_unit->position, opts.center_on_target_range_overwrite ? opts.center_on_target_range_overwrite : max_attack_range);
 	} else {
 		Box32 area = {
 			unit->get_left()   - max_attack_range - 8 * 32, // We can't account for size of all possible other units, but we want border to border search,
@@ -373,10 +415,8 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 	targets.filter(unit, filters);
 	Point16 sort_center = order_target_unit ? order_target_unit->position : unit->position;
 	targets.sort_by_distance(sort_center);
-
-	u32 count = targets.count();
-	if (max_targets && count > max_targets) {
-		count = max_targets;
+	if (max_targets) {
+        targets.take(max_targets);
 	}
 	
 	for (Unit* target : targets) {
@@ -397,24 +437,18 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 			if (bullet) {
 				fired_at = target;
 				BulletExt* bullet_ext = get_bullet_ext(bullet);
-				bullet_ext->divisor_multiplier = options.divisor_multiplier;
+				bullet_ext->divisor_multiplier = opts.divisor_multiplier;
 				if (has_stagger) {
-					return internal_fired_stagger(unit, weapon_id, max_targets, filters, options, fired_at);
+					return internal_fired_stagger(unit, weapon_id, max_targets, filters, opts, fired_at);
 				}
 			}
 		}
 	}
 
 	if (has_stagger) {
-		return internal_fired_stagger(unit, weapon_id, max_targets, filters, options, fired_at);
+		return internal_fired_stagger(unit, weapon_id, max_targets, filters, opts, fired_at);
 	}
 	return fired_at != 0;
-}
-
-namespace
-{
-	typedef void(__stdcall* GetWeaponHitPosFunc)(Unit* unit, s32* x, s32* y);
-	GetWeaponHitPosFunc const get_weapon_hit_pos = (GetWeaponHitPosFunc)0x004762C0;
 }
 
 namespace hooks {
@@ -425,32 +459,18 @@ namespace hooks {
 			return;
 		}
 
+        u8 behavior = weapons_dat::behavior[weapon_id];
+        if (behavior == WeaponBehavior_AppearOnTargetUnit) {
+            if (!unit->order_target.unit) {
+                return;
+            }
+        }
+
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
 		unit_ext->values[ValueAI_PreventTargeting] = 0;
 		u32 index = unit_ext->values[ValueWeaponFireIndex]++;
         unit_ext->values[ValueWeaponBulletLocalIndex] = 0;
-
-		// Retrieve the spawning position for the bullet.
-		s32 x = 0;
-		s32 y = 0;
-		u8 behavior = weapons_dat::behavior[weapon_id];
-		if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) {
-			behavior = WeaponBehavior_AppearOnTargetSite;
-		}
-		if (behavior == WeaponBehavior_AppearOnTargetUnit) {
-			if (!unit->order_target.unit) {
-				return;
-			}
-			get_weapon_hit_pos(unit, &x, &y);
-		} else if (behavior == WeaponBehavior_AppearOnTargetSite) {
-			x = unit->order_target.pt.x;
-			y = unit->order_target.pt.y;
-		} else {
-			s32 forward_offset = weapons_dat::forward_offset[weapon_id];
-			x = unit->position.x + bw::get_polar_x(forward_offset, unit->current_direction_1);
-			y = unit->position.y + bw::get_polar_y(forward_offset, unit->current_direction_1) - weapons_dat::vertical_offset[weapon_id];
-		}
 
 		// Cloaked units - decloak
 		// Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
@@ -613,9 +633,11 @@ namespace hooks {
 					case WeaponId::CherbrathalorVenemousBursts: {
 						// Crushing Tide - Cherbrathalor
 						fire_multiple(unit, weapon_id, 3, FilterEnemy, {
+							.fire_opts = {
+                                .apply_cooldown = true,
+                            },
                             .ignore_main = false,
                             .use_weapon_factor = false,
-                            .apply_cooldown = true,
                             .range_overwrite = 0,
                             .divisor_multiplier = 1,
                             .stagger = -1,
@@ -633,9 +655,11 @@ namespace hooks {
 					case WeaponId::SkortrithColonySkortraTendril: {
 						fire_bullet(unit, weapon_id, unit->order_target);
 						fire_multiple(unit, weapon_id, 2, FilterEnemy, {
+							.fire_opts = {
+                                .apply_cooldown = false,
+                            },
                             .ignore_main = true,
                             .use_weapon_factor = false,
-                            .apply_cooldown = false,
                             .divisor_multiplier = 2,
                             .stagger = -1,
                             .center_on_target = true,

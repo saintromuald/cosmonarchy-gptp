@@ -3,10 +3,12 @@
 #pragma pack(1)
 
 struct Unit;
-struct Target
-{
-  Point16       pt;
-  Unit*         unit;
+
+struct Target {
+    Point16 pt;
+    Unit*   unit;
+
+    bool operator==(const Target& other) const = default;
 };
 
 #pragma pack()
