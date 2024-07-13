@@ -1008,17 +1008,22 @@ s32 spread_clarion_damage(const hooks::WeaponDamageData& data, f32 factor) {
 		damage_to_spread -= missing_damage;
 	}
 
-	if (damage_to_spread > 0) {
-		auto links = get_clarion_links(target); // Has to be copy
-		s32 damage_per_unit = damage_to_spread / links.size();
-		Unit* damage_origin = data.attacker ? data.attacker : target;
-		for (Unit* unit : links) {
-			s32 unit_damage = std::min(damage_per_unit, unit->shields);
-			damage -= unit_damage;
-			link_damage(unit, unit_damage, bw::get_angle(damage_origin->position, unit->position), data);
-		}
+	if (damage_to_spread <= 0) {
+		return damage;
 	}
 
+    auto links = get_clarion_links(target); // Has to be copy
+	if (links.empty()) {
+		return damage;
+	}
+
+    s32 damage_per_unit = damage_to_spread / links.size();
+    Unit* damage_origin = data.attacker ? data.attacker : target;
+    for (Unit* unit : links) {
+        s32 unit_damage = std::min(damage_per_unit, unit->shields);
+        damage -= unit_damage;
+        link_damage(unit, unit_damage, bw::get_angle(damage_origin->position, unit->position), data);
+    }
 	return damage;
 }
 
