@@ -916,18 +916,19 @@ namespace hooks {
 				unit_ext->values[ValueHarvesterActivity] = 0;
 				continue;
 			}
+
 			Unit* target = unit->worker.target_resource.unit;
 			if (!target) {
 				unit_ext->values[ValueHarvesterActivity] = 0;
 				continue;
 			}
-			
 			UnitExt* target_ext = get_unit_ext(target);
 			target_ext->values[ValueAssignedHarvesters] += 1;
 			if (unit->unit_ai && unit->unit_ai->type == AiType::Worker &&
 					unit->unit_ai->worker_ai.target_resource == AiTargetResource_Gas) {
 				target_ext->values[ValueAssignedAiGasHarvesters] += 1;
 			}
+
 			if (!helper::is_target_within_min_range(unit, 10, target) && !helper::is_unit_movable(unit)) {
 				unit_ext->values[ValueHarvesterActivity] = 0;
 				continue;
@@ -936,11 +937,11 @@ namespace hooks {
 			if (unit->worker.is_harvesting) {
 				unit_ext->values[ValueHarvesterActivity] += 1;
 			} else {
-				unit_ext->values[ValueHarvesterActivity] = 1;
-			}
-			if (bw::harvester_is_active(unit) || bw::harvester_is_waiting(unit)) {
 				// Always consider waiting workers active, since it's almost never optimal to triple harvest a node,
 				// when you can double harvest another one, and that's what otherwise will often happen
+				unit_ext->values[ValueHarvesterActivity] = 1;
+			}
+			if (bw::harvester_is_active(unit, target)) {
 				target_ext->values[ValueActiveHarvesters] += 1;
 			}
 		}
