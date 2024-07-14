@@ -135,15 +135,20 @@ namespace hooks {
 			}
 			if (!bw::is_zerg_egg_new(unit, true, false)) {
 				helper::order_new_unit_to_rally(unit, factory);
+				unit->rally = {};
 				if (twin_unit) {
 					helper::order_new_unit_to_rally(twin_unit, factory);
+					twin_unit->rally = {};
 				}
 			}
 			helper::force_order_done(unit);
 			unit->connected_unit = unit_ext->units[UnitMorphConnectedUnit];
-			if (!unit_id_is_larva(unit->id)) {
-				helper::update_buttonset();
-			}
+
+			// TODO: Run this function only for whoever selects this unit. Confirm that this function is actually the right function to run.
+			// Fixes the issue where the cancel button persists on a unit when you select an egg through the birth sequence. -Pr0nogo
+		//	if (!unit_id_is_larva(unit->id)) {
+		//		helper::update_buttonset();
+		//	}
 		}
 	}
 
