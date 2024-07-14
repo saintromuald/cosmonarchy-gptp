@@ -381,7 +381,7 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 			return false; // This is stupid, but the unit_flag_match handling causes tism with entering transports. Should make more elegant later. -Pr0nogo
 		}
 		if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
-			if (!(has_stagger && std::find(blacklist.begin(), blacklist.end(), order_target_unit) != blacklist.end())) {
+			if (!has_stagger || !std::ranges::contains(blacklist, order_target_unit)) {
 				for (u32 i = 0; i < factor; i++) {
 					Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), {.apply_cooldown = apply_cooldown});
 					if (bullet) {
@@ -392,6 +392,9 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 							return internal_fired_stagger(unit, weapon_id, max_targets, filters, opts, fired_at);
 						}
 					}
+				}
+				if (max_targets) {
+					max_targets -= 1;
 				}
 			}
 		}
@@ -415,20 +418,18 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 	targets.filter(unit, filters);
 	Point16 sort_center = order_target_unit ? order_target_unit->position : unit->position;
 	targets.sort_by_distance(sort_center);
-	if (max_targets) {
-        targets.take(max_targets);
-	}
 	
 	for (Unit* target : targets) {
 		if  (target == unit
 		||   target == order_target_unit
 		||   bw::is_allied_to(unit->player, target->player)
 		||  !unit->can_attack_target(target)
-		||  !can_fire_at(target)) {
+		||  !can_fire_at(target)
+		||  !max_targets) {
 			continue;
 		}
 
-		if (has_stagger && std::ranges::find(blacklist, target) != blacklist.end()) {
+		if (has_stagger && std::ranges::contains(blacklist, target)) {
 			continue;
 		}
 
@@ -442,6 +443,9 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 					return internal_fired_stagger(unit, weapon_id, max_targets, filters, opts, fired_at);
 				}
 			}
+            if (max_targets) {
+                max_targets -= 1;
+            }
 		}
 	}
 
@@ -628,7 +632,7 @@ namespace hooks {
 					case WeaponId::IzirokorEnergizedBioplasma:
 					case WeaponId::KonviliskSowingSpines: {
 						// Crushing Tide - Tosgrilisk, Izirokor, Konvilisk
-						fire_multiple(unit, weapon_id, 2, FilterEnemy, {});
+						fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
 					} break;
 					case WeaponId::CherbrathalorVenemousBursts: {
 						// Crushing Tide - Cherbrathalor
