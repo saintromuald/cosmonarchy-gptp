@@ -420,12 +420,12 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 	targets.sort_by_distance(sort_center);
 	
 	for (Unit* target : targets) {
-		if  (target == unit
-		||   target == order_target_unit
-		||   bw::is_allied_to(unit->player, target->player)
-		||  !unit->can_attack_target(target)
-		||  !can_fire_at(target)
-		||  !max_targets) {
+		if (target == unit
+		||  target == order_target_unit
+		||  bw::is_allied_to(unit->player, target->player)
+		|| !unit->can_attack_target(target)
+		|| !can_fire_at(target)
+		||(!has_stagger && !max_targets)) {
 			continue;
 		}
 
