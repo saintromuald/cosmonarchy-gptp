@@ -564,11 +564,13 @@ namespace hooks {
 
 		Unit* townhall = find_best_return_cargo_target(worker);
 		Unit* best_node = 0;
-		s32 best_worker_count = get_unit_ext(current_node)->values[ValueActiveHarvesters];
-		if (bw::harvester_is_active(worker)) {
-			best_worker_count -= 1; // we don't want to count the current worker
-		}
 		u32 best_distance = 0; // we don't want to change the current node on distance alone
+
+		UnitExt* current_node_ext = get_unit_ext(current_node);
+		s32 best_worker_count = current_node_ext->values[ValueActiveHarvesters];
+        if (bw::harvester_is_active(worker, current_node)) {
+            best_worker_count -= 1; // we don't want to count the current worker
+        }
 
 		for (Unit* node : g_unit_search.radial(current_node->position, 8 * 32)) {
 			if (node == current_node || !unit_id_is_minerals(node->id)) {
@@ -611,7 +613,7 @@ namespace hooks {
 			if (better_node) {
 				current_node_ext->values[ValueAssignedHarvesters] -= 1;
 				UnitExt* worker_ext = get_unit_ext(worker);
-				if (bw::harvester_is_active(worker)) {
+				if (bw::harvester_is_active(worker, current_node)) {
 					current_node_ext->values[ValueActiveHarvesters] -= 1; // we don't want to count the current worker
 				}
 				worker_ext->values[ValueHarvesterActivity] = 0;
