@@ -99,6 +99,7 @@ void load_config() {
 	load_field(yaml, "show-team-ui-apm", g_config.show_team_ui_apm);
 	load_field(yaml, "show-team-ui-names", g_config.show_team_ui_names);
 	load_field(yaml, "show-team-ui-self", g_config.show_team_ui_self);
+	load_field(yaml, "show-ingame-global-queue", g_config.show_ingame_global_queue);
 
 	// Witness and replay UI
 	load_field(yaml, "show-replay-progress-bar", g_config.show_replay_progress_bar);
@@ -226,6 +227,7 @@ void save_config() {
 	write_field(yaml, "show-team-ui-apm", g_config.show_team_ui_apm);
 	write_field(yaml, "show-team-ui-names", g_config.show_team_ui_names);
 	write_field(yaml, "show-team-ui-self", g_config.show_team_ui_self);
+	write_field(yaml, "show-ingame-global-queue", g_config.show_ingame_global_queue);
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Witness and replay UI");

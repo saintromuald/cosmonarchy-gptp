@@ -5,17 +5,17 @@
 #define ResSize 32//PLAYABLE_PLAYER_COUNT * 4
 #define RowSize 16
 
-extern char stat_res_resources_buffer[ResSize][16];
-extern char stat_res_production_buffer[PlayerLimit][RowSize][4];
-extern s32 stat_res_displayed_gas[PlayerLimit];						// Reformat of "unknown_68C22C"
-extern s32 stat_res_displayed_minerals[PlayerLimit];				// Reformat of "unknown_68C230"
+inline char stat_res_resources_buffer[ResSize][16];
+inline char stat_res_production_buffer[PlayerLimit][RowSize][4];
+inline s32 stat_res_displayed_gas[PlayerLimit];						// Reformat of "unknown_68C22C"
+inline s32 stat_res_displayed_minerals[PlayerLimit];				// Reformat of "unknown_68C230"
 struct ProductionArrays {
 	u16 types[PlayerLimit][RowSize];
 	u16 timers[PlayerLimit][RowSize];
 	u8 counts[PlayerLimit][RowSize];
 };
-extern ProductionArrays production;
-extern graphics::Font* font_stat_res;
+inline ProductionArrays g_production;
+inline graphics::Font* font_stat_res;
 
 namespace hooks
 {

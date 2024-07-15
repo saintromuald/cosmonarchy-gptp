@@ -9,14 +9,6 @@
 #include "player_color.h"
 #include "hooks/interface/uifeatures/ui_features.h"
 
-char stat_res_resources_buffer[ResSize][16];
-char stat_res_production_buffer[PlayerLimit][RowSize][4];
-s32 stat_res_displayed_gas[PlayerLimit];
-s32 stat_res_displayed_minerals[PlayerLimit];
-ProductionArrays production;
-graphics::Font* font_stat_res;
-extern u8 tFontGame_ImageData[];
-
 namespace hooks
 {
 	// Until further notice, these hooks are all for the shared supply rewrite - Pr0nogo
@@ -448,7 +440,7 @@ namespace hooks
 		u32 i_0;
 
 		for (i_0 = 0; i_0 < RowSize; ++i_0) {
-			u32 remaining_time = (u16)production.timers[player][i_0];
+			u32 remaining_time = (u16)g_production.timers[player][i_0];
 
 			if (remaining_time == 65535) {
 				break;
@@ -459,8 +451,8 @@ namespace hooks
 			}
 
 			x_offset -= 15;
-			u16 user_type = production.types[player][i_0];
-			u8 user_count = production.counts[player][i_0];
+			u16 user_type = g_production.types[player][i_0];
+			u8 user_count = g_production.counts[player][i_0];
 			u32 user_value = (user_type << 20) | user_offset | user_count;
 
 			if (dialog->non_user_value != user_value) {
@@ -591,21 +583,15 @@ namespace hooks
 		if (dialog->control_type) {
 			dialog = dialog->parent;
 		}
-
 		dialog = dialog->child_dialog;
 
-		do { // This while loop is not necessary with a properly organized bin file, but keep it for safety. -DF
+		while (dialog->index != 1) { // This while loop is not necessary with a properly organized bin file, but keep it for safety. -DF
 			if (!dialog) {
 				return; // The original function would set dialog to null and break out of the loop. Surely that can't be good. -DF
 			}
 
-			if (dialog->index != 1) {
-				dialog = dialog->next;
-				continue;
-			}
-
-			break;
-		} while (true);
+            dialog = dialog->next;
+		}
 
 		g_graphics.reset_stat_res_graphics();
 		u32 local_player = g_local_nation_id;
@@ -629,7 +615,7 @@ namespace hooks
 			draw_player_stats(&dialog, &pos, local_player,
 				false,														// use_player_color
 				g_config.show_team_ui_self && g_config.show_team_ui_apm,	// can_show_apm
-				false,														// show_production
+				g_config.show_ingame_global_queue,							// show_production
 				g_config.show_team_ui_self && g_config.show_team_ui_names,	// show_name
 				g_config.show_team_ui_self,									// show_color_box
 				!*g_is_holding_alt);										// count_in_production
@@ -639,15 +625,14 @@ namespace hooks
 					const auto& cm_player = g_globals->players[player];
 					u32 player_type = g_player_table[player].type;
 					if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && player != local_player && !cm_player.witness_mode
-						&& !cm_player.hide_in_team_ui && bw::is_allied_to(player, local_player))
-					{
+							&& !cm_player.hide_in_team_ui && bw::is_allied_to(player, local_player)) {
 						draw_player_stats(&dialog, &pos, player,
-							true,							// use_player_color
-							g_config.show_team_ui_apm,		// can_show_apm
-							false,							// show_production
-							g_config.show_team_ui_names,	// show_name
-							true,							// show_color_box
-							!*g_is_holding_alt);			// count_in_production
+							true,							   // use_player_color
+							g_config.show_team_ui_apm,		   // can_show_apm
+							g_config.show_ingame_global_queue, // show_production
+							g_config.show_team_ui_names,	   // show_name
+							true,							   // show_color_box
+							!*g_is_holding_alt);			   // count_in_production
 					}
 				}
 			}
@@ -664,7 +649,6 @@ namespace hooks
 					}
 
 					child = dialog->child_dialog; // dialog_production
-
 					for (u32 i_0 = RowSize; i_0; --i_0) {
 						if (child->flags & BinDlgFlags::Visible) {
 							helper::hide_dialog(child);
@@ -868,7 +852,7 @@ namespace hooks
 		__asm {
 			PUSHAD
 			MOV		EAX, 0xE400E4//UnitId::None
-			MOV		EDI, offset production
+			MOV		EDI, offset g_production
 			//production.types
 			MOV		ECX, 64//(PlayerLimit * RowSize * 2) / 4, or (sizeof(production.types) / 4)
 			REP STOSD
@@ -926,7 +910,7 @@ namespace hooks
 			JE		offset _ret					//		return;
 			MOVZX	EAX, AL						//	u32 player_id = (u8)unit->player;
 			SHL		EAX, 4
-			LEA		EDX, [EAX * 2 + production.types]
+			LEA		EDX, [EAX * 2 + g_production.types]
 			XOR		ECX, ECX					//	u32 i_0 = 0;
 
 			_loop:								//	do {
@@ -943,10 +927,10 @@ namespace hooks
 			MOV		[EDX + ECX * 2], BX
 
 			_addCount:
-			INC		byte ptr [EAX + ECX + production.counts]//++production.counts[player_id][i_0];
+			INC		byte ptr [EAX + ECX + g_production.counts]//++production.counts[player_id][i_0];
 			SHR		EBX, 16						//	(Restore remaining_build_time.)
 			SHL		EAX, 1
-			LEA		EDX, [EAX + ECX * 2 + production.timers]
+			LEA		EDX, [EAX + ECX * 2 + g_production.timers]
 			MOV		AX, [EDX]
 			CMP		BX, AX
 			JAE		offset _ret					//	if (remaining_build_time < production.timers[player_id][i_0])

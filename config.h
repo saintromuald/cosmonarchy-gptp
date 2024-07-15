@@ -33,6 +33,7 @@ struct Config {
 	bool show_team_ui_apm = true;
 	bool show_team_ui_names = false;
 	bool show_team_ui_self = false;
+	bool show_ingame_global_queue = false;
 
 	// Witness and replay UI
 	bool show_replay_progress_bar = true;
