@@ -572,7 +572,7 @@ namespace hooks {
             best_worker_count -= 1; // we don't want to count the current worker
         }
 
-		for (Unit* node : g_unit_search.radial(current_node->position, 8 * 32)) {
+		for (Unit* node : g_unit_search.radial(current_node->position, 10 * 32)) {
 			if (node == current_node || !unit_id_is_minerals(node->id)) {
 				continue;
 			}
