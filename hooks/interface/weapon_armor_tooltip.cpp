@@ -229,8 +229,7 @@ const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 
 	return buffer;
 }
 
-namespace hooks
-{
+namespace hooks {
 	// Returns the C-string for the tooltip text of the unit's weapon grp_frame.
 	const char* get_weapon_tooltip_string(WeaponId::Enum weapon_id, Unit* unit) {
 		return get_damage_tootlip_string(weapon_id, unit, weapons_dat::label[weapon_id]);
@@ -414,6 +413,8 @@ namespace hooks
 		add_status(statuses, "Swarming Omen", -1, 1, unit_ext->timers[TimerSwarmingOmenDebuff], TimerType::Gptp);
 		add_status(statuses, "Mitosal Fog", -1, 1, unit_ext->timers[TimerNathreliskMitosalFog], TimerType::Gptp);
 		add_status(statuses, "Awaiting Injection", -1, 1, unit_ext->timers[TimerStimpackDelay], TimerType::Gptp);
+		add_status(statuses, "Vengeance", -1, 1, unit_ext->timers[TimerAvenge], TimerType::Gptp);
+		add_status(statuses, "Ascension", -1, 1, unit_ext->timers[TimerAscend], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
