@@ -265,26 +265,6 @@ void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& p
 		placeholder.should_request = true;
 		placeholder.priority = 180;
 		placeholder.yield_score = 0;
-
-		u32 resarea = bw::get_closest_resarea(placeholder.position);
-		for (Unit* unit : g_unit_search.radial(placeholder.position, 12 * 32)) {
-			if (!unit_id_is_resource_node(unit->id, false)) {
-				continue;
-			}
-			if (unit->building.resource.resarea != resarea) {
-				continue;
-			}
-
-			u32 score = 10000 * get_harvest_amount(unit);
-			if (unit_id_is_uncapped_gas_node(unit->id)) {
-				score *= 3;
-			}
-			u32 distance = bw::distance_between(placeholder.position, unit->position) / 32;
-			if (distance) {
-				score /= distance;
-			}
-			placeholder.yield_score += score;
-		}
 	}
 
 	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);
@@ -421,6 +401,29 @@ void AiLayouts::init_placeholder(AiTown& town, AiPlaceholder& placeholder) {
 	placeholder.inited = true;
 	if (units_dat::base_property[placeholder.unit_id] & UnitProperty::Building) {
 		bw::send_gptp_aise_command((Unit*)&placeholder, (Unit*)&town, GptpId::SetBaseLayout, town.player, 0, 0);
+	}
+
+	if (placeholder.unit_id == UnitId::TownCenterMarker) {
+		placeholder.yield_score = 0;
+        u32 resarea = bw::get_closest_resarea(placeholder.position);
+        for (Unit* unit : g_unit_search.radial(placeholder.position, 12 * 32)) {
+            if (!unit_id_is_resource_node(unit->id, false)) {
+                continue;
+            }
+            if (unit->building.resource.resarea != resarea) {
+                continue;
+            }
+
+            u32 score = 10000 * get_harvest_amount(unit);
+            if (unit_id_is_uncapped_gas_node(unit->id)) {
+                score *= 3;
+            }
+            u32 distance = bw::distance_between(placeholder.position, unit->position) / 32;
+            if (distance) {
+                score /= distance;
+            }
+            placeholder.yield_score += score;
+        }
 	}
 }
 
