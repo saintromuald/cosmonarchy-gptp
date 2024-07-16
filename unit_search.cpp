@@ -15,7 +15,7 @@ bool is_rect_in_rect(Box32 inner, Box32 outer) {
 		&& inner.bottom <= outer.bottom;
 }
 
-void reset_search_index() {
+void refresh_search_index() {
 	g_unit_search.reset();
 	for (u32 player = 0; player < PlayerLimit; ++player) {
 		g_seen_unit_search[player].reset();
@@ -23,9 +23,7 @@ void reset_search_index() {
 	g_bullet_search.reset();
 	g_corpse_search.reset();
 	g_effect_search.reset();
-}
 
-void update_search_index() {
 	// Add units
 	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
 		g_unit_search.add(unit, unit->position);

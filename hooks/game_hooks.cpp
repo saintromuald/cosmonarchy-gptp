@@ -628,8 +628,7 @@ namespace hooks {
 		}
 		
 		// Init extended features
-		reset_search_index();
-		update_search_index();
+		refresh_search_index();
 		init_player_data();
 		init_trigger_system();
 		g_ai_layouts.init();
@@ -839,8 +838,7 @@ namespace hooks {
 		bw::set_ingame_loop_state(true); // Needed for bw::random() to work
 		hooks::update_psi_field_providers();
 
-		reset_search_index();
-		update_search_index();
+		refresh_search_index();
 		g_iquare_globals->tick();
 		update_search_index_effects();
 		update_ext_variables();

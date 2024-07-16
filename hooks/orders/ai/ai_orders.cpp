@@ -1526,7 +1526,7 @@ namespace hooks {
 
 	// Hooked to remove a ridicilus condition that would stop AI from expanding in late game and to allow base layouts to control expand order
 	void ai_expand(AiScript* aiscript, u32 block, u32 amount) { // 0045B530
-		default_ai_expansion_block[aiscript->player] = block;
+		g_default_ai_expansion_block[aiscript->player] = block;
 		if (aiscript->town->resarea) { 
 			u32 base_id = g_ai_layouts.ai_get_next_custom_expo(*aiscript->town);
 			if (!base_id || !helper::ai_try_expanding_to(base_id)) {

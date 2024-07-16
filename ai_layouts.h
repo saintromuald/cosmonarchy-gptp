@@ -120,8 +120,8 @@ inline const AiUnitEquivalent equivalents[] = {
 
 inline std::vector<CHKUnit> g_chk_cache;
 
-inline bool show_player_layouts[PlayerLimit];
-inline u32 default_ai_expansion_block[PlayerLimit];
+inline bool g_show_player_layouts[PlayerLimit];
+inline u32 g_default_ai_expansion_block[PlayerLimit];
 
 class AiLayouts {
 public:
@@ -138,6 +138,7 @@ public:
 	bool has_expanding_town(u32 player);
 
 private:
+	void init_first_tick();
 	bool can_build_placeholder(AiTown& town, AiPlaceholder& placeholder);
 	void init_placeholder(AiTown& town, AiPlaceholder& placeholder);
 	void request_placeholder(AiTown& town, TownLayouts& layouts_town, AiPlaceholder& placeholder);
