@@ -11,8 +11,8 @@ static u32 get_unit_priority_class(UnitId::Enum unit_id);
 static u32 get_unit_total_cost(UnitId::Enum unit_id);
 
 void AiLayouts::init() {
-	memset(show_player_layouts, 0, sizeof(show_player_layouts));
-	memset(default_ai_expansion_block, 0, sizeof(default_ai_expansion_block));
+	memset(g_show_player_layouts, 0, sizeof(g_show_player_layouts));
+	memset(g_default_ai_expansion_block, 0, sizeof(g_default_ai_expansion_block));
 	m_player_layouts = {};
 	m_town_layouts = {};
 
@@ -54,7 +54,42 @@ void AiLayouts::init() {
 	}
 }
 
+void AiLayouts::init_first_tick() {
+	for (u32 player = 0; player < PlayerLimit; ++player) {
+        for (auto& placeholder : m_player_layouts[player].placeholders) {
+            if (placeholder.unit_id != UnitId::TownCenterMarker) {
+				continue;
+			}
+
+            placeholder.yield_score = 0;
+            u32 resarea = bw::get_closest_resarea(placeholder.position);
+            for (Unit* unit : g_unit_search.radial(placeholder.position, 12 * 32)) {
+                if (!unit_id_is_resource_node(unit->id, false)) {
+                    continue;
+                }
+                if (unit->building.resource.resarea != resarea) {
+                    continue;
+                }
+
+                u32 score = 10000 * get_harvest_amount(unit);
+                if (unit_id_is_uncapped_gas_node(unit->id)) {
+                    score *= 3;
+                }
+                u32 distance = bw::distance_between(placeholder.position, unit->position) / 32;
+                if (distance) {
+                    score /= distance;
+                }
+                placeholder.yield_score += score;
+            }
+		}
+	}
+}
+
 void AiLayouts::update() {
+	if (g_elapsed_time_frames == 0) {
+		init_first_tick();
+	}
+
 	// Update Layouts Towns
 	for (u32 town_id = 0; town_id < AiTownLimit; ++town_id) {
 		AiTown& town = g_ai_town_array[town_id];
@@ -90,7 +125,7 @@ void AiLayouts::update() {
 				}
 			}
 
-			if (show_player_layouts[town.player]) {
+			if (g_show_player_layouts[town.player]) {
 				bw::printf("Player %u started Town #%u at resarea %u", town.player + 1, town_id, town.resarea);
 			}
 		}
@@ -182,7 +217,7 @@ void AiLayouts::update() {
 				if (can_place_unit(base_unit_id, placeholder.position, player)) {
 					if (!placeholder.requested) {
 						placeholder.requested = true;
-						if (show_player_layouts[town.player]) {
+						if (g_show_player_layouts[town.player]) {
 							bw::printf("Player %u requested %s #%u at resarea %u", player + 1, Unit::get_name(placeholder.unit_id), idx, placeholder.resarea);
 						}
 					}
@@ -211,7 +246,7 @@ void AiLayouts::update() {
 		}
 
 		// Draw layouts
-		if (show_player_layouts[player]) {
+		if (g_show_player_layouts[player]) {
 			s32 idx = -1;
 			for (AiPlaceholder& placeholder : layouts.placeholders) {
 				idx++;
@@ -265,26 +300,6 @@ void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& p
 		placeholder.should_request = true;
 		placeholder.priority = 180;
 		placeholder.yield_score = 0;
-
-		u32 resarea = bw::get_closest_resarea(placeholder.position);
-		for (Unit* unit : g_unit_search.radial(placeholder.position, 12 * 32)) {
-			if (!unit_id_is_resource_node(unit->id, false)) {
-				continue;
-			}
-			if (unit->building.resource.resarea != resarea) {
-				continue;
-			}
-
-			u32 score = 10000 * get_harvest_amount(unit);
-			if (unit_id_is_uncapped_gas_node(unit->id)) {
-				score *= 3;
-			}
-			u32 distance = bw::distance_between(placeholder.position, unit->position) / 32;
-			if (distance) {
-				score /= distance;
-			}
-			placeholder.yield_score += score;
-		}
 	}
 
 	AiUnitEquivalent equivalent = find_unit_equivalent_down(unit_id);

@@ -772,7 +772,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				if (!players[i]) {
 					continue;
 				}
-				show_player_layouts[i] = value;
+				g_show_player_layouts[i] = value;
 			}
 		} else if (parser.equals("set_player_unit_name") && is_local_player) {
 			u32 player = parser.get_player();
@@ -1090,7 +1090,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 							}
 							if (!placeholder.town) {
 								placeholder.town = town;
-								if (show_player_layouts[player]) {
+								if (g_show_player_layouts[player]) {
 									bw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder.unit_id), (u32)idx, placeholder.resarea);
 								}
 							}

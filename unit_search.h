@@ -65,8 +65,7 @@ Box32 clamp_box32(Box32 rect);
 u32 distance_between(Point16 p1, Point16 p2);
 };
 
-void reset_search_index();
-void update_search_index(); // must be done once per frame
+void refresh_search_index(); // must be done once per frame
 void update_search_index_effects(); // must be done once per frame after effects are updated
 
 bool unit_flag_match(Unit* unit, Unit* center = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_unit_ids = {});
@@ -249,8 +248,8 @@ public:
         const u32 x1 = (rect.right + CellPxSize - 1) / CellPxSize;
         const u32 y1 = (rect.bottom + CellPxSize - 1) / CellPxSize;
 
-        for (u32 x = x0; x <= x1; x++) {
-            for (u32 y = y0; y <= y1; y++) {
+        for (u32 x = x0; x < x1; x++) {
+            for (u32 y = y0; y < y1; y++) {
                 Box32 tile_rect = {
                     x * CellPxSize,
                     y * CellPxSize,
@@ -295,8 +294,8 @@ public:
         const u32 y0 = rect.top / CellPxSize;
         const u32 x1 = (rect.right + CellPxSize - 1) / CellPxSize;
         const u32 y1 = (rect.bottom + CellPxSize - 1) / CellPxSize;
-        for (u32 x = x0; x <= x1; x++) {
-            for (u32 y = y0; y <= y1; y++) {
+        for (u32 x = x0; x < x1; x++) {
+            for (u32 y = y0; y < y1; y++) {
                 Point16 tile_center = {
                     x * CellPxSize + CellPxSize / 2,
                     y * CellPxSize + CellPxSize / 2
