@@ -80,6 +80,31 @@ static const char* omnipresence_state_symbol_names[] = {
 };
 C_ASSERT(ARRAY_SIZE(omnipresence_state_symbol_names) == OmnipresenceState_Count);
 
+enum DuopolyState : u8 {
+	DuopolyState_Default,
+	DuopolyState_None,
+
+	DuopolyState_TerranProtoss,
+	DuopolyState_ProtossZerg,
+	DuopolyState_ZergTerran,
+	DuopolyState_All,
+
+	DuopolyState_Count,
+};
+
+// NOTE: This is case insensitive for parsing
+static const char* duopoly_state_symbol_names[] = {
+	"Default",
+	"None",
+
+	"TerranProtoss",
+	"ProtossZerg",
+	"ZergTerran",
+
+	"All",
+};
+C_ASSERT(ARRAY_SIZE(duopoly_state_symbol_names) == DuopolyState_Count);
+
 enum class Faction : u8 {
 	None,
 
@@ -184,6 +209,7 @@ struct CmPlayer {
 	bool disable_burrow;
 	UnitIdBitset disabled_units;
 	OmnipresenceState omnipresence_state;
+	DuopolyState duopoly_state;
 	u32 build_multiplier = 1;
 
 	std::vector<PlayerColor> preferred_colors;
