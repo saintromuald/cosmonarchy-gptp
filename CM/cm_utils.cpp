@@ -106,16 +106,29 @@ void init_omnipresence_state() {
 
 		auto& omni_state = g_globals->players[player].omnipresence_state;
 		if (omni_state == OmnipresenceState_Default) {
-			OmnipresenceState omni_state = OmnipresenceState_None;
+			omni_state = OmnipresenceState_All;
+		}
+	}
+}
+
+void init_duopoly_state() {
+	for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
+		if (g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot) {
+			continue;
+		}
+
+		auto& omni_state = g_globals->players[player].duopoly_state;
+		if (omni_state == DuopolyState_Default) {
+			omni_state = DuopolyState_None;
 			switch (g_player_table[player].race) {
 				case RaceId::Terran: {
-					omni_state = OmnipresenceState_TerranProtoss;
+					omni_state = DuopolyState_TerranProtoss;
 				} break;
 				case RaceId::Protoss: {
-					omni_state = OmnipresenceState_ProtossZerg;
+					omni_state = DuopolyState_ProtossZerg;
 				} break;
 				case RaceId::Zerg: {
-					omni_state = OmnipresenceState_ZergTerran;
+					omni_state = DuopolyState_ZergTerran;
 				} break;
 			}
 		}

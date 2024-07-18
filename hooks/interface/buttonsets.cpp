@@ -670,7 +670,7 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 									break;
 								}
-								if (unit->id != UnitId::Omnivale || g_globals->players[unit->player].omnipresence_state == OmnipresenceState_TerranProtoss) {
+								if (unit->id != UnitId::Omnivale || g_globals->players[unit->player].duopoly_state == DuopolyState_TerranProtoss) {
 									current_button_state = Button_State::Invisible;
 									break;
 								}
@@ -712,7 +712,7 @@ namespace hooks {
 						{
 							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
 								|| unit_id_is_larva(unit->id)
-								|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
+								|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].duopoly_state != DuopolyState_TerranProtoss)) {
 								current_button_state = Button_State::Enabled;
 							} else {
 								current_button_state = Button_State::Invisible;
@@ -787,7 +787,7 @@ namespace hooks {
 					if (current_button->icon_id == IconId::Larva) {
 						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
 							|| unit_id_is_larva(unit->id)
-							|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss)) {
+							|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].duopoly_state != DuopolyState_TerranProtoss)) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
@@ -1114,29 +1114,26 @@ namespace hooks {
 						// As of late 2022, we must force train/build icons for extended unit ids to show up using this very dumb method that
 						// inlines requirements in yet another position. Not sure how to fix! -Pr0nogo
 						switch (unit->id) {
-							case UnitId::Omnivale:
-							{
-								OmnipresenceState omni_state = g_globals->players[unit->player].omnipresence_state;
+							case UnitId::Omnivale: {
+								bool is_omnipresence = bw::get_game_kind() == GameKind_Omnipresence;
+								DuopolyState duopoly_state = g_globals->players[unit->player].duopoly_state;
 								switch (current_button->requirement_var) {
-									case UnitId::TerranMason:
-									{
-										if (omni_state != OmnipresenceState_ProtossZerg) {
+									case UnitId::TerranMason: {
+										if (is_omnipresence || duopoly_state != DuopolyState_ProtossZerg) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
-									case UnitId::ProtossScribe:
-									{
-										if (omni_state != OmnipresenceState_ZergTerran) {
+									case UnitId::ProtossScribe: {
+										if (is_omnipresence || duopoly_state != DuopolyState_ZergTerran) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
-									case UnitId::ZergDroleth:
-									{
-										if (omni_state != OmnipresenceState_TerranProtoss) {
+									case UnitId::ZergDroleth: {
+										if (is_omnipresence || duopoly_state != DuopolyState_TerranProtoss) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Invisible;

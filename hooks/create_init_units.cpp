@@ -37,11 +37,13 @@ u32 get_racial_worker(u32 race_id)
 namespace hooks {
 	void create_initial_melee_buildings(u8 race_id, u32 player) {
 		u32 building_id = get_racial_townhall(race_id);
-		bool is_omni = bw::get_game_kind() == GameKind_Omnipresence
+		GameKind game_kind = bw::get_game_kind();
+		bool is_omnipresence = game_kind == GameKind_Omnipresence
 			&& g_player_table[player].type != PlayerType::Computer
 			&& g_player_table[player].type != PlayerType::ComputerSlot;
+		bool is_duopoly = game_kind == GameKind_Duopoly;
 
-		if (is_omni) {
+		if (is_omnipresence || is_duopoly) {
 			building_id = UnitId::Omnivale;
 		}
 		s32 building_size_x, building_size_y;
@@ -190,13 +192,12 @@ namespace hooks {
 				}
 
 				if (starting_units == 1 || starting_units == 2) {
-					bool is_omni = bw::get_game_kind() == GameKind_Omnipresence
-								&& g_player_table[player].type != PlayerType::Computer
-								&& g_player_table[player].type != PlayerType::ComputerSlot;
-
+					GameKind game_kind = bw::get_game_kind();
+					bool is_omnipresence = game_kind == GameKind_Omnipresence && g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::ComputerSlot;
+					bool is_duopoly = game_kind == GameKind_Duopoly;
 					u32 worker_id = get_racial_worker(*race_id_offset);
 					u8 townhall_id = get_racial_townhall(*race_id_offset);
-					if (is_omni) {
+					if (is_omnipresence || is_duopoly) {
 						townhall_id = UnitId::Omnivale;
 					}
 
@@ -217,76 +218,63 @@ namespace hooks {
 							pos.x += dx;
 							pos.y -= dy;
 
-							if (is_omni) {
-								switch (g_globals->players[player].omnipresence_state)
-								{
-									case OmnipresenceState_All:
-									{
+							if (is_omnipresence) {
+								switch (worker_count) {
+									case 0:
+									case 1: {
+										worker_id = UnitId::TerranMason;
+									} break;
+									case 2:
+									case 3: {
+										worker_id = UnitId::ProtossScribe;
+									} break;
+									case 4:
+									case 5: {
+										worker_id = UnitId::ZergDroleth;
+									} break;
+								}
+							}
+
+							if (is_duopoly) {
+								switch (g_globals->players[player].duopoly_state) {
+									case DuopolyState_TerranProtoss: {
 										switch (worker_count) {
 											case 0:
 											case 1:
-											{
+											case 2: {
 												worker_id = UnitId::TerranMason;
 											} break;
-											case 2:
 											case 3:
-											{
+											case 4:
+											case 5: {
 												worker_id = UnitId::ProtossScribe;
 											} break;
+										}
+									} break;
+									case DuopolyState_ProtossZerg: {
+										switch (worker_count) {
+											case 0:
+											case 1:
+											case 2: {
+												worker_id = UnitId::ProtossScribe;
+											} break;
+											case 3:
 											case 4:
-											case 5:
-											{
+											case 5: {
 												worker_id = UnitId::ZergDroleth;
 											} break;
 										}
 									} break;
-									case OmnipresenceState_TerranProtoss:
-									{
+									case DuopolyState_ZergTerran: {
 										switch (worker_count) {
 											case 0:
 											case 1:
-											case 2:
-											{
+											case 2: {
 												worker_id = UnitId::TerranMason;
 											} break;
 											case 3:
 											case 4:
-											case 5:
-											{
-												worker_id = UnitId::ProtossScribe;
-											} break;
-										}
-									} break;
-									case OmnipresenceState_ProtossZerg:
-									{
-										switch (worker_count) {
-											case 0:
-											case 1:
-											case 2:
-											{
-												worker_id = UnitId::ProtossScribe;
-											} break;
-											case 3:
-											case 4:
-											case 5:
-											{
-												worker_id = UnitId::ZergDroleth;
-											} break;
-										}
-									} break;
-									case OmnipresenceState_ZergTerran:
-									{
-										switch (worker_count) {
-											case 0:
-											case 1:
-											case 2:
-											{
-												worker_id = UnitId::TerranMason;
-											} break;
-											case 3:
-											case 4:
-											case 5:
-											{
+											case 5: {
 												worker_id = UnitId::ZergDroleth;
 											} break;
 										}

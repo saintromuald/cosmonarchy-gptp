@@ -1092,7 +1092,7 @@ bool unit_could_spawn_custom_larva(Unit* unit) {
 	switch (unit->id) {
 		case UnitId::Omnivale:
 		{
-			if (g_globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss) {
+			if (g_globals->players[unit->player].duopoly_state != DuopolyState_TerranProtoss) {
 				return true;
 			}
 		} break;
@@ -1114,9 +1114,8 @@ bool unit_could_spread_custom_creep(Unit* unit) {
 
 	UnitExt* unit_ext = get_unit_ext(unit);
 	switch (unit->id) {
-		case UnitId::Omnivale:
-		{
-			if (g_globals->players[unit->player].omnipresence_state != OmnipresenceState_TerranProtoss) {
+		case UnitId::Omnivale: {
+			if (g_globals->players[unit->player].duopoly_state != DuopolyState_TerranProtoss) {
 				return true;
 			}
 		} break;

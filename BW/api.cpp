@@ -3138,6 +3138,9 @@ GameKind get_game_kind() {
 		case GameType::Uprising:
 			return GameKind_Uprising;
 
+		case GameType::Duopoly:
+			return GameKind_Duopoly;
+
 		case GameType::Debug:
 			return GameKind_Debug;
 	}

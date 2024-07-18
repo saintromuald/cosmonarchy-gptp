@@ -666,6 +666,9 @@ namespace hooks {
 			case GameKind_Omnipresence: {
 				init_omnipresence_state();
 			} break;
+			case GameKind_Duopoly: {
+				init_duopoly_state(); // This runs after create_init_units, meaning the player will not receive 3 of each race's worker. -Pr0nogo
+			} break;
 			case GameKind_Uprising: {
 				g_active_game_mode = std::make_unique<UprisingGameMode>();
 			} break;

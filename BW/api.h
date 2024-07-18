@@ -66,6 +66,7 @@ enum GameKind {
 	GameKind_Massacre,
 	GameKind_TheTurning,
 	GameKind_Uprising,
+	GameKind_Duopoly,
 	GameKind_Debug,
 
 	GameKind_DebugFog,
