@@ -4,6 +4,8 @@
 #include <functional>
 #include <unordered_set>
 
+#include "arena.h"
+
 enum SearchFilter {
 	FilterInvincible			= 1 <<  0,
 	FilterNoAir					= 1 <<  1,
@@ -77,10 +79,16 @@ bool is_rect_in_rect(Box32 inner, Box32 outer);
 template <typename... Ts>
 struct Overloaded : Ts... { using Ts::operator()...; };
 
+inline arena::Arena g_search_arena;
+
 // TODO: rename to SearchResults
 template <typename T>
 class EntryArray {
 public:
+    EntryArray() {
+        m_data.reserve(8);
+    }
+
 	void add(T* data) { m_data.push_back(data); }
 	void clear() { return m_data.clear(); }
 	size_t count() const { return m_data.size(); }
@@ -201,7 +209,7 @@ public:
     }
 
 private:
-	std::vector<T*> m_data;
+    arena::vector<T*> m_data{arena::Allocator<T*>{&g_search_arena}};
 };
 
 template <typename T>
