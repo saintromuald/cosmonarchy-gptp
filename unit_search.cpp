@@ -23,6 +23,7 @@ void refresh_search_index() {
 	g_bullet_search.reset();
 	g_corpse_search.reset();
 	g_effect_search.reset();
+	g_search_arena.reset();
 
 	// Add units
 	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
