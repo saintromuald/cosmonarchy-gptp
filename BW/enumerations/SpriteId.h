@@ -887,6 +887,13 @@ namespace SpriteId
 
 		Corpse_Vorvrokor			= 942,
 
+		Corpse_Manifold				= 945,
+		Corpse_Golem				= 946,
+		Corpse_Idol					= 947,
+		Corpse_Artisan				= 948,
+		Corpse_Witness				= 949,
+		Corpse_Savant				= 950,
+
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
 	};

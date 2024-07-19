@@ -75,7 +75,13 @@ namespace SpriteId {
 			case SpriteId::Corpse_Simulacrum: 
 			case SpriteId::Corpse_Vassal: 
 			case SpriteId::Corpse_Nathrokor:
-			case SpriteId::Corpse_Vorvrokor: {
+			case SpriteId::Corpse_Vorvrokor:
+			case SpriteId::Corpse_Manifold:
+			case SpriteId::Corpse_Golem:
+			case SpriteId::Corpse_Idol:
+			case SpriteId::Corpse_Artisan:
+			case SpriteId::Corpse_Witness:
+			case SpriteId::Corpse_Savant: {
 				return true;
 			} break;
 		}
