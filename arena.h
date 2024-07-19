@@ -5,10 +5,39 @@ namespace bw {
 void printf(const char* format, ...);
 }
 
-namespace arena {
+namespace mem {
 
 class Arena {
 public:
+    template <typename T>
+    struct Allocator {
+        using value_type = T;
+
+        Allocator(Arena* arena) : m_arena{arena} {}
+
+        template <typename Y>
+        Allocator(const Allocator<Y>& other) : m_arena{other.m_arena} {}
+
+        template <typename Y>
+        bool operator==(const Allocator<Y>& other) const { return m_arena == other.m_arena; }
+
+        template <typename Y>
+        bool operator!=(const Allocator<Y>& other) const { return !(*this == other); }
+
+        T* allocate(size_t count) {
+            return (T*)m_arena->allocate(count * sizeof(T));
+        }
+
+        void deallocate(void* ptr, size_t count) {
+            // noop
+        }
+
+        Arena* m_arena;
+    };
+
+    template <typename T>
+    using vector = std::vector<T, Allocator<T>>;
+
     Arena() = default;
     ~Arena() {
         free_all();
@@ -19,26 +48,10 @@ public:
     Arena& operator=(const Arena&) = delete;
     Arena& operator=(Arena&&) = delete;
 
-    struct Block {
-        Block* m_next; 
-        size_t m_size;
-        size_t m_cursor;
-        char m_data[];
-
-        size_t free_space() const {
-            return m_size - m_cursor;
-        }
-
-        void* allocate(size_t size) {
-            if (free_space() < size) {
-                return nullptr;
-            }
-
-            void* result = m_data + m_cursor;
-            m_cursor += size;
-            return result;
-        }
-    };
+    template <typename T>
+    Allocator<T> allocator() {
+        return Allocator<T>(this);
+    }
 
     void* allocate(size_t size) {
         m_allocated += size;
@@ -77,6 +90,27 @@ public:
     }
    
 private:
+    struct Block {
+        Block* m_next; 
+        size_t m_size;
+        size_t m_cursor;
+        char m_data[];
+
+        size_t free_space() const {
+            return m_size - m_cursor;
+        }
+
+        void* allocate(size_t size) {
+            if (free_space() < size) {
+                return nullptr;
+            }
+
+            void* result = m_data + m_cursor;
+            m_cursor += size;
+            return result;
+        }
+    };
+
     Block* allocate_block(size_t min_size) {
         Block* block;
         if (m_free && m_free->m_size >= min_size) {
@@ -98,34 +132,5 @@ private:
     Block* m_free = nullptr;
     size_t m_allocated = 0;
 };
-
-template <typename T>
-struct Allocator {
-    using value_type = T;
-
-    Allocator(Arena* arena) : m_arena{arena} {}
-
-    template <typename Y>
-    Allocator(const Allocator<Y>& other) : m_arena{other.m_arena} {}
-
-    template <typename Y>
-    bool operator==(const Allocator<Y>& other) const { return m_arena == other.m_arena; }
-
-    template <typename Y>
-    bool operator!=(const Allocator<Y>& other) const { return !(*this == other); }
-
-    T* allocate(size_t count) {
-        return (T*)m_arena->allocate(count * sizeof(T));
-    }
-
-    void deallocate(void* ptr, size_t count) {
-        // noop
-    }
-
-    Arena* m_arena;
-};
-
-template <typename T>
-using vector = std::vector<T, Allocator<T>>;
 
 };

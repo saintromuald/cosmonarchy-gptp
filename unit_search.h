@@ -79,7 +79,7 @@ bool is_rect_in_rect(Box32 inner, Box32 outer);
 template <typename... Ts>
 struct Overloaded : Ts... { using Ts::operator()...; };
 
-inline arena::Arena g_search_arena;
+inline mem::Arena g_search_arena;
 
 // TODO: rename to SearchResults
 template <typename T>
@@ -209,7 +209,7 @@ public:
     }
 
 private:
-    arena::vector<T*> m_data{arena::Allocator<T*>{&g_search_arena}};
+    mem::Arena::vector<T*> m_data{g_search_arena.allocator<T*>()};
 };
 
 template <typename T>
