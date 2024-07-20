@@ -98,24 +98,37 @@ u32 get_construction_graphic(Unit* unit) {
 	return units_dat::construction_graphic[unit->id];
 }
 
-void init_omnipresence_state() {
+void init_omnipresence() {
 	for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
 		if (g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot) {
 			continue;
 		}
 
-		auto& omni_state = g_globals->players[player].omnipresence_state;
-		if (omni_state == OmnipresenceState_Default) {
-			OmnipresenceState omni_state = OmnipresenceState_None;
+		auto& game_mode_race = g_globals->players[player].game_mode_race;
+		if (game_mode_race == GameModeRace_Default) {
+			game_mode_race = GameModeRace_All;
+		}
+	}
+}
+
+void init_duopoly() {
+	for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
+		if (g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot) {
+			continue;
+		}
+
+		auto& game_mode_race = g_globals->players[player].game_mode_race;
+		if (game_mode_race == GameModeRace_Default) {
+			game_mode_race = GameModeRace_None;
 			switch (g_player_table[player].race) {
 				case RaceId::Terran: {
-					omni_state = OmnipresenceState_TerranProtoss;
+					game_mode_race = GameModeRace_TerranProtoss;
 				} break;
 				case RaceId::Protoss: {
-					omni_state = OmnipresenceState_ProtossZerg;
+					game_mode_race = GameModeRace_ProtossZerg;
 				} break;
 				case RaceId::Zerg: {
-					omni_state = OmnipresenceState_ZergTerran;
+					game_mode_race = GameModeRace_ZergTerran;
 				} break;
 			}
 		}

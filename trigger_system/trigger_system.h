@@ -55,30 +55,29 @@ enum Celebration : u8 {
 	Celebration_Count,
 };
 
-enum OmnipresenceState : u8 {
-	OmnipresenceState_Default,
-	OmnipresenceState_None,
+enum GameModeRace : u8 {
+	GameModeRace_Default,
+	GameModeRace_None,
 
-	OmnipresenceState_TerranProtoss,
-	OmnipresenceState_ProtossZerg,
-	OmnipresenceState_ZergTerran,
-	OmnipresenceState_All,
+	GameModeRace_All,
+	GameModeRace_TerranProtoss,
+	GameModeRace_ProtossZerg,
+	GameModeRace_ZergTerran,
 
-	OmnipresenceState_Count,
+	GameModeRace_Count,
 };
 
 // NOTE: This is case insensitive for parsing
-static const char* omnipresence_state_symbol_names[] = {
+static const char* game_mode_race_symbol_names[] = {
 	"Default",
 	"None",
 
+	"All",
 	"TerranProtoss",
 	"ProtossZerg",
 	"ZergTerran",
-
-	"All",
 };
-C_ASSERT(ARRAY_SIZE(omnipresence_state_symbol_names) == OmnipresenceState_Count);
+C_ASSERT(ARRAY_SIZE(game_mode_race_symbol_names) == GameModeRace_Count);
 
 enum class Faction : u8 {
 	None,
@@ -183,7 +182,7 @@ struct CmPlayer {
 	bool disable_liftoff;
 	bool disable_burrow;
 	UnitIdBitset disabled_units;
-	OmnipresenceState omnipresence_state;
+	GameModeRace game_mode_race;
 	u32 build_multiplier = 1;
 
 	std::vector<PlayerColor> preferred_colors;

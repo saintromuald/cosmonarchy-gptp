@@ -37,11 +37,12 @@ u32 get_racial_worker(u32 race_id)
 namespace hooks {
 	void create_initial_melee_buildings(u8 race_id, u32 player) {
 		u32 building_id = get_racial_townhall(race_id);
-		bool is_omni = bw::get_game_kind() == GameKind_Omnipresence
-			&& g_player_table[player].type != PlayerType::Computer
-			&& g_player_table[player].type != PlayerType::ComputerSlot;
+		GameKind game_kind = bw::get_game_kind();
+		bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
+		bool is_omnipresence = game_kind == GameKind_Omnipresence;
+		bool is_duopoly = game_kind == GameKind_Duopoly;
 
-		if (is_omni) {
+		if (!is_computer_player && (is_omnipresence || is_duopoly)) {
 			building_id = UnitId::Omnivale;
 		}
 		s32 building_size_x, building_size_y;
@@ -50,12 +51,10 @@ namespace hooks {
 
 		building_size_x = units_dat::building_dimensions[building_id].x;
 		building_size_y = units_dat::building_dimensions[building_id].y;
-		if (building_size_x < 0)
-		{
+		if (building_size_x < 0) {
 			building_size_x++;
 		}
-		if (building_size_y < 0)
-		{
+		if (building_size_y < 0) {
 			building_size_y++;
 		}
 
@@ -176,9 +175,8 @@ namespace hooks {
 				static u8* victory_conditions = (u8*)0x0059686D;
 				static u8* tournament_mode = (u8*)0x00596877;
 
-				if (*victory_conditions == 0 && starting_units == 0 && *tournament_mode == 0 && player < PlayerLimit
-				&&  (g_player_force[player]) != 0) // race selected instead of using map settings?
-				{
+				if (*victory_conditions == 0 && starting_units == 0 && *tournament_mode == 0 && player < PlayerLimit && (g_player_force[player]) != 0) {
+					// race selected instead of using map settings?
 					starting_units = 2;
 				}
 
@@ -190,13 +188,13 @@ namespace hooks {
 				}
 
 				if (starting_units == 1 || starting_units == 2) {
-					bool is_omni = bw::get_game_kind() == GameKind_Omnipresence
-								&& g_player_table[player].type != PlayerType::Computer
-								&& g_player_table[player].type != PlayerType::ComputerSlot;
-
+					GameKind game_kind = bw::get_game_kind();
+					bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
+					bool is_omnipresence = game_kind == GameKind_Omnipresence;
+					bool is_duopoly = game_kind == GameKind_Duopoly;
 					u32 worker_id = get_racial_worker(*race_id_offset);
 					u8 townhall_id = get_racial_townhall(*race_id_offset);
-					if (is_omni) {
+					if (!is_computer_player && (is_omnipresence || is_duopoly)) {
 						townhall_id = UnitId::Omnivale;
 					}
 
@@ -217,76 +215,63 @@ namespace hooks {
 							pos.x += dx;
 							pos.y -= dy;
 
-							if (is_omni) {
-								switch (g_globals->players[player].omnipresence_state)
-								{
-									case OmnipresenceState_All:
-									{
+							if (is_omnipresence && !is_computer_player) {
+								switch (worker_count) {
+									case 0:
+									case 1: {
+										worker_id = UnitId::TerranMason;
+									} break;
+									case 2:
+									case 3: {
+										worker_id = UnitId::ProtossScribe;
+									} break;
+									case 4:
+									case 5: {
+										worker_id = UnitId::ZergDroleth;
+									} break;
+								}
+							}
+
+							if (is_duopoly && !is_computer_player) {
+								switch (g_player_table[player].race) {
+									case RaceId::Terran: {
 										switch (worker_count) {
 											case 0:
 											case 1:
-											{
+											case 2: {
 												worker_id = UnitId::TerranMason;
 											} break;
-											case 2:
 											case 3:
-											{
+											case 4:
+											case 5: {
 												worker_id = UnitId::ProtossScribe;
 											} break;
+										}
+									} break;
+									case RaceId::Protoss: {
+										switch (worker_count) {
+											case 0:
+											case 1:
+											case 2: {
+												worker_id = UnitId::ProtossScribe;
+											} break;
+											case 3:
 											case 4:
-											case 5:
-											{
+											case 5: {
 												worker_id = UnitId::ZergDroleth;
 											} break;
 										}
 									} break;
-									case OmnipresenceState_TerranProtoss:
-									{
+									case RaceId::Zerg: {
 										switch (worker_count) {
 											case 0:
 											case 1:
-											case 2:
-											{
+											case 2: {
 												worker_id = UnitId::TerranMason;
 											} break;
 											case 3:
 											case 4:
-											case 5:
-											{
-												worker_id = UnitId::ProtossScribe;
-											} break;
-										}
-									} break;
-									case OmnipresenceState_ProtossZerg:
-									{
-										switch (worker_count) {
-											case 0:
-											case 1:
-											case 2:
-											{
-												worker_id = UnitId::ProtossScribe;
-											} break;
-											case 3:
-											case 4:
-											case 5:
-											{
-												worker_id = UnitId::ZergDroleth;
-											} break;
-										}
-									} break;
-									case OmnipresenceState_ZergTerran:
-									{
-										switch (worker_count) {
-											case 0:
-											case 1:
-											case 2:
-											{
-												worker_id = UnitId::TerranMason;
-											} break;
-											case 3:
-											case 4:
-											case 5:
-											{
+											case 5: {
 												worker_id = UnitId::ZergDroleth;
 											} break;
 										}
@@ -309,31 +294,27 @@ namespace hooks {
 		}
 	}
 		
-	void create_initial_ovileth(u8 player)
-	{
+	void create_initial_ovileth(u8 player) {
 		return; // Ovileth no longer spawns
 
 		static u16* const max_box_right_value = (u16*)0x00628450;
 		static u16* const max_box_bottom_value = (u16*)0x006284B4;
 		s32 ovileth_start_x, ovileth_start_y;
 		Unit* created_unit;
-		if (g_start_positions[player].x < *max_box_right_value / 2)
-		{
+		if (g_start_positions[player].x < *max_box_right_value / 2) {
 			ovileth_start_x = g_start_positions[player].x + units_dat::unit_bounds[UnitId::ZergHachirosk].right + units_dat::unit_bounds[UnitId::ZergHachirosk].left + 1;
 		} else {
 			ovileth_start_x = g_start_positions[player].x - (units_dat::unit_bounds[UnitId::ZergHachirosk].right + units_dat::unit_bounds[UnitId::ZergHachirosk].left + 1);
 		}
 
-		if (g_start_positions[player].y < *max_box_bottom_value / 2)
-		{
+		if (g_start_positions[player].y < *max_box_bottom_value / 2) {
 			ovileth_start_y = g_start_positions[player].y + units_dat::unit_bounds[UnitId::ZergHachirosk].bottom + units_dat::unit_bounds[UnitId::ZergHachirosk].top + 1;
 		} else {
 			ovileth_start_y = g_start_positions[player].y - (units_dat::unit_bounds[UnitId::ZergHachirosk].bottom + units_dat::unit_bounds[UnitId::ZergHachirosk].top + 1);
 		}
 
 		created_unit = helper::create_unit(UnitId::ZergOvileth, ovileth_start_x, ovileth_start_y, player);
-		if (created_unit)
-		{
+		if (created_unit) {
 			helper::update_unit_stats_and_finish_building(created_unit);
 			if (helper::show_finished_unit(created_unit) != 0) {
 				helper::update_unit_strength(created_unit);

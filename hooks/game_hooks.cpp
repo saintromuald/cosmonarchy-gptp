@@ -664,7 +664,10 @@ namespace hooks {
 				}
 			} break;
 			case GameKind_Omnipresence: {
-				init_omnipresence_state();
+				init_omnipresence();
+			} break;
+			case GameKind_Duopoly: {
+				init_duopoly(); // This runs after create_init_units, meaning the player will not receive 3 of each race's worker. -Pr0nogo
 			} break;
 			case GameKind_Uprising: {
 				g_active_game_mode = std::make_unique<UprisingGameMode>();
@@ -3425,7 +3428,7 @@ namespace hooks {
 
 		memset(vision_timers, 0, 8*256*256);
 
-		init_omnipresence_state();
+		init_omnipresence();
 
 		gptp::g_logger << "Started a match!\n";
 		g_game_was_init = false;

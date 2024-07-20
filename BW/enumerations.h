@@ -569,50 +569,51 @@ namespace ColorRemapping {
 // Compare with (*g_game_type)
 namespace GameType {
 	enum Enum {
-		Melee = 2,
-		FreeForAll = 3,
-		OneOnOne = 4,
-		CaptureTheFlag = 5,
-		Greed = 6,
-		Slaughter = 7,
-		SuddenDeath = 8,
-		Ladder = 9,
-		UseMapSettings = 10,
-		TeamMelee = 11,
-		TeamFreeForAll = 12,
-		TeamCTF = 13,
-		TopVsBottom = 15,
+		Melee			= 2,
+		FreeForAll		= 3,
+		OneOnOne		= 4,
+		CaptureTheFlag	= 5,
+		Greed			= 6,
+		Slaughter		= 7,
+		SuddenDeath		= 8,
+		Ladder			= 9,
+		UseMapSettings	= 10,
+		TeamMelee		= 11,
+		TeamFreeForAll	= 12,
+		TeamCTF			= 13,
+		TopVsBottom		= 15,
 
-		Competitive = 30,
-		Scenario = 31,
-		Omnipresence = 32,
-		FactionWars = 33,
-		Massacre = 34,
-		TheTurning = 35,
-		Uprising = 36,
-		Debug = 37,
+		Competitive		= 30,
+		Scenario		= 31,
+		Omnipresence	= 32,
+		FactionWars		= 33,
+		Massacre		= 34,
+		TheTurning		= 35,
+		Uprising		= 36,
+		Duopoly			= 37,
+		Debug			= 38,
 	};
 }
 
 // Compare with (*g_current_tileset)
 namespace TilesetType {
 	enum Enum {
-		Badlands = 0,
-		Space_Platform = 1,
-		Installation = 2,
-		Ash_World = 3,
-		Jungle_World = 4,
-		Desert = 5,
-		Ice = 6,
-		Twilight = 7,
+		Badlands		= 0,
+		Space_Platform	= 1,
+		Installation	= 2,
+		Ash_World		= 3,
+		Jungle_World	= 4,
+		Desert			= 5,
+		Ice				= 6,
+		Twilight		= 7,
 
 		Count,
 	};
 }
 
 enum MovableState {
-	MovableState_NotReachedDestination = 0,
-	MovableState_ReachedDestination = 1,
+	MovableState_NotReachedDestination	= 0,
+	MovableState_ReachedDestination		= 1,
 	MovableState_UnmovableAtDestination = 2
 };
 

@@ -1530,14 +1530,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					cm_player.hide_in_team_ui = (bool)state;
 				}
 			}
-		} else if (parser.equals("set_omnipresence_state")) {
+		} else if (parser.equals("set_game_mode_race")) {
 			u32 player = parser.get_player();
-			OmnipresenceState omni_state = (OmnipresenceState)parser.get_enum(omnipresence_state_symbol_names, ARRAY_SIZE(omnipresence_state_symbol_names));
+			GameModeRace omni_state = (GameModeRace)parser.get_enum(game_mode_race_symbol_names, ARRAY_SIZE(game_mode_race_symbol_names));
 
 			if (player) {
 				player -= 1;
 				auto& cm_player = g_globals->players[player];
-				cm_player.omnipresence_state = omni_state;
+				cm_player.game_mode_race = omni_state;
 			}
 		} else if (parser.equals("set_player_build_multiplier")) {
 			u32 player = parser.get_player();
