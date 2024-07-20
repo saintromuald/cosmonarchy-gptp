@@ -670,7 +670,7 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 									break;
 								}
-								if (unit->id != UnitId::Omnivale || g_globals->players[unit->player].duopoly_state == DuopolyState_TerranProtoss) {
+								if (unit->id != UnitId::Omnivale || g_globals->players[unit->player].game_mode_race == GameModeRace_TerranProtoss) {
 									current_button_state = Button_State::Invisible;
 									break;
 								}
@@ -712,7 +712,7 @@ namespace hooks {
 						{
 							if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
 								|| unit_id_is_larva(unit->id)
-								|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].duopoly_state != DuopolyState_TerranProtoss)) {
+								|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss)) {
 								current_button_state = Button_State::Enabled;
 							} else {
 								current_button_state = Button_State::Invisible;
@@ -787,7 +787,7 @@ namespace hooks {
 					if (current_button->icon_id == IconId::Larva) {
 						if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
 							|| unit_id_is_larva(unit->id)
-							|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].duopoly_state != DuopolyState_TerranProtoss)) {
+							|| (unit->id == UnitId::Omnivale && g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss)) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
@@ -1116,24 +1116,24 @@ namespace hooks {
 						switch (unit->id) {
 							case UnitId::Omnivale: {
 								bool is_omnipresence = bw::get_game_kind() == GameKind_Omnipresence;
-								DuopolyState duopoly_state = g_globals->players[unit->player].duopoly_state;
+								GameModeRace duopoly_state = g_globals->players[unit->player].game_mode_race;
 								switch (current_button->requirement_var) {
 									case UnitId::TerranMason: {
-										if (is_omnipresence || duopoly_state != DuopolyState_ProtossZerg) {
+										if (is_omnipresence || duopoly_state != GameModeRace_ProtossZerg) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
 									case UnitId::ProtossScribe: {
-										if (is_omnipresence || duopoly_state != DuopolyState_ZergTerran) {
+										if (is_omnipresence || duopoly_state != GameModeRace_ZergTerran) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
 									case UnitId::ZergDroleth: {
-										if (is_omnipresence || duopoly_state != DuopolyState_TerranProtoss) {
+										if (is_omnipresence || duopoly_state != GameModeRace_TerranProtoss) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Invisible;
