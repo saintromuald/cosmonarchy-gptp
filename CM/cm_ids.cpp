@@ -288,20 +288,34 @@ bool unit_id_can_do_controlled_demolition(u32 unit_id) {
 		|| unit_id == UnitId::TerranLobotomyMine;
 }
 
-bool unit_id_is_siege_mode(u32 unit_id) {
-	return unit_id == UnitId::TerranShamanVisionaryMode
-		|| unit_id == UnitId::TerranMatadorCinderMode
-		|| unit_id == UnitId::TerranPhalanxSiegeMode
-		|| unit_id == UnitId::TerranMadrigalFuriaMode
-		|| unit_id == UnitId::TerramCuirassTrenchMode;
+UnitId::Enum unit_id_to_siege_mode(UnitId::Enum unit_id) {
+	switch (unit_id) {
+		case UnitId::TerranShamanSupportMode:     return UnitId::TerranShamanVisionaryMode; 
+		case UnitId::TerranMatadorTankMode:       return UnitId::TerranMatadorCinderMode;   
+		case UnitId::TerranPhalanxTankMode:       return UnitId::TerranPhalanxSiegeMode;   
+		case UnitId::TerranMadrigalImperiosoMode: return UnitId::TerranMadrigalFuriaMode;  
+	//	case UnitId::TerranCuirassTankMode:       return UnitId::TerramCuirassTrenchMode;  
+	}
+	return UnitId::None;
 }
 
-bool unit_id_is_tank_mode(u32 unit_id) {
-	return unit_id == UnitId::TerranShamanSupportMode
-		|| unit_id == UnitId::TerranMatadorTankMode
-		|| unit_id == UnitId::TerranPhalanxTankMode
-		|| unit_id == UnitId::TerranMadrigalImperiosoMode
-		|| unit_id == UnitId::TerranCuirassTankMode;
+UnitId::Enum unit_id_to_tank_mode(UnitId::Enum unit_id) {
+	switch (unit_id) {
+		case UnitId::TerranShamanVisionaryMode: return UnitId::TerranShamanSupportMode;
+		case UnitId::TerranMatadorCinderMode:   return UnitId::TerranMatadorTankMode;
+		case UnitId::TerranPhalanxSiegeMode:    return UnitId::TerranPhalanxTankMode;
+		case UnitId::TerranMadrigalFuriaMode:   return UnitId::TerranMadrigalImperiosoMode;
+	//	case UnitId::TerramCuirassTrenchMode:   return UnitId::TerranCuirassTankMode;
+	}
+	return UnitId::None;
+}
+
+bool unit_id_is_siege_mode(UnitId::Enum unit_id) {
+	return unit_id_to_tank_mode(unit_id) != UnitId::None;
+}
+
+bool unit_id_is_tank_mode(UnitId::Enum unit_id) {
+	return unit_id_to_siege_mode(unit_id) != UnitId::None;
 }
 
 bool unit_id_is_broodspawn(u32 unit_id) {

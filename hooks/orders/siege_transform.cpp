@@ -6,9 +6,8 @@
 namespace hooks
 {
 	void orders_tank_mode(Unit* unit) { // 00464AE0
-		u16 unit_id = unit->id;
 		if (!unit->main_order_state) {
-			if (!unit_id_is_siege_mode(unit_id)) {
+			if (!unit_id_is_siege_mode((UnitId::Enum)unit->id)) {
 				unit->order_to_idle();
 				return;
 			}
@@ -34,8 +33,8 @@ namespace hooks
 			++unit->main_order_state;
 
 			if (unit->player == g_local_nation_id && !g_is_in_replay) {
-				u32 action_sound = 0;
-				switch (unit_id) {
+				u32 action_sound = SoundId::None;
+				switch (unit->id) {
 					case UnitId::TerranShamanVisionaryMode: {
 						action_sound = SoundId::ShamanSupport01;
 					} break;
@@ -52,24 +51,7 @@ namespace hooks
 
 		if (unit->main_order_state && unit->order_signal & 1) {
 			unit->order_signal &= ~1;
-
-			// Transform unit id
-			switch (unit_id) {
-				case UnitId::TerranShamanVisionaryMode: {
-					unit_id = UnitId::TerranShamanSupportMode;
-				} break;
-				case UnitId::TerranMatadorCinderMode: {
-					unit_id = UnitId::TerranMatadorTankMode;
-				} break;
-				case UnitId::TerranPhalanxSiegeMode: {
-					unit_id = UnitId::TerranPhalanxTankMode;
-				} break;
-				case UnitId::TerranMadrigalFuriaMode: {
-					unit_id = UnitId::TerranMadrigalImperiosoMode;
-				} break;
-			}
-
-			bw::transform_unit(unit, unit_id);
+			bw::transform_unit(unit, unit_id_to_tank_mode((UnitId::Enum)unit->id));
 			helper::order_return_to_idle(unit);
 			if (unit->subunit) {
 				helper::order_return_to_idle(unit->subunit);
@@ -78,10 +60,9 @@ namespace hooks
 	}
 	
 	void orders_siege_mode(Unit* unit) { // 00464BD0
-		u16 unit_id = unit->id;
 		switch (unit->main_order_state) {
 			case 0: {
-				if (!unit_id_is_tank_mode(unit_id)) {
+				if (!unit_id_is_tank_mode((UnitId::Enum)unit->id)) {
 					unit->order_to_idle();
 					return;
 				}
@@ -110,7 +91,7 @@ namespace hooks
 			case 2: {
 				if (unit->player == g_local_nation_id && !g_is_in_replay) {
 					u32 action_sound = 0;
-					switch (unit_id) {
+					switch (unit->id) {
 						case UnitId::TerranShamanSupportMode: {
 							action_sound = bw::rand_between_local(SoundId::ShamanVisionary01, SoundId::ShamanVisionary02);
 						} break;
@@ -129,23 +110,7 @@ namespace hooks
 					}
 				}
 
-				// Transform unit ID
-				switch (unit_id) {
-					case UnitId::TerranShamanSupportMode: {
-						unit_id = UnitId::TerranShamanVisionaryMode;
-					} break;
-					case UnitId::TerranMatadorTankMode: {
-						unit_id = UnitId::TerranMatadorCinderMode;
-					} break;
-					case UnitId::TerranPhalanxTankMode: {
-						unit_id = UnitId::TerranPhalanxSiegeMode;
-					} break;
-					case UnitId::TerranMadrigalImperiosoMode: {
-						unit_id = UnitId::TerranMadrigalFuriaMode;
-					} break;
-				}
-
-				bw::transform_unit(unit, unit_id);
+				bw::transform_unit(unit, unit_id_to_siege_mode((UnitId::Enum)unit->id));
 				++unit->main_order_state;
 			} // fallthrough
 			case 3: {
@@ -153,7 +118,7 @@ namespace hooks
 					Order* order_queue_head = unit->order_queue_head;
 					unit->order_signal &= ~1;
 					if (order_queue_head && !(order_queue_head->order_id == OrderId::WatchTarget)) {
-						unit->order_computer(units_dat::return_to_idle_order[unit_id]);
+						unit->order_computer(units_dat::return_to_idle_order[unit->id]);
 						helper::force_order_done(unit);
 					} else {
 						helper::order_return_to_idle(unit);

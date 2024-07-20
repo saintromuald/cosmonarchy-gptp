@@ -17,6 +17,47 @@ static void special_unload_unit(Unit* unit, Unit* transport) {
     }
 }
 
+static void special_post_unload_unit(Unit* unit, Unit* transport) {
+    UnitExt* transport_ext = get_unit_ext(transport);
+    if (transport_ext->values[ValueIsNeutralBunker]) {
+        Unit* first_unit = transport->get_first_loaded_unit();
+        if (first_unit) {
+            if (first_unit->player != unit->player) {
+                transport->give_to(first_unit->player);
+            }
+        } else {
+            transport->give_to(NeutralPlayer);
+            transport->sprite->player = NeutralPlayer;
+        }
+    }
+
+    if (unit_id_is_siege_mode((UnitId::Enum)unit->id)) {
+        bw::transform_unit(unit, unit_id_to_tank_mode((UnitId::Enum)unit->id));
+        unit->order_to(OrderId::SiegeMode);
+    }
+
+    const auto apply_unload_delay = [](Unit* unit) {
+        if (!unit) return;
+        const auto update_delay = [](auto& var) {
+            if (var < UnloadDelay) {
+                var = UnloadDelay;
+            }
+        };
+        u32 ground_weapon_id = unit->get_ground_weapon();
+        if (ground_weapon_id != WeaponId::None) {
+            update_delay(unit->ground_weapon_cooldown);
+        }
+        u32 air_weapon_id = unit->get_air_weapon();
+        if (air_weapon_id != WeaponId::None) {
+            update_delay(unit->air_weapon_cooldown);
+        }
+        update_delay(unit->spell_cooldown);
+    };
+
+    apply_unload_delay(unit);
+    apply_unload_delay(unit->subunit);
+}
+
 static Point16 align_to_tile_grid(Point16 pos) {
     return {
         static_cast<u16>((pos.x + 16) / 32 * 32),
@@ -257,41 +298,8 @@ b32 unload_unit_proc(Unit* unit) { // 004E7F70
             unit->order_computer(OrderId::ComputerAI);
         }
     }
-
-    UnitExt* transport_ext = get_unit_ext(transport);
-    if (transport_ext->values[ValueIsNeutralBunker]) {
-        Unit* first_unit = transport->get_first_loaded_unit();
-        if (first_unit) {
-            if (first_unit->player != unit->player) {
-                transport->give_to(first_unit->player);
-            }
-        } else {
-            transport->give_to(NeutralPlayer);
-            transport->sprite->player = NeutralPlayer;
-        }
-    }
+    special_post_unload_unit(unit, transport);
     bw::refresh_console();
-
-    const auto apply_unload_delay = [](Unit* unit) {
-        if (!unit) return;
-        const auto update_delay = [](auto& var) {
-            if (var < UnloadDelay) {
-                var = UnloadDelay;
-            }
-        };
-        u32 ground_weapon_id = unit->get_ground_weapon();
-        if (ground_weapon_id != WeaponId::None) {
-            update_delay(unit->ground_weapon_cooldown);
-        }
-        u32 air_weapon_id = unit->get_air_weapon();
-        if (air_weapon_id != WeaponId::None) {
-            update_delay(unit->air_weapon_cooldown);
-        }
-        update_delay(unit->spell_cooldown);
-    };
-
-    apply_unload_delay(unit);
-    apply_unload_delay(unit->subunit);
     return true;
 }
 
