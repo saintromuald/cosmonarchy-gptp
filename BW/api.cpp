@@ -2256,7 +2256,7 @@ void prepare_building_area(Point16 pos, u32 unit_id, Unit* builder) {
 			continue;
 		}
 
-		if (unit_id_is_siege_mode(unit->id) && unit->main_order_id != OrderId::TankMode
+		if (unit_id_is_siege_mode((UnitId::Enum)unit->id) && unit->main_order_id != OrderId::TankMode
 			|| unit->main_order_id == OrderId::SiegeMode) {
 			unit->order_to(OrderId::TankMode);
 		}

@@ -294,7 +294,7 @@ namespace hooks
 		}
 
 		// For stationary attackers
-		if (attacker->status & UnitStatus::GroundedBuilding || attacker->status & UnitStatus::Burrowed || unit_id_is_siege_mode(attacker->id)) {
+		if (attacker->status & UnitStatus::GroundedBuilding || attacker->status & UnitStatus::Burrowed || unit_id_is_siege_mode((UnitId::Enum)attacker->id)) {
 			if (!attacker->is_target_within_min_range(target, hooks::get_max_weapon_range(attacker, weapon, target))) {
 				return false;
 			}

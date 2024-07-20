@@ -819,7 +819,7 @@ namespace hooks {
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Tank_Is_In_Siege_Mode) {
-						if (unit_id_is_siege_mode(unit->id)) {
+						if (unit_id_is_siege_mode((UnitId::Enum)unit->id)) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;
@@ -827,7 +827,7 @@ namespace hooks {
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Tank_Is_In_Tank_Mode) {
-						if (unit_id_is_tank_mode(unit->id)) {
+						if (unit_id_is_tank_mode((UnitId::Enum)unit->id)) {
 							current_button_state = Button_State::Enabled;
 						} else {
 							current_button_state = Button_State::Invisible;

@@ -222,7 +222,7 @@ static s32 get_target_cost(Unit* source, Unit* target) {
 	}
 
 	// Value deployed units slightly more
-	if (unit_id_is_siege_mode(target->id)) {
+	if (unit_id_is_siege_mode((UnitId::Enum)target->id)) {
 		cost -= 20;
 	}
 
