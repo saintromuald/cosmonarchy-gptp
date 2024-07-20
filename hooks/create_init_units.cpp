@@ -215,7 +215,7 @@ namespace hooks {
 							pos.x += dx;
 							pos.y -= dy;
 
-							if (is_omnipresence) {
+							if (is_omnipresence && !is_computer_player) {
 								switch (worker_count) {
 									case 0:
 									case 1: {
@@ -232,9 +232,9 @@ namespace hooks {
 								}
 							}
 
-							if (is_duopoly) {
-								switch (g_globals->players[player].duopoly_state) {
-									case DuopolyState_TerranProtoss: {
+							if (is_duopoly && !is_computer_player) {
+								switch (g_player_table[player].race) {
+									case RaceId::Terran: {
 										switch (worker_count) {
 											case 0:
 											case 1:
@@ -248,7 +248,7 @@ namespace hooks {
 											} break;
 										}
 									} break;
-									case DuopolyState_ProtossZerg: {
+									case RaceId::Protoss: {
 										switch (worker_count) {
 											case 0:
 											case 1:
@@ -262,7 +262,7 @@ namespace hooks {
 											} break;
 										}
 									} break;
-									case DuopolyState_ZergTerran: {
+									case RaceId::Zerg: {
 										switch (worker_count) {
 											case 0:
 											case 1:
