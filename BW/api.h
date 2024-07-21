@@ -953,4 +953,6 @@ bool can_show_custom_ui();
 bool player_is_witness(u32 player);
 bool player_is_active(u32 player);
 
+std::string get_commit_hash();
+
 }

@@ -221,20 +221,33 @@ bool isGameOn = false;
 			return;
 		}
 
-		time_t now = time(0);
-		tm* ltm = localtime(&now);
-
 		constexpr std::string_view ext = ".rep";
 		constexpr auto full_size = 28;
+		time_t now = time(0);
+		tm* ltm = localtime(&now);
+		std::string commit = bw::get_commit_hash();
 
-		char short_date[replay_name_size] = {};
-		strftime(short_date, replay_name_size, "%Y-%m-%d", ltm);
+		std::stringstream dir_ss;
+		dir_ss << std::put_time(ltm, "%Y-%m-%d");
+		if (!commit.empty()) {
+			dir_ss << "_" << commit;
+		}
 
-		char date[replay_name_size] = {};
-		strftime(date, replay_name_size, "%y-%m-%d_%H-%M", ltm);
+		std::string dir = dir_ss.str();
+		if (dir.size() > replay_name_size) {
+			dir.resize(replay_name_size);
+		}
 
-		char name[replay_name_size] = {};
-		snprintf(name, replay_name_size, "%s_%s", date, g_current_map_name, ext.data());
+		std::stringstream file_ss;
+		if (!commit.empty()) {
+			file_ss << commit << "_";
+		}
+		file_ss << std::put_time(ltm, "%H-%M") << "_" << g_current_map_name;
+
+		std::string file = file_ss.str();
+		if (file.size() > replay_name_size) {
+			file.resize(replay_name_size);
+		}
 
 		/*
 		bool first = true;
@@ -255,7 +268,7 @@ bool isGameOn = false;
 		}
 		*/
 
-		copy_last_replay(short_date, name + std::string{ext});
+		copy_last_replay(dir, file + std::string{ext});
 	}
 
 	void __declspec(naked) replay_save_wrapper() { // 004EEBEA
