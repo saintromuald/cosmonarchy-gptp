@@ -3913,4 +3913,41 @@ bool player_is_witness(u32 player) {
 bool player_is_active(u32 player) {
 	return g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::Computer;
 }
+
+static std::string get_git_head() {
+	fs::path git = ".git";
+	std::ifstream head_file(git / "HEAD", std::ios::binary);
+	if (!head_file.is_open()) {
+		return {};
+	}
+
+	std::string token;
+	if (head_file >> token) {
+        if (token != "ref:") {
+			return token;
+		}
+
+        if (head_file >> token) {
+            std::ifstream ref_file(git / token, std::ios::binary);
+            if (!ref_file.is_open()) {
+                return {};
+            }
+            
+            if (ref_file >> token) {
+                return token;
+            }
+        }
+	}
+
+	return {};
+}
+
+std::string get_commit_hash() {
+    std::string head = get_git_head();
+    if (head.size() > 7) {
+        head.resize(7);
+    }
+    return head;
+}
+
 }
