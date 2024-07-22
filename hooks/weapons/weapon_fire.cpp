@@ -364,7 +364,7 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 
 	UnitExt* unit_ext = get_unit_ext(unit);
 	bool has_stagger = opts.stagger >= 0;
-	bool has_target_cap = max_targets && has_stagger;
+	bool has_target_cap = max_targets && !has_stagger;
 	auto& blacklist = unit_ext->unit_vectors[UnitVectorStaggerBlacklist];
 	bool apply_cooldown = has_stagger ? false : opts.fire_opts.apply_cooldown;
 
