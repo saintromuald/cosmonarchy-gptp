@@ -2125,8 +2125,8 @@ namespace hooks {
 
 							for (Unit* target : g_unit_search.radial_ex(unit, ThroughTheLookingGlass::TargetSearchRange, FilterAlly | FilterNoBuilding | FilterCompleted)) {
 								Point16 target_pos{
-									.x = u16(target_center_pos.x + (pos.x - target->position.x)),
-									.y = u16(target_center_pos.y + (pos.y - target->position.y)),
+									.x = u16(target_center_pos.x + (target->position.x - pos.x)),
+									.y = u16(target_center_pos.y + (target->position.y - pos.y)),
 								};
 								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, target->position.x, target->position.y, unit->player);
 								bw::teleport_to_point(target, target_pos);
