@@ -1823,8 +1823,7 @@ namespace hooks {
 					case IscriptAnimation::GndAttkRpt:
 					case IscriptAnimation::AirAttkInit:
 					case IscriptAnimation::AirAttkRpt: {
-						if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance && !unit_ext->timers[TimerSecondaryWeaponCooldown])
-						{
+						if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 							unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::CentaurSunchaserMissiles);
 							unit_ext->values[ValueCentaurSecondaryWeaponCount] = 4;
 							unit_ext->units[UnitCentaurSecondaryWeaponTarget] = target;
@@ -2132,11 +2131,10 @@ namespace hooks {
 								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, target->position.x, target->position.y, unit->player);
 								bw::teleport_to_point(target, target_pos);
 								bw::add_unit_overlay(target, ImageId::LegionnaireTeleportEffect);
-
-								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
-								bw::teleport_to_point(unit, target_center_pos);
-								bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 							}
+							helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
+							bw::teleport_to_point(unit, target_center_pos);
+							bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 							unit->unfreeze();
 						} break;
 					}
