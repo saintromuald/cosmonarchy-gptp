@@ -187,7 +187,7 @@ bool isGameOn = false;
 	}
 
 	constexpr std::string_view replay_ext = ".ext";
-	constexpr auto replay_full_size = 32; // Some weird magic BW const we would want to extend 
+	constexpr auto replay_full_size = 31; // Some weird magic BW const we would want to extend 
 	constexpr auto replay_name_size = replay_full_size - replay_ext.size();
 
 	static fs::path get_replay_path() {
@@ -222,7 +222,6 @@ bool isGameOn = false;
 		}
 
 		constexpr std::string_view ext = ".rep";
-		constexpr auto full_size = 28;
 		time_t now = time(0);
 		tm* ltm = localtime(&now);
 		std::string commit = bw::get_commit_hash();
