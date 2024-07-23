@@ -292,7 +292,7 @@ namespace hooks {
 
 	u32 get_modified_unit_turn_speed(Unit* unit) {
 		if (unit->id == UnitId::TerranDiadem && unit->status & UnitStatus::InAir) {
-			return 27;
+			return flingy_dat::turn_speed[units_dat::graphic[unit->id]];
 		}
 		return std::max(flingy_dat::turn_speed[units_dat::graphic[unit->id]] * get_speed_multiplier(unit), 1.0);
 	}
