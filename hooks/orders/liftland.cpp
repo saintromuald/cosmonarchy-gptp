@@ -5,8 +5,7 @@
 #include "hooks/load_unload_proc.h"
 #include <hooks/limits/sfx_extender.h>
 
-namespace hooks
-{
+namespace hooks {
 	void orders_building_land(Unit* unit) { // 00464360
 		Target unit_target = {};
 		unit_target.unit = unit->order_target.unit;
@@ -66,7 +65,6 @@ namespace hooks
 					unit->order_to_idle();
 				} else {
 				//	helper::turn_unit(unit, 128); -- Causes teleportation when landing diagonally while slowed! -Pr0nogo
-
 					// Use an add_fog_mask() function after some coordinates calculations
 					helper::set_building_tile_flag(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 					unit->building.landing_timer = 1;
@@ -117,14 +115,12 @@ namespace hooks
 				helper::start_collision_tracking(unit); // Maybe update orders targeting the unit, set repulse for units in surroundings, and some other things?
 
 				// Maybe the landing unit would get excluded from multi-units selection if that could happen in normal Starcraft gameplay? That may be what this function does.
-				if (unit->sprite->flags & SpriteFlags::Selected && g_client_selection_count > 1)
-				{
+				if (unit->sprite->flags & SpriteFlags::Selected && g_client_selection_count > 1) {
 					helper::update_building_land_unit_selection(0, unit);
 				}
 
 				helper::set_shadow_y(unit->sprite, 0);
-				if (unit->sprite->images.tail->palette_type == PaletteType::Shadow)
-				{
+				if (unit->sprite->images.tail->palette_type == PaletteType::Shadow) {
 					unit->sprite->images.tail->flags &= ~ImageFlags::DontUpdate;
 				}
 				helper::create_landing_dust(unit->sprite);
@@ -173,10 +169,8 @@ namespace hooks
 					helper::complete_addon(unit, addon);
 				}
 
-				if (unit_id_is_garrison(unit->id))
-				{
-					for (s32 i = 0; i < TransportCap; i++)
-					{
+				if (unit_id_is_garrison(unit->id)) {
+					for (s32 i = 0; i < TransportCap; i++) {
 						Unit* cargo_unit = unit->get_loaded_unit(i);
 						if (!cargo_unit) continue;
 					//	helper::move_unit(cargo_unit, unit->position.x, unit->position.y);

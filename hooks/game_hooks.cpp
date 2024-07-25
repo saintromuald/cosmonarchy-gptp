@@ -1823,8 +1823,7 @@ namespace hooks {
 					case IscriptAnimation::GndAttkRpt:
 					case IscriptAnimation::AirAttkInit:
 					case IscriptAnimation::AirAttkRpt: {
-						if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance && !unit_ext->timers[TimerSecondaryWeaponCooldown])
-						{
+						if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 							unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::CentaurSunchaserMissiles);
 							unit_ext->values[ValueCentaurSecondaryWeaponCount] = 4;
 							unit_ext->units[UnitCentaurSecondaryWeaponTarget] = target;
@@ -2126,17 +2125,16 @@ namespace hooks {
 
 							for (Unit* target : g_unit_search.radial_ex(unit, ThroughTheLookingGlass::TargetSearchRange, FilterAlly | FilterNoBuilding | FilterCompleted)) {
 								Point16 target_pos{
-									.x = u16(target_center_pos.x + (pos.x - target->position.x)),
-									.y = u16(target_center_pos.y + (pos.y - target->position.y)),
+									.x = u16(target_center_pos.x + (target->position.x - pos.x)),
+									.y = u16(target_center_pos.y + (target->position.y - pos.y)),
 								};
 								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, target->position.x, target->position.y, unit->player);
 								bw::teleport_to_point(target, target_pos);
 								bw::add_unit_overlay(target, ImageId::LegionnaireTeleportEffect);
-
-								helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
-								bw::teleport_to_point(unit, target_center_pos);
-								bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 							}
+							helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
+							bw::teleport_to_point(unit, target_center_pos);
+							bw::add_unit_overlay(unit, ImageId::LegionnaireTeleportEffect);
 							unit->unfreeze();
 						} break;
 					}

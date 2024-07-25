@@ -113,6 +113,9 @@ void avenge_corpse(Thingy* corpse, u32 player) {
 		if (!bw::is_allied_to(player, unit->player) || unit->player == 11) {
 			continue;
 		}
+		if (units_dat::base_property[unit->id] & UnitProperty::Building && !(units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)) {
+			continue;
+		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->timers[TimerAvenge] = 3 * 24 + 1; // + 1 for update_speed call in game_hooks
 		unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
