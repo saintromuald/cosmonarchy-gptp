@@ -88,6 +88,9 @@ namespace hooks {
 				case UnitId::TerranMadrigalImperiosoMode: {
 					return helper::get_random_unit_response(SoundId::MadrigalOrderAggressive01, SoundId::MadrigalOrderAggressive04);
 				} break;
+				case UnitId::TerranCataphract: {
+					return helper::get_random_unit_response(SoundId::CataphractOrderAggressive01, SoundId::CataphractOrderAggressive04);
+				} break;
 				case UnitId::TerranPaladin: {
 					return helper::get_random_unit_response(SoundId::PaladinOrderAggressive01, SoundId::PaladinOrderAggressive04);
 				} break;
@@ -240,7 +243,9 @@ namespace hooks {
 					case UnitId::TerranPhalanxSiegeModeTurret: {
 						ready_sound = helper::get_random_unit_response(SoundId::PhalanxReady01, SoundId::PhalanxReady02);
 					} break;
-					case UnitId::TerranCataphract: // TODO: Own lines
+					case UnitId::TerranCataphract: {
+						ready_sound = helper::get_random_unit_response(SoundId::CataphractReady01, SoundId::CataphractReady03);
+					} break;
 					case UnitId::TerranPaladin: {
 						ready_sound = helper::get_random_unit_response(SoundId::PaladinReady01, SoundId::PaladinReady03);
 					} break;

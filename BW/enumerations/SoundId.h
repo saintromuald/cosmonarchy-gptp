@@ -1912,6 +1912,15 @@ namespace SoundId {
 		WyvernWeaponCharge02							= 3136,
 		WyvernWeaponCharge03							= 3137,
 
+		CataphractReady01								= 3147,
+		CataphractReady02								= 3148,
+		CataphractReady03								= 3149,
+
+		CataphractOrderAggressive01						= 3158,
+		CataphractOrderAggressive02						= 3159,
+		CataphractOrderAggressive03						= 3160,
+		CataphractOrderAggressive04						= 3161,
+
 		GoskaGrenadeImpact								= 4011,
 	};
 }
