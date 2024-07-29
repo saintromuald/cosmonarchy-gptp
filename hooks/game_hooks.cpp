@@ -438,11 +438,14 @@ namespace hooks {
 					case UnitId::ProtossClarion: {
 						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
+					case UnitId::ProtossDidact: {
+						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
 					case UnitId::ProtossCrucible: {
 						g_graphics.draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
-					case UnitId::ProtossDidact: {
-						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+					case UnitId::ZergSasyrvoleth: {
+						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::ZergMatraleth: {
 						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
