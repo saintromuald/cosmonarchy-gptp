@@ -112,6 +112,9 @@ void TheTurningGameMode::OnUnitTick(Unit* unit) {
 }
 
 void TheTurningGameMode::OnUnitDeath(Unit* unit) {
+    if (unit->player == NeutralHostilePlayer) {
+        return;
+    }
     const auto unit_id = static_cast<UnitId::Enum>(unit->id);
     if (units_dat::base_property[unit_id] & UnitProperty::Building
         || units_dat::base_property[unit_id] & UnitProperty::Worker
