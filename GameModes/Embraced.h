@@ -1,19 +1,9 @@
 #pragma once
-#include <BW/api.h>
-#include <memory>
-
-class IGameMode {
-public:
-	virtual ~IGameMode() {}
-	virtual void tick() {}
-	virtual void tick_unit(Unit* unit) {}
-};
-
-inline std::unique_ptr<IGameMode> g_active_game_mode;
+#include "IGameMode.h"
 
 class EmbracedGameMode : public IGameMode {
 public:
-	void tick_unit(Unit* unit) override {
+	void OnUnitTick(Unit* unit) override {
 		const auto& flags = units_dat::group_flags[unit->id];
 		if (!flags.is_building && !flags.is_factory && !flags.is_factory 
 			&& !flags.is_terran && !flags.is_zerg && !flags.is_protoss) {

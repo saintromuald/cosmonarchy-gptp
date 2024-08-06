@@ -16,6 +16,7 @@ bool is_inactive_corpse(Thingy* thingy);
 bool is_active_corpse(Thingy* thingy);
 void consume_corpse(Thingy* corpse);
 Thingy* get_closest_active_corpse(Point16 position, u32 radius);
+Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id);
 Unit* reclaim_corpse(Thingy* corpse, u32 player);
 
 void avenge_corpse(Thingy* corpse, u32 player);

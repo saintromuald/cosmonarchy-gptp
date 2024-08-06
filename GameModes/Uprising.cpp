@@ -1,4 +1,4 @@
-#include "UprisingGameMode.h"
+#include "Uprising.h"
 #include "BW/api.h"
 #include "trigger_system/trigger_system.h"
 #include "hooks/limits/sfx_extender.h"
@@ -43,7 +43,7 @@ UprisingGameMode::UprisingGameMode() {
 				}
 
 				const auto& [unit_id, spawns] = bw::rand_one(s_spawner_types);
-				Unit* unit = bw::create_unit_in_game((u16) unit_id, NeutralHostilePlayerId, spawn.position.x, spawn.position.y);
+				Unit* unit = bw::create_unit_in_game((u16) unit_id, NeutralHostilePlayer, spawn.position.x, spawn.position.y);
 				if (!unit) {
 					break;
 				}
@@ -59,7 +59,7 @@ UprisingGameMode::UprisingGameMode() {
 	}
 }
 
-void UprisingGameMode::tick_unit(Unit* unit) {
+void UprisingGameMode::OnUnitTick(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 
 	if (unit_ext->values[ValueUprisingSpawner] && !unit_ext->timers[TimerUprisingSpawn]) {
@@ -75,7 +75,7 @@ void UprisingGameMode::tick_unit(Unit* unit) {
 			bool two_per_egg = units_dat::base_property[spawn_id] & UnitProperty::TwoUnitsIn1Egg;
 			u32 spawn_count = two_per_egg ? 2 : 1;
 			for (u32 i = 0; i < spawn_count; i++) {
-				bw::create_unit_in_game(spawn_id, NeutralHostilePlayerId, unit->position.x, unit->position.y, unit);
+				bw::create_unit_in_game(spawn_id, NeutralHostilePlayer, unit->position.x, unit->position.y, unit);
 			}
 			unit_ext->timers[TimerUprisingSpawn] = units_dat::time_cost[spawn_id];
 		} else {

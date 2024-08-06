@@ -1,5 +1,5 @@
 #include "unit_search.h"
-#include <BW\api.h>
+#include "BW/api.h"
 
 bool is_point_in_rect(Point16 point, Box32 rect) {
 	return point.x >= rect.left
@@ -248,4 +248,8 @@ bool corpse_flag_match(Thingy* target, Thingy* center, u32 flags, const std::uno
 		return false;
 	}
 	return true;
+}
+
+u16 bw_random() {
+	return bw::random();
 }

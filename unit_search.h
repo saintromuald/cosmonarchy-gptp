@@ -65,7 +65,10 @@ struct EffectField;
 namespace bw {
 Box32 clamp_box32(Box32 rect);
 u32 distance_between(Point16 p1, Point16 p2);
+bool are_mutual_allies(u32 a, u32 b);
 };
+
+u16 bw_random();
 
 void refresh_search_index(); // must be done once per frame
 void update_search_index_effects(); // must be done once per frame after effects are updated
@@ -146,8 +149,37 @@ public:
         });
     }
 
+    auto owned_by(this auto&& self, u32 player) requires std::same_as<T, Unit> {
+        return self.filter_by([player](Unit* unit) {
+            return unit->player == player;
+        });
+    }
+
+    auto not_owned_by(this auto&& self, u32 player) requires std::same_as<T, Unit> {
+        return self.filter_by([player](Unit* unit) {
+            return unit->player != player;
+        });
+    }
+
+    auto allied_to(this auto&& self, u32 player) requires std::same_as<T, Unit> {
+        return self.filter_by([player](Unit* unit) {
+            return bw::are_mutual_allies(unit->player, player);
+        });
+    }
+
+    auto hostile_to(this auto&& self, u32 player) requires std::same_as<T, Unit> {
+        return self.filter_by([player](Unit* unit) {
+            return !bw::are_mutual_allies(unit->player, player);
+        });
+    }
+
+    auto not_neutral(this auto&& self) requires std::same_as<T, Unit> {
+        return self.filter_by([](Unit* unit) {
+            return unit->player < PlayerLimit;
+        });
+    }
+
     // TODO: add filter methods (to eventually simplify filter to just flags):
-    // owned_by(player), not_owned_by(player), allied_to(player), hostile_to(player),
     // facing(dir, angle_deg), not_facing(dir, angle_deg),
     // including(unit), excluding(unit),
     // allowed_unit_ids(unit_ids), excluded_unit_ids(unit_ids),
@@ -182,6 +214,10 @@ public:
         return self;
     }
 
+    auto take_fraction(this auto&& self, f32 fraction) {
+        return self.take(self.count() * fraction);
+    }
+
     T* first(auto&& filter_func) {
         for (T* elem : m_data) {
             if (filter_func(elem)) {
@@ -205,6 +241,21 @@ public:
             self.add(cargo_unit);
         }
 
+        return self;
+    }
+
+    auto shuffle(this auto&& self) requires std::same_as<T, Unit> {
+        struct BwRandomGenerator {
+            using result_type = unsigned short;
+
+            result_type operator()() {
+                return bw_random();
+            }
+
+            static constexpr result_type min() { return 0; }
+            static constexpr result_type max() { return 32767; }
+        };
+        std::ranges::shuffle(self.m_data, BwRandomGenerator{});
         return self;
     }
 
@@ -276,6 +327,10 @@ public:
 
         filter_junk(result);
         return result;
+    }
+
+    EntryArray<T> all() {
+        return rect({0, 0, *g_map_width_pixels, *g_map_height_pixels});
     }
 
     EntryArray<T> square(Point16 center, u32 radius) {

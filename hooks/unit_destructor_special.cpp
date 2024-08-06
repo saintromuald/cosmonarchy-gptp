@@ -6,6 +6,7 @@
 #include <BW/UnitFinder.h>
 #include "globals.h"
 #include <hooks/limits/sfx_extender.h>
+#include "GameModes/IGameMode.h"
 
 void augur_proc(Unit* augur, s32 radius) {
 	Unit* target = bw::UnitFinder::get_nearest_target(
@@ -309,6 +310,10 @@ void unit_on_death_behaviors(Unit* unit) {
 void unit_destructor_special_cases(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	unit->reset_supply_provided();
+
+	if (g_active_game_mode) {
+		g_active_game_mode->OnUnitDeath(unit);
+	}
 
 	// Cancel units that required an addon
 	if (units_dat::base_property[unit->id] & UnitProperty::Addon) {

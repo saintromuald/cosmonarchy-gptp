@@ -16,6 +16,7 @@
 #include "trigger_system\trigger_system.h"
 #include "hooks/unit_stats/armor_bonus.h"
 #include "hooks/unit_destructor_special.h"
+#include "GameModes/IGameMode.h"
 
 #include "BW\UnitFinder.h"
 
@@ -380,6 +381,10 @@ namespace hooks {
 		// Target based calcs
 		UnitExt* target_ext = get_unit_ext(data.target);
 
+		if (g_active_game_mode) {
+			g_active_game_mode->OnUnitDamageModifiers(data);
+		}
+
 		// Allied invincibility frames (for e.g. Blissful Embrace)
 		if (target_ext->timers[TimerAlliedInvFrames]) {
 			if (bw::is_allied_to(data.attacking_player_id, target_ext->values[ValueAlliedInvPlayer])) {
@@ -452,6 +457,10 @@ namespace hooks {
 	static void weapon_damage_behaviors(const WeaponDamageData& data) {
 		UnitExt* target_ext = get_unit_ext(data.target);
 		bool should_update_speed = false;
+
+		if (g_active_game_mode) {
+			g_active_game_mode->OnUnitDamage(data);
+		}
 
 		// No attacker here
 		switch (data.weapon_id) {
@@ -889,6 +898,9 @@ namespace hooks {
 			} break;
 		}
 
+		if (g_active_game_mode) {
+			g_active_game_mode->OnUnitDamageLifesteal(data, hp_factor, shields_factor);
+		}
 		if (hp_factor) {
 			data.attacker->heal_hp(damage_dealt * hp_factor, data.attacker);
 		}
@@ -904,13 +916,20 @@ namespace hooks {
 		// Note that the order here matters a lot
 		//
 		// 1. Plague
-		// 2. Unit-specific behaviors
-		// 3. Infestation
-		// 4. Regression
-		// 5. Tyranny of the Sun
-		// 6. Zombification
+		// 2. Game Mode
+		// 3. Unit-specific behaviors
+		// 4. Infestation
+		// 5. Regression
+		// 6. Tyranny of the Sun
+		// 7. Zombification
 		//
 		// We exit early to not trigger multiple different fatal damage handling at once
+
+		if (g_active_game_mode) {
+			if (!g_active_game_mode->OnUnitDamageFatal(data)) {
+				return false;
+			}
+		}
 
 		switch (data.weapon_id) {
 			case WeaponId::Plague: {
