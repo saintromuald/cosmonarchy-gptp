@@ -592,6 +592,7 @@ namespace GameType {
 		Uprising		= 36,
 		Duopoly			= 37,
 		Debug			= 38,
+		Embraced		= 39,
 	};
 }
 

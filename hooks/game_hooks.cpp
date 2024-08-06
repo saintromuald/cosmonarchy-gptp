@@ -683,6 +683,9 @@ namespace hooks {
 					}
 				}
 			} break;
+			case GameKind_Embraced: {
+				g_active_game_mode = std::make_unique<EmbracedGameMode>();
+			} break;
 		}
 
 		if (!bw::in_replay_or_witness()) {

@@ -3141,8 +3141,8 @@ GameKind get_game_kind() {
 		case GameType::Duopoly:
 			return GameKind_Duopoly;
 
-		case GameType::Debug:
-			return GameKind_Debug;
+		case GameType::Embraced:
+			return GameKind_Embraced;
 	}
 	return GameKind_Invalid;
 }
