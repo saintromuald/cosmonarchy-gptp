@@ -103,14 +103,14 @@ namespace {
 				POPAD
 				JMP Hook_AI_MorphBehavior_IsMorphedBuildingYes
 			}
-		} else {  // Code at 0x00435122
+		} else { // Code at 0x00435122
 			__asm {
 				POPAD
 				POP EDI
 				XOR EAX, EAX
 				POP ESI
 				POP EBP
-				RETN 8
+				RETN 0x08
 			}
 		}
 	}
@@ -151,7 +151,6 @@ namespace {
 		build_unit_id = unit->build_queue[unit->build_queue_slot];
 		if (!hooks::is_morphed_building(build_unit_id)) {
 			build_unit_id = unit->id;
-		}
 		__asm {
 			POPAD
 			MOVZX EBX, build_unit_id
@@ -247,17 +246,17 @@ namespace {
 		static Unit* unit;
 		static u16 unit_id;
 		static b32 ignoreIncomplete;
-		static u32 unitCount;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ignoreIncomplete, EDX
 			MOV unit_id, DI
 			MOV unit, ESI
 		}
-		unitCount = hooks::get_morph_building_id_count(unit, unit_id, ignoreIncomplete != 0);
+		result = hooks::get_morph_building_id_count(unit, unit_id, ignoreIncomplete != 0);
 		__asm {
 			POPAD
-			MOV EAX, unitCount
+			MOV EAX, result
 			JMP Hook_AI_GetWaitBuildUnitCount_Return
 		}
 	}

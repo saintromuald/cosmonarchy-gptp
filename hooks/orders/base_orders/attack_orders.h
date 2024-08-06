@@ -21,6 +21,7 @@ namespace hooks {
 	void order_attack_move_try_pick_target(Unit* unit, u8 order_id);				// 00477820
 	void orders_turret_attack(Unit* unit);											// 00477980
 	void orders_patrol(Unit* unit);													// 004780F0
+	void order_to_attack_target(Unit* target, Unit* unit, b32 process_subunit, b32 target_is_cloaked);	// 004780F0
 
 	void inject_attack_orders_hooks();
 }

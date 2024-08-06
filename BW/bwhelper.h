@@ -1766,4 +1766,5 @@ namespace helper {
 	void refresh_unit_after_move(Unit* unit);									// 00494160
 
 	void orders_attack_move(Unit* unit);										// 00479040
+	b32 ai_sieged_phalanx_can_attack_nearby_unit(Unit* unit);					// 00442460
 }
