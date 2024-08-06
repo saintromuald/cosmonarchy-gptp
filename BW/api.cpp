@@ -373,6 +373,17 @@ s32 get_polar_y(s32 distance, u8 angle) {
 	return distance * g_angle_distance[angle].y >> 8;
 }
 
+Point16 polar_point(Point16 center, f32 rads, f32 distance) {
+	return {
+		static_cast<u16>(center.x + cosf(rads) * distance),
+		static_cast<u16>(center.y + sinf(rads) * distance),
+	};
+}
+
+Point16 random_polar_point(Point16 center, f32 max_distance) {
+	return polar_point(center, bw::random_float() * 2 * PI, max_distance * sqrt(bw::random_float()));
+}
+
 //-------- Player information --------//
 
 s32 get_supply_remaining(u8 player, u8 raceId) {
@@ -964,6 +975,10 @@ u16 random(std::source_location src) {
 		return log_random(gptp::g_sync_random_logger, (g_last_random_number >> 16) % 32768, src, old_last_random);
 	}
 	return 0;
+}
+
+f32 random_float(std::source_location src) {
+	return random() / MaxRandom;
 }
 
 void refresh_console() { // 004C36C0
@@ -3801,7 +3816,8 @@ bool game_kind_supports_kills(GameKind game_kind) {
 		|| game_kind == GameKind_Omnipresence
 		|| game_kind == GameKind_FactionWars
 		|| game_kind == GameKind_Massacre
-		|| game_kind == GameKind_TheTurning;
+		|| game_kind == GameKind_TheTurning
+		|| game_kind == GameKind_Embraced;
 }
 
 bool unit_can_fire_secondary_weapon(Unit* unit) {

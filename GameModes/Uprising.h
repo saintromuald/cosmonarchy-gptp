@@ -12,8 +12,7 @@ struct UpstartSpawnLocation {
 class UprisingGameMode : public IGameMode {
 public:
 	UprisingGameMode();
-	~UprisingGameMode() override = default;
-	void tick_unit(Unit* unit) override;
+	void OnUnitTick(Unit* unit) override;
 
 private:
 	// NOTE: not using unordered_map, since ordering could be different and desync

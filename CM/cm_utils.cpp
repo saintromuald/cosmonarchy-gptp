@@ -189,6 +189,9 @@ const char* game_kind_to_string(GameKind game_kind) {
 		case GameKind_Duopoly: {
 			return "Duopoly";
 		} break;
+		case GameKind_Embraced: {
+			return "Embraced";
+		} break;
 	}
 	return "Custom";
 }
@@ -222,6 +225,9 @@ const char* game_kind_to_filename_string(GameKind game_kind) {
 		} break;
 		case GameKind_Duopoly: {
 			return "Duopoly(1)";
+		} break;
+		case GameKind_Embraced: {
+			return "Embraced(1)";
 		} break;
 	}
 }

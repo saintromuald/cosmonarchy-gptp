@@ -243,6 +243,10 @@ struct Unit : public UnitLayout
 	// Issue the @p order to the unit, using the given position as the target.
 	void order_to(u8 order_id, u16 x, u16 y);
 
+	inline void order_to(u8 order_id, Point16 pos) {
+		order_to(order_id, pos.x, pos.y);
+	}
+
 	// Issue the @p order to the unit, without a target
 	void order_computer(u8 order_id);
 

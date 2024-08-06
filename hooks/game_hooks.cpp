@@ -48,8 +48,10 @@
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "Discord.h"
 #include "hooks/rally_point.h"
-#include "game_modes/IGameMode.h"
-#include "game_modes/UprisingGameMode.h"
+#include "GameModes/IGameMode.h"
+#include "GameModes/Uprising.h"
+#include "GameModes/Embraced.h"
+#include "GameModes/TheTurning.h"
 #include "aise_signal.h"
 #include "game.h"
 
@@ -683,9 +685,15 @@ namespace hooks {
 					}
 				}
 			} break;
+			case GameKind_TheTurning: {
+				g_active_game_mode = std::make_unique<TheTurningGameMode>();
+			} break;
 			case GameKind_Embraced: {
 				g_active_game_mode = std::make_unique<EmbracedGameMode>();
 			} break;
+		}
+		if (g_active_game_mode) {
+			g_active_game_mode->OnInit();
 		}
 
 		if (!bw::in_replay_or_witness()) {
@@ -853,7 +861,7 @@ namespace hooks {
 		update_ext_variables();
 		update_threshold();
 		if (g_active_game_mode) {
-			g_active_game_mode->tick();
+			g_active_game_mode->OnTick();
 		}
 
 		bw::refresh_screen();
@@ -1051,6 +1059,10 @@ namespace hooks {
 		if (unit->player < PlayerLimit) {
 			unit_ext->values[ValuePlayerColor] = (u32)g_player_data.player_color_list[unit->player];
 		}
+
+		if (g_active_game_mode) {
+			g_active_game_mode->OnUnitInit(unit);
+		}
 	}
 
 	void tick_unit(Unit* unit, bool unit_is_hidden) {
@@ -1105,7 +1117,7 @@ namespace hooks {
 		}
 
 		if (g_active_game_mode) {
-			g_active_game_mode->tick_unit(unit);
+			g_active_game_mode->OnUnitTick(unit);
 		}
 
 		/*
@@ -1229,17 +1241,6 @@ namespace hooks {
 				bw::add_unit_overlay(unit, overlay_id);
 			} else {
 				bw::remove_unit_overlay(unit, overlay_id);
-			}
-		}
-
-		// Random movement for The Turning zombies
-		if (bw::get_game_kind() == GameKind_TheTurning && unit->player == NeutralHostilePlayerId) {
-			if (unit->main_order_id == OrderId::PlayerGuard) {
-				unit->order_to_idle();
-			}
-			if (unit->main_order_id != OrderId::JunkYardDog && !unit_ext->timers[TimerTurningRoam]) {
-				helper::add_order_targeting_nothing(unit, unit->order_queue_head, OrderId::JunkYardDog);
-				unit_ext->timers[TimerTurningRoam] = 3;
 			}
 		}
 

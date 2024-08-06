@@ -294,7 +294,7 @@ inline s32 get_angle(Vec32 start, Vec32 end) {
 
 inline f64 bw_angle_to_normal(s32 bw_angle);
 /// StarCraft's internal function used to quickly calculate distances between
-/// two points (x1, y1) and (x2, y2).
+/// two points (x1, y1) and (x2, y2;).
 /// Warning: This function is inaccurate for long distances.
 u32 distance_between(s32 x1, s32 y1, s32 x2, s32 y2);
 
@@ -316,6 +316,9 @@ s32 get_polar_x(s32 distance, u8 angle);
 /// Calculates the Y Cartesian coordinate from the given polar coordinates
 /// (distance, angle), using StarCraft's internal data.
 s32 get_polar_y(s32 distance, u8 angle);
+
+Point16 polar_point(Point16 center, f32 rads, f32 distance);
+Point16 random_polar_point(Point16 center, f32 max_distance);
 
 inline Point16 clamp_point(Point16 point) {
 	return {
@@ -704,10 +707,12 @@ void refresh_screen(s32 left, s32 top, s32 right, s32 bottom);
 /// Refreshes the entire screen.
 void refresh_screen();
 
+#define MaxRandom 32767.0
 /// Generates a pseudorandom number between 0 and 32767, inclusive. This is
 /// identical to the function used internally by StarCraft, and is guaranteed to
 /// generate the same sequence in a replay.
 u16 random(std::source_location src = std::source_location::current());
+f32 random_float(std::source_location src = std::source_location::current());
 
 //////////////////////////////////////////////////////////////// @}
 

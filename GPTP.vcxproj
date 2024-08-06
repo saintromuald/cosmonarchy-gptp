@@ -245,6 +245,7 @@
     <ClCompile Include="direct_sound.cpp" />
     <ClCompile Include="Discord.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="GameModes\TheTurning.cpp" />
     <ClCompile Include="hooks\audiovisuals\image_render.cpp" />
     <ClCompile Include="hooks\audiovisuals\image_render_grp.cpp" />
     <ClCompile Include="hooks\audiovisuals\image_render_inject.cpp" />
@@ -300,7 +301,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="game_modes\UprisingGameMode.cpp" />
+    <ClCompile Include="GameModes\Uprising.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="utility\RegConfig.cpp" />
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="BW\extender\TileHeight_extender.cpp" />
@@ -615,7 +617,9 @@
     <ClInclude Include="direct_sound.h" />
     <ClInclude Include="Discord.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="game_modes\IGameMode.h" />
+    <ClInclude Include="GameModes\Embraced.h" />
+    <ClInclude Include="GameModes\IGameMode.h" />
+    <ClInclude Include="GameModes\TheTurning.h" />
     <ClInclude Include="hooks\audiovisuals\image_render.h" />
     <ClInclude Include="hooks\DatExtend\dat_load.h" />
     <ClInclude Include="hooks\grafting\button_functions.h" />
@@ -654,7 +658,8 @@
     <ClInclude Include="include\yaml-cpp\src\token.h" />
     <ClInclude Include="maths.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="game_modes\UprisingGameMode.h" />
+    <ClInclude Include="GameModes\Uprising.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="utility\RegConfig.h" />
     <ClInclude Include="req_table.h" />
     <ClInclude Include="BW\enumerations\PortraitId.h" />

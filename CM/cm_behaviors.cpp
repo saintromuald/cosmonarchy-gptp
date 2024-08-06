@@ -50,15 +50,7 @@ Thingy* get_closest_active_corpse(Point16 position, u32 radius) {
 		.first([](Thingy* corpse) { return is_active_corpse(corpse); });
 }
 
-Unit* reclaim_corpse(Thingy* corpse, u32 player) {
-	if (!is_active_corpse(corpse)) {
-		return 0;
-	}
-
-	ThingyExt* corpse_ext = get_thingy_ext(corpse);
-	u32 original_player = corpse_ext->player;
-	u32 unit_id = corpse_ext->unit_id;
-	Point16 pos = corpse->sprite->position;
+Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id) {
 	if (units_dat::base_property[unit_id] & UnitProperty::Flyer) {
 		if (pos.y > 42) {
 			pos.y -= 42;
@@ -66,6 +58,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 			pos.y = 0;
 		}
 	}
+
 	Unit* unit = bw::create_unit_in_game(unit_id, player, pos.x, pos.y);
 	if (unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -74,14 +67,12 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit_ext->values[ValueReviveStarted] = 1;
 		unit_ext->timers[TimerReviveFlagClearMin] = 14; // 3;
 		unit_ext->timers[TimerReviveFlagClearMax] = 14;
-		unit_ext->values[ValueRegressionUnstable] = corpse_ext->create_origin == UnitId::ZergOcsalLarva;
 		switch (unit->id) {
 			case UnitId::ZergRililisk:
 			case UnitId::ZergRilirokor: {
 				unit->remove_timer = BroodspawnTimer;
 			} break;
 		}
-		consume_corpse(corpse);
 
 		unit->shields = 0;
 		unit->set_hitpoints(5 * 256);
@@ -91,11 +82,28 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 		unit_ext->timers[TimerReclaiming] = Reclamation::ReviveTimer;
 		unit_ext->timers[TimerStun]       = Reclamation::ReviveTimer;
 		unit_ext->values[ValueReclaimed]  = 1;
-		if (bw::get_game_kind() == GameKind_TheTurning && player == NeutralHostilePlayerId) {
+		if (bw::get_game_kind() == GameKind_TheTurning && player == NeutralHostilePlayer) {
 			unit_ext->values[ValueNoCorpse] = true;
 		}
 	}
 	return unit;
+}
+
+Unit* reclaim_corpse(Thingy* corpse, u32 player) {
+	if (!is_active_corpse(corpse)) {
+		return 0;
+	}
+	ThingyExt* corpse_ext = get_thingy_ext(corpse);
+	UnitId::Enum unit_id = (UnitId::Enum)corpse_ext->unit_id;
+	Point16 pos = corpse->sprite->position;
+
+	Unit* unit = spawn_reclaimed_unit(player, pos, unit_id);
+	if (unit) {
+		UnitExt* unit_ext = get_unit_ext(unit);
+		unit_ext->values[ValueRegressionUnstable] = corpse_ext->create_origin == UnitId::ZergOcsalLarva;
+		consume_corpse(corpse);
+	}
+    return unit;
 }
 
 void avenge_corpse(Thingy* corpse, u32 player) {
