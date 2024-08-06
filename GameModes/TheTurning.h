@@ -14,7 +14,6 @@ public:
 
     void OnInit() override;
     void OnTick() override;
-    void OnUnitInit(Unit* unit) override;
     void OnUnitTick(Unit* unit) override;
 
     void OnUnitDeath(Unit* unit) override;

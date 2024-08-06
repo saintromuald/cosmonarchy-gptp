@@ -29,10 +29,10 @@ void TheTurningGameMode::OnTick() {
             }
 
             f32 factor = 1;
-            factor *= cost / 200.0; // factor spawn time relative to 200 combined cost (e.g. maverick at 50 is 50/200 = 0.25)
-            factor /= 1 + 0.05 * (g_elapsed_time_frames / 24.0 / 60.0); // 5% faster spawn every minute
-            factor /= 1 + 0.01 * m_spawn_pool_size; // 1% faster for each unit in the pool
+            factor += 0.05 * (g_elapsed_time_frames / 24.0 / 60.0); // 5% faster spawn every minute
+            factor += 0.01 * m_spawn_pool_size; // 1% faster for each unit in the pool
             
+            factor *= cost / 200.0; // factor spawn time relative to 200 combined cost (e.g. maverick at 50 is 50/200 = 0.25)
             u32 player_count = 0;
             for (u32 i = 0; i < 8; i++) {
                 if (bw::player_is_witness(i)) {
@@ -63,13 +63,6 @@ void TheTurningGameMode::OnTick() {
             unit_ext->values[ValueTurningAggressiveMode] = true;
         }
     }
-}
-
-void TheTurningGameMode::OnUnitInit(Unit* unit) {
-    if (unit->player != NeutralHostilePlayer) {
-        return;
-    }
-    blissful_embrace(unit, unit->player, true);
 }
 
 void TheTurningGameMode::OnUnitTick(Unit* unit) {
