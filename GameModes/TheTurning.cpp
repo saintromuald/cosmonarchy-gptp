@@ -30,7 +30,20 @@ void TheTurningGameMode::OnTick() {
 
             f32 factor = 1;
             factor *= cost / 200.0; // factor spawn time relative to 200 combined cost (e.g. maverick at 50 is 50/200 = 0.25)
-            factor /= 1 + 0.2 * (g_elapsed_time_frames / 24.0 / 60.0); // 10% faster spawn every minute
+            factor /= 1 + 0.05 * (g_elapsed_time_frames / 24.0 / 60.0); // 5% faster spawn every minute
+            factor /= 1 + 0.01 * m_spawn_pool_size; // 1% faster for each unit in the pool
+            
+            u32 player_count = 0;
+            for (u32 i = 0; i < 8; i++) {
+                if (bw::player_is_witness(i)) {
+                    continue;
+                }
+                if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
+                    continue;
+                }
+                player_count++;
+            }
+            factor /= player_count; // times the amount of players
 
             m_spawn_timer.Start(DefaultSpawnTimer * factor);
         }
@@ -39,7 +52,7 @@ void TheTurningGameMode::OnTick() {
     if (m_wave_timer.HasElapsed()) {
         m_wave_timer.Start(WaveTimer);
 
-        f32 fraction = Map(g_elapsed_time_frames, WaveTimer, 5 * WaveTimer, 0.2, 0.8);
+        f32 fraction = Map(g_elapsed_time_frames, WaveTimer, 5 * WaveTimer, 0.1, 0.6);
         auto units = g_unit_search.all().owned_by(NeutralHostilePlayer).filter_by([](Unit* unit) {
             UnitExt* unit_ext = get_unit_ext(unit);
             return !unit_ext->values[ValueTurningAggressiveMode];

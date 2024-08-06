@@ -9,7 +9,7 @@ struct SpawnCandidate {
 
 class TheTurningGameMode : public IGameMode {
 public:
-    static constexpr u32 DefaultSpawnTimer = 15 * 24;
+    static constexpr u32 DefaultSpawnTimer = 60 * 24;
     static constexpr u32 WaveTimer = 3 * 60 * 24;
 
     void OnInit() override;
