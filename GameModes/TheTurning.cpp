@@ -113,7 +113,9 @@ void TheTurningGameMode::OnUnitTick(Unit* unit) {
 
 void TheTurningGameMode::OnUnitDeath(Unit* unit) {
     const auto unit_id = static_cast<UnitId::Enum>(unit->id);
-    if (units_dat::base_property[unit_id] & UnitProperty::Building || !unit_id_should_give_gas_in_massacre_mode(unit_id)) {
+    if (units_dat::base_property[unit_id] & UnitProperty::Building
+        || units_dat::base_property[unit_id] & UnitProperty::Worker
+        || !unit_id_should_give_gas_in_massacre_mode(unit_id)) {
         return;
     }
     
