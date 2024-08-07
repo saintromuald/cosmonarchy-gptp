@@ -140,23 +140,25 @@ Unit* TheTurningGameMode::Spawn() {
 
     auto buildings = g_unit_search.all().not_neutral().filter(0, FilterBuilding);
     std::optional<Point16> spawn_position = SampleBest(
-        [unit_id]() -> std::optional<Point16> {
-            Point16 point;
-            point.x = bw::random_float() * *g_map_width_pixels;
-            point.y = bw::random_float() * *g_map_height_pixels;
-
+        []() {
+            return Point16{
+                static_cast<u16>(bw::random_float() * *g_map_width_pixels),
+                static_cast<u16>(bw::random_float() * *g_map_height_pixels),
+            };
+        },
+        [unit_id, &buildings](const Point16& point) -> s32 {
             if (!(units_dat::base_property[unit_id] & UnitProperty::Flyer)) {
                 if (!helper::can_unit_id_fit_at_xy(point.x, point.y, unit_id)) {
-                    return {};
+                    return InvalidSample;
                 }
             }
-
-            return point;
-        },
-        [&buildings](const Point16& point) -> s32 {
             s32 score = 0;
             for (Unit* building : buildings) {
-                score += bw::distance_between(building->position, point);
+                f32 distance = bw::distance_between(building->position, point);
+                if (distance <= 16 * 32) {
+                    return InvalidSample;
+                }
+                score += distance;
             }
             return score;
         },
