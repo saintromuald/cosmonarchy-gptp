@@ -1082,6 +1082,10 @@ namespace hooks {
 		}
 		*/
 
+		if (unit->path) {
+			unit->path->collision_recheck_timer = 0;
+		}
+
 		Unit* overlay_unit = unit;
 		if (unit->status & UnitStatus::InTransport && unit->connected_unit) {
 			Unit* transport = unit->connected_unit;
