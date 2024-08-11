@@ -80,18 +80,18 @@ namespace {
 	const u32 Hook_Orders_Morph1_EggType_Return = 0x0045E048;
 	void __declspec(naked) unit_morph_wrapper_orders_morph1_egg_type() {
 		static Unit* unit;
-		static u32 morphEggType;
+		static u32 morph_egg_type;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit, ESI
 		}
 		unit->status &= ~(UnitStatus::Completed);
-		morphEggType = hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]);
-		assert(bw::is_zerg_egg_new(unit, true, false, morphEggType));
+		morph_egg_type = hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]);
+		assert(bw::is_zerg_egg_new(unit, true, false, morph_egg_type));
 		__asm {
 			POPAD
-			PUSH morphEggType
+			PUSH morph_egg_type
 			JMP Hook_Orders_Morph1_EggType_Return
 		}
 	}
@@ -101,31 +101,31 @@ namespace {
 	typedef void(__stdcall* CancelZergBuildingFunc)(Unit*);
 	CancelZergBuildingFunc cancel_zerg_building = (CancelZergBuildingFunc)0x0045DA40;
 
-	const u32 Func_ChangeUnitType = 0x0049FED0;
-	void change_unit_type(Unit* unit, u16 newUnitId) {
-		static u32 newUnitId_ = newUnitId;
-		newUnitId_ = newUnitId;
+	void change_unit_type(Unit* unit, u16 new_unit_id) {
+		const u32 func_address = 0x0049FED0;
+		static u32 new_unit_id_xd;
+		new_unit_id_xd = new_unit_id;
 		__asm {
 			PUSHAD
-			PUSH newUnitId_
+			PUSH new_unit_id_xd
 			MOV EAX, unit
-			CALL Func_ChangeUnitType
+			CALL func_address
 			POPAD
 		}
 	}
 
-	const u32 Func_ReplaceSpriteImages = 0x00499BB0;
-	void replace_sprite_images(Sprite* sprite, u16 imageId, u8 imageDirection) {
-		static u32 imageId_;
-		static u32 imageDirection_;
-		imageId_ = imageId;
-		imageDirection_ = imageDirection;
+	void replace_sprite_images(Sprite* sprite, u16 image_id, u8 image_direction) {
+		const u32 func_address = 0x00499BB0;
+		static u32 image_id_xd;
+		static u32 image_direction_xd;
+		image_id_xd = image_id;
+		image_direction_xd = image_direction;
 		__asm {
 			PUSHAD
-			PUSH imageDirection_
-			PUSH imageId_
+			PUSH image_direction_xd
+			PUSH image_id_xd
 			MOV EAX, sprite
-			CALL Func_ReplaceSpriteImages
+			CALL func_address
 			POPAD
 		}
 	}
@@ -137,7 +137,6 @@ namespace {
 		if (unit->is_dead() || unit->status & UnitStatus::Completed || (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit)) {
 			return;
 		}
-
 		if (bw::is_conventional_unit_morph_source(unit->id, false) || bw::is_conventional_unit_morph_result(unit->id)) {
 			return;
 		}
