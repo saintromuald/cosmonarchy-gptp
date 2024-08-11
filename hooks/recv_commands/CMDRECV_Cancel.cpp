@@ -2,8 +2,7 @@
 #include <BW/api.h>
 #include "hooks\orders\building_making\building_zerg.h"
 
-namespace hooks
-{
+namespace hooks {
 	// Hooked because the default code didn't allow for multiple units
 	void cmdrecv_cancel_nuke() {
 		*g_unit_iterator_pos = 0;
@@ -60,11 +59,9 @@ namespace hooks
 	}
 
 	// Hooked because the default code didn't allow for multi-selection
-	void cmdrecv_cancel_train(u16 slot) // 004C0100
-	{
+	void cmdrecv_cancel_train(u16 slot) { // 004C0100
 		*g_unit_iterator_pos = 0;
-		while (Unit* unit = get_active_player_next_selection())
-		{
+		while (Unit* unit = get_active_player_next_selection()) {
 			if (unit->id != UnitId::ZergLarva
 			&&  unit->id != UnitId::ZergOcsalLarva
 			&& !bw::is_conventional_unit_morph_source(unit->id)

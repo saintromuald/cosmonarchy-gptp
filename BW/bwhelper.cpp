@@ -2222,12 +2222,12 @@ namespace helper {
 		}
 	}
 
-	void replace_sprite_images(Sprite* sprite, u32 imageId, u32 imageDirection) {
+	void replace_sprite_images(Sprite* sprite, u32 image_id, u32 image_direction) {
 		const u32 func_address = 0x00499BB0;
 		__asm {
 			PUSHAD
-			PUSH imageDirection
-			PUSH imageId
+			PUSH image_direction
+			PUSH image_id
 			MOV EAX, sprite
 			CALL func_address
 			POPAD

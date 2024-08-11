@@ -269,7 +269,7 @@ namespace helper {
 	bool begin_building(Unit* unit);																		// 00467030
 	Unit* begin_gas_building(Unit* unit, u32 unit_id);														// 004678A0
 	void add_overlay_below_main(Sprite* sprite, u32 imageId, u32 x_offset, u32 y_offset, u32 direction);	// 00498D70
-	void replace_sprite_images(Sprite* sprite, u32 imageId, u32 imageDirection);							// 00499BB0
+	void replace_sprite_images(Sprite* sprite, u32 image_id, u32 image_direction);							// 00499BB0
 	void display_last_network_error_for_player(u32 player);										            // 0049E530
 	void update_unit_strength(Unit* unit);												                    // 0049FA40
 	void iscript_opcode_cases(Image* image, void* iscript_header, u32 dont_modify_image, u32 out_value);	// 004D74C0

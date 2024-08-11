@@ -2,9 +2,8 @@
 #include <BW/structures/Unit.h>
 
 // Many of these are now deprecated! -Pr0nogo
-namespace AI
-{
-	Unit* find_best_lockdown_target(Unit* caster, bool isUnderAttack);
+namespace AI {
+	Unit* find_best_lockdown_target(Unit* caster, bool is_under_attack);
 	Unit* find_best_nuke_launch_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_defensive_matrix_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_emp_shockwave_target(Unit* caster, bool isUnderAttack);
