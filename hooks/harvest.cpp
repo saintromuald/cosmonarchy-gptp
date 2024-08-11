@@ -383,7 +383,7 @@ namespace hooks {
 		Unit* final_worker = 0;
 		while (worker) {
 			u32 previous_status = worker->status;
-			if (!bw::unit_is_stunned(worker)) {
+			if (!worker->is_frozen()) {
 				if (worker->main_order_id == OrderId::CanEnterGasMine || worker->main_order_id == OrderId::CanHarvestOre) {
 					final_worker = worker;
 				}

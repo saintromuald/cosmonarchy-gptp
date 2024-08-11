@@ -272,51 +272,39 @@ namespace hooks {
 
 	// Also known as 004EC170 perform_secondary_orders
 	// Less complex than the one about main orders, so not using any array. Still using a switch though. -GPTP
-	void secondary_orders_root(Unit* unit)
-	{
+	void secondary_orders_root(Unit* unit) {
 		if (unit->secondary_order_id == OrderId::Hallucination2) {
 			helper::EAX_order(unit, 0x004F63A0);
 		} else if (!unit->is_frozen()) {
-			switch (unit->secondary_order_id)
-			{
-				case OrderId::BuildAddon:
-				{
+			switch (unit->secondary_order_id) {
+				case OrderId::BuildAddon: {
 					helper::EAX_order(unit, 0x004E6790);
 				} break;
-				case OrderId::Cloak:
-				{
+				case OrderId::Cloak: {
 					helper::EAX_order(unit, 0x00491790);
 				} break;
-				case OrderId::CloakNearbyUnits:
-				{
+				case OrderId::CloakNearbyUnits: {
 					helper::EDI_order(unit, 0x00491C20);
 				} break;
-				case OrderId::Decloak:
-				{
+				case OrderId::Decloak: {
 					helper::EAX_order(unit, 0x004633E0);
 				} break;
-				case OrderId::ShieldBattery:
-				{
+				case OrderId::ShieldBattery: {
 					helper::EDI_order(unit, 0x004932D0);
 				} break;
-				case OrderId::SpawningLarva:
-				{
+				case OrderId::SpawningLarva: {
 					helper::ESI_order(unit, 0x004EA780);
 				} break;
-				case OrderId::SpreadCreep:
-				{
+				case OrderId::SpreadCreep: {
 					helper::EAX_order(unit, 0x004EA880);
 				} break;
-				case OrderId::TrainFighter:
-				{
+				case OrderId::TrainFighter: {
 					helper::EAX_order(unit, 0x00466790);
 				} break;
-				case OrderId::TrainUnit:
-				{
+				case OrderId::TrainUnit: {
 					helper::EAX_order(unit, 0x00468420);
 				} break;
-				default:
-				{
+				default: {
 				} break;
 			}
 		}
@@ -325,12 +313,10 @@ namespace hooks {
 	// Also known as 004EC4D0 ordersEntries | perform_orders
 	// Called between updateUnitState() (see hooks\update_unit_state) and performSecondaryOrders() (see secondary_orders_root)
 	// Implementation quite different from original because hard to manipulate.
-	void main_orders_root(Unit* unit)
-	{
+	void main_orders_root(Unit* unit) {
 		// 1st part is functions that ignore disabled/stunned/other statuses.
 		// Not implemented through an array like original, since there are only 4 valid cases. -GPTP
-		switch (unit->main_order_id)
-		{
+		switch (unit->main_order_id) {
 			case OrderId::Die: {
 				helper::PUSH_order(unit, main_order_func_offsets[OrderId::Die][0]);
 			} break;
@@ -389,32 +375,25 @@ namespace hooks {
 					// Ignore order_queue_timer, and if they change the main_order_id to something that can be used
 					// in the 3rd part, then both the 2nd and 3rd part functions would indeed be used. -GPTP
 					if (main_order_func_offsets[unit->main_order_id][2] == 1 && main_order_func_offsets[unit->main_order_id][0] != NOTVALID) {
-						switch (main_order_func_offsets[unit->main_order_id][1])
-						{
-							case Func_Type::EAX:
-							{
+						switch (main_order_func_offsets[unit->main_order_id][1]) {
+							case Func_Type::EAX: {
 								helper::EAX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 							} break;
-							case Func_Type::EBX:
-							{
+							case Func_Type::EBX: {
 								helper::EBX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 							} break;
-							case Func_Type::ECX:
-							{
+							case Func_Type::ECX: {
 								helper::ECX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 							} break;
-							case Func_Type::EDI:
-							{
+							case Func_Type::EDI: {
 								helper::EDI_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 							} break;
-							case Func_Type::ESI:
-							{
+							case Func_Type::ESI: {
 								helper::ESI_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 							} break;
-							case Func_Type::PUSH:
-							{
+							case Func_Type::PUSH: {
 								helper::PUSH_order(unit, main_order_func_offsets[unit->main_order_id][0]);
-							} break;	
+							} break;
 						}
 					}
 	
@@ -443,30 +422,23 @@ namespace hooks {
 								helper::ECX_order(unit, main_order_func_offsets[OrderId::Nothing2][0]);
 							}
 						} else if (main_order_func_offsets[unit->main_order_id][2] == 2) {
-							switch (main_order_func_offsets[unit->main_order_id][1])
-							{
-								case Func_Type::EAX:
-								{
+							switch (main_order_func_offsets[unit->main_order_id][1]) {
+								case Func_Type::EAX: {
 									helper::EAX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 								} break;
-								case Func_Type::EBX:
-								{
+								case Func_Type::EBX: {
 									helper::EBX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 								} break;
-								case Func_Type::ECX:
-								{
+								case Func_Type::ECX: {
 									helper::ECX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 								} break;
-								case Func_Type::EDI:
-								{
+								case Func_Type::EDI: {
 									helper::EDI_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 								} break;
-								case Func_Type::ESI:
-								{
+								case Func_Type::ESI: {
 									helper::ESI_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 								} break;
-								case Func_Type::PUSH:
-								{
+								case Func_Type::PUSH: {
 									helper::PUSH_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 								} break;
 							}
@@ -478,16 +450,14 @@ namespace hooks {
 	}
 
 	// Hooked to refund queued structures. -Pr0nogo
-	void do_next_queued_order(Unit* unit) // 00475000
-	{
+	void do_next_queued_order(Unit* unit) { // 00475000
 		Order* queue_head = unit->order_queue_head;
 		if (unit->unit_ai) {
 			if (queue_head) {
 				if (unit->status & UnitStatus::Burrowed) {
 					u32 order_queue_id = queue_head->order_id;
 					if (order_queue_id) {
-						if (order_queue_id != OrderId::Unburrow && order_queue_id != OrderId::Burrowed && order_queue_id != OrderId::ComputerAI)
-						{
+						if (order_queue_id != OrderId::Unburrow && order_queue_id != OrderId::Burrowed && order_queue_id != OrderId::ComputerAI) {
 							if (!unit_id_is_trap(unit->id)
 							&& (!unit_id_is_burrowed_attacker(unit->id) || order_queue_id != OrderId::Guard && order_queue_id != OrderId::AttackFixedRange))
 							{

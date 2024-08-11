@@ -2,8 +2,7 @@
 #include <BW/api.h>
 #include <globals.h>
 
-namespace hooks
-{
+namespace hooks {
 	// Cloak all units near @p cloaker.
 	void cloak_nearby_units(Unit* cloaker) {
 		bool needs_refresh = false;

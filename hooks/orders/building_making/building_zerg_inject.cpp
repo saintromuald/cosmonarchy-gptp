@@ -5,10 +5,8 @@
 #include <BW/api.h>
 #include <algorithm>
 
-namespace
-{
-	void __declspec(naked) orders_is_morphing_wrapper()
-	{
+namespace {
+	void __declspec(naked) orders_is_morphing_wrapper() {
 		static Unit* building;
 		static b32 result;
 		__asm {
@@ -23,8 +21,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_zerg_build_self_wrapper()
-	{
+	void __declspec(naked) orders_zerg_build_self_wrapper() {
 		static Unit* building;
 		__asm {
 			MOV building, EAX
@@ -37,8 +34,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cancel_zerg_building_wrapper()
-	{
+	void __declspec(naked) cancel_zerg_building_wrapper() {
 		static Unit* unit;
 		__asm {
 			PUSH EBP
@@ -58,8 +54,7 @@ namespace
 
 	const u32 begin_gas_building_6790F = 0x0046790F;
 	void __declspec(naked) begin_gas_building_patch() {
-		__asm
-		{
+		__asm {
 			MOV		EDX, [ESI + 0xC]	// unit->sprite
 			MOV		DL, [EDX + 0xA]		// unit->sprite->player
 			MOV		ECX, EBX
@@ -68,28 +63,23 @@ namespace
 	}
 }
 
-namespace
-{
+namespace {
 	//-------- isMorphingBuilding() --------//
 
-	void __declspec(naked) is_remorphing_building_wrapper()
-	{
+	void __declspec(naked) is_remorphing_building_wrapper() {
 		static Unit* unit;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit, EAX
 		}
-		if (!(unit->status & UnitStatus::Completed) && hooks::is_morphed_building(unit->build_queue[unit->build_queue_slot]))
-		{
+		if (!(unit->status & UnitStatus::Completed) && hooks::is_morphed_building(unit->build_queue[unit->build_queue_slot])) {
 			__asm {
 				POPAD
 				MOV EAX, 1
 				RETN
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				XOR EAX, EAX; // Set EAX to 0
@@ -101,23 +91,19 @@ namespace
 	//-------- ai_morph_behavior() --------//
 
 	const u32 Hook_AI_MorphBehavior_IsMorphedBuildingYes = 0x0043508B;
-	void __declspec(naked) is_morphed_building_wrapper_ai_morph_behavior()
-	{
+	void __declspec(naked) is_morphed_building_wrapper_ai_morph_behavior() {
 		static u16 buildUnitId;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV buildUnitId, DI
 		}
-		if (hooks::is_morphed_building(buildUnitId))
-		{
+		if (hooks::is_morphed_building(buildUnitId)) {
 			__asm {
 				POPAD
 				JMP Hook_AI_MorphBehavior_IsMorphedBuildingYes
 			}
-		}
-		else
-		{  // Code at 0x00435122
+		} else {  // Code at 0x00435122
 			__asm {
 				POPAD
 				POP EDI
@@ -132,24 +118,21 @@ namespace
 	//-------- statdata_UnitWireframeUpdate() --------//
 
 	const u32 Hook_IsMorphedBuilding_ConsoleWireframeUpdateBack = 0x00456955;
-	void __declspec(naked) is_morphed_building_wrapper_console_wireframe_update()
-	{
+	void __declspec(naked) is_morphed_building_wrapper_console_wireframe_update() {
 		static Unit* unit;
-		static u16 buildUnitId;
+		static u16 build_unit_id;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit, ESI
 		}
-		buildUnitId = unit->build_queue[unit->build_queue_slot];
-		if (unit->status & UnitStatus::Completed
-			|| !hooks::is_morphed_building(buildUnitId))
-		{
-			buildUnitId = unit->id;
+		build_unit_id = unit->build_queue[unit->build_queue_slot];
+		if (unit->status & UnitStatus::Completed || !hooks::is_morphed_building(build_unit_id)) {
+			build_unit_id = unit->id;
 		}
 		__asm {
 			POPAD
-			MOVZX ECX, buildUnitId
+			MOVZX ECX, build_unit_id
 			JMP Hook_IsMorphedBuilding_ConsoleWireframeUpdateBack
 		}
 	}
@@ -157,45 +140,39 @@ namespace
 	//-------- orders_zerg_build_self() --------//
 
 	const u32 Hook_isMorphedBuilding_ZergBuildSelf_GetTypeBack = 0x0045D53F;
-	void __declspec(naked) is_morphed_building_wrapper_zerg_build_self_get_id()
-	{
+	void __declspec(naked) is_morphed_building_wrapper_zerg_build_self_get_id() {
 		static Unit* unit;
-		static u16 buildUnitId;
+		static u16 build_unit_id;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit, EDI
 		}
-		buildUnitId = unit->build_queue[unit->build_queue_slot];
-		if (!hooks::is_morphed_building(buildUnitId))
-		{
-			buildUnitId = unit->id;
+		build_unit_id = unit->build_queue[unit->build_queue_slot];
+		if (!hooks::is_morphed_building(build_unit_id)) {
+			build_unit_id = unit->id;
 		}
 		__asm {
 			POPAD
-			MOVZX EBX, buildUnitId
+			MOVZX EBX, build_unit_id
 			JMP Hook_isMorphedBuilding_ZergBuildSelf_GetTypeBack
 		}
 	}
 
-	void __declspec(naked) is_morphed_building_wrapper_zerg_build_self_complete()
-	{
+	void __declspec(naked) is_morphed_building_wrapper_zerg_build_self_complete() {
 		static u16 unit_id;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit_id, AX
 		}
-		if (hooks::is_morphed_building(unit_id))
-		{
+		if (hooks::is_morphed_building(unit_id)) {
 			__asm {
 				POPAD
 				MOV EAX, 1
 				RETN
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				XOR EAX, EAX;
@@ -205,33 +182,16 @@ namespace
 	}
 
 	// This was moved out of the naked function to prevent stack corruption bug
-	void zerg_build_self_update_timer_and_hitpoints(Unit* unit, u16 unit_id)
-	{
-		bool isOperationCwalEnabled = bw::is_cheat_enabled(CheatFlags::OperationCwal);
-		if (unit->remaining_build_time)
-		{
-			if (isOperationCwalEnabled)
-			{
-				unit->remaining_build_time -= std::min<u16>(unit->remaining_build_time, 16);
-			}
-			else
-			{
-				unit->remaining_build_time--;
-			}
+	void zerg_build_self_update_timer_and_hitpoints(Unit* unit, u16 unit_id) {
+		if (unit->remaining_build_time) {
+			unit->remaining_build_time--;
 		}
-		if (!hooks::is_morphed_building(unit_id))
-		{
-			u32 hpGain = unit->build_repair_hp_gain;
-			if (isOperationCwalEnabled)
-			{
-				hpGain *= 16;
-			}
-			unit->set_hitpoints(unit->hitpoints + hpGain);
+		if (!hooks::is_morphed_building(unit_id)) {
+			unit->set_hitpoints(unit->hitpoints + unit->build_repair_hp_gain);
 		}
 	}
 
-	void __declspec(naked) is_morphed_building_wrapper_zerg_build_self_set_timer()
-	{
+	void __declspec(naked) is_morphed_building_wrapper_zerg_build_self_set_timer() {
 		static Unit* unit;
 		static u16 unit_id;
 		__asm {
@@ -254,16 +214,14 @@ namespace
 
 	const u32 Hook_IsMorphedBuilding_CancelZergBuildingContinue = 0x0045DA93;
 	const u32 Func_CancelZergBuildingRemorph = 0x0045D410;
-	void __declspec(naked) is_morphed_building_wrapper_cancel_zerg_building()
-	{
+	void __declspec(naked) is_morphed_building_wrapper_cancel_zerg_building() {
 		static Unit* unit;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit, EBX
 		}
-		if (!(unit->status & UnitStatus::Completed) && hooks::is_morphed_building(unit->build_queue[unit->build_queue_slot]))
-		{
+		if (!(unit->status & UnitStatus::Completed) && hooks::is_morphed_building(unit->build_queue[unit->build_queue_slot])) {
 			__asm {
 				POPAD
 				MOV EAX, EBX
@@ -273,9 +231,7 @@ namespace
 				POP EBP
 				RETN 0x04
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP Hook_IsMorphedBuilding_CancelZergBuildingContinue
@@ -287,8 +243,7 @@ namespace
 
 	// Inject @ 0x00433286
 	const u32 Hook_AI_GetWaitBuildUnitCount_Return = 0x004333D3;
-	void __declspec(naked) get_morph_building_id_count_wrapper_ai_get_wait_build_unit_count()
-	{
+	void __declspec(naked) get_morph_building_id_count_wrapper_ai_get_wait_build_unit_count() {
 		static Unit* unit;
 		static u16 unit_id;
 		static b32 ignoreIncomplete;
@@ -311,21 +266,20 @@ namespace
 
 	// Inject @ 0x004334D9
 	const u32 Hook_AI_GetUnitCount_Return = 0x00433588;
-	void __declspec(naked) get_morph_building_id_count_type_ai_get_unit_count()
-	{
+	void __declspec(naked) get_morph_building_id_count_type_ai_get_unit_count() {
 		static Unit* unit;
 		static u16 unit_id;
-		static u32 unitCount;
+		static u32 unit_count;
 		__asm {
 			PUSHAD
 			MOV unit_id, DI
 			MOV unit, ESI
-			MOV unitCount, EBX
+			MOV unit_count, EBX
 		}
-		unitCount += hooks::get_morph_building_id_count(unit, unit_id, false);
+		unit_count += hooks::get_morph_building_id_count(unit, unit_id, false);
 		__asm {
 			POPAD
-			MOV EBX, unitCount
+			MOV EBX, unit_count
 			JMP Hook_AI_GetUnitCount_Return
 		}
 	}
@@ -335,8 +289,7 @@ namespace
 	// Inject @ 0x00436439
 
 	const u32 Hook_MorphSpecialStateContinue = 0x0045D2B1;
-	void __declspec(naked) morph_special_state_setup_wrapper()
-	{
+	void __declspec(naked) morph_special_state_setup_wrapper() {
 		static Sprite* sprite;
 		__asm {
 			PUSHAD
@@ -350,8 +303,7 @@ namespace
 	}
 
 	const u32 Hook_AI_ManageBases_Return = 0x004364F7;
-	void __declspec(naked) get_morph_building_id_count_wrapper_ai_manage_bases()
-	{
+	void __declspec(naked) get_morph_building_id_count_wrapper_ai_manage_bases() {
 		static Unit* unit;
 		static u16 unit_id;
 		static u32 unitCount;
@@ -449,8 +401,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_morph2_wrapper() // 0045D0D0
-	{
+	void __declspec(naked) orders_morph2_wrapper() { // 0045D0D0
 		static Unit* unit;
 		__asm {
 			PUSH EBP
@@ -470,8 +421,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) droleth_build_excisant_wrapper() // 0045D790
-	{
+	void __declspec(naked) droleth_build_excisant_wrapper() { // 0045D790
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
@@ -485,10 +435,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_building_zerg_hooks()
-	{
+namespace hooks {
+	void inject_building_zerg_hooks() {
 		jump_patch(orders_is_morphing_wrapper,											0x0045CD00, 2);
 		jump_patch(orders_zerg_build_self_wrapper,										0x0045D500, 0);
 		jump_patch(cancel_zerg_building_wrapper,										0x0045DA40, 1);

@@ -90,8 +90,7 @@ namespace hooks
 		}
 	}
 
-	void orders_attack_fixed_range(Unit* unit) // 00477D00
-	{
+	void orders_attack_fixed_range(Unit* unit) { // 00477D00
 		Unit* target;
 		bool jump_to_77E48 = false;
 		bool jump_to_77E99 = false;
@@ -183,8 +182,7 @@ namespace hooks
 		}
 	}
 
-	void orders_sap_unit(Unit* unit) // 004788E0
-	{
+	void orders_sap_unit(Unit* unit) { // 004788E0
 		Unit* target = unit->order_target.unit;
 		if (!target) {
 			if (unit->order_queue_head) {
@@ -210,8 +208,7 @@ namespace hooks
 					}
 				}
 
-				if (!bStopThere && unit->main_order_state == 1)
-				{
+				if (!bStopThere && unit->main_order_state == 1) {
 					if (!unit->is_target_within_min_range(target, 4) && unit->get_movable_state() != 2) {
 						if (unit->is_target_within_min_range(target, 256) && target->movement_flags & MovementFlags_Accelerating) {
 							helper::move_to_collide(unit, target);
@@ -657,8 +654,7 @@ namespace hooks
 	}
 
 	// Hooked to fix null sprite crash. -Pr0nogo
-	s32 order_attack_behavior(Unit* unit) // 00478540
-	{
+	s32 order_attack_behavior(Unit* unit) { // 00478540
 		u32 status = unit->status;
 		Unit* target_unit = unit->order_target.unit;
 		if (unit->is_frozen()

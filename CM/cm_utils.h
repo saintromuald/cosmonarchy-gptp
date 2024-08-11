@@ -24,3 +24,4 @@ void rescue_unit(Unit* unit, u32 player);
 bool can_auto_heal(Unit* unit);
 bool unit_can_be_repulsed(Unit* unit);
 void specialist_energy_error(Unit* unit);
+bool unit_should_give_gas_in_massacre_mode(Unit* unit);

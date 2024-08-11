@@ -963,12 +963,10 @@ namespace hooks
 	}
 
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
-	void stats_queue_progress(BinDlg* dialog) // 004268D0
-	{
+	void stats_queue_progress(BinDlg* dialog) { // 004268D0
 		Unit* unit = *g_active_portrait_unit;
 		BinDlg* current_dialog;
-		if (dialog->control_type == DialogControlTypes::DialogBoxDC)
-		{
+		if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
 			current_dialog = dialog->child_dialog;
 		} else {
 			current_dialog = dialog->parent->child_dialog;
@@ -999,38 +997,32 @@ namespace hooks
 			}
 
 			u32 progress = 0;
-			if (built_unit)
-			{
+			if (built_unit) {
 				progress = helper::get_remaining_build_time_percentage(built_unit);
 			}
 
 			helper::dialog_set_progress_bar_value(dialog, 7, progress);
 			u32 queue_slot = 0;
-			while (current_dialog)
-			{
-				if (queue_slot >= 5)
-				{
+			while (current_dialog) {
+				if (queue_slot >= 5) {
 					current_dialog = 0;
 				} else {
 					u32 slot_unit_id = unit->build_queue[(unit->build_queue_slot + queue_slot) % 5];
 					char* slot_text;
-					if (queue_slot == 0)
-					{
+					if (queue_slot == 0) {
 						slot_text = (char*)FORMATSTRING_COLORYELLOW_VALUE_COLORCYAN_SPACE;	// queued slot number display (yellow)
 					} else {
 						slot_text = (char*)FORMATSTRING_VALUE_SPACE;						// active slot number display (cyan)
 					}
 
 					helper::bw_sprintf_s(g_queues_buffers[queue_slot], 8, slot_text, queue_slot + 1);
-					if (queue_slot == 0 || queue_slot >= 4)
-					{
+					if (queue_slot == 0 || queue_slot >= 4) {
 						current_dialog->graphic = 2;
 					} else {
 						current_dialog->graphic = 4;
 					}
 
-					if (slot_unit_id != UnitId::None)
-					{
+					if (slot_unit_id != UnitId::None) {
 						current_dialog->stat_button_user->button_grp = *DatExt::get_unit_icons_pointer();
 						current_dialog->stat_button_user->grp_frame = slot_unit_id;
 						current_dialog->stat_button_user->type = 3;
@@ -1055,23 +1047,19 @@ namespace hooks
 			}
 
 			u32 progress_string_id = 0;
-			if (unit->status & UnitStatus::GroundedBuilding && unit->is_frozen())
-			{
+			if (unit->status & UnitStatus::GroundedBuilding && unit->is_frozen()) {
 				progress_string_id = 0x33C; // "<6>Disabled" (<6> means 0x6 byte for red) (Unpowered for Protoss)
 			} else {
 				u32 unit_id = unit->id;
-				if (!(unit->status & UnitStatus::Completed))
-				{
+				if (!(unit->status & UnitStatus::Completed)) {
 					unit_id = unit->build_queue[unit->build_queue_slot];
-					if (bw::is_zerg_building_morph_result(unit_id))
-					{
+					if (bw::is_zerg_building_morph_result(unit_id)) {
 						unit_id = unit->id;
 					}
 				}
 
 				// Note: original code recalculated unitId/built_unit_id, not done here to optimize things. -GPTP
-				if (unit_id_is_protoss_warp_factory(unit_id)) // TODO: Revisit this, probably a saner way to achieve this result, especially since it doesn't even scale if we want the string to say "assembling" based on queued unit. -Pr0nogo
-				{
+				if (unit_id_is_protoss_warp_factory(unit_id)) { // TODO: Revisit this, a saner way to achieve this result, especially since it doesn't even scale if we want the string to say "assembling" based on queued unit. -Pr0nogo
 					progress_string_id = 0x303; //"Morphing" ("Building" for Terran, "Opening Warp Gate" for Protoss)
 				} else {
 					progress_string_id = 0x306; //"Morphing" ("Building" for Terran and Protoss)
@@ -1081,15 +1069,13 @@ namespace hooks
 
 			// Simplified lots of code here, should work. -GPTP
 			char* status_text = (char*)g_stat_txt_tbl_new->get_string(progress_string_id + unit->get_race());
-			if (dialog->control_type == DialogControlTypes::DialogBoxDC)
-			{
+			if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
 				current_dialog = dialog->child_dialog;
 			} else {
 				current_dialog = dialog->parent->child_dialog;
 			}
 
-			while (current_dialog && (s16)current_dialog->index != -15)
-			{
+			while (current_dialog && (s16)current_dialog->index != -15) {
 				current_dialog = current_dialog->next;
 			}
 			// Spoiler: it didn't work.
@@ -1097,12 +1083,9 @@ namespace hooks
 				current_dialog->text = status_text;
 			}
 
-			while (current_dialog)
-			{
-				if (!(current_dialog->flags & BinDlgFlags::Visible))
-				{
-					struct
-					{
+			while (current_dialog) {
+				if (!(current_dialog->flags & BinDlgFlags::Visible)) {
+					struct {
 						u32 unknown_value;		// [EBP-0x20]	[00]
 						u32 always_zero_here;	// [EBP-0x1C]	[04]
 						u32 not_allocated_2;	// [EBP-0x18]	[08]
@@ -1130,14 +1113,12 @@ namespace hooks
 					stack_placeholder.always_zero_here = 0;
 					stack_placeholder.mouse_x = g_mouse->x;
 
-					if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Highlighted))
-					{
+					if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Highlighted)) {
 						current_dialog->flags |= BinDlgFlags::Highlighted;
 						helper::update_dialog(current_dialog);
 					}
 				}
-				if (!(current_dialog->flags & BinDlgFlags::Highlighted))
-				{
+				if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
 					current_dialog->flags |= BinDlgFlags::Highlighted;
 					helper::update_dialog(current_dialog);
 				}

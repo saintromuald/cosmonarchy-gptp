@@ -959,7 +959,7 @@ namespace hooks {
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
 
-				if (bw::get_game_kind() == GameKind_Massacre && unit_id_should_give_gas_in_massacre_mode(data.target->id)) {
+				if (bw::get_game_kind() == GameKind_Massacre && unit_should_give_gas_in_massacre_mode(data.target)) {
 					bw::add_massacre_resource(data.target->player);
 				}
 

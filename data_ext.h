@@ -203,6 +203,7 @@ enum ExtValueId {
 	ValueRefreshSpeedNextFrame,
 	ValueWyvernWeaponCharging,
 	ValueTurningAggressiveMode,
+	ValueCancellingZergStructure,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

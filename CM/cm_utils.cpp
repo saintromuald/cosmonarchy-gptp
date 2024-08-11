@@ -329,7 +329,7 @@ void rescue_unit(Unit* unit, u32 player) {
 
 bool can_auto_heal(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
-	return !unit_ext->values[ValueReviveStarted] && !unit->is_frozen() && !unit_ext->values[ValueDisablePassive];
+	return !unit->is_frozen() && !unit_ext->values[ValueDisablePassive];
 }
 
 bool unit_can_be_repulsed(Unit* unit) {
@@ -349,4 +349,9 @@ void specialist_energy_error(Unit* unit) {
 	if (const char* string = helper::get_stat_txt_string(unit->get_race() + 864)) {
 		helper::set_unit_stat_txt_error_message(string);
 	}
+}
+
+bool unit_should_give_gas_in_massacre_mode(Unit* unit) {
+	UnitExt* unit_ext = get_unit_ext(unit);
+	return unit_id_should_give_gas_in_massacre_mode(unit->id) && !unit_ext->values[ValueCancellingZergStructure];
 }

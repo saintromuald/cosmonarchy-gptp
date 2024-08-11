@@ -132,13 +132,16 @@ void cancel_zerg_building(Unit* unit) { // 0045DA40
 		g_unit_score[unit->player] -= units_dat::build_score[UnitId::ZergDroleth]; // TODO: Check if a Gosvileth is the builder and do nothing to score
 		--g_units_owned[unit->player];
 
+		// For Massacre
+		UnitExt* unit_ext = get_unit_ext(unit);
+		unit_ext->values[ValueCancellingZergStructure] = 1;
+
 		if (unit->id == UnitId::ZergExcisant) {
 			Unit* worker = helper::create_unit(unit->create_origin, unit->get_x(), unit->get_y(), unit->player);
 
 			if (worker) {
 				helper::update_unit_stats_and_finish_building(worker);
 				helper::update_unit_strength(worker);
-				UnitExt* unit_ext = get_unit_ext(unit);
 				worker->set_hitpoints(unit_ext->values[ValuePreMorphHP]);
 				worker->sprite->player = unit->sprite->player;
 			} else {
@@ -324,7 +327,7 @@ Unit* begin_gas_building(Unit* unit, u16 unit_id) { // 004678A0
 	helper::give_sprite(target, unit->player);
 	target->create_origin = unit->id;
 	helper::replace_unit_with_id(target, unit_id);
-	if (!bw::unit_is_stunned(target) || units_dat::base_property[target->id] & UnitProperty::Building) {
+	if (!target->is_frozen() || units_dat::base_property[target->id] & UnitProperty::Building) {
 		target->current_buttonset = UnitId::Buttons_CancelConstruction;
 	}
 	helper::add_overlay_below_main(target->sprite, ImageId::VespeneGeyser2, 0, 0, 0);
