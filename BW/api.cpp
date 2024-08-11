@@ -1108,7 +1108,7 @@ void apply_ensnare(Unit* unit) { // 004F45E0
 }
 
 bool is_enabled(Unit* unit) {
-	if (bw::unit_is_stunned(unit) || unit->status & UnitStatus::Disabled) {
+	if (unit->is_frozen() || unit->status & UnitStatus::Disabled) {
 		return false;
 	}
 	return true;
@@ -1953,7 +1953,7 @@ bool all_selected_units_have_addon(u32 unit_id) {
 bool unit_is_stunned(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
     return  unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer
-        || unit_ext->timers[TimerStun] > 1;
+        || unit_ext->timers[TimerStun] > 1 || unit_ext->values[ValueReviveStarted];
 }
 
 void dump_sync_data() {

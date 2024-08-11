@@ -165,8 +165,7 @@ namespace hooks
 	}
 
 	bool ai_acquire_heal_target(Unit* cleric, Unit* target) { // 00463530
-		UnitExt* unit_ext = get_unit_ext(cleric);
-		if (unit_ext->values[ValueReviveStarted] || cleric->is_frozen()) {
+		if (cleric->is_frozen()) {
 			return false;
 		}
 

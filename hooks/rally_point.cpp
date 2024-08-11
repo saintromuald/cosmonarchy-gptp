@@ -65,8 +65,7 @@ namespace hooks
 
 	// Hooked to allow rally for morphing Larval Colonies - Pr0nogo
 	// Possible downstream effect: need to clear rally for the creep colony if the morph cancelled?
-	u32 btnscond_rally(u32 unused, u32 player, Unit* unit) // 00429520
-	{
+	u32 btnscond_rally(u32 unused, u32 player, Unit* unit) { // 00429520
 		*g_last_internal_error = 0;
 		if (orders_dat::req_offset[OrderId::RallyPointToTile] == -1) {
 			helper::parse_orders_dat_requirements();
@@ -609,7 +608,7 @@ namespace hooks
 			helper::stop_creep_disappearing_at_building(unit);
 		}
 		u32 unit_status = unit->status;
-		if (!bw::unit_is_stunned(unit) || units_dat::base_property[unit->id] & UnitProperty::Building) {
+		if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building) {
 			if (unit_can_have_rally(unit)) {
 				unit->current_buttonset = UnitId::Buttons_CancelMutationWithRallyPt;
 			} else {

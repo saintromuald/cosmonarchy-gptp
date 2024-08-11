@@ -1707,7 +1707,7 @@ namespace hooks {
 					if (!unit_ext->values[ValueDisruptionFieldOn]) {
 						unit_ext->values[ValueDisruptionFieldOn] = 1;
 						g_iquare_globals->create_effect(EffectId::LanifectDisruptionField, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, { .origin = unit });
-					} else if (bw::unit_is_stunned(unit)) {
+					} else if (unit->is_frozen()) {
 						bw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
 					}
 				} else {
@@ -1789,7 +1789,7 @@ namespace hooks {
 			case UnitId::TerranShamanSupportMode:
 			case UnitId::TerranShamanVisionaryMode: {
 				// Shaman - Nanite Field
-				if (bw::unit_is_stunned(unit) || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport || unit_ext->values[ValueDisablePassive]) {
+				if (unit->is_frozen() || unit->status & UnitStatus::InTransport || unit_ext->values[ValueDisablePassive]) {
 					break;
 				}
 				u32 timer = unit_ext->timers[TimerNaniteField];
@@ -1804,7 +1804,7 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::TerranQilin: {
-				if (bw::unit_is_stunned(unit) || unit_ext->values[ValueReviveStarted] || unit->status & UnitStatus::InTransport) {
+				if (unit->is_frozen() || unit->status & UnitStatus::InTransport) {
 					break;
 				}
 				u32 timer = unit_ext->timers[TimerNaniteField];
@@ -1915,7 +1915,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranAnticthon: {
 				// Revive status
-				if (!unit_ext->values[ValueReviveStarted] && !unit_ext->timers[TimerReclaimInterval]) {
+				if (!unit->is_frozen() && !unit_ext->timers[TimerReclaimInterval]) {
 					unit_ext->timers[TimerReclaimInterval] = 24;
 					Thingy* corpse = get_closest_active_corpse(unit->position, 3 * 32);
 					if (corpse) {
@@ -2082,7 +2082,7 @@ namespace hooks {
 			case UnitId::TerranHypnagogue: {
 				// Hypnagogue - Through the Looking Glass
 				auto& try_cast = unit_ext->values[ValueTryCastCustomSpell];
-				if (try_cast && (unit->main_order_id != OrderId::CastThroughTheLookingGlass || bw::unit_is_stunned(unit))) {
+				if (try_cast && (unit->main_order_id != OrderId::CastThroughTheLookingGlass || unit->is_frozen())) {
 					try_cast = false;
 				}
 				if (try_cast && !unit_ext->timers[TimerTryCastCustomSpell] && !unit_ext->timers[TimerHypnagogueChannel]) {
@@ -2713,7 +2713,7 @@ namespace hooks {
 		}
 
 		// Decloak on stun
-		if (bw::unit_is_stunned(unit) || unit_ext->timers[TimerStrigaRepulsion] || unit_ext->timers[TimerMagnetarAttraction] || unit_ext->timers[TimerAnthelionGravityWell]) {
+		if (unit->is_frozen() || unit_ext->timers[TimerStrigaRepulsion] || unit_ext->timers[TimerMagnetarAttraction] || unit_ext->timers[TimerAnthelionGravityWell]) {
 			bw::decloak_passive_proc(unit);
 		}
 
@@ -2742,7 +2742,7 @@ namespace hooks {
 		}
 
 		if (units_dat::base_property[unit->id] & UnitProperty::Addon && !(unit->status & UnitStatus::Completed)) {
-			if (unit->connected_unit && !bw::unit_is_stunned(unit->connected_unit) && !unit_ext->timers[TimerAddonAnimation]) {
+			if (unit->connected_unit && !unit->connected_unit->is_frozen() && !unit_ext->timers[TimerAddonAnimation]) {
 				u32 width  = units_dat::building_dimensions[unit->id].x * 0.5;
 				u32 height = units_dat::building_dimensions[unit->id].y * 0.5;
 
