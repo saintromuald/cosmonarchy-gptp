@@ -1097,7 +1097,11 @@ namespace hooks {
 				fatal_deal_damage = false;
 				target_ext->timers[TimerDemiurgeWorship] = 5 * 24 + 1;
 				bw::remove_unit_overlay(data.target, ImageId::Malediction_Small + bw::get_overlay_offset(data.target->id));
-				bw::add_unit_overlay(data.target, ImageId::DemiurgeWorshipProc_Small + bw::get_overlay_offset(data.target->id, true));
+				u32 overlay_id = ImageId::DemiurgeWorshipProc_Small + bw::get_overlay_offset(data.target->id, true);
+				if (overlay_id == ImageId::ControlledDemolition) {
+					overlay_id = ImageId::DemiurgeWorshipProc_Large;
+				}
+				bw::add_unit_overlay(data.target, overlay_id);
 				helper::play_sound_from_unit(SoundId::DemiurgeWorship01, data.target, 1, 0);
 				target_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 43;
 				data.target->freeze();

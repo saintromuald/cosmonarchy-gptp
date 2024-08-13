@@ -436,7 +436,11 @@ void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target) {
 	// Audiovisuals
 	if (mind_controller_unit_id == UnitId::ProtossDemiurge) {
 		bw::remove_unit_overlay(target, ImageId::Malediction_Small + bw::get_overlay_offset(target->id));
-		bw::add_unit_overlay(target, ImageId::DemiurgeWorshipProc_Small + bw::get_overlay_offset(target->id, true));
+		u32 overlay_id = ImageId::DemiurgeWorshipProc_Small + bw::get_overlay_offset(target->id, true);
+		if (overlay_id == ImageId::ControlledDemolition) {
+			overlay_id = ImageId::DemiurgeWorshipProc_Large;
+		}
+		bw::add_unit_overlay(target, overlay_id);
 		helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
 		target_ext->values[ValueControlledByDemiurge] = 1;
 	} else if (mind_controller_unit_id == UnitId::ProtossMindTyrant) {

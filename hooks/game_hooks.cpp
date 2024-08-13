@@ -2552,12 +2552,8 @@ namespace hooks {
 				}
 
 				if (unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] == 1) {
-					u32 overlay_id = ImageId::DemiurgeWorshipOverlay_Small + bw::get_overlay_offset(unit->id, true);
-					if (overlay_id == ImageId::ControlledDemolition) {
-						overlay_id = ImageId::DemiurgeWorshipOverlay_XLarge; // Stupid workaround because XLarge was added out of sequence. -Pr0nogo
-					}
 					if (!(unit->status & UnitStatus::Burrowed)) {
-						bw::add_unit_overlay(unit, overlay_id);
+						bw::set_unit_overlay(unit, {ImageId::DemiurgeWorshipOverlay_Small, ImageId::DemiurgeWorshipOverlay_XLarge}, true);
 					}
 					unit_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 49;
 				}
