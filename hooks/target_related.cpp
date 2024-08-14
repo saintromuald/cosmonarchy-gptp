@@ -9,8 +9,7 @@
 #include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/unit_stats/weapon_range.h"
 
-namespace hooks
-{
+namespace hooks {
 	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target) { // 00476430
 		if (!helper::is_target_visible(unit, target)) {
 			return 1;
@@ -23,7 +22,7 @@ namespace hooks
 		u32 weapon_id = WeaponId::None;
 		if (target->status & UnitStatus::InAir) {
 			weapon_id = units_dat::air_weapon[final_unit->id];
-		} else if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed) {
+		} else if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
 			weapon_id = units_dat::ground_weapon[final_unit->id];
 		}
 
@@ -58,8 +57,7 @@ namespace hooks
 			weapon_id = units_dat::air_weapon[final_attacker->id];
 		} else {
 			u32 attacker_id = final_attacker->id;
-			if (!unit_id_is_burrowed_attacker(attacker_id) || final_attacker->status & UnitStatus::Burrowed)
-			{
+			if (!unit_id_is_burrowed_attacker(attacker_id) || final_attacker->burrowed_attacker_can_attack()) {
 				weapon_id = units_dat::ground_weapon[attacker_id];
 			} else {
 				weapon_id = WeaponId::None;
@@ -340,26 +338,25 @@ namespace hooks
 								return;
 							}
 							if (helper::is_target_visible(unit, unit_target)) {
-								Unit* subunit = unit->subunit;
-								if (!subunit || !(units_dat::base_property[subunit->id] & UnitProperty::Subunit)) {
-									subunit = unit;
+								Unit* final_unit = unit->subunit;
+								if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
+									final_unit = unit;
 								}
 								u8 air_weapon;
 								if (unit_target->status & UnitStatus::InAir) {
-									air_weapon = units_dat::air_weapon[subunit->id];
+									air_weapon = units_dat::air_weapon[final_unit->id];
 								} else {
-									u16 subunit_id = subunit->id;
-									if (!unit_id_is_burrowed_attacker(subunit_id) || subunit->status & UnitStatus::Burrowed) {
-										air_weapon = units_dat::ground_weapon[subunit_id];
+									if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
+										air_weapon = units_dat::ground_weapon[final_unit->id];
 									} else {
 										air_weapon = WeaponId::None;
 									}
 								}
 								if (air_weapon != WeaponId::None) {
 									u32 air_min_range = weapons_dat::min_range[air_weapon];
-									if (!air_min_range || !(helper::is_target_within_min_range(subunit, air_min_range, unit_target))) {
+									if (!air_min_range || !(helper::is_target_within_min_range(final_unit, air_min_range, unit_target))) {
 										s32 air_max_range = weapons_dat::max_range[air_weapon];
-										if (helper::is_target_within_min_movement_range(unit_target, subunit, air_max_range)) {
+										if (helper::is_target_within_min_movement_range(unit_target, final_unit, air_max_range)) {
 											if (helper::tech_use_allowed(unit, 0, unit->player) == 1 && helper::get_current_hp_plus_shields(unit_target) >= 100) {
 												helper::stimpack_proc(unit);
 											}

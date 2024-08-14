@@ -177,10 +177,8 @@ namespace hooks
 		if (units_dat::base_property[unit->id] & UnitProperty::Burrowable) {
 			if (!(unit->status & UnitStatus::Burrowed) && unit->id != UnitId::ZergDroleth) {
 				if (unit->main_order_id == OrderId::ComputerAI || unit->main_order_id == OrderId::Guard) {
-					if (unit->move_target.pt.x == unit->sprite->position.x
-						&& unit->move_target.pt.y == unit->sprite->position.y
-						// Originally checked for burrow tech here
-						) {
+					if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y) {
+						// Originally checked for burrow tech in the above conditional.
 						bool can_burrow = true;
 						ActiveTile* tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
 						if (tile->currently_occupied) {

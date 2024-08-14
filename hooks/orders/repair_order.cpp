@@ -334,7 +334,7 @@ namespace hooks
 			if (*selected_units) {
 				u8 action = RightClickActions::NoCommand_AutoAttack;
 				u16 unit_id = unit->id;
-				if (unit_id_is_burrowed_attacker(unit_id) && unit->status & UnitStatus::Burrowed) {
+				if (unit->burrowed_attacker_can_attack()) {
 					action = RightClickActions::NoMove_NormalAttack;
 				} else {
 					char right_click_order = helper::get_right_click_action_order(unit);

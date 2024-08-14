@@ -393,6 +393,7 @@ struct Unit : public UnitLayout
 	bool has_energy_for(u32 tech_id);
 	bool can_attack_transport_checks();
 	void issue_custom_order(u32 order_id);
+	bool burrowed_attacker_can_attack();
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

@@ -61,7 +61,7 @@ bool Unit::shields_enabled() const {
 
 //Identical to function @ 0x00475AD0
 u8 Unit::get_ground_weapon() const {
-	if (unit_id_is_burrowed_attacker(this->id) && !(this->status & UnitStatus::Burrowed)) {
+	if (unit_id_is_burrowed_attacker(this->id) && !(this->status & (UnitStatus::Burrowed | UnitStatus::InBuilding))) {
 		return WeaponId::None;
 	} else {
 		return units_dat::ground_weapon[this->id];
@@ -1390,7 +1390,7 @@ bool Unit::is_queue_slot_active(int slot) {
 
 u8 Unit::get_right_click_action_order() {
 	u8 result;
-	if (unit_id_is_burrowed_attacker(this->id) && this->status & UnitStatus::Burrowed) {
+	if (unit_id_is_burrowed_attacker(this->id) && this->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) {
 		result = RightClickActions::NoMove_NormalAttack;
 	} else {
 		u8 temp_result = units_dat::right_click_action[this->id];
@@ -1440,4 +1440,11 @@ void Unit::issue_custom_order(u32 order_id) {
 			}
 		} break;
 	}
+}
+
+bool Unit::burrowed_attacker_can_attack() {
+	if (unit_id_is_burrowed_attacker(this->id)) {
+		return this->status & (UnitStatus::Burrowed | UnitStatus::InBuilding);
+	}
+	return false;
 }

@@ -473,7 +473,7 @@ namespace hooks
 						if (target->status & UnitStatus::InAir) {
 							weapon_id = units_dat::air_weapon[final_unit->id];
 						} else {
-							if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed) {
+							if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
 								weapon_id = units_dat::ground_weapon[final_unit->id];
 							}
 						}
@@ -744,7 +744,7 @@ namespace hooks
 				if (target_unit->status & UnitStatus::InAir) {
 					weapon_id = units_dat::air_weapon[final_unit->id];
 				} else {
-					if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->status & UnitStatus::Burrowed) {
+					if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
 						weapon_id = units_dat::ground_weapon[final_unit->id];
 					} else {
 						weapon_id = WeaponId::None;

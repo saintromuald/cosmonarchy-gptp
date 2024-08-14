@@ -1237,16 +1237,16 @@ namespace hooks {
 	// Hooked to stop damage from forcing units to unburrow. -Pr0nogo
 	void react_to_hit(Unit* attacker, Unit* victim) { // 004776C0
 		if (!unit_id_is_larva(victim->id)) {
-			if (!(victim->status & UnitStatus::Burrowed) || victim->irradiate_timer || unit_id_is_burrowed_attacker(victim->id)) {
-				if  (units_dat::base_property[victim->id] & UnitProperty::Building || helper::unit_can_attack_target(attacker, victim, 1)
-				&& !(units_dat::base_property[victim->id] & UnitProperty::Worker)) {
+			if (!(victim->status & UnitStatus::Burrowed) || victim->irradiate_timer || (unit_id_is_burrowed_attacker(victim->id))) {
+				if  (units_dat::base_property[victim->id] & UnitProperty::Building
+				||   helper::unit_can_attack_target(attacker, victim, 1) && !(units_dat::base_property[victim->id] & UnitProperty::Worker)) {
 					victim->auto_target_unit = attacker;
 					Unit* subunit = victim->subunit;
 					if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
 						subunit->last_attacking_player = victim->last_attacking_player;
 						subunit->auto_target_unit = attacker;
 					}
-				} else if (!unit_id_is_burrowed_attacker(victim->id) || !(victim->status & UnitStatus::Burrowed) || victim->unit_ai && !victim->irradiate_timer) {
+				} else if (!unit_id_is_burrowed_attacker(victim->id) || !(victim->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) || victim->unit_ai && !victim->irradiate_timer) {
 					if (units_dat::base_property[victim->id] & UnitProperty::Subunit) {
 						victim = victim->subunit;
 					}

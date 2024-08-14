@@ -406,7 +406,7 @@ namespace hooks
         u32 weapon_id = WeaponId::None;
         if (is_ground_weapon != 1) {
             weapon_id = units_dat::air_weapon[unit->id];
-        } else if (!unit_id_is_burrowed_attacker(unit->id) || (unit->status & UnitStatus::Burrowed)) {
+        } else if (!unit_id_is_burrowed_attacker(unit->id) || unit->burrowed_attacker_can_attack()) {
             weapon_id = units_dat::ground_weapon[unit->id];
         }
         helper::iscript_fireweapon(unit, weapon_id);

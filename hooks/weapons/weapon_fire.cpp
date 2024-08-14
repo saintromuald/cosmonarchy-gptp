@@ -1714,18 +1714,14 @@ namespace hooks {
 
 	// Hooked to help with kiting AI. Disabled! -Pr0nogo
 	// Ended up useless sadly, as it calls way more often than I anticipated. Replaced with starting attack check from movement flags. -Veeq7
-	void get_weapon_iscript_init(Unit* unit, char iscript_anim) // 00476ED0
-	{
+	void get_weapon_iscript_init(Unit* unit, char iscript_anim) { // 00476ED0
 		*g_last_bullet_creator = 0;
-		if (!(unit->status & UnitStatus::CanNotAttack))
-		{
+		if (!(unit->status & UnitStatus::CanNotAttack)) {
 			UnitExt* unit_ext = get_unit_ext(unit);
-			if (unit->order_target.unit && unit->order_target.unit->status & UnitStatus::InAir)
-			{
+			if (unit->order_target.unit && unit->order_target.unit->status & UnitStatus::InAir) {
 				helper::use_weapon_iscript(unit, units_dat::air_weapon[unit->id], 2, iscript_anim + 1);
 			} else {
-				if (!unit_id_is_burrowed_attacker(unit->id) || unit->status & UnitStatus::Burrowed)
-				{
+				if (!unit_id_is_burrowed_attacker(unit->id) || unit->burrowed_attacker_can_attack()) {
 					helper::use_weapon_iscript(unit, units_dat::ground_weapon[unit->id], 1, iscript_anim);
 				} else {
 					helper::use_weapon_iscript(unit, WeaponId::None, 1, iscript_anim);

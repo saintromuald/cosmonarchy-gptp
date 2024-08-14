@@ -9,44 +9,35 @@
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
 
-namespace hooks
-{
+namespace hooks {
 	// Attempting to be true to the original results in unoptimized code
-	void stats_panel_display(BinDlg* dialog)
-	{
+	void stats_panel_display(BinDlg* dialog) {
 		BinDlg* current_dialog;
 		Unit* active_unit = *g_active_portrait_unit;
 		u32 index = 0;
-
-		if (!(active_unit->status & UnitStatus::IsHallucination) || (!g_is_in_replay && active_unit->player != g_local_nation_id))
-		{
+		if (!(active_unit->status & UnitStatus::IsHallucination) || (!g_is_in_replay && active_unit->player != g_local_nation_id)) {
 			bool no_air_weapon_display;
 			u32 air_weapon;
 			u8 air_weapon_main_unit;
 			u8 air_weapon_subunit;
 			u16 unit_id = helper::get_last_queue_slot_id(active_unit);
-			if (units_dat::armor_upgrade[unit_id] != UpgradeId::GlobalUpgrade60)
-			{
+			if (units_dat::armor_upgrade[unit_id] != UpgradeId::GlobalUpgrade60) {
 				helper::stats_armor_level(dialog, index);
 				index++;
 			}
-			if (units_dat::shields_enabled[active_unit->id])
-			{
+			if (units_dat::shields_enabled[active_unit->id]) {
 				helper::stats_shield_level(dialog, index);
 				index++;
 			}
 
-			if (!unit_id_is_burrowed_attacker(active_unit->id) || active_unit->status & UnitStatus::Burrowed)
-			{
+			if (!unit_id_is_burrowed_attacker(active_unit->id) || active_unit->burrowed_attacker_can_attack()) {
 				UnitExt* unit_ext = get_unit_ext(active_unit);
 				bool no_ground_weapon_display = false;
 				u32 ground_weapon;
 				u8 ground_weapon_main_unit = units_dat::ground_weapon[active_unit->id];
 				u8 ground_weapon_subunit = WeaponId::None;
-				if (ground_weapon_main_unit == WeaponId::None)
-				{
-					if (!active_unit->subunit)
-					{
+				if (ground_weapon_main_unit == WeaponId::None) {
+					if (!active_unit->subunit) {
 						no_ground_weapon_display = true;
 					} else {
 						ground_weapon_subunit = units_dat::ground_weapon[active_unit->subunit->id];
@@ -55,12 +46,10 @@ namespace hooks
 					ground_weapon_subunit = ground_weapon_main_unit;
 				}
 
-				if (!no_ground_weapon_display)
-				{
-					if (ground_weapon_subunit == WeaponId::None)
-					{
+				if (!no_ground_weapon_display) {
+					if (ground_weapon_subunit == WeaponId::None) {
 						no_ground_weapon_display = true;
-					} else if (unit_id_is_burrowed_attacker(active_unit->id) && !(active_unit->status & UnitStatus::Burrowed)) {
+					} else if (!active_unit->burrowed_attacker_can_attack()) {
 						ground_weapon = WeaponId::None;
 					} else if (ground_weapon_main_unit != WeaponId::None) {
 						ground_weapon = ground_weapon_main_unit;
@@ -70,45 +59,36 @@ namespace hooks
 						ground_weapon = units_dat::ground_weapon[active_unit->subunit->id];
 					}
 
-					if (!no_ground_weapon_display)
-					{
+					if (!no_ground_weapon_display) {
 						helper::stats_weapon_level(dialog, index, ground_weapon);
 						index++;
 						// Display additional weapons
-						switch (active_unit->id)
-						{
-							case UnitId::TerranTarasque:
-							{
+						switch (active_unit->id) {
+							case UnitId::TerranTarasque: {
 								helper::stats_weapon_level(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
 								index++;
 							} break;
-							case UnitId::TerranDurendal:
-							{
+							case UnitId::TerranDurendal: {
 								helper::stats_weapon_level(dialog, index, WeaponId::DurendalPhilistineAutogun);
 								index++;
 							} break;
-							case UnitId::TerranCentaur:
-							{
+							case UnitId::TerranCentaur: {
 								helper::stats_weapon_level(dialog, index, WeaponId::CentaurSunchaserMissiles);
 								index++;
 							} break;
-							case UnitId::TerranDiadem:
-							{
+							case UnitId::TerranDiadem: {
 								helper::stats_weapon_level(dialog, index, WeaponId::DiademHammerfallBeacon);
 								index++;
 							} break;
-							case UnitId::ProtossStarSovereign:
-							{
+							case UnitId::ProtossStarSovereign: {
 								helper::stats_weapon_level(dialog, index, WeaponId::StarSovereignInterventionMissiles);
 								index++;
 							} break;
-							case UnitId::ZergOkrimnilisk:
-							{
+							case UnitId::ZergOkrimnilisk: {
 								helper::stats_weapon_level(dialog, index, WeaponId::OkrimniliskOmnispores);
 								index++;
 							} break;
-							case UnitId::ZergZarcavrokor:
-							{
+							case UnitId::ZergZarcavrokor: {
 								helper::stats_weapon_level(dialog, index, WeaponId::ZarcavrokorBonesofReflection);
 								index++;
 							} break;
@@ -119,8 +99,7 @@ namespace hooks
 
 			no_air_weapon_display = false;
 			air_weapon_main_unit = units_dat::air_weapon[active_unit->id];
-			if (air_weapon_main_unit != WeaponId::None)
-			{
+			if (air_weapon_main_unit != WeaponId::None) {
 				air_weapon_subunit = air_weapon_main_unit;
 			} else if (!active_unit->subunit) {
 				no_air_weapon_display = true;
@@ -128,10 +107,8 @@ namespace hooks
 				air_weapon_subunit = units_dat::air_weapon[active_unit->subunit->id];
 			}
 
-			if (!no_air_weapon_display)
-			{
-				if (air_weapon_subunit == WeaponId::None)
-				{
+			if (!no_air_weapon_display) {
+				if (air_weapon_subunit == WeaponId::None) {
 					no_air_weapon_display = true;
 				} else if (air_weapon_main_unit != WeaponId::None) {
 					air_weapon = air_weapon_main_unit;
@@ -143,80 +120,61 @@ namespace hooks
 						air_weapon = units_dat::air_weapon[active_unit->subunit->id];
 					}
 				}
-				if (!no_air_weapon_display)
-				{
+				if (!no_air_weapon_display) {
 					u8 ground_weapon;
-					if (unit_id_is_burrowed_attacker(active_unit->id) && !(active_unit->status & UnitStatus::Burrowed))
-					{
+					if (!active_unit->burrowed_attacker_can_attack()) {
 						ground_weapon = WeaponId::None;
 					} else {
 						ground_weapon = units_dat::ground_weapon[active_unit->id];
-						if (ground_weapon == WeaponId::None && active_unit->subunit)
-						{
+						if (ground_weapon == WeaponId::None && active_unit->subunit) {
 							ground_weapon = units_dat::ground_weapon[active_unit->subunit->id];
 						}
 					}
 
-					if (air_weapon == ground_weapon)
-					{
+					if (air_weapon == ground_weapon) {
 						no_air_weapon_display = true;
 					} else if (air_weapon_main_unit != WeaponId::None) {
 						air_weapon = air_weapon_main_unit;
 					} else if (air_weapon_main_unit == WeaponId::None) {
-						if (!active_unit->subunit)
-						{
+						if (!active_unit->subunit) {
 							air_weapon = WeaponId::None;
 						} else {
 							air_weapon = units_dat::air_weapon[active_unit->subunit->id]; // 00426E16
 						}
 					}
-					if (!no_air_weapon_display)
-					{
+					if (!no_air_weapon_display) {
 						helper::stats_weapon_level(dialog, index, air_weapon);
 						index++;
 					}
 				}
 			}
-
-			if (active_unit->id == UnitId::ProtossSolarion
-				|| active_unit->id == UnitId::ProtossAccantorOld) // Originally had hardcode for Gantrithor and Warbringer
-			{
+			if (active_unit->id == UnitId::ProtossSolarion || active_unit->id == UnitId::ProtossAccantorOld) { // Originally had hardcode for Gantrithor and Warbringer
 				helper::stats_hangar_count(dialog, index);
 				index++;
 			}
-
-			if (active_unit->id == UnitId::TerranVulture) // Originally also had hardcode for Raynor Vulture
-			{
-				if (helper::stat_spidermine_count(dialog, index))
-				{
+			if (active_unit->id == UnitId::TerranVulture) { // Originally also had hardcode for Raynor Vulture
+				if (helper::stat_spidermine_count(dialog, index)) {
 					index++;
 				}
 			}
 			unit_id = helper::get_last_queue_slot_id(active_unit);
-			if (unit_id == UnitId::TerranAnvil)
-			{
+			if (unit_id == UnitId::TerranAnvil) {
 				helper::stat_nuke_count(dialog, index);
 				index++;
 			}
 		}
 
-		if (dialog->control_type == DialogControlTypes::DialogBoxDC)
-		{
+		if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
 			current_dialog = dialog;
-		}
-		else
-		{
+		} else {
 			current_dialog = dialog->parent;
 		}
-		if (current_dialog->child_dialog)
-		{
+		if (current_dialog->child_dialog) {
 			current_dialog = current_dialog->child_dialog;
-			while (current_dialog && current_dialog->index != index + 9)
-			{
+			while (current_dialog && current_dialog->index != index + 9) {
 				current_dialog = current_dialog->next;
 			}
-			while (index < 4 && current_dialog)
-			{
+			while (index < 4 && current_dialog) {
 				helper::hide_dialog(current_dialog);
 				current_dialog = current_dialog->next;
 				index++;
