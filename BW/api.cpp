@@ -3863,11 +3863,10 @@ void select(std::vector<Unit*>& units, bool play_response) {
 	bw::refresh_console();
 }
 
-u32 get_manual_unit_weapon_sound(Unit* unit, u32 weapon_id) {
+u32 get_manual_unit_weaponfire_sound(Unit* unit, u32 weapon_id) {
 	u32 sound_id = SoundId::None;
 	switch (unit->id) {
-		case UnitId::TerranSavant:
-		{
+		case UnitId::TerranSavant: {
 			if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
 				sound_id = bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
 			} else {
@@ -3876,12 +3875,12 @@ u32 get_manual_unit_weapon_sound(Unit* unit, u32 weapon_id) {
 		}
 	}
 	if (!sound_id) {
-		sound_id = get_manual_weapon_id_sound(weapon_id);
+		sound_id = get_manual_weapon_id_weaponfire_sound(weapon_id);
 	}
 	return sound_id;
 }
 
-u32 get_manual_weapon_id_sound(u32 weapon_id) {
+u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id) {
 	u32 sound_id = SoundId::None;
 	switch (weapon_id) {
 		case WeaponId::DemiurgeGalacticWeaver: {

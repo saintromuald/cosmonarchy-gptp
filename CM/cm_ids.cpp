@@ -948,15 +948,12 @@ bool unit_is_tower(Unit* unit) {
 }
 
 bool unit_applies_ensnare(Unit* unit) {
-	switch (unit->id)
-	{
+	switch (unit->id) {
 		case UnitId::ZergVorvrokor:
-		case UnitId::ZergAkistrokor:
-		{
+		case UnitId::ZergAkistrokor: {
 			return true;
 		} break;
-		default:
-		{
+		default: {
 			UnitExt* unit_ext = get_unit_ext(unit);
 			if (unit_ext->timers[TimerEnsnaringBrood] > 0) {
 				return true;
@@ -984,16 +981,13 @@ bool weapon_id_is_line_attack(u32 weapon_id) {
 
 u32 get_splash_width_from_weapon_id(u32 weapon_id) {
 	switch (weapon_id) {
-		case WeaponId::PsiStorm:
-		{
+		case WeaponId::PsiStorm: {
 			return 5 * 32;
 		}
-		case WeaponId::NuclearMissile:
-		{
+		case WeaponId::NuclearMissile: {
 			return 8 * 32;
 		}
-		default: 
-		{
+		default:  {
 			return 5 * 32;
 		//	return weapons_dat::outer_splash_radius[weapon_id];
 		}
@@ -1002,16 +996,13 @@ u32 get_splash_width_from_weapon_id(u32 weapon_id) {
 
 u32 get_splash_height_from_weapon_id(u32 weapon_id) {
 	switch (weapon_id) {
-		case WeaponId::PsiStorm:
-		{
+		case WeaponId::PsiStorm: {
 			return 4 * 32;
 		}
-		case WeaponId::NuclearMissile:
-		{
+		case WeaponId::NuclearMissile: {
 			return 7 * 32;
 		}
-		default: 
-		{
+		default:  {
 			return 5 * 32;
 		//	return weapons_dat::outer_splash_radius[weapon_id];
 		}
@@ -1101,7 +1092,6 @@ bool unit_could_spawn_custom_larva(Unit* unit) {
 	if (unit_id_spawns_larva_by_order(unit->id)) {
 		return false;
 	}
-
 	UnitExt* unit_ext = get_unit_ext(unit);
 	switch (unit->id) {
 		case UnitId::Omnivale: {
@@ -1124,7 +1114,6 @@ bool unit_could_spread_custom_creep(Unit* unit) {
 	if (helper::spreads_creep(unit->id, true)) {
 		return false;
 	}
-
 	UnitExt* unit_ext = get_unit_ext(unit);
 	switch (unit->id) {
 		case UnitId::Omnivale: {

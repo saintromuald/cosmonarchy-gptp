@@ -492,7 +492,7 @@ namespace hooks {
 
 		if (weapons_dat::flingy_id[weapon_id] != 0) {
 			if (unit->id == UnitId::TerranSavant) {
-				u32 sound_id = bw::get_manual_unit_weapon_sound(unit, WeaponId::None);
+				u32 sound_id = bw::get_manual_unit_weaponfire_sound(unit, WeaponId::None);
 				Unit* final_unit = unit;
 				if (unit->status & UnitStatus::InBuilding && unit->connected_unit) { // Nullchecking to protect against attacks firing on the same frame as the garrison's death.
 					final_unit = unit->connected_unit;
@@ -675,7 +675,7 @@ namespace hooks {
 						g_iquare_globals->create_effect(EffectId::VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
 					} // Fallthrough intended, for now.
 					default: {
-                        if (u32 sound_id = bw::get_manual_weapon_id_sound(weapon_id)) {
+                        if (u32 sound_id = bw::get_manual_weapon_id_weaponfire_sound(weapon_id)) {
                             helper::play_sound_from_unit(sound_id, unit, 1, 0);
                         }
 						/*
