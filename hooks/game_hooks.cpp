@@ -58,7 +58,7 @@
 #include <random>
 #include <format>
 
-void shaman_nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
+void nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
 	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
 		bw::add_unit_overlay(target, ImageId::ShamanNaniteField);
 	}
@@ -1799,7 +1799,7 @@ namespace hooks {
 
 					u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? 6 : 3;
 					for (Unit* target : g_unit_search.radial(unit->position, range * 32).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterNoBuilding)) {
-						shaman_nanite_field_proc(unit, 4, target);
+						nanite_field_proc(unit, 4, target);
 					}
 				}
 			} break;

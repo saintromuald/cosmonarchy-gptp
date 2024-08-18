@@ -1,10 +1,8 @@
 #include "build_time.h"
 #include "../hook_tools.h"
 
-namespace
-{
-	void __declspec(naked) decrementRemainingBuildTime_Wrapper()
-	{ // 0x00466940
+namespace {
+	void __declspec(naked) decrementRemainingBuildTime_Wrapper() { // 00466940
 		static Unit* unit;
 		s32 result;
 		_asm {
@@ -20,10 +18,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_build_time_hooks()
-	{
-		jump_patch(decrementRemainingBuildTime_Wrapper,							0x00466940, 1);
+namespace hooks {
+	void inject_build_time_hooks() {
+		jump_patch(decrementRemainingBuildTime_Wrapper,	0x00466940, 1);
 	}
 }

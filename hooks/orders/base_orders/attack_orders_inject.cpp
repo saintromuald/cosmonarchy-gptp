@@ -285,6 +285,33 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) order_to_attack_target_wrapper() { // 00476FC0
+		static Unit* target;
+		static Unit* unit;
+		static b32 process_subunit;
+		static b32 target_is_cloaked;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV process_subunit, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV target_is_cloaked, EAX
+			POP EAX
+			MOV unit, EDI
+			MOV target, EAX
+			PUSHAD
+		}
+		hooks::order_to_attack_target(target, unit, process_subunit, target_is_cloaked);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
 }
 
 namespace hooks {
@@ -307,5 +334,6 @@ namespace hooks {
 		jump_patch(order_attack_move_try_pick_target_wrapper,	0x00477820, 1);
 		jump_patch(orders_turret_attack_wrapper,				0x00477980, 1);
 		jump_patch(orders_patrol_wrapper,						0x004780F0, 1);
+		jump_patch(order_to_attack_target_wrapper,				0x00476FC0, 1);
 	}
 }

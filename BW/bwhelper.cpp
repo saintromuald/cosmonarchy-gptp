@@ -15273,4 +15273,18 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	b32 ai_sieged_phalanx_can_attack_nearby_unit(Unit* unit) {
+		const u32 func_address = 0x00442460;
+		static b32 result;
+		__asm {
+			PUSHAD
+			MOV EDX, unit
+			MOV ECX, 0 // unused
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

@@ -4,8 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) cmdrecv_unburrow_wrapper()
-	{
+	void __declspec(naked) cmdrecv_unburrow_wrapper() {
 		__asm {
 			PUSHAD
 		}
@@ -16,8 +15,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cmdrecv_burrow_wrapper()
-	{
+	void __declspec(naked) cmdrecv_burrow_wrapper() {
 		static u8 bCommandType;
 		__asm {
 			PUSH EBP
@@ -35,8 +33,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unburrow_wrapper()
-	{
+	void __declspec(naked) unburrow_wrapper() {
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
@@ -50,10 +47,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_burrow_tech_hooks()
-	{
+namespace hooks {
+	void inject_burrow_tech_hooks() {
 	//	jump_patch(cmdrecv_unburrow_wrapper,	0x004C1AC0, 3);
 	//	jump_patch(cmdrecv_burrow_wrapper,		0x004C1FA0, 6);
 		jump_patch(unburrow_wrapper,			0x004E97C0, 1);

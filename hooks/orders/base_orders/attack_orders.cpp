@@ -1113,4 +1113,50 @@ namespace hooks
 			helper::force_order_done(unit);
 		}
 	}
+
+	// Hooked to overhaul AI deployment code. -Pr0nogo
+	void order_to_attack_target(Unit* target, Unit* unit, b32 process_subunit, b32 target_is_cloaked) { // 00476FC0
+		if (target->id == UnitId::ProtossSteward && target->hangar_unit.parent) {
+			target = target->hangar_unit.parent;
+		}
+		helper::assign_order_with_target(target, unit, units_dat::attack_unit_order[unit->id]);
+		Unit* subunit = unit->subunit;
+		if (process_subunit) {
+			unit->status |= UnitStatus::AttackMove;
+			if (subunit) {
+				subunit->status |= UnitStatus::AttackMove;
+			}
+		}
+
+		if (subunit) {
+			if (units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
+				helper::assign_order_with_target(target, subunit, units_dat::attack_unit_order[subunit->id]);
+				if (process_subunit) {
+					subunit->status |= UnitStatus::AttackMove;
+					Unit* parent = subunit->subunit;
+					if (parent) {
+						parent->status |= UnitStatus::AttackMove;
+					}
+				}
+			}
+		}
+
+		// Manage Phalanx targeting, and transform to tank mode if all targets are too close.
+		if (unit->unit_ai) {
+			if (unit->id == UnitId::TerranPhalanxSiegeMode && unit->main_order_id != OrderId::TankMode) {
+				if (!helper::is_unit_in_weapon_range(target, unit)) {
+					if (helper::ai_sieged_phalanx_can_attack_nearby_unit(unit)) {
+						if (target_is_cloaked) {
+							helper::ai_respond_to_cloaked_threat(unit, target);
+						} else {
+							helper::ai_update_attack_target(unit, 1, 1, 0);
+						}
+					} else {
+						helper::issue_order_targeting_nothing(unit, OrderId::TankMode);
+						helper::issue_queued_order_target(target, unit, units_dat::attack_unit_order[UnitId::TerranPhalanxTankMode], 0);
+					}
+				}
+			}
+		}
+	}
 }
