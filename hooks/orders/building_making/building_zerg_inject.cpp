@@ -151,6 +151,7 @@ namespace {
 		build_unit_id = unit->build_queue[unit->build_queue_slot];
 		if (!hooks::is_morphed_building(build_unit_id)) {
 			build_unit_id = unit->id;
+		}
 		__asm {
 			POPAD
 			MOVZX EBX, build_unit_id
