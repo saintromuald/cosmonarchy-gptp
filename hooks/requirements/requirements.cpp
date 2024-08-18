@@ -78,20 +78,16 @@ namespace hooks
 				}
 					break;
 
-				case RequirementOpcodes::MustBeResearched:
-				{
-					if (id == TechId::Burrowing && unit_id_is_burrowed_attacker(unit->id))
-					{
+				case RequirementOpcodes::MustBeResearched: {
+					if (id == TechId::Burrowing && unit_id_is_burrowed_attacker(unit->id)) {
 						success++;
 						break;
 					}
-					if (bw::has_tech_researched(player, id) == false && bw::is_cheat_enabled(CheatFlags::MedievalMan) == false)
-					{
+					if (bw::has_tech_researched(player, id) == false && bw::is_cheat_enabled(CheatFlags::MedievalMan) == false) {
 						break;
 					}
 					success++;
-				}
-					break;
+				} break;
 
 				case RequirementOpcodes::IsHeroAndEnabled:
 				{

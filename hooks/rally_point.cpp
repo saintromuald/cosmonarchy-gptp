@@ -166,8 +166,7 @@ namespace hooks
 		return 0; // used to return order_id, but it will always be 0. The return value is never used anyways. -Veeq7
 	}
 
-	Unit* right_click_command(u32 x, u32 y, Unit *target, u32 fow_unit_id, char queued) // 004560D0
-	{
+	Unit* right_click_command(u32 x, u32 y, Unit *target, u32 fow_unit_id, char queued) { // 004560D0
 		MovementGroup movement_group = {};
 		movement_group.pos.x = x;
 		movement_group.pos.y = y;
@@ -184,10 +183,9 @@ namespace hooks
 		*g_unit_iterator_pos = 0;
 		Unit* result = helper::get_next_commanded_unit();
 		u8 order_type;
-		for (Unit* unit = result; result; unit = result)
-		{
+		for (Unit* unit = result; result; unit = result) {
 			u16 id = unit->id;
-			if (unit_id_is_burrowed_attacker(id) && unit->status & UnitStatus::Burrowed) {
+			if (unit->burrowed_attacker_can_attack()) {
 				order_type = 3;
 			} else {
 				order_type = helper::get_right_click_action_order(unit);
@@ -386,7 +384,7 @@ namespace hooks
 		}
 
 		u8 order_id = OrderId::Die;
-		if (unit_id_is_burrowed_attacker(unit->id) && unit->status & UnitStatus::Burrowed) {
+		if (unit->burrowed_attacker_can_attack()) {
 			order_id = OrderId::PlayerGuard;
 		} else {
 			u8 right_click_order = units_dat::right_click_action[unit->id];
@@ -479,7 +477,7 @@ namespace hooks
 		||  order_id == OrderId::BunkerLoad)) {
 			return 1;
 		}
-		if (unit_id_is_burrowed_attacker(unit->id) && unit->status & UnitStatus::Burrowed) {
+		if (unit->burrowed_attacker_can_attack()) {
 			return 1;
 		}
 		u8 right_click_order = units_dat::right_click_action[unit->id];
@@ -493,7 +491,7 @@ namespace hooks
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	char get_right_click_action_order(Unit* unit) { // 004E5EA0
-		if (unit_id_is_burrowed_attacker(unit->id) && unit->status & UnitStatus::Burrowed) {
+		if (unit->burrowed_attacker_can_attack()) {
 			return 3;
 		}
 
@@ -521,13 +519,10 @@ namespace hooks
 		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = g_client_selection_group->unit[i];
 			if (unit) {
-				if (unit_id_is_burrowed_attacker(unit->id)) {
-					if (unit->status & UnitStatus::Burrowed) {
-						return true;
-					}
+				if (unit->burrowed_attacker_can_attack()) {
+					return true;
 				}
-				if (units_dat::right_click_action[unit->id]
-				||  unit->status & UnitStatus::GroundedBuilding && unit_can_rally(unit)) {
+				if (units_dat::right_click_action[unit->id] || unit->status & UnitStatus::GroundedBuilding && unit_can_rally(unit)) {
 					return true;
 				}
 			}
@@ -544,10 +539,8 @@ namespace hooks
 			if (!unit) {
 				continue;
 			}
-			if (unit_id_is_burrowed_attacker(unit->id)) {
-				if (unit->status & UnitStatus::Burrowed) {
-					continue;
-				}
+			if (unit->burrowed_attacker_can_attack()) {
+				continue;
 			}
 			right_click_order = units_dat::right_click_action[unit->id];
 			if (right_click_order) {
@@ -568,9 +561,7 @@ namespace hooks
 		for (u32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = g_client_selection_group->unit[i];
 			if (unit) {
-				if (unit_id_is_burrowed_attacker(unit->id) && unit->status & UnitStatus::Burrowed
-				||  units_dat::right_click_action[unit->id]
-				||  unit_can_rally(unit)) {
+				if (unit->burrowed_attacker_can_attack() || units_dat::right_click_action[unit->id] || unit_can_rally(unit)) {
 					if (helper::ai_unit_can_attack(unit)) {
 						return true;
 					}
@@ -583,7 +574,7 @@ namespace hooks
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	b32 unit_can_move(Unit* unit) { // 00455660
 		u16 right_click_order = units_dat::right_click_action[unit->id];
-		if (unit_id_is_burrowed_attacker(unit->id) && unit->status & UnitStatus::Burrowed) {
+		if (unit->burrowed_attacker_can_attack()) {
 			right_click_order = OrderId::PlayerGuard;
 		} else if (!right_click_order) {
 			if (unit_can_rally(unit)) {

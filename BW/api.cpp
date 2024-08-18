@@ -2995,7 +2995,7 @@ u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target) {
 	if (target->status & UnitStatus::InAir) {
 		weapon_id = units_dat::air_weapon[attacker->id];
 	} else {
-		if (!unit_id_is_burrowed_attacker(attacker->id) || attacker->status & UnitStatus::Burrowed) {
+		if (!unit_id_is_burrowed_attacker(attacker->id) || attacker->burrowed_attacker_can_attack()) {
 			weapon_id = units_dat::ground_weapon[attacker->id];
 		}
 	}

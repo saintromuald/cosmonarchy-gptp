@@ -228,10 +228,8 @@ namespace hooks
 	}
 
 	// Hooked to try to fix mine burrowing - Pr0nogo
-	void burrow_generic(Unit* unit) // 004E9A30
-	{
+	void burrow_generic(Unit* unit) { // 004E9A30
 		helper::toggle_unit_path(unit);
-
 		u8 pathing_flags = unit->pathing_flags;
 		unit->movement_state = 0;
 		unit->pathing_flags = (pathing_flags ^ (unit->sprite->elevation < 12)) & 1 ^ pathing_flags;
@@ -239,8 +237,7 @@ namespace hooks
 		unit->sprite->flags |= SpriteFlags::Burrowed;
 		Sprite* old_sprite = unit->sprite;
 		Sprite* new_sprite = 0;
-		if (unit_id_is_burrowed_attacker(unit->id))
-		{
+		if (unit_id_is_burrowed_attacker(unit->id)) {
 			helper::switch_sprite_id(old_sprite, SpriteId::White_Circle2);
 			unit->sprite->elevation = 1;
 		} else {

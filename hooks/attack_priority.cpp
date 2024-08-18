@@ -283,23 +283,17 @@ void AttackPriorityData::add_target(Unit* target, u32 attackPriority)
 	}
 }
 
-void AttackPriorityData::reset()
-{
+void AttackPriorityData::reset() {
 	for (s32 i = 0; i < countof(target_counts); ++i) {
 		target_counts[i] = 0;
 	}
 }
 
-namespace
-{
-	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, u8 weapon_id) // 00475BE0
-	{
+namespace {
+	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, u8 weapon_id) { // 00475BE0
 		assert(unit);
-
 		s32 angle = bw::get_angle(unit->get_x(), unit->get_y(), x, y);
-
-		if (unit_id_is_burrowed_attacker(unit->id))
-		{
+		if (unit_id_is_burrowed_attacker(unit->id)) {
 			unit->current_direction_1 = angle;
 			return true;
 		}
@@ -315,12 +309,10 @@ namespace
 	}
 
 	const u32 Func_CannotChaseTarget = 0x004A1140;
-	bool cannot_chase_target(Unit* unit, Unit* target)
-	{
+	bool cannot_chase_target(Unit* unit, Unit* target) {
 		assert(unit);
 		assert(target);
 		static u32 result;
-
 		__asm {
 			PUSHAD
 			MOV ESI, target
@@ -329,35 +321,26 @@ namespace
 			MOV result, EAX
 			POPAD
 		}
-
 		return result != 0;
 	}
 
-	u32 get_minimum_range(Unit* unit) // 00440520
-	{
+	u32 get_minimum_range(Unit* unit) { // 00440520
 		u8 ground_weapon = unit->get_ground_weapon();
-		if (ground_weapon == WeaponId::None && unit->subunit)
-		{
+		if (ground_weapon == WeaponId::None && unit->subunit) {
 			ground_weapon = unit->subunit->get_ground_weapon();
 		}
-
 		u8 air_weapon = unit->get_air_weapon();
-		if (air_weapon == WeaponId::None && unit->subunit)
-		{
+		if (air_weapon == WeaponId::None && unit->subunit) {
 			air_weapon = unit->subunit->get_air_weapon();
 		}
-
-		if (ground_weapon == WeaponId::None)
-		{
-			if (air_weapon == WeaponId::None)
-			{
+		if (ground_weapon == WeaponId::None) {
+			if (air_weapon == WeaponId::None) {
 				return 0;
 			} else {
 				return weapons_dat::min_range[air_weapon];
 			}
 		} else {
-			if (air_weapon == WeaponId::None)
-			{
+			if (air_weapon == WeaponId::None) {
 				return weapons_dat::min_range[ground_weapon];
 			} else {
 				return std::min(weapons_dat::min_range[ground_weapon], weapons_dat::min_range[air_weapon]);
