@@ -388,25 +388,20 @@ namespace hooks {
 	}
 
 	// Hooked to draw new values to icons. -- Pr0nogo
-	void stats_armor_level(BinDlg* dialog, Unit* unit, u16 status_screen_index) // 00425600
-	{
+	void stats_armor_level(BinDlg* dialog, Unit* unit, u16 status_screen_index) { // 00425600
 		// Second arg is unit id in one case and an empty Unit* in another, so I'm ignoring it entirely and just using g_active_portrait_unit. -Pr0nogo
 		BinDlg* dialog_var = dialog;
 		Unit* portrait_unit = *g_active_portrait_unit;
 		s32 armor_value = units_dat::armor_amount[portrait_unit->id] + get_bonus_armor(portrait_unit, units_dat::armor_amount[portrait_unit->id]);
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%i", armor_value);
-		if (dialog_var->control_type)
-		{
+		if (dialog_var->control_type) {
 			dialog_var = dialog_var->parent;
 		}
 		BinDlg* child = dialog_var->child_dialog;
-		if (child)
-		{
-			while (child->index != status_screen_index + 9)
-			{
+		if (child) {
+			while (child->index != status_screen_index + 9) {
 				child = child->next;
-				if (!child)
-				{
+				if (!child) {
 					child = 0;
 					break;
 				}
@@ -424,8 +419,7 @@ namespace hooks {
 		child->graphic = 37 + (armor_value >= 10 || armor_value < 0) + (armor_value >= 100 || armor_value <= -10);
 		state->button_grp = icons_grp;
 		u32 final_unit_id = active_unit->build_queue[active_unit->build_queue_slot];
-		if (active_unit->status & UnitStatus::Completed || bw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot]))
-		{
+		if (active_unit->status & UnitStatus::Completed || bw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot])) {
 			final_unit_id = active_unit->id; // We also need to do this for birthing Zerg units
 		}
 		u16 frame = upgrades_dat::upgrade_icon[units_dat::armor_upgrade[final_unit_id]];
@@ -437,8 +431,7 @@ namespace hooks {
 		state->id = units_dat::armor_upgrade[final_unit_id];
 		child->text = g_status_screen_info_button_unk[status_screen_index];
 		u32 flags = child->flags;
-		if (!(child->flags & BinDlgFlags::Highlighted))
-		{
+		if (!(child->flags & BinDlgFlags::Highlighted)) {
 			child->flags = flags | BinDlgFlags::Highlighted;
 			helper::update_dialog(child);
 		}
@@ -446,8 +439,7 @@ namespace hooks {
 	}
 
 	// Hooked to draw new values to icons. - Pr0nogo
-	void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, u8 weapon_id) // 00425790
-	{
+	void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, u8 weapon_id) { // 00425790
 		Unit* unit = *g_active_portrait_unit;
 		UnitExt* unit_ext = get_unit_ext(unit);
 		u32 active_player = unit->player;
@@ -460,19 +452,15 @@ namespace hooks {
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", damage_value);
 
 		BinDlg* dialog_var = dialog;
-		if (dialog->control_type)
-		{
+		if (dialog->control_type) {
 			dialog_var = dialog->parent;
 		}
 
 		BinDlg* child = dialog_var->child_dialog;
-		if (child)
-		{
-			while (child->index != status_screen_index + 9)
-			{
+		if (child) {
+			while (child->index != status_screen_index + 9) {
 				child = child->next;
-				if (!child)
-				{
+				if (!child) {
 					child = 0;
 					break;
 				}
@@ -493,8 +481,7 @@ namespace hooks {
 
 		u32 flags = child->flags;
 		child->text = g_status_screen_info_button_unk[status_screen_index];
-		if (!(flags & 1))
-		{
+		if (!(flags & 1)) {
 			child->flags = flags | 1;
 			helper::update_dialog(child);
 		}
@@ -502,8 +489,7 @@ namespace hooks {
 	}
 
 	// Hooked to draw new values to icons. -Pr0nogo
-	void stats_shield_level(BinDlg* dialog, u16 status_screen_index) // 00425510
-	{
+	void stats_shield_level(BinDlg* dialog, u16 status_screen_index) { // 00425510
 		BinDlg* dialog_var = dialog;
 		Unit* unit = *g_active_portrait_unit;
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -515,18 +501,14 @@ namespace hooks {
 		u32 armor_value = base_armor + get_bonus_armor(unit, units_dat::armor_amount[unit->id]);
 		sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", armor_value);
 
-		if (dialog_var->control_type)
-		{
+		if (dialog_var->control_type) {
 			dialog_var = dialog_var->parent;
 		}
 		BinDlg* child = dialog_var->child_dialog;
-		if (child)
-		{
-			while (child->index != status_screen_index + 9)
-			{
+		if (child) {
+			while (child->index != status_screen_index + 9) {
 				child = child->next;
-				if (!child)
-				{
+				if (!child) {
 					child = 0;
 					break;
 				}
@@ -547,8 +529,7 @@ namespace hooks {
 
 		u32 flags = child->flags;
 		child->text = g_status_screen_info_button_unk[status_screen_index];
-		if (!(flags & 1))
-		{
+		if (!(flags & 1)) {
 			child->flags = flags | 1;
 			helper::update_dialog(child);
 		}
@@ -556,33 +537,25 @@ namespace hooks {
 	}
 
 	// Hooked to correct string spacing. -Pr0nogo
-	b32 stats_spidermine_count(BinDlg* dialog, u16 index) // 00426300
-	{
+	b32 stats_spidermine_count(BinDlg* dialog, u16 index) { // 00426300
 		Unit* unit = *g_active_portrait_unit;
-		if (helper::tech_use_allowed(unit, TechId::SpiderMines, unit->player) != 1)
-		{
+		if (helper::tech_use_allowed(unit, TechId::SpiderMines, unit->player) != 1) {
 			return 0;
 		}
 		sprintf_s(g_status_screen_info_button_unk[index], 8, "%d", unit->mine_carrier.mine_count);
-		if (dialog->control_type)
-		{
+		if (dialog->control_type) {
 			dialog = dialog->parent;
 		}
 
 		BinDlg* child = dialog->child_dialog;
-		if (child)
-		{
-			while (child->index != index + 9)
-			{
+		if (child) {
+			while (child->index != index + 9) {
 				child = child->next;
-				if (!child)
-				{
+				if (!child) {
 					goto LABEL_8;
 				}
 			}
-		}
-		else
-		{
+		} else {
 		LABEL_8:
 			child = 0;
 		}
@@ -772,8 +745,7 @@ namespace hooks {
 	}
 
 	// Hooked to investigate transport UI. -Pr0nogo
-	void unit_stat_action_transport(BinDlg* dialog) // 00427C90
-	{
+	void unit_stat_action_transport(BinDlg* dialog) { // 00427C90
 		Unit* active_unit = *g_active_portrait_unit;
 		// Disabled the block below to turn off transport UI display, since it has not yet been reimplemented. -Pr0nogo
 		/*
@@ -790,8 +762,7 @@ namespace hooks {
 			helper::set_text_string(dialog);
 			helper::get_active_portrait_unit_name(dialog);
 		} else */
-		if (active_unit->status & UnitStatus::GroundedBuilding)
-		{
+		if (active_unit->status & UnitStatus::GroundedBuilding) {
 			helper::unit_stat_action_building(dialog);
 		} else {
 			helper::unit_stat_act_standard(dialog);
@@ -1086,24 +1057,19 @@ namespace hooks {
 
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
 	// Don't see any progress bar code here... is this even relevant?
-	void stats_morph_progress(BinDlg* dialog, int index, u32 unk) // 00457250
-	{
+	void stats_morph_progress(BinDlg* dialog, int index, u32 unk) { // 00457250
 		BinDlg* current_dialog;
-		if (dialog->control_type == DialogControlTypes::DialogBoxDC)
-		{
+		if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
 			current_dialog = dialog->child_dialog;
 		} else {
 			current_dialog = dialog->parent->child_dialog;
 		}
 
-		while (current_dialog && current_dialog->index != (u16)index)
-		{
+		while (current_dialog && current_dialog->index != (u16)index) {
 			current_dialog = current_dialog->next; 
 		}
-		if (!(current_dialog->flags & BinDlgFlags::Visible))
-		{
-			struct
-			{
+		if (!(current_dialog->flags & BinDlgFlags::Visible)) {
+			struct {
 				u32 unknown_value;		// [EBP-0x14]	[00]
 				u32 always_zero_here;	// [EBP-0x10]	[04]
 				u32 not_allocated_2;	// [EBP-0x0C]	[08]
@@ -1123,14 +1089,12 @@ namespace hooks {
 			stack_placeholder.always_zero_here = 0;
 			stack_placeholder.mouse_x = g_mouse->x;
 
-			if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Highlighted))
-			{
+			if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Highlighted)) {
 				current_dialog->flags |= BinDlgFlags::Highlighted;
 				helper::update_dialog(current_dialog);
 			}
 		}
-		if (current_dialog->index == unk)
-		{
+		if (current_dialog->index == unk) {
 			current_dialog = 0;
 		} else {
 			current_dialog = current_dialog->next;
@@ -1138,12 +1102,10 @@ namespace hooks {
 	}
 
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
-	void stats_nuke_silo(BinDlg* dialog) // 00426FF0
-	{
+	void stats_nuke_silo(BinDlg* dialog) { // 00426FF0
 		Unit* unit = *g_active_portrait_unit;
 		BinDlg* current_dialog;
-		if (units_dat::base_property[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building) // Originally checked for a Disruption Web ID range
-		{
+		if (units_dat::base_property[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building) { // Originally checked for a Disruption Web ID range
 			if (g_status_screen_func != 3) {
 				helper::hide_optional_status_screen_controls(dialog);
 				helper::show_control_group(dialog, -20, 12);
@@ -1218,8 +1180,7 @@ namespace hooks {
 			current_dialog->text = g_queues_buffers[0];
 			helper::show_dialog(current_dialog);
 
-			if (!(current_dialog->flags & BinDlgFlags::Highlighted))
-			{
+			if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
 				current_dialog->flags |= BinDlgFlags::Highlighted;
 				helper::update_dialog(current_dialog);
 			}
@@ -1229,11 +1190,9 @@ namespace hooks {
 
 	// Ported from GPTP to show remaining build time seconds above progress bar. NOT TESTED because we don't use it anymore. -Pr0nogo
 	// Used by original Archon and Mind Tyrant. Probably display function 5 in FireGraft. -GPTP
-	void unit_stat_act_archon(BinDlg* dialog) // 004273E0
-	{
+	void unit_stat_act_archon(BinDlg* dialog) { // 004273E0
 		Unit* unit = *g_active_portrait_unit;
-		if ((g_is_in_replay == 0 && unit->player != g_local_nation_id) || unit->main_order_id != OrderId::CompletingArchonSummon)
-		{
+		if ((g_is_in_replay == 0 && unit->player != g_local_nation_id) || unit->main_order_id != OrderId::CompletingArchonSummon) {
 			helper::unit_stat_act_standard(dialog);
 		} else {
 			helper::show_control_group(dialog, -30, 13);

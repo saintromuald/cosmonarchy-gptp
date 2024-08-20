@@ -260,7 +260,7 @@ namespace WeaponId {
 		MatrixKhaydarinRay					= 149,
 		HeraldStellarTorch					= 160,
 		OptectonSunsplitBeam				= 185,
-		OptectonSkybondRay					= 186,
+		OptectonSkybondRay					= 186,	// unused
 		PatriarchIronhandWeaver				= 187,
 		AccantorPlasmaShell					= 191,
 		ServitorRecycledBlaster				= 193,

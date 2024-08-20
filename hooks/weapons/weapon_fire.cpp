@@ -1049,7 +1049,9 @@ namespace hooks {
 		if (weapon_id_intercepts(bullet->weapon_id)) {
 			f32 line_width = 16;
 			switch (bullet->weapon_id) {
-				// add special line_width cases here
+				case WeaponId::OptectonSunsplitBeam: {
+					line_width = 48;
+				} break;
 			}
 
 			if (apply_bullet_interception(bullet, old_position, line_width)) {
