@@ -95,10 +95,18 @@ namespace WeaponId {
 	inline f32 get_tooltip_cooldown_offset(Enum id) {
 		f32 offset = 0;
 		switch (id) {
+			case WeaponId::PaladinCrusaderMissiles: {
+				offset += 0.9;
+			} break;
 			case WeaponId::OptectonSunsplitBeam:
 			case WeaponId::ArchitectDispersiveSalvo: {
 				offset += 1;
-			}
+			} break;
+			case WeaponId::WyvernJacksonCannon:
+			case WeaponId::EpigraphLitanyCannons:
+			case WeaponId::EmpyreanPlasmaBarrage: {
+				offset += 0.5;
+			} break;
 		}
 		return offset;
 	}
