@@ -49,7 +49,7 @@ namespace hooks {
 				if (!no_ground_weapon_display) {
 					if (ground_weapon_subunit == WeaponId::None) {
 						no_ground_weapon_display = true;
-					} else if (!active_unit->burrowed_attacker_can_attack()) {
+					} else if (unit_id_is_burrowed_attacker(active_unit->id) && !active_unit->burrowed_attacker_can_attack()) {
 						ground_weapon = WeaponId::None;
 					} else if (ground_weapon_main_unit != WeaponId::None) {
 						ground_weapon = ground_weapon_main_unit;
@@ -122,7 +122,7 @@ namespace hooks {
 				}
 				if (!no_air_weapon_display) {
 					u8 ground_weapon;
-					if (!active_unit->burrowed_attacker_can_attack()) {
+					if (unit_id_is_burrowed_attacker(active_unit->id) && !active_unit->burrowed_attacker_can_attack()) {
 						ground_weapon = WeaponId::None;
 					} else {
 						ground_weapon = units_dat::ground_weapon[active_unit->id];
