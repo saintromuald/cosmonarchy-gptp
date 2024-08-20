@@ -1921,6 +1921,8 @@ namespace SoundId {
 		CataphractOrderAggressive03						= 3160,
 		CataphractOrderAggressive04						= 3161,
 
+		RamessesWeaponhit01								= 3178,
+
 		GoskaGrenadeImpact								= 4011,
 	};
 }

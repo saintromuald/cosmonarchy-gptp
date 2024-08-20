@@ -755,7 +755,12 @@ namespace hooks {
 			// Same as default, but orange effect
 			case WeaponId::CyprianTwinRailguns:
 			case WeaponId::AutocratEminenceRifle:
-			case WeaponId::RamessesPharoahCannons:
+			case WeaponId::RamessesPharoahCannons: {
+				g_iquare_globals->add_bullet_multihit(bullet, target);
+				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
+				hooks::weapon_bullet_hit(bullet, target, 1);
+				bw::play_sound(target->position, SoundId::RamessesWeaponhit01);
+			} break;
 			case WeaponId::WyvernJacksonCannon:
 			case WeaponId::MagnetarNewtonianShockCannon:
 			case WeaponId::HippogriffChimeraCannons: {
