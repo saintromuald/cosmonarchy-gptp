@@ -1,7 +1,6 @@
 #pragma once
 #include "BW/api.h"
 #include "trigger_parser.h"
-#include "collections.h"
 
 struct Sound;
 

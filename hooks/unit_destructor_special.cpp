@@ -116,7 +116,7 @@ void unit_on_death_behaviors(Unit* unit) {
 	switch (unit->id) {
 		case UnitId::ProtossHerald:
 		{
-			ascend_corpses_in_area(unit->position, 2 * 32, unit->player);
+			ascend_corpses_in_area(unit->position, 2u * 32, unit->player);
 		} break;
 		case UnitId::TerranEidolon:
 		case UnitId::TerranSeraph:

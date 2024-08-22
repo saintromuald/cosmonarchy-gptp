@@ -10,6 +10,10 @@
 #include "BW\api.h"
 #include "data_ext.h"
 
+#include <variant>
+
+using SearchRadius = std::variant<u32, Point16>;
+
 #define ATTACK_LIMIT 64
 
 struct IquareGlobals;
@@ -20,6 +24,7 @@ enum class EffectId {
 	SalamanderFire,
 	Irradiate,
 	AspirantCriticality,
+	PsiStorm,
 	HallucinatingField,
 	LanifectDisruptionField,
 	StarSovereignTheGriefOfAllGods,
@@ -35,9 +40,10 @@ enum class EffectId {
 };
 
 struct EffectField {
+	EffectRef ref;
 	EffectId id;
-	Point16 position;
-	u32 radius;
+	Vec32f position;
+	SearchRadius radius;
 	u32 current_time;
 	u32 max_time;
 	SpriteId::Enum sprite_id;
@@ -49,6 +55,8 @@ struct EffectField {
 	// Extras
 	Unit* origin;
 	u32 intervals;
+	Vec32f move_target;
+	u32 move_speed;
 
 	// Runtime Data
 	s32 tick = -1;
@@ -62,6 +70,8 @@ struct EffectField {
 struct EffectFieldExtras {
 	Unit* origin = nullptr;
 	u32 intervals = 1;
+	Point16 move_target = {};
+	u32 move_speed = 0;
 };
 
 struct LineAttackHit {
@@ -84,6 +94,7 @@ struct IquareGlobals {
 	bool tbl_extender = false;
 	bool unitid_extender = false;
 
+	EffectRef m_next_effect_field_ref = 0;
 	std::vector<EffectField> m_effects;
 	std::vector<EffectField> m_effects_to_add; // We follow a two step process to allow adding new effects, while iterating over current effects
 	std::vector<LineAttackHit> m_line_attack_hits;
@@ -101,7 +112,10 @@ struct IquareGlobals {
 	bool was_hit_by_line_attack(Unit* source, Unit* target);
 	void register_line_attack_hit(Unit* source, Unit* target);
 
-	void create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras = {});
+	EffectField* get_effect(EffectRef ref);
+	EffectRef create_effect(EffectId id, u32 time, Point16 position, SearchRadius radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras = {});
+	EffectRef create_effect(EffectId id, u32 time, Point16 position, Point16 size, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras = {});
+	EffectRef create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras = {});
 	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
 	bool multihit_bullet_is_set(Bullet* bullet);
 	u32 get_multihit_count(Bullet* bullet);

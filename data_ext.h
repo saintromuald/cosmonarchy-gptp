@@ -1,6 +1,8 @@
 #pragma once
 #include "BW/api.h"
 
+using EffectRef = u64;
+
 enum ExtValueId {
 	ValueUnitInit,
 	ValueUnitIdName,
@@ -455,6 +457,8 @@ struct UnitExt {
 
 	std::optional<Target>   last_unit_target;
 	std::optional<Point16>  target_pos_override;
+
+	EffectRef               current_storm;
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
