@@ -150,10 +150,6 @@ namespace hooks
 			bw::place_clarion_links(unit); // Clears, then places all Clarion links
 		}
 
-		if (unit->is_under_storm != 0) {
-			unit->is_under_storm--;
-		}
-
 		// Vithrilisk - Corrosive Touch - update overlays
 		if (unit_ext->values[ValueCorrosiveTouchStacks] != 0) {
 			// Calculate the appropriate overlay ID

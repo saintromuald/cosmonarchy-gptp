@@ -2325,6 +2325,14 @@ namespace hooks {
 				if (unit_ext->values[ValueJustCastedHallucination] && unit->order_signal & 32) {
 					unit_ext->values[ValueJustCastedHallucination] = 0;
 				}
+				if (bw::get_generic_rust_value(unit, RustId::CancelPsiStorm)) {
+					bw::set_generic_rust_value(unit, RustId::CancelPsiStorm, 0);
+					if (auto effect = g_iquare_globals->get_effect(unit_ext->current_storm)) {
+						effect->destroy();
+					}
+					unit_ext->current_storm = 0;
+					unit->spell_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PsiStorm);
+				}
 			} break;
 			case UnitId::ProtossCrucible: {
 				// Crucible - Khaydarin Charge stacks
@@ -2502,6 +2510,11 @@ namespace hooks {
 					overlay->play_iscript_animation(IscriptAnimation::Death);
 				}
 			}
+		}
+
+		// Prevent storm overlap, was in update status effects, which doesn't tick every frame
+		if (unit->is_under_storm) {
+			unit->is_under_storm = false;
 		}
 
 		// Update speed for Tyrannized units

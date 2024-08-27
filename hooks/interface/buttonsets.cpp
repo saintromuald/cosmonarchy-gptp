@@ -2755,6 +2755,11 @@ namespace hooks {
 										can_cancel = true;
 									}
 								} break;
+								case UnitId::ProtossCantavis: {
+									if (g_iquare_globals->get_effect(unit_ext->current_storm)) {
+										can_cancel = true;
+									}
+								} break;
 							}
 							
 							if (unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerEmergencyDetonation]) {

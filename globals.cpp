@@ -70,7 +70,7 @@ void tick_effect(EffectField& effect) {
 
     if (effect.move_target && effect.position != effect.move_target) {
         const auto distance = bw::distance_between(effect.position, effect.move_target);
-		auto move_speed = effect.move_speed / 24.0f;
+        auto move_speed = effect.move_speed / 24.0;
         if (distance < move_speed) {
             effect.position = effect.move_target;
         } else {
@@ -83,13 +83,14 @@ void tick_effect(EffectField& effect) {
         }
     }
 
-	const s32 effect_period = 6;
+	const s32 update_period = 4;
 	const u32 elapsed = effect.max_time - effect.current_time;
-	if (elapsed % effect_period == 0) {
+	if (elapsed % update_period == 0) {
 		effect.tick++;
-		const f64 tick_scalar = 256.0 * f64(effect_period) / 24;
-		const f64 total_scalar = 256.0 * f64(effect_period) / effect.max_time;
-
+		const f64 tick_scalar     = f64(update_period) / 24;
+		const f64 total_scalar    = f64(update_period) / effect.max_time;
+		const f64 tick_scalar_hp  = 256.0 * tick_scalar;
+		const f64 total_scalar_hp = 256.0 * total_scalar;
 		switch (effect.id) {
 			case EffectId::StarSovereignTheGriefOfAllGods: {
 				if (!effect.origin) {
@@ -98,7 +99,7 @@ void tick_effect(EffectField& effect) {
 				}
 
 				for (Unit* unit : g_unit_search.square_ex(effect, FilterNoAir)) {
-					unit->damage_with_custom(2500 * total_scalar, -1, effect.source, effect.player);
+					unit->damage_with_custom(2500 * total_scalar_hp, -1, effect.source, effect.player);
 				}
 
 				avenge_or_ascend_corpses_in_area(effect.position, effect.radius, effect.player);
@@ -115,20 +116,20 @@ void tick_effect(EffectField& effect) {
 			} break;
 			case EffectId::AspirantCriticality: {
 				for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
-					unit->heal_shields_then_hp(4 * tick_scalar, effect.source, true);
+					unit->heal_shields_then_hp(4 * tick_scalar_hp, effect.source, true);
 				}
 			} break;
 			case EffectId::KeskathalorCausticDischarge: {
 				for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
 					UnitExt* unit_ext = get_unit_ext(unit);
-					unit->damage_with_custom(30 * total_scalar, -1, effect.source, effect.player);
+					unit->damage_with_custom(30 * total_scalar_hp, -1, effect.source, effect.player);
 					unit_ext->timers[TimerCausticDischargeSpeed] = 3 * 24 + 1;
 				}
 			} break;
 			case EffectId::DiademIonField: {
 				for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
 					UnitExt* unit_ext = get_unit_ext(unit);
-					unit->damage_with_custom(100 * total_scalar, -1, effect.source, effect.player);
+					unit->damage_with_custom(100 * total_scalar_hp, -1, effect.source, effect.player);
 					unit_ext->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
 				}
 			} break;
@@ -144,17 +145,17 @@ void tick_effect(EffectField& effect) {
 					break;
 				}
 				auto distance = bw::distance_between(caster->position, (Point16)effect.position);
-				if (distance > caster->get_sight_range() * 32) {
+				if (distance > caster->get_sight_range(true) * 32 * 1.25) {
 					caster_ext->current_storm = 0;
 					effect.destroy();
 					break;
 				}
 
-				caster->spend_energy(10 * tick_scalar);
+				caster->spend_energy(10 * tick_scalar_hp);
 				for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
                     if (unit->is_under_storm) continue;
                     unit->is_under_storm = true;
-					unit->damage_with(WeaponId::PsiStorm, 18 * tick_scalar, effect.source, effect.player,
+					unit->damage_with(WeaponId::PsiStorm, 25 * tick_scalar_hp, effect.source, effect.player,
 						helper::get_direction_from_points(effect.position, unit->position));
 				}
 

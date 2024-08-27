@@ -126,6 +126,7 @@ namespace RustId {
 		CancelLandGrab,
 		CancelRecall,
 		CancelControlledDemolition,
+		CancelPsiStorm,
 
 		ToggleLazarusAgent,
 		ToggleSavantOnhit,
