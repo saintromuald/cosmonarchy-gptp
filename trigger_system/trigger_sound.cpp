@@ -486,14 +486,15 @@ void update_playing_sounds() {
 	std::erase_if(g_playing_sounds, [](const PlayingSound& sound) { return !sound.GetBuffer(); });
 
 	for (auto& sound : g_playing_sounds) {
-		auto buffer = sound.GetBuffer();
-		if (buffer->settings.is_bw_hook) {
-			continue;
-		}
+		if (auto buffer = sound.GetBuffer()) {
+            if (buffer->settings.is_bw_hook) {
+                continue;
+            }
 
-		const auto [volume, pan] = calculate_volume_pan(buffer->settings);
-        buffer->ds_buffer->SetVolume(volume);
-        buffer->ds_buffer->SetPan(pan);
+            const auto [volume, pan] = calculate_volume_pan(buffer->settings);
+            buffer->ds_buffer->SetVolume(volume);
+            buffer->ds_buffer->SetPan(pan);
+		}
 	}
 }
 

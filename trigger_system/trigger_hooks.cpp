@@ -111,11 +111,13 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 		if (sound) {
 			u32 flags = sfx_dat::sound_flags[sound_id];
 			if (flags & DatSoundFlags_OneAtATime) {
-                DWORD status = 0;
-                sound->ds_buffer->GetStatus(&status);
-                if (status & DSBSTATUS_PLAYING) {
-					return false;
-                }
+				if (sound->ds_buffer) {
+                    DWORD status = 0;
+                    sound->ds_buffer->GetStatus(&status);
+                    if (status & DSBSTATUS_PLAYING) {
+                        return false;
+                    }
+				}
 			}
 
 			if (flags & DatSoundFlags_UnitResponse && unit) {
