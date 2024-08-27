@@ -2970,19 +2970,23 @@ void set_unit_overlay(Unit* unit, ImageSet image_set, bool active, const Overlay
 }
 
 PlayingSound play_sound(Unit* unit, SoundSet sound_set) {
-	return play_sound_ext(sound_set.rand(), unit);
+	SoundId::Enum sound_id = sound_set.rand();
+	return play_sound_ext(sound_id, {.position = unit->position, .min_volume = sfx_dat::volume[sound_id]});
 }
 
 PlayingSound play_sound(Point16 pos, SoundSet sound_set) {
-	return play_sound_ext(sound_set.rand(), pos);
+	SoundId::Enum sound_id = sound_set.rand();
+	return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id]});
 }
 
 PlayingSound play_sound_local(Unit* unit, SoundSet sound_set) {
-	return play_sound_ext(sound_set.rand_local(), unit);
+	SoundId::Enum sound_id = sound_set.rand_local();
+	return play_sound_ext(sound_id, {.position = unit->position, .min_volume = sfx_dat::volume[sound_id]});
 }
 
 PlayingSound play_sound_local(Point16 pos, SoundSet sound_set) {
-	return play_sound_ext(sound_set.rand_local(), pos);
+	SoundId::Enum sound_id = sound_set.rand_local();
+	return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id]});
 }
 
 void play_action_sound(u32 sound_id, Unit* unit) {

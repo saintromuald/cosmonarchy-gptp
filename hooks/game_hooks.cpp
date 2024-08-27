@@ -739,7 +739,7 @@ namespace hooks {
 		*cpu_throttle = false;
 
 		g_game->tick();
-		update_running_sounds();
+		update_playing_sounds();
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
@@ -3458,6 +3458,7 @@ namespace hooks {
 	}
 
 	bool game_end() {
+		stop_playing_sounds();
 		end_threshold();
 		g_graphics.reset_stat_res_graphics();
 		for (u32 player = 0; player < PlayerLimit; player++)

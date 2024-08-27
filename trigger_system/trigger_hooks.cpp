@@ -81,7 +81,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 			for (SoundReplacement& sound_replacement : g_globals->sound_replacements) {
 				if (sound_replacement_match(&sound_replacement, image, sound_id, unit)) {
 					if (index == target_index) {
-						play_sound_raw(sound_replacement.new_sound, get_sound_volume_at_pos(sprite->position), helper::get_sfx_pan_from_screen_distance(sprite->position.x));
+						play_sound_ext(sound_replacement.new_sound, {.position = sprite->position});
 						if (sound_replacement.replace) {
 							replace = true;
 						}
@@ -111,13 +111,11 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 		if (sound) {
 			u32 flags = sfx_dat::sound_flags[sound_id];
 			if (flags & DatSoundFlags_OneAtATime) {
-				DWORD status = 0;
-				if (sound->ds_buffer) {
-					sound->ds_buffer->GetStatus(&status);
-					if (status == DSBSTATUS_PLAYING) {
-						return false;
-					}
-				}
+                DWORD status = 0;
+                sound->ds_buffer->GetStatus(&status);
+                if (status & DSBSTATUS_PLAYING) {
+					return false;
+                }
 			}
 
 			if (flags & DatSoundFlags_UnitResponse && unit) {
@@ -126,14 +124,14 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 					if (!g_dup_channels[i].ds_buffer) {
 						continue;
 					}
-					if (g_dup_channels[i].unit_id != unit->id) {
+					if (g_dup_channels[i].settings.unit_response_unit_id != unit->id) {
 						continue;
 					}
-					DWORD status = 0;
-					g_dup_channels[i].ds_buffer->GetStatus(&status);
-					if (status == DSBSTATUS_PLAYING) {
-						return false;
-					}
+                    DWORD status = 0;
+                    g_dup_channels[i].ds_buffer->GetStatus(&status);
+                    if (status & DSBSTATUS_PLAYING) {
+                        return false;
+                    }
 				}
 			}
 
@@ -141,7 +139,7 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 			if (flags & DatSoundFlags_UnitResponse && unit) {
 				unit_id = unit->id;
 			}
-			if (play_sound_raw(sound, volume, pan, {}, unit_id)) {
+            if (play_sound_ext(sound, {.bw_volume = volume, .bw_pan = pan, .unit_response_unit_id = unit_id, .is_bw_hook = true})) {
 				return true;
 			}
 		}

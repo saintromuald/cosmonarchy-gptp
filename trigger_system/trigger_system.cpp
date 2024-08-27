@@ -848,7 +848,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			if (trigger_player < PlayerLimit && players[trigger_player]) {
 				if (position.x == 0 && position.y == 0) {
-					play_sound_raw(get_sound(path.string().c_str()), get_sound_volume());
+					play_sound_ext(get_sound(path.string().c_str()), {.bw_volume = get_sound_volume()});
 				} else {
 					bool play = false;
 					ActiveTile* tile = bw::get_active_tile_at_coords(position.x, position.y);
@@ -866,7 +866,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 
 					if (play) {
-						play_sound_raw(get_sound(path.string().c_str()), get_sound_volume_at_pos(position), helper::get_sfx_pan_from_screen_distance(position.x));
+						play_sound_ext(get_sound(path.string().c_str()), {.position = position});
 					}
 				}
 			}

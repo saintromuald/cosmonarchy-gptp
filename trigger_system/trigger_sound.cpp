@@ -93,7 +93,7 @@ void update_sound() {
 		if (sound->ds_buffer && GetTickCount() - sound->last_play_time >= 10 * 1000) {
 			DWORD status = 0;
 			sound->ds_buffer->GetStatus(&status);
-			if (status != DSBSTATUS_PLAYING) {
+			if (!(status & DSBSTATUS_PLAYING)) {
 				sound->ds_buffer->Release();
 				sound->ds_buffer = 0;
 			}
@@ -103,7 +103,7 @@ void update_sound() {
 	if (g_music_playback.current_music && g_music_playback.current_music->ds_buffer) {
 		DWORD status = 0;
 		g_music_playback.current_music->ds_buffer->GetStatus(&status);
-		if (status != DSBSTATUS_PLAYING) {
+		if (!(status & DSBSTATUS_PLAYING)) {
 			g_music_playback.current_music = 0;
 		}
 	} else {
@@ -312,7 +312,7 @@ void free_sound(SoundMainBuffer* sound) {
 	}
 }
 
-PlayingSound play_sound_raw(SoundMainBuffer* sound_buffer, s32 volume, s32 pan, Point16 position, s32 unit_id) {
+PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, const PlaySoundSettings& settings) {
 	if (!sound_buffer) {
 		return {};
 	}
@@ -327,14 +327,14 @@ PlayingSound play_sound_raw(SoundMainBuffer* sound_buffer, s32 volume, s32 pan, 
 
 	DWORD status = 0;
 	sound_buffer->ds_buffer->GetStatus(&status);
-	if (status == DSBSTATUS_PLAYING || unit_id != -1) {
+	if (status & DSBSTATUS_PLAYING || settings.unit_response_unit_id != -1) {
 		// Use dup channel
 		SoundDupBuffer* dup_buffer = 0;
 		for (u32 i = 0; i < MaxDupChannels; ++i) {
 			if (g_dup_channels[i].ds_buffer) {
 				DWORD dup_status = 0;
 				g_dup_channels[i].ds_buffer->GetStatus(&dup_status);
-				if (dup_status != DSBSTATUS_PLAYING) {
+				if (!(dup_status & DSBSTATUS_PLAYING)) {
 					g_dup_channels[i].ds_buffer->Release();
 					g_dup_channels[i].ds_buffer = 0;
 				}
@@ -347,11 +347,12 @@ PlayingSound play_sound_raw(SoundMainBuffer* sound_buffer, s32 volume, s32 pan, 
 		if (dup_buffer) {
 			g_direct_sound->DuplicateSoundBuffer(sound_buffer->ds_buffer, &dup_buffer->ds_buffer);
 			if (dup_buffer->ds_buffer) {
-				dup_buffer->ds_buffer->SetVolume(volume);
-				dup_buffer->ds_buffer->SetPan(pan);
+                const auto [volume, pan] = calculate_volume_pan(settings);
+                dup_buffer->ds_buffer->SetVolume(volume);
+                dup_buffer->ds_buffer->SetPan(pan);
 				dup_buffer->ds_buffer->SetCurrentPosition(0);
-				dup_buffer->ds_buffer->Play(0, 0, 0);
-				dup_buffer->unit_id = unit_id;
+				dup_buffer->ds_buffer->Play(0, 0, settings.looping ? DSBPLAY_LOOPING : 0);
+				dup_buffer->settings = settings;
 				dup_buffer->generation++;
 				sound_buffer->last_play_time = GetTickCount();
 				g_playing_sounds.emplace_back(dup_buffer);
@@ -359,32 +360,22 @@ PlayingSound play_sound_raw(SoundMainBuffer* sound_buffer, s32 volume, s32 pan, 
 			}
 		}
 	} else {
-		sound_buffer->ds_buffer->SetVolume(volume);
-		sound_buffer->ds_buffer->SetPan(pan);
+        const auto [volume, pan] = calculate_volume_pan(settings);
+        sound_buffer->ds_buffer->SetVolume(volume);
+        sound_buffer->ds_buffer->SetPan(pan);
 		sound_buffer->ds_buffer->SetCurrentPosition(0);
-		sound_buffer->ds_buffer->Play(0, 0, 0);
-		sound_buffer->last_play_time = GetTickCount();
+		sound_buffer->ds_buffer->Play(0, 0, settings.looping ? DSBPLAY_LOOPING : 0);
+		sound_buffer->settings = settings;
 		sound_buffer->generation++;
+		sound_buffer->last_play_time = GetTickCount();
         g_playing_sounds.emplace_back(sound_buffer);
 		return {sound_buffer};
 	}
 	return {};
 }
 
-PlayingSound play_sound_raw(SoundMainBuffer* sound, Point16 position, s32 unit_id) {
-	return play_sound_raw(sound, helper::get_sfx_volume_from_screen_distance(position.x, position.y), helper::get_sfx_pan_from_screen_distance(position.x), position, unit_id);
-}
-
-PlayingSound play_sound_ext(SoundId::Enum sound_id) {
-	return play_sound_raw(get_sound(sound_id), 1);
-}
-
-PlayingSound play_sound_ext(SoundId::Enum sound_id, Point16 position) {
-	return play_sound_raw(get_sound(sound_id), position);
-}
-
-PlayingSound play_sound_ext(SoundId::Enum sound_id, Unit* unit) {
-	return play_sound_raw(get_sound(sound_id), unit->position);
+PlayingSound play_sound_ext(SoundId::Enum sound_id, const PlaySoundSettings& settings) {
+	return play_sound_ext(get_sound(sound_id), settings);
 }
 
 void play_music(bool resume) {
@@ -472,25 +463,59 @@ SoundMainBuffer* get_next_music() {
 	return music;
 }
 
+VolumePan calculate_volume_pan(const PlaySoundSettings& settings) {
+	if (settings.is_bw_hook) {
+		return {settings.bw_volume, settings.bw_pan};
+	}
+
+	VolumePan result{99, 0};
+	if (settings.position) {
+        result.volume = helper::get_sfx_volume_from_screen_distance(settings.position.x, settings.position.y);
+		result.pan = helper::get_sfx_pan_from_screen_distance(settings.position.x);
+	};
+	result.volume = std::max<s32>(result.volume, settings.min_volume);
+    result.volume *= g_options_list->sfx;
+    if (g_use_quiet_sounds) {
+        result.volume /= 5;
+    }
+    result.volume = g_big_volume_array[result.volume / 100];
+	return result;
+}
+
 void update_playing_sounds() {
-	std::erase_if(g_playing_sounds, [](const PlayingSound& sound) { return !sound; });
+	std::erase_if(g_playing_sounds, [](const PlayingSound& sound) { return !sound.GetBuffer(); });
 
 	for (auto& sound : g_playing_sounds) {
-		if (auto buffer = sound.GetBuffer(); buffer && buffer->position) {
-			buffer->ds_buffer->SetVolume(helper::get_sfx_volume_from_screen_distance(buffer->position.x, buffer->position.y));
-			buffer->ds_buffer->SetPan(helper::get_sfx_pan_from_screen_distance(buffer->position.x));
+		auto buffer = sound.GetBuffer();
+		if (buffer->settings.is_bw_hook) {
+			continue;
 		}
+
+		const auto [volume, pan] = calculate_volume_pan(buffer->settings);
+        buffer->ds_buffer->SetVolume(volume);
+        buffer->ds_buffer->SetPan(pan);
 	}
 }
 
-void PlayingSound::Stop() {
+void stop_playing_sounds() {
+	for (auto& sound : g_playing_sounds) {
+		if (auto buffer = sound.GetBuffer()) {
+			buffer->ds_buffer->Stop();
+			buffer->settings = {};
+			buffer->generation = 0;
+		}
+	}
+	g_playing_sounds.clear();
+}
+
+void PlayingSound::Stop() const {
 	if (!*this) {
 		return;
 	}
     m_buffer->ds_buffer->Stop();
 }
 
-SoundBuffer* PlayingSound::GetBuffer() {
+SoundBuffer* PlayingSound::GetBuffer() const {
 	if (!*this) {
 		return 0;
 	}
@@ -498,7 +523,7 @@ SoundBuffer* PlayingSound::GetBuffer() {
 }
 
 PlayingSound::operator bool() const {
-	if (!m_buffer) {
+	if (!m_buffer || !m_buffer->ds_buffer) {
 		return false;
 	}
 	if (m_buffer->generation != m_generation) {
@@ -507,5 +532,5 @@ PlayingSound::operator bool() const {
 
 	DWORD status = 0;
 	m_buffer->ds_buffer->GetStatus(&status);
-	return status == DSBSTATUS_PLAYING;
+	return status & DSBSTATUS_PLAYING;
 }
