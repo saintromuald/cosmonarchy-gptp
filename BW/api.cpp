@@ -18,6 +18,7 @@
 #include "hooks/update_unit_sight.h"
 #include "hooks/rally_point.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
+#include "trigger_system/trigger_sound.h"
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -2968,20 +2969,20 @@ void set_unit_overlay(Unit* unit, ImageSet image_set, bool active, const Overlay
 	}
 }
 
-void play_sound(Unit* unit, SoundSet sound_set, u32 min_volume) {
-	helper::play_sound_from_unit(sound_set.rand(), unit, true, min_volume);
+PlayingSound play_sound(Unit* unit, SoundSet sound_set) {
+	return play_sound_ext(sound_set.rand(), unit);
 }
 
-void play_sound(Point16 pos, SoundSet sound_set, u32 min_volume) {
-	helper::play_sound_at_pos(sound_set.rand(), pos, true, min_volume);
+PlayingSound play_sound(Point16 pos, SoundSet sound_set) {
+	return play_sound_ext(sound_set.rand(), pos);
 }
 
-void play_sound_local(Unit* unit, SoundSet sound_set, u32 min_volume) {
-	helper::play_sound_from_unit(sound_set.rand_local(), unit, true, min_volume);
+PlayingSound play_sound_local(Unit* unit, SoundSet sound_set) {
+	return play_sound_ext(sound_set.rand_local(), unit);
 }
 
-void play_sound_local(Point16 pos, SoundSet sound_set, u32 min_volume) {
-	helper::play_sound_at_pos(sound_set.rand_local(), pos, true, min_volume);
+PlayingSound play_sound_local(Point16 pos, SoundSet sound_set) {
+	return play_sound_ext(sound_set.rand_local(), pos);
 }
 
 void play_action_sound(u32 sound_id, Unit* unit) {

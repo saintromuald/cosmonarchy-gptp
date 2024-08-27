@@ -621,46 +621,46 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 		// Local Only Triggers
 		} else if (parser.equals("play_music") && is_local_player) {
 			Token filename = parser.get_string();
-			playback.next_music = get_sound(filename.string().c_str());
-			playback.target_fade = 0;
+			g_music_playback.next_music = get_sound(filename.string().c_str());
+			g_music_playback.target_fade = 0;
 		} else if (parser.equals("stop_music") && is_local_player) {
-			playback.target_fade = 0;
+			g_music_playback.target_fade = 0;
 		} else if (parser.equals("pause_music") && is_local_player) {
-			playback.target_fade = 0;
-			playback.paused = true;
+			g_music_playback.target_fade = 0;
+			g_music_playback.paused = true;
 		} else if (parser.equals("resume_music") && is_local_player) {
-			playback.target_fade = 1;
-			playback.paused = false;
+			g_music_playback.target_fade = 1;
+			g_music_playback.paused = false;
 			play_music(true);
 		} else if (parser.equals("music_fade_in") && is_local_player) {
 			f32 fade_in = parser.get_time_seconds();
-			playback.fade_in = fade_in;
+			g_music_playback.fade_in = fade_in;
 		} else if (parser.equals("music_fade_out") && is_local_player) {
 			f32 fade_out = parser.get_time_seconds();
-			playback.fade_out = fade_out;
+			g_music_playback.fade_out = fade_out;
 		} else if (parser.equals("music_volume") && is_local_player) {
 			f32 volume = parser.get_f32();
 			f32 time = parser.get_time_seconds();
 			if (time == 0) {
-				playback.volume = 0;
+				g_music_playback.volume = 0;
 			}
-			playback.target_volume = volume;
-			playback.volume_time = time;
+			g_music_playback.target_volume = volume;
+			g_music_playback.volume_time = time;
 		} else if (parser.equals("playlist_clear") && is_local_player) {
-			memset(&current_playlist, 0, sizeof(current_playlist));
+			memset(&g_current_playlist, 0, sizeof(g_current_playlist));
 		} else if (parser.equals("playlist_add") && is_local_player) {
 			Token filename = parser.get_string();
-			if (current_playlist.size < MaxSound) {
-				Sound* music = get_sound(filename.string().c_str());
+			if (g_current_playlist.size < MaxSound) {
+				SoundMainBuffer* music = get_sound(filename.string().c_str());
 				if (music) {
-					current_playlist.tracks[current_playlist.size++] = music;
+					g_current_playlist.tracks[g_current_playlist.size++] = music;
 				}
 			} else {
 				bw::printf("Error: Playlist already full! (%s)", filename.string().c_str());
 			}
 		} else if (parser.equals("playlist_shuffle") && is_local_player) {
 			s32 do_shuffle = parser.get_s32(); // 0 - false, 1 - true
-			current_playlist.shuffle = do_shuffle;
+			g_current_playlist.shuffle = do_shuffle;
 		} else if (parser.equals("set_player_name") && is_local_player) {
 			u32 player = parser.get_player();
 			Token name = parser.get_string();
@@ -848,7 +848,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
 			if (trigger_player < PlayerLimit && players[trigger_player]) {
 				if (position.x == 0 && position.y == 0) {
-					play_sound(get_sound(path.string().c_str()), get_sound_volume());
+					play_sound_raw(get_sound(path.string().c_str()), get_sound_volume());
 				} else {
 					bool play = false;
 					ActiveTile* tile = bw::get_active_tile_at_coords(position.x, position.y);
@@ -866,7 +866,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 					}
 
 					if (play) {
-						play_sound(get_sound(path.string().c_str()), get_sound_volume_at_pos(position), helper::get_sfx_pan_from_screen_distance(position.x));
+						play_sound_raw(get_sound(path.string().c_str()), get_sound_volume_at_pos(position), helper::get_sfx_pan_from_screen_distance(position.x));
 					}
 				}
 			}

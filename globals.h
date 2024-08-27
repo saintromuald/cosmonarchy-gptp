@@ -9,6 +9,8 @@
 #include <assert.h>
 #include "BW\api.h"
 #include "data_ext.h"
+#include "Utils.h"
+#include "trigger_system/trigger_sound.h"
 
 #include <variant>
 
@@ -60,8 +62,12 @@ struct EffectField {
 
 	// Runtime Data
 	s32 tick = -1;
+	PlayingSound playing_sound;
 
 	void destroy() {
+		if (playing_sound) {
+			playing_sound.Stop();
+		}
 		current_time = 0;
 		intervals = 0;
 	}

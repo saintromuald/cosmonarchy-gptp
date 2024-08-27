@@ -54,6 +54,7 @@
 #include "GameModes/TheTurning.h"
 #include "aise_signal.h"
 #include "game.h"
+#include "trigger_system/trigger_sound.h"
 
 #include <random>
 #include <format>
@@ -738,6 +739,7 @@ namespace hooks {
 		*cpu_throttle = false;
 
 		g_game->tick();
+		update_running_sounds();
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers

@@ -151,6 +151,10 @@ void tick_effect(EffectField& effect) {
 					break;
 				}
 
+				if (!effect.playing_sound) {
+					effect.playing_sound = bw::play_sound(effect.position, SoundId::Protoss_TEMPLAR_PTeSto00_WAV);
+				}
+
 				caster->spend_energy(10 * tick_scalar_hp);
 				for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
                     if (unit->is_under_storm) continue;

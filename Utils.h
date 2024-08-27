@@ -6,9 +6,9 @@ public:
     void Start(u32 time);
     void Stop();
 
-    bool HasStarted();
-    bool IsRunning();
-    bool HasElapsed();
+    bool HasStarted() const;
+    bool IsRunning() const;
+    bool HasElapsed() const;
 
 private:
     u32 m_end_time = 0;
