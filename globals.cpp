@@ -152,7 +152,7 @@ void tick_effect(EffectField& effect) {
 				}
 
 				if (!effect.playing_sound) {
-					effect.playing_sound = play_sound_ext(SoundId::Protoss_TEMPLAR_PTeSto00_WAV, {.position = effect.position, .looping = true});
+					effect.playing_sound = bw::play_looping_sound(effect.position, SoundId::Protoss_TEMPLAR_PTeSto00_WAV);
 				}
 
 				caster->spend_energy(10 * tick_scalar_hp);

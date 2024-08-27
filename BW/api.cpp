@@ -2989,6 +2989,26 @@ PlayingSound play_sound_local(Point16 pos, SoundSet sound_set) {
 	return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id]});
 }
 
+PlayingSound play_looping_sound(Unit* unit, SoundSet sound_set) {
+	SoundId::Enum sound_id = sound_set.rand();
+	return play_sound_ext(sound_id, {.position = unit->position, .min_volume = sfx_dat::volume[sound_id], .looping = true});
+}
+
+PlayingSound play_looping_sound(Point16 pos, SoundSet sound_set) {
+	SoundId::Enum sound_id = sound_set.rand();
+	return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id], .looping = true});
+}
+
+PlayingSound play_looping_sound_local(Unit* unit, SoundSet sound_set) {
+	SoundId::Enum sound_id = sound_set.rand_local();
+	return play_sound_ext(sound_id, {.position = unit->position, .min_volume = sfx_dat::volume[sound_id], .looping = true});
+}
+
+PlayingSound play_looping_sound_local(Point16 pos, SoundSet sound_set) {
+	SoundId::Enum sound_id = sound_set.rand_local();
+	return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id], .looping = true});
+}
+
 void play_action_sound(u32 sound_id, Unit* unit) {
 	if (helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99)) {
 		helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 0, sound_id);
