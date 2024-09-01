@@ -181,12 +181,16 @@ enum MovementFlags {
 
 #define TransportCap 64
 #define OldTransportCap 8
-union CargoUnit {
+union UnitRef {
 	struct {
 		u16 index     : 12; // btw, used to be 11, but CMMU extender made it 12 btw. 1-based index in the unit table. 
 		u16 unique_id : 4;
 	};
 	u16 value;
+
+	UnitRef() = default;
+	UnitRef(Unit* unit);
+	Unit* get() const;
 };
 
 // Layout of the Unit structure
@@ -292,7 +296,7 @@ struct UnitLayout {
 	/*0x0AA*/ u16       shield_gain;					// Shield gain on construction
 	/*0x0AC*/ u16       remaining_build_time;			// Remaining bulding time; also used by powerups (flags) as the timer for returning to their original location.
 	/*0x0AE*/ u16       previous_hitpoints;				// The HP of the unit before it changed (example Droleth->Hachirosk, the Droleths's HP will be stored here)
-	/*0x0B0*/ CargoUnit loaded_unit_old[OldTransportCap]; // officially called "uwTransport[8]"
+	/*0x0B0*/ UnitRef loaded_unit_old[OldTransportCap]; // officially called "uwTransport[8]"
 	/*0x0C0*/ union {
 		struct {
 			/*0x0C0*/     u8 mine_count;				// Used for Eidolon Lobotomy Mines

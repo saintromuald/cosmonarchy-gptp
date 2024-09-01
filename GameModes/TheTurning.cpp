@@ -33,17 +33,7 @@ void TheTurningGameMode::OnTick() {
             factor += 0.01 * m_spawn_pool_size; // 1% faster for each unit in the pool
             
             factor *= cost / 200.0; // factor spawn time relative to 200 combined cost (e.g. maverick at 50 is 50/200 = 0.25)
-            u32 player_count = 0;
-            for (u32 i = 0; i < 8; i++) {
-                if (bw::player_is_witness(i)) {
-                    continue;
-                }
-                if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
-                    continue;
-                }
-                player_count++;
-            }
-            factor /= player_count; // times the amount of players
+            factor /= bw::active_player_count(); // times the amount of players
 
             m_spawn_timer.Start(DefaultSpawnTimer * factor);
         }
@@ -69,15 +59,15 @@ void TheTurningGameMode::OnUnitTick(Unit* unit) {
     if (unit->player != NeutralHostilePlayer) {
         return;
     }
-    UnitExt* unit_ext = get_unit_ext(unit);
 
+    UnitExt* unit_ext = get_unit_ext(unit);
     if (unit_ext->values[ValueTurningAggressiveMode]) {
         Unit* order_target = unit->order_target.unit;
         if (unit->main_order_id == OrderId::AttackUnit) {
             return;
         }
 
-        if (Unit* target = g_unit_search.all().not_neutral().filter(0).sort_by_distance(unit->position).first()) {
+        if (Unit* target = g_unit_search.all().not_neutral().filter().sort_by_distance(unit->position).first()) {
             unit->order_to(OrderId::AttackUnit, target);
         } else if (!unit_ext->timers[TimerTurningRoam]) {
             const auto target_pos = bw::random_polar_point(unit->position, 1 * 32);
@@ -94,7 +84,7 @@ void TheTurningGameMode::OnUnitTick(Unit* unit) {
             }
         }
 
-        if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter(0).sort_by_distance(unit->position).first()) {
+        if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter().sort_by_distance(unit->position).first()) {
             unit->order_to(OrderId::AttackUnit, target);
         } else if (!unit_ext->timers[TimerTurningRoam]) {
             const auto target_pos = bw::random_polar_point(unit->position, 6 * 32);
@@ -138,33 +128,7 @@ Unit* TheTurningGameMode::Spawn() {
         return 0;
     }
 
-    auto buildings = g_unit_search.all().not_neutral().filter(0, FilterBuilding);
-    std::optional<Point16> spawn_position = SampleBest(
-        []() {
-            return Point16{
-                static_cast<u16>(bw::random_float() * *g_map_width_pixels),
-                static_cast<u16>(bw::random_float() * *g_map_height_pixels),
-            };
-        },
-        [unit_id, &buildings](const Point16& point) -> s32 {
-            if (!(units_dat::base_property[unit_id] & UnitProperty::Flyer)) {
-                if (!helper::can_unit_id_fit_at_xy(point.x, point.y, unit_id)) {
-                    return InvalidSample;
-                }
-            }
-            s32 score = 0;
-            for (Unit* building : buildings) {
-                f32 distance = bw::distance_between(building->position, point);
-                if (distance <= 16 * 32) {
-                    return InvalidSample;
-                }
-                score += distance;
-            }
-            return score;
-        },
-        10,
-        100
-    );
+    std::optional<Point16> spawn_position = pick_random_spawn_position(unit_id);
     if (!spawn_position) {
         return 0;
     }

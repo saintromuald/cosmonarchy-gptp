@@ -1,5 +1,6 @@
 #pragma once
 #include "BW/api.h"
+#include <GameModes/Uprising.h>
 
 using EffectRef = u64;
 
@@ -196,7 +197,6 @@ enum ExtValueId {
 	ValueHasStimpack,
 	ValueControlledByDemiurge,
 	ValueHidebreaker,
-	ValueUprisingSpawner,
 	ValueTryCastCustomSpell,
 	ValueMindTyrantTyranny,
 	ValueReclaimed,
@@ -205,6 +205,7 @@ enum ExtValueId {
 	ValueRefreshSpeedNextFrame,
 	ValueWyvernWeaponCharging,
 	ValueTurningAggressiveMode,
+	ValueUprisingInAttackWave,
 	ValueCancellingZergStructure,
 
 	ValueAI_WorkerChosenForExpansion,
@@ -341,8 +342,8 @@ enum ExtTimerId {
 	TimerAddonDisconnectDelay,
 	TimerMindTyrantTyranny,
 	TimerHidebreaker,
-	TimerUprisingSpawn,
 	TimerLucilleriPheremones,
+	ValueUprisingSpawner,
 	TimerTryCastCustomSpell,
 	TimerGenericAbilityAnimation,
 	TimerAnthelionTurn,
@@ -453,7 +454,7 @@ struct UnitExt {
 
 	u32						ai_timer_avoid_targeting[PlayerLimit];
 
-	CargoUnit				loaded_unit[TransportCap];
+	UnitRef					loaded_unit[TransportCap];
 
 	std::optional<Target>   last_unit_target;
 	std::optional<Point16>  target_pos_override;

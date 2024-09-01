@@ -58,13 +58,6 @@ static void special_post_unload_unit(Unit* unit, Unit* transport) {
     apply_unload_delay(unit->subunit);
 }
 
-static Point16 align_to_tile_grid(Point16 pos) {
-    return {
-        static_cast<u16>((pos.x + 16) / 32 * 32),
-        static_cast<u16>((pos.y + 16) / 32 * 32),
-    };
-}
-
 static bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos) {
     bool is_zerg = units_dat::group_flags[unit_id].is_zerg;
     Point16 size = units_dat::building_dimensions[unit_id];
@@ -111,7 +104,7 @@ static bool fix_unload_pos(Unit* unit, Point16* pos) {
     }
 
     if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-        *pos = align_to_tile_grid(*pos);
+        *pos = bw::align_to_tile_grid(*pos);
         
         if (!check_building_collision((UnitId::Enum)unit->id, unit->player, *pos)) {
             return false;

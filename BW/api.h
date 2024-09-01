@@ -971,7 +971,8 @@ bool unit_has_shields(Unit* unit);
 bool can_show_custom_ui();
 bool player_is_witness(u32 player);
 bool player_is_active(u32 player);
-
 std::string get_commit_hash();
+Point16 align_to_tile_grid(Point16 pos);
+u32 active_player_count();
 
 }
