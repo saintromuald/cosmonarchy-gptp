@@ -336,7 +336,7 @@ public:
     }
 
     EntryArray<T> all() {
-        return rect({0, 0, *g_map_width_pixels, *g_map_height_pixels});
+        return rect({0, 0, g_map_width_pixels, g_map_height_pixels});
     }
 
     EntryArray<T> square(Point16 center, u32 radius) {

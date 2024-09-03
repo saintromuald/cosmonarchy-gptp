@@ -385,8 +385,8 @@ BW_DATA(AiTown*,			g_ai_town_array,			0x006AA090);
 BW_DATA(AiTownList*,		g_ai_town_list,				0x006AA050); // sizeof 0x64[0x8]
 
 // For cmdrecv_hold_position
-BW_DATA(s16*,		g_map_width_pixels,					0x00628450);
-BW_DATA(s16*,		g_map_height_pixels,				0x006284B4);
+BW_REF(s16,			g_map_width_pixels,					0x00628450);
+BW_REF(s16,			g_map_height_pixels,				0x006284B4);
 BW_DATA(u32*,		g_order_type_4_position,			0x006D5C20);
 BW_DATA(u32*,		g_order_type_4_target,				0x006D5C24);
 
@@ -1171,8 +1171,8 @@ BW_DATA(void**,				g_minimap_vision_CB,				0x0059C188);
 BW_DATA(void**,				g_minimap_surface_CB,				0x0059C1A0);
 BW_DATA(u16*,				g_ping_zoom_div,					0x0059CC68);
 BW_DATA(u16*,				g_ping_zoom_lshift,					0x0059C1B0);
-BW_DATA(u16*,				g_map_width,						0x0059CC74);
-BW_DATA(u16*,				g_map_height,						0x0059CC64);
+BW_REF(u16,					g_map_width,						0x0059CC74);
+BW_REF(u16,					g_map_height,						0x0059CC64);
 BW_DATA(u8*,				g_minimap59C2C0,					0x0059C2C0);
 BW_DATA(u8*,				g_minimap59CB60,					0x0059CB60);
 BW_DATA(BinDlg**,			g_minimap_dlg,						0x0059CC60);

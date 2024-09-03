@@ -1559,12 +1559,21 @@ namespace hooks {
 				target_pos.x = (s32)(parent->position.x + ((max_range * g_angle_distance[bullet->current_direction_1].x) >> 16));
 				target_pos.y = (s32)(parent->position.y + ((max_range * g_angle_distance[bullet->current_direction_1].y) >> 16));
 				if (target_pos.x < 0) {
-					target_pos.y = (1 - abs(target_pos.x / (target_pos.x - parent->position.x))) * (target_pos.y - parent->position.y) + parent->position.y;
+					target_pos.y = (parent->position.x / (parent->position.x - target_pos.x)) * (target_pos.y - parent->position.y) + parent->position.y;
 					target_pos.x = 0;
+				} else if (target_pos.x >= g_map_width) {
+					s32 parent_pos_x = -(parent->position.x - g_map_width);
+					target_pos.y = (parent_pos_x / (parent_pos_x - -(target_pos.x - g_map_width))) * (target_pos.y - parent->position.y) + parent->position.y;
+					target_pos.x = g_map_width - 1;
 				}
+
 				if (target_pos.y < 0) {
-					target_pos.x = (1 - abs(target_pos.y / (target_pos.y - parent->position.y))) * (target_pos.x - parent->position.x) + parent->position.x;
+					target_pos.x = (parent->position.y / (parent->position.y - target_pos.y)) * (target_pos.x - parent->position.x) + parent->position.x;
 					target_pos.y = 0;
+				} else if (target_pos.y >= g_map_height) {
+					s32 parent_pos_y = -(parent->position.y - g_map_height);
+					target_pos.x = (parent_pos_y / (parent_pos_y - -(target_pos.y - g_map_height))) * (target_pos.x - parent->position.x) + parent->position.x;
+					target_pos.y = g_map_height - 1;
 				}
 				bullet->attack_target.pt.x = target_pos.x;
 				bullet->attack_target.pt.y = target_pos.y;
@@ -1810,7 +1819,7 @@ namespace hooks {
 		u32 tgt_x_final = tgt_x + (attacker_halt_off2 >> 16);
 		u32 tgt_y_final = tgt_y + (attacker_halt_off1 * g_angle_distance[target_vel].y >> 16);
 
-		if (tgt_x_final >= *g_map_width_pixels || tgt_y_final >= *g_map_height_pixels)
+		if (tgt_x_final >= g_map_width_pixels || tgt_y_final >= g_map_height_pixels)
 		{
 			tgt_y_final = tgt_y;
 		} else {

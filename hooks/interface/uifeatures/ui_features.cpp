@@ -423,15 +423,15 @@ namespace hooks {
 		box.w = box_width;
 		box.h = box_height;
 
-		box.x = Clamp(box.x, 0, *g_map_width);
-		box.y = Clamp(box.y, 0, *g_map_height);
+		box.x = Clamp(box.x, 0, g_map_width);
+		box.y = Clamp(box.y, 0, g_map_height);
 
-		if (box.x + box.w >= *g_map_width) {
-			box.w = *g_map_width - box.x;
+		if (box.x + box.w >= g_map_width) {
+			box.w = g_map_width - box.x;
 		}
 
-		if (box.y + box.h >= *g_map_height) {
-			box.h = *g_map_height - box.y;
+		if (box.y + box.h >= g_map_height) {
+			box.h = g_map_height - box.y;
 		}
 
 		*g_draw_color_index = color;
@@ -931,15 +931,15 @@ namespace hooks {
 
 	int __cdecl input_mmb_up() {
 		disable_mouse_scroll = false;
-		g_move_to_x = Clamp(round(g_move_to_x / 4.0) * 4, 0, *g_map_width_pixels  - 640);
-		g_move_to_y = Clamp(round(g_move_to_y / 4.0) * 4, 0, *g_map_height_pixels - 376);
+		g_move_to_x = Clamp(round(g_move_to_x / 4.0) * 4, 0, g_map_width_pixels  - 640);
+		g_move_to_y = Clamp(round(g_move_to_y / 4.0) * 4, 0, g_map_height_pixels - 376);
 		g_input_procs->funcs[3] = (InputProcsFunc*) 0;
 		return helper::cursor_refresh();
 	}
 
 	static void scroll_screen(s32 dx, s32 dy) {
-		g_move_to_x = Clamp((s32)g_move_to_x + dx, 0, *g_map_width_pixels  - 640);
-		g_move_to_y = Clamp((s32)g_move_to_y + dy, 0, *g_map_height_pixels - 376);
+		g_move_to_x = Clamp((s32)g_move_to_x + dx, 0, g_map_width_pixels  - 640);
+		g_move_to_y = Clamp((s32)g_move_to_y + dy, 0, g_map_height_pixels - 376);
 
 		g_move_to_tile_x = g_move_to_x >> 5;
 		g_move_to_tile_y = g_move_to_y >> 5;
@@ -1039,11 +1039,9 @@ namespace hooks {
 	// Hooked to prevent witness pings from showing for non-witnesses. -Pr0nogo
 	char CMDRECV_minimap_ping(char* buffer) { // 004BF7A0
 		u16 pos_x = *(u16*)(buffer + 1);
-		if (pos_x < *g_map_width_pixels)
-		{
+		if (pos_x < g_map_width_pixels) {
 			u16 pos_y = *(u16*)(buffer + 3);
-			if (pos_y < *g_map_height_pixels)
-			{
+			if (pos_y < g_map_height_pixels) {
 				*buffer = *g_active_nation_id;
 				if (bw::player_is_witness(*g_active_nation_id) && !bw::player_is_witness(g_local_nation_id)
 				|| !bw::player_is_witness(*g_active_nation_id) &&  bw::player_is_witness(g_local_nation_id)) {

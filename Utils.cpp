@@ -26,8 +26,8 @@ std::optional<Point16> pick_random_spawn_position(UnitId::Enum unit_id, u32 samp
     return SampleBest(
         [unit_id]() {
             Point16 position{
-                static_cast<u16>(bw::random_float() * *g_map_width_pixels),
-                static_cast<u16>(bw::random_float() * *g_map_height_pixels),
+                static_cast<u16>(bw::random_float() * g_map_width_pixels),
+                static_cast<u16>(bw::random_float() * g_map_height_pixels),
             };
 
             if (units_dat::base_property[unit_id] & UnitProperty::Building) {

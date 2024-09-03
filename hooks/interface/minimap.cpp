@@ -8,13 +8,13 @@ u16 box_height;
 
 namespace hooks {
 	void minimapVisionUpdate_256() {
-		u32 pos_y = *g_map_height;
+		u32 pos_y = g_map_height;
 		if (pos_y) {
 			u8* surf_buff = g_minimap_surface->buffer;
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
 			ActiveTile* active_tile = *g_active_tile_array;
 			do {
-				u32 pos_x = *g_map_width;
+				u32 pos_x = g_map_width;
 				do {
 					u32 cur_vision = (*g_player_visions & (*active_tile).vision_flags) == 0;
 					u32 cur_filter = (*g_player_explored_visions & (*active_tile).vision_flags) == 0;
@@ -50,7 +50,7 @@ namespace hooks {
 	}
 
 	void minimapVisionUpdate_128() {
-		u32 pos = (*g_map_height) * (*g_map_width);
+		u32 pos = g_map_height * g_map_width;
 		if (pos) {
 			u8* surf_buff = g_minimap_surface->buffer;
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
@@ -87,12 +87,12 @@ namespace hooks {
 	}
 
 	void minimapVisionUpdate_64() {
-		u32 pos_y = *g_map_height >> 1;
+		u32 pos_y = g_map_height >> 1;
 
 		if (pos_y) {
 			u8* surf_buff = g_minimap_surface->buffer;
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
-			u32 map_width = *g_map_width;
+			u32 map_width = g_map_width;
 			u32 buff_step = (g_minimap_surface_fog->width << 1) - map_width;
 			u32 map_width_2 = map_width >> 1;
 			ActiveTile* active_tile = *g_active_tile_array;
@@ -145,8 +145,7 @@ namespace hooks {
 	}
 
 	void minimapVisionUpdate_staircase() {
-		u32 pos_y = *g_map_height;
-
+		u32 pos_y = g_map_height;
 		if (pos_y) {
 			u8* surf_buff = g_minimap_surface->buffer;
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
@@ -155,7 +154,7 @@ namespace hooks {
 
 			do {
 				u32 tile_x = 0;
-				u32 pos_x = *g_map_width;
+				u32 pos_x = g_map_width;
 				u16 _tile_y = (tile_y >> 5) * g_map_tile_size->width;
 
 				do {
@@ -197,7 +196,7 @@ namespace hooks {
 	}
 
 	void minimapSurfaceUpdate_256() {
-		u32 pos_y = *g_map_height;
+		u32 pos_y = g_map_height;
 
 		if (pos_y) {
 			u16* map_tileset_handle = (u16*)*megatileArray;
@@ -206,7 +205,7 @@ namespace hooks {
 			VR4* vr4_handle = (VR4*)(*vr4FileHandle);
 
 			do {
-				u32 pos_x = *g_map_width;
+				u32 pos_x = g_map_width;
 
 				do {
 					u32 i_0 = *map_tileset_handle;
@@ -222,7 +221,7 @@ namespace hooks {
 	}
 
 	void minimapSurfaceUpdate_128() {
-		u32 buff_size = (*g_map_height) * (*g_map_width);
+		u32 buff_size = g_map_height * g_map_width;
 
 		if (buff_size) {
 			u16* map_tileset_handle = (u16*)*megatileArray;
@@ -241,12 +240,12 @@ namespace hooks {
 	}
 
 	void minimapSurfaceUpdate_64() {
-		u32 pos_y = *g_map_height >> 1;
+		u32 pos_y = g_map_height >> 1;
 
 		if (pos_y) {
 			u16* map_tileset_handle = (u16*)*megatileArray;
 			u8* surf_buff = g_minimap_surface->buffer;
-			u32 map_width = *g_map_width;
+			u32 map_width = g_map_width;
 			u32 buff_step = (g_minimap_surface->width << 1) - map_width;
 			u32 map_width_2 = map_width >> 1;
 			VX4* vx4_handle = (VX4*)(*vx4FileHandle);
@@ -280,7 +279,7 @@ namespace hooks {
 	}
 
 	void minimapSurfaceUpdate_staircase() {
-		u32 pos_y = *g_map_height;
+		u32 pos_y = g_map_height;
 
 		if (pos_y) {
 			u16* map_tileset_handle = (u16*)*megatileArray;
@@ -291,7 +290,7 @@ namespace hooks {
 
 			do {
 				u32 tile_x = 0;
-				u32 pos_x = *g_map_width;
+				u32 pos_x = g_map_width;
 				u16 _tile_y = (tile_y >> 5) * g_map_tile_size->width;
 				u8 _pos_y = ((tile_y >> 3) & 3) * 4;
 
@@ -356,8 +355,8 @@ namespace hooks {
 		box_width = width >= 2 ? width : 2;
 		u32 height = DIV_ROUND_UP(416, zoom_level);
 		box_height = height >= 1 ? height : 1;
-		*g_map_width = map_width;
-		*g_map_height = map_height;
+		g_map_width = map_width;
+		g_map_height = map_height;
 		BinDlg* minimap_dlg = *g_minimap_dlg;
 		s16 offset = (128 - map_width) >> 1;
 		minimap_dlg->bounds.left += offset;
@@ -510,12 +509,12 @@ namespace hooks {
 		u32 pos_x = DIV_ROUND_UP(posX, zoom_level);
 		u32 pos_y = DIV_ROUND_UP(posY, zoom_level);
 
-		if (pos_x + sizeX >= *g_map_width) {
-			pos_x = *g_map_width - sizeX;
+		if (pos_x + sizeX >= g_map_width) {
+			pos_x = g_map_width - sizeX;
 		}
 
-		if (pos_y + sizeY >= *g_map_height) {
-			pos_y = *g_map_height - sizeY;
+		if (pos_y + sizeY >= g_map_height) {
+			pos_y = g_map_height - sizeY;
 		}
 
 		//inline and simplification of DrawBox @ 0x004E1D20

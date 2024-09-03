@@ -124,7 +124,7 @@ namespace hooks
 							u16* buffer_u16 = (u16*)(buffer + 1);
 							u16 x = buffer_u16[0];
 							u16 y = buffer_u16[1];
-							if (x < *g_map_width_pixels && y < *g_map_height_pixels) {
+							if (x < g_map_width_pixels && y < g_map_height_pixels) {
 								UnitExt* unit_ext = get_unit_ext(unit);
 								if (!unit_ext->timers[TimerLiftoffDelay]) {
 									unit_ext->timers[TimerLiftoffDelay] = 12 + 1;

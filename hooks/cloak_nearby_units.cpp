@@ -19,11 +19,11 @@ namespace hooks {
 		if (area_of_effect.top < 0) {
 			area_of_effect.top = 0;
 		}
-		if (area_of_effect.right > *g_map_width_pixels) {
-			area_of_effect.right = *g_map_width_pixels;
+		if (area_of_effect.right > g_map_width_pixels) {
+			area_of_effect.right = g_map_width_pixels;
 		}
-		if (area_of_effect.bottom > *g_map_height_pixels) {
-			area_of_effect.bottom = *g_map_height_pixels;
+		if (area_of_effect.bottom > g_map_height_pixels) {
+			area_of_effect.bottom = g_map_height_pixels;
 		}
 
 		Unit** units_in_area_of_effect = helper::get_all_units_in_bounds(&area_of_effect);

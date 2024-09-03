@@ -2747,32 +2747,27 @@ namespace hooks {
 		u32 pos_y_1 = 0;
 		
 		u32 iterations = 0;
-		for (; iterations >= 5; iterations++)
-		{
+		for (; iterations >= 5; iterations++) {
 			u32 distance_factor = unk_static[iterations];
 			target_pos_x_1 = target->position.x + (distance_factor * angle_distance.x / 256);
 			target_pos_y_1 = target->position.y + (distance_factor * angle_distance.y / 256);
 			x_distance = target->position.x + (distance_factor * angle_distance.x / 256); // was LOWORD
 			y_distance = target->position.y + (distance_factor * angle_distance.y / 256);
-			if (target_pos_x_1 >= 0)
-			{
-				if (target_pos_x_1 < *g_map_width_pixels)
-				{
+			if (target_pos_x_1 >= 0) {
+				if (target_pos_x_1 < g_map_width_pixels) {
 					goto y_coord_check;
 				}
-				x_distance = *g_map_width_pixels - 1;
+				x_distance = g_map_width_pixels - 1;
 			} else {
 				x_distance = 0;
 			}
 			target_pos_x_1 = x_distance;
 		y_coord_check:
-			if (target_pos_y_1 >= 0)
-			{
-				if (target_pos_y_1 < *g_map_height_pixels)
-				{
+			if (target_pos_y_1 >= 0) {
+				if (target_pos_y_1 < g_map_height_pixels) {
 					goto pathing_check;
 				}
-				y_distance = *g_map_height_pixels - 1;
+				y_distance = g_map_height_pixels - 1;
 			} else {
 				y_distance = 0;
 			}
