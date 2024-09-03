@@ -13,6 +13,13 @@
 #include "hooks/target_related.h"
 #include "data_ext.h"
 
+UnitRef::UnitRef(Unit* unit) : index{unit->get_unit_index()}, unique_id{unit->unique_id} {}
+
+Unit* UnitRef::get() const {
+    Unit* unit = Unit::get_unit_from_index(index);
+    return (unit && unit->unique_id == unique_id) ? unit : 0;
+}
+
 //-------- Unit stats and properties --------//
 
 // Behavior can be modified with detector hook

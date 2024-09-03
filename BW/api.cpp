@@ -4010,4 +4010,25 @@ std::string get_commit_hash() {
     return head;
 }
 
+Point16 align_to_tile_grid(Point16 pos) {
+    return {
+        static_cast<u16>((pos.x + 16) / 32 * 32),
+        static_cast<u16>((pos.y + 16) / 32 * 32),
+    };
+}
+
+u32 active_player_count() {
+    u32 player_count = 0;
+    for (u32 i = 0; i < 8; i++) {
+        if (bw::player_is_witness(i)) {
+            continue;
+        }
+        if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
+            continue;
+        }
+        player_count++;
+    }
+	return player_count;
+}
+
 }

@@ -24,8 +24,8 @@ auto SampleBest(GenFunc&& gen_func, ScoreFunc&& score_func, u32 max_samples, u32
     Score best_score = std::numeric_limits<Score>::min();
 
     while (max_samples > 0 && max_allowed_fails >= 0) {
-        Result current = gen_func();
-        Score score = score_func(current);
+        const Result current = gen_func();
+        const Score score = score_func(current);
         if (score < 0) {
             max_allowed_fails--;
             continue;
@@ -39,3 +39,6 @@ auto SampleBest(GenFunc&& gen_func, ScoreFunc&& score_func, u32 max_samples, u32
 
     return result;
 }
+
+std::optional<Point16> pick_random_spawn_position(UnitId::Enum unit_id, u32 samples = 10);
+

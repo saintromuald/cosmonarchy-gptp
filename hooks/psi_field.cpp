@@ -7,6 +7,7 @@ namespace hooks
 {
 	// Actual state check for whether a unit can generate a psi field.
 	bool is_ready_to_make_psi_field(Unit* unit) {
+		UnitExt* unit_ext = get_unit_ext(unit);
 		return unit_id_is_psi_provider(unit->id);
 	}
 
@@ -41,9 +42,6 @@ namespace hooks
 				continue;
 			}
 			if ((*psi_field_mask)[2 * w / 32 * ((y + h - unit->sprite->position.y) / 32) + (x + w - unit->sprite->position.x) / 32]) {
-				return true;
-			}
-			if (unit_ext->values[ValueUprisingSpawner]) {
 				return true;
 			}
 		}

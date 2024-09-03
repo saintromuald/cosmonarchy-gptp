@@ -259,6 +259,12 @@ public:
         return self;
     }
 
+    // Tbh I don't think this is necessary since on lvalue references all the functions should copy automatically,
+    // but marking them all const seems incorrect for rvalue reference context
+    EntryArray<T> clone() const {
+        return *this;
+    }
+
 private:
     mem::Arena::vector<T*> m_data{g_search_arena.allocator<T*>()};
 };
