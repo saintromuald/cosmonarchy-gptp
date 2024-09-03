@@ -1922,6 +1922,14 @@ namespace SoundId {
 		CataphractOrderAggressive04						= 3161,
 
 		RamessesWeaponhit01								= 3178,
+		DurendalReady01									= 3179,
+		DurendalReady02									= 3180,
+		DurendalReady03									= 3181,
+
+		DurendalOrderAggressive01						= 3190,
+		DurendalOrderAggressive02						= 3191,
+		DurendalOrderAggressive03						= 3192,
+		DurendalOrderAggressive04						= 3193,
 
 		PsiStormStart									= 3198,
 		PsiStormLoop1									= 3199,
