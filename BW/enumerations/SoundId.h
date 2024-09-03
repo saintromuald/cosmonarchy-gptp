@@ -1923,6 +1923,16 @@ namespace SoundId {
 
 		RamessesWeaponhit01								= 3178,
 
+		PsiStormStart									= 3198,
+		PsiStormLoop1									= 3199,
+		PsiStormLoop2									= 3200,
+		PsiStormLoop3									= 3201,
+		PsiStormLoop4									= 3202,
+		PsiStormLoop5									= 3203,
+		PsiStormLoop6									= 3204,
+		PsiStormLoop7									= 3205,
+		PsiStormEnd 									= 3206,
+
 		GoskaGrenadeImpact								= 4011,
 	};
 }
