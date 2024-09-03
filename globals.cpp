@@ -61,7 +61,92 @@ void apply_irradiate(Unit* unit, u8 player, u32 time) {
 	hooks::play_attack_notification(unit);
 }
 
-void tick_effect(EffectField& effect) {
+struct EffectInfo {
+	bw::SoundSet start_sound;
+	bw::SoundSet loop_sound;
+	bw::SoundSet end_sound;
+};
+
+static const EffectInfo& get_effect_info(EffectId effect_id) {
+	switch (effect_id) {
+		case EffectId::PsiStorm: {
+			static EffectInfo info{
+				.start_sound = SoundId::PsiStormStart,
+				.loop_sound = {SoundId::PsiStormLoop1, SoundId::PsiStormLoop7},
+				.end_sound = SoundId::PsiStormEnd,
+			};
+			return info;
+		} break;
+	}
+	static EffectInfo info{};
+	return info;
+}
+
+void EffectField::destroy() {
+    if (playing_sound) {
+        playing_sound.Stop();
+    }
+    const EffectInfo& effect_info = get_effect_info(id);
+    if (effect_info.end_sound) {
+        bw::play_sound(effect_info.end_sound);
+    }
+
+    current_time = 0;
+    intervals = 0;
+}
+
+EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, SearchRadius radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
+	EffectField& effect_field = m_effects_to_add.emplace_back(EffectField{
+		.ref = ++m_next_effect_field_ref,
+		.id = id,
+		.position = position,
+		.radius = radius,
+		.current_time = time + 1, // We decrement before tick, so first tick will have current_time == max_time
+		.max_time = time,
+		.sprite_id = sprite_id,
+		.elevation = elevation,
+		.player = player,
+		.thingy = nullptr,
+		.source = source,
+		.origin = extras.origin,
+		.intervals = extras.intervals,
+		.move_target = extras.move_target,
+		.move_speed = extras.move_speed,
+	});
+	const EffectInfo& effect_info = get_effect_info(id);
+	if (effect_info.start_sound) {
+		effect_field.playing_sound = bw::play_sound(effect_field.position, effect_info.start_sound);
+	}
+	return effect_field.ref;
+}
+
+EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, Point16 size, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
+	return create_effect(id, time, position, SearchRadius{size}, sprite_id, elevation, player, source, extras);
+}
+
+EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
+	return create_effect(id, time, position, SearchRadius{radius}, sprite_id, elevation, player, source, extras);
+}
+
+EffectField* IquareGlobals::get_effect(EffectRef ref) {
+	if (!ref) {
+		return 0;
+	}
+	if (auto it = std::ranges::find_if(m_effects, [ref](const EffectField& effect) { return effect.ref == ref; }); it != m_effects.end()) {
+		return &*it;
+	}
+	if (auto it = std::ranges::find_if(m_effects_to_add, [ref](const EffectField& effect) { return effect.ref == ref; }); it != m_effects_to_add.end()) {
+		return &*it;
+	}
+	return 0;
+}
+
+static void tick_effect(EffectField& effect) {
+	const EffectInfo& effect_info = get_effect_info(effect.id);
+    if (effect_info.loop_sound && !effect.playing_sound) {
+        effect.playing_sound = bw::play_looping_sound(effect.position, effect_info.loop_sound);
+    }
+
 	if (effect.current_time && effect.sprite_id != SpriteId::None) {
 		if (!effect.thingy || !effect.thingy->sprite) {
 			effect.thingy = bw::create_and_init_thingy(effect.sprite_id, effect.position.x, effect.position.y, effect.player, effect.elevation);
@@ -149,10 +234,6 @@ void tick_effect(EffectField& effect) {
 					caster_ext->current_storm = 0;
 					effect.destroy();
 					break;
-				}
-
-				if (!effect.playing_sound) {
-					effect.playing_sound = bw::play_looping_sound(effect.position, SoundId::Protoss_TEMPLAR_PTeSto00_WAV);
 				}
 
 				caster->spend_energy(10 * tick_scalar_hp);
@@ -322,49 +403,6 @@ void tick_effect(EffectField& effect) {
 			} break;
 		}
 	}
-}
-
-EffectField* IquareGlobals::get_effect(EffectRef ref) {
-	if (!ref) {
-		return 0;
-	}
-	if (auto it = std::ranges::find_if(m_effects, [ref](const EffectField& effect) { return effect.ref == ref; }); it != m_effects.end()) {
-		return &*it;
-	}
-	if (auto it = std::ranges::find_if(m_effects_to_add, [ref](const EffectField& effect) { return effect.ref == ref; }); it != m_effects_to_add.end()) {
-		return &*it;
-	}
-	return 0;
-}
-
-EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, SearchRadius radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
-	EffectRef ref = ++m_next_effect_field_ref;
-	m_effects_to_add.push_back(EffectField{
-		.ref = ref,
-		.id = id,
-		.position = position,
-		.radius = radius,
-		.current_time = time + 1, // We decrement before tick, so first tick will have current_time == max_time
-		.max_time = time,
-		.sprite_id = sprite_id,
-		.elevation = elevation,
-		.player = player,
-		.thingy = nullptr,
-		.source = source,
-		.origin = extras.origin,
-		.intervals = extras.intervals,
-		.move_target = extras.move_target,
-		.move_speed = extras.move_speed,
-	});
-	return ref;
-}
-
-EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, Point16 size, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
-	return create_effect(id, time, position, SearchRadius{size}, sprite_id, elevation, player, source, extras);
-}
-
-EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
-	return create_effect(id, time, position, SearchRadius{radius}, sprite_id, elevation, player, source, extras);
 }
 
 void IquareGlobals::tick() {

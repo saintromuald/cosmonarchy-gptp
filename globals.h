@@ -64,13 +64,7 @@ struct EffectField {
 	s32 tick = -1;
 	PlayingSound playing_sound;
 
-	void destroy() {
-		if (playing_sound) {
-			playing_sound.Stop();
-		}
-		current_time = 0;
-		intervals = 0;
-	}
+	void destroy();
 };
 
 struct EffectFieldExtras {
