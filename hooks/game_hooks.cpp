@@ -835,7 +835,7 @@ namespace hooks {
 
 			if (local_flags & VespeneDeaths_Ping) {
 				for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target) {
-					if (!g_globals->players[target].witness_mode) {
+					if (!g_globals->players[target].witness_mode && !g_globals->players[target].neutral_hostile) {
 						u32 color = 0; // red
 						if (g_globals->players[g_local_nation_id].witness_mode) {
 							color = 7; // yellow
@@ -1532,8 +1532,7 @@ namespace hooks {
 			case UnitId::ZergEgg:
 			case UnitId::ZergCocoon:
 			case UnitId::ZergQuazilisk:
-			case UnitId::ZergNathrokor:
-			{
+			case UnitId::ZergNathrokor: {
 				// Gimmick to allow morph cancellation animations to play correctly
 				if (unit_ext->timers[TimerQuaziliskCancel]) {
 					if (unit->sprite->main_graphic->animation != IscriptAnimation::Unused2) {
@@ -1568,8 +1567,7 @@ namespace hooks {
 					unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
 				}
 			} break;
-			case UnitId::ProtossStarSovereign:
-			{
+			case UnitId::ProtossStarSovereign: {
 				// Star Sovereign - Intervention Missiles
 				if (!unit_ext->timers[TimerStarSovereignInterventionMissiles]) {
 					auto radius = 5 * 32;
@@ -1907,7 +1905,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranTarasque: {
 				// Forward March
-				if (!(unit->status & UnitStatus::InTransport) && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+				if (bw::unit_can_fire_secondary_weapon(unit)) {
 					if (fire_multiple(unit, WeaponId::TarasqueAcceleratedPlasmid, 5, FilterEnemy, {.fire_opts = {.apply_cooldown = false}})) {
 						unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::TarasqueAcceleratedPlasmid);
 					} else {
