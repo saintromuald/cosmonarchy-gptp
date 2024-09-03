@@ -376,6 +376,39 @@ public:
         filter_junk(result);
 		return result;
     }
+
+    EntryArray<T> square(Point16 center, SearchRadius radius) {
+        return std::visit(Overloaded{
+            [this, center](Point16 size) {
+                return rect(Box32{
+                    center.x - size.x / 2,
+                    center.y - size.y / 2,
+                    center.x + size.x / 2,
+                    center.y + size.y / 2
+                });
+            },
+            [this, center](u32 radius) {
+                return square(center, radius);
+            },
+        }, radius);
+    }
+
+    EntryArray<T> search(Point16 center, SearchRadius radius) {
+        return std::visit(Overloaded{
+            [this, center](Point16 size) {
+                // TODO: consider oval? then rename to radial
+                return rect(Box32{
+                    center.x - size.x / 2,
+                    center.y - size.y / 2,
+                    center.x + size.x / 2,
+                    center.y + size.y / 2
+                });
+            },
+            [this, center](u32 radius) {
+                return radial(center, radius);
+            },
+        }, radius);
+    }
     
     EntryArray<Unit> square_ex(Unit* unit, u32 radius, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
         return square(unit->position, radius).filter(unit, filter, allowed_unit_ids);
@@ -384,13 +417,13 @@ public:
     EntryArray<Unit> radial_ex(Unit* unit, u32 radius, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
         return radial(unit->position, radius).filter(unit, filter, allowed_unit_ids);
     }
-
+    
     EntryArray<Unit> square_ex(const EffectField& effect, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
         return square(effect.position, effect.radius).filter(effect.source, filter, allowed_unit_ids);
     }
 
-    EntryArray<Unit> radial_ex(const EffectField& effect, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
-        return radial(effect.position, effect.radius).filter(effect.source, filter, allowed_unit_ids);
+    EntryArray<Unit> search_ex(const EffectField& effect, u32 filter = 0, const std::unordered_set<u16>& allowed_unit_ids = {}) requires std::same_as<T, Unit> {
+        return search(effect.position, effect.radius).filter(effect.source, filter, allowed_unit_ids);
     }
 
     void filter_junk(EntryArray<T>& array) {

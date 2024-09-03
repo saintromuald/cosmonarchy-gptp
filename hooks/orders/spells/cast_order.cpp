@@ -269,6 +269,9 @@ namespace hooks
 							if (!idiot) {
 								unit->spend_energy(spell_cost);
 								u8 cooldown = helper::get_weapon_cooldown(unit, order_weapon_id);
+								if (order_weapon_id == WeaponId::PsiStorm) {
+									cooldown = 0; // Recast doesn't have cooldown, but we apply the cooldown on the event of cancel
+								}
 								unit->spell_cooldown = cooldown;
 								if (unit->id == UnitId::TerranWyvern) {
 									unit->ground_weapon_cooldown = cooldown; // new

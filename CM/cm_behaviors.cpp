@@ -43,11 +43,15 @@ void consume_corpse(Thingy* corpse) {
 	corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 }
 
-Thingy* get_closest_active_corpse(Point16 position, u32 radius) {
+Thingy* get_closest_active_corpse(Point16 position, SearchRadius radius) {
 	return g_corpse_search
-		.radial(position, radius)
+		.search(position, radius)
 		.sort_by_distance(position)
 		.first([](Thingy* corpse) { return is_active_corpse(corpse); });
+}
+
+Thingy* get_closest_active_corpse(Point16 position, u32 radius) {
+	return get_closest_active_corpse(position, SearchRadius{radius});
 }
 
 Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id) {
@@ -177,14 +181,20 @@ void avenge_corpses_in_area(Point16 position, u32 radius, u32 player) {
 	}
 }
 
-void ascend_corpses_in_area(Point16 position, u32 radius, u32 player) {
-	for (Thingy* corpse : g_corpse_search.radial(position, radius)) {
+void ascend_corpses_in_area(Point16 position, SearchRadius radius, u32 player) {
+	for (Thingy* corpse : g_corpse_search.search(position, radius)) {
 		ascend_corpse(corpse, player);
 	}
 }
 
 void avenge_or_ascend_corpses_in_area(Point16 position, u32 radius, u32 player) {
 	for (Thingy* corpse : g_corpse_search.radial(position, radius)) {
+		avenge_or_ascend_corpse(corpse, player);
+	}
+}
+
+void avenge_or_ascend_corpses_in_area(Point16 position, SearchRadius radius, u32 player) {
+	for (Thingy* corpse : g_corpse_search.search(position, radius)) {
 		avenge_or_ascend_corpse(corpse, player);
 	}
 }

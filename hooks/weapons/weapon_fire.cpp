@@ -486,6 +486,17 @@ namespace hooks {
 			bw::decloak_passive_proc(unit->hangar_unit.parent);
 		}
 
+		if (weapon_id == WeaponId::PsiStorm) {
+            Point16 target_pos = unit->order_target.unit ? unit->order_target.unit->position : unit->order_target.pt;
+			if (auto storm = g_iquare_globals->get_effect(unit_ext->current_storm)) {
+				storm->move_target = target_pos;
+			} else {
+                unit_ext->current_storm = g_iquare_globals->create_effect(EffectId::PsiStorm, UINT_MAX, target_pos, Point16{4 * 32, 4 * 32}, // smh I thought it's rectangular, turns out that wasn't needed...
+                    SpriteId::Psionic_Storm, 20, unit->player, unit, {.move_target = target_pos, .move_speed = u32(1.5 * 32)});
+			}
+            return;
+		}
+
 		if (unit->id == UnitId::ProtossManifold) {
 			unit_ext->timers[TimerManifoldConcurringChorus] = 25;
 		}

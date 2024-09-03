@@ -1,7 +1,9 @@
 #pragma once
-#include "BW/api.h"
-#include "trigger_system.h"
+#define NOMINMAX
 #include <dsound.h>
+#include <vector>
+#include "DatExtend/dat_limits.h"
+#include "BW/enumerations/SoundId.h"
 
 // Copy paste from Antikythera
 #define RiffId(a, b, c, d) ((a << 0) | (b << 8) | (c << 16) | (d << 24))
@@ -53,23 +55,56 @@ struct WaveData {
 #define MaxSoundHash 512
 #define MaxDupChannels 256
 
-struct Sound {
-	Sound* hash_next;
+struct PlaySoundSettings {
+	// Volume and pan are automatically calculated outside of the need of bw hooks
+	s32 bw_volume = 1;
+	s32 bw_pan = 0;
+	Point16 position = {};
+	s32 unit_response_unit_id = -1;
+	s32 min_volume = 0;
+	bool looping = false;
+	bool is_bw_hook = false;
+};
+
+struct SoundBuffer {
+	LPDIRECTSOUNDBUFFER ds_buffer;
+	u64 generation;
+	PlaySoundSettings settings;
+};
+
+struct SoundMainBuffer : SoundBuffer {
+	SoundMainBuffer* hash_next;
 	char path[MaxPath];
 	u32 last_play_time;
-	LPDIRECTSOUNDBUFFER ds_buffer;
+};
+
+struct SoundDupBuffer : SoundBuffer {
 };
 
 struct Playlist {
 	bool shuffle;
 	u32 index;
 	u32 size;
-	Sound* tracks[MaxSound];
+	SoundMainBuffer* tracks[MaxSound];
 };
 
-struct Playback {
-	Sound* current_music;
-	Sound* next_music;
+class PlayingSound {
+public:
+	PlayingSound() = default;
+	PlayingSound(SoundBuffer* buffer) : m_buffer{buffer}, m_generation{buffer->generation} {}
+
+	void Stop() const;
+	SoundBuffer* GetBuffer() const;
+	operator bool() const;
+
+private:
+	mutable SoundBuffer* m_buffer = 0;
+	u64 m_generation = 0;
+};
+
+struct MusicPlayback {
+	SoundMainBuffer* current_music;
+	SoundMainBuffer* next_music;
 	f32 fade_in;
 	f32 fade_out;
 	f32 fade;
@@ -80,32 +115,31 @@ struct Playback {
 	bool paused;
 };
 
-struct DupChannel {
-	s32 unit_id;
-	LPDIRECTSOUNDBUFFER ds_buffer;
-};
+inline LPDIRECTSOUND g_direct_sound;
+inline SoundDupBuffer g_dup_channels[MaxDupChannels];
 
-extern LPDIRECTSOUND direct_sound;
-extern DupChannel dup_channels[MaxDupChannels];
+inline u32 g_loaded_sounds_count;
+inline SoundMainBuffer g_loaded_sounds[MaxSound];
+inline SoundMainBuffer* g_loaded_sounds_hash_table[MaxSoundHash];
 
-extern u32 loaded_sounds_count;
-extern Sound loaded_sounds[MaxSound];
-extern Sound* loaded_sounds_hash_table[MaxSoundHash];
+inline Playlist g_current_playlist;
+inline MusicPlayback g_music_playback;
 
-extern Playlist current_playlist;
-extern Playback playback;
+inline char sound_paths[SoundIdLimit][MAX_PATH];
 
-extern char sound_paths[SoundIdLimit][MAX_PATH];
+inline std::vector<PlayingSound> g_playing_sounds;
 
 void init_sound();
 void init_direct_sound();
 void update_sound();
 
-Sound* load_sound(const char* filename);
-Sound* get_sound(const char* filename); // Note: currently passing `token.stinrg().c_str()`, would be nice to not have to do that
-void free_sound(Sound* sound);
+SoundMainBuffer* load_sound(const char* filename);
+SoundMainBuffer* get_sound(const char* filename); // Note: currently passing `token.string().c_str()`, would be nice to not have to do that
+SoundMainBuffer* get_sound(SoundId::Enum sound_id);
+void free_sound(SoundMainBuffer* sound);
 
-bool play_sound(Sound* sound, s32 volume, s32 pan = 0, s32 unit_id = -1);
+PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, const PlaySoundSettings& settings);
+PlayingSound play_sound_ext(SoundId::Enum sound_id, const PlaySoundSettings& settings);
 void play_music(bool resume);
 void stop_music(bool pause);
 void shuffle_playlist();
@@ -113,4 +147,14 @@ void shuffle_playlist();
 s32 get_sound_volume();
 s32 get_sound_volume_at_pos(Point16 pos);
 s32 get_playback_volume();
-Sound* get_next_music();
+SoundMainBuffer* get_next_music();
+
+struct VolumePan {
+	s32 volume;
+	s32 pan;
+};
+
+VolumePan calculate_volume_pan(const PlaySoundSettings& settings);
+
+void update_playing_sounds();
+void stop_playing_sounds();

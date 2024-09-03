@@ -1,5 +1,8 @@
 #pragma once
 #include "BW\bwdata.h"
+#include <variant>
+
+using SearchRadius = std::variant<u32, Point16>;
 
 enum class AttackTargetingType {
     RequiresTarget,					// If target doesn't exist, attack will stop firing (default)
@@ -16,6 +19,7 @@ bool is_inactive_corpse(Thingy* thingy);
 bool is_active_corpse(Thingy* thingy);
 void consume_corpse(Thingy* corpse);
 Thingy* get_closest_active_corpse(Point16 position, u32 radius);
+Thingy* get_closest_active_corpse(Point16 position, SearchRadius radius);
 Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id);
 Unit* reclaim_corpse(Thingy* corpse, u32 player);
 
@@ -24,8 +28,9 @@ void ascend_corpse(Thingy* corpse, u32 player);
 void ascend_in_area(u32 player, Point16 position, u32 range);
 void avenge_or_ascend_corpse(Thingy* corpse, u32 player);
 void avenge_corpses_in_area(Point16 position, u32 radius, u32 player);
-void ascend_corpses_in_area(Point16 position, u32 radius, u32 player);
+void ascend_corpses_in_area(Point16 position, SearchRadius radius, u32 player);
 void avenge_or_ascend_corpses_in_area(Point16 position, u32 radius, u32 player);
+void avenge_or_ascend_corpses_in_area(Point16 position, SearchRadius radius, u32 player);
 u32 unit_avenges_or_ascends(Unit* unit); // Returns (source_player + 1) if should avenge/ascend, returns 0 otherwise 
 
 void incubate(Unit* target, u32 count, u32 unit_id, u32 player);

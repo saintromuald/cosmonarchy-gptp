@@ -1,9 +1,8 @@
 #pragma once
 #include "BW/api.h"
 #include "trigger_parser.h"
-#include "collections.h"
 
-struct Sound;
+struct SoundMainBuffer;
 
 #define SoundReplacementCap 1600
 struct SoundReplacement {
@@ -14,7 +13,7 @@ struct SoundReplacement {
 	bool replace;
 	u32 animation;
 	u32 old_sound_id;
-	Sound* new_sound;
+	SoundMainBuffer* new_sound;
 
 	inline bool operator==(SoundReplacement& other) { return memcmp(this, &other, sizeof(*this)) == 0; }
 	inline bool operator!=(SoundReplacement& other) { return !(*this == other); }

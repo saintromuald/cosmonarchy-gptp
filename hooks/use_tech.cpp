@@ -224,6 +224,9 @@ namespace hooks {
 						case UnitId::ProtossDidact: {
 							queue_generic_ability(RustId::CancelRecall, 1);
 						} break;
+						case UnitId::ProtossCantavis: {
+							queue_generic_ability(RustId::CancelPsiStorm, 1);
+						} break;
 					}
 					if (unit_id_can_do_controlled_demolition(selected->id)) {
 						queue_generic_ability(RustId::CancelControlledDemolition, 1);

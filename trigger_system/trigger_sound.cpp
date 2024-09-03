@@ -1,18 +1,9 @@
 #include "trigger_sound.h"
-#include "hooks\limits\sfx_extender.h"
-
-LPDIRECTSOUND direct_sound;
-DupChannel dup_channels[MaxDupChannels];
-
-u32 loaded_sounds_count;
-Sound loaded_sounds[MaxSound];
-Sound* loaded_sounds_hash_table[MaxSoundHash];
-
-Playlist current_playlist;
-Playback playback;
+#include "BW/api.h"
+#include "trigger_system.h"
+#include "hooks/limits/sfx_extender.h"
 
 static bool sound_paths_init;
-char sound_paths[SoundIdLimit][MAX_PATH];
 
 static void init_sound_paths() {
 	std::string file = mpq_load_file("arr\\sounds.txt");
@@ -39,7 +30,7 @@ static void init_sound_paths() {
 }
 
 void init_sound() {
-	if (!direct_sound) {
+	if (!g_direct_sound) {
 		init_direct_sound();
 	}
 	if (!sound_paths_init) {
@@ -48,31 +39,31 @@ void init_sound() {
 	}
 
 	for (u32 i = 0; i < MaxDupChannels; ++i) {
-		if (dup_channels[i].ds_buffer) {
-			dup_channels[i].ds_buffer->Release();
-			dup_channels[i].ds_buffer = 0;
+		if (g_dup_channels[i].ds_buffer) {
+			g_dup_channels[i].ds_buffer->Release();
+			g_dup_channels[i].ds_buffer = 0;
 		}
 	}
 
-	for (u32 i = 0; i < loaded_sounds_count; ++i) {
-		free_sound(&loaded_sounds[i]);
+	for (u32 i = 0; i < g_loaded_sounds_count; ++i) {
+		free_sound(&g_loaded_sounds[i]);
 	}
 
-	loaded_sounds_count = 0;
-	memset(loaded_sounds, 0, sizeof(loaded_sounds));
-	memset(loaded_sounds_hash_table, 0, sizeof(loaded_sounds_hash_table));
+	g_loaded_sounds_count = 0;
+	memset(g_loaded_sounds, 0, sizeof(g_loaded_sounds));
+	memset(g_loaded_sounds_hash_table, 0, sizeof(g_loaded_sounds_hash_table));
 
-	memset(&current_playlist, 0, sizeof(current_playlist));
-	memset(&playback, 0, sizeof(playback));
-	playback.fade = 1;
-	playback.target_fade = 1;
-	playback.volume = 1;
-	playback.target_volume = 1;
+	memset(&g_current_playlist, 0, sizeof(g_current_playlist));
+	memset(&g_music_playback, 0, sizeof(g_music_playback));
+	g_music_playback.fade = 1;
+	g_music_playback.target_fade = 1;
+	g_music_playback.volume = 1;
+	g_music_playback.target_volume = 1;
 }
 
 void init_direct_sound() {
 	// Init DirectSound
-	if (SUCCEEDED(DirectSoundCreate(0, &direct_sound, 0))) {
+	if (SUCCEEDED(DirectSoundCreate(0, &g_direct_sound, 0))) {
 		WAVEFORMATEX wave_format = {};
 		wave_format.wFormatTag = WAVE_FORMAT_PCM;
 		wave_format.nChannels = 2;
@@ -82,14 +73,14 @@ void init_direct_sound() {
 		wave_format.nAvgBytesPerSec = wave_format.nSamplesPerSec * wave_format.nBlockAlign;
 		wave_format.cbSize = 0;
 
-		if (SUCCEEDED(direct_sound->SetCooperativeLevel(*(HWND*)g_main_window, DSSCL_PRIORITY))) {
+		if (SUCCEEDED(g_direct_sound->SetCooperativeLevel(*(HWND*)g_main_window, DSSCL_PRIORITY))) {
 			DSBUFFERDESC buffer_description = {};
 			buffer_description.dwSize = sizeof(DSBUFFERDESC);
 			buffer_description.dwFlags = DSBCAPS_PRIMARYBUFFER;
 
 			// @Todo: what is a primary buffer needed for? seems like sounds play without too 
 			LPDIRECTSOUNDBUFFER primary_buffer = 0;
-			if (SUCCEEDED(direct_sound->CreateSoundBuffer(&buffer_description, &primary_buffer, 0))) {
+			if (SUCCEEDED(g_direct_sound->CreateSoundBuffer(&buffer_description, &primary_buffer, 0))) {
 				primary_buffer->SetFormat(&wave_format);
 			}
 		}
@@ -97,54 +88,54 @@ void init_direct_sound() {
 }
 
 void update_sound() {
-	for (u32 i = 0; i < loaded_sounds_count; ++i) {
-		Sound* sound = &loaded_sounds[i];
+	for (u32 i = 0; i < g_loaded_sounds_count; ++i) {
+		SoundMainBuffer* sound = &g_loaded_sounds[i];
 		if (sound->ds_buffer && GetTickCount() - sound->last_play_time >= 10 * 1000) {
 			DWORD status = 0;
 			sound->ds_buffer->GetStatus(&status);
-			if (status != DSBSTATUS_PLAYING) {
+			if (!(status & DSBSTATUS_PLAYING)) {
 				sound->ds_buffer->Release();
 				sound->ds_buffer = 0;
 			}
 		}
 	}
 
-	if (playback.current_music && playback.current_music->ds_buffer) {
+	if (g_music_playback.current_music && g_music_playback.current_music->ds_buffer) {
 		DWORD status = 0;
-		playback.current_music->ds_buffer->GetStatus(&status);
-		if (status != DSBSTATUS_PLAYING) {
-			playback.current_music = 0;
+		g_music_playback.current_music->ds_buffer->GetStatus(&status);
+		if (!(status & DSBSTATUS_PLAYING)) {
+			g_music_playback.current_music = 0;
 		}
 	} else {
-		playback.current_music = 0;
+		g_music_playback.current_music = 0;
 	}
 
-	if (playback.target_fade == 0) {
-		if (playback.fade_out) {
-			playback.fade -= (1.0 / playback.fade_out) / 24.0;
+	if (g_music_playback.target_fade == 0) {
+		if (g_music_playback.fade_out) {
+			g_music_playback.fade -= (1.0 / g_music_playback.fade_out) / 24.0;
 		} else {
-			playback.fade = 0;
+			g_music_playback.fade = 0;
 		}
-		if (playback.fade <= 0) {
-			playback.fade = 0;
-			stop_music(playback.paused);
+		if (g_music_playback.fade <= 0) {
+			g_music_playback.fade = 0;
+			stop_music(g_music_playback.paused);
 		}
 	}
 
-	if (!playback.current_music && !playback.paused) {
-		if (playback.next_music) {
-			playback.current_music = playback.next_music;
-			playback.next_music = 0;
+	if (!g_music_playback.current_music && !g_music_playback.paused) {
+		if (g_music_playback.next_music) {
+			g_music_playback.current_music = g_music_playback.next_music;
+			g_music_playback.next_music = 0;
 		} else {
-			playback.current_music = get_next_music();
+			g_music_playback.current_music = get_next_music();
 		}
-		if (playback.current_music) {
-			playback.target_fade = 1;
+		if (g_music_playback.current_music) {
+			g_music_playback.target_fade = 1;
 			play_music(false);
 		}
 	}
 
-	if (playback.current_music || playback.paused) {
+	if (g_music_playback.current_music || g_music_playback.paused) {
 		if (g_music_playing) {
 			g_music_playing = false; // So we don't do retarded lard fade which freezes the game
 			helper::stop_bw_music();
@@ -154,41 +145,41 @@ void update_sound() {
 		helper::play_next_bw_music();
 	}
 
-	if (playback.target_fade == 1) {
-		if (playback.fade_in) {
-			playback.fade += (1.0 / playback.fade_in) / 24.0;
+	if (g_music_playback.target_fade == 1) {
+		if (g_music_playback.fade_in) {
+			g_music_playback.fade += (1.0 / g_music_playback.fade_in) / 24.0;
 		} else {
-			playback.fade = 1;
+			g_music_playback.fade = 1;
 		}
-		if (playback.fade >= 1) {
-			playback.fade = 1;
+		if (g_music_playback.fade >= 1) {
+			g_music_playback.fade = 1;
 		}
 	}
 
-	if (playback.volume_time) {
-		f32 music_volume_delta = (1.0 / playback.volume_time) / 24.0;
-		if (playback.volume < playback.target_volume) {
-			playback.volume += music_volume_delta;
-			if (playback.volume >= playback.target_volume) {
-				playback.volume = playback.target_volume;
+	if (g_music_playback.volume_time) {
+		f32 music_volume_delta = (1.0 / g_music_playback.volume_time) / 24.0;
+		if (g_music_playback.volume < g_music_playback.target_volume) {
+			g_music_playback.volume += music_volume_delta;
+			if (g_music_playback.volume >= g_music_playback.target_volume) {
+				g_music_playback.volume = g_music_playback.target_volume;
 			}
 		} else {
-			playback.volume -= music_volume_delta;
-			if (playback.volume <= playback.target_volume) {
-				playback.volume = playback.target_volume;
+			g_music_playback.volume -= music_volume_delta;
+			if (g_music_playback.volume <= g_music_playback.target_volume) {
+				g_music_playback.volume = g_music_playback.target_volume;
 			}
 		}
 	} else {
-		playback.volume = playback.target_volume;
+		g_music_playback.volume = g_music_playback.target_volume;
 	}
 
-	if (playback.current_music && playback.current_music->ds_buffer) {
-		playback.current_music->ds_buffer->SetVolume(get_playback_volume());
+	if (g_music_playback.current_music && g_music_playback.current_music->ds_buffer) {
+		g_music_playback.current_music->ds_buffer->SetVolume(get_playback_volume());
 	}
 }
 
-static bool load_ds_buffer(Sound* sound) {
-	if (!direct_sound) {
+static bool load_ds_buffer(SoundMainBuffer* sound) {
+	if (!g_direct_sound) {
 		return false;
 	}
 
@@ -241,7 +232,7 @@ static bool load_ds_buffer(Sound* sound) {
 	buffer_description.dwBufferBytes = size;
 	buffer_description.lpwfxFormat = &wave_format;
 
-	if (!SUCCEEDED(direct_sound->CreateSoundBuffer(&buffer_description, &sound->ds_buffer, 0))) {
+	if (!SUCCEEDED(g_direct_sound->CreateSoundBuffer(&buffer_description, &sound->ds_buffer, 0))) {
 		return false;
 	}
 
@@ -275,30 +266,30 @@ static bool load_ds_buffer(Sound* sound) {
 	return false;
 }
 
-Sound* load_sound(const char* filename) {
+SoundMainBuffer* load_sound(const char* filename) {
 	if (!filename) {
 		return 0;
 	}
-	if (loaded_sounds_count < MaxSound) {
-		Sound* sound = &loaded_sounds[loaded_sounds_count++];
+	if (g_loaded_sounds_count < MaxSound) {
+		SoundMainBuffer* sound = &g_loaded_sounds[g_loaded_sounds_count++];
 		snprintf(sound->path, MaxPath, "%s", filename);
 
 		if (mpq_file_exists(sound->path)) {
 			u32 hash_index = hash_string(filename) % MaxSoundHash;
-			sound->hash_next = loaded_sounds_hash_table[hash_index];
-			loaded_sounds_hash_table[hash_index] = sound;
+			sound->hash_next = g_loaded_sounds_hash_table[hash_index];
+			g_loaded_sounds_hash_table[hash_index] = sound;
 			return sound;
 		} else {
-			loaded_sounds_count--;
+			g_loaded_sounds_count--;
 			return 0;
 		}
 	}
 	return 0;
 }
 
-Sound* get_sound(const char* filename) {
+SoundMainBuffer* get_sound(const char* filename) {
 	u32 hash_index = hash_string(filename) % MaxSoundHash;
-	Sound* sound = loaded_sounds_hash_table[hash_index];
+	SoundMainBuffer* sound = g_loaded_sounds_hash_table[hash_index];
 	while (sound && strcmp(sound->path, filename) != 0) {
 		sound = sound->hash_next;
 	}
@@ -308,100 +299,117 @@ Sound* get_sound(const char* filename) {
 	return sound;
 }
 
-void free_sound(Sound* sound) {
+SoundMainBuffer* get_sound(SoundId::Enum sound_id) {
+    char buffer[MAX_PATH] = {};
+    snprintf(buffer, MAX_PATH, "sound\\%s", sound_paths[sound_id]); // sfx_dat::sound_file[sound_id]);
+    return get_sound(buffer);
+}
+
+void free_sound(SoundMainBuffer* sound) {
 	if (sound->ds_buffer) {
 		sound->ds_buffer->Release();
 		sound->ds_buffer = 0;
 	}
 }
 
-bool play_sound(Sound* sound, s32 volume, s32 pan, s32 unit_id) {
-	if (!sound) {
-		return false;
+PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, const PlaySoundSettings& settings) {
+	if (!sound_buffer) {
+		return {};
 	}
-	if (!sound->ds_buffer) {
-		if (!load_ds_buffer(sound)) {
-			return false;
+	if (!sound_buffer->ds_buffer) {
+		if (!load_ds_buffer(sound_buffer)) {
+			return {};
 		}
 	}
-	if (sound->last_play_time && GetTickCount() - sound->last_play_time < 80) {
-		return false;
+	if (sound_buffer->last_play_time && GetTickCount() - sound_buffer->last_play_time < 80) {
+		return {};
 	}
 
 	DWORD status = 0;
-	sound->ds_buffer->GetStatus(&status);
-	if (status == DSBSTATUS_PLAYING || unit_id != -1) {
+	sound_buffer->ds_buffer->GetStatus(&status);
+	if (status & DSBSTATUS_PLAYING || settings.unit_response_unit_id != -1) {
 		// Use dup channel
-		DupChannel* dup_buffer = 0;
+		SoundDupBuffer* dup_buffer = 0;
 		for (u32 i = 0; i < MaxDupChannels; ++i) {
-			if (dup_channels[i].ds_buffer) {
+			if (g_dup_channels[i].ds_buffer) {
 				DWORD dup_status = 0;
-				dup_channels[i].ds_buffer->GetStatus(&dup_status);
-				if (dup_status != DSBSTATUS_PLAYING) {
-					dup_channels[i].ds_buffer->Release();
-					dup_channels[i].ds_buffer = 0;
+				g_dup_channels[i].ds_buffer->GetStatus(&dup_status);
+				if (!(dup_status & DSBSTATUS_PLAYING)) {
+					g_dup_channels[i].ds_buffer->Release();
+					g_dup_channels[i].ds_buffer = 0;
 				}
 			}
-			if (!dup_channels[i].ds_buffer) {
-				dup_buffer = &dup_channels[i];
+			if (!g_dup_channels[i].ds_buffer) {
+				dup_buffer = &g_dup_channels[i];
 			}
 		}
 
 		if (dup_buffer) {
-			direct_sound->DuplicateSoundBuffer(sound->ds_buffer, &dup_buffer->ds_buffer);
+			g_direct_sound->DuplicateSoundBuffer(sound_buffer->ds_buffer, &dup_buffer->ds_buffer);
 			if (dup_buffer->ds_buffer) {
-				dup_buffer->ds_buffer->SetVolume(volume);
-				dup_buffer->ds_buffer->SetPan(pan);
+                const auto [volume, pan] = calculate_volume_pan(settings);
+                dup_buffer->ds_buffer->SetVolume(volume);
+                dup_buffer->ds_buffer->SetPan(pan);
 				dup_buffer->ds_buffer->SetCurrentPosition(0);
-				dup_buffer->ds_buffer->Play(0, 0, 0);
-				dup_buffer->unit_id = unit_id;
-				sound->last_play_time = GetTickCount();
-				return true;
+				dup_buffer->ds_buffer->Play(0, 0, settings.looping ? DSBPLAY_LOOPING : 0);
+				dup_buffer->settings = settings;
+				dup_buffer->generation++;
+				sound_buffer->last_play_time = GetTickCount();
+				g_playing_sounds.emplace_back(dup_buffer);
+				return {dup_buffer};
 			}
 		}
 	} else {
-		sound->ds_buffer->SetVolume(volume);
-		sound->ds_buffer->SetPan(pan);
-		sound->ds_buffer->SetCurrentPosition(0);
-		sound->ds_buffer->Play(0, 0, 0);
-		sound->last_play_time = GetTickCount();
-		return true;
+        const auto [volume, pan] = calculate_volume_pan(settings);
+        sound_buffer->ds_buffer->SetVolume(volume);
+        sound_buffer->ds_buffer->SetPan(pan);
+		sound_buffer->ds_buffer->SetCurrentPosition(0);
+		sound_buffer->ds_buffer->Play(0, 0, settings.looping ? DSBPLAY_LOOPING : 0);
+		sound_buffer->settings = settings;
+		sound_buffer->generation++;
+		sound_buffer->last_play_time = GetTickCount();
+        g_playing_sounds.emplace_back(sound_buffer);
+		return {sound_buffer};
 	}
-	return false;
+	return {};
+}
+
+PlayingSound play_sound_ext(SoundId::Enum sound_id, const PlaySoundSettings& settings) {
+	return play_sound_ext(get_sound(sound_id), settings);
 }
 
 void play_music(bool resume) {
-	if (playback.current_music) {
-		if (!playback.current_music->ds_buffer) {
-			load_ds_buffer(playback.current_music);
+	if (g_music_playback.current_music) {
+		if (!g_music_playback.current_music->ds_buffer) {
+			load_ds_buffer(g_music_playback.current_music);
 		}
-		if (playback.current_music->ds_buffer) {
-			playback.current_music->ds_buffer->SetVolume(get_playback_volume());
-			playback.current_music->ds_buffer->SetPan(0);
-			if (!resume) playback.current_music->ds_buffer->SetCurrentPosition(0);
-			playback.current_music->ds_buffer->Play(0, 0, 0);
+		if (g_music_playback.current_music->ds_buffer) {
+			g_music_playback.current_music->ds_buffer->SetVolume(get_playback_volume());
+			g_music_playback.current_music->ds_buffer->SetPan(0);
+			if (!resume) g_music_playback.current_music->ds_buffer->SetCurrentPosition(0);
+			g_music_playback.current_music->ds_buffer->Play(0, 0, 0);
 		}
 	}
 }
 
 void stop_music(bool pause) {
-	if (playback.current_music && playback.current_music->ds_buffer) {
-		playback.current_music->ds_buffer->Stop();
+	if (g_music_playback.current_music && g_music_playback.current_music->ds_buffer) {
+		g_music_playback.current_music->ds_buffer->Stop();
 	}
-	if (!pause) playback.current_music = 0;
+	if (!pause) g_music_playback.current_music = 0;
 }
 
 void shuffle_playlist() {
-	for (u32 i = 0; i < current_playlist.size; ++i) {
-		Sound* music_a = current_playlist.tracks[i];
-		for (u32 j = i + 1; j < current_playlist.size; ++j) {
-			if (i == 0 && j == current_playlist.size - 1) {
+	for (u32 i = 0; i < g_current_playlist.size; ++i) {
+		SoundMainBuffer* music_a = g_current_playlist.tracks[i];
+		for (u32 j = i + 1; j < g_current_playlist.size; ++j) {
+			if (i == 0 && j == g_current_playlist.size - 1) {
 				// Avoid swapping first and last, so we don't hear the same sound twice
 				continue;
 			}
-			Sound* music_b = current_playlist.tracks[j];
+			SoundMainBuffer* music_b = g_current_playlist.tracks[j];
 			if (rand() % 2 == 0) {
-				Sound temp = *music_a;
+				SoundMainBuffer temp = *music_a;
 				*music_a = *music_b;
 				*music_b = temp;
 			}
@@ -432,25 +440,98 @@ s32 get_sound_volume_at_pos(Point16 pos) {
 }
 
 s32 get_playback_volume() {
-	if (playback.fade == 0 || playback.volume == 0) {
+	if (g_music_playback.fade == 0 || g_music_playback.volume == 0) {
 		return DSBVOLUME_MIN;
 	}
 
 	s32 volume = getMusicVolume();
-	volume += (-4000 - volume) * (1 - playback.fade * playback.volume);
+	volume += (-4000 - volume) * (1 - g_music_playback.fade * g_music_playback.volume);
 	return volume;
 }
 
-Sound* get_next_music() {
-	if (!current_playlist.size) {
+SoundMainBuffer* get_next_music() {
+	if (!g_current_playlist.size) {
 		return 0;
 	}
-	if (current_playlist.index == 0 && current_playlist.shuffle) {
+	if (g_current_playlist.index == 0 && g_current_playlist.shuffle) {
 		shuffle_playlist();
 	}
-	Sound* music = current_playlist.tracks[current_playlist.index++];
-	if (current_playlist.index >= current_playlist.size) {
-		current_playlist.index = 0;
+	SoundMainBuffer* music = g_current_playlist.tracks[g_current_playlist.index++];
+	if (g_current_playlist.index >= g_current_playlist.size) {
+		g_current_playlist.index = 0;
 	}
 	return music;
+}
+
+VolumePan calculate_volume_pan(const PlaySoundSettings& settings) {
+	if (settings.is_bw_hook) {
+		return {settings.bw_volume, settings.bw_pan};
+	}
+
+	VolumePan result{99, 0};
+	if (settings.position) {
+        result.volume = helper::get_sfx_volume_from_screen_distance(settings.position.x, settings.position.y);
+		result.pan = helper::get_sfx_pan_from_screen_distance(settings.position.x);
+	};
+	result.volume = std::max<s32>(result.volume, settings.min_volume);
+    result.volume *= g_options_list->sfx;
+    if (g_use_quiet_sounds) {
+        result.volume /= 5;
+    }
+    result.volume = g_big_volume_array[result.volume / 100];
+	return result;
+}
+
+void update_playing_sounds() {
+	std::erase_if(g_playing_sounds, [](const PlayingSound& sound) { return !sound.GetBuffer(); });
+
+	for (auto& sound : g_playing_sounds) {
+		if (auto buffer = sound.GetBuffer()) {
+            if (buffer->settings.is_bw_hook) {
+                continue;
+            }
+
+            const auto [volume, pan] = calculate_volume_pan(buffer->settings);
+            buffer->ds_buffer->SetVolume(volume);
+            buffer->ds_buffer->SetPan(pan);
+		}
+	}
+}
+
+void stop_playing_sounds() {
+	for (auto& sound : g_playing_sounds) {
+		if (auto buffer = sound.GetBuffer()) {
+			buffer->ds_buffer->Stop();
+			buffer->settings = {};
+			buffer->generation = 0;
+		}
+	}
+	g_playing_sounds.clear();
+}
+
+void PlayingSound::Stop() const {
+	if (!*this) {
+		return;
+	}
+    m_buffer->ds_buffer->Stop();
+}
+
+SoundBuffer* PlayingSound::GetBuffer() const {
+	if (!*this) {
+		return 0;
+	}
+	return m_buffer;
+}
+
+PlayingSound::operator bool() const {
+	if (!m_buffer || !m_buffer->ds_buffer) {
+		return false;
+	}
+	if (m_buffer->generation != m_generation) {
+		return false;
+	}
+
+	DWORD status = 0;
+	m_buffer->ds_buffer->GetStatus(&status);
+	return status & DSBSTATUS_PLAYING;
 }

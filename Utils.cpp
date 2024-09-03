@@ -9,14 +9,14 @@ void Timer::Stop() {
     m_end_time = 0;
 }
 
-bool Timer::HasStarted() {
+bool Timer::HasStarted() const {
     return m_end_time;
 }
 
-bool Timer::IsRunning() {
+bool Timer::IsRunning() const {
     return HasStarted() && g_elapsed_time_frames < m_end_time;
 }
 
-bool Timer::HasElapsed() {
+bool Timer::HasElapsed() const {
     return HasStarted() && g_elapsed_time_frames >= m_end_time;
 }

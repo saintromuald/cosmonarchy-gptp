@@ -54,6 +54,7 @@
 #include "GameModes/TheTurning.h"
 #include "aise_signal.h"
 #include "game.h"
+#include "trigger_system/trigger_sound.h"
 
 #include <random>
 #include <format>
@@ -738,6 +739,7 @@ namespace hooks {
 		*cpu_throttle = false;
 
 		g_game->tick();
+		update_playing_sounds();
 
 		s32* trigger_cooldown = (s32*)0x006509A0;
 		*trigger_cooldown = 0; // Single frame hypertriggers
@@ -2325,6 +2327,14 @@ namespace hooks {
 				if (unit_ext->values[ValueJustCastedHallucination] && unit->order_signal & 32) {
 					unit_ext->values[ValueJustCastedHallucination] = 0;
 				}
+				if (bw::get_generic_rust_value(unit, RustId::CancelPsiStorm)) {
+					bw::set_generic_rust_value(unit, RustId::CancelPsiStorm, 0);
+					if (auto effect = g_iquare_globals->get_effect(unit_ext->current_storm)) {
+						effect->destroy();
+					}
+					unit_ext->current_storm = 0;
+					unit->spell_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PsiStorm);
+				}
 			} break;
 			case UnitId::ProtossCrucible: {
 				// Crucible - Khaydarin Charge stacks
@@ -2502,6 +2512,11 @@ namespace hooks {
 					overlay->play_iscript_animation(IscriptAnimation::Death);
 				}
 			}
+		}
+
+		// Prevent storm overlap, was in update status effects, which doesn't tick every frame
+		if (unit->is_under_storm) {
+			unit->is_under_storm = false;
 		}
 
 		// Update speed for Tyrannized units
@@ -3443,6 +3458,7 @@ namespace hooks {
 	}
 
 	bool game_end() {
+		stop_playing_sounds();
 		end_threshold();
 		g_graphics.reset_stat_res_graphics();
 		for (u32 player = 0; player < PlayerLimit; player++)

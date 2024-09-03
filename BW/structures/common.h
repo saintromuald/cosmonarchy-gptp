@@ -13,7 +13,8 @@ struct Point16 {
 	u16 x;
 	u16 y;
 
-	bool operator ==(const Point16& other) const = default;
+	bool operator==(const Point16& other) const = default;
+	operator bool() const { return *this != Point16{}; }
 };
 
 struct Vec32 {
@@ -24,6 +25,14 @@ struct Vec32 {
 struct Vec32f {
 	f32 x;
 	f32 y;
+
+	Vec32f() = default;
+	Vec32f(f32 x, f32 y) : x(x), y(y) {}
+	Vec32f(Point16 point) : x(point.x), y(point.y) {}
+
+	bool operator==(const Vec32f& other) const = default;
+	operator bool() const { return *this != Vec32f{}; }
+	operator Point16() const { return Point16{u16(x), u16(y)}; }
 };
 
 union Quad {

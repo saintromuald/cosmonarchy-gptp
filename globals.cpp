@@ -67,12 +67,30 @@ void tick_effect(EffectField& effect) {
 			effect.thingy = bw::create_and_init_thingy(effect.sprite_id, effect.position.x, effect.position.y, effect.player, effect.elevation);
 		}
 	}
-	const s32 effect_period = 6;
+
+    if (effect.move_target && effect.position != effect.move_target) {
+        const auto distance = bw::distance_between(effect.position, effect.move_target);
+        auto move_speed = effect.move_speed / 24.0;
+        if (distance < move_speed) {
+            effect.position = effect.move_target;
+        } else {
+            auto dir = bw::dir_between(effect.position, effect.move_target);
+            effect.position.x += dir.x * move_speed;
+            effect.position.y += dir.y * move_speed;
+        }
+        if (effect.thingy) {
+            effect.thingy->sprite->set_position(effect.position.x, effect.position.y);
+        }
+    }
+
+	const s32 update_period = 4;
 	const u32 elapsed = effect.max_time - effect.current_time;
-	if (elapsed % effect_period == 0) {
+	if (elapsed % update_period == 0) {
 		effect.tick++;
-		const f64 tick_scalar = 256.0 * f64(effect_period) / 24;
-		const f64 total_scalar = 256.0 * f64(effect_period) / effect.max_time;
+		const f64 tick_scalar     = f64(update_period) / 24;
+		const f64 total_scalar    = f64(update_period) / effect.max_time;
+		const f64 tick_scalar_hp  = 256.0 * tick_scalar;
+		const f64 total_scalar_hp = 256.0 * total_scalar;
 		switch (effect.id) {
 			case EffectId::StarSovereignTheGriefOfAllGods: {
 				if (!effect.origin) {
@@ -80,19 +98,14 @@ void tick_effect(EffectField& effect) {
 					return;
 				}
 
-				bw::UnitFinder(
-					effect.position.x - effect.radius,
-					effect.position.y - effect.radius,
-					effect.position.x + effect.radius,
-					effect.position.y + effect.radius
-				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					unit->damage_with_custom(2500 * total_scalar, -1, effect.source, effect.player);
-				});
+				for (Unit* unit : g_unit_search.square_ex(effect, FilterNoAir)) {
+					unit->damage_with_custom(2500 * total_scalar_hp, -1, effect.source, effect.player);
+				}
 
 				avenge_or_ascend_corpses_in_area(effect.position, effect.radius, effect.player);
 			} break;
 			case EffectId::SalamanderFire: {
-				for (Unit* target : g_unit_search.radial_ex(effect, FilterNoAir)) {
+				for (Unit* target : g_unit_search.search_ex(effect, FilterNoAir)) {
 					UnitExt* target_ext = get_unit_ext(target);
 					if (!target_ext->timers[TimerSalamanderFire]) { // So it only applies to the same unit once every second.
 						target_ext->values[ValueApollyoidAdhesiveStacks]++;
@@ -102,73 +115,69 @@ void tick_effect(EffectField& effect) {
 				}
 			} break;
 			case EffectId::AspirantCriticality: {
-				bw::UnitFinder(
-					effect.position.x - effect.radius,
-					effect.position.y - effect.radius,
-					effect.position.x + effect.radius,
-					effect.position.y + effect.radius
-				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (bw::distance_between(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
-						return;
-					}
-					unit->heal_shields_then_hp(4 * tick_scalar, effect.source, true);
-				});
+				for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
+					unit->heal_shields_then_hp(4 * tick_scalar_hp, effect.source, true);
+				}
 			} break;
 			case EffectId::KeskathalorCausticDischarge: {
-				bw::UnitFinder(
-					effect.position.x - effect.radius,
-					effect.position.y - effect.radius,
-					effect.position.x + effect.radius,
-					effect.position.y + effect.radius
-				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (bw::distance_between(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
-						return;
-					}
+				for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
 					UnitExt* unit_ext = get_unit_ext(unit);
-					unit->damage_with_custom(30 * total_scalar, -1, effect.source, effect.player);
+					unit->damage_with_custom(30 * total_scalar_hp, -1, effect.source, effect.player);
 					unit_ext->timers[TimerCausticDischargeSpeed] = 3 * 24 + 1;
-				});
+				}
 			} break;
 			case EffectId::DiademIonField: {
-				bw::UnitFinder(
-					effect.position.x - effect.radius,
-					effect.position.y - effect.radius,
-					effect.position.x + effect.radius,
-					effect.position.y + effect.radius
-				).for_each_in_match(cosmonarchy_finder_match(nullptr, Flags::NoAir, {}), [&](Unit* unit) {
-					if (bw::distance_between(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
-						return;
-					}
+				for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
 					UnitExt* unit_ext = get_unit_ext(unit);
-					unit->damage_with_custom(100 * total_scalar, -1, effect.source, effect.player);
+					unit->damage_with_custom(100 * total_scalar_hp, -1, effect.source, effect.player);
 					unit_ext->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
-				});
+				}
+			} break;
+			case EffectId::PsiStorm: {
+				Unit* caster = effect.source;
+				if (!caster) {
+					effect.destroy();
+					break;
+				}
+				UnitExt* caster_ext = get_unit_ext(caster);
+				if (caster_ext->current_storm != effect.ref) {
+					effect.destroy();
+					break;
+				}
+				auto distance = bw::distance_between(caster->position, (Point16)effect.position);
+				if (distance > caster->get_sight_range(true) * 32 * 1.25) {
+					caster_ext->current_storm = 0;
+					effect.destroy();
+					break;
+				}
+
+				if (!effect.playing_sound) {
+					effect.playing_sound = bw::play_looping_sound(effect.position, SoundId::Protoss_TEMPLAR_PTeSto00_WAV);
+				}
+
+				caster->spend_energy(10 * tick_scalar_hp);
+				for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
+                    if (unit->is_under_storm) continue;
+                    unit->is_under_storm = true;
+					unit->damage_with(WeaponId::PsiStorm, 25 * tick_scalar_hp, effect.source, effect.player,
+						helper::get_direction_from_points(effect.position, unit->position));
+				}
+
+				if (!caster->energy) {
+					caster_ext->current_storm = 0;
+					effect.destroy();
+					break;
+				}
 			} break;
 			case EffectId::HallucinatingField: {
-				bw::UnitFinder(
-					effect.position.x - effect.radius,
-					effect.position.y - effect.radius,
-					effect.position.x + effect.radius,
-					effect.position.y + effect.radius
-				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					if (bw::distance_between(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
-						return;
-					}
+				for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf)) {
 					bw::apply_hallucinating(unit, effect.player, 3 * 24 + 1);
-				});
+				}
 			} break;
 			case EffectId::Irradiate: {
-				bw::UnitFinder(
-					effect.position.x - effect.radius,
-					effect.position.y - effect.radius,
-					effect.position.x + effect.radius,
-					effect.position.y + effect.radius
-				).for_each_in_match(cosmonarchy_finder_match(nullptr, 0, {}), [&](Unit* unit) {
-					if (bw::distance_between(effect.position.x, effect.position.y, unit->get_x(), unit->get_y()) > effect.radius) {
-						return;
-					}
+				for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf)) {
 					apply_irradiate(unit, effect.player, 15);
-				});
+				}
 			} break;
 			case EffectId::MorningstarGroundZero: {
 				switch (effect.tick) {
@@ -183,7 +192,7 @@ void tick_effect(EffectField& effect) {
 						Point16 pos = effect.position;
 						pos.x += distance;
 						for (u32 i = 0; i < count; i++) {
-							pos = bw::rotate_point(effect.position, pos, (360.0 / count));
+							pos = bw::rotate_point((Point16)effect.position, pos, (360.0 / count));
 							g_iquare_globals->create_effect(EffectId::Irradiate, 20 * 24 - elapsed, pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect.player, effect.source);
 						}
 					} break;
@@ -250,7 +259,7 @@ void tick_effect(EffectField& effect) {
 				}
 			} break;
 			case EffectId::VilgolethHeal: {
-				for (Unit* target : g_unit_search.radial_ex(effect, FilterNoAir)) {
+				for (Unit* target : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
 					UnitExt* target_ext = get_unit_ext(target);
 					target_ext->timers[TimerNathreliskMitosalFog] = 24;
 				}
@@ -260,7 +269,7 @@ void tick_effect(EffectField& effect) {
 					break;
 				}
 
-                for (Unit* target : g_unit_search.radial_ex(effect, FilterEnemy)) {
+                for (Unit* target : g_unit_search.search_ex(effect, FilterEnemy)) {
                     if (bw::is_allied_to(effect.player, target->player)) {
                         continue;
                     }
@@ -310,13 +319,28 @@ void tick_effect(EffectField& effect) {
 					helper::play_sound_at_pos(sound_id, effect.position, 1, 0);
 					effect.intervals--;
 				}
-			}
+			} break;
 		}
 	}
 }
 
-void IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
+EffectField* IquareGlobals::get_effect(EffectRef ref) {
+	if (!ref) {
+		return 0;
+	}
+	if (auto it = std::ranges::find_if(m_effects, [ref](const EffectField& effect) { return effect.ref == ref; }); it != m_effects.end()) {
+		return &*it;
+	}
+	if (auto it = std::ranges::find_if(m_effects_to_add, [ref](const EffectField& effect) { return effect.ref == ref; }); it != m_effects_to_add.end()) {
+		return &*it;
+	}
+	return 0;
+}
+
+EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, SearchRadius radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
+	EffectRef ref = ++m_next_effect_field_ref;
 	m_effects_to_add.push_back(EffectField{
+		.ref = ref,
 		.id = id,
 		.position = position,
 		.radius = radius,
@@ -329,7 +353,18 @@ void IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 r
 		.source = source,
 		.origin = extras.origin,
 		.intervals = extras.intervals,
+		.move_target = extras.move_target,
+		.move_speed = extras.move_speed,
 	});
+	return ref;
+}
+
+EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, Point16 size, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
+	return create_effect(id, time, position, SearchRadius{size}, sprite_id, elevation, player, source, extras);
+}
+
+EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
+	return create_effect(id, time, position, SearchRadius{radius}, sprite_id, elevation, player, source, extras);
 }
 
 void IquareGlobals::tick() {
@@ -346,7 +381,7 @@ void IquareGlobals::tick() {
 			}
 		}
 
-		effect.current_time--;
+        effect.current_time--;
 		tick_effect(effect);
 
 		if (!effect.current_time) {

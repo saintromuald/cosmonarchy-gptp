@@ -302,14 +302,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GameModes\Uprising.cpp" />
-    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="utility\RegConfig.cpp" />
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="BW\extender\TileHeight_extender.cpp" />
     <ClCompile Include="BW\ExtendSightLimit.cpp" />
     <ClCompile Include="BW\structures.cpp" />
     <ClCompile Include="selection_extender.cpp" />
-    <ClCompile Include="collections.h" />
     <ClCompile Include="trigger_system\trigger_events.cpp" />
     <ClCompile Include="trigger_system\trigger_parser.cpp" />
     <ClCompile Include="threshold.cpp" />
@@ -592,6 +590,7 @@
     <ClCompile Include="utility.cpp" />
     <ClCompile Include="trigger_system\trigger_vars.cpp" />
     <ClCompile Include="unit_search.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -609,6 +608,7 @@
     <ClInclude Include="CM\cm_behaviors.h" />
     <ClInclude Include="CM\cm_ids.h" />
     <ClInclude Include="CM\cm_utils.h" />
+    <ClInclude Include="collections.h" />
     <ClInclude Include="color_palette.h" />
     <ClInclude Include="config_utils.h" />
     <ClInclude Include="custom_ai.h" />
@@ -659,7 +659,6 @@
     <ClInclude Include="maths.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="GameModes\Uprising.h" />
-    <ClInclude Include="Utils.h" />
     <ClInclude Include="utility\RegConfig.h" />
     <ClInclude Include="req_table.h" />
     <ClInclude Include="BW\enumerations\PortraitId.h" />
@@ -743,6 +742,7 @@
     <ClInclude Include="trigger_system\trigger_vars.h" />
     <ClInclude Include="unit_constants.h" />
     <ClInclude Include="unit_search.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="Utils\captivating_claws.h" />
     <ClInclude Include="hooks\limits\ccmu.h" />
     <ClInclude Include="hooks\limits\extender.h" />

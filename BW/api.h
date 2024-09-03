@@ -913,10 +913,14 @@ void transform_unit(Unit* unit, u16 unit_id);
 void add_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});              // Does NOT calculate overlay offset!
 void remove_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});           // Does NOT calculate overlay offset!
 void set_unit_overlay(Unit* unit, ImageSet image_set, bool active, const OverlaySettings& settings = {}); // Does NOT calculate overlay offset!
-void play_sound(Unit* unit, SoundSet sound_set, u32 min_volume = 0);
-void play_sound(Point16 pos, SoundSet sound_set, u32 min_volume = 0);
-void play_sound_local(Unit* unit, SoundSet sound_set, u32 min_volume = 0);
-void play_sound_local(Point16 pos, SoundSet sound_set, u32 min_volume = 0);
+PlayingSound play_sound(Unit* unit, SoundSet sound_set);
+PlayingSound play_sound(Point16 pos, SoundSet sound_set);
+PlayingSound play_sound_local(Unit* unit, SoundSet sound_set);
+PlayingSound play_sound_local(Point16 pos, SoundSet sound_set);
+PlayingSound play_looping_sound(Unit* unit, SoundSet sound_set);
+PlayingSound play_looping_sound(Point16 pos, SoundSet sound_set);
+PlayingSound play_looping_sound_local(Unit* unit, SoundSet sound_set);
+PlayingSound play_looping_sound_local(Point16 pos, SoundSet sound_set);
 void play_action_sound(u32 sound_id, Unit* unit);
 u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target);
 void regress(Unit* unit, u32 regression_id);

@@ -81,7 +81,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 			for (SoundReplacement& sound_replacement : g_globals->sound_replacements) {
 				if (sound_replacement_match(&sound_replacement, image, sound_id, unit)) {
 					if (index == target_index) {
-						play_sound(sound_replacement.new_sound, get_sound_volume_at_pos(sprite->position), helper::get_sfx_pan_from_screen_distance(sprite->position.x));
+						play_sound_ext(sound_replacement.new_sound, {.position = sprite->position});
 						if (sound_replacement.replace) {
 							replace = true;
 						}
@@ -107,33 +107,33 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 	if (sfx_dat::sound_file[sound_id]) {
 		char buffer[MAX_PATH] = {};
 		snprintf(buffer, MAX_PATH, "sound\\%s", sound_paths[sound_id]); // sfx_dat::sound_file[sound_id]);
-		Sound* sound = get_sound(buffer);
+		SoundMainBuffer* sound = get_sound(buffer);
 		if (sound) {
 			u32 flags = sfx_dat::sound_flags[sound_id];
 			if (flags & DatSoundFlags_OneAtATime) {
-				DWORD status = 0;
 				if (sound->ds_buffer) {
-					sound->ds_buffer->GetStatus(&status);
-					if (status == DSBSTATUS_PLAYING) {
-						return false;
-					}
+                    DWORD status = 0;
+                    sound->ds_buffer->GetStatus(&status);
+                    if (status & DSBSTATUS_PLAYING) {
+                        return false;
+                    }
 				}
 			}
 
 			if (flags & DatSoundFlags_UnitResponse && unit) {
 				for (u32 i = 0; i < MaxDupChannels; ++i) {
-					DupChannel* dup_channel = &dup_channels[i];
-					if (!dup_channels[i].ds_buffer) {
+					SoundDupBuffer* dup_channel = &g_dup_channels[i];
+					if (!g_dup_channels[i].ds_buffer) {
 						continue;
 					}
-					if (dup_channels[i].unit_id != unit->id) {
+					if (g_dup_channels[i].settings.unit_response_unit_id != unit->id) {
 						continue;
 					}
-					DWORD status = 0;
-					dup_channels[i].ds_buffer->GetStatus(&status);
-					if (status == DSBSTATUS_PLAYING) {
-						return false;
-					}
+                    DWORD status = 0;
+                    g_dup_channels[i].ds_buffer->GetStatus(&status);
+                    if (status & DSBSTATUS_PLAYING) {
+                        return false;
+                    }
 				}
 			}
 
@@ -141,7 +141,7 @@ s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* uni
 			if (flags & DatSoundFlags_UnitResponse && unit) {
 				unit_id = unit->id;
 			}
-			if (play_sound(sound, volume, pan, unit_id)) {
+            if (play_sound_ext(sound, {.bw_volume = volume, .bw_pan = pan, .unit_response_unit_id = unit_id, .is_bw_hook = true})) {
 				return true;
 			}
 		}
@@ -171,14 +171,14 @@ void free_sound_buffer(u32 sound_id) {
 
 // Hooked to stop endless tick sound in scoreboard and other issues
 void stop_sounds_partial() {
-	for (u32 i = 0; i < loaded_sounds_count; ++i) {
-		Sound* sound = &loaded_sounds[i];
+	for (u32 i = 0; i < g_loaded_sounds_count; ++i) {
+		SoundMainBuffer* sound = &g_loaded_sounds[i];
 		if (sound->ds_buffer) {
 			sound->ds_buffer->Stop();
 		}
 	}
 	for (u32 i = 0; i < MaxDupChannels; ++i) {
-		DupChannel* dup_channel = &dup_channels[i];
+		SoundDupBuffer* dup_channel = &g_dup_channels[i];
 		if (dup_channel->ds_buffer) {
 			dup_channel->ds_buffer->Stop();
 		}
