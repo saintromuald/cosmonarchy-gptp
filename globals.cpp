@@ -72,7 +72,7 @@ static const EffectInfo& get_effect_info(EffectId effect_id) {
 		case EffectId::PsiStorm: {
 			static EffectInfo info{
 				.start_sound = SoundId::PsiStormStart,
-				.loop_sound = {SoundId::PsiStormLoop1, SoundId::PsiStormLoop7},
+				.loop_sound = SoundId::PsiStormLoop,
 				.end_sound = SoundId::PsiStormEnd,
 			};
 			return info;

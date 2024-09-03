@@ -1930,19 +1930,9 @@ namespace SoundId {
 		DurendalOrderAggressive02						= 3191,
 		DurendalOrderAggressive03						= 3192,
 		DurendalOrderAggressive04						= 3193,
-		PsionicStormStart01								= 3194,
-		PsionicStormLoop01								= 3195,
-		PsionicStormEnd01								= 3196,
-
 		PsiStormStart									= 3198,
-		PsiStormLoop1									= 3199,
-		PsiStormLoop2									= 3200,
-		PsiStormLoop3									= 3201,
-		PsiStormLoop4									= 3202,
-		PsiStormLoop5									= 3203,
-		PsiStormLoop6									= 3204,
-		PsiStormLoop7									= 3205,
-		PsiStormEnd 									= 3206,
+		PsiStormLoop									= 3199,
+		PsiStormEnd										= 3200,
 
 		GoskaGrenadeImpact								= 4011,
 	};
