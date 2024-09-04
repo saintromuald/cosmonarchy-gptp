@@ -7,7 +7,6 @@ namespace hooks
 {
 	// Actual state check for whether a unit can generate a psi field.
 	bool is_ready_to_make_psi_field(Unit* unit) {
-		UnitExt* unit_ext = get_unit_ext(unit);
 		return unit_id_is_psi_provider(unit->id);
 	}
 
@@ -25,6 +24,9 @@ namespace hooks
 	// Hooked to allow allies to benefit from power. -Veeq7
 	bool unit_has_power(u32 unit_id, s32 x, s32 y, u8 player) { // 004936B0
 		if (!(units_dat::base_property[unit_id] & UnitProperty::RequiredPsi)) {
+			return true;
+		}
+		if (player == NeutralHostilePlayer && bw::get_game_kind() == GameKind_Uprising) {
 			return true;
 		}
 
