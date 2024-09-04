@@ -230,7 +230,7 @@ static void tick_effect(EffectField& effect) {
 					break;
 				}
 				auto distance = bw::distance_between(caster->position, (Point16)effect.position);
-				if (distance > caster->get_sight_range(true) * 32 * 1.25) {
+				if (distance > weapons_dat::max_range[WeaponId::PsiStorm] * 1.25) {
 					caster_ext->current_storm = 0;
 					effect.destroy();
 					break;
