@@ -40,7 +40,10 @@ void UprisingGameMode::OnTick() {
     }
 
     for (auto& spawner : m_spawners) {
-        Unit* unit = spawner.spawner_unit;
+        Unit* unit = spawner.spawner_unit.get();
+        if (!unit) {
+            continue;
+        }
 
         if (spawner.spawn_timer.HasElapsed()) {
             spawner.spawn_timer.Stop();
@@ -77,6 +80,7 @@ void UprisingGameMode::OnTick() {
             }
         }
     }
+    std::erase_if(m_spawners, [](const auto& spawner) { return spawner.spawner_unit.get(); });
 
     for (auto& wave : m_waves) {
         std::erase_if(wave.units, [](UnitRef ref) { return !ref.get(); });

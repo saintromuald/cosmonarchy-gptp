@@ -13,7 +13,7 @@ struct UprisingSpawner {
 	std::vector<UprisingWaveUnits> repeating_waves;
 
 	// Runtime Data
-	Unit* spawner_unit;
+	UnitRef spawner_unit;
 	u32 wave_index = 0;
 	UnitId::Enum spawn_id = UnitId::None;
 	Timer spawn_timer;
