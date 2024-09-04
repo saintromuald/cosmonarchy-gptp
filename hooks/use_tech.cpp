@@ -214,8 +214,7 @@ namespace hooks {
 				Unit* selected = *g_active_portrait_unit;
 				if (selected) {
 					switch (selected->id) {
-						case UnitId::TerranApostle:
-						{
+						case UnitId::TerranApostle: {
 							queue_generic_ability(RustId::ToggleLazarusAgent, 0);
 						} break;
 						case UnitId::TerranWyvern: {

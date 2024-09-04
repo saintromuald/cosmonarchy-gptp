@@ -64,6 +64,10 @@ namespace hooks {
 						index++;
 						// Display additional weapons
 						switch (active_unit->id) {
+							case UnitId::TerranCyclops: {
+								helper::stats_weapon_level(dialog, index, WeaponId::CyclopsBrontesPayload);
+								index++;
+							} break;
 							case UnitId::TerranTarasque: {
 								helper::stats_weapon_level(dialog, index, WeaponId::TarasqueAcceleratedPlasmid);
 								index++;

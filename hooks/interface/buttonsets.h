@@ -67,8 +67,7 @@ private:
 
 extern ButtonsetContext buttonset_context;
 
-namespace hooks
-{
+namespace hooks {
 	void update_buttonset_ex();							//	00458BC0
 	void highlight_button();							//	00458D50 sub_458D50
 	void update_buttonset();							//	00458DE0

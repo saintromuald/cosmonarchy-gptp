@@ -1,18 +1,15 @@
 #pragma once
 #include <BW/bwdata.h>
 
-namespace SplashType
-{
-	enum
-	{
-		Radial = 0,
-		Enemy = 1,
+namespace SplashType {
+	enum {
+		Radial		= 0,
+		Enemy		= 1,
 		FriendlyNew = 2,
 	};
 }
 
-namespace hooks
-{
+namespace hooks {
 	void splash(Bullet* bullet, u32 weapon_id, u8 splash_type, Unit* guaranteed_hit = nullptr);
 	void lakizilisk_splash(Bullet* bullet, u32 weapon_id, u8 splash);
 
@@ -22,7 +19,7 @@ namespace hooks
 	void air_splash(Bullet* bullet, u32 weapon_id);
 	void nuke(Bullet* bullet, u32 weapon_id);
 
-	// Cosmonarchy BW specific
+	// Cosmonarchy specific
 	bool is_melee_with_aoe(Bullet* bullet, u32 weapon_id);
 	void parasite(Bullet* bullet, u32 weapon_id);
 	void broodlings(Bullet* bullet, u32 weapon_id);

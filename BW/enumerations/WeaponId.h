@@ -224,6 +224,7 @@ namespace WeaponId {
 		SevenstepGeometricRiflePiercing		= 200,
 		MatadorTwinstrikeCannons			= 201,
 		SalamanderAngeltearRockets			= 216,
+		CyclopsBrontesPayload				= 217,	// Passive explosion
 
 		// Protoss \\
 		

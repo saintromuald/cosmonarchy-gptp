@@ -4,8 +4,7 @@
 // Taken from hooks/interface/buttonsets.cpp
 // Main names from Firegraft, comments names from vgce
 namespace ButtonRequirements {
-    enum Enum : u32
-    {
+    enum Enum : u32 {
         Slow_Down_Replay = 0x004DEB40,										//BTNSCOND_ReplaySlowDown
         Speed_Up_Replay = 0x004DEAF0,										//BTNSCOND_ReplaySpeedUp
         PlayorPause_Replay = 0x004DEAC0,									//BTNSCOND_ReplayPlayPause
@@ -76,10 +75,9 @@ namespace ButtonRequirements {
     };
 }
 
-//Main names from Firegraft, comments names from vgce
+// Main names from Firegraft, comments names from vgce
 namespace ButtonActions {
-    enum Enum : u32
-    {
+    enum Enum : u32  {
         Cancel_Infestation = 0x00423180,									//BTNSACT_DoNothing
         Rally_Point = 0x004244A0,											//BTNSACT_RallyPoint
         Select_Larva = 0x00423930,											//BTNSACT_SelectLarva

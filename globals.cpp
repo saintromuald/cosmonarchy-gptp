@@ -349,12 +349,9 @@ static void tick_effect(EffectField& effect) {
 				if (effect.current_time) {
 					break;
 				}
-
+				
+				helper::create_bullet(WeaponId::CyclopsBrontesPayload, effect.source, effect.position.x, effect.position.y, effect.player, 0);
                 for (Unit* target : g_unit_search.search_ex(effect, FilterEnemy)) {
-                    if (bw::is_allied_to(effect.player, target->player)) {
-                        continue;
-                    }
-                    target->damage_with_custom(8 * 256, 0, effect.source, effect.player);
                     target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
                 }
                 u32 sound_id = bw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04);

@@ -2,10 +2,8 @@
 #include <hook_tools.h>
 
 #include "BW/stat_txt_spec.h"
-namespace
-{
-	void __declspec(naked) update_buttonset_ex_wrapper()
-	{
+namespace {
+	void __declspec(naked) update_buttonset_ex_wrapper() {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -20,8 +18,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) highlight_button_wrapper()
-	{
+	void __declspec(naked) highlight_button_wrapper() {
 		__asm PUSHAD
 		hooks::highlight_button();
 		__asm {
@@ -30,8 +27,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) update_buttonset_wrapper()
-	{
+	void __declspec(naked) update_buttonset_wrapper() {
 		__asm PUSHAD
 		hooks::update_buttonset();
 		__asm {
@@ -40,8 +36,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) update_command_card_wrapper()
-	{
+	void __declspec(naked) update_command_card_wrapper() {
 		__asm {
 			PUSHAD
 		}
@@ -52,8 +47,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) update_current_buttonset_wrapper()
-	{
+	void __declspec(naked) update_current_buttonset_wrapper() {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -68,8 +62,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) statbtn_bin_custom_ctrl_id_wrapper()
-	{
+	void __declspec(naked) statbtn_bin_custom_ctrl_id_wrapper() {
 		static BinDlg* dialog;
 		__asm {
 			MOV dialog, EAX
@@ -86,8 +79,7 @@ namespace
 	// You can (and should) disable this if you're already using the hooked 4591D0 function.
 	const u32 func_update_command_card = 0x004591ED;
 	const u32 patch_for_update_command_card = 0x004591F4;
-	void __declspec(naked) update_command_card_patch()
-	{
+	void __declspec(naked) update_command_card_patch() {
 		static u32 index;
 		static ButtonSet* result;
 		__asm {
@@ -107,10 +99,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_buttonset_hooks()
-	{
+namespace hooks {
+	void inject_buttonset_hooks() {
 	//	jump_patch(update_command_card_patch,			func_update_command_card, 2);
 		jump_patch(update_buttonset_ex_wrapper,			0x00458BC0, 1);
 		jump_patch(highlight_button_wrapper,			0x00458D50, 2);

@@ -8,13 +8,10 @@
 #include "limits/ccmu.h"
 #include "CM/cm.h"
 
-namespace
-{
+namespace {
 	// SC internal data for Lakizilisk spines
-	struct SpineHitTable
-	{
-		struct
-		{
+	struct SpineHitTable {
+		struct {
 			Unit* source;
 			Unit* target;
 		} hits[32][16];
