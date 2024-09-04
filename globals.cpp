@@ -346,7 +346,7 @@ static void tick_effect(EffectField& effect) {
 				}
 			} break;
 			case EffectId::CyclopsRecursionRound: {
-				if (effect.current_time) {
+				if (effect.current_time || !effect.source) {
 					break;
 				}
 				

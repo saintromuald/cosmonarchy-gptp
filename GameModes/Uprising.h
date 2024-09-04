@@ -77,7 +77,7 @@ private:
             },
         },
 		UprisingSpawner{
-			.name = "Gun's Impact",
+			.name = "The Revolutionaries",
 			.unit_id = UnitId::TerranStockade,
 			.starting_waves = {
 				{
@@ -101,6 +101,69 @@ private:
                 },
 				{
 					{12, UnitId::TerranCyprian},
+                },
+            },
+        },
+		UprisingSpawner{
+			.name = "Swords & Swordsmen",
+			.unit_id = UnitId::ProtossGateway,
+			.starting_waves = {
+				{
+					{1, UnitId::ProtossZealot},
+					{3, UnitId::ProtossLegionnaire},
+                },
+				{
+					{1, UnitId::ProtossZealot},
+					{6, UnitId::ProtossLegionnaire},
+                },
+				{
+					{2, UnitId::ProtossZealot},
+					{8, UnitId::ProtossLegionnaire},
+					{1, UnitId::ProtossEcclesiast},
+                },
+				{
+					{2, UnitId::ProtossZealot},
+					{11, UnitId::ProtossLegionnaire},
+					{2, UnitId::ProtossEcclesiast},
+                },
+            },
+			.repeating_waves = {
+				{
+					{3, UnitId::ProtossZealot},
+					{12, UnitId::ProtossLegionnaire},
+					{3, UnitId::ProtossEcclesiast},
+                },
+				{
+					{18, UnitId::ProtossZealot},
+					{4, UnitId::ProtossEcclesiast},
+                },
+            },
+        },
+		UprisingSpawner{
+			.name = "Zerg, here?",
+			.unit_id = UnitId::ZergQuazethPool,
+			.starting_waves = {
+				{
+					{8, UnitId::ZergZethrokor},
+                },
+				{
+					{8, UnitId::ZergQuazilisk},
+                },
+				{
+					{12, UnitId::ZergZethrokor},
+					{4, UnitId::ZergQuazilisk},
+                },
+				{
+					{20, UnitId::ZergZethrokor},
+                },
+            },
+			.repeating_waves = {
+				{
+					{18, UnitId::ZergZethrokor},
+					{8, UnitId::ZergQuazilisk},
+                },
+				{
+					{30, UnitId::ZergZethrokor},
                 },
             },
         },
