@@ -105,8 +105,8 @@ namespace hooks {
 				continue; // guaranteed hit unit was already damaged before splash!
 			}
 
-			// Units can't splash themselves -- except Psi Storm
-			if (unit == target && bullet->weapon_id != WeaponId::PsiStorm) continue;
+			// Units can't splash themselves, unless...
+			if (unit == target && !weapon_id_can_self_splash(bullet->weapon_id)) continue;
 
 			// Don't hit allied units -- normally just checks target->player == bullet->player (also checks if type is 'splash enemy' or 'nuclear missile')
 			// if (bw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;

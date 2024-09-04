@@ -1263,5 +1263,12 @@ bool unit_id_is_valid_for_most_abilities(u32 unit_id) {
 }
 
 bool unit_id_is_hero(u32 unit_id) {
-	return unit_id == UnitId::Goska || unit_id == UnitId::Stroluum;
+	return unit_id == UnitId::Goska
+		|| unit_id == UnitId::Stroluum
+		|| unit_id == UnitId::Ackmed;
+}
+
+bool weapon_id_can_self_splash(u32 weapon_id) {
+	return weapon_id == WeaponId::CyclopsBrontesPayload
+		|| weapon_id == WeaponId::PsiStorm;
 }
