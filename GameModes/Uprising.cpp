@@ -80,7 +80,7 @@ void UprisingGameMode::OnTick() {
             }
         }
     }
-    std::erase_if(m_spawners, [](const auto& spawner) { return spawner.spawner_unit.get(); });
+    std::erase_if(m_spawners, [](const auto& spawner) { return !spawner.spawner_unit.get(); });
 
     for (auto& wave : m_waves) {
         std::erase_if(wave.units, [](UnitRef ref) { return !ref.get(); });
