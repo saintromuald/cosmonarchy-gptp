@@ -2205,16 +2205,16 @@ bool move_unit_ai(Unit* unit, AiRegion* ai_region) {
 }
 
 void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id) {
-	u32 heal_amount = 2;
+	u32 heal_amount = 3;
 	u32 range = 96;
 	switch (weapon_id) {
 		case WeaponId::EcclesiastAstralBlaster:
 		case WeaponId::MatrixKhaydarinRay: {
-			heal_amount = 2;
+			heal_amount = 3;
 			range = 96;
 		} break;
 		case WeaponId::HeraldStellarTorch: {
-			heal_amount = 1;
+			heal_amount = 2;
 			range = 96;
 		} break;
 	}
