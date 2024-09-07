@@ -205,6 +205,7 @@ namespace hooks {
 			case UnitId::TerranApostle:
 			case UnitId::TerranOlympian:
 			case UnitId::TerranCataphract:
+			case UnitId::ProtossDracadin:
 			case UnitId::ZergZoryusthaleth: {
 				speed *= 1.1;
 			} break;
@@ -242,12 +243,14 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossLegionnaire:
 			case UnitId::ProtossVagrantShade:
-			case UnitId::ZergAxitriliskWeaponless:
-			case UnitId::ZergHydralisk: {
+			case UnitId::ZergAxitriliskWeaponless: {
 				speed *= 1.5;
 			} break;
 			case UnitId::ZergMortothrokor: {
 				speed *= 1.6;
+			} break;
+			case UnitId::ZergHydralisk: {
+				speed *= 1.7;
 			} break;
 		}
 
