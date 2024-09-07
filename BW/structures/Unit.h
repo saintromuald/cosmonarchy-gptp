@@ -177,12 +177,12 @@ struct Unit : public UnitLayout
 
 	// Returns reminder/overflow
 	u32 heal_hp(s32 amount, Unit* source = nullptr, bool restore = true);
-	u32 heal_shields(s32 amount, Unit* source = nullptr, bool restore = true, bool proc_flash_shielding = true);
+	u32 heal_shields(s32 amount, Unit* source = nullptr, bool restore = true, bool proc_flash_shielding = false);
 	u32 heal_energy(s32 amount, Unit* source = nullptr);
 
-	u32 heal_hp_then_shields(s32 amount, Unit* source = nullptr, bool restore = true, bool proc_flash_shielding = true);
-	u32 heal_shields_then_hp(s32 amount, Unit* source = nullptr, bool restore = true, bool proc_flash_shielding = true);
-	u32 heal_energy_then_shields(s32 amount, Unit* source = nullptr, bool restore = true, bool proc_flash_shielding = true);
+	u32 heal_hp_then_shields(s32 amount, Unit* source = nullptr, bool restore = true, bool proc_flash_shielding = false);
+	u32 heal_shields_then_hp(s32 amount, Unit* source = nullptr, bool restore = true, bool proc_flash_shielding = false);
+	u32 heal_energy_then_shields(s32 amount, Unit* source = nullptr, bool restore = true, bool proc_flash_shielding = false);
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.
 	void damage_with(
