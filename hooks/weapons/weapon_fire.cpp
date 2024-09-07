@@ -550,7 +550,7 @@ namespace hooks {
 						unit->sprite->create_top_overlay(ImageId::MaverickStimpackInject);
 						unit_ext->values[ValueMadcapFullChargeRead] = 1;
 					}
-					unit_ext->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
+					unit_ext->values[ValueMadcapStacks] = Clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
 				}
 
 				if (unit->order_target.unit) {

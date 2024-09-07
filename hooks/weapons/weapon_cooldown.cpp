@@ -91,7 +91,7 @@ namespace hooks {
 				// Blackjack Wear and Tear: reduce weapon speed based on missing health
 				const u32 health = unit->hitpoints / 256;
 				const u32 max_health = unit->get_max_hp_ingame();
-				const f64 multiplier = MathUtils::map(health, (u32)0, max_health, 0.66, 1.0, true);
+				const f64 multiplier = MathUtils::Map(health, (u32)0, max_health, 0.66, 1.0, true);
 				cooldown /= multiplier;
 			} break;
 			case UnitId::TerranPhobos: {

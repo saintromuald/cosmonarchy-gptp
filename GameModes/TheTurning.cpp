@@ -128,7 +128,7 @@ Unit* TheTurningGameMode::Spawn() {
         return 0;
     }
 
-    std::optional<Point16> spawn_position = pick_random_spawn_position(unit_id);
+    std::optional<Point16> spawn_position = PickRandomSpawnPosition(unit_id);
     if (!spawn_position) {
         return 0;
     }

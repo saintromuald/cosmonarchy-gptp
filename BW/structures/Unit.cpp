@@ -730,11 +730,11 @@ void Unit::spend_energy(u32 energy_spent) {
 }
 
 void Unit::add_unit_energy(u32 energy) {
-	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, this->get_max_energy());
+	this->energy = (u32)Clamp(this->energy + energy, 0, this->get_max_energy());
 }
 
 void Unit::add_unit_energy_capped(u32 energy, u32 energyMax) {
-	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
+	this->energy = (u32)Clamp(this->energy + energy, 0, energyMax);
 }
 
 // Identical to get_max_vitality @ 00402710

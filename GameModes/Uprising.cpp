@@ -3,12 +3,22 @@
 #include "trigger_system/trigger_system.h"
 #include "hooks/limits/sfx_extender.h"
 #include "ai_layouts.h"
+#include "maths.h"
 
 // Originally Pr0 proposed camps expanding with more structures, defenses, etc
 // might be something to consider for expanding the current attack wave methodology.
 // Perhaps each attack wave spawner after some time gets another spawner
 // spawned nearby, same for defenses. Also maybe we need to eventually add tiers to spawners
 // since some maybe shouldn't be available in early game.
+
+static u32 GetSpawnerTrainTime(UnitId::Enum unit_id) {
+    u32 time = units_dat::time_cost[unit_id];
+    switch (unit_id) {
+        case UnitId::ZergRililisk:  time = 12 * 24; break;
+        case UnitId::ZergRilirokor: time = 20 * 24; break;
+    }
+    return Map(g_elapsed_time_frames, 0, 40 * 60 * 24, time * 2, time / 2, true);
+}
 
 static UnitId::Enum GetNextUnitToTrain(UprisingSpawner& spawner) {
     std::erase_if(spawner.units_to_send, [](UnitRef ref) { return !ref.get(); });
@@ -32,16 +42,17 @@ static UnitId::Enum GetNextUnitToTrain(UprisingSpawner& spawner) {
 }
 
 void UprisingGameMode::OnTick() {
-    if (m_create_spawner_timer.HasElapsed()) {
-        CreateSpawner();
-    }
-    if (!m_create_spawner_timer.IsRunning()) {
-        m_create_spawner_timer.Start(90 * 24 / bw::active_player_count());
+    for (auto& creator : m_creators) {
+        creator.Tick(m_spawners);
     }
 
     for (auto& spawner : m_spawners) {
         Unit* unit = spawner.spawner_unit.get();
         if (!unit) {
+            continue;
+        }
+        if (unit->id != spawner.info->unit_id || unit->player != NeutralHostilePlayer) {
+            unit->remove();
             continue;
         }
 
@@ -61,10 +72,10 @@ void UprisingGameMode::OnTick() {
         }
 
         if (!spawner.spawn_timer.HasStarted()) {
-            UnitId::Enum unit_to_train = GetNextUnitToTrain(spawner);
-            if (unit_to_train != UnitId::None) {
-                spawner.spawn_id = unit_to_train;
-                spawner.spawn_timer.Start(units_dat::time_cost[unit_to_train]);
+            UnitId::Enum unit_id = GetNextUnitToTrain(spawner);
+            if (unit_id != UnitId::None) {
+                spawner.spawn_id = unit_id;
+                spawner.spawn_timer.Start(GetSpawnerTrainTime(unit_id));
             } else {
                 for (UnitRef ref : spawner.units_to_send) {
                     Unit* wave_unit = ref.get();
@@ -102,7 +113,17 @@ void UprisingGameMode::OnTick() {
             pos_sum.y / wave.units.size(),
         };
 
-        Unit* target = g_unit_search.all().not_neutral().filter().sort_by_distance(center).first(); // TODO: consider only targets the wave can attack
+        Unit* target = g_unit_search.all().not_neutral().filter().filter_by([&wave](Unit* target) {
+            for (UnitRef attacker_ref : wave.units) {
+                Unit* attacker = attacker_ref.get();
+                assert(attacker); // since we cleared wave.units from empty refs
+
+                if (attacker->can_attack_target(target)) {
+                    return true;
+                }
+            }
+            return false;
+        }).sort_by_distance(center).first(); // TODO: consider only targets the wave can attack
         if (target) {
             for (UnitRef ref : wave.units) {
                 Unit* unit = ref.get();
@@ -127,13 +148,13 @@ void UprisingGameMode::OnUnitTick(Unit* unit) {
     if (unit->main_order_id == OrderId::AttackUnit) {
         if (!order_target || bw::distance_between(unit->position, order_target->position) > unit->get_sight_range() * 32 * 1.5) {
             unit->order_to_idle();
-        } else {
-            return;
         }
     }
 
     if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter().sort_by_distance(unit->position).first()) {
-        unit->order_to(OrderId::AttackUnit, target);
+        if (unit->main_order_id != OrderId::AttackUnit || target != order_target) {
+            unit->order_to(OrderId::AttackUnit, target);
+        }
     } else if (!unit_ext->timers[TimerTurningRoam] && !unit_ext->values[ValueUprisingInAttackWave]) {
         const auto target_pos = bw::random_polar_point(unit->position, 1 * 32);
         unit->order_to(OrderId::Move, target_pos);
@@ -141,28 +162,40 @@ void UprisingGameMode::OnUnitTick(Unit* unit) {
     }
 }
 
-void UprisingGameMode::CreateSpawner() {
-    auto spawner = bw::rand_one(s_spawner_types);
-    const auto position = pick_random_spawn_position(spawner.unit_id, 50);
-    if (!position) {
-        return;
+void UprisingCreator::Tick(std::vector<UprisingSpawner>& spawners) {
+    if (m_timer.HasElapsed()) {
+        if (m_infos.empty()) {
+            return; // They shouldn't be, but we don't wanna crash
+        }
+
+        const auto& info = bw::rand_one(m_infos);
+        const auto position = PickRandomSpawnPosition(info.unit_id, 100);
+        if (!position) {
+            return; // We don't want to restart the timer if spawn failed
+        }
+
+        Unit* unit = bw::create_unit_in_game((u16)info.unit_id, NeutralHostilePlayer, position->x, position->y);
+        if (!unit) {
+            return; // We don't want to restart the timer if spawn failed
+        }
+
+        UnitExt* unit_ext = get_unit_ext(unit);
+        unit_ext->values[ValueUprisingSpawner] = true;
+        unit_ext->custom_name = info.name;
+        if (unit->get_race() == RaceId::Zerg) {
+            bw::spawn_custom_creep(unit);
+        }
+
+        UprisingSpawner spawner{
+            .info = &info,
+            .spawner_unit = unit,
+        };
+        spawners.push_back(std::move(spawner));
+
+        bw::minimap_ping(unit->position.x, unit->position.y, 0);
+        unit->play_iscript_animation(IscriptAnimation::IsWorking);
     }
-
-    Unit* unit = bw::create_unit_in_game((u16)spawner.unit_id, NeutralHostilePlayer, position->x, position->y);
-    if (!unit) {
-        return;
+    if (!m_timer.IsRunning()) {
+        m_timer.Start(Map(g_elapsed_time_frames, 0, 40 * 60 * 24, m_default_timer, m_default_timer / 4, true) / bw::active_player_count());
     }
-
-    UnitExt* unit_ext = get_unit_ext(unit);
-    unit_ext->values[ValueUprisingSpawner] = true;
-    unit_ext->custom_name = spawner.name;
-    if (unit->get_race() == RaceId::Zerg) {
-        bw::spawn_custom_creep(unit);
-    }
-
-    spawner.spawner_unit = unit;
-    m_spawners.push_back(std::move(spawner));
-
-    bw::minimap_ping(unit->position.x, unit->position.y, 0);
-    unit->play_iscript_animation(IscriptAnimation::IsWorking);
 }

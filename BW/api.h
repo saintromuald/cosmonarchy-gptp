@@ -1,25 +1,24 @@
 // Contains wrappers for various SCBW internal functions, to be used in hook functions.
 
 #pragma once
-#include <BW/bwdata.h>
-#include <BW/enumerations.h>
-#include <string>
-#include <map>
-#include <math.h>
-#include <unit_search.h>
-#include <source_location>
-#include <numbers>
-#include "bwutils.h"
-
-#include "CM/cm.h"
-
-#include "utility.h"
-
 #define NOMINMAX
 #include <windows.h>
 
+#include <string>
+#include <map>
+#include <math.h>
+#include <source_location>
+#include <numbers>
 #include <filesystem>
 namespace fs = std::filesystem;
+
+#include "BW/bwdata.h"
+#include "BW/enumerations.h"
+#include "unit_search.h"
+#include "bwutils.h"
+#include "CM/cm.h"
+#include "utility.h"
+#include "math_utils.h"
 
 // Text colors
 #define BWTC_RESET		"\002"
@@ -31,10 +30,6 @@ namespace fs = std::filesystem;
 #define BWTC_WHITE		"\004"
 
 constexpr auto PI = std::numbers::pi_v<f64>;
-
-#define Min(a, b) ((a) < (b) ? a : b)
-#define Max(a, b) ((a) > (b) ? a : b)
-#define Clamp(x, min, max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
 
 #define HarvestTimer 36
 #define OrderQueueTimer 0
@@ -972,6 +967,7 @@ bool can_show_custom_ui();
 bool player_is_witness(u32 player);
 bool player_is_active(u32 player);
 std::string get_commit_hash();
+bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos);
 Point16 align_to_tile_grid(Point16 pos);
 u32 active_player_count();
 

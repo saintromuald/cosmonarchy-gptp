@@ -164,7 +164,7 @@ namespace hooks {
 				// Blackjack Wear and Tear: reduce movement speed based on missing health
 				const u32 health = unit->hitpoints / 256;
 				const u32 maxHealth = unit->get_max_hp_ingame();
-				const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+				const f64 multiplier = MathUtils::Map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 				speed *= multiplier;
 			} break;
 			case UnitId::ZergUltrokor: {

@@ -21,7 +21,7 @@ bool Timer::HasElapsed() const {
     return HasStarted() && g_elapsed_time_frames >= m_end_time;
 }
 
-std::optional<Point16> pick_random_spawn_position(UnitId::Enum unit_id, u32 samples) {
+std::optional<Point16> PickRandomSpawnPosition(UnitId::Enum unit_id, u32 samples) {
     const auto buildings = g_unit_search.all().not_neutral().filter(0, FilterBuilding);
     return SampleBest(
         [unit_id]() {
@@ -32,33 +32,28 @@ std::optional<Point16> pick_random_spawn_position(UnitId::Enum unit_id, u32 samp
 
             if (units_dat::base_property[unit_id] & UnitProperty::Building) {
                 position = bw::align_to_tile_grid(position);
-                // TODO: check placeability
             }
 
             return position;
         },
-        [unit_id, &buildings](const Point16& point) -> s32 {
+        [unit_id, &buildings](const Point16& position) -> s32 {
+            if (units_dat::base_property[unit_id] & UnitProperty::Building) {
+                if (!bw::check_building_collision(unit_id, NeutralHostilePlayer, position)) {
+                    return InvalidSample;
+                }
+            }
             if (!(units_dat::base_property[unit_id] & UnitProperty::Flyer)) {
-                if (!helper::can_unit_id_fit_at_xy(point.x, point.y, unit_id)) {
+                if (!helper::can_unit_id_fit_at_xy(position.x, position.y, unit_id)) {
                     return InvalidSample;
                 }
             }
             s32 score = 0;
-            for (u32 player = 0; player < PlayerLimit; player++) {
-                if (g_player_table[player].type != PlayerType::Human && g_player_table[player].type != PlayerType::Computer) {
-                    continue;
+            for (Unit* building : buildings) {
+                s32 distance = bw::distance_between(building->position, position);
+                if (distance <= 16 * 32) {
+                    return InvalidSample;
                 }
-
-                s32 player_score = 0;
-                const auto player_buildings = buildings.clone().owned_by(player);
-                for (Unit* building : buildings) {
-                    s32 distance = bw::distance_between(building->position, point);
-                    if (distance <= 16 * 32) {
-                        return InvalidSample;
-                    }
-                    player_score = std::min(player_score, distance);
-                }
-                score = std::min(score, player_score);
+                score = std::min(score, distance);
             }
             return score;
         },

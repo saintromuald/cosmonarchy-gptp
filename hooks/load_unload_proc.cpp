@@ -58,40 +58,6 @@ static void special_post_unload_unit(Unit* unit, Unit* transport) {
     apply_unload_delay(unit->subunit);
 }
 
-static bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos) {
-    bool is_zerg = units_dat::group_flags[unit_id].is_zerg;
-    Point16 size = units_dat::building_dimensions[unit_id];
-    u32 tx0 = (pos.x - size.x / 2) / 32;
-    u32 tx1 = (pos.x + size.x / 2) / 32;
-    u32 ty0 = (pos.y - size.y / 2) / 32;
-    u32 ty1 = (pos.y + size.y / 2) / 32;
-
-    for (u32 x = tx0; x <= tx1; x++) {
-        if (x >= g_map_tile_size->width) {
-            return false;
-        }
-        for (u32 y = ty0; y <= ty1; y++) {
-            if (y >= g_map_tile_size->height) {
-                return false;
-            }
-
-            const auto& tile = bw::get_tile_at_tile(x, y);
-            if (tile.always_unbuildable || tile.currently_occupied) {
-                return false;
-            }
-
-            if (!is_zerg) {
-                const auto tile_ext = get_tile_ext_at_tile(x, y);
-                if (!can_place_on_creep_tile(tile_ext, player)) {
-                    return false;
-                }
-            }
-        }
-    }
-
-    return true;
-}
-
 static bool fix_unload_pos(Unit* unit, Point16* pos) {
     Box16 valid_area = {};
     valid_area.left   = static_cast<s16>(unit->position.x - 32);
@@ -106,7 +72,7 @@ static bool fix_unload_pos(Unit* unit, Point16* pos) {
     if (units_dat::base_property[unit->id] & UnitProperty::Building) {
         *pos = bw::align_to_tile_grid(*pos);
         
-        if (!check_building_collision((UnitId::Enum)unit->id, unit->player, *pos)) {
+        if (!bw::check_building_collision((UnitId::Enum)unit->id, unit->player, *pos)) {
             return false;
         }
     }

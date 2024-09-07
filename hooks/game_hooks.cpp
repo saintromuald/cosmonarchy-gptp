@@ -1448,8 +1448,8 @@ namespace hooks {
 								s32 x_offset = bw::random() % width  - width  / 2;
 								s32 y_offset = bw::random() % height - height / 2;
 
-								x_offset = MathUtils::clamp(x_offset, -127, 128);
-								y_offset = MathUtils::clamp(y_offset, -127, 128);
+								x_offset = Clamp(x_offset, -127, 128);
+								y_offset = Clamp(y_offset, -127, 128);
 
 								Unit* final_target = unit;
 								if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
@@ -2758,8 +2758,8 @@ namespace hooks {
 				s32 x_offset = bw::random() % width - width / 2;
 				s32 y_offset = bw::random() % height - height / 2;
 
-				x_offset = MathUtils::clamp(x_offset, -127, 128);
-				y_offset = MathUtils::clamp(y_offset, -127, 128);
+				x_offset = Clamp(x_offset, -127, 128);
+				y_offset = Clamp(y_offset, -127, 128);
 
 				unit->sprite->create_overlay(ImageId::AddonWeldOverlay, x_offset, y_offset);
 				u32 sound_id = bw::rand_between(SoundId::AddonConstruction01, SoundId::AddonConstruction04);
@@ -3258,8 +3258,8 @@ namespace hooks {
 				s32 x_offset = bw::random() % width - width / 2;
 				s32 y_offset = bw::random() % height - height / 2;
 
-				x_offset = MathUtils::clamp(x_offset, -128, 127);
-				y_offset = MathUtils::clamp(y_offset, -128, 127);
+				x_offset = Clamp(x_offset, -128, 127);
+				y_offset = Clamp(y_offset, -128, 127);
 
 				Unit* final_unit = unit;
 				if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {

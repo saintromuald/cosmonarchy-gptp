@@ -40,5 +40,5 @@ auto SampleBest(GenFunc&& gen_func, ScoreFunc&& score_func, u32 max_samples, u32
     return result;
 }
 
-std::optional<Point16> pick_random_spawn_position(UnitId::Enum unit_id, u32 samples = 10);
+std::optional<Point16> PickRandomSpawnPosition(UnitId::Enum unit_id, u32 samples = 10);
 

@@ -4010,6 +4010,40 @@ std::string get_commit_hash() {
     return head;
 }
 
+bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos) {
+    bool is_zerg = units_dat::group_flags[unit_id].is_zerg;
+    Point16 size = units_dat::building_dimensions[unit_id];
+    u32 tx0 = (pos.x - size.x / 2) / 32;
+    u32 tx1 = (pos.x + size.x / 2) / 32;
+    u32 ty0 = (pos.y - size.y / 2) / 32;
+    u32 ty1 = (pos.y + size.y / 2) / 32;
+
+    for (u32 x = tx0; x <= tx1; x++) {
+        if (x >= g_map_tile_size->width) {
+            return false;
+        }
+        for (u32 y = ty0; y <= ty1; y++) {
+            if (y >= g_map_tile_size->height) {
+                return false;
+            }
+
+            const auto& tile = bw::get_tile_at_tile(x, y);
+            if (tile.always_unbuildable || tile.currently_occupied) {
+                return false;
+            }
+
+            if (!is_zerg && player < PlayerLimit) {
+                const auto tile_ext = get_tile_ext_at_tile(x, y);
+                if (!can_place_on_creep_tile(tile_ext, player)) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
 Point16 align_to_tile_grid(Point16 pos) {
     return {
         static_cast<u16>((pos.x + 16) / 32 * 32),

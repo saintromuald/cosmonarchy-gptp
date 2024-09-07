@@ -1,57 +1,29 @@
 #pragma once
-#include "logger.h"
 
-// TODO: replace those with non template versions, also remove the namespace, no need for it
+#define Min(a, b) ((a) < (b) ? a : b)
+#define Max(a, b) ((a) > (b) ? a : b)
+#define Clamp(x, min, max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
 
-static struct MathUtils
-{
-	template<typename T>
-	static T clamp(T value, T min, T max);
+inline namespace MathUtils {
 
-	template<typename T>
-	static f64 normalize(T value, T min, T max, bool doClamp = false);
+inline f64 Normalize(f64 value, f64 min, f64 max, bool do_clamp = false) {
+	f64 result = ((f64)value - (f64)min) / ((f64)max - (f64)min);
+	if (do_clamp) {
+		result = Clamp(result, 0.0, 1.0);
+	}
+	return result;
+}
 
-	template<typename T>
-	static T lerp(f64 fraction, T min, T max, bool doClamp = false);
+inline f64 Lerp(f64 fraction, f64 min, f64 max, bool do_clamp = false) {
+	f64 result = (fraction * (max - min)) + min;
+	if (do_clamp) {
+		result = Clamp(result, min, max);
+	}
+	return result;
+}
 
-	template<typename T, typename Y>
-	static Y map(T value, T sourceMin, T sourceMax, Y targetMin, Y targetMax, bool doClamp = false);
+inline f64 Map(f64 value, f64 smin, f64 smax, f64 tmin, f64 tmax, bool do_clamp = false) {
+	return Lerp(Normalize(value, smin, smax, do_clamp), tmin, tmax, false);
+}
+
 };
-
-template<typename T>
-T MathUtils::clamp(T value, T min, T max)
-{
-	if (min > max)
-	{
-		return MathUtils::clamp(value, max, min);
-	}
-	return value < min ? min : value > max ? max : value;
-}
-
-template<typename T>
-f64 MathUtils::normalize(T value, T min, T max, bool doClamp)
-{
-	f64 returnValue = ((f64)value - (f64)min) / ((f64)max - (f64)min);
-	if (doClamp)
-	{
-		returnValue = MathUtils::clamp(returnValue, 0.0, 1.0);
-	}
-	return returnValue;
-}
-
-template<typename T>
-T MathUtils::lerp(f64 fraction, T min, T max, bool doClamp)
-{
-	T returnValue = (fraction * (max - min)) + min;
-	if (doClamp)
-	{
-		returnValue = MathUtils::clamp(returnValue, min, max);
-	}
-	return returnValue;
-}
-
-template<typename T, typename Y>
-Y MathUtils::map(T value, T sourceMin, T sourceMax, Y targetMin, Y targetMax, bool doClamp)
-{
-	return (Y)MathUtils::lerp(MathUtils::normalize(value, sourceMin, sourceMax, doClamp), targetMin, targetMax);
-}
