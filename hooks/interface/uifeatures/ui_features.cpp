@@ -347,18 +347,15 @@ namespace hooks {
 	// Hooked to add features and color Vespene Ridges cyan. -Pr0nogo
 	void draw_minimap_unit_box(u32 player) { // 004A4650
 		u32 unit_id = UnitId::None;
-		char color_mod = 0;
 		char index_ref = 0;
-		if (*g_minimap_state) {
-			color_mod = g_palette_index_reference[20];
+		if (*g_minimap_state && player < PlayerLimit) {
 			if (bw::is_allied_to(g_local_nation_id, player)) {
 				index_ref = g_palette_index_reference[17];
 			} else {
-				index_ref = color_mod;
+				index_ref = g_palette_index_reference[20];
 			}
 		} else {
-			color_mod = g_player_minimap_colors[player];
-			index_ref = color_mod;
+			index_ref = g_player_minimap_colors[player];
 		}
 		Unit* unit = first_player_unit->unit[player];
 		if (unit) {
@@ -403,7 +400,7 @@ namespace hooks {
 				}
 			}
 			u32 color = g_palette_index_reference[25];
-			if (units_dat::base_property[unit_id] & UnitProperty::ResourceContainer) {
+			if (units_dat::base_property[unit_id] & UnitProperty::ResourceContainer || player == NeutralHostilePlayer) {
 				color = index_ref;
 			}
 
