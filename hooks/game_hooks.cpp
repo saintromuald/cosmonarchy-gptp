@@ -2198,7 +2198,7 @@ namespace hooks {
 
 						if (target->shields < unit->shields && target->shields != target->get_max_shields_raw()) {
 							shields -= target->heal_shields(shields, unit, false, false);
-							unit->shields -= shields;
+							unit->shields -= shields / 2;
 							unit->set_hitpoints(unit->hitpoints);
 							bw::update_on_damage_taken(unit, 0);
 							break;

@@ -727,8 +727,7 @@ namespace hooks
 	}
 
 	// Hooked to change the sound id for permacloaked units on initial creation. -Pr0nogo
-	u32 update_unit_strength_and_apply_default_orders(Unit* unit) // 0049FA40
-	{
+	u32 update_unit_strength_and_apply_default_orders(Unit* unit) { // 0049FA40
 		if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 			helper::increment_unit_scores(unit, -1);
 			unit->status |= UnitStatus::Completed;
