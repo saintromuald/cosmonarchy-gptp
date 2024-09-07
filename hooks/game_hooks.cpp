@@ -2183,7 +2183,7 @@ namespace hooks {
 					u32 shields = 6 * 256 / 24;
 					if (shields > unit->shields) {
 						shields = unit->shields;
-					} 
+					}
 
 					auto targets = g_unit_search
 						.radial(unit->position, 3 * 32)

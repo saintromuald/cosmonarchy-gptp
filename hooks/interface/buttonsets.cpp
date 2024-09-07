@@ -64,8 +64,6 @@ namespace hooks {
 		u8 count_eggs  = 0;
 		u8 count_zerg_production = 0;
 		u8 count_zergs = 0;
-		u8 count_mason_sources = 0;
-		u8 count_scribe_sources = 0;
 		u8 count_buildings = 0;
 		u8 count_attacking_buildings = 0;
 		u8 count_lifted_buildings = 0;
@@ -104,14 +102,6 @@ namespace hooks {
 
 				if (unit_id_is_zerg_production(selected->id)) {
 					count_zerg_production++;
-				}
-
-				if (selected->id == UnitId::TerranMinistry || selected->id == UnitId::TerranQuarry) {
-					count_mason_sources++;
-				}
-
-				if (selected->id == UnitId::ProtossNexus || selected->id == UnitId::ProtossEmbassy) {
-					count_scribe_sources++;
 				}
 
 				if (units_dat::group_flags[selected->id].is_zerg) {
@@ -172,10 +162,6 @@ namespace hooks {
 				*g_current_buttonset_id = UnitId::Buttons_GroupBurrower;
 			} else if (count_zerg_production == g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::ZergHachirosk;
-			} else if (count_mason_sources == g_client_selection_count) {
-				*g_current_buttonset_id = UnitId::Buttons_MixedMasonTraining;
-			} else if (count_scribe_sources == g_client_selection_count) {
-				*g_current_buttonset_id = UnitId::Buttons_MixedScribeTraining;
 			} else if (count_lifted_buildings) {
 				*g_current_buttonset_id = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_attacking_buildings) {
@@ -1220,15 +1206,8 @@ namespace hooks {
 							} break;
 							case UnitId::TerranQuarry: {
 								switch (current_button->requirement_var) {
-									case UnitId::TerranMason: {
-										if (!unit_ext->values[ValueAddonInactive]) {
-											current_button_state = Button_State::Enabled;
-										} else {
-											current_button_state = Button_State::Invisible;
-										}
-									} break;
 									case UnitId::TerranTalos: {
-										if (!unit_ext->values[ValueAddonInactive] && player_has_completed_landed_unit_id(unit->player, UnitId::TerranAtlas)) {
+										if (!unit_ext->values[ValueAddonInactive]) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Invisible;
@@ -1306,8 +1285,7 @@ namespace hooks {
 								}
 							} break;
 							case UnitId::ProtossEmbassy: {
-								if (current_button->requirement_var == UnitId::ProtossScribe
-								||	current_button->requirement_var == UnitId::ProtossArtisan
+								if (current_button->requirement_var == UnitId::ProtossArtisan
 								||  current_button->requirement_var == UnitId::ProtossEnvoy
 								||  current_button->requirement_var == UnitId::ProtossWitness) {
 									current_button_state = Button_State::Enabled;

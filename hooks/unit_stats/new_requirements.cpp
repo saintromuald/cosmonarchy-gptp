@@ -134,16 +134,10 @@ namespace hooks {
 		{
 			switch (unit_id)
 			{
-				case UnitId::TerranMason:
+				case UnitId::TerranTalos:
 				{
 					return true;
 				} break;
-				case UnitId::TerranTalos:
-				{
-					if (TierUnlocked[RaceId::Terran][Tier2]) {
-						return true;
-					}
-				}
 			}
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranTreasury))
@@ -1465,16 +1459,9 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::TerranMason:
-					{
-						return TECH_ACTIVE;
-					}
 					case UnitId::TerranTalos:
 					{
-						if (TierUnlocked[RaceId::Terran][Tier2]) {
-							return TECH_ACTIVE;
-						}
-						return TECH_LOCKED;
+						return TECH_ACTIVE;
 					}
 				}
 			} break;
@@ -2046,7 +2033,6 @@ namespace hooks {
 			{
 				switch (unit_id)
 				{
-					case UnitId::ProtossScribe:
 					case UnitId::ProtossArtisan:
 					case UnitId::ProtossEnvoy:
 					case UnitId::ProtossWitness:
