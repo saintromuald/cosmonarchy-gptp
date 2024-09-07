@@ -226,7 +226,7 @@ namespace hooks {
 				u32 energy_to_spend = std::min<u32>(unit->energy, data.damage);
                 unit->spend_energy(energy_to_spend);
                 bw::create_shield_overlay(data.target, data.direction);
-                bw::play_sound(unit, {SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03});
+                bw::play_sound({SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03}, unit);
                 play_attack_notification(unit);
                 bw::reveal_attacker(data.attacker, unit);
 
@@ -373,7 +373,7 @@ namespace hooks {
 		data.target->ground_strength = helper::get_unit_strength(data.target, true);
 
 		if (data.weapon_id == WeaponId::Lockdown) {
-			bw::play_sound(weapon_damage_current_bullet->position, SoundId::GoskaGrenadeImpact);
+			bw::play_sound(SoundId::GoskaGrenadeImpact, weapon_damage_current_bullet->position);
 		}
 	}
 

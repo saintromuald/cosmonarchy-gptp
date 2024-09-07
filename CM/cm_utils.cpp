@@ -298,10 +298,10 @@ bool play_unit_banter(Unit* victim, u16 speaker_unit_id) {
     // Play banter
     switch (speaker_unit_id) {
         case UnitId::ProtossHierophant: {
-            bw::play_sound(speaker, {SoundId::HierophantBanterB01, SoundId::HierophantBanterB03});
+            bw::play_sound({SoundId::HierophantBanterB01, SoundId::HierophantBanterB03}, speaker);
         } break;
         case UnitId::ProtossPatriarch: {
-            bw::play_sound(speaker, {SoundId::PatriarchBanter01, SoundId::PatriarchBanter04});
+            bw::play_sound({SoundId::PatriarchBanter01, SoundId::PatriarchBanter04}, speaker);
         } break;
     }
 

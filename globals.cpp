@@ -115,7 +115,7 @@ EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, 
 	});
 	const EffectInfo& effect_info = get_effect_info(id);
 	if (effect_info.start_sound) {
-		effect_field.playing_sound = bw::play_sound(effect_field.position, effect_info.start_sound);
+		effect_field.playing_sound = bw::play_sound(effect_info.start_sound, effect_field.position);
 	}
 	return effect_field.ref;
 }
@@ -144,7 +144,7 @@ EffectField* IquareGlobals::get_effect(EffectRef ref) {
 static void tick_effect(EffectField& effect) {
 	const EffectInfo& effect_info = get_effect_info(effect.id);
     if (effect_info.loop_sound && !effect.playing_sound) {
-        effect.playing_sound = bw::play_looping_sound(effect.position, effect_info.loop_sound);
+        effect.playing_sound = bw::play_looping_sound(effect_info.loop_sound, effect.position);
     }
 
 	if (effect.current_time && effect.sprite_id != SpriteId::None) {

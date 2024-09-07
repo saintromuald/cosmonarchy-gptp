@@ -6,7 +6,7 @@
 
 inline namespace MathUtils {
 
-inline f64 Normalize(f64 value, f64 min, f64 max, bool do_clamp = false) {
+constexpr f64 Normalize(f64 value, f64 min, f64 max, bool do_clamp = false) {
 	f64 result = ((f64)value - (f64)min) / ((f64)max - (f64)min);
 	if (do_clamp) {
 		result = Clamp(result, 0.0, 1.0);
@@ -14,7 +14,7 @@ inline f64 Normalize(f64 value, f64 min, f64 max, bool do_clamp = false) {
 	return result;
 }
 
-inline f64 Lerp(f64 fraction, f64 min, f64 max, bool do_clamp = false) {
+constexpr f64 Lerp(f64 fraction, f64 min, f64 max, bool do_clamp = false) {
 	f64 result = (fraction * (max - min)) + min;
 	if (do_clamp) {
 		result = Clamp(result, min, max);
@@ -22,7 +22,7 @@ inline f64 Lerp(f64 fraction, f64 min, f64 max, bool do_clamp = false) {
 	return result;
 }
 
-inline f64 Map(f64 value, f64 smin, f64 smax, f64 tmin, f64 tmax, bool do_clamp = false) {
+constexpr f64 Map(f64 value, f64 smin, f64 smax, f64 tmin, f64 tmax, bool do_clamp = false) {
 	return Lerp(Normalize(value, smin, smax, do_clamp), tmin, tmax, false);
 }
 

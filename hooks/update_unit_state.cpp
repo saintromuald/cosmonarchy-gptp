@@ -192,14 +192,14 @@ namespace hooks
 								unit_ext->values[ValueWyvernWeaponCharging] = false;
 
 								s32 direction = bw::get_angle(x, y, target->get_x(), target->get_y());
-								bw::play_sound(unit->position, {SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02});
+								bw::play_sound({SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02}, unit);
 								bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
 								unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 							}
 						} else {
 							unit_ext->values[ValueWyvernWeaponCharging] = true;
 							unit_ext->timers[TimerWyvernWeaponCharge] = 12;
-							bw::play_sound(unit->position, {SoundId::WyvernWeaponCharge01, SoundId::WyvernWeaponCharge03});
+							bw::play_sound({SoundId::WyvernWeaponCharge01, SoundId::WyvernWeaponCharge03}, unit);
 						}
 					}
 				}
@@ -239,9 +239,16 @@ namespace hooks
 					} break;
 				}
 
-				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > 2 * 24 && !unit->is_frozen()) {
-					bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
-					unit->heal_shields((10 * 256 / 24) * (1 + (has_crucible * 0.25)), unit, false);
+				static constexpr u32 start_time = 2 * 24;
+				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > start_time && !unit->is_frozen()) {
+					static constexpr u32 start_heal_amount = (10 * 256 / 24);
+					static constexpr u32 end_heal_amount = (2 * 256 / 24);
+					u32 heal_amount = Map(unit_ext->shield_regen_timer, start_time, start_time + 2 * 24, start_heal_amount, end_heal_amount, true);
+					if (!unit_ext->unit_vectors[UnitVectorCrucibles].empty()) {
+                        heal_amount *= 1.25;
+					}
+
+					unit->heal_shields(heal_amount, unit, false);
 					if (unit->shields > max_shields) {
 						if (unit->shields > max_shields) {
 							unit->shields = max_shields;
@@ -253,7 +260,7 @@ namespace hooks
 
 					if (!unit->get_overlay(overlay_id)) {
 						bw::add_unit_overlay(unit, overlay_id);
-						helper::play_sound_from_unit(SoundId::FlashShieldingStart, unit, 1, 0);
+						bw::play_sound(SoundId::FlashShieldingStart, unit);
 					}
 				} else if (unit->get_overlay(overlay_id)) {
 					bw::remove_unit_overlay(unit, overlay_id);

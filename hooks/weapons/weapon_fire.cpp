@@ -770,7 +770,7 @@ namespace hooks {
 				g_iquare_globals->add_bullet_multihit(bullet, target);
 				bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
 				hooks::weapon_bullet_hit(bullet, target, 1);
-				bw::play_sound(target->position, SoundId::RamessesWeaponhit01);
+				bw::play_sound(SoundId::RamessesWeaponhit01, target);
 			} break;
 			case WeaponId::WyvernJacksonCannon:
 			case WeaponId::MagnetarNewtonianShockCannon:

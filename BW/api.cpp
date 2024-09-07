@@ -2974,12 +2974,12 @@ PlayingSound play_sound(SoundSet sound_set) {
 	return play_sound_ext(sound_id, {.min_volume = sfx_dat::volume[sound_id]});
 }
 
-PlayingSound play_sound(Unit* unit, SoundSet sound_set) {
+PlayingSound play_sound(SoundSet sound_set, Unit* unit) {
 	SoundId::Enum sound_id = sound_set.rand();
 	return play_sound_ext(sound_id, {.position = unit->position, .min_volume = sfx_dat::volume[sound_id]});
 }
 
-PlayingSound play_sound(Point16 pos, SoundSet sound_set) {
+PlayingSound play_sound(SoundSet sound_set, Point16 pos) {
 	SoundId::Enum sound_id = sound_set.rand();
 	return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id]});
 }
@@ -2989,12 +2989,12 @@ PlayingSound play_sound_local(SoundSet sound_set) {
 	return play_sound_ext(sound_id, {.min_volume = sfx_dat::volume[sound_id]});
 }
 
-PlayingSound play_sound_local(Unit* unit, SoundSet sound_set) {
+PlayingSound play_sound_local(SoundSet sound_set, Unit* unit) {
 	SoundId::Enum sound_id = sound_set.rand_local();
 	return play_sound_ext(sound_id, {.position = unit->position, .min_volume = sfx_dat::volume[sound_id]});
 }
 
-PlayingSound play_sound_local(Point16 pos, SoundSet sound_set) {
+PlayingSound play_sound_local(SoundSet sound_set, Point16 pos) {
 	SoundId::Enum sound_id = sound_set.rand_local();
 	return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id]});
 }
@@ -3004,12 +3004,12 @@ PlayingSound play_looping_sound(SoundSet sound_set) {
 	return play_sound_ext(sound_id, {.min_volume = sfx_dat::volume[sound_id], .looping = true});
 }
 
-PlayingSound play_looping_sound(Unit* unit, SoundSet sound_set) {
+PlayingSound play_looping_sound(SoundSet sound_set, Unit* unit) {
 	SoundId::Enum sound_id = sound_set.rand();
 	return play_sound_ext(sound_id, {.position = unit->position, .min_volume = sfx_dat::volume[sound_id], .looping = true});
 }
 
-PlayingSound play_looping_sound(Point16 pos, SoundSet sound_set) {
+PlayingSound play_looping_sound(SoundSet sound_set, Point16 pos) {
 	SoundId::Enum sound_id = sound_set.rand();
 	return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id], .looping = true});
 }
@@ -3019,12 +3019,12 @@ PlayingSound play_looping_sound_local(SoundSet sound_set) {
 	return play_sound_ext(sound_id, {.min_volume = sfx_dat::volume[sound_id], .looping = true});
 }
 
-PlayingSound play_looping_sound_local(Unit* unit, SoundSet sound_set) {
+PlayingSound play_looping_sound_local(SoundSet sound_set, Unit* unit) {
 	SoundId::Enum sound_id = sound_set.rand_local();
 	return play_sound_ext(sound_id, {.position = unit->position, .min_volume = sfx_dat::volume[sound_id], .looping = true});
 }
 
-PlayingSound play_looping_sound_local(Point16 pos, SoundSet sound_set) {
+PlayingSound play_looping_sound_local(SoundSet sound_set, Point16 pos) {
 	SoundId::Enum sound_id = sound_set.rand_local();
 	return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id], .looping = true});
 }

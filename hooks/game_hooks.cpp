@@ -2441,7 +2441,7 @@ namespace hooks {
 				u32 skryspawn_timer = unit_ext->timers[TimerSkryspawn];
 				if (skryspawn_timer % 12 == 11) {
 					bw::add_unit_overlay(unit, ImageId::DevourerDeath);
-					bw::play_sound(unit->position, SoundId::Zerg_AVENGER_ZAvRdy00_WAV);
+					bw::play_sound(SoundId::Zerg_AVENGER_ZAvRdy00_WAV, unit);
 					bw::create_unit_from_ability(UnitId::ZergSkryrokor, 1, unit->player, unit->position, unit);
 				} else if (skryspawn_timer == 1) {
 					unit->unfreeze();
