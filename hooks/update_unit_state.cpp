@@ -241,9 +241,10 @@ namespace hooks
 
 				static constexpr u32 start_time = 2 * 24;
 				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > start_time && !unit->is_frozen()) {
-					static constexpr u32 start_heal_amount = (10 * 256 / 24);
-					static constexpr u32 end_heal_amount = (2 * 256 / 24);
-					u32 heal_amount = Map(unit_ext->shield_regen_timer, start_time, start_time + 2 * 24, start_heal_amount, end_heal_amount, true);
+					static constexpr u32 start_heal_amount = 10 * 256 / 24;
+					static constexpr u32 end_heal_amount = 2 * 256 / 24;
+					static constexpr u32 change_duration = 5 * 24;
+					u32 heal_amount = Map(unit_ext->shield_regen_timer, start_time, start_time + change_duration, start_heal_amount, end_heal_amount, true);
 					if (!unit_ext->unit_vectors[UnitVectorCrucibles].empty()) {
                         heal_amount *= 1.25;
 					}
