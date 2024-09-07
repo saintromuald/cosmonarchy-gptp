@@ -1559,28 +1559,27 @@ namespace hooks {
 				target_pos.x = (s32)(parent->position.x + ((max_range * g_angle_distance[bullet->current_direction_1].x) >> 16));
 				target_pos.y = (s32)(parent->position.y + ((max_range * g_angle_distance[bullet->current_direction_1].y) >> 16));
 				if (target_pos.x < 0) {
-					target_pos.y = (parent->position.x / (parent->position.x - target_pos.x)) * (target_pos.y - parent->position.y) + parent->position.y;
+					s32 parent_pos_x = parent->position.x << 16;
+					target_pos.y = (((parent_pos_x / (parent->position.x - target_pos.x)) * (target_pos.y - parent->position.y)) >> 16) + parent->position.y;
 					target_pos.x = 0;
-				} else if (target_pos.x >= g_map_width) {
-					/* This crashes (divide by zero)
-					s32 parent_pos_x = -(parent->position.x - g_map_width);
-					target_pos.y = (parent_pos_x / (parent_pos_x - -(target_pos.x - g_map_width))) * (target_pos.y - parent->position.y) + parent->position.y;
-					target_pos.x = g_map_width - 1;
-					*/
+				} else if (target_pos.x >= g_map_width_pixels) {
+					s32 parent_pos_x = g_map_width_pixels - parent->position.x;
+					target_pos.y = (((parent_pos_x << 16) / (parent_pos_x - (g_map_width_pixels - target_pos.x)) * (target_pos.y - parent->position.y)) >> 16) + parent->position.y;
+					target_pos.x = g_map_width_pixels - 1;
 				}
-
 				if (target_pos.y < 0) {
-					target_pos.x = (parent->position.y / (parent->position.y - target_pos.y)) * (target_pos.x - parent->position.x) + parent->position.x;
+					s32 parent_pos_y = parent->position.y << 16;
+					target_pos.x = (((parent_pos_y / (parent->position.y - target_pos.y)) * (target_pos.x - parent->position.x)) >> 16) + parent->position.x;
 					target_pos.y = 0;
-				} else if (target_pos.y >= g_map_height) {
-					/* This crashes (divide by zero)
-					s32 parent_pos_y = -(parent->position.y - g_map_height);
-					target_pos.x = (parent_pos_y / (parent_pos_y - -(target_pos.y - g_map_height))) * (target_pos.x - parent->position.x) + parent->position.x;
-					target_pos.y = g_map_height - 1;
-					*/
+				} else if (target_pos.y >= g_map_height_pixels) {
+					s32 parent_pos_y = g_map_height_pixels - parent->position.y;
+					target_pos.x = (((parent_pos_y << 16) / (parent_pos_y - (g_map_height_pixels - target_pos.y)) * (target_pos.x - parent->position.x)) >> 16) + parent->position.x;
+					target_pos.y = g_map_height_pixels - 1;
 				}
 				bullet->attack_target.pt.x = target_pos.x;
 				bullet->attack_target.pt.y = target_pos.y;
+				unit_ext->values[ValueMissileReturnX] = target_pos.x;
+				unit_ext->values[ValueMissileReturnY] = target_pos.y;
 				helper::attack_fly_to_target(bullet, target_pos.x, target_pos.y);
 				return 1;
 			}

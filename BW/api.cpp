@@ -3718,16 +3718,13 @@ u32 get_decloak_sound_id(Unit* unit) {
 	}
 
 	switch (unit->get_race()) {
-		case RaceId::Terran:
-		{
+		case RaceId::Terran: {
 			return SoundId::CloakTerranOff;
 		}
-		case RaceId::Protoss:
-		{
+		case RaceId::Protoss: {
 			return SoundId::Terran_PHOENIX_TPhClo01_WAV;
 		}
-		default:
-		{
+		default: {
 			return SoundId::Terran_PHOENIX_TPhClo01_WAV;
 		}
 	}
@@ -3738,17 +3735,9 @@ void launch_return_missile(Unit* unit, u32 weapon_id) {
 	Point16 position = unit->position;
 	Point16 spr_position = unit->sprite->position;
 	Vec32 pos = {(s32) unit_ext->values[ValueMissileReturnX], (s32) unit_ext->values[ValueMissileReturnY]};
-	if (pos.x < 0) {
-		pos.y = (1 - abs(pos.x / (pos.x - (s32) position.x))) * (pos.y - (s32) position.y) + (s32) position.y;
-		pos.x = 0;
-	}
-	if (pos.y < 0) {
-		pos.x = (1 - abs(pos.y / (pos.y - (s32) position.y))) * (pos.x - (s32) position.x) + (s32) position.x;
-		pos.y = 0;
-	}
 	// This currently stores the old value so the function call can overwrite them safely. It's stupid. -Pr0nogo
-	unit->position.x = (u16) pos.x;
-	unit->position.y = (u16) pos.y;
+	unit->position.x = (u16)pos.x;
+	unit->position.y = (u16)pos.y;
 	unit->sprite->position = unit->position;
 	bw::artificial_bullet_from(weapon_id, unit->player, unit, 0, spr_position);
 	u32 sound_id = SoundId::LakiziliskProjectileReturn;
