@@ -3203,6 +3203,9 @@ GameKind get_game_kind() {
 
 		case GameType::Embraced:
 			return GameKind_Embraced;
+
+		case GameType::Debug:
+			return GameKind_Debug;
 	}
 	return GameKind_Invalid;
 }
