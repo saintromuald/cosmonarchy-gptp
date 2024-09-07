@@ -1562,18 +1562,22 @@ namespace hooks {
 					target_pos.y = (parent->position.x / (parent->position.x - target_pos.x)) * (target_pos.y - parent->position.y) + parent->position.y;
 					target_pos.x = 0;
 				} else if (target_pos.x >= g_map_width) {
+					/* This crashes (divide by zero)
 					s32 parent_pos_x = -(parent->position.x - g_map_width);
 					target_pos.y = (parent_pos_x / (parent_pos_x - -(target_pos.x - g_map_width))) * (target_pos.y - parent->position.y) + parent->position.y;
 					target_pos.x = g_map_width - 1;
+					*/
 				}
 
 				if (target_pos.y < 0) {
 					target_pos.x = (parent->position.y / (parent->position.y - target_pos.y)) * (target_pos.x - parent->position.x) + parent->position.x;
 					target_pos.y = 0;
 				} else if (target_pos.y >= g_map_height) {
+					/* This crashes (divide by zero)
 					s32 parent_pos_y = -(parent->position.y - g_map_height);
 					target_pos.x = (parent_pos_y / (parent_pos_y - -(target_pos.y - g_map_height))) * (target_pos.x - parent->position.x) + parent->position.x;
 					target_pos.y = g_map_height - 1;
+					*/
 				}
 				bullet->attack_target.pt.x = target_pos.x;
 				bullet->attack_target.pt.y = target_pos.y;
