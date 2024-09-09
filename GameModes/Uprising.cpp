@@ -4,6 +4,7 @@
 #include "hooks/limits/sfx_extender.h"
 #include "ai_layouts.h"
 #include "maths.h"
+#include "hooks/tactical_ai.h"
 
 // Originally Pr0 proposed camps expanding with more structures, defenses, etc
 // might be something to consider for expanding the current attack wave methodology.
@@ -143,6 +144,9 @@ void UprisingGameMode::OnUnitTick(Unit* unit) {
         return;
     }
     UnitExt* unit_ext = get_unit_ext(unit);
+    if (unit_ext->timers[TimerAI_KitingActive]) {
+        return;
+    }
 
     Unit* order_target = unit->order_target.unit;
     if (unit->main_order_id == OrderId::AttackUnit) {
@@ -151,7 +155,10 @@ void UprisingGameMode::OnUnitTick(Unit* unit) {
         }
     }
 
-    if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter().sort_by_distance(unit->position).first()) {
+    // Note: this targeting is a fallback for when kiting code wouldn't work
+    if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter().sort([unit](Unit* target) {
+        return -get_targeting_cost(unit, target);
+    }).first()) {
         if (unit->main_order_id != OrderId::AttackUnit || target != order_target) {
             unit->order_to(OrderId::AttackUnit, target);
         }

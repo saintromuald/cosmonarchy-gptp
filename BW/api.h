@@ -511,10 +511,14 @@ inline bool in_replay_or_witness() {
 /// Checks whether @p playerB is recognized by @p playerA as an ally.
 /// Warning: The opposite may not necessarily be true!
 inline bool is_allied_to(u8 a, u8 b) {
+	if (a == NeutralHostilePlayer && b == NeutralHostilePlayer) return true;
+	if (a == NeutralHostilePlayer || b == NeutralHostilePlayer) return false;
 	return player_alliance[a].flags[b];
 }
 
 inline bool is_vision_allied_to(u8 a, u8 b) {
+	if (a == NeutralHostilePlayer && b == NeutralHostilePlayer) return true;
+	if (a == NeutralHostilePlayer || b == NeutralHostilePlayer) return false;
 	return player_vision->flags[a] & (1 << b);
 }
 

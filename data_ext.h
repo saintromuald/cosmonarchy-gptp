@@ -364,7 +364,8 @@ enum ExtTimerId {
 	TimerAI_KitingCooldown,
 	TimerAI_KitingLeash,
 	TimerAI_KitingSync,
-	TimerAI_KitingCombat,
+	TimerAI_KitingWorkerCombat,
+	TimerAI_KitingActive,
 	TimerAI_Patience,
 
 	TimerCount,
@@ -452,7 +453,7 @@ struct UnitExt {
 	Point16					terran_build_pos;
 	Point16					recall_pos;
 
-	u32						ai_timer_avoid_targeting[PlayerLimit];
+	u32						ai_timer_avoid_targeting[FullPlayerLimit];
 
 	UnitRef					loaded_unit[TransportCap];
 

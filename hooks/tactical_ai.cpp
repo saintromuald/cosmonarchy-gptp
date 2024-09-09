@@ -207,12 +207,12 @@ static u32 get_dps_against(Unit* source, Unit* target) {
 	return 0;
 }
 
-f32 get_furia_damage_potential(Unit* unit) {
+static f32 get_furia_damage_potential(Unit* unit) {
 	f32 furia_damage_potential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
 	return furia_damage_potential *= cosmonarchy_unit_count(unit, unit->position, 6 * 32, Flags::Enemy, {});
 }
 
-static s32 get_target_cost(Unit* source, Unit* target) {
+s32 get_targeting_cost(Unit* source, Unit* target) {
 	// Value attacking wounded units first
 	s32 cost = target->get_current_life_ingame() / 10;
 
@@ -458,7 +458,7 @@ static bool should_kite_back_against(Unit* unit, Unit* target) {
 
 static bool unit_in_combat(Unit* unit, bool strict) {
 	UnitExt* unit_ext = get_unit_ext(unit);
-	if (unit_ext->timers[TimerAI_KitingCombat]
+	if (unit_ext->timers[TimerAI_KitingWorkerCombat]
 		|| unit_ext->damage_taken_timer < 4 * 24
 		|| unit_ext->damage_dealt_timer < 4 * 24
 		|| unit->main_order_id == OrderId::Patrol
@@ -637,7 +637,11 @@ static bool unit_kiting_can_attack(Unit* unit) {
 	return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.25;
 }
 
-void kiting_ai(Unit* unit, UnitExt* unit_ext) {
+static void kiting_mark_active(UnitExt* unit_ext) {
+	unit_ext->timers[TimerAI_KitingActive] = 4 * 24;
+}
+
+static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 	if (unit_could_kite(unit) && unit_ext->timers[TimerAI_KitingLeash]) {
 		bool should_leash = unit_ext->timers[TimerAI_KitingLeash] == 1;
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker && bw::distance_between(unit->position, unit_ext->ai_kiting_origin) > GroupRadius) {
@@ -647,11 +651,12 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			unit_ext->values[ValueAI_PreventTargeting] = 0;
 			unit_ext->timers[TimerAI_KitingCooldown] = 1 * 24;
 			unit->order_to(OrderId::Move, unit_ext->ai_kiting_origin.x, unit_ext->ai_kiting_origin.y);
+			unit_ext->timers[TimerAI_KitingActive] = 0;
 		}
 	}
 
 	if (unit_could_kite(unit)) {
-		if (units_dat::base_property[unit->id] & UnitProperty::Worker && !unit_ext->timers[TimerAI_KitingCombat]) {
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker && !unit_ext->timers[TimerAI_KitingWorkerCombat]) {
 			u32 allied_combat_strength = 0;
 			for (Unit* ally : g_unit_search.square_ex(unit, GroupRadius, FilterAlly | FilterCanAttackOrCast)) {
 				if (unit_in_combat(ally, true)) {
@@ -684,6 +689,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 		}
 
 		if (unit_kiting_can_attack(unit)) {
+            unit_ext->timers[TimerAI_KitingActive] = 24 * 24;
 			if (get_kiter_type(unit->id) != KiterType_TargetingOnly) {
 				if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 					if (!unit_ext->timers[TimerAI_KitingLeash]) {
@@ -720,7 +726,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 					}
 				}
 
-				s32 cost = get_target_cost(unit, target);
+				s32 cost = get_targeting_cost(unit, target);
 				if (cost < best_cost) {
 					best_target = target;
 					best_cost = cost;
@@ -728,6 +734,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			});
 
 			if (best_target) {
+				kiting_mark_active(unit_ext);
 				unit_ext->timers[TimerAI_KitingCooldown] = 2;
 				KITE_DEBUG("%s: attack", unit->get_name());
 
@@ -737,7 +744,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				} else {
 					unit_ext->values[ValueAI_PreventTargeting] = 1;
 				}
-				unit_ext->timers[TimerAI_KitingCombat] = 4 * 24;
+				unit_ext->timers[TimerAI_KitingWorkerCombat] = 4 * 24;
 				if (unit->main_order_id != attack_order_id || unit->order_target.unit != best_target) {
 					unit->order_to(attack_order_id, best_target);
 					if (unit->subunit) {
@@ -784,6 +791,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 			sync = true;
 
 			if (sync) {
+				kiting_mark_active(unit_ext);
 				KitePositions result = get_kite_positions(unit);
 
 				if (!result.targets_found) {			
@@ -815,7 +823,7 @@ void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 				unit_ext->timers[TimerAI_KitingLeash] = 0;
 				unit_ext->values[ValueAI_KitingSignal] = 0;
 				unit_ext->values[ValueAI_PreventTargeting] = 0;
-				unit_ext->timers[TimerAI_KitingCombat] = 4 * 24;
+				unit_ext->timers[TimerAI_KitingWorkerCombat] = 4 * 24;
 
 				bool should_kite_back = result.backward_found;
 				bool prefer_kiting_forward = !unit_has_min_range(unit) && result.forward_found;
@@ -914,7 +922,21 @@ static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 	return cost;
 }
 
+static bool unit_has_tactical_ai(Unit* unit) {
+	if (g_player_table[unit->player].type == PlayerType::Computer) {
+		return true;
+	}
+	if (unit->player == NeutralHostilePlayer && bw::get_game_kind() == GameKind_Uprising) {
+		return true;
+	}
+	return false;
+}
+
 void tactical_ai(Unit* unit, UnitExt* unit_ext) {
+	if (helper::is_unit_loaded(unit)) {
+		return;
+	}
+
 	if (unit_id_is_garrison(unit->id) && !unit_ext->timers[TimerAI_GenericAbilityCooldown]) {
 		const u32 bunker_capacity = units_dat::space_provided[unit->id];
 
@@ -931,7 +953,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			for (u32 i = 0; i < allies.count() && counter <= bunker_capacity; ++i) {
 				Unit* target = allies[i];
 
-				if (target->unit_ai && helper::can_enter_transport(unit, target)
+				if (unit_has_tactical_ai(target) && helper::can_enter_transport(unit, target)
 					&& !is_melee_attacker(target->id) && !(units_dat::base_property[unit->id] & UnitProperty::Worker)) {
 					target->order_to(OrderId::EnterTransport, unit);
 					counter += units_dat::space_required[target->id];
@@ -951,9 +973,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 		}
 	}
 
-	if (unit->unit_ai && !helper::is_unit_loaded(unit) &&
-		g_player_table[unit->player].type != PlayerType::Human &&
-		g_player_table[unit->player].type != PlayerType::HumanDefeated) {
+	if (unit_has_tactical_ai(unit)) {
 		kiting_ai(unit, unit_ext);
 
 		if (unit->id == UnitId::TerranApostle) {
