@@ -472,13 +472,23 @@ VolumePan calculate_volume_pan(const PlaySoundSettings& settings) {
 	if (settings.position) {
         result.volume = helper::get_sfx_volume_from_screen_distance(settings.position.x, settings.position.y);
 		result.pan = helper::get_sfx_pan_from_screen_distance(settings.position.x);
-	};
+
+		const auto& tile = bw::get_tile_at_coords(settings.position);
+		if (tile.visibility_flags & (u8)(1 << (u32)g_local_nation_id)) {
+            result.volume = DSBVOLUME_MIN;
+			return result;
+		}
+	}
 	result.volume = std::max<s32>(result.volume, settings.min_volume);
     result.volume *= g_options_list->sfx;
     if (g_use_quiet_sounds) {
         result.volume /= 5;
     }
-    result.volume = g_big_volume_array[result.volume / 100];
+	if (result.volume > 0) {
+		result.volume = g_big_volume_array[result.volume / 100];
+	} else {
+		result.volume = DSBVOLUME_MIN;
+	}
 	return result;
 }
 
