@@ -31,7 +31,7 @@ namespace hooks {
 
 		// Protoss Cornerstone: Avenge - speed
 		if (unit_ext->timers[TimerAvenge] > 1) {
-			speed *= 1.25;
+			speed *= 1.33;
 		}
 
 		// Lobotomy Mine - slow
@@ -227,6 +227,7 @@ namespace hooks {
 			case UnitId::TerranHeracles:
 			case UnitId::TerranMatadorTankMode:
 			case UnitId::ProtossSycophant:
+			case UnitId::ZergZethrokor:
 			case UnitId::ZergAxitrilisk: {
 				speed *= 1.25;
 			} break;
@@ -234,8 +235,7 @@ namespace hooks {
 				speed *= 1.3;
 			} break;
 			case UnitId::TerranStriga:
-			case UnitId::ProtossZealot:
-			case UnitId::ZergZethrokor: {
+			case UnitId::ProtossZealot: {
 				speed *= 1.35;
 			} break;
 			case UnitId::ProtossAmaranth: {

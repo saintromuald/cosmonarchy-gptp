@@ -53,14 +53,11 @@ namespace hooks {
 
 		// Ensnare
 		if (unit->ensnare_timer) {
-			switch (unit_ext->values[ValueEnsnareFactor])
-			{
-				case 1:
-				{
+			switch (unit_ext->values[ValueEnsnareFactor]) {
+				case 1: {
 					cooldown += cooldown / 3;
 				} break;
-				case 2:
-				{
+				case 2: {
 					cooldown += cooldown / 1.5;
 				} break;
 			}
@@ -75,7 +72,7 @@ namespace hooks {
 
 		// Protoss Cornerstone: Ascend - attack cooldown
 		if (unit_ext->timers[TimerAscend]) {
-			cooldown /= 1.25;
+			cooldown /= 1.33;
 		}
 
 		switch (unit->id) {

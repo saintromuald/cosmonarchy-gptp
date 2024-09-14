@@ -4,7 +4,7 @@ namespace WeaponId {
 	enum Enum : u32 {
 		MaverickGaussRifle = 0x00,
 		GaussRifle_JimRaynor_Marine = 0x01,
-		EidolonCanisterRifle = 0x02,
+		EidolonCoronerRifle = 0x02,
 		C10_CanisterRifle_SarahKerrigan = 0x03,
 		VultureFragmentationGrenade = 0x04,
 		FragmentationGrenade_JimRaynor_Vulture = 0x05,
