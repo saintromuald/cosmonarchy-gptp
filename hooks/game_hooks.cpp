@@ -1027,8 +1027,8 @@ namespace hooks {
 			case UnitId::ResourceMineralFieldType2:
 			case UnitId::ResourceMineralFieldType3:
 			{
-				if (unit->building.resource.resource_amount < 4) {
-					unit->building.resource.resource_amount = 2;
+				if (unit->building.resource.resource_amount < g_globals->get_yield(YieldType::Mineral)) {
+					unit->building.resource.resource_amount = g_globals->get_yield(YieldType::MineralDepleted);
 					unit->status |= UnitStatus::NoCollide;
 				}
 			} break;

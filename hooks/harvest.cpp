@@ -72,7 +72,7 @@ namespace hooks {
 			if (resource->building.resource.resource_amount < g_globals->get_yield(YieldType::Mineral)) {
 				resource->building.resource.resource_amount = g_globals->get_yield(YieldType::MineralDepleted);
 				resource->status |= UnitStatus::NoCollide;
-			} else if (resource->building.resource.resource_amount -  harvest_amount > g_globals->get_yield(YieldType::MineralDepleted)) {
+			} else if (resource->building.resource.resource_amount - harvest_amount > g_globals->get_yield(YieldType::MineralDepleted)) {
 				resource->building.resource.resource_amount -= harvest_amount;
 			} else {
 				resource->building.resource.resource_amount = g_globals->get_yield(YieldType::MineralDepleted);
@@ -114,7 +114,7 @@ namespace hooks {
 			}
 
 			u8 resource_amount = harvest_resource_from(resource, is_mineral);
-			if (resource_amount <= 2) {
+			if (resource_amount <= g_globals->get_yield(YieldType::MineralDepleted)) {
 				chunk_image_id += 1; // Use depleted resource image
 			}
 			if (resource_amount > 0) {
@@ -671,8 +671,8 @@ namespace hooks {
 		u8 resources_returned = get_harvest_amount(node);
 		u32 node_resources = node->building.resource.resource_amount;
 		if (is_minerals) {
-			if (node_resources <= 4) {
-				node->building.resource.resource_amount = 2;
+			if (node_resources < g_globals->get_yield(YieldType::Mineral)) {
+				node->building.resource.resource_amount = g_globals->get_yield(YieldType::MineralDepleted);
 			} else {
 				node->building.resource.resource_amount -= resources_returned;
 			}
