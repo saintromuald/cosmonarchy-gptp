@@ -126,41 +126,33 @@ namespace hooks {
 				// Resource return multipliers
 				switch (bw::get_upgrade_level(worker->player, UpgradeId::MiningEfficiency)) {
 					case 0:
-					case 99:
-					{
+					case 99: {
 					} break;
-					case 1:
-					{
+					case 1: {
 						// 125% - Default AI cheat
 						resource_amount += (resource_amount / 4);
 					} break;
-					case 2:
-					{
+					case 2: {
 						// 133%
 						resource_amount += (resource_amount / 3);
 					} break;
-					case 3:
-					{
+					case 3: {
 						// 150%
 						resource_amount += (resource_amount / 2);
 					} break;
-					case 4:
-					{
+					case 4: {
 						// 175%
 						resource_amount += ((resource_amount / 4) + (resource_amount / 4) + (resource_amount / 4));
 					} break;
-					case 5:
-					{
+					case 5: {
 						// 200%
 						resource_amount *= 2;
 					} break;
-					case 6:
-					{
+					case 6: {
 						// 225%
 						resource_amount *= (2 + (1 / 4));
 					} break;
-					default:
-					{
+					default: {
 						// 250%
 						resource_amount *= (2 + (1 / 2));
 					}
@@ -168,7 +160,7 @@ namespace hooks {
 				helper::set_resource_amount_carried(worker, resource_amount, chunk_image_id, is_mineral);
 				if (worker->id == UnitId::ProtossArtisan) {
 					UnitExt* unit_ext = get_unit_ext(worker);
-					unit_ext->timers[TimerArtisanReturn] = 24 * 2 + 1;
+					unit_ext->timers[TimerArtisanReturn] = 49;
 					helper::play_sound_from_unit(SoundId::ArtisanRadiantChannel, worker, 1, 0);
 					worker->freeze();
 				}
@@ -177,8 +169,7 @@ namespace hooks {
 	}
 
 	// Hooked as part of the vespene rework. -Pr0nogo
-	bool unit_is_geyser_ex(Unit* node, Unit* worker, bool ignore_completed) // 00468930
-	{
+	bool unit_is_geyser_ex(Unit* node, Unit* worker, bool ignore_completed) { // 00468930
 		switch (node->id) {
 			case UnitId::ResourceVespeneRidge:
 			case UnitId::ResourceVespeneGeyser: {
