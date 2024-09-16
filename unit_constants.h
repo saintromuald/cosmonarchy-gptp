@@ -163,8 +163,8 @@ constexpr s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per sec
 constexpr s32 AlkajeliskParasiticSporesTimer = 135; // 135 is 255 - 5 * 24
 constexpr s32 AlkajeliskParasiticSporesSeekRange = 8 * 32;
 
-// Hatchery
-constexpr s32 LarvaSpawnRate = (12 * 24) / 8; // 12 seconds
+// Hachirosk
+constexpr s32 LarvaSpawnRate = (14 * 24) / 8; // 12 seconds
 
 // Gladius
 constexpr s32 BindingPlasmaTimer = 12; // 0.5s
