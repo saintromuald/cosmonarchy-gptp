@@ -104,6 +104,7 @@ namespace UnitId
 		TerranHotshot										= 395,
 		TerranQilin											= 398,
 		TerranAuriel										= 399,
+		TerranCyclopsFuturist								= 410,
 
 	// Terran-Building
 		TerranVestry										= 119,		// Starbase / Terran Unused 1

@@ -226,6 +226,7 @@ namespace WeaponId {
 		MatadorTwinstrikeCannons			= 201,
 		SalamanderAngeltearRockets			= 216,
 		CyclopsBrontesPayload				= 217,	// Passive explosion
+		CyclopsFuturistFlakCannons			= 218,
 
 		// Protoss \\
 		

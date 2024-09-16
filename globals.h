@@ -35,6 +35,7 @@ enum class EffectId {
 	ReclamationField,
 	VilgolethHeal,
 	CyclopsRecursionRound,
+	CyclopsFuturistRecursionRound,
 	SevenstepMindMatter,
 	GladiusBindingPlasma,
 

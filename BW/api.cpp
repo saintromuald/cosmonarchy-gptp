@@ -3923,9 +3923,12 @@ u32 get_manual_unit_weaponfire_sound(Unit* unit, u32 weapon_id) {
 u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id) {
 	u32 sound_id = SoundId::None;
 	switch (weapon_id) {
+		case WeaponId::CyclopsFuturistFlakCannons: {
+			sound_id = bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
+		} break;
 		case WeaponId::DemiurgeGalacticWeaver: {
 			sound_id = bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
-		}
+		} break;
 	}
 	return sound_id;
 }

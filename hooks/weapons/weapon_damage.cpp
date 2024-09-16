@@ -653,6 +653,10 @@ namespace hooks {
 					g_iquare_globals->create_effect(EffectId::CyclopsRecursionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
 												 data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
 				} break;
+				case WeaponId::CyclopsFuturistFlakCannons: {
+					g_iquare_globals->create_effect(EffectId::CyclopsFuturistRecursionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
+												 data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
+				} break;
 			}
 
 			if (!bw::is_under_carapace_swarm(data.target)) {

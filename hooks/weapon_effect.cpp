@@ -53,6 +53,9 @@ namespace hooks {
 		Unit* unit = bullet->source_unit;
 		if (unit && unit->sprite) { // Sprite is new.
 			UnitExt* bullet_source_ext = get_unit_ext(unit);
+			if (bullet->weapon_id == WeaponId::CyclopsBrontesPayload && unit->id == UnitId::TerranCyclopsFuturist) { // So we don't need to use another weapon id. -Pr0nogo
+				splash = SplashType::FriendlyNew;
+			}
 			if (unit->is_blind) {
 				splash = SplashType::Radial;
 			}

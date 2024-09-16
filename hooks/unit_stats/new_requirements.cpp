@@ -283,36 +283,39 @@ namespace hooks {
 		}
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranFulcrum))
 		{
-			switch (unit_id)
-			{
+			switch (unit_id) {
 				case UnitId::TerranScrapyard:
 				case UnitId::TerranPalladium:
-				case UnitId::TerranVulture:
-				case UnitId::TerranCyclops:
-				{
+				case UnitId::TerranVulture: {
 					return true;
 				} break;
-				case UnitId::TerranGoliath:
-				{
+				case UnitId::TerranCyclops: {
+					if (faction != Faction::TerranFuturistFederation) {
+						return true;
+					}
+				} break;
+				case UnitId::TerranCyclopsFuturist: {
+					if (faction == Faction::TerranFuturistFederation) {
+						return true;
+					}
+				} break;
+				case UnitId::TerranGoliath: {
 					if (faction != Faction::TerranUpstart && faction != Faction::TerranGoldenRepublic) {
 						return true;
 					}
 				} break;
-				case UnitId::TerranAspirant:
-				{
+				case UnitId::TerranAspirant: {
 					if (faction == Faction::TerranGoldenRepublic) {
 						return true;
 					}
 				} break;
-				case UnitId::TerranSouthpaw:
-				{
+				case UnitId::TerranSouthpaw: {
 					if (faction == Faction::TerranUpstart) {
 						return true;
 					}
 				} break;
 				case UnitId::TerranBlackjack:
-				case UnitId::TerranMatadorTankMode:
-				{
+				case UnitId::TerranMatadorTankMode: {
 					if (player_has_completed_unit_id(player_id, UnitId::TerranScrapyard))
 					{
 						return true;
@@ -320,23 +323,18 @@ namespace hooks {
 				} break;
 				case UnitId::TerranPhalanxTankMode:
 					if (faction != Faction::TerranNydusTrinity) {
-						if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
-						{
+						if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium)) {
 							return true;
 						}
 					} break;
-				case UnitId::TerranMadrigalImperiosoMode:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
-					{
+				case UnitId::TerranMadrigalImperiosoMode: {
+					if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium)) {
 						return true;
 					}
 				} break;
-				case UnitId::TerranTarasque:
-				{
+				case UnitId::TerranTarasque: {
 					if (faction == Faction::TerranNydusTrinity) {
-						if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium))
-						{
+						if (player_has_completed_unit_id(player_id, UnitId::TerranPalladium)) {
 							return true;
 						}
 					}
