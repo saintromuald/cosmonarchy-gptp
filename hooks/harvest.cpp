@@ -701,41 +701,37 @@ namespace hooks {
 
 	// Hooked to change harvest rates for depleted nodes. -Pr0nogo
 	void orders_harvesting_minerals(Unit* unit) { // 004697C0
-		Unit* target_unit = unit->order_target.unit;
-		if (target_unit) {
-			if (unit_id_is_minerals(target_unit->id)) {
-				helper::set_gathering_flags(unit);
-				if (unit->main_order_state) {
-					if (unit->main_order_state != 4) {
-						if (unit->main_order_state == 5 && !unit->main_order_timer) {
-							helper::play_sprite_iscript(unit->sprite, 8, 1);
-							transfer_resource_to_worker(target_unit, unit);
-							helper::finished_mining(unit, target_unit);
-							helper::delete_order(unit, OrderId::HarvestInterrupt);
-							if (unit->resource_type & ResourceType::Minerals) {
-								helper::issue_order_targeting_nothing(unit, OrderId::ReturnMinerals);
-							} else {
-								helper::issue_order_targeting_nothing(unit, OrderId::MoveToMinerals);
-							}
-						}
-						return;
+		Unit* node = unit->order_target.unit;
+		if (node && unit_id_is_minerals(node->id)) {
+			helper::set_gathering_flags(unit);
+			if (unit->main_order_state != 0 && unit->main_order_state != 4) {
+				if (unit->main_order_state == 5 && !unit->main_order_timer) {
+					helper::play_sprite_iscript(unit->sprite, IscriptAnimation::GndAttkToIdle, 1);
+					helper::transfer_resource_to_worker(node, unit);
+					helper::finished_mining(unit, node);
+					helper::delete_order(unit, OrderId::HarvestInterrupt);
+					if (unit->resource_type & ResourceType::Minerals) {
+						helper::issue_order_targeting_nothing(unit, OrderId::ReturnMinerals);
+					} else {
+						helper::issue_order_targeting_nothing(unit, OrderId::MoveToMinerals);
 					}
-				} else {
-					if (!helper::get_closer_to_destination(unit)) {
-						return;
-					}
-
-					u8 unit_direction = unit->current_direction_1;
-					unit->order_target.pt.x = unit->position.x + (20 * g_angle_distance[unit_direction].x >> 8);
-					unit->order_target.pt.y = (20 * g_angle_distance[unit_direction].y >> 8) + unit->position.y;
-					unit->main_order_state = 4;
 				}
-				helper::play_sprite_iscript(unit->sprite, IscriptAnimation::AlmostBuilt, 1);
-				unit->main_order_timer = HarvestTimer;
-				unit->main_order_state = 5;
 				return;
+			} else {
+				if (!helper::get_closer_to_destination(unit)) {
+					return;
+				}
+				u8 unit_direction = unit->current_direction_1;
+				unit->order_target.pt.x = unit->position.x + (20 * g_angle_distance[unit_direction].x >> 8);
+				unit->order_target.pt.y = (20 * g_angle_distance[unit_direction].y >> 8) + unit->position.y;
+				unit->main_order_state = 4;
 			}
+			helper::play_sprite_iscript(unit->sprite, IscriptAnimation::AlmostBuilt, 1);
+			unit->main_order_timer = node->building.resource.resource_amount > 3 ? HarvestTimer : HarvestTimerDepleted;
+			unit->main_order_state = 5;
+			return;
 		}
+
 		if ((unit->worker.is_harvesting)) {
 			Unit* node = unit->worker.harvest_target;
 			unit->worker.is_harvesting = false;
@@ -749,7 +745,7 @@ namespace hooks {
 			}
 		}
 		helper::delete_order(unit, OrderId::HarvestInterrupt);
-		unit->user_action_flags |= 1;
+		unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 		if (unit->main_order_id != OrderId::Die) { // Was a nullcheck
 			while (1) {
 				Order* final_order = unit->order_queue_tail;
