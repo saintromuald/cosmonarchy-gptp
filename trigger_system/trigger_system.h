@@ -212,7 +212,7 @@ enum class YieldType : u8 {
 	Count,
 };
 
-static constexpr u8 default_yields[(size_t)YieldType::Count] = { 3, 5, 3, 5, 7, 9 };
+static constexpr u8 default_yields[(size_t)YieldType::Count] = { 5, 5, 3, 5, 7, 9 };
 
 struct OngoingWait {
 	s32 timer;
