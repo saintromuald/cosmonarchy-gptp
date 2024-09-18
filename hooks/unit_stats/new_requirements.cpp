@@ -1681,28 +1681,40 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranFulcrum:
-			{
-				switch (unit_id)
-				{
+			case UnitId::TerranFulcrum: {
+				switch (unit_id) {
 					case UnitId::TerranScrapyard:
-					case UnitId::TerranPalladium:
-					{
+					case UnitId::TerranPalladium: {
 						if (has_addon || is_training) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranVulture:
-					case UnitId::TerranCyclops:
-					{
+					case UnitId::TerranVulture: {
 						if (in_air || is_adding_on) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::TerranGoliath:
-					{
+					case UnitId::TerranCyclops: {
+						if (faction != Faction::TerranFuturistFederation) {
+							if (in_air || is_adding_on) {
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranCyclopsFuturist: {
+						if (faction == Faction::TerranFuturistFederation) {
+							if (in_air || is_adding_on) {
+								return TECH_HIDDEN;
+							}
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranGoliath: {
 						if (faction != Faction::TerranUpstart && faction != Faction::TerranGoldenRepublic) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
@@ -1712,8 +1724,7 @@ namespace hooks {
 						return TECH_HIDDEN;
 					}
 					case UnitId::TerranBlackjack:
-					case UnitId::TerranMatadorTankMode:
-					{
+					case UnitId::TerranMatadorTankMode: {
 						if (in_air || is_adding_on) {
 							return TECH_HIDDEN;
 						}
@@ -1722,8 +1733,7 @@ namespace hooks {
 						}
 						return TECH_HIDDEN;
 					}
-					case UnitId::TerranPhalanxTankMode:
-					{
+					case UnitId::TerranPhalanxTankMode: {
 						if (faction != Faction::TerranNydusTrinity) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
@@ -1734,8 +1744,7 @@ namespace hooks {
 						}
 						return TECH_HIDDEN;
 					}
-					case UnitId::TerranMadrigalImperiosoMode:
-					{
+					case UnitId::TerranMadrigalImperiosoMode: {
 						if (in_air || is_adding_on) {
 							return TECH_HIDDEN;
 						}
@@ -1744,8 +1753,7 @@ namespace hooks {
 						}
 						return TECH_HIDDEN;
 					}
-					case UnitId::TerranAspirant:
-					{
+					case UnitId::TerranAspirant: {
 						if (faction == Faction::TerranGoldenRepublic) {
 							if (in_air) {
 								return TECH_HIDDEN;
@@ -1754,8 +1762,7 @@ namespace hooks {
 						}
 						return TECH_HIDDEN;
 					}
-					case UnitId::TerranSouthpaw:
-					{
+					case UnitId::TerranSouthpaw: {
 						if (faction == Faction::TerranUpstart) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
@@ -1764,8 +1771,7 @@ namespace hooks {
 						}
 						return TECH_HIDDEN;
 					}
-					case UnitId::TerranTarasque:
-					{
+					case UnitId::TerranTarasque: {
 						if (faction == Faction::TerranNydusTrinity) {
 							if (in_air || is_adding_on) {
 								return TECH_HIDDEN;
