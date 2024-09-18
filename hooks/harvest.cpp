@@ -727,7 +727,7 @@ namespace hooks {
 				unit->main_order_state = 4;
 			}
 			helper::play_sprite_iscript(unit->sprite, IscriptAnimation::AlmostBuilt, 1);
-			unit->main_order_timer = node->building.resource.resource_amount > 3 ? HarvestTimer : HarvestTimerDepleted;
+			unit->main_order_timer = node->building.resource.resource_amount > g_globals->get_yield(YieldType::MineralDepleted) ? HarvestTimer : HarvestTimerDepleted;
 			unit->main_order_state = 5;
 			return;
 		}
