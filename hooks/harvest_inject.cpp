@@ -324,6 +324,19 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) orders_harvesting_minerals_wrapper() { // 004697C0
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::orders_harvesting_minerals(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -348,6 +361,7 @@ namespace hooks {
 		jump_patch(find_best_return_cargo_target_wrapper,					0x00441310,	2);
 		jump_patch(mine_resources_wrapper,									0x00469650,	0);
 		jump_patch(remove_stunned_worker_from_node_wrapper,					0x00468DB0,	1);
+		jump_patch(orders_harvesting_minerals_wrapper,						0x004697C0,	1);
 
 		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
 		jump_patch(worker_wandering_wrapper,								0x00469393,	1);

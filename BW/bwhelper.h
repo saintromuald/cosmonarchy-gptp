@@ -1767,4 +1767,6 @@ namespace helper {
 
 	void orders_attack_move(Unit* unit);										// 00479040
 	b32 ai_sieged_phalanx_can_attack_nearby_unit(Unit* unit);					// 00442460
+
+	void transfer_resource_to_worker(Unit* node, Unit* worker);					// 004696D0
 }

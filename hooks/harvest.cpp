@@ -698,4 +698,67 @@ namespace hooks {
 			helper::begin_harvest(unit, harvest_target);
 		}
 	}
+
+	// Hooked to change harvest rates for depleted nodes. -Pr0nogo
+	void orders_harvesting_minerals(Unit* unit) { // 004697C0
+		Unit* node = unit->order_target.unit;
+		if (node && unit_id_is_minerals(node->id)) {
+			helper::set_gathering_flags(unit);
+			if (unit->main_order_state != 0 && unit->main_order_state != 4) {
+				if (unit->main_order_state == 5 && !unit->main_order_timer) {
+					helper::play_sprite_iscript(unit->sprite, IscriptAnimation::GndAttkToIdle, 1);
+					helper::transfer_resource_to_worker(node, unit);
+					helper::finished_mining(unit, node);
+					helper::delete_order(unit, OrderId::HarvestInterrupt);
+					if (unit->resource_type & ResourceType::Minerals) {
+						helper::issue_order_targeting_nothing(unit, OrderId::ReturnMinerals);
+					} else {
+						helper::issue_order_targeting_nothing(unit, OrderId::MoveToMinerals);
+					}
+				}
+				return;
+			} else {
+				if (!helper::get_closer_to_destination(unit)) {
+					return;
+				}
+				u8 unit_direction = unit->current_direction_1;
+				unit->order_target.pt.x = unit->position.x + (20 * g_angle_distance[unit_direction].x >> 8);
+				unit->order_target.pt.y = (20 * g_angle_distance[unit_direction].y >> 8) + unit->position.y;
+				unit->main_order_state = 4;
+			}
+			helper::play_sprite_iscript(unit->sprite, IscriptAnimation::AlmostBuilt, 1);
+			unit->main_order_timer = node->building.resource.resource_amount > g_globals->get_yield(YieldType::MineralDepleted) ? HarvestTimer : HarvestTimerDepleted;
+			unit->main_order_state = 5;
+			return;
+		}
+
+		if ((unit->worker.is_harvesting)) {
+			Unit* node = unit->worker.harvest_target;
+			unit->worker.is_harvesting = false;
+			unit->worker.harvest_target = 0;
+			if (node) {
+				--node->building.resource.is_mining;
+				Unit* next_worker = helper::let_next_unit_mine(node);
+				if (next_worker) {
+					helper::begin_harvest(next_worker, node);
+				}
+			}
+		}
+		helper::delete_order(unit, OrderId::HarvestInterrupt);
+		unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+		if (unit->main_order_id != OrderId::Die) { // Was a nullcheck
+			while (1) {
+				Order* final_order = unit->order_queue_tail;
+				if (!final_order) {
+					break;
+				}
+				if (!orders_dat::can_be_interrupted[final_order->order_id] && final_order->order_id != OrderId::MoveToMinerals) {
+					break;
+				}
+				helper::remove_order_from_unit_queue(final_order, unit);
+			}
+			helper::perform_another_order(OrderId::MoveToMinerals, 0, unit, UnitId::None, {}, 0);
+		}
+		helper::do_next_queued_order(unit);
+	}
 }

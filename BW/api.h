@@ -32,6 +32,7 @@ namespace fs = std::filesystem;
 constexpr auto PI = std::numbers::pi_v<f64>;
 
 #define HarvestTimer static_cast<u32>(1.75 * 24)
+#define HarvestTimerDepleted static_cast<u32>(3.5 * 24)
 #define OrderQueueTimer 0
 
 #define UnloadDelay 4

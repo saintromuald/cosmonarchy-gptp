@@ -24,6 +24,7 @@ namespace hooks {
 	Unit* find_best_return_cargo_target(Unit* worker);											// 00441310
 	u8 mine_resources(Unit* node, bool is_minerals);											// 00469650
 	void remove_stunned_worker_from_node(Unit* unit);											// 00468DB0
+	void orders_harvesting_minerals(Unit* unit);												// 004697C0
 
 	void inject_harvest_resource();
 }

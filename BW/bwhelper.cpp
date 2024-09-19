@@ -15287,4 +15287,15 @@ namespace helper {
 		}
 		return result;
 	}
+
+	void transfer_resource_to_worker(Unit* node, Unit* worker) {
+		const u32 func_address = 0x004696D0;
+		__asm {
+			PUSHAD
+			MOV EAX, node
+			MOV ECX, worker
+			CALL func_address
+			POPAD
+		}
+	}
 }
