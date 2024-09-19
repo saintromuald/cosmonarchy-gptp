@@ -414,7 +414,11 @@ namespace hooks
 
 	// Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
 	void iscript_useweapon(Unit* unit, u8 weapon_id) { // 00479C30
-		if (weapons_dat::flingy_id[weapon_id]) { // @TODO figure out why g_active_iscript_unit is rarely null, causing crashes here. -Pr0nogo
+		if (weapons_dat::flingy_id[weapon_id]) {
+			if (!unit) {
+				bw::print("error: iscript_useweapon called on a unitless sprite!");
+				return;
+			}
 			helper::create_bullet(weapon_id, unit, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->current_direction_1);
 			if (weapons_dat::damage_factor[weapon_id] == 2) {
 				helper::create_bullet(weapon_id, unit, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->current_direction_1);
