@@ -894,7 +894,7 @@ namespace hooks {
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 					unit->status |= UnitStatus::CanNotAttack;
 					unit_ext->values[ValueProtossSwitchOrderState] = 2;
-					helper::play_sound_from_unit(SoundId::StarSovereignGriefOfAllGodsChannel, unit, 1, 0);
+					bw::play_sound(SoundId::StarSovereignGriefOfAllGodsChannel, unit);
 				}
 			} break;
 			case 2: {

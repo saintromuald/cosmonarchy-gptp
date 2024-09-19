@@ -1171,6 +1171,7 @@ namespace SoundId {
 		AugurDeath03						= 1237,
 		AugurDeath04						= 1238,
 		StarSovereignGriefOfAllGodsChannel	= 1246,
+		StarSovereignGriefOfAllGodsBlast	= 1273,
 		MindTyrantMindControlChannel		= 1276,
 		AkistrokorBlissfulEmbraceChannel	= 1277,
 

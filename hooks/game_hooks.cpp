@@ -1608,8 +1608,7 @@ namespace hooks {
 							unit->order_target.pt.x = polar_x;
 							unit->order_target.pt.y = polar_y;
 							helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player, bw::dir_saturate(unit->current_direction_1, offset_direction));
-							u32 sound_id = bw::rand_between(SoundId::StarSovereignMissileFire01, SoundId::StarSovereignMissileFire03);
-							helper::play_sound_from_unit(sound_id, unit, 1, 0);
+							bw::play_sound({SoundId::StarSovereignMissileFire01, SoundId::StarSovereignMissileFire03}, unit);
 							unit->order_target.unit = target_unit;
 							unit->order_target.pt = target_pos;
 						}
@@ -1619,6 +1618,7 @@ namespace hooks {
 				// Star Sovereign - Grief of All Gods
 				if (unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] == 1) {
 					g_iquare_globals->create_effect(EffectId::StarSovereignTheGriefOfAllGods, 360, unit->position, 8 * 32, SpriteId::None, unit->sprite->elevation, unit->player, unit, { .origin = unit });
+					bw::play_sound(SoundId::StarSovereignGriefOfAllGodsBlast, unit);
 				}
 
 				// blast effects
@@ -1960,8 +1960,7 @@ namespace hooks {
 					if (attacked) {
 						unit_ext->timers[TimerAnthelionAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::AnthelionEventHorizon);
 						unit->sprite->create_underlay(ImageId::OpticalFlareHit_Large);
-						u32 sound_id = bw::rand_between(SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03);
-						helper::play_sound_from_unit(sound_id, unit, 1, 0);
+						bw::play_sound({SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03}, unit);
 					}
 				}
 				if (unit->main_order_id == OrderId::Follow || unit->main_order_id == OrderId::AttackUnit) {
@@ -1975,8 +1974,7 @@ namespace hooks {
 					} else {
 						if (unit_ext->anthelion_last_move_target != target) {
 							if (unit_ext->timers[TimerAnthelionEndlessEclipse] > 1) {
-								u32 sound_id = bw::rand_between(SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02);
-								helper::play_sound_from_unit(sound_id, unit, 1, 0);
+								bw::play_sound({SoundId::AnthelionMoveCharge01, SoundId::AnthelionMoveCharge02}, unit);
 							}
 							unit_ext->timers[TimerAnthelionEndlessEclipse] = 5 * 24 + 1;
 						}
@@ -1987,8 +1985,7 @@ namespace hooks {
 							bool teleport = bw::teleport_to_point(unit, unit->move_target.pt, 0, true);
 							if (teleport) {
 								bw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, old_pos.x, old_pos.y, unit->player, 11);
-								u32 sound_id = bw::rand_between(SoundId::AnthelionArrive01, SoundId::AnthelionArrive03);
-								helper::play_sound_from_unit(sound_id, unit, 1, 0);
+								bw::play_sound({SoundId::AnthelionArrive01, SoundId::AnthelionArrive03}, unit);
 								unit->sprite->create_top_overlay(ImageId::AnthelionTeleportArrival, 0, 0, 0);
 							}
 						}
