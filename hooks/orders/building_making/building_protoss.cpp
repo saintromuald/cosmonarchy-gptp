@@ -77,7 +77,7 @@ namespace hooks {
 									replay_witness_event(built_unit, SpectatorEvent_Tech);
 								}
 
-								helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
+								bw::play_sound(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit);
 								++unit->main_order_state;
 								return;
 							} else {
@@ -124,7 +124,7 @@ namespace hooks {
 						}
 					}
 
-					helper::play_sound_from_unit(SoundId::Protoss_SHUTTLE_pshBld03_wav, building, 1, 0);
+					bw::play_sound(SoundId::Protoss_SHUTTLE_pshBld03_wav, building);
 					++building->main_order_state;
 				}
 			} break;
