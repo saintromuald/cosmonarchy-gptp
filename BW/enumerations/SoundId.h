@@ -1939,6 +1939,6 @@ namespace SoundId {
 		CyclopsWeaponfireFuturist01						= 2548,
 		CyclopsWeaponfireFuturist02						= 2549,
 
-		GoskaGrenadeImpact								= 4011,
+		GoskaGrenadeImpact								= 3215,
 	};
 }
