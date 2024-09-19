@@ -1935,6 +1935,9 @@ namespace SoundId {
 		PsiStormLoop									= 3199,
 		PsiStormEnd										= 3200,
 
+		CyclopsWeaponfireFuturist01						= 2548,
+		CyclopsWeaponfireFuturist02						= 2549,
+
 		GoskaGrenadeImpact								= 4011,
 	};
 }

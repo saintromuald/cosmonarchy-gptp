@@ -355,7 +355,20 @@ static void tick_effect(EffectField& effect) {
                     target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
                 }
                 u32 sound_id = bw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04);
-                helper::play_sound_at_pos(sound_id, effect.position, 1, 0);
+                bw::play_sound(sound_id, effect.position);
+                helper::create_thingy(SpriteId::FragmentaryExplosion, effect.position.x, effect.position.y, effect.player);
+			} break;
+			case EffectId::CyclopsFuturistRecursionRound: {
+				if (effect.current_time || !effect.source) {
+					break;
+				}
+				
+				helper::create_bullet(WeaponId::CyclopsBrontesPayload, effect.source, effect.position.x, effect.position.y, effect.player, 0);
+                for (Unit* target : g_unit_search.search_ex(effect, FilterEnemy)) {
+                    target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
+                }
+                u32 sound_id = bw::rand_between(SoundId::CyclopsPassive01, SoundId::CyclopsPassive04);
+                bw::play_sound(sound_id, effect.position);
                 helper::create_thingy(SpriteId::FragmentaryExplosion, effect.position.x, effect.position.y, effect.player);
 			} break;
 			case EffectId::SevenstepMindMatter: {

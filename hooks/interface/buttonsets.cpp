@@ -936,21 +936,25 @@ namespace hooks {
 										}
 									} break;
 
-									case UnitId::TerranGoliath: {
-										if (faction == Faction::TerranGoldenRepublic
-										||	faction == Faction::TerranUpstart) {
+									case UnitId::TerranCyclops: {
+										if (faction == Faction::TerranFuturistFederation) {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
-									case UnitId::TerranPhalanxTankMode: {
-										if (!bw::all_selected_units_have_addon(UnitId::TerranPalladium) || bw::unit_queue_full(unit)
-										||	 faction == Faction::TerranNydusTrinity) {
+									case UnitId::TerranCyclopsFuturist: {
+										if (faction != Faction::TerranFuturistFederation) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
 
+									case UnitId::TerranGoliath: {
+										if (faction == Faction::TerranGoldenRepublic
+										||	faction == Faction::TerranUpstart) {
+											current_button_state = Button_State::Invisible;
+										}
+									} break;
 									case UnitId::TerranSouthpaw: {
 										if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranUpstart) {
 											current_button_state = Button_State::Invisible;
@@ -960,6 +964,15 @@ namespace hooks {
 									} break;
 									case UnitId::TerranAspirant: {
 										if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranGoldenRepublic) {
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
+
+									case UnitId::TerranPhalanxTankMode: {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranPalladium) || bw::unit_queue_full(unit)
+										||	 faction == Faction::TerranNydusTrinity) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
@@ -2009,8 +2022,9 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranCyclops: {
-									if (current_button->icon_id == IconId::VultureFragmentationGrenade) { // Cyclops - Fragmentary Shells
+								case UnitId::TerranCyclops:
+								case UnitId::TerranCyclopsFuturist: {
+									if (current_button->icon_id == IconId::VultureFragmentationGrenade) { // Cyclops - Recursion Rounds
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
