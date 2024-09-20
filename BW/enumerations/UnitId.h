@@ -190,6 +190,7 @@ namespace UnitId
 		ProtossPrudence										= 184,		// Independent Starport
 		ProtossAdherent										= 400,
 		ProtossExtatus										= 401,
+		ProtossZealotStarbound								= 411,
 
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1
@@ -264,7 +265,6 @@ namespace UnitId
 	// Zerg-Unit-Factional
 		ZergNathrelisk										= 402,
 		ZergIziralisk										= 403,
-
 
 	// Zerg-Building
 		ZergAxtothAxis										= 130,		// Infested Command Center

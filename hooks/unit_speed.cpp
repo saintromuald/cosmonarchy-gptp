@@ -238,6 +238,7 @@ namespace hooks {
 			case UnitId::ProtossZealot: {
 				speed *= 1.35;
 			} break;
+			case UnitId::ProtossZealotStarbound:
 			case UnitId::ProtossAmaranth: {
 				speed *= 1.4;
 			} break;

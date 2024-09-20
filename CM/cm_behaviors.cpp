@@ -205,6 +205,7 @@ u32 unit_avenges_or_ascends(Unit* unit) {
 	// Avenge
 	bool avenges = false;
 	switch (unit->id) {
+		case UnitId::ProtossZealotStarbound:
 		case UnitId::ProtossEcclesiast:
 		case UnitId::ProtossVassal:
 		case UnitId::ProtossServitor:

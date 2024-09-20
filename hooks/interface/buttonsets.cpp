@@ -1315,7 +1315,16 @@ namespace hooks {
 							} break;
 							case UnitId::ProtossGateway: {
 								switch (current_button->requirement_var) {
-									case UnitId::ProtossZealot:
+									case UnitId::ProtossZealot: {
+										if (faction != Faction::ProtossStarbound) {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
+									case UnitId::ProtossZealotStarbound: {
+										if (faction == Faction::ProtossStarbound) {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
 									case UnitId::ProtossDracadin:
 									case UnitId::ProtossEcclesiast:
 									case UnitId::ProtossHierophant: {
@@ -2348,9 +2357,10 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossZealotStarbound:
 								case UnitId::ProtossVassal:
 								case UnitId::ProtossServitor: {
-									if (current_button->icon_id == IconId::LegEnhancements) { // Vassal - Vengeance
+									if (current_button->icon_id == IconId::LegEnhancements) { // Zealot (Starbound), Vassal, Servitor - Vengeance
 										current_button_state = Button_State::Enabled;
 									}
 								} break;

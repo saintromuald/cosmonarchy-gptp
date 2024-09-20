@@ -533,30 +533,41 @@ namespace hooks {
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGateway))
-		{
-			switch (unit_id)
-			{
-				case UnitId::ProtossZealot:
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGateway)) {
+			switch (unit_id) {
+				case UnitId::ProtossZealot: {
+					if (faction != Faction::ProtossStarbound) {
+						return true;
+					}
+				}
+				case UnitId::ProtossZealotStarbound: {
+					if (faction == Faction::ProtossStarbound) {
+						return true;
+					}
+				}
+				case UnitId::ProtossLegionnaire: {
+					if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+						return true;
+					}
+				}
+				case UnitId::ProtossAdherent: {
+					if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+						return true;
+					}
+				}
 				case UnitId::ProtossDracadin:
 				case UnitId::ProtossEcclesiast:
-				case UnitId::ProtossLegionnaire:
-				case UnitId::ProtossAdherent:
-				case UnitId::ProtossHierophant:
-				{
+				case UnitId::ProtossHierophant: {
 					return true;
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGrandLibrary))
-		{
-			switch (unit_id)
-			{
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGrandLibrary)) {
+			switch (unit_id) {
 				case UnitId::ProtossAmaranth:
 				case UnitId::ProtossHerald:
 				case UnitId::ProtossAtreus:
-				case UnitId::ProtossCantavis:
-				{
+				case UnitId::ProtossCantavis: {
 					return true;
 				} break;
 			}
@@ -2059,26 +2070,32 @@ namespace hooks {
 				}
 				return TECH_HIDDEN;
 			}
-			case UnitId::ProtossGateway:
-			{
-				switch (unit_id)
-				{
-					case UnitId::ProtossZealot:
-					case UnitId::ProtossDracadin:
-					case UnitId::ProtossEcclesiast:
-					case UnitId::ProtossHierophant:
-					{
+			case UnitId::ProtossGateway: {
+				switch (unit_id) {
+					case UnitId::ProtossZealot: {
+						if (faction == Faction::ProtossStarbound) {
+							return TECH_HIDDEN;
+						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::ProtossLegionnaire:
-					{
+					case UnitId::ProtossZealotStarbound: {
+						if (faction != Faction::ProtossStarbound) {
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossDracadin:
+					case UnitId::ProtossEcclesiast:
+					case UnitId::ProtossHierophant: {
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossLegionnaire: {
 						if (faction == Faction::ProtossOrderOfTheSacredSaber) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
 					}
-					case UnitId::ProtossAdherent:
-					{
+					case UnitId::ProtossAdherent: {
 						if (faction != Faction::ProtossOrderOfTheSacredSaber) {
 							return TECH_HIDDEN;
 						}

@@ -4027,8 +4027,14 @@ namespace hooks {
 											case Faction::ProtossDivinePrimacy: {
 												bw::printf("\tPlayer %u has chosen the Divine Primacy.", player + 1, GameTextColor::White);
 											} break;
+											case Faction::ProtossKhalendricKnights: {
+												bw::printf("\tPlayer %u has chosen the Khalendric Knights.", player + 1, GameTextColor::White);
+											} break;
 											case Faction::ProtossOrderOfTheSacredSaber: {
 												bw::printf("\tPlayer %u has chosen the Order of the Sacred Saber.", player + 1, GameTextColor::White);
+											} break;
+											case Faction::ProtossStarbound: {
+												bw::printf("\tPlayer %u has chosen the Starbound.", player + 1, GameTextColor::White);
 											} break;
 										}
 									} break;
@@ -4036,6 +4042,15 @@ namespace hooks {
 										switch (faction) {
 											case Faction::ZergAtaltrethTendril: {
 												bw::printf("\tPlayer %u has chosen the Ataltreth Tendril.", player + 1, GameTextColor::White);
+											} break;
+											case Faction::ZergImicrenTendril: {
+												bw::printf("\tPlayer %u has chosen the Imicren Tendril.", player + 1, GameTextColor::White);
+											} break;
+											case Faction::ZergGoszirithTendril: {
+												bw::printf("\tPlayer %u has chosen the Goszirith Tendril.", player + 1, GameTextColor::White);
+											} break;
+											case Faction::ZergOrkotiTendril: {
+												bw::printf("\tPlayer %u has chosen the Orkoti Tendril.", player + 1, GameTextColor::White);
 											} break;
 											case Faction::ZergZorthosTendril: {
 												bw::printf("\tPlayer %u has chosen the Zorthos Tendril.", player + 1, GameTextColor::White);
