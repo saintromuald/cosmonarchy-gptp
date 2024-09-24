@@ -44,6 +44,10 @@ inline bool player_has_completed_landed_unit_id(u32 player, u32 unit_id) {
 	return Player::number_of_completed_landed_units_of_id(player, unit_id);
 }
 
+inline bool player_has_completed_powered_unit_id(s32 player_id, u32 unit_id) {
+	return Player::number_of_completed_powered_units_of_id(player_id, unit_id);
+}
+
 inline bool player_has_completed_addon_unit_id(u32 player, u32 unit_id) {
 	return Player::number_of_completed_addon_units_of_id(player, unit_id);
 }

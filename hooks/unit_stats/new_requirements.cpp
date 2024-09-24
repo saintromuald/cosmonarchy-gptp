@@ -22,6 +22,10 @@ namespace hooks {
 		return Player::number_of_completed_landed_units_of_id(player_id, unit_id);
 	}
 
+	static bool player_has_completed_powered_unit_id(s32 player_id, u32 unit_id) {
+		return Player::number_of_completed_powered_units_of_id(player_id, unit_id);
+	}
+
 	static bool player_has_completed_addon_unit_id(s32 player_id, u32 unit_id) {
 		return Player::number_of_completed_addon_units_of_id(player_id, unit_id);
 	}
@@ -39,6 +43,7 @@ namespace hooks {
 			Tier1 = 0,
 			Tier2,
 			Tier3,
+			Tier4,
 		};
 		bool TierUnlocked[3][5]{};
 
@@ -51,17 +56,23 @@ namespace hooks {
 		TierUnlocked[RaceId::Terran][Tier3] = player_has_completed_landed_unit_id(player_id, UnitId::TerranDaedala);
 
 		TierUnlocked[RaceId::Protoss][Tier1] = true;
-		TierUnlocked[RaceId::Protoss][Tier2] = true;
-		TierUnlocked[RaceId::Protoss][Tier3] = true;
+		TierUnlocked[RaceId::Protoss][Tier2] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossEmbassy)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossGateway)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossLattice);
+		TierUnlocked[RaceId::Protoss][Tier3] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossGrandLibrary)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossRogueGallery)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossArdentAuthority)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossStargate);
+		TierUnlocked[RaceId::Protoss][Tier4] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossProstrationStage)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossUnitaryUnion)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossArgosy);
 
 		Faction faction = g_globals->players[player_id].faction;
 
 		// TERRAN
 		// @Todo: Consider making AI check for landed structures as a safety, e.g. player_has_completed_landed_unit_id(player_id, UnitId::TerranMinistry)
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMason) || player_has_completed_unit_id(player_id, UnitId::TerranTalos))
-		{
-			switch (unit_id)
-			{
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMason) || player_has_completed_unit_id(player_id, UnitId::TerranTalos)) {
+			switch (unit_id) {
 				case UnitId::TerranMinistry:
 				case UnitId::TerranWatchdog:
 				case UnitId::TerranAnchor:
@@ -69,8 +80,7 @@ namespace hooks {
 				case UnitId::TerranAtlas:
 				case UnitId::TerranStockade:
 				case UnitId::TerranFulcrum:
-				case UnitId::TerranStarpad:
-				{
+				case UnitId::TerranStarpad: {
 					return true;
 				} break;
 				case UnitId::TerranReservoir:
@@ -79,8 +89,7 @@ namespace hooks {
 				case UnitId::TerranFountainhead:
 				case UnitId::TerranCaptaincy:
 				case UnitId::TerranMantle:
-				case UnitId::TerranStarport:
-				{
+				case UnitId::TerranStarport: {
 					if (TierUnlocked[RaceId::Terran][Tier2]) {
 						return true;
 					}
@@ -89,43 +98,33 @@ namespace hooks {
 				case UnitId::TerranWellbore:
 				case UnitId::TerranApothecary:
 				case UnitId::TerranIronFoundry:
-				case UnitId::TerranNaniteAssembly:
-				{
+				case UnitId::TerranNaniteAssembly: {
 					if (TierUnlocked[RaceId::Terran][Tier3]) {
 						return true;
 					}
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMinistry))
-		{
-			switch (unit_id)
-			{
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMinistry)) {
+			switch (unit_id) {
 				case UnitId::TerranMason:
 				case UnitId::TerranLodestone:
 				case UnitId::TerranQuarry:
-				case UnitId::TerranAnvil:
-				{
+				case UnitId::TerranAnvil: {
 					return true;
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranParthenon))
-		{
-			switch (unit_id)
-			{
-				case UnitId::TerranArmistice:
-				{
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranParthenon)) {
+			switch (unit_id) {
+				case UnitId::TerranArmistice: {
 					return true;
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranAnvil))
-		{
-			switch (unit_id)
-			{
-				case UnitId::TerranMorningstar:
-				{
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranAnvil)) {
+			switch (unit_id) {
+				case UnitId::TerranMorningstar: {
 					return true;
 				} break;
 			}
@@ -732,39 +731,42 @@ namespace hooks {
 		}
 
 		// Structures
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe) || player_has_completed_unit_id(player_id, UnitId::ProtossPrudence))
-		{
-			switch (unit_id)
-			{
-					case UnitId::ProtossNexus:
-					case UnitId::ProtossPylon:
-					case UnitId::ProtossAquifer:
-					case UnitId::ProtossWarden:
-					case UnitId::ProtossMatrix:
-					case UnitId::ProtossEmbassy:
-					case UnitId::ProtossCrucible:
-					case UnitId::ProtossEngram:
-					case UnitId::ProtossGateway:
-					case UnitId::ProtossCenotaph:
-					case UnitId::ProtossGrandLibrary:
-					case UnitId::ProtossRogueGallery:
-					case UnitId::ProtossProstrationStage:
-					case UnitId::ProtossSanctumOfSorrow:
-					case UnitId::ProtossAncestralArchives:
-					case UnitId::ProtossHallOfHeretics:
-					case UnitId::ProtossLattice:
-					case UnitId::ProtossAutomatonRegister:
-					case UnitId::ProtossArdentAuthority:
-					case UnitId::ProtossSequesteredIcon:
-					case UnitId::ProtossAuxiliaryOasis:
-					case UnitId::ProtossUnitaryUnion:
-					case UnitId::ProtossSyntheticSynod:
-					case UnitId::ProtossStargate:
-					case UnitId::ProtossArgosy:
-					case UnitId::ProtossFleetBeacon:
-					case UnitId::ProtossMonumentOfSin:
-				{
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe) || player_has_completed_unit_id(player_id, UnitId::ProtossPrudence)) {
+			switch (unit_id) {
+				case UnitId::ProtossNexus:
+				case UnitId::ProtossPylon:
+				case UnitId::ProtossAquifer:
+				case UnitId::ProtossWarden:
+				case UnitId::ProtossMatrix:
+				case UnitId::ProtossEmbassy:
+				case UnitId::ProtossCrucible:
+				case UnitId::ProtossEngram:
+				case UnitId::ProtossGateway:
+				case UnitId::ProtossLattice: {
 					return true;
+				} break;
+
+				case UnitId::ProtossGrandLibrary:
+				case UnitId::ProtossRogueGallery:
+				case UnitId::ProtossArdentAuthority:
+				case UnitId::ProtossStargate: {
+					if (TierUnlocked[RaceId::Protoss][Tier2]) {
+						return true;
+					}
+				} break;
+				case UnitId::ProtossProstrationStage:
+				case UnitId::ProtossUnitaryUnion:
+				case UnitId::ProtossArgosy: {
+					if (TierUnlocked[RaceId::Protoss][Tier3]) {
+						return true;
+					}
+				} break;
+				case UnitId::ProtossAncestralArchives:
+				case UnitId::ProtossSyntheticSynod:
+				case UnitId::ProtossMonumentOfSin: {
+					if (TierUnlocked[RaceId::Protoss][Tier4]) {
+						return true;
+					}
 				} break;
 			}
 		}
@@ -1351,9 +1353,10 @@ namespace hooks {
 			Tier1 = 0,
 			Tier2,
 			Tier3,
+			Tier4,
 		};
 
-		bool TierUnlocked[3][3]{};
+		bool TierUnlocked[3][4]{};
 		TierUnlocked[RaceId::Zerg][Tier1] = true;
 		TierUnlocked[RaceId::Zerg][Tier2] = player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)
 										||  player_has_unit_id(player_id, UnitId::ZergOthstolOviform);
@@ -1364,8 +1367,16 @@ namespace hooks {
 		TierUnlocked[RaceId::Terran][Tier3] = player_has_completed_landed_unit_id(player_id, UnitId::TerranDaedala);
 
 		TierUnlocked[RaceId::Protoss][Tier1] = true;
-		TierUnlocked[RaceId::Protoss][Tier2] = true;
-		TierUnlocked[RaceId::Protoss][Tier3] = true;
+		TierUnlocked[RaceId::Protoss][Tier2] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossEmbassy)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossGateway)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossLattice);
+		TierUnlocked[RaceId::Protoss][Tier3] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossGrandLibrary)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossRogueGallery)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossArdentAuthority)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossStargate);
+		TierUnlocked[RaceId::Protoss][Tier4] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossProstrationStage)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossUnitaryUnion)
+			|| player_has_completed_powered_unit_id(player_id, UnitId::ProtossArgosy);
 
 		Faction faction = g_globals->players[player_id].faction;
 
@@ -2273,17 +2284,13 @@ namespace hooks {
 			} break;
 
 			// Subunits
-			case UnitId::ProtossSolarion:
-			{
-				if (unit_id == UnitId::ProtossSteward)
-				{
+			case UnitId::ProtossSolarion: {
+				if (unit_id == UnitId::ProtossSteward) {
 					u32 steward_count = unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count;
-					for (u32 i = 0; i < 5; ++i)
-					{
+					for (u32 i = 0; i < 5; ++i) {
 						steward_count += unit->build_queue[i] != UnitId::None;
 					}
-					if (steward_count >= 12)
-					{
+					if (steward_count >= 12) {
 						return TECH_HIDDEN;
 					}
 					return TECH_ACTIVE;
@@ -2293,10 +2300,8 @@ namespace hooks {
 
 			// Structures
 			case UnitId::ProtossScribe:
-			case UnitId::ProtossPrudence:
-			{
-				switch (unit_id)
-				{
+			case UnitId::ProtossPrudence: {
+				switch (unit_id) {
 					case UnitId::ProtossNexus:
 					case UnitId::ProtossPylon:
 					case UnitId::ProtossAquifer:
@@ -2306,26 +2311,30 @@ namespace hooks {
 					case UnitId::ProtossCrucible:
 					case UnitId::ProtossEngram:
 					case UnitId::ProtossGateway:
-					case UnitId::ProtossCenotaph:
+					case UnitId::ProtossLattice: {
+						return TECH_ACTIVE;
+					}
 					case UnitId::ProtossGrandLibrary:
 					case UnitId::ProtossRogueGallery:
-					case UnitId::ProtossProstrationStage:
-					case UnitId::ProtossSanctumOfSorrow:
-					case UnitId::ProtossAncestralArchives:
-					case UnitId::ProtossHallOfHeretics:
-					case UnitId::ProtossLattice:
-					case UnitId::ProtossAutomatonRegister:
 					case UnitId::ProtossArdentAuthority:
-					case UnitId::ProtossSequesteredIcon:
-					case UnitId::ProtossAuxiliaryOasis:
+					case UnitId::ProtossStargate: {
+						if (TierUnlocked[RaceId::Protoss][Tier2]) {
+							return TECH_ACTIVE;
+						}
+					}
+					case UnitId::ProtossProstrationStage:
 					case UnitId::ProtossUnitaryUnion:
+					case UnitId::ProtossArgosy: {
+						if (TierUnlocked[RaceId::Protoss][Tier3]) {
+							return TECH_ACTIVE;
+						}
+					}
+					case UnitId::ProtossAncestralArchives:
 					case UnitId::ProtossSyntheticSynod:
-					case UnitId::ProtossStargate:
-					case UnitId::ProtossArgosy:
-					case UnitId::ProtossFleetBeacon:
-					case UnitId::ProtossMonumentOfSin:
-					{
-						return TECH_ACTIVE;
+					case UnitId::ProtossMonumentOfSin: {
+						if (TierUnlocked[RaceId::Protoss][Tier4]) {
+							return TECH_ACTIVE;
+						}
 					}
 					return TECH_HIDDEN;
 				}

@@ -2415,7 +2415,6 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
 		case WeaponId::TosgriliskExplosiveSpores:
 		case WeaponId::AxitriliskSearingVenom:
 		case WeaponId::MortothrokorWickedIncisors:
-		case WeaponId::BactaliskCorrosiveAcid:
 		case WeaponId::AlmaksaliskPiercingSpines:
 		case WeaponId::KeskathalorScreamingVenom: {
 			return 2;

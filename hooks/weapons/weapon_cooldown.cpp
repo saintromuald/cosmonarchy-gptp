@@ -75,6 +75,10 @@ namespace hooks {
 			cooldown /= 1.33;
 		}
 
+		if (unit_ext->values[ValueIsShade]) {
+			cooldown /= 1.5;
+		}
+
 		switch (unit->id) {
 			case UnitId::TerranMadcap: {
 				// Madcap Cabeirus Feeders behavior: increase weapon speed while stationary

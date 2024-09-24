@@ -956,6 +956,23 @@ namespace hooks {
 					helper::play_sound_from_unit(SoundId::Misc_TPwrDown_wav, data.target, 1, 0);
 				}
 			} break;
+			case UnitId::ProtossCicatus: {
+				helper::increment_unit_death_scores(data.target, data.target->player);
+				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
+				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
+				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
+				target_ext->values[ValueIsShade] = true;
+				
+				if (bw::get_game_kind() == GameKind_Massacre && unit_should_give_gas_in_massacre_mode(data.target)) {
+					bw::add_massacre_resource(data.target->player);
+				}
+
+				u32 sound = bw::rand_between(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
+				if (helper::play_sound_from_unit(sound, data.target, g_options_list->flags & 1, 99) && !g_is_in_replay && data.target->player == g_local_nation_id) {
+					helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
+				}
+				fatal_deal_damage = false;
+			} break;
 			case UnitId::ProtossVagrant: {
 				helper::increment_unit_death_scores(data.target, data.target->player);
 				helper::replace_unit_with_id(data.target, UnitId::ProtossVagrantShade);

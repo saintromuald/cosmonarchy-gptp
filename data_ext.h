@@ -207,6 +207,7 @@ enum ExtValueId {
 	ValueTurningAggressiveMode,
 	ValueUprisingInAttackWave,
 	ValueCancellingZergStructure,
+	ValueIsShade,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

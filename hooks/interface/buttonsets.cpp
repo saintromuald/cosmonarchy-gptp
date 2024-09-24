@@ -820,6 +820,19 @@ namespace hooks {
 						}
 					}
 
+					enum {
+						Tier1 = 0,
+						Tier2,
+						Tier3,
+						Tier4,
+					};
+
+					bool TierUnlocked[3][4]{};
+					TierUnlocked[RaceId::Protoss][Tier1] = true;
+					TierUnlocked[RaceId::Protoss][Tier2] = false;
+					TierUnlocked[RaceId::Protoss][Tier3] = false;
+					TierUnlocked[RaceId::Protoss][Tier4] = false;
+
 					bool has_addon = 0;
 					bool in_air = 0;
 					bool is_training = 0;
@@ -835,6 +848,17 @@ namespace hooks {
 						if (unit->player <= PLAYABLE_PLAYER_COUNT) {
 							faction = g_globals->players[unit->player].faction;
 						}
+
+						TierUnlocked[RaceId::Protoss][Tier2] = player_has_completed_powered_unit_id(unit->player, UnitId::ProtossEmbassy)
+							|| player_has_completed_powered_unit_id(unit->player, UnitId::ProtossGateway)
+							|| player_has_completed_powered_unit_id(unit->player, UnitId::ProtossLattice);
+						TierUnlocked[RaceId::Protoss][Tier3] = player_has_completed_powered_unit_id(unit->player, UnitId::ProtossGrandLibrary)
+							|| player_has_completed_powered_unit_id(unit->player, UnitId::ProtossRogueGallery)
+							|| player_has_completed_powered_unit_id(unit->player, UnitId::ProtossArdentAuthority)
+							|| player_has_completed_powered_unit_id(unit->player, UnitId::ProtossStargate);
+						TierUnlocked[RaceId::Protoss][Tier4] = player_has_completed_powered_unit_id(unit->player, UnitId::ProtossProstrationStage)
+							|| player_has_completed_powered_unit_id(unit->player, UnitId::ProtossUnitaryUnion)
+							|| player_has_completed_powered_unit_id(unit->player, UnitId::ProtossArgosy);
 					}
 
 					if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) {
@@ -1278,22 +1302,36 @@ namespace hooks {
 									case UnitId::ProtossMatrix:
 									case UnitId::ProtossEngram:
 									case UnitId::ProtossGateway:
-									case UnitId::ProtossCenotaph:
+									case UnitId::ProtossLattice: {
+										current_button_state = Button_State::Enabled;
+									} break;
 									case UnitId::ProtossGrandLibrary:
 									case UnitId::ProtossRogueGallery:
-									case UnitId::ProtossProstrationStage:
-									case UnitId::ProtossSanctumOfSorrow:
-									case UnitId::ProtossAncestralArchives:
-									case UnitId::ProtossLattice:
-									case UnitId::ProtossAutomatonRegister:
 									case UnitId::ProtossArdentAuthority:
-									case UnitId::ProtossSequesteredIcon:
+									case UnitId::ProtossStargate: {
+										if (TierUnlocked[RaceId::Protoss][Tier2]) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ProtossProstrationStage:
+									case UnitId::ProtossUnitaryUnion:
+									case UnitId::ProtossArgosy: {
+										if (TierUnlocked[RaceId::Protoss][Tier3]) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ProtossAncestralArchives:
 									case UnitId::ProtossSyntheticSynod:
-									case UnitId::ProtossStargate:
-									case UnitId::ProtossArgosy:
-									case UnitId::ProtossFleetBeacon:
 									case UnitId::ProtossMonumentOfSin: {
-										current_button_state = Button_State::Enabled;
+										if (TierUnlocked[RaceId::Protoss][Tier4]) {
+											current_button_state = Button_State::Enabled;
+										} else {
+											current_button_state = Button_State::Disabled;
+										}
 									} break;
 								}
 							} break;

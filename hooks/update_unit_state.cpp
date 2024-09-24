@@ -223,7 +223,7 @@ namespace hooks
 
 		// Flash shielding (regeneration)
 		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed) {
-			if (unit_id_has_flash_shielding(unit->id)) {
+			if (!unit_ext->values[ValueIsShade] && unit_id_has_flash_shielding(unit->id)) {
 				s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
 				u32 overlay_id = ImageId::RechargeShields_Small;
@@ -279,7 +279,7 @@ namespace hooks
 		}
 
 		// Vagrant Nihilism - suffer 2 damage per second until death
-		if (unit->id == UnitId::ProtossVagrantShade) {
+		if (unit->id == UnitId::ProtossVagrantShade || unit_ext->values[ValueIsShade]) {
 			unit->inflict_damage(21, unit, unit->player, false, (g_elapsed_time_frames) % 6 == 0);
 		}
 
