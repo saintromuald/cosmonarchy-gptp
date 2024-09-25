@@ -474,7 +474,8 @@ VolumePan calculate_volume_pan(const PlaySoundSettings& settings) {
 		result.pan = helper::get_sfx_pan_from_screen_distance(settings.position.x);
 
 		const auto& tile = bw::get_tile_at_coords(settings.position);
-		if (tile.visibility_flags & (u8)(1 << (u32)g_local_nation_id)) {
+		const auto flags = bw::in_replay() ? ~*g_replay_visions : (u8)(1 << (u32)g_local_nation_id);
+		if (tile.visibility_flags & flags) {
             result.volume = DSBVOLUME_MIN;
 			return result;
 		}
