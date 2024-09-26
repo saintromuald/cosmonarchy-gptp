@@ -821,7 +821,8 @@ namespace hooks {
 							incubate(data.target, 1, UnitId::ZergRililisk, data.attacking_player_id);
 						}
 					} break;
-					case WeaponId::HierophantPhaseSignifier: {
+					case WeaponId::HierophantPhaseSignifier:
+					case WeaponId::EpigraphLitanyCannons: {
 						target_ext->values[ValueSignifyStacks]++;
 						target_ext->timers[TimerSignify] = 3 * 24 + 1;
 						target_ext->values[ValueSignifyPlayer] = data.attacking_player_id;

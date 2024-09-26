@@ -118,35 +118,7 @@ namespace hooks {
 
 		// Hierophant Signify: Cowardice
 		if (unit_ext->values[ValueSignifyStacks]) {
-			auto match = cosmonarchy_finder_match(unit, 0, {});
-			Vec32f facing_dir = bw::facing_dir(unit);
-
-			// TODO: unit search / optimize
-			const u32 radius = 6 * 32;
-			Unit* enemy_unit = bw::UnitFinder::get_nearest_target(
-				unit->get_x() - radius,
-				unit->get_y() - radius,
-				unit->get_x() + radius,
-				unit->get_y() + radius,
-				unit,
-			[&](Unit* hostile) {
-				if (!match(hostile)) {
-					return false;
-				}
-				if (!bw::is_allied_to(unit_ext->values[ValueSignifyPlayer], hostile->player)) {
-					return false;
-				}
-
-				Vec32f dir_from_hostile = bw::dir_between(hostile->position, unit->position);
-				if (bw::dot_product(facing_dir, dir_from_hostile) < 0) {
-					return false;
-				}
-				return true;
-			});
-
-			if (enemy_unit) {
-				speed *= 0.5;
-			}
+			speed *= 0.5;
 		}
 
 		// Mind Tyrant - Maelstrom - slow
