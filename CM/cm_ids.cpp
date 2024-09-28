@@ -1095,7 +1095,7 @@ bool unit_could_spawn_custom_larva(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	switch (unit->id) {
 		case UnitId::Omnivale: {
-			if (g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss) {
+			if (unit->player < PlayerLimit && g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss) {
 				return true;
 			}
 		} break;
@@ -1117,7 +1117,7 @@ bool unit_could_spread_custom_creep(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	switch (unit->id) {
 		case UnitId::Omnivale: {
-			if (g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss) {
+			if (unit->player < PlayerLimit && g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss) {
 				return true;
 			}
 		} break;
@@ -1209,7 +1209,7 @@ bool portrait_id_is_default_advisor(u32 portrait_id) {
 }
 
 u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
-	if (player >= PLAYABLE_PLAYER_COUNT) {
+	if (player >= PlayerLimit) {
 		return portrait_id;
 	}
 	const auto faction = g_globals->players[player].faction;

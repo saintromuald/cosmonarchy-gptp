@@ -440,13 +440,10 @@ namespace hooks
 				--region_count_zeroed;
 			} while (!finished_with_regions);
 		}
-		if (!(g_aiscript_controller[player_id].ai_flags.is_transports_off))
-		{
+		if (!(g_aiscript_controller[player_id].ai_flags.is_transports_off)) {
 			u32 player_race = g_player_table[player_id].race;
-			if (player_race == RaceId::Terran)
-			{
-				if (!g_completed_unit_count_table[UnitId::TerranPhalanxTankModeTurret].player[player_id + 12]) // what
-				{
+			if (player_race == RaceId::Terran) {
+				if (!g_completed_unit_count_table[UnitId::TerranPhalanxTankModeTurret].player[player_id + 12]) { // what
 					return;
 				}
 				transport_unit_id_1 = UnitId::TerranTrojan;
@@ -456,20 +453,16 @@ namespace hooks
 					transport_unit_id_2 = UnitId::TerranQilin;
 				}
 			} else {
-				if (player_race != RaceId::Protoss)
-				{
+				if (player_race != RaceId::Protoss) {
 					return;
 				}
 				witness_count = g_all_unit_count_table[UnitId::ProtossWitness].player[player_id];
-				if (witness_count < 2)
-				{
+				if (witness_count < 2) {
 					witness_request_quantity = 2 - witness_count;
-					do
-					{
+					do {
 						witness_gas_cost = units_dat::vespene_cost[UnitId::ProtossWitness];
 						witness_supply_cost = units_dat::supply_required[UnitId::ProtossWitness];
-						if (units_dat::base_property[UnitId::ProtossWitness] & UnitProperty::TwoUnitsIn1Egg)
-						{
+						if (units_dat::base_property[UnitId::ProtossWitness] & UnitProperty::TwoUnitsIn1Egg) {
 							witness_supply_cost = 2 * units_dat::supply_required[UnitId::ProtossWitness];
 						}
 						g_aiscript_controller[player_id].minerals_needed += units_dat::mineral_cost[UnitId::ProtossWitness];
