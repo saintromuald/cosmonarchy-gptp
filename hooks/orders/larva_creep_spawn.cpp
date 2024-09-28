@@ -115,7 +115,7 @@ namespace hooks
 			// return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
 			// Replace UnitId::ZergGathtelosk with unit->id if giving specific buildings different creep bounding rectangles in get_creep_region
 			u8 did_spread_cagra = helper::spread_creep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
-			if (unit->id == 180 && did_spread_cagra != 0) {
+			if (unit->id == UnitId::UnusedCaveIn && did_spread_cagra != 0) { // This was for Bactalisk spawner, old iquare cagra spread code. -Pr0nogo
 				u32 current_tile_x = unit->sprite->position.x / 32;
 				u32 current_tile_y = unit->sprite->position.y / 32;
 				s32 width_x = 6;

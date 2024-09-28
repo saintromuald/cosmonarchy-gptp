@@ -218,13 +218,12 @@ namespace hooks {
 				}
 
 				// Ignore allied units (new) -Veeq7		
-				if (target && bw::is_allied_to(unit->player, target->player) && !g_globals->players[target->player].neutral_hostile) {
+				if (target && bw::is_allied_to(unit->player, target->player) && (target->player < PlayerLimit && !g_globals->players[target->player].neutral_hostile)) {
 					UnitExt* unit_ext = get_unit_ext(unit);
 					u32 patience = unit_ext->timers[TimerAI_Patience];
 					unit_ext->timers[TimerAI_Patience] += 2 * 24;
 					if (patience <= 7 * 24) {
-						if (units_dat::base_property[unit->id] & UnitProperty::Worker || !helper::unit_can_attack_target(target, unit, 1))
-						{
+						if (units_dat::base_property[unit->id] & UnitProperty::Worker || !helper::unit_can_attack_target(target, unit, 1)) {
 							helper::ai_flee(unit, target);
 						}
 						return;

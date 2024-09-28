@@ -2007,20 +2007,20 @@ u32 get_zerg_regression(Unit* unit) {
 		case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
 
 		// Base Structures
-	case UnitId::ZergHachirosk:
-	case UnitId::ZergCagrantCesiant:
-	case UnitId::ZergExcisant:
-	case UnitId::ZergIrolIris:
-	case UnitId::ZergQuazethPool:
-	case UnitId::ZergMutathSpire:
-	case UnitId::ZergAxtothAxis:
-	case UnitId::ZergHydrithDen:
-	case UnitId::ZergAlkagIteth:
-	case UnitId::ZergGeszkathGrotto:
-	case UnitId::ZergZorkizShroud:
-	case UnitId::ZergMatravilNest:
-	case UnitId::ZergElthisthMound:
-		return UnitId::None;			// Bugs: Larva don't unlink, cagra doesn't recede
+		case UnitId::ZergHachirosk:
+		case UnitId::ZergCagrantCesiant:
+		case UnitId::ZergExcisant:
+		case UnitId::ZergIrolIris:
+		case UnitId::ZergQuazethPool:
+		case UnitId::ZergMutathSpire:
+		case UnitId::ZergAxtothAxis:
+		case UnitId::ZergHydrithDen:
+		case UnitId::ZergAlkagIteth:
+		case UnitId::ZergGeszkathGrotto:
+		case UnitId::ZergZorkizShroud:
+		case UnitId::ZergMatravilNest:
+		case UnitId::ZergElthisthMound:
+			return UnitId::None;			// Bugs: Larva don't unlink, cagra doesn't recede
 		//	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
 
 		// Unit Morphs
@@ -2045,9 +2045,13 @@ u32 get_zerg_regression(Unit* unit) {
 		case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
 		case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
 		case UnitId::ZergKalkalisk: {
-			switch (g_globals->players[unit->player].faction) {
-				case Faction::ZergZorthosTendril:   return UnitId::ZergNathrelisk;
-				default:							return UnitId::ZergNathrokor;
+			if (unit->player < PlayerLimit) {
+				switch (g_globals->players[unit->player].faction) {
+					case Faction::ZergZorthosTendril:   return UnitId::ZergNathrelisk;
+					default:							return UnitId::ZergNathrokor;
+				}
+			} else {
+				return UnitId::ZergNathrokor;
 			}
 		} break;
 	}

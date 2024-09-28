@@ -834,7 +834,7 @@ namespace hooks {
 			}
 
 			if (local_flags & VespeneDeaths_Ping) {
-				for (u32 target = 0; target < PLAYABLE_PLAYER_COUNT; ++target) {
+				for (u32 target = 0; target < PlayerLimit; ++target) {
 					if (!g_globals->players[target].witness_mode && !g_globals->players[target].neutral_hostile) {
 						u32 color = 0; // red
 						if (g_globals->players[g_local_nation_id].witness_mode) {

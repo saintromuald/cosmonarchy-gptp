@@ -99,7 +99,7 @@ u32 get_construction_graphic(Unit* unit) {
 }
 
 void init_omnipresence() {
-	for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
+	for (u32 player = 0; player < PlayerLimit; player++) {
 		if (g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot) {
 			continue;
 		}
@@ -112,7 +112,7 @@ void init_omnipresence() {
 }
 
 void init_duopoly() {
-	for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
+	for (u32 player = 0; player < PlayerLimit; player++) {
 		if (g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot) {
 			continue;
 		}
