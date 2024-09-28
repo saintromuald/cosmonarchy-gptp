@@ -2,8 +2,7 @@
 #include "hook_tools.h"
 #include "BW/structures.h"
 
-namespace
-{
+namespace {
 	void __declspec(naked) is_unit_in_weapon_range_wrapper() { // 00476870
 		static Unit* target;
 		static Unit* attacker;
@@ -28,15 +27,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cmdrecv_hold_position_wrapper() // 004C20C0
-	{
+	void __declspec(naked) cmdrecv_hold_position_wrapper() { // 004C20C0
 		static Unit* result;
-		static s32 a1;
+		static s8* buffer;
 		__asm {
-			MOV a1, EDI
+			MOV buffer, EDI
 			PUSHAD
 		}
-		result = hooks::cmdrecv_hold_position(a1);
+		result = hooks::cmdrecv_hold_position(buffer);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -44,8 +42,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unit_can_see_cloaked_target_wrapper() // 00401D60
-	{
+	void __declspec(naked) unit_can_see_cloaked_target_wrapper() { // 00401D60
 		static Unit* target;
 		static Unit* unit;
 		static u32 result;
@@ -69,8 +66,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) is_unit_visible_wrapper() // 004E5DB0
-	{
+	void __declspec(naked) is_unit_visible_wrapper() { // 004E5DB0
 		static u32 result;
 		static Unit* unit;
 		__asm {
@@ -85,8 +81,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) check_unit_visibility_wrapper() // 00443390
-	{
+	void __declspec(naked) check_unit_visibility_wrapper() { // 00443390
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
@@ -99,12 +94,10 @@ namespace
 		}
 	}
 
-	void __declspec(naked) is_unit_cloaking_wrapper() // 004916E0
-	{
+	void __declspec(naked) is_unit_cloaking_wrapper() { // 004916E0
 		static s32 result;
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, ECX
 			PUSHAD
 		}
@@ -117,14 +110,12 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unit_can_attack_target_wrapper() // 00476730
-	{
+	void __declspec(naked) unit_can_attack_target_wrapper() { // 00476730
 		static u32 result;
 		static Unit* target;
 		static Unit* attacker;
 		static u32 check_detection;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			PUSH EAX
 			MOV EBP, ESP
@@ -137,19 +128,16 @@ namespace
 			PUSHAD
 		}
 		result = hooks::unit_can_attack_target(target, attacker, check_detection);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN 0x04
 		}
 	}
 
-	void __declspec(naked) ai_attack_unit_wrapper() // 0043FFD0
-	{
+	void __declspec(naked) ai_attack_unit_wrapper() { // 0043FFD0
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -159,8 +147,7 @@ namespace
 			PUSHAD
 		}
 		hooks::ai_attack_unit(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -499,7 +486,7 @@ namespace hooks
 	//	nops(0x004EB316, 2);
 
 		jump_patch(is_unit_in_weapon_range_wrapper,						0x00476870, 2);
-	//	jump_patch(cmdrecv_hold_position_wrapper,						0x004C20C0, 0);
+		jump_patch(cmdrecv_hold_position_wrapper,						0x004C20C0, 0);
 	//	jump_patch(unit_can_see_cloaked_target_wrapper,					0x00401D60, 4);
 	//	jump_patch(is_target_visible_wrapper,							0x004E5E30, 4);
 	//	jump_patch(is_unit_visible_wrapper,								0x004E5DB0, 1);
