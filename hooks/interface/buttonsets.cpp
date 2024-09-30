@@ -2435,6 +2435,12 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossVibrance: {
+									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Vibrance - Steady Shroud
+									||  current_button->icon_id == IconId::ProtossGroundWeapons) {		// Vibrance - Astral Blessing
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ProtossDemiurge: {
 									if (current_button->icon_id == IconId::DemiurgePassiveWorship) { // Demiurge - Worship
 										current_button_state = Button_State::Enabled;

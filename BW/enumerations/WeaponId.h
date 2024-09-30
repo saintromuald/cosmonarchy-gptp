@@ -273,6 +273,7 @@ namespace WeaponId {
 		AnalogueCylindricalBlaster			= 202,
 		PotentateTalismanicWeaver			= 206,
 		PotentatePhaseSaber					= 207,
+		VibranceSensoryOverload				= 219,
 
 		// Zerg \\
 					

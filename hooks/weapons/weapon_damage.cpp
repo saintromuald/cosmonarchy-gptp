@@ -837,7 +837,8 @@ namespace hooks {
 						}
 					} break;
 					case WeaponId::EcclesiastAstralBlaster:
-					case WeaponId::MatrixKhaydarinRay: {
+					case WeaponId::MatrixKhaydarinRay:
+					case WeaponId::VibranceSensoryOverload: {
 						// Astral Blessing - Ecclesiast behavior
 						if (data.attacking_player_id != data.target->player && !bw::is_allied_to(data.attacking_player_id, data.target->player)) {
 							bw::astral_blessing_proc(data.target, data.attacking_player_id, data.weapon_id);

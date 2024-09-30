@@ -1193,8 +1193,7 @@ namespace hooks {
 		}
 	}
 
-	bool find_next_bounce_target_proc(Unit* target) // 0048AFD0
-	{
+	bool find_next_bounce_target_proc(Unit* target) { // 0048AFD0
 		Unit* bounce_source = *g_bullet_bounce_missile_source;
 		// Previously disallowed bouncing if unit was disabled
 		if (!target) {
@@ -1261,8 +1260,7 @@ namespace hooks {
 		return *g_bullet_bounce_missile_next != target;
 	}
 
-	Unit* find_next_bounce_target(Bullet* bullet) // 0048B1E0
-	{
+	Unit* find_next_bounce_target(Bullet* bullet) { // 0048B1E0
 		if (!bullet->source_unit) {
 			return 0;
 		}
@@ -1282,41 +1280,32 @@ namespace hooks {
 	}
 
 	// Hooked to resolve issues with multihit bullets - Pr0nogo
-	Bullet* delete_bullet (Bullet* bullet) // 0048A560
-	{
-		if (!bullet->sprite)
-		{
-			if (*g_first_bullet == bullet)
-			{
+	Bullet* delete_bullet (Bullet* bullet) { // 0048A560
+		if (!bullet->sprite) {
+			if (*g_first_bullet == bullet) {
 				*g_first_bullet = bullet->next;
 			}
-			if (*g_last_bullet == bullet)
-			{
+			if (*g_last_bullet == bullet) {
 				*g_last_bullet = bullet->previous;
 			}
-			if (bullet->previous)
-			{
+			if (bullet->previous) {
 				bullet->previous->next = bullet->next;
 			}
-			Bullet* v1 = bullet->next;
-			if (v1)
-			{
-				v1->previous = bullet->previous;
+			Bullet* next_bullet = bullet->next;
+			if (next_bullet) {
+				next_bullet->previous = bullet->previous;
 			}
 			bullet->previous = 0;
 			bullet->next = 0;
 			Bullet* next_bounce_bullet = *first_free_bullet;
-			if (*first_free_bullet)
-			{
-				if (*last_free_bullet == *first_free_bullet)
-				{
+			if (*first_free_bullet) {
+				if (*last_free_bullet == *first_free_bullet) {
 					*last_free_bullet = bullet;
 				}
 				bullet->previous = *first_free_bullet;
 				bullet->next = next_bounce_bullet->next;
 				Bullet* target = next_bounce_bullet->next;
-				if (target)
-				{
+				if (target) {
 					target->previous = bullet;
 				}
 				next_bounce_bullet->next = bullet;
@@ -1509,12 +1498,10 @@ namespace hooks {
 			case WeaponBehavior_Bounce: {
 				switch (weapon_id) {
 					case WeaponId::BactaliskCorrosiveAcid:
-					case WeaponId::AlkajeliskPlasmidSpores:
-					{
+					case WeaponId::AlkajeliskPlasmidSpores: {
 						bullet->remaining_bounces = 1; // Additional bounces added later. -Veeq7
 					} break;
-					default:
-					{
+					default: {
 						if (weapon_id_bounces_crushing_tide(weapon_id)) {
 							bullet->remaining_bounces = 2;
 						} else {

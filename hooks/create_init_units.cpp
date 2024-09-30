@@ -388,8 +388,7 @@ namespace hooks {
 		return 0;
 	}
 
-	u32 create_initial_team_melee_units(s32 player) // 0049D8E0
-	{
+	u32 create_initial_team_melee_units(s32 player) { // 0049D8E0
 		create_initial_melee_units();
 		return 1; // unused
 	}
