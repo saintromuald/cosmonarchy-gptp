@@ -264,24 +264,22 @@ namespace
 			JE		offset isTalos
 			CMP		AX, 7//unit->id == UnitId::TerranMason
 			JNE		offset isNotSCV
-			isTalos :
+		isTalos:
 			MOV		EAX, [ESI + 0xE8]
 			TEST	EAX, EAX//unit->secondaryOrderPos != null
 			JE		offset isNotSCV
 			MOV[EBP - 4], EAX//unit->sprite->position = unit->secondaryOrderPos
 			XOR[ESI + 0xE8], EAX//unit->secondaryOrderPos = null
 			JMP		decollide_unit_F2E4C
-			isNotSCV :
+		isNotSCV:
 			LEA		ECX, [EBP - 4]
 			JMP		decollide_unit_F2E3A
 		}
 	}
 }
 
-namespace hooks
-{
-	void inject_building_terran_hook()
-	{
+namespace hooks {
+	void inject_building_terran_hook() {
 		jump_patch(orders_terran_build_self_wrapper,		0x00467760, 2);
 		jump_patch(orders_scv_build_2_wrapper,				0x00467A70, 1);
 		jump_patch(orders_scv_build_wrapper,				0x00467FD0, 0);

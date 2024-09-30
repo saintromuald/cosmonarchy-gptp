@@ -2,37 +2,31 @@
 #include <hook_tools.h>
 #include <BW/api.h>
 
-namespace
-{
-	void __declspec(naked) move_to_target_wrapper() // 004EB720
-	{
+namespace {
+	void __declspec(naked) move_to_target_wrapper() { // 004EB720
 		static s32 result;
 		static Unit* target;
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV target, EDI
 			MOV unit, ESI
 			PUSHAD
 		}
 		result = hooks::move_to_target(target, unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) get_active_tile_flag_wrapper() // 00472F80
-	{
+	void __declspec(naked) get_active_tile_flag_wrapper() { // 00472F80
 		static b32 result;
 		static s16 x;
 		static s16 y;
 		static s32 includedFlags;
 		static s32 excludedFlags;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -47,8 +41,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::get_active_tile_flag(y, x, includedFlags, excludedFlags);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -57,14 +50,12 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unit_has_path_to_dest_wrapper() // 0049CB60
-	{
+	void __declspec(naked) unit_has_path_to_dest_wrapper() { // 0049CB60
 		static Unit* unit;
 		static s32 x;
 		static s32 y;
 		static bool result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -77,8 +68,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::unit_has_path_to_dest(unit, x, y);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV AL, result
 			MOV ESP, EBP
@@ -87,37 +77,31 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unit_has_path_to_unit_wrapper() // 0049CBB0
-	{
+	void __declspec(naked) unit_has_path_to_unit_wrapper() { // 0049CBB0
 		static Unit* pather;
 		static Unit* target;
 		static bool result;
-		__asm
-		{
+		__asm {
 			MOV pather, EAX
 			MOV target, ECX
 			PUSHAD
 		}
 		result = hooks::unit_has_path_to_unit(pather, target);
-		_asm
-		{
+		_asm {
 			POPAD
 			MOV AL, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) set_repulse_angle_wrapper() // 0049CBB0
-	{
+	void __declspec(naked) set_repulse_angle_wrapper() { // 0049CBB0
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, ESI
 			PUSHAD
 		}
 		hooks::set_repulse_angle(unit);
-		_asm
-		{
+		_asm {
 			POPAD
 			RETN
 		}
@@ -158,6 +142,8 @@ namespace
 			JE locret
 			CMP byte ptr[ESI + 0x4D], 34	// unit->main_order_id != OrderId::Repair1
 			JE locret
+			CMP byte ptr[ESI + 0x4D], 70	// unit->main_order_id != OrderId::DroneLand
+			JE locret
 			JMP setRepulseAngle_53310
 
 			locret:
@@ -166,10 +152,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_pathfinding_hooks()
-	{
+namespace hooks {
+	void inject_pathfinding_hooks() {
 		jump_patch(is_point_at_unit_border,			0x0042DA90, 1);
 		jump_patch(move_to_target_wrapper,			0x004EB720, 0);
 	//	jump_patch(get_active_tile_flag_wrapper,	0x00472F80, 1);
