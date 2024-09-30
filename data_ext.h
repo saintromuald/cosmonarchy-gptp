@@ -390,6 +390,7 @@ enum ExtUnitId {
 	UnitMindTyrantLink,
 	UnitMindTyrantVictim,
 	UnitInfestingMatraleth,
+	UnitPlagueSource,
 
 	UnitCount,
 };

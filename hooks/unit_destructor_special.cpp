@@ -285,14 +285,9 @@ void unit_on_death_behaviors(Unit* unit) {
 
 	// Metastasis - Plague spreads when a unit dies
 	if (unit->plague_timer) {
-		helper::create_bullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->player, unit->current_direction_1);
-		u32 range = 48;
-		Box16 coords = {};
-		coords.left   = unit->position.x - range;
-		coords.top    = unit->position.y - range;
-		coords.right  = unit->position.x + range;
-		coords.bottom = unit->position.y + range;
-		helper::iterate_units_at_location_target_proc_plague(unit, &coords);
+		Unit* attacker = unit_ext->units[UnitPlagueSource];
+		u32 attacking_player = attacker ? attacker->player : 11;
+		g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5 * 32, { (u16)unit->position.x, (u16)unit->position.y }, 3 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
 	}
 
 	// Gladius - Binding Plasma - proc on death

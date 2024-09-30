@@ -325,6 +325,8 @@ static void tick_effect(EffectField& effect) {
 					effect.position.y + 1 * 32
 				).for_each([&](Unit* unit) {
 					helper::plague_proc(unit, 0);
+					UnitExt* unit_ext = get_unit_ext(unit);
+					unit_ext->units[UnitPlagueSource] = effect.origin;
 				});
 			} break;
 			case EffectId::ReclamationField: {
