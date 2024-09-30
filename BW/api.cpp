@@ -3058,6 +3058,7 @@ void regress(Unit* unit, u32 regression_id) {
 	// We first cancel any on-going morphs, that could technically delete the unit, but that shouldn't happen for current unit id cases
 	// I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
 	if (unit) {
+		helper::increment_unit_death_scores(unit, unit->player);
 		bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
 		is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes.
 		u32 old_id = unit->id;

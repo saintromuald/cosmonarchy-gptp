@@ -1088,6 +1088,10 @@ namespace hooks {
 				bw::regress(data.target, regression_id);
 				if (data.target) {
 					unit_on_death_behaviors(data.target);
+					if (data.attacker && !bw::is_allied_to(data.attacking_player_id, data.target->player)) { // Personally I think it's fine if kills are tracked regardless of allegiance,
+																											 // but we need to hook 004797B0 to make this a global rule. -Pr0nogo
+						helper::increment_unit_kill_count(data.attacker);
+					}
 				}
 
 				// Fix burrowed regression / transforms. -DF
