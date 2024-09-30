@@ -4,8 +4,7 @@
 #include "hooks/orders/pathfinding.h"
 #include "hooks/unit_stats/sight_range.h"
 
-namespace hooks
-{
+namespace hooks {
 	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
 	s32 spell_order(s32 default_order_string, Unit* caster, u16 tech_id, s32 range, u16* energy_cost) { // 004926D0
 		Unit* order_target = caster->order_target.unit;
@@ -336,8 +335,7 @@ namespace hooks
 	}
 
 	// Hooked to delard energy expenditure. -Pr0nogo
-	void orders_defensive_matrix(Unit* caster) // 004550A0
-	{
+	void orders_defensive_matrix(Unit* caster) { // 004550A0
 		u16 energy_cost;
 		if (helper::spell_order(caster, TechId::DefensiveMatrix, &energy_cost, 8 * 32, 880)) {
 			caster->spend_energy(energy_cost);
@@ -402,6 +400,7 @@ namespace hooks
 			case TechId::Hallucination:
 			case TechId::YamatoGun:
 			case TechId::Irradiate:
+			case TechId::LuminaryAuralAssault:
 			case TechId::GoskaLobotomyGrenade: {
 				return false;
 			} break;
