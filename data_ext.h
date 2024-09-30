@@ -208,6 +208,7 @@ enum ExtValueId {
 	ValueUprisingInAttackWave,
 	ValueCancellingZergStructure,
 	ValueIsShade,
+	ValuePlayingHatchSound,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

@@ -30,6 +30,10 @@ namespace hooks {
 			if (current_image->animation != animation) {
 				current_image->play_iscript_animation(animation);
 			}
+			if (!unit_ext->values[ValuePlayingHatchSound]) {
+				unit_ext->values[ValuePlayingHatchSound] = true;
+				bw::play_sound(SoundId::Zerg_Egg_ZEgRdy00_WAV, unit->position);
+			}
 		}
 
 		if (unit->order_signal & 4) {
