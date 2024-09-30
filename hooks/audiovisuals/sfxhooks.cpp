@@ -339,19 +339,17 @@ namespace hooks {
 	}
 
 	// Hooked to use positional audio. -Pr0nogo
-	b32 play_sound_from_unit(u32 sound_id, Unit* unit, b32 play, s32 min_volume) { // 0048ED50
+	b32 play_sound_from_unit(SoundId::Enum sound_id, Unit* unit, b32 play, s32 min_volume) { // 0048ED50
 		if (!sound_id || !g_options_list->sfx || !play) {
 			return 0;
 		}
-		PlaySoundSettings settings = { .position = unit->position, .min_volume = min_volume };
-		return (b32)play_sound_ext((SoundId::Enum)sound_id, settings);
+		return play_sound_ext(sound_id, PlaySoundSettings{.position = unit->position, .min_volume = min_volume});
 	}
 
 	// Hooked to use positional audio. -Pr0nogo
-	void play_sound_at_pos(u32 sound_id, Point16 pos, b32 play, s32 min_volume) { // 0048EC10
+	void play_sound_at_pos(SoundId::Enum sound_id, Point16 pos, b32 play, s32 min_volume) { // 0048EC10
 		if (sound_id && pos.x < g_map_width_pixels && pos.y < g_map_height_pixels && g_options_list->sfx && play) {
-			PlaySoundSettings settings = { .position = pos, .min_volume = min_volume };
-			play_sound_ext((SoundId::Enum)sound_id, settings);
+			play_sound_ext(sound_id, PlaySoundSettings{.position = pos, .min_volume = min_volume});
 		}
 	}
 }

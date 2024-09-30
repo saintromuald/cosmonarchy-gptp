@@ -62,7 +62,7 @@ namespace {
 	}
 
 	void __declspec(naked) play_sound_from_unit_wrapper() { // 0048F440
-		static u32 sound_id;
+		static SoundId::Enum sound_id;
 		static Unit* unit;
 		static b32 play;
 		static s32 min_volume;
@@ -91,7 +91,7 @@ namespace {
 	}
 
 	void __declspec(naked) play_sound_at_pos_wrapper() { // 0048F440
-		static u32 sound_id;
+		static SoundId::Enum sound_id;
 		static Point16 pos;
 		static b32 play;
 		static s32 min_volume;
