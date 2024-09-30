@@ -15298,4 +15298,31 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	s32 get_sfx_pan_from_distance(u32 pos_x) {
+		const u32 func_address = 0x0048E850;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, pos_x
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 git_sfx_volume_from_screen_distance(u32 pos_x, u32 pos_y) {
+		const u32 func_address = 0x0048E8D0;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, pos_x
+			MOV ECX, pos_y
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

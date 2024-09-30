@@ -4,6 +4,7 @@
 #include <BW/bwdata.h>
 #include <hooks/byte_operations_utils.h>
 #include <hooks/limits/sfx_extender.h>
+#include "trigger_system/trigger_sound.h"
 
 namespace hooks {
 	// Hooked to allow more unit ids to have "annoyed" lines.
@@ -334,6 +335,23 @@ namespace hooks {
 				helper::play_sound_from_unit(ready_sound, unit, g_options_list->flags & 1, 99);
 				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[ready_sound] + 1000 * (sfx_dat::sound_data[ready_sound].duration_ms / 1000), 1, ready_sound);
 			}
+		}
+	}
+
+	// Hooked to use positional audio. -Pr0nogo
+	b32 play_sound_from_unit(u32 sound_id, Unit* unit, b32 play, s32 min_volume) { // 0048ED50
+		if (!sound_id || !g_options_list->sfx || !play) {
+			return 0;
+		}
+		PlaySoundSettings settings = { .position = unit->position, .min_volume = min_volume };
+		return (b32)play_sound_ext((SoundId::Enum)sound_id, settings);
+	}
+
+	// Hooked to use positional audio. -Pr0nogo
+	void play_sound_at_pos(u32 sound_id, Point16 pos, b32 play, s32 min_volume) { // 0048EC10
+		if (sound_id && pos.x < g_map_width_pixels && pos.y < g_map_height_pixels && g_options_list->sfx && play) {
+			PlaySoundSettings settings = { .position = pos, .min_volume = min_volume };
+			play_sound_ext((SoundId::Enum)sound_id, settings);
 		}
 	}
 }
