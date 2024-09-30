@@ -37,6 +37,7 @@ namespace hooks
 	b32 give_unit_to_player(Unit* unit, u32 player);								// 004C8040
 	void set_maelstrom_timer(Unit* unit, u8 duration);								// 004553F0
 	void unfreeze_unit(Unit* unit);													// 004F62D0
+	void __fastcall plague_proc(Unit* victim, Unit* caster);						// 004F4AF0
 
 	void inject_weapon_spell_hit_hooks();
 }

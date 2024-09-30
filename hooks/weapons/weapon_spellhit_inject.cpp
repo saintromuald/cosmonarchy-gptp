@@ -614,10 +614,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-    void inject_weapon_spell_hit_hooks()
-    {
+namespace hooks {
+    void inject_weapon_spell_hit_hooks() {
         jump_patch(irradiate_hit_wrapper,							0x00454E00, 4);
         jump_patch(optical_flare_hit_wrapper,						0x00455170, 1);
         jump_patch(restore_hit_wrapper,								0x00455230, 6);
@@ -644,6 +642,7 @@ namespace hooks
 	//	jump_patch(give_unit_to_player_wrapper,						0x004C8040, 2);
 		jump_patch(set_maelstrom_timer_wrapper,						0x004553F0, 4);
 		jump_patch(unfreeze_unit_wrapper,							0x004F62D0, 1);
+		jump_patch(plague_proc,										0x004F4AF0, 1);
 
 		// Remove optical flare target check
 		nops(0x0048BBC7, 2);

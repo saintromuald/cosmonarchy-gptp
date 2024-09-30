@@ -753,8 +753,7 @@ namespace hooks {
 	}
 
 	// Hooked to unfreeze subunits too. -Pr0nogo
-	void unfreeze_unit(Unit* unit) // 004F62D0
-	{
+	void unfreeze_unit(Unit* unit) { // 004F62D0
 		unit->stasis_timer = 0;
 		if (!(unit->status & UnitStatus::Frozen) && !unit->lockdown_timer && !unit->maelstrom_timer) {
 			helper::change_unit_buttonset(unit, unit->id);
@@ -767,5 +766,15 @@ namespace hooks {
 			unit->subunit->unfreeze();
 		}
 		helper::remove_overlay_range(ImageId::StasisField_Small, ImageId::StasisField_Large, unit);
+	}
+
+	// Hooked to apply to burrowed units. -Pr0nogo
+	void __fastcall plague_proc(Unit* victim, Unit* caster) { // 004F4AF0
+		if (!(victim->status & UnitStatus::Invincible)) {
+			helper::apply_plague(victim);
+			if (caster) {
+				unit_was_hit(victim, caster, 1);
+			}
+		}
 	}
 }
