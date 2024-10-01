@@ -32,8 +32,8 @@ namespace hooks
 				u32 status_saved = (unit->status & UnitStatus::AttackMove) + (unit->status & UnitStatus::Disabled);
 				u8 new_order_id = OrderId::Die;
 				if (unit->id == UnitId::ProtossAccantorOld) {
-					if (unit->main_order_id == OrderId::ReaverHold) {
-						new_order_id = OrderId::ReaverHold;
+					if (unit->main_order_id == OrderId::HoldPositionReaver) {
+						new_order_id = OrderId::HoldPositionReaver;
 					} else {
 						new_order_id = OrderId::ReaverFight;
 					}
@@ -68,8 +68,8 @@ namespace hooks
 
 				u8 new_order_id = 0;
 				if (unit->id == UnitId::ProtossAccantorOld) {
-					if (unit->main_order_id == OrderId::ReaverHold) {
-						new_order_id = OrderId::ReaverHold;
+					if (unit->main_order_id == OrderId::HoldPositionReaver) {
+						new_order_id = OrderId::HoldPositionReaver;
 					} else {
 						new_order_id = OrderId::ReaverFight;
 					}

@@ -5,7 +5,7 @@
 namespace hooks
 {
 	bool is_unit_in_weapon_range(Unit* target, Unit* attacker);															// 00476870
-	Unit* cmdrecv_hold_position(s32 a1);																				// 004C20C0
+	Unit* cmdrecv_hold_position(s8* buffer);																			// 004C20C0
 	u32 unit_can_see_cloaked_target(Unit* target, Unit* unit);															// 00401D60
 	u32 is_unit_visible(Unit* unit);																					// 004E5DB0
 	void check_unit_visibility(Unit* unit);																				// 00443390

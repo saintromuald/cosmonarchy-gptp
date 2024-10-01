@@ -77,29 +77,29 @@ namespace hooks {
 		return helper::is_target_within_min_movement_range(final_target, final_attacker, max_range);
 	}
 
-	Unit* cmdrecv_hold_position(s32 a1) { // 004C20C0
-		*((s8*)&g_map_height_pixels + 2) = 0;
+	Unit* cmdrecv_hold_position(s8* buffer) { // 004C20C0
+		g_unit_iterator_pos[0] = 0;
 		Unit* result = helper::get_active_player_next_selection();
-		for (Unit* i = result; result; i = result)
-		{
+		for (Unit* i = result; result; i = result) {
 			u32 unit_id = i->id;
-			u32 order_id = 0;
-			if (unit_id != UnitId::ProtossSolarion) {
-				if (unit_id != UnitId::ProtossAccantorOld) {
-					if (unit_id == UnitId::TerranCleric) {
-						order_id = OrderId::MedicHoldPosition;
-					} else {
-						order_id = OrderId::HoldPositionSuicide;
-					}
-				} else {
-					order_id = OrderId::ReaverHold;
-				}
-			} else {
-				order_id = OrderId::HoldPositionSolarion;
+			u32 order_id = OrderId::HoldPositionNormal;
+			switch (unit_id) {
+				case UnitId::ProtossSolarion: {
+					order_id = OrderId::HoldPositionSolarion;
+				} break;
+				case UnitId::ProtossAccantorOld: {
+					order_id = OrderId::HoldPositionReaver;
+				} break;
+				case UnitId::TerranCleric: {
+					order_id = OrderId::HoldPositionCleric;
+				} break;
+				case UnitId::ZergSkryrokor: {
+					order_id = OrderId::HoldPositionSuicide;
+				} break;
 			}
 
 			if (helper::order_allowed(i, order_id, *g_active_nation_id) == 1) {
-				helper::targeted_order(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, order_id, 0, *g_order_type_4_position, *g_order_type_4_target);
+				helper::targeted_order(0, UnitId::None, i, 0, 1, buffer[1] != 0, order_id, 0, *g_order_type_4_position, *g_order_type_4_target);
 			}
 			result = helper::get_active_player_next_selection();
 		}
@@ -107,8 +107,7 @@ namespace hooks {
 	}
 
 	// Hooked for the cloak rewrite. - Pr0nogo
-	u32 unit_can_see_cloaked_target(Unit* target, Unit* unit) // 00401D60
-	{
+	u32 unit_can_see_cloaked_target(Unit* target, Unit* unit) { // 00401D60
 		return target->status & 0x300 && !((1 << unit->player) & target->detection_status);
 	}
 
