@@ -1769,7 +1769,4 @@ namespace helper {
 	b32 ai_sieged_phalanx_can_attack_nearby_unit(Unit* unit);					// 00442460
 
 	void transfer_resource_to_worker(Unit* node, Unit* worker);					// 004696D0
-
-	s32 get_sfx_pan_from_distance(u32 pos_x);									// 0048E850
-	s32 git_sfx_volume_from_screen_distance(u32 pos_x, u32 pos_y);				// 0048E8D0
 }
