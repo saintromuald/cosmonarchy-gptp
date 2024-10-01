@@ -61,7 +61,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) play_sound_from_unit_wrapper() { // 0048F440
+	void __declspec(naked) play_sound_from_unit_wrapper() { // 0048ED50
 		static SoundId::Enum sound_id;
 		static Unit* unit;
 		static b32 play;
@@ -75,7 +75,7 @@ namespace {
 			MOV EAX, [EBP + 0x0C]
 			MOV min_volume, EAX
 			POP EAX
-			MOV unit, EAX
+			MOV unit, ESI
 			MOV sound_id, EBX
 			PUSHAD
 		}
@@ -89,7 +89,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) play_sound_at_pos_wrapper() { // 0048F440
+	void __declspec(naked) play_sound_at_pos_wrapper() { // 0048EC10
 		static SoundId::Enum sound_id;
 		static Point16 pos;
 		static b32 play;
