@@ -532,7 +532,7 @@ namespace hooks {
 	// Hooked to change the breakpoints for mineral images.
 	void update_mineral_field_image(Unit* unit) { // 00468830
 		IscriptAnimation::Enum anim = IscriptAnimation::Built;
-		if (unit->building.resource.resource_amount < 4) {
+		if (unit->building.resource.resource_amount < 6) { // Tried using YieldType::MineralDepleted but it didn't work. -Pr0nogo
 			anim = IscriptAnimation::Landing;
 		} else if (unit->building.resource.resource_amount < 250) {
 			anim = IscriptAnimation::SpecialState1;

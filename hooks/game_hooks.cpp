@@ -570,9 +570,8 @@ namespace hooks {
 					switch (unit->main_order_id) {
 						case OrderId::Patrol:
 						case OrderId::ReturnMinerals:
-						case OrderId::ReturnGas:
+						case OrderId::ReturnGas: {
 							// TODO: Add more neutral orders
-						{
 							color = graphics::YELLOW;
 						} break;
 						case OrderId::Attack1:
@@ -586,13 +585,11 @@ namespace hooks {
 						case OrderId::TurretAttack:
 						case OrderId::TurretGuard:
 						case OrderId::PlayerGuard:
-						case OrderId::StayInRange:
+						case OrderId::StayInRange: {
 							// TODO: Add more aggressive orders
-						{
 							color = graphics::RED;
 						} break;
 					}
-
 					source = draw_order_line(source, unit->order_target, color, ignore_resource_unit);
 				}
 
@@ -1025,29 +1022,24 @@ namespace hooks {
 			} break;
 			case UnitId::ResourceMineralField:
 			case UnitId::ResourceMineralFieldType2:
-			case UnitId::ResourceMineralFieldType3:
-			{
+			case UnitId::ResourceMineralFieldType3: {
 				if (unit->building.resource.resource_amount < g_globals->get_yield(YieldType::Mineral)) {
 					unit->building.resource.resource_amount = g_globals->get_yield(YieldType::MineralDepleted);
 					unit->status |= UnitStatus::NoCollide;
 				}
 			} break;
-			case UnitId::ZergNydusCesiant:
-			{
+			case UnitId::ZergNydusCesiant: {
 				if (unit->player == 11) {
 					unit_ext->values[ValueIsNeutralNydus] = 1;
 				}
 			} break;
-			case UnitId::ProtossVassalOld:
-			{
+			case UnitId::ProtossVassalOld: {
 				helper::replace_unit_with_id(unit, UnitId::ProtossVassal);
 			} break;
-			case UnitId::ProtossAccantorOld:
-			{
+			case UnitId::ProtossAccantorOld: {
 				helper::replace_unit_with_id(unit, UnitId::ProtossAccantor);
 			} break;
-			case UnitId::ProtossSolarion:
-			{
+			case UnitId::ProtossSolarion: {
 				u32 missing_count = 12 - (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count);
 				if (missing_count) {
 					bw::create_hangar_units(unit, missing_count, UnitId::ProtossSteward);
