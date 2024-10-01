@@ -312,7 +312,7 @@ void free_sound(SoundMainBuffer* sound) {
 	}
 }
 
-PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, const PlaySoundSettings& settings) {
+PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, SoundId::Enum sound_id, PlaySoundSettings settings) {
 	if (!sound_buffer) {
 		return {};
 	}
@@ -325,9 +325,37 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, const PlaySoundSettin
 		return {};
 	}
 
+	u32 flags = sfx_dat::sound_flags[sound_id];
+	if (flags & DatSoundFlags_OneAtATime) {
+		if (sound->ds_buffer) {
+			DWORD status = 0;
+			sound->ds_buffer->GetStatus(&status);
+			if (status & DSBSTATUS_PLAYING) {
+				return {};
+			}
+		}
+	}
+
+	if (flags & DatSoundFlags_UnitResponse && settings.unit) {
+		for (u32 i = 0; i < MaxDupChannels; ++i) {
+			SoundDupBuffer* dup_channel = &g_dup_channels[i];
+			if (!g_dup_channels[i].ds_buffer) {
+				continue;
+			}
+			if (g_dup_channels[i].settings.GetUnitId() != settings.unit->unit_id) {
+				continue;
+			}
+			DWORD status = 0;
+			g_dup_channels[i].ds_buffer->GetStatus(&status);
+			if (status & DSBSTATUS_PLAYING) {
+				return {};
+			}
+		}
+	}
+
 	DWORD status = 0;
 	sound_buffer->ds_buffer->GetStatus(&status);
-	if (status & DSBSTATUS_PLAYING || settings.unit_response_unit_id != -1) {
+	if (status & DSBSTATUS_PLAYING || settings.GetUnitId() != -1) {
 		// Use dup channel
 		SoundDupBuffer* dup_buffer = 0;
 		for (u32 i = 0; i < MaxDupChannels; ++i) {
@@ -375,7 +403,7 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, const PlaySoundSettin
 }
 
 PlayingSound play_sound_ext(SoundId::Enum sound_id, const PlaySoundSettings& settings) {
-	return play_sound_ext(get_sound(sound_id), settings);
+	return play_sound_ext(get_sound(sound_id), settings, sound_id);
 }
 
 void play_music(bool resume) {
@@ -463,13 +491,13 @@ SoundMainBuffer* get_next_music() {
 	return music;
 }
 
-VolumePan calculate_volume_pan(const PlaySoundSettings& settings) {
+VolumePan calculate_volume_pan(PlaySoundSettings& settings) {
 	if (settings.is_bw_hook) {
 		return {settings.bw_volume, settings.bw_pan};
 	}
 
 	VolumePan result{99, 0};
-	if (settings.position) {
+	if (settings.GetUpdatedPosition()) {
         result.volume = helper::get_sfx_volume_from_screen_distance(settings.position.x, settings.position.y);
 		result.pan = helper::get_sfx_pan_from_screen_distance(settings.position.x);
 

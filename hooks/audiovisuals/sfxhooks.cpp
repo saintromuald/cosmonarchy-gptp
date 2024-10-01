@@ -343,13 +343,14 @@ namespace hooks {
 		if (!sound_id || !g_options_list->sfx || !play) {
 			return;
 		}
-		play_sound_ext(sound_id, PlaySoundSettings{.position = unit->position, .min_volume = min_volume});
+		play_sound_ext(sound_id, PlaySoundSettings{.position = unit->position, .unit = unit, .min_volume = min_volume});
 	}
 
 	// Hooked to use positional audio. -Pr0nogo
 	void play_sound_at_pos(SoundId::Enum sound_id, Point16 pos, bool play, s32 min_volume) { // 0048EC10
-		if (sound_id && pos.x < g_map_width_pixels && pos.y < g_map_height_pixels && g_options_list->sfx && play) {
-			play_sound_ext(sound_id, PlaySoundSettings{.position = pos, .min_volume = min_volume});
+		if (!sound_id || !g_options_list->sfx || !play) {
+			return;
 		}
+		play_sound_ext(sound_id, PlaySoundSettings{.position = pos, .min_volume = min_volume});
 	}
 }

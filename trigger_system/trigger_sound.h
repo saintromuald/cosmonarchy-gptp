@@ -59,17 +59,29 @@ struct PlaySoundSettings {
 	// Volume and pan are automatically calculated outside of the need of bw hooks
 	s32 bw_volume = 1;
 	s32 bw_pan = 0;
+	bool is_bw_hook = false;
+
 	Point16 position = {};
-	s32 unit_response_unit_id = -1;
+	Unit* unit = 0;
 	s32 min_volume = 0;
 	bool looping = false;
-	bool is_bw_hook = false;
+
+	Point16 GetUpdatedPosition() {
+		if (unit) {
+			position = unit->position;
+		}
+		return position;
+	}
+
+	s32 GetUnitId() const {
+		return unit ? unit->id : -1;
+	}
 };
 
 struct SoundBuffer {
 	LPDIRECTSOUNDBUFFER ds_buffer;
 	u64 generation;
-	PlaySoundSettings settings;
+	PlaySoundSettings settings = {};
 };
 
 struct SoundMainBuffer : SoundBuffer {
@@ -138,7 +150,7 @@ SoundMainBuffer* get_sound(const char* filename); // Note: currently passing `to
 SoundMainBuffer* get_sound(SoundId::Enum sound_id);
 void free_sound(SoundMainBuffer* sound);
 
-PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, const PlaySoundSettings& settings);
+PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings settings, SoundId::Enum sound_id = SoundId::None);
 PlayingSound play_sound_ext(SoundId::Enum sound_id, const PlaySoundSettings& settings);
 void play_music(bool resume);
 void stop_music(bool pause);
