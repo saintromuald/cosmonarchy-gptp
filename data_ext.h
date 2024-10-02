@@ -209,6 +209,7 @@ enum ExtValueId {
 	ValueCancellingZergStructure,
 	ValueIsShade,
 	ValuePlayingHatchSound,
+	ValueWorkerContext,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

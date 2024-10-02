@@ -6,18 +6,15 @@
 #include <hooks/orders/building_making/building_modifier.h>
 #include "trigger_system/trigger_system.h"
 
-namespace hooks
-{
+namespace hooks {
 	// The structure is being constructed
 	void orders_terran_build_self(Unit* building) { // 00467760
 		IscriptAnimation::Enum anim;
-
 		switch (building->main_order_state) {
 			case 0: {
 				if (building->hitpoints < units_dat::max_hitpoints[building->id] * 0.2) {
 					return;
 				}
-
 				for (Image* image = building->sprite->images.head; image; image = image->link.next) {
 					image->play_iscript_animation(IscriptAnimation::SpecialState1);
 				}
@@ -27,7 +24,6 @@ namespace hooks
 				if (building->hitpoints < units_dat::max_hitpoints[building->id] * 0.4) {
 					return;
 				}
-
 				for (Image* image = building->sprite->images.head; image; image = image->link.next) {
 					image->play_iscript_animation(IscriptAnimation::SpecialState2);
 				}
@@ -37,7 +33,6 @@ namespace hooks
 				if (building->hitpoints < units_dat::max_hitpoints[building->id] * 0.6) {
 					return;
 				}
-
 				helper::unit_completion_init(building, 0);
 				for (Image* image = building->sprite->images.head; image; image = image->link.next) {
 					image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
@@ -160,6 +155,8 @@ namespace hooks
 						}
 					}
 					unit->main_order_timer = 30;
+					UnitExt* unit_ext = &unit->ext();
+					unit_ext->values[ValueWorkerContext] = WorkerContext::Constructing;
 					for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 						image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 					}

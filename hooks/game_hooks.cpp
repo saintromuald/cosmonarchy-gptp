@@ -2751,8 +2751,7 @@ namespace hooks {
 				y_offset = Clamp(y_offset, -127, 128);
 
 				unit->sprite->create_overlay(ImageId::AddonWeldOverlay, x_offset, y_offset);
-				u32 sound_id = bw::rand_between(SoundId::AddonConstruction01, SoundId::AddonConstruction04);
-				helper::play_sound_from_unit(sound_id, unit, 1, 0);
+				bw::play_sound({SoundId::AddonConstruction01, SoundId::AddonConstruction04}, unit->position);
 				u32 anim_delay = bw::rand_between(16, 20);
 				unit_ext->timers[TimerAddonAnimation] = anim_delay;
 			}
@@ -2959,6 +2958,30 @@ namespace hooks {
 			Unit* overlay_unit = unit->subunit ? unit->subunit : unit;
 			if (!overlay_unit->get_overlay(overlay)) {
 				overlay_unit->sprite->create_top_overlay(overlay, 0, 0, 0);
+			}
+		}
+
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker && unit->get_race() == RaceId::Terran) {
+			if (unit_ext->values[ValueWorkerContext] != WorkerContext::Harvesting && (unit->main_order_id == OrderId::MoveToMinerals || unit->main_order_id == OrderId::HarvestGas1)) {
+				unit_ext->values[ValueWorkerContext] = WorkerContext::Harvesting;
+			}
+			if (unit->order_signal & 32) {
+				unit->order_signal &= ~32;
+				switch (unit_ext->values[ValueWorkerContext]) {
+					case WorkerContext::Constructing: {
+						bw::play_sound({SoundId::TerranConstruction01, SoundId::TerranConstruction03}, unit->position);
+					} break;
+					case WorkerContext::Repairing: {
+						if (unit->order_target.unit) {
+							bw::play_sound({SoundId::TerranRepair01, SoundId::TerranRepair03}, unit->order_target.unit->position);
+						}
+					} break;
+					default: { 
+						if (unit->order_target.unit) {
+							bw::play_sound({SoundId::terran_SCV_EDrRep00_wav, SoundId::terran_SCV_EDrRep04_wav}, unit->order_target.unit->position);
+						}
+					} break;
+				}
 			}
 		}
 

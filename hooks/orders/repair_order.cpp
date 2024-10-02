@@ -14,10 +14,8 @@ namespace hooks
 		&& !(target->status & UnitStatus::InTransport)
 		&&  !target->stasis_timer)
 		{
-			switch (unit->main_order_state)
-			{
-				case 0:
-				{
+			switch (unit->main_order_state) {
+				case 0: {
 					s16 repair_info;
 					u32 repair_cost_minerals, repair_cost_vespene;
 					helper::get_repair_info(target, &repair_cost_minerals, &repair_cost_vespene, &repair_info);
@@ -25,8 +23,7 @@ namespace hooks
 					unit->worker.repair_resource_loss_timer = 0; // Now used as a toggle for the AlmostBuilt animation to avoid some visual bug, but can probably just use a local bool if necessary.
 					unit->main_order_state++;
 				} // Fallthrough intended
-				case 1:
-				{
+				case 1: {
 					if (!(target->status & UnitStatus::Completed)) {
 						unit->order_to(OrderId::ConstructingBuilding, target);
 						if (g_is_placing_building && !helper::can_still_place_building()) {
@@ -41,16 +38,14 @@ namespace hooks
 					}
 					return;
 				} break;
-				case 6:
-				{
+				case 6: {
 					if (!unit->get_movable_state()) { // not reached destination
 						helper::move_towards(unit, target);
 						return;
 					}
 					unit->main_order_state++;
 				} break;
-				case 7:
-				{
+				case 7: {
 					if (!unit->is_target_within_min_range(target, 5)) {
 						unit->main_order_state = 1;
 						return;
@@ -69,8 +64,7 @@ namespace hooks
 					unit->worker.repair_resource_loss_timer++;
 					unit->main_order_state++;
 				} break; // goto LABEL_35
-				case 8:
-				{
+				case 8: {
 					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 					helper::unit_order_move_to_target_unit(unit, target);
 
@@ -79,12 +73,13 @@ namespace hooks
 						unit->main_order_state = 1;
 					}
 					if (unit->worker.repair_resource_loss_timer) {
+						UnitExt* unit_ext = &unit->ext();
+						unit_ext->values[ValueWorkerContext] = WorkerContext::Repairing;
 						unit->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 						unit->worker.repair_resource_loss_timer--;
 					}
 				} break;
-				default:
-				{
+				default: {
 				} break; // goto LABEL_35
 			}
 

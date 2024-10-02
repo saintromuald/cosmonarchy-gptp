@@ -1940,5 +1940,12 @@ namespace SoundId {
 		CyclopsWeaponfireFuturist02						= 2549,
 
 		GoskaGrenadeImpact								= 3215,
+
+		TerranConstruction01							= 3229,
+		TerranConstruction02							= 3230,
+		TerranConstruction03							= 3231,
+		TerranRepair01									= 3232,
+		TerranRepair02									= 3233,
+		TerranRepair03									= 3234,
 	};
 }

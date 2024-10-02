@@ -47,7 +47,7 @@ namespace UnitsDatEntries
 		Flingy,
 		Subunit,
 		Infested,
-		Construction,
+		Constructing,
 		StartDirection,
 		ShieldEnabled,
 		MaxShields,
@@ -401,10 +401,8 @@ namespace LobbyTextColor
 };
 
 // For use with bw::play_iscript_animation()
-namespace IscriptAnimation
-{
-	enum Enum : u8
-	{
+namespace IscriptAnimation {
+	enum Enum : u8 {
 		Init			= 0,
 		Death			= 1,
 		GndAttkInit		= 2,
@@ -1563,5 +1561,13 @@ namespace MenuId {
 		GlueGamemode	= 23,
 		GlueGamemode2	= 24,
 		GlueGeneric		= 25,
+	};
+}
+
+namespace WorkerContext {
+	enum Enum {
+		Harvesting = 0,
+		Constructing = 1,
+		Repairing = 2,
 	};
 }
