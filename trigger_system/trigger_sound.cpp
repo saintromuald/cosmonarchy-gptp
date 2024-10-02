@@ -327,9 +327,9 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, SoundId::Enum sound_i
 
 	u32 flags = sfx_dat::sound_flags[sound_id];
 	if (flags & DatSoundFlags_OneAtATime) {
-		if (sound->ds_buffer) {
+		if (sound_buffer->ds_buffer) {
 			DWORD status = 0;
-			sound->ds_buffer->GetStatus(&status);
+			sound_buffer->ds_buffer->GetStatus(&status);
 			if (status & DSBSTATUS_PLAYING) {
 				return {};
 			}
@@ -337,11 +337,11 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, SoundId::Enum sound_i
 	}
 	if (flags & DatSoundFlags_UnitResponse && settings.GetUnitId() != -1) {
 		for (const auto& playing_sound : g_playing_sounds) {
-			if (playing_sound.GetBuffer()->settings.GetUnitId() != settings.GetUnitId()) {
+			if (!playing_sound || playing_sound.GetBuffer()->settings.GetUnitId() != settings.GetUnitId()) {
 				continue;
 			}
 			DWORD status = 0;
-			g_dup_channels[i].ds_buffer->GetStatus(&status);
+			playing_sound.GetBuffer()->ds_buffer->GetStatus(&status);
 			if (status & DSBSTATUS_PLAYING) {
 				return {};
 			}

@@ -100,7 +100,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 
 // Hooked to extend sound channels. -Pr0nogo
 s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* unit) { // 004BBFD0
-	return play_sound_ext(sound, {.bw_volume = volume, .bw_pan = pan, .is_bw_hook = true, .unit = unit})) {
+	return play_sound_ext(sound_id, {.bw_volume = volume, .bw_pan = pan, .is_bw_hook = true, .unit = unit});
 }
 
 // Hooked to debug sound related crashes (caused by invalid sound data init in sfx data)
