@@ -71,6 +71,7 @@ bool unit_is_combatant(Unit* unit);
 bool unit_id_can_repair(u32 unit_id);
 bool weapon_id_is_flamethrower(u32 weapon_id);
 bool unit_id_is_larva(u32 unit_id);
+bool unit_id_is_zerg_egg(u32 unit_id);
 u32 get_mutate_image_id(u32 unit_id);
 
 bool unit_is_tower(Unit* unit);

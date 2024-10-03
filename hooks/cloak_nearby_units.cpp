@@ -29,9 +29,12 @@ namespace hooks {
 		Unit** units_in_area_of_effect = helper::get_all_units_in_bounds(&area_of_effect);
 		Unit* current_unit = *units_in_area_of_effect;
 		while (current_unit) {
-			UnitExt* unit_ext = get_unit_ext(current_unit);
+			UnitExt* unit_ext = &current_unit->ext();
+			UnitExt* cloaker_ext = &cloaker->ext();
 			if  (current_unit != cloaker
-			/*&&	 current_unit->status & UnitStatus::Completed*/
+			&&	!cloaker_ext->values[ValueDidactChannelIndex]
+			&&	!cloaker_ext->values[ValueDidactRecalling]
+			/*&& current_unit->status & UnitStatus::Completed*/
 			&& !(units_dat::base_property[current_unit->id] & UnitProperty::NeutralAccessories)
 			&&   current_unit->id != UnitId::TerranMorningstar
 			&&   bw::are_mutual_allies(current_unit->player, cloaker->player)

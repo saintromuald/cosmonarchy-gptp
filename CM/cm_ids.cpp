@@ -922,6 +922,10 @@ bool unit_id_is_larva(u32 unit_id) {
 	return unit_id == UnitId::ZergLarva || unit_id == UnitId::ZergOcsalLarva;
 }
 
+bool unit_id_is_zerg_egg(u32 unit_id) {
+	return unit_id == UnitId::ZergEgg || unit_id == UnitId::ZergCocoon;
+}
+
 u32 get_mutate_image_id(u32 unit_id) {
 	switch (unit_id) {
 		case UnitId::ZergQuazilisk:		return ImageId::QuaziliskMutate;

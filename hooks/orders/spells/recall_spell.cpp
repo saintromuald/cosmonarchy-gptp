@@ -7,7 +7,6 @@ namespace hooks {
 	// that was validated through spells_recall_action_on_target_in_range
 	// Do the actual unit movement -GPTP
 	void spells_recall_action_on_valid_target_for_recall(Unit* target, Unit* caster) { // 004942D0
-		static b32* const at_least_1_unit_was_recalled = (b32*)(0x0063FF50);
 		Point16 previous_pos = {};
 		Point16 new_pos = {};
 		previous_pos.x = target->sprite->position.x;
@@ -45,7 +44,7 @@ namespace hooks {
 					target->connected_unit = 0;
 				}
 			}
-			*at_least_1_unit_was_recalled = 1;
+			g_units_recalled = 1;
 		}
 	}
 
@@ -58,15 +57,13 @@ namespace hooks {
 		if (units_dat::base_property[target->id] & UnitProperty::Building) {
 			return;
 		}
-		if (target->id == UnitId::ZergLarva ||
-			target->id == UnitId::ZergOcsalLarva ||
-			target->id == UnitId::ZergEgg ||
-			target->id == UnitId::ZergCocoon) {
+		if (unit_id_is_larva(target->id) || unit_id_is_zerg_egg(target->id)) {
 			return;
 		}
-		if (target->status & UnitStatus::Invincible ||
-			target->status & UnitStatus::Burrowed ||
-			target->status & UnitStatus::IsHallucination) {
+		if (target->status & UnitStatus::Burrowed) {
+			return;
+		}
+		if (target->status & UnitStatus::Invincible) {
 			return;
 		}
 		spells_recall_action_on_valid_target_for_recall(target, caster);
@@ -106,7 +103,7 @@ namespace hooks {
 	void orders_recall(Unit* unit) {
 		bw::decloak_passive_proc(unit);
 		UnitExt* unit_ext = get_unit_ext(unit);
-		// Unit has started casting DimensionalRecall (== went through the other condition)
+		// Unit has started casting Dimensional Recall
 		if (unit->main_order_state == 1) {
 			// Execute the recall effect when timer reach 0
 			if (unit->main_order_timer == 0) {

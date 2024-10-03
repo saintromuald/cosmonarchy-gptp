@@ -1279,6 +1279,8 @@ BW_DATA(HIMC*,				g_app_context,						0x006D6438);
 // For show_or_hide_minimap
 BW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
 
+BW_REF(b32,					g_units_recalled,				0x0063FF50);
+
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);
 //-------- Format strings used by Starcraft implementations of printf --------//
