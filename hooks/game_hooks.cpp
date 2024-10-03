@@ -1332,7 +1332,7 @@ namespace hooks {
 		// Unit-specific
 		switch (unit->id) {
 			case UnitId::ProtossHerald: {
-				for (Unit* ally : g_unit_search.radial_ex(unit, 2 * 32, FilterAlly)) {
+				for (Unit* ally : g_unit_search.radial_ex(unit, 4 * 32, FilterAlly)) {
 					UnitExt* ally_ext = get_unit_ext(ally);
 					ally_ext->timers[TimerHeraldAvenge] = 12;
 				}

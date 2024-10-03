@@ -114,20 +114,17 @@ void unit_on_death_behaviors(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	// These do not require the unit to be completed
 	switch (unit->id) {
-		case UnitId::ProtossHerald:
-		{
-			ascend_corpses_in_area(unit->position, 2u * 32, unit->player);
+		case UnitId::ProtossHerald: {
+			ascend_corpses_in_area(unit->position, 4u * 32, unit->player);
 		} break;
 		case UnitId::TerranEidolon:
-		case UnitId::TerranSeraph:
-		{
+		case UnitId::TerranSeraph: {
 			if (unit->building.nuke_missile) {
 				(unit->building.nuke_missile)->sprite->play_iscript_animation(IscriptAnimation::Death, true);
 				unit->building.nuke_missile = 0;
 			}
 		} break;
-		case UnitId::TerranLobotomyMine:
-		{
+		case UnitId::TerranLobotomyMine: {
 			for (Unit* victim : g_unit_search.radial(unit->position, 2 * 32)) {
 				UnitExt* victim_ext = get_unit_ext(victim);
 				if (victim_ext->timers[TimerLobotomySlow] < 3 * 24 + 1) {
@@ -135,23 +132,20 @@ void unit_on_death_behaviors(Unit* unit) {
 				}
 			}
 		} break;
-		case UnitId::TerranMorningstar:
-		{
+		case UnitId::TerranMorningstar: {
 			if (unit->connected_unit && unit->connected_unit->id == UnitId::TerranAnvil) {
 				unit->connected_unit->building.silo.nuke = 0;
 				unit->connected_unit->building.silo.is_ready = false;
 			}
 		} break;
-		case UnitId::TerranAnvil:
-		{
+		case UnitId::TerranAnvil: {
 			if (unit->building.silo.nuke) {
 				unit->building.silo.nuke->remove();
 				unit->building.silo.nuke = 0;
 			}
 		} break;
 		case UnitId::ProtossPylon:
-		case UnitId::ProtossCrucible:
-		{
+		case UnitId::ProtossCrucible: {
 			// code from hooks::remove_psi_field(Unit* unit)
 			// copied because the content is hardcoded here
 			if (unit->building.pylon_aura) {
