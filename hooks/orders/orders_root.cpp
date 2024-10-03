@@ -18,7 +18,7 @@ namespace Func_Type {
 }
 
 static void set_order_queue_timer_cooldown(Unit* unit) {
-	unit->order_queue_timer = unit->id == UnitId::TerranDiadem ? 4 : 1;
+	unit->order_queue_timer = unit->id == UnitId::TerranDiadem ? 4 : 0;
 }
 
 static u32 main_order_func_offsets[][3] {
@@ -677,8 +677,9 @@ namespace hooks {
 			} break;
 			default: {
 				u32 timer = unit->order_queue_timer;
-				unit->order_queue_timer = timer - 1;
-				if (!timer) {
+				if (timer) {
+                    unit->order_queue_timer = timer - 1;
+				} else {
 					set_order_queue_timer_cooldown(unit);
 					switch (unit->main_order_id) {
 						case OrderId::BunkerGuard:
