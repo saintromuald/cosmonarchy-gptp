@@ -78,6 +78,8 @@ namespace hooks {
 								}
 
 								bw::play_sound(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit);
+								UnitExt* built_unit_ext = &built_unit->ext();
+								built_unit_ext->timers[TimerConstructionSFXDelay] = 60;
 								++unit->main_order_state;
 								return;
 							} else {

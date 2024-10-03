@@ -2961,6 +2961,19 @@ namespace hooks {
 			}
 		}
 
+		// Construction ambient SFX
+		if (units_dat::base_property[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::Completed)) {
+			if (unit_ext->timers[TimerConstructionSFXDelay] == 1) {
+				switch (unit->get_race()) {
+					case RaceId::Protoss: {
+						unit_ext->timers[TimerConstructionSFXDelay] = 124;
+						bw::play_sound(SoundId::Protoss_SHUTTLE_pshBld04_wav, unit->position);
+					} break;
+				}
+			}
+		}
+
+		// Terran worker ambient SFX
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker && unit->get_race() == RaceId::Terran) {
 			if (unit_ext->values[ValueWorkerContext] != WorkerContext::Harvesting && (unit->main_order_id == OrderId::MoveToMinerals || unit->main_order_id == OrderId::HarvestGas1)) {
 				unit_ext->values[ValueWorkerContext] = WorkerContext::Harvesting;
