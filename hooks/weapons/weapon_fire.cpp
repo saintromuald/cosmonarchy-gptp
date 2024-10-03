@@ -977,7 +977,7 @@ namespace hooks {
 
 				// Let's filter with no flags, since that should remove untargetable stuff and what not
 				for (Unit* target : g_unit_search.radial(bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]).filter()) {
-					if (bw::is_allied_to(bullet->player, target->player) || target == bullet->attack_target.unit) {
+					if (bw::is_allied_to(bullet->player, target->player)) {
 						continue;
 					}
 					u32 distance = bw::distance_between(bullet->position, target->position);

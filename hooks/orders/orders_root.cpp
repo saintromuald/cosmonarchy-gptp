@@ -215,20 +215,16 @@ static u32 main_order_func_offsets[][3] {
 
 namespace hooks {
 	// Called from a global unitUpdate function. Deals with some automatic orders like being in a bunker. -GPTP
-	void orders_id_cases(Unit* unit)
-	{
-		switch (unit->main_order_id)
-		{
-			case OrderId::Die:
-			{
+	void orders_id_cases(Unit* unit) {
+		switch (unit->main_order_id) {
+			case OrderId::Die: {
 				helper::PUSH_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 			} break;	
 			case OrderId::TurretAttack:
 			case OrderId::Nothing2:
 			case OrderId::Neutral:
 			case OrderId::Medic:
-			case OrderId::MedicHeal1:
-			{
+			case OrderId::MedicHeal1: {
 			} break;
 			case OrderId::PlayerGuard:
 			case OrderId::TurretGuard:
@@ -247,12 +243,10 @@ namespace hooks {
 			case OrderId::ResetCollision1:
 			case OrderId::ResetCollision2:
 			case OrderId::Powerup1:
-			case OrderId::Powerup2:
-			{
+			case OrderId::Powerup2: {
 				helper::EAX_order(unit, main_order_func_offsets[unit->main_order_id][0]);
 			} break;
-			default:
-			{
+			default: {
 				if (unit->order_queue_timer != 0) {
 					unit->order_queue_timer--;
 				} else {
@@ -536,8 +530,7 @@ namespace hooks {
 	}
 
 	// Hooked to nullcheck target sprite. -Pr0nogo
-	void orders_stay_in_range(Unit* unit) // 0047C4F0
-	{
+	void orders_stay_in_range(Unit* unit) { // 0047C4F0
 		Unit* target = unit->order_target.unit;
 		if (target && target->sprite) { // sprite is new
 			unit->order_target.pt = target->position;
@@ -643,68 +636,53 @@ namespace hooks {
 	}
 
 	// Hooked to add custom advisor handling for missile launches. -Pr0nogo
-	void partial_order_handling(Unit* unit) // 004EBED0
-	{
-		switch (unit->main_order_id)
-		{
-			case OrderId::Die:
-			{
+	void partial_order_handling(Unit* unit) { // 004EBED0
+		switch (unit->main_order_id) {
+			case OrderId::Die: {
 				helper::orders_die(unit);
 			} break;
 			case OrderId::PlayerGuard:
 			case OrderId::TurretGuard:
 			case OrderId::TurretAttack:
-			case OrderId::EnterTransport:
-			{
+			case OrderId::EnterTransport: {
 				helper::issue_order_targeting_nothing(unit, (unit->status & UnitStatus::InBuilding) != 0 ? OrderId::BunkerGuard : OrderId::Nothing2);
 			} break;
-			case OrderId::Powerup1:
-			{
+			case OrderId::Powerup1: {
 				helper::orders_powerup_1(unit);
 			} break;
 			case OrderId::Nothing2:
 			case OrderId::Nothing3:
 			case OrderId::Neutral:
 			case OrderId::Medic:
-			case OrderId::MedicHeal1:
-			{
+			case OrderId::MedicHeal1: {
 				return;
 			}
-			case OrderId::InfestMine4:
-			{
+			case OrderId::InfestMine4: {
 				helper::orders_infest_mine_4(unit);
 			} break;
-			case OrderId::HarvestGas3:
-			{
+			case OrderId::HarvestGas3: {
 				helper::orders_enter_exit_gas(unit);
 			} break;
-			case OrderId::Powerup2:
-			{
+			case OrderId::Powerup2: {
 				helper::orders_powerup_2(unit);
 			} break;
-			case OrderId::NukeLaunch:
-			{
+			case OrderId::NukeLaunch: {
 				helper::orders_nuke_launch(unit);
 			} break;
-			case OrderId::ResetCollision1:
-			{
+			case OrderId::ResetCollision1: {
 				helper::orders_reset_collision_1(unit);
 			} break;
-			case OrderId::ResetCollision2:
-			{
+			case OrderId::ResetCollision2: {
 				helper::orders_reset_collision_2(unit); 
 			} break;
-			default:
-			{
+			default: {
 				u32 timer = unit->order_queue_timer;
 				unit->order_queue_timer = timer - 1;
 				if (!timer) {
 					set_order_queue_timer_cooldown(unit);
-					switch (unit->main_order_id)
-					{
+					switch (unit->main_order_id) {
 						case OrderId::BunkerGuard:
-						case OrderId::ComputerAI:
-						{
+						case OrderId::ComputerAI: {
 							if (unit->main_order_id == OrderId::BunkerGuard || unit->status & UnitStatus::InBuilding) { // This seems tautologous but it's to omit a stupid jump. -Pr0nogo
 								Unit* garrisoned_unit = unit;
 								u32 garrisoned_unit_id = unit->id;
@@ -727,24 +705,20 @@ namespace hooks {
 										garrisoned_unit->main_order_timer = 15;
 										Unit* target = helper::find_random_attack_target(garrisoned_unit);
 										garrisoned_unit->order_target.unit = target;
-										if (target)
-										{
+										if (target) {
 											garrisoned_unit->order_queue_timer = 0;
 										}
 									}
 								}
 							}
 						} break;
-						case OrderId::TransportLoad:
-						{
+						case OrderId::TransportLoad: {
 							helper::orders_pickup_4(unit);
 						} break;
-						case OrderId::RescuePassive:
-						{
+						case OrderId::RescuePassive: {
 							helper::orders_rescue_passive(unit);
 						} break;
-						default:
-						{
+						default: {
 							return;
 						}
 					}
@@ -754,8 +728,7 @@ namespace hooks {
 	}
 
 	// Hooked to do a silly imlpementation of the Artisan revision. -Pr0nogo
-	s32 order_to_move_to_target(Unit* target, Unit* unit) // 004EB980
-	{
+	s32 order_to_move_to_target(Unit* target, Unit* unit) { // 004EB980
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit_ext->timers[TimerArtisanReturn]) {
 			return 0;
@@ -828,10 +801,8 @@ namespace hooks {
 						Unit* nuker = unit->connected_unit;
 						if (nuker) {
 							u32 action_sound = SoundId::None;
-							switch (nuker->id)
-							{
-								case UnitId::TerranEidolon:
-								{
+							switch (nuker->id) {
+								case UnitId::TerranEidolon: {
 									action_sound = SoundId::Terran_GHOST_TGhPss01_wav;
 								} break;
 							}
