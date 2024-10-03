@@ -7,8 +7,7 @@
 #endif
 
 namespace Func_Type {
-	enum Enum : u8
-	{
+	enum Enum : u8 {
 		EAX,
 		EBX,
 		ECX,
@@ -16,6 +15,10 @@ namespace Func_Type {
 		ESI,
 		PUSH
 	};
+}
+
+static void set_order_queue_timer_cooldown(Unit* unit) {
+	unit->order_queue_timer = unit->id == UnitId::TerranDiadem ? 4 : 1;
 }
 
 static u32 main_order_func_offsets[][3] {
@@ -253,7 +256,7 @@ namespace hooks {
 				if (unit->order_queue_timer != 0) {
 					unit->order_queue_timer--;
 				} else {
-					unit->order_queue_timer = 8;
+					set_order_queue_timer_cooldown(unit);
 					if (unit->main_order_id == OrderId::BunkerGuard) {
 						helper::EAX_order(unit, 0x004790A0);
 					}	 else if (unit->main_order_id == OrderId::TransportLoad) {
@@ -404,8 +407,7 @@ namespace hooks {
 						
 						// 3rd part, executed after the 2nd part (whether it did something or not) only if unit->order_queue_timer was 0.
 						// Execute "get_target_something" before, and has some special cases, otherwise work pretty much like 2nd part. -GPTP
-	
-						unit->order_queue_timer = 8;
+						set_order_queue_timer_cooldown(unit);
 						helper::EAX_order(unit, 0x0043FF90); // known as "get_target_something"
 						unit->ai_action_flags = 0;
 	
@@ -697,7 +699,7 @@ namespace hooks {
 				u32 timer = unit->order_queue_timer;
 				unit->order_queue_timer = timer - 1;
 				if (!timer) {
-					unit->order_queue_timer = 8;
+					set_order_queue_timer_cooldown(unit);
 					switch (unit->main_order_id)
 					{
 						case OrderId::BunkerGuard:
