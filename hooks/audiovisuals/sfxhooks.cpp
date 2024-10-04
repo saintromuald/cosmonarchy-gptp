@@ -4,6 +4,7 @@
 #include <BW/bwdata.h>
 #include <hooks/byte_operations_utils.h>
 #include <hooks/limits/sfx_extender.h>
+#include "trigger_system/trigger_sound.h"
 
 namespace hooks {
 	// Hooked to allow more unit ids to have "annoyed" lines.
@@ -335,5 +336,21 @@ namespace hooks {
 				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[ready_sound] + 1000 * (sfx_dat::sound_data[ready_sound].duration_ms / 1000), 1, ready_sound);
 			}
 		}
+	}
+
+	// Hooked to use positional audio. -Pr0nogo
+	void play_sound_from_unit(SoundId::Enum sound_id, Unit* unit, bool play, s32 min_volume) { // 0048ED50
+		if (!sound_id || !g_options_list->sfx || !play) {
+			return;
+		}
+		play_sound_ext(sound_id, PlaySoundSettings{.position = unit->position, .unit = unit, .min_volume = min_volume});
+	}
+
+	// Hooked to use positional audio. -Pr0nogo
+	void play_sound_at_pos(SoundId::Enum sound_id, Point16 pos, bool play, s32 min_volume) { // 0048EC10
+		if (!sound_id || !g_options_list->sfx || !play) {
+			return;
+		}
+		play_sound_ext(sound_id, PlaySoundSettings{.position = pos, .min_volume = min_volume});
 	}
 }

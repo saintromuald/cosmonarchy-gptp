@@ -100,53 +100,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 
 // Hooked to extend sound channels. -Pr0nogo
 s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* unit) { // 004BBFD0
-	if (!g_direct_sound_interface->lpVtbl || !g_options_list->sfx) {
-		return false;
-	}
-	
-	if (sfx_dat::sound_file[sound_id]) {
-		char buffer[MAX_PATH] = {};
-		snprintf(buffer, MAX_PATH, "sound\\%s", sound_paths[sound_id]); // sfx_dat::sound_file[sound_id]);
-		SoundMainBuffer* sound = get_sound(buffer);
-		if (sound) {
-			u32 flags = sfx_dat::sound_flags[sound_id];
-			if (flags & DatSoundFlags_OneAtATime) {
-				if (sound->ds_buffer) {
-                    DWORD status = 0;
-                    sound->ds_buffer->GetStatus(&status);
-                    if (status & DSBSTATUS_PLAYING) {
-                        return false;
-                    }
-				}
-			}
-
-			if (flags & DatSoundFlags_UnitResponse && unit) {
-				for (u32 i = 0; i < MaxDupChannels; ++i) {
-					SoundDupBuffer* dup_channel = &g_dup_channels[i];
-					if (!g_dup_channels[i].ds_buffer) {
-						continue;
-					}
-					if (g_dup_channels[i].settings.unit_response_unit_id != unit->id) {
-						continue;
-					}
-                    DWORD status = 0;
-                    g_dup_channels[i].ds_buffer->GetStatus(&status);
-                    if (status & DSBSTATUS_PLAYING) {
-                        return false;
-                    }
-				}
-			}
-
-			s32 unit_id = -1;
-			if (flags & DatSoundFlags_UnitResponse && unit) {
-				unit_id = unit->id;
-			}
-            if (play_sound_ext(sound, {.bw_volume = volume, .bw_pan = pan, .unit_response_unit_id = unit_id, .is_bw_hook = true})) {
-				return true;
-			}
-		}
-	}
-	return false;
+	return play_sound_ext(sound_id, {.bw_volume = volume, .bw_pan = pan, .is_bw_hook = true, .unit = unit});
 }
 
 // Hooked to debug sound related crashes (caused by invalid sound data init in sfx data)
