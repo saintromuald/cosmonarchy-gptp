@@ -231,7 +231,7 @@ void update_trigger_system(bool in_game) {
 		if (g_globals->alert.play_timer) {
 			g_globals->alert.play_timer--;
 			if (!g_globals->alert.play_timer) {
-				helper::play_sound_from_unit(g_globals->alert.sound_id, 0);
+				bw::play_sound_local(g_globals->alert.sound_id);
 			}
 		}
 
@@ -241,7 +241,7 @@ void update_trigger_system(bool in_game) {
 		if (g_globals->advisor_state.play_timer) {
 			g_globals->advisor_state.play_timer--;
 			if (!g_globals->advisor_state.play_timer) {
-				helper::play_sound_from_unit(g_globals->advisor_state.sound_id, 0);
+				bw::play_sound_local(g_globals->advisor_state.sound_id);
 			}
 		}
 	}

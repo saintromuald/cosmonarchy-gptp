@@ -51,7 +51,9 @@ bool irradiate_target(Unit* unit) {
 namespace hooks {
 	static void play_alert(Unit* unit, u32 sound_id) {
 		u32 alert_id = SoundId::AlertZerg - g_console_index;
-		helper::play_sound_from_unit(alert_id, 0, g_options_list->flags & 1, 0);
+		if (g_options_list->flags & 1) {
+            bw::play_sound_local(alert_id);
+		}
 		helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);
 
 		g_globals->alert.sound_id = sound_id;
