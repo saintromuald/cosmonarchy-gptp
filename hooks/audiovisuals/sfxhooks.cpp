@@ -340,7 +340,7 @@ namespace hooks {
 
 	// Hooked to use positional audio. -Pr0nogo
 	void play_sound_from_unit(SoundId::Enum sound_id, Unit* unit, bool play, s32 min_volume) { // 0048ED50
-		if (!sound_id || !g_options_list->sfx || !play) {
+		if (!sound_id || !g_options_list->sfx || !play || !unit) {
 			return;
 		}
 		play_sound_ext(sound_id, PlaySoundSettings{.position = unit->position, .unit = unit, .min_volume = min_volume});
