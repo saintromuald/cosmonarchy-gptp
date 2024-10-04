@@ -15298,14 +15298,4 @@ namespace helper {
 			POPAD
 		}
 	}
-
-	void orders_carrier_attack1(Unit* unit) {
-		const u32 func_address = 0x00465950;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL func_address
-			POPAD
-		}
-	}
 }

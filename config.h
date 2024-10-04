@@ -58,7 +58,7 @@ struct Config {
 	bool extended_control_groups = true;
 	bool default_to_steal_hotkeys = false;
 	bool tilde_control_group = true;
-	bool flip_attack_and_patrol = false;
+	bool flip_attack_and_patrol = true;
 
 	// Player Color
 	std::vector<PlayerColor> common_preferred_colors{};

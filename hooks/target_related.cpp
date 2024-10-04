@@ -8,7 +8,6 @@
 #include <limits.h>
 #include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/unit_stats/weapon_range.h"
-#include "config.h"
 
 namespace hooks {
 	bool is_unit_target_out_of_max_range(Unit* unit, Unit* target) { // 00476430
@@ -550,9 +549,6 @@ namespace hooks {
 				helper::get_targeting_error_string(weapon_id, &error, target);
 				helper::display_error_message_id_with_sfx(active_unit->player, error, race + 138);
 				if (weapon_id == WeaponId::None) {
-					if (g_config.flip_attack_and_patrol) {
-						order_id = flip_attack_and_patrol_order(active_unit, target, order_id);
-					}
 					helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
 				}
 				return;
@@ -590,9 +586,6 @@ namespace hooks {
 			UnitExt* unit_ext = get_unit_ext(active_unit);
 			unit_ext->values[ValueUnitResponseOrder] = order_id;
 			hooks::play_yes_unit_response_internal(active_unit, UnitResponseContext::URC_OrderId);
-			if (g_config.flip_attack_and_patrol) {
-				order_id = flip_attack_and_patrol_order(active_unit, target, order_id);
-			}
 			helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
 		} else {
 			u8 active_player = active_unit->player;

@@ -25,4 +25,3 @@ bool can_auto_heal(Unit* unit);
 bool unit_can_be_repulsed(Unit* unit);
 void specialist_energy_error(Unit* unit);
 bool unit_should_give_gas_in_massacre_mode(Unit* unit);
-u32 flip_attack_and_patrol_order(Unit* active_unit, Unit* target, u32 order_id);

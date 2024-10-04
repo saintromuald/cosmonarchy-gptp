@@ -570,6 +570,20 @@ namespace hooks {
 				}
 				changed = true;
 			}
+
+			if (g_config.flip_attack_and_patrol) {
+				switch (button->icon_id) {
+					case IconId::Attack: {
+						button->position = 4;
+                        changed = true;
+                    } break;
+					case IconId::Patrol:
+					case IconId::Gather: {
+						button->position = 3;
+                        changed = true;
+                    } break;
+				}
+			}
 		}
 		if (changed) {
 			qsort(current_buttonset->first_button, current_buttonset->buttons_in_set, sizeof(Button), compare_button);
