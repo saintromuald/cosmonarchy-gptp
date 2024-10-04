@@ -166,7 +166,7 @@ struct VolumePan {
 	s32 pan;
 };
 
-VolumePan calculate_volume_pan(const PlaySoundSettings& settings);
+VolumePan calculate_volume_pan(PlaySoundSettings& settings);
 
 void update_playing_sounds();
 void stop_playing_sounds();

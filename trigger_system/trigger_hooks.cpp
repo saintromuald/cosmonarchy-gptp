@@ -99,7 +99,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 }
 
 // Hooked to extend sound channels. -Pr0nogo
-s32 play_transmission_from_location(u32 sound_id, s32 volume, s32 pan, Unit* unit) { // 004BBFD0
+s32 play_transmission_from_location(SoundId::Enum sound_id, s32 volume, s32 pan, Unit* unit) { // 004BBFD0
 	return play_sound_ext(sound_id, {.bw_volume = volume, .bw_pan = pan, .is_bw_hook = true, .unit = unit});
 }
 
@@ -464,7 +464,7 @@ void __declspec(naked) play_transmission_from_location_wrapper() { // 004BBFD0
 		MOV sound_id, EAX
 		PUSHAD
 	}
-	result = play_transmission_from_location(sound_id, volume, pan, unit);
+	result = play_transmission_from_location(static_cast<SoundId::Enum>(sound_id), volume, pan, unit);
 	__asm {
 		POPAD
 		MOV EAX, result

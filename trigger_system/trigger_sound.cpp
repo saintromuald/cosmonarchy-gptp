@@ -312,7 +312,7 @@ void free_sound(SoundMainBuffer* sound) {
 	}
 }
 
-PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, SoundId::Enum sound_id, PlaySoundSettings settings) {
+PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings settings, SoundId::Enum sound_id) {
 	if (!sound_buffer) {
 		return {};
 	}
