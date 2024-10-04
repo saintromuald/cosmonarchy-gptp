@@ -355,3 +355,59 @@ bool unit_should_give_gas_in_massacre_mode(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	return unit_id_should_give_gas_in_massacre_mode(unit->id) && !unit_ext->values[ValueCancellingZergStructure];
 }
+
+u32 flip_attack_and_patrol_order(Unit* active_unit, Unit* target, u32 order_id) {
+	switch (order_id) {
+		case OrderId::Attack1:
+		case OrderId::Attack2:
+		case OrderId::AttackUnit:
+		case OrderId::AttackMove:
+		case OrderId::CarrierAttack1:
+		case OrderId::CarrierAttack2:
+		case OrderId::CarrierFight:
+		case OrderId::ReaverAttack1:
+		case OrderId::ReaverAttack2:
+		case OrderId::ReaverFight: {
+			return OrderId::Patrol;
+		} break;
+		case OrderId::Patrol: {
+			bool target_exists = false;
+			bool can_see_target = false;
+			if (target) {
+				target_exists = true;
+				if (target->is_visible_to(active_unit->player)) {
+					can_see_target = true;
+				}
+			}
+			switch (active_unit->id) {
+				case UnitId::ProtossSolarion: {
+					if (!target_exists) {
+						return OrderId::AttackMove;
+					}
+					if (helper::unit_can_attack_target(target, active_unit, true)) {
+						return OrderId::CarrierAttack1;
+					}
+					return can_see_target ? OrderId::CarrierAttack1 : OrderId::CarrierAttack2;
+				} break;
+				case UnitId::ProtossAccantorOld: {
+					if (!target_exists) {
+						return OrderId::AttackMove;
+					}
+					if (helper::unit_can_attack_target(target, active_unit, true)) {
+						return OrderId::ReaverFight;
+					}
+					return can_see_target ? OrderId::ReaverAttack1 : OrderId::ReaverAttack2;
+				} break;
+				default: {
+					if (!target_exists) {
+						return OrderId::AttackMove;
+					}
+					if (helper::unit_can_attack_target(target, active_unit, true)) {
+						return OrderId::AttackUnit;
+					}
+					return can_see_target ? OrderId::Attack1 : OrderId::Attack2;
+				} break;
+			}
+		} break;
+	}
+}

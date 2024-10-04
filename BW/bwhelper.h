@@ -1769,4 +1769,6 @@ namespace helper {
 	b32 ai_sieged_phalanx_can_attack_nearby_unit(Unit* unit);					// 00442460
 
 	void transfer_resource_to_worker(Unit* node, Unit* worker);					// 004696D0
+
+	void orders_carrier_attack1(Unit* unit);									// 00465950
 }
