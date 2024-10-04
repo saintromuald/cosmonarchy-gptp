@@ -369,7 +369,7 @@ u32 flip_attack_and_patrol_order(Unit* active_unit, Unit* target, u32 order_id) 
 		case OrderId::ReaverAttack2:
 		case OrderId::ReaverFight: {
 			return OrderId::Patrol;
-		} break;
+		}
 		case OrderId::Patrol: {
 			bool target_exists = false;
 			bool can_see_target = false;
@@ -388,7 +388,7 @@ u32 flip_attack_and_patrol_order(Unit* active_unit, Unit* target, u32 order_id) 
 						return OrderId::CarrierAttack1;
 					}
 					return can_see_target ? OrderId::CarrierAttack1 : OrderId::CarrierAttack2;
-				} break;
+				}
 				case UnitId::ProtossAccantorOld: {
 					if (!target_exists) {
 						return OrderId::AttackMove;
@@ -397,7 +397,7 @@ u32 flip_attack_and_patrol_order(Unit* active_unit, Unit* target, u32 order_id) 
 						return OrderId::ReaverFight;
 					}
 					return can_see_target ? OrderId::ReaverAttack1 : OrderId::ReaverAttack2;
-				} break;
+				}
 				default: {
 					if (!target_exists) {
 						return OrderId::AttackMove;
@@ -406,8 +406,11 @@ u32 flip_attack_and_patrol_order(Unit* active_unit, Unit* target, u32 order_id) 
 						return OrderId::AttackUnit;
 					}
 					return can_see_target ? OrderId::Attack1 : OrderId::Attack2;
-				} break;
+				}
 			}
-		} break;
+		}
+		default: {
+			return order_id;
+		}
 	}
 }
