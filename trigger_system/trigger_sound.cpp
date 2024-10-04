@@ -325,27 +325,29 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings set
 		return {};
 	}
 
-	u32 flags = sfx_dat::sound_flags[sound_id];
-	if (flags & DatSoundFlags_OneAtATime) {
-		if (sound_buffer->ds_buffer) {
-			DWORD status = 0;
-			sound_buffer->ds_buffer->GetStatus(&status);
-			if (status & DSBSTATUS_PLAYING) {
-				return {};
-			}
-		}
-	}
-	if (flags & DatSoundFlags_UnitResponse && settings.GetUnitId() != -1) {
-		for (const auto& playing_sound : g_playing_sounds) {
-			if (!playing_sound || playing_sound.GetBuffer()->settings.GetUnitId() != settings.GetUnitId()) {
-				continue;
-			}
-			DWORD status = 0;
-			playing_sound.GetBuffer()->ds_buffer->GetStatus(&status);
-			if (status & DSBSTATUS_PLAYING) {
-				return {};
-			}
-		}
+	if (sound_id != SoundId::None) {
+        u32 flags = sfx_dat::sound_flags[sound_id];
+        if (flags & DatSoundFlags_OneAtATime) {
+            if (sound_buffer->ds_buffer) {
+                DWORD status = 0;
+                sound_buffer->ds_buffer->GetStatus(&status);
+                if (status & DSBSTATUS_PLAYING) {
+                    return {};
+                }
+            }
+        }
+        if (flags & DatSoundFlags_UnitResponse && settings.GetUnitId() != -1) {
+            for (const auto& playing_sound : g_playing_sounds) {
+                if (!playing_sound || playing_sound.GetBuffer()->settings.GetUnitId() != settings.GetUnitId()) {
+                    continue;
+                }
+                DWORD status = 0;
+                playing_sound.GetBuffer()->ds_buffer->GetStatus(&status);
+                if (status & DSBSTATUS_PLAYING) {
+                    return {};
+                }
+            }
+        }
 	}
 
 	DWORD status = 0;
