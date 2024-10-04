@@ -130,6 +130,7 @@ void load_config() {
 	load_field(yaml, "extended-control-groups", g_config.extended_control_groups);
 	load_field(yaml, "default-to-steal-hotkeys", g_config.default_to_steal_hotkeys);
 	load_field(yaml, "tilde-control-group", g_config.tilde_control_group);
+	load_field(yaml, "flip-attack-and-patrol", g_config.flip_attack_and_patrol);
 
 	// Player Color
 	auto yaml_colors = yaml["preferred-colors"];
@@ -278,6 +279,7 @@ void save_config() {
 	write_field(yaml, "default-to-steal-hotkeys", g_config.default_to_steal_hotkeys);
 	yaml << YAML::Newline << YAML::Comment("Replaces tilde with an additional control group, moves console to F12");
 	write_field(yaml, "tilde-control-group", g_config.tilde_control_group);
+	write_field(yaml, "flip-attack-and-patrol", g_config.flip_attack_and_patrol);
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Player Color");
