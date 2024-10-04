@@ -2969,6 +2969,10 @@ namespace hooks {
 						unit_ext->timers[TimerConstructionSFXDelay] = 124;
 						bw::play_sound(SoundId::Protoss_SHUTTLE_pshBld04_wav, unit->position);
 					} break;
+					case RaceId::Zerg: {
+						unit_ext->timers[TimerConstructionSFXDelay] = 4 * 24 + 1;
+						bw::play_sound({SoundId::ZergConstruction01, SoundId::ZergConstruction03}, unit->position);
+					} break;
 				}
 			}
 		}

@@ -57,6 +57,7 @@ void orders_zerg_build_self(Unit* building) {
 			if (!building->remaining_build_time) {
 				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
 				helper::play_building_completed_sound(building);
+				bw::play_sound(SoundId::Zerg_Bldg_ZChRdy00_WAV, building->position);
 				if (unit_id_is_tech_tier_structure(building->id)) {
 					replay_witness_event(building, SpectatorEvent_Tech);
 				}
@@ -101,7 +102,7 @@ void orders_zerg_build_self(Unit* building) {
 				for (Image* image = building->sprite->images.head; image; image = image->link.next) {
 					image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
 				}
-
+				bw::play_sound((SoundId::Enum)units_dat::sound_what_first[building->id], building->position);
 				helper::update_new_unit_vision(building_id, building->sprite->position.x, building->sprite->position.y);
 			}
 			return;
@@ -295,6 +296,9 @@ void drone_morph_standard(Unit* unit, u32 id) { // 0045D890
 	if (unit_id_is_tech_tier_structure(unit->id)) {
 		replay_witness_event(unit, SpectatorEvent_Tech);
 	}
+	UnitExt* unit_ext = &unit->ext();
+	unit_ext->timers[TimerConstructionSFXDelay] = 6;
+	bw::play_sound(SoundId::ZergConstructionStart01, unit->position);
 
 	if (g_player_table[unit->player].type == PlayerType::Computer) {
 		if (unit->unit_ai) {
@@ -345,8 +349,7 @@ void orders_drone_build(Unit* builder) { // 0045E090
 		vertical_offset = 42;
 	}
 
-	if (builder_sprite->position.x != builder->order_target.pt.x
-		|| builder_sprite->position.y != builder->order_target.pt.y) {
+	if (builder_sprite->position.x != builder->order_target.pt.x || builder_sprite->position.y != builder->order_target.pt.y) {
 		// Change shadow pos
 		if (underlay->palette_type == 10 && underlay->vertical_offset != vertical_offset) {
 			underlay->flags |= ImageFlags::Redraw;
@@ -623,6 +626,9 @@ void orders_morph2(Unit* unit) { // 0045D0D0
 	for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 		play_image_iscript(image, IscriptAnimation::SpecialState1);
 	}
+	UnitExt* unit_ext = &unit->ext();
+	unit_ext->timers[TimerConstructionSFXDelay] = 6;
+	bw::play_sound(SoundId::ZergConstructionStart01, unit->position);
 	bw::refresh_console();
 }
 

@@ -200,6 +200,7 @@ namespace hooks {
 					}
 
 					helper::update_unit_damage_overlay(building);
+					bw::play_sound((SoundId::Enum)units_dat::sound_what_first[building->id], building->position);
 				}
 			} break;
 		}

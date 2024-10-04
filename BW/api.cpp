@@ -3436,7 +3436,17 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
 				}
 			} break;
 			case AdvisorEvent_StructureComplete_Z: {
-				// TODO: fill in
+				switch (advisor) {
+					case Advisor_Terran:	return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
+					case Advisor_Protoss:	return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
+					case Advisor_Zerg:		return SoundId::AtaltrethAdvisor_Addon01;
+					case Advisor_Mesk:		return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
+					case Advisor_Ackmed:	return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
+					case Advisor_HADRAL:	return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
+					case Advisor_Artemis:	return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
+					case Advisor_ISN:		return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
+					case Advisor_Furen:		return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
+				}
 			} break;
 			case AdvisorEvent_AddonComplete: {
 				switch (advisor) {

@@ -396,30 +396,11 @@ namespace hooks {
 			u32 race = unit->get_race();
 			switch (race) {
 				case RaceId::Zerg: {
-					u32 sound_id = 0;
-					if (unit_id_is_tech_tier_structure(unit->id)) {
-						sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_TechUpComplete);
+					u32 sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, unit_id_is_tech_tier_structure(unit->id) ? AdvisorEvent_TechUpComplete : AdvisorEvent_StructureComplete_Z);
+					if (sound_id) {
+						helper::play_sound_from_unit(sound_id, unit, (*g_options_list).flags & 1, 99);
 					}
-					if (unit->create_origin == UnitId::ZergDroleth) {
-						if (sound_id) {
-							helper::play_sound_from_unit(sound_id, unit, (*g_options_list).flags & 1, 99);
-						}
-						helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZChRdy00_WAV, unit, (*g_options_list).flags & 1, 99);
-						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
-					} else if (unit->create_origin == UnitId::ZergGosvileth) {
-						if (sound_id) {
-							helper::play_sound_from_unit(sound_id, unit, (*g_options_list).flags & 1, 99);
-						}
-						helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZChRdy00_WAV, unit, (*g_options_list).flags & 1, 99);
-						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
-					} else {
-						// Nydus exit and morphs
-						if (sound_id) {
-							helper::play_sound_from_unit(sound_id, unit, (*g_options_list).flags & 1, 99);
-						}
-						helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZChRdy00_WAV, unit, (*g_options_list).flags & 1, 99);
-						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
-					}
+					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
 				} break;
 				case RaceId::Terran: {
 					UnitExt* builder_ext = get_unit_ext(unit);

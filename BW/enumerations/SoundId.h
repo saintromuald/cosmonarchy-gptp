@@ -1947,5 +1947,9 @@ namespace SoundId {
 		TerranRepair01									= 3232,
 		TerranRepair02									= 3233,
 		TerranRepair03									= 3234,
+		ZergConstruction01								= 3235,
+		ZergConstruction02								= 3236,
+		ZergConstruction03								= 3237,
+		ZergConstructionStart01							= 3238,
 	};
 }

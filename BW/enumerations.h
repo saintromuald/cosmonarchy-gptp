@@ -1428,7 +1428,7 @@ enum AdvisorEvent {
 	AdvisorEvent_StructureComplete_Z	= 11,
 	AdvisorEvent_AddonComplete			= 12,
 	AdvisorEvent_TechUpComplete			= 13,
-	AdvisorEvent_MissileArmed		= 14,
+	AdvisorEvent_MissileArmed			= 14,
 
 	AdvisorEvent_ArmyUnderAttack		= 15,
 	AdvisorEvent_BaseUnderAttack		= 16,
