@@ -629,14 +629,13 @@ InitPositions sources_positions;
 InitPositions rally_positions;
 
 bool init_threshold_spawn(CHKUnit* unit, u32 flags) {
-	if (unit->player != 11) {
+	if (unit->player != 11 || bw::get_game_kind() != GameKind_Scenario) {
 		return false;
 	}
 
 	Point16 position = { unit->x, unit->y };
 	switch (unit->unit_id) {
-		case UnitId::TownCenterMarker:
-		{
+		case UnitId::TownCenterMarker: {
 			if (!(flags & ChkUnitFlags_Cloaked)) {
 				FraudSpawnLocation spawn = {};
 				spawn.pos = position;
@@ -648,15 +647,13 @@ bool init_threshold_spawn(CHKUnit* unit, u32 flags) {
 			}
 			return false; // We don't want to delete Town Center Markers, since they are supposed to be also processed by AI layouts
 		} break;
-		case UnitId::TerranSupplyDepot:
-		{
+		case UnitId::TerranSupplyDepot: {
 			if (sources_positions.count < InitPositionsCap) {
 				sources_positions.positions[sources_positions.count++] = position;
 			}
 			return true;
 		} break;
-		case UnitId::TerranMaverick:
-		{
+		case UnitId::TerranMaverick: {
 			if (rally_positions.count < InitPositionsCap) {
 				rally_positions.positions[rally_positions.count++] = position;
 			}
