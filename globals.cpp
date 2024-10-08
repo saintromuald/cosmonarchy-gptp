@@ -230,13 +230,13 @@ static void tick_effect(EffectField& effect) {
 					break;
 				}
 				auto distance = bw::distance_between(caster->position, (Point16)effect.position);
-				if (distance > weapons_dat::max_range[WeaponId::PsiStorm] * 1.25) {
+				if (distance > weapons_dat::max_range[WeaponId::PsiStorm] + 16) {
 					caster_ext->current_storm = 0;
 					effect.destroy();
 					break;
 				}
 
-				caster->spend_energy(10 * tick_scalar_hp);
+				caster->spend_energy(20 * tick_scalar_hp);
 				for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
                     if (unit->is_under_storm) continue;
                     unit->is_under_storm = update_period;

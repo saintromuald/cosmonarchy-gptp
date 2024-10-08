@@ -16,10 +16,10 @@ namespace hooks {
 			case UnitId::TerranHypnagogue:
 			case UnitId::TerranSeraph:
 			case UnitId::TerranLuminary:
-			case UnitId::ProtossCantavis:
 			case UnitId::ProtossAnalogue: {
 				energy = 150;
 			} break;
+			case UnitId::ProtossCantavis:
 			case UnitId::ProtossMindTyrant:
 			case UnitId::Goska: {
 				energy = 250;
