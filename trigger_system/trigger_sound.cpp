@@ -336,18 +336,21 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings set
                 }
             }
         }
-        if (flags & DatSoundFlags_UnitResponse && settings.GetUnitId() != -1) {
-            for (const auto& playing_sound : g_playing_sounds) {
-                if (!playing_sound || playing_sound.GetBuffer()->settings.GetUnitId() != settings.GetUnitId()) {
-                    continue;
-                }
-                DWORD status = 0;
-                playing_sound.GetBuffer()->ds_buffer->GetStatus(&status);
-                if (status & DSBSTATUS_PLAYING) {
-                    return {};
+		if (flags & DatSoundFlags_UnitResponse) {
+			settings.is_unit_response = true;
+            if (settings.GetUnitId() != -1) {
+                for (const auto& playing_sound : g_playing_sounds) {
+                    if (!playing_sound || playing_sound.GetBuffer()->settings.GetUnitId() != settings.GetUnitId()) {
+                        continue;
+                    }
+                    DWORD status = 0;
+                    playing_sound.GetBuffer()->ds_buffer->GetStatus(&status);
+                    if (status & DSBSTATUS_PLAYING) {
+                        return {};
+                    }
                 }
             }
-        }
+		}
 	}
 
 	DWORD status = 0;

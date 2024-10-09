@@ -65,9 +65,12 @@ struct PlaySoundSettings {
 	Unit* unit = 0;
 	s32 min_volume = 0;
 	bool looping = false;
+	bool is_unit_response = false;
 
 	Point16 GetUpdatedPosition() {
-		if (unit) {
+		if (is_unit_response) {
+			position = {};
+		} else if (unit) {
 			position = unit->position;
 		}
 		return position;
