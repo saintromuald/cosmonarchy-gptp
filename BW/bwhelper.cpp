@@ -3105,13 +3105,14 @@ namespace helper {
 		return return_value;
 	}
 
-	void apply_creep_at_location_from_unit_id(s32 x, s32 y, u32 unit_id) {
+	void apply_creep_at_location_from_unit_id(s32 x, s32 y, u16 unit_id) {
 		const u32 func_address = 0x004148F0;
+		static u32 unit_id_xd = unit_id;
 		__asm {
 			PUSHAD
 			PUSH y
 			PUSH x
-			PUSH unit_id
+			PUSH unit_id_xd
 			CALL func_address
 			POPAD
 		}

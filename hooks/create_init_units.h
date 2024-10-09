@@ -1,8 +1,7 @@
 #pragma once
 #include "../BW/structures.h"
 
-namespace hooks
-{
+namespace hooks {
 	void create_initial_melee_buildings(u8 race_id, u32 player);					// 0049D7C0
 	void create_initial_melee_units();												// 0049DA40
 	void create_initial_ovileth(u8 player);											// 0049D6C0

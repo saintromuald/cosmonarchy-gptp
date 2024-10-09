@@ -6,8 +6,7 @@
 #include "hooks/game_hooks.h"
 #include "trigger_system/trigger_system.h"
 
-u32 get_racial_townhall(u32 race_id)
-{
+u32 get_racial_townhall(u32 race_id) {
 	// TODO: Add support for custom races. -Pr0nogo
 	if (race_id == RaceId::Zerg) {
 		return UnitId::ZergHachirosk;
@@ -20,8 +19,7 @@ u32 get_racial_townhall(u32 race_id)
 	}
 }
 
-u32 get_racial_worker(u32 race_id)
-{
+u32 get_racial_worker(u32 race_id) {
 	// TODO: Add support for custom races. -Pr0nogo
 	if (race_id == RaceId::Zerg) {
 		return UnitId::ZergDroleth;
@@ -35,7 +33,7 @@ u32 get_racial_worker(u32 race_id)
 }
 
 namespace hooks {
-	void create_initial_melee_buildings(u8 race_id, u32 player) {
+	void create_initial_melee_buildings(u8 race_id, u32 player) { // 0049D7C0
 		u32 building_id = get_racial_townhall(race_id);
 		GameKind game_kind = bw::get_game_kind();
 		bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
