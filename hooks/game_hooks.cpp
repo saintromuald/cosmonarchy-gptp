@@ -2845,31 +2845,26 @@ namespace hooks {
 		}
 
 		// Clear Barghest vector
-		{
-			auto& barghests = unit_ext->unit_vectors[UnitVectorBarghests];
-			for (auto it = barghests.begin(); it != barghests.end(); ++it) {
-				Unit* barghest = *it;
-				UnitExt* barghest_ext = get_unit_ext(barghest);
-				if (barghest_ext->timers[TimerDecloak] < 2 || bw::distance_between(unit->position, barghest->position) > 5 * 32) {
-					barghests.erase(it);
-					--it;
-				}
-			}
-		}
+		std::ranges::remove_if(unit_ext->unit_vectors[UnitVectorBarghests], [unit](Unit* barghest) {
+			UnitExt* barghest_ext = &barghest->ext();
+			return barghest_ext->timers[TimerDecloak] < 2 || bw::distance_between(unit->position, barghest->position) > 5 * 32;
+		});
 
 		// Clear Manifold vector
-		{
-			auto& manifolds = unit_ext->unit_vectors[UnitVectorManifolds];
-			for (auto it = manifolds.begin(); it != manifolds.end();) {
-				Unit* manifold = *it;
-				UnitExt* manifold_ext = get_unit_ext(manifold);
-				if (manifold_ext->timers[TimerManifoldConcurringChorus] <= 1 || bw::distance_between(unit->position, manifold->position) > 2 * 32) {
-					it = manifolds.erase(it);
-				} else {
-					it++;
-				}
+		std::ranges::remove_if(unit_ext->unit_vectors[UnitVectorBarghests], [unit](Unit* manifold) {
+			UnitExt* manifold_ext = &manifold->ext();
+			return manifold_ext->timers[TimerManifoldConcurringChorus] <= 1 || bw::distance_between(unit->position, manifold->position) > 2 * 32;
+		});
+
+		// Clear Crucible vector
+		std::ranges::remove_if(unit_ext->unit_vectors[UnitVectorCrucibles], [unit, &should_update_speed](Unit* crucible) {
+			if (bw::distance_between(unit->position, crucible->position) > 8 * 32) {
+				bw::remove_unit_overlay(unit, ImageId::CrucibleKhaydarinChargeOverlay);
+				should_update_speed = true;
+				return true;
 			}
-		}
+			return false;
+		});
 
 		// Seraph - Observance
 		if (unit_ext->timers[TimerObservanceDebuff] > 1) {
@@ -3067,19 +3062,6 @@ namespace hooks {
 		// Remove Lucilerri Pheremones overlay
 		if (unit_ext->timers[TimerLucilleriPheremones] == 1 || (unit_ext->timers[TimerLucilleriPheremones] > 1 && unit->status & UnitStatus::Burrowed)) {
 			bw::remove_unit_overlay(unit, ImageId::DermalAccelerantSmall + bw::get_overlay_offset(unit->id, true));
-		}
-
-		// Crucible stacks clear
-		{
-			auto& crucibles = unit_ext->unit_vectors[UnitVectorCrucibles];
-			for (auto it = crucibles.begin(); it != crucibles.end(); ++it) {
-				Unit* target = *it;
-				if (bw::distance_between(unit->position, target->position) > 8 * 32) {
-					bw::remove_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay);
-					crucibles.erase(it--);
-					should_update_speed = true;
-				}
-			}
 		}
 
 		// Controlled Demolition - initial cast
