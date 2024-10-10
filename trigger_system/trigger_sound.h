@@ -66,6 +66,7 @@ struct PlaySoundSettings {
 	s32 min_volume = 0;
 	bool force_globally = false;
 	bool looping = false;
+	s32 unit_response_id = -1;
 
 	Point16 GetUpdatedPosition() {
 		if (force_globally) {
@@ -74,10 +75,6 @@ struct PlaySoundSettings {
 			position = unit->position;
 		}
 		return position;
-	}
-
-	s32 GetUnitId() const {
-		return unit ? unit->id : -1;
 	}
 };
 

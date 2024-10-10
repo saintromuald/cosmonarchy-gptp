@@ -333,10 +333,11 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings set
             }
 		}
 		if (flags & DatSoundFlags_UnitResponse) {
-			if (settings.GetUnitId() != -1) {
+			if (settings.unit) {
+				settings.unit_response_id = settings.unit->id;
                 if (const auto pos = settings.GetUpdatedPosition()) {
                     const auto [volume, pan] = calculate_volume_pan(settings);
-					if (volume == 0) {
+					if (volume == DSBVOLUME_MIN) {
                         // atm we don't support starting banter outside of camera, for the sake of not having global collisions,
 						// potentially could filter them by distance, by mimicking the math from
 						// helper::get_sfx_volume_from_screen_distance, but between two points
@@ -345,7 +346,7 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings set
                 }
 				for (const auto& playing_sound : g_playing_sounds) {
 					auto* buffer = playing_sound.GetBuffer();
-					if (!buffer || buffer->settings.GetUnitId() != settings.GetUnitId()) {
+					if (!buffer || buffer->settings.unit_response_id != settings.unit_response_id) {
 						continue;
 					}
 					if (buffer->IsPlaying()) {
