@@ -143,8 +143,12 @@ EffectField* IquareGlobals::get_effect(EffectRef ref) {
 
 static void tick_effect(EffectField& effect) {
 	const EffectInfo& effect_info = get_effect_info(effect.id);
-    if (effect_info.loop_sound && !effect.playing_sound) {
-        effect.playing_sound = bw::play_looping_sound(effect_info.loop_sound, effect.position);
+    if (effect_info.loop_sound) {
+		if (!effect.playing_sound) {
+            effect.playing_sound = bw::play_looping_sound(effect_info.loop_sound, effect.position);
+		} else if (auto buffer = effect.playing_sound.GetBuffer()) {
+			buffer->settings.position = effect.position;
+		}
     }
 
 	if (effect.current_time && effect.sprite_id != SpriteId::None) {

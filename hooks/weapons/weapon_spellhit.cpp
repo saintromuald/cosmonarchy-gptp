@@ -423,7 +423,7 @@ namespace hooks {
 			if (!created_broodling) {
 				helper::display_last_network_error_for_player(attacker->player);
 			} else {
-				bw::play_ambient_sound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling->position);
+				bw::play_sound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling);
 
 				// Update various stuff (set hp, set shield...) not finished on create_unit
 				helper::update_unit_stats_and_finish_building(created_broodling);

@@ -328,25 +328,28 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings set
 	if (sound_id != SoundId::None) {
 		u32 flags = sfx_dat::sound_flags[sound_id];
 		if (flags & DatSoundFlags_OneAtATime) {
-			if (sound_buffer->ds_buffer) {
-				DWORD status = 0;
-				sound_buffer->ds_buffer->GetStatus(&status);
-				if (status & DSBSTATUS_PLAYING) {
-					return {};
-				}
-			}
+            if (sound_buffer->IsPlaying()) {
+                return {};
+            }
 		}
 		if (flags & DatSoundFlags_UnitResponse) {
-			settings.is_unit_response = true;
-			if (settings.GetUnitId() != -1) {
+			if (settings.unit) {
+				settings.unit_response_id = settings.unit->id;
+                if (const auto pos = settings.GetUpdatedPosition()) {
+                    const auto [volume, pan] = calculate_volume_pan(settings);
+					if (volume == DSBVOLUME_MIN) {
+                        // atm we don't support starting banter outside of camera, for the sake of not having global collisions,
+						// potentially could filter them by distance, by mimicking the math from
+						// helper::get_sfx_volume_from_screen_distance, but between two points
+						return {};
+					}
+                }
 				for (const auto& playing_sound : g_playing_sounds) {
-					const auto* buffer = playing_sound.GetBuffer();
-					if (!buffer || buffer->settings.GetUnitId() != settings.GetUnitId()) {
+					auto* buffer = playing_sound.GetBuffer();
+					if (!buffer || buffer->settings.unit_response_id != settings.unit_response_id) {
 						continue;
 					}
-					DWORD status = 0;
-					playing_sound.GetBuffer()->ds_buffer->GetStatus(&status);
-					if (status & DSBSTATUS_PLAYING) {
+					if (buffer->IsPlaying()) {
 						return {};
 					}
 				}

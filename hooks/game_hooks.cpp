@@ -2747,7 +2747,7 @@ namespace hooks {
 				y_offset = Clamp(y_offset, -127, 128);
 
 				unit->sprite->create_overlay(ImageId::AddonWeldOverlay, x_offset, y_offset);
-				bw::play_sound({SoundId::AddonConstruction01, SoundId::AddonConstruction04}, unit->position);
+				bw::play_sound({SoundId::AddonConstruction01, SoundId::AddonConstruction04}, unit);
 				u32 anim_delay = bw::rand_between(16, 20);
 				unit_ext->timers[TimerAddonAnimation] = anim_delay;
 			}
@@ -2958,11 +2958,11 @@ namespace hooks {
 				switch (unit->get_race()) {
 					case RaceId::Protoss: {
 						unit_ext->timers[TimerConstructionSFXDelay] = 124;
-						bw::play_sound(SoundId::Protoss_SHUTTLE_pshBld04_wav, unit->position);
+						bw::play_sound(SoundId::Protoss_SHUTTLE_pshBld04_wav, unit);
 					} break;
 					case RaceId::Zerg: {
 						unit_ext->timers[TimerConstructionSFXDelay] = 4 * 24 + 1;
-						bw::play_sound({SoundId::ZergConstruction01, SoundId::ZergConstruction03}, unit->position);
+						bw::play_sound({SoundId::ZergConstruction01, SoundId::ZergConstruction03}, unit);
 					} break;
 				}
 			}
@@ -2977,16 +2977,16 @@ namespace hooks {
 				unit->order_signal &= ~32;
 				switch (unit_ext->values[ValueWorkerContext]) {
 					case WorkerContext::Constructing: {
-						bw::play_sound({SoundId::TerranConstruction01, SoundId::TerranConstruction03}, unit->position);
+						bw::play_sound({SoundId::TerranConstruction01, SoundId::TerranConstruction03}, unit);
 					} break;
 					case WorkerContext::Repairing: {
 						if (unit->order_target.unit) {
-							bw::play_sound({SoundId::TerranRepair01, SoundId::TerranRepair03}, unit->order_target.unit->position);
+							bw::play_sound({SoundId::TerranRepair01, SoundId::TerranRepair03}, unit->order_target.unit);
 						}
 					} break;
 					default: { 
 						if (unit->order_target.unit) {
-							bw::play_sound({SoundId::terran_SCV_EDrRep00_wav, SoundId::terran_SCV_EDrRep04_wav}, unit->order_target.unit->position);
+							bw::play_sound({SoundId::terran_SCV_EDrRep00_wav, SoundId::terran_SCV_EDrRep04_wav}, unit->order_target.unit);
 						}
 					} break;
 				}
