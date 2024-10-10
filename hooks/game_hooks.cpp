@@ -1357,8 +1357,7 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ZergLarva:
-			case UnitId::ZergOcsalLarva:
-			{
+			case UnitId::ZergOcsalLarva: {
 				Unit* building = unit->connected_unit;
 				if (building && building->status & UnitStatus::Completed) {
 					unit_ext->values[ValueSwarmhold] = unit_id_swarmhold_value(building->id);
@@ -1367,12 +1366,10 @@ namespace hooks {
 						helper::replace_unit_with_id(unit, unit_id);
 					}
 				}
-
 				unit_ext->values[ValueRegressionUnstable] = unit->id == UnitId::ZergOcsalLarva;
 			} break;
 			case UnitId::ZergDroleth:
-			case UnitId::ZergGosvileth:
-			{
+			case UnitId::ZergGosvileth: {
 				unit_ext->values[ValueOriginatedFromGosvileth] = unit->id == UnitId::ZergGosvileth;
 
 				if (unit->id == UnitId::ZergDroleth) {
@@ -1401,8 +1398,7 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranTalos:
-			{
+			case UnitId::TerranTalos: {
 				if (unit->main_order_id == OrderId::TalosSalvage) {
 					Unit* target = unit->order_target.unit;
 					if (target) {

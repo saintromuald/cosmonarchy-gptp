@@ -351,7 +351,7 @@ void orders_drone_build(Unit* builder) { // 0045E090
 
 	if (builder_sprite->position.x != builder->order_target.pt.x || builder_sprite->position.y != builder->order_target.pt.y) {
 		// Change shadow pos
-		if (underlay->palette_type == 10 && underlay->vertical_offset != vertical_offset) {
+		if (underlay->palette_type == PaletteType::Shadow && underlay->vertical_offset != vertical_offset) {
 			underlay->flags |= ImageFlags::Redraw;
 			underlay->vertical_offset = vertical_offset;
 		}
@@ -375,7 +375,7 @@ void orders_drone_build(Unit* builder) { // 0045E090
 			|| builder_sprite->position.x != builder->order_target.pt.x
 			|| builder_sprite->position.y != builder->order_target.pt.y) {
 			helper::play_worker_error_sound(builder, 856);
-			if (underlay->palette_type == 10 && underlay->vertical_offset != vertical_offset) {
+			if (underlay->palette_type == PaletteType::Shadow && underlay->vertical_offset != vertical_offset) {
 				underlay->flags |= ImageFlags::Redraw;
 				underlay->vertical_offset = vertical_offset;
 			}
@@ -392,14 +392,14 @@ void orders_drone_build(Unit* builder) { // 0045E090
 		// @Todo: Tidy this into not being inlined
 		if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
 			helper::display_error_message_id_with_sfx(player, 850, g_console_index + 147);
-			helper::set_shadow_y(builder->sprite, 7);
+			helper::set_shadow_y(builder->sprite, vertical_offset);
 			helper::refresh_sprite_data(builder->sprite);
 			helper::order_immediate(builder, OrderId::ResetCollision1);
 			helper::force_order_done(builder);
 		}
 		if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
 			helper::display_error_message_id_with_sfx(player, 851, g_console_index + 150);
-			helper::set_shadow_y(builder->sprite, 7);
+			helper::set_shadow_y(builder->sprite, vertical_offset);
 			helper::refresh_sprite_data(builder->sprite);
 			helper::order_immediate(builder, OrderId::ResetCollision1);
 			helper::force_order_done(builder);
@@ -436,13 +436,13 @@ void orders_drone_land(Unit* unit) { // 004E9AA0
 					u32 unmovable = ((unit->status & UnitStatus::Unmovable) != 0) + 1;
 
 					Image* underlay = unit_sprite->images.tail;
-					if (underlay->palette_type == 10) {
+					if (underlay->palette_type == PaletteType::Shadow) {
 						if (underlay->vertical_offset) {
 							underlay->flags |= ImageFlags::Redraw;
 							underlay->vertical_offset = 0;
 						}
 					}
-					if (unit->sprite->images.tail->palette_type == 10) { // Deliberately not using underlay var
+					if (unit->sprite->images.tail->palette_type == PaletteType::Shadow) { // Deliberately not using underlay var
 						unit->sprite->images.tail->flags &= 0xFBu;
 					}
 
@@ -460,7 +460,7 @@ void orders_drone_land(Unit* unit) { // 004E9AA0
 							}
 						}
 						underlay = unit->sprite->images.tail;
-						if (underlay->palette_type == 10 && underlay->vertical_offset != vertical_offset) {
+						if (underlay->palette_type == PaletteType::Shadow && underlay->vertical_offset != vertical_offset) {
 							underlay->flags |= ImageFlags::Redraw;
 							underlay->vertical_offset = vertical_offset;
 						}
@@ -473,7 +473,7 @@ void orders_drone_land(Unit* unit) { // 004E9AA0
 							helper::move_unit(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 						} else {
 							underlay = unit->sprite->images.tail;
-							if (underlay->palette_type == 10 && underlay->vertical_offset != vertical_offset) {
+							if (underlay->palette_type == PaletteType::Shadow && underlay->vertical_offset != vertical_offset) {
 								underlay->flags |= ImageFlags::Redraw;
 								underlay->vertical_offset = vertical_offset;
 							}
@@ -502,7 +502,7 @@ void orders_drone_land(Unit* unit) { // 004E9AA0
 					if (helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)) {
 						if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) || unit->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) { // Was BYTE1(unit->status)
 							Image* underlay = unit->sprite->images.tail;
-							if (underlay->palette_type == 10) {
+							if (underlay->palette_type = PaletteType::Shadow) {
 								underlay->flags |= ImageFlags::DontUpdate;
 							}
 							u32 status = unit->status | UnitStatus::CanNotReceiveOrders;
@@ -530,7 +530,7 @@ void orders_drone_land(Unit* unit) { // 004E9AA0
 				if (helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)) {
 					if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) || unit->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) { // Was BYTE1(unit->status)
 						Image* underlay = unit->sprite->images.tail;
-						if (underlay->palette_type == 10) {
+						if (underlay->palette_type == PaletteType::Shadow) {
 							underlay->flags |= ImageFlags::DontUpdate;
 						}
 						u32 status = unit->status | UnitStatus::CanNotReceiveOrders;
