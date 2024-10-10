@@ -827,6 +827,9 @@ void inherit_debuffs(Unit* parent, Unit* child) {
 	child_ext->timers[TimerDemiurgeWorship] = parent_ext->timers[TimerDemiurgeWorship];
 	child_ext->values[ValueDemiurgePlayer] = parent_ext->values[ValueDemiurgePlayer];
 
+	// Inherit "No corpse" status
+	child_ext->values[ValueNoCorpse] = parent_ext->values[ValueNoCorpse];
+
 	bw::refresh_console();
 }
 

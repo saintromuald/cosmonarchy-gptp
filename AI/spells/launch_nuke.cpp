@@ -1,24 +1,18 @@
 #include "spells.h"
 #include <AI/ai_common.h>
 
-namespace AI
-{
-	Unit* find_best_nuke_launch_target(Unit* caster, bool isUnderAttack)
-	{
-		return bw::UnitFinder::get_nearest_target(caster, [&](Unit* target)
-		{
-			if ((target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) && !target->is_visible_to(caster->player))
-			{
+namespace AI {
+	Unit* find_best_nuke_launch_target(Unit* caster, bool isUnderAttack) {
+		return bw::UnitFinder::get_nearest_target(caster, [&](Unit* target) {
+			if ((target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) && !target->is_visible_to(caster->player)) {
 				return false;
 			}
 
-			if (!caster->is_target_enemy(target))
-			{
+			if (!caster->is_target_enemy(target)) {
 				return false;
 			}
-			const s32 totalEnemyClumpValue = get_total_enemy_nuke_value_in_area(target->get_x(), target->get_y(), 192, caster);
-			if (totalEnemyClumpValue >= 800)
-			{
+			const s32 total_value = get_total_enemy_nuke_value_in_area(target->get_x(), target->get_y(), 192, caster);
+			if (total_value >= 800) {
 				return true;
 			}
 			return false;
