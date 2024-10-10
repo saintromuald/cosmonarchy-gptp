@@ -343,7 +343,8 @@ namespace hooks {
 		if (!sound_id || !g_options_list->sfx || !play || !unit) {
 			return;
 		}
-		play_sound_ext(sound_id, PlaySoundSettings{.position = unit->position, .unit = unit, .min_volume = min_volume});
+		play_sound_ext(sound_id, PlaySoundSettings{.position = unit->position, .unit = unit,
+			.min_volume = min_volume, .force_globally = static_cast<bool>(sfx_dat::sound_flags[sound_id] & DatSoundFlags_UnitResponse)});
 	}
 
 	// Hooked to use positional audio. -Pr0nogo

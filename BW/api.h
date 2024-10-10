@@ -135,14 +135,17 @@ private:
 using ImageSet = GraphicsSet<ImageId::Enum, ImageId::None>;
 using SpriteSet = GraphicsSet<SpriteId::Enum, SpriteId::None>;
 
+enum class RandType { Sync, Local };
+
 struct SoundSet {
 	SoundId::Enum first = SoundId::None;
 	SoundId::Enum last = SoundId::None;
+	RandType random_type = RandType::Sync;
 
 	SoundSet() = default;
 	SoundSet(s32 id) : first{SoundId::Enum(id)}, last{SoundId::Enum(id)} {}
 	SoundSet(SoundId::Enum id) : first{id}, last{id} {}
-	SoundSet(SoundId::Enum first, SoundId::Enum last) : first{first}, last{last} {
+	SoundSet(SoundId::Enum first, SoundId::Enum last, RandType random_type = RandType::Sync) : first{first}, last{last}, random_type{random_type} {
 		if (first > last) {
 			std::swap(this->first, this->last);
 		}
@@ -155,12 +158,22 @@ struct SoundSet {
 
 	SoundId::Enum rand(std::source_location src = std::source_location::current()) const {
 		if (first == last) return first;
+		if (random_type == RandType::Local) {
+            return (SoundId::Enum) bw::rand_between_local(first, last, src);
+		}
 		return (SoundId::Enum) bw::rand_between(first, last, src);
 	}
 
-	SoundId::Enum rand_local(std::source_location src = std::source_location::current()) const {
-		if (first == last) return first;
-		return (SoundId::Enum) bw::rand_between_local(first, last, src);
+	SoundSet as_local() {
+		auto copy = *this;
+		copy.random_type = RandType::Local;
+		return copy;
+	}
+
+	SoundSet as_sync() {
+		auto copy = *this;
+		copy.random_type = RandType::Sync;
+		return copy;
 	}
 };
 
@@ -914,21 +927,10 @@ void add_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& set
 void remove_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});
 void set_unit_overlay(Unit* unit, ImageSet image_set, bool active, const OverlaySettings& settings = {});
 
-PlayingSound play_sound(SoundSet sound_set);
-PlayingSound play_sound(SoundSet sound_set, Unit* unit);
-PlayingSound play_sound(SoundSet sound_set, Point16 pos);
-
-PlayingSound play_sound_local(SoundSet sound_set);
-PlayingSound play_sound_local(SoundSet sound_set, Unit* unit);
-PlayingSound play_sound_local(SoundSet sound_set, Point16 pos);
-
-PlayingSound play_looping_sound(SoundSet sound_set);
-PlayingSound play_looping_sound(SoundSet sound_set, Unit* unit);
-PlayingSound play_looping_sound(SoundSet sound_set, Point16 pos);
-
-PlayingSound play_looping_sound_local(SoundSet sound_set);
-PlayingSound play_looping_sound_local(SoundSet sound_set, Unit* unit);
-PlayingSound play_looping_sound_local(SoundSet sound_set, Point16 pos);
+PlayingSound play_sound(SoundSet sound_set, Point16 pos = {});
+PlayingSound play_sound(SoundSet sound_set, Unit* unit, bool force_globally = false);
+PlayingSound play_looping_sound(SoundSet sound_set, Point16 pos = {});
+PlayingSound play_looping_sound(SoundSet sound_set, Unit* unit, bool force_globally = false);
 
 void play_action_sound(u32 sound_id, Unit* unit);
 u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target);

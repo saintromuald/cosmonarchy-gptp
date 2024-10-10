@@ -64,11 +64,11 @@ struct PlaySoundSettings {
 	Point16 position = {};
 	Unit* unit = 0;
 	s32 min_volume = 0;
+	bool force_globally = false;
 	bool looping = false;
-	bool is_unit_response = false;
 
 	Point16 GetUpdatedPosition() {
-		if (is_unit_response) {
+		if (force_globally) {
 			position = {};
 		} else if (unit) {
 			position = unit->position;
@@ -85,6 +85,15 @@ struct SoundBuffer {
 	LPDIRECTSOUNDBUFFER ds_buffer;
 	u64 generation;
 	PlaySoundSettings settings = {};
+
+	bool IsPlaying() const {
+		if (!ds_buffer) {
+			return false;
+		}
+        DWORD status = 0;
+        ds_buffer->GetStatus(&status);
+        return status & DSBSTATUS_PLAYING;
+	}
 };
 
 struct SoundMainBuffer : SoundBuffer {
