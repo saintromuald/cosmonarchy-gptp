@@ -2,11 +2,8 @@
 #include <BW/api.h>
 #include <hooks/limits/sfx_extender.h>
 
-namespace hooks
-{
-	void orders_nuke_track(Unit* unit) // 00464D10
-	{
-		// Unit is nuke painter (e.g. Eidolon, Seraph). - Pr0nogo
+namespace hooks {
+	void orders_nuke_track(Unit* unit) { // 00464D10
 		if (unit->main_order_state != 0) {
 			if (unit->main_order_state == 6) {
 				if (!unit->connected_unit || unit->connected_unit->main_order_state == 5) {
@@ -18,8 +15,7 @@ namespace hooks
 					helper::change_unit_buttonset(unit, unit->id);
 					bw::refresh_console();
 
-					while (current_image)
-					{
+					while (current_image) {
 						current_image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 						current_image = current_image->link.next;
 					}
@@ -49,8 +45,7 @@ namespace hooks
 		}
 	}
 
-	void orders_nuke_ground(Unit* unit)
-	{
+	void orders_nuke_ground(Unit* unit) {
 		if (unit->next_target_waypoint.x != unit->order_target.pt.x || unit->next_target_waypoint.y != unit->order_target.pt.y) {
 			unit->next_target_waypoint.x = unit->order_target.pt.x;
 			unit->next_target_waypoint.y = unit->order_target.pt.y;
@@ -114,16 +109,14 @@ namespace hooks
 					}
 
 					u32 action_sound = SoundId::None;
-					switch (unit->id)
-					{
-						case UnitId::TerranEidolon:
-						{
+					switch (unit->id) {
+						case UnitId::TerranEidolon: {
 							action_sound = SoundId::Terran_GHOST_TGhPss00_wav;
 						} break;
 					}
 
 					if (action_sound) {
-						if (helper::play_sound_from_unit(SoundId::Terran_GHOST_TGhPss00_wav, unit, g_options_list->flags & 1, 99)) {
+						if (bw::play_sound(SoundId::Terran_GHOST_TGhPss00_wav, unit)) {
 							helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 						}
 					}

@@ -32,7 +32,7 @@ namespace hooks {
 			}
 			if (!unit_ext->values[ValuePlayingHatchSound]) {
 				unit_ext->values[ValuePlayingHatchSound] = true;
-				bw::play_sound(SoundId::Zerg_Egg_ZEgRdy00_WAV, unit->position);
+				bw::play_sound(SoundId::Zerg_Egg_ZEgRdy00_WAV, unit);
 			}
 		}
 
