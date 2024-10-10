@@ -2316,7 +2316,7 @@ namespace hooks {
 						effect->destroy();
 					}
 					unit_ext->current_storm = 0;
-					unit->spell_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PsiStorm);
+					unit->spell_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PsiStorm) * 1.25;
 				}
 			} break;
 			case UnitId::ProtossCrucible: {
