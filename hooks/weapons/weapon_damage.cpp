@@ -330,8 +330,10 @@ namespace hooks {
 		if (data.attacker) {
 			weapon_damage_lifesteal(data);
 		}
+
+		GameKind game_kind = bw::get_game_kind();
 		if (weapon_damage_is_lethal(data)) {
-			if (!bw::is_allied_to(data.target->player, data.attacking_player_id) && bw::get_game_kind() == GameKind_Massacre) {
+			if (!bw::is_allied_to(data.target->player, data.attacking_player_id) && game_kind == GameKind_Massacre) {
 				bw::add_massacre_resource(data.attacking_player_id);
 			}
 			if (!weapon_damage_fatal(data)) { // Prevent attack if it wasn't fatal
@@ -376,6 +378,10 @@ namespace hooks {
 
 		if (data.weapon_id == WeaponId::Lockdown) {
 			bw::play_sound(SoundId::GoskaGrenadeImpact, weapon_damage_current_bullet->position);
+		}
+
+		if (game_kind == GameKind_TheTurning && data.target->player == NeutralHostilePlayer && unit_id_is_burrowed_attacker(data.target->id)) {
+			helper::ai_order_lurker_burrow(data.target);
 		}
 	}
 
