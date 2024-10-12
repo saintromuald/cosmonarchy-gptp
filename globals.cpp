@@ -88,7 +88,7 @@ void EffectField::destroy() {
     }
     const EffectInfo& effect_info = get_effect_info(id);
     if (effect_info.end_sound) {
-        bw::play_sound(effect_info.end_sound);
+        bw::play_sound(effect_info.end_sound, this->position);
     }
 
     current_time = 0;
