@@ -68,6 +68,10 @@ namespace hooks {
 		u8 count_attacking_buildings = 0;
 		u8 count_lifted_buildings = 0;
 		u8 count_repairmen = 0;
+
+		u8 count_nexuses = 0;
+		u8 count_ministries = 0;
+
 		u16 active_button_set_id;
 		u16 selected_button_set_id;
 		u32 selected_properties;
@@ -123,6 +127,15 @@ namespace hooks {
 				if (unit_id_can_repair(selected->id)) {
 					count_repairmen++;
 				}
+
+				switch (selected->id) {
+					case UnitId::TerranMinistry: {
+						count_ministries++;
+					} break;
+					case UnitId::ProtossNexus: {
+						count_nexuses++;
+					} break;
+				}
 			}
 		}
 
@@ -160,6 +173,10 @@ namespace hooks {
 				*g_current_buttonset_id = UnitId::Buttons_GroupWorkers;
 			} else if (count_burrowables) {
 				*g_current_buttonset_id = UnitId::Buttons_GroupBurrower;
+			} else if (count_ministries == g_client_selection_count) {
+				*g_current_buttonset_id = UnitId::TerranMinistry;
+			} else if (count_nexuses == g_client_selection_count) {
+				*g_current_buttonset_id = UnitId::ProtossNexus;
 			} else if (count_zerg_production == g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::ZergHachirosk;
 			} else if (count_lifted_buildings) {
@@ -913,8 +930,7 @@ namespace hooks {
 							} break;
 							case UnitId::TerranCaptaincy: {
 								switch (current_button->requirement_var) {
-									case UnitId::TerranApostle:
-									{
+									case UnitId::TerranApostle: {
 										if (faction != Faction::TerranHecatonCoalition) {
 											if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
 												current_button_state = Button_State::Invisible;
@@ -925,8 +941,7 @@ namespace hooks {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
-									case UnitId::TerranAuriel:
-									{
+									case UnitId::TerranAuriel: {
 										if (faction == Faction::TerranHecatonCoalition) {
 											if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
 												current_button_state = Button_State::Invisible;
@@ -939,8 +954,7 @@ namespace hooks {
 									} break;
 									case UnitId::TerranSiren:
 									case UnitId::TerranStriga: {
-										if (!bw::all_selected_units_have_addon(UnitId::TerranTinkerersTower) || bw::unit_queue_full(unit))
-										{
+										if (!bw::all_selected_units_have_addon(UnitId::TerranTinkerersTower) || bw::unit_queue_full(unit)) {
 											current_button_state = Button_State::Invisible;
 										} else {
 											current_button_state = Button_State::Enabled;
