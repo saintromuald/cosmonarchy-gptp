@@ -234,7 +234,7 @@ static void tick_effect(EffectField& effect) {
 					break;
 				}
 				auto distance = bw::distance_between(caster->position, (Point16)effect.position);
-				if (distance > weapons_dat::max_range[WeaponId::PsiStorm] + 64) {
+				if (distance > weapons_dat::max_range[WeaponId::PsiStorm] + 64 || caster->status & UnitStatus::InTransport) {
 					caster_ext->current_storm = 0;
 					effect.destroy();
 					break;

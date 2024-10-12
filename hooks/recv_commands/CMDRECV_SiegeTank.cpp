@@ -1,8 +1,7 @@
 #include "CMDRECV_SiegeTank.h"
 #include <BW/api.h>
 
-namespace hooks
-{
+namespace hooks {
 	void CMDRECV_Siege(u8 is_queued) {
 		*g_unit_iterator_pos = 0;
 		Unit* unit = get_active_player_next_selection();

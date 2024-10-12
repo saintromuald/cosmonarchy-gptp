@@ -2701,8 +2701,7 @@ namespace hooks {
 							}
 						}
 						first_town_copy_2 = first_town_copy->next;
-						if (!first_town_copy_2)
-						{
+						if (!first_town_copy_2) {
 							break;
 						}
 						first_town_copy = first_town_copy->next;
@@ -2713,17 +2712,14 @@ namespace hooks {
 	}
 
 	// Hooked to add sprite nullcheck. -Pr0nogo
-	Target ai_prepare_to_flee(Unit* unit, Unit* target) // 00476A50
-	{
+	Target ai_prepare_to_flee(Unit* unit, Unit* target) { // 00476A50
 		// Currently has bad angle calculation 
 		s32 diff_pos_x = target->position.x - unit->position.x;
 		s32 diff_pos_y = target->position.y - unit->position.y;
 		s32 direction = 0;
-		if (diff_pos_x)
-		{
+		if (diff_pos_x) {
 			u32 diff_pos_div = (diff_pos_y * 256) / diff_pos_x;
-			if (diff_pos_x < 0)
-			{
+			if (diff_pos_x < 0) {
 				s32 fastest_dist = helper::get_fastest_distance(diff_pos_div);
 				direction = fastest_dist == 64 ? 0 : fastest_dist + 192;
 			} else {
@@ -2772,19 +2768,16 @@ namespace hooks {
 			}
 			target_pos_y_1 = y_distance;
 		pathing_check:
-			if (!(target->pathing_flags & PathingFlags::PathingFlags_ProvidesCollision))
-			{
+			if (!(target->pathing_flags & PathingFlags::PathingFlags_ProvidesCollision)) {
 				goto skip_collision;
 			}
 			u32 region_id_home = helper::get_region_id(target->position.x, target->position.y);
 			u32 region_id_away = helper::get_region_id(target_pos_x_1, target_pos_y_1);
-			if ((*g_sai_paths)->regions[region_id_home].group_index == (*g_sai_paths)->regions[region_id_away].group_index) // Not sure if this is accurate
-			{
+			if ((*g_sai_paths)->regions[region_id_home].group_index == (*g_sai_paths)->regions[region_id_away].group_index) { // Not sure if this is accurate
 				u32 target_player = target->player;
 				u32 connected_region_1 = helper::get_region_id(target_pos_x_1, target_pos_y_1);
 				u32 connected_region_2 = helper::get_region_id(target->position.x, target->position.y);
-				if (helper::ai_regions_are_connected(target_player, connected_region_1, connected_region_2))
-				{
+				if (helper::ai_regions_are_connected(target_player, connected_region_1, connected_region_2)) {
 					break;
 				}
 			}
@@ -2803,8 +2796,7 @@ namespace hooks {
 	skip_collision:
 		UnitAi* unit_ai = target->unit_ai;
 		target_pos_x = target_pos_x_1;
-		if (!unit_ai)
-		{
+		if (!unit_ai) {
 			pos_x_1 = target_pos_x;
 			pos_y_1 = target_pos_y;		// was HIWORD
 			result.pt.x = pos_x_1;
@@ -2814,8 +2806,7 @@ namespace hooks {
 		}
 		pos_x_1 = target_pos_x;
 		pos_y_1 = target_pos_y;			// was HIWORD
-		if (unit_ai->type == AiType::Guard)
-		{
+		if (unit_ai->type == AiType::Guard) {
 			unit_ai->guard_ai.current_home.x = target_pos_x_1;
 			unit_ai->guard_ai.current_home.y = target_pos_y_1;
 		}
@@ -2826,50 +2817,37 @@ namespace hooks {
 	}
 
 	// Hooked to resolve nullsprite crashes. -Pr0nogo
-	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y) // 004E7420
-	{
+	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y) { // 004E7420
 		u32 main_order_id = unit->main_order_id;
-		if (main_order_id == OrderId::TransportLoad)
-		{
+		if (main_order_id == OrderId::TransportLoad) {
 			return 1;
 		}
-		if (unit->status & UnitStatus::InAir || units_dat::base_property[unit->id] & UnitProperty::Subunit)
-		{
+		if (unit->status & UnitStatus::InAir || units_dat::base_property[unit->id] & UnitProperty::Subunit) {
 			return 0;
 		}
-		if (unit->position.x == x && unit->position.y == y)
-		{
+		if (unit->position.x == x && unit->position.y == y) {
 			return 0;
 		}
-		if (!(unit->status & UnitStatus::Reacts))
-		{
+		if (!(unit->status & UnitStatus::Reacts)) {
 			return 0;
 		}
-		if (unit_id_can_repair(unit->id) && main_order_id == OrderId::Repair1)
-		{
+		if (unit_id_can_repair(unit->id) && main_order_id == OrderId::Repair1) {
 			Unit* target = unit->order_target.unit;
-			if (target)
-			{
-				if (target->status & UnitStatus::InAir)
-				{
+			if (target) {
+				if (target->status & UnitStatus::InAir) {
 					return 0;
 				}
 			}
 		}
-		if ((*g_sai_paths)->regions[helper::get_region_id(x, y)].accessibility_flags == 8189)
-		{
+		if ((*g_sai_paths)->regions[helper::get_region_id(x, y)].accessibility_flags == 8189) {
 			return 0;
 		}
-		if (helper::unit_has_path_to_destination(unit, x, y))
-		{
+		if (helper::unit_has_path_to_destination(unit, x, y)) {
 			UnitAi* ai = unit->unit_ai;
-			if (ai)
-			{
-				if (ai->type == AiType::Military)
-				{
+			if (ai) {
+				if (ai->type == AiType::Military) {
 					char state = ai->military_ai.region->state;
-					if (state == RegionState::ContinueAttackHere || state == RegionState::Attacking)
-					{
+					if (state == RegionState::ContinueAttackHere || state == RegionState::Attacking) {
 						return 0;
 					}
 				}
@@ -2881,13 +2859,11 @@ namespace hooks {
 			}
 		}
 		Unit* transport = 0;
-		if (!helper::ai_find_transport(unit, &transport))
-		{
+		if (!helper::ai_find_transport(unit, &transport)) {
 			return 0;
 		}
 		Order* order_head = unit->order_queue_head;
-		if (order_head)
-		{
+		if (order_head) {
 			helper::issue_order_before_2(main_order_id, order_head, unit, &unit->order_target.pt, unit->order_target.unit);
 		} else {
 			bool stop_previous = false;
@@ -2899,8 +2875,7 @@ namespace hooks {
 
 		helper::insert_order_targeting_ground_before(OrderId::TransportLoad, unit->order_queue_head, unit, x, y);
 		Unit* subunit = unit->subunit;
-		if (helper::unit_is_subunit(unit->subunit))
-		{
+		if (helper::unit_is_subunit(unit->subunit)) {
 			helper::issue_order_targeting_nothing(subunit, OrderId::Nothing2);
 		}
 		helper::force_order_done(unit);
@@ -2909,14 +2884,11 @@ namespace hooks {
 	}
 
 	// Hooked to use unit positions. -Pr0nogo
-	b32 is_unreachable(Unit* target, Unit* unit) // 00476C50
-	{
+	b32 is_unreachable(Unit* target, Unit* unit) { // 00476C50
 		s32 pos_x = target->position.x; // Previously used sprite positions.
 		s32 pos_y = target->position.y;
-		if (unit->pathing_flags & 1)
-		{
-			if (!helper::unit_has_path_to_destination(unit, pos_x, pos_y) || !helper::ai_are_on_connected_regions(unit, pos_x, pos_y))
-			{
+		if (unit->pathing_flags & 1) {
+			if (!helper::unit_has_path_to_destination(unit, pos_x, pos_y) || !helper::ai_are_on_connected_regions(unit, pos_x, pos_y)) {
 				return true;
 			}
 		}
