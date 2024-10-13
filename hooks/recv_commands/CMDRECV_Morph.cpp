@@ -3,8 +3,7 @@
 #include <BW/api.h>
 #include "hooks/rally_point.h"
 
-namespace hooks
-{
+namespace hooks {
 	void cmdrecv_building_morph(u16 unit_id) { // 004C1910
 		*g_unit_iterator_pos = 0;
 		while (Unit* unit = helper::get_active_player_next_selection()) {

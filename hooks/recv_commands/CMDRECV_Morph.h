@@ -2,8 +2,7 @@
 #include "../../BW/structures/Unit.h"
 #include "BW/structures.h"
 
-namespace hooks
-{
+namespace hooks {
 	void cmdrecv_building_morph(u16 unit_id);																				// 004C1910
 	void cmdrecv_unit_morph(u16 unit_id);																					// 004C1990
 	void cmdrecv_train(char* buffer);																						// 004C1C20

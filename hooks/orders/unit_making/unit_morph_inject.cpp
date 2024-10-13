@@ -14,8 +14,7 @@ namespace {
 		static u32 result;
 		static u32 unitId_;
 		unitId_ = unit_id;
-		__asm
-		{
+		__asm {
 			PUSHAD
 			PUSH unitId_
 			MOV EDI, unit
@@ -29,12 +28,8 @@ namespace {
 	void __stdcall unit_morph_wrapper_cmdrecv_unit_morph(u8* commandData) {
 		const u16 morph_unit_id = *((u16*)&commandData[1]);
 		*g_unit_iterator_pos = 0;
-		while (Unit* unit = get_active_player_next_selection())
-		{
-			if (hooks::unit_can_morph(unit, morph_unit_id)
-				&& unit->main_order_id != OrderId::MorphUnit
-				&& add_unit_to_build_queue(unit, morph_unit_id))
-			{
+		while (Unit* unit = get_active_player_next_selection()) {
+			if (hooks::unit_can_morph(unit, morph_unit_id) && unit->main_order_id != OrderId::MorphUnit && add_unit_to_build_queue(unit, morph_unit_id)) {
 				unit->order_to(OrderId::MorphUnit);
 			}
 		}
@@ -47,7 +42,7 @@ namespace {
 		if (g_client_selection_count <= 1 || hooks::get_unit_morph_egg_id(unit->id, unit, unit->build_queue[0]) != UnitId::None) {
 			return unit->can_make_unit(build_unit_id, player);
 		}
-		return 0;
+		return false;
 	}
 
 	//-------- Orders_Morph1 --------//

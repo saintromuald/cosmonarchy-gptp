@@ -3,8 +3,7 @@
 #include "globals.h"
 #include "hooks/audiovisuals/sfxhooks.h"
 
-namespace hooks
-{
+namespace hooks {
 	static void move_to_rally(Unit* unit, Target rally) {
 		if (rally.unit) {
 			/*
