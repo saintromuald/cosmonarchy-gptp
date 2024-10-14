@@ -158,7 +158,7 @@ namespace hooks {
 
 		while (revealed_count) {
 			if (tileX + sighted_tile->w < g_map_tile_size->width && tileY + sighted_tile->h < g_map_tile_size->height) {
-				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 36);
+				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 18);
 				sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
 			}
 
@@ -173,7 +173,7 @@ namespace hooks {
 		u32 revealed_count = sightVals->revealed_count;
 
 		while (revealed_count) {
-			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 36);
+			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 18);
 			sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
 			++sighted_tile;
 			--revealed_count;

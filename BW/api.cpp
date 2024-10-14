@@ -3653,7 +3653,7 @@ void reveal_attacker(Unit* attacker, Unit* victim) {
 			flags |= 1 << i;
 		}
 	}
-	hooks::reveal_sight_at_location(1, flags, attacker->position.x, attacker->position.y, attacker->status & UnitStatus::InAir);
+	hooks::reveal_sight_at_location(0, flags, attacker->position.x, attacker->position.y, attacker->status & UnitStatus::InAir);
 }
 
 void unload_or_kill_loaded_units(Unit* transport) {
