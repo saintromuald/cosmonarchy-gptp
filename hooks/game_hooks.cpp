@@ -2847,7 +2847,7 @@ namespace hooks {
 		});
 
 		// Clear Manifold vector
-		std::ranges::remove_if(unit_ext->unit_vectors[UnitVectorBarghests], [unit](Unit* manifold) {
+		std::ranges::remove_if(unit_ext->unit_vectors[UnitVectorManifolds], [unit](Unit* manifold) {
 			UnitExt* manifold_ext = &manifold->ext();
 			return manifold_ext->timers[TimerManifoldConcurringChorus] <= 1 || bw::distance_between(unit->position, manifold->position) > 2 * 32;
 		});
