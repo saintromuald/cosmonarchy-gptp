@@ -90,10 +90,9 @@ namespace hooks {
 			} break;
 			case UnitId::TerranBlackjack: {
 				// Blackjack Wear and Tear: reduce weapon speed based on missing health
-				const u32 health = unit->hitpoints / 256;
-				const u32 max_health = unit->get_max_hp_ingame();
-				const f64 multiplier = MathUtils::Map(health, (u32)0, max_health, 0.66, 1.0, true);
-				cooldown /= multiplier;
+				if (unit->hitpoints < unit->get_max_hp_raw() / 2) {
+					cooldown /= 0.66;
+				}
 			} break;
 			case UnitId::TerranPhobos: {
 				// Argent Capacitors
@@ -104,16 +103,14 @@ namespace hooks {
 			case UnitId::ProtossVagrantShade: {
 				cooldown /= 1.5;
 			} break;
-			case UnitId::ZergGhitorokor:
-			{
+			case UnitId::ZergGhitorokor: {
 				// Relentless Aggression
 				if (unit_ext->values[ValueGhitorokorRelentlessAggressionStacks])
 				{
 					cooldown /= 1 + (0.10 * unit_ext->values[ValueGhitorokorRelentlessAggressionStacks]);
 				}
 			} break;
-			case UnitId::ZergMortothrokor:
-			{
+			case UnitId::ZergMortothrokor: {
 				// Whetted Appetite
 				if (unit_ext->values[ValueMortothrokorStacks])
 				{

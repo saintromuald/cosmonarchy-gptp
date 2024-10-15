@@ -427,10 +427,10 @@ namespace hooks {
 			&& (bw::are_mutual_allies(unit->player, g_local_nation_id) || bw::in_replay_or_witness())) {
 				switch (unit->id) {
 					case UnitId::TerranShamanSupportMode: {
-						g_graphics.draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranShamanVisionaryMode: {
-						g_graphics.draw_circle(source.x, source.y, 6 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranAncile: {
 						g_graphics.draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
@@ -1785,7 +1785,7 @@ namespace hooks {
 					unit_ext->timers[TimerNaniteField] = 24;
 					bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
 
-					u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? 6 : 3;
+					u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? 8 : 4;
 					for (Unit* target : g_unit_search.radial(unit->position, range * 32).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterNoBuilding)) {
 						nanite_field_proc(unit, 4, target);
 					}
