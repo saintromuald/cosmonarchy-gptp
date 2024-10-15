@@ -890,7 +890,7 @@ namespace hooks {
 
 		UnitExt* attacker_ext = get_unit_ext(data.attacker);
 		if (attacker_ext->timers[TimerLucilleriPheremones]) {
-			hp_factor += 1;
+			hp_factor += 0.5;
 		}
 		switch (data.weapon_id) {
 			case WeaponId::GhitorokorGnashingTendrils:
