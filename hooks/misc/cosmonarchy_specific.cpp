@@ -149,7 +149,7 @@ bool is_unused_order(u8 order_id) {
 
 void set_up_spider_mines(Unit* unit) {
 	if (unit->id == UnitId::TerranVulture) {
-		unit->mine_carrier.mine_count = 2;
+		unit->mine_carrier.mine_count = 3;
 	}
 }
 

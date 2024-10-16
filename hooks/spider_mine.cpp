@@ -149,8 +149,7 @@ namespace hooks
 	}
 
 	// Not tested yet. -Pr0nogo
-	void orders_place_mine(Unit* unit) // 00464FD0
-	{
+	void orders_place_mine(Unit* unit) { // 00464FD0
 		if (!unit->mine_carrier.mine_count) {
 			helper::order_return_to_idle(unit);
 			return;
@@ -193,19 +192,16 @@ namespace hooks
 			}
 		} else {
 			Unit* target = unit->order_target.unit;
-			if (target)
-			{
+			if (target) {
 				bool can_move = helper::move_to_target(target, unit);
 				Sprite* target_sprite = target->sprite;
 				s32 sprite_pos_x = target_sprite->position.x;
 				s32 sprite_pos_y = target_sprite->position.y;
-				if (sprite_pos_x != unit->next_target_waypoint.x || sprite_pos_y != unit->next_target_waypoint.y)
-				{
+				if (sprite_pos_x != unit->next_target_waypoint.x || sprite_pos_y != unit->next_target_waypoint.y) {
 					unit->next_target_waypoint.x = sprite_pos_x;
 					unit->next_target_waypoint.y = sprite_pos_y;
 				}
-				if (can_move)
-				{
+				if (can_move) {
 					unit->order_target.pt.x = target->sprite->position.x;
 					unit->order_target.pt.y = target->sprite->position.y;
 					unit->main_order_state = 1;
@@ -214,13 +210,11 @@ namespace hooks
 				s32 sprite_pos_x = unit->order_target.pt.x;
 				s32 sprite_pos_y = unit->order_target.pt.y;
 				bool move_target = helper::set_move_target_xy(unit, sprite_pos_x, sprite_pos_y);
-				if (sprite_pos_x != unit->next_target_waypoint.x || sprite_pos_y != unit->next_target_waypoint.y)
-				{
+				if (sprite_pos_x != unit->next_target_waypoint.x || sprite_pos_y != unit->next_target_waypoint.y) {
 					unit->next_target_waypoint.x = sprite_pos_x;
 					unit->next_target_waypoint.y = sprite_pos_y;
 				}
-				if (move_target)
-				{
+				if (move_target) {
 					unit->main_order_state = 1;
 				}
 			}

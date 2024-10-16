@@ -2258,8 +2258,8 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::TerranVulture: {
-				if (unit->mine_carrier.mine_count > 2) {
-					unit->mine_carrier.mine_count = 2;
+				if (unit->mine_carrier.mine_count > 3) {
+					unit->mine_carrier.mine_count = 3;
 				}
 			} break;
 			case UnitId::ZergSkithrokor: {
@@ -2834,19 +2834,19 @@ namespace hooks {
 		}
 
 		// Clear Barghest vector
-		std::ranges::remove_if(unit_ext->unit_vectors[UnitVectorBarghests], [unit](Unit* barghest) {
-			UnitExt* barghest_ext = &barghest->ext();
-			return barghest_ext->timers[TimerDecloak] < 2 || bw::distance_between(unit->position, barghest->position) > 5 * 32;
+		std::erase_if(unit_ext->unit_vectors[UnitVectorBarghests], [unit](Unit* barghest) {
+			UnitExt& barghest_ext = barghest->ext();
+			return barghest_ext.timers[TimerDecloak] < 2 || bw::distance_between(unit->position, barghest->position) > 5 * 32;
 		});
 
 		// Clear Manifold vector
-		std::ranges::remove_if(unit_ext->unit_vectors[UnitVectorManifolds], [unit](Unit* manifold) {
-			UnitExt* manifold_ext = &manifold->ext();
-			return manifold_ext->timers[TimerManifoldConcurringChorus] < 2 || bw::distance_between(unit->position, manifold->position) > 2 * 32;
+		std::erase_if(unit_ext->unit_vectors[UnitVectorManifolds], [unit](Unit* manifold) {
+			UnitExt& manifold_ext = manifold->ext();
+			return manifold_ext.timers[TimerManifoldConcurringChorus] < 2 || bw::distance_between(unit->position, manifold->position) > 2 * 32;
 		});
 
 		// Clear Crucible vector
-		std::ranges::remove_if(unit_ext->unit_vectors[UnitVectorCrucibles], [unit, &should_update_speed](Unit* crucible) {
+		std::erase_if(unit_ext->unit_vectors[UnitVectorCrucibles], [unit, &should_update_speed](Unit* crucible) {
 			if (bw::distance_between(unit->position, crucible->position) > 8 * 32) {
 				bw::remove_unit_overlay(unit, ImageId::CrucibleKhaydarinChargeOverlay);
 				should_update_speed = true;

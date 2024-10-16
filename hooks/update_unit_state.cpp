@@ -921,8 +921,7 @@ namespace hooks
 			unit->player_link.next = first_player_unit->unit[player];
 
 			Unit* first_unit = first_player_unit->unit[player];
-			if (first_unit)
-			{
+			if (first_unit) {
 				first_unit->player_link.prev = unit;
 			}
 			first_player_unit->unit[player] = unit;
@@ -945,7 +944,7 @@ namespace hooks
 				}
 			} else {
 				if (unit->id == UnitId::TerranVulture) {
-					unit->mine_carrier.mine_count = 2;
+					unit->mine_carrier.mine_count = 3;
 				}
 				unit->sprite->flags |= SpriteFlags::Hidden;
 				helper::refresh_all_visible_images_at_screen_pos(unit->sprite, 0);

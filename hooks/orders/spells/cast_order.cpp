@@ -286,8 +286,7 @@ namespace hooks {
 										unit->mine_carrier.mine_count--;
 									}
 
-									while (current_image)
-									{
+									while (current_image) {
 										current_image->play_iscript_animation(anim);
 										current_image = current_image->link.next;
 									}
@@ -305,8 +304,7 @@ namespace hooks {
 	}
 
 	// Hooked to safeguard against crashes. -Pr0nogo
-	void issue_order_targeting_ground(Unit* unit, u32 id, u16 coord_x, u16 coord_y) // 00475260
-	{
+	void issue_order_targeting_ground(Unit* unit, u32 id, u16 coord_x, u16 coord_y) { // 00475260
 		if (!unit) {
 			return;
 		}
@@ -317,8 +315,7 @@ namespace hooks {
 
 	// Hooked to investigate custom abilities. -Pr0nogo
 	// We will likely need to hook all calls to this if order ids ever exceed 256.
-	void issue_tri_target_order(u8 order_1, u8 order_2, u8 order_3) // 0048CAF0
-	{
+	void issue_tri_target_order(u8 order_1, u8 order_2, u8 order_3) { // 0048CAF0
 		g_is_targeting = 1;
 		*g_order_id_unit = order_1;
 		*g_order_id_obstructed = order_2;

@@ -1,10 +1,8 @@
 #include "update_unit_state.h"
 #include <hook_tools.h>
 
-namespace
-{
-	void __declspec(naked) update_unit_energy_wrapper() // 004EB4B0
-	{
+namespace {
+	void __declspec(naked) update_unit_energy_wrapper() { // 004EB4B0
 		static Unit* unit;
 		__asm {
 			MOV unit, ESI
@@ -17,8 +15,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) update_unit_state_wrapper() // 004EC290
-	{
+	void __declspec(naked) update_unit_state_wrapper() { // 004EC290
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
@@ -31,8 +28,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) update_units_wrapper() // 004ED000
-	{
+	void __declspec(naked) update_units_wrapper() { // 004ED000
 		__asm {
 			PUSHAD
 		}
@@ -43,8 +39,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) update_burrowing_cloaking_units_wrapper() // 00492EB0
-	{
+	void __declspec(naked) update_burrowing_cloaking_units_wrapper() { // 00492EB0
 		__asm {
 			PUSHAD
 		}
@@ -55,8 +50,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) do_cloak_wrapper() // 0049B440
-	{
+	void __declspec(naked) do_cloak_wrapper() { // 0049B440
 		static Unit* unit;
 		static s32 sound_id;
 		__asm {
@@ -71,45 +65,37 @@ namespace
 		}
 	}
 
-	void __declspec(naked) progress_unit_frame_wrapper() // 004ECF70
-	{
+	void __declspec(naked) progress_unit_frame_wrapper() { // 004ECF70
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, ECX
 			PUSHAD
 		}
 		hooks::progress_unit_frame(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) sprite_to_iscript_loop_wrapper() // 00497920
-	{
+	void __declspec(naked) sprite_to_iscript_loop_wrapper() { // 00497920
 		static Sprite* sprite;
-		__asm
-		{
+		__asm {
 			MOV sprite, ESI
 			PUSHAD
 		}
 		hooks::sprite_to_iscript_loop(sprite);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) replace_unit_with_id_wrapper() // 0049FED0
-	{
+	void __declspec(naked) replace_unit_with_id_wrapper() { // 0049FED0
 		static Unit* unit;
 		static u32 new_id;
 		static u8 result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -120,8 +106,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::replace_unit_with_id(unit, new_id);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOVZX AL, result
 			MOV ESP, EBP
@@ -130,34 +115,29 @@ namespace
 		}
 	}
 
-	void __declspec(naked) update_unit_strength_and_apply_default_orders_wrapper() // 0049FA40
-	{
+	void __declspec(naked) update_unit_strength_and_apply_default_orders_wrapper() { // 0049FA40
 		static Unit* unit;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
 		result = hooks::update_unit_strength_and_apply_default_orders(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) initialize_unit_base_wrapper() // 004A0320
-	{
+	void __declspec(naked) initialize_unit_base_wrapper() { // 004A0320
 		static Unit* unit;
 		static u32 unit_id;
 		static u32 pos_x;
 		static u32 pos_y;
 		static u32 player;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -173,8 +153,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::initialize_unit_base(unit, unit_id, pos_x, pos_y, player);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -183,18 +162,15 @@ namespace
 		}
 	}
 
-	void __declspec(naked) set_thingy_visibility_flags_wrapper() // 004878F0
-	{
+	void __declspec(naked) set_thingy_visibility_flags_wrapper() { // 004878F0
 		static Thingy* thingy;
 		static b32 result;
-		__asm
-		{
+		__asm {
 			MOV thingy, ESI
 			PUSHAD
 		}
 		result = hooks::set_thingy_visibility_flags(thingy);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
@@ -232,10 +208,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_update_unit_state_hooks()
-	{
+namespace hooks {
+	void inject_update_unit_state_hooks() {
 		jump_patch(update_unit_energy_wrapper,								0x004EB4B0, 0);
 		jump_patch(update_unit_state_wrapper,								0x004EC290, 1);
 		jump_patch(update_units_wrapper,									0x004ED000, 5);
