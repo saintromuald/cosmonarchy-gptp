@@ -244,7 +244,7 @@ static void tick_effect(EffectField& effect) {
 				for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
 					if (unit->is_under_storm) continue;
 					unit->is_under_storm = update_period;
-					unit->damage_with(WeaponId::PsiStorm, 25 * tick_scalar_hp, effect.source, effect.player,
+					unit->damage_with(WeaponId::PsiStorm, 20 * tick_scalar_hp, effect.source, effect.player,
 						helper::get_direction_from_points(effect.position, unit->position), units_dat::base_property[unit->id] & UnitProperty::Building ? 2 : 1);
 				}
 
