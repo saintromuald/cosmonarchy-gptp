@@ -308,7 +308,7 @@ namespace helper {
 	void cancel_zerg_building_morph(Unit* unit);															// 0045D410
 	void stop_creep_disappearing_at_building(Unit* unit);												    // 0047D770
 	void increment_unit_scores_ex(Unit* unit, s32 count, b32 update_morph_merge_unit_score);				// 00488D50
-	void play_building_completed_sound(Unit* building);														// 0048F310
+	void play_building_complete_sound(Unit* building);														// 0048F310
 	void refresh_sprite_data(Sprite* sprite);																// 004983A0
 	void display_last_network_error_for_player(u32 player);									                // 0049E530
 	void replace_unit_with_id(Unit* unit, u16 new_unit_id);													// 0049FED0
@@ -322,7 +322,7 @@ namespace helper {
 	void add_order_targeting_nothing(Unit* unit, Order* order, u8 order_id);								// 004749A0
 	bool can_still_place_building();														                // 0048DDA0
 	void end_building_placement();															                // 0048E310
-	void play_building_completed_sound(Unit* building);														// 0048F310
+	void play_building_complete_sound(Unit* building);														// 0048F310
 	void set_secondary_waypoint(Unit* unit, s32 x, s32 y);									                // 00494BB0
 	void display_last_network_error_for_player(u32 player);									                // 0049E530
 	u32 rand_between(u32 min, u32 max, u32 seed_type);														// 004DC550

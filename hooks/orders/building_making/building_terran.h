@@ -1,8 +1,7 @@
 #pragma once
 #include "../../../BW/structures/Unit.h"
 
-namespace hooks
-{
+namespace hooks {
 	void orders_terran_build_self(Unit* building);					// 00467760
 	void orders_scv_build_2(Unit* unit);							// 00467A70
 	void orders_scv_build(Unit* unit);								// 00467FD0

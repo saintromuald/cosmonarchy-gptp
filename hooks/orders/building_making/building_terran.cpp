@@ -123,7 +123,6 @@ namespace hooks {
 					}
 
 					helper::fix_target_location(&unit->order_target.pt, unit->id);
-
 					if (!helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
 						return;
 					}
@@ -167,7 +166,6 @@ namespace hooks {
 						for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 							image->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
 						}
-
 						unit->main_order_state = 4;
 					}
 				} break;
@@ -193,7 +191,9 @@ namespace hooks {
 
 		if (built_unit) {
 			built_unit->connected_unit = 0;
-			helper::play_building_completed_sound(unit);
+			helper::play_building_complete_sound(unit);
+			bw::play_sound(SoundId::TerranConstructionEnd01, built_unit->position);
+			bw::play_sound((SoundId::Enum)units_dat::sound_what_first[built_unit->id], built_unit);
 			if (unit_id_is_tech_tier_structure(built_unit->id)) {
 				replay_witness_event(built_unit, SpectatorEvent_Tech);
 			}
@@ -281,6 +281,7 @@ namespace hooks {
 							if (unit_id_is_tech_tier_structure(built_unit->id)) {
 								replay_witness_event(built_unit, SpectatorEvent_Tech);
 							}
+							bw::play_sound(SoundId::TerranConstructionStart01, built_unit->position);
 						} else {
 							helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot], unit->player);
 							helper::display_last_network_error_for_player(unit->player);
@@ -421,12 +422,13 @@ namespace hooks {
 					helper::play_sound_from_unit(sound_id, unit, g_options_list->flags & 1, 99);
 					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 				} break;
-				case RaceId::Protoss:
-				default: {
-					u32 sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_StructureComplete_P);
-					helper::play_sound_from_unit(sound_id, unit, 1, 99);
-					helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
-				} break;
+				case RaceId::Protoss: {
+					default: {
+						u32 sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_StructureComplete_P);
+						helper::play_sound_from_unit(sound_id, unit, 1, 99);
+						helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
+					} break;
+				}
 			}
 		}
 	}
@@ -457,9 +459,7 @@ namespace hooks {
 			return;
 		}
 	place_addon:
-		if  (unit->move_target.pt.x == unit->position.x
-		&&   unit->move_target.pt.y == unit->position.y)
-		{
+		if (unit->move_target.pt.x == unit->position.x && unit->move_target.pt.y == unit->position.y) {
 			// Get addon position - this is probably wrong right now, the original IDA code was a disaster.
 			u32 addon_id = unit->building.addon_build_id;
 			Point16 dimensions = units_dat::building_dimensions[addon_id];
@@ -469,14 +469,12 @@ namespace hooks {
 			u32 player = unit->player;
 			g_ai_minerals_reserve[player] = units_dat::mineral_cost[addon_id];
 			g_ai_vespene_reserve[player] = units_dat::vespene_cost[addon_id];
-			if (g_game_minerals[player] < g_ai_minerals_reserve[player])
-			{
+			if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
 				helper::display_error_message_id_with_sfx(player, 850, g_console_index + 147);
 				helper::to_idle(unit);
 				return;
 			}
-			if (g_game_vespene[player] < g_ai_vespene_reserve[player])
-			{
+			if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
 				helper::display_error_message_id_with_sfx(player, 851, g_console_index + 150);
 				helper::to_idle(unit);
 				return;
@@ -488,8 +486,7 @@ namespace hooks {
 				helper::to_idle(unit);
 			} else {
 				Unit* addon = helper::create_unit(unit->building.addon_build_id, unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
-				if (addon)
-				{
+				if (addon) {
 					UnitExt* builder_ext = get_unit_ext(unit);
 					builder_ext->values[ValueTerranConstruction] = unit->building.addon_build_id;
 					helper::subtract_queue_cost(unit->player);
@@ -508,14 +505,13 @@ namespace hooks {
 	}
 
 	// Hooked to enable more refinery types. -Pr0nogo
-	b32 unit_is_geyser(Unit* unit) // 004688B0
-	{
+	b32 unit_is_geyser(Unit* unit) { // 004688B0
 		if (unit->status & UnitStatus::Completed) {
 			if (unit_id_is_capped_gas_structure(unit->id)) {
-				return 1;
+				return true;
 			}
 		}
-		return 0;
+		return false;
 	}
 
 	// Hooked by mistake. -Pr0nogo
@@ -551,6 +547,10 @@ namespace hooks {
 				Unit* addon = helper::connect_addon_check(unit);
 				if (addon) {
 					helper::complete_addon(unit, addon);
+				}
+				if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
+					bw::play_sound(SoundId::TerranConstructionEnd01, unit->position);
+					bw::play_sound((SoundId::Enum)units_dat::sound_what_first[unit->id], unit);
 				}
 			}
 			return true;

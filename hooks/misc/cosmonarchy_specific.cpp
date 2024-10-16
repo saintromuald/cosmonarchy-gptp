@@ -233,6 +233,10 @@ Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) {
 		unit->energy = 0;
 	}
 
+	if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
+		bw::play_sound(SoundId::TerranConstructionStart01, unit->position);
+	}
+
 	if (unit->status & UnitStatus::GroundedBuilding) {
 		helper::visible_units_add(unit);
 	} else {

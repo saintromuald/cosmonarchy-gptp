@@ -1951,5 +1951,8 @@ namespace SoundId {
 		ZergConstruction02								= 3236,
 		ZergConstruction03								= 3237,
 		ZergConstructionStart01							= 3238,
+
+		TerranConstructionEnd01							= 3240,
+		TerranConstructionStart01						= 3241,
 	};
 }

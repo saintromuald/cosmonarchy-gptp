@@ -1313,16 +1313,14 @@ namespace hooks {
 			case UnitId::ZergKonvilisk:
 			case UnitId::ZergVilgoleth:
 			case UnitId::ZergMatraleth:
-			case UnitId::ZergTetcaerokor:
-			{
+			case UnitId::ZergTetcaerokor: {
 				for (Unit* broodspawn : g_unit_search.radial_ex(unit, unit->get_sight_range() * 32, FilterAlly, {UnitId::ZergRilirokor, UnitId::ZergRililisk})) {
 					broodspawn->remove_timer = broodspawn_max_time;
 				}
 			} break;
 			// Broodspawn
 			case UnitId::ZergRilirokor:
-			case UnitId::ZergRililisk:
-			{
+			case UnitId::ZergRililisk: {
 				if (unit->remove_timer > broodspawn_max_time) {
 					unit->remove_timer = broodspawn_max_time;
 				}
@@ -1375,10 +1373,8 @@ namespace hooks {
 				if (unit->id == UnitId::ZergDroleth) {
 					// Temporary? fix for order queue insanity. -Pr0nogo
 					// DOES NOT FIX AI!
-					if (unit->main_order_id == OrderId::MorphUnit
-					&&	unit->build_queue[unit->build_queue_slot] != UnitId::None
-					&&  unit->build_queue[unit->build_queue_slot] != UnitId::ZergGosvileth)
-					{
+					u32 queued_id = unit->build_queue[unit->build_queue_slot];
+					if (unit->main_order_id == OrderId::MorphUnit && queued_id != UnitId::None && queued_id != UnitId::ZergGosvileth) {
 						unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
 					}
 				}
@@ -1448,9 +1444,7 @@ namespace hooks {
 								unit_ext->timers[TimerTalosAnimationSubtimer] = subtimer;
 							}
 
-							if (!unit_ext->values[ValueTalosAnimationTimer]
-							||   unit_ext->values[ValueTalosAnimationTimer] % 128 == 0)
-							{
+							if (!unit_ext->values[ValueTalosAnimationTimer] || unit_ext->values[ValueTalosAnimationTimer] % 128 == 0) {
 								Point16 pos = target->sprite->position;
 								switch (bw::random() % 4) {
 									case 0: {
@@ -1609,7 +1603,7 @@ namespace hooks {
 					bw::play_sound(SoundId::StarSovereignGriefOfAllGodsBlast, unit);
 				}
 
-				// blast effects
+				// Blast effects
 				u32 player = unit->player;
 				u16 X = unit->position.x;
 				u16 Y = unit->position.y;
@@ -2662,9 +2656,8 @@ namespace hooks {
 
 		// Periodic overlays
 		if (g_elapsed_time_frames % 10 == 0) {
-			bool chorus_active = unit_ext->unit_vectors[UnitVectorBarghests].size()
-				|| unit_ext->unit_vectors[UnitVectorManifolds].size()
-				|| unit_ext->timers[TimerManifoldConcurringChorus] > 1;
+			bool chorus_active = unit_ext->unit_vectors[UnitVectorBarghests].size() || unit_ext->unit_vectors[UnitVectorManifolds].size()
+				|| unit_ext->timers[TimerManifoldConcurringChorus] > 1; // For Manifolds themselves
 			bw::set_unit_overlay(unit, {ImageId::RepentantChorusSmall, ImageId::RepentantChorusLarge}, chorus_active);
 
 			bw::set_unit_overlay(unit, {ImageId::PhaseLinkSmall, ImageId::PhaseLinkLarge}, unit_ext->unit_vectors[UnitVectorPhaseLinkClarions].size());
@@ -2849,7 +2842,7 @@ namespace hooks {
 		// Clear Manifold vector
 		std::ranges::remove_if(unit_ext->unit_vectors[UnitVectorManifolds], [unit](Unit* manifold) {
 			UnitExt* manifold_ext = &manifold->ext();
-			return manifold_ext->timers[TimerManifoldConcurringChorus] <= 1 || bw::distance_between(unit->position, manifold->position) > 2 * 32;
+			return manifold_ext->timers[TimerManifoldConcurringChorus] < 2 || bw::distance_between(unit->position, manifold->position) > 2 * 32;
 		});
 
 		// Clear Crucible vector

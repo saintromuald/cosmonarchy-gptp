@@ -2592,7 +2592,7 @@ namespace helper {
 		}
 	}
 
-	void play_building_completed_sound(Unit* building) {
+	void play_building_complete_sound(Unit* building) {
 		const u32 func_address = 0x0048F310;
 		__asm {
 			PUSHAD

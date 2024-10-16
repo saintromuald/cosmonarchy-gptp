@@ -56,7 +56,7 @@ void orders_zerg_build_self(Unit* building) {
 		case 3: {
 			if (!building->remaining_build_time) {
 				building->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
-				helper::play_building_completed_sound(building);
+				helper::play_building_complete_sound(building);
 				bw::play_sound(SoundId::Zerg_Bldg_ZChRdy00_WAV, building);
 				if (unit_id_is_tech_tier_structure(building->id)) {
 					replay_witness_event(building, SpectatorEvent_Tech);
