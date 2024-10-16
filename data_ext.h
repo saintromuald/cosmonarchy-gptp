@@ -525,6 +525,7 @@ struct ThingyExt {
 	u32 avenge_or_ascend_player;
 	u32 sight_range_before_death;
 	u32 create_origin;
+	u32 mine_count;
 };
 
 #define GasBuildingsCap 16

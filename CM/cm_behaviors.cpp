@@ -105,6 +105,9 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 	if (unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueRegressionUnstable] = corpse_ext->create_origin == UnitId::ZergOcsalLarva;
+		if (unit_id_is_mine_layer((UnitId::Enum)unit->id)) {
+			unit->mine_carrier.mine_count = corpse_ext->mine_count;
+		}
 		consume_corpse(corpse);
 	}
     return unit;

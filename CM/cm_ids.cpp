@@ -1276,3 +1276,7 @@ bool weapon_id_can_self_splash(u32 weapon_id) {
 	return weapon_id == WeaponId::CyclopsBrontesPayload
 		|| weapon_id == WeaponId::PsiStorm;
 }
+
+bool unit_id_is_mine_layer(UnitId::Enum unit_id) {
+	return unit_id == UnitId::TerranVulture;
+}
