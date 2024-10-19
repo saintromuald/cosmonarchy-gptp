@@ -3112,7 +3112,8 @@ bool unit_can_flee(Unit* unit) {
 	if (!orders_dat::Unknown11[unit->main_order_id]
 		|| !(unit->status & UnitStatus::Reacts)
 		|| !helper::is_at_home(unit)
-		|| helper::is_under_carapace_swarm(unit) == 255) {
+		|| helper::is_under_carapace_swarm(unit) == 255
+		|| unit->main_order_id == OrderId::NukeTrack) {
 		return false;
 	}
 

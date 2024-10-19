@@ -453,8 +453,7 @@ namespace hooks {
 	}
 
 	// Hooked to allow for aggressive unit responses. -Pr0nogo
-	// Arg sound_offset was cucko'd by IDA, but we don't need the arg anyway since it gets written to before being used in both cases.
-	// TODO: Figure out how to properly access g_client_selection_group in this context
+	// Arg sound_offset was cucko'd in IDA, but we don't need the arg anyway since it gets written to before being used in both cases.
 	void do_targeted_order(void* unused, u32 sound_offset, u32 pos_x, u32 pos_y, Unit* target, u32 fow_unit_id) { // 0046F5B0
 		if (!g_is_targeting) {
 			return;
@@ -605,22 +604,17 @@ namespace hooks {
 	// Hooked to add support for new refineries. -Pr0nogo
 	b32 fow_refinery_check(Unit* self, u16 fow_id) { // 00474500
 		char race = self->get_race(); // TODO: Add support for custom races
-		switch (race)
-		{
-			case RaceId::Zerg:
-			{
+		switch (race) {
+			case RaceId::Zerg: {
 				return fow_id == UnitId::ZergExcisant;
 			}
-			case RaceId::Protoss:
-			{
+			case RaceId::Protoss: {
 				return fow_id == UnitId::ProtossAquifer;
 			}
-			case RaceId::Terran:
-			{
+			case RaceId::Terran: {
 				return fow_id == UnitId::TerranReservoir;
 			}
-			default:
-			{
+			default: {
 				return 0;
 			}
 		}
@@ -814,8 +808,7 @@ namespace hooks {
 
 		u32 pos_x = 0;
 		u32 pos_y = 0;
-		if (units_dat::base_property[unit->id] & UnitProperty::Subunit)
-		{
+		if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
 			Unit* subunit = unit->subunit;
 			pos_x = subunit->position.x;
 			pos_y = subunit->position.y;
