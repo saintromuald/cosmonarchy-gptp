@@ -599,10 +599,11 @@ namespace hooks {
 						fire_line(unit, weapon_id, 3, 24, 1, 0);
 					} break;
 					case WeaponId::CataphractLonginiusCannons: {
-						// Multi-Attack IV
-						fire_multiple(unit, weapon_id, 4, FilterEnemy | FilterFrontalArc, {
-                            .stagger = -1,
-                        });
+						// Cataphract - Offset: Linear
+						fire_line(unit, weapon_id, 1, 4, 4, 8);
+						fire_line(unit, weapon_id, 1, 4, 4, -8);
+						fire_line(unit, weapon_id, 1, 0, 4, 28);
+						fire_line(unit, weapon_id, 1, 0, 4, -28);
 					} break;
 					case WeaponId::PaladinCrusaderMissiles: {
 						// Paladin - Offset: Linear

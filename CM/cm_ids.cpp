@@ -491,6 +491,7 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 
 		case WeaponId::HotshotDispatchShotgun:
 		case WeaponId::SirenCharybdalRifle:
+		case WeaponId::CataphractLonginiusCannons:
 		case WeaponId::EngramKhaydarinPlasmaLaser:
 		case WeaponId::AtreusDauntlessDisruptorCannon:
 		case WeaponId::CharlatanFerventBlaster:
