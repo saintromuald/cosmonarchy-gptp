@@ -148,10 +148,15 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const F
 	}
 
 	auto offsets = !opts.ignore_weapon_offsets ? get_weapon_offsets(weapon_id) : nullptr;
-	auto maybe_launch_pos = get_launch_pos(unit, weapon_id, target, offsets);
-	if (!maybe_launch_pos) {
-		return 0;
+	auto maybe_launch_pos = opts.launch_pos;
+	if (maybe_launch_pos) {
+		next_bullet_offset(unit, offsets);
+	} else {
+        maybe_launch_pos = get_launch_pos(unit, weapon_id, target, offsets);
 	}
+    if (!maybe_launch_pos) {
+        return 0;
+    }
 
 	Point16 launch_pos = *maybe_launch_pos;
 	if (!opts.ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
@@ -302,6 +307,29 @@ void fire_sideways(Unit* unit, WeaponId::Enum weapon_id, s32 angle_spread, s32 v
     for (u32 i = 0; i < 2; ++i) {
 		fire_angled(unit, weapon_id, target, angle, range);
         angle = 360 - angle;
+    }
+}
+
+void fire_parallel(Unit* unit, WeaponId::Enum weapon_id, s32 spread, s32 vertical_offset) {
+	auto [target, max_range] = calculate_target(unit, weapon_id);
+
+	s32 range = max_range + vertical_offset;
+    for (u32 i = 0; i < 2; ++i) {
+        Point16 launch_pos = unit->position;
+        const auto offsets = get_weapon_offsets(weapon_id);
+        if (offsets) {
+            launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, offsets));
+        }
+        Point16 target_pt = set_target_range(launch_pos, target.pt, range);
+
+		const auto side = bw::vec_perpendicular(bw::dir_between(launch_pos, target_pt));
+		const auto sign = i ? -1 : 1;
+		launch_pos.x += side.x * spread * sign;
+		launch_pos.y += side.y * spread * sign;
+		target_pt.x += side.x * spread * sign;
+		target_pt.y += side.y * spread * sign;
+
+        fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), {.launch_pos = launch_pos, .ignore_max_range = true, .dont_follow = true});
     }
 }
 
@@ -606,7 +634,8 @@ namespace hooks {
 						fire_line(unit, weapon_id, 3, 24, 1, 0);
 					} break;
 					case WeaponId::CataphractLonginiusCannons: {
-						fire_shotgun(unit, weapon_id, 2, 8, 4, ShotgunScatterStyle::Arc);
+						fire_parallel(unit, weapon_id,  8, 4);
+						fire_parallel(unit, weapon_id, 28, 0);
 					} break;
 					case WeaponId::PaladinCrusaderMissiles: {
 						// Paladin - Offset: Linear

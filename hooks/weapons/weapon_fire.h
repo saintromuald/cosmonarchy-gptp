@@ -11,6 +11,7 @@ struct WeaponOffsets {
 };
 
 struct FireBulletOpts {
+	std::optional<Point16> launch_pos;
 	bool apply_cooldown = true;
 	bool ignore_max_range = false;
 	bool dont_follow = false;
@@ -45,6 +46,7 @@ void apply_weapon_cooldown(Unit* unit, WeaponId::Enum weapon_id);
 Bullet* create_bullet_ex(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown = true);
 void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 count, s32 forward_spread, u32 lines, s32 side_spread);
 void fire_sideways(Unit* unit, WeaponId::Enum weapon_id, s32 angle_spread, s32 vertical_scatter);
+void fire_parallel(Unit* unit, WeaponId::Enum weapon_id, s32 spread, s32 vertical_offset);
 void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, s32 angle_spread, s32 vertical_scatter, ShotgunScatterStyle scatter_style);
 bool fire_multiple(Unit* attacker, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOpts& opts);
 
