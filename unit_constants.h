@@ -105,6 +105,13 @@ constexpr s32 ArchonAstralAegisShieldHeal = 50 * 256;
 constexpr s32 TyrannyMaxStacks = 48;
 constexpr s32 MindTyrantMaelstromTimer = 16; // 5 seconds
 
+// Architect
+namespace ReactivePayload {
+inline constexpr s32 SplitProcDistance = 1 * 32;
+inline constexpr s32 SplitPeriod = 4 * 32;
+inline constexpr s32 SplitSearchRadius = 3 * 32;
+}
+
 // Demiurge
 constexpr s32 GodsMadeFleshEnergyDrain = 100;
 
