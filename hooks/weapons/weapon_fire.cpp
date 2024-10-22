@@ -148,10 +148,15 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const F
 	}
 
 	auto offsets = !opts.ignore_weapon_offsets ? get_weapon_offsets(weapon_id) : nullptr;
-	auto maybe_launch_pos = get_launch_pos(unit, weapon_id, target, offsets);
-	if (!maybe_launch_pos) {
-		return 0;
+	auto maybe_launch_pos = opts.launch_pos;
+	if (maybe_launch_pos) {
+		next_bullet_offset(unit, offsets);
+	} else {
+        maybe_launch_pos = get_launch_pos(unit, weapon_id, target, offsets);
 	}
+    if (!maybe_launch_pos) {
+        return 0;
+    }
 
 	Point16 launch_pos = *maybe_launch_pos;
 	if (!opts.ignore_max_range && weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
@@ -273,7 +278,7 @@ static std::pair<Target, u32> calculate_target(Unit* unit, WeaponId::Enum weapon
 	Target target = unit->order_target;
 	u32 max_range = bw::distance_between(unit->position, target.pt);
 	if (weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
-		u32 max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
+		max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
 	}
     Point16 launch_pos = unit->position;
 	auto* offsets = get_weapon_offsets(weapon_id);
@@ -305,14 +310,44 @@ void fire_sideways(Unit* unit, WeaponId::Enum weapon_id, s32 angle_spread, s32 v
     }
 }
 
-void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, s32 angle_spread, s32 vertical_scatter) {
+void fire_parallel(Unit* unit, WeaponId::Enum weapon_id, s32 spread, s32 vertical_offset) {
+	auto [target, max_range] = calculate_target(unit, weapon_id);
+
+	s32 range = max_range + vertical_offset;
+    for (u32 i = 0; i < 2; ++i) {
+        Point16 launch_pos = unit->position;
+        const auto offsets = get_weapon_offsets(weapon_id);
+        if (offsets) {
+            launch_pos = make_launch_pos(launch_pos, peek_bullet_offset(unit, offsets));
+        }
+        Point16 target_pt = set_target_range(launch_pos, target.pt, range);
+
+		const auto side = bw::vec_perpendicular(bw::dir_between(launch_pos, target_pt));
+		const auto sign = i ? -1 : 1;
+		launch_pos.x += side.x * spread * sign;
+		launch_pos.y += side.y * spread * sign;
+		target_pt.x += side.x * spread * sign;
+		target_pt.y += side.y * spread * sign;
+
+        fire_bullet(unit, weapon_id, make_target(target.unit, target_pt), {.launch_pos = launch_pos, .ignore_max_range = true, .dont_follow = true});
+    }
+}
+
+void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, s32 angle_spread, s32 vertical_scatter, ShotgunScatterStyle scatter_style) {
 	auto [target, max_range] = calculate_target(unit, weapon_id);
     fire_bullet(unit, weapon_id, target);
 
 	for (s32 i = 1; i <= side_count; ++i) {
 		s32 scatter = vertical_scatter * i;
-		if (i % 2 == 1) {
-			scatter *= -1;
+		switch (scatter_style) {
+			case ShotgunScatterStyle::Flipping: {
+                if (i % 2 == 1) {
+                    scatter *= -1;
+                }
+			} break;
+			case ShotgunScatterStyle::Arc: {
+                scatter *= -1;
+			} break;
 		}
 
         s32 angle = i * angle_spread;
@@ -578,7 +613,7 @@ namespace hooks {
 					} break;
 					case WeaponId::HotshotDispatchShotgun: {
 						// Offset: Cone
-						fire_shotgun(unit, weapon_id, 1, 10, 10);
+						fire_shotgun(unit, weapon_id, 1, 10, 10, ShotgunScatterStyle::Flipping);
 					} break;
 					case WeaponId::SavantDiscoidRailgun: {
 						// Entropy Gauntlets
@@ -600,10 +635,8 @@ namespace hooks {
 					} break;
 					case WeaponId::CataphractLonginiusCannons: {
 						// Cataphract - Offset: Linear
-						fire_line(unit, weapon_id, 1, 4, 4, 8);
-						fire_line(unit, weapon_id, 1, 4, 4, -8);
-						fire_line(unit, weapon_id, 1, 0, 4, 28);
-						fire_line(unit, weapon_id, 1, 0, 4, -28);
+						fire_parallel(unit, weapon_id,  6, 4);
+						fire_parallel(unit, weapon_id, 30, 0);
 					} break;
 					case WeaponId::PaladinCrusaderMissiles: {
 						// Paladin - Offset: Linear
@@ -627,7 +660,7 @@ namespace hooks {
 					} break;
 					case WeaponId::SirenCharybdalRifle: {
 						// Offset: Cone
-						fire_shotgun(unit, weapon_id, 2, 5, 10);
+						fire_shotgun(unit, weapon_id, 2, 5, 10, ShotgunScatterStyle::Flipping);
 					} break;
 					case WeaponId::MadrigalFuriaMissiles: {
 						// Madrigal Furia Salvo
