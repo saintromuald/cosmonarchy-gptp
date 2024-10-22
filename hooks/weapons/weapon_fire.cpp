@@ -635,8 +635,8 @@ namespace hooks {
 					} break;
 					case WeaponId::CataphractLonginiusCannons: {
 						// Cataphract - Offset: Linear
-						fire_parallel(unit, weapon_id,  8, 4);
-						fire_parallel(unit, weapon_id, 28, 0);
+						fire_parallel(unit, weapon_id,  6, 4);
+						fire_parallel(unit, weapon_id, 30, 0);
 					} break;
 					case WeaponId::PaladinCrusaderMissiles: {
 						// Paladin - Offset: Linear
