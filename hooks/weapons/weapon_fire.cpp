@@ -634,6 +634,7 @@ namespace hooks {
 						fire_line(unit, weapon_id, 3, 24, 1, 0);
 					} break;
 					case WeaponId::CataphractLonginiusCannons: {
+						// Cataphract - Offset: Linear
 						fire_parallel(unit, weapon_id,  8, 4);
 						fire_parallel(unit, weapon_id, 28, 0);
 					} break;
@@ -1050,14 +1051,15 @@ namespace hooks {
 			UnitExt* unit_ext = get_unit_ext(bullet->source_unit);
 			const u32 distance_from_source = bullet_ext->distance_traveled;
 			const u32 distance_from_target = bw::distance_between(bullet->position, main_target->position);
-			if (distance_from_source > 5 * 32 && distance_from_target < 3 * 32) {
-				if (!g_iquare_globals->multihit_bullet_is_set(bullet)) {
+			if (distance_from_target < ReactivePayload::SplitProcDistance) {
+				u32 splits = distance_from_source / ReactivePayload::SplitPeriod;
+				if (splits && !g_iquare_globals->multihit_bullet_is_set(bullet)) {
 					Unit* old_target = bullet->source_unit->order_target.unit;
 					Point16 old_sprite_pos = bullet->source_unit->sprite->position;
 					Point16 old_pos = bullet->source_unit->position;
 					bullet->source_unit->sprite->position = bullet->position;
 					bullet->source_unit->position = bullet->position;
-					u32 radius = 3 * 32;
+					u32 radius = ReactivePayload::SplitSearchRadius;
 
 					g_iquare_globals->add_multihit_empty_bullet(bullet, 1);
 					u32 fired = 0;
@@ -1067,13 +1069,12 @@ namespace hooks {
 						}
 						bullet->source_unit->order_target.unit = target;
 						s32 new_angle = bw::get_angle(bullet->position.x, bullet->position.y, target->position.x, target->position.y);
-						Bullet* new_bullet = create_bullet_ex(WeaponId::ArchitectDispersiveSalvo,
-							bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
+						Bullet* new_bullet = create_bullet_ex(WeaponId::ArchitectDispersiveSalvo, bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
 						if (new_bullet) {
 							helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
 							new_bullet->position = bullet->position;
 							g_iquare_globals->add_multihit_empty_bullet(new_bullet, 1);
-							if (++fired == 2) {
+							if (++fired == splits) {
 								break;
 							}
 						}
@@ -1824,10 +1825,8 @@ namespace hooks {
 	}
 
 	// Hooked to fix melee edge unit performance. -Pr0nogo
-	void move_for_melee_range(Unit* target, Unit* attacker) // 00477F10
-	{
-		if (!helper::is_target_visible(attacker, target) || !(target->movement_flags & MovementFlags_Accelerating))
-		{
+	void move_for_melee_range(Unit* target, Unit* attacker) { // 00477F10
+		if (!helper::is_target_visible(attacker, target) || !(target->movement_flags & MovementFlags_Accelerating)) {
 			helper::move_towards(attacker, target);
 			return;
 		}
@@ -1842,8 +1841,7 @@ namespace hooks {
 		u32 tgt_x_final = tgt_x + (attacker_halt_off2 >> 16);
 		u32 tgt_y_final = tgt_y + (attacker_halt_off1 * g_angle_distance[target_vel].y >> 16);
 
-		if (tgt_x_final >= g_map_width_pixels || tgt_y_final >= g_map_height_pixels)
-		{
+		if (tgt_x_final >= g_map_width_pixels || tgt_y_final >= g_map_height_pixels) {
 			tgt_y_final = tgt_y;
 		} else {
 			tgt_x_final = tgt_x;
@@ -1853,12 +1851,10 @@ namespace hooks {
 	}
 
 	// Hooked to safeguard from nullsprites. -Pr0nogo
-	Bullet* assign_weapon_data(Bullet* bullet, char behavior) // 0048AA80
-	{
+	Bullet* assign_weapon_data(Bullet* bullet, char behavior) { // 0048AA80
 		Unit* target = bullet->attack_target.unit;
 		bullet->behavior_type = behavior;
-		if (target)
-		{
+		if (target) {
 			bullet->attack_target.pt.x = target->position.x; // Was sprite
 			bullet->attack_target.pt.y = target->position.y; // ^
 		} else {
@@ -1870,8 +1866,7 @@ namespace hooks {
 	}
 
 	// Hooked to nullcheck sprites. -Pr0nogo
-	void bullet_behavior_follow(Bullet* bullet) // 0048B500
-	{
+	void bullet_behavior_follow(Bullet* bullet) { // 0048B500
 		Unit* target = bullet->attack_target.unit;
 		if (!target || target->is_dead()) {
 			bullet->behavior_type = 1;

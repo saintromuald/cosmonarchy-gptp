@@ -105,6 +105,13 @@ constexpr s32 ArchonAstralAegisShieldHeal = 50 * 256;
 constexpr s32 TyrannyMaxStacks = 48;
 constexpr s32 MindTyrantMaelstromTimer = 16; // 5 seconds
 
+// Architect
+namespace ReactivePayload {
+inline constexpr s32 SplitProcDistance = 1 * 32;
+inline constexpr s32 SplitPeriod = 4 * 32;
+inline constexpr s32 SplitSearchRadius = 3 * 32;
+}
+
 // Demiurge
 constexpr s32 GodsMadeFleshEnergyDrain = 100;
 
@@ -164,7 +171,7 @@ constexpr s32 AlkajeliskParasiticSporesTimer = 135; // 135 is 255 - 5 * 24
 constexpr s32 AlkajeliskParasiticSporesSeekRange = 8 * 32;
 
 // Hachirosk
-constexpr s32 LarvaSpawnRate = (14 * 24) / 8; // 12 seconds
+constexpr s32 LarvaSpawnRate = (14 * 24) / 8; // 14 seconds
 
 // Gladius
 constexpr s32 BindingPlasmaTimer = 12; // 0.5s
