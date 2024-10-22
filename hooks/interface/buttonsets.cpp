@@ -2062,9 +2062,10 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::TerranHotshot:
-								case UnitId::TerranSiren: {
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon		// Siren - Prolonged Arms
-									||  current_button->icon_id == IconId::PsiAssault) {						// Siren - Offset: Cone
+								case UnitId::TerranSiren:
+								case UnitId::TerranCataphract: {
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon		// Prolonged Arms
+									||  current_button->icon_id == IconId::PsiAssault) {						// Offset: Cone
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2146,11 +2147,6 @@ namespace hooks {
 								case UnitId::TerranDurendal: {
 									if (current_button->icon_id == IconId::TerranShipWeapons // Durendal - Forward March
 									||  current_button->icon_id == IconId::FlyerAttack) {	 // Durendal - Apollyoid Adhesive
-										current_button_state = Button_State::Enabled;
-									}
-								} break;
-								case UnitId::TerranCataphract: {
-									if (current_button->icon_id == IconId::ApialSensors) { // Cataphract - Forward March
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
