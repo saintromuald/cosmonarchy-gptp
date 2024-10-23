@@ -162,6 +162,7 @@ namespace hooks {
 					UnitExt* unit_ext = get_unit_ext(worker);
 					unit_ext->timers[TimerArtisanReturn] = 49;
 					helper::play_sound_from_unit(SoundId::ArtisanRadiantChannel, worker, 1, 0);
+					worker->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 					worker->freeze();
 				}
 			}
