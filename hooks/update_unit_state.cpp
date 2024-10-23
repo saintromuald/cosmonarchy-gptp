@@ -12,8 +12,7 @@
 #include "hooks/update_unit_sight.h"
 #include <hooks\unit_stats\supply_hooks.h>
 
-namespace hooks
-{
+namespace hooks {
 	// This function regenerates energy for spellcasters and drains energy for cloaking units.
 	void update_unit_energy(Unit* unit) { // 004EB4B0
 		UnitExt* unit_ext = get_unit_ext(unit);
@@ -35,12 +34,6 @@ namespace hooks
 		}
 		*/
 
-		// Spend energy for Gods Made Flesh
-	//	if (unit_ext->values[ValueGodsMadeFleshActive]) {
-	//		unit->spend_energy(GodsMadeFleshEnergyDrain);
-	//		dont_regen = true;
-	//	}
-
 		// Spend energy for Phobos Discharge
 		if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] > 0) {
 			unit->spend_energy((200 * 256) / (5 * 24));
@@ -52,15 +45,6 @@ namespace hooks
 
 		// Regen code -Veeq7
 		s32 max_energy = unit->get_max_energy();
-
-		/*
-		// Stupid special case for specialists summoned in this manner. No longer applies since Mind Tyrant was revised. -Pr0nogo
-		if (unit->id == UnitId::ProtossMindTyrant
-			&& unit->main_order_id == OrderId::CompletingArchonSummon
-			&& unit->main_order_state == 0) {
-			max_energy = 100 * 256; // Identical to energy amount on spawn
-		}
-		*/
 
 		u32 overlay_id = ImageId::EnergyRegenOverlaySmall + bw::get_overlay_offset(unit->id, true);
 		if (!dont_regen && unit->energy < max_energy) {
@@ -503,23 +487,18 @@ namespace hooks
 	}
 
 	// Originally meant to help with the cloak rewrite. Hooked 22 Oct 2023. -Pr0nogo
-	void update_burrowing_cloaking_units() // 00492EB0
-	{
+	void update_burrowing_cloaking_units() { // 00492EB0
 		Unit* invisible_unit = *g_first_invisible_unit;
 		bool redraw = 0;
-		if (*g_first_invisible_unit)
-		{
-			while (1)
-			{
+		if (*g_first_invisible_unit) {
+			while (1) {
 				Unit* next_burrowed = invisible_unit->invisible_link.next;
-				if (helper::is_unit_cloaking(invisible_unit))
-				{
+				if (helper::is_unit_cloaking(invisible_unit)) {
 					do_cloak(invisible_unit, bw::get_cloak_sound_id(invisible_unit));
 				} else {
 					u32 status_1 = invisible_unit->status;
 					bool cloak_or_burrow;
-					if (status_1 & UnitStatus::Burrowed || invisible_unit->secondary_order_id != OrderId::Cloak || invisible_unit->is_cloaked != 1 || !(status_1 & UnitStatus::CloakingForFree))
-					{
+					if (status_1 & UnitStatus::Burrowed || invisible_unit->secondary_order_id != OrderId::Cloak || invisible_unit->is_cloaked != 1 || !(status_1 & UnitStatus::CloakingForFree)) {
 						cloak_or_burrow = 0;
 					} else {
 						invisible_unit->status = status_1 & 0xFFFFF7FF;
@@ -535,10 +514,8 @@ namespace hooks
 				redraw = 1;
 			Next_Or_Redraw:
 				invisible_unit = next_burrowed;
-				if (!next_burrowed)
-				{
-					if (redraw)
-					{
+				if (!next_burrowed) {
+					if (redraw) {
 						bw::refresh_console();
 					}
 					return;
@@ -548,8 +525,7 @@ namespace hooks
 	}
 
 	// Hooked for cloak rewrite animations - Pr0nogo
-	void do_cloak(Unit* unit, s32 sound_id) // 0049B440
-	{
+	void do_cloak(Unit* unit, s32 sound_id) { // 0049B440
 		if (!(unit->status & UnitStatus::Burrowed)) {
 			helper::play_sound_from_unit(sound_id, unit, 1, 0);
 		}
@@ -573,8 +549,7 @@ namespace hooks
 	}
 
 	// Hooked to add nullcheck - Pr0nogo
-	void progress_unit_frame(Unit* unit) // 004ECF70
-	{
+	void progress_unit_frame(Unit* unit) { // 004ECF70
 		if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit) && AssertSprite(unit->sprite)) {
 			if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
 				helper::refresh_sprite(unit->sprite, g_selection_circle_color[unit->player]);
@@ -600,8 +575,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes. -Pr0nogo
-	void sprite_to_iscript_loop(Sprite* sprite) // 00497920
-	{
+	void sprite_to_iscript_loop(Sprite* sprite) { // 00497920
 		Image* image = sprite->images.head;
 		Image* next_image = 0;
 		u32 data = 0; // unused arg of iscript_opcode_cases?

@@ -1980,31 +1980,36 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::InfestedKerriganExt: {
+									if (current_button->icon_id == IconId::Ensnare) { // Ensnaring Brood
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 
 								// FACTIONAL \\
 
 								case UnitId::TerranCohort: {
-									if (current_button->icon_id == IconId::TerranInfantryArmor) { // Cohort - Servile Vigor
+									if (current_button->icon_id == IconId::TerranInfantryArmor) { // Servile Vigor
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranSouthpaw: {
-									if (current_button->icon_id == IconId::StewardPulseCannon) { // Southpaw - Offset: Linear
+									if (current_button->icon_id == IconId::StewardPulseCannon) { // Offset: Linear
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranAspirant: {
-									if (current_button->icon_id == IconId::ScarabDamage) { // Aspirant - Criticality
+									if (current_button->icon_id == IconId::ScarabDamage) { // Criticality
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranTarasque: {
-									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Tarasque - Fighting Flight
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Fighting Flight
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranWendigo: {
-									if (current_button->icon_id == IconId::ParticleBeamHarvest) { // Wendigo - Shattering Winds
+									if (current_button->icon_id == IconId::ParticleBeamHarvest) { // Shattering Winds
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2012,52 +2017,52 @@ namespace hooks {
 								// TERRAN \\
 
 								case UnitId::TerranTalos: {
-									if (current_button->icon_id == IconId::MasonFusionCutter) { // Talos - Fusion Sealers
+									if (current_button->icon_id == IconId::MasonFusionCutter) { // Fusion Sealers
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranHarakan:
 								case UnitId::Ackmed: {
-									if (current_button->icon_id == IconId::FlyerAttack) { // Harakan - Apollyoid Adhesive
+									if (current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranCyprian: {
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) {
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Kinetic Penetration
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranShamanSupportMode:
 								case UnitId::TerranShamanVisionaryMode: {
-									if (current_button->icon_id == IconId::Restoration) { // Shaman - Nanite Field
+									if (current_button->icon_id == IconId::Restoration) { // Nanite Field
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranSavant: {
-									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0) { // Savant - Entropy Gauntlets
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0) { // Entropy Gauntlets
 										current_button_state = Button_State::Enabled;
-									} else if (current_button->icon_id == IconId::IonThrusters && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) > 0) { // Savant - Power Siphon
+									} else if (current_button->icon_id == IconId::IonThrusters && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) > 0) { // Power Siphon
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranMadcap: {
-									if (current_button->icon_id == IconId::GoliathTwinAutocannons) { // Madcap Maverick Feeders
+									if (current_button->icon_id == IconId::GoliathTwinAutocannons) { // Maverick Feeders
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranHeracles: {
-									if (current_button->icon_id == IconId::FusionCutterHarvest) { // Heracles - Kelvin Munitions
+									if (current_button->icon_id == IconId::FusionCutterHarvest) { // Kelvin Munitions
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranApostle: {
-									if (current_button->icon_id == IconId::RechargeShields	// Apostle - Lazarus Agent
-									||  current_button->icon_id == IconId::Reclamation) {	// Apostle - Reclamation
+									if (current_button->icon_id == IconId::RechargeShields	// Lazarus Agent
+									||  current_button->icon_id == IconId::Reclamation) {	// Reclamation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranAuriel: {
-									if (current_button->icon_id == IconId::FlyerAttack) { // Auriel - Incineration
+									if (current_button->icon_id == IconId::FlyerAttack) { // Incineration
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2070,208 +2075,208 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::TerranStriga: {
-									if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Striga - Projection
-									||	current_button->icon_id == IconId::PsiAssault				// Striga - Fleeting Focus
-									||	current_button->icon_id == IconId::FlyerAttack) {			// Striga - Apollyoid Adhesive
+									if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Projection
+									||	current_button->icon_id == IconId::PsiAssault				// Fleeting Focus
+									||	current_button->icon_id == IconId::FlyerAttack) {			// Apollyoid Adhesive
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranOlympian: {
-									if (current_button->icon_id == IconId::OcularImplants) { // Olympian - Dishonorable Discharge
+									if (current_button->icon_id == IconId::OcularImplants) { // Dishonorable Discharge
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranAutocrat: {
-									if (current_button->icon_id == IconId::RechargeShields					// Autocrat - Reclamation Fields
-									||  current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon	// Autocrat - Kinetic Penetration
-									||  current_button->icon_id == IconId::Reclamation) {					// Autocrat - Reclamation
+									if (current_button->icon_id == IconId::RechargeShields					// Reclamation Fields
+									||  current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon	// Kinetic Penetration
+									||  current_button->icon_id == IconId::Reclamation) {					// Reclamation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranSevenstep: {
-									if (current_button->icon_id == IconId::DefensiveMatrix) { // Sevenstep - Curtain Call
+									if (current_button->icon_id == IconId::DefensiveMatrix) { // Curtain Call
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranLobotomyMine: {
-									if (current_button->icon_id == IconId::UseSpiderMines) { // Lobotomy Mine - Dazing Detonation
+									if (current_button->icon_id == IconId::UseSpiderMines) { // Dazing Detonation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranCyclops:
 								case UnitId::TerranCyclopsFuturist: {
-									if (current_button->icon_id == IconId::VultureFragmentationGrenade) { // Cyclops - Recursion Rounds
+									if (current_button->icon_id == IconId::VultureFragmentationGrenade) { // Recursion Rounds
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranBlackjack: {
-									if (current_button->icon_id == IconId::ProtossAirPlating) { // Blackjack - Wear and Tear
+									if (current_button->icon_id == IconId::ProtossAirPlating) { // Wear and Tear
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranMatadorTankMode: {
-									if (current_button->icon_id == IconId::FlyerAttack) { // Matador - Apollyoid Adhesive
+									if (current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
 										current_button_state = Button_State::Disabled;
 									}
 								} break;
 								case UnitId::TerranMatadorCinderMode: {
-									if (current_button->icon_id == IconId::FlyerAttack) { // Matador - Apollyoid Adhesive
+									if (current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranPhalanxTankMode: {
-									if (current_button->icon_id == IconId::TerranVehiclePlating) { // Phalanx - Babylon Plating
+									if (current_button->icon_id == IconId::TerranVehiclePlating) { // Babylon Plating
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranPhalanxSiegeMode: {
-									if (current_button->icon_id == IconId::TerranVehiclePlating) { // Phalanx - Babylon Plating
+									if (current_button->icon_id == IconId::TerranVehiclePlating) { // Babylon Plating
 										current_button_state = Button_State::Disabled;
 									}
 								} break;
 								case UnitId::TerranMadrigalImperiosoMode: {
-									if (current_button->icon_id == IconId::FusionCutterHarvest) { // Madrigal - Dirge
+									if (current_button->icon_id == IconId::FusionCutterHarvest) { // Dirge
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranMadrigalFuriaMode: {
-									if (current_button->icon_id == IconId::GeminiMissiles) { // Madrigal - Furia Salvo
+									if (current_button->icon_id == IconId::GeminiMissiles) { // Furia Salvo
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranRamesses: {
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Ramesses - Kinetic Penetration
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Kinetic Penetration
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranDurendal: {
-									if (current_button->icon_id == IconId::TerranShipWeapons // Durendal - Forward March
-									||  current_button->icon_id == IconId::FlyerAttack) {	 // Durendal - Apollyoid Adhesive
+									if (current_button->icon_id == IconId::TerranShipWeapons // Forward March
+									||  current_button->icon_id == IconId::FlyerAttack) {	 // Apollyoid Adhesive
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranPaladin: {
-									if (current_button->icon_id == IconId::StewardPulseCannon) { // Paladin - Offset: Linear
+									if (current_button->icon_id == IconId::StewardPulseCannon) { // Offset: Linear
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranCuirassTankMode: {
-									if (current_button->icon_id == IconId::MoebiusReactor) { // Cuirass - Stonewall Protocol
+									if (current_button->icon_id == IconId::MoebiusReactor) { // Stonewall Protocol
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranPazuzu: {
-									if (current_button->icon_id == IconId::ScarabDamage) { // Pazuzu - Deconstruction
+									if (current_button->icon_id == IconId::ScarabDamage) { // Deconstruction
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranPenumbra: {
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon	// Penumbra - Kinetic Penetration
-									||	current_button->icon_id == IconId::LegEnhancements)	{				// Penumbra - Phantasmal Passage
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon	// Kinetic Penetration
+									||	current_button->icon_id == IconId::LegEnhancements)	{				// Phantasmal Passage
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranClaymore: {
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon  // Claymore - Kinetic Penetration
-									||	current_button->icon_id == IconId::FusionCutterHarvest) {			// Claymore - Kelvin Munitions
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon  // Kinetic Penetration
+									||	current_button->icon_id == IconId::FusionCutterHarvest) {			// Kelvin Munitions
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranAnticthon: {
-									if (current_button->icon_id == IconId::RilirokorToxicSpores // Anticthon - Counter-Proposal
-									||	current_button->icon_id == IconId::ApialSensors			// Anticthon - Multi-Attack V
-									||	current_button->icon_id == IconId::Reclamation) {		// Anticthon - Reclamation
+									if (current_button->icon_id == IconId::RilirokorToxicSpores // Counter-Proposal
+									||	current_button->icon_id == IconId::ApialSensors			// Multi-Attack V
+									||	current_button->icon_id == IconId::Reclamation) {		// Reclamation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranAion: {
-									if (current_button->icon_id == IconId::RechargeShields		// Aion - Reclamation Fields
-									||	current_button->icon_id == IconId::StewardPulseCannon	// Aion - Offset: Linear
-									||	current_button->icon_id == IconId::Reclamation) {		// Aion - Reclamation
+									if (current_button->icon_id == IconId::RechargeShields		// Reclamation Fields
+									||	current_button->icon_id == IconId::StewardPulseCannon	// Offset: Linear
+									||	current_button->icon_id == IconId::Reclamation) {		// Reclamation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranTrojan: {
-									if (current_button->icon_id == IconId::Land) { // Trojan - Hotdrop
+									if (current_button->icon_id == IconId::Land) { // Hotdrop
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranQilin: {
-									if (current_button->icon_id == IconId::ColossusReactor) { // Qilin - Nanite Chambers
+									if (current_button->icon_id == IconId::ColossusReactor) { // Nanite Chambers
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranAncile: {
-									if (current_button->icon_id == IconId::DefensiveMatrix) { // Ancile - Providence
+									if (current_button->icon_id == IconId::DefensiveMatrix) { // Providence
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranGorgon: {
-									if (current_button->icon_id == IconId::ArgusJewel) { // Gorgon - Petrification
+									if (current_button->icon_id == IconId::ArgusJewel) { // Petrification
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranWyvern: {
-									if (current_button->icon_id == IconId::AfterburnersOnUnused				  // Wyvern - Reverse Thrust
+									if (current_button->icon_id == IconId::AfterburnersOnUnused				  // Reverse Thrust
 									||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)	{ // Kinetic Penetration
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranValkyrie: {
-									if (current_button->icon_id == IconId::PsiAssault) { // Valkyrie - Offset: Cone
+									if (current_button->icon_id == IconId::PsiAssault) { // Offset: Cone
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranSalamander: {
-									if (current_button->icon_id == IconId::HarakanFlamethrower	 // Salamander - Incendiary Payload
-									||	current_button->icon_id == IconId::StewardPulseCannon) { // Salamander - Offset: Linear
+									if (current_button->icon_id == IconId::HarakanFlamethrower	 // Incendiary Payload
+									||	current_button->icon_id == IconId::StewardPulseCannon) { // Offset: Linear
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranAzazel: {
-									if (current_button->icon_id == IconId::ApialSensors) { // Azazel - Sublime Shepherd
+									if (current_button->icon_id == IconId::ApialSensors) { // Sublime Shepherd
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranSeraph: {
-									if (current_button->icon_id == IconId::OcularImplants) { // Seraph - Observance
+									if (current_button->icon_id == IconId::OcularImplants) { // Observance
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranPhobos: {
-									if (current_button->icon_id == IconId::KhaydarinCore) { // Phobos - Argent Capacitors
+									if (current_button->icon_id == IconId::KhaydarinCore) { // Argent Capacitors
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranCentaur: {
-									if (current_button->icon_id == IconId::GeminiMissiles) { // Centaur - Sunchaser Salvo
+									if (current_button->icon_id == IconId::GeminiMissiles) { // Sunchaser Salvo
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranMinotaur: {
-									if (current_button->icon_id == IconId::TerranShipPlating    // Minotaur - Fore Castle
-									||  current_button->icon_id == IconId::SingularityCharge) { // Minotaur - Monoceros Targeting
+									if (current_button->icon_id == IconId::TerranShipPlating    // Fore Castle
+									||  current_button->icon_id == IconId::SingularityCharge) { // Monoceros Targeting
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranMagnetar: {
-									if (current_button->icon_id == IconId::ArchonPsionicShockwave			// Magnetar Law of Attraction
-									||  current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Magnetar - Kinetic Penetration
+									if (current_button->icon_id == IconId::ArchonPsionicShockwave				// Law of Attraction
+									||  current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) {	// Kinetic Penetration
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranHippogriff: {
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Hippogriff - Kinetic Penetration
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Kinetic Penetration
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranAnvil: {
-									if (current_button->icon_id == IconId::RadioactiveUnused2) { // Missile Silo - Scorched Earth
+									if (current_button->icon_id == IconId::RadioactiveUnused2) { // Scorched Earth
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::TerranSentinel: {
-									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Sentinel - Kinetic Penetration
+									if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Kinetic Penetration
 										if (unit->status & UnitStatus::GroundedBuilding) {
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -2280,8 +2285,8 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::TerranDiadem: {
-									if (current_button->icon_id == IconId::OpticalFlare					// Ion Cannon - Ion Field
-									|| current_button->icon_id == IconId::DidactPassiveShroudOfAdun) {	// Ion Cannon - Artillery Targeting
+									if (current_button->icon_id == IconId::OpticalFlare					// Ion Field
+									|| current_button->icon_id == IconId::DidactPassiveShroudOfAdun) {	// Artillery targeting
 										if (unit->status & UnitStatus::GroundedBuilding) {
 											current_button_state = Button_State::Enabled;
 										} else {
@@ -2305,69 +2310,69 @@ namespace hooks {
 								// PROTOSS \\
 
 								case UnitId::ProtossArtisan: {
-									if (current_button->icon_id == IconId::KhaydarinCore) { // Artisan - Radiant Rifts
+									if (current_button->icon_id == IconId::KhaydarinCore) { // Radiant Rifts
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossClarion: {
-									if (current_button->icon_id == IconId::RechargeShields) { // Clarion - Phase Link
+									if (current_button->icon_id == IconId::RechargeShields) { // Phase Link
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossZealot: {
-									if (current_button->icon_id == IconId::PlasmaShields) { // Zealot - Imperious March
+									if (current_button->icon_id == IconId::PlasmaShields) { // Imperious March
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossEcclesiast: {
-									if (current_button->icon_id == IconId::ProtossGroundWeapons	// Ecclesiast - Astral Blessing
-									||	current_button->icon_id == IconId::LegEnhancements) {	// Ecclesiast - Vengeance
+									if (current_button->icon_id == IconId::ProtossGroundWeapons	// Astral Blessing
+									||	current_button->icon_id == IconId::LegEnhancements) {	// Vengeance
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossLegionnaire: {
-									if (current_button->icon_id == IconId::PsiAssault) { // Legionnaire - Blade Vortex
+									if (current_button->icon_id == IconId::PsiAssault) { // Blade Vortex
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossAdherent: {
-									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Adherent - Eternal Service
-									||	current_button->icon_id == IconId::LegEnhancements) {			// Adherent - Deathless Procession
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Eternal Service
+									||	current_button->icon_id == IconId::LegEnhancements) {			// Deathless Procession
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossHierophant: {
-									if (current_button->icon_id == IconId::PhotonCannonWeapon			// Hierophant - Cowardice
-									||  current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Hierophant - Malice
-									||  current_button->icon_id == IconId::ProtossGroundWeapons) {		// Hierophant - Ascension
+									if (current_button->icon_id == IconId::PhotonCannonWeapon			// Signify: Cowardice
+									||  current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Signify: Malice
+									||  current_button->icon_id == IconId::ProtossGroundWeapons) {		// Ascension
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossVagrant: {
-									if (current_button->icon_id == IconId::MindControlUnused) { // Vagrant - Nihilism
+									if (current_button->icon_id == IconId::MindControlUnused) { // Nihilism
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossAmaranth: {
-									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Amaranth - Eternal Service
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Eternal Service
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossHerald: {
-									if (current_button->icon_id == IconId::RechargeShields	// Herald - Triumphant Rise
-									||	current_button->icon_id == IconId::KhaydarinCore) {	// Herald - Transcendent Fall
+									if (current_button->icon_id == IconId::RechargeShields	// Triumphant Rise
+									||	current_button->icon_id == IconId::KhaydarinCore) {	// Transcendent Fall
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossCabalist: {
 									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
-									||	current_button->icon_id == IconId::ProtossGroundWeapons) {		// Cabalist - Silent Strides
+									||	current_button->icon_id == IconId::ProtossGroundWeapons) {		// Silent Strides
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossBarghest: {
 									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
-									||	current_button->icon_id == IconId::ApialSensors) {				// Barghest - Repentant Chorus
+									||	current_button->icon_id == IconId::ApialSensors) {				// Repentant Chorus
 										current_button_state = Button_State::Enabled;
 									}
 									if (current_button->icon_id == IconId::ApialSensors) {
@@ -2375,64 +2380,64 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ProtossCharlatan: {
-									if (current_button->icon_id == IconId::AntimatterMissiles			// Charlatan - Interception
-									||  current_button->icon_id == IconId::DemiurgePassiveWorship) {	// Charlatan - Leading the Blind
+									if (current_button->icon_id == IconId::AntimatterMissiles			// Interception
+									||  current_button->icon_id == IconId::DemiurgePassiveWorship) {	// Leading the Blind
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossPariah: {
-									if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Pariah - Projection
-									||	current_button->icon_id == IconId::PsiAssault) {			// Pariah - Heretical Bedlam
+									if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Projection
+									||	current_button->icon_id == IconId::PsiAssault) {			// Heretical Bedlam
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossPotentate: {
-									if (current_button->icon_id == IconId::RechargeShields) { // Potentate - Transcendent Tide
+									if (current_button->icon_id == IconId::RechargeShields) { // Transcendent Tide
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossSycophant: {
-									if (current_button->icon_id == IconId::RechargeShields) { // Sycophant - Idolatry
+									if (current_button->icon_id == IconId::RechargeShields) { // Idolatry
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossArchon: {
-									if (current_button->icon_id == IconId::RechargeShields	  // Archon - Astral Aegis
-									||	current_button->icon_id == IconId::LegEnhancements)	{ // Archon - Vengeance
+									if (current_button->icon_id == IconId::RechargeShields	  // Astral Aegis
+									||	current_button->icon_id == IconId::LegEnhancements)	{ // Vengeance
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossOptecton: {
-									if (current_button->icon_id == IconId::AntimatterMissiles // Optecton - Interception
-									||	current_button->icon_id == IconId::LegEnhancements) { // Optecton - Titanic Stride
+									if (current_button->icon_id == IconId::AntimatterMissiles // Interception
+									||	current_button->icon_id == IconId::LegEnhancements) { // Titanic Stride
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossPatriarch: {
-									if (current_button->icon_id == IconId::ProtossGroundWeapons  // Patriarch - Astral Rule
-									||	current_button->icon_id == IconId::AntimatterMissiles) { // Patriarch - Interception
+									if (current_button->icon_id == IconId::ProtossGroundWeapons  // Astral Rule
+									||	current_button->icon_id == IconId::AntimatterMissiles) { // Interception
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossSimulacrum: {
-									if (current_button->icon_id == IconId::ApialSensors) { // Simulacrum - Autovitality
+									if (current_button->icon_id == IconId::ApialSensors) { // Autovitality
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossZealotStarbound:
 								case UnitId::ProtossVassal:
 								case UnitId::ProtossServitor: {
-									if (current_button->icon_id == IconId::LegEnhancements) { // Zealot (Starbound), Vassal, Servitor - Vengeance
+									if (current_button->icon_id == IconId::LegEnhancements) { // Vengeance
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossManifold: {
-									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Manifold - Concurring Chorus
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Concurring Chorus
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossGolem: {
-									if (current_button->icon_id == IconId::PlasmaShields) { // Golem - Tranquility Array
+									if (current_button->icon_id == IconId::PlasmaShields) { // Tranquility Array
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2445,39 +2450,39 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ProtossPositron: {
-									if (current_button->icon_id == IconId::ScarabDamage) { // Positron - Particle Annihilation
+									if (current_button->icon_id == IconId::ScarabDamage) { // Particle Annihilation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossAnalogue: {
-									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Analogue - Empathy Core
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Empathy Core
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossArchitect: {
-									if (current_button->icon_id == IconId::AntimatterMissiles) { // Architect - Reactive Payload
+									if (current_button->icon_id == IconId::AntimatterMissiles) { // Reactive Payload
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossVibrance: {
-									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Vibrance - Steady Shroud
-									||  current_button->icon_id == IconId::ProtossGroundWeapons) {		// Vibrance - Astral Blessing
+									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
+									||  current_button->icon_id == IconId::ProtossGroundWeapons) {		// Astral Blessing
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossDemiurge: {
-									if (current_button->icon_id == IconId::DemiurgePassiveWorship) { // Demiurge - Worship
+									if (current_button->icon_id == IconId::DemiurgePassiveWorship) { // Worship
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossEmpress: {
-									if (current_button->icon_id == IconId::ParticleBeamHarvest) { // Empress - Anodyne Annex
+									if (current_button->icon_id == IconId::ParticleBeamHarvest) { // Anodyne Annex
 										current_button_state = Button_State::Enabled;
 									}
 								}
 								break;
 								case UnitId::ProtossAurora: {
-									if (current_button->icon_id == IconId::MojoScout) { // Aurora - Last Orders
+									if (current_button->icon_id == IconId::MojoScout) { // Last Orders
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2487,48 +2492,48 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ProtossMagister: {
-									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Magister - Stellar Enforcement
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Stellar Enforcement
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossDidact: {
-									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun) { // Didact - Shroud of Adun
+									if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun) { // Shroud of Adun
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossEmpyrean: {
-									if (current_button->icon_id == IconId::StewardPulseCannon) { // Empyrean - Heavenly Passage
+									if (current_button->icon_id == IconId::StewardPulseCannon) { // Heavenly Passage
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossSolarion: {
-									if (current_button->icon_id == IconId::Interceptor) { // Solarion - Robotic Fleet
+									if (current_button->icon_id == IconId::Interceptor) { // Robotic Fleet
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossSteward: {
-									if (current_button->icon_id == IconId::AntimatterMissiles) { // Steward - Evasive Maneuvers
+									if (current_button->icon_id == IconId::AntimatterMissiles) { // Evasive Maneuvers
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossStarSovereign: {
-									if (current_button->icon_id == IconId::AntimatterMissiles) { // Star Sovereign - Intervention
+									if (current_button->icon_id == IconId::AntimatterMissiles) { // Intervention
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossAnthelion: {
-									if (current_button->icon_id == IconId::DimensionalRecall		// Anthelion - False Light
-									||	current_button->icon_id == IconId::ArgusJewel) {         	// Anthelion - Gravity Well
+									if (current_button->icon_id == IconId::DimensionalRecall		// False Light
+									||	current_button->icon_id == IconId::ArgusJewel) {         	// Gravity Well
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossMatrix: {
-									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Matrix - Astral Tether
+									if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Astral Tether
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ProtossCrucible: {
-									if (current_button->icon_id == IconId::KhaydarinCore) { // Crucible - Khaydarin Charge
+									if (current_button->icon_id == IconId::KhaydarinCore) { // Khaydarin Charge
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2536,24 +2541,24 @@ namespace hooks {
 								// ZERG \\
 								
 								case UnitId::ZergGosvileth: {
-									if (current_button->icon_id == IconId::VentralSacs) { // Gosvileth - Plethoral Gestation
+									if (current_button->icon_id == IconId::VentralSacs) { // Plethoral Gestation
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergNathrokor: {
-									if (current_button->icon_id == IconId::AdrenalGlands	// Nathrokor - Adrenal Frenzy
-									||	current_button->icon_id == IconId::RoarUnused) {	// Nathrokor - Hidebreaker
+									if (current_button->icon_id == IconId::AdrenalGlands	// Adrenal Frenzy
+									||	current_button->icon_id == IconId::RoarUnused) {	// Hidebreaker
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergNathrelisk: {
-									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Nathrelisk - Mitosal Fog
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Mitosal Fog
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergVorvrokor: {
-									if (current_button->icon_id == IconId::Ensnare			// Vorvrokor - Captivating Claws
-									||	current_button->icon_id == IconId::RoarUnused) {	// Vorvrokor - Hidebreaker
+									if (current_button->icon_id == IconId::Ensnare			// Captivating Claws
+									||	current_button->icon_id == IconId::RoarUnused) {	// Hidebreaker
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2565,19 +2570,19 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergKalkalisk: {
-									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Kalkalisk - Ablative Spores
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Ablative Spores
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergGhitorokor: {
-									if (current_button->icon_id == IconId::SuicideScourge			// Ghitorokor - Relentless Aggression
-									||  current_button->icon_id == IconId::UltrokorKaiserBlades) {  // Ghitorokor - Saber Siphon
+									if (current_button->icon_id == IconId::SuicideScourge			// Relentless Aggression
+									||  current_button->icon_id == IconId::UltrokorKaiserBlades) {  // Saber Siphon
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergSovroleth: {
-									if (current_button->icon_id == IconId::Ensnare								// Sovroleth - Writhing Web
-									||	current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) {	// Sovroleth - Corpse Cocoon
+									if (current_button->icon_id == IconId::Ensnare								// Writhing Web
+									||	current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) {	// Corpse Cocoon
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2589,23 +2594,23 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergMortothrokor: {
-									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Mortothrokor - Whetted Appetite
+									if (current_button->icon_id == IconId::PneumatizedCaparace) { // Whetted Appetite
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergAxitrilisk:
 								case UnitId::ZergAxitriliskWeaponless: {
-									if (current_button->icon_id == IconId::RoarUnused) { // Axitrilisk - Perpetual Wind
+									if (current_button->icon_id == IconId::RoarUnused) { // Perpetual Wind
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergSasyrvoleth: {
-									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Sasyrvoleth - Lucilleri Pheremones
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Lucilleri Pheremones
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
 								case UnitId::ZergSkithrokor: {
-									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Skithrokor - Ablative Return
+									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Ablative Return
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2616,7 +2621,7 @@ namespace hooks {
 									}
 								} break;
 								case UnitId::ZergTethzorokor: {
-									if (current_button->icon_id == IconId::UltrokorKaiserBlades) { // Tethzorokor - Saber Siphon
+									if (current_button->icon_id == IconId::UltrokorKaiserBlades) { // Saber Siphon
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
