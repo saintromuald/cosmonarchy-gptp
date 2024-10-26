@@ -226,7 +226,7 @@ Bullet* create_bullet_ex(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u
 
 		UnitExt* source_ext = get_unit_ext(source);
 		if (source_ext->values[ValueDeconstruction]) {
-			bw::do_deconstruction_damage(source, weapon_id, false);
+			bw::do_deconstruction_damage(source, weapon_id);
 		}
 	}
 	return bullet;

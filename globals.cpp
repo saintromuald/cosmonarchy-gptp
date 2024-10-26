@@ -1015,8 +1015,7 @@ void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool play_sound) {
 			return;
 		}
 	}
-	unit_ext->values[ValueTakingDeconstructionDamage] = true;
-	hooks::weapon_damage(self_damage, deconstruction_target, (WeaponId::Enum)weapon_id, deconstruction_target, deconstruction_target->player, 0, 1);
+	deconstruction_target->inflict_damage(self_damage, deconstruction_target, deconstruction_target->player, 0);
 	if (play_sound) {
 		helper::play_sound_from_unit(SoundId::PazuzuDeconstructionDamage, unit, 1, 0);
 	}
