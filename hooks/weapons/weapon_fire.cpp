@@ -937,29 +937,8 @@ namespace hooks {
         bullet->sprite->set_position(bullet->position.x, bullet->position.y);
 		bullet_ext->displacement = {};
 
-		// Progress Movement
-		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores) {
-			if (!bullet->attack_target.unit) {
-				u32 range = AlkajeliskParasiticSporesSeekRange;
-				// TODO: Unit search
-				auto seek_target = bw::UnitFinder::get_nearest_target(
-					bullet->position.x - range,
-					bullet->position.y - range,
-					bullet->position.x + range,
-					bullet->position.y + range,
-					bullet, [&](Unit* unit) {
-					return alkajelisk_spore_match(bullet, unit);
-				});
-				if (seek_target) {
-					bw::set_bullet_target(bullet, seek_target);
-					helper::progress_bullet_movement(bullet);
-				}
-			} else {
-				helper::progress_bullet_movement(bullet);
-			}
-		} else {
-			helper::progress_bullet_movement(bullet);
-		}
+		// Progress movement
+		helper::progress_bullet_movement(bullet);
 		u32 old_distance_traveled = bullet_ext->distance_traveled;
 		bullet_ext->distance_traveled += bw::distance_between(old_position, bullet->position);
 		bullet_ext->ticks_traveled += 1;
@@ -1027,11 +1006,6 @@ namespace hooks {
 		}
 
 		u8 time = bullet->remove_timer--;
-		if (bullet->weapon_id == WeaponId::AlkajeliskParasiticSpores) {
-			if (bullet->remove_timer < AlkajeliskParasiticSporesTimer && !bullet->attack_target.unit) {
-				time = 0;
-			}
-		}
 
 		// Accelerate missiles over time
 		if (weapon_id_accelerates(bullet->weapon_id)) {

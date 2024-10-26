@@ -2131,21 +2131,21 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ZergOkrimnilisk: {
-				// Endless Limbs
-				if (unit->can_attack_transport_checks()) {
-					bool is_moving = unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving;
-					bool can_fire = !unit->ground_weapon_cooldown && !(unit->status & UnitStatus::Burrowed);
-					WeaponId::Enum weapon_id = WeaponId::OkrimniliskRelentlessTendrils;
-					if (is_moving && can_fire) {
-						FireMultipleOpts options = {};
-						options.ignore_main = false;
-						options.use_weapon_factor = true;
-						if (fire_multiple(unit, weapon_id, 1, FilterEnemy | FilterNoAir, options)) {
-							u32 sound_id = bw::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03);
-							helper::play_sound_from_unit(sound_id, unit, 1, 0);
-						}
-					}
-				}
+			//	// Endless Limbs
+			//	if (unit->can_attack_transport_checks()) {
+			//		bool is_moving = unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving;
+			//		bool can_fire = !unit->ground_weapon_cooldown && !(unit->status & UnitStatus::Burrowed);
+			//		WeaponId::Enum weapon_id = WeaponId::OkrimniliskRelentlessTendrils;
+			//		if (is_moving && can_fire) {
+			//			FireMultipleOpts options = {};
+			//			options.ignore_main = false;
+			//			options.use_weapon_factor = true;
+			//			if (fire_multiple(unit, weapon_id, 1, FilterEnemy | FilterNoAir, options)) {
+			//				u32 sound_id = bw::rand_between(SoundId::EvigriliskFire01, SoundId::EvigriliskFire03);
+			//				helper::play_sound_from_unit(sound_id, unit, 1, 0);
+			//			}
+			//		}
+			//	}
 				if (bw::unit_can_fire_secondary_weapon(unit)) {
 					if (fire_multiple(unit, WeaponId::OkrimniliskOmnispores, 0, FilterEnemy, {.fire_opts = {.apply_cooldown = false}, .use_weapon_factor = false})) {
 						unit->sprite->create_top_overlay(ImageId::OkrimniliskOmnisporesFire);
