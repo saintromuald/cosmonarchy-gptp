@@ -534,14 +534,31 @@ namespace hooks {
 
 	// Determine the type (unit ID) of the unit to revert to when cancelling an @p egg_unit while it is morphing.
 	u16 get_cancel_morph_revert_id(Unit* egg_unit) {
-		u32 source = egg_unit->create_origin;
+		u32 source_id = egg_unit->create_origin;
 		if (egg_unit->get_race() == RaceId::Zerg) {
 			if (!(units_dat::base_property[egg_unit->id] & UnitProperty::Building)) {
 				UnitExt* unit_ext = get_unit_ext(egg_unit);
-				if (source != UnitId::ZergLarva || unit_ext->values[ValueMorphConnectedUnitId] != UnitId::ZergCaphrolosk) {
-					return source;
+				if (source_id == UnitId::ZergLarva) {
+					if (egg_unit->connected_unit) {
+						egg_unit->connected_unit->count_unit_larva();
+						if (*g_larva_counter < 3 && !(egg_unit->status & UnitStatus::InAir)) {
+							return source_id;
+						}
+					} else {
+						return source_id;
+					}
+					return UnitId::None;
+				}
+				if (unit_ext->values[ValueMorphConnectedUnitId] != UnitId::ZergCaphrolosk) {
+					return source_id;
 				} else {
-					return UnitId::ZergOcsalLarva;
+					if (egg_unit->connected_unit) {
+						egg_unit->connected_unit->count_unit_larva();
+						if (*g_larva_counter < 3 && !(egg_unit->status & UnitStatus::InAir)) {
+							return UnitId::ZergOcsalLarva;
+						}
+					}
+					return UnitId::None;
 				}
 			}
 		}
