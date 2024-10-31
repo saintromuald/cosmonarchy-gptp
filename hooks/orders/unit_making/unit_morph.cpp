@@ -231,7 +231,7 @@ namespace hooks {
 					if (unit->connected_unit) {
 						unit_ext->values[ValueMorphConnectedUnitId] = unit->connected_unit->id;
 					} else { 
-						unit_ext->values[ValueMorphConnectedUnitId] = UnitId::ZergHachirosk; // Dunno if this will ever be true at this time. -Pr0nogo
+						unit_ext->values[ValueMorphConnectedUnitId] = UnitId::ZergHachirosk; // Dunno if connected_unit will ever be null at this time. -Pr0nogo
 					}
 
 					if (unit->unit_ai && unit->unit_ai->type == AiType::Worker) {
@@ -534,33 +534,29 @@ namespace hooks {
 
 	// Determine the type (unit ID) of the unit to revert to when cancelling an @p egg_unit while it is morphing.
 	u16 get_cancel_morph_revert_id(Unit* egg_unit) {
+		if (egg_unit->get_race() != RaceId::Zerg || (units_dat::base_property[egg_unit->id] & UnitProperty::Building)) {
+			return UnitId::None;
+		}
+
 		u32 source_id = egg_unit->create_origin;
-		if (egg_unit->get_race() == RaceId::Zerg) {
-			if (!(units_dat::base_property[egg_unit->id] & UnitProperty::Building)) {
-				UnitExt* unit_ext = get_unit_ext(egg_unit);
-				if (source_id == UnitId::ZergLarva) {
-					if (egg_unit->connected_unit) {
-						egg_unit->connected_unit->count_unit_larva();
-						if (*g_larva_counter < 3 && !(egg_unit->status & UnitStatus::InAir)) {
-							return source_id;
-						}
-					} else {
-						return source_id;
-					}
-					return UnitId::None;
-				}
-				if (unit_ext->values[ValueMorphConnectedUnitId] != UnitId::ZergCaphrolosk) {
-					return source_id;
-				} else {
-					if (egg_unit->connected_unit) {
-						egg_unit->connected_unit->count_unit_larva();
-						if (*g_larva_counter < 3 && !(egg_unit->status & UnitStatus::InAir)) {
-							return UnitId::ZergOcsalLarva;
-						}
-					}
-					return UnitId::None;
-				}
+		UnitExt* unit_ext = &egg_unit->ext();
+		bool is_ocsal = unit_id_get_larva_type(unit_ext->values[ValueMorphConnectedUnitId]) == UnitId::ZergOcsalLarva;
+		if (unit_id_is_larva(source_id)) {
+			if (is_ocsal) {
+				source_id = UnitId::ZergOcsalLarva; // For cases where you cancel eggs after ocsal mutation completes. -Pr0nogo
 			}
+
+			if (egg_unit->connected_unit) {
+				egg_unit->connected_unit->count_connected_larva();
+				if (*g_larva_counter < 3 && !(egg_unit->status & UnitStatus::InAir)) {
+					return source_id;
+				}
+				return UnitId::None;
+			}
+		}
+
+		if (!is_ocsal) {
+			return source_id;
 		}
 		return UnitId::None;
 	}

@@ -62,7 +62,7 @@ namespace hooks
 		if (unit_ext->timers[TimerSpawnLarva] == 0 && unit->player != 11) {
 			unit_ext->timers[TimerSpawnLarva] = 8;
 
-			unit->count_unit_larva();
+			unit->count_connected_larva();
 			if (*g_larva_counter < 3 && !(unit->status & UnitStatus::InAir)) {
 				const auto modifier = cm::get_building_modifier(unit);
 				if (unit->building.larva_timer > modifier.integer_step) {
