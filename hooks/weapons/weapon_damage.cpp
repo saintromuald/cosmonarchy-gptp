@@ -205,7 +205,7 @@ namespace hooks {
 
 		if (data.attacker) {
 			UnitExt* attacker_ext = get_unit_ext(data.attacker);
-			if (!attacker_ext->values[ValueTakingDeconstructionDamage] && attacker_ext->values[ValueTriggerDamageBaseSet] && weapon_id_can_proc_onhits(data.weapon_id)) {
+			if (attacker_ext->values[ValueTriggerDamageBaseSet] && weapon_id_can_proc_onhits(data.weapon_id)) {
 				data.damage = attacker_ext->values[ValueTriggerDamageBaseAmount];
 			}
 

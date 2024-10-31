@@ -216,8 +216,7 @@ u32 unit_id_get_larva_type(u32 unit_id) {
 	switch (unit_id) {
 		case UnitId::ZergCaphrolosk:
 		case UnitId::ZergOcsalCesiant:
-		case UnitId::ZergOcsalLarva:
-		{
+		case UnitId::ZergOcsalLarva: {
 			return UnitId::ZergOcsalLarva;
 		} break;
 	}

@@ -283,7 +283,6 @@ namespace WeaponId {
 		KeskathalorScreamingVenom			= 41,
 		AlkajeliskPlasmidSpores				= 45,
 		GorgrokorSerratedCleavers			= 47,
-		AlkajeliskParasiticSpores			= 49,	// Alkajelisk behavior weapon
 		BactaliskCorrosiveAcid				= 50,
 		SkithrokorSkitteringSpores			= 54,
 		KeskathalorScreamingVenom2			= 58,	// Keskathalor weapon 2 (doesn't spawn Caustic Discharge field)

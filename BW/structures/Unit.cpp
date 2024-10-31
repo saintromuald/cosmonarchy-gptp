@@ -1458,3 +1458,14 @@ bool Unit::burrowed_attacker_can_attack() {
 	}
 	return false;
 }
+
+void Unit::count_connected_larva() {
+	*g_larva_counter = 0;
+	Box16 coords = {};
+	coords.left = this->sprite->position.x - 256;
+	coords.top = this->sprite->position.y - 256;
+	coords.right = this->sprite->position.x + 256;
+	coords.bottom = this->sprite->position.y + 256;
+	// Count existing larvas in g_larva_counter
+	helper::iterate_units_at_location_target_proc_larva_count(this, &coords);
+}

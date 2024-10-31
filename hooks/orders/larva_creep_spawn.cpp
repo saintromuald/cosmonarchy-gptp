@@ -62,15 +62,7 @@ namespace hooks
 		if (unit_ext->timers[TimerSpawnLarva] == 0 && unit->player != 11) {
 			unit_ext->timers[TimerSpawnLarva] = 8;
 
-			*g_larva_counter = 0;
-			Box16 coords = {};
-			coords.left = unit->sprite->position.x - 256;
-			coords.top = unit->sprite->position.y - 256;
-			coords.right = unit->sprite->position.x + 256;
-			coords.bottom = unit->sprite->position.y + 256;
-
-			// Count existing larvas in LARVA_COUNTER
-			helper::iterate_units_at_location_target_proc_larva_count(unit, &coords);
+			unit->count_connected_larva();
 			if (*g_larva_counter < 3 && !(unit->status & UnitStatus::InAir)) {
 				const auto modifier = cm::get_building_modifier(unit);
 				if (unit->building.larva_timer > modifier.integer_step) {
