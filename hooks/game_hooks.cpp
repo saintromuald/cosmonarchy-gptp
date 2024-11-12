@@ -2411,6 +2411,15 @@ namespace hooks {
 					unit->unfreeze();
 				}
 			} break;
+			case UnitId::TerranBlackjack: {
+				if (!unit_ext->values[ValueWearAndTear] && unit->hitpoints < unit->get_max_hp_raw() / 2) {
+					unit_ext->values[ValueWearAndTear] = true;
+					// TODO: Proc audiovisuals
+				} else if (unit_ext->values[ValueWearAndTear] && unit->hitpoints >= unit->get_max_hp_raw() / 2) {
+					unit_ext->values[ValueWearAndTear] = false;
+					// TODO: Proc audiovisuals
+				}
+			} break;
 		}
 
 		// Stimpack - Delayed buff handling

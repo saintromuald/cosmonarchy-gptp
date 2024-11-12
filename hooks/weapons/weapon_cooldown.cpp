@@ -90,7 +90,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranBlackjack: {
 				// Blackjack Wear and Tear: reduce weapon speed based on missing health
-				if (unit->hitpoints < unit->get_max_hp_raw() / 2) {
+				if (unit_ext->values[ValueWearAndTear]) {
 					cooldown /= 0.66;
 				}
 			} break;

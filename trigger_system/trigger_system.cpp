@@ -136,10 +136,7 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 			}
 		} break;
 	}
-
-	u32 flingy_id = units_dat::graphic[unit->id];
-	u32 sprite_id = flingy_dat::sprite_id[flingy_id];
-	return sprite_id;
+	return unit->get_standard_sprite_id();
 }
 
 static void replace_sprite(Unit* unit, u32 sprite_id) {
