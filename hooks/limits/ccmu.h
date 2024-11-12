@@ -25,7 +25,7 @@ struct CCMU_Extender {
 	Thingy fow_sprite_table[FowSpriteLimit]; // 0x00652928
 
 	GrpHead new_hp_bar_grps[SelectionLimit];//0051F200
-	Image new_selection_circles[SelectionLimit];//0x0057D768
+	Image new_selection_circles[SelectionLimit * 9];//0x0057D768
 	Image new_selection_hp_bars[SelectionLimit];//0x0057EB78
 	u32 new_saved_selections[PLAYABLE_PLAYER_COUNT][18][SelectionLimit];//0x0057FE60
 	Unit* new_client_selection_group[SelectionLimit];//0x00597208
