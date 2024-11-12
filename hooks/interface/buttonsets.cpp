@@ -2341,7 +2341,8 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::ProtossHierophant: {
+								case UnitId::ProtossHierophant:
+								case UnitId::ProtossEpigraph: {
 									if (current_button->icon_id == IconId::PhotonCannonWeapon			// Signify: Cowardice
 									||  current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Signify: Malice
 									||  current_button->icon_id == IconId::ProtossGroundWeapons) {		// Ascension
