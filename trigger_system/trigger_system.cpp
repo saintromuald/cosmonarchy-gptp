@@ -110,8 +110,7 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 	}
 
 	switch (g_globals->celebration) {
-		case Celebration_AprilFools:
-		{
+		case Celebration_AprilFools: {
 			switch (unit->id) {
 				case UnitId::ZergQuazilisk:					return SpriteId::AprilFools_Quazilisk;
 			}
@@ -124,8 +123,7 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 			//	sound_replacement.replace = false;
 			}
 		} break;
-		case Celebration_Christmas:
-		{
+		case Celebration_Christmas: {
 			switch (unit->id) {
 				case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
 				case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
