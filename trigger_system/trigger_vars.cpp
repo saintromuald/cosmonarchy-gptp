@@ -11,8 +11,7 @@ VarBank::~VarBank() {
 }
 
 s32 VarBank::get(const std::string& name, s32 default_value) {
-	const auto it = m_json.find(name);
-	if (it != m_json.end()) {
+	if (const auto it = m_json.find(name); it != m_json.end()) {
 		return *it;
 	}
 	m_dirty = true;
@@ -30,18 +29,19 @@ void VarBank::clear() {
 }
 
 void VarBank::save_if_dirty() {
-	if (m_dirty) {
-		save();
+	if (!m_dirty) {
+		return;
 	}
+    save();
 }
 
 void VarBank::load() {
 	std::ifstream file{m_path, std::ios::binary};
-	if (file.is_open()) {
-		m_json = json::from_cbor(file, true, false);
-	} else {
+	if (!file.is_open()) {
 		m_json.clear();
+		return;
 	}
+    m_json = Json::from_cbor(file, true, false);
 }
 
 void VarBank::save() {
@@ -49,10 +49,9 @@ void VarBank::save() {
 	fs::create_directories(m_path.parent_path(), error);
 
 	std::ofstream file{m_path, std::ios::binary};
-	for (const auto byte : json::to_cbor(m_json)) {
+	for (const auto byte : Json::to_cbor(m_json)) {
 		file << byte;
 	}
-
 	m_dirty = false;
 }
 
@@ -74,15 +73,14 @@ void TriggerVars::update() {
 }
 
 TriggerVar* TriggerVars::find(TriggerVarType type, std::string_view name) {
-	auto it = m_vars.find({std::string{name}, type});
-	if (it != m_vars.end()) {
+	if (auto it = m_vars.find({std::string{name}, type}); it != m_vars.end()) {
 		return &it->second;
 	}
 	return 0;
 }
 
 TriggerVar& TriggerVars::find_or_create(TriggerVarType type, std::string_view name) {
-	const auto key = TriggerVarKey{std::string{name}, type};
+	const TriggerVarKey key{std::string{name}, type};
 	if (auto it = m_vars.find(key); it != m_vars.end()) {
 		return it->second;
 	}

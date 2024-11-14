@@ -560,9 +560,8 @@ u32 get_banter_cooldown(UnitId::Enum unit_id) {
     return 0;
 }
 
-UnitId::Enum get_factional_regression(Unit* unit) {
-    Faction faction = unit->player < PlayerLimit ? g_globals->players[unit->player].faction : Faction::None;
-    switch (unit->id) {
+UnitId::Enum get_factional_regression(UnitId::Enum unit_id, Faction faction) {
+    switch (unit_id) {
         case UnitId::ZergIroleth: {
             switch (faction) {
                 case Faction::ZergZorthosTendril: return UnitId::ZergYblyleth;
@@ -606,6 +605,12 @@ UnitId::Enum get_factional_regression(Unit* unit) {
             return UnitId::ZergGorgrokor;
         } break;
     }
+    return UnitId::None;
+}
+
+UnitId::Enum get_factional_regression(Unit* unit) {
+    const auto faction = unit->player < PlayerLimit ? g_globals->players[unit->player].faction : Faction::None;
+    return get_factional_regression(UnitId::Enum(unit->id), faction);
 }
 
 void init_corpse(Thingy* corpse, SpriteId::Enum id, u32 player) {
@@ -932,5 +937,4 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
     }
     return "U...nimplemented";
 }
-
 } // namespace WeaponId

@@ -1044,4 +1044,5 @@ void play_manual_weaponfire_sound(Unit* unit, WeaponId::Enum weapon_id);
 void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id);
 u32 get_weapon_hit_sound(WeaponId::Enum weapon_id);
 Point16 get_building_reposition(Unit* unit, Point16 position);
+f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable);
 } // namespace bw

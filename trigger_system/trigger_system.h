@@ -103,53 +103,6 @@ static const char* game_mode_race_symbol_names[] = {
 };
 C_ASSERT(ARRAY_SIZE(game_mode_race_symbol_names) == GameModeRace_Count);
 
-enum class Faction : u8 {
-    None,
-
-    TerranOrionImperium,
-    TerranHecatonCoalition,
-    TerranFuturistFederation,
-    TerranGoldenRepublic,
-    TerranNydusTrinity,
-    TerranUpstart,
-
-    ProtossDivinePrimacy,
-    ProtossOrderOfTheSacredSaber,
-    ProtossKhalendricKnights,
-    ProtossStarbound,
-
-    ZergAtaltrethTendril,
-    ZergImicrenTendril,
-    ZergOrkotiTendril,
-    ZergGoszirithTendril,
-    ZergZorthosTendril,
-
-    Count,
-};
-
-static const char* faction_identifiers[] = { // This array needs to the same size and order as Faction enum
-    "none",
-
-    "orion_imperium",
-    "hecaton_coalition",
-    "futurist_federation",
-    "golden_republic",
-    "nydus_trinity",
-    "upstart_terran",
-
-    "divine_primacy",
-    "order_of_the_sacred_saber",
-    "khalendric_knights",
-    "starbound",
-
-    "ataltreth",
-    "imicren",
-    "goszirith",
-    "orkoti",
-    "zorthos",
-};
-static_assert(std::size(faction_identifiers) == (size_t)Faction::Count);
-
 enum class Advisor : u8 {
     Default,
 
@@ -257,6 +210,8 @@ struct TriggerButton {
     s32 priority;
 };
 
+using EcoMeasurements = std::array<f32, PlayerLimit>;
+
 struct Globals {
     bool preferred_colors_set;
     CmPlayer players[PlayerLimit];
@@ -275,6 +230,10 @@ struct Globals {
     std::vector<SoundReplacement> sound_replacements;
     std::vector<SpriteReplacement> sprite_replacements;
     std::vector<TriggerButton> trigger_buttons;
+	std::vector<EcoMeasurements> eco_measurements;
+
+	void sample_eco();
+	f32 calculate_hype() const;
 };
 
 enum TriggerStat : u8 {

@@ -2022,7 +2022,7 @@ u32 get_zerg_regression(Unit* unit) {
         return UnitId::None;
     }
 
-    switch (unit->id) {
+    switch (unit_id) {
         // Structure Morphs
         case UnitId::ZergCaphrolosk:			return UnitId::ZergHachirosk;
         case UnitId::ZergGathtelosk:			return UnitId::ZergHachirosk;
@@ -2066,16 +2066,16 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergElthisthMound: {
         //  return UnitId::None;			// Bugs: Larva don't unlink, cagra doesn't recede
                                             // For now we circumvent these by creating the Droleth instead of transforming the structure into the Droleth
-            if (unit->is_completed()) {
-                if (unit_ext.values[ValueOriginatedFromAgrileth]) {
-                    return UnitId::None;
-                }
-                if (unit_ext.values[ValueOriginatedFromGosvileth]) {
-                    return UnitId::ZergGosvileth;
-                }
-                return UnitId::ZergDroleth;
+        if (unit->is_completed()) {
+            if (unit_ext.values[ValueOriginatedFromAgrileth]) {
+                return UnitId::None;
             }
-            return UnitId::None;
+            if (unit_ext.values[ValueOriginatedFromGosvileth]) {
+                return UnitId::ZergGosvileth;
+            }
+            return UnitId::ZergDroleth;
+        }
+        return UnitId::None;
         }
 
         // Unit Morphs
@@ -2103,7 +2103,7 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergTethzorokor:
         case UnitId::ZergZarcavrokor:
         case UnitId::ZergUltrokor: {
-            return get_factional_regression(unit);
+            return get_factional_regression(UnitId::Enum(unit_id), faction);
         }
         default: {
             // Enable to allow non-dual birth units on cagra to regress into larva. -Pr0nogo
@@ -2113,6 +2113,18 @@ u32 get_zerg_regression(Unit* unit) {
         }
     }
     return UnitId::None;
+}
+
+u32 get_zerg_regression(Unit* unit) {
+    UnitExt* unit_ext = get_unit_ext(unit);
+    if (unit_ext->values[ValueRegressionUnstable] ||
+        unit_ext->values[ValueIsNydusExit] ||
+        unit_ext->values[ValueIsNeutralNydus]) {
+        // The above cases do not regress!
+        return UnitId::None;
+    }
+    return get_unit_id_zerg_regression(unit->id, unit->faction(),
+        unit->is_completed() && !unit_ext->values[ValueOriginatedFromGosvileth]);
 }
 
 bool unit_is_allied_or_detected(Unit* unit, u32 player) {
@@ -4300,6 +4312,28 @@ Point16 get_building_reposition(Unit* unit, Point16 position) {
         }
     }
     return best_pos;
+}
+
+f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable) {
+	f32 cost = 0;
+	cost += units_dat::mineral_cost[unit_id];
+	cost += units_dat::vespene_cost[unit_id];
+	if (units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg) {
+		cost /= 2;
+	}
+
+	if (!regression_unstable) {
+        if (u32 unit_id = bw::get_unit_id_zerg_regression(unit_id, faction, true); unit_id != UnitId::None) {
+            cost += unit_id_total_cost(unit_id, faction, regression_unstable);
+        }
+	}
+
+	if (units_dat::group_flags[unit_id].is_zerg && units_dat::base_property[unit_id] & UnitProperty::Building) {
+		// Assumes built by droleth  TODO: Ignore Gosvileths
+		cost += 50;
+	}
+
+	return cost;
 }
 
 } // namespace bw

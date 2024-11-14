@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 #include "json.hpp"
-using nlohmann::json;
+using Json = nlohmann::json;
 
 enum TriggerVarType {
 	TriggerVarType_Var,
@@ -44,7 +44,7 @@ private:
 private:
 	bool m_dirty{false};
 	fs::path m_path;
-	json m_json;
+	Json m_json;
 };
 
 class TriggerVar {

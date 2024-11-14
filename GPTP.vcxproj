@@ -65,27 +65,27 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_tmp\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
-    <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <SourcePath>$(ProjectDir)\_vendor\;$(VC_SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)\_vendor\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>CM-GPTP-Debug</TargetName>
     <TargetExt>.qdp</TargetExt>
-    <LibraryPath>$(ProjectDir)\lib_src\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\_vendor\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">
-    <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
-    <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <SourcePath>$(ProjectDir)\_vendor\;$(VC_SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)\_vendor\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>CM-GPTP-FastDebug</TargetName>
     <TargetExt>.qdp</TargetExt>
-    <LibraryPath>$(ProjectDir)\lib_src\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\_vendor\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
-    <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <SourcePath>$(ProjectDir)\_vendor\;$(VC_SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)\_vendor\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>CM-GPTP-Release</TargetName>
     <TargetExt>.qdp</TargetExt>
-    <LibraryPath>$(ProjectDir)\lib_src\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\_vendor\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -263,6 +263,7 @@
     <ClCompile Include="hooks\orders\orders_root_inject.cpp" />
     <ClCompile Include="hooks\update_unit_sight.cpp" />
     <ClCompile Include="hooks\update_unit_sight_inject.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="include\yaml-cpp\src\binary.cpp" />
     <ClCompile Include="include\yaml-cpp\src\contrib\graphbuilder.cpp" />
     <ClCompile Include="include\yaml-cpp\src\contrib\graphbuilderadapter.cpp" />
@@ -295,6 +296,8 @@
     <ClCompile Include="include\yaml-cpp\src\stream.cpp" />
     <ClCompile Include="include\yaml-cpp\src\tag.cpp" />
     <ClCompile Include="BW\extender\iscript_extender.cpp" />
+=======
+>>>>>>> 08fcced62 (Add hype score; Tidy nlohmann usage; Add and tidy dependencies; TODO: Remove yaml source files from gptp compilation somehow; Implement ReplayKraken request client)
     <ClCompile Include="maths.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -302,6 +305,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GameModes\Uprising.cpp" />
+    <ClCompile Include="ReplayKraken.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</IncludeInUnityFile>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</IncludeInUnityFile>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">false</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="utility\RegConfig.cpp" />
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="BW\extender\TileHeight_extender.cpp" />
@@ -592,6 +600,37 @@
     <ClCompile Include="unit_search.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\binary.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\contrib\graphbuilder.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\contrib\graphbuilderadapter.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\convert.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\depthguard.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\directives.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\emit.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\emitfromevents.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\emitter.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\emitterstate.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\emitterutils.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\exceptions.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\exp.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\memory.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\node.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\nodebuilder.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\nodeevents.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\node_data.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\null.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\ostream_wrapper.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\parse.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\parser.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\regex_yaml.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\scanner.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\scanscalar.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\scantag.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\scantoken.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\simplekey.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\singledocparser.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\stream.cpp" />
+    <ClCompile Include="_vendor\yaml-cpp\src\tag.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIScripter\AICore.h" />
@@ -632,6 +671,7 @@
     <ClInclude Include="hooks\orders\orders_root.h" />
     <ClInclude Include="DatExtend\dat_limits.h" />
     <ClInclude Include="hooks\update_unit_sight.h" />
+<<<<<<< HEAD
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="include\magic_enum\magic_enum.hpp" />
     <ClInclude Include="include\magic_enum\magic_enum_all.hpp" />
@@ -670,11 +710,16 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="GameModes\Uprising.h" />
     <ClInclude Include="trigger_system\table_edit.h" />
+=======
+    <ClInclude Include="maths.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="GameModes\Uprising.h" />
+    <ClInclude Include="ReplayKraken.h" />
+>>>>>>> 08fcced62 (Add hype score; Tidy nlohmann usage; Add and tidy dependencies; TODO: Remove yaml source files from gptp compilation somehow; Implement ReplayKraken request client)
     <ClInclude Include="utility\RegConfig.h" />
     <ClInclude Include="req_table.h" />
     <ClInclude Include="BW\enumerations\PortraitId.h" />
     <ClInclude Include="BW\extender\TileHeight_extender.h" />
-    <ClInclude Include="include\discord_game_sdk.h" />
     <ClInclude Include="selection_extender.h" />
     <ClInclude Include="trigger_system\trigger_events.h" />
     <ClInclude Include="trigger_system\trigger_parser.h" />
@@ -705,42 +750,7 @@
     <ClInclude Include="hooks\unit_movement.h" />
     <ClInclude Include="hooks\unit_stats\new_requirements.h" />
     <ClInclude Include="hooks\unit_stats\supply_hooks.h" />
-    <ClInclude Include="include\yaml-cpp\anchor.h" />
-    <ClInclude Include="include\yaml-cpp\binary.h" />
-    <ClInclude Include="include\yaml-cpp\contrib\anchordict.h" />
-    <ClInclude Include="include\yaml-cpp\contrib\graphbuilder.h" />
-    <ClInclude Include="include\yaml-cpp\dll.h" />
-    <ClInclude Include="include\yaml-cpp\emitfromevents.h" />
-    <ClInclude Include="include\yaml-cpp\emitter.h" />
-    <ClInclude Include="include\yaml-cpp\emitterdef.h" />
-    <ClInclude Include="include\yaml-cpp\emittermanip.h" />
-    <ClInclude Include="include\yaml-cpp\emitterstyle.h" />
-    <ClInclude Include="include\yaml-cpp\eventhandler.h" />
-    <ClInclude Include="include\yaml-cpp\exceptions.h" />
-    <ClInclude Include="include\yaml-cpp\mark.h" />
-    <ClInclude Include="include\yaml-cpp\node\convert.h" />
     <ClInclude Include="include\yaml-cpp\node\detail\bool_type.h" />
-    <ClInclude Include="include\yaml-cpp\node\detail\impl.h" />
-    <ClInclude Include="include\yaml-cpp\node\detail\iterator.h" />
-    <ClInclude Include="include\yaml-cpp\node\detail\iterator_fwd.h" />
-    <ClInclude Include="include\yaml-cpp\node\detail\memory.h" />
-    <ClInclude Include="include\yaml-cpp\node\detail\node.h" />
-    <ClInclude Include="include\yaml-cpp\node\detail\node_data.h" />
-    <ClInclude Include="include\yaml-cpp\node\detail\node_iterator.h" />
-    <ClInclude Include="include\yaml-cpp\node\detail\node_ref.h" />
-    <ClInclude Include="include\yaml-cpp\node\emit.h" />
-    <ClInclude Include="include\yaml-cpp\node\impl.h" />
-    <ClInclude Include="include\yaml-cpp\node\iterator.h" />
-    <ClInclude Include="include\yaml-cpp\node\node.h" />
-    <ClInclude Include="include\yaml-cpp\node\parse.h" />
-    <ClInclude Include="include\yaml-cpp\node\ptr.h" />
-    <ClInclude Include="include\yaml-cpp\node\type.h" />
-    <ClInclude Include="include\yaml-cpp\null.h" />
-    <ClInclude Include="include\yaml-cpp\ostream_wrapper.h" />
-    <ClInclude Include="include\yaml-cpp\parser.h" />
-    <ClInclude Include="include\yaml-cpp\stlemitter.h" />
-    <ClInclude Include="include\yaml-cpp\traits.h" />
-    <ClInclude Include="include\yaml-cpp\yaml.h" />
     <ClInclude Include="player_color.h" />
     <ClInclude Include="BW\stat_txt_spec.h" />
     <ClInclude Include="trigger_system\trigger_hooks.h" />
@@ -884,12 +894,28 @@
     <ClInclude Include="hooks\weapons\weapon_fire.h" />
     <ClInclude Include="hooks\unit_stats\weapon_range.h" />
     <ClInclude Include="BW\enumerations\WeaponId.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="include\yaml-cpp\src\contrib\yaml-cpp.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="include\yaml-cpp\src\contrib\yaml-cpp.natvis.md" />
+    <ClInclude Include="_vendor\yaml-cpp\src\collectionstack.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\contrib\graphbuilderadapter.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\directives.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\emitterstate.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\emitterutils.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\exp.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\indentation.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\nodebuilder.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\nodeevents.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\ptr_vector.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\regeximpl.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\regex_yaml.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\scanner.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\scanscalar.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\scantag.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\setting.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\singledocparser.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\stream.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\streamcharsource.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\stringsource.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\tag.h" />
+    <ClInclude Include="_vendor\yaml-cpp\src\token.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

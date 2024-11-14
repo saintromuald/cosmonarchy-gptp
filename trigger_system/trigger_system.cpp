@@ -1719,3 +1719,52 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
     return true;
 }
 
+void Globals::sample_eco() {
+	EcoMeasurements eco{};
+	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+		if (unit->player > eco.size()) {
+			continue;
+		}
+		UnitExt* unit_ext = get_unit_ext(unit);
+		eco[unit->player] += unit->total_cost();
+	}
+	eco_measurements.push_back(eco);
+}
+
+f32 Globals::calculate_hype() const {
+	const auto count = eco_measurements.size();
+	std::vector<f32> values(count);
+	for (size_t i = 0; i < values.size(); i++) {
+		values[i] = log(std::accumulate(eco_measurements[i].begin(), eco_measurements[i].end(), 0));
+	}
+
+	f32 changes_mean = 0;
+	std::vector<f32> changes(count-1);
+	for (size_t i = 0; i < changes.size(); i++) {
+		changes[i] = values[i] = values[i];
+		changes_mean += changes[i];
+	}
+	changes_mean /= count;
+
+	f32 volatility = 0;
+	for (f32 change : changes) {
+		f32 mean_diff = change - changes_mean;
+		volatility += mean_diff * mean_diff;
+	}
+	volatility = sqrt(volatility / changes.size());
+
+	f32 sum_x = 0;
+	f32 sum_y = 0;
+	f32 sum_xx = 0;
+	f32 sum_xy = 0;
+	for (size_t x = 0; x < count; x++) {
+		f32 y = values[x];
+		sum_x += x;
+		sum_y += y;
+		sum_xx += x * x;
+		sum_xy += x * y;
+	}
+	f32 slope = (count * sum_xy - sum_x * sum_y) / (count * sum_xx - sum_x * sum_x);
+
+	return slope * (1 + volatility);
+}

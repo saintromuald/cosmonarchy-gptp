@@ -801,6 +801,7 @@ namespace hooks {
         }
 
         g_game->first_frame();
+		g_globals->sample_eco();
         g_graphics.reset_all_graphics();
 
         // Update extended features

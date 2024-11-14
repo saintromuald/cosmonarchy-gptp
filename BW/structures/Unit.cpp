@@ -14,6 +14,7 @@
 #include "hooks/target_related.h"
 #include "data_ext.h"
 #include "BW/stat_txt_spec.h"
+#include "trigger_system/trigger_system.h"
 
 UnitRef::UnitRef(Unit* unit) : index{unit->get_unit_index()}, unique_id{unit->unique_id} {}
 
@@ -1470,6 +1471,15 @@ void Unit::count_connected_larva() {
     helper::iterate_units_at_location_target_proc_larva_count(this, &coords);
 }
 
+Faction Unit::faction() {
+	return player < PlayerLimit ? g_globals->players[player].faction : Faction::None;
+}
+
+f32 Unit::total_cost() {
+	UnitExt* unit_ext = get_unit_ext(this);
+	return bw::unit_id_total_cost(id, faction(), unit_ext->values[ValueRegressionUnstable]);
+}
+
 u32 Unit::standard_sprite_id() {
     if (this->id == UnitId::TerranBlackjack || this->id == UnitId::TerranBlackjackGolden) {
         UnitExt& unit_ext = this->ext();
@@ -1632,6 +1642,7 @@ bool Unit::is_plainly_visible() {
 bool Unit::can_use_passive_ability() {
     return this->is_completed() && !this->is_frozen() && !this->is_in_transport() && !this->ext().values[ValueDisablePassive];
 }
+<<<<<<< HEAD
 
 u32 Unit::get_adaptive_amitosis_range() {
     u32 timer = this->ext().timers[TimerAdaptiveAmitosisGrowth];
@@ -1660,3 +1671,5 @@ bool Unit::can_be_passive_cloaked(Unit* source) {
     return this->is_completed() && this != source && !this->is_neutral_accessory() && this->id != UnitId::TerranMorningstar
         && bw::are_mutual_allies(this->player, source->player) && this->player != 11 && !this->is_frozen();
 }
+=======
+>>>>>>> 08fcced62 (Add hype score; Tidy nlohmann usage; Add and tidy dependencies; TODO: Remove yaml source files from gptp compilation somehow; Implement ReplayKraken request client)
