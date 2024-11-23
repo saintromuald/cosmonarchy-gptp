@@ -858,7 +858,7 @@ namespace hooks {
 		s32 player_flag = 1 << unit->player;
 		if (!target || !target->sprite) { // sprite is new
 			ActiveTile* tile = bw::get_active_tile_at_coords(unit->order_target.pt);
-			return player_flag & ~(tile->vision_flags & 0xFF);
+			return player_flag & ~(tile->flags & 0xFF);
 		}
 
 		if (player_id_is_extended(unit->player)) {

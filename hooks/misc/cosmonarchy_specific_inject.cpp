@@ -547,7 +547,7 @@ namespace hooks
 						if (!(x % 16)) {
 							gptp::g_critical_logger << "\n";
 						}
-						u32 tile = bw::get_active_tile_at_tile(x, y)->vision_flags;
+						u32 tile = bw::get_active_tile_at_tile(x, y)->flags;
 						snprintf(buffer, sizeof(buffer), " %08X", tile & ~0x40000000);//'temporary_cagra' isn't part of the GameHash indexing, so it's not useful.
 						gptp::g_critical_logger << buffer;
 					}

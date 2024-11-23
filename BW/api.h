@@ -639,6 +639,10 @@ inline ActiveTile& get_tile_at_tile(u32 tile_x, u32 tile_y) {
 	return (*g_active_tile_array)[tile_x + tile_y * g_map_tile_size->width];
 }
 
+inline ActiveTile& get_tile_at_tile(TileCoord tile) {
+	return get_tile_at_tile(tile.x, tile.y);
+}
+
 inline u16& getTileIdAt(s32 x, s32 y) {
 	return (*tileIdArray)[(x / 32) + g_map_tile_size->width * (y / 32)];
 }
@@ -835,6 +839,10 @@ inline Region* get_region(u32 index) {
 
 inline Region* get_region(Point16 position) {
 	return get_region(get_region_id(position));
+}
+
+inline Region* get_region(TileCoord tile) {
+	return get_region(Point16(tile.x * 32 + 16, tile.y * 32 + 16));
 }
 
 Point16 get_region_center(Region* region);

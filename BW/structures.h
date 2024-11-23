@@ -496,24 +496,24 @@ C_ASSERT(sizeof(ColorShiftData) == 20);
 // Based on BWAPI's Offsets.h
 struct ActiveTile {
 	union {
-		u32 vision_flags;
+		u32 flags;
 		struct {
-			u8 visibility_flags;
-			u8 explored_flags;
-			u8 is_walkable : 1; // Set on tiles that can be walked on
-			u8 unknown1 : 1; // Unused?
-			u8 is_unwalkable : 1; // Set on tiles that can't be walked on
-			u8 unknown2 : 1; // Unused?
-			u8 has_doodad_cover : 1; // Set when a doodad cover (trees) occupies the area
-			u8 unknown3 : 1; // Unused?
-			u8 has_cagra : 1; // Set when creep occupies the area
-			u8 always_unbuildable : 1; // always unbuildable, like water
-			u8 ground_height : 3; // inside height; 1 for low inside, 2 for middle inside and 4 for high inside
-			u8 currently_occupied : 1; // unbuildable but can be made buildable
-			u8 cagra_receding : 1; // Set when the nearby structure supporting the creep is destroyed
-			u8 cliff_edge : 1; // Set if the tile is a cliff edge
-			u8 temporary_cagra : 1; // Set when the creep occupying the area was created. Not set if creep tiles were preplaced. Used in drawing routine.
-			u8 unknown4 : 1; // Unused?
+/*00000f*/ u8 visibility_flags;
+/*0000f0*/ u8 explored_flags;
+/*000100*/ u8 is_walkable : 1; // Set on tiles that can be walked on
+/*000200*/ u8 unknown1 : 1; // Unused?
+/*000400*/ u8 is_unwalkable : 1; // Set on tiles that can't be walked on
+/*000800*/ u8 unknown2 : 1; // Unused?
+/*001000*/ u8 has_doodad_cover : 1; // Set when a doodad cover (trees) occupies the area
+/*002000*/ u8 unknown3 : 1; // Unused?
+/*004000*/ u8 has_cagra : 1; // Set when creep occupies the area
+/*008000*/ u8 always_unbuildable : 1; // always unbuildable, like water
+/*070000*/ u8 ground_height : 3; // inside height; 1 for low inside, 2 for middle inside and 4 for high inside
+/*080000*/ u8 currently_occupied : 1; // unbuildable but can be made buildable
+/*100000*/ u8 cagra_receding : 1; // Set when the nearby structure supporting the creep is destroyed
+/*200000*/ u8 cliff_edge : 1; // Set if the tile is a cliff edge
+/*400000*/ u8 temporary_cagra : 1; // Set when the creep occupying the area was created. Not set if creep tiles were preplaced. Used in drawing routine.
+/*800000*/ u8 unknown4 : 1; // Unused?
 		};
 	};
 };

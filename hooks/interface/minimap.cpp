@@ -16,15 +16,15 @@ namespace hooks {
 			do {
 				u32 pos_x = g_map_width;
 				do {
-					u32 cur_vision = (*g_player_visions & (*active_tile).vision_flags) == 0;
-					u32 cur_filter = (*g_player_explored_visions & (*active_tile).vision_flags) == 0;
+					u32 cur_vision = (*g_player_visions & (*active_tile).flags) == 0;
+					u32 cur_filter = (*g_player_explored_visions & (*active_tile).flags) == 0;
 					if (g_is_in_replay) {
 						cur_filter = 0;
 						if (*g_replay_reveal_all) {
 							cur_vision = 1;
 						} else {
 							cur_filter = (u8)*g_replay_visions;
-							u32 tile_vision = ~(*active_tile).vision_flags;
+							u32 tile_vision = ~(*active_tile).flags;
 
 							if ((cur_filter << 8) & tile_vision) {
 								if ((u8)tile_vision & cur_filter) {
@@ -56,15 +56,15 @@ namespace hooks {
 			u8* surf_buff_fog = g_minimap_surface_fog->buffer;
 			ActiveTile* active_tile = *g_active_tile_array;
 			do {
-				u32 cur_vision = (*g_player_visions & (*active_tile).vision_flags) == 0;
-				u32 cur_filter = (*g_player_explored_visions & (*active_tile).vision_flags) == 0;
+				u32 cur_vision = (*g_player_visions & (*active_tile).flags) == 0;
+				u32 cur_filter = (*g_player_explored_visions & (*active_tile).flags) == 0;
 				if (g_is_in_replay) {
 					cur_filter = 0;
 					if (*g_replay_reveal_all) {
 						cur_vision = 1;
 					} else {
 						cur_filter = (u8)*g_replay_visions;
-						u32 tile_vision = ~(*active_tile).vision_flags;
+						u32 tile_vision = ~(*active_tile).flags;
 
 						if ((cur_filter << 8) & tile_vision) {
 							if ((u8)tile_vision & cur_filter) {
@@ -101,8 +101,8 @@ namespace hooks {
 				u32 pos_x = map_width_2;
 
 				do {
-					u32 cur_vision = (*g_player_visions & (*active_tile).vision_flags) == 0;
-					u32 cur_filter = (*g_player_explored_visions & (*active_tile).vision_flags) == 0;
+					u32 cur_vision = (*g_player_visions & (*active_tile).flags) == 0;
+					u32 cur_filter = (*g_player_explored_visions & (*active_tile).flags) == 0;
 
 					if (g_is_in_replay) {
 						cur_filter = 0;
@@ -111,7 +111,7 @@ namespace hooks {
 							cur_vision = 1;
 						} else {
 							cur_filter = (u8)*g_replay_visions;
-							u32 tile_vision = ~(*active_tile).vision_flags;
+							u32 tile_vision = ~(*active_tile).flags;
 
 							if ((cur_filter << 8) & tile_vision) {
 								if ((u8)tile_vision & cur_filter) {
@@ -159,8 +159,8 @@ namespace hooks {
 
 				do {
 					ActiveTile cur_active_tile = active_tile[(tile_x >> 5) + _tile_y];
-					u32 cur_vision = (*g_player_visions & cur_active_tile.vision_flags) == 0;
-					u32 cur_filter = (*g_player_explored_visions & cur_active_tile.vision_flags) == 0;
+					u32 cur_vision = (*g_player_visions & cur_active_tile.flags) == 0;
+					u32 cur_filter = (*g_player_explored_visions & cur_active_tile.flags) == 0;
 
 					if (g_is_in_replay) {
 						cur_filter = 0;
@@ -169,7 +169,7 @@ namespace hooks {
 							cur_vision = 1;
 						} else {
 							cur_filter = (u8)*g_replay_visions;
-							u32 tile_vision = ~cur_active_tile.vision_flags;
+							u32 tile_vision = ~cur_active_tile.flags;
 
 							if ((cur_filter << 8) & tile_vision) {
 								if ((u8)tile_vision & cur_filter) {
