@@ -407,7 +407,7 @@ namespace hooks {
 		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 			Unit* target = units_in_splash.get_unit(i);
 			if (!target->is_dead() && !units_dat::group_flags[target->id].is_building
-			&& !(units_dat::base_property[target->id] & UnitProperty::ResourceContainer) && !unit_id_is_trap(target->id))
+			&&  !unit_id_is_trap(target->id) && !unit_id_is_resource_node(target->id, false) && target->id != UnitId::TerranMorningstar)
 			{
 				hooks::lockdown_hit(target, LobotomyMineLockdownTimer, bullet);
 			}
