@@ -136,7 +136,7 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
 			}
 		} break;
 	}
-	return unit->get_standard_sprite_id();
+	return unit->standard_sprite_id();
 }
 
 static void replace_sprite(Unit* unit, u32 sprite_id) {

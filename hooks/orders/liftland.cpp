@@ -172,7 +172,9 @@ namespace hooks {
 				if (unit_id_is_garrison(unit->id)) {
 					for (s32 i = 0; i < TransportCap; i++) {
 						Unit* cargo_unit = unit->get_loaded_unit(i);
-						if (!cargo_unit) continue;
+						if (!cargo_unit) {
+							continue;
+						}
 					//	helper::move_unit(cargo_unit, unit->position.x, unit->position.y);
 						if (cargo_unit->subunit) {
 							helper::move_unit(cargo_unit->subunit, unit->position.x, unit->position.y);
@@ -228,21 +230,18 @@ namespace hooks {
 			if (unit->is_factory()) {
 				unit->rally.unit = unit;
 			}
-
 			helper::end_collision_tracking(unit); // Update globally known position and may remove repulse tile if no longer needed
 			helper::modify_building_grounded_status(unit); // Disable GroundedBuilding status and prepare to enable pathing?
 
 			unit->sprite->elevation = 12;
 			helper::set_unit_pathing(unit, 1);
 			helper::start_collision_tracking(unit); // Maybe update orders targetting the unit, set repulse for units in surroundings, and some others things?
-
 			if (unit->sprite->images.tail->palette_type == PaletteType::Shadow) {
 				unit->sprite->images.tail->flags |= ImageFlags::DontUpdate;
 			}
 
 			bw::refresh_console();
-			if (unit->sprite->position.x != unit->next_target_waypoint.x
-			||	unit->sprite->position.y - 42 != unit->next_target_waypoint.y) {
+			if (unit->sprite->position.x != unit->next_target_waypoint.x || unit->sprite->position.y - 42 != unit->next_target_waypoint.y) {
 				unit->next_target_waypoint.x = unit->sprite->position.x;
 				unit->next_target_waypoint.y = unit->sprite->position.y - 42;
 			}
@@ -253,7 +252,6 @@ namespace hooks {
 				helper::place_building_proc();
 			}
 			unit->main_order_id = OrderId::Liftoff;
-
 			UnitExt* unit_ext = get_unit_ext(unit);
 			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
 			helper::turn_unit(unit, 0); // Fix turning structures having difficulty lifting
@@ -266,23 +264,19 @@ namespace hooks {
 	}
 
 	// Hooked for custom advisor handling. -Pr0nogo
-	void play_landing_interrupt_sound(Unit* unit) // 0048F5A0
-	{
+	void play_landing_interrupt_sound(Unit* unit) { // 0048F5A0
 		if (!g_is_in_replay && unit->player == g_local_nation_id) {
 			AdvisorEvent event_type = AdvisorEvent_LandingInterrupted;
 			switch (unit->get_race()) {
-				case RaceId::Terran:
-				{
+				case RaceId::Terran: {
 					if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 						event_type = AdvisorEvent_PlacementInterrupted;
 					}
 				} break;
-				case RaceId::Protoss:
-				{
+				case RaceId::Protoss: {
 					event_type = AdvisorEvent_NoBuildProtoss;
 				} break;
-				case RaceId::Zerg:
-				{
+				case RaceId::Zerg: {
 					event_type = AdvisorEvent_PlacementInterrupted;
 				} break;
 			}

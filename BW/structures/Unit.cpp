@@ -1470,10 +1470,10 @@ void Unit::count_connected_larva() {
 	helper::iterate_units_at_location_target_proc_larva_count(this, &coords);
 }
 
-u32 Unit::get_standard_sprite_id() {
+u32 Unit::standard_sprite_id() {
 	if (this->id == UnitId::TerranBlackjack) {
-		UnitExt* unit_ext = &this->ext();
-		if (unit_ext->values[ValueWearAndTear]) {
+		UnitExt& unit_ext = this->ext();
+		if (unit_ext.values[ValueWearAndTear]) {
 			return SpriteId::TerranBlackjackDamaged;
 		} else {
 			return SpriteId::TerranBlackjack;

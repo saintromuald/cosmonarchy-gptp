@@ -395,7 +395,7 @@ struct Unit : public UnitLayout
 	void issue_custom_order(u32 order_id);
 	bool burrowed_attacker_can_attack();
 	void count_connected_larva();
-	u32 get_standard_sprite_id();
+	u32 standard_sprite_id();
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));
