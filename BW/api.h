@@ -67,7 +67,6 @@ enum class GameKind {
 	DarkAges,
 
 	Debug,
-	DebugFog,
 	Count,
 };
 

@@ -164,8 +164,7 @@ const char* game_kind_to_string(GameKind game_kind) {
 		case GameKind::Competitive: {
 			return "Competitive";
 		} break;
-		case GameKind::Debug:
-		case GameKind::DebugFog: {
+		case GameKind::Debug: {
 			return "Debug";
 		} break;
 		case GameKind::Scenario: {
@@ -204,8 +203,7 @@ const char* game_kind_to_filename_string(GameKind game_kind) {
 		case GameKind::Competitive: {
 			return "Competitive(1)";
 		} break;
-		case GameKind::Debug:
-		case GameKind::DebugFog: {
+		case GameKind::Debug: {
 			return "Debug(1)";
 		} break;
 		case GameKind::Scenario: {

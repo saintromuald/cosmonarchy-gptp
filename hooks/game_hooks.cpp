@@ -653,19 +653,6 @@ namespace hooks {
 					g_total_vespene[i] = 999999;
 				}
 			} break;
-			case GameKind::DebugFog: {
-				ActiveTile* active_tile = *g_active_tile_array;
-				for (u32 tile_size = g_map_tile_size->width * g_map_tile_size->height; tile_size; tile_size--) {
-					active_tile->visibility_flags = 0;
-					active_tile->explored_flags = 0;
-					active_tile++;
-				}
-				if (!(g_game_layer->has_been_refreshed & 1)) {
-					g_game_layer->has_been_refreshed |= 1;
-					helper::bw_refresh((s16)g_game_layer->left, (s16)g_game_layer->height + (s16)g_game_layer->top  - 1,
-									   (s16)g_game_layer->top,  (s16)g_game_layer->width  + (s16)g_game_layer->left - 1);
-				}
-			} break;
 			case GameKind::Omnipresence: {
 				init_omnipresence();
 			} break;
