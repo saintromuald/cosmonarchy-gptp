@@ -69,6 +69,10 @@ namespace hooks {
 
 		Faction faction = g_globals->players[player_id].faction;
 
+        if (bw::get_game_kind() == GameKind::DarkAges && bw::unit_id_blocked_in_dark_ages(static_cast<UnitId::Enum>(unit_id))) {
+			return false;
+        }
+
 		// TERRAN
 		// @Todo: Consider making AI check for landed structures as a safety, e.g. player_has_completed_landed_unit_id(player_id, UnitId::TerranMinistry)
 		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMason) || player_has_completed_unit_id(player_id, UnitId::TerranTalos)) {
@@ -1188,8 +1192,7 @@ namespace hooks {
 		return false;
 	}
 
-	s32 create_unit_allowed_partial(u16 unit_id, Unit* unit, s32 player_id)
-	{
+	s32 create_unit_allowed_partial(u16 unit_id, Unit* unit, s32 player_id) {
 		*g_last_internal_error = InternalErrors::UnknownError0;
 		if (unit_id == UnitId::None) {
 			*g_last_internal_error = InternalErrors::UnknownError16;
@@ -1219,6 +1222,10 @@ namespace hooks {
 			*g_last_internal_error = InternalErrors::UnknownError22;
 			return TECH_HIDDEN;
 		}
+        if (bw::get_game_kind() == GameKind::DarkAges && bw::unit_id_blocked_in_dark_ages(static_cast<UnitId::Enum>(unit->id))) {
+			return false;
+        }
+
 
 		// New hidden cases
 		if (helper::is_constructing_addon(unit)) {

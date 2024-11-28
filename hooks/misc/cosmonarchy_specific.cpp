@@ -264,7 +264,7 @@ Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) {
 		helper::turn_unit(subunit, 96);
 	}
 
-	if (bw::get_game_kind() == GameKind_Massacre && unit_should_give_gas_in_massacre_mode(unit)) {
+	if (bw::get_game_kind() == GameKind::Massacre && unit_should_give_gas_in_massacre_mode(unit)) {
 		bw::add_massacre_resource(unit->player);
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueCancellingZergStructure] = 0;

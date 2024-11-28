@@ -713,7 +713,7 @@ namespace hooks {
 
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (!unit_ext->values[ValueNoMassacreResource]) {
-			if (bw::get_game_kind() == GameKind_Massacre && unit_should_give_gas_in_massacre_mode(unit)) {
+			if (bw::get_game_kind() == GameKind::Massacre && unit_should_give_gas_in_massacre_mode(unit)) {
 				bw::add_massacre_resource(unit->player);
 			}
 		} else {

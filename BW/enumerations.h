@@ -591,6 +591,7 @@ namespace GameType {
 		Duopoly			= 37,
 		Debug			= 38,
 		Embraced		= 39,
+		DarkAges        = 40,
 	};
 }
 

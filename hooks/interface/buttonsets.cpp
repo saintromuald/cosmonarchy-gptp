@@ -384,7 +384,7 @@ namespace hooks {
 		auto buttonset_id = *g_active_portrait_buttonset_id;
 		u32 local_player = *g_local_human_id;
 		auto& cm_player = g_globals->players[local_player];
-		if (bw::get_game_kind() == GameKind_FactionWars && !cm_player.faction_was_set) {
+		if (bw::get_game_kind() == GameKind::FactionWars && !cm_player.faction_was_set) {
 			if (buttonset_id == UnitId::None) {
 				switch (g_player_table[local_player].race) {
 					case RaceId::Terran: {
@@ -1166,7 +1166,7 @@ namespace hooks {
 						// inlines requirements in yet another position. Not sure how to fix! -Pr0nogo
 						switch (unit->id) {
 							case UnitId::Omnivale: {
-								bool is_omnipresence = bw::get_game_kind() == GameKind_Omnipresence;
+								bool is_omnipresence = bw::get_game_kind() == GameKind::Omnipresence;
 								GameModeRace duopoly_state = g_globals->players[unit->player].game_mode_race;
 								switch (current_button->requirement_var) {
 									case UnitId::TerranMason: {
@@ -2850,26 +2850,33 @@ namespace hooks {
 					}
 
 					// Crig overwrites
-					auto disable_button = [&]() {
+					const auto disable_button = [&] {
 						if (current_button_state == Button_State::Invisible) return false;
 						current_button_state = Button_State::Disabled;
 						return true;
 					};
-                    auto disable_buttons_if = [&](bool condition, auto... icon_ids) {
+                    const auto disable_buttons_if = [&](bool condition, auto... icon_ids) {
 						if (!condition) return;
 						((current_button->icon_id == icon_ids && disable_button()), ...);
 					};
-					auto disable_buttons_unit_ids = [&](UnitIdBitset unit_id_bitset) {
+					const auto disable_buttons_unit_ids = [&](UnitIdBitset unit_id_bitset) {
 						if (current_button->requirement_func != (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) return;
 						if (!unit_id_bitset[current_button->requirement_var]) return;
                         disable_button();
 					};
+					const auto dark_ages_hide_flyers = [&] {
+                        if (bw::get_game_kind() != GameKind::DarkAges) return;
+                        if (current_button->requirement_func != (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) return;
+						if (!bw::unit_id_blocked_in_dark_ages(static_cast<UnitId::Enum>(current_button->requirement_var))) return;
+						current_button_state = Button_State::Invisible;
+					};
 					disable_buttons_if(cm_player.disable_liftoff, IconId::Liftoff, IconId::Land);
 					disable_buttons_if(cm_player.disable_burrow, IconId::Burrow, IconId::Unburrow);
 					disable_buttons_unit_ids(cm_player.disabled_units);
+					dark_ages_hide_flyers();
 
 					// TODO: Reenable and test
-					//if ((*g_active_portrait_unit)->player != *g_local_nation_id && current_button_state == Button_State::Enabled) {
+					//if (unit->player != *g_local_nation_id && current_button_state == Button_State::Enabled) {
 					//	current_button_state = Button_State::Disabled;
 					//}
 

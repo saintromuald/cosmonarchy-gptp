@@ -333,7 +333,7 @@ namespace hooks {
 
 		GameKind game_kind = bw::get_game_kind();
 		if (weapon_damage_is_lethal(data)) {
-			if (!bw::is_allied_to(data.target->player, data.attacking_player_id) && game_kind == GameKind_Massacre) {
+			if (!bw::is_allied_to(data.target->player, data.attacking_player_id) && game_kind == GameKind::Massacre) {
 				bw::add_massacre_resource(data.attacking_player_id);
 			}
 			if (!weapon_damage_fatal(data)) { // Prevent attack if it wasn't fatal
@@ -380,7 +380,7 @@ namespace hooks {
 			bw::play_sound(SoundId::GoskaGrenadeImpact, weapon_damage_current_bullet->position);
 		}
 
-		if (game_kind == GameKind_TheTurning && data.target->player == NeutralHostilePlayer && unit_id_is_burrowed_attacker(data.target->id)) {
+		if (game_kind == GameKind::TheTurning && data.target->player == NeutralHostilePlayer && unit_id_is_burrowed_attacker(data.target->id)) {
 			helper::ai_order_lurker_burrow(data.target);
 		}
 	}
@@ -973,7 +973,7 @@ namespace hooks {
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
 				target_ext->values[ValueIsShade] = true;
 				
-				if (bw::get_game_kind() == GameKind_Massacre && unit_should_give_gas_in_massacre_mode(data.target)) {
+				if (bw::get_game_kind() == GameKind::Massacre && unit_should_give_gas_in_massacre_mode(data.target)) {
 					bw::add_massacre_resource(data.target->player);
 				}
 
@@ -990,7 +990,7 @@ namespace hooks {
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
 
-				if (bw::get_game_kind() == GameKind_Massacre && unit_should_give_gas_in_massacre_mode(data.target)) {
+				if (bw::get_game_kind() == GameKind::Massacre && unit_should_give_gas_in_massacre_mode(data.target)) {
 					bw::add_massacre_resource(data.target->player);
 				}
 

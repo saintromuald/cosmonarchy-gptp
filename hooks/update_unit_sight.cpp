@@ -181,7 +181,7 @@ namespace hooks {
 	}
 
 	void update_fog() {
-		if (bw::get_game_kind() == GameKind_DebugFog) {
+		if (bw::get_game_kind() == GameKind::DebugFog) {
 			return;
 		}
 

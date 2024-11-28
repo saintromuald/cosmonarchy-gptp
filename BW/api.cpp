@@ -1066,7 +1066,7 @@ u32 get_sized_overlay(Unit* unit, u32 initial) {
 	return initial;
 }
 
-bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
+static bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
 	return !(unit->status & UnitStatus::InAir)
 		&& (weapon_id == WeaponId::None || weapons_dat::max_range[weapon_id] > 32)
 		&& unit->id != UnitId::TerranHarakan
@@ -1089,13 +1089,14 @@ s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_t
 		unit_pos = unit->position;
 	}
 	s32 source_height = g_height_table[g_map_tile_size->width * (unit_pos.y >> 5) + (unit_pos.x >> 5)];
+	u32 multiplier = bw::get_game_kind() == GameKind::DarkAges ? 1 : 2;
 	if (!target_unit) {
-		return std::max(source_height, 0) * 2;
+		return std::max(source_height, 0) * multiplier;
 	} else if (target_unit->status & UnitStatus::InAir) {
 		return 0;
 	}
 	s32 target_height = g_height_table[g_map_tile_size->width * (target_unit->position.y >> 5) + (target_unit->position.x >> 5)];
-	return std::max(source_height - target_height, 0) * 2;
+	return std::max(source_height - target_height, 0) * multiplier;
 }
 
 void apply_ensnare(Unit* unit) { // 004F45E0
@@ -3146,36 +3147,21 @@ GameKind get_game_kind() {
 	switch (*g_game_type) {
 		case GameType::UseMapSettings:
 		case GameType::Scenario:
-			return GameKind_Scenario;
+			return GameKind::Scenario;
 
-		case GameType::Competitive:
-			return GameKind_Competitive;
+		case GameType::Competitive:  return GameKind::Competitive;
+		case GameType::Omnipresence: return GameKind::Omnipresence;
+		case GameType::FactionWars:  return GameKind::FactionWars;
+		case GameType::Massacre:     return GameKind::Massacre;
+		case GameType::TheTurning:   return GameKind::TheTurning;
+		case GameType::Uprising:     return GameKind::Uprising;
+		case GameType::Duopoly:      return GameKind::Duopoly;
+		case GameType::Embraced:     return GameKind::Embraced;
+		case GameType::DarkAges:     return GameKind::DarkAges;
 
-		case GameType::Omnipresence:
-			return GameKind_Omnipresence;
-
-		case GameType::FactionWars:
-			return GameKind_FactionWars;
-
-		case GameType::Massacre:
-			return GameKind_Massacre;
-
-		case GameType::TheTurning:
-			return GameKind_TheTurning;
-
-		case GameType::Uprising:
-			return GameKind_Uprising;
-
-		case GameType::Duopoly:
-			return GameKind_Duopoly;
-
-		case GameType::Embraced:
-			return GameKind_Embraced;
-
-		case GameType::Debug:
-			return GameKind_Debug;
+		case GameType::Debug:        return GameKind::Debug;
 	}
-	return GameKind_Invalid;
+	return GameKind::Invalid;
 }
 
 u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
@@ -3827,12 +3813,12 @@ void add_massacre_resource(u32 player_id) {
 }
 
 bool game_kind_supports_kills(GameKind game_kind) {
-	return game_kind == GameKind_Competitive
-		|| game_kind == GameKind_Omnipresence
-		|| game_kind == GameKind_FactionWars
-		|| game_kind == GameKind_Massacre
-		|| game_kind == GameKind_TheTurning
-		|| game_kind == GameKind_Embraced;
+	return game_kind == GameKind::Competitive
+		|| game_kind == GameKind::Omnipresence
+		|| game_kind == GameKind::FactionWars
+		|| game_kind == GameKind::Massacre
+		|| game_kind == GameKind::TheTurning
+		|| game_kind == GameKind::Embraced;
 }
 
 bool unit_can_fire_secondary_weapon(Unit* unit) {
@@ -4038,4 +4024,40 @@ u32 active_player_count() {
 	return player_count;
 }
 
+bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id) {
+	switch (unit_id) {
+        // Allow Utility, Detection, Transports, No Weaponed Craft
+        // Note: I wanted no transports, but it's tricky, anchors are transports, ovileth is detection
+		case UnitId::TerranTalos:
+		case UnitId::TerranTrojan:
+		case UnitId::TerranAncile:
+		case UnitId::TerranAzazel: // But no Seraph!
+		case UnitId::TerranPythean:
+			return false;
+			
+		case UnitId::ProtossArtisan:
+		case UnitId::ProtossWitness:
+		case UnitId::ProtossDidact:
+		case UnitId::ProtossClarion:
+			return false;
+
+		case UnitId::ZergGosvileth:
+		case UnitId::ZergOvileth:
+		case UnitId::ZergIroleth:
+		case UnitId::ZergOthstoleth:
+		case UnitId::ZergMatraleth:
+			return false;
+
+        // Disable Useless Production
+		case UnitId::TerranRotary:
+		case UnitId::TerranHadron:
+			return true;
+
+		case UnitId::ProtossStargate:
+		case UnitId::ProtossMonumentOfSin:
+			return true;
+	}
+	return units_dat::base_property[unit_id] & UnitProperty::Flyer;
 }
+
+} // namespace bw

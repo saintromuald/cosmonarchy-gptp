@@ -86,7 +86,7 @@ Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id) {
 		unit_ext->timers[TimerReclaiming] = Reclamation::ReviveTimer;
 		unit_ext->timers[TimerStun]       = Reclamation::ReviveTimer;
 		unit_ext->values[ValueReclaimed]  = 1;
-		if (bw::get_game_kind() == GameKind_TheTurning && player == NeutralHostilePlayer) {
+		if (bw::get_game_kind() == GameKind::TheTurning && player == NeutralHostilePlayer) {
 			unit_ext->values[ValueNoCorpse] = true;
 		}
 	}

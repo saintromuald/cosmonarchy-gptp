@@ -26,7 +26,7 @@ namespace hooks
 		if (!(units_dat::base_property[unit_id] & UnitProperty::RequiredPsi)) {
 			return true;
 		}
-		if (player == NeutralHostilePlayer && bw::get_game_kind() == GameKind_Uprising) {
+		if (player == NeutralHostilePlayer && bw::get_game_kind() == GameKind::Uprising) {
 			return true;
 		}
 
