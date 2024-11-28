@@ -14242,8 +14242,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 battlenet_play_sound(char unk1, u32 event_type, char unk2)
-	{
+	u32 battlenet_play_sound(char unk1, u32 event_type, char unk2) {
 		const u32 func_address = 0x004AD0B0;
 		__asm {
 			PUSHAD
@@ -14256,8 +14255,7 @@ namespace helper {
 		return 0;
 	}
 
-	Unit* remove_repulse_tile(Unit* unit)
-	{
+	Unit* remove_repulse_tile(Unit* unit) {
 		const u32 func_address = 0x004533D0;
 		static Unit* result;
 		__asm {
@@ -14270,13 +14268,12 @@ namespace helper {
 		return result;
 	}
 
-	u8 transform_unit_sprite(Unit* unit, u32 new_sprite_id)
-	{
+	u8 transform_unit_sprite(Unit* unit, u32 new_unit_id) { // Poorly-named! -Pr0nogo
 		const u32 func_address = 0x0049F860;
 		static u8 result;
 		__asm {
 			PUSHAD
-			PUSH new_sprite_id
+			PUSH new_unit_id
 			MOV EAX, unit
 			CALL func_address
 			MOV result, AL
@@ -14285,8 +14282,7 @@ namespace helper {
 		return result;
 	}
 
-	void remove_from_client_selection_3(Unit* unit)
-	{
+	void remove_from_client_selection_3(Unit* unit) {
 		const u32 func_address = 0x0049F7A0;
 		__asm {
 			PUSHAD
@@ -14296,8 +14292,7 @@ namespace helper {
 		}
 	}
 
-	void update_unit_order_finder(Unit* unit)
-	{
+	void update_unit_order_finder(Unit* unit) {
 		const u32 func_address = 0x0046A3A0;
 		__asm {
 			PUSHAD

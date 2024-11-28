@@ -138,7 +138,7 @@ namespace hooks {
 		switch (unit->id) {
 			case UnitId::TerranBlackjack: {
 				// Blackjack Wear and Tear: reduce movement speed based on missing health
-				if (unit->hitpoints < unit->get_max_hp_raw() / 2) {
+				if (unit_ext->values[ValueWearAndTear]) {
 					speed *= 0.66;
 				}
 			} break;

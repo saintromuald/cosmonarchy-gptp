@@ -812,6 +812,8 @@ namespace SpriteId
 		Sasyrvoleth						= 917,
 		ThroughTheLookingGlassCast		= 918,
 
+		TerranBlackjackDamaged			= 956,
+
 		// CORPSE \\
 			
 		Corpse_Aspirant				= 685,

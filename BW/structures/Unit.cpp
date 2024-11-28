@@ -1469,3 +1469,18 @@ void Unit::count_connected_larva() {
 	// Count existing larvas in g_larva_counter
 	helper::iterate_units_at_location_target_proc_larva_count(this, &coords);
 }
+
+u32 Unit::standard_sprite_id() {
+	if (this->id == UnitId::TerranBlackjack) {
+		UnitExt& unit_ext = this->ext();
+		if (unit_ext.values[ValueWearAndTear]) {
+			return SpriteId::TerranBlackjackDamaged;
+		} else {
+			return SpriteId::TerranBlackjack;
+		}
+	}
+
+	u32 flingy_id = units_dat::graphic[this->id];
+	u32 sprite_id = flingy_dat::sprite_id[flingy_id];
+	return sprite_id;
+}

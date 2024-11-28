@@ -126,6 +126,9 @@ void unit_on_death_behaviors(Unit* unit) {
 		} break;
 		case UnitId::TerranLobotomyMine: {
 			for (Unit* victim : g_unit_search.radial(unit->position, 2 * 32)) {
+				if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false)) {
+					continue;
+				}
 				UnitExt* victim_ext = get_unit_ext(victim);
 				if (victim_ext->timers[TimerLobotomySlow] < 3 * 24 + 1) {
 					victim_ext->timers[TimerLobotomySlow] = 3 * 24 + 1;

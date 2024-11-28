@@ -11,8 +11,7 @@ bool unit_is_owned_by_current_player_new(Unit* unit) {
 	return unit->player == active_player_selection->unit[0]->player;
 }
 
-namespace hooks
-{
+namespace hooks {
 	static s32 compare_selection_unit(const void* a, const void* b) {
 		Unit* ua = *(Unit**)a;
 		Unit* ub = *(Unit**)b;

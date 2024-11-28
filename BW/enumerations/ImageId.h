@@ -1288,6 +1288,8 @@ namespace ImageId {
 		AlmaksaliskMutate							= 1928,
 		CikraliskMutate								= 1929,
 
+		BlackjackDamaged							= 1948,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

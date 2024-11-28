@@ -302,11 +302,16 @@ void transform_unit_main(Unit* unit, u32 unit_id) { // 0049F170
 	}
 	unit->status = unit->status & ~UnitStatus::Frozen;
 
-	u32 new_hp = (hp * units_dat::max_hitpoints[unit->id]) / 256;
+	// NOTE: When Zerg eggs and cocoons finish morphing, the unit they morph into gains proportional HP to the
+	//		 HP of the egg or cocoon, i.e. missing HP % on the predecessor will also be missing for the birthed
+	//		 unit, but only for a moment before their HP is correctly set in unit_morph.cpp. This is a lard bug
+	//		 and we could write code here to always set birthing Zerg units to full HP, but I do not believe it
+	//		 is actually necessary. -Pr0nogo
+	u32 new_hp = (hp / 256) * (units_dat::max_hitpoints[unit->id] / 256);
 	u32 max_hp = units_dat::max_hitpoints[unit->previous_unit_type] / 256;
 	u32 final_hp = 1;
 	if (max_hp) {
-		final_hp = (new_hp / max_hp) / 256;
+		final_hp = (new_hp / max_hp);
 	}
 	unit->hitpoints = final_hp * 256;
 	if (!unit->hitpoints) {

@@ -210,6 +210,7 @@ enum ExtValueId {
 	ValueIsShade,
 	ValuePlayingHatchSound,
 	ValueWorkerContext,
+	ValueWearAndTear,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

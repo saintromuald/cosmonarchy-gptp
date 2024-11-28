@@ -2184,8 +2184,7 @@ namespace hooks {
 								} break;
 								case UnitId::TerranAnticthon: {
 									if (current_button->icon_id == IconId::RilirokorToxicSpores // Counter-Proposal
-									||	current_button->icon_id == IconId::ApialSensors			// Multi-Attack V
-									||	current_button->icon_id == IconId::Reclamation) {		// Reclamation
+									||	current_button->icon_id == IconId::ApialSensors) {		// Multi-Attack V
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
@@ -2341,7 +2340,8 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::ProtossHierophant: {
+								case UnitId::ProtossHierophant:
+								case UnitId::ProtossEpigraph: {
 									if (current_button->icon_id == IconId::PhotonCannonWeapon			// Signify: Cowardice
 									||  current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Signify: Malice
 									||  current_button->icon_id == IconId::ProtossGroundWeapons) {		// Ascension

@@ -9,10 +9,8 @@
 #define FALSE 0
 #endif
 
-namespace hooks
-{
-	void orders_reaver_attack(Unit* unit) // 00465690
-	{
+namespace hooks {
+	void orders_reaver_attack(Unit* unit) { // 00465690
 		Unit* target = unit->order_target.unit;
 		if (!target) {
 			if (unit->order_queue_head) {
@@ -53,8 +51,7 @@ namespace hooks
 		}
 	}
 
-	void orders_carrier_attack(Unit* unit) // 00465950
-	{
+	void orders_carrier_attack(Unit* unit) { // 00465950
 		Unit* target = unit->order_target.unit;
 		if (!target) {
 			unit->order_to_idle();
