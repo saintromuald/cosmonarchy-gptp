@@ -89,7 +89,7 @@ namespace hooks
     // Hooked because the helper is fucked - Pr0nogo
     b32 get_active_tile_flag(s16 y, s16 x, s32 included_flags, s32 excluded_flags) { // 00472F80
         ActiveTile* tile = bw::get_active_tile_at_coords(x, y);
-        return tile->vision_flags & included_flags && !(tile->vision_flags & excluded_flags);
+        return tile->flags & included_flags && !(tile->flags & excluded_flags);
     }
 
     // Hooked to investigate crashes - Pr0nogo

@@ -154,7 +154,7 @@ namespace hooks
 				}
 
 				bool buildable = false;
-				if (!check_creep && tile->visibility_flags & human_only_player_bit || !(tile->vision_flags & flags) || tile->vision_flags < 0)
+				if (!check_creep && tile->visibility_flags & human_only_player_bit || !(tile->flags & flags) || tile->flags < 0)
 				{
 					buildable = true;
 				}

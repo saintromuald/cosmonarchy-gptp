@@ -5,6 +5,7 @@
 #include "threshold.h"
 #include "hooks/game_hooks.h"
 #include "trigger_system/trigger_system.h"
+#include "Game.h"
 
 u32 get_racial_townhall(u32 race_id) {
 	// TODO: Add support for custom races. -Pr0nogo
@@ -359,6 +360,16 @@ namespace hooks {
 			return 0;
 		}
 
+		if (!(flags & ChkUnitFlags_Cloaked) && chkunit->player == NeutralPlayer) {
+			if (chkunit->unit_id == UnitId::TerranSupplyDepot) {
+                g_game->m_collision_set_tiles.emplace_back(chkunit->x / 32, chkunit->y / 32);
+                return 0;
+			}
+			if (chkunit->unit_id == UnitId::TerranSpiderMine) {
+                g_game->m_collision_fill_tiles.emplace_back(chkunit->x / 32, chkunit->y / 32);
+                return 0;
+			}
+		}
 		g_chk_cache.push_back(*chkunit);
 		// Requires changes to player select so they actually spawn units
 		//if (flags & ChkUnitFlags_Lifted) {
@@ -366,24 +377,24 @@ namespace hooks {
 		//		return 0;
 		//	}
 		//}
-		if (!(flags & ChkUnitFlags_Cloaked) && chkunit->unit_id != UnitId::TownCenterMarker) {
-			chkunit->state_flags &= ~ChkUnitFlags_Cloaked;
-			chkunit->state_flags &= ~ChkUnitFlags_Burrowed;
-			chkunit->state_flags &= ~ChkUnitFlags_Lifted;
-			chkunit->state_flags &= ~ChkUnitFlags_Hallucinated;
-			chkunit->state_flags &= ~ChkUnitFlags_Invincible;
-			chkunit->hp = 100;
-			chkunit->shields = 100;
-			chkunit->energy = 100;
-			Unit* unit = create_unit_xy(chkunit->player, chkunit->unit_id, chkunit->x, chkunit->y, false);
-			if (unit) {
-				helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
-				unit->remove_timer = 0;
-				hooks::init_unit(unit);
-			}
-			return unit;
+		if (flags & ChkUnitFlags_Cloaked || chkunit->unit_id == UnitId::TownCenterMarker) {
+			return 0;
 		}
-		return 0;
+        chkunit->state_flags &= ~ChkUnitFlags_Cloaked;
+        chkunit->state_flags &= ~ChkUnitFlags_Burrowed;
+        chkunit->state_flags &= ~ChkUnitFlags_Lifted;
+        chkunit->state_flags &= ~ChkUnitFlags_Hallucinated;
+        chkunit->state_flags &= ~ChkUnitFlags_Invincible;
+        chkunit->hp = 100;
+        chkunit->shields = 100;
+        chkunit->energy = 100;
+        Unit* unit = create_unit_xy(chkunit->player, chkunit->unit_id, chkunit->x, chkunit->y, false);
+        if (unit) {
+            helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
+            unit->remove_timer = 0;
+            hooks::init_unit(unit);
+        }
+        return unit;
 	}
 
 	u32 create_initial_team_melee_units(s32 player) { // 0049D8E0

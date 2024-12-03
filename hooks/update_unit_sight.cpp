@@ -30,7 +30,7 @@ namespace hooks {
 
 			if (tileX + sighted_tile->w < g_map_tile_size->width && tileY + sighted_tile->h < g_map_tile_size->height) {
 				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-				sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
+				sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
 			}
 
 			++sighted_tile;
@@ -53,7 +53,7 @@ namespace hooks {
 						&& bw::tile_is_equal_or_lower(tmpHeight, rel_tile_pos)
 						&& (!(g_height_table[rel_tile_pos] == g_height_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000))) {
 						refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-						sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
+						sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
 						break;
 					}
 				}
@@ -71,7 +71,7 @@ namespace hooks {
 
 		while (revealed_count) {
 			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-			sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
+			sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
 			++sighted_tile;
 			--revealed_count;
 		}
@@ -91,7 +91,7 @@ namespace hooks {
 				&& (!(g_height_table[rel_tile_pos] == g_height_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000)))
 				{
 					refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-					sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
+					sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
 					break;
 				}
 			}
@@ -109,7 +109,7 @@ namespace hooks {
 		while (revealed_count) {
 			if (tileX + sighted_tile->w < g_map_tile_size->width && tileY + sighted_tile->h < g_map_tile_size->height) {
 				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-				sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
+				sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
 			}
 
 			++sighted_tile;
@@ -121,7 +121,7 @@ namespace hooks {
 		while (masked_count) {
 			if (tileX + sighted_tile->w < g_map_tile_size->width && tileY + sighted_tile->h < g_map_tile_size->height) {
 				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-				curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
+				curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
 			}
 
 			++sighted_tile;
@@ -136,7 +136,7 @@ namespace hooks {
 
 		while (revealed_count) {
 			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-			sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
+			sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
 			++sighted_tile;
 			--revealed_count;
 		}
@@ -145,7 +145,7 @@ namespace hooks {
 
 		while (masked_count) {
 			refresh_vision_timers(g_map_tile_size->width * (tileY + sighted_tile->h) + tileX + sighted_tile->w, relFlags, 10);
-			curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
+			curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
 			++sighted_tile;
 			--masked_count;
 		}
@@ -159,7 +159,7 @@ namespace hooks {
 		while (revealed_count) {
 			if (tileX + sighted_tile->w < g_map_tile_size->width && tileY + sighted_tile->h < g_map_tile_size->height) {
 				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 18);
-				sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
+				sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
 			}
 
 			++sighted_tile;
@@ -174,7 +174,7 @@ namespace hooks {
 
 		while (revealed_count) {
 			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 18);
-			sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].vision_flags &= newVisionFlags;
+			sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
 			++sighted_tile;
 			--revealed_count;
 		}

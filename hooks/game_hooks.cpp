@@ -53,7 +53,7 @@
 #include "GameModes/Embraced.h"
 #include "GameModes/TheTurning.h"
 #include "aise_signal.h"
-#include "game.h"
+#include "Game.h"
 #include "trigger_system/trigger_sound.h"
 
 #include <random>
@@ -89,13 +89,13 @@ namespace hooks {
 
 	void ui_button_click(BinDlg* dialog) {
 		if (dialog->parent && dialog->parent->text && strcmp(dialog->parent->text, "StatBtn") == 0) {
-			g_game->quick_casting.timeout          = 5;
-			g_game->quick_casting.building_timeout = 5;
+			g_game->m_quick_casting.timeout          = 5;
+			g_game->m_quick_casting.building_timeout = 5;
 		}
 	}
 
 	static bool process_quickcasting() {
-		if (g_config.quick_casting && g_is_targeting && !g_game->quick_casting.timeout) {
+		if (g_config.quick_casting && g_is_targeting && !g_game->m_quick_casting.timeout) {
 			if (PtInRect(g_minimap_rect, *(POINT*)g_mouse)) {
 				u16 x = g_mouse->x;
 				u16 y = g_mouse->y;
@@ -116,7 +116,7 @@ namespace hooks {
 	}
 
 	static bool process_quickbuilding() {
-		if (g_config.quick_building && g_is_placing_building && !g_game->quick_casting.building_timeout) {
+		if (g_config.quick_building && g_is_placing_building && !g_game->m_quick_casting.building_timeout) {
 			bool not_held = true;
 			for (char c = 'A'; c <= 'Z'; ++c) {
 				if (g_is_keycode_used[c]) {
@@ -144,7 +144,7 @@ namespace hooks {
 	}
 
 	int transport_ui_click() {
-		helper::cmdact_unload(g_game->transport_ui_unit);
+		helper::cmdact_unload(g_game->m_transport_ui_unit);
 		return 0;
 	}
 
@@ -177,11 +177,11 @@ namespace hooks {
 		g_input_procs->funcs[18] = 0;
 
 		if (g_game && process_quickcasting()) {
-			g_game->quick_casting.signal = true;
-			g_game->quick_casting.command_card = *g_buttonset_special_buttonset_id;
+			g_game->m_quick_casting.signal = true;
+			g_game->m_quick_casting.command_card = *g_buttonset_special_buttonset_id;
 		}
 
-		if (g_game && g_game->transport_ui_unit) {
+		if (g_game && g_game->m_transport_ui_unit) {
 			*left_click_proc  = (InputProcsFunc*)transport_ui_click;
 			*right_click_proc = (InputProcsFunc*)nop_click;
 		} else if (g_is_placing_building) {
@@ -292,8 +292,8 @@ namespace hooks {
 		Point16 start_pos = {179, 346};
 		Point16 pos = start_pos;
 
-		if (g_game->transport_ui_unit) {
-			g_game->transport_ui_unit = nullptr;
+		if (g_game->m_transport_ui_unit) {
+			g_game->m_transport_ui_unit = nullptr;
 			helper::set_ingame_input_procs();
 		}
 
@@ -384,8 +384,8 @@ namespace hooks {
 				}
 
 				g_graphics.draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
-				if (hover && !g_game->transport_ui_unit) {
-					g_game->transport_ui_unit = cargo_slot.unit;
+				if (hover && !g_game->m_transport_ui_unit) {
+					g_game->m_transport_ui_unit = cargo_slot.unit;
 					helper::set_ingame_input_procs();
 				}
 
@@ -758,6 +758,7 @@ namespace hooks {
 			return true;
 		}
 
+		g_game->first_frame();
 		g_graphics.reset_all_graphics();
 
 		// Update extended features

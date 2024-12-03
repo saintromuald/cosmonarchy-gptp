@@ -9,6 +9,11 @@ struct Point8 {
 	s8 y;
 };
 
+struct TileCoord {
+	u8 x;
+	u8 y;
+};
+
 struct Point16 {
 	u16 x;
 	u16 y;
