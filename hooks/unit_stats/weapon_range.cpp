@@ -9,7 +9,12 @@ namespace hooks
 	// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
 	u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in tiles, unfortunately
 		UnitExt* unit_ext = get_unit_ext(unit);
-		u8 bonus_amount = 0;
+		u32 weapon_range = std::max(weapons_dat::max_range[unit->get_ground_weapon()], weapons_dat::max_range[unit->get_air_weapon()]);
+
+		s16 bonus_amount = 0;
+        if (bw::get_game_kind() == GameKind::DarkAges && weapon_range > 32) {
+			bonus_amount -= 1;
+		}
 
 		if (target) {
 			UnitExt* target_ext = get_unit_ext(target);
@@ -30,7 +35,7 @@ namespace hooks
 		bonus_amount += bw::get_cliff_advantage(unit, target, 0, true);
 
 		// Ignore bonus distance for melee units
-		if (weapons_dat::max_range[unit->get_ground_weapon()] <= 32 || unit_id_is_trap(unit->id)) {
+		if (weapon_range <= 32 || unit_id_is_trap(unit->id)) {
 			scale = 1;
 			bonus_amount = 0;
 		}
@@ -57,7 +62,11 @@ namespace hooks
 	// Note: Weapon ranges are measured in pixels.
 	u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cliff_advantage) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		u32 bonus_amount = 0;
+
+		s32 bonus_amount = 0;
+        if (bw::get_game_kind() == GameKind::DarkAges && weapons_dat::max_range[weapon_id] > 32) {
+			bonus_amount -= 32;
+		}
 
 		// Stellar Enforcement - Magister behavior
 		if (target && weapons_dat::max_range[weapon_id] > 32) {

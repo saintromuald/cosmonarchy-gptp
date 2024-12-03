@@ -926,7 +926,7 @@ static bool unit_has_tactical_ai(Unit* unit) {
 	if (g_player_table[unit->player].type == PlayerType::Computer) {
 		return true;
 	}
-	if (unit->player == NeutralHostilePlayer && bw::get_game_kind() == GameKind_Uprising) {
+	if (unit->player == NeutralHostilePlayer && bw::get_game_kind() == GameKind::Uprising) {
 		return true;
 	}
 	return false;

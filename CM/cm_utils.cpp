@@ -161,36 +161,38 @@ u32 get_bullet_damage(Bullet* bullet, u32 weapon_id) {
 
 const char* game_kind_to_string(GameKind game_kind) {
 	switch (game_kind) {
-		case GameKind_Competitive: {
+		case GameKind::Competitive: {
 			return "Competitive";
 		} break;
-		case GameKind_Debug:
-		case GameKind_DebugFog: {
+		case GameKind::Debug: {
 			return "Debug";
 		} break;
-		case GameKind_Scenario: {
+		case GameKind::Scenario: {
 			return "Scenario";
 		} break;
-		case GameKind_FactionWars: {
+		case GameKind::FactionWars: {
 			return "Faction Wars";
 		} break;
-		case GameKind_Massacre: {
+		case GameKind::Massacre: {
 			return "Massacre";
 		} break;
-		case GameKind_Omnipresence: {
+		case GameKind::Omnipresence: {
 			return "Omnipresence";
 		} break;
-		case GameKind_TheTurning: {
+		case GameKind::TheTurning: {
 			return "The Turning";
 		} break;
-		case GameKind_Uprising: {
+		case GameKind::Uprising: {
 			return "Uprising";
 		} break;
-		case GameKind_Duopoly: {
+		case GameKind::Duopoly: {
 			return "Duopoly";
 		} break;
-		case GameKind_Embraced: {
+		case GameKind::Embraced: {
 			return "Embraced";
+		} break;
+		case GameKind::DarkAges: {
+			return "Dark Ages";
 		} break;
 	}
 	return "Custom";
@@ -198,38 +200,42 @@ const char* game_kind_to_string(GameKind game_kind) {
 
 const char* game_kind_to_filename_string(GameKind game_kind) {
 	switch (game_kind) {
-		case GameKind_Competitive: {
+		case GameKind::Competitive: {
 			return "Competitive(1)";
 		} break;
-		case GameKind_Debug:
-		case GameKind_DebugFog: {
+		case GameKind::Debug: {
 			return "Debug(1)";
 		} break;
-		case GameKind_Scenario: {
+		case GameKind::Scenario: {
 			return "Scenario(1)";
 		} break;
-		case GameKind_FactionWars: {
+		case GameKind::FactionWars: {
 			return "Faction Wars(1)";
 		} break;
-		case GameKind_Massacre: {
+		case GameKind::Massacre: {
 			return "Massacre(1)";
 		} break;
-		case GameKind_Omnipresence: {
+		case GameKind::Omnipresence: {
 			return "Omnipresence(1)";
 		} break;
-		case GameKind_TheTurning: {
+		case GameKind::TheTurning: {
 			return "The Turning(1)";
 		} break;
-		case GameKind_Uprising: {
+		case GameKind::Uprising: {
 			return "Uprising(1)";
 		} break;
-		case GameKind_Duopoly: {
+		case GameKind::Duopoly: {
 			return "Duopoly(1)";
 		} break;
-		case GameKind_Embraced: {
+		case GameKind::Embraced: {
 			return "Embraced(1)";
 		} break;
+		case GameKind::DarkAges: {
+			return "Dark Ages(1)";
+		} break;
 	}
+	assert(false);
+	return "";
 }
 
 const char* race_to_string(RaceId::Enum race) {

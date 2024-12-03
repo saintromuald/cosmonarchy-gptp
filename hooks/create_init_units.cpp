@@ -38,8 +38,8 @@ namespace hooks {
 		u32 building_id = get_racial_townhall(race_id);
 		GameKind game_kind = bw::get_game_kind();
 		bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
-		bool is_omnipresence = game_kind == GameKind_Omnipresence;
-		bool is_duopoly = game_kind == GameKind_Duopoly;
+		bool is_omnipresence = game_kind == GameKind::Omnipresence;
+		bool is_duopoly = game_kind == GameKind::Duopoly;
 
 		if (!is_computer_player && (is_omnipresence || is_duopoly)) {
 			building_id = UnitId::Omnivale;
@@ -189,8 +189,8 @@ namespace hooks {
 				if (starting_units == 1 || starting_units == 2) {
 					GameKind game_kind = bw::get_game_kind();
 					bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
-					bool is_omnipresence = game_kind == GameKind_Omnipresence;
-					bool is_duopoly = game_kind == GameKind_Duopoly;
+					bool is_omnipresence = game_kind == GameKind::Omnipresence;
+					bool is_duopoly = game_kind == GameKind::Duopoly;
 					u32 worker_id = get_racial_worker(*race_id_offset);
 					u8 townhall_id = get_racial_townhall(*race_id_offset);
 					if (!is_computer_player && (is_omnipresence || is_duopoly)) {

@@ -114,7 +114,7 @@ void update_ext_variables() {
 			thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
 		}
 
-		if (bw::get_game_kind() == GameKind_TheTurning && thingy_ext->activity_timer >= 24) {
+		if (bw::get_game_kind() == GameKind::TheTurning && thingy_ext->activity_timer >= 24) {
 			if (!(units_dat::base_property[thingy_ext->unit_id] & UnitProperty::Building)) {
 				reclaim_corpse(thingy, NeutralHostilePlayer);
 			}

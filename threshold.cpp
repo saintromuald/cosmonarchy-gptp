@@ -629,7 +629,7 @@ InitPositions sources_positions;
 InitPositions rally_positions;
 
 bool init_threshold_spawn(CHKUnit* unit, u32 flags) {
-	if (unit->player != 11 || bw::get_game_kind() != GameKind_Scenario) {
+	if (unit->player != 11 || bw::get_game_kind() != GameKind::Scenario) {
 		return false;
 	}
 

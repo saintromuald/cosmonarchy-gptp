@@ -35,7 +35,7 @@ BuildingModifier get_building_modifier(Unit* unit, const ProgressBuildOptions& o
 			const auto& cm_player = g_globals->players[unit->player];
 			modifier.factor *= cm_player.build_multiplier;
 		}
-		if (bw::get_game_kind() == GameKind_Debug) {
+		if (bw::get_game_kind() == GameKind::Debug) {
 			modifier.factor *= 32;
 		}
 

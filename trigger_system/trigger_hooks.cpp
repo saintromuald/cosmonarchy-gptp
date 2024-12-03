@@ -203,7 +203,7 @@ void game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) { // 004
 	helper::set_callback_timer(*g_portrait, 4, time, 0x0045E610);
 	GameKind game_kind = bw::get_game_kind();
 	u32 portrait_id = units_dat::portrait_id[unit_id];
-	if (game_kind == GameKind_Scenario || game_kind == GameKind_FactionWars) {
+	if (game_kind == GameKind::Scenario || game_kind == GameKind::FactionWars) {
 		portrait_id = helper::get_unit_portrait_override(unit_id);
 	}
 	helper::display_update_portrait(portrait_id, 0, 2);

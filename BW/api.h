@@ -52,23 +52,22 @@ enum InterceptType {
 	InterceptType_Count,
 };
 
-enum GameKind {
-	GameKind_Invalid,
+enum class GameKind {
+	Invalid,
 
-	GameKind_Competitive,
-	GameKind_Scenario,
-	GameKind_Omnipresence,
-	GameKind_FactionWars,
-	GameKind_Massacre,
-	GameKind_TheTurning,
-	GameKind_Uprising,
-	GameKind_Duopoly,
-	GameKind_Embraced,
-	GameKind_Debug,
+	Competitive,
+	Scenario,
+	Omnipresence,
+	FactionWars,
+	Massacre,
+	TheTurning,
+	Uprising,
+	Duopoly,
+	Embraced,
+	DarkAges,
 
-	GameKind_DebugFog,
-
-	GameKind_Count,
+	Debug,
+	Count,
 };
 
 #define AssertSprite(sprite) __assert_sprite(sprite, __FUNCTION__, __FILE__, __LINE__)
@@ -789,7 +788,6 @@ bool can_spawn_broodling(Unit* target);
 void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator = nullptr);
 u16 get_last_queue_slot_id(Unit* a1);
 s32 dir_saturate(s32 direction, s32 value);
-bool can_use_cliff_advantage(Unit* unit, u8 weapon_id);
 s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus);
 void set_offset_to_parent_special_overlay(Image* image);
 bool is_slowed(Unit* unit);
@@ -985,5 +983,6 @@ std::string get_commit_hash();
 bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos);
 Point16 align_to_tile_grid(Point16 pos);
 u32 active_player_count();
+bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id);
 
-}
+} // namespace bw
