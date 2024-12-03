@@ -110,14 +110,13 @@ void load_config() {
 	load_field(yaml, "scroll-sensitivity", g_config.scroll_sensitivity);
 
 	// Audiovisuals
-	auto yaml_advisors = yaml["advisors"];
-	if (yaml_advisors) {
+	load_field(yaml, "celebrations-enabled", g_config.celebrations_enabled);
+	if (auto yaml_advisors = yaml["advisors"]) {
 		load_field(yaml_advisors, "common", g_config.common_advisors);
 		load_field(yaml_advisors, "terran", g_config.terran_advisors);
 		load_field(yaml_advisors, "protoss", g_config.protoss_advisors);
 		load_field(yaml_advisors, "zerg", g_config.zerg_advisors);
 	}
-	load_field(yaml_advisors, "celebrations-enabled", g_config.celebrations_enabled);
 
 	// Hotkeys
 	load_field(yaml, "quick-casting", g_config.quick_casting);
@@ -133,8 +132,7 @@ void load_config() {
 	load_field(yaml, "flip-attack-and-patrol", g_config.flip_attack_and_patrol);
 
 	// Player Color
-	auto yaml_colors = yaml["preferred-colors"];
-	if (yaml_colors) {
+	if (auto yaml_colors = yaml["preferred-colors"]) {
 		load_field(yaml_colors, "common", g_config.common_preferred_colors);
 		load_field(yaml_colors, "terran", g_config.terran_preferred_colors);
 		load_field(yaml_colors, "protoss", g_config.protoss_preferred_colors);
@@ -242,38 +240,41 @@ void save_config() {
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Audiovisuals");
-	std::stringstream available_advisors;
-	available_advisors << "Available Advisors are: ";
-	for (u32 i = 0; i < Advisor_Count; ++i) {
-		available_advisors << advisor_names[i];
-		if (i != Advisor_Count - 1) {
-			available_advisors << ", ";
-		}
-	}
-	yaml << YAML::Newline << YAML::Comment("Advisors will be randomized from the common list combined with the list of the race you are playing.");
-	yaml << YAML::Newline << YAML::Comment("You can use [] to make a list empty. e.g.\nterran:\n  []");
-	yaml << YAML::Newline << YAML::Comment("Which is probably what you will want to do, if you want to just use the same advisors for every race.");
-	yaml << YAML::Newline << YAML::Comment(available_advisors.str());
-	write_field(yaml, "advisors", YAML::BeginMap);
-	write_field(yaml, "common", g_config.common_advisors);
-	write_field(yaml, "terran", g_config.terran_advisors);
-	write_field(yaml, "protoss", g_config.protoss_advisors);
-	write_field(yaml, "zerg", g_config.zerg_advisors);
-	yaml << YAML::EndMap;
-	yaml << YAML::Newline << YAML::Newline;
 	write_field(yaml, "celebrations-enabled", g_config.celebrations_enabled);
+	{
+        std::stringstream available_advisors;
+        available_advisors << "Available Advisors are: ";
+        for (u32 i = 0; i < Advisor_Count; ++i) {
+            if (i > 0) {
+                available_advisors << ", ";
+            }
+            available_advisors << advisor_names[i];
+        }
+        yaml << YAML::Newline << YAML::Comment("Advisors will be randomized from the common list combined with the list of the race you are playing.");
+        yaml << YAML::Newline << YAML::Comment("You can use [] to make a list empty. e.g.\nterran:\n  []");
+        yaml << YAML::Newline << YAML::Comment("Which is probably what you will want to do, if you want to just use the same advisors for every race.");
+        yaml << YAML::Newline << YAML::Comment(available_advisors.str());
+        write_field(yaml, "advisors", YAML::BeginMap);
+        write_field(yaml, "common", g_config.common_advisors);
+        write_field(yaml, "terran", g_config.terran_advisors);
+        write_field(yaml, "protoss", g_config.protoss_advisors);
+        write_field(yaml, "zerg", g_config.zerg_advisors);
+        yaml << YAML::EndMap;
+	}
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Hotkeys");
 	write_field(yaml, "quick-casting", g_config.quick_casting);
 	write_field(yaml, "quick-building", g_config.quick_building);
-	write_field(yaml, "grid-hotkeys", YAML::BeginMap);
-	write_field(yaml, "enabled", g_config.grid_hotkeys);
-	write_field(yaml, "layout", YAML::BeginSeq);
-	for (const std::string& str : g_config.grid_layout) {
-		yaml << str;
+	{
+        write_field(yaml, "grid-hotkeys", YAML::BeginMap);
+        write_field(yaml, "enabled", g_config.grid_hotkeys);
+        write_field(yaml, "layout", YAML::BeginSeq);
+        for (const std::string& str : g_config.grid_layout) {
+            yaml << str;
+        }
+        yaml << YAML::EndSeq << YAML::EndMap;
 	}
-	yaml << YAML::EndSeq << YAML::EndMap;
 	yaml << YAML::Newline << YAML::Comment("Adds extra control groups at R, F, V, T, G, B. Must be used with grid hotkeys!");
 	write_field(yaml, "extended-control-groups", g_config.extended_control_groups);
 	write_field(yaml, "default-to-steal-hotkeys", g_config.default_to_steal_hotkeys);
@@ -282,16 +283,18 @@ void save_config() {
 	write_field(yaml, "flip-attack-and-patrol", g_config.flip_attack_and_patrol);
 	yaml << YAML::Newline << YAML::Newline;
 
-	yaml << YAML::Comment("Player Color");
-	yaml << YAML::Newline << YAML::Comment("");
-	yaml << YAML::Newline << YAML::Comment(make_valid_colors_string());
-	write_field(yaml, "preferred-colors", YAML::BeginMap);
-	write_field(yaml, "common", g_config.common_preferred_colors);
-	write_field(yaml, "terran", g_config.terran_preferred_colors);
-	write_field(yaml, "protoss", g_config.protoss_preferred_colors);
-	write_field(yaml, "zerg", g_config.zerg_preferred_colors);
-	write_field(yaml, "shuffle", g_config.shuffle_preferred_colors);
-	yaml << YAML::EndMap;
+    yaml << YAML::Comment("Player Color");
+	{
+        yaml << YAML::Newline << YAML::Comment("");
+        yaml << YAML::Newline << YAML::Comment(make_valid_colors_string());
+        write_field(yaml, "preferred-colors", YAML::BeginMap);
+        write_field(yaml, "common", g_config.common_preferred_colors);
+        write_field(yaml, "terran", g_config.terran_preferred_colors);
+        write_field(yaml, "protoss", g_config.protoss_preferred_colors);
+        write_field(yaml, "zerg", g_config.zerg_preferred_colors);
+        write_field(yaml, "shuffle", g_config.shuffle_preferred_colors);
+        yaml << YAML::EndMap;
+	}
 	yaml << YAML::Newline << YAML::Newline;
 
 	yaml << YAML::Comment("Debug");
