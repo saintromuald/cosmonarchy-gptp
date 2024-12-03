@@ -2660,9 +2660,8 @@ namespace hooks {
 		
 		// Incubation
 		if (unit_ext->timers[TimerIncubationArm] == 1) {
-			for (u32 i = 0; i < unit_ext->values[ValueIncubationCount]; ++i) {
-				bw::create_unit_from_ability(unit_ext->values[ValueIncubationUnitId], 1, unit_ext->values[ValueIncubationPlayer], unit->position);
-			}
+            bw::create_unit_from_ability(unit_ext->values[ValueIncubationUnitId], unit_ext->values[ValueIncubationCount],
+				unit_ext->values[ValueIncubationPlayer], unit->position);
 		}
 
 		// Disruption Field - clear status

@@ -193,6 +193,11 @@ void unit_on_death_behaviors(Unit* unit) {
 		unit_ext->values[ValueNoCorpse] = 1;
 	}
 
+    if (unit_ext->timers[TimerIncubationArm]) {
+        bw::create_unit_from_ability(unit_ext->values[ValueIncubationUnitId], unit_ext->values[ValueIncubationCount],
+            unit_ext->values[ValueIncubationPlayer], unit->position);
+    }
+
 	// These require the unit to be completed
 	if (unit->status & UnitStatus::Completed) {
 		switch (unit->id) {
