@@ -4037,6 +4037,7 @@ bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id) {
 			
 		case UnitId::ProtossArtisan:
 		case UnitId::ProtossWitness:
+		case UnitId::ProtossEnvoy:
 		case UnitId::ProtossDidact:
 		case UnitId::ProtossClarion:
 			return false;
