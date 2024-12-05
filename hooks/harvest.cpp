@@ -114,7 +114,7 @@ namespace hooks {
 			}
 
 			u8 resource_amount = harvest_resource_from(resource, is_mineral);
-			if (resource_amount <= g_globals->get_yield(YieldType::MineralDepleted)) {
+			if (resource->building.resource.resource_amount < 6) {
 				chunk_image_id += 1; // Use depleted resource image
 			}
 			if (resource_amount > 0) {
