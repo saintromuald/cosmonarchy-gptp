@@ -553,7 +553,7 @@ namespace hooks {
 				u32 max_range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit);
 				switch (weapon_id) {
 					case WeaponId::SkithrokorSkitteringSpores: {
-						timer = 9;
+						timer = 11;
 					} break;
 					case WeaponId::LakiziliskSubterraneanSpines: {
 						timer = 2 + ((max_range / 32) * 3);
