@@ -93,7 +93,7 @@ const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 
 	bonus_armor_pen -= armor_pen;
 
 	f32 min_range = weapons_dat::min_range[weapon_id] / 32.0;
-	f32 range = weapons_dat::max_range[weapon_id] / 32.0;
+	f32 range = hooks::get_base_weapon_range(weapon_id, unit->id) / 32.0;
 	if (weapon_id == WeaponId::OlympianTitansFist || weapon_id == WeaponId::PotentatePhaseSaber) {
 		range = 1;
 	}

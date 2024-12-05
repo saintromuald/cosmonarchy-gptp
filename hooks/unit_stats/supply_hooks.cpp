@@ -720,13 +720,13 @@ namespace hooks
 			if (dialog->index < 64) {
 				helper::set_font_handle((u32*)dialog->statRes.font_handle);
 				*g_print_xy_alignment = 0x21;
-				helper::get_color_handle(GameTextColor::Green);
+				helper::get_color_handle(TextColor::Green);
 				dialog_left += graphic_width + 2;
 			} else {
 				helper::set_font_handle((u32*)font_stat_res);
 				*g_print_xy_alignment = 0x44;
 				*g_font_spacing = 0;
-				helper::get_color_handle(GameTextColor::White);
+				helper::get_color_handle(TextColor::White);
 			}
 
 			*g_draw_text = { dialog->bounds.left, dialog->bounds.top, dialog->bounds.right, dialog->bounds.bottom };
@@ -752,7 +752,7 @@ namespace hooks
 					tFontGame_ImageData[305 + i_0] = g_player_in_game_colors[player * ColorSetSize + i_0 * 2];
 				} while (++i_0 < 4);
 			} else {
-				helper::get_color_handle(GameTextColor::Green);
+				helper::get_color_handle(TextColor::Green);
 			}
 
 			helper::bw_print_xy(dialog->text, dialog->bounds.left, dialog->bounds.top);

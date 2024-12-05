@@ -35,7 +35,7 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
 
     s16 bonus_amount = 0;
     if (bw::get_game_kind() == GameKind::DarkAges) {
-        bonus_amount -= 1;
+        bonus_amount -= bw::calculate_dark_ages_penalty(units_dat::seek_range[unit->id]);
     }
 
     if (target) {
@@ -80,6 +80,14 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     return final_range * scale + bonus_amount;
 };
 
+u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
+    u32 result = weapons_dat::max_range[weapon_id];
+    if (bw::get_game_kind() == GameKind::DarkAges && weapons_dat::max_range[weapon_id] > 32 && !unit_id_is_trap(unit_id)) {
+        result -= bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0f) * 32;
+    }
+    return result;
+}
+
 // Returns the modified max distance for the weapon, which is assumed to be attached to the given unit.
 // This hook affects the behavior of Unit::get_max_weapon_range().
 // Note: Weapon ranges are measured in pixels.
@@ -88,7 +96,7 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
 
     s32 bonus_amount = 0;
     if (bw::get_game_kind() == GameKind::DarkAges) {
-        bonus_amount -= 32;
+        bonus_amount -= bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0f) * 32;
     }
 
     // Stellar Enforcement - Magister behavior

@@ -398,7 +398,7 @@ namespace hooks
 		if (!warningOnce00)
 		{
 			sprintf_s(buffer, "Invalid hash_struct_index!!\nhashStructIndex: %u", hashStructIndex);
-			bw::print(buffer, GameTextColor::Red);
+			bw::print(buffer, TextColor::Red);
 			warningOnce00 = true;
 		}
 		__asm {
@@ -425,7 +425,7 @@ namespace hooks
 		if (!warningOnce01)
 		{
 			sprintf_s(buffer, "Invalid PlayerFlag!\nplayer id: %u", active_nation_id);
-			bw::print(buffer, GameTextColor::Red);
+			bw::print(buffer, TextColor::Red);
 			warningOnce01 = true;
 		}
 
@@ -505,7 +505,7 @@ namespace hooks
 			if (g_hash_list[hash_struct_index].hash_type == 1) {
 				if (!warning_once_03_00) {
 					sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", g_local_nation_id);
-					bw::print(buffer, GameTextColor::Red);
+					bw::print(buffer, TextColor::Red);
 					snprintf(buffer, sizeof(buffer), "Critical frame: %u\nLocal Type: %u | Remote Type: %u\nLocal Hash: 0x%X | Remote Hash: 0x%X\nLocal nation id: %u | Active visions: %u | Explored visions: %u\nLast random number: %u\n\nUnmovable Hits:",
 						g_elapsed_time_frames,
 						g_hash_list[hash_struct_index].hash_type, hash_type,
@@ -571,7 +571,7 @@ namespace hooks
 					hash_type & 0x0F,
 					*(u16*)(data + 2),
 					g_elapsed_time_frames);
-				bw::print(buffer, GameTextColor::Yellow);
+				bw::print(buffer, TextColor::Yellow);
 				warning_once_03_01 = true;
 			}
 		}
@@ -579,7 +579,7 @@ namespace hooks
 		if (g_hash_list[hash_struct_index].hash_type != (hash_type & 0x0F) && warning_once_03_02) {
 			succeeded = false;
 			sprintf_s(buffer, "Invalid HashType!\hash_struct_index: %u\nHashType = %u", hash_struct_index, g_hash_list[hash_struct_index].hash_type);
-			bw::print(buffer, GameTextColor::Red);
+			bw::print(buffer, TextColor::Red);
 			warning_once_03_02 = true;
 		}
 		if (succeeded) {

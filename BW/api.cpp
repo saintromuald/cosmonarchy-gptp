@@ -19,6 +19,7 @@
 #include "hooks/rally_point.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "trigger_system/trigger_sound.h"
+#include "hooks/unit_stats/weapon_range.h"
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -140,11 +141,7 @@ Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player, s32 eleva
 	return thingy;
 }
 
-void print_string(std::string text, u32 color) {
-	print(text.c_str(), color);
-}
-
-void print(const char* text, u32 color) {
+void print(const char* text, TextColor color) {
 	const u32 Func_PrintText = 0x0048CD30;
 	if (!text) {
 		return;
@@ -173,7 +170,7 @@ void printf(const char* format, ...) {
 	print(buf);
 }
 
-void printf_color(const char* format, u32 color, ...) {
+void printf(TextColor color, const char* format, ...) {
 	char buf[256] = {};
 
 	va_list _ArgList;
@@ -3602,13 +3599,13 @@ void draw_weapon_range(Unit* unit, u8 weapon_id, u8 color) {
 	};
 
 	if (weapon_id != WeaponId::LobotomyMineExplosion) {
-		draw_shape(20, ((float) weapons_dat::max_range[weapon_id]) / 256.0F, offset, color);
+		draw_shape(20, hooks::get_max_weapon_range(unit, weapon_id, nullptr, true) / 256.0f, offset, color);
 
 		if (weapons_dat::min_range[weapon_id]) {
-			draw_shape(20, ((float) weapons_dat::min_range[weapon_id]) / 256.0F, offset, 71);
+			draw_shape(20,  weapons_dat::min_range[weapon_id] / 256.0f, offset, 71);
 		}
 	} else {
-		draw_shape(20, ((float) (units_dat::seek_range[unit->id] << 5)) / 256.0F, offset, color);
+		draw_shape(20, units_dat::seek_range[unit->id] * 32 / 256.0f, offset, color);
 	}
 }
 
@@ -4059,6 +4056,10 @@ bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id) {
 			return true;
 	}
 	return units_dat::base_property[unit_id] & UnitProperty::Flyer;
+}
+
+f32 calculate_dark_ages_penalty(f32 range) {
+    return range - round(range * 0.8 / 2) * 2;
 }
 
 } // namespace bw

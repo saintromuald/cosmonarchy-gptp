@@ -804,7 +804,7 @@ namespace helper {
 	//// uifeatures
 
 	s32 bwfxn_print_xy(const char* text, s32 x, s32 y);
-	void get_color_handle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
+	void get_color_handle(TextColor color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
 	void set_font_handle(u32* font);																				// 0041FB30
 
 	// For targeted_order

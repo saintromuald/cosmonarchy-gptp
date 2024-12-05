@@ -73,6 +73,17 @@ enum class GameKind {
 #define AssertSprite(sprite) __assert_sprite(sprite, __FUNCTION__, __FILE__, __LINE__)
 bool __assert_sprite(Sprite* sprite, const char* function, const char* file, u64 line);
 
+template <>
+struct std::formatter<TextColor> {
+	constexpr std::format_parse_context::iterator parse(std::format_parse_context& ctx) const {
+		return ctx.end();
+	}
+
+	std::format_context::iterator format(TextColor c, std::format_context& ctx) const {
+		return std::format_to(ctx.out(), "{}", static_cast<char>(c));
+	}
+};
+
 namespace bw {
 
 s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed = false);
@@ -227,12 +238,16 @@ Vec32f rotate_point(Vec32f anchor, Vec32f point, f64 angle_degrees);
 //////////////////////////////////////////////////////////////// @{
 
 /// Prints text to the screen, optionally using the given text color.
-void print_string(std::string text, u32 color = GameTextColor::White);
-void print(const char* text, u32 color = GameTextColor::White);
+void print(const char* text, TextColor color = TextColor::White);
 void printf(const char* format, ...);
-void printf_color(const char* format, u32 color, ...);
+void printf(TextColor color, const char* format, ...);
 
 void printf_console(const char* fmt, ...);
+
+template <typename... Args>
+void println(std::format_string<Args...> fmt, Args&&... args) {
+	print(std::format(fmt, std::forward<Args>(args)...).c_str());
+}
 
 /// Displays an error message and plays a new_sound for the player.
 ///
@@ -984,5 +999,6 @@ bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos);
 Point16 align_to_tile_grid(Point16 pos);
 u32 active_player_count();
 bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id);
+f32 calculate_dark_ages_penalty(f32 range);
 
 } // namespace bw

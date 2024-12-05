@@ -17,7 +17,7 @@ namespace hooks
 		}
 		u32 sight_range = units_dat::sight_range[unit->id];
 		if (bw::get_game_kind() == GameKind::DarkAges) {
-			sight_range -= 1;
+			sight_range -= bw::calculate_dark_ages_penalty(sight_range);
 		}
 		if (unit->status & UnitStatus::Burrowed && !unit_id_is_trap(unit->id)) {
 			sight_range /= 2;

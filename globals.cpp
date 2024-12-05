@@ -9,7 +9,7 @@
 #include "hooks/weapons/weapon_damage.h"
 
 void IquareGlobals::aise_save() {
-	bw::print("WARNING: Saving doesn't work properly in Cosmonarchy.\n\t\t\tAny plugin specific data will be lost.", GameTextColor::Yellow);
+	bw::print("WARNING: Saving doesn't work properly in Cosmonarchy.\n\t\t\tAny plugin specific data will be lost.", TextColor::Yellow);
 	return;
 }
 

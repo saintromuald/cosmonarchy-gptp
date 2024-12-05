@@ -39,7 +39,7 @@ void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool a
 }
 
 namespace hooks {
-	void draw_text(const char* text, u32 x, u32 y, u32 w, u32 h, char color) {
+	void draw_text(const char* text, u32 x, u32 y, u32 w, u32 h, TextColor color) {
 		helper::get_color_handle(color);
 		*printXYAlignment = 0x11;
 		drawTextBox->left = x;
@@ -49,7 +49,7 @@ namespace hooks {
 		helper::bwfxn_print_xy(text, x, y);
 	}
 
-	void draw_ui_text(const char* text, u8 color) {
+	void draw_ui_text(const char* text, TextColor color) {
 		draw_text(text, ui_text_pos.x, ui_text_pos.y, 300, ui_text_height * 4, color);
 		ui_text_pos.y = *printXYPosY;
 	}
@@ -111,7 +111,7 @@ namespace hooks {
 		if (g_config.show_timer) {
 			char buffer[48] = {};
 			format_time(buffer, 48, "", g_elapsed_time_frames / 24, false);
-			draw_ui_text(buffer, 7);
+			draw_ui_text(buffer, TextColor::Green);
 		}
 
 		bool is_replay_or_witness = g_is_in_replay || g_globals->players[g_local_nation_id].witness_mode;
@@ -119,7 +119,7 @@ namespace hooks {
 			char buffer[48] = {};
 			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
 			sprintf_s(buffer, "APM: %u", apm);
-			draw_ui_text(buffer, 7);
+			draw_ui_text(buffer, TextColor::Green);
 		}
 
 		for (const auto& [key, objective] : g_objectives) {
@@ -140,7 +140,7 @@ namespace hooks {
 					format_time(time, 256, "", objective.timer / 24, true);
 					appendf(&pos, &size, " (%s)", time);
 				}
-				draw_ui_text(buffer, 7);
+				draw_ui_text(buffer, TextColor::Green);
 			}
 		}
 	}

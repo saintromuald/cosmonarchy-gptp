@@ -6074,7 +6074,7 @@ namespace helper {
 		return result;
 	}
 
-	void get_color_handle(u8 color) {
+	void get_color_handle(TextColor color) {
 		const u32 func_address = 0x0041F610;
 		_asm {
 			PUSHAD
