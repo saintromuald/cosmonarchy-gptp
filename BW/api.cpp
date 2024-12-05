@@ -2409,6 +2409,7 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
 		case WeaponId::ZealotPhaseBlades:
 		case WeaponId::AmaranthPsiCleaver:
 		case WeaponId::GolemBloodlessAssault:
+		case WeaponId::IdolPrismaticBlaster:
 		case WeaponId::PariahIconoclastBlades:
 		case WeaponId::StarSovereignCelestialCannon:
 		case WeaponId::NathrokorNathrokClaws:

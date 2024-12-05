@@ -211,6 +211,7 @@ enum ExtValueId {
 	ValuePlayingHatchSound,
 	ValueWorkerContext,
 	ValueWearAndTear,
+	ValueIdolLaunchPos,
 	ValueStormDivider,
 
 	ValueAI_WorkerChosenForExpansion,

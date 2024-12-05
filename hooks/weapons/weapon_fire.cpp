@@ -674,6 +674,13 @@ namespace hooks {
 						s32 scatter = -15 + index * 5;
 						fire_sideways(unit, weapon_id, angle, scatter);
 					} break;
+					case WeaponId::MatrixKhaydarinRay: {
+						fire_bullet(unit, weapon_id, weapon_target);
+						Unit* target = unit->order_target.unit;
+						if (target && unit->player != target->player && !bw::is_allied_to(unit->player, target->player)) {
+							bw::astral_blessing_proc(unit, unit->player, weapon_id);
+						}
+					} break;
 					case WeaponId::TosgriliskExplosiveSpores:
 					case WeaponId::IzirokorEnergizedBioplasma:
 					case WeaponId::KonviliskSowingSpines: {
@@ -694,13 +701,6 @@ namespace hooks {
                             .center_on_target = false,
                             .center_on_target_range_overwrite = 0,
                         });
-					} break;
-					case WeaponId::MatrixKhaydarinRay: {
-						fire_bullet(unit, weapon_id, weapon_target);
-						Unit* target = unit->order_target.unit;
-						if (target && unit->player != target->player && !bw::is_allied_to(unit->player, target->player)) {
-							bw::astral_blessing_proc(unit, unit->player, weapon_id);
-						}
 					} break;
 					case WeaponId::SkortrithColonySkortraTendril: {
 						fire_bullet(unit, weapon_id, unit->order_target);
