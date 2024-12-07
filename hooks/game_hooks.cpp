@@ -430,13 +430,19 @@ namespace hooks {
 						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranShamanVisionaryMode: {
-						g_graphics.draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 6 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranAncile: {
 						g_graphics.draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranAzazel: {
 						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ProtossBarghest: {
+						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ProtossManifold: {
+						g_graphics.draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::ProtossClarion: {
 						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
@@ -2337,7 +2343,7 @@ namespace hooks {
 			case UnitId::ProtossManifold: {
 				if (unit_ext->timers[TimerManifoldConcurringChorus] > 1) {
 					if (unit->status & UnitStatus::Completed) {
-						for (Unit* target : g_unit_search.radial_ex(unit, 2 * 32, FilterAlly)) {
+						for (Unit* target : g_unit_search.radial_ex(unit, 3 * 32, FilterAlly)) {
 							UnitExt* target_ext = get_unit_ext(target);
 							if (!(target->status & UnitStatus::Completed) || !target->has_weapon()) {
 								continue;
@@ -3317,14 +3323,14 @@ namespace hooks {
 					case UnitId::TerranHarakan:
 					case UnitId::ProtossArtisan:
 					case UnitId::ProtossSimulacrum:
-					case UnitId::ZergEgg: {
+					case UnitId::ZergEgg:
+					case UnitId::ZergQuazilisk: {
 						image_id = ImageId::SantaHatSmall17;
 						if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
 							image_id -= 4;
 						}
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 6;
 					} break;
-					case UnitId::ZergQuazilisk:
 					case UnitId::ZergHydralisk:
 					case UnitId::ZergKagralisk: {
 						image_id = ImageId::SantaHatSmall17;
