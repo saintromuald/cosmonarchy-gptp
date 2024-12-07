@@ -12,6 +12,23 @@ struct Point8 {
 struct TileCoord {
 	u8 x;
 	u8 y;
+
+	bool operator==(const TileCoord&) const = default;
+};
+
+template <typename T>
+void hash_combine(size_t& hash, const T& data) {
+	hash = ((hash << 7) | (hash >> (sizeof(size_t) - 7))) ^ std::hash<T>{}(data);
+}
+
+template <>
+struct std::hash<TileCoord> {
+	size_t operator()(TileCoord tile) const {
+		size_t hash = 0;
+		hash_combine(hash, tile.x);
+		hash_combine(hash, tile.y);
+		return hash;
+	}
 };
 
 struct Point16 {

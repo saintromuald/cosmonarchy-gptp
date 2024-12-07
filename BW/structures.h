@@ -875,8 +875,7 @@ C_ASSERT(sizeof(AiRegion) == 52);
 
 #define RegionAirOnly 0x1FFD
 
-struct Region
-{
+struct Region {
 	u16		accessibility_flags;	// 0x00
 	u16		group_index;			// 0x02
 	u16		tile_count;				// 0x04
@@ -894,6 +893,16 @@ struct Region
 	u32		field_24;				// 0x24
 	u32		field_28;				// 0x28
 	u16		local_data[10];			// 0x2C
+
+	bool remove_neighbour(u16 id) {
+		for (u32 i = 0; i < neighbor_count; i++) {
+			if (neighbors[i] == id) {
+				neighbors[i] = neighbors[--neighbor_count];
+				return true;
+			}
+		}
+		return false;
+	}
 };
 C_ASSERT(sizeof(Region) == 64);
 

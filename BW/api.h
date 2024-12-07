@@ -838,6 +838,10 @@ inline u32 get_region_id(Point16 position) {
 	return helper::get_region_id(position.x, position.y);
 }
 
+inline u32 get_region_id(TileCoord tile) {
+	return get_region_id(Point16(tile.x * 32 + 16, tile.y * 32 + 16));
+}
+
 inline AiRegion* get_ai_region(u32 player, u32 index) {
 	return &g_ai_region_captains[player][index];
 }
