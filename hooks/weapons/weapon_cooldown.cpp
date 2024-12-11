@@ -44,7 +44,7 @@ namespace hooks {
 
 	u32 get_modified_cooldown(Unit* base_unit, u32 cooldown_param, bool clamp) {
 		Unit* unit = base_unit;
-		if (base_unit->subunit->is_subunit()) {
+		if (base_unit->is_subunit()) {
 			unit = base_unit->subunit;
 		}
 		UnitExt& unit_ext = unit->ext();
