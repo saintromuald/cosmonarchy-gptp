@@ -12,11 +12,11 @@ public:
     static constexpr u32 DefaultSpawnTimer = 60 * 24;
     static constexpr u32 WaveTimer = 3 * 60 * 24;
 
-    void OnInit() override;
-    void OnTick() override;
-    void OnUnitTick(Unit* unit) override;
+    void on_init() override;
+    void on_tick() override;
+    void on_unit_tick(Unit* unit) override;
 
-    void OnUnitDeath(Unit* unit) override;
+    void on_unit_death(Unit* unit) override;
 
 private:
     Unit* Spawn();

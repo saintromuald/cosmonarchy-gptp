@@ -15,13 +15,13 @@ static f32 Map(f32 value, f32 in_min, f32 in_max, f32 out_min, f32 out_max) {
     return Lerp(InvLerp(value, in_min, in_max), out_min, out_max);
 }
 
-void TheTurningGameMode::OnInit() {
-    m_spawn_timer.Start(DefaultSpawnTimer);
-    m_wave_timer.Start(WaveTimer);
+void TheTurningGameMode::on_init() {
+    m_spawn_timer.start(DefaultSpawnTimer);
+    m_wave_timer.start(WaveTimer);
 }
 
-void TheTurningGameMode::OnTick() {
-    if (m_spawn_timer.HasElapsed()) {
+void TheTurningGameMode::on_tick() {
+    if (m_spawn_timer.elapsed()) {
         if (Unit* unit = Spawn()) {
             u32 cost = units_dat::mineral_cost[unit->id] + units_dat::vespene_cost[unit->id];
             if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg) {
@@ -35,12 +35,12 @@ void TheTurningGameMode::OnTick() {
             factor *= cost / 200.0; // factor spawn time relative to 200 combined cost (e.g. maverick at 50 is 50/200 = 0.25)
             factor /= bw::active_player_count(); // times the amount of players
 
-            m_spawn_timer.Start(DefaultSpawnTimer * factor);
+            m_spawn_timer.start(DefaultSpawnTimer * factor);
         }
     }
 
-    if (m_wave_timer.HasElapsed()) {
-        m_wave_timer.Start(WaveTimer);
+    if (m_wave_timer.elapsed()) {
+        m_wave_timer.start(WaveTimer);
 
         f32 fraction = Map(g_elapsed_time_frames, WaveTimer, 5 * WaveTimer, 0.1, 0.6);
         auto units = g_unit_search.all().owned_by(NeutralHostilePlayer).filter_by([](Unit* unit) {
@@ -55,7 +55,7 @@ void TheTurningGameMode::OnTick() {
     }
 }
 
-void TheTurningGameMode::OnUnitTick(Unit* unit) {
+void TheTurningGameMode::on_unit_tick(Unit* unit) {
     if (unit->player != NeutralHostilePlayer) {
         return;
     }
@@ -94,7 +94,7 @@ void TheTurningGameMode::OnUnitTick(Unit* unit) {
     }
 }
 
-void TheTurningGameMode::OnUnitDeath(Unit* unit) {
+void TheTurningGameMode::on_unit_death(Unit* unit) {
     if (unit->player == NeutralHostilePlayer) {
         return;
     }
@@ -128,7 +128,7 @@ Unit* TheTurningGameMode::Spawn() {
         return 0;
     }
 
-    std::optional<Point16> spawn_position = PickRandomSpawnPosition(unit_id);
+    std::optional<Point16> spawn_position = utils::pick_random_spawn_point(unit_id);
     if (!spawn_position) {
         return 0;
     }

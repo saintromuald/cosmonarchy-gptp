@@ -390,7 +390,7 @@ namespace hooks {
 		UnitExt* target_ext = get_unit_ext(data.target);
 
 		if (g_active_game_mode) {
-			g_active_game_mode->OnUnitDamageModifiers(data);
+			g_active_game_mode->on_unit_damage_modifiers(data);
 		}
 
 		// Allied invincibility frames (for e.g. Blissful Embrace)
@@ -467,7 +467,7 @@ namespace hooks {
 		bool should_update_speed = false;
 
 		if (g_active_game_mode) {
-			g_active_game_mode->OnUnitDamage(data);
+			g_active_game_mode->on_unit_damage(data);
 		}
 
 		// No attacker here
@@ -913,7 +913,7 @@ namespace hooks {
 		}
 
 		if (g_active_game_mode) {
-			g_active_game_mode->OnUnitDamageLifesteal(data, hp_factor, shields_factor);
+			g_active_game_mode->on_unit_damage_lifesteal(data, hp_factor, shields_factor);
 		}
 		if (hp_factor) {
 			data.attacker->heal_hp(damage_dealt * hp_factor, data.attacker);
@@ -940,7 +940,7 @@ namespace hooks {
 		// We exit early to not trigger multiple different fatal damage handling at once
 
 		if (g_active_game_mode) {
-			if (!g_active_game_mode->OnUnitDamageFatal(data)) {
+			if (!g_active_game_mode->on_unit_damage_fatal(data)) {
 				return false;
 			}
 		}

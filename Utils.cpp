@@ -1,29 +1,31 @@
 #include "Utils.h"
 #include "BW/api.h"
 
-void Timer::Start(u32 time) {
+void Timer::start(u32 time) {
     m_end_time = g_elapsed_time_frames + time + 1;
 }
 
-void Timer::Stop() {
+void Timer::stop() {
     m_end_time = 0;
 }
 
-bool Timer::HasStarted() const {
+bool Timer::started() const {
     return m_end_time;
 }
 
-bool Timer::IsRunning() const {
-    return HasStarted() && g_elapsed_time_frames < m_end_time;
+bool Timer::running() const {
+    return started() && g_elapsed_time_frames < m_end_time;
 }
 
-bool Timer::HasElapsed() const {
-    return HasStarted() && g_elapsed_time_frames >= m_end_time;
+bool Timer::elapsed() const {
+    return started() && g_elapsed_time_frames >= m_end_time;
 }
 
-std::optional<Point16> PickRandomSpawnPosition(UnitId::Enum unit_id, u32 samples) {
+namespace utils {
+
+std::optional<Point16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples) {
     const auto buildings = g_unit_search.all().not_neutral().filter(0, FilterBuilding);
-    return SampleBest(
+    return sample_best(
         [unit_id]() {
             Point16 position{
                 static_cast<u16>(bw::random_float() * g_map_width_pixels),
@@ -62,3 +64,4 @@ std::optional<Point16> PickRandomSpawnPosition(UnitId::Enum unit_id, u32 samples
     );
 }
 
+} // utils

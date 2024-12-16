@@ -52,8 +52,8 @@ private:
 
 class UprisingGameMode : public IGameMode {
 public:
-	void OnTick() override;
-	void OnUnitTick(Unit* unit) override;
+	void on_tick() override;
+	void on_unit_tick(Unit* unit) override;
 
 private:
 	Timer m_create_spawner_timer;

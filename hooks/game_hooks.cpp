@@ -678,7 +678,7 @@ namespace hooks {
 			} break;
 		}
 		if (g_active_game_mode) {
-			g_active_game_mode->OnInit();
+			g_active_game_mode->on_init();
 		}
 
 		if (!bw::in_replay_or_witness()) {
@@ -848,7 +848,7 @@ namespace hooks {
 		update_ext_variables();
 		update_threshold();
 		if (g_active_game_mode) {
-			g_active_game_mode->OnTick();
+			g_active_game_mode->on_tick();
 		}
 
 		bw::refresh_screen();
@@ -1043,7 +1043,7 @@ namespace hooks {
 		}
 
 		if (g_active_game_mode) {
-			g_active_game_mode->OnUnitInit(unit);
+			g_active_game_mode->on_unit_init(unit);
 		}
 	}
 
@@ -1103,7 +1103,7 @@ namespace hooks {
 		}
 
 		if (g_active_game_mode) {
-			g_active_game_mode->OnUnitTick(unit);
+			g_active_game_mode->on_unit_tick(unit);
 		}
 
 		/*

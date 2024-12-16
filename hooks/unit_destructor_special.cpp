@@ -309,7 +309,7 @@ void unit_destructor_special_cases(Unit* unit) {
 	unit->reset_supply_provided();
 
 	if (g_active_game_mode) {
-		g_active_game_mode->OnUnitDeath(unit);
+		g_active_game_mode->on_unit_death(unit);
 	}
 
 	// Cancel units that required an addon

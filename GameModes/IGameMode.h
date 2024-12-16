@@ -9,16 +9,16 @@ class IGameMode {
 public:
 	virtual ~IGameMode() {}
 
-	virtual void OnInit() {}
-	virtual void OnTick() {}
+	virtual void on_init() {}
+	virtual void on_tick() {}
 
-	virtual void OnUnitInit(Unit* unit) {}
-	virtual void OnUnitTick(Unit* unit) {}
-	virtual void OnUnitDamage(const hooks::WeaponDamageData& data) {}
-	virtual void OnUnitDamageModifiers(hooks::WeaponDamageData& data) {}
-	virtual void OnUnitDamageLifesteal(const hooks::WeaponDamageData& data, f32& hp_factor, f32& shields_factor) {}
-	virtual bool OnUnitDamageFatal(const hooks::WeaponDamageData& data) { return true; }
-	virtual void OnUnitDeath(Unit* unit) {}
+	virtual void on_unit_init(Unit* unit) {}
+	virtual void on_unit_tick(Unit* unit) {}
+	virtual void on_unit_damage(const hooks::WeaponDamageData& data) {}
+	virtual void on_unit_damage_modifiers(hooks::WeaponDamageData& data) {}
+	virtual void on_unit_damage_lifesteal(const hooks::WeaponDamageData& data, f32& hp_factor, f32& shields_factor) {}
+	virtual bool on_unit_damage_fatal(const hooks::WeaponDamageData& data) { return true; }
+	virtual void on_unit_death(Unit* unit) {}
 	// TODO: add more major hook callbacks, like stats e.g. OnUnitSpeedUpdate
 
 	// TODO: add bullet events

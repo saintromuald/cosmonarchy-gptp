@@ -3,12 +3,12 @@
 
 class Timer {
 public:
-    void Start(u32 time);
-    void Stop();
+    void start(u32 time);
+    void stop();
 
-    bool HasStarted() const;
-    bool IsRunning() const;
-    bool HasElapsed() const;
+    bool started() const;
+    bool running() const;
+    bool elapsed() const;
 
 private:
     u32 m_end_time = 0;
@@ -16,8 +16,10 @@ private:
 
 #define InvalidSample -1
 
+namespace utils {
+
 template <typename GenFunc, typename ScoreFunc>
-auto SampleBest(GenFunc&& gen_func, ScoreFunc&& score_func, u32 max_samples, u32 max_allowed_fails) -> std::optional<decltype(gen_func())> {
+std::optional<std::invoke_result_t<GenFunc>> sample_best(GenFunc&& gen_func, ScoreFunc&& score_func, u32 max_samples, u32 max_allowed_fails) {
     using Result = decltype(gen_func());
     using Score = decltype(score_func(std::declval<Result>()));
     std::optional<Result> result{};
@@ -40,5 +42,6 @@ auto SampleBest(GenFunc&& gen_func, ScoreFunc&& score_func, u32 max_samples, u32
     return result;
 }
 
-std::optional<Point16> PickRandomSpawnPosition(UnitId::Enum unit_id, u32 samples = 10);
+std::optional<Point16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples = 10);
 
+}; // utils

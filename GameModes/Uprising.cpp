@@ -42,7 +42,7 @@ static UnitId::Enum GetNextUnitToTrain(UprisingSpawner& spawner) {
     return UnitId::None;
 }
 
-void UprisingGameMode::OnTick() {
+void UprisingGameMode::on_tick() {
     for (auto& creator : m_creators) {
         creator.Tick(m_spawners);
     }
@@ -57,8 +57,8 @@ void UprisingGameMode::OnTick() {
             continue;
         }
 
-        if (spawner.spawn_timer.HasElapsed()) {
-            spawner.spawn_timer.Stop();
+        if (spawner.spawn_timer.elapsed()) {
+            spawner.spawn_timer.stop();
 
             if (spawner.spawn_id != UnitId::None) {
                 bool two_per_egg = units_dat::base_property[spawner.spawn_id] & UnitProperty::TwoUnitsIn1Egg;
@@ -72,11 +72,11 @@ void UprisingGameMode::OnTick() {
             }
         }
 
-        if (!spawner.spawn_timer.HasStarted()) {
+        if (!spawner.spawn_timer.started()) {
             UnitId::Enum unit_id = GetNextUnitToTrain(spawner);
             if (unit_id != UnitId::None) {
                 spawner.spawn_id = unit_id;
-                spawner.spawn_timer.Start(GetSpawnerTrainTime(unit_id));
+                spawner.spawn_timer.start(GetSpawnerTrainTime(unit_id));
             } else {
                 for (UnitRef ref : spawner.units_to_send) {
                     Unit* wave_unit = ref.get();
@@ -139,7 +139,7 @@ void UprisingGameMode::OnTick() {
     std::erase_if(m_waves, [](const auto& wave) { return wave.units.empty(); });
 }
 
-void UprisingGameMode::OnUnitTick(Unit* unit) {
+void UprisingGameMode::on_unit_tick(Unit* unit) {
     if (unit->player != NeutralHostilePlayer) {
         return;
     }
@@ -170,13 +170,13 @@ void UprisingGameMode::OnUnitTick(Unit* unit) {
 }
 
 void UprisingCreator::Tick(std::vector<UprisingSpawner>& spawners) {
-    if (m_timer.HasElapsed()) {
+    if (m_timer.elapsed()) {
         if (m_infos.empty()) {
             return; // They shouldn't be, but we don't wanna crash
         }
 
         const auto& info = bw::rand_one(m_infos);
-        const auto position = PickRandomSpawnPosition(info.unit_id, 100);
+        const auto position = utils::pick_random_spawn_point(info.unit_id, 100);
         if (!position) {
             return; // We don't want to restart the timer if spawn failed
         }
@@ -202,7 +202,7 @@ void UprisingCreator::Tick(std::vector<UprisingSpawner>& spawners) {
         bw::minimap_ping(unit->position.x, unit->position.y, 0);
         unit->play_iscript_animation(IscriptAnimation::IsWorking);
     }
-    if (!m_timer.IsRunning()) {
-        m_timer.Start(Map(g_elapsed_time_frames, 0, 40 * 60 * 24, m_default_timer, m_default_timer / 4, true) / bw::active_player_count());
+    if (!m_timer.running()) {
+        m_timer.start(Map(g_elapsed_time_frames, 0, 40 * 60 * 24, m_default_timer, m_default_timer / 4, true) / bw::active_player_count());
     }
 }
