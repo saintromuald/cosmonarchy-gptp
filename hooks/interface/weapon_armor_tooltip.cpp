@@ -415,6 +415,7 @@ namespace hooks {
 		add_status(statuses, "Awaiting Injection", -1, 1, unit_ext->timers[TimerStimpackDelay], TimerType::Gptp);
 		add_status(statuses, "Vengeance", -1, 1, unit_ext->timers[TimerAvenge], TimerType::Gptp);
 		add_status(statuses, "Ascension", -1, 1, unit_ext->timers[TimerAscend], TimerType::Gptp);
+		add_status(statuses, "Nanoshielded", -1, 1, unit_ext->timers[TimerClericHeal], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);

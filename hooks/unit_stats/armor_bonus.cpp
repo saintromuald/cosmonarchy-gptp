@@ -4,40 +4,37 @@
 #include <algorithm>
 #include <cmath>
 
-namespace hooks
-{
-	u8 get_armor_bonus(Unit* unit) // 00453FC0
-	{
-		UnitExt* unit_ext = get_unit_ext(unit);
+namespace hooks {
+	u8 get_armor_bonus(Unit* unit) { // 00453FC0
+		UnitExt& unit_ext = unit->ext();
 		s32 armor_modifier = bw::get_upgrade_level(unit->player, units_dat::armor_upgrade[unit->id]);
 		switch (unit->id) {
-			case UnitId::TerranMatadorCinderMode:
-			{
-				if (!unit_ext->values[ValueTriggerArmorBaseSet] || unit_ext->values[ValueTriggerArmorBaseAmount]) {
+			case UnitId::TerranMatadorCinderMode: {
+				if (!unit_ext.values[ValueTriggerArmorBaseSet] || unit_ext.values[ValueTriggerArmorBaseAmount]) {
 					armor_modifier += 2;
 				}
 			} break;
-			case UnitId::TerranPhalanxTankMode:
-			{
-				if (!unit_ext->values[ValueTriggerArmorBaseSet] || unit_ext->values[ValueTriggerArmorBaseAmount]) {
+			case UnitId::TerranPhalanxTankMode: {
+				if (!unit_ext.values[ValueTriggerArmorBaseSet] || unit_ext.values[ValueTriggerArmorBaseAmount]) {
 					armor_modifier += 4;
 				}
 			} break;
-			case UnitId::ProtossZealot:
-			{
+			case UnitId::ProtossZealot: {
 				if (unit->shields > 256) {
 					armor_modifier += 1;
 				}
 			} break;
 		}
-		if (unit_ext->values[ValueInfested]) {
+		if (unit_ext.values[ValueInfested]) {
+			armor_modifier += 1;
+		}
+		if (unit_ext.timers[TimerClericHeal]) {
 			armor_modifier += 1;
 		}
 		return armor_modifier;
 	}
 
-	s32 get_armor_internal(Unit* unit)
-	{
+	s32 get_armor_internal(Unit* unit) {
 		s32 armor = units_dat::armor_amount[unit->id] + get_armor_bonus(unit);
 		UnitExt* unit_ext = get_unit_ext(unit);
 

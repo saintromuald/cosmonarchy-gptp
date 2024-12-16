@@ -1767,9 +1767,9 @@ namespace hooks {
 					unit_ext->timers[TimerNaniteField] = 24;
 					bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
 
-					u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? 8 : 4;
+					u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? NaniteField::VisionaryRange : NaniteField::SupportRange;
 					for (Unit* target : g_unit_search.radial(unit->position, range * 32).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterNoBuilding)) {
-						nanite_field_proc(unit, 4, target);
+						nanite_field_proc(unit, NaniteField::HealAmount, target);
 					}
 				}
 			} break;
@@ -1788,7 +1788,7 @@ namespace hooks {
 							break;
 						}
 						has_cargo = true;
-						cargo->heal_hp(4 * 256, unit);
+						cargo->heal_hp(NaniteField::HealAmount * 256, unit);
 					}
 					if (has_cargo) {
 						bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));

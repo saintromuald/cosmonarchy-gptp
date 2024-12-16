@@ -32,10 +32,16 @@ constexpr s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;
 // TERRAN \\
 
 // Cleric
-constexpr s32 ClericHealValue = 96; // 9 HP per second
+namespace Cleric {
+inline constexpr s32 HealAmount = 96;  // 9 HP per second
+}
 
 // Shaman
-constexpr s32 ShamanHeal = 4;
+namespace NaniteField {
+inline constexpr s32 HealAmount = 4;
+inline constexpr s32 SupportRange = 4;
+inline constexpr s32 VisionaryRange = 6;
+}
 
 // Madcap
 constexpr s32 MadcapPassiveDecayTime = 0.5 * 24;
