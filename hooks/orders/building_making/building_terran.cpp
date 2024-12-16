@@ -595,11 +595,10 @@ namespace hooks {
 		}
 		*g_active_iscript_unit = active_unit;
 
-		bool is_silo = parent->id == UnitId::TerranAnvil;
-		if (is_silo) {
-			Unit* missile = parent->building.silo.nuke;
+		if (addon->id == UnitId::TerranAnvil) {
+			Unit* missile = addon->building.silo.nuke;
 			if (missile) {
-				helper::give_unit(missile, parent->player, 0);
+				helper::give_unit(missile, addon->player, 0);
 			}
 		}
 	}

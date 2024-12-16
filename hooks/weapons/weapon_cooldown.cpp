@@ -43,10 +43,7 @@ namespace hooks {
 	}
 
 	u32 get_modified_cooldown(Unit* base_unit, u32 cooldown_param, bool clamp) {
-		Unit* unit = base_unit;
-		if (base_unit->is_subunit()) {
-			unit = base_unit->subunit;
-		}
+		Unit* unit = base_unit->is_subunit() ? base_unit->subunit : base_unit;
 		UnitExt& unit_ext = unit->ext();
 		f32 cooldown = cooldown_param;
 
