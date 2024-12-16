@@ -23,7 +23,7 @@ struct UprisingSpawner {
 	Timer spawn_timer;
 	std::vector<UnitRef> units_to_send;
 
-	const UprisingWaveUnits& GetWave(u32 index) {
+	const UprisingWaveUnits& get_wave(u32 index) {
 		if (index < info->starting_waves.size()) {
 			return info->starting_waves[index];
 		}
@@ -42,7 +42,7 @@ public:
 	UprisingCreator(u32 default_timer, std::vector<UprisingSpawnerInfo> infos)
 		: m_default_timer{default_timer}, m_infos{std::move(infos)} {}
 
-	void Tick(std::vector<UprisingSpawner>& spawners);
+	void tick(std::vector<UprisingSpawner>& spawners);
 
 private:
 	u32 m_default_timer;

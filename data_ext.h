@@ -355,6 +355,7 @@ enum ExtTimerId {
 	TimerSkryspawn,
 	TimerWyvernWeaponCharge,
 	TimerConstructionSFXDelay,
+	TimerTurningAggressiveModeThrottle,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

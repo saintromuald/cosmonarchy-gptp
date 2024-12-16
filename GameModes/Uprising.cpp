@@ -12,7 +12,7 @@
 // spawned nearby, same for defenses. Also maybe we need to eventually add tiers to spawners
 // since some maybe shouldn't be available in early game.
 
-static u32 GetSpawnerTrainTime(UnitId::Enum unit_id) {
+static u32 get_spawner_train_time(UnitId::Enum unit_id) {
     u32 time = units_dat::time_cost[unit_id];
     switch (unit_id) {
         case UnitId::ZergRililisk:  time = 12 * 24; break;
@@ -21,10 +21,10 @@ static u32 GetSpawnerTrainTime(UnitId::Enum unit_id) {
     return Map(g_elapsed_time_frames, 0, 40 * 60 * 24, time * 2, time / 2, true);
 }
 
-static UnitId::Enum GetNextUnitToTrain(UprisingSpawner& spawner) {
+static UnitId::Enum get_next_unit_to_train(UprisingSpawner& spawner) {
     std::erase_if(spawner.units_to_send, [](UnitRef ref) { return !ref.get(); });
 
-    const auto& wave = spawner.GetWave(spawner.wave_index);
+    const auto& wave = spawner.get_wave(spawner.wave_index);
     for (const auto& [count_quota, unit_id] : wave) {
         u32 count = 0;
         for (UnitRef ref : spawner.units_to_send) {
@@ -44,7 +44,7 @@ static UnitId::Enum GetNextUnitToTrain(UprisingSpawner& spawner) {
 
 void UprisingGameMode::on_tick() {
     for (auto& creator : m_creators) {
-        creator.Tick(m_spawners);
+        creator.tick(m_spawners);
     }
 
     for (auto& spawner : m_spawners) {
@@ -73,10 +73,10 @@ void UprisingGameMode::on_tick() {
         }
 
         if (!spawner.spawn_timer.started()) {
-            UnitId::Enum unit_id = GetNextUnitToTrain(spawner);
+            UnitId::Enum unit_id = get_next_unit_to_train(spawner);
             if (unit_id != UnitId::None) {
                 spawner.spawn_id = unit_id;
-                spawner.spawn_timer.start(GetSpawnerTrainTime(unit_id));
+                spawner.spawn_timer.start(get_spawner_train_time(unit_id));
             } else {
                 for (UnitRef ref : spawner.units_to_send) {
                     Unit* wave_unit = ref.get();
@@ -169,7 +169,7 @@ void UprisingGameMode::on_unit_tick(Unit* unit) {
     }
 }
 
-void UprisingCreator::Tick(std::vector<UprisingSpawner>& spawners) {
+void UprisingCreator::tick(std::vector<UprisingSpawner>& spawners) {
     if (m_timer.elapsed()) {
         if (m_infos.empty()) {
             return; // They shouldn't be, but we don't wanna crash

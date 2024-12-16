@@ -19,7 +19,7 @@ public:
     void on_unit_death(Unit* unit) override;
 
 private:
-    Unit* Spawn();
+    Unit* spawn();
 
 private:
     u32 m_spawn_pool_size = 0;

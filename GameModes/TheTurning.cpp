@@ -22,7 +22,7 @@ void TheTurningGameMode::on_init() {
 
 void TheTurningGameMode::on_tick() {
     if (m_spawn_timer.elapsed()) {
-        if (Unit* unit = Spawn()) {
+        if (Unit* unit = spawn()) {
             u32 cost = units_dat::mineral_cost[unit->id] + units_dat::vespene_cost[unit->id];
             if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg) {
                 cost /= 2;
@@ -51,6 +51,7 @@ void TheTurningGameMode::on_tick() {
         for (Unit* unit : units) {
             UnitExt* unit_ext = get_unit_ext(unit);
             unit_ext->values[ValueTurningAggressiveMode] = true;
+            unit_ext->timers[TimerTurningAggressiveModeThrottle] = bw::rand_between(0, 3 * 24);
         }
     }
 }
@@ -61,37 +62,43 @@ void TheTurningGameMode::on_unit_tick(Unit* unit) {
     }
 
     UnitExt* unit_ext = get_unit_ext(unit);
+    Unit* order_target = unit->order_target.unit;
     if (unit_ext->values[ValueTurningAggressiveMode]) {
-        Unit* order_target = unit->order_target.unit;
         if (unit->main_order_id == OrderId::AttackUnit) {
             return;
         }
 
-        if (Unit* target = g_unit_search.all().not_neutral().filter().sort_by_distance(unit->position).first()) {
-            unit->order_to(OrderId::AttackUnit, target);
-        } else if (!unit_ext->timers[TimerTurningRoam]) {
+        if (!unit_ext->timers[TimerTurningAggressiveModeThrottle]) {
+            unit_ext->timers[TimerTurningAggressiveModeThrottle] = bw::rand_between(5 * 24, 8 * 24);
+            if (Unit* target = g_unit_search.all().not_neutral().filter().closest_to(unit->position)) {
+                unit->order_to(OrderId::AttackUnit, target);
+                return;
+            }
+        }
+        if (!unit_ext->timers[TimerTurningRoam]) {
             const auto target_pos = bw::random_polar_point(unit->position, 1 * 32);
             unit->order_to(OrderId::Move, target_pos);
             unit_ext->timers[TimerTurningRoam] = 6;
         }
-    } else {
-        Unit* order_target = unit->order_target.unit;
-        if (unit->main_order_id == OrderId::AttackUnit) {
-            if (!order_target || bw::distance_between(unit->position, order_target->position) > unit->get_sight_range() * 32) {
-                unit->order_to_idle();
-            } else {
-                return;
-            }
-        }
+        return;
+    }
 
-        if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter().sort_by_distance(unit->position).first()) {
-            unit->order_to(OrderId::AttackUnit, target);
-        } else if (!unit_ext->timers[TimerTurningRoam]) {
-            const auto target_pos = bw::random_polar_point(unit->position, 6 * 32);
-            unit->order_to(OrderId::Move, target_pos);
-            unit_ext->timers[TimerTurningRoam] = 6 * 24;
+    if (unit->main_order_id == OrderId::AttackUnit) {
+        if (!order_target || bw::distance_between(unit->position, order_target->position) > unit->get_sight_range() * 32) {
+            unit->order_to_idle();
+        } else {
+            return;
         }
     }
+
+    if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter().sort_by_distance(unit->position).first()) {
+        unit->order_to(OrderId::AttackUnit, target);
+    } else if (!unit_ext->timers[TimerTurningRoam]) {
+        const auto target_pos = bw::random_polar_point(unit->position, 6 * 32);
+        unit->order_to(OrderId::Move, target_pos);
+        unit_ext->timers[TimerTurningRoam] = 6 * 24;
+    }
+    
 }
 
 void TheTurningGameMode::on_unit_death(Unit* unit) {
@@ -113,7 +120,7 @@ void TheTurningGameMode::on_unit_death(Unit* unit) {
     }
 }
 
-Unit* TheTurningGameMode::Spawn() {
+Unit* TheTurningGameMode::spawn() {
     UnitId::Enum unit_id = UnitId::None;
     u32 rand = bw::rand_between(0, m_spawn_pool_size - 1);
     for (const auto& candidate : m_spawn_pool) {

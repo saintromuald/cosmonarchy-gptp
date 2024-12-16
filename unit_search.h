@@ -207,6 +207,20 @@ public:
         return nullptr;
     }
 
+    T* closest_to(Point16 pos) {
+        T* best = nullptr;
+        u32 best_distance = UINT_MAX;
+
+        for (T* elem : m_data) {
+            u32 distance = bw::distance_between(elem->position, pos);
+            if (distance < best_distance) {
+                best_distance = distance;
+                best = elem;
+            }
+        }
+        return best;
+    }
+
     auto take(this auto&& self, u32 count) {
         if (self.m_data.size() > count) {
             self.m_data.resize(count);
