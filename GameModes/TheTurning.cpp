@@ -102,7 +102,7 @@ void TheTurningGameMode::on_unit_tick(Unit* unit) {
 }
 
 void TheTurningGameMode::on_unit_death(Unit* unit) {
-    if (unit->player == NeutralHostilePlayer) {
+    if (unit->player == NeutralHostilePlayer || !(unit->status & UnitStatus::Completed)) {
         return;
     }
     const auto unit_id = static_cast<UnitId::Enum>(unit->id);
