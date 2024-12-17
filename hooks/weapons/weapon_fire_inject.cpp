@@ -396,7 +396,7 @@ namespace hooks
 	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
 		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
 		jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);
-	//	jump_patch(move_for_melee_range_wrapper,			0x00477F10, 0);
+		jump_patch(move_for_melee_range_wrapper,			0x00477F10, 0);
 		jump_patch(assign_weapon_data_wrapper,				0x0048AA80, 0);
 		jump_patch(bullet_behavior_follow_wrapper,			0x0048B500, 0);
 		

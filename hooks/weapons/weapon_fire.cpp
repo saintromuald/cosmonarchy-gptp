@@ -1804,7 +1804,7 @@ namespace hooks {
 			helper::move_towards(attacker, target);
 			return;
 		}
-
+		/*
 		s32 tgt_x = target->position.x;
 		s32 tgt_y = target->position.y;
 
@@ -1820,8 +1820,9 @@ namespace hooks {
 		} else {
 			tgt_x_final = tgt_x;
 		}
+		*/
 		// Originally delayed the chasing using order timer. -Pr0nogo
-		helper::set_move_target_xy(attacker, tgt_x_final, tgt_y_final);
+		helper::set_move_target_xy(attacker, target->position.x, target->position.y);
 	}
 
 	// Hooked to safeguard from nullsprites. -Pr0nogo
