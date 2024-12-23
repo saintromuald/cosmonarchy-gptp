@@ -34,6 +34,7 @@ constexpr s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;
 // Cleric
 namespace Cleric {
 inline constexpr s32 HealAmount = 96;  // 9 HP per second
+inline constexpr s32 NanoshieldTimer = 25;
 }
 
 // Shaman
