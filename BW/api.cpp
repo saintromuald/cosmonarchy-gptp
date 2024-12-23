@@ -1075,7 +1075,7 @@ static bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
 		&& unit->id != UnitId::Ackmed;
 }
 
-s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {
+f32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {
 	if (!can_use_cliff_advantage(unit, weapon)) {
 		return 0;
 	}
@@ -1086,7 +1086,7 @@ s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_t
 		unit_pos = unit->position;
 	}
 	s32 source_height = g_height_table[g_map_tile_size->width * (unit_pos.y >> 5) + (unit_pos.x >> 5)];
-	u32 multiplier = bw::get_game_kind() == GameKind::DarkAges ? 1 : 2;
+	f32 multiplier = bw::get_game_kind() == GameKind::DarkAges ? 0.5 : 1;
 	if (!target_unit) {
 		return std::max(source_height, 0) * multiplier;
 	} else if (target_unit->status & UnitStatus::InAir) {
@@ -3805,9 +3805,9 @@ void add_massacre_resource(u32 player_id) {
 	if (player_id_is_extended(player_id)) {
 		return;
 	}
-	g_game_vespene[player_id] += 3;
-	g_total_vespene[player_id] += 3;
-	g_aiscript_controller[player_id].vespene_available += 3;
+	g_game_vespene[player_id] += 5;
+	g_total_vespene[player_id] += 5;
+	g_aiscript_controller[player_id].vespene_available += 5;
 }
 
 bool game_kind_supports_kills(GameKind game_kind) {
