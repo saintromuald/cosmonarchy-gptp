@@ -172,6 +172,17 @@ void unit_on_death_behaviors(Unit* unit) {
 			// end hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
 			*g_can_update_powered_status = true;
 		} break;
+		case UnitId::ZergRilirokor:
+		case UnitId::ZergRililisk: {
+			Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::Ensnare, unit->position.x, unit->position.y, 0);
+			if (ensnare_effect_sprite) {
+				ensnare_effect_sprite->sprite->elevation = 19; // 0x13
+				helper::set_thingy_visibility_flags(ensnare_effect_sprite);
+			}
+			for (Unit* hostile : g_unit_search.radial_ex(unit, Broodspawn::DeathCycleEnsnareRange, FilterEnemy)) {
+				apply_ensnare_internal(hostile, 1, Broodspawn::DeathCycleEnsnareTimer);
+			}
+		} break;
 		case UnitId::ZergNydusCesiant: {
 			Unit* nydus_exit = unit->building.nydus_exit;
 			if (nydus_exit) {

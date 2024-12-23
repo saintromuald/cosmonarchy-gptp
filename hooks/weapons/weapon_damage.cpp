@@ -23,6 +23,7 @@
 Bullet* weapon_damage_current_bullet;
 
 void apply_ensnare_internal(Unit* unit, u32 ensnare_factor) {
+void apply_ensnare_internal(Unit* unit, u32 ensnare_factor, u32 ensnare_timer) {
 	// Overlay
 	if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
 		bw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + bw::get_overlay_offset(unit->id));
@@ -32,6 +33,7 @@ void apply_ensnare_internal(Unit* unit, u32 ensnare_factor) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	unit_ext->values[ValueEnsnareFactor] = ensnare_factor;
 	unit->ensnare_timer = 5;
+	unit->ensnare_timer = ensnare_timer;
 	unit->update_speed();
 }
 
