@@ -2474,8 +2474,8 @@ namespace hooks {
 		}
 
 		// Prevent storm overlap, was in update status effects, which doesn't tick every frame
-		if (unit->is_under_storm) {
-			unit->is_under_storm = false;
+		if (unit->under_storm_timer) {
+			unit->under_storm_timer--;
 		}
 
 		// Update speed for Tyrannized units
