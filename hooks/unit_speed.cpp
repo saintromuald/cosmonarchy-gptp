@@ -226,7 +226,7 @@ namespace hooks {
 				speed *= 1.6;
 			} break;
 			case UnitId::ZergHydralisk: {
-				speed *= 1.7;
+				speed *= 1.8;
 			} break;
 		}
 
