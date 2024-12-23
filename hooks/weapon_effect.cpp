@@ -125,12 +125,6 @@ namespace hooks {
 
 			if (!helper::is_unit_distance_within(target, bullet, outer)) continue;
 
-			// Don't storm a unit that's already being stormed
-			if (bullet->weapon_id == WeaponId::PsiStorm) {
-				if (target->is_under_storm) continue;
-				target->is_under_storm = 1;
-			}
-
 			if (helper::is_unit_distance_within(target, bullet, inner)) {
 				helper::weapon_bullet_shot(target, bullet, 1); // 100% damage
 				bullet_ext->hit_count++;

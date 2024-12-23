@@ -242,9 +242,14 @@ static void tick_effect(EffectField& effect) {
 
 				caster->spend_energy(20 * tick_scalar_hp);
 				for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
-					if (unit->is_under_storm) continue;
-					unit->is_under_storm = update_period;
-					unit->damage_with(WeaponId::PsiStorm, 20 * tick_scalar_hp, effect.source, effect.player,
+					auto& unit_ext = unit->ext();
+					if (unit->under_storm_timer) {
+						unit_ext.values[ValueStormDivider] *= 2;
+					} else {
+                        unit->under_storm_timer = update_period;
+						unit_ext.values[ValueStormDivider] = 1;
+					}
+					unit->damage_with(WeaponId::PsiStorm, (20 * tick_scalar_hp) / unit_ext.values[ValueStormDivider], effect.source, effect.player,
 						helper::get_direction_from_points(effect.position, unit->position), units_dat::base_property[unit->id] & UnitProperty::Building ? 2 : 1);
 				}
 
