@@ -1748,6 +1748,9 @@ namespace hooks {
 						if (bw::teleport_to_unit(unit, target, min_radius, 0, true)) {
 							bw::add_unit_overlay(unit, image_id);
 							bw::decloak_passive_proc(unit);
+							if (unit->id == UnitId::ProtossCabalist) {
+								unit_ext->values[ValueCabalistSilentStridesDamage] = 1;
+							}
 						}
 					}
 				}
@@ -3022,6 +3025,9 @@ namespace hooks {
 		if (bw::is_passive_decloakable(unit)) {
 			if (unit_ext->timers[TimerDecloak] == 1) {
 				helper::begin_cloak(unit, bw::get_cloak_sound_id(unit));
+				if (unit->id == UnitId::ProtossCabalist) {
+					unit_ext->values[ValueCabalistSilentStridesDamage] = 0;
+				}
 			}
 		}
 

@@ -213,6 +213,7 @@ enum ExtValueId {
 	ValueWearAndTear,
 	ValueIdolLaunchPos,
 	ValueStormDivider,
+	ValueCabalistSilentStridesDamage,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
