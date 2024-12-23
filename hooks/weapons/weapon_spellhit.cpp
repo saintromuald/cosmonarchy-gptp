@@ -311,7 +311,7 @@ namespace hooks {
 	}
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
-	void ensnare_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
+	void ensnare_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) { // 004F4830
 		Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::Ensnare, x, y, 0);
 		if (ensnare_effect_sprite) {
 			ensnare_effect_sprite->sprite->elevation = 19; // 0x13
@@ -326,10 +326,8 @@ namespace hooks {
 	}
 
 	s32 ensnare_proc(Unit* target, Unit* attacker) {
-		if (target != attacker)
-		{
-			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
-			{
+		if (target != attacker && !bw::is_allied_to(attacker->player, target->player)) {
+			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed)) {
 				UnitExt* unit_ext = get_unit_ext(target);
 				apply_ensnare_internal(target, unit_ext->values[ValueEnsnareFactor]);
 			}

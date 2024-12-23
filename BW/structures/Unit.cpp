@@ -1484,3 +1484,11 @@ u32 Unit::standard_sprite_id() {
 	u32 sprite_id = flingy_dat::sprite_id[flingy_id];
 	return sprite_id;
 }
+
+bool Unit::is_building() {
+	return units_dat::base_property[this->id] & UnitProperty::Building;
+}
+
+bool Unit::is_detector() {
+	return units_dat::base_property[this->id] & UnitProperty::Detector;
+}

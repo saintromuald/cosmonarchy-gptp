@@ -396,6 +396,8 @@ struct Unit : public UnitLayout
 	bool burrowed_attacker_can_attack();
 	void count_connected_larva();
 	u32 standard_sprite_id();
+	bool is_building();
+	bool is_detector();
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

@@ -166,8 +166,13 @@ constexpr s32 IsthrathalethPlagueTimer = 5 * 3;
 constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
 constexpr s32 MatralethAIParasiteTimer = 75;
 constexpr s32 MatralethAIEnsnaringBroodTimer = 75;
-constexpr s32 MatralethEnsnareTimer = 37;
+constexpr s32 MatralethEnsnareTimer = 5;
 constexpr s32 BroodspawnTimer = 720;
+
+namespace Broodspawn {
+inline constexpr s32 DeathCycleEnsnareRange = 3 * 32;
+inline constexpr s32 DeathCycleEnsnareTimer = 25;
+}
 
 // Akistrokor
 constexpr s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second

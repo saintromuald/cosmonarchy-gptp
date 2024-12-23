@@ -15294,4 +15294,16 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	void ensnare_hit(Unit* unit, u32 x, u16 y) {
+		const u32 func_address = 0x004F4830;
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV AX, y
+			MOV ECX, x
+			CALL func_address
+			POPAD
+		}
+	}
 }
