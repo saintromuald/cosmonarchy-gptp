@@ -4000,10 +4000,13 @@ bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos) {
     return true;
 }
 
-Point16 align_to_tile_grid(Point16 pos) {
+Point16 align_to_tile_grid(Point16 pos, UnitId::Enum unit_id) {
+	const auto [w, h] = units_dat::building_dimensions[unit_id];
+	const auto hw = w / 2;
+	const auto hh = h / 2;
     return {
-        static_cast<u16>((pos.x + 16) / 32 * 32),
-        static_cast<u16>((pos.y + 16) / 32 * 32),
+        static_cast<u16>((pos.x + 16 - hw) / 32 * 32 + hw),
+        static_cast<u16>((pos.y + 16 - hh) / 32 * 32 + hh),
     };
 }
 

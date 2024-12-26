@@ -249,6 +249,11 @@ void println(std::format_string<Args...> fmt, Args&&... args) {
 	print(std::format(fmt, std::forward<Args>(args)...).c_str());
 }
 
+template <typename... Args>
+void println(TextColor color, std::format_string<Args...> fmt, Args&&... args) {
+	print(std::format(fmt, std::forward<Args>(args)...).c_str(), color);
+}
+
 /// Displays an error message and plays a new_sound for the player.
 ///
 /// @param  player  ID of the player who receives the message.
@@ -1000,7 +1005,7 @@ bool player_is_witness(u32 player);
 bool player_is_active(u32 player);
 std::string get_commit_hash();
 bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos);
-Point16 align_to_tile_grid(Point16 pos);
+Point16 align_to_tile_grid(Point16 pos, UnitId::Enum unit_id);
 u32 active_player_count();
 bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id);
 f32 calculate_dark_ages_penalty(f32 range);

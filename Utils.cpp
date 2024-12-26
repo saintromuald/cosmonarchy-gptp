@@ -33,7 +33,7 @@ std::optional<Point16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples
             };
 
             if (units_dat::base_property[unit_id] & UnitProperty::Building) {
-                position = bw::align_to_tile_grid(position);
+                position = bw::align_to_tile_grid(position, unit_id);
             }
 
             return position;
