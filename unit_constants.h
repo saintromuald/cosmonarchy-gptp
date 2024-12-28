@@ -19,6 +19,11 @@
 
 // COMMON / SHARED \\
 
+namespace Massacre {
+inline constexpr s32 ResourceReward = 3;
+inline constexpr s32 UnitMultiplier = 2;
+}
+
 // General
 constexpr s32 HealthMultiplier = 256;
 constexpr s32 StimpackOffset = 5 * 256;
@@ -172,7 +177,7 @@ constexpr s32 BroodspawnTimer = 720;
 
 namespace Broodspawn {
 inline constexpr s32 DeathCycleEnsnareRange = 3 * 32;
-inline constexpr s32 DeathCycleEnsnareTimer = 25;
+inline constexpr s32 DeathCycleEnsnareTimer = (3 * 24) / 8;
 }
 
 // Akistrokor

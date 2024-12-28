@@ -988,6 +988,7 @@ void refresh_console() { // 004C36C0
 }
 
 void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator) {
+	count *= bw::get_game_kind() == GameKind::Massacre ? 2 : 1;
 	u32 remove_timer = 0;
 	switch (unit_id) {
 		case UnitId::ZergRililisk:
@@ -3805,9 +3806,9 @@ void add_massacre_resource(u32 player_id) {
 	if (player_id_is_extended(player_id)) {
 		return;
 	}
-	g_game_vespene[player_id] += 5;
-	g_total_vespene[player_id] += 5;
-	g_aiscript_controller[player_id].vespene_available += 5;
+	g_game_vespene[player_id] += Massacre::ResourceReward;
+	g_total_vespene[player_id] += Massacre::ResourceReward;
+	g_aiscript_controller[player_id].vespene_available += Massacre::ResourceReward;
 }
 
 bool game_kind_supports_kills(GameKind game_kind) {
