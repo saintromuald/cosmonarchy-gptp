@@ -414,7 +414,7 @@ namespace hooks {
 		// Weapon & Attacker based calcs
 		switch (data.weapon_id) { // Damage divisor calc
 			case WeaponId::CabalistWarpBlades: {
-				if (attacker_ext.values[ValueCabalistSilentStridesDamage]) {
+				if (attacker_ext.values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
 					data.damage *= 1.5;
 					attacker_ext.values[ValueCabalistSilentStridesDamage] = 0;
 				}
