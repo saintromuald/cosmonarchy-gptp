@@ -59,25 +59,49 @@ static void special_post_unload_unit(Unit* unit, Unit* transport) {
 }
 
 static bool fix_unload_pos(Unit* unit, Point16* pos) {
-    Box16 valid_area = {};
-    valid_area.left   = static_cast<s16>(unit->position.x - 32);
-    valid_area.top    = static_cast<s16>(unit->position.y - 32);
-    valid_area.right  = static_cast<s16>(unit->position.x + 32);
-    valid_area.bottom = static_cast<s16>(unit->position.y + 32);
-
-    if (!bw::check_unit_collision_pos(unit, pos, pos, &valid_area, true)) {
-        return false;
-    }
-
     if (units_dat::base_property[unit->id] & UnitProperty::Building) {
-        *pos = bw::align_to_tile_grid(*pos);
-        
-        if (!bw::check_building_collision((UnitId::Enum)unit->id, unit->player, *pos)) {
+        static constexpr auto Tolerance = 3;
+        *pos = bw::align_to_tile_grid(*pos, (UnitId::Enum)unit->id);
+
+        std::optional<Point16> best_pos;
+        u32 best_distance = UINT_MAX;
+
+        for (s32 x = -Tolerance; x <= Tolerance; x++) {
+            for (s32 y = -Tolerance; y <= Tolerance; y++) {
+                Point16 new_pos = *pos;
+                new_pos.x += x * 32;
+                new_pos.y += y * 32;
+                new_pos = bw::align_to_tile_grid(new_pos, (UnitId::Enum)unit->id);
+
+                if (bw::check_building_collision((UnitId::Enum)unit->id, unit->player, new_pos)) {
+                    u32 distance = bw::distance_between(new_pos, *pos);
+                    if (distance < best_distance) {
+                        best_pos = new_pos;
+                        best_distance = distance;
+                    }
+                }
+            }
+        }
+
+        if (best_pos) {
+            *pos = *best_pos;
+            return true;
+        }
+        return false;
+    } else {
+        static constexpr auto Tolerance = 2.5 * 32;
+        Box16 valid_area = {};
+        valid_area.left   = static_cast<s16>(unit->position.x) - Tolerance;
+        valid_area.top    = static_cast<s16>(unit->position.y) - Tolerance;
+        valid_area.right  = static_cast<s16>(unit->position.x) + Tolerance;
+        valid_area.bottom = static_cast<s16>(unit->position.y) + Tolerance;
+
+        if (!bw::check_unit_collision_pos(unit, pos, pos, &valid_area, true)) {
             return false;
         }
+        const auto& tile = bw::get_tile_at_coords(*pos);
+        return tile.is_walkable && !tile.is_unwalkable && !tile.cliff_edge; // Forbid nulled region
     }
-    
-    return true;
 }
 
 void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
@@ -225,9 +249,9 @@ b32 unload_unit_proc(Unit* unit) { // 004E7F70
         return false;
     }
 
-    Point16 pos = {0, 0};
+    Point16 pos{};
     if (!helper::can_unload(transport, unit, &pos)) {
-        return false;
+        pos = transport->position;
     }
     if (!fix_unload_pos(unit, &pos)) {
         return false;

@@ -608,7 +608,7 @@ namespace hooks {
 	void game_init_first_frame() {
 #ifdef CM_DEBUG
 		helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
-		bw::print("\tGPTP was compiled in debug!\n\tThis will make the game run slower.", GameTextColor::Yellow);
+		bw::println(TextColor::Yellow, "\tGPTP was compiled in debug!\n\tThis will make the game run slower.");
 #endif
 		bw::init_weapon_tile_heights();
 		hooks::init_actions();
