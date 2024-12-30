@@ -1175,7 +1175,7 @@ namespace hooks {
 				}
 			}
 
-			if (!unit_ext->timers[TimerReclaiming]) {
+			if (!unit_ext->timers[TimerReclaimStun]) {
 				unit->damage_hp((3 * 256) / 24, 0, unit->player, false);
 			}
 		}
@@ -1201,21 +1201,21 @@ namespace hooks {
 		}
 
 		// Reclamation - Initial healing
-		if (unit_ext->timers[TimerReclaiming]) {
+		if (unit_ext->timers[TimerReclaimHeal]) {
 			const u32 heal_amount = (100 * 256) + (units_dat::max_hitpoints[unit->id] / 3) - (5 * 256); // minus 5, which is set on initial reclamation
-			unit->heal_hp(heal_amount / Reclamation::ReviveTimer);
+			unit->heal_hp(heal_amount / Reclamation::ReviveHealTimer);
 			u32 image_id = ImageId::LazarusAgentProc_Small + bw::get_overlay_offset(unit->id, true);
-			if (unit_ext->timers[TimerReclaiming] == 1) {
+			if (unit_ext->timers[TimerReclaimHeal] == 1) {
 				unit->sprite->create_overlay(image_id);
-				// Play sound for the end of healing and stun
-			} else if (unit_ext->timers[TimerReclaiming] % 12 == 1) {
+				// Play sound for the end of healing
+			} else if (unit_ext->timers[TimerReclaimHeal] % 12 == 1) {
 				unit->sprite->create_overlay(image_id);
-				// Play sound for healing and stun
+				// Play sound for healing
 			}
 		}
 
 		// Reclamation - Regeneration, speed update
-		if (unit_ext->values[ValueReclaimed] && !unit_ext->timers[TimerReclaiming]) {
+		if (unit_ext->values[ValueReclaimed] && !unit_ext->timers[TimerReclaimHeal]) {
 			should_update_speed = true;
 			auto& reclamation_regen = unit_ext->values[ValueReclamationRegen];
 			if (reclamation_regen) {

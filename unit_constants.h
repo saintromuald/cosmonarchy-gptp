@@ -55,7 +55,8 @@ constexpr s32 MadcapMaxStacks = 10;
 
 // Apostle
 namespace Reclamation {
-inline constexpr u32 ReviveTimer = 3 * 24;
+inline constexpr u32 ReviveStunTimer = 3 * 24;
+inline constexpr u32 ReviveHealTimer = 10 * 24;
 }
 
 // Olympian
