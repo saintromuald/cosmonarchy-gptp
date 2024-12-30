@@ -26,5 +26,5 @@ namespace AI {
 	Unit* find_best_disruption_field_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_feedback_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_maelstrom_target(Unit* caster, bool isUnderAttack);
-	Unit* find_best_tyranny_target(Unit* caster, bool isUnderAttack);
+	Unit* find_best_tyranny_target(Unit* caster, bool is_under_attack);
 }
