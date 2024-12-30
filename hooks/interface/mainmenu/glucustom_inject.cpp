@@ -1,24 +1,19 @@
 #include "glucustom.h"
 #include <hook_tools.h>
 
-namespace
-{
-	void _declspec(naked) display_establishing_shot_wrapper() // 004D9200
-	{
-		_asm
-		{
+namespace {
+	void _declspec(naked) display_establishing_shot_wrapper() { // 004D9200
+		_asm {
 			PUSHAD
 		}
 		hooks::display_establishing_shot();
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) CMDACT_game_speed_wrapper() // 00481EF0
-	{
+	void __declspec(naked) CMDACT_game_speed_wrapper() { // 00481EF0
 		static BinDlg* dialog;
 		__asm {
 			MOV dialog, EAX
@@ -31,8 +26,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) hide_dialog_wrapper() // 00418700
-	{
+	void __declspec(naked) hide_dialog_wrapper() { // 00418700
 		static BinDlg* dialog;
 		__asm {
 			MOV dialog, ESI
@@ -45,8 +39,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) load_title_wrapper() // 004D49A0
-	{
+	void __declspec(naked) load_title_wrapper() { // 004D49A0
 		__asm {
 			PUSHAD
 		}
@@ -57,8 +50,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) create_main_window_wrapper() // 004D49A0
-	{
+	void __declspec(naked) create_main_window_wrapper() { // 004D49A0
 		__asm {
 			PUSHAD
 		}
@@ -69,8 +61,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) initialize_game_type_list_wrapper() // 004AF400
-	{
+	void __declspec(naked) initialize_game_type_list_wrapper() { // 004AF400
 		static BinDlg* list;
 		__asm {
 			MOV list, EAX
