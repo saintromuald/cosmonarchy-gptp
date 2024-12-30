@@ -361,3 +361,7 @@ bool unit_should_give_gas_in_massacre_mode(Unit* unit) {
 	UnitExt* unit_ext = get_unit_ext(unit);
 	return unit_id_should_give_gas_in_massacre_mode(unit->id) && !unit_ext->values[ValueCancellingZergStructure];
 }
+
+bool game_kind_has_neutral_hostile(GameKind game_kind) {
+	return game_kind == GameKind::TheTurning || game_kind == GameKind::Uprising;
+}

@@ -380,7 +380,7 @@ namespace hooks {
 			bw::play_sound(SoundId::GoskaGrenadeImpact, weapon_damage_current_bullet->position);
 		}
 
-		if (game_kind == GameKind::TheTurning && data.target->player == NeutralHostilePlayer && unit_id_is_burrowed_attacker(data.target->id)) {
+		if (game_kind_has_neutral_hostile(game_kind) && data.target->player == NeutralHostilePlayer && unit_id_is_burrowed_attacker(data.target->id)) {
 			helper::ai_order_lurker_burrow(data.target);
 		}
 	}
