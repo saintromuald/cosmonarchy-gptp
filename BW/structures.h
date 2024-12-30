@@ -1391,7 +1391,7 @@ C_ASSERT(sizeof(GameVersion) == 60);
 // Selection extender from DarkenedFantasies!
 // As it currently stands, SelectionLimit must be a multiple of 6, and 252 is the largest supported value.
 // Look into editing the cmdact/cmdrecv_select buffers to upgrade the selection byte to at least a word.
-#define SelectionLimit 252
+#define SelectionLimit 246
 #define SelectionLimit_word 2*SelectionLimit
 #define SelectionLimit_dword 4*SelectionLimit
 #define SelectionLimit_dword_2 2*SelectionLimit_dword

@@ -42,8 +42,9 @@ namespace hooks {
 		return armor_pen;
 	}
 
-	u32 get_modified_cooldown(Unit* unit, u32 cooldown_param, bool clamp) {
-		UnitExt* unit_ext = get_unit_ext(unit);
+	u32 get_modified_cooldown(Unit* base_unit, u32 cooldown_param, bool clamp) {
+		Unit* unit = base_unit->is_subunit() ? base_unit->subunit : base_unit;
+		UnitExt& unit_ext = unit->ext();
 		f32 cooldown = cooldown_param;
 
 		// Stimpack
@@ -53,7 +54,7 @@ namespace hooks {
 
 		// Ensnare
 		if (unit->ensnare_timer) {
-			switch (unit_ext->values[ValueEnsnareFactor]) {
+			switch (unit_ext.values[ValueEnsnareFactor]) {
 				case 1: {
 					cooldown += cooldown / 3;
 				} break;
@@ -64,25 +65,25 @@ namespace hooks {
 		}
 
 		// Crucible Aura
-		bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
+		bool has_crucible = unit_ext.unit_vectors[UnitVectorCrucibles].size() != 0;
 		cooldown /= 1 + (has_crucible * 0.23); // Divisor math is different
 
 		// Vithrilisk - Corrosive Spores: lower attack speed of victim
-		cooldown *= 1 + unit_ext->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
+		cooldown *= 1 + unit_ext.values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
 
 		// Protoss Cornerstone: Ascend - attack cooldown
-		if (unit_ext->timers[TimerAscend]) {
+		if (unit_ext.timers[TimerAscend]) {
 			cooldown /= 1.33;
 		}
 
-		if (unit_ext->values[ValueIsShade]) {
+		if (unit_ext.values[ValueIsShade]) {
 			cooldown /= 1.5;
 		}
 
 		switch (unit->id) {
 			case UnitId::TerranMadcap: {
 				// Madcap Cabeirus Feeders behavior: increase weapon speed while stationary
-				u32 stacks = ceil((f64)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime);
+				u32 stacks = ceil((f64)unit_ext.values[ValueMadcapStacks] / MadcapPassiveDecayTime);
 				if (stacks > 0) {
 					f64 new_cooldown = (f64)cooldown / (1 + stacks * 0.15);
 					cooldown = new_cooldown;
@@ -90,13 +91,13 @@ namespace hooks {
 			} break;
 			case UnitId::TerranBlackjack: {
 				// Blackjack Wear and Tear: reduce weapon speed based on missing health
-				if (unit_ext->values[ValueWearAndTear]) {
+				if (unit_ext.values[ValueWearAndTear]) {
 					cooldown /= 0.66;
 				}
 			} break;
 			case UnitId::TerranPhobos: {
 				// Argent Capacitors
-				if (unit_ext->values[ValuePhobosDischarge] > 0) {
+				if (unit_ext.values[ValuePhobosDischarge] > 0) {
 					cooldown /= 2;
 				}
 			} break;
@@ -105,33 +106,31 @@ namespace hooks {
 			} break;
 			case UnitId::ZergGhitorokor: {
 				// Relentless Aggression
-				if (unit_ext->values[ValueGhitorokorRelentlessAggressionStacks])
-				{
-					cooldown /= 1 + (0.10 * unit_ext->values[ValueGhitorokorRelentlessAggressionStacks]);
+				if (unit_ext.values[ValueGhitorokorRelentlessAggressionStacks]) {
+					cooldown /= 1 + (0.10 * unit_ext.values[ValueGhitorokorRelentlessAggressionStacks]);
 				}
 			} break;
 			case UnitId::ZergMortothrokor: {
 				// Whetted Appetite
-				if (unit_ext->values[ValueMortothrokorStacks])
-				{
-					cooldown /= 1 + (0.05 * unit_ext->values[ValueMortothrokorStacks]);
+				if (unit_ext.values[ValueMortothrokorStacks]) {
+					cooldown /= 1 + (0.05 * unit_ext.values[ValueMortothrokorStacks]);
 				}
 			} break;
 			case UnitId::ZergUltrokor: {
 				// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
-				if (unit_ext->timers[TimerKaiserRampage] > 0) {
+				if (unit_ext.timers[TimerKaiserRampage] > 0) {
 					cooldown /= 2;
 				}
 			} break;
 		}
 
 		// Ion Cannon Ion Field: Attack Speed Buff
-		if (unit_ext->timers[TimerIonFieldAttackSpeed] > 0) {
+		if (unit_ext.timers[TimerIonFieldAttackSpeed] > 0) {
 			cooldown /= 1.5;
 		}
 
 		// Hierophant Signify: Malice
-		if (unit_ext->values[ValueSignifyStacks] >= 5) {
+		if (unit_ext.values[ValueSignifyStacks] >= 5) {
 			cooldown /= 0.6666;
 		}
 
@@ -140,11 +139,11 @@ namespace hooks {
 		}
 
 		// Power Siphon
-		if (unit_ext->values[ValueSavantPowerSiphonBuff]) {
-			cooldown /= 1 + (0.1 * unit_ext->values[ValueSavantPowerSiphonBuff]);
+		if (unit_ext.values[ValueSavantPowerSiphonBuff]) {
+			cooldown /= 1 + (0.1 * unit_ext.values[ValueSavantPowerSiphonBuff]);
 		}
-		if (unit_ext->values[ValueSavantPowerSiphonDebuff]) {
-			cooldown *= 1 + (0.1 * unit_ext->values[ValueSavantPowerSiphonDebuff]);
+		if (unit_ext.values[ValueSavantPowerSiphonDebuff]) {
+			cooldown *= 1 + (0.1 * unit_ext.values[ValueSavantPowerSiphonDebuff]);
 		}
 
 		if (clamp) {

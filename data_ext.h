@@ -211,7 +211,9 @@ enum ExtValueId {
 	ValuePlayingHatchSound,
 	ValueWorkerContext,
 	ValueWearAndTear,
+	ValueIdolLaunchPos,
 	ValueStormDivider,
+	ValueCabalistSilentStridesDamage,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -357,6 +359,7 @@ enum ExtTimerId {
 	TimerWyvernWeaponCharge,
 	TimerConstructionSFXDelay,
 	TimerTurningAggressiveModeThrottle,
+	TimerClericHeal,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

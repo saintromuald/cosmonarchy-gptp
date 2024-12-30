@@ -988,6 +988,7 @@ void refresh_console() { // 004C36C0
 }
 
 void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator) {
+	count *= bw::get_game_kind() == GameKind::Massacre ? 2 : 1;
 	u32 remove_timer = 0;
 	switch (unit_id) {
 		case UnitId::ZergRililisk:
@@ -1075,7 +1076,7 @@ static bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
 		&& unit->id != UnitId::Ackmed;
 }
 
-s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {
+f32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {
 	if (!can_use_cliff_advantage(unit, weapon)) {
 		return 0;
 	}
@@ -1086,7 +1087,7 @@ s32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_t
 		unit_pos = unit->position;
 	}
 	s32 source_height = g_height_table[g_map_tile_size->width * (unit_pos.y >> 5) + (unit_pos.x >> 5)];
-	u32 multiplier = bw::get_game_kind() == GameKind::DarkAges ? 1 : 2;
+	f32 multiplier = bw::get_game_kind() == GameKind::DarkAges ? 0.5 : 1;
 	if (!target_unit) {
 		return std::max(source_height, 0) * multiplier;
 	} else if (target_unit->status & UnitStatus::InAir) {
@@ -2409,6 +2410,7 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
 		case WeaponId::ZealotPhaseBlades:
 		case WeaponId::AmaranthPsiCleaver:
 		case WeaponId::GolemBloodlessAssault:
+		case WeaponId::IdolPrismaticBlaster:
 		case WeaponId::PariahIconoclastBlades:
 		case WeaponId::StarSovereignCelestialCannon:
 		case WeaponId::NathrokorNathrokClaws:
@@ -3804,9 +3806,9 @@ void add_massacre_resource(u32 player_id) {
 	if (player_id_is_extended(player_id)) {
 		return;
 	}
-	g_game_vespene[player_id] += 3;
-	g_total_vespene[player_id] += 3;
-	g_aiscript_controller[player_id].vespene_available += 3;
+	g_game_vespene[player_id] += Massacre::ResourceReward;
+	g_total_vespene[player_id] += Massacre::ResourceReward;
+	g_aiscript_controller[player_id].vespene_available += Massacre::ResourceReward;
 }
 
 bool game_kind_supports_kills(GameKind game_kind) {

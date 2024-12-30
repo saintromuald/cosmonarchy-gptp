@@ -3,8 +3,7 @@
 #include <BW/structures/Bullet.h>
 #include "BW\api.h"
 
-namespace hooks
-{
+namespace hooks {
 	void irradiate_hit(Unit* attacker, Point16 target, u8 attacking_player_id);		// 00454E00
 	void irradiate_hit_internal(Unit* attacker, Point16 target, u8 attacking_player_id);
 	void optical_flare_hit(Unit* target, u32 attacking_player_id, Bullet* bullet);	// 00455170

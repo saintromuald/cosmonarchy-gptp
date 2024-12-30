@@ -209,7 +209,9 @@ namespace hooks
 						return 3;
 					}
 					bw::decloak_passive_proc(cleric);
-					target->heal_hp(ClericHealValue, cleric);
+					target->heal_hp(Cleric::HealAmount, cleric);
+					UnitExt& target_ext = target->ext();
+					target_ext.timers[TimerClericHeal] = Cleric::NanoshieldTimer;
 					return 1;
 				}
 			}

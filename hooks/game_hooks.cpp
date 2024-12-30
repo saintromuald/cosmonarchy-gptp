@@ -430,13 +430,19 @@ namespace hooks {
 						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranShamanVisionaryMode: {
-						g_graphics.draw_circle(source.x, source.y, 8 * 32, graphics::GREEN, graphics::ON_MAP);
+						g_graphics.draw_circle(source.x, source.y, 6 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranAncile: {
 						g_graphics.draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranAzazel: {
 						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ProtossBarghest: {
+						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
+					} break;
+					case UnitId::ProtossManifold: {
+						g_graphics.draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::ProtossClarion: {
 						g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
@@ -1742,6 +1748,9 @@ namespace hooks {
 						if (bw::teleport_to_unit(unit, target, min_radius, 0, true)) {
 							bw::add_unit_overlay(unit, image_id);
 							bw::decloak_passive_proc(unit);
+							if (unit->id == UnitId::ProtossCabalist) {
+								unit_ext->values[ValueCabalistSilentStridesDamage] = 1;
+							}
 						}
 					}
 				}
@@ -1767,9 +1776,9 @@ namespace hooks {
 					unit_ext->timers[TimerNaniteField] = 24;
 					bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
 
-					u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? 8 : 4;
+					u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? NaniteField::VisionaryRange : NaniteField::SupportRange;
 					for (Unit* target : g_unit_search.radial(unit->position, range * 32).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterNoBuilding)) {
-						nanite_field_proc(unit, 4, target);
+						nanite_field_proc(unit, NaniteField::HealAmount, target);
 					}
 				}
 			} break;
@@ -1788,7 +1797,7 @@ namespace hooks {
 							break;
 						}
 						has_cargo = true;
-						cargo->heal_hp(4 * 256, unit);
+						cargo->heal_hp(NaniteField::HealAmount * 256, unit);
 					}
 					if (has_cargo) {
 						bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
@@ -2337,7 +2346,7 @@ namespace hooks {
 			case UnitId::ProtossManifold: {
 				if (unit_ext->timers[TimerManifoldConcurringChorus] > 1) {
 					if (unit->status & UnitStatus::Completed) {
-						for (Unit* target : g_unit_search.radial_ex(unit, 2 * 32, FilterAlly)) {
+						for (Unit* target : g_unit_search.radial_ex(unit, 3 * 32, FilterAlly)) {
 							UnitExt* target_ext = get_unit_ext(target);
 							if (!(target->status & UnitStatus::Completed) || !target->has_weapon()) {
 								continue;
@@ -3016,6 +3025,9 @@ namespace hooks {
 		if (bw::is_passive_decloakable(unit)) {
 			if (unit_ext->timers[TimerDecloak] == 1) {
 				helper::begin_cloak(unit, bw::get_cloak_sound_id(unit));
+				if (unit->id == UnitId::ProtossCabalist) {
+					unit_ext->values[ValueCabalistSilentStridesDamage] = 0;
+				}
 			}
 		}
 
@@ -3317,14 +3329,14 @@ namespace hooks {
 					case UnitId::TerranHarakan:
 					case UnitId::ProtossArtisan:
 					case UnitId::ProtossSimulacrum:
-					case UnitId::ZergEgg: {
+					case UnitId::ZergEgg:
+					case UnitId::ZergQuazilisk: {
 						image_id = ImageId::SantaHatSmall17;
 						if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
 							image_id -= 4;
 						}
 						offset_y = units_dat::unit_bounds[unit->id].top / 2 + 6;
 					} break;
-					case UnitId::ZergQuazilisk:
 					case UnitId::ZergHydralisk:
 					case UnitId::ZergKagralisk: {
 						image_id = ImageId::SantaHatSmall17;

@@ -6,31 +6,25 @@
 #include "globals.h"
 #include "weapons/weapon_damage.h"
 	
-namespace hooks
-{
+namespace hooks {
 	void do_irradiate_damage(Unit* unit) {
 		unit->damage_with_custom(50.0 * 256.0 / 15.5, -1, unit->irradiate_caster, unit->irradiate_player_id);
 	}
 
-	static bool safety_unburrow_check(Unit* unit, Unit* target)
-	{
-		if (!(target->status & UnitStatus::GroundedBuilding))
-		{
+	static bool safety_unburrow_check(Unit* unit, Unit* target) {
+		if (!(target->status & UnitStatus::GroundedBuilding)) {
 			return false;
 		}
-		if (target == unit)
-		{
+		if (target == unit) {
 			return false;
 		}
-		if (!helper::do_units_collide(unit, target))
-		{
+		if (!helper::do_units_collide(unit, target)) {
 			return false;
 		}
 		return true;
 	}
 
-	void update_status_effects(Unit* unit) // 00492F70
-	{
+	void update_status_effects(Unit* unit) { // 00492F70
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->subunit) {
 			UnitExt* subunit_ext = get_unit_ext(unit->subunit);
@@ -218,31 +212,24 @@ namespace hooks
 	}
 
 	// Hooked to disallow lifted Terran structures from being detectors. -Pr0nogo
-	b32 unit_is_clean_detector(Unit* unit) // 00403430
-	{
-		if ((units_dat::base_property[unit->id] & UnitProperty::Detector) && unit->status & UnitStatus::Completed)
-		{
-			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
-			||   (units_dat::base_property[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::InAir))) // is not a building OR is a building and is not in edge
-			{
-				if (!unit->is_frozen() && !unit->is_blind)
-				{
-					return true;
-				}
+	b32 unit_is_clean_detector(Unit* unit) { // 00403430
+		if (!unit->is_detector() || !(unit->status & UnitStatus::Completed)) {
+			return false;
+		}
+		if (!unit->is_building() || (unit->is_building() && !(unit->status & UnitStatus::InAir))) {
+			if (!unit->is_frozen() && !unit->is_blind) {
+				return true;
 			}
 		}
 		return false;
 	}
 
 	// Hooked to hide new resource overlays when burrowed. -Pr0nogo
-	void refresh_carryable_sprite(Sprite* sprite) // 00497750
-	{
+	void refresh_carryable_sprite(Sprite* sprite) { // 00497750 
 		Image* overlay = bw::get_powerup_overlay(sprite);
 		if (overlay) {
-			if (!(overlay->flags & ImageFlags::Invisible))
-			{
-				if (!(g_game_layer->has_been_refreshed & 1))
-				{
+			if (!(overlay->flags & ImageFlags::Invisible)) {
+				if (!(g_game_layer->has_been_refreshed & 1)) {
 					helper::refresh_image(overlay);
 				}
 				overlay->flags |= ImageFlags::Invisible;
@@ -251,20 +238,17 @@ namespace hooks
 	}
 
 	// Hooked to show new resources after unburrowing. -Pr0nogo
-	void update_carryable_sprite_flags(Sprite* sprite) // 004981B0
-	{
+	void update_carryable_sprite_flags(Sprite* sprite) { // 004981B0
 		Image* overlay = bw::get_powerup_overlay(sprite);
 		if (overlay) {
-			if (overlay->flags & ImageFlags::Invisible)
-			{
+			if (overlay->flags & ImageFlags::Invisible) {
 				overlay->flags = overlay->flags & 0xFFBF | 1;
 			}
 		}
 	}
 
 	// Hooked to update apply_ensnare argument amount. -Pr0nogo
-	void apply_unit_effects(Unit* unit) // 00492DA0
-	{
+	void apply_unit_effects(Unit* unit) { // 00492DA0
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit->defensive_matrix_timer) {
 			helper::apply_defensive_matrix(unit);

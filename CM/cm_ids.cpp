@@ -761,6 +761,12 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
 			offsets.count = 1;
 			return &offsets;
 		} break;
+		case WeaponId::IdolPrismaticBlaster: {
+			static WeaponOffsets offsets{};
+			offsets.value_id = ValueIdolLaunchPos;
+			offsets.count = 2;
+			return &offsets;
+		} break;
 		case WeaponId::PositronAntimatterMissile: {
 			static WeaponOffsets offsets{};
 			offsets.value_id = ValuePositronLaunchPos;

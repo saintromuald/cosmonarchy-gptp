@@ -553,7 +553,7 @@ namespace hooks {
 				u32 max_range = get_max_weapon_range(unit, weapon_id, unit->order_target.unit);
 				switch (weapon_id) {
 					case WeaponId::SkithrokorSkitteringSpores: {
-						timer = 9;
+						timer = 11;
 					} break;
 					case WeaponId::LakiziliskSubterraneanSpines: {
 						timer = 2 + ((max_range / 32) * 3);
@@ -674,6 +674,13 @@ namespace hooks {
 						s32 scatter = -15 + index * 5;
 						fire_sideways(unit, weapon_id, angle, scatter);
 					} break;
+					case WeaponId::MatrixKhaydarinRay: {
+						fire_bullet(unit, weapon_id, weapon_target);
+						Unit* target = unit->order_target.unit;
+						if (target && unit->player != target->player && !bw::is_allied_to(unit->player, target->player)) {
+							bw::astral_blessing_proc(unit, unit->player, weapon_id);
+						}
+					} break;
 					case WeaponId::TosgriliskExplosiveSpores:
 					case WeaponId::IzirokorEnergizedBioplasma:
 					case WeaponId::KonviliskSowingSpines: {
@@ -694,13 +701,6 @@ namespace hooks {
                             .center_on_target = false,
                             .center_on_target_range_overwrite = 0,
                         });
-					} break;
-					case WeaponId::MatrixKhaydarinRay: {
-						fire_bullet(unit, weapon_id, weapon_target);
-						Unit* target = unit->order_target.unit;
-						if (target && unit->player != target->player && !bw::is_allied_to(unit->player, target->player)) {
-							bw::astral_blessing_proc(unit, unit->player, weapon_id);
-						}
 					} break;
 					case WeaponId::SkortrithColonySkortraTendril: {
 						fire_bullet(unit, weapon_id, unit->order_target);
@@ -1804,7 +1804,7 @@ namespace hooks {
 			helper::move_towards(attacker, target);
 			return;
 		}
-
+		/*
 		s32 tgt_x = target->position.x;
 		s32 tgt_y = target->position.y;
 
@@ -1820,8 +1820,9 @@ namespace hooks {
 		} else {
 			tgt_x_final = tgt_x;
 		}
+		*/
 		// Originally delayed the chasing using order timer. -Pr0nogo
-		helper::set_move_target_xy(attacker, tgt_x_final, tgt_y_final);
+		helper::set_move_target_xy(attacker, target->position.x, target->position.y);
 	}
 
 	// Hooked to safeguard from nullsprites. -Pr0nogo

@@ -19,6 +19,11 @@
 
 // COMMON / SHARED \\
 
+namespace Massacre {
+inline constexpr s32 ResourceReward = 3;
+inline constexpr s32 UnitMultiplier = 2;
+}
+
 // General
 constexpr s32 HealthMultiplier = 256;
 constexpr s32 StimpackOffset = 5 * 256;
@@ -32,10 +37,17 @@ constexpr s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;
 // TERRAN \\
 
 // Cleric
-constexpr s32 ClericHealValue = 96; // 9 HP per second
+namespace Cleric {
+inline constexpr s32 HealAmount = 96;  // 9 HP per second
+inline constexpr s32 NanoshieldTimer = 25;
+}
 
 // Shaman
-constexpr s32 ShamanHeal = 4;
+namespace NaniteField {
+inline constexpr s32 HealAmount = 4;
+inline constexpr s32 SupportRange = 4;
+inline constexpr s32 VisionaryRange = 6;
+}
 
 // Madcap
 constexpr s32 MadcapPassiveDecayTime = 0.5 * 24;
@@ -160,8 +172,13 @@ constexpr s32 IsthrathalethPlagueTimer = 5 * 3;
 constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
 constexpr s32 MatralethAIParasiteTimer = 75;
 constexpr s32 MatralethAIEnsnaringBroodTimer = 75;
-constexpr s32 MatralethEnsnareTimer = 37;
+constexpr s32 MatralethEnsnareTimer = 5;
 constexpr s32 BroodspawnTimer = 720;
+
+namespace Broodspawn {
+inline constexpr s32 DeathCycleEnsnareRange = 3 * 32;
+inline constexpr s32 DeathCycleEnsnareTimer = (3 * 24) / 8;
+}
 
 // Akistrokor
 constexpr s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second

@@ -545,12 +545,66 @@ namespace
 			JMP jmp_back
 		}
 	}
+
+	static u32 dialog_update_proc_store;
+	static u32 draw_game_menu;
+	void __declspec(naked) dialog_update_proc_patch_1CB64() {
+		__asm {
+			MOV EAX, ds: [0x006D5BF4]
+			XOR EDI, EDI
+			CMP EAX, EDI
+			JNE offset menu_is_on				// if (GameMenuDlg) goto menu_is_on
+
+		_return:
+			LEA EAX, [EBP - 0x1C]
+			RETN
+
+		menu_is_on : // Skip ahead to the next dialog and iterate the entire list. We'll draw the game menu last.
+			CMP EAX, EBX
+			JNE offset _return // Sanity check, making sure GameMenuDlg is the head of the dialog list.
+			TEST byte ptr[EAX + 0x18], 8
+			SETNE AL
+			ADD AL, AL
+			MOV byte ptr draw_game_menu, AL		// (u8)draw_game_menu = (GameMenuDlg->flags & CTRL_VISIBLE) ? 2 : 0;
+			JE offset _return // Don't skip dialog if it's not visible, let dialog_update_proc handle it.
+			MOV EBX, [EBX]						// dlg = dlg->next;
+			JMP offset _return
+		}
+	}
+
+	const u32 dialog_update_proc_1CB86 = 0x0041CB86;
+	const u32 dialog_update_proc_1CBFF = 0x0041CBFF;
+	void __declspec(naked) dialog_update_proc_patch_1CBFA() {
+		__asm {
+			MOV EAX, draw_game_menu
+			SUB EAX, 1
+			JE offset finish_draw				// if (draw_game_menu == 1) goto finish_draw
+			JNS offset do_draw					// else if (draw_game_menu == 2) goto do_draw
+
+		_end : // Continue executing the rest of dialog_update_proc.
+			MOV EAX, ds : [0x006D5E2C]
+			JMP dialog_update_proc_1CBFF
+
+		do_draw : // Prepare to iterate the game menu dialog. We set the next ptr to null so that we don't reiterate the entire list again.
+			MOV draw_game_menu, EAX				// --draw_game_menu;
+			MOV EBX, ds : [0x006D5BF4]			// dlg = GameMenuDlg;
+			MOV EAX, [EBX]
+			MOV dialog_update_proc_store, EAX	// dialog_update_proc_store = dlg->next;
+			MOV dword ptr[EBX], 0				// dlg->next = nullptr;
+			JMP dialog_update_proc_1CB86
+
+		finish_draw : // Restore GameMenuDlg's next ptr.
+			MOV draw_game_menu, EAX				// --draw_game_menu;
+			MOV EBX, ds : [0x006D5BF4]
+			MOV EAX, dialog_update_proc_store
+			MOV[EBX], EAX						// GameMenuDlg->next = dialog_update_proc_store;
+			JMP offset _end
+		}
+	}
 }
 
-namespace hooks
-{
-	void inject_ui_features_hooks()
-	{
+namespace hooks {
+	void inject_ui_features_hooks() {
 		jump_patch(draw_ui_features_wrapper,				0x0048D0A9, 0);
 	//	jump_patch(targeted_order_wrapper,					0x004754F0, 1);
 	//	jump_patch(select_units_wrapper,					0x0046FA00, 1);
@@ -587,6 +641,10 @@ namespace hooks
 
 		call_patch(get_scroll_directions_partial,			0x0047F155, 0);
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
+
+		// Make ingame menus appear above custom UI elements. -DF
+		call_patch(dialog_update_proc_patch_1CB64,			0x0041CB64);
+		jump_patch(dialog_update_proc_patch_1CBFA,			0x0041CBFA);
 
 		// Passive icon colorization -- extension of color remaps. -DF
 		memory_patch(0x00459C1D, (u8)0x70); // Since it's a byte value push, this is the largest buffer size with this mempatch. Will need a jump_patch or hook to support more colors.

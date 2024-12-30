@@ -211,14 +211,12 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ensnare_hit_wrapper()
-	{
+	void __declspec(naked) ensnare_hit_wrapper() {
 		static Unit* attacker;
 		static s32 x;
 		static s32 y;
 		static Bullet* bullet;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV x, ECX
@@ -229,8 +227,7 @@ namespace
 			PUSHAD
 		}
 		hooks::ensnare_hit(attacker, x, y, bullet);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -238,8 +235,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) dark_swarm_hit_wrapper()
-	{
+	void __declspec(naked) dark_swarm_hit_wrapper() {
 		static s32 x;
 		static s32 y;
 		static u32 attacking_player_id;

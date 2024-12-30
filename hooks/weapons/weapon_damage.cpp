@@ -22,7 +22,7 @@
 
 Bullet* weapon_damage_current_bullet;
 
-void apply_ensnare_internal(Unit* unit, u32 ensnare_factor) {
+void apply_ensnare_internal(Unit* unit, u32 ensnare_factor, u32 ensnare_timer) {
 	// Overlay
 	if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
 		bw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + bw::get_overlay_offset(unit->id));
@@ -31,7 +31,7 @@ void apply_ensnare_internal(Unit* unit, u32 ensnare_factor) {
 	// Effect
 	UnitExt* unit_ext = get_unit_ext(unit);
 	unit_ext->values[ValueEnsnareFactor] = ensnare_factor;
-	unit->ensnare_timer = 5;
+	unit->ensnare_timer = ensnare_timer;
 	unit->update_speed();
 }
 
@@ -387,15 +387,16 @@ namespace hooks {
 
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
 		// Target based calcs
-		UnitExt* target_ext = get_unit_ext(data.target);
+		UnitExt& attacker_ext = data.attacker->ext();
+		UnitExt& target_ext = data.target->ext();
 
 		if (g_active_game_mode) {
 			g_active_game_mode->on_unit_damage_modifiers(data);
 		}
 
 		// Allied invincibility frames (for e.g. Blissful Embrace)
-		if (target_ext->timers[TimerAlliedInvFrames]) {
-			if (bw::is_allied_to(data.attacking_player_id, target_ext->values[ValueAlliedInvPlayer])) {
+		if (target_ext.timers[TimerAlliedInvFrames]) {
+			if (bw::is_allied_to(data.attacking_player_id, target_ext.values[ValueAlliedInvPlayer])) {
 				data.damage = 0;
 			}
 		}
@@ -412,6 +413,12 @@ namespace hooks {
 
 		// Weapon & Attacker based calcs
 		switch (data.weapon_id) { // Damage divisor calc
+			case WeaponId::CabalistWarpBlades: {
+				if (attacker_ext.values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
+					data.damage *= 1.5;
+					attacker_ext.values[ValueCabalistSilentStridesDamage] = 0;
+				}
+			}
 			case WeaponId::ArchitectDispersiveSalvo: {
 				u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
 				data.damage /= divisor;
@@ -420,10 +427,8 @@ namespace hooks {
 				// Searing Acid - Geszithalor behavior
 				data.damage += data.damage_divisor * 10 * 256;
 			} break;
-			default:
-			{
-				if (weapon_id_bounces_lithe_organelle(data.weapon_id))
-				{
+			default: {
+				if (weapon_id_bounces_lithe_organelle(data.weapon_id)) {
 					data.damage *= 1 - data.damage_divisor * 0.33;
 					if (data.damage < 0) {
 						data.damage = 0;
@@ -443,7 +448,7 @@ namespace hooks {
 		}
 
 		// Hallucinating targets - fire a phantom strike
-		if (data.attacker && weapon_id_can_proc_onhits(data.weapon_id) && target_ext->timers[TimerHallucinating] >= 1 && !bw::is_allied_to(data.attacker->player, data.target->player)) {
+		if (data.attacker && weapon_id_can_proc_onhits(data.weapon_id) && target_ext.timers[TimerHallucinating] >= 1 && !bw::is_allied_to(data.attacker->player, data.target->player)) {
 			if (weapon_damage_current_bullet && data.weapon_id != WeaponId::GladiusPlasmaFlurry && data.weapon_id != WeaponId::PaladinCrusaderMissiles) {
 				BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
 				if (!current_bullet_ext->is_phantom) {
