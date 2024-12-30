@@ -274,7 +274,7 @@ void unit_on_death_behaviors(Unit* unit) {
 	}
 
 	{ // Spellcaster - restore energy on enemy death
-		auto casters = g_unit_search.radial_ex(unit, unit->get_sight_range() * 32, FilterEnemy | FilterSpellcaster); // TODO: Remove Rilirokor, Rililisk
+		auto casters = g_unit_search.radial_ex(unit, unit->get_sight_range() * 32, FilterEnemy | FilterSpellcaster | FilterEnabled);
 
 		for (Unit* caster : casters) {
 			if (bw::distance_between(unit->position, caster->position) <= caster->get_sight_range() * 32) {

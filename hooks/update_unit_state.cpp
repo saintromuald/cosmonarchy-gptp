@@ -16,7 +16,7 @@ namespace hooks {
 	// This function regenerates energy for spellcasters and drains energy for cloaking units.
 	void update_unit_energy(Unit* unit) { // 004EB4B0
 		UnitExt* unit_ext = get_unit_ext(unit);
-		bool dont_regen = !unit->is_valid_caster() || !(unit->status & UnitStatus::Completed) || unit_ext->energy_regen_timer <= 2 * 24;
+		bool dont_regen = !unit->is_valid_caster() || !(unit->status & UnitStatus::Completed) || unit_ext->energy_regen_timer <= 2 * 24 || unit->is_frozen();
 
 		// Behaviors code -Veeq7
 		// Spend energy for cloaked units
