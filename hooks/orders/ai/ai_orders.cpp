@@ -1002,26 +1002,42 @@ namespace hooks {
 	// Hooked to help with AI implementation of the vespene overhaul. -Pr0nogo
 	void ai_worker_controller(Unit* worker) { // 00435210
 		WorkerAi* worker_ai = (WorkerAi*)worker->unit_ai;
-		if (worker_ai) {
-			if (worker_ai->wait_timer) {
-				worker_ai->wait_timer--;
-				return;
-			}
-			Point16 worker_pos = {};
-			AiTown* town = worker_ai->town;
-			worker_ai->last_update_second = *g_elapsed_time_seconds;
-			GroupFlag group_flags = units_dat::group_flags[worker->id];
-			if ((group_flags.is_zerg || group_flags.is_protoss || !group_flags.is_terran || !helper::ai_worker_repair_controller(worker, town))
-			&&  !helper::ai_try_progress_spending_queue_worker(town, worker)) {
-				Unit* main_building = town->main_building;
-				if (main_building) {
-					Unit* town_gas = 0;
-					Unit* town_gas_2 = 0;
-					if (helper::unit_is_active_resource_depot(main_building)) {
-						Unit* best_mineral_field = get_best_mineral_field(town); // New -Veeq7
-						if (best_mineral_field) {
-							town->mineral = best_mineral_field;
-						}
+		if (!worker_ai) {
+			return;
+		}
+		if (worker_ai->wait_timer) {
+			worker_ai->wait_timer--;
+			return;
+		}
+		Point16 worker_pos = {};
+		AiTown* town = worker_ai->town;
+		worker_ai->last_update_second = *g_elapsed_time_seconds;
+
+		GroupFlag group_flags = units_dat::group_flags[worker->id];
+		bool valid_for_harvesting = false;
+		if (group_flags.is_protoss || group_flags.is_zerg) {
+			valid_for_harvesting = true;
+		} else if (group_flags.is_zerg) {
+			valid_for_harvesting = true;
+		} else if (group_flags.is_terran && !helper::ai_worker_repair_controller(worker, town)) {
+			valid_for_harvesting = true;
+		}
+
+		// If the worker can construct and is being used for construction, do not use for harvesting.
+		// Note that calling ai_try_progress_spending_queue_worker makes the AI actually try to build structures, it is not a simple state check. -Pr0nogo
+		if (unit_id_can_construct((UnitId::Enum)worker->id) && helper::ai_try_progress_spending_queue_worker(town, worker)) {
+			valid_for_harvesting = false;
+		}
+		if (valid_for_harvesting) {
+			Unit* main_building = town->main_building;
+			if (main_building) {
+				Unit* town_gas = 0;
+				Unit* town_gas_2 = 0;
+				if (helper::unit_is_active_resource_depot(main_building)) {
+					Unit* best_mineral_field = get_best_mineral_field(town); // New -Veeq7
+					if (best_mineral_field) {
+						town->mineral = best_mineral_field;
+					}
 
 					if (worker_ai->target_resource == AiTargetResource_Mineral) {
 						Unit* target_resource = worker->worker.target_resource.unit;

@@ -1286,3 +1286,13 @@ bool weapon_id_can_self_splash(u32 weapon_id) {
 bool unit_id_is_mine_layer(UnitId::Enum unit_id) {
 	return unit_id == UnitId::TerranVulture;
 }
+
+bool unit_id_can_construct(UnitId::Enum unit_id) {
+	return unit_id == UnitId::TerranMason
+		|| unit_id == UnitId::TerranTalos
+		|| unit_id == UnitId::DanielsMason
+		|| unit_id == UnitId::ProtossScribe
+		|| unit_id == UnitId::ProtossPrudence
+		|| unit_id == UnitId::ZergDroleth
+		|| unit_id == UnitId::ZergGosvileth;
+}
