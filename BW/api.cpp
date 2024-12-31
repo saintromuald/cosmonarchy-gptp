@@ -1026,7 +1026,7 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
 			} break;
 			case UnitId::ZergRilirokor:
 			case UnitId::ZergRililisk: {
-				helper::play_sound_from_unit(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
+				helper::play_sound_from_unit(SoundId::BroodspawnSpawnProc, unit, 1, 0);
 				if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
 					unit->remove_timer = remove_timer;
 				}

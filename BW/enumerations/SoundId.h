@@ -1954,5 +1954,6 @@ namespace SoundId {
 
 		TerranConstructionEnd01							= 3240,
 		TerranConstructionStart01						= 3241,
+		BroodspawnSpawnProc								= 3242,
 	};
 }
