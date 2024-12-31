@@ -224,7 +224,7 @@ static void tick_effect(EffectField& effect) {
 			} break;
 			case EffectId::PsiStorm: {
 				Unit* caster = effect.source;
-				if (!caster) {
+				if (!caster || caster->is_frozen()) {
 					effect.destroy();
 					break;
 				}
