@@ -9960,7 +9960,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* get_ai_refinery(AiTown* town, s32 gas_state, s32 index) {
+	Unit* get_ai_gas_node(AiTown* town, s32 gas_state, s32 index) {
 		static Unit* result;
 		const u32 func_address = 0x00432B90;
 		__asm {

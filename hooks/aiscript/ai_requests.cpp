@@ -21,14 +21,11 @@ static bool player_has_completed_addon_unit_id(s32 player_id, u32 unit_id) {
 	return Player::number_of_completed_addon_units_of_id(player_id, unit_id);
 }
 
-u32 get_refinery_id_from_race(u32 player)
-{
+u32 get_refinery_id_from_race(u32 player) {
 	// TODO: Add handling for custom races. -Pr0nogo
 	u32 refinery_id = UnitId::None;
-	switch (g_player_table[player].race)
-	{
-		case RaceId::Terran:
-		{
+	switch (g_player_table[player].race) {
+		case RaceId::Terran: {
 			if (player_has_completed_landed_unit_id(player, UnitId::TerranAtlas)) {
 				refinery_id = UnitId::TerranReservoir;
 			}
@@ -36,12 +33,10 @@ u32 get_refinery_id_from_race(u32 player)
 				refinery_id = UnitId::TerranWellbore;
 			}
 		} break;
-		case RaceId::Protoss:
-		{
+		case RaceId::Protoss: {
 			refinery_id = UnitId::ProtossAquifer;
 		} break;
-		case RaceId::Zerg:
-		{
+		case RaceId::Zerg: {
 			if (player_has_completed_unit_id(player, UnitId::ZergIrolIris) || player_has_unit_id(player, UnitId::ZergOthstolOviform)) {
 				refinery_id = UnitId::ZergExcisant;
 			}
@@ -53,25 +48,19 @@ u32 get_refinery_id_from_race(u32 player)
 	return refinery_id;
 }
 
-namespace hooks
-{
+namespace hooks {
 	// Don't know what this was hooked for; tidied May 2021 - Pr0nogo
-	void ai_build_tech_upgrade(AiTown* town, char method, char amount, s16 id, char priority, bool need) // 00431F90
-	{
+	void ai_build_tech_upgrade(AiTown* town, char method, char amount, s16 id, char priority, bool need) { // 00431F90
 		s32 iterate = 0;
 		constexpr s32 build_count_flag = 0xF8;
 		TownReq* town_units;
-		if (g_player_table[(u8)town->player].type == PlayerType::Computer)
-		{
+		if (g_player_table[(u8)town->player].type == PlayerType::Computer) {
 			town_units = town->requests;
 			bool set_need = false;
-			if (town->requests[0].flags_and_count & build_count_flag) // if build
-			{
-				for (s32 i = 0; i < 100; i++)
-				{
+			if (town->requests[0].flags_and_count & build_count_flag) { // if build
+				for (s32 i = 0; i < 100; i++) {
 					++town_units;
-					if (!(town_units->flags_and_count & build_count_flag)) // if not build
-					{
+					if (!(town_units->flags_and_count & build_count_flag)) { // if not build
 						set_need = true;
 						iterate = i;
 						break;
@@ -81,8 +70,7 @@ namespace hooks
 				set_need = true;
 			}
 
-			if (set_need)
-			{
+			if (set_need) {
 				town->requests[iterate].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
 				town->requests[iterate].id = id;
 				town->requests[iterate].priority = priority;
@@ -92,8 +80,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-	AiTown* ai_progress_build(s32 player, s32* minerals, s32* gas) // 00434480
-	{
+	AiTown* ai_progress_build(s32 player, s32* minerals, s32* gas) { // 00434480
 		AiTown* result = g_ai_town_list[player].first;
 		AiTown* first_town = g_ai_town_list[player].first;
 		if (result) {
@@ -120,8 +107,7 @@ namespace hooks
 							s32 target_queue_gas_cost = units_dat::vespene_cost[target_unit_queue2];
 							g_ai_minerals_reserve[player_var] = target_queue_mineral_cost;
 							g_ai_vespene_reserve[player_var] = target_queue_gas_cost;
-							if (helper::has_supplies_for_unit(target_unit_queue, player, 1))
-							{
+							if (helper::has_supplies_for_unit(target_unit_queue, player, 1)) {
 								if (g_game_minerals[(u8)player] >= (s32)g_ai_minerals_reserve[(u8)player]) {
 									if (g_game_vespene[(u8)player] >= (s32)g_ai_vespene_reserve[(u8)player]) {
 										*minerals -= g_ai_minerals_reserve[player];
@@ -220,8 +206,7 @@ namespace hooks
 		return true;
 	}
 
-	char ai_plan_do_merge_morph(s32 player, Unit* unit, s32 boolSomething) // 00435F10
-	{
+	char ai_plan_do_merge_morph(s32 player, Unit* unit, s32 boolSomething) { // 00435F10
 		Unit* unit_copy = unit;
 		s32 next_build_type = g_aiscript_controller[player].requests->type;
 		Unit* dummy = nullptr;
@@ -509,63 +494,52 @@ namespace hooks
 		}
 	}
 	
-	void ai_build(u32 unit_id, bool need, u32 count, AiTown* town, u8 priority) // 004323D0
-	{
-		if (count <= 30 && unit_id != UnitId::None)
-		{
+	void ai_build(u32 unit_id, bool need, u32 count, AiTown* town, u8 priority) { // 004323D0
+		if (count <= 30 && unit_id != UnitId::None) {
 			helper::ai_add_build_request(town, 0, count, unit_id, priority, need);
 		}
 	}
 
 	// Hooked to improve logic. -Pr0nogo
-	u8 ai_build_refinery(AiTown* town) // 00433660
-	{
-		u8 result = 0;
+	// This function is now deprecated, as the request handling is done via the 'update_custom_town' func inside custom_ai.cpp. -Pr0nogo
+	void ai_build_gas_node(AiTown* town) { // 00433660
 		u32 player = town->player;
 		u8 mineral_percent;
 		u8 gas_percent;
 		helper::ai_resource_need_split(&gas_percent, player, &mineral_percent);
-		if (gas_percent || town->mineral)
-		{
+		if (gas_percent || town->mineral) {
 			Unit* refinery = 0;
 			u32 priority = 0;
-			if (helper::get_ai_refinery(town, 3, 1))
-			{
+			if (helper::get_ai_gas_node(town, 3, 1)) {
 				priority = 120;
-				refinery = helper::get_ai_refinery(town, 1, 1);
-				if (!refinery)
-				{
-					return 0;
+				refinery = helper::get_ai_gas_node(town, 1, 1);
+				if (!refinery) {
+					return;
 				}
 
 				u8 worker_count = town->worker_count;
-				if (worker_count < town->worker_limit && worker_count < 15)
-				{
-					return worker_count;
+				if (worker_count < town->worker_limit && worker_count < 15) {
+					return;
 				}
 
 				u32 refinery_id = get_refinery_id_from_race(player);
-				if (g_game_minerals[player] < units_dat::mineral_cost[refinery_id] / 2)
-				{
-					return player;
+				if (g_game_minerals[player] < units_dat::mineral_cost[refinery_id] / 2) {
+					return;
 				}
 			} else {
-				refinery = helper::get_ai_refinery(town, 1, 1);
-				if (!refinery)
-				{
-					return 0;
+				refinery = helper::get_ai_gas_node(town, 1, 1);
+				if (!refinery) {
+					return;
 				}
 				priority = 140;
 			}
 
 			u16 refinery_id = get_refinery_id_from_race(player);
-
-			result = 0;
 			if (refinery_id != UnitId::None) {
-				result = helper::ai_add_town_spending_request(player, priority, refinery_id, town);
+				helper::ai_add_town_spending_request(player, priority, refinery_id, town);
 			}
 		}
-		return result; // Actually unused
+		return;
 	}
 
 	// Hooked to allow AI to train guards while under attack. -Pr0nogo
@@ -865,7 +839,7 @@ namespace hooks
 
 			// Requesting refineries is currently handled in custom_ai
 		//	if (town->worker_count > 1 || (town->worker_count == 1 && town->main_building && race == RaceId::Protoss)) {
-		//		hooks::ai_build_refinery(town);
+		//		hooks::ai_build_gas_node(town);
 		//	}
 		}
 
@@ -964,7 +938,7 @@ namespace hooks
 
 		Point16 build_pos = {};
 		if (unit_id == helper::get_default_refinery_type(player)) {
-			Unit* gas = helper::get_ai_refinery(town, 1, 1);
+			Unit* gas = helper::get_ai_gas_node(town, 1, 1);
 			if (!gas) {
 				return false;
 			}

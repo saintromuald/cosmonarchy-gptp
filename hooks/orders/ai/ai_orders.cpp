@@ -884,7 +884,7 @@ namespace hooks {
 		return 0;
 	}
 
-	Unit* get_ai_refinery(AiTown* town, u32 gas_state, u32 index, bool for_harvesting) { // 00432B90
+	Unit* get_ai_gas_node(AiTown* town, u32 gas_state, u32 index, bool for_harvesting) { // 00432B90
 		/*
 		Unit* gas_building = town->gas_buildings[0];
 		u32 counter = 0;
@@ -1023,28 +1023,27 @@ namespace hooks {
 							town->mineral = best_mineral_field;
 						}
 
-						if (worker_ai->target_resource == AiTargetResource_Mineral) {
-							Unit* target_resource = worker->worker.target_resource.unit;
-							if (target_resource && helper::unit_is_mineral_field(target_resource)) {
-								helper::ai_auto_harvest(target_resource, worker, 0);
-							} else {
-								Unit* town_mineral = town->mineral;
-								if (!town_mineral || town_mineral->building.resource.resource_belongs_to_ai) {
-									worker_pos = worker->sprite->position;
-									town_mineral = helper::harvest_next_nearest_resources_ex(town->worker_count <= 12, worker, worker_pos);
-									if (best_mineral_field) { // New -Veeq7
-										town_mineral = best_mineral_field;
-									}
-									if (!town_mineral) {
-										town_mineral = town->mineral;
-									}
+					if (worker_ai->target_resource == AiTargetResource_Mineral) {
+						Unit* target_resource = worker->worker.target_resource.unit;
+						if (target_resource && helper::unit_is_mineral_field(target_resource)) {
+							helper::ai_auto_harvest(target_resource, worker, 0);
+						} else {
+							Unit* town_mineral = town->mineral;
+							if (!town_mineral || town_mineral->building.resource.resource_belongs_to_ai) {
+								worker_pos = worker->sprite->position;
+								town_mineral = helper::harvest_next_nearest_resources_ex(town->worker_count <= 12, worker, worker_pos);
+								if (best_mineral_field) { // New -Veeq7
+									town_mineral = best_mineral_field;
 								}
-								helper::ai_auto_harvest(town_mineral, worker, 0);
+								if (!town_mineral) {
+									town_mineral = town->mineral;
+								}
 							}
-						} else if (worker_ai->target_resource == AiTargetResource_Gas) {
-							Unit* ai_refinery = get_best_gas_refinery(town);
-							helper::ai_auto_harvest(ai_refinery, worker, town->mineral);
+							helper::ai_auto_harvest(town_mineral, worker, 0);
 						}
+					} else if (worker_ai->target_resource == AiTargetResource_Gas) {
+						Unit* ai_refinery = get_best_gas_refinery(town);
+						helper::ai_auto_harvest(ai_refinery, worker, town->mineral);
 					}
 				}
 			}
@@ -1134,7 +1133,7 @@ namespace hooks {
 			}
 			u8 mineral_value = 1;
 			u8 gas_value = 2;
-			if (get_ai_refinery(town, 3, 1, true) || get_ai_refinery(town, 2, 1, true)) {
+			if (get_ai_gas_node(town, 3, 1, true) || get_ai_gas_node(town, 2, 1, true)) {
 				if (!town->mineral) {
 					mineral_value = 2;
 				}

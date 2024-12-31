@@ -1202,7 +1202,7 @@ namespace helper {
 	bool unit_is_mineral_field(Unit* unit);																// 00468890
 	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90
 	Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, Point16 worker_pos);	// 004432D0
-	Unit* get_ai_refinery(AiTown* town, s32 gas_state, s32 index);										// 00432B90
+	Unit* get_ai_gas_node(AiTown* town, s32 gas_state, s32 index);										// 00432B90
 	u32 ai_get_vespene_type(Unit* node, s32 player_id);													// 004326E0
 	void ai_resource_need_split(u8* out_gas_percentage, u32 player, u8* out_mineral_percentage);		// 004475B0
 	u32 ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, void* param);				// 00448400

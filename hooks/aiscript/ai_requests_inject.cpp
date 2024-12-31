@@ -167,13 +167,13 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ai_build_refinery_wrapper() { // 00433660
+	void __declspec(naked) ai_build_gas_node_wrapper() { // 00433660
 		static AiTown* town;
 		__asm {
 			MOV town, EAX
 			PUSHAD
 		}
-		hooks::ai_build_refinery(town);
+		hooks::ai_build_gas_node(town);
 		__asm {
 			POPAD
 			RETN
@@ -481,7 +481,7 @@ namespace hooks {
 	//	jump_patch(ai_plan_do_merge_morph_wrapper,					0x00435F10, 1);
 	//	jump_patch(ai_train_defensive_military_wrapper,				0x0043F990, 1);
 		jump_patch(ai_build_wrapper,								0x004323D0, 1);
-		jump_patch(ai_build_refinery_wrapper,						0x00433660, 1);
+		jump_patch(ai_build_gas_node_wrapper,						0x00433660, 1);
 
 		jump_patch(ai_request_guard_wrapper,						0x00448630, 0);
 		jump_patch(ai_region_train_attack_force_wrapper,			0x0043E670,	4);

@@ -434,70 +434,54 @@ namespace hooks {
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranStarport))
-		{
-			switch (unit_id)
-			{
-				case UnitId::TerranWyvern:
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranStarport)) {
+			switch (unit_id) {
 				case UnitId::TerranGorgon:
+				case UnitId::TerranWyvern:
 				case UnitId::TerranValkyrie:
 				case UnitId::TerranRotary:
-				case UnitId::TerranCommandment:
-				{
+				case UnitId::TerranCommandment: {
 					return true;
 				} break;
 				case UnitId::TerranSundog:
-				case UnitId::TerranSalamander:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranRotary))
-					{
+				case UnitId::TerranSalamander: {
+					if (player_has_completed_unit_id(player_id, UnitId::TerranRotary)) {
 						return true;
 					}
 				} break;
-				case UnitId::TerranSeraph:
-				{
+				case UnitId::TerranSeraph: {
 					if (faction != Faction::TerranGoldenRepublic) {
-						if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
-						{
+						if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment)) {
 							return true;
 						}
 					}
 				} break;
-				case UnitId::TerranAzazel:
-				{
-					if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
-					{
+				case UnitId::TerranAzazel: {
+					if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment)) {
 						return true;
 					}
 				} break;
-				case UnitId::TerranLuminary:
-				{
+				case UnitId::TerranLuminary: {
 					if (faction == Faction::TerranGoldenRepublic) {
-						if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment))
-						{
+						if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCommandment)) {
 							return true;
 						}
 					}
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranNaniteAssembly))
-		{
-			switch (unit_id)
-			{
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranNaniteAssembly)) {
+			switch (unit_id) {
 				case UnitId::TerranHadron:
 				case UnitId::TerranCentaur:
 				case UnitId::TerranMinotaur:
 				case UnitId::TerranMagnetar:
-				case UnitId::TerranPythean:
-				{
+				case UnitId::TerranPythean: {
 					return true;
 				} break;
 				case UnitId::TerranHippogriff:
-				case UnitId::TerranPhobos:
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::TerranHadron))
-					{
+				case UnitId::TerranPhobos: {
+					if (player_has_completed_unit_id(player_id, UnitId::TerranHadron)) {
 						return true;
 					}
 				} break;

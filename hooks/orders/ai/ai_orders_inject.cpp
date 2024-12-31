@@ -392,7 +392,7 @@ namespace
 			MOV town, ESI
 			PUSHAD
 		}
-		result = hooks::get_ai_refinery(town, gas_state, index, false);
+		result = hooks::get_ai_gas_node(town, gas_state, index, false);
 		__asm {
 			POPAD
 			MOV EAX, result
