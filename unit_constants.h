@@ -86,8 +86,11 @@ constexpr s32 MadrigalDirgeDamage = 5;
 constexpr s32 WyvernBaseAttackCooldown = 30;
 
 // Seraph
-constexpr s32 SeraphObservanceDebuffTimer = 5 * 24 + 1;
-constexpr s32 SeraphIrradiateTimer = 10;
+namespace Seraph {
+inline constexpr s32 ObservanceDebuffTimer = 5 * 24 + 1;
+inline constexpr s32 ObservanceSearchRange = 6 * 32;
+inline constexpr s32 IrradiateTimer = 10;
+}
 
 // Azazel
 constexpr s32 AzazelDefensiveMatrixTimer = 30; // roughly 10 seconds

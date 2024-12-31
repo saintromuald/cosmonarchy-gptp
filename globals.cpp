@@ -644,7 +644,7 @@ void refresh_debuffs(Unit* unit) {
 
 	// Refresh Observance
 	if (unit_ext->timers[TimerObservanceDebuff]) {
-		unit_ext->timers[TimerObservanceDebuff] = SeraphObservanceDebuffTimer;
+		unit_ext->timers[TimerObservanceDebuff] = Seraph::ObservanceDebuffTimer;
 	}
 
 	// Refresh Hallucination
@@ -674,7 +674,7 @@ void refresh_debuffs(Unit* unit) {
 
 	// Refresh Irradiate
 	if (unit->irradiate_timer) {
-		unit->irradiate_timer = SeraphIrradiateTimer;
+		unit->irradiate_timer = Seraph::IrradiateTimer;
 	}
 
 	// Refresh Hierophant Signify

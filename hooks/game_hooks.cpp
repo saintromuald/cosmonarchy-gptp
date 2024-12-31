@@ -1839,15 +1839,17 @@ namespace hooks {
 			case UnitId::ZergMatraleth:
 			case UnitId::InfestedKerriganExt: {
 				// Matraleth - Ensnaring Brood
-				for (Unit* target : g_unit_search.radial_ex(unit, 4 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
-					if (!unit_is_combatant(target)) {
-						continue;
-					}
+				if (!unit->is_frozen()) {
+					for (Unit* target : g_unit_search.radial_ex(unit, 4 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
+						if (!unit_is_combatant(target)) {
+							continue;
+						}
 
-					UnitExt* target_ext = get_unit_ext(target);
-					target_ext->timers[TimerEnsnaringBrood] = 3;
-					if (!(target->status & UnitStatus::Burrowed)) {
-						bw::add_unit_overlay(target, ImageId::EnsnaringBroodOverlay);
+						UnitExt* target_ext = get_unit_ext(target);
+						target_ext->timers[TimerEnsnaringBrood] = 3;
+						if (!(target->status & UnitStatus::Burrowed)) {
+							bw::add_unit_overlay(target, ImageId::EnsnaringBroodOverlay);
+						}
 					}
 				}
 				if (unit->id == UnitId::ZergMatraleth && unit->order_signal & 32) {
@@ -1857,16 +1859,18 @@ namespace hooks {
 			} break;
 			case UnitId::ZergSasyrvoleth: {
 				// Sasyrvoleth - Lucilleri Pheremones
-				for (Unit* target : g_unit_search.radial_ex(unit, 5 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
-					if (!unit_is_combatant(target)) {
-						continue;
-					}
+				if (!unit->is_frozen()) {
+					for (Unit* target : g_unit_search.radial_ex(unit, 5 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
+						if (!unit_is_combatant(target)) {
+							continue;
+						}
 
-					UnitExt* target_ext = get_unit_ext(target);
-					target_ext->timers[TimerLucilleriPheremones] = 3;
-					u32 overlay_id = ImageId::DermalAccelerantSmall + bw::get_overlay_offset(target->id, true);
-					if (!(target->status & UnitStatus::Burrowed)) {
-						bw::add_unit_overlay(target, overlay_id);
+						UnitExt* target_ext = get_unit_ext(target);
+						target_ext->timers[TimerLucilleriPheremones] = 3;
+						u32 overlay_id = ImageId::DermalAccelerantSmall + bw::get_overlay_offset(target->id, true);
+						if (!(target->status & UnitStatus::Burrowed)) {
+							bw::add_unit_overlay(target, overlay_id);
+						}
 					}
 				}
 			} break;
@@ -1975,29 +1979,23 @@ namespace hooks {
 			} break;
 			case UnitId::TerranSeraph: {
 				// Observance - Seraph ability
-				// TODO: unit search
-				u32 radius = 6 * 32;
-				auto match = cosmonarchy_finder_match(unit, Flags::Enemy, {});
-				bool attacked = false;
-				bw::UnitFinder(
-					unit->get_x() - radius,
-					unit->get_y() - radius,
-					unit->get_x() + radius,
-					unit->get_y() + radius
-				).for_each_in_match(match, [&](Unit* target) {
-					if ((!bw::is_allied_to(unit->player, target->player))) {
-						UnitExt* target_ext = get_unit_ext(target);
-						if (!target_ext->timers[TimerObservanceDebuff]) {
+				if (!unit->is_frozen()) {
+					auto targets = g_unit_search
+						.radial_ex(unit, Seraph::ObservanceSearchRange, FilterEnemy)
+						.sort_by_distance(unit->position);
+					for (auto target : targets) {
+						UnitExt& target_ext = target->ext();
+						if (!target_ext.timers[TimerObservanceDebuff]) {
 							unit_ext->timers[TimerObservanceOverlay] = 2;
-							target_ext->timers[TimerObservanceDebuff] = 5 * 24 + 1;
-							target_ext->timers[TimerObservancePeriod] = 5 * 24 + 1;
-							if (!target_ext->values[ValueObservanceRend]) {
+							target_ext.timers[TimerObservanceDebuff] = Seraph::ObservanceDebuffTimer;
+							target_ext.timers[TimerObservancePeriod] = Seraph::ObservanceDebuffTimer;
+							if (!target_ext.values[ValueObservanceRend]) {
 								bw::add_unit_overlay(target, ImageId::ObservanceOverlaySmall - bw::get_overlay_offset(target->id));
 							}
-							target_ext->values[ValueObservanceRend] += 1;
+							target_ext.values[ValueObservanceRend] += 1;
 						}
 					}
-				});
+				}
 			} break;
 			case UnitId::TerranPhalanxSiegeMode: {
 				// Fix AI-controlled Phalanxes sometimes failing to acquire targets while in siege mode, originally from DarkenedFantasies.
@@ -2140,7 +2138,7 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ProtossSycophant: {
-				if (!(unit->status & UnitStatus::InTransport) && unit->shields) {
+				if (!unit->is_frozen() && !(unit->status & UnitStatus::InTransport) && unit->shields) {
 					u32 shields = 6 * 256 / 24;
 					if (shields > unit->shields) {
 						shields = unit->shields;
@@ -2297,7 +2295,7 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossCrucible: {
 				// Crucible - Khaydarin Charge stacks
-				if (unit->status & UnitStatus::Completed) {
+				if (unit->status & UnitStatus::Completed && !unit->is_frozen()) {
 					for (Unit* target : g_unit_search.radial_ex(unit, 8 * 32, FilterAlly | FilterBuilding)) {
 						UnitExt* target_ext = get_unit_ext(target);
 						if (unit_id_is_tech(target->id) && units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueInfested]) {
@@ -2329,7 +2327,7 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossBarghest: {
 				if (unit_ext->timers[TimerDecloak] >= 2) {
-					if (unit->status & UnitStatus::Completed) {
+					if (unit->status & UnitStatus::Completed && !unit->is_frozen()) {
 						for (Unit* target : g_unit_search.radial_ex(unit, 5 * 32, FilterAlly)) {
 							UnitExt* target_ext = get_unit_ext(target);
 							if (!(target->status & UnitStatus::Completed) || !target->has_weapon()) {
@@ -2345,7 +2343,7 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossManifold: {
 				if (unit_ext->timers[TimerManifoldConcurringChorus] > 1) {
-					if (unit->status & UnitStatus::Completed) {
+					if (unit->status & UnitStatus::Completed && !unit->is_frozen()) {
 						for (Unit* target : g_unit_search.radial_ex(unit, 3 * 32, FilterAlly)) {
 							UnitExt* target_ext = get_unit_ext(target);
 							if (!(target->status & UnitStatus::Completed) || !target->has_weapon()) {
@@ -2608,7 +2606,7 @@ namespace hooks {
 
 		// Azazel - Sublime Shepherd
 		if (!unit_id_is_resource_node(unit->id, false)) {
-			auto azazels = g_unit_search.radial_ex(unit, 4 * 32, FilterAlly, {UnitId::TerranAzazel});
+			auto azazels = g_unit_search.radial_ex(unit, 4 * 32, FilterAlly | FilterEnabled, {UnitId::TerranAzazel});
 			if (!azazels.count()) {
 				if (unit_ext->values[ValueHasSublimeShepherd]) {
 					unit_ext->values[ValueHasSublimeShepherd] = 0;
@@ -2847,27 +2845,17 @@ namespace hooks {
 
 		// Seraph - Observance
 		if (unit_ext->timers[TimerObservanceDebuff] > 1) {
-			// TODO: unit search
-			const auto range = 6 * 32;
-			auto seraphs = bw::UnitFinder(
-				unit->get_x() - range,
-				unit->get_y() - range,
-				unit->get_x() + range,
-				unit->get_y() + range
-			).filter([&](Unit* target) {
-				if (unit->player == target->player || bw::is_allied_to(unit->player, target->player) || target->id != UnitId::TerranSeraph) {
-					return false;
-				}
-				return true;
-			}).get_all_units();
+			auto seraphs = g_unit_search
+				.radial_ex(unit, Seraph::ObservanceSearchRange, FilterEnemy | FilterEnabled, { UnitId::TerranSeraph })
+				.sort_by_distance(unit->position);
 
-			if (!seraphs.empty()) {
+			if (seraphs.count()) {
 				// Seraph - Observance period
-				unit_ext->timers[TimerObservanceDebuff] = 5 * 24 + 1;
+				unit_ext->timers[TimerObservanceDebuff] = Seraph::ObservanceDebuffTimer;
 
 				// Seraph - Observance ability
 				if (unit_ext->timers[TimerObservancePeriod] == 1) {
-					unit_ext->timers[TimerObservancePeriod] = 5 * 24 + 1;
+					unit_ext->timers[TimerObservancePeriod] = Seraph::ObservanceDebuffTimer;
 					unit_ext->values[ValueObservanceRend] += 1;
 				}
 
@@ -2876,10 +2864,10 @@ namespace hooks {
 					if (!seraph) {
 						continue;
 					}
-					UnitExt* seraph_ext = get_unit_ext(seraph);
-					if (!seraph_ext->timers[TimerObservanceOverlay]) {
+					UnitExt& seraph_ext = seraph->ext();
+					if (!seraph_ext.timers[TimerObservanceOverlay]) {
 						seraph->sprite->create_overlay(ImageId::SeraphRedOverlay);
-						seraph_ext->timers[TimerObservanceOverlay] = 18;
+						seraph_ext.timers[TimerObservanceOverlay] = 18;
 					}
 				}
 			}
