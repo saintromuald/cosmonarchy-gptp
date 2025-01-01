@@ -421,13 +421,16 @@ bool can_enter_transport(Unit* transport, Unit* unit) { // 004E6E00
     if (unit->status & UnitStatus::Burrowed) {
         return 0;
     }
-    if (!bw::is_allied_to(unit->player, transport->player)) {
+    if (!bw::are_mutual_allies(unit->player, transport->player)) {
         return 0;
     }
     if (bw::transport_is_full(transport)) {
         return 0;
     }
     if (unit->status & UnitStatus::InAir) {
+        return 0;
+    }
+    if (unit->player == 11) {
         return 0;
     }
 
