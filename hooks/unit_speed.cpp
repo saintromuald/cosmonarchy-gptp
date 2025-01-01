@@ -103,7 +103,7 @@ namespace hooks {
 		}
 
 		u32 tyranny_stacks = unit_ext->values[ValueMindTyrantTyranny];
-		if (tyranny_stacks > 1 && tyranny_stacks < TyrannyMaxStacks) {
+		if (tyranny_stacks > 1 && tyranny_stacks < MindTyrant::TyrannyMaxStacks) {
 			speed *= 1 - (0.042 * unit_ext->values[ValueMindTyrantTyranny]);
 		}
 

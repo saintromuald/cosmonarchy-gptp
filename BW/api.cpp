@@ -1625,7 +1625,7 @@ void madrigal_dirge_fuse(Unit* unit, UnitExt* unit_ext) {
 		unit->get_x() + radius,
 		unit->get_y() + radius
 	).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}), [&unit_ext](Unit* target) {
-		target->damage_with_custom(unit_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, 5, unit_ext->units[UnitDirgeSource], unit_ext->values[ValueDirgeSourcePlayer]);
+		target->damage_with_custom(unit_ext->values[ValueDirgeStacks] * Madrigal::DirgeDamage * 256, 5, unit_ext->units[UnitDirgeSource], unit_ext->values[ValueDirgeSourcePlayer]);
 	});
 	unit_ext->values[ValueDirgeStacks] = 0;
 }

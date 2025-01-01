@@ -53,7 +53,7 @@ namespace hooks
 
 		if (unit->main_order_state == 0) {
 			helper::play_sound_from_unit(SoundId::SpiderMineDeploy01, unit, 1, 0);
-			unit->ground_weapon_cooldown = MineBurrowTime;
+			unit->ground_weapon_cooldown = TerranMine::BurrowTime;
 			unit->main_order_state = 1;
 		}
 
@@ -106,9 +106,9 @@ namespace hooks
 			bool not_movable = false;
 			helper::unburrow_generic(unit);
 			if (unit->order_target.unit) {
-				if (unit->is_target_within_min_range(unit->order_target.unit, MineSeekRange)) {
+				if (unit->is_target_within_min_range(unit->order_target.unit, TerranMine::SeekRange)) {
 					helper::move_to_collide(unit, unit->order_target.unit);
-					if (unit->is_target_within_min_range(unit->order_target.unit, MineDetonateRange)) {
+					if (unit->is_target_within_min_range(unit->order_target.unit, TerranMine::DetonateRange)) {
 						is_completely_in_range = true;
 					} else if (unit->get_movable_state() != MovableState_UnmovableAtDestination) {
 						not_movable = true;

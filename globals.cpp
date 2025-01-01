@@ -654,22 +654,22 @@ void refresh_debuffs(Unit* unit) {
 
 	// Refresh Captivating ZethrokorClaws
 	if (unit_ext->timers[TimerCaptivatingClaws]) {
-		unit_ext->timers[TimerCaptivatingClaws] = VorvrokorCaptivatingClawsTimer;
+		unit_ext->timers[TimerCaptivatingClaws] = Vorvrokor::CaptivatingClawsTimer;
 	}
 
 	// Refresh Lockdown
 	if (unit->lockdown_timer) {
-		unit->lockdown_timer = LobotomyMineLockdownTimer;
+		unit->lockdown_timer = TerranMine::LobotomyTimer;
 	}
 
 	// Refresh Maelstrom
 	if (unit->maelstrom_timer) {
-		unit->maelstrom_timer = MindTyrantMaelstromTimer;
+		unit->maelstrom_timer = MindTyrant::MaelstromTimer;
 	}
 
 	// Refresh Devourer Corrosive Spores
 	if (unit_ext->timers[TimerCorrosiveTouch]) {
-		unit_ext->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
+		unit_ext->timers[TimerCorrosiveTouch] = Vithrilisk::CorrosiveTouchTimer;
 	}
 
 	// Refresh Irradiate

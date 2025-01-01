@@ -1704,7 +1704,7 @@ namespace hooks {
 			} break;
 			case UnitId::TerranCuirassTankMode: {
 				if (unit_ext->values[ValueCuirassIsSelfReviving]) {
-					if (unit->hitpoints + CuirassSelfHeal >= unit->get_max_hp_raw()) {
+					if (unit->hitpoints + Cuirass::SelfHeal >= unit->get_max_hp_raw()) {
 						unit_ext->values[ValueCuirassIsSelfReviving] = 0;
 						unit->hitpoints = unit->get_max_hp_raw();
 						bw::restore_func(unit);
@@ -1712,7 +1712,7 @@ namespace hooks {
 						unit->status &= ~(UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack);
 						helper::play_sound_from_unit(SoundId::Terran_GOLIATH_TGoWht03_WAV, unit, 1, 0);
 					} else {
-						unit->heal_hp(CuirassSelfHeal);
+						unit->heal_hp(Cuirass::SelfHeal);
 						if (!unit->sprite->get_overlay(ImageId::StonewallProtocolOverlay)) {
 							unit->sprite->create_top_overlay(ImageId::StonewallProtocolOverlay, -3, -8);
 						}
@@ -1813,7 +1813,7 @@ namespace hooks {
 					case IscriptAnimation::GndAttkRpt:
 					case IscriptAnimation::AirAttkInit:
 					case IscriptAnimation::AirAttkRpt: {
-						if (target && unit->get_distance_to_target(target) <= CentaurMissileDistance && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+						if (target && unit->get_distance_to_target(target) <= Centaur::MissileDistance && !unit_ext->timers[TimerSecondaryWeaponCooldown]) {
 							unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::CentaurSunchaserMissiles);
 							unit_ext->values[ValueCentaurSecondaryWeaponCount] = 4;
 							unit_ext->units[UnitCentaurSecondaryWeaponTarget] = target;
@@ -2493,7 +2493,7 @@ namespace hooks {
 
 		// Tyranny - increase stacks
 		if (unit_ext->units[UnitMindTyrantLink]) {
-			if (unit_ext->values[ValueMindTyrantTyranny] < TyrannyMaxStacks) {
+			if (unit_ext->values[ValueMindTyrantTyranny] < MindTyrant::TyrannyMaxStacks) {
 				unit_ext->values[ValueMindTyrantTyranny]++;
 			} else {
 				if (!(unit->status & UnitStatus::Frozen)) {

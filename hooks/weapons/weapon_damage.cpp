@@ -964,7 +964,7 @@ namespace hooks {
 				// Cuirass - Stonewall Protocol
 				if (!target_ext->values[ValueCuirassIsSelfReviving]) {
 					target_ext->values[ValueCuirassIsSelfReviving] = 1;
-					data.target->hitpoints = CuirassSelfReviveHP;
+					data.target->hitpoints = Cuirass::SelfReviveHP;
 					fatal_deal_damage = false;
 					data.target->order_computer(OrderId::Stop);
 					data.target->status |= UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
@@ -1007,47 +1007,22 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossArchon: {
 				// Archon - Astral Aegis
-				bw::UnitFinder(
-					data.target->get_x() - 96,
-					data.target->get_y() - 96,
-					data.target->get_x() + 96,
-					data.target->get_y() + 96
-				).for_each([&](Unit* unit) {
-					if (!units_dat::shields_enabled[unit->id]) {
-						return;
-					}
-					u32 value = ArchonAstralAegisShieldHeal;
-					unit->heal_shields(value, data.target);
-				});
+				auto shielded = g_unit_search
+					.radial_ex(data.target, Archon::AstralAegisRange, FilterCompleted | FilterShielded)
+					.sort_by_distance(data.target->position);
+				for (Unit* shieldee : shielded) {
+					shieldee->heal_shields(Archon::AstralAegisShieldHeal, data.target);
+				};
 			} break;
 			case UnitId::ProtossAurora: {
 				// Last Orders - Aurora behavior
 				if (target_ext->values[ValueLastOrdersInit] == 0) {
 					target_ext->values[ValueLastOrdersInit] = 1;
-					Unit* nearest = bw::UnitFinder(
-						data.target->get_x() - 9 * 32,
-						data.target->get_y() - 9 * 32,
-						data.target->get_x() + 9 * 32,
-						data.target->get_y() + 9 * 32
-					).get_nearest_target(data.target, [&](Unit* unit) {
-						// Don't attack friendly / allied units
-						if (unit->player == data.target->player) {
-							return false;
-						}
-						if (bw::is_allied_to(data.target->player, unit->player)) {
-							return false;
-						}
-						if (unit->status & UnitStatus::Invincible) {
-							return false;
-						}
-						if (!unit->is_visible_to(data.target->player)) {
-							return false;
-						}
-						if (bw::distance_between(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 9 * 32) {
-							return false;
-						}
-						return true;
-					});
+
+					auto targets = g_unit_search
+						.radial_ex(data.target, 9 * 32, FilterEnemy | FilterNoAir | FilterInvincible | FilterVisible)
+						.sort_by_distance(data.target->position);
+					Unit* nearest = targets[0];
 					if (nearest) {
 						fatal_deal_damage = false;
 						data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id] / 2);
@@ -1116,7 +1091,7 @@ namespace hooks {
 				return fatal_deal_damage;
 			}
 
-			if (target_ext->units[UnitMindTyrantLink] && target_ext->values[ValueMindTyrantTyranny] == TyrannyMaxStacks) {
+			if (target_ext->units[UnitMindTyrantLink] && target_ext->values[ValueMindTyrantTyranny] == MindTyrant::TyrannyMaxStacks) {
 				fatal_deal_damage = false;
 				mind_control(data.attacker->player, UnitId::ProtossMindTyrant, data.target);
 				data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);
@@ -1208,7 +1183,7 @@ namespace hooks {
 			final_sprite->create_overlay(spores_image, 0, 0, 0);
 		}
 
-		target_ext->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
+		target_ext->timers[TimerCorrosiveTouch] = Vithrilisk::CorrosiveTouchTimer;
 		return 0;
 	}
 
