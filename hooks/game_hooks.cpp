@@ -1214,18 +1214,22 @@ namespace hooks {
 			}
 		}
 
-		// Reclamation - Regeneration, speed update
-		if (unit_ext->values[ValueReclaimed] && !unit_ext->timers[TimerReclaimHeal]) {
-			should_update_speed = true;
-			auto& reclamation_regen = unit_ext->values[ValueReclamationRegen];
-			if (reclamation_regen) {
-				u32 heal = 2 * 256 / 24;
-				if (unit_ext->damage_taken_timer > 2 * 24) {
-					heal -= unit->heal_hp(heal);
-					reclamation_regen = std::max((s32)(reclamation_regen - heal), 0);
-				} else {
-					u32 heal_fade = heal / 2;
-					reclamation_regen = std::max((s32)(reclamation_regen - heal_fade), 0);
+		// Reclamation - Regeneration, speed update, overlays
+		if (unit_ext->values[ValueReclaimed]) {
+			if (!unit_ext->timers[TimerReclaimStun]) { // This is how this part of the update always worked, but maybe we should not do this every frame for reclaimed units? -Pr0nogo
+				should_update_speed = true;
+			}
+			if (!unit_ext->timers[TimerReclaimHeal]) {
+				auto& reclamation_regen = unit_ext->values[ValueReclamationRegen];
+				if (reclamation_regen) {
+					u32 heal = 2 * 256 / 24;
+					if (unit_ext->damage_taken_timer > 2 * 24) {
+						heal -= unit->heal_hp(heal);
+						reclamation_regen = std::max((s32)(reclamation_regen - heal), 0);
+					} else {
+						u32 heal_fade = heal / 2;
+						reclamation_regen = std::max((s32)(reclamation_regen - heal_fade), 0);
+					}
 				}
 			}
 			u32 overlay_id = ImageId::RevivedDecayingOverlay;

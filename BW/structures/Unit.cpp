@@ -1496,3 +1496,7 @@ bool Unit::is_detector() {
 bool Unit::is_neutral_accessory() {
 	return units_dat::base_property[this->id] & UnitProperty::NeutralAccessories;
 }
+
+bool Unit::has_shields() {
+	return units_dat::shields_enabled[this->id];
+}

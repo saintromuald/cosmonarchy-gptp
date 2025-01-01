@@ -1007,11 +1007,12 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossArchon: {
 				// Archon - Astral Aegis
-				auto shielded = g_unit_search
-					.radial_ex(data.target, Archon::AstralAegisRange, FilterCompleted | FilterShielded)
-					.sort_by_distance(data.target->position);
-				for (Unit* shieldee : shielded) {
-					shieldee->heal_shields(Archon::AstralAegisShieldHeal, data.target);
+				auto shielded = g_unit_search.radial_ex(data.target, Archon::AstralAegisRange, FilterCompleted);
+				for (auto shieldee : shielded) {
+					Unit* shieldee_unit = (Unit*)shieldee; // Needed to use member functions
+					if (shieldee_unit->has_shields()) {
+						shieldee_unit->heal_shields(Archon::AstralAegisShieldHeal, data.target);
+					}
 				};
 			} break;
 			case UnitId::ProtossAurora: {
@@ -1022,7 +1023,7 @@ namespace hooks {
 					auto targets = g_unit_search
 						.radial_ex(data.target, 9 * 32, FilterEnemy | FilterNoAir | FilterInvincible | FilterVisible)
 						.sort_by_distance(data.target->position);
-					Unit* nearest = targets[0];
+					Unit* nearest = (Unit*)targets[0];
 					if (nearest) {
 						fatal_deal_damage = false;
 						data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id] / 2);
@@ -1091,7 +1092,8 @@ namespace hooks {
 				return fatal_deal_damage;
 			}
 
-			if (target_ext->units[UnitMindTyrantLink] && target_ext->values[ValueMindTyrantTyranny] == MindTyrant::TyrannyMaxStacks) {
+			// Tyranny
+			if (target_ext->units[UnitMindTyrantLink] && target_ext->values[ValueMindTyrantTyranny] == MindTyrant::TyrannyMaxStacks && !target_ext->values[ValueLastOrdersInit]) {
 				fatal_deal_damage = false;
 				mind_control(data.attacker->player, UnitId::ProtossMindTyrant, data.target);
 				data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);
@@ -1108,7 +1110,7 @@ namespace hooks {
                     }
                     return true;
                 });
-			if (!(units_dat::base_property[data.target->id] & UnitProperty::Building) && masters.count()) {
+			if (!(units_dat::base_property[data.target->id] & UnitProperty::Building) && masters.count() && !target_ext->values[ValueLastOrdersInit]) {
 				fatal_deal_damage = false;
 				target_ext->timers[TimerDemiurgeWorship] = 5 * 24 + 1;
 				bw::remove_unit_overlay(data.target, ImageId::Malediction_Small + bw::get_overlay_offset(data.target->id));
@@ -1125,7 +1127,7 @@ namespace hooks {
 			}
 			
 			// Empress - Anodyne Annex - zombify target
-			if (target_ext->values[ValueEmpressAnodyneAnnexStacks] && !target_ext->values[ValueIsZombified]) {
+			if (target_ext->values[ValueEmpressAnodyneAnnexStacks] && !target_ext->values[ValueIsZombified] && !target_ext->values[ValueLastOrdersInit]) {
 				fatal_deal_damage = false;
 				empress_zombify(target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer], target_ext->units[UnitEmpressAnodyneAnnexSource], data.target, target_ext->values[ValueEmpressAnodyneAnnexStacks]);
 				return fatal_deal_damage;

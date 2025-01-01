@@ -399,6 +399,7 @@ struct Unit : public UnitLayout
 	bool is_building();
 	bool is_detector();
 	bool is_neutral_accessory();
+	bool has_shields();
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));
