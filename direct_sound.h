@@ -9,5 +9,5 @@ namespace hooks
 	s32 soundInit(s32 a1, s32 a2);				// 004BCB70
 	*/
 
-	void injectDirectSoundHooks();
+	void inject_direct_sound_hooks();
 }

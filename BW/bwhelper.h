@@ -1771,4 +1771,9 @@ namespace helper {
 	void transfer_resource_to_worker(Unit* node, Unit* worker);					// 004696D0
 
 	void ensnare_hit(Unit* unit, u32 x, u16 y);									// 004F4830
+
+	s32 is_selection_group_updated();											// 00424660
+	void status_update_multiselection(BinDlg* dialog);							// 00425960
+	b8 status_update_tooltip();													// 00457FE0
+	void status_update_single_wireframe();										// 004568B0
 }

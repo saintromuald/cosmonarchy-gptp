@@ -8,8 +8,7 @@ DATEXT_VAR_REF(ButtonSet*, buttonSetTable_var);
 DATEXT_VAR_REF(UnitStatFuncArrayEntry*, unitStatFuncs_var);
 DATEXT_VAR_REF(u16*, g_orders_requirement_tree_var);
 
-namespace
-{
+namespace {
 	const u32 load_offsets_unit[] = {
 		0,  0x0046E134 + 4, 0x0046E19A + 4, 0x0046E2D4 + 4, 0x0046E382 + 4, 0x0046E560 + 4, 0x0046E58F + 4, 0x0048E247 + 4,  0,
 		2,  0x0046E100 + 3, 0x0046E13E + 4, /*0x0046E1A6 + 4,*/ 0x0046E320 + 4, 0x0046E4DB + 4, 0x0046E51B + 4, 0x0046E56C + 4, /*0x0048E253 + 4,*/  0,
@@ -67,44 +66,34 @@ namespace
 }
 
 namespace hooks {
-	void inject_grafting_data(void* graftData, u32 type)
-	{
-		if (graftData == NULL)
-		{
+	void inject_grafting_data(void* graftData, u32 type) {
+		if (graftData == NULL) {
 			return;
 		}
-		switch (type)
-		{
-			case GraftType::units_req:
-			{
+		switch (type) {
+			case GraftType::units_req: {
 				load_data(graftData, load_offsets_unit);
 			} break;
-			case GraftType::upgrades_req:
-			{
+			case GraftType::upgrades_req: {
 				load_data(graftData, load_offsets_upgrade);
 			} break;
-			case GraftType::research_req:
-			{
+			case GraftType::research_req: {
 				load_data(graftData, load_offsets_research);
 			} break;
-			case GraftType::tech_req:
-			{
+			case GraftType::tech_req: {
 				load_data(graftData, load_offsets_useTech);
 			} break;
-			case GraftType::orders_req:
-			{
+			case GraftType::orders_req: {
 				load_data(graftData, load_offsets_order);
 				g_orders_requirement_tree_var = (u16*)graftData;
 			} break;
-			case GraftType::buttons:
-			{
+			case GraftType::buttons: {
 				load_data(graftData, load_offsets_buttons);
 				buttonSetTable_var = (ButtonSet*)graftData;
 				// Replace MOVZX BYTE with MOV WORD
 				memory_patch(0x0045925C, buttonReqParamOpcode, 3);
 			} break;
-			case GraftType::statInfo:
-			{
+			case GraftType::statInfo: {
 				load_data(graftData, load_offsets_stat);
 				unitStatFuncs_var = (UnitStatFuncArrayEntry*)graftData;
 			} break;

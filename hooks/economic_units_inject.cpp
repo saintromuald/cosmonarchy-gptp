@@ -1,12 +1,10 @@
 #include "hooks\economic_units.h"
 #include "hook_tools.h"
 
-namespace hooks
-{
+namespace hooks {
 	const u32 jmp_34c53 = 0x00434C53;
 	const u32 jmp_4C80_ret = 0x00434C80;
-	void __declspec(naked) Ai_ProgressSpendingQueue_JmpWrapper()
-	{
+	void __declspec(naked) ai_progress_spending_queue_jump_wrapper() {
 		static u32 unit_id;
 		static u32 result;
 		__asm {
@@ -14,15 +12,12 @@ namespace hooks
 			PUSHAD
 		}
 		result = get_order_from_unit_id(unit_id);
-		if (result == 0) //default case
-		{ 
+		if (result == 0) { //default case
 			__asm {
 				POPAD
 				JMP jmp_4C80_ret
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				MOV EAX, result
@@ -32,8 +27,7 @@ namespace hooks
 	}
 
 	// Probably is going to be hook instead
-	void __declspec(naked) ai_build_supplies_wrapper() // 00433730
-	{
+	void __declspec(naked) ai_build_supplies_wrapper() { // 00433730
 		static AiTown* town;
 		__asm {
 			PUSH EBP
@@ -53,15 +47,14 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) Ai_GetDefaultWorkerFromRace()
-	{
+	void __declspec(naked) get_default_racial_worker_wrapper() {
 		static u32 unit_id;
 		static u32 race;
 		__asm {
 			MOV race, EAX
 			PUSHAD
 		}
-		unit_id = get_worker_from_race(race);
+		unit_id = get_default_racial_worker(race);
 		__asm {
 			POPAD
 			MOV EAX, unit_id
@@ -73,8 +66,7 @@ namespace hooks
 	const u32 jmp_33FD1_ret = 0x00433FD1;
 //	const u32 jmp_33F7A = 0x00433F7A;
 	const u32 jmp_33F77 = 0x00433F77;
-	void __declspec(naked) AddUnitAi_JmpWrapper()
-	{
+	void __declspec(naked) add_unit_ai_jump_wrapper() {
 		static u8 race;
 		static u16 unit_id; // not in original function
 		static u32 cmp_id;
@@ -87,15 +79,12 @@ namespace hooks
 			PUSHAD
 		}
 		cmp_id = get_townhall_from_race(race);
-		if (unit_is_correct_townhall(unit_id, cmp_id, unit))
-		{
+		if (unit_is_correct_townhall(unit_id, cmp_id, unit)) {
 			__asm {
 				POPAD
 				JMP jmp_33FD1_ret
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_33F7E
@@ -104,8 +93,7 @@ namespace hooks
 	}
 
 	const u32 jmp_3660D = 0x0043660D;
-	void __declspec(naked) Ai_UpgradesFinished_JmpWrapper()
-	{
+	void __declspec(naked) ai_upgrades_finished_jump_wrapper() {
 		static u8 race;
 		static u32 unit_id;
 		__asm {
@@ -113,8 +101,7 @@ namespace hooks
 			PUSHAD
 		}
 		unit_id = get_townhall_from_race(race);
-		if (unit_id == 0xe4)
-		{
+		if (unit_id == 0xe4) {
 			unit_id = UnitId::ProtossNexus;
 		}
 		__asm {
@@ -126,22 +113,18 @@ namespace hooks
 
 	const u32 jmp_38f8 = 0x004438F8;
 	const u32 jmp_3889 = 0x00443889;
-	void __declspec(naked) Ai_RemoveDangerousRegions_JmpWrapper()
-	{
+	void __declspec(naked) ai_remove_dangerous_regions_jump_wrapper() {
 		static u32 unit_id;
 		__asm {
 			MOV unit_id, EAX
 			PUSHAD
 		}
-		if (is_townhall(unit_id))
-		{
+		if (is_townhall(unit_id)) {
 			__asm {
 				POPAD
 				JMP jmp_38f8
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_3889
@@ -151,22 +134,18 @@ namespace hooks
 
 	const u32 jmp_27a = 0x0044627A;
 	const u32 jmp_240 = 0x00446240;
-	void __declspec(naked) Ai_GetBuildLocation_JmpWrapper()
-	{
+	void __declspec(naked) ai_get_build_location_jump_wrapper() {
 		static u32 unit_id;
 		__asm {
 			MOV unit_id, EBX
 			PUSHAD
 		}
-		if (is_townhall(unit_id))
-		{
+		if (is_townhall(unit_id)) {
 			__asm {
 				POPAD
 				JMP jmp_27a
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_240
@@ -176,8 +155,7 @@ namespace hooks
 
 	const u32 jmp_920 = 0x00434920;
 	const u32 jmp_c80 = 0x00434C80;
-	void __declspec(naked) Ai_TryProgressSpendingQueue_WorkerJmpWrapper()
-	{
+	void __declspec(naked) ai_try_progress_spending_queue_worker_jump_wrapper() {
 		static u16 unit_id;
 		static Unit* worker;
 		__asm {
@@ -188,16 +166,13 @@ namespace hooks
 			POP EAX
 			PUSHAD
 		}
-		if (is_terran_supply(unit_id, worker))
-		{
+		if (is_terran_supply(unit_id, worker)) {
 			__asm {
 				POPAD
 				JMP jmp_920
 			}
 
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_c80
@@ -205,8 +180,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) AI_AddTownSpendingRequest_Wrapper() // 00448400
-	{
+	void __declspec(naked) ai_add_town_spending_request_wrapper() { // 00448400
 		static s32 result;
 		static s32 player;
 		static s32 priority;
@@ -224,7 +198,7 @@ namespace hooks
 			MOV player, EAX
 			PUSHAD
 		}
-		result = hooks::AI_AddTownSpendingRequest(player, priority, unit_id, param);
+		result = hooks::ai_add_town_spending_request(player, priority, unit_id, param);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -234,45 +208,38 @@ namespace hooks
 		}
 	}
 
-	void injectWorkerHooks()
-	{
-		jump_patch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
-		jump_patch(ai_build_supplies_wrapper, 0x00433730);
-		jump_patch(Ai_GetDefaultWorkerFromRace, 0x00432130);
+	void inject_worker_hooks() {
+		jump_patch(ai_progress_spending_queue_jump_wrapper, 0x00434C31);
+		jump_patch(ai_build_supplies_wrapper,				0x00433730);
+		jump_patch(get_default_racial_worker_wrapper,				0x00432130);
 	}
 
-	void injectTownhallHooks()
-	{
-		jump_patch(AddUnitAi_JmpWrapper, 0x00433F60, 4);
-		jump_patch(Ai_UpgradesFinished_JmpWrapper, 0x004365F6, 4);
-		jump_patch(Ai_RemoveDangerousRegions_JmpWrapper, 0x00443876);
-		jump_patch(Ai_GetBuildLocation_JmpWrapper, 0x0044622B);
-		jump_patch(AI_AddTownSpendingRequest_Wrapper, 0x00448400, 0);
+	void inject_townhall_hooks() {
+		jump_patch(add_unit_ai_jump_wrapper,					0x00433F60, 4);
+		jump_patch(ai_upgrades_finished_jump_wrapper,			0x004365F6, 4);
+		jump_patch(ai_remove_dangerous_regions_jump_wrapper,	0x00443876);
+		jump_patch(ai_get_build_location_jump_wrapper,			0x0044622B);
+		jump_patch(ai_add_town_spending_request_wrapper,		0x00448400, 0);
 	}
 
-	void injectSupplyDepotHooks()
-	{
-		jump_patch(Ai_TryProgressSpendingQueue_WorkerJmpWrapper, 0x00434912, 3);
+	void inject_suppy_depot_hooks() {
+		jump_patch(ai_try_progress_spending_queue_worker_jump_wrapper, 0x00434912, 3);
 	}
 
 	const u32 jmp_00467F24 = 0x00467F24;
 	const u32 jmp_00467F2C = 0x00467F2C;
-	void __declspec(naked) orders_SCVBuild2_Wrapper()
-	{
+	void __declspec(naked) orders_scvbuild2_wrapper() {
 		static u16 id;
 		__asm {
 			MOV id, AX
 			PUSHAD
 		}
-		if (hooks::is_gasholder_structure(id))
-		{
+		if (hooks::is_gasholder_structure(id)) {
 			__asm {
 				POPAD
 				JMP jmp_00467F24
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_00467F2C
@@ -280,8 +247,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) orders_isGeyserTopUnitHookWrapper()
-	{
+	void __declspec(naked) orders_is_geyser_top_unit_wrapper() {
 		static Unit* unit;
 		static u32 result;
 		__asm {
@@ -298,22 +264,18 @@ namespace hooks
 
 	const u32 jmp_00468952 = 0x00468952;
 	const u32 jmp_00468966 = 0x00468966;
-	void __declspec(naked) orders_isGeyserTopUnitEx_Wrapper()
-	{
+	void __declspec(naked) orders_is_geyser_top_unit_ex_wrapper() {
 		static u16 id;
 		__asm {
 			MOV id, AX
 			PUSHAD
 		}
-		if (hooks::is_gasholder_structure(id))
-		{
+		if (hooks::is_gasholder_structure(id)) {
 			__asm {
 				POPAD
 				JMP jmp_00468952
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_00468966
@@ -321,11 +283,10 @@ namespace hooks
 		}
 	}
 
-	void injectGasHooks()
-	{
-		jump_patch(orders_SCVBuild2_Wrapper, 0x00467F12, 1);
-		jump_patch(orders_isGeyserTopUnitHookWrapper, 0x4688b0, 1);
-		jump_patch(orders_isGeyserTopUnitEx_Wrapper, 0x0046893C, 3);
+	void inject_gas_hooks() {
+		jump_patch(orders_scvbuild2_wrapper,				0x00467F12, 1);
+		jump_patch(orders_is_geyser_top_unit_wrapper,		0x4688b0, 1);
+		jump_patch(orders_is_geyser_top_unit_ex_wrapper,	0x0046893C, 3);
 
 		/*
 		0046893C  |.  66:8B41 64    MOV AX,WORD PTR DS:[ECX+64]
@@ -338,18 +299,17 @@ namespace hooks
 		*/
 	}
 
-	void injectEconomicUnitHooks()
-	{
-		injectWorkerHooks();
-		injectTownhallHooks();
-	//	injectSupplyDepotHooks();
+	void inject_economic_unit_hooks() {
+		inject_worker_hooks();
+		inject_townhall_hooks();
+	//	inject_suppy_depot_hooks();
 		//besides Ai_SupplyDepot which is part of worker hooks, there's no other hardcode related to supply
 		//add later:
 		//supplies
 		//00434912 | .  66:83B9 02FF6 > CMP WORD PTR DS : [ECX + 68FF02] , 6D
 		//
 
-		injectGasHooks();
+		inject_gas_hooks();
 		/*
 		//REFINERY ONLY
 		Line 74437: 004320DE  |.  B8 6E000000   MOV EAX,6E
@@ -381,10 +341,6 @@ namespace hooks
 		Line 340029: 004E4E0D   .  66:81FE 9D00  CMP SI,9D
 		Line 340059: 004E4E72   .  66:81FE 9D00  CMP SI,9D
 		Line 340086: 004E4EBF   .  66:8178 64 9D>CMP WORD PTR DS:[EAX+64],9D
-
-
-
 		*/
-
 	}
 }

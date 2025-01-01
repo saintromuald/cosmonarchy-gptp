@@ -80,8 +80,8 @@ BW_DATA(MapSize*,			g_map_tile_size,				0x0057F1D4);
 BW_DATA(Location*,			g_location_table,				0x0058DC60);
 
 // For buttonsets
-BW_DATA_REF(ButtonSet*,					g_buttonset_table,	0x005187E8);
-BW_DATA_REF(UnitStatFuncArrayEntry*,	unitStatFuncs,		0x005193A0);
+BW_DATA_REF(ButtonSet*,					g_buttonset_table,				0x005187E8);
+BW_DATA_REF(UnitStatFuncArrayEntry*,	g_unit_stat_funcs_table,		0x005193A0);
 
 BW_DATA(ActionPointer*,	g_action_table,					0x00512800); // From triggers.cpp
 BW_DATA(ActionPointer*,	g_briefing_action_table,		0x00512800);
@@ -1280,6 +1280,8 @@ BW_DATA(HIMC*,				g_app_context,						0x006D6438);
 BW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
 
 BW_REF(b32,					g_units_recalled,				0x0063FF50);
+
+BW_REF(BinDlg*,				g_statdata_dialog,				0x0068C1F0);
 
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);

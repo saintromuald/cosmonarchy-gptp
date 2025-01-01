@@ -1,10 +1,8 @@
 #include "stats_panel_display.h"
 #include <hook_tools.h>
 
-namespace
-{
-	void __declspec(naked) stats_panel_display_wrapper()
-	{
+namespace {
+	void __declspec(naked) stats_panel_display_wrapper() {
 		static BinDlg* dialog;
 		__asm {
 			PUSH EBP
@@ -22,8 +20,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) draw_building_info_wrapper()
-	{
+	void __declspec(naked) draw_building_info_wrapper() {
 		static BinDlg* dialog;
 		__asm {
 			MOV dialog, ECX
@@ -36,8 +33,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) get_unit_rank_string_wrapper() // 0042F370
-	{
+	void __declspec(naked) get_unit_rank_string_wrapper() { // 0042F370
 		static Unit* a1;
 		static const char* result;
 		__asm {
@@ -52,8 +48,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) draw_unit_kills_string_wrapper() // 00425DD0
-	{
+	void __declspec(naked) draw_unit_kills_string_wrapper() { // 00425DD0
 		static BinDlg* dialog;
 		__asm {
 			MOV dialog, EBX
@@ -66,8 +61,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stats_armor_level_wrapper() // 00425600
-	{
+	void __declspec(naked) stats_armor_level_wrapper() { // 00425600 
 		static BinDlg* dialog;
 		static Unit* unit;
 		static u16 status_screen_index;
@@ -91,8 +85,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stats_weapon_level_wrapper() // 00425790
-	{
+	void __declspec(naked) stats_weapon_level_wrapper() { // 00425790
 		static BinDlg* dialog;
 		static u16 status_screen_index;
 		static u8 weapon_id;
@@ -117,8 +110,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stats_shield_level_wrapper() // 00425510
-	{
+	void __declspec(naked) stats_shield_level_wrapper() { // 00425510
 		static BinDlg* dialog;
 		static u16 status_screen_index;
 		__asm {
@@ -140,8 +132,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stats_spidermine_count_wrapper() // 00426300
-	{
+	void __declspec(naked) stats_spidermine_count_wrapper() { // 00426300
 		static b32 result;
 		static BinDlg* dialog;
 		static u16 index;
@@ -373,8 +364,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stats_addon_builder_wrapper() // 00425F30
-	{
+	void __declspec(naked) stats_addon_builder_wrapper() { // 00425F30
 		static BinDlg* dialog;
 		__asm {
 			MOV dialog, EDI
@@ -387,8 +377,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stats_incomplete_unit_wrapper() // 004260C0
-	{
+	void __declspec(naked) stats_incomplete_unit_wrapper() { // 004260C0
 		static BinDlg* dialog;
 		__asm {
 			MOV dialog, EDI
@@ -401,8 +390,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stats_queue_progress_wrapper() // 004268D0
-	{
+	void __declspec(naked) stats_queue_progress_wrapper() { // 004268D0
 		static BinDlg* dialog;
 		__asm {
 			PUSH EBP
@@ -422,8 +410,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stats_morph_progress_wrapper() // 00457250
-	{
+	void __declspec(naked) stats_morph_progress_wrapper() { // 00457250
 		static BinDlg* dialog;
 		static int index;
 		static u32 unk;
@@ -447,8 +434,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stats_nuke_silo_wrapper() // 00426FF0
-	{
+	void __declspec(naked) stats_nuke_silo_wrapper() { // 00426FF0
 		static BinDlg* dialog;
 		__asm {
 			PUSH EBP
@@ -468,8 +454,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unit_stat_act_archon_wrapper() // 004273E0
-	{
+	void __declspec(naked) unit_stat_act_archon_wrapper() { // 004273E0
 		static BinDlg* dialog;
 		__asm {
 			MOV dialog, ECX
@@ -482,8 +467,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) stats_text_energy_timer_wrapper() // 00425A30
-	{
+	void __declspec(naked) stats_text_energy_timer_wrapper() { // 00425A30
 		static BinDlg* dialog;
 		__asm {
 			MOV dialog, EBX
@@ -523,10 +507,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_stats_panel_display_hooks()
-	{
+namespace hooks {
+	void inject_stats_panel_display_hooks() {
 		jump_patch(stats_panel_display_wrapper,						0x00426C60, 1);
 		jump_patch(get_unit_rank_string_wrapper,					0x0042F370, 2);
 		jump_patch(draw_unit_kills_string_wrapper,					0x00425DD0, 2);
@@ -542,8 +524,8 @@ namespace hooks
 		jump_patch(reset_tooltip_info_wrapper_3,					0x004597D5, 0);
 		jump_patch(set_tooltip_info_wrapper,						0x00458800, 4);
 
-	//	jump_patch(draw_tooltip_with_icon_wrapper,					0x00458EF0, 1);
-	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3);
+	//	jump_patch(draw_tooltip_with_icon_wrapper,					0x00458EF0, 1); // Don't recall why this was disabled.
+	//	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3); // Don't recall why this was disabled.
 
 		jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
 		jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
@@ -553,8 +535,8 @@ namespace hooks
 		jump_patch(stats_incomplete_unit_wrapper,					0x004260C0, 2);
 	//	jump_patch(stats_queue_progress_wrapper,					0x004268D0, 1); // Doesn't clear stats panel properly
 	//	jump_patch(stats_morph_progress_wrapper,					0x00457250, 1); // Replaces unit queue with structure progress bar
-	//	jump_patch(stats_nuke_silo_wrapper,							0x00426FF0, 3);
-	//	jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0); // This is not used anymore, so we can ignore it.
+	//	jump_patch(stats_nuke_silo_wrapper,							0x00426FF0, 3); // Queue display weirdness, IIRC
+	//	jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0); // This is not used anymore, so we can ignore it. -Pr0nogo
 
 		jump_patch(stats_text_energy_timer_wrapper,					0x00425A30, 2);
 		jump_patch(unit_stat_act_default_wrapper,					0x00425EE0, 4);
@@ -564,6 +546,6 @@ namespace hooks
 		nops(0x0042690C, 2);
 		nops(0x00426918, 6);
 		
-	//	call_patch(draw_tooltip_with_icon_partial_wrapper,          0x00458FB2, 1);
+	//	call_patch(draw_tooltip_with_icon_partial_wrapper,          0x00458FB2, 1); // Don't recall why this was disabled.
 	}
 }

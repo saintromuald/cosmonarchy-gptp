@@ -15306,4 +15306,47 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	s32 is_selection_group_updated() {
+		const u32 func_address = 0x00424660;
+		static s32 result;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void status_update_multiselection(BinDlg* dialog) {
+		const u32 func_address = 0x00425960;
+		__asm {
+			PUSHAD
+			MOV EAX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	b8 status_update_tooltip() {
+		const u32 func_address = 0x00457FE0;
+		static b8 result;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void status_update_single_wireframe() {
+		const u32 func_address = 0x004568B0;
+		__asm {
+			PUSHAD
+			CALL func_address
+			POPAD
+		}
+	}
 }

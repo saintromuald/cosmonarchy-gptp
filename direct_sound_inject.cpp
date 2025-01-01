@@ -1,8 +1,7 @@
 #include "direct_sound.h"
 #include <hook_tools.h>
 
-namespace
-{
+namespace {
 	/*
 	void __declspec(naked) soundThread_Wrapper() // 004BC620
 	{
@@ -60,16 +59,13 @@ namespace
 	*/
 }
 
-namespace hooks
-{
-	void injectDirectSoundSub()
-	{
+namespace hooks {
+	void inject_direct_sound_sub() {
 	//	jump_patch(soundThread_Wrapper,		0x004BC620, 4);
 	//	jump_patch(soundInit_Wrapper,		0x004BCB70, 1);
 	}
 
-	void injectDirectSoundHooks()
-	{
-		injectDirectSoundSub();
+	void inject_direct_sound_hooks() {
+		inject_direct_sound_sub();
 	}
 }

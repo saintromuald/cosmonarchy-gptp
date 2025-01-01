@@ -338,7 +338,7 @@ namespace hooks {
 				// Azazel Defensive Matrix - heal over time
 				if (unit->defensive_matrix_hp != 0) {
 					if (unit->hitpoints > 0 && unit->hitpoints / 256 != unit->get_max_hp_ingame()) {
-						tick_heal += AzazelDefensiveMatrixHeal;
+						tick_heal += Azazel::DefensiveMatrixHeal;
 					}
 				}
 
