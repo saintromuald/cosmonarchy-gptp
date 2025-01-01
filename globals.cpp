@@ -632,7 +632,7 @@ void refresh_debuffs(Unit* unit) {
 
 	// Refresh Ensnare
 	if (unit->ensnare_timer) {
-		unit->ensnare_timer = MatralethEnsnareTimer;
+		unit->ensnare_timer = Matraleth::EnsnareTimer;
 		// specific update following ensnare removal
 		unit->update_speed();
 	}

@@ -74,7 +74,7 @@ Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id) {
 		switch (unit->id) {
 			case UnitId::ZergRililisk:
 			case UnitId::ZergRilirokor: {
-				unit->remove_timer = BroodspawnTimer;
+				unit->remove_timer = Broodspawn::LifeTimer;
 			} break;
 		}
 

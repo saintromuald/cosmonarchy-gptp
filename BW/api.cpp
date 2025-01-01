@@ -993,7 +993,7 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
 	switch (unit_id) {
 		case UnitId::ZergRililisk:
 		case UnitId::ZergRilirokor: {
-			remove_timer = BroodspawnTimer;
+			remove_timer = Broodspawn::LifeTimer;
 		} break;
 	}
 

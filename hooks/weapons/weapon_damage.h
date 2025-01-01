@@ -3,7 +3,7 @@
 
 extern Bullet* weapon_damage_current_bullet;
 
-void apply_ensnare_internal(Unit* unit, u32 ensnare_factor, u32 ensnare_timer = MatralethEnsnareTimer);
+void apply_ensnare_internal(Unit* unit, u32 ensnare_factor, u32 ensnare_timer = Matraleth::EnsnareTimer);
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor);
 
 namespace hooks {
