@@ -115,6 +115,7 @@ namespace hooks {
 				unit->spend_energy(5 * 256 / 24);
 				if (unit->energy == 0 || bw::get_generic_rust_value(unit, RustId::CancelRecall)) {
 					bw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
+					unit_ext->values[ValueDidactChannelIndex] = 0;
 					unit_ext->values[ValueDidactRecalling] = false;
 
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;

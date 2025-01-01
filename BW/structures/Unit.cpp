@@ -1492,3 +1492,7 @@ bool Unit::is_building() {
 bool Unit::is_detector() {
 	return units_dat::base_property[this->id] & UnitProperty::Detector;
 }
+
+bool Unit::is_neutral_accessory() {
+	return units_dat::base_property[this->id] & UnitProperty::NeutralAccessories;
+}

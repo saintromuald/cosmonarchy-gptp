@@ -93,8 +93,10 @@ inline constexpr s32 IrradiateTimer = 10;
 }
 
 // Azazel
-constexpr s32 AzazelDefensiveMatrixTimer = 30; // roughly 10 seconds
-constexpr s32 AzazelDefensiveMatrixHeal = 107; // ~10 HP per second | 256 * 5 / 24
+namespace Azazel {
+inline constexpr s32 DefensiveMatrixTimer = 30; // roughly 10 seconds
+inline constexpr s32 DefensiveMatrixHeal = 107; // ~10 HP per second | 256 * 5 / 24
+}
 
 // Centaur
 constexpr s32 CentaurMissileDistance = 4 * 32;
@@ -137,7 +139,10 @@ constexpr s32 AILanifectSeekRange = 8 * 32;
 constexpr s32 AIWebTimer = 1 * 24;
 
 // Didact
-constexpr s32 DidactStasisFieldTimer = 23; // roughly 8 seconds
+namespace Didact {
+inline constexpr s32 ShroudOfAdunRange = 4 * 32;
+inline constexpr s32 StasisFieldTimer = 23; // roughly 8 seconds
+}
 
 // Star Sovereign
 constexpr s32 AIStarSovereignAbilSeekRange = 6 * 32;
@@ -170,7 +175,9 @@ constexpr f64 VithriliskCorrosiveTouchArmorReduction = 1 * 256;
 constexpr s32 ZoryusthalethReconstitutionHealing = 5 * 256;
 
 // Isthrathaleth
-constexpr s32 IsthrathalethPlagueTimer = 5 * 3;
+namespace Isthrathaleth {
+	inline constexpr s32 PlagueTimer = 5 * 3;
+}
 
 // Matraleth
 constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;

@@ -639,7 +639,7 @@ void refresh_debuffs(Unit* unit) {
 
 	// Refresh Plague
 	if (unit->plague_timer) {
-		unit->plague_timer = IsthrathalethPlagueTimer;
+		unit->plague_timer = Isthrathaleth::PlagueTimer;
 	}
 
 	// Refresh Observance

@@ -2735,14 +2735,14 @@ namespace hooks {
 		}
 
 		// Correct vanilla timers -Pr0nogo
-		if (unit->defensive_matrix_timer > AzazelDefensiveMatrixTimer) {
-			unit->defensive_matrix_timer = AzazelDefensiveMatrixTimer;
+		if (unit->defensive_matrix_timer > Azazel::DefensiveMatrixTimer) {
+			unit->defensive_matrix_timer = Azazel::DefensiveMatrixTimer;
 		}
-		if (unit->stasis_timer > DidactStasisFieldTimer) {
-			unit->stasis_timer = DidactStasisFieldTimer;
+		if (unit->stasis_timer > Didact::StasisFieldTimer) {
+			unit->stasis_timer = Didact::StasisFieldTimer;
 		}
-		if (unit->plague_timer > IsthrathalethPlagueTimer) {
-			unit->plague_timer = IsthrathalethPlagueTimer;
+		if (unit->plague_timer > Isthrathaleth::PlagueTimer) {
+			unit->plague_timer = Isthrathaleth::PlagueTimer;
 		}
 		if (unit->defensive_matrix_hp > 100 * 256) {
 			unit->defensive_matrix_hp = 100 * 256;
