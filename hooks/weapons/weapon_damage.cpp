@@ -1021,15 +1021,17 @@ namespace hooks {
 					target_ext->values[ValueLastOrdersInit] = 1;
 
 					auto targets = g_unit_search
-						.radial_ex(data.target, 9 * 32, FilterEnemy | FilterNoAir | FilterInvincible | FilterVisible)
+						.radial_ex(data.target, 9 * 32, FilterEnemy | FilterInvincible | FilterVisible)
 						.sort_by_distance(data.target->position);
-					Unit* nearest = (Unit*)targets[0];
-					if (nearest) {
-						fatal_deal_damage = false;
-						data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id] / 2);
-						data.target->order_to(OrderId::Move, nearest->position.x, nearest->position.y);
-						data.target->status |= UnitStatus::CanNotReceiveOrders;
-						data.target->sprite->create_top_overlay(ImageId::GodsMadeFlesh_Small);
+					if (targets.count()) {
+						Unit* nearest = (Unit*)targets[0];
+						if (nearest) {
+							fatal_deal_damage = false;
+							data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id] / 2);
+							data.target->order_to(OrderId::Move, nearest->position.x, nearest->position.y);
+							data.target->status |= UnitStatus::CanNotReceiveOrders;
+							data.target->sprite->create_top_overlay(ImageId::GodsMadeFlesh_Small);
+						}
 					}
 				}
 			} break;
