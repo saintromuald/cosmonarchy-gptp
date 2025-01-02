@@ -1955,5 +1955,13 @@ namespace SoundId {
 		TerranConstructionEnd01							= 3240,
 		TerranConstructionStart01						= 3241,
 		BroodspawnSpawnProc								= 3242,
+		PotentateReady01								= 3243,
+		PotentateReady02								= 3244,
+		PotentateReady03								= 3245,
+
+		PotentateOrderAggressive01						= 3254,
+		PotentateOrderAggressive02						= 3255,
+		PotentateOrderAggressive03						= 3256,
+		PotentateOrderAggressive04						= 3257,
 	};
 }
