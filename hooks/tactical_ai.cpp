@@ -1124,8 +1124,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 
 			if (web_state && webs > threshold) {
 				bw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
-				if (unit->main_order_id == OrderId::Move)
-				{
+				if (unit->main_order_id == OrderId::Move) {
 					unit->order_to_idle();
 				}
 			}
@@ -1133,20 +1132,20 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			u32 enemy_units_health = 0;
 			u32 allied_units_health = 0;
 			bool allied_town_centers = false;
-			cosmonarchyFinderLoop(unit, unit->sprite->position, StarSovereign::AIAbilSeekRange, Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u) {
-				if (!bw::is_allied_to(unit->player, u->player)) {
-					enemy_units_health += (u->hitpoints + u->shields) / 256;
-				}
-				if (bw::is_allied_to(unit->player, u->player)) {
-					if (units_dat::base_property[u->id] & UnitProperty::ResourceDepot) {
+			auto victims = g_unit_search.radial_ex(unit, StarSovereign::AIAbilSeekRange, FilterNotSelf | FilterNoAir);
+			for (auto victim : victims) {
+				if (!bw::is_allied_to(unit->player, victim->player)) {
+					enemy_units_health += (victim->hitpoints + victim->shields) / 256;
+				} else {
+					if (victim->is_resource_depot()) {
 						allied_town_centers = true;
 						return;
 					}
-					allied_units_health += (u->hitpoints + u->shields) / 256;
+					allied_units_health += (victim->hitpoints + victim->shields) / 256;
 				}
-			});
-			if (!allied_town_centers && enemy_units_health >= 2000 && allied_units_health < 2000
-				&& (unit->hitpoints + unit->shields) * 2 >=	(units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id])) {
+			}
+			if (!allied_town_centers && enemy_units_health >= 1500 && allied_units_health < 1500
+			&& (unit->hitpoints + unit->shields) * 2 >=	(units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id])) {
 				unit_ext->timers[TimerAI_GriefOfAllGods] = 612;
 				unit_ext->timers[TimerAI_KitingCooldown] = 5 * 24;
 				unit->issue_custom_order(OrderId::GriefOfAllGods);
