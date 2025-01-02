@@ -4601,7 +4601,7 @@ namespace helper {
 		}
 	}
 
-	void apply_spores(Unit* unit) {
+	void apply_corrosive_spores(Unit* unit) {
 		const u32 func_address = 0x004F4480;
 		__asm {
 			PUSHAD

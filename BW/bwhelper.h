@@ -578,7 +578,7 @@ namespace helper {
 	void set_image_direction(Image* image, s8 direction);																			// 004D5F80
 
 	//// api
-	void apply_spores(Unit* unit);
+	void apply_corrosive_spores(Unit* unit);
 	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction);
 	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 damage_divisor);
 	Unit* create_unit_at_pos(u16 unit_id, u16 player, u32 x, u32 y);																// 004CD360

@@ -57,15 +57,14 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) update_corrosive_spores_wrapper() // 004F4480
-	{
+	void __declspec(naked) update_corrosive_spores_wrapper() { // 004F4480
 		static Unit* target;
 		static u32 result;
 		__asm {
 			MOV target, EBX
 			PUSHAD
 		}
-		result = hooks::apply_spores_hook(target);
+		result = hooks::apply_corrosive_spores(target);
 		__asm {
 			POPAD
 			MOV EAX, result

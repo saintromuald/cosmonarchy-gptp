@@ -209,6 +209,7 @@ namespace hooks {
 			case UnitId::ZergVorvrokor: {
 				speed *= 1.3;
 			} break;
+			case UnitId::TerranHarakanGolden:
 			case UnitId::TerranStriga:
 			case UnitId::ProtossZealot: {
 				speed *= 1.35;

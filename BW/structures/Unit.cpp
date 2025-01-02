@@ -1500,3 +1500,11 @@ bool Unit::is_neutral_accessory() {
 bool Unit::has_shields() {
 	return units_dat::shields_enabled[this->id];
 }
+
+bool Unit::is_worker() {
+	return units_dat::base_property[this->id] & UnitProperty::Worker;
+}
+
+bool Unit::is_resource_depot() {
+	return units_dat::base_property[this->id] & UnitProperty::ResourceDepot;
+}

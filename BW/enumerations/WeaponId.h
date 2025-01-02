@@ -158,6 +158,10 @@ namespace WeaponId {
 		AurielQuarternaryRifle				= 209,
 		AdherentPhaseBlade					= 210,
 		NathreliskSignalingSpores			= 211,
+		CyclopsBrontesPayload				= 217,	// Passive explosion
+		CyclopsFuturistFlakCannons			= 218,
+		HarakanGoldenFlamethrower			= 220,
+		IziraliskCorrosiveBioplasma			= 221,
 
 		// Terran \\
 			
@@ -225,8 +229,6 @@ namespace WeaponId {
 		SevenstepGeometricRiflePiercing		= 200,
 		MatadorTwinstrikeCannons			= 201,
 		SalamanderAngeltearRockets			= 216,
-		CyclopsBrontesPayload				= 217,	// Passive explosion
-		CyclopsFuturistFlakCannons			= 218,
 
 		// Protoss \\
 		

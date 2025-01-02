@@ -92,7 +92,6 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 			}
 		}
 	}
-
 	if (!replace) {
 		helper::play_sound_at_pos(sound_id, sprite->position, 1, 0);
 	}

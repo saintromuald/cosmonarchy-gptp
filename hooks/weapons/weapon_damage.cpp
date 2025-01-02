@@ -787,6 +787,9 @@ namespace hooks {
 						attacker_ext->values[ValueGhitorokorRelentlessAggressionStacks]++;
 						attacker_ext->timers[TimerGhitorokorRelentlessAggression] = 48 + 1;
 					} break;
+					case WeaponId::IziraliskCorrosiveBioplasma: {
+						helper::apply_corrosive_spores(data.target);
+					} break;
 					case WeaponId::VithriliskCorrosiveSpores: {
 						// Vithrilisk - Critical Mass
 						// TODO: Unit search
@@ -807,7 +810,7 @@ namespace hooks {
 								if (bw::is_allied_to(data.attacker->player, target->player)) {
 									return;
 								}
-								helper::apply_spores(target);
+								helper::apply_corrosive_spores(target);
 								Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
 								if (thingy) {
 									thingy->sprite->elevation = target->sprite->elevation + 1;
@@ -1167,7 +1170,7 @@ namespace hooks {
 	}
 
 	// Hooked to change Corrosive Spores timer - Pr0nogo
-	s32 apply_spores_hook(Unit* target) { // 004F4480
+	s32 apply_corrosive_spores(Unit* target) { // 004F4480
 		UnitExt* target_ext = get_unit_ext(target);
 		target_ext->values[ValueCorrosiveTouchStacks]++;
 		Image* image = target->get_overlay(get_spores_overlay_id(target));

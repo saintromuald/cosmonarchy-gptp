@@ -287,8 +287,7 @@ b32 unload_unit_proc(Unit* unit) { // 004E7F70
 }
 
 // Hooked to extend transports. -Pr0nogo
-char update_unit_transport_data(Unit* cargo, Unit* unused) // 00401EA0
-{
+char update_unit_transport_data(Unit* cargo, Unit* unused) { // 00401EA0
     u32 pathing = cargo->status;
     if (cargo->status & UnitStatus::InTransport) {
         Unit* cargo_transport = cargo->connected_unit;
@@ -476,7 +475,7 @@ bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) { // 004C7E20
             }
         }
     }
-    if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+    if (unit->is_worker()) {
         Unit* powerup = unit->worker.powerup;
         if (powerup) {
             *trig_killing_additional_unit = 1;
@@ -490,12 +489,12 @@ bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) { // 004C7E20
     if (!call_kill_unit_args_func(args->func, args->player, args->unit_id, unit)) {
         return false;
     }
-    if (units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories && unit->powerup_carrier) {
+    if (unit->is_neutral_accessory() && unit->powerup_carrier) {
         helper::kill_powerup(unit->powerup_carrier);
     } else {
         if (!(unit->status & UnitStatus::IsHallucination) && units_dat::space_provided[unit->id]) {
             if (*trig_remove_unit_active) {
-                unit->user_action_flags |= 4u;
+                unit->user_action_flags |= UserActionFlags_HideUnit;
             }
         } else if (*trig_remove_unit_active) {
             helper::hide_unit(unit);

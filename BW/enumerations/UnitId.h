@@ -105,6 +105,7 @@ namespace UnitId
 		TerranQilin											= 398,
 		TerranAuriel										= 399,
 		TerranCyclopsFuturist								= 410,
+		TerranHarakanGolden									= 413,
 
 	// Terran-Building
 		TerranVestry										= 119,		// Starbase / Terran Unused 1

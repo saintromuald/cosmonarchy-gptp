@@ -284,10 +284,10 @@ namespace hooks {
 			auto vec = bw::get_clarion_links(bullet->attack_target.unit);
 			if (vec.size() != 0) {
 				for (auto unit : vec) {
-					helper::apply_spores(unit);
+					helper::apply_corrosive_spores(unit);
 				}
 			} else {
-				helper::apply_spores(bullet->attack_target.unit);
+				helper::apply_corrosive_spores(bullet->attack_target.unit);
 			}
 		}
 	}

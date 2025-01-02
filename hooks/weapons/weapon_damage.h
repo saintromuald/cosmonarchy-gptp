@@ -48,7 +48,7 @@ namespace hooks {
 
 	void apply_ensnare(Unit* unit);									// 004F45E0
 	u16 get_spores_overlay_id(Unit* target);
-	s32 apply_spores_hook(Unit* target);							// 004F4480
+	s32 apply_corrosive_spores(Unit* target);						// 004F4480
 
 	// Important: this one is patched to do nothing by default (to noop the game code)! Use the latter instead
 	void unit_attack_notify_hook(Unit* unit);						// 0048F230

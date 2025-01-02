@@ -1,37 +1,33 @@
 #pragma once
 #include "globals.h"
 
-struct StatTxtStringTbl
-{
-	u16 getStringCount() const
-	{
+struct StatTxtStringTbl {
+	u16 getStringCount() const {
 		return *buffer;
 	}
-	u32 getStringCountExt() const
-	{
+	u32 getStringCountExt() const {
 		return *extendedBuffer;
 	}
-	const char* get_string(u32 index) const
-	{
-		if (g_iquare_globals->tbl_extender)
-		{
-			if (index == 0) return nullptr;
-			else if (index <= getStringCountExt())
+	const char* get_string(u32 index) const {
+		if (g_iquare_globals->tbl_extender) {
+			if (index == 0) {
+				return nullptr;
+			} else if (index <= getStringCountExt()) {
 				return (const char*)(extendedBuffer)+extendedBuffer[index];
-			else
+			} else {
 				return (const char*)0x00501B7D;
-		}
-		else
-		{
-			if ((u16)index == 0) return nullptr;
-			else if ((u16)index <= getStringCount())
+			}
+		} else {
+			if ((u16)index == 0) {
+				return nullptr;
+			} else if ((u16)index <= getStringCount()) {
 				return (const char*)(buffer)+buffer[(u16)index];
-			else
+			} else {
 				return (const char*)0x00501B7D;
+			}
 		}
 	}
-	union
-	{
+	union {
 		u16* buffer;
 		u32* extendedBuffer;
 	};
