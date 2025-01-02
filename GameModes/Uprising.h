@@ -200,6 +200,41 @@ private:
                 },
             },
             UprisingSpawnerInfo{
+                .name = "Trinity's Touch",
+                .unit_id = UnitId::TerranStockade,
+                .starting_waves = {
+                    {
+                        {1, UnitId::TerranMaverick},
+                        {2, UnitId::TerranCohort},
+                    },
+                    {
+                        {2, UnitId::TerranMaverick},
+                        {4, UnitId::TerranCohort},
+                    },
+                    {
+                        {3, UnitId::TerranMaverick},
+                        {8, UnitId::TerranCohort},
+                    },
+                    {
+                        {14, UnitId::TerranCohort},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {1, UnitId::Goska},
+                        {6, UnitId::TerranMaverick},
+                        {12, UnitId::TerranCohort},
+                    },
+                    {
+                        {8, UnitId::TerranMaverick},
+                        {18, UnitId::TerranCohort},
+                    },
+                    {
+                        {25, UnitId::TerranCohort},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
                 .name = "Speed Demons",
                 .unit_id = UnitId::TerranFulcrum,
                 .starting_waves = {
@@ -709,6 +744,66 @@ private:
                 },
             },
             UprisingSpawnerInfo{
+                .name = "From Egypt, With Love",
+                .unit_id = UnitId::TerranMantle,
+                .starting_waves = {
+                    {
+                        {4, UnitId::TerranRamesses},
+                        {1, UnitId::TerranDurendal},
+                    },
+                    {
+                        {8, UnitId::TerranRamesses},
+                        {1, UnitId::TerranCataphract},
+                    },
+                    {
+                        {6, UnitId::TerranRamesses},
+                        {2, UnitId::TerranDurendal},
+                        {2, UnitId::TerranCataphract},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {10, UnitId::TerranRamesses},
+                        {4, UnitId::TerranDurendal},
+                        {2, UnitId::TerranCataphract},
+                    },
+                    {
+                        {16, UnitId::TerranRamesses},
+                        {2, UnitId::TerranCataphract},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "The Twiceborn",
+                .unit_id = UnitId::ProtossGrandLibrary,
+                .starting_waves = {
+                    {
+                        {4, UnitId::ProtossAmaranth},
+                    },
+                    {
+                        {6, UnitId::ProtossAmaranth},
+                        {2, UnitId::ProtossAtreus},
+                    },
+                    {
+                        {5, UnitId::ProtossAmaranth},
+                        {3, UnitId::ProtossAtreus},
+                        {1, UnitId::ProtossHerald},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {9, UnitId::ProtossAmaranth},
+                        {3, UnitId::ProtossAtreus},
+                        {2, UnitId::ProtossHerald},
+                    },
+                    {
+                        {6, UnitId::ProtossAmaranth},
+                        {6, UnitId::ProtossAtreus},
+                        {1, UnitId::ProtossHerald},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
                 .name = "Assembly of Iquaria",
                 .unit_id = UnitId::ProtossArdentAuthority,
                 .starting_waves = {
@@ -752,6 +847,34 @@ private:
                     },
                     {
                         {15, UnitId::ZergMutalisk},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "The Evig Within",
+                .unit_id = UnitId::ZergAlkagIteth,
+                .starting_waves = {
+                    {
+                        {5, UnitId::ZergKagralisk},
+                        {1, UnitId::ZergEvigrilisk},
+                    },
+                    {
+                        {4, UnitId::ZergKagralisk},
+                        {4, UnitId::ZergEvigrilisk},
+                    },
+                    {
+                        {8, UnitId::ZergKagralisk},
+                        {4, UnitId::ZergEvigrilisk},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {10, UnitId::ZergKagralisk},
+                        {6, UnitId::ZergEvigrilisk},
+                    },
+                    {
+                        {13, UnitId::ZergKagralisk},
+                        {4, UnitId::ZergEvigrilisk},
                     },
                 },
             },
