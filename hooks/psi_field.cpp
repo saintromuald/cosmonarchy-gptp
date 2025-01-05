@@ -3,8 +3,7 @@
 #include "BW/api.h"
 #include "trigger_system/trigger_system.h"
 
-namespace hooks
-{
+namespace hooks {
 	// Actual state check for whether a unit can generate a psi field.
 	bool is_ready_to_make_psi_field(Unit* unit) {
 		return unit_id_is_psi_provider(unit->id);
@@ -12,6 +11,9 @@ namespace hooks
 
 	// Conditions on which the power field should be shown.
 	bool unit_can_show_power_for(Unit* unit, u32 player) {
+		if (player > PLAYABLE_PLAYER_COUNT) {
+			return true;
+		}
 		if (bw::player_is_witness(player) || bw::in_replay()) {
 			return true;
 		}
@@ -63,7 +65,7 @@ namespace hooks
 			helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, 0);
 			return true;
 		}
-		if (*g_psi_aura_is_drawn) {
+		if (g_psi_aura_is_drawn) {
 			helper::refresh_all_visible_images_at_screen_position(unit->building.pylon_aura, *g_player_visions);
 			return true;
 		}

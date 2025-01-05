@@ -3942,7 +3942,7 @@ bool can_show_custom_ui() {
 }
 
 bool player_is_witness(u32 player) {
-	return *g_is_in_game && g_globals->players[player].witness_mode;
+	return player < PLAYABLE_PLAYER_COUNT && *g_is_in_game && g_globals->players[player].witness_mode;
 }
 
 bool player_is_active(u32 player) {

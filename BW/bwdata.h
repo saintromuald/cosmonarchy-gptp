@@ -34,7 +34,7 @@ BW_DATA(Unit**,			first_psi_field_provider,		0x0063FF54);
 BW_DATA(u32*,			psi_field_grp_width,			0x0063FF4C);
 BW_DATA(u32*,			psi_field_grp_height,			0x0063FF58);
 BW_DATA(u8**,			psi_field_mask,					0x006D5BD8);
-BW_DATA(u32*,			g_psi_aura_is_drawn,			0x0063FF48);
+BW_REF(u32, 			g_psi_aura_is_drawn,			0x0063FF48);
 BW_DATA(u32*,			g_player_visions,				0x0057F0B0);
 BW_DATA(Bullet**,		g_first_bullet,					0x0064DEC4);
 BW_DATA(Bullet**,		g_last_bullet,					0x0064DEAC);
