@@ -1818,7 +1818,8 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
-							case UnitId::ZergIzirokor: {
+							case UnitId::ZergIzirokor:
+							case UnitId::ZergIziralisk: {
 								if (!is_burrowed && current_button->requirement_var == UnitId::ZergTethzorokor) {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
 										current_button_state = Button_State::Enabled;
@@ -2647,6 +2648,11 @@ namespace hooks {
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Lucilleri Pheremones
 										current_button_state = Button_State::Enabled;
 									}
+								} break;
+								case UnitId::ZergIziralisk: {
+									if (current_button->icon_id == IconId::VenomUnused) {			// Corrosive Touch
+										current_button_state = Button_State::Enabled;
+										}
 								} break;
 								case UnitId::ZergSkithrokor: {
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Ablative Return

@@ -193,7 +193,7 @@ namespace UnitId
 		ProtossExtatus										= 401,
 		ProtossZealotStarbound								= 411,
 		ProtossEcclesiastKhalendric							= 412,
-		ProtossCicatus										= 413,
+		ProtossCicatus										= 414,
 
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1

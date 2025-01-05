@@ -197,6 +197,7 @@ namespace hooks {
 						case UnitId::ZergMortothrokor:
 						case UnitId::ZergHydralisk:
 						case UnitId::ZergIzirokor:
+						case UnitId::ZergIziralisk:
 						case UnitId::ZergKagralisk:
 						case UnitId::ZergEvigrilisk:
 						case UnitId::ZergKeskathalor:
@@ -282,6 +283,7 @@ namespace hooks {
 						case UnitId::ZergCikralisk:
 						case UnitId::ZergProtathalor:
 						case UnitId::ZergIzirokor:
+						case UnitId::ZergIziralisk:
 						case UnitId::ZergSkithrokor:
 						case UnitId::ZergKagralisk:
 						case UnitId::ZergEvigrilisk:
@@ -393,7 +395,8 @@ namespace hooks {
 				}
 				return false;
 			} break;
-			case UnitId::ZergNathrokor: {
+			case UnitId::ZergNathrokor:
+			case UnitId::ZergNathrelisk: {
 				if (morph_unit_id == UnitId::ZergKalkalisk) {
 					return true;
 				}
@@ -435,7 +438,8 @@ namespace hooks {
 				}
 				return false;
 			} break;
-			case UnitId::ZergIzirokor: {
+			case UnitId::ZergIzirokor:
+			case UnitId::ZergIziralisk: {
 				if (morph_unit_id == UnitId::ZergTethzorokor) {
 					return true;
 				}

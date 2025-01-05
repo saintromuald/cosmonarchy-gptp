@@ -942,6 +942,7 @@ u32 get_mutate_image_id(u32 unit_id) {
 		case UnitId::ZergCikralisk:		return ImageId::CikraliskMutate;
 		case UnitId::ZergProtathalor:	return ImageId::ProtathalorMutate;
 		case UnitId::ZergIzirokor:		return ImageId::IzirokorMutate;
+		case UnitId::ZergIziralisk:		return ImageId::IziraliskMutate;
 		case UnitId::ZergSkithrokor:	return ImageId::SkithrokorMutate;
 		case UnitId::ZergKagralisk:		return ImageId::KagraliskMutate;
 		case UnitId::ZergEvigrilisk:	return ImageId::EvigriliskMutate;
@@ -1176,6 +1177,7 @@ bool unit_id_ignores_ground_collision(u32 unit_id) {
 
 bool unit_id_has_projection_attack(u32 unit_id) {
 	return unit_id == UnitId::TerranHarakan
+		|| unit_id == UnitId::TerranHarakanGolden
 		|| unit_id == UnitId::TerranStriga
 		|| unit_id == UnitId::TerranMatadorCinderMode
 		|| unit_id == UnitId::TerranMatadorTurretCinderMode
