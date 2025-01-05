@@ -455,7 +455,7 @@ b32 call_kill_unit_args_func(void* func, u32 player, u32 unit_id, Unit* unit) {
 }
 
 // Hooked to extend transports. -Pr0nogo
-bool kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) { // 004C7E20
+b32 kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) { // 004C7E20
     if (!unit) {
         return false;
     }
