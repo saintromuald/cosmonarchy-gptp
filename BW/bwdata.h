@@ -101,13 +101,13 @@ struct Resources {
 	s32 cumulative_gas[12];
 	s32 cumulative_minerals[12];
 };
-BW_DATA(Resources*, resources, 0x0057F0F0);
+BW_DATA(Resources*,			resources,			0x0057F0F0);
 
-BW_DATA(cv5**, tileGroup, 0x006D5EC8);
+BW_DATA(cv5**,				tileGroup,			0x006D5EC8);
 
 /// TBL files
-BW_DATA(const u16*,		g_stat_txt_tbl,		0x006D1238);
-BW_DATA(const StringTbl*, g_map_string_tbl,	0x005993D4);
+BW_DATA(const u16*,			g_stat_txt_tbl,		0x006D1238);
+BW_DATA(const StringTbl*,	g_map_string_tbl,	0x005993D4);
 
 BW_DATA(const char*,		g_string_empty,		0x00501B7D);
 
@@ -115,11 +115,11 @@ BW_DATA(const char*,		g_string_empty,		0x00501B7D);
 struct UnitsSel {
 	Unit* unit[SelectionCap];
 };
-BW_DATA(UnitsSel*,		g_client_selection_group,		ccmu_extender.new_client_selection_group);
-BW_DATA(Unit*,			g_client_selection_group_end,	0x00597238);
-BW_REF(u8,				g_client_selection_count,		0x0059723D);
-BW_DATA(Point16*,		g_selection_start,				0x0066FF4C);
-BW_DATA(Box16*,			g_selection_box,				0x0066FF50);
+BW_DATA(UnitsSel*,			g_client_selection_group,		ccmu_extender.new_client_selection_group);
+BW_DATA(Unit*,				g_client_selection_group_end,	0x00597238);
+BW_REF(u8,					g_client_selection_count,		0x0059723D);
+BW_DATA(Point16*,			g_selection_start,				0x0066FF4C);
+BW_DATA(Box16*,				g_selection_box,				0x0066FF50);
 
 // Screen position relative to the map
 BW_DATA(s32*,				g_screen_x,				0x00628448);
@@ -136,24 +136,24 @@ BW_DATA(u32*,				g_mmb_pos_y,            0x006556F4);
 
 // Booleans indicating which keyboard buttons are held
 // use g_is_keycode_used[VK_param] where VK_param is one of the Virtual-Key Codes of Windows as seen in msdn here: https://msdn.microsoft.com/fr-fr/library/windows/desktop/dd375731%28v=vs.85%29.aspx
-BW_DATA(const b8*, g_is_keycode_used,		0x00596A18);
-BW_DATA(const b8*, g_is_holding_shift,		0x00596A28);
-BW_DATA(const b8*, g_is_holding_ctrl,		0x00596A29);
-BW_DATA(const b8*, g_is_holding_alt,		0x00596A2A);
+BW_DATA(const b8*,			g_is_keycode_used,		0x00596A18);
+BW_DATA(const b8*,			g_is_holding_shift,		0x00596A28);
+BW_DATA(const b8*,			g_is_holding_ctrl,		0x00596A29);
+BW_DATA(const b8*,			g_is_holding_alt,		0x00596A2A);
 
 // Maybe used by Map triggers to init a progressive movement toward the corresponding location, see GameImpl::setScreenPosition of BWAPI
-BW_REF(u32,			g_move_to_x,			0x0062848C);
-BW_REF(u32,			g_move_to_y,			0x006284A8);
+BW_REF(u32,					g_move_to_x,			0x0062848C);
+BW_REF(u32,					g_move_to_y,			0x006284A8);
 
 // Contains various information (names, player types, race types, and associated forces) of each player in the current game
-BW_DATA(Player*,	g_player_table,			0x0057EEE0);
+BW_DATA(Player*,			g_player_table,			0x0057EEE0);
 
 struct SupplyData {
 	u32 provided[PLAYER_COUNT];
 	u32 used[PLAYER_COUNT];
 	u32 max[PLAYER_COUNT];
 };
-BW_DATA(SupplyData*,	g_race_supply,			0x00582144);	// Array; Use Unit::get_race() to get the index.
+BW_DATA(SupplyData*,		g_race_supply,			0x00582144);	// Array; Use Unit::get_race() to get the index.
 
 BW_REF(u32,			g_elapsed_time_frames,		0x0057F23C);
 BW_DATA(u32*,		g_countdown_timer,			0x0058D6F4);	// Vanilla trigger actions/conditions (From BWAPI Offsets.h)
@@ -195,10 +195,10 @@ BW_DATA(PingArray*,		minimap_ping_array,			0x0059C1B8); // 16
 	// -- Added for various hooks used by Cosmonarchy -- \\
 
 // For race_dropdown
-BW_DATA(StringMap_b*,	single_race_select,			0x0051AAA0);
-BW_DATA(StringMap_w*,	single_type_select,			0x0051AAA8);
-BW_DATA(u16*,			g_network_table,			0x006D1220);
-BW_DATA(StringTbl*,		g_network_table_df,			0x006D1220);
+BW_DATA(StringMap_b*,	single_race_select,				0x0051AAA0);
+BW_DATA(StringMap_w*,	single_type_select,				0x0051AAA8);
+BW_DATA(u16*,			g_network_table,				0x006D1220);
+BW_DATA(StringTbl*,		g_network_table_df,				0x006D1220);
 
 // For init_singleplayer_custom
 BW_DATA(u32*,			g_selected_game_type,			0x0059BA64);
@@ -725,7 +725,7 @@ namespace techdata_dat {
 //	BW_DATA(const DatLoad*,	techdataDat,	0x005137D8); // now in bwdata.cpp
 
 	BW_DATA_REF(u16*,		mineral_cost,				techdataDat[0].address);	// 00656248
-	BW_DATA_REF(u16*,		vespene_cost,					techdataDat[1].address);	// 006561F0
+	BW_DATA_REF(u16*,		vespene_cost,				techdataDat[1].address);	// 006561F0
 	BW_DATA_REF(u16*,		time_cost,					techdataDat[2].address);	// 006563D8
 	BW_DATA_REF(u16*,		energy_cost,				techdataDat[3].address);	// 00656380
 //	BW_DATA_REF(u16*,		???,						techdataDat[4].address);	// 00656198
@@ -802,8 +802,8 @@ BW_DATA(u32*,		g_image_overlay_special,	0x00667B00);
 /// Warning: The following section contains data reserved for internal use only.
 //////////////////////////////////////////////////////////////// @{
 
-BW_DATA(u8*, g_unit_iterator_pos, 0x006284B6);
-BW_DATA(UnitsSel*, active_player_selection, ccmu_extender.new_active_selection);
+BW_DATA(u8*,		g_unit_iterator_pos,	 0x006284B6);
+BW_DATA(UnitsSel*,	active_player_selection, ccmu_extender.new_active_selection);
 
 typedef Unit* (__cdecl* GetActivePlayerNextSelectionFunc)();
 BW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x0049A850);
@@ -862,17 +862,17 @@ BW_DATA(u32*,					g_saved_font_color,		0x006CE0E8);
 
 // Array used in multiplayer to randomize factions used by unit.get_faction_color() and player.get_faction_color()
 // Max index is PLAYABLE_PLAYER_COUNT-1
-BW_DATA(s32*, g_factions_colors_ordering, 0x0057F21C);
+BW_DATA(s32*, g_factions_colors_ordering,	0x0057F21C);
 
 // Access to true player colors that differ from standard versions from graphics.h
 // This is PlayerColors from BWAPI
 // Max index is PLAYER_COUNT-1
-BW_DATA(u8*, g_player_minimap_colors,	0x00581DD6);
-BW_DATA(u8*, g_player_color_ids,		0x0058F442);
-BW_DATA(u8*, g_player_in_game_colors,	0x00581D76);
+BW_DATA(u8*, g_player_minimap_colors,		0x00581DD6);
+BW_DATA(u8*, g_player_color_ids,			0x0058F442);
+BW_DATA(u8*, g_player_in_game_colors,		0x00581D76);
 
 const ListExtern<Image, &Image::link> unusedImages(0x0057EB68, 0x0057EB70);
-BW_DATA(List<Sprite>*, g_free_sprites, 0x0063FE30);
+BW_DATA(List<Sprite>*, g_free_sprites,		0x0063FE30);
 
 struct SpriteTileData {
 	Sprite* tails[256];
@@ -989,15 +989,15 @@ BW_DATA(char**,			off_68C1FC,						0x0068C1FC);
 BW_DATA(char*,			g_palette_remap,				0x0050CDC1);
 
 // For kill_units_at_location_proc
-BW_DATA(u32*,		trig_remove_unit_active,			0x005971DC);
-BW_DATA(u32*,		trig_killing_additional_unit,		0x00596CD4);
-BW_DATA(u32*,		trig_kill_unit_count,				0x005971E0);
+BW_DATA(u32*,			trig_remove_unit_active,		0x005971DC);
+BW_DATA(u32*,			trig_killing_additional_unit,	0x00596CD4);
+BW_DATA(u32*,			trig_kill_unit_count,			0x005971E0);
 
 // For btnsact_rally_point
-BW_DATA(u8*,		g_order_id_ground,					0x00641691);
-BW_DATA(char*,		g_order_id_obstructed,				0x00641693);
-BW_DATA(char*,		g_order_id_unit,					0x00641692);
-BW_DATA(u16*,		g_buttonset_special_buttonset_id,	0x0068C1C8);
+BW_DATA(u8*,			g_order_id_ground,					0x00641691);
+BW_DATA(char*,			g_order_id_obstructed,				0x00641693);
+BW_DATA(char*,			g_order_id_unit,					0x00641692);
+BW_DATA(u16*,			g_buttonset_special_buttonset_id,	0x0068C1C8);
 
 // For select_multiple_units_from_unit_list
 BW_REF(char,	g_client_selection_changed,			0x0059723C);
@@ -1062,12 +1062,12 @@ BW_DATA(u32*,			g_minimap_unit_box_count,	0x0059C2B8);
 BW_DATA(void**,			g_trigger_condition_list,	0x00515A98);
 
 // For play_sound trigger
-BW_DATA(s32*,			g_big_volume_array,			0x005008F0);
+BW_DATA(s32*,			g_big_volume_array,					0x005008F0);
 
-BW_DATA(u32*,			g_game_speed_replay_modifiers,	0x005124D8);
+BW_DATA(u32*,			g_game_speed_replay_modifiers,		0x005124D8);
 
 // For play_yes_unit_responses
-BW_DATA(Unit**,			g_place_building_parent_unit,	0x00640874);
+BW_DATA(Unit**,			g_place_building_parent_unit,		0x00640874);
 
 // For sprite_to_iscript_loop
 BW_DATA(u16*,			g_map_tile_height,					0x0057F1D6);
@@ -1107,7 +1107,7 @@ BW_DATA(u32*,			g_want_visibility_hash_update,		0x00629D90);
 BW_DATA(u8*,			g_region_vision_hash,				0x0063FE38);
 BW_DATA(u32*,			g_current_hash_offset,				0x0063FD28);
 
-BW_DATA(ControlGroupPlayerArray*, control_group_array,	ccmu_extender.new_saved_selections);
+BW_DATA(ControlGroupPlayerArray*, control_group_array,		ccmu_extender.new_saved_selections);
 
 // For remove_healthbar
 BW_DATA(Layer*,			g_game_layer,						0x006CEFB4);
@@ -1120,9 +1120,9 @@ BW_DATA(Image**,		g_last_free_selection_circle,		0x0052F564);
 BW_DATA(u16*,			g_temp_iscript_header,				0x006C2310);
 BW_DATA(u16*,			g_iscript_speed_something,			0x006C2314);
 
-BW_DATA(char*,		g_draw_color_index,					0x006CF4AC);
+BW_DATA(char*,			g_draw_color_index,					0x006CF4AC);
 
-BW_DATA(void**,		g_repulse_handle,					0x006D5CD8);
+BW_DATA(void**,			g_repulse_handle,					0x006D5CD8);
 
 BW_DATA(u8*,			g_images_draw_if_cloaked,			0x00667718);
 
