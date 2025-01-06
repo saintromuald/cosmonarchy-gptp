@@ -881,7 +881,7 @@ namespace hooks {
 				}
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergIzirokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergIzirokor) || player_has_completed_unit_id(player_id, UnitId::ZergIziralisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
 			if (unit_id == UnitId::ZergTethzorokor) {
 				if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp)) {
 					return true;
@@ -2391,51 +2391,39 @@ namespace hooks {
 				return TECH_HIDDEN;
 			}
 			case UnitId::ZergIzirokor:
-			{
-				if (unit_id == UnitId::ZergTethzorokor)
-				{
-					if (unit->status & UnitStatus::Burrowed)
-					{
+			case UnitId::ZergIziralisk: {
+				if (unit_id == UnitId::ZergTethzorokor) {
+					if (unit->status & UnitStatus::Burrowed) {
 						return TECH_HIDDEN;
 					}
-					if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp))
-					{
+					if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp)) {
 						return TECH_ACTIVE;
 					}
 					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
-			case UnitId::ZergSkithrokor:
-			{
-				if (unit_id == UnitId::ZergVithrilisk)
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp))
-					{
+			case UnitId::ZergSkithrokor: {
+				if (unit_id == UnitId::ZergVithrilisk) {
+					if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp)) {
 						return TECH_ACTIVE;
 					}
 					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
-			case UnitId::ZergKagralisk:
-			{
-				if (unit_id == UnitId::ZergCherbrathalor)
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal))
-					{
+			case UnitId::ZergKagralisk: {
+				if (unit_id == UnitId::ZergCherbrathalor) {
+					if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal)) {
 						return TECH_ACTIVE;
 					}
 					return TECH_LOCKED;
 				}
 				return TECH_HIDDEN;
 			}
-			case UnitId::ZergEvigrilisk:
-			{
-				if (unit_id == UnitId::ZergOkrimnilisk)
-				{
-					if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal))
-					{
+			case UnitId::ZergEvigrilisk: {
+				if (unit_id == UnitId::ZergOkrimnilisk) {
+					if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal)) {
 						return TECH_ACTIVE;
 					}
 					return TECH_LOCKED;
