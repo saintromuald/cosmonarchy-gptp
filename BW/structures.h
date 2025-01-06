@@ -61,6 +61,8 @@ extern int IMAGE_TYPE_COUNT;	//= 999;
 
 #pragma pack(1)
 
+typedef b32 __fastcall unit_stat_cond();
+typedef void __fastcall unit_stat_act();
 struct UnitStatFuncArrayEntry {
 	u32 unit_id;					// unused?
 	u32 unit_stat_cond_func;

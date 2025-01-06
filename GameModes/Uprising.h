@@ -83,11 +83,19 @@ private:
                 },
                 .repeating_waves = {
                     {
+                        {1, UnitId::Ackmed},
+                    },
+                    {
                         {12, UnitId::TerranHarakan},
                     },
                     {
                         {9, UnitId::TerranHarakan},
                         {5, UnitId::TerranMaverick},
+                    },
+                    {
+                        {1, UnitId::Ackmed},
+                        {8, UnitId::TerranHarakan},
+                        {3, UnitId::TerranCleric},
                     },
                 },
             },
@@ -111,11 +119,250 @@ private:
                 },
                 .repeating_waves = {
                     {
-                        {8, UnitId::TerranMaverick},
+                        {12, UnitId::TerranMaverick},
                         {8, UnitId::TerranCyprian},
                     },
                     {
+                        {16, UnitId::TerranMaverick},
+                    },
+                    {
                         {12, UnitId::TerranCyprian},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Medicine Men",
+                .unit_id = UnitId::TerranStockade,
+                .starting_waves = {
+                    {
+                        {3, UnitId::TerranMaverick},
+                        {1, UnitId::TerranCleric},
+                    },
+                    {
+                        {6, UnitId::TerranMaverick},
+                        {1, UnitId::TerranShamanSupportMode},
+                    },
+                    {
+                        {12, UnitId::TerranMaverick},
+                        {2, UnitId::TerranShamanSupportMode},
+                    },
+                    {
+                        {12, UnitId::TerranMaverick},
+                        {2, UnitId::TerranHarakan},
+                        {2, UnitId::TerranShamanSupportMode},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {12, UnitId::TerranMaverick},
+                        {8, UnitId::TerranCyprian},
+                    },
+                    {
+                        {16, UnitId::TerranMaverick},
+                    },
+                    {
+                        {12, UnitId::TerranCyprian},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Good Juju",
+                .unit_id = UnitId::TerranStockade,
+                .starting_waves = {
+                    {
+                        {2, UnitId::TerranSavant},
+                    },
+                    {
+                        {2, UnitId::TerranMaverick},
+                        {4, UnitId::TerranSavant},
+                    },
+                    {
+                        {2, UnitId::TerranMaverick},
+                        {2, UnitId::TerranHarakan},
+                        {6, UnitId::TerranSavant},
+                    },
+                    {
+                        {12, UnitId::TerranSavant},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {12, UnitId::TerranMaverick},
+                        {6, UnitId::TerranSavant},
+                    },
+                    {
+                        {8, UnitId::TerranMaverick},
+                        {9, UnitId::TerranSavant},
+                    },
+                    {
+                        {15, UnitId::TerranSavant},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Trinity's Touch",
+                .unit_id = UnitId::TerranStockade,
+                .starting_waves = {
+                    {
+                        {1, UnitId::TerranMaverick},
+                        {2, UnitId::TerranCohort},
+                    },
+                    {
+                        {2, UnitId::TerranMaverick},
+                        {4, UnitId::TerranCohort},
+                    },
+                    {
+                        {3, UnitId::TerranMaverick},
+                        {8, UnitId::TerranCohort},
+                    },
+                    {
+                        {14, UnitId::TerranCohort},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {1, UnitId::Goska},
+                        {6, UnitId::TerranMaverick},
+                        {12, UnitId::TerranCohort},
+                    },
+                    {
+                        {8, UnitId::TerranMaverick},
+                        {18, UnitId::TerranCohort},
+                    },
+                    {
+                        {25, UnitId::TerranCohort},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Speed Demons",
+                .unit_id = UnitId::TerranFulcrum,
+                .starting_waves = {
+                    {
+                        {2, UnitId::TerranVulture},
+                    },
+                    {
+                        {2, UnitId::TerranVulture},
+                        {2, UnitId::TerranMatadorTankMode},
+                    },
+                    {
+                        {5, UnitId::TerranVulture},
+                        {3, UnitId::TerranMatadorTankMode},
+                    },
+                    {
+                        {8, UnitId::TerranVulture},
+                        {2, UnitId::TerranMatadorTankMode},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {6, UnitId::TerranVulture},
+                        {6, UnitId::TerranMatadorTankMode},
+                    },
+                    {
+                        {12, UnitId::TerranVulture},
+                    },
+                    {
+                        {4, UnitId::TerranVulture},
+                        {10, UnitId::TerranMatadorTankMode},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Daywalkers",
+                .unit_id = UnitId::TerranFulcrum,
+                .starting_waves = {
+                    {
+                        {2, UnitId::TerranCyclops},
+                    },
+                    {
+                        {2, UnitId::TerranCyclops},
+                        {2, UnitId::TerranBlackjack},
+                    },
+                    {
+                        {2, UnitId::TerranCyclops},
+                        {4, UnitId::TerranBlackjack},
+                        {1, UnitId::TerranGoliath},
+                    },
+                    {
+                        {3, UnitId::TerranCyclops},
+                        {6, UnitId::TerranBlackjack},
+                        {2, UnitId::TerranGoliath},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {4, UnitId::TerranCyclops},
+                        {4, UnitId::TerranBlackjack},
+                        {4, UnitId::TerranGoliath},
+                    },
+                    {
+                        {2, UnitId::TerranCyclops},
+                        {10, UnitId::TerranBlackjack},
+                        {2, UnitId::TerranGoliath},
+                    },
+                    {
+                        {10, UnitId::TerranCyclops},
+                        {10, UnitId::TerranBlackjack},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Thermopylae",
+                .unit_id = UnitId::TerranFulcrum,
+                .starting_waves = {
+                    {
+                        {1, UnitId::TerranPhalanxTankMode},
+                    },
+                    {
+                        {1, UnitId::TerranGoliath},
+                        {2, UnitId::TerranPhalanxTankMode},
+                    },
+                    {
+                        {2, UnitId::TerranGoliath},
+                        {4, UnitId::TerranPhalanxTankMode},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {9, UnitId::TerranPhalanxTankMode},
+                    },
+                    {
+                        {4, UnitId::TerranGoliath},
+                        {6, UnitId::TerranPhalanxTankMode},
+                    },
+                    {
+                        {7, UnitId::TerranGoliath},
+                        {5, UnitId::TerranPhalanxTankMode},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "The Reverse-Sweep",
+                .unit_id = UnitId::TerranStarpad,
+                .starting_waves = {
+                    {
+                        {3, UnitId::TerranWraith},
+                    },
+                    {
+                        {6, UnitId::TerranWraith},
+                    },
+                    {
+                        {8, UnitId::TerranWraith},
+                        {1, UnitId::TerranAncile},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {12, UnitId::TerranWraith},
+                        {1, UnitId::TerranAncile},
+                    },
+                    {
+                        {14, UnitId::TerranWraith},
+                    },
+                    {
+                        {10, UnitId::TerranWraith},
+                        {2, UnitId::TerranAncile},
                     },
                 },
             },
@@ -155,21 +402,129 @@ private:
                 },
             },
             UprisingSpawnerInfo{
+                .name = "Strident Signs",
+                .unit_id = UnitId::ProtossGateway,
+                .starting_waves = {
+                    {
+                        {1, UnitId::ProtossHierophant},
+                        {1, UnitId::ProtossDracadin},
+                    },
+                    {
+                        {1, UnitId::ProtossHierophant},
+                        {3, UnitId::ProtossDracadin},
+                    },
+                    {
+                        {2, UnitId::ProtossHierophant},
+                        {4, UnitId::ProtossDracadin},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {6, UnitId::ProtossHierophant},
+                        {6, UnitId::ProtossDracadin},
+                    },
+                    {
+                        {4, UnitId::ProtossHierophant},
+                        {12, UnitId::ProtossDracadin},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Autonnihilation",
+                .unit_id = UnitId::ProtossLattice,
+                .starting_waves = {
+                    {
+                        {4, UnitId::ProtossSimulacrum},
+                    },
+                    {
+                        {6, UnitId::ProtossSimulacrum},
+                        {3, UnitId::ProtossManifold},
+                    },
+                    {
+                        {8, UnitId::ProtossSimulacrum},
+                        {2, UnitId::ProtossManifold},
+                        {2, UnitId::ProtossGolem},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {16, UnitId::ProtossSimulacrum},
+                        {2, UnitId::ProtossManifold},
+                        {2, UnitId::ProtossGolem},
+                    },
+                    {
+                        {12, UnitId::ProtossSimulacrum},
+                        {4, UnitId::ProtossManifold},
+                        {6, UnitId::ProtossGolem},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Brobots",
+                .unit_id = UnitId::ProtossLattice,
+                .starting_waves = {
+                    {
+                        {2, UnitId::ProtossIdol},
+                    },
+                    {
+                        {2, UnitId::ProtossGolem},
+                        {3, UnitId::ProtossIdol},
+                    },
+                    {
+                        {4, UnitId::ProtossIdol},
+                        {4, UnitId::ProtossGolem},
+                        {2, UnitId::ProtossManifold},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {9, UnitId::ProtossIdol},
+                        {6, UnitId::ProtossGolem},
+                        {3, UnitId::ProtossManifold},
+                    },
+                    {
+                        {12, UnitId::ProtossIdol},
+                        {4, UnitId::ProtossGolem},
+                        {4, UnitId::ProtossManifold},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "More than Three Crows",
+                .unit_id = UnitId::ProtossLattice,
+                .starting_waves = {
+                    {
+                        {3, UnitId::ProtossVassal},
+                    },
+                    {
+                        {9, UnitId::ProtossVassal},
+                    },
+                    {
+                        {14, UnitId::ProtossVassal},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {28, UnitId::ProtossVassal},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
                 .name = "Zerg, here?",
                 .unit_id = UnitId::ZergQuazethPool,
                 .starting_waves = {
                     {
-                        {8, UnitId::ZergZethrokor},
+                        {10, UnitId::ZergZethrokor},
                     },
                     {
-                        {8, UnitId::ZergQuazilisk},
+                        {6, UnitId::ZergQuazilisk},
                     },
                     {
                         {12, UnitId::ZergZethrokor},
-                        {4, UnitId::ZergQuazilisk},
+                        {6, UnitId::ZergQuazilisk},
                     },
                     {
-                        {20, UnitId::ZergZethrokor},
+                        {24, UnitId::ZergZethrokor},
                     },
                 },
                 .repeating_waves = {
@@ -179,6 +534,36 @@ private:
                     },
                     {
                         {30, UnitId::ZergZethrokor},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Lester's Nightmare",
+                .unit_id = UnitId::ZergVornathPond,
+                .starting_waves = {
+                    {
+                        {4, UnitId::ZergNathrokor},
+                    },
+                    {
+                        {6, UnitId::ZergVorvrokor},
+                        {2, UnitId::ZergNathrokor},
+                    },
+                    {
+                        {6, UnitId::ZergVorvrokor},
+                        {8, UnitId::ZergNathrokor},
+                    },
+                    {
+                        {12, UnitId::ZergVorvrokor},
+                        {10, UnitId::ZergNathrokor},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {18, UnitId::ZergVorvrokor},
+                        {10, UnitId::ZergNathrokor},
+                    },
+                    {
+                        {20, UnitId::ZergNathrokor},
                     },
                 },
             },
@@ -194,19 +579,108 @@ private:
                     },
                     {
                         {5, UnitId::ZergHydralisk},
-                        {3, UnitId::ZergBactalisk},
+                        {5, UnitId::ZergIzirokor},
                     },
                     {
-                        {8, UnitId::ZergHydralisk},
+                        {12, UnitId::ZergHydralisk},
                     },
                 },
                 .repeating_waves = {
                     {
-                        {4, UnitId::ZergHydralisk},
-                        {8, UnitId::ZergBactalisk},
+                        {6, UnitId::ZergHydralisk},
+                        {10, UnitId::ZergIzirokor},
                     },
                     {
                         {14, UnitId::ZergHydralisk},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Scatman's Scabmen",
+                .unit_id = UnitId::ZergSkibactScab,
+                .starting_waves = {
+                    {
+                        {3, UnitId::ZergSkithrokor},
+                    },
+                    {
+                        {4, UnitId::ZergBactalisk},
+                    },
+                    {
+                        {5, UnitId::ZergSkithrokor},
+                        {5, UnitId::ZergBactalisk},
+                    },
+                    {
+                        {9, UnitId::ZergSkithrokor},
+                        {3, UnitId::ZergBactalisk},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {5, UnitId::ZergSkithrokor},
+                        {9, UnitId::ZergBactalisk},
+                    },
+                    {
+                        {12, UnitId::ZergSkithrokor},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Zerg Krankiz Shroud",
+                .unit_id = UnitId::ZergZorkizShroud,
+                .starting_waves = {
+                    {
+                        {2, UnitId::ZergLakizilisk},
+                    },
+                    {
+                        {2, UnitId::ZergZoryusthaleth},
+                        {2, UnitId::ZergLakizilisk},
+                    },
+                    {
+                        {2, UnitId::ZergZoryusthaleth},
+                        {4, UnitId::ZergLakizilisk},
+                    },
+                    {
+                        {4, UnitId::ZergZoryusthaleth},
+                        {6, UnitId::ZergLakizilisk},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {9, UnitId::ZergLakizilisk},
+                    },
+                    {
+                        {6, UnitId::ZergZoryusthaleth},
+                        {5, UnitId::ZergLakizilisk},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "Engorgedrokor",
+                .unit_id = UnitId::ZergZorkizShroud,
+                .starting_waves = {
+                    {
+                        {2, UnitId::ZergGorgrokor},
+                    },
+                    {
+                        {2, UnitId::ZergZoryusthaleth},
+                        {2, UnitId::ZergGorgrokor},
+                    },
+                    {
+                        {2, UnitId::ZergZoryusthaleth},
+                        {4, UnitId::ZergGorgrokor},
+                    },
+                    {
+                        {4, UnitId::ZergZoryusthaleth},
+                        {6, UnitId::ZergGorgrokor},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {9, UnitId::ZergGorgrokor},
+                    },
+                    {
+                        {6, UnitId::ZergZoryusthaleth},
+                        {5, UnitId::ZergGorgrokor},
                     },
                 },
             },
@@ -244,12 +718,11 @@ private:
                     },
                 },
             },
-            // TODO @Pr0nogo: Add more please -Veeq7
         }},
         // Tier 2
         UprisingCreator{4 * 60 * 24, {
             UprisingSpawnerInfo{
-                .name = "Uprising",
+                .name = "Peacekeepers",
                 .unit_id = UnitId::TerranCaptaincy,
                 .starting_waves = {
                     {
@@ -271,22 +744,62 @@ private:
                 },
             },
             UprisingSpawnerInfo{
-                .name = "Skymass",
-                .unit_id = UnitId::ZergMutathSpire,
+                .name = "From Egypt, With Love",
+                .unit_id = UnitId::TerranMantle,
                 .starting_waves = {
                     {
-                        {6, UnitId::ZergMutalisk},
+                        {4, UnitId::TerranRamesses},
+                        {1, UnitId::TerranDurendal},
                     },
                     {
-                        {8, UnitId::ZergMutalisk},
+                        {8, UnitId::TerranRamesses},
+                        {1, UnitId::TerranCataphract},
+                    },
+                    {
+                        {6, UnitId::TerranRamesses},
+                        {2, UnitId::TerranDurendal},
+                        {2, UnitId::TerranCataphract},
                     },
                 },
                 .repeating_waves = {
                     {
-                        {10, UnitId::ZergMutalisk},
+                        {10, UnitId::TerranRamesses},
+                        {4, UnitId::TerranDurendal},
+                        {2, UnitId::TerranCataphract},
                     },
                     {
-                        {14, UnitId::ZergMutalisk},
+                        {16, UnitId::TerranRamesses},
+                        {2, UnitId::TerranCataphract},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "The Twiceborn",
+                .unit_id = UnitId::ProtossGrandLibrary,
+                .starting_waves = {
+                    {
+                        {4, UnitId::ProtossAmaranth},
+                    },
+                    {
+                        {6, UnitId::ProtossAmaranth},
+                        {2, UnitId::ProtossAtreus},
+                    },
+                    {
+                        {5, UnitId::ProtossAmaranth},
+                        {3, UnitId::ProtossAtreus},
+                        {1, UnitId::ProtossHerald},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {9, UnitId::ProtossAmaranth},
+                        {3, UnitId::ProtossAtreus},
+                        {2, UnitId::ProtossHerald},
+                    },
+                    {
+                        {6, UnitId::ProtossAmaranth},
+                        {6, UnitId::ProtossAtreus},
+                        {1, UnitId::ProtossHerald},
                     },
                 },
             },
@@ -299,26 +812,96 @@ private:
                     },
                     {
                         {2, UnitId::ProtossAccantor},
+                        {1, UnitId::ProtossServitor},
                     },
                     {
                         {1, UnitId::ProtossAccantor},
-                        {4, UnitId::ProtossServitor},
+                        {5, UnitId::ProtossServitor},
                     },
                 },
                 .repeating_waves = {
                     {
-                        {4, UnitId::ProtossAccantor},
+                        {5, UnitId::ProtossAccantor},
+                        {2, UnitId::ProtossServitor},
                     },
                     {
                         {3, UnitId::ProtossAccantor},
-                        {8, UnitId::ProtossServitor},
+                        {12, UnitId::ProtossServitor},
                     },
                 },
             },
-            // TODO @Pr0nogo: Add more please -Veeq7
+            UprisingSpawnerInfo{
+                .name = "Skysinew",
+                .unit_id = UnitId::ZergMutathSpire,
+                .starting_waves = {
+                    {
+                        {6, UnitId::ZergMutalisk},
+                    },
+                    {
+                        {9, UnitId::ZergMutalisk},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {11, UnitId::ZergMutalisk},
+                    },
+                    {
+                        {15, UnitId::ZergMutalisk},
+                    },
+                },
+            },
+            UprisingSpawnerInfo{
+                .name = "The Evig Within",
+                .unit_id = UnitId::ZergAlkagIteth,
+                .starting_waves = {
+                    {
+                        {5, UnitId::ZergKagralisk},
+                        {1, UnitId::ZergEvigrilisk},
+                    },
+                    {
+                        {4, UnitId::ZergKagralisk},
+                        {4, UnitId::ZergEvigrilisk},
+                    },
+                    {
+                        {8, UnitId::ZergKagralisk},
+                        {4, UnitId::ZergEvigrilisk},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {10, UnitId::ZergKagralisk},
+                        {6, UnitId::ZergEvigrilisk},
+                    },
+                    {
+                        {13, UnitId::ZergKagralisk},
+                        {4, UnitId::ZergEvigrilisk},
+                    },
+                },
+            },
         }},
         // Tier 3 / 4
         UprisingCreator{12 * 60 * 24, {
+            UprisingSpawnerInfo{
+                .name = "Skyfall Protocol",
+                .unit_id = UnitId::TerranIronFoundry,
+                .starting_waves = {
+                    {
+                        {2, UnitId::TerranPaladin},
+                    },
+                    {
+                        {4, UnitId::TerranPaladin},
+                    },
+                },
+                .repeating_waves = {
+                    {
+                        {6, UnitId::TerranPaladin},
+                    },
+                    {
+                        {4, UnitId::TerranPaladin},
+                        {2, UnitId::TerranCuirassTankMode},
+                    },
+                },
+            },
             UprisingSpawnerInfo{
                 .name = "The Grief of All Gods",
                 .unit_id = UnitId::ProtossMonumentOfSin,
@@ -336,31 +919,9 @@ private:
                     },
                     {
                         {2, UnitId::ProtossStarSovereign},
-                        {1, UnitId::ProtossDidact},
                     },
                     {
                         {3, UnitId::ProtossStarSovereign},
-                    },
-                },
-            },
-            UprisingSpawnerInfo{
-                .name = "Skyfall",
-                .unit_id = UnitId::TerranIronFoundry,
-                .starting_waves = {
-                    {
-                        {3, UnitId::TerranPaladin},
-                    },
-                    {
-                        {4, UnitId::TerranPaladin},
-                    },
-                },
-                .repeating_waves = {
-                    {
-                        {6, UnitId::TerranPaladin},
-                    },
-                    {
-                        {4, UnitId::TerranPaladin},
-                        {2, UnitId::TerranCuirassTankMode},
                     },
                 },
             },
@@ -395,7 +956,6 @@ private:
                     },
                 },
             },
-            // TODO @Pr0nogo: Add more please -Veeq7
         }},
 	};
 };

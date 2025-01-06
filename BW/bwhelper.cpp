@@ -4601,7 +4601,7 @@ namespace helper {
 		}
 	}
 
-	void apply_spores(Unit* unit) {
+	void apply_corrosive_spores(Unit* unit) {
 		const u32 func_address = 0x004F4480;
 		__asm {
 			PUSHAD
@@ -9960,7 +9960,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* get_ai_refinery(AiTown* town, s32 gas_state, s32 index) {
+	Unit* get_ai_gas_node(AiTown* town, s32 gas_state, s32 index) {
 		static Unit* result;
 		const u32 func_address = 0x00432B90;
 		__asm {
@@ -15302,6 +15302,49 @@ namespace helper {
 			PUSH unit
 			MOV AX, y
 			MOV ECX, x
+			CALL func_address
+			POPAD
+		}
+	}
+
+	s32 is_selection_group_updated() {
+		const u32 func_address = 0x00424660;
+		static s32 result;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void status_update_multiselection(BinDlg* dialog) {
+		const u32 func_address = 0x00425960;
+		__asm {
+			PUSHAD
+			MOV EAX, dialog
+			CALL func_address
+			POPAD
+		}
+	}
+
+	b8 status_update_tooltip() {
+		const u32 func_address = 0x00457FE0;
+		static b8 result;
+		__asm {
+			PUSHAD
+			CALL func_address
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void status_update_single_wireframe() {
+		const u32 func_address = 0x004568B0;
+		__asm {
+			PUSHAD
 			CALL func_address
 			POPAD
 		}

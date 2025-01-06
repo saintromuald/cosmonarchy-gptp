@@ -578,7 +578,7 @@ namespace helper {
 	void set_image_direction(Image* image, s8 direction);																			// 004D5F80
 
 	//// api
-	void apply_spores(Unit* unit);
+	void apply_corrosive_spores(Unit* unit);
 	Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction);
 	void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 damage_divisor);
 	Unit* create_unit_at_pos(u16 unit_id, u16 player, u32 x, u32 y);																// 004CD360
@@ -1202,7 +1202,7 @@ namespace helper {
 	bool unit_is_mineral_field(Unit* unit);																// 00468890
 	void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90
 	Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, Point16 worker_pos);	// 004432D0
-	Unit* get_ai_refinery(AiTown* town, s32 gas_state, s32 index);										// 00432B90
+	Unit* get_ai_gas_node(AiTown* town, s32 gas_state, s32 index);										// 00432B90
 	u32 ai_get_vespene_type(Unit* node, s32 player_id);													// 004326E0
 	void ai_resource_need_split(u8* out_gas_percentage, u32 player, u8* out_mineral_percentage);		// 004475B0
 	u32 ai_add_town_spending_request(u32 player, u32 priority, u32 unit_id, void* param);				// 00448400
@@ -1771,4 +1771,9 @@ namespace helper {
 	void transfer_resource_to_worker(Unit* node, Unit* worker);					// 004696D0
 
 	void ensnare_hit(Unit* unit, u32 x, u16 y);									// 004F4830
+
+	s32 is_selection_group_updated();											// 00424660
+	void status_update_multiselection(BinDlg* dialog);							// 00425960
+	b8 status_update_tooltip();													// 00457FE0
+	void status_update_single_wireframe();										// 004568B0
 }

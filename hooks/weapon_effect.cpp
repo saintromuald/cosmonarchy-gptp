@@ -403,7 +403,7 @@ namespace hooks {
 			if (!target->is_dead() && !units_dat::group_flags[target->id].is_building
 			&&  !unit_id_is_trap(target->id) && !unit_id_is_resource_node(target->id, false) && target->id != UnitId::TerranMorningstar)
 			{
-				hooks::lockdown_hit(target, LobotomyMineLockdownTimer, bullet);
+				hooks::lockdown_hit(target, TerranMine::LobotomyTimer, bullet);
 			}
 		}
 	}

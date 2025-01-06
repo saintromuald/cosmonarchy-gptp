@@ -2,10 +2,8 @@
 #include "BW\structures.h"
 #include <hook_tools.h>
 
-namespace
-{
-	void __declspec(naked) load_unit_proc_wrapper() // 004E78E0
-	{
+namespace {
+	void __declspec(naked) load_unit_proc_wrapper() { // 004E78E0
 		static Unit* unit;
 		static Unit* unitToLoad;
 		__asm {
@@ -24,8 +22,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unload_unit_proc_wrapper() // 004E7F70
-	{
+	void __declspec(naked) unload_unit_proc_wrapper() { // 004E7F70
 		static Unit* unit;
 		static u32 return_value;
 		__asm {
@@ -92,7 +89,7 @@ namespace
 	}
 
 	void __declspec(naked) kill_units_at_location_proc_wrapper() { // 004C7E20
-		static bool result;
+		static b32 result;
 		static Unit* unit;
 		static KillUnitArgs* args;
 		__asm {
@@ -103,7 +100,7 @@ namespace
 		result = hooks::kill_units_at_location_proc(unit, args);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOV EAX, result
 			RETN
 		}
 	}

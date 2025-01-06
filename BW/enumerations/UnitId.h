@@ -105,6 +105,7 @@ namespace UnitId
 		TerranQilin											= 398,
 		TerranAuriel										= 399,
 		TerranCyclopsFuturist								= 410,
+		TerranHarakanGolden									= 413,
 
 	// Terran-Building
 		TerranVestry										= 119,		// Starbase / Terran Unused 1
@@ -192,7 +193,7 @@ namespace UnitId
 		ProtossExtatus										= 401,
 		ProtossZealotStarbound								= 411,
 		ProtossEcclesiastKhalendric							= 412,
-		ProtossCicatus										= 413,
+		ProtossCicatus										= 414,
 
 	// Protoss-Building
 		ProtossAutomatonRegister							= 158,		// Unused Protoss 1

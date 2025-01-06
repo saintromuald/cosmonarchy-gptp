@@ -140,6 +140,9 @@ namespace hooks {
 				case UnitId::ProtossPariah: {
 					return helper::get_random_unit_response(SoundId::PariahOrderAggressive01, SoundId::PariahOrderAggressive04);
 				} break;
+				case UnitId::ProtossPotentate: {
+					return helper::get_random_unit_response(SoundId::PotentateOrderAggressive01, SoundId::PotentateOrderAggressive04);
+				} break;
 				case UnitId::ProtossOptecton: {
 					return helper::get_random_unit_response(SoundId::OptectonOrderAggressive01, SoundId::OptectonOrderAggressive04);
 				} break;
@@ -312,6 +315,9 @@ namespace hooks {
 					} break;
 					case UnitId::ProtossPariah: {
 						ready_sound = helper::get_random_unit_response(SoundId::PariahReady01, SoundId::PariahReady03);
+					} break;
+					case UnitId::ProtossPotentate: {
+						ready_sound = helper::get_random_unit_response(SoundId::PotentateReady01, SoundId::PotentateReady03);
 					} break;
 					case UnitId::ProtossOptecton: {
 						ready_sound = helper::get_random_unit_response(SoundId::OptectonReady01, SoundId::OptectonReady03);

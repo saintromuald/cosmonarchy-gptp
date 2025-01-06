@@ -301,7 +301,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	const u8 jnz = 0x75;
 	memory_patch(0x004E6E7C, &jnz, sizeof(u8));
 
-//	hooks::injectEconomicUnitHooks();
+//	hooks::inject_economic_unit_hooks();
 	// test for globals
 //	nops(0x004AAF23, 5);
 //	const u8 retn = 0xc3;

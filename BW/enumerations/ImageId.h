@@ -1289,6 +1289,8 @@ namespace ImageId {
 		CikraliskMutate								= 1929,
 
 		BlackjackDamaged							= 1948,
+		
+		IziraliskMutate								= 1957,
 
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,

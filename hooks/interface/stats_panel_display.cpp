@@ -827,8 +827,7 @@ namespace hooks {
 	// TODO @Veeq7 - 425F30 4260C0 4268D0 426FF0 427260 4273E0 - Make changes to these functions in order to show remaining build time seconds above progress bar.
 
 	// Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
-	void stats_addon_builder(BinDlg* dialog) // 00425F30
-	{
+	void stats_addon_builder(BinDlg* dialog) { // 00425F30
 		BinDlg* current_dialog;
 		Unit* unit = *g_active_portrait_unit;
 		if (g_is_in_replay != 0 || unit->player == g_local_nation_id) {
@@ -1284,5 +1283,48 @@ namespace hooks {
 		helper::set_kills_string_text(dialog);
 		helper::set_text_string(dialog);
 		helper::add_text_to_dialog(dialog, -5, unit->get_name());
+	}
+
+	// Hooked to investigate bugged addon status screen displays. -Pr0nogo
+	// Not working yet...
+	void __cdecl draw_status_screen() { // 00458120
+		Unit* active_unit = *g_active_portrait_unit;
+		if (active_unit) {
+			if (g_client_selection_count != 1) {
+				if (g_status_screen_redraw || helper::is_selection_group_updated()) {
+					helper::status_update_multiselection(g_statdata_dialog);
+					helper::status_update_tooltip();
+				}
+				g_status_screen_redraw = 0;
+				return;
+			}
+			if (!g_status_screen_redraw) {
+			/*	b32* function = (unit_stat_cond*)g_unit_stat_funcs_table[active_unit->id].unit_stat_cond_func();
+				if (!function) {
+					g_status_screen_redraw = 0;
+					return;
+				}*/
+				active_unit = *g_active_portrait_unit; // Maybe redone in case of selection update mid-func? -Pr0nogo
+			}
+		//	(unit_stat_act*)g_unit_stat_funcs_table[active_unit->id].unit_stat_act_func(g_statdata_dialog);
+			helper::status_update_single_wireframe();
+			helper::status_update_tooltip();
+			g_status_screen_redraw = 0;
+			return;
+		}
+		if (!g_status_screen_redraw) {
+			g_status_screen_redraw = 0;
+			return;
+		}
+		
+		BinDlg* stat_dialog = g_statdata_dialog;
+		if (!stat_dialog->control_type) {
+			stat_dialog = *(BinDlg**)&g_statdata_dialog->child_dialog;
+		}
+		for (; stat_dialog; stat_dialog = stat_dialog->next) {
+			helper::hide_dialog(stat_dialog);
+		}
+		g_status_screen_func = 0;
+		g_status_screen_redraw = 0;
 	}
 }

@@ -103,7 +103,7 @@ namespace hooks {
 		}
 
 		u32 tyranny_stacks = unit_ext->values[ValueMindTyrantTyranny];
-		if (tyranny_stacks > 1 && tyranny_stacks < TyrannyMaxStacks) {
+		if (tyranny_stacks > 1 && tyranny_stacks < MindTyrant::TyrannyMaxStacks) {
 			speed *= 1 - (0.042 * unit_ext->values[ValueMindTyrantTyranny]);
 		}
 
@@ -209,6 +209,7 @@ namespace hooks {
 			case UnitId::ZergVorvrokor: {
 				speed *= 1.3;
 			} break;
+			case UnitId::TerranHarakanGolden:
 			case UnitId::TerranStriga:
 			case UnitId::ProtossZealot: {
 				speed *= 1.35;

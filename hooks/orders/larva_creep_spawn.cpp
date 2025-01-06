@@ -4,8 +4,7 @@
 #include "BW\UnitFinder.h"
 #include "globals.h"
 
-namespace hooks
-{
+namespace hooks {
 	helper::SetCreepRelationalData_callback run_creep_randomizer_ptr = &run_creep_randomizer;
 	void create_building_larva(Unit* building) {
 		u32 unit_id = unit_id_get_larva_type(building->id);

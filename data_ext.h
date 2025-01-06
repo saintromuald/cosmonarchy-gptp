@@ -317,7 +317,7 @@ enum ExtTimerId {
 	TimerGhitorokorRelentlessAggression,
 	TimerDemiurgeWorship,
 	TimerAxitriliskPerpetualWind,
-	TimerReclaiming,
+	TimerReclaimStun,
 	TimerVilgolethSpawn,
 	TimerVilgolethTimedLife,
 	TimerAvenge,
@@ -360,6 +360,7 @@ enum ExtTimerId {
 	TimerConstructionSFXDelay,
 	TimerTurningAggressiveModeThrottle,
 	TimerClericHeal,
+	TimerReclaimHeal,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

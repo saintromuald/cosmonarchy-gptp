@@ -42,7 +42,7 @@ BW_DATA_VAR(UnitDeaths*,						deathTable_var, 0x0058A364);
 BW_DATA_VAR(UnitDeaths*,						unitAllCountTable_var, 0x00582324);
 BW_DATA_VAR(UnitDeaths*,						unitCompleteTable_var, 0x00584DE4);
 BW_DATA_VAR(UnitDeaths*,						unitKilledTable_var, 0x005878A4);
-BW_DATA_VAR(ButtonSet*,						buttonSetTable_var, 0x005187E8);
+BW_DATA_VAR(ButtonSet*,							buttonSetTable_var, 0x005187E8);
 BW_DATA_VAR(UnitStatFuncArrayEntry*,			unitStatFuncs_var, 0x005193A0);
 BW_DATA_VAR(u16*,								g_orders_requirement_tree_var, 0x00514CF8);
 BW_DATA_VAR(const LO_Header* const*,			shieldOverlays_var, 0x0052E5C8);
@@ -55,17 +55,17 @@ BW_DATA_VAR(u8*,								g_is_valid_sprite_var, 0x00629A88);
 // bwdata expects pointer references, so make struct pointers to reference
 BW_DATA_VAR(AI_Main*,							AIScriptController_var, &AIScriptController_dat);
 BW_DATA_VAR(_uavail*,							unit_availability_var, &UnitAvailability_dat);
-BW_DATA_VAR(ImagesDatExtraOverlayLO_Files*,	lo_files_var, &lo_files_dat);
-BW_DATA_VAR(_bwTechs*,						TechBw_var, &TechBw_dat);
-BW_DATA_VAR(_bwUpgrs*,						UpgradesBw_var, &UpgradesBw_dat);
+BW_DATA_VAR(ImagesDatExtraOverlayLO_Files*,		lo_files_var, &lo_files_dat);
+BW_DATA_VAR(_bwTechs*,							TechBw_var, &TechBw_dat);
+BW_DATA_VAR(_bwUpgrs*,							UpgradesBw_var, &UpgradesBw_dat);
 
 // Define the extern variables
 BW_DATA_DEF(UnitDeaths*,						g_unit_deaths_table, deathTable_var);
 BW_DATA_DEF(UnitDeaths*,						g_all_unit_count_table, unitAllCountTable_var);
 BW_DATA_DEF(UnitDeaths*,						g_completed_unit_count_table, unitCompleteTable_var);
 BW_DATA_DEF(UnitDeaths*,						g_unit_killed_table, unitKilledTable_var);
-BW_DATA_DEF(ButtonSet*,						g_buttonset_table, buttonSetTable_var);
-BW_DATA_DEF(UnitStatFuncArrayEntry*,			unitStatFuncs, unitStatFuncs_var);
+BW_DATA_DEF(ButtonSet*,							g_buttonset_table, buttonSetTable_var);
+BW_DATA_DEF(UnitStatFuncArrayEntry*,			g_unit_stat_funcs_table, unitStatFuncs_var);
 BW_DATA_DEF(u16*,								g_orders_requirement_tree, g_orders_requirement_tree_var);
 BW_DATA_DEF(const LO_Header* const*,			g_shield_overlays, shieldOverlays_var);
 BW_DATA_DEF(u8*,								g_building_overlay_state_max, g_building_overlay_state_max_var);
@@ -75,9 +75,9 @@ BW_DATA_DEF(u8*,								g_is_valid_sprite, g_is_valid_sprite_var);
 
 BW_DATA_DEF(AI_Main*,							g_aiscript_controller, AIScriptController_var);
 BW_DATA_DEF(_uavail*,							g_unit_availability, unit_availability_var);
-BW_DATA_DEF(ImagesDatExtraOverlayLO_Files*,	lo_files, lo_files_var);
-BW_DATA_DEF(_bwTechs*,						TechBw, TechBw_var);
-BW_DATA_DEF(_bwUpgrs*,						UpgradesBw, UpgradesBw_var);
+BW_DATA_DEF(ImagesDatExtraOverlayLO_Files*,		lo_files, lo_files_var);
+BW_DATA_DEF(_bwTechs*,							TechBw, TechBw_var);
+BW_DATA_DEF(_bwUpgrs*,							UpgradesBw, UpgradesBw_var);
 
 BW_DATA_DEF(u32*,								ai_strength_air, ai_strength_air_var);
 BW_DATA_DEF(u32*,								ai_strength_ground, ai_strength_ground_var);

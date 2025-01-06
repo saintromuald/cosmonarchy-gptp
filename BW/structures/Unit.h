@@ -398,6 +398,10 @@ struct Unit : public UnitLayout
 	u32 standard_sprite_id();
 	bool is_building();
 	bool is_detector();
+	bool is_neutral_accessory();
+	bool has_shields();
+	bool is_worker();
+	bool is_resource_depot();
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

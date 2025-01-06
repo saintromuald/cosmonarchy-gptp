@@ -560,6 +560,7 @@ bool is_conventional_unit_morph_source(u16 id, bool allow_larvae) {
 		case UnitId::ZergMortothrokor:
 		case UnitId::ZergHydralisk:
 		case UnitId::ZergIzirokor:
+		case UnitId::ZergIziralisk:
 		case UnitId::ZergSkithrokor:
 		case UnitId::ZergKagralisk:
 		case UnitId::ZergEvigrilisk:
@@ -993,7 +994,7 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
 	switch (unit_id) {
 		case UnitId::ZergRililisk:
 		case UnitId::ZergRilirokor: {
-			remove_timer = BroodspawnTimer;
+			remove_timer = Broodspawn::LifeTimer;
 		} break;
 	}
 
@@ -1026,7 +1027,7 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
 			} break;
 			case UnitId::ZergRilirokor:
 			case UnitId::ZergRililisk: {
-				helper::play_sound_from_unit(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
+				helper::play_sound_from_unit(SoundId::BroodspawnSpawnProc, unit, 1, 0);
 				if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
 					unit->remove_timer = remove_timer;
 				}
@@ -1065,15 +1066,20 @@ u32 get_sized_overlay(Unit* unit, u32 initial) {
 }
 
 static bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
+	switch (unit->id) {
+		case UnitId::TerranHarakan:
+		case UnitId::TerranHarakanGolden:
+		case UnitId::TerranStriga: 
+		case UnitId::TerranMatadorCinderMode: 
+		case UnitId::TerranMatadorTurretCinderMode: 
+		case UnitId::Ackmed: 
+		case UnitId::ZergIzirokor: {
+			return false;
+		}
+	}
 	return !(unit->status & UnitStatus::InAir)
 		&& (weapon_id == WeaponId::None || weapons_dat::max_range[weapon_id] > 32)
-		&& unit->id != UnitId::TerranHarakan
-		&& unit->id != UnitId::TerranStriga
-		&& unit->id != UnitId::TerranMatadorCinderMode
-		&& unit->id != UnitId::TerranMatadorTurretCinderMode
-		&& weapon_id != WeaponId::DurendalAbaddonFlamethrowers
-		&& unit->id != UnitId::ZergIzirokor
-		&& unit->id != UnitId::Ackmed;
+		&& weapon_id != WeaponId::DurendalAbaddonFlamethrowers;
 }
 
 f32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {
@@ -1269,6 +1275,7 @@ bool unit_is_ranged_attacker(Unit* unit) {
 		} break;
 		// Allowed IDs
 		case UnitId::TerranHarakan:
+		case UnitId::TerranHarakanGolden:
 		case UnitId::TerranGoliathTurret:
 		case UnitId::TerranMatadorTankMode:
 		case UnitId::TerranMatadorCinderMode:
@@ -1355,6 +1362,7 @@ bool unit_id_is_available_without_an_addon(u16 id) {
 		|| id == UnitId::TerranMagnetar
 
 		|| id == UnitId::TerranHotshot
+		|| id == UnitId::TerranHarakanGolden
 		|| id == UnitId::TerranCohort
 		|| id == UnitId::TerranAspirant
 		|| id == UnitId::TerranSouthpaw
@@ -1625,7 +1633,7 @@ void madrigal_dirge_fuse(Unit* unit, UnitExt* unit_ext) {
 		unit->get_x() + radius,
 		unit->get_y() + radius
 	).for_each_in_match(cosmonarchy_finder_match(unit, Flags::IncludingSelf, {}), [&unit_ext](Unit* target) {
-		target->damage_with_custom(unit_ext->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256, 5, unit_ext->units[UnitDirgeSource], unit_ext->values[ValueDirgeSourcePlayer]);
+		target->damage_with_custom(unit_ext->values[ValueDirgeStacks] * Madrigal::DirgeDamage * 256, 5, unit_ext->units[UnitDirgeSource], unit_ext->values[ValueDirgeSourcePlayer]);
 	});
 	unit_ext->values[ValueDirgeStacks] = 0;
 }
@@ -2030,7 +2038,6 @@ u32 get_zerg_regression(Unit* unit) {
 		case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;
 		case UnitId::ZergTosgrilisk:			return UnitId::ZergMutalisk;
 		case UnitId::ZergBactalisk:				return UnitId::ZergHydralisk;
-		case UnitId::ZergTethzorokor:			return UnitId::ZergIzirokor;
 		case UnitId::ZergVithrilisk:			return UnitId::ZergSkithrokor;
 		case UnitId::ZergCherbrathalor:			return UnitId::ZergKagralisk;
 		case UnitId::ZergOkrimnilisk:			return UnitId::ZergEvigrilisk;
@@ -2043,6 +2050,16 @@ u32 get_zerg_regression(Unit* unit) {
 		case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
 		case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
 		case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
+		case UnitId::ZergTethzorokor: {
+			if (unit->player < PlayerLimit) {
+				switch (g_globals->players[unit->player].faction) {
+					case Faction::ZergZorthosTendril:   return UnitId::ZergIziralisk;
+					default:							return UnitId::ZergIzirokor;
+				}
+			} else {
+				return UnitId::ZergIzirokor;
+			}
+		}
 		case UnitId::ZergKalkalisk: {
 			if (unit->player < PlayerLimit) {
 				switch (g_globals->players[unit->player].faction) {
@@ -3925,7 +3942,7 @@ bool can_show_custom_ui() {
 }
 
 bool player_is_witness(u32 player) {
-	return *g_is_in_game && g_globals->players[player].witness_mode;
+	return player < PLAYABLE_PLAYER_COUNT && *g_is_in_game && g_globals->players[player].witness_mode;
 }
 
 bool player_is_active(u32 player) {

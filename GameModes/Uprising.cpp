@@ -15,8 +15,8 @@
 static u32 get_spawner_train_time(UnitId::Enum unit_id) {
     u32 time = units_dat::time_cost[unit_id];
     switch (unit_id) {
-        case UnitId::ZergRililisk:  time = 12 * 24; break;
-        case UnitId::ZergRilirokor: time = 20 * 24; break;
+        case UnitId::ZergRililisk:  time = 8 * 24; break;
+        case UnitId::ZergRilirokor: time = 12 * 24; break;
     }
     return Map(g_elapsed_time_frames, 0, 40 * 60 * 24, time * 2, time / 2, true);
 }

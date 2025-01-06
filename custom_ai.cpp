@@ -75,7 +75,7 @@ static void update_custom_town(CustomAiTown* custom_ai_town, u32 town) {
 			{
 				s32 request_count = std::min(total_gas - unupgradeable_gas, custom_ai_town->gas_cap) - requested_count;
 				if (request_count > 0) {
-					u32 priority = 150 - requested_count;
+					u32 priority = 200 - requested_count;
 					for (u32 i = 0; i < request_count; ++i) {
 						bw::town_add_spending_request(ai_town, 1, capped_id, priority);
 						priority -= 1;

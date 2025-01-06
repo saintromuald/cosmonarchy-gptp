@@ -2,8 +2,7 @@
 #include "../../BW/structures/Unit.h"
 #include "../../BW/structures.h"
 
-namespace hooks
-{
+namespace hooks {
 	void stats_panel_display(BinDlg* dialog);																										// 00426C60
 	const char* get_unit_rank_string(Unit* a1);																										// 0042F370
 	void draw_unit_kills_string(BinDlg* dialog);																									// 00425DD0
@@ -30,6 +29,7 @@ namespace hooks
 	void stats_text_energy_timer(BinDlg* dialog);																									// 00425A30
 	void unit_stat_act_default(BinDlg* dialog);																										// 00425EE0
 	void unit_stat_act_standard(BinDlg* dialog);																									// 00426F50
+	void __cdecl draw_status_screen();																												// 00458120
 
 	void inject_stats_panel_display_hooks();
 }

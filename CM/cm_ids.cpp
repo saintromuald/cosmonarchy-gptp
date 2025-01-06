@@ -157,13 +157,14 @@ bool unit_id_is_protoss_warp_factory(u32 unit_id) {
 
 bool unit_id_has_flash_shielding(u32 unit_id) {
 	return unit_id != UnitId::ProtossVagrantShade
+		&& unit_id != UnitId::TerranHarakanGolden
 		&& unit_id != UnitId::TerranAspirant
 		&& unit_id != UnitId::TerranLuminary;
 }
 
-bool unit_id_has_shield_regeneration(u32 unit_id)
-{
-	return unit_id == UnitId::TerranAspirant
+bool unit_id_has_shield_regeneration(u32 unit_id) {
+	return unit_id == UnitId::TerranHarakanGolden
+		|| unit_id == UnitId::TerranAspirant
 		|| unit_id == UnitId::TerranLuminary;
 }
 
@@ -589,6 +590,7 @@ bool image_id_is_powerup(u32 image_id) {
 ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
 	switch (weapon_id) {
 		case WeaponId::HarakanFlamethrower:				return ImageId::HarakanFlamethrower;
+		case WeaponId::HarakanGoldenFlamethrower:		return ImageId::HarakanFlamethrower;
 		case WeaponId::MatadorTwinstrikeFlamethrowers:	return ImageId::HarakanFlamethrower;
 		case WeaponId::DurendalAbaddonFlamethrowers:	return ImageId::HarakanFlamethrower;
 		case WeaponId::StrigaPhaseSaber:				return ImageId::PhaseLineBlast;
@@ -919,6 +921,7 @@ bool unit_id_can_repair(u32 unit_id) {
 
 bool weapon_id_is_flamethrower(u32 weapon_id) {
 	return weapon_id == WeaponId::HarakanFlamethrower
+		|| weapon_id == WeaponId::HarakanGoldenFlamethrower
 		|| weapon_id == WeaponId::MatadorTwinstrikeFlamethrowers
 		|| weapon_id == WeaponId::DurendalAbaddonFlamethrowers
 		|| weapon_id == WeaponId::AckmedMickenMelter;
@@ -939,6 +942,7 @@ u32 get_mutate_image_id(u32 unit_id) {
 		case UnitId::ZergCikralisk:		return ImageId::CikraliskMutate;
 		case UnitId::ZergProtathalor:	return ImageId::ProtathalorMutate;
 		case UnitId::ZergIzirokor:		return ImageId::IzirokorMutate;
+		case UnitId::ZergIziralisk:		return ImageId::IziraliskMutate;
 		case UnitId::ZergSkithrokor:	return ImageId::SkithrokorMutate;
 		case UnitId::ZergKagralisk:		return ImageId::KagraliskMutate;
 		case UnitId::ZergEvigrilisk:	return ImageId::EvigriliskMutate;
@@ -1173,6 +1177,7 @@ bool unit_id_ignores_ground_collision(u32 unit_id) {
 
 bool unit_id_has_projection_attack(u32 unit_id) {
 	return unit_id == UnitId::TerranHarakan
+		|| unit_id == UnitId::TerranHarakanGolden
 		|| unit_id == UnitId::TerranStriga
 		|| unit_id == UnitId::TerranMatadorCinderMode
 		|| unit_id == UnitId::TerranMatadorTurretCinderMode
@@ -1285,4 +1290,14 @@ bool weapon_id_can_self_splash(u32 weapon_id) {
 
 bool unit_id_is_mine_layer(UnitId::Enum unit_id) {
 	return unit_id == UnitId::TerranVulture;
+}
+
+bool unit_id_can_construct(UnitId::Enum unit_id) {
+	return unit_id == UnitId::TerranMason
+		|| unit_id == UnitId::TerranTalos
+		|| unit_id == UnitId::DanielsMason
+		|| unit_id == UnitId::ProtossScribe
+		|| unit_id == UnitId::ProtossPrudence
+		|| unit_id == UnitId::ZergDroleth
+		|| unit_id == UnitId::ZergGosvileth;
 }

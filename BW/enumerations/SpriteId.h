@@ -896,6 +896,8 @@ namespace SpriteId
 		Corpse_Witness				= 949,
 		Corpse_Savant				= 950,
 
+		Corpse_Iziralisk			= 960,
+
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
 	};

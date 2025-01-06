@@ -1,39 +1,32 @@
 #include "enter_nydus.h"
 #include <hook_tools.h>
 
-namespace
-{
-	void __declspec(naked) canEnterNydusCanalWrapper()
-	{
+namespace {
+	void __declspec(naked) can_enter_nydus_wrapper() {
 		static Unit* unit;
 		static Unit* nydus;
 		static b32 result;
-		__asm
-		{
+		__asm {
 			MOV unit, EAX
 			MOV nydus, EDX
 			PUSHAD
 		}
-		if (hooks::can_enter_nydus(unit, nydus))
-		{
+		if (hooks::can_enter_nydus(unit, nydus)) {
 			result = 1;
 		} else {
 			result = 0;
 		}
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) enterNydusCanal_EffectWrapper()
-	{
+	void __declspec(naked) enter_nydus_effect_wrapper() {
 		static Unit* unit;
 		static Unit* nydus;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, ECX
@@ -49,29 +42,24 @@ namespace
 		}
 	}
 
-	void __declspec(naked) orders_EnterNydusCanalWrapper()
-	{
+	void __declspec(naked) orders_enter_nydus_wrapper() {
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
 		hooks::orders_enter_nydus(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 }
 
-namespace hooks
-{
-	void inject_enter_nydus_hooks()
-	{
-		jump_patch(canEnterNydusCanalWrapper,			0x004E8C20, 2);
-		jump_patch(enterNydusCanal_EffectWrapper,		0x004EA180, 1);
-		jump_patch(orders_EnterNydusCanalWrapper,		0x004EA3E0, 0);
+namespace hooks {
+	void inject_enter_nydus_hooks() {
+		jump_patch(can_enter_nydus_wrapper,			0x004E8C20, 2);
+		jump_patch(enter_nydus_effect_wrapper,		0x004EA180, 1);
+		jump_patch(orders_enter_nydus_wrapper,		0x004EA3E0, 0);
 	}
 }

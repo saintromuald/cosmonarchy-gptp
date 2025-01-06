@@ -1083,7 +1083,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			u32 web_state = bw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
 			u32 lanifects = 0;
 			u32 webs = 0;
-			cosmonarchyFinderLoop(unit, unit->position, AILanifectSeekRange, Flags::Own, {}, [&](Unit* target) {
+			cosmonarchyFinderLoop(unit, unit->position, Lanifect::AISeekRange, Flags::Own, {}, [&](Unit* target) {
 				if (target->id == UnitId::ProtossLanifect) {
 					lanifects += 1;
 					if (bw::get_generic_rust_value(target, RustId::ToggleDisruptionField)) {
@@ -1092,22 +1092,22 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				}
 			});
 
-			u32 allies = cosmonarchy_unit_count(unit, unit->position, AILanifectSeekRange, Flags::IncludingSelf | Flags::Ally, {});
-			u32 enemies = cosmonarchy_unit_count(unit, unit->position, AILanifectSeekRange, Flags::Enemy, {});
+			u32 allies = cosmonarchy_unit_count(unit, unit->position, Lanifect::AISeekRange, Flags::IncludingSelf | Flags::Ally, {});
+			u32 enemies = cosmonarchy_unit_count(unit, unit->position, Lanifect::AISeekRange, Flags::Enemy, {});
 			u32 threshold = std::min(std::min(ceilf(enemies / 4), ceilf(lanifects / 4)), ceilf(allies / 2));
 			if (web_state || webs < threshold) {
 				Unit* best_target = 0;
 				s32 max_score = INT_MIN;
-				cosmonarchyFinderLoop(unit, unit->position, AILanifectSeekRange, Flags::Enemy, {}, [&](Unit* target) {
+				cosmonarchyFinderLoop(unit, unit->position, Lanifect::AISeekRange, Flags::Enemy, {}, [&](Unit* target) {
 					bool valid = true;
-					cosmonarchyFinderLoop(unit, target->position, AILanifectCheckRange / 2, Flags::Own, {}, [&](Unit* dweb) {
+					cosmonarchyFinderLoop(unit, target->position, Lanifect::AICheckRange / 2, Flags::Own, {}, [&](Unit* dweb) {
 						if (bw::get_generic_rust_value(dweb, RustId::ToggleDisruptionField)) {
 							valid = false;
 						}
 					});
 					if (valid) {
-						s32 score = cosmonarchy_unit_count(unit, target->position, AILanifectCheckRange, Flags::Enemy, {});
-						score -= cosmonarchy_unit_count(unit, target->position, AILanifectCheckRange, Flags::Ally, {});
+						s32 score = cosmonarchy_unit_count(unit, target->position, Lanifect::AICheckRange, Flags::Enemy, {});
+						score -= cosmonarchy_unit_count(unit, target->position, Lanifect::AICheckRange, Flags::Ally, {});
 						score -= bw::distance_between(unit->position, target->position) / 128;
 						if (score > max_score) {
 							max_score = score;
@@ -1118,14 +1118,13 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 				if (best_target) {
 					unit->order_to(OrderId::Move, best_target->position.x, best_target->position.y);
 					bw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 1);
-					unit_ext->timers[TimerAI_DisruptionField] = AIWebTimer;
+					unit_ext->timers[TimerAI_DisruptionField] = Lanifect::AIWebTimer;
 				}
 			}
 
 			if (web_state && webs > threshold) {
 				bw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
-				if (unit->main_order_id == OrderId::Move)
-				{
+				if (unit->main_order_id == OrderId::Move) {
 					unit->order_to_idle();
 				}
 			}
@@ -1133,23 +1132,20 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			u32 enemy_units_health = 0;
 			u32 allied_units_health = 0;
 			bool allied_town_centers = false;
-			cosmonarchyFinderLoop(unit, unit->sprite->position, AIStarSovereignAbilSeekRange, Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u) {
-				if (!bw::is_allied_to(unit->player, u->player))
-				{
-					enemy_units_health += (u->hitpoints + u->shields) / 256;
-				}
-				if (bw::is_allied_to(unit->player, u->player))
-				{
-					if (units_dat::base_property[u->id] & UnitProperty::ResourceDepot)
-					{
+			auto victims = g_unit_search.radial_ex(unit, StarSovereign::AIAbilSeekRange, FilterNotSelf | FilterNoAir);
+			for (auto victim : victims) {
+				if (!bw::is_allied_to(unit->player, victim->player)) {
+					enemy_units_health += (victim->hitpoints + victim->shields) / 256;
+				} else {
+					if (victim->is_resource_depot()) {
 						allied_town_centers = true;
 						return;
 					}
-					allied_units_health += (u->hitpoints + u->shields) / 256;
+					allied_units_health += (victim->hitpoints + victim->shields) / 256;
 				}
-			});
-			if (!allied_town_centers && enemy_units_health >= 2000 && allied_units_health < 2000
-				&& (unit->hitpoints + unit->shields) * 2 >=	(units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id])) {
+			}
+			if (!allied_town_centers && enemy_units_health >= 1500 && allied_units_health < 1500
+			&& (unit->hitpoints + unit->shields) * 2 >=	(units_dat::max_hitpoints[unit->id] + units_dat::max_shield_points[unit->id])) {
 				unit_ext->timers[TimerAI_GriefOfAllGods] = 612;
 				unit_ext->timers[TimerAI_KitingCooldown] = 5 * 24;
 				unit->issue_custom_order(OrderId::GriefOfAllGods);

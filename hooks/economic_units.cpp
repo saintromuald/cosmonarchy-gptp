@@ -119,7 +119,7 @@ namespace hooks
 		}
 	}
 
-	u32 get_worker_from_race(u32 race)
+	u32 get_default_racial_worker(u32 race)
 	{
 		u32 id = 0xe4;
 		switch (race)
@@ -241,7 +241,7 @@ namespace hooks
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Terran);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, bw::get_supply_remaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
+					ai_add_town_spending_request(player, bw::get_supply_remaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
 				}
 			}
 			if (check_supply_need(player, RaceId::Protoss))
@@ -249,7 +249,7 @@ namespace hooks
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Protoss);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, bw::get_supply_remaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
+					ai_add_town_spending_request(player, bw::get_supply_remaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
 				}
 			}
 			if (check_supply_need(player, RaceId::Zerg))
@@ -257,7 +257,7 @@ namespace hooks
 				AiTown* town = GetFirstEligibleTown(mainTown, player, RaceId::Zerg);
 				if (town)
 				{
-					AI_AddTownSpendingRequest(player, bw::get_supply_remaining(player, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player), (void*)town);
+					ai_add_town_spending_request(player, bw::get_supply_remaining(player, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player), (void*)town);
 				}
 			}
 		}
@@ -267,7 +267,7 @@ namespace hooks
 	{
 		u32 checkEcoUnits;
 		s32 supplyRemaining;
-		u32 workerUnit = get_worker_from_race(race);
+		u32 workerUnit = get_default_racial_worker(race);
 		s32 supplyUsedCompare;
 		u8 townHallSupply;
 		u32 supplyUnit = get_supply_structure_from_race(race, player);
@@ -315,7 +315,7 @@ namespace hooks
 		return false;
 	}
 
-	s32 AI_AddTownSpendingRequest(s32 player, s32 priority, s32 unit_id, void* param)
+	s32 ai_add_town_spending_request(s32 player, s32 priority, s32 unit_id, void* param)
 	{ // 00448400
 		s32 battleTime;
 		s8 race;

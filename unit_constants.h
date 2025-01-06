@@ -55,7 +55,8 @@ constexpr s32 MadcapMaxStacks = 10;
 
 // Apostle
 namespace Reclamation {
-inline constexpr u32 ReviveTimer = 3 * 24;
+inline constexpr u32 ReviveStunTimer = 3 * 24;
+inline constexpr u32 ReviveHealTimer = 10 * 24;
 }
 
 // Olympian
@@ -67,125 +68,134 @@ inline constexpr u32 CastRange = 6 * 32;
 inline constexpr u32 TargetSearchRange = 6 * 32;
 }
 
-// Mines
-constexpr s32 MineBurrowTime = 72;
-constexpr s32 MineSeekRange = 576;
-constexpr s32 MineDetonateRange = 30;
-constexpr s32 LobotomyMineLockdownTimer = 9; // 3 seconds
+namespace TerranMine {
+inline constexpr s32 BurrowTime = 72;
+inline constexpr s32 SeekRange = 576;
+inline constexpr s32 DetonateRange = 30;
+inline constexpr s32 LobotomyTimer = 9; // 3 seconds
+}
 
-// Cuirass
-constexpr u32 CuirassSelfReviveHP = 50 * 256;
-constexpr s32 CuirassSelfHeal = 160; // (15 * 256) / 24 = 160
+namespace Cuirass {
+inline constexpr u32 SelfReviveHP = 50 * 256;
+inline constexpr s32 SelfHeal = 160; // (15 * 256) / 24 = 160
+}
 
-// Madrigal
-constexpr s32 MadrigalDirgeTimer = 48 + 1;
-constexpr s32 MadrigalDirgeDamage = 5;
+namespace Madrigal {
+inline constexpr s32 DirgeTimer = 48 + 1;
+inline constexpr s32 DirgeDamage = 5;
+}
 
-// Wyvern
-constexpr s32 WyvernBaseAttackCooldown = 30;
+namespace Wyvern {
+inline constexpr s32 BaseAttackCooldown = 30;
+}
 
-// Seraph
-constexpr s32 SeraphObservanceDebuffTimer = 5 * 24 + 1;
-constexpr s32 SeraphIrradiateTimer = 10;
+namespace Seraph {
+inline constexpr s32 ObservanceDebuffTimer = 5 * 24 + 1;
+inline constexpr s32 ObservanceSearchRange = 6 * 32;
+inline constexpr s32 IrradiateTimer = 10;
+}
 
-// Azazel
-constexpr s32 AzazelDefensiveMatrixTimer = 30; // roughly 10 seconds
-constexpr s32 AzazelDefensiveMatrixHeal = 107; // ~10 HP per second | 256 * 5 / 24
+namespace Azazel {
+inline constexpr s32 DefensiveMatrixTimer = 30; // roughly 10 seconds
+inline constexpr s32 DefensiveMatrixHeal = 107; // ~10 HP per second | 256 * 5 / 24
+}
 
-// Centaur
-constexpr s32 CentaurMissileDistance = 4 * 32;
+namespace Centaur {
+inline constexpr s32 MissileDistance = 4 * 32;
+}
 
 // Reservoir / Addon
 constexpr s32 EmergencyDetonationTimer = 5 * 24 + 1;
 constexpr s32 ControlledDemolitionTimer = 10 * 24 + 1;
 
-// Treasury
-constexpr s32 TreasuryIncrease = 8;
-
 // PROTOSS \\
 
-// Ecclesiast
-constexpr s32 EcclesiastAstralBlessingTimer = 5 * 24 + 1;
+namespace Ecclesiast {
+inline constexpr s32 AstralBlessingTimer = 5 * 24 + 1;
+}
 
-// Cantavis
-constexpr s32 CantavisHallucinatingFieldTimer = 10 * 24 + 1;
+namespace Cantavis {
+inline constexpr s32 HallucinatingFieldTimer = 10 * 24 + 1;
+}
 
-// Archon
-constexpr s32 ArchonAstralAegisShieldHeal = 50 * 256;
+namespace Archon {
+inline constexpr s32 AstralAegisRange = 3 * 32;
+inline constexpr s32 AstralAegisShieldHeal = 50 * 256;
+}
 
-// Mind Tyrant
-constexpr s32 TyrannyMaxStacks = 48;
-constexpr s32 MindTyrantMaelstromTimer = 16; // 5 seconds
+namespace MindTyrant {
+inline constexpr s32 TyrannyMaxStacks = 48;
+inline constexpr s32 MaelstromTimer = 16; // 5 seconds
+}
 
-// Architect
 namespace ReactivePayload {
 inline constexpr s32 SplitProcDistance = 1 * 32;
 inline constexpr s32 SplitPeriod = 4 * 32;
 inline constexpr s32 SplitSearchRadius = 3 * 32;
 }
 
-// Demiurge
-constexpr s32 GodsMadeFleshEnergyDrain = 100;
+namespace Lanifect {
+inline constexpr s32 AICheckRange = 3 * 32;
+inline constexpr s32 AISeekRange = 8 * 32;
+inline constexpr s32 AIWebTimer = 1 * 24;
+}
 
-// Lanifect
-constexpr s32 AILanifectCheckRange = 3 * 32;
-constexpr s32 AILanifectSeekRange = 8 * 32;
-constexpr s32 AIWebTimer = 1 * 24;
+namespace Didact {
+inline constexpr s32 ShroudOfAdunRange = 4 * 32;
+inline constexpr s32 StasisFieldTimer = 23; // roughly 8 seconds
+}
 
-// Didact
-constexpr s32 DidactStasisFieldTimer = 23; // roughly 8 seconds
-
-// Star Sovereign
-constexpr s32 AIStarSovereignAbilSeekRange = 6 * 32;
-constexpr s32 AIStarSovereignAbilMinEnemyHealth = 2000;
-constexpr s32 AIStarSovereignAbilMaxAllyHealth = 2000;
-constexpr f64 AIStarSovereignAbilLifePercentage = 0.5;
-constexpr s32 AIStarSovereignAbilTimer = 612;
+namespace StarSovereign {
+inline constexpr s32 AIAbilSeekRange = 6 * 32;
+inline constexpr s32 AIAbilMinEnemyHealth = 2000;
+inline constexpr s32 AIAbilMaxAllyHealth = 2000;
+inline constexpr f64 AIAbilLifePercentage = 0.5;
+inline constexpr s32 AIAbilTimer = 612;
+}
 
 // ZERG \\
 
-// Zethrokor
-constexpr s32 ZethrokorAdrenalGlandsTimer = 24 * 2 + 1;
+namespace Nathrokor {
+inline constexpr s32 AdrenalFrenzyTimer = 2 * 24 + 1;
+inline constexpr f64 AdrenalFrenzySpeedFactor = 0.01;
+}
 
-// Quazilisk
-constexpr f64 QuazaliskPassiveFactor = 0.1;
+namespace Vorvrokor {
+inline constexpr s32 CaptivatingClawsTimer = 24 + 1;
+}
 
-// Nathrokor
-constexpr s32 NathrokorAdrenalFrenzyTimer = 2 * 24 + 1;
-constexpr f64 NathrokorAdrenalFrenzySpeedFactor = 0.01;
-
-// Vorvrokor
-constexpr s32 VorvrokorCaptivatingClawsTimer = 24 + 1;
-
-// Vithrilisk
-constexpr s32 VithriliskCorrosiveTouchTimer = 5 * 24 + 1;
-constexpr f64 VithriliskCorrosiveTouchCooldownIncrease = 0.05;
-constexpr f64 VithriliskCorrosiveTouchArmorReduction = 1 * 256;
+namespace Vithrilisk {
+inline constexpr s32 CorrosiveTouchTimer = 5 * 24 + 1;
+inline constexpr f64 CorrosiveTouchCooldownIncrease = 0.05;
+inline constexpr f64 CorrosiveTouchArmorReduction = 1 * 256;
+}
 
 // Zoryusthaleth
-constexpr s32 ZoryusthalethReconstitutionHealing = 5 * 256;
+namespace Zoryusthaleth {
+inline constexpr s32 ReconstitutionHealing = 5 * 256;
+}
 
 // Isthrathaleth
-constexpr s32 IsthrathalethPlagueTimer = 5 * 3;
+namespace Isthrathaleth {
+inline constexpr s32 PlagueTimer = 5 * 3;
+}
 
 // Matraleth
-constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
-constexpr s32 MatralethAIParasiteTimer = 75;
-constexpr s32 MatralethAIEnsnaringBroodTimer = 75;
-constexpr s32 MatralethEnsnareTimer = 5;
-constexpr s32 BroodspawnTimer = 720;
+namespace Matraleth {
+inline constexpr s32 AIParasiteTimer = 75;
+inline constexpr s32 AIEnsnaringBroodTimer = 75;
+inline constexpr s32 EnsnareTimer = 5;
+}
 
 namespace Broodspawn {
 inline constexpr s32 DeathCycleEnsnareRange = 3 * 32;
 inline constexpr s32 DeathCycleEnsnareTimer = (3 * 24) / 8;
+inline constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
+inline constexpr s32 LifeTimer = 720;
 }
 
 // Akistrokor
 constexpr s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second
-
-// Alkajelisk
-constexpr s32 AlkajeliskParasiticSporesTimer = 135; // 135 is 255 - 5 * 24
-constexpr s32 AlkajeliskParasiticSporesSeekRange = 8 * 32;
 
 // Hachirosk
 constexpr s32 LarvaSpawnRate = (14 * 24) / 8; // 14 seconds

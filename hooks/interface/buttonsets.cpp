@@ -896,6 +896,14 @@ namespace hooks {
 						switch (unit->id) {
 							case UnitId::TerranStockade: {
 								switch (current_button->requirement_var) {
+									case UnitId::TerranHarakan: {
+										if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranGoldenRepublic) {
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
+
 									case UnitId::TerranCleric:
 									case UnitId::TerranShamanSupportMode: {
 										if (!bw::all_selected_units_have_addon(UnitId::TerranVestry) || bw::unit_queue_full(unit)) {
@@ -918,7 +926,13 @@ namespace hooks {
 											current_button_state = Button_State::Invisible;
 										}
 									} break;
-
+									case UnitId::TerranHarakanGolden: {
+										if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranGoldenRepublic) {
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
 									case UnitId::TerranCohort: {
 										if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranNydusTrinity) {
 											current_button_state = Button_State::Invisible;
@@ -1556,14 +1570,39 @@ namespace hooks {
 												current_button_state = Button_State::Invisible;
 										}
 									} break;
-									case UnitId::ZergHydralisk:
-									case UnitId::ZergIzirokor: {
+									case UnitId::ZergHydralisk: {
 										if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrithDen)
 										||  player_has_unit_id(unit->player, UnitId::ZergSkibactScab)
 										||  player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
 											current_button_state = Button_State::Enabled;
 										} else {
 											current_button_state = Button_State::Disabled;
+										}
+									} break;
+									case UnitId::ZergIzirokor: {
+										if (faction != Faction::ZergZorthosTendril) {
+											if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrithDen)
+												|| player_has_unit_id(unit->player, UnitId::ZergSkibactScab)
+												|| player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
+												current_button_state = Button_State::Enabled;
+											} else {
+												current_button_state = Button_State::Disabled;
+											}
+										} else {
+												current_button_state = Button_State::Invisible;
+										}
+									} break;
+									case UnitId::ZergIziralisk: {
+										if (faction == Faction::ZergZorthosTendril) {
+											if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrithDen)
+												|| player_has_unit_id(unit->player, UnitId::ZergSkibactScab)
+												|| player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
+												current_button_state = Button_State::Enabled;
+											} else {
+												current_button_state = Button_State::Disabled;
+											}
+										} else {
+												current_button_state = Button_State::Invisible;
 										}
 									} break;
 									case UnitId::ZergSkithrokor: {
@@ -1779,7 +1818,8 @@ namespace hooks {
 									current_button_state = Button_State::Invisible;
 								}
 							} break;
-							case UnitId::ZergIzirokor: {
+							case UnitId::ZergIzirokor:
+							case UnitId::ZergIziralisk: {
 								if (!is_burrowed && current_button->requirement_var == UnitId::ZergTethzorokor) {
 									if (player_has_completed_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
 										current_button_state = Button_State::Enabled;
@@ -2608,6 +2648,11 @@ namespace hooks {
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Lucilleri Pheremones
 										current_button_state = Button_State::Enabled;
 									}
+								} break;
+								case UnitId::ZergIziralisk: {
+									if (current_button->icon_id == IconId::VenomUnused) {			// Corrosive Touch
+										current_button_state = Button_State::Enabled;
+										}
 								} break;
 								case UnitId::ZergSkithrokor: {
 									if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Ablative Return

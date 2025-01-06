@@ -224,7 +224,7 @@ static void tick_effect(EffectField& effect) {
 			} break;
 			case EffectId::PsiStorm: {
 				Unit* caster = effect.source;
-				if (!caster) {
+				if (!caster || caster->is_frozen()) {
 					effect.destroy();
 					break;
 				}
@@ -632,19 +632,19 @@ void refresh_debuffs(Unit* unit) {
 
 	// Refresh Ensnare
 	if (unit->ensnare_timer) {
-		unit->ensnare_timer = MatralethEnsnareTimer;
+		unit->ensnare_timer = Matraleth::EnsnareTimer;
 		// specific update following ensnare removal
 		unit->update_speed();
 	}
 
 	// Refresh Plague
 	if (unit->plague_timer) {
-		unit->plague_timer = IsthrathalethPlagueTimer;
+		unit->plague_timer = Isthrathaleth::PlagueTimer;
 	}
 
 	// Refresh Observance
 	if (unit_ext->timers[TimerObservanceDebuff]) {
-		unit_ext->timers[TimerObservanceDebuff] = SeraphObservanceDebuffTimer;
+		unit_ext->timers[TimerObservanceDebuff] = Seraph::ObservanceDebuffTimer;
 	}
 
 	// Refresh Hallucination
@@ -654,27 +654,27 @@ void refresh_debuffs(Unit* unit) {
 
 	// Refresh Captivating ZethrokorClaws
 	if (unit_ext->timers[TimerCaptivatingClaws]) {
-		unit_ext->timers[TimerCaptivatingClaws] = VorvrokorCaptivatingClawsTimer;
+		unit_ext->timers[TimerCaptivatingClaws] = Vorvrokor::CaptivatingClawsTimer;
 	}
 
 	// Refresh Lockdown
 	if (unit->lockdown_timer) {
-		unit->lockdown_timer = LobotomyMineLockdownTimer;
+		unit->lockdown_timer = TerranMine::LobotomyTimer;
 	}
 
 	// Refresh Maelstrom
 	if (unit->maelstrom_timer) {
-		unit->maelstrom_timer = MindTyrantMaelstromTimer;
+		unit->maelstrom_timer = MindTyrant::MaelstromTimer;
 	}
 
 	// Refresh Devourer Corrosive Spores
 	if (unit_ext->timers[TimerCorrosiveTouch]) {
-		unit_ext->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
+		unit_ext->timers[TimerCorrosiveTouch] = Vithrilisk::CorrosiveTouchTimer;
 	}
 
 	// Refresh Irradiate
 	if (unit->irradiate_timer) {
-		unit->irradiate_timer = SeraphIrradiateTimer;
+		unit->irradiate_timer = Seraph::IrradiateTimer;
 	}
 
 	// Refresh Hierophant Signify
