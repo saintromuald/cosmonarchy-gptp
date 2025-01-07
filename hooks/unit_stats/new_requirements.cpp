@@ -501,7 +501,7 @@ namespace hooks {
 					}
 				}
 				case UnitId::ProtossLegionnaire: {
-					if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+					if (faction != Faction::ProtossOrderOfTheSacredSaber && faction != Faction::ProtossStarbound) {
 						return true;
 					}
 				}
@@ -510,8 +510,24 @@ namespace hooks {
 						return true;
 					}
 				}
+				case UnitId::ProtossCicatus: {
+					if (faction == Faction::ProtossStarbound) {
+						return true;
+					}
+				}
+				case UnitId::ProtossEcclesiast: {
+					return true; // Factional variant is not yet implemented, remove this line to enable it.
+					if (faction != Faction::ProtossKhalendricKnights) {
+						return true;
+					}
+				}
+				case UnitId::ProtossEcclesiastKhalendric: {
+					return false; // Factional variant is not yet implemented, remove this line to enable it.
+					if (faction == Faction::ProtossKhalendricKnights) {
+						return true;
+					}
+				}
 				case UnitId::ProtossDracadin:
-				case UnitId::ProtossEcclesiast:
 				case UnitId::ProtossHierophant: {
 					return true;
 				} break;
@@ -664,18 +680,14 @@ namespace hooks {
 			}
 		}
 
-		// Morphs and subunits
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAccantorOld))
-		{
-			if (unit_id == UnitId::ProtossPlasmaShell)
-			{
+		// Hangar units
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAccantorOld)) {
+			if (unit_id == UnitId::ProtossPlasmaShell) {
 				return true;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossSolarion))
-		{
-			if (unit_id == UnitId::ProtossSteward)
-			{
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossSolarion)) {
+			if (unit_id == UnitId::ProtossSteward) {
 				return true;
 			}
 		}
@@ -1900,13 +1912,19 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::ProtossLegionnaire: {
-						if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+						if (faction == Faction::ProtossOrderOfTheSacredSaber || faction == Faction::ProtossStarbound) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
 					}
 					case UnitId::ProtossAdherent: {
 						if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+							return TECH_HIDDEN;
+						}
+						return TECH_ACTIVE;
+					}
+					case UnitId::ProtossCicatus: {
+						if (faction != Faction::ProtossStarbound) {
 							return TECH_HIDDEN;
 						}
 						return TECH_ACTIVE;
@@ -2082,7 +2100,7 @@ namespace hooks {
 				}
 			} break;
 
-			// Subunits
+			// Hangar units
 			case UnitId::ProtossSolarion: {
 				if (unit_id == UnitId::ProtossSteward) {
 					u32 steward_count = unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count;

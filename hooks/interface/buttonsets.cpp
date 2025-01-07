@@ -1411,12 +1411,17 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									} break;
 									case UnitId::ProtossLegionnaire: {
-										if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+										if (faction != Faction::ProtossOrderOfTheSacredSaber && faction != Faction::ProtossStarbound) {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
 									case UnitId::ProtossAdherent: {
 										if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
+									case UnitId::ProtossCicatus: {
+										if (faction == Faction::ProtossStarbound) {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
@@ -2388,6 +2393,7 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ProtossCicatus:
 								case UnitId::ProtossVagrant: {
 									if (current_button->icon_id == IconId::MindControlUnused) { // Nihilism
 										current_button_state = Button_State::Enabled;
