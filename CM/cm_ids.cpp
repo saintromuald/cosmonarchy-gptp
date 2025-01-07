@@ -1301,3 +1301,7 @@ bool unit_id_can_construct(UnitId::Enum unit_id) {
 		|| unit_id == UnitId::ZergDroleth
 		|| unit_id == UnitId::ZergGosvileth;
 }
+
+bool unit_id_is_hangar_unit(UnitId::Enum unit_id) {
+	return unit_id == UnitId::ProtossSteward || unit_id == UnitId::ProtossPlasmaShell;
+}

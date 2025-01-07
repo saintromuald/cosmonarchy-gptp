@@ -79,8 +79,8 @@ BW_DATA_DEF(ImagesDatExtraOverlayLO_Files*,		lo_files, lo_files_var);
 BW_DATA_DEF(_bwTechs*,							TechBw, TechBw_var);
 BW_DATA_DEF(_bwUpgrs*,							UpgradesBw, UpgradesBw_var);
 
-BW_DATA_DEF(u32*,								ai_strength_air, ai_strength_air_var);
-BW_DATA_DEF(u32*,								ai_strength_ground, ai_strength_ground_var);
+BW_DATA_DEF(u32*,								g_ai_strength_air, ai_strength_air_var);
+BW_DATA_DEF(u32*,								g_ai_strength_ground, ai_strength_ground_var);
 
 namespace units_dat {
 	BW_DATA(const DatLoad*, unitsDat, 0x00513C30);

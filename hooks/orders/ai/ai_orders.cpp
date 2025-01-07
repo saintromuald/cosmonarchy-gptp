@@ -1884,7 +1884,7 @@ namespace hooks {
 		for (u16* ptr = defense_ptr; *ptr; ++ptr) {
 			u32 unit_id = *ptr - 1;
 			if (helper::ai_add_to_region_military(ai_region, unit_id, ai_region->defense_priority)) {
-				sum += against_air ? ai_strength_air[unit_id] : ai_strength_ground[unit_id];
+				sum += against_air ? g_ai_strength_air[unit_id] : g_ai_strength_ground[unit_id];
 			}
 		}
 		return sum;
@@ -1969,7 +1969,7 @@ namespace hooks {
 		}
 
 		if (best_unit && bw::move_unit_ai(best_unit, ai_region)) {
-			return against_air ? ai_strength_air[best_unit->id] : ai_strength_ground[best_unit->id];
+			return against_air ? g_ai_strength_air[best_unit->id] : g_ai_strength_ground[best_unit->id];
 		}
 		return 0;
 	}

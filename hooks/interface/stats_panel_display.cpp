@@ -10,8 +10,8 @@
 #include "hooks/interface/uifeatures/hotkeys.h"
 
 namespace hooks {
-	// Attempting to be true to the original results in unoptimized code
-	void stats_panel_display(BinDlg* dialog) {
+	// Attempting to be true to the original results in unoptimized code. -GPTP
+	void stats_panel_display(BinDlg* dialog) { // 00426C60
 		BinDlg* current_dialog;
 		Unit* active_unit = *g_active_portrait_unit;
 		u32 index = 0;

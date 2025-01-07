@@ -229,80 +229,80 @@ enum Enum {
 // Based on BWAPI; for use with units_dat::base_property[]
 namespace UnitProperty {
 enum Enum : u32 {
-    Building = 0x00000001,
-    Addon = 0x00000002,
-    Flyer = 0x00000004,
-    Worker = 0x00000008,
-    Subunit = 0x00000010,
-    FlyingBuilding = 0x00000020,
-    Hero = 0x00000040,
-    RegeneratesHP = 0x00000080,
-    AnimatedIdle = 0x00000100,
-    Cloakable = 0x00000200,
-    TwoUnitsIn1Egg = 0x00000400,
-    NeutralAccessories = 0x00000800,	// AKA "Single entity" (prevents multi-select, set on all pickup items)
-    ResourceDepot = 0x00001000,			// Drop-off point
-    ResourceContainer = 0x00002000,		// Node
-    RoboticUnit = 0x00004000,
-    Detector = 0x00008000,
-    Organic = 0x00010000,
-    CreepBuilding = 0x00020000,
-    Unused = 0x00040000,
-    RequiredPsi = 0x00080000,
-    Burrowable = 0x00100000,
-    Spellcaster = 0x00200000,
-    PermanentCloak = 0x00400000,
-    NPCOrAccessories = 0x00800000,		// AKA "Pickup item" (data disc, crystals, mineral chunks, gas tanks, etc.)
-    MorphFromOtherUnit = 0x01000000,
-    MediumOverlay = 0x02000000,
-    LargeOverlay = 0x04000000,
-    AutoAttackAndMove = 0x08000000,
-    Attack = 0x10000000,				// Full Auto-Attack
-    Invincible = 0x20000000,
-    Mechanical = 0x40000000,
-    ProducesUnits = 0x80000000,			// It can produce units directly (making buildings doesn't count)
+    Building            = 0x00000001,
+    Addon               = 0x00000002,
+    Flyer               = 0x00000004,
+    Worker              = 0x00000008,
+    Subunit             = 0x00000010,
+    FlyingBuilding      = 0x00000020,
+    Hero                = 0x00000040,
+    RegeneratesHP       = 0x00000080,
+    AnimatedIdle        = 0x00000100,
+    Cloakable           = 0x00000200,
+    TwoUnitsIn1Egg      = 0x00000400,
+    NeutralAccessories  = 0x00000800, // AKA "Single entity" (prevents multi-select, set on all pickup items)
+    ResourceDepot       = 0x00001000, // Drop-off point
+    ResourceContainer   = 0x00002000, // Node
+    RoboticUnit         = 0x00004000,
+    Detector            = 0x00008000,
+    Organic             = 0x00010000,
+    CreepBuilding       = 0x00020000,
+    Unused              = 0x00040000,
+    RequiredPsi         = 0x00080000,
+    Burrowable          = 0x00100000,
+    Spellcaster         = 0x00200000,
+    PermanentCloak      = 0x00400000,
+    NPCOrAccessories    = 0x00800000, // AKA "Pickup item" (data disc, crystals, mineral chunks, gas tanks, etc.)
+    MorphFromOtherUnit  = 0x01000000,
+    MediumOverlay       = 0x02000000,
+    LargeOverlay        = 0x04000000,
+    AutoAttackAndMove   = 0x08000000,
+    Attack              = 0x10000000, // Full Auto-Attack
+    Invincible          = 0x20000000,
+    Mechanical          = 0x40000000,
+    ProducesUnits       = 0x80000000, // It can produce units directly (making buildings doesn't count)
 };
 }
 
 // Based on BWAPI; For use with the Unit::status member
 namespace UnitStatus {
 enum Enum : u32 {
-    Completed = 0x00000001,
-    GroundedBuilding = 0x00000002,
-    InAir = 0x00000004,
-    Disabled = 0x00000008,
-    Burrowed = 0x00000010,
-    InBuilding = 0x00000020,
-    InTransport = 0x00000040,
-    CanBeChased = 0x00000080,
-    RequiresDetection = 0x00000100,
-    Cloaked = 0x00000200,
-    Frozen = 0x00000400,	// Protoss unpowered buildings have this flag set
-    CloakingForFree = 0x00000800,	// Requires no energy to cloak
-    CanNotReceiveOrders = 0x00001000,
-    NoBrkCodeStart = 0x00002000,	// Unbreakable code section in iscript
-    UNKNOWN2 = 0x00004000,
-    CanNotAttack = 0x00008000,
-    CanTurnAroundToAttack = 0x00010000,	// IsAUnit in IDA
-    Reacts = 0x00020000,
-    IgnoreTileCollision = 0x00040000,
-    Unmovable = 0x00080000,
-    IsNormal = 0x00100000,	// 1 for "normal" units, 0 for hallucinated units
-    NoCollide = 0x00200000,	// If set, other units wont collide with the unit (like burrowed units)
-    UNKNOWN5 = 0x00400000,
-    IsGathering = 0x00800000,	// If set, the unit wont collide with other units (like worker gathering)
-    SubunitWalking = 0x01000000,
-    SubunitFollow = 0x02000000,	// Turret related
-    Invincible = 0x04000000,
-    AttackMove = 0x08000000,
-    SpeedUpgrade = 0x10000000,
-    CooldownUpgrade = 0x20000000,
-    IsHallucination = 0x40000000,	// 1 for hallucinated units, 0 for "normal" units
-    IsSelfDestructing = 0x80000000	// Set for when the unit is self-destructing (scarab, scourge, infested terran)
+    Completed               = 0x00000001,
+    GroundedBuilding        = 0x00000002,
+    InAir                   = 0x00000004,
+    Disabled                = 0x00000008,
+    Burrowed                = 0x00000010,
+    InBuilding              = 0x00000020,
+    InTransport             = 0x00000040,
+    CanBeChased             = 0x00000080,
+    RequiresDetection       = 0x00000100,
+    Cloaked                 = 0x00000200,
+    Frozen                  = 0x00000400, // Protoss unpowered buildings have this flag set
+    CloakingForFree         = 0x00000800, // Requires no energy to cloak
+    CanNotReceiveOrders     = 0x00001000,
+    NoBrkCodeStart          = 0x00002000, // Unbreakable code section in iscript
+    UNKNOWN2                = 0x00004000,
+    CanNotAttack            = 0x00008000,
+    CanTurnAroundToAttack   = 0x00010000, // IsAUnit in IDA
+    Reacts                  = 0x00020000,
+    IgnoreTileCollision     = 0x00040000,
+    Unmovable               = 0x00080000,
+    IsNormal                = 0x00100000, // 1 for "normal" units, 0 for hallucinated units
+    NoCollide               = 0x00200000, // If set, other units wont collide with the unit (like burrowed units)
+    UNKNOWN5                = 0x00400000,
+    IsGathering             = 0x00800000, // If set, the unit wont collide with other units (like worker gathering)
+    SubunitWalking          = 0x01000000,
+    SubunitFollow           = 0x02000000, // Turret related
+    Invincible              = 0x04000000,
+    AttackMove              = 0x08000000,
+    SpeedUpgrade            = 0x10000000,
+    CooldownUpgrade         = 0x20000000,
+    IsHallucination         = 0x40000000, // 1 for hallucinated units, 0 for "normal" units
+    IsSelfDestructing       = 0x80000000, // Set for when the unit is self-destructing (scarab, scourge, infested terran)
 };
 }
 
-// For various newFlags fields
+// For various NewFlags fields; deprecated mid-2022
 namespace NewFlags1 {
 enum Enum : u8 {
     Unused1 = 0x1,
@@ -470,31 +470,31 @@ enum Enum {
 // Use with weapons_dat::explosion_type[]
 namespace WeaponEffect {
 enum Enum {
-    None = 0,
-    NormalHit = 1,
-    SplashRadial = 2,
-    SplashEnemy = 3,
-    Lockdown = 4,
-    NuclearMissile = 5,
-    Parasite = 6,
-    Broodlings = 7,
-    EMPShockwave = 8,
-    Irradiate = 9,
-    Ensnare = 10,
-    Plague = 11,
-    StasisField = 12,
-    CarapaceSwarm = 13,
-    Consume = 14,
-    YamatoGun = 15,
-    Restoration = 16,
-    DisruptionWeb = 17,
-    CorrosiveAcid = 18,
-    Tyranny = 19,
-    Feedback = 20,
-    OpticalFlare = 21,
-    Maelstrom = 22,
-    Unknown_Crash = 23,
-    SplashAir = 24
+    None            = 0,
+    NormalHit       = 1,
+    SplashRadial    = 2,
+    SplashEnemy     = 3,
+    Lockdown        = 4,
+    NuclearMissile  = 5,
+    Parasite        = 6,
+    Broodlings      = 7,
+    EMPShockwave    = 8,
+    Irradiate       = 9,
+    Ensnare         = 10,
+    Plague          = 11,
+    StasisField     = 12,
+    CarapaceSwarm   = 13,
+    Consume         = 14,
+    YamatoGun       = 15,
+    Restoration     = 16,
+    DisruptionWeb   = 17,
+    CorrosiveAcid   = 18,
+    Tyranny         = 19,
+    Feedback        = 20,
+    OpticalFlare    = 21,
+    Maelstrom       = 22,
+    Unknown_Crash   = 23,
+    SplashAir       = 24,
 };
 }
 

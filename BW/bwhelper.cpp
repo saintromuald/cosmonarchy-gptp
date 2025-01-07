@@ -4932,11 +4932,9 @@ namespace helper {
 
 	// Identical to unitIsHangerUnit @ 0x00401450
 	bool is_hangar_unit(Unit* unit) {
-		if (unit->id == UnitId::ProtossSteward
-		||  unit->id == UnitId::ProtossPlasmaShell) {
+		if (unit->id == UnitId::ProtossSteward || unit->id == UnitId::ProtossPlasmaShell) {
 			return true;		
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -7057,7 +7055,7 @@ namespace helper {
 	}
 
 	// For irradiateDamageLoop
-	Unit* iterateLoadedUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 a3) {
+	Unit* iterate_loaded_units(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 a3) {
 		const u32 func_address = 0x004E6D00;
 		static Unit* result;
 		__asm {
@@ -7918,7 +7916,7 @@ namespace helper {
 		return unit->id == UnitId::ProtossSolarion;
 	}
 
-	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg) {
+	s32 for_hangar_units(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg) {
 		const u32 func_address = 0x00465200;
 		static s32 result;
 		__asm {

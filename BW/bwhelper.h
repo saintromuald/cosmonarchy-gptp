@@ -619,8 +619,8 @@ namespace helper {
 	Unit* find_best_unit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*));													// 004E8830
 	s32 splash_func(Bullet* bullet, Unit* unit);																					// 0048B570
 
-	// For iterateLoadedUnits
-	Unit* iterateLoadedUnits(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), s32 a3);											// 004E6D00
+	// For iterate_loaded_units
+	Unit* iterate_loaded_units(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), s32 a3);											// 004E6D00
 
 	//// mindcontrol_spell
 	void mind_control_hit(Unit* attacker, Unit* target);																			// 004F6910
@@ -963,7 +963,7 @@ namespace helper {
 	void give_all_unit_properties_to_player(Unit* unit, s8 player);											// 0047C9F0
 	Unit* get_hidden_miner(Unit* unit);																		// 00468A60
 	bool unit_has_hangar(Unit* unit);																		// identical to 004014B0
-	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
+	s32 for_hangar_units(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
 	Unit* get_creating_unit(Unit* unit);																		// 00466A30
 
 	// For UnitMove

@@ -596,137 +596,54 @@ namespace hooks {
 		return disable_unit(unit);
 	}
 
-	void create_scanner(Unit* unit) { // 00464E40
-		Unit* v1; // esi
-		u16 v2; // ax
-		bool v3; // zf
-		GroupFlag targetsFound2; // al
-		u8 iterate; // al
-		s16 v6; // cx
-		s16 v7; // ax
-		const char* v8; // eax
-		s16 v9; // cx
-		Unit* v10; // eax
-		Unit* v11; // ebx
-		s16 v12; // ax
-		Point16 a2; // [esp+4h] [ebp-4h]
-
-		v1 = unit;
-		if (!(*g_cheat_state & 0x800)) {
-			v2 = techdata_dat::energy_cost[4] * 256;
-			v3 = v1->energy >= v2;
-		//	a2 = (Point32)(v1->energy < v2);		// check this out
-			if (!v3) {
-				targetsFound2 = units_dat::group_flags[(u16)v1->id];
-				if (targetsFound2.is_zerg) {
-					iterate = 0;
-				} else if (targetsFound2.is_terran) {
-					iterate = 1;
-				} else {
-					iterate = (targetsFound2.is_protoss) != 0 ? 2 : 4;
-				}
-				v6 = iterate + 864;
-				v7 = iterate + 863;
-				if (!v6) {
-					goto LABEL_15;
-				}
-				if (v7 < g_stat_txt_buffer.get_string_count()) {
-					v8 = g_stat_txt_buffer.get_string(v7 + 1);
-					if (!v8) {
-				LABEL_15:
-						if (v1->order_queue_head) {
-							v1->user_action_flags |= 1u;
-							helper::do_next_queued_order(v1);
-						} else if (v1->unit_ai) {
-							helper::issue_order_targeting_nothing(v1, 0x9Cu);
-						} else {
-							helper::issue_order_targeting_nothing(v1, units_dat::return_to_idle_order[(u16)v1->id]);
-						}
-						return;
-					}
-				} else {
-					v8 = "";
-				}
-				if ((u8)v1->player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
-					helper::set_unit_stat_txt_error_message(v8);
-				}
-				goto LABEL_15;
-			}
-		}
-		v9 = v1->order_target.pt.x;
-		a2.y = v1->order_target.pt.y;
-		a2.x = v9;
-		helper::fix_target_location(&a2, UnitId::Spell_ScannerSweep);
-		v10 = helper::create_unit(0x21u, a2.x, a2.y, (u8)v1->player);
-		v11 = v10;
-		if (v10) {
-			helper::update_unit_stats_and_finish_building(v10);
-			helper::update_unit_strength(v11);
-			helper::play_sound_from_unit(388, v1, 1, 0);
-			if (!(*g_cheat_state & 0x800))
-			{
-				v1->spend_energy(techdata_dat::energy_cost[4] * 256);
-			}
-			helper::to_idle(v1);
-		} else {
-			helper::display_last_network_error_for_player(v1->player);
-			helper::to_idle(v1);
-		}
-	}
-
 	// Hooked to add Nydus handling, except it already existed! - Pr0nogo
 	b32 give_unit_to_player(Unit* unit, u32 player) { // 004C8040
-		u32 player_id_var = player;
+		u32 final_player = player;
 		if (player == 13) {
-			player_id_var = *g_current_trigger_player_id;
+			final_player = *g_current_trigger_player_id;
 		}
-		if (!(player_id_var < 0xC ? -(unit != 0) : 0)) {
+		if (!(final_player < 12 ? -(unit != 0) : 0)) {
 			helper::SErrSetLastError(87);
-			return 0;
+			return false;
 		}
 		if (unit->status & UnitStatus::IsHallucination) {
-			return 0;
+			return false;
 		}
 		s16 unit_id = unit->id;
-		if (unit_id_is_resource_node(unit_id, false)
-		||  unit_id == UnitId::ProtossSteward
-		||  unit_id == UnitId::ProtossPlasmaShell
-		||  units_dat::base_property[unit_id] & UnitProperty::Addon
-		||  unit->player == player_id_var)
-		{
-			return 0;
+		if (unit_id_is_resource_node(unit_id, false) || unit_id_is_hangar_unit((UnitId::Enum)unit_id) || unit->is_addon() || unit->player == final_player) {
+			return false;
 		}
 		if (helper::unit_is_geyser(unit)) {
 			Unit* hidden_miner = helper::get_hidden_miner(unit);
 			if (hidden_miner) {
-				helper::give_all_unit_properties_to_player(hidden_miner, player_id_var);
+				helper::give_all_unit_properties_to_player(hidden_miner, final_player);
 			}
 		}
-		helper::give_all_unit_properties_to_player(unit, player_id_var);
+		helper::give_all_unit_properties_to_player(unit, final_player);
 		const u32 give_units_proc = 0x004C7CE0;
 		if (helper::unit_is_active_transport(unit)) {
-			helper::iterateLoadedUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player_id_var);
+			helper::iterate_loaded_units(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, final_player);
 		}
 		if (helper::unit_has_hangar(unit)) {
-			helper::forHangarUnits(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player_id_var);
+			helper::for_hangar_units(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, final_player);
 		}
 		if (unit->status & UnitStatus::GroundedBuilding) {
 			Unit* connected_unit = unit->building.addon;
 			if (connected_unit) {
-				helper::give_all_unit_properties_to_player(connected_unit, player_id_var);
+				helper::give_all_unit_properties_to_player(connected_unit, final_player);
 			}
 			if (helper::is_constructing_addon(unit)) {
 				Unit* creating_unit = helper::get_creating_unit(unit);
-				helper::give_all_unit_properties_to_player(creating_unit, player_id_var);
+				helper::give_all_unit_properties_to_player(creating_unit, final_player);
 			}
 			if (unit->id == UnitId::ZergNydusCesiant) {
 				Unit* nydus_exit = unit->building.nydus_exit;
 				if (nydus_exit) {
-					helper::give_all_unit_properties_to_player(nydus_exit, player_id_var);
+					helper::give_all_unit_properties_to_player(nydus_exit, final_player);
 				}
 			}
 		}
-		return 1;
+		return true;
 	}
 
 	// Hooked to investigate Maelstrom double-calling disable_unit. -Pr0nogo

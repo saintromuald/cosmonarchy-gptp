@@ -390,11 +390,11 @@ BW_REF(s16,			g_map_height_pixels,				0x006284B4);
 BW_DATA(u32*,		g_order_type_4_position,			0x006D5C20);
 BW_DATA(u32*,		g_order_type_4_target,				0x006D5C24);
 
-// For openMapFile
+// For open_map_file
 BW_DATA(char*,		g_maps_folder,						0x0066FC08);
 BW_DATA(s32*,		dword_5994DC,						0x005994DC);
 
-// For loadMap
+// For load_map
 BW_DATA(ScenarioFormat*, stru_500574,					0x00500574);
 BW_DATA(ScenarioFormat*, stru_50057C,					0x0050057C);
 BW_DATA(s32*,		scenarioCHKSize,					0x006D0F20);
@@ -1086,8 +1086,8 @@ BW_DATA(u32*,			g_active_portrait_buttonset_id,		0x0068C14C);
 BW_DATA(u32*,			g_current_buttonset_id,				0x0068C1C4);
 
 // For request_military_to
-BW_DATA_REF(u32*,		ai_strength_air,					0x006BB210);
-BW_DATA_REF(u32*,		ai_strength_ground,					0x006BB5A0);
+BW_DATA_REF(u32*,		g_ai_strength_air,					0x006BB210);
+BW_DATA_REF(u32*,		g_ai_strength_ground,					0x006BB5A0);
 
 // For show_cursor_marker
 BW_DATA(Thingy**,		g_first_used_thingy_1,				0x00652918);

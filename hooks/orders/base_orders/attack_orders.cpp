@@ -427,16 +427,13 @@ namespace hooks {
 	}
 
 	// Hooked to debug Stewards in a post-extender environment. -Pr0nogo
-	void orders_strafe_unit(Unit* unit) // 00465F60
-	{
+	void orders_strafe_unit(Unit* unit) { // 00465F60
 		if (unit->hangar_unit.parent && unit->hitpoints < units_dat::max_hitpoints[UnitId::ProtossSteward] << 8 >> 2) {
 			helper::issue_order_targeting_nothing(unit, OrderId::Return);
 		} else if (helper::return_interceptor_if_cannot_attack(unit)) {
 			Unit* target = unit->order_target.unit;
-			switch (unit->main_order_state)
-			{
-				case 0:
-				{
+			switch (unit->main_order_state) {
+				case 0: {
 					if (unit->hangar_unit.parent) {
 						helper::play_sound_from_unit(616, unit, 1, 0);
 						helper::get_next_strafe_position(unit, 3u, unit->order_target.pt);
@@ -446,8 +443,7 @@ namespace hooks {
 					}
 					helper::orders_self_destructing(unit);
 				} break;
-				case 1:
-				{
+				case 1: {
 				LABEL_9:
 					if (!unit->main_order_timer) {
 						unit->sprite->elevation += 2;
@@ -455,9 +451,8 @@ namespace hooks {
 						goto LABEL_11;
 					}
 				} break;
-				case 3:
-				{
-			LABEL_11:
+				case 3: {
+				LABEL_11:
 					if (!target) {
 						helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
 					} else if (helper::is_target_visible(target, unit)) {
@@ -491,23 +486,20 @@ namespace hooks {
 						helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 					}
 				} break;
-				case 4:
-				{
+				case 4: {
 					if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50)) {
 						helper::get_next_strafe_position(unit, 2, unit->order_target.pt);
 						unit->main_order_state = 5;
 					}
 				} break;
-				case 5:
-				{
+				case 5: {
 					if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50)) {
 						if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
 							unit->main_order_state = 3;
 						}
 					}
 				} break;
-				default:
-				{
+				default: {
 					return;
 				}
 			}
@@ -565,11 +557,9 @@ namespace hooks {
 
 	// Ported from GPTP as a dependency of orders_carrier_idle. -Pr0nogo
 	// Only used here, and making a modified copy could be useful, so hardcoded. Not using helpers, a copy should not reproduce that bad coding behavior. -GPTP
-	Unit* release_fighter(Unit* unit) // 00466440
-	{
+	Unit* release_fighter(Unit* unit) { // 00466440
 		Unit* launched_unit = unit->unit_with_hangar.in_hangar_child;
-		while (launched_unit && !(launched_unit->status & UnitStatus::Completed))
-		{
+		while (launched_unit && !(launched_unit->status & UnitStatus::Completed)) {
 			launched_unit = launched_unit->hangar_unit.hangar_link.prev;
 		}
 
@@ -1152,5 +1142,67 @@ namespace hooks {
 				helper::issue_queued_order_target(target, unit, units_dat::attack_unit_order[UnitId::TerranPhalanxTankMode], 0);
 			}
 		}
+	}
+
+	// Hooked to investigate Steward HP issues that prevented launch. -Pr0nogo
+	Unit* dispatch_fighter(Unit* carrier) { // 00466440
+		Unit* hangar_unit = carrier->unit_with_hangar.in_hangar_child;
+		if (!hangar_unit) {
+			return 0;
+		}
+		while (!(hangar_unit->status & UnitStatus::Completed)) {
+			hangar_unit = hangar_unit->hangar_unit.hangar_link.prev;
+			if (!hangar_unit) {
+				return 0;
+			}
+		}
+		Unit* prev_hangar_unit = hangar_unit->hangar_unit.hangar_link.prev;
+		for (s32 i = hangar_unit->hitpoints; prev_hangar_unit; prev_hangar_unit = prev_hangar_unit->hangar_unit.hangar_link.prev) {
+			if (prev_hangar_unit->status & UnitStatus::Completed && prev_hangar_unit->hitpoints > i) {
+				hangar_unit = prev_hangar_unit;
+			}
+		}
+		if (hangar_unit->id == UnitId::ProtossSteward && hangar_unit->hitpoints < units_dat::max_hitpoints[UnitId::ProtossSteward] / 2) {
+			return 0;
+		}
+		u16 out_pos_x = carrier->position.x;
+		u16 out_pos_y = carrier->position.y;
+
+		if (hangar_unit->id == UnitId::ProtossPlasmaShell) {
+			u8 direction = carrier->current_direction_1;
+			out_pos_x += 25 * g_angle_distance[direction].x >> 8;
+			out_pos_y += 25 * g_angle_distance[direction].y >> 8;
+			helper::turn_unit(hangar_unit, direction);
+		}
+
+		bool first_is_current = carrier->unit_with_hangar.in_hangar_child == hangar_unit;
+		bw::refresh_console();
+		if (first_is_current) {
+			carrier->unit_with_hangar.in_hangar_child = hangar_unit->hangar_unit.hangar_link.prev;
+		}
+
+		Unit* next_hangar_unit_2 = hangar_unit->hangar_unit.hangar_link.prev;
+		if (next_hangar_unit_2) {
+			next_hangar_unit_2->hangar_unit.hangar_link.next = hangar_unit->hangar_unit.hangar_link.next;
+		}
+		Unit* next_hangar_unit = hangar_unit->hangar_unit.hangar_link.next;
+		if (next_hangar_unit) {
+			next_hangar_unit->hangar_unit.hangar_link.prev = hangar_unit->hangar_unit.hangar_link.prev;
+		}
+
+		Unit* out_hangar_unit = carrier->unit_with_hangar.out_hangar_child;
+		--carrier->unit_with_hangar.in_hangar_count;
+		hangar_unit->hangar_unit.hangar_link.prev = out_hangar_unit;
+		hangar_unit->hangar_unit.hangar_link.next = 0;
+		Unit* out_hangar_unit_2 = carrier->unit_with_hangar.out_hangar_child;
+		if (out_hangar_unit_2) {
+			out_hangar_unit_2->hangar_unit.hangar_link.next = hangar_unit;
+		}
+		++carrier->unit_with_hangar.out_hangar_count;
+		carrier->unit_with_hangar.out_hangar_child = hangar_unit;
+		helper::move_unit(hangar_unit, out_pos_x, out_pos_y);
+		helper::show_and_enable_unit(hangar_unit);
+		hangar_unit->hangar_unit.is_outside_hangar = 1;
+		return hangar_unit;
 	}
 }

@@ -312,6 +312,21 @@ namespace {
 			RETN 0x08
 		}
 	}
+
+	void __declspec(naked) dispatch_fighter_wrapper() { // 00466440
+		static Unit* carrier;
+		static Unit* result;
+		__asm {
+			MOV carrier, ESI
+			PUSHAD
+		}
+		result = hooks::dispatch_fighter(carrier);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -335,5 +350,6 @@ namespace hooks {
 		jump_patch(orders_turret_attack_wrapper,				0x00477980, 1);
 		jump_patch(orders_patrol_wrapper,						0x004780F0, 1);
 		jump_patch(order_to_attack_target_wrapper,				0x00476FC0, 1);
+	//	jump_patch(dispatch_fighter_wrapper,					0x00466440, 1);
 	}
 }

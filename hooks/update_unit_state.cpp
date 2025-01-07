@@ -761,7 +761,7 @@ namespace hooks {
 				*g_first_scanner_sweep = unit;
 				helper::refresh_unit_vision(unit);
 			}
-		} else if (unit->sprite->flags & SpriteFlags::Hidden && unit->id != UnitId::ProtossSteward && unit->id != UnitId::ProtossPlasmaShell) {
+		} else if (unit->sprite->flags & SpriteFlags::Hidden && !unit_id_is_hangar_unit((UnitId::Enum)unit->id)) {
 			helper::show_and_enable_unit(unit);
 		}
 		// Originally had trap code

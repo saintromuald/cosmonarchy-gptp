@@ -6,10 +6,8 @@
 const u32 Addr_WeaponsDatEffectCount = 0x0048B785 + 2;
 const u32 Addr_WeaponsDatEffectSwitch = 0x0048B790 + 3;
 
-namespace
-{
-	void __declspec(naked) friendly_splash_wrapper()
-	{
+namespace {
+	void __declspec(naked) friendly_splash_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -32,8 +30,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) enemy_splash_wrapper()
-	{
+	void __declspec(naked) enemy_splash_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -55,8 +52,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) radial_splash_wrapper()
-	{
+	void __declspec(naked) radial_splash_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -78,8 +74,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) normal_damage_wrapper()
-	{
+	void __declspec(naked) normal_damage_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -97,8 +92,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) yamato_damage_wrapper()
-	{
+	void __declspec(naked) yamato_damage_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -116,8 +110,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) parasite_wrapper()
-	{
+	void __declspec(naked) parasite_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -135,8 +128,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) broodspawn_wrapper()
-	{
+	void __declspec(naked) broodspawn_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -154,8 +146,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) lockdown_wrapper()
-	{
+	void __declspec(naked) lockdown_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -173,8 +164,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) air_splash_wrapper()
-	{
+	void __declspec(naked) air_splash_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -192,8 +182,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) irradiate_wrapper()
-	{
+	void __declspec(naked) irradiate_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -211,8 +200,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) nuke_wrapper()
-	{
+	void __declspec(naked) nuke_wrapper() {
 		static Bullet* bullet;
 		static u32 weapon_id;
 		__asm {
@@ -230,6 +218,23 @@ namespace
 		}
 	}
 
+	void __declspec(naked) splash_target_check_wrapper() { // 0048B570
+		static Bullet* bullet;
+		static Unit* target;
+		static b32 result;
+		__asm {
+			MOV target, ESI
+			MOV bullet, EDI
+			PUSHAD
+		}
+		result = hooks::splash_target_check(bullet, target);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	//	(void*)0x0048B797,	// 1 - Normal
 	//	(void*)0x0048B80B,	// 15 - Yamato Gun
 	//	(void*)0x0048B8B9,	// 2 - Splash (Radial)
@@ -238,8 +243,7 @@ namespace
 	//	(void*)0x0048B969,	// 6 - MatralethParasite
 	//	(void*)0x0048B9C8,	// 7 - Broodlings
 
-	const void* WeaponEffects_SwitchTable[] =
-	{
+	const void* WeaponEffects_SwitchTable[] = {
 		(void*)0x0048BBF6,			//  0 - None
 		normal_damage_wrapper,		//  1 - Normal
 		radial_splash_wrapper,		//  2 - Splash (Radial)
@@ -270,8 +274,7 @@ namespace
 	};
 }
 
-namespace hooks
-{
+namespace hooks {
 	void inject_weapon_effect_hooks() {
 		u8 max_id = ARRAY_SIZE(WeaponEffects_SwitchTable) - 1;
 		u8 data[4];
@@ -281,5 +284,7 @@ namespace hooks
 		
 		// Remove nuclear missile damage rule (use weapon damage instead)
 		nops(0x0048ACDF, 2);
+
+		jump_patch(splash_target_check_wrapper, 0x0048B570, 0);
 	}
 }
