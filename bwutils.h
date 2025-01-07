@@ -83,7 +83,8 @@ namespace SpriteId {
 			case SpriteId::Corpse_Witness:
 			case SpriteId::Corpse_Savant:
 			case SpriteId::Corpse_Hypnagogue:
-			case SpriteId::Corpse_Iziralisk: {
+			case SpriteId::Corpse_Iziralisk:
+			case SpriteId::Corpse_Gorgrokor: {
 				return true;
 			} break;
 		}
