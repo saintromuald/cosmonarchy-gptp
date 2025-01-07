@@ -4,7 +4,7 @@
 
 namespace
 {
-	// for openMapFile
+	// for open_map_file
 	s32 SStrCopy(char* dest, const char* src, s32 dwSize);                              // 0041008E
 	s32 SStrNCat(char* dest, const char* src, s32 maxLength);                           // 0041007C // also, N
 	char* strrchr(const char* str, s32 ch);                                             // 0040C530
@@ -12,7 +12,7 @@ namespace
 	FILE* pfOpen(s32 a1, const char* a2);                                               // 00420540
 	size_t* lockwrite(const void* data, size_t* count, size_t* sizeArg, FILE* file);    // 00411931
 
-	// for loadMap
+	// for load_map
 	s32 readMapChunks(s32 a1, s32 a2, s32* a3, s32 sizeArg);                               // 004CC060
 	s32 readChunkNodes(s32 count, s32 a2, CHKStruct* nodes, void* buffer, s32 a5);      // 00413710
 	s32 unkNetworkFunc(char* a1, char* a2, s32 a3);                                     // 004CC7F0
@@ -20,7 +20,7 @@ namespace
 
 namespace hooks
 {
-	bool openMapFile(s32 vector)
+	bool open_map_file(s32 vector)
 	{							                            // 0045A290
 		FILE* map; // edi
 		bool result; // eax
@@ -51,7 +51,7 @@ namespace hooks
 		return result;
 	}
 
-	s32 loadMap(s32 a1, char* a2, s32 a3) // 004BF520
+	s32 load_map(s32 a1, char* a2, s32 a3) // 004BF520
 	{
 		s32 v3; // esi
 		void* v4; // edi
@@ -88,7 +88,7 @@ namespace hooks
 
 namespace
 {
-	// for openMapFile
+	// for open_map_file
 	const u32 Func_SStrCopy = 0x0041008E;
 	s32 SStrCopy(char* dest, const char* src, s32 dwSize)
 	{
@@ -182,7 +182,7 @@ namespace
 		return result;
 	}
 
-	// for loadMap
+	// for load_map
 	const u32 Func_readMapChunks = 0x004CC060;
 	s32 readMapChunks(s32 a1, s32 a2, s32* a3, s32 sizeArg)
 	{

@@ -1,14 +1,13 @@
 #pragma once
 #include "BW/api.h"
-namespace hooks
-{
+namespace hooks {
 	u32 get_max_hp(s32 id, s32 player);																			// 0040140B
-	u32 get_max_shields(s32 id, s32 player);																	// 
+	u32 get_max_shields(s32 id, s32 player);																	// internal
 
 	u32 get_max_vitality(Unit* unit);																			// 00402710
 	void attack_overlay_and_notify(Unit* victim, Unit* attacker, u8 weapon_id, u8 direction);					// 00479730
 	b32 ai_target_enemy_proc(Unit* target, Unit* unit);															// 00440A20
-	s32 calculate_unit_strength(u32 unit_id, u8 weapon_id);														// 00431270
+	u32 calculate_unit_strength(u32 unit_id, u32 weapon_id);													// 00431270
 	u32 get_unit_strength(Unit* unit, s32 unused, bool is_ground);												// 00431800
 	b32 ai_restoration_requirements_proc(Unit* caster, Unit* target);											// 004407E0
 	b32 ai_emp_shield_requirements_proc(Unit* target, Unit* caster);											// 004413D0

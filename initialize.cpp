@@ -122,6 +122,7 @@
 #include "utility/RegConfig.h"
 #include "hooks/audiovisuals/image_render.h"
 #include "hooks/interface/minimap.h"
+#include "hooks/game/creategame.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -874,5 +875,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::inject_selection_extender();
 	
 	hooks::inject_sight_update_hooks();
+	hooks::inject_creategame_hooks();
 	return TRUE;
 }

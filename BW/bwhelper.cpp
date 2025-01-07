@@ -15347,4 +15347,32 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	u32 calculate_unit_strength(u32 unit_id, u32 weapon_id) {
+		const u32 func_address = 0x00431270;
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH weapon_id
+			MOV EAX, unit_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 filter_unit_strength(u32 unit_id, u32 strength) {
+		const u32 func_address = 0x00431150;
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, strength
+			MOV EAX, unit_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

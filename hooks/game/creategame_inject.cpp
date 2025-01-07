@@ -1,60 +1,39 @@
 #include "creategame.h"
 #include <hook_tools.h>
-/*
+
 namespace {
-	__int16 __declspec(naked) singleplayerMeleeCreate_Wrapper() { //004EE110
-		static __int16 result;
+	void __declspec(naked) generate_strength_table_wrapper() {
 		__asm {
 			PUSHAD
 		}
-		result = hooks::singleplayerMeleeCreate();
+		hooks::generate_strength_table();
 		__asm {
 			POPAD
-			MOV result, EAX
 			RETN
 		}
-	};
-
-	s32 loadGameCreate_Wrapper(s32 a1, char a2) { //004EE520
-		static s32 a1;
-		static char a2;
-		static s32 result;
+	}
+	
+	void __declspec(naked) filter_unit_strength_wrapper() {
+		static u32 unit_id;
+		static u32 strength;
+		static u32 result;
 		__asm {
-			MOV a1, EAX
-			MOV a2, EDI
+			MOV strength, ECX
+			MOV unit_id, EAX
 			PUSHAD
 		}
-		result = hooks::loadGameCreate();
+		result = hooks::filter_unit_strength(unit_id, strength);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			RETN
 		}
-	};
-
-	s32 levelCheatCreate_Wrapper(char a1, s32 a2) { //004EE5B0
-		static char a1;
-		static s32 a2;
-		static s32 result;
-		__asm {
-			MOV a1, EDI
-			MOV a2, ESI
-			PUSHAD
-		}
-		result = hooks::levelCheatCreate();
-		__asm {
-			POPAD
-			MOV result, EAX
-			RETN
-		}
-	};
+	}
 }
 
 namespace hooks {
-
-	void injectCreategameHooks() {
-		jump_patch(singleplayerMeleeCreate_Wrapper, 0x004EE110, 1);
-		jump_patch(loadGameCreate_Wrapper, 0x004EE520, 1);
-		jump_patch(levelCheatCreate_Wrapper, 0x004EE5B0, 1);
+	void inject_creategame_hooks() {
+		jump_patch(generate_strength_table_wrapper, 0x004313C0, 2);
+		jump_patch(filter_unit_strength_wrapper,	0x00431150, 1);
 	}
-}*/
+}
