@@ -516,16 +516,17 @@ namespace hooks {
 					}
 				}
 				case UnitId::ProtossEcclesiast: {
-					return true; // Factional variant is not yet implemented, remove this line to enable it.
-					if (faction != Faction::ProtossKhalendricKnights) {
+					// Factional variant is not yet implemented, uncomment if to enable it.
+				//	if (faction != Faction::ProtossKhalendricKnights) {
 						return true;
-					}
+				//	}
+
 				}
 				case UnitId::ProtossEcclesiastKhalendric: {
-					return false; // Factional variant is not yet implemented, remove this line to enable it.
-					if (faction == Faction::ProtossKhalendricKnights) {
-						return true;
-					}
+					// Factional variant is not yet implemented, uncomment if to enable it.
+				//	if (faction == Faction::ProtossKhalendricKnights) {
+				//		return true;
+				//	}
 				}
 				case UnitId::ProtossDracadin:
 				case UnitId::ProtossHierophant: {
