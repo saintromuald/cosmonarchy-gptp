@@ -176,12 +176,7 @@ void UprisingCreator::tick(std::vector<UprisingSpawner>& spawners) {
         }
 
         const auto& info = bw::rand_one(m_infos);
-        std::optional<Point16> position = {};
-        if (!unit_id_is_air_spawner(info.unit_id)) {
-            position = utils::pick_random_ground_spawn_point(info.unit_id, 100);
-        } else {
-            position = utils::pick_random_spawn_point(info.unit_id, 100);
-        }
+        const auto position = utils::pick_random_spawn_point(info.unit_id, 100);
         if (!position) {
             return; // We don't want to restart the timer if spawn failed
         }

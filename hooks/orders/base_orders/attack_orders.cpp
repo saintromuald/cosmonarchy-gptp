@@ -1176,15 +1176,14 @@ namespace hooks {
 			helper::turn_unit(hangar_unit, direction);
 		}
 
-		bool first_is_current = carrier->unit_with_hangar.in_hangar_child == hangar_unit;
 		bw::refresh_console();
-		if (first_is_current) {
+		if (carrier->unit_with_hangar.in_hangar_child == hangar_unit) {
 			carrier->unit_with_hangar.in_hangar_child = hangar_unit->hangar_unit.hangar_link.prev;
 		}
 
-		Unit* next_hangar_unit_2 = hangar_unit->hangar_unit.hangar_link.prev;
-		if (next_hangar_unit_2) {
-			next_hangar_unit_2->hangar_unit.hangar_link.next = hangar_unit->hangar_unit.hangar_link.next;
+		prev_hangar_unit = hangar_unit->hangar_unit.hangar_link.prev;
+		if (prev_hangar_unit) {
+			prev_hangar_unit->hangar_unit.hangar_link.next = hangar_unit->hangar_unit.hangar_link.next;
 		}
 		Unit* next_hangar_unit = hangar_unit->hangar_unit.hangar_link.next;
 		if (next_hangar_unit) {
@@ -1195,9 +1194,8 @@ namespace hooks {
 		--carrier->unit_with_hangar.in_hangar_count;
 		hangar_unit->hangar_unit.hangar_link.prev = out_hangar_unit;
 		hangar_unit->hangar_unit.hangar_link.next = 0;
-		Unit* out_hangar_unit_2 = carrier->unit_with_hangar.out_hangar_child;
-		if (out_hangar_unit_2) {
-			out_hangar_unit_2->hangar_unit.hangar_link.next = hangar_unit;
+		if (out_hangar_unit) {
+			out_hangar_unit->hangar_unit.hangar_link.next = hangar_unit;
 		}
 		++carrier->unit_with_hangar.out_hangar_count;
 		carrier->unit_with_hangar.out_hangar_child = hangar_unit;

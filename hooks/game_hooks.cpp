@@ -2019,10 +2019,8 @@ namespace hooks {
 					if (unit->main_order_id != OrderId::Plague) {
 						unit->remove_overlay(ImageId::PlagueChannelOverlay);
 					}
-				} else {
-					if (unit->main_order_id == OrderId::Plague && unit->sprite->main_graphic->animation == IscriptAnimation::Unused2) {
-						unit->sprite->create_top_overlay(ImageId::PlagueChannelOverlay); // TODO: Use the Isthrathaleth's attack overlay for origin coordinates.
-					}
+				} else if (unit->main_order_id == OrderId::Plague && unit->sprite->main_graphic->animation == IscriptAnimation::Unused2) {
+					unit->sprite->create_top_overlay(ImageId::PlagueChannelOverlay); // TODO: Use the Isthrathaleth's attack overlay for origin coordinates.
 				}
 			} break;
 			case UnitId::TerranAnvil: {

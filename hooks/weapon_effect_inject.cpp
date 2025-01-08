@@ -230,7 +230,7 @@ namespace {
 		result = hooks::splash_target_check(bullet, target);
 		__asm {
 			POPAD
-			MOV EAX, result
+			MOVZX EAX, result
 			RETN
 		}
 	}

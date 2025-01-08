@@ -1,7 +1,7 @@
 #include "hooks\cosmonarchy_finder.h"
 
-bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
-	bw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
+bool range_match(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
+	bw::UnitFinder units_in_splash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
 	auto a = bw::UnitFinder::get_nearest_target(
 		unit->get_x() - r, unit->get_y() - r,
 		unit->get_x() + r, unit->get_y() + r,
@@ -12,11 +12,11 @@ bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
 
 u32 cosmonarchy_unit_count(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds) {
 	auto condition = cosmonarchy_finder_match(unitPtr, flags, unitIds);
-	bw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
+	bw::UnitFinder units_in_splash(pos.x - r, pos.y - r,
 		pos.x + r, pos.y + r);
 	auto count = 0;
-	for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++) {
-		auto unit = unitsInSplash.get_unit(i);
+	for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
+		auto unit = units_in_splash.get_unit(i);
 		if (condition(unit))
 		{
 			count++;
@@ -25,8 +25,8 @@ u32 cosmonarchy_unit_count(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::ve
 	return count;
 }
 
-Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
-	bw::UnitFinder unitsInSplash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
+Unit* range_match_unit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
+	bw::UnitFinder units_in_splash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
 	auto a = bw::UnitFinder::get_nearest_target(
 		unit->get_x() - r,
 		unit->get_y() - r,
@@ -38,8 +38,8 @@ Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds
 	return a;
 }
 
-Unit* rangeMatchPosition(Vec32 position, u32 r, u32 context, std::vector<u16> allowedIds) {
-	bw::UnitFinder unitsInSplash(position.x - r, position.y - r, position.x + r, position.x + r);
+Unit* range_match_position(Vec32 position, u32 r, u32 context, std::vector<u16> allowedIds) {
+	bw::UnitFinder units_in_splash(position.x - r, position.y - r, position.x + r, position.x + r);
 	auto a = bw::UnitFinder::get_nearest_target(
 		position.x - r,
 		position.y - r,

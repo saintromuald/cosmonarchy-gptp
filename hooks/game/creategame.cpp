@@ -10,31 +10,33 @@ namespace hooks {
 			u32 air_strength = 0;
 			u32 ground_strength = 0;
 			if (!unit_id_is_larva(unit_id) && !unit_id_is_zerg_egg(unit_id)) {
-				u32 final_unit = units_dat::subunit[unit_id];
-				if (unit_id == UnitId::ProtossSolarion) {
-					final_unit = UnitId::ProtossSteward;
-				} else if (unit_id == UnitId::ProtossAccantorOld) {
-					final_unit = UnitId::ProtossPlasmaShell;
-				} else {
-					if (final_unit == UnitId::None) {
-						final_unit = unit_id;
-					}
+				u32 final_unit_id = units_dat::subunit[unit_id];
+				switch (unit_id) {
+					case UnitId::ProtossSolarion: {
+						final_unit_id = UnitId::ProtossSteward;
+					} break;
+					case UnitId::ProtossAccantorOld: {
+						final_unit_id = UnitId::ProtossPlasmaShell;
+					} break;
+				}
+				if (final_unit_id == UnitId::None) {
+					final_unit_id = unit_id;
 				}
 
-				u32 air_weapon_id = units_dat::air_weapon[final_unit];
+				u32 air_weapon_id = units_dat::air_weapon[final_unit_id];
 				if (air_weapon_id == WeaponId::None) {
 					air_strength = 1;
 				} else {
-					u32 air_strength_calc = helper::calculate_unit_strength(unit_id, air_weapon_id);
-					air_strength = helper::filter_unit_strength(unit_id, air_strength_calc);
+					u32 air_strength_calc = helper::calculate_unit_strength((UnitId::Enum)unit_id, air_weapon_id);
+					air_strength = helper::filter_unit_strength((UnitId::Enum)unit_id, air_strength_calc);
 				}
 
-				u32 ground_weapon_id = units_dat::ground_weapon[final_unit];
+				u32 ground_weapon_id = units_dat::ground_weapon[final_unit_id];
 				if (ground_weapon_id == WeaponId::None) {
 					ground_strength = 1;
 				} else {
-					u32 ground_strength_calc = helper::calculate_unit_strength(unit_id, ground_weapon_id);
-					ground_strength = helper::filter_unit_strength(unit_id, ground_strength_calc);
+					u32 ground_strength_calc = helper::calculate_unit_strength((UnitId::Enum)unit_id, ground_weapon_id);
+					ground_strength = helper::filter_unit_strength((UnitId::Enum)unit_id, ground_strength_calc);
 				}
 			}
 			u32 final_air_strength = 0;
@@ -57,7 +59,7 @@ namespace hooks {
 			case UnitId::TerranMason:
 			case UnitId::ProtossScribe:
 			case UnitId::ZergDroleth: {
-				return strength >> 2;
+				return strength / 4;
 			}
 			case UnitId::TerranSpiderMine:
 			case UnitId::TerranLobotomyMine:

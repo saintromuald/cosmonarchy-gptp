@@ -410,12 +410,12 @@ namespace hooks {
 
 	// Hooked to allow Valkyries to splash Stewards.
 	// This is intended to return false always. -Pr0nogo
-	b32 splash_target_check(Bullet* bullet, Unit* target) { // 0048B570
-		u32 weapon_id = bullet->weapon_id;
+	bool splash_target_check(Bullet* bullet, Unit* target) { // 0048B570
+		const auto weapon_id = bullet->weapon_id;
 		if (target == bullet->source_unit && weapon_id != WeaponId::PsiStorm) {
 			return false;
 		}
-		u8 explosion_type = weapons_dat::explosion_type[weapon_id];
+		const auto explosion_type = weapons_dat::explosion_type[weapon_id];
 		if ((explosion_type == WeaponEffect::SplashEnemy || explosion_type == WeaponEffect::SplashAir)) {
 			if (target != bullet->attack_target.unit && (target->player == bullet->player || bw::is_allied_to(bullet->player, target->player))) {
 				return false;

@@ -4,10 +4,8 @@
 #include "BW\UnitFinder.h"
 #include <vector>
 
-namespace Flags
-{
-	enum
-	{
+namespace Flags {
+	enum {
 		Invincible = 1 << 0,
 		NoAir = 1 << 1,
 		NoGround = 1 << 2,
@@ -40,21 +38,17 @@ namespace Flags
 
 bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds);
 
-bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
-Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
-Unit* rangeMatchPosition(Vec32 position, u32 r, u32 context, std::vector<u16> allowedIds);
+bool range_match(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
+Unit* range_match_unit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
+Unit* range_match_position(Vec32 position, u32 r, u32 context, std::vector<u16> allowedIds);
 u32 cosmonarchy_unit_count(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds);
 template<typename cosmonarchyLoop>
-inline void cosmonarchyFinderLoop(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds, cosmonarchyLoop l)
-{
+inline void cosmonarchy_finder_loop(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds, cosmonarchyLoop l) {
 	auto condition = cosmonarchy_finder_match(unitPtr, flags, unitIds);
-	bw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
-		pos.x + r, pos.y + r);
-	for (s32 i = 0; i < unitsInSplash.get_unit_count(); i++)
-	{
-		auto unit = unitsInSplash.get_unit(i);
-		if (condition(unit))
-		{
+	bw::UnitFinder units_in_splash(pos.x - r, pos.y - r, pos.x + r, pos.y + r);
+	for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
+		auto unit = units_in_splash.get_unit(i);
+		if (condition(unit)) {
 			l(unit);
 		}
 	}

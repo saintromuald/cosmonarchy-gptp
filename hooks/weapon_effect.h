@@ -18,7 +18,7 @@ namespace hooks {
 	void yamato_damage(Bullet* bullet, u32 weapon_id);
 	void air_splash(Bullet* bullet, u32 weapon_id);
 	void nuke(Bullet* bullet, u32 weapon_id);
-	b32 splash_target_check(Bullet* bullet, Unit* target);	// 0048B570
+	bool splash_target_check(Bullet* bullet, Unit* target);	// 0048B570
 
 	// Cosmonarchy specific
 	void parasite(Bullet* bullet, u32 weapon_id);

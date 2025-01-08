@@ -15327,16 +15327,13 @@ namespace helper {
 		}
 	}
 
-	b8 status_update_tooltip() {
+	void status_update_tooltip() {
 		const u32 func_address = 0x00457FE0;
-		static b8 result;
 		__asm {
 			PUSHAD
 			CALL func_address
-			MOV result, AL
 			POPAD
 		}
-		return result;
 	}
 
 	void status_update_single_wireframe() {
@@ -15348,7 +15345,7 @@ namespace helper {
 		}
 	}
 
-	u32 calculate_unit_strength(u32 unit_id, u32 weapon_id) {
+	u32 calculate_unit_strength(UnitId::Enum unit_id, u32 weapon_id) {
 		const u32 func_address = 0x00431270;
 		static u32 result;
 		__asm {
@@ -15362,7 +15359,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 filter_unit_strength(u32 unit_id, u32 strength) {
+	u32 filter_unit_strength(UnitId::Enum unit_id, u32 strength) {
 		const u32 func_address = 0x00431150;
 		static u32 result;
 		__asm {
@@ -15376,7 +15373,7 @@ namespace helper {
 		return result;
 	}
 
-	b32 should_attack_unit(u32 attacking_player, Unit* target) {
+	bool should_attack_unit(u32 attacking_player, Unit* target) {
 		const u32 func_address = 0x00431550;
 		static b32 result;
 		__asm {
@@ -15387,7 +15384,7 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
+		return (bool)result;
 	}
 
 	u32 get_targeting_priority(Unit* unit, b32 is_ground_target) {
@@ -15404,7 +15401,7 @@ namespace helper {
 		return result;
 	}
 
-	b32 unit_is_clean_detector(Unit* unit) {
+	bool unit_is_clean_detector(Unit* unit) {
 		const u32 func_address = 0x00403430;
 		static b32 result;
 		__asm {
@@ -15414,6 +15411,6 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
+		return (bool)result;
 	}
 }

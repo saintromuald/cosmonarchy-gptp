@@ -598,11 +598,10 @@ namespace hooks {
 
 	// Hooked to add Nydus handling, except it already existed! - Pr0nogo
 	b32 give_unit_to_player(Unit* unit, u32 player) { // 004C8040
-		u32 final_player = player;
 		if (player == 13) {
-			final_player = *g_current_trigger_player_id;
+			player = *g_current_trigger_player_id;
 		}
-		if (!(final_player < 12 ? -(unit != 0) : 0)) {
+		if (!(player < 12 ? -(unit != 0) : 0)) {
 			helper::SErrSetLastError(87);
 			return false;
 		}
@@ -610,36 +609,36 @@ namespace hooks {
 			return false;
 		}
 		s16 unit_id = unit->id;
-		if (unit_id_is_resource_node(unit_id, false) || unit_id_is_hangar_unit((UnitId::Enum)unit_id) || unit->is_addon() || unit->player == final_player) {
+		if (unit_id_is_resource_node(unit_id, false) || unit_id_is_hangar_unit((UnitId::Enum)unit_id) || unit->is_addon() || unit->player == player) {
 			return false;
 		}
 		if (helper::unit_is_geyser(unit)) {
 			Unit* hidden_miner = helper::get_hidden_miner(unit);
 			if (hidden_miner) {
-				helper::give_all_unit_properties_to_player(hidden_miner, final_player);
+				helper::give_all_unit_properties_to_player(hidden_miner, player);
 			}
 		}
-		helper::give_all_unit_properties_to_player(unit, final_player);
+		helper::give_all_unit_properties_to_player(unit, player);
 		const u32 give_units_proc = 0x004C7CE0;
 		if (helper::unit_is_active_transport(unit)) {
-			helper::iterate_loaded_units(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, final_player);
+			helper::iterate_loaded_units(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player);
 		}
 		if (helper::unit_has_hangar(unit)) {
-			helper::for_hangar_units(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, final_player);
+			helper::for_hangar_units(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player);
 		}
 		if (unit->status & UnitStatus::GroundedBuilding) {
 			Unit* connected_unit = unit->building.addon;
 			if (connected_unit) {
-				helper::give_all_unit_properties_to_player(connected_unit, final_player);
+				helper::give_all_unit_properties_to_player(connected_unit, player);
 			}
 			if (helper::is_constructing_addon(unit)) {
 				Unit* creating_unit = helper::get_creating_unit(unit);
-				helper::give_all_unit_properties_to_player(creating_unit, final_player);
+				helper::give_all_unit_properties_to_player(creating_unit, player);
 			}
 			if (unit->id == UnitId::ZergNydusCesiant) {
 				Unit* nydus_exit = unit->building.nydus_exit;
 				if (nydus_exit) {
-					helper::give_all_unit_properties_to_player(nydus_exit, final_player);
+					helper::give_all_unit_properties_to_player(nydus_exit, player);
 				}
 			}
 		}
@@ -647,21 +646,17 @@ namespace hooks {
 	}
 
 	// Hooked to investigate Maelstrom double-calling disable_unit. -Pr0nogo
-	void set_maelstrom_timer(Unit* unit, u8 duration) // 004553F0
-	{
+	void set_maelstrom_timer(Unit* unit, u8 duration) { // 004553F0
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (!unit_ext->timers[TimerMindTyrantMaelstromSlow])
-		{
+		if (!unit_ext->timers[TimerMindTyrantMaelstromSlow]) {
 			Unit* final_unit = unit->subunit;
-			if (!final_unit)
-			{
+			if (!final_unit) {
 				final_unit = unit;
 			}
 			final_unit->sprite->create_overlay(ImageId::MaelstromOverlay_Small + bw::get_overlay_offset(unit->id), 0, 0, 0);
 		}
 		u32 timer = unit_ext->timers[TimerMindTyrantMaelstromSlow];
-		if (duration > timer)
-		{
+		if (duration > timer) {
 			timer = duration;
 		}
 		unit_ext->timers[TimerMindTyrantMaelstromSlow] = timer;

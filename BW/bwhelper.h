@@ -1774,12 +1774,12 @@ namespace helper {
 
 	s32 is_selection_group_updated();											// 00424660
 	void status_update_multiselection(BinDlg* dialog);							// 00425960
-	b8 status_update_tooltip();													// 00457FE0
+	void status_update_tooltip();												// 00457FE0
 	void status_update_single_wireframe();										// 004568B0
 
-	u32 calculate_unit_strength(u32 unit_id, u32 weapon_id);					// 00431270
-	u32 filter_unit_strength(u32 unit_id, u32 strength);						// 00431150
-	b32 should_attack_unit(u32 attacking_player, Unit* target);					// 00431550
+	u32 calculate_unit_strength(UnitId::Enum unit_id, u32 weapon_id);			// 00431270
+	u32 filter_unit_strength(UnitId::Enum unit_id, u32 strength);				// 00431150
+	bool should_attack_unit(u32 attacking_player, Unit* target);				// 00431550
 	u32 get_targeting_priority(Unit* unit, b32 is_ground_target);				// 00431730
-	b32 unit_is_clean_detector(Unit* unit);										// 00403430
+	bool unit_is_clean_detector(Unit* unit);									// 00403430
 }
