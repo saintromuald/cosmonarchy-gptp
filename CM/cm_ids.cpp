@@ -1305,3 +1305,14 @@ bool unit_id_can_construct(UnitId::Enum unit_id) {
 bool unit_id_is_hangar_unit(UnitId::Enum unit_id) {
 	return unit_id == UnitId::ProtossSteward || unit_id == UnitId::ProtossPlasmaShell;
 }
+
+bool unit_id_is_air_spawner(UnitId::Enum unit_id) {
+	return unit_id == UnitId::TerranStarpad
+		|| unit_id == UnitId::TerranStarport
+		|| unit_id == UnitId::TerranNaniteAssembly
+		|| unit_id == UnitId::ProtossStargate
+		|| unit_id == UnitId::ProtossArgosy
+		|| unit_id == UnitId::ProtossMonumentOfSin
+		|| unit_id == UnitId::ZergMutathSpire
+		|| unit_id == UnitId::ZergTosvrolHaunt;
+}
