@@ -408,37 +408,38 @@ namespace hooks {
 		}
 	}
 
-	// Hooked to allow Valkyries to splash Stewards. -Pr0nogo
+	// Hooked to allow Valkyries to splash Stewards.
+	// This is intended to return false always. -Pr0nogo
 	b32 splash_target_check(Bullet* bullet, Unit* target) { // 0048B570
 		u32 weapon_id = bullet->weapon_id;
 		if (target == bullet->source_unit && weapon_id != WeaponId::PsiStorm) {
-			return 0;
+			return false;
 		}
 		u8 explosion_type = weapons_dat::explosion_type[weapon_id];
 		if ((explosion_type == WeaponEffect::SplashEnemy || explosion_type == WeaponEffect::SplashAir)) {
 			if (target != bullet->attack_target.unit && (target->player == bullet->player || bw::is_allied_to(bullet->player, target->player))) {
-				return 0;
+				return false;
 			}
 		}
 		if (!helper::can_weapon_target_unit(weapon_id, target, target)) {
-			return 0;
+			return false;
 		}
 		if (!helper::is_unit_distance_within(target, bullet, weapons_dat::outer_splash_radius[weapon_id])) {
-			return 0;
+			return false;
 		}
 		if (g_is_in_ground_splash_proc) {
 			if (helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weapon_id])) {
 				helper::weapon_bullet_shot(target, bullet, 1);
-				return 0;
+				return false;
 			}
 		}
 		if (!(target->status & UnitStatus::Burrowed) && (g_is_in_ground_splash_proc || target != bullet->attack_target.unit)) {
 			if (helper::is_unit_distance_within(target, bullet, weapons_dat::medium_splash_radius[weapon_id])) {
 				helper::weapon_bullet_shot(target, bullet, 2);
-				return 0;
+				return false;
 			}
 			helper::weapon_bullet_shot(target, bullet, 4);
 		}
-		return 0;
+		return false;
 	}
 }

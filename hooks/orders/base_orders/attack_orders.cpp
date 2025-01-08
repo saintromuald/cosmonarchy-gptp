@@ -1162,12 +1162,13 @@ namespace hooks {
 				hangar_unit = prev_hangar_unit;
 			}
 		}
+
 		if (hangar_unit->id == UnitId::ProtossSteward && hangar_unit->hitpoints < units_dat::max_hitpoints[UnitId::ProtossSteward] / 2) {
 			return 0;
 		}
+
 		u16 out_pos_x = carrier->position.x;
 		u16 out_pos_y = carrier->position.y;
-
 		if (hangar_unit->id == UnitId::ProtossPlasmaShell) {
 			u8 direction = carrier->current_direction_1;
 			out_pos_x += 25 * g_angle_distance[direction].x >> 8;
