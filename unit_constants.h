@@ -164,6 +164,10 @@ namespace Vorvrokor {
 inline constexpr s32 CaptivatingClawsTimer = 24 + 1;
 }
 
+namespace Axitrilisk {
+inline constexpr s32 PerpetualWindTimer = 8 * 24 + 1;
+}
+
 namespace Vithrilisk {
 inline constexpr s32 CorrosiveTouchTimer = 5 * 24 + 1;
 inline constexpr f64 CorrosiveTouchCooldownIncrease = 0.05;

@@ -1044,7 +1044,7 @@ namespace hooks {
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
 				data.target->sprite->create_top_overlay(ImageId::ZergAirDeathExplosion_Small);
 				helper::play_sound_from_unit(SoundId::Zerg_Hydra_ZHyDth00_WAV, data.target, 1, 0);
-				target_ext->timers[TimerAxitriliskPerpetualWind] = 8 * 24 + 1;
+				target_ext->timers[TimerAxitriliskPerpetualWind] = Axitrilisk::PerpetualWindTimer;
 				fatal_deal_damage = false;
 			} break;
 			case UnitId::ZergVilgorokor: {

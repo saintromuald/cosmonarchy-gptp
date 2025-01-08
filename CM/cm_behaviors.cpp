@@ -65,16 +65,19 @@ Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id) {
 
 	Unit* unit = bw::create_unit_in_game(unit_id, player, pos.x, pos.y);
 	if (unit) {
-		UnitExt* unit_ext = get_unit_ext(unit);
+		UnitExt& unit_ext = unit->ext();
 		unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 		unit->play_iscript_animation(IscriptAnimation::Unused1);
-		unit_ext->values[ValueReviveStarted] = 1;
-		unit_ext->timers[TimerReviveFlagClearMin] = 14; // 3;
-		unit_ext->timers[TimerReviveFlagClearMax] = 14;
+		unit_ext.values[ValueReviveStarted] = 1;
+		unit_ext.timers[TimerReviveFlagClearMin] = 14; // 3;
+		unit_ext.timers[TimerReviveFlagClearMax] = 14;
 		switch (unit->id) {
 			case UnitId::ZergRililisk:
 			case UnitId::ZergRilirokor: {
 				unit->remove_timer = Broodspawn::LifeTimer;
+			} break;
+			case UnitId::ZergAxitriliskWeaponless: {
+				unit_ext.timers[TimerAxitriliskPerpetualWind] = Axitrilisk::PerpetualWindTimer;
 			} break;
 		}
 
@@ -84,12 +87,12 @@ Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id) {
 		u32 image_id = ImageId::LazarusAgentProc_Small + bw::get_overlay_offset(unit->id, true);
 		unit->sprite->create_top_overlay(image_id);
 		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
-		unit_ext->timers[TimerReclaimHeal] = Reclamation::ReviveHealTimer;
-		unit_ext->timers[TimerReclaimStun] = Reclamation::ReviveStunTimer;
-		unit_ext->timers[TimerStun]        = Reclamation::ReviveStunTimer;
-		unit_ext->values[ValueReclaimed]   = 1;
+		unit_ext.timers[TimerReclaimHeal] = Reclamation::ReviveHealTimer;
+		unit_ext.timers[TimerReclaimStun] = Reclamation::ReviveStunTimer;
+		unit_ext.timers[TimerStun]        = Reclamation::ReviveStunTimer;
+		unit_ext.values[ValueReclaimed]   = 1;
 		if (bw::get_game_kind() == GameKind::TheTurning && player == NeutralHostilePlayer) {
-			unit_ext->values[ValueNoCorpse] = true;
+			unit_ext.values[ValueNoCorpse] = true;
 		}
 	}
 	return unit;
