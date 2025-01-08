@@ -916,7 +916,7 @@ namespace hooks {
 
 	// Hooked to eventually extend weapon ids past 255.
 	// This is very ugly, will need to be refactored. Initial tests seemed fine. -Pr0nogo
-	Unit* choose_target(Unit** unit_array, u32 player, Unit* unit, u32 region_id, b32 is_ground) { // 00431990
+	Unit* ai_choose_target(Unit** unit_array, u32 player, Unit* unit, u32 region_id, b32 is_ground) { // 00431990
 		u32 unit_id = UnitId::None;
 		s16 unit_region_id = region_id;
 		UnitAi* unit_ai = 0;

@@ -26,7 +26,7 @@ namespace hooks {
 	u32 is_target_visible(Unit* target, Unit* unit);																	// 004E5E30
 	b32 is_unit_enemy(Unit* self, Unit* target);																		// 0047B910
 	b32 is_ready_to_attack(Unit* unit, u8 weapon_id);																	// 00476640
-	Unit* choose_target(Unit** target_array, u32 player, Unit* unit, u32 region_id, b32 is_ground);						// 00431990
+	Unit* ai_choose_target(Unit** target_array, u32 player, Unit* unit, u32 region_id, b32 is_ground);						// 00431990
 	u8 get_air_weapon(Unit* unit);																						// 00475840
 
 	void inject_target_related_hooks();
