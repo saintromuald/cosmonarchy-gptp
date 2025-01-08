@@ -465,7 +465,7 @@ namespace helper {
 	void show_and_enable_unit(Unit* unit);																							// 004E6490
 
 	//// tech_target_check
-	bool is_infestable_unit(Unit* unit);																							// 00402210
+	bool is_infestable_target(Unit* unit);																							// 00402210
 
 	//// trap_hooks
 	// For update_unit_strength_and_apply_default_orders
@@ -1779,4 +1779,7 @@ namespace helper {
 
 	u32 calculate_unit_strength(u32 unit_id, u32 weapon_id);					// 00431270
 	u32 filter_unit_strength(u32 unit_id, u32 strength);						// 00431150
+	b32 should_attack_unit(u32 attacking_player, Unit* target);					// 00431550
+	u32 get_targeting_priority(Unit* unit, b32 is_ground_target);				// 00431730
+	b32 unit_is_clean_detector(Unit* unit);										// 00403430
 }

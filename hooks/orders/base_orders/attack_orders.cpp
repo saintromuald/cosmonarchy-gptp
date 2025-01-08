@@ -132,7 +132,7 @@ namespace hooks {
 
 			if (jump_to_77DEF) {
 				if (helper::unit_can_infest(unit)) {
-					if (helper::is_infestable_unit(target)) {
+					if (helper::is_infestable_target(target)) {
 						jump_to_77E99 = true;
 					} else {
 						jump_to_77E48 = true;

@@ -3694,7 +3694,7 @@ namespace helper {
 		}
 	}
 
-	bool is_infestable_unit(Unit* unit) {
+	bool is_infestable_target(Unit* unit) {
 		const u32 func_address = 0x00402210;
 		static b32 result;
 		__asm {
@@ -15369,6 +15369,47 @@ namespace helper {
 			PUSHAD
 			MOV ECX, strength
 			MOV EAX, unit_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	b32 should_attack_unit(u32 attacking_player, Unit* target) {
+		const u32 func_address = 0x00431550;
+		static b32 result;
+		__asm {
+			PUSHAD
+			MOV ESI, target
+			MOV ECX, attacking_player
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 get_targeting_priority(Unit* unit, b32 is_ground_target) {
+		const u32 func_address = 0x00431730;
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, is_ground_target
+			MOV ECX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	b32 unit_is_clean_detector(Unit* unit) {
+		const u32 func_address = 0x00403430;
+		static b32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
 			CALL func_address
 			MOV result, EAX
 			POPAD

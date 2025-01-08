@@ -2909,4 +2909,42 @@ namespace hooks {
 		}
 		return false;
 	}
+
+	// Hooked to eventually extend weapon ids past 255. -Pr0nogo
+	void get_ai_town_capabilities(AiRegion* region, b32* has_ground_military, b32* cant_attack_ground, b32* cant_attack_air) { // 00438FC0
+		*has_ground_military = false;
+		*cant_attack_ground = true;
+		*cant_attack_air = true;
+		Unit* unit = 0;
+		u32 unit_id = 0;
+		for (MilitaryAi* military_ai = region->military.first; military_ai; military_ai = military_ai->link.prev) {
+			unit = military_ai->unit;
+			unit_id = unit->id;
+			if (unit->get_ground_weapon() != WeaponId::None) {
+				*cant_attack_ground = 0;
+			}
+			if (unit->get_air_weapon() != WeaponId::None || (unit->subunit && unit->subunit->get_air_weapon() != WeaponId::None)) {
+				*cant_attack_air = 0;
+			}
+			if (!(unit->status & UnitStatus::InAir)) {
+				*has_ground_military = 1;
+			}
+		}
+	}
+
+	// Hooked to eventually extend weapon ids past 255. -Pr0nogo
+	bool ai_unit_can_attack(Unit* unit) { // 00476180
+		if (unit->get_ground_weapon() != WeaponId::None || unit->get_air_weapon() != WeaponId::None
+		|| (unit->is_carrier() && unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count)
+		|| (unit->is_reaver() && unit->unit_with_hangar.in_hangar_count)) {
+			return true;
+		}
+		if (!unit->subunit) {
+			return false;
+		}
+		if (unit->subunit->get_ground_weapon() != WeaponId::None) {
+			return true;
+		}
+		return unit->subunit->get_air_weapon() != WeaponId::None;
+	}
 }

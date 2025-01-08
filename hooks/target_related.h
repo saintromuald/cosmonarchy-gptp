@@ -2,8 +2,7 @@
 #include "BW/api.h"
 #include "BW/bwdata.h"
 
-namespace hooks
-{
+namespace hooks {
 	bool is_unit_in_weapon_range(Unit* target, Unit* attacker);															// 00476870
 	Unit* cmdrecv_hold_position(s8* buffer);																			// 004C20C0
 	u32 unit_can_see_cloaked_target(Unit* target, Unit* unit);															// 00401D60
@@ -27,6 +26,8 @@ namespace hooks
 	u32 is_target_visible(Unit* target, Unit* unit);																	// 004E5E30
 	b32 is_unit_enemy(Unit* self, Unit* target);																		// 0047B910
 	b32 is_ready_to_attack(Unit* unit, u8 weapon_id);																	// 00476640
+	Unit* choose_target(Unit** target_array, u32 player, Unit* unit, u32 region_id, b32 is_ground);						// 00431990
+	u8 get_air_weapon(Unit* unit);																						// 00475840
 
 	void inject_target_related_hooks();
 }
