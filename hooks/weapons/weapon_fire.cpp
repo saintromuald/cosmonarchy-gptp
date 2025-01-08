@@ -756,9 +756,10 @@ namespace hooks {
 
 		Box32 search_area = get_line_search_area(bullet, old_position);
 		for (Unit* unit : g_unit_search.rect(search_area).filter()) {
-			if (unit_id_ignores_ground_collision(unit->id)) {
-				continue;
-			}
+			// Disabled to allow units with interception weapons to hit Larva and Rilirokors. Not sure why this was ever a rule? -Pr0nogo 7 Jan '25
+		//	if (unit_id_ignores_ground_collision(unit->id)) {
+		//		continue;
+		//	}
 			if (bullet->attack_target.unit != unit && bw::is_allied_to(bullet->player, unit->player)) {
 				continue;
 			}
