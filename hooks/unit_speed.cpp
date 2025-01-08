@@ -211,7 +211,8 @@ namespace hooks {
 			} break;
 			case UnitId::TerranHarakanGolden:
 			case UnitId::TerranStriga:
-			case UnitId::ProtossZealot: {
+			case UnitId::ProtossZealot:
+			case UnitId::ProtossCicatus: {
 				speed *= 1.35;
 			} break;
 			case UnitId::ProtossZealotStarbound:

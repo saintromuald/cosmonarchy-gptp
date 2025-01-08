@@ -276,6 +276,7 @@ namespace WeaponId {
 		PotentateTalismanicWeaver			= 206,
 		PotentatePhaseSaber					= 207,
 		VibranceSensoryOverload				= 219,
+		CicatusPhaseClaws					= 222,
 
 		// Zerg \\
 					

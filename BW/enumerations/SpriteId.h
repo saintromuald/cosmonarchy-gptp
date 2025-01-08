@@ -898,6 +898,8 @@ namespace SpriteId
 
 		Corpse_Iziralisk			= 960,
 
+		Corpse_Gorgrokor			= 963,
+
 		Corpse_ZergBuildingSmall	= 186,
 		Corpse_ZergBuildingLarge	= 187,
 	};

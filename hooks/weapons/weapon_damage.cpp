@@ -975,12 +975,15 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ProtossCicatus: {
+				if (target_ext->values[ValueIsShade]) {
+					break;
+				}
 				helper::increment_unit_death_scores(data.target, data.target->player);
 				data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
 				data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
 				data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
 				target_ext->values[ValueIsShade] = true;
-				
+
 				if (bw::get_game_kind() == GameKind::Massacre && unit_should_give_gas_in_massacre_mode(data.target)) {
 					bw::add_massacre_resource(data.target->player);
 				}
