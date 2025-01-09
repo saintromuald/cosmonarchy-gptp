@@ -511,8 +511,8 @@ namespace hooks {
 		switch (data.target->id) {
 			case UnitId::ProtossGolem: {
 				// Golem - Tranquility Array
-				if (data.target->shields >= 128) {
 					bw::shield_heal_proc(data.target, data.target->player, 64, 2);
+					target_ext->timers[TimerTranquilityArray] = 4;
 				}
 			} break;
 			case UnitId::ZergZoryusthaleth: {
