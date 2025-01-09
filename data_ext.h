@@ -214,6 +214,7 @@ enum ExtValueId {
 	ValueIdolLaunchPos,
 	ValueStormDivider,
 	ValueCabalistSilentStridesDamage,
+	ValueCohortServileVigor,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,

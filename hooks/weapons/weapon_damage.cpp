@@ -511,6 +511,7 @@ namespace hooks {
 		switch (data.target->id) {
 			case UnitId::ProtossGolem: {
 				// Golem - Tranquility Array
+				if (!target_ext->timers[TimerTranquilityArray] && data.target->shields >= 128) {
 					bw::shield_heal_proc(data.target, data.target->player, 64, 2);
 					target_ext->timers[TimerTranquilityArray] = 4;
 				}
@@ -1055,6 +1056,16 @@ namespace hooks {
 				// Vilgorokor - On Death behavior
 				bw::create_unit_from_ability(UnitId::ZergVilgoleth, 1, data.target->player, data.target->position);
 				bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
+			} break;
+			case UnitId::TerranCohort: {
+				if (target_ext->values[ValueCohortServileVigor]) {
+					break;
+				}
+				target_ext->values[ValueNoCorpse] = true;
+				Unit* cohort = bw::create_unit_in_game(UnitId::TerranCohort, data.target->player, data.target->position.x, data.target->position.y, data.target);
+				UnitExt& cohort_ext = cohort->ext();
+				cohort_ext.values[ValueCohortServileVigor] = true;
+				cohort->remove_timer = 240;
 			} break;
 		}
 

@@ -1487,6 +1487,20 @@ namespace hooks {
 					}
 				}
 			} break;
+			case UnitId::TerranCohort: {
+				if (unit_ext->values[ValueCohortServileVigor]) {
+					u32 radius = 1 * 32;
+					for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
+						unit_ext->values[ValueCohortServileVigor] = 0;
+
+						bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
+						corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+						corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+						unit->remove_timer = 0;
+						break;
+					}
+				}
+			} break;
 			case UnitId::ZergSovroleth: {
 				{	
 					EntryArray sovroleths = g_unit_search.radial_ex(unit, 8 * 32, FilterAlly, {UnitId::ZergSovroleth}); 
