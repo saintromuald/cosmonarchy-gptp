@@ -3614,26 +3614,26 @@ namespace helper {
 		return result == 1;
 	}
 
-	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero) {
-		const u32 Func_Sub492620 = 0x00492620;
-		static u32 return_value;
+	bool ordered_spell_progress_moving(Unit* unit, b32 order_state_zero) {
+		const u32 func_address = 0x00492620;
+		static b32 return_value;
 		__asm {
 			PUSHAD
-			PUSH wasMainOrderStateZero
+			PUSH order_state_zero
 			MOV EAX, unit
-			CALL Func_Sub492620
+			CALL func_address
 			MOV return_value, EAX
 			POPAD
 		}
-		return return_value;
+		return (bool)return_value;
 	}
 
 	void refund_all_queue_slots(Unit* unit) {
-		const u32 Func_RefundAllQueueSlots = 0x00466E80;
+		const u32 func_address = 0x00466E80;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_RefundAllQueueSlots
+			CALL func_address
 			POPAD
 		}
 	}

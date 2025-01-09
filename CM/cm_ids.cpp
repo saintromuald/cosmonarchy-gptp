@@ -1316,3 +1316,7 @@ bool unit_id_is_air_spawner(UnitId::Enum unit_id) {
 		|| unit_id == UnitId::ZergMutathSpire
 		|| unit_id == UnitId::ZergTosvrolHaunt;
 }
+
+bool weapon_id_deals_no_damage(WeaponId::Enum weapon_id) {
+	return weapon_id == WeaponId::MindTyrantTyranny; // More will be added later. -Pr0nogo
+}

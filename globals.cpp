@@ -205,7 +205,9 @@ static void tick_effect(EffectField& effect) {
 			} break;
 			case EffectId::AspirantCriticality: {
 				for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
-					unit->heal_shields_then_hp(4 * tick_scalar_hp, effect.source, true);
+					if (unit->player == effect.player || bw::are_mutual_allies(effect.player, unit->player)) {
+						unit->heal_shields_then_hp(4 * tick_scalar_hp, effect.source, true);
+					}
 				}
 			} break;
 			case EffectId::KeskathalorCausticDischarge: {

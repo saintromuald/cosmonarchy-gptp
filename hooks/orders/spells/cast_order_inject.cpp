@@ -1,22 +1,17 @@
-//Injector source file for the Cast Order hook module.
 #include "cast_order.h"
 #include <hook_tools.h>
 
-namespace
-{
-	void __declspec(naked) orders_spell_wrapper() // 00492850
-	{
+namespace {
+	void __declspec(naked) orders_spell_wrapper() { // 00492850
 		static Unit* unit;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
 		hooks::orders_spell(unit);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
@@ -24,8 +19,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) spell_order_wrapper() // 004926D0
-	{
+	void __declspec(naked) spell_order_wrapper() { // 004926D0
 		static s32 result;
 		static s32 default_error_string;
 		static Unit* caster;
@@ -57,8 +51,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) can_target_spell_wrapper() // 00492020
-	{
+	void __declspec(naked) can_target_spell_wrapper() { // 00492020
 		static bool result;
 		static u16 tech_id;
 		static Unit* target;
@@ -95,8 +88,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) issue_order_targeting_ground_wrapper() // 00475260
-	{
+	void __declspec(naked) issue_order_targeting_ground_wrapper() { // 00475260
 		static Unit* unit;
 		static u32 id;
 		static u16 coord_x;
@@ -124,14 +116,12 @@ namespace
 		}
 	}
 
-	void __declspec(naked) issue_tri_target_order_wrapper() // 0048CAF0
-	{
+	void __declspec(naked) issue_tri_target_order_wrapper() { // 0048CAF0
 		static char* unused;
 		static u8 order_1;
 		static u8 order_2;
 		static u8 order_3;
-		__asm
-		{
+		__asm {
 			MOV unused, EDI
 			MOV order_1, AL
 			MOV order_2, DL
@@ -139,15 +129,13 @@ namespace
 			PUSHAD
 		}
 		hooks::issue_tri_target_order(order_1, order_2, order_3);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) orders_defensive_matrix_wrapper() // 004550A0
-	{
+	void __declspec(naked) orders_defensive_matrix_wrapper() { // 004550A0
 		static Unit* caster;
 		__asm {
 			PUSH EBP
@@ -167,8 +155,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cannot_cast_spell_wrapper() // 00492140
-	{
+	void __declspec(naked) cannot_cast_spell_wrapper() { // 00492140
 		static Unit* unit;
 		static b32 result;
 		__asm {
@@ -183,8 +170,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) spell_order_move_towards_target_wrapper() // 00492450
-	{
+	void __declspec(naked) spell_order_move_towards_target_wrapper() { // 00492450
 		static Unit* caster;
 		static u32 range;
 		static b32 result;
@@ -260,10 +246,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_cast_order_hooks()
-	{
+namespace hooks {
+	void inject_cast_order_hooks() {
 		jump_patch(orders_spell_wrapper,						0x00492850, 1);
 		jump_patch(spell_order_wrapper,							0x004926D0, 0);
 		jump_patch(can_target_spell_wrapper,					0x00492020, 1);

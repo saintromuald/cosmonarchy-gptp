@@ -449,7 +449,7 @@ namespace helper {
 	bool is_ready_to_attack(Unit* unit, u32 weapon_id);																				// 00476640
 	u32 get_stat_txt_string(Unit* unit, u32 player, const char* message);															// 0048EF30
 	bool cannot_cast_spell(Unit* unit);																								// 00492140
-	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero);														// 00492620
+	bool ordered_spell_progress_moving(Unit* unit, b32 order_state_zero);															// 00492620
 
 	// For spell_order
 	bool can_target_spell(u16 tech_id, Unit* target, u16 fow_unit_id, Unit* caster, u16 pos_x, u16 pos_y, s32* error);				// 00492020
