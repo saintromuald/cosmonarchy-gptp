@@ -1,10 +1,8 @@
 #pragma once
 #include "DatExtend/dat_limits.h"
 
-namespace UnitId
-{
-	enum Enum
-	{
+namespace UnitId {
+	enum Enum {
 		// Cosmonarchy BW \\
 
 	// AI

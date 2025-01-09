@@ -581,8 +581,8 @@ namespace DatExt {
 		{
 			g_unit_availability->available[i] = (u8*)(unit_newArrs[4]) + newCount * i;
 		}
-		ai_strength_air = (u32*)unit_newArrs[5];
-		ai_strength_ground = (u32*)unit_newArrs[5] + newCount;
+		g_ai_strength_air = (u32*)unit_newArrs[5];
+		g_ai_strength_ground = (u32*)unit_newArrs[5] + newCount;
 		AIScriptController_var = (AI_Main*)unit_newArrs[6];
 		//for (i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
 		//{

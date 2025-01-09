@@ -163,6 +163,7 @@ static void replace_sprite(Unit* unit, u32 sprite_id) {
 	}
 
 	// Replace main image
+	u8 direction = unit->current_direction_1;
 	Image* new_image = unit->sprite->create_overlay(image_id, 0, 0, unit->sprite->main_graphic->direction);
 	if (new_image) {
 		new_image->play_iscript_animation((IscriptAnimation::Enum)unit->sprite->main_graphic->animation);
@@ -172,6 +173,7 @@ static void replace_sprite(Unit* unit, u32 sprite_id) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueCustomImage] = image_id + 1;
 	}
+	helper::turn_unit(unit, direction);
 }
 
 void update_trigger_system(bool in_game) {

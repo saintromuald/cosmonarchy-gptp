@@ -3614,14 +3614,14 @@ namespace helper {
 		return result == 1;
 	}
 
-	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero) {
-		const u32 Func_Sub492620 = 0x00492620;
-		static u32 return_value;
+	bool ordered_spell_progress_moving(Unit* unit, b32 order_state_zero) {
+		const u32 func_address = 0x00492620;
+		static b32 return_value;
 		__asm {
 			PUSHAD
-			PUSH wasMainOrderStateZero
+			PUSH order_state_zero
 			MOV EAX, unit
-			CALL Func_Sub492620
+			CALL func_address
 			MOV return_value, EAX
 			POPAD
 		}
@@ -3629,11 +3629,11 @@ namespace helper {
 	}
 
 	void refund_all_queue_slots(Unit* unit) {
-		const u32 Func_RefundAllQueueSlots = 0x00466E80;
+		const u32 func_address = 0x00466E80;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_RefundAllQueueSlots
+			CALL func_address
 			POPAD
 		}
 	}
@@ -3694,7 +3694,7 @@ namespace helper {
 		}
 	}
 
-	bool is_infestable_unit(Unit* unit) {
+	bool is_infestable_target(Unit* unit) {
 		const u32 func_address = 0x00402210;
 		static b32 result;
 		__asm {
@@ -4932,11 +4932,9 @@ namespace helper {
 
 	// Identical to unitIsHangerUnit @ 0x00401450
 	bool is_hangar_unit(Unit* unit) {
-		if (unit->id == UnitId::ProtossSteward
-		||  unit->id == UnitId::ProtossPlasmaShell) {
+		if (unit->id == UnitId::ProtossSteward || unit->id == UnitId::ProtossPlasmaShell) {
 			return true;		
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -7057,7 +7055,7 @@ namespace helper {
 	}
 
 	// For irradiateDamageLoop
-	Unit* iterateLoadedUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 a3) {
+	Unit* iterate_loaded_units(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 a3) {
 		const u32 func_address = 0x004E6D00;
 		static Unit* result;
 		__asm {
@@ -7918,7 +7916,7 @@ namespace helper {
 		return unit->id == UnitId::ProtossSolarion;
 	}
 
-	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg) {
+	s32 for_hangar_units(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg) {
 		const u32 func_address = 0x00465200;
 		static s32 result;
 		__asm {
@@ -15329,16 +15327,13 @@ namespace helper {
 		}
 	}
 
-	b8 status_update_tooltip() {
+	void status_update_tooltip() {
 		const u32 func_address = 0x00457FE0;
-		static b8 result;
 		__asm {
 			PUSHAD
 			CALL func_address
-			MOV result, AL
 			POPAD
 		}
-		return result;
 	}
 
 	void status_update_single_wireframe() {
@@ -15348,5 +15343,74 @@ namespace helper {
 			CALL func_address
 			POPAD
 		}
+	}
+
+	u32 calculate_unit_strength(UnitId::Enum unit_id, u32 weapon_id) {
+		const u32 func_address = 0x00431270;
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH weapon_id
+			MOV EAX, unit_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 filter_unit_strength(UnitId::Enum unit_id, u32 strength) {
+		const u32 func_address = 0x00431150;
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, strength
+			MOV EAX, unit_id
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool should_attack_unit(u32 attacking_player, Unit* target) {
+		const u32 func_address = 0x00431550;
+		static b32 result;
+		__asm {
+			PUSHAD
+			MOV ESI, target
+			MOV ECX, attacking_player
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	u32 get_targeting_priority(Unit* unit, b32 is_ground_target) {
+		const u32 func_address = 0x00431730;
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, is_ground_target
+			MOV ECX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool unit_is_clean_detector(Unit* unit) {
+		const u32 func_address = 0x00403430;
+		static b32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
 	}
 }

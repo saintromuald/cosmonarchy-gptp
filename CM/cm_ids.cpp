@@ -1301,3 +1301,22 @@ bool unit_id_can_construct(UnitId::Enum unit_id) {
 		|| unit_id == UnitId::ZergDroleth
 		|| unit_id == UnitId::ZergGosvileth;
 }
+
+bool unit_id_is_hangar_unit(UnitId::Enum unit_id) {
+	return unit_id == UnitId::ProtossSteward || unit_id == UnitId::ProtossPlasmaShell;
+}
+
+bool unit_id_is_air_spawner(UnitId::Enum unit_id) {
+	return unit_id == UnitId::TerranStarpad
+		|| unit_id == UnitId::TerranStarport
+		|| unit_id == UnitId::TerranNaniteAssembly
+		|| unit_id == UnitId::ProtossStargate
+		|| unit_id == UnitId::ProtossArgosy
+		|| unit_id == UnitId::ProtossMonumentOfSin
+		|| unit_id == UnitId::ZergMutathSpire
+		|| unit_id == UnitId::ZergTosvrolHaunt;
+}
+
+bool weapon_id_deals_no_damage(WeaponId::Enum weapon_id) {
+	return weapon_id == WeaponId::MindTyrantTyranny; // More will be added later. -Pr0nogo
+}

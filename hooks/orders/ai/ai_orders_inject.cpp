@@ -896,12 +896,44 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) get_ai_town_capabilities_wrapper() { // 00438FC0
+		static AiRegion* region;
+		static b32* has_ground_military;
+		static b32* cant_attack_ground;
+		static b32* cant_attack_air;
+		__asm {
+			MOV cant_attack_air, ESI
+			MOV cant_attack_ground, EDI
+			MOV has_ground_military, EBX
+			MOV region, EAX
+			PUSHAD
+		}
+		hooks::get_ai_town_capabilities(region, has_ground_military, cant_attack_ground, cant_attack_air);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_unit_can_attack_wrapper() { // 00476180
+		static bool result;
+		static Unit* unit;
+		__asm {
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::ai_unit_can_attack(unit);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
 }
 
-namespace hooks
-{
-	void inject_ai_orders_hooks()
-	{
+namespace hooks {
+	void inject_ai_orders_hooks() {
 		jump_patch(ai_unit_was_hit_wrapper,						0x0043F320, 1);
 
 		jump_patch(ai_order_unit_cloaking_wrapper,				0x0043B970, 1);
@@ -956,6 +988,8 @@ namespace hooks
 		jump_patch(ai_prepare_moving_to_wrapper,				0x004E7420, 0);
 		
 		jump_patch(is_unreachable_wrapper,						0x00476C50, 3);
+		jump_patch(get_ai_town_capabilities_wrapper,			0x00438FC0, 1);
+		jump_patch(ai_unit_can_attack_wrapper,					0x00476180, 3);
 
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 

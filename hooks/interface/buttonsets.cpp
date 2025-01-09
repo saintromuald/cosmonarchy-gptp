@@ -62,7 +62,8 @@ namespace hooks {
 		u8 count_larva = 0;
 		u8 count_ocsal_larva = 0;
 		u8 count_eggs  = 0;
-		u8 count_zerg_production = 0;
+		u8 count_zerg_production_base = 0;
+		u8 count_zerg_production_ocsal = 0;
 		u8 count_zergs = 0;
 		u8 count_buildings = 0;
 		u8 count_attacking_buildings = 0;
@@ -104,10 +105,6 @@ namespace hooks {
 					count_burrowables++;
 				}
 
-				if (unit_id_is_zerg_production(selected->id)) {
-					count_zerg_production++;
-				}
-
 				if (units_dat::group_flags[selected->id].is_zerg) {
 					count_zergs++;
 				}
@@ -135,6 +132,15 @@ namespace hooks {
 					case UnitId::ProtossNexus: {
 						count_nexuses++;
 					} break;
+					case UnitId::ZergHachirosk:
+					case UnitId::ZergGathtelosk:
+					case UnitId::ZergLarvoskCesiant: {
+						count_zerg_production_base++;
+					} break;
+					case UnitId::ZergCaphrolosk:
+					case UnitId::ZergOcsalCesiant: {
+						count_zerg_production_ocsal++;
+					}
 				}
 			}
 		}
@@ -177,8 +183,10 @@ namespace hooks {
 				*g_current_buttonset_id = UnitId::TerranMinistry;
 			} else if (count_nexuses == g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::ProtossNexus;
-			} else if (count_zerg_production == g_client_selection_count) {
+			} else if (count_zerg_production_base == g_client_selection_count) {
 				*g_current_buttonset_id = UnitId::ZergHachirosk;
+			} else if (count_zerg_production_ocsal == g_client_selection_count) {
+				*g_current_buttonset_id = UnitId::ZergCaphrolosk;
 			} else if (count_lifted_buildings) {
 				*g_current_buttonset_id = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
 			} else if (count_attacking_buildings) {

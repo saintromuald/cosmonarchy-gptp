@@ -214,6 +214,7 @@ enum ExtValueId {
 	ValueIdolLaunchPos,
 	ValueStormDivider,
 	ValueCabalistSilentStridesDamage,
+	ValueCohortServileVigor,
 
 	ValueAI_WorkerChosenForExpansion,
 	ValueAI_WorkerChosenX,
@@ -361,6 +362,8 @@ enum ExtTimerId {
 	TimerTurningAggressiveModeThrottle,
 	TimerClericHeal,
 	TimerReclaimHeal,
+	TimerTranquilityArray,
+	TimerCriticality,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

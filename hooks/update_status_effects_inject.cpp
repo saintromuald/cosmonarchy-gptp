@@ -1,11 +1,9 @@
 #include "update_status_effects.h"
 #include "../hook_tools.h"
 
-namespace
-{
+namespace {
 	// Note: acid spores management is normally done in function @ 004F42C0, jumped in at the end of this one, but the hook merges both
-	void __declspec(naked) update_status_effects_wrapper()
-	{
+	void __declspec(naked) update_status_effects_wrapper() {
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
@@ -18,8 +16,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ai_burrower_wrapper()
-	{
+	void __declspec(naked) ai_burrower_wrapper() {
 		static Unit* unit;
 		__asm {
 			MOV unit, EAX
@@ -32,8 +29,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unit_is_always_detected_wrapper()
-	{
+	void __declspec(naked) unit_is_always_detected_wrapper() {
 		static b32 result;
 		static Unit* unit;
 		__asm {
@@ -48,8 +44,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) unit_is_clean_detector_wrapper()
-	{
+	void __declspec(naked) unit_is_clean_detector_wrapper() {
 		static b32 result;
 		static Unit* unit;
 		__asm {
@@ -64,8 +59,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) refresh_carryable_sprite_wrapper()
-	{
+	void __declspec(naked) refresh_carryable_sprite_wrapper() {
 		static Sprite* sprite;
 		__asm {
 			MOV sprite, EAX
@@ -78,8 +72,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) update_carryable_sprite_flags_wrapper()
-	{
+	void __declspec(naked) update_carryable_sprite_flags_wrapper() {
 		static Sprite* sprite;
 		__asm {
 			MOV sprite, EAX
@@ -93,10 +86,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_update_status_effects_hooks()
-	{
+namespace hooks {
+	void inject_update_status_effects_hooks() {
 		jump_patch(update_status_effects_wrapper,				0x00492F70, 5);
 		jump_patch(ai_burrower_wrapper,							0x004A1340, 4);
 		jump_patch(unit_is_always_detected_wrapper,				0x00491810, 3);

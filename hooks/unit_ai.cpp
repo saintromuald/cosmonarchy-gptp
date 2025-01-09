@@ -631,13 +631,13 @@ namespace hooks {
 			}
 			if (!bw::is_allied_to(unit->player, player)) {
 				AiRegion* ai_region = bw::get_ai_region(player, bw::get_region_id(unit->position));
-				if (ai_region->ground_strength_needed >= ai_strength_ground[unit->id]) {
-					ai_region->ground_strength_needed -= ai_strength_ground[unit->id];
+				if (ai_region->ground_strength_needed >= g_ai_strength_ground[unit->id]) {
+					ai_region->ground_strength_needed -= g_ai_strength_ground[unit->id];
 				} else {
 					ai_region->ground_strength_needed = 0;
 				}
-				if (ai_region->air_strength_needed >= ai_strength_air[unit->id]) {
-					ai_region->air_strength_needed -= ai_strength_air[unit->id];
+				if (ai_region->air_strength_needed >= g_ai_strength_air[unit->id]) {
+					ai_region->air_strength_needed -= g_ai_strength_air[unit->id];
 				} else {
 					ai_region->air_strength_needed = 0;
 				}

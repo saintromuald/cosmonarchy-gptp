@@ -565,20 +565,19 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) calculate_unit_strength_wrapper() // 00431270
-	{
-		static s32 unit_id;
-		static u8 weapon_id;
-		static s32 result;
+	void __declspec(naked) calculate_unit_strength_wrapper() { // 00431270
+		static u32 unit_id;
+		static u32 weapon_id;
+		static u32 result;
 		__asm {
-			MOV unit_id, EAX
 			PUSH EBP
 			MOV EBP, ESP
 			SUB ESP, 0x08
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV weapon_id, AL
+			MOV weapon_id, EAX
 			POP EAX
+			MOV unit_id, EAX
 			PUSHAD
 		}
 		result = hooks::calculate_unit_strength(unit_id, weapon_id);
@@ -587,12 +586,11 @@ namespace hooks
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x08
+			RETN 0x04
 		}
 	}
 
-	void __declspec(naked) get_unit_strength_wrapper() // 00431800
-	{
+	void __declspec(naked) get_unit_strength_wrapper() { // 00431800
 		static Unit* a1;
 		static s32 a2;
 		static bool a3;
@@ -619,8 +617,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) ai_restoration_requirements_proc_wrapper() // 004407E0
-	{
+	void __declspec(naked) ai_restoration_requirements_proc_wrapper() { // 004407E0
 		static Unit* caster;
 		static Unit* target;
 		static b32 result;
@@ -637,8 +634,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) ai_emp_shield_requirements_proc_wrapper()
-	{
+	void __declspec(naked) ai_emp_shield_requirements_proc_wrapper() {
 		static Unit* target;
 		static Unit* caster;
 		static b32 result;
@@ -655,8 +651,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) attack_overlay_and_notify_wrapper()
-	{
+	void __declspec(naked) attack_overlay_and_notify_wrapper() {
 		static Unit* victim;
 		static Unit* attacker;
 		static u8 weapon_id;
@@ -685,8 +680,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) draw_image_hp_bar_wrapper()
-	{
+	void __declspec(naked) draw_image_hp_bar_wrapper() {
 		static s32 g_screen_x;
 		static s32 g_screen_y;
 		static GrpFrame* pFrame;
@@ -717,8 +711,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) update_building_construct_shields_amount_wrapper()
-	{
+	void __declspec(naked) update_building_construct_shields_amount_wrapper() {
 		static Unit* a1;
 		__asm {
 			MOV a1, EBX
@@ -731,8 +724,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) get_unit_bullet_damage_wrapper() // 0048ACD0
-	{
+	void __declspec(naked) get_unit_bullet_damage_wrapper() { // 0048ACD0
 		static Unit* victim;
 		static Bullet* bullet;
 		static s32 result;
@@ -749,8 +741,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) ai_find_best_transport_wrapper()
-	{
+	void __declspec(naked) ai_find_best_transport_wrapper() {
 		static Unit* unit;
 		static Unit* result_unit;
 		static b32 result;
@@ -775,8 +766,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) mapDataTransfer_Wrapper()
-	{
+	void __declspec(naked) mapDataTransfer_Wrapper() {
 		static char a1;
 		static s32 a2;
 		static s32 a3;
@@ -795,13 +785,12 @@ namespace hooks
 		}
 	}
 
-	void inject_max_hp_hooks()
-	{
+	void inject_max_hp_hooks() {
 		//	jump_patch(get_max_vitality_wrapper,							0x00402710, 5);
 		//	jump_patch(drawUnitInfo_Wrapper,								0x00426190, 3);
 		//	jump_patch(ai_target_enemy_proc_wrapper,						0x00440A20, 2);
 		//	jump_patch(draw_building_info_wrapper,							0x00427890, 3);
-		//	jump_patch(calculate_unit_strength_wrapper,						0x00431270, 5);
+			jump_patch(calculate_unit_strength_wrapper,						0x00431270, 5);
 		//	jump_patch(get_unit_strength_wrapper,							0x00431800, 0);
 		//	jump_patch(ai_restoration_requirements_proc_wrapper,			0x004407E0, 1);
 		//	jump_patch(ai_emp_shield_requirements_proc_wrapper,				0x004413D0, 1);

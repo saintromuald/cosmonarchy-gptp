@@ -1,11 +1,9 @@
 #pragma once
 #include "BW/structures.h"
 
-namespace hooks
-{
+namespace hooks {
+	void generate_strength_table();							// 004313C0
+	u32 filter_unit_strength(u32 unit_id, u32 strength);	// 00431150
 
-	s32 singleplayerMeleeCreate();				//004EE110
-	s32 loadGameCreate(s32 a1, char a2);		//004EE520
-	s32 levelCheatCreate(char a1, s32 a2);		//004EE5B0
-	void injectConsoleHooks();
+	void inject_creategame_hooks();
 }

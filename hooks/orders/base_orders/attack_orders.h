@@ -22,6 +22,7 @@ namespace hooks {
 	void orders_turret_attack(Unit* unit);											// 00477980
 	void orders_patrol(Unit* unit);													// 004780F0
 	void order_to_attack_target(Unit* target, Unit* unit, b32 process_subunit, b32 target_is_cloaked);	// 004780F0
+	Unit* dispatch_fighter(Unit* carrier);											// 00466440
 
 	void inject_attack_orders_hooks();
 }

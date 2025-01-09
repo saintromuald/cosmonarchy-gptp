@@ -18,9 +18,9 @@ namespace hooks {
 	void yamato_damage(Bullet* bullet, u32 weapon_id);
 	void air_splash(Bullet* bullet, u32 weapon_id);
 	void nuke(Bullet* bullet, u32 weapon_id);
+	bool splash_target_check(Bullet* bullet, Unit* target);	// 0048B570
 
 	// Cosmonarchy specific
-	bool is_melee_with_aoe(Bullet* bullet, u32 weapon_id);
 	void parasite(Bullet* bullet, u32 weapon_id);
 	void broodlings(Bullet* bullet, u32 weapon_id);
 	void lockdown(Bullet* bullet, u32 weapon_id);

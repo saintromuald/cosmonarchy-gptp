@@ -130,6 +130,7 @@ namespace hooks {
 				if (units_dat::base_property[unit->id] & UnitProperty::Attack) {
 					unit->status |= UnitStatus::CanTurnAroundToAttack;
 				}
+				unit->update_speed();
 
 				if (unit->order_queue_head) {
 					bool has_move_order = false;
@@ -255,6 +256,7 @@ namespace hooks {
 			UnitExt* unit_ext = get_unit_ext(unit);
 			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
 			helper::turn_unit(unit, 0); // Fix turning structures having difficulty lifting
+			unit->update_speed();
 		} else {
 			if (!unit->order_queue_head) {
 				unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, 0, UnitId::None, 0);

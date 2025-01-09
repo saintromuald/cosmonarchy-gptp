@@ -172,6 +172,9 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	if (flags & FilterNoHangar && (target->id == UnitId::ProtossPlasmaShell || target->id == UnitId::ProtossSteward)) {
 		return false;
 	}
+	if (flags & FilterTownCenter && !unit_id_is_town_center(target->id)) {
+		return false;
+	}
 	return true;
 }
 

@@ -913,4 +913,125 @@ namespace hooks {
 		}
 		return true;
 	}
+
+	// Hooked to eventually extend weapon ids past 255.
+	// This is very ugly, will need to be refactored. Initial tests seemed fine. -Pr0nogo
+	Unit* ai_choose_target(Unit** unit_array, u32 player, Unit* unit, u32 region_id, b32 is_ground) { // 00431990
+		u32 unit_id = UnitId::None;
+		s16 unit_region_id = region_id;
+		UnitAi* unit_ai = 0;
+		if (unit) {
+			unit_id = unit->id;
+			unit_region_id = helper::get_region_id(unit->position.x, unit->position.y);
+			unit_ai = unit->unit_ai;
+		}
+		Unit* target = *unit_array;
+		Unit* final_unit = 0;
+		Unit* final_target = 0;
+		b32 can_proceed_with_attack = 0;
+		if (target) {
+			while (1) {
+				if (!helper::should_attack_unit(player, target)) {
+					goto LABEL_58;
+				}
+				if (!unit) {
+					goto LABEL_30;
+				}
+				if (unit->is_frozen()) {
+					goto LABEL_58;
+				}
+				if (!target) {
+					goto LABEL_58;
+				}
+				if (target->status & UnitStatus::Invincible) {
+					goto LABEL_58;
+				}
+				if (target->sprite->flags & SpriteFlags::Hidden) {
+					goto LABEL_58;
+				}
+				if (helper::unit_can_see_cloaked_target(target, unit)) {
+					goto LABEL_58;
+				}
+				final_unit = unit->subunit;
+				if (!helper::unit_is_subunit(unit->subunit)) {
+					final_unit = unit;
+				}
+				if (unit->is_carrier()) {
+					goto LABEL_30;
+				}
+				if (unit->is_reaver()) {
+					break;
+				}
+				if (helper::unit_can_infest(unit)) {
+					can_proceed_with_attack = helper::is_infestable_target(target) != 0;
+				} else {
+					if (target->status & UnitStatus::InAir) {
+						can_proceed_with_attack = final_unit->get_air_weapon() != WeaponId::None;
+					} else {
+						can_proceed_with_attack = final_unit->get_ground_weapon() != WeaponId::None;
+					}
+				}
+				if (can_proceed_with_attack) {
+					goto LABEL_30;
+				}
+			LABEL_58:
+				target = unit_array[1];
+				++unit_array;
+				if (!target) {
+					u32 temp = g_temp_units_list_arrays_counts_list_last_index[g_temp_units_list_arrays_counts_list_last_index[0]--];
+					*g_temp_units_list_current_array_count = temp;
+					return 0;
+				}
+			}
+			if (target->status & UnitStatus::InAir) {
+				goto LABEL_58;
+			}
+			if (!helper::unit_has_path_to_target(unit, target)) {
+				goto LABEL_58;
+			}
+		LABEL_30:
+			u32 target_id = target->id;
+			if (!(g_aiscript_controller[player].ai_flags.is_use_map_settings)) {
+				if (!unit || g_player_table[unit->player].type != PlayerType::Computer
+					|| unit->status & UnitStatus::InAir
+					|| helper::is_unit_in_weapon_range(target, unit)
+					|| !((target->status >> 7) & 1))
+				{
+					GuardAi* guard_ai = 0;
+					u32 guard_home_x = 0;
+					u32 guard_home_y = 0;
+					s16 region_2 = helper::get_region_id(target->position.x, target->position.y);
+					if (unit_ai && unit_ai->type == AiType::Guard) {
+						guard_ai = (GuardAi*)unit_ai;
+						guard_home_x = guard_ai->current_home.x;
+						guard_home_y = guard_ai->current_home.y;
+						if (region_2 == helper::get_region_id(guard_home_x, guard_home_y) || (helper::get_distance_fast(target->halt.x, guard_home_x << 8, target->halt.y, guard_home_y << 8) & 0xFFFFFF00) <= 49152
+						&&  helper::is_distance_greater_than_halt_distance(unit, guard_home_x, guard_home_y, 192)) {
+						LABEL_48:
+							u32 priority = helper::get_targeting_priority(target, is_ground);
+							if (unit_id == UnitId::TerranWraith && helper::unit_is_clean_detector(target) && target->status & UnitStatus::Reacts) {
+								priority += 1000;
+							}
+							if (priority > -1) {
+								final_target = target;
+							}
+							goto LABEL_58;
+						}
+					} else if (helper::get_region_id(target->sprite->position.x, target->sprite->position.y) == unit_region_id || is_target_within_min_range(unit, 288, target)) {
+						goto LABEL_48;
+					}
+				}
+			}
+			goto LABEL_58;
+		}
+	LABEL_59:
+		u32 temp = g_temp_units_list_arrays_counts_list_last_index[g_temp_units_list_arrays_counts_list_last_index[0]--];
+		*g_temp_units_list_current_array_count = temp;
+		return final_target;
+	}
+
+	// Hooked to eventually extend weapon ids past 255. -Pr0nogo
+	u8 get_air_weapon(Unit* unit) { // 00475840
+		return unit->get_air_weapon();
+	}
 }

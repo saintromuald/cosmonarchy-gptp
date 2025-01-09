@@ -1044,10 +1044,10 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			// Currently done in spellcasting, if that doesn't work copy the code from there here -Veeq7
 			/*
 			if (unit->main_order_id != OrderId::CastParasite && unit->energy >= techdata_dat::energy_cost[TechId::MatralethParasite] * 256 && unit_ext->timers[TimerAI_Parasite] == 0) {
-				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::MatralethParasite], Flags::NotSelf, {}, [&](Unit* u) {
+				cosmonarchy_finder_loop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::MatralethParasite], Flags::NotSelf, {}, [&](Unit* u) {
 					std::vector<std::pair<Unit*, u32>> group;
 					s32 supply = 0;
-					cosmonarchyFinderLoop(u, u->position, 128, 0, {}, [&](Unit* u2)
+					cosmonarchy_finder_loop(u, u->position, 128, 0, {}, [&](Unit* u2)
 					{
 						u32 priority = units_dat::supply_required[u->id] * 100;
 						if (u->status & UnitStatus::InAir)
@@ -1083,7 +1083,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			u32 web_state = bw::get_generic_rust_value(unit, RustId::ToggleDisruptionField);
 			u32 lanifects = 0;
 			u32 webs = 0;
-			cosmonarchyFinderLoop(unit, unit->position, Lanifect::AISeekRange, Flags::Own, {}, [&](Unit* target) {
+			cosmonarchy_finder_loop(unit, unit->position, Lanifect::AISeekRange, Flags::Own, {}, [&](Unit* target) {
 				if (target->id == UnitId::ProtossLanifect) {
 					lanifects += 1;
 					if (bw::get_generic_rust_value(target, RustId::ToggleDisruptionField)) {
@@ -1098,9 +1098,9 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 			if (web_state || webs < threshold) {
 				Unit* best_target = 0;
 				s32 max_score = INT_MIN;
-				cosmonarchyFinderLoop(unit, unit->position, Lanifect::AISeekRange, Flags::Enemy, {}, [&](Unit* target) {
+				cosmonarchy_finder_loop(unit, unit->position, Lanifect::AISeekRange, Flags::Enemy, {}, [&](Unit* target) {
 					bool valid = true;
-					cosmonarchyFinderLoop(unit, target->position, Lanifect::AICheckRange / 2, Flags::Own, {}, [&](Unit* dweb) {
+					cosmonarchy_finder_loop(unit, target->position, Lanifect::AICheckRange / 2, Flags::Own, {}, [&](Unit* dweb) {
 						if (bw::get_generic_rust_value(dweb, RustId::ToggleDisruptionField)) {
 							valid = false;
 						}
@@ -1171,13 +1171,13 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
 		else if (unit->id == UnitId::TerranPaladin) {
 			if (unit->main_order_id != OrderId::Skyfall && bw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
 				bool skyfallCondition = false;
-				cosmonarchyFinderLoop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::Skyfall],
+				cosmonarchy_finder_loop(unit, unit->sprite->position, weapons_dat::max_range[WeaponId::Skyfall],
 					CFlags::Enemy, {}, [&](Unit* u) {
 
 					// bw::print("Loop");
 					Unit* tryTarget = u;
 					s32 innerCount = 0;
-					cosmonarchyFinderLoop(u, u->position, weapons_dat::max_range[WeaponId::Skyfall] , CFlags::Ally, {},
+					cosmonarchy_finder_loop(u, u->position, weapons_dat::max_range[WeaponId::Skyfall] , CFlags::Ally, {},
 						[&](Unit* internalUnit) {
 						innerCount++;
 					});

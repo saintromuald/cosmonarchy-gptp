@@ -179,8 +179,7 @@ LABEL_26:
 		}
 	}
 
-	b32 ai_target_enemy_proc(Unit* target, Unit* unit) // 00440A20
-	{
+	b32 ai_target_enemy_proc(Unit* target, Unit* unit) { // 00440A20
 		b32 result = 0;
 		if (target != unit) {
 			u8 target_player = target->player == 11 ? target->sprite->player : target->player;
@@ -193,8 +192,7 @@ LABEL_26:
 		return result;
 	}
 
-	s32 calculate_unit_strength(u32 unit_id, u8 weapon_id) // 00431270
-	{
+	u32 calculate_unit_strength(u32 unit_id, u32 weapon_id) { // 00431270
 		s32 max_shields = 0;
 		if (units_dat::shields_enabled[unit_id]) {
 			max_shields = units_dat::max_shield_points[unit_id];
@@ -202,23 +200,22 @@ LABEL_26:
 
 		s32 max_vitality = max_shields + (units_dat::max_hitpoints[unit_id] >> 8);
 		u64 final_strength = 0;
-		if (max_vitality)
-		{
-			u32 damage_factor = weapons_dat::damage_factor[weapon_id];
-			u32 weapon_cooldown = weapons_dat::cooldown[weapon_id];
-			u32 weapon_damage = weapons_dat::damage_amount[weapon_id];
-			u32 weapon_strength = 0;
-			if (weapon_id != WeaponId::None) {
-				weapon_strength = (weapon_damage * damage_factor << 11) / (s32)weapon_cooldown;
-			}
-			final_strength = (u64)(sqrt((double)(weapon_damage * damage_factor * (weapons_dat::max_range[weapon_id] / weapon_cooldown)
-										+ ((u32)(max_vitality * weapon_strength) >> 8))) * 7.58);
+		if (!max_vitality) {
+			return (u32)final_strength;
 		}
-		return (s32)final_strength;
+		u32 damage_factor = weapons_dat::damage_factor[weapon_id];
+		u32 weapon_cooldown = weapons_dat::cooldown[weapon_id];
+		u32 weapon_damage = weapons_dat::damage_amount[weapon_id];
+		u32 weapon_strength = 0;
+		if (weapon_id != WeaponId::None) {
+			weapon_strength = (weapon_damage * damage_factor << 11) / (s32)weapon_cooldown;
+		}
+		final_strength = (u64)(sqrt((double)(weapon_damage * damage_factor * (weapons_dat::max_range[weapon_id] / weapon_cooldown)
+									+ ((u32)(max_vitality * weapon_strength) >> 8))) * 7.58);
+		return (u32)final_strength;
 	}
 
-	u32 get_unit_strength(Unit* unit, s32 unused, bool is_ground) // 00431800
-	{
+	u32 get_unit_strength(Unit* unit, s32 unused, bool is_ground) { // 00431800
 		if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) {
 			return 0;
 		}
@@ -240,11 +237,9 @@ LABEL_26:
 		return base_strength * current_vitality / max_vitality;
 	}
 
-	b32 ai_restoration_requirements_proc(Unit* caster, Unit* target) // 004407E0
-	{
+	b32 ai_restoration_requirements_proc(Unit* caster, Unit* target) { // 004407E0
 		b32 result = 0;
-		if (caster->player == target->player && helper::can_weapon_target_unit(WeaponId::Restoration, caster, target))
-		{
+		if (caster->player == target->player && helper::can_weapon_target_unit(WeaponId::Restoration, caster, target)) {
 			s32 shields = bw::unit_has_shields(target) ? target->shields >> 8 : 0;
 			if (shields + ((target->hitpoints + 255) >> 8) > 60
 			&& (target->ensnare_timer || target->plague_timer || target->irradiate_timer || target->lockdown_timer || target->maelstrom_timer || target->corrosive_spore_count_unused))

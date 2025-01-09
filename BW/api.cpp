@@ -4085,4 +4085,25 @@ f32 calculate_dark_ages_penalty(f32 range) {
     return range - round(range * 0.8 / 2) * 2;
 }
 
+void zap_overlay(Unit* unit) {
+	UnitExt& unit_ext = unit->ext();
+	if (!unit_ext.timers[TimerClaymoreKelvinMunitionsZap]) {
+		u32 width = units_dat::unit_bounds[unit->id].x * 3 / 4;
+		u32 height = units_dat::unit_bounds[unit->id].y * 3 / 4;
+
+		s32 x_offset = bw::random() % width - width / 2;
+		s32 y_offset = bw::random() % height - height / 2;
+
+		x_offset = Clamp(x_offset, -128, 127);
+		y_offset = Clamp(y_offset, -128, 127);
+
+		Unit* overlay_unit = unit;
+		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+			overlay_unit = unit->subunit;
+		}
+		overlay_unit->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
+		unit_ext.timers[TimerClaymoreKelvinMunitionsZap] = 7;
+	}
+}
+
 } // namespace bw

@@ -115,15 +115,19 @@ void UprisingGameMode::on_tick() {
         };
 
         Unit* target = g_unit_search.all().not_neutral().filter().filter_by([&wave](Unit* target) {
+            const auto group = bw::get_region(target->position)->group_index;
             for (UnitRef attacker_ref : wave.units) {
                 Unit* attacker = attacker_ref.get();
                 assert(attacker); // since we cleared wave.units from empty refs
 
-                if (attacker->can_attack_target(target)) {
-                    return true;
+                if (!attacker->can_attack_target(target)) {
+                    return false;
+                }
+                if (!(attacker->status & UnitStatus::InAir) && bw::get_region(attacker->position)->group_index != group) {
+                    return false;
                 }
             }
-            return false;
+            return true;
         }).sort_by_distance(center).first(); // TODO: consider only targets the wave can attack
         if (target) {
             for (UnitRef ref : wave.units) {

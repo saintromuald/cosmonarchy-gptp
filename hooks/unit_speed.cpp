@@ -89,11 +89,11 @@ namespace hooks {
 			}
 		}
 
+		// Tyranny of the Sun
 		if (unit_ext->values[ValueMindControllerUnitId]) {
-			for (Unit* target : g_unit_search.radial_ex(unit, unit->get_sight_range() * 32)) {
-				if (bw::is_allied_to(target->player, unit->player)) {
-					continue;
-				}
+			auto targets = g_unit_search
+				.radial_ex(unit, unit->get_sight_range() * 32, FilterEnemy | FilterVisible);
+			for (auto target : targets) {
 				speed *= 1.33;
 				bw::set_unit_overlay(unit, { ImageId::DemiurgeWorshipOverlay_Small, ImageId::DemiurgeWorshipOverlay_XLarge }, true);
 				// TODO: make this overlay work when not moving (probably move to game_hooks). -Pr0nogo
@@ -131,6 +131,7 @@ namespace hooks {
 			speed *= 0.75;
 		}
 
+		// Shade - speed steroid
 		if (unit_ext->values[ValueIsShade]) {
 			speed *= 1.5;
 		}
@@ -272,6 +273,11 @@ namespace hooks {
 	}
 
 	u32 get_modified_unit_turn_speed(Unit* unit) {
+		if (unit->id == UnitId::TerranDiadem) {
+			if (unit->status & UnitStatus::InAir) {
+				return 27;
+			}
+		}
 		return std::max(flingy_dat::turn_speed[units_dat::graphic[unit->id]] * get_speed_multiplier(unit), 1.0);
 	}
 
@@ -306,51 +312,52 @@ namespace hooks {
 
 	// Hooked to fix the speed tooltip for iscript units. -Pr0nogo
 	void update_iscript_speed(Unit* unit) { // 0042D8C0
-		if (unit->flingy_movement_type == MovementType::MovementType_Iscript) {
-			Image* image = unit->sprite->main_graphic;
-			*g_temp_iscript_header = image->iscript_header_offset;
-			*g_iscript_speed_something = image->return_address;
-			if (helper::set_temp_iscript_animation(IscriptAnimation::Walking)) {
-				Unit* active_unit = *g_active_iscript_unit;
-				u32 iteration_factor = 0;
-				u32 opcode_value = 0;
-				u32 tile_size = 32;
-				bool tile_size_bool = 0;
-				u32 base_speed = 0;
-				do {
-					Image* loop_image = unit->sprite->main_graphic;
-					*g_active_iscript_unit = unit;
-				//	helper::iscript_opcode_cases(loop_image, *g_temp_iscript_header, 1, (u32)&opcode_value); // This is probably wrong, compare to IDA (our helper has 1 less arg)
-					u8 stim_timer = unit->stim_timer;
-					u32 opcode_value_final = opcode_value;
+		if (unit->flingy_movement_type != MovementType::MovementType_Iscript) {
+			return;
+		}
+		Image* image = unit->sprite->main_graphic;
+		*g_temp_iscript_header = image->iscript_header_offset;
+		*g_iscript_speed_something = image->return_address;
+		if (helper::set_temp_iscript_animation(IscriptAnimation::Walking)) {
+			Unit* active_unit = *g_active_iscript_unit;
+			u32 iteration_factor = 0;
+			u32 opcode_value = 0;
+			u32 tile_size = 32;
+			bool tile_size_bool = 0;
+			u32 base_speed = 0;
+			do {
+				Image* loop_image = unit->sprite->main_graphic;
+				*g_active_iscript_unit = unit;
+			//	helper::iscript_opcode_cases(loop_image, *g_temp_iscript_header, 1, (u32)&opcode_value); // This is probably wrong, compare to IDA (our helper has 1 less arg)
+				u8 stim_timer = unit->stim_timer;
+				u32 opcode_value_final = opcode_value;
 
-					u32 buff_or_debuff = 0;
-					*g_active_iscript_unit = active_unit;
-					if (stim_timer) {
-						buff_or_debuff = 1;
-					}
-					if (unit->status & UnitStatus::SpeedUpgrade) {
-						++buff_or_debuff;
-					}
-					if (unit->ensnare_timer) {
-						--buff_or_debuff;
-					}
+				u32 buff_or_debuff = 0;
+				*g_active_iscript_unit = active_unit;
+				if (stim_timer) {
+					buff_or_debuff = 1;
+				}
+				if (unit->status & UnitStatus::SpeedUpgrade) {
+					++buff_or_debuff;
+				}
+				if (unit->ensnare_timer) {
+					--buff_or_debuff;
+				}
 
-					if (buff_or_debuff <= 0) {
-						if (buff_or_debuff < 0) {
-							opcode_value_final = opcode_value - (opcode_value >> 2);
-						}
-					} else {
-						opcode_value_final = 2 * opcode_value;
+				if (buff_or_debuff <= 0) {
+					if (buff_or_debuff < 0) {
+						opcode_value_final = opcode_value - (opcode_value >> 2);
 					}
-					base_speed = opcode_value_final + iteration_factor;
-					tile_size_bool = tile_size == 1;
-					iteration_factor += opcode_value_final;
-					opcode_value = 0;
-					--tile_size;
-				} while (!tile_size_bool);
-				unit->flingy_top_speed = base_speed / 32;
-			}
+				} else {
+					opcode_value_final = 2 * opcode_value;
+				}
+				base_speed = opcode_value_final + iteration_factor;
+				tile_size_bool = tile_size == 1;
+				iteration_factor += opcode_value_final;
+				opcode_value = 0;
+				--tile_size;
+			} while (!tile_size_bool);
+			unit->flingy_top_speed = base_speed / 32;
 		}
 	}
 

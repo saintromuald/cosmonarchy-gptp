@@ -1111,23 +1111,21 @@ s32 Unit::can_make_unit(u16 unit_id, u8 player) const {
 	return result;
 }
 
-s32 Unit::can_use_tech(u8 techId, u8 player) const {
+s32 Unit::can_use_tech(u8 tech_id, u8 player) const {
 	assert(this);
-	const u32 Func_CanUseTech = 0x0046DD80;
-	s32 playerId_ = player;
-	u32 _techId = techId;
+	const u32 func_address = 0x0046DD80;
+	s32 player_id_xd = player;
+	u32 tech_id_xd = tech_id;
 	static s32 result;
-
 	__asm {
 		PUSHAD
-		PUSH playerId_
-		MOV EDI, _techId
+		PUSH player_id_xd
+		MOVZX EDI, tech_id
 		MOV EAX, this
-		CALL Func_CanUseTech
+		CALL func_address
 		MOV result, EAX
 		POPAD
 	}
-
 	return result;
 }
 
@@ -1507,4 +1505,8 @@ bool Unit::is_worker() {
 
 bool Unit::is_resource_depot() {
 	return units_dat::base_property[this->id] & UnitProperty::ResourceDepot;
+}
+
+bool Unit::is_addon() {
+	return units_dat::base_property[this->id] & UnitProperty::Addon;
 }

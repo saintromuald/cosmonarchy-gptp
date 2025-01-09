@@ -3,10 +3,8 @@
 #include <BW/UnitFinder.h>
 #include "BW/api.h"
 
-namespace
-{
-	void __declspec(naked) fire_weapon_wrapper()
-	{
+namespace {
+	void __declspec(naked) fire_weapon_wrapper() {
 		static Unit* unit;
 		static u8 weapon_id;
 		__asm {
@@ -26,8 +24,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) progress_bullet_flight_wrapper()
-	{
+	void __declspec(naked) progress_bullet_flight_wrapper() {
 		static Bullet* bullet;
 		__asm {
 			MOV bullet, EAX
@@ -40,22 +37,20 @@ namespace
 		}
 	}
 
-	void __declspec(naked) bullet_behavior_bounce_wrapper()
-	{
-		static Bullet* a1;
+	void __declspec(naked) bullet_behavior_bounce_wrapper() {
+		static Bullet* bullet;
 		__asm {
-			MOV a1, EDI
+			MOV bullet, EDI
 			PUSHAD
 		}
-		hooks::bullet_behavior_bounce(a1);
+		hooks::bullet_behavior_bounce(bullet);
 		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	void __declspec(naked) find_next_bounce_target_proc_wrapper()
-	{
+	void __declspec(naked) find_next_bounce_target_proc_wrapper() {
 		static Unit* pIterator;
 		static bool result;
 		__asm {
@@ -70,15 +65,14 @@ namespace
 		}
 	}
 
-	void __declspec(naked) find_next_bounce_target_wrapper()
-	{
-		static Bullet* a1;
+	void __declspec(naked) find_next_bounce_target_wrapper() {
+		static Bullet* bullet;
 		static Unit* result;
 		__asm {
-			MOV a1, EAX
+			MOV bullet, EAX
 			PUSHAD
 		}
-		result = hooks::find_next_bounce_target(a1);
+		result = hooks::find_next_bounce_target(bullet);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -86,26 +80,22 @@ namespace
 		}
 	}
 
-	void __declspec(naked) delete_bullet_wrapper()
-	{
+	void __declspec(naked) delete_bullet_wrapper() {
 		static Bullet* result;
 		static Bullet* bullet;
-		__asm
-		{
+		__asm {
 			MOV bullet, EAX
 			PUSHAD
 		}
 		result = hooks::delete_bullet(bullet);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) create_bullet_wrapper() // 0048C260
-	{
+	void __declspec(naked) create_bullet_wrapper() { // 0048C260
 		static Bullet* result;
 		static s32 weapon_id;
 		static Unit* parent;
@@ -113,8 +103,7 @@ namespace
 		static s16 y;
 		static char player;
 		static s32 angle;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -132,8 +121,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::create_bullet(weapon_id, parent, x, y, player, angle);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -142,8 +130,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) initialize_bullet_wrapper()
-	{
+	void __declspec(naked) initialize_bullet_wrapper() {
 		static u8 player;
 		static Unit* parent;
 		static s16 y;
@@ -153,8 +140,7 @@ namespace
 		static s32 angle;
 		static s32 result;
 
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -173,8 +159,7 @@ namespace
 			PUSHAD
 		}
 		result = hooks::initialize_bullet(player, parent, y, bullet, weapon_id, x, angle);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -183,34 +168,26 @@ namespace
 		}
 	}
 
-	void __declspec(naked) progress_bullet_frames_wrapper()
-	{
-		__asm
-		{
+	void __declspec(naked) progress_bullet_frames_wrapper() {
+		__asm {
 			PUSHAD
 		}
 		hooks::progress_bullet_frames();
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, 0
 			RETN
 		}
 	}
 
-	void __declspec(naked) bullet_behavior_reassign_wrapper() // 0048BD50
-	{
+	void __declspec(naked) bullet_behavior_reassign_wrapper() { // 0048BD50
 		static Bullet* bullet;
-		__asm
-		{
-		//	MOV unused1, EAX
+		__asm {
 			MOV bullet, ECX
-		//	MOV unused2, EDI
 			PUSHAD
 		}
 		hooks::bullet_behavior_reassign(bullet);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
@@ -259,8 +236,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) should_stay_at_range_wrapper() // 00475A10
-	{
+	void __declspec(naked) should_stay_at_range_wrapper() { // 00475A10
 		static b32 result;
 		static Unit* unit;
 		__asm {
@@ -275,8 +251,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) move_for_melee_range_wrapper() // 00477F10
-	{
+	void __declspec(naked) move_for_melee_range_wrapper() { // 00477F10
 		static Unit* target;
 		static Unit* attacker;
 		__asm {
@@ -298,8 +273,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) assign_weapon_data_wrapper() // 0048AA80
-	{
+	void __declspec(naked) assign_weapon_data_wrapper() { // 0048AA80
 		static Bullet* bullet;
 		static char behavior;
 		static Bullet* result;
@@ -316,8 +290,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) bullet_behavior_follow_wrapper() // 0048B500
-	{
+	void __declspec(naked) bullet_behavior_follow_wrapper() { // 0048B500
 		static Bullet* bullet;
 		__asm {
 			MOV bullet, EAX
@@ -333,11 +306,9 @@ namespace
 	// PATCHES \\
 
 	const u32 bullet_damage_jumpback = 0x0048B77A;
-	void __declspec(naked) bullet_damage_bullet_nullcheck()
-	{
+	void __declspec(naked) bullet_damage_bullet_nullcheck() {
 		static Bullet* bullet;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			SUB ESP, 8
@@ -346,16 +317,13 @@ namespace
 			MOV bullet, EBX
 			PUSHAD
 		}
-		if (bullet)
-		{
-			__asm
-			{
+		if (bullet) {
+			__asm {
 				POPAD
 				JMP bullet_damage_jumpback
 			}
 		}
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP

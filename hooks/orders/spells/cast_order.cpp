@@ -166,137 +166,123 @@ namespace hooks {
 			if (unit->order_signal & 2) {
 				unit->order_signal -= 2;
 				unit->order_to_idle();
-			} else {
-				if (target) {
-					unit->order_target.pt.x = target->sprite->position.x;
-					unit->order_target.pt.y = target->sprite->position.y;
-					if (target->sprite->position.x != unit->next_target_waypoint.x || target->sprite->position.y != unit->next_target_waypoint.y) {
-						unit->next_target_waypoint.x = target->sprite->position.x;
-						unit->next_target_waypoint.y = target->sprite->position.y;
-					}
+			} else if (target) {
+				unit->order_target.pt.x = target->sprite->position.x;
+				unit->order_target.pt.y = target->sprite->position.y;
+				if (target->sprite->position.x != unit->next_target_waypoint.x || target->sprite->position.y != unit->next_target_waypoint.y) {
+					unit->next_target_waypoint.x = target->sprite->position.x;
+					unit->next_target_waypoint.y = target->sprite->position.y;
 				}
 			}
+			return;
+		}
+
+		if (helper::cannot_cast_spell(unit)) {
+			char* message = (char*)g_stat_txt_tbl_new->get_string(876); // Invalid target
+			helper::get_stat_txt_string(unit, unit->player, message); // do the actual transmission corresponding to the message
+			helper::set_resource_target(unit); // make the unit stop since the order failed
+			unit->order_to_idle();
+			return;
+		}
+
+		u8 tech_used = orders_dat::tech_used[unit->main_order_id];
+		u16 spell_cost = 0;
+		if (tech_used != TechId::None) {
+			spell_cost = techdata_dat::energy_cost[tech_used] * 256;
+		}
+
+		if (unit->energy < spell_cost) {
+			u8 race_id = unit->get_race();
+			char* message = (char*)g_stat_txt_tbl_new->get_string(864 + race_id); // Not enough energy
+			if (message) {
+				if (g_local_nation_id == unit->player && *g_active_player_id == *g_local_human_id) {
+					helper::set_unit_stat_txt_error_message(message);
+				}
+			}
+			unit->order_to_idle();
 		} else {
-			if (helper::cannot_cast_spell(unit)) {
-				char* message = (char*)g_stat_txt_tbl_new->get_string(876); // Invalid target
-				helper::get_stat_txt_string(unit, unit->player, message); // do the actual transmission corresponding to the message
-				helper::set_resource_target(unit); // make the unit stop since the order failed
-				unit->order_to_idle();
+			bool progress_moving = false;
+			if (unit->main_order_state == 0) {
+				progress_moving = helper::ordered_spell_progress_moving(unit, 1);
 			} else {
-				u8 tech_used = orders_dat::tech_used[unit->main_order_id];
-				s32 spell_cost;
-				if (tech_used == TechId::None) {
-					spell_cost = 0;
-				} else {
-					spell_cost = techdata_dat::energy_cost[tech_used] * 256;
+				progress_moving = helper::ordered_spell_progress_moving(unit, 0);
+			}
+			if (unit->main_order_state == 0) {
+				unit->main_order_state = 1;
+			}
+
+			bool gcd_condition = true;
+			if (unit->id == UnitId::TerranWyvern && unit->ground_weapon_cooldown > 0) {
+				gcd_condition = false; // new
+			}
+			if (!progress_moving) {
+				if (unit->get_movable_state() == MovableState_UnmovableAtDestination) {
+					unit->order_to_idle();
+				}
+			} else if (unit->get_spell_countdown() == 0 &&	gcd_condition && helper::is_ready_to_attack(unit, order_weapon_id) && !(unit->movement_flags & MovementFlags_Accelerating) &&	unit->get_movable_state() != MovableState_NotReachedDestination) {
+				bool cant_cast = false;
+				// in case it was modified by a previous function, relinking
+				target = unit->order_target.unit;
+				if (unit->unit_ai && target) {
+					// Experimenting with removing weapon id checks entirely, as it was not scalable.
+					// This code only runs for AI, so any damage it could do is limited.			-Pr0nogo 09/01/25
+					
+					// array bound to the function
+					const u8* const array_00492B44 = (u8*)(0x00492B44);
+
+					// This code would not work for weapons id of NuclearMissile, YamatoGun, and weapons id before those, they must be excluded somewhere else
+					// Maybe the switch and array use could be removed in a future version since enough elements use default value (switch 6)
+					u32 switch_value = array_00492B44[order_weapon_id - 0x20];
+					if (switch_value != 6) {
+						// No idea why irradiate is so important
+						u32 analyzed_target_status = target->irradiate_timer;
+						if (switch_value == 2) {
+							analyzed_target_status |= target->parasite_flags;
+						}
+						if (switch_value == 3) {
+							analyzed_target_status |= target->ensnare_timer;
+						}
+						if (switch_value == 4) {
+							analyzed_target_status |= target->plague_timer;
+						}
+						if (switch_value == 5) {
+							analyzed_target_status |= target->is_blind;
+						}
+						if (switch_value == 0 && unit->is_frozen()) {
+							analyzed_target_status |= 1;
+						}
+						if (analyzed_target_status != 0) {
+							unit->order_to_idle();
+							cant_cast = true;
+						}
+					}
 				}
 
-				if (unit->energy < spell_cost) {
-					u8 race_id = unit->get_race();
-					char* message = (char*)g_stat_txt_tbl_new->get_string(864 + race_id); // Not enough energy
-					if (message) {
-						if (g_local_nation_id == unit->player && *g_active_player_id == *g_local_human_id) {
-							helper::set_unit_stat_txt_error_message(message);
+				if (!cant_cast) {
+					unit->spend_energy(spell_cost);
+					u8 cooldown = helper::get_weapon_cooldown(unit, order_weapon_id);
+					if (order_weapon_id == WeaponId::PsiStorm) {
+						cooldown = 0; // Recast doesn't have cooldown, but we apply the cooldown in the event of cancel
+					}
+					unit->spell_cooldown = cooldown;
+					if (unit->id == UnitId::TerranWyvern) {
+						unit->ground_weapon_cooldown = cooldown; // new
+					}
+
+					// disable flag 2 if enabled, else has no effect
+					unit->order_signal &= ~2;
+					unit->movement_flags |= MovementFlags_StartingAttack;
+					if (unit->sprite->images.head) {
+						Image* current_image = unit->sprite->images.head;
+						IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::order_animation[unit->main_order_id];
+						while (current_image) {
+							current_image->play_iscript_animation(anim);
+							current_image = current_image->link.next;
 						}
 					}
-					unit->order_to_idle();
-				} else {
-					u32 progress_moving = 0;
-					if (unit->main_order_state == 0) {
-						progress_moving = helper::ordered_spell_progress_moving(unit, 1);
-					} else {
-						progress_moving = helper::ordered_spell_progress_moving(unit, 0);
-					}
-					if (unit->main_order_state == 0) {
-						unit->main_order_state = 1;
-					}
-
-					bool gcd_condition = true;
-					if (unit->id == UnitId::TerranWyvern && unit->ground_weapon_cooldown > 0) {
-						gcd_condition = false; // new
-					}
-					if (progress_moving == 0) {
-						if (unit->get_movable_state() == MovableState_UnmovableAtDestination) {
-							unit->order_to_idle();
-						}
-					} else {
-						if (unit->get_spell_countdown() == 0
-						&&	gcd_condition // new
-						&&	helper::is_ready_to_attack(unit, order_weapon_id)
-						&&	!(unit->movement_flags & MovementFlags_Accelerating)
-						&&	unit->get_movable_state() != 0)
-						{
-							bool idiot = false;
-							// in case it was modified by a previous function, relinking
-							target = unit->order_target.unit;
-							if (unit->unit_ai && target) {
-								if (order_weapon_id <= WeaponId::MindTyrantMaelstrom
-								||  order_weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) // Maelstrom is the last spell-related weapon, by default
-								{
-									// array bound to the function
-									const u8* const array_00492B44 = (u8*)(0x00492B44);
-
-									// This code would not work for weapons id of NuclearMissile, YamatoGun, and weapons id before those, they must be excluded somewhere else
-									// Maybe the switch and array use could be removed in a future version since enough elements use default value (switch 6)
-									u32 switch_value = array_00492B44[order_weapon_id - 0x20];
-									if (switch_value != 6) {
-										// No idea why irradiate is so important
-										u32 analyzed_target_status = target->irradiate_timer;
-										if (switch_value == 2) {
-											analyzed_target_status |= target->parasite_flags;
-										}
-										if (switch_value == 3) {
-											analyzed_target_status |= target->ensnare_timer;
-										}
-										if (switch_value == 4) {
-											analyzed_target_status |= target->plague_timer;
-										}
-										if (switch_value == 5) {
-											analyzed_target_status |= target->is_blind;
-										}
-										if (switch_value == 0 && unit->is_frozen()) {
-											analyzed_target_status |= 1;
-										}
-										if (analyzed_target_status != 0) {
-											unit->order_to_idle();
-											idiot = true;
-										}
-									}
-								}
-							}
-
-							if (!idiot) {
-								unit->spend_energy(spell_cost);
-								u8 cooldown = helper::get_weapon_cooldown(unit, order_weapon_id);
-								if (order_weapon_id == WeaponId::PsiStorm) {
-									cooldown = 0; // Recast doesn't have cooldown, but we apply the cooldown on the event of cancel
-								}
-								unit->spell_cooldown = cooldown;
-								if (unit->id == UnitId::TerranWyvern) {
-									unit->ground_weapon_cooldown = cooldown; // new
-								}
-
-								// disable flag 2 if enabled, else has no effect
-								unit->order_signal &= ~2; //&= -3
-								unit->movement_flags |= MovementFlags_StartingAttack;
-								if (unit->sprite->images.head) {
-									Image* current_image = unit->sprite->images.head;
-									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::order_animation[unit->main_order_id];
-									if (tech_used == TechId::Lockdown && unit->mine_carrier.mine_count > 0) {
-										unit->mine_carrier.mine_count--;
-									}
-
-									while (current_image) {
-										current_image->play_iscript_animation(anim);
-										current_image = current_image->link.next;
-									}
-								}
-								unit->main_order_state = 2;
-								if (unit->unit_ai) {
-									g_aiscript_controller[unit->player].spellcaster_timer = 1;
-								}
-							}
-						}
+					unit->main_order_state = 2;
+					if (unit->unit_ai) {
+						g_aiscript_controller[unit->player].spellcaster_timer = 1;
 					}
 				}
 			}

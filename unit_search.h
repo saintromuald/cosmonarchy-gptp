@@ -37,6 +37,7 @@ enum SearchFilter {
 	FilterNoLarva				= 1 << 27,
 	FilterNoHangar				= 1 << 28,
 	FilterVisible				= 1 << 29,
+	FilterTownCenter			= 1 << 30,
 };
 
 enum SearchFilterCorpse {

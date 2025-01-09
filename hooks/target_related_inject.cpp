@@ -439,6 +439,54 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) ai_choose_target_wrapper() { // 00431990
+		static Unit* result;
+		static Unit** target_array;
+		static u32 player;
+		static Unit* unit;
+		static u32 region_id;
+		static b32 is_ground;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV unit, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV region_id, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV is_ground, EAX
+			POP EAX
+			MOV target_array, EAX
+			PUSHAD
+		}
+		result = hooks::ai_choose_target(target_array, player, unit, region_id, is_ground);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x10
+		}
+	}
+
+	void __declspec(naked) get_air_weapon_wrapper() { // 00475840
+		static u8 result;
+		static Unit* unit;
+		__asm {
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::get_air_weapon(unit);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
+
 	// Patches \\
 
 	const u32 GetClosestReachable_2F155 = 0x0042F155;
@@ -476,12 +524,10 @@ namespace {
 	}
 }
 
-namespace hooks
-{
-	void inject_target_hooks()
-	{
-	// Removes can not attack status checks from some update functions, it was done by iquare - not exactly sure what was the intention.
-	// Currently it doesn't seem to do anything. -Veeq7
+namespace hooks {
+	void inject_target_related_hooks() {
+		// Removes 'can not attack' status checks from some update functions; it was done by iquare, not exactly sure what was the intention.
+		// Currently it doesn't seem to do anything. -Veeq7
 	//	nops(0x004EB176, 8);
 	//	nops(0x004EB316, 2);
 
@@ -508,16 +554,13 @@ namespace hooks
 		jump_patch(is_target_visible_wrapper,							0x004E5E30, 4);
 		jump_patch(is_unit_enemy_wrapper,								0x0047B910, 1);
 		jump_patch(is_ready_to_attack_wrapper,							0x00476640, 1);
+	//	jump_patch(ai_choose_target_wrapper,								0x00431990, 1); // Disabled for now because it's a mess and I have limited time to refactor it. -Pr0nogo
+		jump_patch(get_air_weapon_wrapper,								0x00475840, 5);
 
 		// Patches \\
 
 		// Fix dying Lakizilisks updating vision while their spines are still in play. -DarkenedFantasies
 		jump_patch(get_closest_reachable_patch_2F147, 0x0042F147);
 		jump_patch(fix_collision_patch_6BFFD, 0x0046BFFD);
-	}
-
-	void inject_target_related_hooks()
-	{
-		inject_target_hooks();
 	}
 }

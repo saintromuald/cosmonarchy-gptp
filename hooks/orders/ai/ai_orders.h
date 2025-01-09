@@ -64,6 +64,8 @@ namespace hooks {
 	s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y);																	// 004E7420
 
 	b32 is_unreachable(Unit* target, Unit* unit);																		// 00476C50
+	void get_ai_town_capabilities(AiRegion* region, b32* has_ground_military, b32* cant_attack_ground, b32* cant_attack_air); // 00438FC0
+	bool ai_unit_can_attack(Unit* unit);																				// 00476180
 
 	void inject_ai_orders_hooks();
 }

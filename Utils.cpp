@@ -49,15 +49,20 @@ std::optional<Point16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples
                     return InvalidSample;
                 }
             }
+            const auto group = bw::get_region(position)->group_index;
+            bool valid = unit_id_is_air_spawner(unit_id);
             s32 score = 0;
             for (Unit* building : buildings) {
                 s32 distance = bw::distance_between(building->position, position);
                 if (distance <= 16 * 32) {
                     return InvalidSample;
                 }
+                if (!unit_id_is_air_spawner(unit_id) && bw::get_region(building->position)->group_index == group) {
+                    valid = true;
+                }
                 score = std::min(score, distance);
             }
-            return score;
+            return valid ? score : InvalidSample;
         },
         samples,
         100

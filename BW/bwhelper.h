@@ -449,7 +449,7 @@ namespace helper {
 	bool is_ready_to_attack(Unit* unit, u32 weapon_id);																				// 00476640
 	u32 get_stat_txt_string(Unit* unit, u32 player, const char* message);															// 0048EF30
 	bool cannot_cast_spell(Unit* unit);																								// 00492140
-	u32 ordered_spell_progress_moving(Unit* unit, b32 wasMainOrderStateZero);														// 00492620
+	bool ordered_spell_progress_moving(Unit* unit, b32 order_state_zero);															// 00492620
 
 	// For spell_order
 	bool can_target_spell(u16 tech_id, Unit* target, u16 fow_unit_id, Unit* caster, u16 pos_x, u16 pos_y, s32* error);				// 00492020
@@ -465,7 +465,7 @@ namespace helper {
 	void show_and_enable_unit(Unit* unit);																							// 004E6490
 
 	//// tech_target_check
-	bool is_infestable_unit(Unit* unit);																							// 00402210
+	bool is_infestable_target(Unit* unit);																							// 00402210
 
 	//// trap_hooks
 	// For update_unit_strength_and_apply_default_orders
@@ -619,8 +619,8 @@ namespace helper {
 	Unit* find_best_unit(Box16* radius, s32 bullet, s32(*func)(Unit*, Bullet*));													// 004E8830
 	s32 splash_func(Bullet* bullet, Unit* unit);																					// 0048B570
 
-	// For iterateLoadedUnits
-	Unit* iterateLoadedUnits(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), s32 a3);											// 004E6D00
+	// For iterate_loaded_units
+	Unit* iterate_loaded_units(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), s32 a3);											// 004E6D00
 
 	//// mindcontrol_spell
 	void mind_control_hit(Unit* attacker, Unit* target);																			// 004F6910
@@ -963,7 +963,7 @@ namespace helper {
 	void give_all_unit_properties_to_player(Unit* unit, s8 player);											// 0047C9F0
 	Unit* get_hidden_miner(Unit* unit);																		// 00468A60
 	bool unit_has_hangar(Unit* unit);																		// identical to 004014B0
-	s32 forHangarUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
+	s32 for_hangar_units(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), s32 arg);						// 00465200
 	Unit* get_creating_unit(Unit* unit);																		// 00466A30
 
 	// For UnitMove
@@ -1774,6 +1774,12 @@ namespace helper {
 
 	s32 is_selection_group_updated();											// 00424660
 	void status_update_multiselection(BinDlg* dialog);							// 00425960
-	b8 status_update_tooltip();													// 00457FE0
+	void status_update_tooltip();												// 00457FE0
 	void status_update_single_wireframe();										// 004568B0
+
+	u32 calculate_unit_strength(UnitId::Enum unit_id, u32 weapon_id);			// 00431270
+	u32 filter_unit_strength(UnitId::Enum unit_id, u32 strength);				// 00431150
+	bool should_attack_unit(u32 attacking_player, Unit* target);				// 00431550
+	u32 get_targeting_priority(Unit* unit, b32 is_ground_target);				// 00431730
+	bool unit_is_clean_detector(Unit* unit);									// 00403430
 }

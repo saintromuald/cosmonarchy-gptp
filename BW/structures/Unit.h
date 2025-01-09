@@ -317,12 +317,12 @@ struct Unit : public UnitLayout
 
 	// Checks the following:
 	//  * If the unit is actually owned by the commanding @p player
-	//  * If the unit's owning player has the @p techId researched
+	//  * If the unit's owning player has the @p tech_id researched
 	//  * If the unit has enough energy (or energy cheat is enabled)
 	//  * If the unit is not stunned / is a hallucination / is being built
 	//  * If the unit meets the Use Tech Requirements (editable in FireGraft)
 	// If the unit can use the tech, returns 1. If the tech needs to be researched, returns -1. If the unit cannot use the tech at all, returns 0.
-	s32 can_use_tech(u8 techId, u8 player) const;
+	s32 can_use_tech(u8 tech_id, u8 player) const;
 
 	// Returns true if the current unit is not frozen and the @p target unit is not invincible and can be attacked or infested.
 	// If @p checkVisibility is set to false, the function will not check whether the unit can see the @p target (i.e. it is being detected properly).
@@ -402,6 +402,7 @@ struct Unit : public UnitLayout
 	bool has_shields();
 	bool is_worker();
 	bool is_resource_depot();
+	bool is_addon();
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

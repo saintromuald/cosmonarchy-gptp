@@ -258,7 +258,7 @@ namespace hooks {
 		// Phase Link: only apply min damage on main target
 		// @Veeq7 - should this be above the Ancile code, to prevent dealing less than 1 damage to Ancile energy? -Pr0nogo
 		if (!data.is_phase_link_damage_instance && data.damage < 256) {
-			data.damage = 256;
+			data.damage = data.damage == 0 ? 0 : 256;
 		}
 
 		// Reduce Defensive Matrix
@@ -289,7 +289,9 @@ namespace hooks {
 					Vec32f facing_dir = bw::facing_dir(data.target);
 					if (bw::dot_product(dir, facing_dir) >= bw::deg_to_dot(120.0 / 2)) {
 						armor_total += fore_castle_factor;
-						shield_overlay = true;
+						if (data.weapon_id != WeaponId::PsiStorm) {
+							shield_overlay = true;
+						}
 					}
 				}
 			}
@@ -305,7 +307,7 @@ namespace hooks {
 		}
 
 		// Reduce shields
-		if (units_dat::shields_enabled[data.target->id] && data.target->shields >= 256) {
+		if (units_dat::shields_enabled[data.target->id] && data.target->shields >= 256 && data.damage > 0) {
 			data.shield_reduce_amount = std::min(data.damage, data.target->shields);
 			// Phase Link: only apply min damage on main target
 			if (!data.is_phase_link_damage_instance && data.shield_reduce_amount < 256) {
@@ -387,11 +389,14 @@ namespace hooks {
 
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
 		// Target based calcs
-		UnitExt& attacker_ext = data.attacker->ext();
 		UnitExt& target_ext = data.target->ext();
 
 		if (g_active_game_mode) {
 			g_active_game_mode->on_unit_damage_modifiers(data);
+		}
+
+		if (weapon_id_deals_no_damage(data.weapon_id)) {
+			data.damage = 0;
 		}
 
 		// Allied invincibility frames (for e.g. Blissful Embrace)
@@ -414,6 +419,10 @@ namespace hooks {
 		// Weapon & Attacker based calcs
 		switch (data.weapon_id) { // Damage divisor calc
 			case WeaponId::CabalistWarpBlades: {
+				if (!data.attacker) {
+					break;
+				}
+                UnitExt& attacker_ext = data.attacker->ext();
 				if (attacker_ext.values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
 					data.damage *= 1.5;
 					attacker_ext.values[ValueCabalistSilentStridesDamage] = 0;
@@ -509,8 +518,9 @@ namespace hooks {
 		switch (data.target->id) {
 			case UnitId::ProtossGolem: {
 				// Golem - Tranquility Array
-				if (data.target->shields >= 128) {
+				if (!target_ext->timers[TimerTranquilityArray] && data.target->shields >= 128) {
 					bw::shield_heal_proc(data.target, data.target->player, 64, 2);
+					target_ext->timers[TimerTranquilityArray] = 4;
 				}
 			} break;
 			case UnitId::ZergZoryusthaleth: {
@@ -519,9 +529,8 @@ namespace hooks {
 					incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
 				}
 			} break;
-			case UnitId::ZergVilgorokor:
-			{
-				if (!bw::is_under_carapace_swarm(data.target) && !target_ext->timers[TimerReconstitutionDelay]) {
+			case UnitId::ZergVilgorokor: {
+				if (data.damage > 0 && !bw::is_under_carapace_swarm(data.target) && !target_ext->timers[TimerReconstitutionDelay]) {
 					target_ext->timers[TimerReconstitutionDelay] = 2 * 24 + 1;
 					helper::play_sound_from_unit(SoundId::Zerg_Ultra_ZUlRor00_WAV, data.target, 1, 0);
 				}
@@ -747,6 +756,10 @@ namespace hooks {
 						// Kelvin Munitions - Slow targets
 						target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
 					} break;
+					case WeaponId::AspirantPotentiumCannon: {
+						// Aspirant - Criticality
+						target_ext->timers[TimerCriticality] = 2 * 24 + 1;
+					} break;
 					case WeaponId::GorgonArtificeBattery: {
 						// Petrification - Gorgon behavior
 						if (target_ext->values[ValuePetrificationStacks] < 20) {
@@ -944,7 +957,8 @@ namespace hooks {
 		// 5. Regression
 		// 6. Tyranny of the Sun
 		// 7. Zombification
-		//
+		// 8. Miscellaneous lesser behaviors
+		// 
 		// We exit early to not trigger multiple different fatal damage handling at once
 
 		if (g_active_game_mode) {
@@ -1055,6 +1069,19 @@ namespace hooks {
 				bw::create_unit_from_ability(UnitId::ZergVilgoleth, 1, data.target->player, data.target->position);
 				bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
 			} break;
+			case UnitId::TerranCohort: {
+				if (target_ext->values[ValueCohortServileVigor]) {
+					break;
+				}
+				target_ext->values[ValueNoCorpse] = true;
+				Unit* cohort = bw::create_unit_in_game(UnitId::TerranCohort, data.target->player, data.target->position.x, data.target->position.y, data.target);
+				bw::inherit_debuffs(data.target, cohort);
+				auto& cohort_ext = cohort->ext();
+				cohort_ext.values[ValueCohortServileVigor] = true;
+				cohort_ext.values[ValueNoCorpse] = false;
+				cohort->remove_timer = 240;
+				return true;
+			} break;
 		}
 
 		if (fatal_deal_damage) {
@@ -1104,6 +1131,7 @@ namespace hooks {
 			if (target_ext->units[UnitMindTyrantLink] && target_ext->values[ValueMindTyrantTyranny] == MindTyrant::TyrannyMaxStacks && !target_ext->values[ValueLastOrdersInit]) {
 				fatal_deal_damage = false;
 				mind_control(data.attacker->player, UnitId::ProtossMindTyrant, data.target);
+				bw::play_sound(SoundId::Protoss_Darchon_mind_wav, data.target->position);
 				data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);
 				data.target->unfreeze();
 				clear_tyranny(data.attacker, data.target);
@@ -1139,6 +1167,11 @@ namespace hooks {
 				fatal_deal_damage = false;
 				empress_zombify(target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer], target_ext->units[UnitEmpressAnodyneAnnexSource], data.target, target_ext->values[ValueEmpressAnodyneAnnexStacks]);
 				return fatal_deal_damage;
+			}
+
+			// Misc behaviors
+			if (target_ext->timers[TimerCriticality]) {
+				g_iquare_globals->create_effect(EffectId::AspirantCriticality, 5 * 24, { data.target->position.x, data.target->position.y }, 2 * 32, SpriteId::Criticality, 5, data.attacking_player_id, data.target);
 			}
 		}
 
