@@ -1473,7 +1473,7 @@ namespace hooks {
 			} break;
 			case UnitId::ZergUltrokor: {
 				// Kaiser Rampage - Ultrokor behavior
-				if (!unit_ext->timers[TimerKaiserRampageTimeout]) {
+				if (!(unit->status & UnitStatus::Burrowed) && !unit_ext->timers[TimerKaiserRampageTimeout]) {
 					u32 radius = 1 * 32;
 					for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
 						unit_ext->timers[TimerKaiserRampageTimeout] = 0.5 * 24;

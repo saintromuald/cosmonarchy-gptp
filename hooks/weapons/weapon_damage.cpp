@@ -289,7 +289,9 @@ namespace hooks {
 					Vec32f facing_dir = bw::facing_dir(data.target);
 					if (bw::dot_product(dir, facing_dir) >= bw::deg_to_dot(120.0 / 2)) {
 						armor_total += fore_castle_factor;
-						shield_overlay = true;
+						if (data.weapon_id != WeaponId::PsiStorm) {
+							shield_overlay = true;
+						}
 					}
 				}
 			}
@@ -519,8 +521,7 @@ namespace hooks {
 					incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
 				}
 			} break;
-			case UnitId::ZergVilgorokor:
-			{
+			case UnitId::ZergVilgorokor: {
 				if (!bw::is_under_carapace_swarm(data.target) && !target_ext->timers[TimerReconstitutionDelay]) {
 					target_ext->timers[TimerReconstitutionDelay] = 2 * 24 + 1;
 					helper::play_sound_from_unit(SoundId::Zerg_Ultra_ZUlRor00_WAV, data.target, 1, 0);
