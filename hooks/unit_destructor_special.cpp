@@ -219,9 +219,6 @@ void unit_on_death_behaviors(Unit* unit) {
 					helper::create_bullet(WeaponId::NuclearMissile, unit, unit->position.x, unit->position.y, unit->player, 0);
 				}
 			} break;
-			case UnitId::TerranAspirant: {
-				g_iquare_globals->create_effect(EffectId::AspirantCriticality, 5 * 24, { unit->position.x, unit->position.y }, 2 * 32, SpriteId::Criticality, 5, unit->player, unit);
-			} break;
 			case UnitId::ProtossClarion: {
 				// Phase Link
 				bw::clear_clarion_links(unit);

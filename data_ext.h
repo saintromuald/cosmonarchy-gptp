@@ -363,6 +363,7 @@ enum ExtTimerId {
 	TimerClericHeal,
 	TimerReclaimHeal,
 	TimerTranquilityArray,
+	TimerCriticality,
 
 	// probably convert the following to use TimerAI_GenericAbilityCooldown
 	TimerAI_Lazarus,

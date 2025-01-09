@@ -3245,26 +3245,13 @@ namespace hooks {
 		}
 
 		// Claymore - Kelvin Munitions - Create overlays
-		if ((unit_ext->timers[TimerKelvinMunitions] > 1 || unit_ext->timers[TimerLobotomySlow] > 1)) { // Piggybacking overlay from Claymore, for now. -Pr0nogo
+		if ((unit_ext->timers[TimerKelvinMunitions] > 1 || unit_ext->timers[TimerLobotomySlow] > 1)) {
 			should_update_speed = true;
-			// Overlay
-			if (!unit_ext->timers[TimerClaymoreKelvinMunitionsZap]) {
-				u32 width = units_dat::unit_bounds[unit->id].x * 3 / 4;
-				u32 height = units_dat::unit_bounds[unit->id].y * 3 / 4;
+			bw::zap_overlay(unit);
+		}
 
-				s32 x_offset = bw::random() % width - width / 2;
-				s32 y_offset = bw::random() % height - height / 2;
-
-				x_offset = Clamp(x_offset, -128, 127);
-				y_offset = Clamp(y_offset, -128, 127);
-
-				Unit* final_unit = unit;
-				if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
-					final_unit = unit->subunit;
-				}
-				final_unit->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
-				unit_ext->timers[TimerClaymoreKelvinMunitionsZap] = 7;
-			}
+		if (unit_ext->timers[TimerCriticality] > 1) {
+			bw::zap_overlay(unit);
 		}
 
 		if (unit_ext->timers[TimerKelvinMunitions] >= 1) {
