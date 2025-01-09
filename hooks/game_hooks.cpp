@@ -1812,7 +1812,7 @@ namespace hooks {
 					for (; counter < units_dat::space_provided[unit->id]; ++counter) {
 						Unit* cargo = helper::get_loaded_unit_from_index(unit, counter);
 						if (!cargo) {
-							break;
+							continue;
 						}
 						has_cargo = true;
 						cargo->heal_hp(NaniteField::HealAmount * 256, unit);
