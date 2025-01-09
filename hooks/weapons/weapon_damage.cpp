@@ -1073,7 +1073,7 @@ namespace hooks {
 				target_ext->values[ValueNoCorpse] = true;
 				Unit* cohort = bw::create_unit_in_game(UnitId::TerranCohort, data.target->player, data.target->position.x, data.target->position.y, data.target);
 				bw::inherit_debuffs(data.target, cohort);
-				UnitExt& cohort_ext = cohort->ext();
+				auto& cohort_ext = cohort->ext();
 				cohort_ext.values[ValueCohortServileVigor] = true;
 				cohort_ext.values[ValueNoCorpse] = false;
 				cohort->remove_timer = 240;

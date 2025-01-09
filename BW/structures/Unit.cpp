@@ -1120,7 +1120,7 @@ s32 Unit::can_use_tech(u8 tech_id, u8 player) const {
 	__asm {
 		PUSHAD
 		PUSH player_id_xd
-		MOV EDI, tech_id_xd
+		MOVZX EDI, tech_id
 		MOV EAX, this
 		CALL func_address
 		MOV result, EAX

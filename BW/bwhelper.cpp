@@ -3625,7 +3625,7 @@ namespace helper {
 			MOV return_value, EAX
 			POPAD
 		}
-		return (bool)return_value;
+		return return_value;
 	}
 
 	void refund_all_queue_slots(Unit* unit) {

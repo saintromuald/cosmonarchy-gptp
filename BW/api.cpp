@@ -4097,11 +4097,11 @@ void zap_overlay(Unit* unit) {
 		x_offset = Clamp(x_offset, -128, 127);
 		y_offset = Clamp(y_offset, -128, 127);
 
-		Unit* final_unit = unit;
+		Unit* overlay_unit = unit;
 		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
-			final_unit = unit->subunit;
+			overlay_unit = unit->subunit;
 		}
-		final_unit->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
+		overlay_unit->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
 		unit_ext.timers[TimerClaymoreKelvinMunitionsZap] = 7;
 	}
 }

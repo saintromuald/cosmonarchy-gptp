@@ -416,7 +416,7 @@ namespace hooks {
 			return false;
 		}
 		const auto explosion_type = weapons_dat::explosion_type[weapon_id];
-		if ((explosion_type == WeaponEffect::SplashEnemy || explosion_type == WeaponEffect::SplashAir)) {
+		if (explosion_type == WeaponEffect::SplashEnemy || explosion_type == WeaponEffect::SplashAir) {
 			if (target != bullet->attack_target.unit && (target->player == bullet->player || bw::is_allied_to(bullet->player, target->player))) {
 				return false;
 			}

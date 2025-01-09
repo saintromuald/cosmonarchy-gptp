@@ -55,12 +55,12 @@ std::optional<Point16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples
                 if (distance <= 16 * 32) {
                     return InvalidSample;
                 }
-                if (!unit_id_is_air_spawner(unit_id)) {
-                    u32 ground_tiles = bw::get_ground_path_distance_tiles(building->position, position);
-                    if (ground_tiles == 9999) {
-                        return InvalidSample;
-                    }
-                }
+            //  if (!unit_id_is_air_spawner(unit_id)) {
+            //      u32 ground_tiles = bw::get_ground_path_distance_tiles(building->position, position);
+            //      if (ground_tiles == 9999) {
+            //          return InvalidSample;
+            //      }
+            //  }
                 score = std::min(score, distance);
             }
             return score;
