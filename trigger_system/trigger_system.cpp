@@ -1593,20 +1593,20 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 				auto& cm_player = g_globals->players[player];
 				cm_player.disabled_units = unit_ids;
 			}
-		} else if (parser.equals("enable_units")) {
+		} else if (parser.equals("disable_units")) {
 			const auto players = parser.get_player_bitset();
 			const auto unit_ids = parser.get_unit_id_bitset();
-			const auto enable = parser.get_bool();
+			const auto disable = parser.get_bool(true);
 
 			// Currently only disables train buttons, ergo won't work on AI and on hackers
 			for (u32 player = 0; player < PlayerLimit; player++) {
 				if (!players[player]) continue;
 
 				auto& cm_player = g_globals->players[player];
-				if (enable) {
-                    cm_player.disabled_units &= ~unit_ids;
-				} else {
+				if (disable) {
                     cm_player.disabled_units |= unit_ids;
+				} else {
+                    cm_player.disabled_units &= ~unit_ids;
 				}
 			}
 		}
