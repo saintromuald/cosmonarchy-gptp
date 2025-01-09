@@ -389,7 +389,6 @@ namespace hooks {
 
 	static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
 		// Target based calcs
-		UnitExt& attacker_ext = data.attacker->ext();
 		UnitExt& target_ext = data.target->ext();
 
 		if (g_active_game_mode) {
@@ -420,6 +419,10 @@ namespace hooks {
 		// Weapon & Attacker based calcs
 		switch (data.weapon_id) { // Damage divisor calc
 			case WeaponId::CabalistWarpBlades: {
+				if (!data.attacker) {
+					break;
+				}
+                UnitExt& attacker_ext = data.attacker->ext();
 				if (attacker_ext.values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
 					data.damage *= 1.5;
 					attacker_ext.values[ValueCabalistSilentStridesDamage] = 0;
@@ -1073,7 +1076,7 @@ namespace hooks {
 				target_ext->values[ValueNoCorpse] = true;
 				Unit* cohort = bw::create_unit_in_game(UnitId::TerranCohort, data.target->player, data.target->position.x, data.target->position.y, data.target);
 				bw::inherit_debuffs(data.target, cohort);
-				auto& cohort_ext = cohort->ext();
+				UnitExt& cohort_ext = cohort->ext();
 				cohort_ext.values[ValueCohortServileVigor] = true;
 				cohort_ext.values[ValueNoCorpse] = false;
 				cohort->remove_timer = 240;
