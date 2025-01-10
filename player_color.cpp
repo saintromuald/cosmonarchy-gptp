@@ -12,7 +12,7 @@ static u8 g_tunit_colors[UnitColorCount];
 static std::vector<const char*> g_easter_egg_unit_names[UnitsIdLimit];
 
 static std::vector<u32> get_player_tints_from_color(PlayerColor color);
-static bool can_use_player_color(PlayerColor color, u32 last_player);
+static bool can_use_player_color(PlayerColor color, u32 last_player, bool is_preference);
 static bool can_use_player_tint(u32 color_tint, u32 last_player);
 static PlayerColor get_color_for_personality(u32 player);
 
@@ -97,9 +97,9 @@ static bool should_check_color_overlap(u32 player, u32 other_player) {
 	return other_player != player && !g_globals->players[other_player].witness_mode && (other_player < player || !player_wants_to_randomize(other_player));
 }
 
-static bool can_use_player_color(PlayerColor color, u32 player) {
+static bool can_use_player_color(PlayerColor color, u32 player, bool is_preference) {
 	for (u32 player_tint : get_player_tints_from_color(color)) {
-		if (!can_use_player_tint(player_tint, player)) {
+		if (!can_use_player_tint(player_tint, player) && !is_preference) {
 			return false;
 		}
 	}
@@ -187,13 +187,13 @@ static PlayerColor get_best_color(std::vector<ColorMatch>& matches, bool return_
 
 static PlayerColor get_next_best_color(u32 player) {
 	for (PlayerColor color : g_globals->players[player].preferred_colors) {
-		if (can_use_player_color(color, player)) {
+		if (can_use_player_color(color, player, true)) {
 			return color;
 		}
 	}
 	std::vector<ColorMatch> matches;
 	for (u32 color = 0; color < (u32)PlayerColor::Count; ++color) {
-		if (!can_use_player_color((PlayerColor)color, player)) continue;
+		if (!can_use_player_color((PlayerColor)color, player, false)) continue;
 		matches.push_back(make_color_match(player, (PlayerColor)color));
 	}
 	return get_best_color(matches, true);
@@ -207,7 +207,7 @@ static PlayerColor get_color_for_personality(u32 player) {
 		&& personality_colors[race].size() > build) {
 		std::vector<ColorMatch> matches;
 		for (PlayerColor color : personality_colors[race][build]) {
-			if (!can_use_player_color(color, player)) continue;
+			if (!can_use_player_color(color, player, false)) continue;
 			matches.push_back(make_color_match(player, color));
 		}
 		return get_best_color(matches, false);
