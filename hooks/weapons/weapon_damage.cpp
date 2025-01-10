@@ -307,7 +307,7 @@ namespace hooks {
 		}
 
 		// Reduce shields
-		if (units_dat::shields_enabled[data.target->id] && data.target->shields >= 256 && data.damage > 0) {
+		if (units_dat::shields_enabled[data.target->id] && data.target->shields >= 256) {
 			data.shield_reduce_amount = std::min(data.damage, data.target->shields);
 			// Phase Link: only apply min damage on main target
 			if (!data.is_phase_link_damage_instance && data.shield_reduce_amount < 256) {
