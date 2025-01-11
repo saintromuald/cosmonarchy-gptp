@@ -80,19 +80,19 @@ namespace hooks {
 				}
 			}
 			if ((!dont_ignore_reacting && other_unit->status & UnitStatus::Reacts)
-			||  (needs_detection && !also_invisible)
-			||   other_unit == builder
-			||   other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir | UnitStatus::Burrowed)
-			||   unit_id_is_spell(other_unit->id)
-			||   other_unit->sprite->flags & SpriteFlags::Hidden)
+				|| (needs_detection && !also_invisible)
+				|| other_unit == builder
+				|| other_unit->status & (UnitStatus::GroundedBuilding | UnitStatus::InAir | UnitStatus::Burrowed)
+				|| unit_id_is_spell(other_unit->id)
+				|| other_unit->sprite->flags & SpriteFlags::Hidden)
 			{
 				continue;
 			}
 
-			if (g_unit_ordering_x[other_unit->finder_index.left  ].position < 32 * x_tile + 32
-			&&  g_unit_ordering_x[other_unit->finder_index.right ].position > 32 * x_tile
-			&&  g_unit_ordering_y[other_unit->finder_index.top   ].position < 32 * y_tile + 32
-			&&  g_unit_ordering_y[other_unit->finder_index.bottom].position > 32 * y_tile)
+			if (g_unit_ordering_x[other_unit->finder_index.left].position < 32 * x_tile + 32
+				&& g_unit_ordering_x[other_unit->finder_index.right].position > 32 * x_tile
+				&& g_unit_ordering_y[other_unit->finder_index.top].position < 32 * y_tile + 32
+				&& g_unit_ordering_y[other_unit->finder_index.bottom].position > 32 * y_tile)
 			{
 				return needs_detection ? 1 : 4;
 			}
@@ -114,12 +114,12 @@ namespace hooks {
 
 				char state = 0;
 				if (tile->explored_flags & human_only_player_bit) {
-					state  = 10;
+					state = 10;
 					result = 10;
 				}
 				bool creep = !tile->has_cagra;
 				if (check_temporary_creep) {
-					creep  = !tile->temporary_cagra;
+					creep = !tile->temporary_cagra;
 				}
 				if ((check_temporary_creep || check_creep || !(tile->visibility_flags & human_only_player_bit)) && creep) {
 					state = 5;
@@ -134,8 +134,7 @@ namespace hooks {
 	}
 
 	// Hooked to allow building on allied creep. -Pr0nogo
-	u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) // 00473A10
-	{
+	u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) { // 00473A10
 		u32 human_only_player_bit = 0;
 		if (g_player_table[player].type == PlayerType::Human) {
 			human_only_player_bit = 1 << player;
@@ -153,8 +152,7 @@ namespace hooks {
 				}
 
 				bool buildable = false;
-				if (!check_creep && tile->visibility_flags & human_only_player_bit || !(tile->flags & flags) || tile->flags < 0)
-				{
+				if (!check_creep && tile->visibility_flags & human_only_player_bit || !(tile->flags & flags) || tile->flags < 0) {
 					buildable = true;
 				}
 
@@ -165,7 +163,7 @@ namespace hooks {
 					if (units_dat::base_property[unit_id] & UnitProperty::ResourceDepot && helper::find_blocking_fow_resource(x + tile_x, y + tile_y, 3)) {
 						state = 2;
 					}
-					
+
 					u32 flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[player];
 					if (!(flags & VespeneDeaths_DisableQuasifog)) {
 						if (!buildable) {
@@ -198,21 +196,21 @@ namespace hooks {
 		// Originally had code checking for supplies.
 		if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
 			helper::display_error_message_id_with_sfx(player, 850, (s32)g_console_index + 147); // Not enough minerals...mine more minerals.<0>
-			return 0;
+			return false;
 		}
 		if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
 			helper::display_error_message_id_with_sfx(player, 851, (s32)g_console_index + 150); // Not enough Vespene gases....harvest more gas.<0>
-			return 0;
+			return false;
 		}
 		if (helper::can_build_on_tile_location(builder, player, (builder->order_target.pt.x - units_dat::building_dimensions[building_id].x / 2) / 32, (builder->order_target.pt.y - units_dat::building_dimensions[building_id].y / 2) / 32, building_id, 0, 0, 1, 0)) {
 			helper::play_worker_error_sound(builder, 856); // You can't build there.<0>
-			return 0;
+			return false;
 		} else {
 			player = builder->player;
 			g_game_minerals[player] -= g_ai_minerals_reserve[player];
 			g_game_vespene[player] -= g_ai_vespene_reserve[player];
 			bw::prepare_building_area(builder->order_target.pt, building_id);
-			return 1;
+			return true;
 		}
 	}
 
@@ -220,7 +218,7 @@ namespace hooks {
 	void place_building_refinery_check(Unit* result) { // 0048E1E0
 		if (unit_id_is_capped_gas_structure(g_place_building_unit_id)) {
 			if (helper::can_draw_placement_rect_maybe(g_place_building_unit_id, result)) {
-				*can_draw_placement_preview = 1;
+				g_can_draw_placement_preview = 1;
 			}
 		}
 	}
@@ -233,7 +231,7 @@ namespace hooks {
 			do {
 				if (geyser->id == UnitId::ResourceVespeneGeyser && unit_id_is_capped_gas_structure(id) && id != UnitId::ZergEzigrisant) {
 					if (helper::can_draw_placement_rect_maybe(id, geyser)) {
-						*can_draw_placement_preview = 1;
+						g_can_draw_placement_preview = 1;
 					}
 				}
 				geyser = geyser->player_link.next;
@@ -246,30 +244,31 @@ namespace hooks {
 		u32 player = g_local_nation_id;
 		Unit* parent = 0;
 		switch (g_place_building_unit_id) {
-			case UnitId::ProtossPylon: {
-				parent = first_player_unit->unit[player];
-				if (parent) {
-					UnitExt* parent_ext = get_unit_ext(parent);
-					u16 id = g_place_building_unit_id;
-					do {
-						if (parent->id == UnitId::ProtossGateway) {
+		case UnitId::ProtossPylon: {
+			parent = first_player_unit->unit[player];
+			if (parent) {
+				UnitExt* parent_ext = get_unit_ext(parent);
+				u16 id = g_place_building_unit_id;
+				do {
+					switch (parent->id) {
+						case UnitId::ProtossGateway: {
 							if (helper::can_draw_placement_rect_maybe(id, parent)) {
-								*can_draw_placement_preview = 1;
+								g_can_draw_placement_preview = 1;
 							}
-						}
-					} while (parent);
-				}
-			} break;
+						} break;
+					}
+				} while (parent);
+			}
+		} break;
 		}
 	}
 
 	// Hooked to enable more refinery types. -Pr0nogo
-	void place_building_proc() // 0048E6E0
-	{
+	void place_building_proc() { // 0048E6E0
 		if (!(g_is_placing_addon)) {
-			if (*can_draw_placement_preview) {
+			if (g_can_draw_placement_preview) {
 				helper::prepare_placement_preview();
-				*can_draw_placement_preview = 0;
+				g_can_draw_placement_preview = 0;
 			}
 
 			if (!unit_id_is_capped_gas_structure(g_place_building_unit_id) && g_place_building_unit_id != UnitId::ZergEzigrisant) {
@@ -283,8 +282,7 @@ namespace hooks {
 	}
 
 	// Hooked to enable more refinery types. -Pr0nogo
-	b32 unit_id_is_refinery(u16 unit_id) // 0047AFE0
-	{
+	b32 unit_id_is_refinery(u16 unit_id) { // 0047AFE0
 		return unit_id_is_capped_gas_structure(unit_id);
 	}
 
@@ -296,15 +294,12 @@ namespace hooks {
 		g_place_building_message_id = 0;
 		*g_place_building_order_id = order_id;
 		helper::prepare_placement_box(1, unit_id);
-		u32 message_thing = 2;
 
 		if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
 			helper::prepare_placement_box(0, (*g_active_portrait_unit)->id);
 			g_is_placing_addon = 1;
-		} else if (!unit_id_is_capped_gas_structure(g_place_building_unit_id)) {
-			if (units_dat::group_flags[g_place_building_unit_id].is_terran) {
-				helper::place_building_normal_proc();
-			}
+		} else if (!unit_id_is_capped_gas_structure(g_place_building_unit_id) && units_dat::group_flags[g_place_building_unit_id].is_terran) {
+			helper::place_building_normal_proc();
 		} else {
 			helper::place_building_refinery_proc();
 		}
@@ -314,12 +309,13 @@ namespace hooks {
 			string = (char*)g_network_table_DF->get_string(64);
 		}
 
+		u32 message_thing = 2;
 		helper::send_message_something(message_thing, string);
 		helper::set_ingame_input_procs();
 		Unit* active_unit = *g_active_portrait_unit;
 		if (!active_unit) {
 			g_placing_player = -1;
-			*g_minimap_cursor = 0;
+			g_minimap_cursor = 0;
 			return helper::refresh_screen(UnitId::None); // Guessed
 		}
 
@@ -329,7 +325,7 @@ namespace hooks {
 		}
 
 		char result = helper::refresh_screen(active_unit->id);
-		*g_minimap_cursor = 0;
+		g_minimap_cursor = 0;
 		if (active_unit) {
 			g_placing_player = active_unit->player;
 		} else {
@@ -340,37 +336,24 @@ namespace hooks {
 
 	// Not enabled.
 	// Hooked to add support for custom races. -Pr0nogo
-	void play_building_placement_sound(Unit* unit) // 0048F630
-	{
-		if (!(g_is_in_replay) && unit->player == g_local_nation_id)
-		{
+	void play_building_placement_sound(Unit* unit) { // 0048F630
+		if (!(g_is_in_replay) && unit->player == g_local_nation_id) {
 			u8 race = unit->get_race();
 			u32 sound_id = race + 141;
-			if (helper::play_sound_from_unit(sound_id, unit, 1, 99))
-			{
+			if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
 				helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
 			}
 		}
 	}
 
 	// Hooked to improve functionality, and later add handling for new races. -Pr0nogo
-	void set_worker_error(Unit* unit, u32 error_string) // 0048F7B0
-	{
+	void set_worker_error(Unit* unit, u32 error_string) { // 0048F7B0
 		if (!(g_is_in_replay) && unit->player == g_local_nation_id) {
 			u32 sound_id = SoundId::None;
 			switch (unit->get_race()) {
-				case RaceId::Terran:
-				{
-					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildTerran);
-				} break;
-				case RaceId::Protoss:
-				{
-					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildProtoss);
-				} break;
-				case RaceId::Zerg:
-				{
-					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildZerg);
-				} break;
+				case RaceId::Terran:	sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildTerran);		break;
+				case RaceId::Protoss:	sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildProtoss);	break;
+				case RaceId::Zerg:		sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildZerg);		break;
 			}
 
 			if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
@@ -400,16 +383,13 @@ namespace hooks {
 		if (!(g_is_in_replay) && unit->player == g_local_nation_id) {
 			u32 sound_id = SoundId::None;
 			switch (unit->get_race()) {
-				case RaceId::Terran:
-				{
+				case RaceId::Terran: {
 					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
 				} break;
-				case RaceId::Protoss:
-				{
+				case RaceId::Protoss: {
 					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
 				} break;
-				case RaceId::Zerg:
-				{
+				case RaceId::Zerg: {
 					sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
 				} break;
 			}
@@ -426,43 +406,35 @@ namespace hooks {
 	}
 
 	// Hooked to add handling for new gas nodes. -Pr0nogo
-	Thingy* __stdcall get_placement_restrictions_from_sprite_id(u32 tile_x, u32 tile_y, u32 radius) // 00487B00
-	{
-		if (!*g_first_fow_sprite)
-		{
+	Thingy* __stdcall get_placement_restrictions_from_sprite_id(u32 tile_x, u32 tile_y, u32 radius) { // 00487B00
+		if (!*g_first_fow_sprite) {
 			return 0;
 		}
 
 		Thingy* fow_sprite_1 = *g_first_fow_sprite;
 		Thingy* fow_sprite_2 = *g_first_fow_sprite;
 		Sprite* sprite = fow_sprite_1->sprite;
-		while (2)
-		{
+		while (2) {
 			u32 unit_id = UnitId::None;
 			u32 sprite_id = fow_sprite_1->sprite->id;
-			switch (sprite_id)
-			{
+			switch (sprite_id) {
 				case SpriteId::Extractor:
 				case SpriteId::Ezigrisant:
 				case SpriteId::Assimilator:
 				case SpriteId::Refinery:
 				case SpriteId::Wellbore:
-				case SpriteId::VespeneGeyser:
-				{
+				case SpriteId::VespeneGeyser: {
 					unit_id = UnitId::ResourceVespeneGeyser;
 				} break;
 				case SpriteId::MineralFieldType1:
 				case SpriteId::MineralFieldType2:
-				case SpriteId::MineralFieldType3:
-				{
+				case SpriteId::MineralFieldType3: {
 					unit_id = sprite_id - 103;
 				} break;
-				case SpriteId::VespeneRidge:
-				{
+				case SpriteId::VespeneRidge: {
 					unit_id = UnitId::ResourceVespeneRidge;
 				} break;
-				default: 
-				{
+				default: {
 					goto LABEL_8;
 				} break;
 			}
@@ -474,8 +446,7 @@ namespace hooks {
 			LABEL_8:
 				fow_sprite_1 = fow_sprite_1->next;
 				fow_sprite_2 = fow_sprite_1;
-				if (!fow_sprite_1)
-				{
+				if (!fow_sprite_1) {
 					return 0;
 				}
 				continue;

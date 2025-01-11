@@ -549,7 +549,7 @@ namespace hooks {
 			return CursorType_HoveringAlly;
 		}
 		if (PtInRect((const RECT*)&g_minimap_rect, *(POINT*)g_mouse)) {
-			return (u16)*g_minimap_cursor;
+			return g_minimap_cursor;
 		}
 		if (helper::is_outside_of_game_screen(g_mouse->x, g_mouse->y) || !PtInRect(g_cursor_limit_rect, *(POINT*)g_mouse)) {
 			return CursorType_Normal;

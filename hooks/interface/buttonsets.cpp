@@ -291,7 +291,7 @@ namespace hooks {
 		if (g_game->m_quick_casting.signal) {
 			g_game->m_quick_casting.signal = false;
 			*g_buttonset_special_buttonset_id = g_game->m_quick_casting.command_card;
-			*g_minimap_cursor = 0;
+			g_minimap_cursor = 0;
 		}
 
 		u16 buttonset_id = *g_buttonset_special_buttonset_id;

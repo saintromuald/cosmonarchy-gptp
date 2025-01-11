@@ -9,28 +9,22 @@
 
 u32 get_racial_townhall(u32 race_id) {
 	// TODO: Add support for custom races. -Pr0nogo
-	if (race_id == RaceId::Zerg) {
-		return UnitId::ZergHachirosk;
-	} else if (race_id == RaceId::Terran) {
-		return UnitId::TerranMinistry;
-	} else if (race_id == RaceId::Protoss) {
-		return UnitId::ProtossNexus;
-	} else {
-		return UnitId::None;
+	switch (race_id) {
+		case RaceId::Terran:	return UnitId::TerranMinistry;
+		case RaceId::Protoss:	return UnitId::ProtossNexus;
+		case RaceId::Zerg:		return UnitId::ZergHachirosk;
 	}
+	return UnitId::None;
 }
 
 u32 get_racial_worker(u32 race_id) {
 	// TODO: Add support for custom races. -Pr0nogo
-	if (race_id == RaceId::Zerg) {
-		return UnitId::ZergDroleth;
-	} else if (race_id == RaceId::Terran) {
-		return UnitId::TerranMason;
-	} else if (race_id == RaceId::Protoss) {
-		return UnitId::ProtossScribe;
-	} else {
-		return UnitId::None;
+	switch (race_id) {
+		case RaceId::Terran:	return UnitId::TerranMason;
+		case RaceId::Protoss:	return UnitId::ProtossScribe;
+		case RaceId::Zerg:		return UnitId::ZergDroleth;
 	}
+	return UnitId::None;
 }
 
 namespace hooks {
@@ -117,47 +111,47 @@ namespace hooks {
 		f64 averageY = (f64)sum_y / count;
 		f64 distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5);
 
-		f64 offsetX = averageX / distance;
-		f64 offsetY = averageY / distance;
+		f64 offset_x = averageX / distance;
+		f64 offset_y = averageY / distance;
 
-		const f64 distanceMultiplier = 1.4;
-		f64 width = distanceMultiplier;
-		f64 height = distanceMultiplier;
+		const f64 distance_multiplier = 1.4;
+		f64 width = distance_multiplier;
+		f64 height = distance_multiplier;
 
-		if (offsetX < 0) {
+		if (offset_x < 0) {
 			width *= units_dat::unit_bounds[townhallId].left;
 		} else {
 			width *= units_dat::unit_bounds[townhallId].right;
 		}
 
-		if (offsetY < 0) {
+		if (offset_y < 0) {
 			height *= units_dat::unit_bounds[townhallId].top;
 		} else {
 			height *= units_dat::unit_bounds[townhallId].bottom;
 		}
 
-		offsetX = offsetX * width;
-		offsetY = offsetY * height;
+		offset_x = offset_x * width;
+		offset_y = offset_y * height;
 
-		const f64 diagonalThreshold = 0.5; // 1 - full diagonal, 0 - straight line
-		bool forceHorizontal = false;
-		f64 max = std::max(abs(offsetX), abs(offsetY));
-		f64 min = std::min(abs(offsetX), abs(offsetY));
-		if (min != 0 && diagonalThreshold != 0) {
-			forceHorizontal = max / min < 1 / diagonalThreshold;
+		const f64 diagonal_threshold = 0.5; // 1 - full diagonal, 0 - straight line
+		bool force_horizontal = false;
+		f64 max = std::max(abs(offset_x), abs(offset_y));
+		f64 min = std::min(abs(offset_x), abs(offset_y));
+		if (min != 0 && diagonal_threshold != 0) {
+			force_horizontal = max / min < 1 / diagonal_threshold;
 		}
 
-		if (forceHorizontal || abs(offsetX) < abs(offsetY)) {
-			offsetX = -units_dat::unit_bounds[townhallId].left * distanceMultiplier;
-			offsetY = Sign(offsetY) * height;
+		if (force_horizontal || abs(offset_x) < abs(offset_y)) {
+			offset_x = -units_dat::unit_bounds[townhallId].left * distance_multiplier;
+			offset_y = Sign(offset_y) * height;
 			horizontal = true;
 		} else {
-			offsetX = Sign(offsetX) * width;
-			offsetY = units_dat::unit_bounds[townhallId].bottom * distanceMultiplier * 1.5;
+			offset_x = Sign(offset_x) * width;
+			offset_y = units_dat::unit_bounds[townhallId].bottom * distance_multiplier * 1.5;
 			horizontal = false;
 		}
 
-		return Point16{(u16)(startX + offsetX), (u16)(startY + offsetY)};
+		return Point16{(u16)(startX + offset_x), (u16)(startY + offset_y)};
 	}
 
 	void create_initial_melee_units() {
@@ -170,23 +164,25 @@ namespace hooks {
 
 			if (*(race_id_offset - 1) == 2 || *(race_id_offset - 1) == 1) {
 				// 0 is use map settings, 1 is Workers, 2 is Workers + Main Building
-				u8 starting_units = (u8)(*(u16*)(0x00596871));
-				static u8* victory_conditions = (u8*)0x0059686D;
-				static u8* tournament_mode = (u8*)0x00596877;
+				u8 starting_units = g_starting_units;
 
-				if (*victory_conditions == 0 && starting_units == 0 && *tournament_mode == 0 && player < PlayerLimit && (g_player_force[player]) != 0) {
+				if (g_victory_conditions == 0 && starting_units == StartingUnits::MapUnits && g_tournament_mode == 0 && player < PlayerLimit && (g_player_force[player]) != 0) {
 					// race selected instead of using map settings?
-					starting_units = 2;
+					starting_units = StartingUnits::WorkersTownCenter;
 				}
 
-				if (starting_units == 2) {
+				if (g_globals->players[player].no_starting_units == true) {
+					starting_units = StartingUnits::MapUnits;
+				}
+
+				if (starting_units == StartingUnits::WorkersTownCenter) {
 					create_initial_melee_buildings(*race_id_offset, player);
 					if (*race_id_offset == RaceId::Zerg) {
 						create_initial_ovileth(player);
 					}
 				}
 
-				if (starting_units == 1 || starting_units == 2) {
+				if (starting_units == StartingUnits::WorkersOnly || starting_units == StartingUnits::WorkersTownCenter) {
 					GameKind game_kind = bw::get_game_kind();
 					bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
 					bool is_omnipresence = game_kind == GameKind::Omnipresence;

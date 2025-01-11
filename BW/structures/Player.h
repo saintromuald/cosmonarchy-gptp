@@ -2,8 +2,7 @@
 #include "common.h"
 
 // Not like the advanced BWAPI struct
-struct Player
-{
+struct Player {
 	/*00*/  u32   id;
 	/*04*/  u32   actions;    // Unused; FF FF FF FF if not a human player
 	/*08*/	u8    type;

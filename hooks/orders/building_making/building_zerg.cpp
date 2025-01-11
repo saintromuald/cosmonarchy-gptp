@@ -322,7 +322,7 @@ Unit* begin_gas_building(Unit* unit, u16 unit_id) { // 004678A0
 	if (!target) {
 		return 0;
 	}
-	if (*can_draw_placement_preview) {
+	if (g_can_draw_placement_preview) {
 		helper::inherit_gas_overlays(target->sprite); // Guessed helper name, probably wrong
 	}
 	helper::increment_unit_scores_ex(target, -1, 1);

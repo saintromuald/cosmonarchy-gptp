@@ -1534,3 +1534,11 @@ enum Enum {
     Repairing = 2,
 };
 }
+
+namespace StartingUnits {
+enum Enum {
+    MapUnits = 0,
+    WorkersOnly = 1,
+    WorkersTownCenter = 2,
+};
+}
