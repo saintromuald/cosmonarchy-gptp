@@ -370,6 +370,13 @@ namespace hooks {
                 return 0;
 			}
 		}
+
+		// Hacky workaround for allowing user select + no starting units.
+		if (chkunit->unit_id == UnitId::VolatileEgg && flags & ChkUnitFlags_Cloaked && chkunit->player < PLAYABLE_PLAYER_COUNT) {
+			g_globals->players[chkunit->player].no_starting_units = true;
+			return 0;
+		}
+
 		g_chk_cache.push_back(*chkunit);
 		// Requires changes to player select so they actually spawn units
 		//if (flags & ChkUnitFlags_Lifted) {
