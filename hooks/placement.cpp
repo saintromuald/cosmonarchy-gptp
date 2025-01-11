@@ -2,8 +2,7 @@
 #include "data_ext.h"
 #include <hooks/limits/sfx_extender.h>
 
-namespace hooks
-{
+namespace hooks {
 	s32 init_placement_box_pos(s32 unused, Point16* placement_pos) { // 0048D660
 		if (g_mouse->x < 0 || g_mouse->x >= 640 ||
 			g_mouse->y < 0 || g_mouse->y >= 400) {
@@ -71,7 +70,7 @@ namespace hooks
 			Unit* other_unit = *it;
 			bool needs_detection = false;
 			if (builder) {
-				if (bw::is_allied_to(other_unit->player, builder->player)) {
+				if (bw::is_allied_to(other_unit->player, builder->player) && !unit_id_blocks_construction((UnitId::Enum)other_unit->id)) {
 					continue;
 				}
 				if (other_unit->status & (UnitStatus::RequiresDetection | UnitStatus::Cloaked)) {

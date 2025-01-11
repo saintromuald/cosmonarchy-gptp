@@ -1320,3 +1320,7 @@ bool unit_id_is_air_spawner(UnitId::Enum unit_id) {
 bool weapon_id_deals_no_damage(WeaponId::Enum weapon_id) {
 	return weapon_id == WeaponId::MindTyrantTyranny; // More will be added later. -Pr0nogo
 }
+
+bool unit_id_blocks_construction(UnitId::Enum unit_id) {
+	return unit_id == UnitId::VolatileEgg;
+}

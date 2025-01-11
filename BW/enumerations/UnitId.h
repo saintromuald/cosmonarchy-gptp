@@ -27,6 +27,7 @@ namespace UnitId {
 		Omnivale											= 383,
 		TerranLodestoneStandalone							= 387,
 		TerranAnchorGrounded								= 406,
+		VolatileEgg											= 416,
 
 	// Neutral
 		TownCenterMarker									= 192,		// Terran Marker
