@@ -26,11 +26,20 @@ struct SpriteReplacement {
 	u32 sprite_id;
 };
 
+enum Races {
+	Races_Zerg,
+	Races_Terran,
+	Races_Protoss,
+
+	Races_Count,
+};
+
 static const char* race_names[] = {
 	"Zerg",
-	"Protoss",
 	"Terran",
+	"Protoss",
 };
+C_ASSERT(ARRAY_SIZE(race_names) == Races_Count);
 
 struct TriggerSystemState {
 	bool game_paused;
@@ -175,6 +184,7 @@ struct CmPlayer {
 	Point16 camera;
 	WitnessMode witness_mode;
 	Faction faction;
+	bool no_starting_units;
 	bool neutral_hostile;
 	bool faction_was_set;
 	bool hide_in_team_ui;

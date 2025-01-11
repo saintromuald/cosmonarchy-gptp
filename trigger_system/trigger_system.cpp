@@ -491,6 +491,18 @@ bool parse_condition(Parser& parser) {
 				return true;
 			}
 			return false;
+		} else if (parser.equals("player_is_race")) {
+			u32 player = parser.get_player();
+			const auto race = parser.get_enum(race_names, ARRAY_SIZE(race_names));
+			if (player) {
+				player -= 1;
+			}
+			switch (race) {
+				case RaceId::Zerg:		return g_player_table[player].race == RaceId::Zerg;
+				case RaceId::Terran:	return g_player_table[player].race == RaceId::Terran;
+				case RaceId::Protoss:	return g_player_table[player].race == RaceId::Protoss;
+			}
+			return false;
 		}/* else if (parser.eq("selected")) {
 			PlayerBitset players = parser.get_player_bitset();
 			UnitIdBitset unit_ids = parser.get_unit_id_bitset();
