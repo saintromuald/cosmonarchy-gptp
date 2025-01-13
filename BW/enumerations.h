@@ -1535,7 +1535,7 @@ enum Enum {
 };
 }
 
-enum class StartingUnits {
+enum class StartingUnits : u8 {
     MapUnits,
     WorkersOnly,
     WorkersTownCenter,

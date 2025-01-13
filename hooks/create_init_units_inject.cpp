@@ -1,4 +1,3 @@
-//Injector source file for the Create Initial Units hook module.
 #include "create_init_units.h"
 #include <hook_tools.h>
 #include "BW/bwhelper.h"
@@ -118,10 +117,39 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) chkunit_invalid_for_melee_wrapper() { // 004CBE20
+		static CHKUnit* chkunit;
+		static bool result;
+		__asm {
+			MOV chkunit, EAX
+			PUSHAD
+		}
+		result = hooks::chkunit_invalid_for_melee(chkunit);
+		__asm {
+			POPAD
+			MOVZX EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) get_player_force_wrapper() { // 004A8B90
+		static u8 player;
+		static u32 result;
+		__asm {
+			MOV player, AL
+			PUSHAD
+		}
+		result = hooks::get_player_force(player);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
-namespace hooks
-{
+namespace hooks {
 	void inject_create_initial_units_hooks() {
 		jump_patch(create_initial_melee_buildings_wrapper,	0x0049D7C0, 1);
 		jump_patch(create_initial_melee_units_wrapper,		0x0049DA40, 1);
@@ -130,5 +158,7 @@ namespace hooks
 		jump_patch(create_unit_xy_wrapper,					0x004CD360, 4);
 		jump_patch(create_preplaced_unit_wrapper,			0x004CD740, 3);
 		jump_patch(create_initial_team_melee_units_wrapper,	0x0049D8E0, 1);
+		jump_patch(chkunit_invalid_for_melee_wrapper,		0x004CBE20, 1);
+		jump_patch(get_player_force_wrapper,				0x004A8B90, 1);
 	}
 }

@@ -164,7 +164,7 @@ namespace hooks {
 
             if (*(race_id_offset - 1) == 2 || *(race_id_offset - 1) == 1) {
                 // 0 is use map settings, 1 is Workers, 2 is Workers + Main Building
-                StartingUnits starting_units = g_starting_units;
+                StartingUnits starting_units = (StartingUnits)g_starting_units;
 
                 if (g_victory_conditions == 0 && starting_units == StartingUnits::MapUnits && g_tournament_mode == 0 && player < PlayerLimit && (g_player_force[player]) != 0) {
                     // race selected instead of using map settings?
@@ -412,5 +412,26 @@ namespace hooks {
     u32 create_initial_team_melee_units(s32 player) { // 0049D8E0
         create_initial_melee_units();
         return 1; // unused
+    }
+
+    // Hooked to add more cases. -Pr0nogo
+    bool chkunit_invalid_for_melee(CHKUnit* chkunit) { // 004CBE20
+        if ((StartingUnits)g_starting_units != StartingUnits::MapUnits) {
+            if (chkunit->player == 11) {
+                return false;
+            }
+            if (unit_id_is_resource_node(chkunit->unit_id, false) || chkunit->unit_id == UnitId::VolatileEgg) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Hooked to troubleshoot preplaced Volatile Eggs not appearing. Ended up not being useful. -Pr0nogo
+    u32 get_player_force(u8 player) { // 004A8B90
+        if (player < PlayerLimit) {
+            return g_player_force[player];
+        }
+        return 0;
     }
 }

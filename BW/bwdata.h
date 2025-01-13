@@ -1284,7 +1284,7 @@ BW_REF(b32,					g_units_recalled,				0x0063FF50);
 BW_REF(BinDlg*,				g_statdata_dialog,				0x0068C1F0);
 
 // For create_initial_melee_units
-BW_REF(StartingUnits,		g_starting_units,				0x00596871);
+BW_REF(u8,					g_starting_units,				0x00596871);
 BW_REF(u8,					g_victory_conditions,			0x0059686D);
 BW_REF(u8,					g_tournament_mode,				0x00596877);
 
