@@ -357,8 +357,7 @@ void dialog_music_fade(u32 music_id) { // 004A6310
 }
 
 // Hooked to investigate adding a rescue unit crig action. -Pr0nogo
-void orders_rescue_passive(Unit* unit) // 004A1EF0
-{
+void orders_rescue_passive(Unit* unit) { // 004A1EF0
 	if (!unit->main_order_timer) {
 		Sprite* sprite = unit->sprite;
 		unit->main_order_timer = 1;
@@ -388,8 +387,7 @@ void orders_rescue_passive(Unit* unit) // 004A1EF0
 				Unit* first_unit = first_player_unit->unit[unit->player];
 				if (first_unit) {
 					Unit* next_unit = unit;
-					do
-					{
+					do {
 						Sprite* first_sprite = first_unit->sprite;
 						next_unit = first_unit->player_link.next;
 						if (first_sprite && first_unit->main_order_id) {

@@ -1,8 +1,7 @@
 #pragma once
 #include <BW/api.h>
 
-namespace hooks
-{
+namespace hooks {
 	s32 init_placement_box_pos(s32 unused, Point16* placement);																										// 0048D660
 	u8 draw_placement_box(Point16 ecx0);																															// 0048DDC0
 	s32 update_placement_state_for_placement_box();																													// 0048DCE0

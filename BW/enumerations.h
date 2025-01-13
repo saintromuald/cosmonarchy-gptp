@@ -1534,3 +1534,9 @@ enum Enum {
     Repairing = 2,
 };
 }
+
+enum class StartingUnits : u8 {
+    MapUnits,
+    WorkersOnly,
+    WorkersTownCenter,
+};

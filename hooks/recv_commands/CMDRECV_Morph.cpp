@@ -155,7 +155,7 @@ namespace hooks {
 
 		helper::send_message_something(xd, string);
 		helper::set_ingame_input_procs();
-		*g_minimap_cursor = 2;
+		g_minimap_cursor = 2;
 		*g_buttonset_special_buttonset_id = UnitId::Buttons_Cancel;
 		helper::update_current_buttonset();
 	}

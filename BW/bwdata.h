@@ -1008,7 +1008,7 @@ BW_DATA(HACCEL*,				accelerator_tables,		0x005968F0);
 BW_DATA(InputProcsFunc**,		left_click_proc,		0x006556EC);
 BW_DATA(InputProcsFunc**,		right_click_proc,		0x006556F0);
 
-BW_DATA(u16*,					g_minimap_cursor,		0x006556FC);
+BW_REF(u16,						g_minimap_cursor,		0x006556FC);
 BW_DATA(RECT*,					g_minimap_rect,			0x00512D00);
 
 // For process_right_click_action
@@ -1026,7 +1026,7 @@ BW_DATA(BinDlg**,	leaderboard_dialog,				0x00597284);
 BW_DATA(char*,		leaderboard_type,				0x0058D70C);
 
 // For begin_gas_building
-BW_DATA(char*,		can_draw_placement_preview,		0x006D5BE4);
+BW_REF(char,		g_can_draw_placement_preview,	0x006D5BE4);
 
 // For create_all_selection_circles
 BW_DATA(char**,		game_result_text,				0x00628668);
@@ -1282,6 +1282,11 @@ BW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
 BW_REF(b32,					g_units_recalled,				0x0063FF50);
 
 BW_REF(BinDlg*,				g_statdata_dialog,				0x0068C1F0);
+
+// For create_initial_melee_units
+BW_REF(u8,					g_starting_units,				0x00596871);
+BW_REF(u8,					g_victory_conditions,			0x0059686D);
+BW_REF(u8,					g_tournament_mode,				0x00596877);
 
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);

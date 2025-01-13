@@ -28,9 +28,10 @@ struct SpriteReplacement {
 
 static const char* race_names[] = {
 	"Zerg",
-	"Protoss",
 	"Terran",
+	"Protoss",
 };
+static_assert(std::size(race_names) == RaceId::Count);
 
 struct TriggerSystemState {
 	bool game_paused;
@@ -175,6 +176,7 @@ struct CmPlayer {
 	Point16 camera;
 	WitnessMode witness_mode;
 	Faction faction;
+	bool no_starting_units;
 	bool neutral_hostile;
 	bool faction_was_set;
 	bool hide_in_team_ui;

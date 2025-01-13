@@ -662,6 +662,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	// Display rank string on structures
 //	nops(0x00425D99, 2); // Needs more robust handling.
+
+	// Disable user select check for starting units.
+	memory_patch(0x004CD8AD, (u8)0xEB);
 	// DarkenedFantasies, end
 
 	// Pr0nogo, start
