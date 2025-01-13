@@ -1535,10 +1535,8 @@ enum Enum {
 };
 }
 
-namespace StartingUnits {
-enum Enum {
-    MapUnits = 0,
-    WorkersOnly = 1,
-    WorkersTownCenter = 2,
+enum class StartingUnits {
+    MapUnits,
+    WorkersOnly,
+    WorkersTownCenter,
 };
-}

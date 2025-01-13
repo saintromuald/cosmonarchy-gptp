@@ -26,20 +26,12 @@ struct SpriteReplacement {
 	u32 sprite_id;
 };
 
-enum Races {
-	Races_Zerg,
-	Races_Terran,
-	Races_Protoss,
-
-	Races_Count,
-};
-
 static const char* race_names[] = {
 	"Zerg",
 	"Terran",
 	"Protoss",
 };
-C_ASSERT(ARRAY_SIZE(race_names) == Races_Count);
+static_assert(std::size(race_names) == RaceId::Count);
 
 struct TriggerSystemState {
 	bool game_paused;
