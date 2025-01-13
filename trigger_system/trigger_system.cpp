@@ -491,27 +491,15 @@ bool parse_condition(Parser& parser) {
                 return true;
             }
             return false;
-        } else if (parser.equals("player_is_race")) {
+        } else if (parser.equals("player_race")) {
             u32 player = parser.get_player();
             Quota op = parser.get_quota(QuotaType_Equal);
             const auto race = parser.get_enum(race_names, std::size(race_names));
             if (player) {
                 player -= 1;
                 switch (op.type) {
-                    case QuotaType_Equal: {
-                        switch (race) {
-                        case RaceId::Zerg:    return g_player_table[player].race == RaceId::Zerg;
-                        case RaceId::Terran:  return g_player_table[player].race == RaceId::Terran;
-                        case RaceId::Protoss: return g_player_table[player].race == RaceId::Protoss;
-                        }
-                    } break;
-                    case QuotaType_NotEqual: {
-                        switch (race) {
-                            case RaceId::Zerg:    return g_player_table[player].race != RaceId::Zerg;
-                            case RaceId::Terran:  return g_player_table[player].race != RaceId::Terran;
-                            case RaceId::Protoss: return g_player_table[player].race != RaceId::Protoss;
-                        }
-                    } break;
+                    case QuotaType_Equal:    return g_player_table[player].race == race;
+                    case QuotaType_NotEqual: return g_player_table[player].race != race;
                 }
             }
             return false;

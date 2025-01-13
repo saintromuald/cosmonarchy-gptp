@@ -387,10 +387,7 @@ namespace hooks {
         		return 0;
         	}
         }
-        if (flags & ChkUnitFlags_Cloaked) {
-            return 0;
-        }
-        if (chkunit->unit_id == UnitId::TownCenterMarker) {
+        if (flags & ChkUnitFlags_Cloaked || chkunit->unit_id == UnitId::TownCenterMarker) {
             return 0;
         }
         chkunit->state_flags &= ~ChkUnitFlags_Cloaked;

@@ -381,18 +381,7 @@ namespace hooks {
     // Hooked to improve functionality, and later add handling for new races. -Pr0nogo
     void play_worker_error_sound(Unit* unit, u32 error_text_index) { // 0048F6C0
         if (!(g_is_in_replay) && unit->player == g_local_nation_id) {
-            u32 sound_id = SoundId::None;
-            switch (unit->get_race()) {
-                case RaceId::Terran: {
-                    sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
-                } break;
-                case RaceId::Protoss: {
-                    sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
-                } break;
-                case RaceId::Zerg: {
-                    sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
-                } break;
-            }
+            u32 sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_PlacementInterrupted);
 
             if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
                 helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
