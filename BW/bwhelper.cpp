@@ -14300,8 +14300,7 @@ namespace helper {
 		}
 	}
 
-	void set_repulse_angle(Unit* unit)
-	{
+	void set_repulse_angle(Unit* unit) {
 		const u32 func_address = 0x00453300;
 		__asm {
 			PUSHAD
@@ -14311,8 +14310,7 @@ namespace helper {
 		}
 	}
 
-	void transform_subunit(Unit* unit, u32 new_unit_id)
-	{
+	void transform_subunit(Unit* unit, u32 new_unit_id) {
 		const u32 func_address = 0x0049F6A0;
 		__asm {
 			PUSHAD
@@ -14323,8 +14321,7 @@ namespace helper {
 		}
 	}
 
-	u8 apply_unit_effects(Unit* unit)
-	{
+	u8 apply_unit_effects(Unit* unit) {
 		const u32 func_address = 0x00492DA0;
 		static u8 result;
 		__asm {
@@ -14346,8 +14343,7 @@ namespace helper {
 		}
 	}
 
-	void manage_vision_references(s32 vision_filter, Unit* unit)
-	{
+	void manage_vision_references(s32 vision_filter, Unit* unit) {
 		const u32 func_address = 0x0049E8A0;
 		__asm {
 			PUSHAD
@@ -14358,8 +14354,7 @@ namespace helper {
 		}
 	}
 
-	u32 get_updated_sight_range(Unit* unit, bool is_for_spellcasting)
-	{
+	u32 get_updated_sight_range(Unit* unit, bool is_for_spellcasting) {
 		const u32 func_address = 0x004E5B40;
 		static b32 is_for_spellcasting_xd = is_for_spellcasting;
 		static u32 result;
@@ -14374,8 +14369,7 @@ namespace helper {
 		return result;
 	}
 
-	u8 create_defensive_matrix(Unit* unit)
-	{
+	u8 create_defensive_matrix(Unit* unit) {
 		const u32 func_address = 0x00454F90;
 		static u8 result;
 		__asm {
@@ -14388,8 +14382,7 @@ namespace helper {
 		return result;
 	}
 
-	Image* create_image_overlay(Sprite* sprite, u32 image_id, u8 x_offset, u8 y_offset, u8 direction)
-	{
+	Image* create_image_overlay(Sprite* sprite, u32 image_id, u8 x_offset, u8 y_offset, u8 direction) {
 		const u32 func_address = 0x00498E00;
 		static u32 x_offset_xd = x_offset;
 		static u32 y_offset_xd = y_offset;
@@ -14409,8 +14402,7 @@ namespace helper {
 		return result;
 	}
 
-	bool statport_button_press(BinDlg* dialog_1, BinDlg* dialog_2)
-	{
+	bool statport_button_press(BinDlg* dialog_1, BinDlg* dialog_2) {
 		const u32 func_address = 0x0045F0B0;
 		static u32 result;
 		__asm {
@@ -14424,8 +14416,7 @@ namespace helper {
 		return (bool)result;
 	}
 
-	BYTE* statport_alloc()
-	{
+	BYTE* statport_alloc() {
 		const u32 func_address = 0x0045E360;
 		static BYTE* result;
 		__asm {
@@ -14437,8 +14428,7 @@ namespace helper {
 		return result;
 	}
 
-	bool generic_dialog_interact(BinDlg* dialog, DialogEvent* dlg_event)
-	{
+	bool generic_dialog_interact(BinDlg* dialog, DialogEvent* dlg_event) {
 		const u32 func_address = 0x00418EB0;
 		static u32 result;
 		__asm {
@@ -14452,8 +14442,7 @@ namespace helper {
 		return (bool)result;
 	}
 
-	bool generic_common_interact(BinDlg* dialog, DialogEvent* dlg_event)
-	{
+	bool generic_common_interact(BinDlg* dialog, DialogEvent* dlg_event) {
 		const u32 func_address = 0x00418C40;
 		static u32 result;
 		__asm {
@@ -14467,8 +14456,7 @@ namespace helper {
 		return (bool)result;
 	}
 
-	void glu_main_create(BinDlg* dialog)
-	{
+	void glu_main_create(BinDlg* dialog) {
 		const u32 func_address = 0x004DB280;
 		__asm {
 			PUSHAD
@@ -14478,8 +14466,7 @@ namespace helper {
 		}
 	}
 
-	void dialog_swish_in(BinDlg* dialog)
-	{
+	void dialog_swish_in(BinDlg* dialog) {
 		const u32 func_address = 0x004DE150;
 		__asm {
 			PUSHAD
@@ -14489,8 +14476,7 @@ namespace helper {
 		}
 	}
 
-	void dialog_music_fade(u32 music_id)
-	{
+	void dialog_music_fade(u32 music_id) {
 		const u32 func_address = 0x004A6310;
 		__asm {
 			PUSHAD
@@ -14500,8 +14486,7 @@ namespace helper {
 		}
 	}
 
-	void glu_main_destroy(BinDlg* dialog)
-	{
+	void glu_main_destroy(BinDlg* dialog) {
 		const u32 func_address = 0x004DB140;
 		__asm {
 			PUSHAD
@@ -14511,8 +14496,7 @@ namespace helper {
 		}
 	}
 
-	char load_glu_pok_bindlg(const char* string)
-	{
+	char load_glu_pok_bindlg(const char* string) {
 		const u32 func_address = 0x004B7180;
 		static char result;
 		__asm {
@@ -14525,8 +14509,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 select_game_mode(u32 game_mode)
-	{
+	s32 select_game_mode(u32 game_mode) {
 		const u32 func_address = 0x004DB6E0;
 		static s32 result;
 		__asm {
@@ -14539,8 +14522,7 @@ namespace helper {
 		return result;
 	}
 
-	char dialog_swish_out(BinDlg* dialog)
-	{
+	char dialog_swish_out(BinDlg* dialog) {
 		const u32 func_address = 0x004DD040;
 		static char result;
 		__asm {
@@ -14552,8 +14534,7 @@ namespace helper {
 		}
 	}
 
-	s32 load_staredit_process(BinDlg* dialog)
-	{
+	s32 load_staredit_process(BinDlg* dialog) {
 		const u32 func_address = 0x004DB490;
 		static s32 result;
 		__asm {
@@ -14566,8 +14547,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 glu_main_display_cdrom_error_bindlg()
-	{
+	s32 glu_main_display_cdrom_error_bindlg() {
 		const u32 func_address = 0x004DB770;
 		static s32 result;
 		__asm {
@@ -14579,8 +14559,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 register_menu_functions(bool (__fastcall** save_game_text_box)(BinDlg* func_dialog, DialogEvent* func_dlg_event), BinDlg* dialog, u32 count, u32 palette)
-	{
+	s32 register_menu_functions(bool (__fastcall** save_game_text_box)(BinDlg* func_dialog, DialogEvent* func_dlg_event), BinDlg* dialog, u32 count, u32 palette) {
 		const u32 func_address = 0x004DD9E0;
 		static s32 result;
 		__asm {
@@ -14596,8 +14575,7 @@ namespace helper {
 		return result;
 	}
 
-	void game_menu_bindlg(BinDlg* dialog)
-	{
+	void game_menu_bindlg(BinDlg* dialog) {
 		const u32 func_address = 0x004CA370;
 		__asm {
 			PUSHAD
@@ -14607,8 +14585,7 @@ namespace helper {
 		}
 	}
 
-	void game_menu_bindlg_bypass(BinDlg* dialog)
-	{
+	void game_menu_bindlg_bypass(BinDlg* dialog) {
 		const u32 func_address = 0x004CA450;
 		__asm {
 			PUSHAD
@@ -14618,8 +14595,7 @@ namespace helper {
 		}
 	}
 
-	u32 select_unit_group(u8 control_group)
-	{
+	u32 select_unit_group(u8 control_group) {
 		static u32 result;
 		const u32 func_address = 0x00496B40;
 		__asm {
@@ -14632,8 +14608,7 @@ namespace helper {
 		return result;
 	}
 
-	u8 keypress_escape()
-	{
+	u8 keypress_escape() {
 		static u8 result;
 		const u32 func_address = 0x00489DA0;
 		__asm {
@@ -14645,14 +14620,12 @@ namespace helper {
 		return result;
 	}
 
-	b32 unit_is_valid_caster(Unit* unit) // Based on 00401210. -Pr0nogo
-	{
+	b32 unit_is_valid_caster(Unit* unit) { // Based on 00401210. -Pr0nogo
 		return  (units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
 			&& !(unit->status & UnitStatus::IsHallucination);
 	}
 
-	u8 trigger_portrait_finished(BinDlg* dialog, u16 timer)
-	{
+	u8 trigger_portrait_finished(BinDlg* dialog, u16 timer) {
 		static u8 result;
 		const u32 func_address = 0x0045E610;
 		__asm {
@@ -14666,8 +14639,7 @@ namespace helper {
 		return result;
 	}
 
-	void display_update_portrait(u32 portrait_id, Unit* unit, u16 idle_or_talking)
-	{
+	void display_update_portrait(u32 portrait_id, Unit* unit, u16 idle_or_talking) {
 		const u32 func_address = 0x0045EA30;
 		u32 idle_or_talking_xd = idle_or_talking;
 		__asm {
@@ -14680,8 +14652,7 @@ namespace helper {
 		}
 	}
 
-	void trigger_portrait_something(BinDlg* dialog, u16 type_arg)
-	{
+	void trigger_portrait_something(BinDlg* dialog, u16 type_arg) {
 		const u32 func_address = 0x0045EC40;
 		__asm {
 			PUSHAD
@@ -14692,8 +14663,7 @@ namespace helper {
 		}
 	}
 
-	void animate_unit_portrait_for_event(BinDlg* dialog, u16 type_arg)
-	{
+	void animate_unit_portrait_for_event(BinDlg* dialog, u16 type_arg) {
 		const u32 func_address = 0x0045EF50;
 		__asm {
 			PUSHAD
@@ -14704,8 +14674,7 @@ namespace helper {
 		}
 	}
 
-	b32 set_last_event_position(u32 x, u32 y)
-	{
+	b32 set_last_event_position(u32 x, u32 y) {
 		static b32 result;
 		const u32 func_address = 0x0045E3A0;
 		__asm {
@@ -14719,8 +14688,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 svid_play_end(u8 video)
-	{
+	u32 svid_play_end(u8 video) {
 		static u32 result;
 		const u32 func_address = 0x004100EE;
 		u32 video_xd = video;
@@ -14734,8 +14702,7 @@ namespace helper {
 		return result;
 	}
 
-	void start_unit_portrait(BinDlg* dialog)
-	{
+	void start_unit_portrait(BinDlg* dialog) {
 		const u32 func_address = 0x0044EDB0;
 		__asm {
 			PUSHAD
@@ -14745,8 +14712,7 @@ namespace helper {
 		}
 	}
 
-	u16 get_unit_portrait_override(u16 unit_id)
-	{
+	u16 get_unit_portrait_override(u16 unit_id) {
 		static u16 result;
 		const u32 func_address = 0x0045E320;
 		__asm {
@@ -14759,8 +14725,7 @@ namespace helper {
 		return result;
 	}
 
-	void play_music(u32 music_id)
-	{
+	void play_music(u32 music_id) {
 		const u32 func_address = 0x004A6140;
 		__asm {
 			PUSHAD
@@ -14770,8 +14735,7 @@ namespace helper {
 		}
 	}
 
-	u32 pixel_pos_has_cagra(s16 pos_x, s16 pos_y) // Default args are inverted
-	{
+	u32 pixel_pos_has_cagra(s16 pos_x, s16 pos_y) { // Default args are inverted
 		static u32 result;
 		const u32 func_address = 0x004E8BC0;
 		__asm {
@@ -14786,8 +14750,7 @@ namespace helper {
 		return result;
 	}
 
-	b32 chk_larva_stray(Unit* larva, u32 pos_x, u32 pos_y)
-	{
+	b32 chk_larva_stray(Unit* larva, u32 pos_x, u32 pos_y) {
 		static s32 result;
 		const u32 func_address = 0x004E93E0;
 		__asm {
@@ -14802,8 +14765,7 @@ namespace helper {
 		return result;
 	}
 
-	void chk_larva_stray0(Unit* larva, u32* pos_x, u32* pos_y)
-	{
+	void chk_larva_stray0(Unit* larva, u32* pos_x, u32* pos_y) {
 		const u32 func_address = 0x004E94B0;
 		__asm {
 			PUSHAD
@@ -14815,8 +14777,7 @@ namespace helper {
 		}
 	}
 
-	void issue_queued_order_target(Unit* target, Unit* attacker, u8 order_id, u32 stop_previous)
-	{
+	void issue_queued_order_target(Unit* target, Unit* attacker, u8 order_id, u32 stop_previous) {
 		const u32 func_address = 0x00474D10;
 		u32 order_id_xd = order_id;
 		__asm {
@@ -14830,8 +14791,7 @@ namespace helper {
 		}
 	}
 
-	void play_addon_detach_sound(Unit* unit)
-	{
+	void play_addon_detach_sound(Unit* unit) {
 		const u32 func_address = 0x0048F8A0;
 		__asm {
 			PUSHAD
@@ -14841,8 +14801,7 @@ namespace helper {
 		}
 	}
 
-	Unit* find_best_return_cargo_target(Unit* worker)
-	{
+	Unit* find_best_return_cargo_target(Unit* worker) {
 		static Unit* result;
 		const u32 func_address = 0x00441310;
 		__asm {
@@ -14855,8 +14814,7 @@ namespace helper {
 		return result;
 	}
 
-	void return_resources_from_unit(Unit* unit)
-	{
+	void return_resources_from_unit(Unit* unit) {
 		const u32 func_address = 0x004F39A0;
 		__asm {
 			PUSHAD
@@ -14866,8 +14824,7 @@ namespace helper {
 		}
 	}
 
-	void unit_destructor_special_cases(Unit* unit)
-	{
+	void unit_destructor_special_cases(Unit* unit) {
 		const u32 func_address = 0x0049F4A0;
 		__asm {
 			PUSHAD
@@ -14877,8 +14834,7 @@ namespace helper {
 		}
 	}
 
-	void remove_references(Unit* unit)
-	{
+	void remove_references(Unit* unit) {
 		const u32 func_address = 0x0049EB70;
 		__asm {
 			PUSHAD
@@ -14889,8 +14845,7 @@ namespace helper {
 		}
 	}
 
-	Bullet* clear_bullet_targets(Unit* unit)
-	{
+	Bullet* clear_bullet_targets(Unit* unit) {
 		const u32 func_address = 0x0048AAC0;
 		static Bullet* result;
 		__asm {
@@ -14903,8 +14858,7 @@ namespace helper {
 		return result;
 	}
 
-	void building_death(Unit* unit, Sprite* sprite)
-	{
+	void building_death(Unit* unit, Sprite* sprite) {
 		const u32 func_address = 0x0049FD00;
 		__asm {
 			PUSHAD
@@ -14915,8 +14869,7 @@ namespace helper {
 		}
 	}
 
-	Unit* remove_unit_from_lists(Unit* unit)
-	{
+	Unit* remove_unit_from_lists(Unit* unit) {
 		const u32 func_address = 0x0049E3F0;
 		static Unit* result;
 		__asm {
