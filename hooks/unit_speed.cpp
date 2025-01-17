@@ -202,6 +202,7 @@ namespace hooks {
 			case UnitId::TerranHarakan:
 			case UnitId::TerranHeracles:
 			case UnitId::TerranMatadorTankMode:
+			case UnitId::ProtossGolem:
 			case UnitId::ProtossSycophant:
 			case UnitId::ZergZethrokor:
 			case UnitId::ZergAxitrilisk: {
