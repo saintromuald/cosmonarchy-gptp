@@ -596,6 +596,7 @@ namespace hooks {
 					unit->order_target.pt = *unit_ext->target_pos_override;
 				}
 				Target weapon_target = unit->order_target;
+				bw::play_manual_weapon_sound(unit, weapon_id);
 				switch (weapon_id) {
 					case WeaponId::PhobosArgosLaserBatteries: {
 						// Phobos - Argent Capacitors passive
@@ -720,9 +721,6 @@ namespace hooks {
 						g_iquare_globals->create_effect(EffectId::VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
 					} // Fallthrough intended, for now.
 					default: {
-                        if (u32 sound_id = bw::get_manual_weapon_id_weaponfire_sound(weapon_id)) {
-                            helper::play_sound_from_unit(sound_id, unit, 1, 0);
-                        }
 						/*
 						if (weapon_id == WeaponId::MadrigalImperiosoMissiles) {
 							for (u32 i = 0; i < 3; i++) {

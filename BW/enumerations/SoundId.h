@@ -1166,6 +1166,12 @@ namespace SoundId {
 		MadrigalFuriaMissilesFire03			= 1210,
 		MadrigalFuriaMissilesFire04			= 1211,
 
+		MadcapWeaponfire01					= 1213,
+		MadcapWeaponfire02					= 1214,
+		MadcapWeaponfire03					= 1215,
+		MadcapWeaponfire04					= 1216,
+		MadcapWeaponfire05					= 1217,
+
 		AugurDeath01						= 1235,
 		AugurDeath02						= 1236,
 		AugurDeath03						= 1237,
@@ -1188,6 +1194,12 @@ namespace SoundId {
 		MadcapOrderAggressive04				= 1347,
 
 		PhobosArgentCapacitorsProc			= 1353,
+
+		EcclesiastWeaponfire01				= 1362,
+		EcclesiastWeaponfire02				= 1364,
+		EcclesiastWeaponfire03				= 1365,
+		EcclesiastWeaponfire04				= 1366,
+
 		PazuzuDeconstructionDamage			= 1372,
 		LakiziliskProjectileReturn			= 1392,
 		AncileProvidenceDeactivate			= 1401,
@@ -1215,6 +1227,10 @@ namespace SoundId {
 		AnthelionWeaponFire01				= 1594,
 		AnthelionWeaponFire02				= 1595,
 		AnthelionWeaponFire03				= 1596,
+
+		CharlatanWeaponfire01				= 1603,
+		CharlatanWeaponfire02				= 1604,
+		CharlatanWeaponfire03				= 1605,
 
 		AxitriliskShieldLoss01				= 1631,
 		AxitriliskShieldLoss02				= 1632,
@@ -1584,6 +1600,9 @@ namespace SoundId {
 		SpirtithWeaponfire02				= 2543,
 		SpirtithWeaponfire03				= 2544,
 
+		CyclopsWeaponfireFuturist01			= 2548,
+		CyclopsWeaponfireFuturist02			= 2549,
+
 		Lobby_PlayerJoin					= 2557,
 		CloakTerranOn						= 2558,
 		CloakTerranOff						= 2559,
@@ -1612,6 +1631,9 @@ namespace SoundId {
 		VagrantShadeOrderAggressive02		= 2610,
 		VagrantShadeOrderAggressive03		= 2611,
 		VagrantShadeOrderAggressive04		= 2612,
+
+		HotshotWeaponfire01					= 2617,
+		HotshotWeaponfire02					= 2618,
 
 		AckmedAdvisor_Addon01					= 2622,
 		AckmedAdvisor_Addon02					= 2623,
@@ -1704,6 +1726,11 @@ namespace SoundId {
 		IzirokorOrderAggressive01				= 2761,
 		IzirokorOrderAggressive02				= 2762,
 
+		ApostleWeaponfire01						= 2783,
+		ApostleWeaponfire02						= 2784,
+		ApostleWeaponfire03						= 2785,
+		ApostleWeaponfire04						= 2786,
+		ApostleWeaponfire05						= 2787,
 		SavantSiphonFire01						= 2788,
 		SavantSiphonFire02						= 2789,
 		SavantSiphonFire03						= 2790,
@@ -1935,9 +1962,6 @@ namespace SoundId {
 		PsiStormStart									= 3198,
 		PsiStormLoop									= 3199,
 		PsiStormEnd										= 3200,
-
-		CyclopsWeaponfireFuturist01						= 2548,
-		CyclopsWeaponfireFuturist02						= 2549,
 
 		GoskaGrenadeImpact								= 3215,
 
