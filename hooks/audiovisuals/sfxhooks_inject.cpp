@@ -66,6 +66,7 @@ namespace {
 		static Unit* unit;
 		static b32 play;
 		static s32 min_volume;
+		static bool result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -79,10 +80,10 @@ namespace {
 			MOV sound_id, EBX
 			PUSHAD
 		}
-		hooks::play_sound_from_unit(sound_id, unit, (bool)play, min_volume);
+		result = hooks::play_sound_from_unit(sound_id, unit, (bool)play, min_volume);
 		__asm {
 			POPAD
-			MOV EAX, 0
+			MOVZX EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x08
