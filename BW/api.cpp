@@ -4107,8 +4107,8 @@ void zap_overlay(Unit* unit) {
 }
 
 void play_manual_weapon_sound(Unit* unit, WeaponId::Enum weapon_id) {
-    if (u32 sound_id = bw::get_manual_weapon_id_weaponfire_sound(weapon_id)) {
-        helper::play_sound_from_unit(sound_id, unit, 1, 0);
+    if (const auto sound_id = bw::get_manual_weapon_id_weaponfire_sound(weapon_id)) {
+        bw::play_sound(sound_id, unit->position);
     }
 }
 
