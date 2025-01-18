@@ -17,7 +17,7 @@
 
 	// Hooked in this file
 	Line 2486: 00402714  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00402710 -- GetMaxHealth -- HOOKED
-	Line 56570: 004262B7  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00426190 -- draw_unit_info -- HOOKED
+	Line 56570: 004262B7  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00426190 -- draw_resource_amount -- HOOKED
 	Line 58295: 0042781F  |.  8A8A B0476600 MOV CL,BYTE PTR DS:[EDX+6647B0] -- 0x00427540 -- Ss_DrawSupplyUnitStatus -- HOOKED
 	Line 129037: 004566B4  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004566B0 -- drawWireframeShield -- HOOKED
 	Line 95955: 00440A9A   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x00440A20 -- ai_target_enemy_proc -- HOOKED
@@ -104,79 +104,6 @@ namespace hooks
 		}
 		helper::add_text_to_dialog(dialog, -7, string);
 		helper::stats_panel_draw_energy(dialog);
-	}
-
-	void draw_unit_info(BinDlg* dialog) // 00426190
-	{
-		s16 v2; // ax
-		const char* v3; // eax
-		u16 v4; // cx
-		const char* v5; // eax
-		BinDlg* v6; // eax
-		s32 v7; // [esp-8h] [ebp-10h]
-		BufferStr* v8; // [esp-8h] [ebp-10h]
-
-		Unit* active_unit = *g_active_portrait_unit;
-		g_supplies_available_temp = active_unit->building.resource.resource_amount;
-		if (g_status_screen_func != 15) {
-			helper::hide_optional_status_screen_controls(dialog);
-			helper::show_control_group(dialog, -10, -13);
-			g_status_screen_func = 15;
-		}
-		helper::add_text_to_dialog(dialog, -10, 0);
-		helper::add_text_to_dialog(dialog, -12, 0);
-		helper::add_text_to_dialog(dialog, -13, 0);
-		v2 = active_unit->id;
-		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u) {
-			if (*g_stat_txt_tbl > 0x31Bu)
-				v3 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[796];
-			else
-				v3 = "";
-			v7 = (u16)active_unit->building.resource.resource_amount;
-LABEL_14:
-			sprintf_s(g_struct_char.buf, 260, "%s %d", v3, v7);
-			v8 = &g_struct_char;
-			goto LABEL_19;
-		}
-		v4 = active_unit->building.resource.resource_amount;
-		if (v4)
-		{
-			if (*g_stat_txt_tbl > 0x31Cu)
-				v3 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[797];
-			else
-				v3 = "";
-			v7 = v4;
-			goto LABEL_14;
-		}
-		if (*g_stat_txt_tbl > 0x31Du)
-			v5 = (char*)g_stat_txt_tbl + g_stat_txt_tbl[798];
-		else
-			v5 = "";
-		v8 = (BufferStr*)v5;
-LABEL_19:
-		helper::add_text_to_dialog(dialog, -11, (const char*)v8);
-		if (bw::unit_has_shields(active_unit)) {
-			helper::draw_shield_upgrade(dialog, 0);
-		} else {
-			if (dialog->control_type)
-				dialog = *(BinDlg**)&dialog->parent;
-			v6 = *(BinDlg**)&dialog->child_dialog;
-			if (v6)
-			{
-				while (v6->index != 9)
-				{
-					v6 = v6->next;
-					if (!v6)
-						goto LABEL_26;
-				}
-			}
-			else
-			{
-LABEL_26:
-				v6 = 0;
-			}
-			helper::hide_dialog(v6);
-		}
 	}
 
 	b32 ai_target_enemy_proc(Unit* target, Unit* unit) { // 00440A20

@@ -31,6 +31,8 @@ void unit_stat_act_default(BinDlg* dialog);																										// 00425EE0
 void unit_stat_act_standard(BinDlg* dialog);																									// 00426F50
 void __cdecl draw_status_screen();																												// 00458120
 void set_unit_status_string_text(BinDlg* dialog);																								// 00425B50
+void draw_resource_amount(BinDlg* dialog);																										// 00426190
+void draw_upgrade_progress(BinDlg* dialog);																										// 00426500
 
 void inject_stats_panel_display_hooks();
 }

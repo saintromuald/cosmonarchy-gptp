@@ -890,4 +890,11 @@ namespace hooks {
 			} break;
 		}
 	}
+
+	// Eventually, hook the following to make stat_txt.tbl a .txt:
+	//		00464E40 orders_place_scanner 
+	//		00474540 insert_order_before
+	//		004745F0 perform_another_order
+	//		004754F0 targeted_order
+	// -Pr0nogo
 }

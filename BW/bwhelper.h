@@ -1374,7 +1374,7 @@ namespace helper {
 	void kill_all_loaded_units(Unit* unit);																	// 0049FDD0
 
 	// For trigact_transmission
-	s32 trigact_play_wav(TriggerAction* action, char* unused);												// 004C77D0
+	s32 trigact_play_wav(TriggerAction* action);															// 004C77D0
 	Unit* get_doodad_for_unit_state(u8 location, u16 unit_id, u32 player);									// 004C7380
 	u8 minimap_ping(u32 x_pos, u32 y_pos, u32 color);														// 004A34C0
 	void game_talking_portrait(u32 x_pos, u32 time, u32 unit_id, u32 y_pos);								// 0045EDD0
@@ -1783,4 +1783,7 @@ namespace helper {
 	u32 get_targeting_priority(Unit* unit, b32 is_ground_target);				// 00431730
 	bool unit_is_clean_detector(Unit* unit);									// 00403430
 	char* get_unit_rank_string(Unit* unit);										// 0042F370
+	u32 get_upgrade_time_cost(u32 player, u8 upgrade_id);						// 00453F70
+	void create_context_help_from_dialog(BinDlg* dialog, const char* text);		// 00481510
+	u16 create_context_tooltip(s32 height, s32 width, char* text);				// 00481510
 }

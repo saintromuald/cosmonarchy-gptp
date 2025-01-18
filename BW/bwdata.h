@@ -323,7 +323,7 @@ struct BufferStr {
 	char buf[260];
 };
 
-// For draw_unit_info
+// For draw_resource_amount
 BW_REF(u16,				g_supplies_available_temp,	0x006CA93C);
 BW_REF(u8,				g_status_screen_func,		0x0068C1E5);
 BW_REF(BufferStr,		g_struct_char,				0x006CA9F8);
@@ -1287,6 +1287,8 @@ BW_REF(BinDlg*,				g_statdata_dialog,				0x0068C1F0);
 BW_REF(u8,					g_starting_units,				0x00596871);
 BW_REF(u8,					g_victory_conditions,			0x0059686D);
 BW_REF(u8,					g_tournament_mode,				0x00596877);
+
+BW_REF(u16*,				g_string_id,					0x00513634);
 
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);

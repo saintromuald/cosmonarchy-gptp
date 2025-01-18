@@ -11306,12 +11306,12 @@ namespace helper {
 	}
 
 	// For trigact_transmission
-	s32 trigact_play_wav(TriggerAction* action, char* unused) {
+	s32 trigact_play_wav(TriggerAction* action) {
 		static s32 result;
 		const u32 func_address = 0x004C77D0;
 		__asm {
 			PUSHAD
-			MOV EDI, unused
+			MOV EDI, 0 // unused
 			MOV ECX, action
 			CALL func_address
 			MOV result, EAX
@@ -15374,6 +15374,52 @@ namespace helper {
 			MOV ESI, unit
 			CALL func_address
 			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	u32 get_upgrade_time_cost(u32 player, u8 upgrade_id) {
+		const u32 func_address = 0x00453F70;
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV BL, upgrade_id
+			MOV EAX, player
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	void create_context_help_from_dialog(BinDlg* dialog, const char* text) {
+		const u32 func_address = 0x00481510;
+		u32 x = dialog->bounds.right, y = dialog->bounds.bottom;
+		if (dialog->control_type != 0) {
+			x += dialog->parent->bounds.left;
+			y += dialog->parent->bounds.top;
+		}
+		__asm {
+			PUSHAD
+			PUSH text
+			PUSH y
+			MOV EAX, x
+			CALL func_address
+			POPAD
+		}
+	}
+
+	u16 create_context_tooltip(s32 height, s32 width, char* text) {
+		const u32 func_address = 0x00481510;
+		static u16 result;
+		__asm {
+			PUSHAD
+			PUSH text
+			PUSH width
+			MOV EAX, height
+			CALL func_address
+			MOV result, AX
 			POPAD
 		}
 		return result;

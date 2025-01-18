@@ -1334,4 +1334,105 @@ namespace hooks {
             helper::add_text_to_dialog(dialog, -20, helper::get_unit_rank_string(unit));
         }
     }
+
+    // Hooked to convert stat_txt.tbl to txt. -Pr0nogo
+    void draw_resource_amount(BinDlg* dialog) { // 00426190
+        Unit* unit = *g_active_portrait_unit;
+        g_supplies_available_temp = unit->building.resource.resource_amount;
+        if (g_status_screen_func != 15) {
+            helper::hide_optional_status_screen_controls(dialog);
+            helper::show_control_group(dialog, -10, -13);
+            g_status_screen_func = 15;
+        }
+        helper::add_text_to_dialog(dialog, -10, 0);
+        helper::add_text_to_dialog(dialog, -12, 0);
+        helper::add_text_to_dialog(dialog, -13, 0);
+        if (unit_id_is_minerals(unit->id)) {
+            sprintf_s(g_struct_char.buf, 260, "%s %d", g_stat_txt_buffer.get_string(796), unit->building.resource.resource_amount);
+            helper::add_text_to_dialog(dialog, -11, g_struct_char.buf);
+        } else {
+            u16 resources = unit->building.resource.resource_amount;
+            if (resources) {
+                sprintf_s(g_struct_char.buf, 260, "%s %d", g_stat_txt_buffer.get_string(797), resources);
+                helper::add_text_to_dialog(dialog, -11, g_struct_char.buf);
+            } else {
+                helper::add_text_to_dialog(dialog, -11, g_stat_txt_buffer.get_string(798));
+            }
+        }
+
+        if (units_dat::shields_enabled[unit->id]) {
+            helper::stats_shield_level(dialog, 0);
+        } else {
+            if (dialog->control_type) {
+                dialog = dialog->parent;
+            }
+            BinDlg* child_dialog = dialog->child_dialog;
+            if (child_dialog) {
+                while (child_dialog->index != 9) {
+                    child_dialog = child_dialog->next;
+                    if (!child_dialog) {
+                        child_dialog = 0;
+                        helper::hide_dialog(child_dialog);
+                        return;
+                    }
+                }
+            } else {
+                child_dialog = 0;
+            }
+            helper::hide_dialog(child_dialog);
+        }
+    }
+
+    // Hooked to convert stat_txt.tbl to txt. -Pr0nogo
+    void draw_upgrade_progress(BinDlg* dialog) { // 00426500
+        Unit* unit = *g_active_portrait_unit;
+        if (g_is_in_replay || unit->player == g_local_nation_id) {
+            if (g_status_screen_func != 8) {
+                helper::hide_optional_status_screen_controls(dialog);
+                helper::show_control_group(dialog, -35, 15);
+                g_status_screen_func = 8;
+            }
+            u32 time_cost = helper::get_upgrade_time_cost(unit->player, unit->building.upgrade_id);
+            helper::dialog_set_progress_bar_value(dialog, 14, 100 * (time_cost - unit->building.upgrade_research_time) / time_cost);
+
+            BinDlg* active_dialog = dialog;
+            if (dialog->control_type) {
+                active_dialog = dialog->parent;
+            }
+            BinDlg* child_dialog = active_dialog->child_dialog;
+            if (child_dialog) {
+                while (child_dialog->index != 15) {
+                    child_dialog = child_dialog->next;
+                    if (!child_dialog) {
+                        child_dialog = 0;
+                    }
+                }
+            } else {
+                child_dialog = 0;
+            }
+
+            StatusScreenState* user = child_dialog->stat_button_user;
+            child_dialog->graphic = 2;
+            user->button_grp = *g_cmdicons_grp;
+            user->grp_frame = upgrades_dat::upgrade_icon[unit->building.upgrade_id];
+            user->type = 5;
+            user->id = unit->building.upgrade_id;
+            helper::enable_control(child_dialog);
+            if (!(child_dialog->flags & BinDlgFlags::Highlighted)) {
+                child_dialog->flags |= BinDlgFlags::Highlighted;
+                helper::update_dialog(child_dialog);
+            }
+
+            u32 race = unit->get_race();
+            u32 string_id = race + 765; // Upgrading string
+            if (unit->is_frozen()) {
+                string_id = race + 828; // Disabled / Unpowered
+            }
+            helper::add_text_to_dialog(dialog, -35, g_stat_txt_buffer.get_string(string_id));
+        }
+    }
+
+    // Eventually, hook show_tech_progress 0x004268D0 -Pr0nogo
+
+
 }
