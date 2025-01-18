@@ -505,6 +505,26 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) set_unit_status_string_text_wrapper() { // 00425B50
+		static BinDlg* dialog;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV dialog, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::set_unit_status_string_text(dialog);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
 }
 
 namespace hooks {
@@ -541,6 +561,7 @@ namespace hooks {
 		jump_patch(stats_text_energy_timer_wrapper,					0x00425A30, 2);
 		jump_patch(unit_stat_act_default_wrapper,					0x00425EE0, 4);
 		jump_patch(unit_stat_act_standard_wrapper,					0x00426F50, 2);
+		jump_patch(set_unit_status_string_text_wrapper,				0x00425B50, 0);
 
 		// Disable player checks for progress bar functions
 		nops(0x0042690C, 2);

@@ -5828,8 +5828,7 @@ namespace helper {
 	// Equivalent to secondaryOrd_Cloak @ 0x00491790
 	void secondary_order_cloak(Unit* unit) {
 		unit->is_cloaked++;
-		if (unit->is_cloaked == 1 && !(unit->status & UnitStatus::RequiresDetection) && !unit->invisible_link.next)
-		{
+		if (unit->is_cloaked == 1 && !(unit->status & UnitStatus::RequiresDetection) && !unit->invisible_link.next) {
 			unit->invisible_link.next = *g_first_invisible_unit;
 			unit->invisible_link.prev = 0;
 			if (*g_first_invisible_unit) {
@@ -8387,7 +8386,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 get_turret_placement_position(char* placement_data, u32 player, Point16 desired_pos, u32 unit_id, u32 unk_flag) {
+	u32 get_tower_placement_position(char* placement_data, u32 player, Point16 desired_pos, u32 unit_id, u32 unk_flag) {
 		const u32 func_address = 0x00443AC0;
 		static u32 result;
 		__asm {
@@ -15365,5 +15364,18 @@ namespace helper {
 			POPAD
 		}
 		return (bool)result;
+	}
+
+	char* get_unit_rank_string(Unit* unit) {
+		const u32 func_address = 0x0042F370;
+		static char* result;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL func_address
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

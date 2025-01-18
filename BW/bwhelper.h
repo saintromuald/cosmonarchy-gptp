@@ -1021,7 +1021,7 @@ namespace helper {
 	u32 ai_placement_related_something(u32 unit_id, char* placement_data, Point16 desired_pos);									// 00443E30
 	void ai_remove_unfit_tiles(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);								// 00444CE0
 	u32 ai_remove_addon_places(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);								// 00443CC0
-	u32 get_turret_placement_position(char* placement_data, u32 player, Point16 desired_pos, u32 unit_id, u32 unk_flag);		// 00443AC0
+	u32 get_tower_placement_position(char* placement_data, u32 player, Point16 desired_pos, u32 unit_id, u32 unk_flag);		// 00443AC0
 	u32 get_pylon_placement_position(char* placement_data, u32 player, Point16 desired_pos);									// 004448D0
 	u32 get_default_placement_position(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);						// 004449A0
 
@@ -1782,4 +1782,5 @@ namespace helper {
 	bool should_attack_unit(u32 attacking_player, Unit* target);				// 00431550
 	u32 get_targeting_priority(Unit* unit, b32 is_ground_target);				// 00431730
 	bool unit_is_clean_detector(Unit* unit);									// 00403430
+	char* get_unit_rank_string(Unit* unit);										// 0042F370
 }

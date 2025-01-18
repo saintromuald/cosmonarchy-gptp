@@ -26,3 +26,4 @@ bool unit_can_be_repulsed(Unit* unit);
 void specialist_energy_error(Unit* unit);
 bool unit_should_give_gas_in_massacre_mode(Unit* unit);
 bool game_kind_has_neutral_hostile(GameKind game_kind);
+bool player_detects_unit(u32 player, Unit* unit);

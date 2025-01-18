@@ -20,7 +20,7 @@ namespace hooks {
 
 	s32 get_bunker_placement_position(u32 placement_id, u32* region_id);												// 004442E0
 	void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos, s32 max_range);		// 004461B0
-	u32 get_turret_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag);	// 00443AC0
+	u32 get_tower_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag);	// 00443AC0
 	bool ai_check_military_grouping(Unit* unit);																		// 00439550
 	u32 __stdcall ai_remove_different_height(char* placement_data, Point16 desired_pos);								// 004BD0F0
 	s32 attack_recent_attacker(Unit* unit);																				// 004770E0

@@ -565,16 +565,13 @@ namespace hooks {
 		// TODO: Add support for custom races. -Pr0nogo
 		u8 race_id = g_player_table[player].race;
 		switch(race_id) {
-			case RaceId::Terran:
-			{
+			case RaceId::Terran: {
 				unit_id = UnitId::TerranMason;
 			} break;
-			case RaceId::Protoss:
-			{
+			case RaceId::Protoss: {
 				unit_id = UnitId::ProtossScribe;
 			} break;
-			case RaceId::Zerg:
-			{
+			case RaceId::Zerg: {
 				unit_id = UnitId::ZergDroleth;
 			} break;
 		}
@@ -676,11 +673,10 @@ namespace hooks {
 
 	// Hooked to change default behaviors - Pr0nogo
 	void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos, s32 max_range) { // 004461B0
-		memset(placement_data, 0, 0x1000u);
+		memset(placement_data, 0, 4096);
 		helper::ai_get_building_placement_data(max_range, unit_id, placement_data, player, desired_pos);
 		helper::ai_remove_unreachable_regions(placement_data, desired_pos);
-		if (unit_id != UnitId::ProtossPylon)
-		{
+		if (unit_id != UnitId::ProtossPylon) {
 			helper::ai_remove_dangerous_regions(unit_id, placement_data, player, desired_pos);
 		}
 		helper::ai_remove_far_tiles(placement_data, desired_pos, max_range);
@@ -700,31 +696,26 @@ namespace hooks {
 					helper::ai_remove_addon_places(unit_id, placement_data, player, desired_pos);
 					switch (unit_id) {
 						case UnitId::TerranWatchdog:
-						case UnitId::ProtossWarden:
-						{
-							helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
+						case UnitId::ProtossWarden: {
+							helper::get_tower_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							return;
 						}
-						case UnitId::TerranAnchor:
+						case UnitId::TerranAnchor: {
 					//	case UnitId::TerranTencendur:
-						{
 							if (!helper::get_bunker_placement_position(player, &max_range)) {
-								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
+								helper::get_tower_placement_position(placement_data, player, desired_pos, unit_id, 0);
 								return;
 							}
 						}
-						case UnitId::ZergCagrantCesiant:
-						{
+						case UnitId::ZergCagrantCesiant: {
 							if (!g_aiscript_controller[player].ai_flags.is_secure_finished || !helper::get_bunker_placement_position(player, &max_range)) {
-								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
+								helper::get_tower_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							}
 						} break;
-						case UnitId::ProtossPylon:
-						{
+						case UnitId::ProtossPylon: {
 							helper::get_pylon_placement_position(placement_data, player, desired_pos);
 						} break;
-						default:
-						{
+						default: {
 							if (!max_range) {
 								helper::get_default_placement_position(unit_id, placement_data, player, desired_pos);
 							}
@@ -743,7 +734,7 @@ namespace hooks {
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	u32 get_turret_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag) { // 00443AC0
+	u32 get_tower_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag) { // 00443AC0
 		// will do this later
 		return 0;
 	}
