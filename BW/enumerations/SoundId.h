@@ -1166,11 +1166,11 @@ namespace SoundId {
 		MadrigalFuriaMissilesFire03			= 1210,
 		MadrigalFuriaMissilesFire04			= 1211,
 
-		MadcapWeaponfire01					= 1213,
-		MadcapWeaponfire02					= 1214,
-		MadcapWeaponfire03					= 1215,
-		MadcapWeaponfire04					= 1216,
-		MadcapWeaponfire05					= 1217,
+		MadcapWeaponfire01					= 1212,
+		MadcapWeaponfire02					= 1213,
+		MadcapWeaponfire03					= 1214,
+		MadcapWeaponfire04					= 1215,
+		MadcapWeaponfire05					= 1216,
 
 		AugurDeath01						= 1235,
 		AugurDeath02						= 1236,
