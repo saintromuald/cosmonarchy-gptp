@@ -582,18 +582,19 @@ namespace hooks {
 
 	// Hooked to fix crashes - Pr0nogo
 	bool ai_is_building_safe(Unit* unit) { // 00438910
-		if (unit) {
-			if (unit->main_order_id) {
-				s16 regionId = helper::get_region_id(unit->position.x, unit->position.y);
-				AiRegion* playerRegions = g_ai_region_captains[unit->player];
-				char regionState = playerRegions[regionId].state;
-				AiRegion* region = &playerRegions[regionId];
-				if (regionState != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->flags & 0x20)) {
-					return 1;
-				}
+		if (!unit) {
+			return;
+		}
+		if (unit->main_order_id) {
+			s16 regionId = helper::get_region_id(unit->position.x, unit->position.y);
+			AiRegion* playerRegions = g_ai_region_captains[unit->player];
+			char regionState = playerRegions[regionId].state;
+			AiRegion* region = &playerRegions[regionId];
+			if (regionState != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->flags & 0x20)) {
+				return true;
 			}
 		}
-		return 0;
+		return false;
 	}
 
 	// Hooked to fix crashes - Pr0nogo

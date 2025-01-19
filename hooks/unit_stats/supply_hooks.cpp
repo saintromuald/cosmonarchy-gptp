@@ -9,22 +9,17 @@
 #include "player_color.h"
 #include "hooks/interface/uifeatures/ui_features.h"
 
-namespace hooks
-{
-	// Until further notice, these hooks are all for the shared supply rewrite - Pr0nogo
-	u32 get_supplies_available(u8 player, s32 race) // 00488900
-	{
+namespace hooks {
+	u32 get_supplies_available(u8 player, s32 race) { // 00488900
 		u32 result = g_supplies_max_terran[player];
 		u32 suppliesAvailable = g_supplies_available_terran[player];
-		if (suppliesAvailable < result)
-		{
+		if (suppliesAvailable < result) {
 			result = suppliesAvailable;
 		}
 		return result;
 	}
 
-	s32 get_supplies_remaining(u8 player, u16 unit_id) // 004889D0
-	{
+	s32 get_supplies_remaining(u8 player, u16 unit_id) { // 004889D0
 		u32 supply_available = 0;
 		u32 supply_used = 0;
 		if (hooks::get_supplies_max(unit_id, player) >= g_supplies_available_terran[player]) {
@@ -37,18 +32,15 @@ namespace hooks
 		return supply_available - supply_used;
 	}
 
-	s32 get_supplies_max(u16 unit_id, u8 player) // 00488990
-	{
+	s32 get_supplies_max(u16 unit_id, u8 player) { // 00488990
 		return g_supplies_max_terran[player];
 	}
 
-	s32 get_supplies_used(s32 race, u8 player) // 004888C0
-	{
+	s32 get_supplies_used(s32 race, u8 player) { // 004888C0
 		return g_supplies_used_terran[player];
 	}
 
-	char initialize_unit_counts() // 00488F90
-	{
+	char initialize_unit_counts() { // 00488F90
 		memset(g_unit_count_score, 0, 0x540u);
 
 		// Let's reset what it originally did, since it cleared more than just g_all_unit_count_table
@@ -150,63 +142,6 @@ namespace hooks
 				helper::show_control_group(dialog, -10, -13);
 				g_status_screen_func = 12;
 			}
-
-			/*
-			u32 race = unit->get_race();
-			u32 supply_used = g_supplies_used_terran[unit->player];
-
-			u32 supply_used_string_id = race + 820;
-			char* supply_used_string = 0;
-			if (race == -821) {
-				supply_used_string = 0;
-			} else if (supply_used_string_id < **g_stat_txt_buffer) {
-				supply_used_string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[supply_used_string_id + 1];
-			} else {
-				supply_used_string = "";
-			}
-			sprintf_s(g_supply_used_buffer, 260, "%s %d", supply_used_string, (supply_used + 1) / 2);
-
-			u32 supply_provided_string_id = race + 814;
-			char* supply_provided_string = 0;
-			if (race == -815) {
-				supply_provided_string = 0;
-			} else if (supply_provided_string_id < **g_stat_txt_buffer) {
-				supply_provided_string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[supply_provided_string_id + 1];
-			} else {
-				supply_provided_string = "";
-			}
-			u32 last_queue_slot_type = helper::get_last_queue_slot_id(unit);
-			sprintf_s(g_supply_provided_buffer, 260, "%s %d", supply_provided_string, (units_dat::supply_provided[last_queue_slot_type] + 1) / 2);
-			
-			u32 supply_available_string_id = race + 66353;
-			char* supply_available_string = 0;
-			if (race == -818) {
-				supply_available_string = 0;
-			} else if (supply_available_string_id < **g_stat_txt_buffer) {
-				supply_available_string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[supply_available_string_id + 1];
-			} else {
-				supply_available_string = "";
-			}
-			u32 supply_available = get_supplies_available(unit->player, race);
-			sprintf_s(g_supply_available_buffer, 260, "%s %d", supply_available_string, (supply_available + 1) / 2);
-
-			u32 supply_max = g_supplies_max_terran[unit->player];
-			u32 supply_max_string_id = race + 823;
-			char* supply_max_string = 0;
-			if (race == -824) {
-				supply_max_string = 0;
-			} else if (supply_max_string_id < **g_stat_txt_buffer) {
-				supply_max_string = (char*)*g_stat_txt_buffer + (*g_stat_txt_buffer)[supply_max_string_id + 1];
-			} else {
-				supply_max_string = "";
-			}
-			sprintf_s(g_supply_max_buffer, 260, "%s %d", supply_max_string, (supply_max + 1) >> 1);
-
-			helper::add_text_to_dialog(dialog, -10, g_supply_used_buffer);
-			helper::add_text_to_dialog(dialog, -11, g_supply_provided_buffer);
-			helper::add_text_to_dialog(dialog, -12, g_supply_available_buffer);
-			helper::add_text_to_dialog(dialog, -13, g_supply_max_buffer);
-			*/
 
 			BinDlg* child = dialog->control_type ? dialog->parent->child_dialog : dialog->child_dialog;
 			while (child) {
@@ -484,7 +419,6 @@ namespace hooks
 			}
 			
 			dialog = dialog->next;
-
 			if (!dialog) {
 				goto loc_ret;
 			}
@@ -762,7 +696,6 @@ namespace hooks
 
 	static void init_stat_res_font(const char* font_name) {
 		const u32 load_font = 0x0041FD10;
-
 		__asm {
 			PUSH	0x004DAB00//AllocateFont
 			MOV		EAX, font_name
@@ -788,15 +721,17 @@ namespace hooks
 		}
 
 		switch (dlg_event->user) {
-		case DialogUserType_Create:
-		case DialogUserType_SelectNext:
-		case DialogUserType_InitSelf:
-		case DialogUserType_InitChildren:
-		case DialogUserType_Show:
-		case DialogUserType_Hide:
-			return helper::generic_common_interact(dialog, dlg_event);
-		default:
-			return false;
+			case DialogUserType_Create:
+			case DialogUserType_SelectNext:
+			case DialogUserType_InitSelf:
+			case DialogUserType_InitChildren:
+			case DialogUserType_Show:
+			case DialogUserType_Hide: {
+				return helper::generic_common_interact(dialog, dlg_event);
+			}
+			default: {
+				return false;
+			}
 		}
 	}
 
@@ -810,7 +745,6 @@ namespace hooks
 
 			do {
 				u16 control_type = dialog->control_type;
-
 				if (!control_type) {
 					dialog = dialog->child_dialog;
 					continue;

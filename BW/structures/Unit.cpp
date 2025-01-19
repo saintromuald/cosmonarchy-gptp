@@ -1512,11 +1512,11 @@ bool Unit::is_addon() {
 }
 
 bool Unit::is_upgrading() {
-	return this->building.upgrade_id != UpgradeId::None;
+	return this->is_building() ? this->building.upgrade_id != UpgradeId::None : false;
 }
 
 bool Unit::is_researching() {
-	return this->building.tech_id != TechId::None;
+	return this->is_building() ? this->building.tech_id != TechId::None : false;
 }
 
 bool Unit::is_upgrading_or_researching() {
