@@ -193,7 +193,7 @@ inline constexpr s32 EnsnareTimer = 5;
 
 namespace Broodspawn {
 inline constexpr s32 DeathCycleEnsnareRange = 3 * 32;
-inline constexpr s32 DeathCycleEnsnareTimer = (0.5 * 24) / 8;
+inline constexpr s32 DeathCycleEnsnareTimer = 5; // Vanilla timer, approximately 1 second
 inline constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
 inline constexpr s32 LifeTimer = 720;
 }
