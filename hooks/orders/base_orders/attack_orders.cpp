@@ -1102,9 +1102,6 @@ namespace hooks {
 
 	// Hooked to overhaul AI deployment code. -Pr0nogo
 	void order_to_attack_target(Unit* target, Unit* unit, b32 process_subunit, b32 target_is_cloaked) { // 00476FC0
-		if (target->id == UnitId::ProtossSteward && target->hangar_unit.parent) {
-			target = target->hangar_unit.parent;
-		}
 		helper::assign_order_with_target(target, unit, units_dat::attack_unit_order[unit->id]);
 		Unit* subunit = unit->subunit;
 		if (process_subunit) {
