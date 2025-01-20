@@ -57,10 +57,9 @@ namespace hooks {
 
 	// Hooked to rule out AI issues -- Pr0nogo
 	Unit* create_hallucination(Unit* source, s32 player, u32 time) {
-		if (units_dat::base_property[source->id] & UnitProperty::Building || source->id == UnitId::ProtossSteward || source->id == UnitId::ProtossPlasmaShell) {
+		if (source->is_building() || unit_id_is_hangar_unit((UnitId::Enum)source->id)) {
 			return 0;
 		}
-		Unit* result = 0;
 		Unit* hallucinated_unit = helper::create_unit(source->id, source->sprite->position.x, source->sprite->position.y, player);
 		if (!hallucinated_unit) {
 			helper::display_last_network_error_for_player(player);

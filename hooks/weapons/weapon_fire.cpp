@@ -390,7 +390,7 @@ static bool internal_fired_stagger(Unit* unit, WeaponId::Enum weapon_id, u32 max
 
 bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOpts& opts) {
 	u32 max_attack_range = opts.range_overwrite ? opts.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, 0);
-	u32 factor = opts.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1; // @TODO: Find some more sane way of doing this, which may be challenging in BW... -Pr0nogo
+	u32 factor = opts.use_weapon_factor ? weapons_dat::damage_factor[weapon_id] : 1;
 
 	auto can_fire_at = [unit, weapon_id, &opts](Unit* target) {
 		u32 attack_range = opts.range_overwrite ? opts.range_overwrite : hooks::get_max_weapon_range(unit, weapon_id, target);

@@ -1216,11 +1216,10 @@ BW_REF(u32,					g_gl_glues_mode,					0x006D11BC);
 BW_DATA(u32*,				g_neutral_carapace_swarm,			0x005873F0);
 
 // For tile height extension
-BW_DATA(ActiveTile**,		activeTileArray,					0x006D1260);
-BW_DATA(const MTXM**,		zergCreepTileData,					0x005993A8);
-BW_DATA(const MTXM**,		MTXMHandle,							0x005993C4);
-BW_DATA(const VF4**,		vf4FileHandle,						0x005993D0);
-BW_DATA(const CV5**,		cv5FileHandle,						0x006D5EC8);
+BW_DATA(const MTXM**,		g_zerg_cagra_tile_data,				0x005993A8);
+BW_DATA(const MTXM**,		g_MTXM_handle,						0x005993C4);
+BW_DATA(const VF4**,		g_vf4_file_handle,					0x005993D0);
+BW_DATA(const CV5**,		g_cv5_file_handle,					0x006D5EC8);
 
 // For on_player_join
 BW_DATA(u32*,				g_local_storm_id,					0x0051268C);

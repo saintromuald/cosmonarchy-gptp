@@ -80,10 +80,10 @@ namespace {
 
 namespace hooks {
 	void inject_sight_update_hooks() {
-		//memory_patch(0x00504524, &gndSightCB_Inside);
-		//memory_patch(0x00504528, &airSightCB_Inside);
-		//memory_patch(0x0050452C, &gndSightCB_Edge);
-		//memory_patch(0x00504530, &airSightCB_Edge);
+		//memory_patch(0x00504524, &ground_sight_cb_inside);
+		//memory_patch(0x00504528, &air_sight_cb_inside);
+		//memory_patch(0x0050452C, &ground_sight_cb_edge);
+		//memory_patch(0x00504530, &air_sight_cb_edge);
 		//jump_patch(gndSightCB_Edge_wrapper, 0x00480110, 1);
 		//jump_patch(gndSightCB_Inside_wrapper, 0x00480200, 1);
 		//jump_patch(airSightCB_Edge_wrapper, 0x004802A0, 1);

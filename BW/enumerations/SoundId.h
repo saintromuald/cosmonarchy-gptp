@@ -618,7 +618,7 @@ namespace SoundId {
 		Protoss_PROBE_PPrYes03_WAV			= 613,
 		Protoss_INTERCEP_PInLau00_WAV		= 614,
 		Protoss_PROBE_PPrPss00_WAV_2		= 615,
-		Protoss_TEMPLAR_PTeSum00_WAV_1		= 616,
+		StewardLaunch01						= 616,
 		Protoss_TEMPLAR_PTeSum00_WAV_2		= 617,
 		Protoss_TEMPLAR_PTeHal00_WAV		= 618,
 		Protoss_TEMPLAR_PTeHal01_WAV		= 619,

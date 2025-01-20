@@ -3,14 +3,14 @@
 namespace bw {
 
 vf4* get_minitile(u32 grid_pos) {
-	u32 tile_id = (u16)(*zergCreepTileData)->tile[grid_pos];
+	u32 tile_id = (u16)(*g_zerg_cagra_tile_data)->tile[grid_pos];
 
 	if (!tile_id) {
-		tile_id = (u16)(*MTXMHandle)->tile[grid_pos];
+		tile_id = (u16)(*g_MTXM_handle)->tile[grid_pos];
 	}
 
-	u32 megatile_id = (u16)((*cv5FileHandle)->group[(tile_id >> 4) & 0xFFF].tiles[tile_id & 0xF]);
-	return (vf4*)(*vf4FileHandle)->tile[megatile_id + 1];
+	u32 megatile_id = (u16)((*g_cv5_file_handle)->group[(tile_id >> 4) & 0xFFF].tiles[tile_id & 0xF]);
+	return (vf4*)(*g_vf4_file_handle)->tile[megatile_id + 1];
 }
 
 void init_weapon_tile_heights() {

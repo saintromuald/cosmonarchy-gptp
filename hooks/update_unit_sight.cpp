@@ -1,180 +1,159 @@
 #include "update_unit_sight.h"
 #include "BW/ExtendSightLimit.h"
 
-s32 tmpHeight;
+s32 temp_height;
 u8 vision_timers[256*256][8];
 
 namespace hooks {
-	SightCallbacks sightCallbacks[] = { gndSightCB_Inside, airSightCB_Inside, hitSightCB_Inside, gndSightCB_Edge, airSightCB_Edge, hitSightCB_Edge };
+	SightCallbacks sight_callbacks[] = { ground_sight_cb_inside, air_sight_cb_inside, hit_sight_cb_inside, ground_sight_cb_edge, air_sight_cb_edge, hit_sight_cb_edge };
 
-	inline void refresh_vision_timers(u32 testTilePos, u8 visionFlags, u8 timer) {
+	inline void refresh_vision_timers(u32 test_tile_pos, u8 vision_flags, u8 timer) {
 		s32 player = 7;
 		u8 player_flag = 0x80;
-		u8* cur_vision_timers = &vision_timers[testTilePos][0];
-
+		u8* cur_vision_timers = &vision_timers[test_tile_pos][0];
 		do {
-			if (visionFlags & player_flag && *(cur_vision_timers + player) < timer) {
+			if (vision_flags & player_flag && *(cur_vision_timers + player) < timer) {
 				*(cur_vision_timers + player) = timer;
 			}
 			player_flag >>= 1;
 		} while (--player >= 0);
 	}
 
-	void __fastcall gndSightCB_Edge(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags) {
-		SightTile* sighted_tile = sightVals->tile;
-		u32 cur_tile_pos = g_map_tile_size->width * tileY + tileX;
-		u32 revealed_count = sightVals->revealed_count;
-
+	void __fastcall ground_sight_cb_edge(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags) {
+		SightTile* sighted_tile = sight_values->tile;
+		u32 cur_tile_pos = g_map_tile_size->width * tile_y + tile_x;
+		u32 revealed_count = sight_values->revealed_count;
 		while (revealed_count) {
 			sighted_tile->visibility_mask = 0xFF;
-
-			if (tileX + sighted_tile->w < g_map_tile_size->width && tileY + sighted_tile->h < g_map_tile_size->height) {
-				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-				sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
+			if (tile_x + sighted_tile->w < g_map_tile_size->width && tile_y + sighted_tile->h < g_map_tile_size->height) {
+				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 10);
+				sighted_tile->visibility_mask = current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
 			}
-
 			++sighted_tile;
 			--revealed_count;
 		}
 
-		u32 masked_count = sightVals->masked_count;
-
+		u32 masked_count = sight_values->masked_count;
 		while (masked_count) {
 			sighted_tile->visibility_mask = 0xFF;
-
-			if (tileX + sighted_tile->w < g_map_tile_size->width && tileY + sighted_tile->h < g_map_tile_size->height) {
+			if (tile_x + sighted_tile->w < g_map_tile_size->width && tile_y + sighted_tile->h < g_map_tile_size->height) {
 				u32 count = (u8)sighted_tile->count;
-
 				while (count) {
 					SightTile* test_tile = sighted_tile->tiles[--count];
 					u32 rel_tile_pos = cur_tile_pos + test_tile->w + (g_map_tile_size->width * test_tile->h);
-
-					if (!(relFlags & test_tile->visibility_mask)
-						&& bw::tile_is_equal_or_lower(tmpHeight, rel_tile_pos)
+					if (!(rel_flags & test_tile->visibility_mask)
+						&& bw::tile_is_equal_or_lower(temp_height, rel_tile_pos)
 						&& (!(g_height_table[rel_tile_pos] == g_height_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000))) {
-						refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-						sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
+						refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 10);
+						sighted_tile->visibility_mask = current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
 						break;
 					}
 				}
 			}
-
 			++sighted_tile;
 			--masked_count;
 		}
 	}
 
-	void __fastcall gndSightCB_Inside(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags) {
-		SightTile* sighted_tile = sightVals->tile;
-		u32 cur_tile_pos = g_map_tile_size->width * tileY + tileX;
-		u32 revealed_count = sightVals->revealed_count;
+	void __fastcall ground_sight_cb_inside(u32 tile_x, u32 tile_y, SightRange* sight_vals, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags) {
+		SightTile* sighted_tile = sight_vals->tile;
+		u32 cur_tile_pos = g_map_tile_size->width * tile_y + tile_x;
+		u32 revealed_count = sight_vals->revealed_count;
 
 		while (revealed_count) {
-			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-			sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
+			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 10);
+			sighted_tile->visibility_mask = current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
 			++sighted_tile;
 			--revealed_count;
 		}
 
-		u32 masked_count = sightVals->masked_count;
-
+		u32 masked_count = sight_vals->masked_count;
 		while (masked_count) {
 			sighted_tile->visibility_mask = 0xFF;
 			u32 count = (u8)sighted_tile->count;
-
 			while (count) {
 				SightTile* test_tile = sighted_tile->tiles[--count];
 				u32 rel_tile_pos = cur_tile_pos + test_tile->w + (g_map_tile_size->width * test_tile->h);
 
-				if (!(relFlags & test_tile->visibility_mask)
-				&&    bw::tile_is_equal_or_lower(tmpHeight, rel_tile_pos)
+				if (!(rel_flags & test_tile->visibility_mask)
+				&&    bw::tile_is_equal_or_lower(temp_height, rel_tile_pos)
 				&& (!(g_height_table[rel_tile_pos] == g_height_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000)))
 				{
-					refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-					sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
+					refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 10);
+					sighted_tile->visibility_mask = current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
 					break;
 				}
 			}
-
 			++sighted_tile;
 			--masked_count;
 		}
 	}
 
-	void __fastcall airSightCB_Edge(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags) {
-		SightTile* sighted_tile = sightVals->tile;
-		u32 cur_tile_pos = g_map_tile_size->width * tileY + tileX;
-		u32 revealed_count = sightVals->revealed_count;
-
+	void __fastcall air_sight_cb_edge(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags) {
+		SightTile* sighted_tile = sight_values->tile;
+		u32 cur_tile_pos = g_map_tile_size->width * tile_y + tile_x;
+		u32 revealed_count = sight_values->revealed_count;
 		while (revealed_count) {
-			if (tileX + sighted_tile->w < g_map_tile_size->width && tileY + sighted_tile->h < g_map_tile_size->height) {
-				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-				sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
+			if (tile_x + sighted_tile->w < g_map_tile_size->width && tile_y + sighted_tile->h < g_map_tile_size->height) {
+				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 10);
+				sighted_tile->visibility_mask = current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
 			}
-
 			++sighted_tile;
 			--revealed_count;
 		}
 
-		u32 masked_count = sightVals->masked_count;
-
+		u32 masked_count = sight_values->masked_count;
 		while (masked_count) {
-			if (tileX + sighted_tile->w < g_map_tile_size->width && tileY + sighted_tile->h < g_map_tile_size->height) {
-				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-				curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
+			if (tile_x + sighted_tile->w < g_map_tile_size->width && tile_y + sighted_tile->h < g_map_tile_size->height) {
+				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 10);
+				current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
 			}
-
 			++sighted_tile;
 			--masked_count;
 		}
 	}
 
-	void __fastcall airSightCB_Inside(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags) {
-		SightTile* sighted_tile = sightVals->tile;
-		u32 cur_tile_pos = g_map_tile_size->width * tileY + tileX;
-		u32 revealed_count = sightVals->revealed_count;
-
+	void __fastcall air_sight_cb_inside(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags) {
+		SightTile* sighted_tile = sight_values->tile;
+		u32 cur_tile_pos = g_map_tile_size->width * tile_y + tile_x;
+		u32 revealed_count = sight_values->revealed_count;
 		while (revealed_count) {
-			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 10);
-			sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
+			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 10);
+			sighted_tile->visibility_mask = current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
 			++sighted_tile;
 			--revealed_count;
 		}
 
-		u32 masked_count = sightVals->masked_count;
-
+		u32 masked_count = sight_values->masked_count;
 		while (masked_count) {
-			refresh_vision_timers(g_map_tile_size->width * (tileY + sighted_tile->h) + tileX + sighted_tile->w, relFlags, 10);
-			curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
+			refresh_vision_timers(g_map_tile_size->width * (tile_y + sighted_tile->h) + tile_x + sighted_tile->w, rel_flags, 10);
+			current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
 			++sighted_tile;
 			--masked_count;
 		}
 	}
 
-	void __fastcall hitSightCB_Edge(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags) {
-		SightTile* sighted_tile = sightVals->tile;
-		u32 cur_tile_pos = g_map_tile_size->width * tileY + tileX;
-		u32 revealed_count = sightVals->revealed_count;
-
+	void __fastcall hit_sight_cb_edge(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags) {
+		SightTile* sighted_tile = sight_values->tile;
+		u32 cur_tile_pos = g_map_tile_size->width * tile_y + tile_x;
+		u32 revealed_count = sight_values->revealed_count;
 		while (revealed_count) {
-			if (tileX + sighted_tile->w < g_map_tile_size->width && tileY + sighted_tile->h < g_map_tile_size->height) {
-				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 18);
-				sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
+			if (tile_x + sighted_tile->w < g_map_tile_size->width && tile_y + sighted_tile->h < g_map_tile_size->height) {
+				refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 18);
+				sighted_tile->visibility_mask = current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
 			}
-
 			++sighted_tile;
 			--revealed_count;
 		}
 	}
 
-	void __fastcall hitSightCB_Inside(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags) {
-		SightTile* sighted_tile = sightVals->tile;
-		u32 cur_tile_pos = g_map_tile_size->width * tileY + tileX;
-		u32 revealed_count = sightVals->revealed_count;
-
+	void __fastcall hit_sight_cb_inside(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags) {
+		SightTile* sighted_tile = sight_values->tile;
+		u32 cur_tile_pos = g_map_tile_size->width * tile_y + tile_x;
+		u32 revealed_count = sight_values->revealed_count;
 		while (revealed_count) {
-			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, relFlags, 18);
-			sighted_tile->visibility_mask = curActiveTile[sighted_tile->relative_tile].flags &= newVisionFlags;
+			refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 18);
+			sighted_tile->visibility_mask = current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
 			++sighted_tile;
 			--revealed_count;
 		}
@@ -184,64 +163,27 @@ namespace hooks {
 		if (*g_multiplayer_mode) {
 			*g_cheat_state &= ~(CheatFlags::BlackSheepWall + CheatFlags::WarAintWhatItUsedToBe);
 		}
-
 		if (!((*g_game_layer).has_been_refreshed & 1)) {
 			(*g_game_layer).unk |= 1;
 		}
-
 		if (!(*g_cheat_state & (CheatFlags::BlackSheepWall + CheatFlags::WarAintWhatItUsedToBe))) {
 			helper::refresh_layer_5();
 			s32 i_0 = g_map_tile_size->width * g_map_tile_size->height - 1;
 			ActiveTile* active_tile = *g_active_tile_array;
-
 			do {
 				s32 player = 7;
 				u8 mask = 0xFF;
-
 				do {
 					bool revealed = vision_timers[i_0][player];
 					mask ^= revealed << player;
 					vision_timers[i_0][player] -= revealed;
 				} while (--player >= 0);
-
 				active_tile[i_0].visibility_flags = mask;
 			} while (--i_0 >= 0);
-			/*__asm {
-				MOVZX	EAX, word ptr ds:[0x57F1D6]//g_map_tile_size->height
-				MOVZX	EDX, word ptr ds:[0x57F1D4]//g_map_tile_size->width
-				IMUL	EDX, EAX
-				DEC		EDX
-				MOV		EAX, [g_active_tile_array]
-				LEA		EDI, [EAX + EDX * 4]//activeTile
-				LEA		ESI, [EDX * 8 + visionTimers + 7]//visionTimers
-				ALIGN 4
-
-				off_0:
-				MOV		ECX, 7//player = 7
-				OR		BH, -1//mask = 0xFF
-				ALIGN 4
-
-				off_1:
-				CMP		[ESI], 0//visionTimers[i_0][player] != 0
-				SETNE	BL//revealed
-				MOV		AL, BL
-				SHL		AL, CL
-				SUB		[ESI],BL//visionTimers[i_0][player] -= revealed
-				XOR		BH, AL//mask ^= revealed << player
-				DEC		ESI//visionTimers
-				DEC		ECX//--player
-				JNS		offset off_1
-				MOV		[EDI], BH//active_tile[i_0].visibility_flags = mask
-				SUB		EDI, 4
-				DEC		EDX//--i_0
-				JNS		offset off_0
-			}*/
-		}
-		else if (!(*g_cheat_state & CheatFlags::WarAintWhatItUsedToBe)) {
+		} else if (!(*g_cheat_state & CheatFlags::WarAintWhatItUsedToBe)) {
 			u32 i_0 = g_map_tile_size->width * g_map_tile_size->height;
 			u32* vision_timers = (u32*)&vision_timers[i_0];
 			i_0 >>= 2;
-
 			do {
 				--vision_timers;
 				*vision_timers = 0;
@@ -249,49 +191,46 @@ namespace hooks {
 		}
 	}
 
-	void reveal_sight_at_location(u32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit) {
-		if (visionFlags <= 0xFF && !(*g_cheat_state & CheatFlags::BlackSheepWall)) {
-			sight_callback_t** callback = sightCallbacks->inside;
-
-			if (sightRange) {
-				if (isAirUnit) {
-					++callback;//airSight
-				}
-				else {
-					tmpHeight = get_ground_height_at_px(ptY, ptX);
+	void reveal_sight_at_location(u32 sight_range, u32 vision_flags, s32 pos_x, s32 pos_y, bool is_air_unit) {
+		if (vision_flags <= 0xFF && !(*g_cheat_state & CheatFlags::BlackSheepWall)) {
+			sight_callback_t** callback = sight_callbacks->inside;
+			if (sight_range) {
+				if (is_air_unit) {
+					++callback; //air_sight
+				} else {
+					temp_height = get_ground_height_at_px(pos_y, pos_x);
 				}
 			} else {
-				++sightRange;
-				callback += 2;//hitSight
+				++sight_range;
+				callback += 2; // hit_sight
 			}
 
-			SightRange* sight_vals = &g_sight_ranges[sightRange];
+			SightRange* sight_vals = &g_sight_ranges[sight_range];
 			s32 tile_sight_radius_x = sight_vals->tile_sight_width >> 1;
 			s32 tile_sight_radius_y = sight_vals->tile_sight_height >> 1;
-			ptX >>= 5;
-			ptY >>= 5;
-
-			if (ptX - tile_sight_radius_x < 0
-				|| ptX + tile_sight_radius_x >= g_map_tile_size->width
-				|| ptY - tile_sight_radius_y < 0
-				|| ptY + tile_sight_radius_y >= g_map_tile_size->height) {
-				callback += 3;//sightCallbacks->edge
+			pos_x >>= 5;
+			pos_y >>= 5;
+			if (pos_x - tile_sight_radius_x < 0
+				|| pos_x + tile_sight_radius_x >= g_map_tile_size->width
+				|| pos_y - tile_sight_radius_y < 0
+				|| pos_y + tile_sight_radius_y >= g_map_tile_size->height) {
+				callback += 3; // sight_callbacks->edge
 			}
 
 			ActiveTile* active_tile = *g_active_tile_array;
-			(*callback)((u32)ptX, (u32)ptY, sight_vals, &active_tile[g_map_tile_size->width * ptY + ptX], visionFlags, ~visionFlags & ~(visionFlags << 8));
+			(*callback)((u32)pos_x, (u32)pos_y, sight_vals, &active_tile[g_map_tile_size->width * pos_y + pos_x], vision_flags, ~vision_flags & ~(vision_flags << 8));
 		}
 	}
 
-	s32 get_ground_height_at_px(s32 offsetY, s32 offsetX) {
-		u32 grid_pos = g_map_tile_size->width * (offsetY >> 5) + (offsetX >> 5);
-		u32 tile_id = (u16)(*zergCreepTileData)->tile[grid_pos];
+	s32 get_ground_height_at_px(s32 offset_y, s32 offset_x) {
+		u32 grid_pos = g_map_tile_size->width * (offset_y >> 5) + (offset_x >> 5);
+		u32 tile_id = (u16)(*g_zerg_cagra_tile_data)->tile[grid_pos];
 
-		if (!tile_id)
-			tile_id = (u16)(*MTXMHandle)->tile[grid_pos];
-
-		u32 megatile_id = (u16)((*cv5FileHandle)->group[(tile_id >> 4) & 0xFFF].tiles[tile_id & 0xF]);
-		vf4 minitile = (*vf4FileHandle)->tile[megatile_id][4 * ((offsetY >> 3) & 3) + ((offsetX >> 3) & 3)];
+		if (!tile_id) {
+			tile_id = (u16)(*g_MTXM_handle)->tile[grid_pos];
+		}
+		u32 megatile_id = (u16)((*g_cv5_file_handle)->group[(tile_id >> 4) & 0xFFF].tiles[tile_id & 0xF]);
+		vf4 minitile = (*g_vf4_file_handle)->tile[megatile_id][4 * ((offset_y >> 3) & 3) + ((offset_x >> 3) & 3)];
 		return ((minitile.flags >> 1) & 0x3) + minitile.xHeight;
 	}
 }
