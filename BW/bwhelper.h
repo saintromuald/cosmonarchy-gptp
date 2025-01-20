@@ -1021,7 +1021,7 @@ namespace helper {
 	u32 ai_placement_related_something(u32 unit_id, char* placement_data, Point16 desired_pos);									// 00443E30
 	void ai_remove_unfit_tiles(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);								// 00444CE0
 	u32 ai_remove_addon_places(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);								// 00443CC0
-	u32 get_turret_placement_position(char* placement_data, u32 player, Point16 desired_pos, u32 unit_id, u32 unk_flag);		// 00443AC0
+	u32 get_tower_placement_position(char* placement_data, u32 player, Point16 desired_pos, u32 unit_id, u32 unk_flag);		// 00443AC0
 	u32 get_pylon_placement_position(char* placement_data, u32 player, Point16 desired_pos);									// 004448D0
 	u32 get_default_placement_position(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);						// 004449A0
 
@@ -1374,7 +1374,7 @@ namespace helper {
 	void kill_all_loaded_units(Unit* unit);																	// 0049FDD0
 
 	// For trigact_transmission
-	s32 trigact_play_wav(TriggerAction* action, char* unused);												// 004C77D0
+	s32 trigact_play_wav(TriggerAction* action);															// 004C77D0
 	Unit* get_doodad_for_unit_state(u8 location, u16 unit_id, u32 player);									// 004C7380
 	u8 minimap_ping(u32 x_pos, u32 y_pos, u32 color);														// 004A34C0
 	void game_talking_portrait(u32 x_pos, u32 time, u32 unit_id, u32 y_pos);								// 0045EDD0
@@ -1782,4 +1782,8 @@ namespace helper {
 	bool should_attack_unit(u32 attacking_player, Unit* target);				// 00431550
 	u32 get_targeting_priority(Unit* unit, b32 is_ground_target);				// 00431730
 	bool unit_is_clean_detector(Unit* unit);									// 00403430
+	char* get_unit_rank_string(Unit* unit);										// 0042F370
+	u32 get_upgrade_time_cost(u32 player, u8 upgrade_id);						// 00453F70
+	void create_context_help_from_dialog(BinDlg* dialog, const char* text);		// 00481510
+	u16 create_context_tooltip(s32 height, s32 width, char* text);				// 00481510
 }

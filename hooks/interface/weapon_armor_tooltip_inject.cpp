@@ -2,58 +2,29 @@
 #include <hook_tools.h>
 #include <BW/bwdata.h>
 
-namespace
-{
-	const u32 Func_CreateContextHelp = 0x00481510;
-	void create_context_help_from_dialog(BinDlg* dialog, const char* text)
-	{
-		u32 x = dialog->bounds.right, y = dialog->bounds.bottom;
-		if (dialog->control_type != 0)
-		{
-			x += dialog->parent->bounds.left;
-			y += dialog->parent->bounds.top;
-		}
-		__asm
-		{
-			PUSHAD
-			PUSH text
-			PUSH y
-			MOV EAX, x
-			CALL Func_CreateContextHelp
-			POPAD
-		}
-	}
-
+namespace {
 	// Replaces function @ 0x004576A0
-	void __stdcall statdata_luser_interact_wrapper(BinDlg* consoleIcon)
-	{
+	void __stdcall statdata_luser_interact_wrapper(BinDlg* consoleIcon) {
 		GuiOverlay* gui = (GuiOverlay*)consoleIcon->user;
-		switch (gui->overlay_type)
-		{
-			case 0:
-			{
-				create_context_help_from_dialog(consoleIcon, hooks::get_weapon_tooltip_string((WeaponId::Enum)(gui->id & 0xff), *g_active_portrait_unit));
+		switch (gui->overlay_type) {
+			case 0: {
+				helper::create_context_help_from_dialog(consoleIcon, hooks::get_weapon_tooltip_string((WeaponId::Enum)(gui->id & 255), *g_active_portrait_unit));
 			} break;
-			case 1:
-			{
-				create_context_help_from_dialog(consoleIcon, hooks::get_armor_tooltip_string(*g_active_portrait_unit));
+			case 1: {
+				helper::create_context_help_from_dialog(consoleIcon, hooks::get_armor_tooltip_string(*g_active_portrait_unit));
 			} break;
-			case 2:
-			{
-				create_context_help_from_dialog(consoleIcon, hooks::get_shield_tooltip_string(*g_active_portrait_unit));
+			case 2: {
+				helper::create_context_help_from_dialog(consoleIcon, hooks::get_shield_tooltip_string(*g_active_portrait_unit));
 			} break;
-			case 3:
-			{
-				create_context_help_from_dialog(consoleIcon, hooks::get_special_tooltip_string(gui->id, *g_active_portrait_unit));
+			case 3: {
+				helper::create_context_help_from_dialog(consoleIcon, hooks::get_special_tooltip_string(gui->id, *g_active_portrait_unit));
 			} break;
 		}
 	}
 }
 
-namespace hooks
-{
-	void inject_unit_tooltip_hooks()
-	{
+namespace hooks {
+	void inject_unit_tooltip_hooks() {
 		call_patch(&statdata_luser_interact_wrapper, 0x00457D4B);
 	}
 }

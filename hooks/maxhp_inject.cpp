@@ -517,8 +517,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) get_max_vitality_wrapper() // 00402710
-	{
+	void __declspec(naked) get_max_vitality_wrapper() { // 00402710
 		static Unit* unit;
 		static u32 result;
 		__asm {
@@ -533,22 +532,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) drawUnitInfo_Wrapper()
-	{
-		static BinDlg* a1;
-		__asm {
-			MOV a1, EAX
-			PUSHAD
-		}
-		hooks::draw_unit_info(a1);
-		__asm {
-			POPAD
-			RETN
-		}
-	}
-
-	void __declspec(naked) ai_target_enemy_proc_wrapper()
-	{
+	void __declspec(naked) ai_target_enemy_proc_wrapper() {
 		static Unit* target;
 		static Unit* unit;
 		static b32 result;

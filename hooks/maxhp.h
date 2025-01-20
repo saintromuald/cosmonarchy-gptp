@@ -18,7 +18,6 @@ namespace hooks {
 
 	// Needs hooking:
 	void __stdcall stats_panel_draw_health_shields(BinDlg* dialog);												// 004263E0
-	void draw_unit_info(BinDlg* a1);																			// 00426190
 	void draw_image_hp_bar(s32 g_screen_x, s32 g_screen_y, GrpFrame* pFrame, Box32* grpRect, s32 colorData);	// 0047A820
 	s32 map_data_transfer(char a1, s32 a2, s32 a3);																// 004EAFE0
 

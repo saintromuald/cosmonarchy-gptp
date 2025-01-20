@@ -129,38 +129,30 @@ namespace
 		}
 	}
 
-	void __declspec(naked) create_upgrade_level_tooltip_wrapper()
-	{
+	void __declspec(naked) create_upgrade_level_tooltip_wrapper() {
 		static char result;
 		static char* text;
-		__asm
-		{
+		__asm {
 			MOV text, ECX
 			PUSHAD
 		}
 		result = hooks::create_upgrade_level_tooltip(text);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOVZX EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) trigact_transmission_wrapper() // 004C7890
-	{
+	void __declspec(naked) trigact_transmission_wrapper() { // 004C7890
 		static u32 result;
 		static TriggerAction* trigger;
-		static char* unused;
-		__asm
-		{
-			MOV unused, EDI
+		__asm {
 			MOV trigger, ECX
 			PUSHAD
 		}
-		result = hooks::trigact_transmission(trigger, unused);
-		__asm
-		{
+		result = hooks::trigact_transmission(trigger);
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
@@ -513,6 +505,21 @@ namespace
 		}
 	}
 
+	void __declspec(naked) draw_game_menu_context_wrapper() { // 004F4F70
+		static BinDlg* dialog;
+		static u16 result;
+		__asm {
+			MOV dialog, EDX
+			PUSHAD
+		}
+		result = hooks::draw_game_menu_context(dialog);
+		__asm {
+			POPAD
+			MOV AX, result
+			RETN
+		}
+	}
+
 	// Non-hooks \\
 
 	const u32 replayStatBtns_27AB5 = 0x00427AB5;
@@ -638,6 +645,7 @@ namespace hooks {
 		jump_patch(CMDRECV_minimap_ping_wrapper,			0x004BF7A0, 0);
 
 	//	jump_patch(show_or_hide_minimap,					0x004A4150, 2);
+		jump_patch(draw_game_menu_context_wrapper,			0x004F4F70, 1);
 
 		call_patch(get_scroll_directions_partial,			0x0047F155, 0);
 		jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF

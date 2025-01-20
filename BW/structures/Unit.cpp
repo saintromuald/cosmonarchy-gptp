@@ -1510,3 +1510,19 @@ bool Unit::is_resource_depot() {
 bool Unit::is_addon() {
 	return units_dat::base_property[this->id] & UnitProperty::Addon;
 }
+
+bool Unit::is_upgrading() {
+	return this->is_building() ? this->building.upgrade_id != UpgradeId::None : false;
+}
+
+bool Unit::is_researching() {
+	return this->is_building() ? this->building.tech_id != TechId::None : false;
+}
+
+bool Unit::is_upgrading_or_researching() {
+	return this->is_upgrading() || this->is_researching();
+}
+
+bool Unit::is_completed() {
+	return this->status & UnitStatus::Completed;
+}

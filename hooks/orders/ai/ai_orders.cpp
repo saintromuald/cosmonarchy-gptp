@@ -554,27 +554,24 @@ namespace hooks {
 	// Hooked because why not? - Pr0nogo
 	bool ai_can_mine_extra(Unit* unit) { // 00447A70
 		if (!unit->unit_ai) {
-			return 0;
+			return false;
 		}
 		u8 player = unit->player;
 		if (g_aiscript_controller[player].difficulty != 2) {
-			return 0;
+			return false;
 		}
 
 		u16 unit_id = UnitId::None;
 		// TODO: Add support for custom races. -Pr0nogo
 		u8 race_id = g_player_table[player].race;
 		switch(race_id) {
-			case RaceId::Terran:
-			{
+			case RaceId::Terran: {
 				unit_id = UnitId::TerranMason;
 			} break;
-			case RaceId::Protoss:
-			{
+			case RaceId::Protoss: {
 				unit_id = UnitId::ProtossScribe;
 			} break;
-			case RaceId::Zerg:
-			{
+			case RaceId::Zerg: {
 				unit_id = UnitId::ZergDroleth;
 			} break;
 		}
@@ -585,24 +582,22 @@ namespace hooks {
 
 	// Hooked to fix crashes - Pr0nogo
 	bool ai_is_building_safe(Unit* unit) { // 00438910
-		if (unit) {
-			if (unit->main_order_id) {
-				s16 regionId = helper::get_region_id(unit->position.x, unit->position.y);
-				AiRegion* playerRegions = g_ai_region_captains[unit->player];
-				char regionState = playerRegions[regionId].state;
-				AiRegion* region = &playerRegions[regionId];
-				if (regionState != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->flags & 0x20)) {
-					return 1;
-				}
+		if (unit && unit->main_order_id) {
+			s16 region_id = helper::get_region_id(unit->position.x, unit->position.y);
+			AiRegion* player_regions = g_ai_region_captains[unit->player];
+			u8 region_state = player_regions[region_id].state;
+			AiRegion* region = &player_regions[region_id];
+			if (region_state != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->flags & 0x20)) {
+				return true;
 			}
 		}
-		return 0;
+		return false;
 	}
 
 	// Hooked to fix crashes - Pr0nogo
 	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2) { // 00438E10
 		if (!unit1 || !unit2) {
-			return 0;
+			return false;
 		}
 		u16 region_id = helper::get_region_id(unit2->position.x, unit2->position.y);
 		u16 region_id2 = helper::get_region_id(unit1->position.x, unit1->position.y);
@@ -676,11 +671,10 @@ namespace hooks {
 
 	// Hooked to change default behaviors - Pr0nogo
 	void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos, s32 max_range) { // 004461B0
-		memset(placement_data, 0, 0x1000u);
+		memset(placement_data, 0, 4096);
 		helper::ai_get_building_placement_data(max_range, unit_id, placement_data, player, desired_pos);
 		helper::ai_remove_unreachable_regions(placement_data, desired_pos);
-		if (unit_id != UnitId::ProtossPylon)
-		{
+		if (unit_id != UnitId::ProtossPylon) {
 			helper::ai_remove_dangerous_regions(unit_id, placement_data, player, desired_pos);
 		}
 		helper::ai_remove_far_tiles(placement_data, desired_pos, max_range);
@@ -700,31 +694,26 @@ namespace hooks {
 					helper::ai_remove_addon_places(unit_id, placement_data, player, desired_pos);
 					switch (unit_id) {
 						case UnitId::TerranWatchdog:
-						case UnitId::ProtossWarden:
-						{
-							helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
+						case UnitId::ProtossWarden: {
+							helper::get_tower_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							return;
 						}
-						case UnitId::TerranAnchor:
+						case UnitId::TerranAnchor: {
 					//	case UnitId::TerranTencendur:
-						{
 							if (!helper::get_bunker_placement_position(player, &max_range)) {
-								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
+								helper::get_tower_placement_position(placement_data, player, desired_pos, unit_id, 0);
 								return;
 							}
 						}
-						case UnitId::ZergCagrantCesiant:
-						{
+						case UnitId::ZergCagrantCesiant: {
 							if (!g_aiscript_controller[player].ai_flags.is_secure_finished || !helper::get_bunker_placement_position(player, &max_range)) {
-								helper::get_turret_placement_position(placement_data, player, desired_pos, unit_id, 0);
+								helper::get_tower_placement_position(placement_data, player, desired_pos, unit_id, 0);
 							}
 						} break;
-						case UnitId::ProtossPylon:
-						{
+						case UnitId::ProtossPylon: {
 							helper::get_pylon_placement_position(placement_data, player, desired_pos);
 						} break;
-						default:
-						{
+						default: {
 							if (!max_range) {
 								helper::get_default_placement_position(unit_id, placement_data, player, desired_pos);
 							}
@@ -743,7 +732,7 @@ namespace hooks {
 	}
 
 	// Hooked to change default behaviors - Pr0nogo
-	u32 get_turret_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag) { // 00443AC0
+	u32 get_tower_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag) { // 00443AC0
 		// will do this later
 		return 0;
 	}

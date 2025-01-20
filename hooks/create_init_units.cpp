@@ -7,29 +7,9 @@
 #include "trigger_system/trigger_system.h"
 #include "Game.h"
 
-u32 get_racial_townhall(u32 race_id) {
-    // TODO: Add support for custom races. -Pr0nogo
-    switch (race_id) {
-        case RaceId::Terran:  return UnitId::TerranMinistry;
-        case RaceId::Protoss: return UnitId::ProtossNexus;
-        case RaceId::Zerg:    return UnitId::ZergHachirosk;
-    }
-    return UnitId::None;
-}
-
-u32 get_racial_worker(u32 race_id) {
-    // TODO: Add support for custom races. -Pr0nogo
-    switch (race_id) {
-        case RaceId::Terran:  return UnitId::TerranMason;
-        case RaceId::Protoss: return UnitId::ProtossScribe;
-        case RaceId::Zerg:    return UnitId::ZergDroleth;
-    }
-    return UnitId::None;
-}
-
 namespace hooks {
     void create_initial_melee_buildings(u8 race_id, u32 player) { // 0049D7C0
-        u32 building_id = get_racial_townhall(race_id);
+        u32 building_id = get_racial_town_center_id(race_id);
         GameKind game_kind = bw::get_game_kind();
         bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
         bool is_omnipresence = game_kind == GameKind::Omnipresence;
@@ -187,8 +167,8 @@ namespace hooks {
                     bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
                     bool is_omnipresence = game_kind == GameKind::Omnipresence;
                     bool is_duopoly = game_kind == GameKind::Duopoly;
-                    u32 worker_id = get_racial_worker(*race_id_offset);
-                    u8 townhall_id = get_racial_townhall(*race_id_offset);
+                    u32 worker_id = get_racial_worker_id(*race_id_offset);
+                    u8 townhall_id = get_racial_town_center_id(*race_id_offset);
                     if (!is_computer_player && (is_omnipresence || is_duopoly)) {
                         townhall_id = UnitId::Omnivale;
                     }

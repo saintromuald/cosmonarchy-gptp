@@ -403,6 +403,10 @@ struct Unit : public UnitLayout
 	bool is_worker();
 	bool is_resource_depot();
 	bool is_addon();
+	bool is_upgrading();
+	bool is_researching();
+	bool is_upgrading_or_researching();
+	bool is_completed();
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

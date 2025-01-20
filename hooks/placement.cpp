@@ -443,4 +443,26 @@ namespace hooks {
             return fow_sprite_2;
         }
     }
+
+    // Hooked to turn stat_txt.tbl into a .txt. -Pr0nogo
+    s32 place_building_message(s32 placement_state) { // 0048D930
+        if (!placement_state) {
+            return true;
+        }
+        if (bw::in_replay_or_witness()) {
+            return false;
+        }
+        const char* string = g_stat_txt_buffer.get_string(g_string_id[placement_state]);
+        if (!string) {
+            return false;
+        }
+        if (*g_active_nation_id == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
+            helper::set_unit_stat_txt_error_message(string);
+        }
+        return false;
+    }
+
+    // Eventually hook the following to turn stat_txt.tbl into a .txt:
+    //      0048E4E0 input_place_building_click_notify
+    // -Pr0nogo
 }

@@ -365,3 +365,16 @@ bool unit_should_give_gas_in_massacre_mode(Unit* unit) {
 bool game_kind_has_neutral_hostile(GameKind game_kind) {
 	return game_kind == GameKind::TheTurning || game_kind == GameKind::Uprising;
 }
+
+bool player_detects_unit(u32 player, Unit* unit) {
+	if (player >= PlayerLimit) {
+		return false;
+	}
+	if (bw::in_replay_or_witness()) {
+		return true;
+	}
+	if ((1 << player) & helper::get_detecting_players(unit)) {
+		return true;
+	}
+	return false;
+}

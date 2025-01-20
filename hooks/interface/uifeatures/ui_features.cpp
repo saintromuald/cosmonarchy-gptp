@@ -268,8 +268,7 @@ namespace hooks {
 	}
 
 	// Hooked to improve functionality and to use in our own dialogue system. -Pr0nogo
-	s32 trigact_transmission(TriggerAction* trigger, char* a2) // 004C7890
-	{
+	s32 trigact_transmission(TriggerAction* trigger) { // 004C7890
 		TriggerAction* trigger_var = trigger;
 		if (!(LOBYTE(trigger->source_location))) // Based on this, IDA's struct is just wrong, and we have a second field here. Guessing lobyte = location id based on context. -Pr0nogo
 		{
@@ -320,7 +319,7 @@ namespace hooks {
 			g_trigger_wait[player_id] = multiplayer_time;
 			g_is_executing_wait[player_id] = 1;
 			if (player_id == g_local_nation_id) {
-				helper::trigact_play_wav(trigger_var, a2);
+				helper::trigact_play_wav(trigger_var);
 				Unit* doodad = helper::get_doodad_for_unit_state(LOBYTE(trigger_var->source_location) - 1, trigger_var->type, 17);
 				Unit* doodad_var = doodad; // Probably not necessary. -Pr0nogo
 				if (doodad) {
@@ -1065,4 +1064,20 @@ namespace hooks {
 			g_minimap_vision_callback();
 		}
 	}
+
+	// Hooked to make stat_txt.tbl a .txt. -Pr0nogo
+	u16 draw_game_menu_context(BinDlg* dialog) { // 004F4F70
+		return helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left,
+										      dialog->bounds.top + dialog->parent->bounds.top,
+										      (char*)g_stat_txt_buffer.get_string(814)); // Game Menu (F10)
+	}
+
+	// Eventually, hook the following to make stat_txt.tbl a .txt:
+	//		00457CE0 statdata_mouseover_interact
+	//		004A4C40 draw_show_hide_terrain_context
+	//		004A5110 draw_stat_lb_buttons_context
+	//		004C36F0 get_stat_txt_string
+	//		004C3780 destroy_game_hud
+	//		004C3A20 load_stat_txt
+	// -Pr0nogo
 }

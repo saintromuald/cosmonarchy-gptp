@@ -1,8 +1,7 @@
 #pragma once
 #include <BW/structures/Unit.h>
 
-namespace hooks
-{
+namespace hooks {
 	s32 get_bonus_armor(Unit* unit, u8 base_armor);
 
 	const char* get_weapon_tooltip_string(WeaponId::Enum weapon_id, Unit* unit);

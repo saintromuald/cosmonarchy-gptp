@@ -11,7 +11,7 @@ namespace hooks {
 			MOV unit_id, EAX
 			PUSHAD
 		}
-		result = get_order_from_unit_id(unit_id);
+		result = get_build_order_from_unit_id(unit_id);
 		if (result == 0) { //default case
 			__asm {
 				POPAD
@@ -54,7 +54,7 @@ namespace hooks {
 			MOV race, EAX
 			PUSHAD
 		}
-		unit_id = get_default_racial_worker(race);
+		unit_id = get_racial_worker_id(race);
 		__asm {
 			POPAD
 			MOV EAX, unit_id
@@ -78,7 +78,7 @@ namespace hooks {
 			MOVZX ECX, CX
 			PUSHAD
 		}
-		cmp_id = get_townhall_from_race(race);
+		cmp_id = get_racial_town_center_id(race);
 		if (unit_is_correct_townhall(unit_id, cmp_id, unit)) {
 			__asm {
 				POPAD
@@ -100,7 +100,7 @@ namespace hooks {
 			MOV race, AL
 			PUSHAD
 		}
-		unit_id = get_townhall_from_race(race);
+		unit_id = get_racial_town_center_id(race);
 		if (unit_id == 0xe4) {
 			unit_id = UnitId::ProtossNexus;
 		}
@@ -119,7 +119,7 @@ namespace hooks {
 			MOV unit_id, EAX
 			PUSHAD
 		}
-		if (is_townhall(unit_id)) {
+		if (is_town_center(unit_id)) {
 			__asm {
 				POPAD
 				JMP jmp_38f8
@@ -140,7 +140,7 @@ namespace hooks {
 			MOV unit_id, EBX
 			PUSHAD
 		}
-		if (is_townhall(unit_id)) {
+		if (is_town_center(unit_id)) {
 			__asm {
 				POPAD
 				JMP jmp_27a
@@ -209,16 +209,16 @@ namespace hooks {
 	}
 
 	void inject_worker_hooks() {
-		jump_patch(ai_progress_spending_queue_jump_wrapper, 0x00434C31);
-		jump_patch(ai_build_supplies_wrapper,				0x00433730);
-		jump_patch(get_default_racial_worker_wrapper,				0x00432130);
+		jump_patch(ai_progress_spending_queue_jump_wrapper,		0x00434C31, 0);
+		jump_patch(ai_build_supplies_wrapper,					0x00433730, 0);
+		jump_patch(get_default_racial_worker_wrapper,			0x00432130, 0);
 	}
 
 	void inject_townhall_hooks() {
 		jump_patch(add_unit_ai_jump_wrapper,					0x00433F60, 4);
 		jump_patch(ai_upgrades_finished_jump_wrapper,			0x004365F6, 4);
-		jump_patch(ai_remove_dangerous_regions_jump_wrapper,	0x00443876);
-		jump_patch(ai_get_build_location_jump_wrapper,			0x0044622B);
+		jump_patch(ai_remove_dangerous_regions_jump_wrapper,	0x00443876, 0);
+		jump_patch(ai_get_build_location_jump_wrapper,			0x0044622B, 0);
 		jump_patch(ai_add_town_spending_request_wrapper,		0x00448400, 0);
 	}
 
@@ -229,12 +229,12 @@ namespace hooks {
 	const u32 jmp_00467F24 = 0x00467F24;
 	const u32 jmp_00467F2C = 0x00467F2C;
 	void __declspec(naked) orders_scvbuild2_wrapper() {
-		static u16 id;
+		static u16 unit_id;
 		__asm {
-			MOV id, AX
+			MOV unit_id, AX
 			PUSHAD
 		}
-		if (hooks::is_gasholder_structure(id)) {
+		if (unit_id_is_capped_gas_structure(unit_id)) {
 			__asm {
 				POPAD
 				JMP jmp_00467F24
@@ -247,14 +247,14 @@ namespace hooks {
 		}
 	}
 
-	void __declspec(naked) orders_is_geyser_top_unit_wrapper() {
+	void __declspec(naked) orders_is_geyser_cap_wrapper() {
 		static Unit* unit;
 		static u32 result;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = hooks::orders_isGeyserTopUnitHook(unit);
+		result = hooks::orders_is_geyser_cap(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -264,13 +264,13 @@ namespace hooks {
 
 	const u32 jmp_00468952 = 0x00468952;
 	const u32 jmp_00468966 = 0x00468966;
-	void __declspec(naked) orders_is_geyser_top_unit_ex_wrapper() {
-		static u16 id;
+	void __declspec(naked) orders_is_geyser_cap_ex_wrapper() {
+		static u16 unit_id;
 		__asm {
-			MOV id, AX
+			MOV unit_id, AX
 			PUSHAD
 		}
-		if (hooks::is_gasholder_structure(id)) {
+		if (unit_id_is_capped_gas_structure(unit_id)) {
 			__asm {
 				POPAD
 				JMP jmp_00468952
@@ -285,8 +285,8 @@ namespace hooks {
 
 	void inject_gas_hooks() {
 		jump_patch(orders_scvbuild2_wrapper,				0x00467F12, 1);
-		jump_patch(orders_is_geyser_top_unit_wrapper,		0x4688b0, 1);
-		jump_patch(orders_is_geyser_top_unit_ex_wrapper,	0x0046893C, 3);
+		jump_patch(orders_is_geyser_cap_wrapper,			0x004688B0, 1);
+		jump_patch(orders_is_geyser_cap_ex_wrapper,			0x0046893C, 3);
 
 		/*
 		0046893C  |.  66:8B41 64    MOV AX,WORD PTR DS:[ECX+64]
