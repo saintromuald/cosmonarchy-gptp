@@ -9,7 +9,7 @@ namespace hooks {
 	inline void refresh_vision_timers(u32 test_tile_pos, u8 vision_flags, u8 timer) {
 		s32 player = 7;
 		u8 player_flag = 0x80;
-		u8* cur_vision_timers = &vision_timers[test_tile_pos][0];
+		u8* cur_vision_timers = &g_vision_timers[test_tile_pos][0];
 		do {
 			if (vision_flags & player_flag && *(cur_vision_timers + player) < timer) {
 				*(cur_vision_timers + player) = timer;
@@ -173,19 +173,19 @@ namespace hooks {
 				s32 player = 7;
 				u8 mask = 0xFF;
 				do {
-					bool revealed = vision_timers[i_0][player];
+					bool revealed = g_vision_timers[i_0][player];
 					mask ^= revealed << player;
-					vision_timers[i_0][player] -= revealed;
+					g_vision_timers[i_0][player] -= revealed;
 				} while (--player >= 0);
 				active_tile[i_0].visibility_flags = mask;
 			} while (--i_0 >= 0);
 		} else if (!(*g_cheat_state & CheatFlags::WarAintWhatItUsedToBe)) {
 			u32 i_0 = g_map_tile_size->width * g_map_tile_size->height;
-			u32* vision_timers = (u32*)&vision_timers[i_0];
+			u32* g_vision_timers = (u32*)&g_vision_timers[i_0];
 			i_0 >>= 2;
 			do {
-				--vision_timers;
-				*vision_timers = 0;
+				--g_vision_timers;
+				*g_vision_timers = 0;
 			} while (--i_0);
 		}
 	}
