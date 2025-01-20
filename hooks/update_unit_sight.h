@@ -5,7 +5,7 @@
 #include <BW/structures.h>
 #include <BW/structures/Unit.h>
 
-extern u8 vision_timers[256*256][8];
+inline u8 vision_timers[256*256][8];
 
 namespace hooks {
 	inline void refresh_vision_timers(u32 test_tile_pos, u8 vision_flags, u8 timer);

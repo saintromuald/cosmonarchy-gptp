@@ -123,14 +123,7 @@ bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context
 			}
 		}
 		if (allowed_unit_ids.size() > 0) {
-			bool good = false;
-			for (auto a : allowed_unit_ids) {
-				if (target->id == a) {
-					good = true;
-					break;
-				}
-			}
-			if (!good) {
+			if (!std::ranges::contains(allowed_unit_ids, target->id)) {
 				return false;
 			}
 		}

@@ -1,11 +1,10 @@
 #include "update_unit_sight.h"
 #include "BW/ExtendSightLimit.h"
 
-s32 temp_height;
-u8 vision_timers[256*256][8];
+static s32 g_temp_height;
 
 namespace hooks {
-	SightCallbacks sight_callbacks[] = { ground_sight_cb_inside, air_sight_cb_inside, hit_sight_cb_inside, ground_sight_cb_edge, air_sight_cb_edge, hit_sight_cb_edge };
+	SightCallbacks g_sight_callbacks[]{ground_sight_cb_inside, air_sight_cb_inside, hit_sight_cb_inside, ground_sight_cb_edge, air_sight_cb_edge, hit_sight_cb_edge};
 
 	inline void refresh_vision_timers(u32 test_tile_pos, u8 vision_flags, u8 timer) {
 		s32 player = 7;
@@ -42,7 +41,7 @@ namespace hooks {
 					SightTile* test_tile = sighted_tile->tiles[--count];
 					u32 rel_tile_pos = cur_tile_pos + test_tile->w + (g_map_tile_size->width * test_tile->h);
 					if (!(rel_flags & test_tile->visibility_mask)
-						&& bw::tile_is_equal_or_lower(temp_height, rel_tile_pos)
+						&& bw::tile_is_equal_or_lower(g_temp_height, rel_tile_pos)
 						&& (!(g_height_table[rel_tile_pos] == g_height_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000))) {
 						refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 10);
 						sighted_tile->visibility_mask = current_active_tile[sighted_tile->relative_tile].flags &= new_vision_flags;
@@ -76,7 +75,7 @@ namespace hooks {
 				u32 rel_tile_pos = cur_tile_pos + test_tile->w + (g_map_tile_size->width * test_tile->h);
 
 				if (!(rel_flags & test_tile->visibility_mask)
-				&&    bw::tile_is_equal_or_lower(temp_height, rel_tile_pos)
+				&&    bw::tile_is_equal_or_lower(g_temp_height, rel_tile_pos)
 				&& (!(g_height_table[rel_tile_pos] == g_height_table[cur_tile_pos] && test_tile->visibility_mask & 0x1000000)))
 				{
 					refresh_vision_timers(cur_tile_pos + sighted_tile->relative_tile, rel_flags, 10);
@@ -193,12 +192,12 @@ namespace hooks {
 
 	void reveal_sight_at_location(u32 sight_range, u32 vision_flags, s32 pos_x, s32 pos_y, bool is_air_unit) {
 		if (vision_flags <= 0xFF && !(*g_cheat_state & CheatFlags::BlackSheepWall)) {
-			sight_callback_t** callback = sight_callbacks->inside;
+			sight_callback_t** callback = g_sight_callbacks->inside;
 			if (sight_range) {
 				if (is_air_unit) {
 					++callback; //air_sight
 				} else {
-					temp_height = get_ground_height_at_px(pos_y, pos_x);
+					g_temp_height = get_ground_height_at_px(pos_y, pos_x);
 				}
 			} else {
 				++sight_range;
@@ -214,7 +213,7 @@ namespace hooks {
 				|| pos_x + tile_sight_radius_x >= g_map_tile_size->width
 				|| pos_y - tile_sight_radius_y < 0
 				|| pos_y + tile_sight_radius_y >= g_map_tile_size->height) {
-				callback += 3; // sight_callbacks->edge
+				callback += 3; // g_sight_callbacks->edge
 			}
 
 			ActiveTile* active_tile = *g_active_tile_array;
@@ -224,13 +223,13 @@ namespace hooks {
 
 	s32 get_ground_height_at_px(s32 offset_y, s32 offset_x) {
 		u32 grid_pos = g_map_tile_size->width * (offset_y >> 5) + (offset_x >> 5);
-		u32 tile_id = (u16)(*g_zerg_cagra_tile_data)->tile[grid_pos];
+		u32 tile_id = (u16)g_zerg_cagra_tile_data->tile[grid_pos];
 
 		if (!tile_id) {
-			tile_id = (u16)(*g_MTXM_handle)->tile[grid_pos];
+			tile_id = (u16)g_mtxm_handle->tile[grid_pos];
 		}
-		u32 megatile_id = (u16)((*g_cv5_file_handle)->group[(tile_id >> 4) & 0xFFF].tiles[tile_id & 0xF]);
-		vf4 minitile = (*g_vf4_file_handle)->tile[megatile_id][4 * ((offset_y >> 3) & 3) + ((offset_x >> 3) & 3)];
+		u32 megatile_id = (u16)(g_cv5_file_handle->group[(tile_id >> 4) & 0xFFF].tiles[tile_id & 0xF]);
+		vf4 minitile = g_vf4_file_handle->tile[megatile_id][4 * ((offset_y >> 3) & 3) + ((offset_x >> 3) & 3)];
 		return ((minitile.flags >> 1) & 0x3) + minitile.xHeight;
 	}
 }

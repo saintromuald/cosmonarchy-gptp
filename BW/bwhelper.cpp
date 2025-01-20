@@ -11643,21 +11643,21 @@ namespace helper {
 
 	u8 ask_for_help(Unit* attacker, Unit* helper) {
 		const u32 func_address = 0x00476E60;
-		static u32 result;
+		static u8 result;
 		__asm {
 			PUSHAD
 			MOV ESI, helper
 			MOV EAX, attacker
 			CALL func_address
-			MOV result, EAX
+			MOV result, AL
 			POPAD
 		}
-		return (u8)result;
+		return result;
 	}
 
 	s32 play_loaded_sound(u32 loaded_sound, s32 volume, s32 pan, u32 sound_id, u32 unit_id, u32 sound_flags, u32 some_bool, u32 priority) {
-		static s32 result;
 		const u32 func_address = 0x004BBAF0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH priority
@@ -11676,8 +11676,8 @@ namespace helper {
 	}
 
 	s32 queue_sound(u32 sound_id, s32 volume, s32 pan, u32 unit_id) {
-		static s32 result;
 		const u32 func_address = 0x004BBEB0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH unit_id
@@ -11692,8 +11692,8 @@ namespace helper {
 	}
 
 	bool unit_finished_summon(Unit* unit) {
-		static u32 result;
 		const u32 func_address = 0x00436E40;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -11705,8 +11705,8 @@ namespace helper {
 	}
 
 	u32 get_total_hp_plus_shields(Unit* unit) {
-		static u32 result;
 		const u32 func_address = 0x00402710;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -11718,8 +11718,8 @@ namespace helper {
 	}
 
 	bool unit_is_morphing(Unit* unit) {
-		static u32 result;
 		const u32 func_address = 0x0045CD00;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
