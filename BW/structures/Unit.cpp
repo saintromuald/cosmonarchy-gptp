@@ -1526,3 +1526,19 @@ bool Unit::is_upgrading_or_researching() {
 bool Unit::is_completed() {
 	return this->status & UnitStatus::Completed;
 }
+
+bool Unit::is_garrisoned() {
+	return this->status & UnitStatus::InBuilding;
+}
+
+bool Unit::is_burrowed() {
+	return this->status & UnitStatus::Burrowed;
+}
+
+bool Unit::can_burrow() {
+	return units_dat::base_property[this->id] & UnitProperty::Burrowable;
+}
+
+bool Unit::is_computer_controlled() {
+	return g_player_table[this->player].type == PlayerType::Computer;
+}

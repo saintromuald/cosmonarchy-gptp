@@ -407,6 +407,10 @@ struct Unit : public UnitLayout
 	bool is_researching();
 	bool is_upgrading_or_researching();
 	bool is_completed();
+	bool is_garrisoned();
+	bool is_burrowed();
+	bool can_burrow();
+	bool is_computer_controlled();
 };
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

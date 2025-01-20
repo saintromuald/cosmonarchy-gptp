@@ -4932,11 +4932,7 @@ namespace helper {
 
 	// Identical to unitIsHangerUnit @ 0x00401450
 	bool is_hangar_unit(Unit* unit) {
-		if (unit->id == UnitId::ProtossSteward || unit->id == UnitId::ProtossPlasmaShell) {
-			return true;		
-		} else {
-			return false;
-		}
+		return unit->id == UnitId::ProtossSteward || unit->id == UnitId::ProtossPlasmaShell;
 	}
 
 	Unit* acquire_medic_heal_target(Unit* medic) {
@@ -11620,8 +11616,8 @@ namespace helper {
 	}
 
 	bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit) {
-		static u32 result;
 		const u32 func_address = 0x004769D0;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, compare_unit
@@ -11645,9 +11641,9 @@ namespace helper {
 		}
 	}
 
-	char ask_for_help(Unit* attacker, Unit* helper) {
-		static u32 result;
+	u8 ask_for_help(Unit* attacker, Unit* helper) {
 		const u32 func_address = 0x00476E60;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, helper
@@ -11656,7 +11652,7 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		return (char)result;
+		return (u8)result;
 	}
 
 	s32 play_loaded_sound(u32 loaded_sound, s32 volume, s32 pan, u32 sound_id, u32 unit_id, u32 sound_flags, u32 some_bool, u32 priority) {
