@@ -554,11 +554,11 @@ namespace hooks {
 	// Hooked because why not? - Pr0nogo
 	bool ai_can_mine_extra(Unit* unit) { // 00447A70
 		if (!unit->unit_ai) {
-			return 0;
+			return false;
 		}
 		u8 player = unit->player;
 		if (g_aiscript_controller[player].difficulty != 2) {
-			return 0;
+			return false;
 		}
 
 		u16 unit_id = UnitId::None;
@@ -582,15 +582,12 @@ namespace hooks {
 
 	// Hooked to fix crashes - Pr0nogo
 	bool ai_is_building_safe(Unit* unit) { // 00438910
-		if (!unit) {
-			return;
-		}
-		if (unit->main_order_id) {
-			s16 regionId = helper::get_region_id(unit->position.x, unit->position.y);
-			AiRegion* playerRegions = g_ai_region_captains[unit->player];
-			char regionState = playerRegions[regionId].state;
-			AiRegion* region = &playerRegions[regionId];
-			if (regionState != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->flags & 0x20)) {
+		if (unit && unit->main_order_id) {
+			s16 region_id = helper::get_region_id(unit->position.x, unit->position.y);
+			AiRegion* player_regions = g_ai_region_captains[unit->player];
+			u8 region_state = player_regions[region_id].state;
+			AiRegion* region = &player_regions[region_id];
+			if (region_state != RegionState::EnemySighted && !region->air_target && !region->ground_target && !(region->flags & 0x20)) {
 				return true;
 			}
 		}
@@ -600,7 +597,7 @@ namespace hooks {
 	// Hooked to fix crashes - Pr0nogo
 	bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2) { // 00438E10
 		if (!unit1 || !unit2) {
-			return 0;
+			return false;
 		}
 		u16 region_id = helper::get_region_id(unit2->position.x, unit2->position.y);
 		u16 region_id2 = helper::get_region_id(unit1->position.x, unit1->position.y);

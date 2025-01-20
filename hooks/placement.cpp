@@ -450,11 +450,11 @@ namespace hooks {
             return true;
         }
         if (bw::in_replay_or_witness()) {
-            return;
+            return false;
         }
         const char* string = g_stat_txt_buffer.get_string(g_string_id[placement_state]);
         if (!string) {
-            return;
+            return false;
         }
         if (*g_active_nation_id == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
             helper::set_unit_stat_txt_error_message(string);
