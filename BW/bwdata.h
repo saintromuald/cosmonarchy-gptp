@@ -1290,8 +1290,6 @@ BW_REF(u8,					g_tournament_mode,				0x00596877);
 BW_REF(u16*,				g_string_id,					0x00513634);
 BW_REF(u8*,					g_game_map_data_for_blit,		0x00628454);
 
-BW_REF(u8*,					g_game_map_data_for_blit,		0x00628454);
-
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);
 //-------- Format strings used by Starcraft implementations of printf --------//

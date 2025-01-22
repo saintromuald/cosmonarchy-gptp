@@ -1343,9 +1343,11 @@ UnitId::Enum get_racial_town_center_id(u32 race_id) {
     return UnitId::None;
 }
 
-u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {
-    switch (weapon_id) {
-        case WeaponId::CicatusPhaseClaws: return 2;
+namespace WeaponId {
+    u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {
+        switch (weapon_id) {
+           case WeaponId::CicatusPhaseClaws: return 2;
+        }
+        return 1;
     }
-    return 1;
-}
+} // namespace WeaponId

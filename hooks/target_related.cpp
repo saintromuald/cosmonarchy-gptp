@@ -948,7 +948,7 @@ namespace hooks {
 			if (helper::unit_can_infest(unit)) {
 				can_proceed_with_attack = helper::is_infestable_target(target) != 0;
 			} else {
-				if (target->is_airborne()) {
+				if (target->is_in_air()) {
 					can_proceed_with_attack = final_unit->get_air_weapon() != WeaponId::None;
 				} else {
 					can_proceed_with_attack = final_unit->get_ground_weapon() != WeaponId::None;
@@ -966,14 +966,14 @@ namespace hooks {
 				return 0;
 			}
 		}
-		if (target->is_airborne()) {
+		if (target->is_in_air()) {
 			goto continue_loop;
 		}
 		if (!helper::unit_has_path_to_target(unit, target)) {
 			goto continue_loop;
 		}
 	check_target:
-		if (!unit || !unit->is_computer_controlled() || unit->is_airborne() || helper::is_unit_in_weapon_range(target, unit) || !((target->status >> 7) & 1)) {
+		if (!unit || !unit->is_computer_controlled() || unit->is_in_air() || helper::is_unit_in_weapon_range(target, unit) || !((target->status >> 7) & 1)) {
 			GuardAi* guard_ai = 0;
 			u32 guard_home_x = 0;
 			u32 guard_home_y = 0;

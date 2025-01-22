@@ -1,8 +1,7 @@
 #pragma once
-namespace IconId
-{
-	enum Enum
-	{
+
+namespace IconId {
+	enum Enum {
 		/*0000*/	Marine,
 		/*0001*/	Ghost,
 		/*0002*/	Vulture,

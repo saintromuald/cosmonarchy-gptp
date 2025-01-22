@@ -192,7 +192,7 @@ namespace hooks {
 		UnitExt& attacker_ext = attacker->ext();
 		WeaponId::Enum weapon_id = WeaponId::None;
 		if (!unit_id_is_burrowed_attacker(attacker->id) || attacker->burrowed_attacker_can_attack()) {
-			if (target->is_airborne() && units_dat::air_weapon[attacker->id] != WeaponId::None) {
+			if (target->is_in_air() && units_dat::air_weapon[attacker->id] != WeaponId::None) {
 				weapon_id = (WeaponId::Enum)units_dat::air_weapon[attacker->id];
 			} else {
 				weapon_id = (WeaponId::Enum)units_dat::ground_weapon[attacker->id];
@@ -205,8 +205,7 @@ namespace hooks {
 		// Refactored 15 Sep 2022. -Pr0nogo
 		u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
 		damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
-		u32 factor = get_custom_melee_factor(weapon_id);
-		for (u32 i = 0; i < factor; i++) {
+		for (u32 i = 0; i < WeaponId::get_custom_melee_factor(weapon_id); i++) {
 			if (attacker_ext.values[ValueDeconstruction]) {
 				bw::do_deconstruction_damage(attacker, weapon_id);
 			}

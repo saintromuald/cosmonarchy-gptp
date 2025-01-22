@@ -1,11 +1,7 @@
 #pragma once
 
-//Based on bwapi/BWMemoryEdit/Enums/FlingyType.cs
-
-namespace flingy_id
-{
-	enum Enum
-	{
+namespace flingy_id {
+	enum Enum {
 		Scourge,
 		Broodling,
 		Infested_Terran,

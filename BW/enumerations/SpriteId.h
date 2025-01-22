@@ -1,11 +1,7 @@
 #pragma once
 
-//Based on bwapi/BWMemoryEdit/Enums/SpriteType.cs
-
-namespace SpriteId
-{
-	enum Enum
-	{
+namespace SpriteId {
+	enum Enum {
 		SPR_2_38_Ash = 0,
 		SPR_2_39_Ash = 1,
 		SPR_2_41_Ash = 2,
