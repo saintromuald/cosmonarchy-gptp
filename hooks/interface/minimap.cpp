@@ -201,8 +201,8 @@ namespace hooks {
 		if (pos_y) {
 			u16* map_tileset_handle = (u16*)*megatileArray;
 			u8* surf_buff = g_minimap_surface->buffer;
-			VX4* vx4_handle = (VX4*)(*vx4FileHandle);
-			VR4* vr4_handle = (VR4*)(*vr4FileHandle);
+			VX4* vx4_handle = (VX4*)(*g_vx4_file_handle);
+			VR4* vr4_handle = (VR4*)(*g_vr4_file_handle);
 
 			do {
 				u32 pos_x = g_map_width;
@@ -226,8 +226,8 @@ namespace hooks {
 		if (buff_size) {
 			u16* map_tileset_handle = (u16*)*megatileArray;
 			u8* surf_buff = ((Bitmap*)g_minimap_surface)->buffer;
-			VX4* vx4_handle = (VX4*)(*vx4FileHandle);
-			VR4* vr4_handle = (VR4*)(*vr4FileHandle);
+			VX4* vx4_handle = (VX4*)(*g_vx4_file_handle);
+			VR4* vr4_handle = (VR4*)(*g_vr4_file_handle);
 
 			do {
 				u32 i_0 = *map_tileset_handle;
@@ -248,8 +248,8 @@ namespace hooks {
 			u32 map_width = g_map_width;
 			u32 buff_step = (g_minimap_surface->width << 1) - map_width;
 			u32 map_width_2 = map_width >> 1;
-			VX4* vx4_handle = (VX4*)(*vx4FileHandle);
-			VR4* vr4_handle = (VR4*)(*vr4FileHandle);
+			VX4* vx4_handle = (VX4*)(*g_vx4_file_handle);
+			VR4* vr4_handle = (VR4*)(*g_vr4_file_handle);
 
 			do {
 				u32 pos_x = map_width_2;
@@ -284,8 +284,8 @@ namespace hooks {
 		if (pos_y) {
 			u16* map_tileset_handle = (u16*)*megatileArray;
 			u8* surf_buff = ((Bitmap*)g_minimap_surface)->buffer;
-			VX4* vx4_handle = (VX4*)(*vx4FileHandle);
-			VR4* vr4_handle = (VR4*)(*vr4FileHandle);
+			VX4* vx4_handle = (VX4*)(*g_vx4_file_handle);
+			VR4* vr4_handle = (VR4*)(*g_vr4_file_handle);
 			u32 tile_y = 0;
 
 			do {

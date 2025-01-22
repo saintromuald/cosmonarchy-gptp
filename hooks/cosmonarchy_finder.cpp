@@ -1,17 +1,17 @@
 #include "hooks\cosmonarchy_finder.h"
 
-bool range_match(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
+bool range_match(Unit* unit, u32 r, u32 context, const std::vector<u16>& allowed_ids) {
 	bw::UnitFinder units_in_splash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
 	auto a = bw::UnitFinder::get_nearest_target(
 		unit->get_x() - r, unit->get_y() - r,
 		unit->get_x() + r, unit->get_y() + r,
-		unit, cosmonarchy_finder_match(unit, context, allowedIds)
+		unit, cosmonarchy_finder_match(unit, context, allowed_ids)
 	);
 	return a != nullptr;
 }
 
-u32 cosmonarchy_unit_count(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds) {
-	auto condition = cosmonarchy_finder_match(unitPtr, flags, unitIds);
+u32 cosmonarchy_unit_count(Unit* unit, Point16 pos, s32 r, u32 flags, const std::vector<u16>& unit_ids) {
+	auto condition = cosmonarchy_finder_match(unit, flags, unit_ids);
 	bw::UnitFinder units_in_splash(pos.x - r, pos.y - r,
 		pos.x + r, pos.y + r);
 	auto count = 0;
@@ -25,7 +25,7 @@ u32 cosmonarchy_unit_count(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::ve
 	return count;
 }
 
-Unit* range_match_unit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
+Unit* range_match_unit(Unit* unit, u32 r, u32 context, const std::vector<u16>& allowed_ids) {
 	bw::UnitFinder units_in_splash(unit->get_x() - r, unit->get_y() - r, unit->get_x() + r, unit->get_y() + r);
 	auto a = bw::UnitFinder::get_nearest_target(
 		unit->get_x() - r,
@@ -33,12 +33,12 @@ Unit* range_match_unit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedI
 		unit->get_x() + r,
 		unit->get_y() + r,
 		unit,
-		cosmonarchy_finder_match(unit, context, allowedIds)
+		cosmonarchy_finder_match(unit, context, allowed_ids)
 	);
 	return a;
 }
 
-Unit* range_match_position(Vec32 position, u32 r, u32 context, std::vector<u16> allowedIds) {
+Unit* range_match_position(Vec32 position, u32 r, u32 context, const std::vector<u16>& allowed_ids) {
 	bw::UnitFinder units_in_splash(position.x - r, position.y - r, position.x + r, position.x + r);
 	auto a = bw::UnitFinder::get_nearest_target(
 		position.x - r,
@@ -46,12 +46,12 @@ Unit* range_match_position(Vec32 position, u32 r, u32 context, std::vector<u16> 
 		position.x + r,
 		position.y + r,
 		position,
-		cosmonarchy_finder_match(nullptr, context, allowedIds)
+		cosmonarchy_finder_match(nullptr, context, allowed_ids)
 	);
 	return a;
 }
 
-bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds) {
+bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context, const std::vector<u16>& allowed_unit_ids) {
 	bw::UnitFinder::CallbackMatch callback = [=](Unit* target) {
 		if (target == center && !(context & Flags::IncludingSelf)) {
 			return false;
@@ -122,15 +122,8 @@ bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context
 				return false;
 			}
 		}
-		if (allowedUnitIds.size() > 0) {
-			bool good = false;
-			for (auto a : allowedUnitIds) {
-				if (target->id == a) {
-					good = true;
-					break;
-				}
-			}
-			if (!good) {
+		if (allowed_unit_ids.size() > 0) {
+			if (!std::ranges::contains(allowed_unit_ids, target->id)) {
 				return false;
 			}
 		}

@@ -1174,7 +1174,6 @@ namespace hooks {
 				g_iquare_globals->create_effect(EffectId::AspirantCriticality, 5 * 24, { data.target->position.x, data.target->position.y }, 2 * 32, SpriteId::Criticality, 5, data.attacking_player_id, data.target);
 			}
 		}
-
 		return fatal_deal_damage;
 	}
 
@@ -1232,41 +1231,36 @@ namespace hooks {
 
 	// Hooked to reveal fog around attackers when they attack allies. -Pr0nogo
 	void unit_was_hit(Unit* victim, Unit* attacker, u32 reveal) { // 004795D0
-		if (attacker) {
-			if (attacker->player != victim->player) {
-				victim->last_attacking_player = attacker->player;
-				if (victim->unit_ai) {
-					if (!victim->auto_target_unit) {
-						victim->auto_target_unit = attacker;
-						if (victim->subunit) {
-							if (units_dat::base_property[victim->subunit->id] & UnitProperty::Subunit) {
-								victim->subunit->last_attacking_player = victim->last_attacking_player;
-								victim->subunit->auto_target_unit = attacker;
-							}
-						}
-					}
+		if (!attacker || attacker->player == victim->player) {
+			return;
+		}
+		victim->last_attacking_player = attacker->player;
+		if (victim->unit_ai && !victim->auto_target_unit) {
+			victim->auto_target_unit = attacker;
+			if (victim->subunit && victim->subunit->is_subunit()) {
+				victim->subunit->last_attacking_player = victim->last_attacking_player;
+				victim->subunit->auto_target_unit = attacker;
+			}
+		}
+		helper::ai_unit_was_hit(victim, attacker, 1, 0);
+		if (reveal && attacker->sprite) {
+			if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
+				bw::reveal_attacker(attacker, victim);
+				if (attacker->id == UnitId::ProtossSteward && attacker->hangar_unit.parent) {
+					bw::reveal_attacker(attacker->hangar_unit.parent, victim);
 				}
-				helper::ai_unit_was_hit(victim, attacker, 1, 0);
-				if (reveal && attacker->sprite) {
-					if (!helper::unit_can_see_cloaked_target(attacker, victim)) {
-						bw::reveal_attacker(attacker, victim);
-						if (attacker->id == UnitId::ProtossSteward && attacker->hangar_unit.parent) {
-							bw::reveal_attacker(attacker->hangar_unit.parent, victim);
-						}
-					}
-				}
-				if (attacker->status & UnitStatus::InBuilding && attacker->connected_unit) { // This nullcheck is temporary until we fix the source of the issue. -Pr0nogo
-					attacker = attacker->connected_unit;
-				}
-				if (victim->main_order_id != OrderId::HoldPositionNormal && helper::is_better_target(victim, victim->auto_target_unit, attacker)) {
-					helper::react_to_hit(attacker, victim);
-				}
-				if (!victim->unit_ai) {
-					for (Unit* unit : g_unit_search.radial(victim->position, 96)) {
-						if (unit != victim && unit->player == victim->player) {
-							helper::ask_for_help(attacker, unit);
-						}
-					}
+			}
+		}
+		if (attacker->is_garrisoned() && attacker->connected_unit) { // This nullcheck is temporary until we fix the source of the issue. -Pr0nogo
+			attacker = attacker->connected_unit;
+		}
+		if (victim->main_order_id != OrderId::HoldPositionNormal && helper::is_better_target(victim, victim->auto_target_unit, attacker)) {
+			helper::react_to_hit(attacker, victim);
+		}
+		if (!victim->unit_ai) {
+			for (Unit* unit : g_unit_search.radial(victim->position, 96)) {
+				if (unit != victim && unit->player == victim->player) {
+					helper::ask_for_help(attacker, unit);
 				}
 			}
 		}
@@ -1275,48 +1269,44 @@ namespace hooks {
 	// Hooked to investigate crashes. -Pr0nogo
 	u32 ask_for_help(Unit* attacker, Unit* helper) { // 00476E60
 		// Originally had code to prohibit Didact and Danimoth unit IDs.
-		if (!(units_dat::base_property[helper->id] & UnitProperty::Worker)
-		&&  !(helper->status & UnitStatus::Burrowed)) {
-			if (helper::ai_unit_can_attack(helper)) {
-				if (helper::is_better_target(helper, helper->auto_target_unit, attacker)) {
-					Unit* subunit = helper->subunit;
-					helper->auto_target_unit = attacker;
-					if (helper::unit_is_subunit(subunit)) {
-						subunit->last_attacking_player = helper->last_attacking_player;
-						helper->subunit->auto_target_unit = attacker;
-					}
-					return true;
-				}
-			}
+		if (helper->is_worker() || helper->is_burrowed() || !helper::ai_unit_can_attack(helper) || !helper::is_better_target(helper, helper->auto_target_unit, attacker)) {
+			return false;
 		}
-		return false;
+		Unit* subunit = helper->subunit;
+		helper->auto_target_unit = attacker;
+		if (helper::unit_is_subunit(subunit)) {
+			subunit->last_attacking_player = helper->last_attacking_player;
+			helper->subunit->auto_target_unit = attacker;
+		}
+		return true;
 	}
 
 	// Hooked to stop damage from forcing units to unburrow. -Pr0nogo
 	void react_to_hit(Unit* attacker, Unit* victim) { // 004776C0
-		if (!unit_id_is_larva(victim->id)) {
-			if (!(victim->status & UnitStatus::Burrowed) || victim->irradiate_timer || (unit_id_is_burrowed_attacker(victim->id))) {
-				if  (units_dat::base_property[victim->id] & UnitProperty::Building
-				||   helper::unit_can_attack_target(attacker, victim, 1) && !(units_dat::base_property[victim->id] & UnitProperty::Worker)) {
-					victim->auto_target_unit = attacker;
-					Unit* subunit = victim->subunit;
-					if (subunit && units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
-						subunit->last_attacking_player = victim->last_attacking_player;
-						subunit->auto_target_unit = attacker;
-					}
-				} else if (!unit_id_is_burrowed_attacker(victim->id) || !(victim->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) || victim->unit_ai && !victim->irradiate_timer) {
-					if (units_dat::base_property[victim->id] & UnitProperty::Subunit) {
-						victim = victim->subunit;
-					}
-
-					UnitExt* victim_ext = get_unit_ext(victim);
-					if (bw::unit_can_flee(victim)) {
-						Target flee_target = helper::ai_prepare_to_flee(victim, attacker);
-						helper::order_interrupt(victim, 0, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
-					}
-				}
-			} else if (units_dat::base_property[victim->id] & UnitProperty::Burrowable && g_player_table[victim->player].type == PlayerType::Computer) {
+		if (unit_id_is_larva(victim->id)) {
+			return;
+		}
+		bool is_burrowed_attacker = unit_id_is_burrowed_attacker(victim->id);
+		if (victim->is_burrowed() && !victim->irradiate_timer && !is_burrowed_attacker) {
+			if (victim->can_burrow() && victim->is_computer_controlled()) {
 				helper::unburrow(victim); // For now, we unburrow AI units only. -Pr0nogo
+			}
+			return;
+		}
+		if (victim->is_building() || (helper::unit_can_attack_target(attacker, victim, 1) && !victim->is_worker())) {
+			victim->auto_target_unit = attacker;
+			Unit* subunit = victim->subunit;
+			if (subunit && subunit->is_subunit()) {
+				subunit->last_attacking_player = victim->last_attacking_player;
+				subunit->auto_target_unit = attacker;
+			}
+		} else if (!is_burrowed_attacker || !(victim->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) || victim->unit_ai && !victim->irradiate_timer) {
+			if (victim->is_subunit()) {
+				victim = victim->subunit;
+			}
+			if (bw::unit_can_flee(victim)) {
+				Target flee_target = helper::ai_prepare_to_flee(victim, attacker);
+				helper::order_interrupt(victim, 0, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
 			}
 		}
 	}

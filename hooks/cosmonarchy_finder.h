@@ -36,20 +36,21 @@ namespace Flags {
 	};
 }
 
-bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context, std::vector<u16> allowedUnitIds);
+bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context, const std::vector<u16>& allowed_unit_ids);
 
-bool range_match(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
-Unit* range_match_unit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
-Unit* range_match_position(Vec32 position, u32 r, u32 context, std::vector<u16> allowedIds);
-u32 cosmonarchy_unit_count(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds);
-template<typename cosmonarchyLoop>
-inline void cosmonarchy_finder_loop(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds, cosmonarchyLoop l) {
-	auto condition = cosmonarchy_finder_match(unitPtr, flags, unitIds);
+bool range_match(Unit* unit, u32 r, u32 context, const std::vector<u16>& allowed_ids);
+Unit* range_match_unit(Unit* unit, u32 r, u32 context, const std::vector<u16>& allowed_ids);
+Unit* range_match_position(Vec32 position, u32 r, u32 context, const std::vector<u16>& allowed_ids);
+u32 cosmonarchy_unit_count(Unit* unit, Point16 pos, s32 r, u32 flags, const std::vector<u16>& unit_ids);
+
+template <typename Func>
+void cosmonarchy_finder_loop(Unit* unit, Point16 pos, s32 r, u32 flags, std::vector<u16> unit_ids, Func&& func) {
+	auto condition = cosmonarchy_finder_match(unit, flags, unit_ids);
 	bw::UnitFinder units_in_splash(pos.x - r, pos.y - r, pos.x + r, pos.y + r);
-	for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
+	for (u32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 		auto unit = units_in_splash.get_unit(i);
 		if (condition(unit)) {
-			l(unit);
+			func(unit);
 		}
 	}
 }

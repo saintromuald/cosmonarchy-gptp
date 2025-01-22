@@ -3428,7 +3428,7 @@ namespace hooks {
 			init_grp_wire_font("font_wire");
 		}
 
-		memset(vision_timers, 0, 8*256*256);
+		memset(g_vision_timers, 0, 8*256*256);
 
 		init_omnipresence();
 

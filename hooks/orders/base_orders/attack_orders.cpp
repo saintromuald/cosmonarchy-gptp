@@ -435,8 +435,8 @@ namespace hooks {
 			switch (unit->main_order_state) {
 				case 0: {
 					if (unit->hangar_unit.parent) {
-						helper::play_sound_from_unit(616, unit, 1, 0);
-						helper::get_next_strafe_position(unit, 3u, unit->order_target.pt);
+						helper::play_sound_from_unit(SoundId::StewardLaunch01, unit, 1, 0);
+						helper::get_next_strafe_position(unit, 3, unit->order_target.pt);
 						unit->main_order_timer = 15;
 						unit->main_order_state = 1;
 						goto LABEL_9;
@@ -499,9 +499,6 @@ namespace hooks {
 						}
 					}
 				} break;
-				default: {
-					return;
-				}
 			}
 		}
 	}
@@ -539,8 +536,7 @@ namespace hooks {
 
 	// Ported from GPTP to change the Solarion-Steward launch timer. -Pr0nogo
 	// Used when unit->main_order_id is OrderId::Carrier, OrderId::CarrierFight or OrderId::HoldPositionSolarion
-	void orders_carrier_idle(Unit* unit) // 004666A0
-	{
+	void orders_carrier_idle(Unit* unit) { // 004666A0
 		if (helper::order_hangar_unit(unit, 0, 6 * 32)) {
 			Unit* out_unit = release_fighter(unit);
 			if (out_unit) {
@@ -1102,9 +1098,6 @@ namespace hooks {
 
 	// Hooked to overhaul AI deployment code. -Pr0nogo
 	void order_to_attack_target(Unit* target, Unit* unit, b32 process_subunit, b32 target_is_cloaked) { // 00476FC0
-		if (target->id == UnitId::ProtossSteward && target->hangar_unit.parent) {
-			target = target->hangar_unit.parent;
-		}
 		helper::assign_order_with_target(target, unit, units_dat::attack_unit_order[unit->id]);
 		Unit* subunit = unit->subunit;
 		if (process_subunit) {

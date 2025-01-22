@@ -5,19 +5,19 @@
 #include <BW/structures.h>
 #include <BW/structures/Unit.h>
 
-extern u8 vision_timers[256*256][8];
+inline u8 g_vision_timers[256*256][8];
 
 namespace hooks {
-	inline void refresh_vision_timers(u32 testTilePos, u8 visionFlags, u8 timer);
-	void __fastcall gndSightCB_Edge(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags);
-	void __fastcall gndSightCB_Inside(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags);
-	void __fastcall airSightCB_Edge(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags);
-	void __fastcall airSightCB_Inside(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags);
-	void __fastcall hitSightCB_Edge(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags);
-	void __fastcall hitSightCB_Inside(u32 tileX, u32 tileY, SightRange* sightVals, ActiveTile* curActiveTile, u32 relFlags, u32 newVisionFlags);
+	inline void refresh_vision_timers(u32 test_tile_pos, u8 vision_flags, u8 timer);
+	void __fastcall ground_sight_cb_edge(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags);
+	void __fastcall ground_sight_cb_inside(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags);
+	void __fastcall air_sight_cb_edge(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags);
+	void __fastcall air_sight_cb_inside(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags);
+	void __fastcall hit_sight_cb_edge(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags);
+	void __fastcall hit_sight_cb_inside(u32 tile_x, u32 tile_y, SightRange* sight_values, ActiveTile* current_active_tile, u32 rel_flags, u32 new_vision_flags);
 	void update_fog();
-	void reveal_sight_at_location(u32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit);
-	s32 get_ground_height_at_px(s32 offsetY, s32 offsetX);
+	void reveal_sight_at_location(u32 sight_range, u32 vision_flags, s32 pos_x, s32 pos_y, bool is_air_unit);
+	s32 get_ground_height_at_px(s32 offset_y, s32 offset_x);
 
 	void inject_sight_update_hooks();
 }
