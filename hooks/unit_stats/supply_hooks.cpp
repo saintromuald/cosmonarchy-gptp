@@ -486,7 +486,7 @@ namespace hooks {
 		u32 user_value = (player << 24) | (use_player_color << 16);
 
 		if (can_show_apm) {
-			u16 display_value = g_player_table[player].type == PlayerType::Human ? player_apm_counter[player].action_count / (ActionSampleTime / 60.0) : 0x8000;
+			u16 display_value = g_player_table[player].type == PlayerType::Human ? g_player_apm_counter[player].action_count / (ActionSampleTime / 60.0) : 0x8000;
 			print_player_apm(dialog, user_value | display_value);
 			local_pos.x -= 33;
 		} else if (dialog->flags & BinDlgFlags::Visible) {

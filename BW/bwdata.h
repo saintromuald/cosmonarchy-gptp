@@ -131,8 +131,8 @@ BW_DATA(Point16*,			g_start_positions,		0x0058D720);
 // Mouse position relative to the screen
 BW_DATA(const Vec32*,		g_mouse,				0x006CDDC4);
 
-BW_DATA(u32*,				g_mmb_pos_x,            0x006556F8);
-BW_DATA(u32*,				g_mmb_pos_y,            0x006556F4);
+BW_REF(u32,				g_mmb_pos_x,            0x006556F8);
+BW_REF(u32,				g_mmb_pos_y,            0x006556F4);
 
 // Booleans indicating which keyboard buttons are held
 // use g_is_keycode_used[VK_param] where VK_param is one of the Virtual-Key Codes of Windows as seen in msdn here: https://msdn.microsoft.com/fr-fr/library/windows/desktop/dd375731%28v=vs.85%29.aspx

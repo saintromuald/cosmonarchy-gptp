@@ -542,7 +542,7 @@ namespace
 
 	void __declspec(naked) get_scroll_directions_partial() { // 0047F155
 		static const u32 jmp_back = 0x004D12A0;
-		if (disable_mouse_scroll) {
+		if (g_disable_mouse_scroll) {
 			__asm {
 				MOV EAX, 0
 				RET
@@ -656,8 +656,8 @@ namespace hooks {
 
 		// Passive icon colorization -- extension of color remaps. -DF
 		memory_patch(0x00459C1D, (u8)0x70); // Since it's a byte value push, this is the largest buffer size with this mempatch. Will need a jump_patch or hook to support more colors.
-		memory_patch(0x00456C59, &new_cmdbtn_palette);
-		memory_patch(0x004589D5, &new_cmdbtn_palette);
-		memory_patch(0x00459C1F, &new_cmdbtn_palette);
+		memory_patch(0x00456C59, &g_new_cmdbtn_palette);
+		memory_patch(0x004589D5, &g_new_cmdbtn_palette);
+		memory_patch(0x00459C1F, &g_new_cmdbtn_palette);
 	}
 }

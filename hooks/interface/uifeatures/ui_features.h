@@ -10,13 +10,13 @@ struct ApmCounter {
     u32 action_time[MaxActions];
 };
 
-const u32 ui_text_height = 15;
-extern Point16 ui_text_pos;
+inline const u32 UiTextHeight = 15;
+inline Point16 g_ui_text_pos;
 
-extern ApmCounter local_apm_counter;
-extern ApmCounter player_apm_counter[PlayerLimit];
+inline ApmCounter g_local_apm_counter;
+inline ApmCounter g_player_apm_counter[PlayerLimit];
 
-extern bool disable_mouse_scroll;
+inline bool g_disable_mouse_scroll;
 
 void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool allow_short);
 
@@ -62,4 +62,4 @@ u16 draw_game_menu_context(BinDlg* dialog);                                     
 }
 
 #define tIconCount 7
-extern CmdBtnPalette new_cmdbtn_palette[tIconCount];
+extern CmdBtnPalette g_new_cmdbtn_palette[tIconCount];

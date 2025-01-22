@@ -4066,7 +4066,7 @@ namespace hooks {
 						helper::bwfxn_display_text(buffer[1], (s32)(buffer + 2), in_replay);
 					next_command:
 						if (*g_active_nation_id < PlayerLimit) {
-							hooks::register_action(&player_apm_counter[*g_active_nation_id], buffer);
+							hooks::register_action(&g_player_apm_counter[*g_active_nation_id], buffer);
 						}
 						helper::save_replay_action(*g_replay_data, buffer, command_size, *g_active_storm_id);
 						size -= command_size;

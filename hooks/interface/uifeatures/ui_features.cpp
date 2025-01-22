@@ -12,19 +12,11 @@
 #include <hooks\interface\minimap.h>
 #include "Game.h"
 
-ApmCounter local_apm_counter;
-ApmCounter player_apm_counter[PlayerLimit];
+static s32* const g_fonts = (s32*)0x006CE0F4;
+static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;
+static Box16* const g_draw_text_box = (Box16*)0x006CE0C8;
 
-s32* const fonts = (s32*) 0x006CE0F4;
-char* const printXYAlignment = (char*) 0x006CE110;
-u32* const printXYPosY = (u32*) 0x006CE0E0;
-Box16* const drawTextBox = (Box16*) 0x006CE0C8;
-
-Point16 ui_text_pos;
-
-CmdBtnPalette new_cmdbtn_palette[tIconCount];
-
-bool disable_mouse_scroll;
+static CmdBtnPalette g_new_cmdbtn_palette[tIconCount];
 
 void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool allow_short) {
 	u32 sec = seconds % 60;
@@ -41,17 +33,17 @@ void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool a
 namespace hooks {
 	void draw_text(const char* text, u32 x, u32 y, u32 w, u32 h, TextColor color) {
 		helper::get_color_handle(color);
-		*printXYAlignment = 0x11;
-		drawTextBox->left = x;
-		drawTextBox->right = x + w;
-		drawTextBox->top = y;
-		drawTextBox->bottom = y + h;
+		*g_print_xy_alignment = 0x11;
+		g_draw_text_box->left = x;
+		g_draw_text_box->right = x + w;
+		g_draw_text_box->top = y;
+		g_draw_text_box->bottom = y + h;
 		helper::bwfxn_print_xy(text, x, y);
 	}
 
 	void draw_ui_text(const char* text, TextColor color) {
-		draw_text(text, ui_text_pos.x, ui_text_pos.y, 300, ui_text_height * 4, color);
-		ui_text_pos.y = *printXYPosY;
+		draw_text(text, g_ui_text_pos.x, g_ui_text_pos.y, 300, UiTextHeight * 4, color);
+		g_ui_text_pos.y = *g_print_xy_pos_y;
 	}
 
 	void register_action(ApmCounter* counter, char* buffer) {
@@ -68,8 +60,8 @@ namespace hooks {
 	}
 
 	void init_actions() {
-		memset(&local_apm_counter, 0, sizeof(local_apm_counter));
-		memset(player_apm_counter, 0, sizeof(player_apm_counter));
+		memset(&g_local_apm_counter, 0, sizeof(g_local_apm_counter));
+		memset(g_player_apm_counter, 0, sizeof(g_player_apm_counter));
 	}
 
 	void update_apm_counter(ApmCounter* counter) {
@@ -82,9 +74,9 @@ namespace hooks {
 	}
 
 	void update_actions() {
-		update_apm_counter(&local_apm_counter);
+		update_apm_counter(&g_local_apm_counter);
 		for (u32 i = 0; i < PlayerLimit; ++i) {
-			update_apm_counter(&player_apm_counter[i]);
+			update_apm_counter(&g_player_apm_counter[i]);
 		}
 	}
 
@@ -103,9 +95,9 @@ namespace hooks {
 	}
 
 	void draw_ui_features() {
-		ui_text_pos = { 10, 3 };
+		g_ui_text_pos = { 10, 3 };
 		if (*leaderboard_type) {
-			ui_text_pos.x += 80;
+			g_ui_text_pos.x += 80;
 		}
 
 		if (g_config.show_timer) {
@@ -117,7 +109,7 @@ namespace hooks {
 		bool is_replay_or_witness = g_is_in_replay || g_globals->players[g_local_nation_id].witness_mode;
 		if (!is_replay_or_witness && g_config.show_apm) {
 			char buffer[48] = {};
-			u32 apm = local_apm_counter.action_count / (ActionSampleTime / 60.0);
+			u32 apm = g_local_apm_counter.action_count / (ActionSampleTime / 60.0);
 			sprintf_s(buffer, "APM: %u", apm);
 			draw_ui_text(buffer, TextColor::Green);
 		}
@@ -147,7 +139,7 @@ namespace hooks {
 
 	void queue_game_command(u8* data, u32 size) {
 		if (*g_command_queue_size + size <= *g_provider_max_buffer) {
-			register_action(&local_apm_counter, (char*)data);
+			register_action(&g_local_apm_counter, (char*)data);
 			memcpy((void*)&g_turn_buffer[*g_command_queue_size], data, size);
 			*g_command_queue_size += size;
 			return;
@@ -162,7 +154,7 @@ namespace hooks {
 			if (turns >= 16 - *g_provider_latency_calls) {
 				return;
 			}
-			register_action(&local_apm_counter, (char*)data);
+			register_action(&g_local_apm_counter, (char*)data);
 			helper::send_turn();
 			memcpy((void*)&g_turn_buffer[*g_command_queue_size], data, size);
 			*g_command_queue_size += size;
@@ -716,7 +708,7 @@ namespace hooks {
 			palette_type = 4;
 		}
 
-		memcpy(g_palette_remap, new_cmdbtn_palette[palette_type].colors, 16);
+		memcpy(g_palette_remap, g_new_cmdbtn_palette[palette_type].colors, 16);
 		StatusScreenState* state = dialog->stat_button_user;
 		GrpHead* grp = state->button_grp;
 		u16 frame_index = state->grp_frame;
@@ -777,7 +769,7 @@ namespace hooks {
 			palette_type = button->graphic != *g_highlighted_icon ? 0 : 2;
 		}
 
-		memcpy(g_palette_remap, new_cmdbtn_palette[palette_type].colors, 16);
+		memcpy(g_palette_remap, g_new_cmdbtn_palette[palette_type].colors, 16);
 		u16 button_graphic = button->graphic;
 		if (button_graphic >= (*g_cmdicons_grp)->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
 			button_graphic = 0;
@@ -915,27 +907,40 @@ namespace hooks {
 		}
 	}*/
 
+	static POINT get_mouse_pos() {
+		POINT result{};
+		GetCursorPos(&result);
+		return result;
+	}
+
+	static Vec32f g_mouse_error;
+
 	char input_mmb_down(DialogEvent* event) {
-		disable_mouse_scroll = true;
-		POINT mouse = {};
-		GetCursorPos(&mouse);
-		*g_mmb_pos_x = mouse.x;
-		*g_mmb_pos_y = mouse.y;
+		g_disable_mouse_scroll = true;
+
+		const auto mouse = get_mouse_pos();
+		g_mmb_pos_x = mouse.x;
+		g_mmb_pos_y = mouse.y;
+		g_mouse_error = {};
+
 		g_input_procs->funcs[3] = (InputProcsFunc*) 0x00484460;
 		return helper::refresh_cursor_0();
 	}
 
 	int __cdecl input_mmb_up() {
-		disable_mouse_scroll = false;
-		g_move_to_x = Clamp(round(g_move_to_x / 4.0) * 4, 0, g_map_width_pixels  - 640);
-		g_move_to_y = Clamp(round(g_move_to_y / 4.0) * 4, 0, g_map_height_pixels - 376);
+		g_disable_mouse_scroll = false;
+
+		g_move_to_x = std::clamp<s32>(round(g_move_to_x / 4.0) * 4, 0, g_map_width_pixels  - 640);
+		g_move_to_y = std::clamp<s32>(round(g_move_to_y / 4.0) * 4, 0, g_map_height_pixels - 376);
+		g_mouse_error = {};
+
 		g_input_procs->funcs[3] = (InputProcsFunc*) 0;
 		return helper::cursor_refresh();
 	}
 
 	static void scroll_screen(s32 dx, s32 dy) {
-		g_move_to_x = Clamp((s32)g_move_to_x + dx, 0, g_map_width_pixels  - 640);
-		g_move_to_y = Clamp((s32)g_move_to_y + dy, 0, g_map_height_pixels - 376);
+		g_move_to_x = std::clamp<s32>((s32)g_move_to_x + dx, 0, g_map_width_pixels  - 640);
+		g_move_to_y = std::clamp<s32>((s32)g_move_to_y + dy, 0, g_map_height_pixels - 376);
 
 		g_move_to_tile_x = g_move_to_x >> 5;
 		g_move_to_tile_y = g_move_to_y >> 5;
@@ -943,27 +948,24 @@ namespace hooks {
 		helper::update_screen_position();
 	}
 
-	static Vec32f mouse_error;
-
 	void __cdecl input_mmb_move() {
-		POINT mouse = {};
-		GetCursorPos(&mouse);
-		s32 dx = (s32)mouse.x - (s32)*g_mmb_pos_x;
-		s32 dy = (s32)mouse.y - (s32)*g_mmb_pos_y;
+		const auto mouse = get_mouse_pos();
+		const s32 dx = (s32)mouse.x - (s32)g_mmb_pos_x;
+		const s32 dy = (s32)mouse.y - (s32)g_mmb_pos_y;
 
-		f32 sens = g_config.scroll_sensitivity;
-		f32 sdx = dx * sens + mouse_error.x;
-		f32 sdy = dy * sens + mouse_error.y;
+		const auto sens = g_config.scroll_sensitivity;
+		const f32 sdx = dx * sens + g_mouse_error.x;
+		const f32 sdy = dy * sens + g_mouse_error.y;
 		if (g_config.use_pan_scrolling) {
 			scroll_screen(sdx, sdy);
 		} else {
 			scroll_screen(-sdx, -sdy);
 		}
-		mouse_error.x = sdx - (s32)sdx;
-		mouse_error.y = sdy - (s32)sdy;
+		g_mouse_error.x = sdx - (s32)sdx;
+		g_mouse_error.y = sdy - (s32)sdy;
 
 		if (dx || dy) {
-			SetCursorPos(*g_mmb_pos_x, *g_mmb_pos_y);
+			SetCursorPos(g_mmb_pos_x, g_mmb_pos_y);
 		}
 	}
 
