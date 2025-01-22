@@ -1542,3 +1542,11 @@ bool Unit::can_burrow() {
 bool Unit::is_computer_controlled() {
 	return g_player_table[this->player].type == PlayerType::Computer;
 }
+
+bool Unit::is_airborne() {
+	return this->status & UnitStatus::InAir;
+}
+
+bool Unit::is_invincible() {
+	return this->status & UnitStatus::Invincible;
+}

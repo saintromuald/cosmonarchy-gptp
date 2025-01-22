@@ -666,7 +666,7 @@ namespace SoundId {
 		Protoss_Witness_PWiYes01_WAV		= 661,
 		Protoss_ZEALOT_pzeAtt00_WAV			= 662,
 		Protoss_ZEALOT_pzeAtt01_WAV			= 663,
-		Protoss_ZEALOT_pzeHit00_WAV			= 664,
+		ZealotWeaponhit01					= 664,
 		Protoss_ZEALOT_PZeRag00_wav			= 665,
 		Protoss_ZEALOT_PZeRdy00_WAV			= 666,
 		Protoss_ZEALOT_PZePss00_WAV			= 667,
@@ -1965,6 +1965,7 @@ namespace SoundId {
 
 		GoskaGrenadeImpact								= 3215,
 
+		ZealotStarboundWeaponhit01						= 3228,
 		TerranConstruction01							= 3229,
 		TerranConstruction02							= 3230,
 		TerranConstruction03							= 3231,

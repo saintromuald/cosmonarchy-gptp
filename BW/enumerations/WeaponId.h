@@ -277,6 +277,7 @@ namespace WeaponId {
 		PotentatePhaseSaber					= 207,
 		VibranceSensoryOverload				= 219,
 		CicatusPhaseClaws					= 222,
+		ZealotStarboundPhaseBlades			= 223,
 
 		// Zerg \\
 					

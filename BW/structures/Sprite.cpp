@@ -291,6 +291,10 @@ bool Sprite::is_visible_to(u8 player) const {
 	return (this->visibility_status & (1 << player)) != 0;
 }
 
+bool Sprite::is_hidden() {
+	return this->flags & SpriteFlags::Hidden;
+}
+
 namespace hooks {
 	// Hooked to investigate crashes and desyncs. -Pr0nogo
 	void update_visibility_hash(Sprite* sprite) { // 00497C30

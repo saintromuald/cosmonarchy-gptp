@@ -1178,8 +1178,8 @@ BW_DATA(u8*,				g_minimap59CB60,					0x0059CB60);
 BW_DATA(BinDlg**,			g_minimap_dlg,						0x0059CC60);
 BW_DATA(u16*,				g_minimap_zoom_level,				0x0059CC6C);
 BW_DATA(u32*,				g_minimap_move_tile_x,				0x0059CC70);
-BW_DATA(const VR4**,		vr4FileHandle,						0x00628444);
-BW_DATA(const VX4**,		vx4FileHandle,						0x00628458);
+BW_DATA(const VR4**,		g_vr4_file_handle,					0x00628444);
+BW_DATA(const VX4**,		g_vx4_file_handle,					0x00628458);
 
 // For replay autosaves
 BW_DATA(u8*,				g_is_league_game,					0x00629268);
@@ -1288,6 +1288,8 @@ BW_REF(u8,					g_victory_conditions,			0x0059686D);
 BW_REF(u8,					g_tournament_mode,				0x00596877);
 
 BW_REF(u16*,				g_string_id,					0x00513634);
+
+BW_REF(u8*,					g_game_map_data_for_blit,		0x00628454);
 
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);

@@ -47,6 +47,7 @@ struct Sprite
 	Image* get_overlay(u16 image_id) const; // Returns the overlay image of this sprite that has the given @p image_id. If the image cannot be found, returns nullptr.
 
 	bool is_visible_to(u8 player) const; // Checks whether this sprite is visible to @p player (i.e. not covered by the fog of war). This does NOT check detectability.
+	bool is_hidden();
 
 	////////////////////////////////////////////////////////////////
 	//Actual data structure
