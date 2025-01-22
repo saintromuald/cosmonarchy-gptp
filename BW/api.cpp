@@ -3904,6 +3904,8 @@ u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id) {
         case WeaponId::MadcapDanannAutogun:        return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
         case WeaponId::ApostleCharonRifle:         return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
         case WeaponId::CyclopsFuturistFlakCannons: return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
+        case WeaponId::ZealotPhaseBlades:	       return SoundId::ZealotWeaponhit01;
+        case WeaponId::ZealotStarboundPhaseBlades: return SoundId::ZealotStarboundWeaponhit01;
         case WeaponId::EcclesiastAstralBlaster:	   return bw::rand_between(SoundId::EcclesiastWeaponfire01, SoundId::EcclesiastWeaponfire04);
         case WeaponId::CharlatanFerventBlaster:	   return bw::rand_between(SoundId::CharlatanWeaponfire01, SoundId::CharlatanWeaponfire03);
         case WeaponId::DemiurgeGalacticWeaver:	   return bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);

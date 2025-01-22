@@ -554,7 +554,7 @@ namespace hooks {
 		jump_patch(is_target_visible_wrapper,							0x004E5E30, 4);
 		jump_patch(is_unit_enemy_wrapper,								0x0047B910, 1);
 		jump_patch(is_ready_to_attack_wrapper,							0x00476640, 1);
-	//	jump_patch(ai_choose_target_wrapper,								0x00431990, 1); // Disabled for now because it's a mess and I have limited time to refactor it. -Pr0nogo
+	//	jump_patch(ai_choose_target_wrapper,							0x00431990, 1); // Disabled for now because it's a mess and I have limited time to refactor it. -Pr0nogo
 		jump_patch(get_air_weapon_wrapper,								0x00475840, 5);
 
 		// Patches \\

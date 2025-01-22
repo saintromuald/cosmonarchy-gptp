@@ -1543,10 +1543,18 @@ bool Unit::is_computer_controlled() {
 	return g_player_table[this->player].type == PlayerType::Computer;
 }
 
-bool Unit::is_airborne() {
+bool Unit::is_in_air() {
 	return this->status & UnitStatus::InAir;
 }
 
 bool Unit::is_invincible() {
 	return this->status & UnitStatus::Invincible;
+}
+
+bool Unit::is_spellcaster() {
+	return units_dat::base_property[this->id] & UnitProperty::Spellcaster;
+}
+
+bool Unit::is_hallucination() {
+	return this->status & UnitStatus::IsHallucination;
 }

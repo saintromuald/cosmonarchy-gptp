@@ -8,8 +8,7 @@
 #include <BW/enumerations.h>
 #include "../../graphics/graphics.h"
 
-struct Flingy
-{
+struct Flingy {
 	/*0x000*/ Link<Unit> link;
 	/*0x008*/ s32       value;                 ///for unit it's hitpoints
 	/*0x00C*/ Sprite*   sprite;
@@ -36,9 +35,7 @@ struct Flingy
 };
 
 //Wrapper structure that provides methods for the Unit structure.
-struct Unit : public UnitLayout
-{
-
+struct Unit : public UnitLayout {
 	/// @name Unit Stats and Properties
 	//////////////////////////////////////////////////////////////// @{
 
@@ -411,9 +408,11 @@ struct Unit : public UnitLayout
 	bool is_burrowed();
 	bool can_burrow();
 	bool is_computer_controlled();
-	bool is_airborne();
+	bool is_in_air();
 	bool is_invincible();
+	bool is_spellcaster();
+	bool is_hallucination();
 };
+
 C_ASSERT(sizeof(Flingy) == 0x4c);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));
-//static_assert(sizeof(Unit) == sizeof(UnitLayout), "The count of the Unit structure is invalid");

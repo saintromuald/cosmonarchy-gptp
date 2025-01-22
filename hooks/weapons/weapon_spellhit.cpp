@@ -184,36 +184,39 @@ namespace hooks {
 	}
 
 	void iscript_attackmelee(Unit* attacker) { // 00479B40
-		UnitExt* attacker_ext = get_unit_ext(attacker);
 		Unit* target = attacker->order_target.unit;
-		if (target) {
-			WeaponId::Enum weapon_id = WeaponId::None;
-			if (!unit_id_is_burrowed_attacker(attacker->id) || attacker->burrowed_attacker_can_attack()) {
-				if (target->status & UnitStatus::InAir && units_dat::air_weapon[attacker->id] != WeaponId::None) {
-					weapon_id = (WeaponId::Enum)units_dat::air_weapon[attacker->id];
-				} else {
-					weapon_id = (WeaponId::Enum)units_dat::ground_weapon[attacker->id];
-				}
-			}
-			attacker_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
-			attacker_ext->values[ValueAI_PreventTargeting] = 0;
+		if (!target) {
+			return;
+		}
 
-			// Previously checked for Hallucination status, but there was no functional difference in the code!
-			// Refactored 15 Sep 2022. -Pr0nogo
-			u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
-			damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
-			if (attacker_ext->values[ValueDeconstruction]) {
+		UnitExt& attacker_ext = attacker->ext();
+		WeaponId::Enum weapon_id = WeaponId::None;
+		if (!unit_id_is_burrowed_attacker(attacker->id) || attacker->burrowed_attacker_can_attack()) {
+			if (target->is_in_air() && units_dat::air_weapon[attacker->id] != WeaponId::None) {
+				weapon_id = (WeaponId::Enum)units_dat::air_weapon[attacker->id];
+			} else {
+				weapon_id = (WeaponId::Enum)units_dat::ground_weapon[attacker->id];
+			}
+		}
+		attacker_ext.values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
+		attacker_ext.values[ValueAI_PreventTargeting] = 0;
+
+		// Previously checked for Hallucination status, but there was no functional difference in the code!
+		// Refactored 15 Sep 2022. -Pr0nogo
+		u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
+		damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
+		for (u32 i = 0; i < WeaponId::get_custom_melee_factor(weapon_id); i++) {
+			if (attacker_ext.values[ValueDeconstruction]) {
 				bw::do_deconstruction_damage(attacker, weapon_id);
 			}
 			target->damage_with(weapon_id, damage, attacker, attacker->player, attacker->current_direction_1, 1);
-
-			// Cloaked units - decloak
-			// Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
-		//	if (unit->id != UnitId::ProtossCabalist) {
-				bw::decloak_passive_proc(attacker);
-		//	}
-			apply_weapon_cooldown(attacker, weapon_id);
 		}
+
+		// Cloaked units - decloak
+		// We can check for special conditions here if the attacker is not meant to decloak on melee attack. -Pr0nogo
+		bw::decloak_passive_proc(attacker);
+		apply_weapon_cooldown(attacker, weapon_id);
+		bw::play_manual_weapon_sound(attacker, weapon_id);
 	}
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.

@@ -1,6 +1,5 @@
 #pragma once
-//Entries in arr\images.dat
-//List taken from PyMS: Libs\Data\Images.txt
+
 namespace ImageId {
 	enum Enum {
 		Scourge                             = 0,

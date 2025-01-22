@@ -1074,11 +1074,48 @@ namespace hooks {
 										      (char*)g_stat_txt_buffer.get_string(814)); // Game Menu (F10)
 	}
 
+	// Hooked by DarkenedFantasies to investigate rare crashes.
+	// Eventually, this code will be made more clean and readable. -Pr0nogo
+	void get_tile_image_data(s32 offset_arg, vx4 tile) { // 0040C3B0
+		u8* map_data = g_game_map_data_for_blit;
+		u8* minitile = (u8*)(*g_vr4_file_handle)->minitile[tile.vr4_id];
+		u32 i_0 = 8;
+		if (tile.flipped) {
+			do {
+				if (offset_arg >= 301056) {
+					offset_arg -= 301056;
+				}
+				u32* _map_data = (u32*)&map_data[offset_arg];
+				u32 _1 = (minitile[0] << 24) | (minitile[1] << 16) | (minitile[2] << 8) | minitile[3];
+				u32 _2 = (minitile[4] << 24) | (minitile[5] << 16) | (minitile[6] << 8) | minitile[7];
+				_map_data[0] = _2;
+				_map_data[1] = _1;
+				minitile += 8;
+				offset_arg += 672;
+			} while (--i_0);
+		} else {
+			do {
+				if (offset_arg >= 301056) {
+					offset_arg -= 301056;
+				}
+				u32* _map_data = (u32*)&map_data[offset_arg];
+				_map_data[0] = ((u32*)minitile)[0];
+				_map_data[1] = ((u32*)minitile)[1];
+				minitile += 8;
+				offset_arg += 672;
+			} while (--i_0);
+		}
+	}
+
+	// Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
+	char* get_stat_txt_string(u16 string_id) { // 004C36F0
+		return (char*)g_stat_txt_buffer.get_string(string_id);
+	}
+
 	// Eventually, hook the following to make stat_txt.tbl a .txt:
 	//		00457CE0 statdata_mouseover_interact
 	//		004A4C40 draw_show_hide_terrain_context
 	//		004A5110 draw_stat_lb_buttons_context
-	//		004C36F0 get_stat_txt_string
 	//		004C3780 destroy_game_hud
 	//		004C3A20 load_stat_txt
 	// -Pr0nogo
