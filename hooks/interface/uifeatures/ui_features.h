@@ -59,6 +59,8 @@ bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event);					// 0045F
 char CMDRECV_minimap_ping(char* buffer);											// 004BF7A0
 void __cdecl show_or_hide_minimap();												// 004A4150
 u16 draw_game_menu_context(BinDlg* dialog);                                         // 004F4F70
+void get_tile_image_data(s32 offset_arg, vx4 tile);                                 // 0040C3B0
+char* get_stat_txt_string(u16 string_id);                                           // 004C36F0
 }
 
 #define tIconCount 7
