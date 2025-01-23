@@ -123,6 +123,7 @@
 #include "hooks/audiovisuals/image_render.h"
 #include "hooks/interface/minimap.h"
 #include "hooks/game/creategame.h"
+#include "BW/extender/iscript_extender.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -849,35 +850,38 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_supply_hooks();
 
 //	hooks::inject_requirement_hooks();
-    hooks::inject_new_requirements_hooks();
-    hooks::inject_unit_ai_hooks();
-    hooks::inject_ai_request_hooks();
+	hooks::inject_new_requirements_hooks();
+	hooks::inject_unit_ai_hooks();
+	hooks::inject_ai_request_hooks();
 
-    hooks::inject_attack_orders_hooks();
+	hooks::inject_attack_orders_hooks();
 
-    hooks::inject_stop_hold_position_orders_hooks();
+	hooks::inject_stop_hold_position_orders_hooks();
 
-    hooks::inject_utils_hooks();
-    hooks::inject_select_larva_hooks();
+	hooks::inject_utils_hooks();
+	hooks::inject_select_larva_hooks();
 
-    hooks::inject_cmdrecv_siege_tank_hooks();
-    hooks::inject_bullet_extender();
-    inject_trigger_system_hooks();
-    hooks::inject_hp_bars_hooks();
-    hooks::inject_image_render_hooks();
-    hooks::inject_minimap_hooks();
+	hooks::inject_cmdrecv_siege_tank_hooks();
+	hooks::inject_bullet_extender();
+	inject_trigger_system_hooks();
+	hooks::inject_hp_bars_hooks();
+	hooks::inject_image_render_hooks();
+	hooks::inject_minimap_hooks();
 
-    // Limits - most likely needs to be patched in aise, aice, and mtl
-    hooks::inject_unit_extender();
-    hooks::inject_sprite_extender();
-    hooks::inject_order_extender();
-    hooks::inject_image_extender();
-    hooks::inject_thingy_extender();
+	// Limits - most likely needs to be patched in aise, aice, and mtl
+	hooks::inject_unit_extender();
+	hooks::inject_sprite_extender();
+	hooks::inject_order_extender();
+	hooks::inject_image_extender();
+	hooks::inject_thingy_extender();
 
-    hooks::inject_orders_root_hooks();
-    hooks::inject_selection_extender();
-    
-    hooks::inject_sight_update_hooks();
-    hooks::inject_creategame_hooks();
-    return TRUE;
+	hooks::inject_orders_root_hooks();
+	hooks::inject_selection_extender();
+	
+	hooks::inject_sight_update_hooks();
+	hooks::inject_creategame_hooks();
+
+	hooks::inject_iscript_extender();
+
+	return TRUE;
 }

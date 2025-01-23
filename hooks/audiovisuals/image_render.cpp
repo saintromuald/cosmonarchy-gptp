@@ -1,5 +1,6 @@
 #include "image_render.h"
 #include <math.h>
+#include "BW/extender/iscript_extender.h"
 
 u8 threshold_map[256];
 
@@ -21,7 +22,7 @@ UpdateFunc sgUpdateFuncs[] = {
 	{ PaletteType::RLE_PLAYER_SIDE,		updateFunc_None },
 	{ PaletteType::ImageBounds,			updateFunc_None },
 	{ PaletteType::Hallucination,		updateFunc_None },
-	{ PaletteType::WarpFlash,			drawFunc::WarpFlash_update },
+	{ PaletteType::WarpFlash,			drawFunc::warp_flash_update },
 	{ PaletteType::WarpAnchor,			updateFunc_None },
 	{ PaletteType::ShadowCloak,			drawFunc::ShadowCloak_update },
 	{ PaletteType::HiddenCloaking_WA,	drawFunc::Cloaking_update },
@@ -37,10 +38,10 @@ UpdateFunc sgUpdateFuncs[] = {
 	{ PaletteType::VisibleCloaked_WT,	updateFunc_None },
 	{ PaletteType::VisibleDecloaking_WT,drawFunc::Decloaking_update },
 	{ PaletteType::HiddenCloaking_WF,	drawFunc::WarpFlash_Cloaking_update },
-	{ PaletteType::HiddenCloaked_WF,	drawFunc::WarpFlash_update },
+	{ PaletteType::HiddenCloaked_WF,	drawFunc::warp_flash_update },
 	{ PaletteType::HiddenDecloaking_WF,	drawFunc::WarpFlash_Decloaking_update },
 	{ PaletteType::VisibleCloaking_WF,	drawFunc::WarpFlash_Cloaking_update },
-	{ PaletteType::VisibleCloaked_WF,	drawFunc::WarpFlash_update },
+	{ PaletteType::VisibleCloaked_WF,	drawFunc::warp_flash_update },
 	{ PaletteType::VisibleDecloaking_WF,drawFunc::WarpFlash_Decloaking_update }
 };
 
@@ -213,7 +214,7 @@ namespace drawFunc {
 		image->flags |= ImageFlags::Redraw;
 	}
 
-	void __fastcall WarpFlash_update(Image* image) {
+	void __fastcall warp_flash_update(Image* image) { // 004D8590
 		bool redraw = false;
 
 		if (!(image->draw_fxn.step2 -= image->draw_fxn.step2 != 0)) {
@@ -222,7 +223,7 @@ namespace drawFunc {
 
 			if (++image->draw_fxn.step1 >= 63) {
 				if (image->animation != IscriptAnimation::Death) {
-					image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 10);
+					image->iscript_offset = *(u16*)(*g_iscript_handles[image->flags >> 12] + image->iscript_header_offset + 10);
 					image->return_address = 0;
 					image->animation = IscriptAnimation::Death;
 					image->wait = 0;
@@ -254,7 +255,7 @@ namespace drawFunc {
 
 			if (++image->draw_fxn.step1 >= 63) {
 				if (image->animation != IscriptAnimation::Death) {
-					image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 10);
+					image->iscript_offset = *(u16*)(*g_iscript_handles[image->flags >> 12] + image->iscript_header_offset + 10);
 					image->return_address = 0;
 					image->animation = IscriptAnimation::Death;
 					image->wait = 0;
@@ -311,7 +312,7 @@ namespace drawFunc {
 
 			if (++image->draw_fxn.step1 >= 63) {
 				if (image->animation != IscriptAnimation::Death) {
-					image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 10);
+					image->iscript_offset = *(u16*)(*g_iscript_handles[image->flags >> 12] + image->iscript_header_offset + 10);
 					image->return_address = 0;
 					image->animation = IscriptAnimation::Death;
 					image->wait = 0;

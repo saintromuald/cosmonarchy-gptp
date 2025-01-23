@@ -88,7 +88,7 @@ namespace drawFunc {
 	void __fastcall WarpFlash_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
 	void __fastcall Decloaking_update(Image* image);																		//0x004D5D10
 	void __fastcall Cloaking_update(Image* image);																			//0x004D5D70
-	void __fastcall WarpFlash_update(Image* image);																			//0x004D8590
+	void __fastcall warp_flash_update(Image* image);																			//0x004D8590
 	void __fastcall WarpFlash_Decloaking_update(Image* image);
 	void __fastcall WarpFlash_Cloaking_update(Image* image);
 	void __fastcall ShadowCloak_update(Image* image);

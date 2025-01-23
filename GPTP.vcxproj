@@ -294,6 +294,7 @@
     <ClCompile Include="include\yaml-cpp\src\singledocparser.cpp" />
     <ClCompile Include="include\yaml-cpp\src\stream.cpp" />
     <ClCompile Include="include\yaml-cpp\src\tag.cpp" />
+    <ClCompile Include="BW\extender\iscript_extender.cpp" />
     <ClCompile Include="maths.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -602,6 +603,7 @@
     <ClInclude Include="bwutils.h" />
     <ClInclude Include="BW\bwdata.h" />
     <ClInclude Include="BW\bwhelper.h" />
+    <ClInclude Include="BW\extender\iscript_extender.h" />
     <ClInclude Include="BW\Storm.h" />
     <ClInclude Include="CM\cm.h" />
     <ClInclude Include="CM\cm_behaviors.h" />
