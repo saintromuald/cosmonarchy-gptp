@@ -43,7 +43,7 @@ BW_DATA(Bullet**,		last_free_bullet,				0x0064EEDC);
 BW_DATA(u32*,			bullet_count,					0x0064DEBC);
 
 struct Units12 {
-	Unit* unit[12];
+    Unit* unit[12];
 };
 BW_DATA(Units12*, first_player_unit, 0x006283F8); // Indexed by player Id
 
@@ -96,10 +96,10 @@ BW_REF(b8,				g_music_playing,				0x006D5BBC);
 
 // From resources.cpp
 struct Resources {
-	s32 minerals[12];
-	s32 gas[12];
-	s32 cumulative_gas[12];
-	s32 cumulative_minerals[12];
+    s32 minerals[12];
+    s32 gas[12];
+    s32 cumulative_gas[12];
+    s32 cumulative_minerals[12];
 };
 BW_DATA(Resources*,			resources,			0x0057F0F0);
 
@@ -113,7 +113,7 @@ BW_DATA(const char*,		g_string_empty,		0x00501B7D);
 
 /// Units that are selected by the current player (or the player viewing the replay).
 struct UnitsSel {
-	Unit* unit[SelectionCap];
+    Unit* unit[SelectionCap];
 };
 BW_DATA(UnitsSel*,			g_client_selection_group,		ccmu_extender.new_client_selection_group);
 BW_DATA(Unit*,				g_client_selection_group_end,	0x00597238);
@@ -149,9 +149,9 @@ BW_REF(u32,					g_move_to_y,			0x006284A8);
 BW_DATA(Player*,			g_player_table,			0x0057EEE0);
 
 struct SupplyData {
-	u32 provided[PLAYER_COUNT];
-	u32 used[PLAYER_COUNT];
-	u32 max[PLAYER_COUNT];
+    u32 provided[PLAYER_COUNT];
+    u32 used[PLAYER_COUNT];
+    u32 max[PLAYER_COUNT];
 };
 BW_DATA(SupplyData*,		g_race_supply,			0x00582144);	// Array; Use Unit::get_race() to get the index.
 
@@ -192,7 +192,7 @@ BW_DATA_REF(_uavail*, g_unit_availability,	0x0057F27C);
 BW_DATA(Ping*,			ping_array,					0x0059C1B8); // 16
 BW_DATA(PingArray*,		minimap_ping_array,			0x0059C1B8); // 16
 
-	// -- Added for various hooks used by Cosmonarchy -- \\
+    // -- Added for various hooks used by Cosmonarchy -- \\
 
 // For race_dropdown
 BW_DATA(StringMap_b*,	single_race_select,				0x0051AAA0);
@@ -242,21 +242,21 @@ BW_DATA(u32*,			g_player_explored_visions,	0x0057EEB8);
 BW_DATA(s32*,			sub_two_check_two,			0x004EE0F0);
 
 enum MinimapColor {
-	MinimapColor_Unexplored,
-	MinimapColor_Explored,
-	MinimapColor_Visible,
-	MinimapColor_Visible2,
+    MinimapColor_Unexplored,
+    MinimapColor_Explored,
+    MinimapColor_Visible,
+    MinimapColor_Visible2,
 
-	MinimapColor_Count,
+    MinimapColor_Count,
 };
 
 struct MinimapColors {
-	u8 index[MinimapColor_Count][256];
+    u8 index[MinimapColor_Count][256];
 };
 BW_DATA(MinimapColors*,	minimap_colors, 0x0059C2C0);
 
 struct DarkMap {
-	u8 index[32][256];
+    u8 index[32][256];
 };
 BW_DATA(DarkMap*,			dark_pcx_image_map, 0x005973A0);
 BW_DATA(u8*,				palette_index_ref,  0x006CEB20);
@@ -320,7 +320,7 @@ BW_REF(u16,				g_upgrade_level_tooltip,	0x0068C1CC);
 BW_REF(StringTbl,		g_stat_txt_buffer,			0x006D1238);
 
 struct BufferStr {
-	char buf[260];
+    char buf[260];
 };
 
 // For draw_resource_amount
@@ -548,7 +548,7 @@ BW_DATA(void*,			g_sfx_tbl_handle,			0x005999B0);
 // For handle_window_messages
 typedef void __fastcall InputProcsFunc(s32 arg);
 struct InputProcsArray {
-	InputProcsFunc* funcs[19];
+    InputProcsFunc* funcs[19];
 };
 BW_DATA(InputProcsArray*,	g_input_procs,		0x005968A0);
 
@@ -584,80 +584,80 @@ BW_DATA(Point32*,	g_last_event_position,		0x0057FD34);
 // structs are guaranteed to have the corrent offsets.
 
 struct DatLoad {
-	void* address; // a real pointer
-	u32 length;
-	u32 entries;
+    void* address; // a real pointer
+    u32 length;
+    u32 entries;
 };
 
 namespace units_dat {
 //	BW_DATA(const DatLoad*,	unitsDat,	0x00513C30); // now in bwdata.cpp
 
-	BW_DATA_REF(u16*,			graphic,				unitsDat[0].address);	// 006644F8
-	BW_DATA_REF(u16*,			subunit,				unitsDat[1].address);	// 006607C0
-	BW_DATA_REF(u16*,			subunit_2,				unitsDat[2].address);	// 00660C38
-	BW_DATA_REF(u16*,			infested_unit_partial,	unitsDat[3].address);	// 00664980 // (Id - UnitId::TerranMinistry) for it to work, last valid id is UnitId::Special_OvermindCocoon by default
-	BW_DATA_REF(u32*,			construction_graphic,	unitsDat[4].address);	// 006610B0
-	BW_DATA_REF(u8*,			start_direction,		unitsDat[5].address);	// 006605F0 // Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise). 32 means random
-	BW_DATA_REF(u8*,			shields_enabled,		unitsDat[6].address);	// 006647B0
-	BW_DATA_REF(u16*,			max_shield_points,		unitsDat[7].address);	// 00660E00
-	BW_DATA_REF(s32*,			max_hitpoints,			unitsDat[8].address);	// 00662350
-	BW_DATA_REF(u8*,			elevation,				unitsDat[9].address);	// 00663150
-	BW_DATA_REF(u8*,			movement_flags,			unitsDat[10].address);	// 00660FC8
-	BW_DATA_REF(u8*,			rank,					unitsDat[11].address);	// 00663DD0
-	BW_DATA_REF(u8*,			computer_idle_order,	unitsDat[12].address);	// 00662EA0
-	BW_DATA_REF(u8*,			human_idle_order,		unitsDat[13].address);	// 00662268
-	BW_DATA_REF(u8*,			return_to_idle_order,	unitsDat[14].address);	// 00664898
-	BW_DATA_REF(u8*,			attack_unit_order,		unitsDat[15].address);	// 00663320
-	BW_DATA_REF(u8*,			attack_move_order,		unitsDat[16].address);	// 00663A50
-	BW_DATA_REF(u8*,			ground_weapon,			unitsDat[17].address);	// 006636B8
-	BW_DATA_REF(u8*,			max_ground_hits,		unitsDat[18].address);	// 006645E0
-	BW_DATA_REF(u8*,			air_weapon,				unitsDat[19].address);	// 006616E0
-	BW_DATA_REF(u8*,			max_air_hits,			unitsDat[20].address);	// 0065FC18
-	BW_DATA_REF(u8*,			computer_ai_internal,	unitsDat[21].address);	// 00660178
-	BW_DATA_REF(u32*,			base_property,			unitsDat[22].address);	// 00664080 // AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
-	BW_DATA_REF(u8*,			seek_range,				unitsDat[23].address);	// 00662DB8 // AKA Target Acquisition Range, Acquire Target Range, etc.
-	BW_DATA_REF(u8*,			sight_range,			unitsDat[24].address);	// 00663238
-	BW_DATA_REF(u8*,			armor_upgrade,			unitsDat[25].address);	// 006635D0
-	BW_DATA_REF(u8*,			size_type,				unitsDat[26].address);	// 00662180
-	BW_DATA_REF(u8*,			armor_amount,			unitsDat[27].address);	// 0065FEC8
-	BW_DATA_REF(u8*,			right_click_action,		unitsDat[28].address);	// 00662098
-	BW_DATA_REF(u16*,			sound_ready,			unitsDat[29].address);	// 00661FC0
-	BW_DATA_REF(u16*,			sound_what_first,		unitsDat[30].address);	// 0065FFB0
-	BW_DATA_REF(u16*,			sound_what_last,		unitsDat[31].address);	// 00662BF0
-	BW_DATA_REF(u16*,			sound_annoyed_first,	unitsDat[32].address);	// 00663B38
-	BW_DATA_REF(u16*,			sound_annoyed_last,		unitsDat[33].address);	// 00661EE8
-	BW_DATA_REF(u16*,			sound_yes_first,		unitsDat[34].address);	// 00663C10
-	BW_DATA_REF(u16*,			sound_yes_last,			unitsDat[35].address);	// 00661440
-	BW_DATA_REF(Point16*,		building_dimensions,	unitsDat[36].address);	// 00662860	// Placement Box in PyDAT
-	BW_DATA_REF(Point16*,		addon_placement,		unitsDat[37].address);	// 006626E0 // Addon Position in PyDAT
-	BW_DATA_REF(Box16*,			unit_bounds,			unitsDat[38].address);	// 006617C8	// Unit Dimensions in PyDAT
-	BW_DATA_REF(u16*,			portrait_id,			unitsDat[39].address);	// 00662F88
-	BW_DATA_REF(u16*,			mineral_cost,			unitsDat[40].address);	// 00663888
-	BW_DATA_REF(u16*,			vespene_cost,			unitsDat[41].address);	// 0065FD00
-	BW_DATA_REF(u16*,			time_cost,				unitsDat[42].address);	// 00660428
-	BW_DATA_REF(u16*,			requirement_offsets,	unitsDat[43].address);	// 00660A70 // "Restriction Address" according to EUDDB
-	BW_DATA_REF(GroupFlag*,		group_flags,			unitsDat[44].address);	// 006637A0
-	BW_DATA_REF(u8*,			supply_provided,		unitsDat[45].address);	// 006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
-	BW_DATA_REF(u8*,			supply_required,		unitsDat[46].address);	// 00663CE8
-	BW_DATA_REF(u8*,			space_required,			unitsDat[47].address);	// 00664410
-	BW_DATA_REF(u8*,			space_provided,			unitsDat[48].address);	// 00660988
-	BW_DATA_REF(u16*,			build_score,			unitsDat[49].address);	// 00663408
-	BW_DATA_REF(u16*,			destroy_score,			unitsDat[50].address);	// 00663EB8
-	BW_DATA_REF(u16*,			map_string_id,			unitsDat[51].address);	// 00660260
-	BW_DATA_REF(u8*,			broodwar_only,			unitsDat[52].address);	// 006606D8
-	BW_DATA_REF(u16*,			staredit_avail_flags,	unitsDat[53].address);	// 00661518
+    BW_DATA_REF(u16*,			graphic,				unitsDat[0].address);	// 006644F8
+    BW_DATA_REF(u16*,			subunit,				unitsDat[1].address);	// 006607C0
+    BW_DATA_REF(u16*,			subunit_2,				unitsDat[2].address);	// 00660C38
+    BW_DATA_REF(u16*,			infested_unit_partial,	unitsDat[3].address);	// 00664980 // (Id - UnitId::TerranMinistry) for it to work, last valid id is UnitId::Special_OvermindCocoon by default
+    BW_DATA_REF(u32*,			construction_graphic,	unitsDat[4].address);	// 006610B0
+    BW_DATA_REF(u8*,			start_direction,		unitsDat[5].address);	// 006605F0 // Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise). 32 means random
+    BW_DATA_REF(u8*,			shields_enabled,		unitsDat[6].address);	// 006647B0
+    BW_DATA_REF(u16*,			max_shield_points,		unitsDat[7].address);	// 00660E00
+    BW_DATA_REF(s32*,			max_hitpoints,			unitsDat[8].address);	// 00662350
+    BW_DATA_REF(u8*,			elevation,				unitsDat[9].address);	// 00663150
+    BW_DATA_REF(u8*,			movement_flags,			unitsDat[10].address);	// 00660FC8
+    BW_DATA_REF(u8*,			rank,					unitsDat[11].address);	// 00663DD0
+    BW_DATA_REF(u8*,			computer_idle_order,	unitsDat[12].address);	// 00662EA0
+    BW_DATA_REF(u8*,			human_idle_order,		unitsDat[13].address);	// 00662268
+    BW_DATA_REF(u8*,			return_to_idle_order,	unitsDat[14].address);	// 00664898
+    BW_DATA_REF(u8*,			attack_unit_order,		unitsDat[15].address);	// 00663320
+    BW_DATA_REF(u8*,			attack_move_order,		unitsDat[16].address);	// 00663A50
+    BW_DATA_REF(u8*,			ground_weapon,			unitsDat[17].address);	// 006636B8
+    BW_DATA_REF(u8*,			max_ground_hits,		unitsDat[18].address);	// 006645E0
+    BW_DATA_REF(u8*,			air_weapon,				unitsDat[19].address);	// 006616E0
+    BW_DATA_REF(u8*,			max_air_hits,			unitsDat[20].address);	// 0065FC18
+    BW_DATA_REF(u8*,			computer_ai_internal,	unitsDat[21].address);	// 00660178
+    BW_DATA_REF(u32*,			base_property,			unitsDat[22].address);	// 00664080 // AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
+    BW_DATA_REF(u8*,			seek_range,				unitsDat[23].address);	// 00662DB8 // AKA Target Acquisition Range, Acquire Target Range, etc.
+    BW_DATA_REF(u8*,			sight_range,			unitsDat[24].address);	// 00663238
+    BW_DATA_REF(u8*,			armor_upgrade,			unitsDat[25].address);	// 006635D0
+    BW_DATA_REF(u8*,			size_type,				unitsDat[26].address);	// 00662180
+    BW_DATA_REF(u8*,			armor_amount,			unitsDat[27].address);	// 0065FEC8
+    BW_DATA_REF(u8*,			right_click_action,		unitsDat[28].address);	// 00662098
+    BW_DATA_REF(u16*,			sound_ready,			unitsDat[29].address);	// 00661FC0
+    BW_DATA_REF(u16*,			sound_what_first,		unitsDat[30].address);	// 0065FFB0
+    BW_DATA_REF(u16*,			sound_what_last,		unitsDat[31].address);	// 00662BF0
+    BW_DATA_REF(u16*,			sound_annoyed_first,	unitsDat[32].address);	// 00663B38
+    BW_DATA_REF(u16*,			sound_annoyed_last,		unitsDat[33].address);	// 00661EE8
+    BW_DATA_REF(u16*,			sound_yes_first,		unitsDat[34].address);	// 00663C10
+    BW_DATA_REF(u16*,			sound_yes_last,			unitsDat[35].address);	// 00661440
+    BW_DATA_REF(Point16*,		building_dimensions,	unitsDat[36].address);	// 00662860	// Placement Box in PyDAT
+    BW_DATA_REF(Point16*,		addon_placement,		unitsDat[37].address);	// 006626E0 // Addon Position in PyDAT
+    BW_DATA_REF(Box16*,			unit_bounds,			unitsDat[38].address);	// 006617C8	// Unit Dimensions in PyDAT
+    BW_DATA_REF(u16*,			portrait_id,			unitsDat[39].address);	// 00662F88
+    BW_DATA_REF(u16*,			mineral_cost,			unitsDat[40].address);	// 00663888
+    BW_DATA_REF(u16*,			vespene_cost,			unitsDat[41].address);	// 0065FD00
+    BW_DATA_REF(u16*,			time_cost,				unitsDat[42].address);	// 00660428
+    BW_DATA_REF(u16*,			requirement_offsets,	unitsDat[43].address);	// 00660A70 // "Restriction Address" according to EUDDB
+    BW_DATA_REF(GroupFlag*,		group_flags,			unitsDat[44].address);	// 006637A0
+    BW_DATA_REF(u8*,			supply_provided,		unitsDat[45].address);	// 006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
+    BW_DATA_REF(u8*,			supply_required,		unitsDat[46].address);	// 00663CE8
+    BW_DATA_REF(u8*,			space_required,			unitsDat[47].address);	// 00664410
+    BW_DATA_REF(u8*,			space_provided,			unitsDat[48].address);	// 00660988
+    BW_DATA_REF(u16*,			build_score,			unitsDat[49].address);	// 00663408
+    BW_DATA_REF(u16*,			destroy_score,			unitsDat[50].address);	// 00663EB8
+    BW_DATA_REF(u16*,			map_string_id,			unitsDat[51].address);	// 00660260
+    BW_DATA_REF(u8*,			broodwar_only,			unitsDat[52].address);	// 006606D8
+    BW_DATA_REF(u16*,			staredit_avail_flags,	unitsDat[53].address);	// 00661518
 } // (last entry at 0x00513EAC)
 
 namespace flingy_dat {
 //	BW_DATA(const DatLoad*,	flingyDat,	0x00515A38); // now in bwdata.cpp
 
-	BW_DATA_REF(u16*,	sprite_id,			flingyDat[0].address);	// 006CA318
-	BW_DATA_REF(u32*,	top_speed,			flingyDat[1].address);	// 006C9EF8
-	BW_DATA_REF(u16*,	acceleration,		flingyDat[2].address);	// 006C9C78
-	BW_DATA_REF(u32*,	halt_distance,		flingyDat[3].address);	// 006C9930
-	BW_DATA_REF(u8*,	turn_speed,			flingyDat[4].address);	// 006C9E20 Incorrectly known as "Turn Radius"
+    BW_DATA_REF(u16*,	sprite_id,			flingyDat[0].address);	// 006CA318
+    BW_DATA_REF(u32*,	top_speed,			flingyDat[1].address);	// 006C9EF8
+    BW_DATA_REF(u16*,	acceleration,		flingyDat[2].address);	// 006C9C78
+    BW_DATA_REF(u32*,	halt_distance,		flingyDat[3].address);	// 006C9930
+    BW_DATA_REF(u8*,	turn_speed,			flingyDat[4].address);	// 006C9E20 Incorrectly known as "Turn Radius"
 //	BW_DATA_REF(u8*,	???,				flingyDat[5].address);	// 006CA240
-	BW_DATA_REF(u8*,	movement_control,	flingyDat[6].address);	// 006C9858
+    BW_DATA_REF(u8*,	movement_control,	flingyDat[6].address);	// 006C9858
 } // (last entry at 0x00515A80)
 
 // incorrect, must be clarified
@@ -666,72 +666,72 @@ namespace flingy_dat {
 /*
 namespace sfx_dat {
 //	BW_DATA(const	DatLoad*,	sfxDat,		0x00515498); // now in bwdata.cpp
-	
-	BW_DATA_REF(u32*,	sound_pointer,		sfxDat[0].address);	// 0068DAA0
-	BW_DATA_REF(u8*,	priority,			sfxDat[1].address);	// 0068D628
-	BW_DATA_REF(u8*,	sound_flags,		sfxDat[2].address);	// 0068C8C0
-	BW_DATA_REF(u16*,	portrait_duration,	sfxDat[3].address);	// 0068CD38
-	BW_DATA_REF(u8*,	volume,				sfxDat[4].address);	// 0068C448
+    
+    BW_DATA_REF(u32*,	sound_pointer,		sfxDat[0].address);	// 0068DAA0
+    BW_DATA_REF(u8*,	priority,			sfxDat[1].address);	// 0068D628
+    BW_DATA_REF(u8*,	sound_flags,		sfxDat[2].address);	// 0068C8C0
+    BW_DATA_REF(u16*,	portrait_duration,	sfxDat[3].address);	// 0068CD38
+    BW_DATA_REF(u8*,	volume,				sfxDat[4].address);	// 0068C448
 }
 */
 
 namespace weapons_dat {
 //	BW_DATA(const DatLoad*,	weaponsDat, 0x00513868);
 
-	BW_DATA_REF(u16*,			label,					weaponsDat[0].address);		// 006572E0
-	BW_DATA_REF(u32*,			flingy_id,				weaponsDat[1].address);		// 00656CA8
-	BW_DATA_REF(u8*,			special_attack,			weaponsDat[2].address);		// 006573E8
-	BW_DATA_REF(TargetFlag*,	target_flags,			weaponsDat[3].address);		// 00657998
-	BW_DATA_REF(u32*,			min_range,				weaponsDat[4].address);		// 00656A18
-	BW_DATA_REF(u32*,			max_range,				weaponsDat[5].address);		// 00657470
-	BW_DATA_REF(u8*,			damage_upgrade,			weaponsDat[6].address);		// 006571D0
-	BW_DATA_REF(u8*,			damage_type,			weaponsDat[7].address);		// 00657258 Normal, Explosive, etc.. Use with damage_type::Enum.
-	BW_DATA_REF(u8*,			behavior,				weaponsDat[8].address);		// 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior enum.
-	BW_DATA_REF(u8*,			remove_after,			weaponsDat[9].address);		// 00657040
-	BW_DATA_REF(u8*,			explosion_type,			weaponsDat[10].address);	// 006566F8 NormalHit, RadialSplash, EnemySplash, etc. Use with WeaponEffect::Enum.
-	BW_DATA_REF(u16*,			inner_splash_radius,	weaponsDat[11].address);	// 00656888
-	BW_DATA_REF(u16*,			medium_splash_radius,	weaponsDat[12].address);	// 006570C8
-	BW_DATA_REF(u16*,			outer_splash_radius,	weaponsDat[13].address);	// 00657780
-	BW_DATA_REF(u16*,			damage_amount,			weaponsDat[14].address);	// 00656EB0
-	BW_DATA_REF(u16*,			armor_pen,				weaponsDat[15].address);	// 00657678
-	BW_DATA_REF(u8*,			cooldown,				weaponsDat[16].address);	// 00656FB8
-	BW_DATA_REF(u8*,			damage_factor,			weaponsDat[17].address);	// 006564E0
-	BW_DATA_REF(u8*,			attack_angle,			weaponsDat[18].address);	// 00656990
-	BW_DATA_REF(u8*,			launch_spin,			weaponsDat[19].address);	// 00657888
-	BW_DATA_REF(u8*,			forward_offset,			weaponsDat[20].address);	// 00657910
-	BW_DATA_REF(u8*,			vertical_offset,		weaponsDat[21].address);	// 00656C20
-	BW_DATA_REF(u16*,			error_message,			weaponsDat[22].address);	// 00656568
-	BW_DATA_REF(u16*,			weapon_icon,			weaponsDat[23].address);	// 00656780
+    BW_DATA_REF(u16*,			label,					weaponsDat[0].address);		// 006572E0
+    BW_DATA_REF(u32*,			flingy_id,				weaponsDat[1].address);		// 00656CA8
+    BW_DATA_REF(u8*,			special_attack,			weaponsDat[2].address);		// 006573E8
+    BW_DATA_REF(TargetFlag*,	target_flags,			weaponsDat[3].address);		// 00657998
+    BW_DATA_REF(u32*,			min_range,				weaponsDat[4].address);		// 00656A18
+    BW_DATA_REF(u32*,			max_range,				weaponsDat[5].address);		// 00657470
+    BW_DATA_REF(u8*,			damage_upgrade,			weaponsDat[6].address);		// 006571D0
+    BW_DATA_REF(u8*,			damage_type,			weaponsDat[7].address);		// 00657258 Normal, Explosive, etc.. Use with damage_type::Enum.
+    BW_DATA_REF(u8*,			behavior,				weaponsDat[8].address);		// 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior enum.
+    BW_DATA_REF(u8*,			remove_after,			weaponsDat[9].address);		// 00657040
+    BW_DATA_REF(u8*,			explosion_type,			weaponsDat[10].address);	// 006566F8 NormalHit, RadialSplash, EnemySplash, etc. Use with WeaponEffect::Enum.
+    BW_DATA_REF(u16*,			inner_splash_radius,	weaponsDat[11].address);	// 00656888
+    BW_DATA_REF(u16*,			medium_splash_radius,	weaponsDat[12].address);	// 006570C8
+    BW_DATA_REF(u16*,			outer_splash_radius,	weaponsDat[13].address);	// 00657780
+    BW_DATA_REF(u16*,			damage_amount,			weaponsDat[14].address);	// 00656EB0
+    BW_DATA_REF(u16*,			armor_pen,				weaponsDat[15].address);	// 00657678
+    BW_DATA_REF(u8*,			cooldown,				weaponsDat[16].address);	// 00656FB8
+    BW_DATA_REF(u8*,			damage_factor,			weaponsDat[17].address);	// 006564E0
+    BW_DATA_REF(u8*,			attack_angle,			weaponsDat[18].address);	// 00656990
+    BW_DATA_REF(u8*,			launch_spin,			weaponsDat[19].address);	// 00657888
+    BW_DATA_REF(u8*,			forward_offset,			weaponsDat[20].address);	// 00657910
+    BW_DATA_REF(u8*,			vertical_offset,		weaponsDat[21].address);	// 00656C20
+    BW_DATA_REF(u16*,			error_message,			weaponsDat[22].address);	// 00656568
+    BW_DATA_REF(u16*,			weapon_icon,			weaponsDat[23].address);	// 00656780
 } //weapons_dat (last entry at 0x0051397C)
 
 namespace upgrades_dat {
 //	BW_DATA(const DatLoad*,	upgradesDat,	0x005136E0); // now in bwdata.cpp
 
-	BW_DATA_REF(u16*,		mineral_cost_base,			upgradesDat[0].address);	// 00656740
-	BW_DATA_REF(u16*,		mineral_cost_factor,		upgradesDat[1].address);	// 006559C0
-	BW_DATA_REF(u16*,		vespene_cost_base,			upgradesDat[2].address);	// 00655840
-	BW_DATA_REF(u16*,		vespene_cost_factor,		upgradesDat[3].address);	// 006557C0
-	BW_DATA_REF(u16*,		time_cost_base,				upgradesDat[4].address);	// 00655B80
-	BW_DATA_REF(u16*,		time_cost_factor,			upgradesDat[5].address);	// 00655940
-	BW_DATA_REF(u16*,		requirement_offsets,		upgradesDat[6].address);	// 006558C0	// Restriction sound_flags according to EUDDB
-	BW_DATA_REF(u16*,		upgrade_icon,				upgradesDat[7].address);	// 00655AC0
-	BW_DATA_REF(u16*,		label,						upgradesDat[8].address);	// 00655A40
-	BW_DATA_REF(u8*,		race,						upgradesDat[9].address);	// 00655BFC
-	BW_DATA_REF(u8*,		max_repeats,				upgradesDat[10].address);	// 00655700
+    BW_DATA_REF(u16*,		mineral_cost_base,			upgradesDat[0].address);	// 00656740
+    BW_DATA_REF(u16*,		mineral_cost_factor,		upgradesDat[1].address);	// 006559C0
+    BW_DATA_REF(u16*,		vespene_cost_base,			upgradesDat[2].address);	// 00655840
+    BW_DATA_REF(u16*,		vespene_cost_factor,		upgradesDat[3].address);	// 006557C0
+    BW_DATA_REF(u16*,		time_cost_base,				upgradesDat[4].address);	// 00655B80
+    BW_DATA_REF(u16*,		time_cost_factor,			upgradesDat[5].address);	// 00655940
+    BW_DATA_REF(u16*,		requirement_offsets,		upgradesDat[6].address);	// 006558C0	// Restriction sound_flags according to EUDDB
+    BW_DATA_REF(u16*,		upgrade_icon,				upgradesDat[7].address);	// 00655AC0
+    BW_DATA_REF(u16*,		label,						upgradesDat[8].address);	// 00655A40
+    BW_DATA_REF(u8*,		race,						upgradesDat[9].address);	// 00655BFC
+    BW_DATA_REF(u8*,		max_repeats,				upgradesDat[10].address);	// 00655700
 //	BW_DATA_REF(u8*,		???,						upgradesDat[11].address);	// 00655B3C	// Brood War Flag according to EUDDB
 } //upgrades_dat (last entry at 0x00513764)
 
 namespace techdata_dat {
 //	BW_DATA(const DatLoad*,	techdataDat,	0x005137D8); // now in bwdata.cpp
 
-	BW_DATA_REF(u16*,		mineral_cost,				techdataDat[0].address);	// 00656248
-	BW_DATA_REF(u16*,		vespene_cost,				techdataDat[1].address);	// 006561F0
-	BW_DATA_REF(u16*,		time_cost,					techdataDat[2].address);	// 006563D8
-	BW_DATA_REF(u16*,		energy_cost,				techdataDat[3].address);	// 00656380
+    BW_DATA_REF(u16*,		mineral_cost,				techdataDat[0].address);	// 00656248
+    BW_DATA_REF(u16*,		vespene_cost,				techdataDat[1].address);	// 006561F0
+    BW_DATA_REF(u16*,		time_cost,					techdataDat[2].address);	// 006563D8
+    BW_DATA_REF(u16*,		energy_cost,				techdataDat[3].address);	// 00656380
 //	BW_DATA_REF(u16*,		???,						techdataDat[4].address);	// 00656198
-	BW_DATA_REF(u16*,		requirement_offsets,		techdataDat[5].address);	// 006562F8
-	BW_DATA_REF(u16*,		tech_icon,					techdataDat[6].address);	// 00656430
-	BW_DATA_REF(u16*,		label,						techdataDat[7].address);	// 006562A0
+    BW_DATA_REF(u16*,		requirement_offsets,		techdataDat[5].address);	// 006562F8
+    BW_DATA_REF(u16*,		tech_icon,					techdataDat[6].address);	// 00656430
+    BW_DATA_REF(u16*,		label,						techdataDat[7].address);	// 006562A0
 //	BW_DATA_REF(u8*,		???,						techdataDat[8].address);	// 00656488	// race according to EUDDB
 //	BW_DATA_REF(u8*,		???,						techdataDat[9].address);	// 00656350	// "Researched" according to EUDDB
 //	BW_DATA_REF(u8*,		???,						techdataDat[10].address);	// 006564B4	// Brood War Flag according to EUDDB
@@ -740,55 +740,55 @@ namespace techdata_dat {
 namespace orders_dat {
 //	BW_DATA(const DatLoad*,	ordersDat,	0x00513EC8); // now in bwdata.cpp
 
-	BW_DATA_REF(u16*,		label,						ordersDat[0].address);	// 00665280
-	BW_DATA_REF(u8*,		use_weapon_targeting,		ordersDat[1].address);	// 00664B00
+    BW_DATA_REF(u16*,		label,						ordersDat[0].address);	// 00665280
+    BW_DATA_REF(u8*,		use_weapon_targeting,		ordersDat[1].address);	// 00664B00
 //	BW_DATA_REF(u8*,		???,						ordersDat[2].address);	// 00665940 // May be "secondary order" used for debug/assert only / "Order goes in bSecondaryOrderID instead of bMainOrderID." according to EUDDB
-	BW_DATA_REF(u8*,		Unused3,					ordersDat[3].address);	// 00665A00 // May be "Non-subunit" used for debug only
-	BW_DATA_REF(u8*,		Unknown4,					ordersDat[4].address);	// 00664A40
+    BW_DATA_REF(u8*,		Unused3,					ordersDat[3].address);	// 00665A00 // May be "Non-subunit" used for debug only
+    BW_DATA_REF(u8*,		Unknown4,					ordersDat[4].address);	// 00664A40
 //	BW_DATA_REF(u8*,		???,						ordersDat[5].address);	// 006657C0 // May be "Subunit can use" used for debug only
-	BW_DATA_REF(b8*,		can_be_interrupted,			ordersDat[6].address);	// 00665040
-	BW_DATA_REF(u8*,		Unknown7,					ordersDat[7].address);	// 00665100
-	BW_DATA_REF(u8*,		can_be_queued,				ordersDat[8].address);	// 00665700
-	BW_DATA_REF(u8*,		disabling_keeps_target,		ordersDat[9].address);	// 006651C0
-	BW_DATA_REF(u8*,		can_be_obstructed,			ordersDat[10].address);	// 006654C0
-	BW_DATA_REF(u8*,		Unknown11,					ordersDat[11].address);	// 00664C80
+    BW_DATA_REF(b8*,		can_be_interrupted,			ordersDat[6].address);	// 00665040
+    BW_DATA_REF(u8*,		Unknown7,					ordersDat[7].address);	// 00665100
+    BW_DATA_REF(u8*,		can_be_queued,				ordersDat[8].address);	// 00665700
+    BW_DATA_REF(u8*,		disabling_keeps_target,		ordersDat[9].address);	// 006651C0
+    BW_DATA_REF(u8*,		can_be_obstructed,			ordersDat[10].address);	// 006654C0
+    BW_DATA_REF(u8*,		Unknown11,					ordersDat[11].address);	// 00664C80
 //	BW_DATA_REF(u8*,		???,						ordersDat[12].address);	// 00664BC0 // May be "Order requires moving"
-	BW_DATA_REF(u8*,		order_weapon_id,			ordersDat[13].address);	// 00665880
-	BW_DATA_REF(u8*,		tech_used,					ordersDat[14].address);	// 00664E00
-	BW_DATA_REF(u8*,		order_animation,			ordersDat[15].address);	// 00664D40 // Animation (IscriptAnimation) according to EUDDB
-	BW_DATA_REF(s16*,		button_icon,				ordersDat[16].address);	// 00664EC0
-	BW_DATA_REF(u16*,		req_offset,					ordersDat[17].address);	// 00665580 // based on context
-	BW_DATA_REF(u8*,		obscured_order,				ordersDat[18].address);	// 00665400
+    BW_DATA_REF(u8*,		order_weapon_id,			ordersDat[13].address);	// 00665880
+    BW_DATA_REF(u8*,		tech_used,					ordersDat[14].address);	// 00664E00
+    BW_DATA_REF(u8*,		order_animation,			ordersDat[15].address);	// 00664D40 // Animation (IscriptAnimation) according to EUDDB
+    BW_DATA_REF(s16*,		button_icon,				ordersDat[16].address);	// 00664EC0
+    BW_DATA_REF(u16*,		req_offset,					ordersDat[17].address);	// 00665580 // based on context
+    BW_DATA_REF(u8*,		obscured_order,				ordersDat[18].address);	// 00665400
 } //orders_dat (last entry at 0x00513FA0)
 
 namespace sprites_dat {
 //	BW_DATA(const DatLoad*,	spritesDat,		0x00513FB8); // now in bwdata.cpp
 
-	BW_DATA_REF(u16*,		image_id,					spritesDat[0].address);	// 00666160
-	BW_DATA_REF(s8*,		hp_bar_size,				spritesDat[1].address);	// 00665E50
+    BW_DATA_REF(u16*,		image_id,					spritesDat[0].address);	// 00666160
+    BW_DATA_REF(s8*,		hp_bar_size,				spritesDat[1].address);	// 00665E50
 //	BW_DATA_REF(s8*,		???,						spritesDat[2].address);	// 00666570
-	BW_DATA_REF(u8*,		is_visible,					spritesDat[3].address);	// 00665C48
-	BW_DATA_REF(s8*,		selection_circle_image,		spritesDat[4].address);	// 00665AC0
-	BW_DATA_REF(s8*,		selection_circle_offset,	spritesDat[5].address);	// 00665FD8
+    BW_DATA_REF(u8*,		is_visible,					spritesDat[3].address);	// 00665C48
+    BW_DATA_REF(s8*,		selection_circle_image,		spritesDat[4].address);	// 00665AC0
+    BW_DATA_REF(s8*,		selection_circle_offset,	spritesDat[5].address);	// 00665FD8
 } //sprites_dat (last entry at 0x00513FF4)
 
 namespace images_dat {
 //	BW_DATA(const DatLoad*,	imagesDat,	0x00514010); // now in bwdata.cpp
 
-	BW_DATA_REF(const u32*,		image_file,			imagesDat[0].address);	// 00668AA0
-	BW_DATA_REF(const u8*,		is_turnable,		imagesDat[1].address);	// 0066E860
-	BW_DATA_REF(const u8*,		is_clickable,		imagesDat[2].address);	// 0066C150
-	BW_DATA_REF(const u8*,		use_full_iscript,	imagesDat[3].address);	// 0066D4D8
-	BW_DATA_REF(const u8*,		draw_if_cloaked,	imagesDat[4].address);	// 00667718
-	BW_DATA_REF(const u8*,		rle_function,		imagesDat[5].address);	// 00669E28
-	BW_DATA_REF(const u8*,		remapping,			imagesDat[6].address);	// 00669A40
-	BW_DATA_REF(const u32*,		iscript_id,			imagesDat[7].address);	// 0066EC48
-	BW_DATA_REF(const u32*,		lo_shields,			imagesDat[8].address);	// 0066C538
-	BW_DATA_REF(const u32*,		lo_attack,			imagesDat[9].address);	// 0066B1B0
-	BW_DATA_REF(const u32*,		lo_damage,			imagesDat[10].address);	// 0066A210
-	BW_DATA_REF(const u32*,		lo_special,			imagesDat[11].address);	// 00667B00
-	BW_DATA_REF(const u32*,		lo_landing,			imagesDat[12].address);	// 00666778
-	BW_DATA_REF(const u32*,		lo_liftoff,			imagesDat[13].address);	// 0066D8C0
+    BW_DATA_REF(const u32*,		image_file,			imagesDat[0].address);	// 00668AA0
+    BW_DATA_REF(const u8*,		is_turnable,		imagesDat[1].address);	// 0066E860
+    BW_DATA_REF(const u8*,		is_clickable,		imagesDat[2].address);	// 0066C150
+    BW_DATA_REF(const u8*,		use_full_iscript,	imagesDat[3].address);	// 0066D4D8
+    BW_DATA_REF(const u8*,		draw_if_cloaked,	imagesDat[4].address);	// 00667718
+    BW_DATA_REF(const u8*,		rle_function,		imagesDat[5].address);	// 00669E28
+    BW_DATA_REF(const u8*,		remapping,			imagesDat[6].address);	// 00669A40
+    BW_DATA_REF(const u32*,		iscript_id,			imagesDat[7].address);	// 0066EC48
+    BW_DATA_REF(const u32*,		lo_shields,			imagesDat[8].address);	// 0066C538
+    BW_DATA_REF(const u32*,		lo_attack,			imagesDat[9].address);	// 0066B1B0
+    BW_DATA_REF(const u32*,		lo_damage,			imagesDat[10].address);	// 0066A210
+    BW_DATA_REF(const u32*,		lo_special,			imagesDat[11].address);	// 00667B00
+    BW_DATA_REF(const u32*,		lo_landing,			imagesDat[12].address);	// 00666778
+    BW_DATA_REF(const u32*,		lo_liftoff,			imagesDat[13].address);	// 0066D8C0
 } //images_dat (last entry at 0x005140AC)
 
 BW_DATA_REF(u8*,	g_is_valid_sprite,			0x00629A88);
@@ -810,11 +810,11 @@ BW_DATA(GetActivePlayerNextSelectionFunc, get_active_player_next_selection, 0x00
 
 /// Selections of all players
 struct PlayersSel {
-	Unit* unit[PLAYABLE_PLAYER_COUNT][SelectionCap];
+    Unit* unit[PLAYABLE_PLAYER_COUNT][SelectionCap];
 };
 BW_DATA(PlayersSel*, players_selections, ccmu_extender.new_players_selections);
 struct PlayerSel {
-	Unit* unit[SelectionCap];
+    Unit* unit[SelectionCap];
 };
 BW_DATA(const PlayerSel*, current_unit_selection, ccmu_extender.new_active_selection);
 
@@ -843,7 +843,7 @@ BW_DATA(u32*,				g_temp_units_list_arrays_counts_list,				ccmu_extender.get_all_
 
 // Font & Drawing
 namespace graphics {
-	struct Font; struct Bitmap;
+    struct Font; struct Bitmap;
 }
 BW_DATA(graphics::Font**,		font_base,				0x006CE0F4);
 BW_DATA(graphics::Bitmap*,		g_game_screen_buffer,	0x006CEFF0);
@@ -875,18 +875,18 @@ const ListExtern<Image, &Image::link> unusedImages(0x0057EB68, 0x0057EB70);
 BW_DATA(List<Sprite>*, g_free_sprites,		0x0063FE30);
 
 struct SpriteTileData {
-	Sprite* tails[256];
-	Sprite* heads[256];
+    Sprite* tails[256];
+    Sprite* heads[256];
 };
 BW_DATA(SpriteTileData*, g_sprites_on_tile_row, 0x00629288);
 
 // Image-related
 struct ImagesDatExtraOverlayLO_Files {
-	LO_Header** attack_overlays;
-	LO_Header** damage_overlays;
-	LO_Header** special_overlays;
-	LO_Header** landing_dust_overlays;
-	LO_Header** liftoff_dust_overlays;
+    LO_Header** attack_overlays;
+    LO_Header** damage_overlays;
+    LO_Header** special_overlays;
+    LO_Header** landing_dust_overlays;
+    LO_Header** liftoff_dust_overlays;
 };
 BW_DATA_REF(ImagesDatExtraOverlayLO_Files*,			lo_files,				0x0051F2A8);
 BW_DATA_REF(const LO_Header* const*,				g_shield_overlays,		0x0052E5C8);
@@ -896,7 +896,7 @@ BW_DATA_REF(GrpHead* const*,						g_image_grp_graphics,	0x0051CED0);
 
 template <typename T>
 struct PlayerFlags {
-	T flags[PLAYER_COUNT];
+    T flags[PLAYER_COUNT];
 };
 BW_DATA(PlayerFlags<u8>*,		player_alliance,			0x0058D634); // See bw::is_allied_to()
 BW_DATA(PlayerFlags<u32>*,		player_vision,				0x0057F1EC);
@@ -928,12 +928,12 @@ BW_REF(b32,		g_is_placing_building,			0x00640880);
 //-------- Tech levels --------//
 
 struct _scTechs {
-	u8 is_enabled[PLAYER_COUNT][24];		// 0x0058CE24
-	u8 is_researched[PLAYER_COUNT][24];		// 0x0058CF44
+    u8 is_enabled[PLAYER_COUNT][24];		// 0x0058CE24
+    u8 is_researched[PLAYER_COUNT][24];		// 0x0058CF44
 };
 struct _bwTechs {
-	u8* is_enabled[PLAYER_COUNT];			// 0x0058F050
-	u8* is_researched[PLAYER_COUNT];		// 0x0058F140
+    u8* is_enabled[PLAYER_COUNT];			// 0x0058F050
+    u8* is_researched[PLAYER_COUNT];		// 0x0058F140
 };
 
 // Available and Researched techs are exactly next to each other, that's why with 2 entries structures, only 2 addresses are needed here when BWAPI got 4 of them.
@@ -943,12 +943,12 @@ BW_DATA_REF(_bwTechs*, TechBw, 0x0058F050); //Use with BwTech::Enum
 //-------- Upgrade levels --------//
 
 struct _scUpgrs {
-	u8 max_level[PLAYER_COUNT][46];		// 0x0058D088
-	u8 current_level[PLAYER_COUNT][46];	// 0x0058D2B0
+    u8 max_level[PLAYER_COUNT][46];		// 0x0058D088
+    u8 current_level[PLAYER_COUNT][46];	// 0x0058D2B0
 };
 struct _bwUpgrs {
-	u8* max_level[PLAYER_COUNT];			// 0x0058F278
-	u8* current_level[PLAYER_COUNT];		// 0x0058F32C
+    u8* max_level[PLAYER_COUNT];			// 0x0058F278
+    u8* current_level[PLAYER_COUNT];		// 0x0058F32C
 };
 BW_DATA(_scUpgrs*,		UpgradesSc, 0x0058D088); // Use with ScUpgrade::Enum
 BW_DATA_REF(_bwUpgrs*,	UpgradesBw, 0x0058F278); // Use with BwUpgrade::Enum
@@ -956,11 +956,11 @@ BW_DATA_REF(_bwUpgrs*,	UpgradesBw, 0x0058F278); // Use with BwUpgrade::Enum
 // Requirement opcode lists
 namespace requirements
 {
-	BW_DATA_REF(u16*, units,		0x00514178);
-	BW_DATA_REF(u16*, orders,		0x00514CF8);
-	BW_DATA_REF(u16*, research,		0x00514908);
-	BW_DATA_REF(u16*, upgrade,		0x005145C0);
-	BW_DATA_REF(u16*, tech,			0x00514A48);
+    BW_DATA_REF(u16*, units,		0x00514178);
+    BW_DATA_REF(u16*, orders,		0x00514CF8);
+    BW_DATA_REF(u16*, research,		0x00514908);
+    BW_DATA_REF(u16*, upgrade,		0x005145C0);
+    BW_DATA_REF(u16*, tech,			0x00514A48);
 }
 
 BW_DATA(GuardAiArray*,       g_guard_array,				0x0067D400);
@@ -1087,7 +1087,7 @@ BW_DATA(u32*,			g_current_buttonset_id,				0x0068C1C4);
 
 // For request_military_to
 BW_DATA_REF(u32*,		g_ai_strength_air,					0x006BB210);
-BW_DATA_REF(u32*,		g_ai_strength_ground,					0x006BB5A0);
+BW_DATA_REF(u32*,		g_ai_strength_ground,				0x006BB5A0);
 
 // For show_cursor_marker
 BW_DATA(Thingy**,		g_first_used_thingy_1,				0x00652918);
@@ -1266,17 +1266,17 @@ BW_DATA(u8*,				g_audio_something,					0x006D1A98);
 BW_DATA(u32*,				g_ignore_unit_flag80_clear_subcount,	0x006D5BD0);
 
 // For image_render
-BW_DATA(u8*,				UnkRGBMashup,						0x005993D8);
+BW_DATA(u8*,				UnkRGBMashup,					0x005993D8);
 
 // For init_title
-BW_DATA(BinDlg**,			g_main_dlg,							0x0057F0DC);
+BW_DATA(BinDlg**,			g_main_dlg,						0x0057F0DC);
 
 // For create_main_window
-BW_DATA(HINSTANCE*,			g_main_hinstance,					0x0051BFAC);
-BW_DATA(HIMC*,				g_app_context,						0x006D6438);
+BW_DATA(HINSTANCE*,			g_main_hinstance,				0x0051BFAC);
+BW_DATA(HIMC*,				g_app_context,					0x006D6438);
 
 // For show_or_hide_minimap
-BW_DATA(s8*,				g_hide_minimap_terrain,				0x006D5BBF);
+BW_DATA(s8*,				g_hide_minimap_terrain,			0x006D5BBF);
 
 BW_REF(b32,					g_units_recalled,				0x0063FF50);
 

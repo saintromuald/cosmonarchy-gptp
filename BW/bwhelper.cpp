@@ -13600,8 +13600,7 @@ namespace helper {
 		}
 	}
 
-	void file_fatal(HANDLE* file, u32 something)
-	{
+	void file_fatal(HANDLE* file, u32 something) {
 		const u32 func_address = 0x004D2880;
 		__asm {
 			PUSHAD
@@ -13612,8 +13611,7 @@ namespace helper {
 		}
 	}
 
-	void alloc_init_dialog_data(BinDlg* dialog, void (__fastcall* function)(u32, u32, u32, u32, u32), const char* log_filename, u32 log_line)
-	{
+	void alloc_init_dialog_data(BinDlg* dialog, void (__fastcall* function)(u32, u32, u32, u32, u32), const char* log_filename, u32 log_line) {
 		const u32 func_address = 0x004194E0;
 		__asm {
 			PUSHAD
@@ -13626,8 +13624,7 @@ namespace helper {
 		}
 	}
 
-	void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog)
-	{
+	void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog) {
 		const u32 func_address = 0x00419D20;
 		__asm {
 			PUSHAD
@@ -13638,8 +13635,7 @@ namespace helper {
 		}
 	}
 
-	u32 sfile_read_file(HANDLE* file, void* item, u32 size_arg, u32* read, u32 arg5)
-	{
+	u32 sfile_read_file(HANDLE* file, void* item, u32 size_arg, u32* read, u32 arg5) {
 		static u32 result;
 		const u32 func_address = 0x00410148;
 		__asm {
@@ -13656,8 +13652,7 @@ namespace helper {
 		return result;
 	}
 
-	s32 get_fastest_distance(u32 angle)
-	{
+	s32 get_fastest_distance(u32 angle) {
 		static s32 result;
 		const u32 func_address = 0x00494C10;
 		__asm {
@@ -13685,8 +13680,7 @@ namespace helper {
 		}
 	}
 
-	void insert_order_targeting_unit_before(Unit* target, u8 order_id, Order* order, Unit* unit)
-	{
+	void insert_order_targeting_unit_before(Unit* target, u8 order_id, Order* order, Unit* unit) {
 		const u32 func_address = 0x004747E0;
 		__asm {
 			PUSHAD
@@ -13699,8 +13693,7 @@ namespace helper {
 		}
 	}
 
-	void set_flag_attack_move(Unit* unit)
-	{
+	void set_flag_attack_move(Unit* unit) {
 		const u32 func_address = 0x004026A0;
 		__asm {
 			PUSHAD
@@ -13710,8 +13703,7 @@ namespace helper {
 		}
 	}
 
-	Unit* set_unit_movement_speed_ex(Unit* unit)
-	{
+	Unit* set_unit_movement_speed_ex(Unit* unit) {
 		static Unit* result;
 		const u32 func_address = 0x00495100;
 		__asm {
@@ -13779,8 +13771,7 @@ namespace helper {
 		return result;
 	}
 
-	void cancel_zerg_building(Unit* unit)
-	{
+	void cancel_zerg_building(Unit* unit) {
 		const u32 func_address = 0x0045DA40;
 		__asm {
 			PUSHAD
@@ -13790,8 +13781,7 @@ namespace helper {
 		}
 	}
 
-	void update_building_construct_shields_amount(Unit* unit)
-	{
+	void update_building_construct_shields_amount(Unit* unit) {
 		const u32 func_address = 0x0047B6A0;
 		__asm {
 			PUSHAD
@@ -13827,8 +13817,7 @@ namespace helper {
 		}
 	}
 
-	u32 distance_from_box_corner(Unit* unit, u16 pos_x, u16 pos_y)
-	{
+	u32 distance_from_box_corner(Unit* unit, u16 pos_x, u16 pos_y) {
 		const u32 func_address = 0x00430E50;
 		static u32 pos_x_xd = pos_x;
 		static u32 pos_y_xd = pos_y;
@@ -13845,8 +13834,7 @@ namespace helper {
 		return result;
 	}
 
-	void load_campaign_progress()
-	{
+	void load_campaign_progress() {
 		const u32 func_address = 0x004B5050;
 		__asm {
 			PUSHAD
@@ -13855,8 +13843,7 @@ namespace helper {
 		}
 	}
 
-	BinDlg* load_full_menu_dialog(u32 filename, void* default_value, char* unused, u32 read, char* log_filename, u32 log_line)
-	{
+	BinDlg* load_full_menu_dialog(u32 filename, void* default_value, char* unused, u32 read, char* log_filename, u32 log_line) {
 		static BinDlg* result;
 		const u32 func_address = 0x004DDBE0;
 		__asm {
@@ -13874,8 +13861,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 glu_load_bin_dialog(BinDlg* dialog, void* proc)
-	{
+	u32 glu_load_bin_dialog(BinDlg* dialog, void* proc) {
 		static u32 result;
 		const u32 func_address = 0x0041A080;
 		__asm {
@@ -13890,8 +13876,7 @@ namespace helper {
 		return result;
 	}
 
-	u32 change_menu()
-	{
+	u32 change_menu() {
 		static u32 result;
 		const u32 func_address = 0x004DCFA0;
 		__asm {
@@ -13903,8 +13888,7 @@ namespace helper {
 		return result;
 	}
 
-	void store_selection_group_hp_and_type()
-	{
+	void store_selection_group_hp_and_type() {
 		const u32 func_address = 0x00424540;
 		__asm {
 			PUSHAD
@@ -13913,8 +13897,7 @@ namespace helper {
 		}
 	}
 
-	void issue_order_before_2(u8 order_id, Order* order_queue_head, Unit* unit, Point16* pos, Unit* target)
-	{
+	void issue_order_before_2(u8 order_id, Order* order_queue_head, Unit* unit, Point16* pos, Unit* target) {
 		const u32 func_address = 0x004747C0;
 		__asm {
 			PUSHAD
@@ -13928,8 +13911,7 @@ namespace helper {
 		}
 	}
 
-	u8 apply_defensive_matrix(Unit* unit) // 00455010
-	{
+	u8 apply_defensive_matrix(Unit* unit) {
 		static u8 result;
 		const u32 func_address = 0x00455010;
 		__asm {
@@ -13942,8 +13924,7 @@ namespace helper {
 		return result;
 	}
 
-	u8 apply_lockdown(Unit* unit, u32 duration) // 00455380
-	{
+	u8 apply_lockdown(Unit* unit, u32 duration) {
 		static u8 result;
 		const u32 func_address = 0x00455380;
 		__asm {
@@ -13956,8 +13937,7 @@ namespace helper {
 		}
 	}
 
-	u8 apply_irradiate(Unit* unit) // 00454E80
-	{
+	u8 apply_irradiate(Unit* unit) {
 		static u8 result;
 		const u32 func_address = 0x00454E80;
 		__asm {
@@ -13970,8 +13950,7 @@ namespace helper {
 		return result;
 	}
 
-	u8 apply_stasis_field(Unit* unit, u32 duration) // 004F67B0
-	{
+	u8 apply_stasis_field(Unit* unit, u32 duration) {
 		static u8 result;
 		const u32 func_address = 0x004F67B0;
 		__asm {
@@ -13985,8 +13964,7 @@ namespace helper {
 		return result;
 	}
 
-	u8 apply_plague(Unit* unit) // 004F4550
-	{
+	u8 apply_plague(Unit* unit) {
 		static u8 result;
 		const u32 func_address = 0x004F4550;
 		__asm {
@@ -13999,8 +13977,7 @@ namespace helper {
 		return result;
 	}
 
-	Unit* orders_die(Unit* unit)
-	{
+	Unit* orders_die(Unit* unit) {
 		static Unit* result;
 		const u32 func_address = 0x00479480;
 		__asm {
@@ -14013,8 +13990,7 @@ namespace helper {
 		return result;
 	}
 
-	void orders_powerup_1(Unit* unit)
-	{
+	void orders_powerup_1(Unit* unit) {
 		const u32 func_address = 0x004F3EA0;
 		__asm {
 			PUSHAD
@@ -14024,8 +14000,7 @@ namespace helper {
 		}
 	}
 
-	void orders_infest_mine_4(Unit* unit)
-	{
+	void orders_infest_mine_4(Unit* unit) {
 		const u32 func_address = 0x004EA290;
 		__asm {
 			PUSHAD
@@ -14035,8 +14010,7 @@ namespace helper {
 		}
 	}
 
-	void orders_enter_exit_gas(Unit* unit)
-	{
+	void orders_enter_exit_gas(Unit* unit) {
 		const u32 func_address = 0x00469980;
 		__asm {
 			PUSHAD
@@ -14046,8 +14020,7 @@ namespace helper {
 		}
 	}
 
-	Sprite* orders_powerup_2(Unit* unit)
-	{
+	Sprite* orders_powerup_2(Unit* unit) {
 		const u32 func_address = 0x004F3E10;
 		__asm {
 			PUSHAD
@@ -14057,8 +14030,7 @@ namespace helper {
 		}
 	}
 
-	void orders_reset_collision_1(Unit* unit)
-	{
+	void orders_reset_collision_1(Unit* unit) {
 		const u32 func_address = 0x004671B0;
 		__asm {
 			PUSHAD
@@ -14068,8 +14040,7 @@ namespace helper {
 		}
 	}
 
-	void orders_reset_collision_2(Unit* unit)
-	{
+	void orders_reset_collision_2(Unit* unit) {
 		const u32 func_address = 0x0042E320;
 		__asm {
 			PUSHAD
@@ -14079,8 +14050,7 @@ namespace helper {
 		}
 	}
 
-	void orders_pickup_4(Unit* unit)
-	{
+	void orders_pickup_4(Unit* unit) {
 		const u32 func_address = 0x004E7B70;
 		__asm {
 			PUSHAD
@@ -14090,8 +14060,7 @@ namespace helper {
 		}
 	}
 
-	void orders_rescue_passive(Unit* unit)
-	{
+	void orders_rescue_passive(Unit* unit) {
 		const u32 func_address = 0x004A1EF0;
 		__asm {
 			PUSHAD
@@ -14111,8 +14080,7 @@ namespace helper {
 		}
 	}
 
-	void set_unit_hp(Unit* unit, u32 amount)
-	{
+	void set_unit_hp(Unit* unit, u32 amount) {
 		const u32 func_address = 0x00467340;
 		__asm {
 			PUSHAD
@@ -14123,8 +14091,7 @@ namespace helper {
 		}
 	}
 
-	s32 unit_movement_another_path(Unit* unit, Point16 dest)
-	{
+	s32 unit_movement_another_path(Unit* unit, Point16 dest) {
 		const u32 func_address = 0x0042FE00;
 		static s32 result;
 		__asm {
@@ -14138,7 +14105,7 @@ namespace helper {
 		return result;
 	}
 
-	void scroll_screen_left(u32 x_diff) { // 0049C1A0 
+	void scroll_screen_left(u32 x_diff) {
 		const u32 func_address = 0x0049C1A0;
 		__asm {
 			PUSHAD
@@ -14148,7 +14115,7 @@ namespace helper {
 		}
 	}
 
-	void scroll_screen_right(u32 x_diff) { // 0049C0C0 
+	void scroll_screen_right(u32 x_diff) {
 		const u32 func_address = 0x0049C0C0;
 		__asm {
 			PUSHAD
@@ -14158,7 +14125,7 @@ namespace helper {
 		}
 	}
 
-	void scroll_screen_down(u32 y_diff) { // 0049C280 
+	void scroll_screen_down(u32 y_diff) {
 		const u32 func_address = 0x0049C280;
 		__asm {
 			PUSHAD
@@ -14168,7 +14135,7 @@ namespace helper {
 		}
 	}
 
-	void scroll_screen_up(u32 y_diff) { // 0049C360 
+	void scroll_screen_up(u32 y_diff) {
 		const u32 func_address = 0x0049C360;
 		__asm {
 			PUSHAD
@@ -14178,8 +14145,7 @@ namespace helper {
 		}
 	}
 
-	void update_carryable_sprite_flags(Sprite* sprite)
-	{
+	void update_carryable_sprite_flags(Sprite* sprite) {
 		const u32 func_address = 0x004981B0;
 		__asm {
 			PUSHAD
@@ -14189,8 +14155,7 @@ namespace helper {
 		}
 	}
 
-	u32 snet_get_player_name(u32 player_id, int player_name, s32 some_index)
-	{
+	u32 snet_get_player_name(u32 player_id, int player_name, s32 some_index) {
 		const u32 func_address = 0x00410184;
 		static u32 result;
 		__asm {
@@ -14205,8 +14170,7 @@ namespace helper {
 		return result;
 	}
 
-	void print_lobby_string(u32 player_id, int string)
-	{
+	void print_lobby_string(u32 player_id, int string) {
 		const u32 func_address = 0x004B91C0;
 		__asm {
 			PUSHAD
@@ -14221,8 +14185,7 @@ namespace helper {
 		return *g_multiplayer_mode && g_current_network_mode == 'BNET';
 	}
 
-	u32 snet_send_server_chat_command(char string)
-	{
+	u32 snet_send_server_chat_command(char string) {
 		const u32 func_address = 0x00410280;
 		static u32 result;
 		__asm {

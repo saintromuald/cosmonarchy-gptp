@@ -816,8 +816,8 @@ namespace helper {
 	s32 select_single_unit_from_id(s32 index);																		// 00496D30
 	s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, u8 play_sound, u32 send_command);	// 0049AEF0
 	s32 snet_get_turns_in_transit(u32* turns);																		// 00410274
-	u8 send_turn();
-	s32 serr_get_last_error();
+	u8 send_turn();																									// 00485A40
+	s32 serr_get_last_error();																						// 004100FA
 	u8 packet_error_handle(s32 result, s32 a1, const char* a3, s32 a4, s32 a5);
 
 	//// repair_order
