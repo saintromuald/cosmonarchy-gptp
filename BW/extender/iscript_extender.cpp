@@ -49,6 +49,7 @@ namespace hooks {
             helper::SFileCloseFile(file);
             g_iscript_handles[i_0] = (char*)item;
         }
+        g_iscript_data = g_iscript_handles[0];
     }
 
     void cleanup_iscript_handles() {
@@ -123,6 +124,7 @@ namespace hooks {
             MOVZX EAX, byte ptr[EAX + 0xD]
             SHR EAX, 4
             MOV EAX, [EAX * 4 + g_iscript_handles]
+            MOV g_iscript_data, EAX
             JMP iscript_cases_D74DE_retn
         }
     }
@@ -316,6 +318,7 @@ namespace hooks {
         memory_patch(0x004D739C, (u8)0xE9);//JMP...
         memory_patch(0x004D739D, (u32)0xB1);//...0x004D7452;
         memory_patch(0x004D50C5, (u16)0x14EB);//JMP 0x004D50DB
+        nops(0x004D745C, 6);
 
         call_patch(init_iscript_bin,               0x004D7397, 0);	// 004D7390
         call_patch(cleanup_iscript_handles,        0x004D50C0, 0);	// 004D50C0

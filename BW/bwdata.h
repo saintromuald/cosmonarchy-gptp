@@ -1091,7 +1091,7 @@ BW_DATA_REF(u32*,		g_ai_strength_ground,				0x006BB5A0);
 // For show_cursor_marker
 BW_DATA(Thingy**,		g_first_used_thingy_1,				0x00652918);
 BW_DATA(u8*,			g_can_draw_thingy,					0x00652920);
-BW_DATA(char**,			g_iscript_data,						0x006D1200);
+BW_REF(char*,			g_iscript_data,						0x006D1200);
 
 // For play_warp_in_overlay
 BW_DATA(UpdateFunction*,	g_sg_update_funcs,				0x00512510);
