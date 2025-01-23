@@ -25,7 +25,7 @@ namespace hooks {
 
 		// DatExt -- Patch dat file
 		// Note now every patch happens immediately with size being in DatExt::extend_data()
-	//	if (DatExt::setDatSize(datTable, size) == false)
+	//	if (DatExt::set_dat_size(datTable, size) == false)
 	//	{
 	//		helper::syswarn_file_not_found(24, filename); // invalid file
 	//	}

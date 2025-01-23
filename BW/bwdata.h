@@ -184,9 +184,9 @@ typedef bool __fastcall generic_interact_function(BinDlg*, Event*);
 BW_DATA(generic_interact_function**, generic_interact_functions, 0x005014AC);
 
 // Added from BWAPI Offsets.h
-BW_DATA(char*,		g_current_map_filename,	0x0057FD3C);
-BW_DATA(char*,		g_current_map_name,		0x0057FE40);
-BW_DATA_REF(_uavail*, g_unit_availability,	0x0057F27C);
+BW_DATA(char*,		  g_current_map_filename, 0x0057FD3C);
+BW_DATA(char*,		  g_current_map_name,	  0x0057FE40);
+BW_DATA_REF(_uavail*, g_unit_availability,	  0x0057F27C);
 
 // Ping data
 BW_DATA(Ping*,			ping_array,					0x0059C1B8); // 16

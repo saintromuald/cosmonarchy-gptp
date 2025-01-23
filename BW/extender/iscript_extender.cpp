@@ -189,7 +189,7 @@ namespace hooks {
             MOV EAX, [EBP - 0xC]
             MOVZX EAX, byte ptr[EAX + 0xD]
             SHR EAX, 4
-            MOV EAX, [EAX * 4 + g_iscript_handles]
+            MOV ECX, [EAX * 4 + g_iscript_handles]
             JMP iscript_cases_trgtrangecondjmp_retn
         }
     }
