@@ -789,45 +789,46 @@ namespace hooks {
 	b32 is_target_within_min_range(Unit* unit, u32 min_range, Unit* target) { // 00430F10
 		u32 pos_x = unit->position.x;
 		u32 pos_y = unit->position.y;
-		s16 bounds_h = units_dat::unit_bounds[unit->id].h;
-		s16 bounds_y = unit->position.y - units_dat::unit_bounds[unit->id].y;
-		s16 bounds_x = pos_x - units_dat::unit_bounds[unit->id].x;
-		s16 bounds_w = units_dat::unit_bounds[unit->id].w;
+		s16 bounds_bot = units_dat::unit_bounds[unit->id].h;
+		s16 bounds_top = unit->position.y - units_dat::unit_bounds[unit->id].y;
+		s16 bounds_left = pos_x - units_dat::unit_bounds[unit->id].x;
+		s16 width = units_dat::unit_bounds[unit->id].w;
 		if (unit->is_subunit()) {
-			Unit* subunit = unit->subunit;
-			pos_x = subunit->position.x;
-			pos_y = subunit->position.y;
-			bounds_h = units_dat::unit_bounds[subunit->id].h;
-			bounds_y = subunit->position.y - units_dat::unit_bounds[subunit->id].y;
-			bounds_x = pos_x - units_dat::unit_bounds[subunit->id].x;
-			bounds_w = units_dat::unit_bounds[subunit->id].w;
+			Unit* parent = unit->subunit;
+			pos_x = parent->position.x;
+			pos_y = parent->position.y;
+			bounds_bot = units_dat::unit_bounds[parent->id].h;
+			Box16* bounds = &units_dat::unit_bounds[parent->id];
+			bounds_top = parent->position.y - bounds->y;
+			bounds_left = pos_x - bounds->x;
+			width = bounds->w;
 		}
 
-		u16 targ_pos_x = target->position.x;
-		u16 targ_pos_y = target->position.y;
+		s16 bottom_fin = pos_y + bounds_bot;
+		s16 x_width = pos_x + width;
+		s16 targ_pos_x = target->position.x;
+		s16 targ_pos_y = target->position.y;
 		Box16* target_bounds = &units_dat::unit_bounds[target->id];
-		s16 pos_height = pos_y + bounds_h;
-		s16 pos_width = pos_x + bounds_w;
-		s16 target_bound_x = targ_pos_x - target_bounds->x;
-		s16 target_bound_y = targ_pos_y - target_bounds->y;
-		s16 targ_width = targ_pos_x + target_bounds->w + 1;
-		s16 targ_height = targ_pos_y + target_bounds->h + 1;
-
-		s16 final_x = bounds_x - targ_width;
-		if (final_x < 0) {
-			final_x = target_bound_x - pos_width + 1;
-			if (final_x < 0) {
-				final_x = 0;
+		s16 targ_top = targ_pos_y - target_bounds->y;
+		s16 x_1 = x_width + 1;
+		s16 y_bot = bottom_fin + 1;
+		s16 targ_left = targ_pos_x - target_bounds->x;
+		s16 targ_bottom = targ_pos_y + target_bounds->h + 1;
+		s32 x2 = bounds_left - (signed __int16)(targ_pos_x + target_bounds->w + 1);
+		if (x2 < 0) {
+			x2 = targ_left - x_1;
+			if (x2 < 0) {
+				x2 = 0;
 			}
 		}
-		s16 final_y = bounds_y - targ_height;
-		if (final_y < 0) {
-			final_y = target_bound_y - pos_height + 1;
-			if (final_y < 0) {
-				final_y = 0;
+		s32 y2 = bounds_top - targ_bottom;
+		if (y2 < 0) {
+			y2 = targ_top - y_bot;
+			if (y2 < 0) {
+				y2 = 0;
 			}
 		}
-		return min_range >= helper::get_distance_fast(0, final_x, 0, final_y);
+		return min_range >= helper::get_distance_fast(0, x2, 0, y2);
 	}
 
 	// Hooked to protect against nullsprite crashes. -Pr0nogo
