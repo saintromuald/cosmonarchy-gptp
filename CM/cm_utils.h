@@ -29,3 +29,4 @@ bool game_kind_has_neutral_hostile(GameKind game_kind);
 bool player_detects_unit(u32 player, Unit* unit);
 void fire_amitosis_weapon(Unit* attacker, WeaponId::Enum weapon_id);
 void set_up_mines(Unit* unit);
+bool match_player_name(u32 player, const char* name_string);
