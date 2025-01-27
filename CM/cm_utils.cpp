@@ -284,14 +284,17 @@ void cancel_all_training(Unit* unit) {
 }
 
 bool play_unit_banter(Unit* victim, u16 speaker_unit_id) {
+	if (!victim) {
+		return false;
+	}
 	auto speakers = g_unit_search.radial_ex(victim, 16 * 32, FilterEnemy, {speaker_unit_id}).sort_by_distance(victim->position);
 
 	Unit* speaker = speakers.first([victim](Unit* speaker) {
 		if (bw::distance_between(victim->position, speaker->position) > speaker->get_sight_range() * 32) {
 			return false;
 		}
-		UnitExt* speaker_ext = get_unit_ext(speaker);
-		if (speaker_ext->timers[TimerUnitBanter]) {
+		UnitExt& speaker_ext = speaker->ext();
+		if (speaker_ext.timers[TimerUnitBanter]) {
 			return false;
 		}
 		return true;
