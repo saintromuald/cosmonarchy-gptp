@@ -412,6 +412,7 @@ struct Unit : public UnitLayout {
 	bool is_invincible();
 	bool is_spellcaster();
 	bool is_hallucination();
+	bool is_grounded_building();
 };
 
 C_ASSERT(sizeof(Flingy) == 0x4c);

@@ -132,7 +132,6 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     // CCMU extender
     u32 loaded_index;
     auto new_table = g_unit_table;
-
     __asm {
         PUSHAD
         MOV ECX, cargo_unit
@@ -150,14 +149,6 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
 
     cargo_unit->connected_unit = transport;
 
-    /*
-    s32 unit_array_length = UNIT_ARRAY_LENGTH;
-    if (globals->extended_unit_table == 1)
-    {
-        unit_array_length = NEW_ARRAY_LENGTH;
-    }
-    */
-
     if (loaded_index < UNIT_ARRAY_LENGTH) {
         transport_ext->loaded_unit[counter].index = loaded_index;
         transport_ext->loaded_unit[counter].unique_id = cargo_unit->unique_id;
@@ -173,7 +164,8 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     }
     special_load_unit(cargo_unit, transport);
 
-    if (unit_id_is_garrison(transport->id)) {
+    bool is_garrison = unit_id_is_garrison(transport->id);
+    if (is_garrison) {
         for (s32 i = 0; i < TransportCap; i++) {
             Unit* cargo_unit = transport->get_loaded_unit(i);
             if (!cargo_unit) continue;
@@ -188,7 +180,7 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     }
 
     bw::refresh_console();
-    if (unit_id_is_garrison(transport->id)) {
+    if (is_garrison) {
         cargo_unit->status = (cargo_unit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
         if (cargo_unit->subunit) {
             cargo_unit->subunit->status = (cargo_unit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
@@ -340,21 +332,22 @@ void kill_all_loaded_units(Unit* transport) { // 0049FDD0
     } else if (!(transport->status & UnitStatus::IsHallucination)) {
         // Originally had a check for the Ovileth transport upgrade. We enable it by default, so BYE!
         u8 transport_space = units_dat::space_provided[transport->id];
-        if (transport_space) {
-            for (u32 i = 0; i < TransportCap; ++i) {
-                Unit* unit = get_loaded_unit_from_index(transport, i);
-                if (unit) {
-                    transport->main_order_timer = 0;
-                    if (helper::unload_unit_proc(unit)) {
-                        if (!unit_id_is_garrison(transport->id) || transport_ext->timers[TimerEmergencyDetonation] == 1) {
-                            helper::orders_self_destructing(unit); // Just kill it! -Veeq7
-                        }
-                    } else {
-                        helper::orders_self_destructing(unit);
+        if (!transport_space) {
+            return;
+        }
+        for (u32 i = 0; i < TransportCap; ++i) {
+            Unit* unit = get_loaded_unit_from_index(transport, i);
+            if (unit) {
+                transport->main_order_timer = 0;
+                if (helper::unload_unit_proc(unit)) {
+                    if (!unit_id_is_garrison(transport->id) || transport_ext->timers[TimerEmergencyDetonation] == 1) {
+                        helper::orders_self_destructing(unit); // Just kill it! -Veeq7
                     }
+                } else {
+                    helper::orders_self_destructing(unit);
                 }
-                transport_ext->loaded_unit[i].value = 0;
             }
+            transport_ext->loaded_unit[i].value = 0;
         }
     }
 }

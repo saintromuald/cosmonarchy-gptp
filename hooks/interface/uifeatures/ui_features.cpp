@@ -1002,8 +1002,7 @@ namespace hooks {
 			//	}
 				goto RespondToPortraitEvent;
 			} break;
-			case DialogEventType_MWheelDown:
-			{
+			case DialogEventType_MWheelDown: {
 			//	if (!config.use_spacebar_for_scrolling) {
 				RespondToPortraitEvent:
 					if (*g_dialog_key)

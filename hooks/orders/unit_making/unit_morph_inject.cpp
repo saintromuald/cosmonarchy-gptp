@@ -136,7 +136,7 @@ namespace {
 			return;
 		}
 
-		if (unit->status & UnitStatus::GroundedBuilding) {
+		if (unit->is_grounded_building()) {
 			if (unit->get_race() == RaceId::Zerg) {
 				if (unit->id == UnitId::ZergExcisant) {
 					unit->building.resource.is_mining = 0;
@@ -151,11 +151,9 @@ namespace {
 			resources->minerals[unit->player] += units_dat::mineral_cost[unit->id] * 3 / 4;
 			resources->gas[unit->player] += units_dat::vespene_cost[unit->id] * 3 / 4;
 		} else {
-			u16 refund_unit_id;
+			u16 refund_unit_id = unit->id;
 			if (bw::is_zerg_egg_new(unit, true, false)) {
 				refund_unit_id = unit->build_queue[unit->build_queue_slot % 5];
-			} else {
-				refund_unit_id = unit->id;
 			}
 			resources->minerals[unit->player] += units_dat::mineral_cost[refund_unit_id];
 			resources->gas[unit->player] += units_dat::vespene_cost[refund_unit_id];
@@ -206,24 +204,19 @@ namespace {
 			u32 flingy_sprite_id = flingy_dat::sprite_id[index];
 			replace_sprite_images(unit->sprite, sprites_dat::image_id[flingy_sprite_id], 0);
 			unit->order_signal &= ~0x4;
-			if (unit->id == UnitId::ZergZethrokor
-			||  unit->id == UnitId::ZergVorvrokor
-			||  unit->id == UnitId::ZergNathrokor)
-			{
-				unit->sprite->play_iscript_animation(IscriptAnimation::Unused2, true);
+			IscriptAnimation::Enum animation = IscriptAnimation::SpecialState2;
+			if (unit->id == UnitId::ZergZethrokor || unit->id == UnitId::ZergVorvrokor || unit->id == UnitId::ZergNathrokor) {
+				animation = IscriptAnimation::Unused2;
 			} else if (unit->id == UnitId::ZergQuazilisk) {
-				unit->sprite->play_iscript_animation(IscriptAnimation::Unused2, true);
+				animation = IscriptAnimation::Unused2;
 				unit_ext->timers[TimerQuaziliskCancel] = 4;
-			} else {
-				unit->sprite->play_iscript_animation(IscriptAnimation::SpecialState2, true);
 			}
+			unit->sprite->play_iscript_animation(animation, true);
 			unit->rally.pt = unit->position;
 			unit->rally.unit = 0;
 			unit->order_to(OrderId::ZergBirth);
 		}
 	}
-
-	//-------- getRemainingBuildTimePct --------//
 
 	s32 get_remaining_build_time_pct(Unit* unit) {
 		u16 unit_id = unit->id;
@@ -233,8 +226,9 @@ namespace {
 		return 100 * (units_dat::time_cost[unit_id] - unit->remaining_build_time) / units_dat::time_cost[unit_id];
 	}
 
-	// Inject @ 0x004669E0
-	void __declspec(naked) get_remaining_build_time_pct_wrapper() {
+	//-------- Wrappers --------//
+
+	void __declspec(naked) get_remaining_build_time_pct_wrapper() { // 004669E0
 		static Unit* unit;
 		static s32 percentage;
 		__asm {
@@ -250,11 +244,8 @@ namespace {
 		}
 	}
 
-	//-------- orders_zerg_birth --------//
-
-	// Inject @ 0x0045DE00
-	const u32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
-	void __declspec(naked) get_unit_vertical_offset_on_birth_wrapper() {
+	void __declspec(naked) get_unit_vertical_offset_on_birth_wrapper() { // 0045DE00
+		static const u32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
 		static Unit* unit;
 		static s16 yOffset;
 		__asm {
@@ -269,10 +260,9 @@ namespace {
 		}
 	}
 
-	// Inject @ 0x0045DE57
-	const u32 Hook_IsRallyableEggUnit_Yes = 0x0045DE6C;
-	const u32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
-	void __declspec(naked) is_rallyable_unit_egg_wrapper() {
+	void __declspec(naked) is_rallyable_unit_egg_wrapper() { // 0045DE57
+		static const u32 Hook_IsRallyableEggUnit_Yes = 0x0045DE6C;
+		static const u32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
 		static Unit* unit;
 		__asm {
 			POP ESI
@@ -349,9 +339,9 @@ namespace {
 		}
 	}
 
-	const u32 Jmp_IsEgg = 0x00434CF1;
-	const u32 Jmp_IsNotEgg = 0x00434CD6;
 	void __declspec(naked) delete_building_worker_ai_egg_jump_wrapper() {
+		static const u32 Jmp_IsEgg = 0x00434CF1;
+		static const u32 Jmp_IsNotEgg = 0x00434CD6;
 		static Unit* unit;
 		__asm {
 			MOV unit, EDI
@@ -370,9 +360,9 @@ namespace {
 		}
 	}
 
-	const u32 Jmp_UnitAi_IsEgg = 0x00433E74;
-	const u32 Jmp_UnitAi_IsNotEgg = 0x00433E6A;
 	void __declspec(naked) add_unit_ai_egg_jump_wrapper() {
+		static const u32 Jmp_UnitAi_IsEgg = 0x00433E74;
+		static const u32 Jmp_UnitAi_IsNotEgg = 0x00433E6A;
 		static Unit* unit;
 		__asm {
 			MOV unit, EBX
@@ -417,9 +407,9 @@ namespace {
 		}
 	}
 
-	const u32 Jmp_UnitTask_IsEgg = 0x00434CF1;
-	const u32 Jmp_UnitTask_IsNotEgg = 0x00434CD6;
 	void __declspec(naked) detach_unit_task_egg_jump_wrapper() {
+		static const u32 Jmp_UnitTask_IsEgg = 0x00434CF1;
+		static const u32 Jmp_UnitTask_IsNotEgg = 0x00434CD6;
 		static Unit* unit;
 		__asm {
 			MOV unit, EDI
@@ -438,9 +428,9 @@ namespace {
 		}
 	}
 
-	const u32 Jmp_PrepSuicide_IsEgg = 0x0043D218;
-	const u32 Jmp_PrepSuicide_IsNotEgg = 0x0043D212;
 	void __declspec(naked) prep_suicide_egg_jump_wrapper() {
+		static const u32 Jmp_PrepSuicide_IsEgg = 0x0043D218;
+		static const u32 Jmp_PrepSuicide_IsNotEgg = 0x0043D212;
 		static Unit* unit;
 		__asm {
 			MOV unit, ESI

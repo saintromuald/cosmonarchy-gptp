@@ -1558,3 +1558,7 @@ bool Unit::is_spellcaster() {
 bool Unit::is_hallucination() {
 	return this->status & UnitStatus::IsHallucination;
 }
+
+bool Unit::is_grounded_building() {
+	return this->status & UnitStatus::GroundedBuilding;
+}

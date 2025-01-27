@@ -1489,8 +1489,7 @@ namespace hooks
 		}
 	}
 
-	void inject_image_hooks()
-	{
+	void inject_image_hooks() {
 		jump_patch(initialize_image_data_wrapper,	0x004D5A50, 2);
 		jump_patch(set_image_direction_wrapper,		0x004D5F80, 1);
 		jump_patch(update_image_direction_wrapper,	0x004D5EA0, 2);

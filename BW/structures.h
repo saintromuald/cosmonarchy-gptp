@@ -1534,4 +1534,13 @@ struct PingArray {
 	Ping ping_array[16];
 };
 
+struct NetPlayer {
+/*0x0*/  u8 state; // 0x0 = Not active?, 0x1 = Sending command? Active?, 0x2 = ?
+/*0x2*/  u16 flags; // 0x2 = Voice chat on (mute?), 0x100 = Spawn
+/*0x4*/  u16 unk_u16;
+/*0x6*/  u16 protocol_version; // (always 5?)
+/*0x8*/  char name[0x19]; // (0066FE28)
+/*0x21*/ u8 padding;
+};
+
 #pragma pack()

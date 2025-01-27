@@ -18,8 +18,7 @@ bool unit_id_is_gas_structure(u16 unit_id) {
         ||	   unit_id == UnitId::ResourceVespeneGeyser;
 }
 
-bool unit_id_is_uncapped_gas_node(u16 unit_id)
-{
+bool unit_id_is_uncapped_gas_node(u16 unit_id) {
     return unit_id == UnitId::ResourceVespeneRidge
         || unit_id == UnitId::ResourceVespeneGeyser;
 }

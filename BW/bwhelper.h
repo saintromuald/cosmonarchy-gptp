@@ -289,7 +289,7 @@ namespace helper {
 
 	// For orders_place_mine
 	s32 tech_use_allowed(Unit* unit, u16 tech_id, u32 player);							                    // 0046DD80
-	u32 get_distance_fast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
+	u32 get_distance_fast(s32 pos1_x, s32 pos2_x, s32 pos1_y, s32 pos2_y);									// 0040C360
 	s32 orders_hold_pos_suicidal(Unit* unit);												                // 004EB5B0
 	void turn_unit(Unit* unit, s8 direction);													            // 00495F20
 	void to_idle(Unit* unit);																                // 004753A0
@@ -1193,7 +1193,7 @@ namespace helper {
 	void order_targeting_nothing(u8 order_id, Unit* unit, u32 stop_previous_orders);					// 00474D60
 	void hide_unit_partial(Unit* unit, s32 hide_unit);													// 00493CA0
 
-	void Order_BeginHarvest(Unit* node, Unit* worker);													// 00468D10
+	void order_begin_harvest(Unit* node, Unit* worker);													// 00468D10
 	Unit* remove_harvesters(Unit* node);																// 00468770
 	Unit* remove_from_current_harvesters(Unit* worker, Unit* node);										// 004686D0
 

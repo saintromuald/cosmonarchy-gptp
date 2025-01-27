@@ -180,10 +180,8 @@ namespace hooks {
 			case UnitId::TerranWellbore:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
-			case UnitId::ZergEzigrisant:
-			{
-				if ((ignore_completed || node->status & UnitStatus::Completed) && (node->player == worker->player || bw::are_mutual_allies(node->player, worker->player)))
-				{
+			case UnitId::ZergEzigrisant: {
+				if ((ignore_completed || node->is_completed()) && (node->player == worker->player || bw::are_mutual_allies(node->player, worker->player))) {
 					return true;
 				}
 			} break;
@@ -201,10 +199,7 @@ namespace hooks {
 			return;
 		}
 
-		if (unit->sprite->flags & SpriteFlags::Hidden || node
-		&&  unit_is_geyser_ex(node, unit)
-		&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either))
-		{
+		if (unit->sprite->is_hidden() || node && unit_is_geyser_ex(node, unit) && (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either)) {
 			helper::set_gathering_flags(unit);
 			if (unit->main_order_state) {
 				if (unit->main_order_state == 5 && !unit->main_order_timer) {
@@ -252,26 +247,19 @@ namespace hooks {
 
 	void can_harvest_gas(Unit* unit) { // 00469000
 		Unit* node = unit->order_target.unit;
-
 		bool valid_structure = false;
 		if (node) {
-			if (node->id == UnitId::ResourceVespeneRidge || node->id == UnitId::ResourceVespeneGeyser) {
+			if (unit_id_is_uncapped_gas_node(node->id)) {
 				valid_structure = true;
-			} else if ((node->id == UnitId::TerranReservoir || node->id == UnitId::ProtossAquifer || node->id == UnitId::ZergExcisant
-			||			node->id == UnitId::TerranWellbore	|| node->id == UnitId::ZergEzigrisant)
-				&&		(node->player == unit->player || bw::are_mutual_allies(node->player, unit->player)))
-			{
+			} else if (unit_id_is_capped_gas_structure(node->id) && (node->player == unit->player || bw::are_mutual_allies(node->player, unit->player))) {
 				valid_structure = true;
 			} 
 		}
 
-		if (node
-			&& node->status & UnitStatus::Completed
-			&& valid_structure
-			&& (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either)) {
+		if (node && node->is_completed() && valid_structure && (unit->resource_type == ResourceType::None || unit->resource_type & ResourceType::Either)) {
 			helper::turn_unit(unit, bw::get_angle(unit->position, node->position));
 			if (!unit->main_order_state) {
-				helper::Order_BeginHarvest(node, unit);
+				helper::order_begin_harvest(node, unit);
 			}
 		} else {
 			helper::set_resource_target(unit);
