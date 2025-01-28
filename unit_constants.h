@@ -140,6 +140,11 @@ inline constexpr s32 AISeekRange = 8 * 32;
 inline constexpr s32 AIWebTimer = 1 * 24;
 }
 
+namespace Gladius {
+inline constexpr s32 BindingPlasmaTimer = 24 * 0.5;
+inline constexpr s32 BindingPlasmaRadius = 3 * 32;
+}
+
 namespace Didact {
 inline constexpr s32 ShroudOfAdunRange = 4 * 32;
 inline constexpr s32 StasisFieldTimer = 23; // roughly 8 seconds
@@ -204,6 +209,6 @@ constexpr s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per sec
 // Hachirosk
 constexpr s32 LarvaSpawnRate = (14 * 24) / 8; // 14 seconds
 
-// Gladius
-constexpr s32 BindingPlasmaTimer = 12; // 0.5s
-constexpr s32 BindingPlasmaRadius = 3 * 32;
+namespace Zerg {
+inline constexpr s32 AmitosisSearchRange = 3 * 32;
+}

@@ -2532,7 +2532,7 @@ void delete_fow_sprite(Thingy* thingy) {
 }
 
 std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks) {
-    EntryArray targets = g_unit_search.radial(position, BindingPlasmaRadius)
+    EntryArray targets = g_unit_search.radial(position, Gladius::BindingPlasmaRadius)
         .filter(reference, FilterNotSelf | FilterNotSubunit)
         .filter_by([player](Unit* target) {
             if (bw::is_allied_to(player, target->player)) {

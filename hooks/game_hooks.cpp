@@ -2342,7 +2342,7 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ZergKazitrithCesiant: {
-				if (unit->is_completed() && !unit->is_frozen()) {
+				if (unit->is_completed() && !unit->is_frozen() && !unit->is_in_transport()) {
 					for (Unit* target : g_unit_search.radial_ex(unit, 8 * 32, FilterAlly | FilterCompleted)) {
 						if (!target->has_weapon()) {
 							continue;
@@ -2352,8 +2352,8 @@ namespace hooks {
 						if (!std::ranges::contains(kazitriths, unit)) {
 							kazitriths.push_back(unit);
 						}
-						if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
-							bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, { .underlay = true }); // TODO: Own overlays
+						if (!target->get_overlay(ImageId::AdaptiveAmitosisOverlay)) {
+							bw::add_unit_overlay(target, ImageId::AdaptiveAmitosisOverlay);
 						}
 					}
 				}
@@ -2480,7 +2480,7 @@ namespace hooks {
 			}
 
 			if (has_source) {
-				if (unit_ext->timers[TimerBindingPlasma] % BindingPlasmaTimer == BindingPlasmaTimer - 1) {
+				if (unit_ext->timers[TimerBindingPlasma] % Gladius::BindingPlasmaTimer == Gladius::BindingPlasmaTimer - 1) {
 					bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay); // TODO: Audio
 				}
 				if (unit_ext->timers[TimerBindingPlasma] == 1) {
@@ -2871,6 +2871,15 @@ namespace hooks {
 			if (bw::distance_between(unit->position, crucible->position) > 8 * 32) {
 				bw::remove_unit_overlay(unit, ImageId::CrucibleKhaydarinChargeOverlay);
 				should_update_speed = true;
+				return true;
+			}
+			return false;
+		});
+
+		// Clear Kazitrith vector
+		std::erase_if(unit_ext->unit_vectors[UnitVectorKazitriths], [unit](Unit* kazitrith) {
+			if (bw::distance_between(unit->position, kazitrith->position) > 6 * 32) {
+				bw::remove_unit_overlay(unit, ImageId::AdaptiveAmitosisOverlay);
 				return true;
 			}
 			return false;

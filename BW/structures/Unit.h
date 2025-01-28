@@ -413,6 +413,7 @@ struct Unit : public UnitLayout {
 	bool is_spellcaster();
 	bool is_hallucination();
 	bool is_grounded_building();
+	bool is_in_transport();
 };
 
 C_ASSERT(sizeof(Flingy) == 0x4c);
