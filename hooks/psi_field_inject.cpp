@@ -5,10 +5,19 @@
 //-------- Unit selection hooks --------//
 
 void show_all_psi_fields() {
-    static const u32 func_address = 0x00493640;
+    static const u32 Func_showAllPsiFields = 0x00493640;
     __asm {
         PUSHAD
-        CALL func_address
+        CALL Func_showAllPsiFields
+        POPAD
+    }
+}
+
+void hide_all_psi_fields() {
+    static const u32 Func_hideAllPsiFields = 0x00494100;
+    __asm {
+        PUSHAD
+        CALL Func_hideAllPsiFields
         POPAD
     }
 }
@@ -25,8 +34,8 @@ void show_all_psi_fields_on_select(Unit* unit) {
 // If @p unit is a psi provider, make all psi field graphics invisible.
 void hide_all_psi_fields_on_unselect(Unit* unit) {
     if (!bw::in_replay() && hooks::unit_can_show_power_for(unit, g_local_nation_id)) {
-        if (unit->is_completed() && hooks::is_ready_to_make_psi_field(unit)) {
-            hooks::hide_all_psi_fields();
+        if ((unit->status & UnitStatus::Completed) && hooks::is_ready_to_make_psi_field(unit)) {
+            hide_all_psi_fields();
         }
     }
 }
@@ -45,7 +54,7 @@ void __declspec(naked) show_all_psi_fields_on_select_wrapper() { // 0x004E6224
         POP EBX
         MOV ESP, EBP
         POP EBP
-        RETN 4
+        RETN 0x4
     }
 }
 
@@ -64,19 +73,6 @@ void __declspec(naked) hide_all_psi_fields_on_unselect_wrapper() { // 0x004E62BE
     }
 }
 
-void __declspec(naked) orders_init_psi_provider_wrapper() { // 00493F70
-    static Unit* unit;
-    __asm {
-        MOV unit, EAX
-        PUSHAD
-    }
-    hooks::orders_init_psi_provider(unit);
-    __asm {
-        POPAD
-        RETN
-    }
-}
-
 //-------- Save & load game hooks --------//
 
 void __declspec(naked) pack_unit_data_psi_provider() { // 004E3935
@@ -89,9 +85,8 @@ void __declspec(naked) pack_unit_data_psi_provider() { // 004E3935
         PUSHAD
     }
     if (unit_id_is_psi_provider(unit_id)) {
-        UnitExt& unit_ext = unit->ext();
-        if (unit_ext.power_aura) {
-            *((u32*)&unit_ext.power_aura) = (unit_ext.power_aura - g_sprite_table) / sizeof(Sprite) + 1;
+        if (unit->building.pylon_aura) {
+            *((u32*)&unit->building.pylon_aura) = (unit->building.pylon_aura - g_sprite_table) / sizeof(Sprite) + 1;
         }
     }
     __asm {
@@ -110,9 +105,8 @@ void __declspec(naked) unpack_unit_data_psi_provider() { // 004E3182
         PUSHAD
     }
     if (unit_id_is_psi_provider(unit_id)) {
-        UnitExt& unit_ext = unit->ext();
-        if (unit_ext.power_aura) {
-            unit_ext.power_aura = &g_sprite_table[(s32)unit_ext.power_aura];
+        if (unit->building.pylon_aura) {
+            unit->building.pylon_aura = &g_sprite_table[(s32)unit->building.pylon_aura];
         }
     }
     __asm {
@@ -158,7 +152,7 @@ void __declspec(naked) show_power_sprite_wrapper() { // 00493BF0
         MOV unit, ECX
         PUSHAD
     }
-    result = hooks::add_psi_field_sprite(unit);
+    result = hooks::show_power_sprite(unit);
     __asm {
         POPAD
         MOV EAX, result
@@ -166,19 +160,17 @@ void __declspec(naked) show_power_sprite_wrapper() { // 00493BF0
     }
 }
 
-inline int esi() { __asm MOV EAX, ESI }
+inline int psi_esi() { __asm MOV EAX, ESI }
 b32 is_repowered_building_working() {
-    Unit* unit = (Unit*)esi();
-    if (unit->is_grounded_building()) {
-        return unit->secondary_order_id == OrderId::TrainUnit || unit->building.tech_id != TechId::None || unit->building.upgrade_id != UpgradeId::None;
-    }
-    return false;
+	Unit* unit = (Unit*)psi_esi();
+	if (unit->status & UnitStatus::GroundedBuilding) {
+		return unit->secondary_order_id == OrderId::TrainUnit || unit->building.tech_id != TechId::None || unit->building.upgrade_id != UpgradeId::None;
+	}
+	return false;
 }
 
 namespace hooks {
     void inject_psi_field_hooks() {
-        // Hooks \\
-
         jump_patch(show_all_psi_fields_on_select_wrapper,		0x004E6224, 0);
         jump_patch(hide_all_psi_fields_on_unselect_wrapper,		0x004E62BE, 0);
     //	jump_patch(pack_unit_data_psi_provider,					0x004E3935, 0);
@@ -186,9 +178,6 @@ namespace hooks {
         jump_patch(unit_has_power_wrapper,						0x004936B0, 1);
         jump_patch(show_power_sprite_wrapper,					0x00493BF0, 1);
         jump_patch(create_pylon_aura,							0x00493640, 2);
-        jump_patch(hide_all_psi_fields,							0x00494100, 2);
-        jump_patch(create_all_power_auras,						0x00494030, 2);
-        jump_patch(orders_init_psi_provider_wrapper,			0x00493F70, 1);
 
         // Patches \\
 

@@ -656,15 +656,13 @@ namespace hooks {
 
 	Sprite* /*__stdcall*/ duplicate_sprite(Sprite* sprite) {
 		Sprite* new_sprite = helper::create_sprite(sprite->id, sprite->position.x, sprite->position.y, sprite->player);
-
-		if (!new_sprite)
-			return NULL;
+		if (!new_sprite) {
+			return nullptr;
+		}
 
 		Image* image = new_sprite->images.head;
-
 		if (image) {
 			Image* next_image;
-
 			do {
 				next_image = image->link.next;
 				image->free();
@@ -672,19 +670,17 @@ namespace hooks {
 			} while (next_image);
 		}
 
-		new_sprite->main_graphic = NULL;
-
+		new_sprite->main_graphic = nullptr;
 		for (image = sprite->images.tail; image; image = image->link.prev) {
 			u8 type = image->palette_type;
-
-			if (type == PaletteType::HPBar || type == PaletteType::RLE_OUTLINE)
+			if (type == PaletteType::HPBar || type == PaletteType::RLE_OUTLINE) {
 				continue;
+			}
 
 			Image* new_image = helper::create_image(new_sprite, image->id, image->horizontal_offset, image->vertical_offset, image->direction);
-
 			if (!new_image) {
 				new_sprite->free();
-				return NULL;
+				return nullptr;
 			}
 
 			new_image->frameset = image->frameset;
@@ -692,7 +688,6 @@ namespace hooks {
 			new_image->draw_fxn = image->draw_fxn;
 			u16 new_flags = new_image->flags;
 			u8 flip_state = image->flags & ImageFlags::Mirrored;
-
 			if ((new_flags & ImageFlags::Mirrored) != flip_state) {//I don't know why this entire block exists, everything within it is already handled by create_image.
 				type = new_image->palette_type;
 				new_flags = (new_flags & ~ImageFlags::Mirrored) | flip_state | ImageFlags::Redraw;
@@ -704,28 +699,23 @@ namespace hooks {
 					Image* main_image = image->parent_sprite->main_graphic;
 					GrpHead* overlay_grp = (GrpHead*)images_dat::lo_special[main_image->id];
 					GrpFrame* frame = &overlay_grp->frames[main_image->frame_index];
+					
 					s8 h_offset = frame->x;
-
 					if (main_image->flags & ImageFlags::Mirrored) {
 						h_offset = -h_offset;
 					}
-
 					s8 v_offset = frame->y;
-
 					if (image->horizontal_offset != h_offset || image->vertical_offset != v_offset) {
 						image->horizontal_offset = h_offset;
 						image->vertical_offset = v_offset;
 					}
 				}
 			}
-
 			helper::update_image_draw_data(new_image);
-
 			if (image == sprite->main_graphic) {
 				new_sprite->main_graphic = new_image;
 			}
 		}
-
 		return new_sprite;
 	}
 

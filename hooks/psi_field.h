@@ -17,11 +17,12 @@ namespace hooks {
     void create_all_power_auras();                                  // 00494030
     void orders_init_psi_provider(Unit* unit);                      // 00493F70
     void create_pylon_aura_witness(u8 player);
+    b32 show_power_sprite(Unit* unit);								// 00493BF0
+    void create_pylon_aura();										// 00493640
 
     // This function must be called once per frame in next_frame().
     // This uses canMakePsiField() and isReadyToMakePsiField() internally.
     void update_psi_field_providers();
 
-    // Call this in initialize.h.
     void inject_psi_field_hooks();
 }

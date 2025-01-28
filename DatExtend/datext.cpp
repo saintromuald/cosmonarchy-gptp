@@ -34,12 +34,12 @@ namespace DatExt {
 		{ "mapdata.dat",  LoadTable::Mapdata_Dat,    260,  4, MapdataIdLimit,  false, },
 	};
 
-	StringTbl* g_unit_names_tbl = NULL;
-	GrpHead* g_unit_icons = NULL;
+	StringTbl* g_unit_names_tbl = nullptr;
+	GrpHead* g_unit_icons = nullptr;
 	GrpHead** const g_unit_cmdicons = g_cmdicons_grp; // default value
 
 	bool set_dat_size(DatLoad* dat_table_ptr, u32 size) {
-		void* new_mem = NULL;
+		void* new_mem = nullptr;
 
 		// get dat file table index
 		u32 i = 0;
@@ -93,11 +93,11 @@ namespace DatExt {
 		}
 
 		// Load new entry counts
-		for (u32 j = 0; dat_table_ptr[j].address != NULL; j++) {
+		for (u32 j = 0; dat_table_ptr[j].address; j++) {
 			dat_table_ptr[j].entries = new_count;
 
 			new_mem = calloc(mem_count, dat_table_ptr[j].length);
-			if (new_mem == NULL) {
+			if (!new_mem) {
 				// error allocating memory
 				return false; // or something
 			}
@@ -165,18 +165,18 @@ namespace DatExt {
 		for (u32 i = 0; i < DatFile::COUNT; i++) {
 			DatLoad* dat_table_ptr = (DatLoad*)(datFiles[i].datTablePtr);
 			if (i == DatFile::Units_Dat && dat_table_ptr[0].address != (void*)(0x0059CCCC)) { // Flingy ID
-				if (dat_table_ptr[0].address != NULL) {
+				if (dat_table_ptr[0].address) {
 					free(dat_table_ptr[0].address);
 					dat_table_ptr[0].address = (void*)(0x0059CCCC);
 				}
 			}
-			if (datFiles[i].loaded == false) {
+			if (!datFiles[i].loaded) {
 				continue;
 			}
 			for (u32 j = 0; dat_table_ptr[j].entries != 0; j++) {
-				if (dat_table_ptr[j].address != NULL) {
+				if (dat_table_ptr[j].address) {
 					free(dat_table_ptr[j].address);
-					dat_table_ptr[j].address = NULL;
+					dat_table_ptr[j].address = nullptr;
 				}
 			}
 		}
@@ -187,22 +187,22 @@ namespace DatExt {
 		upgrades_dat_unpatch();
 		techdata_dat_unpatch();
 	
-		if (g_unit_names_tbl != NULL) {
+		if (g_unit_names_tbl) {
 			SMemFree(g_unit_names_tbl, __FILE__, __LINE__, 0);
-			g_unit_names_tbl = NULL;
+			g_unit_names_tbl = nullptr;
 		}
-		if (g_unit_icons != NULL) {
+		if (g_unit_icons) {
 			SMemFree(g_unit_icons, __FILE__, __LINE__, 0);
-			g_unit_icons = NULL;
+			g_unit_icons = nullptr;
 		}
 	}
 
 	// Loads rez\unitnames.tbl, if it exists, for extended unit ID names
 	void load_unit_names_tbl() {
-		if (g_unit_names_tbl != NULL) {
+		if (g_unit_names_tbl) {
 			return; // already loaded
 		}
-		g_unit_names_tbl = (StringTbl*)FastFileRead("rez\\unitnames.tbl", NULL, true, 0, NULL);
+		g_unit_names_tbl = (StringTbl*)FastFileRead("rez\\unitnames.tbl", nullptr, true, 0, nullptr);
 	}
 
 	// Loads unit\cmdbtns\uniticons.grp, if it exists, for extended unit ID build queue icons
@@ -210,7 +210,7 @@ namespace DatExt {
 		if (g_unit_icons != NULL) { // already loaded
 			return;
 		}
-		g_unit_icons = (GrpHead*)FastFileRead("unit\\cmdbtns\\uniticons.grp", NULL, true, 0, NULL);
+		g_unit_icons = (GrpHead*)FastFileRead("unit\\cmdbtns\\uniticons.grp", nullptr, true, 0, nullptr);
 
 		// patch if hooks aren't enabled
 		memory_patch(0x00426002 + 2, get_unit_icons_pointer()); // status_buildmorphtrain --> stats_addon_builder
@@ -221,7 +221,7 @@ namespace DatExt {
 
 	// Returns uniticons.grp pointer if was loaded, otherwise returns default cmdicons.grp pointer
 	GrpHead** const get_unit_icons_pointer() {
-		if (g_unit_icons != NULL) {
+		if (g_unit_icons) {
 			return &g_unit_icons;
 		}
 		return g_unit_cmdicons;
@@ -233,7 +233,7 @@ namespace DatExt {
 		// Null-terminated list of null-terminated lists of addresses
 		// First value is table offset for the sub-list (i.e., 12 would mean the new address + 12 bytes is written)
 		u32 i, j;
-		for (i = 0, j = 0; datTablePtr[i].entries != 0; i++, j++) {
+		for (i = 0, j = 0; datTablePtr[i].entries; i++, j++) {
 			do {
 				// Get array offset
 				u32 offs;
@@ -244,11 +244,11 @@ namespace DatExt {
 				}
 
 				// Apply patches
-				for (j++; list[j] != 0; j++) {
+				for (j++; list[j]; j++) {
 					memory_patch(list[j], offs);
 				}
 				j++;
-			} while (list[j] != 0);
+			} while (list[j]);
 		}
 	}
 
@@ -258,7 +258,7 @@ namespace DatExt {
 		// - First value is the #entries factor, second value is a value to be added to the product
 	  
 		// cl->ptr[j] == 0 terminator of previous list, so cl->ptr[j+1] is the beginning of the next struct.
-		u32 i;
+		u32 i = 0;
 		for (constList *cl = (constList*)list; cl->ptr[0] != 0; cl = (constList*)&cl->ptr[i + 1]) {
 			s32 new_value = val * cl->factor + cl->add;
 			for (i = 0; cl->ptr[i] != 0; i++) {
