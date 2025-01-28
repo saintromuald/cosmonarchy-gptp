@@ -485,6 +485,11 @@ namespace hooks {
 			add_status(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
 		}
 
+		// Detector
+		if (unit->is_detector()) {
+			add_status(statuses, "Detector", 1, 1);
+		}
+
 		std::string status = format_string_vector(statuses);
 
 		// TODO Statuses
