@@ -179,17 +179,10 @@ inline constexpr f64 CorrosiveTouchCooldownIncrease = 0.05;
 inline constexpr f64 CorrosiveTouchArmorReduction = 1 * 256;
 }
 
-// Zoryusthaleth
-namespace Zoryusthaleth {
-inline constexpr s32 ReconstitutionHealing = 5 * 256;
-}
-
-// Isthrathaleth
 namespace Isthrathaleth {
 inline constexpr s32 PlagueTimer = 5 * 3;
 }
 
-// Matraleth
 namespace Matraleth {
 inline constexpr s32 AIParasiteTimer = 75;
 inline constexpr s32 AIEnsnaringBroodTimer = 75;
@@ -203,12 +196,11 @@ inline constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
 inline constexpr s32 LifeTimer = 720;
 }
 
-// Akistrokor
-constexpr s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second
-
-// Hachirosk
-constexpr s32 LarvaSpawnRate = (14 * 24) / 8; // 14 seconds
+namespace Kazitrith {
+inline constexpr s32 AuraRadius = 6 * 32;
+}
 
 namespace Zerg {
+inline constexpr s32 LarvaSpawnRate = (14 * 24) / 8; // 14 seconds
 inline constexpr s32 AmitosisSearchRange = 3 * 32;
 }

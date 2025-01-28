@@ -462,6 +462,9 @@ namespace hooks {
 					case UnitId::ZergVilgoleth: {
 						g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
+					case UnitId::ZergKazitrithCesiant: {
+						g_graphics.draw_circle(source.x, source.y, Kazitrith::AuraRadius, graphics::GREEN, graphics::ON_MAP);
+					} break;
 				}
 			}
 
@@ -2313,24 +2316,24 @@ namespace hooks {
 				// Crucible - Khaydarin Charge stacks
 				if (unit->is_completed() && !unit->is_frozen()) {
 					for (Unit* target : g_unit_search.radial_ex(unit, 8 * 32, FilterAlly | FilterBuilding)) {
-						UnitExt* target_ext = get_unit_ext(target);
-						if (unit_id_is_tech(target->id) && units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueInfested]) {
+						UnitExt& target_ext = target->ext();
+						if (unit_id_is_tech(target->id) && units_dat::group_flags[target->id].is_terran && !target_ext.values[ValueInfested]) {
 							continue;
 						}
 						switch (target->id) {
 							case UnitId::TerranSupplyDepot:
 							case UnitId::TerranAnchor:
 							case UnitId::TerranReservoir: {
-								if (!target_ext->values[ValueInfested] && target->status & UnitStatus::GroundedBuilding) {
+								if (!target_ext.values[ValueInfested] && target->status & UnitStatus::GroundedBuilding) {
 									continue;
 								}
 							} break;
 						}
-						if (!(target->status & UnitStatus::Completed) && target->id != UnitId::ZergNydusCesiant) {
+						if (!target->is_completed() && target->id != UnitId::ZergNydusCesiant) {
 							continue;
 						}
 
-						auto& crucibles = target_ext->unit_vectors[UnitVectorCrucibles];
+						auto& crucibles = target_ext.unit_vectors[UnitVectorCrucibles];
 						if (!std::ranges::contains(crucibles, unit)) {
 							crucibles.push_back(unit);
 							target->update_speed();
@@ -2343,7 +2346,7 @@ namespace hooks {
 			} break;
 			case UnitId::ZergKazitrithCesiant: {
 				if (unit->is_completed() && !unit->is_frozen() && !unit->is_in_transport()) {
-					for (Unit* target : g_unit_search.radial_ex(unit, 8 * 32, FilterAlly | FilterCompleted)) {
+					for (Unit* target : g_unit_search.radial_ex(unit, Kazitrith::AuraRadius, FilterAlly | FilterCompleted)) {
 						if (!target->has_weapon()) {
 							continue;
 						}
@@ -2442,10 +2445,10 @@ namespace hooks {
 			case UnitId::TerranBlackjack: {
 				if (!unit_ext->values[ValueWearAndTear] && unit->hitpoints < unit->get_max_hp_raw() / 2) {
 					unit_ext->values[ValueWearAndTear] = true;
-					// TODO: Proc audiovisuals
+					bw::add_unit_overlay(unit, ImageId::OpticalFlareHit_Medium); // TODO: Sound effect
 				} else if (unit_ext->values[ValueWearAndTear] && unit->hitpoints >= unit->get_max_hp_raw() / 2) {
 					unit_ext->values[ValueWearAndTear] = false;
-					// TODO: Proc audiovisuals
+					bw::add_unit_overlay(unit, ImageId::OpticalFlareHit_Medium); // TODO: Sound effect
 				}
 			} break;
 		}
@@ -2876,14 +2879,22 @@ namespace hooks {
 			return false;
 		});
 
+		if (unit->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay) && unit_ext->unit_vectors[UnitVectorCrucibles].size() == 0) {
+			bw::remove_unit_overlay(unit, ImageId::CrucibleKhaydarinChargeOverlay);
+		}
+
 		// Clear Kazitrith vector
 		std::erase_if(unit_ext->unit_vectors[UnitVectorKazitriths], [unit](Unit* kazitrith) {
-			if (bw::distance_between(unit->position, kazitrith->position) > 6 * 32) {
+			if (kazitrith->is_frozen() || bw::distance_between(unit->position, kazitrith->position) > Kazitrith::AuraRadius) {
 				bw::remove_unit_overlay(unit, ImageId::AdaptiveAmitosisOverlay);
 				return true;
 			}
 			return false;
 		});
+
+		if (unit->get_overlay(ImageId::AdaptiveAmitosisOverlay) && unit_ext->unit_vectors[UnitVectorKazitriths].size() == 0) {
+			bw::remove_unit_overlay(unit, ImageId::AdaptiveAmitosisOverlay);
+		}
 
 		// Seraph - Observance
 		if (unit_ext->timers[TimerObservanceDebuff] > 1) {
