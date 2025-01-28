@@ -2797,6 +2797,11 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
+								case UnitId::ZergKazitrithCesiant: {
+									if (current_button->icon_id == IconId::StewardPulseCannon) { // Adaptive Amitosis
+										current_button_state = Button_State::Enabled;
+									}
+								} break;
 								case UnitId::ZergCaphrolosk:
 								case UnitId::ZergGathtelosk:
 								case UnitId::ZergOcsalCesiant: {

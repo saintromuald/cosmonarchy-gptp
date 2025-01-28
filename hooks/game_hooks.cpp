@@ -2311,7 +2311,7 @@ namespace hooks {
 			} break;
 			case UnitId::ProtossCrucible: {
 				// Crucible - Khaydarin Charge stacks
-				if (unit->status & UnitStatus::Completed && !unit->is_frozen()) {
+				if (unit->is_completed() && !unit->is_frozen()) {
 					for (Unit* target : g_unit_search.radial_ex(unit, 8 * 32, FilterAlly | FilterBuilding)) {
 						UnitExt* target_ext = get_unit_ext(target);
 						if (unit_id_is_tech(target->id) && units_dat::group_flags[target->id].is_terran && !target_ext->values[ValueInfested]) {
@@ -2337,6 +2337,23 @@ namespace hooks {
 						}
 						if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
 							bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, { .underlay = true });
+						}
+					}
+				}
+			} break;
+			case UnitId::ZergKazitrithCesiant: {
+				if (unit->is_completed() && !unit->is_frozen()) {
+					for (Unit* target : g_unit_search.radial_ex(unit, 8 * 32, FilterAlly | FilterCompleted)) {
+						if (!target->has_weapon()) {
+							continue;
+						}
+						UnitExt& target_ext = target->ext();
+						auto& kazitriths = target_ext.unit_vectors[UnitVectorKazitriths];
+						if (!std::ranges::contains(kazitriths, unit)) {
+							kazitriths.push_back(unit);
+						}
+						if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
+							bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, { .underlay = true }); // TODO: Own overlays
 						}
 					}
 				}

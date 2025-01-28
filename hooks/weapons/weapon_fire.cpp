@@ -597,6 +597,19 @@ namespace hooks {
 				}
 				Target weapon_target = unit->order_target;
 				bw::play_manual_weapon_sound(unit, weapon_id);
+				if (unit_ext->unit_vectors[UnitVectorKazitriths].size()) {
+					fire_multiple(unit, weapon_id, 2, FilterEnemy, {
+						.fire_opts = {
+							.apply_cooldown = false,
+						},
+						.ignore_main = true,
+						.use_weapon_factor = false,
+						.divisor_multiplier = 2,
+						.stagger = -1,
+						.center_on_target = true,
+						.center_on_target_range_overwrite = 2 * 32,
+					});
+				}
 				switch (weapon_id) {
 					case WeaponId::PhobosArgosLaserBatteries: {
 						// Phobos - Argent Capacitors passive
