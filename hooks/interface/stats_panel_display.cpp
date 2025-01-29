@@ -152,7 +152,7 @@ namespace hooks {
                 helper::stats_hangar_count(dialog, index);
                 index++;
             }
-            if (active_unit->id == UnitId::TerranVulture) { // Originally also had hardcode for Raynor Vulture
+            if (unit_id_is_mine_layer((UnitId::Enum)active_unit->id)) {
                 if (helper::stat_spidermine_count(dialog, index)) {
                     index++;
                 }

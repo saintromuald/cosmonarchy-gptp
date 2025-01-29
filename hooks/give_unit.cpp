@@ -111,7 +111,7 @@ namespace hooks
 	void give_ai(Unit* unit) { // 00463040
 		u32 player = unit->player;
 		if (player < PlayerLimit && g_player_table[player].type == PlayerType::Computer) {
-			if (unit->id == UnitId::TerranCleric) {
+			if (unit_id_has_auto_healing(unit->id)) {
 				Unit* free_medic = g_aiscript_controller[player].main_medic;
 				if (!free_medic) {
 					free_medic = unit;

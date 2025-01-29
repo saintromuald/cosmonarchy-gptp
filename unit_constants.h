@@ -158,6 +158,10 @@ inline constexpr f64 AIAbilLifePercentage = 0.5;
 inline constexpr s32 AIAbilTimer = 612;
 }
 
+namespace Protoss {
+inline constexpr s32 AstralChargeRadius = 2 * 32;
+}
+
 // ZERG \\
 
 namespace Nathrokor {

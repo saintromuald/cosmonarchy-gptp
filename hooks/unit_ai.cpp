@@ -12,7 +12,7 @@ namespace hooks {
 		if (g_player_table[unit->player].type != PlayerType::Computer) {
 			return;
 		}
-		if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
+		if (unit_id_has_auto_healing(unit->id) && !g_aiscript_controller[unit->player].main_medic) {
 			g_aiscript_controller[unit->player].main_medic = unit;
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
@@ -420,7 +420,7 @@ namespace hooks {
 				}
 				unit->unit_ai = (UnitAi*)military_ai;
 				Region* region = bw::get_region(ai_region->region);
-				helper::ai_order_to_destination(unit, unit->id == UnitId::TerranCleric ? OrderId::HealMove : OrderId::AttackMoveComputer,
+				helper::ai_order_to_destination(unit, unit_id_has_auto_healing(unit->id) ? OrderId::HealMove : OrderId::AttackMoveComputer,
 					region->region_center_x >> 8, region->region_center_y >> 8);
 				char region_state = ai_region->state;
 				if (region_state == RegionState::PreparingAttack
@@ -971,7 +971,7 @@ namespace hooks {
 
 	// Hooked to stop this function from iterating for human players. -Pr0nogo
 	void ai_remove_cleric(Unit* unit) { // 004477C0
-		if (unit->id != UnitId::TerranCleric) {
+		if (!unit_id_has_auto_healing(unit->id)) {
 			return;
 		}
 		u32 player = unit->player;
@@ -987,7 +987,7 @@ namespace hooks {
 			Unit* first_unit = first_player_unit->unit[player];
 			g_aiscript_controller[player].main_medic = 0;
 			if (first_unit) {
-				while (first_unit->id != UnitId::TerranCleric) {
+				while (!unit_id_has_auto_healing(first_unit->id)) {
 					first_unit = first_unit->player_link.next;
 					if (!first_unit) {
 						return;

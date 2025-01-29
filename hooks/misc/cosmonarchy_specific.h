@@ -11,7 +11,6 @@ namespace hooks {
 	u32 weapon_flingy(u32 weapon_id, u8 player);
 	u32 get_flingy_halt_distance(Flingy* flingy);
 	bool is_unused_order(u8 order_id);
-	void set_up_spider_mines(Unit* unit);
 	u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId);
 	bool can_attack_target_end_chunk(Unit* source, u32 target_flags);
 	void create_damage_overlay(Sprite* sprite);

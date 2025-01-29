@@ -147,12 +147,6 @@ bool is_unused_order(u8 order_id) {
 	return false;
 }
 
-void set_up_spider_mines(Unit* unit) {
-	if (unit->id == UnitId::TerranVulture) {
-		unit->mine_carrier.mine_count = 3;
-	}
-}
-
 u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId) {
 	if (orig_result == 0) { // Valid target 
 		bw::print("Can cast");

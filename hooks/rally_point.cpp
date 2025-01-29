@@ -321,7 +321,7 @@ namespace hooks {
 			return OrderId::Move;
 		}
 		// Previously had Matraleth infest code
-		if (unit->id == UnitId::TerranCleric) {
+		if (unit_id_has_auto_healing(unit->id)) {
 			return OrderId::HealMove;
 		}
 		return OrderId::Follow;
