@@ -1056,7 +1056,7 @@ namespace hooks {
 
 	// Hooked to add config option blocking the toggle. -Pr0nogo
 	void __cdecl show_or_hide_minimap() { // 004A4150
-		if (*g_minimap_draw_neutrals != 1 && *g_hide_minimap_terrain && g_config.can_toggle_minimap_terrain) {
+		if (*g_minimap_draw_neutrals != 1 && g_hide_minimap_terrain && g_config.can_toggle_minimap_terrain) {
 			Bitmap* current_surface = *g_current_surface;
 			memset(g_minimap_surface_2->buffer, 0, (s16)g_minimap_surface_2->height * (s16)g_minimap_surface_2->width);
 			*g_current_surface = current_surface;
@@ -1111,11 +1111,47 @@ namespace hooks {
 		return (char*)g_stat_txt_buffer.get_string(string_id);
 	}
 
+	// Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
+	void draw_show_hide_terrain_context(BinDlg* dialog) { // 004A4C40
+		if (!g_hide_minimap_terrain) {
+			// string is 'Hide Terrain in Minimap'
+			helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left, dialog->bounds.top + dialog->parent->bounds.top, (char*)g_stat_txt_buffer.get_string(811));
+		} else {
+			// string is 'Show Terrain in Minimap'
+			helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left, dialog->bounds.top + dialog->parent->bounds.top, (char*)g_stat_txt_buffer.get_string(810));
+		}
+	}
+
+	// Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
+	void draw_cancel_unit_context(BinDlg* dialog) { // 00457B10
+		const auto* user = dialog->stat_button_user;
+		if (user->type != 3) {
+			helper::refresh_selection_screen();
+			return;
+		}
+		Unit* active_unit = *g_active_portrait_unit;
+		if ((unit_id_is_zerg_egg(active_unit->id)) && active_unit->is_frozen()) {
+			helper::refresh_selection_screen();
+			return;
+		}
+		const char* cancel_string = g_stat_txt_buffer.get_string(802 + active_unit->get_race()); // Cancel 
+		const char* name = helper::get_unit_name_stat_string(user->id);
+		char dest[128];
+		sprintf_s(dest, 128, cancel_string, name); // Assigns to 'dest' the first letter of the string instead of the whole string, causing a crash. -Pr0nogo
+		s32 bounds_top = 0;
+		s32 bounds_left = 0;
+		if (dialog->control_type) {
+			bounds_left = dialog->parent->bounds.left;
+			bounds_top = dialog->parent->bounds.top;
+		}
+		helper::create_context_tooltip(bounds_left + dialog->bounds.right, bounds_top + dialog->bounds.top, dest);
+	}
+
 	// Eventually, hook the following to make stat_txt.tbl a .txt:
 	//		00457CE0 statdata_mouseover_interact
-	//		004A4C40 draw_show_hide_terrain_context
 	//		004A5110 draw_stat_lb_buttons_context
 	//		004C3780 destroy_game_hud
 	//		004C3A20 load_stat_txt
+	//		004575A0 draw_cancel_upgrade_context
 	// -Pr0nogo
 }

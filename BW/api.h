@@ -870,7 +870,7 @@ inline Region* get_region(TileCoord tile) {
 Point16 get_region_center(Region* region);
 Box32 get_region_area(Region* region);
 
-void set_cmbw_ai_preference(u16 unit_id, u32 player);
+void set_ai_preference(u16 unit_id, u32 player);
 Box32 unit_area(Unit* unit);
 void clear_creep(Box32 area);
 u32 get_closest_resarea(Point16 position);

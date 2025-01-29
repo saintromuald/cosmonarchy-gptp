@@ -575,6 +575,9 @@ namespace hooks {
 				}
 			}
 
+			if (unit_ext->unit_vectors[UnitVectorKazitriths].size()) {
+				fire_amitosis_weapon(unit, weapon_id);
+			}
 			if (!unit_id_has_custom_weapon_handling(unit->id)) {
 				// Madcap - Maverick Feeders passive
 				if (unit->id == UnitId::TerranMadcap) {
@@ -705,17 +708,7 @@ namespace hooks {
 					} break;
 					case WeaponId::SkortrithColonySkortraTendril: {
 						fire_bullet(unit, weapon_id, unit->order_target);
-						fire_multiple(unit, weapon_id, 2, FilterEnemy, {
-							.fire_opts = {
-                                .apply_cooldown = false,
-                            },
-                            .ignore_main = true,
-                            .use_weapon_factor = false,
-                            .divisor_multiplier = 2,
-                            .stagger = -1,
-                            .center_on_target = true,
-                            .center_on_target_range_overwrite = 2 * 32,
-                        });
+						fire_amitosis_weapon(unit, weapon_id);
 					} break;
 					case WeaponId::NathreliskSignalingSpores: {
 						g_iquare_globals->create_effect(EffectId::VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
@@ -1130,7 +1123,7 @@ namespace hooks {
 				} break;
 				case WeaponId::GladiusPlasmaFlurry: {
 					if (!bullet->attack_target.unit) {
-						g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, BindingPlasmaTimer, bullet->position, BindingPlasmaRadius,
+						g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, Gladius::BindingPlasmaTimer, bullet->position, Gladius::BindingPlasmaRadius,
 							SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
 					}
 				} break;

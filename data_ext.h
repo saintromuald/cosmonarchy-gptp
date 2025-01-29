@@ -422,6 +422,7 @@ enum ExtUnitVectorId {
 	UnitVectorStaggerBlacklist,
 	UnitVectorBarghests,
 	UnitVectorManifolds,
+	UnitVectorKazitriths,
 
 	UnitVectorCount,
 };

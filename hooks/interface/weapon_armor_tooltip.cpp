@@ -429,6 +429,7 @@ namespace hooks {
 		add_status(statuses, "Reclaimed", unit_ext->values[ValueReclaimed], 1);
 		add_status(statuses, "Repentant Chorus", unit_ext->unit_vectors[UnitVectorBarghests].size(), 0);
 		add_status(statuses, "Concurring Chorus", unit_ext->unit_vectors[UnitVectorManifolds].size(), 0);
+		add_status(statuses, "Adaptive Amitosis", unit_ext->unit_vectors[UnitVectorKazitriths].size() != 0, 0);
 		add_status(statuses, "Lucilleri Pheremones", unit_ext->timers[TimerLucilleriPheremones], 1);
 
 		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
@@ -483,6 +484,11 @@ namespace hooks {
 		if (bw::is_under_carapace_swarm(unit)) {
 			Unit* darkSwarm = bw::get_carapace_swarm_unit(unit);
 			add_status(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
+		}
+
+		// Detector
+		if (unit->is_detector()) {
+			add_status(statuses, "Detector", 1, 1);
 		}
 
 		std::string status = format_string_vector(statuses);

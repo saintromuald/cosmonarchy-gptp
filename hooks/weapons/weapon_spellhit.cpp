@@ -205,11 +205,15 @@ namespace hooks {
 		// Refactored 15 Sep 2022. -Pr0nogo
 		u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
 		damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
+		bool amitosis = attacker_ext.unit_vectors[UnitVectorKazitriths].size();
 		for (u32 i = 0; i < WeaponId::get_custom_melee_factor(weapon_id); i++) {
 			if (attacker_ext.values[ValueDeconstruction]) {
 				bw::do_deconstruction_damage(attacker, weapon_id);
 			}
 			target->damage_with(weapon_id, damage, attacker, attacker->player, attacker->current_direction_1, 1);
+			if (amitosis) {
+				fire_amitosis_weapon(attacker, weapon_id);
+			}
 		}
 
 		// Cloaked units - decloak

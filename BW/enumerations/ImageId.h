@@ -1291,6 +1291,8 @@ namespace ImageId {
 		
 		IziraliskMutate								= 1957,
 
+		AdaptiveAmitosisOverlay						= 1964,
+
 		// Used for damage overlay crash fix
 		FirstMinorDamageOverlay						= 450,
 		LastMinorDamageOverlay						= 471,

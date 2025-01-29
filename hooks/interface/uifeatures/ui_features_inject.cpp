@@ -515,6 +515,32 @@ namespace {
         }
     }
 
+    void __declspec(naked) draw_show_hide_terrain_context_wrapper() { // 004A4C40
+        static BinDlg* dialog;
+        __asm {
+            MOV dialog, ECX
+            PUSHAD
+        }
+        hooks::draw_show_hide_terrain_context(dialog);
+        __asm {
+            POPAD
+            RETN
+        }
+    }
+
+    void __declspec(naked) draw_cancel_unit_context_wrapper() { // 00457B10
+        static BinDlg* dialog;
+        __asm {
+            MOV dialog, EBX
+            PUSHAD
+        }
+        hooks::draw_cancel_unit_context(dialog);
+        __asm {
+            POPAD
+            RETN
+        }
+    }
+
     // Non-hooks \\
 
     const u32 replayStatBtns_27AB5 = 0x00427AB5;
@@ -643,6 +669,8 @@ namespace hooks {
         jump_patch(draw_game_menu_context_wrapper,			0x004F4F70, 1);
         jump_patch(get_tile_image_data_wrapper,				0x0040C3B0, 1);
         jump_patch(get_stat_txt_string_wrapper,				0x004C36F0, 1);
+        jump_patch(draw_show_hide_terrain_context_wrapper,	0x004A4C40, 0);
+        jump_patch(draw_cancel_unit_context_wrapper,	    0x00457B10, 4);
 
         call_patch(get_scroll_directions_partial,			0x0047F155, 0);
         jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF

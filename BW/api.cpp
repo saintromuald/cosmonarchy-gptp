@@ -589,9 +589,10 @@ bool is_zerg_building_morph_result(u16 id) {
         case UnitId::ZergCaphrolosk:
         case UnitId::ZergGathtelosk:
         case UnitId::ZergEzigrisant:
-        case UnitId::ZergLarvoskCesiant:
-        case UnitId::ZergSpraithCesiant:
         case UnitId::ZergSurkithCesiant:
+        case UnitId::ZergSpraithCesiant:
+        case UnitId::ZergLarvoskCesiant:
+        case UnitId::ZergKazitrithCesiant:
         case UnitId::ZergSkortrithCesiant:
         case UnitId::ZergSpirtithCesiant:
         case UnitId::ZergNydusCesiant:
@@ -619,6 +620,7 @@ bool is_zerg_building_morph_source(u16 id) {
         case UnitId::ZergCagrantCesiant:
         case UnitId::ZergSurkithCesiant:
         case UnitId::ZergSpraithCesiant:
+        case UnitId::ZergLarvoskCesiant:
         case UnitId::ZergIrolIris:
         case UnitId::ZergQuazethPool:
         case UnitId::ZergVornathPond:
@@ -1096,7 +1098,7 @@ f32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_t
     f32 multiplier = bw::get_game_kind() == GameKind::DarkAges ? 0.5 : 1;
     if (!target_unit) {
         return std::max(source_height, 0) * multiplier;
-    } else if (target_unit->status & UnitStatus::InAir) {
+    } else if (target_unit->is_in_air()) {
         return 0;
     }
     s32 target_height = g_height_table[g_map_tile_size->width * (target_unit->position.y >> 5) + (target_unit->position.x >> 5)];
@@ -1104,8 +1106,7 @@ f32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_t
 }
 
 void apply_ensnare(Unit* unit) { // 004F45E0
-    if (!(unit->ensnare_timer)
-        && !(unit->status & UnitStatus::Burrowed)) {
+    if (!(unit->ensnare_timer) && !unit->is_burrowed()) {
         Unit* victim = unit->subunit ? unit->subunit : unit;
         victim->sprite->create_overlay(ImageId::EnsnareOverlay_Small + bw::get_overlay_offset(unit->id));
     }
@@ -1226,22 +1227,22 @@ bool is_passive_decloakable(Unit* unit) {
     if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak) {
         return true;
     }
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->values[ValueTriggerBehaviorSteadyShroud]) {
+    UnitExt& unit_ext = unit->ext();
+    if (unit_ext.values[ValueTriggerBehaviorSteadyShroud]) {
         return true;
     }
     return unit->status & UnitStatus::CloakingForFree; // Didact
 }
 
 bool is_proximity_decloakable(Unit* unit) {
-    if (unit->status & UnitStatus::Burrowed) {
+    if (unit->is_burrowed()) {
         return false;
     }
     if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && unit_id_has_proximity_cloak(unit->id)) {
         return true;
     }
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->values[ValueTriggerBehaviorProximityCloak]) {
+    UnitExt& unit_ext = unit->ext();
+    if (unit_ext.values[ValueTriggerBehaviorProximityCloak]) {
         return true;
     }
     return false;
@@ -1249,7 +1250,7 @@ bool is_proximity_decloakable(Unit* unit) {
 
 // Replacement for unit_is_ghost
 bool unit_can_nuke(Unit* unit) {
-    return (unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph);
+    return unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph;
 }
 
 u32 get_trap_id(Unit* unit) {
@@ -1261,7 +1262,7 @@ u32 get_trap_id(Unit* unit) {
 }
 
 bool unit_is_ranged_attacker(Unit* unit) {
-    if (unit->connected_unit && unit->connected_unit->status & UnitStatus::InAir) {
+    if (unit->connected_unit && unit->connected_unit->is_in_air()) {
         return false;
     }
 
@@ -1640,15 +1641,12 @@ void madrigal_dirge_fuse(Unit* unit, UnitExt* unit_ext) {
 
 void update_signify_status(Unit* unit, UnitExt* unit_ext) {
     unit->update_speed();
-
     const u32 cowardice_id = ImageId::Cowardice_Small + bw::get_overlay_offset(unit->id);
     const u32 malice_id = ImageId::Malice_Small + bw::get_overlay_offset(unit->id);
     if (unit_ext->values[ValueSignifyStacks] == 0) {
         bw::remove_unit_overlay(unit, cowardice_id);
         bw::remove_unit_overlay(unit, malice_id);
-    } else if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
-        || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding
-        || unit->has_weapon()) {
+    } else if (!unit->is_building() || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding || unit->has_weapon()) {
         if (unit_ext->values[ValueSignifyStacks] < 5 && !unit->get_overlay(cowardice_id)) {
             bw::add_unit_overlay(unit, cowardice_id);
         } else if (unit_ext->values[ValueSignifyStacks] >= 5 && !unit->get_overlay(malice_id)) {
@@ -1661,7 +1659,6 @@ void update_signify_status(Unit* unit, UnitExt* unit_ext) {
 bool is_unit_isolated(Unit* unit) {
     u32 ally_count = 0;
     u32 enemy_count = 0;
-
     auto match = cosmonarchy_finder_match(unit, Flags::NotSelf, {});
     const u32 radius = 5 * 32;
     bw::UnitFinder(
@@ -1681,9 +1678,9 @@ bool is_unit_isolated(Unit* unit) {
 }
 
 bool transport_is_full(Unit* transport) {
-    UnitExt* transport_ext = get_unit_ext(transport);
+    UnitExt& transport_ext = transport->ext();
     for (u32 i = 0; i < TransportCap; ++i) {
-        if (!transport_ext->loaded_unit[i].index) {
+        if (!transport_ext.loaded_unit[i].index) {
             return false;
         }
     }
@@ -1691,16 +1688,16 @@ bool transport_is_full(Unit* transport) {
 }
 
 bool transport_is_empty(Unit* transport) {
-    UnitExt* transport_ext = get_unit_ext(transport);
+    UnitExt& transport_ext = transport->ext();
     for (u32 i = 0; i < TransportCap; ++i) {
-        if (transport_ext->loaded_unit[i].index) {
+        if (transport_ext.loaded_unit[i].index) {
             return false;
         }
     }
     return true;
 }
 
-void set_cmbw_ai_preference(u16 unit_id, u32 player) {
+void set_ai_preference(u16 unit_id, u32 player) {
     g_unit_deaths_table[unit_id].player[player] = 1;
 }
 
@@ -1894,9 +1891,9 @@ AiScript* run_ai(u32 player, Point16 pos, s32 name) {
 AiScript* run_default_ai(u32 player, Point16 pos) {
     u32 race = g_player_table[player].race;
     switch (race) {
-        case RaceId::Terran:	bw::printf("Running Terran AI for player %u", player + 1); return bw::run_ai(player, pos, 'xCMT');
+        case RaceId::Terran:	bw::printf("Running Terran AI for player %u", player + 1);  return bw::run_ai(player, pos, 'xCMT');
         case RaceId::Protoss:	bw::printf("Running Protoss AI for player %u", player + 1); return bw::run_ai(player, pos, 'xCMP');
-        case RaceId::Zerg:		bw::printf("Running Zerg AI for player %u", player + 1); return bw::run_ai(player, pos, 'xCMZ');
+        case RaceId::Zerg:		bw::printf("Running Zerg AI for player %u", player + 1);    return bw::run_ai(player, pos, 'xCMZ');
     }
     return 0;
 }
@@ -1907,17 +1904,17 @@ void give_ai_ex(Unit* unit) {
     }
     if (units_dat::computer_ai_internal[unit->id] & 2) {
         helper::give_ai(unit);
-    } else {
-        if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
-            g_aiscript_controller[unit->player].main_medic = unit;
-        }
-        helper::add_military_ai(bw::get_ai_region(unit->player, bw::get_region_id(unit->position)), unit, true);
+        return;
     }
+    if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
+        g_aiscript_controller[unit->player].main_medic = unit;
+    }
+    helper::add_military_ai(bw::get_ai_region(unit->player, bw::get_region_id(unit->position)), unit, true);
 }
 
 u32 unit_get_creep_spreader_id(Unit* unit) {
     UnitExt* unit_ext = get_unit_ext(unit);
-    if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
+    if (helper::spreads_creep(unit->id, unit->is_completed())) {
         return unit->id;
     }
     if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::GroundedBuilding) {
@@ -2026,9 +2023,10 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergGeszkathGrotto:
         case UnitId::ZergZorkizShroud:
         case UnitId::ZergMatravilNest:
-        case UnitId::ZergElthisthMound:
+        case UnitId::ZergElthisthMound: {
             return UnitId::None;			// Bugs: Larva don't unlink, cagra doesn't recede
         //	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
+        }
 
         // Unit Morphs
         case UnitId::ZergIroleth:				return UnitId::ZergOvileth;
@@ -2207,7 +2205,7 @@ bool move_unit_ai(Unit* unit, AiRegion* ai_region) {
         helper::delete_military_ai(military_ai, military_ai->region);
         unit->unit_ai = 0;
         helper::add_military_ai(ai_region, unit, 1);
-        if (unit->status & UnitStatus::InBuilding) {
+        if (unit->is_garrisoned()) {
             helper::unload_unit_proc(unit);
         }
         helper::ai_recalculate_region_strength(current_ai_region);
@@ -2263,7 +2261,6 @@ void shield_heal_proc(Unit* heal_source, u32 heal_source_player, u32 range, u32 
         } else {
             continue;
         }
-
         if (has_shields) {
             // Shield heal
             unit->heal_shields(heal_amount * 256, heal_source);
@@ -2294,24 +2291,18 @@ void prepare_building_area(Point16 pos, u32 unit_id, Unit* builder) {
         if (unit == builder) {
             continue;
         }
-
-        if (unit_id_is_siege_mode((UnitId::Enum)unit->id) && unit->main_order_id != OrderId::TankMode
-            || unit->main_order_id == OrderId::SiegeMode) {
+        if (unit_id_is_siege_mode((UnitId::Enum)unit->id) && unit->main_order_id != OrderId::TankMode || unit->main_order_id == OrderId::SiegeMode) {
             unit->order_to(OrderId::TankMode);
         }
-
-        if (unit->status & UnitStatus::Burrowed || unit->main_order_id == OrderId::Burrow) {
+        if (unit->is_burrowed() || unit->main_order_id == OrderId::Burrow) {
             helper::unburrow(unit);
         }
-
         if (unit_id_is_trap(unit->id)) {
             unit->remove();
         }
-
         if (unit->id == UnitId::TerranCleric && unit->status & UnitStatus::AttackMove) {
             helper::order_return_to_idle(unit);
         }
-
         // Fix AI workers getting stuck
         if (unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergGosvileth) {
             if (unit->main_order_id == OrderId::DroneLand) {
@@ -2541,7 +2532,7 @@ void delete_fow_sprite(Thingy* thingy) {
 }
 
 std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks) {
-    EntryArray targets = g_unit_search.radial(position, BindingPlasmaRadius)
+    EntryArray targets = g_unit_search.radial(position, Gladius::BindingPlasmaRadius)
         .filter(reference, FilterNotSelf | FilterNotSubunit)
         .filter_by([player](Unit* target) {
             if (bw::is_allied_to(player, target->player)) {
@@ -3021,7 +3012,7 @@ void play_action_sound(u32 sound_id, Unit* unit) {
 
 u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target) {
     u32 weapon_id = WeaponId::None;
-    if (target->status & UnitStatus::InAir) {
+    if (target->is_in_air()) {
         weapon_id = units_dat::air_weapon[attacker->id];
     } else {
         if (!unit_id_is_burrowed_attacker(attacker->id) || attacker->burrowed_attacker_can_attack()) {
@@ -3035,90 +3026,91 @@ void regress(Unit* unit, u32 regression_id) {
     helper::cancel_unit(unit);
     // We first cancel any on-going morphs, that could technically delete the unit, but that shouldn't happen for current unit id cases
     // I will check if the unit exists anyways, for the sake of not crashing the game if something about that changes - Veeq7
-    if (unit) {
-        helper::increment_unit_death_scores(unit, unit->player);
-        bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
-        is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes.
-        u32 old_id = unit->id;
-        u32 regress_to = regression_id;
-        if (!is_building) {
-            regress_to = units_dat::base_property[regression_id] & UnitProperty::Flyer ? UnitId::ZergCocoon : UnitId::ZergEgg;
-        }
+    if (!unit) {
+        return;
+    }
+    helper::increment_unit_death_scores(unit, unit->player);
+    bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
+    is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes.
+    u32 old_id = unit->id;
+    u32 regress_to = regression_id;
+    if (!is_building) {
+        regress_to = units_dat::base_property[regression_id] & UnitProperty::Flyer ? UnitId::ZergCocoon : UnitId::ZergEgg;
+    }
 
-        if (unit_id_is_transport(old_id)) {
-            helper::kill_all_loaded_units(unit); // @TODO: Get the difference between transport cargo space of new and old ids, and kill excess units. -Pr0nogo
-        }
+    if (unit_id_is_transport(old_id)) {
+        helper::kill_all_loaded_units(unit); // @TODO: Get the difference between transport cargo space of new and old ids, and kill excess units. -Pr0nogo
+    }
 
-        Unit* new_unit = unit;
-        if (unit->id == UnitId::ZergExcisant) {
-            new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
-        } else {
-            helper::replace_unit_with_id(unit, regress_to);
-            unit->set_hitpoints(unit->get_max_hp_raw());
+    Unit* new_unit = unit;
+    if (unit->id == UnitId::ZergExcisant) {
+        new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
+    } else {
+        helper::replace_unit_with_id(unit, regress_to);
+        unit->set_hitpoints(unit->get_max_hp_raw());
 
-            bool was_flyer = units_dat::base_property[old_id] & UnitProperty::Flyer;
-            bool is_flyer = units_dat::base_property[regress_to] & UnitProperty::Flyer;
-            if (was_flyer && !is_flyer) {
-                Point16 old_pos = unit->position;
-                Point16 new_pos = unit->position;
+        bool was_flyer = units_dat::base_property[old_id] & UnitProperty::Flyer;
+        bool is_flyer = units_dat::base_property[regress_to] & UnitProperty::Flyer;
+        if (was_flyer && !is_flyer) {
+            Point16 old_pos = unit->position;
+            Point16 new_pos = unit->position;
 
-                helper::fix_target_location(&new_pos, regress_to);
-                if (bw::distance_between(old_pos, new_pos) <= 2 * 32) {
-                    helper::move_unit(unit, new_pos.x, new_pos.y);
-                } else {
-                    unit->remove();
-                }
-            }
-        }
-        if (new_unit) {
-            if (is_building) {
-                UnitExt* new_unit_ext = get_unit_ext(new_unit);
-                new_unit_ext->timers[TimerStun] = 1 * 24;
-                // TODO: Try calling a cagra-related function to stop regression from ruining cagra spread. -Pr0nogo
-                // TODO: Add stun audio visuals. -Veeq7
+            helper::fix_target_location(&new_pos, regress_to);
+            if (bw::distance_between(old_pos, new_pos) <= 2 * 32) {
+                helper::move_unit(unit, new_pos.x, new_pos.y);
             } else {
-                set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes. -Veeq7
+                unit->remove();
             }
         }
-
-        u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
-        if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
-            effect_image_id = ImageId::ZergBuildingExplosion;
-        } else if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay) {
-            effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+    }
+    if (new_unit) {
+        if (is_building) {
+            UnitExt* new_unit_ext = get_unit_ext(new_unit);
+            new_unit_ext->timers[TimerStun] = 1 * 24;
+            // TODO: Try calling a cagra-related function to stop regression from ruining cagra spread. -Pr0nogo
+            // TODO: Add stun audio visuals. -Veeq7
+        } else {
+            set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes. -Veeq7
         }
-        unit->sprite->create_overlay(effect_image_id);
-        u32 sound_id = get_death_sfx_id(old_id);
-        if (!sound_id) {
-            sound_id = SoundId::Zerg_Bldg_ZBldgDth_WAV;
-        }
-        helper::play_sound_from_unit(sound_id, unit, true, 0);
+    }
 
-        if (unit->irradiate_timer) {
-            u32 irradiate_image_id = ImageId::IrradiateNew_Small + bw::get_overlay_offset(unit->id);
-            if (!unit->get_overlay(irradiate_image_id)) {
-                bw::add_unit_overlay(unit, irradiate_image_id);
-            }
+    u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
+    if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
+        effect_image_id = ImageId::ZergBuildingExplosion;
+    } else if (units_dat::base_property[unit->id] & UnitProperty::MediumOverlay) {
+        effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+    }
+    unit->sprite->create_overlay(effect_image_id);
+    u32 sound_id = get_death_sfx_id(old_id);
+    if (!sound_id) {
+        sound_id = SoundId::Zerg_Bldg_ZBldgDth_WAV;
+    }
+    helper::play_sound_from_unit(sound_id, unit, true, 0);
+
+    if (unit->irradiate_timer) {
+        u32 irradiate_image_id = ImageId::IrradiateNew_Small + bw::get_overlay_offset(unit->id);
+        if (!unit->get_overlay(irradiate_image_id)) {
+            bw::add_unit_overlay(unit, irradiate_image_id);
         }
     }
 }
 
 void unfreeze_channeling_unit(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
+    UnitExt& unit_ext = unit->ext();
     switch (unit->id) {
         case UnitId::ProtossStarSovereign: {
-            if (unit->is_frozen() && unit_ext->values[ValueProtossSwitchOrderState] && !unit_ext->values[ValueNeedsUnfreezing]) {
+            if (unit->is_frozen() && unit_ext.values[ValueProtossSwitchOrderState] && !unit_ext.values[ValueNeedsUnfreezing]) {
                 unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
-                unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] = 0;
-                unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] = 0;
+                unit_ext.timers[TimerStarSovereignGriefOfAllGodsChannel] = 0;
+                unit_ext.timers[TimerStarSovereignGriefOfAllGodsDelay] = 0;
                 unit->order_signal &= ~127;
-                unit_ext->values[ValueNeedsUnfreezing] = 1;
+                unit_ext.values[ValueNeedsUnfreezing] = 1;
             }
-            if (!unit->is_frozen() && unit_ext->values[ValueNeedsUnfreezing]) {
+            if (!unit->is_frozen() && unit_ext.values[ValueNeedsUnfreezing]) {
                 unit->status &= ~UnitStatus::CanNotReceiveOrders;
                 unit->status &= ~UnitStatus::CanNotAttack;
-                unit_ext->values[ValueNeedsUnfreezing] = 0;
-                unit_ext->values[ValueProtossSwitchOrderState] = 0;
+                unit_ext.values[ValueNeedsUnfreezing] = 0;
+                unit_ext.values[ValueProtossSwitchOrderState] = 0;
                 unit->unfreeze();
                 unit->order_to_idle();
             }
@@ -3679,7 +3671,6 @@ u32 get_cloak_sound_id(Unit* unit) {
     if (unit->status & UnitStatus::CloakingForFree && !unit_id_has_proximity_cloak(unit->id)) {
         return SoundId::Terran_PHOENIX_TPhClo00_WAV;
     }
-
     switch (unit->get_race()) {
         case RaceId::Terran:
         {
@@ -3700,7 +3691,6 @@ u32 get_decloak_sound_id(Unit* unit) {
     if (unit->status & UnitStatus::CloakingForFree && !unit_id_has_proximity_cloak(unit->id)) {
         return SoundId::Terran_PHOENIX_TPhClo01_WAV;
     }
-
     switch (unit->get_race()) {
         case RaceId::Terran: {
             return SoundId::CloakTerranOff;

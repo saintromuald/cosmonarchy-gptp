@@ -57,12 +57,11 @@ namespace hooks {
 		if (!unit_building_can_act(unit)) {
 			return;
 		}
-		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->timers[TimerSpawnLarva] == 0 && unit->player != 11) {
-			unit_ext->timers[TimerSpawnLarva] = 8;
-
+		UnitExt& unit_ext = unit->ext();
+		if (unit_ext.timers[TimerSpawnLarva] == 0 && unit->player != 11) {
+			unit_ext.timers[TimerSpawnLarva] = 8;
 			unit->count_connected_larva();
-			if (*g_larva_counter < 3 && !(unit->status & UnitStatus::InAir)) {
+			if (*g_larva_counter < 3 && !unit->is_in_air()) {
 				const auto modifier = cm::get_building_modifier(unit);
 				if (unit->building.larva_timer > modifier.integer_step) {
 					unit->building.larva_timer -= modifier.integer_step;
@@ -71,8 +70,7 @@ namespace hooks {
 				}
 
 				if (!unit->building.larva_timer) {
-					unit->building.larva_timer = LarvaSpawnRate;
-
+					unit->building.larva_timer = Zerg::LarvaSpawnRate;
 					u32 unit_id = unit->id;
 					if (unit->main_order_id == OrderId::MorphStructure) {
 						unit_id = unit->previous_unit_type;

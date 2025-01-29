@@ -1562,3 +1562,7 @@ bool Unit::is_hallucination() {
 bool Unit::is_grounded_building() {
 	return this->status & UnitStatus::GroundedBuilding;
 }
+
+bool Unit::is_in_transport() {
+	return this->status & UnitStatus::InTransport;
+}

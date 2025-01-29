@@ -504,7 +504,7 @@ namespace hooks {
 						target_ext->values[ValueGladiusBindingPlasmaStacks]++;
 					}
 				} else {
-					target_ext->timers[TimerBindingPlasma] = BindingPlasmaTimer;
+					target_ext->timers[TimerBindingPlasma] = Gladius::BindingPlasmaTimer;
 					target_ext->values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
 					target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
 				}

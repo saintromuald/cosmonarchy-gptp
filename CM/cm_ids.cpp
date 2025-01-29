@@ -59,7 +59,7 @@ b32 unit_id_is_tech(u32 unit_id, bool allow_addons) {
         case UnitId::TerranAtlas:
         case UnitId::TerranDaedala:
 
-            // Zerg
+        // Zerg
         case UnitId::ZergIrolIris:
         case UnitId::ZergIrulentIvoa:
         case UnitId::ZergOthstolOviform:
@@ -169,8 +169,7 @@ bool unit_id_has_shield_regeneration(u32 unit_id) {
 
 bool unit_id_is_stackable_building(u32 unit_id) {
     return false; // Disabled to see if it improves AI base layouts. -Pr0nogo
-    switch (unit_id)
-    {
+    switch (unit_id) {
         case UnitId::TerranWatchdog:
         case UnitId::TerranAnchor:
         case UnitId::TerranSentinel:
@@ -186,8 +185,7 @@ bool unit_id_is_stackable_building(u32 unit_id) {
         case UnitId::ZergKazitrithCesiant:
         case UnitId::ZergOcsalCesiant:
         case UnitId::ZergIrolIris:
-        case UnitId::ZergOthstolOviform:
-        {
+        case UnitId::ZergOthstolOviform: {
             return true;
         } break;
     }
@@ -204,8 +202,7 @@ bool unit_id_has_addon(u32 unit_id) {
         case UnitId::TerranFulcrum:
         case UnitId::TerranIronFoundry:
         case UnitId::TerranStarport:
-        case UnitId::TerranNaniteAssembly:
-        {
+        case UnitId::TerranNaniteAssembly: {
             return true;
         } break;
     }
@@ -328,14 +325,13 @@ bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only) {
             || unit_id == UnitId::ZergCaphrolosk
             || unit_id == UnitId::ZergGathtelosk
             || unit_id == UnitId::Omnivale;
-    } else {
-        return unit_id == UnitId::ZergHachirosk
-            || unit_id == UnitId::ZergCaphrolosk
-            || unit_id == UnitId::ZergGathtelosk
-            || unit_id == UnitId::ZergLarvoskCesiant
-            || unit_id == UnitId::ZergOcsalCesiant
-            || unit_id == UnitId::Omnivale;
     }
+    return unit_id == UnitId::ZergHachirosk
+        || unit_id == UnitId::ZergCaphrolosk
+        || unit_id == UnitId::ZergGathtelosk
+        || unit_id == UnitId::ZergLarvoskCesiant
+        || unit_id == UnitId::ZergOcsalCesiant
+        || unit_id == UnitId::Omnivale;
 }
 
 bool unit_id_is_town_center(u16 unit_id) {
@@ -384,13 +380,12 @@ bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures) {
             || unit_id == UnitId::ProtossAquifer
             || unit_id == UnitId::ZergExcisant
             || unit_id == UnitId::ZergEzigrisant;
-    } else {
-        return unit_id == UnitId::ResourceMineralField
-            || unit_id == UnitId::ResourceMineralFieldType2
-            || unit_id == UnitId::ResourceMineralFieldType3
-            || unit_id == UnitId::ResourceVespeneGeyser
-            || unit_id == UnitId::ResourceVespeneRidge;
     }
+    return unit_id == UnitId::ResourceMineralField
+        || unit_id == UnitId::ResourceMineralFieldType2
+        || unit_id == UnitId::ResourceMineralFieldType3
+        || unit_id == UnitId::ResourceVespeneGeyser
+        || unit_id == UnitId::ResourceVespeneRidge;
 }
 
 bool unit_id_is_minerals(u16 unit_id) {
@@ -442,8 +437,9 @@ bool weapon_id_is_standard_weapon(u32 weapon_id) {
         case WeaponEffect::SplashRadial:
         case WeaponEffect::SplashEnemy:
         case WeaponEffect::SplashAir:
-        case WeaponEffect::Unknown_Crash:
+        case WeaponEffect::Unknown_Crash: {
             return true;
+        }
     }
     return false;
 }
@@ -482,12 +478,12 @@ bool weapon_id_cleaves(u32 weapon_id) {
 u32 weapon_id_intercepts(u32 weapon_id) {
     switch (weapon_id) {
         case WeaponId::OptectonSunsplitBeam:
-        case WeaponId::AccantorPlasmaShell:
+        case WeaponId::AccantorPlasmaShell: {
             return InterceptType_GroundOnly;
-
-        case WeaponId::EmpyreanPlasmaBarrage:
+        }
+        case WeaponId::EmpyreanPlasmaBarrage: {
             return InterceptType_AirOnly;
-
+        }
         case WeaponId::HotshotDispatchShotgun:
         case WeaponId::SirenCharybdalRifle:
         case WeaponId::CataphractLonginiusCannons:
@@ -497,8 +493,9 @@ u32 weapon_id_intercepts(u32 weapon_id) {
         case WeaponId::CantavisHallucinationCast:
         case WeaponId::PatriarchIronhandWeaver:
         case WeaponId::IdolPrismaticBlaster:
-        case WeaponId::StarSovereignInterventionMissiles:
+        case WeaponId::StarSovereignInterventionMissiles: {
             return InterceptType_Any;
+        }
     }
     return InterceptType_None;
 }
@@ -518,8 +515,9 @@ bool weapon_id_pierces(u32 weapon_id) {
         case WeaponId::SentinelCerberusRailgun:
         case WeaponId::KalkaliskViscousAcid:
         case WeaponId::SkithrokorSkitteringSpores:
-        case WeaponId::ZarcavrokorBonesofReflection:
+        case WeaponId::ZarcavrokorBonesofReflection: {
             return true;
+        }
     }
     return false;
 }
@@ -540,8 +538,9 @@ bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
             case WeaponId::GorgrokorSerratedCleavers:
             case WeaponId::ZarcavrokorBisectingBlades:
             case WeaponId::TethzorokorSaberArray:
-            case WeaponId::TetcaerokorCleavingMaw:
+            case WeaponId::TetcaerokorCleavingMaw: {
                 return true;
+            }
         }
     }
     return false;
@@ -605,7 +604,6 @@ bool weapon_id_can_proc_onhits(u32 weapon_id) {
     // * Clarion Phase Link
     // * Analogue Empathy Core
     // * Custom trigger damage overrides
-
     return weapon_id != WeaponId::HypnagogueThroughTheLookingGlass
         && weapon_id != WeaponId::SpiderMines
         && weapon_id != WeaponId::LobotomyMineExplosion
@@ -889,10 +887,8 @@ u32 get_scribe_warp_distance(u32 unit_id) {
         case UnitId::ProtossArgosy: {
             return 99;
         }
-        default: {
-            return 70;
-        }
     }
+    return 70;
 }
 
 bool unit_id_ignored_on_minimap(u32 unit_id) {
@@ -902,14 +898,14 @@ bool unit_id_ignored_on_minimap(u32 unit_id) {
 bool unit_is_combatant(Unit* unit) {
     switch (unit->id) {
         // TODO: add combat casters here
-        case UnitId::ZergLakizilisk:
+        case UnitId::ZergLakizilisk: {
             return true;
+        }
     }
     if (unit->subunit && unit->subunit->is_subunit()) {
         return unit->subunit->has_weapon();
-    } else {
-        return unit->has_weapon();
     }
+    return unit->has_weapon();
 }
 
 bool unit_id_can_repair(u32 unit_id) {
@@ -966,12 +962,10 @@ bool unit_applies_ensnare(Unit* unit) {
         case UnitId::ZergAkistrokor: {
             return true;
         } break;
-        default: {
-            UnitExt* unit_ext = get_unit_ext(unit);
-            if (unit_ext->timers[TimerEnsnaringBrood] > 0) {
-                return true;
-            }
-        } break;
+    }
+    UnitExt& unit_ext = unit->ext();
+    if (unit_ext.timers[TimerEnsnaringBrood] > 0) {
+        return true;
     }
     return false;
 }
@@ -980,7 +974,7 @@ bool unit_can_be_ensnared(Unit* unit) {
     if (units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding || unit_is_tower(unit)) {
         return true;
     }
-    if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+    if (unit->is_building()) {
         return false;
     }
     return true;
