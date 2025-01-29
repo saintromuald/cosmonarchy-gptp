@@ -1906,7 +1906,7 @@ void give_ai_ex(Unit* unit) {
         helper::give_ai(unit);
         return;
     }
-    if (unit_id_has_auto_healing(unit->id) && !g_aiscript_controller[unit->player].main_medic) {
+    if (unit_id_has_cleric_heal(unit->id) && !g_aiscript_controller[unit->player].main_medic) {
         g_aiscript_controller[unit->player].main_medic = unit;
     }
     helper::add_military_ai(bw::get_ai_region(unit->player, bw::get_region_id(unit->position)), unit, true);

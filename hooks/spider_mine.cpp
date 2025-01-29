@@ -9,10 +9,10 @@ namespace hooks {
 	Unit* find_best_mine_target(Unit* mine) { // 00441270
 		// Don't search for a target if the mine is under a Disruption Field
 		if (mine->status & UnitStatus::CanNotAttack) {
-			return 0;
+			return nullptr;
 		}
 		if (!mine->has_weapon()) {
-			return 0;
+			return nullptr;
 		}
 
 		u32 range = 32 * mine->get_seek_range();
@@ -153,7 +153,7 @@ namespace hooks {
 				if ((helper::get_distance_fast(unit->halt.x, unit->order_target.pt.x << 8, unit->halt.y, unit->order_target.pt.y << 8) & 0xFFFFFF00) <= 5120) {
 					helper::orders_hold_pos_suicidal(unit);
 					Point16 target_pos = {unit->order_target.pt.x, unit->order_target.pt.y};
-					UnitId::Enum mine_id = bw::get_trap_id(unit);
+					const auto mine_id = bw::get_trap_id(unit);
 					helper::fix_target_location(&target_pos, mine_id);
 					Unit* mine = helper::create_unit(mine_id, target_pos.x, target_pos.y, unit->player);
 					if (mine) {

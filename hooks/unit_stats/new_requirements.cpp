@@ -193,13 +193,13 @@ namespace hooks {
 					}
 				} break;
 				case UnitId::TerranCleric: {
-					if (player_has_completed_unit_id(player_id, UnitId::TerranVestry)) {
-						return faction != Faction::TerranFuturistFederation;
+					if (player_has_completed_unit_id(player_id, UnitId::TerranVestry) && faction != Faction::TerranFuturistFederation) {
+						return true;
 					}
 				} break;
 				case UnitId::TerranClericFuturist: {
-					if (player_has_completed_unit_id(player_id, UnitId::TerranVestry)) {
-						return faction == Faction::TerranFuturistFederation;
+					if (player_has_completed_unit_id(player_id, UnitId::TerranVestry) && faction == Faction::TerranFuturistFederation) {
+						return true;
 					}
 				} break;
 				case UnitId::TerranShamanSupportMode: {

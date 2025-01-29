@@ -217,7 +217,7 @@ namespace hooks {
 		// Ancile - Providence - Hitscan handling
 		if (weapon_id_can_proc_onhits(data.weapon_id)) {
             auto units = g_unit_search
-				.radial_ex(data.target, 2 * 32, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile, UnitId::TerranPietyWard })
+				.radial_ex(data.target, 2 * 32, FilterIncludingSelf | FilterAlly, {UnitId::TerranAncile, UnitId::TerranPietyWard})
                 .sort_by_distance(data.target->position);
 
 			for (Unit* unit : units) {

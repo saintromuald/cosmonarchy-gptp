@@ -398,7 +398,7 @@ void fire_amitosis_weapon(Unit* attacker, WeaponId::Enum weapon_id) {
 
 void set_up_mines(Unit* unit) {
     switch (unit->id) {
-        case UnitId::TerranVulture:        unit->mine_carrier.mine_count = 3; return;
-        case UnitId::TerranClericFuturist: unit->mine_carrier.mine_count = 1; return;
+        case UnitId::TerranVulture:        unit->mine_carrier.mine_count = 3; break;
+        case UnitId::TerranClericFuturist: unit->mine_carrier.mine_count = 1; break;
     }
 }
