@@ -61,6 +61,8 @@ void __cdecl show_or_hide_minimap();												// 004A4150
 u16 draw_game_menu_context(BinDlg* dialog);                                         // 004F4F70
 void get_tile_image_data(s32 offset_arg, vx4 tile);                                 // 0040C3B0
 char* get_stat_txt_string(u16 string_id);                                           // 004C36F0
+void draw_show_hide_terrain_context(BinDlg* dialog);                                // 004A4C40
+void draw_cancel_unit_context(BinDlg* dialog);                                      // 00457B10
 }
 
 #define tIconCount 7

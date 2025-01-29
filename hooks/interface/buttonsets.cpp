@@ -3056,9 +3056,4 @@ namespace hooks {
 		helper::register_user_dialog_action(dialog, (u32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
 		helper::bindlg_blit_surface(dialog);
 	}
-
-	// Eventually, hook the following to make stat_txt.tbl a .txt.
-	//		0x004575A0 draw_cancel_upgrade_context
-	//		0x00457B10 draw_cancel_unit_context
-	// -Pr0nogo
 }
