@@ -1253,12 +1253,12 @@ bool unit_can_nuke(Unit* unit) {
     return unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph;
 }
 
-u32 get_trap_id(Unit* unit) {
-    u32 id = UnitId::TerranSpiderMine;
-    if (unit->id == UnitId::TerranVulture) {
-        id = UnitId::TerranLobotomyMine;
+UnitId::Enum get_trap_id(Unit* unit) {
+    switch (unit->id) {
+        case UnitId::TerranVulture:        return UnitId::TerranLobotomyMine;
+        case UnitId::TerranClericFuturist: return UnitId::TerranPietyWard;
     }
-    return UnitId::TerranLobotomyMine;
+    return UnitId::None;
 }
 
 bool unit_is_ranged_attacker(Unit* unit) {
@@ -1906,7 +1906,7 @@ void give_ai_ex(Unit* unit) {
         helper::give_ai(unit);
         return;
     }
-    if (unit->id == UnitId::TerranCleric && !g_aiscript_controller[unit->player].main_medic) {
+    if (unit_id_has_cleric_heal(unit->id) && !g_aiscript_controller[unit->player].main_medic) {
         g_aiscript_controller[unit->player].main_medic = unit;
     }
     helper::add_military_ai(bw::get_ai_region(unit->player, bw::get_region_id(unit->position)), unit, true);

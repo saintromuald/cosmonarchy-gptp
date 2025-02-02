@@ -1258,8 +1258,9 @@ bool unit_id_is_spell(u32 unit_id) {
         || unit_id == UnitId::Spell_ScannerSweep;
 }
 
-bool unit_id_has_auto_healing(u32 unit_id) {
-    return unit_id == UnitId::TerranCleric; // In case we want to add more later. -Pr0nogo
+bool unit_id_has_cleric_heal(u32 unit_id) {
+    return unit_id == UnitId::TerranCleric
+        || unit_id == UnitId::TerranClericFuturist;
 }
 
 bool unit_id_is_valid_for_most_abilities(u32 unit_id) {
@@ -1282,7 +1283,8 @@ bool weapon_id_can_self_splash(u32 weapon_id) {
 }
 
 bool unit_id_is_mine_layer(UnitId::Enum unit_id) {
-    return unit_id == UnitId::TerranVulture;
+    return unit_id == UnitId::TerranVulture
+        || unit_id == UnitId::TerranClericFuturist;
 }
 
 bool unit_id_can_construct(UnitId::Enum unit_id) {

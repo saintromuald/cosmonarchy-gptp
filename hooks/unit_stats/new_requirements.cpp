@@ -192,7 +192,16 @@ namespace hooks {
 						return true;
 					}
 				} break;
-				case UnitId::TerranCleric:
+				case UnitId::TerranCleric: {
+					if (player_has_completed_unit_id(player_id, UnitId::TerranVestry) && faction != Faction::TerranFuturistFederation) {
+						return true;
+					}
+				} break;
+				case UnitId::TerranClericFuturist: {
+					if (player_has_completed_unit_id(player_id, UnitId::TerranVestry) && faction == Faction::TerranFuturistFederation) {
+						return true;
+					}
+				} break;
 				case UnitId::TerranShamanSupportMode: {
 					if (player_has_completed_unit_id(player_id, UnitId::TerranVestry)) {
 						return true;
@@ -260,8 +269,7 @@ namespace hooks {
 				} break;
 			}
 		}
-		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranFulcrum))
-		{
+		if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranFulcrum)) {
 			switch (unit_id) {
 				case UnitId::TerranScrapyard:
 				case UnitId::TerranPalladium:
@@ -1399,7 +1407,24 @@ namespace hooks {
 						}
 						return TECH_HIDDEN;
 					}
-					case UnitId::TerranCleric:
+					case UnitId::TerranCleric: {
+						if (in_air) {
+							return TECH_HIDDEN;
+						}
+						if (addon_id == UnitId::TerranVestry && faction != Faction::TerranFuturistFederation) {
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
+					case UnitId::TerranClericFuturist: {
+						if (in_air) {
+							return TECH_HIDDEN;
+						}
+						if (addon_id == UnitId::TerranVestry && faction == Faction::TerranFuturistFederation) {
+							return TECH_ACTIVE;
+						}
+						return TECH_HIDDEN;
+					}
 					case UnitId::TerranShamanSupportMode: {
 						if (in_air) {
 							return TECH_HIDDEN;

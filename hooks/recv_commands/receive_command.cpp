@@ -62,7 +62,7 @@ namespace hooks
 
 						*saved_order_2 = OrderId::Nothing2;
 						*saved_order_3 = bActionOrder;
-						if (current_unit->id == UnitId::TerranCleric) {
+						if (unit_id_has_cleric_heal(current_unit->id)) {
 							if (bActionOrder == OrderId::AttackMove ||  bActionOrder == OrderId::Attack1) { // 0049AC09
 								*saved_order_3 = OrderId::HealMove;
 							} else {

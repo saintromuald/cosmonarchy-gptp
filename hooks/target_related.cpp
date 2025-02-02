@@ -90,7 +90,8 @@ namespace hooks {
 				case UnitId::ProtossAccantorOld: {
 					order_id = OrderId::HoldPositionReaver;
 				} break;
-				case UnitId::TerranCleric: {
+				case UnitId::TerranCleric:
+				case UnitId::TerranClericFuturist: {
 					order_id = OrderId::HoldPositionCleric;
 				} break;
 				case UnitId::ZergSkryrokor: {

@@ -69,8 +69,7 @@ struct UnitStatFuncArrayEntry {
 	u32 unit_stat_act_func;
 };
 
-struct UnitPath
-{
+struct UnitPath {
 	Point16		start;					 // 0x00
 	s32			next;					 // 0x04
 	s32			finish;					 // 0x08
@@ -88,33 +87,28 @@ struct UnitPath
 	s32			steps[24];				 // 0x20
 };
 
-struct CampaignMission
-{
+struct CampaignMission {
 	char*	mission_name;
 	s32		mission_index;
 };
 
-struct CHKStruct
-{
+struct CHKStruct {
 	u8	section[4];
 	u32 function;
 	u32 flags;
 };
 
-struct ScenarioFormat
-{
+struct ScenarioFormat {
 	CHKStruct*	chk_struct;
 	u32			chk_struct_count;
 };
 
-struct VectorHead
-{
+struct VectorHead {
 	u32 next;
 	u32 prev;
 };
 
-struct unk_61
-{
+struct unk_61 {
 	u8 anonymous_0;
 	u8 anonymous_1;
 	u8 anonymous_2;
@@ -135,20 +129,17 @@ struct unk_62
 	u8 anonymous_7;
 };
 
-struct StringMap_b
-{
+struct StringMap_b {
 	u8		value;					// 0x0
 	u8		id;						// 0x1
 };
 
-struct StringMap_w
-{
+struct StringMap_w {
 	u16		tbl_string;				// 0x0
 	u16		index;					// 0x2
 };
 
-struct DialogEvent
-{
+struct DialogEvent {
 	u32		user;					// 0x0
 	u16		field_4;				// 0x4
 	u16		field_6;				// 0x6
@@ -160,8 +151,7 @@ struct DialogEvent
 };
 
 // Seems to be identical to ResourceArea
-struct Base
-{
+struct Base {
 	Point16	position;				// 0x0
 	u8		mineral_field_count;	// 0x4
 	u8		geyser_count;			// 0x5
@@ -179,8 +169,7 @@ struct Base
 	u32		unk2C;					// 0x2C
 };
 
-struct GameData // taken from IDA and from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
-{ 
+struct GameData { // taken from IDA and from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
 	u32		save_time;					// 0x0
 	char	game_name[0x18];			// 0x4
 	u32		save_timestamp;				// 0x1C
@@ -219,8 +208,7 @@ struct GameData // taken from IDA and from https://gist.githubusercontent.com/ne
 };
 C_ASSERT(sizeof(GameData) == 0x8C);
 
-struct ReplayData // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
-{ 
+struct ReplayData { // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
 	u32		replay_data_start;			// 0x0
 	u32		bool_unk;					// 0x4
 	u32		replay_frame_begin;			// 0x8
@@ -231,16 +219,14 @@ struct ReplayData // taken from https://gist.githubusercontent.com/neivv/d56baed
 };
 C_ASSERT(sizeof(ReplayData) == 0x20);
 
-struct ReplayFrame // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
-{
+struct ReplayFrame { // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
 	u32		frame;						// 0x0
 	u8		data_length;				// 0x4
 	u8		storm;						// 0x5 | { byte storm_player, byte cmd[...] }[...]
 };
 C_ASSERT(sizeof(ReplayFrame) == 0x6);
 
-struct Options // taken from IDA
-{
+struct Options { // taken from IDA 
 	u32		speed;						// 0x0
 	u32		mouse_scroll;				// 0x4
 	u32		keyboard_scroll;			// 0x8
@@ -255,27 +241,22 @@ struct Options // taken from IDA
 };
 C_ASSERT(sizeof(Options) == 0x2C);
 
-struct PlayerName
-{
+struct PlayerName {
 	char	player_name[0x19];			// 0x0
 };
 
-struct MenDeaths
-{
+struct MenDeaths {
 	u32        player[12];
 };
-struct UnitDeaths
-{
+struct UnitDeaths {
 	u32        player[12];
 };
-struct UnitScores_I
-{
+struct UnitScores_I {
 	u32        player[12];
 };
 // Based on http://code.google.com/p/bwapi/source/browse/branches/bwapi4/bwapi/BWAPI/Source/BW/Image.h
 
-struct Text
-{
+struct Text {
 	char	text_display[218][13];  // last is text at bottom; ex: "Cheat enabled."
 	unk_t   unknown1;
 	unk_t   unknown2;
@@ -284,8 +265,7 @@ struct Text
 	u8		timer[13];
 };
 
-struct Tile
-{
+struct Tile {
 	/*00*/  u16 index;
 	/*02*/  u8 buildability;	/**< 8th bit should sign not buildable. */
 	/*03*/  u8 ground_height;	/**< Ground Height(4 lower bits) - Deprecated? Some values are incorrect. */
@@ -303,8 +283,7 @@ struct Tile
 	/*14*/  u16 minitile[16]; /** MegaTile References (VF4/VX4) */
 };
 
-struct Doodad
-{
+struct Doodad {
 	/*00*/  u16 index;
 	/*02*/	u8	buildability; /**< 8th bit should sign not buildable. */
 	/*03*/  u8	ground_height_and_overlay_flags; /**< Ground Height(4 lower bits) - Deprecated? Some values are incorrect.
@@ -325,16 +304,14 @@ struct Doodad
 	/*14*/  u16 minitile[16]; /** MegaTile References (VF4/VX4) */
 }; // count 34
 
-struct Thingy
-{
+struct Thingy {
 	/*00*/  Thingy* prev;
 	/*04*/  Thingy* next;
 	/*08*/  u32     unit_id;
 	/*0C*/  Sprite* sprite;
 };
 
-struct CHKUnit
-{
+struct CHKUnit {
 	/*00*/	u32	 chkid;
 	/*04*/	u16	 x;
 	/*06*/	u16	 y;
@@ -356,14 +333,12 @@ struct CHKUnit
 
 //---- Taken from locations.cpp ----//
 
-struct MapSize
-{
+struct MapSize {
 	u16   width;
 	u16   height;
 };
 
-struct Location
-{
+struct Location {
 	Box32 dimensions;
 	u16   string_id;
 	u16   flags;
@@ -375,8 +350,7 @@ typedef u32 ButtonState;
 typedef ButtonState(__fastcall* ReqFunc)(u32, u32, Unit*);
 typedef void(__fastcall* ActFunc)(u32, u32);
 
-struct Button
-{
+struct Button {
 	/*00*/  u16		 position;
 	/*02*/  u16		 icon_id;
 	/*04*/  ReqFunc* requirement_func;
@@ -387,16 +361,14 @@ struct Button
 	/*12*/  u16		 action_string_id;		// and this should be requirement. -Pr0nogo
 };
 
-struct StatusScreenState
-{
+struct StatusScreenState {
 	GrpHead*	button_grp;	// 0x0
 	u16			grp_frame;	// 0x4
 	u16			type;		// 0x6
 	u8			id;			// 0x8
 };
 
-struct PortraitData
-{
+struct PortraitData {
 	u16			dims_x;			// 0x0
 	u16			dims_y;			// 0x2
 	void*		bmp_buffer;		// 0x4
@@ -406,16 +378,14 @@ struct PortraitData
 	u8			anim_type;		// 0x10
 };
 
-struct ButtonSet
-{
+struct ButtonSet {
 	u32			buttons_in_set;
 	Button*		first_button;
 	u32			connected_unit;
 };
 
 //---- Taken from triggers.h ----//
-struct Condition
-{
+struct Condition {
 	u32			location;
 	u32			player;
 	u32			number;
@@ -428,8 +398,7 @@ struct Condition
 
 typedef b32(__fastcall* ConditionPointer)(Condition*);
 
-struct Action
-{
+struct Action {
 	u32        location;
 	u32        string;
 	u32        wavString;
@@ -444,8 +413,7 @@ struct Action
 typedef b32(__fastcall* ActionPointer)(Action*);
 
 //GRP frame header
-struct GrpFrame
-{
+struct GrpFrame {
 	u8  x;
 	u8  y;
 	u8  w;
@@ -456,8 +424,7 @@ C_ASSERT(sizeof(GrpFrame) == 8);
 //static_assert(sizeof(GrpFrame) == 8, "The count of the GrpFrame structure is invalid");
 
 //GRP file header
-struct GrpHead
-{
+struct GrpHead {
 	u16			frame_count;
 	s16			width;
 	s16			height;
@@ -468,8 +435,7 @@ C_ASSERT(sizeof(GrpHead) == 14);
 //static_assert(sizeof(GrpHead) == 14, "The count of the GrpHead structure is invalid");
 
 // LO* file header
-struct LO_Header
-{
+struct LO_Header {
 	u32 frame_count;
 	u32 overlay_count;
 	u32 frame_offsets[1];
@@ -483,8 +449,7 @@ C_ASSERT(sizeof(LO_Header) == 12);
 //static_assert(sizeof(LO_Header) == 12, "The count of the LO_Header structure is invalid");
 
 // Image remapping Data
-struct ColorShiftData
-{
+struct ColorShiftData {
 	u32		index;
 	void*	data;
 	char	name[12];
@@ -595,8 +560,7 @@ C_ASSERT(sizeof(UnitFinderData) == 8);
 // BinDlg is defined in https://code.google.com/p/vgce/source/browse/trunk/docs/Blizzard/Starcraft/BIN%20FORMAT.txt as Dialog Structure
 // That structure is variable depending on the content
 
-struct BinDlg
-{
+struct BinDlg {
 	/*0x00*/  BinDlg*		next;
 	/*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
 	/*0x10*/  u8*			buffer;
@@ -607,8 +571,7 @@ struct BinDlg
 	/*0x22*/  u16			control_type;	// use DialogControlTypes::Enum
 	/*0x24*/  u16			graphic;
 
-	union
-	{
+	union {
 		/*0x26*/  u32*		user;
 		/*0x26*/  Unit*		unit_user;
 		/*0x26*/  BinDlg*	dialog_user;

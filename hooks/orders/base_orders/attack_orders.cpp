@@ -1054,7 +1054,7 @@ namespace hooks {
 			return;
 		}
 
-		if (unit_id_has_auto_healing(unit->id)) {
+		if (unit_id_has_cleric_heal(unit->id)) {
 			Unit* heal_target = helper::acquire_medic_heal_target(unit);
 			if (heal_target) {
 				if (!unit->order_target.unit) {

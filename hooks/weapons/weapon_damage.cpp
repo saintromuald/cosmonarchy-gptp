@@ -217,13 +217,16 @@ namespace hooks {
 		// Ancile - Providence - Hitscan handling
 		if (weapon_id_can_proc_onhits(data.weapon_id)) {
             auto units = g_unit_search
-				.radial_ex(data.target, 2 * 32, FilterIncludingSelf | FilterAlly, { UnitId::TerranAncile })
+				.radial_ex(data.target, 2 * 32, FilterIncludingSelf | FilterAlly, {UnitId::TerranAncile, UnitId::TerranPietyWard})
                 .sort_by_distance(data.target->position);
 
 			for (Unit* unit : units) {
                 if (unit->energy < 1 * 256) {
                     continue;
                 }
+				if (unit->id == UnitId::TerranPietyWard && !unit->is_burrowed()) {
+					continue;
+				}
 
 				u32 energy_to_spend = std::min<u32>(unit->energy, data.damage);
                 unit->spend_energy(energy_to_spend);
@@ -550,6 +553,11 @@ namespace hooks {
 				case UnitId::ZergNathrokor: {
 					attacker_ext->timers[TimerZergAdrenalFrenzy] = 2 * 24 + 1;
 					data.attacker->update_speed();
+				} break;
+				case UnitId::ProtossEcclesiastKhalendric: {
+					if (!bw::is_allied_to(data.target->player, data.attacker->player)) {
+						ascend_in_area(data.attacker->player, data.attacker->position, Protoss::AstralChargeRadius);
+					}
 				} break;
 				case UnitId::ProtossAugur: {
 					// Augur spend shields on attack

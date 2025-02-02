@@ -593,10 +593,10 @@ namespace hooks {
 		switch (icon_unit_id) {
 			case UnitId::TerranSpiderMine:
 			case UnitId::TerranLobotomyMine: {
-				if (unit->id == UnitId::TerranVulture) {
-					return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363);		// "Lobotomy Mines"
-				} else {
-					return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			// "Spider Mines"
+				switch (unit->id) {
+					case UnitId::TerranVulture:        return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363); // "Lobotomy Mines"
+					case UnitId::TerranClericFuturist: return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363); // "Lobotomy Mines"
+					default:                           return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			  // "Spider Mines"
 				}
 			}
 			case UnitId::TerranMorningstar: {

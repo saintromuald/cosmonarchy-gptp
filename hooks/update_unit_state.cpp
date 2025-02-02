@@ -917,8 +917,8 @@ namespace hooks {
 					helper::place_building_proc();
 				}
 			} else {
-				if (unit->id == UnitId::TerranVulture) {
-					unit->mine_carrier.mine_count = 3;
+				if (unit_id_is_mine_layer((UnitId::Enum)unit->id)) {
+					set_up_mines(unit);
 				}
 				unit->sprite->flags |= SpriteFlags::Hidden;
 				helper::refresh_all_visible_images_at_screen_pos(unit->sprite, 0);
@@ -939,8 +939,7 @@ namespace hooks {
 	}
 
 	// Hooked to investigate crashes. -Pr0nogo
-	b32 set_thingy_visibility_flags(Thingy* thingy) // 004878F0
-	{
+	b32 set_thingy_visibility_flags(Thingy* thingy) { // 004878F0
 		Sprite* thingy_sprite = thingy->sprite;
 		if (thingy_sprite && !(thingy_sprite->flags & SpriteFlags::Hidden)) {
 			u8 status = ~(g_active_tile_array[thingy_sprite->position.x / 32 + g_map_tile_size->width * (thingy_sprite->position.y / 32)]->visibility_flags);

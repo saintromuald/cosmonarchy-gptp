@@ -1276,7 +1276,7 @@ BW_DATA(HINSTANCE*,			g_main_hinstance,				0x0051BFAC);
 BW_DATA(HIMC*,				g_app_context,					0x006D6438);
 
 // For show_or_hide_minimap
-BW_DATA(s8*,				g_hide_minimap_terrain,			0x006D5BBF);
+BW_REF(s8,				    g_hide_minimap_terrain,			0x006D5BBF);
 
 BW_REF(b32,					g_units_recalled,				0x0063FF50);
 

@@ -4,22 +4,19 @@
 #include "logger.h"
 #include "byte_operations_utils.h"
 
-namespace hooks
-{
+namespace hooks {
 	// Return the best target for the mine. If there is no suitable target, return 0 instead.
-	Unit* find_best_mine_target(Unit* mine) // 00441270
-	{
+	Unit* find_best_mine_target(Unit* mine) { // 00441270
 		// Don't search for a target if the mine is under a Disruption Field
 		if (mine->status & UnitStatus::CanNotAttack) {
-			return 0;
+			return nullptr;
+		}
+		if (!mine->has_weapon()) {
+			return nullptr;
 		}
 
 		u32 range = 32 * mine->get_seek_range();
-		return bw::UnitFinder::get_nearest_target(
-				mine->get_x() - range, mine->get_y() - range,
-				mine->get_x() + range, mine->get_y() + range,
-				mine, [&](Unit* target)
-		{
+		return bw::UnitFinder::get_nearest_target(mine->get_x() - range, mine->get_y() - range, mine->get_x() + range, mine->get_y() + range, mine, [&](Unit* target) {
 			// Don't attack friendly or allied units
 			if (!mine->is_target_enemy(target)) {
 				return false;
@@ -46,11 +43,7 @@ namespace hooks
 		});
 	}
 
-	void orders_terran_mine(Unit* unit) // 00463DF0
-	{
-
-
-
+	void orders_terran_mine(Unit* unit) { // 00463DF0
 		if (unit->main_order_state == 0) {
 			helper::play_sound_from_unit(SoundId::SpiderMineDeploy01, unit, 1, 0);
 			unit->ground_weapon_cooldown = TerranMine::BurrowTime;
@@ -77,7 +70,6 @@ namespace hooks
 
 		if (unit->main_order_state == 3) {
 			Unit* target = helper::spider_mine_acquire_target(unit);
-
 			if (target) {
 				unit->order_target.unit = target;
 				unit->sprite->play_iscript_animation(IscriptAnimation::UnBurrow, true);
@@ -132,8 +124,7 @@ namespace hooks
 					anim = IscriptAnimation::Unused2;
 				}
 
-				while (current_image)
-				{
+				while (current_image) {
 					current_image->play_iscript_animation(anim);
 					current_image = current_image->link.next;
 				}
@@ -158,16 +149,14 @@ namespace hooks
 		if (unit->main_order_state) {
 			Sprite* unit_sprite = unit->sprite;
 			if  (helper::tech_use_allowed(unit, TechId::SpiderMines, unit->player)
-			&&  (unit->move_target.pt.x != unit->position.x) || unit->move_target.pt.y != unit->position.y || !(unit->status & UnitStatus::Unmovable))
-			{
+			&&  (unit->move_target.pt.x != unit->position.x) || unit->move_target.pt.y != unit->position.y || !(unit->status & UnitStatus::Unmovable)) {
 				if ((helper::get_distance_fast(unit->halt.x, unit->order_target.pt.x << 8, unit->halt.y, unit->order_target.pt.y << 8) & 0xFFFFFF00) <= 5120) {
 					helper::orders_hold_pos_suicidal(unit);
 					Point16 target_pos = {unit->order_target.pt.x, unit->order_target.pt.y};
-					u32 mine_id = bw::get_trap_id(unit);
+					const auto mine_id = bw::get_trap_id(unit);
 					helper::fix_target_location(&target_pos, mine_id);
 					Unit* mine = helper::create_unit(mine_id, target_pos.x, target_pos.y, unit->player);
-					if (mine)
-					{
+					if (mine) {
 						helper::update_unit_stats_and_finish_building(mine);
 						helper::update_unit_strength_and_apply_default_orders(mine);
 						mine->sprite->player = unit->sprite->player;
@@ -183,7 +172,7 @@ namespace hooks
 					}
 				}
 			} else if (unit->order_queue_head) {
-				unit->user_action_flags |= 1;
+				unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 				helper::do_next_queued_order(unit);
 			} else if (unit->unit_ai) {
 				helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);

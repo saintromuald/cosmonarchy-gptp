@@ -7,6 +7,7 @@ namespace hooks {
 	u16 get_unit_max_energy(Unit* const unit) { // 00491870 
 		u32 energy = 200;
 		switch (unit->id) {
+			case UnitId::TerranPietyWard:
 			case UnitId::TerranPhobos: {
 				energy = 100;
 			} break;

@@ -175,6 +175,7 @@ namespace hooks {
 			case UnitId::TerranMaverick:
 			case UnitId::TerranHotshot:
 			case UnitId::TerranCleric:
+			case UnitId::TerranClericFuturist:
 			case UnitId::TerranEidolon:
 			case UnitId::TerranSavant:
 			case UnitId::TerranMadcap:

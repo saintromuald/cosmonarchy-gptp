@@ -2,10 +2,8 @@
 #include "globals.h"
 #include "logger.h"
 
-namespace hooks
-{
-	void __declspec(naked) get_flingy_halt_distance_wrapper()
-	{
+namespace hooks {
+	void __declspec(naked) get_flingy_halt_distance_wrapper() {
 		static Flingy* flingy;
 		static u32 result;
 		__asm {
@@ -21,8 +19,7 @@ namespace hooks
 	}
 
 	const u32 jmp_00496390 = 0x00496390;
-	void __declspec(naked) initialize_flingy_96377_jump_wrapper()
-	{
+	void __declspec(naked) initialize_flingy_96377_jump_wrapper() {
 		static u32 topSpeed;
 		static u32 flingy_id;
 		static u16 acceleration;
@@ -48,8 +45,7 @@ namespace hooks
 	}
 
 	const u32 jmp_8BEDE = 0x0048BEDE;
-	void __declspec(naked) initialize_bullet_8BED7_jump_wrapper()
-	{
+	void __declspec(naked) initialize_bullet_8BED7_jump_wrapper() {
 		static u32 weapon_id;
 		static u32 player_id;
 		static u32 result;
@@ -66,8 +62,7 @@ namespace hooks
 		}
 	}
 
-	void flingy_speed_patches() // for madrigals
-	{
+	void flingy_speed_patches() { // for madrigals
 		jump_patch(get_flingy_halt_distance_wrapper,		0x00494F90);
 		jump_patch(initialize_flingy_96377_jump_wrapper,	0x00496377, 2);
 		jump_patch(initialize_bullet_8BED7_jump_wrapper,	0x0048BED7, 2);
@@ -75,8 +70,7 @@ namespace hooks
 
 	const u32 jmp_004295F8 = 0x004295F8;
 	const u32 jmp_004295F3 = 0x004295F3;
-	void __declspec(naked) wrapper_295EB()
-	{
+	void __declspec(naked) wrapper_295EB() {
 		static u16 id;
 		__asm {
 			MOV id, DI
@@ -131,14 +125,13 @@ namespace hooks
 	}
 
 	const u32 jmp_004A0682 = 0x004A0682;
-	void __declspec(naked) lobotomy_mine_jump_wrapper()
-	{
+	void __declspec(naked) lobotomy_mine_jump_wrapper() {
 		Unit* unit;
 		__asm {
 			MOV unit, ESI
 			PUSHAD
 		}
-		set_up_spider_mines(unit);
+		set_up_mines(unit);
 		__asm {
 			POPAD
 			JMP jmp_004A0682
@@ -147,8 +140,7 @@ namespace hooks
 	}
 
 	const u32 jmp_0046512B = 0x0046512B;
-	void orders_place_mine_jump_wrapper_1()
-	{
+	void orders_place_mine_jump_wrapper_1() {
 		Unit* unit;
 		u32 result;
 		__asm {
@@ -164,8 +156,7 @@ namespace hooks
 	}
 
 	const u32 jmp_0046514A = 0x0046514A;
-	void orders_place_mine_jump_wrapper_2()
-	{
+	void orders_place_mine_jump_wrapper_2() {
 		Unit* unit;
 		u32 result;
 		__asm {
@@ -180,19 +171,16 @@ namespace hooks
 		}
 	}
 
-	void unused_order_patches()
-	{
+	void unused_order_patches() {
 		jump_patch(unused_order_patch_wrapper, 0x004EC70B, 7); // turns unused orders to spell orders
 		// later add jump patches to make CTFCop2 and WarpIn useless
 	}
 
-	void archon_hardcode_patches() // for augurs
-	{
+	void archon_hardcode_patches() { // for augurs
 		jump_patch(wrapper_295EB, 0x004295EB, 1);
 	}
 
-	void lobotomy_mine_patches()
-	{
+	void lobotomy_mine_patches() {
 		jump_patch(lobotomy_mine_jump_wrapper, 0x004A066B, 3);  /*
 		jump_patch(orders_place_mine_jump_wrapper_1, 0x00465126, 0);
 		jump_patch(orders_place_mine_jump_wrapper_2, 0x00465145, 0);
@@ -201,8 +189,7 @@ namespace hooks
 
 	const u32 func_techTargetSpellCheck = 0x00491E80;
 	const u32 jmp_004920E3 = 0x004920E3;
-	void __declspec(naked) get_order_target_error_string_jump_wrapper()
-	{
+	void __declspec(naked) get_order_target_error_string_jump_wrapper() {
 		static Unit* caster;
 		static u8 player;
 		static u32 techId;
@@ -228,8 +215,7 @@ namespace hooks
 	}
 
 	const u32 jmp_004922E1 = 0x004922E1;
-	void __declspec(naked) should_stop_ordered_spell_jump_wrapper()
-	{
+	void __declspec(naked) should_stop_ordered_spell_jump_wrapper() {
 		static Unit* caster;
 		static u8 player;
 		static u32 techId;
@@ -256,14 +242,12 @@ namespace hooks
 		}
 	}
 
-	void lobotomy_mine_targeting_patches()
-	{
+	void lobotomy_mine_targeting_patches() {
 		jump_patch(get_order_target_error_string_jump_wrapper,	0x004920D9);
 		jump_patch(should_stop_ordered_spell_jump_wrapper,		0x004922DC);
 	}
 
-	void trap_jump_wrappers()
-	{
+	void trap_jump_wrappers() {
 		memory_patch(0x00401438, (u8)0xEB); // change to jump
 		u8 patchb030[] = {0x33, 0xc0, 0x90, 0x90};
 		memory_patch(0x0047B030, patchb030); // xor eax, eax; nop; nop
@@ -301,8 +285,7 @@ namespace hooks
 		memory_patch(0x0047BDCB, jmpp3); // JNZ
 	}
 
-	void __declspec(naked) can_attack_target_tail_wrapper()
-	{
+	void __declspec(naked) can_attack_target_tail_wrapper() {
 		static u32 target_flags;
 		static Unit* source;
 		static u32 result;
@@ -325,8 +308,7 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) get_ground_weapon_hook_wrapper()
-	{
+	void __declspec(naked) get_ground_weapon_hook_wrapper() {
 		static Unit* unit;
 		static u32 result;
 		__asm {
@@ -341,8 +323,7 @@ namespace hooks
 		}
 	}
 
-	void clarion_wrappers()
-	{
+	void clarion_wrappers() {
 		// can_attack_target - end
 		// jump_patch(can_attack_target_tail_wrapper, 0x0047682C, 1);
 		// tail wrapper disabled, without edge weapon it don't have sense anywhere, will be reworked w/ edge target functionality
@@ -351,23 +332,19 @@ namespace hooks
 
 	const u32 jmp_skip = 0x00404541;
 	const u32 jmp_continue = 0x00404539;
-	void __declspec(naked) create_building_ai_workaround_wrapper()
-	{
+	void __declspec(naked) create_building_ai_workaround_wrapper() {
 		static BuildingAi* bAi;
 		__asm {
 			MOV EDX, [ECX + 0xABE0]
 			MOV bAi, EDX
 			PUSHAD
 		}
-		if (reinterpret_cast<u32>(bAi) < 0x300000)
-		{
+		if (reinterpret_cast<u32>(bAi) < 0x300000) {
 			__asm {
 				POPAD
 				JMP jmp_skip
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_continue
@@ -375,16 +352,14 @@ namespace hooks
 		}
 	}
 
-	void create_building_ai_workaround()
-	{
+	void create_building_ai_workaround() {
 		jump_patch(create_building_ai_workaround_wrapper, 0x00404533, 1);
 	}
 
 	static bool warningOnce00 = false;
 	const u32 Hook_DropDebugging00 = 0x0047CDDB;
 	const u32 Hook_DropDebugging00Back = 0x0047CDE1;
-	void __declspec(naked) drop_debugging_00()
-	{
+	void __declspec(naked) drop_debugging_00() {
 		static char buffer[256];
 		static u8 hashStructIndex;
 		__asm {
@@ -395,8 +370,7 @@ namespace hooks
 				MOV EBP, ESP
 				MOV hashStructIndex, AL
 		}
-		if (!warningOnce00)
-		{
+		if (!warningOnce00) {
 			sprintf_s(buffer, "Invalid hash_struct_index!!\nhashStructIndex: %u", hashStructIndex);
 			bw::print(buffer, TextColor::Red);
 			warningOnce00 = true;
@@ -411,24 +385,19 @@ namespace hooks
 
 	static bool warningOnce01 = false;
 	const u32 Hook_DropDebugging01 = 0x0047CCF8;
-	void __declspec(naked) drop_debugging_01()
-	{
+	void __declspec(naked) drop_debugging_01() {
 		static char buffer[256];
 		static u32 active_nation_id;
-
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV active_nation_id, EBX
 		}
-
-		if (!warningOnce01)
-		{
+		if (!warningOnce01) {
 			sprintf_s(buffer, "Invalid PlayerFlag!\nplayer id: %u", active_nation_id);
 			bw::print(buffer, TextColor::Red);
 			warningOnce01 = true;
 		}
-
 		__asm {
 			POPAD
 			POP EDI
@@ -441,8 +410,7 @@ namespace hooks
 
 	static bool warning_once_02 = false;
 	const u32 Hook_DropDebugging02 = 0x0047CD63;
-	void __declspec(naked) drop_debugging_02()
-	{
+	void __declspec(naked) drop_debugging_02() {
 //		static char buffer[256];
 		static bool succeeded;
 		static u8 visibility_hash;
@@ -454,8 +422,7 @@ namespace hooks
 			MOV visibility_hash, CL
 			MOV nation_hash, DL
 		}
-		if (!succeeded && !warning_once_02)
-		{
+		if (!succeeded && !warning_once_02) {
 //			sprintf_s(buffer, "Invalid SpriteVisibility!!\nactiveNationID: %u", *g_active_nation_id);
 //			bw::print(buffer, GameTextColor::Red);
 			bw::printf("Invalid SpriteVisibility!\nactive_nation_id: % u", *g_active_nation_id);
@@ -471,8 +438,7 @@ namespace hooks
 		}
 	}
 
-	struct HashStruct
-	{
+	struct HashStruct {
 		u16 hash;
 		u8 hash_type;
 		u8 byte[0x109];

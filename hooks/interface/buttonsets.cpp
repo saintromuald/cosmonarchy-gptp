@@ -948,6 +948,13 @@ namespace hooks {
 											current_button_state = Button_State::Enabled;
 										}
 									} break;
+									case UnitId::TerranClericFuturist: {
+										if (!bw::all_selected_units_have_addon(UnitId::TerranVestry) || bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranFuturistFederation) {
+											current_button_state = Button_State::Invisible;
+										} else {
+											current_button_state = Button_State::Enabled;
+										}
+									} break;
 								}
 							} break;
 							case UnitId::TerranCaptaincy: {
@@ -2258,7 +2265,8 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::TerranAncile: {
+								case UnitId::TerranAncile:
+								case UnitId::TerranPietyWard: {
 									if (current_button->icon_id == IconId::DefensiveMatrix) { // Providence
 										current_button_state = Button_State::Enabled;
 									}
@@ -2376,7 +2384,8 @@ namespace hooks {
 										current_button_state = Button_State::Enabled;
 									}
 								} break;
-								case UnitId::ProtossEcclesiast: {
+								case UnitId::ProtossEcclesiast:
+								case UnitId::ProtossEcclesiastKhalendric: {
 									if (current_button->icon_id == IconId::ProtossGroundWeapons	// Astral Blessing
 									||	current_button->icon_id == IconId::LegEnhancements) {	// Vengeance
 										current_button_state = Button_State::Enabled;

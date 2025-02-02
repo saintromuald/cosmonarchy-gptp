@@ -432,7 +432,8 @@ namespace hooks {
 					case UnitId::TerranShamanVisionaryMode: {
 						g_graphics.draw_circle(source.x, source.y, 6 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
-					case UnitId::TerranAncile: {
+					case UnitId::TerranAncile:
+					case UnitId::TerranPietyWard: {
 						g_graphics.draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
 					} break;
 					case UnitId::TerranAzazel: {
@@ -610,7 +611,6 @@ namespace hooks {
 				}
 			}
 		}
-
 		draw_transport_ui();
 	}
 
@@ -2052,9 +2052,13 @@ namespace hooks {
 					}
 				}
 			} break;
-			case UnitId::TerranAncile: {
-				// Ancile - Providence - Projectile handling
+			case UnitId::TerranAncile:
+			case UnitId::TerranPietyWard: {
+				// Ancile - Providence - Overlay handling
 				bool active = unit->energy >= 1 * 256;
+				if (unit->id == UnitId::TerranPietyWard && !unit->is_burrowed()) {
+					active = false;
+				}
 				bw::set_unit_overlay(unit, ImageId::SublimeShepherdOverlayLarge, active, { // TODO: Own overlays?
 					.remove_sound = SoundId::AncileProvidenceDeactivate,
 				});
