@@ -133,138 +133,94 @@ namespace hooks
 	}
 
 	// Hooked to allow for general Repair and some other shit - Pr0nogo
-	s32 is_order_valid(char order_id, Unit* unit, s32 unused, Unit* target, s32 bErrorFlag) // 00474D90
-	{
+	s32 is_order_valid(char order_id, Unit* unit, s32 unused, Unit* target, s32 bErrorFlag) { // 00474D90
 		s32 unused_result = 0;
 		u16 error_string_id = 0;
-		switch (order_id)
-		{
-			case OrderId::Repair1:
-			{
+		switch (order_id) {
+			case OrderId::Repair1: {
 				error_string_id = 884;
-				if (!target)
-				{
-					if (bErrorFlag)
-					{
+				if (!target) {
+					if (bErrorFlag) {
 						*(s16*)bErrorFlag = error_string_id;
 					}
 					return 0;
 				}
 				error_string_id = 883;
-				if (!(target->status & UnitStatus::Completed))
-				{
-					if (bErrorFlag)
-					{
+				if (!target->is_completed()) {
+					if (bErrorFlag) {
 						*(s16*)bErrorFlag = error_string_id;
 					}
 					return 0;
 				}
 
-				if (target->id == UnitId::ZergNydusCesiant && target->hitpoints >= units_dat::max_hitpoints[target->id])
-				{
+				if (target->id == UnitId::ZergNydusCesiant && target->hitpoints >= units_dat::max_hitpoints[target->id]) {
 					return 0;
 				}
-				
-				//if (target->hitpoints >= units_dat::max_hitpoints[target->id])
-				//{
-				//	if (bErrorFlag)
-				//	{
-				//		*(s16*)bErrorFlag = error_string_id;
-				//	}
-				//	return 0;
-				//}
 				return 1;
 			} break;
-			case OrderId::Harvest1:
-			{
-				if (!target)
-				{
+			case OrderId::Harvest1: {
+				if (!target) {
 					return 1;
 				}
 				error_string_id = unit->get_race() + 893;
-				if (target->id == UnitId::ResourceVespeneGeyser)
-				{
-					//if (bErrorFlag)
-					//{
-					//	*(s16*)bErrorFlag = error_string_id;
-					//}
-					//return 0;
-
+				if (target->id == UnitId::ResourceVespeneGeyser) {
 					return 1;
 				}
-				if (!helper::unit_is_resource(target))
-				{
+				if (!helper::unit_is_resource(target)) {
 					return 0;
 				}
 				error_string_id = 892;
-				if (!(units_dat::base_property[target->id] & UnitProperty::ResourceContainer))
-				{
-					if (bErrorFlag)
-					{
+				if (!(units_dat::base_property[target->id] & UnitProperty::ResourceContainer)) {
+					if (bErrorFlag) {
 						*(s16*)bErrorFlag = error_string_id;
 					}
 					return 0;
 				}
 				error_string_id = 896;
-				if (unit->player != target->player && unit_id_is_capped_gas_structure(target->id))
-				{
-					if (bErrorFlag)
-					{
+				if (unit->player != target->player && unit_id_is_capped_gas_node(target->id)) {
+					if (bErrorFlag) {
 						*(s16*)bErrorFlag = error_string_id;
 					}
 					return 0;
 				}
 				return 1;
 			} break;
-			case OrderId::Pickup2:
-			{
+			case OrderId::Pickup2: {
 				error_string_id = 890;
-				if (!target || !bw::is_allied_to(target->player, unit->player))
-				{
-					if (bErrorFlag)
-					{
+				if (!target || !bw::is_allied_to(target->player, unit->player)) {
+					if (bErrorFlag) {
 						*(s16*)bErrorFlag = error_string_id;
 					}
 					return 0;
 				}
-				if (helper::can_enter_transport(unit, target))
-				{
+				if (helper::can_enter_transport(unit, target)) {
 					return 1;
 				}
-				if (units_dat::space_provided[unit->id] >= units_dat::space_required[target->id])
-				{
+				if (units_dat::space_provided[unit->id] >= units_dat::space_required[target->id]) {
 					error_string_id = 891;
 				}
-				if (bErrorFlag)
-				{
+				if (bErrorFlag) {
 					*(s16*)bErrorFlag = error_string_id;
 				}
 				return 0;
 			} break;
-			case OrderId::HealMove:
-			{
-				if (!target)
-				{
+			case OrderId::HealMove: {
+				if (!target) {
 					return 1;
 				}
-				if (!helper::tech_use_allowed(unit, TechId::Healing, unit->player))
-				{
+				if (!helper::tech_use_allowed(unit, TechId::Healing, unit->player)) {
 					return 0;
 				}
 				error_string_id = 1325;
-				if (!(target->status & 6) // GroundedBuilding and InAir
-					&& target->hitpoints < units_dat::max_hitpoints[target->id])
-				{
+				if (!(target->status & UnitStatus::GroundedBuilding | UnitStatus::InAir) && target->hitpoints < units_dat::max_hitpoints[target->id]) {
 					return 1;
 				}
-				if (bErrorFlag)
-				{
+				if (bErrorFlag) {
 					*(s16*)bErrorFlag = error_string_id;
 				}
 				return 0;
 			} break;
-			default:
-			{
+			default: {
 				return 1;
 			}
 		}

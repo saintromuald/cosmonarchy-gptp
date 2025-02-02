@@ -170,7 +170,7 @@ void unit_death_start(Unit* unit) {
 
 	UnitExt* unit_ext = get_unit_ext(unit);
 	unit_ext->pause_timers = true;
-	if (unit_id_is_capped_gas_structure(unit->id)) {
+	if (unit_id_is_capped_gas_node(unit->id)) {
 		unit_death_end(unit);
 	}
 }

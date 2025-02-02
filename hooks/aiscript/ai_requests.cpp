@@ -1165,72 +1165,56 @@ namespace hooks {
 	}
 
 	// Hooked to lay the groundwork for more refinery types. -Pr0nogo
-	u32 get_default_refinery_type(u32 player) // 004320D0
-	{
-		switch (g_player_table[player].race)
-		{
-			case RaceId::Zerg:
-			{
+	u32 get_default_refinery_type(u32 player) { // 004320D0
+		switch (g_player_table[player].race) {
+			case RaceId::Zerg: {
 				return UnitId::ZergExcisant;
 			}
-			case RaceId::Terran:
-			{
+			case RaceId::Terran: {
 				return UnitId::TerranReservoir;
 			}
-			case RaceId::Protoss:
-			{
+			case RaceId::Protoss: {
 				return UnitId::ProtossAquifer;
 			}
 		}
 	}
 
 	// Hooked to improve functionality. -Pr0nogo
-	u32 ai_get_queued_count(Unit* builder, u32 unit_id) // 00466B70
-	{
+	u32 ai_get_queued_count(Unit* builder, u32 unit_id) { // 00466B70
 		u32 main_order = builder->main_order_id;
-		if (units_dat::base_property[builder->id] & UnitProperty::Worker)
-		{
+		if (builder->is_worker()) {
 			Unit* build_unit = 0;
-			if (main_order == OrderId::BuildTerran || main_order == OrderId::Repair1 || main_order == OrderId::ConstructingBuilding || helper::is_attempting_protoss_build(builder))
-			{
+			if (main_order == OrderId::BuildTerran || main_order == OrderId::Repair1 || main_order == OrderId::ConstructingBuilding || helper::is_attempting_protoss_build(builder)) {
 				build_unit = builder->order_target.unit;
 			} else {
 				u32 secondary_order = builder->secondary_order_id;
-				if (secondary_order != OrderId::TrainUnit && secondary_order != OrderId::TrainFighter && !helper::is_constructing_addon(builder))
-				{
-					if (builder->build_queue[builder->build_queue_slot % 5] == unit_id && order_id_is_build_order(main_order))
-					{
+				if (secondary_order != OrderId::TrainUnit && secondary_order != OrderId::TrainFighter && !helper::is_constructing_addon(builder)) {
+					if (builder->build_queue[builder->build_queue_slot % 5] == unit_id && order_id_is_build_order(main_order)) {
 						return 1;
 					}
 					return 0;
 				}
 				build_unit = builder->current_build_unit;
 			}
-			if (build_unit)
-			{
+			if (build_unit) {
 				return 0;
 			}
-			if (builder->build_queue[builder->build_queue_slot % 5] == unit_id && order_id_is_build_order(main_order))
-			{
+			if (builder->build_queue[builder->build_queue_slot % 5] == unit_id && order_id_is_build_order(main_order)) {
 				return 1;
 			}
 			return 0;
 		}
 
-		switch (builder->id)
-		{
-			case UnitId::ZergEgg:
-			{
+		switch (builder->id) {
+			case UnitId::ZergEgg: {
 				return unit_id == builder->build_queue[builder->build_queue_slot];
 			}
-			case UnitId::ZergCocoon:
-			{
+			case UnitId::ZergCocoon: {
 				return unit_id == builder->build_queue[builder->build_queue_slot];
 			}
 		}
 
-		if (main_order == OrderId::MorphStructure || main_order == OrderId::ZergBuildSelf)
-		{
+		if (main_order == OrderId::MorphStructure || main_order == OrderId::ZergBuildSelf) {
 			return unit_id == builder->build_queue[builder->build_queue_slot];
 		}
 		u32 count = 0;

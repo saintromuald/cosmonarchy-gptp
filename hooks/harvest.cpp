@@ -11,6 +11,9 @@ u32 get_gas_tier(Unit* unit) {
 				return 1;
 
 			case UnitId::ResourceVespeneGeyser:
+			case UnitId::TerranSieve:
+			case UnitId::ProtossCedent:
+			case UnitId::ZergEskigant:
 				return 2;
 
 			case UnitId::TerranReservoir:
@@ -41,8 +44,8 @@ u32 get_harvest_amount(Unit* unit) {
 			switch (get_gas_tier(unit)) {
 				case 1: return g_globals->get_yield(YieldType::GasRidge);
 				case 2: return g_globals->get_yield(YieldType::GasGeyser);
-				case 3: return g_globals->get_yield(YieldType::GasTier2);
-				case 4: return g_globals->get_yield(YieldType::GasTier3);
+				case 3: return g_globals->get_yield(YieldType::GasGeyserTier2);
+				case 4: return g_globals->get_yield(YieldType::GasGeyserTier3);
 			}
 		} break;
 	}
@@ -51,10 +54,7 @@ u32 get_harvest_amount(Unit* unit) {
 
 namespace hooks {
 	bool is_gas_container(u16 unit_id) {
-		if (unit_id_is_capped_gas_structure(unit_id)) {
-			return true;
-		}
-		return false;
+		return unit_id_is_capped_gas_node(unit_id);
 	}
 
 	void remove_powerup_image_overlay(Unit* worker) { // 004F3900
@@ -94,11 +94,11 @@ namespace hooks {
 				chunk_image_id = ImageId::Christmas_MineralChunk1;
 			}
 			is_mineral = true;
-		} else if (resource->id == UnitId::ProtossAquifer) {
+		} else if (resource->get_race() == RaceId::Protoss) {
 			chunk_image_id = ImageId::ProtossGasOrbType1;
-		} else if (resource->id == UnitId::ZergExcisant || resource->id == UnitId::ZergEzigrisant) {
+		} else if (resource->get_race() == RaceId::Zerg) {
 			chunk_image_id = ImageId::ZergGasSacType1;
-		} else if (resource->id == UnitId::TerranReservoir || resource->id == UnitId::TerranWellbore) {
+		} else if (resource->get_race() == RaceId::Terran) {
 			chunk_image_id = ImageId::TerranGasTankType1;
 		} else if (resource->id == UnitId::ResourceVespeneRidge || resource->id == UnitId::ResourceVespeneGeyser) {
 			chunk_image_id = ImageId::GasRaw;
@@ -176,9 +176,12 @@ namespace hooks {
 			case UnitId::ResourceVespeneGeyser: {
 				return true;
 			} break;
+			case UnitId::TerranSieve:
 			case UnitId::TerranReservoir:
 			case UnitId::TerranWellbore:
+			case UnitId::ProtossCedent:
 			case UnitId::ProtossAquifer:
+			case UnitId::ZergEskigant:
 			case UnitId::ZergExcisant:
 			case UnitId::ZergEzigrisant: {
 				if ((ignore_completed || node->is_completed()) && (node->player == worker->player || bw::are_mutual_allies(node->player, worker->player))) {
@@ -251,7 +254,7 @@ namespace hooks {
 		if (node) {
 			if (unit_id_is_uncapped_gas_node(node->id)) {
 				valid_structure = true;
-			} else if (unit_id_is_capped_gas_structure(node->id) && (node->player == unit->player || bw::are_mutual_allies(node->player, unit->player))) {
+			} else if (unit_id_is_capped_gas_node(node->id) && (node->player == unit->player || bw::are_mutual_allies(node->player, unit->player))) {
 				valid_structure = true;
 			} 
 		}
@@ -284,7 +287,7 @@ namespace hooks {
 		u8 worker_resource_type;
 		if (!unit_id_is_minerals(node_id)) {
 			bool ignore_completed = true;
-			if ((node->id == UnitId::TerranReservoir || node->id == UnitId::TerranWellbore)
+			if ((unit_id_is_capped_gas_node(node->id) && node->get_race() == RaceId::Terran)
 			&& !(node->status & UnitStatus::Completed) && (!node->connected_unit || node->connected_unit->order_target.unit != node)) {
 				ignore_completed = false;
 			}

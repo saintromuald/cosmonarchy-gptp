@@ -604,7 +604,7 @@ namespace hooks {
 
 	// Hooked to add support for new refineries. -Pr0nogo
 	b32 fow_refinery_check(Unit* self, u16 fow_id) { // 00474500
-		char race = self->get_race(); // TODO: Add support for custom races
+		u8 race = self->get_race(); // TODO: Add support for custom races
 		switch (race) {
 			case RaceId::Zerg: {
 				return fow_id == UnitId::ZergExcisant;

@@ -1230,6 +1230,7 @@ namespace hooks {
 										case UnitId::TerranWatchdog:
 										case UnitId::TerranAnchor:
 										case UnitId::TerranTreasury:
+										case UnitId::TerranSieve:
 										case UnitId::TerranAtlas:
 										case UnitId::TerranStockade:
 										case UnitId::TerranFulcrum:
@@ -1352,9 +1353,10 @@ namespace hooks {
 								switch (current_button->requirement_var) {
 									case UnitId::ProtossNexus:
 									case UnitId::ProtossPylon:
-									case UnitId::ProtossAquifer:
+									case UnitId::ProtossCedent:
 									case UnitId::ProtossWarden:
 									case UnitId::ProtossEmbassy:
+									case UnitId::ProtossAquifer:
 									case UnitId::ProtossCrucible:
 									case UnitId::ProtossMatrix:
 									case UnitId::ProtossEngram:

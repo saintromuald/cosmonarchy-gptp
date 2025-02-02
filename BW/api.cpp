@@ -3043,7 +3043,7 @@ void regress(Unit* unit, u32 regression_id) {
     }
 
     Unit* new_unit = unit;
-    if (unit->id == UnitId::ZergExcisant) {
+    if (unit->id == UnitId::ZergEskigant || unit->id == UnitId::ZergExcisant) {
         new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
     } else {
         helper::replace_unit_with_id(unit, regress_to);

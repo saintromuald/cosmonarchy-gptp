@@ -556,7 +556,7 @@ namespace hooks {
 					Unit* target_resource = unit->worker.target_resource.unit;
 					if (target_resource) {
 						graphics::ColorId color = graphics::CYAN;
-						if (g_config.show_unique_gas_order_line_color && unit_id_is_gas_structure(target_resource->id)) {
+						if (g_config.show_unique_gas_order_line_color && unit_id_is_gas_node(target_resource->id)) {
 							color = graphics::GREEN;
 						}
 						draw_simple_line(source, target_resource->position, color);
@@ -1008,11 +1008,14 @@ namespace hooks {
 			case UnitId::TerranSentinel: {
 				helper::turn_unit(unit, 96);
 			} break;
-			case UnitId::TerranWellbore:
-			case UnitId::ZergEzigrisant:
+			case UnitId::TerranSieve:
 			case UnitId::TerranReservoir:
-			case UnitId::ProtossAquifer:
+			case UnitId::TerranWellbore:
+			case UnitId::ZergEskigant:
 			case UnitId::ZergExcisant:
+			case UnitId::ZergEzigrisant:
+			case UnitId::ProtossCedent:
+			case UnitId::ProtossAquifer:
 			case UnitId::ResourceVespeneGeyser:
 			case UnitId::ResourceVespeneRidge: {
 				unit->building.resource.resource_amount = get_harvest_amount(unit);
@@ -2327,7 +2330,9 @@ namespace hooks {
 						switch (target->id) {
 							case UnitId::TerranSupplyDepot:
 							case UnitId::TerranAnchor:
-							case UnitId::TerranReservoir: {
+							case UnitId::TerranSieve:
+							case UnitId::TerranReservoir:
+							case UnitId::TerranWellbore: {
 								if (!target_ext.values[ValueInfested] && target->status & UnitStatus::GroundedBuilding) {
 									continue;
 								}
@@ -2677,7 +2682,7 @@ namespace hooks {
 		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
 			Unit* harvest_target = unit->worker.harvest_target;
 			// Eventually make it happen for vespene geysers and mineral fields, not just refineries
-			if (harvest_target && bw::unit_id_is_gas_structure(harvest_target->id, true) && harvest_target->sprite->main_graphic->animation != IscriptAnimation::IsWorking) {
+			if (harvest_target && bw::unit_id_is_gas_node(harvest_target->id, true) && harvest_target->sprite->main_graphic->animation != IscriptAnimation::IsWorking) {
 				harvest_target->sprite->play_iscript_animation(IscriptAnimation::IsWorking);
 			}
 		}

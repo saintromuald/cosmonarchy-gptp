@@ -10,7 +10,7 @@ namespace hooks {
 			bool is_worker = units_dat::base_property[unit->id] & UnitProperty::Worker;
 			if (is_worker && unit_id_is_minerals(rally.unit->id)) {
 				unit->order_to(OrderId::MoveToMinerals, rally.unit);
-			} else if (is_worker && unit_id_is_gas_structure(rally.unit->id)) {
+			} else if (is_worker && unit_id_is_gas_node(rally.unit->id)) {
 				unit->order_to(OrderId::HarvestGas1, rally.unit);
 			} else */ if (bw::is_allied_to(unit->player, rally.unit->player)) {
 				unit->order_to(OrderId::Follow, rally.unit);

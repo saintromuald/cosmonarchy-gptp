@@ -257,9 +257,12 @@ void unit_on_death_behaviors(Unit* unit) {
 			case UnitId::ResourceMineralFieldType2:
 			case UnitId::ResourceMineralFieldType3:
 			case UnitId::ResourceVespeneGeyser:
+			case UnitId::TerranSieve:
 			case UnitId::TerranReservoir:
 			case UnitId::TerranWellbore:
+			case UnitId::ProtossCedent:
 			case UnitId::ProtossAquifer:
+			case UnitId::ZergEskigant:
 			case UnitId::ZergExcisant:
 			case UnitId::ZergEzigrisant: {
 				free_resource_container(unit);
@@ -435,8 +438,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 }
 
 // Hooked to make new refineries revert to their previous node type. -Pr0nogo
-s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
-{
+s32 remove_subunit_or_gas_container(Unit* unit) { // 004A0080
 	u32 id = unit->id;
 	if (units_dat::base_property[id] & UnitProperty::Subunit) {
 		Unit* first_dying_unit = *g_first_dying_unit;
@@ -480,15 +482,15 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	if (!sprite || sprite->flags & SpriteFlags::Hidden) {
 		return 0;
 	}
-	if (id != UnitId::TerranReservoir && id != UnitId::TerranWellbore && id != UnitId::ZergEzigrisant) {
-		if (id == UnitId::ZergExcisant) {
+	if (id != UnitId::TerranSieve && id != UnitId::TerranReservoir && id != UnitId::TerranWellbore && id != UnitId::ZergEzigrisant) {
+		if (id == UnitId::ZergEskigant || id == UnitId::ZergExcisant) {
 			helper::remove_creep_at_unit(sprite->position.x, sprite->position.y, id);
-		} else if (id != UnitId::ProtossAquifer) {
+		} else if (id != UnitId::ProtossCedent && id != UnitId::ProtossAquifer) {
 			return 0;
 		}
 	}
 
-	if (unit->status & UnitStatus::Completed) {
+	if (unit->is_completed()) {
 		helper::increment_unit_scores_ex(unit, -1, 0);
 	}
 
@@ -517,9 +519,8 @@ s32 remove_subunit_or_gas_container(Unit* unit) // 004A0080
 	return 1;
 }
 
-// Hooked to troubleshoot Map Revealer crash. -Pr0nogo
-void unit_die(Unit* unit) // 004A0740
-{
+// Hooked to troubleshoot a Map Revealer crash. -Pr0nogo
+void unit_die(Unit* unit) { // 004A0740
 	if (units_dat::base_property[(unsigned __int16)unit->id] & UnitProperty::Building) {
 		*g_ignore_unit_flag80_clear_subcount = 1;
 	}

@@ -38,7 +38,12 @@ void orders_zerg_build_self(Unit* building) {
 		case 1: {
 			if (building->remaining_build_time < 3 * units_dat::time_cost[building_id] >> 2) {
 				if (building->id == UnitId::ZergExcisant) {
-					Image* overlay = building->sprite->get_overlay(ImageId::VespeneGeyser2);
+					Image* overlay = building->sprite->get_overlay(ImageId::VespeneGeyserUnderlay);
+					if (overlay) {
+						overlay->free();
+					}
+				} else if (building->id == UnitId::ZergEskigant) {
+					Image* overlay = building->sprite->get_overlay(ImageId::VespeneRidgeUnderlay);
 					if (overlay) {
 						overlay->free();
 					}
@@ -137,7 +142,7 @@ void cancel_zerg_building(Unit* unit) { // 0045DA40
 		UnitExt* unit_ext = get_unit_ext(unit);
 		unit_ext->values[ValueCancellingZergStructure] = 1;
 
-		if (unit->id == UnitId::ZergExcisant) {
+		if (unit_id_is_capped_gas_node(unit->id)) {
 			Unit* worker = helper::create_unit(unit->create_origin, unit->get_x(), unit->get_y(), unit->player);
 
 			if (worker) {
@@ -316,8 +321,10 @@ void drone_morph_standard(Unit* unit, u32 id) { // 0045D890
 // Hooked to help Veeq7 remember to go to sleep. -Pr0nogo
 Unit* begin_gas_building(Unit* unit, u16 unit_id) { // 004678A0
 	Unit* target = unit->order_target.unit;
-	if (!target || target->id != UnitId::ResourceVespeneGeyser) {
-		target = helper::find_unit_at_tile(unit->order_target.pt.y, unit->order_target.pt.x, OrderId::Fatal);
+	bool is_ridge_refinery = unit_id_is_ridge_refinery(unit->build_queue[unit->build_queue_slot]);
+	if (!target || !unit_id_is_uncapped_gas_node(target->id)) {
+		u32 node_id = is_ridge_refinery ? UnitId::ResourceVespeneRidge : UnitId::ResourceVespeneGeyser;
+		target = helper::find_unit_at_tile(unit->order_target.pt.x, unit->order_target.pt.y, node_id);
 	}
 	if (!target) {
 		return 0;
@@ -334,7 +341,8 @@ Unit* begin_gas_building(Unit* unit, u16 unit_id) { // 004678A0
 	if (!target->is_frozen() || units_dat::base_property[target->id] & UnitProperty::Building) {
 		target->current_buttonset = UnitId::Buttons_CancelConstruction;
 	}
-	helper::add_overlay_below_main(target->sprite, ImageId::VespeneGeyser2, 0, 0, 0);
+	u32 image_id = is_ridge_refinery ? ImageId::VespeneRidgeUnderlay : ImageId::VespeneGeyserUnderlay;
+	helper::add_overlay_below_main(target->sprite, image_id, 0, 0, 0);
 	target->hitpoints = units_dat::max_hitpoints[unit_id] / 10;
 	return target;
 }
@@ -410,7 +418,7 @@ void orders_drone_build(Unit* builder) { // 0045E090
 		if (powerup) {
 			helper::drop_powerup(builder);
 		}
-		if (building_id == UnitId::ZergExcisant) {
+		if (unit_id_is_capped_gas_node(building_id)) {
 			helper::droleth_build_excisant(builder);
 		} else {
 			drone_morph_standard(builder, building_id);
@@ -490,14 +498,14 @@ void orders_drone_land(Unit* unit) { // 004E9AA0
 
 		if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y) {
 			u32 unmovable = ((unit->status & UnitStatus::Unmovable) != 0) + 1;
-			u32 queue_slot_id = unit->build_queue[unit->build_queue_slot];
+			u32 build_id = unit->build_queue[unit->build_queue_slot];
 
 			u32 can_build = helper::can_build_on_tile_location(unit, unit->player,
-				(unit->order_target.pt.x - units_dat::building_dimensions[queue_slot_id].x / 2) / 32,
-				(unit->order_target.pt.y - units_dat::building_dimensions[queue_slot_id].y / 2) / 32,
-				queue_slot_id, 0, 0, 1, 1);
+				(unit->order_target.pt.x - units_dat::building_dimensions[build_id].x / 2) / 32,
+				(unit->order_target.pt.y - units_dat::building_dimensions[build_id].y / 2) / 32,
+				build_id, 0, 0, 1, 1);
 
-			if (queue_slot_id != UnitId::ZergExcisant || unmovable != 1) {
+			if (!unit_id_is_capped_gas_node(build_id) || unmovable != 1) {
 				if (!can_build && unmovable != 2) {
 					if (helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)) {
 						if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y) || unit->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) { // Was BYTE1(unit->status)
@@ -513,7 +521,8 @@ void orders_drone_land(Unit* unit) { // 004E9AA0
 					}
 				}
 			} else if (!can_build) {
-				Unit* unit_at_tile = helper::find_unit_at_tile(unit->order_target.pt.y, unit->order_target.pt.x, 188);
+				u32 node_id = unit_id_is_ridge_refinery(build_id) ? UnitId::ResourceVespeneRidge : UnitId::ResourceVespeneGeyser;
+				Unit* unit_at_tile = helper::find_unit_at_tile(unit->order_target.pt.x, unit->order_target.pt.y, node_id);
 				if (unit_at_tile && helper::is_target_within_min_range(unit, 32, unit_at_tile)) {
 					u32 builder_id = unit->id;
 					unit->status &= 0xFFEFFFFF;
@@ -633,9 +642,9 @@ void orders_morph2(Unit* unit) { // 0045D0D0
 }
 
 // Hooked to fix HP bug. -Pr0nogo
-void droleth_build_excisant(Unit* builder) // 0045D790
-{
-	Unit* building = begin_gas_building(builder, UnitId::ZergExcisant);
+void droleth_build_excisant(Unit* builder) { // 0045D790
+	u32 building_id = builder->build_queue[builder->build_queue_slot];
+	Unit* building = helper::begin_gas_building(builder, building_id);
 	if (building) {
 		UnitExt* building_ext = get_unit_ext(building);
 		building_ext->values[ValuePreMorphHP] = builder->hitpoints;
@@ -643,33 +652,33 @@ void droleth_build_excisant(Unit* builder) // 0045D790
 		builder->user_action_flags |= UserActionFlags_HideUnit;
 		helper::orders_self_destructing(builder);
 		helper::drone_build_execute(building);
-		helper::add_overlay_below_main(building->sprite, ImageId::VespeneGeyser2, 0, 0, 0);
-	} else {
-		Image* tail = builder->sprite->images.tail;
-		if (tail->palette_type == 10 && tail->vertical_offset != 7) {
-			tail->flags |= ImageFlags::Mirrored;
-			tail->vertical_offset = 7;
-		}
-
-		Image* tail2 = builder->sprite->images.tail;
-		if (tail2->palette_type == 10) {
-			tail2->flags |= ImageFlags::UseFullIscript;
-		}
-
-		u32 pos_y = builder->sprite->position.y;
-		u32 pos_x = builder->sprite->position.x;
-		if (pos_x != builder->next_target_waypoint.x || pos_y - 7 != builder->next_target_waypoint.y) {
-			builder->next_target_waypoint.x = pos_x;
-			builder->next_target_waypoint.y = pos_y - 7;
-		}
-		Order* head = builder->order_queue_head;
-		if (head) {
-			helper::insert_order_before(builder, head, OrderId::ResetCollision1, 0, 0, 0, UnitId::None);
-		} else {
-			helper::perform_another_order(OrderId::ResetCollision1, 0, builder, UnitId::None, {}, 0);
-		}
-		helper::force_order_done(builder);
+		helper::add_overlay_below_main(building->sprite, unit_id_is_ridge_refinery(building_id) ? ImageId::VespeneRidgeUnderlay : ImageId::VespeneGeyserUnderlay, 0, 0, 0);
+		return;
 	}
+	Image* tail = builder->sprite->images.tail;
+	if (tail->palette_type == 10 && tail->vertical_offset != 7) {
+		tail->flags |= ImageFlags::Mirrored;
+		tail->vertical_offset = 7;
+	}
+
+	Image* tail2 = builder->sprite->images.tail;
+	if (tail2->palette_type == 10) {
+		tail2->flags |= ImageFlags::UseFullIscript;
+	}
+
+	u32 pos_y = builder->sprite->position.y;
+	u32 pos_x = builder->sprite->position.x;
+	if (pos_x != builder->next_target_waypoint.x || pos_y - 7 != builder->next_target_waypoint.y) {
+		builder->next_target_waypoint.x = pos_x;
+		builder->next_target_waypoint.y = pos_y - 7;
+	}
+	Order* head = builder->order_queue_head;
+	if (head) {
+		helper::insert_order_before(builder, head, OrderId::ResetCollision1, 0, 0, 0, UnitId::None);
+	} else {
+		helper::perform_another_order(OrderId::ResetCollision1, 0, builder, UnitId::None, {}, 0);
+	}
+	helper::force_order_done(builder);
 }
 
 }
