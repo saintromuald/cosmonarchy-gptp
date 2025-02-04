@@ -81,6 +81,7 @@ namespace hooks {
 				case UnitId::TerranWatchdog:
 				case UnitId::TerranAnchor:
 				case UnitId::TerranTreasury:
+				case UnitId::TerranSieve:
 				case UnitId::TerranAtlas:
 				case UnitId::TerranStockade:
 				case UnitId::TerranFulcrum:
@@ -706,6 +707,7 @@ namespace hooks {
 			switch (unit_id) {
 				case UnitId::ProtossNexus:
 				case UnitId::ProtossPylon:
+				case UnitId::ProtossCedent:
 				case UnitId::ProtossAquifer:
 				case UnitId::ProtossWarden:
 				case UnitId::ProtossMatrix:
@@ -992,6 +994,7 @@ namespace hooks {
 			switch (unit_id) {
 				case UnitId::ZergHachirosk:
 				case UnitId::ZergCagrantCesiant:
+				case UnitId::ZergEskigant:
 				case UnitId::ZergQuazethPool:
 				case UnitId::ZergHydrithDen:
 				case UnitId::ZergZorkizShroud:
@@ -1225,27 +1228,24 @@ namespace hooks {
 		bool is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
 		bool is_adding_on = units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon;
 
-		switch (unit->id)
-		{
+		switch (unit->id) {
 			// TERRAN
 			case UnitId::TerranMason:
-			case UnitId::TerranTalos:
-			{
+			case UnitId::TerranTalos: {
 				if (unit->main_order_id == OrderId::ConstructingBuilding) {
 					return TECH_HIDDEN;
 				}
 
-				switch (unit_id)
-				{
+				switch (unit_id) {
 					case UnitId::TerranMinistry:
 					case UnitId::TerranWatchdog:
 					case UnitId::TerranAnchor:
 					case UnitId::TerranTreasury:
+					case UnitId::TerranSieve:
 					case UnitId::TerranAtlas:
 					case UnitId::TerranStockade:
 					case UnitId::TerranFulcrum:
-					case UnitId::TerranStarpad:
-					{
+					case UnitId::TerranStarpad: {
 						return TECH_ACTIVE;
 					}
 					case UnitId::TerranReservoir:
@@ -1253,8 +1253,7 @@ namespace hooks {
 					case UnitId::TerranDaedala:
 					case UnitId::TerranCaptaincy:
 					case UnitId::TerranMantle:
-					case UnitId::TerranStarport:
-					{
+					case UnitId::TerranStarport: {
 						if (TierUnlocked[RaceId::Terran][Tier2]) {
 							return TECH_ACTIVE;
 						}
@@ -1264,8 +1263,7 @@ namespace hooks {
 					case UnitId::TerranWellbore:
 					case UnitId::TerranApothecary:
 					case UnitId::TerranIronFoundry:
-					case UnitId::TerranNaniteAssembly:
-					{
+					case UnitId::TerranNaniteAssembly: {
 						if (TierUnlocked[RaceId::Terran][Tier3]) {
 							return TECH_ACTIVE;
 						}
@@ -2145,6 +2143,7 @@ namespace hooks {
 				switch (unit_id) {
 					case UnitId::ProtossNexus:
 					case UnitId::ProtossPylon:
+					case UnitId::ProtossCedent:
 					case UnitId::ProtossAquifer:
 					case UnitId::ProtossWarden:
 					case UnitId::ProtossEmbassy:
@@ -2701,6 +2700,7 @@ namespace hooks {
 				switch (unit_id) {
 					case UnitId::ZergHachirosk:
 					case UnitId::ZergCagrantCesiant:
+					case UnitId::ZergEskigant:
 					case UnitId::ZergQuazethPool:
 					case UnitId::ZergHydrithDen:
 					case UnitId::ZergZorkizShroud:

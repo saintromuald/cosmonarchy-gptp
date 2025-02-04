@@ -216,7 +216,7 @@ namespace hooks {
 
     // Hooked to enable more refinery types. -Pr0nogo
     void place_building_refinery_check(Unit* result) { // 0048E1E0
-        if (unit_id_is_capped_gas_structure(g_place_building_unit_id)) {
+        if (unit_id_is_capped_gas_node(g_place_building_unit_id)) {
             if (helper::can_draw_placement_rect_maybe(g_place_building_unit_id, result)) {
                 g_can_draw_placement_preview = 1;
             }
@@ -229,7 +229,12 @@ namespace hooks {
         if (geyser) {
             u16 id = g_place_building_unit_id;
             do {
-                if (geyser->id == UnitId::ResourceVespeneGeyser && unit_id_is_capped_gas_structure(id) && id != UnitId::ZergEzigrisant) {
+                if (geyser->id == UnitId::ResourceVespeneGeyser && unit_id_is_geyser_refinery(id) && id != UnitId::ZergEzigrisant) {
+                    if (helper::can_draw_placement_rect_maybe(id, geyser)) {
+                        g_can_draw_placement_preview = 1;
+                    }
+                }
+                if (geyser->id == UnitId::ResourceVespeneRidge && unit_id_is_ridge_refinery(id)) {
                     if (helper::can_draw_placement_rect_maybe(id, geyser)) {
                         g_can_draw_placement_preview = 1;
                     }
@@ -240,7 +245,7 @@ namespace hooks {
     }
 
     // Local function to explore Dedications. -Pr0nogo
-    void place_custom_building_proc() { // 0048E430
+    void place_custom_building_proc() {
         u32 player = g_local_nation_id;
         Unit* parent = 0;
         switch (g_place_building_unit_id) {
@@ -271,7 +276,7 @@ namespace hooks {
                 g_can_draw_placement_preview = 0;
             }
 
-            if (!unit_id_is_capped_gas_structure(g_place_building_unit_id) && g_place_building_unit_id != UnitId::ZergEzigrisant) {
+            if (!unit_id_is_capped_gas_node(g_place_building_unit_id) && g_place_building_unit_id != UnitId::ZergEzigrisant) {
                 if (units_dat::group_flags[g_place_building_unit_id].is_terran) {
                     helper::place_building_normal_proc();
                 }
@@ -283,13 +288,13 @@ namespace hooks {
 
     // Hooked to enable more refinery types. -Pr0nogo
     b32 unit_id_is_refinery(u16 unit_id) { // 0047AFE0
-        return unit_id_is_capped_gas_structure(unit_id);
+        return unit_id_is_capped_gas_node(unit_id);
     }
 
     // Hooked to enable more refinery types. -Pr0nogo
-    char issue_place_building_order(char* unused, u16 unit_id, u8 order_id) { // 0048E730
+    void issue_place_building_order(u16 unit_id, u8 order_id) { // 0048E730
         g_is_placing_building = 1;
-        *g_buttonset_special_buttonset_id = 230;
+        *g_buttonset_special_buttonset_id = UnitId::Buttons_CancelPlaceBuilding;
         helper::update_current_buttonset();
         g_place_building_message_id = 0;
         *g_place_building_order_id = order_id;
@@ -298,25 +303,23 @@ namespace hooks {
         if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
             helper::prepare_placement_box(0, (*g_active_portrait_unit)->id);
             g_is_placing_addon = 1;
-        } else if (!unit_id_is_capped_gas_structure(g_place_building_unit_id) && units_dat::group_flags[g_place_building_unit_id].is_terran) {
-            helper::place_building_normal_proc();
+        } else if (!unit_id_is_capped_gas_node(g_place_building_unit_id)) {
+            if (units_dat::group_flags[g_place_building_unit_id].is_terran) {
+                helper::place_building_normal_proc();
+            }
         } else {
             helper::place_building_refinery_proc();
         }
 
-        const char* string = "";
-        if (g_network_table_DF->get_string_count() > 63) {
-            string = (char*)g_network_table_DF->get_string(64);
-        }
-
-        u32 message_thing = 2;
-        helper::send_message_something(message_thing, string);
+        const char* string = (char*)g_network_table_DF->get_string(64); // Select Location
+        helper::send_message_something(2, string);
         helper::set_ingame_input_procs();
         Unit* active_unit = *g_active_portrait_unit;
         if (!active_unit) {
             g_placing_player = -1;
+            helper::refresh_screen();
             g_minimap_cursor = 0;
-            return helper::refresh_screen(UnitId::None); // Guessed
+            return;
         }
 
         if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi || unit_id_is_psi_provider(unit_id)) {
@@ -324,14 +327,9 @@ namespace hooks {
             active_unit = *g_active_portrait_unit;
         }
 
-        char result = helper::refresh_screen(active_unit->id);
         g_minimap_cursor = 0;
-        if (active_unit) {
-            g_placing_player = active_unit->player;
-        } else {
-            g_placing_player = -1;
-        }
-        return result;
+        helper::refresh_screen();
+        g_placing_player = active_unit->player;
     }
 
     // Not enabled.
@@ -420,6 +418,9 @@ namespace hooks {
                 case SpriteId::MineralFieldType3: {
                     unit_id = sprite_id - 103;
                 } break;
+                case SpriteId::Sieve:
+                case SpriteId::Cedent:
+                case SpriteId::Eskigant:
                 case SpriteId::VespeneRidge: {
                     unit_id = UnitId::ResourceVespeneRidge;
                 } break;
@@ -462,7 +463,67 @@ namespace hooks {
         return false;
     }
 
-    // Eventually hook the following to turn stat_txt.tbl into a .txt:
-    //      0048E4E0 input_place_building_click_notify
-    // -Pr0nogo
+    // Hooked to turn stat_txt.tbl into a .txt.
+    // Not working yet, not injected. Will revisit in another PR. -Pr0nogo
+    void input_place_building_click_notify(u8* order_id, u16* building_id, bool is_valid) { // 0048E4E0
+        if (*order_id) {
+            *order_id = *g_place_building_order_id;
+        }
+        if (!is_valid) {
+            if (g_place_building_message_id) {
+                if (*order_id != OrderId::BuildingLand) {
+                    helper::set_worker_error(*g_active_portrait_unit, g_string_id[g_place_building_message_id]);
+                    if (building_id) {
+                        *building_id = UnitId::None;
+                    }
+                    return;
+                }
+                if (*g_active_nation_id == g_local_nation_id && g_active_player_id == g_local_human_id) {
+                    helper::set_unit_stat_txt_error_message(g_stat_txt_buffer.get_string(863)); // You can't land there.
+                }
+                helper::play_building_placement_sound(*g_active_portrait_unit);
+                if (building_id) {
+                    *building_id = UnitId::None;
+                }
+                return;
+            }
+            helper::play_building_placement_sound_0(g_place_building_unit_id);
+        }
+        if (building_id) {
+            *building_id = g_place_building_unit_id;
+        }
+        helper::refresh_layers_3_and_4();
+        helper::end_building_placement();
+    }
+
+    // Hooked to allow ridge capping. -Pr0nogo
+    // We might be able to use a town center variant of this function (if it exists) to fix the bug that greenlights quasifog placement too close to resources.
+    s32 vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision) { // 00473DB0
+        u32 node_id = unit_id_is_ridge_refinery(g_place_building_unit_id) ? UnitId::ResourceVespeneRidge : UnitId::ResourceVespeneGeyser;
+        Point16 node_dims = units_dat::building_dimensions[node_id];
+        u32 x_pos = 32 * tile_x + node_dims.x / 2;
+        u32 y_pos = 32 * tile_y + node_dims.y / 2;
+        if (g_player_table[player].type != PlayerType::Human)  {
+            return helper::find_unit_at_tile(x_pos, y_pos, node_id) != 0 ? (s32)Placeability::Valid : (s32)Placeability::InvalidExplored;
+        }
+        u32 node_width = node_dims.x / 32;
+        u32 node_height = node_dims.y / 32;
+        if (helper::tiles_in_rect_are_not_explored_for(node_width, node_height, tile_x, tile_y, player)) {
+            return (s32)Placeability::InvalidUnexplored;
+        }
+        if (!helper::tiles_in_rect_are_not_visible_for(node_width, node_height, tile_x, tile_y, player)) {
+            return helper::find_unit_at_tile(x_pos, y_pos, node_id) != 0 ? (s32)Placeability::Valid : (s32)Placeability::InvalidExplored;
+        }
+
+        u32 node_sprite_id = node_id == UnitId::ResourceVespeneRidge ? SpriteId::VespeneRidge : SpriteId::VespeneGeyser;
+        Thingy* parent = helper::get_placement_parent(node_sprite_id, x_pos, y_pos, node_dims);
+        Sprite* parent_sprite = 0;
+        if (parent) {
+            parent_sprite = parent->sprite;
+        }
+        if (!check_vision || (parent_sprite && parent_sprite->position.x == x_pos && parent_sprite->position.y == y_pos)) {
+            return (s32)Placeability::Valid;
+        }
+        return (s32)Placeability::InvalidExplored;
+    }
 }

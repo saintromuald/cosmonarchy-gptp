@@ -834,10 +834,8 @@ void Unit::order_to_idle() {
 void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 target_unit_id, bool stop_previous_orders) {
 	assert(this);
 	const u32 Func_Order = 0x00474810;
-	static Point16 pos;
-	static u32 target_unit_id_xd;
-	pos.x = x, pos.y = y;
-	target_unit_id_xd = target_unit_id;
+	static Point16 pos; pos.x = x, pos.y = y;
+	static u32 target_unit_id_xd; target_unit_id_xd = target_unit_id;
 	__asm {
 		PUSHAD
 		PUSH target_unit_id_xd
@@ -1114,8 +1112,8 @@ s32 Unit::can_make_unit(u16 unit_id, u8 player) const {
 s32 Unit::can_use_tech(u8 tech_id, u8 player) const {
 	assert(this);
 	const u32 func_address = 0x0046DD80;
-	s32 player_id_xd = player;
-	u32 tech_id_xd = tech_id;
+	static s32 player_id_xd; player_id_xd = player;
+	static u32 tech_id_xd; tech_id_xd = tech_id;
 	static s32 result;
 	__asm {
 		PUSHAD
@@ -1135,7 +1133,7 @@ bool Unit::can_attack_target(Unit* target, bool check_visibility) const {
 	assert(this);
 	assert(target);
 	const u32 func_address = 0x00476730;
-	u32 check_visibility_xd = check_visibility ? 1 : 0;
+	static u32 check_visibility_xd; check_visibility_xd = check_visibility ? 1 : 0;
 	static u32 result;
 	__asm {
 		PUSHAD
@@ -1153,8 +1151,7 @@ bool Unit::can_attack_target(Unit* target, bool check_visibility) const {
 void Unit::fire_weapon(u8 weapon_id) const {
 	assert(this);
 	const u32 func_address = 0x00479C90;
-	static u32 weapon_id_xd;
-	weapon_id_xd = weapon_id;
+	static u32 weapon_id_xd; weapon_id_xd = weapon_id;
 	__asm {
 		PUSHAD
 		PUSH weapon_id_xd
@@ -1280,8 +1277,7 @@ u32 Unit::get_supply_provided() { // overwrites previous supply provided
 
 	u32 supply = units_dat::supply_provided[id];
 	if (bw::is_zerg_egg_new(this, false, false)) {
-		if (build_queue[build_queue_slot % 5] == UnitId::ZergIroleth)
-		{
+		if (build_queue[build_queue_slot % 5] == UnitId::ZergIroleth) {
 			supply = units_dat::supply_provided[UnitId::ZergOvileth];
 		}
 	}

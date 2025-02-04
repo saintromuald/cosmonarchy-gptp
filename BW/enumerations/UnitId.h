@@ -138,6 +138,7 @@ namespace UnitId {
         TerranWellbore										= 365,
         TerranLodestone										= 384,
         TerranTencendur										= 408,
+        TerranSieve                                         = 419,
 
     // Protoss-Unit
         ProtossManifold										= 16,		// Sarah Kerrigan
@@ -213,6 +214,7 @@ namespace UnitId {
         ProtossSequesteredIcon								= 304,
         ProtossUnitaryUnion									= 305,
         ProtossHallOfHeretics								= 349,
+        ProtossCedent                                       = 420,
 
     // Zerg-Unit
         ZergAlmaksalisk										= 29,		// Norad II
@@ -295,6 +297,7 @@ namespace UnitId {
         ZergEzigrisant										= 364,		// Morphed from Excisant
         ZergVornathPond										= 396,		// Morphed from Quazeth Pool
         ZergSkibactScab										= 397,		// Morphed from Hydrith Den
+        ZergEskigant                                        = 421,
 
     // Special-Unit
         TerranCivilianExt									= 332,

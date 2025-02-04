@@ -12,7 +12,6 @@
 namespace hooks {
     // Attempting to be true to the original results in unoptimized code. -GPTP
     void stats_panel_display(BinDlg* dialog) { // 00426C60
-        BinDlg* current_dialog;
         Unit* active_unit = *g_active_portrait_unit;
         u32 index = 0;
         if (!(active_unit->status & UnitStatus::IsHallucination) || (!g_is_in_replay && active_unit->player != g_local_nation_id)) {
@@ -164,10 +163,9 @@ namespace hooks {
             }
         }
 
+        BinDlg* current_dialog = dialog->parent;
         if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
             current_dialog = dialog;
-        } else {
-            current_dialog = dialog->parent;
         }
         if (current_dialog->child_dialog) {
             current_dialog = current_dialog->child_dialog;
@@ -324,14 +322,6 @@ namespace hooks {
             helper::add_text_to_dialog(dialog, -5, unit->get_name());
             return;
         }
-        //if (units_dat::supply_provided[unit->id]) {
-        //	helper::draw_supply_unit_info(dialog);
-        //	helper::set_text_string(dialog);
-        //	helper::set_unit_status_string_text(dialog);
-        //	draw_new_building_info(dialog, unit);
-        //	helper::add_text_to_dialog(dialog, -5, unit->get_name());
-        //	return;
-        //}
         if (helper::unit_is_geyser(unit)) {
             helper::draw_gas_quantity(dialog);
             helper::set_text_string(dialog);

@@ -285,7 +285,7 @@ BW_REF(u32,				g_ophelia_enabled,			0x006D11C0);
 BW_REF(char,			g_player_name,				0x0057EEB5);
 
 // For update_placement_state_for_placement_box
-BW_REF(u8,			g_placing_player,				0x0064088C);
+BW_REF(s8,			g_placing_player,				0x0064088C);
 BW_REF(u16,			g_place_building_x,				0x00640890);
 BW_REF(u16,			g_place_building_y,				0x00640892);
 BW_REF(u32,			g_is_placing_addon,				0x00640884);
@@ -954,8 +954,7 @@ BW_DATA(_scUpgrs*,		UpgradesSc, 0x0058D088); // Use with ScUpgrade::Enum
 BW_DATA_REF(_bwUpgrs*,	UpgradesBw, 0x0058F278); // Use with BwUpgrade::Enum
 
 // Requirement opcode lists
-namespace requirements
-{
+namespace requirements {
     BW_DATA_REF(u16*, units,		0x00514178);
     BW_DATA_REF(u16*, orders,		0x00514CF8);
     BW_DATA_REF(u16*, research,		0x00514908);
@@ -1000,7 +999,7 @@ BW_DATA(char*,			g_order_id_unit,					0x00641692);
 BW_DATA(u16*,			g_buttonset_special_buttonset_id,	0x0068C1C8);
 
 // For select_multiple_units_from_unit_list
-BW_REF(char,	g_client_selection_changed,			0x0059723C);
+BW_REF(char,	        g_client_selection_changed,			0x0059723C);
 
 // For set_ingame_input_procs
 BW_DATA(HACCEL*,				common_accelerator,		0x006D120C);
@@ -1291,6 +1290,8 @@ BW_REF(u16*,				g_string_id,					0x00513634);
 BW_REF(u8*,					g_game_map_data_for_blit,		0x00628454);
 
 BW_DATA(NetPlayer*,         g_net_players,                  0x0066FE20);
+
+BW_REF(char,                g_unk_sprite_related,           0x0048E2FD);
 
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);

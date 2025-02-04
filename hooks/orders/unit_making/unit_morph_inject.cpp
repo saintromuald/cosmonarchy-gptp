@@ -138,7 +138,7 @@ namespace {
 
 		if (unit->is_grounded_building()) {
 			if (unit->get_race() == RaceId::Zerg) {
-				if (unit->id == UnitId::ZergExcisant) {
+				if (unit->id == UnitId::ZergEskigant || unit->id == UnitId::ZergExcisant) {
 					unit->building.resource.is_mining = 0;
 				}
 				cancel_zerg_building(unit);
@@ -161,7 +161,7 @@ namespace {
 
 		u16 cancel_change_unit_id = hooks::get_cancel_morph_revert_id(unit);
 		if (cancel_change_unit_id == UnitId::None) {
-			if (unit_id_is_gas_structure(unit->id)) {
+			if (unit_id_is_gas_node(unit->id)) {
 				unit->building.resource.is_mining = 0;
 			}
 			switch (unit->get_race()) {

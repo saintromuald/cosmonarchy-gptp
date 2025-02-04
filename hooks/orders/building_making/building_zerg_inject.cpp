@@ -455,8 +455,8 @@ namespace hooks {
 		jump_patch(morph_special_state_setup_wrapper,									0x0045D2A1);
 		jump_patch(drone_morph_standard_wrapper,										0x0045D890, 0);
 		jump_patch(begin_gas_building_wrapper,											0x004678A0, 0);
-	//	jump_patch(orders_drone_build_wrapper,											0x0045E090, 0);
-	//	jump_patch(orders_drone_land_wrapper,											0x004E9AA0, 1);
+		jump_patch(orders_drone_build_wrapper,											0x0045E090, 0);
+		jump_patch(orders_drone_land_wrapper,											0x004E9AA0, 1);
 		jump_patch(orders_morph2_wrapper,												0x0045D0D0, 2);
 		jump_patch(droleth_build_excisant_wrapper,										0x0045D790, 5);
 	}

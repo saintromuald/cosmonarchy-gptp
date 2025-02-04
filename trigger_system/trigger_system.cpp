@@ -894,8 +894,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
             g_globals->yields[(size_t)YieldType::GasRidge] = ridge_yield;
             g_globals->yields[(size_t)YieldType::GasGeyser] = geyser_yield;
-            g_globals->yields[(size_t)YieldType::GasTier2] = tier2_yield;
-            g_globals->yields[(size_t)YieldType::GasTier3] = tier3_yield;
+            g_globals->yields[(size_t)YieldType::GasGeyserTier2] = tier2_yield;
+            g_globals->yields[(size_t)YieldType::GasGeyserTier3] = tier3_yield;
         } else if (parser.equals("unit_sprite")) {
             SpriteReplacement sprite_replacement = {};
             sprite_replacement.players = parser.get_player_bitset();

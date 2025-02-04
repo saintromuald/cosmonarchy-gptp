@@ -234,7 +234,7 @@ namespace hooks {
 			MOV unit_id, AX
 			PUSHAD
 		}
-		if (unit_id_is_capped_gas_structure(unit_id)) {
+		if (unit_id_is_capped_gas_node(unit_id)) {
 			__asm {
 				POPAD
 				JMP jmp_00467F24
@@ -270,7 +270,7 @@ namespace hooks {
 			MOV unit_id, AX
 			PUSHAD
 		}
-		if (unit_id_is_capped_gas_structure(unit_id)) {
+		if (unit_id_is_capped_gas_node(unit_id)) {
 			__asm {
 				POPAD
 				JMP jmp_00468952

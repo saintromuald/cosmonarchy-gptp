@@ -31,7 +31,8 @@ namespace hooks {
 			} break;
 			case 2: {
 				if (!(unit->movement_flags & MovementFlags_Accelerating)) {
-					bool is_building_aquifer = unit->build_queue[unit->build_queue_slot] == UnitId::ProtossAquifer;
+					u32 build_id = unit->build_queue[unit->build_queue_slot];
+					bool is_gas_cap = unit_id_is_capped_gas_node(build_id);
 					u32 distance_wanted = get_scribe_warp_distance(unit->build_queue[unit->build_queue_slot]);
 
 					if (!helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, distance_wanted)) {
@@ -42,8 +43,8 @@ namespace hooks {
 						if (helper::begin_building(unit)) {
 							Unit* built_unit;
 
-							if (is_building_aquifer) {
-								built_unit = helper::begin_gas_building(unit, UnitId::ProtossAquifer);
+							if (is_gas_cap) {
+								built_unit = helper::begin_gas_building(unit, build_id);
 							} else {
 								built_unit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
 							}
@@ -60,8 +61,9 @@ namespace hooks {
 								built_unit->sprite->player = unit->sprite->player;
 								helper::replace_sprite_images(built_unit->sprite, ImageId::WarpAnchor, 0);
 
-								if (is_building_aquifer) {
-									built_unit->sprite->create_underlay(ImageId::VespeneGeyser, 0, 0, 0);
+								if (is_gas_cap) {
+									u32 build_image_id = unit_id_is_ridge_refinery(build_id) ? ImageId::VespeneRidge : ImageId::VespeneGeyser;
+									built_unit->sprite->create_underlay(build_image_id, 0, 0, 0);
 								}
 
 								Image* main_grp = built_unit->sprite->main_graphic;
@@ -78,8 +80,8 @@ namespace hooks {
 								}
 
 								bw::play_sound(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit);
-								UnitExt* built_unit_ext = &built_unit->ext();
-								built_unit_ext->timers[TimerConstructionSFXDelay] = 60;
+								UnitExt& built_unit_ext = built_unit->ext();
+								built_unit_ext.timers[TimerConstructionSFXDelay] = 60;
 								++unit->main_order_state;
 								return;
 							} else {
@@ -93,12 +95,11 @@ namespace hooks {
 			} break;
 			case 3: {
 				Unit* target = unit->order_target.unit;
-				if (!target || target->id != UnitId::ProtossAquifer || unit->order_queue_head) {
+				if (!target || !unit_id_is_capped_gas_node(target->id) || unit->order_queue_head) {
 					unit->order_to_idle();
 				} else {
 					unit->order_to(OrderId::CanEnterGasMine, target);
 				}
-
 				for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 					image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
 				}

@@ -278,7 +278,8 @@ namespace hooks {
 		bool does_spread = helper::get_creep_spread_area(unit->id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &rect);
 		u32 pos_x = 32 * rect.left - unit->position.x + 16;
 		u32 pos_y = 32 * rect.top - unit->position.y + 16;
-		u32 tile_flags = unit->id == UnitId::ZergExcisant ? 0x10000000 : 0x18000000;
+		bool is_zerg_gas_cap = unit_id_is_capped_gas_node(unit->id) && unit->get_race() == RaceId::Zerg;
+		u32 tile_flags = is_zerg_gas_cap ? 0x10000000 : 0x18000000;
 		if (rect.top > rect.bottom) {
 			*g_dying_unit_creep_disappearance_count = 0;
 			return 1;

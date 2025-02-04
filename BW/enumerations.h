@@ -1540,3 +1540,9 @@ enum class StartingUnits : u8 {
     WorkersOnly,
     WorkersTownCenter,
 };
+
+enum class Placeability : u8 {
+    Valid = 0,
+    InvalidExplored = 8,
+    InvalidUnexplored = 10,
+};

@@ -1478,7 +1478,7 @@ namespace hooks {
 			if (unit_id_is_minerals(unit->id)) {
 				score += get_harvest_amount(unit) * mineral_bias;
 			}
-			if (unit_id_is_gas_structure(unit->id)) {
+			if (unit_id_is_gas_node(unit->id)) {
 				score += get_harvest_amount(unit) * gas_bias; // should ignore capped (which can happen on an occupied base)
 			}
 		}

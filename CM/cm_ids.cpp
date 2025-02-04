@@ -4,7 +4,7 @@
 #include "trigger_system/trigger_system.h"
 #include "data_ext.h"
 
-bool unit_id_is_capped_gas_structure(u16 unit_id) {
+bool unit_id_is_geyser_refinery(u16 unit_id) {
     return unit_id == UnitId::TerranReservoir
         || unit_id == UnitId::TerranWellbore
         || unit_id == UnitId::ProtossAquifer
@@ -12,15 +12,16 @@ bool unit_id_is_capped_gas_structure(u16 unit_id) {
         || unit_id == UnitId::ZergEzigrisant;
 }
 
-bool unit_id_is_gas_structure(u16 unit_id) {
-    return unit_id_is_capped_gas_structure(unit_id)
-        ||	   unit_id == UnitId::ResourceVespeneRidge
-        ||	   unit_id == UnitId::ResourceVespeneGeyser;
+bool unit_id_is_capped_gas_node(u16 unit_id) {
+    return unit_id_is_geyser_refinery(unit_id) || unit_id_is_ridge_refinery(unit_id);
+}
+
+bool unit_id_is_gas_node(u16 unit_id) {
+    return unit_id_is_geyser_refinery(unit_id) || unit_id_is_ridge_refinery(unit_id) || unit_id_is_uncapped_gas_node(unit_id);
 }
 
 bool unit_id_is_uncapped_gas_node(u16 unit_id) {
-    return unit_id == UnitId::ResourceVespeneRidge
-        || unit_id == UnitId::ResourceVespeneGeyser;
+    return unit_id == UnitId::ResourceVespeneRidge || unit_id == UnitId::ResourceVespeneGeyser;
 }
 
 bool unit_id_is_smaller_building(u16 unit_id) {
@@ -230,9 +231,12 @@ u32 unit_id_swarmhold_value(u32 unit_id) {
 bool unit_id_is_vespene_node(u32 unit_id) {
     return unit_id == UnitId::ResourceVespeneRidge
         || unit_id == UnitId::ResourceVespeneGeyser
+        || unit_id == UnitId::TerranSieve
         || unit_id == UnitId::TerranReservoir
         || unit_id == UnitId::TerranWellbore
+        || unit_id == UnitId::ProtossCedent
         || unit_id == UnitId::ProtossAquifer
+        || unit_id == UnitId::ZergEskigant
         || unit_id == UnitId::ZergExcisant
         || unit_id == UnitId::ZergEzigrisant;
 }
@@ -279,6 +283,7 @@ bool unit_id_is_psi_provider(u16 unit_id) {
 
 bool unit_id_can_do_controlled_demolition(u32 unit_id) {
     return units_dat::base_property[unit_id] & UnitProperty::Addon
+        || unit_id == UnitId::TerranSieve
         || unit_id == UnitId::TerranReservoir
         || unit_id == UnitId::TerranWellbore
         || unit_id == UnitId::TerranLobotomyMine;
@@ -375,9 +380,12 @@ bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures) {
             || unit_id == UnitId::ResourceMineralFieldType3
             || unit_id == UnitId::ResourceVespeneGeyser
             || unit_id == UnitId::ResourceVespeneRidge
+            || unit_id == UnitId::TerranSieve
             || unit_id == UnitId::TerranReservoir
             || unit_id == UnitId::TerranWellbore
+            || unit_id == UnitId::ProtossCedent
             || unit_id == UnitId::ProtossAquifer
+            || unit_id == UnitId::ZergEskigant
             || unit_id == UnitId::ZergExcisant
             || unit_id == UnitId::ZergEzigrisant;
     }
@@ -1072,7 +1080,9 @@ bool unit_id_has_proximity_cloak(u32 unit_id) {
 }
 
 bool unit_id_is_ridge_refinery(u32 unit_id) {
-    return false; // Will add new IDs later. -Pr0nogo
+    return unit_id == UnitId::TerranSieve
+        || unit_id == UnitId::ProtossCedent
+        || unit_id == UnitId::ZergEskigant;
 }
 
 bool skip_military_tracking_by_unit_id(u32 unit_id) {

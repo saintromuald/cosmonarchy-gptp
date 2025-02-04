@@ -208,8 +208,8 @@ enum class YieldType : u8 {
 	Mineral,
 	GasRidge,
 	GasGeyser,
-	GasTier2,
-	GasTier3,
+	GasGeyserTier2,
+	GasGeyserTier3,
 
 	Count,
 };

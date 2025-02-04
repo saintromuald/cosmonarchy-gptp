@@ -195,10 +195,7 @@ namespace hooks {
 	}
 
 	u32 orders_is_geyser_cap(Unit* unit) {
-		if (unit->status & UnitStatus::Completed) {
-			return unit_id_is_capped_gas_structure(unit->id);
-		}
-		return false;
+		return unit->is_completed() && unit_id_is_capped_gas_node(unit->id);
 	}
 
 	s32 ai_add_town_spending_request(s32 player, s32 priority, s32 unit_id, void* param) { // 00448400

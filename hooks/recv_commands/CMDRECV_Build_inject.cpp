@@ -1,10 +1,8 @@
 #include "CMDRECV_Build.h"
 #include <hook_tools.h>
 
-namespace
-{
-	void __declspec(naked) cmdrecv_place_building_allowed_wrapper()
-	{
+namespace {
+	void __declspec(naked) cmdrecv_place_building_allowed_wrapper() {
 		static Unit* builder;
 		static u8 order_id;
 		static u16 built_unit_id;
@@ -23,8 +21,7 @@ namespace
 		}
 	}	
 
-	void __declspec(naked) cmdrecv_place_building_normal_wrapper()
-	{
+	void __declspec(naked) cmdrecv_place_building_normal_wrapper() {
 		static s16 x;
 		static s16 y;
 		static u32 order_id;
@@ -51,8 +48,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cmdrecv_place_addon_wrapper()
-	{
+	void __declspec(naked) cmdrecv_place_addon_wrapper() {
 		static s16 x;
 		static s16 y;
 		static u32 order_id;
@@ -79,8 +75,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) cmdrecv_build_wrapper()
-	{
+	void __declspec(naked) cmdrecv_build_wrapper() {
 		static u8 order_id;
 		static s16 x;
 		static s16 y;
@@ -193,10 +188,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_cmdrecv_build_hooks()
-	{
+namespace hooks {
+	void inject_cmdrecv_build_hooks() {
 	//	jump_patch(cmdrecv_place_building_allowed_wrapper,		0x0048DBD0, 1);
 	//	jump_patch(cmdrecv_place_building_normal_wrapper,		0x0048E010, 0);
 	//	jump_patch(cmdrecv_place_addon_wrapper,					0x0048E0A0, 0);
