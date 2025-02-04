@@ -1410,19 +1410,18 @@ bool can_be_entered_by(Unit* transport, Unit* unit) {
 
 u16 get_tech_user_error_message(Unit* target, u8 castingPlayer, u16 techId) {
     const u32 func_address = 0x00491E80;
-    static u32 tech_id_xd;
-    static u16 error_message_xd;
-    tech_id_xd = techId;
+    static u32 tech_id_xd; tech_id_xd = techId;
+    static u16 result;
     __asm {
         PUSHAD
         PUSH tech_id_xd
         MOV BL, castingPlayer
         MOV EAX, target
         CALL func_address
-        MOV error_message_xd, AX
+        MOV result, AX
         POPAD
     }
-    return error_message_xd;
+    return result;
 }
 
 u16 get_last_queue_slot_id(Unit* a1) {
@@ -1515,8 +1514,7 @@ void update_dialog(BinDlg* dialog) {
 void prepare_unit_move(Unit* unit, bool hide_unit) {
     const u32 func_address = 0x00493CA0;
     assert(unit);
-    static b32 hide_unit_xd;
-    hide_unit_xd = hide_unit ? 1 : 0;
+    static b32 hide_unit_xd; hide_unit_xd = hide_unit ? 1 : 0;
     __asm {
         PUSHAD
         PUSH hide_unit_xd
@@ -1551,8 +1549,7 @@ bool check_unit_collision_pos(Unit* unit, const Point16* in_pos, Point16* out_po
 
 void make_to_hold_position(Unit* unit) {
     const u32 func_address = 0x004EB5B0;
-    __asm
-    {
+    __asm {
         PUSHAD
         MOV ESI, unit
         CALL func_address

@@ -1503,7 +1503,7 @@ namespace helper {
     void place_building_normal_proc();																		// 0048E490
     void place_building_refinery_proc();																	// 0048E430
     u32 prepare_placement_box(b32 is_addon, u32 unit_id);													// 0048DAF0
-    char refresh_screen();																					// 0048DDC0
+    void refresh_screen();																					// 0048DDC0
 
     void update_unit_damage_overlay(Unit* unit);															// 004E6090
 

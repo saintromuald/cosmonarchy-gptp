@@ -242,7 +242,6 @@ namespace
     }
 
     void __declspec(naked) issue_place_building_order_wrapper() { // 0048E730
-        static char result;
         static u16 unit_id;
         static u8 order_id;
         __asm {
@@ -255,10 +254,10 @@ namespace
             MOV unit_id, SI
             PUSHAD
         }
-        result = hooks::issue_place_building_order(unit_id, order_id);
+        hooks::issue_place_building_order(unit_id, order_id);
         __asm {
             POPAD
-            MOV AL, result
+            MOV AL, 0 // unused return value
             MOV ESP, EBP
             POP EBP
             RETN 0x04
@@ -401,16 +400,16 @@ namespace
         __asm {
             LEA		ESI, [EAX * 2 + units_req + 2]
             MOV		DX, [ESI]
-            CMP		DX, CX//UnitId
+            CMP		DX, CX // unit id
             JE		offset finishChecking
             LEA		ESI, [EAX * 2 + units_req + 4]
-            CMP		word ptr[ESI], 0xFF01//reqOpcode_Or
+            CMP		word ptr[ESI], 0xFF01 // ReqOpcode_Or
             JE		offset checkNextItem
             finishChecking :
             MOV		AX, DX
             RET
             checkNextItem :
-            ADD		EAX, 3//Go to next requirement.
+            ADD		EAX, 3 // Go to next requirement.
             JMP		TTBaseUnitType_6E19A
         }
     }
@@ -423,19 +422,19 @@ namespace
             PUSH	EDI
             LEA		EDI, [EAX * 2 + units_req + 2]
             MOV		CX, [EDI]
-            CMP		CX, ds: [0x0064088A]//placeBuildingUnitType
+            CMP		CX, ds: [0x0064088A] // place_building_unit_type
             JE		offset finishChecking
             LEA		EDI, [EAX * 2 + units_req + 4]
-            CMP		word ptr[EDI], 0xFF01//reqOpcode_Or
+            CMP		word ptr[EDI], 0xFF01 // ReqOpcode_Or
             JE		offset checkNextItem
             POP		EDI
-            JMP		do_place_building_checking_8E305//No matching IDs.
+            JMP		do_place_building_checking_8E305 // No matching IDs.
             finishChecking :
             MOV		AX, CX
             POP		EDI
-            JMP		do_place_building_checking_8E26F//Found a match.
+            JMP		do_place_building_checking_8E26F // Found a match.
             checkNextItem :
-            ADD		EAX, 3//Go to next requirement.
+            ADD		EAX, 3 // Go to next requirement.
             POP		EDI
             JMP		do_place_building_checking_8E247
         }

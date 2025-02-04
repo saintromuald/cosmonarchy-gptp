@@ -292,7 +292,7 @@ namespace hooks {
     }
 
     // Hooked to enable more refinery types. -Pr0nogo
-    char issue_place_building_order(u16 unit_id, u8 order_id) { // 0048E730
+    void issue_place_building_order(u16 unit_id, u8 order_id) { // 0048E730
         g_is_placing_building = 1;
         *g_buttonset_special_buttonset_id = UnitId::Buttons_CancelPlaceBuilding;
         helper::update_current_buttonset();
@@ -317,9 +317,9 @@ namespace hooks {
         Unit* active_unit = *g_active_portrait_unit;
         if (!active_unit) {
             g_placing_player = -1;
-            char result = helper::refresh_screen();
+            helper::refresh_screen();
             g_minimap_cursor = 0;
-            return result;
+            return;
         }
 
         if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi || unit_id_is_psi_provider(unit_id)) {
@@ -328,9 +328,8 @@ namespace hooks {
         }
 
         g_minimap_cursor = 0;
-        char result = helper::refresh_screen();
+        helper::refresh_screen();
         g_placing_player = active_unit->player;
-        return result;
     }
 
     // Not enabled.
@@ -510,19 +509,10 @@ namespace hooks {
         u32 node_width = node_dims.x / 32;
         u32 node_height = node_dims.y / 32;
         if (helper::tiles_in_rect_are_not_explored_for(node_width, node_height, tile_x, tile_y, player)) {
-            bw::printf("node_width %u, node_height %u, tile_x %u, tile_y %u, player %u", node_width, node_height, tile_x, tile_y, player);
-            bw::print("invalid unexplored");
             return (s32)Placeability::InvalidUnexplored;
         }
         if (!helper::tiles_in_rect_are_not_visible_for(node_width, node_height, tile_x, tile_y, player)) {
-            s32 result = helper::find_unit_at_tile(x_pos, y_pos, node_id) != 0 ? (s32)Placeability::Valid : (s32)Placeability::InvalidExplored;
-            if (result == 0) {
-                bw::print("valid");
-            }
-            if (result == 8) {
-                bw::print("invalid explored");
-            }
-            return result;
+            return helper::find_unit_at_tile(x_pos, y_pos, node_id) != 0 ? (s32)Placeability::Valid : (s32)Placeability::InvalidExplored;
         }
 
         u32 node_sprite_id = node_id == UnitId::ResourceVespeneRidge ? SpriteId::VespeneRidge : SpriteId::VespeneGeyser;

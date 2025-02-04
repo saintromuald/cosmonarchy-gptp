@@ -13,7 +13,7 @@ void place_building_refinery_check(Unit* result);													// 0048E1E0
 void place_building_refinery_proc();																// 0048E430
 void place_building_proc();																			// 0048E6E0
 b32 unit_id_is_refinery(u16 unit_id);																// 0047AFE0
-char issue_place_building_order(u16 unit_id, u8 order_id);											// 0048E730
+void issue_place_building_order(u16 unit_id, u8 order_id);											// 0048E730
 void play_building_placement_sound(Unit* unit);														// 0048F630
 void set_worker_error(Unit* unit, u32 error_string);												// 0048F7B0
 void play_worker_error_sound(Unit* unit, u32 error_text_index);										// 0048F6C0
