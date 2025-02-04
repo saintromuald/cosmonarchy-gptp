@@ -1497,15 +1497,15 @@ namespace helper {
 
     Image* copy_image_palette_type(Image* image, Image* from);																			// 004D5E40
 
-    bool order_hangar_unit(Unit* unit, u32 range1, u32 range2);																			// 00465A60
-    b32 can_draw_placement_rect_maybe(u16 unit_id, Unit* unit);																			// 00436A10
-    Image* prepare_placement_preview();																									// 004D5B60
-    void place_building_normal_proc();																									// 0048E490
-    void place_building_refinery_proc();																								// 0048E430
-    u32 prepare_placement_box(b32 is_addon, u32 unit_id);																				// 0048DAF0
-    char refresh_screen(u32 placement_box);																								// 0048DDC0
+    bool order_hangar_unit(Unit* unit, u32 range1, u32 range2);												// 00465A60
+    b32 can_draw_placement_rect_maybe(u16 unit_id, Unit* unit);												// 00436A10
+    Image* prepare_placement_preview();																		// 004D5B60
+    void place_building_normal_proc();																		// 0048E490
+    void place_building_refinery_proc();																	// 0048E430
+    u32 prepare_placement_box(b32 is_addon, u32 unit_id);													// 0048DAF0
+    char refresh_screen();																					// 0048DDC0
 
-    void update_unit_damage_overlay(Unit* unit);																						// 004E6090
+    void update_unit_damage_overlay(Unit* unit);															// 004E6090
 
     s32 get_recv_string(u32 string_id, u32 data_len, u32 buffer, char* string, s32 string_type);			// 00485980
     void CMDRECV_save_game(char* buffer);																	// 004C2910
@@ -1794,7 +1794,7 @@ namespace helper {
     void play_building_placement_sound(Unit* unit);								// 0048F630
     void play_building_placement_sound_0(u16 unit_id);                          // 0048EFF0
 
-    bool tiles_in_rect_are_not_explored_for(s16 width, s16 height, s16 x_pos, s16 y_pos, u8 player_id); // 004027F0
-    bool tiles_in_rect_are_not_visible_for(s16 width, s16 height, s16 x_pos, s16 y_pos, u8 player_id);  // 00402770
-    Thingy* get_placement_parent(u32 sprite_id, u32 x_dims, u32 y_dims, Point16 parent_dims);           // 00487C70
+    bool tiles_in_rect_are_not_explored_for(u16 width, u16 height, u16 x_pos, u16 y_pos, u8 player); // 004027F0
+    bool tiles_in_rect_are_not_visible_for(u16 width, u16 height, u16 x_pos, u16 y_pos, u8 player);  // 00402770
+    Thingy* get_placement_parent(u32 sprite_id, u32 x_dims, u32 y_dims, Point16 parent_dims);        // 00487C70
 }

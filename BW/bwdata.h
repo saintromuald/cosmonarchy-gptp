@@ -285,7 +285,7 @@ BW_REF(u32,				g_ophelia_enabled,			0x006D11C0);
 BW_REF(char,			g_player_name,				0x0057EEB5);
 
 // For update_placement_state_for_placement_box
-BW_REF(u8,			g_placing_player,				0x0064088C);
+BW_REF(s8,			g_placing_player,				0x0064088C);
 BW_REF(u16,			g_place_building_x,				0x00640890);
 BW_REF(u16,			g_place_building_y,				0x00640892);
 BW_REF(u32,			g_is_placing_addon,				0x00640884);

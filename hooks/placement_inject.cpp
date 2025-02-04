@@ -243,7 +243,6 @@ namespace
 
     void __declspec(naked) issue_place_building_order_wrapper() { // 0048E730
         static char result;
-        static char* unused;
         static u16 unit_id;
         static u8 order_id;
         __asm {
@@ -254,10 +253,9 @@ namespace
             MOV order_id, AL
             POP EAX
             MOV unit_id, SI
-            MOV unused, EDI
             PUSHAD
         }
-        result = hooks::issue_place_building_order(unused, unit_id, order_id);
+        result = hooks::issue_place_building_order(unit_id, order_id);
         __asm {
             POPAD
             MOV AL, result
@@ -364,6 +362,37 @@ namespace
             RETN 0x04
         }
     }
+
+    void __declspec(naked) vespene_geyser_placebox_wrapper() { // 0048E4E0
+        static u32 tile_x;
+        static u32 tile_y;
+        static u8 player;
+        static u32 check_vision;
+        static s32 result;
+        __asm {
+            PUSH EBP
+            MOV EBP, ESP
+            PUSH EAX
+            MOV EAX, [EBP + 0x08]
+            MOV tile_x, EAX
+            MOV EAX, [EBP + 0x0C]
+            MOV tile_y, EAX
+            MOV EAX, [EBP + 0x10]
+            MOV player, AL
+            MOV EAX, [EBP + 0x14]
+            MOV check_vision, EAX
+            POP EAX
+            PUSHAD
+        }
+        result = hooks::vespene_geyser_placebox(tile_x, tile_y, player, check_vision);
+        __asm {
+            POPAD
+            MOV EAX, result
+            MOV ESP, EBP
+            POP EBP
+            RETN 0x10
+        }
+    }
     
     // Patches \\
 
@@ -433,7 +462,7 @@ namespace hooks {
         jump_patch(get_placement_restrictions_from_sprite_id,				0x00487B00, 1);
         jump_patch(place_building_message_wrapper,							0x0048D930, 4);
     //	jump_patch(input_place_building_click_notify_wrapper,				0x0048E4E0, 0); // Not working yet...
-        jump_patch(vespene_geyser_placebox,				                    0x00473DB0, 1);
+        jump_patch(vespene_geyser_placebox_wrapper,				            0x00473DB0, 1);
 
         // DF - Fix Treasury being unable to claim addons
     //	jump_patch(TTBaseUnitType_patch_6E1A6,								0x0046E1A6, 3); //TTBaseUnitType (0x0046E170)

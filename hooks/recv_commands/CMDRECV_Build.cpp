@@ -38,14 +38,12 @@ namespace hooks
 		return is_allowed;
 	}
 
-	void cmdrecv_place_building_normal(s16 x, s16 y, u32 order_id, u32 built_unit_id) // 0048E010
-	{
+	void cmdrecv_place_building_normal(s16 x, s16 y, u32 order_id, u32 built_unit_id) { // 0048E010
 		*g_unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
 		u32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
 
-		if (helper::place_building_message(can_build))
-		{
+		if (helper::place_building_message(can_build)) {
 			s32 DimensionX, DimensionY;
 			DimensionX = (s16)units_dat::building_dimensions[built_unit_id].x;
 			if (DimensionX < 0)
@@ -65,15 +63,13 @@ namespace hooks
 		}
 	}
 
-	void cmdrecv_place_addon(s16 x, s16 y, u32 order_id, u32 built_unit_id) // 0048E0A0
-	{
+	void cmdrecv_place_addon(s16 x, s16 y, u32 order_id, u32 built_unit_id) { // 0048E0A0
 		u16 addon_place_x = 0;
 		u16 addon_place_y = 0;
 		*g_unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
 		s32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
-		if (!can_build)
-		{
+		if (!can_build) {
 			addon_place_x = (s16)units_dat::addon_placement[built_unit_id - UnitId::TerranMinistry].x;
 			bw::adjust_addon_x(built_unit_id, builder->id, &addon_place_x);
 			if (addon_place_x < 0) {
@@ -111,12 +107,10 @@ namespace hooks
 		}
 	}
 
-	void cmdrecv_build(u8 order_id, s16 x, s16 y, u16 built_unit_id) // 004C23C0
-	{
+	void cmdrecv_build(u8 order_id, s16 x, s16 y, u16 built_unit_id) { // 004C23C0
 		*g_unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
-		if (builder)
-		{
+		if (builder) {
 			if (!get_active_player_next_selection()) { // multiple selection not allowed 
 				if (x < g_map_tile_size->width && y < g_map_tile_size->height && helper::CMDRECV_place_building_allowed(builder, order_id, built_unit_id)) {
 					helper::CMDRECV_place_building(x, y, order_id, built_unit_id);
@@ -127,8 +121,7 @@ namespace hooks
 
 	// Hooked to try to allow for queueable build orders. -Pr0nogo
 	// Not injected. Status unknown as of Feb '24.
-	void process_building_placement(Unit* unit, u8 order_id, Point16 pos, u16 target_unit_id) // 0048DE70
-	{
+	void process_building_placement(Unit* unit, u8 order_id, Point16 pos, u16 target_unit_id) { // 0048DE70
 		if (order_id == OrderId::BuildingLand) {
 			helper::issue_order_targeting_ground(unit, OrderId::BuildingLand, pos.x, pos.y);
 		} else {

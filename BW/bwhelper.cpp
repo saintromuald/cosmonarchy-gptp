@@ -12570,12 +12570,11 @@ namespace helper {
         return result;
     }
 
-    char refresh_screen(u32 placement_box) {
+    char refresh_screen() {
         static char result;
         const u32 func_address = 0x0048DDC0;
         __asm {
             PUSHAD
-            MOV ECX, placement_box
             CALL func_address
             MOV result, AL
             POPAD
@@ -15445,42 +15444,42 @@ namespace helper {
         }
     }
 
-    bool tiles_in_rect_are_not_explored_for(s16 width, s16 height, s16 x_pos, s16 y_pos, u8 player_id) {
+    bool tiles_in_rect_are_not_explored_for(u16 width, u16 height, u16 x_pos, u16 y_pos, u8 player) {
         const u32 func_address = 0x004027F0;
-        static u32 player_id_xd = player_id;
-        static s32 y_pos_xd = y_pos;
-        static bool result;
+        static u32 player_xd = player;
+        static u32 y_pos_xd = y_pos;
+        static b32 result;
         __asm {
             PUSHAD
-            PUSH player_id_xd
+            PUSH player_xd
             PUSH y_pos_xd
             MOVZX EDI, x_pos
             MOV CX, height
             MOV DX, width
             CALL func_address
-            MOV result, AL
+            MOV result, EAX
             POPAD
         }
-        return result;
+        return (bool)result;
     }
 
-    bool tiles_in_rect_are_not_visible_for(s16 width, s16 height, s16 x_pos, s16 y_pos, u8 player_id) {
+    bool tiles_in_rect_are_not_visible_for(u16 width, u16 height, u16 x_pos, u16 y_pos, u8 player) {
         const u32 func_address = 0x00402770;
-        static u32 player_id_xd = player_id;
-        static s32 y_pos_xd = y_pos;
-        static bool result;
+        static u32 player_xd = player;
+        static u32 y_pos_xd = y_pos;
+        static b32 result;
         __asm {
             PUSHAD
-            PUSH player_id_xd
+            PUSH player_xd
             PUSH y_pos_xd
             MOVZX EBX, x_pos
             MOV CX, height
             MOV DX, width
             CALL func_address
-            MOV result, AL
+            MOV result, EAX
             POPAD
         }
-        return result;
+        return (bool)result;
     }
 
     Thingy* get_placement_parent(u32 sprite_id, u32 x_dims, u32 y_dims, Point16 parent_dims) {

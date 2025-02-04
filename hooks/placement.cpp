@@ -245,7 +245,7 @@ namespace hooks {
     }
 
     // Local function to explore Dedications. -Pr0nogo
-    void place_custom_building_proc() { // 0048E430
+    void place_custom_building_proc() {
         u32 player = g_local_nation_id;
         Unit* parent = 0;
         switch (g_place_building_unit_id) {
@@ -292,9 +292,9 @@ namespace hooks {
     }
 
     // Hooked to enable more refinery types. -Pr0nogo
-    char issue_place_building_order(char* unused, u16 unit_id, u8 order_id) { // 0048E730
+    char issue_place_building_order(u16 unit_id, u8 order_id) { // 0048E730
         g_is_placing_building = 1;
-        *g_buttonset_special_buttonset_id = 230;
+        *g_buttonset_special_buttonset_id = UnitId::Buttons_CancelPlaceBuilding;
         helper::update_current_buttonset();
         g_place_building_message_id = 0;
         *g_place_building_order_id = order_id;
@@ -303,25 +303,23 @@ namespace hooks {
         if (units_dat::base_property[unit_id] & UnitProperty::Addon) {
             helper::prepare_placement_box(0, (*g_active_portrait_unit)->id);
             g_is_placing_addon = 1;
-        } else if (!unit_id_is_capped_gas_node(g_place_building_unit_id) && units_dat::group_flags[g_place_building_unit_id].is_terran) {
-            helper::place_building_normal_proc();
+        } else if (!unit_id_is_capped_gas_node(g_place_building_unit_id)) {
+            if (units_dat::group_flags[g_place_building_unit_id].is_terran) {
+                helper::place_building_normal_proc();
+            }
         } else {
             helper::place_building_refinery_proc();
         }
 
-        const char* string = "";
-        if (g_network_table_DF->get_string_count() > 63) {
-            string = (char*)g_network_table_DF->get_string(64);
-        }
-
-        u32 message_thing = 2;
-        helper::send_message_something(message_thing, string);
+        const char* string = (char*)g_network_table_DF->get_string(64); // Select Location
+        helper::send_message_something(2, string);
         helper::set_ingame_input_procs();
         Unit* active_unit = *g_active_portrait_unit;
         if (!active_unit) {
             g_placing_player = -1;
+            char result = helper::refresh_screen();
             g_minimap_cursor = 0;
-            return helper::refresh_screen(UnitId::None); // Guessed
+            return result;
         }
 
         if (units_dat::base_property[unit_id] & UnitProperty::RequiredPsi || unit_id_is_psi_provider(unit_id)) {
@@ -329,13 +327,9 @@ namespace hooks {
             active_unit = *g_active_portrait_unit;
         }
 
-        char result = helper::refresh_screen(active_unit->id);
         g_minimap_cursor = 0;
-        if (active_unit) {
-            g_placing_player = active_unit->player;
-        } else {
-            g_placing_player = -1;
-        }
+        char result = helper::refresh_screen();
+        g_placing_player = active_unit->player;
         return result;
     }
 
@@ -486,7 +480,7 @@ namespace hooks {
                     return;
                 }
                 if (*g_active_nation_id == g_local_nation_id && g_active_player_id == g_local_human_id) {
-                    helper::set_unit_stat_txt_error_message(g_stat_txt_buffer.get_string(863));
+                    helper::set_unit_stat_txt_error_message(g_stat_txt_buffer.get_string(863)); // You can't land there.
                 }
                 helper::play_building_placement_sound(*g_active_portrait_unit);
                 if (building_id) {
@@ -505,7 +499,7 @@ namespace hooks {
 
     // Hooked to allow ridge capping. -Pr0nogo
     // We might be able to use a town center variant of this function (if it exists) to fix the bug that greenlights quasifog placement too close to resources.
-    s32 __stdcall vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision) { // 00473DB0
+    s32 vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision) { // 00473DB0
         u32 node_id = unit_id_is_ridge_refinery(g_place_building_unit_id) ? UnitId::ResourceVespeneRidge : UnitId::ResourceVespeneGeyser;
         Point16 node_dims = units_dat::building_dimensions[node_id];
         u32 x_pos = 32 * tile_x + node_dims.x / 2;
@@ -513,11 +507,22 @@ namespace hooks {
         if (g_player_table[player].type != PlayerType::Human)  {
             return helper::find_unit_at_tile(x_pos, y_pos, node_id) != 0 ? (s32)Placeability::Valid : (s32)Placeability::InvalidExplored;
         }
-        if (helper::tiles_in_rect_are_not_explored_for(node_dims.x / 32, node_dims.y / 32, tile_x, tile_y, player)) {
+        u32 node_width = node_dims.x / 32;
+        u32 node_height = node_dims.y / 32;
+        if (helper::tiles_in_rect_are_not_explored_for(node_width, node_height, tile_x, tile_y, player)) {
+            bw::printf("node_width %u, node_height %u, tile_x %u, tile_y %u, player %u", node_width, node_height, tile_x, tile_y, player);
+            bw::print("invalid unexplored");
             return (s32)Placeability::InvalidUnexplored;
         }
-        if (!helper::tiles_in_rect_are_not_visible_for(node_dims.x / 32, node_dims.y / 32, tile_x, tile_y, player)) {
-            return helper::find_unit_at_tile(x_pos, y_pos, node_id) != 0 ? (s32)Placeability::Valid : (s32)Placeability::InvalidExplored;
+        if (!helper::tiles_in_rect_are_not_visible_for(node_width, node_height, tile_x, tile_y, player)) {
+            s32 result = helper::find_unit_at_tile(x_pos, y_pos, node_id) != 0 ? (s32)Placeability::Valid : (s32)Placeability::InvalidExplored;
+            if (result == 0) {
+                bw::print("valid");
+            }
+            if (result == 8) {
+                bw::print("invalid explored");
+            }
+            return result;
         }
 
         u32 node_sprite_id = node_id == UnitId::ResourceVespeneRidge ? SpriteId::VespeneRidge : SpriteId::VespeneGeyser;
