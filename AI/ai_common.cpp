@@ -6,8 +6,7 @@
 #include <cassert>
 
 namespace AI {
-	// Equivalent to 00440E30 ai_target_unit_is_worth_hitting
-	bool is_target_worth_hitting(Unit* target, Unit* attacker) {
+	bool is_target_worth_hitting(Unit* target, Unit* attacker) { // logically equivalent to 00440E30
 		// If the target is hidden by the fog-of-war
 		if (!target->sprite->is_visible_to(attacker->player)) {
 			return false;
@@ -35,7 +34,7 @@ namespace AI {
 	}
 
 	bool is_campaign_ai(u8 player) {
-		assert(player < 8);
+		assert(player < PlayerLimit);
 		return g_aiscript_controller[player].ai_flags.is_use_map_settings;
 	}
 

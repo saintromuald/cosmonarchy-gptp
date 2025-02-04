@@ -7,7 +7,7 @@ namespace AI {
 	Unit* find_best_nuke_launch_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_defensive_matrix_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_emp_shockwave_target(Unit* caster, bool isUnderAttack);
-	Unit* find_best_irradiate_target(Unit* caster, bool isUnderAttack);
+	Unit* find_best_irradiate_target(Unit* caster, bool is_under_attack);
 	Unit* find_best_yamato_gun_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_optical_flare_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_restoration_target(Unit* caster, bool isUnderAttack);
@@ -21,7 +21,7 @@ namespace AI {
 
 	Unit* find_best_psi_storm_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_hallucination_target(Unit* caster, bool isUnderAttack);
-	Unit* find_best_stasis_field_target(Unit* caster, bool isUnderAttack);
+	Unit* find_best_stasis_field_target(Unit* caster, bool is_under_attack);
 	Unit* find_best_recall_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_disruption_field_target(Unit* caster, bool isUnderAttack);
 	Unit* find_best_feedback_target(Unit* caster, bool isUnderAttack);

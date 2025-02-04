@@ -854,7 +854,6 @@ namespace hooks {
 		if (!unit_should_be_autoattacked_by_player(target, self->player)) {
 			return false;
 		}
-
 		u8 target_player = target->player;
 		if (target_player == 11) {
 			target_player = target->sprite->player;

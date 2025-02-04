@@ -259,9 +259,9 @@ bool order_id_ignores_collision(u32 order_id) {
 }
 
 bool unit_should_be_autoattacked_by_player(Unit* unit, u32 player) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->timers[TimerMindControlRecede]) {
-        u32 original_player = unit_ext->values[ValueMindControlOriginalPlayer];
+    UnitExt& unit_ext = unit->ext();
+    if (unit_ext.timers[TimerMindControlRecede]) {
+        u32 original_player = unit_ext.values[ValueMindControlOriginalPlayer];
         if (player == original_player || bw::is_allied_to(player, original_player)) {
             return false;
         }
