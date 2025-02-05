@@ -2708,7 +2708,6 @@ namespace hooks {
 						return TECH_ACTIVE;
 					}
 					case UnitId::ZergExcisant:
-					case UnitId::ZergNydusCesiant:
 					case UnitId::ZergMutathSpire:
 					case UnitId::ZergAlkagIteth:
 					case UnitId::ZergMatravilNest: {
@@ -2740,16 +2739,16 @@ namespace hooks {
 			case UnitId::ZergGosvileth: {
 				switch (unit_id) {
 					case UnitId::ZergHachirosk:
+					case UnitId::ZergEskigant:
 					case UnitId::ZergCagrantCesiant:
-					case UnitId::ZergExcisant:
 					case UnitId::ZergQuazethPool:
 					case UnitId::ZergHydrithDen:
 					case UnitId::ZergZorkizShroud:
 					case UnitId::ZergIrolIris: {
 						return TECH_ACTIVE;
 					}
+					case UnitId::ZergExcisant:
 					case UnitId::ZergMutathSpire:
-					case UnitId::ZergNydusCesiant:
 					case UnitId::ZergAlkagIteth:
 					case UnitId::ZergMatravilNest: {
 						if (TierUnlocked[RaceId::Zerg][Tier2]) {

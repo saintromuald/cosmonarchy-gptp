@@ -3,34 +3,25 @@
 #include "trigger_system/trigger_system.h"
 #include "hooks\limits\sfx_extender.h"
 
-namespace hooks
-{
-	bool cmdrecv_place_building_allowed(Unit* builder, u8 order_id, u16 built_unit_id) // 0048DBD0
-	{
+namespace hooks {
+	bool cmdrecv_place_building_allowed(Unit* builder, u8 order_id, u16 built_unit_id) { // 0048DBD0
 		bool is_allowed = false;
-		if (order_id >= OrderId::DroneStartBuild && order_id <= OrderId::CTFCOP2)
-		{
+		if (order_id >= OrderId::DroneStartBuild && order_id <= OrderId::CTFCOP2) {
 			if (order_id == OrderId::DroneStartBuild
 			||	order_id == OrderId::BuildTerran
 			||	order_id == OrderId::BuildProtoss1
 			||	order_id == OrderId::BuildProtoss2
 			||	order_id == OrderId::PlaceAddon)
 			{
-				if (builder->can_make_unit(built_unit_id, *g_active_nation_id))
-				{
+				if (builder->can_make_unit(built_unit_id, *g_active_nation_id)) {
 					is_allowed = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
 				}
-			} else if (order_id == OrderId::BuildNydusExit			// Build Nydus Exit
-			||		   order_id == OrderId::BuildingLand)
-			{
-				if (builder->id == built_unit_id)
-				{
+			} else if (order_id == OrderId::BuildNydusExit || order_id == OrderId::BuildingLand) {
+				if (builder->id == built_unit_id) {
 					is_allowed = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
 				}
-			} else if (order_id == OrderId::CTFCOP2) // Create Flag Beacon
-			{
-				if (*g_elapsed_time_seconds <= 600 && builder->id == built_unit_id)
-				{
+			} else if (order_id == OrderId::CTFCOP2) {
+				if (*g_elapsed_time_seconds <= 600 && builder->id == built_unit_id) {
 					is_allowed = (helper::order_is_allowed(builder, order_id, *g_active_nation_id) != 0);
 				}
 			}
@@ -44,22 +35,19 @@ namespace hooks
 		u32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
 
 		if (helper::place_building_message(can_build)) {
-			s32 DimensionX, DimensionY;
-			DimensionX = (s16)units_dat::building_dimensions[built_unit_id].x;
-			if (DimensionX < 0)
-			{
-				DimensionX++;
+			s32 dimension_x = (s16)units_dat::building_dimensions[built_unit_id].x;
+			if (dimension_x < 0) {
+				dimension_x++;
 			}
-			DimensionX /= 2;
-			DimensionX += (x * 32);
-			DimensionY = (s16)units_dat::building_dimensions[built_unit_id].y;
-			if (DimensionY < 0)
-			{
-				DimensionY++;
+			dimension_x /= 2;
+			dimension_x += (x * 32);
+			s32 dimension_y = (s16)units_dat::building_dimensions[built_unit_id].y;
+			if (dimension_y < 0) {
+				dimension_y++;
 			}
-			DimensionY /= 2;
-			DimensionY += (y * 32);
-			helper::process_building_placement(builder, order_id, DimensionX, DimensionY, built_unit_id);
+			dimension_y /= 2;
+			dimension_y += (y * 32);
+			helper::process_building_placement(builder, order_id, dimension_x, dimension_y, built_unit_id);
 		}
 	}
 
@@ -124,40 +112,39 @@ namespace hooks
 	void process_building_placement(Unit* unit, u8 order_id, Point16 pos, u16 target_unit_id) { // 0048DE70
 		if (order_id == OrderId::BuildingLand) {
 			helper::issue_order_targeting_ground(unit, OrderId::BuildingLand, pos.x, pos.y);
-		} else {
-			if  (unit->id != UnitId::ZergDroleth && unit->id != UnitId::ZergGosvileth
-			|| ((unit->main_order_id != OrderId::DroneLand) || !(unit->status & (UnitStatus::CanNotReceiveOrders|UnitStatus::NoBrkCodeStart)))
-			&&   unit->main_order_id != OrderId::DroneBuild)
-			{
-				if ((unit->id != UnitId::ZergNydusCesiant || order_id != OrderId::BuildNydusExit) && order_id != OrderId::CTFCOP2) {
-					g_ai_minerals_reserve[unit->player] = units_dat::mineral_cost[target_unit_id];
-					g_ai_vespene_reserve[unit->player] = units_dat::vespene_cost[target_unit_id];
-					if (g_game_minerals[unit->player] >= g_ai_minerals_reserve[unit->player]) {
-						if (g_game_vespene[unit->player] >= g_ai_vespene_reserve[unit->player]) {
-							helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
-							if (units_dat::base_property[unit->id] & UnitProperty::Building && units_dat::base_property[target_unit_id] & UnitProperty::Addon) {
-								helper::refund_all_queue_slots(unit);
-								unit->building.addon_build_id = target_unit_id;
-							} else {
-								helper::refund_all_queue_slots(unit);
-								helper::has_money_can_make(unit, target_unit_id);
-							}
+			return;
+		}
+		if  (unit->id != UnitId::ZergDroleth && unit->id != UnitId::ZergGosvileth
+		|| ((unit->main_order_id != OrderId::DroneLand) || !(unit->status & (UnitStatus::CanNotReceiveOrders | UnitStatus::NoBrkCodeStart)))
+		&&   unit->main_order_id != OrderId::DroneBuild) 
+		{
+			if ((unit->id != UnitId::ZergNydusCesiant || order_id != OrderId::BuildNydusExit) && order_id != OrderId::CTFCOP2) {
+				g_ai_minerals_reserve[unit->player] = units_dat::mineral_cost[target_unit_id];
+				g_ai_vespene_reserve[unit->player] = units_dat::vespene_cost[target_unit_id];
+				if (g_game_minerals[unit->player] >= g_ai_minerals_reserve[unit->player]) {
+					if (g_game_vespene[unit->player] >= g_ai_vespene_reserve[unit->player]) {
+						helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
+						if (units_dat::base_property[unit->id] & UnitProperty::Building && units_dat::base_property[target_unit_id] & UnitProperty::Addon) {
+							helper::refund_all_queue_slots(unit);
+							unit->building.addon_build_id = target_unit_id;
 						} else {
-							helper::display_error_message_id_with_sfx(unit->player, 851, g_console_index + 0x96);
+							helper::refund_all_queue_slots(unit);
+							helper::has_money_can_make(unit, target_unit_id);
 						}
 					} else {
-						helper::display_error_message_id_with_sfx(unit->player, 850, g_console_index + 0x93);
+						helper::display_error_message_id_with_sfx(unit->player, 851, g_console_index + 0x96);
 					}
 				} else {
-					helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
+					helper::display_error_message_id_with_sfx(unit->player, 850, g_console_index + 0x93);
 				}
+			} else {
+				helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
 			}
 		}
 	}
 
 	// Hooked to debug Pylon-based construction. -Pr0nogo
-	u32 cmdrecv_place_building(u32 order_id, u16 built_unit_id, Point16 position) // 0048E190
-	{
+	u32 cmdrecv_place_building(u32 order_id, u16 built_unit_id, Point16 position) { // 0048E190
 		if (units_dat::base_property[built_unit_id] & UnitProperty::Addon) {
 			cmdrecv_place_addon(position.x, position.y, order_id, built_unit_id);
 		} else {
@@ -172,7 +159,7 @@ namespace hooks
 	b32 check_resources_for_building(u32 notify, u8 player) { // 0042D0C0 
 		if (g_game_minerals[player] >= g_ai_minerals_reserve[player]) {
 			if (g_game_vespene[player] >= g_ai_vespene_reserve[player]) {
-				return 1;
+				return true;
 			} else {
 				if (notify) {
 					u32 sound_id = g_console_index + 150;
@@ -181,18 +168,17 @@ namespace hooks
 					}
 					helper::display_error_message_id_with_sfx(player, 851, sound_id);
 				}
-				return 0;
+				return false;
 			}
-		} else {
-			if (notify) {
-				u32 sound_id = g_console_index + 147;
-				if (bw::has_custom_advisor(player)) {
-					sound_id = bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
-				}
-				helper::display_error_message_id_with_sfx(player, 850, sound_id);
-			}
-			return 0;
 		}
+		if (notify) {
+			u32 sound_id = g_console_index + 147;
+			if (bw::has_custom_advisor(player)) {
+				sound_id = bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
+			}
+			helper::display_error_message_id_with_sfx(player, 850, sound_id);
+		}
+		return false;
 	}
 
 	// Hooked to enable custom advisor lines. -Pr0nogo
@@ -225,8 +211,7 @@ namespace hooks
 							u32 timer = 6;
 							switch (g_player_table[player].race) {
 								case RaceId::Protoss:
-								case RaceId::Zerg:
-								{
+								case RaceId::Zerg: {
 									timer = 4;
 								}
 							}
@@ -239,11 +224,9 @@ namespace hooks
 					}
 				}
 			}
-
-			char* message_string;
 			u32 final_message_id = message_id - 1;
 			if ((u16)message_id) {
-				message_string = (char*)g_stat_txt_buffer.get_string(message_id);
+				char* message_string = (char*)g_stat_txt_buffer.get_string(message_id);
 				if (player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(message_string);
 				}

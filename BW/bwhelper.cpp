@@ -38,7 +38,7 @@ namespace helper {
     // For loadRaceUI
 
     void get_race_sound_list(s8 a1) {
-        static s32 init_xd; init_xd = a1;
+        s32 init_xd = a1;
         const u32 func_address = 0x0048FB40;
         __asm {
             PUSHAD
@@ -180,7 +180,7 @@ namespace helper {
 
     void show_control_group(BinDlg* dialog, u16 firstId, u16 lastId) {
         const u32 func_address = 0x00457250;
-        static u32 last_id_xd; last_id_xd = lastId;
+        u32 last_id_xd = lastId;
         __asm {
             PUSHAD
             PUSH last_id_xd
@@ -665,8 +665,8 @@ namespace helper {
 
     s32 hpBarSurfaceBuffer2(s32 a1, s32 a2, u16 a3, s32 a4) {
         const u32 func_address = 0x0047A120;
+        u32 a3_xd = a3;
         static s32 result;
-        static u32 a3_xd; a3_xd = a3;
         __asm {
             PUSHAD
             PUSH a4
@@ -757,7 +757,7 @@ namespace helper {
     b32 get_active_tile_flag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags) {
         const u32 func_address = 0x00472F80;
         static b32 result;
-        static s32 x_xd; x_xd = x;
+        s32 x_xd = x;
         __asm {
             PUSHAD
             PUSH excludeFlags
@@ -790,8 +790,8 @@ namespace helper {
 
     s32 SErrSetLastError(char a1) {
         const u32 func_address = 0x00410172;
+        s32 a1_xd = a1;
         static s32 result;
-        static s32 a1_xd; a1_xd = a1;
         __asm {
             PUSHAD
             PUSH a1_xd
@@ -838,7 +838,7 @@ namespace helper {
 
     void play_image_iscript(Image* img, u8 iscript_anim) {
         const u32 func_address = 0x004D8470;
-        u32 iscript_anim_xd; iscript_anim_xd = iscript_anim;
+        u32 iscript_anim_xd = iscript_anim;
         _asm {
             PUSHAD
             PUSH iscript_anim_xd
@@ -985,7 +985,7 @@ namespace helper {
     VectorHead* vectorTransfer(char a1, char a2) {
         const u32 func_address = 0x0045A010;
         static VectorHead* result;
-        static s32 a2_xd; a2_xd = a2;
+        s32 a2_xd = a2;
         __asm {
             PUSHAD
             PUSH a2_xd
@@ -1266,7 +1266,7 @@ namespace helper {
 
     Unit* check_arbiter_cloaking_range(Unit* unit, u16 id) {
         const u32 func_address = 0x004410C0;
-        static u32 id_xd; id_xd = id;
+        u32 id_xd = id;
         static Unit* result;
         __asm {
             PUSHAD
@@ -1400,10 +1400,10 @@ namespace helper {
         return (bool)result;
     }
 
-    bool ai_cast_spell_behavior(Unit* unit, bool isAggro) {
+    bool ai_cast_spell_behavior(Unit* unit, bool is_aggro) {
         const u32 func_address = 0x004A13C0;
+        b32 is_aggro_xd = is_aggro;
         static u32 result;
-        static b32 is_aggro_xd; is_aggro_xd = isAggro;
         __asm {
             PUSHAD
             PUSH is_aggro_xd
@@ -1431,8 +1431,8 @@ namespace helper {
 
     bool unit_has_ground_path(Unit* unit, s16 x, s16 y) {
         const u32 func_address = 0x0042FA00;
+        u32 y_xd = y;
         static u32 result;
-        static u32 y_xd; y_xd = y;
         __asm {
             PUSHAD
             PUSH y_xd
@@ -1501,7 +1501,7 @@ namespace helper {
 
     void order_interrupt(Unit* unit, u8 order_id, Vec32* pos, Unit* target) {
         const u32 func_address = 0x00474C30;
-        static u32 order_id_xd; order_id_xd = order_id;
+        u32 order_id_xd; order_id_xd = order_id;
         __asm {
             PUSHAD
             PUSH target
@@ -1543,8 +1543,8 @@ namespace helper {
 
     void prepare_guard_ai(u16 y, u32 player, u16 unit_id, u16 x) {
         const u32 func_address = 0x00462670;
-        static u32 x_xd; x_xd = x;
-        static u32 unit_id_xd; unit_id_xd = unit_id;
+        u32 x_xd = x;
+        u32 unit_id_xd = unit_id;
         __asm {
             PUSHAD
             PUSH x_xd
@@ -1577,7 +1577,7 @@ namespace helper {
     u32 ai_add_cost_to_needs(u32 unit_id, u32 player, u32 type) {
         const u32 func_address = 0x00447DC0;
         static u32 result;
-        static u32 type_xd; type_xd = type;
+        u32 type_xd = type;
         __asm {
             PUSHAD
             PUSH type_xd
@@ -1593,8 +1593,8 @@ namespace helper {
     u32 ai_add_spending_request(u16 unit_id, u32 player, u8 type, char priority, void* value) {
         const u32 func_address = 0x00447980;
         static u32 result;
-        static u32 type_xd; type_xd = type;
-        static u32 priority_xd; priority_xd = priority;
+        u32 type_xd = type;
+        u32 priority_xd = priority;
         __asm {
             PUSHAD
             PUSH value
@@ -1863,10 +1863,10 @@ namespace helper {
         return result;
     }
 
-    bool ai_try_return_home(Unit* unit, u8 unknownByteValue) {
+    bool ai_try_return_home(Unit* unit, u8 unk_byte_value) {
         const u32 func_address = 0x00462EA0;
         static b32 result;
-        static u32 unknown_xd; unknown_xd = unknownByteValue;
+        u32 unknown_xd = unk_byte_value;
         __asm {
             PUSHAD
             MOV EAX, unit
@@ -1981,7 +1981,7 @@ namespace helper {
 
     void attack_move_try_pick_target(Unit* unit, u8 order_id) {
         const u32 func_address = 0x00477820;
-        static u32 order_id_xd; order_id_xd = order_id;
+        u32 order_id_xd = order_id;
         __asm {
             PUSHAD
             PUSH order_id_xd
@@ -1994,7 +1994,7 @@ namespace helper {
     bool attack_move_react_to_attack(Unit* unit, u8 order_id) {
         const u32 func_address = 0x00478370;
         static b32 result;
-        static u32 order_id_xd; order_id_xd = order_id;
+        u32 order_id_xd = order_id;
         __asm {
             PUSHAD
             MOV EAX, unit
@@ -2293,7 +2293,7 @@ namespace helper {
     Thingy* create_thingy(u32 sprite_id, s16 x, s16 y, u32 player) {
         const u32 func_address = 0x00488210;
         static Thingy* thingy;
-        static s32 x_xd; x_xd = x;
+        s32 x_xd = x;
         __asm {
             PUSHAD
             PUSH player
@@ -2614,7 +2614,7 @@ namespace helper {
 
     void replace_unit_with_id(Unit* unit, u16 new_unit_id) {
         const u32 func_address = 0x0049FED0;
-        static u32 new_unit_id_xd; new_unit_id_xd = new_unit_id;
+        u32 new_unit_id_xd = new_unit_id;
         __asm {
             PUSHAD
             PUSH new_unit_id_xd
@@ -3107,7 +3107,7 @@ namespace helper {
 
     void apply_creep_at_location_from_unit_id(s32 x, s32 y, u16 unit_id) {
         const u32 func_address = 0x004148F0;
-        static u32 unit_id_xd; unit_id_xd = unit_id;
+        u32 unit_id_xd = unit_id;
         __asm {
             PUSHAD
             PUSH y
@@ -3775,7 +3775,7 @@ namespace helper {
     u32 get_unit_strength(Unit* a1, s32 a2, bool a3) {
         const u32 func_address = 0x00431800;
         static u32 result;
-        static b32 a3_xd; a3_xd = a3;
+        b32 a3_xd = a3;
         __asm {
             PUSHAD
             MOV EAX, a1
@@ -4009,8 +4009,8 @@ namespace helper {
     u32 distance_from_dbox_corner(Unit* a1, __int16 a2, __int16 a3) {
         const u32 func_address = 0x0043E50;
         static u32 result;
-        static s16 a2_xd; a2_xd = a2;
-        static s16 a3_xd; a3_xd = a3;
+        s32 a2_xd = a2;
+        s32 a3_xd = a3;
         __asm {
             PUSHAD
             PUSH a3_xd
@@ -4026,7 +4026,7 @@ namespace helper {
     b32 is_angle_in_attack_angle(s32 pos_x, s32 pos_y, Unit* unit, u8 weapon_id) {
         const u32 func_address = 0x00475BE0;
         static b32 result;
-        static u32 weapon_id_xd; weapon_id_xd = weapon_id;
+        u32 weapon_id_xd = weapon_id;
         __asm {
             PUSHAD
             PUSH weapon_id_xd
@@ -4074,8 +4074,8 @@ namespace helper {
     // for orders_watch_target
     void unknown_orders_func(s32 a1, __int16 a2, __int16 a3) {
         const u32 func_address = 0x00475350;
-        static s32 a2_xd; a2_xd = a2;
-        static s32 a3_xd; a3_xd = a3;
+        s32 a2_xd = a2;
+        s32 a3_xd = a3;
         __asm {
             PUSHAD
             PUSH a3_xd
@@ -4226,7 +4226,7 @@ namespace helper {
 
     void targeted_order(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10) {
         const u32 func_address = 0x004754F0;
-        static s32 a7_xd; a7_xd = a7;
+        s32 a7_xd = a7;
         __asm {
             PUSHAD
             PUSH a10
@@ -4591,7 +4591,7 @@ namespace helper {
 
     void set_image_direction(Image* image, s8 direction) {
         const u32 func_address = 0x004D5F80;
-        static u32 direction_xd; direction_xd = direction;
+        u32 direction_xd = direction;
         __asm {
             PUSHAD
             PUSH direction_xd
@@ -4797,7 +4797,7 @@ namespace helper {
 
     void do_weapon_hit(Unit* target, Unit* attacker, u8 dmgDivisor) {
         const u32 func_address = 0x004795D0;
-        static u32 divisor_xd; divisor_xd = dmgDivisor;
+        u32 divisor_xd = dmgDivisor;
         __asm {
             PUSHAD
             PUSH divisor_xd
@@ -4850,10 +4850,10 @@ namespace helper {
     }
 
     // Somehow related to AI stuff; details unknown.
-    u16 get_unit_strength(Unit* unit, bool useGroundStrength) {
+    u16 get_unit_strength(Unit* unit, bool use_ground_strength) {
         const u32 func_address = 0x00431800;
         static u16 result;
-        static b32 use_ground_strength_xd; use_ground_strength_xd = useGroundStrength;
+        b32 use_ground_strength_xd = use_ground_strength;
         __asm {
             PUSHAD
             PUSH use_ground_strength_xd
@@ -5054,16 +5054,15 @@ namespace helper {
         }
     }
 
-    void insert_order_before(Unit* unit, Order* order, u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId) {
+    void insert_order_before(Unit* unit, Order* order, u8 order_id, s16 x, s16 y, Unit* target, u16 target_unit_id) {
         const u32 func_address = 0x00474540;
-        static Point16 pos;
-        pos.x = x; pos.y = y;
+        Point16 pos = {x, y};
         __asm {
             PUSHAD
             PUSH target
             PUSH pos
             MOVZX EBX, order_id
-            MOVZX EDX, targetUnitId
+            MOVZX EDX, target_unit_id
             MOV ESI, unit
             MOV EDI, order
             CALL func_address
@@ -5071,9 +5070,9 @@ namespace helper {
         }
     }
 
-    void do_order(Unit* unit, u32 order_id, s32 x, s32 y, bool stopPreviousOrders) {
+    void do_order(Unit* unit, u32 order_id, s32 x, s32 y, bool stop_previous_orders) {
         const u32 func_address = 0x00474C70;
-        static b32 stop_previous_orders_xd; stop_previous_orders_xd = stopPreviousOrders ? 1 : 0;
+        b32 stop_previous_orders_xd = stop_previous_orders ? 1 : 0;
         __asm {
             PUSHAD
             PUSH stop_previous_orders_xd
@@ -5202,7 +5201,7 @@ namespace helper {
 
     void play_subunit_iscript(Unit* unit, IscriptAnimation::Enum anim) {
         const u32 func_address = 0x00474380;
-        static u32 anim_xd; anim_xd = anim;
+        u32 anim_xd = anim;
         assert(unit->subunit);
         __asm {
             PUSHAD
@@ -5272,10 +5271,10 @@ namespace helper {
 
     Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction) {
         const u32 func_address = 0x0048C260;
-        static u32 attacking_player_xd; attacking_player_xd = attacking_player;
-        static u32 direction_xd; direction_xd = direction;
-        static s32 x_xd; x_xd = x;
-        static s32 y_xd; y_xd = y;
+        u32 attacking_player_xd = attacking_player;
+        u32 direction_xd = direction;
+        s32 x_xd = x;
+        s32 y_xd = y;
         static Bullet* result;
         __asm {
             PUSHAD
@@ -5746,7 +5745,7 @@ namespace helper {
 
     void select_units_if_alt_not_held(Unit** unit_list, u32 unit_list_length, u8 play_sound, u32 send_command) {
         const u32 func_address = 0x0046FA00;
-        static u32 play_sound_xd; play_sound_xd = play_sound;
+        u32 play_sound_xd = play_sound;
         __asm {
             PUSHAD
             PUSH send_command
@@ -5916,7 +5915,7 @@ namespace helper {
 
     void reveal_sight_at_location(s32 sight_range, u32 vision_flags, s32 pt_x, s32 pt_y, bool is_air) {
         const u32 func_address = 0x004806F0;
-        static b32 is_air_unit_xd; is_air_unit_xd = is_air;
+        b32 is_air_unit_xd = is_air;
         __asm {
             PUSHAD
             PUSH is_air_unit_xd
@@ -6086,8 +6085,8 @@ namespace helper {
     // For targeted_order
     Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vec32* a8, Unit* a9) {
         const u32 func_address = 0x00474B90;
-        static s32 a7_xd; a7_xd = a7;
-        static u32 a5_xd; a5_xd = a5;
+        s32 a7_xd = a7;
+        u32 a5_xd = a5;
         static Order* result;
         __asm {
             PUSHAD
@@ -6156,7 +6155,7 @@ namespace helper {
 
     s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, u8 play_sound, u32 send_command) {
         const u32 func_address = 0x0049AEF0;
-        static u32 play_sound_xd; play_sound_xd = play_sound;
+        u32 play_sound_xd = play_sound;
         static s32 result;
         __asm {
             PUSHAD
@@ -6815,7 +6814,7 @@ namespace helper {
 
     char apply_maelstrom(Unit* unit, u8 time) {
         const u32 func_address = 0x004553F0;
-        static u32 time_xd; time_xd = time;
+        u32 time_xd = time;
         static s32 result;
         __asm {
             PUSHAD
@@ -7024,19 +7023,19 @@ namespace helper {
         return (bool)result;
     }
 
-    s32 is_tile_blocked_by(Unit** array, Unit* builder, s32 xTile, s32 yTile, char bDontIgnoreReacting, char bAlsoInvisible) {
+    s32 is_tile_blocked_by(Unit** unit_array, Unit* builder, s32 tile_x, s32 tile_y, char is_addon, char also_invisible) {
         const u32 func_address = 0x00473300;
         static s32 result;
-        static b32 dont_ignore_reacting_xd; dont_ignore_reacting_xd = bDontIgnoreReacting;
-        static b32 also_invisible_xd; also_invisible_xd = bAlsoInvisible;
+        b32 is_addon_xd = is_addon;
+        b32 also_invisible_xd = also_invisible;
         __asm {
             PUSHAD
             PUSH also_invisible_xd
-            PUSH dont_ignore_reacting_xd
-            PUSH yTile
-            PUSH xTile
+            PUSH is_addon_xd
+            PUSH tile_y
+            PUSH tile_x
             PUSH builder
-            MOV EAX, array
+            MOV EAX, unit_array
             CALL func_address
             MOV result, EAX
             POPAD
@@ -7133,8 +7132,8 @@ namespace helper {
     bool can_target_spell(u16 tech_id, Unit* target, u16 fow_unit_id, Unit* caster, u16 pos_x, u16 pos_y, s32* error) {
         const u32 func_address = 0x00492020;
         static b32 result;
-        static u32 pos_x_xd; pos_x_xd = pos_x;
-        static u32 pos_y_xd; pos_y_xd = pos_y;
+        u32 pos_x_xd = pos_x;
+        u32 pos_y_xd = pos_y;
         __asm {
             PUSHAD
             PUSH error
@@ -7168,7 +7167,7 @@ namespace helper {
     s16 can_target_spell_on_fow_unit(s32 techId, s16 unit_id) {
         const u32 func_address = 0x004914B0;
         static s32 result;
-        static u32 unit_id_xd; unit_id_xd = unit_id;
+        u32 unit_id_xd = unit_id;
         __asm {
             PUSHAD
             PUSH unit_id_xd
@@ -7307,8 +7306,8 @@ namespace helper {
 
     void set_sprite_main_image_offset(Sprite* sprite, char x, char y) {
         const u32 func_address = 0x00401E40;
-        static u32 x_xd; x_xd = x;
-        static u32 y_xd; y_xd = y;
+        u32 x_xd = x;
+        u32 y_xd = y;
         __asm {
             PUSHAD
             PUSH y_xd
@@ -7515,7 +7514,7 @@ namespace helper {
     bool set_last_open_slot_to_computer(s8 race) {
         const u32 func_address = 0x004DBB70;
         static s8 result;
-        static s32 race_xd; race_xd = race;
+        s32 race_xd = race;
         __asm {
             PUSHAD
             PUSH race_xd
@@ -7578,8 +7577,8 @@ namespace helper {
     Flingy* initialize_flingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle) {
         const u32 func_address = 0x00496360;
         static Flingy* result;
-        static s32 player_xd; player_xd = player;
-        static s32 angle_xd; angle_xd = angle;
+        s32 player_xd = player;
+        s32 angle_xd = angle;
         __asm {
             PUSHAD
             PUSH angle_xd
@@ -7731,7 +7730,7 @@ namespace helper {
     // For initialize_unit_counts
     char team_game_count_races(char force, char* bIsLegal, char race) {
         const u32 func_address = 0x004857B0;
-        static s32 race_xd; race_xd = race;
+        s32 race_xd = race;
         static char result;
         __asm {
             PUSHAD
@@ -7748,9 +7747,9 @@ namespace helper {
     // For stat_res_main_proc
     /*void show_supply_info(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB) {
         const u32 Func_showSupplyInfo = 0x004E53B0;
-        static s32 graphic_xd; graphic_xd = graphic;
-        static s32 mathA_xd; mathA_xd = mathA;
-        static s32 mathB_xd; mathB_xd = mathB;
+        s32 graphic_xd = graphic;
+        s32 mathA_xd = mathA;
+        s32 mathB_xd = mathB;
         __asm {
             PUSHAD
             PUSH mathB_xd
@@ -7792,7 +7791,7 @@ namespace helper {
     // For draw_supply_unit_status
     void draw_shield_upgrade(BinDlg* dialog, u16 status_screen_index) {
         const u32 func_address = 0x00425510;
-        static u32 status_screen_index_xd; status_screen_index_xd = status_screen_index;
+        u32 status_screen_index_xd = status_screen_index;
         __asm {
             PUSHAD
             PUSH status_screen_index_xd
@@ -7804,7 +7803,7 @@ namespace helper {
 
     void draw_armor(BinDlg* dialog, s32 unit_id, u16 status_screen_index) {
         const u32 Func_drawArmor = 0x00425600;
-        static u32 status_screen_index_xd; status_screen_index_xd = status_screen_index;
+        u32 status_screen_index_xd = status_screen_index;
         __asm {
             PUSHAD
             PUSH status_screen_index_xd
@@ -7879,7 +7878,7 @@ namespace helper {
     // For give_unit_to_player
     void give_all_unit_properties_to_player(Unit* unit, s8 player) {
         const u32 func_address = 0x0047C9F0;
-        static s32 player_xd; player_xd = player;
+        u32 player_xd = player;
         __asm {
             PUSHAD
             PUSH player_xd
@@ -7964,7 +7963,7 @@ namespace helper {
     // For bullet_behavior_reassign
     void play_sprite_iscript(Sprite* sprite, char scriptId, s32 bPlay) {
         const u32 func_address = 0x00499D00;
-        static s32 script_id_xd; script_id_xd = scriptId;
+        s32 script_id_xd = scriptId;
         __asm {
             PUSHAD
             PUSH bPlay
@@ -9011,8 +9010,8 @@ namespace helper {
     bool ai_train_unit(Unit* unit, u16 unit_id, char requestId, void* value) {
         static bool result;
         const u32 func_address = 0x004672F0;
-        static u32 unit_id_xd; unit_id_xd = unit_id;
-        static s32 request_id_xd; request_id_xd = requestId;
+        u32 unit_id_xd = unit_id;
+        s32 request_id_xd = requestId;
         __asm {
             PUSHAD
             PUSH value
@@ -9210,7 +9209,7 @@ namespace helper {
 
     void prepare_formation_movement(MovementGroup* movement_group, char can_be_obstructed) {
         const u32 func_address = 0x0049A8C0;
-        static s32 can_be_obstructed_xd; can_be_obstructed_xd = can_be_obstructed;
+        s32 can_be_obstructed_xd = can_be_obstructed;
         __asm {
             PUSHAD
             PUSH can_be_obstructed_xd
@@ -9237,7 +9236,7 @@ namespace helper {
 
     void targeted_order_unit(Unit* a1, Unit* a2, int a3, char a4) {
         const u32 func_address = 0x004756E0;
-        static u32 a4_xd; a4_xd = a4;
+        u32 a4_xd = a4;
         __asm {
             PUSHAD
             PUSH a4_xd
@@ -9317,7 +9316,7 @@ namespace helper {
 
     void unit_placement_error(const char *a1, char a2) {
         const u32 func_address = 0x0048D140;
-        static s32 a2_xd; a2_xd = a2;
+        s32 a2_xd = a2;
         __asm {
             PUSHAD
             MOV ESI, a1
@@ -9459,7 +9458,7 @@ namespace helper {
     u32 ai_add_base_unit_spending_request(u32 final_unit_id, u32 player_id, AiRegion* region, u8 priority) {
         static u32 result;
         const u32 func_address = 0x004484A0;
-        static u32 priority_xd; priority_xd = priority;
+        u32 priority_xd = priority;
         __asm {
             PUSHAD
             PUSH priority_xd
@@ -9544,7 +9543,7 @@ namespace helper {
     u32 ai_count_units_in_town(AiTown* town, u32 unit_id, bool finished) {
         static u32 result;
         const u32 func_address = 0x00433210;
-        static b32 finished_xd; finished_xd = finished;
+        b32 finished_xd = finished;
         __asm {
             PUSHAD
             PUSH finished_xd
@@ -10292,7 +10291,7 @@ namespace helper {
     u32 initialize_unit(Unit* unit, u32 y, u32 unit_id, u32 x, u8 player_id) {
         static u32 result;
         const u32 func_address = 0x0049ECF0;
-        static u32 player_xd; player_xd = player_id;
+        u32 player_xd = player_id;
         __asm {
             PUSHAD
             PUSH player_xd
@@ -10503,7 +10502,7 @@ namespace helper {
     s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 flag_or_timer, char iscript_anim) {
         static s32 result;
         const u32 func_address = 0x00476C90;
-        static u32 iscript_anim_xd; iscript_anim_xd = iscript_anim;
+        u32 iscript_anim_xd = iscript_anim;
         __asm {
             PUSHAD
             PUSH iscript_anim_xd
@@ -10569,7 +10568,7 @@ namespace helper {
 
     void refresh_all_visible_images_at_screen_position(Sprite* sprite, u8 vision_filter) {
         const u32 func_address = 0x00497480;
-        static u32 vision_filter_xd; vision_filter_xd = vision_filter;
+        u32 vision_filter_xd = vision_filter;
         __asm {
             PUSHAD
             PUSH vision_filter_xd
@@ -10581,7 +10580,7 @@ namespace helper {
 
     void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply) {
         const u32 func_address = 0x00458800;
-        static u32 z_supply_xd; z_supply_xd = z_supply;
+        u32 z_supply_xd = z_supply;
         __asm {
             PUSHAD
             MOV EAX, mineral_cost
@@ -10650,7 +10649,7 @@ namespace helper {
 
     void do_unit_event_notification(Unit* unit, char event_type, u32 timer, bool ping, u32 message_id) {
         const u32 func_address = 0x0045EFE0;
-        static b32 ping_xd; ping_xd = ping;
+        b32 ping_xd = ping;
         __asm {
             PUSHAD
             PUSH message_id
@@ -10854,7 +10853,7 @@ namespace helper {
 
     char issue_place_building_order(char* unused, u32 unit_id, char order_id) {
         const u32 func_address = 0x0048E730;
-        static u32 order_id_xd; order_id_xd = order_id;
+        u32 order_id_xd = order_id;
         static char result;
         __asm {
             PUSHAD
@@ -10968,8 +10967,8 @@ namespace helper {
 
     u32 order_acquire_generic_idle_unit_proc(Unit* unit, u32 x_pos, u16 y_pos, Unit** target, u16 fow_unit_id) {
         const u32 func_address = 0x00455900;
-        static u32 fow_unit_id_xd; fow_unit_id_xd = fow_unit_id;
-        static u32 y_pos_xd; y_pos_xd = y_pos;
+        u32 fow_unit_id_xd = fow_unit_id;
+        u32 y_pos_xd = y_pos;
         static u32 result;
         __asm {
             PUSHAD
@@ -11041,8 +11040,8 @@ namespace helper {
 
     void set_rally_position(Unit* factory, u16 x_pos, u16 y_pos) {
         const u32 func_address = 0x00466910;
-        static u32 x_pos_xd; x_pos_xd = x_pos;
-        static u32 y_pos_xd; y_pos_xd = y_pos;
+        u32 x_pos_xd = x_pos;
+        u32 y_pos_xd = y_pos;
         __asm {
             PUSHAD
             PUSH y_pos_xd
@@ -11229,8 +11228,8 @@ namespace helper {
     // For create_all_selection_circles
     Image* create_selection_circle(Sprite* sprite, u8 color, u16 image_id) {
         const u32 func_address = 0x004D7070;
-        static u32 color_xd; color_xd = color;
-        static u32 image_id_xd; image_id_xd = image_id;
+        u32 color_xd = color;
+        u32 image_id_xd = image_id;
         static Image* result;
         __asm {
             PUSHAD
@@ -11314,7 +11313,7 @@ namespace helper {
     Unit* get_doodad_for_unit_state(u8 location, u16 unit_id, u32 player) {
         static Unit* result;
         const u32 func_address = 0x004C7380;
-        static u32 unit_id_xd; unit_id_xd = unit_id;
+        u32 unit_id_xd = unit_id;
         __asm {
             PUSHAD
             PUSH player
@@ -11820,10 +11819,10 @@ namespace helper {
     char cmdact_target_order(u8 order_id, Unit* target, u16 x_pos, u16 y_pos, u16 fow_unit_id, char keycode_used) {
         static u32 result;
         const u32 func_address = 0x004C0300;
-        static u32 x_pos_xd; x_pos_xd = x_pos;
-        static u32 y_pos_xd; y_pos_xd = y_pos;
-        static u32 fow_unit_id_xd; fow_unit_id_xd = fow_unit_id;
-        static s32 keycode_used_xd; keycode_used_xd = keycode_used;
+        u32 x_pos_xd = x_pos;
+        u32 y_pos_xd = y_pos;
+        u32 fow_unit_id_xd = fow_unit_id;
+        s32 keycode_used_xd = keycode_used;
         __asm {
             PUSHAD
             PUSH keycode_used_xd
@@ -11925,7 +11924,7 @@ namespace helper {
 
     void fire_unit_weapon(Unit* unit, u8 weapon_id) {
         const u32 func_address = 0x00479C90;
-        static u32 weapon_id_xd; weapon_id_xd = weapon_id;
+        u32 weapon_id_xd = weapon_id;
         __asm {
             PUSHAD
             PUSH weapon_id_xd
@@ -11950,8 +11949,8 @@ namespace helper {
 
     void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player) {
         const u32 func_address = 0x00479930;
-        static u32 weapon_id_xd; weapon_id_xd = weapon_id;
-        static u32 direction_xd; direction_xd = direction;
+        u32 weapon_id_xd = weapon_id;
+        u32 direction_xd = direction;
         __asm {
             PUSHAD
             PUSH attacking_player
@@ -11968,9 +11967,9 @@ namespace helper {
 
     Image* iscript_create_image(Image* relative_image, u32 image_id, char x, char y, u8 draw_above) {
         const u32 func_address = 0x004D6D90;
-        static s32 x_xd; x_xd = x;
-        static s32 y_xd; y_xd = y;
-        static u32 draw_above_xd; draw_above_xd = draw_above;
+        s32 x_xd = x;
+        s32 y_xd = y;
+        u32 draw_above_xd = draw_above;
         static Image* result;
         __asm {
             PUSHAD
@@ -12172,7 +12171,7 @@ namespace helper {
     Unit** get_all_units_in_region(u16 region_id) {
         static Unit** result;
         const u32 func_address = 0x00430B50;
-        static u32 region_id_xd; region_id_xd = region_id;
+        u32 region_id_xd = region_id;
         __asm {
             PUSHAD
             PUSH region_id_xd
@@ -12297,7 +12296,7 @@ namespace helper {
 
     void do_area_fixups_for_enemy(u32 player, u16 region_id, u32 iterations) {
         const u32 func_address = 0x00444EB0;
-        static u32 region_id_xd; region_id_xd = region_id;
+        u32 region_id_xd = region_id;
         __asm {
             PUSHAD
             PUSH iterations
@@ -13243,7 +13242,7 @@ namespace helper {
 
     void save_replay_action(void* game_actions, void* buffer, u32 action_size, char player) {
         const u32 func_address = 0x004CDE70;
-        static s32 player_xd; player_xd = player;
+        s32 player_xd = player;
         __asm {
             PUSHAD
             PUSH player_xd
@@ -13257,7 +13256,7 @@ namespace helper {
 
     char create_dashed_selection(u32 player, Sprite* sprite, char color) {
         const u32 func_address = 0x00499A10;
-        static s32 color_xd; color_xd = color;
+        s32 color_xd = color;
         static char result;
         __asm {
             PUSHAD
@@ -13358,7 +13357,7 @@ namespace helper {
 
     void iscript_useweapon(Unit* unit, u16 weapon_id) {
         const u32 func_address = 0x00479C30;
-        static u32 weapon_id_xd; weapon_id_xd = weapon_id;
+        u32 weapon_id_xd = weapon_id;
         __asm {
             PUSHAD
             PUSH weapon_id_xd
@@ -13462,8 +13461,8 @@ namespace helper {
 
     void insert_order_targeting_ground_before(u8 order_id, Order* order, Unit* unit, u16 pos_x, u16 pos_y) {
         const u32 func_address = 0x00474790;
-        static u32 pos_x_xd; pos_x_xd = pos_x;
-        static u32 pos_y_xd; pos_y_xd = pos_y;
+        u32 pos_x_xd = pos_x;
+        u32 pos_y_xd = pos_y;
         __asm {
             PUSHAD
             PUSH pos_y_xd
@@ -13492,9 +13491,9 @@ namespace helper {
 
     void issue_order_targeting_fow(Unit* unit, u8 order_id, u32 unit_id, u16 pos_x, u16 pos_y) {
         const u32 func_address = 0x00474FB0;
-        static u32 order_id_xd; order_id_xd = order_id;
-        static u32 pos_x_xd; pos_x_xd = pos_x;
-        static u32 pos_y_xd; pos_y_xd = pos_y;
+        u32 order_id_xd = order_id;
+        u32 pos_x_xd = pos_x;
+        u32 pos_y_xd = pos_y;
         __asm {
             PUSHAD
             PUSH pos_y_xd
@@ -13526,7 +13525,7 @@ namespace helper {
 
     u8* bw_draw(u16 x_pos, u32 y_pos, u32 x_clamp, u16 y_clamp) {
         const u32 func_address = 0x004E1C70;
-        static u32 y_clamp_xd; y_clamp_xd = y_clamp;
+        u32 y_clamp_xd = y_clamp;
         static u8* result;
         __asm {
             PUSHAD
@@ -13803,8 +13802,8 @@ namespace helper {
 
     u32 distance_from_box_corner(Unit* unit, u16 pos_x, u16 pos_y) {
         const u32 func_address = 0x00430E50;
-        static u32 pos_x_xd; pos_x_xd = pos_x;
-        static u32 pos_y_xd; pos_y_xd = pos_y;
+        u32 pos_x_xd = pos_x;
+        u32 pos_y_xd = pos_y;
         static u32 result;
         __asm {
             PUSHAD
@@ -14298,7 +14297,7 @@ namespace helper {
 
     u32 get_updated_sight_range(Unit* unit, bool is_for_spellcasting) {
         const u32 func_address = 0x004E5B40;
-        static b32 is_for_spellcasting_xd; is_for_spellcasting_xd = is_for_spellcasting;
+        b32 is_for_spellcasting_xd = is_for_spellcasting;
         static u32 result;
         __asm {
             PUSHAD
@@ -14326,9 +14325,9 @@ namespace helper {
 
     Image* create_image_overlay(Sprite* sprite, u32 image_id, u8 x_offset, u8 y_offset, u8 direction) {
         const u32 func_address = 0x00498E00;
-        static u32 x_offset_xd; x_offset_xd = x_offset;
-        static u32 y_offset_xd; y_offset_xd = y_offset;
-        static u32 direction_xd; direction_xd = direction;
+        u32 x_offset_xd = x_offset;
+        u32 y_offset_xd = y_offset;
+        u32 direction_xd = direction;
         static Image* result;
         __asm {
             PUSHAD
@@ -14582,7 +14581,7 @@ namespace helper {
 
     void display_update_portrait(u32 portrait_id, Unit* unit, u16 idle_or_talking) {
         const u32 func_address = 0x0045EA30;
-        static u32 idle_or_talking_xd; idle_or_talking_xd = idle_or_talking;
+        u32 idle_or_talking_xd = idle_or_talking;
         __asm {
             PUSHAD
             PUSH idle_or_talking_xd
@@ -14632,7 +14631,7 @@ namespace helper {
     u32 svid_play_end(u8 video) {
         static u32 result;
         const u32 func_address = 0x004100EE;
-        static u32 video_xd; video_xd = video;
+        u32 video_xd = video;
         __asm {
             PUSHAD
             PUSH video_xd
@@ -14720,7 +14719,7 @@ namespace helper {
 
     void issue_queued_order_target(Unit* target, Unit* attacker, u8 order_id, u32 stop_previous) {
         const u32 func_address = 0x00474D10;
-        static u32 order_id_xd; order_id_xd = order_id;
+        u32 order_id_xd = order_id;
         __asm {
             PUSHAD
             PUSH stop_previous
@@ -14869,8 +14868,7 @@ namespace helper {
         }
     }
 
-    void finish_unit_movement(Unit* unit)
-    {
+    void finish_unit_movement(Unit* unit) {
         const u32 func_address = 0x0046AD90;
         __asm {
             PUSHAD
@@ -14880,8 +14878,7 @@ namespace helper {
         }
     }
 
-    u32 get_random_yes_unit_response_local(u32 unit_id)
-    {
+    u32 get_random_yes_unit_response_local(u32 unit_id) {
         const u32 func_address = 0x0048EAB0;
         static u32 result;
         __asm {
@@ -14894,8 +14891,7 @@ namespace helper {
         return result;
     }
 
-    s32 bw_refresh(s32 left, s32 height, s32 top, s32 width)
-    {
+    s32 bw_refresh(s32 left, s32 height, s32 top, s32 width) {
         const u32 func_address = 0x0041E0D0;
         static s32 result;
         __asm {
@@ -14914,8 +14910,8 @@ namespace helper {
     Image* make_cloaked(u8 param, Sprite* sprite, u8 status, u8 timer) {
         const u32 func_address = 0x00497FD0;
         static Image* result;
-        static u32 status_xd; status_xd = status;
-        static u32 timer_xd; timer_xd = timer;
+        u32 status_xd = status;
+        u32 timer_xd = timer;
         __asm {
             PUSHAD
             PUSH timer_xd
@@ -14971,8 +14967,7 @@ namespace helper {
         }
     }
 
-    void orders_nuke_launch(Unit* unit)
-    {
+    void orders_nuke_launch(Unit* unit) {
         const u32 func_address = 0x00464730;
         __asm {
             PUSHAD
@@ -15010,8 +15005,7 @@ namespace helper {
         }
     }
 
-    void fatal_error(char* error_type)
-    {
+    void fatal_error(char* error_type) {
         const u32 function = 0x004215D0;
         __asm {
             PUSHAD
@@ -15021,8 +15015,7 @@ namespace helper {
         }
     }
 
-    HIMC ImmGetContextBW(HWND hwnd)
-    {
+    HIMC ImmGetContextBW(HWND hwnd) {
         const u32 func_address = 0x0041003A;
         static HIMC result;
         __asm {
@@ -15060,8 +15053,8 @@ namespace helper {
 
     Thingy* iscript_create_sprite(Image* image, u16 sprite_id, u32 x, u32 y, s8 elevation) {
         const u32 func_address = 0x004D7120;
-        static s32 elevation_xd; elevation_xd = elevation;
-        static u32 sprite_id_xd; sprite_id_xd = sprite_id;
+        s32 elevation_xd = elevation;
+        u32 sprite_id_xd = sprite_id;
         static Thingy* result;
         __asm {
             PUSHAD
@@ -15126,7 +15119,7 @@ namespace helper {
 
     void chk_unit_apply_burrow_flag(Unit* unit, u8 flag, b32 try_burrow) {
         const u32 func_address = 0x004CCF20;
-        static u32 flag_xd; flag_xd = flag;
+        u32 flag_xd = flag;
         __asm {
             PUSHAD
             PUSH try_burrow
@@ -15375,7 +15368,7 @@ namespace helper {
 
     s32 confirm_building_placeability(Unit* builder, u16 unit_id, u8 player, u16 tile_x, u32 tile_y) {
         const u32 func_address = 0x00473EF0;
-        static u32 player_xd; player_xd = player;
+        u32 player_xd = player;
         static s32 result;
         __asm {
             PUSHAD
@@ -15427,8 +15420,8 @@ namespace helper {
 
     bool tiles_in_rect_are_not_explored_for(u16 width, u16 height, u16 x_pos, u16 y_pos, u8 player) {
         const u32 func_address = 0x004027F0;
-        static u32 player_xd; player_xd = player;
-        static u32 y_pos_xd; y_pos_xd = y_pos;
+        u32 player_xd = player;
+        u32 y_pos_xd = y_pos;
         static b32 result;
         __asm {
             PUSHAD
@@ -15446,8 +15439,8 @@ namespace helper {
 
     bool tiles_in_rect_are_not_visible_for(u16 width, u16 height, u16 x_pos, u16 y_pos, u8 player) {
         const u32 func_address = 0x00402770;
-        static u32 player_xd; player_xd = player;
-        static u32 y_pos_xd; y_pos_xd = y_pos;
+        u32 player_xd = player;
+        u32 y_pos_xd = y_pos;
         static b32 result;
         __asm {
             PUSHAD
@@ -15477,5 +15470,136 @@ namespace helper {
             POPAD
         }
         return result;
+    }
+
+    s32 vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision) {
+        const u32 func_address = 0x00473DB0;
+        u32 player_xd = player;
+        static s32 result;
+        __asm {
+            PUSHAD
+            PUSH check_vision
+            PUSH player_xd
+            PUSH tile_y
+            PUSH tile_x
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    s32 get_psi_placement_state(u8 player, u16 unit_id, u16 tile_x, u16 tile_y) {
+        const u32 func_address = 0x00473920;
+        u32 tile_x_xd = tile_x;
+        u32 tile_y_xd = tile_y;
+        static s32 result;
+        __asm {
+            PUSHAD
+            PUSH tile_y_xd
+            PUSH tile_x_xd
+            MOV SI, unit_id
+            MOV AL, player
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    u32 update_nydus_placement_state(u8 player, u32 tile_x, u32 tile_y, Point16 position, u32 placement_state_entry, b32 check_vision) {
+        const u32 func_address = 0x00473150;
+        static u32 result;
+        __asm {
+            PUSHAD
+            PUSH check_vision
+            PUSH placement_state_entry
+            PUSH position
+            PUSH tile_y
+            PUSH tile_x
+            MOV AL, player
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    u32 update_creep_building_placement_state(u8 player, u32 tile_x, u32 tile_y, Point16 position, u32 placement_state_entry, b32 check_vision, b32 unk_bool) {
+        const u32 func_address = 0x00473010;
+        u32 tile_x_xd = tile_x;
+        u32 tile_y_xd = tile_y;
+        static u32 result;
+        __asm {
+            PUSHAD
+            PUSH unk_bool
+            PUSH check_vision
+            PUSH placement_state_entry
+            PUSH position
+            PUSH tile_y_xd
+            PUSH tile_x_xd
+            MOV AL, player
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u32 tile_x, u32 tile_y, u8 player, Point16 pos, u32 placement_state_entry, b32 check_vision) {
+        const u32 func_address = 0x00473A10;
+        u32 player_xd = player;
+        static u32 result;
+        __asm {
+            PUSHAD
+            PUSH check_vision
+            PUSH placement_state_entry
+            PUSH pos
+            PUSH player_xd
+            PUSH tile_y
+            PUSH tile_x
+            MOV AX, unit_id
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    u32 update_building_placement_state_units(Unit* builder, u32 tile_x, u32 tile_y, u8 player, u16 unit_id, Point16 pos, u32 placement_state_entry, bool is_not_addon, bool also_invisible, b32 without_vision) {
+        // actual order is tile_y - builder - tile_x - the rest ^
+        const u32 func_address = 0x00473720;
+        b32 also_invisible_xd = also_invisible;
+        b32 is_not_addon_xd = is_not_addon;
+        u32 unit_id_xd = unit_id;
+        u32 player_xd = player;
+        static u32 result;
+        __asm {
+            PUSHAD
+            PUSH without_vision
+            PUSH also_invisible_xd
+            PUSH is_not_addon_xd
+            PUSH placement_state_entry
+            PUSH pos
+            PUSH unit_id_xd
+            PUSH player_xd
+            PUSH tile_x
+            PUSh builder
+            MOV EAX, tile_y
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    void orders_init_psi_provider(Unit* unit) {
+        const u32 func_address = 0x00493F70;
+        __asm {
+            PUSHAD
+            MOV EAX, unit
+            CALL func_address
+            POPAD
+        }
     }
 }

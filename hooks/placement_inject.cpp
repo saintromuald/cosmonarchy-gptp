@@ -367,8 +367,11 @@ namespace
         static u32 tile_y;
         static u8 player;
         static u32 check_vision;
+        static u32 unit_id; // Sourced from function can_build_on_tile_location 00473FB0
         static s32 result;
         __asm {
+            MOV EAX, [EBP + 0x18]
+            MOV unit_id, EAX
             PUSH EBP
             MOV EBP, ESP
             PUSH EAX
@@ -383,7 +386,7 @@ namespace
             POP EAX
             PUSHAD
         }
-        result = hooks::vespene_geyser_placebox(tile_x, tile_y, player, check_vision);
+        result = hooks::vespene_geyser_placebox(tile_x, tile_y, player, check_vision, unit_id);
         __asm {
             POPAD
             MOV EAX, result

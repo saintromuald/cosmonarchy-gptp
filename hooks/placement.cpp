@@ -89,10 +89,10 @@ namespace hooks {
                 continue;
             }
 
-            if (g_unit_ordering_x[other_unit->finder_index.left].position < 32 * x_tile + 32
-                && g_unit_ordering_x[other_unit->finder_index.right].position > 32 * x_tile
-                && g_unit_ordering_y[other_unit->finder_index.top].position < 32 * y_tile + 32
-                && g_unit_ordering_y[other_unit->finder_index.bottom].position > 32 * y_tile)
+            if (g_unit_ordering_x[other_unit->finder_index.left].position   < 32 * x_tile + 32
+            &&  g_unit_ordering_x[other_unit->finder_index.right].position  > 32 * x_tile
+            &&  g_unit_ordering_y[other_unit->finder_index.top].position    < 32 * y_tile + 32
+            &&  g_unit_ordering_y[other_unit->finder_index.bottom].position > 32 * y_tile)
             {
                 return needs_detection ? 1 : 4;
             }
@@ -466,7 +466,7 @@ namespace hooks {
     // Hooked to turn stat_txt.tbl into a .txt.
     // Not working yet, not injected. Will revisit in another PR. -Pr0nogo
     void input_place_building_click_notify(u8* order_id, u16* building_id, bool is_valid) { // 0048E4E0
-        if (*order_id) {
+        if (order_id) {
             *order_id = *g_place_building_order_id;
         }
         if (!is_valid) {
@@ -498,8 +498,8 @@ namespace hooks {
 
     // Hooked to allow ridge capping. -Pr0nogo
     // We might be able to use a town center variant of this function (if it exists) to fix the bug that greenlights quasifog placement too close to resources.
-    s32 vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision) { // 00473DB0
-        u32 node_id = unit_id_is_ridge_refinery(g_place_building_unit_id) ? UnitId::ResourceVespeneRidge : UnitId::ResourceVespeneGeyser;
+    s32 vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision, u32 unit_id) { // 00473DB0
+        u32 node_id = unit_id_is_ridge_refinery(unit_id) ? UnitId::ResourceVespeneRidge : UnitId::ResourceVespeneGeyser;
         Point16 node_dims = units_dat::building_dimensions[node_id];
         u32 x_pos = 32 * tile_x + node_dims.x / 2;
         u32 y_pos = 32 * tile_y + node_dims.y / 2;
@@ -525,5 +525,76 @@ namespace hooks {
             return (s32)Placeability::Valid;
         }
         return (s32)Placeability::InvalidExplored;
+    }
+
+    // Hooked to make ridge refinery placement work properly. -Pr0nogo
+    s32 __stdcall can_build_on_tile_location(Unit* builder, u32 player, int tile_x, int tile_y, u32 unit_id, int placement_state_entry, int check_vision, b32 also_invisible, b32 ignore_vision) {
+        int tile_x_var; // edx
+        int tile_y_var; // ecx
+        int placement_val_data; // edx
+        int placement_val; // eax
+
+        Point16 dims = {units_dat::building_dimensions[unit_id].x / 32, units_dat::building_dimensions[unit_id].y / 32};
+        s32 placement_state_early = 3;
+        if ((tile_x & 0x8000) != 0) {
+            goto LABEL_10;
+        }
+        if ((tile_y & 0x8000) != 0) {
+            goto LABEL_10;
+        }
+        if (tile_x + dims.x > g_map_tile_size->width) {
+            goto LABEL_10;
+        }
+        if (tile_y + dims.y > g_map_tile_size->height) {
+            goto LABEL_10;
+        }
+        placement_state_early = 7;
+        if (builder) {
+            if (!(builder->status & (UnitStatus::InAir | UnitStatus::GroundedBuilding))) {
+                if (!helper::unit_has_ground_path(builder, 32 * tile_x, 32 * tile_y)) {
+                    goto LABEL_10;
+                }
+            }
+        }
+        if (unit_id_is_capped_gas_node(unit_id)) {
+            placement_state_early = helper::vespene_geyser_placebox(tile_x, tile_y, player, check_vision);
+        LABEL_10:
+         // HIWORD(placement_val_data) = HIWORD(placement_state_entry);
+         // LOBYTE(placement_val_data) = placement_state_early;
+         // BYTE1(placement_val_data) = placement_state_early;
+         // placement_val = placement_val_data << 16;
+         // LOWORD(placement_val) = placement_val_data;
+         // memset32(&g_building_placement_state[48 * placement_state_entry], placement_val, 12);
+            return placement_state_early;
+        }
+        u32 unit_property = units_dat::base_property[unit_id];
+        if (unit_property & UnitProperty::RequiredPsi) {
+            placement_state_early = helper::get_psi_placement_state(player, unit_id, tile_x_var, tile_y_var);
+            if (placement_state_early) {
+                goto LABEL_10;
+            }
+            tile_x_var = tile_x;
+            builder = builder;
+            tile_y_var = tile_y;
+        }
+        u32 placement_state = 0;
+        if (builder && builder->id == UnitId::ZergNydusCesiant) {
+            placement_state = helper::update_nydus_placement_state(player, tile_x_var, tile_y_var, dims, placement_state_entry, check_vision);
+        } else {
+            if (unit_property & UnitProperty::CreepBuilding) {
+                placement_state = helper::update_creep_building_placement_state(player, tile_x_var, tile_y_var, dims, placement_state_entry, check_vision, ignore_vision);
+            } else {
+                placement_state = helper::update_building_placement_state_map_tile_flags(unit_id, tile_x_var, tile_y_var, player, dims, placement_state_entry, check_vision);
+            }
+        }
+        if (*g_ai_builder_unk) {
+            builder = *g_ai_builder_unk;
+        }
+        u8 is_not_addon = !(units_dat::base_property[unit_id] & UnitProperty::Addon);
+        s32 result = helper::update_building_placement_state_units(builder, tile_x, tile_y, player, unit_id, dims, placement_state_entry, is_not_addon, also_invisible, ignore_vision);
+        if (placement_state > result) {
+            result = placement_state;
+        }
+        return result;
     }
 }

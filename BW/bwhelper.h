@@ -185,7 +185,7 @@ namespace helper {
     s32 get_enemy_air_strength_in_region(u16 region_id, s32 player);
     s32 get_enemy_strength_in_region(u16 region_id, s32 player, s32 includeAir);
     bool unit_is_performing_unbreakable_code(Unit* unit);
-    bool ai_cast_spell_behavior(Unit* unit, bool isAggro);
+    bool ai_cast_spell_behavior(Unit* unit, bool is_aggro);
     s32 ai_flee(Unit* unit, Unit* enemy);
     bool unit_has_ground_path(Unit* unit, s16 x, s16 y);
     bool ai_has_no_defense_build(s32 player);
@@ -238,14 +238,14 @@ namespace helper {
     bool unit_can_infest(Unit* unit);																		// 00402750
     void ai_attack_unit(Unit* unit);																		// 0043FFD0
     Unit* find_best_attack_target(Unit* unit);																// 00443080
-    bool ai_try_return_home(Unit* unit, u8 unknownByteValue);												// 00462EA0
+    bool ai_try_return_home(Unit* unit, u8 unk_byte_value);					    							// 00462EA0
     void set_interceptors_to_standby(Unit* unit);															// 00465780
     Order* remove_order_from_unit_queue(Order* order, Unit* unit);											// 004742D0
     void prepend_order_targeting_unit(Unit* unit, Unit* target, u8 order_id);								// 00474A70
     bool is_target_within_min_movement_range(Unit* unit, Unit* target, u32 range);							// 004763D0
     bool ai_is_unreachable_position(Unit* unit, s32 x, s32 y);												// 00476610
     bool is_unit_in_weapon_range(Unit* unit, Unit* target);													// 00476870
-    void get_weapon_begin_iscript(Unit* unit, IscriptAnimation::Enum anim);								// 00476ED0
+    void get_weapon_begin_iscript(Unit* unit, IscriptAnimation::Enum anim);							    	// 00476ED0
     void pick_new_target_if_needed(Unit* unit);																// 00477510
     void attack_move_try_pick_target(Unit* unit, u8 order_id);												// 00477820
     bool attack_move_react_to_attack(Unit* unit, u8 order_id);												// 00478370
@@ -332,8 +332,8 @@ namespace helper {
 
     // For updatePlacementState_Units
     bool does_building_block(Unit* unit, s32 xTile, s32 yTile);												// 00473410
-    s32 is_tile_blocked_by(Unit** array, Unit* builder, s32 xTile, s32 yTile,								// 00473300
-        char bDontIgnoreReacting, char bAlsoInvisible);
+    s32 is_tile_blocked_by(Unit** unit_array, Unit* builder, s32 tile_x, s32 tile_y,				    	// 00473300
+        char is_addon, char also_invisible);
 
     // For update_placement_state_for_placement_box
     s32 can_build_on_tile_location(Unit* builder, s32 player, s32 xTile, s32 yTile, s32 unit_id,			// 00473FB0
@@ -626,8 +626,8 @@ namespace helper {
     void mind_control_hit(Unit* attacker, Unit* target);																			// 004F6910
 
     //// weapon_damage
-    u16 get_unit_strength(Unit* unit, bool useGroundStrength);
-    Unit* create_hallucination(Unit* target, u32 player);
+    u16 get_unit_strength(Unit* unit, bool use_ground_strength); // 00431800
+    Unit* create_hallucination(Unit* target, u32 player);        // 004F6B90
 
     // For updateCorrosiveSpores
     u32 get_corrosive_spores_image(Unit* unit);																						// 004F41F0
@@ -653,8 +653,8 @@ namespace helper {
     //// load_unload_orders
     b32 ai_are_on_connected_regions(Unit* unit, s32 x, s32 y);																		// 00438E70
     void ai_unload_failure(Unit* unit);																								// 0043DF30
-    void insert_order_before(Unit* unit, Order* order, u8 order_id, s16 x, s16 y, Unit* target, u16 targetUnitId);					// 00474540
-    void do_order(Unit* unit, u32 order_id, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
+    void insert_order_before(Unit* unit, Order* order, u8 order_id, s16 x, s16 y, Unit* target, u16 target_unit_id);					// 00474540
+    void do_order(Unit* unit, u32 order_id, s32 x, s32 y, bool stop_previous_orders);													// 00474C70
     Unit* get_loaded_unit_from_index(Unit* transport, s32 index);																	// 004E6C40
     b32 get_first_loaded_worker(Unit* transport);																					// 004E6D90
     b32 ai_find_transport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
@@ -1797,4 +1797,13 @@ namespace helper {
     bool tiles_in_rect_are_not_explored_for(u16 width, u16 height, u16 x_pos, u16 y_pos, u8 player); // 004027F0
     bool tiles_in_rect_are_not_visible_for(u16 width, u16 height, u16 x_pos, u16 y_pos, u8 player);  // 00402770
     Thingy* get_placement_parent(u32 sprite_id, u32 x_dims, u32 y_dims, Point16 parent_dims);        // 00487C70
+
+    s32 vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision);                // 00473DB0
+    u32 update_nydus_placement_state(u8 player, u32 tile_x, u32 tile_y, Point16 position, u32 placement_state_entry, b32 check_vision); // 00473150
+    s32 get_psi_placement_state(u8 player, u16 unit_id, u16 tile_x, u16 tile_y);                     // 00473920
+    u32 update_creep_building_placement_state(u8 player, u32 tile_x, u32 tile_y, Point16 position, u32 placement_state_entry, b32 check_vision, b32 unk_bool); // 00473010
+    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u32 tile_x, u32 tile_y, u8 player, Point16 pos, u32 placement_state_entry, b32 check_vision); // 00473A10
+    u32 update_building_placement_state_units(Unit* builder, u32 tile_x, u32 tile_y, u8 player, u16 unit_id, Point16 pos, u32 placement_state_entry, bool is_not_addon, bool also_invisible, b32 without_vision); // 00473720
+
+    void orders_init_psi_provider(Unit* unit);                                                       // 00493F70
 }

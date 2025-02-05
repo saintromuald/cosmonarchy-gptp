@@ -20,7 +20,7 @@ void play_worker_error_sound(Unit* unit, u32 error_text_index);										// 0048
 Thingy* __stdcall get_placement_restrictions_from_sprite_id(u32 tile_x, u32 tile_y, u32 radius);	// 00487B00
 s32 place_building_message(s32 placement_state);													// 0048D930
 void input_place_building_click_notify(u8* order_id, u16* building_id, bool is_valid);				// 0048E4E0
-s32 vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision);					// 00473DB0
+s32 vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision, u32 unit_id);		// 00473DB0
 
 void inject_placement_hooks();
 }

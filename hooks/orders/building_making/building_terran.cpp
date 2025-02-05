@@ -50,9 +50,8 @@ namespace hooks {
     // Resume construction on an existing structure
     void orders_scv_build_2(Unit* unit) { // 00467A70
         Unit* built_unit = unit->order_target.unit;
-        UnitExt* builder_ext = get_unit_ext(unit);
-
-        if (built_unit && !(built_unit->status & UnitStatus::Completed)) {
+        UnitExt& builder_ext = unit->ext();
+        if (built_unit && !built_unit->is_completed()) {
             switch (unit->main_order_state) {
                 case 0: {
                     if (!helper::order_to_move_to_target(unit, built_unit)) {
@@ -70,7 +69,7 @@ namespace hooks {
                         if (built_unit->connected_unit && built_unit->connected_unit != unit && (built_unit->connected_unit)->order_target.unit == built_unit) {
                             unit->order_to_idle(); // another worker is already on the job
                         } else {
-                            builder_ext->values[ValueTerranConstruction] = built_unit->id;
+                            builder_ext.values[ValueTerranConstruction] = built_unit->id;
                             built_unit->connected_unit = unit;
                             unit->status &= ~UnitStatus::IsNormal;
                             unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
@@ -194,7 +193,7 @@ namespace hooks {
             if (unit_id_is_tech_tier_structure(built_unit->id)) {
                 replay_witness_event(built_unit, SpectatorEvent_Tech);
             }
-            builder_ext->values[ValueTerranConstruction] = UnitId::None;
+            builder_ext.values[ValueTerranConstruction] = UnitId::None;
             helper::update_unit_damage_overlay(built_unit); // New - fix bug where damaged structures don't create overlay until damaged or healed. -Pr0nogo
             if ((built_unit->is_completed() && unit_id_is_capped_gas_node(built_unit->id) && built_unit->player == unit->player) || unit_id_is_minerals(built_unit->id)) {
                 unit->order_to(OrderId::Harvest1, built_unit);
@@ -203,7 +202,7 @@ namespace hooks {
         }
 
         if (unit->order_queue_head) {
-            unit->user_action_flags |= 1;
+            unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
             prepare_for_next_order(unit);
         } else if (unit->unit_ai) {
             unit->order_computer(OrderId::ComputerAI);
@@ -270,7 +269,6 @@ namespace hooks {
                             bw::refresh_console();
                             built_unit->order_computer(OrderId::BuildSelf1);
                             helper::ai_training_overlord(built_unit, unit);
-
                             if (unit_id_is_tech_tier_structure(built_unit->id)) {
                                 replay_witness_event(built_unit, SpectatorEvent_Tech);
                             }
@@ -287,7 +285,6 @@ namespace hooks {
             }
         } else {
             bw::refresh_console();
-
             if (unit->order_target.unit) {
                 unit->order_target.pt.x = (unit->order_target.unit)->sprite->position.x;
                 unit->order_target.pt.y = (unit->order_target.unit)->sprite->position.y;
@@ -299,7 +296,6 @@ namespace hooks {
                 unit->next_target_waypoint.x = unit->order_target.pt.x;
                 unit->next_target_waypoint.y = unit->order_target.pt.y;
             }
-
             if (move_target_result) {
                 unit->main_order_state = 1;
             }
@@ -503,9 +499,9 @@ namespace hooks {
 
     // Hooked by mistake. -Pr0nogo
     b32 is_constructing_addon(Unit* unit) { // 004E66B0
-        if (unit->secondary_order_id == OrderId::BuildAddon && unit->status & UnitStatus::GroundedBuilding) {
+        if (unit->secondary_order_id == OrderId::BuildAddon && unit->is_grounded_building()) {
             Unit* build_unit = unit->current_build_unit;
-            if (build_unit && !(build_unit->status & UnitStatus::Completed)) {
+            if (build_unit && !build_unit->is_completed()) {
                 return true;
             }
         }

@@ -264,7 +264,7 @@ namespace hooks {
             helper::add_text_to_dialog(dialog, -5, unit->get_name());
             return;
         }
-        if (!(unit->status & UnitStatus::Completed)) {
+        if (!unit->is_completed()) {
             helper::draw_progress_bar(dialog);
             helper::set_text_string(dialog);
             helper::set_unit_status_string_text(dialog);

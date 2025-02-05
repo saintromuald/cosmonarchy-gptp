@@ -1,8 +1,7 @@
 #pragma once
 #include "../../../BW/structures/Unit.h"
 
-namespace hooks
-{
+namespace hooks {
 	bool is_morphing(Unit* building);							// 0045CD00
 	void orders_zerg_build_self(Unit* building);				// 0045D500
 	void cancel_zerg_building(Unit* drone);						// 0045DA40

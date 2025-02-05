@@ -835,7 +835,7 @@ void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 target_unit_id, bo
 	assert(this);
 	const u32 Func_Order = 0x00474810;
 	static Point16 pos; pos.x = x, pos.y = y;
-	static u32 target_unit_id_xd; target_unit_id_xd = target_unit_id;
+	u32 target_unit_id_xd = target_unit_id;
 	__asm {
 		PUSHAD
 		PUSH target_unit_id_xd
@@ -1112,8 +1112,8 @@ s32 Unit::can_make_unit(u16 unit_id, u8 player) const {
 s32 Unit::can_use_tech(u8 tech_id, u8 player) const {
 	assert(this);
 	const u32 func_address = 0x0046DD80;
-	static s32 player_id_xd; player_id_xd = player;
-	static u32 tech_id_xd; tech_id_xd = tech_id;
+	s32 player_id_xd = player;
+	u32 tech_id_xd = tech_id;
 	static s32 result;
 	__asm {
 		PUSHAD
@@ -1133,7 +1133,7 @@ bool Unit::can_attack_target(Unit* target, bool check_visibility) const {
 	assert(this);
 	assert(target);
 	const u32 func_address = 0x00476730;
-	static u32 check_visibility_xd; check_visibility_xd = check_visibility ? 1 : 0;
+	u32 check_visibility_xd = check_visibility ? 1 : 0;
 	static u32 result;
 	__asm {
 		PUSHAD
@@ -1151,7 +1151,7 @@ bool Unit::can_attack_target(Unit* target, bool check_visibility) const {
 void Unit::fire_weapon(u8 weapon_id) const {
 	assert(this);
 	const u32 func_address = 0x00479C90;
-	static u32 weapon_id_xd; weapon_id_xd = weapon_id;
+	u32 weapon_id_xd = weapon_id;
 	__asm {
 		PUSHAD
 		PUSH weapon_id_xd

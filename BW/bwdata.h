@@ -1286,7 +1286,7 @@ BW_REF(u8,					g_starting_units,				0x00596871);
 BW_REF(u8,					g_victory_conditions,			0x0059686D);
 BW_REF(u8,					g_tournament_mode,				0x00596877);
 
-BW_REF(u16*,				g_string_id,					0x00513634);
+BW_DATA(u16*,	    		g_string_id,					0x00513634);
 BW_REF(u8*,					g_game_map_data_for_blit,		0x00628454);
 
 BW_DATA(NetPlayer*,         g_net_players,                  0x0066FE20);

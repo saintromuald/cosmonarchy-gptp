@@ -374,7 +374,7 @@ struct UnitLayout {
 	/*0x0F0*/ Link<Unit>invisible_link;
 	/*0x0F8*/ union {
 		Target		rally;
-		Link<Unit>	psi_link;
+		Link<Unit>	psi_link; // Now in unit_ext
 	};
 	/*0x100*/ UnitPath*	path;
 	/*0x104*/ u8        pathing_collision_interval;		// unknown
