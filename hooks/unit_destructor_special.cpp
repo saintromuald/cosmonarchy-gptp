@@ -41,9 +41,9 @@ void augur_proc(Unit* augur, s32 radius) {
 }
 
 void augur_sacrifice(Unit* augur, s32 radius) {
-	UnitExt* targetExt = get_unit_ext(augur);
-	if (targetExt->values[ValueAugurSafetyCheck] == 0) {
-		targetExt->values[ValueAugurSafetyCheck] = 1;
+	UnitExt& target_ext = augur->ext();
+	if (target_ext.values[ValueAugurSafetyCheck] == 0) {
+		target_ext.values[ValueAugurSafetyCheck] = 1;
 		augur_proc(augur, radius);
 		augur->remove();
 	}
@@ -52,7 +52,6 @@ void augur_sacrifice(Unit* augur, s32 radius) {
 // Identical to 00466170 kill_hangar_units
 // Not hooked but used by hooked unit_destructor_special_cases
 void kill_hangar_units(Unit* unit) {
-	u32 random_value;
 	while (unit->unit_with_hangar.in_hangar_count != 0) {
 		Unit* child_inside = unit->unit_with_hangar.in_hangar_child;
 		unit->unit_with_hangar.in_hangar_child = child_inside->hangar_unit.hangar_link.prev;
@@ -111,7 +110,7 @@ void free_resource_container(Unit* resource) {
 }
 
 void unit_on_death_behaviors(Unit* unit) {
-	UnitExt* unit_ext = get_unit_ext(unit);
+	UnitExt& unit_ext = unit->ext();
 	// These do not require the unit to be completed
 	switch (unit->id) {
 		case UnitId::ProtossHerald: {
@@ -129,9 +128,9 @@ void unit_on_death_behaviors(Unit* unit) {
 				if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false)) {
 					continue;
 				}
-				UnitExt* victim_ext = get_unit_ext(victim);
-				if (victim_ext->timers[TimerLobotomySlow] < 3 * 24 + 1) {
-					victim_ext->timers[TimerLobotomySlow] = 3 * 24 + 1;
+				UnitExt& victim_ext = victim->ext();
+				if (victim_ext.timers[TimerLobotomySlow] < 3 * 24 + 1) {
+					victim_ext.timers[TimerLobotomySlow] = 3 * 24 + 1;
 				}
 			}
 		} break;
@@ -151,26 +150,28 @@ void unit_on_death_behaviors(Unit* unit) {
 		case UnitId::ProtossCrucible: {
 			// code from hooks::remove_psi_field(Unit* unit)
 			// copied because the content is hardcoded here
-			if (unit->building.pylon_aura) {
-				unit->building.pylon_aura->free();	// should be equivalent to SpriteDestructor @ 00497B40
-				unit->building.pylon_aura = 0;
+			if (unit_ext.power_aura) {
+				unit_ext.power_aura->free();	// should be equivalent to SpriteDestructor @ 00497B40
+				unit_ext.power_aura = nullptr;
 			}
 
 			// begin hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
-			if (unit->psi_link.prev) { // untie the previous pylon from current pylon (tie it to next)
-				unit->psi_link.prev->psi_link.next = unit->psi_link.next;
+			if (unit_ext.psi_link.prev) { // untie the previous pylon from current pylon (tie it to next)
+				UnitExt& prev_ext = unit_ext.psi_link.prev->ext();
+				prev_ext .psi_link.next = unit_ext.psi_link.next;
 			}
-			if (unit->psi_link.next) { // untie the next pylon from current pylon (tie it to previous)
-				unit->psi_link.next->psi_link.prev = unit->psi_link.prev;
+			if (unit_ext.psi_link.next) { // untie the next pylon from current pylon (tie it to previous)
+				UnitExt& next_ext = unit_ext.psi_link.next->ext();
+				next_ext.psi_link.prev = unit_ext.psi_link.prev;
 			}
 
-			if (unit == *first_psi_field_provider) {
-				*first_psi_field_provider = unit->psi_link.next;
+			if (unit == *g_first_psi_field_provider) {
+				*g_first_psi_field_provider = unit_ext.psi_link.next;
 			}
-			unit->psi_link.prev = 0;
-			unit->psi_link.next = 0;
+			unit_ext.psi_link.prev = 0;
+			unit_ext.psi_link.next = 0;
 			// end hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
-			*g_can_update_powered_status = true;
+			g_can_update_powered_status = true;
 		} break;
 		case UnitId::ZergRilirokor:
 		case UnitId::ZergRililisk: {
@@ -189,7 +190,7 @@ void unit_on_death_behaviors(Unit* unit) {
 				unit->building.nydus_exit = 0;
 				nydus_exit->building.nydus_exit = 0;
 
-				if (unit_ext->values[ValueIsNydusExit]) {
+				if (unit_ext.values[ValueIsNydusExit]) {
 					bw::regress(nydus_exit, UnitId::ZergCagrantCesiant);
 				} else {
 					nydus_exit->remove();
@@ -198,15 +199,15 @@ void unit_on_death_behaviors(Unit* unit) {
 		} break;
 	}
 
-	if (unit_ext->timers[TimerAurielIncineration] >= 1) {
-		g_iquare_globals->create_effect(EffectId::SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext->values[ValueAurielIncinerationPlayer], 0);
-		unit_ext->timers[TimerAurielIncineration] = 0;
-		unit_ext->values[ValueNoCorpse] = 1;
+	if (unit_ext.timers[TimerAurielIncineration] >= 1) {
+		g_iquare_globals->create_effect(EffectId::SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext.values[ValueAurielIncinerationPlayer], 0);
+		unit_ext.timers[TimerAurielIncineration] = 0;
+		unit_ext.values[ValueNoCorpse] = 1;
 	}
 
-    if (unit_ext->timers[TimerIncubationArm]) {
-        bw::create_unit_from_ability(unit_ext->values[ValueIncubationUnitId], unit_ext->values[ValueIncubationCount],
-            unit_ext->values[ValueIncubationPlayer], unit->position);
+    if (unit_ext.timers[TimerIncubationArm]) {
+        bw::create_unit_from_ability(unit_ext.values[ValueIncubationUnitId], unit_ext.values[ValueIncubationCount],
+            unit_ext.values[ValueIncubationPlayer], unit->position);
     }
 
 	// These require the unit to be completed
@@ -214,7 +215,7 @@ void unit_on_death_behaviors(Unit* unit) {
 		switch (unit->id) {
 			case UnitId::TerranAnvil: {
 				// Anvil - death while armed
-				if (unit->building.silo.is_ready && !unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerSalvageStunTimer]) {
+				if (unit->building.silo.is_ready && !unit_ext.timers[TimerControlledDemolition] && !unit_ext.timers[TimerSalvageStunTimer]) {
 					bw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->position.x, unit->position.y, 11, 12);
 					helper::create_bullet(WeaponId::NuclearMissile, unit, unit->position.x, unit->position.y, unit->player, 0);
 				}
@@ -298,19 +299,19 @@ void unit_on_death_behaviors(Unit* unit) {
 
 	// Metastasis - Plague spreads when a unit dies
 	if (unit->plague_timer) {
-		Unit* attacker = unit_ext->units[UnitPlagueSource];
+		Unit* attacker = unit_ext.units[UnitPlagueSource];
 		u32 attacking_player = attacker ? attacker->player : 11;
 		g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5 * 32, { (u16)unit->position.x, (u16)unit->position.y }, 3 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
 	}
 
 	// Gladius - Binding Plasma - proc on death
-	if (unit_ext->timers[TimerBindingPlasma]) {
-		g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, unit_ext->timers[TimerBindingPlasma], unit->position, Gladius::BindingPlasmaRadius,
-			SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext->values[ValueGladiusBindingPlasmaPlayer], 0, { .intervals = unit_ext->values[ValueGladiusBindingPlasmaStacks] });
+	if (unit_ext.timers[TimerBindingPlasma]) {
+		g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, unit_ext.timers[TimerBindingPlasma], unit->position, Gladius::BindingPlasmaRadius,
+			SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext.values[ValueGladiusBindingPlasmaPlayer], 0, { .intervals = unit_ext.values[ValueGladiusBindingPlasmaStacks] });
 	}
 
 	// Banter
-	if (unit_ext->values[ValueSignifyStacks] >= 5) {
+	if (unit_ext.values[ValueSignifyStacks] >= 5) {
 		play_unit_banter(unit, UnitId::ProtossHierophant);
 	}
 }

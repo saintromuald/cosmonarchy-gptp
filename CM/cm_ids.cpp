@@ -272,12 +272,12 @@ bool unit_id_is_morphed_from_double_unit(u32 unit_id) {
 }
 
 bool unit_id_is_power_generator(u32 unit_id) {
-    return unit_id == UnitId::ProtossPylon
-        || unit_id == UnitId::ProtossCrucible;
+    return unit_id_is_psi_provider(unit_id); // Not sure why these two are distinct, maybe psi referenced supply or something. Kept them both for now, may merge/delete later. -Pr0nogo
 }
 
 bool unit_id_is_psi_provider(u16 unit_id) {
-    return unit_id == UnitId::ProtossPylon
+    return unit_id == UnitId::ProtossNexus
+        || unit_id == UnitId::ProtossPylon
         || unit_id == UnitId::ProtossCrucible;
 }
 
