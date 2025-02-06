@@ -77,30 +77,31 @@ void update_psi_field_position(Unit* unit) {
 }
 
 // Defined in psi_field_inject.cpp
-void hooks::hide_all_psi_fields();
 
 namespace hooks {
-	void update_psi_field_providers() {
-		for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-			 if (unit_id_is_psi_provider(unit->id) && unit->is_completed()) {
-				if (hooks::is_ready_to_make_psi_field(unit)) {
-					add_psi_field(unit);
-					update_psi_field_position(unit);
-				} else {
-					remove_psi_field(unit);
-				}
-			}
-		}
+void hide_all_psi_fields();
 
-		if (!g_is_placing_building) {
-			Unit* selected_unit;
-			for (s32 i = 0; i < SelectionCap; i++) {
-				selected_unit = g_client_selection_group->unit[i];
-				if (selected_unit != nullptr && hooks::is_ready_to_make_psi_field(selected_unit)) {
-					return;
-				}
+void update_psi_field_providers() {
+	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+		 if (unit_id_is_psi_provider(unit->id) && unit->is_completed()) {
+			if (hooks::is_ready_to_make_psi_field(unit)) {
+				add_psi_field(unit);
+				update_psi_field_position(unit);
+			} else {
+				remove_psi_field(unit);
 			}
-			hide_all_psi_fields();
 		}
 	}
+
+	if (!g_is_placing_building) {
+		Unit* selected_unit;
+		for (s32 i = 0; i < SelectionCap; i++) {
+			selected_unit = g_client_selection_group->unit[i];
+			if (selected_unit != nullptr && hooks::is_ready_to_make_psi_field(selected_unit)) {
+				return;
+			}
+		}
+		hide_all_psi_fields();
+	}
+}
 }

@@ -34,7 +34,7 @@ namespace hooks {
 
         u32 w = *psi_field_grp_width;
         u32 h = *psi_field_grp_height;
-        for (Unit* unit = *g_first_psi_field_provider; unit; unit = unit->get_psi_link_next()) {
+        for (Unit* unit = *g_first_psi_field_provider; unit; unit = unit->ext().psi_link.next) {
             UnitExt* unit_ext = get_unit_ext(unit);
             if (unit->status & UnitStatus::InTransport) {
                 continue;
@@ -81,7 +81,7 @@ namespace hooks {
 
     // Hooked to show allied power fields -Veeq7
     void __cdecl create_pylon_aura() { // 00493640
-        for (Unit* unit = *g_first_psi_field_provider; unit; unit = unit->get_psi_link_next()) {
+        for (Unit* unit = *g_first_psi_field_provider; unit; unit = unit->ext().psi_link.next) {
             UnitExt& unit_ext = unit->ext();
             if (!g_is_in_replay && unit_can_show_power_for(unit, g_local_nation_id) && (unit_ext.power_aura || add_psi_field_sprite(unit))) {
                 unit_ext.power_aura->flags &= ~SpriteFlags::Hidden;
@@ -92,7 +92,7 @@ namespace hooks {
 
     // Hooked to move psi provider to unitext. -Pr0nogo
     void __cdecl hide_all_psi_fields() { // 00494100
-        for (Unit* power_node = *g_first_psi_field_provider; power_node; power_node = power_node->get_psi_link_next()) {
+        for (Unit* power_node = *g_first_psi_field_provider; power_node; power_node = power_node->ext().psi_link.next) {
             UnitExt& unit_ext = power_node->ext();
             if (unit_ext.power_aura || helper::add_psi_field_sprite(power_node)) {
                 unit_ext.power_aura->flags |= SpriteFlags::Hidden;
