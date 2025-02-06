@@ -146,6 +146,7 @@ void unit_on_death_behaviors(Unit* unit) {
 				unit->building.silo.nuke = 0;
 			}
 		} break;
+		case UnitId::ProtossNexus:
 		case UnitId::ProtossPylon:
 		case UnitId::ProtossCrucible: {
 			// code from hooks::remove_psi_field(Unit* unit)
