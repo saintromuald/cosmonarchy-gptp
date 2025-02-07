@@ -1104,7 +1104,7 @@ namespace hooks {
 			// Zerg Regression
 			u32 regression_id = bw::get_zerg_regression(data.target);
 			if (data.damage > 0 && regression_id != UnitId::None) {
-				if (data.target->id != UnitId::ZergEskigant && data.target->id != UnitId::ZergExcisant) {
+				if (data.target->id != UnitId::ZergEskigant && data.target->id != UnitId::ZergExcisant && !(units_dat::base_property[regression_id] & UnitProperty::Worker) && !unit_id_is_larva(regression_id)) {
 					fatal_deal_damage = false;
 				}
 				if (data.target->id == UnitId::ZergNydusCesiant) {
