@@ -1976,7 +1976,8 @@ u32 get_zerg_regression(Unit* unit) {
     UnitExt* unit_ext = get_unit_ext(unit);
     if (unit_ext->values[ValueRegressionUnstable]
     ||	unit_ext->values[ValueIsNydusExit]
-    ||	unit_ext->values[ValueIsNeutralNydus]) {
+    ||	unit_ext->values[ValueIsNeutralNydus]
+    ||  unit_id_is_larva(unit->id)) {
         // The above cases do not regress!
         return UnitId::None;
     }
@@ -2009,9 +2010,10 @@ u32 get_zerg_regression(Unit* unit) {
 
         // Base Structures
         case UnitId::ZergHachirosk:
+        case UnitId::ZergEskigant:
         case UnitId::ZergCagrantCesiant:
-        case UnitId::ZergExcisant:
         case UnitId::ZergIrolIris:
+        case UnitId::ZergExcisant:
         case UnitId::ZergQuazethPool:
         case UnitId::ZergMutathSpire:
         case UnitId::ZergAxtothAxis:
@@ -2021,8 +2023,9 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergZorkizShroud:
         case UnitId::ZergMatravilNest:
         case UnitId::ZergElthisthMound: {
-            return UnitId::None;			// Bugs: Larva don't unlink, cagra doesn't recede
-        //	return unit->status & UnitStatus::Completed && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
+        //  return UnitId::None;			// Bugs: Larva don't unlink, cagra doesn't recede
+                                            // For now we circumvent these by creating the Droleth instead of transforming the structure into the Droleth
+        	return unit->is_completed() && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
         }
 
         // Unit Morphs
@@ -2065,6 +2068,12 @@ u32 get_zerg_regression(Unit* unit) {
                 return UnitId::ZergNathrokor;
             }
         } break;
+        default: {
+            // Enable to allow non-dual birth units on cagra to regress into larva. -Pr0nogo
+        //  if (!unit->is_dual_requisition() && bw::get_active_tile_at_coords(unit->position)->has_cagra) {
+        //      return UnitId::ZergLarva;
+        //  }
+        }
     }
     return UnitId::None;
 }
@@ -3042,6 +3051,8 @@ void regress(Unit* unit, u32 regression_id) {
     Unit* new_unit = unit;
     if (unit->id == UnitId::ZergEskigant || unit->id == UnitId::ZergExcisant) {
         new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
+    } else if (unit_id_is_larva(regression_id) || units_dat::base_property[regression_id] & UnitProperty::Worker) {
+        new_unit = bw::create_unit_in_game(regression_id, unit->player, unit->position.x, unit->position.y);
     } else {
         helper::replace_unit_with_id(unit, regress_to);
         unit->set_hitpoints(unit->get_max_hp_raw());
