@@ -1314,18 +1314,18 @@ enum GameCommand {
 
 enum UserActionFlags {
     UserActionFlags_IscriptGoToIdle = 0x1, // after NoBrkCodeEnd, test at 0x00475403
-    UserActionFlags_UMStartPath = 0x2, // test at 0x0046BDAD
-    UserActionFlags_HideUnit = 0x4, // remove unit, test at 0x00479487
+    UserActionFlags_UMStartPath     = 0x2, // test at 0x0046BDAD
+    UserActionFlags_HideUnit        = 0x4, // remove unit, test at 0x00479487
 };
 
 enum PathingFlags {
     PathingFlags_ProvidesCollision = 0x1,
-    PathingFlags_IsStacked = 0x2,
-    PathingFlags_DoDecollide = 0x4,
+    PathingFlags_IsStacked         = 0x2,
+    PathingFlags_DoDecollide       = 0x4,
 };
 
 enum MovementType {
-    MovementType_Flingy = 0x0,
+    MovementType_Flingy  = 0x0,
     MovementType_Partial = 0x1,
     MovementType_Iscript = 0x2,
 };

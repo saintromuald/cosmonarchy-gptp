@@ -30,7 +30,7 @@ BW_DATA(Unit**,			g_last_hidden_unit,				0x00628428);	// Same as above.
 BW_DATA(Bullet**,		g_first_active_bullet,			0x0064DEC4);
 BW_DATA(Unit**,			g_first_scanner_sweep,			0x006283F4);
 BW_DATA(Unit**,			g_last_scanner_sweep,			0x00628434);
-BW_DATA(Unit**,			first_psi_field_provider,		0x0063FF54);
+BW_DATA(Unit**,			g_first_psi_field_provider,		0x0063FF54);
 BW_DATA(u32*,			psi_field_grp_width,			0x0063FF4C);
 BW_DATA(u32*,			psi_field_grp_height,			0x0063FF58);
 BW_DATA(u8**,			psi_field_mask,					0x006D5BD8);
@@ -922,7 +922,7 @@ BW_DATA(s32*,	g_max_unit_width,				0x006BEE68);
 BW_DATA(s32*,	g_max_unit_height,				0x006BB930);
 BW_REF(b32,		g_is_in_game_loop,				0x006D11C8);
 BW_REF(u32,		g_last_random_number,			0x0051CA14);  // See bw::random(), bw::rand_between()
-BW_DATA(b32*,	g_can_update_powered_status,	0x0063FF44);
+BW_REF(b32,	    g_can_update_powered_status,	0x0063FF44);
 BW_REF(b32,		g_is_placing_building,			0x00640880);
 
 //-------- Tech levels --------//

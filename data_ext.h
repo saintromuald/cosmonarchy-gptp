@@ -477,6 +477,9 @@ struct UnitExt {
 	std::optional<Point16>  target_pos_override;
 
 	EffectRef               current_storm;
+	
+	Sprite*					power_aura;
+	Link<Unit>				psi_link;
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];

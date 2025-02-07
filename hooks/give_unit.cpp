@@ -78,16 +78,12 @@ namespace hooks
 
 			helper::recheck_attacks(unit);
 			bw::refresh_console();
-			if (units_dat::group_flags[unit->id].is_zerg != 1
-				&& units_dat::group_flags[unit->id].is_protoss != 1
-				&& unit->status & UnitStatus::GroundedBuilding)
-			{
-				*g_can_update_powered_status = 1;
+			if (unit->get_race() == RaceId::Protoss && unit->is_grounded_building()) {
+				g_can_update_powered_status = 1;
 			}
 
 			helper::give_ai(unit);
-			if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit)
-			{
+			if (unit->subunit && unit->subunit->is_subunit()) {
 				give_unit(unit->subunit, player, count_as_completed);
 			}
 
