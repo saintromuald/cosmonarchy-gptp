@@ -414,7 +414,8 @@ struct Unit : public UnitLayout {
 	bool is_hallucination();
 	bool is_grounded_building();
 	bool is_in_transport();
+	bool is_dual_requisition();
 };
 
-C_ASSERT(sizeof(Flingy) == 0x4c);
+C_ASSERT(sizeof(Flingy) == 76);
 C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));

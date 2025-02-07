@@ -485,7 +485,7 @@ namespace hooks {
 					target.x = 0;
 					target.y = 0;
 				}
-				if (!unit_id_is_psi_provider(unit->id) && draw_simple_line(source, target, graphics::WHITE)) {
+				if (draw_simple_line(source, target, graphics::WHITE)) {
 					source = target;
 				} else if (unit->id == UnitId::ZergEgg && unit->connected_unit) {
 					source = draw_order_line(source, unit->connected_unit->rally, graphics::GREY);
@@ -1239,7 +1239,7 @@ namespace hooks {
 				}
 			}
 			u32 overlay_id = ImageId::RevivedDecayingOverlay;
-			if (!(unit->status & UnitStatus::Burrowed)) {
+			if (!unit->is_burrowed()) {
 				bw::add_unit_overlay(unit, overlay_id);
 			} else {
 				bw::remove_unit_overlay(unit, overlay_id);
@@ -1249,7 +1249,7 @@ namespace hooks {
 		u32 creep_spreader_id = bw::unit_get_creep_spreader_id(unit);
 		if (creep_spreader_id != UnitId::None && unit->player < PlayerLimit) {
 			Box32 creep_area = {};
-			helper::get_creep_spread_area(creep_spreader_id, unit->position.x, unit->position.y, unit->status & UnitStatus::Completed, &creep_area);
+			helper::get_creep_spread_area(creep_spreader_id, unit->position.x, unit->position.y, unit->is_completed(), &creep_area);
 			for (u32 y = creep_area.top; y <= creep_area.bottom; ++y) {
 				for (u32 x = creep_area.left; x <= creep_area.right; ++x) {
 					s32 delta_x = unit->position.x - (x * 32 + 16);
@@ -2631,12 +2631,12 @@ namespace hooks {
 			if (unit_ext->timers[TimerSwarmingOmenDebuff] > 1) {
 				bw::add_unit_overlay(unit, overlay_id);
 
-				for (Unit* target : g_unit_search.radial(unit->position, 10 * 32)) {
+				for (Unit* target : g_unit_search.radial(unit->position, Zoryusthaleth::SwarmingOmenRadius)) {
 					if (bw::is_allied_to(unit->player, target->player)) {
 						continue;
 					}
-					UnitExt* target_ext = get_unit_ext(target);
-					target_ext->timers[TimerSwarmingOmenSearch] = 24 + 1;
+					UnitExt& target_ext = target->ext();
+					target_ext.timers[TimerSwarmingOmenSearch] = 24 + 1;
 				}
 			} else if (unit_ext->timers[TimerSwarmingOmenDebuff == 1]) {
 				bw::remove_unit_overlay(unit, overlay_id);

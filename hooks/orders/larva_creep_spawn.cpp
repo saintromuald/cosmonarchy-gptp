@@ -144,7 +144,6 @@ namespace hooks {
 							} else {
 								// can spread
 								if (!a->always_unbuildable && a->is_walkable) {
-
 									mustspread = 1;
 								}
 							}

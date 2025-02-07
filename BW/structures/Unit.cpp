@@ -1562,3 +1562,7 @@ bool Unit::is_grounded_building() {
 bool Unit::is_in_transport() {
 	return this->status & UnitStatus::InTransport;
 }
+
+bool Unit::is_dual_requisition() {
+	return units_dat::base_property[this->id] & UnitProperty::TwoUnitsIn1Egg;
+}

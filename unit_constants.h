@@ -183,6 +183,10 @@ inline constexpr f64 CorrosiveTouchCooldownIncrease = 0.05;
 inline constexpr f64 CorrosiveTouchArmorReduction = 1 * 256;
 }
 
+namespace Zoryusthaleth {
+inline constexpr s32 SwarmingOmenRadius = 10 * 32;
+}
+
 namespace Isthrathaleth {
 inline constexpr s32 PlagueTimer = 5 * 3;
 }

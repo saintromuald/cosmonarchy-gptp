@@ -12,11 +12,11 @@
 
 namespace hooks {
 	f64 get_speed_multiplier(Unit* unit) {
-		UnitExt* unit_ext = get_unit_ext(unit);
+		UnitExt& unit_ext = unit->ext();
 
 		f64 speed = 1;
 		// Set additives based on status effects
-		s32 decrease = (unit->ensnare_timer ? unit_ext->values[ValueEnsnareFactor] : 0);
+		s32 decrease = (unit->ensnare_timer ? unit_ext.values[ValueEnsnareFactor] : 0);
 
 		if (decrease > 0) {
 			for (s32 i = 0; i < decrease; i++) {
@@ -25,28 +25,28 @@ namespace hooks {
 		}
 
 		// Zerg - Adrenal Frenzy - speed
-		if (unit_ext->timers[TimerZergAdrenalFrenzy] > 1) {
+		if (unit_ext.timers[TimerZergAdrenalFrenzy] > 1) {
 			speed *= 1.25;
 		}
 
 		// Protoss Cornerstone: Avenge - speed
-		if (unit_ext->timers[TimerAvenge] > 1) {
+		if (unit_ext.timers[TimerAvenge] > 1) {
 			speed *= 1.33;
 		}
 
 		// Lobotomy Mine - slow
-		if (unit_ext->timers[TimerLobotomySlow] > 1) {
+		if (unit_ext.timers[TimerLobotomySlow] > 1) {
 			speed *= 0.666;
 		}
 
 		// Claymore - Kelvin Munitions - slow
-		if (unit_ext->timers[TimerKelvinMunitions] > 1) {
+		if (unit_ext.timers[TimerKelvinMunitions] > 1) {
 			speed *= 0.666;
 		}
 
 		// Gorgon - Petrification - slow
-		if (unit_ext->timers[TimerPetrification]) {
-			speed *= 1 - (0.10 * unit_ext->values[ValuePetrificationStacks]);
+		if (unit_ext.timers[TimerPetrification]) {
+			speed *= 1 - (0.10 * unit_ext.values[ValuePetrificationStacks]);
 		}
 
 		// Vorvrokor - Captivating Claws - reduces movement speed by 25% per unique attacker
@@ -56,19 +56,19 @@ namespace hooks {
 
 		// Sovroleth - Writhing Web - slow more based on proximal Sovroleths
 		if (unit->id == UnitId::ZergSovroleth) {
-			speed *= pow(0.95, unit_ext->values[ValueSovrolethLinkCount]);
+			speed *= pow(0.95, unit_ext.values[ValueSovrolethLinkCount]);
 		}
 
 		// Keskathalor - Caustic Discharge - speed up
-		if (unit_ext->timers[TimerCausticDischargeSpeed] > 1) {
+		if (unit_ext.timers[TimerCausticDischargeSpeed] > 1) {
 			speed *= 1.5;
 		}
 
 		// Zoryusthaleth - Swarming Omen - 133% movement speed when moving towards Zoryusthaleth victims
-		if (unit_ext->timers[TimerSwarmingOmenSearch]) {
-			for (Unit* target : g_unit_search.radial_ex(unit, 10 * 32)) {
-				UnitExt* target_ext = get_unit_ext(target);
-				if (!target_ext->timers[TimerSwarmingOmenDebuff]) {
+		if (unit_ext.timers[TimerSwarmingOmenSearch]) {
+			for (Unit* target : g_unit_search.radial_ex(unit, Zoryusthaleth::SwarmingOmenRadius)) {
+				UnitExt& target_ext = target->ext();
+				if (!target_ext.timers[TimerSwarmingOmenDebuff]) {
 					continue;
 				}
 				if (bw::is_allied_to(target->player, unit->player)) {
@@ -78,10 +78,10 @@ namespace hooks {
 					continue;
 				}
 				speed *= 1.33;
-				if (unit_ext->try_reset_timer(TimerSwarmingOmenVisuals, 12)) {
+				if (unit_ext.try_reset_timer(TimerSwarmingOmenVisuals, 12)) {
 					bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
 				}
-				if (unit_ext->try_reset_timer(TimerSwarmingOmenAudio, 36)) {
+				if (unit_ext.try_reset_timer(TimerSwarmingOmenAudio, 36)) {
 					u32 sound_id = bw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02);
 					helper::play_sound_from_unit(sound_id, unit, 1, 0);
 				}
@@ -90,7 +90,7 @@ namespace hooks {
 		}
 
 		// Tyranny of the Sun
-		if (unit_ext->values[ValueMindControllerUnitId]) {
+		if (unit_ext.values[ValueMindControllerUnitId]) {
 			auto targets = g_unit_search
 				.radial_ex(unit, unit->get_sight_range() * 32, FilterEnemy | FilterVisible);
 			for (auto target : targets) {
@@ -102,51 +102,51 @@ namespace hooks {
 			}
 		}
 
-		u32 tyranny_stacks = unit_ext->values[ValueMindTyrantTyranny];
+		u32 tyranny_stacks = unit_ext.values[ValueMindTyrantTyranny];
 		if (tyranny_stacks > 1 && tyranny_stacks < MindTyrant::TyrannyMaxStacks) {
-			speed *= 1 - (0.042 * unit_ext->values[ValueMindTyrantTyranny]);
+			speed *= 1 - (0.042 * unit_ext.values[ValueMindTyrantTyranny]);
 		}
 
 		// Crucible - speed up
-		bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
+		bool has_crucible = unit_ext.unit_vectors[UnitVectorCrucibles].size() != 0;
 		speed *= 1 + (has_crucible * 0.25);
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
-		if (unit_ext->timers[TimerTerminalSurge] > 1) {
+		if (unit_ext.timers[TimerTerminalSurge] > 1) {
 			speed *= 1.25;
 		}
 
 		// Hierophant Signify: Cowardice
-		if (unit_ext->values[ValueSignifyStacks]) {
+		if (unit_ext.values[ValueSignifyStacks]) {
 			speed *= 0.5;
 		}
 
 		// Mind Tyrant - Maelstrom - slow
-		if (unit_ext->timers[TimerMindTyrantMaelstromSlow] > 1) {
+		if (unit_ext.timers[TimerMindTyrantMaelstromSlow] > 1) {
 			speed *= 0.5;
 		}
 
 		// Infestation - Slow
-		if (unit_ext->values[ValueReclaimed] || unit_ext->values[ValueInfested]) {
+		if (unit_ext.values[ValueReclaimed] || unit_ext.values[ValueInfested]) {
 			speed *= 0.75;
 		}
 
 		// Shade - speed steroid
-		if (unit_ext->values[ValueIsShade]) {
+		if (unit_ext.values[ValueIsShade]) {
 			speed *= 1.5;
 		}
 
 		switch (unit->id) {
 			case UnitId::TerranBlackjack: {
 				// Blackjack Wear and Tear: reduce movement speed based on missing health
-				if (unit_ext->values[ValueWearAndTear]) {
+				if (unit_ext.values[ValueWearAndTear]) {
 					speed *= 0.66;
 				}
 			} break;
 			case UnitId::ZergUltrokor: {
 				// Ultrakor Kaiser Rampage: gains 200% movespeed on kill for 1 second
 				speed *= 1.2;
-				if (unit_ext->timers[TimerKaiserRampage]) {
+				if (unit_ext.timers[TimerKaiserRampage]) {
 					speed *= 2;
 				}
 			} break;
