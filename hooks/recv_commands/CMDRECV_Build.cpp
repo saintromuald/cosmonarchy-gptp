@@ -32,7 +32,7 @@ namespace hooks {
 	void cmdrecv_place_building_normal(s16 x, s16 y, u32 order_id, u32 built_unit_id) { // 0048E010
 		*g_unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
-		u32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
+		u32 can_build = helper::tile_location_is_unbuildable(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
 
 		if (helper::place_building_message(can_build)) {
 			s32 dimension_x = (s16)units_dat::building_dimensions[built_unit_id].x;
@@ -56,7 +56,7 @@ namespace hooks {
 		u16 addon_place_y = 0;
 		*g_unit_iterator_pos = 0;
 		Unit* builder = get_active_player_next_selection();
-		s32 can_build = helper::can_build_on_tile_location(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
+		s32 can_build = helper::tile_location_is_unbuildable(builder, builder->player, x, y, built_unit_id, 1, 0, 0, 0);
 		if (!can_build) {
 			addon_place_x = (s16)units_dat::addon_placement[built_unit_id - UnitId::TerranMinistry].x;
 			bw::adjust_addon_x(built_unit_id, builder->id, &addon_place_x);
@@ -72,7 +72,7 @@ namespace hooks {
 			}
 			addon_place_y /= 32;
 			addon_place_y = y - addon_place_y;
-			can_build = helper::can_build_on_tile_location(builder, builder->player, addon_place_x, addon_place_y, builder->id, 0, 0, 0, 0);
+			can_build = helper::tile_location_is_unbuildable(builder, builder->player, addon_place_x, addon_place_y, builder->id, 0, 0, 0, 0);
 		}
 
 		if (helper::place_building_message(can_build)) {

@@ -39,35 +39,35 @@ constexpr auto PI = std::numbers::pi_v<f64>;
 
 #define PlayerColorByte 0x0B
 struct PlayerColorCode {
-	char data[3];
+    char data[3];
 };
 
 enum InterceptType {
-	InterceptType_None,
+    InterceptType_None,
 
-	InterceptType_GroundOnly,
-	InterceptType_AirOnly,
-	InterceptType_Any,
+    InterceptType_GroundOnly,
+    InterceptType_AirOnly,
+    InterceptType_Any,
 
-	InterceptType_Count,
+    InterceptType_Count,
 };
 
 enum class GameKind {
-	Invalid,
+    Invalid,
 
-	Competitive,
-	Scenario,
-	Omnipresence,
-	FactionWars,
-	Massacre,
-	TheTurning,
-	Uprising,
-	Duopoly,
-	Embraced,
-	DarkAges,
+    Competitive,
+    Scenario,
+    Omnipresence,
+    FactionWars,
+    Massacre,
+    TheTurning,
+    Uprising,
+    Duopoly,
+    Embraced,
+    DarkAges,
 
-	Debug,
-	Count,
+    Debug,
+    Count,
 };
 
 #define AssertSprite(sprite) __assert_sprite(sprite, __FUNCTION__, __FILE__, __LINE__)
@@ -75,13 +75,13 @@ bool __assert_sprite(Sprite* sprite, const char* function, const char* file, u64
 
 template <>
 struct std::formatter<TextColor> {
-	constexpr std::format_parse_context::iterator parse(std::format_parse_context& ctx) const {
-		return ctx.end();
-	}
+    constexpr std::format_parse_context::iterator parse(std::format_parse_context& ctx) const {
+        return ctx.end();
+    }
 
-	std::format_context::iterator format(TextColor c, std::format_context& ctx) const {
-		return std::format_to(ctx.out(), "{}", static_cast<char>(c));
-	}
+    std::format_context::iterator format(TextColor c, std::format_context& ctx) const {
+        return std::format_to(ctx.out(), "{}", static_cast<char>(c));
+    }
 };
 
 namespace bw {
@@ -100,47 +100,47 @@ u32 rand_between_local(u32 min, u32 max, std::source_location src = std::source_
 
 template <typename T, T T_None>
 struct GraphicsSet {
-	T first = T_None; // Smallest Overlay
-	T last = T_None;  // Largest Overlay
+    T first = T_None; // Smallest Overlay
+    T last = T_None;  // Largest Overlay
 
-	GraphicsSet() = default;
-	GraphicsSet(int id) : first{T(id)}, last{T(id)} {}
-	GraphicsSet(T id) : first{id}, last{id} {}
-	GraphicsSet(T smallest_size, T largest_size) : first{smallest_size}, last{largest_size} {}
+    GraphicsSet() = default;
+    GraphicsSet(int id) : first{T(id)}, last{T(id)} {}
+    GraphicsSet(T id) : first{id}, last{id} {}
+    GraphicsSet(T smallest_size, T largest_size) : first{smallest_size}, last{largest_size} {}
 
-	operator bool() const {
-		return first != T_None;
-	}
-	bool operator==(const GraphicsSet&) const = default;
+    operator bool() const {
+        return first != T_None;
+    }
+    bool operator==(const GraphicsSet&) const = default;
 
-	T get_small() const {
-		return get(0);
-	}
+    T get_small() const {
+        return get(0);
+    }
 
-	T get_medium() const {
-		return get(1);
-	}
+    T get_medium() const {
+        return get(1);
+    }
 
-	T get_large() const {
-		return get(2);
-	}
+    T get_large() const {
+        return get(2);
+    }
 
-	T get_xlarge() const {
-		return get(3);
-	}
+    T get_xlarge() const {
+        return get(3);
+    }
 
-	T get_for(Unit* unit) const {
-		return get(bw::get_overlay_offset(unit->id, true));
-	}
+    T get_for(Unit* unit) const {
+        return get(bw::get_overlay_offset(unit->id, true));
+    }
 
 private:
-	T get(u32 index) const {
-		if (first > last) {
-			return std::clamp<T>(T(s32(first) - s32(index)), last, first);
-		} else {
-			return std::clamp<T>(T(s32(first) + s32(index)), first, last);
-		}
-	}
+    T get(u32 index) const {
+        if (first > last) {
+            return std::clamp<T>(T(s32(first) - s32(index)), last, first);
+        } else {
+            return std::clamp<T>(T(s32(first) + s32(index)), first, last);
+        }
+    }
 };
 using ImageSet = GraphicsSet<ImageId::Enum, ImageId::None>;
 using SpriteSet = GraphicsSet<SpriteId::Enum, SpriteId::None>;
@@ -148,71 +148,71 @@ using SpriteSet = GraphicsSet<SpriteId::Enum, SpriteId::None>;
 enum class RandType { Sync, Local };
 
 struct SoundSet {
-	SoundId::Enum first = SoundId::None;
-	SoundId::Enum last = SoundId::None;
-	RandType random_type = RandType::Sync;
+    SoundId::Enum first = SoundId::None;
+    SoundId::Enum last = SoundId::None;
+    RandType random_type = RandType::Sync;
 
-	SoundSet() = default;
-	SoundSet(s32 id) : first{SoundId::Enum(id)}, last{SoundId::Enum(id)} {}
-	SoundSet(SoundId::Enum id) : first{id}, last{id} {}
-	SoundSet(SoundId::Enum first, SoundId::Enum last, RandType random_type = RandType::Sync) : first{first}, last{last}, random_type{random_type} {
-		if (first > last) {
-			std::swap(this->first, this->last);
-		}
-	}
+    SoundSet() = default;
+    SoundSet(s32 id) : first{SoundId::Enum(id)}, last{SoundId::Enum(id)} {}
+    SoundSet(SoundId::Enum id) : first{id}, last{id} {}
+    SoundSet(SoundId::Enum first, SoundId::Enum last, RandType random_type = RandType::Sync) : first{first}, last{last}, random_type{random_type} {
+        if (first > last) {
+            std::swap(this->first, this->last);
+        }
+    }
 
-	operator bool() const {
-		return first != SoundId::None;
-	}
-	bool operator==(const SoundSet&) const = default;
+    operator bool() const {
+        return first != SoundId::None;
+    }
+    bool operator==(const SoundSet&) const = default;
 
-	SoundId::Enum rand(std::source_location src = std::source_location::current()) const {
-		if (first == last) return first;
-		if (random_type == RandType::Local) {
+    SoundId::Enum rand(std::source_location src = std::source_location::current()) const {
+        if (first == last) return first;
+        if (random_type == RandType::Local) {
             return (SoundId::Enum) bw::rand_between_local(first, last, src);
-		}
-		return (SoundId::Enum) bw::rand_between(first, last, src);
-	}
+        }
+        return (SoundId::Enum) bw::rand_between(first, last, src);
+    }
 
-	SoundSet as_local() {
-		auto copy = *this;
-		copy.random_type = RandType::Local;
-		return copy;
-	}
+    SoundSet as_local() {
+        auto copy = *this;
+        copy.random_type = RandType::Local;
+        return copy;
+    }
 
-	SoundSet as_sync() {
-		auto copy = *this;
-		copy.random_type = RandType::Sync;
-		return copy;
-	}
+    SoundSet as_sync() {
+        auto copy = *this;
+        copy.random_type = RandType::Sync;
+        return copy;
+    }
 };
 
 struct OverlaySettings {
-	bool underlay   : 1 = false;
-	bool play_death : 1 = false;
-	SoundSet add_sound = SoundId::None;
-	SoundSet remove_sound = SoundId::None;
+    bool underlay   : 1 = false;
+    bool play_death : 1 = false;
+    SoundSet add_sound = SoundId::None;
+    SoundSet remove_sound = SoundId::None;
 };
 
 auto rand_one(const std::ranges::range auto& range, std::source_location src = std::source_location::current()) -> decltype(*std::ranges::begin(range)) {
-	return *std::ranges::next(std::ranges::begin(range), bw::rand_between(0, std::ranges::size(range) - 1, src));
+    return *std::ranges::next(std::ranges::begin(range), bw::rand_between(0, std::ranges::size(range) - 1, src));
 };
 
 auto rand_one_local(const std::ranges::range auto& range, std::source_location src = std::source_location::current()) -> decltype(*std::ranges::begin(range)) {
-	return *std::ranges::next(std::ranges::begin(range), bw::rand_between_local(0, std::ranges::size(range) - 1, src));
+    return *std::ranges::next(std::ranges::begin(range), bw::rand_between_local(0, std::ranges::size(range) - 1, src));
 };
 
 inline bool harvester_is_active(Unit* unit, Unit* target) {
-	UnitExt* unit_ext = get_unit_ext(unit);
-	UnitExt* target_ext = get_unit_ext(target);
-	u32 activity = unit_ext->values[ValueHarvesterActivity];
-	if (target_ext->values[ValueAssignedHarvesters] <= 2) {
-		// Until 2 workers, we don't want to wander synced pairs (to allow worker micro),
+    UnitExt* unit_ext = get_unit_ext(unit);
+    UnitExt* target_ext = get_unit_ext(target);
+    u32 activity = unit_ext->values[ValueHarvesterActivity];
+    if (target_ext->values[ValueAssignedHarvesters] <= 2) {
+        // Until 2 workers, we don't want to wander synced pairs (to allow worker micro),
         return activity > 0 && activity <= HarvestTimer - 24;
-	} else {
-		// After 2 workers, we always wander since it's always optimal
+    } else {
+        // After 2 workers, we always wander since it's always optimal
         return activity > 0;
-	}
+    }
 }
 
 std::filesystem::path get_starcraft_path();
@@ -246,12 +246,12 @@ void printf_console(const char* fmt, ...);
 
 template <typename... Args>
 void println(std::format_string<Args...> fmt, Args&&... args) {
-	print(std::format(fmt, std::forward<Args>(args)...).c_str());
+    print(std::format(fmt, std::forward<Args>(args)...).c_str());
 }
 
 template <typename... Args>
 void println(TextColor color, std::format_string<Args...> fmt, Args&&... args) {
-	print(std::format(fmt, std::forward<Args>(args)...).c_str(), color);
+    print(std::format(fmt, std::forward<Args>(args)...).c_str(), color);
 }
 
 /// Displays an error message and plays a new_sound for the player.
@@ -291,7 +291,7 @@ bool can_be_entered_by(Unit* transport, Unit* unit);
 ///                   weapon can target a position on the inside. If @p target
 ///                   is invincible, the function returns false.
 bool can_weapon_target_unit(u8 weapon_id, Unit* target = nullptr,
-	Unit* attacker = nullptr);
+    Unit* attacker = nullptr);
 
 /// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
 /// unit is a inside unit or a building.
@@ -313,11 +313,11 @@ u16 get_tech_user_error_message(Unit* target, u8 castingPlayer, u16 techId);
 s32 get_angle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd);
 
 inline s32 get_angle(Point16 start, Point16 end) {
-	return get_angle(start.x, start.y, end.x, end.y);
+    return get_angle(start.x, start.y, end.x, end.y);
 }
 
 inline s32 get_angle(Vec32 start, Vec32 end) {
-	return get_angle(start.x, start.y, end.x, end.y);
+    return get_angle(start.x, start.y, end.x, end.y);
 }
 
 inline f64 bw_angle_to_normal(s32 bw_angle);
@@ -327,14 +327,14 @@ inline f64 bw_angle_to_normal(s32 bw_angle);
 u32 distance_between(s32 x1, s32 y1, s32 x2, s32 y2);
 
 inline u32 distance_between(Point16 p1, Point16 p2) {
-	return distance_between(p1.x, p1.y, p2.x, p2.y);
+    return distance_between(p1.x, p1.y, p2.x, p2.y);
 }
 
 /// Distance, but rectangular instead of circular (max of x dist and y dist)
 u32 distance_manhattan_between(s32 x1, s32 y1, s32 x2, s32 y2);
 
 inline u32 distance_manhattan_between(Point16 p1, Point16 p2) {
-	return distance_manhattan_between(p1.x, p1.y, p2.x, p2.y);
+    return distance_manhattan_between(p1.x, p1.y, p2.x, p2.y);
 }
 
 /// Calculates the X Cartesian coordinate from the given polar coordinates
@@ -349,160 +349,160 @@ Point16 polar_point(Point16 center, f32 rads, f32 distance);
 Point16 random_polar_point(Point16 center, f32 max_distance);
 
 inline Point16 clamp_point(Point16 point) {
-	return {
-		std::clamp<u16>(point.x, 0, g_map_tile_size->width * 32),
-		std::clamp<u16>(point.y, 0, g_map_tile_size->height * 32),
-	};
+    return {
+        std::clamp<u16>(point.x, 0, g_map_tile_size->width * 32),
+        std::clamp<u16>(point.y, 0, g_map_tile_size->height * 32),
+    };
 }
 
 inline Point16 to_point16(Vec32f vec) {
-	return {
+    return {
         (u16)std::clamp<f32>(vec.x, 0, g_map_tile_size->width * 32),
         (u16)std::clamp<f32>(vec.y, 0, g_map_tile_size->height * 32),
-	};
+    };
 }
 
 inline Box16 clamp_box16(Box16 rect) {
-	return {
-		std::clamp<s16>(rect.left, 0, g_map_tile_size->width * 32),
-		std::clamp<s16>(rect.top, 0, g_map_tile_size->height * 32),
-		std::clamp<s16>(rect.right, 0, g_map_tile_size->width * 32),
-		std::clamp<s16>(rect.bottom, 0, g_map_tile_size->height * 32),
-	};
+    return {
+        std::clamp<s16>(rect.left, 0, g_map_tile_size->width * 32),
+        std::clamp<s16>(rect.top, 0, g_map_tile_size->height * 32),
+        std::clamp<s16>(rect.right, 0, g_map_tile_size->width * 32),
+        std::clamp<s16>(rect.bottom, 0, g_map_tile_size->height * 32),
+    };
 }
 
 inline Box32 clamp_box32(Box32 rect) {
-	return {
-		std::clamp<s32>(rect.left, 0, g_map_tile_size->width * 32),
-		std::clamp<s32>(rect.top, 0, g_map_tile_size->height * 32),
-		std::clamp<s32>(rect.right, 0, g_map_tile_size->width * 32),
-		std::clamp<s32>(rect.bottom, 0, g_map_tile_size->height * 32),
-	};
+    return {
+        std::clamp<s32>(rect.left, 0, g_map_tile_size->width * 32),
+        std::clamp<s32>(rect.top, 0, g_map_tile_size->height * 32),
+        std::clamp<s32>(rect.right, 0, g_map_tile_size->width * 32),
+        std::clamp<s32>(rect.bottom, 0, g_map_tile_size->height * 32),
+    };
 }
 
 inline Vec32f normalize(Vec32 vec) {
-	f32 dist = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
-	if (!dist) {
-		return {};
-	}
-	return {vec.x / dist, vec.y / dist};
+    f32 dist = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
+    if (!dist) {
+        return {};
+    }
+    return {vec.x / dist, vec.y / dist};
 }
 
 inline Vec32f normalize(Vec32f vec) {
-	f32 dist = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
-	if (!dist) {
-		return {};
-	}
-	return {vec.x / dist, vec.y / dist};
+    f32 dist = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
+    if (!dist) {
+        return {};
+    }
+    return {vec.x / dist, vec.y / dist};
 }
 
 inline Vec32 vec_between(Point16 source, Point16 target) {
-	return {
-		target.x - source.x,
-		target.y - source.y,
-	};
+    return {
+        target.x - source.x,
+        target.y - source.y,
+    };
 }
 
 inline Vec32f vecf_between(Point16 source, Point16 target) {
-	return {
-		(f32)target.x - (f32)source.x,
-		(f32)target.y - (f32)source.y,
-	};
+    return {
+        (f32)target.x - (f32)source.x,
+        (f32)target.y - (f32)source.y,
+    };
 }
 
 inline Vec32f vecf_between(Vec32f source, Vec32f target) {
-	return {
-		target.x - source.x,
-		target.y - source.y,
-	};
+    return {
+        target.x - source.x,
+        target.y - source.y,
+    };
 }
 
 inline Vec32f dir_between(Point16 source, Point16 target) {
-	return normalize(vecf_between(source, target));
+    return normalize(vecf_between(source, target));
 }
 
 inline Vec32f dir_between(Vec32f source, Vec32f target) {
-	return normalize(vecf_between(source, target));
+    return normalize(vecf_between(source, target));
 }
 
 inline f32 distance_between(Vec32f a, Vec32f b) {
-	return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
+    return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
 }
 
 inline Vec32f facing_dir(Unit* unit) {
-	return normalize(Vec32f{
+    return normalize(Vec32f{
         g_angle_distance[unit->current_direction_1].x / 256.0f,
         g_angle_distance[unit->current_direction_1].y / 256.0f,
-	});
+    });
 }
 
 inline Vec32f facing_dir(Bullet* bullet) {
-	return normalize(Vec32f{
+    return normalize(Vec32f{
         g_angle_distance[bullet->current_direction_1].x / 256.0f,
         g_angle_distance[bullet->current_direction_1].y / 256.0f,
-	});
+    });
 }
 
 inline f32 deg_to_rad(f32 degrees) {
-	return degrees * PI / 180;
+    return degrees * PI / 180;
 }
 
 inline f32 rad_to_deg(f32 radians) {
-	return radians * 180 / PI;
+    return radians * 180 / PI;
 }
 
 inline f32 deg_to_dot(f32 angle) {
-	return cosf(deg_to_rad(angle));
+    return cosf(deg_to_rad(angle));
 }
 
 inline f32 dot_to_degree(f32 dot) {
-	return rad_to_deg(acosf(dot));
+    return rad_to_deg(acosf(dot));
 }
 
 inline f32 dot_product(Vec32f a, Vec32f b) {
-	return a.x * b.x + a.y * b.y;
+    return a.x * b.x + a.y * b.y;
 }
 
 inline f32 dot_norm(Vec32f a, Vec32f b) {
-	return dot_norm(normalize(a), normalize(b));
+    return dot_norm(normalize(a), normalize(b));
 }
 
 inline f32 determinant(Vec32f a, Vec32f b) {
-	return a.x * b.y - a.y * b.x;
+    return a.x * b.y - a.y * b.x;
 }
 
 inline f32 determinant_norm(Vec32f a, Vec32f b) {
-	return determinant_norm(normalize(a), normalize(b));
+    return determinant_norm(normalize(a), normalize(b));
 }
 
 inline Vec32f vec_perpendicular(Vec32f vec) {
-	return {-vec.y, vec.x};
+    return {-vec.y, vec.x};
 }
 
 inline Vec32f vec_reversed(Vec32f vec) {
-	return {-vec.x, -vec.y};
+    return {-vec.x, -vec.y};
 }
 
 inline bool unit_is_facing(Unit* unit, Point16 position) {
-	Vec32f angle = facing_dir(unit);
-	Vec32f dir = dir_between(unit->position, position);
-	f32 dot = dot_product(angle, dir);
-	return dot >= deg_to_dot(120.0 / 2);
+    Vec32f angle = facing_dir(unit);
+    Vec32f dir = dir_between(unit->position, position);
+    f32 dot = dot_product(angle, dir);
+    return dot >= deg_to_dot(120.0 / 2);
 }
 
 inline bool unit_is_exposed_to(Unit* unit, Point16 position) {
-	Vec32f angle = facing_dir(unit);
-	Vec32f dir = dir_between(unit->position, position);
-	f32 dot = dot_product(angle, dir);
-	return dot <= deg_to_dot(120.0 / 2);
+    Vec32f angle = facing_dir(unit);
+    Vec32f dir = dir_between(unit->position, position);
+    f32 dot = dot_product(angle, dir);
+    return dot <= deg_to_dot(120.0 / 2);
 }
 
 inline f32 vec_length(Vec32 vec) {
-	return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
+    return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 }
 
 inline f32 vec_length(Vec32f vec) {
-	return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
+    return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 }
 
 //////////////////////////////////////////////////////////////// @}
@@ -512,28 +512,28 @@ inline f32 vec_length(Vec32f vec) {
 
 /// Checks whether the game is in Brood War mode (instead of vanilla StarCraft).
 inline bool is_brood_war_mode() {
-	return (*g_is_brood_war) != 0;
+    return (*g_is_brood_war) != 0;
 }
 
 /// Checks whether the given cheat flag is enabled.
 inline bool is_cheat_enabled(u32 cheatFlag) {
-	return ((*g_cheat_state) & cheatFlag) != 0;
+    return ((*g_cheat_state) & cheatFlag) != 0;
 }
 
 /// Checks whether the game is paused.
 inline bool is_game_paused() {
-	return (*g_is_game_paused) != 0;
+    return (*g_is_game_paused) != 0;
 }
 
 /// Checks whether the game is in replay mode.
 inline bool in_replay() {
-	return (g_is_in_replay) != 0;
+    return (g_is_in_replay) != 0;
 }
 
 bool is_witness();
 
 inline bool in_replay_or_witness() {
-	return in_replay() || is_witness();
+    return in_replay() || is_witness();
 }
 
 //////////////////////////////////////////////////////////////// @}
@@ -544,31 +544,31 @@ inline bool in_replay_or_witness() {
 /// Checks whether @p playerB is recognized by @p playerA as an ally.
 /// Warning: The opposite may not necessarily be true!
 inline bool is_allied_to(u8 a, u8 b) {
-	if (a == NeutralHostilePlayer && b == NeutralHostilePlayer) return true;
-	if (a == NeutralHostilePlayer || b == NeutralHostilePlayer) return false;
-	return player_alliance[a].flags[b];
+    if (a == NeutralHostilePlayer && b == NeutralHostilePlayer) return true;
+    if (a == NeutralHostilePlayer || b == NeutralHostilePlayer) return false;
+    return player_alliance[a].flags[b];
 }
 
 inline bool is_vision_allied_to(u8 a, u8 b) {
-	if (a == NeutralHostilePlayer && b == NeutralHostilePlayer) return true;
-	if (a == NeutralHostilePlayer || b == NeutralHostilePlayer) return false;
-	return player_vision->flags[a] & (1 << b);
+    if (a == NeutralHostilePlayer && b == NeutralHostilePlayer) return true;
+    if (a == NeutralHostilePlayer || b == NeutralHostilePlayer) return false;
+    return player_vision->flags[a] & (1 << b);
 }
 
 inline bool are_mutual_allies(u32 a, u32 b) {
-	return bw::is_allied_to(a, b) && bw::is_allied_to(b, a);
+    return bw::is_allied_to(a, b) && bw::is_allied_to(b, a);
 }
 
 /// Checks whether the @p unit is recognized by @p player as an enemy.
 /// This will work even when the owner of the @p unit has left the game.
 /// @see Unit::is_target_enemy().
 inline bool is_unit_enemy(u8 player, Unit* unit) {
-	//Identical to function @ 0x0047B740
-	u8 owner = unit->player;
-	if (owner == NeutralPlayer) {
-		owner = unit->sprite->player;
-	}
-	return player_alliance[player].flags[owner] == 0;
+    //Identical to function @ 0x0047B740
+    u8 owner = unit->player;
+    if (owner == NeutralPlayer) {
+        owner = unit->sprite->player;
+    }
+    return player_alliance[player].flags[owner] == 0;
 }
 
 u32 get_sized_overlay(Unit* unit, u32 initial);
@@ -635,35 +635,35 @@ void set_upgrade_level(u8 player, u8 upgradeId, u8 level);
 
 /// Returns the pointer to the active tile data at (x, y).
 inline ActiveTile* get_active_tile_at_coords(u32 x, u32 y) {
-	return &(*g_active_tile_array)[(x / 32) + (y / 32) * g_map_tile_size->width];
+    return &(*g_active_tile_array)[(x / 32) + (y / 32) * g_map_tile_size->width];
 }
 
 inline ActiveTile* get_active_tile_at_coords(Point16 point) {
-	return get_active_tile_at_coords(point.x, point.y);
+    return get_active_tile_at_coords(point.x, point.y);
 }
 
 inline ActiveTile* get_active_tile_at_tile(u32 tile_x, u32 tile_y) {
-	return &(*g_active_tile_array)[tile_x + tile_y * g_map_tile_size->width];
+    return &(*g_active_tile_array)[tile_x + tile_y * g_map_tile_size->width];
 }
 
 inline ActiveTile& get_tile_at_coords(u32 x, u32 y) {
-	return (*g_active_tile_array)[(x / 32) + (y / 32) * g_map_tile_size->width];
+    return (*g_active_tile_array)[(x / 32) + (y / 32) * g_map_tile_size->width];
 }
 
 inline ActiveTile& get_tile_at_coords(Point16 point) {
-	return get_tile_at_coords(point.x, point.y);
+    return get_tile_at_coords(point.x, point.y);
 }
 
 inline ActiveTile& get_tile_at_tile(u32 tile_x, u32 tile_y) {
-	return (*g_active_tile_array)[tile_x + tile_y * g_map_tile_size->width];
+    return (*g_active_tile_array)[tile_x + tile_y * g_map_tile_size->width];
 }
 
 inline ActiveTile& get_tile_at_tile(TileCoord tile) {
-	return get_tile_at_tile(tile.x, tile.y);
+    return get_tile_at_tile(tile.x, tile.y);
 }
 
 inline u16& getTileIdAt(s32 x, s32 y) {
-	return (*tileIdArray)[(x / 32) + g_map_tile_size->width * (y / 32)];
+    return (*tileIdArray)[(x / 32) + g_map_tile_size->width * (y / 32)];
 }
 
 /// Returns the elevation of the tile at (x, y). 0 for low terrain, 1 for
@@ -755,8 +755,8 @@ f32 random_float(std::source_location src = std::source_location::current());
 /// @name Needs research
 //////////////////////////////////////////////////////////////// @{
 
-	/// Tells StarCraft to refresh the console (current button set, unit portrait,
-	/// and status bar). not completely understood.
+    /// Tells StarCraft to refresh the console (current button set, unit portrait,
+    /// and status bar). not completely understood.
 void refresh_console();
 
 // Moves the camera/screen to the unit
@@ -767,39 +767,39 @@ void minimap_ping(u32 x, u32 y, s32 color, u32 player = 8);
 
 // Functionally identical to the [playfram] opcode in iscript.bin.
 inline void play_frame(Image* image, u16 frameset) {
-	if (image->frameset != frameset) {
-		image->frameset = frameset;
-		u16 frameIndex = frameset + image->direction;
-		if (image->frame_index != frameIndex) {
-			image->flags |= ImageFlags::Redraw;	//Order the game to redraw the image
-			image->frame_index = frameIndex;
-		}
-	}
+    if (image->frameset != frameset) {
+        image->frameset = frameset;
+        u16 frameIndex = frameset + image->direction;
+        if (image->frame_index != frameIndex) {
+            image->flags |= ImageFlags::Redraw;	//Order the game to redraw the image
+            image->frame_index = frameIndex;
+        }
+    }
 }
 
 /// Sets the data of location @p locNumber.
 inline void set_location(s32 locNumber, s32 left, s32 top, s32 right, s32 bottom, s32 flags) {
-	Location* location = &g_location_table[locNumber];
-	location->dimensions.left = left;
-	location->dimensions.top = top;
-	location->dimensions.right = right;
-	location->dimensions.bottom = bottom;
-	location->flags = flags;
+    Location* location = &g_location_table[locNumber];
+    location->dimensions.left = left;
+    location->dimensions.top = top;
+    location->dimensions.right = right;
+    location->dimensions.bottom = bottom;
+    location->flags = flags;
 }
 
 /// Sets the data of the Anywhere location.
 inline void set_anywhere_location() {
-	static constexpr auto AnywhereLocation = 63;
-	set_location(AnywhereLocation, 0, 0, 32 * g_map_tile_size->width, 32 * g_map_tile_size->height, 63);
+    static constexpr auto AnywhereLocation = 63;
+    set_location(AnywhereLocation, 0, 0, 32 * g_map_tile_size->width, 32 * g_map_tile_size->height, 63);
 }
 
 /// Sets or clears the "is currently inside the game loop" property.
 /// This must be called in next_frame() to use bw::random() there.
 inline bool set_ingame_loop_state(bool new_state) {
-	// Identical to function @ 0x004DC540
-	b32 previous_state = g_is_in_game_loop;
-	g_is_in_game_loop = (new_state ? 1 : 0);
-	return previous_state != 0;
+    // Identical to function @ 0x004DC540
+    b32 previous_state = g_is_in_game_loop;
+    g_is_in_game_loop = (new_state ? 1 : 0);
+    return previous_state != 0;
 }
 
 //////////////////////////////////////////////////////////////// @}
@@ -840,31 +840,31 @@ bool transport_is_full(Unit* transport);
 bool transport_is_empty(Unit* transport);
 
 inline u32 get_region_id(Point16 position) {
-	return helper::get_region_id(position.x, position.y);
+    return helper::get_region_id(position.x, position.y);
 }
 
 inline u32 get_region_id(TileCoord tile) {
-	return get_region_id(Point16(tile.x * 32 + 16, tile.y * 32 + 16));
+    return get_region_id(Point16(tile.x * 32 + 16, tile.y * 32 + 16));
 }
 
 inline AiRegion* get_ai_region(u32 player, u32 index) {
-	return &g_ai_region_captains[player][index];
+    return &g_ai_region_captains[player][index];
 }
 
 inline AiRegion* get_ai_region(u32 player, Point16 position) {
-	return get_ai_region(player, get_region_id(position));
+    return get_ai_region(player, get_region_id(position));
 }
 
 inline Region* get_region(u32 index) {
-	return &(*g_sai_paths)->regions[index];
+    return &(*g_sai_paths)->regions[index];
 }
 
 inline Region* get_region(Point16 position) {
-	return get_region(get_region_id(position));
+    return get_region(get_region_id(position));
 }
 
 inline Region* get_region(TileCoord tile) {
-	return get_region(Point16(tile.x * 32 + 16, tile.y * 32 + 16));
+    return get_region(Point16(tile.x * 32 + 16, tile.y * 32 + 16));
 }
 
 Point16 get_region_center(Region* region);
@@ -933,16 +933,16 @@ void move_camera(Point16 pos);
 bool are_mutual_allies(u32 player1, u32 player2);
 
 struct LineLineIntersect {
-	f32 t;
-	f32 u;
-	f32 clamped_t;
-	f32 clamped_u;
-	Vec32f cp;
-	Vec32f clamped_first_cp;
-	Vec32f clamped_second_cp;
-	bool on_first_line;
-	bool on_second_line;
-	bool on_both_lines;
+    f32 t;
+    f32 u;
+    f32 clamped_t;
+    f32 clamped_u;
+    Vec32f cp;
+    Vec32f clamped_first_cp;
+    Vec32f clamped_second_cp;
+    bool on_first_line;
+    bool on_second_line;
+    bool on_both_lines;
 };
 
 Quad quad_from_line(Point16 from, Point16 to, f32 line_width);

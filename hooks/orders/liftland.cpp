@@ -55,7 +55,7 @@ namespace hooks {
 				x /= 32; y /= 32;
 
 				// Check for units occupying the landing zone before the final vertical movement started.
-				if (helper::can_build_on_tile_location(unit, unit->player, x, y, unit->id, 0, 0, 1, 0)) {
+				if (helper::tile_location_is_unbuildable(unit, unit->player, x, y, unit->id, 0, 0, 1, 0)) {
 					// Play "landing sequence interrupted".
 					helper::play_landing_interrupt_sound(unit);
 

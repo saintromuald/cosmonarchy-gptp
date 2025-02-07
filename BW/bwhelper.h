@@ -336,7 +336,7 @@ namespace helper {
         char is_addon, char also_invisible);
 
     // For update_placement_state_for_placement_box
-    s32 can_build_on_tile_location(Unit* builder, s32 player, s32 xTile, s32 yTile, s32 unit_id,			// 00473FB0
+    s32 tile_location_is_unbuildable(Unit* builder, s32 player, s32 xTile, s32 yTile, s32 unit_id,			// 00473FB0
         s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision);
     
     // For refresh_screen

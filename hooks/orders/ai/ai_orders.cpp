@@ -1994,7 +1994,7 @@ namespace hooks {
 			addon_cucko3 = (u16*)((char*)&units_dat::max_hitpoints[unit_id + 122] + 2);
 			fallback_y = *addon_cucko3 / 32 + addon_cucko0;
 			fallback.x = addon_cucko2;
-			if (!helper::can_build_on_tile_location(builder, player, fallback.x, fallback_y, unit_id, 0, 0, 1, 0)) {
+			if (!helper::tile_location_is_unbuildable(builder, player, fallback.x, fallback_y, unit_id, 0, 0, 1, 0)) {
 				addon_cucko4 = *(u16*)addon_cucko1 / -32 + addon_cucko2;
 				fallback_y = *addon_cucko3 / -32 + fallback_y;
 				addon_dims_x2 = units_dat::building_dimensions[builder->id].x;

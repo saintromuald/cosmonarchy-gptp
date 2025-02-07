@@ -5,547 +5,547 @@
 using EffectRef = u64;
 
 enum ExtValueId {
-	ValueUnitInit,
-	ValueUnitIdName,
-	ValueWyvernLandGrabOn,
-	ValueAmitosis,
-	ValueHasFiredReturnAttack,
-	ValueHasSublimeShepherd,
-	ValueWyvernLandGrabX,
-	ValueWyvernLandGrabY,
-	ValueObservanceRend,
-	ValueMissileReturnX,
-	ValueMissileReturnY,
-	ValueAdrenalStacks,
-	ValueLastOrdersInit,
-	ValueTempoChange,
-	ValueTreasuryStacks,
-	ValueSupplyProvidedSet,
-	ValueSupplyProvidedId,
-	ValueSupplyProvided,
-	ValueSkyfallStacks,
-	ValueSkyfallX,
-	ValueSkyfallY,
-	ValueCorrosiveTouchStacks,
-	ValueKalkaliskLaunchPos,
-	ValueTerminalSurge,
-	ValueEmpyreanLaunchPos,
-	ValueProtossSwitchOrderState,
-	ValueMadcapStacks,
-	ValuePhobosDischarge,
-	ValueSalamanderLaunchPos,
-	ValueNaniteField,
-	ValuePhobosLaunchPos,
-	ValueHippogriffLaunchPos,
-	ValueHippogriffLaunchPos2,
-	ValueIncubationCount,
-	ValueIncubationUnitId,
-	ValueIncubationPlayer,
-	ValueCentaurLaunchPos,
-	ValueMagnetarLaunchPos,
-	ValueAlkajeliskSpores,
-	ValueAlkajeliskSporesPlayer,
-	ValueSovereignLaunchPos,
-	ValueAICloakGimmick,
-	ValueKeskathalorLaunchPos,
-	ValueAugurSafetyCheck,
-	ValuePenumbraLaunchPos,
-	ValueClarionSFX,
-	ValueWraithLaunchPos,
-	ValueHierophantOverlay,
-	ValueEnsnaringBroodAbility,
-	ValuePetrificationStacks,
-	ValueIonCannonLaunchPos,
-	ValueReconstitution,
-	ValueSimulacrumClone,
-	ValueProtectiveInstinctsStatus,
-	ValueEntropyGauntlets,
-	ValueDeconstruction,
-	ValueDeconstructionPlayer,
-	ValueMindControlOriginalPlayer,
-	ValuePreMorphEnergy,
-	ValueWendigoShatteredWindsStacks,
-	ValuePlayerColor,
-	ValueMissileReturnTarget, // unit
-	ValueAurielIncinerationPlayer,
-	ValueRaceSupplyType,
-	ValueExemplarLaunchPos,
-	ValueClaymoreLaunchPos,
-	ValueDirgeSourcePlayer,
-	ValueDirgeStacks,
-	ValueSignifyStacks,
-	ValueSignifyPlayer,
-	ValueReviveStarted,
-	ValuePreMorphHP,
-	ValueSkithrokorLaunchPos,
-	ValueDisruptionFieldOn,
-	ValueLiiraliskLaunchPos,
-	ValueAlliedInvPlayer,
-	ValueAutocratControlledOppositionStacks,
-	ValueAutocratControlledOppositionPlayer,
-	ValueEmpressAnodyneAnnexStacks,
-	ValueEmpressAnodyneAnnexSourcePlayer,
-	ValueAxitriliskLaunchPos,
-	ValueBactaliskLaunchPos,
-	ValueDracadinLaunchPos,
-	ValueCharlatanLaunchPos,
-	ValueIsNeutralBunker,
-	ValueIsZombified,
-	ValueCuirassIsSelfReviving,
-	ValueTalosAnimationTimer,
-	ValueSpecialSovrolethBirth,
-	ValuePlayingAddonWorkingAnim,
-	ValueMindControlPlayer,
-	ValueMindControllerUnitId,
-	ValueNewRepairTimer,
-	ValueSpraithColonyLaunchPos,
-	ValueMissileSiloLoaded,
-	ValueSovrolethLinkCount,
-	ValueDisableAutoBurrow,
-	ValueSentinelLaunchPos,
-	ValueWardenLaunchPos,
-	ValueCowardiceOverlay,
-	ValueUnitResponseOrder,
-	ValuePaladinLaunchPos,
-	ValueGoliathLaunchPos,
-	ValueSundogLaunchPos,
-	ValueEpigraphLaunchPos,
-	ValueMatrixLaunchPos,
-	ValueCataphractLaunchPos,
-	ValueDilettanteLuck,
-	ValuePanoptusLaunchPos,
-	ValueThroughTheLookingGlassX,
-	ValueThroughTheLookingGlassY,
-	ValueGladiusBindingPlasmaStacks,
-	ValueGladiusBindingPlasmaPlayer,
-	ValueCentaurSecondaryWeaponCount,
-	ValueAccantorLaunchPos,
-	ValuePatriarchAstralRulePlayer,
-	ValueSwarmhold,
-	ValueOptectonLaunchPos1,
-	ValueOptectonLaunchPos2,
-	ValueApollyoidAdhesiveStacks,
-	ValueRamessesLaunchPos,
-	ValuePositronLaunchPos,
-	ValueCustomImage,
-	ValueAionLaunchPos,
-	ValueMortothrokorStacks,
-	ValueCherbrathalorLaunchPos,
-	ValueAssignedHarvesters,
-	ValueAssignedAiGasHarvesters,
-	ValueActiveHarvesters,
-	ValueHarvesterActivity,
-	ValueNoCorpse,
-	ValueDidactChannelIndex,
-	ValueDidactRecalling,
-	ValueDiademTargeting,
-	ValueDiademTargetPosX,
-	ValueDiademTargetPosY,
-	ValueCyprianLaunchPos,
-	ValueSavantEntropyGauntlets,
-	ValueSavantPowerSiphonBuff,
-	ValueSavantPowerSiphonDebuff,
-	ValuePhalanxSiegeModeLaunchPos,
-	ValueRegressionUnstable,
-	ValueOriginatedFromGosvileth,
-	ValueCustomEggActive,
-	ValueCustomEggHatchMax,
-	ValueCustomEggHpMax,
-	ValueWeaponFireIndex,        // Index of fire event
-	ValueWeaponBulletLocalIndex, // Index of bullet in one fire event
-	ValueWeaponBulletTotalIndex, // Index of bullet in the whole fire sequence
-	ValueProjectilePattern,
-	ValueProjectileAngle,
-	ValueGhitorokorRelentlessAggressionStacks,
-	ValueDecaying,
-	ValuePariahHitPlayer,
-	ValueIsNydusExit,
-	ValueIsNeutralNydus,
-	ValueNeedsUnfreezing,
-	ValueTerranConstruction,
-	ValueMorphConnectedUnitId,
-	ValueEnsnareFactor,
-	ValueVultureLaunchPos,
-	ValueStaggerWeaponId,
-	ValueStaggerCount,
-	ValueTriggerArmorBaseSet,
-	ValueTriggerArmorBaseAmount,
-	ValueTriggerArmorPenBaseSet,
-	ValueTriggerArmorPenBaseAmount,
-	ValueTriggerDamageBaseSet,
-	ValueTriggerDamageBaseAmount,
-	ValueTakingDeconstructionDamage,
-	ValueTriggerWeaponSplashInnerSet,
-	ValueTriggerWeaponSplashInnerAmount,
-	ValueTriggerWeaponSplashMediumSet,
-	ValueTriggerWeaponSplashMediumAmount,
-	ValueTriggerWeaponSplashOuterSet,
-	ValueTriggerWeaponSplashOuterAmount,
-	ValueTriggerWeaponRangeBaseSet,
-	ValueTriggerWeaponRangeBaseAmount,
-	ValueTriggerBehaviorProximityCloak,
-	ValueTriggerBehaviorSteadyShroud,
-	ValueAddonInactive,
-	ValueNoMassacreResource,
-	ValueJustCastedHallucination,
-	ValueInfested,
-	ValueInfestedInit,
-	ValueInfestingPlayer,
-	ValueRepentantChorus,
-	ValueDemiurgePlayer,
-	ValueMadcapFullChargeRead,
-	ValueHasStimpack,
-	ValueControlledByDemiurge,
-	ValueHidebreaker,
-	ValueTryCastCustomSpell,
-	ValueMindTyrantTyranny,
-	ValueReclaimed,
-	ValueReclamationRegen,
-	ValueDisablePassive,
-	ValueRefreshSpeedNextFrame,
-	ValueWyvernWeaponCharging,
-	ValueTurningAggressiveMode,
-	ValueUprisingInAttackWave,
-	ValueCancellingZergStructure,
-	ValueIsShade,
-	ValuePlayingHatchSound,
-	ValueWorkerContext,
-	ValueWearAndTear,
-	ValueIdolLaunchPos,
-	ValueStormDivider,
-	ValueCabalistSilentStridesDamage,
-	ValueCohortServileVigor,
+    ValueUnitInit,
+    ValueUnitIdName,
+    ValueWyvernLandGrabOn,
+    ValueAmitosis,
+    ValueHasFiredReturnAttack,
+    ValueHasSublimeShepherd,
+    ValueWyvernLandGrabX,
+    ValueWyvernLandGrabY,
+    ValueObservanceRend,
+    ValueMissileReturnX,
+    ValueMissileReturnY,
+    ValueAdrenalStacks,
+    ValueLastOrdersInit,
+    ValueTempoChange,
+    ValueTreasuryStacks,
+    ValueSupplyProvidedSet,
+    ValueSupplyProvidedId,
+    ValueSupplyProvided,
+    ValueSkyfallStacks,
+    ValueSkyfallX,
+    ValueSkyfallY,
+    ValueCorrosiveTouchStacks,
+    ValueKalkaliskLaunchPos,
+    ValueTerminalSurge,
+    ValueEmpyreanLaunchPos,
+    ValueProtossSwitchOrderState,
+    ValueMadcapStacks,
+    ValuePhobosDischarge,
+    ValueSalamanderLaunchPos,
+    ValueNaniteField,
+    ValuePhobosLaunchPos,
+    ValueHippogriffLaunchPos,
+    ValueHippogriffLaunchPos2,
+    ValueIncubationCount,
+    ValueIncubationUnitId,
+    ValueIncubationPlayer,
+    ValueCentaurLaunchPos,
+    ValueMagnetarLaunchPos,
+    ValueAlkajeliskSpores,
+    ValueAlkajeliskSporesPlayer,
+    ValueSovereignLaunchPos,
+    ValueAICloakGimmick,
+    ValueKeskathalorLaunchPos,
+    ValueAugurSafetyCheck,
+    ValuePenumbraLaunchPos,
+    ValueClarionSFX,
+    ValueWraithLaunchPos,
+    ValueHierophantOverlay,
+    ValueEnsnaringBroodAbility,
+    ValuePetrificationStacks,
+    ValueIonCannonLaunchPos,
+    ValueReconstitution,
+    ValueSimulacrumClone,
+    ValueProtectiveInstinctsStatus,
+    ValueEntropyGauntlets,
+    ValueDeconstruction,
+    ValueDeconstructionPlayer,
+    ValueMindControlOriginalPlayer,
+    ValuePreMorphEnergy,
+    ValueWendigoShatteredWindsStacks,
+    ValuePlayerColor,
+    ValueMissileReturnTarget, // unit
+    ValueAurielIncinerationPlayer,
+    ValueRaceSupplyType,
+    ValueExemplarLaunchPos,
+    ValueClaymoreLaunchPos,
+    ValueDirgeSourcePlayer,
+    ValueDirgeStacks,
+    ValueSignifyStacks,
+    ValueSignifyPlayer,
+    ValueReviveStarted,
+    ValuePreMorphHP,
+    ValueSkithrokorLaunchPos,
+    ValueDisruptionFieldOn,
+    ValueLiiraliskLaunchPos,
+    ValueAlliedInvPlayer,
+    ValueAutocratControlledOppositionStacks,
+    ValueAutocratControlledOppositionPlayer,
+    ValueEmpressAnodyneAnnexStacks,
+    ValueEmpressAnodyneAnnexSourcePlayer,
+    ValueAxitriliskLaunchPos,
+    ValueBactaliskLaunchPos,
+    ValueDracadinLaunchPos,
+    ValueCharlatanLaunchPos,
+    ValueIsNeutralBunker,
+    ValueIsZombified,
+    ValueCuirassIsSelfReviving,
+    ValueTalosAnimationTimer,
+    ValueSpecialSovrolethBirth,
+    ValuePlayingAddonWorkingAnim,
+    ValueMindControlPlayer,
+    ValueMindControllerUnitId,
+    ValueNewRepairTimer,
+    ValueSpraithColonyLaunchPos,
+    ValueMissileSiloLoaded,
+    ValueSovrolethLinkCount,
+    ValueDisableAutoBurrow,
+    ValueSentinelLaunchPos,
+    ValueWardenLaunchPos,
+    ValueCowardiceOverlay,
+    ValueUnitResponseOrder,
+    ValuePaladinLaunchPos,
+    ValueGoliathLaunchPos,
+    ValueSundogLaunchPos,
+    ValueEpigraphLaunchPos,
+    ValueMatrixLaunchPos,
+    ValueCataphractLaunchPos,
+    ValueDilettanteLuck,
+    ValuePanoptusLaunchPos,
+    ValueThroughTheLookingGlassX,
+    ValueThroughTheLookingGlassY,
+    ValueGladiusBindingPlasmaStacks,
+    ValueGladiusBindingPlasmaPlayer,
+    ValueCentaurSecondaryWeaponCount,
+    ValueAccantorLaunchPos,
+    ValuePatriarchAstralRulePlayer,
+    ValueSwarmhold,
+    ValueOptectonLaunchPos1,
+    ValueOptectonLaunchPos2,
+    ValueApollyoidAdhesiveStacks,
+    ValueRamessesLaunchPos,
+    ValuePositronLaunchPos,
+    ValueCustomImage,
+    ValueAionLaunchPos,
+    ValueMortothrokorStacks,
+    ValueCherbrathalorLaunchPos,
+    ValueAssignedHarvesters,
+    ValueAssignedAiGasHarvesters,
+    ValueActiveHarvesters,
+    ValueHarvesterActivity,
+    ValueNoCorpse,
+    ValueDidactChannelIndex,
+    ValueDidactRecalling,
+    ValueDiademTargeting,
+    ValueDiademTargetPosX,
+    ValueDiademTargetPosY,
+    ValueCyprianLaunchPos,
+    ValueSavantEntropyGauntlets,
+    ValueSavantPowerSiphonBuff,
+    ValueSavantPowerSiphonDebuff,
+    ValuePhalanxSiegeModeLaunchPos,
+    ValueRegressionUnstable,
+    ValueOriginatedFromGosvileth,
+    ValueCustomEggActive,
+    ValueCustomEggHatchMax,
+    ValueCustomEggHpMax,
+    ValueWeaponFireIndex,        // Index of fire event
+    ValueWeaponBulletLocalIndex, // Index of bullet in one fire event
+    ValueWeaponBulletTotalIndex, // Index of bullet in the whole fire sequence
+    ValueProjectilePattern,
+    ValueProjectileAngle,
+    ValueGhitorokorRelentlessAggressionStacks,
+    ValueDecaying,
+    ValuePariahHitPlayer,
+    ValueIsNydusExit,
+    ValueIsNeutralNydus,
+    ValueNeedsUnfreezing,
+    ValueTerranConstruction,
+    ValueMorphConnectedUnitId,
+    ValueEnsnareFactor,
+    ValueVultureLaunchPos,
+    ValueStaggerWeaponId,
+    ValueStaggerCount,
+    ValueTriggerArmorBaseSet,
+    ValueTriggerArmorBaseAmount,
+    ValueTriggerArmorPenBaseSet,
+    ValueTriggerArmorPenBaseAmount,
+    ValueTriggerDamageBaseSet,
+    ValueTriggerDamageBaseAmount,
+    ValueTakingDeconstructionDamage,
+    ValueTriggerWeaponSplashInnerSet,
+    ValueTriggerWeaponSplashInnerAmount,
+    ValueTriggerWeaponSplashMediumSet,
+    ValueTriggerWeaponSplashMediumAmount,
+    ValueTriggerWeaponSplashOuterSet,
+    ValueTriggerWeaponSplashOuterAmount,
+    ValueTriggerWeaponRangeBaseSet,
+    ValueTriggerWeaponRangeBaseAmount,
+    ValueTriggerBehaviorProximityCloak,
+    ValueTriggerBehaviorSteadyShroud,
+    ValueAddonInactive,
+    ValueNoMassacreResource,
+    ValueJustCastedHallucination,
+    ValueInfested,
+    ValueInfestedInit,
+    ValueInfestingPlayer,
+    ValueRepentantChorus,
+    ValueDemiurgePlayer,
+    ValueMadcapFullChargeRead,
+    ValueHasStimpack,
+    ValueControlledByDemiurge,
+    ValueHidebreaker,
+    ValueTryCastCustomSpell,
+    ValueMindTyrantTyranny,
+    ValueReclaimed,
+    ValueReclamationRegen,
+    ValueDisablePassive,
+    ValueRefreshSpeedNextFrame,
+    ValueWyvernWeaponCharging,
+    ValueTurningAggressiveMode,
+    ValueUprisingInAttackWave,
+    ValueCancellingZergStructure,
+    ValueIsShade,
+    ValuePlayingHatchSound,
+    ValueWorkerContext,
+    ValueWearAndTear,
+    ValueIdolLaunchPos,
+    ValueStormDivider,
+    ValueCabalistSilentStridesDamage,
+    ValueCohortServileVigor,
 
-	ValueAI_WorkerChosenForExpansion,
-	ValueAI_WorkerChosenX,
-	ValueAI_WorkerChosenY,
-	ValueAI_KitingSignal,
-	ValueAI_PreventTargeting,
-	ValueAI_BunkerCustom,
+    ValueAI_WorkerChosenForExpansion,
+    ValueAI_WorkerChosenX,
+    ValueAI_WorkerChosenY,
+    ValueAI_KitingSignal,
+    ValueAI_PreventTargeting,
+    ValueAI_BunkerCustom,
 
-	ValueCount,
+    ValueCount,
 };
 
 enum ExtTimerId {
-	TimerKaiserRampage,
-	TimerKaiserRampageTimeout,
-	TimerApollyoidAdhesive,
-	TimerApollyoidAdhesiveDamagePeriod,
-	TimerObservanceDebuff,
-	TimerObservancePeriod,
-	TimerMissileReturnETA,
-	TimerLobotomySlow,							
-	TimerStarSovereignGriefOfAllGodsChannel,
-	TimerStarSovereignGriefOfAllGodsDelay,
-	TimerStarSovereignInterventionMissiles,
-	TimerQuaziliskCancel,
-	TimerCausticDischargeSpeed,
-	TimerIonFieldAttackSpeed,
-	TimerReconstitutionCooldown,
-	TimerSalamanderFire,
-	TimerWendigoShatteredWinds,
-	TimerControlledDemolition,
-	TimerEmergencyDetonation,
-	TimerNemeanReactors,
-	TimerSimulacrumClone,
-	TimerEnsnaringBrood,
-	TimerAurielIncineration,
-	TimerAugurGimmick,
-	TimerObservanceOverlay,
-	TimerNaniteField,
-	TimerCorrosiveTouch,
-	TimerSkyfall,
-	TimerSireEggBoost,
-	TimerHallucinating,
-	TimerPetrification,
-	TimerDecloak,
-	TimerDecloakBurrow,
-	TimerResourceBoostedRegen,
-	TimerAdrenal,
-	TimerSwitchModeGimmick,
-	TimerCaptivatingClaws,
-	TimerAlaszilethRegenBoost,
-	TimerWyvernAttackCooldown,
-	TimerAurielIncinerationDamagePeriod,
-	TimerSignify,
-	TimerReviveFlagClearMin,
-	TimerReviveFlagClearMax,
-	TimerUnderDisruptionField,
-	TimerAlliedInvFrames,
-	TimerIncubationArm,
-	TimerAuralAssaultBlind,
-	TimerAnthelionGravityWell,
-	TimerAnthelionEndlessEclipse,
-	TimerAnthelionAttackCooldown,
-	TimerStrigaRepulsion,
-	TimerAxitriliskShieldLossSFX,
-	TimerOwnerChangedRecently,
-	TimerMagnetarAttraction,
-	TimerSalvageStunTimer,
-	TimerCreepMorphOverlay,
-	TimerCustomEggHatch,
-	TimerMindControlRecede,
-	TimerTalosAnimationSubtimer,
-	TimerTalosSoundLoopTimer,
-	TimerAddonAnimation,
-	TimerSwarmingOmenDebuff,
-	TimerBladeVortex,
-	TimerStellarEnforcementOverlay,
-	TimerSwarmingOmenSearch,
-	TimerHypnagogueChannel,
-	TimerSecondaryWeaponCooldown,
-	TimerReclaimInterval,
-	TimerBindingPlasma,
-	TimerCentaurSecondaryWeaponStagger,
-	TimerPatriarchAstralRule,
-	TimerTerminalSurge,
-	TimerTriumphantRiseDebuff,
-	TimerMatadorHeal,
-	TimerMortothrokorPassive,
-	TimerLiftLandDelay,
-	TimerSwarmingOmenVisuals,
-	TimerDidactStasisFieldOverlay,
-	TimerStellarEnforcement,
-	TimerDeconstruction,
-	TimerKelvinMunitions,
-	TimerSavantPowerSiphonBuff,
-	TimerSavantPowerSiphonDebuff,
-	TimerStun,
-	TimerAutocratControlledOpposition,
-	TimerSilvertonguePlotTwist,
-	TimerClaymoreKelvinMunitionsZap,
-	TimerMindTyrantMaelstromSlow,
-	TimerGhitorokorRelentlessAggression,
-	TimerDemiurgeWorship,
-	TimerAxitriliskPerpetualWind,
-	TimerReclaimStun,
-	TimerVilgolethSpawn,
-	TimerVilgolethTimedLife,
-	TimerAvenge,
-	TimerAscend,
-	TimerPariahHit,
-	TimerHeraldAvenge,
-	TimerZergAdrenalFrenzy,
-	TimerEmpressAnodyneAnnex,
-	TimerZarcavrokorSecondaryFire,
-	TimerClearStaggerBlacklist,
-	TimerUseLastRepulsion,
-	TimerSpawnLarva,
-	TimerNathreliskMitosalFog,
-	TimerStimpackDelay,
-	TimerRecallEffect,
-	TimerArtisanReturn,
-	TimerLiftoffDelay,
-	TimerReconstitutionDelay,
-	TimerInfesting,
-	TimerRepentantChorus,
-	TimerSwarmingOmenAudio,
-	TimerTurningRoam,
-	TimerSavantFormSwitchCooldown,
-	TimerSevenstepMindMatterCarrier,
-	TimerOlympianMythicalMightSFX,
-	TimerBindingPlasmaChargeOverlay,
-	TimerUnitBanter,
-	TimerDemiurgeWorshipOverlayDelay,
-	TimerAddonDisconnectDelay,
-	TimerMindTyrantTyranny,
-	TimerHidebreaker,
-	TimerLucilleriPheremones,
-	ValueUprisingSpawner,
-	TimerTryCastCustomSpell,
-	TimerGenericAbilityAnimation,
-	TimerAnthelionTurn,
-	TimerManifoldConcurringChorus,
-	TimerSkryspawn,
-	TimerWyvernWeaponCharge,
-	TimerConstructionSFXDelay,
-	TimerTurningAggressiveModeThrottle,
-	TimerClericHeal,
-	TimerReclaimHeal,
-	TimerTranquilityArray,
-	TimerCriticality,
+    TimerKaiserRampage,
+    TimerKaiserRampageTimeout,
+    TimerApollyoidAdhesive,
+    TimerApollyoidAdhesiveDamagePeriod,
+    TimerObservanceDebuff,
+    TimerObservancePeriod,
+    TimerMissileReturnETA,
+    TimerLobotomySlow,							
+    TimerStarSovereignGriefOfAllGodsChannel,
+    TimerStarSovereignGriefOfAllGodsDelay,
+    TimerStarSovereignInterventionMissiles,
+    TimerQuaziliskCancel,
+    TimerCausticDischargeSpeed,
+    TimerIonFieldAttackSpeed,
+    TimerReconstitutionCooldown,
+    TimerSalamanderFire,
+    TimerWendigoShatteredWinds,
+    TimerControlledDemolition,
+    TimerEmergencyDetonation,
+    TimerNemeanReactors,
+    TimerSimulacrumClone,
+    TimerEnsnaringBrood,
+    TimerAurielIncineration,
+    TimerAugurGimmick,
+    TimerObservanceOverlay,
+    TimerNaniteField,
+    TimerCorrosiveTouch,
+    TimerSkyfall,
+    TimerSireEggBoost,
+    TimerHallucinating,
+    TimerPetrification,
+    TimerDecloak,
+    TimerDecloakBurrow,
+    TimerResourceBoostedRegen,
+    TimerAdrenal,
+    TimerSwitchModeGimmick,
+    TimerCaptivatingClaws,
+    TimerAlaszilethRegenBoost,
+    TimerWyvernAttackCooldown,
+    TimerAurielIncinerationDamagePeriod,
+    TimerSignify,
+    TimerReviveFlagClearMin,
+    TimerReviveFlagClearMax,
+    TimerUnderDisruptionField,
+    TimerAlliedInvFrames,
+    TimerIncubationArm,
+    TimerAuralAssaultBlind,
+    TimerAnthelionGravityWell,
+    TimerAnthelionEndlessEclipse,
+    TimerAnthelionAttackCooldown,
+    TimerStrigaRepulsion,
+    TimerAxitriliskShieldLossSFX,
+    TimerOwnerChangedRecently,
+    TimerMagnetarAttraction,
+    TimerSalvageStunTimer,
+    TimerCreepMorphOverlay,
+    TimerCustomEggHatch,
+    TimerMindControlRecede,
+    TimerTalosAnimationSubtimer,
+    TimerTalosSoundLoopTimer,
+    TimerAddonAnimation,
+    TimerSwarmingOmenDebuff,
+    TimerBladeVortex,
+    TimerStellarEnforcementOverlay,
+    TimerSwarmingOmenSearch,
+    TimerHypnagogueChannel,
+    TimerSecondaryWeaponCooldown,
+    TimerReclaimInterval,
+    TimerBindingPlasma,
+    TimerCentaurSecondaryWeaponStagger,
+    TimerPatriarchAstralRule,
+    TimerTerminalSurge,
+    TimerTriumphantRiseDebuff,
+    TimerMatadorHeal,
+    TimerMortothrokorPassive,
+    TimerLiftLandDelay,
+    TimerSwarmingOmenVisuals,
+    TimerDidactStasisFieldOverlay,
+    TimerStellarEnforcement,
+    TimerDeconstruction,
+    TimerKelvinMunitions,
+    TimerSavantPowerSiphonBuff,
+    TimerSavantPowerSiphonDebuff,
+    TimerStun,
+    TimerAutocratControlledOpposition,
+    TimerSilvertonguePlotTwist,
+    TimerClaymoreKelvinMunitionsZap,
+    TimerMindTyrantMaelstromSlow,
+    TimerGhitorokorRelentlessAggression,
+    TimerDemiurgeWorship,
+    TimerAxitriliskPerpetualWind,
+    TimerReclaimStun,
+    TimerVilgolethSpawn,
+    TimerVilgolethTimedLife,
+    TimerAvenge,
+    TimerAscend,
+    TimerPariahHit,
+    TimerHeraldAvenge,
+    TimerZergAdrenalFrenzy,
+    TimerEmpressAnodyneAnnex,
+    TimerZarcavrokorSecondaryFire,
+    TimerClearStaggerBlacklist,
+    TimerUseLastRepulsion,
+    TimerSpawnLarva,
+    TimerNathreliskMitosalFog,
+    TimerStimpackDelay,
+    TimerRecallEffect,
+    TimerArtisanReturn,
+    TimerLiftoffDelay,
+    TimerReconstitutionDelay,
+    TimerInfesting,
+    TimerRepentantChorus,
+    TimerSwarmingOmenAudio,
+    TimerTurningRoam,
+    TimerSavantFormSwitchCooldown,
+    TimerSevenstepMindMatterCarrier,
+    TimerOlympianMythicalMightSFX,
+    TimerBindingPlasmaChargeOverlay,
+    TimerUnitBanter,
+    TimerDemiurgeWorshipOverlayDelay,
+    TimerAddonDisconnectDelay,
+    TimerMindTyrantTyranny,
+    TimerHidebreaker,
+    TimerLucilleriPheremones,
+    ValueUprisingSpawner,
+    TimerTryCastCustomSpell,
+    TimerGenericAbilityAnimation,
+    TimerAnthelionTurn,
+    TimerManifoldConcurringChorus,
+    TimerSkryspawn,
+    TimerWyvernWeaponCharge,
+    TimerConstructionSFXDelay,
+    TimerTurningAggressiveModeThrottle,
+    TimerClericHeal,
+    TimerReclaimHeal,
+    TimerTranquilityArray,
+    TimerCriticality,
 
-	// probably convert the following to use TimerAI_GenericAbilityCooldown
-	TimerAI_Lazarus,
-	TimerAI_Siphon,
-	TimerAI_Clarion,
-	TimerAI_Skyfall,
-	TimerAI_GriefOfAllGods,
-	TimerAI_DisruptionField,
-	TimerAI_MadrigalTempoChangeCooldown,
+    // probably convert the following to use TimerAI_GenericAbilityCooldown
+    TimerAI_Lazarus,
+    TimerAI_Siphon,
+    TimerAI_Clarion,
+    TimerAI_Skyfall,
+    TimerAI_GriefOfAllGods,
+    TimerAI_DisruptionField,
+    TimerAI_MadrigalTempoChangeCooldown,
 
-	TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
-	TimerAI_KitingCooldown,
-	TimerAI_KitingLeash,
-	TimerAI_KitingSync,
-	TimerAI_KitingWorkerCombat,
-	TimerAI_KitingActive,
-	TimerAI_Patience,
+    TimerAI_GenericAbilityCooldown, // reusable for multiple unit ids, probably add second one if unit has two seperate abilities
+    TimerAI_KitingCooldown,
+    TimerAI_KitingLeash,
+    TimerAI_KitingSync,
+    TimerAI_KitingWorkerCombat,
+    TimerAI_KitingActive,
+    TimerAI_Patience,
 
-	TimerCount,
+    TimerCount,
 };
 
 enum ExtUnitId {
-	UnitBroodlingMother,			// is this still really used?
-	UnitDecaySavant,
-	UnitWyvernTargetLock,
-	UnitDirgeSource,
-	UnitBunkerLockOn,
-	UnitEmpressAnodyneAnnexSource,
-	UnitAnthelionGravityWellSource,
-	UnitTurretParentLink,
-	UnitMorphConnectedUnit,
-	UnitAddonParent,
-	UnitResponseTarget,
-	UnitCentaurSecondaryWeaponTarget,
-	UnitDiademTarget,
-	UnitPennant,
-	UnitMindTyrantLink,
-	UnitMindTyrantVictim,
-	UnitInfestingMatraleth,
-	UnitPlagueSource,
+    UnitBroodlingMother,			// is this still really used?
+    UnitDecaySavant,
+    UnitWyvernTargetLock,
+    UnitDirgeSource,
+    UnitBunkerLockOn,
+    UnitEmpressAnodyneAnnexSource,
+    UnitAnthelionGravityWellSource,
+    UnitTurretParentLink,
+    UnitMorphConnectedUnit,
+    UnitAddonParent,
+    UnitResponseTarget,
+    UnitCentaurSecondaryWeaponTarget,
+    UnitDiademTarget,
+    UnitPennant,
+    UnitMindTyrantLink,
+    UnitMindTyrantVictim,
+    UnitInfestingMatraleth,
+    UnitPlagueSource,
 
-	UnitCount,
+    UnitCount,
 };
 
 enum ExtValueVectorId {
-	ValueVectorPleaseDontUseVectors,
+    ValueVectorPleaseDontUseVectors,
 
-	ValueVectorCount,
+    ValueVectorCount,
 };
 
 enum ExtUnitVectorId {
-	UnitVectorCaptivatingClaws,
-	UnitVectorPhaseLink,
-	UnitVectorPhaseLinkClarions,
-	UnitVectorCrucibles,
-	UnitVectorStaggerBlacklist,
-	UnitVectorBarghests,
-	UnitVectorManifolds,
-	UnitVectorKazitriths,
+    UnitVectorCaptivatingClaws,
+    UnitVectorPhaseLink,
+    UnitVectorPhaseLinkClarions,
+    UnitVectorCrucibles,
+    UnitVectorStaggerBlacklist,
+    UnitVectorBarghests,
+    UnitVectorManifolds,
+    UnitVectorKazitriths,
 
-	UnitVectorCount,
+    UnitVectorCount,
 };
 
 enum ExtTimerVectorId {
-	TimerVectorCorrupted, // last slot is always corrupted on some builds, fuck you visual studio
+    TimerVectorCorrupted, // last slot is always corrupted on some builds, fuck you visual studio
 
-	TimerVectorCount,
+    TimerVectorCount,
 };
 
 struct UnitExt {
-	bool					pause_timers;
-	u32						energy_regen_timer;
+    bool					pause_timers;
+    u32						energy_regen_timer;
 
-	// Every unit will starts counted as out of combat
-	u32						shield_regen_timer = UINT_MAX;
-	u32						damage_taken_timer = UINT_MAX;
-	u32						damage_dealt_timer = UINT_MAX;
+    // Every unit will starts counted as out of combat
+    u32						shield_regen_timer = UINT_MAX;
+    u32						damage_taken_timer = UINT_MAX;
+    u32						damage_dealt_timer = UINT_MAX;
 
-	u32                     total_damage_taken;
-	u32                     total_damage_dealt;
-	Point16					anthelion_last_move_target;
-	Vec32f					repulsion_vector;
-	Point16					ai_kiting_origin;
-	Target                  projectile_pattern_target;
-	Vec32f					last_repulsion;
+    u32                     total_damage_taken;
+    u32                     total_damage_dealt;
+    Point16					anthelion_last_move_target;
+    Vec32f					repulsion_vector;
+    Point16					ai_kiting_origin;
+    Target                  projectile_pattern_target;
+    Vec32f					last_repulsion;
 //	Target					rally;
-	const char*				custom_name;
+    const char*				custom_name;
 
-	u8						seen_by_flags;
-	Point16					last_seen_position[PlayerLimit];
-	u32						last_seen_timer[PlayerLimit]{
-		UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX
-	};
+    u8						seen_by_flags;
+    Point16					last_seen_position[PlayerLimit];
+    u32						last_seen_timer[PlayerLimit]{
+        UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX
+    };
 
-	f32						build_progress_float;
-	u32						build_progress_integer;
-	u32						build_progress_last_update_tick;
+    f32						build_progress_float;
+    u32						build_progress_integer;
+    u32						build_progress_last_update_tick;
 
-	u32						salvage_time;
-	f32						salvage_minerals;
-	f32						salvage_gas;
+    u32						salvage_time;
+    f32						salvage_minerals;
+    f32						salvage_gas;
 
-	Point16					terran_build_pos;
-	Point16					recall_pos;
+    Point16					terran_build_pos;
+    Point16					recall_pos;
 
-	u32						ai_timer_avoid_targeting[FullPlayerLimit];
+    u32						ai_timer_avoid_targeting[FullPlayerLimit];
 
-	UnitRef					loaded_unit[TransportCap];
+    UnitRef					loaded_unit[TransportCap];
 
-	std::optional<Target>   last_unit_target;
-	std::optional<Point16>  target_pos_override;
+    std::optional<Target>   last_unit_target;
+    std::optional<Point16>  target_pos_override;
 
-	EffectRef               current_storm;
-	
-	Sprite*					power_aura;
-	Link<Unit>				psi_link;
+    EffectRef               current_storm;
+    
+    Sprite*					power_aura;
+    Link<Unit>				psi_link;
 
-	u32						values[ValueCount];
-	u32						timers[TimerCount];
-	Unit*					units[UnitCount];
-	std::vector<u32>		value_vectors[ValueVectorCount];
-	std::vector<Unit*>		unit_vectors[UnitVectorCount];
-	std::vector<u32>		timer_vectors[TimerVectorCount];
+    u32						values[ValueCount];
+    u32						timers[TimerCount];
+    Unit*					units[UnitCount];
+    std::vector<u32>		value_vectors[ValueVectorCount];
+    std::vector<Unit*>		unit_vectors[UnitVectorCount];
+    std::vector<u32>		timer_vectors[TimerVectorCount];
 
-	inline bool try_reset_timer(ExtTimerId timer, u32 time) {
-		if (timers[timer] != 0) {
-			return false;
-		}
-		timers[timer] = time;
-		return true;
-	}
+    inline bool try_reset_timer(ExtTimerId timer, u32 time) {
+        if (timers[timer] != 0) {
+            return false;
+        }
+        timers[timer] = time;
+        return true;
+    }
 };
 
 struct TileExt {
-	u8 creep_owners;
+    u8 creep_owners;
 };
 
 struct BulletExt {
-	Point16 bullet_source;
-	u32 distance_traveled;
-	u32 ticks_traveled;
-	u32 divisor_multiplier = 1;
-	u32 damage_override = 0;
-	u32 hit_count;
+    Point16 bullet_source;
+    u32 distance_traveled;
+    u32 ticks_traveled;
+    u32 divisor_multiplier = 1;
+    u32 damage_override = 0;
+    u32 hit_count;
 
-	f32 t;
-	Vec32f displacement;
+    f32 t;
+    Vec32f displacement;
 
-	u32 fire_index;
-	u32 bullet_local_index;
-	u32 bullet_total_index;
+    u32 fire_index;
+    u32 bullet_local_index;
+    u32 bullet_total_index;
 
-	bool bounced;
-	bool is_phantom;
-	bool did_pierce;
+    bool bounced;
+    bool is_phantom;
+    bool did_pierce;
 };
 
 struct SpriteExt {
-	bool is_fow_sprite;
-	Unit* owner;
+    bool is_fow_sprite;
+    Unit* owner;
 };
 
 struct ImageExt {
-	u32 iscript_header_offset;
-	u32 iscript_offset;
-	u32 return_address;
+    u32 iscript_header_offset;
+    u32 iscript_offset;
+    u32 return_address;
 };
 
 struct ThingyExt {
-	u32 player;
-	u32 unit_id;
-	u32 activity_timer;
-	u32 avenge_or_ascend_player;
-	u32 sight_range_before_death;
-	u32 create_origin;
-	u32 mine_count;
+    u32 player;
+    u32 unit_id;
+    u32 activity_timer;
+    u32 avenge_or_ascend_player;
+    u32 sight_range_before_death;
+    u32 create_origin;
+    u32 mine_count;
 };
 
 #define GasBuildingsCap 16
 struct AiTownExt {
-	u32 gas_buildings_count;
-	Unit* gas_buildings[GasBuildingsCap];
+    u32 gas_buildings_count;
+    Unit* gas_buildings[GasBuildingsCap];
 };
 
 void init_ext_variables();

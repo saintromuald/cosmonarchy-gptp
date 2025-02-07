@@ -55,8 +55,8 @@ namespace hooks {
         u16 addon_y = (g_place_building_y - units_dat::addon_placement[2 * g_place_building_unit_id - 211].y / 32);
         bw::adjust_addon_coordinates(source, target, &addon_x, &addon_y);
 
-        s32 can_build = helper::can_build_on_tile_location(*g_active_portrait_unit, g_placing_player, g_place_building_x, g_place_building_y, g_place_building_unit_id, 1, 1, 0, 0);
-        s32 result = helper::can_build_on_tile_location(*g_active_portrait_unit, g_placing_player, addon_x, addon_y, g_place_building_base_type, 0, 1, 0, 0);
+        s32 can_build = helper::tile_location_is_unbuildable(*g_active_portrait_unit, g_placing_player, g_place_building_x, g_place_building_y, g_place_building_unit_id, 1, 1, 0, 0);
+        s32 result = helper::tile_location_is_unbuildable(*g_active_portrait_unit, g_placing_player, addon_x, addon_y, g_place_building_base_type, 0, 1, 0, 0);
         // ^ this call might be needed, even if the result isn't returned, untested
         if (!g_is_placing_addon || can_build) {
             result = can_build;
@@ -202,7 +202,7 @@ namespace hooks {
             helper::display_error_message_id_with_sfx(player, 851, (s32)g_console_index + 150); // Not enough Vespene gases....harvest more gas.<0>
             return false;
         }
-        if (helper::can_build_on_tile_location(builder, player, (builder->order_target.pt.x - units_dat::building_dimensions[building_id].x / 2) / 32, (builder->order_target.pt.y - units_dat::building_dimensions[building_id].y / 2) / 32, building_id, 0, 0, 1, 0)) {
+        if (helper::tile_location_is_unbuildable(builder, player, (builder->order_target.pt.x - units_dat::building_dimensions[building_id].x / 2) / 32, (builder->order_target.pt.y - units_dat::building_dimensions[building_id].y / 2) / 32, building_id, 0, 0, 1, 0)) {
             helper::play_worker_error_sound(builder, 856); // You can't build there.<0>
             return false;
         } else {
@@ -525,76 +525,5 @@ namespace hooks {
             return (s32)Placeability::Valid;
         }
         return (s32)Placeability::InvalidExplored;
-    }
-
-    // Hooked to make ridge refinery placement work properly. -Pr0nogo
-    s32 __stdcall can_build_on_tile_location(Unit* builder, u32 player, int tile_x, int tile_y, u32 unit_id, int placement_state_entry, int check_vision, b32 also_invisible, b32 ignore_vision) {
-        int tile_x_var; // edx
-        int tile_y_var; // ecx
-        int placement_val_data; // edx
-        int placement_val; // eax
-
-        Point16 dims = {units_dat::building_dimensions[unit_id].x / 32, units_dat::building_dimensions[unit_id].y / 32};
-        s32 placement_state_early = 3;
-        if ((tile_x & 0x8000) != 0) {
-            goto LABEL_10;
-        }
-        if ((tile_y & 0x8000) != 0) {
-            goto LABEL_10;
-        }
-        if (tile_x + dims.x > g_map_tile_size->width) {
-            goto LABEL_10;
-        }
-        if (tile_y + dims.y > g_map_tile_size->height) {
-            goto LABEL_10;
-        }
-        placement_state_early = 7;
-        if (builder) {
-            if (!(builder->status & (UnitStatus::InAir | UnitStatus::GroundedBuilding))) {
-                if (!helper::unit_has_ground_path(builder, 32 * tile_x, 32 * tile_y)) {
-                    goto LABEL_10;
-                }
-            }
-        }
-        if (unit_id_is_capped_gas_node(unit_id)) {
-            placement_state_early = helper::vespene_geyser_placebox(tile_x, tile_y, player, check_vision);
-        LABEL_10:
-         // HIWORD(placement_val_data) = HIWORD(placement_state_entry);
-         // LOBYTE(placement_val_data) = placement_state_early;
-         // BYTE1(placement_val_data) = placement_state_early;
-         // placement_val = placement_val_data << 16;
-         // LOWORD(placement_val) = placement_val_data;
-         // memset32(&g_building_placement_state[48 * placement_state_entry], placement_val, 12);
-            return placement_state_early;
-        }
-        u32 unit_property = units_dat::base_property[unit_id];
-        if (unit_property & UnitProperty::RequiredPsi) {
-            placement_state_early = helper::get_psi_placement_state(player, unit_id, tile_x_var, tile_y_var);
-            if (placement_state_early) {
-                goto LABEL_10;
-            }
-            tile_x_var = tile_x;
-            builder = builder;
-            tile_y_var = tile_y;
-        }
-        u32 placement_state = 0;
-        if (builder && builder->id == UnitId::ZergNydusCesiant) {
-            placement_state = helper::update_nydus_placement_state(player, tile_x_var, tile_y_var, dims, placement_state_entry, check_vision);
-        } else {
-            if (unit_property & UnitProperty::CreepBuilding) {
-                placement_state = helper::update_creep_building_placement_state(player, tile_x_var, tile_y_var, dims, placement_state_entry, check_vision, ignore_vision);
-            } else {
-                placement_state = helper::update_building_placement_state_map_tile_flags(unit_id, tile_x_var, tile_y_var, player, dims, placement_state_entry, check_vision);
-            }
-        }
-        if (*g_ai_builder_unk) {
-            builder = *g_ai_builder_unk;
-        }
-        u8 is_not_addon = !(units_dat::base_property[unit_id] & UnitProperty::Addon);
-        s32 result = helper::update_building_placement_state_units(builder, tile_x, tile_y, player, unit_id, dims, placement_state_entry, is_not_addon, also_invisible, ignore_vision);
-        if (placement_state > result) {
-            result = placement_state;
-        }
-        return result;
     }
 }

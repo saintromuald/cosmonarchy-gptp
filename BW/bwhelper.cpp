@@ -2770,7 +2770,7 @@ namespace helper {
     }
 
     // For update_placement_state_for_placement_box
-    s32 can_build_on_tile_location(Unit* builder, s32 player, s32 xTile, s32 yTile, s32 unit_id, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision) {
+    s32 tile_location_is_unbuildable(Unit* builder, s32 player, s32 xTile, s32 yTile, s32 unit_id, s32 placementStateEntry, s32 bCheckVision, s32 bAlsoInvisible, s32 bWithoutVision) {
         const u32 func_address = 0x00473FB0;
         static s32 result;
         __asm {

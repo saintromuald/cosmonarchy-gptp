@@ -469,7 +469,7 @@ namespace hooks {
                 return;
             }
 
-            if (helper::can_build_on_tile_location(unit, unit->player, unit->order_target.pt.x / 32 - dimensions.x / 32 / 2, unit->order_target.pt.y / 32 - dimensions.y / 32 / 2, unit->building.addon_build_id, 0, 0, 1, 0)) {
+            if (helper::tile_location_is_unbuildable(unit, unit->player, unit->order_target.pt.x / 32 - dimensions.x / 32 / 2, unit->order_target.pt.y / 32 - dimensions.y / 32 / 2, unit->building.addon_build_id, 0, 0, 1, 0)) {
                 helper::play_worker_error_sound(unit, 856); // Can't build there
                 helper::to_idle(unit);
             } else {

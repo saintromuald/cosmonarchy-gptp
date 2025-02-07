@@ -367,7 +367,7 @@ namespace
         static u32 tile_y;
         static u8 player;
         static u32 check_vision;
-        static u32 unit_id; // Sourced from function can_build_on_tile_location 00473FB0
+        static u32 unit_id; // Sourced from function tile_location_is_unbuildable 00473FB0
         static s32 result;
         __asm {
             MOV EAX, [EBP + 0x18]
