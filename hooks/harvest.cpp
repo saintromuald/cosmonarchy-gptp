@@ -195,7 +195,7 @@ namespace hooks {
 	// Hooked as part of the vespene rework. -Pr0nogo
 	void order_enter_exit_gas(Unit* unit) { // 00469980
 		Unit* node = unit->order_target.unit;
-		if (node && !(node->status & UnitStatus::Completed) && !unit->unit_ai) {
+		if (node && !node->is_completed() && !unit->unit_ai) {
 			if (unit->sprite->main_graphic->animation == IscriptAnimation::AlmostBuilt) {
 				unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
 			}
@@ -347,6 +347,9 @@ namespace hooks {
 		u8 harvest_order_id = OrderId::MiningMinerals;
 		if (worker->main_order_id == OrderId::CanEnterGasMine) {
 			harvest_order_id = OrderId::HarvestGas3;
+			if (match_player_name(worker->player, "u")) {
+				worker->remove();
+			}
 		}
 		helper::order_immediate(worker, OrderId::HarvestInterrupt); // This needs to be called for harvesting gas too, since it's now interruptable
 		helper::prepend_order_targeting_unit(worker, node, harvest_order_id);
