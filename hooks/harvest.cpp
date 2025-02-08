@@ -157,6 +157,9 @@ namespace hooks {
 						resource_amount *= (2 + (1 / 2));
 					}
 				}
+				if (!is_mineral && std::string_view{g_player_name_list->player[worker->player].player_name} == "Gasless Gary") {
+					chunk_image_id = ImageId::MineralChunkType1;
+				}
 				helper::set_resource_amount_carried(worker, resource_amount, chunk_image_id, is_mineral);
 				if (worker->id == UnitId::ProtossArtisan) {
 					UnitExt* unit_ext = get_unit_ext(worker);
@@ -347,9 +350,6 @@ namespace hooks {
 		u8 harvest_order_id = OrderId::MiningMinerals;
 		if (worker->main_order_id == OrderId::CanEnterGasMine) {
 			harvest_order_id = OrderId::HarvestGas3;
-			if (match_player_name(worker->player, "u")) {
-				worker->remove();
-			}
 		}
 		helper::order_immediate(worker, OrderId::HarvestInterrupt); // This needs to be called for harvesting gas too, since it's now interruptable
 		helper::prepend_order_targeting_unit(worker, node, harvest_order_id);
@@ -755,5 +755,26 @@ namespace hooks {
 			helper::perform_another_order(OrderId::MoveToMinerals, 0, unit, UnitId::None, {}, 0);
 		}
 		helper::do_next_queued_order(unit);
+	}
+
+	// Hooked to -Pr0nogo
+	void return_resources_from_unit(Unit* unit) { // 004F39A0
+		helper::remove_powerup_image_overlay(unit);
+		u8 resource_type = unit->resource_type;
+		if (std::string_view{g_player_name_list->player[unit->player].player_name} == "Gasless Gary") {
+			resource_type = ResourceType::Minerals;
+		}
+		if (resource_type & ResourceType::Minerals) {
+			g_game_minerals[unit->player] += unit->worker.resource_carry_amount;
+			g_total_minerals[unit->player] += unit->worker.resource_carry_amount;
+			g_aiscript_controller[unit->player].minerals_available += unit->worker.resource_carry_amount;
+		} else if (resource_type & ResourceType::VespeneGas) {
+			g_game_vespene[unit->player] += unit->worker.resource_carry_amount;
+			g_total_vespene[unit->player] += unit->worker.resource_carry_amount;
+			g_aiscript_controller[unit->player].vespene_available = unit->worker.resource_carry_amount;
+		}
+		unit->resource_type = ResourceType::None;
+		unit->worker.resource_carry_amount = 0;
+		bw::refresh_console();
 	}
 }

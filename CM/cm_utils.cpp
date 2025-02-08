@@ -402,7 +402,3 @@ void set_up_mines(Unit* unit) {
         case UnitId::TerranClericFuturist: unit->mine_carrier.mine_count = 1; break;
     }
 }
-
-bool match_player_name(u32 player, const char* name_string) {
-	return strcmp(g_player_name_list->player[player].player_name, name_string) == 0;
-}
