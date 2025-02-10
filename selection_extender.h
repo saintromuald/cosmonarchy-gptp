@@ -8,5 +8,5 @@ extern graphics::Font* grp_wire_Font;
 void init_grp_wire_font(const char* font_name);
 
 namespace hooks {
-	void inject_selection_extender();
+    void inject_selection_extender();
 }

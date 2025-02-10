@@ -304,7 +304,7 @@ namespace hooks {
 				/*
 				BuildingAi* unitAI = (BuildingAi*)g_aiscript_controller[player].requests->val;
 				mainTownTown = unitAI->town;
-				unitAIQueues = (s16)unitAI->trainQueueValues;
+				unitAIQueues = (s16)unitAI->train_queue_values;
 				unitAI->parent = unit_copy;
 				unitAI->region = mainTownTown;
 				unitAI->town = unitAIQueues;

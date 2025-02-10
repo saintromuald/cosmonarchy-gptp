@@ -451,8 +451,7 @@ namespace hooks {
     static bool warning_once_03_01 = false;
     static bool warning_once_03_02 = false;
     const u32 Hook_DropDebugging03 = 0x0047CDF1;
-    void __declspec(naked) drop_debugging_03()
-    {
+    void __declspec(naked) drop_debugging_03() {
         static char buffer[1024];
         static u8* data;
         static u32 hash_struct_index;

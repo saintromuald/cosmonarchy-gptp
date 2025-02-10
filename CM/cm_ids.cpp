@@ -278,7 +278,8 @@ bool unit_id_is_power_generator(u32 unit_id) {
 bool unit_id_is_psi_provider(u16 unit_id) {
     return unit_id == UnitId::ProtossNexus
         || unit_id == UnitId::ProtossPylon
-        || unit_id == UnitId::ProtossCrucible;
+        || unit_id == UnitId::ProtossCrucible
+        || unit_id == UnitId::ProtossTempleExt;
 }
 
 bool unit_id_can_do_controlled_demolition(u32 unit_id) {

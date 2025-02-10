@@ -1408,14 +1408,14 @@ bool can_be_entered_by(Unit* transport, Unit* unit) {
     return result != 0;
 }
 
-u16 get_tech_user_error_message(Unit* target, u8 castingPlayer, u16 techId) {
+u16 get_tech_user_error_message(Unit* target, u8 casting_player, u16 tech_id) {
     const u32 func_address = 0x00491E80;
-    static u32 tech_id_xd; tech_id_xd = techId;
+    u32 tech_id_xd = tech_id;
     static u16 result;
     __asm {
         PUSHAD
         PUSH tech_id_xd
-        MOV BL, castingPlayer
+        MOV BL, casting_player
         MOV EAX, target
         CALL func_address
         MOV result, AX
@@ -1514,7 +1514,7 @@ void update_dialog(BinDlg* dialog) {
 void prepare_unit_move(Unit* unit, bool hide_unit) {
     const u32 func_address = 0x00493CA0;
     assert(unit);
-    static b32 hide_unit_xd; hide_unit_xd = hide_unit ? 1 : 0;
+    b32 hide_unit_xd = hide_unit ? 1 : 0;
     __asm {
         PUSHAD
         PUSH hide_unit_xd
@@ -1530,8 +1530,7 @@ bool check_unit_collision_pos(Unit* unit, const Point16* in_pos, Point16* out_po
     assert(in_pos);
     assert(out_pos);
     static u32 result;
-    static u32 hide_error_message_xd;
-    hide_error_message_xd = hide_error_message;
+    u32 hide_error_message_xd = hide_error_message;
     __asm {
         PUSHAD
         PUSH some_flag;
@@ -3276,6 +3275,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return helper::get_random_unit_response(SoundId::ArtemisAdvisor_NoMinerals01, SoundId::ArtemisAdvisor_NoMinerals02);
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoMinerals01, SoundId::ISNAdvisor_NoMinerals04);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_NoMinerals01;
+                    case Advisor_Kortar:	return helper::get_random_unit_response(SoundId::KortarAdvisor_NoMinerals01, SoundId::KortarAdvisor_NoMinerals04);
                 }
             } break;
             case AdvisorEvent_NoVespene: {
@@ -3289,6 +3289,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return helper::get_random_unit_response(SoundId::ArtemisAdvisor_NoVespene01, SoundId::ArtemisAdvisor_NoVespene02);
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoVespene01, SoundId::ISNAdvisor_NoVespene04);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_NoVespene01;
+                    case Advisor_Kortar:	return helper::get_random_unit_response(SoundId::KortarAdvisor_NoVespene01, SoundId::KortarAdvisor_NoVespene04);
                 }
             } break;
             case AdvisorEvent_NoEnergy: {
@@ -3302,7 +3303,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return helper::get_random_unit_response(SoundId::ArtemisAdvisor_NoEnergy01, SoundId::ArtemisAdvisor_NoEnergy02);
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoEnergy01, SoundId::ISNAdvisor_NoEnergy04);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_NoEnergy01;
-
+                    case Advisor_Kortar:	return helper::get_random_unit_response(SoundId::KortarAdvisor_NoEnergy01, SoundId::KortarAdvisor_NoEnergy04);
                 }
             } break;
             case AdvisorEvent_NoBuildTerran: {
@@ -3316,6 +3317,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_NoBuild01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_NoBuild01;
                 }
             } break;
             case AdvisorEvent_NoBuildProtoss: {
@@ -3329,6 +3331,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_NoWarp01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoWarp01, SoundId::ISNAdvisor_NoWarp02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_NoWarp01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_NoWarp01;
                 }
             } break;
             case AdvisorEvent_NoBuildZerg: {
@@ -3342,6 +3345,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_NoBuild01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_NoBuild01;
                 }
             } break;
             case AdvisorEvent_NoLanding: {
@@ -3355,6 +3359,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_NoLand01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoLand01, SoundId::ISNAdvisor_NoLand02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_NoLand01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_NoLand01;
                 }
             } break;
             case AdvisorEvent_LandingInterrupted: {
@@ -3368,6 +3373,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_LandingInterrupt01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_LandingInterrupt01, SoundId::ISNAdvisor_LandingInterrupt02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_LandingInterrupt01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_LandingInterrupt01;
                 }
             } break;
             case AdvisorEvent_PlacementInterrupted: {
@@ -3381,6 +3387,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_NoBuild01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_NoBuild01, SoundId::ISNAdvisor_NoBuild02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_NoBuild01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_NoBuild01;
                 }
             } break;
             case AdvisorEvent_StructureComplete_T: {
@@ -3397,6 +3404,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_Warp01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_Warp01, SoundId::ISNAdvisor_Warp02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_Warp01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_Warp01;
                 }
             } break;
             case AdvisorEvent_StructureComplete_Z: {
@@ -3410,6 +3418,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
                     case Advisor_ISN:		return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
                     case Advisor_Furen:		return SoundId::AtaltrethAdvisor_Addon01; // Todo: replace
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_Build01;
                 }
             } break;
             case AdvisorEvent_AddonComplete: {
@@ -3423,6 +3432,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_Addon01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_Addon01, SoundId::ISNAdvisor_Addon02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_Addon01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_Addon01;
                 }
             } break;
             case AdvisorEvent_TechUpComplete: {
@@ -3436,6 +3446,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_Tech01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_Tech01, SoundId::ISNAdvisor_Tech02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_Tech01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_Tech01;
                 }
             } break;
             case AdvisorEvent_MissileArmed: {
@@ -3449,6 +3460,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_MissileArmed01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_MissileArmed01, SoundId::ISNAdvisor_MissileArmed02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_MissileArmed01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_MissileArmed01;
                 }
             } break;
             case AdvisorEvent_ArmyUnderAttack: {
@@ -3462,6 +3474,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_ArmyUnderAttack01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_ArmyUnderAttack01, SoundId::ISNAdvisor_ArmyUnderAttack04);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_ArmyUnderAttack01;
+                    case Advisor_Kortar:	return helper::get_random_unit_response(SoundId::KortarAdvisor_ArmyUnderAttack01, SoundId::KortarAdvisor_ArmyUnderAttack04);
                 }
             } break;
             case AdvisorEvent_BaseUnderAttack: {
@@ -3475,6 +3488,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_BaseUnderAttack01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_BaseUnderAttack01, SoundId::ISNAdvisor_BaseUnderAttack01);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_BaseUnderAttack01;
+                    case Advisor_Kortar:	return helper::get_random_unit_response(SoundId::KortarAdvisor_BaseUnderAttack01, SoundId::KortarAdvisor_BaseUnderAttack04);
                 }
             } break;
             case AdvisorEvent_MissileLaunch: {
@@ -3488,6 +3502,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_MissileLaunch01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_MissileLaunch01, SoundId::ISNAdvisor_MissileLaunch02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_MissileLaunch01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_MissileLaunch01;
                 }
             } break;
             case AdvisorEvent_AllyUnderAttack_T: {
@@ -3501,6 +3516,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Terran01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AllyUnderAttack_Terran01, SoundId::ISNAdvisor_AllyUnderAttack_Terran03);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_AllyUnderAttack_Terran01;
+                    case Advisor_Kortar:	return helper::get_random_unit_response(SoundId::KortarAdvisor_AllyUnderAttack_Terran01, SoundId::KortarAdvisor_AllyUnderAttack_Terran03);
                 }
             } break;
             case AdvisorEvent_AllyUnderAttack_P: {
@@ -3514,6 +3530,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Protoss01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AllyUnderAttack_Protoss01, SoundId::ISNAdvisor_AllyUnderAttack_Protoss03);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_AllyUnderAttack_Protoss01;
+                    case Advisor_Kortar:	return helper::get_random_unit_response(SoundId::KortarAdvisor_AllyUnderAttack_Protoss01, SoundId::KortarAdvisor_AllyUnderAttack_Protoss03);
                 }
             } break;
             case AdvisorEvent_AllyUnderAttack_Z: {
@@ -3527,6 +3544,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::ArtemisAdvisor_AllyUnderAttack_Zerg01;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AllyUnderAttack_Zerg01, SoundId::ISNAdvisor_AllyUnderAttack_Zerg01);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_AllyUnderAttack_Zerg01;
+                    case Advisor_Kortar:	return helper::get_random_unit_response(SoundId::KortarAdvisor_AllyUnderAttack_Zerg01, SoundId::KortarAdvisor_AllyUnderAttack_Zerg03);
                 }
             } break;
             case AdvisorEvent_AbandonAddon: {
@@ -3540,6 +3558,7 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor_Artemis:	return SoundId::Terran_Advisor_TAdUpd05_WAV;
                     case Advisor_ISN:		return helper::get_random_unit_response(SoundId::ISNAdvisor_AddonAbandon01, SoundId::ISNAdvisor_AddonAbandon02);
                     case Advisor_Furen:		return SoundId::FurenAdvisor_AddonAbandon01;
+                    case Advisor_Kortar:	return SoundId::KortarAdvisor_AddonAbandon01;
                 }
             } break;
         }

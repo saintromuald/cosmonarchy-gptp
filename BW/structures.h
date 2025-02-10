@@ -674,23 +674,21 @@ struct BinDlg {
 C_ASSERT(sizeof(BinDlg) == 86); //0x56
 //static_assert(sizeof(BinDlg) == 86, "The count of the BinDlg structure is invalid");
 
-struct SMK_Structure
-{
-    /*0x00*/ u32		smkOverlayOffset;
+struct SMK_Structure {
+    /*0x00*/ u32		smk_overlay_offset;
     /*0x04*/ u16		flags;				//use SmkFlags::Enum
-    /*0x06*/ u32		internalUse1;
-    /*0x0A*/ u32		smkFilenameOffset;
-    /*0x0E*/ u32		internalUse2;
-    /*0x12*/ Point16	smkOverlayPosition;
-    /*0x16*/ u32		internalUse3;
-    /*0x1A*/ u32		internalUse4;
+    /*0x06*/ u32		internal_use1;
+    /*0x0A*/ u32		smk_filename_offset;
+    /*0x0E*/ u32		internal_use2;
+    /*0x12*/ Point16	smk_overlay_pos;
+    /*0x16*/ u32		internal_use3;
+    /*0x1A*/ u32		internal_use4;
 };
 
 C_ASSERT(sizeof(SMK_Structure) == 30); //0x1E
 //static_assert(sizeof(SMK_Structure) == 30, "The count of the SMK_Structure structure is invalid");
 
-struct GuiOverlay
-{
+struct GuiOverlay {
     /*0x00*/  unk_t     unk_0[6];
     /*0x06*/  u16		overlay_type;
     /*0x08*/  u16		id;
@@ -734,11 +732,11 @@ C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 struct BuildingAi {
     Link<BuildingAi> link;			// 0x0, 0x4
     u8 type;						// 0x8
-    u8 trainQueueTypes[5];			// 0x9
+    u8 train_queue_types[5];		// 0x9
     u8 unkE[2];						// 0xE
     Unit* parent;					// 0x10
     AiTown* town;					// 0x14
-    void* trainQueueValues[5];		// 0x18
+    void* train_queue_values[5];	// 0x18
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
 
@@ -1355,7 +1353,7 @@ C_ASSERT(sizeof(GameVersion) == 60);
 // Selection extender from DarkenedFantasies!
 // As it currently stands, SelectionLimit must be a multiple of 6, and 252 is the largest supported value.
 // Look into editing the cmdact/cmdrecv_select buffers to upgrade the selection byte to at least a word.
-#define SelectionLimit 246
+#define SelectionLimit 204
 #define SelectionLimit_word 2*SelectionLimit
 #define SelectionLimit_dword 4*SelectionLimit
 #define SelectionLimit_dword_2 2*SelectionLimit_dword

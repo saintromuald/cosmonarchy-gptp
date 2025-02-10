@@ -301,7 +301,7 @@ Unit* get_dark_swarm_from_position(u16 x, u16 y, u16 radius);
 //Checks if the @p target can be targeted by player @p castingPlayer with
 //tech/spell @p techId
 //If yes, return 0, else return error message id in stat_txt.tbl to use
-u16 get_tech_user_error_message(Unit* target, u8 castingPlayer, u16 techId);
+u16 get_tech_user_error_message(Unit* target, u8 casting_player, u16 tech_id);
 
 //////////////////////////////////////////////////////////////// @}
 

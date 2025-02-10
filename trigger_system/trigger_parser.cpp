@@ -473,7 +473,7 @@ s32 Parser::get_enum(const char** enum_names, size_t count, s32 default_value) {
 u32 Parser::get_player(bool allow_neutral) {
 	s32 player = get_s32(-1);
 	if (player >= 0) {
-		if (player <= 8 || (allow_neutral && player == 12)) {
+		if (player <= PlayerLimit || (allow_neutral && player == 12)) {
 			return player;
 		}
 		if (player == 13) {

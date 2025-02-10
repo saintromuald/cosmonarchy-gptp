@@ -166,7 +166,6 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
         player = active_unit->player;
     }
     portrait_id = get_player_portrait_id_override(portrait_id, player);
-
     if (strcmp(g_current_map_name, "Anad's Greatsword") == 0) {
         switch (portrait_id) {
             case PortraitId::Maverick: {
@@ -177,6 +176,15 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
             } break;
             case PortraitId::Apostle: {
                 portrait_id = PortraitId::AdvisorZorthos;
+            } break;
+        }
+    } else if (strcmp(g_current_map_name, "Sanctuary Lost") == 0) {
+        switch (portrait_id) {
+            case PortraitId::Maverick: {
+                portrait_id = PortraitId::AnadThyron;
+            } break;
+            case PortraitId::Legionnaire: {
+                portrait_id = PortraitId::Patriarch;
             } break;
         }
     } else if (strcmp(g_current_map_name, "The Initiate") == 0) {
@@ -191,8 +199,13 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
                 portrait_id = PortraitId::AdvisorZorthos;
             } break;
         }
+    } else if (strcmp(g_current_map_name, "Waterwar") == 0) {
+        switch (portrait_id) {
+            case PortraitId::Goliath: {
+                portrait_id = PortraitId::Sevenstep;
+            } break;
+        }
     }
-
     return portrait_id;
 }
 
@@ -239,35 +252,47 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 00
     u16 portrait_id = helper::get_unit_portrait_override(unit_id);
     if (strcmp(g_current_map_name, "Anad's Greatsword") == 0) {
         switch (portrait_id) {
-            case PortraitId::AdvisorOrionImperium:
-            {
+            case PortraitId::AdvisorOrionImperium: {
                 portrait_id = PortraitId::HADRAL;
             } break;
-            case PortraitId::Maverick:
-            {
+            case PortraitId::Maverick: {
                 portrait_id = PortraitId::AnadThyron;
             } break;
-            case PortraitId::Zealot:
-            {
+            case PortraitId::Zealot: {
                 portrait_id = PortraitId::Patriarch;
             } break;
-            case PortraitId::Ovileth:
-            {
+            case PortraitId::Ovileth: {
                 portrait_id = PortraitId::AdvisorZorthos;
+            } break;
+        }
+    } else if (strcmp(g_current_map_name, "Sanctuary Lost") == 0) {
+        switch (portrait_id) {
+            case PortraitId::AdvisorOrionImperium: {
+                portrait_id = PortraitId::HADRAL;
+            } break;
+            case PortraitId::Maverick: {
+                portrait_id = PortraitId::AnadThyron;
+            } break;
+            case PortraitId::Legionnaire: {
+                portrait_id = PortraitId::Patriarch;
             } break;
         }
     } else if (strcmp(g_current_map_name, "Further Notice") == 0) {
         switch (portrait_id) {
-            case PortraitId::Cyprian:
-            {
+            case PortraitId::Cyprian: {
                 portrait_id = PortraitId::Hotshot;
             } break;
         }
     } else if (strcmp(g_current_map_name, "Autophagy") == 0) {
         switch (portrait_id) {
-            case PortraitId::Scribe:
-            {
+            case PortraitId::Scribe: {
                 portrait_id = PortraitId::AdvisorZorthos;
+            } break;
+        }
+    } else if (strcmp(g_current_map_name, "Waterwar") == 0) {
+        switch (portrait_id) {
+            case PortraitId::Goliath: {
+                portrait_id = PortraitId::Sevenstep;
             } break;
         }
     }
