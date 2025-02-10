@@ -104,62 +104,61 @@ namespace hooks {
 	}
 
 	// Hooked to investigate crashes and remove Archon hardcode - Pr0nogo
-	void ai_training_normal(Unit* newUnit, Unit* parentUnit) { // 00435DB0
-		s16 unit_id = newUnit->id;
+	void ai_training_normal(Unit* new_unit, Unit* parent_unit) { // 00435DB0
+		s16 unit_id = new_unit->id;
 		if (!bw::is_conventional_unit_morph_result(unit_id)) {
-			if (newUnit->status & UnitStatus::IsHallucination) {
-				helper::add_military_ai(&g_ai_region_captains[newUnit->player][bw::get_region_id(newUnit->sprite->position)], newUnit, 1);
+			if (new_unit->status & UnitStatus::IsHallucination) {
+				helper::add_military_ai(&g_ai_region_captains[new_unit->player][bw::get_region_id(new_unit->sprite->position)], new_unit, 1);
 				return;
 			}
 			if (unit_id != UnitId::TerranMorningstar && unit_id != UnitId::ProtossWitness) {
-				BuildingAi* parentUnitAi = (BuildingAi*)parentUnit->unit_ai;
-				BuildingAi* parentUnitAiBackup = (BuildingAi*)parentUnit->unit_ai;
-				if (parentUnitAi) {
-					s32 queueSlot = 0;
-					if (parentUnit == newUnit) {
-						queueSlot = 0;
-						helper::ai_remove_from_towns(newUnit);
-						BuildingAi* newUnitAi = (BuildingAi*)newUnit->unit_ai;
-						if (newUnitAi) {
-							AiTown* newUnitTown = newUnitAi->town;
-							helper::delete_building_ai(newUnitAi, &newUnitTown->buildings);
-							if (newUnitTown) {
-								if (newUnit == newUnitTown->building_scv)
-								{
-									newUnitTown->building_scv = 0;
+				BuildingAi* parent_unit_ai = (BuildingAi*)parent_unit->unit_ai;
+				BuildingAi* parent_unit_ai_backup = (BuildingAi*)parent_unit->unit_ai;
+				// DF - Guard type comparison fixes a niche crash when Zerg units playing their birth animation are given to a computer player
+				if (parent_unit_ai && parent_unit_ai->type != AiType::Guard) {
+					s32 queue_slot = 0;
+					if (parent_unit == new_unit) {
+						queue_slot = 0;
+						helper::ai_remove_from_towns(new_unit);
+						BuildingAi* new_unit_ai = (BuildingAi*)new_unit->unit_ai;
+						if (new_unit_ai) {
+							AiTown* new_unit_town = new_unit_ai->town;
+							helper::delete_building_ai(new_unit_ai, &new_unit_town->buildings);
+							if (new_unit_town) {
+								if (new_unit == new_unit_town->building_scv) {
+									new_unit_town->building_scv = 0;
 								}
-								if (newUnit == newUnitTown->main_building)
-								{
-									newUnitTown->main_building = 0;
+								if (new_unit == new_unit_town->main_building) {
+									new_unit_town->main_building = 0;
 								}
 							}
-							parentUnitAi = parentUnitAiBackup;
-							newUnit->unit_ai = 0;
+							parent_unit_ai = parent_unit_ai_backup;
+							new_unit->unit_ai = 0;
 						}
-					} else if (parentUnit->id == unit_id) {
-						queueSlot = 0;
+					} else if (parent_unit->id == unit_id) {
+						queue_slot = 0;
 					} else {
-						queueSlot = (u8)parentUnit->build_queue_slot;
+						queue_slot = (u8)parent_unit->build_queue_slot;
 					}
-					AiRegion* region = (AiRegion*)parentUnitAi->trainQueueValues[queueSlot];
-					if (parentUnitAi->trainQueueTypes[queueSlot] == 2) {
+					AiRegion* region = (AiRegion*)parent_unit_ai->train_queue_values[queue_slot];
+					if (parent_unit_ai->train_queue_types[queue_slot] == 2) {
 						if (!region->ground_strength_needed) {
-							s16 regionFullAir = region->air_strength_full;
-							s16 regionEnemyAir = region->air_strength_enemy;
-							region->ground_strength_needed = (u16)newUnit;
-							region->air_strength = regionFullAir;
-							region->ground_strength_full = regionEnemyAir;
-							newUnit->unit_ai = (UnitAi*)region;
+							s16 region_full_air = region->air_strength_full;
+							s16 region_enemy_air = region->air_strength_enemy;
+							region->ground_strength_needed = (u16)new_unit;
+							region->air_strength = region_full_air;
+							region->ground_strength_full = region_enemy_air;
+							new_unit->unit_ai = (UnitAi*)region;
 							return;
 						}
-						parentUnitAi->trainQueueTypes[queueSlot] = 1;
-						region = helper::get_ai_region_info_from_unit_loc(newUnit);
-						parentUnitAi->trainQueueValues[queueSlot] = (void*)region;
+						parent_unit_ai->train_queue_types[queue_slot] = 1;
+						region = helper::get_ai_region_info_from_unit_loc(new_unit);
+						parent_unit_ai->train_queue_values[queue_slot] = (void*)region;
 					}
-					if (parentUnitAi->trainQueueTypes[queueSlot] == 1) {
-						helper::add_military_ai(region, newUnit, 0);
+					if (parent_unit_ai->train_queue_types[queue_slot] == 1) {
+						helper::add_military_ai(region, new_unit, 0);
 					} else {
-						helper::add_guard_ai_to_unit(newUnit);
+						helper::add_guard_ai_to_unit(new_unit);
 					}
 				}
 			}
@@ -264,20 +263,20 @@ namespace hooks {
 				ai->type = 3;
 				ai->parent = unit;
 				ai->town = town;
-				ai->trainQueueValues[0] = 0;
-				ai->trainQueueValues[1] = 0;
-				ai->trainQueueValues[2] = 0;
-				ai->trainQueueValues[3] = 0;
-				ai->trainQueueValues[4] = 0;
-				ai->trainQueueTypes[0] = 0;
-				ai->trainQueueTypes[1] = 0;
-				ai->trainQueueTypes[2] = 0;
-				ai->trainQueueTypes[3] = 0;
-				ai->trainQueueTypes[4] = 0;
+				ai->train_queue_values[0] = 0;
+				ai->train_queue_values[1] = 0;
+				ai->train_queue_values[2] = 0;
+				ai->train_queue_values[3] = 0;
+				ai->train_queue_values[4] = 0;
+				ai->train_queue_types[0] = 0;
+				ai->train_queue_types[1] = 0;
+				ai->train_queue_types[2] = 0;
+				ai->train_queue_types[3] = 0;
+				ai->train_queue_types[4] = 0;
 
 				unit->unit_ai = (UnitAi*)ai;
 				if (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk) {
-					if (unit->status & UnitStatus::Completed) {
+					if (unit->is_completed()) {
 						unit->order_computer(OrderId::ComputerAI);
 						helper::set_secondary_order(unit, OrderId::SpreadCreep);
 					}

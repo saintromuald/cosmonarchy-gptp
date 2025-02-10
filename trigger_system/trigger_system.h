@@ -142,6 +142,7 @@ enum Advisor : u8 {
     Advisor_HADRAL,
     Advisor_ISN,
     Advisor_Furen,
+    Advisor_Kortar,
 
     // Faction-specific
     Advisor_Artemis,
@@ -166,6 +167,7 @@ static const char* advisor_names[]{
     "HADRAL",
     "ISN",
     "Furen",
+    "Kortar",
 
     // Faction-specific
     "Artemis",

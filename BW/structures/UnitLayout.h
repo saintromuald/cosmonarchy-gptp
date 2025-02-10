@@ -24,6 +24,7 @@ namespace NewGameCommand {
         CameraSync,
         SelectFaction,
         SyncColorPref,
+        AnnounceDefeat,
     };
 }
 

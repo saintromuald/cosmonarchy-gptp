@@ -1504,4 +1504,12 @@ struct NetPlayer {
 /*0x21*/ u8 padding;
 };
 
+struct AnnounceDefeatCommand {
+    u8 type;
+    u8 subtype;
+    u8 player;
+    u8 padding[9];
+};
+static_assert(sizeof(AnnounceDefeatCommand) == 12);
+
 #pragma pack()

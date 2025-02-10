@@ -1623,6 +1623,17 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                     cm_player.disabled_units &= ~unit_ids;
                 }
             }
+        } else if (parser.equals("announce_player_defeat")) {
+            const auto players = parser.get_player_bitset();
+            for (u32 player = 0; player < PlayerLimit; player++) {
+                if (!players[player]) continue;
+
+                AnnounceDefeatCommand command = {};
+                command.type = GameCommand_Custom;
+                command.subtype = NewGameCommand::AnnounceDefeat;
+                command.player = player;
+                helper::queue_game_command((u8*)&command, sizeof(command));
+            }
         }
     }
     return true;

@@ -4103,6 +4103,13 @@ namespace hooks {
                                     }
                                 }
                             } break;
+                            case NewGameCommand::AnnounceDefeat: {
+                                auto command = (AnnounceDefeatCommand*)buffer;
+                                auto player = command->player;
+                                const char* player_name = g_player_table[player].name;
+                                bw::printf("%s (P%u) has been defeated!", player_name, player + 1, TextColor::Yellow);
+                                bw::play_sound(SoundId::PlayerDefeatZerg + g_player_table[player].race);
+                            } break;
                         }
                         goto next_command;
                     }
