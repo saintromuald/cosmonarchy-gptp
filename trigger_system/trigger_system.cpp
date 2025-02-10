@@ -1625,6 +1625,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             }
         } else if (parser.equals("announce_player_defeat")) {
             const auto players = parser.get_player_bitset();
+            const auto bool_state = parser.get_bool(true);
             for (u32 player = 0; player < PlayerLimit; player++) {
                 if (!players[player]) continue;
 
@@ -1632,6 +1633,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                     command.type = GameCommand_Custom,
                     command.subtype = NewGameCommand::AnnounceDefeat,
                     command.player = player,
+                    command.show_player_number = bool_state,
                 };
                 helper::queue_game_command((u8*)&command, sizeof(command));
             }

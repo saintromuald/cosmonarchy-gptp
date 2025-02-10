@@ -4105,7 +4105,11 @@ namespace hooks {
                             } break;
                             case NewGameCommand::AnnounceDefeat: {
                                 auto command = (AnnounceDefeatCommand*)buffer;
-                                bw::println(TextColor::Yellow, "{} (P{}) has been defeated!", g_player_table[command->player].name, command->player + 1);
+                                if (command->show_player_number) {
+                                    bw::println(TextColor::Yellow, "{} (P{}) has been defeated!", g_player_table[command->player].name, command->player + 1);
+                                } else {
+                                    bw::println(TextColor::Yellow, "{} has been defeated!", g_player_table[command->player].name);
+                                }
                                 bw::play_sound(SoundId::PlayerDefeatZerg + g_player_table[command->player].race);
                             } break;
                         }

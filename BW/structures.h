@@ -1508,7 +1508,8 @@ struct AnnounceDefeatCommand {
     u8 type;
     u8 subtype;
     u8 player;
-    u8 _padding[9];
+    bool show_player_number;
+    u8 _padding[8];
 };
 static_assert(sizeof(AnnounceDefeatCommand) == 12);
 
