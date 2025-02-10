@@ -77,7 +77,7 @@ u32 Player::number_of_completed_landed_units_of_id(u8 player, u16 unit_id) {
 	u32 count = 0;
 	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 		if (unit->id == unit_id) {
-			if (unit->status & UnitStatus::Completed && !(unit->status & UnitStatus::InAir)) {
+			if (unit->is_completed() && !unit->is_in_air()) {
 				count++;
 			}
 		}
@@ -92,7 +92,7 @@ u32 Player::number_of_completed_powered_units_of_id(u8 player, u16 unit_id) {
 	u32 count = 0;
 	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 		if (unit->id == unit_id) {
-			if (unit->status & UnitStatus::Completed && !(unit->status & UnitStatus::Disabled)) {
+			if (unit->is_completed()  && !unit->is_disabled()) {
 				count++;
 			}
 		}
@@ -107,10 +107,14 @@ u32 Player::number_of_completed_addon_units_of_id(u8 player, u16 unit_id) {
 	u32 count = 0;
 	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 		if (unit->id == unit_id) {
-			if (unit->status & UnitStatus::Completed) {
+			if (unit->is_completed()) {
 				count++;
 			}
 		}
 	}
 	return count;
+}
+
+std::string_view Player::name_view(u32 player) {
+	return g_player_name_list->player[player].player_name;
 }

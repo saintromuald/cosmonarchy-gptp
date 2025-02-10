@@ -757,11 +757,11 @@ namespace hooks {
 		helper::do_next_queued_order(unit);
 	}
 
-	// Hooked to -Pr0nogo
+	// Hooked to implement a player-specific event -Pr0nogo
 	void return_resources_from_unit(Unit* unit) { // 004F39A0
 		helper::remove_powerup_image_overlay(unit);
 		u8 resource_type = unit->resource_type;
-		if (std::string_view{g_player_name_list->player[unit->player].player_name} == "Gasless Gary") {
+		if (Player::name_view(unit->player) == "Gasless Gary") {
 			resource_type = ResourceType::Minerals;
 		}
 		if (resource_type & ResourceType::Minerals) {

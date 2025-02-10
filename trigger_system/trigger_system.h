@@ -126,28 +126,28 @@ static const char* faction_identifiers[] = { // This array needs to the same siz
 };
 static_assert(std::size(faction_identifiers) == (size_t)Faction::Count);
 
-enum Advisor : u8 {
-    Advisor_Default,
+enum class Advisor : u8 {
+    Default,
 
     // Races
-    Advisor_Terran,
-    Advisor_Protoss,
-    Advisor_Zerg,
+    Terran,
+    Protoss,
+    Zerg,
 
     // Community
-    Advisor_Mesk,
+    Mesk,
 
     // Characters
-    Advisor_Ackmed,
-    Advisor_HADRAL,
-    Advisor_ISN,
-    Advisor_Furen,
-    Advisor_Kortar,
+    Ackmed,
+    HADRAL,
+    ISN,
+    Furen,
+    Kortar,
 
     // Faction-specific
-    Advisor_Artemis,
+    Artemis,
 
-    Advisor_Count,
+    Count,
 };
 
 // NOTE: This is case insensitive for parsing
@@ -172,7 +172,7 @@ static const char* advisor_names[]{
     // Faction-specific
     "Artemis",
 };
-static_assert(std::size(advisor_names) == Advisor_Count);
+static_assert(std::size(advisor_names) == (size_t)Advisor::Count);
 
 struct CmPlayer {
     Point16 camera;

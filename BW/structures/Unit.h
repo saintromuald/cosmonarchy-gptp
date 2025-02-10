@@ -415,6 +415,7 @@ struct Unit : public UnitLayout {
     bool is_grounded_building();
     bool is_in_transport();
     bool is_dual_requisition();
+    bool is_disabled();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

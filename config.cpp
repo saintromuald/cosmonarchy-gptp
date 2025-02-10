@@ -244,7 +244,7 @@ void save_config() {
     {
         std::stringstream available_advisors;
         available_advisors << "Available Advisors are: ";
-        for (u32 i = 0; i < Advisor_Count; ++i) {
+        for (u32 i = 0; i < (u32)Advisor::Count; ++i) {
             if (i > 0) {
                 available_advisors << ", ";
             }

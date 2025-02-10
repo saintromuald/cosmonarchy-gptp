@@ -128,7 +128,7 @@ template <>
 struct YAML::convert<Advisor> {
 	static YAML::Node encode(Advisor value) {
 		auto index = static_cast<size_t>(value);
-		return YAML::Node{index < (size_t)Advisor_Count ? advisor_names[index] : "invalid_color"};
+		return YAML::Node{index < (size_t)Advisor::Count ? advisor_names[index] : "invalid_color"};
 	}
 
 	static bool decode(const YAML::Node& node, Advisor& value) {
