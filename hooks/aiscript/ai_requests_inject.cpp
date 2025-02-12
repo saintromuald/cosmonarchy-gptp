@@ -366,7 +366,7 @@ namespace
 			MOV request_type, CL
 			PUSHAD
 		}
-		result = hooks::ai_add_spending_request(unit_id, player, request_type, priority, value);
+		result = hooks::ai_add_spending_request((UnitId::Enum)unit_id, player, request_type, priority, value); // Casts to enum here because it's u16 instead of u32.
 		__asm {
 			POPAD
 			MOV EAX, result

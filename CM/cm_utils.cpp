@@ -402,3 +402,78 @@ void set_up_mines(Unit* unit) {
         case UnitId::TerranClericFuturist: unit->mine_carrier.mine_count = 1; break;
     }
 }
+
+UnitId::Enum get_faction_replacement(u32 player, UnitId::Enum unit_id) {
+    Faction faction = g_globals->players[player].faction;
+    switch (faction) {
+        case Faction::TerranHecatonCoalition: {
+            switch (unit_id) {
+                case UnitId::TerranMaverick: return UnitId::TerranHotshot;
+                case UnitId::TerranApostle:  return UnitId::TerranAuriel;
+                case UnitId::TerranTrojan:   return UnitId::TerranQilin;
+            }
+        } break;
+        case Faction::TerranFuturistFederation: {
+            switch (unit_id) {
+                case UnitId::TerranCleric:  return UnitId::TerranClericFuturist;
+                case UnitId::TerranCyclops: return UnitId::TerranCyclopsFuturist;
+                case UnitId::TerranWraith:  return UnitId::TerranPhiloc;
+            }
+        } break;
+        case Faction::TerranGoldenRepublic: {
+            switch (unit_id) {
+                case UnitId::TerranHarakan: return UnitId::TerranHarakanGolden;
+                case UnitId::TerranGoliath: return UnitId::TerranAspirant;
+                case UnitId::TerranSeraph:  return UnitId::TerranLuminary;
+            }
+        } break;
+        case Faction::TerranNydusTrinity: {
+            switch (unit_id) {
+                case UnitId::TerranCyprian:         return UnitId::TerranCohort;
+                case UnitId::TerranPhalanxTankMode: return UnitId::TerranTarasque;
+            }
+        } break;
+        case Faction::TerranUpstart: {
+            switch (unit_id) {
+                case UnitId::TerranGoliath: return UnitId::TerranSouthpaw;
+                case UnitId::TerranAncile:  return UnitId::TerranWendigo;
+            }
+        } break;
+        case Faction::ProtossKhalendricKnights: {
+            switch (unit_id) {
+                case UnitId::ProtossEcclesiast: return UnitId::ProtossEcclesiastKhalendric;
+            }
+        } break;
+        case Faction::ProtossOrderOfTheSacredSaber: {
+            switch (unit_id) {
+                case UnitId::ProtossLegionnaire: return UnitId::ProtossAdherent;
+            //  case UnitId::ProtossVassal:      return UnitId::ProtossRenesair;
+            //  case UnitId::ProtossAurora:      return UnitId::ProtossExtatus;
+            }
+        } break;
+        case Faction::ProtossStarbound: {
+            switch (unit_id) {
+                case UnitId::ProtossZealot:      return UnitId::ProtossZealotStarbound;
+                case UnitId::ProtossLegionnaire: return UnitId::ProtossCicatus;
+            }
+        } break;
+        case Faction::ZergImicrenTendril: {
+            switch (unit_id) {
+            //  case UnitId::ZergQuazilisk:     return UnitId::ZergQuazrokor;
+            //  case UnitId::ZergZoryusthaleth: return UnitId::ZergInzorthrokor;
+            }
+        } break;
+        case Faction::ZergGoszirithTendril: {
+            switch (unit_id) {
+            //  case UnitId::ZergVorvrokor: return UnitId::ZergGorvrokor;
+            }
+        } break;
+        case Faction::ZergZorthosTendril: {
+            switch (unit_id) {
+                case UnitId::ZergNathrokor: return UnitId::ZergNathrelisk;
+                case UnitId::ZergIzirokor:  return UnitId::ZergIziralisk;
+            }
+        } break;
+    }
+    return unit_id;
+}
