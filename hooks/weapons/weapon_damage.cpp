@@ -1179,7 +1179,7 @@ namespace hooks {
 
             // Misc behaviors
             if (target_ext->timers[TimerCriticality]) {
-                g_iquare_globals->create_effect(EffectId::AspirantCriticality, 5 * 24, { data.target->position.x, data.target->position.y }, 2 * 32, SpriteId::Criticality, 5, data.attacking_player_id, data.target);
+                g_iquare_globals->create_effect(EffectId::AspirantCriticality, 5 * 24, { data.target->position.x, data.target->position.y }, 2 * 32, SpriteId::Criticality, 2, data.attacking_player_id, data.target);
             }
         }
         return fatal_deal_damage;
