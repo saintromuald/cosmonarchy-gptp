@@ -403,7 +403,7 @@ void set_up_mines(Unit* unit) {
     }
 }
 
-UnitId::Enum get_faction_replacement(u32 player, UnitId::Enum unit_id) {
+UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
     Faction faction = g_globals->players[player].faction;
     switch (faction) {
         case Faction::TerranHecatonCoalition: {

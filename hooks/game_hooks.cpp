@@ -1561,7 +1561,7 @@ namespace hooks {
                     }
                 }
                 
-                if ((unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && unit->order_signal & 0x8) {
+                if ((unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && unit->order_signal & 8) {
                     unit->order_signal &= ~0x8;
                     helper::replace_sprite_images(unit->sprite, unit->id == UnitId::ZergEgg ? ImageId::Egg : ImageId::GuardianCocoon, 0);
                     unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
@@ -1593,11 +1593,11 @@ namespace hooks {
                             const LO_Header* loFile = lo_files->special_overlays[unit->sprite->main_graphic->id];
                             u8 frame_direction = unit->sprite->main_graphic->direction;
                             Point8 offset = loFile->get_offset(frame_direction, 5 - arc);
-                            if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored) {
+                            if (unit->sprite->main_graphic->is_mirrored()) {
                                 offset.x = -offset.x;
                             }
-                            auto X = unit->position.x + offset.x;
-                            auto Y = unit->position.y + offset.y;
+                            auto x_pos = unit->position.x + offset.x;
+                            auto y_pos = unit->position.y + offset.y;
                             auto target_unit = unit->order_target.unit;
                             auto target_pos = unit->order_target.pt;
                             auto offset_direction = -40 + arc * 16;
@@ -1607,7 +1607,7 @@ namespace hooks {
                             unit->order_target.unit = 0;
                             unit->order_target.pt.x = polar_x;
                             unit->order_target.pt.y = polar_y;
-                            helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player, bw::dir_saturate(unit->current_direction_1, offset_direction));
+                            helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, x_pos, y_pos, unit->player, bw::dir_saturate(unit->current_direction_1, offset_direction));
                             bw::play_sound({SoundId::StarSovereignMissileFire01, SoundId::StarSovereignMissileFire03}, unit);
                             unit->order_target.unit = target_unit;
                             unit->order_target.pt = target_pos;

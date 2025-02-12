@@ -1038,7 +1038,7 @@ namespace hooks {
                 if (helper::ai_isnt_at_define_max(player, unit_id)) {
                     return false;
                 }
-            }
+            } break;
         }
 
         AI_Main* player_ai = &g_aiscript_controller[player];
@@ -1047,7 +1047,7 @@ namespace hooks {
         }
 
         u32 index = player_ai->request_count - 1;
-        unit_id = get_faction_replacement(player, unit_id);
+        unit_id = get_factional_unit_id(player, unit_id);
         player_ai->requests[index].id = (u32)unit_id;
         player_ai->requests[index].type = type;
         player_ai->requests[index].priority = priority;
@@ -1146,8 +1146,7 @@ namespace hooks {
             }
         }
         bool is_morphing_hachirosk = unit->id == UnitId::ZergHachirosk && helper::unit_is_morphing(unit);
-        if (!unit->is_completed() && !unit_id_is_zerg_production(unit->id, true) && unit->id != !is_morphing_hachirosk
-        ||  !unit->is_grounded_building() || !unit->is_resource_depot() && !unit_id_is_town_center(unit->id)) { // Originally checked for race, so Terran would only accept Ministry, etc
+        if (!unit->is_completed() && !unit_id_is_zerg_production(unit->id, true) && !is_morphing_hachirosk && !unit_id_is_town_center(unit->id)) { // Originally checked for race, so Terran would only accept Ministry, etc
             return;
         }
 
