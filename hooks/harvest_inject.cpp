@@ -337,6 +337,19 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) return_resources_from_unit_wrapper() { // 004F39A0
+		static Unit* unit;
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+		hooks::return_resources_from_unit(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -362,6 +375,7 @@ namespace hooks {
 		jump_patch(mine_resources_wrapper,									0x00469650,	0);
 		jump_patch(remove_stunned_worker_from_node_wrapper,					0x00468DB0,	1);
 		jump_patch(orders_harvesting_minerals_wrapper,						0x004697C0,	1);
+		jump_patch(return_resources_from_unit_wrapper,						0x004F39A0,	3);
 
 		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
 		jump_patch(worker_wandering_wrapper,								0x00469393,	1);

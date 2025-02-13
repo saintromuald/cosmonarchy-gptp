@@ -7,8 +7,8 @@ namespace hooks
 	void ai_create_nuke(Unit* silo, Unit* result);																// 0045B7A0
 	void ai_add_military_to_region(AiRegion* region, Unit* unit, u32 must_use_region, void* debug_caller_address);	// 0043DA20
 	void ai_training_simple_military(Unit* result, Unit* parent);												// 0043E280
-	void ai_training_worker(Unit* newUnit, Unit* otherUnit);													// 00435700
-	void ai_training_normal(Unit* newUnit, Unit* parentUnit);													// 00435DB0
+	void ai_training_worker(Unit* new_unit, Unit* other_unit);													// 00435700
+	void ai_training_normal(Unit* new_unit, Unit* parent_unit);													// 00435DB0
 	void* add_worker_structure_ai(Unit* unit, AiTown* town);													// 00433DD0
 	void iterate_building_ai(Unit* result, Unit* parent);														// 00435770
 	void remove_unit_ai(Unit* unit, UnitAi* unitAI);															// 004A1E50

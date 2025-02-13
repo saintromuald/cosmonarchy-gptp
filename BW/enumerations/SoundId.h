@@ -2046,5 +2046,11 @@ namespace SoundId {
         KortarAdvisor_NoVespene04					    = 3320,
         KortarAdvisor_Warp01							= 3321,
         KortarAdvisor_Warp02							= 3322,
+        PlayerDefeatZerg                                = 3323,
+        PlayerDefeatTerran                              = 3324,
+        PlayerDefeatProtoss                             = 3325,
+        PlayerDefeatAskosi                              = 3326,
+        PlayerDefeatBloodsummon                         = 3327,
+        PlayerDefeatKogri                               = 3328,
     };
 }

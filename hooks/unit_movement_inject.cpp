@@ -126,6 +126,24 @@ namespace {
 			JMP		playIdleIscript_978D8
 		}
 	}
+
+	void __declspec(naked) can_move_unit_patch() {
+		static const u32 can_move_unit_9D3E8 = 0x0049D3E8;
+		static const u32 can_move_unit_9D52F = 0x0049D52F;
+		__asm {
+			SUB ESP, 0x14
+			PUSH EBX
+			PUSH ESI
+			MOV ESI, [EBP + 0x8]
+			CMP[ESI + 0x64], 101//UnitId::Special_MapRevealer
+			JE offset _ret
+			JMP can_move_unit_9D3E8
+
+			_ret :
+			PUSH EDI
+				JMP can_move_unit_9D52F
+		}
+	}
 }
 
 namespace hooks {
@@ -138,6 +156,7 @@ namespace hooks {
 	//	jump_patch(unit_movement_initialize_wrapper,	0x0046C320, 4); // Not tested yet
 	//	jump_patch(refresh_unit_after_move_wrapper,		0x00494160,	2); // Causes common freeze
 
-	//	jump_patch(play_idle_iscript_patch_978D3,	0x004978D3); // DF - Fix animation bug with acceleration movement flag
+	//	jump_patch(play_idle_iscript_patch_978D3,		0x004978D3); // DF - Fix animation bug with acceleration movement flag
+		jump_patch(can_move_unit_patch,					0x0049D3E3); // DF - Fix map revealers crashing on map start if colliding with air units
 	}
 }

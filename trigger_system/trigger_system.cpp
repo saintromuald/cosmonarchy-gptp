@@ -60,7 +60,7 @@ static Advisor get_advisor_type_from_config(u32 race) {
         u32 index = bw::rand_between_local(0, advisors.size() - 1);
         return advisors[index];
     }
-    return Advisor_Default;
+    return Advisor::Default;
 }
 
 void init_trigger_system() {
@@ -1622,6 +1622,20 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                 } else {
                     cm_player.disabled_units &= ~unit_ids;
                 }
+            }
+        } else if (parser.equals("announce_player_defeat")) {
+            const auto players = parser.get_player_bitset();
+            const auto bool_state = parser.get_bool(true);
+            for (u32 player = 0; player < PlayerLimit; player++) {
+                if (!players[player]) continue;
+
+                AnnounceDefeatCommand command = {
+                    command.type = GameCommand_Custom,
+                    command.subtype = NewGameCommand::AnnounceDefeat,
+                    command.player = player,
+                    command.show_player_number = bool_state,
+                };
+                helper::queue_game_command((u8*)&command, sizeof(command));
             }
         }
     }

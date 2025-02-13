@@ -1566,3 +1566,7 @@ bool Unit::is_in_transport() {
 bool Unit::is_dual_requisition() {
     return units_dat::base_property[this->id] & UnitProperty::TwoUnitsIn1Egg;
 }
+
+bool Unit::is_disabled() {
+    return this->status & UnitStatus::Disabled;
+}

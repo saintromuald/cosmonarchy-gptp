@@ -44,7 +44,7 @@ struct Config {
     f32 scroll_sensitivity = 1.0;
 
     // Audiovisuals
-    std::vector<Advisor> common_advisors{ Advisor_Default };
+    std::vector<Advisor> common_advisors{ Advisor::Default };
     std::vector<Advisor> terran_advisors{};
     std::vector<Advisor> protoss_advisors{};
     std::vector<Advisor> zerg_advisors{};
