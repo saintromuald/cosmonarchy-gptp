@@ -629,9 +629,9 @@ namespace hooks {
         }
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod)) {
             switch (unit_id) {
+                case UnitId::ProtossAnalogue:
                 case UnitId::ProtossDemiurge:
-                case UnitId::ProtossEmpress:
-                case UnitId::ProtossAnalogue: {
+                case UnitId::ProtossEmpress: {
                     return true;
                 } break;
             }
@@ -2054,8 +2054,8 @@ namespace hooks {
             } break;
             case UnitId::ProtossSyntheticSynod: {
                 switch (unit_id) {
-                    case UnitId::ProtossDemiurge:
                     case UnitId::ProtossAnalogue:
+                    case UnitId::ProtossDemiurge:
                     case UnitId::ProtossEmpress: {
                         return TECH_ACTIVE;
                     }

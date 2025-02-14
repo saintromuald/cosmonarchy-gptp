@@ -1522,8 +1522,8 @@ namespace hooks {
                                 }
                             } break;
                             case UnitId::ProtossSyntheticSynod: {
-                                if (current_button->requirement_var == UnitId::ProtossDemiurge
-                                ||  current_button->requirement_var == UnitId::ProtossAnalogue
+                                if (current_button->requirement_var == UnitId::ProtossAnalogue
+                                ||  current_button->requirement_var == UnitId::ProtossDemiurge
                                 ||  current_button->requirement_var == UnitId::ProtossEmpress) {
                                     current_button_state = Button_State::Enabled;
                                 } else {
