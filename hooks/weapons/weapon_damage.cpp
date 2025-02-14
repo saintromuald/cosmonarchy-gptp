@@ -650,8 +650,8 @@ namespace hooks {
                     if (!weapon_id_can_proc_onhits(data.weapon_id) || weapon_damage_is_lethal(data)) {
                         break;
                     }
-                    if (data.target->energy >= 10 * 256) {
-                        data.target->spend_energy(10 * 256);
+                    if (data.target->energy >= EmpathyCore::EnergyAmount) {
+                        data.target->spend_energy(EmpathyCore::EnergyAmount);
 
                         u32 damage = data.damage + data.shield_reduce_amount;
                         u32 image_id = analogue_image_id_overwrite(data.weapon_id);

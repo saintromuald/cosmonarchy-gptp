@@ -144,6 +144,10 @@ inline constexpr s32 SplitPeriod = 4 * 32;
 inline constexpr s32 SplitSearchRadius = 3 * 32;
 }
 
+namespace EmpathyCore {
+inline constexpr s32 EnergyAmount = 5 * 256;
+}
+
 namespace Lanifect {
 inline constexpr s32 AICheckRange = 3 * 32;
 inline constexpr s32 AISeekRange = 8 * 32;
