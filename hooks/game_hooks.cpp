@@ -789,7 +789,7 @@ namespace hooks {
         if (g_elapsed_time_frames == 1) {
             u32 local_flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[g_local_nation_id];
             if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
-                // Default maps to "semi-explored", from DarkenedFantasies
+                // Default maps to "semi-explored". -DF
                 for (s32 i = 0; i < 4092; i++) {
                     if (g_fog_of_war_mask->unexplored[i] < 8) {
                         g_fog_of_war_mask->unexplored[i] = 8;
@@ -807,7 +807,7 @@ namespace hooks {
                 }
             }
 
-            // Explores the entire map, requires a trigger that sets 1 death of Vespene Geyser for players in question
+            // Explores the entire map; requires a trigger that sets 1 death of Vespene Geyser for players in question
             if (reveal_flag) {
                 // Explore map
                 /*
@@ -842,8 +842,8 @@ namespace hooks {
             }
         }
 
-        *g_ai_update_cooldown = 0; // We want the AI to update spending requests every tick, so we can have precise 
-        g_can_update_powered_status = true; // We want to have dynamic power updates, so we update power every frame
+        *g_ai_update_cooldown = 0; // We want the AI to update spending requests every tick, so we can have precision. -Veeq7
+        g_can_update_powered_status = true; // We want to have dynamic power updates, so we update power every frame.  -Veeq7
         for (u32 i = 0; i < 8; ++i) {
             g_race_supply[RaceId::Terran].provided[i] = 60000;
         }
@@ -972,10 +972,20 @@ namespace hooks {
             tick_unit(unit, false);
         }
         for (Unit* unit = *g_first_hidden_unit; unit; unit = unit->link.next) {
-            if (unit->status & UnitStatus::Completed) {
+            if (unit->is_completed()) {
                 tick_unit(unit, true);
             }
         }
+
+        // Replace AI requests based on factions.
+        for (auto player = 0; player < PlayerLimit; player++) {
+            for (auto town = g_ai_town_list[player].first; town; town = town->next) {
+                for (auto& request : town->requests) {
+                    request.id = get_factional_unit_id(player, (UnitId::Enum)request.id);
+                }
+            }
+        }
+
         bw::set_ingame_loop_state(false);
 
         return true;

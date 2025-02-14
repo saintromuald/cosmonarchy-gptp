@@ -1047,7 +1047,6 @@ namespace hooks {
         }
 
         u32 index = player_ai->request_count - 1;
-        unit_id = get_factional_unit_id(player, unit_id);
         player_ai->requests[index].id = (u32)unit_id;
         player_ai->requests[index].type = type;
         player_ai->requests[index].priority = priority;
