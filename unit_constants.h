@@ -128,6 +128,10 @@ inline constexpr s32 TyrannyMaxStacks = 48;
 inline constexpr s32 MaelstromTimer = 16; // 5 seconds
 }
 
+namespace Unar {
+inline constexpr s32 SolitaryFocusTimer = 2 * 24 + 1;
+}
+
 namespace Vibrance {
 inline constexpr s32 WeaponRadiusInner = 64;
 inline constexpr s32 WeaponRadiusMedium = 128;

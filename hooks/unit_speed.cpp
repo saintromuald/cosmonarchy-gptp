@@ -121,6 +121,11 @@ namespace hooks {
             speed *= 0.5;
         }
 
+        // Unar - Solitary Focus
+        if (unit_ext.timers[TimerUnarMovementDebuff]) {
+            speed *= 0.5;
+        }
+
         // Mind Tyrant - Maelstrom - slow
         if (unit_ext.timers[TimerMindTyrantMaelstromSlow] > 1) {
             speed *= 0.5;

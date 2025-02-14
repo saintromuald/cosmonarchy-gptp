@@ -367,6 +367,7 @@ enum ExtTimerId {
     TimerTranquilityArray,
     TimerCriticality,
     TimerOscilliantBindingPlasma,
+    TimerUnarMovementDebuff,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

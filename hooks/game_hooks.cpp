@@ -2256,6 +2256,19 @@ namespace hooks {
                     helper::create_bullet(WeaponId::DiademHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
                 }
             } break;
+            case UnitId::ProtossUnar: {
+                if (unit->order_signal & 0x20) {
+                    unit->order_signal &= ~0x20;
+                    unit_ext->timers[TimerUnarMovementDebuff] = Unar::SolitaryFocusTimer;
+                    should_update_speed = true;
+                }
+                if (unit_ext->timers[TimerUnarMovementDebuff] == Unar::SolitaryFocusTimer) {
+                    // TODO: audiovisuals
+                } else if (unit_ext->timers[TimerUnarMovementDebuff] == 1) {
+                    unit_ext->timers[TimerUnarMovementDebuff] = 0;
+                    should_update_speed = true;
+                }
+            } break;
             case UnitId::TerranSavant: {
                 if (unit_ext->timers[TimerSavantPowerSiphonBuff] == 1) {
                     unit_ext->values[ValueSavantPowerSiphonBuff] = 0;

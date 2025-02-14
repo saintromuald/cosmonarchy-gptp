@@ -2559,6 +2559,11 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ProtossUnar: {
+                                    if (current_button->icon_id == IconId::RechargeShields) { // Singular Focus
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ProtossVibrance: {
                                     if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
                                     ||  current_button->icon_id == IconId::ProtossGroundWeapons) {		// Astral Blessing
