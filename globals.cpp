@@ -398,7 +398,7 @@ static void tick_effect(EffectField& effect) {
                     break;
                 }
 
-                EntryArray sources = g_unit_search
+                EntryArray<Unit> sources = g_unit_search
                     .radial(effect.position, Protoss::BindingPlasmaSearchRadius)
                     .filter(nullptr, 0, {UnitId::ProtossOscilliant})
                     .filter_by([&effect](Unit* unit) {
@@ -419,8 +419,7 @@ static void tick_effect(EffectField& effect) {
                 assert(targets.size() <= effect.intervals);
                 for (Unit* target : targets) {
                     bw::artificial_bullet_from(WeaponId::OscilliantRotatingRay, effect.player, source, target, target->position, effect.position);
-                    u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
-                    helper::play_sound_at_pos(sound_id, effect.position, 1, 0);
+                    bw::play_sound({SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03});
                     effect.intervals--;
                 }
             } break;
@@ -450,8 +449,7 @@ static void tick_effect(EffectField& effect) {
                 assert(targets.size() <= effect.intervals);
                 for (Unit* target : targets) {
                     bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, source, target, target->position, effect.position);
-                    u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
-                    helper::play_sound_at_pos(sound_id, effect.position, 1, 0);
+                    bw::play_sound({SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03});
                     effect.intervals--;
                 }
             } break;
@@ -697,7 +695,7 @@ void refresh_debuffs(Unit* unit) {
 
     // Refresh Maelstrom
     if (unit->maelstrom_timer) {
-        unit->maelstrom_timer = MindTyrant::MaelstromTimer;
+        unit->maelstrom_timer = ProtossMindTyrant::MaelstromTimer;
     }
 
     // Refresh Devourer Corrosive Spores

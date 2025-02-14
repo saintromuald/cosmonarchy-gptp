@@ -650,8 +650,8 @@ namespace hooks {
                     if (!weapon_id_can_proc_onhits(data.weapon_id) || weapon_damage_is_lethal(data)) {
                         break;
                     }
-                    if (data.target->energy >= EmpathyCore::EnergyAmount) {
-                        data.target->spend_energy(EmpathyCore::EnergyAmount);
+                    if (data.target->energy >= ProtossEmpathyCore::EnergyAmount) {
+                        data.target->spend_energy(ProtossEmpathyCore::EnergyAmount);
 
                         u32 damage = data.damage + data.shield_reduce_amount;
                         u32 image_id = analogue_image_id_overwrite(data.weapon_id);
@@ -1049,11 +1049,11 @@ namespace hooks {
             } break;
             case UnitId::ProtossArchon: {
                 // Archon - Astral Aegis
-                auto shielded = g_unit_search.radial_ex(data.target, Archon::AstralAegisRange, FilterCompleted);
+                auto shielded = g_unit_search.radial_ex(data.target, ProtossArchon::AstralAegisRange, FilterCompleted);
                 for (auto shieldee : shielded) {
                     Unit* shieldee_unit = (Unit*)shieldee; // Needed to use member functions
                     if (shieldee_unit->has_shields()) {
-                        shieldee_unit->heal_shields(Archon::AstralAegisShieldHeal, data.target);
+                        shieldee_unit->heal_shields(ProtossArchon::AstralAegisShieldHeal, data.target);
                     }
                 };
             } break;
@@ -1150,7 +1150,7 @@ namespace hooks {
             }
 
             // Tyranny
-            if (target_ext->units[UnitMindTyrantLink] && target_ext->values[ValueMindTyrantTyranny] == MindTyrant::TyrannyMaxStacks && !target_ext->values[ValueLastOrdersInit]) {
+            if (target_ext->units[UnitMindTyrantLink] && target_ext->values[ValueMindTyrantTyranny] == ProtossMindTyrant::TyrannyMaxStacks && !target_ext->values[ValueLastOrdersInit]) {
                 fatal_deal_damage = false;
                 mind_control(data.attacker->player, UnitId::ProtossMindTyrant, data.target);
                 bw::play_sound(SoundId::Protoss_Darchon_mind_wav, data.target->position);

@@ -1011,5 +1011,6 @@ bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id);
 f32 calculate_dark_ages_penalty(f32 range);
 void zap_overlay(Unit* unit);
 void play_manual_weapon_sound(Unit* unit, WeaponId::Enum weapon_id);
+void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id);
 
 } // namespace bw

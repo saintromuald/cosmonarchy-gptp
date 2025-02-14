@@ -692,27 +692,25 @@ namespace hooks {
                         if (bw::is_allied_to(unit->player, unit->order_target.unit->player) || unit->player == unit->order_target.unit->player) {
                             ignore_allies = false;
                         }
-                        for (Unit* target : g_unit_search.radial_ex(unit, Vibrance::WeaponRadiusOuter)) {
+                        for (Unit* target : g_unit_search.radial_ex(unit, ProtossVibrance::WeaponRadiusOuter)) {
                             if (ignore_allies && (bw::is_allied_to(unit->player, target->player) || unit->player == target->player)) {
                                 continue;
                             }
-                            u32 dist = bw::distance_between(unit->position, target->position);
-                            if (dist <= Vibrance::WeaponRadiusOuter && unit->can_attack_target(target)) {
+                            u32 distance = bw::distance_between(unit->position, target->position);
+                            if (distance <= ProtossVibrance::WeaponRadiusOuter && unit->can_attack_target(target)) {
                                 u32 divisor = 4;
-                                if (dist <= Vibrance::WeaponRadiusInner) {
+                                if (distance <= ProtossVibrance::WeaponRadiusInner) {
                                     divisor = 1;
-                                } else if (dist <= Vibrance::WeaponRadiusMedium) {
+                                } else if (distance <= ProtossVibrance::WeaponRadiusMedium) {
                                     divisor = 2;
                                 }
-                                target->damage_with(WeaponId::VibranceSensoryOverload, -1, unit, unit->player, 0, divisor);
+                                target->damage_with(WeaponId::VibranceSensoryOverload, -1, unit, unit->player, bw::get_angle(unit->position, target->position), divisor);
                                 helper::create_thingy(SpriteId::NeutronFlareBlueDamageless, target->position.x, target->position.y, unit->player);
                                 attacked = true;
                             }
                         }
                         if (attacked) {
-                            u32 cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::VibranceSensoryOverload);
-                            unit->ground_weapon_cooldown = cooldown;
-                            unit->air_weapon_cooldown    = cooldown;
+                            apply_weapon_cooldown(unit, weapon_id);
                             helper::create_thingy(SpriteId::PlasmaTorpedoImpact, unit->position.x, unit->position.y, unit->player);
                         //  bw::play_sound({SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03}, unit);
                         }
@@ -1048,15 +1046,15 @@ namespace hooks {
             Unit* main_target = bullet->attack_target.unit;
             const u32 distance_from_source = bullet_ext->distance_traveled;
             const u32 distance_from_target = bw::distance_between(bullet->position, main_target->position);
-            if (distance_from_target < ReactivePayload::SplitProcDistance) {
-                u32 splits = distance_from_source / ReactivePayload::SplitPeriod;
+            if (distance_from_target < ProtossReactivePayload::SplitProcDistance) {
+                u32 splits = distance_from_source / ProtossReactivePayload::SplitPeriod;
                 if (splits && !g_iquare_globals->multihit_bullet_is_set(bullet)) {
                     Unit* old_target = bullet->source_unit->order_target.unit;
                     Point16 old_sprite_pos = bullet->source_unit->sprite->position;
                     Point16 old_pos = bullet->source_unit->position;
                     bullet->source_unit->sprite->position = bullet->position;
                     bullet->source_unit->position = bullet->position;
-                    u32 radius = ReactivePayload::SplitSearchRadius;
+                    u32 radius = ProtossReactivePayload::SplitSearchRadius;
 
                     g_iquare_globals->add_multihit_empty_bullet(bullet, 1);
                     u32 fired = 0;

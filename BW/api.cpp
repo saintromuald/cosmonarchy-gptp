@@ -4153,4 +4153,45 @@ void play_manual_weapon_sound(Unit* unit, WeaponId::Enum weapon_id) {
     }
 }
 
+void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id) {
+    u32 timer_id = 0;
+    u32 stack_value_id = 0;
+    switch (source_unit_id) {
+        case UnitId::ProtossOscilliant: {
+            timer_id = ExtTimerId::TimerOscilliantBindingPlasma;
+            stack_value_id = ExtValueId::ValueOscilliantBindingPlasmaStacks;
+        } break;
+        case UnitId::ProtossGladius: {
+            timer_id = ExtTimerId::TimerGladiusBindingPlasma;
+            stack_value_id = ExtValueId::ValueGladiusBindingPlasmaStacks;
+        } break;
+    }
+
+    bool has_source = false;
+    for (Unit* source : g_unit_search.radial_ex(unit, Protoss::BindingPlasmaSearchRadius, 0, {(u16)source_unit_id})) {
+        if (!bw::is_allied_to(source->player, player)) {
+            continue;
+        }
+        has_source = true;
+        UnitExt& source_ext = source->ext();
+        source_ext.timers[TimerBindingPlasmaChargeOverlay] = 3;
+    }
+
+    UnitExt& unit_ext = unit->ext();
+    if (has_source) {
+        if (unit_ext.timers[timer_id] % Protoss::BindingPlasmaTimer == Protoss::BindingPlasmaTimer - 1) {
+            bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay);
+        }
+        if (unit_ext.timers[timer_id] == 1) {
+            if (bw::binding_plasma_proc(unit, source_unit_id)) {
+                u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
+                helper::play_sound_from_unit(sound_id, unit, 1, 0);
+            }
+        }
+    } else {
+        unit_ext.timers[timer_id] = 0;
+        unit_ext.values[stack_value_id] = 0;
+    }
+}
+
 } // namespace bw

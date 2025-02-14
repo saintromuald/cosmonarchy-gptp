@@ -10,7 +10,7 @@ namespace hooks {
 		}
 
 		bool needs_refresh = false;
-		u32 cloak_radius = Didact::ShroudOfAdunRange;
+		u32 cloak_radius = ProtossDidact::ShroudOfAdunRange;
 		Box16 area_of_effect = {};
 		area_of_effect.left   = cloaker->sprite->position.x - cloak_radius;
 		area_of_effect.right  = cloaker->sprite->position.x + cloak_radius;

@@ -2259,12 +2259,10 @@ namespace hooks {
             case UnitId::ProtossUnar: {
                 if (unit->order_signal & 0x20) {
                     unit->order_signal &= ~0x20;
-                    unit_ext->timers[TimerUnarMovementDebuff] = Unar::SolitaryFocusTimer;
+                    unit_ext->timers[TimerUnarMovementDebuff] = ProtossUnar::SelfSlowDuration;
                     should_update_speed = true;
                 }
-                if (unit_ext->timers[TimerUnarMovementDebuff] == Unar::SolitaryFocusTimer) {
-                    // TODO: audiovisuals
-                } else if (unit_ext->timers[TimerUnarMovementDebuff] == 1) {
+                if (unit_ext->timers[TimerUnarMovementDebuff] == 1) {
                     unit_ext->timers[TimerUnarMovementDebuff] = 0;
                     should_update_speed = true;
                 }
@@ -2510,63 +2508,14 @@ namespace hooks {
 
         // Gladius - Binding Plasma
         if (unit_ext->timers[TimerGladiusBindingPlasma]) {
-            u32 source_player = unit_ext->values[ValueGladiusBindingPlasmaPlayer];
-
-            bool has_source = false;
-            for (Unit* source : g_unit_search.radial_ex(unit, Protoss::BindingPlasmaSearchRadius, 0, {UnitId::ProtossGladius})) {
-                if (bw::is_allied_to(source->player, source_player)) {
-                    has_source = true;
-                    UnitExt* source_ext = get_unit_ext(source);
-                    source_ext->timers[TimerBindingPlasmaChargeOverlay] = 3;
-                }
-            }
-
-            if (has_source) {
-                if (unit_ext->timers[TimerGladiusBindingPlasma] % Protoss::BindingPlasmaTimer == Protoss::BindingPlasmaTimer - 1) {
-                    bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay);
-                }
-                if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
-                    if (bw::binding_plasma_proc(unit, UnitId::ProtossGladius)) {
-                        u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
-                        helper::play_sound_from_unit(sound_id, unit, 1, 0);
-                    }
-                }
-            } else {
-                unit_ext->timers[TimerGladiusBindingPlasma] = 0;
-                unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
-            }
+            bw::binding_plasma_tick(unit_ext->values[ValueGladiusBindingPlasmaPlayer], unit, UnitId::ProtossGladius);
         } else {
             unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
         }
 
         // Oscilliant - Binding Plasma
-        // @Veeq7 please advise on how to avoid code duplication. -Pr0nogo
         if (unit_ext->timers[TimerOscilliantBindingPlasma]) {
-            u32 source_player = unit_ext->values[ValueOscilliantBindingPlasmaPlayer];
-
-            bool has_source = false;
-            for (Unit* source : g_unit_search.radial_ex(unit, Protoss::BindingPlasmaSearchRadius, 0, {UnitId::ProtossOscilliant})) {
-                if (bw::is_allied_to(source->player, source_player)) {
-                    has_source = true;
-                    UnitExt* source_ext = get_unit_ext(source);
-                    source_ext->timers[TimerBindingPlasmaChargeOverlay] = 3;
-                }
-            }
-
-            if (has_source) {
-                if (unit_ext->timers[TimerOscilliantBindingPlasma] % Protoss::BindingPlasmaTimer == Protoss::BindingPlasmaTimer - 1) {
-                    bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay);
-                }
-                if (unit_ext->timers[TimerOscilliantBindingPlasma] == 1) {
-                    if (bw::binding_plasma_proc(unit, UnitId::ProtossOscilliant)) {
-                        u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
-                        helper::play_sound_from_unit(sound_id, unit, 1, 0);
-                    }
-                }
-            } else {
-                unit_ext->timers[TimerOscilliantBindingPlasma] = 0;
-                unit_ext->values[ValueOscilliantBindingPlasmaStacks] = 0;
-            }
+            bw::binding_plasma_tick(unit_ext->values[ValueOscilliantBindingPlasmaPlayer], unit, UnitId::ProtossOscilliant);
         } else {
             unit_ext->values[ValueOscilliantBindingPlasmaStacks] = 0;
         }
@@ -2600,7 +2549,7 @@ namespace hooks {
 
         // Tyranny - increase stacks
         if (unit_ext->units[UnitMindTyrantLink]) {
-            if (unit_ext->values[ValueMindTyrantTyranny] < MindTyrant::TyrannyMaxStacks) {
+            if (unit_ext->values[ValueMindTyrantTyranny] < ProtossMindTyrant::TyrannyMaxStacks) {
                 unit_ext->values[ValueMindTyrantTyranny]++;
             } else {
                 if (!(unit->status & UnitStatus::Frozen)) {
@@ -2845,8 +2794,8 @@ namespace hooks {
         if (unit->defensive_matrix_timer > Azazel::DefensiveMatrixTimer) {
             unit->defensive_matrix_timer = Azazel::DefensiveMatrixTimer;
         }
-        if (unit->stasis_timer > Didact::StasisFieldTimer) {
-            unit->stasis_timer = Didact::StasisFieldTimer;
+        if (unit->stasis_timer > ProtossDidact::StasisFieldTimer) {
+            unit->stasis_timer = ProtossDidact::StasisFieldTimer;
         }
         if (unit->plague_timer > Isthrathaleth::PlagueTimer) {
             unit->plague_timer = Isthrathaleth::PlagueTimer;

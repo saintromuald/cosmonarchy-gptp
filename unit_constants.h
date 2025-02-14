@@ -110,56 +110,56 @@ constexpr s32 ControlledDemolitionTimer = 10 * 24 + 1;
 
 // PROTOSS \\
 
-namespace Ecclesiast {
+namespace ProtossEcclesiast {
 inline constexpr s32 AstralBlessingTimer = 5 * 24 + 1;
 }
 
-namespace Cantavis {
+namespace ProtossCantavis {
 inline constexpr s32 HallucinatingFieldTimer = 10 * 24 + 1;
 }
 
-namespace Archon {
+namespace ProtossArchon {
 inline constexpr s32 AstralAegisRange = 3 * 32;
 inline constexpr s32 AstralAegisShieldHeal = 50 * 256;
 }
 
-namespace MindTyrant {
+namespace ProtossMindTyrant {
 inline constexpr s32 TyrannyMaxStacks = 48;
 inline constexpr s32 MaelstromTimer = 16; // 5 seconds
 }
 
-namespace Unar {
-inline constexpr s32 SolitaryFocusTimer = 2 * 24 + 1;
+namespace ProtossUnar {
+inline constexpr s32 SelfSlowDuration = 2 * 24 + 1;
 }
 
-namespace Vibrance {
+namespace ProtossVibrance {
 inline constexpr s32 WeaponRadiusInner = 64;
 inline constexpr s32 WeaponRadiusMedium = 128;
 inline constexpr s32 WeaponRadiusOuter = 192;
 }
 
-namespace ReactivePayload {
+namespace ProtossReactivePayload {
 inline constexpr s32 SplitProcDistance = 1 * 32;
 inline constexpr s32 SplitPeriod = 4 * 32;
 inline constexpr s32 SplitSearchRadius = 3 * 32;
 }
 
-namespace EmpathyCore {
+namespace ProtossEmpathyCore {
 inline constexpr s32 EnergyAmount = 5 * 256;
 }
 
-namespace Lanifect {
+namespace ProtossLanifect {
 inline constexpr s32 AICheckRange = 3 * 32;
 inline constexpr s32 AISeekRange = 8 * 32;
 inline constexpr s32 AIWebTimer = 1 * 24;
 }
 
-namespace Didact {
+namespace ProtossDidact {
 inline constexpr s32 ShroudOfAdunRange = 4 * 32;
 inline constexpr s32 StasisFieldTimer = 23; // roughly 8 seconds
 }
 
-namespace StarSovereign {
+namespace ProtossStarSovereign {
 inline constexpr s32 AIAbilSeekRange = 6 * 32;
 inline constexpr s32 AIAbilMinEnemyHealth = 2000;
 inline constexpr s32 AIAbilMaxAllyHealth = 2000;
