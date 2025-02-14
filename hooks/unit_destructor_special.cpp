@@ -306,10 +306,14 @@ void unit_on_death_behaviors(Unit* unit) {
         g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5 * 32, { (u16)unit->position.x, (u16)unit->position.y }, 3 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
     }
 
-    // Gladius - Binding Plasma - proc on death
-    if (unit_ext.timers[TimerBindingPlasma]) {
-        g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, unit_ext.timers[TimerBindingPlasma], unit->position, Gladius::BindingPlasmaRadius,
-            SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext.values[ValueGladiusBindingPlasmaPlayer], 0, { .intervals = unit_ext.values[ValueGladiusBindingPlasmaStacks] });
+    // Binding Plasma - proc on death
+    if (unit_ext.timers[TimerOscilliantBindingPlasma]) {
+        g_iquare_globals->create_effect(EffectId::OscilliantBindingPlasma, unit_ext.timers[TimerOscilliantBindingPlasma], unit->position, Protoss::BindingPlasmaRadius,
+            SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext.values[ValueOscilliantBindingPlasmaPlayer], 0, {.intervals = unit_ext.values[ValueOscilliantBindingPlasmaStacks]});
+    }
+    if (unit_ext.timers[TimerGladiusBindingPlasma]) {
+        g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, unit_ext.timers[TimerGladiusBindingPlasma], unit->position, Protoss::BindingPlasmaRadius,
+            SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext.values[ValueGladiusBindingPlasmaPlayer], 0, {.intervals = unit_ext.values[ValueGladiusBindingPlasmaStacks]});
     }
 
     // Banter

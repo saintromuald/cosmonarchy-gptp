@@ -1356,4 +1356,9 @@ namespace WeaponId {
         }
         return 1;
     }
+
+    bool weapon_id_splits(WeaponId::Enum weapon_id) {
+        return weapon_id == WeaponId::OscilliantRotatingRay
+            || weapon_id == WeaponId::ArchitectDispersiveSalvo;
+    }
 } // namespace WeaponId

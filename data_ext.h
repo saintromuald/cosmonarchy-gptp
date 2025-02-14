@@ -215,6 +215,8 @@ enum ExtValueId {
     ValueStormDivider,
     ValueCabalistSilentStridesDamage,
     ValueCohortServileVigor,
+    ValueOscilliantBindingPlasmaStacks,
+    ValueOscilliantBindingPlasmaPlayer,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -247,7 +249,7 @@ enum ExtTimerId {
     TimerControlledDemolition,
     TimerEmergencyDetonation,
     TimerNemeanReactors,
-    TimerSimulacrumClone,
+    TimerAutovitalityClone,
     TimerEnsnaringBrood,
     TimerAurielIncineration,
     TimerAugurGimmick,
@@ -295,7 +297,7 @@ enum ExtTimerId {
     TimerHypnagogueChannel,
     TimerSecondaryWeaponCooldown,
     TimerReclaimInterval,
-    TimerBindingPlasma,
+    TimerGladiusBindingPlasma,
     TimerCentaurSecondaryWeaponStagger,
     TimerPatriarchAstralRule,
     TimerTerminalSurge,
@@ -364,6 +366,7 @@ enum ExtTimerId {
     TimerReclaimHeal,
     TimerTranquilityArray,
     TimerCriticality,
+    TimerOscilliantBindingPlasma,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

@@ -128,6 +128,12 @@ inline constexpr s32 TyrannyMaxStacks = 48;
 inline constexpr s32 MaelstromTimer = 16; // 5 seconds
 }
 
+namespace Vibrance {
+inline constexpr s32 WeaponRadiusInner = 64;
+inline constexpr s32 WeaponRadiusMedium = 128;
+inline constexpr s32 WeaponRadiusOuter = 192;
+}
+
 namespace ReactivePayload {
 inline constexpr s32 SplitProcDistance = 1 * 32;
 inline constexpr s32 SplitPeriod = 4 * 32;
@@ -138,11 +144,6 @@ namespace Lanifect {
 inline constexpr s32 AICheckRange = 3 * 32;
 inline constexpr s32 AISeekRange = 8 * 32;
 inline constexpr s32 AIWebTimer = 1 * 24;
-}
-
-namespace Gladius {
-inline constexpr s32 BindingPlasmaTimer = 24 * 0.5;
-inline constexpr s32 BindingPlasmaRadius = 3 * 32;
 }
 
 namespace Didact {
@@ -160,6 +161,9 @@ inline constexpr s32 AIAbilTimer = 612;
 
 namespace Protoss {
 inline constexpr s32 AstralChargeRadius = 2 * 32;
+inline constexpr s32 BindingPlasmaTimer = 24 * 0.5;
+inline constexpr s32 BindingPlasmaRadius = 3 * 32;
+inline constexpr s32 BindingPlasmaSearchRadius = 8 * 32;
 }
 
 // ZERG \\

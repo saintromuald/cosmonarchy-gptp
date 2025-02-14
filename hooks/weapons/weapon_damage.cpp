@@ -500,14 +500,26 @@ namespace hooks {
             case WeaponId::LegionnairePhaseSpear: {
                 target_ext->timers[TimerBladeVortex] = 2 * 24 + 1;
             } break;
+            case WeaponId::OscilliantRotatingRay: {
+                if (target_ext->timers[TimerOscilliantBindingPlasma]) {
+                    u32 source_player = target_ext->values[ValueOscilliantBindingPlasmaPlayer];
+                    if (bw::is_allied_to(data.attacking_player_id, source_player)) {
+                        target_ext->values[ValueOscilliantBindingPlasmaStacks]++;
+                    }
+                } else {
+                    target_ext->timers[TimerOscilliantBindingPlasma] = Protoss::BindingPlasmaTimer;
+                    target_ext->values[ValueOscilliantBindingPlasmaPlayer] = data.attacking_player_id;
+                    target_ext->values[ValueOscilliantBindingPlasmaStacks] = 1;
+                }
+            } break;
             case WeaponId::GladiusPlasmaFlurry: {
-                if (target_ext->timers[TimerBindingPlasma]) {
+                if (target_ext->timers[TimerGladiusBindingPlasma]) {
                     u32 source_player = target_ext->values[ValueGladiusBindingPlasmaPlayer];
                     if (bw::is_allied_to(data.attacking_player_id, source_player)) {
                         target_ext->values[ValueGladiusBindingPlasmaStacks]++;
                     }
                 } else {
-                    target_ext->timers[TimerBindingPlasma] = Gladius::BindingPlasmaTimer;
+                    target_ext->timers[TimerGladiusBindingPlasma] = Protoss::BindingPlasmaTimer;
                     target_ext->values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
                     target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
                 }
@@ -613,17 +625,18 @@ namespace hooks {
                         }
                     }
                 } break;
+                case UnitId::ProtossRenesair:
                 case UnitId::ProtossSimulacrum: {
-                    // Autovitality - Simulacrum behavior
+                    // Autovitality
                     if (!bw::is_allied_to(data.target->player, data.attacker->player)
                     &&  !bw::is_under_carapace_swarm(data.target)
                     &&   data.shield_reduce_amount >= data.target->shields
                     &&   data.damage
-                    &&   target_ext->timers[TimerSimulacrumClone] == 0)
+                    &&   target_ext->timers[TimerAutovitalityClone] == 0)
                     {
-                        target_ext->timers[TimerSimulacrumClone] = 4 * 24;
+                        target_ext->timers[TimerAutovitalityClone] = 4 * 24;
                         bw::add_unit_overlay(data.target, ImageId::LegionnaireTeleportEffect);
-                        helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
+                        helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0); // TODO: Make sound dependent on unit id
                     }
                 } break;
                 case UnitId::ProtossAnalogue: {
@@ -874,8 +887,9 @@ namespace hooks {
                         }
                     } break;
                     case WeaponId::EcclesiastAstralBlaster:
-                    case WeaponId::MatrixKhaydarinRay:
-                    case WeaponId::VibranceSensoryOverload: {
+                    case WeaponId::VibranceSensoryOverload:
+                    case WeaponId::ExtatusRepeatingBlaster:
+                    case WeaponId::MatrixKhaydarinRay: {
                         // Astral Blessing - Ecclesiast behavior
                         if (data.attacking_player_id != data.target->player && !bw::is_allied_to(data.attacking_player_id, data.target->player)) {
                             bw::astral_blessing_proc(data.target, data.attacking_player_id, data.weapon_id);

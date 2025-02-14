@@ -2436,6 +2436,7 @@ namespace hooks {
                     unit->building.resource.is_mining = 0;
                 }
             } break;
+            case UnitId::ProtossOscilliant:
             case UnitId::ProtossGladius: {
                 if (unit_ext->timers[TimerBindingPlasmaChargeOverlay]) {
                     if (!unit->get_overlay(ImageId::GladiusCharge)) {
@@ -2494,12 +2495,12 @@ namespace hooks {
             unit->sprite->create_top_overlay(ImageId::MaverickStimpackExpire);
         }
 
-        // Protoss - Binding Plasma
-        if (unit_ext->timers[TimerBindingPlasma]) {
+        // Gladius - Binding Plasma
+        if (unit_ext->timers[TimerGladiusBindingPlasma]) {
             u32 source_player = unit_ext->values[ValueGladiusBindingPlasmaPlayer];
 
             bool has_source = false;
-            for (Unit* source : g_unit_search.radial_ex(unit, 8 * 32, 0, {UnitId::ProtossGladius})) {
+            for (Unit* source : g_unit_search.radial_ex(unit, Protoss::BindingPlasmaSearchRadius, 0, {UnitId::ProtossGladius})) {
                 if (bw::is_allied_to(source->player, source_player)) {
                     has_source = true;
                     UnitExt* source_ext = get_unit_ext(source);
@@ -2508,21 +2509,53 @@ namespace hooks {
             }
 
             if (has_source) {
-                if (unit_ext->timers[TimerBindingPlasma] % Gladius::BindingPlasmaTimer == Gladius::BindingPlasmaTimer - 1) {
-                    bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay); // TODO: Audio
+                if (unit_ext->timers[TimerGladiusBindingPlasma] % Protoss::BindingPlasmaTimer == Protoss::BindingPlasmaTimer - 1) {
+                    bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay);
                 }
-                if (unit_ext->timers[TimerBindingPlasma] == 1) {
-                    if (bw::binding_plasma_proc(unit)) {
+                if (unit_ext->timers[TimerGladiusBindingPlasma] == 1) {
+                    if (bw::binding_plasma_proc(unit, UnitId::ProtossGladius)) {
                         u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
                         helper::play_sound_from_unit(sound_id, unit, 1, 0);
                     }
                 }
             } else {
-                unit_ext->timers[TimerBindingPlasma] = 0;
+                unit_ext->timers[TimerGladiusBindingPlasma] = 0;
                 unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
             }
         } else {
             unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
+        }
+
+        // Oscilliant - Binding Plasma
+        // @Veeq7 please advise on how to avoid code duplication. -Pr0nogo
+        if (unit_ext->timers[TimerOscilliantBindingPlasma]) {
+            u32 source_player = unit_ext->values[ValueOscilliantBindingPlasmaPlayer];
+
+            bool has_source = false;
+            for (Unit* source : g_unit_search.radial_ex(unit, Protoss::BindingPlasmaSearchRadius, 0, {UnitId::ProtossOscilliant})) {
+                if (bw::is_allied_to(source->player, source_player)) {
+                    has_source = true;
+                    UnitExt* source_ext = get_unit_ext(source);
+                    source_ext->timers[TimerBindingPlasmaChargeOverlay] = 3;
+                }
+            }
+
+            if (has_source) {
+                if (unit_ext->timers[TimerOscilliantBindingPlasma] % Protoss::BindingPlasmaTimer == Protoss::BindingPlasmaTimer - 1) {
+                    bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay);
+                }
+                if (unit_ext->timers[TimerOscilliantBindingPlasma] == 1) {
+                    if (bw::binding_plasma_proc(unit, UnitId::ProtossOscilliant)) {
+                        u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
+                        helper::play_sound_from_unit(sound_id, unit, 1, 0);
+                    }
+                }
+            } else {
+                unit_ext->timers[TimerOscilliantBindingPlasma] = 0;
+                unit_ext->values[ValueOscilliantBindingPlasmaStacks] = 0;
+            }
+        } else {
+            unit_ext->values[ValueOscilliantBindingPlasmaStacks] = 0;
         }
 
         bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] >= 1, {.play_death = true});
@@ -3097,9 +3130,9 @@ namespace hooks {
             }
         }
 
-        // Autovitality - Simulacrum behavior
-        if (unit_ext->timers[TimerSimulacrumClone] == 1 && !unit->is_frozen()) {
-            bw::create_unit_from_ability(UnitId::ProtossSimulacrum, 1, unit->player, unit->position, unit);
+        // Autovitality - Clone after a small delay
+        if (unit_ext->timers[TimerAutovitalityClone] == 1 && !unit->is_frozen()) {
+            bw::create_unit_from_ability(unit->id, 1, unit->player, unit->position, unit);
         }
 
         // Remove Ensnaring Brood overlay

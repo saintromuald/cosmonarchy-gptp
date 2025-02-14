@@ -255,7 +255,7 @@ s32 get_targeting_cost(Unit* source, Unit* target) {
 
     // Value splitting Simulacra more
     UnitExt* target_ext = get_unit_ext(target);
-    if (target_ext->timers[TimerSimulacrumClone]) {
+    if (target_ext->timers[TimerAutovitalityClone]) {
         cost -= 15;
     }
 

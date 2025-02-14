@@ -1027,6 +1027,7 @@ namespace ImageId {
         PhaseLinkSmall								= 1102,
         PhaseLinkMedium								= 1103,
         PhaseLinkLarge								= 1104,
+        PlasmaTorpedoImpact                         = 1105,
         EntropyGauntletsOverlaySmall				= 1107,
         EntropyGauntletsOverlayMedium				= 1108,
         EntropyGauntletsOverlayLarge				= 1109,

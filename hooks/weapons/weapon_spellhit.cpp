@@ -79,8 +79,7 @@ namespace hooks {
 	//	iquare_globals.create_effect(EffectId::Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
 	}
 
-	void irradiate_hit_internal(Unit* attacker, Point16 target, u8 attacking_player_id)
-	{
+	void irradiate_hit_internal(Unit* attacker, Point16 target, u8 attacking_player_id) {
 		g_iquare_globals->create_effect(EffectId::Irradiate, 10 * 24, { target.x, target.y }, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
 	}
 
@@ -545,8 +544,7 @@ namespace hooks {
 		stasis_field_hit_internal(attacker, position, bullet);
 	}
 
-	void stasis_field_hit_internal(Unit* attacker, Point16 position, Bullet* bullet)
-	{
+	void stasis_field_hit_internal(Unit* attacker, Point16 position, Bullet* bullet) {
 		bw::create_and_init_thingy(SpriteId::Stasis_Field_Hit, position.x, position.y, 11, 17);
 		helper::play_sound_at_pos(SoundId::Protoss_ARBITER_PAbCag00_WAV, position, 1, 0);
 		Box16 coords = {};

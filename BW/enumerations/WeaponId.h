@@ -278,6 +278,10 @@ namespace WeaponId {
         VibranceSensoryOverload				= 219,
         CicatusPhaseClaws					= 222,
         ZealotStarboundPhaseBlades			= 223,
+        OscilliantRotatingRay               = 225,
+        RenesairRotatingBlaster             = 226,
+        ExtatusRepeatingBlaster             = 227,
+        UnarAutonomousRay                   = 228,
 
         // Zerg \\
                     

@@ -636,7 +636,7 @@ namespace SpriteId {
         BurstLasersImpactBlue = 630,
         DEFECTIVE_SPRITE_631 = 631,
         BurstLasersImpactRed = 632,
-        ExemplarMissileImpact = 633,
+        PlasmaTorpedoImpact = 633,
         PlanetCrackerBeam = 634,
         PlanetCrackerBlastLoop = 635,
         PlanetCrackerBlast = 636,
@@ -774,14 +774,15 @@ namespace SpriteId {
         InfestedOverlayLarge = 770,
         BlackjackCorpse = 771,
         BurstLasersImpactBlue_Damageless = 772,
-        PlagueField = 773,
-        ZealotDeath = 810,
-        AntiMatterMissileHit = 829,
-        Ezigrisant = 835,
-        Wellbore = 836,
+        PlagueField                     = 773,
+        NeutronFlareBlueDamageless      = 783,
+        ZealotDeath                     = 810,
+        AntiMatterMissileHit            = 829,
+        Ezigrisant                      = 835,
+        Wellbore                        = 836,
         CuirassStonewallProtocolOverlay = 839,
-        BunkerAttackOverlay_Green = 842,
-        BunkerAttackOverlay_Blue = 843,
+        BunkerAttackOverlay_Green       = 842,
+        BunkerAttackOverlay_Blue        = 843,
 
         BurstLasersImpactRed_Damageless = 858,
 
@@ -899,6 +900,10 @@ namespace SpriteId {
         Corpse_Iziralisk			= 960,
 
         Corpse_Gorgrokor			= 963,
+
+        Corpse_MadrigalFuria        = 971,
+
+        Corpse_Renesair             = 973,
 
         Corpse_ZergBuildingSmall	= 186,
         Corpse_ZergBuildingLarge	= 187,

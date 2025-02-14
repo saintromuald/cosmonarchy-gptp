@@ -525,17 +525,14 @@ namespace hooks {
                     }
                 }
                 case UnitId::ProtossEcclesiast: {
-                    // Factional variant is not yet implemented, uncomment if to enable it.
-                //	if (faction != Faction::ProtossKhalendricKnights) {
+                	if (faction != Faction::ProtossKhalendricKnights) {
                         return true;
-                //	}
-
+                	}
                 }
                 case UnitId::ProtossEcclesiastKhalendric: {
-                    // Factional variant is not yet implemented, uncomment if to enable it.
-                //	if (faction == Faction::ProtossKhalendricKnights) {
-                //		return true;
-                //	}
+                    if (faction == Faction::ProtossKhalendricKnights) {
+                    	return true;
+                    }
                 }
                 case UnitId::ProtossDracadin:
                 case UnitId::ProtossHierophant: {
@@ -563,80 +560,69 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossProstrationStage))
-        {
-            switch (unit_id)
-            {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossProstrationStage)) {
+            switch (unit_id) {
                 case UnitId::ProtossPariah:
                 case UnitId::ProtossPotentate:
                 case UnitId::ProtossSycophant:
-                case UnitId::ProtossMindTyrant:
-                {
+                case UnitId::ProtossMindTyrant: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAncestralArchives))
-        {
-            switch (unit_id)
-            {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAncestralArchives)) {
+            switch (unit_id) {
                 case UnitId::ProtossArchon:
                 case UnitId::ProtossOptecton:
-                case UnitId::ProtossPatriarch:
-                {
+                case UnitId::ProtossPatriarch: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossHallOfHeretics))
-        {
-            switch (unit_id)
-            {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossHallOfHeretics)) {
+            switch (unit_id) {
                 case UnitId::ProtossApostate:
-                case UnitId::ProtossAugur:
-                {
+                case UnitId::ProtossAugur: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossLattice))
-        {
-            switch (unit_id)
-            {
-                case UnitId::ProtossVassal:
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossLattice)) {
+            switch (unit_id) {
+                case UnitId::ProtossVassal: {
+                    if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ProtossRenesair: {
+                    if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                        return true;
+                    }
+                } break;
                 case UnitId::ProtossSimulacrum:
                 case UnitId::ProtossManifold:
                 case UnitId::ProtossGolem:
-                case UnitId::ProtossIdol:
-                {
+                case UnitId::ProtossIdol: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossArdentAuthority))
-        {
-            switch (unit_id)
-            {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossArdentAuthority)) {
+            switch (unit_id) {
                 case UnitId::ProtossServitor:
                 case UnitId::ProtossPositron:
-                case UnitId::ProtossAnalogue:
                 case UnitId::ProtossAccantor:
-                case UnitId::ProtossArchitect:
-                {
+                case UnitId::ProtossClarion: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAuxiliaryOasis))
-        {
-            switch (unit_id)
-            {
-                case UnitId::ProtossMainstay:
-                case UnitId::ProtossMaven:
-                case UnitId::ProtossCloudform:
-                case UnitId::ProtossVibrance:
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAuxiliaryOasis)) {
+            switch (unit_id) {
                 case UnitId::ProtossOscilliant:
-                {
+                case UnitId::ProtossUnar:
+                case UnitId::ProtossArchitect:
+                case UnitId::ProtossVibrance: {
                     return true;
                 } break;
             }
@@ -645,46 +631,46 @@ namespace hooks {
             switch (unit_id) {
                 case UnitId::ProtossDemiurge:
                 case UnitId::ProtossEmpress:
-                case UnitId::ProtossClarion: {
+                case UnitId::ProtossAnalogue: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossStargate))
-        {
-            switch (unit_id)
-            {
-                case UnitId::ProtossAurora:
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossStargate)) {
+            switch (unit_id) {
+                case UnitId::ProtossAurora: {
+                    if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ProtossExtatus: {
+                    if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                        return true;
+                    }
+                } break;
                 case UnitId::ProtossPanoptus:
                 case UnitId::ProtossLanifect:
                 case UnitId::ProtossGladius:
-                case UnitId::ProtossExemplar:
-                {
+                case UnitId::ProtossExemplar: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossArgosy))
-        {
-            switch (unit_id)
-            {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossArgosy)) {
+            switch (unit_id) {
                 case UnitId::ProtossMagister:
                 case UnitId::ProtossEpigraph:
                 case UnitId::ProtossDidact:
                 case UnitId::ProtossEmpyrean:
-                case UnitId::ProtossSolarion:
-                {
+                case UnitId::ProtossSolarion: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossMonumentOfSin))
-        {
-            switch (unit_id)
-            {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossMonumentOfSin)) {
+            switch (unit_id) {
                 case UnitId::ProtossAnthelion:
-                case UnitId::ProtossStarSovereign:
-                {
+                case UnitId::ProtossStarSovereign: {
                     return true;
                 } break;
             }
@@ -2021,101 +2007,100 @@ namespace hooks {
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossLattice:
-            {
-                switch (unit_id)
-                {
-                    case UnitId::ProtossVassal:
+            case UnitId::ProtossLattice: {
+                switch (unit_id) {
+                    case UnitId::ProtossVassal: {
+                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::ProtossRenesair: {
+                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
                     case UnitId::ProtossSimulacrum:
                     case UnitId::ProtossManifold:
                     case UnitId::ProtossGolem:
-                    case UnitId::ProtossIdol:
-                    {
+                    case UnitId::ProtossIdol: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossArdentAuthority:
-            {
-                switch (unit_id)
-                {
+            case UnitId::ProtossArdentAuthority: {
+                switch (unit_id) {
                     case UnitId::ProtossServitor:
                     case UnitId::ProtossPositron:
-                    case UnitId::ProtossAnalogue:
                     case UnitId::ProtossAccantor:
-                    case UnitId::ProtossArchitect:
-                    {
+                    case UnitId::ProtossClarion: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossAuxiliaryOasis:
-            {
-                switch (unit_id)
-                {
-                    case UnitId::ProtossMainstay:
-                    case UnitId::ProtossMaven:
-                    case UnitId::ProtossCloudform:
-                    case UnitId::ProtossVibrance:
+            case UnitId::ProtossUnitaryUnion: {
+                switch (unit_id) {
                     case UnitId::ProtossOscilliant:
-                    {
+                    case UnitId::ProtossUnar:
+                    case UnitId::ProtossArchitect:
+                    case UnitId::ProtossVibrance: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossSyntheticSynod:
-            {
-                switch (unit_id)
-                {
+            case UnitId::ProtossSyntheticSynod: {
+                switch (unit_id) {
                     case UnitId::ProtossDemiurge:
-                    case UnitId::ProtossEmpress:
-                    case UnitId::ProtossClarion:
-                    {
+                    case UnitId::ProtossAnalogue:
+                    case UnitId::ProtossEmpress: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossStargate:
-            {
-                switch (unit_id)
-                {
-                    case UnitId::ProtossAurora:
+            case UnitId::ProtossStargate: {
+                switch (unit_id) {
+                    case UnitId::ProtossAurora: {
+                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::ProtossExtatus: {
+                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
                     case UnitId::ProtossPanoptus:
                     case UnitId::ProtossLanifect:
                     case UnitId::ProtossGladius:
-                    case UnitId::ProtossExemplar:
-                    {
+                    case UnitId::ProtossExemplar: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossArgosy:
-            {
-                switch (unit_id)
-                {
+            case UnitId::ProtossArgosy: {
+                switch (unit_id) {
                     case UnitId::ProtossMagister:
                     case UnitId::ProtossEpigraph:
                     case UnitId::ProtossDidact:
                     case UnitId::ProtossEmpyrean:
-                    case UnitId::ProtossSolarion:
-                    {
+                    case UnitId::ProtossSolarion: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossMonumentOfSin:
-            {
-                switch (unit_id)
-                {
+            case UnitId::ProtossMonumentOfSin: {
+                switch (unit_id) {
                     case UnitId::ProtossAnthelion:
-                    case UnitId::ProtossStarSovereign:
-                    {
+                    case UnitId::ProtossStarSovereign: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;

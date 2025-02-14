@@ -125,5 +125,6 @@ UnitId::Enum get_racial_worker_id(u32 race_id);
 UnitId::Enum get_racial_town_center_id(u32 race_id);
 
 namespace WeaponId {
-    u32 get_custom_melee_factor(WeaponId::Enum weapon_id);
+    u32  get_custom_melee_factor(WeaponId::Enum weapon_id);
+    bool weapon_id_splits(WeaponId::Enum weapon_id);
 } // namespace WeaponId

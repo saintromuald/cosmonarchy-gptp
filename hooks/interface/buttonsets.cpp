@@ -1482,47 +1482,71 @@ namespace hooks {
                                 }
                             } break;
                             case UnitId::ProtossLattice: {
-                                if (current_button->requirement_var == UnitId::ProtossManifold
-                                ||  current_button->requirement_var == UnitId::ProtossSimulacrum
-                                ||	current_button->requirement_var == UnitId::ProtossVassal
-                                ||	current_button->requirement_var == UnitId::ProtossGolem
-                                ||  current_button->requirement_var == UnitId::ProtossIdol) {
-                                    current_button_state = Button_State::Enabled;
-                                } else {
-                                    current_button_state = Button_State::Invisible;
+                                switch (current_button->requirement_var) {
+                                    case UnitId::ProtossSimulacrum:
+                                    case UnitId::ProtossManifold:
+                                    case UnitId::ProtossGolem:
+                                    case UnitId::ProtossIdol: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::ProtossVassal: {
+                                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossRenesair: {
+                                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
                                 }
                             } break;
                             case UnitId::ProtossArdentAuthority: {
                                 if (current_button->requirement_var == UnitId::ProtossServitor
                                 ||  current_button->requirement_var == UnitId::ProtossPositron
-                                ||  current_button->requirement_var == UnitId::ProtossAnalogue
-                                ||	current_button->requirement_var == UnitId::ProtossAccantor
-                                ||  current_button->requirement_var == UnitId::ProtossArchitect) {
+                                ||  current_button->requirement_var == UnitId::ProtossAccantor
+                                ||	current_button->requirement_var == UnitId::ProtossClarion) {
                                     current_button_state = Button_State::Enabled;
                                 } else {
                                     current_button_state = Button_State::Invisible;
                                 }
                             } break;
-                            case UnitId::ProtossAuxiliaryOasis: {
-                                if (current_button->requirement_var == UnitId::ProtossMainstay
-                                ||  current_button->requirement_var == UnitId::ProtossMaven
-                                ||  current_button->requirement_var == UnitId::ProtossCloudform
-                                ||	current_button->requirement_var == UnitId::ProtossVibrance
-                                ||  current_button->requirement_var == UnitId::ProtossOscilliant) {
+                            case UnitId::ProtossUnitaryUnion: {
+                                if (current_button->requirement_var == UnitId::ProtossOscilliant
+                                ||  current_button->requirement_var == UnitId::ProtossUnar
+                                ||  current_button->requirement_var == UnitId::ProtossArchitect
+                                ||	current_button->requirement_var == UnitId::ProtossVibrance) {
+                                    current_button_state = Button_State::Enabled;
+                                } else {
+                                    current_button_state = Button_State::Invisible;
+                                }
+                            } break;
+                            case UnitId::ProtossSyntheticSynod: {
+                                if (current_button->requirement_var == UnitId::ProtossDemiurge
+                                ||  current_button->requirement_var == UnitId::ProtossAnalogue
+                                ||  current_button->requirement_var == UnitId::ProtossEmpress) {
                                     current_button_state = Button_State::Enabled;
                                 } else {
                                     current_button_state = Button_State::Invisible;
                                 }
                             } break;
                             case UnitId::ProtossStargate: {
-                                if (current_button->requirement_var == UnitId::ProtossAurora
-                                ||  current_button->requirement_var == UnitId::ProtossLanifect
-                                ||  current_button->requirement_var == UnitId::ProtossPanoptus
-                                ||	current_button->requirement_var == UnitId::ProtossExemplar
-                                ||  current_button->requirement_var == UnitId::ProtossGladius) {
-                                    current_button_state = Button_State::Enabled;
-                                } else {
-                                    current_button_state = Button_State::Invisible;
+                                switch (current_button->requirement_var) {
+                                    case UnitId::ProtossAurora: {
+                                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossExtatus: {
+                                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossPanoptus:
+                                    case UnitId::ProtossExemplar:
+                                    case UnitId::ProtossGladius: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
                                 }
                             } break;
                             case UnitId::ProtossArgosy: {
@@ -2529,6 +2553,12 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ProtossOscilliant: {
+                                    if (current_button->icon_id == IconId::AntimatterMissiles        // Reactive Payload
+                                    ||  current_button->icon_id == IconId::DracadinPhaseDisruptor) { // Binding Plasma
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ProtossVibrance: {
                                     if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
                                     ||  current_button->icon_id == IconId::ProtossGroundWeapons) {		// Astral Blessing
@@ -2592,6 +2622,7 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ProtossExtatus:
                                 case UnitId::ProtossMatrix: {
                                     if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Astral Tether
                                         current_button_state = Button_State::Enabled;

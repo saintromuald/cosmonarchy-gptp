@@ -678,11 +678,43 @@ namespace hooks {
                         s32 scatter = -15 + index * 5;
                         fire_sideways(unit, weapon_id, angle, scatter);
                     } break;
+                    case WeaponId::ExtatusRepeatingBlaster:
                     case WeaponId::MatrixKhaydarinRay: {
                         fire_bullet(unit, weapon_id, weapon_target);
                         Unit* target = unit->order_target.unit;
                         if (target && unit->player != target->player && !bw::is_allied_to(unit->player, target->player)) {
                             bw::astral_blessing_proc(unit, unit->player, weapon_id);
+                        }
+                    } break;
+                    case WeaponId::VibranceSensoryOverload: {
+                        bool attacked = false;
+                        bool ignore_allies = true;
+                        if (bw::is_allied_to(unit->player, unit->order_target.unit->player) || unit->player == unit->order_target.unit->player) {
+                            ignore_allies = false;
+                        }
+                        for (Unit* target : g_unit_search.radial_ex(unit, Vibrance::WeaponRadiusOuter)) {
+                            if (ignore_allies && (bw::is_allied_to(unit->player, target->player) || unit->player == target->player)) {
+                                continue;
+                            }
+                            u32 dist = bw::distance_between(unit->position, target->position);
+                            if (dist <= Vibrance::WeaponRadiusOuter && unit->can_attack_target(target)) {
+                                u32 divisor = 4;
+                                if (dist <= Vibrance::WeaponRadiusInner) {
+                                    divisor = 1;
+                                } else if (dist <= Vibrance::WeaponRadiusMedium) {
+                                    divisor = 2;
+                                }
+                                target->damage_with(WeaponId::VibranceSensoryOverload, -1, unit, unit->player, 0, divisor);
+                                helper::create_thingy(SpriteId::NeutronFlareBlueDamageless, target->position.x, target->position.y, unit->player);
+                                attacked = true;
+                            }
+                        }
+                        if (attacked) {
+                            u32 cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::VibranceSensoryOverload);
+                            unit->ground_weapon_cooldown = cooldown;
+                            unit->air_weapon_cooldown    = cooldown;
+                            helper::create_thingy(SpriteId::PlasmaTorpedoImpact, unit->position.x, unit->position.y, unit->player);
+                        //  bw::play_sound({SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03}, unit);
                         }
                     } break;
                     case WeaponId::TosgriliskExplosiveSpores:
@@ -1009,12 +1041,11 @@ namespace hooks {
         }
 
         // Split missiles
-        if (bullet->weapon_id == WeaponId::ArchitectDispersiveSalvo
+        if (weapon_id_splits((WeaponId::Enum)bullet->weapon_id)
         &&  bullet->source_unit
         &&  bullet->attack_target.unit
         &&  bullet->attack_target.unit->sprite && bullet->source_unit->sprite) {
             Unit* main_target = bullet->attack_target.unit;
-            UnitExt* unit_ext = get_unit_ext(bullet->source_unit);
             const u32 distance_from_source = bullet_ext->distance_traveled;
             const u32 distance_from_target = bw::distance_between(bullet->position, main_target->position);
             if (distance_from_target < ReactivePayload::SplitProcDistance) {
@@ -1035,7 +1066,7 @@ namespace hooks {
                         }
                         bullet->source_unit->order_target.unit = target;
                         s32 new_angle = bw::get_angle(bullet->position.x, bullet->position.y, target->position.x, target->position.y);
-                        Bullet* new_bullet = create_bullet_ex(WeaponId::ArchitectDispersiveSalvo, bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
+                        Bullet* new_bullet = create_bullet_ex((WeaponId::Enum)bullet->weapon_id, bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
                         if (new_bullet) {
                             helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
                             new_bullet->position = bullet->position;
@@ -1121,9 +1152,15 @@ namespace hooks {
                 case WeaponId::StasisField: {
                     hooks::stasis_field_hit_internal(bullet->source_unit, bullet->position, bullet);
                 } break;
+                case WeaponId::OscilliantRotatingRay: {
+                    if (!bullet->attack_target.unit) {
+                        g_iquare_globals->create_effect(EffectId::OscilliantBindingPlasma, Protoss::BindingPlasmaTimer, bullet->position, Protoss::BindingPlasmaRadius,
+                            SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
+                    }
+                } break;
                 case WeaponId::GladiusPlasmaFlurry: {
                     if (!bullet->attack_target.unit) {
-                        g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, Gladius::BindingPlasmaTimer, bullet->position, Gladius::BindingPlasmaRadius,
+                        g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, Protoss::BindingPlasmaTimer, bullet->position, Protoss::BindingPlasmaRadius,
                             SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
                     }
                 } break;

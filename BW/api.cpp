@@ -1018,6 +1018,7 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
         UnitExt* unit_ext = get_unit_ext(unit);
 
         switch (unit_id) {
+            case UnitId::ProtossRenesair:
             case UnitId::ProtossSimulacrum: {
                 if (creator) {
                     unit->hitpoints = std::max(256, creator->hitpoints);
@@ -1221,7 +1222,7 @@ void decloak_proximity_proc(Unit* unit) {
 }
 
 bool is_passive_decloakable(Unit* unit) {
-    if (unit->status & UnitStatus::Burrowed || unit_id_has_proximity_cloak(unit->id)) {
+    if (unit->is_burrowed() || unit_id_has_proximity_cloak(unit->id)) {
         return false;
     }
     if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak) {
@@ -2231,10 +2232,12 @@ void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id) 
     u32 heal_amount = 3;
     u32 range = 96;
     switch (weapon_id) {
-        case WeaponId::EcclesiastAstralBlaster: {
+        case WeaponId::EcclesiastAstralBlaster:
+        case WeaponId::VibranceSensoryOverload: {
             heal_amount = 3;
             range = 96;
         } break;
+        case WeaponId::ExtatusRepeatingBlaster:
         case WeaponId::MatrixKhaydarinRay: {
             heal_amount = 5;
             range = 96;
@@ -2537,7 +2540,7 @@ void delete_fow_sprite(Thingy* thingy) {
 }
 
 std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks) {
-    EntryArray targets = g_unit_search.radial(position, Gladius::BindingPlasmaRadius)
+    EntryArray targets = g_unit_search.radial(position, Protoss::BindingPlasmaRadius)
         .filter(reference, FilterNotSelf | FilterNotSubunit)
         .filter_by([player](Unit* target) {
             if (bw::is_allied_to(player, target->player)) {
@@ -2563,31 +2566,50 @@ std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference
     return result;
 }
 
-bool binding_plasma_proc(Unit* victim) {
-    UnitExt* victim_ext = get_unit_ext(victim);
-    u32 player = victim_ext->values[ValueGladiusBindingPlasmaPlayer];
+bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id) {
+    // Not sure if there's a better way to support more unit ids, but it saves duplicating the entire function! -Pr0nogo
+    u32 timer_id = 0;
+    u32 stack_value_id = 0;
+    u32 player_value_id = 0;
+    u32 weapon_id = WeaponId::None;
+    switch (source_unit_id) {
+        case UnitId::ProtossOscilliant: {
+            timer_id = ExtTimerId::TimerOscilliantBindingPlasma;
+            stack_value_id = ExtValueId::ValueOscilliantBindingPlasmaStacks;
+            player_value_id = ExtValueId::ValueOscilliantBindingPlasmaPlayer;
+            weapon_id = WeaponId::OscilliantRotatingRay;
+        } break;
+        case UnitId::ProtossGladius: {
+            timer_id = ExtTimerId::TimerGladiusBindingPlasma;
+            stack_value_id = ExtValueId::ValueGladiusBindingPlasmaStacks;
+            player_value_id = ExtValueId::ValueGladiusBindingPlasmaPlayer;
+            weapon_id = WeaponId::GladiusPlasmaFlurry;
+        } break;
+    }
 
-    const auto targets = binding_plasma_find_targets(victim->position, victim, player, victim_ext->values[ValueGladiusBindingPlasmaStacks]);
+    UnitExt& victim_ext = victim->ext();
+    u32 player = victim_ext.values[player_value_id];
+    const auto targets = binding_plasma_find_targets(victim->position, victim, player, victim_ext.values[stack_value_id]);
     if (targets.empty()) {
-        victim_ext->timers[TimerBindingPlasma] = 0;
-        victim_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
+        victim_ext.timers[timer_id] = 0;
+        victim_ext.values[stack_value_id] = 0;
         return false;
     }
 
     bool procced = false;
     for (Unit* target : targets) {
         u32 angle = bw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
-        Bullet* bullet = helper::create_bullet(WeaponId::GladiusPlasmaFlurry, victim, victim->position.x, victim->position.y, player, angle);
+        Bullet* bullet = helper::create_bullet(weapon_id, victim, victim->position.x, victim->position.y, player, angle);
         if (!bullet) {
             break;
         }
         bw::set_bullet_target(bullet, target);
-        victim_ext->values[ValueGladiusBindingPlasmaStacks]--;
+        victim_ext.values[stack_value_id]--;
         procced = true;
     }
 
-    if (!victim_ext->values[ValueGladiusBindingPlasmaStacks]) {
-        victim_ext->timers[TimerBindingPlasma] = 0;
+    if (!victim_ext.values[stack_value_id]) {
+        victim_ext.timers[timer_id] = 0;
     }
     return procced;
 }
