@@ -6,8 +6,7 @@
 #include "hook_tools.h"
 #include <hooks/weapons/weapon_spellhit.h>
 
-void Image::play_iscript_animation(IscriptAnimation::Enum animation)
-{
+void Image::play_iscript_animation(IscriptAnimation::Enum animation) {
     assert(this);
     u32 animation_ = (u8)animation;
 
@@ -22,45 +21,35 @@ void Image::play_iscript_animation(IscriptAnimation::Enum animation)
 }
 
 //should be equivalent to helper::image_destructor @ 0x004D4CE0 with ESI = sprite
-void Image::free()
-{
-
+void Image::free() {
     assert(this);
+    if (!(g_screen_layers->game.has_been_refreshed)) {
+        // should be equivalent to a call to refreshImage @ 0x004970A0 with EAX = this
+        bw::refresh_screen(this->screen_pos.x, this->screen_pos.y, this->screen_pos.x + this->grp_size.right, this->screen_pos.y + this->grp_size.bottom);
+    }
 
-    if (!(g_screen_layers->game.has_been_refreshed))
-        bw::refresh_screen(this->screen_pos.x,
-            this->screen_pos.y,
-            this->screen_pos.x + this->grp_size.right,
-            this->screen_pos.y + this->grp_size.bottom
-        );	//should be equivalent to a call to refreshImage @ 0x004970A0 with EAX = this
-
-            //perform identically to original code
+    // perform identically to original code
     this->parent_sprite->images.unlink<&Image::link>(this);
-
     this->grp_file = nullptr;
 
-    //perform identically to original code
+    // perform identically to original code
     unusedImages.insertAfterHead(this);
-
 }
 
 // Loosely based on code at @ 0x004D5A50
-void Image::set_remapping(ColorRemapping::Enum remapping)
-{
+void Image::set_remapping(ColorRemapping::Enum remapping) {
     assert(this);
     this->standard.draw_func_param = g_color_shift[remapping].data;
 }
 
 // Identical to function @ 0x004D5A50
-void Image::initialize_data(Sprite* parent, u16 image_id, s8 x, s8 y)
-{
+void Image::initialize_data(Sprite* parent, u16 image_id, s8 x, s8 y) {
     assert(this);
     hooks::initialize_image_data(this, parent, image_id, x, y);
 }
 
 // Same as function 0x004D5EA0, direction is 0-31
-void Image::set_image_direction(u8 direction)
-{
+void Image::set_image_direction(u8 direction) {
     assert(this);
     constexpr u32 Func_setDir = 0x004D5EA0;
     __asm {
@@ -72,14 +61,16 @@ void Image::set_image_direction(u8 direction)
     }
 }
 
-GrpFrame* Image::get_current_frame() const
-{
+GrpFrame* Image::get_current_frame() const {
     assert(this);
     return &this->grp_file->frames[this->frame_index];
 }
 
-namespace hooks
-{
+bool Image::is_mirrored() const {
+    return this->flags & ImageFlags::Mirrored;
+}
+
+namespace hooks {
     // Hooked to replace calls in unhooked functions. -Pr0nogo
     void initialize_image_data(Image* image, Sprite* parent, u16 image_id, s8 horizontal_offset, s8 vertical_offset) { // 004D5A50
         image->id = image_id;

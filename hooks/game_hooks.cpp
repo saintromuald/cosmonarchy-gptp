@@ -789,7 +789,7 @@ namespace hooks {
         if (g_elapsed_time_frames == 1) {
             u32 local_flags = g_unit_deaths_table[UnitId::ResourceVespeneGeyser].player[g_local_nation_id];
             if (!(local_flags & VespeneDeaths_DisableQuasifog)) {
-                // Default maps to "semi-explored", from DarkenedFantasies
+                // Default maps to "semi-explored". -DF
                 for (s32 i = 0; i < 4092; i++) {
                     if (g_fog_of_war_mask->unexplored[i] < 8) {
                         g_fog_of_war_mask->unexplored[i] = 8;
@@ -807,7 +807,7 @@ namespace hooks {
                 }
             }
 
-            // Explores the entire map, requires a trigger that sets 1 death of Vespene Geyser for players in question
+            // Explores the entire map; requires a trigger that sets 1 death of Vespene Geyser for players in question
             if (reveal_flag) {
                 // Explore map
                 /*
@@ -842,8 +842,8 @@ namespace hooks {
             }
         }
 
-        *g_ai_update_cooldown = 0; // We want the AI to update spending requests every tick, so we can have precise 
-        g_can_update_powered_status = true; // We want to have dynamic power updates, so we update power every frame
+        *g_ai_update_cooldown = 0; // We want the AI to update spending requests every tick, so we can have precision. -Veeq7
+        g_can_update_powered_status = true; // We want to have dynamic power updates, so we update power every frame.  -Veeq7
         for (u32 i = 0; i < 8; ++i) {
             g_race_supply[RaceId::Terran].provided[i] = 60000;
         }
@@ -972,10 +972,26 @@ namespace hooks {
             tick_unit(unit, false);
         }
         for (Unit* unit = *g_first_hidden_unit; unit; unit = unit->link.next) {
-            if (unit->status & UnitStatus::Completed) {
+            if (unit->is_completed()) {
                 tick_unit(unit, true);
             }
         }
+
+        // Replace AI requests based on factions.
+        for (auto player = 0; player < PlayerLimit; player++) {
+            for (auto town = g_ai_town_list[player].first; town; town = town->prev) {
+                for (auto& request : town->requests) {
+                    if (!request.count) {
+                        break;
+                    }
+                    if (request.is_tech || request.is_upgrade) {
+                        continue;
+                    }
+                    request.id = get_factional_unit_id(player, static_cast<UnitId::Enum>(request.id));
+                }
+            }
+        }
+
         bw::set_ingame_loop_state(false);
 
         return true;
@@ -1561,7 +1577,7 @@ namespace hooks {
                     }
                 }
                 
-                if ((unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && unit->order_signal & 0x8) {
+                if ((unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && unit->order_signal & 8) {
                     unit->order_signal &= ~0x8;
                     helper::replace_sprite_images(unit->sprite, unit->id == UnitId::ZergEgg ? ImageId::Egg : ImageId::GuardianCocoon, 0);
                     unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
@@ -1593,11 +1609,11 @@ namespace hooks {
                             const LO_Header* loFile = lo_files->special_overlays[unit->sprite->main_graphic->id];
                             u8 frame_direction = unit->sprite->main_graphic->direction;
                             Point8 offset = loFile->get_offset(frame_direction, 5 - arc);
-                            if (unit->sprite->main_graphic->flags & ImageFlags::Mirrored) {
+                            if (unit->sprite->main_graphic->is_mirrored()) {
                                 offset.x = -offset.x;
                             }
-                            auto X = unit->position.x + offset.x;
-                            auto Y = unit->position.y + offset.y;
+                            auto x_pos = unit->position.x + offset.x;
+                            auto y_pos = unit->position.y + offset.y;
                             auto target_unit = unit->order_target.unit;
                             auto target_pos = unit->order_target.pt;
                             auto offset_direction = -40 + arc * 16;
@@ -1607,7 +1623,7 @@ namespace hooks {
                             unit->order_target.unit = 0;
                             unit->order_target.pt.x = polar_x;
                             unit->order_target.pt.y = polar_y;
-                            helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->player, bw::dir_saturate(unit->current_direction_1, offset_direction));
+                            helper::create_bullet(WeaponId::StarSovereignInterventionMissiles, unit, x_pos, y_pos, unit->player, bw::dir_saturate(unit->current_direction_1, offset_direction));
                             bw::play_sound({SoundId::StarSovereignMissileFire01, SoundId::StarSovereignMissileFire03}, unit);
                             unit->order_target.unit = target_unit;
                             unit->order_target.pt = target_pos;
