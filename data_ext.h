@@ -367,7 +367,6 @@ enum ExtTimerId {
     TimerTranquilityArray,
     TimerCriticality,
     TimerOscilliantBindingPlasma,
-    TimerUnarMovementDebuff,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
@@ -484,6 +483,11 @@ struct UnitExt {
     
     Sprite*					power_aura;
     Link<Unit>				psi_link;
+
+    Point16                 last_pos;
+
+    u32                     unar_solitary_focus_stacks;
+    u32                     unar_distance_traveled;
 
     u32						values[ValueCount];
     u32						timers[TimerCount];

@@ -129,7 +129,8 @@ inline constexpr s32 MaelstromTimer = 16; // 5 seconds
 }
 
 namespace ProtossUnar {
-inline constexpr s32 SelfSlowDuration = 2 * 24 + 1;
+inline constexpr s32 SolitaryFocusTravelThreshold = 1 * 32;
+inline constexpr s32 SolitaryFocusCap = 4;
 }
 
 namespace ProtossVibrance {

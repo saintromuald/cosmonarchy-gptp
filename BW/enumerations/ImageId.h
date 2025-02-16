@@ -1298,6 +1298,8 @@ namespace ImageId {
 
         VespeneRidgeUnderlay					    = 1972,
 
+        UnarOrbital                                 = 1987,
+
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,
         LastMinorDamageOverlay						= 471,

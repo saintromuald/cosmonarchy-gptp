@@ -2257,14 +2257,19 @@ namespace hooks {
                 }
             } break;
             case UnitId::ProtossUnar: {
+                const auto delta = bw::distance_between(unit_ext->last_pos, unit->position);
+                unit_ext->unar_distance_traveled += delta;
+                unit_ext->last_pos = unit->position;
+
+                const auto stacks_lost = unit_ext->unar_distance_traveled / ProtossUnar::SolitaryFocusTravelThreshold;
+                unit_ext->unar_distance_traveled -= stacks_lost * ProtossUnar::SolitaryFocusTravelThreshold;
+                unit_ext->unar_solitary_focus_stacks = std::max<s32>((s32)unit_ext->unar_solitary_focus_stacks - stacks_lost, 0);
                 if (unit->order_signal & 0x20) {
                     unit->order_signal &= ~0x20;
-                    unit_ext->timers[TimerUnarMovementDebuff] = ProtossUnar::SelfSlowDuration;
-                    should_update_speed = true;
-                }
-                if (unit_ext->timers[TimerUnarMovementDebuff] == 1) {
-                    unit_ext->timers[TimerUnarMovementDebuff] = 0;
-                    should_update_speed = true;
+                    if (unit_ext->unar_solitary_focus_stacks < ProtossUnar::SolitaryFocusCap) {
+                        unit_ext->unar_solitary_focus_stacks++;
+                        // TODO: Orbiting audiovisuals. SpriteId::UnarOrbital or ImageId::UnarOrbital
+                    }
                 }
             } break;
             case UnitId::TerranSavant: {

@@ -92,7 +92,7 @@ u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
 // This hook affects the behavior of Unit::get_max_weapon_range().
 // Note: Weapon ranges are measured in pixels.
 u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cliff_advantage) {
-    UnitExt* unit_ext = get_unit_ext(unit);
+    UnitExt& unit_ext = unit->ext();
 
     s32 bonus_amount = 0;
     if (bw::get_game_kind() == GameKind::DarkAges) {
@@ -110,7 +110,7 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
     f32 scale = 1;
     // Sovroleth - Writhing Web
     if (unit->id == UnitId::ZergSovroleth) {
-        scale += 0.05 * unit_ext->values[ValueSovrolethLinkCount];
+        scale += 0.05 * unit_ext.values[ValueSovrolethLinkCount];
     }
 
     // Height advantage
@@ -129,13 +129,17 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
         bonus_amount += 64;
     }
 
-    if (unit_ext->timers[TimerAuralAssaultBlind] > 1) {
+    if (unit_ext.unar_solitary_focus_stacks) {
+        bonus_amount += 32 * unit_ext.unar_solitary_focus_stacks;
+    }
+
+    if (unit_ext.timers[TimerAuralAssaultBlind] > 1) {
         return std::min(weapons_dat::max_range[weapon_id], 64u);
     }
 
     u32 final_range = weapons_dat::max_range[weapon_id];
-    if (unit_ext->values[ValueTriggerWeaponRangeBaseSet]) {
-        final_range = unit_ext->values[ValueTriggerWeaponRangeBaseAmount];
+    if (unit_ext.values[ValueTriggerWeaponRangeBaseSet]) {
+        final_range = unit_ext.values[ValueTriggerWeaponRangeBaseAmount];
     }
 
     return final_range * scale + bonus_amount;

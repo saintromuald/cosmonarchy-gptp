@@ -419,13 +419,17 @@ namespace hooks {
             return; // Skip Weapon & Attacker based calcs, since we already did those for phase link
         }
 
+        UnitExt& attacker_ext = data.attacker->ext();
+        if (attacker_ext.unar_solitary_focus_stacks) {
+            data.damage += attacker_ext.unar_solitary_focus_stacks;
+        }
+
         // Weapon & Attacker based calcs
         switch (data.weapon_id) { // Damage divisor calc
             case WeaponId::CabalistWarpBlades: {
                 if (!data.attacker) {
                     break;
                 }
-                UnitExt& attacker_ext = data.attacker->ext();
                 if (attacker_ext.values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
                     data.damage *= 1.5;
                     attacker_ext.values[ValueCabalistSilentStridesDamage] = 0;
