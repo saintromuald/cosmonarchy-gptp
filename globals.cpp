@@ -398,7 +398,7 @@ static void tick_effect(EffectField& effect) {
                     break;
                 }
 
-                EntryArray<Unit> sources = g_unit_search
+                auto sources = g_unit_search
                     .radial(effect.position, Protoss::BindingPlasmaSearchRadius)
                     .filter(nullptr, 0, {UnitId::ProtossOscilliant})
                     .filter_by([&effect](Unit* unit) {

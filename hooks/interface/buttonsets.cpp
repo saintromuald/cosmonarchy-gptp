@@ -2554,8 +2554,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossOscilliant: {
-                                    if (current_button->icon_id == IconId::AntimatterMissiles        // Reactive Payload
-                                    ||  current_button->icon_id == IconId::DracadinPhaseDisruptor) { // Binding Plasma
+                                    if (current_button->icon_id == IconId::DracadinPhaseDisruptor) { // Binding Plasma
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
