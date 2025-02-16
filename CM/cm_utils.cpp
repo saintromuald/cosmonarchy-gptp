@@ -404,8 +404,7 @@ void set_up_mines(Unit* unit) {
 }
 
 UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
-    Faction faction = g_globals->players[player].faction;
-    switch (faction) {
+    switch (g_globals->players[player].faction) {
         case Faction::TerranHecatonCoalition: {
             switch (unit_id) {
                 case UnitId::TerranMaverick: return UnitId::TerranHotshot;

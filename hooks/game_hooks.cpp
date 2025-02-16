@@ -979,9 +979,15 @@ namespace hooks {
 
         // Replace AI requests based on factions.
         for (auto player = 0; player < PlayerLimit; player++) {
-            for (auto town = g_ai_town_list[player].first; town; town = town->next) {
+            for (auto town = g_ai_town_list[player].first; town; town = town->prev) {
                 for (auto& request : town->requests) {
-                    request.id = get_factional_unit_id(player, (UnitId::Enum)request.id);
+                    if (!request.count) {
+                        break;
+                    }
+                    if (request.is_tech || request.is_upgrade) {
+                        continue;
+                    }
+                    request.id = get_factional_unit_id(player, static_cast<UnitId::Enum>(request.id));
                 }
             }
         }

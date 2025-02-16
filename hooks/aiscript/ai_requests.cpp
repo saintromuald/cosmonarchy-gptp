@@ -789,9 +789,7 @@ namespace hooks {
                 continue;
             }
 
-            for (u32 i = 0; i < ARRAY_SIZE(town->requests); ++i) {
-                TownReq& request = town->requests[i];
-
+            for (auto& request : town->requests) {
                 if (!request.count) {
                     break;
                 }
@@ -1044,6 +1042,16 @@ namespace hooks {
         AI_Main* player_ai = &g_aiscript_controller[player];
         if (player_ai->request_count < 63) {
             player_ai->request_count += 1;
+        }
+
+        // Update unit id to factional & correct costs needed
+        // TODO: would be ideally to not do last minute replacements, and replace the unit_id in the caller function,
+        //       since we might still count the old unit id for other AI checks etc...  -Veeq7
+        const auto old_unit_id = unit_id; 
+        unit_id = get_factional_unit_id(player, unit_id);
+        if (unit_id != old_unit_id) {
+            g_aiscript_controller[player].minerals_needed += units_dat::mineral_cost[unit_id] - units_dat::mineral_cost[old_unit_id];
+            g_aiscript_controller[player].vespene_needed += units_dat::vespene_cost[unit_id] - units_dat::vespene_cost[old_unit_id];
         }
 
         u32 index = player_ai->request_count - 1;
