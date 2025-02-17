@@ -162,6 +162,8 @@ namespace WeaponId {
         CyclopsFuturistFlakCannons			= 218,
         HarakanGoldenFlamethrower			= 220,
         IziraliskCorrosiveBioplasma			= 221,
+        EcclesiastKhalendricAvengingBlaster = 224,
+        AshguardPhaseCremator               = 229,
 
         // Terran \\
             

@@ -3948,6 +3948,8 @@ u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id) {
         case WeaponId::EcclesiastAstralBlaster:	   return bw::rand_between(SoundId::EcclesiastWeaponfire01, SoundId::EcclesiastWeaponfire04);
         case WeaponId::CharlatanFerventBlaster:	   return bw::rand_between(SoundId::CharlatanWeaponfire01, SoundId::CharlatanWeaponfire03);
         case WeaponId::DemiurgeGalacticWeaver:	   return bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
+        case WeaponId::AuroraPhotonBlasters:       return SoundId::Bullet_BlastGn2_wav;
+        case WeaponId::ExtatusRepeatingBlaster:    return bw::rand_between(SoundId::ExtatusWeaponfire01, SoundId::ExtatusWeaponfire03);
     }
     return SoundId::None;
 }

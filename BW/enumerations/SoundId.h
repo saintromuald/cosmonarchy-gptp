@@ -2052,5 +2052,16 @@ namespace SoundId {
         PlayerDefeatAskosi                              = 3326,
         PlayerDefeatBloodsummon                         = 3327,
         PlayerDefeatKogri                               = 3328,
+
+        ExtatusWeaponfire01                             = 3335,
+        ExtatusWeaponfire02                             = 3336,
+        ExtatusWeaponfire03                             = 3337,
+
+        UnarPassiveLoss01                               = 3341,
+        UnarPassiveLoss02                               = 3342,
+        UnarPassiveLoss03                               = 3343,
+        UnarPassiveGain01                               = 3344,
+        UnarPassiveGain02                               = 3345,
+        UnarPassiveGain03                               = 3346,
     };
 }
