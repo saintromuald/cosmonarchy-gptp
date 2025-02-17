@@ -420,12 +420,11 @@ namespace hooks {
         }
 
         UnitExt& attacker_ext = data.attacker->ext();
-        if (attacker_ext.unar_solitary_focus_stacks) {
-            data.damage += attacker_ext.unar_solitary_focus_stacks;
-        }
-
         // Weapon & Attacker based calcs
         switch (data.weapon_id) { // Damage divisor calc
+            case WeaponId::AshguardPhaseCremator: {
+                data.damage += KhalendricAshguard::IndomitableAnnexDamageMultiplier * target_ext.indomitable_annex_stacks * 256;
+            } break;
             case WeaponId::CabalistWarpBlades: {
                 if (!data.attacker) {
                     break;
@@ -434,7 +433,15 @@ namespace hooks {
                     data.damage *= 1.5;
                     attacker_ext.values[ValueCabalistSilentStridesDamage] = 0;
                 }
-            }
+            } break;
+            case WeaponId::UnarAutonomousRay: {
+                if (!data.attacker) {
+                    break;
+                }
+                if (attacker_ext.unar_solitary_focus_stacks) {
+                    data.damage += attacker_ext.unar_solitary_focus_stacks;
+                }
+            } break;
             case WeaponId::ArchitectDispersiveSalvo: {
                 u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
                 data.damage /= divisor;
@@ -814,12 +821,24 @@ namespace hooks {
                             target_ext->timers[TimerTriumphantRiseDebuff] = 36;
                         }
                     } break;
+                    case WeaponId::AshguardPhaseCremator: {
+                        // Vengeful March
+                        attacker_ext->timers[TimerVengefulMarch] = Protoss::VengefulMarchDuration;
+
+                        // Ashguard - Indomitable Annex - add stack
+                        target_ext->units[UnitAnnexSource] = data.attacker;
+                        if (target_ext->indomitable_annex_stacks < 5) {
+                            target_ext->indomitable_annex_stacks++;
+                        }
+                        target_ext->values[ValueAnnexSourcePlayer] = data.attacking_player_id;
+                        target_ext->timers[TimerAnnex] = 2 * 24 + 1;
+                    } break;
                     case WeaponId::EmpressFadingBioplasma: {
                         // Empress - Anodyne Annex - add stack
-                        target_ext->units[UnitEmpressAnodyneAnnexSource] = data.attacker;
+                        target_ext->units[UnitAnnexSource] = data.attacker;
                         target_ext->values[ValueEmpressAnodyneAnnexStacks]++;
-                        target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = data.attacking_player_id;
-                        target_ext->timers[TimerEmpressAnodyneAnnex] = 2 * 24 + 1;
+                        target_ext->values[ValueAnnexSourcePlayer] = data.attacking_player_id;
+                        target_ext->timers[TimerAnnex] = 2 * 24 + 1;
                     } break;
                     case WeaponId::GhitorokorGnashingTendrils: {
                         attacker_ext->values[ValueGhitorokorRelentlessAggressionStacks]++;
@@ -972,7 +991,7 @@ namespace hooks {
 
     static bool weapon_damage_fatal(const WeaponDamageData& data) {
         bool fatal_deal_damage = true;
-        UnitExt* target_ext = get_unit_ext(data.target);
+        UnitExt& target_ext = data.target->ext();
 
         // Note that the order here matters a lot
         //
@@ -1005,8 +1024,8 @@ namespace hooks {
         switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
             case UnitId::TerranCuirassTankMode: {
                 // Cuirass - Stonewall Protocol
-                if (!target_ext->values[ValueCuirassIsSelfReviving]) {
-                    target_ext->values[ValueCuirassIsSelfReviving] = 1;
+                if (!target_ext.values[ValueCuirassIsSelfReviving]) {
+                    target_ext.values[ValueCuirassIsSelfReviving] = 1;
                     data.target->hitpoints = Cuirass::SelfReviveHP;
                     fatal_deal_damage = false;
                     data.target->order_computer(OrderId::Stop);
@@ -1015,14 +1034,14 @@ namespace hooks {
                 }
             } break;
             case UnitId::ProtossCicatus: {
-                if (target_ext->values[ValueIsShade]) {
+                if (target_ext.values[ValueIsShade]) {
                     break;
                 }
                 helper::increment_unit_death_scores(data.target, data.target->player);
                 data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
                 data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
                 data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
-                target_ext->values[ValueIsShade] = true;
+                target_ext.values[ValueIsShade] = true;
 
                 if (bw::get_game_kind() == GameKind::Massacre && unit_should_give_gas_in_massacre_mode(data.target)) {
                     bw::add_massacre_resource(data.target->player);
@@ -1063,8 +1082,8 @@ namespace hooks {
             } break;
             case UnitId::ProtossAurora: {
                 // Last Orders - Aurora behavior
-                if (target_ext->values[ValueLastOrdersInit] == 0) {
-                    target_ext->values[ValueLastOrdersInit] = 1;
+                if (target_ext.values[ValueLastOrdersInit] == 0) {
+                    target_ext.values[ValueLastOrdersInit] = 1;
 
                     auto targets = g_unit_search
                         .radial_ex(data.target, 9 * 32, FilterEnemy | FilterInvincible | FilterVisible)
@@ -1087,7 +1106,7 @@ namespace hooks {
                 data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
                 data.target->sprite->create_top_overlay(ImageId::ZergAirDeathExplosion_Small);
                 helper::play_sound_from_unit(SoundId::Zerg_Hydra_ZHyDth00_WAV, data.target, 1, 0);
-                target_ext->timers[TimerAxitriliskPerpetualWind] = Axitrilisk::PerpetualWindTimer;
+                target_ext.timers[TimerAxitriliskPerpetualWind] = Axitrilisk::PerpetualWindTimer;
                 fatal_deal_damage = false;
             } break;
             case UnitId::ZergVilgorokor: {
@@ -1096,15 +1115,16 @@ namespace hooks {
                 bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
             } break;
             case UnitId::TerranCohort: {
-                if (target_ext->values[ValueCohortServileVigor]) {
+                if (target_ext.values[ValueCohortServileVigor]) {
                     break;
                 }
-                target_ext->values[ValueNoCorpse] = true;
+                target_ext.values[ValueNoCorpse] = true;
                 Unit* cohort = bw::create_unit_in_game(UnitId::TerranCohort, data.target->player, data.target->position.x, data.target->position.y, data.target);
                 bw::inherit_debuffs(data.target, cohort);
                 auto& cohort_ext = cohort->ext();
                 cohort_ext.values[ValueCohortServileVigor] = true;
                 cohort_ext.values[ValueNoCorpse] = false;
+                cohort_ext.timers[TimerCohortCorpseDelay] = 24;
                 cohort->remove_timer = 240;
                 return true;
             } break;
@@ -1112,9 +1132,9 @@ namespace hooks {
 
         if (fatal_deal_damage) {
             // Matraleth, Akistokor - Blissful Embrace - infest target
-            if (target_ext->timers[TimerInfesting]) {
+            if (target_ext.timers[TimerInfesting]) {
                 fatal_deal_damage = false;
-                blissful_embrace(data.target, target_ext->values[ValueInfestingPlayer]);
+                blissful_embrace(data.target, target_ext.values[ValueInfestingPlayer]);
                 data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);
                 return fatal_deal_damage;
             }
@@ -1131,7 +1151,7 @@ namespace hooks {
                         data.target->building.nydus_exit = 0;
                         nydus_exit->building.nydus_exit = 0;
 
-                        if (!target_ext->values[ValueIsNydusExit] == 1) {
+                        if (!target_ext.values[ValueIsNydusExit] == 1) {
                             nydus_exit->remove();
                         }
                     }
@@ -1154,7 +1174,7 @@ namespace hooks {
             }
 
             // Tyranny
-            if (target_ext->units[UnitMindTyrantLink] && target_ext->values[ValueMindTyrantTyranny] == ProtossMindTyrant::TyrannyMaxStacks && !target_ext->values[ValueLastOrdersInit]) {
+            if (target_ext.units[UnitMindTyrantLink] && target_ext.values[ValueMindTyrantTyranny] == ProtossMindTyrant::TyrannyMaxStacks && !target_ext.values[ValueLastOrdersInit]) {
                 fatal_deal_damage = false;
                 mind_control(data.attacker->player, UnitId::ProtossMindTyrant, data.target);
                 bw::play_sound(SoundId::Protoss_Darchon_mind_wav, data.target->position);
@@ -1172,9 +1192,9 @@ namespace hooks {
                     }
                     return true;
                 });
-            if (!(units_dat::base_property[data.target->id] & UnitProperty::Building) && masters.count() && !target_ext->values[ValueLastOrdersInit]) {
+            if (!data.target->is_building() && masters.count() && !target_ext.values[ValueLastOrdersInit]) {
                 fatal_deal_damage = false;
-                target_ext->timers[TimerDemiurgeWorship] = 5 * 24 + 1;
+                target_ext.timers[TimerDemiurgeWorship] = 5 * 24 + 1;
                 bw::remove_unit_overlay(data.target, ImageId::Malediction_Small + bw::get_overlay_offset(data.target->id));
                 u32 overlay_id = ImageId::DemiurgeWorshipProc_Small + bw::get_overlay_offset(data.target->id, true);
                 if (overlay_id == ImageId::ControlledDemolition) {
@@ -1182,21 +1202,26 @@ namespace hooks {
                 }
                 bw::add_unit_overlay(data.target, overlay_id);
                 helper::play_sound_from_unit(SoundId::DemiurgeWorship01, data.target, 1, 0);
-                target_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 43;
+                target_ext.timers[TimerDemiurgeWorshipOverlayDelay] = 43;
                 data.target->freeze();
                 data.target->status |= UnitStatus::Invincible;
                 return fatal_deal_damage;
             }
             
-            // Empress - Anodyne Annex - zombify target
-            if (target_ext->values[ValueEmpressAnodyneAnnexStacks] && !target_ext->values[ValueIsZombified] && !target_ext->values[ValueLastOrdersInit]) {
+            // Empress, Ashguard - Zombify target
+            bool can_be_annexed = target_ext.values[ValueEmpressAnodyneAnnexStacks] || target_ext.indomitable_annex_stacks == KhalendricAshguard::IndomitableAnnexCap;
+            if (can_be_annexed && !target_ext.values[ValueIsZombified] && !target_ext.values[ValueLastOrdersInit]) {
                 fatal_deal_damage = false;
-                empress_zombify(target_ext->values[ValueEmpressAnodyneAnnexSourcePlayer], target_ext->units[UnitEmpressAnodyneAnnexSource], data.target, target_ext->values[ValueEmpressAnodyneAnnexStacks]);
+                auto stack_count = target_ext.values[ValueEmpressAnodyneAnnexStacks];
+                if (!stack_count) {
+                    stack_count = KhalendricAshguard::IndomitableAnnexTimedLife;
+                }
+                empress_zombify(target_ext.values[ValueAnnexSourcePlayer], target_ext.units[UnitAnnexSource], data.target, stack_count);
                 return fatal_deal_damage;
             }
 
-            // Misc behaviors
-            if (target_ext->timers[TimerCriticality]) {
+            // Create effect fields
+            if (target_ext.timers[TimerCriticality]) {
                 g_iquare_globals->create_effect(EffectId::AspirantCriticality, 5 * 24, { data.target->position.x, data.target->position.y }, 2 * 32, SpriteId::Criticality, 2, data.attacking_player_id, data.target);
             }
         }

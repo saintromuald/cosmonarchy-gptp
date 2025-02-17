@@ -1510,7 +1510,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::TerranCohort: {
-                if (unit_ext->values[ValueCohortServileVigor]) {
+                if (!unit_ext->timers[TimerCohortCorpseDelay] && unit_ext->values[ValueCohortServileVigor]) {
                     u32 radius = 1 * 32;
                     for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
                         unit_ext->values[ValueCohortServileVigor] = 0;
@@ -2531,6 +2531,8 @@ namespace hooks {
 
         bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] >= 1, {.play_death = true});
 
+        bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerVengefulMarch] >= 1, {.play_death = true});
+
         bw::set_unit_overlay(unit, { ImageId::Ascension_Small, ImageId::Ascension_XLarge }, unit_ext->timers[TimerAscend] >= 1, {.play_death = true});
 
         {
@@ -3303,11 +3305,12 @@ namespace hooks {
             bw::add_unit_overlay(unit, ImageId::AutocratControlledOpposition);
         }
 
-        // Clear Empress - Anodyne Annex
-        if (unit_ext->timers[TimerEmpressAnodyneAnnex] == 1) {
-            unit_ext->units[UnitEmpressAnodyneAnnexSource] = 0;
+        // Clear Ashguard & Empress annex
+        if (unit_ext->timers[TimerAnnex] == 1) {
+            unit_ext->units[UnitAnnexSource] = 0;
             unit_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
-            unit_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = 0;
+            unit_ext->indomitable_annex_stacks = 0;
+            unit_ext->values[ValueAnnexSourcePlayer] = 0;
         }
 
         // Claymore - Kelvin Munitions - Create overlays
@@ -3349,7 +3352,7 @@ namespace hooks {
         }
 
         // Generic speed timers
-        if (unit_ext->timers[TimerAvenge] == 1 || unit_ext->timers[TimerZergAdrenalFrenzy] == 1) {
+        if (unit_ext->timers[TimerAvenge] == 1 || unit_ext->timers[TimerZergAdrenalFrenzy] == 1 || unit_ext->timers[TimerVengefulMarch] == 1) {
             should_update_speed = true;
         }
 

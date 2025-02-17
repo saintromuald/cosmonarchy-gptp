@@ -136,6 +136,11 @@ namespace hooks {
             speed *= 1.5;
         }
 
+        // Vengeful March - fading speed steroid
+        if (unit_ext.timers[TimerVengefulMarch]) {
+            speed *= Map(unit_ext.timers[TimerVengefulMarch], Protoss::VengefulMarchDuration, 0, 1.25, 1);
+        }
+
         switch (unit->id) {
             case UnitId::TerranBlackjack: {
                 // Blackjack Wear and Tear: reduce movement speed based on missing health

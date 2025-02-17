@@ -1422,10 +1422,28 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
-                                    case UnitId::ProtossDracadin:
-                                    case UnitId::ProtossEcclesiast:
-                                    case UnitId::ProtossHierophant: {
+                                    case UnitId::ProtossDracadin: {
                                         current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::ProtossEcclesiast: {
+                                        if (faction != Faction::ProtossKhalendricKnights) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossEcclesiastKhalendric: {
+                                        if (faction == Faction::ProtossKhalendricKnights) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossHierophant: {
+                                        if (faction != Faction::ProtossKhalendricKnights) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossAshguard: {
+                                        if (faction == Faction::ProtossKhalendricKnights) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
                                     } break;
                                     case UnitId::ProtossLegionnaire: {
                                         if (faction != Faction::ProtossOrderOfTheSacredSaber && faction != Faction::ProtossStarbound) {

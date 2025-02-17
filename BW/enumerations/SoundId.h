@@ -1253,6 +1253,8 @@ namespace SoundId {
         CohortRevive02						= 1887,
         SimulacrumReady01					= 1888,
 
+        LegionnaireWeaponfire01             = 1896,
+
         EvigriliskFire01					= 1898,
         EvigriliskFire02					= 1899,
         EvigriliskFire03					= 1900,
@@ -1742,6 +1744,9 @@ namespace SoundId {
 
         TalosSalvageLoop						= 2849,
 
+        HierophantWeaponfire01                  = 2856,
+        HierophantWeaponfire02                  = 2857,
+
         MeskAdvisor_AllyUnderAttack_Protoss01	= 2861,
         MeskAdvisor_AllyUnderAttack_Protoss02	= 2862,
 
@@ -2063,5 +2068,16 @@ namespace SoundId {
         UnarPassiveGain01                               = 3344,
         UnarPassiveGain02                               = 3345,
         UnarPassiveGain03                               = 3346,
+        EcclesiastKhalendricWeaponfire01                = 3347,
+        EcclesiastKhalendricWeaponfire02                = 3348,
+        EcclesiastKhalendricWeaponfire03                = 3349,
+        AshguardWeaponfire01                            = 3350,
+        AshguardWeaponfire02                            = 3351,
+        AshguardWeaponfire03                            = 3352,
+        AshguardWeaponfire04                            = 3353,
+        AshguardWeaponfire05                            = 3354,
+        CicatusWeaponfire01                             = 3355,
+        CicatusWeaponfire02                             = 3356,
+        CicatusWeaponfire03                             = 3357,
     };
 }

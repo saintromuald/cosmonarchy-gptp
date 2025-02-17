@@ -114,6 +114,12 @@ namespace ProtossEcclesiast {
 inline constexpr s32 AstralBlessingTimer = 5 * 24 + 1;
 }
 
+namespace KhalendricAshguard {
+inline constexpr s32 IndomitableAnnexCap = 5;
+inline constexpr s32 IndomitableAnnexDamageMultiplier = 5;
+inline constexpr s32 IndomitableAnnexTimedLife = 10;
+}
+
 namespace ProtossCantavis {
 inline constexpr s32 HallucinatingFieldTimer = 10 * 24 + 1;
 }
@@ -170,6 +176,7 @@ inline constexpr s32 AIAbilTimer = 612;
 
 namespace Protoss {
 inline constexpr s32 AstralChargeRadius = 2 * 32;
+inline constexpr s32 VengefulMarchDuration = 1 * 24 + 1;
 inline constexpr s32 BindingPlasmaTimer = 24 * 0.5;
 inline constexpr s32 BindingPlasmaRadius = 3 * 32;
 inline constexpr s32 BindingPlasmaSearchRadius = 8 * 32;

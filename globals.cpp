@@ -854,7 +854,7 @@ void inherit_debuffs(Unit* parent, Unit* child) {
     // Inherit Empress Passive Stacks
     if (parent_ext->values[ValueEmpressAnodyneAnnexStacks]) {
         child_ext->values[ValueEmpressAnodyneAnnexStacks] = parent_ext->values[ValueEmpressAnodyneAnnexStacks];
-        child_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = parent_ext->values[ValueEmpressAnodyneAnnexSourcePlayer];
+        child_ext->values[ValueAnnexSourcePlayer] = parent_ext->values[ValueAnnexSourcePlayer];
     }
 
     // Inherit Hierophant Signify

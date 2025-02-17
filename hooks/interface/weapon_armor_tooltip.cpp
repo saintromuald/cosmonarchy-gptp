@@ -379,7 +379,7 @@ namespace hooks {
 		add_status(statuses, "Corrosive Spores", unit_ext->values[ValueCorrosiveTouchStacks], 0,
 			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
 		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressAnodyneAnnexStacks], 0,
-			unit_ext->timers[TimerEmpressAnodyneAnnex], TimerType::Gptp);
+			unit_ext->timers[TimerAnnex], TimerType::Gptp);
 		add_status(statuses, "Shattered", unit_ext->values[ValueWendigoShatteredWindsStacks], 0,
 			unit_ext->timers[TimerWendigoShatteredWinds], TimerType::Gptp);
 

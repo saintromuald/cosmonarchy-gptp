@@ -509,6 +509,19 @@ namespace hooks {
                         return true;
                     }
                 }
+                case UnitId::ProtossDracadin: {
+                    return true;
+                } break;
+                case UnitId::ProtossEcclesiast: {
+                    if (faction != Faction::ProtossKhalendricKnights) {
+                        return true;
+                    }
+                }
+                case UnitId::ProtossEcclesiastKhalendric: {
+                    if (faction == Faction::ProtossKhalendricKnights) {
+                        return true;
+                    }
+                }
                 case UnitId::ProtossLegionnaire: {
                     if (faction != Faction::ProtossOrderOfTheSacredSaber && faction != Faction::ProtossStarbound) {
                         return true;
@@ -524,20 +537,16 @@ namespace hooks {
                         return true;
                     }
                 }
-                case UnitId::ProtossEcclesiast: {
+                case UnitId::ProtossHierophant: {
                 	if (faction != Faction::ProtossKhalendricKnights) {
                         return true;
                 	}
                 }
-                case UnitId::ProtossEcclesiastKhalendric: {
+                case UnitId::ProtossAshguard: {
                     if (faction == Faction::ProtossKhalendricKnights) {
                     	return true;
                     }
                 }
-                case UnitId::ProtossDracadin:
-                case UnitId::ProtossHierophant: {
-                    return true;
-                } break;
             }
         }
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGrandLibrary)) {
@@ -1914,9 +1923,19 @@ namespace hooks {
                         }
                         return TECH_ACTIVE;
                     }
-                    case UnitId::ProtossDracadin:
-                    case UnitId::ProtossEcclesiast:
-                    case UnitId::ProtossHierophant: {
+                    case UnitId::ProtossDracadin: {
+                        return TECH_ACTIVE;
+                    }
+                    case UnitId::ProtossEcclesiast: {
+                        if (faction == Faction::ProtossKhalendricKnights) {
+                            return TECH_HIDDEN;
+                        }
+                        return TECH_ACTIVE;
+                    }
+                    case UnitId::ProtossEcclesiastKhalendric: {
+                        if (faction != Faction::ProtossKhalendricKnights) {
+                            return TECH_HIDDEN;
+                        }
                         return TECH_ACTIVE;
                     }
                     case UnitId::ProtossLegionnaire: {
@@ -1933,6 +1952,18 @@ namespace hooks {
                     }
                     case UnitId::ProtossCicatus: {
                         if (faction != Faction::ProtossStarbound) {
+                            return TECH_HIDDEN;
+                        }
+                        return TECH_ACTIVE;
+                    }
+                    case UnitId::ProtossHierophant: {
+                        if (faction == Faction::ProtossKhalendricKnights) {
+                            return TECH_HIDDEN;
+                        }
+                        return TECH_ACTIVE;
+                    }
+                    case UnitId::ProtossAshguard: {
+                        if (faction != Faction::ProtossKhalendricKnights) {
                             return TECH_HIDDEN;
                         }
                         return TECH_ACTIVE;

@@ -84,7 +84,7 @@ enum ExtValueId {
     ValueAutocratControlledOppositionStacks,
     ValueAutocratControlledOppositionPlayer,
     ValueEmpressAnodyneAnnexStacks,
-    ValueEmpressAnodyneAnnexSourcePlayer,
+    ValueAnnexSourcePlayer,
     ValueAxitriliskLaunchPos,
     ValueBactaliskLaunchPos,
     ValueDracadinLaunchPos,
@@ -328,7 +328,7 @@ enum ExtTimerId {
     TimerPariahHit,
     TimerHeraldAvenge,
     TimerZergAdrenalFrenzy,
-    TimerEmpressAnodyneAnnex,
+    TimerAnnex,
     TimerZarcavrokorSecondaryFire,
     TimerClearStaggerBlacklist,
     TimerUseLastRepulsion,
@@ -367,6 +367,8 @@ enum ExtTimerId {
     TimerTranquilityArray,
     TimerCriticality,
     TimerOscilliantBindingPlasma,
+    TimerCohortCorpseDelay,
+    TimerVengefulMarch,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
@@ -394,7 +396,7 @@ enum ExtUnitId {
     UnitWyvernTargetLock,
     UnitDirgeSource,
     UnitBunkerLockOn,
-    UnitEmpressAnodyneAnnexSource,
+    UnitAnnexSource,
     UnitAnthelionGravityWellSource,
     UnitTurretParentLink,
     UnitMorphConnectedUnit,
@@ -488,6 +490,7 @@ struct UnitExt {
 
     u32                     unar_solitary_focus_stacks;
     u32                     unar_distance_traveled;
+    u32                     indomitable_annex_stacks;
 
     u32						values[ValueCount];
     u32						timers[TimerCount];

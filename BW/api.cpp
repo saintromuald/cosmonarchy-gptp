@@ -3939,17 +3939,22 @@ u32 get_manual_unit_weaponfire_sound(Unit* unit, u32 weapon_id) {
 
 u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id) {
     switch (weapon_id) {
-        case WeaponId::HotshotDispatchShotgun:     return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
-        case WeaponId::MadcapDanannAutogun:        return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
-        case WeaponId::ApostleCharonRifle:         return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
-        case WeaponId::CyclopsFuturistFlakCannons: return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
-        case WeaponId::ZealotPhaseBlades:	       return SoundId::ZealotWeaponhit01;
-        case WeaponId::ZealotStarboundPhaseBlades: return SoundId::ZealotStarboundWeaponhit01;
-        case WeaponId::EcclesiastAstralBlaster:	   return bw::rand_between(SoundId::EcclesiastWeaponfire01, SoundId::EcclesiastWeaponfire04);
-        case WeaponId::CharlatanFerventBlaster:	   return bw::rand_between(SoundId::CharlatanWeaponfire01, SoundId::CharlatanWeaponfire03);
-        case WeaponId::DemiurgeGalacticWeaver:	   return bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
-        case WeaponId::AuroraPhotonBlasters:       return SoundId::Bullet_BlastGn2_wav;
-        case WeaponId::ExtatusRepeatingBlaster:    return bw::rand_between(SoundId::ExtatusWeaponfire01, SoundId::ExtatusWeaponfire03);
+        case WeaponId::HotshotDispatchShotgun:              return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
+        case WeaponId::MadcapDanannAutogun:                 return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
+        case WeaponId::ApostleCharonRifle:                  return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
+        case WeaponId::CyclopsFuturistFlakCannons:          return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
+        case WeaponId::ZealotPhaseBlades:	                return SoundId::ZealotWeaponhit01;
+        case WeaponId::ZealotStarboundPhaseBlades:          return SoundId::ZealotStarboundWeaponhit01;
+        case WeaponId::EcclesiastAstralBlaster:	            return bw::rand_between(SoundId::EcclesiastWeaponfire01, SoundId::EcclesiastWeaponfire04);
+        case WeaponId::EcclesiastKhalendricAvengingBlaster:	return bw::rand_between(SoundId::EcclesiastKhalendricWeaponfire01, SoundId::EcclesiastKhalendricWeaponfire03);
+        case WeaponId::LegionnairePhaseSpear:	            return SoundId::LegionnaireWeaponfire01;
+        case WeaponId::CicatusPhaseClaws:	                return bw::rand_between(SoundId::CicatusWeaponfire01, SoundId::CicatusWeaponfire03);
+        case WeaponId::HierophantPhaseSignifier:	        return bw::rand_between(SoundId::HierophantWeaponfire01, SoundId::HierophantWeaponfire02);
+        case WeaponId::AshguardPhaseCremator:	            return bw::rand_between(SoundId::AshguardWeaponfire01, SoundId::AshguardWeaponfire05);
+        case WeaponId::CharlatanFerventBlaster:	            return bw::rand_between(SoundId::CharlatanWeaponfire01, SoundId::CharlatanWeaponfire03);
+        case WeaponId::DemiurgeGalacticWeaver:	            return bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
+        case WeaponId::AuroraPhotonBlasters:                return SoundId::Bullet_BlastGn2_wav;
+        case WeaponId::ExtatusRepeatingBlaster:             return bw::rand_between(SoundId::ExtatusWeaponfire01, SoundId::ExtatusWeaponfire03);
     }
     return SoundId::None;
 }

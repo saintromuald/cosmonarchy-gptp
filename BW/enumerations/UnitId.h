@@ -197,6 +197,7 @@ namespace UnitId {
         ProtossEcclesiastKhalendric							= 412,
         ProtossCicatus										= 414,
         ProtossRenesair                                     = 423,
+        ProtossAshguard                                     = 424,
 
     // Protoss-Building
         ProtossAutomatonRegister							= 158,		// Unused Protoss 1
