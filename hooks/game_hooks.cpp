@@ -2263,10 +2263,13 @@ namespace hooks {
 
                 const auto stacks_lost = unit_ext->unar_distance_traveled / ProtossUnar::SolitaryFocusTravelThreshold;
                 unit_ext->unar_distance_traveled -= stacks_lost * ProtossUnar::SolitaryFocusTravelThreshold;
-                unit_ext->unar_solitary_focus_stacks = std::max<s32>((s32)unit_ext->unar_solitary_focus_stacks - stacks_lost, 0);
-                if (stacks_lost) {
+                if (unit_ext->unar_solitary_focus_stacks && stacks_lost) {
                     bw::play_sound({SoundId::UnarPassiveLoss01, SoundId::UnarPassiveLoss03}, unit->position);
+                    // TODO: Remove orbiting audiovisual.
                 }
+                unit_ext->unar_solitary_focus_stacks = std::max<s32>((s32)unit_ext->unar_solitary_focus_stacks - stacks_lost, 0);
+
+                // Add stack
                 if (unit->order_signal & 0x20) {
                     unit->order_signal &= ~0x20;
                     if (unit_ext->unar_solitary_focus_stacks < ProtossUnar::SolitaryFocusCap) {
