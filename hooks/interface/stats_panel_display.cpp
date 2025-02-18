@@ -411,13 +411,10 @@ namespace hooks {
     // Hooked to draw new values to icons. - Pr0nogo
     void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, u8 weapon_id) { // 00425790
         Unit* unit = *g_active_portrait_unit;
-        UnitExt* unit_ext = get_unit_ext(unit);
+        UnitExt& unit_ext = unit->ext();
         u32 active_player = unit->player;
 
-        u32 damage = weapons_dat::damage_amount[weapon_id];	// TODO: calculate current damage using g_active_portrait_unit
-        if (unit_ext->values[ValueTriggerDamageBaseSet]) {
-            damage = unit_ext->values[ValueTriggerDamageBaseAmount] / 256;
-        }
+        u32 damage = get_modified_damage(unit, (WeaponId::Enum)weapon_id);
         u16 damage_value = damage * bw::get_damage_factor_for_tooltip(weapon_id, unit);
         sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", damage_value);
 

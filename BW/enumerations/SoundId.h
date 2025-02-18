@@ -1682,6 +1682,9 @@ namespace SoundId {
         AckmedAdvisor_NoVespene04				= 2664,
         AckmedAdvisor_Warp01					= 2665,
         AckmedAdvisor_Warp02					= 2666,
+        AnalogueWeaponfire01                    = 2667,
+        AnalogueWeaponfire02                    = 2668,
+        AnalogueWeaponfire03                    = 2669,
 
         HADRALAdvisor_Addon01					= 2680,
         HADRALAdvisor_AllyUnderAttack_Askosi01	= 2681,
@@ -2084,5 +2087,15 @@ namespace SoundId {
         OscilliantWeaponhit03                           = 3360,
         OscilliantWeaponhit04                           = 3361,
         OscilliantWeaponhit05                           = 3362,
+        VibranceWeaponfire01                            = 3363,
+        VibranceWeaponfire02                            = 3364,
+        VibranceWeaponfire03                            = 3365,
+        VibranceWeaponfire04                            = 3366,
+        VibranceWeaponfire05                            = 3367,
+        UnarWeaponfire01                                = 3368,
+        UnarWeaponfire02                                = 3369,
+        UnarWeaponfire03                                = 3370,
+        UnarWeaponfire04                                = 3371,
+        UnarWeaponfire05                                = 3372,
     };
 }

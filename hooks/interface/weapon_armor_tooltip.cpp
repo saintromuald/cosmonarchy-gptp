@@ -74,17 +74,14 @@ const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 
 
 	// Get game strings
 	const char* entry_name = g_stat_txt_tbl_new->get_string(entry_string_index);
-	const char* damage_string = g_stat_txt_tbl_new->get_string(777);					//"Damage:"
+	const char* damage_string = g_stat_txt_tbl_new->get_string(777); // "Damage:"
 
-	UnitExt* unit_ext = get_unit_ext(unit);
+	UnitExt& unit_ext = unit->ext();
 
 	u8 damage_factor = bw::get_damage_factor_for_tooltip(weapon_id, unit);
 	u8 upgrade_level = bw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
 	u8 damage_type = weapons_dat::damage_type[weapon_id];
-	u32 base_damage = weapons_dat::damage_amount[weapon_id];
-	if (unit_ext->values[ValueTriggerDamageBaseSet]) {
-		base_damage = unit_ext->values[ValueTriggerDamageBaseAmount] / 256;
-	}
+	u32 base_damage = get_modified_damage(unit, weapon_id);
 	u32 armor_pen = weapons_dat::armor_pen[weapon_id];
 	s32 bonus_armor_pen = hooks::get_modified_armor_pen(unit, 0, weapon_id);
 	if (bonus_armor_pen < 0) {

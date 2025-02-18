@@ -440,7 +440,7 @@ namespace hooks {
                     break;
                 }
                 if (attacker_ext.unar_solitary_focus_stacks) {
-                    data.damage += attacker_ext.unar_solitary_focus_stacks;
+                    data.damage += attacker_ext.unar_solitary_focus_stacks * 256;
                 }
             } break;
             case WeaponId::ArchitectDispersiveSalvo: {

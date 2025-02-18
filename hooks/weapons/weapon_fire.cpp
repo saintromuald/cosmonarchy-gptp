@@ -705,13 +705,15 @@ namespace hooks {
                                     divisor = 2;
                                 }
                                 target->damage_with(WeaponId::VibranceSensoryOverload, -1, unit, unit->player, bw::get_angle(unit->position, target->position), divisor);
-                                helper::create_thingy(SpriteId::NeutronFlareBlueDamageless, target->position.x, target->position.y, unit->player);
+                                Thingy* impact_effect = helper::create_thingy(SpriteId::NeutronFlareBlueDamageless, target->position.x, target->position.y, unit->player);
+                                impact_effect->sprite->elevation = target->sprite->elevation + 1;
                                 attacked = true;
                             }
                         }
                         if (attacked) {
                             apply_weapon_cooldown(unit, weapon_id);
-                            helper::create_thingy(SpriteId::PlasmaTorpedoImpact, unit->position.x, unit->position.y, unit->player);
+                            Thingy* muzzle_flash = helper::create_thingy(SpriteId::PlasmaTorpedoImpact, unit->position.x, unit->position.y, unit->player);
+                            muzzle_flash->sprite->elevation = unit->sprite->elevation + 1;
                         //  bw::play_sound({SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03}, unit);
                         }
                     } break;

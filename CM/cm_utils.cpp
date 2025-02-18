@@ -446,8 +446,8 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         case Faction::ProtossOrderOfTheSacredSaber: {
             switch (unit_id) {
                 case UnitId::ProtossLegionnaire: return UnitId::ProtossAdherent;
-            //  case UnitId::ProtossVassal:      return UnitId::ProtossRenesair;
-            //  case UnitId::ProtossAurora:      return UnitId::ProtossExtatus;
+                case UnitId::ProtossVassal:      return UnitId::ProtossRenesair;
+                case UnitId::ProtossAurora:      return UnitId::ProtossExtatus;
             }
         } break;
         case Faction::ProtossStarbound: {
@@ -469,10 +469,23 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::ZergZorthosTendril: {
             switch (unit_id) {
-                case UnitId::ZergNathrokor: return UnitId::ZergNathrelisk;
-                case UnitId::ZergIzirokor:  return UnitId::ZergIziralisk;
+                case UnitId::ZergNathrokor:  return UnitId::ZergNathrelisk;
+                case UnitId::ZergIzirokor:   return UnitId::ZergIziralisk;
+            //  case UnitId::ZergLakizilisk: return UnitId::ZergLakiziliskZorthos;
             }
         } break;
     }
     return unit_id;
+}
+
+u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
+    const auto& unit_ext = unit->ext();
+    u32 damage = weapons_dat::damage_amount[weapon_id];
+    if (unit_ext.values[ValueTriggerDamageBaseSet]) {
+        damage = unit_ext.values[ValueTriggerDamageBaseAmount] / 256;
+    }
+    if (unit_ext.unar_solitary_focus_stacks) {
+        damage += unit_ext.unar_solitary_focus_stacks;
+    }
+    return damage;
 }

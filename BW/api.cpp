@@ -3952,7 +3952,10 @@ u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id) {
         case WeaponId::HierophantPhaseSignifier:	        return bw::rand_between(SoundId::HierophantWeaponfire01, SoundId::HierophantWeaponfire02);
         case WeaponId::AshguardPhaseCremator:	            return bw::rand_between(SoundId::AshguardWeaponfire01, SoundId::AshguardWeaponfire05);
         case WeaponId::CharlatanFerventBlaster:	            return bw::rand_between(SoundId::CharlatanWeaponfire01, SoundId::CharlatanWeaponfire03);
+        case WeaponId::UnarAutonomousRay:	                return bw::rand_between(SoundId::UnarWeaponfire01, SoundId::UnarWeaponfire05);
+        case WeaponId::VibranceSensoryOverload:	            return bw::rand_between(SoundId::VibranceWeaponfire01, SoundId::VibranceWeaponfire05);
         case WeaponId::DemiurgeGalacticWeaver:	            return bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
+        case WeaponId::AnalogueCylindricalBlaster:	        return bw::rand_between(SoundId::AnalogueWeaponfire01, SoundId::AnalogueWeaponfire03);
         case WeaponId::AuroraPhotonBlasters:                return SoundId::Bullet_BlastGn2_wav;
         case WeaponId::ExtatusRepeatingBlaster:             return bw::rand_between(SoundId::ExtatusWeaponfire01, SoundId::ExtatusWeaponfire03);
     }
