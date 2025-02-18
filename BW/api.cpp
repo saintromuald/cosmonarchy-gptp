@@ -3959,6 +3959,13 @@ u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id) {
     return SoundId::None;
 }
 
+u32 get_manual_weapon_id_weaponhit_sound(WeaponId::Enum weapon_id) {
+    switch (weapon_id) {
+        case WeaponId::OscilliantRotatingRay: return bw::rand_between(SoundId::OscilliantWeaponhit01, SoundId::OscilliantWeaponhit05);
+    }
+    return SoundId::None;
+}
+
 bool unit_regenerates_hp(Unit* unit) {
     UnitExt* unit_ext = get_unit_ext(unit);
     return units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP
@@ -4154,8 +4161,14 @@ void zap_overlay(Unit* unit) {
     }
 }
 
-void play_manual_weapon_sound(Unit* unit, WeaponId::Enum weapon_id) {
+void play_manual_weaponfire_sound(Unit* unit, WeaponId::Enum weapon_id) {
     if (const auto sound_id = bw::get_manual_weapon_id_weaponfire_sound(weapon_id)) {
+        bw::play_sound(sound_id, unit->position);
+    }
+}
+
+void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id) {
+    if (const auto sound_id = bw::get_manual_weapon_id_weaponhit_sound(weapon_id)) {
         bw::play_sound(sound_id, unit->position);
     }
 }

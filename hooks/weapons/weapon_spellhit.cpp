@@ -219,7 +219,7 @@ namespace hooks {
 		// We can check for special conditions here if the attacker is not meant to decloak on melee attack. -Pr0nogo
 		bw::decloak_passive_proc(attacker);
 		apply_weapon_cooldown(attacker, weapon_id);
-		bw::play_manual_weapon_sound(attacker, weapon_id);
+		bw::play_manual_weaponfire_sound(attacker, weapon_id);
 	}
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.

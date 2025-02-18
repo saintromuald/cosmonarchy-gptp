@@ -2079,5 +2079,10 @@ namespace SoundId {
         CicatusWeaponfire01                             = 3355,
         CicatusWeaponfire02                             = 3356,
         CicatusWeaponfire03                             = 3357,
+        OscilliantWeaponhit01                           = 3358,
+        OscilliantWeaponhit02                           = 3359,
+        OscilliantWeaponhit03                           = 3360,
+        OscilliantWeaponhit04                           = 3361,
+        OscilliantWeaponhit05                           = 3362,
     };
 }

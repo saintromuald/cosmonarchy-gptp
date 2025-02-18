@@ -599,7 +599,7 @@ namespace hooks {
                     unit->order_target.pt = *unit_ext->target_pos_override;
                 }
                 Target weapon_target = unit->order_target;
-                bw::play_manual_weapon_sound(unit, weapon_id);
+                bw::play_manual_weaponfire_sound(unit, weapon_id);
                 switch (weapon_id) {
                     case WeaponId::PhobosArgosLaserBatteries: {
                         // Phobos - Argent Capacitors passive

@@ -754,15 +754,22 @@ namespace hooks {
                 } break;
                 case UnitId::ZergZethrokor:
                 case UnitId::ZergQuazilisk: {
-                    if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake)|| player_has_unit_id(player_id, UnitId::ZergVornathPond) || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool))
-                    {
+                    if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake)|| player_has_unit_id(player_id, UnitId::ZergVornathPond) || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool)) {
                         return true;
                     }
                 } break;
-                case UnitId::ZergNathrokor:
+                case UnitId::ZergNathrokor: {
+                    if (faction != Faction::ZergZorthosTendril) {
+                        if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond)) {
+                            return true;
+                        }
+                    }
+                } break;
                 case UnitId::ZergNathrelisk: {
-                    if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond)) {
-                        return true;
+                    if (faction == Faction::ZergZorthosTendril) {
+                        if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond)) {
+                            return true;
+                        }
                     }
                 } break;
                 case UnitId::ZergMutalisk:
@@ -779,11 +786,23 @@ namespace hooks {
                         return true;
                     }
                 } break;
-                case UnitId::ZergHydralisk:
-                case UnitId::ZergIzirokor:
-                case UnitId::ZergIziralisk: {
+                case UnitId::ZergHydralisk: {
                     if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkibactScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen)) {
                         return true;
+                    }
+                } break;
+                case UnitId::ZergIzirokor: {
+                    if (faction != Faction::ZergZorthosTendril) {
+                        if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkibactScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen)) {
+                            return true;
+                        }
+                    }
+                } break;
+                case UnitId::ZergIziralisk: {
+                    if (faction == Faction::ZergZorthosTendril) {
+                        if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkibactScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen)) {
+                            return true;
+                        }
                     }
                 } break;
                 case UnitId::ZergSkithrokor: {
