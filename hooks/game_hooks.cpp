@@ -1510,7 +1510,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::TerranCohort: {
-                if (unit_ext->values[ValueCohortServileVigor]) {
+                if (!unit_ext->timers[TimerCohortCorpseDelay] && unit_ext->values[ValueCohortServileVigor]) {
                     u32 radius = 1 * 32;
                     for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
                         unit_ext->values[ValueCohortServileVigor] = 0;
@@ -2256,6 +2256,29 @@ namespace hooks {
                     helper::create_bullet(WeaponId::DiademHammerfallBeacon, unit, unit->get_x(), unit->get_y(), unit->player, unit->current_direction_1);
                 }
             } break;
+            case UnitId::ProtossUnar: {
+                const auto delta = bw::distance_between(unit_ext->last_pos, unit->position);
+                unit_ext->unar_distance_traveled += delta;
+                unit_ext->last_pos = unit->position;
+
+                const auto stacks_lost = unit_ext->unar_distance_traveled / ProtossUnar::SolitaryFocusTravelThreshold;
+                unit_ext->unar_distance_traveled -= stacks_lost * ProtossUnar::SolitaryFocusTravelThreshold;
+                if (unit_ext->unar_solitary_focus_stacks && stacks_lost) {
+                    bw::play_sound({SoundId::UnarPassiveLoss01, SoundId::UnarPassiveLoss03}, unit->position);
+                    // TODO: Remove orbiting audiovisual.
+                }
+                unit_ext->unar_solitary_focus_stacks = std::max<s32>((s32)unit_ext->unar_solitary_focus_stacks - stacks_lost, 0);
+
+                // Add stack
+                if (unit->order_signal & 0x20) {
+                    unit->order_signal &= ~0x20;
+                    if (unit_ext->unar_solitary_focus_stacks < ProtossUnar::SolitaryFocusCap) {
+                        unit_ext->unar_solitary_focus_stacks++;
+                        // TODO: Orbiting audiovisuals. SpriteId::UnarOrbital or ImageId::UnarOrbital
+                        bw::play_sound({SoundId::UnarPassiveGain01, SoundId::UnarPassiveGain03}, unit->position);
+                    }
+                }
+            } break;
             case UnitId::TerranSavant: {
                 if (unit_ext->timers[TimerSavantPowerSiphonBuff] == 1) {
                     unit_ext->values[ValueSavantPowerSiphonBuff] = 0;
@@ -2436,6 +2459,7 @@ namespace hooks {
                     unit->building.resource.is_mining = 0;
                 }
             } break;
+            case UnitId::ProtossOscilliant:
             case UnitId::ProtossGladius: {
                 if (unit_ext->timers[TimerBindingPlasmaChargeOverlay]) {
                     if (!unit->get_overlay(ImageId::GladiusCharge)) {
@@ -2494,40 +2518,35 @@ namespace hooks {
             unit->sprite->create_top_overlay(ImageId::MaverickStimpackExpire);
         }
 
-        // Protoss - Binding Plasma
-        if (unit_ext->timers[TimerBindingPlasma]) {
-            u32 source_player = unit_ext->values[ValueGladiusBindingPlasmaPlayer];
-
-            bool has_source = false;
-            for (Unit* source : g_unit_search.radial_ex(unit, 8 * 32, 0, {UnitId::ProtossGladius})) {
-                if (bw::is_allied_to(source->player, source_player)) {
-                    has_source = true;
-                    UnitExt* source_ext = get_unit_ext(source);
-                    source_ext->timers[TimerBindingPlasmaChargeOverlay] = 3;
-                }
-            }
-
-            if (has_source) {
-                if (unit_ext->timers[TimerBindingPlasma] % Gladius::BindingPlasmaTimer == Gladius::BindingPlasmaTimer - 1) {
-                    bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay); // TODO: Audio
-                }
-                if (unit_ext->timers[TimerBindingPlasma] == 1) {
-                    if (bw::binding_plasma_proc(unit)) {
-                        u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
-                        helper::play_sound_from_unit(sound_id, unit, 1, 0);
-                    }
-                }
-            } else {
-                unit_ext->timers[TimerBindingPlasma] = 0;
-                unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
-            }
+        // Gladius - Binding Plasma
+        if (unit_ext->timers[TimerGladiusBindingPlasma]) {
+            bw::binding_plasma_tick(unit_ext->values[ValueGladiusBindingPlasmaPlayer], unit, UnitId::ProtossGladius, {
+                .timer_id = ExtTimerId::TimerGladiusBindingPlasma,
+                .stack_value_id = ExtValueId::ValueGladiusBindingPlasmaStacks,
+                .player_value_id = ExtValueId::ValueGladiusBindingPlasmaPlayer,
+                .weapon_id = WeaponId::GladiusPlasmaFlurry,
+                .sound = {SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03}
+            });
         } else {
             unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
         }
 
-        bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] >= 1, {.play_death = true});
+        // Oscilliant - Binding Plasma
+        if (unit_ext->timers[TimerOscilliantBindingPlasma]) {
+            bw::binding_plasma_tick(unit_ext->values[ValueOscilliantBindingPlasmaPlayer], unit, UnitId::ProtossOscilliant, {
+                .timer_id = ExtTimerId::TimerOscilliantBindingPlasma,
+                .stack_value_id = ExtValueId::ValueOscilliantBindingPlasmaStacks,
+                .player_value_id = ExtValueId::ValueOscilliantBindingPlasmaPlayer,
+                .weapon_id = WeaponId::OscilliantRotatingRay,
+                .sound = {SoundId::OscilliantWeaponfire01, SoundId::OscilliantWeaponfire05}
+            });
+        } else {
+            unit_ext->values[ValueOscilliantBindingPlasmaStacks] = 0;
+        }
 
-        bw::set_unit_overlay(unit, { ImageId::Ascension_Small, ImageId::Ascension_XLarge }, unit_ext->timers[TimerAscend] >= 1, {.play_death = true});
+        bw::set_unit_overlay(unit, {ImageId::Avenge_Small, ImageId::Avenge_XLarge}, unit_ext->timers[TimerAvenge] >= 1 || unit_ext->timers[TimerVengefulMarch] >= 1, {.play_death = true});
+
+        bw::set_unit_overlay(unit, {ImageId::Ascension_Small, ImageId::Ascension_XLarge}, unit_ext->timers[TimerAscend] >= 1, {.play_death = true});
 
         {
             u32 shield_bleed_overlay = ImageId::AstralRule_Small + bw::get_overlay_offset(unit->id, true);
@@ -2554,7 +2573,7 @@ namespace hooks {
 
         // Tyranny - increase stacks
         if (unit_ext->units[UnitMindTyrantLink]) {
-            if (unit_ext->values[ValueMindTyrantTyranny] < MindTyrant::TyrannyMaxStacks) {
+            if (unit_ext->values[ValueMindTyrantTyranny] < ProtossMindTyrant::TyrannyMaxStacks) {
                 unit_ext->values[ValueMindTyrantTyranny]++;
             } else {
                 if (!(unit->status & UnitStatus::Frozen)) {
@@ -2799,8 +2818,8 @@ namespace hooks {
         if (unit->defensive_matrix_timer > Azazel::DefensiveMatrixTimer) {
             unit->defensive_matrix_timer = Azazel::DefensiveMatrixTimer;
         }
-        if (unit->stasis_timer > Didact::StasisFieldTimer) {
-            unit->stasis_timer = Didact::StasisFieldTimer;
+        if (unit->stasis_timer > ProtossDidact::StasisFieldTimer) {
+            unit->stasis_timer = ProtossDidact::StasisFieldTimer;
         }
         if (unit->plague_timer > Isthrathaleth::PlagueTimer) {
             unit->plague_timer = Isthrathaleth::PlagueTimer;
@@ -3097,9 +3116,9 @@ namespace hooks {
             }
         }
 
-        // Autovitality - Simulacrum behavior
-        if (unit_ext->timers[TimerSimulacrumClone] == 1 && !unit->is_frozen()) {
-            bw::create_unit_from_ability(UnitId::ProtossSimulacrum, 1, unit->player, unit->position, unit);
+        // Autovitality - Clone after a small delay
+        if (unit_ext->timers[TimerAutovitalityClone] == 1 && !unit->is_frozen()) {
+            bw::create_unit_from_ability(unit->id, 1, unit->player, unit->position, unit);
         }
 
         // Remove Ensnaring Brood overlay
@@ -3299,11 +3318,12 @@ namespace hooks {
             bw::add_unit_overlay(unit, ImageId::AutocratControlledOpposition);
         }
 
-        // Clear Empress - Anodyne Annex
-        if (unit_ext->timers[TimerEmpressAnodyneAnnex] == 1) {
-            unit_ext->units[UnitEmpressAnodyneAnnexSource] = 0;
+        // Clear Ashguard & Empress annex
+        if (unit_ext->timers[TimerAnnex] == 1) {
+            unit_ext->units[UnitAnnexSource] = 0;
             unit_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
-            unit_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = 0;
+            unit_ext->indomitable_annex_stacks = 0;
+            unit_ext->values[ValueAnnexSourcePlayer] = 0;
         }
 
         // Claymore - Kelvin Munitions - Create overlays
@@ -3345,7 +3365,7 @@ namespace hooks {
         }
 
         // Generic speed timers
-        if (unit_ext->timers[TimerAvenge] == 1 || unit_ext->timers[TimerZergAdrenalFrenzy] == 1) {
+        if (unit_ext->timers[TimerAvenge] == 1 || unit_ext->timers[TimerZergAdrenalFrenzy] == 1 || unit_ext->timers[TimerVengefulMarch] == 1) {
             should_update_speed = true;
         }
 

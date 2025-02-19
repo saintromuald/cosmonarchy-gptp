@@ -103,7 +103,7 @@ namespace hooks {
         }
 
         u32 tyranny_stacks = unit_ext.values[ValueMindTyrantTyranny];
-        if (tyranny_stacks > 1 && tyranny_stacks < MindTyrant::TyrannyMaxStacks) {
+        if (tyranny_stacks > 1 && tyranny_stacks < ProtossMindTyrant::TyrannyMaxStacks) {
             speed *= 1 - (0.042 * unit_ext.values[ValueMindTyrantTyranny]);
         }
 
@@ -134,6 +134,11 @@ namespace hooks {
         // Shade - speed steroid
         if (unit_ext.values[ValueIsShade]) {
             speed *= 1.5;
+        }
+
+        // Vengeful March - fading speed steroid
+        if (unit_ext.timers[TimerVengefulMarch]) {
+            speed *= MathUtils::Map(unit_ext.timers[TimerVengefulMarch], Protoss::VengefulMarchDuration, 0, 1.25, 1);
         }
 
         switch (unit->id) {

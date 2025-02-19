@@ -393,24 +393,24 @@ static void tick_effect(EffectField& effect) {
                     bw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, effect.player, effect.source, 0, effect.source->position, effect.position);
                 }
             } break;
-            case EffectId::GladiusBindingPlasma: {
+            case EffectId::OscilliantBindingPlasma: {
                 if (effect.current_time) {
                     break;
                 }
 
-                EntryArray gladiuses = g_unit_search
-                    .radial(effect.position, 8 * 32)
-                    .filter(nullptr, 0, {UnitId::ProtossGladius})
+                auto sources = g_unit_search
+                    .radial(effect.position, Protoss::BindingPlasmaSearchRadius)
+                    .filter(nullptr, 0, {UnitId::ProtossOscilliant})
                     .filter_by([&effect](Unit* unit) {
                         return bw::is_allied_to(unit->player, effect.player);
                     })
                     .sort_by_distance(effect.position);
-                if (!gladiuses.count()) {
+                if (!sources.count()) {
                     effect.destroy();
                     break;
                 }
 
-                Unit* gladius = gladiuses.first();
+                Unit* source = sources.first();
                 const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals);
                 if (targets.empty()) {
                     effect.destroy();
@@ -418,9 +418,38 @@ static void tick_effect(EffectField& effect) {
                 }
                 assert(targets.size() <= effect.intervals);
                 for (Unit* target : targets) {
-                    bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, gladius, target, target->position, effect.position);
-                    u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
-                    helper::play_sound_at_pos(sound_id, effect.position, 1, 0);
+                    bw::artificial_bullet_from(WeaponId::OscilliantRotatingRay, effect.player, source, target, target->position, effect.position);
+                    bw::play_sound({SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03});
+                    effect.intervals--;
+                }
+            } break;
+            case EffectId::GladiusBindingPlasma: {
+                if (effect.current_time) {
+                    break;
+                }
+
+                EntryArray sources = g_unit_search
+                    .radial(effect.position, Protoss::BindingPlasmaSearchRadius)
+                    .filter(nullptr, 0, {UnitId::ProtossGladius})
+                    .filter_by([&effect](Unit* unit) {
+                        return bw::is_allied_to(unit->player, effect.player);
+                    })
+                    .sort_by_distance(effect.position);
+                if (!sources.count()) {
+                    effect.destroy();
+                    break;
+                }
+
+                Unit* source = sources.first();
+                const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals);
+                if (targets.empty()) {
+                    effect.destroy();
+                    break;
+                }
+                assert(targets.size() <= effect.intervals);
+                for (Unit* target : targets) {
+                    bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, source, target, target->position, effect.position);
+                    bw::play_sound({SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03});
                     effect.intervals--;
                 }
             } break;
@@ -666,7 +695,7 @@ void refresh_debuffs(Unit* unit) {
 
     // Refresh Maelstrom
     if (unit->maelstrom_timer) {
-        unit->maelstrom_timer = MindTyrant::MaelstromTimer;
+        unit->maelstrom_timer = ProtossMindTyrant::MaelstromTimer;
     }
 
     // Refresh Devourer Corrosive Spores
@@ -825,7 +854,7 @@ void inherit_debuffs(Unit* parent, Unit* child) {
     // Inherit Empress Passive Stacks
     if (parent_ext->values[ValueEmpressAnodyneAnnexStacks]) {
         child_ext->values[ValueEmpressAnodyneAnnexStacks] = parent_ext->values[ValueEmpressAnodyneAnnexStacks];
-        child_ext->values[ValueEmpressAnodyneAnnexSourcePlayer] = parent_ext->values[ValueEmpressAnodyneAnnexSourcePlayer];
+        child_ext->values[ValueAnnexSourcePlayer] = parent_ext->values[ValueAnnexSourcePlayer];
     }
 
     // Inherit Hierophant Signify

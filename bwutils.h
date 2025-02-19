@@ -84,7 +84,9 @@ namespace SpriteId {
             case SpriteId::Corpse_Savant:
             case SpriteId::Corpse_Hypnagogue:
             case SpriteId::Corpse_Iziralisk:
-            case SpriteId::Corpse_Gorgrokor: {
+            case SpriteId::Corpse_Gorgrokor:
+            case SpriteId::Corpse_MadrigalFuria:
+            case SpriteId::Corpse_Renesair: {
                 return true;
             } break;
         }
@@ -102,6 +104,8 @@ namespace WeaponId {
                 offset += 0.9;
             } break;
             case WeaponId::OptectonSunsplitBeam:
+            case WeaponId::OscilliantRotatingRay:
+            case WeaponId::UnarAutonomousRay:
             case WeaponId::ArchitectDispersiveSalvo: {
                 offset += 1;
             } break;

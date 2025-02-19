@@ -30,3 +30,4 @@ bool player_detects_unit(u32 player, Unit* unit);
 void fire_amitosis_weapon(Unit* attacker, WeaponId::Enum weapon_id);
 void set_up_mines(Unit* unit);
 UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id);
+u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id);

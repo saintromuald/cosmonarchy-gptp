@@ -84,7 +84,7 @@ enum ExtValueId {
     ValueAutocratControlledOppositionStacks,
     ValueAutocratControlledOppositionPlayer,
     ValueEmpressAnodyneAnnexStacks,
-    ValueEmpressAnodyneAnnexSourcePlayer,
+    ValueAnnexSourcePlayer,
     ValueAxitriliskLaunchPos,
     ValueBactaliskLaunchPos,
     ValueDracadinLaunchPos,
@@ -215,6 +215,8 @@ enum ExtValueId {
     ValueStormDivider,
     ValueCabalistSilentStridesDamage,
     ValueCohortServileVigor,
+    ValueOscilliantBindingPlasmaStacks,
+    ValueOscilliantBindingPlasmaPlayer,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -247,7 +249,7 @@ enum ExtTimerId {
     TimerControlledDemolition,
     TimerEmergencyDetonation,
     TimerNemeanReactors,
-    TimerSimulacrumClone,
+    TimerAutovitalityClone,
     TimerEnsnaringBrood,
     TimerAurielIncineration,
     TimerAugurGimmick,
@@ -295,7 +297,7 @@ enum ExtTimerId {
     TimerHypnagogueChannel,
     TimerSecondaryWeaponCooldown,
     TimerReclaimInterval,
-    TimerBindingPlasma,
+    TimerGladiusBindingPlasma,
     TimerCentaurSecondaryWeaponStagger,
     TimerPatriarchAstralRule,
     TimerTerminalSurge,
@@ -326,7 +328,7 @@ enum ExtTimerId {
     TimerPariahHit,
     TimerHeraldAvenge,
     TimerZergAdrenalFrenzy,
-    TimerEmpressAnodyneAnnex,
+    TimerAnnex,
     TimerZarcavrokorSecondaryFire,
     TimerClearStaggerBlacklist,
     TimerUseLastRepulsion,
@@ -364,6 +366,9 @@ enum ExtTimerId {
     TimerReclaimHeal,
     TimerTranquilityArray,
     TimerCriticality,
+    TimerOscilliantBindingPlasma,
+    TimerCohortCorpseDelay,
+    TimerVengefulMarch,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
@@ -391,7 +396,7 @@ enum ExtUnitId {
     UnitWyvernTargetLock,
     UnitDirgeSource,
     UnitBunkerLockOn,
-    UnitEmpressAnodyneAnnexSource,
+    UnitAnnexSource,
     UnitAnthelionGravityWellSource,
     UnitTurretParentLink,
     UnitMorphConnectedUnit,
@@ -480,6 +485,12 @@ struct UnitExt {
     
     Sprite*					power_aura;
     Link<Unit>				psi_link;
+
+    Point16                 last_pos;
+
+    u32                     unar_solitary_focus_stacks;
+    u32                     unar_distance_traveled;
+    u32                     indomitable_annex_stacks;
 
     u32						values[ValueCount];
     u32						timers[TimerCount];

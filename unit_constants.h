@@ -110,47 +110,63 @@ constexpr s32 ControlledDemolitionTimer = 10 * 24 + 1;
 
 // PROTOSS \\
 
-namespace Ecclesiast {
+namespace ProtossEcclesiast {
 inline constexpr s32 AstralBlessingTimer = 5 * 24 + 1;
 }
 
-namespace Cantavis {
+namespace KhalendricAshguard {
+inline constexpr s32 IndomitableAnnexCap = 5;
+inline constexpr s32 IndomitableAnnexDamageMultiplier = 5;
+inline constexpr s32 IndomitableAnnexTimedLife = 10;
+}
+
+namespace ProtossCantavis {
 inline constexpr s32 HallucinatingFieldTimer = 10 * 24 + 1;
 }
 
-namespace Archon {
+namespace ProtossArchon {
 inline constexpr s32 AstralAegisRange = 3 * 32;
 inline constexpr s32 AstralAegisShieldHeal = 50 * 256;
 }
 
-namespace MindTyrant {
+namespace ProtossMindTyrant {
 inline constexpr s32 TyrannyMaxStacks = 48;
 inline constexpr s32 MaelstromTimer = 16; // 5 seconds
 }
 
-namespace ReactivePayload {
+namespace ProtossUnar {
+inline constexpr s32 SolitaryFocusTravelThreshold = 1 * 32;
+inline constexpr s32 SolitaryFocusCap = 4;
+}
+
+namespace ProtossVibrance {
+inline constexpr s32 WeaponRadiusInner = 64;
+inline constexpr s32 WeaponRadiusMedium = 128;
+inline constexpr s32 WeaponRadiusOuter = 192;
+}
+
+namespace ProtossReactivePayload {
 inline constexpr s32 SplitProcDistance = 1 * 32;
 inline constexpr s32 SplitPeriod = 4 * 32;
 inline constexpr s32 SplitSearchRadius = 3 * 32;
 }
 
-namespace Lanifect {
+namespace ProtossEmpathyCore {
+inline constexpr s32 EnergyAmount = 5 * 256;
+}
+
+namespace ProtossLanifect {
 inline constexpr s32 AICheckRange = 3 * 32;
 inline constexpr s32 AISeekRange = 8 * 32;
 inline constexpr s32 AIWebTimer = 1 * 24;
 }
 
-namespace Gladius {
-inline constexpr s32 BindingPlasmaTimer = 24 * 0.5;
-inline constexpr s32 BindingPlasmaRadius = 3 * 32;
-}
-
-namespace Didact {
+namespace ProtossDidact {
 inline constexpr s32 ShroudOfAdunRange = 4 * 32;
 inline constexpr s32 StasisFieldTimer = 23; // roughly 8 seconds
 }
 
-namespace StarSovereign {
+namespace ProtossStarSovereign {
 inline constexpr s32 AIAbilSeekRange = 6 * 32;
 inline constexpr s32 AIAbilMinEnemyHealth = 2000;
 inline constexpr s32 AIAbilMaxAllyHealth = 2000;
@@ -160,6 +176,10 @@ inline constexpr s32 AIAbilTimer = 612;
 
 namespace Protoss {
 inline constexpr s32 AstralChargeRadius = 2 * 32;
+inline constexpr s32 VengefulMarchDuration = 1 * 24 + 1;
+inline constexpr s32 BindingPlasmaTimer = 24 * 0.5;
+inline constexpr s32 BindingPlasmaRadius = 3 * 32;
+inline constexpr s32 BindingPlasmaSearchRadius = 8 * 32;
 }
 
 // ZERG \\

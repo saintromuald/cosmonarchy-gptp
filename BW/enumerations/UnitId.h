@@ -173,7 +173,7 @@ namespace UnitId {
         ProtossServitor										= 306,
         ProtossPositron										= 307,
         ProtossAnalogue										= 308,
-        ProtossMainstay										= 309,
+        ProtossUnar										    = 309,
         ProtossMaven										= 310,
         ProtossCloudform									= 311,
         ProtossVibrance										= 312,
@@ -196,6 +196,8 @@ namespace UnitId {
         ProtossZealotStarbound								= 411,
         ProtossEcclesiastKhalendric							= 412,
         ProtossCicatus										= 414,
+        ProtossRenesair                                     = 423,
+        ProtossAshguard                                     = 424,
 
     // Protoss-Building
         ProtossAutomatonRegister							= 158,		// Unused Protoss 1

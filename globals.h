@@ -37,6 +37,7 @@ enum class EffectId {
     CyclopsRecursionRound,
     CyclopsFuturistRecursionRound,
     SevenstepMindMatter,
+    OscilliantBindingPlasma,
     GladiusBindingPlasma,
 
     Count,

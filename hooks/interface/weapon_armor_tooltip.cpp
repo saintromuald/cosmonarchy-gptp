@@ -74,17 +74,14 @@ const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 
 
 	// Get game strings
 	const char* entry_name = g_stat_txt_tbl_new->get_string(entry_string_index);
-	const char* damage_string = g_stat_txt_tbl_new->get_string(777);					//"Damage:"
+	const char* damage_string = g_stat_txt_tbl_new->get_string(777); // "Damage:"
 
-	UnitExt* unit_ext = get_unit_ext(unit);
+	UnitExt& unit_ext = unit->ext();
 
 	u8 damage_factor = bw::get_damage_factor_for_tooltip(weapon_id, unit);
 	u8 upgrade_level = bw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
 	u8 damage_type = weapons_dat::damage_type[weapon_id];
-	u32 base_damage = weapons_dat::damage_amount[weapon_id];
-	if (unit_ext->values[ValueTriggerDamageBaseSet]) {
-		base_damage = unit_ext->values[ValueTriggerDamageBaseAmount] / 256;
-	}
+	u32 base_damage = get_modified_damage(unit, weapon_id);
 	u32 armor_pen = weapons_dat::armor_pen[weapon_id];
 	s32 bonus_armor_pen = hooks::get_modified_armor_pen(unit, 0, weapon_id);
 	if (bonus_armor_pen < 0) {
@@ -379,7 +376,7 @@ namespace hooks {
 		add_status(statuses, "Corrosive Spores", unit_ext->values[ValueCorrosiveTouchStacks], 0,
 			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
 		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressAnodyneAnnexStacks], 0,
-			unit_ext->timers[TimerEmpressAnodyneAnnex], TimerType::Gptp);
+			unit_ext->timers[TimerAnnex], TimerType::Gptp);
 		add_status(statuses, "Shattered", unit_ext->values[ValueWendigoShatteredWindsStacks], 0,
 			unit_ext->timers[TimerWendigoShatteredWinds], TimerType::Gptp);
 
@@ -401,7 +398,7 @@ namespace hooks {
 		add_status(statuses, "Hallucinating", -1, 1, unit_ext->timers[TimerHallucinating], TimerType::Gptp);
 		add_status(statuses, "Triumphant Rise", -1, 1, unit_ext->timers[TimerTriumphantRiseDebuff], TimerType::Gptp);
 		add_status(statuses, "Maelstrom", -1, 1, unit_ext->timers[TimerMindTyrantMaelstromSlow], TimerType::Gptp);
-		add_status(statuses, "Autovitality", -1, 1, unit_ext->timers[TimerSimulacrumClone], TimerType::Gptp);
+		add_status(statuses, "Autovitality", -1, 1, unit_ext->timers[TimerAutovitalityClone], TimerType::Gptp);
 		add_status(statuses, "Terminal Surge", -1, 1, unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
 		add_status(statuses, "Crisis of Faith", -1, 1, unit_ext->timers[TimerDemiurgeWorship], TimerType::Gptp);
 		add_status(statuses, "Stellar Enforcement", -1, 1, unit_ext->timers[TimerStellarEnforcement], TimerType::Gptp);
@@ -431,6 +428,7 @@ namespace hooks {
 		add_status(statuses, "Concurring Chorus", unit_ext->unit_vectors[UnitVectorManifolds].size(), 0);
 		add_status(statuses, "Adaptive Amitosis", unit_ext->unit_vectors[UnitVectorKazitriths].size() != 0, 0);
 		add_status(statuses, "Lucilleri Pheremones", unit_ext->timers[TimerLucilleriPheremones], 1);
+		add_status(statuses, "Solitary Focus", unit_ext->unar_solitary_focus_stacks, 4);
 
 		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
 		add_status(statuses, "Decided Reach", unit_ext->values[ValueTriggerWeaponRangeBaseAmount] / 32);

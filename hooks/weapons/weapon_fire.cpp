@@ -538,7 +538,7 @@ namespace hooks {
 
         if (weapons_dat::flingy_id[weapon_id] != 0) {
             if (unit->id == UnitId::TerranSavant) {
-                u32 sound_id = bw::get_manual_unit_weaponfire_sound(unit, WeaponId::None);
+                u32 sound_id = bw::get_unit_weapon_fire_sound(unit, WeaponId::None);
                 Unit* final_unit = unit;
                 if (unit->status & UnitStatus::InBuilding && unit->connected_unit) { // Nullchecking to protect against attacks firing on the same frame as the garrison's death.
                     final_unit = unit->connected_unit;
@@ -599,7 +599,7 @@ namespace hooks {
                     unit->order_target.pt = *unit_ext->target_pos_override;
                 }
                 Target weapon_target = unit->order_target;
-                bw::play_manual_weapon_sound(unit, weapon_id);
+                bw::play_manual_weaponfire_sound(unit, weapon_id);
                 switch (weapon_id) {
                     case WeaponId::PhobosArgosLaserBatteries: {
                         // Phobos - Argent Capacitors passive
@@ -678,11 +678,36 @@ namespace hooks {
                         s32 scatter = -15 + index * 5;
                         fire_sideways(unit, weapon_id, angle, scatter);
                     } break;
+                    case WeaponId::ExtatusRepeatingBlaster:
                     case WeaponId::MatrixKhaydarinRay: {
                         fire_bullet(unit, weapon_id, weapon_target);
                         Unit* target = unit->order_target.unit;
                         if (target && unit->player != target->player && !bw::is_allied_to(unit->player, target->player)) {
                             bw::astral_blessing_proc(unit, unit->player, weapon_id);
+                        }
+                    } break;
+                    case WeaponId::VibranceSensoryOverload: {
+                        bool attacked = false;
+                        for (Unit* target : g_unit_search.radial_ex(unit, ProtossVibrance::WeaponRadiusOuter + 8 * 32)) {
+                            if (target != unit->order_target.unit && bw::is_allied_to(unit->player, target->player)) {
+                                continue;
+                            }
+                            const auto distance = unit->get_distance_to_target(target);
+                            if (distance > ProtossVibrance::WeaponRadiusOuter || !unit->can_attack_target(target)) {
+                                continue;
+                            }
+
+                            const auto divisor = distance <= ProtossVibrance::WeaponRadiusInner ? 1 : distance <= ProtossVibrance::WeaponRadiusMedium ? 2 : 4;
+                            target->damage_with(WeaponId::VibranceSensoryOverload, -1, unit, unit->player, bw::get_angle(unit->position, target->position), divisor);
+                            auto impact_effect = helper::create_thingy(SpriteId::NeutronFlareBlueDamageless, target->position.x, target->position.y, unit->player);
+                            impact_effect->sprite->elevation = target->sprite->elevation + 1;
+                            attacked = true;
+                        }
+                        if (attacked) {
+                            apply_weapon_cooldown(unit, weapon_id);
+                            Thingy* muzzle_flash = helper::create_thingy(SpriteId::PlasmaTorpedoImpact, unit->position.x, unit->position.y, unit->player);
+                            muzzle_flash->sprite->elevation = unit->sprite->elevation + 1;
+                        //  bw::play_sound({SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03}, unit);
                         }
                     } break;
                     case WeaponId::TosgriliskExplosiveSpores:
@@ -1009,23 +1034,22 @@ namespace hooks {
         }
 
         // Split missiles
-        if (bullet->weapon_id == WeaponId::ArchitectDispersiveSalvo
+        if (weapon_id_splits_reactive_payload((WeaponId::Enum)bullet->weapon_id)
         &&  bullet->source_unit
         &&  bullet->attack_target.unit
         &&  bullet->attack_target.unit->sprite && bullet->source_unit->sprite) {
             Unit* main_target = bullet->attack_target.unit;
-            UnitExt* unit_ext = get_unit_ext(bullet->source_unit);
             const u32 distance_from_source = bullet_ext->distance_traveled;
             const u32 distance_from_target = bw::distance_between(bullet->position, main_target->position);
-            if (distance_from_target < ReactivePayload::SplitProcDistance) {
-                u32 splits = distance_from_source / ReactivePayload::SplitPeriod;
+            if (distance_from_target < ProtossReactivePayload::SplitProcDistance) {
+                u32 splits = distance_from_source / ProtossReactivePayload::SplitPeriod;
                 if (splits && !g_iquare_globals->multihit_bullet_is_set(bullet)) {
                     Unit* old_target = bullet->source_unit->order_target.unit;
                     Point16 old_sprite_pos = bullet->source_unit->sprite->position;
                     Point16 old_pos = bullet->source_unit->position;
                     bullet->source_unit->sprite->position = bullet->position;
                     bullet->source_unit->position = bullet->position;
-                    u32 radius = ReactivePayload::SplitSearchRadius;
+                    u32 radius = ProtossReactivePayload::SplitSearchRadius;
 
                     g_iquare_globals->add_multihit_empty_bullet(bullet, 1);
                     u32 fired = 0;
@@ -1035,7 +1059,7 @@ namespace hooks {
                         }
                         bullet->source_unit->order_target.unit = target;
                         s32 new_angle = bw::get_angle(bullet->position.x, bullet->position.y, target->position.x, target->position.y);
-                        Bullet* new_bullet = create_bullet_ex(WeaponId::ArchitectDispersiveSalvo, bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
+                        Bullet* new_bullet = create_bullet_ex((WeaponId::Enum)bullet->weapon_id, bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
                         if (new_bullet) {
                             helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
                             new_bullet->position = bullet->position;
@@ -1121,9 +1145,15 @@ namespace hooks {
                 case WeaponId::StasisField: {
                     hooks::stasis_field_hit_internal(bullet->source_unit, bullet->position, bullet);
                 } break;
+                case WeaponId::OscilliantRotatingRay: {
+                    if (!bullet->attack_target.unit) {
+                        g_iquare_globals->create_effect(EffectId::OscilliantBindingPlasma, Protoss::BindingPlasmaTimer, bullet->position, Protoss::BindingPlasmaRadius,
+                            SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
+                    }
+                } break;
                 case WeaponId::GladiusPlasmaFlurry: {
                     if (!bullet->attack_target.unit) {
-                        g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, Gladius::BindingPlasmaTimer, bullet->position, Gladius::BindingPlasmaRadius,
+                        g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, Protoss::BindingPlasmaTimer, bullet->position, Protoss::BindingPlasmaRadius,
                             SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
                     }
                 } break;
