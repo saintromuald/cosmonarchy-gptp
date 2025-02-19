@@ -629,6 +629,14 @@ namespace {
             JMP offset _end
         }
     }
+
+    void __declspec(naked) StarMain_restart_replay() {
+        __asm {
+            MOV EAX, ds:[0x006D5A60]
+            MOV ds:[0x006D0F14], EAX // *g_is_replay = *g_was_replay;
+            RETN
+        }
+    }
 }
 
 namespace hooks {
@@ -684,5 +692,10 @@ namespace hooks {
         memory_patch(0x00456C59, &g_new_cmdbtn_palette);
         memory_patch(0x004589D5, &g_new_cmdbtn_palette);
         memory_patch(0x00459C1F, &g_new_cmdbtn_palette);
+
+        // Fix replay deletion on restart. -DF
+        memory_patch(0x004E09DC, (u8)0xA3);//Change "MOV [g_is_restart], 1" to "MOV [g_is_restart], EAX" to make room for callpatch.
+        memory_patch(0x004E09DD, (u32)0x6D0F0C);
+        call_patch(StarMain_restart_replay, 0x004E09E1);
     }
 }
