@@ -31,18 +31,16 @@ namespace hooks {
 // This hook affects the behavior of Unit::get_seek_range().
 // Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
 u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in tiles, unfortunately
-    UnitExt* unit_ext = get_unit_ext(unit);
-
+    auto& unit_ext = unit->ext();
     s16 bonus_amount = 0;
     if (bw::get_game_kind() == GameKind::DarkAges) {
         bonus_amount -= bw::calculate_dark_ages_penalty(units_dat::seek_range[unit->id]);
     }
 
     if (target) {
-        UnitExt* target_ext = get_unit_ext(target);
-
+        auto& target_ext = target->ext();
         // Stellar Enforcement - Magister behavior
-        if (target_ext->timers[TimerStellarEnforcement]) {
+        if (target_ext.timers[TimerStellarEnforcement]) {
             bonus_amount += 2;
         }
     }
@@ -50,7 +48,7 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     f32 scale = 1;
     // Sovroleth - Writhing Web
     if (unit->id == UnitId::ZergSovroleth) {
-        scale += 0.05 * unit_ext->values[ValueSovrolethLinkCount];
+        scale += 0.05 * unit_ext.values[ValueSovrolethLinkCount];
     }
 
     // Height advantage
@@ -64,8 +62,8 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     }
 
     u32 final_range = units_dat::seek_range[unit->id];
-    if (unit_ext->values[ValueTriggerWeaponRangeBaseSet]) {
-        final_range = unit_ext->values[ValueTriggerWeaponRangeBaseAmount];
+    if (unit_ext.values[ValueTriggerWeaponRangeBaseSet]) {
+        final_range = unit_ext.values[ValueTriggerWeaponRangeBaseAmount];
     }
     if (target && target->is_in_air()) {
         u32 weapon_id = unit->get_air_weapon();
@@ -76,7 +74,9 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
             final_range = weapons_dat::max_range[weapon_id] / 32;
         }
     }
-
+    if (unit_ext.unar_solitary_focus_stacks) {
+        bonus_amount += unit_ext.unar_solitary_focus_stacks;
+    }
     return final_range * scale + bonus_amount;
 };
 
