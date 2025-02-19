@@ -420,7 +420,6 @@ namespace hooks {
             return; // Skip Weapon & Attacker based calcs, since we already did those for phase link
         }
 
-        UnitExt& attacker_ext = data.attacker->ext();
         // Weapon & Attacker based calcs
         switch (data.weapon_id) { // Damage divisor calc
             case WeaponId::AshguardPhaseCremator: {
@@ -430,17 +429,17 @@ namespace hooks {
                 if (!data.attacker) {
                     break;
                 }
-                if (attacker_ext.values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
+                if (data.attacker->ext().values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
                     data.damage *= 1.5;
-                    attacker_ext.values[ValueCabalistSilentStridesDamage] = 0;
+                    data.attacker->ext().values[ValueCabalistSilentStridesDamage] = 0;
                 }
             } break;
             case WeaponId::UnarAutonomousRay: {
                 if (!data.attacker) {
                     break;
                 }
-                if (attacker_ext.unar_solitary_focus_stacks) {
-                    data.damage += attacker_ext.unar_solitary_focus_stacks * 256;
+                if (data.attacker->ext().unar_solitary_focus_stacks) {
+                    data.damage += data.attacker->ext().unar_solitary_focus_stacks * 256;
                 }
             } break;
             case WeaponId::ArchitectDispersiveSalvo: {

@@ -2520,21 +2520,27 @@ namespace hooks {
 
         // Gladius - Binding Plasma
         if (unit_ext->timers[TimerGladiusBindingPlasma]) {
-            bw::binding_plasma_tick(unit_ext->values[ValueGladiusBindingPlasmaPlayer], unit, UnitId::ProtossGladius);
+            bw::binding_plasma_tick(unit_ext->values[ValueGladiusBindingPlasmaPlayer], unit, UnitId::ProtossGladius, {});
         } else {
             unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
         }
 
         // Oscilliant - Binding Plasma
         if (unit_ext->timers[TimerOscilliantBindingPlasma]) {
-            bw::binding_plasma_tick(unit_ext->values[ValueOscilliantBindingPlasmaPlayer], unit, UnitId::ProtossOscilliant);
+            BindingPlasmaOptions options = {.timer_id = ExtTimerId::TimerOscilliantBindingPlasma,
+                                            .stack_value_id = ExtValueId::ValueOscilliantBindingPlasmaStacks,
+                                            .player_value_id = ExtValueId::ValueOscilliantBindingPlasmaPlayer,
+                                            .weapon_id = WeaponId::OscilliantRotatingRay,
+                                            .sound_id_first = SoundId::OscilliantWeaponfire01,
+                                            .sound_id_last = SoundId::OscilliantWeaponfire05};
+            bw::binding_plasma_tick(unit_ext->values[ValueOscilliantBindingPlasmaPlayer], unit, UnitId::ProtossOscilliant, options);
         } else {
             unit_ext->values[ValueOscilliantBindingPlasmaStacks] = 0;
         }
 
-        bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] >= 1 || unit_ext->timers[TimerVengefulMarch] >= 1, {.play_death = true});
+        bw::set_unit_overlay(unit, {ImageId::Avenge_Small, ImageId::Avenge_XLarge}, unit_ext->timers[TimerAvenge] >= 1 || unit_ext->timers[TimerVengefulMarch] >= 1, {.play_death = true});
 
-        bw::set_unit_overlay(unit, { ImageId::Ascension_Small, ImageId::Ascension_XLarge }, unit_ext->timers[TimerAscend] >= 1, {.play_death = true});
+        bw::set_unit_overlay(unit, {ImageId::Ascension_Small, ImageId::Ascension_XLarge}, unit_ext->timers[TimerAscend] >= 1, {.play_death = true});
 
         {
             u32 shield_bleed_overlay = ImageId::AstralRule_Small + bw::get_overlay_offset(unit->id, true);

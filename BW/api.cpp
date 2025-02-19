@@ -2566,50 +2566,30 @@ std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference
     return result;
 }
 
-bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id) {
-    // Not sure if there's a better way to support more unit ids, but it saves duplicating the entire function! -Pr0nogo
-    u32 timer_id = 0;
-    u32 stack_value_id = 0;
-    u32 player_value_id = 0;
-    u32 weapon_id = WeaponId::None;
-    switch (source_unit_id) {
-        case UnitId::ProtossOscilliant: {
-            timer_id = ExtTimerId::TimerOscilliantBindingPlasma;
-            stack_value_id = ExtValueId::ValueOscilliantBindingPlasmaStacks;
-            player_value_id = ExtValueId::ValueOscilliantBindingPlasmaPlayer;
-            weapon_id = WeaponId::OscilliantRotatingRay;
-        } break;
-        case UnitId::ProtossGladius: {
-            timer_id = ExtTimerId::TimerGladiusBindingPlasma;
-            stack_value_id = ExtValueId::ValueGladiusBindingPlasmaStacks;
-            player_value_id = ExtValueId::ValueGladiusBindingPlasmaPlayer;
-            weapon_id = WeaponId::GladiusPlasmaFlurry;
-        } break;
-    }
-
+bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, BindingPlasmaOptions options) {
     UnitExt& victim_ext = victim->ext();
-    u32 player = victim_ext.values[player_value_id];
-    const auto targets = binding_plasma_find_targets(victim->position, victim, player, victim_ext.values[stack_value_id]);
+    u32 player = victim_ext.values[options.player_value_id];
+    const auto targets = binding_plasma_find_targets(victim->position, victim, player, victim_ext.values[options.stack_value_id]);
     if (targets.empty()) {
-        victim_ext.timers[timer_id] = 0;
-        victim_ext.values[stack_value_id] = 0;
+        victim_ext.timers[options.timer_id] = 0;
+        victim_ext.values[options.stack_value_id] = 0;
         return false;
     }
 
     bool procced = false;
     for (Unit* target : targets) {
         u32 angle = bw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
-        Bullet* bullet = helper::create_bullet(weapon_id, victim, victim->position.x, victim->position.y, player, angle);
+        Bullet* bullet = helper::create_bullet((u32)options.weapon_id, victim, victim->position.x, victim->position.y, player, angle);
         if (!bullet) {
             break;
         }
         bw::set_bullet_target(bullet, target);
-        victim_ext.values[stack_value_id]--;
+        victim_ext.values[options.stack_value_id]--;
         procced = true;
     }
 
-    if (!victim_ext.values[stack_value_id]) {
-        victim_ext.timers[timer_id] = 0;
+    if (!victim_ext.values[options.stack_value_id]) {
+        victim_ext.timers[options.timer_id] = 0;
     }
     return procced;
 }
@@ -3941,7 +3921,7 @@ void select(std::vector<Unit*>& units, bool play_response) {
     bw::refresh_console();
 }
 
-u32 get_manual_unit_weaponfire_sound(Unit* unit, u32 weapon_id) {
+u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id) {
     u32 sound_id = SoundId::None;
     switch (unit->id) {
         case UnitId::TerranSavant: {
@@ -3953,12 +3933,12 @@ u32 get_manual_unit_weaponfire_sound(Unit* unit, u32 weapon_id) {
         }
     }
     if (!sound_id) {
-        sound_id = get_manual_weapon_id_weaponfire_sound(weapon_id);
+        sound_id = get_weapon_fire_sound(weapon_id);
     }
     return sound_id;
 }
 
-u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id) {
+u32 get_weapon_fire_sound(u32 weapon_id) {
     switch (weapon_id) {
         case WeaponId::HotshotDispatchShotgun:              return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
         case WeaponId::MadcapDanannAutogun:                 return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
@@ -3984,7 +3964,7 @@ u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id) {
     return SoundId::None;
 }
 
-u32 get_manual_weapon_id_weaponhit_sound(WeaponId::Enum weapon_id) {
+u32 get_weapon_hit_sound(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::OscilliantRotatingRay: return bw::rand_between(SoundId::OscilliantWeaponhit01, SoundId::OscilliantWeaponhit05);
     }
@@ -4187,37 +4167,18 @@ void zap_overlay(Unit* unit) {
 }
 
 void play_manual_weaponfire_sound(Unit* unit, WeaponId::Enum weapon_id) {
-    if (const auto sound_id = bw::get_manual_weapon_id_weaponfire_sound(weapon_id)) {
+    if (const auto sound_id = bw::get_weapon_fire_sound(weapon_id)) {
         bw::play_sound(sound_id, unit->position);
     }
 }
 
 void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id) {
-    if (const auto sound_id = bw::get_manual_weapon_id_weaponhit_sound(weapon_id)) {
+    if (const auto sound_id = bw::get_weapon_hit_sound(weapon_id)) {
         bw::play_sound(sound_id, unit->position);
     }
 }
 
-void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id) {
-    u32 timer_id = 0;
-    u32 stack_value_id = 0;
-    u32 sound_id_first = 0;
-    u32 sound_id_last = 0;
-    switch (source_unit_id) {
-        case UnitId::ProtossOscilliant: {
-            timer_id = ExtTimerId::TimerOscilliantBindingPlasma;
-            stack_value_id = ExtValueId::ValueOscilliantBindingPlasmaStacks;
-            sound_id_first = SoundId::OscilliantWeaponfire01;
-            sound_id_last  = SoundId::OscilliantWeaponfire05;
-        } break;
-        case UnitId::ProtossGladius: {
-            timer_id = ExtTimerId::TimerGladiusBindingPlasma;
-            stack_value_id = ExtValueId::ValueGladiusBindingPlasmaStacks;
-            sound_id_first = SoundId::GladiusBindingPlasmaProc01;
-            sound_id_last  = SoundId::GladiusBindingPlasmaProc03;
-        } break;
-    }
-
+void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, BindingPlasmaOptions options) {
     bool has_source = false;
     for (Unit* source : g_unit_search.radial_ex(unit, Protoss::BindingPlasmaSearchRadius, 0, {(u16)source_unit_id})) {
         if (!bw::is_allied_to(source->player, player)) {
@@ -4230,18 +4191,18 @@ void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id) {
 
     UnitExt& unit_ext = unit->ext();
     if (has_source) {
-        if (unit_ext.timers[timer_id] % Protoss::BindingPlasmaTimer == Protoss::BindingPlasmaTimer - 1) {
+        if (unit_ext.timers[options.timer_id] % Protoss::BindingPlasmaTimer == Protoss::BindingPlasmaTimer - 1) {
             bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay);
         }
-        if (unit_ext.timers[timer_id] == 1) {
-            if (bw::binding_plasma_proc(unit, source_unit_id)) {
-                u32 sound_id = bw::rand_between(sound_id_first, sound_id_last);
+        if (unit_ext.timers[options.timer_id] == 1) {
+            if (bw::binding_plasma_proc(unit, source_unit_id, options)) {
+                u32 sound_id = bw::rand_between(options.sound_id_first, options.sound_id_last);
                 helper::play_sound_from_unit(sound_id, unit, 1, 0);
             }
         }
     } else {
-        unit_ext.timers[timer_id] = 0;
-        unit_ext.values[stack_value_id] = 0;
+        unit_ext.timers[options.timer_id] = 0;
+        unit_ext.values[options.stack_value_id] = 0;
     }
 }
 

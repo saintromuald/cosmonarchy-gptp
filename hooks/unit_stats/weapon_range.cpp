@@ -67,7 +67,7 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     if (unit_ext->values[ValueTriggerWeaponRangeBaseSet]) {
         final_range = unit_ext->values[ValueTriggerWeaponRangeBaseAmount];
     }
-    if (target && target->status & UnitStatus::InAir) {
+    if (target && target->is_in_air()) {
         u32 weapon_id = unit->get_air_weapon();
         if (unit_id_has_custom_air_weapon(unit->id)) {
             weapon_id = bw::get_custom_secondary_weapon_from_unit_id(unit->id);

@@ -1357,7 +1357,7 @@ namespace WeaponId {
         return 1;
     }
 
-    bool weapon_id_splits(WeaponId::Enum weapon_id) {
+    bool weapon_id_splits_reactive_payload(WeaponId::Enum weapon_id) {
         return weapon_id == WeaponId::ArchitectDispersiveSalvo;
     }
 } // namespace WeaponId

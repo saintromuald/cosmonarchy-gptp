@@ -919,8 +919,11 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit);
 void delete_ai_script(AiScript* ai_script);
 void delete_town(AiTown* ai_town);
 void delete_fow_sprite(Thingy* thingy);
+
 std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks);
-bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id);
+bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, BindingPlasmaOptions options);
+void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, BindingPlasmaOptions options);
+
 bool player_has_transport(u32 player);
 bool unit_in_combat_within_seconds(Unit* unit, u32 seconds);
 void update_on_damage_dealt(Unit* unit, u32 damage);
@@ -995,8 +998,8 @@ bool game_kind_supports_kills(GameKind game_kind);
 bool unit_can_fire_secondary_weapon(Unit* unit);
 void cancel_targeting_and_place_building();
 void select(std::vector<Unit*>& units, bool play_response);
-u32 get_manual_unit_weaponfire_sound(Unit* unit, u32 weapon_id);
-u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id);
+u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id);
+u32 get_weapon_fire_sound(u32 weapon_id);
 bool unit_regenerates_hp(Unit* unit);
 u32 get_regeneration_factor(Unit* unit);
 bool unit_has_shields(Unit* unit);
@@ -1011,7 +1014,6 @@ bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id);
 f32 calculate_dark_ages_penalty(f32 range);
 void zap_overlay(Unit* unit);
 void play_manual_weaponfire_sound(Unit* unit, WeaponId::Enum weapon_id);
-void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id);
 void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id);
-u32 get_manual_weapon_id_weaponhit_sound(WeaponId::Enum weapon_id);
+u32 get_weapon_hit_sound(WeaponId::Enum weapon_id);
 } // namespace bw

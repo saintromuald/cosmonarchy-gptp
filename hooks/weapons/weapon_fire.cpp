@@ -538,7 +538,7 @@ namespace hooks {
 
         if (weapons_dat::flingy_id[weapon_id] != 0) {
             if (unit->id == UnitId::TerranSavant) {
-                u32 sound_id = bw::get_manual_unit_weaponfire_sound(unit, WeaponId::None);
+                u32 sound_id = bw::get_unit_weapon_fire_sound(unit, WeaponId::None);
                 Unit* final_unit = unit;
                 if (unit->status & UnitStatus::InBuilding && unit->connected_unit) { // Nullchecking to protect against attacks firing on the same frame as the garrison's death.
                     final_unit = unit->connected_unit;
@@ -1041,7 +1041,7 @@ namespace hooks {
         }
 
         // Split missiles
-        if (weapon_id_splits((WeaponId::Enum)bullet->weapon_id)
+        if (weapon_id_splits_reactive_payload((WeaponId::Enum)bullet->weapon_id)
         &&  bullet->source_unit
         &&  bullet->attack_target.unit
         &&  bullet->attack_target.unit->sprite && bullet->source_unit->sprite) {
