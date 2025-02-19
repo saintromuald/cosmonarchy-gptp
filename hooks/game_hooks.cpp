@@ -2520,20 +2520,26 @@ namespace hooks {
 
         // Gladius - Binding Plasma
         if (unit_ext->timers[TimerGladiusBindingPlasma]) {
-            bw::binding_plasma_tick(unit_ext->values[ValueGladiusBindingPlasmaPlayer], unit, UnitId::ProtossGladius, {});
+            bw::binding_plasma_tick(unit_ext->values[ValueGladiusBindingPlasmaPlayer], unit, UnitId::ProtossGladius, {
+                .timer_id = ExtTimerId::TimerGladiusBindingPlasma,
+                .stack_value_id = ExtValueId::ValueGladiusBindingPlasmaStacks,
+                .player_value_id = ExtValueId::ValueGladiusBindingPlasmaPlayer,
+                .weapon_id = WeaponId::GladiusPlasmaFlurry,
+                .sound = {SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03}
+                });
         } else {
             unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
         }
 
         // Oscilliant - Binding Plasma
         if (unit_ext->timers[TimerOscilliantBindingPlasma]) {
-            BindingPlasmaOptions options = {.timer_id = ExtTimerId::TimerOscilliantBindingPlasma,
-                                            .stack_value_id = ExtValueId::ValueOscilliantBindingPlasmaStacks,
-                                            .player_value_id = ExtValueId::ValueOscilliantBindingPlasmaPlayer,
-                                            .weapon_id = WeaponId::OscilliantRotatingRay,
-                                            .sound_id_first = SoundId::OscilliantWeaponfire01,
-                                            .sound_id_last = SoundId::OscilliantWeaponfire05};
-            bw::binding_plasma_tick(unit_ext->values[ValueOscilliantBindingPlasmaPlayer], unit, UnitId::ProtossOscilliant, options);
+            bw::binding_plasma_tick(unit_ext->values[ValueOscilliantBindingPlasmaPlayer], unit, UnitId::ProtossOscilliant, {
+                .timer_id = ExtTimerId::TimerOscilliantBindingPlasma,
+                .stack_value_id = ExtValueId::ValueOscilliantBindingPlasmaStacks,
+                .player_value_id = ExtValueId::ValueOscilliantBindingPlasmaPlayer,
+                .weapon_id = WeaponId::OscilliantRotatingRay,
+                .sound = {SoundId::OscilliantWeaponfire01, SoundId::OscilliantWeaponfire05}
+                });
         } else {
             unit_ext->values[ValueOscilliantBindingPlasmaStacks] = 0;
         }

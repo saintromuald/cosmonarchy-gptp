@@ -429,17 +429,19 @@ namespace hooks {
                 if (!data.attacker) {
                     break;
                 }
-                if (data.attacker->ext().values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
+                auto& attacker_ext = data.attacker->ext();
+                if (attacker_ext.values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
                     data.damage *= 1.5;
-                    data.attacker->ext().values[ValueCabalistSilentStridesDamage] = 0;
+                    attacker_ext.values[ValueCabalistSilentStridesDamage] = 0;
                 }
             } break;
             case WeaponId::UnarAutonomousRay: {
                 if (!data.attacker) {
                     break;
                 }
-                if (data.attacker->ext().unar_solitary_focus_stacks) {
-                    data.damage += data.attacker->ext().unar_solitary_focus_stacks * 256;
+                auto& attacker_ext = data.attacker->ext();
+                if (attacker_ext.unar_solitary_focus_stacks) {
+                    data.damage += attacker_ext.unar_solitary_focus_stacks * 256;
                 }
             } break;
             case WeaponId::ArchitectDispersiveSalvo: {

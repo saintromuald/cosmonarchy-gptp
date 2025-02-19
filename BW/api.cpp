@@ -2566,7 +2566,7 @@ std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference
     return result;
 }
 
-bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, BindingPlasmaOptions options) {
+bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, const BindingPlasmaOptions& options) {
     UnitExt& victim_ext = victim->ext();
     u32 player = victim_ext.values[options.player_value_id];
     const auto targets = binding_plasma_find_targets(victim->position, victim, player, victim_ext.values[options.stack_value_id]);
@@ -4178,7 +4178,7 @@ void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id) {
     }
 }
 
-void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, BindingPlasmaOptions options) {
+void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, const BindingPlasmaOptions& options) {
     bool has_source = false;
     for (Unit* source : g_unit_search.radial_ex(unit, Protoss::BindingPlasmaSearchRadius, 0, {(u16)source_unit_id})) {
         if (!bw::is_allied_to(source->player, player)) {
@@ -4196,7 +4196,7 @@ void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, Bi
         }
         if (unit_ext.timers[options.timer_id] == 1) {
             if (bw::binding_plasma_proc(unit, source_unit_id, options)) {
-                u32 sound_id = bw::rand_between(options.sound_id_first, options.sound_id_last);
+                u32 sound_id = bw::rand_between(options.sound.first, options.sound.last);
                 helper::play_sound_from_unit(sound_id, unit, 1, 0);
             }
         }

@@ -559,15 +559,6 @@ struct AiTownExt {
     Unit* gas_buildings[GasBuildingsCap];
 };
 
-struct BindingPlasmaOptions {
-    u32 timer_id = ExtTimerId::TimerGladiusBindingPlasma;
-    u32 stack_value_id = ExtValueId::ValueGladiusBindingPlasmaStacks;
-    u32 player_value_id = ExtValueId::ValueGladiusBindingPlasmaPlayer;
-    WeaponId::Enum weapon_id = WeaponId::GladiusPlasmaFlurry;
-    u32 sound_id_first = SoundId::GladiusBindingPlasmaProc01;
-    u32 sound_id_last = SoundId::GladiusBindingPlasmaProc03;
-};
-
 void init_ext_variables();
 void update_ext_variables();
 

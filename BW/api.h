@@ -194,6 +194,14 @@ struct OverlaySettings {
     SoundSet remove_sound = SoundId::None;
 };
 
+struct BindingPlasmaOptions {
+    u32 timer_id;
+    u32 stack_value_id;
+    u32 player_value_id;
+    WeaponId::Enum weapon_id;
+    SoundSet sound;
+};
+
 auto rand_one(const std::ranges::range auto& range, std::source_location src = std::source_location::current()) -> decltype(*std::ranges::begin(range)) {
     return *std::ranges::next(std::ranges::begin(range), bw::rand_between(0, std::ranges::size(range) - 1, src));
 };
@@ -921,8 +929,8 @@ void delete_town(AiTown* ai_town);
 void delete_fow_sprite(Thingy* thingy);
 
 std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks);
-bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, BindingPlasmaOptions options);
-void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, BindingPlasmaOptions options);
+bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, const BindingPlasmaOptions& options);
+void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, const BindingPlasmaOptions& options);
 
 bool player_has_transport(u32 player);
 bool unit_in_combat_within_seconds(Unit* unit, u32 seconds);

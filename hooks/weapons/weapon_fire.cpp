@@ -692,23 +692,20 @@ namespace hooks {
                         if (bw::is_allied_to(unit->player, unit->order_target.unit->player) || unit->player == unit->order_target.unit->player) {
                             ignore_allies = false;
                         }
-                        for (Unit* target : g_unit_search.radial_ex(unit, ProtossVibrance::WeaponRadiusOuter)) {
-                            if (ignore_allies && (bw::is_allied_to(unit->player, target->player) || unit->player == target->player)) {
+                        for (Unit* target : g_unit_search.radial_ex(unit, ProtossVibrance::WeaponRadiusOuter + 8 * 32)) {
+                            if (ignore_allies && (bw::is_allied_to(unit->player, target->player) || target == unit)) {
                                 continue;
                             }
-                            u32 distance = bw::distance_between(unit->position, target->position);
-                            if (distance <= ProtossVibrance::WeaponRadiusOuter && unit->can_attack_target(target)) {
-                                u32 divisor = 4;
-                                if (distance <= ProtossVibrance::WeaponRadiusInner) {
-                                    divisor = 1;
-                                } else if (distance <= ProtossVibrance::WeaponRadiusMedium) {
-                                    divisor = 2;
-                                }
-                                target->damage_with(WeaponId::VibranceSensoryOverload, -1, unit, unit->player, bw::get_angle(unit->position, target->position), divisor);
-                                Thingy* impact_effect = helper::create_thingy(SpriteId::NeutronFlareBlueDamageless, target->position.x, target->position.y, unit->player);
-                                impact_effect->sprite->elevation = target->sprite->elevation + 1;
-                                attacked = true;
+                            const auto distance = unit->get_distance_to_target(target);
+                            if (distance > ProtossVibrance::WeaponRadiusOuter || !unit->can_attack_target(target)) {
+                                continue;
                             }
+
+                            const auto divisor = distance <= ProtossVibrance::WeaponRadiusInner ? 1 : distance <= ProtossVibrance::WeaponRadiusMedium ? 2 : 4;
+                            target->damage_with(WeaponId::VibranceSensoryOverload, -1, unit, unit->player, bw::get_angle(unit->position, target->position), divisor);
+                            auto impact_effect = helper::create_thingy(SpriteId::NeutronFlareBlueDamageless, target->position.x, target->position.y, unit->player);
+                            impact_effect->sprite->elevation = target->sprite->elevation + 1;
+                            attacked = true;
                         }
                         if (attacked) {
                             apply_weapon_cooldown(unit, weapon_id);
