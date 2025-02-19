@@ -688,12 +688,8 @@ namespace hooks {
                     } break;
                     case WeaponId::VibranceSensoryOverload: {
                         bool attacked = false;
-                        bool ignore_allies = true;
-                        if (bw::is_allied_to(unit->player, unit->order_target.unit->player) || unit->player == unit->order_target.unit->player) {
-                            ignore_allies = false;
-                        }
                         for (Unit* target : g_unit_search.radial_ex(unit, ProtossVibrance::WeaponRadiusOuter + 8 * 32)) {
-                            if (ignore_allies && (bw::is_allied_to(unit->player, target->player) || target == unit)) {
+                            if (target != unit->order_target.unit && bw::is_allied_to(unit->player, target->player)) {
                                 continue;
                             }
                             const auto distance = unit->get_distance_to_target(target);

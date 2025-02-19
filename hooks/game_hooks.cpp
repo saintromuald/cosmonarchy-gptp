@@ -2526,7 +2526,7 @@ namespace hooks {
                 .player_value_id = ExtValueId::ValueGladiusBindingPlasmaPlayer,
                 .weapon_id = WeaponId::GladiusPlasmaFlurry,
                 .sound = {SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03}
-                });
+            });
         } else {
             unit_ext->values[ValueGladiusBindingPlasmaStacks] = 0;
         }
@@ -2539,7 +2539,7 @@ namespace hooks {
                 .player_value_id = ExtValueId::ValueOscilliantBindingPlasmaPlayer,
                 .weapon_id = WeaponId::OscilliantRotatingRay,
                 .sound = {SoundId::OscilliantWeaponfire01, SoundId::OscilliantWeaponfire05}
-                });
+            });
         } else {
             unit_ext->values[ValueOscilliantBindingPlasmaStacks] = 0;
         }
