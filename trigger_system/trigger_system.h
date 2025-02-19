@@ -146,6 +146,7 @@ enum class Advisor : u8 {
 
     // Faction-specific
     Artemis,
+    GoldenRepublic,
 
     Count,
 };
@@ -171,6 +172,7 @@ static const char* advisor_names[]{
 
     // Faction-specific
     "Artemis",
+    "Golden_Republic",
 };
 static_assert(std::size(advisor_names) == (size_t)Advisor::Count);
 
