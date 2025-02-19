@@ -2446,6 +2446,12 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ProtossAshguard: {
+                                    if (current_button->icon_id == IconId::LegEnhancements    // Vengeful March
+                                    ||  current_button->icon_id == IconId::RechargeShields) { // Indomitable Annex
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ProtossHierophant:
                                 case UnitId::ProtossEpigraph: {
                                     if (current_button->icon_id == IconId::PhotonCannonWeapon			// Signify: Cowardice
@@ -2526,7 +2532,8 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::ProtossSimulacrum: {
+                                case UnitId::ProtossSimulacrum:
+                                case UnitId::ProtossRenesair: {
                                     if (current_button->icon_id == IconId::ApialSensors) { // Autovitality
                                         current_button_state = Button_State::Enabled;
                                     }

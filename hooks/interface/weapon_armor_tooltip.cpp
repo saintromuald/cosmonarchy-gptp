@@ -428,6 +428,7 @@ namespace hooks {
 		add_status(statuses, "Concurring Chorus", unit_ext->unit_vectors[UnitVectorManifolds].size(), 0);
 		add_status(statuses, "Adaptive Amitosis", unit_ext->unit_vectors[UnitVectorKazitriths].size() != 0, 0);
 		add_status(statuses, "Lucilleri Pheremones", unit_ext->timers[TimerLucilleriPheremones], 1);
+		add_status(statuses, "Solitary Focus", unit_ext->unar_solitary_focus_stacks, 4);
 
 		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
 		add_status(statuses, "Decided Reach", unit_ext->values[ValueTriggerWeaponRangeBaseAmount] / 32);

@@ -1990,38 +1990,30 @@ namespace hooks {
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossGrandLibrary:
-            {
-                switch (unit_id)
-                {
+            case UnitId::ProtossGrandLibrary: {
+                switch (unit_id) {
                     case UnitId::ProtossAmaranth:
                     case UnitId::ProtossHerald:
                     case UnitId::ProtossAtreus:
-                    case UnitId::ProtossCantavis:
-                    {
+                    case UnitId::ProtossCantavis: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossRogueGallery:
-            {
-                switch (unit_id)
-                {
+            case UnitId::ProtossRogueGallery: {
+                switch (unit_id) {
                     case UnitId::ProtossVagrant:
                     case UnitId::ProtossCabalist:
                     case UnitId::ProtossCharlatan:
-                    case UnitId::ProtossBarghest:
-                    {
+                    case UnitId::ProtossBarghest: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossProstrationStage:
-            {
-                switch (unit_id)
-                {
+            case UnitId::ProtossProstrationStage: {
+                switch (unit_id) {
                     case UnitId::ProtossPariah:
                     case UnitId::ProtossPotentate:
                     case UnitId::ProtossSycophant:
@@ -2032,10 +2024,8 @@ namespace hooks {
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossAncestralArchives:
-            {
-                switch (unit_id)
-                {
+            case UnitId::ProtossAncestralArchives: {
+                switch (unit_id) {
                     case UnitId::ProtossArchon:
                     case UnitId::ProtossOptecton:
                     case UnitId::ProtossPatriarch:
@@ -2045,13 +2035,10 @@ namespace hooks {
                     return TECH_HIDDEN;
                 }
             } break;
-            case UnitId::ProtossHallOfHeretics:
-            {
-                switch (unit_id)
-                {
+            case UnitId::ProtossHallOfHeretics: {
+                switch (unit_id) {
                     case UnitId::ProtossApostate:
-                    case UnitId::ProtossAugur:
-                    {
+                    case UnitId::ProtossAugur: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;

@@ -2532,9 +2532,7 @@ namespace hooks {
             unit_ext->values[ValueOscilliantBindingPlasmaStacks] = 0;
         }
 
-        bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] >= 1, {.play_death = true});
-
-        bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerVengefulMarch] >= 1, {.play_death = true});
+        bw::set_unit_overlay(unit, { ImageId::Avenge_Small, ImageId::Avenge_XLarge }, unit_ext->timers[TimerAvenge] >= 1 || unit_ext->timers[TimerVengefulMarch] >= 1, {.play_death = true});
 
         bw::set_unit_overlay(unit, { ImageId::Ascension_Small, ImageId::Ascension_XLarge }, unit_ext->timers[TimerAscend] >= 1, {.play_death = true});
 

@@ -3973,6 +3973,7 @@ u32 get_manual_weapon_id_weaponfire_sound(u32 weapon_id) {
         case WeaponId::HierophantPhaseSignifier:	        return bw::rand_between(SoundId::HierophantWeaponfire01, SoundId::HierophantWeaponfire02);
         case WeaponId::AshguardPhaseCremator:	            return bw::rand_between(SoundId::AshguardWeaponfire01, SoundId::AshguardWeaponfire05);
         case WeaponId::CharlatanFerventBlaster:	            return bw::rand_between(SoundId::CharlatanWeaponfire01, SoundId::CharlatanWeaponfire03);
+        case WeaponId::OscilliantRotatingRay:	            return bw::rand_between(SoundId::OscilliantWeaponfire01, SoundId::OscilliantWeaponfire05);
         case WeaponId::UnarAutonomousRay:	                return bw::rand_between(SoundId::UnarWeaponfire01, SoundId::UnarWeaponfire05);
         case WeaponId::VibranceSensoryOverload:	            return bw::rand_between(SoundId::VibranceWeaponfire01, SoundId::VibranceWeaponfire05);
         case WeaponId::DemiurgeGalacticWeaver:	            return bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
@@ -4200,14 +4201,20 @@ void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id) {
 void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id) {
     u32 timer_id = 0;
     u32 stack_value_id = 0;
+    u32 sound_id_first = 0;
+    u32 sound_id_last = 0;
     switch (source_unit_id) {
         case UnitId::ProtossOscilliant: {
             timer_id = ExtTimerId::TimerOscilliantBindingPlasma;
             stack_value_id = ExtValueId::ValueOscilliantBindingPlasmaStacks;
+            sound_id_first = SoundId::OscilliantWeaponfire01;
+            sound_id_last  = SoundId::OscilliantWeaponfire05;
         } break;
         case UnitId::ProtossGladius: {
             timer_id = ExtTimerId::TimerGladiusBindingPlasma;
             stack_value_id = ExtValueId::ValueGladiusBindingPlasmaStacks;
+            sound_id_first = SoundId::GladiusBindingPlasmaProc01;
+            sound_id_last  = SoundId::GladiusBindingPlasmaProc03;
         } break;
     }
 
@@ -4228,7 +4235,7 @@ void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id) {
         }
         if (unit_ext.timers[timer_id] == 1) {
             if (bw::binding_plasma_proc(unit, source_unit_id)) {
-                u32 sound_id = bw::rand_between(SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03);
+                u32 sound_id = bw::rand_between(sound_id_first, sound_id_last);
                 helper::play_sound_from_unit(sound_id, unit, 1, 0);
             }
         }

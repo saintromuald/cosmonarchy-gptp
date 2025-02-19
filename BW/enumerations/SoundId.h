@@ -2155,5 +2155,10 @@ namespace SoundId {
         GoldenRepublicAdvisor_NoVespene03					= 3427,
         GoldenRepublicAdvisor_NoVespene04					= 3428,
         GoldenRepublicAdvisor_Warp01						= 3429,
+        OscilliantWeaponfire01                              = 3430,
+        OscilliantWeaponfire02                              = 3431,
+        OscilliantWeaponfire03                              = 3432,
+        OscilliantWeaponfire04                              = 3433,
+        OscilliantWeaponfire05                              = 3434,
     };
 }
