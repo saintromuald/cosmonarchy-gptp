@@ -754,7 +754,7 @@ namespace hooks {
                 } break;
                 case UnitId::ZergZethrokor:
                 case UnitId::ZergQuazilisk: {
-                    if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake)|| player_has_unit_id(player_id, UnitId::ZergVornathPond) || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool)) {
+                    if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_unit_id(player_id, UnitId::ZergVornathPond) || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool)) {
                         return true;
                     }
                 } break;
