@@ -4156,7 +4156,6 @@ void zap_overlay(Unit* unit) {
 
         x_offset = Clamp(x_offset, -128, 127);
         y_offset = Clamp(y_offset, -128, 127);
-
         Unit* overlay_unit = unit;
         if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
             overlay_unit = unit->subunit;
@@ -4196,8 +4195,7 @@ void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, co
         }
         if (unit_ext.timers[options.timer_id] == 1) {
             if (bw::binding_plasma_proc(unit, source_unit_id, options)) {
-                u32 sound_id = bw::rand_between(options.sound.first, options.sound.last);
-                helper::play_sound_from_unit(sound_id, unit, 1, 0);
+                bw::play_sound(options.sound, unit->position);
             }
         }
     } else {
