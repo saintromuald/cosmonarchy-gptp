@@ -2160,5 +2160,12 @@ namespace SoundId {
         OscilliantWeaponfire03                              = 3432,
         OscilliantWeaponfire04                              = 3433,
         OscilliantWeaponfire05                              = 3434,
+        AspirantReady01                                     = 3435,
+        AspirantReady02                                     = 3436,
+        AspirantReady03                                     = 3437,
+        AspirantOrderAggressive01                           = 3438,
+        AspirantOrderAggressive02                           = 3439,
+        AspirantOrderAggressive03                           = 3440,
+        AspirantOrderAggressive04                           = 3441,
     };
 }

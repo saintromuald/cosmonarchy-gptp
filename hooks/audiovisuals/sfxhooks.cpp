@@ -80,6 +80,9 @@ namespace hooks {
                 case UnitId::TerranStriga: {
                     return helper::get_random_unit_response(SoundId::StrigaOrderAggressive01, SoundId::StrigaOrderAggressive04);
                 } break;
+                case UnitId::TerranAspirant: {
+                    return helper::get_random_unit_response(SoundId::AspirantOrderAggressive01, SoundId::AspirantOrderAggressive04);
+                } break;
                 case UnitId::TerranBlackjack: {
                     return helper::get_random_unit_response(SoundId::BlackjackAggressive01, SoundId::BlackjackAggressive04);
                 } break;
@@ -237,6 +240,9 @@ namespace hooks {
                     } break;
                     case UnitId::TerranStriga: {
                         ready_sound = helper::get_random_unit_response(SoundId::StrigaReady01, SoundId::StrigaReady03);
+                    } break;
+                    case UnitId::TerranAspirant: {
+                        ready_sound = helper::get_random_unit_response(SoundId::AspirantReady01, SoundId::AspirantReady03);
                     } break;
                     case UnitId::TerranBlackjack: {
                         ready_sound = helper::get_random_unit_response(SoundId::BlackjackReady01, SoundId::BlackjackReady03);
