@@ -419,7 +419,7 @@ static void tick_effect(EffectField& effect) {
                 assert(targets.size() <= effect.intervals);
                 for (Unit* target : targets) {
                     bw::artificial_bullet_from(WeaponId::OscilliantRotatingRay, effect.player, source, target, target->position, effect.position);
-                    bw::play_sound({SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03});
+                    bw::play_sound({SoundId::OscilliantWeaponfire01, SoundId::OscilliantWeaponfire05}, effect.position);
                     effect.intervals--;
                 }
             } break;
@@ -449,7 +449,7 @@ static void tick_effect(EffectField& effect) {
                 assert(targets.size() <= effect.intervals);
                 for (Unit* target : targets) {
                     bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, source, target, target->position, effect.position);
-                    bw::play_sound({SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03});
+                    bw::play_sound({SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03}, effect.position);
                     effect.intervals--;
                 }
             } break;
