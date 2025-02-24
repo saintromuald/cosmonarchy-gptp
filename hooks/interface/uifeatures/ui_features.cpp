@@ -1137,7 +1137,7 @@ namespace hooks {
 		const char* cancel_string = g_stat_txt_buffer.get_string(802 + active_unit->get_race()); // Cancel 
 		const char* name = helper::get_unit_name_stat_string(user->id);
 		char dest[128];
-		sprintf_s(dest, 128, cancel_string, name); // Assigns to 'dest' the first letter of the string instead of the whole string, causing a crash. -Pr0nogo
+		sprintf_s(dest, 128, cancel_string, name);
 		s32 bounds_top = 0;
 		s32 bounds_left = 0;
 		if (dialog->control_type) {
