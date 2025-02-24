@@ -383,13 +383,12 @@ void dialog_music_fade(u32 music_id) { // 004A6310
 // Hooked to investigate adding a rescue unit crig action. -Pr0nogo
 void orders_rescue_passive(Unit* unit) { // 004A1EF0
     if (!unit->main_order_timer) {
-        Sprite* sprite = unit->sprite;
         unit->main_order_timer = 1;
-        u32 pos_x = sprite->position.x;
-        u32 pos_y = sprite->position.y;
+        u32 pos_x = unit->position.x;
+        u32 pos_y = unit->position.y;
         
         Unit* rescuer = g_unit_search
-            .radial(unit->position, 64)
+            .rect({units_dat::unit_bounds[unit->id].left + 32, units_dat::unit_bounds[unit->id].top + 32, units_dat::unit_bounds[unit->id].right + 32, units_dat::unit_bounds[unit->id].bottom + 32})
             .filter_by([](Unit* unit) {
                 return g_player_table[unit->player].type == PlayerType::Human;
             })
@@ -427,9 +426,6 @@ void orders_rescue_passive(Unit* unit) { // 004A1EF0
             // Audiovisuals were here -- now handled in rescue_unit
             bw::refresh_console();
         }
-        u32 temp_array = g_temp_units_list_arrays_counts_list_last_index[g_temp_units_list_arrays_counts_list_last_index[0]];
-        --g_temp_units_list_arrays_counts_list_last_index[0];
-        *g_temp_units_list_current_array_count = temp_array;
     }
 }
 
