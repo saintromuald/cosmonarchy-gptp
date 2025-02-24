@@ -611,4 +611,25 @@ namespace hooks {
 			}
 		}
 	}
+} // namespace hooks
+
+namespace bw {
+// Done like so because the GPTP hook is nonstandard. -Pr0nogo
+void statdata_user_interact_internal(BinDlg* dialog) {
+	GuiOverlay* gui = (GuiOverlay*)dialog->user;
+	switch (gui->overlay_type) {
+		case 0: {
+			helper::create_context_help_from_dialog(dialog, hooks::get_weapon_tooltip_string((WeaponId::Enum)(gui->id & 255), *g_active_portrait_unit));
+		} break;
+		case 1: {
+			helper::create_context_help_from_dialog(dialog, hooks::get_armor_tooltip_string(*g_active_portrait_unit));
+		} break;
+		case 2: {
+			helper::create_context_help_from_dialog(dialog, hooks::get_shield_tooltip_string(*g_active_portrait_unit));
+		} break;
+		case 3: {
+			helper::create_context_help_from_dialog(dialog, hooks::get_special_tooltip_string(gui->id, *g_active_portrait_unit));
+		} break;
+	}
 }
+} // namespace bw

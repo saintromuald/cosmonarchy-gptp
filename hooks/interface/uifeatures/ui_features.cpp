@@ -11,6 +11,7 @@
 #include "trigger_system/trigger_system.h"
 #include <hooks\interface\minimap.h>
 #include "Game.h"
+#include "hooks\interface\weapon_armor_tooltip.h"
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
 static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;
@@ -1147,8 +1148,54 @@ namespace hooks {
 		helper::create_context_tooltip(bounds_left + dialog->bounds.right, bounds_top + dialog->bounds.top, dest);
 	}
 
+	// Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
+	void statdata_mouseover_interact(BinDlg* main_dialog, BinDlg* secondary_dialog) { // 00457CE0
+		if (!(*g_active_portrait_unit) || !main_dialog || secondary_dialog == main_dialog) {
+			helper::refresh_selection_screen();
+			return;
+		}
+
+		u16 index = main_dialog->index;
+		if (g_is_in_replay) {
+			if (index < 9 || index > 12) {
+				helper::refresh_selection_screen();
+				return;
+			}
+		}
+		// Don't yet have an enum for index here.
+		switch (index) {
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 17: {
+				helper::draw_cancel_unit_context(main_dialog);
+			} break;
+			case 9:
+			case 10:
+			case 11:
+			case 12: {
+				bw::statdata_user_interact_internal(main_dialog);
+			} break;
+			case 15: {
+				helper::draw_cancel_upgrade_context(main_dialog);
+			} break;
+			default: {
+				if (index < 18 || index > 32) {
+					if (index < 33 || index > 44) {
+						helper::refresh_selection_screen();
+					} else {
+						helper::create_context_from_dialog(main_dialog, g_stat_txt_buffer.get_string(808)); // Unload unit
+					}
+				} else {
+					helper::draw_unload_unit_context(main_dialog);
+				}
+			} break;
+		}
+	}
+
 	// Eventually, hook the following to make stat_txt.tbl a .txt:
-	//		00457CE0 statdata_mouseover_interact
 	//		004A5110 draw_stat_lb_buttons_context
 	//		004C3780 destroy_game_hud
 	//		004C3A20 load_stat_txt
