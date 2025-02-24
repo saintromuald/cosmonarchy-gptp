@@ -284,6 +284,7 @@ bool unit_id_is_psi_provider(u16 unit_id) {
 
 bool unit_id_can_do_controlled_demolition(u32 unit_id) {
     return units_dat::base_property[unit_id] & UnitProperty::Addon
+        || unit_id == UnitId::TerranSupplyDepot
         || unit_id == UnitId::TerranSieve
         || unit_id == UnitId::TerranReservoir
         || unit_id == UnitId::TerranWellbore
