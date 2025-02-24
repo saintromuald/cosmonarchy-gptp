@@ -9,12 +9,8 @@ namespace hooks {
         return unit_id_is_psi_provider(unit->id);
     }
 
-    // Conditions on which the power field should be shown.
     bool unit_can_show_power_for(Unit* unit, u32 player) {
         if (player > PLAYABLE_PLAYER_COUNT) {
-            return true;
-        }
-        if (bw::player_is_witness(player) || bw::in_replay()) {
             return true;
         }
         if (!bw::is_allied_to(unit->player, player)) {
@@ -64,18 +60,16 @@ namespace hooks {
         if (!unit_can_show_power_for(unit, g_local_nation_id)) {
             unit_ext.power_aura->flags |= SpriteFlags::Hidden;
             helper::refresh_all_visible_images_at_screen_position(unit_ext.power_aura, 0);
-            return true;
-        }
-        if (g_psi_aura_is_drawn) {
+        } else if (g_psi_aura_is_drawn) {
             helper::refresh_all_visible_images_at_screen_position(unit_ext.power_aura, *g_player_visions);
-            return true;
-        }
-        if (!(unit->sprite->flags & SpriteFlags::Selected) ) {
+        } else if (!(unit->sprite->flags & SpriteFlags::Selected)) {
             unit_ext.power_aura->flags |= SpriteFlags::Hidden;
             helper::refresh_all_visible_images_at_screen_position(unit_ext.power_aura, 0);
-            return true;
+        } else if (bw::in_replay() || bw::player_is_witness(g_local_nation_id)) {
+            create_pylon_aura_witness(unit->player);
+        } else {
+            helper::create_pylon_aura();
         }
-        helper::create_pylon_aura();
         return true;
     }
 
@@ -83,11 +77,23 @@ namespace hooks {
     void __cdecl create_pylon_aura() { // 00493640
         for (Unit* unit = *g_first_psi_field_provider; unit; unit = unit->ext().psi_link.next) {
             UnitExt& unit_ext = unit->ext();
-            if (!g_is_in_replay && unit_can_show_power_for(unit, g_local_nation_id) && (unit_ext.power_aura || add_psi_field_sprite(unit))) {
+            if (unit_can_show_power_for(unit, g_local_nation_id) && (unit_ext.power_aura || add_psi_field_sprite(unit))) {
                 unit_ext.power_aura->flags &= ~SpriteFlags::Hidden;
                 helper::refresh_all_visible_images_at_screen_position(unit_ext.power_aura, *g_player_visions);
             }
         }
+        g_psi_aura_is_drawn = true;
+    }
+
+    void __cdecl create_pylon_aura_witness(u8 player) {
+        for (Unit* unit = *g_first_psi_field_provider; unit; unit = unit->ext().psi_link.next) {
+            UnitExt& unit_ext = unit->ext();
+            if (unit_can_show_power_for(unit, player) && (unit_ext.power_aura || add_psi_field_sprite(unit))) {
+                unit_ext.power_aura->flags &= ~SpriteFlags::Hidden;
+                helper::refresh_all_visible_images_at_screen_position(unit_ext.power_aura, *g_player_visions);
+            }
+        }
+        g_psi_aura_is_drawn = true;
     }
 
     // Hooked to move psi provider to unitext. -Pr0nogo
@@ -99,7 +105,7 @@ namespace hooks {
                 helper::refresh_all_visible_images_at_screen_pos(unit_ext.power_aura, 0);
             }
         }
-        g_psi_aura_is_drawn = 0;
+        g_psi_aura_is_drawn = false;
     }
 
     // Hooked to add more cases. -Pr0nogo
