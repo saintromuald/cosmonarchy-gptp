@@ -627,20 +627,16 @@ u32 get_loaded_space_amount(Unit* transport) { // 004E7170
 }
 
 // Hooked to extend transports. -Pr0nogo
-void unload_unit_ext(Unit* cargo, u32 transport_died) // 004E7E10
-{
-    u32 cargo_status = cargo->status;
-    Unit* cargo_subunit = 0;
-    if (cargo_status & UnitStatus::InTransport) {
+void unload_unit_ext(Unit* cargo, u32 transport_died) { // 004E7E10
+    if (cargo->is_in_transport()) {
         if (transport_died && !cargo->connected_unit) {
-            cargo->status = cargo_status & 0xFFFFFFBF;
+            cargo->status &= 0xFFFFFFBF;
             helper::toggle_unit_pathing_properties(cargo);
-            cargo_subunit = cargo->subunit;
-            if (!cargo_subunit) {
+            if (!cargo->subunit) {
                 return;
             }
-            if (units_dat::base_property[cargo_subunit->id] & UnitProperty::Subunit) {
-                helper::toggle_unit_pathing_properties(cargo_subunit);
+            if (cargo->subunit->is_subunit()) {
+                helper::toggle_unit_pathing_properties(cargo->subunit);
             }
             return;
         }
@@ -673,15 +669,11 @@ void unload_unit_ext(Unit* cargo, u32 transport_died) // 004E7E10
             iterations = iterations_2;
         }
         connected_unit_ext->loaded_unit[iterations].value = 0;
-        u32 cargo_status_something = cargo->status & 0xFFFFFFBF;
         cargo->connected_unit = 0;
-        cargo->status = cargo_status_something;
+        cargo->status &= 0xFFFFFFBF;
         helper::toggle_unit_pathing_properties(cargo);
-        cargo_subunit = cargo->subunit;
-        if (cargo_subunit) {
-            if (units_dat::base_property[cargo_subunit->id] & UnitProperty::Subunit) {
-                helper::toggle_unit_pathing_properties(cargo_subunit);
-            }
+        if (cargo->subunit && cargo->subunit->is_subunit()) {
+            helper::toggle_unit_pathing_properties(cargo->subunit);
             return;
         }
     }
