@@ -15602,4 +15602,26 @@ namespace helper {
             POPAD
         }
     }
+
+    s8 remove_selection_circle_and_hp_bar(Sprite* sprite) {
+        const u32 func_address = 0x00497620;
+        static s8 result;
+        __asm {
+            PUSHAD
+            MOV EDI, sprite
+            CALL func_address
+            MOV result, AL
+            POPAD
+        }
+        return result;
+    }
+
+    void hide_all_psi_fields() {
+        const u32 func_address = 0x00494100;
+        __asm {
+            PUSHAD
+            CALL func_address
+            POPAD
+        }
+    }
 }

@@ -3,6 +3,7 @@
 #include "hooks/rally_point.h"
 #include "trigger_system/trigger_system.h"
 #include "config.h"
+#include "hooks/psi_field.h"
 
 bool unit_is_owned_by_current_player_new(Unit* unit) {
     if (!g_is_in_replay && !g_globals->players[g_local_nation_id].witness_mode) {
@@ -564,10 +565,7 @@ namespace hooks {
                 return;
             }
 
-            if (sorted_units != 1
-            || !g_is_keycode_used[18]
-            || !helper::select_single_unit_from_id(helper::unit_to_unit_id(new_units[0])))
-            {
+            if (sorted_units != 1 || !g_is_keycode_used[18] || !helper::select_single_unit_from_id(helper::unit_to_unit_id(new_units[0]))) {
                 helper::select_multiple_units_from_unit_list((u32)sorted_units, new_units, 1, 1);
                 if (sorted_units != 1) {
                     return;
@@ -579,36 +577,36 @@ namespace hooks {
     // Hooked to help debug hpbars.cpp hooks. -Pr0nogo
     void create_unit_selection(Unit* unit, char index) { // 004E6180
         Sprite* sprite = unit->sprite;
-        if (units_dat::base_property[unit->id] & UnitStatus::Invincible) {
+        if (units_dat::base_property[unit->id] & UnitProperty::Invincible) {
             if (!(sprite->flags & SpriteFlags::DrawSelCircle)) {
-                if (helper::create_selection_circle(sprite, g_selection_circle_color[unit->player], ImageId::SelectionCircleDashed_22pixels)) {
+                if (helper::create_selection_circle(sprite, g_selection_circle_color[unit->player], ImageId::SelectionCircle_22pixels)) {
                     sprite->flags |= SpriteFlags::DrawSelCircle;
                 }
             }
             Sprite* sprite_copy = unit->sprite;
             sprite_copy->flags |= SpriteFlags::Selected;
             sprite_copy->selection_index = index;
-        } else {
-            u8 sprite_id = g_selection_circle_color[unit->player];
-            u8 sprite_flags = sprite->flags;
-            if (!(sprite_flags & SpriteFlags::Selected)) {
-                sprite->selection_index = index;
-                sprite->flags = sprite_flags | SpriteFlags::Selected;
-                helper::create_healthbar(sprite);
-                if (!(sprite->flags & SpriteFlags::DrawSelCircle))
-                {
-                    if (helper::create_selection_circle(sprite, sprite_id, ImageId::SelectionCircleDashed_22pixels))
-                    {
-                        sprite->flags |= SpriteFlags::DrawSelCircle;
-                    }
+            return;
+        }
+
+        u8 sprite_id = g_selection_circle_color[unit->player];
+        u8 sprite_flags = sprite->flags;
+        if (!(sprite_flags & SpriteFlags::Selected)) {
+            sprite->selection_index = index;
+            sprite->flags = sprite_flags | SpriteFlags::Selected;
+            helper::create_healthbar(sprite);
+            if (!(sprite->flags & SpriteFlags::DrawSelCircle)) {
+                if (helper::create_selection_circle(sprite, sprite_id, ImageId::SelectionCircle_22pixels)) {
+                    sprite->flags |= SpriteFlags::DrawSelCircle;
                 }
             }
-            if (!g_is_in_replay && unit->player == g_local_nation_id) {
-                if (unit->status & UnitStatus::Completed) {
-                    if (unit_id_is_power_generator(unit->id)) {
-                        helper::create_pylon_aura();
-                    }
-                }
+        }
+
+        if (unit->is_completed() && unit_id_is_power_generator(unit->id)) {
+            if (bw::in_replay() || bw::player_is_witness(g_local_nation_id)) {
+                create_pylon_aura_witness(unit->player);
+            } else if (unit_can_show_power_for(unit, g_local_nation_id)) {
+                helper::create_pylon_aura();
             }
         }
     }
@@ -1309,6 +1307,21 @@ namespace hooks {
                 }
 
                 current_dialog = current_dialog->next;
+            }
+        }
+    }
+
+    // Hooked to change power preview handling. -Pr0nogo
+    void destroy_unit_selection(Unit* unit) { // 004E6290
+        if (units_dat::base_property[unit->id] & UnitProperty::Invincible) {
+            helper::remove_selection_circle(unit->sprite);
+            unit->sprite->flags &= ~SpriteFlags::Selected;
+            return;
+        }
+        helper::remove_selection_circle_and_hp_bar(unit->sprite);
+        if (unit->is_completed() && unit_id_is_power_generator(unit->id)) {
+            if (bw::in_replay() || bw::player_is_witness(g_local_nation_id) || unit_can_show_power_for(unit, g_local_nation_id)) {
+                helper::hide_all_psi_fields();
             }
         }
     }

@@ -319,6 +319,19 @@ namespace
         }
     }
 
+    void __declspec(naked) destroy_unit_selection_wrapper() { // 004E6290
+        static Unit* unit;
+        __asm {
+            MOV unit, EAX
+            PUSHAD
+        }
+        hooks::destroy_unit_selection(unit);
+        __asm {
+            POPAD
+            RETN
+        }
+    }
+
     void __declspec(naked) set_control_group_partial() { // 00496766
         static const u32 continue_address = 0x0049676D;
         static u8 slot;
@@ -377,16 +390,14 @@ namespace
     }
 }
 
-namespace hooks
-{
-    void inject_selection_hooks()
-    {
+namespace hooks {
+    void inject_selection_hooks() {
         jump_patch(unit_selection_click_wrapper,					0x0046FB40, 27);
         jump_patch(sort_all_units_wrapper,							0x0046F0F0, 1);
         jump_patch(select_multiple_units_from_unit_list_wrapper,	0x0049AEF0, 2);
         jump_patch(create_new_unit_selections_from_list_wrapper,	0x0049AE40, 0);
         jump_patch(get_selected_units_in_box,						0x0046FA40, 1);
-    //	jump_patch(create_unit_selection_wrapper,					0x004E6180, 0);
+    	jump_patch(create_unit_selection_wrapper,					0x004E6180, 0);
     //	jump_patch(create_selection_circle_wrapper,					0x004D7070, 5);
         jump_patch(is_human_player_on_same_team_wrapper,			0x0049A110, 1);
         jump_patch(illegal_team_check_wrapper,						0x00485710, 0);
@@ -399,6 +410,7 @@ namespace hooks
     //	jump_patch(create_all_selection_circles_wrapper,			0x00499A60, 1); // Not finished
     //	jump_patch(update_selected_unit_data_wrapper,				0x004C38B0, 3); // Not working
     //	jump_patch(set_control_group_partial,						0x00496766, 2); // Unfinished -Veeq7
+        jump_patch(destroy_unit_selection_wrapper,                  0x004E6290, 2);
         call_patch(status_screen_button_wrapper,					0x00458450);	//There's only 1 reference to this function, so avoid the extra jump by hooking it with a direct call to the wrapper instead.
         call_patch(generate_group_wireframes_wrapper,				0x004581CE);
     }

@@ -1806,4 +1806,6 @@ namespace helper {
     u32 update_building_placement_state_units(Unit* builder, u32 tile_x, u32 tile_y, u8 player, u16 unit_id, Point16 pos, u32 placement_state_entry, bool is_not_addon, bool also_invisible, b32 without_vision); // 00473720
 
     void orders_init_psi_provider(Unit* unit);                                                       // 00493F70
+    s8 remove_selection_circle_and_hp_bar(Sprite* sprite);                                           // 00497620
+    void hide_all_psi_fields();                                                                      // 00494100
 }

@@ -16,6 +16,7 @@ namespace hooks {
     void hide_all_psi_fields();								        // 00494100
     void create_all_power_auras();                                  // 00494030
     void orders_init_psi_provider(Unit* unit);                      // 00493F70
+    void create_pylon_aura_witness(u8 player);
 
     // This function must be called once per frame in next_frame().
     // This uses canMakePsiField() and isReadyToMakePsiField() internally.
