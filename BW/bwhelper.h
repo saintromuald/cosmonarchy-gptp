@@ -1808,4 +1808,10 @@ namespace helper {
     void orders_init_psi_provider(Unit* unit);                                                       // 00493F70
     s8 remove_selection_circle_and_hp_bar(Sprite* sprite);                                           // 00497620
     void hide_all_psi_fields();                                                                      // 00494100
+
+    void draw_cancel_unit_context(BinDlg* dialog);                                                   // 00457B10
+    void statdata_user_interact(u32 dialog_index, BinDlg* dialog);                                   // 004576A0
+    void draw_cancel_upgrade_context(BinDlg* dialog);                                                // 004575A0
+    void create_context_from_dialog(BinDlg* dialog, const char* text);                               // 00457350
+    void draw_unload_unit_context(BinDlg* dialog);                                                   // 00457C20
 }

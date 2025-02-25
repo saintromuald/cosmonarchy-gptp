@@ -15624,4 +15624,56 @@ namespace helper {
             POPAD
         }
     }
+
+    void draw_cancel_unit_context(BinDlg* dialog) {
+        const u32 func_address = 0x00457B10;
+        __asm {
+            PUSHAD
+            MOV EBX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void statdata_user_interact(u32 dialog_index, BinDlg* dialog) {
+        const u32 func_address = 0x004576A0;
+        __asm {
+            PUSHAD
+            PUSH dialog
+            MOV ECX, dialog_index
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void draw_cancel_upgrade_context(BinDlg* dialog) {
+        const u32 func_address = 0x004575A0;
+        __asm {
+            PUSHAD
+            MOV EBX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void create_context_from_dialog(BinDlg* dialog, const char* text) {
+        const u32 func_address = 0x00457350;
+        __asm {
+            PUSHAD
+            PUSH text
+            MOV EAX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void draw_unload_unit_context(BinDlg* dialog) {
+        const u32 func_address = 0x00457C20;
+        __asm {
+            PUSHAD
+            MOV EBX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
 }
