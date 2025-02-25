@@ -166,6 +166,10 @@ inline constexpr s32 ShroudOfAdunRange = 4 * 32;
 inline constexpr s32 StasisFieldTimer = 23; // roughly 8 seconds
 }
 
+namespace ProtossSolarion {
+inline constexpr s32 FighterRange = 6 * 32;
+}
+
 namespace ProtossStarSovereign {
 inline constexpr s32 AIAbilSeekRange = 6 * 32;
 inline constexpr s32 AIAbilMinEnemyHealth = 2000;

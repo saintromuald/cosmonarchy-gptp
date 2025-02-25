@@ -537,7 +537,7 @@ namespace hooks {
     // Ported from GPTP to change the Solarion-Steward launch timer. -Pr0nogo
     // Used when unit->main_order_id is OrderId::Carrier, OrderId::CarrierFight or OrderId::HoldPositionSolarion
     void orders_carrier_idle(Unit* unit) { // 004666A0
-        if (helper::order_hangar_unit(unit, 0, 6 * 32)) {
+        if (helper::order_hangar_unit(unit, ProtossSolarion::FighterRange, 0)) {
             Unit* out_unit = release_fighter(unit);
             if (out_unit) {
                 // Originally set shields to full.
