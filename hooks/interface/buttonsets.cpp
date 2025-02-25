@@ -2060,6 +2060,12 @@ namespace hooks {
                             if (bw::client_selection_unit_id_count(unit->id) != g_client_selection_count) {
                                 current_button_state = Button_State::Invisible;
                             }
+                            if (unit->is_detector()) {
+                                if (current_button->icon_id == IconId::OcularImplants) { // Detector
+                                    current_button_state = unit->is_building() && unit->is_in_air() ? Button_State::Invisible : Button_State::Enabled;
+                                }
+                            }
+
                             switch (unit->id) {
                                 // GLOBAL \\
                                 
