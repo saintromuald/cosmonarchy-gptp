@@ -1589,7 +1589,8 @@ namespace hooks {
                             case UnitId::ZergLarva: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::ZergDroleth:
-                                    case UnitId::ZergOvileth: {
+                                    case UnitId::ZergOvileth:
+                                    case UnitId::ZergRilirokor: {
                                         current_button_state = Button_State::Enabled;
                                     } break;
                                     case UnitId::ZergOthstoleth:

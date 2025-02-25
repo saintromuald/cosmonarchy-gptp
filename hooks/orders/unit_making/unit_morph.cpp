@@ -79,12 +79,16 @@ namespace hooks {
 			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg && !no_two_units) {
 				twin_unit = helper::zerg_dual_birth(unit);
 				if (twin_unit) {
-					UnitExt* twin_unit_ext = get_unit_ext(twin_unit);
+					auto& twin_unit_ext = twin_unit->ext();
 					if (stable_count) {
 						stable_count--;
-						twin_unit_ext->values[ValueRegressionUnstable] = unit_ext->values[ValueRegressionUnstable];
+						twin_unit_ext.values[ValueRegressionUnstable] = unit_ext->values[ValueRegressionUnstable];
 					} else {
-						twin_unit_ext->values[ValueRegressionUnstable] = bw::get_zerg_regression(twin_unit) != UnitId::None ? true : false;
+						twin_unit_ext.values[ValueRegressionUnstable] = bw::get_zerg_regression(twin_unit) != UnitId::None ? true : false;
+					}
+					if (unit_id_is_broodspawn(twin_unit->id)) {
+						unit->remove_timer = Broodspawn::LifeTimer; // Feels like cheating to put it here. -Pr0nogo
+						twin_unit->remove_timer = Broodspawn::LifeTimer;
 					}
 					spread_debuffs(unit, twin_unit);
 					twin_unit->rally = unit->rally;
@@ -637,4 +641,6 @@ namespace hooks {
 		unit->damage_overlay_state = g_building_overlay_state_max[main_graphic->id];
 		return main_graphic;
 	}
+
+	// Eventually, hook 0045D910 zerg_dual_birth to fix initial facing direction of non-Zethrokor dual birth units. -Pr0nogo
 }

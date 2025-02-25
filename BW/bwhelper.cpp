@@ -4666,15 +4666,15 @@ namespace helper {
 
     Unit* zerg_dual_birth(Unit* unit) {
         const u32 func_address = 0x0045D910;
-        static Unit* rValue;
+        static Unit* result;
         __asm {
             PUSHAD
             PUSH unit
             CALL func_address
-            MOV rValue, EAX
+            MOV result, EAX
             POPAD
         }
-        return rValue;
+        return result;
     }
 
     void order_new_unit_to_rally(Unit* unit, Unit* factory) {

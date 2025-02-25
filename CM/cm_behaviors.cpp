@@ -493,22 +493,22 @@ void recede_mind_control(Unit* target) {
 }
 
 void spread_debuffs(Unit* from, Unit* to) {
-	UnitExt* from_ext = get_unit_ext(from);
-	UnitExt* to_ext = get_unit_ext(to);
+	auto& from_ext = from->ext();
+	auto& to_ext = to->ext();
 
-	if (from_ext->values[ValueReclaimed]) {
-		to_ext->values[ValueReclaimed] = true;
+	if (from_ext.values[ValueReclaimed]) {
+		to_ext.values[ValueReclaimed] = true;
 	}
-	if (from_ext->values[ValueInfested]) {
-		to_ext->values[ValueInfested] = true;
+	if (from_ext.values[ValueInfested]) {
+		to_ext.values[ValueInfested] = true;
 	}
-	if (from_ext->values[ValueIsZombified]) {
+	if (from_ext.values[ValueIsZombified]) {
 		empress_zombify(from->player, from, to, 1);
 		to->remove_timer = from->remove_timer;
 	}
-	if (from_ext->values[ValueMindControlPlayer]) {
-		to->give_to(from_ext->values[ValueMindControlOriginalPlayer] - 1);
-		mind_control(from_ext->values[ValueMindControlPlayer] - 1, from_ext->values[ValueMindControllerUnitId], to);
+	if (from_ext.values[ValueMindControlPlayer]) {
+		to->give_to(from_ext.values[ValueMindControlOriginalPlayer] - 1);
+		mind_control(from_ext.values[ValueMindControlPlayer] - 1, from_ext.values[ValueMindControllerUnitId], to);
 	}
 }
 

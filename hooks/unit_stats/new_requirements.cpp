@@ -744,7 +744,8 @@ namespace hooks {
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergLarva)) {
             switch (unit_id) {
                 case UnitId::ZergDroleth:
-                case UnitId::ZergOvileth: {
+                case UnitId::ZergOvileth:
+                case UnitId::ZergRilirokor: {
                     return true;
                 } break;
                 case UnitId::ZergOthstoleth: {
@@ -2208,7 +2209,8 @@ namespace hooks {
             case UnitId::ZergLarva: {
                 switch (unit_id) {
                     case UnitId::ZergDroleth:
-                    case UnitId::ZergOvileth: {
+                    case UnitId::ZergOvileth:
+                    case UnitId::ZergRilirokor: {
                         return TECH_ACTIVE;
                     }
                     case UnitId::ZergOthstoleth: {
