@@ -801,6 +801,7 @@ namespace hooks {
                         }
                         target_ext->timers[TimerPetrification] = 48 + 1;
                     } break;
+                    case WeaponId::SirenCharybdalRifle:
                     case WeaponId::MagnetarNewtonianShockCannon: {
                         // Magnetar - Law of Attraction - Pull target to attacker
                         if ((!(units_dat::base_property[data.target->id] & UnitProperty::Building)

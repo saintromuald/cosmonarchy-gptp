@@ -2176,8 +2176,14 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::TerranSiren: {
+                                    if (current_button->icon_id == IconId::ArchonPsionicShockwave               // Law of Attraction
+                                    ||  current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon		// Prolonged Arms
+                                    ||  current_button->icon_id == IconId::PsiAssault) {						// Offset: Cone
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::TerranHotshot:
-                                case UnitId::TerranSiren:
                                 case UnitId::TerranCataphract: {
                                     if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon		// Prolonged Arms
                                     ||  current_button->icon_id == IconId::PsiAssault) {						// Offset: Cone

@@ -664,7 +664,7 @@ namespace hooks {
                     } break;
                     case WeaponId::SirenCharybdalRifle: {
                         // Offset: Cone
-                        fire_shotgun(unit, weapon_id, 2, 5, 10, ShotgunScatterStyle::Flipping);
+                        fire_shotgun(unit, weapon_id, 1, 5, 10, ShotgunScatterStyle::Flipping);
                     } break;
                     case WeaponId::MadrigalFuriaMissiles: {
                         // Madrigal Furia Salvo
