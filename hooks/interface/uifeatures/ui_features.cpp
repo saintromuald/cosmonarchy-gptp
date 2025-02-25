@@ -1186,7 +1186,7 @@ namespace hooks {
 					if (index < 33 || index > 44) {
 						helper::refresh_selection_screen();
 					} else {
-						helper::create_context_from_dialog(main_dialog, g_stat_txt_buffer.get_string(808)); // Unload unit
+						helper::create_context_from_dialog(main_dialog, g_stat_txt_buffer.get_string(809)); // Selection instructions
 					}
 				} else {
 					helper::draw_unload_unit_context(main_dialog);
