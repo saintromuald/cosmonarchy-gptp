@@ -59,7 +59,7 @@ static void special_post_unload_unit(Unit* unit, Unit* transport) {
 }
 
 static bool fix_unload_pos(Unit* unit, Point16* pos) {
-    if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+    if (unit->is_building()) {
         static constexpr auto Tolerance = 3;
         *pos = bw::align_to_tile_grid(*pos, (UnitId::Enum)unit->id);
 
@@ -100,7 +100,7 @@ static bool fix_unload_pos(Unit* unit, Point16* pos) {
             return false;
         }
         const auto& tile = bw::get_tile_at_coords(*pos);
-        return tile.is_walkable && !tile.is_unwalkable && !tile.cliff_edge; // Forbid nulled region
+        return unit->connected_unit->is_grounded_building() || (tile.is_walkable && !tile.is_unwalkable && !tile.cliff_edge); // Forbid nulled region, more permissive for garrisons
     }
 }
 
@@ -237,7 +237,7 @@ b32 unload_unit_proc(Unit* unit) { // 004E7F70
     if (!transport || transport->is_frozen()) {
         return false;
     }
-    if (transport->main_order_timer != 0 && !(transport->status & UnitStatus::GroundedBuilding)) {
+    if (transport->main_order_timer != 0 && !transport->is_grounded_building()) {
         return false;
     }
 
@@ -266,7 +266,7 @@ b32 unload_unit_proc(Unit* unit) { // 004E7F70
 
     helper::ignore_iscript_go_to_idle(unit);
     helper::unload_unit_ext(unit, 0);
-    if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+    if (!unit->is_building()) {
         if (!unit->unit_ai) {
             unit->order_computer(units_dat::return_to_idle_order[unit->id]);
         } else {
@@ -522,8 +522,7 @@ Unit* get_loaded_unit_from_index(Unit* transport, u32 index) { // 004E6C40
 
 // Hooked to extend transports. -Pr0nogo
 // Logic moved from Unit.cpp
-Unit* get_first_loaded_unit(Unit* transport) // 004E6C90
-{
+Unit* get_first_loaded_unit(Unit* transport) { // 004E6C90
     for (s32 i = 0; i < units_dat::space_provided[transport->id]; ++i) {
         Unit* first_loaded_unit = hooks::get_loaded_unit(transport, i);
         if (first_loaded_unit) {
@@ -680,17 +679,13 @@ void unload_unit_ext(Unit* cargo, u32 transport_died) { // 004E7E10
 }
 
 // Hooked to extend transports. -Pr0nogo
-u32 set_under_disruption_field(Unit* unit) // 004EB170
-{
-    u32 status = unit->status;
-    if (status & 4) {
+u32 set_under_disruption_field(Unit* unit) { // 004EB170
+    if (unit->is_in_air()) {
         return 0;
     }
-    u32 status_something = status | UnitStatus::CanNotAttack;
-    unit->status = status_something;
+    unit->status |= UnitStatus::CanNotAttack;
     u32 unit_id = unit->id;
-    if (status_something & UnitStatus::IsHallucination
-        || !units_dat::space_provided[unit_id]) {
+    if (unit->is_hallucination() || !units_dat::space_provided[unit_id]) {
         Unit* subunit = unit->subunit;
         if (subunit) {
             subunit->status |= UnitStatus::CanNotAttack;
@@ -700,7 +695,7 @@ u32 set_under_disruption_field(Unit* unit) // 004EB170
     for (u32 i = 0; i < TransportCap; ++i) {
         Unit* cargo = get_loaded_unit_from_index(unit, i);
         if (cargo) {
-            cargo->status |= 0x8000u;
+            cargo->status |= UnitStatus::CanNotAttack;
         }
     }
     return 0;
