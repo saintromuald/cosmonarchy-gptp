@@ -57,6 +57,10 @@ namespace hooks {
 			}
 			unit_ext->values[ValueSpecialSovrolethBirth] = false;
 
+			if (unit_id_is_broodspawn(twin_unit->id)) {
+				unit->remove_timer = Broodspawn::LifeTimer;
+			}
+
 			Unit* factory = 0;
 			if ((unit->create_origin == UnitId::ZergLarva && unit->id != UnitId::ZergLarva)
 			||  (unit->create_origin == UnitId::ZergOcsalLarva && unit->id != UnitId::ZergOcsalLarva)) {
@@ -86,10 +90,7 @@ namespace hooks {
 					} else {
 						twin_unit_ext.values[ValueRegressionUnstable] = bw::get_zerg_regression(twin_unit) != UnitId::None ? true : false;
 					}
-					if (unit_id_is_broodspawn(twin_unit->id)) {
-						unit->remove_timer = Broodspawn::LifeTimer; // Feels like cheating to put it here. -Pr0nogo
-						twin_unit->remove_timer = Broodspawn::LifeTimer;
-					}
+					twin_unit->remove_timer = Broodspawn::LifeTimer;
 					spread_debuffs(unit, twin_unit);
 					twin_unit->rally = unit->rally;
 					helper::ai_training_unit(twin_unit, unit);
@@ -642,5 +643,5 @@ namespace hooks {
 		return main_graphic;
 	}
 
-	// Eventually, hook 0045D910 zerg_dual_birth to fix initial facing direction of non-Zethrokor dual birth units. -Pr0nogo
+	// TODO: Eventually, hook 0045D910 zerg_dual_birth to fix initial facing direction of non-Zethrokor dual birth units. -Pr0nogo
 }
