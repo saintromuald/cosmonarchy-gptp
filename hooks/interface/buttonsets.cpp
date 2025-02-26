@@ -288,7 +288,7 @@ namespace hooks {
     // Main update_buttonset function; calls update_buttonset() and others
     void update_current_buttonset() { // 004599A0
         // Quick targeting post-handling
-        if (g_game->m_quick_casting.signal) {
+        if (g_game && g_game->m_quick_casting.signal) {
             g_game->m_quick_casting.signal = false;
             *g_buttonset_special_buttonset_id = g_game->m_quick_casting.command_card;
             g_minimap_cursor = 0;

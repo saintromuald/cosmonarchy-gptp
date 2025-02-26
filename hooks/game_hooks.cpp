@@ -3525,8 +3525,7 @@ namespace hooks {
         stop_playing_sounds();
         end_threshold();
         g_graphics.reset_stat_res_graphics();
-        for (u32 player = 0; player < PlayerLimit; player++)
-        {
+        for (u32 player = 0; player < PlayerLimit; player++) {
             g_factions_colors_ordering[player] = g_player_color_ids[player];
             g_player_color_ids[player] = 0;
         }
