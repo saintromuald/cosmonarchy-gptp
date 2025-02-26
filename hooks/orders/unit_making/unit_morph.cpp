@@ -57,7 +57,7 @@ namespace hooks {
 			}
 			unit_ext->values[ValueSpecialSovrolethBirth] = false;
 
-			if (unit_id_is_broodspawn(twin_unit->id)) {
+			if (unit_id_is_broodspawn(unit->id)) {
 				unit->remove_timer = Broodspawn::LifeTimer;
 			}
 
