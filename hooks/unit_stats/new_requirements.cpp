@@ -59,7 +59,8 @@ namespace hooks {
         TierUnlocked[RaceId::Protoss][Tier2] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossEmbassy)
             || player_has_completed_powered_unit_id(player_id, UnitId::ProtossGateway)
             || player_has_completed_powered_unit_id(player_id, UnitId::ProtossLattice);
-        TierUnlocked[RaceId::Protoss][Tier3] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossGrandLibrary)
+        TierUnlocked[RaceId::Protoss][Tier3] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossCrucible)
+            || player_has_completed_powered_unit_id(player_id, UnitId::ProtossGrandLibrary)
             || player_has_completed_powered_unit_id(player_id, UnitId::ProtossRogueGallery)
             || player_has_completed_powered_unit_id(player_id, UnitId::ProtossArdentAuthority)
             || player_has_completed_powered_unit_id(player_id, UnitId::ProtossStargate);
@@ -703,17 +704,15 @@ namespace hooks {
                 case UnitId::ProtossNexus:
                 case UnitId::ProtossPylon:
                 case UnitId::ProtossCedent:
-                case UnitId::ProtossAquifer:
                 case UnitId::ProtossWarden:
-                case UnitId::ProtossMatrix:
                 case UnitId::ProtossEmbassy:
-                case UnitId::ProtossCrucible:
-                case UnitId::ProtossEngram:
                 case UnitId::ProtossGateway:
                 case UnitId::ProtossLattice: {
                     return true;
                 } break;
-
+                case UnitId::ProtossCrucible:
+                case UnitId::ProtossAquifer:
+                case UnitId::ProtossMatrix:
                 case UnitId::ProtossGrandLibrary:
                 case UnitId::ProtossRogueGallery:
                 case UnitId::ProtossArdentAuthority:
@@ -722,6 +721,8 @@ namespace hooks {
                         return true;
                     }
                 } break;
+                case UnitId::ProtossXenolith:
+                case UnitId::ProtossEngram:
                 case UnitId::ProtossProstrationStage:
                 case UnitId::ProtossUnitaryUnion:
                 case UnitId::ProtossArgosy: {
@@ -2168,16 +2169,15 @@ namespace hooks {
                     case UnitId::ProtossNexus:
                     case UnitId::ProtossPylon:
                     case UnitId::ProtossCedent:
-                    case UnitId::ProtossAquifer:
                     case UnitId::ProtossWarden:
                     case UnitId::ProtossEmbassy:
-                    case UnitId::ProtossMatrix:
-                    case UnitId::ProtossCrucible:
-                    case UnitId::ProtossEngram:
                     case UnitId::ProtossGateway:
                     case UnitId::ProtossLattice: {
                         return TECH_ACTIVE;
                     }
+                    case UnitId::ProtossCrucible:
+                    case UnitId::ProtossAquifer:
+                    case UnitId::ProtossMatrix:
                     case UnitId::ProtossGrandLibrary:
                     case UnitId::ProtossRogueGallery:
                     case UnitId::ProtossArdentAuthority:
@@ -2186,6 +2186,8 @@ namespace hooks {
                             return TECH_ACTIVE;
                         }
                     }
+                    case UnitId::ProtossXenolith:
+                    case UnitId::ProtossEngram:
                     case UnitId::ProtossProstrationStage:
                     case UnitId::ProtossUnitaryUnion:
                     case UnitId::ProtossArgosy: {

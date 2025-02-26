@@ -11,7 +11,8 @@ namespace hooks {
 			case UnitId::TerranPhobos: {
 				energy = 100;
 			} break;
-			case UnitId::TerranAncile: {
+			case UnitId::TerranAncile:
+			case UnitId::ProtossXenolith: {
 				energy = 125;
 			} break;
 			case UnitId::TerranHypnagogue:

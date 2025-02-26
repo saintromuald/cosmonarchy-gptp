@@ -217,6 +217,7 @@ namespace UnitId {
         ProtossUnitaryUnion									= 305,
         ProtossHallOfHeretics								= 349,
         ProtossCedent                                       = 420,
+        ProtossXenolith                                     = 426,
 
     // Zerg-Unit
         ZergAlmaksalisk										= 29,		// Norad II

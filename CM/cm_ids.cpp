@@ -279,6 +279,7 @@ bool unit_id_is_psi_provider(u16 unit_id) {
     return unit_id == UnitId::ProtossNexus
         || unit_id == UnitId::ProtossPylon
         || unit_id == UnitId::ProtossCrucible
+        || unit_id == UnitId::ProtossXenolith
         || unit_id == UnitId::ProtossTempleExt;
 }
 
@@ -1352,6 +1353,11 @@ UnitId::Enum get_racial_town_center_id(u32 race_id) {
         case RaceId::Zerg:    return UnitId::ZergHachirosk;
     }
     return UnitId::None;
+}
+
+bool unit_id_can_cast_recall(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ProtossXenolith
+        || unit_id == UnitId::ProtossDidact;
 }
 
 namespace WeaponId {
