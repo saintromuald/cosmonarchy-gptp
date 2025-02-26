@@ -1219,7 +1219,8 @@ namespace hooks {
         TierUnlocked[RaceId::Protoss][Tier2] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossEmbassy)
             || player_has_completed_powered_unit_id(player_id, UnitId::ProtossGateway)
             || player_has_completed_powered_unit_id(player_id, UnitId::ProtossLattice);
-        TierUnlocked[RaceId::Protoss][Tier3] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossGrandLibrary)
+        TierUnlocked[RaceId::Protoss][Tier3] = player_has_completed_powered_unit_id(player_id, UnitId::ProtossCrucible)
+            || player_has_completed_powered_unit_id(player_id, UnitId::ProtossGrandLibrary)
             || player_has_completed_powered_unit_id(player_id, UnitId::ProtossRogueGallery)
             || player_has_completed_powered_unit_id(player_id, UnitId::ProtossArdentAuthority)
             || player_has_completed_powered_unit_id(player_id, UnitId::ProtossStargate);
