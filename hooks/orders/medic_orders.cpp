@@ -210,8 +210,12 @@ namespace hooks
 					}
 					bw::decloak_passive_proc(cleric);
 					target->heal_hp(Cleric::HealAmount, cleric);
-					UnitExt& target_ext = target->ext();
-					target_ext.timers[TimerClericHeal] = Cleric::NanoshieldTimer;
+
+					// Nanoshield passive
+					if (cleric->id == UnitId::TerranCleric) {
+						auto& target_ext = target->ext();
+						target_ext.timers[TimerClericHeal] = Cleric::NanoshieldTimer;
+					}
 					return 1;
 				}
 			}
