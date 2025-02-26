@@ -879,10 +879,10 @@ namespace hooks {
                     bool is_adding_on = 0;
                     Faction faction = Faction::None;
                     if (unit) {
-                        has_addon = units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon;
-                        in_air = unit->status & UnitStatus::InAir;
+                        has_addon = unit->is_building() && unit->building.addon;
+                        in_air = unit->is_in_air();
                         is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
-                        is_burrowed = unit->status & UnitStatus::Burrowed;
+                        is_burrowed = unit->is_burrowed();
                         is_adding_on = unit->current_build_unit && units_dat::base_property[unit->current_build_unit->id] & UnitProperty::Addon;
                         if (unit->player <= PLAYABLE_PLAYER_COUNT) {
                             faction = g_globals->players[unit->player].faction;
@@ -2355,7 +2355,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranSeraph: {
-                                    if (current_button->icon_id == IconId::OcularImplants) { // Observance
+                                    if (current_button->icon_id == IconId::DemiurgePassiveWorship) { // Observance
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
