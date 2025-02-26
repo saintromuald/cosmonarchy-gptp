@@ -90,7 +90,9 @@ namespace hooks {
 					} else {
 						twin_unit_ext.values[ValueRegressionUnstable] = bw::get_zerg_regression(twin_unit) != UnitId::None ? true : false;
 					}
-					twin_unit->remove_timer = Broodspawn::LifeTimer;
+					if (unit_id_is_broodspawn(twin_unit->id)) {
+						twin_unit->remove_timer = Broodspawn::LifeTimer;
+					}
 					spread_debuffs(unit, twin_unit);
 					twin_unit->rally = unit->rally;
 					helper::ai_training_unit(twin_unit, unit);
