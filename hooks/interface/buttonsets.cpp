@@ -2602,8 +2602,9 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossVibrance: {
-                                    if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
-                                    ||  current_button->icon_id == IconId::ProtossGroundWeapons) {		// Astral Blessing
+                                    if (current_button->icon_id == IconId::ArchonPsionicShockwave    // Pulsing Attack
+                                    ||  current_button->icon_id == IconId::DidactPassiveShroudOfAdun // Steady Shroud
+                                    ||  current_button->icon_id == IconId::ProtossGroundWeapons) {	 // Astral Blessing
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2822,12 +2823,28 @@ namespace hooks {
                                     if (current_button->icon_id == IconId::Attack) { // Burrowed attacker
                                         if (is_mixed) {
                                             current_button_state = Button_State::Enabled;
-                                        } else if (unit->status & UnitStatus::Burrowed && unit->main_order_id != OrderId::Unburrow) {
+                                        } else if (unit->is_burrowed() && unit->main_order_id != OrderId::Unburrow) {
                                             current_button_state = Button_State::Invisible;
                                         } else {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } else if (current_button->icon_id == IconId::LakiziliskSubterraneanSpines) { // Seismic Spines
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergUltrokor: {
+                                    if (current_button->icon_id == IconId::UltrokorKaiserBlades // Saber Siphon
+                                    ||  current_button->icon_id == IconId::AnabolicSynthesis) {	// Kaiser Rampage
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergZobriolisk: {
+                                    if (current_button->icon_id == IconId::LakiziliskUnburrow) { // Skyward Stare
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergZarcavrokor: {
+                                    if (current_button->icon_id == IconId::RoarUnused) { // Fan of Teeth
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2850,17 +2867,6 @@ namespace hooks {
                                 } break;
                                 case UnitId::ZergMatraleth: {
                                     if (current_button->icon_id == IconId::Ensnare) { // Ensnaring Brood
-                                        current_button_state = Button_State::Enabled;
-                                    }
-                                } break;
-                                case UnitId::ZergUltrokor: {
-                                    if (current_button->icon_id == IconId::UltrokorKaiserBlades // Saber Siphon
-                                    ||  current_button->icon_id == IconId::AnabolicSynthesis) {	// Kaiser Rampage
-                                        current_button_state = Button_State::Enabled;
-                                    }
-                                } break;
-                                case UnitId::ZergZarcavrokor: {
-                                    if (current_button->icon_id == IconId::RoarUnused) { // Fan of Teeth
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

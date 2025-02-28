@@ -214,7 +214,8 @@ namespace hooks {
             case UnitId::ZergAxitrilisk: {
                 speed *= 1.25;
             } break;
-            case UnitId::ZergVorvrokor: {
+            case UnitId::ZergVorvrokor:
+            case UnitId::ZergZobriolisk: {
                 speed *= 1.3;
             } break;
             case UnitId::TerranHarakanGolden:
@@ -232,11 +233,10 @@ namespace hooks {
             case UnitId::ZergAxitriliskWeaponless: {
                 speed *= 1.5;
             } break;
-            case UnitId::ZergMortothrokor: {
+            case UnitId::ZergMortothrokor:
+            case UnitId::ZergHydralisk:
+            case UnitId::ZergLakizilisk: {
                 speed *= 1.6;
-            } break;
-            case UnitId::ZergHydralisk: {
-                speed *= 1.8;
             } break;
         }
 

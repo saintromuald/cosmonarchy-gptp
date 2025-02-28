@@ -2151,6 +2151,7 @@ u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
         case UnitId::TerranDurendal:	return WeaponId::DurendalPhilistineAutogun;
         case UnitId::TerranCentaur:		return WeaponId::CentaurSunchaserMissiles;
         case UnitId::ZergOkrimnilisk:	return WeaponId::OkrimniliskOmnispores;
+        case UnitId::ZergZobriolisk:    return WeaponId::ZobrioliskRapidSpinesAir;
         case UnitId::ZergZarcavrokor:	return WeaponId::ZarcavrokorBonesofReflection;
     }
     return WeaponId::None;
@@ -3877,8 +3878,8 @@ bool game_kind_supports_kills(GameKind game_kind) {
 }
 
 bool unit_can_fire_secondary_weapon(Unit* unit) {
-    UnitExt* unit_ext = &unit->ext();
-    if (unit_ext->timers[TimerSecondaryWeaponCooldown]) {
+    auto& unit_ext = unit->ext();
+    if (unit_ext.timers[TimerSecondaryWeaponCooldown]) {
         return false;
     }
     return unit->can_attack_transport_checks();

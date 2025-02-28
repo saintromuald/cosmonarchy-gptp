@@ -317,7 +317,7 @@ namespace WeaponId {
         VilgorokorDissolvingSabers			= 164,
         TosgriliskExplosiveSpores			= 165,
         GhitorokorGnashingTendrils			= 166,
-        ZobrioliskRapidSpines				= 167,
+        ZobrioliskRapidSpinesGround			= 167,
         TetcaerokorCleavingMaw				= 177,
         MortothrokorWickedIncisors			= 192,
         SpirtithColonySpirtilSpores			= 178,
@@ -328,6 +328,7 @@ namespace WeaponId {
         OkrimniliskRelentlessTendrils		= 213,
         OkrimniliskOmnispores				= 214,
         CherbrathalorVenemousBursts			= 215,
+        ZobrioliskRapidSpinesAir            = 231,
 
         // Misc \\
 

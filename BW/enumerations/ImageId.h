@@ -1300,6 +1300,9 @@ namespace ImageId {
 
         UnarOrbital                                 = 1987,
 
+        ZobrioliskBurrowWeaponfireOverlay           = 1994,
+        LakiziliskMutate                            = 1995,
+
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,
         LastMinorDamageOverlay						= 471,

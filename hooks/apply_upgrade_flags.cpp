@@ -4,12 +4,8 @@
 namespace hooks {
 	void apply_upgrade_flags_to_new_unit(Unit* unit) { // 00454370
 		b8 speed_upgrade = 0, cooldown_upgrade = 0;
-		if (unit->id == UnitId::ZergLakizilisk) {
-			speed_upgrade = 1;
-		}
 		if (speed_upgrade == 1) {
 			unit->status |= UnitStatus::SpeedUpgrade;
-			unit->update_speed();
 		}
 		unit->update_speed();
 	}
