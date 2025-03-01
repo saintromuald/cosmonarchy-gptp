@@ -2499,6 +2499,11 @@ namespace hooks {
                     bw::add_unit_overlay(unit, ImageId::OpticalFlareHit_Medium); // TODO: Sound effect
                 }
             } break;
+            case UnitId::ZergRilirokor: {
+                if (bw::get_active_tile_at_coords(unit->position)->has_cagra) {
+                    unit->remove_timer = Broodspawn::LifeTimer;
+                }
+            } break;
         }
 
         // Stimpack - Delayed buff handling

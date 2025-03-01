@@ -575,10 +575,6 @@ namespace hooks {
             // Ignore Carapace Swarm!
             // START
             switch (data.attacker->id) {
-                case UnitId::ZergNathrokor: {
-                    attacker_ext->timers[TimerZergAdrenalFrenzy] = 2 * 24 + 1;
-                    data.attacker->update_speed();
-                } break;
                 case UnitId::ProtossEcclesiastKhalendric: {
                     if (!bw::is_allied_to(data.target->player, data.attacker->player)) {
                         ascend_in_area(data.attacker->player, data.attacker->position, Protoss::AstralChargeRadius);
@@ -588,6 +584,16 @@ namespace hooks {
                     // Augur spend shields on attack
                     data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);
                     attacker_ext->shield_regen_timer = 0;
+                } break;
+                case UnitId::ZergNathrokor: {
+                    attacker_ext->timers[TimerZergAdrenalFrenzy] = 2 * 24 + 1;
+                    data.attacker->update_speed();
+                } break;
+                case UnitId::ZergRilirokor: {
+                    data.attacker->remove_timer += 24;
+                    if (data.attacker->remove_timer > Broodspawn::LifeTimer) {
+                        data.attacker->remove_timer = Broodspawn::LifeTimer;
+                    }
                 } break;
             }
 
