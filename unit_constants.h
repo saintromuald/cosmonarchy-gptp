@@ -225,7 +225,7 @@ namespace Broodspawn {
 inline constexpr s32 DeathCycleEnsnareRange = 3 * 32;
 inline constexpr s32 DeathCycleEnsnareTimer = 5; // Vanilla timer, approximately 1 second
 inline constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
-inline constexpr s32 LifeTimer = 720;
+inline constexpr s32 LifeTimer = 119; // Oddly-specific because 120 (previous value) listed timed life as 12/11 in UI. -Pr0nogo
 }
 
 namespace Kazitrith {

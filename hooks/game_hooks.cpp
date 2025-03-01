@@ -1326,7 +1326,6 @@ namespace hooks {
         }
 
         // Unit behavior groups
-        const static u32 broodspawn_max_time = 5 * 24; // TODO: move to unit consts?
         switch (unit->id) {
             // Sires
             case UnitId::ZergZoryusthaleth:
@@ -1335,14 +1334,14 @@ namespace hooks {
             case UnitId::ZergMatraleth:
             case UnitId::ZergTetcaerokor: {
                 for (Unit* broodspawn : g_unit_search.radial_ex(unit, unit->get_sight_range() * 32, FilterAlly, {UnitId::ZergRilirokor, UnitId::ZergRililisk})) {
-                    broodspawn->remove_timer = broodspawn_max_time;
+                    broodspawn->remove_timer = Broodspawn::LifeTimer;
                 }
             } break;
             // Broodspawn
             case UnitId::ZergRilirokor:
             case UnitId::ZergRililisk: {
-                if (unit->remove_timer > broodspawn_max_time) {
-                    unit->remove_timer = broodspawn_max_time;
+                if (unit->remove_timer > Broodspawn::LifeTimer) {
+                    unit->remove_timer = Broodspawn::LifeTimer;
                 }
             } break;
         }
@@ -2498,6 +2497,11 @@ namespace hooks {
                 } else if (unit_ext->values[ValueWearAndTear] && unit->hitpoints >= unit->get_max_hp_raw() / 2) {
                     unit_ext->values[ValueWearAndTear] = false;
                     bw::add_unit_overlay(unit, ImageId::OpticalFlareHit_Medium); // TODO: Sound effect
+                }
+            } break;
+            case UnitId::ZergRilirokor: {
+                if (bw::get_active_tile_at_coords(unit->position)->has_cagra) {
+                    unit->remove_timer = Broodspawn::LifeTimer;
                 }
             } break;
         }

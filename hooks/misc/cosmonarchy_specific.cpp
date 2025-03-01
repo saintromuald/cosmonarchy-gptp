@@ -231,10 +231,14 @@ Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) {
         bw::play_sound(SoundId::TerranConstructionStart01, unit->position);
     }
 
-    if (unit->status & UnitStatus::GroundedBuilding) {
+    if (unit->is_grounded_building()) {
         helper::visible_units_add(unit);
     } else {
         helper::list_push_back_hidden_unit_entry(unit);
+    }
+
+    if (unit_id_is_broodspawn(unit->id)) {
+        unit->remove_timer = Broodspawn::LifeTimer;
     }
 
     if (units_dat::subunit[unit_id] == UnitId::None) {
