@@ -2483,6 +2483,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::TerranBlackjack:
+            case UnitId::TerranBlackjackGolden: {
                 if (!unit_ext.values[ValueWearAndTear] && unit->hitpoints < unit->get_max_hp_raw() / 2) {
                     unit_ext.values[ValueWearAndTear] = true;
                     bw::add_unit_overlay(unit, ImageId::OpticalFlareHit_Medium); // TODO: Sound effect

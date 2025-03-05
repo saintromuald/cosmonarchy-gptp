@@ -423,9 +423,10 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::TerranGoldenRepublic: {
             switch (unit_id) {
-                case UnitId::TerranHarakan: return UnitId::TerranHarakanGolden;
-                case UnitId::TerranGoliath: return UnitId::TerranAspirant;
-                case UnitId::TerranSeraph:  return UnitId::TerranLuminary;
+                case UnitId::TerranHarakan:   return UnitId::TerranHarakanGolden;
+                case UnitId::TerranGoliath:   return UnitId::TerranAspirant;
+                case UnitId::TerranBlackjack: return UnitId::TerranBlackjackGolden;
+                case UnitId::TerranSeraph:    return UnitId::TerranLuminary;
             }
         } break;
         case Faction::TerranNydusTrinity: {

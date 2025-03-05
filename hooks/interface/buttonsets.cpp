@@ -1020,7 +1020,11 @@ namespace hooks {
                             case UnitId::TerranFulcrum: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::TerranBlackjack: {
+<<<<<<< HEAD
                                         if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
+=======
+                                        if (faction != Faction::TerranGoldenRepublic) {
+>>>>>>> 52f3f509b (Implement Golden Blackjack)
                                             if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                                 current_button_state = Button_State::Invisible;
                                             } else {
@@ -1041,6 +1045,7 @@ namespace hooks {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
+<<<<<<< HEAD
                                     case UnitId::TerranTiangou: {
                                         if (faction == Faction::TerranFuturistFederation) {
                                             if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit) || is_adding_on || in_air) {
@@ -1052,6 +1057,8 @@ namespace hooks {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
+=======
+>>>>>>> 52f3f509b (Implement Golden Blackjack)
                                     case UnitId::TerranMatadorTankMode: {
                                         if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit)) {
                                             current_button_state = Button_State::Invisible;
@@ -2342,7 +2349,8 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranBlackjack: {
+                                case UnitId::TerranBlackjack: 
+                                case UnitId::TerranBlackjackGolden:  {
                                     if (current_button->icon_id == IconId::ProtossAirPlating) { // Wear and Tear
                                         current_button_state = Button_State::Enabled;
                                     }

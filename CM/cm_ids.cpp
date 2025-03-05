@@ -159,12 +159,14 @@ bool unit_id_has_flash_shielding(u32 unit_id) {
     return unit_id != UnitId::ProtossVagrantShade
         && unit_id != UnitId::TerranHarakanGolden
         && unit_id != UnitId::TerranAspirant
+        && unit_id != UnitId::TerranBlackjackGolden
         && unit_id != UnitId::TerranLuminary;
 }
 
 bool unit_id_has_shield_regeneration(u32 unit_id) {
     return unit_id == UnitId::TerranHarakanGolden
         || unit_id == UnitId::TerranAspirant
+        || unit_id == UnitId::TerranBlackjackGolden
         || unit_id == UnitId::TerranLuminary;
 }
 

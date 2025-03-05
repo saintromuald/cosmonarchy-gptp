@@ -84,7 +84,8 @@ namespace hooks {
                 case UnitId::TerranAspirant: {
                     return helper::get_random_unit_response(SoundId::AspirantOrderAggressive01, SoundId::AspirantOrderAggressive04);
                 } break;
-                case UnitId::TerranBlackjack: {
+                case UnitId::TerranBlackjack: 
+                case UnitId::TerranBlackjackGolden: {
                     return helper::get_random_unit_response(SoundId::BlackjackAggressive01, SoundId::BlackjackAggressive04);
                 } break;
                 case UnitId::TerranMatadorTankMode: {
@@ -249,7 +250,8 @@ namespace hooks {
                     case UnitId::TerranAspirant: {
                         ready_sound = helper::get_random_unit_response(SoundId::AspirantReady01, SoundId::AspirantReady03);
                     } break;
-                    case UnitId::TerranBlackjack: {
+                    case UnitId::TerranBlackjack:
+                    case UnitId::TerranBlackjackGolden: {
                         ready_sound = helper::get_random_unit_response(SoundId::BlackjackReady01, SoundId::BlackjackReady03);
                     } break;
                     case UnitId::TerranMatadorTankMode: {

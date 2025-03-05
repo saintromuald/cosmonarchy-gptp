@@ -1466,12 +1466,12 @@ void Unit::count_connected_larva() {
 }
 
 u32 Unit::standard_sprite_id() {
-    if (this->id == UnitId::TerranBlackjack) {
+    if (this->id == UnitId::TerranBlackjack || this->id == UnitId::TerranBlackjackGolden) {
         UnitExt& unit_ext = this->ext();
         if (unit_ext.values[ValueWearAndTear]) {
-            return SpriteId::TerranBlackjackDamaged;
+            return this->id == UnitId::TerranBlackjack ? SpriteId::TerranBlackjackDamaged : SpriteId::TerranBlackjackGoldenDamaged;
         } else {
-            return SpriteId::TerranBlackjack;
+            return this->id == UnitId::TerranBlackjack ? SpriteId::TerranBlackjack : SpriteId::TerranBlackjackGolden;
         }
     }
 

@@ -318,7 +318,11 @@ namespace hooks {
                     }
                 } break;
                 case UnitId::TerranBlackjack: {
+<<<<<<< HEAD
                     if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
+=======
+                    if (faction != Faction::TerranGoldenRepublic) {
+>>>>>>> 52f3f509b (Implement Golden Blackjack)
                         return true;
                     }
                 } break;
@@ -327,11 +331,14 @@ namespace hooks {
                         return true;
                     }
                 } break;
+<<<<<<< HEAD
                 case UnitId::TerranTiangou: {
                     if (faction == Faction::TerranFuturistFederation) {
                         return true;
                     }
                 } break;
+=======
+>>>>>>> 52f3f509b (Implement Golden Blackjack)
                 case UnitId::TerranMatadorTankMode: {
                     if (player_has_completed_unit_id(player_id, UnitId::TerranScrapyard)) {
                         return true;
@@ -1693,7 +1700,11 @@ namespace hooks {
                         return TECH_HIDDEN;
                     }
                     case UnitId::TerranBlackjack: {
+<<<<<<< HEAD
                         if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
+=======
+                        if (faction != Faction::TerranGoldenRepublic) {
+>>>>>>> 52f3f509b (Implement Golden Blackjack)
                             if (in_air || is_adding_on) {
                                 return TECH_HIDDEN;
                             }
@@ -1710,6 +1721,7 @@ namespace hooks {
                         }
                         return TECH_HIDDEN;
                     }
+<<<<<<< HEAD
                     case UnitId::TerranTiangou: {
                         if (faction == Faction::TerranFuturistFederation) {
                             if (in_air || is_adding_on) {
@@ -1719,6 +1731,8 @@ namespace hooks {
                         }
                         return TECH_HIDDEN;
                     }
+=======
+>>>>>>> 52f3f509b (Implement Golden Blackjack)
                     case UnitId::TerranMatadorTankMode: {
                         if (in_air || is_adding_on) {
                             return TECH_HIDDEN;

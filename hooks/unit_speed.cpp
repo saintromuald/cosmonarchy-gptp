@@ -145,7 +145,8 @@ namespace hooks {
         }
 
         switch (unit->id) {
-            case UnitId::TerranBlackjack: {
+            case UnitId::TerranBlackjack:
+            case UnitId::TerranBlackjackGolden: {
                 // Blackjack Wear and Tear: reduce movement speed based on missing health
                 if (unit_ext.values[ValueWearAndTear]) {
                     speed *= 0.66;
