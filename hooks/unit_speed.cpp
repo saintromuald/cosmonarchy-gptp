@@ -176,6 +176,7 @@ namespace hooks {
             } break;
             case UnitId::TerranSiren:
             case UnitId::TerranPhalanxTankMode:
+            case UnitId::ProtossAccantor:
             case UnitId::ZergEvigrilisk: {
                 speed *= 0.9;
             } break;

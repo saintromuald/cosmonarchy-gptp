@@ -127,7 +127,8 @@ namespace hooks {
                 case UnitId::TerranPhobos: {
                     return helper::get_random_unit_response(SoundId::PhobosOrderAggressive01, SoundId::PhobosOrderAggressive04);
                 } break;
-                case UnitId::ProtossDracadin: {
+                case UnitId::ProtossDracadin:
+                case UnitId::ProtossDracadinOrder: {
                     return helper::get_random_unit_response(SoundId::DracadinOrderAggressive01, SoundId::DracadinOrderAggressive04);
                 } break;
                 case UnitId::ProtossEcclesiast: {
@@ -314,7 +315,8 @@ namespace hooks {
                     case UnitId::ProtossEcclesiast: {
                         ready_sound = helper::get_random_unit_response(SoundId::EcclesiastReady01, SoundId::EcclesiastReady03);
                     } break;
-                    case UnitId::ProtossDracadin: {
+                    case UnitId::ProtossDracadin:
+                    case UnitId::ProtossDracadinOrder: {
                         ready_sound = helper::get_random_unit_response(SoundId::DracadinReady01, SoundId::DracadinReady03);
                     } break;
                     case UnitId::ProtossLegionnaire: {

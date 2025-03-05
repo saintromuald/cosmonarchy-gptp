@@ -545,8 +545,15 @@ namespace hooks {
                     }
                 }
                 case UnitId::ProtossDracadin: {
-                    return true;
+                    if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                        return true;
+                    }
                 } break;
+                case UnitId::ProtossDracadinOrder: {
+                    if (faction == Faction::ProtossKhalendricKnights) {
+                        return true;
+                    }
+                }
                 case UnitId::ProtossEcclesiast: {
                     if (faction != Faction::ProtossKhalendricKnights) {
                         return true;
@@ -2075,6 +2082,15 @@ namespace hooks {
                         return TECH_ACTIVE;
                     }
                     case UnitId::ProtossDracadin: {
+                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                            return TECH_HIDDEN;
+                        }
+                        return TECH_ACTIVE;
+                    }
+                    case UnitId::ProtossDracadinOrder: {
+                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                            return TECH_HIDDEN;
+                        }
                         return TECH_ACTIVE;
                     }
                     case UnitId::ProtossEcclesiast: {

@@ -450,6 +450,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::ProtossOrderOfTheSacredSaber: {
             switch (unit_id) {
+                case UnitId::ProtossDracadin:    return UnitId::ProtossDracadinOrder;
                 case UnitId::ProtossLegionnaire: return UnitId::ProtossAdherent;
                 case UnitId::ProtossVassal:      return UnitId::ProtossRenesair;
                 case UnitId::ProtossAurora:      return UnitId::ProtossExtatus;

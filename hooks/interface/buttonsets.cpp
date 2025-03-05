@@ -1481,7 +1481,14 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::ProtossDracadin: {
-                                        current_button_state = Button_State::Enabled;
+                                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossDracadinOrder: {
+                                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
                                     } break;
                                     case UnitId::ProtossEcclesiast: {
                                         if (faction != Faction::ProtossKhalendricKnights) {
@@ -1703,7 +1710,7 @@ namespace hooks {
                                                 current_button_state = Button_State::Disabled;
                                             }
                                         } else {
-                                                current_button_state = Button_State::Invisible;
+                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::ZergNathrelisk: {
