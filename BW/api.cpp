@@ -1072,17 +1072,17 @@ static bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
     switch (unit->id) {
         case UnitId::TerranHarakan:
         case UnitId::TerranHarakanGolden:
-        case UnitId::TerranStriga: 
-        case UnitId::TerranMatadorCinderMode: 
-        case UnitId::TerranMatadorTurretCinderMode: 
-        case UnitId::Ackmed: 
+        case UnitId::TerranStriga:
+        case UnitId::TerranMatadorTankMode:
+        case UnitId::TerranMatadorTurretTankMode:
+        case UnitId::TerranMatadorCinderMode:
+        case UnitId::TerranMatadorTurretCinderMode:
+        case UnitId::Ackmed:
         case UnitId::ZergIzirokor: {
             return false;
         }
     }
-    return !(unit->status & UnitStatus::InAir)
-        && (weapon_id == WeaponId::None || weapons_dat::max_range[weapon_id] > 32)
-        && weapon_id != WeaponId::DurendalAbaddonFlamethrowers;
+    return !unit->is_in_air() && (weapon_id == WeaponId::None || weapons_dat::max_range[weapon_id] > 32) && weapon_id != WeaponId::DurendalAbaddonFlamethrowers;
 }
 
 f32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {

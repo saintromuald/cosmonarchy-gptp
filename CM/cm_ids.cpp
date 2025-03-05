@@ -1187,6 +1187,8 @@ bool unit_id_has_projection_attack(u32 unit_id) {
     return unit_id == UnitId::TerranHarakan
         || unit_id == UnitId::TerranHarakanGolden
         || unit_id == UnitId::TerranStriga
+        || unit_id == UnitId::TerranMatadorTankMode
+        || unit_id == UnitId::TerranMatadorTurretTankMode
         || unit_id == UnitId::TerranMatadorCinderMode
         || unit_id == UnitId::TerranMatadorTurretCinderMode
         || unit_id == UnitId::TerranDurendal
