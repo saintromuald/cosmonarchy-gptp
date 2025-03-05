@@ -1227,7 +1227,7 @@ bool buttonset_id_is_faction_selection(u32 buttonset_id) {
 bool portrait_id_is_default_advisor(u32 portrait_id) {
     return portrait_id == PortraitId::AdvisorOrionImperium
         || portrait_id == PortraitId::ProtossAdvisor
-        || portrait_id == PortraitId::AdvisorAtaltreth;
+        || portrait_id == PortraitId::AdvisorZerg;
 }
 
 u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
@@ -1247,13 +1247,15 @@ u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
         } break;
         case PortraitId::ProtossAdvisor: {
             switch (faction) {
+                case Faction::ProtossKhalendricKnights:     return PortraitId::AdvisorKhalendricKnights;
                 case Faction::ProtossOrderOfTheSacredSaber: return PortraitId::Patriarch; // Temporary
                 case Faction::ProtossStarbound:             return PortraitId::AdvisorStarbound;
             }
         } break;
-        case PortraitId::AdvisorAtaltreth: {
+        case PortraitId::AdvisorZerg: {
             switch (faction) {
                 case Faction::ZergImicrenTendril:			return PortraitId::AdvisorImicren;
+                case Faction::ZergOrkotiTendril:			return PortraitId::AdvisorOrkoti;
                 case Faction::ZergZorthosTendril:			return PortraitId::AdvisorZorthos;
             }
         } break;

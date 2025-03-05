@@ -151,13 +151,14 @@ u32 unit_is_at_height(Unit* unit, u32 height) { // 0045F8D0
     }
 
     ++ground_height;
-    if (unit->status & UnitStatus::InAir) {
+    if (unit->is_in_air()) {
         ground_height <<= 3;
     }
     return height & ground_height;
 }
 
 // Hooked to add support for factional and crig-based advisors. -Pr0nogo
+// Overrides are reflected in-game.
 u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
     u32 portrait_id = units_dat::portrait_id[unit_id];
     u32 player = g_local_nation_id;
@@ -172,7 +173,7 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
                 portrait_id = PortraitId::AnadThyron;
             } break;
             case PortraitId::Legionnaire: {
-                portrait_id = PortraitId::Patriarch;
+                portrait_id = PortraitId::Kortar;
             } break;
             case PortraitId::Apostle: {
                 portrait_id = PortraitId::AdvisorZorthos;
@@ -180,29 +181,56 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
         }
     } else if (strcmp(g_current_map_name, "Sanctuary Lost") == 0) {
         switch (portrait_id) {
-            case PortraitId::Maverick: {
+            case PortraitId::PlasmaShellUnused: {
                 portrait_id = PortraitId::AnadThyron;
             } break;
-            case PortraitId::Legionnaire: {
-                portrait_id = PortraitId::Patriarch;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Kortar;
+            } break;
+        }
+    } else if (strcmp(g_current_map_name, "Further Notice") == 0) {
+        switch (portrait_id) {
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Osina;
             } break;
         }
     } else if (strcmp(g_current_map_name, "The Initiate") == 0) {
         switch (portrait_id) {
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Terimanok;
+            } break;
             case PortraitId::ProtossAdvisor: {
-                portrait_id = PortraitId::Solarion;
+                portrait_id = PortraitId::Furen;
             } break;
         }
     } else if (strcmp(g_current_map_name, "Autophagy") == 0) {
         switch (portrait_id) {
+            case PortraitId::Anticthon: {
+                portrait_id = PortraitId::Daggoth;
+            } break;
             case PortraitId::Scribe: {
-                portrait_id = PortraitId::AdvisorZorthos;
+                portrait_id = PortraitId::OrganSenescent;
             } break;
         }
     } else if (strcmp(g_current_map_name, "Waterwar") == 0) {
         switch (portrait_id) {
-            case PortraitId::Goliath: {
+            case PortraitId::Prudence: {
                 portrait_id = PortraitId::Sevenstep;
+            } break;
+            case PortraitId::ProtossAdvisor: {
+                portrait_id = PortraitId::Venammar;
+            } break;
+        }
+    } else if (strcmp(g_current_map_name, "Cellbound") == 0) {
+        switch (portrait_id) {
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::Atreus; // TODO: Own portrait
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Terimanok;
+            } break;
+            case PortraitId::PlasmaShellUnused: {
+                portrait_id = PortraitId::Joran;
             } break;
         }
     }
@@ -227,6 +255,7 @@ void game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) { // 004
 }
 
 // Hooked to add support for factional and crig-based advisors. -Pr0nogo
+// Overrides are reflected in briefings.
 void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 0046CF30
     BinDlg* ready_room_dlg = *g_ready_room_dialog;
     if (ready_room_dlg->control_type) {
@@ -259,7 +288,7 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 00
                 portrait_id = PortraitId::AnadThyron;
             } break;
             case PortraitId::Zealot: {
-                portrait_id = PortraitId::Patriarch;
+                portrait_id = PortraitId::Kortar;
             } break;
             case PortraitId::Ovileth: {
                 portrait_id = PortraitId::AdvisorZorthos;
@@ -270,11 +299,11 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 00
             case PortraitId::AdvisorOrionImperium: {
                 portrait_id = PortraitId::HADRAL;
             } break;
-            case PortraitId::Maverick: {
+            case PortraitId::PlasmaShellUnused: {
                 portrait_id = PortraitId::AnadThyron;
             } break;
-            case PortraitId::Legionnaire: {
-                portrait_id = PortraitId::Patriarch;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Kortar;
             } break;
         }
     } else if (strcmp(g_current_map_name, "Further Notice") == 0) {
@@ -282,17 +311,47 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 00
             case PortraitId::Cyprian: {
                 portrait_id = PortraitId::Hotshot;
             } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Osina;
+            } break;
+        }
+    } else if (strcmp(g_current_map_name, "The Initiate") == 0) {
+        switch (portrait_id) {
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Terimanok;
+            } break;
+            case PortraitId::ProtossAdvisor: {
+                portrait_id = PortraitId::Furen;
+            } break;
         }
     } else if (strcmp(g_current_map_name, "Autophagy") == 0) {
         switch (portrait_id) {
+            case PortraitId::Anticthon: {
+                portrait_id = PortraitId::Zasz;
+            } break;
             case PortraitId::Scribe: {
-                portrait_id = PortraitId::AdvisorZorthos;
+                portrait_id = PortraitId::OrganSenescent;
             } break;
         }
     } else if (strcmp(g_current_map_name, "Waterwar") == 0) {
         switch (portrait_id) {
-            case PortraitId::Goliath: {
+            case PortraitId::Prudence: {
                 portrait_id = PortraitId::Sevenstep;
+            } break;
+            case PortraitId::ProtossAdvisor: {
+                portrait_id = PortraitId::Venammar;
+            } break;
+        }
+    } else if (strcmp(g_current_map_name, "Cellbound") == 0) {
+        switch (portrait_id) {
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::Atreus;
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Terimanok; // TODO: Own portrait
+            } break;
+            case PortraitId::PlasmaShellUnused: {
+                portrait_id = PortraitId::Joran;
             } break;
         }
     }
