@@ -191,6 +191,7 @@ namespace hooks {
             case UnitId::TerranOlympian:
             case UnitId::TerranCataphract:
             case UnitId::ProtossDracadin:
+            case UnitId::ZergQuazrokor:
             case UnitId::ZergZoryusthaleth: {
                 speed *= 1.1;
             } break;

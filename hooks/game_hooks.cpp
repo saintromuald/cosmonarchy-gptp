@@ -1553,6 +1553,7 @@ namespace hooks {
             case UnitId::ZergEgg:
             case UnitId::ZergCocoon:
             case UnitId::ZergQuazilisk:
+            case UnitId::ZergQuazrokor:
             case UnitId::ZergNathrokor: {
                 // Gimmick to allow morph cancellation animations to play correctly
                 if (unit_ext.timers[TimerQuaziliskCancel]) {
@@ -3412,7 +3413,8 @@ namespace hooks {
                     case UnitId::ProtossArtisan:
                     case UnitId::ProtossSimulacrum:
                     case UnitId::ZergEgg:
-                    case UnitId::ZergQuazilisk: {
+                    case UnitId::ZergQuazilisk:
+                    case UnitId::ZergQuazrokor: {
                         image_id = ImageId::SantaHatSmall17;
                         if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
                             image_id -= 4;

@@ -1652,14 +1652,39 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
-                                    case UnitId::ZergZethrokor:
-                                    case UnitId::ZergQuazilisk: {
+                                    case UnitId::ZergZethrokor: {
                                         if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazethPool)
-                                        ||  player_has_unit_id(unit->player, UnitId::ZergVornathPond)
-                                        ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                            || player_has_unit_id(unit->player, UnitId::ZergVornathPond)
+                                            || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::ZergQuazilisk: {
+                                        if (faction != Faction::ZergImicrenTendril) {
+                                            if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazethPool)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergVornathPond)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::ZergQuazrokor: {
+                                        if (faction == Faction::ZergImicrenTendril) {
+                                            if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazethPool)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergVornathPond)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::ZergNathrokor: {
@@ -2322,11 +2347,7 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranMatadorTankMode: {
-                                    if (current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
-                                        current_button_state = Button_State::Disabled;
-                                    }
-                                } break;
+                                case UnitId::TerranMatadorTankMode:
                                 case UnitId::TerranMatadorCinderMode: {
                                     if (current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
                                         current_button_state = Button_State::Enabled;
@@ -2777,6 +2798,11 @@ namespace hooks {
                                 
                                 case UnitId::ZergGosvileth: {
                                     if (current_button->icon_id == IconId::VentralSacs) { // Plethoral Gestation
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergQuazrokor: {
+                                    if (current_button->icon_id == IconId::AdrenalGlands) { // Adrenal Frenzy
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
