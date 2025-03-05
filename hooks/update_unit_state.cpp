@@ -103,42 +103,41 @@ namespace hooks {
 			unit->spell_cooldown--;
 		}
 
-		UnitExt* unit_ext = get_unit_ext(unit);
+		auto& unit_ext = unit->ext();
 		if (unit->id == UnitId::TerranWyvern) {
 			Unit* turret = unit->subunit;
 
 			// Wyvern - clear target if owner becomes allied
-			if (unit_ext->units[UnitWyvernTargetLock]) {
-				Unit* target = unit_ext->units[UnitWyvernTargetLock];
-				UnitExt* target_ext = get_unit_ext(target);
-				if (target_ext->timers[TimerOwnerChangedRecently] && bw::is_allied_to(unit->player, target->player)) {
-					unit_ext->units[UnitWyvernTargetLock] = 0;
+			if (unit_ext.units[UnitWyvernTargetLock]) {
+				Unit* target = unit_ext.units[UnitWyvernTargetLock];
+				if (target->ext().timers[TimerOwnerChangedRecently] && bw::is_allied_to(unit->player, target->player)) {
+					unit_ext.units[UnitWyvernTargetLock] = 0;
 				}
 			}
 
 			// Wyvern Reverse Thrust - fire while moving
-			if (unit->status & UnitStatus::Completed && unit_ext->timers[TimerWyvernAttackCooldown] == 0) {
+			if (unit->status & UnitStatus::Completed && unit_ext.timers[TimerWyvernAttackCooldown] == 0) {
 				u32 range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
 				s32 forward_offset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
 				u32 x = unit->get_x() + bw::get_polar_x(forward_offset, unit->current_direction_1);
 				u32 y = unit->get_y() + bw::get_polar_y(forward_offset, unit->current_direction_1);
 
 				bool seek_unit = true;
-				if (unit_ext->values[ValueWyvernLandGrabOn] == 1) {
-					u32 targ_x = unit_ext->values[ValueWyvernLandGrabX];
-					u32 targ_y = unit_ext->values[ValueWyvernLandGrabY];
+				if (unit_ext.values[ValueWyvernLandGrabOn] == 1) {
+					u32 targ_x = unit_ext.values[ValueWyvernLandGrabX];
+					u32 targ_y = unit_ext.values[ValueWyvernLandGrabY];
 					s32 direction = bw::get_angle(x, y, targ_x, targ_y);
 					if (bw::distance_between(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						u32 sound = bw::rand_between(SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02);
 						helper::play_sound_from_unit(sound, unit, 1, 0);
 						bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, 0, targ_x, targ_y);
-						unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+						unit_ext.timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 						turret->order_target.pt.x = targ_x;
 						turret->order_target.pt.y = targ_y;
 						turret->order_target.unit = 0;
 						seek_unit = false;
 					} else {
-						unit_ext->values[ValueWyvernLandGrabOn] = 0;
+						unit_ext.values[ValueWyvernLandGrabOn] = 0;
 					}
 				}
 
@@ -149,10 +148,10 @@ namespace hooks {
 					&&  turret->main_order_id != OrderId::WyvernLandGrab) {
 						Unit* new_target = turret->order_target.unit;
 						if (wyvern_can_fire_at(unit, new_target)) {
-							unit_ext->units[UnitWyvernTargetLock] = new_target;
+							unit_ext.units[UnitWyvernTargetLock] = new_target;
 						}
 					}
-					Unit* target = unit_ext->units[UnitWyvernTargetLock];
+					Unit* target = unit_ext.units[UnitWyvernTargetLock];
 					if (!target || !wyvern_can_fire_at(unit, target)) {
 						auto targets = g_unit_search.radial_ex(unit, range, FilterEnemy)
                             .sort_by_distance(unit->position);
@@ -171,18 +170,18 @@ namespace hooks {
 					}
 					
 					if (target && wyvern_can_fire_at(unit, target)) {
-						if (unit_ext->values[ValueWyvernWeaponCharging]) {
-							if (!unit_ext->timers[TimerWyvernWeaponCharge]) {
-								unit_ext->values[ValueWyvernWeaponCharging] = false;
+						if (unit_ext.values[ValueWyvernWeaponCharging]) {
+							if (!unit_ext.timers[TimerWyvernWeaponCharge]) {
+								unit_ext.values[ValueWyvernWeaponCharging] = false;
 
 								s32 direction = bw::get_angle(x, y, target->get_x(), target->get_y());
 								bw::play_sound({SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02}, unit);
 								bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
-								unit_ext->timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+								unit_ext.timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
 							}
 						} else {
-							unit_ext->values[ValueWyvernWeaponCharging] = true;
-							unit_ext->timers[TimerWyvernWeaponCharge] = 12;
+							unit_ext.values[ValueWyvernWeaponCharging] = true;
+							unit_ext.timers[TimerWyvernWeaponCharge] = 12;
 							bw::play_sound({SoundId::WyvernWeaponCharge01, SoundId::WyvernWeaponCharge03}, unit);
 						}
 					}
@@ -206,8 +205,8 @@ namespace hooks {
 		}
 
 		// Flash shielding (regeneration)
-		if (units_dat::shields_enabled[unit->id] && unit->status & UnitStatus::Completed) {
-			if (!unit_ext->values[ValueIsShade] && unit_id_has_flash_shielding(unit->id)) {
+		if (units_dat::shields_enabled[unit->id] && unit->is_completed()) {
+			if (!unit_ext.values[ValueIsShade] && unit_id_has_flash_shielding(unit->id)) {
 				s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
 
 				u32 overlay_id = ImageId::RechargeShields_Small;
@@ -224,12 +223,12 @@ namespace hooks {
 				}
 
 				static constexpr u32 start_time = 2 * 24;
-				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext->shield_regen_timer > start_time && !unit->is_frozen()) {
+				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext.shield_regen_timer > start_time && !unit->is_frozen()) {
 					static constexpr u32 start_heal_amount = 10 * 256 / 24;
 					static constexpr u32 end_heal_amount = 2 * 256 / 24;
 					static constexpr u32 change_duration = 5 * 24;
-					u32 heal_amount = Map(unit_ext->shield_regen_timer, start_time, start_time + change_duration, start_heal_amount, end_heal_amount, true);
-					if (!unit_ext->unit_vectors[UnitVectorCrucibles].empty()) {
+					u32 heal_amount = Map(unit_ext.shield_regen_timer, start_time, start_time + change_duration, start_heal_amount, end_heal_amount, true);
+					if (!unit_ext.unit_vectors[UnitVectorCrucibles].empty()) {
                         heal_amount *= 1.25;
 					}
 
@@ -256,14 +255,14 @@ namespace hooks {
 					}
 				}
 			} else if (unit_id_has_shield_regeneration(unit->id)) {
-				if (unit_ext->damage_taken_timer > 2 * 24) {
+				if (unit_ext.damage_taken_timer > 2 * 24) {
 					unit->heal_shields(21, 0, false, false);
 				}
 			}
 		}
 
 		// Vagrant Nihilism - suffer 2 damage per second until death
-		if (unit->id == UnitId::ProtossVagrantShade || unit_ext->values[ValueIsShade]) {
+		if (unit->id == UnitId::ProtossVagrantShade || unit_ext.values[ValueIsShade]) {
 			unit->inflict_damage(21, unit, unit->player, false, (g_elapsed_time_frames) % 6 == 0);
 		}
 
@@ -275,7 +274,7 @@ namespace hooks {
 		}
 
 		// update unit status effects (stim, maelstrom, plague, etc.)
-		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & SpriteFlags::Hidden)) {
+		if (unit->is_completed() || !unit->sprite->is_hidden()) {
 			unit->cycle_counter++;
 			if (unit->cycle_counter >= 8) {
 				unit->cycle_counter = 0;
@@ -312,16 +311,19 @@ namespace hooks {
 			// Passive HP regeneration
 			if (bw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw()) {
 				u32 factor = bw::get_regeneration_factor(unit);
-				if (unit_ext->damage_taken_timer > 2 * 24) {
+				if (unit_ext.damage_taken_timer > 2 * 24) {
 					factor++;
 				}
 
 				s32 regen = 11 * factor; // 1 HP per second, before factor.
-				if (unit->status & UnitStatus::Burrowed) {
+				if (unit->is_burrowed()) {
 					regen *= 2;
 				}
+				if (unit->id == UnitId::TerranEidolonNydus && unit->is_cloaked) {
+					regen *= 1.33;
+				}
 
-				bool has_crucible = unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0;
+				bool has_crucible = unit_ext.unit_vectors[UnitVectorCrucibles].size() != 0;
 				regen *= 1 + (has_crucible * 0.25);
 				unit->heal_hp(regen, 0, false);
 			}
@@ -330,7 +332,7 @@ namespace hooks {
 			{
 				s32 tick_heal = 0;
 				// Alaszileth - Dermal Accelerant - 500% life regen
-				if (unit_ext->timers[TimerAlaszilethRegenBoost] > 0) {
+				if (unit_ext.timers[TimerAlaszilethRegenBoost] > 0) {
 					tick_heal += 11 * 5;
 				}
 
@@ -348,7 +350,7 @@ namespace hooks {
 
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora) {
-				if (unit_ext->values[ValueLastOrdersInit] == 1) {
+				if (unit_ext.values[ValueLastOrdersInit] == 1) {
 					auto distance = bw::distance_between(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
 					if (distance < 32) {
 						unit->status |= UnitStatus::Invincible;
@@ -378,7 +380,7 @@ namespace hooks {
 			}
 
 			// Terran building burn-down
-			if (!stop_here && !unit_ext->values[ValueInfested]) {
+			if (!stop_here && !unit_ext.values[ValueInfested]) {
 				if (unit->get_race() == RaceId::Terran) {
 					if (unit->status & UnitStatus::GroundedBuilding || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
 						if (helper::unit_hp_is_in_redzone(unit)) {

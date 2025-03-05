@@ -921,7 +921,24 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
-                                    case UnitId::TerranEidolon:
+                                    case UnitId::TerranEidolon: {
+                                        if (faction != Faction::TerranNydusTrinity) {
+                                            if (!bw::all_selected_units_have_addon(UnitId::TerranCovenant) || bw::unit_queue_full(unit)) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::TerranEidolonNydus: {
+                                        if (faction == Faction::TerranNydusTrinity) {
+                                            if (!bw::all_selected_units_have_addon(UnitId::TerranCovenant) || bw::unit_queue_full(unit)) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
                                     case UnitId::TerranSavantEntropyGauntlets: {
                                         if (!bw::all_selected_units_have_addon(UnitId::TerranCovenant) || bw::unit_queue_full(unit)) {
                                             current_button_state = Button_State::Invisible;
@@ -2210,6 +2227,12 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::TerranEidolonNydus: {
+                                    if (current_button->icon_id == IconId::SensorArray       // Proximity Cloak
+                                    ||  current_button->icon_id == IconId::MoebiusReactor) { // Adrenal Implant
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::TerranSavantEntropyGauntlets: {
                                     if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Entropy Gauntlets
                                         current_button_state = Button_State::Enabled;
@@ -2225,7 +2248,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranMadcap: {
-                                    if (current_button->icon_id == IconId::GoliathTwinAutocannons) { // Maverick Feeders
+                                    if (current_button->icon_id == IconId::GoliathTwinAutocannons) { // Cabeirus Feeders
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

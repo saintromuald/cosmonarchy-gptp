@@ -3927,7 +3927,11 @@ u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id) {
 
 u32 get_weapon_fire_sound(u32 weapon_id) {
     switch (weapon_id) {
+        case WeaponId::MaverickGaussRifle:                  return SoundId::Bullet_TMaFir00_wav;
+        case WeaponId::MaverickFuturistGaussSlugger:        return bw::rand_between(SoundId::MaverickFuturistWeaponfire01, SoundId::MaverickFuturistWeaponfire03);
         case WeaponId::HotshotDispatchShotgun:              return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
+        case WeaponId::EidolonCoronerRifle:                 return SoundId::Bullet_TGhFir00_wav;
+        case WeaponId::EidolonNydusRevenantRifle:           return bw::rand_between(SoundId::EidolonNydusWeaponfire01, SoundId::EidolonNydusWeaponfire03);
         case WeaponId::MadcapDanannAutogun:                 return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
         case WeaponId::ApostleCharonRifle:                  return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
         case WeaponId::CyclopsFuturistFlakCannons:          return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
