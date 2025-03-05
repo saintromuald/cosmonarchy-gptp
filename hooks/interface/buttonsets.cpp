@@ -1002,7 +1002,39 @@ namespace hooks {
                             } break;
                             case UnitId::TerranFulcrum: {
                                 switch (current_button->requirement_var) {
-                                    case UnitId::TerranBlackjack:
+                                    case UnitId::TerranBlackjack: {
+                                        if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
+                                            if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranBlackjackGolden: {
+                                        if (faction == Faction::TerranGoldenRepublic) {
+                                            if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranTiangou: {
+                                        if (faction == Faction::TerranFuturistFederation) {
+                                            if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
                                     case UnitId::TerranMatadorTankMode: {
                                         if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit)) {
                                             current_button_state = Button_State::Invisible;

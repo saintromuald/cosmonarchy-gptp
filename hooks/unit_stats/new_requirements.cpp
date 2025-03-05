@@ -303,10 +303,23 @@ namespace hooks {
                         return true;
                     }
                 } break;
-                case UnitId::TerranBlackjack:
+                case UnitId::TerranBlackjack: {
+                    if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranBlackjackGolden: {
+                    if (faction == Faction::TerranGoldenRepublic) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranTiangou: {
+                    if (faction == Faction::TerranFuturistFederation) {
+                        return true;
+                    }
+                } break;
                 case UnitId::TerranMatadorTankMode: {
-                    if (player_has_completed_unit_id(player_id, UnitId::TerranScrapyard))
-                    {
+                    if (player_has_completed_unit_id(player_id, UnitId::TerranScrapyard)) {
                         return true;
                     }
                 } break;
@@ -1625,7 +1638,33 @@ namespace hooks {
                         }
                         return TECH_HIDDEN;
                     }
-                    case UnitId::TerranBlackjack:
+                    case UnitId::TerranBlackjack: {
+                        if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranBlackjackGolden: {
+                        if (faction == Faction::TerranGoldenRepublic) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranTiangou: {
+                        if (faction == Faction::TerranFuturistFederation) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
                     case UnitId::TerranMatadorTankMode: {
                         if (in_air || is_adding_on) {
                             return TECH_HIDDEN;

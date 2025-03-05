@@ -1378,6 +1378,11 @@ namespace UnitId {
  }
 } // namespace UnitId
 
+bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {
+    return unit_id == UnitId::TerranGoliath
+        || unit_id == UnitId::TerranTiangou;
+}
+
 namespace WeaponId {
 u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {
     switch (weapon_id) {

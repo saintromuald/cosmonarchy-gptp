@@ -602,7 +602,7 @@ namespace hooks {
 			if (helper::move_to_target(unit->order_target.unit, unit)) {
 				unit->main_order_state = 1;
 			turn_to_face_target:
-				if (unit->id == UnitId::TerranGoliath && !(unit->movement_flags & UnitMovement::UnitMovement_Lump)) {
+				if (unit_id_turns_to_face_target((UnitId::Enum)unit->id) && !(unit->movement_flags & UnitMovement::UnitMovement_Lump)) {
 					u32 pos_x = unit->order_target.pt.x;
 					u32 pos_y = unit->order_target.pt.y;
 					s32 direction = helper::get_direction_from_points(pos_y, unit->sprite->position.x, pos_x, unit->sprite->position.y) - unit->current_direction_1;

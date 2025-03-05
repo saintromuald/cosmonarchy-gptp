@@ -225,6 +225,7 @@ namespace hooks {
             case UnitId::ProtossCicatus: {
                 speed *= 1.35;
             } break;
+            case UnitId::TerranTiangou:
             case UnitId::ProtossZealotStarbound:
             case UnitId::ProtossAmaranth:
             case UnitId::ZergHydraliskOrkoti: {
