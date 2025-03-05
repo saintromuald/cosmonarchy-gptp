@@ -2167,5 +2167,19 @@ namespace SoundId {
         AspirantOrderAggressive02                           = 3439,
         AspirantOrderAggressive03                           = 3440,
         AspirantOrderAggressive04                           = 3441,
+
+        QuazrokorWeaponfire01                               = 3446,
+        QuazrokorWeaponfire02                               = 3447,
+        QuazrokorWeaponfire03                               = 3448,
+        RamessesReady01                                     = 3449,
+        RamessesReady02                                     = 3450,
+        RamessesReady03                                     = 3451,
+
+        RamessesOrderAggressive01                           = 3460,
+        RamessesOrderAggressive02                           = 3461,
+        RamessesOrderAggressive03                           = 3462,
+        RamessesOrderAggressive04                           = 3463,
+
+
     };
 }
