@@ -198,7 +198,7 @@ enum ExtValueId {
     ValueControlledByDemiurge,
     ValueHidebreaker,
     ValueTryCastCustomSpell,
-    ValueMindTyrantTyranny,
+    ValueIsMalefactor,
     ValueReclaimed,
     ValueReclamationRegen,
     ValueDisablePassive,
@@ -371,6 +371,7 @@ enum ExtTimerId {
     TimerOscilliantBindingPlasma,
     TimerCohortCorpseDelay,
     TimerVengefulMarch,
+    TimerMalefactorTyrannize,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
@@ -408,7 +409,7 @@ enum ExtUnitId {
     UnitDiademTarget,
     UnitPennant,
     UnitMindTyrantLink,
-    UnitMindTyrantVictim,
+    UnitMindTyrantMalefactor,
     UnitInfestingMatraleth,
     UnitPlagueSource,
 
@@ -493,6 +494,7 @@ struct UnitExt {
     u32                     unar_solitary_focus_stacks;
     u32                     unar_distance_traveled;
     u32                     indomitable_annex_stacks;
+    u32                     last_malefactor_player;
 
     u32						values[ValueCount];
     u32						timers[TimerCount];

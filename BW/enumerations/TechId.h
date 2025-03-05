@@ -64,7 +64,7 @@ namespace TechId {
         Restoration				= 24,
         LanifectDisruptionField	= 25,
         UnusedTech26			= 26, // (unused)
-        Tyranny					= 27,
+        MindTyrantMaledictus	= 27,
         DarkArchonMeld			= 28, // (default)
         Feedback				= 29, // (default)
         LuminaryAuralAssault	= 30,
@@ -123,7 +123,7 @@ namespace BwTech {
         Restoration					=  0,
         LanifectDisruptionField     =  1,
         UnusedTech26				=  2,	// (unused)
-        Tyranny						=  3,
+        MindTyrantMaledictus						=  3,
         DarkArchonMeld				=  4,	// (default)
         Feedback					=  5,	// (default)
         LuminaryAuralAssault		=  6,

@@ -124,14 +124,16 @@ namespace ProtossCantavis {
 inline constexpr s32 HallucinatingFieldTimer = 10 * 24 + 1;
 }
 
+namespace ProtossMindTyrant {
+inline constexpr s32 MaledictusCastTime = 5 * 24;
+inline constexpr s32 MaledictusRange = 10 * 32;
+inline constexpr s32 MalefactorTyrannizeDuration = 1 * 24;
+inline constexpr s32 MaelstromTimer = 5 * 24 + 1;
+}
+
 namespace ProtossArchon {
 inline constexpr s32 AstralAegisRange = 3 * 32;
 inline constexpr s32 AstralAegisShieldHeal = 50 * 256;
-}
-
-namespace ProtossMindTyrant {
-inline constexpr s32 TyrannyMaxStacks = 48;
-inline constexpr s32 MaelstromTimer = 16; // 5 seconds
 }
 
 namespace ProtossUnar {

@@ -158,12 +158,12 @@ namespace hooks {
                 }
                 helper::issue_tri_target_order(OrderId::Hallucination1, 0, 0);
             } break;
-            case TechId::Tyranny: {
+            case TechId::MindTyrantMaledictus: {
                 if (can_play_local_sound) {
                     u32 action_sound = bw::rand_between_local(SoundId::Protoss_DARCHON_PDaPss00_WAV, SoundId::Protoss_DARCHON_PDaPss01_WAV);
                     bw::play_action_sound(action_sound, *g_active_portrait_unit);
                 }
-                helper::issue_tri_target_order(OrderId::CastTyranny, 0, 0);
+                helper::issue_tri_target_order(OrderId::CastMaledictus, 0, 0);
             } break;
             case TechId::MindTyrantMaelstrom: {
                 helper::issue_tri_target_order(OrderId::CastMaelstrom, 0, 0);

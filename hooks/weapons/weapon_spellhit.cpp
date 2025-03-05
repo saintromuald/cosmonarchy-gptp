@@ -506,15 +506,8 @@ namespace hooks {
 
 	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterate_units_at_location_target_proc - 004E8280 - Pr0nogo
 	bool maelstrom_proc(Unit* target, Unit* source) { // 004F6760, always returns 0
-		s32 unit_status = target->status;
-		if (unit_status & UnitStatus::IsHallucination) {
-			helper::orders_self_destructing(target);
-		} else {
-			if (target != source && !(unit_status & UnitStatus::Invincible)) {
-				if (!(unit_status & UnitStatus::Burrowed)) {
-					helper::apply_maelstrom(target, 4 * 24);
-				}
-			}
+		if (target != source && !target->is_invincible() && !target->is_burrowed()) {
+			helper::apply_maelstrom(target, ProtossMindTyrant::MaelstromTimer);
 		}
 		return 0;
 	}
@@ -522,20 +515,18 @@ namespace hooks {
 	// No bullet because this function is called in another context without the bullet.
 	void mind_control_hit(Unit* attacker, Unit* target) { // 004F6910
 		bw::decloak_passive_proc(attacker);
-		UnitExt* attacker_ext = get_unit_ext(attacker);
-		Unit* old_victim = attacker_ext->units[UnitMindTyrantVictim];
+		auto& attacker_ext = attacker->ext();
+		Unit* old_victim = attacker_ext.units[UnitMindTyrantMalefactor];
 		if (old_victim) {
-			clear_tyranny(attacker, old_victim);
+			clear_maledictus(attacker, old_victim);
 		}
-		UnitExt* target_ext = get_unit_ext(target);
-		if (!target_ext->units[UnitMindTyrantLink]) {
-			target_ext->values[ValueMindTyrantTyranny] = 1;
-			target_ext->units[UnitMindTyrantLink] = attacker;
-
-			UnitExt* attacker_ext = get_unit_ext(attacker);
-			attacker_ext->units[UnitMindTyrantVictim] = target;
+		auto& target_ext = target->ext();
+		if (!target_ext.units[UnitMindTyrantLink]) { // Revisit
+			target_ext.values[ValueIsMalefactor] = 1;
+			target_ext.units[UnitMindTyrantLink] = attacker;
+			attacker->ext().units[UnitMindTyrantMalefactor] = target;
 		}
-		helper::play_sound_from_unit(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
+		bw::play_sound(SoundId::Protoss_Darchon_mind_wav, target);
 	}
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
@@ -610,11 +601,7 @@ namespace hooks {
 			helper::SErrSetLastError(87);
 			return false;
 		}
-		if (unit->status & UnitStatus::IsHallucination) {
-			return false;
-		}
-		s16 unit_id = unit->id;
-		if (unit_id_is_resource_node(unit_id, false) || unit_id_is_hangar_unit((UnitId::Enum)unit_id) || unit->is_addon() || unit->player == player) {
+		if (unit_id_is_resource_node(unit->id, false) || unit_id_is_hangar_unit((UnitId::Enum)unit->id) || unit->is_addon() || unit->player == player) {
 			return false;
 		}
 		if (helper::unit_is_geyser(unit)) {
@@ -631,7 +618,7 @@ namespace hooks {
 		if (helper::unit_has_hangar(unit)) {
 			helper::for_hangar_units(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player);
 		}
-		if (unit->status & UnitStatus::GroundedBuilding) {
+		if (unit->is_grounded_building()) {
 			Unit* connected_unit = unit->building.addon;
 			if (connected_unit) {
 				helper::give_all_unit_properties_to_player(connected_unit, player);

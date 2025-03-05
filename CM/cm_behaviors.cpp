@@ -416,11 +416,11 @@ void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target) {
 		return;
 	}
 
-	UnitExt* target_ext = get_unit_ext(target);
-	if (!target_ext->values[ValueMindControlOriginalPlayer]) {
-		target_ext->values[ValueMindControlOriginalPlayer] = target->player + 1;
+	auto& target_ext = target->ext();
+	if (!target_ext.values[ValueMindControlOriginalPlayer]) {
+		target_ext.values[ValueMindControlOriginalPlayer] = target->player + 1;
 	}
-	target_ext->values[ValueMindControllerUnitId] = mind_controller_unit_id;
+	target_ext.values[ValueMindControllerUnitId] = mind_controller_unit_id;
 
 	// Recurse
 	for (u32 i = 0; i < TransportCap; ++i) {
@@ -446,8 +446,8 @@ void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target) {
 	}
 
 	// Global recede timer for all control abilities
-	target_ext->values[ValueMindControlPlayer] = player + 1;
-	target_ext->timers[TimerMindControlRecede] = 5 * 24;
+	target_ext.values[ValueMindControlPlayer] = player + 1;
+	target_ext.timers[TimerMindControlRecede] = 5 * 24;
 
 	// Obtain control
 	target->give_to(player);
@@ -461,17 +461,32 @@ void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target) {
 		}
 		bw::add_unit_overlay(target, overlay_id);
 		helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
-		target_ext->values[ValueControlledByDemiurge] = 1;
+		target_ext.values[ValueControlledByDemiurge] = 1;
 	} else if (mind_controller_unit_id == UnitId::ProtossMindTyrant) {
 		bw::add_unit_overlay(target, ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
 	}
 }
 
-void clear_tyranny(Unit* tyrant, Unit* victim) {
-	UnitExt* tyrant_ext = get_unit_ext(tyrant);
-	UnitExt* victim_ext = get_unit_ext(victim);
-	victim_ext->units[UnitMindTyrantLink] = 0;
-	tyrant_ext->units[UnitMindTyrantVictim] = 0;
+void clear_maledictus(Unit* tyrant, Unit* malefactor) {
+	tyrant->ext().units[UnitMindTyrantMalefactor] = 0;
+
+	auto& malefactor_ext = malefactor->ext();
+	malefactor_ext.units[UnitMindTyrantLink] = 0;
+	malefactor->update_speed();
+}
+
+void clear_maledictus_if_needed(Unit* unit) {
+	auto& unit_ext = unit->ext();
+	if (unit->id == UnitId::ProtossMindTyrant) {
+		Unit* malefactor = unit_ext.units[UnitMindTyrantMalefactor];
+		if (malefactor) {
+			clear_maledictus(unit, malefactor);
+		}
+	}
+	auto& tyrant = unit_ext.units[UnitMindTyrantLink];
+	if (tyrant) {
+		clear_maledictus(tyrant, unit);
+	}
 }
 
 void recede_mind_control(Unit* target) {

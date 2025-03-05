@@ -489,7 +489,7 @@ enum Enum {
     Restoration     = 16,
     DisruptionWeb   = 17,
     CorrosiveAcid   = 18,
-    Tyranny         = 19,
+    MindTyrantMaledictus         = 19,
     Feedback        = 20,
     OpticalFlare    = 21,
     Maelstrom       = 22,

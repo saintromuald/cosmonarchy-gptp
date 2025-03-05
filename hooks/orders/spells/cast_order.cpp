@@ -91,7 +91,7 @@ namespace hooks {
 					bool has_target = false;
 					u16 error_stat_string = 0;
 					if (target) {
-						if (!(target->status & UnitStatus::Invincible)) {
+						if (!target->is_invincible()) {
 						LABEL_20:
 							if (fow_unit_id == UnitId::None) {
 								error_stat_string = (u32)helper::get_target_unit_ability_error_stat_string(target, caster->player, tech_id);

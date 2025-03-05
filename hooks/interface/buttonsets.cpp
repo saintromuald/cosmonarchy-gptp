@@ -2536,6 +2536,11 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ProtossMindTyrant: {
+                                    if (current_button->icon_id == IconId::Feedback) { // Villanous Fervor
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ProtossArchon: {
                                     if (current_button->icon_id == IconId::RechargeShields	  // Astral Aegis
                                     ||	current_button->icon_id == IconId::LegEnhancements)	{ // Vengeance
