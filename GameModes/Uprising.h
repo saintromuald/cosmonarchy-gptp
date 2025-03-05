@@ -170,32 +170,32 @@ private:
                 .unit_id = UnitId::TerranStockade,
                 .starting_waves = {
                     {
-                        {2, UnitId::TerranSavant},
+                        {2, UnitId::TerranSavantEntropyGauntlets},
                     },
                     {
                         {2, UnitId::TerranMaverick},
-                        {4, UnitId::TerranSavant},
+                        {4, UnitId::TerranSavantEntropyGauntlets},
                     },
                     {
                         {2, UnitId::TerranMaverick},
                         {2, UnitId::TerranHarakan},
-                        {6, UnitId::TerranSavant},
+                        {6, UnitId::TerranSavantEntropyGauntlets},
                     },
                     {
-                        {12, UnitId::TerranSavant},
+                        {12, UnitId::TerranSavantEntropyGauntlets},
                     },
                 },
                 .repeating_waves = {
                     {
                         {12, UnitId::TerranMaverick},
-                        {6, UnitId::TerranSavant},
+                        {6, UnitId::TerranSavantEntropyGauntlets},
                     },
                     {
                         {8, UnitId::TerranMaverick},
-                        {9, UnitId::TerranSavant},
+                        {9, UnitId::TerranSavantEntropyGauntlets},
                     },
                     {
-                        {15, UnitId::TerranSavant},
+                        {15, UnitId::TerranSavantEntropyGauntlets},
                     },
                 },
             },

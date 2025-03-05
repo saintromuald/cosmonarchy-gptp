@@ -922,7 +922,7 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranEidolon:
-                                    case UnitId::TerranSavant: {
+                                    case UnitId::TerranSavantEntropyGauntlets: {
                                         if (!bw::all_selected_units_have_addon(UnitId::TerranCovenant) || bw::unit_queue_full(unit)) {
                                             current_button_state = Button_State::Invisible;
                                         } else {
@@ -2151,10 +2151,17 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranSavant: {
-                                    if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0) { // Entropy Gauntlets
+                                case UnitId::TerranSavantEntropyGauntlets: {
+                                    if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Entropy Gauntlets
                                         current_button_state = Button_State::Enabled;
-                                    } else if (current_button->icon_id == IconId::IonThrusters && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) > 0) { // Power Siphon
+                                    } else if (current_button->icon_id == IconId::IonThrusters) { // Power Siphon
+                                        current_button_state = Button_State::Disabled;
+                                    }
+                                } break;
+                                case UnitId::TerranSavantPowerSiphon: {
+                                    if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Entropy Gauntlets
+                                        current_button_state = Button_State::Disabled;
+                                    } else if (current_button->icon_id == IconId::IonThrusters) { // Power Siphon
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2950,7 +2957,7 @@ namespace hooks {
                             }
                         }
 
-                        if (unit->id == UnitId::TerranSavant) {
+                        if (unit->id == UnitId::TerranSavantEntropyGauntlets) {
                             if (unit_ext->timers[TimerSavantFormSwitchCooldown] > 1) {
                                 current_button_state = Button_State::Disabled;
                             } else {

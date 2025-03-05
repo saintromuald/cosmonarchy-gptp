@@ -294,17 +294,19 @@ bool unit_id_can_do_controlled_demolition(u32 unit_id) {
 
 UnitId::Enum unit_id_to_siege_mode(UnitId::Enum unit_id) {
     switch (unit_id) {
-        case UnitId::TerranShamanSupportMode:     return UnitId::TerranShamanVisionaryMode; 
-        case UnitId::TerranMatadorTankMode:       return UnitId::TerranMatadorCinderMode;   
-        case UnitId::TerranPhalanxTankMode:       return UnitId::TerranPhalanxSiegeMode;   
-        case UnitId::TerranMadrigalImperiosoMode: return UnitId::TerranMadrigalFuriaMode;  
-    //	case UnitId::TerranCuirassTankMode:       return UnitId::TerramCuirassTrenchMode;  
+        case UnitId::TerranSavantEntropyGauntlets: return UnitId::TerranSavantPowerSiphon; 
+        case UnitId::TerranShamanSupportMode:      return UnitId::TerranShamanVisionaryMode; 
+        case UnitId::TerranMatadorTankMode:        return UnitId::TerranMatadorCinderMode;   
+        case UnitId::TerranPhalanxTankMode:        return UnitId::TerranPhalanxSiegeMode;   
+        case UnitId::TerranMadrigalImperiosoMode:  return UnitId::TerranMadrigalFuriaMode;  
+    //	case UnitId::TerranCuirassTankMode:        return UnitId::TerramCuirassTrenchMode;  
     }
     return UnitId::None;
 }
 
 UnitId::Enum unit_id_to_tank_mode(UnitId::Enum unit_id) {
     switch (unit_id) {
+        case UnitId::TerranSavantPowerSiphon:   return UnitId::TerranSavantEntropyGauntlets;
         case UnitId::TerranShamanVisionaryMode: return UnitId::TerranShamanSupportMode;
         case UnitId::TerranMatadorCinderMode:   return UnitId::TerranMatadorTankMode;
         case UnitId::TerranPhalanxSiegeMode:    return UnitId::TerranPhalanxTankMode;
@@ -514,7 +516,7 @@ u32 weapon_id_intercepts(u32 weapon_id) {
 bool weapon_id_pierces(u32 weapon_id) {
     switch (weapon_id) {
         case WeaponId::CyprianTwinRailguns:
-        case WeaponId::SavantDiscoidRailgunPiercing:
+        case WeaponId::SavantDiscoidRailgunEntropy:
         case WeaponId::AutocratEminenceRifle:
         case WeaponId::SevenstepGeometricRiflePiercing:
         case WeaponId::RamessesPharoahCannons:
@@ -639,6 +641,18 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueCyprianLaunchPos;
             offsets.count = 2;
+            return &offsets;
+        } break;
+        case WeaponId::SavantDiscoidRailgunEntropy: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueSavantLaunchPos1;
+            offsets.count = 1;
+            return &offsets;
+        } break;
+        case WeaponId::SavantDiscoidRailgun: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueSavantLaunchPos2;
+            offsets.count = 1;
             return &offsets;
         } break;
         case WeaponId::VultureFragmentationGrenade: {

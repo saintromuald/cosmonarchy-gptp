@@ -4029,19 +4029,6 @@ namespace hooks {
                                     UnitExt* unit_ext = get_unit_ext(unit);
                                     bool set_value = true;
                                     switch (unit->id) {
-                                        case UnitId::TerranSavant: {
-                                            if (unit_ext->timers[TimerSavantFormSwitchCooldown] > 1) {
-                                                set_value = false;
-                                                break;
-                                            }
-                                            u32 sound = value ? SoundId::SavantSwitchA01 : SoundId::SavantSwitchB01;
-                                            helper::play_sound_from_unit(sound, unit, 1, 0);
-                                            
-                                            u32 image_id = value ? ImageId::SavantFormSwitchPower : ImageId::SavantFormSwitchEntropy;
-                                            bw::add_unit_overlay(unit, image_id);
-                                            
-                                            unit_ext->timers[TimerSavantFormSwitchCooldown] = 49;
-                                        } break;
                                         case UnitId::Stroluum: {
                                             bool set_value = false;
                                             if (unit->has_energy_for(TechId::StroluumSkryspawn)) {

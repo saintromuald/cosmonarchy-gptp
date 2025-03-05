@@ -527,7 +527,7 @@ namespace SpriteId {
         ZergMutationPit = 521, // unused
         TerranPaladin = 522,
         TerranMadrigalImperiosoMode = 523,
-        TerranSavant = 524,
+        TerranSavantEntropyGauntlets = 524,
         TerranHadron = 525,
         TerranRotary = 526,
         TerranDrydock = 527, // unused

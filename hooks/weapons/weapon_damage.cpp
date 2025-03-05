@@ -349,7 +349,7 @@ namespace hooks {
 
         // Deal damage, except for Independent damage, which always deals 0
         if (data.damage_type != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0) {
-            if (data.target->status & UnitStatus::IsHallucination) {
+            if (data.target->is_hallucination()) {
                 data.damage = data.target->hitpoints; // Increasing the damage, so we insta kill, but don't inflate other damage calcs
             }
             data.target->damage_hp(data.damage, data.attacker, data.attacking_player_id, data.weapon_id != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
@@ -741,9 +741,9 @@ namespace hooks {
                     } break;
                     case WeaponId::SavantDiscoidRailgun: {
                         // Power Siphon
-                        if (bw::get_generic_rust_value(data.attacker, RustId::ToggleSavantOnhit) && unit_is_combatant(data.target)) {
-                            attacker_ext->values[ValueSavantPowerSiphonBuff]++;
-                            attacker_ext->timers[TimerSavantPowerSiphonBuff] = 2 * 24 + 1;
+                        if (data.attacker->id == UnitId::TerranSavantPowerSiphon && unit_is_combatant(data.target)) {
+                            attacker_ext.values[ValueSavantPowerSiphonBuff]++;
+                            attacker_ext.timers[TimerSavantPowerSiphonBuff] = 2 * 24 + 1;
 
                             Unit* final_target = data.target;
                             if (final_target->subunit && final_target->subunit->is_subunit()) {

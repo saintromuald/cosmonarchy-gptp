@@ -537,13 +537,13 @@ namespace hooks {
         }
 
         if (weapons_dat::flingy_id[weapon_id] != 0) {
-            if (unit->id == UnitId::TerranSavant) {
+            if (unit->id == UnitId::TerranSavantEntropyGauntlets || unit->id == UnitId::TerranSavantPowerSiphon) {
                 u32 sound_id = bw::get_unit_weapon_fire_sound(unit, WeaponId::None);
                 Unit* final_unit = unit;
-                if (unit->status & UnitStatus::InBuilding && unit->connected_unit) { // Nullchecking to protect against attacks firing on the same frame as the garrison's death.
+                if (unit->is_garrisoned() && unit->connected_unit) { // Nullchecking to protect against attacks firing on the same frame as the garrison's death.
                     final_unit = unit->connected_unit;
                 }
-                helper::play_sound_from_unit(sound_id, final_unit, 1, 0);
+                bw::play_sound(sound_id, final_unit);
             }
 
             // Lakizilisk Seismic Spines behavior
@@ -621,14 +621,14 @@ namespace hooks {
                     } break;
                     case WeaponId::SavantDiscoidRailgun: {
                         // Entropy Gauntlets
-                        if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
+                        if (unit->id != UnitId::TerranSavantPowerSiphon) {
                             Unit* final_unit = unit;
-                            if (unit->status & UnitStatus::InBuilding && unit->connected_unit) { // Nullchecking to protect against attacks firing on the same frame as the garrison's death.
+                            if (unit->is_garrisoned() && unit->connected_unit) { // Nullchecking to protect against attacks firing on the same frame as the garrison's death.
                                 final_unit = unit->connected_unit;
                             }
                             Thingy* overlay = helper::create_thingy(SpriteId::EntropyGauntletsOverlay, final_unit->position.x, final_unit->position.y, final_unit->player);
                             overlay->sprite->elevation = final_unit->sprite->elevation + 1;
-                            fire_bullet(unit, WeaponId::SavantDiscoidRailgunPiercing, unit->order_target);
+                            fire_bullet(unit, WeaponId::SavantDiscoidRailgunEntropy, unit->order_target);
                         } else {
                             fire_bullet(unit, weapon_id, unit->order_target);
                         }
@@ -831,7 +831,7 @@ namespace hooks {
                 hooks::weapon_bullet_hit(bullet, target, 1);
             } break;
             // Same as default, but red effect
-            case WeaponId::SavantDiscoidRailgunPiercing: {
+            case WeaponId::SavantDiscoidRailgunEntropy: {
                 g_iquare_globals->add_bullet_multihit(bullet, target);
                 bw::create_and_init_thingy(SpriteId::BurstLasersImpactRed_Damageless, cp.x, cp.y, bullet->player);
                 hooks::weapon_bullet_hit(bullet, target, 1);
@@ -1096,7 +1096,7 @@ namespace hooks {
         } else if (weapon_id_pierces(bullet->weapon_id)) {
             f32 line_width = 16;
             switch (bullet->weapon_id) {
-                case WeaponId::SavantDiscoidRailgunPiercing:
+                case WeaponId::SavantDiscoidRailgunEntropy:
                 case WeaponId::AutocratEminenceRifle:
                 case WeaponId::ClaymoreHarpoonRailgun:
                 case WeaponId::WyvernJacksonCannon:

@@ -57,7 +57,7 @@ namespace UnitId {
         TerranStriga										= 148,		// Overmind
         TerranSiren											= 151,		// Cerebrate
         TerranPaladin										= 186,		// Ruins
-        TerranSavant										= 187,		// Kyadarin Crystal Formation
+        TerranSavantEntropyGauntlets						= 187,		// Kyadarin Crystal Formation
         TerranBlackjack										= 195,		// Terran Beacon
         TerranClaymore										= 196,		// Protoss Beacon
         TerranAnticthon										= 211,		// Left Wall Flame Trap
@@ -91,6 +91,7 @@ namespace UnitId {
         TerranMadrigalTurretImperiosoMode					= 380,
         TerranMadrigalFuriaMode								= 381,
         TerranMadrigalTurretFuriaMode						= 382,
+        TerranSavantPowerSiphon                             = 428,
 
     // Terran-Unit-Factional
         TerranCohort										= 50,		// Infested Terran

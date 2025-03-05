@@ -220,7 +220,7 @@ namespace flingy_id {
 		ZergMutationPit = 214, // unused
 		TerranPaladin = 215,
 		TerranMadrigalImperiosoMode = 216,
-		TerranSavant = 217,
+		TerranSavantEntropyGauntlets = 217,
 		TerranHadron = 218,
 		TerranRotary = 219,
 		TerranDrydock = 220, // unused

@@ -165,6 +165,7 @@ namespace hooks {
             } break;
 
             // Hardcode ideal movement speeds
+            case UnitId::TerranSavantPowerSiphon:
             case UnitId::TerranRamesses:
             case UnitId::ProtossOptecton: {
                 speed *= 0.8;
@@ -182,7 +183,6 @@ namespace hooks {
             case UnitId::TerranCleric:
             case UnitId::TerranClericFuturist:
             case UnitId::TerranEidolon:
-            case UnitId::TerranSavant:
             case UnitId::TerranMadcap:
             case UnitId::TerranApostle:
             case UnitId::TerranOlympian:
@@ -205,6 +205,7 @@ namespace hooks {
             case UnitId::ZergKagralisk: {
                 speed *= 1.2;
             } break;
+            case UnitId::TerranSavantEntropyGauntlets:
             case UnitId::TerranHarakan:
             case UnitId::TerranHeracles:
             case UnitId::TerranMatadorTankMode:

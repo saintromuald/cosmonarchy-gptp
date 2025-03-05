@@ -62,7 +62,8 @@ namespace hooks {
                 case UnitId::TerranCyprian: {
                     return helper::get_random_unit_response(SoundId::CyprianOrderAggressive01, SoundId::CyprianOrderAggressive04);
                 } break;
-                case UnitId::TerranSavant: {
+                case UnitId::TerranSavantEntropyGauntlets:
+                case UnitId::TerranSavantPowerSiphon: {
                     return helper::get_random_unit_response(SoundId::SavantOrderAggressive01, SoundId::SavantOrderAggressive04);
                 } break;
                 case UnitId::TerranMadcap: {
@@ -226,7 +227,8 @@ namespace hooks {
                     case UnitId::TerranShamanSupportMode: {
                         ready_sound = helper::get_random_unit_response(SoundId::ShamanReady01, SoundId::ShamanReady03);
                     } break;
-                    case UnitId::TerranSavant: {
+                    case UnitId::TerranSavantEntropyGauntlets:
+                    case UnitId::TerranSavantPowerSiphon: {
                         ready_sound = helper::get_random_unit_response(SoundId::SavantReady01, SoundId::SavantReady03);
                     } break;
                     case UnitId::TerranMadcap: {

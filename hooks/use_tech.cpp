@@ -92,14 +92,6 @@ namespace hooks {
             case TechId::TalosSalvage: {
                 helper::issue_tri_target_order(OrderId::TalosSalvage, 0, 0);
             } break;
-            case TechId::SavantOnhitToggle: {
-                s32 action = !bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit);
-                if (can_play_local_sound) {
-                    u32 action_sound = action ? bw::rand_between_local(SoundId::SavantSwitchPierce01, SoundId::SavantSwitchPierce03) : bw::rand_between_local(SoundId::SavantSwitchSteal01, SoundId::SavantSwitchSteal03);
-                    bw::play_action_sound(action_sound, *g_active_portrait_unit);
-                }
-                queue_generic_ability(RustId::ToggleSavantOnhit, action);
-            } break;
             case TechId::ApostleLazarusAgent: {
                 if (can_play_local_sound) {
                     u32 action_sound = bw::rand_between_local(SoundId::ApostleToggleLazarus01, SoundId::ApostleToggleLazarus03);
