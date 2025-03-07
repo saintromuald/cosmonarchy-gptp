@@ -295,6 +295,7 @@ namespace hooks {
 						case UnitId::ZergKagralisk:
 						case UnitId::ZergEvigrilisk:
 						case UnitId::ZergAlmaksalisk:
+						case UnitId::ZergLakizilisk:
 						case UnitId::ZergGorgrokor:
 						case UnitId::ZergVilgorokor:
 						case UnitId::ZergGeszithalor: {

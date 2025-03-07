@@ -952,6 +952,7 @@ u32 get_mutate_image_id(u32 unit_id) {
         case UnitId::ZergKagralisk:		return ImageId::KagraliskMutate;
         case UnitId::ZergEvigrilisk:	return ImageId::EvigriliskMutate;
         case UnitId::ZergAlmaksalisk:	return ImageId::AlmaksaliskMutate;
+        case UnitId::ZergLakizilisk:	return ImageId::LakiziliskMutate;
         case UnitId::ZergGorgrokor:		return ImageId::GorgrokorMutate;
         case UnitId::ZergVilgorokor:	return ImageId::VilgorokorMutate;
         case UnitId::ZergGeszithalor:	return ImageId::GeszithalorMutate;
@@ -1061,7 +1062,8 @@ u32 weapon_id_is_secondary(u32 weapon_id) {
 
 bool unit_id_has_custom_air_weapon(u32 unit_id) {
     return unit_id == UnitId::TerranDurendal
-        || unit_id == UnitId::ZergOkrimnilisk;
+        || unit_id == UnitId::ZergOkrimnilisk
+        || unit_id == UnitId::ZergZobriolisk;
 }
 
 bool weapon_id_returns_to_attacker(u32 weapon_id) {

@@ -1946,6 +1946,17 @@ namespace hooks {
                     }
                 }
             } break;
+            case UnitId::ZergZobriolisk: {
+                if (unit->is_burrowed() && bw::unit_can_fire_secondary_weapon(unit)) {
+                    if (fire_multiple(unit, WeaponId::ZobrioliskRapidSpinesAir, 1, FilterEnemy | FilterNoGround, {})) {
+                        unit->sprite->create_top_overlay(ImageId::ZobrioliskBurrowWeaponfireOverlay);
+                    //  bw::play_sound({SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03}, unit->position);
+                        unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
+                    } else {
+                        unit_ext->timers[TimerSecondaryWeaponCooldown] = 3;
+                    }
+                }
+            } break;
             case UnitId::ProtossAnthelion: {
                 if (!unit_ext->timers[TimerAnthelionAttackCooldown]) {
                     bool attacked = false;
@@ -1953,7 +1964,7 @@ namespace hooks {
                         u32 dist = bw::distance_between(unit->position, target->position);
                         if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon] && unit->can_attack_target(target)) {
                             UnitExt* target_ext = get_unit_ext(target);
-                            if (!(units_dat::base_property[target->id] & UnitProperty::Building)) {
+                            if (!target->is_building()) {
                                 target_ext->units[UnitAnthelionGravityWellSource] = unit;
                                 const u32 displacement_time = 5;
                                 Vec32 diff = bw::vec_between(unit->sprite->position, target->sprite->position);
@@ -2086,8 +2097,7 @@ namespace hooks {
                 if (bw::unit_can_fire_secondary_weapon(unit)) {
                     if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, {.fire_opts = {.apply_cooldown = false}})) {
                         unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
-                        u32 sound_id = bw::rand_between(SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03);
-                        helper::play_sound_from_unit(sound_id, unit, 1, 0);
+                        bw::play_sound({SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03}, unit->position);
                         unit_ext->timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
                     } else {
                         unit_ext->timers[TimerSecondaryWeaponCooldown] = 3;
