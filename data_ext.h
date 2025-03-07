@@ -372,6 +372,7 @@ enum ExtTimerId {
     TimerCohortCorpseDelay,
     TimerVengefulMarch,
     TimerMalefactorTyrannize,
+    TimerMalefactorStun,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
