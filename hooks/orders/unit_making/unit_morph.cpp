@@ -203,12 +203,14 @@ namespace hooks {
 						case UnitId::ZergAxitrilisk:
 						case UnitId::ZergMortothrokor:
 						case UnitId::ZergHydralisk:
+						case UnitId::ZergHydraliskOrkoti:
 						case UnitId::ZergIzirokor:
 						case UnitId::ZergIziralisk:
 						case UnitId::ZergKagralisk:
 						case UnitId::ZergEvigrilisk:
 						case UnitId::ZergKeskathalor:
 						case UnitId::ZergZoryusthaleth:
+						case UnitId::ZergInzorthrokor:
 						case UnitId::ZergLakizilisk:
 						case UnitId::ZergKonvilisk:
 						case UnitId::ZergVilgorokor:
@@ -301,7 +303,8 @@ namespace hooks {
 						case UnitId::ZergGeszithalor: {
 							animation = IscriptAnimation::SpecialState1;
 						} break;
-						case UnitId::ZergZoryusthaleth: {
+						case UnitId::ZergZoryusthaleth: 
+						case UnitId::ZergInzorthrokor: {
 							animation = IscriptAnimation::Built;
 						} break;
 						case UnitId::ZergUltrokor:
@@ -440,7 +443,8 @@ namespace hooks {
 				}
 				return false;
 			} break;
-			case UnitId::ZergHydralisk: {
+			case UnitId::ZergHydralisk: 
+			case UnitId::ZergHydraliskOrkoti: {
 				if (morph_unit_id == UnitId::ZergBactalisk) {
 					return true;
 				}
@@ -489,7 +493,8 @@ namespace hooks {
 				}
 				return false;
 			} break;
-			case UnitId::ZergZoryusthaleth: {
+			case UnitId::ZergZoryusthaleth:
+			case UnitId::ZergInzorthrokor: {
 				if (morph_unit_id == UnitId::ZergUltrokor) {
 					return true;
 				}

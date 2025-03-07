@@ -559,6 +559,7 @@ bool is_conventional_unit_morph_source(u16 id, bool allow_larvae) {
         case UnitId::ZergAxitrilisk:
         case UnitId::ZergMortothrokor:
         case UnitId::ZergHydralisk:
+        case UnitId::ZergHydraliskOrkoti:
         case UnitId::ZergIzirokor:
         case UnitId::ZergIziralisk:
         case UnitId::ZergSkithrokor:
@@ -568,6 +569,7 @@ bool is_conventional_unit_morph_source(u16 id, bool allow_larvae) {
         case UnitId::ZergKeskathalor:
         case UnitId::ZergGeszithalor:
         case UnitId::ZergZoryusthaleth:
+        case UnitId::ZergInzorthrokor:
         case UnitId::ZergLakizilisk:
         case UnitId::ZergGorgrokor:
         case UnitId::ZergKonvilisk:
@@ -1228,7 +1230,7 @@ bool is_passive_decloakable(Unit* unit) {
     if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak) {
         return true;
     }
-    UnitExt& unit_ext = unit->ext();
+    auto& unit_ext = unit->ext();
     if (unit_ext.values[ValueTriggerBehaviorSteadyShroud]) {
         return true;
     }
@@ -1242,7 +1244,7 @@ bool is_proximity_decloakable(Unit* unit) {
     if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && unit_id_has_proximity_cloak(unit->id)) {
         return true;
     }
-    UnitExt& unit_ext = unit->ext();
+    auto& unit_ext = unit->ext();
     if (unit_ext.values[ValueTriggerBehaviorProximityCloak]) {
         return true;
     }
@@ -2035,14 +2037,30 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
         case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;
         case UnitId::ZergTosgrilisk:			return UnitId::ZergMutalisk;
-        case UnitId::ZergBactalisk:				return UnitId::ZergHydralisk;
+        case UnitId::ZergBactalisk: {
+            if (unit->player < PlayerLimit) {
+                switch (g_globals->players[unit->player].faction) {
+                    case Faction::ZergOrkotiTendril: return UnitId::ZergHydraliskOrkoti;
+                    default:						 return UnitId::ZergHydralisk;
+                }
+            }
+            return UnitId::ZergHydralisk;
+        }
         case UnitId::ZergVithrilisk:			return UnitId::ZergSkithrokor;
         case UnitId::ZergCherbrathalor:			return UnitId::ZergKagralisk;
         case UnitId::ZergOkrimnilisk:			return UnitId::ZergEvigrilisk;
         case UnitId::ZergAlgoztalisk:			return UnitId::ZergAlmaksalisk;
         case UnitId::ZergKethrostalor:			return UnitId::ZergKeskathalor;
         case UnitId::ZergAlkajelisk:			return UnitId::ZergGeszithalor;
-        case UnitId::ZergUltrokor:				return UnitId::ZergZoryusthaleth;
+        case UnitId::ZergUltrokor: {
+            if (unit->player < PlayerLimit) {
+                switch (g_globals->players[unit->player].faction) {
+                case Faction::ZergImicrenTendril: return UnitId::ZergInzorthrokor;
+                default:						  return UnitId::ZergZoryusthaleth;
+                }
+            }
+            return UnitId::ZergIzirokor;
+        }
         case UnitId::ZergZobriolisk:			return UnitId::ZergLakizilisk;
         case UnitId::ZergZarcavrokor:			return UnitId::ZergGorgrokor;
         case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
@@ -2051,8 +2069,8 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergTethzorokor: {
             if (unit->player < PlayerLimit) {
                 switch (g_globals->players[unit->player].faction) {
-                    case Faction::ZergZorthosTendril:   return UnitId::ZergIziralisk;
-                    default:							return UnitId::ZergIzirokor;
+                    case Faction::ZergZorthosTendril: return UnitId::ZergIziralisk;
+                    default:						  return UnitId::ZergIzirokor;
                 }
             } else {
                 return UnitId::ZergIzirokor;
@@ -2061,8 +2079,8 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergKalkalisk: {
             if (unit->player < PlayerLimit) {
                 switch (g_globals->players[unit->player].faction) {
-                    case Faction::ZergZorthosTendril:   return UnitId::ZergNathrelisk;
-                    default:							return UnitId::ZergNathrokor;
+                    case Faction::ZergZorthosTendril: return UnitId::ZergNathrelisk;
+                    default:						  return UnitId::ZergNathrokor;
                 }
             } else {
                 return UnitId::ZergNathrokor;
@@ -3751,6 +3769,7 @@ u32 get_decloak_sound_id(Unit* unit) {
             return SoundId::Terran_PHOENIX_TPhClo01_WAV;
         }
     }
+    return SoundId::Terran_PHOENIX_TPhClo01_WAV;
 }
 
 void launch_return_missile(Unit* unit, u32 weapon_id) {

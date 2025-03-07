@@ -164,6 +164,13 @@ namespace WeaponId {
         IziraliskCorrosiveBioplasma			= 221,
         EcclesiastKhalendricAvengingBlaster = 224,
         AshguardPhaseCremator               = 229,
+        QuazrokorQuazrokSpray               = 232,
+        DracadinOrderPhaseDisruptor         = 233,
+        TiangouMoonboundSalvo               = 234,
+        EidolonNydusRevenantRifle           = 235,
+        MaverickFuturistGaussSlugger        = 236,
+        HydraliskOrkotiNeedleSpores         = 237,
+        InzorthrokorInzorReflux             = 238,
 
         // Terran \\
             

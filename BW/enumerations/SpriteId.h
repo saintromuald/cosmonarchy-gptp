@@ -907,6 +907,12 @@ namespace SpriteId {
 
         Corpse_Renesair                 = 973,
 
+        Corpse_DracadinOrder            = 982,
+
+        Corpse_HydraliskOrkoti          = 994,
+
+        Corpse_Inzorthrokor             = 996,
+
         Corpse_ZergBuildingSmall	    = 186,
         Corpse_ZergBuildingLarge	    = 187,
     };

@@ -404,11 +404,11 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
     u32 pos_x = x + image->horizontal_offset + sprite->position.x;
     u32 pos_y = y + image->vertical_offset   + sprite->position.y;
 
+    Unit* unit = *g_active_iscript_unit;
     if (SpriteId::is_corpse((SpriteId::Enum)id)) {
-        Unit* unit = *g_active_iscript_unit;
         if (unit) {
-            UnitExt* unit_ext = get_unit_ext(unit);
-            if (unit_ext->values[ValueNoCorpse]) {
+            auto& unit_ext = unit->ext();
+            if (unit_ext.values[ValueNoCorpse]) {
                 return 0;
             }
 
@@ -416,6 +416,22 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
                 sprite->create_overlay(ImageId::ZergAirDeathExplosion_Small);
                 return 0;
             }
+        }
+    }
+
+    // Override custom corpses
+    if (unit) {
+        switch (id) {
+            case SpriteId::Corpse_Dracadin: {
+                if (unit->id == UnitId::ProtossDracadinOrder) {
+                    id = SpriteId::Corpse_DracadinOrder;
+                }
+            } break;
+            case SpriteId::Corpse_Hydralisk: {
+                if (unit->id == UnitId::ZergHydraliskOrkoti) {
+                    id = SpriteId::Corpse_HydraliskOrkoti;
+                }
+            } break;
         }
     }
 
@@ -438,9 +454,9 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
                     thingy_ext->mine_count = unit->mine_carrier.mine_count;
                 }
 
-                UnitExt* unit_ext = get_unit_ext(unit);
-                if (unit_ext->timers[TimerAutocratControlledOpposition]) {
-                    reclaim_corpse(thingy, unit_ext->values[ValueAutocratControlledOppositionPlayer]);
+                auto& unit_ext = unit->ext();
+                if (unit_ext.timers[TimerAutocratControlledOpposition]) {
+                    reclaim_corpse(thingy, unit_ext.values[ValueAutocratControlledOppositionPlayer]);
                 }
             }
         }

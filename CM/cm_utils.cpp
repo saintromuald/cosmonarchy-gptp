@@ -459,8 +459,8 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::ZergImicrenTendril: {
             switch (unit_id) {
-            //  case UnitId::ZergQuazilisk:     return UnitId::ZergQuazrokor;
-            //  case UnitId::ZergZoryusthaleth: return UnitId::ZergInzorthrokor;
+                case UnitId::ZergQuazilisk:     return UnitId::ZergQuazrokor;
+                case UnitId::ZergZoryusthaleth: return UnitId::ZergInzorthrokor;
             }
         } break;
         case Faction::ZergGoszirithTendril: {

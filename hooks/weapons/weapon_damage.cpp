@@ -761,6 +761,7 @@ namespace hooks {
                 }
 
                 switch (data.weapon_id) {
+                    case WeaponId::InzorthrokorInzorReflux:
                     case WeaponId::ZergBlissfulEmbrace:
                     case WeaponId::AkistrokorHarryingTalons: {
                         mark_infesting(data.attacking_player_id, data.target);

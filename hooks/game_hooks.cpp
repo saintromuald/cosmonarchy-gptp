@@ -3420,6 +3420,7 @@ namespace hooks {
                         offset_y = units_dat::unit_bounds[unit->id].top / 2 + 6;
                     } break;
                     case UnitId::ZergHydralisk:
+                    case UnitId::ZergHydraliskOrkoti:
                     case UnitId::ZergKagralisk: {
                         image_id = ImageId::SantaHatSmall17;
                         offset_y = units_dat::unit_bounds[unit->id].top / 2 + 9;
