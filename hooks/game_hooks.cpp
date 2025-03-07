@@ -2597,6 +2597,12 @@ namespace hooks {
             should_update_speed = true;
         }
 
+        // Unfreeze Malefactor victims
+        if (unit_ext.timers[TimerMalefactorStun] == 1) {
+            unit_ext.timers[TimerDemiurgeWorshipOverlayDelay] = 0;
+            unit->unfreeze();
+        }
+
         {
             Unit* master = g_unit_search
                 .radial_ex(unit, 6 * 32, 0, {UnitId::ProtossDemiurge})
@@ -3367,7 +3373,10 @@ namespace hooks {
         }
 
         // Generic speed timers
-        if (unit_ext.timers[TimerAvenge] == 1 || unit_ext.timers[TimerZergAdrenalFrenzy] == 1 || unit_ext.timers[TimerVengefulMarch] == 1) {
+        if (unit_ext.timers[TimerAvenge] == 1 || unit_ext.timers[TimerZergAdrenalFrenzy] == 1) {
+            should_update_speed = true;
+        }
+        if (unit_ext.timers[TimerVengefulMarch]) {
             should_update_speed = true;
         }
 

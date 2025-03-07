@@ -588,7 +588,13 @@ namespace hooks {
 
             // Ignore Carapace Swarm!
             // START
-            if (!bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !data.target->is_building() && attacker_ext.units[UnitMindTyrantLink] && attacker_ext.values[ValueIsMalefactor] == 2) {
+            Unit* malefactor = data.attacker;
+            auto& malefactor_ext = attacker_ext;
+            if (malefactor->id == UnitId::ProtossSteward) {
+                malefactor = malefactor->hangar_unit.parent;
+                malefactor_ext = malefactor->ext();
+            }
+            if (!bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !data.target->is_building() && malefactor_ext.units[UnitMindTyrantLink] && malefactor_ext.values[ValueIsMalefactor] == 2) {
                 target_ext->timers[TimerMalefactorTyrannize] = ProtossMindTyrant::MalefactorTyrannizeDuration;
                 target_ext->last_malefactor_player = data.attacking_player_id;
             }
@@ -1209,7 +1215,8 @@ namespace hooks {
                     mind_control(target_ext.last_malefactor_player, UnitId::ProtossMindTyrant, data.target);
                     bw::play_sound(SoundId::Protoss_Darchon_mind_wav, data.target->position);
                     data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);
-                    target_ext.timers[TimerStun] = 2 * 24;
+                    data.target->freeze();
+                    target_ext.timers[TimerMalefactorStun] = 2 * 24 + 1;
                     data.target->order_to_idle();
                     return fatal_deal_damage;
                 }
@@ -1232,7 +1239,7 @@ namespace hooks {
                     overlay_id = ImageId::DemiurgeWorshipProc_Large;
                 }
                 bw::add_unit_overlay(data.target, overlay_id);
-                helper::play_sound_from_unit(SoundId::DemiurgeWorship01, data.target, 1, 0);
+                bw::play_sound(SoundId::DemiurgeWorship01, data.target);
                 target_ext.timers[TimerDemiurgeWorshipOverlayDelay] = 43;
                 data.target->freeze();
                 data.target->status |= UnitStatus::Invincible;

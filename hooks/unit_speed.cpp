@@ -137,7 +137,7 @@ namespace hooks {
 
         // Vengeful March - fading speed steroid
         if (unit_ext.timers[TimerVengefulMarch]) {
-            speed *= MathUtils::Map(unit_ext.timers[TimerVengefulMarch], Protoss::VengefulMarchDuration, 0, 1.25, 1);
+            speed *= MathUtils::Map(unit_ext.timers[TimerVengefulMarch], Protoss::VengefulMarchDuration, 0, 1.33, 1);
         }
 
         switch (unit->id) {
