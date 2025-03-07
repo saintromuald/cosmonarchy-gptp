@@ -110,7 +110,8 @@ namespace hooks {
 
 					u32 action_sound = SoundId::None;
 					switch (unit->id) {
-						case UnitId::TerranEidolon: {
+						case UnitId::TerranEidolon:
+						case UnitId::TerranEidolonNydus: {
 							action_sound = SoundId::Terran_GHOST_TGhPss00_wav;
 						} break;
 					}

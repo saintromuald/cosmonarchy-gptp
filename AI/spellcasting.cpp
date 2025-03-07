@@ -29,7 +29,8 @@ namespace AI {
 				}
 				break;
 			}
-			case UnitId::TerranEidolon: {
+			case UnitId::TerranEidolon:
+			case UnitId::TerranEidolonNydus: {
 				// Launch Nuclear Missile
 				if (is_nuke_timer_ready(unit->player)) {
 					if (is_unit_being_attacked) {

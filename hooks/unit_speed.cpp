@@ -140,7 +140,7 @@ namespace hooks {
             speed *= MathUtils::Map(unit_ext.timers[TimerVengefulMarch], Protoss::VengefulMarchDuration, 0, 1.33, 1);
         }
 
-        if (unit->id == UnitId::TerranEidolonNydus && unit->is_cloaked) {
+        if (unit->id == UnitId::TerranEidolonNydus && bw::is_proximity_decloakable(unit)) {
             speed *= 1.33;
         }
 

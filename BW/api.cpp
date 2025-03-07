@@ -1253,7 +1253,9 @@ bool is_proximity_decloakable(Unit* unit) {
 
 // Replacement for unit_is_ghost
 bool unit_can_nuke(Unit* unit) {
-    return unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph;
+    return unit->id == UnitId::TerranEidolon
+        || unit->id == UnitId::TerranEidolonNydus
+        || unit->id == UnitId::TerranSeraph;
 }
 
 UnitId::Enum get_trap_id(Unit* unit) {
@@ -3709,19 +3711,10 @@ u32 get_cloak_sound_id(Unit* unit) {
         return SoundId::Terran_PHOENIX_TPhClo00_WAV;
     }
     switch (unit->get_race()) {
-        case RaceId::Terran:
-        {
-            return SoundId::CloakTerranOn;
-        }
-        case RaceId::Protoss:
-        {
-            return SoundId::Terran_PHOENIX_TPhClo00_WAV;
-        }
-        default:
-        {
-            return SoundId::Terran_PHOENIX_TPhClo00_WAV;
-        }
+        case RaceId::Terran:  return SoundId::CloakTerranOn;
+        case RaceId::Protoss: return SoundId::Terran_PHOENIX_TPhClo00_WAV;
     }
+    return SoundId::Terran_PHOENIX_TPhClo00_WAV;
 }
 
 u32 get_decloak_sound_id(Unit* unit) {
@@ -3729,15 +3722,8 @@ u32 get_decloak_sound_id(Unit* unit) {
         return SoundId::Terran_PHOENIX_TPhClo01_WAV;
     }
     switch (unit->get_race()) {
-        case RaceId::Terran: {
-            return SoundId::CloakTerranOff;
-        }
-        case RaceId::Protoss: {
-            return SoundId::Terran_PHOENIX_TPhClo01_WAV;
-        }
-        default: {
-            return SoundId::Terran_PHOENIX_TPhClo01_WAV;
-        }
+        case RaceId::Terran:  return SoundId::CloakTerranOff;
+        case RaceId::Protoss: return SoundId::Terran_PHOENIX_TPhClo01_WAV;
     }
     return SoundId::Terran_PHOENIX_TPhClo01_WAV;
 }

@@ -803,7 +803,8 @@ namespace hooks {
 						if (nuker) {
 							u32 action_sound = SoundId::None;
 							switch (nuker->id) {
-								case UnitId::TerranEidolon: {
+								case UnitId::TerranEidolon:
+								case UnitId::TerranEidolonNydus: {
 									action_sound = SoundId::Terran_GHOST_TGhPss01_wav;
 								} break;
 							}

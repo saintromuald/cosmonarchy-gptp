@@ -1093,6 +1093,7 @@ bool weapon_id_is_incremental(u32 weapon_id) {
 
 bool unit_id_has_proximity_cloak(u32 unit_id) {
     return unit_id == UnitId::TerranEidolon
+        || unit_id == UnitId::TerranEidolonNydus
         || unit_id == UnitId::TerranWraith
         || unit_id == UnitId::TerranSundog
         || unit_id == UnitId::Goska;

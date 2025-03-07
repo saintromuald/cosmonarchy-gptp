@@ -429,6 +429,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         case Faction::TerranNydusTrinity: {
             switch (unit_id) {
                 case UnitId::TerranCyprian:         return UnitId::TerranCohort;
+                case UnitId::TerranEidolon:         return UnitId::TerranEidolonNydus;
                 case UnitId::TerranPhalanxTankMode: return UnitId::TerranTarasque;
             }
         } break;
