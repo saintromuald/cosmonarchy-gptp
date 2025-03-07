@@ -1150,7 +1150,7 @@ namespace hooks {
 
 	// Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
 	void statdata_mouseover_interact(BinDlg* main_dialog, BinDlg* secondary_dialog) { // 00457CE0
-		if (!(*g_active_portrait_unit) || !main_dialog || secondary_dialog == main_dialog) {
+		if (!*g_active_portrait_unit || !main_dialog || secondary_dialog == main_dialog) {
 			helper::refresh_selection_screen();
 			return;
 		}
@@ -1162,36 +1162,14 @@ namespace hooks {
 				return;
 			}
 		}
-		// Don't yet have an enum for index here.
-		switch (index) {
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-			case 17: {
-				helper::draw_cancel_unit_context(main_dialog);
-			} break;
-			case 9:
-			case 10:
-			case 11:
-			case 12: {
-				bw::statdata_user_interact_internal(main_dialog);
-			} break;
-			case 15: {
-				helper::draw_cancel_upgrade_context(main_dialog);
-			} break;
-			default: {
-				if (index < 18 || index > 32) {
-					if (index < 33 || index > 44) {
-						helper::refresh_selection_screen();
-					} else {
-						helper::create_context_from_dialog(main_dialog, g_stat_txt_buffer.get_string(809)); // Selection instructions
-					}
-				} else {
-					helper::draw_unload_unit_context(main_dialog);
-				}
-			} break;
+		// Don't yet have an enum for index.
+		// Refactor deletes upgrade/tech functionality.
+		if (index < 33 || index > 44) {
+			helper::refresh_selection_screen();
+		} else if (index < 18 || index > 32) {
+			helper::create_context_from_dialog(main_dialog, g_stat_txt_buffer.get_string(809)); // Selection instructions
+		} else {
+			helper::draw_unload_unit_context(main_dialog);
 		}
 	}
 
