@@ -2959,7 +2959,7 @@ namespace hooks {
                         }
 
                         // Hide Recall, since cancel is the same slot
-                        if (unit_id_can_cast_recall((UnitId::Enum)unit->id) && current_button->action_var == TechId::DimensionalRecall) {
+                        if (UnitId::can_cast_recall(static_cast<UnitId::Enum>(unit->id)) && current_button->action_var == TechId::DimensionalRecall) {
                             if (unit_ext->values[ValueDidactRecalling]) {
                                 current_button_state = Button_State::Invisible;
                             } else {
