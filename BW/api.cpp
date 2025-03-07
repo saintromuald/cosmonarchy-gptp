@@ -1295,7 +1295,9 @@ bool unit_is_ranged_attacker(Unit* unit) {
         case UnitId::TerranMadrigalFuriaMode:
         case UnitId::TerranMadrigalTurretImperiosoMode:
         case UnitId::TerranMadrigalTurretFuriaMode:
-        case UnitId::Ackmed: {
+        case UnitId::Ackmed:
+        case UnitId::TerranTiangou:
+        case UnitId::TerranTiangouTurret: {
             return true;
         } break;
     }

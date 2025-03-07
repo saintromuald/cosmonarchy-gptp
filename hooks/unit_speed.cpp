@@ -194,11 +194,11 @@ namespace hooks {
             case UnitId::ZergZoryusthaleth: {
                 speed *= 1.1;
             } break;
-            case UnitId::TerranMaverickFuturist:
             case UnitId::TerranCyclops:
             case UnitId::TerranDurendal: {
                 speed *= 1.15;
             } break;
+            case UnitId::TerranMaverickFuturist:
             case UnitId::TerranCyprian:
             case UnitId::TerranSevenstep:
             case UnitId::ProtossAtreus:
