@@ -475,21 +475,25 @@ namespace hooks {
 		add_status(statuses, "Stasis", -1, 1, unit->stasis_timer);
 		add_status(statuses, "Timed Life", -1, 1, unit->remove_timer, TimerType::RemoveTimer);
 
+		bool is_building = unit->is_building();
+		bool is_in_air = unit->is_in_air();
+
 		// Vanilla Value
 		add_status(statuses, "Blinded", unit->is_blind != 0, 1);
-		add_status(statuses, "Lifted Off", unit->status & UnitStatus::InAir && units_dat::base_property[unit->id] & UnitProperty::Building, 1);
+		add_status(statuses, "Lifted Off", is_building && is_in_air, 1);
 		add_status(statuses, "Cannot Attack", unit_ext->timers[TimerUnderDisruptionField] > 0, 1);
 
 		// Case Specific
 		add_status(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
 		if (bw::is_under_carapace_swarm(unit)) {
-			Unit* darkSwarm = bw::get_carapace_swarm_unit(unit);
-			add_status(statuses, "Under Dark Swarm", darkSwarm->hitpoints / 256, 1, darkSwarm->remove_timer, TimerType::RemoveTimer);
+			Unit* dark_swarm = bw::get_carapace_swarm_unit(unit);
+			add_status(statuses, "Under Carapace Swarm", dark_swarm->hitpoints / 256, 1, dark_swarm->remove_timer, TimerType::RemoveTimer);
 		}
 
 		// Detector
+		bool is_active_detector = !unit->is_frozen() && !is_building || (is_building && !is_in_air);
 		if (unit->is_detector()) {
-			add_status(statuses, "Detector", 1, 1);
+			add_status(statuses, is_active_detector ? "Detector" : "Detector (disabled)", 1, 1);
 		}
 
 		std::string status = format_string_vector(statuses);
@@ -498,17 +502,17 @@ namespace hooks {
 		// Tyranny on target, Last Orders
 		// color code source player if possible
 
-		std::vector<std::string> flags; // TODO: replace with something not gay
-		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+		std::vector<std::string> flags;
+		if (is_building) {
 			flags.push_back("Structure");
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::ProducesUnits) {
 			flags.push_back("Factory");
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Addon) {
+		if (unit->is_addon()) {
 			flags.push_back("Addon");
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+		if (unit->is_worker()) {
 			flags.push_back("Worker");
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::Hero) {
@@ -517,14 +521,8 @@ namespace hooks {
 		if (units_dat::base_property[unit->id] & UnitProperty::Invincible) {
 			flags.push_back("Invincible");
 		}
-		if (units_dat::base_property[unit->id] & UnitProperty::Detector) {
-			if (!(units_dat::base_property[unit->id] & UnitProperty::Building)
-			||   (units_dat::base_property[unit->id] & UnitProperty::Building && !(unit->status & UnitStatus::InAir)))
-			{
-				flags.push_back("Detector");
-			} else {
-				flags.push_back("Detector (disabled)");
-			}
+		if (unit->is_detector()) {
+			flags.push_back(is_active_detector ? "Detector" : "Detector (disabled)");
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) {
 			flags.push_back("Spreads cagra");

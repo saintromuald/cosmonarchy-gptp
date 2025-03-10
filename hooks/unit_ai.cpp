@@ -168,11 +168,10 @@ namespace hooks {
 	// Hooked because iquare told me to - Pr0nogo
 	void* add_worker_structure_ai(Unit* unit, AiTown* town) { // 00433DD0
 		if (unit->unit_ai) {
-		//	bw::printf("Attempt to add worker or structure AI to a unit with unit_ai (prevented)");
 			helper::remove_unit_ai(unit, false);
 		}
 		void* result = 0;
-		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+		if (unit->is_worker()) {
 			if (town->workers.array) {
 				WorkerAi* ai = 0;
 				if (town && town->workers.array) {
@@ -180,8 +179,7 @@ namespace hooks {
 						bw::printf("Corrupted free worker AI array!");
 						return result;
 					}
-					if (town->workers.array && town->workers.array->first_free_worker
-						&& town->workers.array->first_free_worker <= (void*)0x100000) {
+					if (town->workers.array && town->workers.array->first_free_worker && town->workers.array->first_free_worker <= (void*)0x100000) {
 						bw::printf("Corrupted first free worker AI!");
 						return result;
 					}
@@ -216,7 +214,10 @@ namespace hooks {
 					++town->worker_count;
 
 					TownLayouts& layouts_town = g_ai_layouts.get_town_layouts(*town);
-					UnitExt* unit_ext = get_unit_ext(unit);
+					if (unit->id == UnitId::ProtossArtisan) {
+						return result;
+					}
+					auto& unit_ext = unit->ext();
 					if (!town->inited) {
 						town->inited = 1;
 						town->mineral = 0;
@@ -227,15 +228,15 @@ namespace hooks {
 							layouts_town.worker_maynard--;
 						}
 						Point16 position = g_ai_layouts.get_ai_town_position(*town);
-						unit_ext->values[ValueAI_WorkerChosenForExpansion] = true;
-						unit_ext->values[ValueAI_WorkerChosenX] = position.x;
-						unit_ext->values[ValueAI_WorkerChosenY] = position.y;
+						unit_ext.values[ValueAI_WorkerChosenForExpansion] = true;
+						unit_ext.values[ValueAI_WorkerChosenX] = position.x;
+						unit_ext.values[ValueAI_WorkerChosenY] = position.y;
 					} else if (layouts_town.worker_maynard) {
 						layouts_town.worker_maynard--;
 						Point16 position = g_ai_layouts.get_ai_town_position(*town);
-						unit_ext->values[ValueAI_WorkerChosenForExpansion] = true;
-						unit_ext->values[ValueAI_WorkerChosenX] = position.x;
-						unit_ext->values[ValueAI_WorkerChosenY] = position.y;
+						unit_ext.values[ValueAI_WorkerChosenForExpansion] = true;
+						unit_ext.values[ValueAI_WorkerChosenX] = position.x;
+						unit_ext.values[ValueAI_WorkerChosenY] = position.y;
 					}
 				}
 			}
@@ -994,6 +995,41 @@ namespace hooks {
 				}
 				g_aiscript_controller[player].main_medic = first_unit;
 			}
+		}
+	}
+
+	// Hooked to investigate fixing AI issues. -Pr0nogo
+	AiTown* ai_start_town(u32 player, u16 pos_x, u16 pos_y, u32 resarea) { // 00434220
+		Unit* first_unit = *first_player_unit[player].unit;
+		if (!first_unit) {
+			return 0;
+		}
+
+		bool is_first_town = g_ai_town_list[player].first == 0;
+		if (is_first_town) {
+			helper::ai_delete_guard_needs(player);
+		}
+		AiTown* town = helper::create_ai_town(player, pos_x, pos_y);
+		if (!town) {
+			return 0;
+		}
+
+		town->resarea = resarea;
+		town->resource_units_not_set = resarea != 0;
+
+		for (Unit* unit = first_unit; unit; unit = unit->player_link.next) {
+			if (!unit->is_completed() || !unit->sprite || unit->unit_ai) {
+				continue;
+			}
+			u32 order_id = unit->main_order_id;
+			if (order_id == OrderId::Die || order_id == OrderId::CompletingArchonSummon || order_id == OrderId::ResetCollision1) {
+				continue;
+			}
+			helper::add_worker_structure_ai(unit, town);
+		}
+		if (!(g_aiscript_controller[town->player].ai_flags.is_use_map_settings)) {
+			helper::do_melee_town_region_fixups(town->position.x, town->position.y, town->player, is_first_town ? 5 : 2);
+			helper::ai_make_chokepoint_region_state_4(town->player, town->position.x, town->position.y);
 		}
 	}
 }

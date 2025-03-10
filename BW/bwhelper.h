@@ -1810,8 +1810,11 @@ namespace helper {
     void hide_all_psi_fields();                                                                      // 00494100
 
     void draw_cancel_unit_context(BinDlg* dialog);                                                   // 00457B10
-    void statdata_user_interact(u32 dialog_index, BinDlg* dialog);                                   // 004576A0
     void draw_cancel_upgrade_context(BinDlg* dialog);                                                // 004575A0
     void create_context_from_dialog(BinDlg* dialog, const char* text);                               // 00457350
     void draw_unload_unit_context(BinDlg* dialog);                                                   // 00457C20
+    void statdata_user_interact(u32 dialog_index, BinDlg* dialog);                                   // 004576A0
+    void do_melee_town_region_fixups(s32 pos_x, s32 pos_y, u32 player, u32 some_type);               // 00445AA0
+    void ai_make_chokepoint_region_state_4(u32 player, s32 pos_x, s32 pos_y);                        // 0043A8F0
+    void ai_delete_guard_needs(u32 player);                                                          // 004626E0
 }

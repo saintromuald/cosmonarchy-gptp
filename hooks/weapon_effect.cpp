@@ -52,7 +52,7 @@ namespace hooks {
 		Point16 pos = bullet->sprite->position;
 		Unit* unit = bullet->source_unit;
 		if (unit && unit->sprite) { // Sprite is new.
-			UnitExt* bullet_source_ext = get_unit_ext(unit);
+			auto& bullet_source_ext = unit->ext();
 			if (bullet->weapon_id == WeaponId::CyclopsBrontesPayload && unit->id == UnitId::TerranCyclopsFuturist) { // So we don't need to use another weapon id. -Pr0nogo
 				splash = SplashType::FriendlyNew;
 			}
@@ -79,14 +79,14 @@ namespace hooks {
 				} break;
 			}
 
-			if (bullet_source_ext->values[ValueTriggerWeaponSplashInnerSet]) {
-				inner = bullet_source_ext->values[ValueTriggerWeaponSplashInnerAmount];
+			if (bullet_source_ext.values[ValueTriggerWeaponSplashInnerSet]) {
+				inner = bullet_source_ext.values[ValueTriggerWeaponSplashInnerAmount];
 			}
-			if (bullet_source_ext->values[ValueTriggerWeaponSplashMediumSet]) {
-				medium = bullet_source_ext->values[ValueTriggerWeaponSplashMediumAmount];
+			if (bullet_source_ext.values[ValueTriggerWeaponSplashMediumSet]) {
+				medium = bullet_source_ext.values[ValueTriggerWeaponSplashMediumAmount];
 			}
-			if (bullet_source_ext->values[ValueTriggerWeaponSplashOuterSet]) {
-				outer = bullet_source_ext->values[ValueTriggerWeaponSplashOuterAmount];
+			if (bullet_source_ext.values[ValueTriggerWeaponSplashOuterSet]) {
+				outer = bullet_source_ext.values[ValueTriggerWeaponSplashOuterAmount];
 			}
 		}
 

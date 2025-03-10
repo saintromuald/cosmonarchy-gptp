@@ -645,7 +645,7 @@ namespace hooks {
 			case OrderId::TurretGuard:
 			case OrderId::TurretAttack:
 			case OrderId::EnterTransport: {
-				helper::issue_order_targeting_nothing(unit, (unit->status & UnitStatus::InBuilding) != 0 ? OrderId::BunkerGuard : OrderId::Nothing2);
+				helper::issue_order_targeting_nothing(unit, unit->is_garrisoned() != 0 ? OrderId::BunkerGuard : OrderId::Nothing2);
 			} break;
 			case OrderId::Powerup1: {
 				helper::orders_powerup_1(unit);
@@ -684,31 +684,31 @@ namespace hooks {
 					switch (unit->main_order_id) {
 						case OrderId::BunkerGuard:
 						case OrderId::ComputerAI: {
-							if (unit->main_order_id == OrderId::BunkerGuard || unit->status & UnitStatus::InBuilding) { // This seems tautologous but it's to omit a stupid jump. -Pr0nogo
+							if (unit->main_order_id == OrderId::BunkerGuard || unit->is_garrisoned()) { // This seems tautologous but it's to omit a stupid jump. -Pr0nogo
 								Unit* garrisoned_unit = unit;
 								u32 garrisoned_unit_id = unit->id;
-								if (bw::unit_is_ranged_attacker(garrisoned_unit)) {
-									garrisoned_unit->status |= UnitStatus::AttackMove;
-									Unit* subunit_in_bunker = garrisoned_unit->subunit;
-									if (subunit_in_bunker) {
-										subunit_in_bunker->status |= UnitStatus::AttackMove;
+								if (!bw::unit_is_ranged_attacker(garrisoned_unit)) {
+									break;
+								}
+
+								garrisoned_unit->status |= UnitStatus::AttackMove;
+								Unit* subunit_in_bunker = garrisoned_unit->subunit;
+								if (subunit_in_bunker) {
+									subunit_in_bunker->status |= UnitStatus::AttackMove;
+								}
+								if (helper::attack_apply_cooldown(garrisoned_unit)) {
+									u32 bunker_x_pos = garrisoned_unit->order_target.pt.x;
+									u32 bunker_y_pos = garrisoned_unit->order_target.pt.y;
+									if (bunker_x_pos != garrisoned_unit->next_target_waypoint.x || bunker_y_pos != garrisoned_unit->next_target_waypoint.y) {
+										garrisoned_unit->next_target_waypoint.x = bunker_x_pos;
+										garrisoned_unit->next_target_waypoint.y = bunker_y_pos;
 									}
-									if (helper::attack_apply_cooldown(garrisoned_unit)) {
-										u32 bunker_x_pos = garrisoned_unit->order_target.pt.x;
-										u32 bunker_y_pos = garrisoned_unit->order_target.pt.y;
-										if (bunker_x_pos != garrisoned_unit->next_target_waypoint.x
-										||  bunker_y_pos != garrisoned_unit->next_target_waypoint.y)
-										{
-											garrisoned_unit->next_target_waypoint.x = bunker_x_pos;
-											garrisoned_unit->next_target_waypoint.y = bunker_y_pos;
-										}
-									} else if (!garrisoned_unit->main_order_timer) {
-										garrisoned_unit->main_order_timer = 15;
-										Unit* target = helper::find_random_attack_target(garrisoned_unit);
-										garrisoned_unit->order_target.unit = target;
-										if (target) {
-											garrisoned_unit->order_queue_timer = 0;
-										}
+								} else if (!garrisoned_unit->main_order_timer) {
+									garrisoned_unit->main_order_timer = 15;
+									Unit* target = helper::find_random_attack_target(garrisoned_unit);
+									garrisoned_unit->order_target.unit = target;
+									if (target) {
+										garrisoned_unit->order_queue_timer = 0;
 									}
 								}
 							}
