@@ -42,8 +42,8 @@ Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
         return {};
     }
 
-    UnitExt* unit_ext = get_unit_ext(unit);
-    u32 rotate = unit_ext->values[weapon_offsets->value_id];
+    auto& unit_ext = unit->ext();
+    u32 rotate = unit_ext.values[weapon_offsets->value_id];
 
     Image* image = unit->sprite->main_graphic;
     switch (unit->id) {
@@ -537,7 +537,7 @@ namespace hooks {
         }
 
         if (weapons_dat::flingy_id[weapon_id] != 0) {
-            if (unit->id == UnitId::TerranSavantEntropyGauntlets || unit->id == UnitId::TerranSavantPowerSiphon) {
+            if (UnitId::has_manual_weapon_fire_sfx(static_cast<UnitId::Enum>(unit->id))) {
                 u32 sound_id = bw::get_unit_weapon_fire_sound(unit, WeaponId::None);
                 Unit* final_unit = unit;
                 if (unit->is_garrisoned() && unit->connected_unit) { // Nullchecking to protect against attacks firing on the same frame as the garrison's death.

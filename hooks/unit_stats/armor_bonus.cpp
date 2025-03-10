@@ -50,6 +50,7 @@ namespace hooks {
 		armor -= unit_ext->values[ValueHidebreaker];
 		armor -= unit_ext->values[ValueCorrosiveTouchStacks];
 		armor -= unit_ext->values[ValueWendigoShatteredWindsStacks];
+		armor -= unit_ext->timers[TimerDiscordantChorus] > 1;
 
 		if (armor < 0) {
 			armor = 0;

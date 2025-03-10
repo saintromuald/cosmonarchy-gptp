@@ -357,7 +357,6 @@ enum ExtTimerId {
     TimerMindTyrantTyranny,
     TimerHidebreaker,
     TimerLucilleriPheremones,
-    ValueUprisingSpawner,
     TimerTryCastCustomSpell,
     TimerGenericAbilityAnimation,
     TimerAnthelionTurn,

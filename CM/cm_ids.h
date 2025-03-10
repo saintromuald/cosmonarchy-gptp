@@ -127,6 +127,7 @@ bool unit_id_turns_to_face_target(UnitId::Enum unit_id);
 
 namespace UnitId {
 bool can_cast_recall(UnitId::Enum unit_id);
+bool has_manual_weapon_fire_sfx(UnitId::Enum unit_id);
 } // namespace UnitId
 
 namespace WeaponId {

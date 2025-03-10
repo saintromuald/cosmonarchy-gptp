@@ -3904,12 +3904,10 @@ void select(std::vector<Unit*>& units, bool play_response) {
 u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id) {
     u32 sound_id = SoundId::None;
     switch (unit->id) {
-        case UnitId::TerranSavantEntropyGauntlets: {
-            return bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
-        }
-        case UnitId::TerranSavantPowerSiphon: {
-            return bw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
-        }
+        case UnitId::TerranSavantEntropyGauntlets: return bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
+        case UnitId::TerranSavantPowerSiphon:      return bw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
+        case UnitId::ProtossManifold:              return bw::rand_between(SoundId::ManifoldWeaponfire01, SoundId::ManifoldWeaponfire03);
+        case UnitId::ProtossManifoldStarbound:     return bw::rand_between(SoundId::ManifoldStarboundWeaponfire01, SoundId::ManifoldStarboundWeaponfire04);
     }
     if (!sound_id) {
         sound_id = get_weapon_fire_sound(weapon_id);

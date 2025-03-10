@@ -206,6 +206,7 @@ namespace UnitId {
         ProtossRenesair                                     = 423,
         ProtossAshguard                                     = 424,
         ProtossDracadinOrder                                = 430,
+        ProtossManifoldStarbound                            = 437,
 
     // Protoss-Building
         ProtossAutomatonRegister							= 158,		// Unused Protoss 1

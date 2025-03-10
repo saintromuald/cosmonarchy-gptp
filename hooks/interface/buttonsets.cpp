@@ -1584,8 +1584,19 @@ namespace hooks {
                             } break;
                             case UnitId::ProtossLattice: {
                                 switch (current_button->requirement_var) {
-                                    case UnitId::ProtossSimulacrum:
-                                    case UnitId::ProtossManifold:
+                                    case UnitId::ProtossSimulacrum: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::ProtossManifold: {
+                                        if (faction != Faction::ProtossStarbound) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossManifoldStarbound: {
+                                        if (faction == Faction::ProtossStarbound) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
                                     case UnitId::ProtossGolem:
                                     case UnitId::ProtossIdol: {
                                         current_button_state = Button_State::Enabled;
@@ -2724,6 +2735,11 @@ namespace hooks {
                                 } break;
                                 case UnitId::ProtossManifold: {
                                     if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Concurring Chorus
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ProtossManifoldStarbound: {
+                                    if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Discordant Chorus
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
