@@ -436,8 +436,9 @@ namespace hooks {
                     case UnitId::TerranPietyWard: {
                         g_graphics.draw_circle(source.x, source.y, 2 * 32, graphics::GREEN, graphics::ON_MAP);
                     } break;
+                    case UnitId::TerranCestus:
                     case UnitId::TerranAzazel: {
-                        g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
+                        g_graphics.draw_circle(source.x, source.y, Terran::SublimeShepherdRange, graphics::GREEN, graphics::ON_MAP);
                     } break;
                     case UnitId::TerranFacade: {
                         if (unit_ext->timers[TimerFacadePryingEyesChannel]) {
@@ -2762,8 +2763,8 @@ namespace hooks {
 
         // Azazel - Sublime Shepherd
         if (!unit_id_is_resource_node(unit->id, false)) {
-            auto azazels = g_unit_search.radial_ex(unit, 4 * 32, FilterAlly | FilterEnabled, {UnitId::TerranAzazel});
-            if (!azazels.count()) {
+            auto shepherds = g_unit_search.radial_ex(unit, Terran::SublimeShepherdRange, FilterAlly | FilterEnabled, {UnitId::TerranAzazel, UnitId::TerranCestus});
+            if (!shepherds.count()) {
                 if (unit_ext.values[ValueHasSublimeShepherd]) {
                     unit_ext.values[ValueHasSublimeShepherd] = 0;
                     if (unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - bw::get_overlay_offset(unit->id))) {
@@ -4187,11 +4188,11 @@ namespace hooks {
                                             case Faction::ZergImicrenTendril: {
                                                 bw::printf("\t%s (P%u) has chosen the Imicren Tendril.", player_name, player + 1, TextColor::White);
                                             } break;
-                                            case Faction::ZergGoszirithTendril: {
-                                                bw::printf("\t%s (P%u) has chosen the Goszirith Tendril.", player_name, player + 1, TextColor::White);
-                                            } break;
                                             case Faction::ZergOrkotiTendril: {
                                                 bw::printf("\t%s (P%u) has chosen the Orkoti Tendril.", player_name, player + 1, TextColor::White);
+                                            } break;
+                                            case Faction::ZergGoszirithTendril: {
+                                                bw::printf("\t%s (P%u) has chosen the Goszirith Tendril.", player_name, player + 1, TextColor::White);
                                             } break;
                                             case Faction::ZergZorthosTendril: {
                                                 bw::printf("\t%s (P%u) has chosen the Zorthos Tendril.", player_name, player + 1, TextColor::White);

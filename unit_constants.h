@@ -111,6 +111,7 @@ inline constexpr s32 PryingEyesRange = 8 * 32;
 
 namespace Terran {
 inline constexpr s32 SublimeShepherdRange = 6 * 32;
+}
 
 // Reservoir / Addon
 inline constexpr s32 EmergencyDetonationTimer = 5 * 24 + 1;

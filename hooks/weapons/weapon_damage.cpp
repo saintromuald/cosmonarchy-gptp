@@ -285,16 +285,20 @@ namespace hooks {
             }
             s32 armor_total = (hooks::get_armor_internal(data.target) - armor_pen);
 
-            if (data.attacker) {
-                u32 fore_castle_factor = bw::get_fore_castle_armor_bonus(data.target);
-                if (fore_castle_factor) {
+            u32 fore_castle_factor = bw::get_fore_castle_armor_bonus(data.target);
+            if (fore_castle_factor) {
+                bool apply_fore_castle = false;
+                if (!data.attacker || data.target->is_building()) {
+                    apply_fore_castle = true;
+                } else {
                     Vec32f dir = bw::dir_between(data.target->position, data.attacker->position);
                     Vec32f facing_dir = bw::facing_dir(data.target);
-                    if (bw::dot_product(dir, facing_dir) >= bw::deg_to_dot(120.0 / 2)) {
-                        armor_total += fore_castle_factor;
-                        if (data.weapon_id != WeaponId::PsiStorm) {
-                            shield_overlay = true;
-                        }
+                    apply_fore_castle = bw::dot_product(dir, facing_dir) >= bw::deg_to_dot(120.0 / 2);
+                }
+                if (apply_fore_castle) {
+                    armor_total += fore_castle_factor;
+                    if (data.weapon_id != WeaponId::PsiStorm) {
+                        shield_overlay = true;
                     }
                 }
             }
