@@ -26,7 +26,7 @@ namespace UnitId {
     // Special
         Omnivale											= 383,
         TerranLodestoneStandalone							= 387,
-        TerranAnchorGrounded								= 406,
+        TerranTrenchfoot    								= 406,      // Grounded Anchor
         VolatileEgg											= 416,
 
     // Neutral
@@ -133,7 +133,7 @@ namespace UnitId {
         TerranTreasury										= 215,		// Flag
         TerranStarpad										= 254,
         TerranFutureStation									= 257,
-        TerranQuantumInstitute								= 259,
+        TerranCestus        								= 259,
         TerranAerie											= 260,
         TerranMantle										= 280,
         TerranApothecary									= 284,
@@ -145,6 +145,7 @@ namespace UnitId {
         TerranLodestone										= 384,
         TerranTencendur										= 408,
         TerranSieve                                         = 419,
+        TerranFacade                                        = 427,
 
     // Protoss-Unit
         ProtossManifold										= 16,		// Sarah Kerrigan
@@ -312,6 +313,9 @@ namespace UnitId {
         ZergVornathPond										= 396,		// Morphed from Quazeth Pool
         ZergSkibactScab										= 397,		// Morphed from Hydrith Den
         ZergEskigant                                        = 421,
+
+    // Askosi-Building
+        AskosiLandlock                                      = 429,
 
     // Special-Unit
         TerranCivilianExt									= 332,

@@ -7,13 +7,12 @@
 #include "BW/UnitFinder.h"
 #include "hooks/unit_stats/weapon_range.h"
 
-namespace hooks
-{
+namespace hooks {
 	static inline bool is_within_attack_range(Unit* attacker, Unit* target) {
 		if (!target) {
 			return false;
 		}
-		u32 weapon_id = target->status & UnitStatus::InAir ? attacker->get_air_weapon() : attacker->get_ground_weapon();
+		u32 weapon_id = target->is_in_air() ? attacker->get_air_weapon() : attacker->get_ground_weapon();
 		if (weapon_id == WeaponId::None) {
 			return false;
 		}
@@ -23,16 +22,13 @@ namespace hooks
 		if (weapon_id == WeaponId::OlympianTitansFist) {
 			return false;
 		}
-
-		return !attacker->is_target_within_min_range(target, min_range)
-		&&		attacker->is_target_within_min_range(target, range);
+		return !attacker->is_target_within_min_range(target, min_range) && attacker->is_target_within_min_range(target, range);
 	}
 
 	// Checks whether the unit can attack from inside a bunker.
 	void unit_attacks_from_inside_bunker(Unit* unit) { // 004790A0
 		Unit* garrison = unit->connected_unit;
-		if (garrison)
-		{
+		if (garrison) {
 			if (unit_id_is_ground_garrison(garrison->id) && garrison->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
 				return; // Disallow units in garrisons from firing while garrison is lifted or in a transport.
 			}
@@ -41,12 +37,10 @@ namespace hooks
 			}
 		}
 
-		if (unit->subunit)
-		{
+		if (unit->subunit) {
 			Unit* subunit_garrison = unit->subunit->connected_unit;
 			if (subunit_garrison) {
-				if (unit_id_is_ground_garrison(subunit_garrison->id) && subunit_garrison->status & (UnitStatus::InAir | UnitStatus::InTransport))
-				{
+				if (unit_id_is_ground_garrison(subunit_garrison->id) && subunit_garrison->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
 					return; // Disallow units in garrisons from firing while garrisons is lifted or in a transport.
 				}
 				if (!unit_id_is_garrison(subunit_garrison->id)) {
@@ -119,22 +113,43 @@ namespace hooks
 		const LO_Header* attack_overlay = lo_files->attack_overlays[bunker_image->id];
 		Point8 offset = attack_overlay->get_offset(bunker_image->frame_index, frame_direction);
 
-		if (bunker_image->flags & ImageFlags::Mirrored) { // Is inverted
+		if (bunker_image->flags & ImageFlags::Mirrored) {
 			offset.x = -offset.x;
 		}
 
 		u8 frame_angle = frame_direction * 32;
-		u16 sprite_id = SpriteId::BunkerAttackOverlay_Orange; // Bunker attack overlay
-		switch (final_unit->get_race()) {
-			case RaceId::Zerg: {
-				sprite_id = SpriteId::BunkerAttackOverlay_Green;
+		u16 sprite_id = SpriteId::BunkerAttackOverlay_Orange;
+		switch (final_unit->connected_unit->id) {
+			case UnitId::TerranAnchor:
+			case UnitId::TerranTrenchfoot:
+			case UnitId::TerranLodestone:
+			case UnitId::TerranLodestoneStandalone: {
+				frame_angle = final_unit->current_direction_1;
+				switch (final_unit->get_race()) {
+					case RaceId::Terran: {
+						sprite_id = SpriteId::BunkerAttackOverlay_Orange;
+					} break;
+					case RaceId::Protoss: {
+						sprite_id = SpriteId::BunkerAttackOverlay_Blue;
+					} break;
+					case RaceId::Zerg: {
+						sprite_id = SpriteId::BunkerAttackOverlay_Green;
+					} break;
+				}
 			} break;
-			case RaceId::Protoss: {
-				sprite_id = SpriteId::BunkerAttackOverlay_Blue;
-			} break;
-			default:
-			{
-			} break;
+			case UnitId::TerranTencendur: {
+				switch (final_unit->get_race()) {
+					case RaceId::Terran: {
+						sprite_id = SpriteId::TencendurAttackOverlay_Orange;
+					} break;
+					case RaceId::Protoss: {
+						sprite_id = SpriteId::TencendurAttackOverlay_Blue;
+					} break;
+					case RaceId::Zerg: {
+						sprite_id = SpriteId::TencendurAttackOverlay_Green;
+					} break;
+				}
+			}
 		}
 		if (weapon_id_is_flamethrower(unit->get_ground_weapon())) {
 			frame_angle = ((final_unit->current_direction_1 + 8) / 16 % 16) * 16;
@@ -170,13 +185,13 @@ namespace hooks
 
 		unit->order_target.pt.x = target->sprite->position.x;
 		unit->order_target.pt.y = target->sprite->position.y;
-		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+		if (unit->subunit && unit->subunit->is_subunit()) {
 			return true;
 		}
 
 		u8 weapon_id = unit->get_ground_weapon();
 		u8 cooldown = unit->ground_weapon_cooldown;
-		if (target->status & UnitStatus::InAir) {
+		if (target->is_in_air()) {
 			weapon_id = units_dat::air_weapon[unit->id];
 			cooldown = unit->air_weapon_cooldown;
 		}
@@ -219,23 +234,20 @@ namespace hooks
 		}
 		
 		if (unit->id == UnitId::TerranDiadem) {
-			UnitExt* unit_ext = get_unit_ext(unit);
-			unit_ext->values[ValueDiademTargeting] = true;
-			unit_ext->units[UnitDiademTarget] = target;
-			unit_ext->values[ValueDiademTargetPosX] = target->position.x;
-			unit_ext->values[ValueDiademTargetPosY] = target->position.y;
+			auto& unit_ext = unit->ext();
+			unit_ext.values[ValueDiademTargeting] = true;
+			unit_ext.units[UnitDiademTarget] = target;
+			unit_ext.values[ValueDiademTargetPosX] = target->position.x;
+			unit_ext.values[ValueDiademTargetPosY] = target->position.y;
 			unit->order_target.unit = 0;
 		}
-		if (unit->status & UnitStatus::InBuilding) {
+		if (unit->is_garrisoned()) {
 			if (unit->subunit) {
-				if (unit->subunit->connected_unit && unit->subunit->connected_unit->status & UnitStatus::InAir) {
-					return false;
-				}
-				if (unit->subunit->connected_unit && unit->subunit->connected_unit->status & UnitStatus::InTransport) {
+				if (unit->subunit->connected_unit && unit->subunit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
 					return false;
 				}
 			}
-			if (unit->connected_unit && unit->connected_unit->status & UnitStatus::InTransport) {
+			if (unit->connected_unit && unit->connected_unit->is_in_transport()) {
 				return false;
 			}
 			helper::create_bunker_attack_overlay(unit);
@@ -243,15 +255,13 @@ namespace hooks
 		unit->movement_flags |= MovementFlags_StartingAttack;
 		*g_last_bullet_creator = 0;
 
-		// Previously had random delays here.
-		
 		// Cooldown is now applied in fire bullet and attack melee.
 	//	cooldown = helper::get_weapon_cooldown(unit, weapon_id);
 	//	unit->ground_weapon_cooldown = cooldown;
 	//	unit->air_weapon_cooldown = cooldown;
 
 		IscriptAnimation::Enum iscript_anim = IscriptAnimation::GndAttkRpt;
-		if (target->status & UnitStatus::InAir) {
+		if (target->is_in_air()) {
 			iscript_anim = IscriptAnimation::AirAttkRpt;
 		}
 		for (Image* current_image = unit->sprite->images.head; current_image; current_image = current_image->link.next) {
