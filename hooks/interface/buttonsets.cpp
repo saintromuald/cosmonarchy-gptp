@@ -607,6 +607,14 @@ namespace hooks {
                         button->position = 3;
                         changed = true;
                     } break;
+                    case IconId::ReturnResources: {
+                        button->position = bw::client_selection_count() == 1 ? 3 : 6;
+                        changed = true;
+                    } break;
+                    case IconId::Repair: {
+                        button->position = 5;
+                        changed = true;
+                    } break;
                 }
             }
         }
