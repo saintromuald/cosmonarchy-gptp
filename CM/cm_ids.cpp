@@ -672,6 +672,12 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             offsets.count = 2;
             return &offsets;
         } break;
+        case WeaponId::TiangouMoonboundSalvo: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueTiangouLaunchPos;
+            offsets.count = 4;
+            return &offsets;
+        } break;
         case WeaponId::PhalanxArcliteShockCannon: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValuePhalanxSiegeModeLaunchPos;

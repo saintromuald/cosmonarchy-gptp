@@ -77,13 +77,13 @@ Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 
 Point8 next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
     Point8 offset = peek_bullet_offset(unit, weapon_offsets);
-    UnitExt* unit_ext = get_unit_ext(unit);
-    u32 rotate = unit_ext->values[weapon_offsets->value_id];
+    auto& unit_ext = unit->ext();
+    u32 rotate = unit_ext.values[weapon_offsets->value_id];
     rotate++;
     if (rotate >= weapon_offsets->count) {
         rotate = 0;
     }
-    unit_ext->values[weapon_offsets->value_id] = rotate;
+    unit_ext.values[weapon_offsets->value_id] = rotate;
     return offset;
 }
 
