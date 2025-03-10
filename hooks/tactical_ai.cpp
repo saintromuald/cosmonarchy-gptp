@@ -232,6 +232,11 @@ s32 get_targeting_cost(Unit* source, Unit* target) {
             cost -= 50;
         } break;
         case UnitId::TerranAnticthon:
+        case UnitId::TerranAion:
+        case UnitId::TerranAutocrat:
+        case UnitId::TerranApostle: {
+            cost -= 40;
+        } break;
         case UnitId::ProtossEmpress:
         case UnitId::ProtossDemiurge:
         case UnitId::ProtossClarion: {
@@ -256,7 +261,7 @@ s32 get_targeting_cost(Unit* source, Unit* target) {
     // Value splitting Simulacra more
     UnitExt* target_ext = get_unit_ext(target);
     if (target_ext->timers[TimerAutovitalityClone]) {
-        cost -= 15;
+        cost -= 20;
     }
 
     // Value hallucinating enemies more
@@ -278,12 +283,12 @@ s32 get_targeting_cost(Unit* source, Unit* target) {
 
     // Value attacking strategically important targets
     if (target->id == UnitId::ZergNydusCesiant
-    || (units_dat::base_property[target->id] & UnitProperty::Worker && target->main_order_id == OrderId::ConstructingBuilding)
-    || (units_dat::base_property[target->id] & UnitProperty::ResourceDepot && !(target->status & UnitStatus::Completed))) {
+    || (target->is_worker() && target->main_order_id == OrderId::ConstructingBuilding)
+    || (units_dat::base_property[target->id] & UnitProperty::ResourceDepot && !target->is_completed())) {
         cost -= 50;
     } else if (target->id == UnitId::ProtossPylon
             || units_dat::base_property[target->id] & UnitProperty::ResourceDepot
-            || units_dat::base_property[target->id] & UnitProperty::Worker
+            || target->is_worker()
             || units_dat::group_flags[target->id].is_factory
             || unit_id_is_tech(target->id)) {
         cost -= 25;
@@ -293,7 +298,7 @@ s32 get_targeting_cost(Unit* source, Unit* target) {
 
     {
         Unit* context = source->subunit ? source->subunit : source;
-        u32 weapon_id = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
+        u32 weapon_id = target->is_in_air() ? context->get_air_weapon() : context->get_ground_weapon();
 
         // Value Carapace Swarm immune units way less
         if (carapace_swarm_blocks_damage(target, weapon_id, 1)) {
@@ -335,15 +340,18 @@ static KiterType get_kiter_type(u32 unit_id) {
         } break;
 
         case UnitId::TerranEidolon:
+        case UnitId::TerranEidolonNydus:
         case UnitId::TerranSilvertongue:
         case UnitId::TerranCataphract:
         case UnitId::TerranPaladin:
         case UnitId::TerranHippogriff:
         case UnitId::ProtossOptecton:
         case UnitId::ProtossAccantor:
+        case UnitId::ProtossUnar:
         case UnitId::ProtossArchitect:
         case UnitId::ProtossSolarion:
         case UnitId::ZergProtathalor:
+        case UnitId::ZergHydraliskOrkoti:
         case UnitId::ZergBactalisk:
         case UnitId::ZergKeskathalor:
         case UnitId::ZergGeszithalor:
