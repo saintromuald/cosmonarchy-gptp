@@ -513,9 +513,6 @@ namespace helper {
     bool is_target_within_min_range(Unit* unit, u32 min_range, Unit* target);														// 00430F10
     s32 get_flingy_halt_distance(Unit* unit);																						// 00494F90
 
-    // for orders_watch_target
-    void unknown_orders_func(s32 a1, __int16 a2, __int16 a3);
-
     // for orders_stay_in_range
     void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit);
     s32 orders_hold_position_suicidal(Unit* a1);

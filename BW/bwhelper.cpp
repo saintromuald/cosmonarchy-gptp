@@ -4071,21 +4071,6 @@ namespace helper {
         return result;
     }
 
-    // for orders_watch_target
-    void unknown_orders_func(s32 a1, __int16 a2, __int16 a3) {
-        const u32 func_address = 0x00475350;
-        s32 a2_xd = a2;
-        s32 a3_xd = a3;
-        __asm {
-            PUSHAD
-            PUSH a3_xd
-            PUSH a2_xd
-            MOV EAX, a1
-            CALL func_address
-            POPAD
-        }
-    }
-
     // for orders_stay_in_range
     void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit) {
         const u32 func_address = 0x00474A20;
