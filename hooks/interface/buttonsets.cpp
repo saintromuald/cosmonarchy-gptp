@@ -938,7 +938,15 @@ namespace hooks {
                                         }
                                     } break;
 
-                                    case UnitId::TerranCleric:
+                                    case UnitId::TerranCleric: {
+                                        if (faction != Faction::TerranFuturistFederation) {
+                                            if (!bw::all_selected_units_have_addon(UnitId::TerranVestry) || bw::unit_queue_full(unit)) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
                                     case UnitId::TerranShamanSupportMode: {
                                         if (!bw::all_selected_units_have_addon(UnitId::TerranVestry) || bw::unit_queue_full(unit)) {
                                             current_button_state = Button_State::Invisible;
@@ -1327,7 +1335,9 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         } break;
                                         case UnitId::TerranReservoir:
+                                        case UnitId::TerranFacade:
                                         case UnitId::TerranSentinel:
+                                        case UnitId::TerranTencendur:
                                         case UnitId::TerranDaedala:
                                         case UnitId::TerranCaptaincy:
                                         case UnitId::TerranMantle:
@@ -1783,8 +1793,19 @@ namespace hooks {
                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
-                                    case UnitId::ZergHydraliskOrkoti: {
+                                    case UnitId::ZergHydralisk: {
                                         if (faction != Faction::ZergOrkotiTendril) {
+                                            if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrithDen)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergSkibactScab)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::ZergHydraliskOrkoti: {
+                                        if (faction == Faction::ZergOrkotiTendril) {
                                             if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrithDen)
                                             ||  player_has_unit_id(unit->player, UnitId::ZergSkibactScab)
                                             ||  player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
@@ -1830,9 +1851,8 @@ namespace hooks {
                                     } break;
                                     case UnitId::ZergZoryusthaleth: {
                                         if (faction != Faction::ZergImicrenTendril) {
-                                            if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrithDen)
-                                                || player_has_unit_id(unit->player, UnitId::ZergSkibactScab)
-                                                || player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
+                                            if (player_has_completed_unit_id(unit->player, UnitId::ZergZorkizShroud)
+                                                || player_has_unit_id(unit->player, UnitId::ZergUltravCavern)) {
                                                 current_button_state = Button_State::Enabled;
                                             } else {
                                                 current_button_state = Button_State::Disabled;
@@ -1843,9 +1863,8 @@ namespace hooks {
                                     } break;
                                     case UnitId::ZergInzorthrokor: {
                                         if (faction == Faction::ZergImicrenTendril) {
-                                            if (player_has_completed_unit_id(unit->player, UnitId::ZergHydrithDen)
-                                                || player_has_unit_id(unit->player, UnitId::ZergSkibactScab)
-                                                || player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
+                                            if (player_has_completed_unit_id(unit->player, UnitId::ZergZorkizShroud)
+                                                || player_has_unit_id(unit->player, UnitId::ZergUltravCavern)) {
                                                 current_button_state = Button_State::Enabled;
                                             } else {
                                                 current_button_state = Button_State::Disabled;
