@@ -591,8 +591,10 @@ namespace hooks {
             Unit* malefactor = data.attacker;
             auto& malefactor_ext = attacker_ext;
             if (malefactor->id == UnitId::ProtossSteward) {
-                malefactor = malefactor->hangar_unit.parent;
-                malefactor_ext = malefactor->ext();
+                if (malefactor->hangar_unit.parent) {
+                    malefactor = malefactor->hangar_unit.parent;
+                    malefactor_ext = malefactor->ext();
+                }
             }
             if (!bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !data.target->is_building() && malefactor_ext.units[UnitMindTyrantLink] && malefactor_ext.values[ValueIsMalefactor] == 2) {
                 target_ext->timers[TimerMalefactorTyrannize] = ProtossMindTyrant::MalefactorTyrannizeDuration;
