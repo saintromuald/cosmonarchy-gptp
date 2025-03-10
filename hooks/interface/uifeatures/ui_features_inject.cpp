@@ -35,8 +35,7 @@ namespace {
         }
     }
 
-    void __declspec(naked) targeted_order_wrapper()
-    {
+    void __declspec(naked) targeted_order_wrapper() {
         static s16 a1;
         static s32 a2;
         static Unit* a3;
