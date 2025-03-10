@@ -252,6 +252,11 @@ namespace hooks {
             case UnitId::ZergLakizilisk: {
                 speed *= 1.6;
             } break;
+
+            // Special overrides
+            case UnitId::ProtossSteward: {
+                speed = 1;
+            }
         }
 
         if (speed < 0) {
