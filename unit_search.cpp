@@ -175,6 +175,9 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	if (flags & FilterTownCenter && !unit_id_is_town_center(target->id)) {
 		return false;
 	}
+	if (flags & FilterLifted && target->is_building() && target->is_in_air()) {
+		return false;
+	}
 	return true;
 }
 
