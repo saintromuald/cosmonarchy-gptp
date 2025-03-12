@@ -990,6 +990,7 @@ namespace hooks {
 		jump_patch(is_unreachable_wrapper,						0x00476C50, 3);
 		jump_patch(get_ai_town_capabilities_wrapper,			0x00438FC0, 1);
 		jump_patch(ai_unit_can_attack_wrapper,					0x00476180, 3);
+		jump_patch(ai_ask_for_help,								0x0043ADA0, 1);
 
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 

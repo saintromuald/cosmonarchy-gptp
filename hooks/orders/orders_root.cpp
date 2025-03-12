@@ -555,7 +555,7 @@ namespace hooks {
 					goto turn_to_face_target;
 				}
 				Unit* final_attacker = unit->subunit;
-				if (!final_attacker || !(units_dat::base_property[final_attacker->id] & UnitProperty::Subunit)) {
+				if (!final_attacker || !final_attacker->is_subunit()) {
 					final_attacker = unit;
 				}
 
@@ -582,7 +582,7 @@ namespace hooks {
 
 			if (helper::is_target_visible(unit, target)) {
 				Unit* final_attacker_2 = unit->subunit;
-				if (!final_attacker_2 || !(units_dat::base_property[final_attacker_2->id] & UnitProperty::Subunit)) {
+				if (!final_attacker_2 || !final_attacker_2->is_subunit()) {
 					final_attacker_2 = unit;
 				}
 
