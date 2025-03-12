@@ -2763,7 +2763,7 @@ namespace hooks {
 
         // Azazel - Sublime Shepherd
         if (!unit_id_is_resource_node(unit->id, false)) {
-            auto shepherds = g_unit_search.radial_ex(unit, Terran::SublimeShepherdRange, FilterAlly | FilterEnabled | FilterLifted, {UnitId::TerranAzazel, UnitId::TerranCestus});
+            auto shepherds = g_unit_search.radial_ex(unit, Terran::SublimeShepherdRange, FilterAlly | FilterCompleted | FilterEnabled | FilterLifted, {UnitId::TerranAzazel, UnitId::TerranCestus});
             if (!shepherds.count()) {
                 if (unit_ext.values[ValueHasSublimeShepherd]) {
                     unit_ext.values[ValueHasSublimeShepherd] = 0;
