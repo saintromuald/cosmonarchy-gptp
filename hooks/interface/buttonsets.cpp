@@ -1421,6 +1421,7 @@ namespace hooks {
                                     case UnitId::ProtossNexus:
                                     case UnitId::ProtossPylon:
                                     case UnitId::ProtossCedent:
+                                    case UnitId::ProtossBulwark:
                                     case UnitId::ProtossWarden:
                                     case UnitId::ProtossEmbassy:
                                     case UnitId::ProtossGateway:
@@ -2817,6 +2818,11 @@ namespace hooks {
                                 case UnitId::ProtossAnthelion: {
                                     if (current_button->icon_id == IconId::DimensionalRecall		// False Light
                                     ||	current_button->icon_id == IconId::ArgusJewel) {         	// Gravity Well
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ProtossBulwark: {
+                                    if (current_button->icon_id == IconId::RechargeShields) { // Astral Splendor
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

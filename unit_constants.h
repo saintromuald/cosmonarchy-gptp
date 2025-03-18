@@ -110,6 +110,11 @@ constexpr s32 ControlledDemolitionTimer = 10 * 24 + 1;
 
 // PROTOSS \\
 
+namespace ProtossBulwark {
+inline constexpr s32 AstralSplendorShieldAmount = 10 * 256;
+inline constexpr s32 AstralSplendorRange = 8 * 32;
+}
+
 namespace ProtossEcclesiast {
 inline constexpr s32 AstralBlessingTimer = 5 * 24 + 1;
 }

@@ -745,6 +745,7 @@ namespace hooks {
                 case UnitId::ProtossNexus:
                 case UnitId::ProtossPylon:
                 case UnitId::ProtossCedent:
+                case UnitId::ProtossBulwark:
                 case UnitId::ProtossWarden:
                 case UnitId::ProtossEmbassy:
                 case UnitId::ProtossGateway:
@@ -2327,6 +2328,7 @@ namespace hooks {
                     case UnitId::ProtossNexus:
                     case UnitId::ProtossPylon:
                     case UnitId::ProtossCedent:
+                    case UnitId::ProtossBulwark:
                     case UnitId::ProtossWarden:
                     case UnitId::ProtossEmbassy:
                     case UnitId::ProtossGateway:
