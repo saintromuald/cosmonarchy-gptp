@@ -427,10 +427,10 @@ namespace hooks {
             && (bw::are_mutual_allies(unit->player, g_local_nation_id) || bw::in_replay_or_witness())) {
                 switch (unit->id) {
                     case UnitId::TerranShamanSupportMode: {
-                        g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
+                        g_graphics.draw_circle(source.x, source.y, Shaman::NaniteFieldSupportRange, graphics::GREEN, graphics::ON_MAP);
                     } break;
                     case UnitId::TerranShamanVisionaryMode: {
-                        g_graphics.draw_circle(source.x, source.y, 6 * 32, graphics::GREEN, graphics::ON_MAP);
+                        g_graphics.draw_circle(source.x, source.y, Shaman::NaniteFieldVisionaryRange, graphics::GREEN, graphics::ON_MAP);
                     } break;
                     case UnitId::TerranAncile:
                     case UnitId::TerranPietyWard: {
@@ -1857,9 +1857,9 @@ namespace hooks {
                     unit_ext.timers[TimerNaniteField] = 24;
                     bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
 
-                    u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? NaniteField::VisionaryRange : NaniteField::SupportRange;
-                    for (Unit* target : g_unit_search.radial(unit->position, range * 32).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterNoBuilding)) {
-                        nanite_field_proc(unit, NaniteField::HealAmount, target);
+                    u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? Shaman::NaniteFieldVisionaryRange : Shaman::NaniteFieldSupportRange;
+                    for (Unit* target : g_unit_search.radial(unit->position, range).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterNoBuilding)) {
+                        nanite_field_proc(unit, Shaman::NaniteFieldHealAmount, target);
                     }
                 }
             } break;
@@ -1878,7 +1878,7 @@ namespace hooks {
                             continue;
                         }
                         has_cargo = true;
-                        cargo->heal_hp(NaniteField::HealAmount * 256, unit);
+                        cargo->heal_hp(Shaman::NaniteFieldHealAmount * 256, unit);
                     }
                     if (has_cargo) {
                         bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
@@ -2761,7 +2761,7 @@ namespace hooks {
             unit->rally.pt.y = 0;
         }
 
-        // Azazel - Sublime Shepherd
+        // Cestus, Azazel - Sublime Shepherd
         if (!unit_id_is_resource_node(unit->id, false)) {
             auto shepherds = g_unit_search.radial_ex(unit, Terran::SublimeShepherdRange, FilterAlly | FilterCompleted | FilterEnabled | FilterLifted, {UnitId::TerranAzazel, UnitId::TerranCestus});
             if (!shepherds.count()) {
@@ -2773,7 +2773,7 @@ namespace hooks {
                 }
             } else {
                 unit_ext.values[ValueHasSublimeShepherd] = 1;
-                if (!unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - bw::get_overlay_offset(unit->id))) {
+                if (!unit->get_overlay(ImageId::SublimeShepherdOverlaySmall - bw::get_overlay_offset(unit->id)) && unit->is_plainly_visible()) {
                     unit->sprite->create_top_overlay(ImageId::SublimeShepherdOverlaySmall - bw::get_overlay_offset(unit->id));
                 }
             }

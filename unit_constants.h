@@ -43,10 +43,10 @@ inline constexpr s32 NanoshieldTimer = 25;
 }
 
 // Shaman
-namespace NaniteField {
-inline constexpr s32 HealAmount = 4;
-inline constexpr s32 SupportRange = 4;
-inline constexpr s32 VisionaryRange = 6;
+namespace Shaman {
+inline constexpr s32 NaniteFieldHealAmount = 4;
+inline constexpr s32 NaniteFieldSupportRange = 4 * 32;
+inline constexpr s32 NaniteFieldVisionaryRange = 6 * 32;
 }
 
 // Madcap
