@@ -276,7 +276,7 @@ void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 total_count, s32 forwar
 
 static std::pair<Target, u32> calculate_target(Unit* unit, WeaponId::Enum weapon_id) {
     Target target = unit->order_target;
-    u32 max_range = bw::distance_between(unit->position, target.pt);
+    u32 max_range = bw::distance_manhattan_between(unit->position, target.pt);
     if (weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
         max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 48;
     }
