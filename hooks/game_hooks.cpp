@@ -1625,9 +1625,9 @@ namespace hooks {
                     if (enemies_detected) {
                         unit_ext.timers[TimerStarSovereignInterventionMissiles] = weapons_dat::cooldown[WeaponId::StarSovereignInterventionMissiles];
                         for (s32 arc = 0; arc < 6; arc++) {
-                            const LO_Header* loFile = lo_files->special_overlays[unit->sprite->main_graphic->id];
+                            const LO_Header* overlay_file = lo_files->special_overlays[unit->sprite->main_graphic->id];
                             u8 frame_direction = unit->sprite->main_graphic->direction;
-                            Point8 offset = loFile->get_offset(frame_direction, 5 - arc);
+                            Point8 offset = overlay_file->get_offset(frame_direction, 5 - arc);
                             if (unit->sprite->main_graphic->is_mirrored()) {
                                 offset.x = -offset.x;
                             }

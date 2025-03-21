@@ -150,6 +150,8 @@ namespace hooks {
                 // Blackjack Wear and Tear: reduce movement speed based on missing health
                 if (unit_ext.values[ValueWearAndTear]) {
                     speed *= 0.66;
+                } else {
+                    speed *= 1.1;
                 }
             } break;
             case UnitId::ZergUltrokor: {

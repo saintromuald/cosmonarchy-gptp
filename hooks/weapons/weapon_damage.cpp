@@ -622,7 +622,8 @@ namespace hooks {
                     attacker_ext.timers[TimerZergAdrenalFrenzy] = 2 * 24 + 1;
                     data.attacker->update_speed();
                 } break;
-                case UnitId::ZergRilirokor: {
+                case UnitId::ZergRilirokor:
+                case UnitId::ZergRililisk: {
                     data.attacker->remove_timer += 24;
                     if (data.attacker->remove_timer > Broodspawn::LifeTimer) {
                         data.attacker->remove_timer = Broodspawn::LifeTimer;
@@ -1004,8 +1005,6 @@ namespace hooks {
         switch (data.weapon_id) {
             case WeaponId::GhitorokorGnashingTendrils:
             case WeaponId::TethzorokorSaberArray:
-            case WeaponId::RilirokorToxicSpores:
-            case WeaponId::RililiskSwarmingSpores:
             case WeaponId::UltrokorKaiserBlades: {
                 // Broodspawn Death Cycle, Ghitorokor / Tethzorokor / Ultrokor Saber Siphon
                 hp_factor += 1;

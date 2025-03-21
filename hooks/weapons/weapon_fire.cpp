@@ -278,7 +278,7 @@ static std::pair<Target, u32> calculate_target(Unit* unit, WeaponId::Enum weapon
     Target target = unit->order_target;
     u32 max_range = bw::distance_between(unit->position, target.pt);
     if (weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
-        max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 24;
+        max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 48;
     }
     Point16 launch_pos = unit->position;
     auto* offsets = get_weapon_offsets(weapon_id);
@@ -686,9 +686,17 @@ namespace hooks {
                             bw::astral_blessing_proc(unit, unit->player, weapon_id);
                         }
                     } break;
+                    case WeaponId::ManifoldPhaseBlaster: {
+                        if (unit->id == UnitId::ProtossManifoldStarbound) {
+                            // Multi-Attack III
+                            fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
+                        } else {
+                            fire_bullet(unit, weapon_id, weapon_target);
+                        }
+                    } break;
                     case WeaponId::VibranceSensoryOverload: {
                         bool attacked = false;
-                        for (Unit* target : g_unit_search.radial_ex(unit, ProtossVibrance::WeaponRadiusOuter + 8 * 32)) {
+                        for (Unit* target : g_unit_search.radial_ex(unit, ProtossVibrance::WeaponRadiusOuter + 8 * 32, FilterNoAir)) {
                             if (target != unit->order_target.unit && bw::is_allied_to(unit->player, target->player)) {
                                 continue;
                             }
