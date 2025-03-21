@@ -123,6 +123,9 @@ namespace hooks {
             case TechId::YamatoGun: {
                 helper::issue_tri_target_order(OrderId::FireYamatoGun1, OrderId::FireYamatoGun2, 0);
             } break;
+            case TechId::FacadePryingEyes: {
+                queue_generic_ability(RustId::CastPryingEyes, 1);
+            } break;
             case TechId::Consume: {
                 helper::issue_tri_target_order(OrderId::Consume, 0, 0);
             } break;

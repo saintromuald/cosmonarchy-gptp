@@ -20,7 +20,7 @@ namespace TechId {
         AzazelSublimeShepherd				= 40, // Unused Tech 40
         TalosSalvage						= 41, // Unused Tech 41
         HypnagogueThroughTheLookingGlass	= 42, // Unused Tech 42
-        StroluumSkryspawn					= 51,
+        FacadePryingEyes                    = 47,
 
     // Protoss
         StarSovereignTheGriefOfAllGods		= 29, // Feedback
@@ -29,6 +29,7 @@ namespace TechId {
         MatralethEnsnaringBrood				= 13, // Spawn Broodlings
         ZergBlissfulEmbrace					= 35, // Unused Tech 35
         KazitrithColonyAdaptation			= 46,
+        StroluumSkryspawn					= 51,
 
         LarvalSubmenuSelectShared			= 9,  // Cloaking Field Wraith
         LarvalSubmenuSelectControl			= 28, // Dark Archon Meld

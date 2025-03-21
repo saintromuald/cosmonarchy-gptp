@@ -688,6 +688,13 @@ namespace hooks {
                             case TechId::HypnagogueThroughTheLookingGlass: {
                                 current_button_state = Button_State::Enabled;
                             } break;
+                            case TechId::FacadePryingEyes: {
+                                if (unit_ext->timers[TimerFacadePryingEyes]) {
+                                    current_button_state = Button_State::Disabled;
+                                } else {
+                                    current_button_state = Button_State::Enabled;
+                                }
+                            } break;
                             case TechId::LarvalSubmenuSelectSwarm:
                             case TechId::LarvalSubmenuSelectAssault:
                             case TechId::LarvalSubmenuSelectControl: {
@@ -3137,7 +3144,7 @@ namespace hooks {
                             }
                         }
 
-                        // Hide Recall, since cancel is the same slot
+                        // Hide ability button, since cancel is the same slot
                         if (UnitId::can_cast_recall(static_cast<UnitId::Enum>(unit->id)) && current_button->action_var == TechId::DimensionalRecall) {
                             if (unit_ext->values[ValueDidactRecalling]) {
                                 current_button_state = Button_State::Invisible;

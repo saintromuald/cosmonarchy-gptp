@@ -439,6 +439,11 @@ namespace hooks {
                     case UnitId::TerranAzazel: {
                         g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
                     } break;
+                    case UnitId::TerranFacade: {
+                        if (unit_ext->timers[TimerFacadePryingEyes]) {
+                            g_graphics.draw_circle(source.x, source.y, TerranFacade::PryingEyesRange, graphics::GREEN, graphics::ON_MAP);
+                        }
+                    } break;
                     case UnitId::ProtossBulwark: {
                         g_graphics.draw_circle(source.x, source.y, ProtossBulwark::AstralSplendorRange, graphics::GREEN, graphics::ON_MAP);
                     } break;
@@ -1960,6 +1965,32 @@ namespace hooks {
                     unit_ext.values[ValueWyvernLandGrabOn] = 0;
                 }
             } break;
+            case UnitId::TerranFacade: {
+                if (bw::get_generic_rust_value(unit, RustId::CastPryingEyes)) {
+                    bw::set_generic_rust_value(unit, RustId::CastPryingEyes, 0);
+                    auto energy_cost = TechId::energy_cost(TechId::FacadePryingEyes);
+                    if (unit->energy == energy_cost) {
+                        // TODO: Audiovisuals
+                        bw::decloak_passive_proc(unit);
+                        unit->spend_energy(energy_cost);
+                        unit_ext.timers[TimerFacadePryingEyes] = TerranFacade::PryingEyesDuration;
+                    } else {
+                        // TODO: Error
+                    }
+                }
+                if (unit_ext.timers[TimerFacadePryingEyes]) {
+                    for (auto target : g_unit_search.radial_ex(unit, TerranFacade::PryingEyesRange, FilterAlly | FilterCompleted)) {
+                        auto& target_ext = target->ext();
+                        if (target->is_burrowed() || target->status & UnitStatus::CloakingForFree || unit_id_has_proximity_cloak(target->id)) {
+                            continue;
+                        }
+                        if (!target_ext.timers[TimerFacadePryingEyesCloak]) {
+                            target_ext.timers[TimerDecloak] = 1;
+                        }
+                        target_ext.timers[TimerFacadePryingEyesCloak] = 3;
+                    }
+                }
+            } break;
             case UnitId::TerranTarasque: {
                 // Forward March
                 if (bw::unit_can_fire_secondary_weapon(unit)) {
@@ -3113,6 +3144,10 @@ namespace hooks {
             if (unit->get_overlay(ImageId::SalvageDisableSmall + offset)) {
                 bw::remove_unit_overlay(unit, ImageId::SalvageDisableSmall + offset);
             }
+        }
+
+        if (unit_ext.timers[TimerFacadePryingEyesCloak] == 1) {
+            bw::decloak_proximity_proc(unit);
         }
 
         // Proximity cloaking - recloak after 2 seconds of no nearby enemies

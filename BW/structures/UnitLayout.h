@@ -115,18 +115,17 @@ namespace OverlayOffset {
 
 namespace RustId {
     enum {
-        CastEnsnaringBrood,
-        CastGodsMadeFlesh,
-        CastEnthrallingAssault,
-        CastControlledDemolition,
-        CastEmergencyDetonation,
         CastSalvage,
         CastThroughTheLookingGlass,
         CastToggleTempoChange,
+        CastControlledDemolition,
+        CastEmergencyDetonation,
+        CastPryingEyes,
+        CastEnthrallingAssault,
 
         CancelLandGrab,
-        CancelRecall,
         CancelControlledDemolition,
+        CancelRecall,
         CancelPsiStorm,
 
         ToggleLazarusAgent,

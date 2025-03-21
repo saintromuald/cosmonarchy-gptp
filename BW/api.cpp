@@ -1247,7 +1247,7 @@ bool is_proximity_decloakable(Unit* unit) {
         return true;
     }
     auto& unit_ext = unit->ext();
-    if (unit_ext.values[ValueTriggerBehaviorProximityCloak]) {
+    if (unit_ext.values[ValueTriggerBehaviorProximityCloak] || unit_ext.timers[TimerFacadePryingEyesCloak]) {
         return true;
     }
     return false;
