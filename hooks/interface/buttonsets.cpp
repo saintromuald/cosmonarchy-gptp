@@ -1171,6 +1171,11 @@ namespace hooks {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
+                                    case UnitId::TerranValkyrie: {
+                                        if (!in_air) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
                                     case UnitId::TerranAncile: {
                                         if (faction == Faction::TerranUpstart) {
                                             current_button_state = Button_State::Invisible;
@@ -1192,6 +1197,15 @@ namespace hooks {
                             } break;
                             case UnitId::TerranStarport: {
                                 switch (current_button->requirement_var) {
+                                    case UnitId::TerranGorgon:
+                                    case UnitId::TerranWyvern:
+                                    case UnitId::TerranPythean: {
+                                        if (in_air || bw::unit_queue_full(unit)) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
                                     case UnitId::TerranSalamander:
                                     case UnitId::TerranSundog: {
                                         if (!bw::all_selected_units_have_addon(UnitId::TerranRotary) || bw::unit_queue_full(unit)) {
@@ -1236,8 +1250,7 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranCentaur:
                                     case UnitId::TerranMinotaur:
-                                    case UnitId::TerranMagnetar:
-                                    case UnitId::TerranPythean: {
+                                    case UnitId::TerranMagnetar: {
                                         if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                             current_button_state = Button_State::Invisible;
                                         } else {
