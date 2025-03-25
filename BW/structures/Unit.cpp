@@ -1618,7 +1618,7 @@ bool Unit::is_plainly_visible() {
         return false;
     }
     auto& unit_ext = this->ext();
-    if (bw::is_passive_decloakable(this) && !unit_ext.timers[TimerDecloak]) {
+    if ((bw::is_passive_decloakable(this) || bw::is_proximity_decloakable(this)) && !unit_ext.timers[TimerDecloak]) {
         return false;
     }
     return true;
