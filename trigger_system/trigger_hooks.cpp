@@ -354,6 +354,24 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 00
                 portrait_id = PortraitId::Joran;
             } break;
         }
+    }else if (strcmp(g_current_map_name, "Mendacity") == 0) {
+        switch (portrait_id) {
+            case PortraitId::Anticthon: {
+                portrait_id = PortraitId::Zasz; // Ataltreth
+            } break;
+            case PortraitId::ScannerSweep: {
+                portrait_id = PortraitId::OrganSenescent; // Relgant; Temporary
+            } break;
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::Medley; // Sprinia; Temporary
+            } break;
+            case PortraitId::PlasmaShellUnused: {
+                portrait_id = PortraitId::Trodin; // Scintor; Temporary
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Tazarain;
+            } break;
+        }
     }
 
     PortraitData* portrait_data = final_dlg->portrait_data; // Ignoring nullcheck warning as it is accessed without nullchecks all over the codebase. -Pr0nogo

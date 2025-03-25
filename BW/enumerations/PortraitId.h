@@ -280,6 +280,10 @@ namespace PortraitId {
         Trodin                      = 272,
         Tazarain                    = 273,
         Venammar                    = 274,
+        Ithintos                    = 275,
+        Kiraxxar                    = 276,
+        Demiurge                    = 277,
+        ScannerSweep                = 278,
 
         None						= 0xFFFF
     };
