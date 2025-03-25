@@ -1455,7 +1455,6 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
-                                    case UnitId::ProtossXenolith:
                                     case UnitId::ProtossEngram:
                                     case UnitId::ProtossProstrationStage:
                                     case UnitId::ProtossUnitaryUnion:
@@ -1466,6 +1465,7 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
+                                    case UnitId::ProtossXenolith:
                                     case UnitId::ProtossAncestralArchives:
                                     case UnitId::ProtossSyntheticSynod:
                                     case UnitId::ProtossMonumentOfSin: {

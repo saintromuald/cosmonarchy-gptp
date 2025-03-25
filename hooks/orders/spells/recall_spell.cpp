@@ -97,7 +97,7 @@ namespace hooks {
 		helper::play_sound_at_pos(sound_id_source, source);
 		helper::play_sound_at_pos(sound_id_target, target);
 
-		unit->order_queue_timer = 8;
+		unit->order_queue_timer = 12;
 	}
 
 	void orders_recall(Unit* unit) { // 00494470
@@ -174,7 +174,7 @@ namespace hooks {
 				}
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 				unit->main_order_state = 1;
-				unit->main_order_timer = 2.25 * 24;
+				unit->main_order_timer = 4 * 24;
 				helper::make_to_hold_position(unit);
 				unit_ext.values[ValueDidactChannelIndex] = 0;
 				unit_ext.values[ValueDidactRecalling] = false;
