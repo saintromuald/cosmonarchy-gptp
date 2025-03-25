@@ -1356,21 +1356,21 @@ UnitId::Enum get_racial_town_center_id(u32 race_id) {
 }
 
 namespace UnitId {
-    bool can_cast_recall(UnitId::Enum unit_id) {
-        return unit_id == UnitId::ProtossXenolith
-            || unit_id == UnitId::ProtossDidact;
-    }
+ bool can_cast_recall(UnitId::Enum unit_id) {
+     return unit_id == UnitId::ProtossXenolith
+         || unit_id == UnitId::ProtossDidact;
+ }
 } // namespace UnitId
 
 namespace WeaponId {
-    u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {
-        switch (weapon_id) {
-           case WeaponId::CicatusPhaseClaws: return 2;
-        }
-        return 1;
+u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {
+    switch (weapon_id) {
+       case WeaponId::CicatusPhaseClaws: return 2;
     }
+    return 1;
+}
 
-    bool weapon_id_splits_reactive_payload(WeaponId::Enum weapon_id) {
-        return weapon_id == WeaponId::ArchitectDispersiveSalvo;
-    }
+bool weapon_id_splits_reactive_payload(WeaponId::Enum weapon_id) {
+    return weapon_id == WeaponId::ArchitectDispersiveSalvo;
+}
 } // namespace WeaponId
