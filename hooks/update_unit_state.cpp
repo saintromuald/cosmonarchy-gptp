@@ -28,7 +28,7 @@ namespace hooks {
 		}
 
 		// Block regen for channeling Facades
-		if (unit->id == UnitId::TerranFacade && unit_ext->timers[TimerFacadePryingEyes]) {
+		if (unit->id == UnitId::TerranFacade && unit_ext->timers[TimerFacadePryingEyesChannel]) {
 			dont_regen = true;
 		}
 
@@ -486,7 +486,7 @@ namespace hooks {
 				} else {
 					u32 status_1 = invisible_unit->status;
 					bool cloak_or_burrow;
-					if (status_1 & UnitStatus::Burrowed || invisible_unit->secondary_order_id != OrderId::Cloak || invisible_unit->is_cloaked != 1 || !(status_1 & UnitStatus::CloakingForFree)) {
+					if (invisible_unit->is_burrowed() || invisible_unit->secondary_order_id != OrderId::Cloak || invisible_unit->is_cloaked != 1 || !(status_1 & UnitStatus::CloakingForFree)) {
 						cloak_or_burrow = 0;
 					} else {
 						invisible_unit->status = status_1 & 0xFFFFF7FF;
@@ -513,14 +513,15 @@ namespace hooks {
 
 	// Hooked for cloak rewrite animations - Pr0nogo
 	void do_cloak(Unit* unit, s32 sound_id) { // 0049B440
-		if (!(unit->status & UnitStatus::Burrowed)) {
+		bool is_burrowed = unit->is_burrowed();
+		if (!is_burrowed) {
 			helper::play_sound_from_unit(sound_id, unit, 1, 0);
 		}
 		if (!g_is_in_replay && unit->player == g_local_nation_id) {
 			bw::refresh_console();
 		}
 
-		if (unit->status & UnitStatus::Burrowed) {
+		if (is_burrowed) {
 			helper::update_sprite_flag_on_palette(unit->sprite);
 			helper::show_images_hidden_by_cloak(unit->sprite);
 			unit->status &= 0xFFFFFCFF;
@@ -708,12 +709,10 @@ namespace hooks {
 		}
 
 		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak
-		||  unit_ext->timers[TimerFacadePryingEyesCloak]
 		||	unit_ext->values[ValueTriggerBehaviorProximityCloak]
 		||	unit_ext->values[ValueTriggerBehaviorSteadyShroud])
 		{
-			u32 sound_id = bw::get_cloak_sound_id(unit);
-			helper::begin_cloak(unit, sound_id);
+			helper::begin_cloak(unit, bw::get_cloak_sound_id(unit));
 		}
 		if (unit->id == UnitId::Spell_ScannerSweep || unit->id == UnitId::Special_MapRevealer) {
 			if (*g_first_hidden_unit == unit) {
@@ -749,12 +748,12 @@ namespace hooks {
 				*g_first_scanner_sweep = unit;
 				helper::refresh_unit_vision(unit);
 			}
-		} else if (unit->sprite->flags & SpriteFlags::Hidden && !unit_id_is_hangar_unit((UnitId::Enum)unit->id)) {
+		} else if (unit->sprite->is_hidden() && !unit_id_is_hangar_unit((UnitId::Enum)unit->id)) {
 			helper::show_and_enable_unit(unit);
 		}
 		// Originally had trap code
 
-		u32 player_type = g_player_table[(unsigned __int8)unit->player].type;
+		u32 player_type = g_player_table[unit->player].type;
 		if (player_type == PlayerType::Rescuable) {
 			u32 main_order_id = unit->main_order_id;
 			unit->user_action_flags |= UserActionFlags::UserActionFlags_IscriptGoToIdle;

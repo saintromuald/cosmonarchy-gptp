@@ -668,18 +668,18 @@ namespace hooks {
                     }
 
                     if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched) {
-                        UnitExt* unit_ext = get_unit_ext(unit);
+                        auto& unit_ext = unit->ext();
                         // Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
                         switch (current_button->requirement_var) {
                             case TechId::ControlledDemolition: {
-                                if (unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
+                                if (unit_ext.timers[TimerControlledDemolition] || unit_ext.timers[TimerEmergencyDetonation]) {
                                     current_button_state = Button_State::Invisible;
                                 } else {
                                     current_button_state = Button_State::Enabled;
                                 }
                             } break;
                             case TechId::EmergencyDetonation: {
-                                if (!unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
+                                if (!unit_ext.timers[TimerControlledDemolition] || unit_ext.timers[TimerEmergencyDetonation]) {
                                     current_button_state = Button_State::Invisible;
                                 } else {
                                     current_button_state = Button_State::Enabled;
@@ -689,7 +689,7 @@ namespace hooks {
                                 current_button_state = Button_State::Enabled;
                             } break;
                             case TechId::FacadePryingEyes: {
-                                if (unit_ext->timers[TimerFacadePryingEyes]) {
+                                if (unit_ext.timers[TimerFacadePryingEyesChannel] || unit->is_in_air()) {
                                     current_button_state = Button_State::Disabled;
                                 } else {
                                     current_button_state = Button_State::Enabled;
@@ -714,7 +714,7 @@ namespace hooks {
                                 }
                             } break;
                             case TechId::StroluumSkryspawn: {
-                                if (unit_ext->timers[TimerSkryspawn]) {
+                                if (unit_ext.timers[TimerSkryspawn]) {
                                     current_button_state = Button_State::Disabled;
                                 } else if (unit->is_burrowed()) {
                                     current_button_state = Button_State::Invisible;
@@ -725,13 +725,13 @@ namespace hooks {
                         }
 
                         if (current_button->requirement_var == TechId::ControlledDemolition) {
-                            if (unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
+                            if (unit_ext.timers[TimerControlledDemolition] || unit_ext.timers[TimerEmergencyDetonation]) {
                                 current_button_state = Button_State::Invisible;
                             } else {
                                 current_button_state = Button_State::Enabled;
                             }
                         } else if (current_button->requirement_var == TechId::EmergencyDetonation) {
-                            if (!unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
+                            if (!unit_ext.timers[TimerControlledDemolition] || unit_ext.timers[TimerEmergencyDetonation]) {
                                 current_button_state = Button_State::Invisible;
                             } else {
                                 current_button_state = Button_State::Enabled;
@@ -1643,6 +1643,7 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
+                                    case UnitId::ProtossLanifect:
                                     case UnitId::ProtossPanoptus:
                                     case UnitId::ProtossExemplar:
                                     case UnitId::ProtossGladius: {

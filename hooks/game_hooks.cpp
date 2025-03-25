@@ -440,7 +440,7 @@ namespace hooks {
                         g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
                     } break;
                     case UnitId::TerranFacade: {
-                        if (unit_ext->timers[TimerFacadePryingEyes]) {
+                        if (unit_ext->timers[TimerFacadePryingEyesChannel]) {
                             g_graphics.draw_circle(source.x, source.y, TerranFacade::PryingEyesRange, graphics::GREEN, graphics::ON_MAP);
                         }
                     } break;
@@ -1970,25 +1970,33 @@ namespace hooks {
                     bw::set_generic_rust_value(unit, RustId::CastPryingEyes, 0);
                     auto energy_cost = TechId::energy_cost(TechId::FacadePryingEyes);
                     if (unit->energy == energy_cost) {
-                        // TODO: Audiovisuals
+                        bw::play_sound(SoundId::FacadeCast01, unit->position);
+                        helper::create_image_overlay(unit->sprite, ImageId::PryingEyesChannel, 8, -24, 0); // Used this because we do not have offset support in add_unit_overlay
                         bw::decloak_passive_proc(unit);
                         unit->spend_energy(energy_cost);
-                        unit_ext.timers[TimerFacadePryingEyes] = TerranFacade::PryingEyesDuration;
+                        unit_ext.timers[TimerFacadePryingEyesChannel] = TerranFacade::PryingEyesDuration;
                     } else {
                         // TODO: Error
                     }
                 }
-                if (unit_ext.timers[TimerFacadePryingEyes]) {
-                    for (auto target : g_unit_search.radial_ex(unit, TerranFacade::PryingEyesRange, FilterAlly | FilterCompleted)) {
+                if (unit_ext.timers[TimerFacadePryingEyesChannel] > 1) {
+                    for (Unit* target : g_unit_search.radial_ex(unit, TerranFacade::PryingEyesRange, FilterAlly | FilterCompleted)) {
                         auto& target_ext = target->ext();
-                        if (target->is_burrowed() || target->status & UnitStatus::CloakingForFree || unit_id_has_proximity_cloak(target->id)) {
+                        if (target->is_burrowed() || target->status & UnitStatus::CloakingForFree) {
+                            continue;
+                        }
+                        if (units_dat::base_property[target->id] & UnitProperty::PermanentCloak || unit_id_has_proximity_cloak(target->id)) {
                             continue;
                         }
                         if (!target_ext.timers[TimerFacadePryingEyesCloak]) {
-                            target_ext.timers[TimerDecloak] = 1;
+                            helper::begin_cloak(target, SoundId::CloakTerranOn);
                         }
                         target_ext.timers[TimerFacadePryingEyesCloak] = 3;
                     }
+                } else if (unit->get_overlay(ImageId::PryingEyesChannel)) {
+                    bw::remove_unit_overlay(unit, ImageId::PryingEyesChannel);
+                    bw::play_sound(SoundId::FacadeOff01, unit->position);
+                    unit_ext.energy_regen_timer = 0;
                 }
             } break;
             case UnitId::TerranTarasque: {

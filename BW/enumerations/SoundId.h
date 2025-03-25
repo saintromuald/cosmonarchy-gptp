@@ -2190,5 +2190,18 @@ namespace SoundId {
         EidolonNydusWeaponfire01                            = 3471,
         EidolonNydusWeaponfire02                            = 3472,
         EidolonNydusWeaponfire03                            = 3473,
+        EidolonNydusWeaponfire04                            = 3474,
+        EidolonNydusWeaponfire05                            = 3475,
+        ManifoldStarboundWeaponfire01                       = 3476,
+        ManifoldStarboundWeaponfire02                       = 3477,
+        ManifoldStarboundWeaponfire03                       = 3478,
+        ManifoldStarboundWeaponfire04                       = 3479,
+        TiangouWeaponfire01                                 = 3480,
+        TiangouWeaponfire02                                 = 3481,
+        TiangouWeaponfire03                                 = 3482,
+        TiangouWeaponfire04                                 = 3483,
+        TiangouWeaponfire05                                 = 3484,
+        FacadeCast01                                        = 3485,
+        FacadeOff01                                         = 3486,
     };
 }

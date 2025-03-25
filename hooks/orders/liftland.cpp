@@ -253,8 +253,12 @@ namespace hooks {
 				helper::place_building_proc();
 			}
 			unit->main_order_id = OrderId::Liftoff;
-			auto unit_ext = unit->ext();
+			auto& unit_ext = unit->ext();
 			unit_ext.timers[TimerLiftLandDelay] = 52 + 1;
+			if (unit_ext.timers[TimerFacadePryingEyesChannel]) {
+				unit_ext.energy_regen_timer = 0;
+				unit_ext.timers[TimerFacadePryingEyesChannel] = 1;
+			}
 			helper::turn_unit(unit, 0); // Fix turning structures having difficulty lifting
 			unit->update_speed();
 		} else {
