@@ -36,4 +36,5 @@ namespace hooks {
 
 	void initialize_provider_version(GameVersion* version);			// 00472770
 	s32 __cdecl network_set_return_menu();							// 004DC5B0
+	s32 __stdcall get_replay_turn_data(s32* command_count, u8* command_players, u8* command_buffer, s32* command_sizes); // 004CDFF0
 }

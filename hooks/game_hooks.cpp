@@ -4313,4 +4313,67 @@ namespace hooks {
         g_gl_glues_mode = MenuId::GlueDirect;
         return network_mode;
     }
+
+    // Hooked to fix broken replays when commands are given during pauses. -DF
+    inline int esi();
+    s32 __stdcall get_replay_turn_data(s32* command_count, u8* command_players, u8* command_buffer, s32* command_sizes) { // 004CDFF0
+        ReplayData* replay_data = (ReplayData*)esi();
+        if (!replay_data->is_replaying) {
+            return -1;
+        }
+
+        ReplayFrame* replay_frame = replay_data->cur_frame;
+
+        if ((u32)replay_frame > replay_data->start + replay_data->size) {//Changed >= to > to fix replay last action bug.
+            return -1;
+        }
+
+        s32 frame_time = replay_frame->time;
+        u32 cmd_index = 0;
+
+        do {
+            s32 frame_size = replay_frame->size;
+            if ((u32)(command_buffer + frame_size) >= 0x006554B0) {//Added to prevent buffer overflow.
+                break;
+            }
+            replay_data->cur_command = replay_frame->data;
+            while (frame_size > 0) {
+                command_players[cmd_index] = -1;
+                s32 cmd_size = 0;
+
+                if (replay_data->is_replaying) {//May be pointless due to the return condition at the top.
+                    u8* cmd_data = replay_data->cur_command;
+                    command_players[cmd_index] = cmd_data[0];
+                    ++cmd_data;
+                    u32 cmd_id = cmd_data[0];
+
+                    if (cmd_id >= 9 && cmd_id <= 11) {//GameCommand_Select, GameCommand_ShiftDeselect
+                        cmd_size = 2 * cmd_data[1] + 2;
+                    } else {
+                        cmd_size = g_turn_command_size[cmd_id];
+                    }
+
+                    if (cmd_size) {
+                        memcpy(command_buffer, cmd_data, cmd_size);
+                        cmd_data += cmd_size;
+                    }
+
+                    replay_data->cur_command = cmd_data;
+                }
+
+                command_sizes[cmd_index++] = cmd_size;
+                command_buffer += cmd_size;
+                frame_size -= cmd_size + 1;
+            }
+
+            replay_frame = replay_data->cur_frame;
+
+            if ((u32)replay_frame > replay_data->start + replay_data->size) {//Changed >= to > to fix replay last action bug.
+                return -1;
+            }
+        } while (replay_frame->time == frame_time);
+
+        *command_count = cmd_index;
+        return frame_time;
+    }
 }
