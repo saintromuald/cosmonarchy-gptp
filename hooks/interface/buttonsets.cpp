@@ -2805,10 +2805,14 @@ namespace hooks {
                                     if (current_button->icon_id == IconId::AnodyneAnnex) {
                                         current_button_state = Button_State::Enabled;
                                     }
-                                }
-                                break;
+                                } break;
                                 case UnitId::ProtossAurora: {
                                     if (current_button->icon_id == IconId::MojoScout) { // Last Orders
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ProtossExtatus: {
+                                    if (current_button->icon_id == IconId::ProtossGroundWeapons) { // Astral Blessing
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2858,7 +2862,6 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::ProtossExtatus:
                                 case UnitId::ProtossMatrix: {
                                     if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Astral Tether
                                         current_button_state = Button_State::Enabled;

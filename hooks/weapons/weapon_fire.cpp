@@ -678,7 +678,6 @@ namespace hooks {
                         s32 scatter = -15 + index * 5;
                         fire_sideways(unit, weapon_id, angle, scatter);
                     } break;
-                    case WeaponId::ExtatusRepeatingBlaster:
                     case WeaponId::MatrixKhaydarinRay: {
                         fire_bullet(unit, weapon_id, weapon_target);
                         Unit* target = unit->order_target.unit;

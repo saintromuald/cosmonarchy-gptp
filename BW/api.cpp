@@ -2230,11 +2230,11 @@ void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id) 
     u32 range = 96;
     switch (weapon_id) {
         case WeaponId::EcclesiastAstralBlaster:
-        case WeaponId::VibranceSensoryOverload: {
+        case WeaponId::VibranceSensoryOverload:
+        case WeaponId::ExtatusRepeatingBlaster: {
             heal_amount = 3;
             range = 96;
         } break;
-        case WeaponId::ExtatusRepeatingBlaster:
         case WeaponId::MatrixKhaydarinRay: {
             heal_amount = 5;
             range = 96;
