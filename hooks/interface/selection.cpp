@@ -41,7 +41,7 @@ namespace hooks {
         bool stop_big_loop = false;
         bool keep_for_empty_list_case = false;
         bool dont_add_to_list = false;
-        
+
         // if unit not null, become first entry of unit_list
         u32 current_index_in_unit_list = 0;
         if (unit) {
@@ -59,7 +59,8 @@ namespace hooks {
                 }
                 if (units_dat::base_property[current_unit->id] & UnitProperty::Building) {
                     has_buildings = true;
-                } else {
+                }
+                else {
                     has_units = true;
                 }
             }
@@ -67,14 +68,11 @@ namespace hooks {
 
         // work with the first unit from units_in_bounds
         Unit* current_unit = *units_in_bounds;
-        if (!current_unit)
-        {
+        if (!current_unit) {
             stop_big_loop = true;
         }
-        while (!stop_big_loop)
-        {
-            if (current_unit != unit)
-            {
+        while (!stop_big_loop) {
+            if (current_unit != unit) {
                 if (has_units) {
                     if (units_dat::base_property[current_unit->id] & UnitProperty::Building) {
                         dont_add_to_list = true;
@@ -87,22 +85,17 @@ namespace hooks {
 
                 if (!dont_add_to_list) {
                     // if current_unit == unit, then it's already in unit_list
-                    if (current_unit->subunit)
-                    {
+                    if (current_unit->subunit) {
                         // if what got it is the turret or another subunit, swap the unit and the subunit as current_unit
-                        if (units_dat::base_property[current_unit->id] & UnitProperty::Subunit)
-                        {
+                        if (units_dat::base_property[current_unit->id] & UnitProperty::Subunit) {
                             current_unit = current_unit->subunit;
                         }
-                        if (current_index_in_unit_list != 0)
-                        {
+                        if (current_index_in_unit_list != 0) {
                             u32 index = current_index_in_unit_list;
-                            do
-                            {
+                            do {
                                 index--;
                                 // if the unit is already in the list, skip it
-                                if (unit_list[index] == current_unit)
-                                {
+                                if (unit_list[index] == current_unit) {
                                     dont_add_to_list = true;
                                 }
                             } while (index != 0 && !dont_add_to_list);
@@ -110,16 +103,12 @@ namespace hooks {
                     }
                 }
 
-                if (!dont_add_to_list)
-                {
+                if (!dont_add_to_list) {
                     // if the unit sprite is visible, perform additionnal visibility test, else skip the unit
-                    if (current_unit->sprite->visibility_status & (u8)*g_player_visions)
-                    {
+                    if (current_unit->sprite->visibility_status & (u8)*g_player_visions) {
                         // if the unit is cloaked and visibility status test (detection by detectors units probably) fail, the unit is skipped
-                        if (current_unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
-                        {
-                            if (!(current_unit->detection_status & *g_player_visions))
-                            {
+                        if (current_unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)) {
+                            if (!(current_unit->detection_status & *g_player_visions)) {
                                 dont_add_to_list = true;
                             }
                         }
@@ -127,10 +116,8 @@ namespace hooks {
                         dont_add_to_list = true;
                     }
 
-                    if (!dont_add_to_list)
-                    {
-                        if (helper::unit_is_unselectable(current_unit->id))
-                        {
+                    if (!dont_add_to_list) {
+                        if (helper::unit_is_unselectable(current_unit->id)) {
                             dont_add_to_list = true;
                         } else if (!helper::unit_is_standard_and_movable(current_unit)) {
                             keep_for_empty_list_case = true; // skip the unit for the list, unless it's the only available
@@ -140,11 +127,9 @@ namespace hooks {
                             keep_for_empty_list_case = true;
                         } else {
                         new_replay_logic:
-                            if (unit)
-                            {
+                            if (unit) {
                                 // all units should belong to the same player (the one owning the clicked unit)
-                                if (unit->player != current_unit->player)
-                                {
+                                if (unit->player != current_unit->player) {
                                     dont_add_to_list = true;
                                 } else if (unit->id != current_unit->id) {
                                     dont_add_to_list = true; // select only units with same id
@@ -155,36 +140,30 @@ namespace hooks {
 
                                     // Only select all burrowed OR all unburrowed units.
                                     // The test exclude current_unit if the burrowed state differ from the one of unit.
-                                    if (mixed_flags & UnitStatus::Burrowed)
-                                    {
+                                    if (mixed_flags & UnitStatus::Burrowed) {
                                         dont_add_to_list = true;
                                     }
 
                                     // Same thing for hallucinations
-                                    if (mixed_flags & UnitStatus::IsHallucination)
-                                    {
+                                    if (mixed_flags & UnitStatus::IsHallucination) {
                                         dont_add_to_list = true;
                                     }
 
                                     // Same thing for completed units
-                                    if (mixed_flags & UnitStatus::Completed)
-                                    {
+                                    if (mixed_flags & UnitStatus::Completed) {
                                         dont_add_to_list = true;
                                     }
 
                                     // Same thing for lifted structures
-                                    if (mixed_flags & UnitStatus::InAir)
-                                    {
+                                    if (mixed_flags & UnitStatus::InAir) {
                                         dont_add_to_list = true;
                                     }
                                 }
                             }
 
-                            if (!dont_add_to_list)
-                            {
+                            if (!dont_add_to_list) {
                                 if (current_index_in_unit_list >= SelectionCap) { // action when unit_list is full
                                     stop_big_loop = true; // This was added, so sorting by cursor is respected, not sure about the role of the original call
-
                                     // helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
                                 } else {
                                     if (units_dat::base_property[current_unit->id] & UnitProperty::Building) {
@@ -192,7 +171,6 @@ namespace hooks {
                                     } else {
                                         has_units = true;
                                     }
-
                                     // Add current_unit to unit_list
                                     unit_list[current_index_in_unit_list] = current_unit;
                                     current_index_in_unit_list++;
@@ -203,35 +181,29 @@ namespace hooks {
                 }
             }
 
-            if (keep_for_empty_list_case)
-            {
+            if (keep_for_empty_list_case) {
                 backup_current_unit = current_unit;
             }
             units_in_bounds += 1; // this actually advances by 4 bytes
             current_unit = *units_in_bounds;
             keep_for_empty_list_case = false;
             dont_add_to_list = false;
-            if (!current_unit)
-            {
+            if (!current_unit) {
                 stop_big_loop = true;
             }
         }
 
-        if (current_index_in_unit_list == 0)
-        {
+        if (current_index_in_unit_list == 0) {
             // if current_index_in_unit_list == 0, the list is empty and cannot be used, so another solution is found here
-            if (!backup_current_unit)
-            {
-                if (!unit)
-                {
+            if (!backup_current_unit) {
+                if (!unit) {
                     current_index_in_unit_list = 0; // return 0 (no list)
                 } else {
                     unit_list[0] = unit;
                     current_index_in_unit_list = 1; // return 1 (the clicked unit alone)
                 }
             } else {
-                if (unit)
-                {
+                if (unit) {
                     unit_list[0] = unit;
                     current_index_in_unit_list = 1; // return 1 (the clicked unit alone)
                 } else {
@@ -333,10 +305,10 @@ namespace hooks {
                         // 0x0046FD13 (getting unit sprite) and 0x0046FD18 (middle of the test with the flag)
                         // unit not it, so it's added to current unit_list if valid
                         if (array_index < SelectionCap
-                        &&  helper::unit_is_standard_and_movable(local_temp_array_1[0])
-                        &&  unit_is_owned_by_current_player_new(local_temp_array_1[0])
-                        &&  helper::unit_is_standard_and_movable(clicked_unit)
-                        &&  unit_is_owned_by_current_player_new(clicked_unit))
+                            && helper::unit_is_standard_and_movable(local_temp_array_1[0])
+                            && unit_is_owned_by_current_player_new(local_temp_array_1[0])
+                            && helper::unit_is_standard_and_movable(clicked_unit)
+                            && unit_is_owned_by_current_player_new(clicked_unit))
                         {
                             // new unit is added at end of array, and the index is increased to be used as new array length
                             local_temp_array_1[array_index] = clicked_unit;
@@ -485,7 +457,7 @@ namespace hooks {
         }
         return false;
     }
-    
+
     // Hooked to forbid buildings. -Pr0nogo
     s32 select_multiple_units_from_unit_list(u32 count, Unit** unit_list, char play_sound, u32 send_command) { // 0049AEF0
         if (*g_is_holding_shift) {
@@ -605,7 +577,8 @@ namespace hooks {
         if (unit->is_completed() && unit_id_is_power_generator(unit->id)) {
             if (bw::in_replay() || bw::player_is_witness(g_local_nation_id)) {
                 create_pylon_aura_witness(unit->player);
-            } else if (unit_can_show_power_for(unit, g_local_nation_id)) {
+            }
+            else if (unit_can_show_power_for(unit, g_local_nation_id)) {
                 helper::create_pylon_aura();
             }
         }
@@ -617,7 +590,7 @@ namespace hooks {
         if (*g_last_free_selection_circle == 0) {
             return 0;
         }
-        
+
         Image* next_free_circle = (*g_last_free_selection_circle)->link.next;
         *g_last_free_selection_circle = (*g_last_free_selection_circle)->link.next;
         if (*g_first_free_selection_circle == last_free_circle) {
@@ -664,7 +637,7 @@ namespace hooks {
     // Ended up being used for allied selection circles. -Pr0nogo
     b32 is_human_player_on_same_team(u32 player_id) { // 0049A110
         if (player_id != *g_local_human_id
-        &&  player_id < PlayerLimit) { // Originally checked for singleplayer (turned off so sp replays load selections) and for a team game (turned off so it works at all).
+            && player_id < PlayerLimit) { // Originally checked for singleplayer (turned off so sp replays load selections) and for a team game (turned off so it works at all).
             if (bw::is_allied_to(player_id, *g_local_human_id) && bw::is_allied_to(*g_local_human_id, player_id) && !g_globals->players[player_id].witness_mode) {
                 return true;
             }
@@ -678,8 +651,8 @@ namespace hooks {
     // Hooked to not die to lard. -Pr0nogo
     u8 get_team_size(u32 selecting_player) { // 00485710
         if ((selecting_player < PlayerLimit && g_globals->players[selecting_player].witness_mode)
-        ||	!bw::is_allied_to(selecting_player, *g_local_human_id) 
-        ||	!bw::is_allied_to(*g_local_human_id, selecting_player)) {
+            || !bw::is_allied_to(selecting_player, *g_local_human_id)
+            || !bw::is_allied_to(*g_local_human_id, selecting_player)) {
             return 2;
         }
         return 4;
@@ -708,7 +681,6 @@ namespace hooks {
         do {
             helper::remove_from_selections_2(unit, iterations++);
         } while (iterations < 8);
-        
         if (!unit->sprite) {
             return false;
         }
@@ -780,15 +752,12 @@ namespace hooks {
         Unit* selection_array[SelectionCap];
         memcpy(selection_array, active_player_selection, sizeof(selection_array));
         s32 result = 0;
-        while (selection_array[result])
-        {
-            if (++result >= SelectionCap)
-            {
+        while (selection_array[result]) {
+            if (++result >= SelectionCap) {
                 return result;
             }
         }
-        if (result < SelectionCap)
-        {
+        if (result < SelectionCap) {
             selection_index = result + 1;
             selection_array[result] = unit;
             helper::create_new_unit_selections_from_list((Unit**)selection_array, result + 1);
@@ -924,7 +893,7 @@ namespace hooks {
                 u8 last_player_force = g_player_table[8].force;
                 while (1) {
                     Player* player_from_force = 0;						// Avoids compiler errors, obviously not final
-                //	Player* player_from_force = last_player_force - 36; // Some struct nonsense
+                    //	Player* player_from_force = last_player_force - 36; // Some struct nonsense
                     Player* player_from_force_2 = player_from_force;
                     Unit** selection = players_selections->unit[0];
                     Unit** selection_2 = selection;
@@ -992,7 +961,6 @@ namespace hooks {
         *g_active_portrait_unit = 0;
         while (*current_unit_offset < g_client_selection_group_end) {
             Unit* current_unit = *current_unit_offset;
-
             if (current_unit) {
                 if (helper::compare_unit_rank(current_unit, unit_at_selection_top) != 0) {
                     unit_at_selection_top = current_unit;
@@ -1001,7 +969,6 @@ namespace hooks {
             }
             current_unit_offset++;
         }
-
         *g_active_portrait_unit = unit_at_selection_top;
         if (g_client_selection_count == 1) {
             g_client_selection_group->unit[0] = *g_active_portrait_unit;
@@ -1017,18 +984,15 @@ namespace hooks {
         Unit* unit_list[SelectionLimit];
         Unit* unit;
         u32 i_0 = 0;
-
         if (*g_is_holding_shift) {
             memset(&unit_list, 0, sizeof(unit_list));
             BinDlg* current_dialog;
             u32 count = g_client_selection_count;
-
             if (g_config.always_show_condensed_selection || count > GroupWireframesCap) {
                 current_dialog = dialog;
                 if (current_dialog->flags & BinDlgFlags::Visible) {
-                    u16 unit_id = ((Unit*)current_dialog->user)->id;
+                    u16 unit_id = current_dialog->user_unit_with_id->unit->id;
                     u32 i_1;
-
                     if (*g_is_holding_ctrl) {
                         i_1 = 0;
                         do {
@@ -1071,7 +1035,7 @@ namespace hooks {
                     count = GroupWireframesCap;
                     do {
                         if (current_dialog->flags & BinDlgFlags::Visible) {
-                            unit = (Unit*)current_dialog->user;
+                            unit = current_dialog->user_unit_with_id->unit;
                             if (unit && current_dialog != dialog) {
                                 unit_list[i_0++] = unit;
                             }
@@ -1081,19 +1045,15 @@ namespace hooks {
                 }
             }
         } else {
-            unit = (Unit*)dialog->user;
+            unit = dialog->user_unit_with_id->unit;
             u32 count = g_client_selection_count;
-
             if (g_config.always_show_condensed_selection || *g_is_holding_ctrl || count > GroupWireframesCap) {
                 memset(&unit_list, 0, sizeof(unit_list));
                 BinDlg* current_dialog = dialog->parent;
-
-                if (current_dialog->control_type)
-                {
+                if (current_dialog->control_type) {
                     current_dialog = current_dialog->parent;
                 }
                 current_dialog = current_dialog->child_dialog;
-
                 if (current_dialog) {
                     while (current_dialog->index != 33) {
                         current_dialog = current_dialog->next;
@@ -1101,7 +1061,6 @@ namespace hooks {
                             return;
                         }
                     }
-
                     u16 unit_id = unit->id;
                     if (g_config.always_show_condensed_selection || count > GroupWireframesCap) {
                         if (current_dialog->flags & BinDlgFlags::Visible) {
@@ -1117,7 +1076,7 @@ namespace hooks {
                         count = GroupWireframesCap;
                         do {
                             if (current_dialog->flags & BinDlgFlags::Visible) {
-                                unit = (Unit*)current_dialog->user;
+                                unit = current_dialog->user_unit_with_id->unit;
                                 if (unit->id == unit_id) {
                                     unit_list[i_0++] = unit;
                                 }
@@ -1133,16 +1092,14 @@ namespace hooks {
                     g_client_selection_changed = 1; // client_selection_changed
                     bw::refresh_console();
                 }
-
                 return;
             }
         }
-        
+
         if (i_0 == 1 && *g_is_holding_alt) {
             u32 unit_table_id;
             if (unit_list[0]) {
                 u32 unit_index = unit_list[0]->get_unit_index();
-
                 if (unit_index <= UnitLimit) {
                     unit_table_id = unit_index | (unit_list[0]->unique_id << 12);
                 } else {
@@ -1186,7 +1143,6 @@ namespace hooks {
                     return;
                 }
             }
-
             u32 grpwire_count = GroupWireframesCap;
             u32 selection_count = g_client_selection_count;
             u8 i_0 = 0;
@@ -1208,17 +1164,15 @@ namespace hooks {
                             break;
                         }
                     } while (++i_0 < GroupWireframesCap);
-
                     i_0 = 0;
                 } while (--selection_count);
-
                 i_0 = 0;
                 do {
-                    u32* user = (u32*)current_dialog->user;
-                    *user = (u32)wire_list[i_0].unit;
-                    *(user + 1) = wire_list[i_0].unit_id;
-                    helper::bw_sprintf_s((char*)&grpWireBuffer[i_0], 8, "%d", wire_list[i_0].count);
-                    current_dialog->text = (char*)&grpWireBuffer[i_0];
+                    UserUnit* user = current_dialog->user_unit_with_id;
+                    user->unit = wire_list[i_0].unit;
+                    user->unit_id = wire_list[i_0].unit_id;
+                    helper::bw_sprintf_s((char*)&g_grpwire_buffer[i_0], 8, "%d", wire_list[i_0].count);
+                    current_dialog->text = (char*)&g_grpwire_buffer[i_0];
                     helper::show_dialog(current_dialog);
 
                     if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
@@ -1235,9 +1189,9 @@ namespace hooks {
                 do {
                     Unit* unit = ccmu_extender.new_client_selection_group[i_0];
                     if (unit) {
-                        u32* user = (u32*)current_dialog->user;
-                        *user = (u32)unit;
-                        *(user + 1) = unit->id;
+                        UserUnit* user = current_dialog->user_unit_with_id;
+                        user->unit = unit;
+                        user->unit_id = unit->id;
                         current_dialog->text = NULL;
                         helper::show_dialog(current_dialog);
                         if (!(current_dialog->flags & BinDlgFlags::Active)) {

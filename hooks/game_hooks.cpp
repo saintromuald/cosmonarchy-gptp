@@ -4340,15 +4340,15 @@ namespace hooks {
             }
             replay_data->cur_command = replay_frame->data;
             while (frame_size > 0) {
-                replay_cmd_players[cmd_index] = -1;
+                command_players[cmd_index] = -1;
                 s32 cmd_size = 0;
-
-                if (replay_data->is_replaying) { // May be pointless due to the return condition at the top.
+                if (replay_data->is_replaying) {//May be pointless due to the return condition at the top.
                     u8* cmd_data = replay_data->cur_command;
-                    replay_cmd_players[cmd_index] = cmd_data[0];
+                    command_players[cmd_index] = cmd_data[0];
                     ++cmd_data;
                     u32 cmd_id = cmd_data[0];
-                    if (cmd_id >= 9 && cmd_id <= 11) { // GameCommand_Select, GameCommand_ShiftDeselect
+
+                    if (cmd_id >= 9 && cmd_id <= 11) {//GameCommand_Select, GameCommand_ShiftDeselect
                         cmd_size = 2 * cmd_data[1] + 2;
                     } else {
                         cmd_size = g_turn_command_size[cmd_id];
