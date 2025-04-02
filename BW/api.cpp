@@ -3923,12 +3923,11 @@ void select(std::vector<Unit*>& units, bool play_response) {
 u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id) {
     u32 sound_id = SoundId::None;
     switch (unit->id) {
-        case UnitId::TerranSavant: {
-            if (!bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit)) {
-                sound_id = bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
-            } else {
-                sound_id = bw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
-            }
+        case UnitId::TerranSavantEntropyGauntlets: {
+            return bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
+        }
+        case UnitId::TerranSavantPowerSiphon: {
+            return bw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
         }
     }
     if (!sound_id) {

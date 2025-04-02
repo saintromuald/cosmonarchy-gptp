@@ -217,6 +217,8 @@ enum ExtValueId {
     ValueCohortServileVigor,
     ValueOscilliantBindingPlasmaStacks,
     ValueOscilliantBindingPlasmaPlayer,
+    ValueSavantLaunchPos1,
+    ValueSavantLaunchPos2,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,

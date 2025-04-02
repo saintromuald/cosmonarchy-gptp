@@ -1450,7 +1450,7 @@ namespace hooks {
                         return TECH_HIDDEN;
                     }
                     case UnitId::TerranEidolon:
-                    case UnitId::TerranSavant: {
+                    case UnitId::TerranSavantEntropyGauntlets: {
                         if (in_air) {
                             return TECH_HIDDEN;
                         }

@@ -227,7 +227,7 @@ namespace WeaponId {
         HypnagogueThroughTheLookingGlass	= 183,	// Ability targeting
         SilvertongueWordsmithRailgun		= 184,
         DiademIonCannon						= 198,
-        SavantDiscoidRailgunPiercing		= 199,
+        SavantDiscoidRailgunEntropy		= 199,
         SevenstepGeometricRiflePiercing		= 200,
         MatadorTwinstrikeCannons			= 201,
         SalamanderAngeltearRockets			= 216,
