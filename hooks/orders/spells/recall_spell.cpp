@@ -4,16 +4,16 @@
 
 namespace hooks {
 	// Function performed on each target of Dimensional Recall by iterate_units_at_location_target_proc_recall_targets
-	// that was validated through spells_recall_action_on_target_in_range
-	// Do the actual unit movement -GPTP
+	// that was validated through spells_recall_action_on_target_in_range.
+	// Do the actual unit movement. -GPTP
 	void spells_recall_action_on_valid_target_for_recall(Unit* target, Unit* caster) { // 004942D0
 		Point16 previous_pos = {};
 		Point16 new_pos = {};
 		previous_pos.x = target->sprite->position.x;
 		previous_pos.y = target->sprite->position.y;
 
-		UnitExt* caster_ext = get_unit_ext(caster);
-		if (!caster_ext->values[ValueDidactRecalling]) {
+		auto& caster_ext = caster->ext();
+		if (!caster_ext.values[ValueDidactRecalling]) {
 			return;
 		}
 
@@ -48,34 +48,34 @@ namespace hooks {
 		}
 	}
 
-	// Function performed on each target of DimensionalRecall by iterate_units_at_location_target_proc_recall_targets
-	// to choose if the unit can have the DimensionalRecall effect cast on it or no, and if yes, calling another function to do the DimensionalRecall effect.
-	void spells_recall_action_on_target_in_range(Unit* target, Unit* caster) {
-		if (target->sprite->flags & SpriteFlags::Hidden || !bw::is_allied_to(target->player, caster->player) || target == caster) {
+	// Function performed on each target of DimensionalRecall by iterate_units_at_location_target_proc_recall_targets to choose if the unit
+	// can have the DimensionalRecall effect cast on it or no, and if yes, calling another function to do the Dimensional Recall effect.
+	void spells_recall_action_on_target_in_range(Unit* target, Unit* caster) { // 00494400
+		if (target->sprite->is_hidden() || !bw::is_allied_to(target->player, caster->player) || target == caster) {
 			return;
 		}
-		if (units_dat::base_property[target->id] & UnitProperty::Building) {
+		if (target->is_building()) {
 			return;
 		}
 		if (unit_id_is_larva(target->id) || unit_id_is_zerg_egg(target->id)) {
 			return;
 		}
-		if (target->status & UnitStatus::Burrowed) {
+		if (target->is_burrowed()) {
 			return;
 		}
-		if (target->status & UnitStatus::Invincible) {
+		if (target->is_invincible()) {
 			return;
 		}
 		spells_recall_action_on_valid_target_for_recall(target, caster);
 	}
 
 	void tick_recall_channel_anim(Unit* unit) {
-		UnitExt* unit_ext = get_unit_ext(unit);
-		u32 index = unit_ext->values[ValueDidactChannelIndex] % 8;
-		unit_ext->values[ValueDidactChannelIndex] += 1;
+		auto& unit_ext = unit->ext();
+		u32 index = unit_ext.values[ValueDidactChannelIndex] % 8;
+		unit_ext.values[ValueDidactChannelIndex] += 1;
 
 		Point16 source_origin = {unit->position.x, unit->position.y};
-		Point16 target_origin = unit_ext->recall_pos;
+		Point16 target_origin = unit_ext.recall_pos;
 
 		Point16 source = source_origin;
 		Point16 target = target_origin;
@@ -100,30 +100,30 @@ namespace hooks {
 		unit->order_queue_timer = 8;
 	}
 
-	void orders_recall(Unit* unit) {
+	void orders_recall(Unit* unit) { // 00494470
 		bw::decloak_passive_proc(unit);
-		UnitExt* unit_ext = get_unit_ext(unit);
+		auto& unit_ext = unit->ext();
 		// Unit has started casting Dimensional Recall
 		if (unit->main_order_state == 1) {
 			// Execute the recall effect when timer reach 0
 			if (unit->main_order_timer == 0) {
-				if (!unit_ext->values[ValueDidactRecalling]) {
-					unit_ext->values[ValueDidactRecalling] = true;
+				if (!unit_ext.values[ValueDidactRecalling]) {
+					unit_ext.values[ValueDidactRecalling] = true;
 					bw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
 				}
 
 				unit->spend_energy(5 * 256 / 24);
 				if (unit->energy == 0 || bw::get_generic_rust_value(unit, RustId::CancelRecall)) {
 					bw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
-					unit_ext->values[ValueDidactChannelIndex] = 0;
-					unit_ext->values[ValueDidactRecalling] = false;
+					unit_ext.values[ValueDidactChannelIndex] = 0;
+					unit_ext.values[ValueDidactRecalling] = false;
 
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->order_to_idle();
 				}
 
-				if (unit_ext->timers[TimerRecallEffect] == 0) {
-					unit_ext->timers[TimerRecallEffect] = 8;
+				if (unit_ext.timers[TimerRecallEffect] == 0) {
+					unit_ext.timers[TimerRecallEffect] = 8;
 
 					static b32* const recall_successful = (b32*)(0x0063FF50);
 					*recall_successful = false;
@@ -154,7 +154,7 @@ namespace hooks {
 					bw::create_and_init_thingy(SpriteId::RecallFieldShorter, unit->order_target.pt.x, unit->order_target.pt.y, unit->player, unit->sprite->elevation + 1);
 				}
 			} else {
-				unit_ext->energy_regen_timer = 0; // Prevent energy regen during channel
+				unit_ext.energy_regen_timer = 0; // Prevent energy regen during channel
 				tick_recall_channel_anim(unit);
 			}
 		} else {
@@ -176,9 +176,9 @@ namespace hooks {
 				unit->main_order_state = 1;
 				unit->main_order_timer = 2.25 * 24;
 				helper::make_to_hold_position(unit);
-				unit_ext->values[ValueDidactChannelIndex] = 0;
-				unit_ext->values[ValueDidactRecalling] = false;
-				unit_ext->recall_pos = unit->order_target.pt;
+				unit_ext.values[ValueDidactChannelIndex] = 0;
+				unit_ext.values[ValueDidactRecalling] = false;
+				unit_ext.recall_pos = unit->order_target.pt;
 				tick_recall_channel_anim(unit);
 			}
 		}

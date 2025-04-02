@@ -586,7 +586,7 @@ namespace hooks {
                 if (unit_id_is_larva(buttonset_id) || buttonset_id == UnitId::ZergEgg || buttonset_id == UnitId::ZergCocoon
                     || units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
                     button->position = 6;
-                } else if (buttonset_id == UnitId::ProtossLanifect || buttonset_id == UnitId::ProtossDidact) {
+                } else if (buttonset_id == UnitId::ProtossLanifect || buttonset_id == UnitId::ProtossDidact || buttonset_id == UnitId::ProtossXenolith) {
                     button->position = 7;
                 } else if (buttonset_id == UnitId::TerranApostle) {
                     button->position = 8;
@@ -891,7 +891,8 @@ namespace hooks {
                         TierUnlocked[RaceId::Protoss][Tier2] = player_has_completed_powered_unit_id(unit->player, UnitId::ProtossEmbassy)
                             || player_has_completed_powered_unit_id(unit->player, UnitId::ProtossGateway)
                             || player_has_completed_powered_unit_id(unit->player, UnitId::ProtossLattice);
-                        TierUnlocked[RaceId::Protoss][Tier3] = player_has_completed_powered_unit_id(unit->player, UnitId::ProtossGrandLibrary)
+                        TierUnlocked[RaceId::Protoss][Tier3] = player_has_completed_powered_unit_id(unit->player, UnitId::ProtossCrucible)
+                            || player_has_completed_powered_unit_id(unit->player, UnitId::ProtossGrandLibrary)
                             || player_has_completed_powered_unit_id(unit->player, UnitId::ProtossRogueGallery)
                             || player_has_completed_powered_unit_id(unit->player, UnitId::ProtossArdentAuthority)
                             || player_has_completed_powered_unit_id(unit->player, UnitId::ProtossStargate);
@@ -1356,14 +1357,13 @@ namespace hooks {
                                     case UnitId::ProtossCedent:
                                     case UnitId::ProtossWarden:
                                     case UnitId::ProtossEmbassy:
-                                    case UnitId::ProtossAquifer:
-                                    case UnitId::ProtossCrucible:
-                                    case UnitId::ProtossMatrix:
-                                    case UnitId::ProtossEngram:
                                     case UnitId::ProtossGateway:
                                     case UnitId::ProtossLattice: {
                                         current_button_state = Button_State::Enabled;
                                     } break;
+                                    case UnitId::ProtossCrucible:
+                                    case UnitId::ProtossAquifer:
+                                    case UnitId::ProtossMatrix:
                                     case UnitId::ProtossGrandLibrary:
                                     case UnitId::ProtossRogueGallery:
                                     case UnitId::ProtossArdentAuthority:
@@ -1374,6 +1374,8 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
+                                    case UnitId::ProtossXenolith:
+                                    case UnitId::ProtossEngram:
                                     case UnitId::ProtossProstrationStage:
                                     case UnitId::ProtossUnitaryUnion:
                                     case UnitId::ProtossArgosy: {
@@ -2957,7 +2959,7 @@ namespace hooks {
                         }
 
                         // Hide Recall, since cancel is the same slot
-                        if (unit->id == UnitId::ProtossDidact && current_button->action_var == TechId::DimensionalRecall) {
+                        if (UnitId::can_cast_recall(static_cast<UnitId::Enum>(unit->id)) && current_button->action_var == TechId::DimensionalRecall) {
                             if (unit_ext->values[ValueDidactRecalling]) {
                                 current_button_state = Button_State::Invisible;
                             } else {
@@ -2979,6 +2981,7 @@ namespace hooks {
                                         can_cancel = true;
                                     }
                                 } break;
+                                case UnitId::ProtossXenolith:
                                 case UnitId::ProtossDidact: {
                                     if (unit_ext->values[ValueDidactRecalling]) {
                                         can_cancel = true;

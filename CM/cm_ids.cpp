@@ -279,6 +279,7 @@ bool unit_id_is_psi_provider(u16 unit_id) {
     return unit_id == UnitId::ProtossNexus
         || unit_id == UnitId::ProtossPylon
         || unit_id == UnitId::ProtossCrucible
+        || unit_id == UnitId::ProtossXenolith
         || unit_id == UnitId::ProtossTempleExt;
 }
 
@@ -1354,15 +1355,22 @@ UnitId::Enum get_racial_town_center_id(u32 race_id) {
     return UnitId::None;
 }
 
-namespace WeaponId {
-    u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {
-        switch (weapon_id) {
-           case WeaponId::CicatusPhaseClaws: return 2;
-        }
-        return 1;
-    }
+namespace UnitId {
+ bool can_cast_recall(UnitId::Enum unit_id) {
+     return unit_id == UnitId::ProtossXenolith
+         || unit_id == UnitId::ProtossDidact;
+ }
+} // namespace UnitId
 
-    bool weapon_id_splits_reactive_payload(WeaponId::Enum weapon_id) {
-        return weapon_id == WeaponId::ArchitectDispersiveSalvo;
+namespace WeaponId {
+u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {
+    switch (weapon_id) {
+       case WeaponId::CicatusPhaseClaws: return 2;
     }
+    return 1;
+}
+
+bool weapon_id_splits_reactive_payload(WeaponId::Enum weapon_id) {
+    return weapon_id == WeaponId::ArchitectDispersiveSalvo;
+}
 } // namespace WeaponId

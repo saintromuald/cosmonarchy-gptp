@@ -124,7 +124,11 @@ bool unit_id_blocks_construction(UnitId::Enum unit_id);
 UnitId::Enum get_racial_worker_id(u32 race_id);
 UnitId::Enum get_racial_town_center_id(u32 race_id);
 
+namespace UnitId {
+bool can_cast_recall(UnitId::Enum unit_id);
+}
+
 namespace WeaponId {
-    u32  get_custom_melee_factor(WeaponId::Enum weapon_id);
-    bool weapon_id_splits_reactive_payload(WeaponId::Enum weapon_id);
+u32  get_custom_melee_factor(WeaponId::Enum weapon_id);
+bool weapon_id_splits_reactive_payload(WeaponId::Enum weapon_id);
 } // namespace WeaponId
