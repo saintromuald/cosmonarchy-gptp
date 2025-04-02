@@ -940,14 +940,16 @@ namespace hooks {
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergQuazilisk) || player_has_completed_unit_id(player_id, UnitId::ZergQuazrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+        ||  player_has_completed_unit_id(player_id, UnitId::ZergQuazilisk) || player_has_completed_unit_id(player_id, UnitId::ZergQuazrokor)) {
             if (unit_id == UnitId::ZergLiiralisk) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergNathrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva) || player_has_completed_unit_id(player_id, UnitId::ZergNathrelisk)) {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+        ||  player_has_completed_unit_id(player_id, UnitId::ZergNathrokor) || player_has_completed_unit_id(player_id, UnitId::ZergNathrelisk)) {
             if (unit_id == UnitId::ZergKalkalisk) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake)) {
                     return true;
@@ -996,7 +998,8 @@ namespace hooks {
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergIzirokor) || player_has_completed_unit_id(player_id, UnitId::ZergIziralisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+        ||  player_has_completed_unit_id(player_id, UnitId::ZergIzirokor) || player_has_completed_unit_id(player_id, UnitId::ZergIziralisk)) {
             if (unit_id == UnitId::ZergTethzorokor) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp)) {
                     return true;
