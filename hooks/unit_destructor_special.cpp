@@ -421,18 +421,7 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
 
     // Override custom corpses
     if (unit) {
-        switch (id) {
-            case SpriteId::Corpse_Dracadin: {
-                if (unit->id == UnitId::ProtossDracadinOrder) {
-                    id = SpriteId::Corpse_DracadinOrder;
-                }
-            } break;
-            case SpriteId::Corpse_Hydralisk: {
-                if (unit->id == UnitId::ZergHydraliskOrkoti) {
-                    id = SpriteId::Corpse_HydraliskOrkoti;
-                }
-            } break;
-        }
+        id = unit->get_custom_corpse(static_cast<SpriteId::Enum>(id));
     }
 
     Thingy* thingy = helper::create_thingy(id, pos_x, pos_y, 0);

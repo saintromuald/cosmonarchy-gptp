@@ -2033,59 +2033,29 @@ u32 get_zerg_regression(Unit* unit) {
         // Unit Morphs
         case UnitId::ZergIroleth:				return UnitId::ZergOvileth;
         case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
-        case UnitId::ZergLiiralisk:				return UnitId::ZergQuazilisk;
         case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
         case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;
         case UnitId::ZergTosgrilisk:			return UnitId::ZergMutalisk;
-        case UnitId::ZergBactalisk: {
-            if (unit->player < PlayerLimit) {
-                switch (g_globals->players[unit->player].faction) {
-                    case Faction::ZergOrkotiTendril: return UnitId::ZergHydraliskOrkoti;
-                    default:						 return UnitId::ZergHydralisk;
-                }
-            }
-            return UnitId::ZergHydralisk;
-        }
         case UnitId::ZergVithrilisk:			return UnitId::ZergSkithrokor;
         case UnitId::ZergCherbrathalor:			return UnitId::ZergKagralisk;
         case UnitId::ZergOkrimnilisk:			return UnitId::ZergEvigrilisk;
         case UnitId::ZergAlgoztalisk:			return UnitId::ZergAlmaksalisk;
         case UnitId::ZergKethrostalor:			return UnitId::ZergKeskathalor;
         case UnitId::ZergAlkajelisk:			return UnitId::ZergGeszithalor;
-        case UnitId::ZergUltrokor: {
-            if (unit->player < PlayerLimit) {
-                switch (g_globals->players[unit->player].faction) {
-                case Faction::ZergImicrenTendril: return UnitId::ZergInzorthrokor;
-                default:						  return UnitId::ZergZoryusthaleth;
-                }
-            }
-            return UnitId::ZergIzirokor;
-        }
         case UnitId::ZergZobriolisk:			return UnitId::ZergLakizilisk;
         case UnitId::ZergZarcavrokor:			return UnitId::ZergGorgrokor;
         case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
         case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
         case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
-        case UnitId::ZergTethzorokor: {
-            if (unit->player < PlayerLimit) {
-                switch (g_globals->players[unit->player].faction) {
-                    case Faction::ZergZorthosTendril: return UnitId::ZergIziralisk;
-                    default:						  return UnitId::ZergIzirokor;
-                }
-            } else {
-                return UnitId::ZergIzirokor;
-            }
+
+        // Imagine, eventually we will have everything using this...  -Pr0nogo
+        case UnitId::ZergLiiralisk:
+        case UnitId::ZergKalkalisk:
+        case UnitId::ZergBactalisk:
+        case UnitId::ZergTethzorokor:
+        case UnitId::ZergUltrokor: {
+            return get_factional_regression(unit);
         }
-        case UnitId::ZergKalkalisk: {
-            if (unit->player < PlayerLimit) {
-                switch (g_globals->players[unit->player].faction) {
-                    case Faction::ZergZorthosTendril: return UnitId::ZergNathrelisk;
-                    default:						  return UnitId::ZergNathrokor;
-                }
-            } else {
-                return UnitId::ZergNathrokor;
-            }
-        } break;
         default: {
             // Enable to allow non-dual birth units on cagra to regress into larva. -Pr0nogo
         //  if (!unit->is_dual_requisition() && bw::get_active_tile_at_coords(unit->position)->has_cagra) {
