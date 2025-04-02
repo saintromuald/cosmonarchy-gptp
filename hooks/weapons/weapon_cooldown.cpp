@@ -95,6 +95,9 @@ namespace hooks {
 					cooldown /= 0.66;
 				}
 			} break;
+			case UnitId::TerranMatadorCinderMode: {
+				cooldown /= 1.25;
+			} break;
 			case UnitId::TerranPhobos: {
 				// Argent Capacitors
 				if (unit_ext.values[ValuePhobosDischarge] > 0) {
