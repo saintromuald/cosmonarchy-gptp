@@ -349,33 +349,31 @@ namespace hooks {
 			}
 
 			// Last Orders - Aurora passive
-			if (unit->id == UnitId::ProtossAurora) {
-				if (unit_ext.values[ValueLastOrdersInit] == 1) {
-					auto distance = bw::distance_between(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
-					if (distance < 32) {
-						unit->status |= UnitStatus::Invincible;
-						// TODO: unit search radial
-						auto match = cosmonarchy_finder_match(unit, Flags::Enemy, {});
-						const u32 radius = 64;
-						bw::UnitFinder(
-							unit->get_x() - radius,
-							unit->get_y() - radius,
-							unit->get_x() + radius,
-							unit->get_y() + radius
-						).for_each_in_match(match, [&](Unit* target) {
-							u32 dist = bw::distance_between(unit->position, target->position);
-							u32 damage = 25 * 256;
-							if (dist > 48) {
-								damage /= 4;
-							} else if (dist > 32) {
-								damage /= 2;
-							}
-							target->damage_with_custom(damage, -1, unit, unit->player);
-						});
-						unit->remove();
-						avenge_or_ascend_corpses_in_area(unit->position, 2 * 32, unit->player);
-						stop_here = true;
-					}
+			if (unit->has_last_orders() && unit_ext.values[ValueLastOrdersInit] == 1) {
+				auto distance = bw::distance_between(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
+				if (distance < 32) {
+					unit->status |= UnitStatus::Invincible;
+					// TODO: unit search radial
+					auto match = cosmonarchy_finder_match(unit, Flags::Enemy, {});
+					const u32 radius = 64;
+					bw::UnitFinder(
+						unit->get_x() - radius,
+						unit->get_y() - radius,
+						unit->get_x() + radius,
+						unit->get_y() + radius
+					).for_each_in_match(match, [&](Unit* target) {
+						u32 dist = bw::distance_between(unit->position, target->position);
+						u32 damage = 25 * 256;
+						if (dist > 48) {
+							damage /= 4;
+						} else if (dist > 32) {
+							damage /= 2;
+						}
+						target->damage_with_custom(damage, -1, unit, unit->player);
+					});
+					unit->remove();
+					avenge_or_ascend_corpses_in_area(unit->position, 2 * 32, unit->player);
+					stop_here = true;
 				}
 			}
 

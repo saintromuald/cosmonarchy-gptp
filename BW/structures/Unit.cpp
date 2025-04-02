@@ -1574,16 +1574,20 @@ bool Unit::is_disabled() {
 
 SpriteId::Enum Unit::get_custom_corpse(SpriteId::Enum id) {
     switch (id) {
-        case SpriteId::Corpse_Dracadin: {
-            if (this->id == UnitId::ProtossDracadinOrder) {
-                return SpriteId::Corpse_DracadinOrder;
-            }
-        } break;
-        case SpriteId::Corpse_Hydralisk: {
-            if (this->id == UnitId::ZergHydraliskOrkoti) {
-                return SpriteId::Corpse_HydraliskOrkoti;
-            }
-        } break;
+    case SpriteId::Corpse_Dracadin: {
+        if (this->id == UnitId::ProtossDracadinOrder) {
+            return SpriteId::Corpse_DracadinOrder;
+        }
+    } break;
+    case SpriteId::Corpse_Hydralisk: {
+        if (this->id == UnitId::ZergHydraliskOrkoti) {
+            return SpriteId::Corpse_HydraliskOrkoti;
+        }
+    } break;
     }
     return id;
+}
+
+bool Unit::has_last_orders() {
+    return this->id == UnitId::ProtossAurora;
 }

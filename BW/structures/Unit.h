@@ -417,6 +417,7 @@ struct Unit : public UnitLayout {
     bool is_dual_requisition();
     bool is_disabled();
     SpriteId::Enum get_custom_corpse(SpriteId::Enum id);
+    bool has_last_orders();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);
