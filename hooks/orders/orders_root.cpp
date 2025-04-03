@@ -450,7 +450,7 @@ namespace hooks {
 		Order* queue_head = unit->order_queue_head;
 		if (unit->unit_ai) {
 			if (queue_head) {
-				if (unit->status & UnitStatus::Burrowed) {
+				if (unit->is_burrowed()) {
 					u32 order_queue_id = queue_head->order_id;
 					if (order_queue_id) {
 						if (order_queue_id != OrderId::Unburrow && order_queue_id != OrderId::Burrowed && order_queue_id != OrderId::ComputerAI) {

@@ -1,18 +1,13 @@
 #include "burrow_tech.h"
 #include <BW/api.h>
 
-namespace hooks
-{
-	void cmdrecv_unburrow()
-	{
+namespace hooks {
+	void cmdrecv_unburrow() {
 		Unit* selected_unit;
 		*g_unit_iterator_pos = 0;
 		selected_unit = get_active_player_next_selection();
-		while (selected_unit)
-		{
-			if (units_dat::base_property[selected_unit->id] & UnitProperty::Burrowable
-			&&  selected_unit->can_use_tech(TechId::Burrowing, *g_active_nation_id) == 1)
-			{
+		while (selected_unit) {
+			if (units_dat::base_property[selected_unit->id] & UnitProperty::Burrowable && selected_unit->can_use_tech(TechId::Burrowing, *g_active_nation_id) == 1) {
 				helper::unburrow(selected_unit);
 			}
 			selected_unit = get_active_player_next_selection();
@@ -24,15 +19,12 @@ namespace hooks
 		Unit* selected_unit;
 		*g_unit_iterator_pos = 0;
 		selected_unit = get_active_player_next_selection();
-		while (selected_unit)
-		{
+		while (selected_unit) {
 			if  (units_dat::base_property[selected_unit->id] & UnitProperty::Burrowable
 			&&   selected_unit->can_use_tech(TechId::Burrowing, *g_active_nation_id) == 1
-			&& !(selected_unit->status & UnitStatus::Burrowed)
-			&&   selected_unit->main_order_id != OrderId::Burrow)
-			{
-				if (command_type != 0)
-				{
+			&&  !selected_unit->is_burrowed()
+			&&   selected_unit->main_order_id != OrderId::Burrow) {
+				if (command_type != 0) {
 					command_type = 1;
 				} else {
 					command_type = 0;

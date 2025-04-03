@@ -499,6 +499,12 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
 UnitId::Enum get_factional_regression(Unit* unit) {
     Faction faction = unit->player < PlayerLimit ? g_globals->players[unit->player].faction : Faction::None;
     switch (unit->id) {
+        case UnitId::ZergIroleth: {
+            switch (faction) {
+                case Faction::ZergZorthosTendril: return UnitId::ZergYblyleth;
+            }
+            return UnitId::ZergOvileth;
+        } break;
         case UnitId::ZergLiiralisk: {
             switch (faction) {
                 case Faction::ZergImicrenTendril: return UnitId::ZergQuazrokor;

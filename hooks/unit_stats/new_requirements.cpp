@@ -786,9 +786,18 @@ namespace hooks {
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergLarva)) {
             switch (unit_id) {
                 case UnitId::ZergDroleth:
-                case UnitId::ZergOvileth:
                 case UnitId::ZergRilirokor: {
                     return true;
+                } break;
+                case UnitId::ZergOvileth: {
+                    if (faction != Faction::ZergZorthosTendril) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ZergYblyleth: {
+                    if (faction == Faction::ZergZorthosTendril) {
+                        return true;
+                    }
                 } break;
                 case UnitId::ZergOthstoleth: {
                     if (TierUnlocked[RaceId::Zerg][Tier3]) {
@@ -926,7 +935,8 @@ namespace hooks {
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOvileth) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+        ||  player_has_completed_unit_id(player_id, UnitId::ZergOvileth) || player_has_completed_unit_id(player_id, UnitId::ZergYblyleth)) {
             if (unit_id == UnitId::ZergIroleth) {
                 if (TierUnlocked[RaceId::Zerg][Tier2]) {
                     return true;
@@ -2359,10 +2369,19 @@ namespace hooks {
             case UnitId::ZergLarva: {
                 switch (unit_id) {
                     case UnitId::ZergDroleth:
-                    case UnitId::ZergOvileth:
                     case UnitId::ZergRilirokor: {
                         return TECH_ACTIVE;
                     }
+                    case UnitId::ZergOvileth: {
+                        if (faction != Faction::ZergZorthosTendril) {
+                            return TECH_ACTIVE;
+                        }
+                    } 
+                    case UnitId::ZergYblyleth: {
+                        if (faction == Faction::ZergZorthosTendril) {
+                            return TECH_ACTIVE;
+                        }
+                    } 
                     case UnitId::ZergOthstoleth: {
                         if (TierUnlocked[RaceId::Zerg][Tier3]) {
                             return TECH_ACTIVE;
@@ -2521,28 +2540,24 @@ namespace hooks {
             
             // Morphs
             case UnitId::ZergOvileth:
-            {
-                if (unit_id == UnitId::ZergIroleth)
-                {
-                    if (TierUnlocked[RaceId::Zerg][Tier2]
-                        && bw::transport_is_empty(unit))
-                    {
+            case UnitId::ZergYblyleth: {
+                if (unit_id == UnitId::ZergIroleth) {
+                    if (unit->is_burrowed()) {
+                        return TECH_HIDDEN;
+                    }
+                    if (TierUnlocked[RaceId::Zerg][Tier2] && bw::transport_is_empty(unit)) {
                         return TECH_ACTIVE;
                     }
                     return TECH_LOCKED;
                 }
                 return TECH_HIDDEN;
             }
-            case UnitId::ZergZethrokor:
-            {
-                if (unit_id == UnitId::ZergVorvrokor)
-                {
-                    if (unit->status & UnitStatus::Burrowed)
-                    {
+            case UnitId::ZergZethrokor: {
+                if (unit_id == UnitId::ZergVorvrokor) {
+                    if (unit->is_burrowed()) {
                         return TECH_HIDDEN;
                     }
-                    if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond))
-                    {
+                    if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond)) {
                         return TECH_ACTIVE;
                     }
                     return TECH_ACTIVE;

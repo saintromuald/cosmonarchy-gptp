@@ -1334,6 +1334,7 @@ namespace hooks {
         // Unit behavior groups
         switch (unit->id) {
             // Sires
+            case UnitId::ZergYblyleth:
             case UnitId::ZergZoryusthaleth:
             case UnitId::ZergKonvilisk:
             case UnitId::ZergVilgoleth:
@@ -1360,21 +1361,24 @@ namespace hooks {
                     ally_ext->timers[TimerHeraldAvenge] = 12;
                 }
             } break;
-            case UnitId::ZergVilgoleth: {
-                if (!unit_ext.timers[TimerVilgolethSpawn]) {
-                    Thingy* corpse = get_closest_active_corpse(unit->position, 5 * 32);
-                    if (corpse && corpse->sprite->id != SpriteId::Corpse_Rilirokor) {
-                        unit_ext.timers[TimerVilgolethSpawn] = 24;
-                        Point16 pos = corpse->sprite->position;
-                        bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, unit->player, pos);
-                        bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y - 12, unit->player, corpse->sprite->elevation + 1);
-                        consume_corpse(corpse);
-                        unit->sprite->create_overlay(ImageId::LazarusAgentProc_Large);
+            case UnitId::ZergYblyleth: {
+                if (unit->order_signal & 4) {
+                    if (!unit->is_burrowed()) {
+                        bw::spawn_custom_creep(unit);
+                    } else {
+                        bw::update_custom_creep_disappearance(unit);
                     }
                 }
-
+                if (!unit->is_frozen() && unit->is_burrowed()) {
+                    unit->autophagy_spawn();
+                }
+            } break;
+            case UnitId::ZergVilgoleth: {
+                if (!unit->is_frozen() && !unit_ext.timers[TimerAutophagySpawn]) {
+                    unit->autophagy_spawn();
+                }
                 if (unit->player != 11 && !unit_ext.timers[TimerVilgolethTimedLife]) { // Ignores P12 Vilgoleths to make preplaced ones permanent
-                    unit_ext.timers[TimerVilgolethTimedLife] = 10 * 24;
+                    unit_ext.timers[TimerVilgolethTimedLife] = Vilgoleth::TimedLife;
                 } else if (unit_ext.timers[TimerVilgolethTimedLife] == 1) {
                     unit->remove();
                 }

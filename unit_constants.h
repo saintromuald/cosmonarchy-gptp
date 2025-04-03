@@ -223,6 +223,16 @@ inline constexpr s32 AIEnsnaringBroodTimer = 75;
 inline constexpr s32 EnsnareTimer = 5;
 }
 
+namespace Vilgoleth {
+inline constexpr s32 TimedLife = 10 * 24;
+inline constexpr s32 SpawnDelay = 1 * 24;
+inline constexpr s32 Range = 5 * 24;
+}
+
+namespace Yblyleth {
+inline constexpr s32 SpawnDelay = 2 * 24;
+}
+
 namespace Broodspawn {
 inline constexpr s32 DeathCycleEnsnareRange = 3 * 32;
 inline constexpr s32 DeathCycleEnsnareTimer = 5; // Vanilla timer, approximately 1 second
