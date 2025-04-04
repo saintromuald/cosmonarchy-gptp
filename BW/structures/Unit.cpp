@@ -1213,7 +1213,7 @@ namespace {
 bool Unit::give_to(u8 player) {
     assert(this);
     assert(player < 12);
-    if (give_unit_to_player(this, player) != 0) {
+    if (give_unit_to_player(this, player)) {
         if ((this->id == UnitId::ZergNydusCesiant || !this->is_building())
             && this->id != UnitId::ZergEgg
             && this->id != UnitId::ZergLarva

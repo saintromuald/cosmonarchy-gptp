@@ -480,11 +480,9 @@ namespace hooks {
             if (unit->id == UnitId::ProtossMindTyrant && unit_ext->units[UnitMindTyrantMalefactor]) {
                 draw_simple_line(source, unit_ext->units[UnitMindTyrantMalefactor]->position, graphics::ORANGE);
             }
-
             if (unit_ext->values[ValueIsMalefactor] && unit_ext->units[UnitMindTyrantLink]) {
                 draw_simple_line(source, unit_ext->units[UnitMindTyrantLink]->position, graphics::ORANGE);
             }
-
 
             // Rally points
             if (g_config.show_rally_lines && bw::can_show_custom_ui()
@@ -908,7 +906,7 @@ namespace hooks {
             Point16 pos;
             u8 padding[5];
         };
-        assert(sizeof(SyncCameraCommand) == 0xC);
+        static_assert(sizeof(SyncCameraCommand) == 0xC);
 
         Point16 camera = {};
         camera.x = g_move_to_x;
@@ -917,7 +915,7 @@ namespace hooks {
         SyncCameraCommand command = {};
         command.player = *g_local_human_id;
         command.pos = camera;
-        helper::queue_game_command((u8*)&command, 0xC);
+        helper::queue_game_command((u8*)&command, sizeof(command));
 
         // Count workers
         for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
@@ -2423,7 +2421,7 @@ namespace hooks {
                             continue;
                         }
                         auto& vec = target->ext().unit_vectors[UnitVectorBarghests];
-                        if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
+                        if (std::ranges::find(vec, unit) == vec.end()) {
                             vec.push_back(unit);
                         }
                     }
@@ -2573,13 +2571,13 @@ namespace hooks {
             Unit* tyrant = g_unit_search
                 .radial_ex(unit, ProtossMindTyrant::MaledictusRange, 0, {UnitId::ProtossMindTyrant})
                 .filter_by([unit](Unit* tyrant) {
-                if (tyrant == unit->ext().units[UnitMindTyrantLink]) {
-                    return true;
-                }
-                return false;
-            })
-            .sort_by_distance(unit->position)
-            .first();
+                    if (tyrant == unit->ext().units[UnitMindTyrantLink]) {
+                        return true;
+                    }
+                    return false;
+                })
+                .sort_by_distance(unit->position)
+                .first();
 
             if (tyrant) {
                 unit_ext.values[ValueIsMalefactor] = 2;
