@@ -15708,4 +15708,31 @@ namespace helper {
             POPAD
         }
     }
+
+    void return_to_idle_at_pos(Unit* unit, u16 pos_x, u16 pos_y) {
+        const u32 func_address = 0x00475350;
+        __asm {
+            PUSHAD
+            PUSH DWORD PTR pos_y
+            PUSH DWORD PTR pos_x
+            MOV EAX, unit
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void game_recv(u8* data_buffer, u32 data_length, b32 is_replay) {
+        const u32 function = 0x004865D0;
+        __asm {
+            PUSH is_replay
+            PUSH data_length
+            MOV EAX, data_buffer
+            CALL function
+        }
+    }
+
+    void report_game_result() {
+        const u32 function = 0x004C4790;
+        __asm CALL function
+    }
 }

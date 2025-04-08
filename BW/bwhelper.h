@@ -1805,16 +1805,19 @@ namespace helper {
     u32 update_building_placement_state_map_tile_flags(u16 unit_id, u32 tile_x, u32 tile_y, u8 player, Point16 pos, u32 placement_state_entry, b32 check_vision); // 00473A10
     u32 update_building_placement_state_units(Unit* builder, u32 tile_x, u32 tile_y, u8 player, u16 unit_id, Point16 pos, u32 placement_state_entry, bool is_not_addon, bool also_invisible, b32 without_vision); // 00473720
 
-    void orders_init_psi_provider(Unit* unit);                                                       // 00493F70
-    s8 remove_selection_circle_and_hp_bar(Sprite* sprite);                                           // 00497620
-    void hide_all_psi_fields();                                                                      // 00494100
+    void orders_init_psi_provider(Unit* unit);                                                      // 00493F70
+    s8 remove_selection_circle_and_hp_bar(Sprite* sprite);                                          // 00497620
+    void hide_all_psi_fields();                                                                     // 00494100
+    void draw_cancel_unit_context(BinDlg* dialog);                                                  // 00457B10
+    void statdata_user_interact(u32 dialog_index, BinDlg* dialog);                                  // 004576A0
+    void draw_cancel_upgrade_context(BinDlg* dialog);                                               // 004575A0
+    void create_context_from_dialog(BinDlg* dialog, const char* text);                              // 00457350
+    void draw_unload_unit_context(BinDlg* dialog);                                                  // 00457C20
+    void do_melee_town_region_fixups(s32 pos_x, s32 pos_y, u32 player, u32 some_type);              // 00445AA0
+    void ai_make_chokepoint_region_state_4(u32 player, s32 pos_x, s32 pos_y);                       // 0043A8F0
+    void ai_delete_guard_needs(u32 player);                                                         // 004626E0
+    void return_to_idle_at_pos(Unit* unit, u16 pos_x, u16 pos_y);                                   // 00475350
 
-    void draw_cancel_unit_context(BinDlg* dialog);                                                   // 00457B10
-    void draw_cancel_upgrade_context(BinDlg* dialog);                                                // 004575A0
-    void create_context_from_dialog(BinDlg* dialog, const char* text);                               // 00457350
-    void draw_unload_unit_context(BinDlg* dialog);                                                   // 00457C20
-    void statdata_user_interact(u32 dialog_index, BinDlg* dialog);                                   // 004576A0
-    void do_melee_town_region_fixups(s32 pos_x, s32 pos_y, u32 player, u32 some_type);               // 00445AA0
-    void ai_make_chokepoint_region_state_4(u32 player, s32 pos_x, s32 pos_y);                        // 0043A8F0
-    void ai_delete_guard_needs(u32 player);                                                          // 004626E0
+    void game_recv(u8* data_buffer, u32 data_length, b32 is_replay);                                // 004865D0
+    void report_game_result();                                                                      // 004C4790
 }

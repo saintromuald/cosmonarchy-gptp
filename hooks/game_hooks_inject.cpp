@@ -320,16 +320,7 @@ void inject_game_hooks() {
     jump_patch(network_set_return_menu,				0x004DC5B0, 0);
 
     // Fix replay buffer overflow. (get_replay_turn_data @ 004CDFF0)
-    call_patch(hooks::get_replay_turn_data, 0x00487163);
-
-    // Change If statement at 0x00487139 to While loop. (replay_loop @ 00487100)
-    memory_patch(0x004870FC, (u32)0xC35B5F5E); // POP ESI; POP EDI; POP EBX; RETN;
-    memory_patch(0x0048710C, (u32)0x13E);	   // JE 0x0048724E
-    memory_patch(0x00487142, (u32)0x107);	   // JL 0x0048724D
-    memory_patch(0x00487170, (u16)0x8A74);	   // JE 0x004870FC
-    memory_patch(0x00487187, (u32)0xFFFFFF71); // JE 0x004870FC
-    nops(0x00487172, 4);
-    memory_patch(0x0048724C, (u32)0xC35B5F00); // POP EDI; POP EBX; RETN;
-    jump_patch((void*)0x00487139, 0x00487248);
+    call_patch(hooks::get_replay_turn_data,         0x00487163);
+    call_patch(replay_loop,                         0x004D96C4);
 }
 }

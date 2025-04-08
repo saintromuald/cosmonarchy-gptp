@@ -1295,6 +1295,18 @@ BW_REF(char,                g_unk_sprite_related,           0x0048E2FD);
 
 typedef int (__fastcall MinimapVisionCallback)();
 BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);
+
+BW_DATA(u8*,  g_replay_cmd_buffer,  0x006552B0);
+BW_DATA(u8*,  g_replay_cmd_players, 0x006554D8);
+BW_DATA(s32*, g_replay_cmd_sizes,   0x00654AA8);
+BW_REF(s32,   g_replay_cmd_count,   0x006D5BF0);
+BW_REF(b32,   g_sync_turn_enabled,  0x006556E0);
+BW_REF(bool,  g_6D5BEC,             0x006D5BEC); // Appears to be unused (all xrefs are writes, no reads), but haven't confirmed if it's somehow accessed elsewhere like storm.dll.
+BW_REF(u32,   g_speed_multiplier,   0x0050E058);
+BW_REF(b32,   g_685174,             0x00685174); // No idea, but related to the other two below.
+BW_REF(b32,   g_685178,             0x00685178); // Probably defines that the client is entering or is in the score screen.
+BW_REF(b32,   g_68517C,             0x0068517C); // Probably defines that the score screen dlg is loaded or active.
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 BW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"
