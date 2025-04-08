@@ -13,9 +13,9 @@ void orders_cast_maledictus(Unit* unit) {
 		return;
 	}
 	bw::decloak_passive_proc(unit);
-	u16 tech_energy_cost = 0; // unused now
+	u16 unused_tech_energy_cost = 0; // unused now
 	if (!unit->main_order_state) {
-		if (helper::spell_order(unit, TechId::MindTyrantMaledictus, &tech_energy_cost, weapons_dat::max_range[orders_dat::order_weapon_id[OrderId::CastMaledictus]], 1326)) {
+		if (helper::spell_order(unit, TechId::MindTyrantMaledictus, &unused_tech_energy_cost, weapons_dat::max_range[orders_dat::order_weapon_id[OrderId::CastMaledictus]], 1326)) {
 			// Start the channel
 			unit->sprite->create_top_overlay(ImageId::MindTyrantTyrannyCastOverlay);
 			unit->play_iscript_animation(IscriptAnimation::Unused2);
