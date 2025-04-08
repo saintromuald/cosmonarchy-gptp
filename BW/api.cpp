@@ -3052,6 +3052,7 @@ void regress(Unit* unit, u32 regression_id) {
         new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
     } else if (unit_id_is_larva(regression_id) || units_dat::base_property[regression_id] & UnitProperty::Worker) {
         new_unit = bw::create_unit_in_game(regression_id, unit->player, unit->position.x, was_flyer && !is_flyer ? unit->position.y + 42 : unit->position.y);
+        unit->ext().values[ValueNoCorpse] = true;
     } else {
         helper::replace_unit_with_id(unit, regress_to);
         unit->set_hitpoints(unit->get_max_hp_raw());
