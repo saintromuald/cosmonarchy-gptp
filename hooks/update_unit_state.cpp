@@ -349,7 +349,7 @@ namespace hooks {
 			}
 
 			// Last Orders - Aurora passive
-			if (unit->has_last_orders() && unit_ext.values[ValueLastOrdersInit] == 1) {
+			if (unit->has_last_orders() && unit_ext.values[ValueLastOrdersInit]) {
 				auto distance = bw::distance_between(unit->position.x, unit->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
 				if (distance < 32) {
 					unit->status |= UnitStatus::Invincible;

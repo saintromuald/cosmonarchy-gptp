@@ -1269,7 +1269,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
             Point16 dest = target.area.center();
             for (Unit* unit : source.search().take(count)) {
-                UnitExt* unit_ext = get_unit_ext(unit);
                 // TODO: Handle orders other than build / train. -Pr0nogo
                 switch (order_id) {
                     case OrderId::BuildTerran:
