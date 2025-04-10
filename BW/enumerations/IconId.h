@@ -395,15 +395,20 @@ namespace IconId {
 
         // Extended / Cosmonarchy \\
 
-        MadcapDanaanAutogun,
-        AtreusDauntlessDisruptionCannon,
-        DemiurgePassiveWorship,
-        UnusedTaunt,
-        Reclamation,
-        DidactPassiveShroudOfAdun,
-        PaladinActiveSkyfall,
+        MadcapDanaanAutogun             = 390,
+        AtreusDauntlessDisruptionCannon = 391,
+        DemiurgePassiveWorship          = 392,
+        UnusedTaunt                     = 393,
+        Reclamation                     = 394,
+        DidactPassiveShroudOfAdun       = 395,
+        PaladinActiveSkyfall            = 396,
 
-        LakiziliskBurrow = 377,
-        LakiziliskUnburrow = 398,
+        LakiziliskBurrow                = 377,
+        LakiziliskUnburrow              = 398,
+
+        SavantDiscoidRifle              = 666,
+        KineticPenetration              = 667,
+        Hijack                          = 668,
+        VitalRemains                    = 669,
     };
 }

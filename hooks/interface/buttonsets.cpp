@@ -2300,7 +2300,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranCyprian: {
-                                    if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::KineticPenetration) { // Kinetic Penetration
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2378,9 +2378,9 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranAutocrat: {
-                                    if (current_button->icon_id == IconId::RechargeShields					// Reclamation Fields
-                                    ||  current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon	// Kinetic Penetration
-                                    ||  current_button->icon_id == IconId::Reclamation) {					// Reclamation
+                                    if (current_button->icon_id == IconId::RechargeShields	  // Reclamation Fields
+                                    ||  current_button->icon_id == IconId::KineticPenetration // Kinetic Penetration
+                                    ||  current_button->icon_id == IconId::Reclamation) {	  // Reclamation
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2433,7 +2433,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranRamesses: {
-                                    if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::KineticPenetration) { // Kinetic Penetration
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2459,14 +2459,14 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranPenumbra: {
-                                    if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon	// Kinetic Penetration
-                                    ||	current_button->icon_id == IconId::LegEnhancements)	{				// Phantasmal Passage
+                                    if (current_button->icon_id == IconId::KineticPenetration // Kinetic Penetration
+                                    ||	current_button->icon_id == IconId::LegEnhancements)	{ // Phantasmal Passage
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::TerranClaymore: {
-                                    if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon  // Kinetic Penetration
-                                    ||	current_button->icon_id == IconId::FusionCutterHarvest) {			// Kelvin Munitions
+                                    if (current_button->icon_id == IconId::KineticPenetration     // Kinetic Penetration
+                                    ||	current_button->icon_id == IconId::FusionCutterHarvest) { // Kelvin Munitions
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2505,8 +2505,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranWyvern: {
-                                    if (current_button->icon_id == IconId::AfterburnersOnUnused				  // Reverse Thrust
-                                    ||	current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon)	{ // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::AfterburnersOnUnused	 // Reverse Thrust
+                                    ||	current_button->icon_id == IconId::KineticPenetration) { // Kinetic Penetration
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2549,13 +2549,13 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranMagnetar: {
-                                    if (current_button->icon_id == IconId::ArchonPsionicShockwave				// Law of Attraction
-                                    ||  current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) {	// Kinetic Penetration
+                                    if (current_button->icon_id == IconId::ArchonPsionicShockwave // Law of Attraction
+                                    ||  current_button->icon_id == IconId::KineticPenetration) {  // Kinetic Penetration
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::TerranHippogriff: {
-                                    if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::KineticPenetration) { // Kinetic Penetration
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2565,7 +2565,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranSentinel: {
-                                    if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon) { // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::KineticPenetration) { // Kinetic Penetration
                                         if (unit->status & UnitStatus::GroundedBuilding) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
@@ -2589,7 +2589,7 @@ namespace hooks {
                                 case UnitId::TerranIronFoundry:
                                 case UnitId::TerranStarport: {
                                     bool is_adding_on = units_dat::base_property[unit->build_queue[unit->build_queue_slot]] & UnitProperty::Addon;
-                                    if (!unit->building.addon && !is_adding_on != OrderId::BuildAddon && !(unit->status & UnitStatus::InAir) && !bw::unit_queue_full(unit)) {
+                                    if (!unit->building.addon && !is_adding_on != OrderId::BuildAddon && !unit->is_in_air() && !bw::unit_queue_full(unit)) {
                                         current_button_state = Button_State::Disabled; // Still shows even when they are building an addon!
                                     } else {
                                         current_button_state = Button_State::Invisible;

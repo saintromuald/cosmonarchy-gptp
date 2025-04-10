@@ -2209,5 +2209,14 @@ namespace SoundId {
         TiangouWeaponfire05                                 = 3484,
         FacadeCast01                                        = 3485,
         FacadeOff01                                         = 3486,
+
+        CikraliskReady01                                    = 3489,
+        CikraliskReady02                                    = 3490,
+        CikraliskReady03                                    = 3491,
+
+        CikraliskOrderAggressive01                          = 3500,
+        CikraliskOrderAggressive02                          = 3501,
+        CikraliskOrderAggressive03                          = 3502,
+        CikraliskOrderAggressive04                          = 3503,
     };
 }
