@@ -1550,14 +1550,15 @@ namespace hooks {
 
                 // Corpse Cocoon
                 for (Thingy* corpse : g_corpse_search.rect(unit->get_box32())) {
-                    if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
+                    auto* corpse_ext = get_thingy_ext(corpse);
+                    if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) && !unit_id_is_broodspawn(corpse_ext->unit_id)) {
                         Unit* egg = bw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
                         if (egg) {
                             set_custom_egg(egg, UnitId::ZergSovroleth, 4 * 24);
                         }
-                        UnitExt* egg_ext = get_unit_ext(egg);
-                        egg_ext->values[ValueNoCorpse] = true;
-                        egg_ext->values[ValueRegressionUnstable] = true;
+                        auto& egg_ext = egg->ext();
+                        egg_ext.values[ValueNoCorpse] = true;
+                        egg_ext.values[ValueRegressionUnstable] = true;
                         corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
                         corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
                     }
