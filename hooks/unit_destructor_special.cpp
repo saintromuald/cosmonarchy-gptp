@@ -404,11 +404,11 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
     u32 pos_x = x + image->horizontal_offset + sprite->position.x;
     u32 pos_y = y + image->vertical_offset   + sprite->position.y;
 
+    Unit* unit = *g_active_iscript_unit;
     if (SpriteId::is_corpse((SpriteId::Enum)id)) {
-        Unit* unit = *g_active_iscript_unit;
         if (unit) {
-            UnitExt* unit_ext = get_unit_ext(unit);
-            if (unit_ext->values[ValueNoCorpse]) {
+            auto& unit_ext = unit->ext();
+            if (unit_ext.values[ValueNoCorpse]) {
                 return 0;
             }
 
@@ -417,6 +417,11 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
                 return 0;
             }
         }
+    }
+
+    // Override custom corpses
+    if (unit) {
+        id = unit->get_custom_corpse(static_cast<SpriteId::Enum>(id));
     }
 
     Thingy* thingy = helper::create_thingy(id, pos_x, pos_y, 0);
@@ -438,9 +443,9 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
                     thingy_ext->mine_count = unit->mine_carrier.mine_count;
                 }
 
-                UnitExt* unit_ext = get_unit_ext(unit);
-                if (unit_ext->timers[TimerAutocratControlledOpposition]) {
-                    reclaim_corpse(thingy, unit_ext->values[ValueAutocratControlledOppositionPlayer]);
+                auto& unit_ext = unit->ext();
+                if (unit_ext.timers[TimerAutocratControlledOpposition]) {
+                    reclaim_corpse(thingy, unit_ext.values[ValueAutocratControlledOppositionPlayer]);
                 }
             }
         }

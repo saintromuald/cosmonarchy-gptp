@@ -1571,3 +1571,19 @@ bool Unit::is_dual_requisition() {
 bool Unit::is_disabled() {
     return this->status & UnitStatus::Disabled;
 }
+
+SpriteId::Enum Unit::get_custom_corpse(SpriteId::Enum id) {
+    switch (id) {
+        case SpriteId::Corpse_Dracadin: {
+            if (this->id == UnitId::ProtossDracadinOrder) {
+                return SpriteId::Corpse_DracadinOrder;
+            }
+        } break;
+        case SpriteId::Corpse_Hydralisk: {
+            if (this->id == UnitId::ZergHydraliskOrkoti) {
+                return SpriteId::Corpse_HydraliskOrkoti;
+            }
+        } break;
+    }
+    return id;
+}

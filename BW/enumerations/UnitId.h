@@ -275,6 +275,9 @@ namespace UnitId {
     // Zerg-Unit-Factional
         ZergNathrelisk										= 402,
         ZergIziralisk										= 403,
+        ZergInzorthrokor                                    = 415,
+        ZergQuazrokor                                       = 422,
+        ZergHydraliskOrkoti                                 = 436,
 
     // Zerg-Building
         ZergAxtothAxis										= 130,		// Infested Command Center

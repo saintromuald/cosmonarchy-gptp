@@ -214,6 +214,7 @@ namespace hooks {
             case UnitId::ZergAxitrilisk: {
                 speed *= 1.25;
             } break;
+            case UnitId::ZergInzorthrokor:
             case UnitId::ZergVorvrokor:
             case UnitId::ZergZobriolisk: {
                 speed *= 1.3;
@@ -225,7 +226,8 @@ namespace hooks {
                 speed *= 1.35;
             } break;
             case UnitId::ProtossZealotStarbound:
-            case UnitId::ProtossAmaranth: {
+            case UnitId::ProtossAmaranth:
+            case UnitId::ZergHydraliskOrkoti: {
                 speed *= 1.4;
             } break;
             case UnitId::ProtossLegionnaire:

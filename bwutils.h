@@ -86,7 +86,9 @@ namespace SpriteId {
             case SpriteId::Corpse_Iziralisk:
             case SpriteId::Corpse_Gorgrokor:
             case SpriteId::Corpse_MadrigalFuria:
-            case SpriteId::Corpse_Renesair: {
+            case SpriteId::Corpse_Renesair:
+            case SpriteId::Corpse_DracadinOrder:
+            case SpriteId::Corpse_HydraliskOrkoti: {
                 return true;
             } break;
         }

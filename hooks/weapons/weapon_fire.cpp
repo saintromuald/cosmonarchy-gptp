@@ -710,6 +710,20 @@ namespace hooks {
                         //  bw::play_sound({SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03}, unit);
                         }
                     } break;
+                    case WeaponId::QuazrokorQuazrokSpray: {
+                        unit->sprite->create_top_overlay(ImageId::GlaveWurm_SeekerSporesHit, bw::get_polar_x(15, unit->current_direction_1), bw::get_polar_y(15, unit->current_direction_1), unit->current_direction_1);
+                        unit->sprite->create_top_overlay(ImageId::GlaveWurm_SeekerSporesHit, bw::get_polar_x(30, unit->current_direction_1), bw::get_polar_y(30, unit->current_direction_1), unit->current_direction_1);
+                        unit->sprite->create_top_overlay(ImageId::GlaveWurm_SeekerSporesHit, bw::get_polar_x(45, unit->current_direction_1), bw::get_polar_y(45, unit->current_direction_1), unit->current_direction_1);
+                        unit->sprite->create_top_overlay(ImageId::GlaveWurm_SeekerSporesHit, bw::get_polar_x(60, unit->current_direction_1), bw::get_polar_y(60, unit->current_direction_1), unit->current_direction_1);
+                        fire_bullet(unit, weapon_id, weapon_target);
+                    } break;
+                    case WeaponId::InzorthrokorInzorReflux: {
+                        unit->sprite->create_top_overlay(ImageId::GlaveWurm_SeekerSporesHit, bw::get_polar_x(15, unit->current_direction_1), bw::get_polar_y(15, unit->current_direction_1), unit->current_direction_1);
+                        unit->sprite->create_top_overlay(ImageId::GlaveWurm_SeekerSporesHit, bw::get_polar_x(30, unit->current_direction_1), bw::get_polar_y(30, unit->current_direction_1), unit->current_direction_1);
+                        unit->sprite->create_top_overlay(ImageId::GlaveWurm_SeekerSporesHit, bw::get_polar_x(45, unit->current_direction_1), bw::get_polar_y(45, unit->current_direction_1), unit->current_direction_1);
+                        unit->sprite->create_top_overlay(ImageId::GlaveWurm_SeekerSporesHit, bw::get_polar_x(60, unit->current_direction_1), bw::get_polar_y(60, unit->current_direction_1), unit->current_direction_1);
+                        fire_bullet(unit, weapon_id, weapon_target);
+                    } break;
                     case WeaponId::TosgriliskExplosiveSpores:
                     case WeaponId::IzirokorEnergizedBioplasma:
                     case WeaponId::KonviliskSowingSpines: {

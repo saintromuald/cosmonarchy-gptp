@@ -459,8 +459,8 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::ZergImicrenTendril: {
             switch (unit_id) {
-            //  case UnitId::ZergQuazilisk:     return UnitId::ZergQuazrokor;
-            //  case UnitId::ZergZoryusthaleth: return UnitId::ZergInzorthrokor;
+                case UnitId::ZergQuazilisk:     return UnitId::ZergQuazrokor;
+                case UnitId::ZergZoryusthaleth: return UnitId::ZergInzorthrokor;
             }
         } break;
         case Faction::ZergGoszirithTendril: {
@@ -489,4 +489,40 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
         damage += unit_ext.unar_solitary_focus_stacks;
     }
     return damage;
+}
+
+UnitId::Enum get_factional_regression(Unit* unit) {
+    Faction faction = unit->player < PlayerLimit ? g_globals->players[unit->player].faction : Faction::None;
+    switch (unit->id) {
+        case UnitId::ZergLiiralisk: {
+            switch (faction) {
+                case Faction::ZergImicrenTendril: return UnitId::ZergQuazrokor;
+            }
+            return UnitId::ZergQuazilisk;
+        } break;
+        case UnitId::ZergKalkalisk: {
+            switch (faction) {
+                case Faction::ZergZorthosTendril: return UnitId::ZergNathrelisk;
+            }
+            return UnitId::ZergNathrokor;
+        } break;
+        case UnitId::ZergBactalisk: {
+            switch (faction) {
+                case Faction::ZergOrkotiTendril: return UnitId::ZergHydraliskOrkoti;
+            }
+            return UnitId::ZergHydralisk;
+        } break;
+        case UnitId::ZergTethzorokor: {
+            switch (faction) {
+                case Faction::ZergZorthosTendril: return UnitId::ZergIziralisk;
+            }
+            return UnitId::ZergIzirokor;
+        } break;
+        case UnitId::ZergUltrokor: {
+            switch (faction) {
+                case Faction::ZergImicrenTendril: return UnitId::ZergInzorthrokor;
+            }
+            return UnitId::ZergZoryusthaleth;
+        } break;
+    }
 }

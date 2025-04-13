@@ -789,8 +789,17 @@ namespace hooks {
                     }
                 } break;
                 case UnitId::ZergHydralisk: {
-                    if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkibactScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen)) {
-                        return true;
+                    if (faction != Faction::ZergOrkotiTendril) {
+                        if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkibactScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen)) {
+                            return true;
+                        }
+                    }
+                } break;
+                case UnitId::ZergHydraliskOrkoti: {
+                    if (faction == Faction::ZergOrkotiTendril) {
+                        if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkibactScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen)) {
+                            return true;
+                        }
                     }
                 } break;
                 case UnitId::ZergIzirokor: {
@@ -819,7 +828,20 @@ namespace hooks {
                         return true;
                     }
                 } break;
-                case UnitId::ZergZoryusthaleth:
+                case UnitId::ZergZoryusthaleth: {
+                    if (faction != Faction::ZergImicrenTendril) {
+                        if (player_has_unit_id(player_id, UnitId::ZergUltravCavern) || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud)) {
+                            return true;
+                        }
+                    }
+                } break;
+                case UnitId::ZergInzorthrokor: {
+                    if (faction == Faction::ZergImicrenTendril) {
+                        if (player_has_unit_id(player_id, UnitId::ZergUltravCavern) || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud)) {
+                            return true;
+                        }
+                    }
+                } break;
                 case UnitId::ZergGorgrokor:
                 case UnitId::ZergLakizilisk: {
                     if (player_has_unit_id(player_id, UnitId::ZergUltravCavern) || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud)) {
@@ -913,7 +935,7 @@ namespace hooks {
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHydralisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHydralisk) || player_has_completed_unit_id(player_id, UnitId::ZergHydraliskOrkoti) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergBactalisk) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp)) {
                     return true;
@@ -962,7 +984,7 @@ namespace hooks {
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZoryusthaleth) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZoryusthaleth) || player_has_completed_unit_id(player_id, UnitId::ZergInzorthrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergUltrokor) {
                 if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergUltravCavern)) {
                     return true;
@@ -2247,6 +2269,18 @@ namespace hooks {
                         return TECH_LOCKED;
                     }
                     case UnitId::ZergHydralisk:{
+                        if (faction == Faction::ZergOrkotiTendril) {
+                            return TECH_HIDDEN;
+                        }
+                        if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkibactScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                    case UnitId::ZergHydraliskOrkoti:{
+                        if (faction != Faction::ZergOrkotiTendril) {
+                            return TECH_HIDDEN;
+                        }
                         if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_unit_id(player_id, UnitId::ZergSkibactScab) || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen)) {
                             return TECH_ACTIVE;
                         }
@@ -2276,7 +2310,24 @@ namespace hooks {
                         }
                         return TECH_LOCKED;
                     }
-                    case UnitId::ZergZoryusthaleth:
+                    case UnitId::ZergZoryusthaleth: {
+                        if (faction == Faction::ZergImicrenTendril) {
+                            return TECH_HIDDEN;
+                        }
+                        if (player_has_unit_id(player_id, UnitId::ZergUltravCavern) || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                    case UnitId::ZergInzorthrokor: {
+                        if (faction != Faction::ZergImicrenTendril) {
+                            return TECH_HIDDEN;
+                        }
+                        if (player_has_unit_id(player_id, UnitId::ZergUltravCavern) || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
                     case UnitId::ZergLakizilisk:
                     case UnitId::ZergGorgrokor: {
                         if (player_has_unit_id(player_id, UnitId::ZergUltravCavern) || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud)) {
@@ -2374,72 +2425,54 @@ namespace hooks {
                 return TECH_HIDDEN;
             }
             case UnitId::ZergNathrokor:
-            case UnitId::ZergNathrelisk:
-            {
-                if (unit_id == UnitId::ZergKalkalisk)
-                {
-                    if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake))
-                    {
+            case UnitId::ZergNathrelisk: {
+                if (unit_id == UnitId::ZergKalkalisk) {
+                    if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake)) {
                         return TECH_ACTIVE;
                     }
                     return TECH_LOCKED;
                 }
                 return TECH_HIDDEN;
             }
-            case UnitId::ZergCikralisk:
-            {
-                if (unit_id == UnitId::ZergGhitorokor)
-                {
-                    if (player_has_completed_unit_id(player_id, UnitId::ZergTosvrolHaunt))
-                    {
+            case UnitId::ZergCikralisk: {
+                if (unit_id == UnitId::ZergGhitorokor) {
+                    if (player_has_completed_unit_id(player_id, UnitId::ZergTosvrolHaunt)) {
                         return TECH_ACTIVE;
                     }
                     return TECH_LOCKED;
                 }
                 return TECH_HIDDEN;
             }
-            case UnitId::ZergProtathalor:
-            {
-                if (unit_id == UnitId::ZergSovroleth)
-                {
-                    if (player_has_completed_unit_id(player_id, UnitId::ZergTosvrolHaunt))
-                    {
+            case UnitId::ZergProtathalor: {
+                if (unit_id == UnitId::ZergSovroleth) {
+                    if (player_has_completed_unit_id(player_id, UnitId::ZergTosvrolHaunt)) {
                         return TECH_ACTIVE;
                     }
                     return TECH_LOCKED;
                 }
                 return TECH_HIDDEN;
             }
-            case UnitId::ZergMutalisk:
-            {
-                if (unit_id == UnitId::ZergTosgrilisk)
-                {
-                    if (player_has_completed_unit_id(player_id, UnitId::ZergTosvrolHaunt))
-                    {
+            case UnitId::ZergMutalisk: {
+                if (unit_id == UnitId::ZergTosgrilisk) {
+                    if (player_has_completed_unit_id(player_id, UnitId::ZergTosvrolHaunt)) {
                         return TECH_ACTIVE;
                     }
                     return TECH_LOCKED;
                 }
                 return TECH_HIDDEN;
             }
-            case UnitId::ZergAxitrilisk:
-            {
-                if (unit_id == UnitId::ZergBegrothilisk)
-                {
-                    if (player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow))
-                    {
+            case UnitId::ZergAxitrilisk: {
+                if (unit_id == UnitId::ZergBegrothilisk) {
+                    if (player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow)) {
                         return TECH_ACTIVE;
                     }
                     return TECH_LOCKED;
                 }
                 return TECH_HIDDEN;
             }
-            case UnitId::ZergMortothrokor:
-            {
-                if (unit_id == UnitId::ZergOztukrokor)
-                {
-                    if (player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow))
-                    {
+            case UnitId::ZergMortothrokor: {
+                if (unit_id == UnitId::ZergOztukrokor) {
+                    if (player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow)) {
                         return TECH_ACTIVE;
                     }
                     return TECH_LOCKED;
@@ -2447,11 +2480,9 @@ namespace hooks {
                 return TECH_HIDDEN;
             }
             case UnitId::ZergHydralisk:
-            {
-                if (unit_id == UnitId::ZergBactalisk)
-                {
-                    if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_completed_unit_id(player_id, UnitId::ZergSkibactScab))
-                    {
+            case UnitId::ZergHydraliskOrkoti: {
+                if (unit_id == UnitId::ZergBactalisk) {
+                    if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_completed_unit_id(player_id, UnitId::ZergSkibactScab)) {
                         return TECH_ACTIVE;
                     }
                     return TECH_LOCKED;
@@ -2507,7 +2538,8 @@ namespace hooks {
                 }
                 return TECH_HIDDEN;
             }
-            case UnitId::ZergZoryusthaleth: {
+            case UnitId::ZergZoryusthaleth:
+            case UnitId::ZergInzorthrokor: {
                 if (unit_id == UnitId::ZergUltrokor) {
                     if (unit->is_burrowed()) {
                         return TECH_HIDDEN;
