@@ -213,8 +213,7 @@ void unit_on_death_behaviors(Unit* unit) {
             unit_ext.values[ValueIncubationPlayer], unit->position);
     }
 
-    // These require the unit to be completed
-    if (unit->status & UnitStatus::Completed) {
+    if (unit->is_completed()) {
         switch (unit->id) {
             case UnitId::TerranAnvil: {
                 // Anvil - death while armed
@@ -273,6 +272,12 @@ void unit_on_death_behaviors(Unit* unit) {
             } break;
             case UnitId::ProtossAugur: {
                 augur_sacrifice(unit);
+            } break;
+            case UnitId::ProtossMindTyrant: {
+                Unit* malefactor = unit_ext.units[UnitMindTyrantMalefactor];
+                if (malefactor) {
+                    clear_maledictus(unit, malefactor);
+                }
             } break;
         }
     }

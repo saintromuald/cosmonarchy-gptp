@@ -309,6 +309,20 @@ namespace hooks {
             data.damage = bw::spread_clarion_damage(data, 0.75);
         }
 
+        // Mind Tyrant - Villanous Fervor - Reduce Mind Tyrant energy first
+        if (target_ext->values[ValueIsMalefactor] == 2) {
+            Unit* mind_tyrant = target_ext->units[UnitMindTyrantLink];
+            if (mind_tyrant) {
+                s32 energy_reduce_amount = std::min(data.damage, (s32)mind_tyrant->energy);
+                mind_tyrant->spend_energy(energy_reduce_amount);
+                data.damage -= energy_reduce_amount;
+                if (data.damage < 0) {
+                    data.damage = 0;
+                    data.damage_type = DamageType::Independent;
+                }
+            }
+        }
+
         // Reduce shields
         if (units_dat::shields_enabled[data.target->id] && data.target->shields >= 256) {
             data.shield_reduce_amount = std::min(data.damage, data.target->shields);
@@ -570,10 +584,21 @@ namespace hooks {
         }
 
         if (data.attacker) {
-            UnitExt* attacker_ext = get_unit_ext(data.attacker);
+            auto& attacker_ext = data.attacker->ext();
 
             // Ignore Carapace Swarm!
             // START
+            Unit* malefactor = data.attacker;
+            auto& malefactor_ext = attacker_ext;
+            if (malefactor->id == UnitId::ProtossSteward) {
+                malefactor = malefactor->hangar_unit.parent;
+                malefactor_ext = malefactor->ext();
+            }
+            if (!bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !data.target->is_building() && malefactor_ext.units[UnitMindTyrantLink] && malefactor_ext.values[ValueIsMalefactor] == 2) {
+                target_ext->timers[TimerMalefactorTyrannize] = ProtossMindTyrant::MalefactorTyrannizeDuration;
+                target_ext->last_malefactor_player = data.attacking_player_id;
+            }
+
             switch (data.attacker->id) {
                 case UnitId::ProtossEcclesiastKhalendric: {
                     if (!bw::is_allied_to(data.target->player, data.attacker->player)) {
@@ -583,10 +608,11 @@ namespace hooks {
                 case UnitId::ProtossAugur: {
                     // Augur spend shields on attack
                     data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);
-                    attacker_ext->shield_regen_timer = 0;
+                    attacker_ext.shield_regen_timer = 0;
                 } break;
+                case UnitId::ZergQuazrokor:
                 case UnitId::ZergNathrokor: {
-                    attacker_ext->timers[TimerZergAdrenalFrenzy] = 2 * 24 + 1;
+                    attacker_ext.timers[TimerZergAdrenalFrenzy] = 2 * 24 + 1;
                     data.attacker->update_speed();
                 } break;
                 case UnitId::ZergRilirokor: {
@@ -607,7 +633,7 @@ namespace hooks {
                         ascend_in_area(data.attacker->player, data.attacker->position, 4 * 32);
                     }
                 } break;
-                case WeaponId::MindTyrantTyranny: {
+                case WeaponId::MindTyrantMaledictus: {
                     helper::mind_control_hit(data.attacker, data.target);
                 } break;
                 case WeaponId::VorvalClaws:
@@ -639,8 +665,8 @@ namespace hooks {
                             displacement.x *= 1 * 32.0 / displacement_time;
                             displacement.y *= 1 * 32.0 / displacement_time;
 
-                            attacker_ext->timers[TimerStrigaRepulsion] = displacement_time;
-                            attacker_ext->repulsion_vector = displacement;
+                            attacker_ext.timers[TimerStrigaRepulsion] = displacement_time;
+                            attacker_ext.repulsion_vector = displacement;
                         }
                     }
                 } break;
@@ -832,7 +858,7 @@ namespace hooks {
                     } break;
                     case WeaponId::AshguardPhaseCremator: {
                         // Vengeful March
-                        attacker_ext->timers[TimerVengefulMarch] = Protoss::VengefulMarchDuration;
+                        attacker_ext.timers[TimerVengefulMarch] = Protoss::VengefulMarchDuration;
 
                         // Ashguard - Indomitable Annex - add stack
                         target_ext->units[UnitAnnexSource] = data.attacker;
@@ -850,8 +876,8 @@ namespace hooks {
                         target_ext->timers[TimerAnnex] = 2 * 24 + 1;
                     } break;
                     case WeaponId::GhitorokorGnashingTendrils: {
-                        attacker_ext->values[ValueGhitorokorRelentlessAggressionStacks]++;
-                        attacker_ext->timers[TimerGhitorokorRelentlessAggression] = 48 + 1;
+                        attacker_ext.values[ValueGhitorokorRelentlessAggressionStacks]++;
+                        attacker_ext.timers[TimerGhitorokorRelentlessAggression] = 48 + 1;
                     } break;
                     case WeaponId::IziraliskCorrosiveBioplasma: {
                         helper::apply_corrosive_spores(data.target);
@@ -1182,19 +1208,22 @@ namespace hooks {
                 return fatal_deal_damage;
             }
 
-            // Tyranny
-            if (target_ext.units[UnitMindTyrantLink] && target_ext.values[ValueMindTyrantTyranny] == ProtossMindTyrant::TyrannyMaxStacks && !target_ext.values[ValueLastOrdersInit]) {
-                fatal_deal_damage = false;
-                mind_control(data.attacker->player, UnitId::ProtossMindTyrant, data.target);
-                bw::play_sound(SoundId::Protoss_Darchon_mind_wav, data.target->position);
-                data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);
-                data.target->unfreeze();
-                clear_tyranny(data.attacker, data.target);
-                return fatal_deal_damage;
+            // Malefactor Tyrannize
+            if (data.attacker) {
+                if (target_ext.timers[TimerMalefactorTyrannize] && !target_ext.values[ValueLastOrdersInit]) {
+                    fatal_deal_damage = false;
+                    mind_control(target_ext.last_malefactor_player, UnitId::ProtossMindTyrant, data.target);
+                    bw::play_sound(SoundId::Protoss_Darchon_mind_wav, data.target->position);
+                    data.target->set_hitpoints(100 * 256 + units_dat::max_hitpoints[data.target->id] / 3);
+                    data.target->freeze();
+                    target_ext.timers[TimerMalefactorStun] = 2 * 24 + 1;
+                    data.target->order_to_idle();
+                    return fatal_deal_damage;
+                }
             }
 
             EntryArray masters = g_unit_search
-                .radial_ex(data.target, 6 * 32, 0, { UnitId::ProtossDemiurge })
+                .radial_ex(data.target, 6 * 32, 0, {UnitId::ProtossDemiurge})
                 .filter_by([&data](Unit* master) {
                     if (bw::is_allied_to(data.target->player, master->player)) {
                         return false;
@@ -1210,7 +1239,7 @@ namespace hooks {
                     overlay_id = ImageId::DemiurgeWorshipProc_Large;
                 }
                 bw::add_unit_overlay(data.target, overlay_id);
-                helper::play_sound_from_unit(SoundId::DemiurgeWorship01, data.target, 1, 0);
+                bw::play_sound(SoundId::DemiurgeWorship01, data.target);
                 target_ext.timers[TimerDemiurgeWorshipOverlayDelay] = 43;
                 data.target->freeze();
                 data.target->status |= UnitStatus::Invincible;

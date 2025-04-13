@@ -366,7 +366,7 @@ enum Enum {
                     * Default Requirements: Unused. */
     CastDisruptionWeb      = 0xB5, /**< Cast Spell: Disruption Web.
                     * Default Requirements: Unused. */
-    CastTyranny			   = 0xB6, /**< Tyranny Cast on Target.
+    CastMaledictus  	   = 0xB6, /**< Maledictus Cast on Target.
                     * Default Requirements: Unit must be Protoss Dark Archon. */
     WarpingDarkArchon      = 0xB7, /**< Mind Tyrant Meld. Unused.
                     * Default Requirements: Unused. */

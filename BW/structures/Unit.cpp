@@ -1213,18 +1213,19 @@ namespace {
 bool Unit::give_to(u8 player) {
     assert(this);
     assert(player < 12);
-    if (give_unit_to_player(this, player) != 0) {
-        if ((this->id == UnitId::ZergNydusCesiant || !(units_dat::base_property[this->id] & UnitProperty::Building))
+    if (give_unit_to_player(this, player)) {
+        if ((this->id == UnitId::ZergNydusCesiant || !this->is_building())
             && this->id != UnitId::ZergEgg
             && this->id != UnitId::ZergLarva
             && this->id != UnitId::ZergOcsalLarva)
         {
             this->order_to_idle();
         }
-        UnitExt* unit_ext = get_unit_ext(this);
-        unit_ext->timers[TimerOwnerChangedRecently] = 2;
-        unit_ext->values[ValueAlliedInvPlayer] = player;
-        unit_ext->timers[TimerAlliedInvFrames] = 24;
+        auto& unit_ext = this->ext();
+        unit_ext.timers[TimerOwnerChangedRecently] = 2;
+        unit_ext.values[ValueAlliedInvPlayer] = player;
+        unit_ext.timers[TimerAlliedInvFrames] = 24;
+        clear_maledictus_if_needed(this);
         return true;
     }
     return false;

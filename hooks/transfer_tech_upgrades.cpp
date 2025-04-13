@@ -37,7 +37,7 @@ namespace {
 		{UnitId::ProtossDidact, TechId::DimensionalRecall, TechId::StasisField, TechId::None},
 		{UnitId::ProtossLanifect, TechId::LanifectDisruptionField, TechId::None},
 		{UnitId::ProtossCabalist, TechId::DarkArchonMeld, TechId::None},
-		{UnitId::ProtossMindTyrant, TechId::Tyranny, TechId::Feedback, TechId::MindTyrantMaelstrom, TechId::None},
+		{UnitId::ProtossMindTyrant, TechId::MindTyrantMaledictus, TechId::Feedback, TechId::MindTyrantMaelstrom, TechId::None},
 	};
 
 	struct UpgradeTransferData {

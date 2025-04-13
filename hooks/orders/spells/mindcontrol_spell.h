@@ -3,6 +3,6 @@
 
 namespace hooks
 {
-	void orders_cast_tyranny(Unit* unit);			// 004F6950
+	void orders_cast_maledictus(Unit* unit);			// 004F6950
 	void inject_tyranny_spell_hooks();
 }

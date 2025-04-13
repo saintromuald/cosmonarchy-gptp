@@ -13,7 +13,7 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::orders_cast_tyranny(unit);
+		hooks::orders_cast_maledictus(unit);
 		__asm {
 			POPAD
 			MOV ESP, EBP
