@@ -89,7 +89,8 @@ namespace hooks {
 					cooldown = new_cooldown;
 				}
 			} break;
-			case UnitId::TerranBlackjack: {
+			case UnitId::TerranBlackjack:
+			case UnitId::TerranBlackjackGolden: {
 				// Blackjack Wear and Tear: reduce weapon speed based on missing health
 				if (unit_ext.values[ValueWearAndTear]) {
 					cooldown /= 0.66;

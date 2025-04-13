@@ -817,6 +817,9 @@ namespace SpriteId {
 
         UnarOrbital                     = 975,
 
+        TerranBlackjackGolden           = 983,
+        TerranBlackjackGoldenDamaged    = 984,
+
         // CORPSE \\
             
         Corpse_Aspirant				    = 685,

@@ -187,7 +187,7 @@ namespace hooks {
 						} break;
 					}
 
-					if (unit->status & UnitStatus::Completed) {
+					if (unit->is_completed()) {
 						unit->status -= UnitStatus::Completed;
 					}
 
@@ -198,6 +198,7 @@ namespace hooks {
 						case UnitId::ZergDroleth:
 						case UnitId::ZergZethrokor:
 						case UnitId::ZergQuazilisk:
+						case UnitId::ZergQuazrokor:
 						case UnitId::ZergCikralisk:
 						case UnitId::ZergProtathalor:
 						case UnitId::ZergAxitrilisk:
@@ -288,6 +289,7 @@ namespace hooks {
 						} break;
 						// New mutation animation handling! Everything will eventually use this. -Pr0nogo
 						case UnitId::ZergQuazilisk:
+						case UnitId::ZergQuazrokor:
 						case UnitId::ZergNathrokor:
 						case UnitId::ZergCikralisk:
 						case UnitId::ZergProtathalor:
@@ -400,7 +402,8 @@ namespace hooks {
 				}
 				return false;
 			} break;
-			case UnitId::ZergQuazilisk: {
+			case UnitId::ZergQuazilisk:
+			case UnitId::ZergQuazrokor: {
 				if (morph_unit_id == UnitId::ZergLiiralisk) {
 					return true;
 				}

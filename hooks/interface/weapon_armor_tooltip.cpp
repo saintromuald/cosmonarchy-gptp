@@ -440,8 +440,8 @@ namespace hooks {
 		add_status(statuses, "Decided Collateral (Outer)", unit_ext->values[ValueTriggerWeaponSplashOuterAmount] / 32);
 
 		// GPTP Value - Gimmicked
-		add_status(statuses, "Power Siphon", bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 1, 1);
-		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavant && bw::get_generic_rust_value(unit, RustId::ToggleSavantOnhit) == 0, 1);
+		add_status(statuses, "Power Siphon", unit->id == UnitId::TerranSavantPowerSiphon, 1);
+		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavantEntropyGauntlets, 1);
 		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigalImperiosoMode, 1);
 		add_status(statuses, "Tempo Down", unit->id == UnitId::TerranMadrigalFuriaMode, 1);
 		add_status(statuses, "Phase Link", bw::has_clarion_links(unit), 1);

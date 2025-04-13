@@ -551,6 +551,7 @@ bool is_conventional_unit_morph_source(u16 id, bool allow_larvae) {
         case UnitId::ZergOthstoleth:
         case UnitId::ZergZethrokor:
         case UnitId::ZergQuazilisk:
+        case UnitId::ZergQuazrokor:
         case UnitId::ZergNathrokor:
         case UnitId::ZergNathrelisk:
         case UnitId::ZergCikralisk:
@@ -3939,6 +3940,8 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::AnalogueCylindricalBlaster:	        return bw::rand_between(SoundId::AnalogueWeaponfire01, SoundId::AnalogueWeaponfire03);
         case WeaponId::AuroraPhotonBlasters:                return SoundId::Bullet_BlastGn2_wav;
         case WeaponId::ExtatusRepeatingBlaster:             return bw::rand_between(SoundId::ExtatusWeaponfire01, SoundId::ExtatusWeaponfire03);
+        case WeaponId::QuaziliskAcridBarbs:                 return bw::rand_between(SoundId::QuaziliskWeaponfire01, SoundId::QuaziliskWeaponfire03);
+        case WeaponId::QuazrokorQuazrokSpray:               return bw::rand_between(SoundId::QuazrokorWeaponfire01, SoundId::QuazrokorWeaponfire01);
     }
     return SoundId::None;
 }

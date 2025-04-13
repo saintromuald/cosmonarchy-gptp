@@ -1553,6 +1553,7 @@ namespace hooks {
             case UnitId::ZergEgg:
             case UnitId::ZergCocoon:
             case UnitId::ZergQuazilisk:
+            case UnitId::ZergQuazrokor:
             case UnitId::ZergNathrokor: {
                 // Gimmick to allow morph cancellation animations to play correctly
                 if (unit_ext.timers[TimerQuaziliskCancel]) {
@@ -2482,6 +2483,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::TerranBlackjack:
+            case UnitId::TerranBlackjackGolden: {
                 if (!unit_ext.values[ValueWearAndTear] && unit->hitpoints < unit->get_max_hp_raw() / 2) {
                     unit_ext.values[ValueWearAndTear] = true;
                     bw::add_unit_overlay(unit, ImageId::OpticalFlareHit_Medium); // TODO: Sound effect
@@ -3412,7 +3414,8 @@ namespace hooks {
                     case UnitId::ProtossArtisan:
                     case UnitId::ProtossSimulacrum:
                     case UnitId::ZergEgg:
-                    case UnitId::ZergQuazilisk: {
+                    case UnitId::ZergQuazilisk:
+                    case UnitId::ZergQuazrokor: {
                         image_id = ImageId::SantaHatSmall17;
                         if (unit->sprite->main_graphic->flags & ImageFlags::Omnidirectional) {
                             image_id -= 4;

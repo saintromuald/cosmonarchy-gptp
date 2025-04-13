@@ -145,7 +145,8 @@ namespace hooks {
         }
 
         switch (unit->id) {
-            case UnitId::TerranBlackjack: {
+            case UnitId::TerranBlackjack:
+            case UnitId::TerranBlackjackGolden: {
                 // Blackjack Wear and Tear: reduce movement speed based on missing health
                 if (unit_ext.values[ValueWearAndTear]) {
                     speed *= 0.66;
@@ -175,6 +176,7 @@ namespace hooks {
             } break;
             case UnitId::TerranSiren:
             case UnitId::TerranPhalanxTankMode:
+            case UnitId::ProtossAccantor:
             case UnitId::ZergEvigrilisk: {
                 speed *= 0.9;
             } break;
@@ -191,6 +193,7 @@ namespace hooks {
             case UnitId::TerranOlympian:
             case UnitId::TerranCataphract:
             case UnitId::ProtossDracadin:
+            case UnitId::ZergQuazrokor:
             case UnitId::ZergZoryusthaleth: {
                 speed *= 1.1;
             } break;

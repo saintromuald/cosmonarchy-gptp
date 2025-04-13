@@ -207,7 +207,7 @@ namespace {
 			IscriptAnimation::Enum animation = IscriptAnimation::SpecialState2;
 			if (unit->id == UnitId::ZergZethrokor || unit->id == UnitId::ZergVorvrokor || unit->id == UnitId::ZergNathrokor) {
 				animation = IscriptAnimation::Unused2;
-			} else if (unit->id == UnitId::ZergQuazilisk) {
+			} else if (unit->id == UnitId::ZergQuazilisk || unit->id == UnitId::ZergQuazrokor) {
 				animation = IscriptAnimation::Unused2;
 				unit_ext->timers[TimerQuaziliskCancel] = 4;
 			}

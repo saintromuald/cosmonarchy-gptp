@@ -1020,7 +1020,11 @@ namespace hooks {
                             case UnitId::TerranFulcrum: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::TerranBlackjack: {
+<<<<<<< HEAD
                                         if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
+=======
+                                        if (faction != Faction::TerranGoldenRepublic) {
+>>>>>>> 52f3f509b (Implement Golden Blackjack)
                                             if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                                 current_button_state = Button_State::Invisible;
                                             } else {
@@ -1041,6 +1045,7 @@ namespace hooks {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
+<<<<<<< HEAD
                                     case UnitId::TerranTiangou: {
                                         if (faction == Faction::TerranFuturistFederation) {
                                             if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit) || is_adding_on || in_air) {
@@ -1052,6 +1057,8 @@ namespace hooks {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
+=======
+>>>>>>> 52f3f509b (Implement Golden Blackjack)
                                     case UnitId::TerranMatadorTankMode: {
                                         if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit)) {
                                             current_button_state = Button_State::Invisible;
@@ -1474,7 +1481,14 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::ProtossDracadin: {
-                                        current_button_state = Button_State::Enabled;
+                                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossDracadinOrder: {
+                                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
                                     } break;
                                     case UnitId::ProtossEcclesiast: {
                                         if (faction != Faction::ProtossKhalendricKnights) {
@@ -1652,14 +1666,39 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
-                                    case UnitId::ZergZethrokor:
-                                    case UnitId::ZergQuazilisk: {
+                                    case UnitId::ZergZethrokor: {
                                         if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazethPool)
-                                        ||  player_has_unit_id(unit->player, UnitId::ZergVornathPond)
-                                        ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                            || player_has_unit_id(unit->player, UnitId::ZergVornathPond)
+                                            || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::ZergQuazilisk: {
+                                        if (faction != Faction::ZergImicrenTendril) {
+                                            if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazethPool)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergVornathPond)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::ZergQuazrokor: {
+                                        if (faction == Faction::ZergImicrenTendril) {
+                                            if (player_has_completed_unit_id(unit->player, UnitId::ZergQuazethPool)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergVornathPond)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::ZergNathrokor: {
@@ -1671,7 +1710,7 @@ namespace hooks {
                                                 current_button_state = Button_State::Disabled;
                                             }
                                         } else {
-                                                current_button_state = Button_State::Invisible;
+                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::ZergNathrelisk: {
@@ -2317,16 +2356,13 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranBlackjack: {
+                                case UnitId::TerranBlackjack: 
+                                case UnitId::TerranBlackjackGolden:  {
                                     if (current_button->icon_id == IconId::ProtossAirPlating) { // Wear and Tear
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranMatadorTankMode: {
-                                    if (current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
-                                        current_button_state = Button_State::Disabled;
-                                    }
-                                } break;
+                                case UnitId::TerranMatadorTankMode:
                                 case UnitId::TerranMatadorCinderMode: {
                                     if (current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
                                         current_button_state = Button_State::Enabled;
@@ -2777,6 +2813,11 @@ namespace hooks {
                                 
                                 case UnitId::ZergGosvileth: {
                                     if (current_button->icon_id == IconId::VentralSacs) { // Plethoral Gestation
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergQuazrokor: {
+                                    if (current_button->icon_id == IconId::AdrenalGlands) { // Adrenal Frenzy
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

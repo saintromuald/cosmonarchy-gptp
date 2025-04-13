@@ -159,12 +159,14 @@ bool unit_id_has_flash_shielding(u32 unit_id) {
     return unit_id != UnitId::ProtossVagrantShade
         && unit_id != UnitId::TerranHarakanGolden
         && unit_id != UnitId::TerranAspirant
+        && unit_id != UnitId::TerranBlackjackGolden
         && unit_id != UnitId::TerranLuminary;
 }
 
 bool unit_id_has_shield_regeneration(u32 unit_id) {
     return unit_id == UnitId::TerranHarakanGolden
         || unit_id == UnitId::TerranAspirant
+        || unit_id == UnitId::TerranBlackjackGolden
         || unit_id == UnitId::TerranLuminary;
 }
 
@@ -477,6 +479,7 @@ bool weapon_id_accelerates(u32 weapon_id) {
 bool weapon_id_is_melee_aoe(u32 weapon_id) {
     return weapon_id == WeaponId::SycophantSparringSaber
         || weapon_id == WeaponId::GolemBloodlessAssault
+        || weapon_id == WeaponId::QuazrokorQuazrokSpray
         || weapon_id == WeaponId::MortothrokorWickedIncisors
         || weapon_id == WeaponId::GorgrokorSerratedCleavers
         || weapon_id == WeaponId::ZarcavrokorBisectingBlades
@@ -547,6 +550,7 @@ bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
         switch (weapon_id) {
             case WeaponId::SycophantSparringSaber:
             case WeaponId::GolemBloodlessAssault:
+            case WeaponId::QuazrokorQuazrokSpray:
             case WeaponId::MortothrokorWickedIncisors:
             case WeaponId::GorgrokorSerratedCleavers:
             case WeaponId::ZarcavrokorBisectingBlades:
@@ -624,7 +628,7 @@ bool weapon_id_can_proc_onhits(u32 weapon_id) {
         && weapon_id != WeaponId::YamatoGun
         && weapon_id != WeaponId::PsiStorm
         && weapon_id != WeaponId::CantavisHallucinationCast
-        && weapon_id != WeaponId::MindTyrantTyranny
+        && weapon_id != WeaponId::MindTyrantMaledictus
         && weapon_id != WeaponId::MindTyrantMaelstrom
         && weapon_id != WeaponId::StasisField
         && weapon_id != WeaponId::MatralethParasite
@@ -958,6 +962,7 @@ bool unit_id_is_zerg_egg(u32 unit_id) {
 u32 get_mutate_image_id(u32 unit_id) {
     switch (unit_id) {
         case UnitId::ZergQuazilisk:		return ImageId::QuaziliskMutate;
+        case UnitId::ZergQuazrokor:		return ImageId::QuaziliskMutate;
         case UnitId::ZergNathrokor:		return ImageId::NathrokorMutate;
         case UnitId::ZergCikralisk:		return ImageId::CikraliskMutate;
         case UnitId::ZergProtathalor:	return ImageId::ProtathalorMutate;

@@ -1186,6 +1186,10 @@ namespace SoundId {
         LegionnaireTeleport03				= 1291,
         LegionnaireTeleport04				= 1292,
 
+        QuaziliskWeaponfire01               = 1329,
+        QuaziliskWeaponfire02               = 1330,
+        QuaziliskWeaponfire03               = 1331,
+
         Simulacrum_Clone_01					= 1332,
 
         MadcapOrderAggressive01				= 1344,

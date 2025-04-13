@@ -74,6 +74,9 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
             final_range = weapons_dat::max_range[weapon_id] / 32;
         }
     }
+    if (unit->id == UnitId::TerranBlackjackGolden) {
+        final_range -= 1;
+    }
     if (unit_ext.unar_solitary_focus_stacks) {
         bonus_amount += unit_ext.unar_solitary_focus_stacks;
     }
@@ -84,6 +87,9 @@ u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
     u32 result = weapons_dat::max_range[weapon_id];
     if (bw::get_game_kind() == GameKind::DarkAges && weapons_dat::max_range[weapon_id] > 32 && !unit_id_is_trap(unit_id)) {
         result -= bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0f) * 32;
+    }
+    if (unit_id == UnitId::TerranBlackjackGolden) {
+        result -= 32;
     }
     return result;
 }
@@ -140,6 +146,8 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
     u32 final_range = weapons_dat::max_range[weapon_id];
     if (unit_ext.values[ValueTriggerWeaponRangeBaseSet]) {
         final_range = unit_ext.values[ValueTriggerWeaponRangeBaseAmount];
+    } else if (unit->id == UnitId::TerranBlackjackGolden) {
+        final_range -= 32;
     }
 
     return final_range * scale + bonus_amount;
