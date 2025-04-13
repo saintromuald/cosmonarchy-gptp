@@ -2300,7 +2300,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranCyprian: {
-                                    if (current_button->icon_id == IconId::KineticPenetration) { // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::KineticPenetration) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2331,7 +2331,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranMadcap: {
-                                    if (current_button->icon_id == IconId::GoliathTwinAutocannons) { // Cabeirus Feeders
+                                    if (current_button->icon_id == IconId::CabeirusFeeders) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2379,7 +2379,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::TerranAutocrat: {
                                     if (current_button->icon_id == IconId::RechargeShields	  // Reclamation Fields
-                                    ||  current_button->icon_id == IconId::KineticPenetration // Kinetic Penetration
+                                    ||  current_button->icon_id == IconId::KineticPenetration
                                     ||  current_button->icon_id == IconId::Reclamation) {	  // Reclamation
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -2396,7 +2396,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::TerranCyclops:
                                 case UnitId::TerranCyclopsFuturist: {
-                                    if (current_button->icon_id == IconId::VultureFragmentationGrenade) { // Recursion Rounds
+                                    if (current_button->icon_id == IconId::RecursionRounds) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2433,7 +2433,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranRamesses: {
-                                    if (current_button->icon_id == IconId::KineticPenetration) { // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::KineticPenetration) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2454,18 +2454,18 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranPazuzu: {
-                                    if (current_button->icon_id == IconId::ScarabDamage) { // Deconstruction
+                                    if (current_button->icon_id == IconId::Deconstruction) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::TerranPenumbra: {
-                                    if (current_button->icon_id == IconId::KineticPenetration // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::KineticPenetration
                                     ||	current_button->icon_id == IconId::LegEnhancements)	{ // Phantasmal Passage
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::TerranClaymore: {
-                                    if (current_button->icon_id == IconId::KineticPenetration     // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::KineticPenetration
                                     ||	current_button->icon_id == IconId::FusionCutterHarvest) { // Kelvin Munitions
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -2506,7 +2506,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::TerranWyvern: {
                                     if (current_button->icon_id == IconId::AfterburnersOnUnused	 // Reverse Thrust
-                                    ||	current_button->icon_id == IconId::KineticPenetration) { // Kinetic Penetration
+                                    ||	current_button->icon_id == IconId::KineticPenetration) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2550,12 +2550,12 @@ namespace hooks {
                                 } break;
                                 case UnitId::TerranMagnetar: {
                                     if (current_button->icon_id == IconId::ArchonPsionicShockwave // Law of Attraction
-                                    ||  current_button->icon_id == IconId::KineticPenetration) {  // Kinetic Penetration
+                                    ||  current_button->icon_id == IconId::KineticPenetration) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::TerranHippogriff: {
-                                    if (current_button->icon_id == IconId::KineticPenetration) { // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::KineticPenetration) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2565,7 +2565,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranSentinel: {
-                                    if (current_button->icon_id == IconId::KineticPenetration) { // Kinetic Penetration
+                                    if (current_button->icon_id == IconId::KineticPenetration) {
                                         if (unit->status & UnitStatus::GroundedBuilding) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
@@ -2633,7 +2633,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::ProtossAshguard: {
                                     if (current_button->icon_id == IconId::LegEnhancements    // Vengeful March
-                                    ||  current_button->icon_id == IconId::RechargeShields) { // Indomitable Annex
+                                    ||  current_button->icon_id == IconId::AnodyneAnnex) {    // Indomitable Annex
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2796,7 +2796,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossEmpress: {
-                                    if (current_button->icon_id == IconId::ParticleBeamHarvest) { // Anodyne Annex
+                                    if (current_button->icon_id == IconId::AnodyneAnnex) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 }
@@ -2842,8 +2842,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossAnthelion: {
-                                    if (current_button->icon_id == IconId::DimensionalRecall		// False Light
-                                    ||	current_button->icon_id == IconId::ArgusJewel) {         	// Gravity Well
+                                    if (current_button->icon_id == IconId::GravityWell   // Gravity Well
+                                    ||	current_button->icon_id == IconId::ArgusJewel) { // Endless Eclipse
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
