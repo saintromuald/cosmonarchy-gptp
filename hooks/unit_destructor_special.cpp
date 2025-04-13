@@ -117,6 +117,7 @@ void unit_on_death_behaviors(Unit* unit) {
             ascend_corpses_in_area(unit->position, 4u * 32, unit->player);
         } break;
         case UnitId::TerranEidolon:
+        case UnitId::TerranEidolonNydus:
         case UnitId::TerranSeraph: {
             if (unit->building.nuke_missile) {
                 (unit->building.nuke_missile)->sprite->play_iscript_animation(IscriptAnimation::Death, true);

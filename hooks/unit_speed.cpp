@@ -140,6 +140,10 @@ namespace hooks {
             speed *= MathUtils::Map(unit_ext.timers[TimerVengefulMarch], Protoss::VengefulMarchDuration, 0, 1.33, 1);
         }
 
+        if (unit->id == UnitId::TerranEidolonNydus && bw::is_proximity_decloakable(unit)) {
+            speed *= 1.33;
+        }
+
         switch (unit->id) {
             case UnitId::TerranBlackjack: {
                 // Blackjack Wear and Tear: reduce movement speed based on missing health
@@ -194,6 +198,7 @@ namespace hooks {
             case UnitId::TerranDurendal: {
                 speed *= 1.15;
             } break;
+            case UnitId::TerranMaverickFuturist:
             case UnitId::TerranCyprian:
             case UnitId::TerranSevenstep:
             case UnitId::ProtossAtreus:
@@ -225,6 +230,7 @@ namespace hooks {
             case UnitId::ProtossCicatus: {
                 speed *= 1.35;
             } break;
+            case UnitId::TerranTiangou:
             case UnitId::ProtossZealotStarbound:
             case UnitId::ProtossAmaranth:
             case UnitId::ZergHydraliskOrkoti: {

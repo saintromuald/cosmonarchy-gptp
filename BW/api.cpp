@@ -1253,7 +1253,9 @@ bool is_proximity_decloakable(Unit* unit) {
 
 // Replacement for unit_is_ghost
 bool unit_can_nuke(Unit* unit) {
-    return unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph;
+    return unit->id == UnitId::TerranEidolon
+        || unit->id == UnitId::TerranEidolonNydus
+        || unit->id == UnitId::TerranSeraph;
 }
 
 UnitId::Enum get_trap_id(Unit* unit) {
@@ -1293,7 +1295,9 @@ bool unit_is_ranged_attacker(Unit* unit) {
         case UnitId::TerranMadrigalFuriaMode:
         case UnitId::TerranMadrigalTurretImperiosoMode:
         case UnitId::TerranMadrigalTurretFuriaMode:
-        case UnitId::Ackmed: {
+        case UnitId::Ackmed:
+        case UnitId::TerranTiangou:
+        case UnitId::TerranTiangouTurret: {
             return true;
         } break;
     }
@@ -3709,19 +3713,10 @@ u32 get_cloak_sound_id(Unit* unit) {
         return SoundId::Terran_PHOENIX_TPhClo00_WAV;
     }
     switch (unit->get_race()) {
-        case RaceId::Terran:
-        {
-            return SoundId::CloakTerranOn;
-        }
-        case RaceId::Protoss:
-        {
-            return SoundId::Terran_PHOENIX_TPhClo00_WAV;
-        }
-        default:
-        {
-            return SoundId::Terran_PHOENIX_TPhClo00_WAV;
-        }
+        case RaceId::Terran:  return SoundId::CloakTerranOn;
+        case RaceId::Protoss: return SoundId::Terran_PHOENIX_TPhClo00_WAV;
     }
+    return SoundId::Terran_PHOENIX_TPhClo00_WAV;
 }
 
 u32 get_decloak_sound_id(Unit* unit) {
@@ -3729,15 +3724,8 @@ u32 get_decloak_sound_id(Unit* unit) {
         return SoundId::Terran_PHOENIX_TPhClo01_WAV;
     }
     switch (unit->get_race()) {
-        case RaceId::Terran: {
-            return SoundId::CloakTerranOff;
-        }
-        case RaceId::Protoss: {
-            return SoundId::Terran_PHOENIX_TPhClo01_WAV;
-        }
-        default: {
-            return SoundId::Terran_PHOENIX_TPhClo01_WAV;
-        }
+        case RaceId::Terran:  return SoundId::CloakTerranOff;
+        case RaceId::Protoss: return SoundId::Terran_PHOENIX_TPhClo01_WAV;
     }
     return SoundId::Terran_PHOENIX_TPhClo01_WAV;
 }
@@ -3927,7 +3915,11 @@ u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id) {
 
 u32 get_weapon_fire_sound(u32 weapon_id) {
     switch (weapon_id) {
+        case WeaponId::MaverickGaussRifle:                  return SoundId::Bullet_TMaFir00_wav;
+        case WeaponId::MaverickFuturistGaussSlugger:        return bw::rand_between(SoundId::MaverickFuturistWeaponfire01, SoundId::MaverickFuturistWeaponfire03);
         case WeaponId::HotshotDispatchShotgun:              return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
+        case WeaponId::EidolonCoronerRifle:                 return SoundId::Bullet_TGhFir00_wav;
+        case WeaponId::EidolonNydusRevenantRifle:           return bw::rand_between(SoundId::EidolonNydusWeaponfire01, SoundId::EidolonNydusWeaponfire03);
         case WeaponId::MadcapDanannAutogun:                 return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
         case WeaponId::ApostleCharonRifle:                  return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
         case WeaponId::CyclopsFuturistFlakCannons:          return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);

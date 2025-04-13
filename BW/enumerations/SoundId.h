@@ -2180,6 +2180,11 @@ namespace SoundId {
         RamessesOrderAggressive03                           = 3462,
         RamessesOrderAggressive04                           = 3463,
 
-
+        MaverickFuturistWeaponfire01                        = 3468,
+        MaverickFuturistWeaponfire02                        = 3469,
+        MaverickFuturistWeaponfire03                        = 3470,
+        EidolonNydusWeaponfire01                            = 3471,
+        EidolonNydusWeaponfire02                            = 3472,
+        EidolonNydusWeaponfire03                            = 3473,
     };
 }

@@ -414,9 +414,11 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::TerranFuturistFederation: {
             switch (unit_id) {
-                case UnitId::TerranCleric:  return UnitId::TerranClericFuturist;
-                case UnitId::TerranCyclops: return UnitId::TerranCyclopsFuturist;
-                case UnitId::TerranWraith:  return UnitId::TerranPhiloc;
+                case UnitId::TerranMaverick:  return UnitId::TerranMaverickFuturist;
+                case UnitId::TerranCleric:    return UnitId::TerranClericFuturist;
+                case UnitId::TerranCyclops:   return UnitId::TerranCyclopsFuturist;
+                case UnitId::TerranBlackjack: return UnitId::TerranTiangou;
+                case UnitId::TerranWraith:    return UnitId::TerranPhiloc;
             }
         } break;
         case Faction::TerranGoldenRepublic: {
@@ -429,6 +431,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         case Faction::TerranNydusTrinity: {
             switch (unit_id) {
                 case UnitId::TerranCyprian:         return UnitId::TerranCohort;
+                case UnitId::TerranEidolon:         return UnitId::TerranEidolonNydus;
                 case UnitId::TerranPhalanxTankMode: return UnitId::TerranTarasque;
             }
         } break;

@@ -1093,6 +1093,7 @@ bool weapon_id_is_incremental(u32 weapon_id) {
 
 bool unit_id_has_proximity_cloak(u32 unit_id) {
     return unit_id == UnitId::TerranEidolon
+        || unit_id == UnitId::TerranEidolonNydus
         || unit_id == UnitId::TerranWraith
         || unit_id == UnitId::TerranSundog
         || unit_id == UnitId::Goska;
@@ -1377,6 +1378,11 @@ namespace UnitId {
          || unit_id == UnitId::ProtossDidact;
  }
 } // namespace UnitId
+
+bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {
+    return unit_id == UnitId::TerranGoliath
+        || unit_id == UnitId::TerranTiangou;
+}
 
 namespace WeaponId {
 u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {

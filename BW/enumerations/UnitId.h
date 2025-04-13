@@ -108,6 +108,11 @@ namespace UnitId {
         TerranHarakanGolden									= 413,
         TerranPietyWard										= 417,
         TerranClericFuturist								= 418,
+        TerranBlackjackGolden                               = 431,
+        TerranEidolonNydus                                  = 432,
+        TerranTiangou                                       = 433,
+        TerranTiangouTurret                                 = 434,
+        TerranMaverickFuturist                              = 435,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1

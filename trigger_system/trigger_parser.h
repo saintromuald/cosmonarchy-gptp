@@ -112,7 +112,7 @@ struct Designator {
 	UnitIdBitset unit_ids;
 
 	bool check(Unit* unit) const {
-        if (!area.check(unit->position, unit->status & UnitStatus::InAir)) {
+        if (!area.check(unit->position, unit->is_in_air())) {
             return false;
         }
         if (unit->player >= PlayerLimit || !players[unit->player]) {
