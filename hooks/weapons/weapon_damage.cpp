@@ -287,10 +287,8 @@ namespace hooks {
 
             u32 fore_castle_factor = bw::get_fore_castle_armor_bonus(data.target);
             if (fore_castle_factor) {
-                bool apply_fore_castle = false;
-                if (!data.attacker || data.target->is_building()) {
-                    apply_fore_castle = true;
-                } else {
+                bool apply_fore_castle = !data.attacker || data.target->is_building();
+                if (!apply_fore_castle) {
                     Vec32f dir = bw::dir_between(data.target->position, data.attacker->position);
                     Vec32f facing_dir = bw::facing_dir(data.target);
                     apply_fore_castle = bw::dot_product(dir, facing_dir) >= bw::deg_to_dot(120.0 / 2);
