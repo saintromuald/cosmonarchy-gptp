@@ -178,6 +178,9 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	if (flags & FilterLifted && target->is_building() && target->is_in_air()) {
 		return false;
 	}
+	if (flags & FilterComputer && !target->is_computer_controlled()) {
+		return false;
+	}
 	return true;
 }
 

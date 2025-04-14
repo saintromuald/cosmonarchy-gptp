@@ -248,7 +248,7 @@ bool unit_id_is_ground_garrison(u32 unit_id) {
     return unit_id == UnitId::TerranAnchor
         || unit_id == UnitId::TerranLodestone
         || unit_id == UnitId::TerranLodestoneStandalone
-        || unit_id == UnitId::TerranAnchorGrounded
+        || unit_id == UnitId::TerranTrenchfoot
         || unit_id == UnitId::TerranTencendur;
 }
 

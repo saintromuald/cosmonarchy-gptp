@@ -39,6 +39,7 @@ enum SearchFilter {
 	FilterVisible				= 1 << 29,
 	FilterTownCenter			= 1 << 30,
     FilterLifted                = 1 << 31,
+    FilterComputer              = 1 << 32,
 };
 
 enum SearchFilterCorpse {

@@ -3218,7 +3218,7 @@ namespace hooks {
                 unit->remove();
             } else {
                 bw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
-                unit_ext.timers[TimerControlledDemolition] = ControlledDemolitionTimer;
+                unit_ext.timers[TimerControlledDemolition] = Terran::ControlledDemolitionTimer;
                 unit->sprite->create_overlay(ImageId::ControlledDemolition);
             }
         }

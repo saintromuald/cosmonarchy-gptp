@@ -206,6 +206,7 @@ enum ExtValueId {
     ValueWyvernWeaponCharging,
     ValueTurningAggressiveMode,
     ValueUprisingInAttackWave,
+    ValueUprisingSpawner,
     ValueCancellingZergStructure,
     ValueIsShade,
     ValuePlayingHatchSound,
