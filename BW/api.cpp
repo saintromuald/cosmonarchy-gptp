@@ -3220,8 +3220,8 @@ u32 get_fore_castle_armor_bonus(Unit* unit) {
             bonus += 2;
         }
     }
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->values[ValueHasSublimeShepherd]) {
+    auto& unit_ext = unit->ext();
+    if (unit_ext.values[ValueHasSublimeShepherd]) {
         bonus += 2;
     }
     return bonus;

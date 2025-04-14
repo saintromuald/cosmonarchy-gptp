@@ -1606,6 +1606,8 @@ namespace SoundId {
 
         BactaliskDeath01					= 2539,
 
+        SkortrithCesiantWeaponfire01        = 2540,
+
         SpirtithWeaponfire01				= 2542,
         SpirtithWeaponfire02				= 2543,
         SpirtithWeaponfire03				= 2544,

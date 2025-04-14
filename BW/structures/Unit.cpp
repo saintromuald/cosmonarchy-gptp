@@ -1608,3 +1608,18 @@ void Unit::autophagy_spawn() {
         this->sprite->create_overlay(ImageId::LazarusAgentProc_Large);
     }
 }
+
+bool Unit::can_be_displaced() {
+    return !this->is_building() || (this->is_in_air() && this->main_order_id != OrderId::Liftoff && this->main_order_id != OrderId::BuildingLand) && !this->is_burrowed();
+}
+
+bool Unit::is_plainly_visible() {
+    if (this->is_burrowed()) {
+        return false;
+    }
+    auto& unit_ext = this->ext();
+    if (bw::is_passive_decloakable(this) && !unit_ext.timers[TimerDecloak]) {
+        return false;
+    }
+    return true;
+}

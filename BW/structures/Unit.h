@@ -419,6 +419,8 @@ struct Unit : public UnitLayout {
     SpriteId::Enum get_custom_corpse(SpriteId::Enum id);
     bool has_last_orders();
     void autophagy_spawn();
+    bool can_be_displaced();
+    bool is_plainly_visible();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

@@ -1305,6 +1305,7 @@ namespace hooks {
                                         case UnitId::TerranAnchor:
                                         case UnitId::TerranTreasury:
                                         case UnitId::TerranSieve:
+                                        case UnitId::TerranCestus:
                                         case UnitId::TerranAtlas:
                                         case UnitId::TerranStockade:
                                         case UnitId::TerranFulcrum:
@@ -2520,7 +2521,8 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranAzazel: {
+                                case UnitId::TerranAzazel:
+                                case UnitId::TerranCestus: {
                                     if (current_button->icon_id == IconId::ApialSensors) { // Sublime Shepherd
                                         current_button_state = Button_State::Enabled;
                                     }
