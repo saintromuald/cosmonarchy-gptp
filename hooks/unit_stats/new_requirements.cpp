@@ -83,6 +83,7 @@ namespace hooks {
                 case UnitId::TerranAnchor:
                 case UnitId::TerranTreasury:
                 case UnitId::TerranSieve:
+                case UnitId::TerranCestus:
                 case UnitId::TerranAtlas:
                 case UnitId::TerranStockade:
                 case UnitId::TerranFulcrum:
@@ -90,7 +91,9 @@ namespace hooks {
                     return true;
                 } break;
                 case UnitId::TerranReservoir:
+                case UnitId::TerranFacade:
                 case UnitId::TerranSentinel:
+                case UnitId::TerranTencendur:
                 case UnitId::TerranDaedala:
                 case UnitId::TerranFountainhead:
                 case UnitId::TerranCaptaincy:
@@ -1349,6 +1352,7 @@ namespace hooks {
                     case UnitId::TerranAnchor:
                     case UnitId::TerranTreasury:
                     case UnitId::TerranSieve:
+                    case UnitId::TerranCestus:
                     case UnitId::TerranAtlas:
                     case UnitId::TerranStockade:
                     case UnitId::TerranFulcrum:
@@ -1356,7 +1360,9 @@ namespace hooks {
                         return TECH_ACTIVE;
                     }
                     case UnitId::TerranReservoir:
+                    case UnitId::TerranFacade:
                     case UnitId::TerranSentinel:
+                    case UnitId::TerranTencendur:
                     case UnitId::TerranDaedala:
                     case UnitId::TerranCaptaincy:
                     case UnitId::TerranMantle:

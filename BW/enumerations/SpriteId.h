@@ -820,6 +820,10 @@ namespace SpriteId {
         TerranBlackjackGolden           = 983,
         TerranBlackjackGoldenDamaged    = 984,
 
+        TencendurAttackOverlay_Orange   = 991,
+        TencendurAttackOverlay_Blue     = 992,
+        TencendurAttackOverlay_Green    = 993,
+
         // CORPSE \\
             
         Corpse_Aspirant				    = 685,
