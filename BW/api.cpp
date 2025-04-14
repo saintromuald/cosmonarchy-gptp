@@ -1195,13 +1195,13 @@ void create_shield_overlay(Unit* unit, u32 attack_direction) {
 }
 
 void decloak_proc(Unit* unit, u32 timer) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->timers[TimerDecloak] == 0) {
+    auto& unit_ext = unit->ext();
+    if (unit_ext.timers[TimerDecloak] == 0) {
         u32 sound_id = get_decloak_sound_id(unit);
         helper::end_cloak(unit, sound_id);
     }
-    if (unit_ext->timers[TimerDecloak] != 1) {
-        unit_ext->timers[TimerDecloak] = timer + 1;
+    if (unit_ext.timers[TimerDecloak] != 1) {
+        unit_ext.timers[TimerDecloak] = timer + 1;
     }
 }
 
@@ -1233,6 +1233,9 @@ bool is_passive_decloakable(Unit* unit) {
         return true;
     }
     auto& unit_ext = unit->ext();
+    if (unit_ext.timers[TimerFacadePryingEyesCloak]) {
+        return false;
+    }
     if (unit_ext.values[ValueTriggerBehaviorSteadyShroud]) {
         return true;
     }
@@ -1247,7 +1250,7 @@ bool is_proximity_decloakable(Unit* unit) {
         return true;
     }
     auto& unit_ext = unit->ext();
-    if (unit_ext.values[ValueTriggerBehaviorProximityCloak]) {
+    if (unit_ext.values[ValueTriggerBehaviorProximityCloak] || unit_ext.timers[TimerFacadePryingEyesCloak]) {
         return true;
     }
     return false;

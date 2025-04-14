@@ -104,11 +104,25 @@ namespace Centaur {
 inline constexpr s32 MissileDistance = 4 * 32;
 }
 
+namespace TerranFacade {
+inline constexpr s32 PryingEyesDuration = 10 * 24 + 1;
+inline constexpr s32 PryingEyesRange = 8 * 32;
+}
+
+namespace Terran {
+inline constexpr s32 SublimeShepherdRange = 6 * 32;
+
 // Reservoir / Addon
-constexpr s32 EmergencyDetonationTimer = 5 * 24 + 1;
-constexpr s32 ControlledDemolitionTimer = 10 * 24 + 1;
+inline constexpr s32 EmergencyDetonationTimer = 5 * 24 + 1;
+inline constexpr s32 ControlledDemolitionTimer = 10 * 24 + 1;
+}
 
 // PROTOSS \\
+
+namespace ProtossBulwark {
+inline constexpr s32 AstralSplendorShieldAmount = 10 * 256;
+inline constexpr s32 AstralSplendorRange = 8 * 32;
+}
 
 namespace ProtossEcclesiast {
 inline constexpr s32 AstralBlessingTimer = 5 * 24 + 1;

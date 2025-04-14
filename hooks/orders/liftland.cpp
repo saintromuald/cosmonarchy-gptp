@@ -197,11 +197,11 @@ namespace hooks {
 	}
 
 	void orders_building_liftoff(Unit* unit) { // 004649B0
-		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->timers[TimerLiftoffDelay] > 1) {
+		auto& unit_ext = unit->ext();
+		if (unit_ext.timers[TimerLiftoffDelay] > 1) {
 			return;
 		}
-		if (unit_ext->values[ValueIsNeutralBunker]) {
+		if (unit_ext.values[ValueIsNeutralBunker]) {
 			unit->order_to_idle();
 			return;
 		}
@@ -253,8 +253,12 @@ namespace hooks {
 				helper::place_building_proc();
 			}
 			unit->main_order_id = OrderId::Liftoff;
-			UnitExt* unit_ext = get_unit_ext(unit);
-			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
+			auto& unit_ext = unit->ext();
+			unit_ext.timers[TimerLiftLandDelay] = 52 + 1;
+			if (unit_ext.timers[TimerFacadePryingEyesChannel]) {
+				unit_ext.energy_regen_timer = 0;
+				unit_ext.timers[TimerFacadePryingEyesChannel] = 1;
+			}
 			helper::turn_unit(unit, 0); // Fix turning structures having difficulty lifting
 			unit->update_speed();
 		} else {

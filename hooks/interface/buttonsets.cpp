@@ -668,18 +668,18 @@ namespace hooks {
                     }
 
                     if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched) {
-                        UnitExt* unit_ext = get_unit_ext(unit);
+                        auto& unit_ext = unit->ext();
                         // Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
                         switch (current_button->requirement_var) {
                             case TechId::ControlledDemolition: {
-                                if (unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
+                                if (unit_ext.timers[TimerControlledDemolition] || unit_ext.timers[TimerEmergencyDetonation]) {
                                     current_button_state = Button_State::Invisible;
                                 } else {
                                     current_button_state = Button_State::Enabled;
                                 }
                             } break;
                             case TechId::EmergencyDetonation: {
-                                if (!unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
+                                if (!unit_ext.timers[TimerControlledDemolition] || unit_ext.timers[TimerEmergencyDetonation]) {
                                     current_button_state = Button_State::Invisible;
                                 } else {
                                     current_button_state = Button_State::Enabled;
@@ -687,6 +687,13 @@ namespace hooks {
                             } break;
                             case TechId::HypnagogueThroughTheLookingGlass: {
                                 current_button_state = Button_State::Enabled;
+                            } break;
+                            case TechId::FacadePryingEyes: {
+                                if (unit_ext.timers[TimerFacadePryingEyesChannel] || unit->is_in_air()) {
+                                    current_button_state = Button_State::Disabled;
+                                } else {
+                                    current_button_state = Button_State::Enabled;
+                                }
                             } break;
                             case TechId::LarvalSubmenuSelectSwarm:
                             case TechId::LarvalSubmenuSelectAssault:
@@ -707,7 +714,7 @@ namespace hooks {
                                 }
                             } break;
                             case TechId::StroluumSkryspawn: {
-                                if (unit_ext->timers[TimerSkryspawn]) {
+                                if (unit_ext.timers[TimerSkryspawn]) {
                                     current_button_state = Button_State::Disabled;
                                 } else if (unit->is_burrowed()) {
                                     current_button_state = Button_State::Invisible;
@@ -718,13 +725,13 @@ namespace hooks {
                         }
 
                         if (current_button->requirement_var == TechId::ControlledDemolition) {
-                            if (unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
+                            if (unit_ext.timers[TimerControlledDemolition] || unit_ext.timers[TimerEmergencyDetonation]) {
                                 current_button_state = Button_State::Invisible;
                             } else {
                                 current_button_state = Button_State::Enabled;
                             }
                         } else if (current_button->requirement_var == TechId::EmergencyDetonation) {
-                            if (!unit_ext->timers[TimerControlledDemolition] || unit_ext->timers[TimerEmergencyDetonation]) {
+                            if (!unit_ext.timers[TimerControlledDemolition] || unit_ext.timers[TimerEmergencyDetonation]) {
                                 current_button_state = Button_State::Invisible;
                             } else {
                                 current_button_state = Button_State::Enabled;
@@ -1421,6 +1428,7 @@ namespace hooks {
                                     case UnitId::ProtossNexus:
                                     case UnitId::ProtossPylon:
                                     case UnitId::ProtossCedent:
+                                    case UnitId::ProtossBulwark:
                                     case UnitId::ProtossWarden:
                                     case UnitId::ProtossEmbassy:
                                     case UnitId::ProtossGateway:
@@ -1635,6 +1643,7 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
+                                    case UnitId::ProtossLanifect:
                                     case UnitId::ProtossPanoptus:
                                     case UnitId::ProtossExemplar:
                                     case UnitId::ProtossGladius: {
@@ -2820,6 +2829,11 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ProtossBulwark: {
+                                    if (current_button->icon_id == IconId::RechargeShields) { // Astral Splendor
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ProtossExtatus:
                                 case UnitId::ProtossMatrix: {
                                     if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Astral Tether
@@ -3131,7 +3145,7 @@ namespace hooks {
                             }
                         }
 
-                        // Hide Recall, since cancel is the same slot
+                        // Hide ability button, since cancel is the same slot
                         if (UnitId::can_cast_recall(static_cast<UnitId::Enum>(unit->id)) && current_button->action_var == TechId::DimensionalRecall) {
                             if (unit_ext->values[ValueDidactRecalling]) {
                                 current_button_state = Button_State::Invisible;

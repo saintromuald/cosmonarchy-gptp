@@ -1024,6 +1024,7 @@ namespace ImageId {
         Malediction_Small							= 1067,
         Malediction_Medium							= 1068,
         Malediction_Large							= 1069,
+        PryingEyesChannel                           = 1078,
         PhaseLinkSmall								= 1102,
         PhaseLinkMedium								= 1103,
         PhaseLinkLarge								= 1104,

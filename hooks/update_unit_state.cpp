@@ -13,27 +13,11 @@
 #include <hooks\unit_stats\supply_hooks.h>
 
 namespace hooks {
-	// This function regenerates energy for spellcasters and drains energy for cloaking units.
 	void update_unit_energy(Unit* unit) { // 004EB4B0
 		UnitExt* unit_ext = get_unit_ext(unit);
-		bool dont_regen = !unit->is_valid_caster() || !(unit->status & UnitStatus::Completed) || unit_ext->energy_regen_timer <= 2 * 24 || unit->is_frozen();
+		bool dont_regen = !unit->is_valid_caster() || !unit->is_completed() || unit_ext->energy_regen_timer <= 2 * 24 || unit->is_frozen();
 
 		// Behaviors code -Veeq7
-		// Spend energy for cloaked units
-		// Judging by the cost set to zero I assume this this block is not actually used, so I am commenting it out -Veeq7
-		/*
-		if (unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection) // If the unit is cloaked and must consume energy to stay cloaked (i.e. not under a Didact)
-			&& !(unit->status & UnitStatus::CloakingForFree)) {
-			u16 cloaking_energy_cost = 0;
-			if (unit->has_energy(cloaking_energy_cost)) {
-				unit->spend_energy(cloaking_energy_cost); // The function prevents energy consumption if THE GATHERING is enabled
-				dont_regen = true;
-			} else if (unit->secondary_order_id == OrderId::Cloak) {
-				unit->set_secondary_order(OrderId::Nothing2);  // Supposedly, immediately decloaks the unit.
-			}
-		}
-		*/
-
 		// Spend energy for Phobos Discharge
 		if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] > 0) {
 			unit->spend_energy((200 * 256) / (5 * 24));
@@ -41,6 +25,11 @@ namespace hooks {
 			if (unit->energy == 0) {
 				unit_ext->values[ValuePhobosDischarge] = 0;
 			}
+		}
+
+		// Block regen for channeling Facades
+		if (unit->id == UnitId::TerranFacade && unit_ext->timers[TimerFacadePryingEyesChannel]) {
+			dont_regen = true;
 		}
 
 		// Regen code -Veeq7
@@ -497,15 +486,14 @@ namespace hooks {
 				} else {
 					u32 status_1 = invisible_unit->status;
 					bool cloak_or_burrow;
-					if (status_1 & UnitStatus::Burrowed || invisible_unit->secondary_order_id != OrderId::Cloak || invisible_unit->is_cloaked != 1 || !(status_1 & UnitStatus::CloakingForFree)) {
+					if (invisible_unit->is_burrowed() || invisible_unit->secondary_order_id != OrderId::Cloak || invisible_unit->is_cloaked != 1 || !(status_1 & UnitStatus::CloakingForFree)) {
 						cloak_or_burrow = 0;
 					} else {
 						invisible_unit->status = status_1 & 0xFFFFF7FF;
 						cloak_or_burrow = 1;
 					}
 					redraw |= cloak_or_burrow;
-					if (invisible_unit->status & UnitStatus::RequiresDetection)
-					{
+					if (invisible_unit->status & UnitStatus::RequiresDetection) {
 						goto Next_Or_Redraw;
 					}
 					helper::begin_cloak(invisible_unit, bw::get_cloak_sound_id(invisible_unit));
@@ -525,14 +513,15 @@ namespace hooks {
 
 	// Hooked for cloak rewrite animations - Pr0nogo
 	void do_cloak(Unit* unit, s32 sound_id) { // 0049B440
-		if (!(unit->status & UnitStatus::Burrowed)) {
+		bool is_burrowed = unit->is_burrowed();
+		if (!is_burrowed) {
 			helper::play_sound_from_unit(sound_id, unit, 1, 0);
 		}
 		if (!g_is_in_replay && unit->player == g_local_nation_id) {
 			bw::refresh_console();
 		}
 
-		if (unit->status & UnitStatus::Burrowed) {
+		if (is_burrowed) {
 			helper::update_sprite_flag_on_palette(unit->sprite);
 			helper::show_images_hidden_by_cloak(unit->sprite);
 			unit->status &= 0xFFFFFCFF;
@@ -723,8 +712,7 @@ namespace hooks {
 		||	unit_ext->values[ValueTriggerBehaviorProximityCloak]
 		||	unit_ext->values[ValueTriggerBehaviorSteadyShroud])
 		{
-			u32 sound_id = bw::get_cloak_sound_id(unit);
-			helper::begin_cloak(unit, sound_id);
+			helper::begin_cloak(unit, bw::get_cloak_sound_id(unit));
 		}
 		if (unit->id == UnitId::Spell_ScannerSweep || unit->id == UnitId::Special_MapRevealer) {
 			if (*g_first_hidden_unit == unit) {
@@ -760,12 +748,12 @@ namespace hooks {
 				*g_first_scanner_sweep = unit;
 				helper::refresh_unit_vision(unit);
 			}
-		} else if (unit->sprite->flags & SpriteFlags::Hidden && !unit_id_is_hangar_unit((UnitId::Enum)unit->id)) {
+		} else if (unit->sprite->is_hidden() && !unit_id_is_hangar_unit((UnitId::Enum)unit->id)) {
 			helper::show_and_enable_unit(unit);
 		}
 		// Originally had trap code
 
-		u32 player_type = g_player_table[(unsigned __int8)unit->player].type;
+		u32 player_type = g_player_table[unit->player].type;
 		if (player_type == PlayerType::Rescuable) {
 			u32 main_order_id = unit->main_order_id;
 			unit->user_action_flags |= UserActionFlags::UserActionFlags_IscriptGoToIdle;

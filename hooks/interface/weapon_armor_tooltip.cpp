@@ -413,6 +413,7 @@ namespace hooks {
 		add_status(statuses, "Vengeance", -1, 1, unit_ext->timers[TimerAvenge], TimerType::Gptp);
 		add_status(statuses, "Ascension", -1, 1, unit_ext->timers[TimerAscend], TimerType::Gptp);
 		add_status(statuses, "Nanoshielded", -1, 1, unit_ext->timers[TimerClericHeal], TimerType::Gptp);
+		add_status(statuses, "Casting Prying Eyes", -1, 1, unit_ext->timers[TimerFacadePryingEyesChannel], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
@@ -430,6 +431,7 @@ namespace hooks {
 		add_status(statuses, "Lucilleri Pheremones", unit_ext->timers[TimerLucilleriPheremones], 1);
 		add_status(statuses, "Solitary Focus", unit_ext->unar_solitary_focus_stacks, 4);
 		add_status(statuses, "Malefactor", unit_ext->values[ValueIsMalefactor] != 0, 1);
+		add_status(statuses, "Prying Eyes", unit_ext->timers[TimerFacadePryingEyesCloak], 1);
 
 		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
 		add_status(statuses, "Decided Reach", unit_ext->values[ValueTriggerWeaponRangeBaseAmount] / 32);

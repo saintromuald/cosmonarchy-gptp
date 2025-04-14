@@ -375,6 +375,11 @@ enum ExtTimerId {
     TimerVengefulMarch,
     TimerMalefactorTyrannize,
     TimerMalefactorStun,
+    TimerDiscordantChorus,
+    TimerBulwarkAstralSplendor,
+    TimerAstralSplendorCooldown,
+    TimerFacadePryingEyesChannel,
+    TimerFacadePryingEyesCloak,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

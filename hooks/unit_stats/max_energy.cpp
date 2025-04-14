@@ -8,7 +8,8 @@ namespace hooks {
 		u32 energy = 200;
 		switch (unit->id) {
 			case UnitId::TerranPietyWard:
-			case UnitId::TerranPhobos: {
+			case UnitId::TerranPhobos:
+			case UnitId::TerranFacade: {
 				energy = 100;
 			} break;
 			case UnitId::TerranAncile:

@@ -439,6 +439,14 @@ namespace hooks {
                     case UnitId::TerranAzazel: {
                         g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
                     } break;
+                    case UnitId::TerranFacade: {
+                        if (unit_ext->timers[TimerFacadePryingEyesChannel]) {
+                            g_graphics.draw_circle(source.x, source.y, TerranFacade::PryingEyesRange, graphics::GREEN, graphics::ON_MAP);
+                        }
+                    } break;
+                    case UnitId::ProtossBulwark: {
+                        g_graphics.draw_circle(source.x, source.y, ProtossBulwark::AstralSplendorRange, graphics::GREEN, graphics::ON_MAP);
+                    } break;
                     case UnitId::ProtossBarghest: {
                         g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
                     } break;
@@ -1815,6 +1823,28 @@ namespace hooks {
                     bw::launch_return_missile(unit, WeaponId::LakiziliskSubterraneanSpines);
                 }
             } break;
+            case UnitId::ProtossBulwark: {
+                if (!unit->is_completed() || unit->is_frozen() || unit->is_in_transport() || unit_ext.values[ValueDisablePassive]) {
+                    break;
+                }
+                if (!unit_ext.timers[TimerBulwarkAstralSplendor]) {
+                    unit_ext.timers[TimerBulwarkAstralSplendor] = 48;
+
+                    // TODO: Unique audiovisuals!
+                    bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
+                    for (Unit* target : g_unit_search.radial(unit->position, ProtossBulwark::AstralSplendorRange).filter(unit, FilterAlly | FilterCompleted)) {
+                        auto& target_ext = target->ext();
+                        if (!target_ext.timers[TimerAstralSplendorCooldown] && target->shields < target->max_shields() * 256) {
+                            target_ext.timers[TimerAstralSplendorCooldown] = 48;
+                            target->heal_shields(ProtossBulwark::AstralSplendorShieldAmount, unit);
+
+                            // TODO: Unique audiovisuals!
+                            bw::add_unit_overlay(target, ImageId::RestorationHit_Small + bw::get_overlay_offset(target->id));
+                            helper::add_overlay_below_main(target->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+                        }
+                    }
+                }
+            } break;
             case UnitId::TerranShamanSupportMode:
             case UnitId::TerranShamanVisionaryMode: {
                 // Shaman - Nanite Field
@@ -1933,6 +1963,40 @@ namespace hooks {
                 if (bw::get_generic_rust_value(unit, RustId::CancelLandGrab)) {
                     bw::set_generic_rust_value(unit, RustId::CancelLandGrab, 0);
                     unit_ext.values[ValueWyvernLandGrabOn] = 0;
+                }
+            } break;
+            case UnitId::TerranFacade: {
+                if (bw::get_generic_rust_value(unit, RustId::CastPryingEyes)) {
+                    bw::set_generic_rust_value(unit, RustId::CastPryingEyes, 0);
+                    auto energy_cost = TechId::energy_cost(TechId::FacadePryingEyes);
+                    if (unit->energy == energy_cost) {
+                        bw::play_sound(SoundId::FacadeCast01, unit->position);
+                        helper::create_image_overlay(unit->sprite, ImageId::PryingEyesChannel, 8, -24, 0); // Used this because we do not have offset support in add_unit_overlay
+                        bw::decloak_passive_proc(unit);
+                        unit->spend_energy(energy_cost);
+                        unit_ext.timers[TimerFacadePryingEyesChannel] = TerranFacade::PryingEyesDuration;
+                    } else {
+                        // TODO: Error
+                    }
+                }
+                if (unit_ext.timers[TimerFacadePryingEyesChannel] > 1) {
+                    for (Unit* target : g_unit_search.radial_ex(unit, TerranFacade::PryingEyesRange, FilterAlly | FilterCompleted)) {
+                        auto& target_ext = target->ext();
+                        if (target->is_burrowed() || target->status & UnitStatus::CloakingForFree) {
+                            continue;
+                        }
+                        if (units_dat::base_property[target->id] & UnitProperty::PermanentCloak || unit_id_has_proximity_cloak(target->id)) {
+                            continue;
+                        }
+                        if (!target_ext.timers[TimerFacadePryingEyesCloak]) {
+                            helper::begin_cloak(target, SoundId::CloakTerranOn);
+                        }
+                        target_ext.timers[TimerFacadePryingEyesCloak] = 3;
+                    }
+                } else if (unit->get_overlay(ImageId::PryingEyesChannel)) {
+                    bw::remove_unit_overlay(unit, ImageId::PryingEyesChannel);
+                    bw::play_sound(SoundId::FacadeOff01, unit->position);
+                    unit_ext.energy_regen_timer = 0;
                 }
             } break;
             case UnitId::TerranTarasque: {
@@ -3088,6 +3152,10 @@ namespace hooks {
             if (unit->get_overlay(ImageId::SalvageDisableSmall + offset)) {
                 bw::remove_unit_overlay(unit, ImageId::SalvageDisableSmall + offset);
             }
+        }
+
+        if (unit_ext.timers[TimerFacadePryingEyesCloak] == 1) {
+            bw::decloak_proximity_proc(unit);
         }
 
         // Proximity cloaking - recloak after 2 seconds of no nearby enemies
