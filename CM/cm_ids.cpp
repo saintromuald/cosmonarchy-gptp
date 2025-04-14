@@ -1391,10 +1391,17 @@ UnitId::Enum get_racial_town_center_id(u32 race_id) {
 }
 
 namespace UnitId {
- bool can_cast_recall(UnitId::Enum unit_id) {
-     return unit_id == UnitId::ProtossXenolith
-         || unit_id == UnitId::ProtossDidact;
- }
+bool can_cast_recall(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ProtossXenolith
+        || unit_id == UnitId::ProtossDidact;
+}
+
+bool has_manual_weapon_fire_sfx(UnitId::Enum unit_id) {
+    return unit_id == UnitId::TerranSavantEntropyGauntlets
+        || unit_id == UnitId::TerranSavantPowerSiphon
+        || unit_id == UnitId::ProtossManifold
+        || unit_id == UnitId::ProtossManifoldStarbound;
+}
 } // namespace UnitId
 
 bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {

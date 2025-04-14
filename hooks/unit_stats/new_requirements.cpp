@@ -653,8 +653,19 @@ namespace hooks {
                         return true;
                     }
                 } break;
-                case UnitId::ProtossSimulacrum:
-                case UnitId::ProtossManifold:
+                case UnitId::ProtossSimulacrum: {
+                    return true;
+                } break;
+                case UnitId::ProtossManifold: {
+                    if (faction != Faction::ProtossStarbound) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ProtossManifoldStarbound: {
+                    if (faction == Faction::ProtossStarbound) {
+                        return true;
+                    }
+                } break;
                 case UnitId::ProtossGolem:
                 case UnitId::ProtossIdol: {
                     return true;
@@ -2226,8 +2237,21 @@ namespace hooks {
                         }
                         return TECH_HIDDEN;
                     }
-                    case UnitId::ProtossSimulacrum:
-                    case UnitId::ProtossManifold:
+                    case UnitId::ProtossSimulacrum: {
+                        return TECH_ACTIVE;
+                    }
+                    case UnitId::ProtossManifold: {
+                        if (faction != Faction::ProtossStarbound) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::ProtossManifoldStarbound: {
+                        if (faction == Faction::ProtossStarbound) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
                     case UnitId::ProtossGolem:
                     case UnitId::ProtossIdol: {
                         return TECH_ACTIVE;

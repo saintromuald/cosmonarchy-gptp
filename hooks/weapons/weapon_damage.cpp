@@ -612,6 +612,9 @@ namespace hooks {
                     data.attacker->shields = std::max(data.attacker->shields - 10 * 256, 0);
                     attacker_ext.shield_regen_timer = 0;
                 } break;
+                case UnitId::ProtossManifoldStarbound: {
+                    target_ext->timers[TimerDiscordantChorus] = 24 * 2 + 1;
+                } break;
                 case UnitId::ZergQuazrokor:
                 case UnitId::ZergNathrokor: {
                     attacker_ext.timers[TimerZergAdrenalFrenzy] = 2 * 24 + 1;

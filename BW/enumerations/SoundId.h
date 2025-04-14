@@ -1186,6 +1186,10 @@ namespace SoundId {
         LegionnaireTeleport03				= 1291,
         LegionnaireTeleport04				= 1292,
 
+        ManifoldWeaponfire01                = 1310,
+        ManifoldWeaponfire02                = 1311,
+        ManifoldWeaponfire03                = 1312,
+
         QuaziliskWeaponfire01               = 1329,
         QuaziliskWeaponfire02               = 1330,
         QuaziliskWeaponfire03               = 1331,
