@@ -1188,7 +1188,7 @@ namespace hooks {
                     fatal_deal_damage = false;
                 }
 
-                // Kill flying -> ground regressions if placement is impossible. -Pr0nogo
+                // Kill flying -> ground regressions if placement is impossible. Otherwise, no corpse is created! -Pr0nogo
                 if (!(units_dat::base_property[regression_id] & UnitProperty::Flyer) && units_dat::base_property[data.target->id] & UnitProperty::Flyer) {
                     Point16 position = data.target->position;
                     position.y += 42;
