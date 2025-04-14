@@ -222,6 +222,7 @@ namespace hooks {
             case UnitId::ZergAxitrilisk: {
                 speed *= 1.25;
             } break;
+            case UnitId::ZergYblyleth:
             case UnitId::ZergInzorthrokor:
             case UnitId::ZergVorvrokor:
             case UnitId::ZergZobriolisk: {

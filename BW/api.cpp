@@ -548,6 +548,7 @@ bool is_conventional_unit_morph_source(u16 id, bool allow_larvae) {
     switch (id) {
         case UnitId::ZergDroleth:
         case UnitId::ZergOvileth:
+        case UnitId::ZergYblyleth:
         case UnitId::ZergOthstoleth:
         case UnitId::ZergZethrokor:
         case UnitId::ZergQuazilisk:
@@ -1039,7 +1040,7 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
                 }
             } break;
             case UnitId::ZergVilgoleth: {
-                unit_ext->timers[TimerVilgolethSpawn] = 24;
+                unit_ext->timers[TimerAutophagySpawn] = 24;
             } break;
         }
     }
@@ -1856,7 +1857,6 @@ void spread_custom_creep(Unit* unit) {
 }
 
 void update_custom_creep_disappearance(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
     if (unit_could_spread_custom_creep(unit)) {
         helper::update_creep_disappearance_unit_id(UnitId::ZergGathtelosk, unit->position.x, unit->position.y, true);
     }
@@ -2036,7 +2036,6 @@ u32 get_zerg_regression(Unit* unit) {
         }
 
         // Unit Morphs
-        case UnitId::ZergIroleth:				return UnitId::ZergOvileth;
         case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
         case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
         case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;
@@ -2054,6 +2053,7 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
 
         // Imagine, eventually we will have everything using this...  -Pr0nogo
+        case UnitId::ZergIroleth:
         case UnitId::ZergLiiralisk:
         case UnitId::ZergKalkalisk:
         case UnitId::ZergBactalisk:

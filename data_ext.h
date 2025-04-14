@@ -219,6 +219,8 @@ enum ExtValueId {
     ValueOscilliantBindingPlasmaPlayer,
     ValueSavantLaunchPos1,
     ValueSavantLaunchPos2,
+    ValueTiangouLaunchPos,
+    ValueArchitectLaunchPos,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -323,7 +325,7 @@ enum ExtTimerId {
     TimerDemiurgeWorship,
     TimerAxitriliskPerpetualWind,
     TimerReclaimStun,
-    TimerVilgolethSpawn,
+    TimerAutophagySpawn,
     TimerVilgolethTimedLife,
     TimerAvenge,
     TimerAscend,

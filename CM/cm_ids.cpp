@@ -107,6 +107,7 @@ bool unit_id_is_transport(u32 unit_id) {
         || unit_id == UnitId::TerranPythean
         || unit_id == UnitId::ProtossEnvoy
         || unit_id == UnitId::ZergOvileth
+        || unit_id == UnitId::ZergYblyleth
         || unit_id == UnitId::ZergIroleth
         || unit_id == UnitId::ZergOthstoleth;
 }
@@ -765,12 +766,6 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             offsets.use_special_overlay = true;
             return &offsets;
         } break;
-        case WeaponId::WardenPrismaticCannon: {
-            static WeaponOffsets offsets{};
-            offsets.value_id = ValueWardenLaunchPos;
-            offsets.count = 1;
-            return &offsets;
-        } break;
         case WeaponId::DracadinPhaseDisruptor: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueDracadinLaunchPos;
@@ -807,6 +802,12 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             offsets.count = 1;
             return &offsets;
         } break;
+        case WeaponId::ArchitectDispersiveSalvo: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueArchitectLaunchPos;
+            offsets.count = 1;
+            return &offsets;
+        } break;
         case WeaponId::PanoptusPlasmaMissiles: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValuePanoptusLaunchPos;
@@ -835,6 +836,12 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueSovereignLaunchPos;
             offsets.count = 2;
+            return &offsets;
+        } break;
+        case WeaponId::WardenPrismaticCannon: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueWardenLaunchPos;
+            offsets.count = 1;
             return &offsets;
         } break;
         case WeaponId::MatrixKhaydarinRay: {
@@ -961,6 +968,7 @@ bool unit_id_is_zerg_egg(u32 unit_id) {
 
 u32 get_mutate_image_id(u32 unit_id) {
     switch (unit_id) {
+        case UnitId::ZergYblyleth:		return ImageId::EvigriliskMutate;
         case UnitId::ZergQuazilisk:		return ImageId::QuaziliskMutate;
         case UnitId::ZergQuazrokor:		return ImageId::QuaziliskMutate;
         case UnitId::ZergNathrokor:		return ImageId::NathrokorMutate;
@@ -1134,7 +1142,6 @@ bool unit_could_spawn_custom_larva(Unit* unit) {
     if (unit_id_spawns_larva_by_order(unit->id)) {
         return false;
     }
-    UnitExt* unit_ext = get_unit_ext(unit);
     switch (unit->id) {
         case UnitId::Omnivale: {
             if (unit->player < PlayerLimit && g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss) {
@@ -1156,7 +1163,7 @@ bool unit_could_spread_custom_creep(Unit* unit) {
     if (helper::spreads_creep(unit->id, true)) {
         return false;
     }
-    UnitExt* unit_ext = get_unit_ext(unit);
+    auto& unit_ext = unit->ext();
     switch (unit->id) {
         case UnitId::Omnivale: {
             if (unit->player < PlayerLimit && g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss) {
@@ -1164,17 +1171,23 @@ bool unit_could_spread_custom_creep(Unit* unit) {
             }
         } break;
     }
-    if (unit_ext->values[ValueInfested] && unit->status & UnitStatus::GroundedBuilding) {
+    if (unit_ext.values[ValueInfested] && unit->is_grounded_building()) {
         return true;
     }
-    if (unit_ext->values[ValueUprisingSpawner] && unit->get_race() == RaceId::Zerg) {
+    if (unit_ext.values[ValueUprisingSpawner] && unit->get_race() == RaceId::Zerg) {
+        return true;
+    }
+    if (unit->id == UnitId::ZergYblyleth) {
         return true;
     }
     return false;
 }
 
 bool unit_spreads_custom_creep(Unit* unit) {
-    if (unit->status & UnitStatus::InAir || !(unit->status & UnitStatus::Completed)) {
+    if (unit->is_in_air() || !unit->is_completed()) {
+        return false;
+    }
+    if (unit->id == UnitId::ZergYblyleth && !unit->is_burrowed()) {
         return false;
     }
     return unit_could_spread_custom_creep(unit);

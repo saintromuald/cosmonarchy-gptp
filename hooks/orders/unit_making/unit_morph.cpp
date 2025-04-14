@@ -178,6 +178,7 @@ namespace hooks {
 				} else {
 					switch (unit->id) {
 						case UnitId::ZergOvileth:
+						case UnitId::ZergYblyleth:
 						case UnitId::ZergIroleth:
 						case UnitId::ZergOthstoleth: {
 							break;
@@ -196,6 +197,7 @@ namespace hooks {
 						case UnitId::ZergLarva:
 						case UnitId::ZergOcsalLarva:
 						case UnitId::ZergDroleth:
+						case UnitId::ZergYblyleth:
 						case UnitId::ZergZethrokor:
 						case UnitId::ZergQuazilisk:
 						case UnitId::ZergQuazrokor:
@@ -288,6 +290,7 @@ namespace hooks {
 							animation = IscriptAnimation::Unused1;
 						} break;
 						// New mutation animation handling! Everything will eventually use this. -Pr0nogo
+						case UnitId::ZergYblyleth:
 						case UnitId::ZergQuazilisk:
 						case UnitId::ZergQuazrokor:
 						case UnitId::ZergNathrokor:
@@ -390,7 +393,8 @@ namespace hooks {
 				}
 				return false;
 			} break;
-			case UnitId::ZergOvileth: {
+			case UnitId::ZergOvileth:
+			case UnitId::ZergYblyleth: {
 				if (morph_unit_id == UnitId::ZergIroleth) {
 					return true;
 				}

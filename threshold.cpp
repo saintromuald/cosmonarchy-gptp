@@ -1407,8 +1407,7 @@ void update_threshold() {
 static void init_threshold_units() {
 	for (u32 i = 0; i < Fraud_Count; ++i) {
 		switch (get_fraud_class(i)) {
-			case FraudClass_Fraud:
-			{
+			case FraudClass_Fraud: {
 				fraud_add_unit(i, RaceId::Terran,  {12, UnitId::TerranMason});
 				fraud_add_unit(i, RaceId::Terran,  {1, UnitId::TerranAncile});
 
@@ -1418,8 +1417,7 @@ static void init_threshold_units() {
 				fraud_add_unit(i, RaceId::Zerg,    {12, UnitId::ZergDroleth});
 				fraud_add_unit(i, RaceId::Zerg,    {1, UnitId::ZergOvileth});
 			} break;
-			case FraudClass_Hero:
-			{
+			case FraudClass_Hero: {
 				fraud_add_unit(i, RaceId::Terran,  {10, UnitId::TerranMason});
 				fraud_add_unit(i, RaceId::Terran,  {2, UnitId::TerranTalos});
 				fraud_add_unit(i, RaceId::Terran,  {2, UnitId::TerranAncile});
@@ -1433,8 +1431,7 @@ static void init_threshold_units() {
 			//	fraud_add_unit(i, RaceId::Zerg,    {2, UnitId::ZergGosvileth});
 				fraud_add_unit(i, RaceId::Zerg,    {1, UnitId::ZergIroleth});
 			} break;
-			case FraudClass_Super:
-			{
+			case FraudClass_Super: {
 				fraud_add_unit(i, RaceId::Terran,  {8, UnitId::TerranMason});
 				fraud_add_unit(i, RaceId::Terran,  {4, UnitId::TerranTalos});
 				fraud_add_unit(i, RaceId::Terran,  {1, UnitId::TerranSeraph});
@@ -1448,8 +1445,7 @@ static void init_threshold_units() {
 			//	fraud_add_unit(i, RaceId::Zerg,    {4, UnitId::ZergGosvileth});
 				fraud_add_unit(i, RaceId::Zerg,    {1, UnitId::ZergOthstoleth});
 			} break;
-			case FraudClass_God:
-			{
+			case FraudClass_God: {
 				fraud_add_unit(i, RaceId::Terran,  {6, UnitId::TerranMason});
 				fraud_add_unit(i, RaceId::Terran,  {6, UnitId::TerranTalos});
 				fraud_add_unit(i, RaceId::Terran,  {2, UnitId::TerranSeraph});

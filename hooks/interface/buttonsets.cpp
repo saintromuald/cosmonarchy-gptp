@@ -709,7 +709,7 @@ namespace hooks {
                             case TechId::StroluumSkryspawn: {
                                 if (unit_ext->timers[TimerSkryspawn]) {
                                     current_button_state = Button_State::Disabled;
-                                } else if (unit->status & UnitStatus::Burrowed) {
+                                } else if (unit->is_burrowed()) {
                                     current_button_state = Button_State::Invisible;
                                 } else {
                                     current_button_state = Button_State::Enabled;
@@ -769,13 +769,23 @@ namespace hooks {
                         }
                     }
 
+                    // @Veeq7 - Please advise how to do this more elegantly! Not enough space on command card to show all these and the other vital functions. -Pr0nogo
+                    if (unit && unit->id == UnitId::ZergYblyleth && unit->is_burrowed()) {
+                        if (current_button->icon_id == IconId::Move
+                        ||  current_button->icon_id == IconId::Stop
+                        ||  current_button->icon_id == IconId::Patrol
+                        ||  current_button->icon_id == IconId::Hold_Position) {
+                            current_button_state = Button_State::Invisible;
+                        }
+                    }
+
                     if (current_button->icon_id == IconId::Burrow || current_button->icon_id == IconId::LakiziliskBurrow) {
                         bool has_burrowed = false;
                         bool has_unburrowed = false;
 
                         for (u32 i = 0; i < g_client_selection_count; ++i) {
                             Unit* unit = g_client_selection_group->unit[i];
-                            if (unit->status & UnitStatus::Burrowed) {
+                            if (unit->is_burrowed()) {
                                 has_burrowed = true;
                             } else {
                                 has_unburrowed = true;
@@ -795,7 +805,7 @@ namespace hooks {
 
                         for (u32 i = 0; i < g_client_selection_count; ++i) {
                             Unit* unit = g_client_selection_group->unit[i];
-                            if (unit->status & UnitStatus::Burrowed) {
+                            if (unit->is_burrowed()) {
                                 has_burrowed = true;
                             } else {
                                 has_unburrowed = true;
@@ -831,11 +841,11 @@ namespace hooks {
                         current_button_state = Button_State::Invisible;
                     }
 
-                    if (current_button->action_func == (ActFunc*)ButtonActions::Attack_Building && unit->status & UnitStatus::InAir) {
+                    if (current_button->action_func == (ActFunc*)ButtonActions::Attack_Building && unit->is_in_air()) {
                         current_button_state = Button_State::Invisible;
                     }
 
-                    if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Attacking_Building && unit->status & UnitStatus::InAir) {
+                    if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Attacking_Building && unit->is_in_air()) {
                         current_button_state = Button_State::Invisible;
                     }
 
@@ -1654,9 +1664,22 @@ namespace hooks {
                             case UnitId::ZergLarva: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::ZergDroleth:
-                                    case UnitId::ZergOvileth:
                                     case UnitId::ZergRilirokor: {
                                         current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::ZergOvileth: {
+                                        if (faction != Faction::ZergZorthosTendril) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::ZergYblyleth: {
+                                        if (faction == Faction::ZergZorthosTendril) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
                                     } break;
                                     case UnitId::ZergOthstoleth:
                                     case UnitId::ZergAgrileth: {
@@ -2811,6 +2834,22 @@ namespace hooks {
 
                                 // ZERG \\
                                 
+                                case UnitId::ZergRilirokor:
+                                case UnitId::ZergRililisk: {
+                                    if (current_button->icon_id == IconId::RoarUnused) { // Death Cycle
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergYblyleth: {
+                                    if (current_button->icon_id == IconId::PneumatizedCaparace      // Cagra Autophagy
+                                    ||  current_button->icon_id == IconId::ZergAdvancedBuildings) { // Cagragenesis
+                                        if (unit->is_burrowed()) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    }
+                                } break;
                                 case UnitId::ZergGosvileth: {
                                     if (current_button->icon_id == IconId::VentralSacs) { // Plethoral Gestation
                                         current_button_state = Button_State::Enabled;
@@ -2945,12 +2984,6 @@ namespace hooks {
                                 } break;
                                 case UnitId::ZergInzorthrokor: {
                                     if (current_button->icon_id == IconId::SuicideScourge) { // Devouring Instinct
-                                        current_button_state = Button_State::Enabled;
-                                    }
-                                } break;
-                                case UnitId::ZergRilirokor:
-                                case UnitId::ZergRililisk: {
-                                    if (current_button->icon_id == IconId::RoarUnused) { // Death Cycle
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

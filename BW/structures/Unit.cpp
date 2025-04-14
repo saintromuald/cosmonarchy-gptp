@@ -1591,3 +1591,20 @@ SpriteId::Enum Unit::get_custom_corpse(SpriteId::Enum id) {
 bool Unit::has_last_orders() {
     return this->id == UnitId::ProtossAurora;
 }
+
+void Unit::autophagy_spawn() {
+    auto& unit_ext = this->ext();
+    if (unit_ext.timers[TimerAutophagySpawn]) {
+        return;
+    }
+    u32 timer = this->id == UnitId::ZergVilgoleth ? Vilgoleth::SpawnDelay : Yblyleth::SpawnDelay;
+    Thingy* corpse = get_closest_active_corpse(this->position, Vilgoleth::Range);
+    if (corpse && corpse->sprite->id != SpriteId::Corpse_Rilirokor) {
+        unit_ext.timers[TimerAutophagySpawn] = timer;
+        Point16 pos = corpse->sprite->position;
+        bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, this->player, pos);
+        bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y - 12, this->player, corpse->sprite->elevation + 1);
+        consume_corpse(corpse);
+        this->sprite->create_overlay(ImageId::LazarusAgentProc_Large);
+    }
+}
