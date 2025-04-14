@@ -421,6 +421,7 @@ struct Unit : public UnitLayout {
     void autophagy_spawn();
     bool can_be_displaced();
     bool is_plainly_visible();
+    bool can_use_passive_ability();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

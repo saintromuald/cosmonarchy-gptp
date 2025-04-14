@@ -1623,3 +1623,7 @@ bool Unit::is_plainly_visible() {
     }
     return true;
 }
+
+bool Unit::can_use_passive_ability() {
+    return this->is_completed() && !this->is_frozen() && !this->is_in_transport() && !this->ext().values[ValueDisablePassive];
+}

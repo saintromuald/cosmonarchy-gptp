@@ -1825,7 +1825,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::ProtossBulwark: {
-                if (!unit->is_completed() || unit->is_frozen() || unit->is_in_transport() || unit_ext.values[ValueDisablePassive]) {
+                if (!unit->can_use_passive_ability()) {
                     break;
                 }
                 if (!unit_ext.timers[TimerBulwarkAstralSplendor]) {
@@ -1835,14 +1835,15 @@ namespace hooks {
                     bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
                     for (Unit* target : g_unit_search.radial(unit->position, ProtossBulwark::AstralSplendorRange).filter(unit, FilterAlly | FilterCompleted)) {
                         auto& target_ext = target->ext();
-                        if (!target_ext.timers[TimerAstralSplendorCooldown] && target->shields < target->max_shields() * 256) {
-                            target_ext.timers[TimerAstralSplendorCooldown] = 48;
-                            target->heal_shields(ProtossBulwark::AstralSplendorShieldAmount, unit);
-
-                            // TODO: Unique audiovisuals!
-                            bw::add_unit_overlay(target, ImageId::RestorationHit_Small + bw::get_overlay_offset(target->id));
-                            helper::add_overlay_below_main(target->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+                        if (target_ext.timers[TimerAstralSplendorCooldown] || target->shields < target->max_shields() * 256) {
+                            continue;
                         }
+                        target_ext.timers[TimerAstralSplendorCooldown] = 48;
+                        target->heal_shields(ProtossBulwark::AstralSplendorShieldAmount, unit);
+
+                        // TODO: Unique audiovisuals!
+                        bw::add_unit_overlay(target, ImageId::RestorationHit_Small + bw::get_overlay_offset(target->id));
+                        helper::add_overlay_below_main(target->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
                     }
                 }
             } break;
