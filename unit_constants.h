@@ -54,7 +54,11 @@ inline constexpr s32 NaniteFieldVisionaryRange = 6 * 32;
 constexpr s32 MadcapPassiveDecayTime = 0.5 * 24;
 constexpr s32 MadcapMaxStacks = 10;
 
-// Apostle
+namespace TerranApostle {
+inline constexpr u32 BloodTitheRange = 3 * 24;
+inline constexpr u32 BloodTitheHeal = 5 * 256;
+}
+
 namespace Reclamation {
 inline constexpr u32 ReviveStunTimer = 3 * 24;
 inline constexpr u32 ReviveHealTimer = 10 * 24;
