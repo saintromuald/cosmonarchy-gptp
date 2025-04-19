@@ -1304,6 +1304,8 @@ namespace ImageId {
         ZobrioliskBurrowWeaponfireOverlay           = 1994,
         LakiziliskMutate                            = 1995,
 
+        HealingPulseUnderlay                        = 2036,
+
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,
         LastMinorDamageOverlay						= 471,

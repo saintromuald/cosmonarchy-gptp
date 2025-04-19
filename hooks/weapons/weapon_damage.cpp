@@ -954,7 +954,7 @@ namespace hooks {
                             auto allies = g_unit_search.radial_ex(data.attacker, TerranApostle::BloodTitheRange, FilterAlly | FilterCompleted);
                             for (auto ally : allies) {
                                 ally->heal_hp(TerranApostle::BloodTitheHeal, data.attacker);
-                                helper::add_overlay_below_main(ally->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0); // TODO: Own reads
+                                helper::add_overlay_below_main(ally->sprite, ImageId::HealingPulseUnderlay, 0, 0, 0);
                             };
                         }
                     } break;
