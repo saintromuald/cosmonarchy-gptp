@@ -44,8 +44,6 @@ void statbtn_button_update(BinDlg* button);																				// 00458900
 void load_statdata_bin();																								// 00459B90
 void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update);	// 004E52E0
 
-void inject_ui_features_hooks();
-
 void register_action(ApmCounter* counter, char* buffer);
 void init_actions();
 void update_actions();
@@ -63,6 +61,9 @@ void get_tile_image_data(s32 offset_arg, vx4 tile);                             
 char* get_stat_txt_string(u16 string_id);                                           // 004C36F0
 void draw_show_hide_terrain_context(BinDlg* dialog);                                // 004A4C40
 void draw_cancel_unit_context(BinDlg* dialog);                                      // 00457B10
+void statdata_mouseover_interact(BinDlg* main_dialog, BinDlg* secondary_dialog);    // 00457CE0
+
+void inject_ui_features_hooks();
 }
 
 #define tIconCount 7

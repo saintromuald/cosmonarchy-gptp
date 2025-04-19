@@ -562,12 +562,12 @@ namespace helper {
     bool stat_spidermine_count(BinDlg* dialog, u32 index);																			// 00426300
 
     // For get_unit_rank_string and check_hotkey_char
-    __int8 unitGetRace(Unit* a1);																									// 0047B150
+    __int8 unit_get_race(Unit* unit);																									// 0047B150
     const char* get_stat_txt_string(u16 id);																						// 004C36F0
     char* get_stat_txt_mutable_string(u16 id);																						// 004C36F0
 
     // For stats_weapon_level / stats_armor_level
-    char getArmorCount(Unit* unit, s32 a2);																							// 00453FC0
+    char get_armor_count(Unit* unit, s32 a2);																							// 00453FC0
     void show_dialog(BinDlg* dialog);																								// 004186A0
     s32 disable_dialog(BinDlg* dialog);																								// 00418640
     void update_dialog(BinDlg* dialog);																								// 0041C400
@@ -1682,7 +1682,7 @@ namespace helper {
     u32 get_updated_sight_range(Unit* unit, bool is_for_spellcasting);			// 004E5B40
     u8 create_defensive_matrix(Unit* unit);										// 00454F90
 
-    Image* create_image_overlay(Sprite* sprite, u32 image_id, u8 x_offset, u8 y_offset, u8 direction); // 00498E00
+    Image* create_image_overlay(Sprite* sprite, u32 image_id, s8 x_offset, s8 y_offset, u32 direction); // 00498E00
 
     bool statport_button_press(BinDlg* dialog_1, BinDlg* dialog_2);				// 0045F0B0
     BYTE* statport_alloc();														// 0045E360
@@ -1808,4 +1808,10 @@ namespace helper {
     void orders_init_psi_provider(Unit* unit);                                                       // 00493F70
     s8 remove_selection_circle_and_hp_bar(Sprite* sprite);                                           // 00497620
     void hide_all_psi_fields();                                                                      // 00494100
+
+    void draw_cancel_unit_context(BinDlg* dialog);                                                   // 00457B10
+    void statdata_user_interact(u32 dialog_index, BinDlg* dialog);                                   // 004576A0
+    void draw_cancel_upgrade_context(BinDlg* dialog);                                                // 004575A0
+    void create_context_from_dialog(BinDlg* dialog, const char* text);                               // 00457350
+    void draw_unload_unit_context(BinDlg* dialog);                                                   // 00457C20
 }

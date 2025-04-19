@@ -4488,12 +4488,12 @@ namespace helper {
 
     // For get_unit_rank_string
 
-    __int8 unitGetRace(Unit* a1) {
+    __int8 unit_get_race(Unit* unit) {
         const u32 func_address = 0x0047B150;
         static s32 result;
         __asm {
             PUSHAD
-            MOV EAX, a1
+            MOV EAX, unit
             CALL func_address
             MOV result, EAX
             POPAD
@@ -4516,7 +4516,7 @@ namespace helper {
 
     // For stats_weapon_level / stats_armor_level
 
-    char getArmorCount(Unit* unit, s32 unused) {
+    char get_armor_count(Unit* unit, s32 unused) {
         const u32 func_address = 0x00453FC0;
         static s32 result;
         __asm {
@@ -14323,17 +14323,14 @@ namespace helper {
         return result;
     }
 
-    Image* create_image_overlay(Sprite* sprite, u32 image_id, u8 x_offset, u8 y_offset, u8 direction) {
+    Image* create_image_overlay(Sprite* sprite, u32 image_id, s8 x_offset, s8 y_offset, u32 direction) {
         const u32 func_address = 0x00498E00;
-        u32 x_offset_xd = x_offset;
-        u32 y_offset_xd = y_offset;
-        u32 direction_xd = direction;
         static Image* result;
         __asm {
             PUSHAD
-            PUSH direction
-            PUSH y_offset
-            PUSH x_offset
+            PUSH DWORD PTR direction
+            PUSH DWORD PTR y_offset
+            PUSH DWORD PTR x_offset
             MOV ESI, image_id
             MOV EAX, sprite
             CALL func_address
@@ -15620,6 +15617,58 @@ namespace helper {
         const u32 func_address = 0x00494100;
         __asm {
             PUSHAD
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void draw_cancel_unit_context(BinDlg* dialog) {
+        const u32 func_address = 0x00457B10;
+        __asm {
+            PUSHAD
+            MOV EBX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void statdata_user_interact(u32 dialog_index, BinDlg* dialog) {
+        const u32 func_address = 0x004576A0;
+        __asm {
+            PUSHAD
+            PUSH dialog
+            MOV ECX, dialog_index
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void draw_cancel_upgrade_context(BinDlg* dialog) {
+        const u32 func_address = 0x004575A0;
+        __asm {
+            PUSHAD
+            MOV EBX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void create_context_from_dialog(BinDlg* dialog, const char* text) {
+        const u32 func_address = 0x00457350;
+        __asm {
+            PUSHAD
+            PUSH text
+            MOV EAX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void draw_unload_unit_context(BinDlg* dialog) {
+        const u32 func_address = 0x00457C20;
+        __asm {
+            PUSHAD
+            MOV EBX, dialog
             CALL func_address
             POPAD
         }

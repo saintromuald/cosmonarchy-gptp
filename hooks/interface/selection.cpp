@@ -900,8 +900,7 @@ namespace hooks {
     }
 
     // Hooked as part of the selection extender. Unfinished. -Pr0nogo
-    char create_all_selection_circles() // 00499A60
-    {
+    char create_all_selection_circles() { // 00499A60
         for (s32 i = 0; i < SelectionCap; ++i) {
             Unit* unit_from_selection = active_player_selection->unit[i];
             if (!unit_from_selection) {
@@ -1026,76 +1025,63 @@ namespace hooks {
 
             if (g_config.always_show_condensed_selection || count > GroupWireframesCap) {
                 current_dialog = dialog;
-
                 if (current_dialog->flags & BinDlgFlags::Visible) {
-                    u16 unit_id = ((Unit*)*current_dialog->user)->id;
+                    u16 unit_id = ((Unit*)current_dialog->user)->id;
                     u32 i_1;
 
                     if (*g_is_holding_ctrl) {
                         i_1 = 0;
-
                         do {
                             unit = ccmu_extender.new_client_selection_group[i_1++];
-
-                            if (unit->id != unit_id)
+                            if (unit->id != unit_id) {
                                 unit_list[i_0++] = unit;
+                            }
                         } while (--count);
                     } else {
                         Unit* deselect_unit;
                         i_1 = count;
-
                         do {
                             deselect_unit = ccmu_extender.new_client_selection_group[--i_1];
-
-                            if (deselect_unit->id == unit_id)
+                            if (deselect_unit->id == unit_id) {
                                 break;
+                            }
                         } while (i_1);
-
                         i_1 = 0;
-
                         do {
                             unit = ccmu_extender.new_client_selection_group[i_1++];
-
-                            if (unit != deselect_unit)
+                            if (unit != deselect_unit) {
                                 unit_list[i_0++] = unit;
+                            }
                         } while (--count);
                     }
                 }
             } else {
                 current_dialog = dialog->parent;
-
-                if (current_dialog->control_type)
-                {
+                if (current_dialog->control_type) {
                     current_dialog = current_dialog->parent;
                 }
-
                 current_dialog = current_dialog->child_dialog;
                 if (current_dialog) {
                     while (current_dialog->index != 33) {
                         current_dialog = current_dialog->next;
-
-                        if (!current_dialog)
-                        {
+                        if (!current_dialog) {
                             return;
                         }
                     }
-
                     count = GroupWireframesCap;
                     do {
                         if (current_dialog->flags & BinDlgFlags::Visible) {
-                            unit = (Unit*)*current_dialog->user;
-
+                            unit = (Unit*)current_dialog->user;
                             if (unit && current_dialog != dialog) {
                                 unit_list[i_0++] = unit;
                             }
                         }
-
                         current_dialog = current_dialog->next;
                     } while (--count);
                 }
             }
         } else {
-            unit = (Unit*)*dialog->user;
+            unit = (Unit*)dialog->user;
             u32 count = g_client_selection_count;
 
             if (g_config.always_show_condensed_selection || *g_is_holding_ctrl || count > GroupWireframesCap) {
@@ -1111,51 +1097,40 @@ namespace hooks {
                 if (current_dialog) {
                     while (current_dialog->index != 33) {
                         current_dialog = current_dialog->next;
-
-                        if (!current_dialog)
-                        {
+                        if (!current_dialog) {
                             return;
                         }
                     }
 
                     u16 unit_id = unit->id;
-
                     if (g_config.always_show_condensed_selection || count > GroupWireframesCap) {
-
                         if (current_dialog->flags & BinDlgFlags::Visible) {
                             u32 i_1 = 0;
-
                             do {
                                 unit = ccmu_extender.new_client_selection_group[i_1++];
-
-                                if (unit->id == unit_id)
-                                {
+                                if (unit->id == unit_id) {
                                     unit_list[i_0++] = unit;
                                 }
                             } while (--count);
                         }
                     } else {
                         count = GroupWireframesCap;
-
                         do {
                             if (current_dialog->flags & BinDlgFlags::Visible) {
-                                unit = (Unit*)*current_dialog->user;
-
-                                if (unit->id == unit_id)
-                                {
+                                unit = (Unit*)current_dialog->user;
+                                if (unit->id == unit_id) {
                                     unit_list[i_0++] = unit;
                                 }
                             }
-
                             current_dialog = current_dialog->next;
                         } while (--count);
                     }
                 }
             } else {
-                if (!*g_is_holding_alt || helper::select_single_unit_from_id(helper::unit_to_unit_id(unit))) {//wtf??? why???
+                if (!*g_is_holding_alt || helper::select_single_unit_from_id(helper::unit_to_unit_id(unit))) {
                     helper::create_new_unit_selections_from_list(&unit, 1);
                     helper::cmdact_select(&unit, 1);
-                    g_client_selection_changed = 1;//client_selection_changed
+                    g_client_selection_changed = 1; // client_selection_changed
                     bw::refresh_console();
                 }
 
@@ -1165,7 +1140,6 @@ namespace hooks {
         
         if (i_0 == 1 && *g_is_holding_alt) {
             u32 unit_table_id;
-
             if (unit_list[0]) {
                 u32 unit_index = unit_list[0]->get_unit_index();
 
@@ -1177,63 +1151,51 @@ namespace hooks {
             } else {
                 unit_table_id = 0;
             }
-
             if (helper::select_single_unit_from_id(unit_table_id)) {
                 return;
             }
         }
-
         helper::create_new_unit_selections_from_list(unit_list, i_0);
         helper::cmdact_select(unit_list, i_0);
-        g_client_selection_changed = 1; //client_selection_changed
+        g_client_selection_changed = 1; // client_selection_changed
         bw::refresh_console();
     }
 
     void generate_group_wireframes(BinDlg* dialog) {
         if (g_status_screen_func != 1) {
             BinDlg* current_dialog = dialog;
-
             if (!current_dialog->control_type) {
                 current_dialog = current_dialog->child_dialog;
             }
-
             while (current_dialog) {
                 helper::hide_dialog(current_dialog);
                 current_dialog = current_dialog->next;
             }
-
             g_status_screen_func = 1;
         }
-
         helper::store_selection_group_hp_and_type();
         BinDlg* current_dialog = dialog;
-
         if (current_dialog->control_type) {
             current_dialog = current_dialog->parent;
         }
-
         current_dialog = current_dialog->child_dialog;
-
         if (current_dialog) {
             while (current_dialog->index != 33) {
                 current_dialog = current_dialog->next;
-
-                if (!current_dialog)
+                if (!current_dialog) {
                     return;
+                }
             }
 
-            u32 grpWire_count = GroupWireframesCap;
+            u32 grpwire_count = GroupWireframesCap;
             u32 selection_count = g_client_selection_count;
             u8 i_0 = 0;
-
-            if (selection_count > grpWire_count || g_config.always_show_condensed_selection) {
+            if (selection_count > grpwire_count || g_config.always_show_condensed_selection) {
                 WireList wire_list[GroupWireframesCap]{};
                 u32 i_1 = 0;
-                grpWire_count = 0;
-
+                grpwire_count = 0;
                 do {
                     Unit* unit = ccmu_extender.new_client_selection_group[i_1++];
-
                     do {
                         if (unit->id == wire_list[i_0].unit_id) {
                             ++wire_list[i_0].count;
@@ -1242,7 +1204,7 @@ namespace hooks {
                             wire_list[i_0].unit = unit;
                             wire_list[i_0].unit_id = unit->id;
                             ++wire_list[i_0].count;
-                            ++grpWire_count;
+                            ++grpwire_count;
                             break;
                         }
                     } while (++i_0 < GroupWireframesCap);
@@ -1251,9 +1213,8 @@ namespace hooks {
                 } while (--selection_count);
 
                 i_0 = 0;
-
                 do {
-                    u32* user = current_dialog->user;
+                    u32* user = (u32*)current_dialog->user;
                     *user = (u32)wire_list[i_0].unit;
                     *(user + 1) = wire_list[i_0].unit_id;
                     helper::bw_sprintf_s((char*)&grpWireBuffer[i_0], 8, "%d", wire_list[i_0].count);
@@ -1264,48 +1225,38 @@ namespace hooks {
                         current_dialog->flags |= BinDlgFlags::Highlighted;
                         helper::update_dialog(current_dialog);
                     }
-
                     current_dialog = current_dialog->next;
-
-                    if (!current_dialog)
+                    if (!current_dialog) {
                         return;
-
+                    }
                     ++i_0;
-                } while (--grpWire_count);
+                } while (--grpwire_count);
             } else {
                 do {
                     Unit* unit = ccmu_extender.new_client_selection_group[i_0];
-
                     if (unit) {
-                        u32* user = current_dialog->user;
+                        u32* user = (u32*)current_dialog->user;
                         *user = (u32)unit;
                         *(user + 1) = unit->id;
                         current_dialog->text = NULL;
                         helper::show_dialog(current_dialog);
-
                         if (!(current_dialog->flags & BinDlgFlags::Active)) {
                             current_dialog->flags |= BinDlgFlags::Highlighted;
                             helper::update_dialog(current_dialog);
                         }
-
                         current_dialog = current_dialog->next;
                     }
-
-                    if (!current_dialog)
+                    if (!current_dialog) {
                         return;
-
+                    }
                     ++i_0;
-                } while (--grpWire_count);
+                } while (--grpwire_count);
             }
-
             while (current_dialog) {
                 helper::hide_dialog(current_dialog);
-
-                if (current_dialog->index == 44)//12th group wireframe button.
-                {
+                if (current_dialog->index == 44) { // 12th group wireframe button.
                     return;
                 }
-
                 current_dialog = current_dialog->next;
             }
         }
