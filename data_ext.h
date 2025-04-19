@@ -380,6 +380,7 @@ enum ExtTimerId {
     TimerAstralSplendorCooldown,
     TimerFacadePryingEyesChannel,
     TimerFacadePryingEyesCloak,
+    TimerRecallInterval,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

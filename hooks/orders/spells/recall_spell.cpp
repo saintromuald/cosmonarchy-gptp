@@ -128,7 +128,10 @@ namespace hooks {
 					static b32* const recall_successful = (b32*)(0x0063FF50);
 					*recall_successful = false;
 					for (Unit* target : g_unit_search.radial(unit->order_target.pt, 2 * 32)) {
-						spells_recall_action_on_target_in_range(target, unit);
+						if (!unit_ext.timers[TimerRecallInterval]) {
+							unit_ext.timers[TimerRecallInterval] = Protoss::DimensionalRecallInterval;
+							spells_recall_action_on_target_in_range(target, unit);
+						}
 					}
 					if (*recall_successful) {
 						u32 sound_id_source = SoundId::Protoss_ARBITER_PAbFol02_WAV;

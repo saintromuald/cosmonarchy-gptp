@@ -201,6 +201,7 @@ inline constexpr s32 VengefulMarchDuration = 1 * 24 + 1;
 inline constexpr s32 BindingPlasmaTimer = 24 * 0.5;
 inline constexpr s32 BindingPlasmaRadius = 3 * 32;
 inline constexpr s32 BindingPlasmaSearchRadius = 8 * 32;
+inline constexpr s32 DimensionalRecallInterval = 12;
 }
 
 // ZERG \\
