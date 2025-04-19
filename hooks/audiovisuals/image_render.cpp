@@ -183,7 +183,6 @@ namespace drawFunc {
 	void __fastcall Decloaking_update(Image* image) {
 		if (!(image->draw_fxn.step0 -= image->draw_fxn.step0 != 0)) {
 			u8 type = image->palette_type;
-
 			if (type < PaletteType::HiddenCloaking_WT) {
 				if (type < PaletteType::WarpAnchor) {
 					type = PaletteType::Normal;
@@ -193,13 +192,11 @@ namespace drawFunc {
 			} else {
 				type = PaletteType::WarpTexture;
 			}
-
 			image->palette_type = type;
 			image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
 			image->update_fxn = sgUpdateFuncs[type].fxn;
 			(*g_active_iscript_unit)->status &= ~(UnitStatus::RequiresDetection | UnitStatus::Cloaked);
 		}
-
 		image->flags |= ImageFlags::Redraw;
 	}
 
@@ -210,36 +207,27 @@ namespace drawFunc {
 			image->update_fxn = sgUpdateFuncs[type].fxn;
 			(*g_active_iscript_unit)->status |= (UnitStatus::RequiresDetection | UnitStatus::Cloaked);
 		}
-
 		image->flags |= ImageFlags::Redraw;
 	}
 
 	void __fastcall warp_flash_update(Image* image) { // 004D8590
 		bool redraw = false;
-
 		if (!(image->draw_fxn.step2 -= image->draw_fxn.step2 != 0)) {
 			image->draw_fxn.step2 = 2;
 			redraw = true;
-
 			if (++image->draw_fxn.step1 >= 63) {
 				if (image->animation != IscriptAnimation::Death) {
-					image->iscript_offset = *(u16*)(*g_iscript_handles[image->flags >> 12] + image->iscript_header_offset + 10);
-					image->return_address = 0;
-					image->animation = IscriptAnimation::Death;
-					image->wait = 0;
+					image->set_iscript(IscriptAnimation::Death);
 					helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 				}
-
 				(*g_active_iscript_entity)->order_signal |= 1;
 			}
 		}
-
 		image->flags |= (u8)redraw;
 	}
 
 	void __fastcall WarpFlash_Decloaking_update(Image* image) {
 		bool redraw = false;
-
 		if (!(image->draw_fxn.step0 -= image->draw_fxn.step0 != 0)) {
 			redraw = true;
 			u8 type = image->palette_type;
@@ -248,38 +236,28 @@ namespace drawFunc {
 			image->update_fxn = sgUpdateFuncs[type].fxn;
 			(*g_active_iscript_entity)->status &= ~(UnitStatus::RequiresDetection | UnitStatus::Cloaked);
 		}
-
 		if (!(image->draw_fxn.step2 -= image->draw_fxn.step2 != 0)) {
 			image->draw_fxn.step2 = 2;
 			redraw = true;
-
 			if (++image->draw_fxn.step1 >= 63) {
 				if (image->animation != IscriptAnimation::Death) {
-					image->iscript_offset = *(u16*)(*g_iscript_handles[image->flags >> 12] + image->iscript_header_offset + 10);
-					image->return_address = 0;
-					image->animation = IscriptAnimation::Death;
-					image->wait = 0;
+					image->set_iscript(IscriptAnimation::Death);
 					helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 				}
-
 				(*g_active_iscript_entity)->order_signal |= 1;
 			}
 		}
-
 		image->flags |= (u8)redraw;
 	}
 
 	void __fastcall ShadowCloak_update(Image* image) {
 		Image* main_image = image->parent_sprite->main_graphic;
 		u8 step = main_image->draw_fxn.step0 >> 1;
-
 		if (step > 13) {
 			step = 13;
 		}
-
 		image->draw_fxn.step0 = step;
 		u8 type = main_image->palette_type;
-
 		if (type == PaletteType::HiddenCloaked || type == PaletteType::VisibleCloaked) {
 			image->flags |= ImageFlags::Invisible;
 		} else if (!(image->parent_sprite->flags & SpriteFlags::Burrowed)) {
@@ -288,16 +266,13 @@ namespace drawFunc {
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[PaletteType::Shadow].fxn_mirror : sgRenderFuncs[PaletteType::Shadow].fxn;
 				image->update_fxn = sgUpdateFuncs[PaletteType::Shadow].fxn;
 			}
-
 			image->flags &= ~ImageFlags::Invisible;
 		}
-
 		image->flags |= ImageFlags::Redraw;
 	}
 
 	void __fastcall WarpFlash_Cloaking_update(Image* image) {
 		bool redraw = false;
-
 		if (++image->draw_fxn.step0 >= Step0) {
 			redraw = true;
 			u8 type = ++image->palette_type;
@@ -305,24 +280,17 @@ namespace drawFunc {
 			image->update_fxn = sgUpdateFuncs[type].fxn;
 			(*g_active_iscript_unit)->status |= (UnitStatus::RequiresDetection | UnitStatus::Cloaked);
 		}
-
 		if (!(image->draw_fxn.step2 -= image->draw_fxn.step2 != 0)) {
 			image->draw_fxn.step2 = 2;
 			redraw = true;
-
 			if (++image->draw_fxn.step1 >= 63) {
 				if (image->animation != IscriptAnimation::Death) {
-					image->iscript_offset = *(u16*)(*g_iscript_handles[image->flags >> 12] + image->iscript_header_offset + 10);
-					image->return_address = 0;
-					image->animation = IscriptAnimation::Death;
-					image->wait = 0;
+					image->set_iscript(IscriptAnimation::Death);
 					helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 				}
-
 				(*g_active_iscript_entity)->order_signal |= 1;
 			}
 		}
-
 		image->flags |= (u8)redraw;
 	}
 }
@@ -330,86 +298,96 @@ namespace drawFunc {
 namespace hooks {
 	u8 get_type_offset(u8 type) {
 		switch (type) {
-		case PaletteType::WarpTexture:
-			return 12;
-		case PaletteType::WarpFlash:
-			return 17;
-		case PaletteType::WarpAnchor:
-		case PaletteType::HiddenCloaking_WA:
-		case PaletteType::HiddenCloaked_WA:
-		case PaletteType::HiddenDecloaking_WA:
-		case PaletteType::VisibleCloaking_WA:
-		case PaletteType::VisibleCloaked_WA:
-		case PaletteType::VisibleDecloaking_WA:
-			return 18;
-		case PaletteType::HiddenCloaking_WT:
-		case PaletteType::HiddenCloaked_WT:
-		case PaletteType::HiddenDecloaking_WT:
-		case PaletteType::VisibleCloaking_WT:
-		case PaletteType::VisibleCloaked_WT:
-		case PaletteType::VisibleDecloaking_WT:
-			return 24;
-		case PaletteType::HiddenCloaking_WF:
-		case PaletteType::HiddenCloaked_WF:
-		case PaletteType::HiddenDecloaking_WF:
-		case PaletteType::VisibleCloaking_WF:
-		case PaletteType::VisibleCloaked_WF:
-		case PaletteType::VisibleDecloaking_WF:
-			return 30;
-		default:
-			return 0;
-		}
-	}
-
-	u8 get_new_type(u8 type_offset) {
-		if (type_offset == PaletteType::WarpTexture)
-			return 24;
-
-		if (type_offset == PaletteType::WarpFlash)
-			return 30;
-
-		return type_offset;
-	}
-
-	u8 get_new_type(u8 type, u8 type_offset) {
-		if (!type) {
-			if (type_offset == PaletteType::WarpTexture)
-				return 24;
-
-			if (type_offset == PaletteType::WarpFlash)
-				return 30;
-
-			return type_offset;
-		} else {
-			switch (type_offset) {
+			case PaletteType::WarpTexture: {
+				return 12;
+			}
+			case PaletteType::WarpFlash: {
+				return 17;
+			}
+			case PaletteType::WarpAnchor:
 			case PaletteType::HiddenCloaking_WA:
 			case PaletteType::HiddenCloaked_WA:
 			case PaletteType::HiddenDecloaking_WA:
 			case PaletteType::VisibleCloaking_WA:
 			case PaletteType::VisibleCloaked_WA:
-			case PaletteType::VisibleDecloaking_WA:
+			case PaletteType::VisibleDecloaking_WA: {
 				return 18;
+			}
 			case PaletteType::HiddenCloaking_WT:
 			case PaletteType::HiddenCloaked_WT:
 			case PaletteType::HiddenDecloaking_WT:
 			case PaletteType::VisibleCloaking_WT:
 			case PaletteType::VisibleCloaked_WT:
-			case PaletteType::VisibleDecloaking_WT:
+			case PaletteType::VisibleDecloaking_WT: {
 				return 24;
+			}
 			case PaletteType::HiddenCloaking_WF:
 			case PaletteType::HiddenCloaked_WF:
 			case PaletteType::HiddenDecloaking_WF:
 			case PaletteType::VisibleCloaking_WF:
 			case PaletteType::VisibleCloaked_WF:
-			case PaletteType::VisibleDecloaking_WF:
+			case PaletteType::VisibleDecloaking_WF: {
 				return 30;
-			default:
+			}
+			default: {
 				return 0;
 			}
 		}
 	}
 
-	void updateSpriteFlagOnPalette(Sprite* sprite) {
+	u8 get_new_type(u8 type_offset) {
+		if (type_offset == PaletteType::WarpTexture) {
+			return 24;
+		}
+		if (type_offset == PaletteType::WarpFlash) {
+			return 30;
+		}
+		return type_offset;
+	}
+
+	u8 get_new_type(u8 type, u8 type_offset) {
+		if (!type) {
+			if (type_offset == PaletteType::WarpTexture) {
+				return 24;
+			}
+			if (type_offset == PaletteType::WarpFlash) {
+				return 30;
+			}
+			return type_offset;
+		} else {
+			switch (type_offset) {
+				case PaletteType::HiddenCloaking_WA:
+				case PaletteType::HiddenCloaked_WA:
+				case PaletteType::HiddenDecloaking_WA:
+				case PaletteType::VisibleCloaking_WA:
+				case PaletteType::VisibleCloaked_WA:
+				case PaletteType::VisibleDecloaking_WA: {
+					return 18;
+				}
+				case PaletteType::HiddenCloaking_WT:
+				case PaletteType::HiddenCloaked_WT:
+				case PaletteType::HiddenDecloaking_WT:
+				case PaletteType::VisibleCloaking_WT:
+				case PaletteType::VisibleCloaked_WT:
+				case PaletteType::VisibleDecloaking_WT: {
+					return 24;
+				}
+				case PaletteType::HiddenCloaking_WF:
+				case PaletteType::HiddenCloaked_WF:
+				case PaletteType::HiddenDecloaking_WF:
+				case PaletteType::VisibleCloaking_WF:
+				case PaletteType::VisibleCloaked_WF:
+				case PaletteType::VisibleDecloaking_WF: {
+					return 30;
+				}
+				default: {
+					return 0;
+				}
+			}
+		}
+	}
+
+	void update_sprite_flag_on_palette(Sprite* sprite) {
 		for (Image* image = sprite->images.head; image; image = image->link.next) {
 			u8 type = image->palette_type;
 			u8 type_offset = get_type_offset(type);

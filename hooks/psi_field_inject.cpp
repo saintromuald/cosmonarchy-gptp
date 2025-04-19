@@ -73,6 +73,19 @@ void __declspec(naked) hide_all_psi_fields_on_unselect_wrapper() { // 0x004E62BE
     }
 }
 
+void __declspec(naked) orders_init_psi_provider_wrapper() { // 00493F70
+    static Unit* unit;
+    __asm {
+        MOV unit, EAX
+        PUSHAD
+    }
+    hooks::orders_init_psi_provider(unit);
+    __asm {
+        POPAD
+        RETN
+    }
+}
+
 //-------- Save & load game hooks --------//
 
 void __declspec(naked) pack_unit_data_psi_provider() { // 004E3935
@@ -85,10 +98,12 @@ void __declspec(naked) pack_unit_data_psi_provider() { // 004E3935
         PUSHAD
     }
     if (unit_id_is_psi_provider(unit_id)) {
-        if (unit->building.pylon_aura) {
-            *((u32*)&unit->building.pylon_aura) = (unit->building.pylon_aura - g_sprite_table) / sizeof(Sprite) + 1;
+        UnitExt& unit_ext = unit->ext();
+        if (unit_ext.power_aura) {
+            *((u32*)&unit_ext.power_aura) = (unit_ext.power_aura - g_sprite_table) / sizeof(Sprite) + 1;
         }
     }
+
     __asm {
         POPAD
         JMP jmp_address
@@ -105,8 +120,9 @@ void __declspec(naked) unpack_unit_data_psi_provider() { // 004E3182
         PUSHAD
     }
     if (unit_id_is_psi_provider(unit_id)) {
-        if (unit->building.pylon_aura) {
-            unit->building.pylon_aura = &g_sprite_table[(s32)unit->building.pylon_aura];
+        UnitExt& unit_ext = unit->ext();
+        if (unit_ext.power_aura) {
+            unit_ext.power_aura = &g_sprite_table[(s32)unit_ext.power_aura];
         }
     }
     __asm {
@@ -145,14 +161,14 @@ void __declspec(naked) unit_has_power_wrapper() { // 004936B0
     }
 }
 
-void __declspec(naked) show_power_sprite_wrapper() { // 00493BF0
+void __declspec(naked) add_psi_field_sprite_wrapper() { // 00493BF0
     static u32 result;
     static Unit* unit;
     __asm {
         MOV unit, ECX
         PUSHAD
     }
-    result = hooks::show_power_sprite(unit);
+    result = hooks::add_psi_field_sprite(unit);
     __asm {
         POPAD
         MOV EAX, result
@@ -163,7 +179,7 @@ void __declspec(naked) show_power_sprite_wrapper() { // 00493BF0
 inline int psi_esi() { __asm MOV EAX, ESI }
 b32 is_repowered_building_working() {
 	Unit* unit = (Unit*)psi_esi();
-	if (unit->status & UnitStatus::GroundedBuilding) {
+	if (unit->is_grounded_building()) {
 		return unit->secondary_order_id == OrderId::TrainUnit || unit->building.tech_id != TechId::None || unit->building.upgrade_id != UpgradeId::None;
 	}
 	return false;
@@ -176,8 +192,11 @@ namespace hooks {
     //	jump_patch(pack_unit_data_psi_provider,					0x004E3935, 0);
     //	jump_patch(unpack_unit_data_psi_provider,				0x004E3182, 0);
         jump_patch(unit_has_power_wrapper,						0x004936B0, 1);
-        jump_patch(show_power_sprite_wrapper,					0x00493BF0, 1);
+        jump_patch(add_psi_field_sprite_wrapper,				0x00493BF0, 1);
         jump_patch(create_pylon_aura,							0x00493640, 2);
+        jump_patch(hide_all_psi_fields,							0x00494100, 2);
+        jump_patch(create_all_power_auras,						0x00494030, 2);
+        jump_patch(orders_init_psi_provider_wrapper,			0x00493F70, 1);
 
         // Patches \\
 

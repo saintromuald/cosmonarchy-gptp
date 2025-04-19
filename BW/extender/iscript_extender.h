@@ -1,6 +1,8 @@
 #pragma once
 
-extern char* g_iscript_handles[];
+struct Image;
+
 namespace hooks {
-	void inject_iscript_extender();
+inline char* get_iscript_file(Image* image);
+void inject_iscript_extender();
 }

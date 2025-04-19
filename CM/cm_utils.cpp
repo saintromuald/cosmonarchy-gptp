@@ -526,6 +526,32 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
     return damage;
 }
 
+const char* get_unit_name_ext(UnitId::Enum unit_id) {
+    if (unit_id >= UnitsIdLimit) {
+        return (char*)g_string_empty;
+    } else if (units_dat::map_string_id[unit_id] != 0) {
+        return (char*)g_map_string_tbl->get_string(units_dat::map_string_id[unit_id]);
+    } else if (DatExt::g_unit_names_tbl) {
+        return (char*)((StringTbl*)&DatExt::g_unit_names_tbl)->get_string(unit_id + 1); // must be a pointer to a pointer, rather than just a pointer
+    } else {
+        return g_stat_txt_tbl_new->get_string(unit_id + 1);
+    }
+}
+
+u32 get_banter_cooldown(UnitId::Enum unit_id) {
+    switch (unit_id) {
+        case UnitId::ProtossHierophant:
+        case UnitId::ProtossPatriarch: {
+            return 24 * 60;
+        }
+        case UnitId::ProtossCicatus:
+        case UnitId::ProtossVagrant: {
+            return 24;
+        }
+    }
+    return 0;
+}
+
 UnitId::Enum get_factional_regression(Unit* unit) {
     Faction faction = unit->player < PlayerLimit ? g_globals->players[unit->player].faction : Faction::None;
     switch (unit->id) {

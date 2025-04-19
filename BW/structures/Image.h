@@ -97,6 +97,8 @@ struct Image {
     GrpFrame* get_current_frame() const;
     bool is_mirrored() const;
 
+    void set_iscript(IscriptAnimation::Enum animation);
+
     ////////////////////////////////////////////////////////////////
     // Actual data structure
 
@@ -104,7 +106,8 @@ struct Image {
     /*0x08*/  u16			id;
     /*0x0A*/  u8			palette_type;			// Use PaletteType::Enum
     /*0x0B*/  u8			direction;
-    /*0x0C*/  u16			flags;					// Use ImageFlags::Enum
+    /*0x0C*/  u16			flags : 12;				// Use ImageFlags::Enum
+              u16           iscript_key : 4;        // For the extender!
     /*0x0E*/  s8			horizontal_offset;
     /*0x0F*/  s8			vertical_offset;
     /*0x10*/  u16			iscript_header_offset;

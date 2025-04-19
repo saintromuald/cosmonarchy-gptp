@@ -102,7 +102,7 @@ namespace drawFunc {
 
 namespace hooks {
 	u8 get_type_offset(u8 type);
-	void updateSpriteFlagOnPalette(Sprite* sprite);								//0x00497E80
+	void update_sprite_flag_on_palette(Sprite* sprite);								//0x00497E80
 	void make_sprite_visible(Sprite* sprite);									//0x00497ED0
 	void make_cloaked(u8 cloakH, Sprite* sprite, u8 cloakedStatus, u8 cloakL);	//0x00497FD0
 	void sub_4980F0(Sprite* sprite);											//0x004980F0

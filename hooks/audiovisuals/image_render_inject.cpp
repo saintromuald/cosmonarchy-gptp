@@ -13,7 +13,7 @@ namespace {
 			PUSHAD
 		}
 
-		hooks::updateSpriteFlagOnPalette((Sprite*)var0);
+		hooks::update_sprite_flag_on_palette((Sprite*)var0);
 
 		__asm {
 			POPAD
