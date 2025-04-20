@@ -1000,12 +1000,12 @@ namespace hooks {
 
 	// Hooked to investigate fixing AI issues. -Pr0nogo
 	AiTown* ai_start_town(u32 player, u16 pos_x, u16 pos_y, u32 resarea) { // 00434220
-		Unit* first_unit = *first_player_unit[player].unit;
+		Unit* first_unit = first_player_unit->unit[player];
 		if (!first_unit) {
 			return 0;
 		}
 
-		bool is_first_town = g_ai_town_list[player].first == 0;
+		bool is_first_town = !g_ai_town_list[player].first;
 		if (is_first_town) {
 			helper::ai_delete_guard_needs(player);
 		}
@@ -1027,7 +1027,7 @@ namespace hooks {
 			}
 			helper::add_worker_structure_ai(unit, town);
 		}
-		if (!(g_aiscript_controller[town->player].ai_flags.is_use_map_settings)) {
+		if (!g_aiscript_controller[town->player].ai_flags.is_use_map_settings) {
 			helper::do_melee_town_region_fixups(town->position.x, town->position.y, town->player, is_first_town ? 5 : 2);
 			helper::ai_make_chokepoint_region_state_4(town->player, town->position.x, town->position.y);
 		}

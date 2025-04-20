@@ -2372,8 +2372,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranStriga: {
-                                    if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Projection
-                                    ||	current_button->icon_id == IconId::PsiAssault				// Fleeting Focus
+                                    if (current_button->icon_id == IconId::Projection
+                                    ||	current_button->icon_id == IconId::FleetingFocus
                                     ||	current_button->icon_id == IconId::FlyerAttack) {			// Apollyoid Adhesive
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -2690,7 +2690,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossPariah: {
-                                    if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Projection
+                                    if (current_button->icon_id == IconId::Projection
                                     ||	current_button->icon_id == IconId::PsiAssault) {			// Heretical Bedlam
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -2950,7 +2950,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergMortothrokor: {
-                                    if (current_button->icon_id == IconId::PneumatizedCaparace) { // Whetted Appetite
+                                    if (current_button->icon_id == IconId::WhettedAppetite) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
