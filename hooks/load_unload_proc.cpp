@@ -100,7 +100,8 @@ static bool fix_unload_pos(Unit* unit, Point16* pos) {
             return false;
         }
         const auto& tile = bw::get_tile_at_coords(*pos);
-        return unit->connected_unit->is_grounded_building() || (tile.is_walkable && !tile.is_unwalkable && !tile.cliff_edge); // Forbid nulled region, more permissive for garrisons
+        return (unit->connected_unit && unit->connected_unit->is_grounded_building())
+            || (tile.is_walkable && !tile.is_unwalkable && !tile.cliff_edge); // Forbid nulled region, more permissive for garrisons
     }
 }
 
@@ -326,10 +327,9 @@ char update_unit_transport_data(Unit* cargo, Unit* unused) { // 00401EA0
 // Hooked to extend transports. -Pr0nogo
 void kill_all_loaded_units(Unit* transport) { // 0049FDD0
     UnitExt* transport_ext = get_unit_ext(transport);
-    char transport_data = 0;
-    if (transport->status & UnitStatus::InTransport) {
-        transport_data = update_unit_transport_data(transport, 0);
-    } else if (!(transport->status & UnitStatus::IsHallucination)) {
+    if (transport->is_in_transport()) {
+        update_unit_transport_data(transport, 0);
+    } else if (!transport->is_hallucination()) {
         // Originally had a check for the Ovileth transport upgrade. We enable it by default, so BYE!
         u8 transport_space = units_dat::space_provided[transport->id];
         if (!transport_space) {
@@ -365,15 +365,12 @@ s32 get_doodad_state_unit(Unit* unit, FindUnitLocationParam* parameter) { // 004
     u32 playerid_2_wrong = player_id[2];
     FindUnitLocationParam param_2 = {};
     param_2.player = *player_id;
-    u32 unit_id_2 = unit->id;
     param_2.check_height = playerid_2_wrong;
     u32 iterations = 0;
     *(u32*)&param_2.unit_id = playerid_1_wrong;
     param_2.check_height = 0;
 
-    if (!(units_dat::base_property[unit_id_2] & UnitProperty::Worker)
-        || !unit->building.addon
-        || !get_doodad_state_unit(unit->building.addon, &param_2)) {
+    if (!unit->is_worker() || !unit->building.addon || !get_doodad_state_unit(unit->building.addon, &param_2)) {
         if (helper::is_unit_owned_by_player_ex(*player_id, unit)) {
             if (helper::unit_is_active_transport(unit)) {
                 u32 unit_id_3 = unit->id;
@@ -457,7 +454,7 @@ b32 kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) { // 004C7E20
     }
 
     KillUnitArgs* args_func = (KillUnitArgs*)&args->func;
-    if (!(unit->status & UnitStatus::IsHallucination)) {
+    if (!unit->is_hallucination()) {
         u8 space_provided = units_dat::space_provided[unit->id];
         if (space_provided) {
             for (u32 i = 0; i < space_provided; ++i) {
@@ -485,7 +482,7 @@ b32 kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) { // 004C7E20
     if (unit->is_neutral_accessory() && unit->powerup_carrier) {
         helper::kill_powerup(unit->powerup_carrier);
     } else {
-        if (!(unit->status & UnitStatus::IsHallucination) && units_dat::space_provided[unit->id]) {
+        if (!unit->is_hallucination() && units_dat::space_provided[unit->id]) {
             if (*trig_remove_unit_active) {
                 unit->user_action_flags |= UserActionFlags_HideUnit;
             }

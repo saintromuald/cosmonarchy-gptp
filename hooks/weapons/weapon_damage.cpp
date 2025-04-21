@@ -1187,6 +1187,16 @@ namespace hooks {
                 if (data.target->id != UnitId::ZergEskigant && data.target->id != UnitId::ZergExcisant && !(units_dat::base_property[regression_id] & UnitProperty::Worker) && !unit_id_is_larva(regression_id)) {
                     fatal_deal_damage = false;
                 }
+
+                // Kill flying -> ground regressions if placement is impossible. Otherwise, no corpse is created! -Pr0nogo
+                if (!(units_dat::base_property[regression_id] & UnitProperty::Flyer) && units_dat::base_property[data.target->id] & UnitProperty::Flyer) {
+                    Point16 position = data.target->position;
+                    position.y += AirToGroundDistance;
+                    const auto& tile = bw::get_tile_at_coords(position);
+                    if (tile.is_unwalkable) {
+                        return true;
+                    }
+                }
                 if (data.target->id == UnitId::ZergNydusCesiant) {
                     Unit* nydus_exit = data.target->building.nydus_exit;
                     if (nydus_exit) {
@@ -1208,7 +1218,7 @@ namespace hooks {
                 }
 
                 // Fix burrowed regression / transforms. -DF
-                if (data.target->status & UnitStatus::Burrowed) {
+                if (data.target->is_burrowed()) {
                     data.target->main_order_id = OrderId::Unburrow;
                 }
 

@@ -30,6 +30,7 @@ constexpr s32 StimpackOffset = 5 * 256;
 constexpr s32 StimpackTimer = 21;
 constexpr s32 MindControlEnergyGain = 5 * 256;
 constexpr u32 NeutralHostilePlayer = 9;
+constexpr u32 AirToGroundDistance = 42;
 
 // Factional
 constexpr s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;

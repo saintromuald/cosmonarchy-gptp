@@ -2039,6 +2039,7 @@ u32 get_zerg_regression(Unit* unit) {
         }
 
         // Unit Morphs
+        case UnitId::ZergGosvileth:				return UnitId::ZergDroleth;
         case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
         case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
         case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;
@@ -3045,20 +3046,19 @@ void regress(Unit* unit, u32 regression_id) {
     }
 
     Unit* new_unit = unit;
+    bool is_atg_regression = UnitId::is_atg_regression(static_cast<UnitId::Enum>(old_id), static_cast<UnitId::Enum>(regress_to));
     if (unit->id == UnitId::ZergEskigant || unit->id == UnitId::ZergExcisant) {
         new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
     } else if (unit_id_is_larva(regression_id) || units_dat::base_property[regression_id] & UnitProperty::Worker) {
-        new_unit = bw::create_unit_in_game(regression_id, unit->player, unit->position.x, unit->position.y);
+        new_unit = bw::create_unit_in_game(regression_id, unit->player, unit->position.x, is_atg_regression ? unit->position.y + AirToGroundDistance : unit->position.y);
+        unit->ext().values[ValueNoCorpse] = true;
     } else {
         helper::replace_unit_with_id(unit, regress_to);
         unit->set_hitpoints(unit->get_max_hp_raw());
-
-        bool was_flyer = units_dat::base_property[old_id] & UnitProperty::Flyer;
-        bool is_flyer = units_dat::base_property[regress_to] & UnitProperty::Flyer;
-        if (was_flyer && !is_flyer) {
+        if (is_atg_regression) {
             Point16 old_pos = unit->position;
             Point16 new_pos = unit->position;
-
+            new_pos.y += AirToGroundDistance;
             helper::fix_target_location(&new_pos, regress_to);
             if (bw::distance_between(old_pos, new_pos) <= 2 * 32) {
                 helper::move_unit(unit, new_pos.x, new_pos.y);

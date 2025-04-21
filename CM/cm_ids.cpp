@@ -1408,6 +1408,11 @@ bool has_manual_weapon_fire_sfx(UnitId::Enum unit_id) {
         || unit_id == UnitId::ProtossManifold
         || unit_id == UnitId::ProtossManifoldStarbound;
 }
+
+bool is_atg_regression(UnitId::Enum old_unit_id, UnitId::Enum new_unit_id) {
+    return units_dat::base_property[old_unit_id] & UnitProperty::Flyer
+       && !units_dat::base_property[new_unit_id] & UnitProperty::Flyer;
+}
 } // namespace UnitId
 
 bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {
