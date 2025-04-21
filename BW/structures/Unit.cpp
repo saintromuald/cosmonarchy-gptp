@@ -76,12 +76,10 @@ u8 Unit::get_ground_weapon() const {
 }
 
 u8 Unit::get_air_weapon() const {
-    assert(this);
     if (unit_id_is_burrowed_attacker(this->id) && !(this->status & (UnitStatus::Burrowed | UnitStatus::InBuilding))) {
         return WeaponId::None;
-    } else {
-        return units_dat::air_weapon[this->id];
     }
+    return units_dat::air_weapon[this->id];
 }
 
 u16 Unit::get_max_energy() const {

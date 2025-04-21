@@ -1062,10 +1062,8 @@ namespace hooks {
         u32 weapon_id = WeaponId::None;
         if (target->is_in_air()) {
             weapon_id = units_dat::air_weapon[final_unit->id];
-        } else {
-            if (final_unit->burrowed_attacker_can_attack() || !final_unit->is_burrowed()) {
-                weapon_id = units_dat::ground_weapon[final_unit->id];
-            }
+        } else if (final_unit->burrowed_attacker_can_attack() || !final_unit->is_burrowed()) {
+            weapon_id = units_dat::ground_weapon[final_unit->id];
         }
         u32 min_range = weapons_dat::min_range[weapon_id];
         if (weapon_id != WeaponId::None && min_range) {

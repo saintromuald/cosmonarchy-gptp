@@ -218,7 +218,7 @@ struct ReplayData {
     b32 is_replaying;    // True when watching replay.
     u32 start;           // Address to the beginning of the replay data.
     u32 size;            // Size in bytes of the replay data.
-    u32 malloc_size;     // Size in bytes of allocated memory. Initialized to 50000 and grown in steps of 10000.
+    u32 malloc_capacity; // Size in bytes of allocated memory. Initialized to 50000 and grown in steps of 10000.
     u32 end;             // Address to the end of the replay data? Seems to always be 0.
     u32 last_frame_time; // Frame number of the latest recorded action. Used only when tracking during a live game.
     union {
@@ -226,8 +226,6 @@ struct ReplayData {
         u8* cur_command;        // Address of the current command within a replay frame.
     };
 };
-
-
 
 struct Options { // taken from IDA 
     u32		speed;						// 0x0
