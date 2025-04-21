@@ -409,16 +409,16 @@ void orders_unload(Unit* unit) {
 }
 
 bool can_enter_transport(Unit* transport, Unit* unit) { // 004E6E00
-    if (!(transport->status & UnitStatus::Completed)) {
+    if (!transport->is_completed()) {
         return 0;
     }
     if (transport->is_frozen()) {
         return 0;
     }
-    if (!(unit->status & UnitStatus::Completed)) {
+    if (!unit->is_completed()) {
         return 0;
     }
-    if (unit->status & UnitStatus::Burrowed) {
+    if (unit->is_burrowed()) {
         return 0;
     }
     if (!bw::are_mutual_allies(unit->player, transport->player)) {
@@ -427,10 +427,13 @@ bool can_enter_transport(Unit* transport, Unit* unit) { // 004E6E00
     if (bw::transport_is_full(transport)) {
         return 0;
     }
-    if (unit->status & UnitStatus::InAir) {
+    if (unit->is_in_air()) {
         return 0;
     }
     if (unit->player == 11) {
+        return 0;
+    }
+    if (unit->is_building() && transport->is_building()) {
         return 0;
     }
 

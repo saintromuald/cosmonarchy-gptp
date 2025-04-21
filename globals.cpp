@@ -851,10 +851,11 @@ void inherit_debuffs(Unit* parent, Unit* child) {
         child_ext->timers[TimerKelvinMunitions] = parent_ext->timers[TimerKelvinMunitions];
     }
 
-    // Inherit Empress Passive Stacks
+    // Inherit Empress Passive
     if (parent_ext->values[ValueEmpressAnodyneAnnexStacks]) {
         child_ext->values[ValueEmpressAnodyneAnnexStacks] = parent_ext->values[ValueEmpressAnodyneAnnexStacks];
         child_ext->values[ValueAnnexSourcePlayer] = parent_ext->values[ValueAnnexSourcePlayer];
+        child_ext->timers[TimerAnnex] = parent_ext->timers[TimerAnnex];
     }
 
     // Inherit Hierophant Signify

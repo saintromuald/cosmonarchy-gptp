@@ -137,8 +137,7 @@ namespace {
 	}
 
 	const u32 progressOrder_jmp = 0x004EC6F1;
-	void __declspec(naked) orders_grief_of_all_gods_wrapper()
-	{
+	void __declspec(naked) orders_grief_of_all_gods_wrapper() {
 		static Unit* unit;
 		__asm {
 			MOV unit, ESI

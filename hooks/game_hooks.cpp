@@ -1550,14 +1550,15 @@ namespace hooks {
 
                 // Corpse Cocoon
                 for (Thingy* corpse : g_corpse_search.rect(unit->get_box32())) {
-                    if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
+                    auto* corpse_ext = get_thingy_ext(corpse);
+                    if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) && !unit_id_is_broodspawn(corpse_ext->unit_id)) {
                         Unit* egg = bw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
                         if (egg) {
                             set_custom_egg(egg, UnitId::ZergSovroleth, 4 * 24);
                         }
-                        UnitExt* egg_ext = get_unit_ext(egg);
-                        egg_ext->values[ValueNoCorpse] = true;
-                        egg_ext->values[ValueRegressionUnstable] = true;
+                        auto& egg_ext = egg->ext();
+                        egg_ext.values[ValueNoCorpse] = true;
+                        egg_ext.values[ValueRegressionUnstable] = true;
                         corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
                         corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
                     }
@@ -1625,9 +1626,9 @@ namespace hooks {
                     if (enemies_detected) {
                         unit_ext.timers[TimerStarSovereignInterventionMissiles] = weapons_dat::cooldown[WeaponId::StarSovereignInterventionMissiles];
                         for (s32 arc = 0; arc < 6; arc++) {
-                            const LO_Header* loFile = lo_files->special_overlays[unit->sprite->main_graphic->id];
+                            const LO_Header* overlay_file = lo_files->special_overlays[unit->sprite->main_graphic->id];
                             u8 frame_direction = unit->sprite->main_graphic->direction;
-                            Point8 offset = loFile->get_offset(frame_direction, 5 - arc);
+                            Point8 offset = overlay_file->get_offset(frame_direction, 5 - arc);
                             if (unit->sprite->main_graphic->is_mirrored()) {
                                 offset.x = -offset.x;
                             }

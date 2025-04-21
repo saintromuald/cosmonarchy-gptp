@@ -15673,4 +15673,39 @@ namespace helper {
             POPAD
         }
     }
+
+    void ai_delete_guard_needs(u32 player) {
+        const u32 func_address = 0x004626E0;
+        __asm {
+            PUSHAD
+            MOV ESI, player
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void do_melee_town_region_fixups(s32 pos_x, s32 pos_y, u32 player, u32 some_type) {
+        const u32 func_address = 0x00445AA0;
+        __asm {
+            PUSHAD
+            PUSH some_type
+            MOV EBX, player
+            MOV ECX, pos_y
+            MOV EDX, pos_x
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void ai_make_chokepoint_region_state_4(u32 player, s32 pos_x, s32 pos_y) {
+        const u32 func_address = 0x0043A8F0;
+        __asm {
+            PUSHAD
+            PUSH pos_y
+            PUSH pos_x
+            PUSH player
+            CALL func_address
+            POPAD
+        }
+    }
 }

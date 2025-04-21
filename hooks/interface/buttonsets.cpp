@@ -1171,6 +1171,11 @@ namespace hooks {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
+                                    case UnitId::TerranValkyrie: {
+                                        if (!in_air) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
                                     case UnitId::TerranAncile: {
                                         if (faction == Faction::TerranUpstart) {
                                             current_button_state = Button_State::Invisible;
@@ -1192,6 +1197,15 @@ namespace hooks {
                             } break;
                             case UnitId::TerranStarport: {
                                 switch (current_button->requirement_var) {
+                                    case UnitId::TerranGorgon:
+                                    case UnitId::TerranWyvern:
+                                    case UnitId::TerranPythean: {
+                                        if (in_air || bw::unit_queue_full(unit)) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
                                     case UnitId::TerranSalamander:
                                     case UnitId::TerranSundog: {
                                         if (!bw::all_selected_units_have_addon(UnitId::TerranRotary) || bw::unit_queue_full(unit)) {
@@ -1236,8 +1250,7 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranCentaur:
                                     case UnitId::TerranMinotaur:
-                                    case UnitId::TerranMagnetar:
-                                    case UnitId::TerranPythean: {
+                                    case UnitId::TerranMagnetar: {
                                         if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                             current_button_state = Button_State::Invisible;
                                         } else {
@@ -1442,7 +1455,6 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
-                                    case UnitId::ProtossXenolith:
                                     case UnitId::ProtossEngram:
                                     case UnitId::ProtossProstrationStage:
                                     case UnitId::ProtossUnitaryUnion:
@@ -1453,6 +1465,7 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
+                                    case UnitId::ProtossXenolith:
                                     case UnitId::ProtossAncestralArchives:
                                     case UnitId::ProtossSyntheticSynod:
                                     case UnitId::ProtossMonumentOfSin: {
@@ -2359,8 +2372,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranStriga: {
-                                    if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Projection
-                                    ||	current_button->icon_id == IconId::PsiAssault				// Fleeting Focus
+                                    if (current_button->icon_id == IconId::Projection
+                                    ||	current_button->icon_id == IconId::FleetingFocus
                                     ||	current_button->icon_id == IconId::FlyerAttack) {			// Apollyoid Adhesive
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -2677,7 +2690,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossPariah: {
-                                    if (current_button->icon_id == IconId::DracadinPhaseDisruptor	// Projection
+                                    if (current_button->icon_id == IconId::Projection
                                     ||	current_button->icon_id == IconId::PsiAssault) {			// Heretical Bedlam
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -2792,10 +2805,14 @@ namespace hooks {
                                     if (current_button->icon_id == IconId::AnodyneAnnex) {
                                         current_button_state = Button_State::Enabled;
                                     }
-                                }
-                                break;
+                                } break;
                                 case UnitId::ProtossAurora: {
                                     if (current_button->icon_id == IconId::MojoScout) { // Last Orders
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ProtossExtatus: {
+                                    if (current_button->icon_id == IconId::ProtossGroundWeapons) { // Astral Blessing
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2845,7 +2862,6 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::ProtossExtatus:
                                 case UnitId::ProtossMatrix: {
                                     if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Astral Tether
                                         current_button_state = Button_State::Enabled;
@@ -2934,7 +2950,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergMortothrokor: {
-                                    if (current_button->icon_id == IconId::PneumatizedCaparace) { // Whetted Appetite
+                                    if (current_button->icon_id == IconId::WhettedAppetite) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

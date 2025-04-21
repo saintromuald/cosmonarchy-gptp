@@ -88,7 +88,6 @@ namespace hooks {
     }
 
     void orders_attack_fixed_range(Unit* unit) { // 00477D00
-        Unit* target;
         bool jump_to_77E48 = false;
         bool jump_to_77E99 = false;
         if (unit->unit_ai) {
@@ -97,22 +96,17 @@ namespace hooks {
             helper::pick_new_target_if_needed(unit);
         }
 
-        target = unit->order_target.unit;
+        Unit* target = unit->order_target.unit;
         if (target) {
             unit->order_target.pt.x = target->position.x;
             unit->order_target.pt.y = target->position.y;
         }
-        if (unit->is_frozen()
-        || !target
-        ||  target->status & UnitStatus::Invincible
-        ||  target->sprite->flags & SpriteFlags::Hidden
-        ||  helper::unit_cant_see_cloaked_target(unit, target))
-        {
+        if (unit->is_frozen() || !target || target->is_invincible() || target->sprite->is_hidden() || helper::unit_cant_see_cloaked_target(unit, target)) {
             jump_to_77E48 = true;
         } else {
             Unit* current_unit;
             bool jump_to_77DEF = false;
-            if (unit->subunit->is_subunit()) { // check if is not null AND is a subunit 
+            if (unit->subunit->is_subunit()) {
                 current_unit = unit->subunit;
             } else {
                 current_unit = unit;
@@ -138,8 +132,8 @@ namespace hooks {
                         jump_to_77E48 = true;
                     }
                 } else {
-                    u8 current_weapon_id = current_unit->get_ground_weapon();
-                    if (target->status & UnitStatus::InAir) {
+                    u32 current_weapon_id = current_unit->get_ground_weapon();
+                    if (target->is_in_air()) {
                         current_weapon_id = current_unit->get_air_weapon();
                     }
                     if (current_weapon_id != WeaponId::None) {
@@ -153,7 +147,7 @@ namespace hooks {
 
         if (jump_to_77E48) {
             if (unit->order_queue_head) {
-                unit->user_action_flags |= 1;
+                unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
                 prepare_for_next_order(unit);
             } else if (unit->unit_ai) {
                 unit->order_computer(OrderId::ComputerAI);
@@ -221,8 +215,7 @@ namespace hooks {
                         } else {
                             unit->order_target.unit = unit;
                             Image* current_image = unit->sprite->images.head;
-                            while (current_image)
-                            {
+                            while (current_image) {
                                 current_image->play_iscript_animation(IscriptAnimation::SpecialState1);
                                 current_image = current_image->link.next;
                             }

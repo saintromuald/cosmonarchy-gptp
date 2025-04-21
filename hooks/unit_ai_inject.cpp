@@ -279,7 +279,6 @@ namespace {
 		static Unit* unit;
 		static u32 must_be_active;
 		__asm {
-
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -310,6 +309,34 @@ namespace {
 		__asm {
 			POPAD
 			RETN
+		}
+	}
+
+	void __declspec(naked) ai_start_town_wrapper() { // 00434220
+		static u32 player;
+		static u16 pos_x;
+		static u16 pos_y;
+		static u32 resarea;
+		static AiTown* result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV player, EAX
+			MOV EAX, [EBP + 0x08]
+			MOV pos_x, AX
+			MOV EAX, [EBP + 0x0C]
+			MOV pos_y, AX
+			MOV EAX, [EBP + 0x10]
+			MOV resarea, EAX
+			PUSHAD
+		}
+		result = hooks::ai_start_town(player, pos_x, pos_y, resarea);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x0C
 		}
 	}
 
@@ -362,6 +389,7 @@ namespace hooks {
 	//	jump_patch(is_valid_for_wrapper,						0x0043B6D0,	5);
 		jump_patch(add_guard_ai_to_unit,						0x00462960,	2);
 		jump_patch(ai_remove_cleric_wrapper,					0x004477C0,	0);
+	//  jump_patch(ai_start_town_wrapper,						0x00434220,	1); // Crashes, but also unnecessary for fixes. -Pr0nogo
 
 	//	jump_patch(hooks::find_nearest_military_or_guard_ai,	0x0043BAC0, 0);
 
