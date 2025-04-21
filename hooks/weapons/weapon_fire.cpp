@@ -77,13 +77,13 @@ Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
 
 Point8 next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
     Point8 offset = peek_bullet_offset(unit, weapon_offsets);
-    UnitExt* unit_ext = get_unit_ext(unit);
-    u32 rotate = unit_ext->values[weapon_offsets->value_id];
+    auto& unit_ext = unit->ext();
+    u32 rotate = unit_ext.values[weapon_offsets->value_id];
     rotate++;
     if (rotate >= weapon_offsets->count) {
         rotate = 0;
     }
-    unit_ext->values[weapon_offsets->value_id] = rotate;
+    unit_ext.values[weapon_offsets->value_id] = rotate;
     return offset;
 }
 
@@ -276,7 +276,7 @@ void fire_line(Unit* unit, WeaponId::Enum weapon_id, u32 total_count, s32 forwar
 
 static std::pair<Target, u32> calculate_target(Unit* unit, WeaponId::Enum weapon_id) {
     Target target = unit->order_target;
-    u32 max_range = bw::distance_between(unit->position, target.pt);
+    u32 max_range = bw::distance_manhattan_between(unit->position, target.pt);
     if (weapons_dat::behavior[weapon_id] == WeaponBehavior_GoToMaxRange) {
         max_range = hooks::get_max_weapon_range(unit, weapon_id, target.unit) + 48;
     }

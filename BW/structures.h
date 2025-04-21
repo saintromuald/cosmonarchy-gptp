@@ -545,11 +545,11 @@ C_ASSERT(sizeof(TargetFlag) == 2);
 //-------- End of flag structures --------//
 
 struct UnitFinderData {
-    s32 unit_index;
-    s32 position;
-    bool operator < (const UnitFinderData& rhs) const {
-        return this->position < rhs.position;
-    }
+s32 unit_index;
+s32 position;
+bool operator < (const UnitFinderData& rhs) const {
+    return this->position < rhs.position;
+}
 };
 
 C_ASSERT(sizeof(UnitFinderData) == 8);
@@ -558,104 +558,110 @@ C_ASSERT(sizeof(UnitFinderData) == 8);
 // BinDlg is defined in https://code.google.com/p/vgce/source/browse/trunk/docs/Blizzard/Starcraft/BIN%20FORMAT.txt as Dialog Structure
 // That structure is variable depending on the content
 
+struct UserUnit {
+Unit* unit;
+u16 unit_id;
+};
+
 struct BinDlg {
-    /*0x00*/  BinDlg*		next;
-    /*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
-    /*0x10*/  u8*			buffer;
-    /*0x14*/  char*			text;
-    /*0x18*/  u32			flags;			// use BinDlgFlags::Enum
-    /*0x1C*/  u32			unk_1c;
-    /*0x20*/  u16			index;
-    /*0x22*/  u16			control_type;	// use DialogControlTypes::Enum
-    /*0x24*/  u16			graphic;
+/*0x00*/  BinDlg*		next;
+/*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
+/*0x10*/  u8*			buffer;
+/*0x14*/  char*			text;
+/*0x18*/  u32			flags;			// use BinDlgFlags::Enum
+/*0x1C*/  u32			unk_1c;
+/*0x20*/  u16			index;
+/*0x22*/  u16			control_type;	// use DialogControlTypes::Enum
+/*0x24*/  u16			graphic;
 
-    union {
-        /*0x26*/  void*		user;
-        /*0x26*/  Unit*		unit_user;
-        /*0x26*/  BinDlg*	dialog_user;
-        /*0x26*/  Button*	button_user;
-        StatusScreenState*	stat_button_user; // from Neiv's list
-        /*0x26*/  u32		non_user_value;
-        GrpHead*			grp_head_user;
-        PortraitData*		portrait_data;
-    };
+union {
+/*0x26*/  void*		user;
+/*0x26*/  Unit*		unit_user;
+/*0x26*/  BinDlg*	dialog_user;
+/*0x26*/  Button*	button_user;
+StatusScreenState*	stat_button_user; // from Neiv's list
+/*0x26*/  u32		non_user_value;
+GrpHead*			grp_head_user;
+PortraitData*		portrait_data;
+UserUnit*           user_unit_with_id;
+};
 
-    /*0x2A*/  void*			fxn_interact;
-    /*0x2E*/  void*			fxn_update;
-    /*0x32*/  BinDlg*		parent;
+/*0x2A*/  void*			fxn_interact;
+/*0x2E*/  void*			fxn_update;
+/*0x32*/  BinDlg*		parent;
 
-    union {
-        struct {
-            /*0x36*/  Box16		response_area;
-            /*0x3E*/  BinDlg*	unk_3e;
-        } initialVersion0x36;
-        struct {
-            /*0x36*/  s16		response_area_width;	// guess
-            /*0x38*/  s16		response_area_height;	// guess
-            /*0x3A*/  u32*		response_area_bit_array;// set with a memory allocation function, bit array is a guess
-            /*0x3E*/  u32*		unk3e;					// unverified filler
-        } onInitDialog0x36;
-        struct {
-            /*0x36*/  void*		unk_func_36;			// should be a function
-            /*0x3A*/  u16		scrollMinValue;			// unconfirmed
-            /*0x3C*/  u16		scrollMaxValue;			// unconfirmed
-            /*0x3E*/  u16		scrollCurrentValue;		// unconfirmed
-            /*0x40*/  u16		unk40;					// unverified filler
-        } scrollDialog0x36;								// probably for scrollbar involving dialogs?
-        struct {
-            /*0x36*/  BinDlg*	unkDlg36;
-            /*0x3A*/  u32		unk3a;					// unverified filler
-            /*0x3E*/  u32		unk3e;					// unverified filler
-        } dialogOn0x36;									// for when 0x36 is clearly BinDlg* but the rest is unknown
-        struct {
-            /*0x36*/  b32		unkBool32_36;			// based on the value only being compared to 0
-            /*0x3A*/  u32		unk3a;					// unverified filler
-            /*0x3E*/  u32		unk3e;					// unverified filler
-        } checkBox0x36;									// not completely sure
-        struct {
-            /*0x36*/  u8		unkFlags36;				// "flag" because of possible unkFlags36 |= 1
-            /*0x37*/  unk_t     unk37[3];				// unverified filler
-            /*0x3A*/  u8**		unk3aArrayCharPtr;		// seen in a different context so may be wrong and belong to another category
-            /*0x3E*/  u8		pszTextLen;				// should be the length of psz_text
-            /*0x3F*/  unk_t     unk3f[3];				// unverified filler
-        } textDialog0x36;								// seems to apply to some text related dialogs
-        struct {
-            /*0x36*/  u32		time_cost;
-            /*0x3A*/  u32*		font_handle;
-            /*0x3E*/  BinDlg*	player_name;
-        } statRes;
-    };
+union {
+    struct {
+        /*0x36*/  Box16		response_area;
+        /*0x3E*/  BinDlg*	unk_3e;
+    } initialVersion0x36;
+    struct {
+        /*0x36*/  s16		response_area_width;	// guess
+        /*0x38*/  s16		response_area_height;	// guess
+        /*0x3A*/  u32*		response_area_bit_array;// set with a memory allocation function, bit array is a guess
+        /*0x3E*/  u32*		unk3e;					// unverified filler
+    } onInitDialog0x36;
+    struct {
+        /*0x36*/  void*		unk_func_36;			// should be a function
+        /*0x3A*/  u16		scrollMinValue;			// unconfirmed
+        /*0x3C*/  u16		scrollMaxValue;			// unconfirmed
+        /*0x3E*/  u16		scrollCurrentValue;		// unconfirmed
+        /*0x40*/  u16		unk40;					// unverified filler
+    } scrollDialog0x36;								// probably for scrollbar involving dialogs?
+    struct {
+        /*0x36*/  BinDlg*	unkDlg36;
+        /*0x3A*/  u32		unk3a;					// unverified filler
+        /*0x3E*/  u32		unk3e;					// unverified filler
+    } dialogOn0x36;									// for when 0x36 is clearly BinDlg* but the rest is unknown
+    struct {
+        /*0x36*/  b32		unkBool32_36;			// based on the value only being compared to 0
+        /*0x3A*/  u32		unk3a;					// unverified filler
+        /*0x3E*/  u32		unk3e;					// unverified filler
+    } checkBox0x36;									// not completely sure
+    struct {
+        /*0x36*/  u8		unkFlags36;				// "flag" because of possible unkFlags36 |= 1
+        /*0x37*/  unk_t     unk37[3];				// unverified filler
+        /*0x3A*/  u8**		unk3aArrayCharPtr;		// seen in a different context so may be wrong and belong to another category
+        /*0x3E*/  u8		pszTextLen;				// should be the length of psz_text
+        /*0x3F*/  unk_t     unk3f[3];				// unverified filler
+    } textDialog0x36;								// seems to apply to some text related dialogs
+    struct {
+        /*0x36*/  u32		time_cost;
+        /*0x3A*/  u32*		font_handle;
+        /*0x3E*/  BinDlg*	player_name;
+    } statRes;
+};
 
-    union {
-        /*0x42*/  void*			child_smk;
-        /*0x42*/  BinDlg*		child_dialog;
-    };
+union {
+/*0x42*/  void*			child_smk;
+/*0x42*/  BinDlg*		child_dialog;
+};
 
-    union {
-        struct {
-            /*0x46*/  Point16	text_pos;
-            /*0x4A*/  u16		response_area_width;
-            /*0x4C*/  u16		response_area_height;
-            /*0x4E*/  unk_t     unk_4e[8];
-        } initial_version_0x46;
-        struct {
-            /*0x46*/  Point16	text_pos;				// unverified filler
-            /*0x4A*/  u32		unk4a;
-            /*0x4E*/  unk_t     unk_4e[8];				// unverified filler
-        } onInitDialog0x46;
-        struct {
-            /*0x46*/  u8		item_count;
-            /*0x47*/  u8		unk47;					// unverified filler
-            /*0x48*/  u8		unk48;
-            /*0x49*/  u8		unk49;
-            /*0x4A*/  u8		unk4a;
-            /*0x4B*/  u8		unk4b;
-            /*0x4C*/  b8		unk4c;
-            /*0x4D*/  u8		unk4d;
-            /*0x4E*/  u8		unk4e;
-            /*0x4F*/  unk_t     unk_4f[7];				// unverified filler
-        } alternateVersion0x46;
-    };
+union {
+    struct {
+        /*0x46*/  Point16	text_pos;
+        /*0x4A*/  u16		response_area_width;
+        /*0x4C*/  u16		response_area_height;
+        /*0x4E*/  unk_t     unk_4e[8];
+    } initial_version_0x46;
+    struct {
+        /*0x46*/  Point16	text_pos;				// unverified filler
+        /*0x4A*/  u32		unk4a;
+        /*0x4E*/  unk_t     unk_4e[8];				// unverified filler
+    } onInitDialog0x46;
+    struct {
+        /*0x46*/  u8		item_count;
+        /*0x47*/  u8		unk47;					// unverified filler
+        /*0x48*/  u8		unk48;
+        /*0x49*/  u8		unk49;
+        /*0x4A*/  u8		unk4a;
+        /*0x4B*/  u8		unk4b;
+        /*0x4C*/  b8		unk4c;
+        /*0x4D*/  u8		unk4d;
+        /*0x4E*/  u8		unk4e;
+        /*0x4F*/  unk_t     unk_4f[7];				// unverified filler
+    } alternateVersion0x46;
+};
 
 };
 
@@ -1378,9 +1384,9 @@ struct ControlGroup {
 };
 
 struct WireList {
-    u16 count;
-    u16 unit_id = UnitId::None;
-    Unit* unit;
+u16 count;
+u16 unit_id = UnitId::None;
+Unit* unit;
 };
 
 #define TotalControlGroups 18	// Control groups + Recent selections

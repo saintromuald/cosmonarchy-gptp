@@ -473,6 +473,11 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
             //  case UnitId::ZergVorvrokor: return UnitId::ZergGorvrokor;
             }
         } break;
+        case Faction::ZergOrkotiTendril: {
+            switch (unit_id) {
+                case UnitId::ZergHydralisk: return UnitId::ZergHydraliskOrkoti;
+            }
+        } break;
         case Faction::ZergZorthosTendril: {
             switch (unit_id) {
                 case UnitId::ZergNathrokor:  return UnitId::ZergNathrelisk;

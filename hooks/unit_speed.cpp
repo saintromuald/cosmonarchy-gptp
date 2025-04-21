@@ -12,7 +12,7 @@
 
 namespace hooks {
     f64 get_speed_multiplier(Unit* unit) {
-        UnitExt& unit_ext = unit->ext();
+        auto& unit_ext = unit->ext();
 
         f64 speed = 1;
         // Set additives based on status effects
@@ -140,7 +140,7 @@ namespace hooks {
             speed *= MathUtils::Map(unit_ext.timers[TimerVengefulMarch], Protoss::VengefulMarchDuration, 0, 1.33, 1);
         }
 
-        if (unit->id == UnitId::TerranEidolonNydus && bw::is_proximity_decloakable(unit)) {
+        if (unit->id == UnitId::TerranEidolonNydus && !unit_ext.timers[TimerDecloak]) {
             speed *= 1.33;
         }
 

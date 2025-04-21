@@ -3921,10 +3921,11 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::MaverickFuturistGaussSlugger:        return bw::rand_between(SoundId::MaverickFuturistWeaponfire01, SoundId::MaverickFuturistWeaponfire03);
         case WeaponId::HotshotDispatchShotgun:              return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
         case WeaponId::EidolonCoronerRifle:                 return SoundId::Bullet_TGhFir00_wav;
-        case WeaponId::EidolonNydusRevenantRifle:           return bw::rand_between(SoundId::EidolonNydusWeaponfire01, SoundId::EidolonNydusWeaponfire03);
+        case WeaponId::EidolonNydusRevenantRifle:           return bw::rand_between(SoundId::EidolonNydusWeaponfire01, SoundId::EidolonNydusWeaponfire05);
         case WeaponId::MadcapDanannAutogun:                 return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
         case WeaponId::ApostleCharonRifle:                  return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
         case WeaponId::CyclopsFuturistFlakCannons:          return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
+        case WeaponId::TiangouMoonboundSalvo:               return bw::rand_between(SoundId::TiangouWeaponfire01, SoundId::TiangouWeaponfire05);
         case WeaponId::ZealotPhaseBlades:	                return SoundId::ZealotWeaponhit01;
         case WeaponId::ZealotStarboundPhaseBlades:          return SoundId::ZealotStarboundWeaponhit01;
         case WeaponId::EcclesiastAstralBlaster:	            return bw::rand_between(SoundId::EcclesiastWeaponfire01, SoundId::EcclesiastWeaponfire04);

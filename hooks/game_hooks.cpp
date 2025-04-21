@@ -4321,9 +4321,7 @@ namespace hooks {
         if (!replay_data->is_replaying) {
             return -1;
         }
-
         ReplayFrame* replay_frame = replay_data->cur_frame;
-
         if ((u32)replay_frame > replay_data->start + replay_data->size) {//Changed >= to > to fix replay last action bug.
             return -1;
         }
@@ -4332,7 +4330,6 @@ namespace hooks {
         u8* replay_cmd_players = g_replay_cmd_players; // Extracted from parameter.
         s32 frame_time = replay_frame->time;
         u32 cmd_index = 0;
-
         do {
             s32 frame_size = replay_frame->size;
             if ((u32)(replay_cmd_buffer + frame_size) >= 0x006554B0) { // Added to prevent buffer overflow.
@@ -4358,7 +4355,6 @@ namespace hooks {
                         memcpy(replay_cmd_buffer, cmd_data, cmd_size);
                         cmd_data += cmd_size;
                     }
-
                     replay_data->cur_command = cmd_data;
                 }
                 g_replay_cmd_sizes[cmd_index++] = cmd_size; // Extracted from parameter.
