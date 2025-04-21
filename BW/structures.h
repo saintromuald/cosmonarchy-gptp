@@ -575,15 +575,15 @@ struct BinDlg {
 /*0x24*/  u16			graphic;
 
 union {
-/*0x26*/  void*		    user;
-/*0x26*/  Unit*		    unit_user;
-/*0x26*/  BinDlg*	    dialog_user;
-/*0x26*/  Button*	    button_user;
-StatusScreenState*	    stat_button_user; // from Neiv's list
-/*0x26*/  u32		    non_user_value;
-GrpHead*			    grp_head_user;
-PortraitData*		    portrait_data;
-UserUnit*               user_unit_with_id;
+/*0x26*/  void*		user;
+/*0x26*/  Unit*		unit_user;
+/*0x26*/  BinDlg*	dialog_user;
+/*0x26*/  Button*	button_user;
+StatusScreenState*	stat_button_user; // from Neiv's list
+/*0x26*/  u32		non_user_value;
+GrpHead*			grp_head_user;
+PortraitData*		portrait_data;
+UserUnit*           user_unit_with_id;
 };
 
 /*0x2A*/  void*			fxn_interact;
@@ -633,6 +633,11 @@ union {
 };
 
 union {
+/*0x42*/  void*			child_smk;
+/*0x42*/  BinDlg*		child_dialog;
+};
+
+union {
     struct {
         /*0x46*/  Point16	text_pos;
         /*0x4A*/  u16		response_area_width;
@@ -657,10 +662,7 @@ union {
         /*0x4F*/  unk_t     unk_4f[7];				// unverified filler
     } alternateVersion0x46;
 };
-union {
-/*0x42*/  void*			child_smk;
-/*0x42*/  BinDlg*		child_dialog;
-};
+
 };
 
 C_ASSERT(sizeof(BinDlg) == 86); //0x56
