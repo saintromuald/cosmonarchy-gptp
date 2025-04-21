@@ -487,6 +487,36 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) orders_watch_target_wrapper() { // 0047BAB0
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::orders_watch_target(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) target_is_inside_minimum_range_wrapper() { // 004764D0
+		static Unit* unit;
+		static Unit* target;
+		static bool result;
+		__asm {
+			MOV unit, EAX
+			MOV target, ESI
+			PUSHAD
+		}
+		result = hooks::target_is_inside_minimum_range(unit, target);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
+	}
+	
 	// Patches \\
 
 	const u32 GetClosestReachable_2F155 = 0x0042F155;
@@ -556,6 +586,8 @@ namespace hooks {
 		jump_patch(is_ready_to_attack_wrapper,							0x00476640, 1);
 	//	jump_patch(ai_choose_target_wrapper,							0x00431990, 1); // Disabled for now because it's a mess and I have limited time to refactor it. -Pr0nogo
 		jump_patch(get_air_weapon_wrapper,								0x00475840, 5);
+		jump_patch(orders_watch_target_wrapper,							0x0047BAB0, 0);
+		jump_patch(target_is_inside_minimum_range_wrapper,				0x004764D0, 0);
 
 		// Patches \\
 

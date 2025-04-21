@@ -4313,4 +4313,131 @@ namespace hooks {
         g_gl_glues_mode = MenuId::GlueDirect;
         return network_mode;
     }
+
+    // Hooked to fix broken replays when commands are given during pauses. -DF
+    // Original function has parameters, but since all of the variables being passed are globals there's no need for them.
+    __declspec(noinline) s32 get_replay_turn_data() {
+        ReplayData* replay_data = *g_replay_data;//Extracted from parameter.
+        if (!replay_data->is_replaying) {
+            return -1;
+        }
+
+        ReplayFrame* replay_frame = replay_data->cur_frame;
+
+        if ((u32)replay_frame > replay_data->start + replay_data->size) {//Changed >= to > to fix replay last action bug.
+            return -1;
+        }
+
+        u8* replay_cmd_buffer  = g_replay_cmd_buffer;  // Extracted from parameter.
+        u8* replay_cmd_players = g_replay_cmd_players; // Extracted from parameter.
+        s32 frame_time = replay_frame->time;
+        u32 cmd_index = 0;
+
+        do {
+            s32 frame_size = replay_frame->size;
+            if ((u32)(replay_cmd_buffer + frame_size) >= 0x006554B0) { // Added to prevent buffer overflow.
+                break;
+            }
+            replay_data->cur_command = replay_frame->data;
+            while (frame_size > 0) {
+                replay_cmd_players[cmd_index] = -1;
+                s32 cmd_size = 0;
+
+                if (replay_data->is_replaying) { // May be pointless due to the return condition at the top.
+                    u8* cmd_data = replay_data->cur_command;
+                    replay_cmd_players[cmd_index] = cmd_data[0];
+                    ++cmd_data;
+                    u32 cmd_id = cmd_data[0];
+                    if (cmd_id >= 9 && cmd_id <= 11) { // GameCommand_Select, GameCommand_ShiftDeselect
+                        cmd_size = 2 * cmd_data[1] + 2;
+                    } else {
+                        cmd_size = g_turn_command_size[cmd_id];
+                    }
+
+                    if (cmd_size) {
+                        memcpy(replay_cmd_buffer, cmd_data, cmd_size);
+                        cmd_data += cmd_size;
+                    }
+
+                    replay_data->cur_command = cmd_data;
+                }
+                g_replay_cmd_sizes[cmd_index++] = cmd_size; // Extracted from parameter.
+                replay_cmd_buffer += cmd_size;
+                frame_size -= cmd_size + 1;
+            }
+
+            replay_frame = replay_data->cur_frame;
+            if ((u32)replay_frame > replay_data->start + replay_data->size) { // Changed >= to > to fix replay last action bug.
+                return -1;
+            }
+        } while (replay_frame->time == frame_time);
+        g_replay_cmd_count = cmd_index; // Extracted from parameter.
+        return frame_time;
+    }
+
+    // Hooked to improve replay stability. -DF
+    void replay_loop() { // 004D96C4
+        if (!g_sync_turn_enabled) {
+            return;
+        }
+        s32 elapsed_time = g_elapsed_time_frames;
+        if (elapsed_time < (s32)g_replay_end_frame) {
+            s32 next_frame_time = *next_replay_command_frame;
+
+            while (elapsed_time >= next_frame_time) {
+                if (elapsed_time <= next_frame_time) {
+                    u32 cmd_count = g_replay_cmd_count;
+                    if (cmd_count) {
+                        g_is_in_game_loop = true;
+                        g_6D5BEC = true;
+                        s32 cur = 0;
+                        u32 cmd = 0;
+                        do {
+                            u32 player = 0;
+                            do {
+                                if (g_player_table[player].actions == g_replay_cmd_players[cmd]) {
+                                    u32 _id = g_player_table[player].id;
+                                    *g_active_nation_id = _id;
+                                    *g_active_player_id = _id;
+                                    break;
+                                }
+                            } while (++player < 8);
+                            s32 cmd_size = g_replay_cmd_sizes[cmd];
+                            *g_sequence = 0;
+                            helper::game_recv(&g_replay_cmd_buffer[cur], cmd_size, true);
+                            cur += cmd_size;
+                        } while (++cmd < cmd_count);
+                        g_replay_cmd_count = 0;
+                        *g_active_nation_id = g_local_nation_id;
+                        *g_active_player_id = *g_local_human_id;
+                        *g_active_storm_id = *g_local_storm_id;
+                        g_is_in_game_loop = false;
+                        g_6D5BEC = false;
+                    }
+                }
+                if ((*next_replay_command_frame = next_frame_time = get_replay_turn_data()) == -1) {
+                    break;
+                }
+            }
+        } else {
+            helper::CMDRECV_set_replay_speed(g_options_list->speed, true, g_speed_multiplier);
+            if (!g_685178 && !g_68517C) {
+                if (*g_multiplayer_mode && g_current_network_mode == 'BNET' && !g_685174) {
+                    g_685174 = true;
+                    helper::report_game_result();
+                }
+                g_685178 = true;
+
+                if (g_is_placing_building) {
+                    helper::end_building_placement();
+                }
+                if (g_is_targeting) {
+                    helper::cancel_target_order();
+                }
+                helper::set_ingame_input_procs();
+                *last_control_index = 0;
+                helper::load_dialog("rez\\wmission.bin", (void*)0x00461510); // g_mission_bindlg_main()
+            }
+        }
+    }
 }

@@ -10,315 +10,317 @@ bool isGameOn = false;
 
 /******** Game Start ********/
 
-	const u32 Hook_OnGameStart = 0x004C9A51;
-	const u32 Hook_OnGameStartBack = Hook_OnGameStart + 5;
-	const u32 Func_CompileSCode = 0x00417C20;
-	void __declspec(naked) on_game_start()
-	{ // From BWAPI by Kovarex, slightly modified
-		__asm PUSHAD;
-		{
-			isGameOn = true;
-			hooks::game_preinit();
-			gptp::g_logger.log_game_start();
-		}
-		__asm {
-			POPAD
-			CALL Func_CompileSCode
-			JMP Hook_OnGameStartBack
-		}
-	}
+const u32 Hook_OnGameStart = 0x004C9A51;
+const u32 Hook_OnGameStartBack = Hook_OnGameStart + 5;
+const u32 Func_CompileSCode = 0x00417C20;
+void __declspec(naked) on_game_start()
+{ // From BWAPI by Kovarex, slightly modified
+    __asm PUSHAD;
+    {
+        isGameOn = true;
+        hooks::game_preinit();
+        gptp::g_logger.log_game_start();
+    }
+    __asm {
+        POPAD
+        CALL Func_CompileSCode
+        JMP Hook_OnGameStartBack
+    }
+}
 
-	/******** Game End ********/
+/******** Game End ********/
 
-	const u32 Func_DeleteSCode = 0x00416D90;
-	void __declspec(naked) on_game_end()
-	{ // From BWAPI by Kovarex, slightly modified
-		__asm PUSHAD;
-		{
-			isGameOn = false;
-			hooks::game_end();
-			gptp::g_logger.log_game_end();
-			gptp::g_local_random_logger.log_end();
-			gptp::g_sync_random_logger.log_end();
-		}
-		__asm {
-			POPAD
-			CALL Func_DeleteSCode
-			RETN
-		}
-	}
+const u32 Func_DeleteSCode = 0x00416D90;
+void __declspec(naked) on_game_end()
+{ // From BWAPI by Kovarex, slightly modified
+    __asm PUSHAD;
+    {
+        isGameOn = false;
+        hooks::game_end();
+        gptp::g_logger.log_game_end();
+        gptp::g_local_random_logger.log_end();
+        gptp::g_sync_random_logger.log_end();
+    }
+    __asm {
+        POPAD
+        CALL Func_DeleteSCode
+        RETN
+    }
+}
 
-	/******** NEXT FRAME HOOK ********/
+/******** NEXT FRAME HOOK ********/
 
-	void __declspec(naked) next_frame_hook()
-	{ // From BWAPI by Kovarex, slightly modified
-		__asm {
-			PUSHAD
-			MOV EBP, ESP
-		}
+void __declspec(naked) next_frame_hook()
+{ // From BWAPI by Kovarex, slightly modified
+    __asm {
+        PUSHAD
+        MOV EBP, ESP
+    }
 
-		{
-			hooks::next_frame();
-		}
-		if (bw::is_game_paused())
-		{
-			__asm {
-				POPAD
-				MOV EAX, 1
-				RETN
-			}
-		} else {
-			__asm {
-				POPAD
-				MOV EAX, 0
-				RETN
-			}
-		}
-	}
+    {
+        hooks::next_frame();
+    }
+    if (bw::is_game_paused())
+    {
+        __asm {
+            POPAD
+            MOV EAX, 1
+            RETN
+        }
+    } else {
+        __asm {
+            POPAD
+            MOV EAX, 0
+            RETN
+        }
+    }
+}
 
-	void __declspec(naked) next_ui_frame_hook() {
-		__asm {
-			PUSHAD
-			MOV EBP, ESP
-		}
-		hooks::next_ui_frame();
-		__asm {
-			POPAD
-			MOV EDI, 4 // original line
-			RETN
-		}
-	}
+void __declspec(naked) next_ui_frame_hook() {
+    __asm {
+        PUSHAD
+        MOV EBP, ESP
+    }
+    hooks::next_ui_frame();
+    __asm {
+        POPAD
+        MOV EDI, 4 // original line
+        RETN
+    }
+}
 
-	void __declspec(naked) ui_button_click_wrapper() {
-		static const u32 jmp_address = 0x004190F4;
-		static BinDlg* dialog;
-		__asm {
-			MOV dialog, ESI
-			PUSHAD
-		}
-		hooks::ui_button_click(dialog);
-		__asm {
-			POPAD
-			MOV EDX, EBX
-			MOV ECX, ESI
-			CALL dword ptr [ESI + 0x2A]
-			JMP jmp_address
-		}
-	}
+void __declspec(naked) ui_button_click_wrapper() {
+    static const u32 jmp_address = 0x004190F4;
+    static BinDlg* dialog;
+    __asm {
+        MOV dialog, ESI
+        PUSHAD
+    }
+    hooks::ui_button_click(dialog);
+    __asm {
+        POPAD
+        MOV EDX, EBX
+        MOV ECX, ESI
+        CALL dword ptr [ESI + 0x2A]
+        JMP jmp_address
+    }
+}
 
-	void __declspec(naked) update_doodad_visibility_wrapper() { // 00487690
-		static Thingy* thingy;
-		static b32 result;
-		__asm {
-			PUSH EBP
-			MOV EBP, ESP
-			PUSH EAX
-			MOV EAX, [EBP + 0x08]
-			MOV thingy, EAX
-			POP EAX
-			PUSHAD
-		}
-		result = hooks::update_doodad_visibility(thingy);
-		__asm {
-			POPAD
-			MOV ESP, EBP
-			POP EBP
-			MOV EAX, result
-			RETN 0x04
-		}
-	}
+void __declspec(naked) update_doodad_visibility_wrapper() { // 00487690
+    static Thingy* thingy;
+    static b32 result;
+    __asm {
+        PUSH EBP
+        MOV EBP, ESP
+        PUSH EAX
+        MOV EAX, [EBP + 0x08]
+        MOV thingy, EAX
+        POP EAX
+        PUSHAD
+    }
+    result = hooks::update_doodad_visibility(thingy);
+    __asm {
+        POPAD
+        MOV ESP, EBP
+        POP EBP
+        MOV EAX, result
+        RETN 0x04
+    }
+}
 
-	void __declspec(naked) game_recv_wrapper() { // 004865D0
-		static char* cur_len;
-		static s32 data_len;
-		static bool as_replay;
-		__asm {
-			PUSH EBP
-			MOV EBP, ESP
-			PUSH EAX
-			MOV EAX, [EBP + 0x08]
-			MOV data_len, EAX
-			MOV EAX, [EBP + 0x0C]
-			MOV as_replay, AL
-			POP EAX
-			MOV cur_len, EAX
-			PUSHAD
-		}
-		hooks::game_recv(cur_len, data_len, as_replay);
-		__asm {
-			POPAD
-			MOV ESP, EBP
-			POP EBP
-			RETN 0x08
-		}
-	}
+void __declspec(naked) game_recv_wrapper() { // 004865D0
+    static char* cur_len;
+    static s32 data_len;
+    static bool as_replay;
+    __asm {
+        PUSH EBP
+        MOV EBP, ESP
+        PUSH EAX
+        MOV EAX, [EBP + 0x08]
+        MOV data_len, EAX
+        MOV EAX, [EBP + 0x0C]
+        MOV as_replay, AL
+        POP EAX
+        MOV cur_len, EAX
+        PUSHAD
+    }
+    hooks::game_recv(cur_len, data_len, as_replay);
+    __asm {
+        POPAD
+        MOV ESP, EBP
+        POP EBP
+        RETN 0x08
+    }
+}
 
-	void __declspec(naked) sp_save_directory_wrapper() { // 004AE9E2
-		static const u32 jmp_address = 0x004AEA15;
-		static char* buffer;
-		__asm {
-			PUSH EAX
-			LEA EAX, [EBP - 0x104]
-			MOV buffer, EAX
-			POP EAX
-			PUSHAD
-		}
-		strcat(buffer, "\\");
-		strcat(buffer, g_config.default_map_directory.c_str());
-		__asm {
-			POPAD
-			JMP jmp_address
-		}
-	}
+void __declspec(naked) sp_save_directory_wrapper() { // 004AE9E2
+    static const u32 jmp_address = 0x004AEA15;
+    static char* buffer;
+    __asm {
+        PUSH EAX
+        LEA EAX, [EBP - 0x104]
+        MOV buffer, EAX
+        POP EAX
+        PUSHAD
+    }
+    strcat(buffer, "\\");
+    strcat(buffer, g_config.default_map_directory.c_str());
+    __asm {
+        POPAD
+        JMP jmp_address
+    }
+}
 
-	void __declspec(naked) mp_save_directory_wrapper() { // 0044CCF7
-		static const u32 jmp_address = 0x0044CD25;
-		static char* buffer;
-		__asm {
-			MOV buffer, EDX
-			PUSHAD
-		}
-		strcat(buffer, "\\");
-		strcat(buffer, g_config.default_map_directory.c_str());
-		__asm {
-			POPAD
-			JMP jmp_address
-		}
-	}
+void __declspec(naked) mp_save_directory_wrapper() { // 0044CCF7
+    static const u32 jmp_address = 0x0044CD25;
+    static char* buffer;
+    __asm {
+        MOV buffer, EDX
+        PUSHAD
+    }
+    strcat(buffer, "\\");
+    strcat(buffer, g_config.default_map_directory.c_str());
+    __asm {
+        POPAD
+        JMP jmp_address
+    }
+}
 
-	constexpr std::string_view replay_ext = ".ext";
-	constexpr auto replay_full_size = 31; // Some weird magic BW const we would want to extend 
-	constexpr auto replay_name_size = replay_full_size - replay_ext.size();
+constexpr std::string_view replay_ext = ".ext";
+constexpr auto replay_full_size = 31; // Some weird magic BW const we would want to extend 
+constexpr auto replay_name_size = replay_full_size - replay_ext.size();
 
-	static fs::path get_replay_path() {
-		return bw::get_starcraft_path() / "maps" / "replays";
-	}
+static fs::path get_replay_path() {
+    return bw::get_starcraft_path() / "maps" / "replays";
+}
 
-	void copy_last_replay(const std::string& dir, const std::string& name) {
-		std::ifstream from(get_replay_path() / "LastReplay.rep", std::ios::binary);
-		if (!from) {
-			return;
-		}
+void copy_last_replay(const std::string& dir, const std::string& name) {
+    std::ifstream from(get_replay_path() / "LastReplay.rep", std::ios::binary);
+    if (!from) {
+        return;
+    }
 
-		fs::path to_path = get_replay_path() / "Autosave" / dir / name;
-		if (fs::exists(to_path)) {
-			return; // Do not overwrite existing files
-		}
+    fs::path to_path = get_replay_path() / "Autosave" / dir / name;
+    if (fs::exists(to_path)) {
+        return; // Do not overwrite existing files
+    }
 
-		std::error_code error;
-		fs::create_directories(to_path.parent_path(), error);
+    std::error_code error;
+    fs::create_directories(to_path.parent_path(), error);
 
-		std::ofstream to(to_path, std::ios::binary);
-		if (!to) {
-			return;
-		}
+    std::ofstream to(to_path, std::ios::binary);
+    if (!to) {
+        return;
+    }
 
-		to << from.rdbuf();
-	}
+    to << from.rdbuf();
+}
 
-	void replay_save() {
-		if (!g_config.auto_save_replays) {
-			return;
-		}
+void replay_save() {
+    if (!g_config.auto_save_replays) {
+        return;
+    }
 
-		constexpr std::string_view ext = ".rep";
-		time_t now = time(0);
-		tm* ltm = localtime(&now);
-		std::string commit = bw::get_commit_hash();
+    constexpr std::string_view ext = ".rep";
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    std::string commit = bw::get_commit_hash();
 
-		std::stringstream dir_ss;
-		dir_ss << std::put_time(ltm, "%Y-%m-%d");
-		if (!commit.empty()) {
-			dir_ss << "_" << commit;
-		}
+    std::stringstream dir_ss;
+    dir_ss << std::put_time(ltm, "%Y-%m-%d");
+    if (!commit.empty()) {
+        dir_ss << "_" << commit;
+    }
 
-		std::string dir = dir_ss.str();
-		if (dir.size() > replay_name_size) {
-			dir.resize(replay_name_size);
-		}
+    std::string dir = dir_ss.str();
+    if (dir.size() > replay_name_size) {
+        dir.resize(replay_name_size);
+    }
 
-		std::stringstream file_ss;
-		if (!commit.empty()) {
-			file_ss << commit << "_";
-		}
-		file_ss << std::put_time(ltm, "%H-%M") << "_" << g_current_map_name;
+    std::stringstream file_ss;
+    if (!commit.empty()) {
+        file_ss << commit << "_";
+    }
+    file_ss << std::put_time(ltm, "%H-%M") << "_" << g_current_map_name;
 
-		std::string file = file_ss.str();
-		if (file.size() > replay_name_size) {
-			file.resize(replay_name_size);
-		}
+    std::string file = file_ss.str();
+    if (file.size() > replay_name_size) {
+        file.resize(replay_name_size);
+    }
 
-		/*
-		bool first = true;
-		for (u32 i = 0; i < PlayerLimit; ++i) {
-			if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
-				continue;
-			}
-			if (globals->players[i].is_witness) {
-				continue;
-			}
-			if (first) {
-				first = false;
-				strcat_s(name, ", ");
-			} else {
-				strcat_s(name, " - ");
-			}
-			strcat_s(name, player_data.full_player_names[i].data);
-		}
-		*/
+    /*
+    bool first = true;
+    for (u32 i = 0; i < PlayerLimit; ++i) {
+        if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
+            continue;
+        }
+        if (globals->players[i].is_witness) {
+            continue;
+        }
+        if (first) {
+            first = false;
+            strcat_s(name, ", ");
+        } else {
+            strcat_s(name, " - ");
+        }
+        strcat_s(name, player_data.full_player_names[i].data);
+    }
+    */
 
-		copy_last_replay(dir, file + std::string{ext});
-	}
+    copy_last_replay(dir, file + std::string{ext});
+}
 
-	void __declspec(naked) replay_save_wrapper() { // 004EEBEA
-		static const u32 jmp_address = 0x004EEBF0;
-		__asm {
-			PUSHAD
-		}
-		replay_save();
-		static u8 is_league = *g_is_league_game;
-		__asm {
-			POPAD
-			CMP bl, is_league // original code
-			JMP jmp_address
-		}
-	}
+void __declspec(naked) replay_save_wrapper() { // 004EEBEA
+    static const u32 jmp_address = 0x004EEBF0;
+    __asm {
+        PUSHAD
+    }
+    replay_save();
+    static u8 is_league = *g_is_league_game;
+    __asm {
+        POPAD
+        CMP bl, is_league // original code
+        JMP jmp_address
+    }
+}
 
-	void __declspec(naked) initialize_provider_version_wrapper() { // 00472770
-		static GameVersion* version;
-		__asm {
-			MOV version, ESI
-			PUSHAD
-		}
-		hooks::initialize_provider_version(version);
-		__asm {
-			POPAD
-			MOV EAX, 0
-			RET
-		}
-	}
-
-//-------- Hook injector --------//
+void __declspec(naked) initialize_provider_version_wrapper() { // 00472770
+    static GameVersion* version;
+    __asm {
+        MOV version, ESI
+        PUSHAD
+    }
+    hooks::initialize_provider_version(version);
+    __asm {
+        POPAD
+        MOV EAX, 0
+        RET
+    }
+}
 
 namespace hooks {
-	void inject_game_hooks() {
-		jump_patch(on_game_start,						Hook_OnGameStart);
-		jump_patch(set_ingame_input_procs,				0x00484CC0, 0);
-		jump_patch(update_minimap_colors,				0x004A3A00, 0);
-		jump_patch(update_doodad_visibility_wrapper,	0x00487690, 1);
-		jump_patch(game_recv_wrapper,					0x004865D0, 0);
+void inject_game_hooks() {
+    jump_patch(on_game_start,						Hook_OnGameStart);
+    jump_patch(set_ingame_input_procs,				0x00484CC0, 0);
+    jump_patch(update_minimap_colors,				0x004A3A00, 0);
+    jump_patch(update_doodad_visibility_wrapper,	0x00487690, 1);
+    jump_patch(game_recv_wrapper,					0x004865D0, 0);
 
-		jump_patch(ui_button_click_wrapper,				0x004190ED, 2);
+    jump_patch(ui_button_click_wrapper,				0x004190ED, 2);
 
-		call_patch(on_game_end,							0x004EE983, 0);
-		call_patch(next_frame_hook,						0x004D974E, 0);
-		call_patch(next_ui_frame_hook,					0x004DE433, 0);
+    call_patch(on_game_end,							0x004EE983, 0);
+    call_patch(next_frame_hook,						0x004D974E, 0);
+    call_patch(next_ui_frame_hook,					0x004DE433, 0);
 
-		jump_patch(sp_save_directory_wrapper,			0x004AE9E2, 0);
-		jump_patch(mp_save_directory_wrapper,			0x0044CCF7, 1);
-		jump_patch(replay_save_wrapper,					0x004EEBEA, 1);
+    jump_patch(sp_save_directory_wrapper,			0x004AE9E2, 0);
+    jump_patch(mp_save_directory_wrapper,			0x0044CCF7, 1);
+    jump_patch(replay_save_wrapper,					0x004EEBEA, 1);
 
-		jump_patch(initialize_provider_version_wrapper, 0x00472770, 1);
-		jump_patch(network_set_return_menu,				0x004DC5B0, 0);
-	}
+    jump_patch(initialize_provider_version_wrapper, 0x00472770, 1);
+    jump_patch(network_set_return_menu,				0x004DC5B0, 0);
+
+    // Fix replay buffer overflow. (get_replay_turn_data @ 004CDFF0)
+    call_patch(hooks::get_replay_turn_data,         0x00487163);
+    call_patch(replay_loop,                         0x004D96C4);
+}
 }

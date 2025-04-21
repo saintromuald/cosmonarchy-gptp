@@ -5,7 +5,7 @@
 #pragma once
 #include "types.h"
 
-// New Extender Limits
+// New extender limits
 #define UnitLimit 4095
 #define UnitIDMask 0xFFF // Happens to be the same value as UnitLimit here, but it doesn't necessarily have to be.
 #define SpriteLimit 8875 // Must be a multiple of 5, as well as a multiple of 3 when decremented by one.
@@ -16,7 +16,7 @@
 #define FowSpriteLimit 2048
 #define BulletLimit 2048
 
-// Const Limits (Do not modify!)
+// Const limits (do not modify!)
 #define AiTownLimit 100
 #define ResAreaLimit 250
 
@@ -27,10 +27,10 @@
 
 const s32 PLAYER_COUNT = 12;
 const s32 PLAYABLE_PLAYER_COUNT = PlayerLimit;
-const s32 UNIT_ARRAY_LENGTH = UnitLimit; // 1700
+const s32 UNIT_ARRAY_LENGTH = UnitLimit;     // 1700
 const s32 BULLET_ARRAY_LENGTH = BulletLimit; // 100
 const s32 SPRITE_ARRAY_LENGTH = SpriteLimit; // 2500
-const s32 IMAGE_ARRAY_LENGTH = ImageLimit; // 5000
+const s32 IMAGE_ARRAY_LENGTH = ImageLimit;   // 5000
 const s32 THINGY_ARRAY_LENGTH = ThingyLimit; // 500;
 
 /*
@@ -44,12 +44,12 @@ const s32 SOUND_TYPE_COUNT = 1144;
 */
 
 // use DatExt variables
-extern int UNIT_TYPE_COUNT;		//= 228;
-extern int TECH_TYPE_COUNT;		//= 44;
-extern int UPGRADE_TYPE_COUNT;	//= 61;
-extern int WEAPON_TYPE_COUNT;	//= 130;
-extern int FLINGY_TYPE_COUNT;	//= 209;
-extern int IMAGE_TYPE_COUNT;	//= 999;
+extern int UNIT_TYPE_COUNT;	   //= 228;
+extern int TECH_TYPE_COUNT;	   //= 44;
+extern int UPGRADE_TYPE_COUNT; //= 61;
+extern int WEAPON_TYPE_COUNT;  //= 130;
+extern int FLINGY_TYPE_COUNT;  //= 209;
+extern int IMAGE_TYPE_COUNT;   //= 999;
 
 #include "structures/Unit.h"
 #include "structures/Bullet.h"
@@ -64,7 +64,7 @@ extern int IMAGE_TYPE_COUNT;	//= 999;
 typedef b32 __fastcall unit_stat_cond();
 typedef void __fastcall unit_stat_act();
 struct UnitStatFuncArrayEntry {
-    u32 unit_id;					// unused?
+    u32 unit_id; // unused?
     u32 unit_stat_cond_func;
     u32 unit_stat_act_func;
 };
@@ -117,8 +117,7 @@ struct unk_61 {
     u8 anonymous_5;
 };
 
-struct unk_62
-{
+struct unk_62 {
     u8 anonymous_0;
     u8 anonymous_1;
     u8 anonymous_2;
@@ -130,101 +129,103 @@ struct unk_62
 };
 
 struct StringMap_b {
-    u8		value;					// 0x0
-    u8		id;						// 0x1
+    u8		value; // 0x0
+    u8		id;	   // 0x1
 };
 
 struct StringMap_w {
-    u16		tbl_string;				// 0x0
-    u16		index;					// 0x2
+    u16		tbl_string;	// 0x0
+    u16		index;		// 0x2
 };
 
 struct DialogEvent {
-    u32		user;					// 0x0
-    u16		field_4;				// 0x4
-    u16		field_6;				// 0x6
-    u16		virtual_key;			// 0x8
-    u16		virtual_key_modifier;	// 0xA
-    u16		number_order;			// 0xC
-    Point16	current;				// 0xE
-    u16		field_12;				// 0x12
+    u32		user;				  // 0x0
+    u16		field_4;			  // 0x4
+    u16		field_6;			  // 0x6
+    u16		virtual_key;		  // 0x8
+    u16		virtual_key_modifier; // 0xA
+    u16		number_order;		  // 0xC
+    Point16	current;			  // 0xE
+    u16		field_12;			  // 0x12
 };
 
 // Seems to be identical to ResourceArea
 struct Base {
-    Point16	position;				// 0x0
-    u8		mineral_field_count;	// 0x4
-    u8		geyser_count;			// 0x5
-    u8		is_start_loc;			// 0x6
-    u8		flags;					// 0x7
-    u32		total_mineral_count;	// 0x8
-    u32		total_vespene_count;	// 0xC
-    u32		unk10;					// 0x10
-    u32		unk14;					// 0x14
-    u32		unk18;					// 0x18
-    u32		unk1C;					// 0x1C
-    u32		unk20;					// 0x20
-    u32		unk24;					// 0x24
-    u32		unk28;					// 0x28
-    u32		unk2C;					// 0x2C
+    Point16	position;			 // 0x0
+    u8		mineral_field_count; // 0x4
+    u8		geyser_count;		 // 0x5
+    u8		is_start_loc;		 // 0x6
+    u8		flags;				 // 0x7
+    u32		total_mineral_count; // 0x8
+    u32		total_vespene_count; // 0xC
+    u32		unk10;				 // 0x10
+    u32		unk14;				 // 0x14
+    u32		unk18;				 // 0x18
+    u32		unk1C;				 // 0x1C
+    u32		unk20;				 // 0x20
+    u32		unk24;				 // 0x24
+    u32		unk28;				 // 0x28
+    u32		unk2C;				 // 0x2C
 };
 
 struct GameData { // taken from IDA and from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
-    u32		save_time;					// 0x0
-    char	game_name[0x18];			// 0x4
-    u32		save_timestamp;				// 0x1C
-    u16		map_width_tiles;			// 0x20
-    u16		map_height_tiles;			// 0x22
-    u8		active_player_count;		// 0x24
-    u8		max_player_count;			// 0x25
-    u8		game_speed;					// 0x26
-    u8		game_state;					// 0x27
-    u16		g_game_type;				// 0x28
-    u16		game_subtype;				// 0x2A
-    u32		cdkey_hash;					// 0x2C
-    u16		tileset;					// 0x30
-    u8		is_replay;					// 0x32
-    u8		computer_player_count;		// 0x33
-    u8		host_name[0x19];			// 0x34
-    char	map_title[0x20];			// 0x4D
-    u16		got_game_type;				// 0x6D
-    u16		got_game_subtype;			// 0x6F
-    u16		got_game_subtype_display;	// 0x71
-    u16		got_game_subtype_label;		// 0x73
-    u8		victory_condition;			// 0x75
-    u8		resource_type;				// 0x76
-    u8		use_standard_unit_stats;	// 0x77
-    u8		fog_of_war;					// 0x78
-    u8		starting_units;				// 0x79
-    u8		use_fixed_positions;		// 0x7A
-    u8		restriction_flags;			// 0x7B
-    u8		allies_enabled;				// 0x7C
-    u8		teams_enabled;				// 0x7D
-    u8		cheats_enabled;				// 0x7E
-    u8		tournament_mode_enabled;	// 0x7F
-    u32		victory_condition_value;	// 0x80
-    u32		resource_mineral_value;		// 0x84
-    u32		resource_gas_value;			// 0x88
+    u32		save_time;				  // 0x0
+    char	game_name[0x18];		  // 0x4
+    u32		save_timestamp;			  // 0x1C
+    u16		map_width_tiles;		  // 0x20
+    u16		map_height_tiles;		  // 0x22
+    u8		active_player_count;	  // 0x24
+    u8		max_player_count;		  // 0x25
+    u8		game_speed;				  // 0x26
+    u8		game_state;				  // 0x27
+    u16		g_game_type;			  // 0x28
+    u16		game_subtype;			  // 0x2A
+    u32		cdkey_hash;				  // 0x2C
+    u16		tileset;				  // 0x30
+    u8		is_replay;				  // 0x32
+    u8		computer_player_count;	  // 0x33
+    u8		host_name[0x19];		  // 0x34
+    char	map_title[0x20];		  // 0x4D
+    u16		got_game_type;			  // 0x6D
+    u16		got_game_subtype;		  // 0x6F
+    u16		got_game_subtype_display; // 0x71
+    u16		got_game_subtype_label;	  // 0x73
+    u8		victory_condition;		  // 0x75
+    u8		resource_type;			  // 0x76
+    u8		use_standard_unit_stats;  // 0x77
+    u8		fog_of_war;				  // 0x78
+    u8		starting_units;			  // 0x79
+    u8		use_fixed_positions;	  // 0x7A
+    u8		restriction_flags;		  // 0x7B
+    u8		allies_enabled;			  // 0x7C
+    u8		teams_enabled;			  // 0x7D
+    u8		cheats_enabled;			  // 0x7E
+    u8		tournament_mode_enabled;  // 0x7F
+    u32		victory_condition_value;  // 0x80
+    u32		resource_mineral_value;	  // 0x84
+    u32		resource_gas_value;		  // 0x88
 };
 C_ASSERT(sizeof(GameData) == 0x8C);
 
-struct ReplayData { // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
-    u32		replay_data_start;			// 0x0
-    u32		bool_unk;					// 0x4
-    u32		replay_frame_begin;			// 0x8
-    u32		length[0x2];				// 0xC
-    u32		replay_frame_end;			// 0x14
-    u32		latest_command_frame;		// 0x18
-    u32		replay_frame_pos;			// 0x1C
-};
-C_ASSERT(sizeof(ReplayData) == 0x20);
-
 struct ReplayFrame { // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
-    u32		frame;						// 0x0
-    u8		data_length;				// 0x4
-    u8		storm;						// 0x5 | { byte storm_player, byte cmd[...] }[...]
+    u32	time;    // The game frame on which the commands are to be played.
+    u8	size;    // Total size of all commands within this frame.
+    u8	data[1]; // Usually { u8 active_storm_id; u8 command_id; u8 data_bytes[g_turn_command_size]; }. May contain a series of multiple commands.
 };
-C_ASSERT(sizeof(ReplayFrame) == 0x6);
+
+struct ReplayData {
+    b32 is_recording;    // True when playing a live game.
+    b32 is_replaying;    // True when watching replay.
+    u32 start;           // Address to the beginning of the replay data.
+    u32 size;            // Size in bytes of the replay data.
+    u32 capacity;        // Size in bytes of allocated memory. Initialized to 50000 and grown in steps of 10000.
+    u32 end;             // Address to the end of the replay data? Seems to always be 0.
+    u32 last_frame_time; // Frame number of the latest recorded action. Used only when tracking during a live game.
+    union {
+        ReplayFrame* cur_frame; // Address of the current replay frame.
+        u8* cur_command;        // Address of the current command within a replay frame.
+    };
+};
 
 struct Options { // taken from IDA 
     u32		speed;						// 0x0
@@ -512,8 +513,7 @@ struct ActiveTileDF {
 };
 C_ASSERT(sizeof(ActiveTileDF) == 4);
 
-union GroupFlag
-{
+union GroupFlag {
     struct {
         u8 is_zerg			: 1; /*0x01*/
         u8 is_terran		: 1; /*0x02*/
@@ -528,8 +528,7 @@ union GroupFlag
 };
 C_ASSERT(sizeof(GroupFlag) == 1);
 
-struct TargetFlag
-{
+struct TargetFlag {
     u16 air : 1;
     u16 ground : 1;
     u16 mechanical : 1;
@@ -545,8 +544,7 @@ C_ASSERT(sizeof(TargetFlag) == 2);
 
 //-------- End of flag structures --------//
 
-struct UnitFinderData
-{
+struct UnitFinderData {
     s32 unit_index;
     s32 position;
     bool operator < (const UnitFinderData& rhs) const {
@@ -572,7 +570,7 @@ struct BinDlg {
     /*0x24*/  u16			graphic;
 
     union {
-        /*0x26*/  u32*		user;
+        /*0x26*/  void*		user;
         /*0x26*/  Unit*		unit_user;
         /*0x26*/  BinDlg*	dialog_user;
         /*0x26*/  Button*	button_user;
@@ -587,48 +585,41 @@ struct BinDlg {
     /*0x32*/  BinDlg*		parent;
 
     union {
-        struct
-        {
+        struct {
             /*0x36*/  Box16		response_area;
             /*0x3E*/  BinDlg*	unk_3e;
         } initialVersion0x36;
-        struct
-        {
+        struct {
             /*0x36*/  s16		response_area_width;	// guess
             /*0x38*/  s16		response_area_height;	// guess
             /*0x3A*/  u32*		response_area_bit_array;// set with a memory allocation function, bit array is a guess
             /*0x3E*/  u32*		unk3e;					// unverified filler
         } onInitDialog0x36;
-        struct
-        {
+        struct {
             /*0x36*/  void*		unk_func_36;			// should be a function
             /*0x3A*/  u16		scrollMinValue;			// unconfirmed
             /*0x3C*/  u16		scrollMaxValue;			// unconfirmed
             /*0x3E*/  u16		scrollCurrentValue;		// unconfirmed
             /*0x40*/  u16		unk40;					// unverified filler
         } scrollDialog0x36;								// probably for scrollbar involving dialogs?
-        struct
-        {
+        struct {
             /*0x36*/  BinDlg*	unkDlg36;
             /*0x3A*/  u32		unk3a;					// unverified filler
             /*0x3E*/  u32		unk3e;					// unverified filler
         } dialogOn0x36;									// for when 0x36 is clearly BinDlg* but the rest is unknown
-        struct
-        {
+        struct {
             /*0x36*/  b32		unkBool32_36;			// based on the value only being compared to 0
             /*0x3A*/  u32		unk3a;					// unverified filler
             /*0x3E*/  u32		unk3e;					// unverified filler
         } checkBox0x36;									// not completely sure
-        struct
-        {
+        struct {
             /*0x36*/  u8		unkFlags36;				// "flag" because of possible unkFlags36 |= 1
             /*0x37*/  unk_t     unk37[3];				// unverified filler
             /*0x3A*/  u8**		unk3aArrayCharPtr;		// seen in a different context so may be wrong and belong to another category
             /*0x3E*/  u8		pszTextLen;				// should be the length of psz_text
             /*0x3F*/  unk_t     unk3f[3];				// unverified filler
         } textDialog0x36;								// seems to apply to some text related dialogs
-        struct
-        {
+        struct {
             /*0x36*/  u32		time_cost;
             /*0x3A*/  u32*		font_handle;
             /*0x3E*/  BinDlg*	player_name;
@@ -641,21 +632,18 @@ struct BinDlg {
     };
 
     union {
-        struct
-        {
+        struct {
             /*0x46*/  Point16	text_pos;
             /*0x4A*/  u16		response_area_width;
             /*0x4C*/  u16		response_area_height;
             /*0x4E*/  unk_t     unk_4e[8];
         } initial_version_0x46;
-        struct
-        {
+        struct {
             /*0x46*/  Point16	text_pos;				// unverified filler
             /*0x4A*/  u32		unk4a;
             /*0x4E*/  unk_t     unk_4e[8];				// unverified filler
         } onInitDialog0x46;
-        struct
-        {
+        struct {
             /*0x46*/  u8		item_count;
             /*0x47*/  u8		unk47;					// unverified filler
             /*0x48*/  u8		unk48;

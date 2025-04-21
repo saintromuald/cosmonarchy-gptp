@@ -1007,4 +1007,68 @@ namespace hooks {
     u8 get_air_weapon(Unit* unit) { // 00475840
         return unit->get_air_weapon();
     }
+
+    // Hooked to eventually extend weapon ids past 255. -Pr0nogo
+    void orders_watch_target(Unit* unit) { // 0047BAB0
+        Unit* target = unit->order_target.unit;
+        if (!target || !unit_can_attack_target(target, unit, 1)) {
+            helper::return_to_idle_at_pos(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+            return;
+        }
+        if (!is_target_visible(target, unit)) {
+            if (helper::get_right_click_action_order(unit) == OrderId::PlayerGuard) {
+                helper::return_to_idle_at_pos(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+            }
+            return;
+        }
+
+        Unit* final_unit = unit->subunit;
+        if (!final_unit || !final_unit->is_subunit()) {
+            final_unit = unit;
+        }
+
+        u32 weapon_id = WeaponId::None;
+        if (target->is_in_air()) {
+            weapon_id = units_dat::air_weapon[final_unit->id];
+        } else {
+            if (final_unit->burrowed_attacker_can_attack() || !unit->is_burrowed()) {
+                weapon_id = units_dat::ground_weapon[final_unit->id];
+            }
+        }
+        
+        if (weapon_id != WeaponId::None) {
+            return;
+        }
+        u32 min_range = weapons_dat::min_range[weapon_id];
+        if (min_range == 0 || !is_target_within_min_range(final_unit, min_range, target)) {
+            return;
+        }
+        if (helper::is_target_within_min_movement_range(target, final_unit, helper::get_unit_max_weapon_range(unit, weapon_id))) {
+            return;
+        }
+
+        if (helper::get_right_click_action_order(unit) == OrderId::PlayerGuard) {
+            helper::return_to_idle_at_pos(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+        }
+    }
+
+    // Hooked to eventually extend weapon ids past 255. -Pr0nogo
+    bool target_is_inside_minimum_range(Unit* unit, Unit* target) { // 004764D0
+        Unit* final_unit = unit->subunit;
+        if (!final_unit || !final_unit->is_subunit()) {
+            final_unit = unit;
+        }
+
+        u32 weapon_id = WeaponId::None;
+        if (target->is_in_air()) {
+            weapon_id = units_dat::air_weapon[final_unit->id];
+        } else if (final_unit->burrowed_attacker_can_attack() || !final_unit->is_burrowed()) {
+            weapon_id = units_dat::ground_weapon[final_unit->id];
+        }
+        u32 min_range = weapons_dat::min_range[weapon_id];
+        if (weapon_id != WeaponId::None && min_range) {
+            return helper::is_target_within_min_range(final_unit, min_range, target);
+        }
+        return false;
+    }
 }

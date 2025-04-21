@@ -4071,21 +4071,6 @@ namespace helper {
         return result;
     }
 
-    // for orders_watch_target
-    void unknown_orders_func(s32 a1, __int16 a2, __int16 a3) {
-        const u32 func_address = 0x00475350;
-        s32 a2_xd = a2;
-        s32 a3_xd = a3;
-        __asm {
-            PUSHAD
-            PUSH a3_xd
-            PUSH a2_xd
-            MOV EAX, a1
-            CALL func_address
-            POPAD
-        }
-    }
-
     // for orders_stay_in_range
     void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit) {
         const u32 func_address = 0x00474A20;
@@ -15707,5 +15692,32 @@ namespace helper {
             CALL func_address
             POPAD
         }
+    }
+
+    void return_to_idle_at_pos(Unit* unit, u16 pos_x, u16 pos_y) {
+        const u32 func_address = 0x00475350;
+        __asm {
+            PUSHAD
+            PUSH DWORD PTR pos_y
+            PUSH DWORD PTR pos_x
+            MOV EAX, unit
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void game_recv(u8* data_buffer, u32 data_length, b32 is_replay) {
+        const u32 function = 0x004865D0;
+        __asm {
+            PUSH is_replay
+            PUSH data_length
+            MOV EAX, data_buffer
+            CALL function
+        }
+    }
+
+    void report_game_result() {
+        const u32 function = 0x004C4790;
+        __asm CALL function
     }
 }
