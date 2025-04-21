@@ -140,8 +140,8 @@ namespace hooks {
 			if (offset_unit) {
 				if (units_dat::movement_flags[unit->id] == MovementFlags_HoverUnit) {
 					pos.y -= 7;
-				} else if (unit->status & UnitStatus::InAir) {
-					pos.y -= 42;
+				} else if (unit->is_in_air()) {
+					pos.y -= AirToGroundDistance;
 				}
 			}
 			helper::fix_target_location(&pos, unit->id);
@@ -605,7 +605,7 @@ namespace hooks {
 		}
 		// Air units f32 42 pixels above inside
 		if (unit->status & UnitStatus::InAir) {
-			return -42;
+			return -AirToGroundDistance;
 		}
 		// Default for inside units
 		return 0;

@@ -3050,7 +3050,7 @@ void regress(Unit* unit, u32 regression_id) {
     if (unit->id == UnitId::ZergEskigant || unit->id == UnitId::ZergExcisant) {
         new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
     } else if (unit_id_is_larva(regression_id) || units_dat::base_property[regression_id] & UnitProperty::Worker) {
-        new_unit = bw::create_unit_in_game(regression_id, unit->player, unit->position.x, is_atg_regression ? unit->position.y + 42 : unit->position.y);
+        new_unit = bw::create_unit_in_game(regression_id, unit->player, unit->position.x, is_atg_regression ? unit->position.y + AirToGroundDistance : unit->position.y);
         unit->ext().values[ValueNoCorpse] = true;
     } else {
         helper::replace_unit_with_id(unit, regress_to);
@@ -3058,7 +3058,7 @@ void regress(Unit* unit, u32 regression_id) {
         if (is_atg_regression) {
             Point16 old_pos = unit->position;
             Point16 new_pos = unit->position;
-            new_pos.y += 42;
+            new_pos.y += AirToGroundDistance;
             helper::fix_target_location(&new_pos, regress_to);
             if (bw::distance_between(old_pos, new_pos) <= 2 * 32) {
                 helper::move_unit(unit, new_pos.x, new_pos.y);

@@ -1191,7 +1191,7 @@ namespace hooks {
                 // Kill flying -> ground regressions if placement is impossible. Otherwise, no corpse is created! -Pr0nogo
                 if (!(units_dat::base_property[regression_id] & UnitProperty::Flyer) && units_dat::base_property[data.target->id] & UnitProperty::Flyer) {
                     Point16 position = data.target->position;
-                    position.y += 42;
+                    position.y += AirToGroundDistance;
                     const auto& tile = bw::get_tile_at_coords(position);
                     if (tile.is_unwalkable) {
                         return true;
