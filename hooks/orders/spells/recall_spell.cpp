@@ -127,8 +127,8 @@ namespace hooks {
 
 					static b32* const recall_successful = (b32*)(0x0063FF50);
 					*recall_successful = false;
-					for (Unit* target : g_unit_search.radial(unit->order_target.pt, 2 * 32)) {
-						if (!unit_ext.timers[TimerRecallInterval]) {
+					if (!unit_ext.timers[TimerRecallInterval]) {
+						if (Unit* target = g_unit_search.radial(unit->order_target.pt, Protoss::DimensionalRecallRange).closest_to(unit->order_target.pt)) {
 							unit_ext.timers[TimerRecallInterval] = Protoss::DimensionalRecallInterval;
 							spells_recall_action_on_target_in_range(target, unit);
 						}
