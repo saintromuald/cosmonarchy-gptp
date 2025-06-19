@@ -231,6 +231,7 @@ struct Globals {
     std::vector<SpriteReplacement> sprite_replacements;
     std::vector<TriggerButton> trigger_buttons;
 	std::vector<EcoMeasurements> eco_measurements;
+    std::vector<char> uuid_rand;
 
 	void sample_eco();
 	f32 calculate_hype() const;

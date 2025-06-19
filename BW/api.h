@@ -1037,6 +1037,7 @@ std::string get_commit_hash();
 bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos);
 Point16 align_to_tile_grid(Point16 pos, UnitId::Enum unit_id);
 u32 active_player_count();
+u32 human_or_witness_count();
 bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id);
 f32 calculate_dark_ages_penalty(f32 range);
 void zap_overlay(Unit* unit);

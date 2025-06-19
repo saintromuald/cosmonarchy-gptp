@@ -4191,6 +4191,17 @@ u32 active_player_count() {
     return player_count;
 }
 
+u32 human_or_witness_count() {
+    u32 player_count = 0;
+    for (u32 i = 0; i < 8; i++) {
+        if (g_player_table[i].type != PlayerType::Human) {
+            continue;
+        }
+        player_count++;
+    }
+    return player_count;
+}
+
 bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id) {
     switch (unit_id) {
         // Allow Utility, Detection, Transports, No Weaponed Craft

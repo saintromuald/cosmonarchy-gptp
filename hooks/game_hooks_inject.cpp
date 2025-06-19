@@ -5,6 +5,7 @@
 #include <config.h>
 #include <trigger_system\trigger_system.h>
 #include <player_color.h>
+#include <ReplayKraken.h>
 
 bool isGameOn = false;
 
@@ -193,8 +194,8 @@ static fs::path get_replay_path() {
     return bw::get_starcraft_path() / "maps" / "replays";
 }
 
-void copy_last_replay(const std::string& dir, const std::string& name) {
-    std::ifstream from(get_replay_path() / "LastReplay.rep", std::ios::binary);
+static void copy_last_replay(const std::string& dir, const std::string& name) {
+    std::ifstream from{get_replay_path() / "LastReplay.rep", std::ios::binary};
     if (!from) {
         return;
     }
@@ -207,7 +208,7 @@ void copy_last_replay(const std::string& dir, const std::string& name) {
     std::error_code error;
     fs::create_directories(to_path.parent_path(), error);
 
-    std::ofstream to(to_path, std::ios::binary);
+    std::ofstream to{to_path, std::ios::binary};
     if (!to) {
         return;
     }
@@ -215,11 +216,7 @@ void copy_last_replay(const std::string& dir, const std::string& name) {
     to << from.rdbuf();
 }
 
-void replay_save() {
-    if (!g_config.auto_save_replays) {
-        return;
-    }
-
+static void auto_save_replay() {
     constexpr std::string_view ext = ".rep";
     time_t now = time(0);
     tm* ltm = localtime(&now);
@@ -267,6 +264,24 @@ void replay_save() {
     */
 
     copy_last_replay(dir, file + std::string{ext});
+}
+
+static void upload_last_replay() {
+    std::ifstream from{get_replay_path() / "LastReplay.rep", std::ios::binary};
+    if (!from) {
+        return;
+    }
+    std::vector<char> replay{std::istreambuf_iterator<char>(from), std::istreambuf_iterator<char>()};
+    ReplayKraken::send_replay(g_globals->uuid_rand, bw::get_commit_hash(), replay);
+}
+
+static void replay_save() {
+    if (g_config.auto_save_replays) {
+        auto_save_replay();
+    }
+    if (g_config.upload_all_replays) {
+        upload_last_replay();
+    }
 }
 
 void __declspec(naked) replay_save_wrapper() { // 004EEBEA

@@ -1642,7 +1642,6 @@ bool Unit::is_plainly_visible() {
 bool Unit::can_use_passive_ability() {
     return this->is_completed() && !this->is_frozen() && !this->is_in_transport() && !this->ext().values[ValueDisablePassive];
 }
-<<<<<<< HEAD
 
 u32 Unit::get_adaptive_amitosis_range() {
     u32 timer = this->ext().timers[TimerAdaptiveAmitosisGrowth];
@@ -1671,5 +1670,3 @@ bool Unit::can_be_passive_cloaked(Unit* source) {
     return this->is_completed() && this != source && !this->is_neutral_accessory() && this->id != UnitId::TerranMorningstar
         && bw::are_mutual_allies(this->player, source->player) && this->player != 11 && !this->is_frozen();
 }
-=======
->>>>>>> 08fcced62 (Add hype score; Tidy nlohmann usage; Add and tidy dependencies; TODO: Remove yaml source files from gptp compilation somehow; Implement ReplayKraken request client)

@@ -2,6 +2,7 @@
 // For the member functions, see Unit.h
 // Based on BWAPI's BW/Unit.h
 
+#pragma once
 #include "Target.h"
 #include "List.h"
 #include <vector>
@@ -25,6 +26,7 @@ namespace NewGameCommand {
         SelectFaction,
         SyncColorPref,
         AnnounceDefeat,
+        UuidRand,
     };
 }
 

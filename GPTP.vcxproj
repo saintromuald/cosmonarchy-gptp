@@ -263,41 +263,7 @@
     <ClCompile Include="hooks\orders\orders_root_inject.cpp" />
     <ClCompile Include="hooks\update_unit_sight.cpp" />
     <ClCompile Include="hooks\update_unit_sight_inject.cpp" />
-<<<<<<< HEAD
-    <ClCompile Include="include\yaml-cpp\src\binary.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\contrib\graphbuilder.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\contrib\graphbuilderadapter.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\convert.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\depthguard.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\directives.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\emit.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\emitfromevents.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\emitter.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\emitterstate.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\emitterutils.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\exceptions.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\exp.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\memory.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\node.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\nodebuilder.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\nodeevents.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\node_data.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\null.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\ostream_wrapper.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\parse.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\parser.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\regex_yaml.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\scanner.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\scanscalar.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\scantag.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\scantoken.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\simplekey.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\singledocparser.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\stream.cpp" />
-    <ClCompile Include="include\yaml-cpp\src\tag.cpp" />
     <ClCompile Include="BW\extender\iscript_extender.cpp" />
-=======
->>>>>>> 08fcced62 (Add hype score; Tidy nlohmann usage; Add and tidy dependencies; TODO: Remove yaml source files from gptp compilation somehow; Implement ReplayKraken request client)
     <ClCompile Include="maths.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -671,7 +637,6 @@
     <ClInclude Include="hooks\orders\orders_root.h" />
     <ClInclude Include="DatExtend\dat_limits.h" />
     <ClInclude Include="hooks\update_unit_sight.h" />
-<<<<<<< HEAD
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="include\magic_enum\magic_enum.hpp" />
     <ClInclude Include="include\magic_enum\magic_enum_all.hpp" />
@@ -710,12 +675,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="GameModes\Uprising.h" />
     <ClInclude Include="trigger_system\table_edit.h" />
-=======
-    <ClInclude Include="maths.h" />
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="GameModes\Uprising.h" />
     <ClInclude Include="ReplayKraken.h" />
->>>>>>> 08fcced62 (Add hype score; Tidy nlohmann usage; Add and tidy dependencies; TODO: Remove yaml source files from gptp compilation somehow; Implement ReplayKraken request client)
     <ClInclude Include="utility\RegConfig.h" />
     <ClInclude Include="req_table.h" />
     <ClInclude Include="BW\enumerations\PortraitId.h" />

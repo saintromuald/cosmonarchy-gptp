@@ -154,6 +154,7 @@ void load_config() {
     // Replays
     load_field(yaml, "auto-save-replays", g_config.auto_save_replays);
     load_field(yaml, "sanitize-replay-chat", g_config.sanitize_replay_chat);
+    load_field(yaml, "upload-all-replays", g_config.auto_save_replays);
 
     validate_config();
     save_config();
@@ -317,6 +318,10 @@ void save_config() {
     yaml << YAML::Comment("Replays");
     write_field(yaml, "auto-save-replays", g_config.auto_save_replays);
     write_field(yaml, "sanitize-replay-chat", g_config.sanitize_replay_chat);
+
+    yaml << YAML::Newline << YAML::Comment("If you wish to participate in ReplayKraken Alpha testing, we currently only allow you to upload *ALL* replays");
+    yaml << YAML::Newline << YAML::Comment("I know this may be unfortunate, but a more fine-grain uploads will only be implemented later");
+    write_field(yaml, "upload-all-replays", g_config.upload_all_replays);
     yaml << YAML::Newline << YAML::Newline;
 
     yaml << YAML::EndMap;
