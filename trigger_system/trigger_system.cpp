@@ -718,6 +718,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
             Objective& objective = g_objectives.get(key);
             objective.text = text.string();
+            objective.max_score = 1;
             objective.show = true;
         } else if (parser.equals("objective_text") && is_local_player) {
             s32 key = parser.get_s32();

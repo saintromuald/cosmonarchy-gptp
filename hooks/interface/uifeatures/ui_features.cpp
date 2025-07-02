@@ -11,7 +11,6 @@
 #include "trigger_system/trigger_system.h"
 #include <hooks\interface\minimap.h>
 #include "Game.h"
-#include "hooks\interface\weapon_armor_tooltip.h"
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
 static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;
@@ -123,7 +122,7 @@ namespace hooks {
 
                 appendf(&pos, &size, "- ");
                 if (objective.max_score == 1) {
-                    appendf(&pos, &size, "[%c] ", objective.score ? 'X' : ' ', objective.text.c_str());
+                    appendf(&pos, &size, "%c ", objective.score ? 142 : 141, objective.text.c_str());
                 } else if (objective.max_score) {
                     appendf(&pos, &size, "[%u/%u] ", objective.score, objective.max_score);
                 }
@@ -1138,7 +1137,7 @@ namespace hooks {
         const char* cancel_string = g_stat_txt_buffer.get_string(802 + active_unit->get_race()); // Cancel 
         const char* name = helper::get_unit_name_stat_string(user->id);
         char dest[128];
-        sprintf_s(dest, 128, cancel_string, name);
+        sprintf_s(dest, 128, cancel_string, name); // Assigns to 'dest' the first letter of the string instead of the whole string, causing a crash. -Pr0nogo
         s32 bounds_top = 0;
         s32 bounds_left = 0;
         if (dialog->control_type) {
