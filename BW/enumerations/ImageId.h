@@ -428,7 +428,7 @@ namespace ImageId {
         Longbolt_GeminiMissilesTrail        = 422,
         BurrowingDust                       = 423,
         ShieldOverlay                       = 424,
-        SmallExplosion_Unused               = 425,
+        SmallExplosion_Unused               = 425, // Shield / energy restore
         DoubleExplosion                     = 426,
         PhaseDisruptorHit                   = 427,
         NuclearMissileDeath                 = 428,
@@ -1303,6 +1303,8 @@ namespace ImageId {
 
         ZobrioliskBurrowWeaponfireOverlay           = 1994,
         LakiziliskMutate                            = 1995,
+
+        HealingPulseUnderlay                        = 2036,
 
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,
