@@ -560,65 +560,25 @@ namespace {
     }
 }
 
-//The following patches are to be retired when their respective functions are hooked.
-const u32 StatNukeCount_42538E = 0x0042538E;
-void __declspec(naked) StatNukeCount_patch_25388() {
-    __asm {
-        MOV EBX, ds: [0x00597248]//unit = g_active_portrait_unit
-        MOV EBX, [EBX + 0xD0]
-        TEST EBX, EBX
-        SETE BL					//value = unit->silo.nuke ? 0 : 1
-        MOVZX EBX, BL
-        ADD EBX, 12
-        MOV[ESI + 0x24], BX	//icon->graphic = frame;
-        JMP StatNukeCount_42538E
-    }
-}
-
-const u32 StatHangarCount_25477 = 0x00425477;
-void __declspec(naked) StatHangarCount_patch_25471() {
-    __asm {
-        MOV EBX, ds: [0x00597248]//unit = g_active_portrait_unit
-        MOV EAX, [EBX + 0x64]	//unit->id
-        MOV BX, [EBX + 0xC8]	//(u16) unit->unit_with_hangar.in_hangar_count
-        CMP AX, 0x48			//Carrier
-        JE offset loc_isCarrier
-        CMP AX, 0x52			//Gantrithor
-        JE offset loc_isCarrier
-        MOV BH, 0				//Disregard out_hangar_count for reavers.
-
-        loc_isCarrier:
-        ADD BH, BL				//number = in_hangar_count + out_hangar_count
-        PUSH ECX
-        PUSH EDX
-        MOVZX ECX, BH
-        CALL get_stat_icon_graphic
-        MOV[ESI + 0x24], AX
-        POP EDX
-        POP ECX
-        JMP StatHangarCount_25477
-    }
-}
-
 namespace hooks {
     void inject_stats_panel_display_hooks() {
-        jump_patch(stats_panel_display_wrapper,				0x00426C60, 1);
-        jump_patch(get_unit_rank_string_wrapper,				0x0042F370, 2);
-        jump_patch(draw_unit_kills_string_wrapper,			0x00425DD0, 2);
-        jump_patch(draw_building_info_wrapper,				0x00427890, 3);
-        jump_patch(stats_armor_level_wrapper,					0x00425600, 1);
-        jump_patch(stats_weapon_level_wrapper,				0x00425790, 1);
-        jump_patch(stats_shield_level_wrapper,				0x00425510, 1);
-        jump_patch(stats_spidermine_count_wrapper,			0x00426300, 0);
-        jump_patch(set_tooltip_info_unit_case1_wrapper,		0x004594B0, 2);
-        jump_patch(set_tooltip_info_unit_case5_wrapper,		0x0045952F, 4);
-        jump_patch(reset_tooltip_info_wrapper_1,				0x00459360, 0);
-        jump_patch(reset_tooltip_info_wrapper_2,				0x004593B0, 0);
-        jump_patch(reset_tooltip_info_wrapper_3,				0x004597D5, 0);
-        jump_patch(set_tooltip_info_wrapper,					0x00458800, 4);
+        jump_patch(stats_panel_display_wrapper,						0x00426C60, 1);
+        jump_patch(get_unit_rank_string_wrapper,					0x0042F370, 2);
+        jump_patch(draw_unit_kills_string_wrapper,					0x00425DD0, 2);
+        jump_patch(draw_building_info_wrapper,						0x00427890, 3);
+        jump_patch(stats_armor_level_wrapper,						0x00425600, 1);
+        jump_patch(stats_weapon_level_wrapper,						0x00425790, 1);
+        jump_patch(stats_shield_level_wrapper,						0x00425510, 1);
+        jump_patch(stats_spidermine_count_wrapper,					0x00426300, 0);
+        jump_patch(set_tooltip_info_unit_case1_wrapper,				0x004594B0, 2);
+        jump_patch(set_tooltip_info_unit_case5_wrapper,				0x0045952F, 4);
+        jump_patch(reset_tooltip_info_wrapper_1,					0x00459360, 0);
+        jump_patch(reset_tooltip_info_wrapper_2,					0x004593B0, 0);
+        jump_patch(reset_tooltip_info_wrapper_3,					0x004597D5, 0);
+        jump_patch(set_tooltip_info_wrapper,						0x00458800, 4);
 
-    //	jump_patch(draw_tooltip_with_icon_wrapper,					        0x00458EF0, 1); // Don't recall why this was disabled.
-    //	jump_patch(stat_data_unit_wireframe_selection_wrapper,		        0x004583E0, 3); // Don't recall why this was disabled.
+    //	jump_patch(draw_tooltip_with_icon_wrapper,					0x00458EF0, 1); // Don't recall why this was disabled.
+    //	jump_patch(stat_data_unit_wireframe_selection_wrapper,		0x004583E0, 3); // Don't recall why this was disabled.
 
         jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
         jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
@@ -643,13 +603,5 @@ namespace hooks {
         nops(0x00426918, 6);
         
     //	call_patch(draw_tooltip_with_icon_partial_wrapper,          0x00458FB2, 1); // Don't recall why this was disabled.
-
-        // The following patches are to be retired when their respective functions are hooked.
-        // Dynamic status icon sizing.
-        jump_patch(StatNukeCount_patch_25388, 0x00425388, 1);
-        jump_patch(StatHangarCount_patch_25471, 0x00425471, 1);
-        // Remove trailing space from status icon labels.
-        memory_patch(0x0042533E, (u32)0x00505700);//nuke count
-        memory_patch(0x0042541E, (u32)0x00505700);//hangar count
     }
 }

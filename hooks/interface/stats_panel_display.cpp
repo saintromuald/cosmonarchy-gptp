@@ -9,22 +9,6 @@
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
 
-u16 __fastcall get_stat_icon_graphic(u8 value) {
-    u8 frame = 13; //2nd stat icon frame in unit\cmdbtns\?cmdbtns.grp
-    if (value >= 10) {
-        frame = 16;
-        if (value >= 100) {
-            frame = 19 - (value < 200);
-            value %= 100;
-        }
-        if (value >= 10) {
-            frame -= value < 20;
-            value %= 10;
-        }
-    }
-    return frame - (value == 1);
-}
-
 namespace hooks {
     // Attempting to be true to the original results in unoptimized code. -GPTP
     void stats_panel_display(BinDlg* dialog) { // 00426C60
@@ -402,7 +386,7 @@ namespace hooks {
         GrpHead* icons_grp = *g_cmdicons_grp;
         StatusScreenState* state = child->stat_button_user;
         Unit* active_unit = *g_active_portrait_unit;
-        child->graphic = get_stat_icon_graphic(armor_value);
+        child->graphic = 37 + (armor_value >= 10 || armor_value < 0) + (armor_value >= 100 || armor_value <= -10);
         state->button_grp = icons_grp;
         u32 final_unit_id = active_unit->build_queue[active_unit->build_queue_slot];
         if (active_unit->status & UnitStatus::Completed || bw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot])) {
@@ -456,7 +440,7 @@ namespace hooks {
         helper::disable_dialog(child);
         StatusScreenState* state = child->stat_button_user;
         GrpHead* icons_grp = *g_cmdicons_grp;
-        child->graphic = get_stat_icon_graphic(damage_value);
+        child->graphic = 37 + (damage_value >= 10) + (damage_value >= 100);
         state->button_grp = icons_grp;
         state->grp_frame = weapons_dat::weapon_icon[weapon_id];
         state->type = 0;
@@ -504,7 +488,7 @@ namespace hooks {
         helper::disable_dialog(child);
         StatusScreenState* state = child->stat_button_user;
         GrpHead* icons_grp = *g_cmdicons_grp;
-        child->graphic = get_stat_icon_graphic(armor_value);
+        child->graphic = 37 + (armor_value >= 10) + (armor_value >= 100);
         state->button_grp = icons_grp;
         state->grp_frame = 310;
         state->type = 2;
@@ -546,7 +530,7 @@ namespace hooks {
         helper::disable_dialog(child);
         StatusScreenState* user = child->stat_button_user;
         GrpHead* grp = *g_cmdicons_grp;
-        child->graphic = get_stat_icon_graphic(unit->mine_carrier.mine_count);
+        child->graphic = 37 + (unit->mine_carrier.mine_count >= 10) + (unit->mine_carrier.mine_count >= 100);
         user->button_grp = *g_cmdicons_grp;
         user->grp_frame = 13;
         user->type = 3;
@@ -554,7 +538,8 @@ namespace hooks {
 
         u32 flags = child->flags;
         child->text = g_status_screen_info_button_unk[index];
-        if (!(flags & 1)) {
+        if (!(flags & 1))
+        {
             child->flags = flags | 1;
             helper::update_dialog(child);
         }
