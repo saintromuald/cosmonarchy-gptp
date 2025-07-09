@@ -28,11 +28,8 @@ void Image::free() {
         bw::refresh_screen(this->screen_pos.x, this->screen_pos.y, this->screen_pos.x + this->grp_size.right, this->screen_pos.y + this->grp_size.bottom);
     }
 
-    // perform identically to original code
     this->parent_sprite->images.unlink<&Image::link>(this);
     this->grp_file = nullptr;
-
-    // perform identically to original code
     unusedImages.insertAfterHead(this);
 }
 
@@ -1480,18 +1477,32 @@ namespace hooks {
         }
     }
 
+    void _declspec(naked) progress_subunit_direction_patch() {
+        __asm {
+            MOV EAX, 8            // sigorder = 8
+            MOV EDX, [ESI + 0x70] // subunit->parent
+            AND AL, [EDX + 0x4F]  // sigorder &= parent->order_signal
+            XOR[EDX + 0x4F], AL   // parent->order_signal ^= sigorder
+            OR EAX, [ESI + 0x5C]  // sigorder |= subunit->order_target.unit
+            RETN
+        }
+    }
+
     void inject_image_hooks() {
-        jump_patch(initialize_image_data_wrapper,	0x004D5A50, 2);
-        jump_patch(set_image_direction_wrapper,		0x004D5F80, 1);
-        jump_patch(update_image_direction_wrapper,	0x004D5EA0, 2);
-        jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
-        jump_patch(show_cursor_marker_wrapper,		0x00488660, 3);
-        jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
-    //	jump_patch(image_update_warp_flash_wrapper,	0x004D8590, 1);
-    //	jump_patch(iscript_opcode_cases_wrapper,	0x004D74C0, 1);
-        jump_patch(iscript_fireweapon_wrapper,		0x00479D40, 4);
-        jump_patch(iscript_attackwith_wrapper,		0x00479D60, 1);
-        jump_patch(iscript_useweapon_wrapper,		0x00479C30, 3);
-        jump_patch(iscript_nobrkcodeend_wrapper,	0x004753E0, 4);
+        jump_patch(initialize_image_data_wrapper,	 0x004D5A50, 2);
+        jump_patch(set_image_direction_wrapper,	 0x004D5F80, 1);
+        jump_patch(update_image_direction_wrapper, 0x004D5EA0, 2);
+        jump_patch(play_image_iscript_wrapper,	 0x004D8470, 1);
+        jump_patch(show_cursor_marker_wrapper,	 0x00488660, 3);
+        jump_patch(play_warp_in_overlay_wrapper,	 0x004D8500, 0);
+    //	jump_patch(image_update_warp_flash_wrapper,	             0x004D8590, 1);
+    //	jump_patch(iscript_opcode_cases_wrapper,	             0x004D74C0, 1);
+        jump_patch(iscript_fireweapon_wrapper,	 0x00479D40, 4);
+        jump_patch(iscript_attackwith_wrapper,	 0x00479D60, 1);
+        jump_patch(iscript_useweapon_wrapper,		 0x00479C30, 3);
+        jump_patch(iscript_nobrkcodeend_wrapper,	 0x004753E0, 4);
+
+        // Allow subunits to use turnccwise and so on.
+        call_patch(progress_subunit_direction_patch, 0x004EB663);
     }
 }

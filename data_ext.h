@@ -222,6 +222,12 @@ enum ExtValueId {
     ValueSavantLaunchPos2,
     ValueTiangouLaunchPos,
     ValueArchitectLaunchPos,
+    ValueMiasma,
+    ValueNathrokHidebreaker,
+    ValueIsCloning,
+    ValueTicksDecolliding,
+    ValueCollisionBandage,
+    ValueCritter,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -381,6 +387,8 @@ enum ExtTimerId {
     TimerFacadePryingEyesChannel,
     TimerFacadePryingEyesCloak,
     TimerRecallInterval,
+    TimerAdaptiveAmitosisGrowth,
+    TimerWanderDelay,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

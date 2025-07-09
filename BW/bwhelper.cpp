@@ -2021,7 +2021,15 @@ namespace helper {
 
     // 0x0047B450
     bool unit_is_critter(Unit* unit) {
-        return false;
+        if (unit->ext().values[ValueCritter]) {
+            return true;
+        }
+        return unit->id == UnitId::ExtRagnasaur
+            || unit->id == UnitId::ExtRhynadon
+            || unit->id == UnitId::ExtBengalaas
+            || unit->id == UnitId::ExtScantid
+            || unit->id == UnitId::ExtUrsadon
+            || unit->id == UnitId::ExtKakaru;
     }
 
     void move_to_collide(Unit* unit, Unit* target) {
@@ -15719,5 +15727,27 @@ namespace helper {
     void report_game_result() {
         const u32 function = 0x004C4790;
         __asm CALL function
+    }
+
+    void iscript_set_pos(Image* image, s8 pos_x, s8 pos_y) {
+        const u32 func_address = 0x004D5900;
+        __asm {
+            PUSHAD
+            MOV CL, pos_y
+            MOV DL, pos_x
+            MOV EAX, image
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void orders_critter_wander(Unit* unit) {
+        const u32 func_address = 0x0047C3C0;
+        __asm {
+            PUSHAD
+            MOV EAX, unit
+            CALL func_address
+            POPAD
+        }
     }
 }

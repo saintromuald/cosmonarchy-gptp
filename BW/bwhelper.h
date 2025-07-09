@@ -1817,4 +1817,6 @@ namespace helper {
 
     void game_recv(u8* data_buffer, u32 data_length, b32 is_replay);                                // 004865D0
     void report_game_result();                                                                      // 004C4790
+    void iscript_set_pos(Image* image, s8 pos_x, s8 pos_y);                                         // 004D5900
+    void orders_critter_wander(Unit* unit);                                                         // 0047C3C0
 }
