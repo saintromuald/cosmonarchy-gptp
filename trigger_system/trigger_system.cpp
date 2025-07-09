@@ -1210,13 +1210,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             b32 enable = parser.get_s32();
 
             for (Unit* unit : designator.search().take(count)) {
-                UnitExt* unit_ext = get_unit_ext(unit);
+                auto& unit_ext = unit->ext();
                 switch (trigger_behavior) {
                     case TriggerBehavior_CloakProximity: {
-                        unit_ext->values[ValueTriggerBehaviorProximityCloak] = enable;
+                        unit_ext.values[ValueTriggerBehaviorProximityCloak] = enable;
                     } break;
                     case TriggerBehavior_CloakSteady: {
-                        unit_ext->values[ValueTriggerBehaviorSteadyShroud] = enable;
+                        unit_ext.values[ValueTriggerBehaviorSteadyShroud] = enable;
                     } break;
                     case TriggerBehavior_Hallucination: {
                         if (enable && !(unit->status & UnitStatus::IsHallucination)) {
@@ -1226,7 +1226,13 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                         }
                     } break;
                     case TriggerBehavior_DisablePassive: {
-                        unit_ext->values[ValueDisablePassive] = enable != false;
+                        unit_ext.values[ValueDisablePassive] = enable != false;
+                    } break;
+                    case TriggerBehavior_Critter: {
+                        if (unit_ext.values[ValueCritter] != enable) {
+                            unit_ext.values[ValueCritter] = enable;
+                            unit->order_to_idle();
+                        }
                     } break;
                 }
             }

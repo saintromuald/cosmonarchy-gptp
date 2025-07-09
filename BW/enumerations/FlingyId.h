@@ -295,7 +295,6 @@ namespace flingy_id {
 		ProtossPariah = 289,
 		TerranWendigo = 290,
 		GladiusWeapon = 291,
-		ZergBactalisk = 292,
 		CyclopsWeaponImpact = 293,
 		MaelstromMissile = 294,
 		ZergKalkalisk = 295,
@@ -384,5 +383,7 @@ namespace flingy_id {
 		IzirokorProjectile						= 407,
 		CyclopsFragmentaryExplosion				= 408,
 		BurstLasersHitBlue_Damageless			= 409,
+
+		ZergBactalisk							= 567,
 	};
 }

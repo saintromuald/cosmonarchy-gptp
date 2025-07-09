@@ -32,6 +32,30 @@ namespace UnitId {
     // Neutral
         TownCenterMarker									= 192,		// Terran Marker
         ResourceVespeneRidge								= 221,		// Mineral Cluster Type 2
+        ExtRagnasaur                                        = 465,
+        ExtRhynadon                                         = 466,
+        ExtBengalaas                                        = 467,
+        ExtScantid                                          = 468,
+        ExtUrsadon                                          = 469,
+        ExtKakaru                                           = 470,
+        ExtFlag                                             = 471,
+        ExtYoungChrysalis                                   = 472,
+        ExtPsiEmitter                                       = 473,
+        ExtDataDisk                                         = 474,
+        ExtKhaydarinCrystal                                 = 475,
+        ExtUraj                                             = 476,
+        ExtKhalis                                           = 477,
+        ExtMineralChunk1                                    = 478,
+        ExtMineralChunk2                                    = 479,
+        ExtVespeneTerran1                                   = 480,
+        ExtVespeneTerran2                                   = 481,
+        ExtVespeneProtoss1                                  = 482,
+        ExtVespeneProtoss2                                  = 483,
+        ExtVespeneZerg1                                     = 484,
+        ExtVespeneZerg2                                     = 485,
+        ExtBeaconTerran                                     = 486,
+        ExtBeaconProtoss                                    = 487,
+        ExtBeaconZerg                                       = 488,
 
     // Terran-Unit
         TerranApostle										= 10,		// Gui Montag
@@ -319,25 +343,26 @@ namespace UnitId {
         AskosiLandlock                                      = 429,
 
     // Special-Unit
-        TerranCivilianExt									= 332,
-        SarahKerriganExt									= 333,
-        InfestedKerriganExt									= 334,
+        ExtTerranCivilian									= 332,
+        ExtSarahKerrigan									= 333,
+        ExtInfestedKerrigan									= 334,
         DanielsMason										= 362,
         SmoochieBoy											= 363,
 
     // Special-Building
-        CrashedMinotaurExt									= 335,
-        TerranPsiDisrupterExt								= 336,
-        TerranPowerGeneratorExt								= 337,
-        ZergOvermindExt										= 338,
-        ZergOvermindShellExt								= 339,
-        ZergChrysalisExt									= 340,
-        ZergCerebrateExt									= 341,
-        ZergOvermindCocoonExt								= 342,
-        KhaydarinFormationExt								= 343,
-        ProtossTempleExt									= 344,
-        XelNagaTempleExt									= 345,
-        ProtossWarpGateExt									= 346,
+        ExtCrashedMinotaur									= 335,
+        ExtTerranPsiDisrupter								= 336,
+        ExtTerranPowerGenerator								= 337,
+        ExtZergOvermind										= 338,
+        ExtZergOvermindShell								= 339,
+        ExtZergChrysalis									= 340,
+        ExtZergCerebrate									= 341,
+        ExtZergOvermindCocoon								= 342,
+        ExtKhaydarinFormation								= 343,
+        ExtProtossTemple									= 344,
+        ExtXelNagaTemple									= 345,
+        ExtProtossWarpGate									= 346,
+        ExtStasisChamber                                    = 347,
         TerranControlNode									= 359,
 
     // Old enum

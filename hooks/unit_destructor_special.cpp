@@ -151,7 +151,7 @@ void unit_on_death_behaviors(Unit* unit) {
         case UnitId::ProtossPylon:
         case UnitId::ProtossCrucible:
         case UnitId::ProtossXenolith:
-        case UnitId::ProtossTempleExt: {
+        case UnitId::ExtProtossTemple: {
             // code from hooks::remove_psi_field(Unit* unit)
             // copied because the content is hardcoded here
             if (unit_ext.power_aura) {

@@ -283,7 +283,7 @@ bool unit_id_is_psi_provider(u16 unit_id) {
         || unit_id == UnitId::ProtossPylon
         || unit_id == UnitId::ProtossCrucible
         || unit_id == UnitId::ProtossXenolith
-        || unit_id == UnitId::ProtossTempleExt;
+        || unit_id == UnitId::ExtProtossTemple;
 }
 
 bool unit_id_can_do_controlled_demolition(u32 unit_id) {

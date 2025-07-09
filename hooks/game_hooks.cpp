@@ -1920,7 +1920,7 @@ namespace hooks {
                 fire_secondary_melee_weapon_if_needed(unit, WeaponId::PotentatePhaseSaber);
             } break;
             case UnitId::ZergMatraleth:
-            case UnitId::InfestedKerriganExt: {
+            case UnitId::ExtInfestedKerrigan: {
                 // Matraleth - Ensnaring Brood
                 if (!unit->is_frozen()) {
                     for (Unit* target : g_unit_search.radial_ex(unit, 4 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
@@ -3465,6 +3465,20 @@ namespace hooks {
             unit->update_speed(); // Have to do this here because of the Diadem bandage. -Pr0nogo
             if (unit->id == UnitId::TerranDiadem) {
                 unit->flingy_turn_rate = 27;
+            }
+        }
+
+        // Emulate critter wandering for crig-action critters. Not meant to be 1:1 with the original behavior. -Pr0nogo
+        if (unit_ext.values[ValueCritter]) {
+            bool is_human_unit = !unit->is_computer_controlled();
+            u32 order_id = is_human_unit ? units_dat::human_idle_order[unit->id] : units_dat::computer_idle_order[unit->id];
+            if (order_id == OrderId::Guard) {
+                order_id = is_human_unit ? OrderId::PlayerGuard : OrderId::ComputerAI;
+            }
+            if (unit->main_order_id == order_id && !unit_ext.timers[TimerWanderDelay]) {
+                u32 timer = bw::rand_between(8, 48);
+                unit_ext.timers[TimerWanderDelay] = timer;
+                helper::orders_critter_wander(unit);
             }
         }
 
