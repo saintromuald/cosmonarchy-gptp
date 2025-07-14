@@ -196,7 +196,7 @@ enum ExtValueId {
     ValueMadcapFullChargeRead,
     ValueHasStimpack,
     ValueControlledByDemiurge,
-    ValueHidebreaker,
+    ValueVorvalHidebreaker,
     ValueTryCastCustomSpell,
     ValueIsMalefactor,
     ValueReclaimed,
@@ -573,6 +573,7 @@ struct ThingyExt {
     u32 sight_range_before_death;
     u32 create_origin;
     u32 mine_count;
+    u32 is_regression;
 };
 
 #define GasBuildingsCap 16

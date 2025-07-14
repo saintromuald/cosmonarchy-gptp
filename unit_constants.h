@@ -114,6 +114,11 @@ inline constexpr s32 PryingEyesDuration = 10 * 24 + 1;
 inline constexpr s32 PryingEyesRange = 8 * 32;
 }
 
+namespace ApollyoidAdhesive {
+inline constexpr s32 Timer = 2 * 24 + 1;
+inline constexpr s32 StackCap = 3;
+}
+
 namespace Terran {
 inline constexpr s32 SublimeShepherdRange = 6 * 32;
 
@@ -153,6 +158,10 @@ inline constexpr s32 MaelstromTimer = 5 * 24 + 1;
 namespace ProtossArchon {
 inline constexpr s32 AstralAegisRange = 3 * 32;
 inline constexpr s32 AstralAegisShieldHeal = 50 * 256;
+}
+
+namespace ProtossClarion {
+inline constexpr s32 PhaseLinkRange = 3 * 32;
 }
 
 namespace ProtossUnar {
@@ -256,13 +265,24 @@ inline constexpr s32 SpawnDelay = 2 * 24;
 
 namespace Broodspawn {
 inline constexpr s32 DeathCycleEnsnareRange = 3 * 32;
-inline constexpr s32 DeathCycleEnsnareTimer = 5; // Vanilla timer, approximately 1 second
+inline constexpr s32 DeathCycleCorrosiveTouchRange = 3 * 32;
+inline constexpr s32 DeathCycleCorrosiveTouchTimer = 2 * 24 + 1;
 inline constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
 inline constexpr s32 LifeTimer = 119; // Oddly-specific because 120 (previous value) listed timed life as 12/11 in UI. -Pr0nogo
 }
 
-namespace Kazitrith {
-inline constexpr s32 AuraRadius = 6 * 32;
+namespace AdaptiveAmitosis {
+inline constexpr s32 GrowthTimer = 3 * 24 + 1;
+}
+
+namespace CorrosiveTouch {
+inline constexpr s32 Timer = 3 * 24 + 1;
+inline constexpr f64 CooldownIncrease = 3;
+inline constexpr f64 ArmorReduction = 1;
+}
+
+namespace Plague {
+inline constexpr s32 MiasmaTimer = 4;
 }
 
 namespace Zerg {

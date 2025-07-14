@@ -887,7 +887,7 @@ namespace hooks {
                 // Skithrokor - Ablative Whiplash
                 bw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
             } break;
-            case WeaponId::ZarcavrokorBonesofReflection: {
+            case WeaponId::ZergBonesofReflection: {
                 g_iquare_globals->add_bullet_multihit(bullet, target);
                 bw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, cp.x, cp.y, bullet->player);
                 hooks::weapon_bullet_hit(bullet, target, 1);

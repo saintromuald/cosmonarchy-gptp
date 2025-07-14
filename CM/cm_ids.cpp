@@ -532,7 +532,7 @@ bool weapon_id_pierces(u32 weapon_id) {
         case WeaponId::SentinelCerberusRailgun:
         case WeaponId::KalkaliskViscousAcid:
         case WeaponId::SkithrokorSkitteringSpores:
-        case WeaponId::ZarcavrokorBonesofReflection: {
+        case WeaponId::ZergBonesofReflection: {
             return true;
         }
     }
@@ -1413,6 +1413,136 @@ bool is_atg_regression(UnitId::Enum old_unit_id, UnitId::Enum new_unit_id) {
     return units_dat::base_property[old_unit_id] & UnitProperty::Flyer
        && !units_dat::base_property[new_unit_id] & UnitProperty::Flyer;
 }
+
+u32 get_overlay_offset(UnitId::Enum unit_id) {
+    if (unit_id_uses_xlarge_overlays(unit_id)) {
+        return 3;
+    }
+    if (units_dat::base_property[unit_id] & UnitProperty::LargeOverlay) {
+        return 2;
+    }
+    if (units_dat::base_property[unit_id] & UnitProperty::MediumOverlay) {
+        return 1;
+    }
+    return 0;
+}
+
+SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
+    // Specific
+    switch (unit_id) {
+        case UnitId::TerranMason:                  return SpriteId::Corpse_Mason;
+        case UnitId::TerranMaverick:               return SpriteId::Corpse_Maverick;
+        case UnitId::TerranHarakan:                return SpriteId::Corpse_Harakan;
+        case UnitId::TerranHarakanGolden:          return SpriteId::Corpse_Harakan;
+        case UnitId::TerranCyprian:                return SpriteId::Corpse_Cyprian;
+        case UnitId::TerranCleric:                 return SpriteId::Corpse_Cleric;
+        case UnitId::TerranShamanSupportMode:      return SpriteId::Corpse_Shaman;
+        case UnitId::TerranShamanVisionaryMode:    return SpriteId::Corpse_Shaman;
+        case UnitId::TerranEidolon:                return SpriteId::Corpse_Eidolon;
+        case UnitId::TerranEidolonNydus:           return SpriteId::Corpse_Eidolon;
+        case UnitId::TerranSavantEntropyGauntlets: return SpriteId::Corpse_Savant;
+        case UnitId::TerranSavantPowerSiphon:      return SpriteId::Corpse_Savant;
+        case UnitId::TerranApostle:                return SpriteId::Corpse_Apostle;
+        case UnitId::TerranDilettante:             return SpriteId::Corpse_Dilettante;
+        case UnitId::TerranHypnagogue:             return SpriteId::Corpse_Hypnagogue;
+        case UnitId::TerranVulture:                return SpriteId::Corpse_Vulture;
+        case UnitId::TerranCyclops:                return SpriteId::Corpse_Cyclops;
+        case UnitId::TerranCyclopsFuturist:        return SpriteId::Corpse_Cyclops;
+        case UnitId::TerranGoliath:                return SpriteId::Corpse_Goliath;
+        case UnitId::TerranAspirant:               return SpriteId::Corpse_Aspirant;
+        case UnitId::TerranBlackjack:              return SpriteId::Corpse_Blackjack;
+        case UnitId::TerranBlackjackGolden:        return SpriteId::Corpse_Blackjack;
+        case UnitId::TerranPhalanxTankMode:        return SpriteId::Corpse_PhalanxTank;
+        case UnitId::TerranPhalanxSiegeMode:       return SpriteId::Corpse_PhalanxSiege;
+        case UnitId::TerranMadrigalImperiosoMode:  return SpriteId::Corpse_MadrigalFuria;
+        case UnitId::TerranMadrigalFuriaMode:      return SpriteId::Corpse_MadrigalFuria;
+        case UnitId::TerranWraith:                 return SpriteId::Corpse_Wraith;
+        case UnitId::TerranAncile:                 return SpriteId::Corpse_Ancile;
+        case UnitId::TerranTrojan:                 return SpriteId::Corpse_Trojan;
+                                                   
+        case UnitId::ProtossScribe:                return SpriteId::Corpse_Scribe;
+        case UnitId::ProtossEnvoy:                 return SpriteId::Corpse_Envoy;
+        case UnitId::ProtossWitness:               return SpriteId::Corpse_Witness;
+        case UnitId::ProtossArtisan:               return SpriteId::Corpse_Artisan;
+        case UnitId::ProtossZealot:                return SpriteId::Corpse_Zealot;
+        case UnitId::ProtossZealotStarbound:       return SpriteId::Corpse_Zealot;
+        case UnitId::ProtossDracadin:              return SpriteId::Corpse_Dracadin;
+        case UnitId::ProtossDracadinOrder:         return SpriteId::Corpse_DracadinOrder;
+        case UnitId::ProtossEcclesiast:            return SpriteId::Corpse_Ecclesiast;
+        case UnitId::ProtossLegionnaire:           return SpriteId::Corpse_Legionnaire;
+        case UnitId::ProtossHierophant:            return SpriteId::Corpse_Hierophant;
+        case UnitId::ProtossSimulacrum:            return SpriteId::Corpse_Simulacrum;
+        case UnitId::ProtossManifold:              return SpriteId::Corpse_Manifold;
+        case UnitId::ProtossVassal:                return SpriteId::Corpse_Vassal;
+        case UnitId::ProtossIdol:                  return SpriteId::Corpse_Idol;
+        case UnitId::ProtossGolem:                 return SpriteId::Corpse_Golem;
+        case UnitId::ProtossRenesair:              return SpriteId::Corpse_Renesair;
+        case UnitId::ProtossLanifect:              return SpriteId::Corpse_Lanifect;
+                                                   
+        case UnitId::ZergLarva:                    return SpriteId::Corpse_Larva;
+        case UnitId::ZergOcsalLarva:               return SpriteId::Corpse_Larva;
+        case UnitId::ZergEgg:                      return SpriteId::Corpse_Egg;
+        case UnitId::ZergDroleth:                  return SpriteId::Corpse_Droleth;
+        case UnitId::ZergOvileth:                  return SpriteId::Corpse_Ovileth;
+        case UnitId::ZergZethrokor:                return SpriteId::Corpse_Zethrokor;
+        case UnitId::ZergQuazilisk:                return SpriteId::Corpse_Quazilisk;
+        case UnitId::ZergQuazrokor:                return SpriteId::Corpse_Quazilisk;
+        case UnitId::ZergVorvrokor:                return SpriteId::Corpse_Vorvrokor;
+        case UnitId::ZergNathrokor:                return SpriteId::Corpse_Nathrokor;
+        case UnitId::ZergMortothrokor:             return SpriteId::Corpse_Mortothrokor;
+        case UnitId::ZergHydralisk:                return SpriteId::Corpse_Hydralisk;
+        case UnitId::ZergHydraliskOrkoti:          return SpriteId::Corpse_HydraliskOrkoti;
+        case UnitId::ZergIzirokor:                 return SpriteId::Corpse_Izirokor;
+        case UnitId::ZergIziralisk:                return SpriteId::Corpse_Izirokor;
+        case UnitId::ZergBactalisk:                return SpriteId::Corpse_Bactalisk;
+        case UnitId::ZergKagralisk:                return SpriteId::Corpse_Kagralisk;
+        case UnitId::ZergEvigrilisk:               return SpriteId::Corpse_Evigrilisk;
+        case UnitId::ZergAlkajelisk:               return SpriteId::Corpse_ZergBuildingLarge;
+        case UnitId::ZergZoryusthaleth:            return SpriteId::Corpse_Zoryusthaleth;
+        case UnitId::ZergInzorthrokor:             return SpriteId::Corpse_Inzorthrokor;
+        case UnitId::ZergLakizilisk:               return SpriteId::Corpse_Lakizilisk;
+        case UnitId::ZergLakiziliskZorthos:        return SpriteId::Corpse_Lakizilisk;
+        case UnitId::ZergGorgrokor:                return SpriteId::Corpse_Gorgrokor;
+        case UnitId::ZergKonvilisk:                return SpriteId::Corpse_Konvilisk;
+        case UnitId::ZergRilirokor:                return SpriteId::Corpse_Rilirokor;
+        case UnitId::ZergUltrokor:                 return SpriteId::Corpse_Ultrokor;
+        case UnitId::ZergIsthrathaleth:            return SpriteId::Corpse_Isthrathaleth;
+    }
+
+    // Generic
+    u32 overlay_size = UnitId::get_overlay_offset(unit_id);
+    bool is_unit = !(units_dat::base_property[unit_id] & UnitProperty::Building);
+    switch (Unit::get_race(unit_id)) {
+        case RaceId::Terran: {
+            switch (overlay_size) {
+                case 0: return !is_unit ? SpriteId::Corpse_TerranUnitSmall  : SpriteId::Corpse_TerranBuildingSmall;
+                case 1: return !is_unit ? SpriteId::Corpse_TerranUnitMedium : SpriteId::Corpse_TerranBuildingSmall;
+                case 2: return SpriteId::Corpse_TerranBuildingSmall;
+                case 3: return SpriteId::Corpse_TerranBuildingLarge;
+            }
+            return SpriteId::Corpse_TerranUnitSmall;
+        }
+        case RaceId::Protoss: {
+            switch (overlay_size) {
+                case 0: return !is_unit ? SpriteId::Corpse_ProtossUnitSmall  : SpriteId::Corpse_ProtossBuildingSmall;
+                case 1: return !is_unit ? SpriteId::Corpse_ProtossUnitMedium : SpriteId::Corpse_ProtossBuildingSmall;
+                case 2: return SpriteId::Corpse_ProtossBuildingSmall;
+                case 3: return SpriteId::Corpse_ProtossBuildingLarge;
+            }
+            return SpriteId::Corpse_ProtossUnitSmall;
+        }
+        case RaceId::Zerg: {
+            switch (overlay_size) {
+                case 0: return !is_unit ? SpriteId::Corpse_ZergUnitSmall  : SpriteId::Corpse_ZergBuildingSmall;
+                case 1: return !is_unit ? SpriteId::Corpse_ZergUnitMedium : SpriteId::Corpse_ZergBuildingSmall;
+                case 2: return SpriteId::Corpse_ZergBuildingSmall;
+                case 3: return SpriteId::Corpse_ZergBuildingLarge;
+            }
+            return SpriteId::Corpse_ZergUnitSmall;
+        }
+    }
+}
+
 SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
     if (unit_id != UnitId::ProtossSteward && unit_id != UnitId::ProtossPlasmaShell) {
         u32 ready_sound = units_dat::sound_ready[unit_id];
@@ -1566,12 +1696,12 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
 bool has_autovitality(UnitId::Enum unit_id) {
     return unit_id == UnitId::ProtossSimulacrum || unit_id == UnitId::ProtossRenesair;
 }
-} // namespace UnitId
 
 bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranGoliath
         || unit_id == UnitId::TerranTiangou;
 }
+} // namespace UnitId
 
 namespace WeaponId {
 u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {

@@ -103,8 +103,9 @@ namespace hooks {
                                 helper::stats_weapon_level(dialog, index, WeaponId::StarSovereignInterventionMissiles);
                                 index++;
                             } break;
+                            case UnitId::ZergTethzorokor:
                             case UnitId::ZergZarcavrokor: {
-                                helper::stats_weapon_level(dialog, index, WeaponId::ZarcavrokorBonesofReflection);
+                                helper::stats_weapon_level(dialog, index, WeaponId::ZergBonesofReflection);
                                 index++;
                             } break;
                         }

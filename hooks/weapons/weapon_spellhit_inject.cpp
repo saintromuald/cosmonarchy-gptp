@@ -533,36 +533,50 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) apply_plague_wrapper() { // 004F4550
+		static Unit* unit;
+		__asm {
+			MOV unit, EDI
+			PUSHAD
+		}
+		hooks::apply_plague(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
     void inject_weapon_spell_hit_hooks() {
-        jump_patch(irradiate_hit_wrapper,							0x00454E00, 4);
-        jump_patch(optical_flare_hit_wrapper,						0x00455170, 1);
-        jump_patch(restore_hit_wrapper,								0x00455230, 6);
-        jump_patch(lockdown_hit_wrapper,							0x00455380, 4);
-        jump_patch(weapon_bullet_hit_wrapper,						0x00479AE0, 1);
-        jump_patch(iscript_attack_melee_wrapper,					0x00479B40, 0);
-        jump_patch(emp_showckwave_hit_wrapper,						0x00492BA0, 1);
-        jump_patch(corrosive_acid_hit_wrapper,						0x004F4770, 1);
-        jump_patch(consume_hit_wrapper,								0x004F47B0, 0);
-        jump_patch(ensnare_hit_wrapper,								0x004F4830, 1);
-        jump_patch(dark_swarm_hit_wrapper,							0x004F48A0, 2);
-        jump_patch(broodling_hit_wrapper,							0x004F4940, 1);
-        jump_patch(plague_hit_wrapper,								0x004F4B30, 1);
-        jump_patch(maelstrom_hit_wrapper,							0x004F6850, 1);
-        jump_patch(mind_control_hit_wrapper,						0x004F6910, 8);
-        jump_patch(stasis_field_hit_wrapper,						0x004F6A80, 1);
-        jump_patch(disruption_web_hit_wrapper,						0x004F6AF0, 2);
-        jump_patch(ensnare_proc_wrapper,							0x004F46C0, 1);
-        jump_patch(stasis_field_overlay_wrapper,					0x004F67B0, 4);
-        jump_patch(disable_unit_wrapper,							0x00492CC0, 2);
-        jump_patch(maelstrom_proc_wrapper,							0x004F6760, 3);
-	//	jump_patch(iterate_units_at_location_target_proc_wrapper,	0x004F6760, 0);
-	//	jump_patch(give_unit_to_player_wrapper,						0x004C8040, 2);
-		jump_patch(set_maelstrom_timer_wrapper,						0x004553F0, 4);
-		jump_patch(unfreeze_unit_wrapper,							0x004F62D0, 1);
-		jump_patch(plague_proc,										0x004F4AF0, 1);
+        jump_patch(irradiate_hit_wrapper,					  0x00454E00, 4);
+        jump_patch(optical_flare_hit_wrapper,				  0x00455170, 1);
+        jump_patch(restore_hit_wrapper,					  0x00455230, 6);
+        jump_patch(lockdown_hit_wrapper,					  0x00455380, 4);
+        jump_patch(weapon_bullet_hit_wrapper,				  0x00479AE0, 1);
+        jump_patch(iscript_attack_melee_wrapper,			  0x00479B40, 0);
+        jump_patch(emp_showckwave_hit_wrapper,			  0x00492BA0, 1);
+        jump_patch(corrosive_acid_hit_wrapper,			  0x004F4770, 1);
+        jump_patch(consume_hit_wrapper,					  0x004F47B0, 0);
+        jump_patch(ensnare_hit_wrapper,					  0x004F4830, 1);
+        jump_patch(dark_swarm_hit_wrapper,				  0x004F48A0, 2);
+        jump_patch(broodling_hit_wrapper,					  0x004F4940, 1);
+        jump_patch(plague_hit_wrapper,					  0x004F4B30, 1);
+        jump_patch(maelstrom_hit_wrapper,					  0x004F6850, 1);
+        jump_patch(mind_control_hit_wrapper,				  0x004F6910, 8);
+        jump_patch(stasis_field_hit_wrapper,				  0x004F6A80, 1);
+        jump_patch(disruption_web_hit_wrapper,			  0x004F6AF0, 2);
+        jump_patch(ensnare_proc_wrapper,					  0x004F46C0, 1);
+        jump_patch(stasis_field_overlay_wrapper,			  0x004F67B0, 4);
+        jump_patch(disable_unit_wrapper,					  0x00492CC0, 2);
+        jump_patch(maelstrom_proc_wrapper,				  0x004F6760, 3);
+	//	jump_patch(iterate_units_at_location_target_proc_wrapper, 0x004F6760, 0);
+	//	jump_patch(give_unit_to_player_wrapper,					  0x004C8040, 2);
+		jump_patch(set_maelstrom_timer_wrapper,			  0x004553F0, 4);
+		jump_patch(unfreeze_unit_wrapper,					  0x004F62D0, 1);
+		jump_patch(plague_proc,							  0x004F4AF0, 1);
+		jump_patch(apply_plague_wrapper,					  0x004F4550, 1);
 
 		// Remove optical flare target check
 		nops(0x0048BBC7, 2);

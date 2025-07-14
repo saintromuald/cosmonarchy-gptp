@@ -469,9 +469,7 @@ namespace hooks {
 		//		x + distance,
 		//		y + distance
 		//	).for_each([&](Unit* unit) {
-		//		if (attacker && attacker_ext->timers[TimerEnsnaringBrood] > 0
-		//			&& !(units_dat::base_property[unit->id] & UnitProperty::Building))
-		//		{
+		//		if (attacker && attacker_ext->timers[TimerEnsnaringBrood] > 0 && !(units_dat::base_property[unit->id] & UnitProperty::Building)) {
 		//			bw::apply_ensnare(unit);
 		//		}
 		//	});
@@ -672,11 +670,30 @@ namespace hooks {
 
 	// Hooked to apply to burrowed units. -Pr0nogo
 	void __fastcall plague_proc(Unit* victim, Unit* caster) { // 004F4AF0
-		if (!(victim->status & UnitStatus::Invincible)) {
-			helper::apply_plague(victim);
+		plague_proc_internal(victim, caster, false);
+	}
+
+	void plague_proc_internal(Unit* victim, Unit* caster, bool from_miasma) {
+		if (!victim->is_invincible()) {
+			apply_plague_internal(victim, from_miasma);
 			if (caster) {
 				unit_was_hit(victim, caster, 1);
 			}
 		}
+	}
+
+	// Hooked to make applying plague more flexible. -Pr0nogo
+	void apply_plague(Unit* unit) { // 004F4550
+		apply_plague_internal(unit, false);
+	}
+
+	void apply_plague_internal(Unit* unit, bool from_miasma) {
+		// Originally didn't apply to burrowed units
+		if (!unit->plague_timer) {
+			u32 overlay_offset = bw::get_overlay_offset(unit->id);
+			Unit* final_unit = unit->subunit ? unit->subunit : unit;
+			final_unit->sprite->create_overlay(ImageId::PlagueOverlay_Small + overlay_offset, 0, 0, 0);
+		}
+		unit->plague_timer = from_miasma ? Plague::MiasmaTimer : Isthrathaleth::PlagueTimer;
 	}
 }
