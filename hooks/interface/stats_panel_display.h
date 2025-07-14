@@ -2,6 +2,8 @@
 #include "../../BW/structures/Unit.h"
 #include "../../BW/structures.h"
 
+u16 __fastcall get_stat_icon_graphic(u8 value);
+
 namespace hooks {
 void stats_panel_display(BinDlg* dialog);																										// 00426C60
 const char* get_unit_rank_string(Unit* a1);																										// 0042F370
