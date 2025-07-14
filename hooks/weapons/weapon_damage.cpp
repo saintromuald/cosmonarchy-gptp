@@ -41,6 +41,7 @@ bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_diviso
         && (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
         && !weapon_id_is_flamethrower(weapon_id)
         && weapon_id != WeaponId::LakiziliskSubterraneanSpines
+        && weapon_id != WeaponId::Plague
         && weapon_id != WeaponId::Custom;
 }
 
@@ -327,14 +328,16 @@ namespace hooks {
 
         // Reduce shields
         if (units_dat::shields_enabled[data.target->id] && data.target->shields >= 256) {
-            data.shield_reduce_amount = std::min(data.damage, data.target->shields);
-            // Phase Link: only apply min damage on main target
-            if (!data.is_phase_link_damage_instance && data.shield_reduce_amount < 256) {
-                data.shield_reduce_amount = 256;
-            }
-            data.damage -= data.shield_reduce_amount;
-            if (data.damage < 0) {
-                data.damage = 0;
+            if (!(helper::is_under_carapace_swarm(data.target) && carapace_swarm_blocks_damage(data.target, data.weapon_id, data.damage_divisor))) {
+                data.shield_reduce_amount = std::min(data.damage, data.target->shields);
+                // Phase Link: only apply min damage on main target
+                if (!data.is_phase_link_damage_instance && data.shield_reduce_amount < 256) {
+                    data.shield_reduce_amount = 256;
+                }
+                data.damage -= data.shield_reduce_amount;
+                if (data.damage < 0) {
+                    data.damage = 0;
+                }
             }
         }
 
@@ -556,6 +559,17 @@ namespace hooks {
                 target_ext->timers[TimerPariahHit] = 2 * 24;
                 target_ext->values[ValuePariahHitPlayer] = data.attacking_player_id;
             } break;
+            case WeaponId::KagraliskRepeatingVenom:
+            case WeaponId::CherbrathalorVenemousBursts: {
+                if (!data.target->plague_timer) {
+                    u32 overlay_offset = bw::get_overlay_offset(data.target->id);
+                    if (!(data.target->sprite->get_overlay(ImageId::PlagueOverlay_Small + overlay_offset))) {
+                        data.target->sprite->create_overlay(ImageId::PlagueOverlay_Small + overlay_offset);
+                    }
+                }
+                data.target->plague_timer = Plague::MiasmaTimer;
+                target_ext->values[ValueMiasma] = 1;
+            } break;
         }
 
         switch (data.target->id) {
@@ -582,6 +596,11 @@ namespace hooks {
 
         if (target_ext->values[ValueReclaimed]) {
             target_ext->values[ValueReclamationRegen] += data.damage / 2;
+        }
+
+        // Refresh Apollyoid Adhesive on damage taken
+        if (weapon_id_can_proc_onhits(data.weapon_id) && target_ext->timers[TimerApollyoidAdhesive]) {
+            target_ext->timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
         }
 
         if (data.attacker) {
@@ -635,19 +654,28 @@ namespace hooks {
                     g_iquare_globals->create_effect(EffectId::ReclamationField, 36, data.target->position, 2 * 32, SpriteId::CausticDischarge,
                         data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
                 } break;
-                case WeaponId::PotentatePhaseSaber: {
-                    if (!bw::is_allied_to(data.target->player, data.attacker->player)) {
-                        ascend_in_area(data.attacker->player, data.attacker->position, 4 * 32);
+                case WeaponId::PotentateTalismanicWeaver: {
+                    if (!bw::is_allied_to(data.target->player, data.attacker->player) && weapon_damage_current_bullet) {
+                        BulletExt* bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+                        if (bullet_ext->distance_traveled <= 4 * 32) { // This should be 3, added 1 range of padding for edge to edge. -Pr0nogo
+                            ascend_in_area(data.attacker->player, data.attacker->position, 3 * 32);
+                        }
                     }
                 } break;
                 case WeaponId::MindTyrantMaledictus: {
                     helper::mind_control_hit(data.attacker, data.target);
                 } break;
-                case WeaponId::VorvalClaws:
+                case WeaponId::VorvalClaws: {
+                    if (!target_ext->values[ValueVorvalHidebreaker]) {
+                        target_ext->values[ValueVorvalHidebreaker] = 1;
+                        // TODO: Overlay
+                    }
+                    target_ext->timers[TimerHidebreaker] = 2 * 24 + 1;
+                } break;
                 case WeaponId::NathrokorVestigialStrike:
                 case WeaponId::NathrokorNathrokClaws: {
-                    if (!target_ext->values[ValueHidebreaker]) {
-                        target_ext->values[ValueHidebreaker] = 1;
+                    if (!target_ext->values[ValueNathrokHidebreaker]) {
+                        target_ext->values[ValueNathrokHidebreaker] = 1;
                         // TODO: Overlay
                     }
                     target_ext->timers[TimerHidebreaker] = 2 * 24 + 1;
@@ -726,11 +754,12 @@ namespace hooks {
                         }
                     }
                 } break;
+                case UnitId::ZergTethzorokor:
                 case UnitId::ZergZarcavrokor: {
                     // Fan of Teeth - Zarcavrokor behavior
                     if (data.target != data.attacker && !target_ext->timers[TimerZarcavrokorSecondaryFire]) {
-                        fire_bullet(data.target, WeaponId::ZarcavrokorBonesofReflection, make_target(data.attacker), {.apply_cooldown = false});
-                        target_ext->timers[TimerZarcavrokorSecondaryFire] = weapons_dat::cooldown[WeaponId::ZarcavrokorBonesofReflection] - 1;
+                        fire_bullet(data.target, WeaponId::ZergBonesofReflection, make_target(data.attacker), {.apply_cooldown = false});
+                        target_ext->timers[TimerZarcavrokorSecondaryFire] = weapons_dat::cooldown[WeaponId::ZergBonesofReflection] - 1;
                     }
                 } break;
             }
@@ -743,8 +772,10 @@ namespace hooks {
                 case WeaponId::DurendalAbaddonFlamethrowers:
                 case WeaponId::SalamanderAngeltearRockets:
                 case WeaponId::AckmedMickenMelter: {
-                    target_ext->values[ValueApollyoidAdhesiveStacks]++;
-                    target_ext->timers[TimerApollyoidAdhesive] = 2 * 24 + 1;
+                    if (target_ext->values[ValueApollyoidAdhesiveStacks] < ApollyoidAdhesive::StackCap) {
+                        target_ext->values[ValueApollyoidAdhesiveStacks]++;
+                    }
+                    target_ext->timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
                 } break;
                 case WeaponId::CyclopsFlakCannons: {
                     g_iquare_globals->create_effect(EffectId::CyclopsRecursionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,

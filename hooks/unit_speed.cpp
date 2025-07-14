@@ -186,6 +186,9 @@ namespace hooks {
             case UnitId::ZergEvigrilisk: {
                 speed *= 0.9;
             } break;
+            case UnitId::ZergQuazilisk: {
+                speed *= 1.05;
+            } break;
             case UnitId::TerranMason:
             case UnitId::ProtossScribe:
             case UnitId::ZergDroleth:
@@ -214,8 +217,7 @@ namespace hooks {
             case UnitId::ProtossCabalist:
             case UnitId::ProtossSimulacrum:
             case UnitId::ZergLiiralisk:
-            case UnitId::ZergIzirokor:
-            case UnitId::ZergKagralisk: {
+            case UnitId::ZergIzirokor: {
                 speed *= 1.2;
             } break;
             case UnitId::TerranSavantEntropyGauntlets:

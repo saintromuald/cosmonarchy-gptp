@@ -104,8 +104,7 @@ u32 Unit::get_max_hp_ingame() const {
     u32 max_hp = units_dat::max_hitpoints[this->id];
     if (max_hp == 0) {
         max_hp = this->get_current_hp_ingame();
-        if (max_hp == 0)
-        {
+        if (!max_hp) {
             max_hp = 1;
         }
     } else {
@@ -1628,6 +1627,15 @@ bool Unit::is_plainly_visible() {
 
 bool Unit::can_use_passive_ability() {
     return this->is_completed() && !this->is_frozen() && !this->is_in_transport() && !this->ext().values[ValueDisablePassive];
+}
+
+u32 Unit::get_adaptive_amitosis_range() {
+    u32 timer = this->ext().timers[TimerAdaptiveAmitosisGrowth];
+    u32 radius = 2 * 32; // Initial range
+    if (timer < 49) {
+        radius = timer < 25 ? 6 * 32 : 4 * 32; // Grows to 6 range over time
+    }
+    return radius;
 }
 
 bool Unit::can_proc_autovitality(u32 attacking_player, u32 shield_reduce, u32 damage) {

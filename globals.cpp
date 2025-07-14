@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <Utils/captivating_claws.h>
 #include "hooks/weapons/weapon_damage.h"
+#include "hooks/weapons/weapon_spellhit.h"
 
 void IquareGlobals::aise_save() {
     bw::print("WARNING: Saving doesn't work properly in Cosmonarchy.\n\t\t\tAny plugin specific data will be lost.", TextColor::Yellow);
@@ -197,8 +198,10 @@ static void tick_effect(EffectField& effect) {
                 for (Unit* target : g_unit_search.search_ex(effect, FilterNoAir)) {
                     UnitExt* target_ext = get_unit_ext(target);
                     if (!target_ext->timers[TimerSalamanderFire]) { // So it only applies to the same unit once every second.
-                        target_ext->values[ValueApollyoidAdhesiveStacks]++;
-                        target_ext->timers[TimerApollyoidAdhesive] = 2 * 24 + 1;
+                        if (target_ext->values[ValueApollyoidAdhesiveStacks] < ApollyoidAdhesive::StackCap) {
+                            target_ext->values[ValueApollyoidAdhesiveStacks]++;
+                        }
+                        target_ext->timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
                         target_ext->timers[TimerSalamanderFire] = 24;
                     }
                 }
@@ -296,8 +299,8 @@ static void tick_effect(EffectField& effect) {
                     break;
                 }
 
-                UnitExt* origin_ext = get_unit_ext(effect.origin);
-                if (!origin_ext->values[ValueDisruptionFieldOn]) {
+                auto& origin_ext = effect.origin->ext();
+                if (!origin_ext.values[ValueDisruptionFieldOn]) {
                     effect.destroy();
                     break;
                 }
@@ -308,20 +311,22 @@ static void tick_effect(EffectField& effect) {
                     effect.position.x + 60,
                     effect.position.y + 40
                 ).for_each_in_match(cosmonarchy_finder_match(0, 0, {}), [&](Unit* unit) {
-                    UnitExt* unit_ext = get_unit_ext(unit);
-                    unit_ext->timers[TimerUnderDisruptionField] = 8;
-                    unit->status |= UnitStatus::CanNotAttack;
-                    if (unit->subunit) {
-                        unit->subunit->status |= UnitStatus::CanNotAttack;
-                    }
-                    if (unit_id_is_garrison(unit->id)) {
-                        for (s32 i = 0; i < TransportCap; i++) {
-                            Unit* cargo_unit = unit->get_loaded_unit(i);
-                            if (!cargo_unit) continue;
-                            if (cargo_unit) {
-                                cargo_unit->status |= UnitStatus::CanNotAttack;
-                                if (cargo_unit->subunit) {
-                                    cargo_unit->subunit->status |= UnitStatus::CanNotAttack;
+                    if (!unit->is_in_air()) {
+                        auto& unit_ext = unit->ext();
+                        unit_ext.timers[TimerUnderDisruptionField] = 8;
+                        unit->status |= UnitStatus::CanNotAttack;
+                        if (unit->subunit) {
+                            unit->subunit->status |= UnitStatus::CanNotAttack;
+                        }
+                        if (unit_id_is_garrison(unit->id)) {
+                            for (s32 i = 0; i < TransportCap; i++) {
+                                Unit* cargo_unit = unit->get_loaded_unit(i);
+                                if (!cargo_unit) continue;
+                                if (cargo_unit) {
+                                    cargo_unit->status |= UnitStatus::CanNotAttack;
+                                    if (cargo_unit->subunit) {
+                                        cargo_unit->subunit->status |= UnitStatus::CanNotAttack;
+                                    }
                                 }
                             }
                         }
@@ -329,16 +334,16 @@ static void tick_effect(EffectField& effect) {
                 });
             } break;
             case EffectId::IsthrathalethPlagueField: {
-                bw::UnitFinder(
-                    effect.position.x - 1.5 * 32,
-                    effect.position.y - 1 * 32,
-                    effect.position.x + 1.5 * 32,
-                    effect.position.y + 1 * 32
-                ).for_each([&](Unit* unit) {
-                    helper::plague_proc(unit, 0);
-                    UnitExt* unit_ext = get_unit_ext(unit);
-                    unit_ext->units[UnitPlagueSource] = effect.origin;
-                });
+                for (Unit* target : g_unit_search.radial(effect.position, 1.5 * 32)) {
+                    helper::plague_proc(target, 0);
+                    target->ext().units[UnitPlagueSource] = effect.origin;
+                }
+            } break;
+            case EffectId::MiasmaPlagueField: {
+                for (Unit* target : g_unit_search.radial(effect.position, 1.5 * 32)) {
+                    hooks::plague_proc_internal(target, 0, true);
+                    target->ext().units[UnitPlagueSource] = effect.origin;
+                }
             } break;
             case EffectId::ReclamationField: {
                 if (effect.current_time) {
@@ -1078,7 +1083,7 @@ void place_clarion_links(Unit* unit) {
     auto& links = unit_ext->unit_vectors[UnitVectorPhaseLink];
 
     auto targets = g_unit_search
-        .radial_ex(unit, 5 * 32)
+        .radial_ex(unit, ProtossClarion::PhaseLinkRange)
         .filter_by([unit](Unit* target) {
             if (!bw::is_allied_to(unit->player, target->player)) {
                 return false;

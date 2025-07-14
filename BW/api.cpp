@@ -2143,9 +2143,9 @@ u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
         case UnitId::TerranTarasque:	return WeaponId::TarasqueAcceleratedPlasmid;
         case UnitId::TerranDurendal:	return WeaponId::DurendalPhilistineAutogun;
         case UnitId::TerranCentaur:		return WeaponId::CentaurSunchaserMissiles;
-        case UnitId::ZergOkrimnilisk:	return WeaponId::OkrimniliskOmnispores;
+        case UnitId::ZergTethzorokor:	return WeaponId::ZergBonesofReflection;
         case UnitId::ZergZobriolisk:    return WeaponId::ZobrioliskRapidSpinesAir;
-        case UnitId::ZergZarcavrokor:	return WeaponId::ZarcavrokorBonesofReflection;
+        case UnitId::ZergZarcavrokor:	return WeaponId::ZergBonesofReflection;
     }
     return WeaponId::None;
 }
@@ -2428,6 +2428,7 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
         case WeaponId::TosgriliskExplosiveSpores:
         case WeaponId::AxitriliskSearingVenom:
         case WeaponId::MortothrokorWickedIncisors:
+        case WeaponId::KagraliskRepeatingVenom:
         case WeaponId::AlmaksaliskPiercingSpines:
         case WeaponId::KeskathalorScreamingVenom: {
             return 2;
@@ -2617,14 +2618,14 @@ void update_on_damage_dealt(Unit* unit, u32 damage) {
 }
 
 void update_on_damage_taken(Unit* unit, u32 damage) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    unit_ext->shield_regen_timer = 0;
-    unit_ext->damage_taken_timer = 0;
-    unit_ext->total_damage_taken += damage;
+    auto& unit_ext = unit->ext();
+    unit_ext.shield_regen_timer = 0;
+    unit_ext.damage_taken_timer = 0;
+    unit_ext.total_damage_taken += damage;
     switch (unit->id) {
         case UnitId::ZergMortothrokor: {
-            if (unit_ext->timers[TimerMortothrokorPassive]) {
-                unit_ext->timers[TimerMortothrokorPassive] = 2 * 24;
+            if (unit_ext.timers[TimerMortothrokorPassive]) {
+                unit_ext.timers[TimerMortothrokorPassive] = 2 * 24;
             }
         } break;
     }
@@ -3043,24 +3044,27 @@ void regress(Unit* unit, u32 regression_id) {
 
     Unit* new_unit = unit;
     bool is_atg_regression = UnitId::is_atg_regression(static_cast<UnitId::Enum>(old_id), static_cast<UnitId::Enum>(regress_to));
+    bool create_corpse = false;
+    Point16 old_pos = unit->position;
+    Point16 new_pos = unit->position;
     if (unit->id == UnitId::ZergEskigant || unit->id == UnitId::ZergExcisant) {
         new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
     } else if (unit_id_is_larva(regression_id) || units_dat::base_property[regression_id] & UnitProperty::Worker) {
         new_unit = bw::create_unit_in_game(regression_id, unit->player, unit->position.x, is_atg_regression ? unit->position.y + AirToGroundDistance : unit->position.y);
-        unit->ext().values[ValueNoCorpse] = true;
     } else {
         helper::replace_unit_with_id(unit, regress_to);
         unit->set_hitpoints(unit->get_max_hp_raw());
         if (is_atg_regression) {
-            Point16 old_pos = unit->position;
-            Point16 new_pos = unit->position;
             new_pos.y += AirToGroundDistance;
             helper::fix_target_location(&new_pos, regress_to);
             if (bw::distance_between(old_pos, new_pos) <= 2 * 32) {
                 helper::move_unit(unit, new_pos.x, new_pos.y);
+                create_corpse = true;
             } else {
                 unit->remove();
             }
+        } else {
+            create_corpse = true;
         }
     }
     if (new_unit) {
@@ -3074,6 +3078,7 @@ void regress(Unit* unit, u32 regression_id) {
         }
     }
 
+    // Death audiovisuals
     u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
     if (units_dat::base_property[unit->id] & UnitProperty::LargeOverlay) {
         effect_image_id = ImageId::ZergBuildingExplosion;
@@ -3086,7 +3091,21 @@ void regress(Unit* unit, u32 regression_id) {
         sound_id = SoundId::Zerg_Bldg_ZBldgDth_WAV;
     }
     helper::play_sound_from_unit(sound_id, unit, true, 0);
+    if (create_corpse) {
+        Unit* old_iscript_unit = *g_active_iscript_unit;
+        *g_active_iscript_unit = unit;
+        SpriteId::Enum corpse_id = UnitId::get_corpse_sprite_id((UnitId::Enum)old_id);
+        Thingy* corpse = helper::create_thingy(corpse_id, new_pos.x, new_pos.y, 0);
+        if (corpse) {
+            init_corpse(corpse, corpse_id, unit->player);
+            ThingyExt* thingy_ext = get_thingy_ext(corpse);
+            thingy_ext->unit_id = old_id;
+            thingy_ext->is_regression = true;
+        }
+        *g_active_iscript_unit = old_iscript_unit;
+    }
 
+    // Effect-related hardcodes
     if (unit->irradiate_timer) {
         u32 irradiate_image_id = ImageId::IrradiateNew_Small + bw::get_overlay_offset(unit->id);
         if (!unit->get_overlay(irradiate_image_id)) {

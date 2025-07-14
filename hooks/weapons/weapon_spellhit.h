@@ -40,6 +40,10 @@ namespace hooks {
 	void set_maelstrom_timer(Unit* unit, u8 duration);								// 004553F0
 	void unfreeze_unit(Unit* unit);													// 004F62D0
 	void __fastcall plague_proc(Unit* victim, Unit* caster);						// 004F4AF0
+	void apply_plague(Unit* unit);													// 004F4550
+
+	void plague_proc_internal(Unit* victim, Unit* caster, bool from_miasma);
+	void apply_plague_internal(Unit* unit, bool from_miasma);
 
 	void inject_weapon_spell_hit_hooks();
 }

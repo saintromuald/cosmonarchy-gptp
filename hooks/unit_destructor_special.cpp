@@ -179,7 +179,7 @@ void unit_on_death_behaviors(Unit* unit) {
         } break;
         case UnitId::ZergRilirokor:
         case UnitId::ZergRililisk: {
-            Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::Ensnare, unit->position.x, unit->position.y, 0);
+            Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::CorrosiveTouchExplosionSmall, unit->position.x, unit->position.y, 0);
             if (ensnare_effect_sprite) {
                 ensnare_effect_sprite->sprite->elevation = 19; // 0x13
                 helper::set_thingy_visibility_flags(ensnare_effect_sprite);
@@ -308,9 +308,14 @@ void unit_on_death_behaviors(Unit* unit) {
 
     // Metastasis - Plague spreads when a unit dies
     if (unit->plague_timer) {
+        unit_ext.values[ValueNoCorpse] = true;
         Unit* attacker = unit_ext.units[UnitPlagueSource];
         u32 attacking_player = attacker ? attacker->player : 11;
-        g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5 * 32, { (u16)unit->position.x, (u16)unit->position.y }, 3 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
+        if (unit_ext.values[ValueMiasma]) {
+            g_iquare_globals->create_effect(EffectId::MiasmaPlagueField, 2 * 32, { (u16)unit->position.x, (u16)unit->position.y }, 1.5 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
+        } else {
+            g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5 * 32, { (u16)unit->position.x, (u16)unit->position.y }, 1.5 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
+        }
     }
 
     // Binding Plasma - proc on death
@@ -418,11 +423,11 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
     if (SpriteId::is_corpse((SpriteId::Enum)id)) {
         if (unit) {
             auto& unit_ext = unit->ext();
+            // Don't spawn corpses under these circumstances!
             if (unit_ext.values[ValueNoCorpse]) {
                 return 0;
             }
-
-            if (unit->id == UnitId::ZergVilgoleth) { // Currently does not leave a corpse
+            if (unit->id == UnitId::ZergVilgoleth) {
                 sprite->create_overlay(ImageId::ZergAirDeathExplosion_Small);
                 return 0;
             }
@@ -433,34 +438,9 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) 
     if (unit) {
         id = unit->get_custom_corpse(static_cast<SpriteId::Enum>(id));
     }
-
     Thingy* thingy = helper::create_thingy(id, pos_x, pos_y, 0);
     if (thingy) {
-        if (id == SpriteId::Egg_Spawn) {
-            thingy->sprite->player = sprite->player;
-        } else if (SpriteId::is_corpse((SpriteId::Enum)id)) {
-            thingy->sprite->player = sprite->player;
-
-            Unit* unit = *g_active_iscript_unit;
-            if (unit) {
-                ThingyExt* thingy_ext = get_thingy_ext(thingy);
-                thingy_ext->player = unit->player;
-                thingy_ext->unit_id = unit->id;
-                thingy_ext->sight_range_before_death = unit->get_sight_range() * 32;
-                thingy_ext->avenge_or_ascend_player = unit_avenges_or_ascends(unit);
-                thingy_ext->create_origin = unit->create_origin;
-                if (unit_id_is_mine_layer((UnitId::Enum)unit->id)) {
-                    thingy_ext->mine_count = unit->mine_carrier.mine_count;
-                }
-
-                auto& unit_ext = unit->ext();
-                if (unit_ext.timers[TimerAutocratControlledOpposition]) {
-                    reclaim_corpse(thingy, unit_ext.values[ValueAutocratControlledOppositionPlayer]);
-                }
-            }
-        }
-        thingy->sprite->elevation = elevation;
-        helper::set_thingy_visibility_flags(thingy);
+        init_corpse(thingy, (SpriteId::Enum)id, sprite->player);
     }
     return thingy;
 }
@@ -507,7 +487,7 @@ s32 remove_subunit_or_gas_container(Unit* unit) { // 004A0080
     }
 
     Sprite* sprite = unit->sprite;
-    if (!sprite || sprite->flags & SpriteFlags::Hidden) {
+    if (!sprite || sprite->is_hidden()) {
         return 0;
     }
     if (id != UnitId::TerranSieve && id != UnitId::TerranReservoir && id != UnitId::TerranWellbore && id != UnitId::ZergEzigrisant) {
@@ -540,7 +520,6 @@ s32 remove_subunit_or_gas_container(Unit* unit) { // 004A0080
     helper::give_sprite(unit, 11);
     unit->status |= UnitStatus::Completed;
     helper::increment_unit_scores_ex(unit, 1, 1);
-
     if (g_is_placing_building) {
         helper::place_building_refinery_check(unit);
     }

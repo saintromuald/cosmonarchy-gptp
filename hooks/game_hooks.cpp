@@ -455,7 +455,7 @@ namespace hooks {
                         g_graphics.draw_circle(source.x, source.y, 3 * 32, graphics::GREEN, graphics::ON_MAP);
                     } break;
                     case UnitId::ProtossClarion: {
-                        g_graphics.draw_circle(source.x, source.y, 5 * 32, graphics::GREEN, graphics::ON_MAP);
+                        g_graphics.draw_circle(source.x, source.y, ProtossClarion::PhaseLinkRange, graphics::GREEN, graphics::ON_MAP);
                     } break;
                     case UnitId::ProtossDidact: {
                         g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
@@ -473,7 +473,7 @@ namespace hooks {
                         g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
                     } break;
                     case UnitId::ZergKazitrithCesiant: {
-                        g_graphics.draw_circle(source.x, source.y, Kazitrith::AuraRadius, graphics::GREEN, graphics::ON_MAP);
+                        g_graphics.draw_circle(source.x, source.y, unit->get_adaptive_amitosis_range(), graphics::GREEN, graphics::ON_MAP);
                     } break;
                 }
             }
@@ -1086,6 +1086,9 @@ namespace hooks {
                 if (missing_count) {
                     bw::create_hangar_units(unit, missing_count, UnitId::ProtossSteward);
                 }
+            } break;
+            case UnitId::ZergKazitrithCesiant: {
+                unit_ext.timers[TimerAdaptiveAmitosisGrowth] = AdaptiveAmitosis::GrowthTimer;
             } break;
         }
 
@@ -1745,11 +1748,13 @@ namespace hooks {
                     if (!unit_ext.values[ValueDisruptionFieldOn]) {
                         unit_ext.values[ValueDisruptionFieldOn] = 1;
                         g_iquare_globals->create_effect(EffectId::LanifectDisruptionField, -1, {unit->position.x, unit->position.y}, 0, SpriteId::Disruption_Web, 0, unit->player, unit, { .origin = unit });
+                        unit->status |= UnitStatus::CanNotAttack;
                     } else if (unit->is_frozen()) {
                         bw::set_generic_rust_value(unit, RustId::ToggleDisruptionField, 0);
                     }
                 } else {
                     unit_ext.values[ValueDisruptionFieldOn] = 0;
+                    unit->status &= ~UnitStatus::CanNotAttack;
                 }
                 if (unit_ext.values[ValueDisruptionFieldOn]) {
                     bw::decloak_passive_proc(unit);
@@ -1918,9 +1923,6 @@ namespace hooks {
             case UnitId::TerranOlympian: {
                 fire_secondary_melee_weapon_if_needed(unit, WeaponId::OlympianTitansFist);
             } break;
-            case UnitId::ProtossPotentate: {
-                fire_secondary_melee_weapon_if_needed(unit, WeaponId::PotentatePhaseSaber);
-            } break;
             case UnitId::ZergMatraleth:
             case UnitId::ExtInfestedKerrigan: {
                 // Matraleth - Ensnaring Brood
@@ -1948,7 +1950,6 @@ namespace hooks {
                         if (!unit_is_combatant(target)) {
                             continue;
                         }
-
                         auto& target_ext = target->ext();
                         target_ext.timers[TimerLucilleriPheremones] = 3;
                         u32 overlay_id = ImageId::DermalAccelerantSmall + bw::get_overlay_offset(target->id, true);
@@ -2280,16 +2281,12 @@ namespace hooks {
                         .filter(unit, FilterAlly | FilterNotSelf | FilterCompleted)
                         .sort_by_distance(unit->position);
                     for (Unit* target : targets) {
-                        UnitExt* target_ext = get_unit_ext(target);
-                        if (target_ext->shield_regen_timer > 2 * 24 || target->id == UnitId::ProtossSycophant) {
+                        if (target->ext().shield_regen_timer > 2 * 24) {
                             continue;
                         }
 
-                        if (target->shields < unit->shields && target->shields != target->get_max_shields_raw()) {
-                            shields -= target->heal_shields(shields, unit, false, false);
-                            unit->shields -= shields / 2;
-                            unit->set_hitpoints(unit->hitpoints);
-                            bw::update_on_damage_taken(unit, 0);
+                        if (target->shields != target->get_max_shields_raw()) {
+                            target->heal_shields(shields, unit, false, false);
                             break;
                         }
                     }
@@ -2473,7 +2470,8 @@ namespace hooks {
             } break;
             case UnitId::ZergKazitrithCesiant: {
                 if (unit->is_completed() && !unit->is_frozen() && !unit->is_in_transport()) {
-                    for (Unit* target : g_unit_search.radial_ex(unit, Kazitrith::AuraRadius, FilterAlly | FilterCompleted)) {
+                    u32 radius = unit->get_adaptive_amitosis_range();
+                    for (Unit* target : g_unit_search.radial_ex(unit, radius, FilterAlly | FilterCompleted)) {
                         if (!target->has_weapon()) {
                             continue;
                         }
@@ -2484,6 +2482,15 @@ namespace hooks {
                         }
                         if (!target->get_overlay(ImageId::AdaptiveAmitosisOverlay)) {
                             bw::add_unit_overlay(target, ImageId::AdaptiveAmitosisOverlay);
+                        }
+                    }
+
+                    u32 timer = unit_ext.timers[TimerAdaptiveAmitosisGrowth];
+                    switch (timer) {
+                        case 72:
+                        case 48:
+                        case 24: {
+                            // TODO: Audiovisuals to indicate aura growth
                         }
                     }
                 }
@@ -3025,7 +3032,7 @@ namespace hooks {
 
         // Clear Kazitrith vector
         std::erase_if(unit_ext.unit_vectors[UnitVectorKazitriths], [unit](Unit* kazitrith) {
-            if (kazitrith->is_frozen() || bw::distance_between(unit->position, kazitrith->position) > Kazitrith::AuraRadius) {
+            if (kazitrith->is_frozen() || kazitrith->is_in_transport() || bw::distance_between(unit->position, kazitrith->position) > kazitrith->get_adaptive_amitosis_range()) {
                 bw::remove_unit_overlay(unit, ImageId::AdaptiveAmitosisOverlay);
                 return true;
             }
@@ -3314,7 +3321,8 @@ namespace hooks {
         }
 
         if (unit_ext.timers[TimerHidebreaker] == 1) {
-            unit_ext.values[ValueHidebreaker] = 0;
+            unit_ext.values[ValueVorvalHidebreaker] = 0;
+            unit_ext.values[ValueNathrokHidebreaker] = 0;
             // TODO: Overlay
         }
 

@@ -39,6 +39,7 @@ enum class EffectId {
     SevenstepMindMatter,
     OscilliantBindingPlasma,
     GladiusBindingPlasma,
+    MiasmaPlagueField,
 
     Count,
 };

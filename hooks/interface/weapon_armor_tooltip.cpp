@@ -91,7 +91,7 @@ const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 
 
 	f32 min_range = weapons_dat::min_range[weapon_id] / 32.0;
 	f32 range = hooks::get_base_weapon_range(weapon_id, unit->id) / 32.0;
-	if (weapon_id == WeaponId::OlympianTitansFist || weapon_id == WeaponId::PotentatePhaseSaber) {
+	if (weapon_id == WeaponId::OlympianTitansFist) {
 		range = 1;
 	}
 	f32 bonus_range = hooks::get_max_weapon_range(unit, weapon_id, unit->order_target.unit, true) / 32.0 - range;
@@ -357,7 +357,7 @@ namespace hooks {
 		}
 
 		// GPTP Timer + Value
-		add_status(statuses, "Apollyoid Adhesive", unit_ext->values[ValueApollyoidAdhesiveStacks], 0,
+		add_status(statuses, "Apollyoid Adhesive", unit_ext->values[ValueApollyoidAdhesiveStacks], 3,
 			unit_ext->timers[TimerApollyoidAdhesive], TimerType::Gptp);
 		add_status(statuses, "Empowered", unit_ext->values[ValueSavantPowerSiphonBuff], 0,
 			unit_ext->timers[TimerSavantPowerSiphonBuff], TimerType::Gptp);
@@ -414,6 +414,8 @@ namespace hooks {
 		add_status(statuses, "Ascension", -1, 1, unit_ext->timers[TimerAscend], TimerType::Gptp);
 		add_status(statuses, "Nanoshielded", -1, 1, unit_ext->timers[TimerClericHeal], TimerType::Gptp);
 		add_status(statuses, "Casting Prying Eyes", -1, 1, unit_ext->timers[TimerFacadePryingEyesChannel], TimerType::Gptp);
+		add_status(statuses, "Corrosive Touch", -1, 1, unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
+		add_status(statuses, "Hidebreaker", -1, 1, unit_ext->timers[TimerHidebreaker], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
