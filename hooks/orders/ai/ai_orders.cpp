@@ -1267,12 +1267,10 @@ namespace hooks {
             if (!resource || !(resource->status & UnitStatus::Completed)) {
                 resource = fallback;
             }
-            if (resource && (resource->id == UnitId::ResourceVespeneRidge || resource->id == UnitId::ResourceVespeneGeyser || resource->status & UnitStatus::Completed)) {
+            if (resource && (resource->id == UnitId::ResourceVespeneRidge || resource->id == UnitId::ResourceVespeneGeyser || resource->is_completed())) {
                 helper::assign_order_with_target(resource, worker, OrderId::Harvest1);
                 resource->building.resource.resource_belongs_to_ai = 1;
-
-                UnitExt* resource_ext = get_unit_ext(resource);
-                resource_ext->values[ValueAssignedHarvesters] += 1; // Update assigned harvesters for this frame for the sake of mineral field priority calcs...
+                resource->ext().values[ValueAssignedHarvesters] += 1; // Update assigned harvesters for this frame for the sake of mineral field priority calcs...
             }
         }
     }

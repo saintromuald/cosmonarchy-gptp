@@ -846,9 +846,7 @@ namespace hooks {
                     case WeaponId::SirenCharybdalRifle:
                     case WeaponId::MagnetarNewtonianShockCannon: {
                         // Magnetar - Law of Attraction - Pull target to attacker
-                        if ((!(units_dat::base_property[data.target->id] & UnitProperty::Building)
-                        ||    (data.target->status & UnitStatus::InAir && data.target->main_order_id != OrderId::Liftoff && data.target->main_order_id != OrderId::BuildingLand))
-                        && !(data.target->status & UnitStatus::Burrowed)) {
+                        if (unit_can_be_repulsed(data.target)) {
                             const u32 displacement_time = 5;
                             Vec32f displacement = bw::dir_between(data.target->sprite->position, data.attacker->sprite->position);
                             displacement.x *= 2 * 32.0 / displacement_time;

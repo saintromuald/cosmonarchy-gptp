@@ -240,8 +240,8 @@ namespace hooks {
 					}
 				}
 			}
-		} else if ((units_dat::base_property[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneRidge && unit->id != UnitId::ResourceVespeneGeyser) ||
-				unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth) {
+		} else if ((unit->is_building() && unit->id != UnitId::ResourceVespeneRidge && unit->id != UnitId::ResourceVespeneGeyser)
+				 || unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth) {
 			BuildingAi* ai = 0;
 			if (town) {
 				if (town->buildings.array && town->buildings.array <= (void*)0x100000) {

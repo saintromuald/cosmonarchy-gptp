@@ -236,11 +236,11 @@ namespace hooks
 	{
 //		jump_patch(cloaking_tech_wrapper_is_cloaked,			0x00429210, 1);
 //		jump_patch(cloaking_tech_wrapper_can_cloak,				0x004292C0, 1);
-		jump_patch(cloaking_tech_wrapper_cmdrecv_cloak,			0x004C0720, 3);
-		jump_patch(cloaking_tech_wrapper_ai_cloak_unit,			0x0043B970, 1);
+		jump_patch(cloaking_tech_wrapper_cmdrecv_cloak,	0x004C0720, 3);
+		jump_patch(cloaking_tech_wrapper_ai_cloak_unit,	0x0043B970, 1);
 //		jump_patch(cloaking_tech_apply_cloaking_orders,			0x00491B30, 5);
 //		jump_patch(cloaking_tech_wrapper_cmdrecv_decloak,		0x004C0660, 3);
-		jump_patch(get_cloaking_tech_wrapper,					0x00491A50, 3);
+		jump_patch(get_cloaking_tech_wrapper,				0x00491A50, 3);
 //		jump_patch(current_unit_selection_can_cloak_wrapper,	0x00423540, 1);
 	}
 }

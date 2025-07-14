@@ -204,14 +204,7 @@ namespace {
 			u32 flingy_sprite_id = flingy_dat::sprite_id[index];
 			replace_sprite_images(unit->sprite, sprites_dat::image_id[flingy_sprite_id], 0);
 			unit->order_signal &= ~0x4;
-			IscriptAnimation::Enum animation = IscriptAnimation::SpecialState2;
-			if (unit->id == UnitId::ZergZethrokor || unit->id == UnitId::ZergVorvrokor || unit->id == UnitId::ZergNathrokor) {
-				animation = IscriptAnimation::Unused2;
-			} else if (unit->id == UnitId::ZergQuazilisk || unit->id == UnitId::ZergQuazrokor) {
-				animation = IscriptAnimation::Unused2;
-				unit_ext->timers[TimerQuaziliskCancel] = 4;
-			}
-			unit->sprite->play_iscript_animation(animation, true);
+			unit->sprite->play_iscript_animation(IscriptAnimation::SpecialState2, true);
 			unit->rally.pt = unit->position;
 			unit->rally.unit = 0;
 			unit->order_to(OrderId::ZergBirth);

@@ -125,37 +125,17 @@ namespace hooks {
 
 				// Resource return multipliers
 				switch (bw::get_upgrade_level(worker->player, UpgradeId::MiningEfficiency)) {
-					case 0:
-					case 99: {
-					} break;
-					case 1: {
-						// 125% - Default AI cheat
-						resource_amount += (resource_amount / 4);
-					} break;
-					case 2: {
-						// 133%
-						resource_amount += (resource_amount / 3);
-					} break;
-					case 3: {
-						// 150%
-						resource_amount += (resource_amount / 2);
-					} break;
-					case 4: {
-						// 175%
-						resource_amount += ((resource_amount / 4) + (resource_amount / 4) + (resource_amount / 4));
-					} break;
-					case 5: {
-						// 200%
-						resource_amount *= 2;
-					} break;
-					case 6: {
-						// 225%
-						resource_amount *= (2 + (1 / 4));
-					} break;
-					default: {
-						// 250%
-						resource_amount *= (2 + (1 / 2));
-					}
+					case 0:																									 break;	// 100% - Default human state
+					case 99:																								 break;	// 100% - AI overwrite state
+					case 1:  resource_amount += (resource_amount / 4);														 break; // 125% - Default AI cheat
+					case 2:  resource_amount += (resource_amount / 3);														 break; // 133%
+					case 3:  resource_amount += (resource_amount / 2);														 break; // 150%
+					case 4:  resource_amount += ((resource_amount / 4) + (resource_amount / 4) + (resource_amount / 4));	 break; // 175% - Juggernaut 1v2
+					case 5:  resource_amount *= 2;																			 break; // 200% - Juggernaut 1v3
+					case 6:  resource_amount *= (2 + (1 / 4));																 break; // 225%
+					case 7:  resource_amount *= (2 + (1 / 2));																 break; // 250%
+					case 8:  resource_amount *= 2 + ((resource_amount / 4) + (resource_amount / 4) + (resource_amount / 4)); break; // 275%
+					case 9:  resource_amount *= 3;																			 break; // 300%
 				}
 				if (!is_mineral && std::string_view{g_player_name_list->player[worker->player].player_name} == "Gasless Gary") {
 					chunk_image_id = ImageId::MineralChunkType1;

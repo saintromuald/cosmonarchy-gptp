@@ -126,7 +126,7 @@ namespace hooks {
 
 		if (unit->plague_timer) {
 			unit->plague_timer--;
-			if (!(unit->status & UnitStatus::Invincible)) {
+			if (!unit->is_invincible()) {
 				s32 damage = (weapons_dat::damage_amount[WeaponId::Plague] * 256) / 30;
 				if (!unit->plague_timer) {
 					damage += (weapons_dat::damage_amount[WeaponId::Plague] * 256) % 30;

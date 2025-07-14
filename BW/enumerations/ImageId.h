@@ -1305,6 +1305,10 @@ namespace ImageId {
         LakiziliskMutate                            = 1995,
 
         HealingPulseUnderlay                        = 2036,
+        TerranHeavyMissileAion                      = 2037,
+        CorrosiveTouchExplosionMedium               = 2038,
+
+        CorrosiveTouchExplosionSmall                = 2043,
 
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,

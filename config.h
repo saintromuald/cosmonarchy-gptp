@@ -73,7 +73,10 @@ struct Config {
 
     // Map directory
     std::string default_map_directory = "CMBW-Root\\CMBW-maps";
+
+    // Replays
     bool auto_save_replays = true;
+    bool sanitize_replay_chat = false;
 };
 
 inline Config g_config{};

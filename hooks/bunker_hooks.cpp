@@ -213,21 +213,23 @@ namespace hooks {
 			return false;
 		}
 
-		s32 angle = bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
-		angle = unit->current_direction_1 - angle;
-		if (angle < 0) {
-			angle = angle + 256;
-		}
-		if (angle > 128) {
-			angle = 256 - angle;
-		}
-
-		if (angle > weapons_dat::attack_angle[weapon_id]) {
-			if (unit->status & UnitStatus::CanTurnAroundToAttack) {
-				unit->order_queue_timer = 0;
-				return true;
+		if (distance) {
+			s32 angle = bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->order_target.pt.x, unit->order_target.pt.y);
+			angle = unit->current_direction_1 - angle;
+			if (angle < 0) {
+				angle = angle + 256;
 			}
-			return false;
+			if (angle > 128) {
+				angle = 256 - angle;
+			}
+
+			if (angle > weapons_dat::attack_angle[weapon_id]) {
+				if (unit->status & UnitStatus::CanTurnAroundToAttack) {
+					unit->order_queue_timer = 0;
+					return true;
+				}
+				return false;
+			}
 		}
 		if (unit->status & UnitStatus::CanNotAttack) {
 			return 0;

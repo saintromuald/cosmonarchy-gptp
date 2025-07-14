@@ -1578,13 +1578,6 @@ namespace hooks {
             case UnitId::ZergQuazilisk:
             case UnitId::ZergQuazrokor:
             case UnitId::ZergNathrokor: {
-                // Gimmick to allow morph cancellation animations to play correctly
-                if (unit_ext.timers[TimerQuaziliskCancel]) {
-                    if (unit->sprite->main_graphic->animation != IscriptAnimation::Unused2) {
-                        unit->sprite->play_iscript_animation(IscriptAnimation::Unused2, true);
-                    }
-                }
-
                 if (unit_ext.timers[TimerCustomEggHatch]) {
                     u32 morph_unit_id = unit->build_queue[unit->build_queue_slot];
                     f32 time_factor = unit_ext.timers[TimerCustomEggHatch] / (f32)unit_ext.values[ValueCustomEggHatchMax];
@@ -2049,17 +2042,17 @@ namespace hooks {
                     for (Unit* target : g_unit_search.radial_ex(unit, weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon], FilterEnemy)) {
                         u32 dist = bw::distance_between(unit->position, target->position);
                         if (dist <= weapons_dat::outer_splash_radius[WeaponId::AnthelionEventHorizon] && unit->can_attack_target(target)) {
-                            UnitExt* target_ext = get_unit_ext(target);
-                            if (!target->is_building()) {
-                                target_ext->units[UnitAnthelionGravityWellSource] = unit;
+                            auto& target_ext = target->ext();
+                            if (!target->is_building() && unit_can_be_repulsed(target)) {
+                                target_ext.units[UnitAnthelionGravityWellSource] = unit;
                                 const u32 displacement_time = 5;
                                 Vec32 diff = bw::vec_between(unit->sprite->position, target->sprite->position);
                                 if (bw::vec_length(diff) > 12) {
                                     Vec32f displacement = bw::normalize(diff);
                                     displacement.x *= -1 * 32.0 / displacement_time;
                                     displacement.y *= -1 * 32.0 / displacement_time;
-                                    target_ext->timers[TimerAnthelionGravityWell] = displacement_time;
-                                    target_ext->repulsion_vector = displacement;
+                                    target_ext.timers[TimerAnthelionGravityWell] = displacement_time;
+                                    target_ext.repulsion_vector = displacement;
                                 }
                             }
 
@@ -2577,6 +2570,24 @@ namespace hooks {
                     unit->remove_timer = Broodspawn::LifeTimer;
                 }
             } break;
+        }
+
+        // Stop AI units from decolliding. Bandage for bad AI decisionmaking. -Pr0nogo
+        if (unit->is_computer_controlled()) {
+            if (unit->movement_state == UnitMovement_CheckIllegal || unit->movement_state == UnitMovement_MoveToLegal) {
+                unit_ext.values[ValueTicksDecolliding]++;
+            } else if (unit_ext.values[ValueTicksDecolliding]) {
+                unit_ext.values[ValueTicksDecolliding] = 0;
+                if (unit_ext.values[ValueCollisionBandage]) {
+                    unit->status &= ~UnitStatus::NoCollide;
+                    unit_ext.values[ValueCollisionBandage] = 0;
+                }
+            }
+
+            if (unit_ext.values[ValueTicksDecolliding] > 24 * 10) {
+                unit->status |= UnitStatus::NoCollide;
+                unit_ext.values[ValueCollisionBandage] = 1;
+            }
         }
 
         // Stimpack - Delayed buff handling
@@ -3227,9 +3238,7 @@ namespace hooks {
         }
 
         // Controlled Demolition - initial cast
-        if (bw::get_generic_rust_value(unit, RustId::CastControlledDemolition)
-        && !unit_ext.timers[TimerEmergencyDetonation] && !unit_ext.timers[TimerControlledDemolition])
-        {
+        if (bw::get_generic_rust_value(unit, RustId::CastControlledDemolition) && !unit_ext.timers[TimerEmergencyDetonation] && !unit_ext.timers[TimerControlledDemolition]) {
             if (unit->id == UnitId::TerranLobotomyMine) {
                 unit->remove();
             } else {
@@ -4258,7 +4267,9 @@ namespace hooks {
                 case GameCommand_DisplaySomeText: {
                     command_size = 82;
                     if (size >= command_size) {
-                        helper::bwfxn_display_text(buffer[1], (s32)(buffer + 2), in_replay);
+                        if (!g_is_in_replay || !g_config.sanitize_replay_chat || chat_message_is_allowed((const char*)(buffer + 2))) {
+                            helper::bwfxn_display_text(buffer[1], (s32)(buffer + 2), in_replay);
+                        }
                     next_command:
                         if (*g_active_nation_id < PlayerLimit) {
                             hooks::register_action(&g_player_apm_counter[*g_active_nation_id], buffer);

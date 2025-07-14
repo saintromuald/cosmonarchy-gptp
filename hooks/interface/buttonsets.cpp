@@ -2471,7 +2471,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranDurendal: {
-                                    if (current_button->icon_id == IconId::TerranShipWeapons // Forward March
+                                    if (current_button->icon_id == IconId::ForwardMarch
                                     ||  current_button->icon_id == IconId::FlyerAttack) {	 // Apollyoid Adhesive
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -2571,7 +2571,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranCentaur: {
-                                    if (current_button->icon_id == IconId::GeminiMissiles) { // Sunchaser Salvo
+                                    if (current_button->icon_id == IconId::CentaurSunchaserMissiles) { // Sunchaser Salvo
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2924,13 +2924,13 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergQuazrokor: {
-                                    if (current_button->icon_id == IconId::AdrenalGlands) { // Adrenal Frenzy
+                                    if (current_button->icon_id == IconId::AdrenalFrenzy) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::ZergNathrokor: {
-                                    if (current_button->icon_id == IconId::AdrenalGlands	// Adrenal Frenzy
-                                    ||	current_button->icon_id == IconId::RoarUnused) {	// Hidebreaker
+                                    if (current_button->icon_id == IconId::AdrenalFrenzy
+                                    ||	current_button->icon_id == IconId::Hidebreaker) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2940,8 +2940,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergVorvrokor: {
-                                    if (current_button->icon_id == IconId::Ensnare			// Captivating Claws
-                                    ||	current_button->icon_id == IconId::RoarUnused) {	// Hidebreaker
+                                    if (current_button->icon_id == IconId::CaptivatingClaws
+                                    ||	current_button->icon_id == IconId::Hidebreaker) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2964,8 +2964,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergSovroleth: {
-                                    if (current_button->icon_id == IconId::Ensnare								// Writhing Web
-                                    ||	current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) {	// Corpse Cocoon
+                                    if (current_button->icon_id == IconId::WrithingWeb
+                                    ||	current_button->icon_id == IconId::CorpseCocoon) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2998,18 +2998,19 @@ namespace hooks {
                                         }
                                 } break;
                                 case UnitId::ZergSkithrokor: {
-                                    if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Ablative Return
+                                    if (current_button->icon_id == IconId::AblativeWhiplash) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::ZergBactalisk:
                                 case UnitId::ZergAlkajelisk: {
-                                    if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Caustic Fission
+                                    if (current_button->icon_id == IconId::CausticFission) { // Caustic Fission
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::ZergTethzorokor: {
-                                    if (current_button->icon_id == IconId::UltrokorKaiserBlades) { // Saber Siphon
+                                    if (current_button->icon_id == IconId::UltrokorKaiserBlades // Saber Siphon
+                                    ||  current_button->icon_id == IconId::RoarUnused) {        // Fan of Teeth
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3030,12 +3031,12 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergAlgoztalisk: {
-                                    if (current_button->icon_id == IconId::ChitinousPlating) { // Escape Velocity
+                                    if (current_button->icon_id == IconId::EscapeVelocity) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::ZergGeszithalor: {
-                                    if (current_button->icon_id == IconId::ZergFlyerAttacks) { // Searing Acid
+                                    if (current_button->icon_id == IconId::SearingAcid) { // Searing Acid
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3045,8 +3046,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergZoryusthaleth: {
-                                    if (current_button->icon_id == IconId::Rilirokor			// Mitosis
-                                    ||	current_button->icon_id == IconId::MetabolicBoost) {	// Swarming Omen
+                                    if (current_button->icon_id == IconId::Rilirokor		 // Mitosis
+                                    ||	current_button->icon_id == IconId::MetabolicBoost) { // Swarming Omen
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3098,8 +3099,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergVilgorokor: {
-                                    if (current_button->icon_id == IconId::Dark_Swarm				// Reconstitution
-                                    ||  current_button->icon_id == IconId::Radioactive_Zerg_Egg) {	// Autophagy
+                                    if (current_button->icon_id == IconId::Reconstitution
+                                    ||  current_button->icon_id == IconId::Autophagy) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3119,7 +3120,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergAkistrokor: {
-                                    if (current_button->icon_id == IconId::Ensnare				// Captivating Claws
+                                    if (current_button->icon_id == IconId::CaptivatingClaws
                                     ||	current_button->icon_id == IconId::SuicideScourge) {	// Devouring Instinct
                                         current_button_state = Button_State::Enabled;
                                     }
