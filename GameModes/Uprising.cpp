@@ -123,7 +123,7 @@ void UprisingGameMode::on_tick() {
                 if (!attacker->can_attack_target(target)) {
                     return false;
                 }
-                if (!(attacker->status & UnitStatus::InAir) && bw::get_region(attacker->position)->group_index != group) {
+                if (!attacker->is_in_air() && bw::get_region(attacker->position)->group_index != group) {
                     return false;
                 }
             }
@@ -160,16 +160,18 @@ void UprisingGameMode::on_unit_tick(Unit* unit) {
     }
 
     // Note: this targeting is a fallback for when kiting code wouldn't work
-    if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter().sort([unit](Unit* target) {
-        return -get_targeting_cost(unit, target);
-    }).first()) {
-        if (unit->main_order_id != OrderId::AttackUnit || target != order_target) {
-            unit->order_to(OrderId::AttackUnit, target);
+    if (!unit->is_building()) {
+        if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter().sort([unit](Unit* target) {
+            return -get_targeting_cost(unit, target);
+        }).first()) {
+            if (unit->main_order_id != OrderId::AttackUnit || target != order_target) {
+                unit->order_to(OrderId::AttackUnit, target);
+            }
+        } else if (!unit_ext->timers[TimerTurningRoam] && !unit_ext->values[ValueUprisingInAttackWave]) {
+            const auto target_pos = bw::random_polar_point(unit->position, 1 * 32);
+            unit->order_to(OrderId::Move, target_pos);
+            unit_ext->timers[TimerTurningRoam] = 4 * 24;
         }
-    } else if (!unit_ext->timers[TimerTurningRoam] && !unit_ext->values[ValueUprisingInAttackWave]) {
-        const auto target_pos = bw::random_polar_point(unit->position, 1 * 32);
-        unit->order_to(OrderId::Move, target_pos);
-        unit_ext->timers[TimerTurningRoam] = 4 * 24;
     }
 }
 

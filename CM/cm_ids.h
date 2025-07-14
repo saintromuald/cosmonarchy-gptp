@@ -129,6 +129,8 @@ namespace UnitId {
 bool can_cast_recall(UnitId::Enum unit_id);
 bool has_manual_weapon_fire_sfx(UnitId::Enum unit_id);
 bool is_atg_regression(UnitId::Enum old_unit_id, UnitId::Enum new_unit_id);
+SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id);
+bool has_autovitality(UnitId::Enum unit_id);
 } // namespace UnitId
 
 namespace WeaponId {

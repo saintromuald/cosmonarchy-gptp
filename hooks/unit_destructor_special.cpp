@@ -370,6 +370,15 @@ void unit_destructor_special_cases(Unit* unit) {
         }
         unit->sprite->create_overlay(effect_image_id);
         helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, unit, true, 0);
+
+        if (bw::get_game_kind() == GameKind::Embraced) {
+            UnitId::Enum unit_id = unit->is_in_air() ? UnitId::ZergRililisk : UnitId::ZergRilirokor;
+            u32 count = units_dat::mineral_cost[unit->id] / 10 + units_dat::vespene_cost[unit->id] / 10;
+            if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg) {
+                count /= 2;
+            }
+            bw::create_unit_from_ability(unit_id, count, unit->player, unit->position, unit);
+        }
     }
 
     // Proc on death behaviors

@@ -352,9 +352,8 @@ namespace hooks {
             weapon_damage_lifesteal(data);
         }
 
-        GameKind game_kind = bw::get_game_kind();
         if (weapon_damage_is_lethal(data)) {
-            if (!bw::is_allied_to(data.target->player, data.attacking_player_id) && game_kind == GameKind::Massacre) {
+            if (!bw::is_allied_to(data.target->player, data.attacking_player_id) && game_kind_doubles_units()) {
                 bw::add_massacre_resource(data.attacking_player_id);
             }
             if (!weapon_damage_fatal(data)) { // Prevent attack if it wasn't fatal
@@ -401,7 +400,7 @@ namespace hooks {
             bw::play_sound(SoundId::GoskaGrenadeImpact, weapon_damage_current_bullet->position);
         }
 
-        if (game_kind_has_neutral_hostile(game_kind) && data.target->player == NeutralHostilePlayer && unit_id_is_burrowed_attacker(data.target->id)) {
+        if (game_kind_has_neutral_hostile() && data.target->player == NeutralHostilePlayer && unit_id_is_burrowed_attacker(data.target->id)) {
             helper::ai_order_lurker_burrow(data.target);
         }
         bw::play_manual_weaponhit_sound(data.target, data.weapon_id);
@@ -662,6 +661,13 @@ namespace hooks {
                 apply_ensnare_internal(data.target, bw::get_ensnare_factor(data.attacker));
             }
 
+            if (bw::get_game_kind() == GameKind::Brotherhood && data.target->can_proc_autovitality(data.attacker->player, data.shield_reduce_amount, data.damage)) {
+                u32 time_cost = units_dat::time_cost[data.target->id];
+                target_ext->timers[TimerAutovitalityClone] = data.target->has_shields() ? time_cost / 3.75 : time_cost / 4.5;
+                bw::add_unit_overlay(data.target, ImageId::LegionnaireTeleportEffect);
+                helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
+            }
+
             switch (data.target->id) {
                 case UnitId::TerranStriga: {
                     // Striga - Fleeting Focus
@@ -681,12 +687,7 @@ namespace hooks {
                 case UnitId::ProtossRenesair:
                 case UnitId::ProtossSimulacrum: {
                     // Autovitality
-                    if (!bw::is_allied_to(data.target->player, data.attacker->player)
-                    &&  !bw::is_under_carapace_swarm(data.target)
-                    &&   data.shield_reduce_amount >= data.target->shields
-                    &&   data.damage
-                    &&   target_ext->timers[TimerAutovitalityClone] == 0)
-                    {
+                    if (data.target->can_proc_autovitality(data.attacker->player, data.shield_reduce_amount, data.damage)) {
                         target_ext->timers[TimerAutovitalityClone] = 4 * 24;
                         bw::add_unit_overlay(data.target, ImageId::LegionnaireTeleportEffect);
                         helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0); // TODO: Make sound dependent on unit id
@@ -1091,7 +1092,7 @@ namespace hooks {
                 data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
                 target_ext.values[ValueIsShade] = true;
 
-                if (bw::get_game_kind() == GameKind::Massacre && unit_should_give_gas_in_massacre_mode(data.target)) {
+                if (game_kind_doubles_units() && unit_should_give_gas_in_massacre_mode(data.target)) {
                     bw::add_massacre_resource(data.target->player);
                 }
 
@@ -1108,7 +1109,7 @@ namespace hooks {
                 data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
                 data.target->sprite->create_top_overlay(ImageId::ExplosionSmallBlueReversed);
 
-                if (bw::get_game_kind() == GameKind::Massacre && unit_should_give_gas_in_massacre_mode(data.target)) {
+                if (game_kind_doubles_units() && unit_should_give_gas_in_massacre_mode(data.target)) {
                     bw::add_massacre_resource(data.target->player);
                 }
 

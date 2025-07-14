@@ -130,6 +130,10 @@ namespace hooks {
             speed *= 0.75;
         }
 
+        if (unit_ext.values[ValueInfested] && bw::get_game_kind() != GameKind::Embraced) {
+            speed *= 0.75;
+        }
+
         // Shade - speed steroid
         if (unit_ext.values[ValueIsShade]) {
             speed *= 1.5;

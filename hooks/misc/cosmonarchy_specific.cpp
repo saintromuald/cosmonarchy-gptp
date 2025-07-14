@@ -262,7 +262,7 @@ Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) {
         helper::turn_unit(subunit, 96);
     }
 
-    if (bw::get_game_kind() == GameKind::Massacre && unit_should_give_gas_in_massacre_mode(unit)) {
+    if (game_kind_doubles_units() && unit_should_give_gas_in_massacre_mode(unit)) {
         bw::add_massacre_resource(unit->player);
         UnitExt* unit_ext = get_unit_ext(unit);
         unit_ext->values[ValueCancellingZergStructure] = 0;
@@ -337,10 +337,10 @@ void transform_unit_main(Unit* unit, u32 unit_id) { // 0049F170
     unit->order_target = order_target;
 
     u32 temp_unit_id = unit_id;
-    if (!(unit->status & UnitStatus::Completed)) {
+    if (!unit->is_completed()) {
         temp_unit_id = UnitId::None;
     }
-    if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building || temp_unit_id == UnitId::None) {
+    if (!unit->is_frozen() || unit->is_building() || temp_unit_id == UnitId::None) {
         unit->current_buttonset = temp_unit_id;
     }
     bw::refresh_console();

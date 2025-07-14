@@ -69,7 +69,7 @@ namespace hooks {
 
 			u32 extra_count = 0;
 			extra_count += unit->id == UnitId::ZergLarva ? 0 : unit_ext->values[ValueSwarmhold]; // Done this way to prevent double Larvae on Egg cancel. -Pr0nogo
-			if (unit->id != UnitId::ZergLarva && bw::get_game_kind() == GameKind::Massacre) {
+			if (unit->id != UnitId::ZergLarva && game_kind_doubles_units()) {
 				extra_count *= Massacre::UnitMultiplier;
 				extra_count++;
 			}

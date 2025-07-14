@@ -91,7 +91,7 @@ Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id) {
 		unit_ext.timers[TimerReclaimStun] = Reclamation::ReviveStunTimer;
 		unit_ext.timers[TimerStun]        = Reclamation::ReviveStunTimer;
 		unit_ext.values[ValueReclaimed]   = 1;
-		if (bw::get_game_kind() == GameKind::TheTurning && player == NeutralHostilePlayer) {
+		if (game_kind_has_zombies() && player == NeutralHostilePlayer) {
 			unit_ext.values[ValueNoCorpse] = true;
 		}
 	}
@@ -108,8 +108,10 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 
 	Unit* unit = spawn_reclaimed_unit(player, pos, unit_id);
 	if (unit) {
-		UnitExt* unit_ext = get_unit_ext(unit);
-		unit_ext->values[ValueRegressionUnstable] = corpse_ext->create_origin == UnitId::ZergOcsalLarva;
+		auto& unit_ext = unit->ext();
+		if (corpse_ext->create_origin == UnitId::ZergOcsalLarva || corpse_ext->is_regression) {
+			unit_ext.values[ValueRegressionUnstable] = true;
+		}
 		if (unit_id_is_mine_layer((UnitId::Enum)unit->id)) {
 			unit->mine_carrier.mine_count = corpse_ext->mine_count;
 		}

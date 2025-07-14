@@ -194,6 +194,15 @@ const char* game_kind_to_string(GameKind game_kind) {
         case GameKind::DarkAges: {
             return "Dark Ages";
         } break;
+        case GameKind::Deathmarch: {
+            return "Deathmarch";
+        } break;
+        case GameKind::Brotherhood: {
+            return "Brotherhood";
+        } break;
+        case GameKind::Zombocalypse: {
+            return "Zombocalypse";
+        } break;
     }
     return "Custom";
 }
@@ -232,6 +241,15 @@ const char* game_kind_to_filename_string(GameKind game_kind) {
         } break;
         case GameKind::DarkAges: {
             return "Dark Ages(1)";
+        } break;
+        case GameKind::Deathmarch: {
+            return "Deathmarch(1)";
+        } break;
+        case GameKind::Brotherhood: {
+            return "Brotherhood(1)";
+        } break;
+        case GameKind::Zombocalypse: {
+            return "Zombocalypse(1)";
         } break;
     }
     assert(false);
@@ -342,10 +360,13 @@ bool can_auto_heal(Unit* unit) {
 }
 
 bool unit_can_be_repulsed(Unit* unit) {
-    if (unit->status & UnitStatus::GroundedBuilding) {
+    if (unit->is_building()) {
         return false;
     }
-    if (unit->status & UnitStatus::Burrowed) {
+    if (unit->is_burrowed()) {
+        return false;
+    }
+    if (unit->id == UnitId::ProtossSteward) {
         return false;
     }
     return true;
@@ -361,12 +382,14 @@ void specialist_energy_error(Unit* unit) {
 }
 
 bool unit_should_give_gas_in_massacre_mode(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    return unit_id_should_give_gas_in_massacre_mode(unit->id) && !unit_ext->values[ValueCancellingZergStructure];
+    return unit_id_should_give_gas_in_massacre_mode(unit->id) && !unit->ext().values[ValueCancellingZergStructure];
 }
 
 bool game_kind_has_neutral_hostile(GameKind game_kind) {
-    return game_kind == GameKind::TheTurning || game_kind == GameKind::Uprising;
+    return game_kind == GameKind::TheTurning
+        || game_kind == GameKind::Uprising
+        || game_kind == GameKind::Deathmarch
+        || game_kind == GameKind::Zombocalypse;
 }
 
 bool player_detects_unit(u32 player, Unit* unit) {
@@ -541,4 +564,15 @@ UnitId::Enum get_factional_regression(Unit* unit) {
             return UnitId::ZergZoryusthaleth;
         } break;
     }
+}
+
+bool game_kind_has_zombies(GameKind game_kind) {
+    return game_kind == GameKind::TheTurning
+        || game_kind == GameKind::Deathmarch
+        || game_kind == GameKind::Zombocalypse;
+}
+
+bool game_kind_doubles_units(GameKind game_kind) {
+    return game_kind == GameKind::Massacre
+        || game_kind == GameKind::Deathmarch;
 }

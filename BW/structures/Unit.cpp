@@ -1628,4 +1628,14 @@ bool Unit::is_plainly_visible() {
 
 bool Unit::can_use_passive_ability() {
     return this->is_completed() && !this->is_frozen() && !this->is_in_transport() && !this->ext().values[ValueDisablePassive];
+}bool Unit::can_proc_autovitality(u32 attacking_player, u32 shield_reduce, u32 damage) {
+    return !this->is_building()
+        && !unit_id_is_larva(this->id)
+        && !unit_id_is_zerg_egg(this->id)
+        && !bw::is_allied_to(this->player, attacking_player)
+        && !bw::is_under_carapace_swarm(this)
+        && (shield_reduce >= this->shields || !this->has_shields())
+        &&  damage
+        &&  this->is_completed()
+        &&  this->ext().timers[TimerAutovitalityClone] == 0;
 }
