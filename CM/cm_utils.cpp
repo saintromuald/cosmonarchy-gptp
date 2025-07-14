@@ -566,6 +566,37 @@ UnitId::Enum get_factional_regression(Unit* unit) {
     }
 }
 
+void init_corpse(Thingy* corpse, SpriteId::Enum id, u32 player) {
+    if (id == SpriteId::Egg_Spawn) {
+        corpse->sprite->player = player;
+    } else if (SpriteId::is_corpse(SpriteId::Enum(id))) {
+        corpse->sprite->player = player;
+
+        Unit* unit = *g_active_iscript_unit;
+        if (unit) {
+            ThingyExt* thingy_ext = get_thingy_ext(corpse);
+            thingy_ext->player = unit->player;
+            thingy_ext->unit_id = unit->id;
+            thingy_ext->sight_range_before_death = unit->get_sight_range() * 32;
+            thingy_ext->avenge_or_ascend_player = unit_avenges_or_ascends(unit);
+            thingy_ext->create_origin = unit->create_origin;
+            if (unit_id_is_mine_layer((UnitId::Enum)unit->id)) {
+                thingy_ext->mine_count = unit->mine_carrier.mine_count;
+            }
+
+            auto& unit_ext = unit->ext();
+            if (unit_ext.values[ValueRegressionUnstable]) {
+                thingy_ext->is_regression = true;
+            }
+            if (unit_ext.timers[TimerAutocratControlledOpposition]) {
+                reclaim_corpse(corpse, unit_ext.values[ValueAutocratControlledOppositionPlayer]);
+            }
+        }
+    }
+    corpse->sprite->elevation = 0;
+    helper::set_thingy_visibility_flags(corpse);
+}
+
 bool game_kind_has_zombies(GameKind game_kind) {
     return game_kind == GameKind::TheTurning
         || game_kind == GameKind::Deathmarch
@@ -575,4 +606,14 @@ bool game_kind_has_zombies(GameKind game_kind) {
 bool game_kind_doubles_units(GameKind game_kind) {
     return game_kind == GameKind::Massacre
         || game_kind == GameKind::Deathmarch;
+}
+
+bool chat_message_is_allowed(const char* text) {
+    return stricmp(text, "GG")   == 0
+        || stricmp(text, "GLHF") == 0
+        || stricmp(text, "PP") == 0
+        || stricmp(text, "PAUSE") == 0
+        || stricmp(text, "R") == 0
+        || stricmp(text, "RDY") == 0
+        || stricmp(text, "READY") == 0;
 }

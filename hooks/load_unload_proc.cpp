@@ -5,21 +5,21 @@
 
 namespace hooks {
 static void special_load_unit(Unit* unit, Unit* transport) {
-    if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
+    if (helper::spreads_creep(unit->id, unit->is_completed())) {
         helper::update_creep_disappearance_unit(unit);
     }
 }
 
 static void special_unload_unit(Unit* unit, Unit* transport) {
-    if (helper::spreads_creep(unit->id, unit->status & UnitStatus::Completed)) {
+    if (helper::spreads_creep(unit->id, unit->is_completed())) {
         bw::spawn_custom_creep_at(unit->position, unit->id, false);
         helper::set_secondary_order(unit, OrderId::SpreadCreep);
     }
 }
 
 static void special_post_unload_unit(Unit* unit, Unit* transport) {
-    UnitExt* transport_ext = get_unit_ext(transport);
-    if (transport_ext->values[ValueIsNeutralBunker]) {
+    auto& transport_ext = transport->ext();
+    if (transport_ext.values[ValueIsNeutralBunker]) {
         Unit* first_unit = transport->get_first_loaded_unit();
         if (first_unit) {
             if (first_unit->player != unit->player) {
@@ -29,6 +29,10 @@ static void special_post_unload_unit(Unit* unit, Unit* transport) {
             transport->give_to(NeutralPlayer);
             transport->sprite->player = NeutralPlayer;
         }
+    }
+
+    if (unit->id == UnitId::ZergKazitrithCesiant) {
+        unit->ext().timers[TimerAdaptiveAmitosisGrowth] = AdaptiveAmitosis::GrowthTimer;
     }
 
     if (unit_id_is_siege_mode((UnitId::Enum)unit->id)) {
@@ -175,8 +179,7 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     }
 
     if (transport->player == 11) {
-        UnitExt* unit_ext = get_unit_ext(transport);
-        unit_ext->values[ValueIsNeutralBunker] = 1;
+        transport->ext().values[ValueIsNeutralBunker] = 1;
         transport->give_to(cargo_unit->player);
     }
 

@@ -422,6 +422,9 @@ struct Unit : public UnitLayout {
     bool can_be_displaced();
     bool is_plainly_visible();
     bool can_use_passive_ability();
+    u32 get_adaptive_amitosis_range();
+    bool can_proc_autovitality(u32 attacking_player, u32 shield_reduce, u32 damage);
+    bool can_be_passive_cloaked(Unit* source);
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

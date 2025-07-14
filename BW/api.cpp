@@ -3127,10 +3127,10 @@ bool unit_can_flee(Unit* unit) {
         return false;
     }
 
-    UnitExt* unit_ext = get_unit_ext(unit);
+    auto& unit_ext = unit->ext();
     switch (unit->id) {
         case UnitId::ProtossClarion: {
-            if (unit_ext->unit_vectors[UnitVectorPhaseLink].size() <= 1) {
+            if (unit_ext.unit_vectors[UnitVectorPhaseLink].size() <= 1) {
                 return false;
             }
         } break;
@@ -3139,7 +3139,7 @@ bool unit_can_flee(Unit* unit) {
             return false;
         } break;
         case UnitId::ProtossLanifect: {
-            if (unit_ext->values[ValueDisruptionFieldOn]) {
+            if (unit_ext.values[ValueDisruptionFieldOn]) {
                 return false;
             }
         } break;

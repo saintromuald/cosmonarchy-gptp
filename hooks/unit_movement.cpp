@@ -109,10 +109,10 @@ namespace hooks {
 
 	// Hooked to resolve a nullsprite crash. -Pr0nogo
 	b32 move_towards(Unit* target, Unit* unit) { // 004EB900
-		if (!AssertSprite(unit->sprite)) { // New
+		if (!unit->sprite) { // New
 			return 0;
 		}
-		if (!AssertSprite(target->sprite)) { // New
+		if (!target->sprite) { // New
 			return 0;
 		}
 		if (unit->recent_order_timer) {

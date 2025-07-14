@@ -149,7 +149,10 @@ void load_config() {
 
     // Map directory
     load_field(yaml, "default-map-directory", g_config.default_map_directory);
+
+    // Replays
     load_field(yaml, "auto-save-replays", g_config.auto_save_replays);
+    load_field(yaml, "sanitize-replay-chat", g_config.sanitize_replay_chat);
 
     validate_config();
     save_config();
@@ -307,7 +310,11 @@ void save_config() {
     yaml << YAML::Newline << YAML::Comment("The map directory must be within Starcraft's 'maps' folder.");
     yaml << YAML::Newline << YAML::Comment("Example: BroodWar\\CMBW-maps");
     write_field(yaml, "default-map-directory", g_config.default_map_directory);
+    yaml << YAML::Newline << YAML::Newline;
+
+    yaml << YAML::Comment("Replays");
     write_field(yaml, "auto-save-replays", g_config.auto_save_replays);
+    write_field(yaml, "sanitize-replay-chat", g_config.sanitize_replay_chat);
     yaml << YAML::Newline << YAML::Newline;
 
     yaml << YAML::EndMap;

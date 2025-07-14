@@ -51,7 +51,6 @@ namespace {
 		{UnitId::TerranEidolon, UpgradeId::OcularImplants, UpgradeId::MoebiusReactor, UpgradeId::None},
 		{UnitId::TerranCleric, UpgradeId::CaduceusReactor, UpgradeId::None},
 		{UnitId::TerranVulture, UpgradeId::IonThrusters, UpgradeId::None},
-		{UnitId::TerranGoliath, UpgradeId::CharonBooster, UpgradeId::None},
 		{UnitId::TerranSeraph, UpgradeId::TitanReactor, UpgradeId::None},
 		{UnitId::TerranWraith, UpgradeId::ApolloReactor, UpgradeId::None},
 		{UnitId::TerranMinotaur, UpgradeId::ColossusReactor, UpgradeId::None},
@@ -62,7 +61,6 @@ namespace {
 		{UnitId::ZergHydralisk, UpgradeId::MuscularAugments, UpgradeId::GroovedSpines, UpgradeId::None},
 		{UnitId::ZergMatraleth, UpgradeId::GameteMeiosis, UpgradeId::None},
 		{UnitId::ZergIsthrathaleth, UpgradeId::MetasynapticNode, UpgradeId::None},
-		{UnitId::ZergUltrokor, UpgradeId::AnabolicSynthesis, UpgradeId::ChitinousPlating, UpgradeId::None},
 
 		// Protoss
 		{UnitId::ProtossZealot, UpgradeId::LegEnhancements, UpgradeId::None},

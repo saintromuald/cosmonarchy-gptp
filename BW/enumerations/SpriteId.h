@@ -824,6 +824,10 @@ namespace SpriteId {
         TencendurAttackOverlay_Blue     = 992,
         TencendurAttackOverlay_Green    = 993,
 
+        CorrosiveTouchExplosionMedium   = 999,
+
+        CorrosiveTouchExplosionSmall    = 1006,
+
         // CORPSE \\
             
         Corpse_Aspirant				    = 685,

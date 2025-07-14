@@ -309,6 +309,7 @@ namespace UnitId {
         ZergIziralisk										= 403,
         ZergInzorthrokor                                    = 415,
         ZergQuazrokor                                       = 422,
+        ZergLakiziliskZorthos                               = 425,
         ZergHydraliskOrkoti                                 = 436,
         ZergYblyleth                                        = 438,
 
@@ -339,8 +340,33 @@ namespace UnitId {
         ZergSkibactScab										= 397,		// Morphed from Hydrith Den
         ZergEskigant                                        = 421,
 
+    // Askosi-Unit
+        AskosiPilgrim                                       = 439,
+        AskosiProselyte                                     = 443,
+        AskosiDyad                                          = 444,
+        AskosiMissionary                                    = 445,
+        AskosiCardinal                                      = 446,
+        AskosiMimic                                         = 447,
+        AskosiVicar                                         = 448,
+        AskosiRove                                          = 449,
+        AskosiObject                                        = 450,
+        AskosiScepter                                       = 451,
+        AskosiIntende                                       = 452,
+        AskosiHelion                                        = 453,
+        AskosiEmissary                                      = 454,
+        AskosiInkblot                                       = 455,
+        AskosiTirade                                        = 456,
+
     // Askosi-Building
         AskosiLandlock                                      = 429,
+        AskosiArch                                          = 457,
+        AskosiGrandstand                                    = 458,
+        AskosiChantry                                       = 459,
+        AskosiRadix                                         = 460,
+        AskosiCipher                                        = 461,
+        AskosiFunction                                      = 462,
+        AskosiGauntlet                                      = 463,
+        AskosiCosmoscope                                    = 464,
 
     // Special-Unit
         ExtTerranCivilian									= 332,

@@ -555,7 +555,7 @@ namespace hooks {
         if (launched_unit) {
             Unit* temp_unit = launched_unit->hangar_unit.hangar_link.prev;
             while (temp_unit) {
-                if ((temp_unit->status & UnitStatus::Completed) && (temp_unit->hitpoints > launched_unit->hitpoints)) {
+                if ((temp_unit->is_completed()) && (temp_unit->hitpoints > launched_unit->hitpoints)) {
                     launched_unit = temp_unit;
                 }
                 temp_unit = temp_unit->hangar_unit.hangar_link.prev;

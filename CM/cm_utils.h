@@ -38,5 +38,7 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id);
 const char* get_unit_name_ext(UnitId::Enum unit_id);
 u32 get_banter_cooldown(UnitId::Enum unit_id);
 UnitId::Enum get_factional_regression(Unit* unit);
+void init_corpse(Thingy* corpse, SpriteId::Enum id, u32 player);
 bool game_kind_has_zombies(GameKind game_kind = bw::get_game_kind());
 bool game_kind_doubles_units(GameKind game_kind = bw::get_game_kind());
+bool chat_message_is_allowed(const char* text);

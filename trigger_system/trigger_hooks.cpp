@@ -3,6 +3,7 @@
 #include "trigger_sound.h"
 #include "hook_tools.h"
 #include "hooks/limits/sfx_extender.h"
+using namespace std::literals;
 
 // HOOKS \\
 
@@ -167,7 +168,7 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
         player = active_unit->player;
     }
     portrait_id = get_player_portrait_id_override(portrait_id, player);
-    if (strcmp(g_current_map_name, "Anad's Greatsword") == 0) {
+    if (g_current_map_name == "Anad's Greatsword"sv) {
         switch (portrait_id) {
             case PortraitId::Maverick: {
                 portrait_id = PortraitId::AnadThyron;
@@ -179,7 +180,7 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
                 portrait_id = PortraitId::AdvisorZorthos;
             } break;
         }
-    } else if (strcmp(g_current_map_name, "Sanctuary Lost") == 0) {
+    } else if (g_current_map_name == "Sanctuary Lost"sv) {
         switch (portrait_id) {
             case PortraitId::PlasmaShellUnused: {
                 portrait_id = PortraitId::AnadThyron;
@@ -188,13 +189,13 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
                 portrait_id = PortraitId::Kortar;
             } break;
         }
-    } else if (strcmp(g_current_map_name, "Further Notice") == 0) {
+    } else if (g_current_map_name == "Further Notice"sv) {
         switch (portrait_id) {
             case PortraitId::Prudence: {
                 portrait_id = PortraitId::Osina;
             } break;
         }
-    } else if (strcmp(g_current_map_name, "The Initiate") == 0) {
+    } else if (g_current_map_name == "The Initiate"sv) {
         switch (portrait_id) {
             case PortraitId::Prudence: {
                 portrait_id = PortraitId::Terimanok;
@@ -203,7 +204,7 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
                 portrait_id = PortraitId::Furen;
             } break;
         }
-    } else if (strcmp(g_current_map_name, "Autophagy") == 0) {
+    } else if (g_current_map_name == "Autophagy"sv) {
         switch (portrait_id) {
             case PortraitId::Anticthon: {
                 portrait_id = PortraitId::Daggoth;
@@ -212,7 +213,7 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
                 portrait_id = PortraitId::OrganSenescent;
             } break;
         }
-    } else if (strcmp(g_current_map_name, "Waterwar") == 0) {
+    } else if (g_current_map_name == "Waterwar"sv) {
         switch (portrait_id) {
             case PortraitId::Prudence: {
                 portrait_id = PortraitId::Sevenstep;
@@ -221,7 +222,7 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
                 portrait_id = PortraitId::Venammar;
             } break;
         }
-    } else if (strcmp(g_current_map_name, "Cellbound") == 0) {
+    } else if (g_current_map_name == "Cellbound"sv) {
         switch (portrait_id) {
             case PortraitId::Morningstar: {
                 portrait_id = PortraitId::Atreus; // TODO: Own portrait
@@ -231,6 +232,24 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
             } break;
             case PortraitId::PlasmaShellUnused: {
                 portrait_id = PortraitId::Joran;
+            } break;
+        }
+    } else if (g_current_map_name == "Mendacity"sv) {
+        switch (portrait_id) {
+            case PortraitId::Anticthon: {
+                portrait_id = PortraitId::Zasz; // Ataltreth
+            } break;
+            case PortraitId::ScannerSweep: {
+                portrait_id = PortraitId::OrganSenescent; // Relgant; Temporary
+            } break;
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::Medley; // Sprinia; Temporary
+            } break;
+            case PortraitId::PlasmaShellUnused: {
+                portrait_id = PortraitId::Trodin; // Scintor; Temporary
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Tazarain;
             } break;
         }
     }

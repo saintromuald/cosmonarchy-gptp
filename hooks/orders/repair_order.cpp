@@ -296,7 +296,7 @@ namespace hooks
 					}
 					action = right_click_order;
 				}
-				if (unit->status & UnitStatus::IsHallucination) {
+				if (unit->is_hallucination()) {
 					if (action == RightClickActions::Harvest || action == RightClickActions::HarvestAndRepair) {
 						action = RightClickActions::NormalMove_NormalAttack;
 					}
@@ -309,7 +309,7 @@ namespace hooks
 							return true;
 						}
 						text_id = 879;
-						sfx_id = unit->get_race() + 138;
+						sfx_id = unit->get_race() + SoundId::Zerg_DRONE_ZDrErr00_WAV_2;
 					case RightClickActions::NoMove_NormalAttack:
 						if (!target || is_neutral) {
 							break;
@@ -334,14 +334,14 @@ namespace hooks
 							return true;
 						}
 						if (target->id == UnitId::ResourceVespeneGeyser) {
-						//	sfx_id = unit->get_race() + 1;
+						//	sfx_id = unit->get_race() + SoundId::Zerg_Drone_ZDrErr00_WAV;
 						//	text_id = unit->get_race()  + 893;
 						} else {
 							if (!helper::is_unit_enemy(*g_active_portrait_unit, target) || is_neutral || helper::unit_can_attack_target(target, unit, 1)) {
 								return true;
 							}
 							text_id = 879;
-							sfx_id = unit->get_race() + 138;
+							sfx_id = unit->get_race() + SoundId::Zerg_DRONE_ZDrErr00_WAV_2;
 						}
 						break;
 					default: {
