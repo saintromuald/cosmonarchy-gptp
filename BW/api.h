@@ -65,6 +65,9 @@ enum class GameKind {
     Duopoly,
     Embraced,
     DarkAges,
+    Deathmarch,
+    Brotherhood,
+    Zombocalypse,
 
     Debug,
     Count,

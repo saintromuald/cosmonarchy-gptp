@@ -24,7 +24,7 @@ namespace hooks
 		}
 
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueInfested]) {
+		if (unit_ext->values[ValueInfested] && bw::get_game_kind() != GameKind::Embraced) {
 			sight_range /= 2;
 		}
 		return sight_range;

@@ -119,7 +119,7 @@ namespace hooks {
 						if (built_unit->status & UnitStatus::Completed) {
 							u32 count = 1;
 							Unit* built_units[2] = {built_unit, 0};
-							if (units_dat::base_property[built_unit->id] & UnitProperty::TwoUnitsIn1Egg || bw::get_game_kind() == GameKind::Massacre) {
+							if (units_dat::base_property[built_unit->id] & UnitProperty::TwoUnitsIn1Egg || game_kind_doubles_units()) {
 								count = 2;
 								built_units[1] = bw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
 							}

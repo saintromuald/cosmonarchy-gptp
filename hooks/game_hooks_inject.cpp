@@ -300,27 +300,27 @@ void __declspec(naked) initialize_provider_version_wrapper() { // 00472770
 
 namespace hooks {
 void inject_game_hooks() {
-    jump_patch(on_game_start,						Hook_OnGameStart);
-    jump_patch(set_ingame_input_procs,				0x00484CC0, 0);
-    jump_patch(update_minimap_colors,				0x004A3A00, 0);
-    jump_patch(update_doodad_visibility_wrapper,	0x00487690, 1);
-    jump_patch(game_recv_wrapper,					0x004865D0, 0);
+    jump_patch(on_game_start,						   Hook_OnGameStart);
+    jump_patch(set_ingame_input_procs,			   0x00484CC0, 0);
+    jump_patch(update_minimap_colors,				   0x004A3A00, 0);
+    jump_patch(update_doodad_visibility_wrapper,	   0x00487690, 1);
+    jump_patch(game_recv_wrapper,					   0x004865D0, 0);
 
-    jump_patch(ui_button_click_wrapper,				0x004190ED, 2);
+    jump_patch(ui_button_click_wrapper,			   0x004190ED, 2);
 
-    call_patch(on_game_end,							0x004EE983, 0);
-    call_patch(next_frame_hook,						0x004D974E, 0);
-    call_patch(next_ui_frame_hook,					0x004DE433, 0);
+    call_patch(on_game_end,						   0x004EE983, 0);
+    call_patch(next_frame_hook,					   0x004D974E, 0);
+    call_patch(next_ui_frame_hook,				   0x004DE433, 0);
 
-    jump_patch(sp_save_directory_wrapper,			0x004AE9E2, 0);
-    jump_patch(mp_save_directory_wrapper,			0x0044CCF7, 1);
-    jump_patch(replay_save_wrapper,					0x004EEBEA, 1);
+    jump_patch(sp_save_directory_wrapper,			   0x004AE9E2, 0);
+    jump_patch(mp_save_directory_wrapper,			   0x0044CCF7, 1);
+    jump_patch(replay_save_wrapper,				   0x004EEBEA, 1);
 
-    jump_patch(initialize_provider_version_wrapper, 0x00472770, 1);
-    jump_patch(network_set_return_menu,				0x004DC5B0, 0);
+    jump_patch(initialize_provider_version_wrapper,  0x00472770, 1);
+    jump_patch(network_set_return_menu,              0x004DC5B0, 0);
 
     // Fix replay buffer overflow. (get_replay_turn_data @ 004CDFF0)
-    call_patch(hooks::get_replay_turn_data,         0x00487163);
-    call_patch(replay_loop,                         0x004D96C4);
+    call_patch(hooks::get_replay_turn_data,          0x00487163);
+    call_patch(replay_loop,                          0x004D96C4);
 }
 }

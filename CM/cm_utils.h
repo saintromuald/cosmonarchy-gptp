@@ -1,7 +1,11 @@
 #pragma once
 #include "cm.h"
+#include "BW/api.h"
 
 enum class GameKind;
+namespace bw {
+GameKind get_game_kind();
+} //bw
 
 Box32 box32_rect(Point16 pos, u32 w, u32 h);
 Box32 box32_square(Point16 pos, u32 w);
@@ -25,10 +29,14 @@ bool can_auto_heal(Unit* unit);
 bool unit_can_be_repulsed(Unit* unit);
 void specialist_energy_error(Unit* unit);
 bool unit_should_give_gas_in_massacre_mode(Unit* unit);
-bool game_kind_has_neutral_hostile(GameKind game_kind);
+bool game_kind_has_neutral_hostile(GameKind game_kind = bw::get_game_kind());
 bool player_detects_unit(u32 player, Unit* unit);
 void fire_amitosis_weapon(Unit* attacker, WeaponId::Enum weapon_id);
 void set_up_mines(Unit* unit);
 UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id);
 u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id);
+const char* get_unit_name_ext(UnitId::Enum unit_id);
+u32 get_banter_cooldown(UnitId::Enum unit_id);
 UnitId::Enum get_factional_regression(Unit* unit);
+bool game_kind_has_zombies(GameKind game_kind = bw::get_game_kind());
+bool game_kind_doubles_units(GameKind game_kind = bw::get_game_kind());
