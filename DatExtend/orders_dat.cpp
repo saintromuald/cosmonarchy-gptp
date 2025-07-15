@@ -35,9 +35,9 @@ namespace {
 }
 
 namespace DatExt {
-    void orders_dat_doPatch(u32 newCount)
+    void orders_dat_do_patch(u32 newCount)
     {
-        datTablePatch((DatLoad*)LoadTable::Orders_Dat, orders_r);
+        dat_table_patch((DatLoad*)LoadTable::Orders_Dat, orders_r);
     }
     //void orders_dat_unpatch() {
     //}

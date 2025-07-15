@@ -9,8 +9,8 @@ namespace {
 }
 
 namespace DatExt {
-	  //void mapdata_dat_doPatch(u32 newCount) {
-	  //  datTablePatch((DatLoad*)LoadTable::Mapdata_Dat, mapdata_r);
+	  //void mapdata_dat_do_patch(u32 newCount) {
+	  //  dat_table_patch((DatLoad*)LoadTable::Mapdata_Dat, mapdata_r);
 	  //}
 
 	  //void mapdata_dat_unpatch() {

@@ -50,9 +50,9 @@ namespace {
 }
 
 namespace DatExt {
-	void weapons_dat_doPatch(u32 newCount)
+	void weapons_dat_do_patch(u32 newCount)
 	{
-		datTablePatch((DatLoad*)LoadTable::Weapons_Dat, weapons_r);
+		dat_table_patch((DatLoad*)LoadTable::Weapons_Dat, weapons_r);
 		const_replace(weapons_consts, newCount);
 	}
 }

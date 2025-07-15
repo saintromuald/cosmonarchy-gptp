@@ -506,10 +506,10 @@ namespace {
 
 
 namespace DatExt {
-	void units_dat_doPatch(u32 newCount)
+	void units_dat_do_patch(u32 newCount)
 	{
 		u32 i,j, offs;
-		datTablePatch((DatLoad*)LoadTable::Units_Dat, unit_r);
+		dat_table_patch((DatLoad*)LoadTable::Units_Dat, unit_r);
 
 		// unit_AllCount
 		unit_newArrs[0] = malloc(newCount * PLAYER_COUNT * sizeof(u32));
@@ -590,10 +590,10 @@ namespace DatExt {
 		//}
 	
 		// Load flingy expand patch
-		units_dat_flingyExpand();
+		units_dat_flingy_expand();
 	}
 	
-	void units_dat_flingyExpand()
+	void units_dat_flingy_expand()
 	{
 		int i;
 		u32 offs;

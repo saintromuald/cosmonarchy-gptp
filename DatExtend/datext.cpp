@@ -34,53 +34,47 @@ namespace DatExt {
 		{ "mapdata.dat",  LoadTable::Mapdata_Dat,    260,  4, MapdataIdLimit,  false, },
 	};
 
-	StringTbl* unitNamesTbl = NULL;
+	StringTbl* g_unit_names_tbl = NULL;
 	GrpHead* unitIcons = NULL;
 	GrpHead** const cmdIcons = (GrpHead**)(0x0068C1E0); // default value
 
-	bool setDatSize(DatLoad* datTablePtr, u32 size)
-	{
-
+	bool set_dat_size(DatLoad* datTablePtr, u32 size) {
 		u32 i,j;
-		u32 newCount, memCount;
-		void* newMem = NULL;
+		u32 new_count, mem_count;
+		void* new_mem = NULL;
 
 		// get dat file table index
 		for (i = 0; i < DatFile::COUNT && (u32)datTablePtr != datFiles[i].datTablePtr; i++);
 
 		// Unknown file; return success to load normally
-		if (i == DatFile::COUNT)
-		{
+		if (i == DatFile::COUNT) {
 			return true;
 		}
 
 		// Default file; return success to load normally
-		if (size == datFiles[i].defaultSize)
-		{
+		if (size == datFiles[i].defaultSize) {
 			return true;
 		}
 		
 		// Not an integer number of entries -- invalid file
-		if ((size % datFiles[i].entrySize) != 0)
-		{
+		if ((size % datFiles[i].entrySize) != 0) {
 			return false;
 		}
 
 		// Dat file already patched; return success
-		if (datFiles[i].loaded)
-		{
+		if (datFiles[i].loaded) {
 			return true;
 		}
 
 		// Get number of entries
-		newCount = size / datFiles[i].entrySize;
-		memCount = newCount;
+		new_count = size / datFiles[i].entrySize;
+		mem_count = new_count;
 
 		// units.dat special cases
 		if (i == DatFile::Units_Dat) {
 			// Count must be a multiple of 12, so round up
-			if ((newCount % 12) != 0) {
-				memCount += 12 - (newCount % 12);
+			if ((new_count % 12) != 0) {
+				mem_count += 12 - (new_count % 12);
 			}
 
 			datTablePtr[0].length = 2; // flingy ID to u16
@@ -94,76 +88,64 @@ namespace DatExt {
 		// portdata.dat special cases
 		if (i == DatFile::Portdata_Dat) {
 			// Count must be a multiple of 5, so round up
-			if ((newCount % 5) != 0)
-			{
-			  memCount += 5 - (newCount % 5);
+			if ((new_count % 5) != 0) {
+			  mem_count += 5 - (new_count % 5);
 			}
 		}
 
 		// Load new entry counts
 		for (j = 0; datTablePtr[j].address != NULL; j++) {
-			datTablePtr[j].entries = newCount;
+			datTablePtr[j].entries = new_count;
 
-			newMem = calloc(memCount, datTablePtr[j].length);
-			if (newMem == NULL) {
+			new_mem = calloc(mem_count, datTablePtr[j].length);
+			if (new_mem == NULL) {
 				// error allocating memory
 				return false; // or something
 			}
-			datTablePtr[j].address = newMem;
+			datTablePtr[j].address = new_mem;
 		}
 
 		// Load patches for dat file
 		switch (i) {
-			case DatFile::Units_Dat:
-			{
-				units_dat_doPatch(memCount); // rounded up to a multiple of 12
-				UNIT_TYPE_COUNT = newCount;
+			case DatFile::Units_Dat: {
+				units_dat_do_patch(mem_count); // rounded up to a multiple of 12
+				UNIT_TYPE_COUNT = new_count;
 			} break;
-			case DatFile::Weapons_Dat:
-			{
-				weapons_dat_doPatch(newCount);
-				WEAPON_TYPE_COUNT = newCount;
+			case DatFile::Weapons_Dat: {
+				weapons_dat_do_patch(new_count);
+				WEAPON_TYPE_COUNT = new_count;
 			} break;
-			case DatFile::Flingy_Dat:
-			{
-				flingy_dat_doPatch(newCount);
-				FLINGY_TYPE_COUNT = newCount;
+			case DatFile::Flingy_Dat: {
+				flingy_dat_do_patch(new_count);
+				FLINGY_TYPE_COUNT = new_count;
 			} break;
-			case DatFile::Sprites_Dat:
-			{
-				sprites_dat_doPatch(newCount);
-				SPRITES_TYPE_COUNT = newCount;
+			case DatFile::Sprites_Dat: {
+				sprites_dat_do_patch(new_count);
+				SPRITES_TYPE_COUNT = new_count;
 			} break;
-			case DatFile::Images_Dat:
-			{
-				images_dat_doPatch(newCount);
-				IMAGE_TYPE_COUNT = newCount;
+			case DatFile::Images_Dat: {
+				images_dat_do_patch(new_count);
+				IMAGE_TYPE_COUNT = new_count;
 			} break;
-			case DatFile::Upgrades_Dat:
-			{
-				upgrades_dat_doPatch(newCount);
-				UPGRADE_TYPE_COUNT = newCount;
+			case DatFile::Upgrades_Dat: {
+				upgrades_dat_do_patch(new_count);
+				UPGRADE_TYPE_COUNT = new_count;
 			} break;
-			case DatFile::Techdata_Dat:
-			{
-				techdata_dat_doPatch(newCount);
-				TECH_TYPE_COUNT = newCount;
+			case DatFile::Techdata_Dat: {
+				techdata_dat_do_patch(new_count);
+				TECH_TYPE_COUNT = new_count;
 			} break;
-			case DatFile::Orders_Dat:
-			{
-				orders_dat_doPatch(newCount);
+			case DatFile::Orders_Dat: {
+				orders_dat_do_patch(new_count);
 			} break;
-			// case DatFile::Sfxdata_Dat:
-			// {
-			// 	sfxdata_dat_doPatch(newCount);
+			// case DatFile::Sfxdata_Dat: {
+			// 	sfxdata_dat_do_patch(new_count);
 			// } break;
-			case DatFile::Portdata_Dat:
-			{
-				portdata_dat_doPatch(memCount); // rounded up to a multiple of 5
+			case DatFile::Portdata_Dat: {
+				portdata_dat_do_patch(mem_count); // rounded up to a multiple of 5
 			} break;
-			case DatFile::Mapdata_Dat:
-			{
-		//		mapdata_dat_doPatch(newCount);
+			case DatFile::Mapdata_Dat: {
+		//		mapdata_dat_do_patch(new_count);
 			} break;
 		}
 
@@ -173,36 +155,29 @@ namespace DatExt {
 
 	void extend_data() {
 		for (u32 i = 0; i < DatFile::COUNT; ++i) {
-			if (!setDatSize((DatLoad*)datFiles[i].datTablePtr, datFiles[i].newLimit * datFiles[i].entrySize)) {
+			if (!set_dat_size((DatLoad*)datFiles[i].datTablePtr, datFiles[i].newLimit * datFiles[i].entrySize)) {
 				helper::syswarn_file_not_found(24, (char*)datFiles[i].name); // invalid file
 			}
 		}
 	}
 
 	// Frees allocated memory
-	void unloadDatFiles() {
+	void unload_dat_files() {
 		u32 i, j;
 		DatLoad* datTablePtr;
-	
-		for (i = 0; i < DatFile::COUNT; i++)
-		{
+		for (i = 0; i < DatFile::COUNT; i++) {
 			datTablePtr = (DatLoad*)(datFiles[i].datTablePtr);
-			if (i == DatFile::Units_Dat && datTablePtr[0].address != (void*)(0x0059CCCC)) // Flingy ID
-			{
-				if (datTablePtr[0].address != NULL)
-				{
+			if (i == DatFile::Units_Dat && datTablePtr[0].address != (void*)(0x0059CCCC)) { // Flingy ID
+				if (datTablePtr[0].address != NULL) {
 					free(datTablePtr[0].address);
 					datTablePtr[0].address = (void*)(0x0059CCCC);
 				}
 			}
-			if (datFiles[i].loaded == false)
-			{
+			if (datFiles[i].loaded == false) {
 				continue;
 			}
-			for (j = 0; datTablePtr[j].entries != 0; j++)
-			{
-				if (datTablePtr[j].address != NULL)
-				{
+			for (j = 0; datTablePtr[j].entries != 0; j++) {
+				if (datTablePtr[j].address != NULL) {
 					free(datTablePtr[j].address);
 					datTablePtr[j].address = NULL;
 				}
@@ -215,11 +190,10 @@ namespace DatExt {
 		upgrades_dat_unpatch();
 		techdata_dat_unpatch();
 	
-		if (unitNamesTbl != NULL) {
-			SMemFree(unitNamesTbl, __FILE__, __LINE__, 0);
-			unitNamesTbl = NULL;
+		if (g_unit_names_tbl != NULL) {
+			SMemFree(g_unit_names_tbl, __FILE__, __LINE__, 0);
+			g_unit_names_tbl = NULL;
 		}
-
 		if (unitIcons != NULL) {
 			SMemFree(unitIcons, __FILE__, __LINE__, 0);
 			unitIcons = NULL;
@@ -227,17 +201,15 @@ namespace DatExt {
 	}
 
 	// Loads rez\unitnames.tbl, if it exists, for extended unit ID names
-	void loadUnitNamesTbl()
-	{
-		if (unitNamesTbl != NULL)
-		{
+	void load_unit_names_tbl() {
+		if (g_unit_names_tbl != NULL) {
 			return; // already loaded
 		}
-		unitNamesTbl = (StringTbl*)FastFileRead("rez\\unitnames.tbl", NULL, true, 0, NULL);
+		g_unit_names_tbl = (StringTbl*)FastFileRead("rez\\unitnames.tbl", NULL, true, 0, NULL);
 	}
 
 	// Loads unit\cmdbtns\uniticons.grp, if it exists, for extended unit ID build queue icons
-	void loadUnitIcons() {
+	void load_unit_icons() {
 		if (unitIcons != NULL) return; // already loaded
 
 		unitIcons = (GrpHead*)FastFileRead("unit\\cmdbtns\\uniticons.grp", NULL, true, 0, NULL);
@@ -257,33 +229,25 @@ namespace DatExt {
 
 	// general patching functions  
 	// Overwrites references to dat file arrays
-	void datTablePatch(DatLoad* datTablePtr, s32* list)
-	{
+	void dat_table_patch(DatLoad* datTablePtr, s32* list) {
 		u32 i, j;
 		u32 offs;
 		// Null-terminated list of null-terminated lists of addresses
 		// First value is table offset for the sub-list (i.e., 12 would mean the new address + 12 bytes is written)
 
-		for (i = 0, j = 0; datTablePtr[i].entries != 0; i++, j++)
-		{
-			do
-			{
+		for (i = 0, j = 0; datTablePtr[i].entries != 0; i++, j++) {
+			do {
 				// Get array offset
-				if (list[j] == ARRAY_END)
-				{
+				if (list[j] == ARRAY_END) {
 					offs = (u32)(datTablePtr[i].address) + datTablePtr[i].entries * datTablePtr[i].length;
-				}
-				else
-				{
+				} else {
 					offs = (u32)(datTablePtr[i].address) + list[j];
 				}
 
 				// Apply patches
-				for (j++; list[j] != 0; j++)
-				{
+				for (j++; list[j] != 0; j++) {
 					memory_patch(list[j], offs);
 				}
-				
 				j++;
 			} while (list[j] != 0);
 		}
@@ -297,11 +261,9 @@ namespace DatExt {
 		// - First value is the #entries factor, second value is a value to be added to the product
 	  
 		// cl->ptr[j] == 0 terminator of previous list, so cl->ptr[j+1] is the beginning of the next struct.
-		for (constList *cl = (constList*)list; cl->ptr[0] != 0; cl = (constList*)&cl->ptr[i + 1])
-		{
+		for (constList *cl = (constList*)list; cl->ptr[0] != 0; cl = (constList*)&cl->ptr[i + 1]) {
 			newVal = val * cl->factor + cl->add;
-			for (i = 0; cl->ptr[i] != 0; i++)
-			{
+			for (i = 0; cl->ptr[i] != 0; i++) {
 				memory_patch(cl->ptr[i], (u8*)&newVal, cl->size);
 			}
 		}

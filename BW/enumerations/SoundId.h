@@ -1157,6 +1157,9 @@ namespace SoundId {
 
         ZealotRevive01						= 1187,
 
+        SpraithCesiantWeaponhit01           = 1195,
+        SpraithCesiantWeaponhit02           = 1196,
+
         CentaurSunchaserMissilesFire01		= 1204,
         CentaurSunchaserMissilesFire02		= 1205,
         CentaurSunchaserMissilesFire03		= 1206,
@@ -1211,6 +1214,9 @@ namespace SoundId {
         PazuzuDeconstructionDamage			= 1372,
         LakiziliskProjectileReturn			= 1392,
         AncileProvidenceDeactivate			= 1401,
+
+        DemiurgeWeaponhit01                 = 1405,
+        DemiurgeWeaponhit02                 = 1406,
         DemiurgeGodsMadeFleshCast01			= 1407,
         DemiurgeGodsMadeFleshCast02			= 1408,
         ArchitectWeaponSplit01				= 1416,
@@ -1342,6 +1348,11 @@ namespace SoundId {
         StarSovereignHelp01					= 2004,
         StarSovereignHelp02					= 2005,
         StarSovereignHelp03					= 2006,
+
+        EmpyreanWeaponhit01                 = 2016,
+        EmpyreanWeaponhit02                 = 2017,
+        EmpyreanWeaponhit03                 = 2018,
+        EmpyreanWeaponhit04                 = 2019,
 
         EcclesiastOrderAggressive01			= 2027,
         EcclesiastOrderAggressive02			= 2028,
@@ -1538,6 +1549,15 @@ namespace SoundId {
         SavantSwitchPierce02				= 2391,
         SavantSwitchPierce03				= 2392,
 
+        KonviliskWeaponhit01                = 2393,
+        KonviliskWeaponhit02                = 2394,
+        KonviliskWeaponhit03                = 2395,
+
+        ProtathalorWeaponhit01              = 2399,
+        ProtathalorWeaponhit02              = 2400,
+        ProtathalorWeaponhit03              = 2401,
+        ProtathalorWeaponhit04              = 2402,
+
         SavantReady01						= 2403,
         SavantReady02						= 2404,
         SavantReady03						= 2405,
@@ -1597,6 +1617,9 @@ namespace SoundId {
         MeskAdvisor_Tech02					= 2515,
         MeskAdvisor_Warp01					= 2516,
 
+        CataphractWeaponhit01               = 2518,
+        CataphractWeaponhit02               = 2519,
+        CataphractWeaponhit03               = 2520,
         ClaymoreWeaponHit01					= 2521,
         ClaymoreWeaponHit02					= 2522,
 
@@ -1611,6 +1634,8 @@ namespace SoundId {
         SpirtithWeaponfire01				= 2542,
         SpirtithWeaponfire02				= 2543,
         SpirtithWeaponfire03				= 2544,
+        SpirtithWeaponhit01                 = 2545,
+        SpirtithWeaponhit02                 = 2546,
 
         CyclopsWeaponfireFuturist01			= 2548,
         CyclopsWeaponfireFuturist02			= 2549,
@@ -1696,6 +1721,10 @@ namespace SoundId {
         AnalogueWeaponfire02                    = 2668,
         AnalogueWeaponfire03                    = 2669,
 
+        DracadinWeaponhit01                     = 2673,
+        DracadinWeaponhit02                     = 2674,
+        DracadinWeaponhit03                     = 2675,
+
         HADRALAdvisor_Addon01					= 2680,
         HADRALAdvisor_AllyUnderAttack_Askosi01	= 2681,
         HADRALAdvisor_AllyUnderAttack_Protoss01	= 2682,
@@ -1741,6 +1770,9 @@ namespace SoundId {
         IzirokorOrderAggressive01				= 2761,
         IzirokorOrderAggressive02				= 2762,
 
+        PenumbraWeaponhit01                     = 2765,
+        PenumbraWeaponhit02                     = 2766,
+
         ApostleWeaponfire01						= 2783,
         ApostleWeaponfire02						= 2784,
         ApostleWeaponfire03						= 2785,
@@ -1755,8 +1787,12 @@ namespace SoundId {
         WyvernWeaponfire01						= 2836,
         WyvernWeaponfire02						= 2837,
 
+        PanoptusWeaponhit01                     = 2848,
         TalosSalvageLoop						= 2849,
 
+        BactaliskWeaponhit01                    = 2853,
+        BactaliskWeaponhit02                    = 2854,
+        BactaliskWeaponhit03                    = 2855,
         HierophantWeaponfire01                  = 2856,
         HierophantWeaponfire02                  = 2857,
 
@@ -1967,6 +2003,12 @@ namespace SoundId {
         CataphractOrderAggressive03						= 3160,
         CataphractOrderAggressive04						= 3161,
 
+        EpigraphWeaponhit01                             = 3169,
+        EpigraphWeaponhit02                             = 3170,
+
+        TosgriliskWeaponhit01                           = 3175,
+        TosgriliskWeaponhit02                           = 3176,
+        TosgriliskWeaponhit03                           = 3177,
         RamessesWeaponhit01								= 3178,
         DurendalReady01									= 3179,
         DurendalReady02									= 3180,

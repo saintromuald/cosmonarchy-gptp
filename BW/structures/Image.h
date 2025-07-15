@@ -145,7 +145,7 @@ namespace hooks {
     void play_image_iscript(Image* image, u8 animation);																// 004D8470
     void show_cursor_marker(u16 pos_x, u16 pos_y);																		// 00488660
     void play_warp_in_overlay(Image* image, u32 unused);																// 004D8500
-    //void image_update_warp_flash(Image* image);																			// 004D8590
+//  void image_update_warp_flash(Image* image);																			// 004D8590
     void iscript_opcode_cases(Image* image, IscriptProgram* program_state, u32 noop, u32* distance_moved);				// 004D74C0
 
     void inject_image_hooks();

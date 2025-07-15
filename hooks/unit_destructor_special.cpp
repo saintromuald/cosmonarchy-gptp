@@ -185,7 +185,7 @@ void unit_on_death_behaviors(Unit* unit) {
                 helper::set_thingy_visibility_flags(ensnare_effect_sprite);
             }
             for (Unit* hostile : g_unit_search.radial_ex(unit, Broodspawn::DeathCycleEnsnareRange, FilterEnemy)) {
-                apply_ensnare_internal(hostile, 1, Broodspawn::DeathCycleEnsnareTimer);
+                helper::apply_corrosive_spores(hostile);
             }
         } break;
         case UnitId::ZergNydusCesiant: {

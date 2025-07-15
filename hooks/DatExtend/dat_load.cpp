@@ -49,11 +49,11 @@ namespace hooks {
 		// Apply Flingy Expand patch to default units.dat file, so that flingy datatype will be consistent whether DatExt is used or not
 		if (datTable == (DatLoad*)DatExt::LoadTable::Units_Dat)
 		{
-			DatExt::loadUnitNamesTbl(); // load extended unit names table
-			DatExt::loadUnitIcons(); // load extended unit icons
+			DatExt::load_unit_names_tbl(); // load extended unit names table
+			DatExt::load_unit_icons(); // load extended unit icons
 			if (datTable[0].length == 1)
 			{
-				DatExt::units_dat_flingyExpand();
+				DatExt::units_dat_flingy_expand();
 			}
 		}		
 	}

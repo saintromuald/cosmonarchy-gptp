@@ -50,8 +50,8 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 			return (u32)g_unit_availability->available[0];
 		} break;
 		case AiseSignal::GetUnitTbl: {
-			if (DatExt::unitNamesTbl) {
-				return (u32)DatExt::unitNamesTbl;
+			if (DatExt::g_unit_names_tbl) {
+				return (u32)DatExt::g_unit_names_tbl;
 			}
 			return (u32)g_stat_txt_tbl;
 		} break;

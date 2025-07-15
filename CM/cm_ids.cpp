@@ -856,7 +856,7 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             offsets.count = 4;
             return &offsets;
         } break;
-        case WeaponId::SpraithColonySeekerSpores: {
+        case WeaponId::SpraithCesiantSeekerSpores: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueSpraithColonyLaunchPos;
             offsets.count = 1;

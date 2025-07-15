@@ -59,9 +59,9 @@ namespace {
 }
 
 namespace DatExt {
-    void images_dat_doPatch(u32 newCount) {
+    void images_dat_do_patch(u32 newCount) {
         u32 i, j, offs;
-        datTablePatch((DatLoad*)LoadTable::Images_Dat, images_r);
+        dat_table_patch((DatLoad*)LoadTable::Images_Dat, images_r);
     
         // img_grpArr
         // - Null-terminated list of null-terminated lists of addresses

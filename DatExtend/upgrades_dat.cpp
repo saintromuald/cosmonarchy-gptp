@@ -91,10 +91,10 @@ namespace {
 }
 
 namespace DatExt {
-	void upgrades_dat_doPatch(u32 newCount)
+	void upgrades_dat_do_patch(u32 newCount)
 	{
 		u32 i, offs;
-		datTablePatch((DatLoad*)LoadTable::Upgrades_Dat, upgrades_r);
+		dat_table_patch((DatLoad*)LoadTable::Upgrades_Dat, upgrades_r);
 
 		// upgs_bwAvail
 		upgs_newArrs[0] = malloc((newCount - 46) * PLAYER_COUNT);

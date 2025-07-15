@@ -305,8 +305,7 @@ namespace hooks {
 
     // Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
     // Local only.
-    void iscript_playfram(Image* image, u32 frame) // 004D5E70
-    {
+    void iscript_playfram(Image* image, u32 frame) { // 004D5E70
         if (image->frameset != frame) {
             image->frameset = frame;
             if (image->frame_index != image->frameset + image->direction) {
@@ -318,8 +317,7 @@ namespace hooks {
 
     // Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
     // Local only.
-    void iscript_set_pos(Image* image, char x, char y) // 004D5900
-    {
+    void iscript_set_pos(Image* image, char x, char y) { // 004D5900
         if (image->horizontal_offset != x || image->vertical_offset != y) {
             image->flags |= ImageFlags::Redraw;
             image->horizontal_offset = x;
@@ -329,8 +327,7 @@ namespace hooks {
 
     // Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
     // Local only.
-    Thingy* iscript_create_sprite(Image* image, u16 sprite_id, u32 x, u32 y, char elevation_level) // 004D7120
-    {
+    Thingy* iscript_create_sprite(Image* image, u16 sprite_id, u32 x, u32 y, char elevation_level) { // 004D7120
         Thingy* result = helper::create_thingy(sprite_id, x + image->horizontal_offset + (u16)image->parent_sprite->position.x, y + image->vertical_offset + image->parent_sprite->position.y, 0);
         if (result) {
             result->sprite->elevation = elevation_level;
@@ -620,7 +617,7 @@ namespace hooks {
                     {
                         break;
                     }
-                    iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation + 1);
+                    helper::iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation + 1);
                     break;
                 }
                 case IscriptOpcodes::opc_highsprol:
@@ -632,7 +629,7 @@ namespace hooks {
                     {
                         break;
                     }
-                    iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation - 1);
+                    helper::iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation - 1);
                     break;
                 }
                 case IscriptOpcodes::opc_lowsprul:
@@ -644,7 +641,7 @@ namespace hooks {
                     {
                         break;
                     }
-                    iscript_create_sprite(image, sprite_id, x, y, 1);
+                    helper::iscript_create_sprite(image, sprite_id, x, y, 1);
                     break;
                 }
                 case IscriptOpcodes::opc_uflunstable:
@@ -674,7 +671,7 @@ namespace hooks {
                     {
                         break;
                     }
-                    if (Thingy* thingy = iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation))
+                    if (Thingy* thingy = helper::iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation))
                     {
                         helper::set_all_overlay_directions_generic((Unit*)thingy, (image->flags & ImageFlags::Mirrored) ? 32 - image->direction : image->direction);
                     }
@@ -693,7 +690,7 @@ namespace hooks {
                     {
                         break;
                     }
-                    if (Thingy* thingy = iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation - 1))
+                    if (Thingy* thingy = helper::iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation - 1))
                     {
                         helper::set_all_overlay_directions_generic((Unit*)thingy, (image->flags & ImageFlags::Mirrored) ? 32 - image->direction : image->direction);
                     }
@@ -709,7 +706,7 @@ namespace hooks {
                     }
                     Point16 pt;
                     helper::iscript_use_lo_file(&pt, image, arg3, 0);
-                    if (Thingy* thingy = iscript_create_sprite(image, sprite_id, pt.x, pt.y, image->parent_sprite->elevation + 1))
+                    if (Thingy* thingy = helper::iscript_create_sprite(image, sprite_id, pt.x, pt.y, image->parent_sprite->elevation + 1))
                     {
                         helper::set_all_overlay_directions_generic((Unit*)thingy, (image->flags & ImageFlags::Mirrored) ? 32 - image->direction : image->direction);
                     }
@@ -1214,7 +1211,7 @@ namespace hooks {
                     }
                     if (helper::can_unit_id_fit_at_xy(x + image->parent_sprite->position.x + image->horizontal_offset, y + image->parent_sprite->position.y + image->vertical_offset, UnitId::TerranMaverick)) // Not sure why Maverick is used here. -Pr0nogo
                     {
-                        iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation + 1);
+                        helper::iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation + 1);
                     }
                     break;
                 }

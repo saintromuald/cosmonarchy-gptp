@@ -192,8 +192,8 @@ const char* Unit::get_name(u16 unit_id) {
         return (char*)g_string_empty;
     } else if (units_dat::map_string_id[unit_id] != 0) {
         return (char*)g_map_string_tbl->get_string(units_dat::map_string_id[unit_id]);
-    } else if (DatExt::unitNamesTbl != NULL) {
-        return (char*)((StringTbl*)&DatExt::unitNamesTbl)->get_string(unit_id + 1); // must be a pointer to a pointer, rather than just a pointer
+    } else if (DatExt::g_unit_names_tbl != NULL) {
+        return (char*)((StringTbl*)&DatExt::g_unit_names_tbl)->get_string(unit_id + 1); // must be a pointer to a pointer, rather than just a pointer
     } else {
         return g_stat_txt_tbl_new->get_string(unit_id + 1);
     }

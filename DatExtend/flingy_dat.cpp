@@ -14,8 +14,7 @@ namespace {
 };
 
 namespace DatExt {
-    void flingy_dat_doPatch(u32 newCount)
-    {
-        datTablePatch((DatLoad*)LoadTable::Flingy_Dat, flingy_r);
+    void flingy_dat_do_patch(u32 newCount) {
+        dat_table_patch((DatLoad*)LoadTable::Flingy_Dat, flingy_r);
     }
 }

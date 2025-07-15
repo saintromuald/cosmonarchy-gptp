@@ -228,7 +228,6 @@ enum ExtValueId {
     ValueTicksDecolliding,
     ValueCollisionBandage,
     ValueCritter,
-    ValueIsCloning,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,

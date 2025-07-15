@@ -11,6 +11,7 @@
 #include "trigger_system/trigger_system.h"
 #include <hooks\interface\minimap.h>
 #include "Game.h"
+#include <hooks\interface\weapon_armor_tooltip.h>
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
 static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;

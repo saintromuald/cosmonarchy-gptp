@@ -30,8 +30,8 @@ namespace {
 }
 
 namespace DatExt {
-    void sfxdata_dat_doPatch(u32 newCount) {
-        datTablePatch((DatLoad*)LoadTable::Sfxdata_Dat, sfxdata_r);
+    void sfxdata_dat_do_patch(u32 newCount) {
+        dat_table_patch((DatLoad*)LoadTable::Sfxdata_Dat, sfxdata_r);
         const_replace(sfx_consts, newCount);
     }
   //void sfxdata_dat_unpatch() {

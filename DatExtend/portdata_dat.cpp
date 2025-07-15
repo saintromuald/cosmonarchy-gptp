@@ -28,8 +28,8 @@ namespace {
 }
 
 namespace DatExt {
-    void portdata_dat_doPatch(u32 newCount) {
-        datTablePatch((DatLoad*)LoadTable::Portdata_Dat, portdata_r);
+    void portdata_dat_do_patch(u32 newCount) {
+        dat_table_patch((DatLoad*)LoadTable::Portdata_Dat, portdata_r);
         const_replace(port_consts, newCount);
     }
 }

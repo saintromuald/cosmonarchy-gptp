@@ -69,7 +69,7 @@ GrpHead** const get_unit_icons_pointer();
 
 // dat patching functions -- defined in their repective .cpp files to reduce clutter
 void units_dat_do_patch(u32 newCount);
-void units_dat_flingyExpand();
+void units_dat_flingy_expand();
 void weapons_dat_do_patch(u32 newCount);
 void flingy_dat_do_patch(u32 newCount);
 void sprites_dat_do_patch(u32 newCount);

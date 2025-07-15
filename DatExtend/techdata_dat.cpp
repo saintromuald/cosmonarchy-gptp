@@ -116,9 +116,9 @@ namespace {
 }
 
 namespace DatExt {
-	void techdata_dat_doPatch(u32 newCount) {
+	void techdata_dat_do_patch(u32 newCount) {
 		u32 i, offs;
-		datTablePatch((DatLoad*)LoadTable::Techdata_Dat, techdata_r);
+		dat_table_patch((DatLoad*)LoadTable::Techdata_Dat, techdata_r);
 		// tech_bwAvail
 		tech_newArrs[0] = malloc((newCount - 24) * PLAYER_COUNT);
 		// - Null-terminated list of null-terminated lists of addresses

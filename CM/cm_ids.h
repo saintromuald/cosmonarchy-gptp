@@ -123,7 +123,6 @@ bool weapon_id_deals_no_damage(WeaponId::Enum weapon_id);
 bool unit_id_blocks_construction(UnitId::Enum unit_id);
 UnitId::Enum get_racial_worker_id(u32 race_id);
 UnitId::Enum get_racial_town_center_id(u32 race_id);
-bool unit_id_turns_to_face_target(UnitId::Enum unit_id);
 
 namespace UnitId {
 bool can_cast_recall(UnitId::Enum unit_id);
@@ -133,6 +132,7 @@ u32 get_overlay_offset(UnitId::Enum unit_id);
 SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id);
 SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id);
 bool has_autovitality(UnitId::Enum unit_id);
+bool unit_id_turns_to_face_target(UnitId::Enum unit_id);
 } // namespace UnitId
 
 namespace WeaponId {
