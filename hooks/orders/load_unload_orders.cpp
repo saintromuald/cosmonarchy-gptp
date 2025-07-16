@@ -16,16 +16,14 @@ void orders_pickup_1(Unit* unit) {
         prepare_for_next_order(unit);
     } else if (unit->unit_ai) {
         Point16 pos = {0,0};
-        unit->user_action_flags |= 1;
+        unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
         if (unit->main_order_id != OrderId::Die) {
             bool bStopLoop = (unit->order_queue_tail == 0);
             while (!bStopLoop) {
                 u8 order_id = (u8)unit->order_queue_tail->order_id;
-                if (orders_dat::can_be_interrupted[order_id] == 0
-                    && order_id != OrderId::ComputerAI) {
+                if (orders_dat::can_be_interrupted[order_id] == 0 && order_id != OrderId::ComputerAI) {
                     bStopLoop = true;
                 }
-
                 if (!bStopLoop) {
                     helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
                     bStopLoop = (unit->order_queue_tail == 0);
@@ -65,7 +63,7 @@ void orders_pickup_2(Unit* unit) {
     Unit* unit_to_load = unit->order_target.unit;
     if (!unit_to_load) {
         if (unit->order_queue_head) {
-            unit->user_action_flags |= 1;
+            unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
             prepare_for_next_order(unit);
         } else {
             if (unit->unit_ai) {
@@ -74,35 +72,34 @@ void orders_pickup_2(Unit* unit) {
                 unit->order_computer(units_dat::return_to_idle_order[unit->id]);
             }
         }
-    } else {
-        if (!unit->unit_ai || !unit_to_load->unit_ai || unit_to_load->main_order_id == OrderId::TransportLoad) {
-            if (unit->main_order_state == 0) {
-                if (bw::can_be_entered_by(unit, unit_to_load)) {
-                    if (unit->main_order_timer == 0) {
-                        unit->main_order_timer = 7;
-                        if (!unit->is_target_within_min_range(unit_to_load, 1)) {
-                            helper::order_to_move_to_target(unit, unit_to_load);
-                        } else {
-                            helper::make_to_hold_position(unit);
-                            if (unit_to_load->main_order_id != OrderId::EnterTransport && unit_to_load->main_order_id != OrderId::TransportLoad) {
-                                unit_to_load->order_to(OrderId::EnterTransport, unit);
-                            }
+        return;
+    }
+    if (!unit->unit_ai || !unit_to_load->unit_ai || unit_to_load->main_order_id == OrderId::TransportLoad) {
+        if (unit->main_order_state == 0) {
+            if (bw::can_be_entered_by(unit, unit_to_load)) {
+                if (unit->main_order_timer == 0) {
+                    if (!unit->is_target_within_min_range(unit_to_load, 1)) {
+                        helper::order_to_move_to_target(unit, unit_to_load);
+                    } else {
+                        helper::make_to_hold_position(unit);
+                        if (unit_to_load->main_order_id != OrderId::EnterTransport && unit_to_load->main_order_id != OrderId::TransportLoad) {
+                            unit_to_load->order_to(OrderId::EnterTransport, unit);
+                        }
 
-                            if (unit->unit_ai) {
-                                unit->main_order_state = 1;
-                            } else {
-                                helper::prepend_order_targeting_unit(unit, unit_to_load, OrderId::Pickup1);
-                                prepare_for_next_order(unit);
-                            }
+                        if (unit->unit_ai) {
+                            unit->main_order_state = 1;
+                        } else {
+                            helper::prepend_order_targeting_unit(unit, unit_to_load, OrderId::Pickup1);
+                            prepare_for_next_order(unit);
                         }
                     }
-                } else {
-                    unit->order_to_idle();
                 }
+            } else {
+                unit->order_to_idle();
             }
-        } else {
-            unit->order_to_idle();
         }
+    } else {
+        unit->order_to_idle();
     }
 }
 
@@ -176,11 +173,11 @@ void orders_move_unload(Unit* unit) {
 // Breaks AI transport usage! -Pr0nogo
 void orders_pickup_4(Unit* unit) {
     bool is_neutral = unit->player == 11;
-    char unit_status = unit->status;
+    bool is_in_transport = unit->is_in_transport();
     if (is_neutral) {
         u8 idle_order;
-        if (unit_status & UnitStatus::InTransport) {
-            if (units_dat::base_property[UnitProperty::Building] && unit_is_combatant(unit)) {
+        if (is_in_transport) {
+            if (unit->is_building() && unit_is_combatant(unit)) {
                 idle_order = OrderId::TurretGuard;
             } else {
                 idle_order = OrderId::Nothing2;
@@ -193,7 +190,7 @@ void orders_pickup_4(Unit* unit) {
         helper::do_next_queued_order(unit);
         return;
     }
-    if (!(unit_status & UnitStatus::InTransport) && !helper::ai_update_attack_target(unit, 0, 0, 1)) {
+    if (!is_in_transport && !helper::ai_update_attack_target(unit, 0, 0, 1)) {
         Unit* order_target = unit->order_target.unit;
         Unit** order_target_offset = &unit->order_target.unit;
         if (order_target) {
@@ -232,11 +229,9 @@ void orders_pickup_4(Unit* unit) {
     }
 
     /*
-    if (unit->player == 11)
-    {
-        unit->user_action_flags |= 1;
-        if (unit->status & UnitStatus::InTransport)
-        {
+    if (unit->player == 11) {
+        unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+        if (unit->is_in_transport()) {
             unit->order(OrderId::Nothing2, 0, 0, nullptr, UnitId::None, 1);
         } else {
             unit->order(units_dat::return_to_idle_order[unit->id], 0, 0, nullptr, UnitId::None, 1);
@@ -248,41 +243,26 @@ void orders_pickup_4(Unit* unit) {
         bool jump_to_E7C37 = false;
         bool jump_to_E7C44 = false;
         bool bEndThere = false;
-        if (target == nullptr)
-        {
-            if (helper::ai_find_transport(unit, &target) == 0)
-            {
+        if (!target) {
+            if (helper::ai_find_transport(unit, &target) == 0) {
                 unit->order_to_idle();
                 bEndThere = true;
-            }
-            else
-            if (target != nullptr)
-            {
+            } else if (target) {
                 jump_to_E7C2B = true;
             }
         }
-        if (!bEndThere)
-        {
-            if (!jump_to_E7C2B)
-            { // 004E7C1B
-                if (target != nullptr
-                    && (!helper::unit_is_active_transport(target) || target->order_target.unit != unit))
-                {
+        if (!bEndThere) {
+            if (!jump_to_E7C2B) { // 004E7C1B
+                if (target && (!helper::unit_is_active_transport(target) || target->order_target.unit != unit)) {
                     jump_to_E7C37 = true;
-                }
-                else
-                {
+                } else {
                     jump_to_E7C2B = true;
                 }
             }
-            if (jump_to_E7C2B)
-            {
-                if (bw::can_be_entered_by(target, unit))
-                {
+            if (jump_to_E7C2B) {
+                if (bw::can_be_entered_by(target, unit)) {
                     jump_to_E7C44 = true;
-                }
-                else
-                {
+                } else {
                     jump_to_E7C37 = true;
                 }
             }
@@ -332,8 +312,7 @@ void orders_enter_transport(Unit* unit) {
             unit->main_order_state = 1;
         }
 
-        if (target->sprite->position.x != unit->next_target_waypoint.x
-            || target->sprite->position.y != unit->next_target_waypoint.y) {
+        if (target->sprite->position.x != unit->next_target_waypoint.x || target->sprite->position.y != unit->next_target_waypoint.y) {
             unit->next_target_waypoint.x = target->sprite->position.x;
             unit->next_target_waypoint.y = target->sprite->position.y;
         }
@@ -343,7 +322,7 @@ void orders_enter_transport(Unit* unit) {
             helper::load_unit_proc(target, unit);
         }
     } else if (unit->order_queue_head) {
-        unit->user_action_flags |= 1;
+        unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
         prepare_for_next_order(unit);
     } else if (unit->unit_ai) {
         unit->order_computer(OrderId::ComputerAI);
@@ -353,7 +332,8 @@ void orders_enter_transport(Unit* unit) {
 }
 
 void orders_unload(Unit* unit) {
-    if (!(unit->status & UnitStatus::GroundedBuilding) && unit->main_order_timer != 0) {
+    bool is_grounded_building = unit->is_grounded_building();
+    if (!is_grounded_building && unit->main_order_timer != 0) {
         return;
     }
 
@@ -363,14 +343,14 @@ void orders_unload(Unit* unit) {
         if (cargo) {
             if (helper::unload_unit_proc(cargo)) {
                 unit_unloaded = true;
-                if (!(unit->status & UnitStatus::GroundedBuilding)) {
+                if (!is_grounded_building) {
                     break;
                 }
             }
         }
     }
 
-    if (!(unit->status & UnitStatus::GroundedBuilding)) {
+    if (!is_grounded_building) {
         if (unit_unloaded) {
             if (unit->has_loaded_unit()) {
                 return;
@@ -393,10 +373,8 @@ void orders_unload(Unit* unit) {
             prepare_for_next_order(unit);
             return;
         }
-
         while (unit->order_queue_tail) {
-            if (orders_dat::can_be_interrupted[unit->order_queue_tail->order_id]
-                || unit->order_queue_tail->order_id == OrderId::ComputerAI) {
+            if (orders_dat::can_be_interrupted[unit->order_queue_tail->order_id] || unit->order_queue_tail->order_id == OrderId::ComputerAI) {
                 helper::remove_order_from_unit_queue(unit->order_queue_tail, unit);
             } else {
                 break;
