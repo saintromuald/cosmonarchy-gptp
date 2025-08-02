@@ -520,9 +520,10 @@ namespace hooks {
 
         // No attacker here
         switch (data.weapon_id) {
-            case WeaponId::AurielQuarternaryRifle: {
-                target_ext->values[ValueAurielIncinerationPlayer] = data.attacking_player_id;
-                target_ext->timers[TimerAurielIncineration] = 2 * 24 + 1;
+            case WeaponId::AurielQuarternaryRifle:
+            case WeaponId::ArhaunPhlegethonCannon: {
+                target_ext->values[ValueIncinerationPlayer] = data.attacking_player_id;
+                target_ext->timers[TimerIncineration] = 2 * 24 + 1;
             } break;
             case WeaponId::WendigoFusionSaw: {
                 target_ext->values[ValueWendigoShatteredWindsStacks]++;

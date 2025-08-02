@@ -3382,7 +3382,7 @@ namespace hooks {
         // Auriel - Incineration
         {
             u32 image_id = ImageId::HarakanApollyoidAdhesiveOverlay;
-            if (unit_ext.timers[TimerAurielIncineration] >= 1) {
+            if (unit_ext.timers[TimerIncineration] >= 1) {
                 if (!unit->sprite->get_overlay(image_id)) {
                     bw::add_unit_overlay(unit, image_id);
                 }
@@ -3394,7 +3394,7 @@ namespace hooks {
                 }
 
             }
-            if (unit_ext.timers[TimerAurielIncineration] == 1) {
+            if (unit_ext.timers[TimerIncineration] == 1) {
                 bw::remove_unit_overlay(unit, image_id);
             }
         }

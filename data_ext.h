@@ -67,7 +67,7 @@ enum ExtValueId {
     ValueWendigoShatteredWindsStacks,
     ValuePlayerColor,
     ValueMissileReturnTarget, // unit
-    ValueAurielIncinerationPlayer,
+    ValueIncinerationPlayer,
     ValueRaceSupplyType,
     ValueExemplarLaunchPos,
     ValueClaymoreLaunchPos,
@@ -228,6 +228,8 @@ enum ExtValueId {
     ValueTicksDecolliding,
     ValueCollisionBandage,
     ValueCritter,
+    ValueBlackguardLaunchPos,
+    ValueArhaunLaunchPos,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -262,7 +264,7 @@ enum ExtTimerId {
     TimerNemeanReactors,
     TimerAutovitalityClone,
     TimerEnsnaringBrood,
-    TimerAurielIncineration,
+    TimerIncineration,
     TimerAugurGimmick,
     TimerObservanceOverlay,
     TimerNaniteField,

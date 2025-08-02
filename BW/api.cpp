@@ -1272,7 +1272,6 @@ bool unit_is_ranged_attacker(Unit* unit) {
         return false;
     }
 
-    // Would be nice to somehow avoid ID hardcode
     switch (unit->id) {
         // Prohibited IDs
         case UnitId::ProtossAmaranth:
@@ -1298,7 +1297,9 @@ bool unit_is_ranged_attacker(Unit* unit) {
         case UnitId::TerranMadrigalTurretFuriaMode:
         case UnitId::Ackmed:
         case UnitId::TerranTiangou:
-        case UnitId::TerranTiangouTurret: {
+        case UnitId::TerranTiangouTurret:
+        case UnitId::TerranArhaun:
+        case UnitId::TerranArhaunTurret: {
             return true;
         } break;
     }
@@ -2411,6 +2412,7 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
         case WeaponId::AurielQuarternaryRifle:
         case WeaponId::HypnagogueKaleidoscopeCannon:
         case WeaponId::VultureFragmentationGrenade:
+        case WeaponId::ArhaunPhlegethonCannon:
         case WeaponId::PazuzuJupiterDriver:
         case WeaponId::WraithBurstLasers:
         case WeaponId::SundogBlindsideRockets:
@@ -3936,6 +3938,7 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::EidolonCoronerRifle:                 return SoundId::Bullet_TGhFir00_wav;
         case WeaponId::EidolonNydusRevenantRifle:           return bw::rand_between(SoundId::EidolonNydusWeaponfire01, SoundId::EidolonNydusWeaponfire05);
         case WeaponId::MadcapDanannAutogun:                 return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
+        case WeaponId::BlackguardAsoniCarbine:              return bw::rand_between(SoundId::BlackguardWeaponfire01, SoundId::BlackguardWeaponfire04);;
         case WeaponId::ApostleCharonRifle:                  return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
         case WeaponId::CyclopsFuturistFlakCannons:          return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
         case WeaponId::TiangouMoonboundSalvo:               return bw::rand_between(SoundId::TiangouWeaponfire01, SoundId::TiangouWeaponfire05);
@@ -3957,6 +3960,8 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::ExtatusRepeatingBlaster:             return bw::rand_between(SoundId::ExtatusWeaponfire01, SoundId::ExtatusWeaponfire03);
         case WeaponId::QuaziliskAcridBarbs:                 return bw::rand_between(SoundId::QuaziliskWeaponfire01, SoundId::QuaziliskWeaponfire03);
         case WeaponId::QuazrokorQuazrokSpray:               return bw::rand_between(SoundId::QuazrokorWeaponfire01, SoundId::QuazrokorWeaponfire01);
+        case WeaponId::HydraliskNeedleSpines:               return SoundId::Bullet_SpoogHit_wav;
+        case WeaponId::HydraliskOrkotiNeedleSpores:         return bw::rand_between(SoundId::HydraliskOrkotiWeaponfire01, SoundId::HydraliskOrkotiWeaponfire03);
     }
     return SoundId::None;
 }

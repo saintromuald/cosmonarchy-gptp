@@ -432,6 +432,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
             switch (unit_id) {
                 case UnitId::TerranMaverick: return UnitId::TerranHotshot;
                 case UnitId::TerranApostle:  return UnitId::TerranAuriel;
+                case UnitId::TerranGoliath:  return UnitId::TerranArhaun;
                 case UnitId::TerranTrojan:   return UnitId::TerranQilin;
             }
         } break;
@@ -439,6 +440,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
             switch (unit_id) {
                 case UnitId::TerranMaverick:  return UnitId::TerranMaverickFuturist;
                 case UnitId::TerranCleric:    return UnitId::TerranClericFuturist;
+                case UnitId::TerranMadcap:    return UnitId::TerranBlackguard;
                 case UnitId::TerranCyclops:   return UnitId::TerranCyclopsFuturist;
                 case UnitId::TerranBlackjack: return UnitId::TerranTiangou;
                 case UnitId::TerranWraith:    return UnitId::TerranPhiloc;
