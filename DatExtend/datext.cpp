@@ -34,17 +34,16 @@ namespace DatExt {
 		{ "mapdata.dat",  LoadTable::Mapdata_Dat,    260,  4, MapdataIdLimit,  false, },
 	};
 
-	StringTbl* g_unit_names_tbl = NULL;
-	GrpHead* unitIcons = NULL;
-	GrpHead** const cmdIcons = (GrpHead**)(0x0068C1E0); // default value
+	StringTbl* g_unit_names_tbl = nullptr;
+	GrpHead* g_unit_icons = nullptr;
+	GrpHead** const g_unit_cmdicons = g_cmdicons_grp; // default value
 
-	bool set_dat_size(DatLoad* datTablePtr, u32 size) {
-		u32 i,j;
-		u32 new_count, mem_count;
-		void* new_mem = NULL;
+	bool set_dat_size(DatLoad* dat_table_ptr, u32 size) {
+		void* new_mem = nullptr;
 
 		// get dat file table index
-		for (i = 0; i < DatFile::COUNT && (u32)datTablePtr != datFiles[i].datTablePtr; i++);
+		u32 i = 0;
+		for (i = 0; i < DatFile::COUNT && (u32)dat_table_ptr != datFiles[i].datTablePtr; i++);
 
 		// Unknown file; return success to load normally
 		if (i == DatFile::COUNT) {
@@ -67,8 +66,8 @@ namespace DatExt {
 		}
 
 		// Get number of entries
-		new_count = size / datFiles[i].entrySize;
-		mem_count = new_count;
+		u32 new_count = size / datFiles[i].entrySize;
+		u32 mem_count = new_count;
 
 		// units.dat special cases
 		if (i == DatFile::Units_Dat) {
@@ -77,12 +76,12 @@ namespace DatExt {
 				mem_count += 12 - (new_count % 12);
 			}
 
-			datTablePtr[0].length = 2; // flingy ID to u16
+			dat_table_ptr[0].length = 2; // flingy ID to u16
 
 			// these normally have a length of 2 and the number of entries multiplied accordingly, but for simplicity the length will be multiplied here instead
-			datTablePtr[36].length = 4; // placement box
-			datTablePtr[37].length = 4; // addon position
-			datTablePtr[38].length = 8; // unit size
+			dat_table_ptr[36].length = 4; // placement box
+			dat_table_ptr[37].length = 4; // addon position
+			dat_table_ptr[38].length = 8; // unit size
 		}
 
 		// portdata.dat special cases
@@ -94,15 +93,15 @@ namespace DatExt {
 		}
 
 		// Load new entry counts
-		for (j = 0; datTablePtr[j].address != NULL; j++) {
-			datTablePtr[j].entries = new_count;
+		for (u32 j = 0; dat_table_ptr[j].address; j++) {
+			dat_table_ptr[j].entries = new_count;
 
-			new_mem = calloc(mem_count, datTablePtr[j].length);
-			if (new_mem == NULL) {
+			new_mem = calloc(mem_count, dat_table_ptr[j].length);
+			if (!new_mem) {
 				// error allocating memory
 				return false; // or something
 			}
-			datTablePtr[j].address = new_mem;
+			dat_table_ptr[j].address = new_mem;
 		}
 
 		// Load patches for dat file
@@ -163,23 +162,21 @@ namespace DatExt {
 
 	// Frees allocated memory
 	void unload_dat_files() {
-		u32 i, j;
-		DatLoad* datTablePtr;
-		for (i = 0; i < DatFile::COUNT; i++) {
-			datTablePtr = (DatLoad*)(datFiles[i].datTablePtr);
-			if (i == DatFile::Units_Dat && datTablePtr[0].address != (void*)(0x0059CCCC)) { // Flingy ID
-				if (datTablePtr[0].address != NULL) {
-					free(datTablePtr[0].address);
-					datTablePtr[0].address = (void*)(0x0059CCCC);
+		for (u32 i = 0; i < DatFile::COUNT; i++) {
+			DatLoad* dat_table_ptr = (DatLoad*)(datFiles[i].datTablePtr);
+			if (i == DatFile::Units_Dat && dat_table_ptr[0].address != (void*)(0x0059CCCC)) { // Flingy ID
+				if (dat_table_ptr[0].address) {
+					free(dat_table_ptr[0].address);
+					dat_table_ptr[0].address = (void*)(0x0059CCCC);
 				}
 			}
-			if (datFiles[i].loaded == false) {
+			if (!datFiles[i].loaded) {
 				continue;
 			}
-			for (j = 0; datTablePtr[j].entries != 0; j++) {
-				if (datTablePtr[j].address != NULL) {
-					free(datTablePtr[j].address);
-					datTablePtr[j].address = NULL;
+			for (u32 j = 0; dat_table_ptr[j].entries != 0; j++) {
+				if (dat_table_ptr[j].address) {
+					free(dat_table_ptr[j].address);
+					dat_table_ptr[j].address = nullptr;
 				}
 			}
 		}
@@ -190,29 +187,30 @@ namespace DatExt {
 		upgrades_dat_unpatch();
 		techdata_dat_unpatch();
 	
-		if (g_unit_names_tbl != NULL) {
+		if (g_unit_names_tbl) {
 			SMemFree(g_unit_names_tbl, __FILE__, __LINE__, 0);
-			g_unit_names_tbl = NULL;
+			g_unit_names_tbl = nullptr;
 		}
-		if (unitIcons != NULL) {
-			SMemFree(unitIcons, __FILE__, __LINE__, 0);
-			unitIcons = NULL;
+		if (g_unit_icons) {
+			SMemFree(g_unit_icons, __FILE__, __LINE__, 0);
+			g_unit_icons = nullptr;
 		}
 	}
 
 	// Loads rez\unitnames.tbl, if it exists, for extended unit ID names
 	void load_unit_names_tbl() {
-		if (g_unit_names_tbl != NULL) {
+		if (g_unit_names_tbl) {
 			return; // already loaded
 		}
-		g_unit_names_tbl = (StringTbl*)FastFileRead("rez\\unitnames.tbl", NULL, true, 0, NULL);
+		g_unit_names_tbl = (StringTbl*)FastFileRead("rez\\unitnames.tbl", nullptr, true, 0, nullptr);
 	}
 
 	// Loads unit\cmdbtns\uniticons.grp, if it exists, for extended unit ID build queue icons
 	void load_unit_icons() {
-		if (unitIcons != NULL) return; // already loaded
-
-		unitIcons = (GrpHead*)FastFileRead("unit\\cmdbtns\\uniticons.grp", NULL, true, 0, NULL);
+		if (g_unit_icons != NULL) { // already loaded
+			return;
+		}
+		g_unit_icons = (GrpHead*)FastFileRead("unit\\cmdbtns\\uniticons.grp", nullptr, true, 0, nullptr);
 
 		// patch if hooks aren't enabled
 		memory_patch(0x00426002 + 2, get_unit_icons_pointer()); // status_buildmorphtrain --> stats_addon_builder
@@ -223,21 +221,22 @@ namespace DatExt {
 
 	// Returns uniticons.grp pointer if was loaded, otherwise returns default cmdicons.grp pointer
 	GrpHead** const get_unit_icons_pointer() {
-		if (unitIcons != NULL) return &unitIcons;
-		return cmdIcons;
+		if (g_unit_icons) {
+			return &g_unit_icons;
+		}
+		return g_unit_cmdicons;
 	}
 
 	// general patching functions  
 	// Overwrites references to dat file arrays
 	void dat_table_patch(DatLoad* datTablePtr, s32* list) {
-		u32 i, j;
-		u32 offs;
 		// Null-terminated list of null-terminated lists of addresses
 		// First value is table offset for the sub-list (i.e., 12 would mean the new address + 12 bytes is written)
-
-		for (i = 0, j = 0; datTablePtr[i].entries != 0; i++, j++) {
+		u32 i, j;
+		for (i = 0, j = 0; datTablePtr[i].entries; i++, j++) {
 			do {
 				// Get array offset
+				u32 offs;
 				if (list[j] == ARRAY_END) {
 					offs = (u32)(datTablePtr[i].address) + datTablePtr[i].entries * datTablePtr[i].length;
 				} else {
@@ -245,26 +244,25 @@ namespace DatExt {
 				}
 
 				// Apply patches
-				for (j++; list[j] != 0; j++) {
+				for (j++; list[j]; j++) {
 					memory_patch(list[j], offs);
 				}
 				j++;
-			} while (list[j] != 0);
+			} while (list[j]);
 		}
 	}
 
 	// Writes a value with a list of modifiers to a list of addresses, defined by "constList" struct
 	void const_replace(s32* list, u32 val) {
-		u32 i;
-		s32 newVal;
 		// - Null-terminated list of null-terminated lists of addresses
 		// - First value is the #entries factor, second value is a value to be added to the product
 	  
 		// cl->ptr[j] == 0 terminator of previous list, so cl->ptr[j+1] is the beginning of the next struct.
+		u32 i = 0;
 		for (constList *cl = (constList*)list; cl->ptr[0] != 0; cl = (constList*)&cl->ptr[i + 1]) {
-			newVal = val * cl->factor + cl->add;
+			s32 new_value = val * cl->factor + cl->add;
 			for (i = 0; cl->ptr[i] != 0; i++) {
-				memory_patch(cl->ptr[i], (u8*)&newVal, cl->size);
+				memory_patch(cl->ptr[i], (u8*)&new_value, cl->size);
 			}
 		}
 	}

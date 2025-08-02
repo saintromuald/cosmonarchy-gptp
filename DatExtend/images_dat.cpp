@@ -60,24 +60,23 @@ namespace {
 
 namespace DatExt {
     void images_dat_do_patch(u32 newCount) {
-        u32 i, j, offs;
         dat_table_patch((DatLoad*)LoadTable::Images_Dat, images_r);
     
         // img_grpArr
         // - Null-terminated list of null-terminated lists of addresses
         img_newArrs[0] = malloc(newCount * sizeof(u32));
         // - First value in list is the image ID referenced
-        for(i=0; img_grpArr[i] != 0 || i == 0; i++)
-        {
+        u32 i, offs;
+        for(i = 0; img_grpArr[i] != 0 || i == 0; i++) {
             offs = (u32)img_newArrs[0] + img_grpArr[i++] * sizeof(u32); // ID offset
             i += simple_replace(&img_grpArr[i], offs);
         }
 
         // img_loArr
         img_newArrs[1] = malloc(newCount * sizeof(u32) * 5);
+        u32 j;
         // - 5 null-terminated lists of addresses, one for each lo? type
-        for(i=0,j=0; i < 5; i++,j++)
-        {
+        for(i = 0, j = 0; i < 5; i++,j++) {
             offs = (u32)img_newArrs[1] + newCount * sizeof(u32) * i;
             j += simple_replace(&img_loArr[j], offs);
         }
@@ -85,8 +84,7 @@ namespace DatExt {
         // img_loShield
         img_newArrs[2] = malloc(newCount * sizeof(u32));
         // - 2 null-terminated lists of addresses, one references 0x52E5C8 and the other 0x52F528 (ID#984 ?) 
-        for(i=0,j=0; i < 2; i++,j++)
-        {
+        for(i = 0, j = 0; i < 2; i++, j++) {
             offs = (u32)img_newArrs[2] + i * 984 * sizeof(u32);
             j += simple_replace(&img_loShield[j], offs);
         }

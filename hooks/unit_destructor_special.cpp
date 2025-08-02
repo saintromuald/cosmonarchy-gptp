@@ -414,7 +414,7 @@ void clear_tile_flags_from_area(u32 flags, u32 tile_width, u32 tile_height, s32 
 }
 
 // Hooked to allow for player-colored corpses. -Pr0nogo
-Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, u8 elevation) { // 004D7120
+Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, s8 elevation) { // 004D7120
     Sprite* sprite = image->parent_sprite;
     u32 pos_x = x + image->horizontal_offset + sprite->position.x;
     u32 pos_y = y + image->vertical_offset   + sprite->position.y;

@@ -4,6 +4,8 @@
 #include <globals.h>
 #include <hooks/audiovisuals/image_render.h>
 #include <hooks/limits/sfx_extender.h>
+#include "BW/extender/iscript_extender.h"
+
 namespace hooks {
 	void orders_scribe_build(Unit* unit) { // 004E4D00
 		if (unit->unit_ai) {
@@ -67,10 +69,7 @@ namespace hooks {
 								}
 
 								Image* main_grp = built_unit->sprite->main_graphic;
-								main_grp->iscript_offset = *(u16*)(*g_iscript_data + main_grp->iscript_header_offset + 8);
-								main_grp->return_address = 0;
-								main_grp->animation = IscriptAnimation::Init;
-								main_grp->wait = 0;
+								main_grp->set_iscript(IscriptAnimation::Init);
 								unit->order_target.unit = built_unit;
 								helper::ai_training_overlord(built_unit, unit);
 								built_unit->order_computer(OrderId::BuildSelf2);
@@ -119,10 +118,7 @@ namespace hooks {
 				if (completed) {
 					for (Image* image = building->sprite->images.head; image; image = image->link.next) {
 						if (image->flags & ImageFlags::UseFullIscript) {
-							image->animation = IscriptAnimation::SpecialState1;
-							image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 0x22);
-							image->wait = 0;
-							image->return_address = 0;
+							image->set_iscript(IscriptAnimation::SpecialState1);
 							helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 						}
 					}
@@ -180,10 +176,7 @@ namespace hooks {
 					
 					for (Image* image = sprite->images.head; image; image = image->link.next) {
 						if (image->flags & ImageFlags::UseFullIscript) {
-							image->animation = IscriptAnimation::WarpIn;
-							image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 0x32);
-							image->wait = 0;
-							image->return_address = 0;
+							image->set_iscript(IscriptAnimation::WarpIn);
 							helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 						}
 					}
@@ -191,10 +184,7 @@ namespace hooks {
 					if (building->status & UnitStatus::Frozen) {
 						for (Image* image = sprite->images.head; image; image = image->link.next) {
 							if (image->flags & ImageFlags::UseFullIscript) {
-								image->animation = IscriptAnimation::Disable;
-								image->iscript_offset = *(u16*)(*g_iscript_data + image->iscript_header_offset + 0x38);
-								image->wait = 0;
-								image->return_address = 0;
+								image->set_iscript(IscriptAnimation::Disable);
 								helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
 							}							
 						}

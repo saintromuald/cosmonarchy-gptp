@@ -184,9 +184,9 @@ typedef bool __fastcall generic_interact_function(BinDlg*, Event*);
 BW_DATA(generic_interact_function**, generic_interact_functions, 0x005014AC);
 
 // Added from BWAPI Offsets.h
-BW_DATA(char*,		g_current_map_filename,	0x0057FD3C);
-BW_DATA(char*,		g_current_map_name,		0x0057FE40);
-BW_DATA_REF(_uavail*, g_unit_availability,	0x0057F27C);
+BW_DATA(char*,		  g_current_map_filename, 0x0057FD3C);
+BW_DATA(char*,		  g_current_map_name,	  0x0057FE40);
+BW_DATA_REF(_uavail*, g_unit_availability,	  0x0057F27C);
 
 // Ping data
 BW_DATA(Ping*,			ping_array,					0x0059C1B8); // 16
@@ -1091,7 +1091,7 @@ BW_DATA_REF(u32*,		g_ai_strength_ground,				0x006BB5A0);
 // For show_cursor_marker
 BW_DATA(Thingy**,		g_first_used_thingy_1,				0x00652918);
 BW_DATA(u8*,			g_can_draw_thingy,					0x00652920);
-BW_DATA(char**,			g_iscript_data,						0x006D1200);
+BW_REF(char*,			g_iscript_data,						0x006D1200);
 
 // For play_warp_in_overlay
 BW_DATA(UpdateFunction*,	g_sg_update_funcs,				0x00512510);

@@ -43,8 +43,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) apply_ensnare_wrapper()
-	{
+	void __declspec(naked) apply_ensnare_wrapper() {
 		static Unit* unit;
 		__asm {
 			MOV unit, EDI

@@ -1507,4 +1507,10 @@ struct AnnounceDefeatCommand {
 };
 static_assert(sizeof(AnnounceDefeatCommand) == 12);
 
+struct IscriptHeader {
+    u32 magic;
+    u32 type;
+    u16 data[27];//This array's size is actually defined by the header type, and iscript_has_animation is the only place BW does any bounds checking.
+};
+
 #pragma pack()

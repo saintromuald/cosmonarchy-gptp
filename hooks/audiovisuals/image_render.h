@@ -88,7 +88,7 @@ namespace drawFunc {
 	void __fastcall WarpFlash_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
 	void __fastcall Decloaking_update(Image* image);																		//0x004D5D10
 	void __fastcall Cloaking_update(Image* image);																			//0x004D5D70
-	void __fastcall WarpFlash_update(Image* image);																			//0x004D8590
+	void __fastcall warp_flash_update(Image* image);																			//0x004D8590
 	void __fastcall WarpFlash_Decloaking_update(Image* image);
 	void __fastcall WarpFlash_Cloaking_update(Image* image);
 	void __fastcall ShadowCloak_update(Image* image);
@@ -102,7 +102,7 @@ namespace drawFunc {
 
 namespace hooks {
 	u8 get_type_offset(u8 type);
-	void updateSpriteFlagOnPalette(Sprite* sprite);								//0x00497E80
+	void update_sprite_flag_on_palette(Sprite* sprite);								//0x00497E80
 	void make_sprite_visible(Sprite* sprite);									//0x00497ED0
 	void make_cloaked(u8 cloakH, Sprite* sprite, u8 cloakedStatus, u8 cloakL);	//0x00497FD0
 	void sub_4980F0(Sprite* sprite);											//0x004980F0
