@@ -3,6 +3,7 @@
 #include "trigger_system/trigger_system.h"
 #include "hooks/limits/sfx_extender.h"
 #include "ai_layouts.h"
+#include "BW\stat_txt_spec.h"
 
 Box32 box32_rect(Point16 pos, u32 w, u32 h) {
     Box32 box = {};
