@@ -364,7 +364,38 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::TerranTarasque
         || unit_id == UnitId::TerranPhiloc
         || unit_id == UnitId::TerranWendigo
-        || unit_id == UnitId::TerranLuminary;
+        || unit_id == UnitId::TerranLuminary
+        || unit_id == UnitId::TerranQilin
+        || unit_id == UnitId::TerranAuriel
+        || unit_id == UnitId::TerranCyclopsFuturist
+        || unit_id == UnitId::TerranHarakanGolden
+        || unit_id == UnitId::TerranPietyWard
+        || unit_id == UnitId::TerranClericFuturist
+        || unit_id == UnitId::TerranBlackjackGolden
+        || unit_id == UnitId::TerranEidolonNydus
+        || unit_id == UnitId::TerranTiangou
+        || unit_id == UnitId::TerranMaverickFuturist
+        || unit_id == UnitId::TerranBlackguard
+        || unit_id == UnitId::TerranArhaun
+        
+        || unit_id == UnitId::ProtossPrudence
+        || unit_id == UnitId::ProtossAdherent
+        || unit_id == UnitId::ProtossExtatus
+        || unit_id == UnitId::ProtossZealotStarbound
+        || unit_id == UnitId::ProtossEcclesiastKhalendric
+        || unit_id == UnitId::ProtossCicatus
+        || unit_id == UnitId::ProtossRenesair
+        || unit_id == UnitId::ProtossAshguard
+        || unit_id == UnitId::ProtossDracadinOrder
+        || unit_id == UnitId::ProtossManifoldStarbound
+        
+        || unit_id == UnitId::ZergNathrelisk
+        || unit_id == UnitId::ZergIziralisk
+        || unit_id == UnitId::ZergInzorthrokor
+        || unit_id == UnitId::ZergQuazrokor
+        || unit_id == UnitId::ZergLakiziliskZorthos
+        || unit_id == UnitId::ZergHydraliskOrkoti
+        || unit_id == UnitId::ZergYblyleth;
 }
 
 bool unit_id_uses_xlarge_overlays(u16 unit_id) {
@@ -521,6 +552,7 @@ bool weapon_id_pierces(u32 weapon_id) {
     switch (weapon_id) {
         case WeaponId::CyprianTwinRailguns:
         case WeaponId::SavantDiscoidRailgunEntropy:
+        case WeaponId::BlackguardAsoniCarbine:
         case WeaponId::AutocratEminenceRifle:
         case WeaponId::SevenstepGeometricRiflePiercing:
         case WeaponId::RamessesPharoahCannons:
@@ -660,6 +692,12 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             offsets.count = 1;
             return &offsets;
         } break;
+        case WeaponId::BlackguardAsoniCarbine: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueBlackguardLaunchPos;
+            offsets.count = 1;
+            return &offsets;
+        } break;
         case WeaponId::VultureFragmentationGrenade: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueVultureLaunchPos;
@@ -669,6 +707,12 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
         case WeaponId::GoliathContenderMissiles: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueGoliathLaunchPos;
+            offsets.count = 2;
+            return &offsets;
+        } break;
+        case WeaponId::ArhaunPhlegethonCannon: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueArhaunLaunchPos;
             offsets.count = 2;
             return &offsets;
         } break;

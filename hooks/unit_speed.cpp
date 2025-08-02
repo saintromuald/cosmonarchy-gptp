@@ -175,7 +175,7 @@ namespace hooks {
             } break;
 
             // Hardcode ideal movement speeds
-            case UnitId::TerranSavantPowerSiphon:
+            case UnitId::TerranArhaun:
             case UnitId::TerranRamesses:
             case UnitId::ProtossOptecton: {
                 speed *= 0.8;

@@ -203,9 +203,9 @@ void unit_on_death_behaviors(Unit* unit) {
         } break;
     }
 
-    if (unit_ext.timers[TimerAurielIncineration] >= 1) {
-        g_iquare_globals->create_effect(EffectId::SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext.values[ValueAurielIncinerationPlayer], 0);
-        unit_ext.timers[TimerAurielIncineration] = 0;
+    if (unit_ext.timers[TimerIncineration] >= 1) {
+        g_iquare_globals->create_effect(EffectId::SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext.values[ValueIncinerationPlayer], 0);
+        unit_ext.timers[TimerIncineration] = 0;
         unit_ext.values[ValueNoCorpse] = 1;
     }
 

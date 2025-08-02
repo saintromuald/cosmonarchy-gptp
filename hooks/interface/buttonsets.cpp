@@ -1114,13 +1114,14 @@ namespace hooks {
                                     } break;
 
                                     case UnitId::TerranGoliath: {
-                                        if (faction == Faction::TerranGoldenRepublic
+                                        if (faction == Faction::TerranHecatonCoalition
+                                        ||  faction == Faction::TerranGoldenRepublic
                                         ||	faction == Faction::TerranUpstart) {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
-                                    case UnitId::TerranSouthpaw: {
-                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranUpstart) {
+                                    case UnitId::TerranArhaun: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranHecatonCoalition) {
                                             current_button_state = Button_State::Invisible;
                                         } else {
                                             current_button_state = Button_State::Enabled;
@@ -1128,6 +1129,13 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranAspirant: {
                                         if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranGoldenRepublic) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::TerranSouthpaw: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranUpstart) {
                                             current_button_state = Button_State::Invisible;
                                         } else {
                                             current_button_state = Button_State::Enabled;
@@ -2332,7 +2340,8 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranCyprian: {
+                                case UnitId::TerranCyprian:
+                                case UnitId::TerranBlackguard: {
                                     if (current_button->icon_id == IconId::KineticPenetration) {
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -2379,7 +2388,8 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranAuriel: {
+                                case UnitId::TerranAuriel:
+                                case UnitId::TerranArhaun: {
                                     if (current_button->icon_id == IconId::FlyerAttack) { // Incineration
                                         current_button_state = Button_State::Enabled;
                                     }

@@ -171,6 +171,8 @@ namespace WeaponId {
         MaverickFuturistGaussSlugger        = 236,
         HydraliskOrkotiNeedleSpores         = 237,
         InzorthrokorInzorReflux             = 238,
+        BlackguardAsoniCarbine              = 240,
+        ArhaunPhlegethonCannon              = 241,
 
         // Terran \\
             

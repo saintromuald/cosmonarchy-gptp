@@ -234,56 +234,53 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCaptaincy))
-        {
-            switch (unit_id)
-            {
-                case UnitId::TerranMadcap:
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCaptaincy)) {
+            switch (unit_id) {
+                case UnitId::TerranMadcap: {
+                    if (faction != Faction::TerranFuturistFederation) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranBlackguard: {
+                    if (faction == Faction::TerranFuturistFederation) {
+                        return true;
+                    }
+                } break;
                 case UnitId::TerranHeracles:
                 case UnitId::TerranTinkerersTower:
-                case UnitId::TerranGuildhall:
-                {
+                case UnitId::TerranGuildhall: {
                     return true;
                 } break;
-                case UnitId::TerranApostle:
-                {
+                case UnitId::TerranApostle: {
                     if (faction != Faction::TerranHecatonCoalition) {
                         return true;
                     }
                 } break;
-                case UnitId::TerranAuriel:
-                {
+                case UnitId::TerranAuriel: {
                     if (faction == Faction::TerranHecatonCoalition) {
                         return true;
                     }
                 } break;
                 case UnitId::TerranSiren:
-                case UnitId::TerranStriga:
-                {
-                    if (player_has_completed_unit_id(player_id, UnitId::TerranTinkerersTower))
-                    {
+                case UnitId::TerranStriga: {
+                    if (player_has_completed_unit_id(player_id, UnitId::TerranTinkerersTower)) {
                         return true;
                     }
                 } break;
                 case UnitId::TerranOlympian:
-                case UnitId::TerranAutocrat:
-                {
-                    if (player_has_completed_unit_id(player_id, UnitId::TerranGuildhall))
-                    {
+                case UnitId::TerranAutocrat: {
+                    if (player_has_completed_unit_id(player_id, UnitId::TerranGuildhall)) {
                         return true;
                     }
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranApothecary))
-        {
-            switch (unit_id)
-            {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranApothecary)) {
+            switch (unit_id) {
                 case UnitId::TerranDilettante:
                 case UnitId::TerranSevenstep:
                 case UnitId::TerranSilvertongue:
-                case UnitId::TerranHypnagogue:
-                {
+                case UnitId::TerranHypnagogue: {
                     return true;
                 } break;
             }
@@ -306,7 +303,12 @@ namespace hooks {
                     }
                 } break;
                 case UnitId::TerranGoliath: {
-                    if (faction != Faction::TerranUpstart && faction != Faction::TerranGoldenRepublic) {
+                    if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranGoldenRepublic && faction != Faction::TerranUpstart) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranArhaun: {
+                    if (faction == Faction::TerranHecatonCoalition) {
                         return true;
                     }
                 } break;
@@ -1622,7 +1624,24 @@ namespace hooks {
                         }
                         return TECH_ACTIVE;
                     }
-                    case UnitId::TerranMadcap:
+                    case UnitId::TerranMadcap: {
+                        if (faction != Faction::TerranFuturistFederation) {
+                            if (in_air) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranBlackguard: {
+                        if (faction == Faction::TerranFuturistFederation) {
+                            if (in_air) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
                     case UnitId::TerranHeracles: {
                         if (in_air) {
                             return TECH_HIDDEN;
@@ -1716,7 +1735,7 @@ namespace hooks {
                         return TECH_HIDDEN;
                     }
                     case UnitId::TerranGoliath: {
-                        if (faction != Faction::TerranUpstart && faction != Faction::TerranGoldenRepublic) {
+                        if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranGoldenRepublic && faction != Faction::TerranUpstart) {
                             if (in_air || is_adding_on) {
                                 return TECH_HIDDEN;
                             }
@@ -1776,6 +1795,15 @@ namespace hooks {
                             return TECH_HIDDEN;
                         }
                         if (addon_id == UnitId::TerranPalladium)  {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranArhaun: {
+                        if (faction == Faction::TerranHecatonCoalition) {
+                            if (in_air) {
+                                return TECH_HIDDEN;
+                            }
                             return TECH_ACTIVE;
                         }
                         return TECH_HIDDEN;

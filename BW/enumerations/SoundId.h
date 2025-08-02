@@ -2260,5 +2260,14 @@ namespace SoundId {
         CikraliskOrderAggressive02                          = 3501,
         CikraliskOrderAggressive03                          = 3502,
         CikraliskOrderAggressive04                          = 3503,
+
+        BlackguardWeaponfire01                              = 3516,
+        BlackguardWeaponfire02                              = 3517,
+        BlackguardWeaponfire03                              = 3518,
+        BlackguardWeaponfire04                              = 3519,
+
+        HydraliskOrkotiWeaponfire01                         = 3523,
+        HydraliskOrkotiWeaponfire02                         = 3524,
+        HydraliskOrkotiWeaponfire03                         = 3525,
     };
 }

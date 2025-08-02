@@ -137,6 +137,9 @@ namespace UnitId {
         TerranTiangou                                       = 433,
         TerranTiangouTurret                                 = 434,
         TerranMaverickFuturist                              = 435,
+        TerranBlackguard                                    = 489,
+        TerranArhaun                                        = 490,
+        TerranArhaunTurret                                  = 491,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1
