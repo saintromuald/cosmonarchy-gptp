@@ -85,7 +85,7 @@ struct Unit : public UnitLayout {
 
     /// Retrieves the in-game name of the unit with @p unit_id. In UMS maps, this
     /// returns custom unit names (if they exist).
-    static const char* get_name(u16 unit_id);
+    static const char* get_name(u16 unit_id, bool ignore_map_name = false);
 
     /// Returns the race of the current unit.
     /// @return   RaceId::Terran, Zerg, Protoss, or Neutral.

@@ -363,7 +363,7 @@ namespace hooks {
 
         // Spawn 'lifted' chkunits, only if the player's race matches the unit's race.
         if (flags & ChkUnitFlags_Lifted) {
-        	if (!unit_id_race_check(chkunit->unit_id, g_player_table[chkunit->player].race)) {
+        	if (!unit_id_is_race(chkunit->unit_id, g_player_table[chkunit->player].race)) {
         		return 0;
         	}
         }

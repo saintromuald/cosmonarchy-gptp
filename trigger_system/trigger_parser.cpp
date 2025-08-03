@@ -1,5 +1,6 @@
 #include "trigger_parser.h"
 #include "trigger_vars.h"
+#include "BW/stat_txt_spec.h"
 
 static bool is_normal_space(char c) {
 	return c == ' ' || c == '\t';
@@ -175,6 +176,23 @@ bool Parser::get_keyword(const char* keyword) {
 	return false;
 }
 
+bool Parser::eat_prefix(const char* prefix) {
+	const char* c = m_at;
+	const char* p = prefix;
+	while (*c && *p) {
+		if (*c != *p) {
+			return false;
+		}
+		c++;
+		p++;
+	}
+	if (*p) {
+		return false;
+	}
+	m_at = c;
+	return true;
+}
+
 Token Parser::get_string() {
 	if (!skip_whitespace()) {
 		return m_token;
@@ -218,7 +236,8 @@ TriggerVar* Parser::maybe_get_var() {
 	return 0;
 }
 
-s32 Parser::get_s32(s32 default_value) {
+template <typename T>
+T Parser::get_integer(T default_value) {
 	TriggerVar* var = maybe_get_var();
 	if (var) {
 		return var->value();
@@ -232,8 +251,16 @@ s32 Parser::get_s32(s32 default_value) {
 		return 0;
 	}
 
-	const auto value = sv_convert_to<s32>(m_token.sv);
+	const auto value = sv_convert_to<T>(m_token.sv);
 	return value ? *value : default_value;
+}
+
+s32 Parser::get_s32(s32 default_value) {
+	return get_integer<s32>(default_value);
+}
+
+u32 Parser::get_u32(u32 default_value) {
+	return get_integer<u32>(default_value);
 }
 
 u32 Parser::get_count(u32 default_value) {
@@ -406,7 +433,7 @@ Area Parser::get_area(Area default_value) {
 	}
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
-		if (name && name[0] && sv_equals(name, string.sv)) {
+		if (name && name[0] && name == string) {
 			area.box = g_location_table[i].dimensions;
 			area.flags = ~g_location_table[i].flags;
 			return area;
@@ -444,7 +471,7 @@ Point16 Parser::get_position(Point16 default_value) {
 	}
 	for (u32 i = 0; i < 256; ++i) {
 		char* name = helper::get_chk_string(g_location_table[i].string_id);
-		if (name && name[0] && sv_equals(name, string.sv)) {
+		if (name && name[0] && name == string) {
 			return box_center(g_location_table[i].dimensions);
 		}
 	}
@@ -579,7 +606,7 @@ static void remove_prefix(std::string_view& string, std::string_view prefix) {
 }
 
 Token get_short_unit_name(u32 unit_id) {
-	std::string_view name = Unit::get_name(unit_id);
+	std::string_view name = Unit::get_name(unit_id, true);
 	remove_prefix(name, "terran");
 	remove_prefix(name, "protoss");
 	remove_prefix(name, "zerg");
@@ -614,125 +641,194 @@ u32 Parser::get_unit_id() {
 	return get_s32(UnitId::None);
 }
 
-static void unit_id_bitset_set(UnitIdBitset& bitset, u32 i, bool value, bool mask, bool negate) {
-	if (negate) {
-		value = !value;
+template <typename T>
+struct BitsetSize_t;
+
+template <size_t N>
+struct BitsetSize_t<std::bitset<N>> : std::integral_constant<size_t, N> {};
+
+template <std::integral T>
+struct BitsetSize_t<T> : std::integral_constant<size_t, 8 * sizeof(T)> {};
+
+template <typename T>
+static constexpr size_t BitsetSize = BitsetSize_t<T>::value;
+
+template <typename Bitset>
+class BitsetParser {
+public:
+	BitsetParser(Parser& parser) : m_parser{parser} {}
+
+	template <typename Func>
+	Bitset parse(Func&& callback) {
+        Bitset result = {};
+		m_bitset = {};
+		m_mask = false;
+        while (true) {
+            m_negate = m_parser.get_negation();
+            m_marker = m_parser.marker();
+            m_parser.get_string();
+
+            if (m_parser.equals("*")) {
+                set([](u32 i) { return true; });
+			} else {
+                callback(*this);
+			}
+
+            char separator = m_parser.get_separator();
+            if (separator == '&') {
+                m_mask = true;
+                continue;
+            }
+            if (separator == '|') {
+                m_mask = false;
+                result |= m_bitset;
+                m_bitset = {};
+                continue;
+            }
+            result |= m_bitset;
+            break;
+        }
+        return result;
 	}
-	if (value) {
-		if (!mask) {
-			bitset[i] = true;
+
+	template <typename Func>
+	void set(Func&& func) {
+		for (u32 i = 0; i < BitsetSize<Bitset>; i++) {
+			bool value = func(i);
+            if (m_negate) {
+                value = !value;
+            }
+            if (value) {
+                if (!m_mask) {
+                    if constexpr (std::is_integral_v<Bitset>) {
+                        m_bitset |= (1 << i);
+                    } else {
+                        m_bitset[i] = true;
+                    }
+                }
+            } else if (m_mask) {
+                if constexpr (std::is_integral_v<Bitset>) {
+                    m_bitset &= ~(1 << i);
+                } else {
+                    m_bitset[i] = false;
+                }
+            }
 		}
-	} else if (mask) {
-		bitset[i] = false;
 	}
+
+	void unwind_token() {
+		m_parser.unwind(m_marker);
+	}
+
+private:
+	Parser& m_parser;
+	Bitset m_bitset;
+	bool m_mask;
+	bool m_negate;
+	ParserMarker m_marker;
+};
+
+template <typename Bitset, typename Func>
+Bitset Parser::parse_bitset(Func&& callback) {
+	BitsetParser<Bitset> parser{*this};
+	return parser.parse(callback);
 }
 
 UnitIdBitset Parser::get_unit_id_bitset() {
-	bool mask = false;
-	UnitIdBitset bitset = {};
-	UnitIdBitset current_bitset = {};
-	while (true) {
-		bool negate = get_negation();
-		const auto marker = this->marker();
-		get_string();
-		if (equals("*")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, true, mask, negate);
-			}
-		} else if (iequals("men")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_men, mask, negate);
-			}
+	return parse_bitset<UnitIdBitset>([&](BitsetParser<UnitIdBitset>& parser) {
+		if (iequals("men")) {
+            parser.set([](u32 i) { return units_dat::group_flags[i].is_men; });
 		} else if (iequals("buildings")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_building, mask, negate);
-			}
+            parser.set([](u32 i) { return units_dat::group_flags[i].is_building; });
 		} else if (iequals("factories")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, units_dat::group_flags[i].is_factory, mask, negate);
-			}
+            parser.set([](u32 i) { return units_dat::group_flags[i].is_factory; });
 		} else if (iequals("tech")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, unit_id_is_tech(i), mask, negate);
-			}
+            parser.set([](u32 i) { return unit_id_is_tech(i); });
 		} else if (iequals("tech_tier")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, unit_id_is_tech_tier_structure(i), mask, negate);
-			}
+            parser.set([](u32 i) { return unit_id_is_tech_tier_structure(i); });
 		} else if (iequals("terran")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Terran), mask, negate);
-			}
+            parser.set([](u32 i) { return unit_id_is_race(i, RaceId::Terran); });
 		} else if (iequals("protoss")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Protoss), mask, negate);
-			}
+            parser.set([](u32 i) { return unit_id_is_race(i, RaceId::Protoss); });
 		} else if (iequals("zerg")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, unit_id_race_check(i, RaceId::Zerg), mask, negate);
-			}
+            parser.set([](u32 i) { return unit_id_is_race(i, RaceId::Zerg); });
 		} else if (iequals("combatants")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				bool is_combatant = false;
-				u32 subunit_id = units_dat::subunit[i];
-				if (units_dat::ground_weapon[i] != WeaponId::None || units_dat::ground_weapon[subunit_id] != WeaponId::None) {
-					is_combatant = true;
-				}
-				if (units_dat::air_weapon[i] != WeaponId::None || units_dat::air_weapon[subunit_id] != WeaponId::None) {
-					is_combatant = true;
-				}
-				if (units_dat::base_property[i] & UnitProperty::Spellcaster && i != UnitId::TerranComsatStation) {
-					is_combatant = true;
-				}
-				unit_id_bitset_set(current_bitset, i, is_combatant, mask, negate);
-			}
+            parser.set([](u32 i) { return unit_id_is_combatant(i); });
 		} else if (iequals("transports")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, unit_id_is_transport(i), mask, negate);
-			}
+            parser.set([](u32 i) { return unit_id_is_transport(i); });
 		} else if (iequals("townhalls")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, unit_id_is_town_center(i), mask, negate);
-			}
+            parser.set([](u32 i) { return unit_id_is_town_center(i); });
 		} else if (iequals("depots")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceDepot, mask, negate);
-			}
+            parser.set([](u32 i) { return units_dat::base_property[i] & UnitProperty::ResourceDepot; });
 		} else if (iequals("nodes")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::ResourceContainer, mask, negate);
-			}
+            parser.set([](u32 i) { return units_dat::base_property[i] & UnitProperty::ResourceContainer; });
 		} else if (iequals("factional")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, unit_id_is_factional(i), mask, negate);
-			}
+            parser.set([](u32 i) { return unit_id_is_factional(i); });
 		} else if (iequals("workers")) {
-			for (u32 i = 0; i < UnitId::Count; ++i) {
-				unit_id_bitset_set(current_bitset, i, units_dat::base_property[i] & UnitProperty::Worker, mask, negate);
-			}
+            parser.set([](u32 i) { return units_dat::base_property[i] & UnitProperty::Worker; });
 		} else {
-			unwind(marker);
-			s32 unit_id = get_unit_id();
-			if (unit_id != UnitId::None) {
-				for (u32 i = 0; i < UnitId::Count; ++i) {
-					unit_id_bitset_set(current_bitset, i, i == unit_id, mask, negate);
-				}
-			}
+            parser.unwind_token();
+            s32 unit_id = get_unit_id();
+            if (unit_id != UnitId::None) {
+                parser.set([unit_id](u32 i) { return i == unit_id; });
+            }
 		}
+	});
+}
 
-		char separator = get_separator();
-		if (separator == '&') {
-			mask = true;
-		} else if (separator == '|') {
-			mask = false;
-			bitset |= current_bitset;
-			current_bitset = {};
-		} else {
-			bitset |= current_bitset;
-			break;
+u32 Parser::get_weapon_id() {
+	const auto marker = this->marker();
+	Token token = get_string();
+	for (u32 i = 0; i < WeaponId::Count; ++i) {
+		if (sv_lazy_equals(token.sv, g_stat_txt_tbl_new->get_string(weapons_dat::label[i]))) {
+			return i;
 		}
 	}
-	return bitset;
+	unwind(marker);
+	return get_s32(WeaponId::None);
+}
+
+WeaponIdBitset Parser::get_weapon_id_bitset() {
+	return parse_bitset<WeaponIdBitset>([&](BitsetParser<WeaponIdBitset>& parser) {
+        parser.unwind_token();
+        s32 weapon_id = get_weapon_id();
+        if (weapon_id != WeaponId::None) {
+            parser.set([weapon_id](u32 i) { return i == weapon_id; });
+        }
+	});
+}
+
+u32 Parser::get_flags_bitset() {
+	return parse_bitset<u32>([&](BitsetParser<u32>& parser) {
+        parser.unwind_token();
+        parser.set([value = get_u32()](u32 i) { return i & value; });
+	});
+}
+
+u32 Parser::get_flags_bitset(const char** enum_names, size_t count) {
+	return parse_bitset<u32>([&](BitsetParser<u32>& parser) {
+		if (u32 value = get_enum(enum_names, count); value) {
+            parser.set([value](u32 i) { return i & value; });
+		} else {
+            parser.unwind_token();
+            parser.set([value = get_u32()](u32 i) { return i & value; });
+		}
+	});
+}
+
+StatOperator Parser::get_stat_operator() {
+	if (!skip_whitespace()) {
+		return StatOperator::Set;
+	}
+	if (eat_prefix("+=")) return StatOperator::Add;
+	if (eat_prefix("-=")) return StatOperator::Subtract;
+	if (eat_prefix("*=")) return StatOperator::Multiply;
+	if (eat_prefix("/=")) return StatOperator::Divide;
+	if (eat_prefix("|=")) return StatOperator::Or;
+	if (eat_prefix("&=")) return StatOperator::And;
+	if (eat_prefix("!"))  return StatOperator::Negate;
+	if (eat_prefix("="))  return StatOperator::Set;
+	return StatOperator::Set;
 }
 
 Designator Parser::get_designator() {
@@ -748,22 +844,28 @@ QuotaType Parser::get_quota_type(QuotaType default_type) {
 		return default_type;
 	}
 
-	if (*m_at == '>' || *m_at == '<' || *m_at == '!' || *m_at == '=' || *m_at == '*') {
-		const auto marker = this->marker();
-		char op = *m_at++;
+	switch (*m_at) {
+		case '>':
+		case '<':
+		case '!':
+		case '=':
+		case '*': {
+            const auto marker = this->marker();
+            char op = *m_at++;
 
-		bool equals = get_char('=');
-		switch (op) {
-			case '>': return equals ? QuotaType_GreaterOrEqual : QuotaType_Greater; break;
-			case '<': return equals ? QuotaType_LessOrEqual : QuotaType_Less; break;
-			case '=': return QuotaType_Equal; break;
-			case '!': return QuotaType_NotEqual; break;
-			case '*': {
-				// We pop since we don't want next get to consume next argument
-				unwind(marker);
-				return QuotaType_Anything;
-			} break;
-		}
+            bool equals = get_char('=');
+            switch (op) {
+                case '>': return equals ? QuotaType_GreaterOrEqual : QuotaType_Greater;
+                case '<': return equals ? QuotaType_LessOrEqual : QuotaType_Less;
+                case '=': return QuotaType_Equal;
+                case '!': return QuotaType_NotEqual;
+                case '*': {
+                    // We pop since we don't want next get to consume next argument
+                    unwind(marker);
+                    return QuotaType_Anything;
+                } break;
+            }
+		} break;
 	}
 	return default_type;
 }
@@ -825,10 +927,6 @@ Point16 box_center(Box32 box) {
 	point.x = box.left + (box.right  - box.left) / 2;
 	point.y = box.top  + (box.bottom - box.top)  / 2;
 	return point;
-}
-
-bool sv_equals(std::string_view a, std::string_view b) {
-	return std::ranges::equal(a, b);
 }
 
 bool sv_iequals(std::string_view a, std::string_view b) {

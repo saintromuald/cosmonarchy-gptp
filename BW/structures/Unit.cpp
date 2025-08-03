@@ -7,11 +7,13 @@
 #include "hooks\weapons\weapon_damage.h"
 #include "hooks\load_unload_proc.h"
 #include "trigger_system/trigger_events.h"
+#include "trigger_system/trigger_system.h"
 #include <DatExtend/datext.h>
 #include "math_utils.h"
 #include "hooks/unit_stats/armor_bonus.h"
 #include "hooks/target_related.h"
 #include "data_ext.h"
+#include "BW/stat_txt_spec.h"
 
 UnitRef::UnitRef(Unit* unit) : index{unit->get_unit_index()}, unique_id{unit->unique_id} {}
 
@@ -184,19 +186,19 @@ const char* Unit::get_name() {
     return get_name(this->id);
 }
 
-#include "BW/stat_txt_spec.h"
 // Based on function @ 0x0047B090
-const char* Unit::get_name(u16 unit_id) {
+const char* Unit::get_name(u16 unit_id, bool ignore_map_name) {
     assert(unit_id < UnitsIdLimit);
     if (unit_id >= UnitsIdLimit) {
         return (char*)g_string_empty;
-    } else if (units_dat::map_string_id[unit_id] != 0) {
-        return (char*)g_map_string_tbl->get_string(units_dat::map_string_id[unit_id]);
-    } else if (DatExt::g_unit_names_tbl != NULL) {
-        return (char*)((StringTbl*)&DatExt::g_unit_names_tbl)->get_string(unit_id + 1); // must be a pointer to a pointer, rather than just a pointer
-    } else {
-        return g_stat_txt_tbl_new->get_string(unit_id + 1);
     }
+    if (!ignore_map_name && units_dat::map_string_id[unit_id] != 0) {
+        return (char*)g_map_string_tbl->get_string(units_dat::map_string_id[unit_id]);
+    }
+    if (DatExt::g_unit_names_tbl) {
+        return (char*)((StringTbl*)&DatExt::g_unit_names_tbl)->get_string(unit_id + 1); // must be a pointer to a pointer, rather than just a pointer
+    }
+    return g_stat_txt_tbl_new->get_string(unit_id + 1);
 }
 
 RaceId::Enum Unit::get_race() const {
