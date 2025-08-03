@@ -112,7 +112,7 @@ bool unit_id_is_transport(u32 unit_id) {
         || unit_id == UnitId::ZergOthstoleth;
 }
 
-bool unit_id_race_check(u32 unit_id, u32 race) {
+bool unit_id_is_race(u32 unit_id, u32 race) {
     switch (race) {
         case RaceId::Terran: {
             if (units_dat::group_flags[unit_id].is_terran) {
@@ -137,6 +137,21 @@ bool unit_id_race_check(u32 unit_id, u32 race) {
                 return true;
             }
         } break;
+    }
+    return false;
+}
+
+bool unit_id_is_combatant(u32 unit_id) {
+    if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster && unit_id != UnitId::TerranComsatStation) {
+        return true;
+    }
+    if (units_dat::ground_weapon[unit_id] != WeaponId::None || units_dat::air_weapon[unit_id] != WeaponId::None) {
+        return true;
+    }
+    if (u32 subunit_id = units_dat::subunit[unit_id]; subunit_id != UnitId::None) {
+        if (units_dat::ground_weapon[subunit_id] != WeaponId::None || units_dat::air_weapon[subunit_id] != WeaponId::None) {
+            return true;
+        }
     }
     return false;
 }

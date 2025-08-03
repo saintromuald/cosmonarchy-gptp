@@ -342,5 +342,7 @@ namespace WeaponId {
         // Misc \\
 
         SmoochieBoyKissingEmoji				= 196,
+
+        Count = 256,
     };
 }

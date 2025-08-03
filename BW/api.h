@@ -12,6 +12,8 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
+#include <magic_enum/magic_enum_all.hpp>
+
 #include "BW/bwdata.h"
 #include "BW/enumerations.h"
 #include "unit_search.h"
@@ -86,6 +88,19 @@ struct std::formatter<TextColor> {
         return std::format_to(ctx.out(), "{}", static_cast<char>(c));
     }
 };
+
+namespace enums {
+
+template <typename T>
+using base = std::underlying_type_t<T>;
+
+template <typename T>
+base<T> to_base(T value) {
+    return static_cast<base<T>>(value);
+}
+
+} // enums
+
 
 namespace bw {
 
@@ -256,7 +271,7 @@ void printf(TextColor color, const char* format, ...);
 void printf_console(const char* fmt, ...);
 
 template <typename... Args>
-void println(std::format_string<Args...> fmt, Args&&... args) {
+void println(std::format_string<Args...> fmt = " ", Args&&... args) {
     print(std::format(fmt, std::forward<Args>(args)...).c_str());
 }
 

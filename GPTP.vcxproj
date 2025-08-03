@@ -633,6 +633,15 @@
     <ClInclude Include="DatExtend\dat_limits.h" />
     <ClInclude Include="hooks\update_unit_sight.h" />
     <ClInclude Include="include\json.hpp" />
+    <ClInclude Include="include\magic_enum\magic_enum.hpp" />
+    <ClInclude Include="include\magic_enum\magic_enum_all.hpp" />
+    <ClInclude Include="include\magic_enum\magic_enum_containers.hpp" />
+    <ClInclude Include="include\magic_enum\magic_enum_flags.hpp" />
+    <ClInclude Include="include\magic_enum\magic_enum_format.hpp" />
+    <ClInclude Include="include\magic_enum\magic_enum_fuse.hpp" />
+    <ClInclude Include="include\magic_enum\magic_enum_iostream.hpp" />
+    <ClInclude Include="include\magic_enum\magic_enum_switch.hpp" />
+    <ClInclude Include="include\magic_enum\magic_enum_utility.hpp" />
     <ClInclude Include="include\yaml-cpp\depthguard.h" />
     <ClInclude Include="include\yaml-cpp\noexcept.h" />
     <ClInclude Include="include\yaml-cpp\src\collectionstack.h" />

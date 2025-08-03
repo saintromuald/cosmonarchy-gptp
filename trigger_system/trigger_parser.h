@@ -5,13 +5,12 @@
 #include <bitset>
 #include <charconv>
 
-bool sv_equals(std::string_view a, std::string_view b);
 bool sv_iequals(std::string_view a, std::string_view b);
 bool sv_lazy_equals(std::string_view a, std::string_view b);
 Point16 box_center(Box32 box);
 
 struct Token {
-	std::string_view sv;
+	std::string_view sv{};
 
 	Token() = default;
 	Token(const char* cstr) : sv{cstr} {}
@@ -19,11 +18,11 @@ struct Token {
 
 	std::string string() const { return std::string{sv}; }
 	operator bool() { return !sv.empty(); }
+	operator std::string_view() { return sv; }
 	bool operator==(const Token&) const = default;
 
-	bool equals(std::string_view other) { return sv_equals(sv, other); }
-	bool iequals(std::string_view other) { return sv_iequals(sv, other); }
-	bool lazy_equals(std::string_view other) { return sv_lazy_equals(sv, other); }
+	bool iequals(std::string_view other) const { return sv_iequals(sv, other); }
+	bool lazy_equals(std::string_view other) const { return sv_lazy_equals(sv, other); }
 };
 Token get_short_unit_name(u32 unit_id);
 
@@ -67,6 +66,39 @@ struct Area {
 
 using PlayerBitset = std::bitset<FullPlayerLimit>;
 using UnitIdBitset = std::bitset<UnitId::Count>;
+using WeaponIdBitset = std::bitset<WeaponId::Count>;
+
+template <typename I, size_t N, size_t MAX = N>
+struct IterateBitset {
+    const std::bitset<N>& bitset;
+
+    struct Iterator {
+        const std::bitset<N>& bitset;
+		size_t index{};
+
+		Iterator(const std::bitset<N>& bitset, size_t index) : bitset{bitset}, index{index} { if (!bitset[index]) { ++*this; } }
+        I operator*() const { return static_cast<I>(index); }
+		Iterator& operator++() {
+			while (++index < MAX) {
+				if (bitset[index]) {
+					break;
+				}
+			}
+			return *this;
+		}  
+        Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
+        friend bool operator==(const Iterator& a, const Iterator& b) { return a.index == b.index; };
+        friend bool operator!=(const Iterator& a, const Iterator& b) { return !(a == b); };  
+    };
+
+	Iterator begin() { return Iterator{bitset, 0}; }
+	Iterator end() { return Iterator{bitset, MAX}; }
+};
+
+using IteratePlayerBitsetPlayable = IterateBitset<int, FullPlayerLimit, PlayerLimit>;
+using IteratePlayerBitsetAll      = IterateBitset<int, FullPlayerLimit>;
+using IterateUnitIdBitset         = IterateBitset<UnitId::Enum, UnitId::Count>;
+using IterateWeaponIdBitset       = IterateBitset<WeaponId::Enum, WeaponId::Count>;
 
 enum QuotaType {
 	QuotaType_Greater,
@@ -96,6 +128,18 @@ struct Quota {
 		}
 		return false;
 	}
+};
+
+enum class StatOperator {
+	Set,
+	Add,
+	Subtract,
+	Multiply,
+	Divide,
+	Negate,
+	Or,
+	And,
+	Count,
 };
 
 class TriggerVar;
@@ -148,11 +192,13 @@ public:
 	void load_command_pos(u32 position);
 	bool get_command();
 	bool get_keyword(const char* keyword);
+	bool eat_prefix(const char* chars);
 	Token get_string();
 	Token get_identifier();
 
 	TriggerVar* maybe_get_var();
 	s32 get_s32(s32 default_value = 0);
+	u32 get_u32(u32 default_value = 0);
 	u32 get_count(u32 default_value = UINT_MAX);
 	f32 get_f32(f32 default_value = 0);
 	bool get_bool(bool default_value = false);
@@ -176,6 +222,14 @@ public:
 	u32 get_unit_id();
 	UnitIdBitset get_unit_id_bitset();
 
+	u32 get_weapon_id();
+	WeaponIdBitset get_weapon_id_bitset();
+
+	u32 get_flags_bitset();
+	u32 get_flags_bitset(const char** enum_names, size_t count);
+
+    StatOperator get_stat_operator();
+
 	Designator get_designator();
 
 	QuotaType get_quota_type(QuotaType default_type);
@@ -186,14 +240,41 @@ public:
 	Recolor get_recolor();
 	RecolorSet get_recolor_set();
 
-	bool equals(std::string_view sv) { return m_token.equals(sv); }
-	bool iequals(std::string_view sv) { return m_token.iequals(sv); }
-	bool lazy_equals(std::string_view sv) { return m_token.lazy_equals(sv); }
+	bool equals(std::string_view sv) const { return m_token == sv; }
+	bool iequals(std::string_view sv) const { return m_token.iequals(sv); }
+	bool lazy_equals(std::string_view sv) const { return m_token.lazy_equals(sv); }
 
 	Token token() const { return m_token; }
 	u32 command_start_pos() const { return m_command_start_pos; }
 
+	std::string_view current_command_line() const {
+		std::string_view sv{m_start + m_command_start_pos};
+		if (const auto newline_pos = sv.find_first_of("\r\n"); newline_pos != std::string_view::npos) {
+			return sv.substr(0, newline_pos);
+		}
+		return sv;
+	}
+
+	template <typename... Ts>
+	void error(std::string_view title, Ts&&... args) {
+		std::ostringstream ss;
+		if (sizeof...(args) == 0) {
+			ss << "!";
+		} else {
+			ss << ": ";
+            size_t i = 0;
+            (ss << ... << std::format("{}{}{}{}", i++ > 0 ? ", " : "", char(TextColor::Yellow3), args, char(TextColor::White)));
+		}
+		bw::play_sound(SoundId::Misc_Buzz_wav_1);
+		bw::println();
+		bw::println(TextColor::Red, "Crig Error: {}{}{}", TextColor::White, title, ss.str());
+		bw::println(TextColor::Grey, "{}", current_command_line());
+	}
+
 private:
+	template <typename Bitset, typename Func>
+	Bitset parse_bitset(Func&& callback);
+
 	void start_token();
 	void expand_token();
 
@@ -205,7 +286,13 @@ private:
 	char get_separator();
 	char get_relative_op();
 
+    template <typename T>
+    T get_integer(T default_value);
+
 private:
+	template <typename Bitset>
+	friend class BitsetParser;
+
 	bool m_parsed_first_command{};
 	bool m_should_load_pos{};
 	const char* m_start{};

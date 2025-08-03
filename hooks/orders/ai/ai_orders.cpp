@@ -1835,7 +1835,7 @@ namespace hooks {
     }
 
     b32 ai_is_unit_id_unit_race(u16 unit_id, Unit* unit) {
-        if (unit_id_race_check(unit_id, unit->get_race())) {
+        if (unit_id_is_race(unit_id, unit->get_race())) {
             return 1;
         }
         *g_last_internal_error = 25;
