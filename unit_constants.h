@@ -43,7 +43,6 @@ inline constexpr s32 HealAmount = 96;  // 9 HP per second
 inline constexpr s32 NanoshieldTimer = 25;
 }
 
-// Shaman
 namespace Shaman {
 inline constexpr s32 NaniteFieldHealAmount = 4;
 inline constexpr s32 NaniteFieldSupportRange = 4 * 32;
@@ -148,16 +147,16 @@ namespace ProtossCantavis {
 inline constexpr s32 HallucinatingFieldTimer = 10 * 24 + 1;
 }
 
+namespace ProtossSycophant {
+inline constexpr s32 IdolatryDeathRange = 3 * 32;
+inline constexpr s32 IdolatryDeathShieldHeal = 50 * 256;
+}
+
 namespace ProtossMindTyrant {
 inline constexpr s32 MaledictusCastTime = 5 * 24;
 inline constexpr s32 MaledictusRange = 10 * 32;
 inline constexpr s32 MalefactorTyrannizeDuration = 1 * 24;
 inline constexpr s32 MaelstromTimer = 5 * 24 + 1;
-}
-
-namespace ProtossArchon {
-inline constexpr s32 AstralAegisRange = 3 * 32;
-inline constexpr s32 AstralAegisShieldHeal = 50 * 256;
 }
 
 namespace ProtossClarion {
@@ -261,6 +260,10 @@ inline constexpr s32 Range = 5 * 24;
 
 namespace Yblyleth {
 inline constexpr s32 SpawnDelay = 2 * 24;
+}
+
+namespace Vithrilisk {
+inline constexpr s32 CorrosivePathogenRange = 4 * 32;
 }
 
 namespace Broodspawn {

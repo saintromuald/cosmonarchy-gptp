@@ -2428,7 +2428,6 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
         case WeaponId::StarSovereignCelestialCannon:
         case WeaponId::NathrokorNathrokClaws:
         case WeaponId::LiiraliskHollowedSpores:
-        case WeaponId::CikraliskAcidSalvo:
         case WeaponId::TosgriliskExplosiveSpores:
         case WeaponId::AxitriliskSearingVenom:
         case WeaponId::MortothrokorWickedIncisors:
@@ -2437,7 +2436,6 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
         case WeaponId::KeskathalorScreamingVenom: {
             return 2;
         }
-        case WeaponId::OptectonSkybondRay:
         case WeaponId::StarSovereignInterventionMissiles: {
             return 1;
         }
@@ -3944,6 +3942,7 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::ApostleCharonRifle:                  return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
         case WeaponId::CyclopsFuturistFlakCannons:          return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
         case WeaponId::TiangouMoonboundSalvo:               return bw::rand_between(SoundId::TiangouWeaponfire01, SoundId::TiangouWeaponfire05);
+
         case WeaponId::ZealotPhaseBlades:	                return SoundId::ZealotWeaponhit01;
         case WeaponId::ZealotStarboundPhaseBlades:          return SoundId::ZealotStarboundWeaponhit01;
         case WeaponId::EcclesiastAstralBlaster:	            return bw::rand_between(SoundId::EcclesiastWeaponfire01, SoundId::EcclesiastWeaponfire04);
@@ -3960,10 +3959,13 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::AnalogueCylindricalBlaster:	        return bw::rand_between(SoundId::AnalogueWeaponfire01, SoundId::AnalogueWeaponfire03);
         case WeaponId::AuroraPhotonBlasters:                return SoundId::Bullet_BlastGn2_wav;
         case WeaponId::ExtatusRepeatingBlaster:             return bw::rand_between(SoundId::ExtatusWeaponfire01, SoundId::ExtatusWeaponfire03);
+
         case WeaponId::QuaziliskAcridBarbs:                 return bw::rand_between(SoundId::QuaziliskWeaponfire01, SoundId::QuaziliskWeaponfire03);
         case WeaponId::QuazrokorQuazrokSpray:               return bw::rand_between(SoundId::QuazrokorWeaponfire01, SoundId::QuazrokorWeaponfire01);
         case WeaponId::HydraliskNeedleSpines:               return SoundId::Bullet_SpoogHit_wav;
         case WeaponId::HydraliskOrkotiNeedleSpores:         return bw::rand_between(SoundId::HydraliskOrkotiWeaponfire01, SoundId::HydraliskOrkotiWeaponfire03);
+
+        case WeaponId::SmoochieBoyKissingEmoji:             return bw::rand_between(SoundId::SmoochieBoyWeaponfire01, SoundId::SmoochieBoyWeaponfire03);
     }
     return SoundId::None;
 }
@@ -3993,9 +3995,10 @@ u32 get_weapon_hit_sound(WeaponId::Enum weapon_id) {
         case WeaponId::EmpyreanPlasmaBarrage:             return bw::rand_between(SoundId::EmpyreanWeaponhit01, SoundId::EmpyreanWeaponhit04);
         case WeaponId::StarSovereignInterventionMissiles: return SoundId::PanoptusWeaponhit01;
 
+        case WeaponId::RililiskSwarmingSpores:            return SoundId::Bullet_ZLuHit00_wav;
+        case WeaponId::LiiraliskHomingSpore:              return SoundId::Bullet_ZLuHit00_wav;
         case WeaponId::ProtathalorPungentSpores:          return bw::rand_between(SoundId::ProtathalorWeaponhit01, SoundId::ProtathalorWeaponhit04);
         case WeaponId::NathreliskSignalingSpores:         return SoundId::Bullet_ZLuHit00_wav;
-        case WeaponId::RililiskSwarmingSpores:            return SoundId::Bullet_ZLuHit00_wav;
         case WeaponId::SovrolethSpores:                   return SoundId::Bullet_ZLuHit00_wav;
         case WeaponId::TosgriliskExplosiveSpores:         return bw::rand_between(SoundId::TosgriliskWeaponhit01, SoundId::TosgriliskWeaponhit03);
         case WeaponId::HydraliskOrkotiNeedleSpores:       return SoundId::Bullet_ZLuHit00_wav;
@@ -4007,7 +4010,9 @@ u32 get_weapon_hit_sound(WeaponId::Enum weapon_id) {
         case WeaponId::AlkajeliskPlasmidSpores:           return SoundId::Bullet_ZLuHit00_wav;
         case WeaponId::KonviliskSowingSpines:             return bw::rand_between(SoundId::KonviliskWeaponhit01, SoundId::KonviliskWeaponhit03);
         case WeaponId::SpraithCesiantSeekerSpores:        return bw::rand_between(SoundId::SpraithCesiantWeaponhit01, SoundId::SpraithCesiantWeaponhit02);
-        case WeaponId::SpirtithColonySpirtilSpores:       return bw::rand_between(SoundId::SpirtithWeaponhit01, SoundId::SpirtithWeaponhit02);
+        case WeaponId::SpirtithCesiantSpirtilSpores:       return bw::rand_between(SoundId::SpirtithWeaponhit01, SoundId::SpirtithWeaponhit02);
+
+        case WeaponId::SmoochieBoyKissingEmoji:           return bw::rand_between(SoundId::SmoochieBoyWeaponhit01, SoundId::SmoochieBoyWeaponhit04);
     }
     return SoundId::None;
 }

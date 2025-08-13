@@ -70,7 +70,8 @@ struct EffectInfo {
 
 static const EffectInfo& get_effect_info(EffectId effect_id) {
     switch (effect_id) {
-        case EffectId::PsiStorm: {
+        case EffectId::PsiStorm:
+        case EffectId::PsiStormPersistent: {
             static EffectInfo info{
                 .start_sound = SoundId::PsiStormStart,
                 .loop_sound = SoundId::PsiStormLoop,
@@ -225,14 +226,14 @@ static void tick_effect(EffectField& effect) {
                     effect.destroy();
                     break;
                 }
-                UnitExt* caster_ext = get_unit_ext(caster);
-                if (caster_ext->current_storm != effect.ref) {
+                auto& caster_ext = caster->ext();
+                if (caster_ext.current_storm != effect.ref) {
                     effect.destroy();
                     break;
                 }
                 auto distance = bw::distance_between(caster->position, (Point16)effect.position);
                 if (distance > weapons_dat::max_range[WeaponId::PsiStorm] + 64 || caster->status & UnitStatus::InTransport) {
-                    caster_ext->current_storm = 0;
+                    caster_ext.current_storm = 0;
                     effect.destroy();
                     break;
                 }
@@ -251,9 +252,25 @@ static void tick_effect(EffectField& effect) {
                 }
 
                 if (!caster->energy) {
-                    caster_ext->current_storm = 0;
+                    caster_ext.current_storm = 0;
                     effect.destroy();
                     break;
+                }
+            } break;
+            case EffectId::PsiStormPersistent: {
+                if (effect.current_time == 1) {
+                    effect.destroy();
+                }
+                for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
+                    auto& unit_ext = unit->ext();
+                    if (unit->under_storm_timer) {
+                        unit_ext.values[ValueStormDivider] *= 2;
+                    } else {
+                        unit->under_storm_timer = update_period;
+                        unit_ext.values[ValueStormDivider] = 1;
+                    }
+                    unit->damage_with(WeaponId::PsiStorm, (20 * tick_scalar_hp) / unit_ext.values[ValueStormDivider], effect.source, effect.player,
+                        helper::get_direction_from_points(effect.position, unit->position), units_dat::base_property[unit->id] & UnitProperty::Building ? 2 : 1);
                 }
             } break;
             case EffectId::HallucinatingField: {
@@ -269,7 +286,7 @@ static void tick_effect(EffectField& effect) {
             case EffectId::MorningstarGroundZero: {
                 switch (effect.tick) {
                     case 0: {
-                        g_iquare_globals->create_effect(EffectId::Irradiate, 20 * 24 - elapsed, effect.position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect.player, effect.source);
+                        g_iquare_globals->create_effect(EffectId::Irradiate, 20 * 24 - elapsed, effect.position, 1.5 * 32, SpriteId::MorningstarRadiationField, 5, effect.player, effect.source);
                     } break;
                     case 1:
                     case 2: {
@@ -280,7 +297,7 @@ static void tick_effect(EffectField& effect) {
                         pos.x += distance;
                         for (u32 i = 0; i < count; i++) {
                             pos = bw::rotate_point((Point16)effect.position, pos, (360.0 / count));
-                            g_iquare_globals->create_effect(EffectId::Irradiate, 20 * 24 - elapsed, pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effect.player, effect.source);
+                            g_iquare_globals->create_effect(EffectId::Irradiate, 20 * 24 - elapsed, pos, 1.5 * 32, SpriteId::MorningstarRadiationField, 5, effect.player, effect.source);
                         }
                     } break;
                 }

@@ -828,6 +828,8 @@ namespace SpriteId {
 
         CorrosiveTouchExplosionSmall    = 1006,
 
+        MorningstarRadiationField       = 1014,
+
         // CORPSE \\
             
         Corpse_Aspirant				    = 685,

@@ -425,8 +425,8 @@ bool unit_id_uses_xlarge_overlays(u16 unit_id) {
         || unit_id == UnitId::ProtossStarSovereign
         || unit_id == UnitId::ProtossAncestralArchives
         || unit_id == UnitId::ProtossMonumentOfSin
-        || unit_id == UnitId::ZergOthstoleth
-        || unit_id == UnitId::ZergAlkajelisk;
+        || unit_id == UnitId::ZergAlkajelisk
+        || unit_id == UnitId::ZergOkrimnilisk;
 }
 
 bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures) {
@@ -511,7 +511,7 @@ bool weapon_id_is_standard_weapon(u32 weapon_id) {
 bool weapon_id_bounces_lithe_organelle(u32 weapon_id) {
     return weapon_id == WeaponId::MutaliskGlaveWurm
         || weapon_id == WeaponId::LiiraliskHollowedSpores
-        || weapon_id == WeaponId::SpirtithColonySpirtilSpores;
+        || weapon_id == WeaponId::SpirtithCesiantSpirtilSpores;
 }
 
 bool weapon_id_bounces_crushing_tide(u32 weapon_id) {
@@ -556,7 +556,6 @@ u32 weapon_id_intercepts(u32 weapon_id) {
         case WeaponId::AtreusDauntlessDisruptorCannon:
         case WeaponId::CharlatanFerventBlaster:
         case WeaponId::CantavisHallucinationCast:
-        case WeaponId::PatriarchIronhandWeaver:
         case WeaponId::IdolPrismaticBlaster:
         case WeaponId::StarSovereignInterventionMissiles: {
             return InterceptType_Any;
@@ -658,8 +657,9 @@ ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
         case WeaponId::HarakanGoldenFlamethrower:		return ImageId::HarakanFlamethrower;
         case WeaponId::MatadorTwinstrikeFlamethrowers:	return ImageId::HarakanFlamethrower;
         case WeaponId::DurendalAbaddonFlamethrowers:	return ImageId::HarakanFlamethrower;
-        case WeaponId::StrigaPhaseSaber:				return ImageId::PhaseLineBlast;
+        case WeaponId::StrigaPhaseSaber:				return ImageId::StrigaAttackOverlay;
         case WeaponId::PariahIconoclastBlades:			return ImageId::PhaseLineBlast;
+        case WeaponId::CikraliskAcidSalvo:			    return ImageId::CikraliskAttackOverlay;
         case WeaponId::AckmedMickenMelter:				return ImageId::HarakanFlamethrower;
     }
     return ImageId::None;
@@ -1095,6 +1095,7 @@ bool unit_can_be_ensnared(Unit* unit) {
 bool weapon_id_is_line_attack(u32 weapon_id) {
     return weapon_id == WeaponId::StrigaPhaseSaber
         || weapon_id == WeaponId::PariahIconoclastBlades
+        || weapon_id == WeaponId::CikraliskAcidSalvo
         || weapon_id_is_flamethrower(weapon_id);
 }
 
@@ -1157,8 +1158,7 @@ u32 get_death_sfx_id(u32 unit_id) {
 
 u32 weapon_id_is_secondary(u32 weapon_id) {
     return weapon_id == WeaponId::DurendalPhilistineAutogun
-        || weapon_id == WeaponId::TarasqueAcceleratedPlasmid
-        || weapon_id == WeaponId::OptectonSkybondRay;
+        || weapon_id == WeaponId::TarasqueAcceleratedPlasmid;
 }
 
 bool unit_id_has_custom_air_weapon(u32 unit_id) {
@@ -1299,6 +1299,7 @@ bool unit_id_has_projection_attack(u32 unit_id) {
         || unit_id == UnitId::TerranMatadorTurretCinderMode
         || unit_id == UnitId::TerranDurendal
         || unit_id == UnitId::ProtossPariah
+        || unit_id == UnitId::ZergCikralisk
         || unit_id == UnitId::Ackmed;
 }
 
@@ -1556,6 +1557,11 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
         case UnitId::ZergQuazrokor:                return SpriteId::Corpse_Quazilisk;
         case UnitId::ZergVorvrokor:                return SpriteId::Corpse_Vorvrokor;
         case UnitId::ZergNathrokor:                return SpriteId::Corpse_Nathrokor;
+        case UnitId::ZergLiiralisk:                return SpriteId::Corpse_ZergUnitSmall;
+        case UnitId::ZergKalkalisk:                return SpriteId::Corpse_ZergUnitSmall;
+        case UnitId::ZergGhitorokor:               return SpriteId::Corpse_ZergUnitMedium;
+        case UnitId::ZergSovroleth:                return SpriteId::Corpse_ZergUnitSmall;
+        case UnitId::ZergTosgrilisk:               return SpriteId::Corpse_ZergUnitMedium;
         case UnitId::ZergMortothrokor:             return SpriteId::Corpse_Mortothrokor;
         case UnitId::ZergHydralisk:                return SpriteId::Corpse_Hydralisk;
         case UnitId::ZergHydraliskOrkoti:          return SpriteId::Corpse_HydraliskOrkoti;

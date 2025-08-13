@@ -679,7 +679,7 @@ namespace hooks {
                         // Offset: Cone
                         s32 angle = 15 - index * 4;
                         s32 scatter = -15 + index * 5;
-                        fire_sideways(unit, weapon_id, angle, scatter);
+                        fire_sideways(unit, weapon_id, angle, scatter + 32); // Adding 32 for Valkyrie specifically.
                     } break;
                     case WeaponId::MatrixKhaydarinRay: {
                         fire_bullet(unit, weapon_id, weapon_target);
@@ -757,7 +757,7 @@ namespace hooks {
                             .center_on_target_range_overwrite = 0,
                         });
                     } break;
-                    case WeaponId::SkortrithColonySkortraTendril: {
+                    case WeaponId::SkortrithCesiantSkortraTendril: {
                         fire_bullet(unit, weapon_id, unit->order_target);
                         fire_amitosis_weapon(unit, weapon_id);
                     } break;

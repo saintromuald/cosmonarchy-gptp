@@ -2290,8 +2290,8 @@ namespace hooks {
                                 // HEROES \\
 
                                 case UnitId::Goska: {
-                                    if (current_button->icon_id == IconId::U238_Shells		// Fossilizer Rounds
-                                    ||  current_button->icon_id == IconId::SensorArray) {	// Proximity Cloak
+                                    if (current_button->icon_id == IconId::U238_Shells	  // Fossilizer Rounds
+                                    ||  current_button->icon_id == IconId::SensorArray) { // Proximity Cloak
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2683,6 +2683,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossHierophant:
+                                case UnitId::ProtossPatriarch:
                                 case UnitId::ProtossEpigraph: {
                                     if (current_button->icon_id == IconId::PhotonCannonWeapon			// Signify: Cowardice
                                     ||  current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Signify: Malice
@@ -2723,14 +2724,14 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossCharlatan: {
-                                    if (current_button->icon_id == IconId::AntimatterMissiles			// Interception
-                                    ||  current_button->icon_id == IconId::DemiurgePassiveWorship) {	// Leading the Blind
+                                    if (current_button->icon_id == IconId::AntimatterMissiles		 // Interception
+                                    ||  current_button->icon_id == IconId::DemiurgePassiveWorship) { // Leading the Blind
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::ProtossPariah: {
                                     if (current_button->icon_id == IconId::Projection
-                                    ||	current_button->icon_id == IconId::PsiAssault) {			// Heretical Bedlam
+                                    ||	current_button->icon_id == IconId::PsiAssault) { // Heretical Bedlam
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2750,7 +2751,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossArchon: {
-                                    if (current_button->icon_id == IconId::RechargeShields	  // Astral Aegis
+                                    if (current_button->icon_id == IconId::RechargeShields	  // Triumphant Rise
+                                    ||  current_button->icon_id == IconId::Psionic_Storm	  // Martyrous Tempest
                                     ||	current_button->icon_id == IconId::LegEnhancements)	{ // Vengeance
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -2758,12 +2760,6 @@ namespace hooks {
                                 case UnitId::ProtossOptecton: {
                                     if (current_button->icon_id == IconId::AntimatterMissiles // Interception
                                     ||	current_button->icon_id == IconId::LegEnhancements) { // Titanic Stride
-                                        current_button_state = Button_State::Enabled;
-                                    }
-                                } break;
-                                case UnitId::ProtossPatriarch: {
-                                    if (current_button->icon_id == IconId::ProtossGroundWeapons  // Astral Rule
-                                    ||	current_button->icon_id == IconId::AntimatterMissiles) { // Interception
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3105,7 +3101,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergKonvilisk: {
-                                    if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle // Fertile Spines
+                                    if (current_button->icon_id == IconId::SurkithCesiantSubterraneanTentacle // Fertile Spines
                                     ||	current_button->icon_id == IconId::GeszithalorAcidSpore) {			// Crushing Tide
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -3156,7 +3152,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergSkortrithCesiant: {
-                                    if (current_button->icon_id == IconId::SunkenColonySubterraneanTentacle) { // Tendril Amitosis
+                                    if (current_button->icon_id == IconId::SurkithCesiantSubterraneanTentacle) { // Tendril Amitosis
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

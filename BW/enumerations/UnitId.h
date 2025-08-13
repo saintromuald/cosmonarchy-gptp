@@ -104,7 +104,6 @@ namespace UnitId {
         TerranSilvertongue									= 298,
         TerranEmperor										= 300,
         TerranJester										= 301,
-        TerranPhiloc										= 328,
         TerranMatadorCinderMode								= 371,
         TerramCuirassTrenchMode								= 372,
         TerranMatadorTurretTankMode							= 373,
@@ -124,6 +123,7 @@ namespace UnitId {
         TerranTarasque										= 210,		// Left Wall Missile Trap
         TerranWendigo										= 275,
         TerranSouthpaw										= 276,
+        TerranPhiloc										= 328,
         TerranZergMeleeHybrid								= 349,
         TerranHotshot										= 395,
         TerranQilin											= 398,
@@ -217,7 +217,6 @@ namespace UnitId {
         ProtossOptecton										= 316,
         ProtossPatriarch									= 317,
         ProtossApostate										= 318,
-        ProtossBulwark										= 331,
         ProtossMonogram										= 348,
         ProtossVagrantShade									= 351,
         ProtossAccantor										= 352,		// The new one
