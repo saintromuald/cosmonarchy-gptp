@@ -279,7 +279,7 @@ namespace hooks {
 				if (unit->id != UnitId::ZergRilirokor || !bw::get_active_tile_at_coords(unit->position)->has_cagra) {
 					unit->remove_timer -= 1;
 					if (unit->remove_timer == 0) {
-						unit->remove();
+						unit->bwfunc_remove();
 						stop_here = true;
 					}
 				}
@@ -360,7 +360,7 @@ namespace hooks {
 						}
 						target->damage_with_custom(damage, -1, unit, unit->player);
 					});
-					unit->remove();
+					unit->bwfunc_remove();
 					avenge_or_ascend_corpses_in_area(unit->position, 2 * 32, unit->player);
 					stop_here = true;
 				}

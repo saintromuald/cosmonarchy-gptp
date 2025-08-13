@@ -5,7 +5,7 @@ namespace hooks
 {
 	void orders_die(Unit* unit) // 00479480
 	{
-		if (unit->user_action_flags & UserActionFlags_HideUnit) {
+		if (unit->user_action_flags & UserActionFlags_SilentRemove) {
 			helper::hide_and_disable_unit(unit);
 		}
 

@@ -487,7 +487,7 @@ b32 kill_units_at_location_proc(Unit* unit, KillUnitArgs* args) { // 004C7E20
     } else {
         if (!unit->is_hallucination() && units_dat::space_provided[unit->id]) {
             if (*trig_remove_unit_active) {
-                unit->user_action_flags |= UserActionFlags_HideUnit;
+                unit->user_action_flags |= UserActionFlags_SilentRemove;
             }
         } else if (*trig_remove_unit_active) {
             helper::hide_unit(unit);

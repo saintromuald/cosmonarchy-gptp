@@ -837,9 +837,9 @@ static void clear_player_slot(u32 player, bool map_start) {
 		unit_next = unit->player_link.next;
 		if (map_start) {
 			helper::remove_creep_at_unit(unit->position.x, unit->position.y, unit->id);
-			unit->user_action_flags |= UserActionFlags_HideUnit;
+			unit->user_action_flags |= UserActionFlags_SilentRemove;
 		}
-		unit->remove();
+		unit->bwfunc_remove();
 	}
 
 	// Clear fow sprites
@@ -1222,7 +1222,7 @@ static void cleanup_dead_frauds() {
 				Unit* next = 0;
 				for (Unit* unit = first_player_unit->unit[player]; unit; unit = next) {
 					next = unit->player_link.next;
-					unit->remove();
+					unit->bwfunc_remove();
 				}
 				clear_player_slot(player, false);
 				sequence->fraud = Fraud_None;

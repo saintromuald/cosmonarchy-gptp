@@ -26,7 +26,7 @@ void update_spawn() {
 			case SpawnType_AugurDamage: {
 				Unit* augur = bw::create_unit_in_game(UnitId::ProtossAugur, seq->player, seq->source_pos.x, seq->source_pos.y);
 				if (augur) {
-					augur->user_action_flags |= UserActionFlags_HideUnit;
+					augur->user_action_flags |= UserActionFlags_SilentRemove;
 					augur_sacrifice(augur, 10 * 32);
 				}
 			} break;

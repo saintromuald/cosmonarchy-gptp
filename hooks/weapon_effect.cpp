@@ -31,7 +31,7 @@ namespace hooks {
 				damage /= 2;
 			}
 			if (damage >= swarm->hitpoints) {
-				swarm->remove();
+				swarm->bwfunc_remove();
 			} else {
 				u32 old = swarm->hitpoints;
 				swarm->hitpoints -= damage;

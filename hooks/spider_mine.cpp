@@ -134,7 +134,7 @@ namespace hooks {
 
 		if (unit->main_order_state == 6) { // Unlike state 5 with state 4, state 6 can be chained from state 5, so no else here
 			if (unit->order_signal & 1) {
-				unit->remove();
+				unit->bwfunc_remove();
 			}
 		}
 	}

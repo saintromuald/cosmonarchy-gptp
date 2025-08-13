@@ -320,7 +320,7 @@ namespace hooks {
                 char buffer[256] = {};
                 sprintf_s(buffer, 256, text, text2, unit->sprite->position.x, unit->sprite->position.y);
                 helper::unit_placement_error(buffer, 3);
-                unit->user_action_flags |= UserActionFlags_HideUnit;
+                unit->user_action_flags |= UserActionFlags_SilentRemove;
                 helper::orders_self_destructing(unit);
             }
         } else {

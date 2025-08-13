@@ -513,6 +513,17 @@ struct ActiveTileDF {
 };
 C_ASSERT(sizeof(ActiveTileDF) == 4);
 
+enum class GroupFlags : u8 {
+    Zerg		= 0x01,
+    Terran		= 0x02,
+    Protoss		= 0x04,
+    Men			= 0x08,
+    Building	= 0x10,
+    Factory		= 0x20,
+    Independent	= 0x40,
+    Neutral		= 0x80,
+};
+
 union GroupFlag {
     struct {
         u8 is_zerg			: 1; /*0x01*/

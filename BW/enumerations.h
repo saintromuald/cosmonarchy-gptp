@@ -512,6 +512,19 @@ enum Enum {
     WeaponBehavior_GoToMaxRange          = 9
 };
 
+enum class WeaponBehaviors : u8 {
+    FlyDoNotFollowTarget  = 0,
+    FlyFollowTarget       = 1,
+    AppearOnTargetUnit    = 2,
+    PersistOnTargetSite   = 3,
+    AppearOnTargetSite    = 4,
+    AppearOnAttacker      = 5,
+    AttackAndSelfDestruct = 6,
+    Bounce                = 7,
+    AttackNearbyArea      = 8,
+    GoToMaxRange          = 9,
+};
+
 // Use with g_color_shift
 namespace ColorRemapping {
 enum Enum {
@@ -1320,7 +1333,7 @@ enum GameCommand {
 enum UserActionFlags {
     UserActionFlags_IscriptGoToIdle = 0x1, // after NoBrkCodeEnd, test at 0x00475403
     UserActionFlags_UMStartPath     = 0x2, // test at 0x0046BDAD
-    UserActionFlags_HideUnit        = 0x4, // remove unit, test at 0x00479487
+    UserActionFlags_SilentRemove        = 0x4, // remove unit, test at 0x00479487
 };
 
 enum PathingFlags {

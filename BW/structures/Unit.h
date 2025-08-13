@@ -209,10 +209,21 @@ struct Unit : public UnitLayout {
     /// Reduces Defensive Matrix by @p amount, removing it if possible.
     void reduce_defensive_matrix_hp(s32 amount);
 
-    /// Immediately kills the unit. To silently remove the unit, use:
-    ///   unit->user_action_flags |= 0x4;
+    /// Deprecated!
+    /// Calls the original BW function for killing the unit.
+    /// Please use new variants instead: unit->kill() or unit->silent_remove()
+    /// 
+    /// Old silent removal required two lines (bad api):
+    ///   unit->user_action_flags |= UserActionFlags_SilentRemove;
     ///   unit->remove();
-    void remove();
+    /// Might still be useful for hooking?
+    void bwfunc_remove();
+
+    /// Kills the unit
+    inline void kill() { user_action_flags &= ~UserActionFlags_SilentRemove; bwfunc_remove(); }
+
+    /// Silently removes the unit
+    inline void silent_remove() { user_action_flags |= UserActionFlags_SilentRemove; bwfunc_remove(); }
 
     /// Removes the Lockdown effect from the unit.
     void remove_lockdown();

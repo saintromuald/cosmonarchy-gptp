@@ -154,7 +154,7 @@ void cancel_zerg_building(Unit* unit) { // 0045DA40
                 helper::refund_unit_train_cost(unit->create_origin, unit->player);
                 helper::display_last_network_error_for_player(unit->player);
             }
-            unit->remove();
+            unit->bwfunc_remove();
         } else {
             Thingy* thingy = helper::create_thingy(SpriteId::Zerg_Building_Spawn_Small, unit->get_x(), unit->get_y(), 0);
 
@@ -651,7 +651,7 @@ void droleth_build_excisant(Unit* builder) { // 0045D790
         UnitExt* building_ext = get_unit_ext(building);
         building_ext->values[ValuePreMorphHP] = builder->hitpoints;
         helper::ai_training_overlord(building, builder);
-        builder->user_action_flags |= UserActionFlags_HideUnit;
+        builder->user_action_flags |= UserActionFlags_SilentRemove;
         helper::orders_self_destructing(builder);
         helper::drone_build_execute(building);
         helper::add_overlay_below_main(building->sprite, unit_id_is_ridge_refinery(building_id) ? ImageId::VespeneRidgeUnderlay : ImageId::VespeneGeyserUnderlay, 0, 0, 0);

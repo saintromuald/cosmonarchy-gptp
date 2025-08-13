@@ -2,6 +2,9 @@
 #include "trigger_vars.h"
 #include "BW/stat_txt_spec.h"
 
+#include <magic_enum/magic_enum_all.hpp>
+using namespace magic_enum::bitwise_operators;
+
 static bool is_normal_space(char c) {
 	return c == ' ' || c == '\t';
 }
@@ -193,12 +196,12 @@ bool Parser::eat_prefix(const char* prefix) {
 	return true;
 }
 
-Token Parser::get_string() {
+Token Parser::get_string(bool allow_quotes) {
 	if (!skip_whitespace()) {
 		return m_token;
 	}
 
-	if (get_char('"')) {
+	if (allow_quotes && get_char('"')) {
 		start_token();
 		while (*m_at && *m_at != '"' && !is_newline(*m_at)) {
 			expand_token();
@@ -237,10 +240,16 @@ TriggerVar* Parser::maybe_get_var() {
 }
 
 template <typename T>
-T Parser::get_integer(T default_value) {
+T Parser::get_integer(T default_value, u32 base) {
 	TriggerVar* var = maybe_get_var();
 	if (var) {
 		return var->value();
+	}
+
+	if (eat_prefix("0x")) {
+        get_word();
+        const auto value = sv_convert_to<T>(m_token.sv, 16);
+        return value ? *value : default_value;
 	}
 
 	get_word();
@@ -379,6 +388,27 @@ s32 Parser::get_var_value(bool is_timer) {
 	return is_timer ? get_time_ticks() : get_s32();
 }
 
+Location* Parser::get_location() {
+	const auto marker = this->marker();
+	Token string = get_string();
+	if (equals("*")) {
+        return &g_location_table[63];
+	}
+	for (u32 i = 0; i < 256; ++i) {
+		char* name = helper::get_chk_string(g_location_table[i].string_id);
+		if (name && name[0] && name == string) {
+			return &g_location_table[i];
+		}
+	}
+	unwind(marker); // string wasn't valid, let's unwind and try an int
+
+	s32 i = get_s32(-1);
+	if (i >= 0 && i < 256) {
+		return &g_location_table[i];
+	}
+	return nullptr;
+}
+
 Area Parser::get_area(Area default_value) {
 	Area area = {};
 	if (!skip_whitespace()) {
@@ -424,30 +454,11 @@ Area Parser::get_area(Area default_value) {
 		return area;
 	}
 
-	const auto marker = this->marker();
-	Token string = get_string();
-	if (equals("*")) {
-		area.box = g_location_table[63].dimensions;
-		area.flags = ~g_location_table[63].flags;
-		return area;
+	if (const auto location = get_location()) {
+        area.box = location->dimensions;
+        area.flags = ~location->flags;
+        return area;
 	}
-	for (u32 i = 0; i < 256; ++i) {
-		char* name = helper::get_chk_string(g_location_table[i].string_id);
-		if (name && name[0] && name == string) {
-			area.box = g_location_table[i].dimensions;
-			area.flags = ~g_location_table[i].flags;
-			return area;
-		}
-	}
-	unwind(marker); // string wasn't valid, let's unwind and try an int
-
-	s32 i = get_s32(-1);
-	if (i >= 0 && i < 256) {
-		area.box = g_location_table[i].dimensions;
-		area.flags = ~g_location_table[i].flags;
-		return area;
-	}
-
 	return default_value;
 }
 
@@ -464,24 +475,9 @@ Point16 Parser::get_position(Point16 default_value) {
 		return pos;
 	}
 
-	const auto marker = this->marker();
-	Token string = get_string();
-	if (equals("*")) {
-		return box_center(g_location_table[63].dimensions);
+	if (const auto location = get_location()) {
+		return location->dimensions.center();
 	}
-	for (u32 i = 0; i < 256; ++i) {
-		char* name = helper::get_chk_string(g_location_table[i].string_id);
-		if (name && name[0] && name == string) {
-			return box_center(g_location_table[i].dimensions);
-		}
-	}
-	unwind(marker); // string wasn't valid, let's unwind and try an int
-
-	s32 i = get_s32();
-	if (i >= 0 && i < 256) {
-		return box_center(g_location_table[i].dimensions);
-	}
-
 	return default_value;
 }
 
@@ -650,6 +646,9 @@ struct BitsetSize_t<std::bitset<N>> : std::integral_constant<size_t, N> {};
 template <std::integral T>
 struct BitsetSize_t<T> : std::integral_constant<size_t, 8 * sizeof(T)> {};
 
+template <typename T> requires std::is_enum_v<T>
+struct BitsetSize_t<T> : std::integral_constant<size_t, 8 * sizeof(T)> {};
+
 template <typename T>
 static constexpr size_t BitsetSize = BitsetSize_t<T>::value;
 
@@ -666,7 +665,7 @@ public:
         while (true) {
             m_negate = m_parser.get_negation();
             m_marker = m_parser.marker();
-            m_parser.get_string();
+            m_parser.get_string(false);
 
             if (m_parser.equals("*")) {
                 set([](u32 i) { return true; });
@@ -700,15 +699,15 @@ public:
             }
             if (value) {
                 if (!m_mask) {
-                    if constexpr (std::is_integral_v<Bitset>) {
-                        m_bitset |= (1 << i);
+                    if constexpr (std::is_integral_v<Bitset> || std::is_enum_v<Bitset>) {
+                        m_bitset = Bitset(u32(m_bitset) | (1 << i));
                     } else {
                         m_bitset[i] = true;
                     }
                 }
             } else if (m_mask) {
-                if constexpr (std::is_integral_v<Bitset>) {
-                    m_bitset &= ~(1 << i);
+                if constexpr (std::is_integral_v<Bitset> || std::is_enum_v<Bitset>) {
+                    m_bitset = Bitset(u32(m_bitset) & ~(1 << i));
                 } else {
                     m_bitset[i] = false;
                 }
@@ -825,7 +824,8 @@ StatOperator Parser::get_stat_operator() {
 	if (eat_prefix("*=")) return StatOperator::Multiply;
 	if (eat_prefix("/=")) return StatOperator::Divide;
 	if (eat_prefix("|=")) return StatOperator::Or;
-	if (eat_prefix("&=")) return StatOperator::And;
+	if (eat_prefix("&=")) return StatOperator::InverseAnd;
+	if (eat_prefix("^=")) return StatOperator::Xor;
 	if (eat_prefix("!"))  return StatOperator::Negate;
 	if (eat_prefix("="))  return StatOperator::Set;
 	return StatOperator::Set;
@@ -920,13 +920,6 @@ RecolorSet Parser::get_recolor_set() {
 		set = default_recolor_set();
 	}
 	return set;
-}
-
-Point16 box_center(Box32 box) {
-	Point16 point = {};
-	point.x = box.left + (box.right  - box.left) / 2;
-	point.y = box.top  + (box.bottom - box.top)  / 2;
-	return point;
 }
 
 bool sv_iequals(std::string_view a, std::string_view b) {

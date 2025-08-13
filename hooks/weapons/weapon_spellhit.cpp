@@ -107,7 +107,7 @@ namespace hooks {
 	// Bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void restore_hit(Unit* target, Bullet* bullet) {
 		if (target->status & UnitStatus::IsHallucination) {
-			target->remove();
+			target->bwfunc_remove();
 		} else {
 			// Create impact overlay
 			bw::restore_func(target);
@@ -258,7 +258,7 @@ namespace hooks {
 			if (current_unit != attacker // EMP doesn't affect the attacker
 				&& (!attacker || current_unit != attacker->subunit)) {
 				if (current_unit->status & UnitStatus::IsHallucination) {
-					current_unit->remove();
+					current_unit->bwfunc_remove();
 				} else if (current_unit->stasis_timer == 0) { // don't affect units in stasis
 				//	current_unit->energy -= 100;
 				//	current_unit->shields -= 100;
@@ -312,7 +312,7 @@ namespace hooks {
 					unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
 				}
 			}
-			target->remove();
+			target->bwfunc_remove();
 		}
 	}
 

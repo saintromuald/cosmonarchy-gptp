@@ -48,7 +48,7 @@ public:
     Arena& operator=(const Arena&) = delete;
     Arena& operator=(Arena&&) = delete;
 
-    template <typename T>
+    template <typename T = std::byte>
     Allocator<T> allocator() {
         return Allocator<T>(this);
     }

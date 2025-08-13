@@ -45,7 +45,7 @@ void augur_sacrifice(Unit* augur, s32 radius) {
     if (target_ext.values[ValueAugurSafetyCheck] == 0) {
         target_ext.values[ValueAugurSafetyCheck] = 1;
         augur_proc(augur, radius);
-        augur->remove();
+        augur->bwfunc_remove();
     }
 }
 
@@ -56,7 +56,7 @@ void kill_hangar_units(Unit* unit) {
         Unit* child_inside = unit->unit_with_hangar.in_hangar_child;
         unit->unit_with_hangar.in_hangar_child = child_inside->hangar_unit.hangar_link.prev;
         child_inside->hangar_unit.parent = 0;
-        child_inside->remove();
+        child_inside->bwfunc_remove();
         unit->unit_with_hangar.in_hangar_count--;
     }
 
@@ -143,7 +143,7 @@ void unit_on_death_behaviors(Unit* unit) {
         } break;
         case UnitId::TerranAnvil: {
             if (unit->building.silo.nuke) {
-                unit->building.silo.nuke->remove();
+                unit->building.silo.nuke->bwfunc_remove();
                 unit->building.silo.nuke = 0;
             }
         } break;
@@ -197,7 +197,7 @@ void unit_on_death_behaviors(Unit* unit) {
                 if (unit_ext.values[ValueIsNydusExit]) {
                     bw::regress(nydus_exit, UnitId::ZergCagrantCesiant);
                 } else {
-                    nydus_exit->remove();
+                    nydus_exit->bwfunc_remove();
                 }
             }
         } break;

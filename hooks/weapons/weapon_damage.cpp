@@ -1241,7 +1241,7 @@ namespace hooks {
                         nydus_exit->building.nydus_exit = 0;
 
                         if (!target_ext.values[ValueIsNydusExit] == 1) {
-                            nydus_exit->remove();
+                            nydus_exit->bwfunc_remove();
                         }
                     }
                 }
