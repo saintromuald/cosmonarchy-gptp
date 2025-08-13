@@ -7,7 +7,6 @@
 
 bool sv_iequals(std::string_view a, std::string_view b);
 bool sv_lazy_equals(std::string_view a, std::string_view b);
-Point16 box_center(Box32 box);
 
 struct Token {
 	std::string_view sv{};
@@ -18,7 +17,6 @@ struct Token {
 
 	std::string string() const { return std::string{sv}; }
 	operator bool() { return !sv.empty(); }
-	operator std::string_view() { return sv; }
 	bool operator==(const Token&) const = default;
 
 	bool iequals(std::string_view other) const { return sv_iequals(sv, other); }
@@ -33,6 +31,8 @@ enum LocationFlags {
 	LocationFlags_LowAir     = 0x08,
 	LocationFlags_MidAir     = 0x10,
 	LocationFlags_HighAir    = 0x20,
+
+	LocationFlags_All        = 0x3F,
 };
 
 struct Area {
@@ -59,8 +59,16 @@ struct Area {
 		return false;
 	}
 
+	bool is_entire_map() const {
+		return box.x == 0
+			&& box.y == 0
+			&& box.w == g_map_width_pixels
+			&& box.h == g_map_height_pixels
+			&& (flags & LocationFlags_All) == LocationFlags_All;
+	}
+
 	Point16 center() const {
-		return box_center(box);
+		return box.center();
 	}
 };
 
@@ -138,7 +146,8 @@ enum class StatOperator {
 	Divide,
 	Negate,
 	Or,
-	And,
+	InverseAnd,
+	Xor,
 	Count,
 };
 
@@ -155,6 +164,11 @@ struct Designator {
 	PlayerBitset players;
 	UnitIdBitset unit_ids;
 
+	struct SearchSettings {
+		u32 limit = 0; // NOTE: limit is unsorted, biased towards top left chunks in search area (internal sorting not guaranteed either)
+		bool sort = false;
+	};
+
 	bool check(Unit* unit) const {
         if (!area.check(unit->position, unit->is_in_air())) {
             return false;
@@ -168,15 +182,15 @@ struct Designator {
         return true;
 	}
 
-	EntryArray<Unit> search() const {
-		return g_unit_search.rect(area.box)
-			.sort_by_distance(box_center(area.box))
+	EntryArray<Unit> search(const SearchSettings& settings = {}) const {
+		return (area.is_entire_map() ? g_unit_search.rect(area.box, settings.limit) : g_unit_search.all(settings.limit))
+			.apply_if(settings.sort, [this](auto&& units) { return units.sort_by_distance(area.box.center()); })
             .filter_by([this](Unit* unit) { return check(unit); });
 	}
 
-	EntryArray<Unit> search_seen(u32 player) const {
-		return g_seen_unit_search[player].rect(area.box)
-			.sort_by_distance(box_center(area.box))
+	EntryArray<Unit> search_seen(u32 player, const SearchSettings& settings = {}) const {
+		return (area.is_entire_map() ? g_seen_unit_search[player].rect(area.box, settings.limit) : g_seen_unit_search[player].all(settings.limit))
+			.apply_if(settings.sort, [this](auto&& units) { return units.sort_by_distance(area.box.center()); })
             .filter_by([this](Unit* unit) { return check(unit); });
 	}
 };
@@ -193,7 +207,7 @@ public:
 	bool get_command();
 	bool get_keyword(const char* keyword);
 	bool eat_prefix(const char* chars);
-	Token get_string();
+	Token get_string(bool allow_quotes = true);
 	Token get_identifier();
 
 	TriggerVar* maybe_get_var();
@@ -206,6 +220,7 @@ public:
 	u32 get_time_ticks();
 	s32 get_var_value(bool is_timer);
 
+	Location* get_location();
 	Area get_area(Area default_value = {});
 	Point16 get_position(Point16 default_value = {});
 
@@ -214,6 +229,29 @@ public:
 	template <typename T>
 	T get_typed_enum(const char* enum_names[(size_t)T::Count], T default_value = T::None) {
 		return (T)get_enum(enum_names, (size_t)T::Count, (s32)default_value);
+	}
+
+	template <typename T> requires std::is_enum_v<T>
+	T get_magic_enum(T default_value = T::None) {
+		const auto marker = this->marker();
+		const auto token = get_string(false);
+		if (auto result = magic_enum::enum_cast<T>(token.sv)) {
+			return *result;
+		}
+		return T(get_s32(s32(default_value)));
+	}
+
+	template <typename T> requires std::is_enum_v<T>
+	T get_magic_flags() {
+		return parse_bitset<T>([&](auto& parser) {
+			if (auto flag = magic_enum::enum_flags_cast<T>(m_token.sv)) {
+                parser.set([flag = u32(*flag)](u32 i) { return (1 << i) & flag; });
+			} else {
+                parser.unwind_token();
+				const auto value = get_u32();
+                parser.set([value](u32 i) { return (i & value) != 0; });
+			}
+		});
 	}
 
 	u32 get_player(bool allow_neutral = false); // 1 - 8
@@ -287,7 +325,7 @@ private:
 	char get_relative_op();
 
     template <typename T>
-    T get_integer(T default_value);
+    T get_integer(T default_value, u32 base = 10);
 
 private:
 	template <typename Bitset>
@@ -301,9 +339,16 @@ private:
 	Token m_token{};
 };
 
-template <typename T>
-std::optional<T> sv_convert_to(std::string_view sv) {
+template <std::integral T>
+std::optional<T> sv_convert_to(std::string_view sv, int base = 10) {
 	T value{};
-	const auto result = std::from_chars(sv.data(), sv.data() + sv.size(), value);
+	const auto result = std::from_chars(sv.data(), sv.data() + sv.size(), value, base);
+	return (bool)result.ec ? std::nullopt : std::make_optional(value);
+}
+
+template <std::floating_point T>
+std::optional<T> sv_convert_to(std::string_view sv, std::chars_format fmt = std::chars_format::general) {
+	T value{};
+	const auto result = std::from_chars(sv.data(), sv.data() + sv.size(), value, fmt);
 	return (bool)result.ec ? std::nullopt : std::make_optional(value);
 }

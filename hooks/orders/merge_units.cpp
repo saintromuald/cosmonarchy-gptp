@@ -313,7 +313,7 @@ namespace hooks
 
 				//remove the 2nd unit of the merge process
 				targetUnit->user_action_flags |= 4;
-				targetUnit->remove();
+				targetUnit->bwfunc_remove();
 
 				unit->status &= ~UnitStatus::Reacts; //disable the flag if set
 				helper::delete_pathing(unit); ////pathing related
@@ -509,7 +509,7 @@ namespace hooks
 
 				//remove the 2nd unit of the merge process
 				targetUnit->user_action_flags |= 4;
-				targetUnit->remove();
+				targetUnit->bwfunc_remove();
 
 				unit->status &= ~UnitStatus::Reacts; //disable the flag if set
 				helper::delete_pathing(unit); ////pathing related

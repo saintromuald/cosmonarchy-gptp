@@ -691,8 +691,8 @@ namespace hooks {
             case GameKind::Massacre: {
                 for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
                     if (unit_id_is_vespene_node(unit->id)) {
-                        unit->user_action_flags |= UserActionFlags_HideUnit;
-                        unit->remove();
+                        unit->user_action_flags |= UserActionFlags_SilentRemove;
+                        unit->bwfunc_remove();
                     }
                 }
             } break;
@@ -705,8 +705,8 @@ namespace hooks {
             case GameKind::Deathmarch: {
                 for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
                     if (unit_id_is_vespene_node(unit->id)) {
-                        unit->user_action_flags |= UserActionFlags_HideUnit;
-                        unit->remove();
+                        unit->user_action_flags |= UserActionFlags_SilentRemove;
+                        unit->bwfunc_remove();
                     }
                 }
                 g_active_game_mode = std::make_unique<TheTurningGameMode>();
@@ -1401,7 +1401,7 @@ namespace hooks {
                 if (unit->player != 11 && !unit_ext.timers[TimerVilgolethTimedLife]) { // Ignores P12 Vilgoleths to make preplaced ones permanent
                     unit_ext.timers[TimerVilgolethTimedLife] = Vilgoleth::TimedLife;
                 } else if (unit_ext.timers[TimerVilgolethTimedLife] == 1) {
-                    unit->remove();
+                    unit->bwfunc_remove();
                 }
             } break;
             case UnitId::ZergLarva:
@@ -1470,7 +1470,7 @@ namespace hooks {
                             if (target_ext.salvage_time >= time) {
                                 resources->minerals[unit->player] += ceilf(target_ext.salvage_minerals);
                                 resources->gas[unit->player] += ceilf(target_ext.salvage_gas);
-                                target->remove();
+                                target->bwfunc_remove();
                             }
 
                             if (!(unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving)
@@ -2728,7 +2728,7 @@ namespace hooks {
 
             if (unit_ext.timers[TimerDemiurgeWorship] == 1) {
                 if (!master) {
-                    unit->remove();
+                    unit->bwfunc_remove();
                 } else {
                     mind_control(master->player, UnitId::ProtossDemiurge, unit);
                     unit_ext.timers[TimerDemiurgeWorshipOverlayDelay] = 0;
@@ -3247,7 +3247,7 @@ namespace hooks {
         // Controlled Demolition - initial cast
         if (bw::get_generic_rust_value(unit, RustId::CastControlledDemolition) && !unit_ext.timers[TimerEmergencyDetonation] && !unit_ext.timers[TimerControlledDemolition]) {
             if (unit->id == UnitId::TerranLobotomyMine) {
-                unit->remove();
+                unit->bwfunc_remove();
             } else {
                 bw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
                 unit_ext.timers[TimerControlledDemolition] = Terran::ControlledDemolitionTimer;
@@ -3263,7 +3263,7 @@ namespace hooks {
 
         // Controlled Demolition - destroy structure
         if (unit_ext.timers[TimerControlledDemolition] == 1) {
-            unit->remove();
+            unit->bwfunc_remove();
         }
 
         // Controlled Demolition - cancel
@@ -3311,7 +3311,7 @@ namespace hooks {
                 }
             });
             helper::create_thingy(SpriteId::ArcliteShockCannon_Damageless, unit->sprite->position.x, unit->sprite->position.y, unit->player);
-            unit->remove();
+            unit->bwfunc_remove();
         }
 
         // Silly way of pathing workers to expansion site

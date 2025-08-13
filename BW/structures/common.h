@@ -95,6 +95,23 @@ union Box32 {
 		s32 w;
 		s32 h;
 	};
+
+    Point16 center() const {
+        return {
+            .x = u16(left + (right  - left) / 2),
+            .y = u16(top  + (bottom - top)  / 2),
+		};
+    }
+
+	Box32 offsets_from_center() const {
+		const auto c = center();
+		return {
+			.left   = left   - c.x,
+			.top    = top    - c.y,
+			.right  = right  - c.x,
+			.bottom = bottom - c.y,
+		};
+	}
 };
 
 struct Bounds {

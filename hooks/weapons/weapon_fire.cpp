@@ -1544,7 +1544,7 @@ namespace hooks {
                     return 1;
                 }
                 bullet->source_unit->status |= UnitStatus::IsSelfDestructing;
-                bullet->source_unit->user_action_flags |= UserActionFlags_HideUnit;
+                bullet->source_unit->user_action_flags |= UserActionFlags_SilentRemove;
                 helper::orders_self_destructing(bullet->source_unit);
                 return 1;
             }

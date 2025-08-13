@@ -2301,7 +2301,7 @@ void prepare_building_area(Point16 pos, u32 unit_id, Unit* builder) {
             helper::unburrow(unit);
         }
         if (unit_id_is_trap(unit->id)) {
-            unit->remove();
+            unit->bwfunc_remove();
         }
         if (unit->id == UnitId::TerranCleric && unit->status & UnitStatus::AttackMove) {
             helper::order_return_to_idle(unit);
@@ -3063,7 +3063,7 @@ void regress(Unit* unit, u32 regression_id) {
                 helper::move_unit(unit, new_pos.x, new_pos.y);
                 create_corpse = true;
             } else {
-                unit->remove();
+                unit->bwfunc_remove();
             }
         } else {
             create_corpse = true;

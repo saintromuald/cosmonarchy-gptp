@@ -179,9 +179,11 @@ const char* Unit::get_name() {
     if (unit_ext->custom_name) {
         return unit_ext->custom_name;
     }
-    const auto unit_id = (UnitId::Enum)this->id;
-    if (this->player < PlayerLimit && g_globals->players[this->player].custom_unit_names.contains(unit_id)) {
-        return g_globals->players[this->player].custom_unit_names[unit_id].data();
+    if (this->player < PlayerLimit) {
+        const auto& custom_unit_names = g_globals->players[this->player].custom_unit_names;
+        if (auto it = custom_unit_names.find(UnitId::Enum(this->id)); it != custom_unit_names.end()) {
+            return it->second.data();
+        }
     }
     return get_name(this->id);
 }
@@ -650,7 +652,7 @@ void Unit::reduce_defensive_matrix_hp(s32 amount) {
     }
 }
 
-void Unit::remove() {
+void Unit::bwfunc_remove() {
     assert(this);
     const u32 func_address = 0x00475710; // AKA orders_self_destructing()
     __asm {

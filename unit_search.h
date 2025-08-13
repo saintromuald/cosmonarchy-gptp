@@ -3,6 +3,7 @@
 #include <globals.h>
 #include <functional>
 #include <unordered_set>
+#include <ranges>
 
 #include "arena.h"
 
@@ -87,12 +88,14 @@ struct Overloaded : Ts... { using Ts::operator()...; };
 
 inline mem::Arena g_search_arena;
 
+constexpr size_t EntryArrayDefaultReserve = 8;
+
 // TODO: rename to SearchResults
 template <typename T>
 class EntryArray {
 public:
-    EntryArray() {
-        m_data.reserve(8);
+    EntryArray(size_t reserve = EntryArrayDefaultReserve) {
+        m_data.reserve(reserve);
     }
 
 	void add(T* data) { m_data.push_back(data); }
@@ -111,32 +114,37 @@ public:
     // This implementation means returning a move of self on each chain call on a temporary (rvalue),
     // and means returning a reference to self on each call otherwise
 
-    template <typename ScoreFunc>
-    auto sort(this auto&& self, ScoreFunc&& score_func) {
-        std::ranges::stable_sort(self.m_data, [&score_func](T* a, T* b) {
-            return score_func(a) > score_func(b);	
-        });
+    template <typename Func>
+    auto apply_if(this auto&& self, bool condition, Func&& func) {
+        if (condition) return func(std::forward<decltype(self)>(self));
         return self;
     }
 
-    auto sort_by_distance(this auto&& self, Point16 center) {
+    template <typename ScoreFunc>
+    auto sort(this auto&& self, ScoreFunc&& score_func) {
+        using Pair = std::pair<T*, std::invoke_result_t<ScoreFunc, T*>>;
+        auto pairs = self.m_data
+            | std::views::transform([&score_func](T* a) { return Pair{a, score_func(a)}; })
+            | std::ranges::to<mem::Arena::vector<Pair>>(g_search_arena.allocator());
+        std::ranges::stable_sort(pairs, std::less<>{}, &Pair::second);
+        std::ranges::transform(pairs, self.m_data.begin(), &Pair::first);
+        return self;
+    }
+
+    static Point16 position_of(T* entity) {
         if constexpr (std::same_as<T, Thingy>) {
-            std::ranges::stable_sort(self.m_data, [center](Thingy* a, Thingy* b) {
-                return bw::distance_between(a->sprite->position, center) < bw::distance_between(b->sprite->position, center);	
-            });
-            return self;
+            return entity->sprite->position;
         } else {
-            std::ranges::stable_sort(self.m_data, [center](T* a, T* b) {
-                return bw::distance_between(a->position, center) < bw::distance_between(b->position, center);	
-            });
-            return self;
+            return entity->position;
         }
     }
 
+    auto sort_by_distance(this auto&& self, Point16 center) {
+        return self.sort([center](T* a) { return bw::distance_between(position_of(a), center); });
+    }
+
     auto filter_by(this auto&& self, auto&& filter_func) {
-        std::erase_if(self.m_data, [&filter_func](T* data) {
-            return !filter_func(data);
-        });
+        std::erase_if(self.m_data, [&filter_func](T* data) { return !filter_func(data); });
         return self;
     }
 
@@ -321,8 +329,8 @@ public:
         m_grid[x][y] = &entry;
     }
 
-    EntryArray<T> rect(Box32 rect) {
-		EntryArray<T> result;
+    EntryArray<T> rect(Box32 rect, u32 limit = 0) {
+		EntryArray<T> result(limit != 0 ? limit : EntryArrayDefaultReserve);
 
         rect = bw::clamp_box32(rect);
         const u32 x0 = rect.left / CellPxSize;
@@ -343,30 +351,44 @@ public:
                 for (Entry* entry = m_grid[x][y]; entry; entry = entry->next) {
                     if (is_fully_covered || is_point_in_rect(entry->position, rect)) {
 						result.add(entry->data);
+                        if (limit && result.count() >= limit) {
+                            goto end;
+                        }
                     }
                 }
             }
         }
 
+    end:
         filter_junk(result);
         return result;
     }
 
-    EntryArray<T> all() {
-        return rect({0, 0, g_map_width_pixels, g_map_height_pixels});
+    EntryArray<T> all(u32 limit = 0) {
+		EntryArray<T> result(limit != 0 ? limit : m_size);
+        for (u32 i = 0; i < m_size; i++) {
+            result.add(m_entries[i].data);
+            if (limit && result.count() >= limit) {
+                goto end;
+            }
+        }
+
+    end:
+        filter_junk(result);
+        return result;
     }
 
-    EntryArray<T> square(Point16 center, u32 radius) {
+    EntryArray<T> square(Point16 center, u32 radius, u32 limit = 0) {
         return rect({
             center.x - (s32)radius,
             center.y - (s32)radius,
             center.x + (s32)radius,
             center.y + (s32)radius
-        });
+        }, limit);
     }
 
-    EntryArray<T> radial(Point16 center, u32 radius) {
-		EntryArray<T> result;
+    EntryArray<T> radial(Point16 center, u32 radius, u32 limit = 0) {
+		EntryArray<T> result(limit != 0 ? limit : EntryArrayDefaultReserve);
 
         Box32 rect = {
             center.x - (s32)radius,
@@ -391,11 +413,15 @@ public:
                 for (Entry* entry = m_grid[x][y]; entry; entry = entry->next) {
                     if (is_fully_covered || bw::distance_between(center, entry->position) <= radius) {
 						result.add(entry->data);
+                        if (limit && result.count() >= limit) {
+                            goto end;
+                        }
                     }
                 }
             }
         }
 
+    end:
         filter_junk(result);
 		return result;
     }

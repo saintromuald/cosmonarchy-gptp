@@ -53,7 +53,7 @@ void UprisingGameMode::on_tick() {
             continue;
         }
         if (unit->id != spawner.info->unit_id || unit->player != NeutralHostilePlayer) {
-            unit->remove();
+            unit->bwfunc_remove();
             continue;
         }
 

@@ -170,7 +170,7 @@ namespace {
 						helper::play_sound_from_unit(SoundId::CancelStructureProtoss, unit, 1, 0);
 						helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player);
 					}
-					unit->remove();
+					unit->bwfunc_remove();
 				} break;
 				case RaceId::Terran: {
 					if (unit->id == UnitId::TerranMorningstar) {
@@ -179,18 +179,18 @@ namespace {
 							silo->building.silo.nuke = 0;
 							silo->main_order_state = 0;
 						}
-						unit->remove();
+						unit->bwfunc_remove();
 						bw::refresh_console();
 					} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 						helper::play_sound_from_unit(SoundId::Misc_Explo1_wav, unit, 1, 0);
 						helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player); // TODO: Find working Terran-themed overlay
-						unit->remove();
+						unit->bwfunc_remove();
 					} else {
-						unit->remove();
+						unit->bwfunc_remove();
 					}
 				} break;
 				default: {
-					unit->remove();
+					unit->bwfunc_remove();
 				}
 			}
 		} else {

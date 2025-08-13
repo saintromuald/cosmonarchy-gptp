@@ -227,7 +227,7 @@ namespace hooks {
                 if (!bStopThere && unit->main_order_state == 2) {
                     if (unit->order_signal & 1) {
                         unit->status |= UnitStatus::IsSelfDestructing;
-                        unit->remove(); // orders_self_destructing
+                        unit->bwfunc_remove(); // orders_self_destructing
                     }
                 }
             }
@@ -286,7 +286,7 @@ namespace hooks {
         if (!bStopThere && unit->main_order_state == 2) {
             if (unit->order_signal & 1) {
                 unit->status |= UnitStatus::IsSelfDestructing;
-                unit->remove();
+                unit->bwfunc_remove();
             }
         }
     }
@@ -397,7 +397,7 @@ namespace hooks {
             } else if (unit->main_order_state == 6) {
                 if (unit->order_signal & 1) {
                     unit->status |= UnitStatus::IsSelfDestructing;
-                    unit->remove();
+                    unit->bwfunc_remove();
                 }
             }
         }

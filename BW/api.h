@@ -13,6 +13,7 @@
 namespace fs = std::filesystem;
 
 #include <magic_enum/magic_enum_all.hpp>
+using namespace magic_enum::bitwise_operators;
 
 #include "BW/bwdata.h"
 #include "BW/enumerations.h"

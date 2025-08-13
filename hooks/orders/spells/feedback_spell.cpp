@@ -12,7 +12,7 @@ namespace hooks {
 					u8 overlay_size = bw::overlay_size(target);
 					helper::replace_feedback_sprite(target, overlay_size + SpriteId::Feedback_Hit_Small);
 					unit->spend_energy(tech_cost);
-					target->remove();
+					target->bwfunc_remove();
 					unit->order_to_idle();
 				} else {
 					if (target->energy <= 0) {
