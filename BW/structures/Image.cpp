@@ -596,7 +596,7 @@ namespace hooks {
                     if (*g_active_iscript_unit && ((*g_active_iscript_unit)->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) && !images_dat::draw_if_cloaked[sprites_dat::image_id[sprite_id]]) {
                         break;
                     }
-                    if (Thingy* thingy = hooks::iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation)) {
+                    if (Thingy* thingy = helper::iscript_create_sprite(image, sprite_id, x, y, image->parent_sprite->elevation)) {
                         helper::set_all_overlay_directions_generic((Unit*)thingy, (image->flags & ImageFlags::Mirrored) ? 32 - image->direction : image->direction);
                     }
                 } break;
