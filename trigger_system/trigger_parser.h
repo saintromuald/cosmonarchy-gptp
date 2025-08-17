@@ -16,7 +16,7 @@ struct Token {
 	Token(std::string_view sv) : sv{sv} {}
 
 	std::string string() const { return std::string{sv}; }
-	operator bool() { return !sv.empty(); }
+	operator bool() const { return !sv.empty(); }
 	bool operator==(const Token&) const = default;
 
 	bool iequals(std::string_view other) const { return sv_iequals(sv, other); }
