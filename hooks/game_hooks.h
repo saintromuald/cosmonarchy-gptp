@@ -1,6 +1,8 @@
 #pragma once
 #include "BW\bwdata.h"
 
+inline bool g_wmode_loaded = false;
+
 struct GameVersion;
 
 struct SyncColorPrefCommand {

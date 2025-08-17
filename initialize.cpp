@@ -132,9 +132,9 @@
 
 namespace {
     void load_wmode() {
-        HINSTANCE hDll;
-        hDll = LoadLibraryA("./WMODE.dll");
-        hDll = LoadLibraryA("./WMODE_FIX.dll");
+        LoadLibraryA("./WMODE.dll");
+        LoadLibraryA("./WMODE_FIX.dll");
+        g_wmode_loaded = true;
     }
 
     void run_wmode(bool hide_prompt, bool prefer_wmode) {

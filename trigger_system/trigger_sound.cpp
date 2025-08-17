@@ -2,6 +2,7 @@
 #include "BW/api.h"
 #include "trigger_system.h"
 #include "hooks/limits/sfx_extender.h"
+#include "hooks/game_hooks.h"
 
 static bool sound_paths_init;
 
@@ -321,21 +322,25 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings set
 			return {};
 		}
 	}
-	if (sound_buffer->last_play_time && GetTickCount() - sound_buffer->last_play_time < 80) {
-		return {};
+	for (auto& sound : g_playing_sounds) {
+		if (auto buffer = sound.GetBuffer()) {
+			if (buffer->is_blocking_play(sound_buffer)) {
+				return {};
+			}
+		}
 	}
 
 	if (sound_id != SoundId::None) {
 		u32 flags = sfx_dat::sound_flags[sound_id];
 		if (flags & DatSoundFlags_OneAtATime) {
-            if (sound_buffer->IsPlaying()) {
+            if (sound_buffer->is_playing()) {
                 return {};
             }
 		}
 		if (flags & DatSoundFlags_UnitResponse) {
 			if (settings.unit) {
 				settings.unit_response_id = settings.unit->id;
-                if (const auto pos = settings.GetUpdatedPosition()) {
+                if (const auto pos = settings.get_updated_position()) {
                     const auto [volume, pan] = calculate_volume_pan(settings);
 					if (volume == DSBVOLUME_MIN) {
                         // atm we don't support starting banter outside of camera, for the sake of not having global collisions,
@@ -349,7 +354,7 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings set
 					if (!buffer || buffer->settings.unit_response_id != settings.unit_response_id) {
 						continue;
 					}
-					if (buffer->IsPlaying()) {
+					if (buffer->is_playing()) {
 						return {};
 					}
 				}
@@ -400,9 +405,10 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings set
 	dup_buffer->ds_buffer->SetPan(pan);
 	dup_buffer->ds_buffer->SetCurrentPosition(0);
 	dup_buffer->ds_buffer->Play(0, 0, settings.looping ? DSBPLAY_LOOPING : 0);
+	dup_buffer->parent_buffer = sound_buffer;
 	dup_buffer->settings = settings;
 	dup_buffer->generation++;
-	sound_buffer->last_play_time = GetTickCount();
+	dup_buffer->last_play_time = GetTickCount();
 	g_playing_sounds.emplace_back(dup_buffer);
 	return {dup_buffer};
 }
@@ -496,13 +502,20 @@ SoundMainBuffer* get_next_music() {
 	return music;
 }
 
+static bool is_main_window_focused() {
+	return GetForegroundWindow() == *g_main_window;
+}
+
 VolumePan calculate_volume_pan(PlaySoundSettings& settings) {
+	if (!g_wmode_loaded && !is_main_window_focused()) {
+		return {DSBVOLUME_MIN, 0};
+	}
 	if (settings.is_bw_hook) {
 		return {settings.bw_volume, settings.bw_pan};
 	}
 
 	VolumePan result{99, 0};
-	if (settings.GetUpdatedPosition()) {
+	if (settings.get_updated_position()) {
         result.volume = helper::get_sfx_volume_from_screen_distance(settings.position.x, settings.position.y);
 		result.pan = helper::get_sfx_pan_from_screen_distance(settings.position.x);
 
