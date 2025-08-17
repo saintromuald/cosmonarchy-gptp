@@ -39,20 +39,18 @@ void init_sound() {
 		init_sound_paths();
 	}
 
-	for (u32 i = 0; i < MaxDupChannels; ++i) {
-		if (g_dup_channels[i].ds_buffer) {
-			g_dup_channels[i].ds_buffer->Release();
-			g_dup_channels[i].ds_buffer = 0;
-		}
+	for (auto& sound : g_dup_channels) {
+		sound.free_buffer();
+		sound = {};
 	}
 
-	for (u32 i = 0; i < g_loaded_sounds_count; ++i) {
-		free_sound(&g_loaded_sounds[i]);
+	for (auto& sound : g_loaded_sounds) {
+		sound.free_buffer();
+		sound = {};
 	}
 
 	g_loaded_sounds_count = 0;
-	memset(g_loaded_sounds, 0, sizeof(g_loaded_sounds));
-	memset(g_loaded_sounds_hash_table, 0, sizeof(g_loaded_sounds_hash_table));
+	g_loaded_sounds_map.clear();
 
 	memset(&g_current_playlist, 0, sizeof(g_current_playlist));
 	memset(&g_music_playback, 0, sizeof(g_music_playback));
@@ -267,50 +265,33 @@ static bool load_ds_buffer(SoundMainBuffer* sound) {
 	return false;
 }
 
-SoundMainBuffer* load_sound(const char* filename) {
-	if (!filename) {
+SoundMainBuffer* load_sound(const std::string& filename) {
+	if (filename.empty()) {
 		return 0;
 	}
 	if (g_loaded_sounds_count < MaxSound) {
-		SoundMainBuffer* sound = &g_loaded_sounds[g_loaded_sounds_count++];
-		snprintf(sound->path, MaxPath, "%s", filename);
 
-		if (mpq_file_exists(sound->path)) {
-			u32 hash_index = hash_string(filename) % MaxSoundHash;
-			sound->hash_next = g_loaded_sounds_hash_table[hash_index];
-			g_loaded_sounds_hash_table[hash_index] = sound;
+		if (mpq_file_exists(filename.c_str())) {
+            SoundMainBuffer* sound = &g_loaded_sounds[g_loaded_sounds_count++];
+            std::format_to_n(sound->path, MaxPath, "{}", filename);
+			g_loaded_sounds_map[filename] = sound;
 			return sound;
-		} else {
-			g_loaded_sounds_count--;
-			return 0;
 		}
 	}
 	return 0;
 }
 
-SoundMainBuffer* get_sound(const char* filename) {
-	u32 hash_index = hash_string(filename) % MaxSoundHash;
-	SoundMainBuffer* sound = g_loaded_sounds_hash_table[hash_index];
-	while (sound && strcmp(sound->path, filename) != 0) {
-		sound = sound->hash_next;
+SoundMainBuffer* get_sound(const std::string& filename) {
+    if (auto it = g_loaded_sounds_map.find(filename); it != g_loaded_sounds_map.end()) {
+        return it->second;
 	}
-	if (!sound) {
-		sound = load_sound(filename);
-	}
-	return sound;
+    return load_sound(filename);
 }
 
 SoundMainBuffer* get_sound(SoundId::Enum sound_id) {
     char buffer[MAX_PATH] = {};
     snprintf(buffer, MAX_PATH, "sound\\%s", sound_paths[sound_id]); // sfx_dat::sound_file[sound_id]);
     return get_sound(buffer);
-}
-
-void free_sound(SoundMainBuffer* sound) {
-	if (sound->ds_buffer) {
-		sound->ds_buffer->Release();
-		sound->ds_buffer = 0;
-	}
 }
 
 PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings settings, SoundId::Enum sound_id) {
@@ -323,7 +304,7 @@ PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings set
 		}
 	}
 	for (auto& sound : g_playing_sounds) {
-		if (auto buffer = sound.GetBuffer()) {
+		if (auto* buffer = sound.GetBuffer()) {
 			if (buffer->is_blocking_play(sound_buffer)) {
 				return {};
 			}

@@ -84,6 +84,13 @@ struct SoundBuffer {
 	PlaySoundSettings settings = {};
 	u32 last_play_time = 0;
 
+	void free_buffer() {
+        if (ds_buffer) {
+			ds_buffer->Release();
+			ds_buffer = 0;
+		}
+	}
+
 	bool is_playing() const {
 		if (!ds_buffer) {
 			return false;
@@ -142,7 +149,7 @@ public:
 	operator bool() const;
 
 private:
-	mutable SoundBuffer* m_buffer = 0;
+	SoundBuffer* m_buffer = 0;
 	u64 m_generation = 0;
 };
 
@@ -164,7 +171,7 @@ inline SoundDupBuffer g_dup_channels[MaxDupChannels];
 
 inline u32 g_loaded_sounds_count;
 inline SoundMainBuffer g_loaded_sounds[MaxSound];
-inline SoundMainBuffer* g_loaded_sounds_hash_table[MaxSoundHash];
+inline std::unordered_map<std::string, SoundMainBuffer*> g_loaded_sounds_map;
 
 inline Playlist g_current_playlist;
 inline MusicPlayback g_music_playback;
@@ -177,10 +184,9 @@ void init_sound();
 void init_direct_sound();
 void update_sound();
 
-SoundMainBuffer* load_sound(const char* filename);
-SoundMainBuffer* get_sound(const char* filename); // Note: currently passing `token.string().c_str()`, would be nice to not have to do that
+SoundMainBuffer* load_sound(const std::string& filename);
+SoundMainBuffer* get_sound(const std::string& filename);
 SoundMainBuffer* get_sound(SoundId::Enum sound_id);
-void free_sound(SoundMainBuffer* sound);
 
 PlayingSound play_sound_ext(SoundMainBuffer* sound_buffer, PlaySoundSettings settings, SoundId::Enum sound_id = SoundId::None);
 PlayingSound play_sound_ext(SoundId::Enum sound_id, const PlaySoundSettings& settings);
