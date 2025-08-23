@@ -436,6 +436,7 @@ struct Unit : public UnitLayout {
     u32 get_adaptive_amitosis_range();
     bool can_proc_autovitality(u32 attacking_player, u32 shield_reduce, u32 damage);
     bool can_be_passive_cloaked(Unit* source);
+    bool can_transport_air();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);
