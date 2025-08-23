@@ -222,6 +222,7 @@ namespace hooks {
             case UnitId::ProtossAtreus:
             case UnitId::ProtossCabalist:
             case UnitId::ProtossSimulacrum:
+            case UnitId::ZergAgrileth:
             case UnitId::ZergLiiralisk:
             case UnitId::ZergIzirokor: {
                 speed *= 1.2;

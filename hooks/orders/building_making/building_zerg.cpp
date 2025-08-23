@@ -7,15 +7,15 @@
 #include "hooks\orders\building_making\building_helper.h"
 #include "logger.h"
 #include <globals.h>
+#include "hooks\interface\uifeatures\hotkeys.h"
 
 namespace hooks {
-
 bool is_morphing(Unit* building) {
-    return !(building->status & UnitStatus::Completed) && helper::is_valid_building_morph(building->build_queue[building->build_queue_slot]);
+    return !building->is_completed() && helper::is_valid_building_morph(building->build_queue[building->build_queue_slot]);
 }
 
 void orders_zerg_build_self(Unit* building) {
-    UnitExt* building_ext = get_unit_ext(building);
+    auto& building_ext = building->ext();
     u16 building_id = building->build_queue[building->build_queue_slot];
     if (!bw::is_zerg_building_morph_result(building_id)) {
         building_id = building->id;
@@ -27,7 +27,7 @@ void orders_zerg_build_self(Unit* building) {
             // Remove statuses if the source worker had them before morphing
             building->status &= ~UnitStatus::NoCollide;
             building->status &= ~UnitStatus::IsGathering;
-            if (helper::is_valid_building_morph(building_id)) {
+            if (helper::is_valid_building_morph(building_id) && !building_ext.values[ValueOriginatedFromGosvileth]) {
                 building->create_origin = building->id;
             }
             ++building->main_order_state;
@@ -89,15 +89,21 @@ void orders_zerg_build_self(Unit* building) {
                     }
                     building->set_hitpoints(hp_after_morph);
                     building->remaining_build_time = 0;
-                } else if (building->create_origin == UnitId::ZergGosvileth) {
-                    Unit* worker = bw::create_unit_in_game(UnitId::ZergGosvileth, building->player, building->position.x, building->position.y, 0, 0, 0);
+                } else if (building->create_origin == UnitId::ZergAgrileth) {
+                    Unit* worker = bw::create_unit_in_game(building->create_origin, building->player, building->position.x, building->position.y, 0, 0, 0);
                     if (worker) {
                         worker->set_hitpoints(building->previous_hitpoints << 8);
+                        for (ControlGroup& control_group : hotkeys.control_groups) {
+                            if (control_group.has(building)) {
+                                control_group.remove(building);
+                                control_group.add(worker);
+                            }
+                        }
                     }
-                    if (building_ext->values[ValueRegressionUnstable]) {
-                        UnitExt* worker_ext = get_unit_ext(worker);
-                        worker_ext->values[ValueRegressionUnstable] = true;
-                        building_ext->values[ValueRegressionUnstable] = false;
+                    if (building_ext.values[ValueRegressionUnstable]) {
+                        auto& worker_ext = worker->ext();
+                        worker_ext.values[ValueRegressionUnstable] = true;
+                        building_ext.values[ValueRegressionUnstable] = false;
                     }
                 }
 
@@ -118,11 +124,11 @@ void orders_zerg_build_self(Unit* building) {
     }
 
     u32 hp_gain = 0;
-    if (!bw::is_zerg_building_morph_result(building_id) || building_ext->values[ValueIsNydusExit]) {
+    if ((!bw::is_zerg_building_morph_result(building_id) || building_ext.values[ValueOriginatedFromGosvileth]) || building_ext.values[ValueIsNydusExit]) {
         hp_gain = building->build_repair_hp_gain;
     }
     Unit* builder = nullptr;
-    if (building_ext->values[ValueIsNydusExit]) {
+    if (building_ext.values[ValueIsNydusExit]) {
         builder = building->building.nydus_exit;
     }
     cm::progress_build(building, {
@@ -133,14 +139,16 @@ void orders_zerg_build_self(Unit* building) {
 }
 
 void cancel_zerg_building(Unit* unit) { // 0045DA40
-    if (unit->status & UnitStatus::Completed || !helper::is_valid_building_morph(unit->build_queue[unit->build_queue_slot])) {
+    if (unit->is_completed() || unit->create_origin == UnitId::ZergGosvileth || !helper::is_valid_building_morph(unit->build_queue[unit->build_queue_slot])) {
         helper::refund_building_cost(unit->id, unit->player);
-        g_unit_score[unit->player] -= units_dat::build_score[UnitId::ZergDroleth]; // TODO: Check if a Gosvileth is the builder and do nothing to score
-        --g_units_owned[unit->player];
+        if (unit->create_origin != UnitId::ZergAgrileth) {
+            g_unit_score[unit->player] -= units_dat::build_score[unit->create_origin];
+            --g_units_owned[unit->player];
+        }
 
         // For Massacre
-        UnitExt* unit_ext = get_unit_ext(unit);
-        unit_ext->values[ValueCancellingZergStructure] = 1;
+        auto& unit_ext = unit->ext();
+        unit_ext.values[ValueCancellingZergStructure] = 1;
 
         if (unit_id_is_capped_gas_node(unit->id)) {
             Unit* worker = helper::create_unit(unit->create_origin, unit->get_x(), unit->get_y(), unit->player);
@@ -148,7 +156,7 @@ void cancel_zerg_building(Unit* unit) { // 0045DA40
             if (worker) {
                 helper::update_unit_stats_and_finish_building(worker);
                 helper::update_unit_strength(worker);
-                worker->set_hitpoints(unit_ext->values[ValuePreMorphHP]);
+                worker->set_hitpoints(unit_ext.values[ValuePreMorphHP]);
                 worker->sprite->player = unit->sprite->player;
             } else {
                 helper::refund_unit_train_cost(unit->create_origin, unit->player);
@@ -164,7 +172,7 @@ void cancel_zerg_building(Unit* unit) { // 0045DA40
             }
 
             u32 previous_unit_id = unit->id;
-            u32 previous_hitpoints = unit->previous_hitpoints << 8;
+            u32 previous_hitpoints = unit->previous_hitpoints * 256;
             helper::play_sound_from_unit(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
             helper::replace_unit_with_id(unit, unit->create_origin);
             helper::update_building_ai(unit);
@@ -172,7 +180,7 @@ void cancel_zerg_building(Unit* unit) { // 0045DA40
             helper::update_unit_strength(unit);
 
             u32 vertical_offset = 7;
-            if (unit->id == UnitId::ZergGosvileth) {
+            if (units_dat::base_property[unit->id] & UnitProperty::Flyer) {
                 vertical_offset = 42;
             }
 
@@ -189,6 +197,25 @@ void cancel_zerg_building(Unit* unit) { // 0045DA40
         }
     } else {
         helper::cancel_zerg_building_morph(unit);
+    }
+}
+
+// Hooked to turn advanced mutations to Gosvileths where applicable. -Pr0nogo
+void cancel_zerg_building_mutation(Unit* unit) { // 0045D410
+    u32 morph_id = unit->build_queue[unit->build_queue_slot];
+    g_game_minerals[unit->player] += 3 * units_dat::mineral_cost[morph_id] / 4;
+    g_game_vespene[unit->player]  += 3 * units_dat::vespene_cost[morph_id] / 4;
+    unit->build_queue[unit->build_queue_slot] = UnitId::None;
+    u32 hp = unit->hitpoints;
+    unit->status |= UnitStatus::Completed;
+    helper::increment_unit_scores_ex(unit, -1, 1);
+    unit->status &= 0xFFFFFFFE;
+    helper::update_unit_stats_and_finish_building(unit);
+    helper::update_unit_strength_and_apply_default_orders(unit);
+    helper::set_unit_hp(unit, hp);
+    bw::play_sound(SoundId::Misc_ZBldgPlc_wav_1, unit);
+    for (Image* i = unit->sprite->images.head; i; i = i->link.next) {
+        play_image_iscript(i, IscriptAnimation::AlmostBuilt);
     }
 }
 }
@@ -270,7 +297,7 @@ s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignore_incom
         } break;
 
         case UnitId::ZergGeszkathGrotto: {
-            unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergAlkajChasm, ignore_incomplete);
+            unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKethrajChasm, ignore_incomplete);
         } break;
 
         case UnitId::ZergAlkagIteth: {
@@ -306,8 +333,8 @@ void drone_morph_standard(Unit* unit, u32 id) { // 0045D890
     if (unit_id_is_tech_tier_structure(unit->id)) {
         replay_witness_event(unit, SpectatorEvent_Tech);
     }
-    UnitExt* unit_ext = &unit->ext();
-    unit_ext->timers[TimerConstructionSFXDelay] = 6;
+    auto& unit_ext = unit->ext();
+    unit_ext.timers[TimerConstructionSFXDelay] = 6;
     bw::play_sound(SoundId::ZergConstructionStart01, unit);
 
     if (g_player_table[unit->player].type == PlayerType::Computer) {
@@ -342,9 +369,17 @@ Unit* begin_gas_building(Unit* unit, u16 unit_id) { // 004678A0
     helper::give_unit(target, unit->player, 0);
     helper::give_sprite(target, unit->player);
     target->create_origin = unit->id;
+    auto& target_ext = target->ext();
+    if (unit->id == UnitId::ZergGosvileth) {
+        target_ext.values[ValueOriginatedFromGosvileth] = true;
+    }
     helper::replace_unit_with_id(target, unit_id);
     if (!target->is_frozen() || units_dat::base_property[target->id] & UnitProperty::Building) {
         target->current_buttonset = UnitId::Buttons_CancelConstruction;
+    }
+    if (target->get_race() == RaceId::Zerg) {
+        target_ext.timers[TimerConstructionSFXDelay] = 6;
+        bw::play_sound(SoundId::ZergConstructionStart01, target);
     }
     u32 image_id = is_ridge_refinery ? ImageId::VespeneRidgeUnderlay : ImageId::VespeneGeyserUnderlay;
     helper::add_overlay_below_main(target->sprite, image_id, 0, 0, 0);
@@ -358,7 +393,7 @@ void orders_drone_build(Unit* builder) { // 0045E090
     Image* underlay = builder_sprite->images.tail;
 
     u32 vertical_offset = 7;
-    if (builder->id == UnitId::ZergGosvileth) {
+    if (units_dat::base_property[builder->id] & UnitProperty::Flyer) {
         vertical_offset = 42;
     }
 
@@ -462,7 +497,7 @@ void orders_drone_land(Unit* unit) { // 004E9AA0
                     }
 
                     u32 vertical_offset = 7;
-                    if (unit->id == UnitId::ZergGosvileth) {
+                    if (units_dat::base_property[unit->id] & UnitProperty::Flyer) {
                         vertical_offset = 42;
                     }
 

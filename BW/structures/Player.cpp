@@ -60,14 +60,28 @@ u32 Player::number_of_units_of_id(u8 player, u16 unit_id) {
 	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
 		return 0;
 	}
-	return g_all_unit_count_table[unit_id].player[player];
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			count++;
+		}
+	}
+	return count;
 }
 
 u32 Player::number_of_completed_units_of_id(u8 player, u16 unit_id) {
 	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
 		return 0;
 	}
-	return g_completed_unit_count_table[unit_id].player[player];
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->is_completed()) {
+				count++;
+			}
+		}
+	}
+	return count;
 }
 
 u32 Player::number_of_completed_landed_units_of_id(u8 player, u16 unit_id) {
@@ -108,6 +122,36 @@ u32 Player::number_of_completed_addon_units_of_id(u8 player, u16 unit_id) {
 	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
 		if (unit->id == unit_id) {
 			if (unit->is_completed() && !unit->ext().values[ValueAddonInactive]) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+u32 Player::number_of_base_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
+		return 0;
+	}
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->is_completed() || UnitId::match_id_to_base(static_cast<UnitId::Enum>(unit->build_queue[unit->build_queue_slot]), static_cast<UnitId::Enum>(unit_id))) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+u32 Player::number_of_gestated_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
+		return 0;
+	}
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->is_completed() || !unit->ext().values[ValueOriginatedFromGosvileth]) {
 				count++;
 			}
 		}

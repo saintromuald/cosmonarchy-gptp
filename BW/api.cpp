@@ -620,6 +620,7 @@ bool is_zerg_building_morph_result(u16 id) {
 
 bool is_zerg_building_morph_source(u16 id) {
     switch (id) {
+        case UnitId::ZergGosvileth:
         case UnitId::ZergHachirosk:
         case UnitId::ZergExcisant:
         case UnitId::ZergCagrantCesiant:
@@ -2033,7 +2034,16 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergElthisthMound: {
         //  return UnitId::None;			// Bugs: Larva don't unlink, cagra doesn't recede
                                             // For now we circumvent these by creating the Droleth instead of transforming the structure into the Droleth
-        	return unit->is_completed() && !unit_ext->values[ValueOriginatedFromGosvileth] ? UnitId::ZergDroleth : UnitId::None;
+            if (unit->is_completed()) {
+                if (unit_ext.values[ValueOriginatedFromAgrileth]) {
+                    return UnitId::None;
+                }
+                if (unit_ext.values[ValueOriginatedFromGosvileth]) {
+                    return UnitId::ZergGosvileth;
+                }
+                return UnitId::ZergDroleth;
+            }
+            return UnitId::None;
         }
 
         // Unit Morphs
@@ -2141,7 +2151,9 @@ bool buttonset_id_is_submenu(u32 buttonset_id) {
         || buttonset_id == UnitId::Buttons_BasicAskosiFacilities
         || buttonset_id == UnitId::Buttons_AdvancedAskosiFacilities
         || buttonset_id == UnitId::Buttons_SupremeAskosiFacilities
-        || buttonset_id == UnitId::Buttons_TerranAddonSubmenu;
+        || buttonset_id == UnitId::Buttons_TerranAddonSubmenu
+        || buttonset_id == UnitId::Buttons_ZergBasicMutations
+        || buttonset_id == UnitId::Buttons_ZergAdvancedMutations;
 }
 
 u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
@@ -2312,7 +2324,7 @@ void prepare_building_area(Point16 pos, u32 unit_id, Unit* builder) {
             helper::order_return_to_idle(unit);
         }
         // Fix AI workers getting stuck
-        if (unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergGosvileth) {
+        if (UnitId::is_zerg_worker(static_cast<UnitId::Enum>(unit->id))) {
             if (unit->main_order_id == OrderId::DroneLand) {
                 helper::order_return_to_idle(unit);
             }
@@ -3053,7 +3065,7 @@ void regress(Unit* unit, u32 regression_id) {
     bool create_corpse = false;
     Point16 old_pos = unit->position;
     Point16 new_pos = unit->position;
-    if (unit->id == UnitId::ZergEskigant || unit->id == UnitId::ZergExcisant) {
+    if ((unit->id == UnitId::ZergEskigant || unit->id == UnitId::ZergExcisant) && !unit->ext().values[ValueOriginatedFromAgrileth]) {
         new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
     } else if (unit_id_is_larva(regression_id) || units_dat::base_property[regression_id] & UnitProperty::Worker) {
         new_unit = bw::create_unit_in_game(regression_id, unit->player, unit->position.x, is_atg_regression ? unit->position.y + AirToGroundDistance : unit->position.y);

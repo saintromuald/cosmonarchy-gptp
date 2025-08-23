@@ -1269,6 +1269,16 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                             unit->order_to_idle();
                         }
                     } break;
+                    case TriggerBehavior_NoCollision: {
+                        if (unit_ext.values[ValueNoCollision] != enable) {
+                            unit_ext.values[ValueNoCollision] = enable;
+                        }
+                    } break;
+                    case TriggerBehavior_AirTransport: {
+                        if (unit_ext.values[ValueAirTransport] != enable) {
+                            unit_ext.values[ValueAirTransport] = enable;
+                        }
+                    } break;
                 }
             }
         } else if (parser.equals("move_unit")) {

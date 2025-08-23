@@ -699,5 +699,8 @@ namespace UnitId {
         Buttons_SupremeAskosiFacilities                     = 442,
 
         Buttons_TerranAddonSubmenu                          = 492,
+
+        Buttons_ZergBasicMutations                          = 498,
+        Buttons_ZergAdvancedMutations                       = 499,
     };
 }

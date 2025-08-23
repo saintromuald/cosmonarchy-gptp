@@ -1644,6 +1644,10 @@ u32 Unit::get_adaptive_amitosis_range() {
 
 bool Unit::can_proc_autovitality(u32 attacking_player, u32 shield_reduce, u32 damage) {
     return !this->is_building()
+        && !unit_id_is_larva(this->id)
+        && !unit_id_is_zerg_egg(this->id)
+        &&  this->id != UnitId::ZergVilgoleth
+        &&  this->id != UnitId::VolatileEgg
         && !bw::is_allied_to(this->player, attacking_player)
         && !bw::is_under_carapace_swarm(this)
         && (shield_reduce >= this->shields || !this->has_shields())

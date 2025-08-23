@@ -52,6 +52,14 @@ inline bool player_has_completed_addon_unit_id(u32 player, u32 unit_id) {
 	return Player::number_of_completed_addon_units_of_id(player, unit_id);
 }
 
+inline bool player_has_base_unit_id(u32 player, u32 unit_id) {
+	return Player::number_of_base_units_of_id(player, unit_id);
+}
+
+inline bool player_has_gestated_unit_id(u32 player, u32 unit_id) {
+	return Player::number_of_gestated_units_of_id(player, unit_id);
+}
+
 inline bool player_has_require_unit(u32 player, RequireUnit* require_unit) {
 	if (require_unit->unit_id == UnitId::None || require_unit->unit_id > UnitId::Count) {
 		return 0;

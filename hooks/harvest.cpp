@@ -600,7 +600,8 @@ namespace hooks {
 
 	// Hooked to enable returns to allied town centers. -Pr0nogo
 	b32 return_cargo_to_best_depot_proc(Unit* depot, Unit* worker) { // 00440FA0
-		if (helper::unit_is_active_resource_depot(depot)) {
+		bool is_valid_incomplete = unit_id_is_zerg_production(depot->id, true) && helper::unit_is_morphing(depot) && !depot->ext().values[ValueOriginatedFromGosvileth];
+		if (helper::unit_is_active_resource_depot(depot) && (depot->is_completed() || is_valid_incomplete)) {
 			if (depot->player == worker->player || bw::are_mutual_allies(depot->player, worker->player)) {
 				if (!(worker->pathing_flags & PathingFlags_ProvidesCollision) || helper::unit_has_path_to_destination(worker, depot->position.x, depot->position.y)) {
 					return true;

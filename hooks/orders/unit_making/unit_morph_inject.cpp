@@ -129,7 +129,7 @@ namespace {
 
 	void __fastcall cancel_unit_wrapper(Unit* unit) {
 		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit->is_dead() || unit->status & UnitStatus::Completed || (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit)) {
+		if (unit->is_dead() || unit->is_completed() || (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit)) {
 			return;
 		}
 		if (bw::is_conventional_unit_morph_source(unit->id, false) || bw::is_conventional_unit_morph_result(unit->id)) {
@@ -166,7 +166,7 @@ namespace {
 			}
 			switch (unit->get_race()) {
 				case RaceId::Protoss: {
-					if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+					if (unit->is_building()) {
 						helper::play_sound_from_unit(SoundId::CancelStructureProtoss, unit, 1, 0);
 						helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, unit->position.x, unit->position.y, unit->player);
 					}

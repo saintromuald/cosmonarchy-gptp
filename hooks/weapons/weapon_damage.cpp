@@ -915,9 +915,10 @@ namespace hooks {
                     case WeaponId::IziraliskCorrosiveBioplasma: {
                         helper::apply_corrosive_spores(data.target);
                     } break;
-                    case WeaponId::VithriliskCorrosiveSpores: {
-                        // Vithrilisk - Corrosive Pathogen
-                        u32 search_margin  = Vithrilisk::CorrosivePathogenRange;
+                    case WeaponId::VithriliskCorrosiveSpores:
+                    case WeaponId::SkryrokorPlasmaMetamorphosis: {
+                        // Corrosive Pathogen
+                        u32 search_margin  = Zerg::CorrosivePathogenRange;
                         Box32 search_area  = {};
                         search_area.left   = data.target->position.x - search_margin;
                         search_area.top    = data.target->position.y - search_margin;
@@ -1008,8 +1009,8 @@ namespace hooks {
         f32 hp_factor = 0;
         f32 shields_factor = 0;
 
-        UnitExt* attacker_ext = get_unit_ext(data.attacker);
-        if (attacker_ext->timers[TimerLucilleriPheremones]) {
+        auto& attacker_ext = data.attacker->ext();
+        if (attacker_ext.timers[TimerLucilleriPheremones]) {
             hp_factor += 0.5;
         }
         switch (data.weapon_id) {
@@ -1021,7 +1022,7 @@ namespace hooks {
             } break;
             case WeaponId::MortothrokorWickedIncisors: {
                 // Mortothrokor Whetted Appetite
-                hp_factor += attacker_ext->values[ValueMortothrokorStacks] * 0.05;
+                hp_factor += attacker_ext.values[ValueMortothrokorStacks] * 0.05;
             } break;
             case WeaponId::AdherentPhaseBlade:
             case WeaponId::AmaranthPsiCleaver: {

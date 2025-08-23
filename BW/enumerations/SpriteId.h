@@ -521,7 +521,7 @@ namespace SpriteId {
         Khalis = 516,
         None = 517,
 
-        // COSMONARCHY BW \\
+        // COSMONARCHY \\
 
         ZergIroleth = 520,
         ZergMutationPit = 521, // unused
@@ -925,6 +925,8 @@ namespace SpriteId {
         Corpse_HydraliskOrkoti          = 994,
 
         Corpse_Inzorthrokor             = 996,
+
+        Corpse_Agrileth                 = 1021,
 
         Corpse_ZergBuildingSmall	    = 186,
         Corpse_ZergBuildingLarge	    = 187,
