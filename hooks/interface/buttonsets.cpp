@@ -3059,7 +3059,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::ZergGhitorokor: {
                                     if (current_button->icon_id == IconId::SuicideScourge			// Relentless Aggression
-                                    ||  current_button->icon_id == IconId::UltrokorKaiserBlades) {  // Saber Siphon
+                                    ||  current_button->icon_id == IconId::SaberSiphon) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3109,7 +3109,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergTethzorokor: {
-                                    if (current_button->icon_id == IconId::UltrokorKaiserBlades // Saber Siphon
+                                    if (current_button->icon_id == IconId::SaberSiphon
                                     ||  current_button->icon_id == IconId::RoarUnused) {        // Fan of Teeth
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -3177,7 +3177,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergUltrokor: {
-                                    if (current_button->icon_id == IconId::UltrokorKaiserBlades // Saber Siphon
+                                    if (current_button->icon_id == IconId::SaberSiphon
                                     ||  current_button->icon_id == IconId::AnabolicSynthesis) {	// Kaiser Rampage
                                         current_button_state = Button_State::Enabled;
                                     }

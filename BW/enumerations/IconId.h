@@ -503,5 +503,9 @@ namespace IconId {
         Hidebreaker                                     = 774,
         SkithrokorSkitteringSpores                      = 775,
         GorgrokorSerratedCleavers                       = 776,
+
+        SaberSiphon                                     = 779,
+
+        FanOfTeeth                                      = 820,
     };
 }
