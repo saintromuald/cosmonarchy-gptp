@@ -31,11 +31,14 @@ bool send_replay(const std::vector<char>& uuid_data, const std::string& game_ver
         .replayFile = cppcodec::base64_rfc4648::encode(replay_file),
     };
 
-    httplib::Client client{"https://cosmonarchy.com/api/matches"};
     const Json json(request);
     const auto json_str = json.dump();
-    const auto result = client.Post(json_str);
-    return result.error() == httplib::Error::Success;
+
+    httplib::Client cli{"http://cosmonarchy.com"};
+    if (const auto res = cli.Post("/api/matches", json_str, "application/json")) {
+        return res->status == 200;
+    }
+    return false;
 }
 
 } // namespace ReplayKraken
