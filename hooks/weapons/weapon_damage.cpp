@@ -1199,12 +1199,14 @@ namespace hooks {
                 }
                 target_ext.values[ValueNoCorpse] = true;
                 Unit* cohort = bw::create_unit_in_game(UnitId::TerranCohort, data.target->player, data.target->position.x, data.target->position.y, data.target);
-                bw::inherit_debuffs(data.target, cohort);
-                auto& cohort_ext = cohort->ext();
-                cohort_ext.values[ValueCohortServileVigor] = true;
-                cohort_ext.values[ValueNoCorpse] = false;
-                cohort_ext.timers[TimerCohortCorpseDelay] = 24;
-                cohort->remove_timer = 240;
+                if (cohort) {
+                    bw::inherit_debuffs(data.target, cohort);
+                    auto& cohort_ext = cohort->ext();
+                    cohort_ext.values[ValueCohortServileVigor] = true;
+                    cohort_ext.values[ValueNoCorpse] = false;
+                    cohort_ext.timers[TimerCohortCorpseDelay] = 24;
+                    cohort->remove_timer = 240;
+                }
                 return true;
             } break;
         }
