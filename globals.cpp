@@ -1049,7 +1049,7 @@ bool is_slowed(Unit* unit) {
 void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool play_sound) {
     // Deconstruction - Pazuzu passive
     UnitExt* unit_ext = get_unit_ext(unit);
-    f64 self_damage = (unit_ext->values[ValueDeconstruction] * 0.05 * (f64) (weapons_dat::damage_amount[weapon_id] * 256.0));
+    f64 self_damage = (unit_ext->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::damage_amount[weapon_id] * 256.0));
     Unit* deconstruction_target = unit;
     if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
         deconstruction_target = unit_ext->units[UnitTurretParentLink]; // TODO: port as unit
@@ -1057,7 +1057,7 @@ void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool play_sound) {
             return;
         }
     }
-    deconstruction_target->inflict_damage(self_damage, deconstruction_target, deconstruction_target->player, 0);
+    deconstruction_target->inflict_damage(std::lround(self_damage), deconstruction_target, deconstruction_target->player, 0);
     if (play_sound) {
         helper::play_sound_from_unit(SoundId::PazuzuDeconstructionDamage, unit, 1, 0);
     }
