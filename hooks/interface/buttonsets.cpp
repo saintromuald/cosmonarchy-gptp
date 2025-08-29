@@ -753,6 +753,11 @@ namespace hooks {
                                     current_button_state = Button_State::Enabled;
                                 }
                             } break;
+                            case TechId::SpiderMines: {
+                                if (unit->id == UnitId::TerranVultureHecaton) {
+                                    current_button_state = unit->mine_carrier.mine_count ? Button_State::Enabled : Button_State::Invisible;
+                                }
+                            } break;
                         }
 
                         if (current_button->requirement_var == TechId::ControlledDemolition) {
@@ -1103,6 +1108,16 @@ namespace hooks {
                             } break;
                             case UnitId::TerranFulcrum: {
                                 switch (current_button->requirement_var) {
+                                    case UnitId::TerranVulture: {
+                                        if (faction == Faction::TerranHecatonCoalition) {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranVultureHecaton: {
+                                        if (faction != Faction::TerranHecatonCoalition) {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
                                     case UnitId::TerranCyclops: {
                                         if (faction == Faction::TerranFuturistFederation) {
                                             current_button_state = Button_State::Invisible;
@@ -1144,7 +1159,6 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
-
                                     case UnitId::TerranBlackjack: {
                                         if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
                                             if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
@@ -1163,7 +1177,7 @@ namespace hooks {
                                             if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                                 current_button_state = Button_State::Invisible;
                                             } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranScrapyard)) {
-                                                current_button_state = Button_State::Invisible;
+                                                current_button_state = Button_State::Disabled;
                                             } else {
                                                 current_button_state = Button_State::Enabled;
                                             }
@@ -1212,7 +1226,16 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranMadrigalImperiosoMode: {
-                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranHecatonCoalition) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranPalladium)) {
+                                            current_button_state = Button_State::Disabled;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::TerranMadrigalHecatonImperiosoMode: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranHecatonCoalition) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranPalladium)) {
                                             current_button_state = Button_State::Disabled;
@@ -2557,6 +2580,11 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::TerranTartarusMine: {
+                                    if (current_button->icon_id == IconId::TartarusMine) { // Apollyoid Conflagration
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::TerranCyclops:
                                 case UnitId::TerranCyclopsFuturist: {
                                     if (current_button->icon_id == IconId::RecursionRounds) {
@@ -2590,7 +2618,13 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranMadrigalFuriaMode: {
+                                case UnitId::TerranMadrigalHecatonImperiosoMode: {
+                                    if (current_button->icon_id == IconId::FlyerAttack) { // Incineration
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::TerranMadrigalFuriaMode:
+                                case UnitId::TerranMadrigalHecatonFuriaMode: {
                                     if (current_button->icon_id == IconId::GeminiMissiles) { // Furia Salvo
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -3097,8 +3131,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergTosgrilisk:
-                                case UnitId::ZergIzirokor:
-                                case UnitId::ZergCherbrathalor: {
+                                case UnitId::ZergIzirokor: {
                                     if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Crushing Tide
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -3110,7 +3143,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::ZergAxitrilisk:
                                 case UnitId::ZergAxitriliskWeaponless: {
-                                    if (current_button->icon_id == IconId::RoarUnused) { // Perpetual Wind
+                                    if (current_button->icon_id == IconId::PerpetualWind) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3137,7 +3170,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::ZergTethzorokor: {
                                     if (current_button->icon_id == IconId::SaberSiphon
-                                    ||  current_button->icon_id == IconId::RoarUnused) {        // Fan of Teeth
+                                    ||  current_button->icon_id == IconId::FanOfTeeth) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3147,8 +3180,19 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ZergKagralisk: {
+                                    if (current_button->icon_id == IconId::Miasma) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ZergEvigrilisk: {
                                     if (current_button->icon_id == IconId::RilirokorToxicSpores) { // Lashing Limbs
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergCherbrathalor: {
+                                    if (current_button->icon_id == IconId::Miasma
+                                    ||  current_button->icon_id == IconId::GeszithalorAcidSpore) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3215,7 +3259,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergZarcavrokor: {
-                                    if (current_button->icon_id == IconId::RoarUnused) { // Fan of Teeth
+                                    if (current_button->icon_id == IconId::FanOfTeeth) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3415,7 +3459,7 @@ namespace hooks {
 
             // 00459278
             if (!stop_there && !jumpto5934E) {
-                jumpto5933C = (!g_is_in_replay) && (*g_active_portrait_unit != nullptr) && ((*g_active_portrait_unit)->player != g_local_nation_id);
+                jumpto5933C = (!g_is_in_replay) && *g_active_portrait_unit && ((*g_active_portrait_unit)->player != g_local_nation_id);
                 // TODO: Reenable and test
                 // jumpto5933C = false;
                 if (!jumpto5933C) {
@@ -3427,8 +3471,7 @@ namespace hooks {
                         current_dialog->button_user = current_button;
                         if (current_dialog->graphic != current_button->icon_id) {
                             // 004592C2
-                            struct
-                            {
+                            struct {
                                 u32 unknown_value_1;	//[EBP-1C]	[00]
                                 u32 unknown_value_2;	//[EBP-18]	[04]
                                 u32 not_allocated;		//[EBP-14]	[08]
@@ -3513,7 +3556,7 @@ namespace hooks {
     };
 
     // Using a local array instead of the original may allow to go past the 9 buttons limitations
-    // May need a special case using the original array adress and count when in replay if modified
+    // May need a special case using the original array address and count when in replay if modified
     void statbtn_bin_custom_ctrl_id(BinDlg* dialog) {
         helper::register_user_dialog_action(dialog, (u32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
         helper::bindlg_blit_surface(dialog);

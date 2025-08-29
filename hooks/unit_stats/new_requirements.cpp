@@ -303,73 +303,47 @@ namespace hooks {
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranFulcrum)) {
             switch (unit_id) {
                 case UnitId::TerranScrapyard:
-                case UnitId::TerranPalladium:
-                case UnitId::TerranVulture: {
+                case UnitId::TerranPalladium: {
                     return true;
                 } break;
-                case UnitId::TerranCyclops: {
-                    if (faction != Faction::TerranFuturistFederation) {
-                        return true;
-                    }
-                } break;
-                case UnitId::TerranCyclopsFuturist: {
-                    if (faction == Faction::TerranFuturistFederation) {
-                        return true;
-                    }
-                } break;
-                case UnitId::TerranGoliath: {
-                    if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranGoldenRepublic && faction != Faction::TerranUpstart) {
-                        return true;
-                    }
-                } break;
-                case UnitId::TerranArhaun: {
-                    if (faction == Faction::TerranHecatonCoalition) {
-                        return true;
-                    }
-                } break;
-                case UnitId::TerranAspirant: {
-                    if (faction == Faction::TerranGoldenRepublic) {
-                        return true;
-                    }
-                } break;
-                case UnitId::TerranSouthpaw: {
-                    if (faction == Faction::TerranUpstart) {
-                        return true;
-                    }
-                } break;
-                case UnitId::TerranBlackjack: {
-                    if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
-                        return true;
-                    }
-                } break;
-                case UnitId::TerranBlackjackGolden: {
-                    if (faction == Faction::TerranGoldenRepublic) {
-                        return true;
-                    }
-                } break;
-                case UnitId::TerranTiangou: {
-                    if (faction == Faction::TerranFuturistFederation) {
-                        return true;
-                    }
-                } break;
+                case UnitId::TerranVulture:         return faction != Faction::TerranHecatonCoalition;
+                case UnitId::TerranVultureHecaton:  return faction == Faction::TerranHecatonCoalition;
+                case UnitId::TerranCyclops:         return faction != Faction::TerranFuturistFederation;
+                case UnitId::TerranCyclopsFuturist: return faction == Faction::TerranFuturistFederation;
+                case UnitId::TerranGoliath:         return faction != Faction::TerranHecatonCoalition && faction != Faction::TerranGoldenRepublic && faction != Faction::TerranUpstart;
+                case UnitId::TerranArhaun:          return faction == Faction::TerranHecatonCoalition;
+                case UnitId::TerranAspirant:        return faction == Faction::TerranGoldenRepublic;
+                case UnitId::TerranSouthpaw:        return faction == Faction::TerranUpstart;
+                case UnitId::TerranBlackjack:       return faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic;
+                case UnitId::TerranBlackjackGolden: return faction == Faction::TerranGoldenRepublic;
+                case UnitId::TerranTiangou:         return faction == Faction::TerranFuturistFederation;
                 case UnitId::TerranMatadorTankMode: {
                     if (player_has_completed_addon_unit_id(player_id, UnitId::TerranScrapyard)) {
                         return true;
                     }
                 } break;
-                case UnitId::TerranPhalanxTankMode:
+                case UnitId::TerranPhalanxTankMode: {
                     if (faction != Faction::TerranNydusTrinity) {
                         if (player_has_completed_addon_unit_id(player_id, UnitId::TerranPalladium)) {
                             return true;
                         }
                     } break;
-                case UnitId::TerranMadrigalImperiosoMode: {
-                    if (player_has_completed_addon_unit_id(player_id, UnitId::TerranPalladium)) {
-                        return true;
-                    }
-                } break;
                 case UnitId::TerranTarasque: {
                     if (faction == Faction::TerranNydusTrinity) {
+                        if (player_has_completed_addon_unit_id(player_id, UnitId::TerranPalladium)) {
+                            return true;
+                        }
+                    }
+                } break;
+                case UnitId::TerranMadrigalImperiosoMode: {
+                    if (faction != Faction::TerranHecatonCoalition) {
+                        if (player_has_completed_addon_unit_id(player_id, UnitId::TerranPalladium)) {
+                            return true;
+                        }
+                    }
+                } break;
+                case UnitId::TerranMadrigalHecatonImperiosoMode: {
+                    if (faction == Faction::TerranHecatonCoalition) {
                         if (player_has_completed_addon_unit_id(player_id, UnitId::TerranPalladium)) {
                             return true;
                         }
@@ -1681,10 +1655,22 @@ namespace hooks {
                         return TECH_ACTIVE;
                     }
                     case UnitId::TerranVulture: {
-                        if (in_air || is_adding_on) {
-                            return TECH_HIDDEN;
+                        if (faction != Faction::TerranHecatonCoalition) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
                         }
-                        return TECH_ACTIVE;
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranVultureHecaton: {
+                        if (faction == Faction::TerranHecatonCoalition) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
                     }
                     case UnitId::TerranCyclops: {
                         if (faction != Faction::TerranFuturistFederation) {
@@ -1767,11 +1753,24 @@ namespace hooks {
                         return TECH_HIDDEN;
                     }
                     case UnitId::TerranMadrigalImperiosoMode: {
-                        if (in_air || is_adding_on) {
-                            return TECH_HIDDEN;
+                        if (faction != Faction::TerranHecatonCoalition) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            if (player_has_completed_addon_unit_id(player_id, UnitId::TerranPalladium)) {
+                                return TECH_ACTIVE;
+                            }
                         }
-                        if (player_has_completed_addon_unit_id(player_id, UnitId::TerranPalladium)) {
-                            return TECH_ACTIVE;
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranMadrigalHecatonImperiosoMode: {
+                        if (faction == Faction::TerranHecatonCoalition) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            if (player_has_completed_addon_unit_id(player_id, UnitId::TerranPalladium)) {
+                                return TECH_ACTIVE;
+                            }
                         }
                         return TECH_HIDDEN;
                     }

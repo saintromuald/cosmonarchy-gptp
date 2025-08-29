@@ -22,7 +22,7 @@ namespace hooks {
 				return false;
 			}
 			// Don't attack invincible units
-			if (target->status & UnitStatus::Invincible) {
+			if (target->is_invincible()) {
 				return false;
 			}
 			// Don't attack air units / buildings
@@ -119,8 +119,7 @@ namespace hooks {
 				unit->order_target.pt.y = unit->sprite->position.y;
 				current_image = unit->sprite->images.head;
 				IscriptAnimation::Enum anim = IscriptAnimation::SpecialState1;
-				if (unit->id == UnitId::TerranLobotomyMine) {
-					// This is really stupid, but it works, because the weapon is actually hardcoded within iscript. -Pr0nogo
+				if (unit->id == UnitId::TerranLobotomyMine || unit->id == UnitId::TerranTartarusMine) {
 					anim = IscriptAnimation::Unused2;
 				}
 

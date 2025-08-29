@@ -210,7 +210,7 @@ namespace hooks {
                 data.damage = attacker_ext->values[ValueTriggerDamageBaseAmount];
             }
 
-            if (data.attacker->status & UnitStatus::IsHallucination) {
+            if (data.attacker->is_hallucination()) {
                 data.damage /= 2;
             }
         }
@@ -522,12 +522,16 @@ namespace hooks {
         switch (data.weapon_id) {
             case WeaponId::AurielQuarternaryRifle:
             case WeaponId::ArhaunPhlegethonCannon: {
-                target_ext->values[ValueIncinerationPlayer] = data.attacking_player_id;
-                target_ext->timers[TimerIncineration] = 2 * 24 + 1;
+                target_ext->values[ValueIncineratePlayer] = data.attacking_player_id;
+                target_ext->timers[TimerIncinerateDamage] = HecatonAuriel::IncinerateTimer;
+            } break;
+            case WeaponId::TartarusMineApollyoidConflagration: {
+                target_ext->values[ValueIncineratePlayer] = data.attacking_player_id;
+                target_ext->timers[TimerIncinerateDamage] = TerranMine::IncinerateTimer;
             } break;
             case WeaponId::WendigoFusionSaw: {
                 target_ext->values[ValueWendigoShatteredWindsStacks]++;
-                target_ext->timers[TimerWendigoShatteredWinds] = 2 * 24 + 1;
+                target_ext->timers[TimerWendigoShatteredWinds] = UpstartWendigo::ShatteredWindsDuration;
             } break;
             case WeaponId::LegionnairePhaseSpear: {
                 target_ext->timers[TimerBladeVortex] = 2 * 24 + 1;
@@ -762,6 +766,7 @@ namespace hooks {
                 case WeaponId::HarakanFlamethrower:
                 case WeaponId::StrigaPhaseSaber:
                 case WeaponId::MatadorTwinstrikeFlamethrowers:
+                case WeaponId::MadrigalHecatonAngeltearMissiles:
                 case WeaponId::DurendalAbaddonFlamethrowers:
                 case WeaponId::SalamanderAngeltearRockets:
                 case WeaponId::AckmedMickenMelter: {

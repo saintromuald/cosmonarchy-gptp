@@ -32,8 +32,9 @@ constexpr s32 MindControlEnergyGain = 5 * 256;
 constexpr u32 NeutralHostilePlayer = 9;
 constexpr u32 AirToGroundDistance = 42;
 
-// Factional
-constexpr s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;
+namespace CommonBehavior {
+inline constexpr s32 MeleeWeaponDistance = 30;
+}
 
 // TERRAN \\
 
@@ -56,9 +57,10 @@ inline constexpr s32 NaniteFieldSupportRange = 4 * 32;
 inline constexpr s32 NaniteFieldVisionaryRange = 6 * 32;
 }
 
-// Madcap
-constexpr s32 MadcapPassiveDecayTime = 0.5 * 24;
-constexpr s32 MadcapMaxStacks = 10;
+namespace TerranMadcap {
+constexpr s32 PassiveDecayTime = 0.5 * 24;
+constexpr s32 PassiveMaxStacks = 10;
+}
 
 namespace TerranApostle {
 inline constexpr u32 BloodTitheRange = 3 * 24;
@@ -70,10 +72,10 @@ inline constexpr u32 ReviveStunTimer = 3 * 24;
 inline constexpr u32 ReviveHealTimer = 10 * 24;
 }
 
-// Olympian
-constexpr s32 OlympianMeleeDistance = 30;
+namespace HecatonAuriel {
+inline constexpr s32 IncinerateTimer = 2 * 24 + 1;
+}
 
-// Hypnagogue
 namespace ThroughTheLookingGlass {
 inline constexpr u32 CastRange = 6 * 32;
 inline constexpr u32 TargetSearchRange = 6 * 32;
@@ -83,7 +85,10 @@ namespace TerranMine {
 inline constexpr s32 BurrowTime = 72;
 inline constexpr s32 SeekRange = 576;
 inline constexpr s32 DetonateRange = 30;
-inline constexpr s32 LobotomyTimer = 9; // 3 seconds
+inline constexpr s32 LobotomyTimerVanilla = 9; // 3 seconds
+inline constexpr s32 LobotomyTimer = 3 * 24 + 1;
+inline constexpr s32 IncinerateTimer = 5 * 24 + 1;
+inline constexpr s32 DetonationRange = 2 * 32;
 }
 
 namespace Cuirass {
@@ -94,6 +99,10 @@ inline constexpr s32 SelfHeal = 160; // (15 * 256) / 24 = 160
 namespace Madrigal {
 inline constexpr s32 DirgeTimer = 48 + 1;
 inline constexpr s32 DirgeDamage = 5;
+}
+
+namespace UpstartWendigo {
+inline constexpr s32 ShatteredWindsDuration = 2 * 24 + 1;
 }
 
 namespace Wyvern {
@@ -126,11 +135,8 @@ inline constexpr s32 StackCap = 3;
 }
 
 namespace Terran {
-inline constexpr s32 SublimeShepherdRange = 6 * 32;
-
-// Reservoir / Addon
-inline constexpr s32 EmergencyDetonationTimer = 5 * 24 + 1;
 inline constexpr s32 ControlledDemolitionTimer = 10 * 24 + 1;
+inline constexpr s32 SublimeShepherdRange = 6 * 32;
 }
 
 // PROTOSS \\

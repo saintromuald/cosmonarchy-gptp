@@ -687,7 +687,7 @@ void refresh_debuffs(Unit* unit) {
 
     // Refresh Lockdown
     if (unit->lockdown_timer) {
-        unit->lockdown_timer = TerranMine::LobotomyTimer;
+        unit->lockdown_timer = TerranMine::LobotomyTimerVanilla;
     }
 
     // Refresh Maelstrom
@@ -710,6 +710,10 @@ void refresh_debuffs(Unit* unit) {
         unit_ext->timers[TimerSignify] = 3 * 24 + 1;
     }
 
+    unit_ext->timers[TimerIncinerateArmor] = unit_ext->timers[TimerIncinerateArmor] ? TerranMine::IncinerateTimer : 0;
+    unit_ext->timers[TimerIncinerateDamage] = unit_ext->timers[TimerIncinerateDamage] ? TerranMine::IncinerateTimer : 0;
+
+
     //was hardcoded in original code
     bw::refresh_console();
 }
@@ -717,8 +721,8 @@ void refresh_debuffs(Unit* unit) {
 void inherit_debuffs(Unit* parent, Unit* child) {
     spread_debuffs(parent, child);
 
-    UnitExt* parent_ext = get_unit_ext(parent);
-    UnitExt* child_ext = get_unit_ext(child);
+    auto& parent_ext = parent->ext();
+    auto& child_ext  = child->ext();
 
     // NOTE: classic period formula is (([real seconds / 0.042) / 8)
     // e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
@@ -744,35 +748,35 @@ void inherit_debuffs(Unit* parent, Unit* child) {
     }
 
     // Inherit Incubation
-    if (child_ext->timers[TimerIncubationArm]) {
-        child_ext->timers[TimerIncubationArm] = parent_ext->timers[TimerIncubationArm];
-        child_ext->values[ValueIncubationCount] = parent_ext->values[ValueIncubationCount];
-        child_ext->values[ValueIncubationUnitId] = parent_ext->values[ValueIncubationUnitId];
-        child_ext->values[ValueIncubationPlayer] = parent_ext->values[ValueIncubationPlayer];
+    if (child_ext.timers[TimerIncubationArm]) {
+        child_ext.timers[TimerIncubationArm]    = parent_ext.timers[TimerIncubationArm];
+        child_ext.values[ValueIncubationCount]  = parent_ext.values[ValueIncubationCount];
+        child_ext.values[ValueIncubationUnitId] = parent_ext.values[ValueIncubationUnitId];
+        child_ext.values[ValueIncubationPlayer] = parent_ext.values[ValueIncubationPlayer];
         child->sprite->create_overlay(ImageId::ParasiteOverlay);
     }
 
     // Inherit Observance
-    if (parent_ext->timers[TimerObservanceDebuff] > 0) {
-        child_ext->timers[TimerObservanceDebuff] = parent_ext->timers[TimerObservanceDebuff];
-        child_ext->timers[TimerObservancePeriod] = parent_ext->timers[TimerObservancePeriod];
-        child_ext->values[ValueObservanceRend] = parent_ext->values[ValueObservanceRend];
+    if (parent_ext.timers[TimerObservanceDebuff] > 0) {
+        child_ext.timers[TimerObservanceDebuff] = parent_ext.timers[TimerObservanceDebuff];
+        child_ext.timers[TimerObservancePeriod] = parent_ext.timers[TimerObservancePeriod];
+        child_ext.values[ValueObservanceRend]   = parent_ext.values[ValueObservanceRend];
     }
 
     // Inherit Knockout Drivers
-    if (parent_ext->timers[TimerPetrification] > 0) {
-        child_ext->timers[TimerPetrification] = parent_ext->timers[TimerPetrification];
+    if (parent_ext.timers[TimerPetrification] > 0) {
+        child_ext.timers[TimerPetrification] = parent_ext.timers[TimerPetrification];
     }
 
     // Inherit Hallucination
-    if (parent_ext->timers[TimerHallucinating] > 0) {
-        child_ext->timers[TimerHallucinating] = parent_ext->timers[TimerHallucinating];
+    if (parent_ext.timers[TimerHallucinating] > 0) {
+        child_ext.timers[TimerHallucinating] = parent_ext.timers[TimerHallucinating];
     }
 
     // Inherit Captivating ZethrokorClaws
-    if (auto timer = parent_ext->timers[TimerCaptivatingClaws]) {
-        child_ext->timers[TimerCaptivatingClaws] = timer;
-        parent_ext->unit_vectors[UnitVectorCaptivatingClaws] = child_ext->unit_vectors[UnitVectorCaptivatingClaws];
+    if (auto timer = parent_ext.timers[TimerCaptivatingClaws]) {
+        child_ext.timers[TimerCaptivatingClaws] = timer;
+        parent_ext.unit_vectors[UnitVectorCaptivatingClaws] = child_ext.unit_vectors[UnitVectorCaptivatingClaws];
     }
 
     // Inherit Lockdown
@@ -785,10 +789,9 @@ void inherit_debuffs(Unit* parent, Unit* child) {
         child->maelstrom_timer = parent->maelstrom_timer;
     }
 
-    // Inherit Devourer Corrosive Spores
-    if (parent_ext->timers[TimerCorrosiveTouch]) {
-        child_ext->values[ValueCorrosiveTouchStacks] = parent_ext->values[ValueCorrosiveTouchStacks];
-        child_ext->timers[TimerCorrosiveTouch] = parent_ext->timers[TimerCorrosiveTouch];
+    // Inherit Corrosive Touch
+    if (parent_ext.timers[TimerCorrosiveTouch]) {
+        child_ext.timers[TimerCorrosiveTouch] = parent_ext.timers[TimerCorrosiveTouch];
     }
 
     // Inherit Irradiate
@@ -808,14 +811,14 @@ void inherit_debuffs(Unit* parent, Unit* child) {
     }
 
     // Inherit Deconstruction
-    if (parent_ext->values[ValueDeconstruction]) {
-        child_ext->values[ValueDeconstruction] = parent_ext->values[ValueDeconstruction];
-        child_ext->timers[TimerDeconstruction] = parent_ext->timers[TimerDeconstruction];
+    if (parent_ext.values[ValueDeconstruction]) {
+        child_ext.values[ValueDeconstruction] = parent_ext.values[ValueDeconstruction];
+        child_ext.timers[TimerDeconstruction] = parent_ext.timers[TimerDeconstruction];
         Sprite* sprite = child->sprite;
         if (child->subunit) {
             UnitExt* subunit_ext = get_unit_ext(child->subunit);
-            subunit_ext->values[ValueDeconstruction] = parent_ext->values[ValueDeconstruction];
-            subunit_ext->timers[TimerDeconstruction] = parent_ext->timers[TimerDeconstruction];
+            subunit_ext->values[ValueDeconstruction] = parent_ext.values[ValueDeconstruction];
+            subunit_ext->timers[TimerDeconstruction] = parent_ext.timers[TimerDeconstruction];
             sprite = child->subunit->sprite;
         }
         if (!sprite->get_overlay(ImageId::DeconstructionSmall + overlay_offset)) {
@@ -824,49 +827,48 @@ void inherit_debuffs(Unit* parent, Unit* child) {
     }
 
     // Inherit Terminal Surge
-    if (parent_ext->values[ValueTerminalSurge]) {
-        child_ext->values[ValueTerminalSurge] = parent_ext->values[ValueTerminalSurge];
+    if (parent_ext.values[ValueTerminalSurge]) {
+        child_ext.values[ValueTerminalSurge] = parent_ext.values[ValueTerminalSurge];
     }
 
     // Inherit Stellar Enforcement
-    if (parent_ext->timers[TimerStellarEnforcement]) {
-        child_ext->timers[TimerStellarEnforcement] = parent_ext->timers[TimerStellarEnforcement];
+    if (parent_ext.timers[TimerStellarEnforcement]) {
+        child_ext.timers[TimerStellarEnforcement] = parent_ext.timers[TimerStellarEnforcement];
     }
 
     // Inherit Swarming Omen debuff
-    if (parent_ext->timers[TimerSwarmingOmenDebuff]) {
-        child_ext->timers[TimerSwarmingOmenDebuff] = parent_ext->timers[TimerSwarmingOmenDebuff];
+    if (parent_ext.timers[TimerSwarmingOmenDebuff]) {
+        child_ext.timers[TimerSwarmingOmenDebuff] = parent_ext.timers[TimerSwarmingOmenDebuff];
     }
 
     // Inherit Kaiser Rampage
-    if (parent_ext->timers[TimerKaiserRampage]) {
-        child_ext->timers[TimerKaiserRampage] = parent_ext->timers[TimerKaiserRampage];
+    if (parent_ext.timers[TimerKaiserRampage]) {
+        child_ext.timers[TimerKaiserRampage] = parent_ext.timers[TimerKaiserRampage];
     }
 
     // Inherit Kelvin Munitions
-    if (parent_ext->timers[TimerKelvinMunitions]) {
-        child_ext->timers[TimerKelvinMunitions] = parent_ext->timers[TimerKelvinMunitions];
+    if (parent_ext.timers[TimerKelvinMunitions]) {
+        child_ext.timers[TimerKelvinMunitions] = parent_ext.timers[TimerKelvinMunitions];
     }
 
     // Inherit Empress Passive
-    if (parent_ext->values[ValueEmpressAnodyneAnnexStacks]) {
-        child_ext->values[ValueEmpressAnodyneAnnexStacks] = parent_ext->values[ValueEmpressAnodyneAnnexStacks];
-        child_ext->values[ValueAnnexSourcePlayer] = parent_ext->values[ValueAnnexSourcePlayer];
-        child_ext->timers[TimerAnnex] = parent_ext->timers[TimerAnnex];
+    if (parent_ext.values[ValueEmpressAnodyneAnnexStacks]) {
+        child_ext.values[ValueEmpressAnodyneAnnexStacks] = parent_ext.values[ValueEmpressAnodyneAnnexStacks];
+        child_ext.values[ValueAnnexSourcePlayer] = parent_ext.values[ValueAnnexSourcePlayer];
+        child_ext.timers[TimerAnnex] = parent_ext.timers[TimerAnnex];
     }
 
     // Inherit Hierophant Signify
-    child_ext->timers[TimerSignify] = parent_ext->timers[TimerSignify];
-    child_ext->values[ValueSignifyStacks] = parent_ext->values[ValueSignifyStacks];
-    child_ext->values[ValueSignifyPlayer] = parent_ext->values[ValueSignifyPlayer];
-    bw::update_signify_status(child, child_ext);
+    child_ext.timers[TimerSignify] = parent_ext.timers[TimerSignify];
+    child_ext.values[ValueSignifyStacks] = parent_ext.values[ValueSignifyStacks];
+    child_ext.values[ValueSignifyPlayer] = parent_ext.values[ValueSignifyPlayer];
+    bw::update_signify_status(child, &child_ext);
 
     // Inherit Worship
-    child_ext->timers[TimerDemiurgeWorship] = parent_ext->timers[TimerDemiurgeWorship];
-    child_ext->values[ValueDemiurgePlayer] = parent_ext->values[ValueDemiurgePlayer];
+    child_ext.timers[TimerDemiurgeWorship] = parent_ext.timers[TimerDemiurgeWorship];
+    child_ext.values[ValueDemiurgePlayer] = parent_ext.values[ValueDemiurgePlayer];
 
-    // Inherit "No corpse" status
-    child_ext->values[ValueNoCorpse] = parent_ext->values[ValueNoCorpse];
+    child_ext.values[ValueNoCorpse] = parent_ext.values[ValueNoCorpse];
 
     bw::refresh_console();
 }

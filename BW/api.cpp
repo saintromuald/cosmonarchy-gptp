@@ -1265,8 +1265,9 @@ bool unit_can_nuke(Unit* unit) {
 
 UnitId::Enum get_trap_id(Unit* unit) {
     switch (unit->id) {
-        case UnitId::TerranVulture:        return UnitId::TerranLobotomyMine;
         case UnitId::TerranClericFuturist: return UnitId::TerranPietyWard;
+        case UnitId::TerranVulture:        return UnitId::TerranLobotomyMine;
+        case UnitId::TerranVultureHecaton: return UnitId::TerranTartarusMine;
     }
     return UnitId::None;
 }
@@ -1296,6 +1297,7 @@ bool unit_is_ranged_attacker(Unit* unit) {
         case UnitId::TerranPhalanxTankModeTurret:
         case UnitId::TerranPhalanxSiegeModeTurret:
         case UnitId::TerranMadrigalImperiosoMode:
+        case UnitId::TerranMadrigalHecatonImperiosoMode:
         case UnitId::TerranMadrigalFuriaMode:
         case UnitId::TerranMadrigalTurretImperiosoMode:
         case UnitId::TerranMadrigalTurretFuriaMode:
@@ -1377,6 +1379,8 @@ bool unit_id_is_available_without_an_addon(u16 id) {
         || id == UnitId::TerranHarakanGolden
         || id == UnitId::TerranCohort
         || id == UnitId::TerranCannibal
+        || id == UnitId::TerranVultureHecaton
+        || id == UnitId::TerranArhaun
         || id == UnitId::TerranAspirant
         || id == UnitId::TerranSouthpaw
         || id == UnitId::TerranPhiloc

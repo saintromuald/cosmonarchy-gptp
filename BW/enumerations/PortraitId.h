@@ -284,6 +284,8 @@ namespace PortraitId {
         Kiraxxar                    = 276,
         Demiurge                    = 277,
         ScannerSweep                = 278,
+        Aurora                      = 279,
+        Iziralisk                   = 280,
 
         None						= 0xFFFF
     };

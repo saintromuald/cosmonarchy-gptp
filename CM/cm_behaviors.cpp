@@ -66,7 +66,7 @@ Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id) {
 
 	Unit* unit = bw::create_unit_in_game(unit_id, player, pos.x, pos.y);
 	if (unit) {
-		UnitExt& unit_ext = unit->ext();
+		auto& unit_ext = unit->ext();
 		unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
 		unit->play_iscript_animation(IscriptAnimation::Unused1);
 		unit_ext.values[ValueReviveStarted] = 1;
@@ -280,7 +280,7 @@ void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id) {
 	Unit* target = unit->order_target.unit;
 	if (unit->order_signal & 0x20 && unit->ground_weapon_cooldown <= 1) {
 		unit->order_signal &= ~0x20;
-		if (target && !(units_dat::base_property[target->id] & UnitProperty::Flyer) && unit->get_distance_to_target(target) <= 30) {
+		if (target && !target->is_in_air() && unit->get_distance_to_target(target) <= CommonBehavior::MeleeWeaponDistance) {
 			unit->play_iscript_animation(IscriptAnimation::SpecialState1);
 		}
 	}

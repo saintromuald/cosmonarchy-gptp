@@ -143,6 +143,12 @@ namespace UnitId {
         TerranArhaun                                        = 490,
         TerranArhaunTurret                                  = 491,
         TerranCannibal                                      = 496,
+        TerranMadrigalHecatonImperiosoMode                  = 504,
+        TerranMadrigalTurretHecatonImperiosoMode            = 505,
+        TerranVultureHecaton                                = 506,
+        TerranTartarusMine                                  = 507,
+        TerranMadrigalHecatonFuriaMode                      = 508,
+        TerranMadrigalTurretHecatonFuriaMode                = 509,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1

@@ -6,7 +6,7 @@
 
 namespace hooks {
 	u8 get_armor_bonus(Unit* unit) { // 00453FC0
-		UnitExt& unit_ext = unit->ext();
+		auto& unit_ext = unit->ext();
 		s32 armor_modifier = bw::get_upgrade_level(unit->player, units_dat::armor_upgrade[unit->id]);
 		switch (unit->id) {
 			case UnitId::TerranMatadorCinderMode: {
@@ -52,6 +52,7 @@ namespace hooks {
 		armor -= unit_ext->timers[TimerCorrosiveTouch] > 1;
 		armor -= unit_ext->values[ValueWendigoShatteredWindsStacks];
 		armor -= unit_ext->timers[TimerDiscordantChorus] > 1;
+		armor -= unit_ext->timers[TimerIncinerateArmor] > 1;
 
 		if (armor < 0) {
 			armor = 0;
