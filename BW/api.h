@@ -58,7 +58,7 @@ enum InterceptType {
 enum class GameKind {
     Invalid,
 
-    Competitive,
+    Unranked,
     Scenario,
     Omnipresence,
     FactionWars,
@@ -71,6 +71,7 @@ enum class GameKind {
     Deathmarch,
     Brotherhood,
     Zombocalypse,
+    Ranked,
 
     Debug,
     Count,

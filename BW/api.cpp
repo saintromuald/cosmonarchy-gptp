@@ -3239,7 +3239,8 @@ GameKind get_game_kind() {
         case GameType::Scenario:
             return GameKind::Scenario;
 
-        case GameType::Competitive:  return GameKind::Competitive;
+        case GameType::Unranked:     return GameKind::Unranked;
+        case GameType::Ranked:       return GameKind::Ranked;
         case GameType::Omnipresence: return GameKind::Omnipresence;
         case GameType::FactionWars:  return GameKind::FactionWars;
         case GameType::Massacre:     return GameKind::Massacre;

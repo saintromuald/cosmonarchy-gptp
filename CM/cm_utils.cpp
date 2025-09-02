@@ -162,8 +162,8 @@ u32 get_bullet_damage(Bullet* bullet, u32 weapon_id) {
 
 const char* game_kind_to_string(GameKind game_kind) {
     switch (game_kind) {
-        case GameKind::Competitive: {
-            return "Competitive";
+        case GameKind::Unranked: {
+            return "Unranked";
         } break;
         case GameKind::Debug: {
             return "Debug";
@@ -204,14 +204,17 @@ const char* game_kind_to_string(GameKind game_kind) {
         case GameKind::Zombocalypse: {
             return "Zombocalypse";
         } break;
+        case GameKind::Ranked: {
+            return "Ranked";
+        } break;
     }
     return "Custom";
 }
 
 const char* game_kind_to_filename_string(GameKind game_kind) {
     switch (game_kind) {
-        case GameKind::Competitive: {
-            return "Competitive(1)";
+        case GameKind::Unranked: {
+            return "Unranked(1)";
         } break;
         case GameKind::Debug: {
             return "Debug(1)";
@@ -251,6 +254,9 @@ const char* game_kind_to_filename_string(GameKind game_kind) {
         } break;
         case GameKind::Zombocalypse: {
             return "Zombocalypse(1)";
+        } break;
+        case GameKind::Ranked: {
+            return "Ranked(1)";
         } break;
     }
     assert(false);

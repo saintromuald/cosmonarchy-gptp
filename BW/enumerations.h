@@ -558,7 +558,7 @@ enum Enum {
     TopVsBottom    = 15,
 
     // Cosmonarchy
-    Competitive    = 30,
+    Unranked       = 30,
     Scenario       = 31,
     Omnipresence   = 32,
     FactionWars    = 33,
@@ -572,6 +572,7 @@ enum Enum {
     Deathmarch     = 41,
     Brotherhood    = 42,
     Zombocalypse   = 43,
+    Ranked         = 44,
 };
 }
 
