@@ -1527,4 +1527,20 @@ struct IscriptHeader {
     u16 data[27];//This array's size is actually defined by the header type, and iscript_has_animation is the only place BW does any bounds checking.
 };
 
+enum class Faction : u8;
+struct SelectFactionCommand {
+    u8 type;
+    u8 subtype;
+    u8 player;
+    Faction faction;
+    u8 padding[8];
+};
+static_assert(sizeof(SelectFactionCommand) == 12);
+
+struct GameAction {
+    s32 unk;
+    s32 start;
+    s32 size;
+};
+
 #pragma pack()
