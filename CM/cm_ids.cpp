@@ -1069,6 +1069,7 @@ u32 get_mutate_image_id(u32 unit_id) {
         case UnitId::ZergKagralisk:		return ImageId::KagraliskMutate;
         case UnitId::ZergEvigrilisk:	return ImageId::EvigriliskMutate;
         case UnitId::ZergAlmaksalisk:	return ImageId::AlmaksaliskMutate;
+        case UnitId::ZergZoryusthaleth:	return ImageId::ZoryusthalethMutate;
         case UnitId::ZergLakizilisk:	return ImageId::LakiziliskMutate;
         case UnitId::ZergGorgrokor:		return ImageId::GorgrokorMutate;
         case UnitId::ZergAzanthrokor:	return ImageId::AzanthrokorMutate;

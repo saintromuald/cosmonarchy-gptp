@@ -2953,16 +2953,18 @@ namespace hooks {
             if (unit_ext.timers[TimerSwarmingOmenDebuff] > 1) {
                 bw::add_unit_overlay(unit, overlay_id);
 
-                for (Unit* target : g_unit_search.radial(unit->position, Zoryusthaleth::SwarmingOmenRadius)) {
-                    if (bw::is_allied_to(unit->player, target->player)) {
+                for (Unit* target : g_unit_search.radial(unit->position, Zoryusthaleth::SwarmingOmenRadius, FilterEnemy)) {
+                    if (!bw::are_mutual_allies(target->player, unit_ext.values[ValueSwarmingOmenPlayer])) {
                         continue;
                     }
-                    auto& target_ext = target->ext();
-                    target_ext.timers[TimerSwarmingOmenSearch] = 24 + 1;
+                    target->ext().timers[TimerSwarmingOmenSearch] = 24 + 1;
                 }
             } else if (unit_ext.timers[TimerSwarmingOmenDebuff == 1]) {
                 bw::remove_unit_overlay(unit, overlay_id);
             }
+        }
+        if (unit_ext.timers[TimerSwarmingOmenSearch]) {
+            should_update_speed = true;
         }
 
         if (hooks::unit_can_have_rally(unit) && unit->rally.unit && !helper::is_target_visible(unit, unit->rally.unit)) {
