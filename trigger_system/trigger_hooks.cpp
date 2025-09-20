@@ -252,6 +252,21 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
                 portrait_id = PortraitId::Tazarain;
             } break;
         }
+    } else if (g_current_map_name == "Sunset Mission"sv) {
+        switch (portrait_id) {
+            case PortraitId::ScannerSweep: {
+                portrait_id = PortraitId::PILER; // SCAPAL; Temporary
+            } break;
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::Claymore; // Redmond; Temporary
+            } break;
+            case PortraitId::PlasmaShellUnused: {
+                portrait_id = PortraitId::Madrigal; // Braverman; Temporary
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Hippogriff; // Prentat; Temporary
+            } break;
+        }
     }
     return portrait_id;
 }
