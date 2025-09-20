@@ -3,8 +3,10 @@
 #include <graphics/Bitmap.h>
 #include "BW/bwdata.h"
 
-#define Step0 33	//originally 8
-//#define Step1 0		//originally 3
+u8 new_warp_texture_buffer[65025];
+
+#define Step0 33  // originally 8
+//#define Step1 0 // originally 3
 #define updateFunc_None					(update_fxn*)0x004D55F0
 //#define updateFunc_Decloaking			(update_fxn*)0x004D5D10
 //#define updateFunc_Cloaking			(update_fxn*)0x004D5D70
@@ -13,11 +15,11 @@
 #define renderFunc_Normal2				(render_fxn*)0x0040BF60
 #define renderFunc_HiddenCloak			(render_fxn*)0x0040B155
 #define renderFunc_HiddenCloak2			(render_fxn*)0x0040B9A9
-//#define renderFunc_HiddenCloakAnim		(render_fxn*)0x004D55B0
-//#define renderFunc_HiddenCloakAnim2		(render_fxn*)0x004D5570
+//#define renderFunc_HiddenCloakAnim	(render_fxn*)0x004D55B0
+//#define renderFunc_HiddenCloakAnim2	(render_fxn*)0x004D5570
 #define renderFunc_VisibleCloak			(render_fxn*)0x004D54D0
 #define renderFunc_VisibleCloak2		(render_fxn*)0x004D54B0
-//#define renderFunc_VisibleCloakAnim		(render_fxn*)0x004D5530
+//#define renderFunc_VisibleCloakAnim	(render_fxn*)0x004D5530
 //#define renderFunc_VisibleCloakAnim2	(render_fxn*)0x004D54F0
 #define renderFunc_EMP					(render_fxn*)0x0040B2D3
 #define renderFunc_EMP2					(render_fxn*)0x0040BB2E
@@ -46,7 +48,7 @@
 #define draw_hiddenCloak2				0x0040B9A9
 #define draw_useRemapping2				0x0040BCA3
 #define	draw_warpFlash2					0x0040BE04
-#define warpTextureBuffer				0x005254C0
+#define warpTextureBuffer				new_warp_texture_buffer
 
 typedef void __fastcall update_fxn(Image* image);
 
@@ -68,36 +70,36 @@ extern UpdateFunc sgUpdateFuncs[];
 extern RenderFunc sgRenderFuncs[];
 
 namespace drawFunc {
-	void __fastcall HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);				// 004D55B0
-	void __fastcall HiddenCloakAnim_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		// 004D5570
-	void __fastcall VisibleCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);			// 004D5530
-	void __fastcall VisibleCloakAnim_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		// 004D54F0
-	void __fastcall WarpFlash_Normal(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);			// 004D5480
-	void __fastcall WarpFlash_Normal_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		// 004D5450
-	void __fastcall WarpAnchor_Normal(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall WarpAnchor_HiddenCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall WarpAnchor_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall WarpAnchor_VisibleCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall WarpAnchor_VisibleCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	//void __fastcall WarpTexture_HiddenCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall WarpTexture_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall WarpTexture_VisibleCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall WarpTexture_VisibleCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall WarpFlash_VisibleCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall WarpFlash_HiddenCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall WarpFlash_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall Decloaking_update(Image* image);																		// 004D5D10
-	void __fastcall Cloaking_update(Image* image);																			// 004D5D70
-	void __fastcall warp_flash_update(Image* image);																		// 004D8590
-	void __fastcall WarpFlash_Decloaking_update(Image* image);
-	void __fastcall WarpFlash_Cloaking_update(Image* image);
-	void __fastcall ShadowCloak_update(Image* image);
+void __fastcall HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);				// 004D55B0
+void __fastcall HiddenCloakAnim_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		// 004D5570
+void __fastcall VisibleCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);			// 004D5530
+void __fastcall VisibleCloakAnim_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		// 004D54F0
+void __fastcall WarpFlash_Normal(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);			// 004D5480
+void __fastcall WarpFlash_Normal_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		// 004D5450
+void __fastcall WarpAnchor_Normal(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall WarpAnchor_HiddenCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall WarpAnchor_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall WarpAnchor_VisibleCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall WarpAnchor_VisibleCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+//void __fastcall WarpTexture_HiddenCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall WarpTexture_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall WarpTexture_VisibleCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall WarpTexture_VisibleCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall WarpFlash_VisibleCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall WarpFlash_HiddenCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall WarpFlash_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall Decloaking_update(Image* image);																		// 004D5D10
+void __fastcall Cloaking_update(Image* image);																			// 004D5D70
+void __fastcall warp_flash_update(Image* image);																		// 004D8590
+void __fastcall WarpFlash_Decloaking_update(Image* image);
+void __fastcall WarpFlash_Cloaking_update(Image* image);
+void __fastcall ShadowCloak_update(Image* image);
 
-	void __fastcall texture_to_remapping(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, u8* colorTable);
-	void __fastcall threshold_remapping(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, u32 step, u8* colorTable);
-	void __fastcall threshold_texture(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, u32 step);
-	void __fastcall ShadowCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall ShadowCloak_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall texture_to_remapping(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, u8* colorTable);
+void __fastcall threshold_remapping(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, u32 step, u8* colorTable);
+void __fastcall threshold_texture(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, u32 step);
+void __fastcall ShadowCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
+void __fastcall ShadowCloak_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
 }
 
 namespace hooks {
