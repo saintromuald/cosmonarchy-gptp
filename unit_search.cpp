@@ -181,6 +181,9 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	if (flags & FilterComputer && !target->is_computer_controlled()) {
 		return false;
 	}
+	if (flags & FilterCombatant && !unit_id_is_combatant(target->id)) {
+		return false;
+	}
 	return true;
 }
 
