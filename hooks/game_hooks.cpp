@@ -1967,7 +1967,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::TerranFacade: {
-                if (bw::get_generic_rust_value(unit, RustId::CastPryingEyes)) {
+                if (!unit_ext.timers[TimerFacadePryingEyesChannel] && bw::get_generic_rust_value(unit, RustId::CastPryingEyes)) {
                     bw::set_generic_rust_value(unit, RustId::CastPryingEyes, 0);
                     auto energy_cost = TechId::energy_cost(TechId::FacadePryingEyes);
                     if (unit->energy == energy_cost) {
@@ -1992,7 +1992,7 @@ namespace hooks {
                         if (!target_ext.timers[TimerFacadePryingEyesCloak]) {
                             helper::begin_cloak(target, SoundId::CloakTerranOn);
                         }
-                        target_ext.timers[TimerFacadePryingEyesCloak] = 3;
+                        target_ext.timers[TimerFacadePryingEyesCloak] = 6;
                     }
                 } else if (unit->get_overlay(ImageId::PryingEyesChannel)) {
                     bw::remove_unit_overlay(unit, ImageId::PryingEyesChannel);

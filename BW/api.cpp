@@ -1195,10 +1195,9 @@ void create_shield_overlay(Unit* unit, u32 attack_direction) {
 void decloak_proc(Unit* unit, u32 timer) {
     auto& unit_ext = unit->ext();
     if (unit_ext.timers[TimerDecloak] == 0) {
-        u32 sound_id = get_decloak_sound_id(unit);
-        helper::end_cloak(unit, sound_id);
+        helper::end_cloak(unit, get_decloak_sound_id(unit));
     }
-    if (unit_ext.timers[TimerDecloak] != 1) {
+    if (unit_ext.timers[TimerDecloak]) {
         unit_ext.timers[TimerDecloak] = timer + 1;
     }
 }
@@ -1962,9 +1961,9 @@ bool all_selected_units_have_addon(u32 unit_id) {
 }
 
 bool unit_is_stunned(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
+    auto& unit_ext = unit->ext();
     return  unit->status & UnitStatus::Frozen || unit->lockdown_timer || unit->stasis_timer || unit->maelstrom_timer
-        || unit_ext->timers[TimerStun] > 1 || unit_ext->values[ValueReviveStarted];
+        || unit_ext.timers[TimerStun] > 1 || unit_ext.values[ValueReviveStarted];
 }
 
 void dump_sync_data() {
