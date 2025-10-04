@@ -194,6 +194,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     // Fix to make vanilla campaigns playable from Firegraft executables -UndeadStar
 //	jump_patch((void*)0x15017960, 0x004100C4); // insert a "jump to storm.dll function" instead of a "jump to firegraft function" in an array
 
+    // Jesse, start 
+    if (g_config.allow_multiple_instances) {
+        // skip the jump to 0x004e0380 which checks for other instances and exits if found
+        nops(0x004e0b02, 5);
+    }
+    // Jesse, end
+
     // Veeq7, start
     // Quicker drop timeout
     memory_patch(0x004A345D + 2, (u32)0);

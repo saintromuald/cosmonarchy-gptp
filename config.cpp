@@ -73,6 +73,7 @@ void load_config() {
     // Launch settings
     load_field(yaml, "disable-wmode-prompt", g_config.disable_wmode_prompt);
     load_field(yaml, "prefer-wmode", g_config.prefer_wmode);
+    load_field(yaml, "allow-multiple-instances", g_config.allow_multiple_instances);
 
     // General UI
     load_field(yaml, "extended-camera-hotkeys", g_config.extended_camera_hotkeys);
@@ -197,6 +198,7 @@ void save_config() {
     yaml << YAML::Comment("Launch settings");
     write_field(yaml, "disable-wmode-prompt", g_config.disable_wmode_prompt);
     write_field(yaml, "prefer-wmode", g_config.prefer_wmode);
+    write_field(yaml, "allow-multiple-instances", g_config.allow_multiple_instances);
     yaml << YAML::Newline << YAML::Newline;
 
     yaml << YAML::Comment("General UI");

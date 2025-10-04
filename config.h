@@ -7,6 +7,7 @@ struct Config {
     // Launch settings
     bool disable_wmode_prompt = true;
     bool prefer_wmode = false;
+    bool allow_multiple_instances = false;
 
     // General UI
     bool extended_camera_hotkeys = true;
