@@ -1762,6 +1762,21 @@ bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranGoliath
         || unit_id == UnitId::TerranTiangou;
 }
+
+bool has_interruptable_windup(UnitId::Enum unit_id) {
+    return unit_id == UnitId::TerranCyprian
+        || unit_id == UnitId::TerranEidolon
+        || unit_id == UnitId::TerranGoliath;
+}
+
+SoundId::Enum get_windup_sfx(UnitId::Enum unit_id) {
+    switch (unit_id) {
+        case UnitId::TerranCyprian: return bw::SoundSet{SoundId::CyprianWindup01, SoundId::CyprianWindup03}.rand();
+        case UnitId::TerranEidolon: return bw::SoundSet{SoundId::EidolonWindup01, SoundId::EidolonWindup03}.rand();
+        case UnitId::TerranGoliath: return bw::SoundSet{SoundId::GoliathTwinAutocannonWindup01, SoundId::GoliathTwinAutocannonWindup03}.rand();
+    }
+    return SoundId::None;
+}
 } // namespace UnitId
 
 namespace WeaponId {
