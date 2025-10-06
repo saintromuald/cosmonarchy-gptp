@@ -1419,7 +1419,6 @@ namespace hooks {
             case UnitId::ZergDroleth:
             case UnitId::ZergGosvileth: {
                 unit_ext.values[ValueOriginatedFromGosvileth] = unit->id == UnitId::ZergGosvileth;
-
                 if (unit->id == UnitId::ZergDroleth) {
                     // Temporary? fix for order queue insanity. -Pr0nogo
                     // DOES NOT FIX AI!
@@ -1427,10 +1426,6 @@ namespace hooks {
                     if (unit->main_order_id == OrderId::MorphUnit && queued_id != UnitId::None && queued_id != UnitId::ZergGosvileth) {
                         unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
                     }
-                }
-
-                if (unit->main_order_id == OrderId::DroneLand) {
-                    // TODO: check if it collides with a building, and order it to decollide, without the conditionals being too expensive or naive. -Pr0nogo
                 }
             } break;
             case UnitId::ZergEvigrilisk: {
@@ -1566,7 +1561,7 @@ namespace hooks {
                     if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) && !unit_id_is_broodspawn(corpse_ext->unit_id)) {
                         Unit* egg = bw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
                         if (egg) {
-                            set_custom_egg(egg, UnitId::ZergSovroleth, 4 * 24);
+                            set_custom_egg(egg, UnitId::ZergSovroleth, units_dat::time_cost[UnitId::ZergSovroleth] / 2);
                         }
                         auto& egg_ext = egg->ext();
                         egg_ext.values[ValueNoCorpse] = true;

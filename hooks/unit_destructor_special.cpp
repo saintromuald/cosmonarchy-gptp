@@ -281,12 +281,26 @@ void unit_on_death_behaviors(Unit* unit) {
                     clear_maledictus(unit, malefactor);
                 }
             } break;
+            case UnitId::ProtossSycophant: {
+                // Sycophant - Idolatry, on-death proc
+                auto shielded = g_unit_search.radial_ex(unit, ProtossSycophant::IdolatryDeathRange, FilterCompleted | FilterAlly);
+                for (auto shieldee : shielded) {
+                    Unit* shieldee_unit = (Unit*)shieldee; // Needed to use member functions
+                    if (shieldee_unit->has_shields()) {
+                        shieldee_unit->heal_shields(ProtossSycophant::IdolatryDeathShieldHeal, unit);
+                        helper::add_overlay_below_main(shieldee_unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+                    }
+                };
+            } break;
+            case UnitId::ProtossArchon: {
+                g_iquare_globals->create_effect(EffectId::PsiStormPersistent, 10 * 24 + 1, {(u16)unit->position.x, (u16)unit->position.y}, Point16{4 * 32, 4 * 32},
+                    SpriteId::Psionic_Storm, 20, unit->player, unit);
+            } break;
         }
     }
 
     { // Spellcaster - restore energy on enemy death
         auto casters = g_unit_search.radial_ex(unit, unit->get_sight_range() * 32, FilterEnemy | FilterSpellcaster | FilterEnabled);
-
         for (Unit* caster : casters) {
             if (bw::distance_between(unit->position, caster->position) <= caster->get_sight_range() * 32) {
                 caster->heal_energy(5 * 256);
@@ -297,7 +311,6 @@ void unit_on_death_behaviors(Unit* unit) {
 
     if (!unit_id_is_spell(unit->id)) { // Mortothrokor - Whetted Appetite - Add stacks when in vision
         auto mortothrokors = g_unit_search.radial_ex(unit, units_dat::sight_range[UnitId::ZergMortothrokor] * 32, 0, {UnitId::ZergMortothrokor});
-
         for (Unit* mortothrokor : mortothrokors) {
             if (bw::distance_between(unit->position, mortothrokor->position) <= mortothrokor->get_sight_range() * 32) {
                 UnitExt* unit_ext = get_unit_ext(mortothrokor);
@@ -313,9 +326,9 @@ void unit_on_death_behaviors(Unit* unit) {
         Unit* attacker = unit_ext.units[UnitPlagueSource];
         u32 attacking_player = attacker ? attacker->player : 11;
         if (unit_ext.values[ValueMiasma]) {
-            g_iquare_globals->create_effect(EffectId::MiasmaPlagueField, 2 * 32, { (u16)unit->position.x, (u16)unit->position.y }, 1.5 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
+            g_iquare_globals->create_effect(EffectId::MiasmaPlagueField, 2 * 24, { (u16)unit->position.x, (u16)unit->position.y }, 1.5 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
         } else {
-            g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5 * 32, { (u16)unit->position.x, (u16)unit->position.y }, 1.5 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
+            g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5 * 24, { (u16)unit->position.x, (u16)unit->position.y }, 1.5 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
         }
     }
 

@@ -655,14 +655,6 @@ namespace hooks {
                     g_iquare_globals->create_effect(EffectId::ReclamationField, 36, data.target->position, 2 * 32, SpriteId::CausticDischarge,
                         data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
                 } break;
-                case WeaponId::PotentateTalismanicWeaver: {
-                    if (!bw::is_allied_to(data.target->player, data.attacker->player) && weapon_damage_current_bullet) {
-                        BulletExt* bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
-                        if (bullet_ext->distance_traveled <= 4 * 32) { // This should be 3, added 1 range of padding for edge to edge. -Pr0nogo
-                            ascend_in_area(data.attacker->player, data.attacker->position, 3 * 32);
-                        }
-                    }
-                } break;
                 case WeaponId::MindTyrantMaledictus: {
                     helper::mind_control_hit(data.attacker, data.target);
                 } break;
@@ -890,7 +882,8 @@ namespace hooks {
                             bw::create_and_init_thingy(overlay_id, data.target->position.x, data.target->position.y, data.attacker->player, data.target->sprite->elevation + 1);
                         }
                     } break;
-                    case WeaponId::HeraldStellarTorch: {
+                    case WeaponId::HeraldStellarTorch:
+                    case WeaponId::ArchonPsionicShockwave: {
                         if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
                             // TODO: Audiovisuals
                             target_ext->timers[TimerTriumphantRiseDebuff] = 36;
@@ -923,32 +916,20 @@ namespace hooks {
                         helper::apply_corrosive_spores(data.target);
                     } break;
                     case WeaponId::VithriliskCorrosiveSpores: {
-                        // Vithrilisk - Critical Mass
-                        // TODO: Unit search
-                        if (target_ext->values[ValueCorrosiveTouchStacks]) {
-                            s32 range = 160;
-                            bw::UnitFinder(
-                                data.target->get_x() - 96,
-                                data.target->get_y() - 96,
-                                data.target->get_x() + 96,
-                                data.target->get_y() + 96
-                            ).for_each([&](Unit* target) {
-                                if (target->status & UnitStatus::Burrowed) {
-                                    return;
-                                }
-                                if (target->status & UnitStatus::Invincible) {
-                                    return;
-                                }
-                                if (bw::is_allied_to(data.attacker->player, target->player)) {
-                                    return;
-                                }
-                                helper::apply_corrosive_spores(target);
-                                Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, target->get_x(), target->get_y(), 11);
-                                if (thingy) {
-                                    thingy->sprite->elevation = target->sprite->elevation + 1;
-                                    helper::set_thingy_visibility_flags(thingy);
-                                }
-                            });
+                        // Vithrilisk - Corrosive Pathogen
+                        u32 search_margin  = Vithrilisk::CorrosivePathogenRange;
+                        Box32 search_area  = {};
+                        search_area.left   = data.target->position.x - search_margin;
+                        search_area.top    = data.target->position.y - search_margin;
+                        search_area.right  = data.target->position.x + search_margin;
+                        search_area.bottom = data.target->position.y + search_margin;
+                        for (Unit* unit : g_unit_search.rect(search_area).filter(data.attacker, FilterEnemy | FilterIncludingSelf)) {
+                            helper::apply_corrosive_spores(unit);
+                            Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, unit->get_x(), unit->get_y(), 11);
+                            if (thingy) {
+                                thingy->sprite->elevation = unit->sprite->elevation + 1;
+                                helper::set_thingy_visibility_flags(thingy);
+                            }
                         }
                     } break;
                     case WeaponId::ZoryusthalethMonstrousMaw: {
@@ -970,7 +951,8 @@ namespace hooks {
                         }
                     } break;
                     case WeaponId::HierophantPhaseSignifier:
-                    case WeaponId::EpigraphLitanyCannons: {
+                    case WeaponId::EpigraphLitanyCannons:
+                    case WeaponId::PatriarchIronhandWeaver: {
                         target_ext->values[ValueSignifyStacks]++;
                         target_ext->timers[TimerSignify] = 3 * 24 + 1;
                         target_ext->values[ValueSignifyPlayer] = data.attacking_player_id;
@@ -1003,15 +985,6 @@ namespace hooks {
                         // Charlatan - Leading the Blind passive
                         if (!bw::is_allied_to(data.attacker->player, data.target->player)) {
                             bw::apply_hallucinating(data.target, data.attacker->player, 25);
-                        }
-                    } break;
-                    case WeaponId::PatriarchIronhandWeaver: {
-                        if (data.attacking_player_id != data.target->player
-                        && !bw::is_allied_to(data.attacking_player_id, data.target->player)
-                        &&  target_ext->timers[TimerPatriarchAstralRule] == 0)
-                        {
-                            target_ext->values[ValuePatriarchAstralRulePlayer] = data.attacking_player_id;
-                            target_ext->timers[TimerPatriarchAstralRule] = 24 + 1;
                         }
                     } break;
                     case WeaponId::MagisterNeutronCannon: {
@@ -1148,16 +1121,6 @@ namespace hooks {
                     helper::do_unit_event_notification(data.target, 17, sfx_dat::portrait_duration[sound] + 1000 * (sfx_dat::sound_data[sound].duration_ms / 1000), 0, sound);
                 }
                 fatal_deal_damage = false;
-            } break;
-            case UnitId::ProtossArchon: {
-                // Archon - Astral Aegis
-                auto shielded = g_unit_search.radial_ex(data.target, ProtossArchon::AstralAegisRange, FilterCompleted);
-                for (auto shieldee : shielded) {
-                    Unit* shieldee_unit = (Unit*)shieldee; // Needed to use member functions
-                    if (shieldee_unit->has_shields()) {
-                        shieldee_unit->heal_shields(ProtossArchon::AstralAegisShieldHeal, data.target);
-                    }
-                };
             } break;
             case UnitId::ProtossAurora: {
                 // Last Orders - Aurora behavior

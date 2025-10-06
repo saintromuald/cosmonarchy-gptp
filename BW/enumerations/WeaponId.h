@@ -55,9 +55,9 @@ namespace WeaponId {
         Venom_Unused_Defiler					 = 0x32,
         Venom_Unused_Defiler_Hero				 = 0x33,
         SpraithCesiantSeekerSpores				 = 0x34,
-        SunkenColonySubterraneanTentacle		 = 0x35,
+        SurkithCesiantSubterraneanTentacle		 = 0x35,
         InfestedTerranSuicide					 = 0x36,
-        ScourgeSuicide							 = 0x37,
+        SkryrokorSuicide							 = 0x37,
         MatralethParasite						 = 0x38,
         SpawnBroodlings							 = 0x39,
         Ensnare									 = 0x3A,
@@ -145,6 +145,8 @@ namespace WeaponId {
         AckmedMickenMelter					= 248,
         GoskaMedusaRifle					= 249,
         StroluumMagnatesMaw					= 251,
+        KerriganC10CanisterRifle            = 253,
+        KerriganClaws                       = 254,
 
         // Factional \\
             
@@ -154,6 +156,8 @@ namespace WeaponId {
         TarasqueHedonCannon					= 135,
         TarasqueAcceleratedPlasmid			= 136, // Tarasque mobile weapon
         SouthpawKnockoutDrivers				= 169,
+        MadrigalHecatonAngeltearMissiles    = 188,
+        PhilocHeirloomBatteries				= 203,
         HotshotDispatchShotgun				= 208,
         AurielQuarternaryRifle				= 209,
         AdherentPhaseBlade					= 210,
@@ -164,6 +168,7 @@ namespace WeaponId {
         IziraliskCorrosiveBioplasma			= 221,
         EcclesiastKhalendricAvengingBlaster = 224,
         AshguardPhaseCremator               = 229,
+        LakiziliskZorthosSuccessiveSpines   = 230,
         QuazrokorQuazrokSpray               = 232,
         DracadinOrderPhaseDisruptor         = 233,
         TiangouMoonboundSalvo               = 234,
@@ -173,6 +178,7 @@ namespace WeaponId {
         InzorthrokorInzorReflux             = 238,
         BlackguardAsoniCarbine              = 240,
         ArhaunPhlegethonCannon              = 241,
+        CannibalZuluSidekicks               = 243,
 
         // Terran \\
             
@@ -192,7 +198,6 @@ namespace WeaponId {
         CyprianTwinRailguns					= 26,
         PenumbraErebolShockCannon			= 39,
         PazuzuJupiterDriver					= 51,
-        TalosSalvage						= 57,  // Talos ability targeting
         SavantDiscoidRailgun				= 88,
         LobotomyMineExplosion				= 89,
         CyclopsFlakCannons					= 93,
@@ -236,7 +241,7 @@ namespace WeaponId {
         HypnagogueThroughTheLookingGlass	= 183, // Ability targeting
         SilvertongueWordsmithRailgun		= 184,
         DiademIonCannon						= 198,
-        SavantDiscoidRailgunEntropy		= 199,
+        SavantDiscoidRailgunEntropy		    = 199,
         SevenstepGeometricRiflePiercing		= 200,
         MatadorTwinstrikeCannons			= 201,
         SalamanderAngeltearRockets			= 216,
@@ -272,11 +277,12 @@ namespace WeaponId {
         EpigraphLitanyCannons				= 132,
         EmpressFadingBioplasma				= 138,
         AnthelionEventHorizon				= 139,
+        ArtisanNeutronSaber                 = 144,
         VagrantVapidBlaster					= 148,
         MatrixKhaydarinRay					= 149,
         HeraldStellarTorch					= 160,
         OptectonSunsplitBeam				= 185,
-        OptectonSkybondRay					= 186, // unused
+        AutocortParticleRay					= 186,
         PatriarchIronhandWeaver				= 187,
         AccantorPlasmaShell					= 191,
         ServitorRecycledBlaster				= 193,
@@ -316,6 +322,7 @@ namespace WeaponId {
         ZergBlissfulEmbrace					= 127, // Ability targeting
         AxitriliskSearingVenom				= 134,
         IzirokorEnergizedBioplasma			= 142,
+        GosvilethGosvilSpines               = 143,
         KagraliskRepeatingVenom				= 145,
         EvigriliskBrutishTendrils			= 146,
         ZarcavrokorBisectingBlades			= 152,
@@ -329,8 +336,8 @@ namespace WeaponId {
         ZobrioliskRapidSpinesGround			= 167,
         TetcaerokorCleavingMaw				= 177,
         MortothrokorWickedIncisors			= 192,
-        SpirtithColonySpirtilSpores			= 178,
-        SkortrithColonySkortraTendril		= 180,
+        SpirtithCesiantSpirtilSpores		= 178,
+        SkortrithCesiantSkortraTendril		= 180,
         NathrokorNathrokClaws				= 204,
         GorgrokorCalcification				= 205,
         AlgoztaliskBottomlessSpinestacks	= 212,
@@ -338,10 +345,29 @@ namespace WeaponId {
         OkrimniliskOmnispores				= 214,
         CherbrathalorVenemousBursts			= 215,
         ZobrioliskRapidSpinesAir            = 231,
+        LiiraliskHomingSpore                = 242,
+
+        // Askosi \\
+
+        ProselyteDispatchPistols            = 49,
+        DyadTwintorch						= 57,
+        MissionaryAruoTwinshot              = 77, // was Didact weapon, hardcode beware
+        CardinalInoaTwinaxe                 = 82, // was Accantor weapon, hardcode beware
+        VicarOspoTwinshard                  = 122,
+        RoveElreScaleshot                   = 126,
+        ObjectOrliMallet                    = 127,
+        ScepterOrmaScrapray                 = 154,
+        IntendentErsaDriver                 = 155,
+        IntendentAlruBurstray               = 157,
+        HelionUskoScrapray                  = 179,
+        TiradeIktaDriver                    = 181,
+        AvatarReformingCarbine              = 182,
+        PilgrimMiningSaber                  = 239,
 
         // Misc \\
 
         SmoochieBoyKissingEmoji				= 196,
+        NoneNew                             = 255,
 
         Count = 256,
     };

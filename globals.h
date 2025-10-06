@@ -27,6 +27,7 @@ enum class EffectId {
     Irradiate,
     AspirantCriticality,
     PsiStorm,
+    PsiStormPersistent,
     HallucinatingField,
     LanifectDisruptionField,
     StarSovereignTheGriefOfAllGods,

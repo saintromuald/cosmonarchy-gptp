@@ -1212,6 +1212,8 @@ namespace ImageId {
         QuaziliskMutate								= 1751,
         NathrokorMutate								= 1754,
 
+        StrigaAttackOverlay                         = 1768,
+
         OcsalRegressionOverlay						= 1778,
         TyrannyOverlay								= 1779,
 
@@ -1309,6 +1311,8 @@ namespace ImageId {
         CorrosiveTouchExplosionMedium               = 2038,
 
         CorrosiveTouchExplosionSmall                = 2043,
+
+        CikraliskAttackOverlay                      = 2056,
 
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,

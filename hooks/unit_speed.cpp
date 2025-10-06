@@ -149,9 +149,16 @@ namespace hooks {
         }
 
         switch (unit->id) {
-            case UnitId::TerranBlackjack:
+            case UnitId::TerranBlackjack: {
+                // Wear and Tear: reduce movement speed based on missing health
+                if (unit_ext.values[ValueWearAndTear]) {
+                    speed *= 0.66;
+                } else {
+                    speed *= 1.2;
+                }
+            } break;
             case UnitId::TerranBlackjackGolden: {
-                // Blackjack Wear and Tear: reduce movement speed based on missing health
+                // Wear and Tear: reduce movement speed based on missing health
                 if (unit_ext.values[ValueWearAndTear]) {
                     speed *= 0.66;
                 } else {
@@ -159,7 +166,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::ZergUltrokor: {
-                // Ultrakor Kaiser Rampage: gains 200% movespeed on kill for 1 second
+                // Ultrokor Kaiser Rampage: gains 200% movespeed on kill for 1 second
                 speed *= 1.2;
                 if (unit_ext.timers[TimerKaiserRampage]) {
                     speed *= 2;
@@ -197,9 +204,7 @@ namespace hooks {
             case UnitId::TerranCleric:
             case UnitId::TerranClericFuturist:
             case UnitId::TerranEidolon:
-            case UnitId::TerranMadcap:
             case UnitId::TerranApostle:
-            case UnitId::TerranOlympian:
             case UnitId::TerranCataphract:
             case UnitId::ProtossDracadin:
             case UnitId::ZergQuazrokor:
@@ -211,7 +216,8 @@ namespace hooks {
                 speed *= 1.15;
             } break;
             case UnitId::TerranMaverickFuturist:
-            case UnitId::TerranCyprian:
+            case UnitId::TerranMadcap:
+            case UnitId::TerranOlympian:
             case UnitId::TerranSevenstep:
             case UnitId::ProtossAtreus:
             case UnitId::ProtossCabalist:
@@ -227,14 +233,16 @@ namespace hooks {
             case UnitId::ProtossGolem:
             case UnitId::ProtossSycophant:
             case UnitId::ZergZethrokor:
-            case UnitId::ZergAxitrilisk:
-            case UnitId::ZergLakizilisk:
-            case UnitId::ZergLakiziliskZorthos: {
+            case UnitId::ZergAxitrilisk: {
                 speed *= 1.25;
             } break;
+            case UnitId::TerranCyprian:
             case UnitId::ZergYblyleth:
-            case UnitId::ZergInzorthrokor:
             case UnitId::ZergVorvrokor:
+            case UnitId::ZergCikralisk:
+            case UnitId::ZergInzorthrokor:
+            case UnitId::ZergLakizilisk:
+            case UnitId::ZergLakiziliskZorthos:
             case UnitId::ZergZobriolisk: {
                 speed *= 1.3;
             } break;
