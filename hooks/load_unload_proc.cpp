@@ -66,29 +66,9 @@ static bool fix_unload_pos(Unit* unit, Point16* pos) {
     if (unit->is_building()) {
         static constexpr auto Tolerance = 3;
         *pos = bw::align_to_tile_grid(*pos, (UnitId::Enum)unit->id);
-
-        std::optional<Point16> best_pos;
-        u32 best_distance = UINT_MAX;
-
-        for (s32 x = -Tolerance; x <= Tolerance; x++) {
-            for (s32 y = -Tolerance; y <= Tolerance; y++) {
-                Point16 new_pos = *pos;
-                new_pos.x += x * 32;
-                new_pos.y += y * 32;
-                new_pos = bw::align_to_tile_grid(new_pos, (UnitId::Enum)unit->id);
-
-                if (bw::check_building_collision((UnitId::Enum)unit->id, unit->player, new_pos)) {
-                    u32 distance = bw::distance_between(new_pos, *pos);
-                    if (distance < best_distance) {
-                        best_pos = new_pos;
-                        best_distance = distance;
-                    }
-                }
-            }
-        }
-
+        Point16 best_pos = bw::get_building_reposition(unit, *pos);
         if (best_pos) {
-            *pos = *best_pos;
+            *pos = best_pos;
             return true;
         }
         return false;

@@ -34,6 +34,7 @@ constexpr u32 AirToGroundDistance = 42;
 
 namespace CommonBehavior {
 inline constexpr s32 MeleeWeaponDistance = 30;
+inline constexpr s32 MissileSplitProcDistance = 1 * 32;
 }
 
 // TERRAN \\
@@ -188,7 +189,6 @@ inline constexpr s32 WeaponRadiusOuter = 192;
 }
 
 namespace ProtossReactivePayload {
-inline constexpr s32 SplitProcDistance = 1 * 32;
 inline constexpr s32 SplitPeriod = 4 * 32;
 inline constexpr s32 SplitSearchRadius = 3 * 32;
 }

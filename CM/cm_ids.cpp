@@ -977,6 +977,12 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             offsets.fake_count = 1;
             return &offsets;
         } break;
+        case WeaponId::KethrostalorStaggeredSpores: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueKethrostalorLaunchPos;
+            offsets.count = 5;
+            return &offsets;
+        } break;
     }
     return nullptr;
 }
@@ -1156,7 +1162,7 @@ u32 get_death_sfx_id(u32 unit_id) {
         case UnitId::ZergVithrilisk:	return SoundId::Zerg_Devourer_ZDvDth00_WAV;
         case UnitId::ZergAlkajelisk:	return SoundId::Zerg_Guardian_ZGuDth00_WAV;
         case UnitId::ZergUltrokor:		return SoundId::Zerg_Ultra_ZUlDth00_WAV;
-        case UnitId::ZergZarcavrokor:	return SoundId::Zerg_Guardian_ZGuDth00_WAV;
+        case UnitId::ZergZarcavrokor:	return bw::rand_between(SoundId::GorgrokorDeath01, SoundId::GorgrokorDeath02);
         case UnitId::ZergTetcaerokor:	return SoundId::Zerg_Hydra_ZHyDth00_WAV;
         case UnitId::ZergAkistrokor:	return SoundId::Zerg_Queen_ZQuDth00_WAV;
 
@@ -1887,7 +1893,7 @@ u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {
     return 1;
 }
 
-bool weapon_id_splits_reactive_payload(WeaponId::Enum weapon_id) {
+bool weapon_splits(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::ArchitectDispersiveSalvo;
 }
 

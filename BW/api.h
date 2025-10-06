@@ -829,6 +829,9 @@ inline bool set_ingame_loop_state(bool new_state) {
 //////////////////////////////////////////////////////////////// @}
 
 bool can_spawn_broodling(Unit* target);
+void clone_unit_traits(Unit* new_unit, Unit* old_unit);
+Unit* create_hidden_unit(UnitId::Enum unit_id, s32 count, u32 player, Point16 position, Unit* creator, bool clone = false);
+Unit* create_unit_from_bullet(UnitId::Enum unit_id, u32 player, Point16 position, Unit* reference = nullptr);
 void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator = nullptr);
 u16 get_last_queue_slot_id(Unit* a1);
 s32 dir_saturate(s32 direction, s32 value);
@@ -1040,4 +1043,5 @@ void zap_overlay(Unit* unit);
 void play_manual_weaponfire_sound(Unit* unit, WeaponId::Enum weapon_id);
 void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id);
 u32 get_weapon_hit_sound(WeaponId::Enum weapon_id);
+Point16 get_building_reposition(Unit* unit, Point16 position);
 } // namespace bw

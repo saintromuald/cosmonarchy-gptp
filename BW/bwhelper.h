@@ -678,7 +678,7 @@ namespace helper {
     void do_missile_damage(Bullet* bullet);																							// 0048B770
 
     // For bulletBehavior_Bounce
-    Bullet* change_move_pos(Bullet* bullet, s32 a2, s32 a3);																		// 00495240
+    Bullet* change_move_pos(Bullet* bullet, s32 pos_y, s32 pos_x);																		// 00495240
     void progress_bullet_movement(Bullet* bullet);																						// 0048B250
     Unit* find_next_bounce_target(Bullet* bullet);																						// 0048B1E0
 

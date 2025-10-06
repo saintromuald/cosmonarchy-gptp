@@ -997,6 +997,34 @@ void refresh_console() { // 004C36C0
     g_control_under_mouse_value = 0;
 }
 
+void clone_unit_traits(Unit* new_unit, Unit* old_unit) {
+    new_unit->hitpoints = std::max(256, old_unit->hitpoints);
+    new_unit->shields = std::max(256, old_unit->shields);
+    bw::inherit_debuffs(old_unit, new_unit);
+    inherit_selection(old_unit, new_unit);
+}
+
+Unit* create_hidden_unit(UnitId::Enum unit_id, s32 count, u32 player, Point16 position, Unit* creator, bool clone) {
+    Unit* unit = bw::create_unit_in_game(unit_id, player, position.x, position.y, creator, false, true);
+    if (clone) {
+        clone_unit_traits(unit, creator);
+    }
+    helper::hide_and_disable_unit(unit);
+    return unit;
+}
+
+Unit* create_unit_from_bullet(UnitId::Enum unit_id, u32 player, Point16 position, Unit* reference) {
+    Unit* unit = bw::create_unit_in_game(unit_id, player, position.x, position.y, reference, false);
+    if (reference) {
+        spread_debuffs(reference, unit);
+        auto& reference_ext = reference->ext();
+        if (reference_ext.values[ValueIsCloning]) {
+            clone_unit_traits(unit, reference);
+        }
+    }
+    return unit;
+}
+
 void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator) {
     u32 remove_timer = 0;
     switch (unit_id) {
@@ -1012,6 +1040,7 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
             return;
         }
         bw::give_ai_ex(unit);
+        auto& unit_ext = unit->ext();
         if (creator) {
             spread_debuffs(creator, unit);
             if (creator->status & UnitStatus::IsHallucination) {
@@ -1020,16 +1049,14 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
                 unit->remove_timer = 1350;
                 unit->sprite->create_overlay(ImageId::HallucinationDeath3);
             }
+
+            auto& creator_ext = creator->ext();
+            if (creator_ext.values[ValueIsCloning]) {
+                clone_unit_traits(unit, creator);
+                bw::play_sound(UnitId::get_unit_ready_sound(static_cast<UnitId::Enum>(unit->id)), unit->position);
+            }
         }
 
-        auto& unit_ext = unit->ext();
-        if (creator && creator->ext().values[ValueIsCloning]) {
-            unit->hitpoints = std::max(256, creator->hitpoints);
-            unit->shields = std::max(256, creator->shields);
-            bw::inherit_debuffs(creator, unit);
-            inherit_selection(creator, unit);
-            bw::play_sound(UnitId::get_unit_ready_sound(static_cast<UnitId::Enum>(unit->id)), unit->position);
-        }
         switch (unit_id) {
             case UnitId::ZergRilirokor:
             case UnitId::ZergRililisk: {
@@ -3964,6 +3991,7 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::QuazrokorQuazrokSpray:               return bw::rand_between(SoundId::QuazrokorWeaponfire01, SoundId::QuazrokorWeaponfire01);
         case WeaponId::HydraliskNeedleSpines:               return SoundId::Bullet_SpoogHit_wav;
         case WeaponId::HydraliskOrkotiNeedleSpores:         return bw::rand_between(SoundId::HydraliskOrkotiWeaponfire01, SoundId::HydraliskOrkotiWeaponfire03);
+        case WeaponId::KethrostalorStaggeredSpores:         return bw::rand_between(SoundId::KethrostalorWeaponfire01, SoundId::KethrostalorWeaponfire03);
 
         case WeaponId::SmoochieBoyKissingEmoji:             return bw::rand_between(SoundId::SmoochieBoyWeaponfire01, SoundId::SmoochieBoyWeaponfire03);
     }
@@ -4007,10 +4035,11 @@ u32 get_weapon_hit_sound(WeaponId::Enum weapon_id) {
         case WeaponId::KagraliskRepeatingVenom:           return bw::rand_between(SoundId::BactaliskWeaponhit01, SoundId::BactaliskWeaponhit03);
         case WeaponId::CherbrathalorVenemousBursts:       return SoundId::Bullet_ZQuHit02_wav;
         case WeaponId::OkrimniliskOmnispores:             return SoundId::Bullet_ZLuHit00_wav;
+        case WeaponId::KethrostalorStaggeredSpores:       return bw::rand_between(SoundId::KethrostalorWeaponhit01, SoundId::KethrostalorWeaponhit05);
         case WeaponId::AlkajeliskPlasmidSpores:           return SoundId::Bullet_ZLuHit00_wav;
         case WeaponId::KonviliskSowingSpines:             return bw::rand_between(SoundId::KonviliskWeaponhit01, SoundId::KonviliskWeaponhit03);
         case WeaponId::SpraithCesiantSeekerSpores:        return bw::rand_between(SoundId::SpraithCesiantWeaponhit01, SoundId::SpraithCesiantWeaponhit02);
-        case WeaponId::SpirtithCesiantSpirtilSpores:       return bw::rand_between(SoundId::SpirtithWeaponhit01, SoundId::SpirtithWeaponhit02);
+        case WeaponId::SpirtithCesiantSpirtilSpores:      return bw::rand_between(SoundId::SpirtithWeaponhit01, SoundId::SpirtithWeaponhit02);
 
         case WeaponId::SmoochieBoyKissingEmoji:           return bw::rand_between(SoundId::SmoochieBoyWeaponhit01, SoundId::SmoochieBoyWeaponhit04);
     }
@@ -4122,7 +4151,6 @@ bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos) {
             }
         }
     }
-
     return true;
 }
 
@@ -4230,11 +4258,11 @@ void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, co
             continue;
         }
         has_source = true;
-        UnitExt& source_ext = source->ext();
+        auto& source_ext = source->ext();
         source_ext.timers[TimerBindingPlasmaChargeOverlay] = 3;
     }
 
-    UnitExt& unit_ext = unit->ext();
+    auto& unit_ext = unit->ext();
     if (has_source) {
         if (unit_ext.timers[options.timer_id] % Protoss::BindingPlasmaTimer == Protoss::BindingPlasmaTimer - 1) {
             bw::add_unit_overlay(unit, ImageId::BindingPlasmaOverlay);
@@ -4248,6 +4276,29 @@ void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, co
         unit_ext.timers[options.timer_id] = 0;
         unit_ext.values[options.stack_value_id] = 0;
     }
+}
+
+Point16 get_building_reposition(Unit* unit, Point16 position) {
+    static constexpr auto Tolerance = 3;
+    Point16 best_pos = {};
+    u32 best_distance = UINT_MAX;
+    for (s32 x = -Tolerance; x <= Tolerance; x++) {
+        for (s32 y = -Tolerance; y <= Tolerance; y++) {
+            Point16 new_pos = position;
+            new_pos.x += x * 32;
+            new_pos.y += y * 32;
+            new_pos = bw::align_to_tile_grid(new_pos, static_cast<UnitId::Enum>(unit->id));
+
+            if (bw::check_building_collision(static_cast<UnitId::Enum>(unit->id), unit->player, new_pos)) {
+                u32 distance = bw::distance_between(new_pos, position);
+                if (distance < best_distance) {
+                    best_pos = new_pos;
+                    best_distance = distance;
+                }
+            }
+        }
+    }
+    return best_pos;
 }
 
 } // namespace bw

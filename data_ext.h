@@ -236,6 +236,10 @@ enum ExtValueId {
     ValueNoCollision,
     ValueAirTransport,
     ValueIzirokorLaunchPos,
+    ValueSwarmingOmenPlayer,
+    ValueKethrostalorLaunchPos,
+    ValueBloodyRain,
+    ValueDontProcOnDeathEffects,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -568,6 +572,8 @@ struct BulletExt {
     bool bounced;
     bool is_phantom;
     bool did_pierce;
+
+    Unit* cargo;
 };
 
 struct SpriteExt {
