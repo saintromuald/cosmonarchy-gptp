@@ -230,6 +230,8 @@ enum ExtValueId {
     ValueCritter,
     ValueBlackguardLaunchPos,
     ValueArhaunLaunchPos,
+    ValueDelayedRallyMoveX,
+    ValueDelayedRallyMoveY,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -391,6 +393,7 @@ enum ExtTimerId {
     TimerRecallInterval,
     TimerAdaptiveAmitosisGrowth,
     TimerWanderDelay,
+    TimerDelayedRally,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

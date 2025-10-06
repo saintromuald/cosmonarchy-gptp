@@ -1456,7 +1456,8 @@ namespace hooks {
                                 }
                             } break;
                             case UnitId::ProtossScribe:
-                            case UnitId::ProtossPrudence: {
+                            case UnitId::ProtossPrudence:
+                            case UnitId::ProtossAutocort: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::ProtossNexus:
                                     case UnitId::ProtossPylon:
@@ -1506,7 +1507,8 @@ namespace hooks {
                             case UnitId::ProtossEmbassy: {
                                 if (current_button->requirement_var == UnitId::ProtossArtisan
                                 ||  current_button->requirement_var == UnitId::ProtossEnvoy
-                                ||  current_button->requirement_var == UnitId::ProtossWitness) {
+                                ||  current_button->requirement_var == UnitId::ProtossWitness
+                                ||  current_button->requirement_var == UnitId::ProtossAutocort) {
                                     current_button_state = Button_State::Enabled;
                                 } else {
                                     current_button_state = Button_State::Invisible;

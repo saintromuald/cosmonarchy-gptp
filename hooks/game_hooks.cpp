@@ -3514,6 +3514,12 @@ namespace hooks {
             }
         }
 
+        // Delayed rally
+        if (unit_ext.timers[TimerDelayedRally] == 1) {
+            hooks::move_to_rally(unit, unit->rally);
+            unit->rally = {};
+        }
+
         if (should_update_speed) {
             unit->update_speed();
         }

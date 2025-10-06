@@ -222,6 +222,7 @@ namespace UnitId {
         ProtossVagrantShade									= 351,
         ProtossAccantor										= 352,		// The new one
         ProtossVassal										= 360,		// The new one
+        ProtossAutocort                                     = 495,
 
     // Protoss-Unit-Factional
         ProtossPrudence										= 184,		// Independent Starport

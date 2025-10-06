@@ -509,10 +509,10 @@ namespace hooks {
         }
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossEmbassy)) {
             switch (unit_id) {
-                case UnitId::ProtossScribe:
                 case UnitId::ProtossArtisan:
                 case UnitId::ProtossEnvoy:
-                case UnitId::ProtossWitness: {
+                case UnitId::ProtossWitness:
+                case UnitId::ProtossAutocort: {
                     return true;
                 } break;
             }
@@ -743,7 +743,7 @@ namespace hooks {
         }
 
         // Structures
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe) || player_has_completed_unit_id(player_id, UnitId::ProtossPrudence)) {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe) || player_has_completed_unit_id(player_id, UnitId::ProtossAutocort)) {
             switch (unit_id) {
                 case UnitId::ProtossNexus:
                 case UnitId::ProtossPylon:
@@ -2060,7 +2060,8 @@ namespace hooks {
                 switch (unit_id) {
                     case UnitId::ProtossArtisan:
                     case UnitId::ProtossEnvoy:
-                    case UnitId::ProtossWitness: {
+                    case UnitId::ProtossWitness:
+                    case UnitId::ProtossAutocort: {
                         return TECH_ACTIVE;
                     }
                     return TECH_HIDDEN;
@@ -2331,7 +2332,8 @@ namespace hooks {
 
             // Structures
             case UnitId::ProtossScribe:
-            case UnitId::ProtossPrudence: {
+            case UnitId::ProtossPrudence:
+            case UnitId::ProtossAutocort: {
                 switch (unit_id) {
                     case UnitId::ProtossNexus:
                     case UnitId::ProtossPylon:
