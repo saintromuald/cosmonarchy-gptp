@@ -73,7 +73,7 @@ const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 
 	bool in_replay_or_witness = g_globals->players[g_local_nation_id].witness_mode || g_is_in_replay;
 
 	// Get game strings
-	const char* entry_name = g_stat_txt_tbl_new->get_string(entry_string_index);
+	const char* entry_name = WeaponId::get_name(unit, weapon_id);
 	const char* damage_string = g_stat_txt_tbl_new->get_string(777); // "Damage:"
 
 	UnitExt& unit_ext = unit->ext();
