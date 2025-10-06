@@ -362,28 +362,22 @@ namespace hooks {
 
         region_count = (*g_sai_paths)->region_count;
         v33 = 0;
-        if (region_count > 1)
-        {
+        if (region_count > 1) {
             v2 = 52;
             v34 = 52;
             region_count_zeroed = region_count - 1;
-            do
-            {
+            do {
                 player_regions = g_ai_region_captains[player_id];
                 v3 = *(&player_regions->state + v2);
                 military_region = (player_regions + v2);
-                if (v3 > 3u)
-                {
-                    if (v3 == 8)
-                    {
+                if (v3 > 3u) {
+                    if (v3 == 8) {
                         helper::ai_region_train_attack_force(military_region);
                     } else {
-                        if (v3 == 5 || v3 == 4)
-                        {
+                        if (v3 == 5 || v3 == 4) {
                             v33 = military_region;
                         }
-                        if (v3 < 7u)
-                        {
+                        if (v3 < 7u) {
                             defense_region_id = military_region->region;
                         } else {
                             defense_region_id = military_region->target_region;
@@ -392,27 +386,21 @@ namespace hooks {
                         defense_region_id_copy = defense_region_id;
                         i = player_regions[defense_region_id_copy].air_strength_needed;
                         defense_region = &player_regions[defense_region_id_copy];
-                        if (i)
-                        {
-                            for (i = i; i > region_air_strength; i = defense_region->air_strength_needed)
-                            {
+                        if (i) {
+                            for (i = i; i > region_air_strength; i = defense_region->air_strength_needed) {
                                 region_air_strength += helper::ai_defend_region(military_region, defense_region_id, 1, i - region_air_strength);
                             }
                         }
                         j = defense_region->ground_strength_needed;
                         region_gnd_strength = military_region->ground_strength_full;
-                        if (j)
-                        {
-                            for (j = j; j > region_gnd_strength; j = defense_region->ground_strength_needed)
-                            {
+                        if (j) {
+                            for (j = j; j > region_gnd_strength; j = defense_region->ground_strength_needed) {
                                 region_gnd_strength += helper::ai_defend_region(military_region, defense_region_id, defense_region->air_strength_enemy != 0, j - region_gnd_strength);
                             }
                         }
-                        if (g_aiscript_controller[player_id].ai_flags.flag_0x40)
-                        {
+                        if (g_aiscript_controller[player_id].ai_flags.flag_0x40) {
                             v15 = g_aiscript_controller[player_id].defense_priority_base;
-                            if (v15)
-                            {
+                            if (v15) {
                                 g_aiscript_controller[player_id].defense_priority_base = v15 - 1;
                             }
                             g_aiscript_controller[player_id].ai_flags.flag_0x40 = false;
@@ -460,21 +448,17 @@ namespace hooks {
                 transport_unit_id_2 = UnitId::ProtossEnvoy;
                 transport_unit_id_1 = UnitId::ProtossEnvoy;
             }
-            if (v33)
-            {
+            if (v33) {
                 transport_1_count = g_all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1];
                 transport_1_quantity = (g_aiscript_controller[player_id].ai_flags.is_use_map_settings) != 0 ? 2 : 5;
                 transport_1_priority = g_all_unit_count_table[0].player[player_id + 12 * transport_unit_id_1] != 0 ? 50 : 80;
-                if (transport_1_count < transport_1_quantity)
-                {
+                if (transport_1_count < transport_1_quantity) {
                     transport_1_request_count = transport_1_quantity - transport_1_count;
-                    while (1)
-                    {
+                    while (1) {
                         g_aiscript_controller[player_id].ai_flags.flag_0x40 = true;
                         transport_1_gas_cost = units_dat::vespene_cost[transport_unit_id_1];
                         transport_supply_cost = units_dat::supply_required[transport_unit_id_1];
-                        if (units_dat::base_property[transport_unit_id_1] & UnitProperty::TwoUnitsIn1Egg)
-                        {
+                        if (units_dat::base_property[transport_unit_id_1] & UnitProperty::TwoUnitsIn1Egg) {
                             transport_supply_cost *= 2;
                         }
                         v29 = g_aiscript_controller[player_id].vespene_needed;
@@ -483,8 +467,7 @@ namespace hooks {
                         g_aiscript_controller[player_id].supply_needed += transport_supply_cost;
                         helper::ai_add_spending_request(transport_unit_id_1, player_id, 1, transport_1_priority, v33);
                         helper::ai_add_base_unit_spending_request(transport_unit_id_2, player_id, v33, transport_1_priority);
-                        if (!--transport_1_request_count)
-                        {
+                        if (!--transport_1_request_count) {
                             break;
                         }
                         transport_unit_id_1 = transport_unit_id_2;
@@ -516,12 +499,10 @@ namespace hooks {
                 if (!refinery) {
                     return;
                 }
-
                 u8 worker_count = town->worker_count;
                 if (worker_count < town->worker_limit && worker_count < 15) {
                     return;
                 }
-
                 u32 refinery_id = get_refinery_id_from_race(player);
                 if (g_game_minerals[player] < units_dat::mineral_cost[refinery_id] / 2) {
                     return;
@@ -533,7 +514,6 @@ namespace hooks {
                 }
                 priority = 140;
             }
-
             u16 refinery_id = get_refinery_id_from_race(player);
             if (refinery_id != UnitId::None) {
                 helper::ai_add_town_spending_request(player, priority, refinery_id, town);
@@ -564,7 +544,6 @@ namespace hooks {
         if (!(unit->status & UnitStatus::Completed) || !helper::is_valid_for(unit->id, unit, 0)) {
             return false;
         }
-
         if (!unit->unit_ai || (unit->unit_ai->type != AiType::Guard && unit->unit_ai->type != AiType::Military)) {
             return false;
         }
@@ -574,7 +553,6 @@ namespace hooks {
             if (unit_id_is_transport(unit->id)) {
                 return false;
             }
-
             // Skip guards
             if (unit->unit_ai->type == AiType::Guard) {
                 return false;
@@ -587,7 +565,6 @@ namespace hooks {
             if (bw::is_attack_region(current_ai_region)) {
                 return false;
             }
-
             if (strict) {
                 // Skip units from regions that don't have strength needed defined, since they are hard to assess properly
                 // We will instead let AI assign units to defense regions and then pull the units to attack waves
@@ -595,7 +572,6 @@ namespace hooks {
                     return false;
                 }
             }
-
             // Skip units needed for defending regions, we take a portion of the needed force of less important regions,
             // and only excess force of the important regions
             u16 max_force = current_ai_region->defense_priority > 110 ? 0xffff : 100 * (g_elapsed_time_frames / 24 / 60);
@@ -610,7 +586,6 @@ namespace hooks {
         if (region->accessibility_flags == RegionAirOnly && unit->pathing_flags & 1) {
             return false;
         }
-
         return true;
     }
 
@@ -680,15 +655,12 @@ namespace hooks {
             if (unit->id != unit_id) {
                 continue;
             }
-
             if (!(unit->status & UnitStatus::Completed) || !helper::is_valid_for(unit->id, unit, 0)) {
                 continue;
             }
-            
             if (!unit->unit_ai || unit->unit_ai->type != AiType::Military) {
                 continue;
             }
-
             AiRegion* current_ai_region = unit->unit_ai->military_ai.region;
             if (bw::is_attack_region(current_ai_region)) {
                 continue;
@@ -696,12 +668,10 @@ namespace hooks {
             if (current_ai_region->defense_priority > 110) {
                 continue;
             }
-            
             f32 force = unit->ground_strength + unit->air_strength;
             if (!force) {
                 continue;
             }
-
             f32 distance = helper::get_path_distance_to(unit, position);
             f32 score = distance >= 1 ? force / distance : force;
             if (score > best_score) {
@@ -784,16 +754,13 @@ namespace hooks {
                     helper::ai_get_old_peons(town, 1);
                 }
             }
-
             if (town->in_battle) {
                 continue;
             }
-
             for (auto& request : town->requests) {
                 if (!request.count) {
                     break;
                 }
-
                 u32 existing_count = 0;
                 if (request.is_upgrade) {
                     existing_count = helper::get_upgrade_count(town, request.id);
@@ -804,12 +771,10 @@ namespace hooks {
                 } else {
                     existing_count = town_count_up_equivalents(*town, (UnitId::Enum)request.id);
                 }
-
                 u32 requested_count = request.count;
                 if (request.id == builder_id && requested_count > town->worker_limit) {
                     requested_count = town->worker_limit; // This is not supporting multiple worker ids properly (would have to count all worker ids in the town)
                 }
-
                 if (existing_count < requested_count) {
                     u32 count = requested_count - existing_count;
                     if (request.is_upgrade) {
@@ -834,7 +799,6 @@ namespace hooks {
                     }
                 }
             }
-
             // Requesting refineries is currently handled in custom_ai
         //	if (town->worker_count > 1 || (town->worker_count == 1 && town->main_building && race == RaceId::Protoss)) {
         //		hooks::ai_build_gas_node(town);
@@ -944,8 +908,7 @@ namespace hooks {
         } else {
             switch (unit_id) {
                 case UnitId::TerranAnchor:
-            //	case UnitId::TerranTencendur:
-                {
+            	case UnitId::TerranTencendur: {
                     if (!helper::get_bunker_position(player, &build_pos)) {
                         build_pos = town->position;
                     }

@@ -1213,13 +1213,17 @@ namespace hooks {
             bullet_ext->bounced = true;
             u8 next_bounce = bullet->remaining_bounces - 1;
             // Gladius infinite bouncing
-            if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry) {
+            bool is_binding_plasma = WeaponId::weapon_id_bounces_binding_plasma(static_cast<WeaponId::Enum>(bullet->weapon_id));
+            if (is_binding_plasma) {
                 next_bounce = 1;
             }
 
             bullet->remaining_bounces = next_bounce;
             g_iquare_globals->bounce_bullet = bullet;
             Unit* target = helper::find_next_bounce_target(bullet);
+            if (!WeaponId::can_attack_target(static_cast<WeaponId::Enum>(bullet->weapon_id), target)) {
+                target = 0; // TODO: Hook find_next_bounce_target / whatever other func is needed and search for target with proper flags. -Pr0nogo
+            }
             bullet->next_bounce_unit = bullet->attack_target.unit;
             if (next_bounce && target) {
                 for (Image* image = bullet->sprite->images.head; image; image = image->link.next) {
@@ -1227,7 +1231,7 @@ namespace hooks {
                 }
                 bullet->attack_target.unit = target;
             } else {
-                if (bullet->weapon_id == WeaponId::GladiusPlasmaFlurry) {
+                if (is_binding_plasma) {
                     g_iquare_globals->remove_multihit_bullet(bullet);
                 }
                 target_unit = bullet->attack_target.unit;
@@ -1302,8 +1306,7 @@ namespace hooks {
         }
 
         // Gladius Binding Plasma behavior
-        if (g_iquare_globals->bounce_bullet->weapon_id == WeaponId::GladiusPlasmaFlurry)
-        {
+        if (WeaponId::weapon_id_bounces_binding_plasma(static_cast<WeaponId::Enum>(g_iquare_globals->bounce_bullet->weapon_id))) {
             if (target && *g_bullet_bounce_missile_next && (*g_bullet_bounce_missile_next)->sprite && target->sprite) {
                 if (g_iquare_globals->was_already_hit_by_multihit_bullet(g_iquare_globals->bounce_bullet, target)) {
                     return false;

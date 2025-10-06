@@ -228,8 +228,7 @@ namespace hooks {
             case UnitId::ZergSpirtithCesiant:
             case UnitId::ZergNydusCesiant:
             case UnitId::ZergKazitrithCesiant:
-            case UnitId::ZergOcsalCesiant:
-            {
+            case UnitId::ZergOcsalCesiant: {
                 return true;
             }
         }

@@ -941,6 +941,12 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             offsets.count = 1;
             return &offsets;
         } break;
+        case WeaponId::IzirokorEnergizedBioplasma: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueIzirokorLaunchPos;
+            offsets.count = 1;
+            return &offsets;
+        } break;
         case WeaponId::SkithrokorSkitteringSpores: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueSkithrokorLaunchPos;
@@ -1789,5 +1795,10 @@ u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {
 
 bool weapon_id_splits_reactive_payload(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::ArchitectDispersiveSalvo;
+}
+
+bool weapon_id_bounces_binding_plasma(WeaponId::Enum weapon_id) {
+    return weapon_id == WeaponId::OscilliantRotatingRay
+        || weapon_id == WeaponId::GladiusPlasmaFlurry;
 }
 } // namespace WeaponId

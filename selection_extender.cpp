@@ -7,8 +7,7 @@
 #include "config.h"
 #include "trigger_system/trigger_system.h"
 
-//C++
-//Commented patches are intended for functions that have been hooked in CMBW; edit hooks to reflect changes.
+// Commented patches are intended for functions that have been hooked in CMBW; edit hooks to reflect changes.
 
 static u32 tmp;
 
@@ -2315,26 +2314,26 @@ void __declspec(naked) combine_lists_patch_6F2D1() {
 
 namespace hooks {
     void inject_selection_extender() {
-        //CMDACT_Stimpack (0x004234D0)
+        // CMDACT_Stimpack (0x004234D0) -- hooked
         //memory_patch(0x004234D5, &ccmu_extender.new_client_selection_group);
         //memory_patch(0x004234F0, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //unit_CanCloak (0x00423540)
+        // unit_CanCloak (0x00423540)
         memory_patch(0x00423556, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004235CD, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //TechUseCheckForGroupEnergyCost (0x00423660)
+        // TechUseCheckForGroupEnergyCost (0x00423660)
         memory_patch(0x00423683, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004236A9, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSACT_AttackMove (0x00424380)
+        // BTNSACT_AttackMove (0x00424380)
         memory_patch(0x00424385, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004243DD, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //UnitStatCond_Powerup (0x00424520)
+        // UnitStatCond_Powerup (0x00424520)
         memory_patch(0x00424528, &ccmu_extender.new_selGroupHp);
 
-        //storeSelectionGroupHPAndType (0x00424540)
+        // storeSelectionGroupHPAndType (0x00424540)
         memory_patch(0x00424542, &ccmu_extender.new_selGroupType[1]);
         memory_patch(0x00424552, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00424565, &ccmu_extender.new_selGroupHp);
@@ -2349,221 +2348,221 @@ namespace hooks {
         memory_patch(0x00424623, &ccmu_extender.new_client_selection_group[5]);
         memory_patch(0x00424636, &ccmu_extender.new_selGroupHp[5]);
 
-        //isSelGroupUpdated (0x00424660)
+        // isSelGroupUpdated (0x00424660)
         memory_patch(0x00424663, &ccmu_extender.new_selGroupHp);
         memory_patch(0x00424668, &ccmu_extender.new_selGroupType);
         memory_patch(0x0042466D, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00424691, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //unitStatCond_Standard (0x00424980)
+        // unitStatCond_Standard (0x00424980)
         memory_patch(0x00424987, &ccmu_extender.new_selGroupHp);
 
-        //transport_status_update_drawn_values (0x00424FC0)
+        // transport_status_update_drawn_values (0x00424FC0)
         memory_patch(0x00424FCA, &ccmu_extender.new_selGroupHp[2]);
         memory_patch(0x0042514E, &ccmu_extender.new_selGroupHp);
 
-        //unit_stat_condition_building (0x00425180)
+        // unit_stat_condition_building (0x00425180)
         memory_patch(0x00425187, &ccmu_extender.new_selGroupHp);
 
-        //UnitStatCond_overlord (0x00425900)
+        // UnitStatCond_overlord (0x00425900)
         memory_patch(0x00425901, &ccmu_extender.new_selGroupHp);
 
-        //sub_425960 (0x00425960) -- hooked
+        // sub_425960 (0x00425960) -- hooked
     //	memory_patch(0x004259C3, &ccmu_extender.new_client_selection_group);
     //	memory_patch(0x004259C9, &ccmu_extender.new_client_selection_group[GroupWireframesCap]);
 
-        //UnitStatAct_Powerup (0x00426EE0)
+        // UnitStatAct_Powerup (0x00426EE0)
         memory_patch(0x00426F1E, &ccmu_extender.new_selGroupHp);
 
-        //unit_stat_act_standard (0x00426F50)
-        memory_patch(0x00426F5E, &ccmu_extender.new_selGroupHp);
+        // unit_stat_act_standard (0x00426F50)
+    //  memory_patch(0x00426F5E, &ccmu_extender.new_selGroupHp);
 
-        //UnitStatAct_CarrierReaver (0x004274A0)
+        // UnitStatAct_CarrierReaver (0x004274A0)
         memory_patch(0x004274CE, &ccmu_extender.new_selGroupHp);
 
-        //unit_stat_action_building (0x00427890)
+        // unit_stat_action_building (0x00427890) -- hooked
         //memory_patch(0x0042789D, &ccmu_extender.new_selGroupHp);
 
-        //btnscond_worker_is_building (0x00428310)
+        // btnscond_worker_is_building (0x00428310)
         memory_patch(0x00428311, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428327, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_LurkerStop (0x00428360)
+        // BTNSCOND_LurkerStop (0x00428360)
         memory_patch(0x00428373, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004283A5, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_Movement (0x004283C0)
+        // BTNSCOND_Movement (0x004283C0)
         memory_patch(0x004283C1, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004283DA, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_HasCargo (0x00428480)
+        // BTNSCOND_HasCargo (0x00428480)
         memory_patch(0x00428481, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428499, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_NoCargo (0x004284B0)
+        // BTNSCOND_NoCargo (0x004284B0)
         memory_patch(0x004284B1, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004284C9, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_HasCargoTerran (0x00428560)
+        // BTNSCOND_HasCargoTerran (0x00428560)
         memory_patch(0x00428571, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428587, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_NoCargoTerran (0x004285A0)
+        // BTNSCOND_NoCargoTerran (0x004285A0)
         memory_patch(0x004285B1, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004285C7, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_CanRepair (0x004285E0)
+        // BTNSCOND_CanRepair (0x004285E0)
         memory_patch(0x004285E1, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004285F7, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_SCVCanAttack (0x00428610)
+        // BTNSCOND_SCVCanAttack (0x00428610)
         memory_patch(0x00428611, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428627, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_SCVCanStop (0x00428640)
+        // BTNSCOND_SCVCanStop (0x00428640)
         memory_patch(0x00428641, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428657, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_SCVCanMove (0x00428670)
+        // BTNSCOND_SCVCanMove (0x00428670)
         memory_patch(0x00428671, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428687, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_HasScarabs (0x004286A0)
+        // BTNSCOND_HasScarabs (0x004286A0)
         memory_patch(0x004286A1, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004286CA, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_HasInterceptors (0x004286E0)
+        // BTNSCOND_HasInterceptors (0x004286E0)
         memory_patch(0x004286E1, &ccmu_extender.new_client_selection_group);
         memory_patch(0x0042870E, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_ZergHasCargo (0x00428730)
+        // BTNSCOND_ZergHasCargo (0x00428730)
         memory_patch(0x00428734, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428753, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_ZergNoCargo (0x00428780)
+        // BTNSCOND_ZergNoCargo (0x00428780)
         memory_patch(0x00428784, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004287A3, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_TankMove (0x00428860)
+        // BTNSCOND_TankMove (0x00428860)
         memory_patch(0x00428861, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428880, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_TerranAdvanced (0x00428990)
-        //memory_patch(0x004289A1, &ccmu_extender.new_client_selection_group);
-        //memory_patch(0x004289B7, &ccmu_extender.new_client_selection_group[SelectionLimit]);
+        // BTNSCOND_TerranAdvanced (0x00428990)
+        memory_patch(0x004289A1, &ccmu_extender.new_client_selection_group);
+        memory_patch(0x004289B7, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_TerranBasic (0x00428A10)
-        //memory_patch(0x00428A21, &ccmu_extender.new_client_selection_group);
-        //memory_patch(0x00428A37, &ccmu_extender.new_client_selection_group[SelectionLimit]);
+        // BTNSCOND_TerranBasic (0x00428A10)
+        memory_patch(0x00428A21, &ccmu_extender.new_client_selection_group);
+        memory_patch(0x00428A37, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //btnscond_can_move_special_case (0x00428D40)
+        // btnscond_can_move_special_case (0x00428D40) -- hooked
         //memory_patch(0x00428D41, &ccmu_extender.new_client_selection_group);
         //memory_patch(0x00428D81, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //btnscond_can_move (0x00428DA0)
+        // btnscond_can_move (0x00428DA0) -- hooked
         //memory_patch(0x00428DA1, &ccmu_extender.new_client_selection_group);
         //memory_patch(0x00428DE7, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_TrainingFighter (0x00428E00)
+        // BTNSCOND_TrainingFighter (0x00428E00)
         jump_patch(BTNSCOND_TrainingFighter_patch_28E20, 0x00428E1B);
 
-        //BTNSCOND_HasUnit (0x00428EA0)
+        // BTNSCOND_HasUnit (0x00428EA0)
         memory_patch(0x00428EA2, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428EBA, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_Stationary (0x00428ED0)
+        // BTNSCOND_Stationary (0x00428ED0)
         memory_patch(0x00428ED2, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428F13, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //btnscond_can_attack (0x00428F30)
+        // btnscond_can_attack (0x00428F30) -- hooked
         //memory_patch(0x00428F32, &ccmu_extender.new_client_selection_group);
         //memory_patch(0x00428F7E, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_BattleOrders (0x00428FA0)
+        // BTNSCOND_BattleOrders (0x00428FA0)
         memory_patch(0x00428FA4, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00428FC3, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_HasRoom (0x00428FF0)
+        // BTNSCOND_HasRoom (0x00428FF0)
         memory_patch(0x00428FF3, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00429053, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_IsBurrowed (0x00429070)
+        // BTNSCOND_IsBurrowed (0x00429070)
         memory_patch(0x0042907D, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004290C3, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_CanBurrow (0x004290F0)
+        // BTNSCOND_CanBurrow (0x004290F0)
         memory_patch(0x00429100, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00429149, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_IsSieged (0x00429170)
+        // BTNSCOND_IsSieged (0x00429170)
         memory_patch(0x00429188, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004291AB, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_IsUnsieged (0x004291C0)
+        // BTNSCOND_IsUnsieged (0x004291C0)
         memory_patch(0x004291D8, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004291FB, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_IsCloaked (0x00429210)
+        // BTNSCOND_IsCloaked (0x00429210)
         memory_patch(0x0042921D, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00429298, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_CanCloak (0x004292C0)
+        // BTNSCOND_CanCloak (0x004292C0)
         memory_patch(0x004292CD, &ccmu_extender.new_client_selection_group);
         memory_patch(0x0042934A, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_IsCloaked_0 (0x00429370)
+        // BTNSCOND_IsCloaked_0 (0x00429370)
         memory_patch(0x00429380, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004293BE, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_CanCloak_0 (0x004293E0)
+        // BTNSCOND_CanCloak_0 (0x004293E0)
         memory_patch(0x004293F0, &ccmu_extender.new_client_selection_group);
         memory_patch(0x00429430, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //BTNSCOND_HasSpidermines (0x00429470)
+        // BTNSCOND_HasSpidermines (0x00429470)
         memory_patch(0x00429486, &ccmu_extender.new_client_selection_group);
         memory_patch(0x004294B3, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //show_right_click_error_if_needed (0x00455A00)
+        // show_right_click_error_if_needed (0x00455A00) -- hooked
         //memory_patch(0x00455A07, &ccmu_extender.new_client_selection_group[SelectionLimit - 1]);
         //memory_patch(0x00455BBA, &ccmu_extender.new_client_selection_group);
 
-        //CMDACT_RightClick (0x004563A0)
+        // CMDACT_RightClick (0x004563A0) -- hooked
         //jump_patch(CMDACT_RightClick_patch_563D0, 0x004563D0, 2);
 
-        //input_game_right_mouse_click (0x004564E0)
+        // input_game_right_mouse_click (0x004564E0) -- hooked
         //memory_patch(0x004564FD, &ccmu_extender.new_local_selection_group);
         //jump_patch(input_game_right_mouse_click_patch_56540, 0x00456540, 2);
         //jump_patch(input_game_right_mouse_click_patch_565C0, 0x004565BB);
 
-        //stat_data_unit_wireframe_select (0x00456F50)
+        // stat_data_unit_wireframe_select (0x00456F50)
         jump_patch(stat_data_unit_wireframe_select_update_patch_57046, 0x00457046, 4);
 
-        //statdataMouseOverInteract (0x00457CE0)
-        jump_patch(statdataMouseOverInteract_patch_57046, 0x00457D87);
+        // statdataMouseOverInteract (0x00457CE0) -- hooked
+    //  jump_patch(statdataMouseOverInteract_patch_57046, 0x00457D87);
 
-        //updateButtonSetEx (0x00458BC0)
+        // updateButtonSetEx (0x00458BC0) -- hooked
         //memory_patch(0x00458BD7, &ccmu_extender.new_client_selection_group);
         //memory_patch(0x00458C8F, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //select_dual_birth_units (0x0045D040)
+        // select_dual_birth_units (0x0045D040) -- hooked
         //jump_patch(select_dual_birth_units_patch_5D041, 0x0045D041);
 
-        //sort_all_units (0x0046F0F0)
+        // sort_all_units (0x0046F0F0) -- hooked
         //jump_patch(sort_all_units_patch_6F206, 0x0046F206);
         //memory_patch(0x0046F1B3, (u32)0x754C468A);//MOV AL, [ESI + 0x4C]
         //memory_patch(0x0046F1B7, (u8)0x0D);//JNE 0x0046F1C5
 
-        //combine_lists (0x0046F290)
+        // combine_lists (0x0046F290)
         jump_patch(combine_lists_patch_6F2AD, 0x0046F2AD);
         jump_patch(combine_lists_patch_6F320, 0x0046F320);
         memory_patch(0x0046F2D9, (u8)0x2D);//JNE 0x0046F307
         jump_patch(combine_lists_patch_6F2D1, 0x0046F2D1);
 
-        //do_targeted_order (0x0046F5B0)
-        memory_patch(0x0046F657, &ccmu_extender.new_client_selection_group);
-        memory_patch(0x0046F7E8, &ccmu_extender.new_client_selection_group[SelectionLimit]);
+        // do_targeted_order (0x0046F5B0) -- hooked
+    //  memory_patch(0x0046F657, &ccmu_extender.new_client_selection_group);
+    //  memory_patch(0x0046F7E8, &ccmu_extender.new_client_selection_group[SelectionLimit]);
 
-        //get_selected_units_in_box (0x0046FA40)
+        // get_selected_units_in_box (0x0046FA40) -- hooked
         //jump_patch(get_selected_units_in_box_patch_6FA41, 0x0046FA41);
         //memory_patch(0x0046FA98, &ccmu_extender.new_active_selection);
         //memory_patch(0x0046FAA3, SelectionLimit);
@@ -2571,7 +2570,7 @@ namespace hooks {
         //jump_patch(get_selected_units_in_box_patch_6FAAC, 0x0046FAAC, 2);
         //jump_patch(get_selected_units_in_box_patch_6FAD4, 0x0046FAD4);
 
-        //get_selected_units_at_point (0x0046FB40)
+        // get_selected_units_at_point (0x0046FB40) -- hooked
         //jump_patch(get_selected_units_at_point_patch_6FB41, 0x0046FB41);
         //memory_patch(0x0046FB8F, SelectionLimit);
         //jump_patch(get_selected_units_at_point_patch_6FB98, 0x0046FB98);
@@ -2592,82 +2591,82 @@ namespace hooks {
         //call_patch(unit_is_owned_by_current_player_new, 0x0046FD35);
         //call_patch(unit_is_owned_by_current_player_new, 0x0046FD52);
 
-        //command_save_hotkey_group (0x004965D0)
+        // command_save_hotkey_group (0x004965D0)
         jump_patch(command_save_hotkey_group_patch_965E1, 0x004965E1, 1);
         jump_patch(command_save_hotkey_group_patch_96653, 0x00496653, 1);
         memory_patch(0x004966AD, SelectionLimit);
         jump_patch(command_save_hotkey_group_patch_966CC, 0x004966CC, 1);
 
-        //centerviewUnitGroup (0x004967E0)
+        // centerviewUnitGroup (0x004967E0) -- hooked
         //jump_patch(centerviewUnitGroup_patch_967F7, 0x004967F7, 1);
 
-        //add_to_control_group (0x00496940)
+        // add_to_control_group (0x00496940)
         jump_patch(add_to_control_group_patch_96952, 0x00496952, 1);
         jump_patch(add_to_control_group_patch_969D9, 0x004969D9, 2);
 
-        //selectUnitGroup (0x00496B40)
+        // selectUnitGroup (0x00496B40)
         jump_patch(selectUnitGroup_patch_96B41, 0x00496B41);
         jump_patch(selectUnitGroup_patch_96BFA, 0x00496BFA);
         jump_patch(selectUnitGroup_patch_96CA3, 0x00496CA3, 3);
         jump_patch(selectUnitGroup_patch_96CE6, 0x00496CE6);
 
-        //select_single_unit_from_id (0x00496D30)
+        // select_single_unit_from_id (0x00496D30)
         memory_patch(0x00496D43, sizeof(ccmu_extender.new_saved_selections[0]));
         memory_patch(0x00496D51, &ccmu_extender.new_saved_selections[1][0][1]);
         jump_patch(select_single_unit_from_id_patch_96D61, 0x00496D61, 1);
 
-        //create_all_selection_circles (0x00499A60)
+        // create_all_selection_circles (0x00499A60)
         jump_patch(create_all_selection_circles_patch_99A70, 0x00499A70, 2);
         jump_patch(create_all_selection_circles_patch_99B23, 0x00499B23, 1);
 
-        //remove_from_selection_2 (0x0049A170)
+        // remove_from_selection_2 (0x0049A170)
         jump_patch(remove_from_selection_2_patch_9A185, 0x0049A185, 1);
 
-        //is_selected_unit_group_enabled (0x0049A2C0)
+        // is_selected_unit_group_enabled (0x0049A2C0)
         memory_patch(0x0049A2C7, &ccmu_extender.new_active_selection);
         memory_patch(0x0049A305, &ccmu_extender.new_active_selection[SelectionLimit]);
 
-        //clear_selection (0x0049A740)
+        // clear_selection (0x0049A740)
         jump_patch(clear_selection_patch_9A749, 0x0049A749);
 
-        //get_active_player_first_selection (0x0049A850)
+        // get_active_player_first_selection (0x0049A850)
         jump_patch(get_active_player_first_selection_patch_9A857, 0x0049A857);
 
-        //create_new_unit_selections_from_list (0x0049AE40)
+        // create_new_unit_selections_from_list (0x0049AE40) -- hooked
         //memory_patch(0x0049AE49, &ccmu_extender.new_active_selection);
         //memory_patch(0x0049AE77, &ccmu_extender.new_active_selection[SelectionLimit]);
         //memory_patch(0x0049AE95, &ccmu_extender.new_active_selection);
         //memory_patch(0x0049AEB9, &ccmu_extender.new_active_selection);
         //memory_patch(0x0049AEC9, &ccmu_extender.new_active_selection);
 
-        //add_to_player_selection (0x0049AF80)
+        // add_to_player_selection (0x0049AF80)
         jump_patch(add_to_player_selection_patch_9AF89, 0x0049AF89);
         jump_patch(add_to_player_selection_patch_9AFB5, 0x0049AFB5, 1);
 
-        //select_unit_initial (0x0049B690)
+        // select_unit_initial (0x0049B690)
         jump_patch(select_unit_initial_patch_9B6A0, 0x0049B6A0, 2);
         memory_patch(0x0049B729, &ccmu_extender.new_players_selections);
         jump_patch(select_unit_initial_patch_9B770, 0x0049B76B);
 
-        //remove_from_client_selection_3 (0x0049F7A0)
+        // remove_from_client_selection_3 (0x0049F7A0)
         jump_patch(remove_from_client_selection_3_patch_9F7A1, 0x0049F7A1);
         jump_patch(remove_from_client_selection_3_patch_9F7C0, 0x0049F7C0, 2);
         jump_patch(remove_from_client_selection_3_patch_9F7E6, 0x0049F7E6);
         jump_patch(remove_from_client_selection_3_patch_9F7FB, 0x0049F7FB, 2);
 
-        //removeFromSelections (0x0049A7F0)
+        // removeFromSelections (0x0049A7F0) -- hooked
         //jump_patch(removeFromSelections_patch_BF8C0, 0x0049A839);
         //jump_patch(removeFromSelections_patch_BF8C0, 0x0049A846);
 
-        //CMDRECV_ShiftDeselect (0x004BFB40)
+        // CMDRECV_ShiftDeselect (0x004BFB40)
         jump_patch(CMDRECV_ShiftDeselect_patch_BFB49, 0x004BFB49, 1);
 
-        //CMDACT_HotkeyUnit (0x004C07B0)
+        // CMDACT_HotkeyUnit (0x004C07B0)
         memory_patch(0x004C07DC, SelectionLimit);
         memory_patch(0x004C07E1, &ccmu_extender.new_local_selection_group);
         memory_patch(0x004C07F4, &ccmu_extender.new_local_selection_group);
 
-        //cmdact_select (0x004C0860)
+        // cmdact_select (0x004C0860)
         jump_patch(cmdact_select_patch_C0863, 0x004C0863);
         jump_patch(cmdact_select_patch_C08E0, 0x004C08D8, 3);
         memory_patch(0x004C08FA, &ccmu_extender.new_local_selection_group);
@@ -2682,21 +2681,21 @@ namespace hooks {
         jump_patch(cmdact_select_patch_C0A71, 0x004C0A71, 2);
         jump_patch(cmdact_select_patch_C0A8D, 0x004C0A8D, 2);
 
-        //cmdrecv_shift_select (0x004C2560)
+        // cmdrecv_shift_select (0x004C2560)
         jump_patch(cmdrecv_shift_select_patch_C256D, 0x004C256D, 4);
         jump_patch(cmdrecv_shift_select_patch_C2650, 0x004C2650);
         jump_patch(cmdrecv_shift_select_patch_C2685, 0x004C2685);
         jump_patch(cmdrecv_shift_select_patch_C26AB, 0x004C26AB);
 
-        //cmdrecv_select (0x004C2750)
+        // cmdrecv_select (0x004C2750)
         jump_patch(cmdrecv_select_patch_C2757, 0x004C2757, 2);
         jump_patch(cmdrecv_select_patch_C27D3, 0x004C27D3, 1);
 
-        //cmdrecv_save_game (0x004C2910)
+        // cmdrecv_save_game (0x004C2910)
         memory_patch(0x004C2D1E, sizeof(ccmu_extender.new_players_selections));
         memory_patch(0x004C2D23, &ccmu_extender.new_players_selections);
 
-        //update_selected_unit_data (0x004C38B0)
+        // update_selected_unit_data (0x004C38B0)
         memory_patch(0x004C38B4, SelectionLimit);
         memory_patch(0x004C38B9, &ccmu_extender.new_active_selection);
         memory_patch(0x004C38BE, &ccmu_extender.new_client_selection_group);
@@ -2705,36 +2704,36 @@ namespace hooks {
         memory_patch(0x004C3911, &ccmu_extender.new_client_selection_group[1]);
         memory_patch(0x004C3917, &ccmu_extender.new_client_selection_group);
 
-        //update_building_land_unit_selection (0x004C3B40)
+        // update_building_land_unit_selection (0x004C3B40)
         jump_patch(update_building_land_unit_selection_patch_C3B41, 0x004C3B41);
         memory_patch(0x004C3B4A, &ccmu_extender.new_active_selection);
         jump_patch(update_building_land_unit_selection_patch_C3B5A, 0x004C3B5A);
         memory_patch(0x004C3B64, &ccmu_extender.new_active_selection[SelectionLimit]);
         jump_patch(update_building_land_unit_selection_patch_C3B6B, 0x004C3B6B, 3);
 
-        //setup_HUD (0x004C3BB0)
+        // setup_HUD (0x004C3BB0)
         memory_patch(0x004C3C38, SelectionLimit);
         memory_patch(0x004C3C3D, &ccmu_extender.new_client_selection_group);
 
-        //unpack_all_player_selection_groups (0x004CEDA0)
+        // unpack_all_player_selection_groups (0x004CEDA0)
         memory_patch(0x004CEDA3, &ccmu_extender.new_players_selections);
         memory_patch(0x004CEDA8, sizeof(ccmu_extender.new_players_selections) / 4);
 
-        //pack_all_player_selection_groups (0x004CEE00)
+        // pack_all_player_selection_groups (0x004CEE00)
         memory_patch(0x004CEE04, &ccmu_extender.new_players_selections);
         memory_patch(0x004CEE09, sizeof(ccmu_extender.new_players_selections) / 4);
 
-        //load_game_full (0x004CFEF0)
+        // load_game_full (0x004CFEF0)
         memory_patch(0x004D013A, sizeof(ccmu_extender.new_players_selections));
         memory_patch(0x004D013F, &ccmu_extender.new_players_selections);
 
-        //compile_health_bar (0x004D6010)
+        // compile_health_bar (0x004D6010)
         memory_patch(0x004D603F, &ccmu_extender.new_active_selection);
 
-        //sub_4D68C0 (0x004D68C0)
+        // sub_4D68C0 (0x004D68C0)
         memory_patch(0x004D68CA, &ccmu_extender.new_hp_bar_grps);
 
-        //InitializeImageArray (0x004D6930)
+        // InitializeImageArray (0x004D6930)
         memory_patch(0x004D693F, &ccmu_extender.new_selection_hp_bars);
         memory_patch(0x004D6952, sizeof(ccmu_extender.new_selection_hp_bars) / 4);
         memory_patch(0x004D6959, sizeof(ccmu_extender.new_selection_circles) / 4);
@@ -2750,14 +2749,14 @@ namespace hooks {
         memory_patch(0x004D6A1B, &ccmu_extender.new_selection_circles[0].link.next);
         memory_patch(0x004D6A26, &ccmu_extender.new_selection_circles[0].link.next);
 
-        //StatRes_MainProc (0x004E5640)
+        // StatRes_MainProc (0x004E5640)
         //memory_patch(0x004E5692, &ccmu_extender.new_client_selection_group);
 
-        //hotkeyRemapping (0x004EEC30)
+        // hotkeyRemapping (0x004EEC30)
         memory_patch(0x004EEC74, sizeof(ccmu_extender.new_saved_selections) / 4);
         memory_patch(0x004EEC79, &ccmu_extender.new_saved_selections);
 
-        //load_game_core (0x004EED10)
+        // load_game_core (0x004EED10)
         memory_patch(0x004EED14, SelectionLimit);
         memory_patch(0x004EED19, &ccmu_extender.new_active_selection);
         memory_patch(0x004EED20, sizeof(ccmu_extender.new_players_selections) / 4);

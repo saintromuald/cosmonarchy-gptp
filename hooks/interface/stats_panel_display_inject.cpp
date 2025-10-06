@@ -558,6 +558,28 @@ namespace {
             RETN 0x04
         }
     }
+
+    void __declspec(naked) stats_hangar_count_wrapper() { // 004253D0
+        static BinDlg* dialog;
+        static u32 iterations;
+        __asm {
+            PUSH EBP
+            MOV EBP, ESP
+            PUSH EAX
+            MOV EAX, [EBP + 0x08]
+            MOV dialog, EAX
+            POP EAX
+            MOV dialog, EBX
+            PUSHAD
+        }
+        hooks::stats_hangar_count(dialog, iterations);
+        __asm {
+            POPAD
+            MOV ESP, EBP
+            POP EBP
+            RETN 0x04
+        }
+    }
 }
 
 //The following patches are to be retired when their respective functions are hooked.
@@ -620,23 +642,25 @@ namespace hooks {
     //	jump_patch(draw_tooltip_with_icon_wrapper,					        0x00458EF0, 1); // Don't recall why this was disabled.
     //	jump_patch(stat_data_unit_wireframe_selection_wrapper,		        0x004583E0, 3); // Don't recall why this was disabled.
 
-        jump_patch(get_last_queue_slot_id_wrapper,					0x0047B270, 2);
-        jump_patch(unit_stat_action_transport_wrapper,				0x00427C90, 2);
+        jump_patch(get_last_queue_slot_id_wrapper,				0x0047B270, 2);
+        jump_patch(unit_stat_action_transport_wrapper,			0x00427C90, 2);
         jump_patch(unit_stat_act_egg_wrapper,						0x00427260, 0);
 
-        jump_patch(stats_addon_builder_wrapper,						0x00425F30, 2);
+        jump_patch(stats_addon_builder_wrapper,					0x00425F30, 2);
         jump_patch(stats_incomplete_unit_wrapper,					0x004260C0, 2);
     //  jump_patch(stats_queue_progress_wrapper,					0x004268D0, 1); // Infinitely loops; doesn't clear stats panel properly
     //	jump_patch(stats_morph_progress_wrapper,					0x00457250, 1); // Replaces unit queue with structure progress bar
     //	jump_patch(stats_nuke_silo_wrapper,							0x00426FF0, 3); // Queue display weirdness, IIRC
     //	jump_patch(unit_stat_act_archon_wrapper,					0x004273E0, 0); // This is not used anymore, so we can ignore it. -Pr0nogo
 
-        jump_patch(stats_text_energy_timer_wrapper,					0x00425A30, 2);
+        jump_patch(stats_text_energy_timer_wrapper,				0x00425A30, 2);
         jump_patch(unit_stat_act_default_wrapper,					0x00425EE0, 4);
-        jump_patch(unit_stat_act_standard_wrapper,					0x00426F50, 2);
-        jump_patch(set_unit_status_string_text_wrapper,				0x00425B50, 0);
+        jump_patch(unit_stat_act_standard_wrapper,				0x00426F50, 2);
+        jump_patch(set_unit_status_string_text_wrapper,			0x00425B50, 0);
         jump_patch(draw_resource_amount_wrapper,					0x00426190, 3);
         jump_patch(draw_upgrade_progress_wrapper,					0x00426500, 3);
+
+    //  jump_patch(stats_hangar_count_wrapper,					0x004253D0, 5); // Needs testing later
 
         // Disable player checks for progress bar functions
         nops(0x0042690C, 2);
@@ -646,10 +670,10 @@ namespace hooks {
 
         // The following patches are to be retired when their respective functions are hooked.
         // Dynamic status icon sizing.
-        jump_patch(StatNukeCount_patch_25388, 0x00425388, 1);
+        jump_patch(StatNukeCount_patch_25388,   0x00425388, 1);
         jump_patch(StatHangarCount_patch_25471, 0x00425471, 1);
         // Remove trailing space from status icon labels.
-        memory_patch(0x0042533E, (u32)0x00505700);//nuke count
-        memory_patch(0x0042541E, (u32)0x00505700);//hangar count
+        memory_patch(0x0042533E, (u32)0x00505700); // nuke count
+        memory_patch(0x0042541E, (u32)0x00505700); // hangar count
     }
 }

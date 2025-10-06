@@ -3264,14 +3264,20 @@ namespace hooks {
         }
 
         // Autovitality - Clone after a small delay
-        if (unit_ext.timers[TimerAutovitalityClone] == 1 && !unit->is_frozen()) {
-            u32 count = 1;
-            if (UnitId::has_autovitality(static_cast<UnitId::Enum>(unit->id))) {
-                count = bw::get_game_kind() == GameKind::Brotherhood ? 2 : 1;
+        if (unit_ext.timers[TimerAutovitalityClone] == 1) {
+            if (unit->is_frozen()) {
+                unit_ext.timers[TimerAutovitalityClone] = 2;
+            } else {
+                u32 count = 1;
+                if (UnitId::has_autovitality(static_cast<UnitId::Enum>(unit->id))) {
+                    count = bw::get_game_kind() == GameKind::Brotherhood ? 2 : 1;
+                }
+                unit_ext.values[ValueIsCloning] = true;
+                bw::create_unit_from_ability(unit->id, count, unit->player, unit->position, unit);
+                unit_ext.values[ValueIsCloning] = false;
             }
-            unit_ext.values[ValueIsCloning] = true;
-            bw::create_unit_from_ability(unit->id, count, unit->player, unit->position, unit);
-            unit_ext.values[ValueIsCloning] = false;
+        } else if (unit_ext.timers[TimerAutovitalityClone] > 1 && unit->is_frozen()) {
+            unit_ext.timers[TimerAutovitalityClone]++;
         }
 
         // Remove Ensnaring Brood overlay

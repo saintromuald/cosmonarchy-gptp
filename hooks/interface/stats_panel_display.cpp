@@ -79,7 +79,8 @@ namespace hooks {
                         index++;
                         // Display additional weapons
                         switch (active_unit->id) {
-                            case UnitId::TerranCyclops: {
+                            case UnitId::TerranCyclops:
+                            case UnitId::TerranCyclopsFuturist: {
                                 helper::stats_weapon_level(dialog, index, WeaponId::CyclopsBrontesPayload);
                                 index++;
                             } break;
@@ -1435,6 +1436,49 @@ namespace hooks {
             string_id = race + 828; // Disabled / Unpowered
         }
         helper::add_text_to_dialog(dialog, -35, g_stat_txt_buffer.get_string(string_id));
+    }
+
+    // Hooked to fix the hangar unit icon pointer. -Pr0nogo
+    void stats_hangar_count(BinDlg* dialog, u32 iterations) { // 004253D0
+        Unit* unit = *g_active_portrait_unit;
+        u8 count = 0;
+        if (unit->id == UnitId::ProtossSolarion) {
+            count = unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count;
+        }
+        sprintf_s(g_status_screen_info_button_unk[iterations], 8, "%d ", count);
+        BinDlg* main_dialog = dialog;
+        if (dialog->control_type) {
+            main_dialog = dialog->parent;
+        }
+        BinDlg* final_dialog = main_dialog->child_dialog;
+        if (final_dialog) {
+            while (final_dialog->index != iterations + 9) {
+                final_dialog = final_dialog->next;
+                if (!final_dialog) {
+                    final_dialog = 0;
+                    break;
+                }
+            }
+        } else {
+            final_dialog = 0;
+        }
+        helper::show_dialog(final_dialog);
+        helper::disable_dialog(final_dialog);
+        StatusScreenState* state = final_dialog->stat_button_user;
+        final_dialog->graphic = 12;
+        state->button_grp = *g_cmdicons_grp;
+        u32 hangar_unit_id = 0;
+        if (unit->id == UnitId::ProtossSolarion) {
+            hangar_unit_id = UnitId::ProtossSteward;
+        }
+        state->grp_frame = hangar_unit_id;
+        state->type = 3;
+        state->id = hangar_unit_id;
+        final_dialog->text = g_status_screen_info_button_unk[iterations];
+        if (!(final_dialog->flags & BinDlgFlags::Highlighted)) {
+            final_dialog->flags |= BinDlgFlags::Highlighted;
+            helper::update_dialog(final_dialog);
+        }
     }
 
     // Eventually, hook show_tech_progress 0x004268D0 -Pr0nogo

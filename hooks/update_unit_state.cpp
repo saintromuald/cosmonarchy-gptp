@@ -369,9 +369,18 @@ namespace hooks {
 			// Terran building burn-down
 			if (!stop_here && !unit_ext.values[ValueInfested]) {
 				if (unit->get_race() == RaceId::Terran) {
-					if (unit->status & UnitStatus::GroundedBuilding || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
+					if (unit->is_grounded_building() || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
 						if (helper::unit_hp_is_in_redzone(unit)) {
-							unit->damage_hp(20, 0, unit->last_attacking_player, true);
+							// Manual handling of on-death behaviors. -Pr0nogo
+							if (unit->hitpoints <= 20 && unit_ext.timers[TimerInfesting]) {
+								blissful_embrace(unit, unit_ext.values[ValueInfestingPlayer]);
+								unit->set_hitpoints(100 * 256 + units_dat::max_hitpoints[unit->id] / 3);
+							} else {
+								unit->damage_hp(20, 0, unit->last_attacking_player, true);
+								if (unit->plague_timer && unit->hitpoints <= 256) {
+									unit->remove();
+								}
+							}
 						}
 					}
 				}
