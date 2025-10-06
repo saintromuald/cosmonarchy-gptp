@@ -6,13 +6,7 @@
 namespace hooks {
 	static void move_to_rally(Unit* unit, Target rally) {
 		if (rally.unit) {
-			/*
-			bool is_worker = units_dat::base_property[unit->id] & UnitProperty::Worker;
-			if (is_worker && unit_id_is_minerals(rally.unit->id)) {
-				unit->order_to(OrderId::MoveToMinerals, rally.unit);
-			} else if (is_worker && unit_id_is_gas_node(rally.unit->id)) {
-				unit->order_to(OrderId::HarvestGas1, rally.unit);
-			} else */ if (bw::is_allied_to(unit->player, rally.unit->player)) {
+			if (bw::is_allied_to(unit->player, rally.unit->player)) {
 				unit->order_to(OrderId::Follow, rally.unit);
 			} else {
 				unit->order_to(OrderId::AttackUnit, rally.unit);
@@ -37,11 +31,18 @@ namespace hooks {
 			}
 		}
 		// Do nothing if the rally target is the factory itself or the rally target position is 0
-		if (factory
-		&&  factory->is_factory()
-		&&  (!factory->rally.unit || (factory->rally.unit != unit && factory->rally.unit != factory))
-		&&  (factory->rally.pt.x != 0 || factory->rally.pt.y != 0)) {
+		if (factory && factory->is_factory()
+		&& (!factory->rally.unit || (factory->rally.unit != unit && factory->rally.unit != factory))
+		&&  (factory->rally.pt.x != 0 || factory->rally.pt.y != 0))
+		{
 			move_to_rally(unit, factory->rally);
+
+			// Delayed rally is required for psi providers
+			if (unit_id_is_psi_provider(unit->id)) {
+				auto& unit_ext = unit->ext();
+				unit->rally = factory->rally;
+				unit_ext.timers[TimerDelayedRally] = 4;
+			}
 		}
 	}
 
