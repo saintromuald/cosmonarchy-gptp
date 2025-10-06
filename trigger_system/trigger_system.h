@@ -33,6 +33,30 @@ static const char* race_names[] = {
 };
 static_assert(std::size(race_names) == RaceId::Count);
 
+enum class CrigPlayerType {
+    Human,
+    HumanDefeated,
+    Computer,
+    ComputerDefeated,
+    Witness,
+    WitnessDefeated,
+
+    None,
+    Count,
+};
+
+static const char* player_type_names[] = {
+    "human",
+    "human_defeated",
+    "computer",
+    "computer_defeated",
+    "witness",
+    "witness_defeated",
+
+    "none",
+};
+static_assert(std::size(player_type_names) == (u8)CrigPlayerType::Count);
+
 struct TriggerSystemState {
     bool game_paused;
     bool init;

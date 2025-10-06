@@ -504,6 +504,39 @@ static bool parse_condition(Parser& parser) {
                 }
             }
             return false;
+        } else if (parser.equals("player_type")) {
+            auto player = parser.get_player();
+            const Quota op = parser.get_quota(QuotaType_Equal);
+            const auto type = parser.get_magic_enum<CrigPlayerType>();
+            auto compare_type = PlayerType::Human;
+            bool type_is_witness = false;
+            switch (type) {
+                case CrigPlayerType::Human:            compare_type = PlayerType::Human;            break;
+                case CrigPlayerType::HumanDefeated:    compare_type = PlayerType::HumanDefeated;    break;
+                case CrigPlayerType::Computer:         compare_type = PlayerType::Computer;         break;
+                case CrigPlayerType::ComputerDefeated: compare_type = PlayerType::ComputerDefeated; break;
+
+                case CrigPlayerType::Witness:
+                case CrigPlayerType::WitnessDefeated: {
+                    type_is_witness = true;
+                }
+            }
+            if (player) {
+                player -= 1;
+                if (!type_is_witness) {
+                    switch (op.type) {
+                        case QuotaType_Equal:    return g_player_table[player].type == compare_type;
+                        case QuotaType_NotEqual: return g_player_table[player].race != compare_type;
+                    }
+                } else {
+                    auto witness_type = g_globals->players[player].witness_mode;
+                    switch (op.type) {
+                        case QuotaType_Equal:    return type == CrigPlayerType::Witness ? witness_type == WitnessMode_Pure : witness_type == WitnessMode_Defeated;
+                        case QuotaType_NotEqual: return type == CrigPlayerType::Witness ? witness_type != WitnessMode_Pure : witness_type != WitnessMode_Defeated;
+                    }
+                }
+            }
+            return false;
         }/* else if (parser.eq("selected")) {
             PlayerBitset players = parser.get_player_bitset();
             UnitIdBitset unit_ids = parser.get_unit_id_bitset();
