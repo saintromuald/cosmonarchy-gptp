@@ -325,6 +325,7 @@ namespace UnitId {
         ZergLakiziliskZorthos                               = 425,
         ZergHydraliskOrkoti                                 = 436,
         ZergYblyleth                                        = 438,
+        ZergAzanthrokor                                     = 511,
 
     // Zerg-Building
         ZergAxtothAxis										= 130,		// Infested Command Center
@@ -335,7 +336,7 @@ namespace UnitId {
         ZergZorkizShroud									= 193,		// Protoss Marker
         ZergTosvrolHaunt									= 197,		// Zerg Flag Beacon
         ZergKalkiirLake										= 204,		// Floor Hatch
-        ZergKethrajChasm								    = 212,		// Right Wall Missile Trap
+        ZergKethrajKeep								        = 212,		// Right Wall Missile Trap
         ZergLarvoskCesiant									= 216,		// Young Chrysalis
         ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
         ZergIrolIris										= 224,		// Zerg Gas Sac Type 1

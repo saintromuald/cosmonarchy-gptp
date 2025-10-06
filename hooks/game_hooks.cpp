@@ -2465,7 +2465,8 @@ namespace hooks {
                     } break;
                 }
             } break;
-            case UnitId::ZergVilgorokor: {
+            case UnitId::ZergVilgorokor:
+            case UnitId::ZergAzanthrokor: {
                 if (unit_ext.timers[TimerReconstitutionDelay] == 1) {
                     hooks::carapace_swarm_hit_internal(unit->position.x, unit->position.y, unit->player, UnitId::Spell_CarapaceSwarmSmall);
                 }

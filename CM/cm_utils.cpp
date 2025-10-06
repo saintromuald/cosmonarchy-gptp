@@ -508,6 +508,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         case Faction::ZergOrkotiTendril: {
             switch (unit_id) {
                 case UnitId::ZergHydralisk: return UnitId::ZergHydraliskOrkoti;
+                case UnitId::ZergGorgrokor: return UnitId::ZergAzanthrokor;
             }
         } break;
         case Faction::ZergZorthosTendril: {
@@ -597,6 +598,12 @@ UnitId::Enum get_factional_regression(Unit* unit) {
                 case Faction::ZergImicrenTendril: return UnitId::ZergInzorthrokor;
             }
             return UnitId::ZergZoryusthaleth;
+        } break;
+        case UnitId::ZergZarcavrokor: {
+            switch (faction) {
+                case Faction::ZergOrkotiTendril: return UnitId::ZergAzanthrokor;
+            }
+            return UnitId::ZergGorgrokor;
         } break;
     }
 }
@@ -879,7 +886,7 @@ const char* get_weapon_name(WeaponId::Enum weapon_id) {
         case WeaponId::AdherentPhaseBlade:                  return "Phase Blade";
         case WeaponId::NathreliskSignalingSpores:           return "Signaling Spores";
         case WeaponId::AlgoztaliskBottomlessSpinestacks:    return "Bottomless Spinestacks";
-        case 213:                                           return "U...nimplemented";
+        case WeaponId::AzanthrokorAzanthrokSpew:            return "Azanthrok Spew";
         case WeaponId::OkrimniliskOmnispores:               return "Omnispores";
         case WeaponId::CherbrathalorVenemousBursts:         return "Contagion Bursts";
         case WeaponId::SalamanderAngeltearRockets:          return "Angeltear Rockets";

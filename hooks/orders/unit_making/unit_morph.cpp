@@ -230,6 +230,7 @@ namespace hooks {
 						case UnitId::ZergAlmaksalisk:
 						case UnitId::ZergGeszithalor:
 						case UnitId::ZergGorgrokor:
+						case UnitId::ZergAzanthrokor:
 						case UnitId::ZergMatraleth: {
 							egg_id = UnitId::ZergCocoon;
 						} break;
@@ -304,6 +305,7 @@ namespace hooks {
 						case UnitId::ZergAlmaksalisk:
 						case UnitId::ZergLakizilisk:
 						case UnitId::ZergGorgrokor:
+						case UnitId::ZergAzanthrokor:
 						case UnitId::ZergVilgorokor:
 						case UnitId::ZergGeszithalor: {
 							animation = IscriptAnimation::SpecialState1;
@@ -513,7 +515,8 @@ namespace hooks {
 				}
 				return false;
 			} break;
-			case UnitId::ZergGorgrokor: {
+			case UnitId::ZergGorgrokor:
+			case UnitId::ZergAzanthrokor: {
 				if (morph_unit_id == UnitId::ZergZarcavrokor) {
 					return true;
 				}

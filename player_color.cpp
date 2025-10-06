@@ -280,7 +280,7 @@ void init_player_data() {
         g_easter_egg_unit_names[UnitId::ZergLiiralisk].push_back("Zerg Wigglehead Raptor");
         g_easter_egg_unit_names[UnitId::ZergProtathalor].push_back("Zerg Pr0tathalor");
         g_easter_egg_unit_names[UnitId::ZergIzirokor].push_back("Zerg Chadrokor");
-        g_easter_egg_unit_names[UnitId::ZergGorgrokor].push_back("Zerg Dadthrokor");
+        g_easter_egg_unit_names[UnitId::ZergAzanthrokor].push_back("Zerg Dadthrokor");
         g_easter_egg_unit_names[UnitId::ZergRililisk].push_back("Zerg Nekrilisk");
         g_easter_egg_unit_names[UnitId::ZergRilirokor].push_back("Zerg Nekrirokor");
         g_easter_egg_unit_names[UnitId::ZergMatraleth].push_back("Zerg Nekrathaleth");

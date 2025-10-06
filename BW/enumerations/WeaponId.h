@@ -164,6 +164,7 @@ namespace WeaponId {
         AurielQuarternaryRifle				= 209,
         AdherentPhaseBlade					= 210,
         NathreliskSignalingSpores			= 211,
+        AzanthrokorAzanthrokSpew            = 213,
         CyclopsBrontesPayload				= 217, // Passive explosion
         CyclopsFuturistFlakCannons			= 218,
         HarakanGoldenFlamethrower			= 220,

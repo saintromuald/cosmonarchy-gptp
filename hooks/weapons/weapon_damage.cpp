@@ -411,7 +411,7 @@ namespace hooks {
 
     static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
         // Target based calcs
-        UnitExt& target_ext = data.target->ext();
+        auto& target_ext = data.target->ext();
 
         if (g_active_game_mode) {
             g_active_game_mode->on_unit_damage_modifiers(data);
@@ -511,7 +511,7 @@ namespace hooks {
     }
 
     static void weapon_damage_behaviors(const WeaponDamageData& data) {
-        UnitExt* target_ext = get_unit_ext(data.target);
+        auto& target_ext = data.target->ext();
         bool should_update_speed = false;
 
         if (g_active_game_mode) {
@@ -522,47 +522,47 @@ namespace hooks {
         switch (data.weapon_id) {
             case WeaponId::AurielQuarternaryRifle:
             case WeaponId::ArhaunPhlegethonCannon: {
-                target_ext->values[ValueIncineratePlayer] = data.attacking_player_id;
-                target_ext->timers[TimerIncinerateDamage] = HecatonAuriel::IncinerateTimer;
+                target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
+                target_ext.timers[TimerIncinerateDamage] = HecatonAuriel::IncinerateTimer;
             } break;
             case WeaponId::TartarusMineApollyoidConflagration: {
-                target_ext->values[ValueIncineratePlayer] = data.attacking_player_id;
-                target_ext->timers[TimerIncinerateDamage] = TerranMine::IncinerateTimer;
+                target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
+                target_ext.timers[TimerIncinerateDamage] = TerranMine::IncinerateTimer;
             } break;
             case WeaponId::WendigoFusionSaw: {
-                target_ext->values[ValueWendigoShatteredWindsStacks]++;
-                target_ext->timers[TimerWendigoShatteredWinds] = UpstartWendigo::ShatteredWindsDuration;
+                target_ext.values[ValueWendigoShatteredWindsStacks]++;
+                target_ext.timers[TimerWendigoShatteredWinds] = UpstartWendigo::ShatteredWindsDuration;
             } break;
             case WeaponId::LegionnairePhaseSpear: {
-                target_ext->timers[TimerBladeVortex] = 2 * 24 + 1;
+                target_ext.timers[TimerBladeVortex] = 2 * 24 + 1;
             } break;
             case WeaponId::OscilliantRotatingRay: {
-                if (target_ext->timers[TimerOscilliantBindingPlasma]) {
-                    u32 source_player = target_ext->values[ValueOscilliantBindingPlasmaPlayer];
+                if (target_ext.timers[TimerOscilliantBindingPlasma]) {
+                    u32 source_player = target_ext.values[ValueOscilliantBindingPlasmaPlayer];
                     if (bw::is_allied_to(data.attacking_player_id, source_player)) {
-                        target_ext->values[ValueOscilliantBindingPlasmaStacks]++;
+                        target_ext.values[ValueOscilliantBindingPlasmaStacks]++;
                     }
                 } else {
-                    target_ext->timers[TimerOscilliantBindingPlasma] = Protoss::BindingPlasmaTimer;
-                    target_ext->values[ValueOscilliantBindingPlasmaPlayer] = data.attacking_player_id;
-                    target_ext->values[ValueOscilliantBindingPlasmaStacks] = 1;
+                    target_ext.timers[TimerOscilliantBindingPlasma] = Protoss::BindingPlasmaTimer;
+                    target_ext.values[ValueOscilliantBindingPlasmaPlayer] = data.attacking_player_id;
+                    target_ext.values[ValueOscilliantBindingPlasmaStacks] = 1;
                 }
             } break;
             case WeaponId::GladiusPlasmaFlurry: {
-                if (target_ext->timers[TimerGladiusBindingPlasma]) {
-                    u32 source_player = target_ext->values[ValueGladiusBindingPlasmaPlayer];
+                if (target_ext.timers[TimerGladiusBindingPlasma]) {
+                    u32 source_player = target_ext.values[ValueGladiusBindingPlasmaPlayer];
                     if (bw::is_allied_to(data.attacking_player_id, source_player)) {
-                        target_ext->values[ValueGladiusBindingPlasmaStacks]++;
+                        target_ext.values[ValueGladiusBindingPlasmaStacks]++;
                     }
                 } else {
-                    target_ext->timers[TimerGladiusBindingPlasma] = Protoss::BindingPlasmaTimer;
-                    target_ext->values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
-                    target_ext->values[ValueGladiusBindingPlasmaStacks] = 1;
+                    target_ext.timers[TimerGladiusBindingPlasma] = Protoss::BindingPlasmaTimer;
+                    target_ext.values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
+                    target_ext.values[ValueGladiusBindingPlasmaStacks] = 1;
                 }
             } break;
             case WeaponId::PariahIconoclastBlades: {
-                target_ext->timers[TimerPariahHit] = 2 * 24;
-                target_ext->values[ValuePariahHitPlayer] = data.attacking_player_id;
+                target_ext.timers[TimerPariahHit] = 2 * 24;
+                target_ext.values[ValuePariahHitPlayer] = data.attacking_player_id;
             } break;
             case WeaponId::KagraliskRepeatingVenom:
             case WeaponId::CherbrathalorVenemousBursts: {
@@ -573,16 +573,16 @@ namespace hooks {
                     }
                 }
                 data.target->plague_timer = Plague::MiasmaTimer;
-                target_ext->values[ValueMiasma] = 1;
+                target_ext.values[ValueMiasma] = 1;
             } break;
         }
 
         switch (data.target->id) {
             case UnitId::ProtossGolem: {
                 // Golem - Tranquility Array
-                if (!target_ext->timers[TimerTranquilityArray] && data.target->shields >= 128) {
+                if (!target_ext.timers[TimerTranquilityArray] && data.target->shields >= 128) {
                     bw::shield_heal_proc(data.target, data.target->player, 64, 2);
-                    target_ext->timers[TimerTranquilityArray] = 4;
+                    target_ext.timers[TimerTranquilityArray] = 4;
                 }
             } break;
             case UnitId::ZergZoryusthaleth: {
@@ -591,21 +591,22 @@ namespace hooks {
                     incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
                 }
             } break;
-            case UnitId::ZergVilgorokor: {
-                if (data.damage > 0 && !bw::is_under_carapace_swarm(data.target) && !target_ext->timers[TimerReconstitutionDelay]) {
-                    target_ext->timers[TimerReconstitutionDelay] = 2 * 24 + 1;
+            case UnitId::ZergVilgorokor:
+            case UnitId::ZergAzanthrokor: {
+                if (data.damage > 0 && !bw::is_under_carapace_swarm(data.target) && !target_ext.timers[TimerReconstitutionDelay]) {
+                    target_ext.timers[TimerReconstitutionDelay] = 2 * 24 + 1;
                     helper::play_sound_from_unit(SoundId::Zerg_Ultra_ZUlRor00_WAV, data.target, 1, 0);
                 }
             } break;
         }
 
-        if (target_ext->values[ValueReclaimed]) {
-            target_ext->values[ValueReclamationRegen] += data.damage / 2;
+        if (target_ext.values[ValueReclaimed]) {
+            target_ext.values[ValueReclamationRegen] += data.damage / 2;
         }
 
         // Refresh Apollyoid Adhesive on damage taken
-        if (weapon_id_can_proc_onhits(data.weapon_id) && target_ext->timers[TimerApollyoidAdhesive]) {
-            target_ext->timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
+        if (weapon_id_can_proc_onhits(data.weapon_id) && target_ext.timers[TimerApollyoidAdhesive]) {
+            target_ext.timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
         }
 
         if (data.attacker) {
@@ -622,8 +623,8 @@ namespace hooks {
                 }
             }
             if (!bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !data.target->is_building() && malefactor_ext.units[UnitMindTyrantLink] && malefactor_ext.values[ValueIsMalefactor] == 2) {
-                target_ext->timers[TimerMalefactorTyrannize] = ProtossMindTyrant::MalefactorTyrannizeDuration;
-                target_ext->last_malefactor_player = data.attacking_player_id;
+                target_ext.timers[TimerMalefactorTyrannize] = ProtossMindTyrant::MalefactorTyrannizeDuration;
+                target_ext.last_malefactor_player = data.attacking_player_id;
             }
 
             switch (data.attacker->id) {
@@ -638,7 +639,7 @@ namespace hooks {
                     attacker_ext.shield_regen_timer = 0;
                 } break;
                 case UnitId::ProtossManifoldStarbound: {
-                    target_ext->timers[TimerDiscordantChorus] = 24 * 2 + 1;
+                    target_ext.timers[TimerDiscordantChorus] = 24 * 2 + 1;
                 } break;
                 case UnitId::ZergQuazrokor:
                 case UnitId::ZergNathrokor: {
@@ -663,19 +664,19 @@ namespace hooks {
                     helper::mind_control_hit(data.attacker, data.target);
                 } break;
                 case WeaponId::VorvalClaws: {
-                    if (!target_ext->values[ValueVorvalHidebreaker]) {
-                        target_ext->values[ValueVorvalHidebreaker] = 1;
+                    if (!target_ext.values[ValueVorvalHidebreaker]) {
+                        target_ext.values[ValueVorvalHidebreaker] = 1;
                         // TODO: Overlay
                     }
-                    target_ext->timers[TimerHidebreaker] = 2 * 24 + 1;
+                    target_ext.timers[TimerHidebreaker] = 2 * 24 + 1;
                 } break;
                 case WeaponId::NathrokorVestigialStrike:
                 case WeaponId::NathrokorNathrokClaws: {
-                    if (!target_ext->values[ValueNathrokHidebreaker]) {
-                        target_ext->values[ValueNathrokHidebreaker] = 1;
+                    if (!target_ext.values[ValueNathrokHidebreaker]) {
+                        target_ext.values[ValueNathrokHidebreaker] = 1;
                         // TODO: Overlay
                     }
-                    target_ext->timers[TimerHidebreaker] = 2 * 24 + 1;
+                    target_ext.timers[TimerHidebreaker] = 2 * 24 + 1;
                 } break;
             }
             // Ignore Carapace Swarm!
@@ -688,7 +689,7 @@ namespace hooks {
 
             if (bw::get_game_kind() == GameKind::Brotherhood && data.target->can_proc_autovitality(data.attacker->player, data.shield_reduce_amount, data.damage)) {
                 u32 time_cost = units_dat::time_cost[data.target->id];
-                target_ext->timers[TimerAutovitalityClone] = data.target->has_shields() ? time_cost / 3.75 : time_cost / 4.5;
+                target_ext.timers[TimerAutovitalityClone] = data.target->has_shields() ? time_cost / 3.75 : time_cost / 4.5;
                 bw::add_unit_overlay(data.target, ImageId::LegionnaireTeleportEffect);
                 helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0);
             }
@@ -713,7 +714,7 @@ namespace hooks {
                 case UnitId::ProtossSimulacrum: {
                     // Autovitality
                     if (data.target->can_proc_autovitality(data.attacker->player, data.shield_reduce_amount, data.damage)) {
-                        target_ext->timers[TimerAutovitalityClone] = 4 * 24;
+                        target_ext.timers[TimerAutovitalityClone] = 4 * 24;
                         bw::add_unit_overlay(data.target, ImageId::LegionnaireTeleportEffect);
                         helper::play_sound_from_unit(SoundId::SimulacrumCloneStart01, data.target, 1, 0); // TODO: Make sound dependent on unit id
                     }
@@ -754,9 +755,9 @@ namespace hooks {
                 case UnitId::ZergTethzorokor:
                 case UnitId::ZergZarcavrokor: {
                     // Fan of Teeth - Zarcavrokor behavior
-                    if (data.target != data.attacker && !target_ext->timers[TimerZarcavrokorSecondaryFire]) {
+                    if (data.target != data.attacker && !target_ext.timers[TimerZarcavrokorSecondaryFire]) {
                         fire_bullet(data.target, WeaponId::ZergBonesofReflection, make_target(data.attacker), {.apply_cooldown = false});
-                        target_ext->timers[TimerZarcavrokorSecondaryFire] = weapons_dat::cooldown[WeaponId::ZergBonesofReflection] - 1;
+                        target_ext.timers[TimerZarcavrokorSecondaryFire] = weapons_dat::cooldown[WeaponId::ZergBonesofReflection] - 1;
                     }
                 } break;
             }
@@ -770,10 +771,10 @@ namespace hooks {
                 case WeaponId::DurendalAbaddonFlamethrowers:
                 case WeaponId::SalamanderAngeltearRockets:
                 case WeaponId::AckmedMickenMelter: {
-                    if (target_ext->values[ValueApollyoidAdhesiveStacks] < ApollyoidAdhesive::StackCap) {
-                        target_ext->values[ValueApollyoidAdhesiveStacks]++;
+                    if (target_ext.values[ValueApollyoidAdhesiveStacks] < ApollyoidAdhesive::StackCap) {
+                        target_ext.values[ValueApollyoidAdhesiveStacks]++;
                     }
-                    target_ext->timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
+                    target_ext.timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
                 } break;
                 case WeaponId::CyclopsFlakCannons: {
                     g_iquare_globals->create_effect(EffectId::CyclopsRecursionRound, 48, data.target->position, 2 * 32, SpriteId::CyclopsPassiveArmingOverlay,
@@ -787,14 +788,14 @@ namespace hooks {
 
             if (!bw::is_under_carapace_swarm(data.target)) {
                 // Astral Rule - Patriarch behavior
-                if (target_ext->timers[TimerPatriarchAstralRule] > 1
+                if (target_ext.timers[TimerPatriarchAstralRule] > 1
                 && units_dat::shields_enabled[data.attacker->id]
                 && data.attacker->shields < units_dat::max_shield_points[data.attacker->id] * 256) {
                     data.attacker->heal_shields(5 * 256);
                     helper::add_overlay_below_main(data.attacker->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
                 }
 
-                if (target_ext->timers[TimerTriumphantRiseDebuff]) {
+                if (target_ext.timers[TimerTriumphantRiseDebuff]) {
                     bw::astral_blessing_proc(data.target, data.attacking_player_id, WeaponId::HeraldStellarTorch);
                 }
 
@@ -814,12 +815,12 @@ namespace hooks {
                             if (final_target->subunit && final_target->subunit->is_subunit()) {
                                 final_target = final_target->subunit;
                             }
-                            UnitExt* final_target_ext = get_unit_ext(final_target);
-                            final_target_ext->values[ValueSavantPowerSiphonDebuff]++;
-                            final_target_ext->timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
+                            auto& final_target_ext = final_target->ext();
+                            final_target_ext.values[ValueSavantPowerSiphonDebuff]++;
+                            final_target_ext.timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
                             if (final_target != data.target) { // For tooltips. -Pr0nogo
-                                target_ext->values[ValueSavantPowerSiphonDebuff]++;
-                                target_ext->timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
+                                target_ext.values[ValueSavantPowerSiphonDebuff]++;
+                                target_ext.timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
                             }
                             helper::create_thingy(SpriteId::Feedback_Hit_Small + bw::get_overlay_offset(data.target->id), data.target->position.x, data.target->position.y, data.attacking_player_id);
                         }
@@ -829,7 +830,7 @@ namespace hooks {
                             data.target->sprite->elevation + 1, data.attacker->player, data.attacker, { .origin = data.target });
                     } break;
                     case WeaponId::SevenstepGeometricRiflePiercing: {
-                        if (!target_ext->timers[TimerSevenstepMindMatterCarrier]) {
+                        if (!target_ext.timers[TimerSevenstepMindMatterCarrier]) {
                             g_iquare_globals->create_effect(EffectId::SevenstepMindMatter, 24, data.target->position, 1, SpriteId::SevenstepMindMatterOverlay,
                                 data.target->sprite->elevation + 1, data.attacker->player, data.attacker, { .origin = data.target });
                         }
@@ -837,9 +838,9 @@ namespace hooks {
                     case WeaponId::PazuzuJupiterDriver: {
                         // Deconstruction - Pazuzu behavior - apply stack
                         if (unit_is_combatant(data.target)) {
-                            target_ext->values[ValueDeconstruction]++;
-                            target_ext->timers[TimerDeconstruction] = 5 * 24 + 1;
-                            target_ext->values[ValueDeconstructionPlayer] = data.attacker->player;
+                            target_ext.values[ValueDeconstruction]++;
+                            target_ext.timers[TimerDeconstruction] = 5 * 24 + 1;
+                            target_ext.values[ValueDeconstructionPlayer] = data.attacker->player;
                             u32 overlay = ImageId::DeconstructionSmall + bw::get_overlay_offset(data.target->id);
                             if (data.target->subunit) {
                                 UnitExt* subunit_ext = get_unit_ext(data.target->subunit);
@@ -859,18 +860,18 @@ namespace hooks {
                     case WeaponId::HeraclesJavelinCannons:
                     case WeaponId::ClaymoreHarpoonRailgun: {
                         // Kelvin Munitions - Slow targets
-                        target_ext->timers[TimerKelvinMunitions] = 3 * 24 + 1;
+                        target_ext.timers[TimerKelvinMunitions] = 3 * 24 + 1;
                     } break;
                     case WeaponId::AspirantPotentiumCannon: {
                         // Aspirant - Criticality
-                        target_ext->timers[TimerCriticality] = 2 * 24 + 1;
+                        target_ext.timers[TimerCriticality] = 2 * 24 + 1;
                     } break;
                     case WeaponId::GorgonArtificeBattery: {
                         // Petrification - Gorgon behavior
-                        if (target_ext->values[ValuePetrificationStacks] < 20) {
-                            target_ext->values[ValuePetrificationStacks] += 1;
+                        if (target_ext.values[ValuePetrificationStacks] < 20) {
+                            target_ext.values[ValuePetrificationStacks] += 1;
                         }
-                        target_ext->timers[TimerPetrification] = 48 + 1;
+                        target_ext.timers[TimerPetrification] = 48 + 1;
                     } break;
                     case WeaponId::SirenCharybdalRifle:
                     case WeaponId::MagnetarNewtonianShockCannon: {
@@ -880,8 +881,8 @@ namespace hooks {
                             Vec32f displacement = bw::dir_between(data.target->sprite->position, data.attacker->sprite->position);
                             displacement.x *= 2 * 32.0 / displacement_time;
                             displacement.y *= 2 * 32.0 / displacement_time;
-                            target_ext->timers[TimerMagnetarAttraction] = displacement_time;
-                            target_ext->repulsion_vector = displacement;
+                            target_ext.timers[TimerMagnetarAttraction] = displacement_time;
+                            target_ext.repulsion_vector = displacement;
 
                             u32 overlay_id = bw::rand_between(SpriteId::MagnetarLawOfAttraction1, SpriteId::MagnetarLawOfAttraction3);
                             bw::create_and_init_thingy(overlay_id, data.target->position.x, data.target->position.y, data.attacker->player, data.target->sprite->elevation + 1);
@@ -891,7 +892,7 @@ namespace hooks {
                     case WeaponId::ArchonPsionicShockwave: {
                         if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
                             // TODO: Audiovisuals
-                            target_ext->timers[TimerTriumphantRiseDebuff] = 36;
+                            target_ext.timers[TimerTriumphantRiseDebuff] = 36;
                         }
                     } break;
                     case WeaponId::AshguardPhaseCremator: {
@@ -899,19 +900,19 @@ namespace hooks {
                         attacker_ext.timers[TimerVengefulMarch] = Protoss::VengefulMarchDuration;
 
                         // Ashguard - Indomitable Annex - add stack
-                        target_ext->units[UnitAnnexSource] = data.attacker;
-                        if (target_ext->indomitable_annex_stacks < 5) {
-                            target_ext->indomitable_annex_stacks++;
+                        target_ext.units[UnitAnnexSource] = data.attacker;
+                        if (target_ext.indomitable_annex_stacks < 5) {
+                            target_ext.indomitable_annex_stacks++;
                         }
-                        target_ext->values[ValueAnnexSourcePlayer] = data.attacking_player_id;
-                        target_ext->timers[TimerAnnex] = 2 * 24 + 1;
+                        target_ext.values[ValueAnnexSourcePlayer] = data.attacking_player_id;
+                        target_ext.timers[TimerAnnex] = 2 * 24 + 1;
                     } break;
                     case WeaponId::EmpressFadingBioplasma: {
                         // Empress - Anodyne Annex - add stack
-                        target_ext->units[UnitAnnexSource] = data.attacker;
-                        target_ext->values[ValueEmpressAnodyneAnnexStacks]++;
-                        target_ext->values[ValueAnnexSourcePlayer] = data.attacking_player_id;
-                        target_ext->timers[TimerAnnex] = 2 * 24 + 1;
+                        target_ext.units[UnitAnnexSource] = data.attacker;
+                        target_ext.values[ValueEmpressAnodyneAnnexStacks]++;
+                        target_ext.values[ValueAnnexSourcePlayer] = data.attacking_player_id;
+                        target_ext.timers[TimerAnnex] = 2 * 24 + 1;
                     } break;
                     case WeaponId::GhitorokorGnashingTendrils: {
                         attacker_ext.values[ValueGhitorokorRelentlessAggressionStacks]++;
@@ -941,7 +942,8 @@ namespace hooks {
                     case WeaponId::ZoryusthalethMonstrousMaw: {
                         // Zoryusthaleth - Swarming Omen
                         if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
-                            target_ext->timers[TimerSwarmingOmenDebuff] = 24 + 1;
+                            target_ext.timers[TimerSwarmingOmenDebuff] = 24 + 1;
+                            target_ext.values[ValueSwarmingOmenPlayer] = data.attacking_player_id;
                         }
                     } break;
                     case WeaponId::KonviliskSowingSpines: {
@@ -959,10 +961,10 @@ namespace hooks {
                     case WeaponId::HierophantPhaseSignifier:
                     case WeaponId::EpigraphLitanyCannons:
                     case WeaponId::PatriarchIronhandWeaver: {
-                        target_ext->values[ValueSignifyStacks]++;
-                        target_ext->timers[TimerSignify] = 3 * 24 + 1;
-                        target_ext->values[ValueSignifyPlayer] = data.attacking_player_id;
-                        bw::update_signify_status(data.target, target_ext);
+                        target_ext.values[ValueSignifyStacks]++;
+                        target_ext.timers[TimerSignify] = 3 * 24 + 1;
+                        target_ext.values[ValueSignifyPlayer] = data.attacking_player_id;
+                        bw::update_signify_status(data.target, &target_ext);
                     } break;
                     case WeaponId::ApostleCharonRifle: {
                         if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
@@ -995,9 +997,9 @@ namespace hooks {
                     } break;
                     case WeaponId::MagisterNeutronCannon: {
                         // Stellar Enforcement - Magister behavior
-                        if (!bw::is_allied_to(data.attacker->player, data.target->player) && !target_ext->timers[TimerStellarEnforcement]) {
-                            target_ext->timers[TimerStellarEnforcement] = 3 * 24 + 1;
-                            target_ext->timers[TimerStellarEnforcementOverlay] = 30;
+                        if (!bw::is_allied_to(data.attacker->player, data.target->player) && !target_ext.timers[TimerStellarEnforcement]) {
+                            target_ext.timers[TimerStellarEnforcement] = 3 * 24 + 1;
+                            target_ext.timers[TimerStellarEnforcementOverlay] = 30;
                             bw::add_unit_overlay(data.target, ImageId::StellarEnforcementDebuff_Small + bw::get_overlay_offset(data.target->id, true));  // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
                         }
                     } break;
