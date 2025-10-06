@@ -68,12 +68,12 @@ extern UpdateFunc sgUpdateFuncs[];
 extern RenderFunc sgRenderFuncs[];
 
 namespace drawFunc {
-	void __fastcall HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);				//0x004D55B0
-	void __fastcall HiddenCloakAnim_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		//0x004D5570
-	void __fastcall VisibleCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);			//0x004D5530
-	void __fastcall VisibleCloakAnim_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		//0x004D54F0
-	void __fastcall WarpFlash_Normal(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);			//0x004D5480
-	void __fastcall WarpFlash_Normal_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		//0x004D5450
+	void __fastcall HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);				// 004D55B0
+	void __fastcall HiddenCloakAnim_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		// 004D5570
+	void __fastcall VisibleCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);			// 004D5530
+	void __fastcall VisibleCloakAnim_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		// 004D54F0
+	void __fastcall WarpFlash_Normal(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);			// 004D5480
+	void __fastcall WarpFlash_Normal_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);		// 004D5450
 	void __fastcall WarpAnchor_Normal(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
 	void __fastcall WarpAnchor_HiddenCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
 	void __fastcall WarpAnchor_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
@@ -86,9 +86,9 @@ namespace drawFunc {
 	void __fastcall WarpFlash_VisibleCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
 	void __fastcall WarpFlash_HiddenCloak(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
 	void __fastcall WarpFlash_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void __fastcall Decloaking_update(Image* image);																		//0x004D5D10
-	void __fastcall Cloaking_update(Image* image);																			//0x004D5D70
-	void __fastcall warp_flash_update(Image* image);																			//0x004D8590
+	void __fastcall Decloaking_update(Image* image);																		// 004D5D10
+	void __fastcall Cloaking_update(Image* image);																			// 004D5D70
+	void __fastcall warp_flash_update(Image* image);																		// 004D8590
 	void __fastcall WarpFlash_Decloaking_update(Image* image);
 	void __fastcall WarpFlash_Cloaking_update(Image* image);
 	void __fastcall ShadowCloak_update(Image* image);
@@ -102,21 +102,21 @@ namespace drawFunc {
 
 namespace hooks {
 	u8 get_type_offset(u8 type);
-	void update_sprite_flag_on_palette(Sprite* sprite);								//0x00497E80
-	void make_sprite_visible(Sprite* sprite);									//0x00497ED0
-	void make_cloaked(u8 cloakH, Sprite* sprite, u8 cloakedStatus, u8 cloakL);	//0x00497FD0
-	void sub_4980F0(Sprite* sprite);											//0x004980F0
-	void showImagesHiddenByCloak(Sprite* sprite);								//0x00498170
-	void make_sprite_invisible(Sprite* sprite);									//0x00498A10
-	void UpdateSpriteImagesForCloak(Sprite* sprite);							//0x00498A90
-	void sub_498B50(Sprite* sprite, bool flipped);								//0x00498B50
-	Sprite* /*__stdcall*/ duplicate_sprite(Sprite* sprite);						//0x00499210
-	void sub_4BCD70(u8* paletteEntry);											//0x004BCD70
+	void update_sprite_flag_on_palette(Sprite* sprite);							// 00497E80
+	void make_sprite_visible(Sprite* sprite);									// 00497ED0
+	void make_cloaked(u8 cloakH, Sprite* sprite, u8 cloakedStatus, u8 cloakL);	// 00497FD0
+	void sub_4980F0(Sprite* sprite);											// 004980F0
+	void showImagesHiddenByCloak(Sprite* sprite);								// 00498170
+	void make_sprite_invisible(Sprite* sprite);									// 00498A10
+	void UpdateSpriteImagesForCloak(Sprite* sprite);							// 00498A90
+	void sub_498B50(Sprite* sprite, bool flipped);								// 00498B50
+	Sprite* /*__stdcall*/ duplicate_sprite(Sprite* sprite);						// 00499210
+	void sub_4BCD70(u8* paletteEntry);											// 004BCD70
 
 	void inject_image_render_hooks();
 }
 
 namespace helper {
 	void drawFunc(int function, s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);
-	void drawFunc_WarpTexture_colorData(Box32* grpRect, u32 frame);				//0x004D53F0
+	void drawFunc_WarpTexture_colorData(Box32* grpRect, u32 frame);				// 004D53F0
 }

@@ -3,7 +3,7 @@
 #define UnitsIdLimit 3000
 #define WeaponsIdLimit 256
 #define FlingyIdLimit 1000
-#define SpritesIdLimit 1030
+#define SpritesIdLimit 2000
 #define ImagesIdLimit 3000
 #define UpgradesIdLimit 61
 #define TechdataIdLimit 100

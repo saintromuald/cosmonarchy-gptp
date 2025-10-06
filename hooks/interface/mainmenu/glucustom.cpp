@@ -518,34 +518,6 @@ namespace hooks
 			RET
 		}
 	};
-
-	const u32 StatHangarCount_25477 = 0x00425477;
-	void __declspec(naked) StatHangarCount_patch_25471() {
-		__asm {
-			PUSH    EDX
-			XOR     BL, BL
-			MOV     EDX, ds: [0x00597248] // activePortraitUnit
-			MOV     EAX, [EDX + 0x64] // unit->id
-			CMP     AX, 0x48 // Carrier
-			JE      offset loc_isCarrier
-			CMP     AX, 0x52 // Gantrithor
-			JNE     offset loc_notCarrier
-
-		loc_isCarrier:
-			ADD     BL, [EDX + 0xC9] // unit->inHangarCount
-
-		loc_notCarrier:
-			ADD     BL, [EDX + 0xC8] // unit->outHangarCount
-			MOV     AX, 0x26
-			CMP     BL, 0xA
-			JAE     offset dont_dec
-			DEC     AX
-			dont_dec:
-			MOV     word ptr[ESI + 0x24], AX
-			POP     EDX
-			JMP     StatHangarCount_25477
-		}
-	}
 	
 	const u32 load_dialog = 0x004F57A0;
 	void __declspec(naked) RestartGameMenu() {

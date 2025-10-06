@@ -623,8 +623,7 @@ namespace hooks {
             for (i = *first_player_unit[placement_id].unit; i; i = i->player_link.next) {
                 if (i->sprite) {
                     if (i->main_order_id) {
-                        if (i->id == UnitId::TerranAnchor || i->id == UnitId::ZergCagrantCesiant || i->id == UnitId::ZergSurkithCesiant || i->id == UnitId::ZergSkortrithCesiant)
-                        {
+                        if (i->id == UnitId::TerranAnchor || i->id == UnitId::ZergCagrantCesiant || i->id == UnitId::ZergSurkithCesiant || i->id == UnitId::ZergSkortrithCesiant) {
                             u32 iterator2 = 0;
                             if (region_max) {
                                 do { // Distance from unit to region position
@@ -2035,8 +2034,7 @@ namespace hooks {
                     }
                 }
             } break;
-            case UnitId::ProtossPylon:
-            {
+            case UnitId::ProtossPylon: {
                 Unit* disabled_unit = helper::get_disabled_unit_in_range(player_var, try_position);
                 g_disabled_unit_array[9] = disabled_unit;
                 if (disabled_unit) {

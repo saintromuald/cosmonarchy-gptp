@@ -531,9 +531,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     memory_patch(0x00488855, (u8)0xC3);//RET;
     memory_patch(0x00488856, (u32)0x90909090);
 
-    // Pick appropriate icon size for hangar counts. Weapons, armor, shields, and spider mine counts are handled in stats_panel_display.
-    jump_patch(hooks::StatHangarCount_patch_25471, 0x00425471, 1);
-
     // Change quick in-game shortcuts.
     call_patch(hooks::RestartGameMenu, 0x00484785);					// Change leaderboard toggle shortcut action to mission restart shortcut action.
     memory_patch(0x00484B40, (u32)0x00484B24);						// Default switch table case (do nothing) for save game shortcut.

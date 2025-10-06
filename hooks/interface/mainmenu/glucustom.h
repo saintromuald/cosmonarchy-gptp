@@ -25,9 +25,6 @@ namespace hooks {
     // Player-colored font
     void get_color_handle();
     void writeFontApplyColour_patch();
-
-    // New stats_panel graphic handling
-    void StatHangarCount_patch_25471();
     
     // CTRL+R restart game hotkey
     void RestartGameMenu();

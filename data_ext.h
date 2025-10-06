@@ -232,6 +232,10 @@ enum ExtValueId {
     ValueArhaunLaunchPos,
     ValueDelayedRallyMoveX,
     ValueDelayedRallyMoveY,
+    ValueOriginatedFromGosvileth,
+    ValueNoCollision,
+    ValueAirTransport,
+    ValueIzirokorLaunchPos,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,

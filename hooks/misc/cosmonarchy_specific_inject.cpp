@@ -371,7 +371,7 @@ namespace hooks {
                 MOV hashStructIndex, AL
         }
         if (!warningOnce00) {
-            sprintf_s(buffer, "Invalid hash_struct_index!!\nhashStructIndex: %u", hashStructIndex);
+            sprintf_s(buffer, "Invalid hash_struct_index!\nhashStructIndex: %u", hashStructIndex);
             bw::print(buffer, TextColor::Red);
             warningOnce00 = true;
         }
@@ -394,7 +394,7 @@ namespace hooks {
             MOV active_nation_id, EBX
         }
         if (!warningOnce01) {
-            sprintf_s(buffer, "Invalid PlayerFlag!\nplayer id: %u", active_nation_id);
+            sprintf_s(buffer, "Invalid PlayerFlag!\nplayer id: %u\nplayer name: %s", active_nation_id, g_player_table[active_nation_id].name);
             bw::print(buffer, TextColor::Red);
             warningOnce01 = true;
         }
@@ -469,9 +469,9 @@ namespace hooks {
             succeeded = false;
             if (g_hash_list[hash_struct_index].hash_type == 1) {
                 if (!warning_once_03_00) {
-                    sprintf_s(buffer, "Invalid Hash, type 1! Local nation id %u\nCheck log for more info!", g_local_nation_id);
+                    snprintf(buffer, sizeof(buffer), "Invalid Hash, type 1! Your player id is: %u\nSubmit criticals to help debug!", g_local_nation_id);
                     bw::print(buffer, TextColor::Red);
-                    snprintf(buffer, sizeof(buffer), "Critical frame: %u\nLocal Type: %u | Remote Type: %u\nLocal Hash: 0x%X | Remote Hash: 0x%X\nLocal nation id: %u | Active visions: %u | Explored visions: %u\nLast random number: %u\n\nUnmovable Hits:",
+                    snprintf(buffer, sizeof(buffer), "Critical frame: %u\nLocal Type: %u | Remote Type: %u\nLocal Hash: 0x%X | Remote Hash: 0x%X\nLocal nation id: %u | Active visions: %u | Explored visions: %u\nLast random number: %u",
                         g_elapsed_time_frames,
                         g_hash_list[hash_struct_index].hash_type, hash_type,
                         g_hash_list[hash_struct_index].hash , *(u16*)(data + 2),
@@ -513,7 +513,7 @@ namespace hooks {
                             gptp::g_critical_logger << "\n";
                         }
                         u32 tile = bw::get_active_tile_at_tile(x, y)->flags;
-                        snprintf(buffer, sizeof(buffer), " %08X", tile & ~0x40000000);//'temporary_cagra' isn't part of the GameHash indexing, so it's not useful.
+                        snprintf(buffer, sizeof(buffer), " %08X", tile & ~0x40000000); // 'temporary_cagra' isn't part of the GameHash indexing, so it's not useful.
                         gptp::g_critical_logger << buffer;
                     }
 
@@ -566,8 +566,7 @@ namespace hooks {
         }
     }
 
-    void desync_debug_messages()
-    {
+    void desync_debug_messages() {
         // code from BG
         jump_patch(drop_debugging_00, Hook_DropDebugging00);
         jump_patch(drop_debugging_01, Hook_DropDebugging01);
@@ -619,37 +618,31 @@ namespace hooks {
         }	
     }
 
-    void damage_overlay_debug()
-    {
+    void damage_overlay_debug() {
 //		jump_patch(create_damage_overlay_wrapper, 0x004993C0);
         jump_patch(newDamageOverlay_JmpWrapper, 0x004993DB, 3);
     }
 
-    void __declspec(naked) game_loop_wrapper()
-    {
+    void __declspec(naked) game_loop_wrapper() {
         static s32 result;
-        __asm
-        {
+        __asm {
             PUSHAD
         }
         result = hooks::game_loop();
-        __asm
-        {
+        __asm {
             POPAD
             MOV EAX, result
             RETN
         }
     }
 
-    void __declspec(naked) create_unit_wrapper() // 004A09D0
-    {
+    void __declspec(naked) create_unit_wrapper() { // 004A09D0
         static Unit* result;
         static u16 unit_id;
         static s32 x;
         static s32 y;
         static s32 player;
-        __asm
-        {
+        __asm {
             PUSH EBP
             MOV EBP, ESP
             PUSH EAX
@@ -663,8 +656,7 @@ namespace hooks {
             PUSHAD
         }
         result = hooks::create_unit(unit_id, x, y, player);
-        __asm
-        {
+        __asm {
             POPAD
             MOV EAX, result
             MOV ESP, EBP
@@ -696,8 +688,7 @@ namespace hooks {
         }
     }
 
-    void __declspec(naked) ignore_iscript_and_go_to_idle_wrapper() // 00476550
-    {
+    void __declspec(naked) ignore_iscript_and_go_to_idle_wrapper() { // 00476550
         static Unit* unit;
         static u8 result;
         __asm {
@@ -767,8 +758,7 @@ namespace hooks {
         }
     }
 
-    void inject_cosmonarchy_specific()
-    {
+    void inject_cosmonarchy_specific() {
         flingy_speed_patches();
         desync_debug_messages();
 
@@ -786,13 +776,13 @@ namespace hooks {
         archon_hardcode_patches();
 
         // Hook patches!
-    //	jump_patch(game_loop_wrapper,							0x004D94B0, 3);
-        jump_patch(create_unit_wrapper,							0x004A09D0, 1);
-        jump_patch(transform_unit_main_wrapper,					0x0049F170, 1);
-        jump_patch(ignore_iscript_and_go_to_idle_wrapper,		0x00476550, 1);
-        jump_patch(turn_unit_wrapper,							0x00495F20, 1);
-        jump_patch(init_damage_overlay_counts_wrapper,			0x004D5C20, 1);
-        jump_patch(create_unit_building_sprite_validity_array,	0x00497110, 1);
-        jump_patch(create_thingy_wrapper,						0x00488210, 5);
+    //	jump_patch(game_loop_wrapper,							                0x004D94B0, 3);
+        jump_patch(create_unit_wrapper,						    0x004A09D0, 1);
+        jump_patch(transform_unit_main_wrapper,				    0x0049F170, 1);
+        jump_patch(ignore_iscript_and_go_to_idle_wrapper,		    0x00476550, 1);
+        jump_patch(turn_unit_wrapper,							    0x00495F20, 1);
+        jump_patch(init_damage_overlay_counts_wrapper,		    0x004D5C20, 1);
+        jump_patch(create_unit_building_sprite_validity_array,  0x00497110, 1);
+        jump_patch(create_thingy_wrapper,						    0x00488210, 5);
     }
 }

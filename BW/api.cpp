@@ -1204,9 +1204,11 @@ void decloak_proc(Unit* unit, u32 timer) {
 void decloak_passive_proc(Unit* unit) {
     if (is_passive_decloakable(unit)) {
         decloak_proc(unit, 60);
+        unit->status &= ~UnitStatus::CloakingForFree;
     }
     if (unit->is_subunit() && unit->subunit) {
         decloak_passive_proc(unit->subunit);
+        unit->subunit->status &= ~UnitStatus::CloakingForFree;
     }
 }
 
