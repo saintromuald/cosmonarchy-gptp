@@ -3,6 +3,7 @@
 #include <variant>
 
 using SearchRadius = std::variant<u32, Point16>;
+struct EffectField;
 
 enum class AttackTargetingType {
     RequiresTarget,					// If target doesn't exist, attack will stop firing (default)
@@ -50,3 +51,4 @@ void clear_maledictus_if_needed(Unit* unit);
 
 AttackTargetingType attack_targeting_type_of(Unit* unit);
 bool can_pick_new_target(Unit* unit);
+void tick_psi_storm_damage(EffectField& effect, u32 update_period, u32 tick_scalar_hp);

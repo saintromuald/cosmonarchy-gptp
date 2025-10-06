@@ -115,6 +115,8 @@ namespace UnitId {
         TerranMadrigalFuriaMode								= 381,
         TerranMadrigalTurretFuriaMode						= 382,
         TerranSavantPowerSiphon                             = 428,
+        TerranOgunTankMode                                  = 494,
+        TerranOgunSmithyMode                                = 497,
 
     // Terran-Unit-Factional
         TerranCohort										= 50,		// Infested Terran
@@ -251,6 +253,7 @@ namespace UnitId {
         ProtossEngram										= 294,
         ProtossSequesteredIcon								= 304,
         ProtossUnitaryUnion									= 305,
+        ProtossBulwark										= 331,
         ProtossHallOfHeretics								= 349,
         ProtossCedent                                       = 420,
         ProtossXenolith                                     = 426,
@@ -342,6 +345,7 @@ namespace UnitId {
         ZergVornathPond										= 396,		// Morphed from Quazeth Pool
         ZergSkibactScab										= 397,		// Morphed from Hydrith Den
         ZergEskigant                                        = 421,
+        ZergZozarcGorge                                     = 493,      // Morphed from Ultrav Cavern
 
     // Askosi-Unit
         AskosiPilgrim                                       = 439,
@@ -535,7 +539,7 @@ namespace UnitId {
         ZergGeszithRoost									= 137,
         ZergMatravilNest									= 138,
         ZergAlmakisAntre									= 139,
-        ZergUltravCavern									= 140,
+        ZergUlgorgCavern									= 140,
         ZergMutathSpire										= 141,
         ZergQuazethPool										= 142,
         ZergCagrantCesiant									= 143,
@@ -688,5 +692,11 @@ namespace UnitId {
         // Temporary until all factions are implemented for all races!
         Buttons_FactionSelectProtoss						= 404,
         Buttons_FactionSelectZerg							= 405,
+
+        Buttons_BasicAskosiFacilities                       = 440,
+        Buttons_AdvancedAskosiFacilities                    = 441,
+        Buttons_SupremeAskosiFacilities                     = 442,
+
+        Buttons_TerranAddonSubmenu                          = 492,
     };
 }

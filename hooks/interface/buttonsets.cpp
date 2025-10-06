@@ -664,14 +664,33 @@ namespace hooks {
                     current_button_state = helper::req_check((u32)current_button->requirement_func, current_button->requirement_var, g_local_nation_id, unit);
                     // Fight that lardcode, tony!
                     if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons) {
-                        if (buttonset_id == UnitId::ZergLarva || buttonset_id == UnitId::ZergOcsalLarva || buttonset_id_is_faction_selection(buttonset_id)) {
-                            current_button_state = Button_State::Enabled;
-                        }
-                        if ((buttonset_id == UnitId::TerranMason || buttonset_id == UnitId::TerranTalos) && (unit->main_order_id != OrderId::ConstructingBuilding)) {
-                            if (!(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit) && g_client_selection_count == 1)
-                            {
+                        switch (buttonset_id) {
+                            case UnitId::Buttons_FactionSelect:
+                            case UnitId::Buttons_FactionSelectProtoss:
+                            case UnitId::Buttons_FactionSelectZerg:
+                            case UnitId::ZergLarva:
+                            case UnitId::ZergOcsalLarva:
+                            case UnitId::AskosiPilgrim: {
                                 current_button_state = Button_State::Enabled;
-                            }
+                            } break;
+                            case UnitId::TerranMason:
+                            case UnitId::TerranTalos: {
+                                if (unit->main_order_id != OrderId::ConstructingBuilding
+                               && !(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit) && g_client_selection_count == 1) {
+                                    current_button_state = Button_State::Enabled;
+                                }
+                            } break;
+                            case UnitId::TerranStockade:
+                            case UnitId::TerranFulcrum:
+                            case UnitId::TerranCaptaincy:
+                            case UnitId::TerranStarport:
+                            case UnitId::TerranIronFoundry: {
+                                if (unit->build_queue[0] == UnitId::None || unit->building.addon) {
+                                    current_button_state = Button_State::Enabled;
+                                } else {
+                                    current_button_state = Button_State::Invisible;
+                                }
+                            } break;
                         }
                     }
 
@@ -937,59 +956,16 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
-
-                                    case UnitId::TerranCleric: {
-                                        if (faction != Faction::TerranFuturistFederation) {
-                                            if (!bw::all_selected_units_have_addon(UnitId::TerranVestry) || bw::unit_queue_full(unit)) {
-                                                current_button_state = Button_State::Invisible;
-                                            } else {
-                                                current_button_state = Button_State::Enabled;
-                                            }
-                                        }
-                                    } break;
-                                    case UnitId::TerranShamanSupportMode: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranVestry) || bw::unit_queue_full(unit)) {
-                                            current_button_state = Button_State::Invisible;
-                                        } else {
-                                            current_button_state = Button_State::Enabled;
-                                        }
-                                    } break;
-                                    case UnitId::TerranEidolon: {
-                                        if (faction != Faction::TerranNydusTrinity) {
-                                            if (!bw::all_selected_units_have_addon(UnitId::TerranCovenant) || bw::unit_queue_full(unit)) {
-                                                current_button_state = Button_State::Invisible;
-                                            } else {
-                                                current_button_state = Button_State::Enabled;
-                                            }
-                                        }
-                                    } break;
-                                    case UnitId::TerranEidolonNydus: {
-                                        if (faction == Faction::TerranNydusTrinity) {
-                                            if (!bw::all_selected_units_have_addon(UnitId::TerranCovenant) || bw::unit_queue_full(unit)) {
-                                                current_button_state = Button_State::Invisible;
-                                            } else {
-                                                current_button_state = Button_State::Enabled;
-                                            }
-                                        }
-                                    } break;
-                                    case UnitId::TerranSavantEntropyGauntlets: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranCovenant) || bw::unit_queue_full(unit)) {
-                                            current_button_state = Button_State::Invisible;
-                                        } else {
-                                            current_button_state = Button_State::Enabled;
-                                        }
-                                    } break;
-
-                                    case UnitId::TerranCyprian: {
-                                        if (faction == Faction::TerranNydusTrinity) {
-                                            current_button_state = Button_State::Invisible;
-                                        }
-                                    } break;
                                     case UnitId::TerranHarakanGolden: {
                                         if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranGoldenRepublic) {
                                             current_button_state = Button_State::Invisible;
                                         } else {
                                             current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::TerranCyprian: {
+                                        if (faction == Faction::TerranNydusTrinity) {
+                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::TerranCohort: {
@@ -999,12 +975,70 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
+                                    case UnitId::TerranCleric: {
+                                        if (faction != Faction::TerranFuturistFederation) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranVestry)) {
+                                                current_button_state = Button_State::Disabled;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
                                     case UnitId::TerranClericFuturist: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranVestry) || bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranFuturistFederation) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranFuturistFederation) {
                                             current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranVestry)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
+                                    } break;
+                                    case UnitId::TerranShamanSupportMode: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranVestry)) {
+                                            current_button_state = Button_State::Disabled;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::TerranEidolon: {
+                                        if (faction != Faction::TerranNydusTrinity) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCovenant)) {
+                                                current_button_state = Button_State::Disabled;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::TerranEidolonNydus: {
+                                        if (faction == Faction::TerranNydusTrinity) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCovenant)) {
+                                                current_button_state = Button_State::Disabled;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::TerranSavantEntropyGauntlets: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCovenant)) {
+                                            current_button_state = Button_State::Disabled;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+
+                                    case UnitId::TerranVestry:
+                                    case UnitId::TerranCovenant: {
+                                        current_button_state = Button_State::Enabled;
                                     } break;
                                 }
                             } break;
@@ -1034,72 +1068,33 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranSiren:
                                     case UnitId::TerranStriga: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranTinkerersTower) || bw::unit_queue_full(unit)) {
+                                        if (bw::unit_queue_full(unit)) {
                                             current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranTinkerersTower)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
                                     case UnitId::TerranOlympian:
                                     case UnitId::TerranAutocrat: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranGuildhall) || bw::unit_queue_full(unit)) {
+                                        if (bw::unit_queue_full(unit)) {
                                             current_button_state = Button_State::Invisible;
-                                        } else {
-                                            current_button_state = Button_State::Enabled;
-                                        }
-                                    } break;
-                                }
-                            } break;
-                            case UnitId::TerranFulcrum: {
-                                switch (current_button->requirement_var) {
-                                    case UnitId::TerranBlackjack: {
-                                        if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
-                                            if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit) || is_adding_on || in_air) {
-                                                current_button_state = Button_State::Invisible;
-                                            } else {
-                                                current_button_state = Button_State::Enabled;
-                                            }
-                                        } else {
-                                            current_button_state = Button_State::Invisible;
-                                        }
-                                    } break;
-                                    case UnitId::TerranBlackjackGolden: {
-                                        if (faction == Faction::TerranGoldenRepublic) {
-                                            if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit) || is_adding_on || in_air) {
-                                                current_button_state = Button_State::Invisible;
-                                            } else {
-                                                current_button_state = Button_State::Enabled;
-                                            }
-                                        } else {
-                                            current_button_state = Button_State::Invisible;
-                                        }
-                                    } break;
-                                    case UnitId::TerranTiangou: {
-                                        if (faction == Faction::TerranFuturistFederation) {
-                                            if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit) || is_adding_on || in_air) {
-                                                current_button_state = Button_State::Invisible;
-                                            } else {
-                                                current_button_state = Button_State::Enabled;
-                                            }   
-                                        } else {
-                                            current_button_state = Button_State::Invisible;
-                                        }
-                                    } break;
-                                    case UnitId::TerranMatadorTankMode: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranScrapyard) || bw::unit_queue_full(unit)) {
-                                            current_button_state = Button_State::Invisible;
-                                        } else {
-                                            current_button_state = Button_State::Enabled;
-                                        }
-                                    } break;
-                                    case UnitId::TerranMadrigalImperiosoMode: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranPalladium) || bw::unit_queue_full(unit)) {
-                                            current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranGuildhall)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
 
+                                    case UnitId::TerranTinkerersTower:
+                                    case UnitId::TerranGuildhall: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                }
+                            } break;
+                            case UnitId::TerranFulcrum: {
+                                switch (current_button->requirement_var) {
                                     case UnitId::TerranCyclops: {
                                         if (faction == Faction::TerranFuturistFederation) {
                                             current_button_state = Button_State::Invisible;
@@ -1142,21 +1137,85 @@ namespace hooks {
                                         }
                                     } break;
 
-                                    case UnitId::TerranPhalanxTankMode: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranPalladium) || bw::unit_queue_full(unit)
-                                        ||	 faction == Faction::TerranNydusTrinity) {
+                                    case UnitId::TerranBlackjack: {
+                                        if (faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranScrapyard)) {
+                                                current_button_state = Button_State::Disabled;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        } else {
                                             current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranBlackjackGolden: {
+                                        if (faction == Faction::TerranGoldenRepublic) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranScrapyard)) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranTiangou: {
+                                        if (faction == Faction::TerranFuturistFederation) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranScrapyard)) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranMatadorTankMode: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranScrapyard)) {
+                                            current_button_state = Button_State::Disabled;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::TerranPhalanxTankMode: {
+                                        if (bw::unit_queue_full(unit) || faction == Faction::TerranNydusTrinity) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranPalladium)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
                                     case UnitId::TerranTarasque: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranPalladium) || bw::unit_queue_full(unit)
-                                        ||  faction != Faction::TerranNydusTrinity) {
+                                        if (bw::unit_queue_full(unit) || faction != Faction::TerranNydusTrinity) {
                                             current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranPalladium)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
+                                    } break;
+                                    case UnitId::TerranMadrigalImperiosoMode: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranPalladium)) {
+                                            current_button_state = Button_State::Disabled;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+
+                                    case UnitId::TerranScrapyard:
+                                    case UnitId::TerranPalladium: {
+                                        current_button_state = Button_State::Enabled;
                                     } break;
                                 }
                             } break;
@@ -1172,16 +1231,20 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranClaymore:
                                     case UnitId::TerranPenumbra: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranFutureStation) || bw::unit_queue_full(unit) || is_adding_on) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on) {
                                             current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranFutureStation)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
                                     case UnitId::TerranAnticthon:
                                     case UnitId::TerranAion: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranBioticBastion) || bw::unit_queue_full(unit) || is_adding_on) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on) {
                                             current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranBioticBastion)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
@@ -1232,34 +1295,45 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranSalamander:
                                     case UnitId::TerranSundog: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranRotary) || bw::unit_queue_full(unit)) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                             current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranRotary)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
                                     case UnitId::TerranAzazel: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranCommandment) || bw::unit_queue_full(unit)) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                             current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCommandment)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
                                     case UnitId::TerranSeraph: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranCommandment) || bw::unit_queue_full(unit)
-                                        ||	 faction == Faction::TerranGoldenRepublic) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranGoldenRepublic) {
                                             current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCommandment)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
                                     case UnitId::TerranLuminary: {
-                                        if (!bw::all_selected_units_have_addon(UnitId::TerranCommandment) || bw::unit_queue_full(unit)
-                                        || 	 faction != Faction::TerranGoldenRepublic) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranGoldenRepublic) {
                                             current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCommandment)) {
+                                            current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
                                         }
+                                    } break;
+
+                                    case UnitId::TerranRotary:
+                                    case UnitId::TerranCommandment: {
+                                        current_button_state = Button_State::Enabled;
                                     } break;
                                 }
                             } break;
@@ -1285,7 +1359,7 @@ namespace hooks {
                                     case UnitId::TerranPhobos: {
                                         if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                             current_button_state = Button_State::Invisible;
-                                        } else if (!bw::all_selected_units_have_addon(UnitId::TerranHadron)) {
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranHadron)) {
                                             current_button_state = Button_State::Disabled;
                                         } else {
                                             current_button_state = Button_State::Enabled;
@@ -1376,8 +1450,20 @@ namespace hooks {
                             case UnitId::TerranMinistry: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::TerranMason: {
-                                        if (unit->status & UnitStatus::GroundedBuilding && !is_adding_on) {
+                                        if (unit->is_grounded_building() && !is_adding_on) {
                                             current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranTalos:
+                                    case UnitId::TerranOgunTankMode: {
+                                        if (unit->is_grounded_building() && !is_adding_on) {
+                                            if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranQuarry)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
                                         } else {
                                             current_button_state = Button_State::Invisible;
                                         }
@@ -1395,6 +1481,17 @@ namespace hooks {
                             } break;
                             case UnitId::TerranTreasury: {
                                 switch (current_button->requirement_var) {
+                                    case UnitId::TerranTalos: {
+                                        if (unit->is_grounded_building() && !is_adding_on) {
+                                            if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranQuarry)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
                                     case UnitId::TerranLodestone:
                                     case UnitId::TerranQuarry:
                                     case UnitId::TerranAnvil: {
@@ -1402,17 +1499,6 @@ namespace hooks {
                                             current_button_state = Button_State::Invisible;
                                         } else {
                                             current_button_state = Button_State::Enabled;
-                                        }
-                                    } break;
-                                }
-                            } break;
-                            case UnitId::TerranQuarry: {
-                                switch (current_button->requirement_var) {
-                                    case UnitId::TerranTalos: {
-                                        if (!unit_ext->values[ValueAddonInactive]) {
-                                            current_button_state = Button_State::Enabled;
-                                        } else {
-                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                 }
@@ -1862,7 +1948,8 @@ namespace hooks {
                                     case UnitId::ZergZoryusthaleth: {
                                         if (faction != Faction::ZergImicrenTendril) {
                                             if (player_has_completed_unit_id(unit->player, UnitId::ZergZorkizShroud)
-                                                || player_has_unit_id(unit->player, UnitId::ZergUltravCavern)) {
+                                                || player_has_unit_id(unit->player, UnitId::ZergUlgorgCavern)
+                                                || player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
                                                 current_button_state = Button_State::Enabled;
                                             } else {
                                                 current_button_state = Button_State::Disabled;
@@ -1874,7 +1961,8 @@ namespace hooks {
                                     case UnitId::ZergInzorthrokor: {
                                         if (faction == Faction::ZergImicrenTendril) {
                                             if (player_has_completed_unit_id(unit->player, UnitId::ZergZorkizShroud)
-                                                || player_has_unit_id(unit->player, UnitId::ZergUltravCavern)) {
+                                                || player_has_unit_id(unit->player, UnitId::ZergUlgorgCavern)
+                                                || player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
                                                 current_button_state = Button_State::Enabled;
                                             } else {
                                                 current_button_state = Button_State::Disabled;
@@ -1883,10 +1971,18 @@ namespace hooks {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
-                                    case UnitId::ZergLakizilisk:
-                                    case UnitId::ZergGorgrokor: {
+                                    case UnitId::ZergLakizilisk: {
                                         if (player_has_completed_unit_id(unit->player, UnitId::ZergZorkizShroud)
-                                        ||  player_has_unit_id(unit->player, UnitId::ZergUltravCavern)) {
+                                        ||  player_has_unit_id(unit->player, UnitId::ZergUlgorgCavern)
+                                        ||  player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::ZergGorgrokor: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::ZergUlgorgCavern)
+                                        ||  player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
@@ -2004,10 +2100,17 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
-                                    case UnitId::ZergUltrokor:
+                                    case UnitId::ZergUltrokor: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::ZergUlgorgCavern)
+                                            || player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
                                     case UnitId::ZergZobriolisk:
                                     case UnitId::ZergZarcavrokor: {
-                                        if (player_has_completed_unit_id(unit->player, UnitId::ZergUltravCavern)) {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
@@ -2134,7 +2237,7 @@ namespace hooks {
                             } break;
                             case UnitId::ZergLakizilisk: {
                                 if (!is_burrowed && current_button->requirement_var == UnitId::ZergZobriolisk) {
-                                    if (player_has_completed_unit_id(unit->player, UnitId::ZergUltravCavern)) {
+                                    if (player_has_completed_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
                                         current_button_state = Button_State::Enabled;
                                     } else {
                                         current_button_state = Button_State::Disabled;
@@ -2145,7 +2248,7 @@ namespace hooks {
                             } break;
                             case UnitId::ZergGorgrokor: {
                                 if (current_button->requirement_var == UnitId::ZergZarcavrokor) {
-                                    if (player_has_completed_unit_id(unit->player, UnitId::ZergUltravCavern)) {
+                                    if (player_has_completed_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
                                         current_button_state = Button_State::Enabled;
                                     } else {
                                         current_button_state = Button_State::Disabled;
@@ -2203,13 +2306,6 @@ namespace hooks {
                             case UnitId::ZergQuazethPool: {
                                 if (current_button->requirement_var == UnitId::ZergVornathPond) {
                                     current_button_state = Button_State::Enabled;
-                                } else if (current_button->requirement_var == UnitId::ZergKalkiirLake) {
-                                    if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
-                                    ||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
-                                        current_button_state = Button_State::Enabled;
-                                    } else {
-                                        current_button_state = Button_State::Disabled;
-                                    }
                                 } else {
                                     current_button_state = Button_State::Invisible;
                                 }
@@ -2217,24 +2313,20 @@ namespace hooks {
                             case UnitId::ZergHydrithDen: {
                                 if (current_button->requirement_var == UnitId::ZergSkibactScab) {
                                     current_button_state = Button_State::Enabled;
-                                } else if (current_button->requirement_var == UnitId::ZergTethvithSwamp) {
-                                    if (player_has_completed_unit_id(unit->player, UnitId::ZergIrolIris)
-                                    ||  player_has_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
-                                        current_button_state = Button_State::Enabled;
-                                    } else {
-                                        current_button_state = Button_State::Disabled;
-                                    }
+                                } else {
+                                    current_button_state = Button_State::Invisible;
+                                }
+                            } break;
+                            case UnitId::ZergUlgorgCavern: {
+                                if (current_button->requirement_var == UnitId::ZergZozarcGorge) {
+                                    current_button_state = Button_State::Enabled;
                                 } else {
                                     current_button_state = Button_State::Invisible;
                                 }
                             } break;
                             case UnitId::ZergAlkagIteth: {
                                 if (current_button->requirement_var == UnitId::ZergChokralChazsal) {
-                                    if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
-                                        current_button_state = Button_State::Enabled;
-                                    } else {
-                                        current_button_state = Button_State::Disabled;
-                                    }
+                                    current_button_state = Button_State::Enabled;
                                 } else {
                                     current_button_state = Button_State::Invisible;
                                 }

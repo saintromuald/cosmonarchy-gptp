@@ -77,7 +77,8 @@ b32 unit_id_is_tech(u32 unit_id, bool allow_addons) {
         case UnitId::ZergGeszkathGrotto:
         case UnitId::ZergAlkajChasm:
         case UnitId::ZergZorkizShroud:
-        case UnitId::ZergUltravCavern:
+        case UnitId::ZergUlgorgCavern:
+        case UnitId::ZergZozarcGorge:
         case UnitId::ZergMatravilNest:
         case UnitId::ZergAlmakisAntre:
         case UnitId::ZergElthisthMound:

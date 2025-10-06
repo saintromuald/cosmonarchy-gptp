@@ -91,7 +91,6 @@ struct std::formatter<TextColor> {
 };
 
 namespace enums {
-
 template <typename T>
 using base = std::underlying_type_t<T>;
 
@@ -99,9 +98,7 @@ template <typename T>
 base<T> to_base(T value) {
     return static_cast<base<T>>(value);
 }
-
 } // enums
-
 
 namespace bw {
 
