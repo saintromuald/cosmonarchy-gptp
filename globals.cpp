@@ -84,14 +84,6 @@ static const EffectInfo& get_effect_info(EffectId effect_id) {
 }
 
 void EffectField::destroy() {
-    if (playing_sound) {
-        playing_sound.Stop();
-    }
-    const EffectInfo& effect_info = get_effect_info(id);
-    if (effect_info.end_sound) {
-        bw::play_sound(effect_info.end_sound, this->position);
-    }
-
     current_time = 0;
     intervals = 0;
 }
@@ -485,6 +477,13 @@ void IquareGlobals::tick() {
                 effect.thingy->sprite->play_iscript_animation(IscriptAnimation::Death);
             }
             effect.thingy = nullptr;
+            if (effect.playing_sound) {
+                effect.playing_sound.Stop();
+            }
+            const EffectInfo& effect_info = get_effect_info(effect.id);
+            if (effect_info.end_sound) {
+                bw::play_sound(effect_info.end_sound, effect.position);
+            }
 
             if (effect.intervals) {
                 effect.intervals--;
