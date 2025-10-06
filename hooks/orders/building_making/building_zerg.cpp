@@ -278,7 +278,12 @@ s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignore_incom
         } break;
 
         case UnitId::ZergZorkizShroud: {
-            unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergUltravCavern, ignore_incomplete);
+            unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergUlgorgCavern, ignore_incomplete);
+            unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergZozarcGorge, ignore_incomplete);
+        } break;
+
+        case UnitId::ZergUlgorgCavern: {
+            unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergZozarcGorge, ignore_incomplete);
         } break;
     }
     return unit_count;

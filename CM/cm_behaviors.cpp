@@ -1,5 +1,6 @@
 #include "cm_behaviors.h"
 #include "BW\api.h"
+#include "globals.h"
 
 bool is_any_corpse(Thingy* thingy) {
 	if (thingy->sprite && SpriteId::is_corpse((SpriteId::Enum)thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
@@ -550,4 +551,18 @@ bool can_pick_new_target(Unit* unit) {
 		} break;
 	}
 	return true;
+}
+
+void tick_psi_storm_damage(EffectField& effect, u32 update_period, u32 tick_scalar_hp) {
+	for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
+		auto& unit_ext = unit->ext();
+		if (unit->under_storm_timer) {
+			unit_ext.values[ValueStormDivider] *= 2;
+		} else {
+			unit->under_storm_timer = update_period;
+			unit_ext.values[ValueStormDivider] = 1;
+		}
+		unit->damage_with(WeaponId::PsiStorm, (20 * tick_scalar_hp) / unit_ext.values[ValueStormDivider], effect.source, effect.player,
+			helper::get_direction_from_points(effect.position, unit->position), unit->is_building() ? 2 : 1);
+	}
 }

@@ -102,10 +102,10 @@ Button_State::Enum get_button_state(Button* button, Unit* unit, Button_State::En
 		return default_return;
 	}
 
-	bool has_addon = units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon;
-	bool in_air = unit->status & UnitStatus::InAir;
+	bool has_addon = unit->is_building() && unit->building.addon;
+	bool in_air = unit->is_in_air();
 	bool is_training = unit->build_queue[unit->build_queue_slot] != UnitId::None;
-	bool is_burrowed = unit->status & UnitStatus::Burrowed;
+	bool is_burrowed = unit->is_burrowed();
 	bool is_adding_on = unit->building.addon_build_id && unit->main_order_id == OrderId::BuildAddon;
 
 	Button_State::Enum result = Button_State::Enabled;
@@ -115,7 +115,7 @@ Button_State::Enum get_button_state(Button* button, Unit* unit, Button_State::En
 		}
 	}
 
-	if (!(unit->status & UnitStatus::GroundedBuilding)) {
+	if (!unit->is_grounded_building()) {
 		update_button_state_result(&result, Button_State::Invisible);
 	}
 	

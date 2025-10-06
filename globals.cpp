@@ -239,18 +239,7 @@ static void tick_effect(EffectField& effect) {
                 }
 
                 caster->spend_energy(20 * tick_scalar_hp);
-                for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
-                    auto& unit_ext = unit->ext();
-                    if (unit->under_storm_timer) {
-                        unit_ext.values[ValueStormDivider] *= 2;
-                    } else {
-                        unit->under_storm_timer = update_period;
-                        unit_ext.values[ValueStormDivider] = 1;
-                    }
-                    unit->damage_with(WeaponId::PsiStorm, (20 * tick_scalar_hp) / unit_ext.values[ValueStormDivider], effect.source, effect.player,
-                        helper::get_direction_from_points(effect.position, unit->position), units_dat::base_property[unit->id] & UnitProperty::Building ? 2 : 1);
-                }
-
+                tick_psi_storm_damage(effect, update_period, tick_scalar_hp);
                 if (!caster->energy) {
                     caster_ext.current_storm = 0;
                     effect.destroy();
@@ -258,20 +247,7 @@ static void tick_effect(EffectField& effect) {
                 }
             } break;
             case EffectId::PsiStormPersistent: {
-                if (effect.current_time == 1) {
-                    effect.destroy();
-                }
-                for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
-                    auto& unit_ext = unit->ext();
-                    if (unit->under_storm_timer) {
-                        unit_ext.values[ValueStormDivider] *= 2;
-                    } else {
-                        unit->under_storm_timer = update_period;
-                        unit_ext.values[ValueStormDivider] = 1;
-                    }
-                    unit->damage_with(WeaponId::PsiStorm, (20 * tick_scalar_hp) / unit_ext.values[ValueStormDivider], effect.source, effect.player,
-                        helper::get_direction_from_points(effect.position, unit->position), units_dat::base_property[unit->id] & UnitProperty::Building ? 2 : 1);
-                }
+                tick_psi_storm_damage(effect, update_period, tick_scalar_hp);
             } break;
             case EffectId::HallucinatingField: {
                 for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf)) {

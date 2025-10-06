@@ -678,8 +678,8 @@ namespace hooks {
                     case WeaponId::ValkyrieHaloRockets: {
                         // Offset: Cone
                         s32 angle = 15 - index * 4;
-                        s32 scatter = -15 + index * 5;
-                        fire_sideways(unit, weapon_id, angle, scatter + 32); // Adding 32 for Valkyrie specifically.
+                        s32 scatter = -15 + index * 5 + 32; // Adding 32 for Valkyrie specifically.
+                        fire_sideways(unit, weapon_id, angle, scatter);
                     } break;
                     case WeaponId::MatrixKhaydarinRay: {
                         fire_bullet(unit, weapon_id, weapon_target);

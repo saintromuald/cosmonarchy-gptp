@@ -610,7 +610,8 @@ bool is_zerg_building_morph_result(u16 id) {
         case UnitId::ZergChokralChazsal:
         case UnitId::ZergAlmakisAntre:
         case UnitId::ZergAlkajChasm:
-        case UnitId::ZergUltravCavern: {
+        case UnitId::ZergUlgorgCavern:
+        case UnitId::ZergZozarcGorge: {
             return true;
         }
     }
@@ -634,6 +635,7 @@ bool is_zerg_building_morph_source(u16 id) {
         case UnitId::ZergMutathSpire:
         case UnitId::ZergMatravilNest:
         case UnitId::ZergZorkizShroud:
+        case UnitId::ZergUlgorgCavern:
         case UnitId::ZergGeszkathGrotto: {
             return true;
         }
@@ -1948,11 +1950,9 @@ bool all_selected_units_have_addon(u32 unit_id) {
         if (!unit) {
             break;
         }
-
-        if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+        if (!unit->is_building()) {
             return false;
         }
-
         has_selection = true;
         if (!unit->building.addon || unit->building.addon->id != unit_id) {
             return false;
@@ -2013,7 +2013,8 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergBegrozithBarrow:		return UnitId::ZergAxtothAxis;
         case UnitId::ZergAlkajChasm:			return UnitId::ZergGeszkathGrotto;
         case UnitId::ZergChokralChazsal:		return UnitId::ZergAlkagIteth;
-        case UnitId::ZergUltravCavern:			return UnitId::ZergZorkizShroud;
+        case UnitId::ZergUlgorgCavern:			return UnitId::ZergZorkizShroud;
+        case UnitId::ZergZozarcGorge:			return UnitId::ZergUlgorgCavern;
         case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
         case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
 
@@ -2138,7 +2139,11 @@ bool buttonset_id_is_submenu(u32 buttonset_id) {
         || buttonset_id == UnitId::Buttons_LarvaControl
         || buttonset_id == UnitId::Buttons_OcsalLarvaSwarm
         || buttonset_id == UnitId::Buttons_OcsalLarvaAssault
-        || buttonset_id == UnitId::Buttons_OcsalLarvaControl;
+        || buttonset_id == UnitId::Buttons_OcsalLarvaControl
+        || buttonset_id == UnitId::Buttons_BasicAskosiFacilities
+        || buttonset_id == UnitId::Buttons_AdvancedAskosiFacilities
+        || buttonset_id == UnitId::Buttons_SupremeAskosiFacilities
+        || buttonset_id == UnitId::Buttons_TerranAddonSubmenu;
 }
 
 u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
@@ -3255,8 +3260,8 @@ u32 get_ensnare_factor(Unit* unit) {
             factor++;
         }
     }
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->timers[TimerEnsnaringBrood] > 0) {
+    auto& unit_ext = unit->ext();
+    if (unit_ext.timers[TimerEnsnaringBrood] > 0) {
         factor++;
     }
     return factor;
