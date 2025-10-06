@@ -112,6 +112,8 @@ namespace hooks {
 	void sub_498B50(Sprite* sprite, bool flipped);								// 00498B50
 	Sprite* /*__stdcall*/ duplicate_sprite(Sprite* sprite);						// 00499210
 	void sub_4BCD70(u8* paletteEntry);											// 004BCD70
+	void set_image_palette_type(Image* image, u8 type);							// 004D58B0
+	void set_image_palette_type2(Image* image, u8 type);
 
 	void inject_image_render_hooks();
 }

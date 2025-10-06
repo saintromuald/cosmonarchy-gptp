@@ -178,6 +178,32 @@ namespace {
 			RET
 		}
 	}
+
+	void __declspec(naked) set_image_palette_type_wrapper() {
+		__asm {
+			MOV var0, EAX //image
+			MOV var1, EBX //type
+			PUSHAD
+		}
+		hooks::set_image_palette_type((Image*)var0, (u8)var1);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) set_image_palette_type2_wrapper() {
+		__asm {
+			MOV var0, EAX //image
+			MOV var1, EBX //type
+			PUSHAD
+		}
+		hooks::set_image_palette_type2((Image*)var0, (u8)var1);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -212,5 +238,9 @@ namespace hooks {
 		memory_patch(0x004D66F4, (u8)0x32);
 		memory_patch(0x004D66F8, (u8)0x33);
 		memory_patch(0x004D753C, (u8)0x88);//iscript_opcode_cases @ 0x004D74C0
+
+		call_patch(set_image_palette_type_wrapper,  0x00498FD2, 0);
+		call_patch(set_image_palette_type_wrapper,  0x004D5E4E, 0);
+		jump_patch(set_image_palette_type2_wrapper, 0x004D58B0, 1);
 	}
 }

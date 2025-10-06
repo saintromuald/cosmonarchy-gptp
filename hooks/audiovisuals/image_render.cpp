@@ -715,6 +715,29 @@ namespace hooks {
 			UnkRGBMashup[i_0] = RGB >> 2;
 		} while (--i_0 >= 0);
 	}
+
+	void set_image_palette_type(Image* image, u8 type) { // 004BCD70
+		image->palette_type = type;
+		image->update_fxn = sgUpdateFuncs[type].fxn;
+		u16 flags = image->flags;
+		image->render_fxn = flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
+
+		if (type == PaletteType::WarpFlash) {
+			image->draw_fxn.step1 = 48;
+			image->draw_fxn.step2 = 2;
+		}
+
+		image->flags = flags | ImageFlags::Redraw;
+	}
+
+	void set_image_palette_type2(Image* image, u8 type) { // 004D58B0
+		image->palette_type = type;
+		image->update_fxn = sgUpdateFuncs[type].fxn;
+		u16 flags = image->flags;
+		image->render_fxn = flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
+		image->flags = flags | ImageFlags::Redraw;
+	}
+
 }
 
 //Placing this here instead of bwhelper because it's very specific to image_render.
