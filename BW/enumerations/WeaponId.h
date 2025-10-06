@@ -57,7 +57,7 @@ namespace WeaponId {
         SpraithCesiantSeekerSpores				 = 0x34,
         SurkithCesiantSubterraneanTentacle		 = 0x35,
         InfestedTerranSuicide					 = 0x36,
-        SkryrokorSuicide							 = 0x37,
+        SkryrokorPlasmaMetamorphosis             = 0x37,
         MatralethParasite						 = 0x38,
         SpawnBroodlings							 = 0x39,
         Ensnare									 = 0x3A,
@@ -157,6 +157,8 @@ namespace WeaponId {
         TarasqueAcceleratedPlasmid			= 136, // Tarasque mobile weapon
         SouthpawKnockoutDrivers				= 169,
         MadrigalHecatonAngeltearMissiles    = 188,
+        TartarusMineApollyoidConflagration  = 190,
+        PietyWardProvidence                 = 201,
         PhilocHeirloomBatteries				= 203,
         HotshotDispatchShotgun				= 208,
         AurielQuarternaryRifle				= 209,
@@ -338,6 +340,7 @@ namespace WeaponId {
         MortothrokorWickedIncisors			= 192,
         SpirtithCesiantSpirtilSpores		= 178,
         SkortrithCesiantSkortraTendril		= 180,
+        AgrilethMassiveMandible             = 189,
         NathrokorNathrokClaws				= 204,
         GorgrokorCalcification				= 205,
         AlgoztaliskBottomlessSpinestacks	= 212,
@@ -362,6 +365,7 @@ namespace WeaponId {
         HelionUskoScrapray                  = 179,
         TiradeIktaDriver                    = 181,
         AvatarReformingCarbine              = 182,
+        Rematerialize                       = 207,
         PilgrimMiningSaber                  = 239,
 
         // Misc \\

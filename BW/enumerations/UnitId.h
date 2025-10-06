@@ -142,6 +142,7 @@ namespace UnitId {
         TerranBlackguard                                    = 489,
         TerranArhaun                                        = 490,
         TerranArhaunTurret                                  = 491,
+        TerranCannibal                                      = 496,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1

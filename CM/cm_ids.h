@@ -147,4 +147,5 @@ namespace WeaponId {
 u32  get_custom_melee_factor(WeaponId::Enum weapon_id);
 bool weapon_id_splits_reactive_payload(WeaponId::Enum weapon_id);
 bool weapon_id_bounces_binding_plasma(WeaponId::Enum weapon_id);
+bool can_attack_target(WeaponId::Enum weapon_id, Unit* target);
 } // namespace WeaponId

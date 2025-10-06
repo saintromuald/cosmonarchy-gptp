@@ -2601,6 +2601,7 @@ namespace hooks {
                     }
                 }
             } break;
+        }
 
         // Terran-style windups
         if (UnitId::has_interruptable_windup(static_cast<UnitId::Enum>(unit->id)) && unit->order_signal & 32) {

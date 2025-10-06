@@ -147,7 +147,7 @@ enum ExtValueId {
     ValueSavantPowerSiphonDebuff,
     ValuePhalanxSiegeModeLaunchPos,
     ValueRegressionUnstable,
-    ValueOriginatedFromGosvileth,
+    ValueOriginatedFromAgrileth,
     ValueCustomEggActive,
     ValueCustomEggHatchMax,
     ValueCustomEggHpMax,
@@ -399,7 +399,6 @@ enum ExtTimerId {
     TimerWanderDelay,
     TimerDelayedRally,
 
-    TimerDelayedRally,
     TimerOgunNaniteDrones,
     TimerBurnDownDelay,
     TimerCannibalHealing,

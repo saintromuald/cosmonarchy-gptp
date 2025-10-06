@@ -378,7 +378,7 @@ namespace hooks {
 							} else {
 								unit->damage_hp(20, 0, unit->last_attacking_player, true);
 								if (unit->plague_timer && unit->hitpoints <= 256) {
-									unit->remove();
+									unit->bwfunc_remove();
 								}
 							}
 						}

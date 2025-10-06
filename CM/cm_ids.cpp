@@ -1808,4 +1808,17 @@ bool weapon_id_bounces_binding_plasma(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::OscilliantRotatingRay
         || weapon_id == WeaponId::GladiusPlasmaFlurry;
 }
+
+bool can_attack_target(WeaponId::Enum weapon_id, Unit* target) {
+    if (!target) {
+        return false;
+    }
+    if (weapons_dat::target_flags[weapon_id].air && target->is_in_air()) {
+        return true;
+    }
+    if (weapons_dat::target_flags[weapon_id].ground && !target->is_in_air()) {
+        return true;
+    }
+    return false;
+}
 } // namespace WeaponId
