@@ -395,6 +395,16 @@ enum ExtTimerId {
     TimerWanderDelay,
     TimerDelayedRally,
 
+    TimerDelayedRally,
+    TimerOgunNaniteDrones,
+    TimerBurnDownDelay,
+    TimerCannibalHealing,
+    TimerSermonSalve,
+    TimerSermonSalveOverlay,
+    TimerIncinerateDamage,
+    TimerIncinerateArmor,
+    TimerTerranWindup,
+
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
     TimerAI_Siphon,

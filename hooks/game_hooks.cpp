@@ -2577,6 +2577,46 @@ namespace hooks {
                     unit->remove_timer = Broodspawn::LifeTimer;
                 }
             } break;
+            case UnitId::ZergKeskathalor: {
+                if (unit->order_signal & 32) {
+                    unit->order_signal &= ~32;
+                    fire_bullet(unit, WeaponId::KeskathalorScreamingVenom2, unit->order_target);
+                }
+            } break;
+            case UnitId::TerranLobotomyMine: {
+                if (unit->order_signal & 32) {
+                    unit->order_signal &= 32;
+                    fire_bullet(unit, WeaponId::LobotomyMineExplosion, unit->order_target);
+                    unit->ground_weapon_cooldown = hooks::get_modified_cooldown(unit, 1, false);
+                }
+            } break;
+            case UnitId::AskosiChantry: {
+                if (unit->can_use_passive_ability()) {
+                    const auto timer = unit_ext.timers[TimerSermonSalveOverlay];
+                    if (!timer) {
+                        unit_ext.timers[TimerSermonSalveOverlay] = 24;
+                        bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
+                    }
+                    u32 range = AskosiChantry::SermonSalveRange;
+                    for (Unit* target : g_unit_search.radial(unit->position, range).filter(unit, FilterAlly | FilterNoBuilding)) {
+                        auto& target_ext = target->ext();
+                        if (!target_ext.timers[TimerSermonSalve]) {
+                            target_ext.timers[TimerSermonSalve] = 3;
+                        }
+                    }
+                }
+            } break;
+
+        // Terran-style windups
+        if (UnitId::has_interruptable_windup(static_cast<UnitId::Enum>(unit->id)) && unit->order_signal & 32) {
+            if (unit_ext.timers[TimerTerranWindup]) {
+                Unit* final_unit = unit->subunit && unit->subunit->is_subunit() ? unit->subunit : unit;
+                final_unit->play_iscript_animation(IscriptAnimation::GndAttkRpt);
+            } else {
+                unit_ext.timers[TimerTerranWindup] = 24;
+                bw::play_sound(UnitId::get_windup_sfx(static_cast<UnitId::Enum>(unit->id)), unit);
+            }
+            unit->order_signal &= ~32;
         }
 
         // Stop AI units from decolliding. Bandage for bad AI decisionmaking. -Pr0nogo

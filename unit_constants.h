@@ -289,3 +289,7 @@ namespace Zerg {
 inline constexpr s32 LarvaSpawnRate = (14 * 24) / 8; // 14 seconds
 inline constexpr s32 AmitosisSearchRange = 3 * 32;
 }
+
+namespace AskosiChantry {
+inline constexpr s32 SermonSalveRange = 8 * 32;
+}
