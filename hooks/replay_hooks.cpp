@@ -97,6 +97,13 @@ void upload_last_replay() {
     ReplayKraken::send_replay(g_globals->uuid_rand, bw::get_commit_hash(), replay);
 }
 
+static bool should_upload_replay() {
+    if (g_globals->forbid_replay_auto_upload) return false;
+    return g_config.auto_upload_all_replays
+        || g_globals->force_replay_auto_upload;
+        // TODO: || bw::get_game_kind() == GameKind::Ranked;
+}
+
 } // namespace
 
 namespace hooks {
@@ -105,7 +112,7 @@ void replay_save() {
     if (g_config.auto_save_replays) {
         auto_save_replay();
     }
-    if (g_config.upload_all_replays) {
+    if (should_upload_replay()) {
         upload_last_replay();
     }
 }

@@ -226,6 +226,8 @@ struct Globals {
         return yields[(size_t)type] ? yields[(size_t)type] : default_yields[(size_t)type];
     }
 
+    bool force_replay_auto_upload = false; // TODO: remove after Ranked is implemented
+    bool forbid_replay_auto_upload = false;
     std::unordered_map<TriggerAction*, TriggerExt> trigger_exts;
     std::vector<SoundReplacement> sound_replacements;
     std::vector<SpriteReplacement> sprite_replacements;
