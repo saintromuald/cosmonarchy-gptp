@@ -1197,7 +1197,7 @@ void decloak_proc(Unit* unit, u32 timer) {
     if (unit_ext.timers[TimerDecloak] == 0) {
         helper::end_cloak(unit, get_decloak_sound_id(unit));
     }
-    if (unit_ext.timers[TimerDecloak]) {
+    if (unit_ext.timers[TimerDecloak] != 1) {
         unit_ext.timers[TimerDecloak] = timer + 1;
     }
 }
