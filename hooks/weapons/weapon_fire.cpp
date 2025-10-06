@@ -67,8 +67,11 @@ Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets) {
     if (image->flags & ImageFlags::Omnidirectional) {
         frameset_length = 32;
     }
-
-    Point8 offset = lo_file->get_offset(image->direction + (frameset_length * weapon_offsets->frameset_offset), rotate);
+    
+    if (!lo_file) { // For when this is called unexpectedly, e.g. table_edit cases
+        return {};
+    }
+    auto offset = lo_file->get_offset(image->direction + (frameset_length * weapon_offsets->frameset_offset), rotate);
     if (image->flags & ImageFlags::Mirrored) {
         offset.x = -offset.x;
     }

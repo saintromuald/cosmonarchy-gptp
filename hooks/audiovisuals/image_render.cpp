@@ -3,6 +3,7 @@
 #include "BW/extender/iscript_extender.h"
 
 u8 threshold_map[256];
+u8 new_warp_texture_buffer[65025];
 
 UpdateFunc sgUpdateFuncs[] = {
 	{ PaletteType::Normal,				updateFunc_None },
@@ -739,7 +740,7 @@ namespace helper {
 		const u32 func_address = 0x004D53F0;
 		__asm {
 			PUSHAD
-			PUSH	warpTextureBuffer
+			PUSH	new_warp_texture_buffer
 			MOV		EAX, frame
 			PUSH	EAX
 			MOV		EAX, grpRect
