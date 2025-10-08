@@ -48,7 +48,7 @@ namespace hooks {
 							if (is_gas_cap) {
 								built_unit = helper::begin_gas_building(unit, build_id);
 							} else {
-								built_unit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
+								built_unit = helper::create_unit(build_id, unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
 							}
 
 							unit->build_queue[unit->build_queue_slot] = UnitId::None;
@@ -84,7 +84,7 @@ namespace hooks {
 								++unit->main_order_state;
 								return;
 							} else {
-								helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot], unit->player);
+								helper::refund_unit_train_cost(build_id, unit->player);
 								helper::display_last_network_error_for_player(unit->player);
 							}
 						}

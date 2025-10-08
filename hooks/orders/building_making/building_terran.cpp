@@ -225,8 +225,8 @@ namespace hooks {
                     &&    helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)
                     &&    helper::begin_building(unit))
                     {
-                        UnitExt* builder_ext = get_unit_ext(unit);
-                        builder_ext->terran_build_pos = unit->position;
+                        auto& builder_ext = unit->ext();
+                        builder_ext.terran_build_pos = unit->position;
 
                         Unit* built_unit = 0;
                         unit->status &= ~UnitStatus::IsNormal;
@@ -239,19 +239,19 @@ namespace hooks {
                             helper::add_order_targeting_nothing(unit, 0, units_dat::return_to_idle_order[unit->id]);
                         }
 
-                        u16 gas_building_id = unit->build_queue[unit->build_queue_slot];
-                        if (unit_id_is_capped_gas_node(gas_building_id)) {
+                        u16 build_id = unit->build_queue[unit->build_queue_slot];
+                        if (unit_id_is_capped_gas_node(build_id)) {
                             unit->secondary_order_pos = unit->position;
-                            built_unit = helper::begin_gas_building(unit, gas_building_id);
+                            built_unit = helper::begin_gas_building(unit, build_id);
                         } else {
                             unit->secondary_order_pos = { 0, 0 };
-                            built_unit = helper::create_unit(unit->build_queue[unit->build_queue_slot], unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
+                            built_unit = helper::create_unit(build_id, unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
                         }
 
                         unit->build_queue[unit->build_queue_slot] = UnitId::None;
                         if (built_unit) {
                             spread_debuffs(unit, built_unit);
-                            builder_ext->values[ValueTerranConstruction] = built_unit->id;
+                            builder_ext.values[ValueTerranConstruction] = built_unit->id;
                             built_unit->create_origin = unit->id;
                             built_unit->connected_unit = unit;
                             built_unit->sprite->player = unit->sprite->player; // Player color inheritance.
@@ -274,7 +274,7 @@ namespace hooks {
                             }
                             bw::play_sound(SoundId::TerranConstructionStart01, built_unit->position);
                         } else {
-                            helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot], unit->player);
+                            helper::refund_unit_train_cost(build_id, unit->player);
                             helper::display_last_network_error_for_player(unit->player);
                             unit->order_computer(units_dat::return_to_idle_order[unit->id]);
                         }
