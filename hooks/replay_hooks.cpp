@@ -40,9 +40,9 @@ void copy_last_replay(const std::string& dir, const std::string& name) {
 
 void auto_save_replay() {
     constexpr std::string_view ext = ".rep";
-    time_t now = time(0);
-    tm* ltm = localtime(&now);
-    std::string commit = bw::get_commit_hash();
+    const auto now = time(0);
+    const auto ltm = localtime(&now);
+    const auto commit = bw::get_commit_hash();
 
     std::stringstream dir_ss;
     dir_ss << std::put_time(ltm, "%Y-%m-%d");
@@ -50,7 +50,7 @@ void auto_save_replay() {
         dir_ss << "_" << commit;
     }
 
-    std::string dir = dir_ss.str();
+    auto dir = dir_ss.str();
     if (dir.size() > replay_name_size) {
         dir.resize(replay_name_size);
     }
@@ -61,47 +61,38 @@ void auto_save_replay() {
     }
     file_ss << std::put_time(ltm, "%H-%M") << "_" << g_current_map_name;
 
-    std::string file = file_ss.str();
+    auto file = file_ss.str();
     if (file.size() > replay_name_size) {
         file.resize(replay_name_size);
     }
 
-    /*
-    bool first = true;
-    for (u32 i = 0; i < PlayerLimit; ++i) {
-        if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
-            continue;
-        }
-        if (globals->players[i].is_witness) {
-            continue;
-        }
-        if (first) {
-            first = false;
-            strcat_s(name, ", ");
-        } else {
-            strcat_s(name, " - ");
-        }
-        strcat_s(name, player_data.full_player_names[i].data);
-    }
-    */
-
     copy_last_replay(dir, file + std::string{ext});
 }
 
-void upload_last_replay() {
-    std::ifstream from{get_replay_path() / "LastReplay.rep", std::ios::binary};
-    if (!from) {
-        return;
+static bool should_upload_replay() {
+    if (g_globals->forbid_replay_auto_upload) {
+        return false;
     }
-    std::vector<char> replay{std::istreambuf_iterator<char>(from), std::istreambuf_iterator<char>()};
-    ReplayKraken::send_replay(g_globals->uuid_rand, bw::get_commit_hash(), replay);
+    return g_config.auto_upload_all_replays
+        || bw::get_game_kind() == GameKind::Competitive
+        || g_globals->had_desync;
 }
 
-static bool should_upload_replay() {
-    if (g_globals->forbid_replay_auto_upload) return false;
-    return g_config.auto_upload_all_replays
-        || g_globals->force_replay_auto_upload;
-        // TODO: || bw::get_game_kind() == GameKind::Ranked;
+void upload_last_replay() {
+    std::ifstream replay_stream{get_replay_path() / "LastReplay.rep", std::ios::binary};
+    if (!replay_stream) {
+        return;
+    }
+    std::vector<char> replay{std::istreambuf_iterator<char>(replay_stream), std::istreambuf_iterator<char>()};
+
+    std::vector<char> desync;
+    if (g_globals->had_desync) {
+        if (std::ifstream desync_stream{"desync.txt", std::ios::binary}) {
+            desync.assign(std::istreambuf_iterator<char>(desync_stream), std::istreambuf_iterator<char>());
+        }
+    }
+
+    ReplayKraken::upload_replay(g_globals->uuid_rand, bw::get_commit_hash(), replay, desync);
 }
 
 } // namespace

@@ -1999,17 +1999,17 @@ bool unit_is_stunned(Unit* unit) {
 }
 
 void dump_sync_data() {
-    FILE* file = fopen("desync.text", "wb");
+    g_globals->had_desync = true;
+    std::ofstream file{"desync.txt", std::ios::binary};
     for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-        fprintf(file, "Unit %s #%u", unit->get_name(), unit->get_unit_index() - 1);
-        fprintf(file, "\tPlayer %u", unit->player);
+        std::print(file, "Unit {} #{}", unit->get_name(), unit->get_unit_index() - 1);
+        std::print(file, "\tPlayer {}", unit->player);
 
         Sprite* sprite = unit->sprite;
-        fprintf(file, "Sprite");
-        fprintf(file, "\tSprite Id: %u", (u32) sprite->id);
-        fprintf(file, "\tVisibility: %u", (u32) sprite->visibility_status);
+        std::print(file, "Sprite");
+        std::print(file, "\tSprite Id: {}", sprite->id);
+        std::print(file, "\tVisibility: {}", sprite->visibility_status);
     }
-    fclose(file);
 }
 
 u32 get_zerg_regression(Unit* unit) {

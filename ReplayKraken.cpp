@@ -22,14 +22,19 @@ struct InsertMatchRequest {
     std::string matchUuid;
     std::string gameVersion;
     std::string replayFile;
+    std::string desyncFile;
 };
 
-bool send_replay(const std::vector<char>& uuid_data, const std::string& game_version, const std::vector<char>& replay_file) {
+bool upload_replay(const std::vector<char>& uuid_data, const std::string& game_version,
+    const std::vector<char>& replay_file, const std::vector<char>& desync_file) {
     InsertMatchRequest request{
         .matchUuid = uuids::to_string(g_uuid_generator(std::string{std::begin(uuid_data), std::end(uuid_data)})),
         .gameVersion = game_version,
         .replayFile = cppcodec::base64_rfc4648::encode(replay_file),
     };
+    if (!desync_file.empty()) {
+        request.desyncFile = cppcodec::base64_rfc4648::encode(desync_file);
+    }
 
     const Json json(request);
     const auto json_str = json.dump();
