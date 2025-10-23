@@ -73,7 +73,7 @@ static bool should_auto_upload_replay() {
     if (g_globals->forbid_replay_auto_upload || !*g_multiplayer_mode) {
         return false;
     }
-    return bw::get_game_kind() == GameKind::Competitive
+    return bw::get_game_kind() == GameKind::Ranked
         || g_globals->had_desync;
 }
 
