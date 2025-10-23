@@ -69,12 +69,11 @@ void auto_save_replay() {
     copy_last_replay(dir, file + std::string{ext});
 }
 
-static bool should_upload_replay() {
-    if (g_globals->forbid_replay_auto_upload) {
+static bool should_auto_upload_replay() {
+    if (g_globals->forbid_replay_auto_upload || !*g_multiplayer_mode) {
         return false;
     }
-    return g_config.auto_upload_all_replays
-        || bw::get_game_kind() == GameKind::Competitive
+    return bw::get_game_kind() == GameKind::Competitive
         || g_globals->had_desync;
 }
 
@@ -103,7 +102,7 @@ void replay_save() {
     if (g_config.auto_save_replays) {
         auto_save_replay();
     }
-    if (should_upload_replay()) {
+    if (should_auto_upload_replay()) {
         upload_last_replay();
     }
 }

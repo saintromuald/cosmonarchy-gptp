@@ -883,8 +883,6 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             } else {
                 g_globals->sound_replacements.push_back(sound_replacement);
             }
-        } else if (parser.equals("forbid_replay_auto_upload") && is_local_player) {
-            g_globals->forbid_replay_auto_upload = true;
         // Bitset Local Only Triggers
         } else if (parser.equals("play_sound") && is_local_player) {
             Token path = parser.get_string();
@@ -916,6 +914,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                     }
                 }
             }
+        // Global Flag
+        } else if (parser.equals("forbid_replay_auto_upload") && is_local_player) {
+            g_globals->forbid_replay_auto_upload = true;
         // Gameplay Actions
         } else if (parser.equals("set_mineral_yields")) {
             u32 depleted_yield = parser.get_s32();

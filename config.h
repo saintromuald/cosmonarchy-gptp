@@ -78,7 +78,6 @@ struct Config {
     // Replays
     bool auto_save_replays = true;
     bool sanitize_replay_chat = false;
-    bool auto_upload_all_replays = false;
 };
 
 inline Config g_config{};
