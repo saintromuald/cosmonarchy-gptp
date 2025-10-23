@@ -298,8 +298,15 @@ inline constexpr s32 MiasmaTimer = 4;
 namespace Zerg {
 inline constexpr s32 LarvaSpawnRate = (14 * 24) / 8; // 14 seconds
 inline constexpr s32 AmitosisSearchRange = 3 * 32;
+inline constexpr s32 CorrosivePathogenRange = 4 * 32;
 }
+
+// ASKOSI \\
 
 namespace AskosiChantry {
 inline constexpr s32 SermonSalveRange = 8 * 32;
+}
+
+namespace AskosiCardinal {
+inline constexpr s32 SustainingSermonRange = 3 * 32;
 }

@@ -159,12 +159,11 @@ enum class Advisor : u8 {
     Zerg,
 
     // Community
-    Mesk,
+    Goku,
 
     // Characters
     Ackmed,
     HADRAL,
-    ISN,
     Furen,
     Kortar,
 
@@ -185,12 +184,11 @@ static const char* advisor_names[]{
     "Zerg",
 
     // Community
-    "Mesk",
+    "Goku",
 
     // Characters
     "Ackmed",
     "HADRAL",
-    "ISN",
     "Furen",
     "Kortar",
 
@@ -310,6 +308,8 @@ enum TriggerBehavior : u8 {
     TriggerBehavior_Hallucination,
     TriggerBehavior_DisablePassive,
     TriggerBehavior_Critter,
+    TriggerBehavior_NoCollision,
+    TriggerBehavior_AirTransport,
 
     TriggerBehavior_Count,
 };
@@ -320,6 +320,8 @@ static const char* trigger_behavior_names[] = {
     "hallucination",
     "disable_passive",
     "critter",
+    "no_collision",
+    "air_transport",
 };
 C_ASSERT(ARRAY_SIZE(trigger_behavior_names) == TriggerBehavior_Count);
 

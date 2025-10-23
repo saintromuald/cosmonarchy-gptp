@@ -30,6 +30,8 @@ struct Player {
 	static u32 number_of_completed_landed_units_of_id(u8 player, u16 unit_id);
 	static u32 number_of_completed_powered_units_of_id(u8 player, u16 unit_id);
 	static u32 number_of_completed_addon_units_of_id(u8 player, u16 unit_id);
+	static u32 number_of_base_units_of_id(u8 player, u16 unit_id);
+	static u32 number_of_gestated_units_of_id(u8 player, u16 unit_id);
 
 	static std::string_view name_view(u32 player);
 };

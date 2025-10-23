@@ -114,7 +114,7 @@ namespace hooks {
 			helper::issue_order_targeting_ground(unit, OrderId::BuildingLand, pos.x, pos.y);
 			return;
 		}
-		if  (unit->id != UnitId::ZergDroleth && unit->id != UnitId::ZergGosvileth
+		if  (!UnitId::is_zerg_worker(static_cast<UnitId::Enum>(unit->id))
 		|| ((unit->main_order_id != OrderId::DroneLand) || !(unit->status & (UnitStatus::CanNotReceiveOrders | UnitStatus::NoBrkCodeStart)))
 		&&   unit->main_order_id != OrderId::DroneBuild) 
 		{

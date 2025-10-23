@@ -121,7 +121,7 @@ namespace hooks {
 				}
 			}
 
-			if (unit->id != UnitId::ZergDroleth && unit->id != UnitId::ZergOvileth) {
+			if (!UnitId::is_zerg_worker(static_cast<UnitId::Enum>(unit->id)) && unit->id != UnitId::ZergOvileth && unit->id != UnitId::ZergYblyleth) {
 				helper::ai_training_unit(unit, unit);
 			}
 			helper::unit_completion_init(unit, 0);
@@ -169,7 +169,7 @@ namespace hooks {
 
 	// TODO: Use switch -Veeq7
 	void orders_morph_1(Unit* unit) { // 0045DEA0
-		UnitExt* unit_ext = get_unit_ext(unit);
+		auto& unit_ext = unit->ext();
 		if (unit->main_order_state == 0) {
 			if (bw::is_conventional_unit_morph_source(unit->id, true)) {
 				if (!helper::has_supplies_for_unit(unit->build_queue[unit->build_queue_slot], unit->player, 1)) {
@@ -239,16 +239,16 @@ namespace hooks {
 					}
 
 					if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster) {
-						unit_ext->values[ValuePreMorphEnergy] = unit->energy;
+						unit_ext.values[ValuePreMorphEnergy] = unit->energy;
 					} else {
-						unit_ext->values[ValuePreMorphEnergy] = hooks::get_unit_max_energy(unit); // New starting amount
+						unit_ext.values[ValuePreMorphEnergy] = hooks::get_unit_max_energy(unit); // New starting amount
 					}
 					unit->create_origin = unit->id;
-					unit_ext->units[UnitMorphConnectedUnit] = 0;
+					unit_ext.units[UnitMorphConnectedUnit] = 0;
 					if (unit->connected_unit) {
-						unit_ext->values[ValueMorphConnectedUnitId] = unit->connected_unit->id;
+						unit_ext.values[ValueMorphConnectedUnitId] = unit->connected_unit->id;
 					} else { 
-						unit_ext->values[ValueMorphConnectedUnitId] = UnitId::ZergHachirosk; // Dunno if connected_unit will ever be null at this time. -Pr0nogo
+						unit_ext.values[ValueMorphConnectedUnitId] = UnitId::ZergHachirosk; // Dunno if connected_unit will ever be null at this time. -Pr0nogo
 					}
 
 					if (unit->unit_ai && unit->unit_ai->type == AiType::Worker) {
@@ -346,12 +346,12 @@ namespace hooks {
 				unit->order_signal &= ~4;
 				helper::replace_unit_with_id(unit, unit->build_queue[unit->build_queue_slot]);
 				if (units_dat::base_property[unit->id] & UnitProperty::Spellcaster) {
-					unit->energy = unit_ext->values[ValuePreMorphEnergy];
+					unit->energy = unit_ext.values[ValuePreMorphEnergy];
 				} else {
 					unit->energy = 0;
 				}
 
-				if (unit->id == UnitId::ZergDroleth || unit->id == UnitId::ZergOvileth) {
+				if (UnitId::is_zerg_worker(static_cast<UnitId::Enum>(unit->id)) || unit->id == UnitId::ZergOvileth && unit->id == UnitId::ZergYblyleth) {
 					helper::ai_training_unit(unit, unit);
 				}
 
@@ -565,24 +565,21 @@ namespace hooks {
 		if (egg_unit->get_race() != RaceId::Zerg || (units_dat::base_property[egg_unit->id] & UnitProperty::Building)) {
 			return UnitId::None;
 		}
-
 		u32 source_id = egg_unit->create_origin;
-		UnitExt* unit_ext = &egg_unit->ext();
-		bool is_ocsal = unit_id_get_larva_type(unit_ext->values[ValueMorphConnectedUnitId]) == UnitId::ZergOcsalLarva;
+		auto& unit_ext = egg_unit->ext();
+		bool is_ocsal = unit_id_get_larva_type(unit_ext.values[ValueMorphConnectedUnitId]) == UnitId::ZergOcsalLarva;
 		if (unit_id_is_larva(source_id)) {
 			if (is_ocsal) {
 				source_id = UnitId::ZergOcsalLarva; // For cases where you cancel eggs after ocsal mutation completes. -Pr0nogo
 			}
-
 			if (egg_unit->connected_unit) {
 				egg_unit->connected_unit->count_connected_larva();
-				if (*g_larva_counter < 3 && !(egg_unit->status & UnitStatus::InAir)) {
+				if (*g_larva_counter < 3 && !egg_unit->is_in_air()) {
 					return source_id;
 				}
 				return UnitId::None;
 			}
 		}
-
 		if (!is_ocsal) {
 			return source_id;
 		}

@@ -6,7 +6,7 @@
 #include <algorithm>
 
 namespace {
-    void __declspec(naked) orders_is_morphing_wrapper() {
+    void __declspec(naked) orders_is_morphing_wrapper() { // 0045CD00
         static Unit* building;
         static b32 result;
         __asm {
@@ -433,31 +433,45 @@ namespace {
             RETN
         }
     }
+
+    void __declspec(naked) cancel_zerg_building_mutation_wrapper() { // 0045D410
+        static Unit* unit;
+        __asm {
+            MOV unit, EAX
+            PUSHAD
+        }
+        hooks::cancel_zerg_building_mutation(unit);
+        __asm {
+            POPAD
+            RETN
+        }
+    }
 }
 
 namespace hooks {
     void inject_building_zerg_hooks() {
-        jump_patch(orders_is_morphing_wrapper,											0x0045CD00, 2);
-        jump_patch(orders_zerg_build_self_wrapper,										0x0045D500, 0);
+        jump_patch(orders_is_morphing_wrapper,										0x0045CD00, 2);
+        jump_patch(orders_zerg_build_self_wrapper,									0x0045D500, 0);
         jump_patch(cancel_zerg_building_wrapper,										0x0045DA40, 1);
         jump_patch(begin_gas_building_patch,											0x0046790A);
 
-        jump_patch(is_remorphing_building_wrapper,										0x0045CD00);
+        jump_patch(is_remorphing_building_wrapper,									0x0045CD00);
         jump_patch(is_morphed_building_wrapper_ai_morph_behavior,						0x0043505F);
         jump_patch(is_morphed_building_wrapper_console_wireframe_update,				0x00456911);
-        jump_patch(is_morphed_building_wrapper_zerg_build_self_get_id,					0x0045D505);
+        jump_patch(is_morphed_building_wrapper_zerg_build_self_get_id,				0x0045D505);
         call_patch(is_morphed_building_wrapper_zerg_build_self_complete,				0x0045D65D);
         jump_patch(is_morphed_building_wrapper_zerg_build_self_set_timer,				0x0045D56C);
         jump_patch(is_morphed_building_wrapper_cancel_zerg_building,					0x0045DA4A);
         jump_patch(get_morph_building_id_count_wrapper_ai_get_wait_build_unit_count,	0x00433286);
-        jump_patch(get_morph_building_id_count_type_ai_get_unit_count,					0x004334D9);
-        jump_patch(get_morph_building_id_count_wrapper_ai_manage_bases,					0x00436439);
+        jump_patch(get_morph_building_id_count_type_ai_get_unit_count,				0x004334D9);
+        jump_patch(get_morph_building_id_count_wrapper_ai_manage_bases,				0x00436439);
         jump_patch(morph_special_state_setup_wrapper,									0x0045D2A1);
         jump_patch(drone_morph_standard_wrapper,										0x0045D890, 0);
-        jump_patch(begin_gas_building_wrapper,											0x004678A0, 0);
-        jump_patch(orders_drone_build_wrapper,											0x0045E090, 0);
+        jump_patch(begin_gas_building_wrapper,										0x004678A0, 0);
+        jump_patch(orders_drone_build_wrapper,									    0x0045E090, 0);
         jump_patch(orders_drone_land_wrapper,											0x004E9AA0, 1);
         jump_patch(orders_morph2_wrapper,												0x0045D0D0, 2);
-        jump_patch(droleth_build_excisant_wrapper,										0x0045D790, 5);
+        jump_patch(droleth_build_excisant_wrapper,									0x0045D790, 5);
+        jump_patch(cancel_zerg_building_mutation_wrapper,                            0x0045D410, 6);
     }
 }

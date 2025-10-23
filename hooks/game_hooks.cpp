@@ -1420,14 +1420,16 @@ namespace hooks {
                 unit_ext.values[ValueRegressionUnstable] = unit->id == UnitId::ZergOcsalLarva;
             } break;
             case UnitId::ZergDroleth:
+            case UnitId::ZergAgrileth:
             case UnitId::ZergGosvileth: {
+                unit_ext.values[ValueOriginatedFromAgrileth] = unit->id == UnitId::ZergAgrileth;
                 unit_ext.values[ValueOriginatedFromGosvileth] = unit->id == UnitId::ZergGosvileth;
-                if (unit->id == UnitId::ZergDroleth) {
+                if (unit->id != UnitId::ZergAgrileth) {
                     // Temporary? fix for order queue insanity. -Pr0nogo
                     // DOES NOT FIX AI!
                     u32 queued_id = unit->build_queue[unit->build_queue_slot];
-                    if (unit->main_order_id == OrderId::MorphUnit && queued_id != UnitId::None && queued_id != UnitId::ZergGosvileth) {
-                        unit->build_queue[unit->build_queue_slot] = UnitId::ZergGosvileth;
+                    if (unit->main_order_id == OrderId::MorphUnit && queued_id != UnitId::None && !UnitId::is_zerg_worker(static_cast<UnitId::Enum>(queued_id))) {
+                        unit->build_queue[unit->build_queue_slot] = UnitId::ZergAgrileth;
                     }
                 }
             } break;

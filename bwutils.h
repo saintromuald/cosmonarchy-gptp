@@ -88,7 +88,12 @@ namespace SpriteId {
             case SpriteId::Corpse_MadrigalFuria:
             case SpriteId::Corpse_Renesair:
             case SpriteId::Corpse_DracadinOrder:
-            case SpriteId::Corpse_HydraliskOrkoti: {
+            case SpriteId::Corpse_HydraliskOrkoti:
+            case SpriteId::Corpse_Inzorthrokor:
+            case SpriteId::Corpse_Agrileth:
+            case SpriteId::Corpse_Cardinal:
+            case SpriteId::Corpse_Vicar:
+            case SpriteId::Corpse_Missionary: {
                 return true;
             } break;
         }

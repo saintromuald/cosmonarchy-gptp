@@ -987,10 +987,11 @@ bool unit_id_spawns_larva_by_order(u32 unit_id) {
         || unit_id == UnitId::ZergOcsalCesiant;
 }
 
-u32 get_scribe_warp_distance(u32 unit_id) {
-    switch (unit_id) {
+u32 get_worker_construction_distance(u32 structure_id) {
+    switch (structure_id) {
         case UnitId::ProtossAquifer:
-        case UnitId::ProtossArdentAuthority: {
+        case UnitId::ProtossArdentAuthority:
+        case UnitId::AskosiLandlock:{
             return 88;
         }
         case UnitId::ProtossGrandLibrary:
@@ -1140,6 +1141,7 @@ bool weapon_id_bounces_caustic_fission(u32 weapon_id) {
 
 u32 get_death_sfx_id(u32 unit_id) {
     switch (unit_id) {
+        case UnitId::ZergAgrileth:		return SoundId::Zerg_Ultra_ZUlDth00_WAV;
         case UnitId::ZergGosvileth:		return SoundId::Zerg_DRONE_ZDrDth00_WAV;
         case UnitId::ZergIroleth:		return SoundId::Zerg_OVERLORD_ZOvDth00_WAV;
         case UnitId::ZergVorvrokor:		return SoundId::VorvrokorDeath01;
@@ -1192,7 +1194,8 @@ bool unit_id_has_proximity_cloak(u32 unit_id) {
 bool unit_id_is_ridge_refinery(u32 unit_id) {
     return unit_id == UnitId::TerranSieve
         || unit_id == UnitId::ProtossCedent
-        || unit_id == UnitId::ZergEskigant;
+        || unit_id == UnitId::ZergEskigant
+        || unit_id == UnitId::AskosiArch;
 }
 
 bool skip_military_tracking_by_unit_id(u32 unit_id) {
@@ -1558,6 +1561,7 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
         case UnitId::ZergOcsalLarva:               return SpriteId::Corpse_Larva;
         case UnitId::ZergEgg:                      return SpriteId::Corpse_Egg;
         case UnitId::ZergDroleth:                  return SpriteId::Corpse_Droleth;
+        case UnitId::ZergAgrileth:                 return SpriteId::Corpse_Agrileth;
         case UnitId::ZergOvileth:                  return SpriteId::Corpse_Ovileth;
         case UnitId::ZergZethrokor:                return SpriteId::Corpse_Zethrokor;
         case UnitId::ZergQuazilisk:                return SpriteId::Corpse_Quazilisk;
@@ -1587,6 +1591,10 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
         case UnitId::ZergRilirokor:                return SpriteId::Corpse_Rilirokor;
         case UnitId::ZergUltrokor:                 return SpriteId::Corpse_Ultrokor;
         case UnitId::ZergIsthrathaleth:            return SpriteId::Corpse_Isthrathaleth;
+
+        case UnitId::AskosiMissionary:             return SpriteId::Corpse_Missionary;
+        case UnitId::AskosiCardinal:               return SpriteId::Corpse_Cardinal;
+        case UnitId::AskosiVicar:                  return SpriteId::Corpse_Vicar;
     }
 
     // Generic
@@ -1621,6 +1629,34 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
             return SpriteId::Corpse_ZergUnitSmall;
         }
     }
+}
+
+bool is_askosi(UnitId::Enum unit_id) {
+    return unit_id == UnitId::AskosiPilgrim
+        || unit_id == UnitId::AskosiProselyte
+        || unit_id == UnitId::AskosiDyad
+        || unit_id == UnitId::AskosiMissionary
+        || unit_id == UnitId::AskosiCardinal
+        || unit_id == UnitId::AskosiMimic
+        || unit_id == UnitId::AskosiVicar
+        || unit_id == UnitId::AskosiRove
+        || unit_id == UnitId::AskosiObject
+        || unit_id == UnitId::AskosiScepter
+        || unit_id == UnitId::AskosiIntendent
+        || unit_id == UnitId::AskosiHelion
+        || unit_id == UnitId::AskosiEmissary
+        || unit_id == UnitId::AskosiInkblot
+        || unit_id == UnitId::AskosiTirade
+
+        || unit_id == UnitId::AskosiLandlock
+        || unit_id == UnitId::AskosiArch
+        || unit_id == UnitId::AskosiGrandstand
+        || unit_id == UnitId::AskosiChantry
+        || unit_id == UnitId::AskosiRadix
+        || unit_id == UnitId::AskosiCipher
+        || unit_id == UnitId::AskosiFunction
+        || unit_id == UnitId::AskosiGauntlet
+        || unit_id == UnitId::AskosiCosmoscope;
 }
 
 SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
@@ -1790,9 +1826,9 @@ bool has_interruptable_windup(UnitId::Enum unit_id) {
 
 SoundId::Enum get_windup_sfx(UnitId::Enum unit_id) {
     switch (unit_id) {
-        case UnitId::TerranCyprian: return bw::SoundSet{SoundId::CyprianWindup01, SoundId::CyprianWindup03}.rand();
-        case UnitId::TerranEidolon: return bw::SoundSet{SoundId::EidolonWindup01, SoundId::EidolonWindup03}.rand();
-        case UnitId::TerranGoliath: return bw::SoundSet{SoundId::GoliathTwinAutocannonWindup01, SoundId::GoliathTwinAutocannonWindup03}.rand();
+    case UnitId::TerranCyprian: return bw::SoundSet{ SoundId::CyprianWindup01, SoundId::CyprianWindup03 }.rand();
+    case UnitId::TerranEidolon: return bw::SoundSet{ SoundId::EidolonWindup01, SoundId::EidolonWindup03 }.rand();
+    case UnitId::TerranGoliath: return bw::SoundSet{ SoundId::GoliathTwinAutocannonWindup01, SoundId::GoliathTwinAutocannonWindup03 }.rand();
     }
     return SoundId::None;
 }
@@ -1801,6 +1837,40 @@ bool is_terran_worker(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranMason
         || unit_id == UnitId::TerranTalos
         || unit_id == UnitId::TerranOgunWorkerMode;
+}
+
+bool is_zerg_worker(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ZergDroleth
+        || unit_id == UnitId::ZergAgrileth
+        || unit_id == UnitId::ZergGosvileth;
+}
+
+bool is_beacon(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ExtBeaconTerran
+        || unit_id == UnitId::ExtBeaconProtoss
+        || unit_id == UnitId::ExtBeaconZerg;
+}
+
+bool has_fusion_sealers(Unit* unit) {
+    return unit->id == UnitId::TerranOgunSmithyMode;
+}
+
+bool match_id_to_base(UnitId::Enum match_id, UnitId::Enum base_id) {
+    switch (base_id) {
+        case UnitId::ZergIrolIris:       return match_id == UnitId::ZergOthstolOviform;
+        case UnitId::ZergQuazethPool:    return match_id == UnitId::ZergVornathPond;
+        case UnitId::ZergVornathPond:    return match_id == UnitId::ZergKalkiirLake;
+        case UnitId::ZergHydrithDen:     return match_id == UnitId::ZergSkibactScab;
+        case UnitId::ZergSkibactScab:    return match_id == UnitId::ZergTethvithSwamp;
+        case UnitId::ZergZorkizShroud:   return match_id == UnitId::ZergUlgorgCavern;
+        case UnitId::ZergUlgorgCavern:   return match_id == UnitId::ZergZozarcGorge;
+        case UnitId::ZergMutathSpire:    return match_id == UnitId::ZergTosvrolHaunt;
+        case UnitId::ZergAlkagIteth:     return match_id == UnitId::ZergChokralChazsal;
+        case UnitId::ZergMatravilNest:   return match_id == UnitId::ZergAlmakisAntre;
+        case UnitId::ZergAxtothAxis:     return match_id == UnitId::ZergBegrozithBarrow;
+        case UnitId::ZergGeszkathGrotto: return match_id == UnitId::ZergKethrajChasm;
+    }
+    return false;
 }
 } // namespace UnitId
 
