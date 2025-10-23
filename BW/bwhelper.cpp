@@ -5290,14 +5290,14 @@ namespace helper {
     }
 
     // For bulletBehavior_Bounce
-    Bullet* change_move_pos(Bullet* bullet, s32 a2, s32 a3) {
+    Bullet* change_move_pos(Bullet* bullet, s32 pos_y, s32 pos_x) {
         const u32 func_address = 0x00495240;
         static Bullet* result;
         __asm {
             PUSHAD
             MOV EAX, bullet
-            MOV ECX, a2
-            MOV ESI, a3
+            MOV ECX, pos_y
+            MOV ESI, pos_x
             CALL func_address
             MOV result, EAX
             POPAD

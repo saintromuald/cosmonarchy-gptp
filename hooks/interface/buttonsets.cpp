@@ -3216,6 +3216,11 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ZergKethrostalor: {
+                                    if (current_button->icon_id == IconId::ZergFlyerAttacks) { // Bloody Rain
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ZergZoryusthaleth: {
                                     if (current_button->icon_id == IconId::Rilirokor		 // Mitosis
                                     ||	current_button->icon_id == IconId::MetabolicBoost) { // Swarming Omen

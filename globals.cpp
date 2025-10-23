@@ -870,6 +870,11 @@ void inherit_debuffs(Unit* parent, Unit* child) {
 
     child_ext.values[ValueNoCorpse] = parent_ext.values[ValueNoCorpse];
 
+    // Inherit mine count
+    if (unit_id_is_mine_layer(static_cast<UnitId::Enum>(parent->id)) && unit_id_is_mine_layer(static_cast<UnitId::Enum>(child->id))) {
+        child->mine_carrier.mine_count = parent->mine_carrier.mine_count;
+    }
+
     bw::refresh_console();
 }
 

@@ -110,12 +110,9 @@ void free_resource_container(Unit* resource) {
 }
 
 void unit_on_death_behaviors(Unit* unit) {
-    UnitExt& unit_ext = unit->ext();
+    auto& unit_ext = unit->ext();
     // These do not require the unit to be completed
     switch (unit->id) {
-        case UnitId::ProtossHerald: {
-            ascend_corpses_in_area(unit->position, 4u * 32, unit->player);
-        } break;
         case UnitId::TerranEidolon:
         case UnitId::TerranEidolonNydus:
         case UnitId::TerranSeraph: {
@@ -189,17 +186,6 @@ void unit_on_death_behaviors(Unit* unit) {
             // end hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
             g_can_update_powered_status = true;
         } break;
-        case UnitId::ZergRilirokor:
-        case UnitId::ZergRililisk: {
-            Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::CorrosiveTouchExplosionSmall, unit->position.x, unit->position.y, 0);
-            if (ensnare_effect_sprite) {
-                ensnare_effect_sprite->sprite->elevation = 19; // 0x13
-                helper::set_thingy_visibility_flags(ensnare_effect_sprite);
-            }
-            for (Unit* hostile : g_unit_search.radial_ex(unit, Broodspawn::DeathCycleEnsnareRange, FilterEnemy)) {
-                helper::apply_corrosive_spores(hostile);
-            }
-        } break;
         case UnitId::ZergNydusCesiant: {
             Unit* nydus_exit = unit->building.nydus_exit;
             if (nydus_exit) {
@@ -215,10 +201,14 @@ void unit_on_death_behaviors(Unit* unit) {
         } break;
     }
 
+    if (unit_ext.values[ValueDontProcOnDeathEffects]) {
+        return;
+    }
+
     if (unit_ext.timers[TimerIncinerateDamage] >= 1) {
         g_iquare_globals->create_effect(EffectId::SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext.values[ValueIncineratePlayer], 0);
         unit_ext.timers[TimerIncinerateDamage] = 0;
-        unit_ext.values[ValueNoCorpse] = 1;
+        unit_ext.values[ValueNoCorpse] = true;
     }
 
     if (unit_ext.timers[TimerIncubationArm]) {
@@ -234,6 +224,31 @@ void unit_on_death_behaviors(Unit* unit) {
                     bw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->position.x, unit->position.y, 11, 12);
                     helper::create_bullet(WeaponId::NuclearMissile, unit, unit->position.x, unit->position.y, unit->player, 0);
                 }
+            } break;
+            case UnitId::TerranLobotomyMine: {
+                for (Unit* victim : g_unit_search.radial(unit->position, TerranMine::DetonationRange)) {
+                    if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
+                        continue;
+                    }
+                    auto& victim_ext = victim->ext();
+                    if (victim_ext.timers[TimerLobotomySlow] < TerranMine::LobotomyTimer) {
+                        victim_ext.timers[TimerLobotomySlow] = TerranMine::LobotomyTimer;
+                    }
+                }
+            } break;
+            case UnitId::TerranTartarusMine: {
+                for (Unit* victim : g_unit_search.radial(unit->position, TerranMine::DetonationRange)) {
+                    if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
+                        continue;
+                    }
+                    auto& victim_ext = victim->ext();
+                    if (victim_ext.timers[TimerIncinerateArmor] < TerranMine::IncinerateTimer) {
+                        victim_ext.timers[TimerIncinerateArmor] = TerranMine::IncinerateTimer;
+                    }
+                }
+            } break;
+            case UnitId::ProtossHerald: {
+                ascend_corpses_in_area(unit->position, 4u * 32, unit->player);
             } break;
             case UnitId::ProtossClarion: {
                 // Phase Link
@@ -260,7 +275,6 @@ void unit_on_death_behaviors(Unit* unit) {
                     } else {
                         unit->hangar_unit.parent->unit_with_hangar.in_hangar_count--;
                     }
-
                     if (unit->hangar_unit.hangar_link.prev) { // untie the previous hangar_unit/scarab from current hangar_unit/scarab (tie it to next)
                         unit->hangar_unit.hangar_link.prev->hangar_unit.hangar_link.next = unit->hangar_unit.hangar_link.next;
                     }
@@ -306,6 +320,17 @@ void unit_on_death_behaviors(Unit* unit) {
             case UnitId::ProtossArchon: {
                 g_iquare_globals->create_effect(EffectId::PsiStormPersistent, 10 * 24 + 1, {(u16)unit->position.x, (u16)unit->position.y}, Point16{4 * 32, 4 * 32},
                     SpriteId::Psionic_Storm, 20, unit->player, unit);
+            } break;
+            case UnitId::ZergRilirokor:
+            case UnitId::ZergRililisk: {
+                Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::CorrosiveTouchExplosionSmall, unit->position.x, unit->position.y, 0);
+                if (ensnare_effect_sprite) {
+                    ensnare_effect_sprite->sprite->elevation = 19; // 0x13
+                    helper::set_thingy_visibility_flags(ensnare_effect_sprite);
+                }
+                for (Unit* hostile : g_unit_search.radial_ex(unit, Broodspawn::DeathCycleCorrosiveTouchRange, FilterEnemy)) {
+                    apply_corrosive_spores_internal(hostile, Broodspawn::DeathCycleCorrosiveTouchTimer);
+                }
             } break;
         }
     }

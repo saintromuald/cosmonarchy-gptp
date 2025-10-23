@@ -334,7 +334,6 @@ namespace {
 	void __declspec(naked) unit_id_is_melee_air_unit_wrapper() {
 		u32 unit_id;
 		bool is_air_unit;
-
 		__asm {
 			MOVZX	EAX, word ptr[ESI + 0x64]
 			MOV		unit_id, EAX

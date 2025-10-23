@@ -60,6 +60,7 @@ void init_hotkeys();
 void update_hotkeys();
 
 void inherit_selection(Unit* parent, Unit* child);
+void inherit_control_groups(Unit* parent, Unit* child);
 
 // In general keys should be handled using keyboard events in handle_hotkeys event loop,
 // since checking if key is held on a given frame does not account for sequentiality of presses!

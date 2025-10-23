@@ -347,6 +347,7 @@ namespace WeaponId {
         CherbrathalorVenemousBursts			= 215,
         ZobrioliskRapidSpinesAir            = 231,
         LiiraliskHomingSpore                = 242,
+        KethrostalorStaggeredSpores         = 244,
 
         // Askosi \\
 

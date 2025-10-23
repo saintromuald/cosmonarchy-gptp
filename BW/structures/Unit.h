@@ -220,10 +220,10 @@ struct Unit : public UnitLayout {
     void bwfunc_remove();
 
     /// Kills the unit
-    inline void kill() { user_action_flags &= ~UserActionFlags_SilentRemove; bwfunc_remove(); }
+    inline void kill() {user_action_flags &= ~UserActionFlags_SilentRemove; bwfunc_remove();}
 
     /// Silently removes the unit
-    inline void silent_remove() { user_action_flags |= UserActionFlags_SilentRemove; bwfunc_remove(); }
+    inline void silent_remove() {user_action_flags |= UserActionFlags_SilentRemove; bwfunc_remove();}
 
     /// Removes the Lockdown effect from the unit.
     void remove_lockdown();

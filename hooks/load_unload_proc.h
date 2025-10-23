@@ -1,6 +1,8 @@
 #include <BW/structures.h>
 
 namespace hooks {
+static void special_unload_unit(Unit* unit, Unit* transport);
+
 void load_unit_proc(Unit* unit, Unit* unitToLoad);												// 004E78E0
 b32 unload_unit_proc(Unit* unit);																// 004E7F70
 

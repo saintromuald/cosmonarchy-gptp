@@ -12,6 +12,7 @@
 #include "weapon_damage.h"
 #include "weapon_spellhit.h"
 #include "weapon_cooldown.h"
+#include "hooks/load_unload_proc.h"
 
 namespace {
 
@@ -509,11 +510,11 @@ namespace hooks {
             }
         }
 
-        UnitExt* unit_ext = get_unit_ext(unit);
-        unit_ext->values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
-        unit_ext->values[ValueAI_PreventTargeting] = 0;
-        u32 index = unit_ext->values[ValueWeaponFireIndex]++;
-        unit_ext->values[ValueWeaponBulletLocalIndex] = 0;
+        auto& unit_ext = unit->ext();
+        unit_ext.values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
+        unit_ext.values[ValueAI_PreventTargeting] = 0;
+        u32 index = unit_ext.values[ValueWeaponFireIndex]++;
+        unit_ext.values[ValueWeaponBulletLocalIndex] = 0;
 
         // Cloaked units - decloak
         // Reenable the conditional and check for special unit IDs if they are not meant to cloak. -Pr0nogo
@@ -526,17 +527,17 @@ namespace hooks {
 
         if (weapon_id == WeaponId::PsiStorm) {
             Point16 target_pos = unit->order_target.unit ? unit->order_target.unit->position : unit->order_target.pt;
-            if (auto storm = g_iquare_globals->get_effect(unit_ext->current_storm)) {
+            if (auto storm = g_iquare_globals->get_effect(unit_ext.current_storm)) {
                 storm->move_target = target_pos;
             } else {
-                unit_ext->current_storm = g_iquare_globals->create_effect(EffectId::PsiStorm, UINT_MAX, target_pos, Point16{4 * 32, 4 * 32}, // smh I thought it's rectangular, turns out that wasn't needed...
+                unit_ext.current_storm = g_iquare_globals->create_effect(EffectId::PsiStorm, UINT_MAX, target_pos, Point16{4 * 32, 4 * 32}, // smh I thought it's rectangular, turns out that wasn't needed...
                     SpriteId::Psionic_Storm, 20, unit->player, unit, {.move_target = target_pos, .move_speed = u32(1.5 * 32)});
             }
             return;
         }
 
         if (unit->id == UnitId::ProtossManifold) {
-            unit_ext->timers[TimerManifoldConcurringChorus] = 25;
+            unit_ext.timers[TimerManifoldConcurringChorus] = 25;
         }
 
         if (weapons_dat::flingy_id[weapon_id] != 0) {
@@ -560,56 +561,56 @@ namespace hooks {
                     } break;
                     case WeaponId::LakiziliskSubterraneanSpines: {
                         timer = 2 + ((max_range / 32) * 3);
-                        unit_ext->values[ValueHasFiredReturnAttack] = max_range + 16;
+                        unit_ext.values[ValueHasFiredReturnAttack] = max_range + 16;
                     } break;
                 }
-                unit_ext->timers[TimerMissileReturnETA] = timer;
+                unit_ext.timers[TimerMissileReturnETA] = timer;
                 u32 range = max_range + 16;
                 Point16 unit_pos = { unit->position.x, unit->position.y };
                 Point16 target_pos = { unit->order_target.unit->position.x, unit->order_target.unit->position.y };
                 s32 angle = bw::get_angle(unit_pos.x, unit_pos.y, target_pos.x, target_pos.y);
-                unit_ext->values[ValueMissileReturnX] = unit_pos.x + bw::get_polar_x(range, angle);
-                unit_ext->values[ValueMissileReturnY] = unit_pos.y + bw::get_polar_y(range, angle);
+                unit_ext.values[ValueMissileReturnX] = unit_pos.x + bw::get_polar_x(range, angle);
+                unit_ext.values[ValueMissileReturnY] = unit_pos.y + bw::get_polar_y(range, angle);
                 if (unit->order_target.unit) {
-                    unit_ext->values[ValueMissileReturnTarget] = (u32)unit->order_target.unit;
+                    unit_ext.values[ValueMissileReturnTarget] = (u32)unit->order_target.unit;
                 }
                 if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
                     g_iquare_globals->clear_lakizilisk(unit);
                 }
             }
 
-            if (unit_ext->unit_vectors[UnitVectorKazitriths].size()) {
+            if (unit_ext.unit_vectors[UnitVectorKazitriths].size()) {
                 fire_amitosis_weapon(unit, weapon_id);
             }
             if (!unit_id_has_custom_weapon_handling(unit->id)) {
                 // Madcap - Maverick Feeders passive
                 if (unit->id == UnitId::TerranMadcap) {
-                    s32 stacks = unit_ext->values[ValueMadcapStacks];
-                    if (stacks >= 108 && !unit_ext->values[ValueMadcapFullChargeRead]) { // 9 stacks
+                    s32 stacks = unit_ext.values[ValueMadcapStacks];
+                    if (stacks >= 108 && !unit_ext.values[ValueMadcapFullChargeRead]) { // 9 stacks
                         const auto sound_id = bw::rand_between(SoundId::MadcapPassiveCharge01, SoundId::MadcapPassiveCharge03);
                         helper::play_sound_from_unit(sound_id, unit, 1, 0);
                         unit->sprite->create_top_overlay(ImageId::MaverickStimpackInject);
-                        unit_ext->values[ValueMadcapFullChargeRead] = 1;
+                        unit_ext.values[ValueMadcapFullChargeRead] = 1;
                     }
-                    unit_ext->values[ValueMadcapStacks] = Clamp(stacks + TerranMadcap::PassiveDecayTime, 0, TerranMadcap::PassiveMaxStacks * TerranMadcap::PassiveDecayTime);
+                    unit_ext.values[ValueMadcapStacks] = Clamp(stacks + TerranMadcap::PassiveDecayTime, 0, TerranMadcap::PassiveMaxStacks * TerranMadcap::PassiveDecayTime);
                 }
 
                 if (unit->order_target.unit) {
                     // I am not sure why we are always centering on the unit, but I won't change it yet, since not sure how much we rely on that -Veeq7
                     unit->order_target = make_target(unit->order_target.unit);
                 }
-                if (unit_ext->target_pos_override) {
-                    unit->order_target.pt = *unit_ext->target_pos_override;
+                if (unit_ext.target_pos_override) {
+                    unit->order_target.pt = *unit_ext.target_pos_override;
                 }
                 Target weapon_target = unit->order_target;
                 bw::play_manual_weaponfire_sound(unit, weapon_id);
                 switch (weapon_id) {
                     case WeaponId::PhobosArgosLaserBatteries: {
                         // Phobos - Argent Capacitors passive
-                        if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] == 0) {
+                        if (unit->id == UnitId::TerranPhobos && unit_ext.values[ValuePhobosDischarge] == 0) {
                             unit->add_unit_energy(5 * 256);
                             if (unit->energy == unit->get_max_energy()) {
-                                unit_ext->values[ValuePhobosDischarge] = 1;
+                                unit_ext.values[ValuePhobosDischarge] = 1;
                                 unit->ground_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
                                 unit->air_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
                                 helper::play_sound_from_unit(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
@@ -763,17 +764,41 @@ namespace hooks {
                     } break;
                     case WeaponId::NathreliskSignalingSpores: {
                         g_iquare_globals->create_effect(EffectId::VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
-                    } // Fallthrough intended, for now.
-                    default: {
-                        /*
-                        if (weapon_id == WeaponId::MadrigalImperiosoMissiles) {
-                            for (u32 i = 0; i < 3; i++) {
-                                fire_bullet(unit, weapon_id, weapon_target, false);
-                            }
-                        }
-                        */
                         fire_bullet(unit, weapon_id, weapon_target);
                     } break;
+                    case WeaponId::KethrostalorStaggeredSpores: {
+                        Bullet* bullet = fire_bullet(unit, weapon_id, weapon_target);
+                        BulletExt* bullet_ext = get_bullet_ext(bullet);
+                        Unit* cargo = 0;
+                        for (u32 i = 0; i < TransportCap; ++i) {
+                            cargo = helper::get_loaded_unit_from_index(unit, i);
+                            if (cargo) {
+                                break;
+                            }
+                        }
+                        if (cargo) {
+                            Unit* bullet_cargo = bw::create_hidden_unit(static_cast<UnitId::Enum>(cargo->id), 1, cargo->player, unit->position, cargo, true);
+                            bullet_ext->cargo = bullet_cargo;
+                            cargo->ext().values[ValueDontProcOnDeathEffects] = true;
+                            cargo->silent_remove();
+                        }
+                    } break;
+                    default: {
+                        fire_bullet(unit, weapon_id, weapon_target);
+                    } break;
+                }
+
+                // After successfully firing the weapon...
+                if (unit_ext.timers[TimerMimicryCheck]) {
+                    for (Unit* mimic : g_unit_search.radial(unit->position, AskosiMimic::MimicryRange).filter(unit, FilterAlly, {UnitId::AskosiMimic})) {
+                        auto mimic_ext = mimic->ext();
+                        if (mimic->ground_weapon_cooldown) {
+                            continue;
+                        }
+                        // TODO: audiovisuals
+                        fire_bullet(mimic, weapon_id, weapon_target);
+                        apply_weapon_cooldown(mimic, weapon_id);
+                    }
                 }
             }
         }
@@ -1056,25 +1081,28 @@ namespace hooks {
         }
 
         // Split missiles
-        if (weapon_id_splits_reactive_payload((WeaponId::Enum)bullet->weapon_id)
-        &&  bullet->source_unit
-        &&  bullet->attack_target.unit
-        &&  bullet->attack_target.unit->sprite && bullet->source_unit->sprite) {
+        if (weapon_splits(static_cast<WeaponId::Enum>(bullet->weapon_id))
+        &&  bullet->source_unit && bullet->attack_target.unit && bullet->attack_target.unit->sprite && bullet->source_unit->sprite) {
             Unit* main_target = bullet->attack_target.unit;
             const u32 distance_from_source = bullet_ext->distance_traveled;
             const u32 distance_from_target = bw::distance_between(bullet->position, main_target->position);
-            if (distance_from_target < ProtossReactivePayload::SplitProcDistance) {
-                u32 splits = distance_from_source / ProtossReactivePayload::SplitPeriod;
+            if (distance_from_target < CommonBehavior::MissileSplitProcDistance) {
+                u32 splits = 0;
+                switch (bullet->weapon_id) {
+                    case WeaponId::ArchitectDispersiveSalvo: {
+                        splits = distance_from_source / ProtossReactivePayload::SplitPeriod;
+                    } break;
+                }
                 if (splits && !g_iquare_globals->multihit_bullet_is_set(bullet)) {
                     Unit* old_target = bullet->source_unit->order_target.unit;
                     Point16 old_sprite_pos = bullet->source_unit->sprite->position;
                     Point16 old_pos = bullet->source_unit->position;
                     bullet->source_unit->sprite->position = bullet->position;
                     bullet->source_unit->position = bullet->position;
-                    u32 radius = ProtossReactivePayload::SplitSearchRadius;
-
                     g_iquare_globals->add_multihit_empty_bullet(bullet, 1);
+
                     u32 fired = 0;
+                    u32 radius = ProtossReactivePayload::SplitSearchRadius;
                     for (Unit* target : g_unit_search.radial(main_target->position, radius).filter(bullet->source_unit, FilterEnemy | FilterVisible | FilterNoAir)) {
                         if (target == main_target) {
                             continue;
@@ -1083,10 +1111,10 @@ namespace hooks {
                         s32 new_angle = bw::get_angle(bullet->position.x, bullet->position.y, target->position.x, target->position.y);
                         Bullet* new_bullet = create_bullet_ex((WeaponId::Enum)bullet->weapon_id, bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
                         if (new_bullet) {
-                            helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
                             new_bullet->position = bullet->position;
                             g_iquare_globals->add_multihit_empty_bullet(new_bullet, 1);
                             if (++fired == splits) {
+                                helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
                                 break;
                             }
                         }
@@ -1177,6 +1205,33 @@ namespace hooks {
                     if (!bullet->attack_target.unit) {
                         g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, Protoss::BindingPlasmaTimer, bullet->position, Protoss::BindingPlasmaRadius,
                             SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
+                    }
+                } break;
+                case WeaponId::KethrostalorStaggeredSpores: {
+                    BulletExt* bullet_ext = get_bullet_ext(bullet);
+                    Unit* cargo = bullet_ext->cargo;
+                    if (cargo) {
+                        cargo->ext().values[ValueIsCloning] = true;
+                        cargo->ext().values[ValueDontProcOnDeathEffects] = true;
+                        Point16 position;
+                        bool valid_placement = true;
+                        if (cargo->is_building()) {
+                            position = bw::get_building_reposition(cargo, bullet->position);
+                            if (position.x == 0 && position.y == 0) {
+                                position = bullet->position;
+                                valid_placement = false;
+                            }
+                        } else {
+                            position = bullet->position;
+                        }
+                        Unit* new_unit = bw::create_unit_from_bullet(static_cast<UnitId::Enum>(cargo->id), cargo->player, position, cargo);
+                        if (!valid_placement) {
+                            new_unit->kill();
+                        } else {
+                            helper::move_unit(new_unit, position.x, position.y);
+                            hooks::special_unload_unit(new_unit, 0);
+                        }
+                        bullet_ext->cargo->silent_remove();
                     }
                 } break;
             }
@@ -1835,6 +1890,10 @@ namespace hooks {
     // Hooked to fix melee edge unit performance. -Pr0nogo
     b32 should_stay_at_range(Unit* unit) { // 00475A10
         if (unit_id_is_melee_air_unit(unit->id)) {
+            Unit* target = unit->order_target.unit;
+            if (unit->id == UnitId::ZergGorgrokor && target && target->is_in_air()) {
+                return true;
+            }
             return false;
         }
         u32 weapon_id = units_dat::ground_weapon[unit->id];
