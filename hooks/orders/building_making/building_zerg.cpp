@@ -297,7 +297,7 @@ s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignore_incom
         } break;
 
         case UnitId::ZergGeszkathGrotto: {
-            unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKethrajChasm, ignore_incomplete);
+            unit_count += BuildingHelper::get_unit_id_count(unit, UnitId::ZergKethrajKeep, ignore_incomplete);
         } break;
 
         case UnitId::ZergAlkagIteth: {

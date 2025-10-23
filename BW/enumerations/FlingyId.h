@@ -287,7 +287,7 @@ namespace flingy_id {
 		ProtossSanctumOfSorrow = 281,
 		ZergKeskathGrotto = 282,
 		ZergVithrilHaunt = 283,
-		ZergKethrajChasm = 284,
+		ZergKethrajKeep = 284,
 		ProtossIdol = 285,
 		ProtossGolem = 286,
 		ProtossBarghest = 287,

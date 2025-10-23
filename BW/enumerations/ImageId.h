@@ -1314,6 +1314,10 @@ namespace ImageId {
 
         CikraliskAttackOverlay                      = 2056,
 
+        ZoryusthalethMutate                         = 2107,
+
+        AzanthrokorMutate                           = 2187,
+
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,
         LastMinorDamageOverlay						= 471,

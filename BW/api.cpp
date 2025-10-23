@@ -234,7 +234,7 @@ bool can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker) {
 }
 
 bool is_under_carapace_swarm(Unit* unit) {
-    return !(unit->status & UnitStatus::InAir) && get_carapace_swarm_unit(unit);
+    return !unit->is_in_air() && get_carapace_swarm_unit(unit);
 }
 
 bool is_dark_swarm(Unit* unit) {
@@ -574,6 +574,7 @@ bool is_conventional_unit_morph_source(u16 id, bool allow_larvae) {
         case UnitId::ZergInzorthrokor:
         case UnitId::ZergLakizilisk:
         case UnitId::ZergGorgrokor:
+        case UnitId::ZergAzanthrokor:
         case UnitId::ZergKonvilisk:
         case UnitId::ZergVilgorokor:
         case UnitId::ZergMatraleth:
@@ -609,7 +610,7 @@ bool is_zerg_building_morph_result(u16 id) {
         case UnitId::ZergTethvithSwamp:
         case UnitId::ZergChokralChazsal:
         case UnitId::ZergAlmakisAntre:
-        case UnitId::ZergKethrajChasm:
+        case UnitId::ZergKethrajKeep:
         case UnitId::ZergUlgorgCavern:
         case UnitId::ZergZozarcGorge: {
             return true;
@@ -2041,7 +2042,7 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergSkibactScab:			return UnitId::ZergHydrithDen;
         case UnitId::ZergTethvithSwamp:			return UnitId::ZergSkibactScab;
         case UnitId::ZergBegrozithBarrow:		return UnitId::ZergAxtothAxis;
-        case UnitId::ZergKethrajChasm:			return UnitId::ZergGeszkathGrotto;
+        case UnitId::ZergKethrajKeep:			return UnitId::ZergGeszkathGrotto;
         case UnitId::ZergChokralChazsal:		return UnitId::ZergAlkagIteth;
         case UnitId::ZergUlgorgCavern:			return UnitId::ZergZorkizShroud;
         case UnitId::ZergZozarcGorge:			return UnitId::ZergUlgorgCavern;
@@ -2090,7 +2091,6 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergKethrostalor:			return UnitId::ZergKeskathalor;
         case UnitId::ZergAlkajelisk:			return UnitId::ZergGeszithalor;
         case UnitId::ZergZobriolisk:			return UnitId::ZergLakizilisk;
-        case UnitId::ZergZarcavrokor:			return UnitId::ZergGorgrokor;
         case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
         case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
         case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
@@ -2101,6 +2101,7 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergKalkalisk:
         case UnitId::ZergBactalisk:
         case UnitId::ZergTethzorokor:
+        case UnitId::ZergZarcavrokor:
         case UnitId::ZergUltrokor: {
             return get_factional_regression(unit);
         }

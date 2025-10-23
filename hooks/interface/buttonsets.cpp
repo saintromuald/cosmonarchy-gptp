@@ -2021,12 +2021,27 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
-                                    case UnitId::ZergGorgrokor: {
-                                        if (player_has_base_unit_id(unit->player, UnitId::ZergUlgorgCavern)
-                                        ||  player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
-                                            current_button_state = Button_State::Enabled;
+                                        if (faction != Faction::ZergOrkotiTendril) {
+                                            if (player_has_base_unit_id(unit->player, UnitId::ZergUlgorgCavern)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
                                         } else {
-                                            current_button_state = Button_State::Disabled;
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::ZergAzanthrokor: {
+                                        if (faction == Faction::ZergOrkotiTendril) {
+                                            if (player_has_base_unit_id(unit->player, UnitId::ZergUlgorgCavern)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::ZergMutalisk:
@@ -2072,7 +2087,7 @@ namespace hooks {
                                     case UnitId::ZergKeskathalor:
                                     case UnitId::ZergGeszithalor: {
                                         if (player_has_base_unit_id(unit->player, UnitId::ZergGeszkathGrotto)
-                                        ||  player_has_gestated_unit_id(unit->player, UnitId::ZergKethrajChasm)) {
+                                        ||  player_has_gestated_unit_id(unit->player, UnitId::ZergKethrajKeep)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
@@ -2178,7 +2193,7 @@ namespace hooks {
                                     } break;
                                     case UnitId::ZergKethrostalor:
                                     case UnitId::ZergAlkajelisk: {
-                                        if (player_has_base_unit_id(unit->player, UnitId::ZergGeszkathGrotto)) {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::ZergKethrajKeep)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
@@ -2279,7 +2294,8 @@ namespace hooks {
                                     current_button_state = Button_State::Invisible;
                                 }
                             } break;
-                            case UnitId::ZergGorgrokor: {
+                            case UnitId::ZergGorgrokor:
+                            case UnitId::ZergAzanthrokor: {
                                 if (current_button->requirement_var == UnitId::ZergZarcavrokor) {
                                     if (player_has_completed_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
                                         current_button_state = Button_State::Enabled;
@@ -3249,6 +3265,16 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } else if (current_button->icon_id == IconId::LakiziliskSubterraneanSpines) { // Seismic Spines
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergGorgrokor: {
+                                    if (current_button->icon_id == IconId::CorrosiveTouch) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergAzanthrokor: {
+                                    if (current_button->icon_id == IconId::Reconstitution) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
