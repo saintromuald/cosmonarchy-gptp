@@ -799,7 +799,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_medic_orders_hooks();
     hooks::inject_hallucination_spell_hooks();
 //	hooks::inject_feedback_spell();
-//	hooks::injectBtnsCondHook();
+//	hooks::inject_btns_cond_hooks();
 //	hooks::inject_receive_command_hooks();
     hooks::inject_create_initial_units_hooks();
     hooks::inject_give_unit_hooks();

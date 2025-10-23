@@ -354,30 +354,30 @@ namespace {
 
 namespace hooks {
 	void inject_harvest_resource() {
-		jump_patch(remove_powerup_image_overlay_wrapper,					0x004F3900, 2);
-		jump_patch(transfer_resource_to_worker_wrapper,						0x004696D0, 0);
+		jump_patch(remove_powerup_image_overlay_wrapper,					 0x004F3900, 2);
+		jump_patch(transfer_resource_to_worker_wrapper,					 0x004696D0, 0);
 
-		jump_patch(unit_is_geyser_ex_wrapper,								0x00468930, 5);
-		jump_patch(order_enter_exit_gas_wrapper,							0x00469980, 1);
-		jump_patch(can_harvest_gas_wrapper,									0x00469000, 1);
-		jump_patch(order_acquire_generic_right_click_harvest_proc_wrapper,	0x004557C0, 2);
-		jump_patch(orders_harvest_finish_wrapper,							0x00468ED0, 1);
-		jump_patch(begin_harvest_wrapper,									0x00468C70, 4);
-		jump_patch(let_next_unit_mine_wrapper,								0x00468970, 1);
-		jump_patch(orders_entries_move_to_harvest_obscured_wrapper,			0x00469500, 4);
+		jump_patch(unit_is_geyser_ex_wrapper,								 0x00468930, 5);
+		jump_patch(order_enter_exit_gas_wrapper,							 0x00469980, 1);
+		jump_patch(can_harvest_gas_wrapper,								 0x00469000, 1);
+		jump_patch(order_acquire_generic_right_click_harvest_proc_wrapper,0x004557C0, 2);
+		jump_patch(orders_harvest_finish_wrapper,							 0x00468ED0, 1);
+		jump_patch(begin_harvest_wrapper,									 0x00468C70, 4);
+		jump_patch(let_next_unit_mine_wrapper,							 0x00468970, 1);
+		jump_patch(orders_entries_move_to_harvest_obscured_wrapper,		 0x00469500, 4);
 
-		jump_patch(remove_references_node_worker_wrapper,					0x00468EF0,	4);
-		jump_patch(remove_from_current_harvesters_wrapper,					0x004686D0,	4);
-		jump_patch(remove_harvesters_wrapper,								0x00468770,	1);
-		jump_patch(update_mineral_field_image_wrapper,						0x00468830,	6);
-		jump_patch(return_cargo_to_best_depot_proc_wrapper,					0x00440FA0,	1);
-		jump_patch(find_best_return_cargo_target_wrapper,					0x00441310,	2);
-		jump_patch(mine_resources_wrapper,									0x00469650,	0);
-		jump_patch(remove_stunned_worker_from_node_wrapper,					0x00468DB0,	1);
-		jump_patch(orders_harvesting_minerals_wrapper,						0x004697C0,	1);
-		jump_patch(return_resources_from_unit_wrapper,						0x004F39A0,	3);
+		jump_patch(remove_references_node_worker_wrapper,					 0x00468EF0,	4);
+		jump_patch(remove_from_current_harvesters_wrapper,				 0x004686D0,	4);
+		jump_patch(remove_harvesters_wrapper,								 0x00468770,	1);
+		jump_patch(update_mineral_field_image_wrapper,					 0x00468830,	6);
+		jump_patch(return_cargo_to_best_depot_proc_wrapper,				 0x00440FA0,	1);
+		jump_patch(find_best_return_cargo_target_wrapper,						 0x00441310,	2);
+		jump_patch(mine_resources_wrapper,								 0x00469650,	0);
+		jump_patch(remove_stunned_worker_from_node_wrapper,				 0x00468DB0,	1);
+		jump_patch(orders_harvesting_minerals_wrapper,					 0x004697C0,	1);
+		jump_patch(return_resources_from_unit_wrapper,					 0x004F39A0,	3);
 
-		call_patch(death_geyser_check_wrapper,								0x0049F515, 0);
-		jump_patch(worker_wandering_wrapper,								0x00469393,	1);
+		call_patch(death_geyser_check_wrapper,							 0x0049F515,0);
+		jump_patch(worker_wandering_wrapper,								 0x00469393,	1);
 	}
 }

@@ -166,7 +166,7 @@ namespace hooks {
                                     stop_big_loop = true; // This was added, so sorting by cursor is respected, not sure about the role of the original call
                                     // helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
                                 } else {
-                                    if (units_dat::base_property[current_unit->id] & UnitProperty::Building) {
+                                    if (current_unit->is_building()) {
                                         has_buildings = true;
                                     } else {
                                         has_units = true;
@@ -220,7 +220,7 @@ namespace hooks {
         Unit* local_temp_array_1[SelectionCap];	// used instead of an array starting from [EBP-3C]
         Unit* local_temp_array_2[SelectionCap];	// used instead of an array starting from [EBP-6C]
         Box16 local_temp_box16_structure;		// used instead of using from [EBP-0C] to [EBP-06]
-        bool holding_ctrl_or_double_clicking = *g_is_holding_ctrl || (*g_is_double_clicking && (clicked_unit->sprite->flags & SpriteFlags::Selected));
+        bool holding_ctrl_or_double_clicking = *g_is_holding_ctrl || (*g_is_double_clicking && clicked_unit->sprite->is_selected());
         for (s32 i = 0; i < SelectionCap; i++) {
             local_temp_array_1[i] = 0;
         }
@@ -320,7 +320,7 @@ namespace hooks {
                     } else {
                         // unit already it, remove it from unit_list
                         u32 memcpy_size;
-                        bool bUpdateSelection = true;
+                        bool update_selection = true;
                         // decrease it so it's equal to the index of last element
                         array_index--;
                         // each element is 4 bytes, multiply it by the number of elements after the one to remove
@@ -340,12 +340,12 @@ namespace hooks {
                                 // continue to deselect.
                                 u32 unit_index = helper::unit_to_unit_id(local_temp_array_1[0]);
                                 if (helper::select_single_unit_from_id(unit_index) != 0) {
-                                    bUpdateSelection = false;
+                                    update_selection = false;
                                 }
                             }
                         }
 
-                        if (bUpdateSelection) {
+                        if (update_selection) {
                             // Create a new unit unit_list (since the clicked unit is unselected)
                             // and choose it as current unit_list)
                             helper::create_new_unit_selections_from_list(local_temp_array_1, array_index);
@@ -400,7 +400,7 @@ namespace hooks {
             if (!unit) {
                 break;
             }
-            if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+            if (unit->is_building()) {
                 has_buildings = true;
             } else {
                 has_units = true;
@@ -414,11 +414,11 @@ namespace hooks {
                 break;
             }
             if ((has_units && has_buildings) || !has_units) {
-                if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+                if (unit->is_building()) {
                     list[count++] = unit;
                 }
             } else if (!has_buildings) {
-                if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+                if (!unit->is_building()) {
                     list[count++] = unit;
                 }
             }
@@ -555,20 +555,19 @@ namespace hooks {
                     sprite->flags |= SpriteFlags::DrawSelCircle;
                 }
             }
-            Sprite* sprite_copy = unit->sprite;
-            sprite_copy->flags |= SpriteFlags::Selected;
-            sprite_copy->selection_index = index;
+            unit->sprite->flags |= SpriteFlags::Selected;
+            unit->sprite->selection_index = index;
             return;
         }
 
-        u8 sprite_id = g_selection_circle_color[unit->player];
+        u8 color = g_selection_circle_color[unit->player];
         u8 sprite_flags = sprite->flags;
         if (!(sprite_flags & SpriteFlags::Selected)) {
             sprite->selection_index = index;
             sprite->flags = sprite_flags | SpriteFlags::Selected;
             helper::create_healthbar(sprite);
             if (!(sprite->flags & SpriteFlags::DrawSelCircle)) {
-                if (helper::create_selection_circle(sprite, sprite_id, ImageId::SelectionCircle_22pixels)) {
+                if (helper::create_selection_circle(sprite, color, ImageId::SelectionCircle_22pixels)) {
                     sprite->flags |= SpriteFlags::DrawSelCircle;
                 }
             }
@@ -577,8 +576,7 @@ namespace hooks {
         if (unit->is_completed() && unit_id_is_power_generator(unit->id)) {
             if (bw::in_replay() || bw::player_is_witness(g_local_nation_id)) {
                 create_pylon_aura_witness(unit->player);
-            }
-            else if (unit_can_show_power_for(unit, g_local_nation_id)) {
+            } else if (unit_can_show_power_for(unit, g_local_nation_id)) {
                 helper::create_pylon_aura();
             }
         }

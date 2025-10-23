@@ -70,7 +70,7 @@ struct Config {
 
     // Debug
     bool verbose = false;
-    bool log_randoms = true;
+    bool log_randoms = false;
 
     // Map directory
     std::string default_map_directory = "CMBW-Root\\CMBW-maps";

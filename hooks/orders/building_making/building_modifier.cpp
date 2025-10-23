@@ -3,7 +3,6 @@
 #include "trigger_system\trigger_system.h"
 
 namespace cm {
-
 BuildingModifier get_building_modifier(Unit* unit, const ProgressBuildOptions& options) {
 	BuildingModifier modifier{.factor = 1, .integer_step = 1};
 	if (unit && !options.use_stock_speed) {
@@ -81,8 +80,6 @@ bool progress_build(Unit* unit, const ProgressBuildOptions& options) {
 			unit->set_hitpoints(unit->hitpoints + options.hp_gain * modifier.factor);
 		}
 	}
-
 	return false;
 }
-
-}
+} // namespace cm

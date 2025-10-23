@@ -165,7 +165,7 @@ namespace UnitId {
         TerranScrapyard										= 200,		// Power Generator
         TerranNaniteAssembly								= 203,		// Floor Missile Trap
         TerranSentinel										= 209,		// Floor Gun Trap
-        TerranAtelier										= 213,		// Right Wall Flame Trap
+        TerranAtelier										= 213,		// Right Wall Flame Trap | unused
         TerranTreasury										= 215,		// Flag
         TerranStarpad										= 254,
         TerranFutureStation									= 257,
@@ -173,10 +173,10 @@ namespace UnitId {
         TerranAerie											= 260,
         TerranMantle										= 280,
         TerranApothecary									= 284,
-        TerranParthenon										= 288,
-        TerranIronCouncil									= 295,
-        TerranAmphitheater									= 296,
-        TerranThroneroom									= 299,
+        TerranParthenon										= 288,      // unused
+        TerranIronCouncil									= 295,      // unused
+        TerranAmphitheater									= 296,      // unused
+        TerranThroneroom									= 299,      // unused
         TerranWellbore										= 365,
         TerranLodestone										= 384,
         TerranTencendur										= 408,
@@ -331,11 +331,11 @@ namespace UnitId {
         ZergOthstolOviform									= 152,		// Cerebrate Daggoth
         ZergTethvithSwamp									= 153,		// Unused Zerg 2
         ZergAlkagIteth										= 170,		// Arbiter Tribunal
-        ZergIrulentIvoa										= 181,		// Cantina
+        ZergIrulentIvoa										= 181,		// Cantina | unused
         ZergZorkizShroud									= 193,		// Protoss Marker
         ZergTosvrolHaunt									= 197,		// Zerg Flag Beacon
         ZergKalkiirLake										= 204,		// Floor Hatch
-        ZergAlkajChasm										= 212,		// Right Wall Missile Trap
+        ZergKethrajChasm								    = 212,		// Right Wall Missile Trap
         ZergLarvoskCesiant									= 216,		// Young Chrysalis
         ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
         ZergIrolIris										= 224,		// Zerg Gas Sac Type 1

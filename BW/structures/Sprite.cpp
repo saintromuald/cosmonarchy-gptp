@@ -295,6 +295,10 @@ bool Sprite::is_hidden() {
 	return this->flags & SpriteFlags::Hidden;
 }
 
+bool Sprite::is_selected() {
+	return this->flags & SpriteFlags::Selected;
+}
+
 namespace hooks {
 	// Hooked to investigate crashes and desyncs. -Pr0nogo
 	void update_visibility_hash(Sprite* sprite) { // 00497C30

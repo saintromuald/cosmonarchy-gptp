@@ -48,6 +48,7 @@ struct Sprite
 
 	bool is_visible_to(u8 player) const; // Checks whether this sprite is visible to @p player (i.e. not covered by the fog of war). This does NOT check detectability.
 	bool is_hidden();
+	bool is_selected();
 
 	////////////////////////////////////////////////////////////////
 	//Actual data structure

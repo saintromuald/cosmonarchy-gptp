@@ -236,7 +236,12 @@ void update_hotkeys() {
 }
 
 void inherit_selection(Unit* parent, Unit* child) {
-	// TODO: also inherit selection
+  /*for (u32 i = 0; i < SelectionCap; ++i) {
+		Unit* unit = g_client_selection_group->unit[i];
+		if (unit && unit == parent) {
+			// TODO: also inherit selection
+		}
+	}*/
 	for (ControlGroup& control_group : hotkeys.control_groups) {
 		if (control_group.has(parent)) {
 			control_group.add(child);

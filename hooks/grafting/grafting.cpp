@@ -12,8 +12,7 @@ REQ_SCRIPT* orders_req = 0;
 
 void* buttons_data = 0;
 
-namespace
-{
+namespace {
 	u32 button_req_funcs[] = {
 		ButtonRequirements::Slow_Down_Replay,
 		ButtonRequirements::Speed_Up_Replay,
@@ -177,7 +176,6 @@ namespace
 };
 
 namespace hooks {
-
 	void load_req_grafts() {
 		void* data = 0;
 

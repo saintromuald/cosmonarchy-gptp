@@ -8,8 +8,7 @@ namespace hooks
 
 	// Local answer when using stimpacks (check units of selection, and can just display an error message without notifying others players
 	// of the attempt if no unit can do the stimpack action). -GPTP
-	void cmdact_stimpack() // 004234D0
-	{
+	void cmdact_stimpack() { // 004234D0
 		Unit* current_client_selection_unit;
 		bool able_to_stim = false;
 

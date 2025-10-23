@@ -278,7 +278,7 @@ bool order_id_ignores_collision(u32 order_id) {
 }
 
 bool unit_should_be_autoattacked_by_player(Unit* unit, u32 player) {
-    UnitExt& unit_ext = unit->ext();
+    auto& unit_ext = unit->ext();
     if (unit_ext.timers[TimerMindControlRecede]) {
         u32 original_player = unit_ext.values[ValueMindControlOriginalPlayer];
         if (player == original_player || bw::is_allied_to(player, original_player)) {
@@ -664,7 +664,7 @@ Faction get_random_faction(RaceId::Enum race) {
 
 namespace WeaponId {
 // TODO: YAML
-const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
+const char* get_weapon_name(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::MaverickGaussRifle:                  return "Gauss Rifle";
         case WeaponId::HeraclesJavelinCannons:              return "Javelin Cannons";

@@ -372,7 +372,7 @@ namespace hooks {
 			}
 
 			// Terran building burn-down
-			if (!stop_here && !unit_ext.values[ValueInfested]) {
+			if (!stop_here && !unit_ext.values[ValueInfested] && !unit_ext.timers[TimerBurnDownDelay]) {
 				if (unit->get_race() == RaceId::Terran) {
 					if (unit->is_grounded_building() || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
 						if (helper::unit_hp_is_in_redzone(unit)) {
@@ -644,18 +644,18 @@ namespace hooks {
 			return false;
 		}
 
-		if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
+		if (!unit->sprite->is_hidden()) {
 			helper::sort_unit(unit);
-			if (unit->status & UnitStatus::GroundedBuilding) {
+			if (unit->is_grounded_building()) {
 				helper::clear_building_from_tile_flag(unit, unit->position.x, unit->position.y);
 			}
-			if (unit->status & UnitStatus::InAir) {
+			if (unit->is_in_air()) {
 				helper::remove_repulse_tile(unit);
 			}
 		}
 		helper::transform_unit_sprite(unit, new_id);
 
-		if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+		if (unit->is_building()) {
 			if (unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) {
 				if (unit->secondary_order_id != OrderId::Nothing2) {
 					unit->secondary_order_id = OrderId::Nothing2;
@@ -670,7 +670,7 @@ namespace hooks {
 			helper::set_image_direction(unit->sprite->main_graphic, direction);
 		}
 
-		if (unit->sprite->flags & SpriteFlags::Selected) {
+		if (unit->sprite->is_selected()) {
 			if (!helper::unit_is_standard_and_movable(unit) && g_client_selection_count > 1 && new_id != UnitId::ZergEgg) {
 				helper::update_building_land_unit_selection(0, unit);
 				helper::remove_from_client_selection_3(unit);
@@ -684,13 +684,13 @@ namespace hooks {
 		if (pos_x != position.x || pos_y != position.y) {
 			helper::move_unit(unit, position.x, position.y);
 		}
-		if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
+		if (!unit->sprite->is_hidden()) {
 			helper::update_unit_order_finder(unit);
-			if (unit->status & UnitStatus::GroundedBuilding) {
+			if (unit->is_grounded_building()) {
 				helper::set_building_tile_flag(unit, unit->position.x, unit->position.y);
 			}
 			helper::check_unstack(unit);
-			if (unit->status & UnitStatus::InAir) {
+			if (unit->is_in_air()) {
 				helper::set_repulse_angle(unit);
 			}
 		}

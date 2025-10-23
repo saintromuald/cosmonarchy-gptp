@@ -60,8 +60,7 @@ void __declspec(naked) next_frame_hook()
     {
         hooks::next_frame();
     }
-    if (bw::is_game_paused())
-    {
+    if (bw::is_game_paused()) {
         __asm {
             POPAD
             MOV EAX, 1

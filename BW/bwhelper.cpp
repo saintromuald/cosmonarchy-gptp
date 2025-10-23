@@ -2546,13 +2546,7 @@ namespace helper {
 
     // is_valid_morph @ 0x0045CC60;
     bool is_valid_building_morph(u16 building_id) {
-        bool result;
-        if (bw::is_zerg_building_morph_result(building_id)) {
-            result = true;
-        } else {
-            result = false;
-        }
-        return result;
+        return bw::is_zerg_building_morph_result(building_id);
     }
 
     void update_new_unit_vision(u32 id, s32 x, s32 y) {
@@ -9582,7 +9576,7 @@ namespace helper {
     }
 
     // For get_standard_attack_target
-    s32 is_ai_target_related(Unit* attacker, Unit* target) {
+    s32 cannot_chase_target(Unit* attacker, Unit* target) {
         static s32 result;
         const u32 func_address = 0x004A1140;
         __asm {
