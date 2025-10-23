@@ -279,7 +279,6 @@ bool unit_id_is_melee_air_unit(u32 unit_id) {
         || unit_id == UnitId::ZergAkistrokor
         || unit_id == UnitId::ZergZarcavrokor
         || unit_id == UnitId::ZergSkryrokor
-        || unit_id == UnitId::TerranTalos
         || unit_id == UnitId::TerranWendigo;
 }
 
@@ -315,12 +314,13 @@ bool unit_id_can_do_controlled_demolition(u32 unit_id) {
 
 UnitId::Enum unit_id_to_siege_mode(UnitId::Enum unit_id) {
     switch (unit_id) {
-        case UnitId::TerranSavantEntropyGauntlets: return UnitId::TerranSavantPowerSiphon; 
-        case UnitId::TerranShamanSupportMode:      return UnitId::TerranShamanVisionaryMode; 
-        case UnitId::TerranMatadorTankMode:        return UnitId::TerranMatadorCinderMode;   
-        case UnitId::TerranPhalanxTankMode:        return UnitId::TerranPhalanxSiegeMode;   
-        case UnitId::TerranMadrigalImperiosoMode:  return UnitId::TerranMadrigalFuriaMode;  
-    //	case UnitId::TerranCuirassTankMode:        return UnitId::TerramCuirassTrenchMode;  
+        case UnitId::TerranSavantEntropyGauntlets: return UnitId::TerranSavantPowerSiphon;
+        case UnitId::TerranShamanSupportMode:      return UnitId::TerranShamanVisionaryMode;
+        case UnitId::TerranMatadorTankMode:        return UnitId::TerranMatadorCinderMode;
+        case UnitId::TerranPhalanxTankMode:        return UnitId::TerranPhalanxSiegeMode;
+        case UnitId::TerranMadrigalImperiosoMode:  return UnitId::TerranMadrigalFuriaMode;
+    //	case UnitId::TerranCuirassTankMode:        return UnitId::TerramCuirassTrenchMode;
+    	case UnitId::TerranOgunWorkerMode:         return UnitId::TerranOgunSmithyMode;
     }
     return UnitId::None;
 }
@@ -333,6 +333,7 @@ UnitId::Enum unit_id_to_tank_mode(UnitId::Enum unit_id) {
         case UnitId::TerranPhalanxSiegeMode:    return UnitId::TerranPhalanxTankMode;
         case UnitId::TerranMadrigalFuriaMode:   return UnitId::TerranMadrigalImperiosoMode;
     //	case UnitId::TerramCuirassTrenchMode:   return UnitId::TerranCuirassTankMode;
+        case UnitId::TerranOgunSmithyMode:      return UnitId::TerranOgunWorkerMode;
     }
     return UnitId::None;
 }
@@ -377,6 +378,7 @@ bool unit_id_is_town_center(u16 unit_id) {
 bool unit_id_is_factional(u16 unit_id) {
     return unit_id == UnitId::TerranHotshot
         || unit_id == UnitId::TerranCohort
+        || unit_id == UnitId::TerranCannibal
         || unit_id == UnitId::TerranAspirant
         || unit_id == UnitId::TerranSouthpaw
         || unit_id == UnitId::TerranTarasque
@@ -1021,7 +1023,8 @@ bool unit_is_combatant(Unit* unit) {
 bool unit_id_can_repair(u32 unit_id) {
     return unit_id == UnitId::TerranMason
         || unit_id == UnitId::TerranTalos
-        || unit_id == UnitId::DanielsMason;
+        || unit_id == UnitId::DanielsMason
+        || unit_id == UnitId::TerranOgunWorkerMode;
 }
 
 bool weapon_id_is_flamethrower(u32 weapon_id) {
@@ -1418,9 +1421,12 @@ bool unit_id_can_construct(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranMason
         || unit_id == UnitId::TerranTalos
         || unit_id == UnitId::DanielsMason
+        || unit_id == UnitId::TerranOgunWorkerMode
         || unit_id == UnitId::ProtossScribe
         || unit_id == UnitId::ProtossPrudence
+        || unit_id == UnitId::ProtossAutocort
         || unit_id == UnitId::ZergDroleth
+        || unit_id == UnitId::ZergAgrileth
         || unit_id == UnitId::ZergGosvileth;
 }
 
@@ -1789,6 +1795,12 @@ SoundId::Enum get_windup_sfx(UnitId::Enum unit_id) {
         case UnitId::TerranGoliath: return bw::SoundSet{SoundId::GoliathTwinAutocannonWindup01, SoundId::GoliathTwinAutocannonWindup03}.rand();
     }
     return SoundId::None;
+}
+
+bool is_terran_worker(UnitId::Enum unit_id) {
+    return unit_id == UnitId::TerranMason
+        || unit_id == UnitId::TerranTalos
+        || unit_id == UnitId::TerranOgunWorkerMode;
 }
 } // namespace UnitId
 

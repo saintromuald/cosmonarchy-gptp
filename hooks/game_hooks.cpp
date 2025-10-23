@@ -404,7 +404,7 @@ namespace hooks {
         // Draw selection info
         for (u32 i = 0; i < g_client_selection_count; ++i) {
             Unit* unit = g_client_selection_group->unit[i];
-            UnitExt* unit_ext = get_unit_ext(unit);
+            auto& unit_ext = unit->ext();
             Point16 source = unit->position;
 
             // For checking cargo-related elements.
@@ -426,6 +426,9 @@ namespace hooks {
             if (g_config.show_aura_circles && bw::can_show_custom_ui()
             && (bw::are_mutual_allies(unit->player, g_local_nation_id) || bw::in_replay_or_witness())) {
                 switch (unit->id) {
+                    case UnitId::TerranOgunSmithyMode: {
+                        g_graphics.draw_circle(source.x, source.y, TerranOgun::NaniteDronesRange, graphics::GREEN, graphics::ON_MAP);
+                    } break;
                     case UnitId::TerranShamanSupportMode: {
                         g_graphics.draw_circle(source.x, source.y, Shaman::NaniteFieldSupportRange, graphics::GREEN, graphics::ON_MAP);
                     } break;
@@ -441,7 +444,7 @@ namespace hooks {
                         g_graphics.draw_circle(source.x, source.y, Terran::SublimeShepherdRange, graphics::GREEN, graphics::ON_MAP);
                     } break;
                     case UnitId::TerranFacade: {
-                        if (unit_ext->timers[TimerFacadePryingEyesChannel]) {
+                        if (unit_ext.timers[TimerFacadePryingEyesChannel]) {
                             g_graphics.draw_circle(source.x, source.y, TerranFacade::PryingEyesRange, graphics::GREEN, graphics::ON_MAP);
                         }
                     } break;
@@ -486,11 +489,11 @@ namespace hooks {
             }
 
             // Show connected Mind Tyrants and Malefactors
-            if (unit->id == UnitId::ProtossMindTyrant && unit_ext->units[UnitMindTyrantMalefactor]) {
-                draw_simple_line(source, unit_ext->units[UnitMindTyrantMalefactor]->position, graphics::ORANGE);
+            if (unit->id == UnitId::ProtossMindTyrant && unit_ext.units[UnitMindTyrantMalefactor]) {
+                draw_simple_line(source, unit_ext.units[UnitMindTyrantMalefactor]->position, graphics::ORANGE);
             }
-            if (unit_ext->values[ValueIsMalefactor] && unit_ext->units[UnitMindTyrantLink]) {
-                draw_simple_line(source, unit_ext->units[UnitMindTyrantLink]->position, graphics::ORANGE);
+            if (unit_ext.values[ValueIsMalefactor] && unit_ext.units[UnitMindTyrantLink]) {
+                draw_simple_line(source, unit_ext.units[UnitMindTyrantLink]->position, graphics::ORANGE);
             }
 
             // Rally points
@@ -582,14 +585,14 @@ namespace hooks {
                 }
 
                 // Main orders
-                if (unit_ext->values[ValueDiademTargeting]) {
+                if (unit_ext.values[ValueDiademTargeting]) {
                     Target ion_target = {};
-                    ion_target.pt.x = unit_ext->values[ValueDiademTargetPosX];
-                    ion_target.pt.y = unit_ext->values[ValueDiademTargetPosY];
+                    ion_target.pt.x = unit_ext.values[ValueDiademTargetPosX];
+                    ion_target.pt.y = unit_ext.values[ValueDiademTargetPosY];
                     source = draw_order_line(source, ion_target, graphics::RED, ignore_resource_unit);
 
                     if (g_config.show_queued_order_lines) {
-                        ion_target.unit = unit_ext->units[UnitDiademTarget];
+                        ion_target.unit = unit_ext.units[UnitDiademTarget];
                         source = draw_order_line(source, ion_target, graphics::GREY, ignore_resource_unit);
                     }
                 } else {
@@ -1548,6 +1551,20 @@ namespace hooks {
                     }
                 }
             } break;
+            case UnitId::TerranCannibal: {
+                if (!unit_ext.timers[TimerCannibalHealing] && unit->hitpoints != unit->get_max_hp_raw()) {
+                    u32 radius = 1 * 32;
+                    for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
+                        unit_ext.timers[TimerCannibalHealing] = UpstartCannibal::ReintegrationTimer;
+
+                        bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
+                        corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+                        corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+                        unit->remove_timer = 0;
+                        break;
+                    }
+                }
+            } break;
             case UnitId::ZergSovroleth: {
                 {	
                     EntryArray sovroleths = g_unit_search.radial_ex(unit, 8 * 32, FilterAlly, {UnitId::ZergSovroleth}); 
@@ -1865,6 +1882,27 @@ namespace hooks {
                     for (Unit* target : g_unit_search.radial(unit->position, range).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterNoBuilding)) {
                         nanite_field_proc(unit, Shaman::NaniteFieldHealAmount, target);
                     }
+                }
+            } break;
+            case UnitId::TerranOgunSmithyMode: {
+                // Shaman - Nanite Field
+                if (unit->is_frozen() || unit->is_in_transport() || unit_ext.values[ValueDisablePassive]) {
+                    break;
+                }
+                u32 timer = unit_ext.timers[TimerOgunNaniteDrones];
+                if (!timer) {
+                    unit_ext.timers[TimerOgunNaniteDrones] = 4;
+                    u32 range = TerranOgun::NaniteDronesRange;
+                    for (Unit* target : g_unit_search.radial(unit->position, range).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterBuilding)) {
+                        if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
+                            bw::add_unit_overlay(target, ImageId::FusionCutterHitDamageless);
+                            target->ext().timers[TimerBurnDownDelay] = 3;
+                        }
+                        target->heal_hp(target->build_repair_hp_gain, unit);
+                    }
+                }
+                if (g_elapsed_time_frames % 8 == 0) {
+                    bw::add_unit_overlay(unit, ImageId::ShamanNaniteField);
                 }
             } break;
             case UnitId::TerranQilin: {

@@ -674,11 +674,15 @@ namespace hooks {
                                 current_button_state = Button_State::Enabled;
                             } break;
                             case UnitId::TerranMason:
-                            case UnitId::TerranTalos: {
+                            case UnitId::TerranTalos:
+                            case UnitId::TerranOgunWorkerMode: {
                                 if (unit->main_order_id != OrderId::ConstructingBuilding
-                               && !(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit) && g_client_selection_count == 1) {
+                                    && !(unit->main_order_id == OrderId::BuildTerran && unit->order_target.unit) && g_client_selection_count == 1) {
                                     current_button_state = Button_State::Enabled;
                                 }
+                            } break;
+                            case UnitId::TerranOgunSmithyMode: {
+                                current_button_state = Button_State::Invisible;
                             } break;
                             case UnitId::TerranStockade:
                             case UnitId::TerranFulcrum:
@@ -792,6 +796,10 @@ namespace hooks {
                         if (hide) {
                             current_button_state = Button_State::Invisible;
                         }
+                    }
+
+                    if (current_button->action_func == (ActFunc*)ButtonActions::Repair && !unit_id_can_repair(unit->id)) {
+                        current_button_state = Button_State::Invisible;
                     }
                     
                     if (current_button->icon_id == IconId::SetRallyPoint) {
@@ -1401,7 +1409,8 @@ namespace hooks {
                             } break;
 
                             case UnitId::TerranMason:
-                            case UnitId::TerranTalos: {
+                            case UnitId::TerranTalos:
+                            case UnitId::TerranOgunWorkerMode: {
                                 if (unit->main_order_id != OrderId::BuildTerran && unit->main_order_id != OrderId::ConstructingBuilding) {
                                     switch (current_button->requirement_var) {
                                         case UnitId::TerranMinistry:
@@ -1457,7 +1466,7 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranTalos:
-                                    case UnitId::TerranOgunTankMode: {
+                                    case UnitId::TerranOgunWorkerMode: {
                                         if (unit->is_grounded_building() && !is_adding_on) {
                                             if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranQuarry)) {
                                                 current_button_state = Button_State::Enabled;
@@ -1481,7 +1490,8 @@ namespace hooks {
                             } break;
                             case UnitId::TerranTreasury: {
                                 switch (current_button->requirement_var) {
-                                    case UnitId::TerranTalos: {
+                                    case UnitId::TerranTalos:
+                                    case UnitId::TerranOgunWorkerMode: {
                                         if (unit->is_grounded_building() && !is_adding_on) {
                                             if (player_has_completed_addon_unit_id(unit->player, UnitId::TerranQuarry)) {
                                                 current_button_state = Button_State::Enabled;
@@ -2423,8 +2433,19 @@ namespace hooks {
 
                                 // TERRAN \\
 
-                                case UnitId::TerranTalos: {
+                                case UnitId::TerranOgunWorkerMode: {
                                     if (current_button->icon_id == IconId::MasonFusionCutter) { // Fusion Sealers
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                    if (current_button->icon_id == IconId::FusionCutterHarvest) { // Nanite Drones
+                                        current_button_state = Button_State::Invisible;
+                                    }
+                                } break;
+                                case UnitId::TerranOgunSmithyMode: {
+                                    if (current_button->icon_id == IconId::MasonFusionCutter) { // Fusion Sealers
+                                        current_button_state = Button_State::Invisible;
+                                    }
+                                    if (current_button->icon_id == IconId::FusionCutterHarvest) { // Nanite Drones
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2437,6 +2458,11 @@ namespace hooks {
                                 case UnitId::TerranCyprian:
                                 case UnitId::TerranBlackguard: {
                                     if (current_button->icon_id == IconId::KineticPenetration) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::TerranCannibal: {
+                                    if (current_button->icon_id == IconId::CabeirusFeeders) { // Reintegration
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

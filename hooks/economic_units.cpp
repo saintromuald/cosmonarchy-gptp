@@ -5,15 +5,18 @@ namespace hooks {
 		u32 order = 0;
 		switch (unit_id) {
 			case UnitId::TerranMason:
-			case UnitId::TerranTalos: {
+			case UnitId::TerranTalos:
+			case UnitId::TerranOgunWorkerMode: {
 				order = OrderId::BuildTerran;
 			} break;
 			case UnitId::ZergDroleth:
+			case UnitId::ZergAgrileth:
 			case UnitId::ZergGosvileth: {
 				order = OrderId::DroneStartBuild;
 			} break;
 			case UnitId::ProtossScribe:
-			case UnitId::ProtossArtisan: {
+			case UnitId::ProtossAutocort:
+			case UnitId::ProtossPrudence: {
 				order = OrderId::BuildProtoss1;
 			} break;
 		};

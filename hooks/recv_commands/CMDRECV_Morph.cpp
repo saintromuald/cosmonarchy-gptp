@@ -114,7 +114,7 @@ namespace hooks {
 							*g_last_internal_error = 11;
 							continue;
 						}
-						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding
+						if (UnitId::is_terran_worker(static_cast<UnitId::Enum>(unit->id)) && unit->main_order_id == OrderId::ConstructingBuilding
 							|| bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
 							|| unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
 						{

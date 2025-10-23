@@ -1339,9 +1339,6 @@ void play_work_animation(Unit* unit) {
 
 bool unit_id_is_available_without_an_addon(u16 id) {
     return id == UnitId::TerranMason
-        || id == UnitId::TerranTalos
-        || id == UnitId::TerranArmistice
-        || id == UnitId::TerranPythean
 
         || id == UnitId::TerranMaverick
         || id == UnitId::TerranHarakan
@@ -1365,11 +1362,12 @@ bool unit_id_is_available_without_an_addon(u16 id) {
         || id == UnitId::TerranPazuzu
 
         || id == UnitId::TerranWraith
-        || id == UnitId::TerranAncile
         || id == UnitId::TerranTrojan
+        || id == UnitId::TerranValkyrie
+        || id == UnitId::TerranAncile
         || id == UnitId::TerranGorgon
         || id == UnitId::TerranWyvern
-        || id == UnitId::TerranValkyrie
+        || id == UnitId::TerranPythean
         || id == UnitId::TerranCentaur
         || id == UnitId::TerranMinotaur
         || id == UnitId::TerranMagnetar
@@ -1377,6 +1375,7 @@ bool unit_id_is_available_without_an_addon(u16 id) {
         || id == UnitId::TerranHotshot
         || id == UnitId::TerranHarakanGolden
         || id == UnitId::TerranCohort
+        || id == UnitId::TerranCannibal
         || id == UnitId::TerranAspirant
         || id == UnitId::TerranSouthpaw
         || id == UnitId::TerranPhiloc
@@ -2415,6 +2414,7 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
         case WeaponId::SirenCharybdalRifle: {
             return 3;
         }
+        case WeaponId::CannibalZuluSidekicks:
         case WeaponId::AurielQuarternaryRifle:
         case WeaponId::HypnagogueKaleidoscopeCannon:
         case WeaponId::VultureFragmentationGrenade:
@@ -3939,6 +3939,7 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::MaverickGaussRifle:                  return SoundId::Bullet_TMaFir00_wav;
         case WeaponId::MaverickFuturistGaussSlugger:        return bw::rand_between(SoundId::MaverickFuturistWeaponfire01, SoundId::MaverickFuturistWeaponfire03);
         case WeaponId::HotshotDispatchShotgun:              return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
+        case WeaponId::CannibalZuluSidekicks:               return bw::rand_between(SoundId::CannibalWeaponfire01, SoundId::CannibalWeaponfire04);
         case WeaponId::EidolonCoronerRifle:                 return SoundId::Bullet_TGhFir00_wav;
         case WeaponId::EidolonNydusRevenantRifle:           return bw::rand_between(SoundId::EidolonNydusWeaponfire01, SoundId::EidolonNydusWeaponfire05);
         case WeaponId::MadcapDanannAutogun:                 return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;

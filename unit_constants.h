@@ -37,7 +37,14 @@ constexpr s32 AxitriliskShieldLossSFXTimer = 24 * 6 + 1;
 
 // TERRAN \\
 
-// Cleric
+namespace TerranOgun {
+inline constexpr s32 NaniteDronesRange = 4 * 32;
+}
+
+namespace UpstartCannibal {
+inline constexpr s32 ReintegrationTimer = 10 * 24;
+}
+
 namespace Cleric {
 inline constexpr s32 HealAmount = 96;  // 9 HP per second
 inline constexpr s32 NanoshieldTimer = 25;

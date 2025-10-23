@@ -76,7 +76,8 @@ namespace hooks {
 
         // TERRAN
         // @Todo: Consider making AI check for landed structures as a safety, e.g. player_has_completed_landed_unit_id(player_id, UnitId::TerranMinistry)
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMason) || player_has_completed_unit_id(player_id, UnitId::TerranTalos)) {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMason) || player_has_completed_unit_id(player_id, UnitId::TerranTalos)
+            || player_has_completed_unit_id(player_id, UnitId::TerranOgunWorkerMode)) {
             switch (unit_id) {
                 case UnitId::TerranMinistry:
                 case UnitId::TerranWatchdog:
@@ -141,7 +142,7 @@ namespace hooks {
         if (ignore_creator || (player_has_completed_unit_id(player_id, UnitId::TerranTreasury) && player_has_completed_addon_unit_id(player_id, UnitId::TerranQuarry))) {
             switch (unit_id) {
                 case UnitId::TerranTalos:
-                case UnitId::TerranOgunTankMode: {
+                case UnitId::TerranOgunWorkerMode: {
                     return true;
                 } break;
             }
@@ -189,7 +190,7 @@ namespace hooks {
                     }
                 } break;
                 case UnitId::TerranCyprian: {
-                    if (faction != Faction::TerranNydusTrinity) {
+                    if (faction != Faction::TerranNydusTrinity && faction != Faction::TerranUpstart) {
                         return true;
                     }
                 } break;
@@ -200,6 +201,11 @@ namespace hooks {
                 } break;
                 case UnitId::TerranCohort: {
                     if (faction == Faction::TerranNydusTrinity) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranCannibal: {
+                    if (faction == Faction::TerranUpstart) {
                         return true;
                     }
                 } break;
@@ -1324,7 +1330,8 @@ namespace hooks {
         switch (unit->id) {
             // TERRAN
             case UnitId::TerranMason:
-            case UnitId::TerranTalos: {
+            case UnitId::TerranTalos:
+            case UnitId::TerranOgunWorkerMode: {
                 if (unit->main_order_id == OrderId::ConstructingBuilding) {
                     return TECH_HIDDEN;
                 }
@@ -1376,7 +1383,7 @@ namespace hooks {
                         return TECH_ACTIVE;
                     }
                     case UnitId::TerranTalos: {
-                //  case UnitId::TerranOgun:
+                    case UnitId::TerranOgunWorkerMode:
                         if (in_air) {
                             return TECH_HIDDEN;
                         }
@@ -1406,20 +1413,16 @@ namespace hooks {
             } break;
             case UnitId::TerranTreasury: {
                 switch (unit_id) {
-                    case UnitId::TerranTalos: {
-                    case UnitId::TerranOgunTankMode:
-                        if (in_air) {
-                            return TECH_HIDDEN;
-                        }
-                        if (!player_has_completed_addon_unit_id(player_id, UnitId::TerranQuarry)) {
-                            return TECH_LOCKED;
-                        }
-                        return TECH_ACTIVE;
-                    }
                     case UnitId::TerranLodestone:
                     case UnitId::TerranQuarry:
                     case UnitId::TerranAnvil: {
                         if (has_addon || is_training) {
+                            return TECH_HIDDEN;
+                        }
+                    }
+                    case UnitId::TerranTalos: {
+                    case UnitId::TerranOgunWorkerMode:
+                        if (in_air) {
                             return TECH_HIDDEN;
                         }
                         return TECH_ACTIVE;
@@ -1472,7 +1475,7 @@ namespace hooks {
                         return TECH_HIDDEN;
                     }
                     case UnitId::TerranCyprian: {
-                        if (faction != Faction::TerranNydusTrinity) {
+                        if (faction != Faction::TerranNydusTrinity && faction != Faction::TerranUpstart) {
                             if (in_air || is_adding_on) {
                                 return TECH_HIDDEN;
                             }
@@ -1549,6 +1552,15 @@ namespace hooks {
                     }
                     case UnitId::TerranCohort: {
                         if (faction == Faction::TerranNydusTrinity) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranCannibal: {
+                        if (faction == Faction::TerranUpstart) {
                             if (in_air || is_adding_on) {
                                 return TECH_HIDDEN;
                             }

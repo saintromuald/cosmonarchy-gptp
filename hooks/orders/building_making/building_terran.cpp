@@ -380,7 +380,7 @@ namespace hooks {
         }
     }
 
-    // Hooked to play the correct new_sound when Taloses complete a structure. -Pr0nogo
+    // Hooked to play the correct new_sound when other Terran workers complete a structure. -Pr0nogo
     void play_building_complete_sound(Unit* unit) { // 0048F310
         if (!g_is_in_replay && unit->player == g_local_nation_id) {
             u32 race = unit->get_race();
@@ -400,7 +400,7 @@ namespace hooks {
                         if (!sound_id) {
                             sound_id = SoundId::Terran_Advisor_TAdUpd03_WAV;
                         }
-                    } else if (unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) {
+                    } else if (UnitId::is_terran_worker(static_cast<UnitId::Enum>(unit->id))) {
                         sound_id = SoundId::Terran_SCV_TSCUpd00_WAV; // Job's finished
                     }
 

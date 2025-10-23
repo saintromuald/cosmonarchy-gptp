@@ -125,7 +125,7 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     bw::decloak_passive_proc(transport);
     bw::decloak_passive_proc(cargo_unit);
     helper::play_sound_from_unit(SoundId::Misc_ZOvTra00_wav + unit_race_id, transport, 1, 0);
-    if (cargo_unit->id == UnitId::TerranMason || cargo_unit->id == UnitId::TerranTalos) {
+    if (UnitId::is_terran_worker(static_cast<UnitId::Enum>(cargo_unit->id))) {
         if (cargo_unit->unit_ai) {
             AiTown* town = cargo_unit->unit_ai->worker_ai.town;
             if (town->building_scv == cargo_unit) {
