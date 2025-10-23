@@ -56,10 +56,6 @@ void init_req_table() {
 	}
 	req_table_init = true;
 
-	add_req_entry(UnitId::TerranParthenon, UnitId::TerranTalos);
-	add_req_entry(UnitId::TerranParthenon, UnitId::TerranArmistice);
-	add_req_entry(UnitId::TerranParthenon, UnitId::TerranPythean);
-
 	add_req_entry(UnitId::TerranMantle, UnitId::TerranRamesses);
 	add_req_entry(UnitId::TerranMantle, UnitId::TerranDurendal);
 	add_req_entry(UnitId::TerranMantle, UnitId::TerranCataphract);
@@ -68,6 +64,8 @@ void init_req_table() {
 	add_req_entry(UnitId::TerranApothecary, UnitId::TerranSevenstep);
 	add_req_entry(UnitId::TerranApothecary, UnitId::TerranHypnagogue);
 	add_req_entry(UnitId::TerranApothecary, UnitId::TerranSilvertongue);
+
+	add_req_entry(UnitId::TerranStarport, UnitId::TerranPythean);
 }
 
 static u32 button_state_compare_value(Button_State::Enum state) {

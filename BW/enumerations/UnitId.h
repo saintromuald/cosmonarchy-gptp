@@ -115,7 +115,7 @@ namespace UnitId {
         TerranMadrigalFuriaMode								= 381,
         TerranMadrigalTurretFuriaMode						= 382,
         TerranSavantPowerSiphon                             = 428,
-        TerranOgunTankMode                                  = 494,
+        TerranOgunWorkerMode                                = 494,
         TerranOgunSmithyMode                                = 497,
 
     // Terran-Unit-Factional

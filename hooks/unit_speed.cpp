@@ -267,6 +267,9 @@ namespace hooks {
             case UnitId::ZergHydralisk: {
                 speed *= 1.6;
             } break;
+            case UnitId::TerranCannibal: {
+                speed *= 1.75;
+            } break;
 
             // Special overrides
             case UnitId::ProtossSteward: {

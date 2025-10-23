@@ -80,10 +80,9 @@ namespace hooks {
 				*g_last_internal_error = 11;
 				result = 0;
 			} else {
-				u16 unit_id = unit->id;
-				if ((unit_id == UnitId::TerranMason || unit_id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding
+				if (UnitId::is_terran_worker(static_cast<UnitId::Enum>(unit->id)) && unit->main_order_id == OrderId::ConstructingBuilding
 				||  bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
-				||  unit_id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
+				||  unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
 				{
 					*g_last_internal_error = 8;
 					result = 0;

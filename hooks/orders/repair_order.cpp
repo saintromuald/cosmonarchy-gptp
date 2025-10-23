@@ -3,17 +3,15 @@
 #include <hooks/rally_point.h>
 #include "globals.h"
 
-namespace hooks
-{
+namespace hooks {
 	void orders_repair_1(Unit * unit) { // 004673D0
 		Unit* target = unit->order_target.unit;
 		if  (target
 	//	&&   target->hitpoints < units_dat::max_hitpoints[target->id] // Disabled to allow tasking repair on full HP targets
-		&&   target->status & UnitStatus::Completed
+		&&   target->is_completed()
 		&& !(unit->unit_ai && target->status & UnitStatus::Reacts && target->order_target.unit != unit)
-		&& !(target->status & UnitStatus::InTransport)
-		&&  !target->stasis_timer)
-		{
+		&&  !target->is_in_transport()
+		&&  !target->stasis_timer) {
 			switch (unit->main_order_state) {
 				case 0: {
 					s16 repair_info;
@@ -24,7 +22,7 @@ namespace hooks
 					unit->main_order_state++;
 				} // Fallthrough intended
 				case 1: {
-					if (!(target->status & UnitStatus::Completed)) {
+					if (!target->is_completed()) {
 						unit->order_to(OrderId::ConstructingBuilding, target);
 						if (g_is_placing_building && !helper::can_still_place_building()) {
 							helper::refresh_layers_3_and_4();
@@ -94,14 +92,13 @@ namespace hooks
 						return;
 					}
 				}
-				u32 hp_gain = target->build_repair_hp_gain;
-				if (unit->id == UnitId::TerranTalos) { // Talos - Increased repair speed
-					hp_gain *= 1.5;
+				u32 hp_gain = target->build_repair_hp_gain * 0.75; // We repair slower in CM than SC1 due to higher base HP on most units/structures.
+				if (UnitId::has_fusion_sealers(unit)) {
+					hp_gain *= 1.33;
 				}
-				hp_gain *= 0.75; // Reduce overall healing rate
 				target->heal_hp(hp_gain, unit);
 				if (target->hitpoints < units_dat::max_hitpoints[target->id]) {
-					return; // don't goto LABEL_43
+					return;
 				}
 			}
 		}
@@ -240,11 +237,11 @@ namespace hooks
 					if (unit->is_frozen()) {
 						*g_last_internal_error = 10;
 						result = 0;
-					} else if (unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(unit->id) && order_id != OrderId::Unburrow) {
+					} else if (unit->is_burrowed() && !unit_id_is_burrowed_attacker(unit->id) && order_id != OrderId::Unburrow) {
 						*g_last_internal_error = 11;
 						result = 0;
 					} else {
-						if ((unit->id == UnitId::TerranMason || unit->id == UnitId::TerranTalos) && unit->main_order_id == OrderId::ConstructingBuilding && order_id != 1
+						if (UnitId::is_terran_worker(static_cast<UnitId::Enum>(unit->id)) && unit->main_order_id == OrderId::ConstructingBuilding && order_id != OrderId::Stop
 						|| (bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
 						||  unit->id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
 						||  unit->id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)

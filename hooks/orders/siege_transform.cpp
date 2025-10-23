@@ -109,6 +109,9 @@ namespace hooks {
                         case UnitId::TerranMadrigalImperiosoMode: {
                             // TODO: Unit responses
                         } break;
+                        case UnitId::TerranOgunWorkerMode: {
+                            // TODO: Unit responses
+                        } break;
                     }
                     if (action_sound) {
                         bw::play_action_sound(action_sound, unit);
