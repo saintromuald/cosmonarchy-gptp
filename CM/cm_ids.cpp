@@ -309,31 +309,34 @@ bool unit_id_can_do_controlled_demolition(u32 unit_id) {
         || unit_id == UnitId::TerranSieve
         || unit_id == UnitId::TerranReservoir
         || unit_id == UnitId::TerranWellbore
-        || unit_id == UnitId::TerranLobotomyMine;
+        || unit_id == UnitId::TerranLobotomyMine
+        || unit_id == UnitId::TerranTartarusMine;
 }
 
 UnitId::Enum unit_id_to_siege_mode(UnitId::Enum unit_id) {
     switch (unit_id) {
-        case UnitId::TerranSavantEntropyGauntlets: return UnitId::TerranSavantPowerSiphon;
-        case UnitId::TerranShamanSupportMode:      return UnitId::TerranShamanVisionaryMode;
-        case UnitId::TerranMatadorTankMode:        return UnitId::TerranMatadorCinderMode;
-        case UnitId::TerranPhalanxTankMode:        return UnitId::TerranPhalanxSiegeMode;
-        case UnitId::TerranMadrigalImperiosoMode:  return UnitId::TerranMadrigalFuriaMode;
-    //	case UnitId::TerranCuirassTankMode:        return UnitId::TerramCuirassTrenchMode;
-    	case UnitId::TerranOgunWorkerMode:         return UnitId::TerranOgunSmithyMode;
+        case UnitId::TerranSavantEntropyGauntlets:       return UnitId::TerranSavantPowerSiphon;
+        case UnitId::TerranShamanSupportMode:            return UnitId::TerranShamanVisionaryMode;
+        case UnitId::TerranMatadorTankMode:              return UnitId::TerranMatadorCinderMode;
+        case UnitId::TerranPhalanxTankMode:              return UnitId::TerranPhalanxSiegeMode;
+        case UnitId::TerranMadrigalImperiosoMode:        return UnitId::TerranMadrigalFuriaMode;
+    //	case UnitId::TerranCuirassTankMode:              return UnitId::TerramCuirassTrenchMode;
+    	case UnitId::TerranOgunWorkerMode:               return UnitId::TerranOgunSmithyMode;
+    	case UnitId::TerranMadrigalHecatonImperiosoMode: return UnitId::TerranMadrigalHecatonFuriaMode;
     }
     return UnitId::None;
 }
 
 UnitId::Enum unit_id_to_tank_mode(UnitId::Enum unit_id) {
     switch (unit_id) {
-        case UnitId::TerranSavantPowerSiphon:   return UnitId::TerranSavantEntropyGauntlets;
-        case UnitId::TerranShamanVisionaryMode: return UnitId::TerranShamanSupportMode;
-        case UnitId::TerranMatadorCinderMode:   return UnitId::TerranMatadorTankMode;
-        case UnitId::TerranPhalanxSiegeMode:    return UnitId::TerranPhalanxTankMode;
-        case UnitId::TerranMadrigalFuriaMode:   return UnitId::TerranMadrigalImperiosoMode;
-    //	case UnitId::TerramCuirassTrenchMode:   return UnitId::TerranCuirassTankMode;
-        case UnitId::TerranOgunSmithyMode:      return UnitId::TerranOgunWorkerMode;
+        case UnitId::TerranSavantPowerSiphon:        return UnitId::TerranSavantEntropyGauntlets;
+        case UnitId::TerranShamanVisionaryMode:      return UnitId::TerranShamanSupportMode;
+        case UnitId::TerranMatadorCinderMode:        return UnitId::TerranMatadorTankMode;
+        case UnitId::TerranPhalanxSiegeMode:         return UnitId::TerranPhalanxTankMode;
+        case UnitId::TerranMadrigalFuriaMode:        return UnitId::TerranMadrigalImperiosoMode;
+    //	case UnitId::TerramCuirassTrenchMode:        return UnitId::TerranCuirassTankMode;
+        case UnitId::TerranOgunSmithyMode:           return UnitId::TerranOgunWorkerMode;
+        case UnitId::TerranMadrigalHecatonFuriaMode: return UnitId::TerranMadrigalHecatonImperiosoMode;
     }
     return UnitId::None;
 }
@@ -1206,7 +1209,8 @@ bool skip_military_tracking_by_unit_id(u32 unit_id) {
 
 bool unit_id_is_trap(u32 unit_id) {
     return unit_id == UnitId::TerranSpiderMine
-        || unit_id == UnitId::TerranLobotomyMine;
+        || unit_id == UnitId::TerranLobotomyMine
+        || unit_id == UnitId::TerranTartarusMine;
 }
 
 bool unit_building_can_act(Unit* unit) {
@@ -1381,7 +1385,9 @@ u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
 }
 
 bool unit_id_is_tiny_unit(u32 unit_id) {
-    return unit_id == UnitId::TerranLobotomyMine
+    return unit_id == UnitId::TerranPietyWard
+        || unit_id == UnitId::TerranLobotomyMine
+        || unit_id == UnitId::TerranTartarusMine
         || unit_id == UnitId::ZergRilirokor;
 }
 
@@ -1417,6 +1423,7 @@ bool weapon_id_can_self_splash(u32 weapon_id) {
 
 bool unit_id_is_mine_layer(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranVulture
+        || unit_id == UnitId::TerranVultureHecaton
         || unit_id == UnitId::TerranClericFuturist;
 }
 
@@ -1508,93 +1515,91 @@ u32 get_overlay_offset(UnitId::Enum unit_id) {
 SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
     // Specific
     switch (unit_id) {
-        case UnitId::TerranMason:                  return SpriteId::Corpse_Mason;
-        case UnitId::TerranMaverick:               return SpriteId::Corpse_Maverick;
-        case UnitId::TerranHarakan:                return SpriteId::Corpse_Harakan;
-        case UnitId::TerranHarakanGolden:          return SpriteId::Corpse_Harakan;
-        case UnitId::TerranCyprian:                return SpriteId::Corpse_Cyprian;
-        case UnitId::TerranCleric:                 return SpriteId::Corpse_Cleric;
-        case UnitId::TerranShamanSupportMode:      return SpriteId::Corpse_Shaman;
-        case UnitId::TerranShamanVisionaryMode:    return SpriteId::Corpse_Shaman;
-        case UnitId::TerranEidolon:                return SpriteId::Corpse_Eidolon;
-        case UnitId::TerranEidolonNydus:           return SpriteId::Corpse_Eidolon;
-        case UnitId::TerranSavantEntropyGauntlets: return SpriteId::Corpse_Savant;
-        case UnitId::TerranSavantPowerSiphon:      return SpriteId::Corpse_Savant;
-        case UnitId::TerranApostle:                return SpriteId::Corpse_Apostle;
-        case UnitId::TerranDilettante:             return SpriteId::Corpse_Dilettante;
-        case UnitId::TerranHypnagogue:             return SpriteId::Corpse_Hypnagogue;
-        case UnitId::TerranVulture:                return SpriteId::Corpse_Vulture;
-        case UnitId::TerranCyclops:                return SpriteId::Corpse_Cyclops;
-        case UnitId::TerranCyclopsFuturist:        return SpriteId::Corpse_Cyclops;
-        case UnitId::TerranGoliath:                return SpriteId::Corpse_Goliath;
-        case UnitId::TerranAspirant:               return SpriteId::Corpse_Aspirant;
-        case UnitId::TerranBlackjack:              return SpriteId::Corpse_Blackjack;
-        case UnitId::TerranBlackjackGolden:        return SpriteId::Corpse_Blackjack;
-        case UnitId::TerranPhalanxTankMode:        return SpriteId::Corpse_PhalanxTank;
-        case UnitId::TerranPhalanxSiegeMode:       return SpriteId::Corpse_PhalanxSiege;
-        case UnitId::TerranMadrigalImperiosoMode:  return SpriteId::Corpse_MadrigalFuria;
-        case UnitId::TerranMadrigalFuriaMode:      return SpriteId::Corpse_MadrigalFuria;
-        case UnitId::TerranWraith:                 return SpriteId::Corpse_Wraith;
-        case UnitId::TerranAncile:                 return SpriteId::Corpse_Ancile;
-        case UnitId::TerranTrojan:                 return SpriteId::Corpse_Trojan;
-                                                   
-        case UnitId::ProtossScribe:                return SpriteId::Corpse_Scribe;
-        case UnitId::ProtossEnvoy:                 return SpriteId::Corpse_Envoy;
-        case UnitId::ProtossWitness:               return SpriteId::Corpse_Witness;
-        case UnitId::ProtossArtisan:               return SpriteId::Corpse_Artisan;
-        case UnitId::ProtossZealot:                return SpriteId::Corpse_Zealot;
-        case UnitId::ProtossZealotStarbound:       return SpriteId::Corpse_Zealot;
-        case UnitId::ProtossDracadin:              return SpriteId::Corpse_Dracadin;
-        case UnitId::ProtossDracadinOrder:         return SpriteId::Corpse_DracadinOrder;
-        case UnitId::ProtossEcclesiast:            return SpriteId::Corpse_Ecclesiast;
-        case UnitId::ProtossLegionnaire:           return SpriteId::Corpse_Legionnaire;
-        case UnitId::ProtossHierophant:            return SpriteId::Corpse_Hierophant;
-        case UnitId::ProtossSimulacrum:            return SpriteId::Corpse_Simulacrum;
-        case UnitId::ProtossManifold:              return SpriteId::Corpse_Manifold;
-        case UnitId::ProtossVassal:                return SpriteId::Corpse_Vassal;
-        case UnitId::ProtossIdol:                  return SpriteId::Corpse_Idol;
-        case UnitId::ProtossGolem:                 return SpriteId::Corpse_Golem;
-        case UnitId::ProtossRenesair:              return SpriteId::Corpse_Renesair;
-        case UnitId::ProtossLanifect:              return SpriteId::Corpse_Lanifect;
-                                                   
-        case UnitId::ZergLarva:                    return SpriteId::Corpse_Larva;
-        case UnitId::ZergOcsalLarva:               return SpriteId::Corpse_Larva;
-        case UnitId::ZergEgg:                      return SpriteId::Corpse_Egg;
-        case UnitId::ZergDroleth:                  return SpriteId::Corpse_Droleth;
-        case UnitId::ZergAgrileth:                 return SpriteId::Corpse_Agrileth;
-        case UnitId::ZergOvileth:                  return SpriteId::Corpse_Ovileth;
-        case UnitId::ZergZethrokor:                return SpriteId::Corpse_Zethrokor;
-        case UnitId::ZergQuazilisk:                return SpriteId::Corpse_Quazilisk;
-        case UnitId::ZergQuazrokor:                return SpriteId::Corpse_Quazilisk;
-        case UnitId::ZergVorvrokor:                return SpriteId::Corpse_Vorvrokor;
-        case UnitId::ZergNathrokor:                return SpriteId::Corpse_Nathrokor;
-        case UnitId::ZergLiiralisk:                return SpriteId::Corpse_ZergUnitSmall;
-        case UnitId::ZergKalkalisk:                return SpriteId::Corpse_ZergUnitSmall;
-        case UnitId::ZergGhitorokor:               return SpriteId::Corpse_ZergUnitMedium;
-        case UnitId::ZergSovroleth:                return SpriteId::Corpse_ZergUnitSmall;
-        case UnitId::ZergTosgrilisk:               return SpriteId::Corpse_ZergUnitMedium;
-        case UnitId::ZergMortothrokor:             return SpriteId::Corpse_Mortothrokor;
-        case UnitId::ZergHydralisk:                return SpriteId::Corpse_Hydralisk;
-        case UnitId::ZergHydraliskOrkoti:          return SpriteId::Corpse_HydraliskOrkoti;
-        case UnitId::ZergIzirokor:                 return SpriteId::Corpse_Izirokor;
-        case UnitId::ZergIziralisk:                return SpriteId::Corpse_Izirokor;
-        case UnitId::ZergBactalisk:                return SpriteId::Corpse_Bactalisk;
-        case UnitId::ZergKagralisk:                return SpriteId::Corpse_Kagralisk;
-        case UnitId::ZergEvigrilisk:               return SpriteId::Corpse_Evigrilisk;
-        case UnitId::ZergAlkajelisk:               return SpriteId::Corpse_ZergBuildingLarge;
-        case UnitId::ZergZoryusthaleth:            return SpriteId::Corpse_Zoryusthaleth;
-        case UnitId::ZergInzorthrokor:             return SpriteId::Corpse_Inzorthrokor;
-        case UnitId::ZergLakizilisk:               return SpriteId::Corpse_Lakizilisk;
-        case UnitId::ZergLakiziliskZorthos:        return SpriteId::Corpse_Lakizilisk;
-        case UnitId::ZergGorgrokor:                return SpriteId::Corpse_Gorgrokor;
-        case UnitId::ZergKonvilisk:                return SpriteId::Corpse_Konvilisk;
-        case UnitId::ZergRilirokor:                return SpriteId::Corpse_Rilirokor;
-        case UnitId::ZergUltrokor:                 return SpriteId::Corpse_Ultrokor;
-        case UnitId::ZergIsthrathaleth:            return SpriteId::Corpse_Isthrathaleth;
-
-        case UnitId::AskosiMissionary:             return SpriteId::Corpse_Missionary;
-        case UnitId::AskosiCardinal:               return SpriteId::Corpse_Cardinal;
-        case UnitId::AskosiVicar:                  return SpriteId::Corpse_Vicar;
+        case UnitId::TerranMason:                        return SpriteId::Corpse_Mason;
+        case UnitId::TerranMaverick:                     return SpriteId::Corpse_Maverick;
+        case UnitId::TerranHarakan:                      return SpriteId::Corpse_Harakan;
+        case UnitId::TerranHarakanGolden:                return SpriteId::Corpse_Harakan;
+        case UnitId::TerranCyprian:                      return SpriteId::Corpse_Cyprian;
+        case UnitId::TerranCleric:                       return SpriteId::Corpse_Cleric;
+        case UnitId::TerranShamanSupportMode:            return SpriteId::Corpse_Shaman;
+        case UnitId::TerranShamanVisionaryMode:          return SpriteId::Corpse_Shaman;
+        case UnitId::TerranEidolon:                      return SpriteId::Corpse_Eidolon;
+        case UnitId::TerranEidolonNydus:                 return SpriteId::Corpse_Eidolon;
+        case UnitId::TerranSavantEntropyGauntlets:       return SpriteId::Corpse_Savant;
+        case UnitId::TerranSavantPowerSiphon:            return SpriteId::Corpse_Savant;
+        case UnitId::TerranApostle:                      return SpriteId::Corpse_Apostle;
+        case UnitId::TerranDilettante:                   return SpriteId::Corpse_Dilettante;
+        case UnitId::TerranHypnagogue:                   return SpriteId::Corpse_Hypnagogue;
+        case UnitId::TerranVulture:                      return SpriteId::Corpse_Vulture;
+        case UnitId::TerranVultureHecaton:               return SpriteId::Corpse_Vulture;
+        case UnitId::TerranCyclops:                      return SpriteId::Corpse_Cyclops;
+        case UnitId::TerranCyclopsFuturist:              return SpriteId::Corpse_Cyclops;
+        case UnitId::TerranGoliath:                      return SpriteId::Corpse_Goliath;
+        case UnitId::TerranAspirant:                     return SpriteId::Corpse_Aspirant;
+        case UnitId::TerranBlackjack:                    return SpriteId::Corpse_Blackjack;
+        case UnitId::TerranBlackjackGolden:              return SpriteId::Corpse_Blackjack;
+        case UnitId::TerranPhalanxTankMode:              return SpriteId::Corpse_PhalanxTank;
+        case UnitId::TerranPhalanxSiegeMode:             return SpriteId::Corpse_PhalanxSiege;
+        case UnitId::TerranMadrigalImperiosoMode:        return SpriteId::Corpse_MadrigalFuria;
+        case UnitId::TerranMadrigalHecatonImperiosoMode: return SpriteId::Corpse_MadrigalFuria;
+        case UnitId::TerranMadrigalFuriaMode:            return SpriteId::Corpse_MadrigalFuria;
+        case UnitId::TerranWraith:                       return SpriteId::Corpse_Wraith;
+        case UnitId::TerranAncile:                       return SpriteId::Corpse_Ancile;
+        case UnitId::TerranTrojan:                       return SpriteId::Corpse_Trojan;
+                                                  
+        case UnitId::ProtossScribe:                      return SpriteId::Corpse_Scribe;
+        case UnitId::ProtossEnvoy:                       return SpriteId::Corpse_Envoy;
+        case UnitId::ProtossWitness:                     return SpriteId::Corpse_Witness;
+        case UnitId::ProtossArtisan:                     return SpriteId::Corpse_Artisan;
+        case UnitId::ProtossZealot:                      return SpriteId::Corpse_Zealot;
+        case UnitId::ProtossZealotStarbound:             return SpriteId::Corpse_Zealot;
+        case UnitId::ProtossDracadin:                    return SpriteId::Corpse_Dracadin;
+        case UnitId::ProtossDracadinOrder:               return SpriteId::Corpse_DracadinOrder;
+        case UnitId::ProtossEcclesiast:                  return SpriteId::Corpse_Ecclesiast;
+        case UnitId::ProtossLegionnaire:                 return SpriteId::Corpse_Legionnaire;
+        case UnitId::ProtossHierophant:                  return SpriteId::Corpse_Hierophant;
+        case UnitId::ProtossSimulacrum:                  return SpriteId::Corpse_Simulacrum;
+        case UnitId::ProtossManifold:                    return SpriteId::Corpse_Manifold;
+        case UnitId::ProtossVassal:                      return SpriteId::Corpse_Vassal;
+        case UnitId::ProtossIdol:                        return SpriteId::Corpse_Idol;
+        case UnitId::ProtossGolem:                       return SpriteId::Corpse_Golem;
+        case UnitId::ProtossRenesair:                    return SpriteId::Corpse_Renesair;
+        case UnitId::ProtossLanifect:                    return SpriteId::Corpse_Lanifect;
+                                       
+        case UnitId::ZergLarva:                          return SpriteId::Corpse_Larva;
+        case UnitId::ZergOcsalLarva:                     return SpriteId::Corpse_Larva;
+        case UnitId::ZergEgg:                            return SpriteId::Corpse_Egg;
+        case UnitId::ZergDroleth:                        return SpriteId::Corpse_Droleth;
+        case UnitId::ZergAgrileth:                       return SpriteId::Corpse_Agrileth;
+        case UnitId::ZergOvileth:                        return SpriteId::Corpse_Ovileth;
+        case UnitId::ZergZethrokor:                      return SpriteId::Corpse_Zethrokor;
+        case UnitId::ZergQuazilisk:                      return SpriteId::Corpse_Quazilisk;
+        case UnitId::ZergQuazrokor:                      return SpriteId::Corpse_Quazilisk;
+        case UnitId::ZergVorvrokor:                      return SpriteId::Corpse_Vorvrokor;
+        case UnitId::ZergNathrokor:                      return SpriteId::Corpse_Nathrokor;
+        case UnitId::ZergLiiralisk:                      return SpriteId::Corpse_ZergUnitSmall;
+        case UnitId::ZergKalkalisk:                      return SpriteId::Corpse_ZergUnitSmall;
+        case UnitId::ZergGhitorokor:                     return SpriteId::Corpse_ZergUnitMedium;
+        case UnitId::ZergSovroleth:                      return SpriteId::Corpse_ZergUnitSmall;
+        case UnitId::ZergTosgrilisk:                     return SpriteId::Corpse_ZergUnitMedium;
+        case UnitId::ZergMortothrokor:                   return SpriteId::Corpse_Mortothrokor;
+        case UnitId::ZergHydralisk:                      return SpriteId::Corpse_Hydralisk;
+        case UnitId::ZergHydraliskOrkoti:                return SpriteId::Corpse_HydraliskOrkoti;
+        case UnitId::ZergIzirokor:                       return SpriteId::Corpse_Izirokor;
+        case UnitId::ZergIziralisk:                      return SpriteId::Corpse_Izirokor;
+        case UnitId::ZergBactalisk:                      return SpriteId::Corpse_Bactalisk;
+        case UnitId::ZergKagralisk:                      return SpriteId::Corpse_Kagralisk;
+        case UnitId::ZergEvigrilisk:                     return SpriteId::Corpse_Evigrilisk;
+        case UnitId::ZergAlkajelisk:                     return SpriteId::Corpse_ZergBuildingLarge;
+        case UnitId::ZergZoryusthaleth:                  return SpriteId::Corpse_Zoryusthaleth;
+        case UnitId::ZergInzorthrokor:                   return SpriteId::Corpse_Inzorthrokor;
+        case UnitId::ZergLakizilisk:                     return SpriteId::Corpse_Lakizilisk;
+        case UnitId::ZergLakiziliskZorthos:              return SpriteId::Corpse_Lakizilisk;
+        case UnitId::ZergGorgrokor:                      return SpriteId::Corpse_Gorgrokor;
+        case UnitId::ZergKonvilisk:                      return SpriteId::Corpse_Konvilisk;
+        case UnitId::ZergRilirokor:                      return SpriteId::Corpse_Rilirokor;
+        case UnitId::ZergUltrokor:                       return SpriteId::Corpse_Ultrokor;
+        case UnitId::ZergIsthrathaleth:                  return SpriteId::Corpse_Isthrathaleth;
     }
 
     // Generic
@@ -1725,7 +1730,8 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
             case UnitId::TerranPaladin: {
                 ready_sound = helper::get_random_unit_response(SoundId::PaladinReady01, SoundId::PaladinReady03);
             } break;
-            case UnitId::TerranMadrigalImperiosoMode: {
+            case UnitId::TerranMadrigalImperiosoMode:
+            case UnitId::TerranMadrigalHecatonImperiosoMode: {
                 ready_sound = helper::get_random_unit_response(SoundId::MadrigalReady01, SoundId::MadrigalReady03);
             } break;
             case UnitId::TerranAnticthon: {

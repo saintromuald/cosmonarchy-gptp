@@ -208,7 +208,6 @@ namespace WeaponId {
         AutocratEminenceRifle				= 116,
         ClaymoreHarpoonRailgun				= 120,
         LuminaryAuralAssault				= 121,
-        UnusedSeraphObservance				= 122, // Was Seraph ability targeting
         OlympianTitansFist					= 123,
         OlympianMountainGun					= 124,
         WyvernJacksonCannon					= 125,
@@ -293,7 +292,6 @@ namespace WeaponId {
         EngramKhaydarinPlasmaLaser			= 197,
         AnalogueCylindricalBlaster			= 202,
         PotentateTalismanicWeaver			= 206,
-        PotentatePhaseSaber					= 207, // unused
         VibranceSensoryOverload				= 219,
         CicatusPhaseClaws					= 222,
         ZealotStarboundPhaseBlades			= 223,

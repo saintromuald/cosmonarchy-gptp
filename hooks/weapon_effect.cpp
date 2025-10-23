@@ -381,8 +381,9 @@ namespace hooks {
 			return;
 		}
 		Unit* spawn = bw::create_unit_in_game(UnitId::ZergVilgoleth, bullet->player, bullet->position.x, bullet->position.y);
-		UnitExt* unit_ext = get_unit_ext(spawn);
-		unit_ext->timers[TimerAutophagySpawn] = 24;
+		if (spawn) {
+			spawn->ext().timers[TimerAutophagySpawn] = 24;
+		}
 	}
 
 	void broodlings(Bullet* bullet, u32 weapon_id) {
@@ -403,7 +404,7 @@ namespace hooks {
 			if (!target->is_dead() && !units_dat::group_flags[target->id].is_building
 			&&  !unit_id_is_trap(target->id) && !unit_id_is_resource_node(target->id, false) && target->id != UnitId::TerranMorningstar)
 			{
-				hooks::lockdown_hit(target, TerranMine::LobotomyTimer, bullet);
+				hooks::lockdown_hit(target, TerranMine::LobotomyTimerVanilla, bullet);
 			}
 		}
 	}

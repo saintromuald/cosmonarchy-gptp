@@ -125,13 +125,24 @@ void unit_on_death_behaviors(Unit* unit) {
             }
         } break;
         case UnitId::TerranLobotomyMine: {
-            for (Unit* victim : g_unit_search.radial(unit->position, 2 * 32)) {
-                if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false)) {
+            for (Unit* victim : g_unit_search.radial(unit->position, TerranMine::DetonationRange)) {
+                if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
                     continue;
                 }
-                UnitExt& victim_ext = victim->ext();
-                if (victim_ext.timers[TimerLobotomySlow] < 3 * 24 + 1) {
-                    victim_ext.timers[TimerLobotomySlow] = 3 * 24 + 1;
+                auto& victim_ext = victim->ext();
+                if (victim_ext.timers[TimerLobotomySlow] < TerranMine::LobotomyTimer) {
+                    victim_ext.timers[TimerLobotomySlow] = TerranMine::LobotomyTimer;
+                }
+            }
+        } break;
+        case UnitId::TerranTartarusMine: {
+            for (Unit* victim : g_unit_search.radial(unit->position, TerranMine::DetonationRange)) {
+                if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
+                    continue;
+                }
+                auto& victim_ext = victim->ext();
+                if (victim_ext.timers[TimerIncinerateArmor] < TerranMine::IncinerateTimer) {
+                    victim_ext.timers[TimerIncinerateArmor] = TerranMine::IncinerateTimer;
                 }
             }
         } break;
@@ -204,9 +215,9 @@ void unit_on_death_behaviors(Unit* unit) {
         } break;
     }
 
-    if (unit_ext.timers[TimerIncineration] >= 1) {
-        g_iquare_globals->create_effect(EffectId::SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext.values[ValueIncinerationPlayer], 0);
-        unit_ext.timers[TimerIncineration] = 0;
+    if (unit_ext.timers[TimerIncinerateDamage] >= 1) {
+        g_iquare_globals->create_effect(EffectId::SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext.values[ValueIncineratePlayer], 0);
+        unit_ext.timers[TimerIncinerateDamage] = 0;
         unit_ext.values[ValueNoCorpse] = 1;
     }
 

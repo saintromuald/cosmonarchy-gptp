@@ -2413,7 +2413,8 @@ namespace hooks {
                     helper::replace_unit_with_id(unit, UnitId::ZergAxitrilisk);
                 }
             } break;
-            case UnitId::TerranVulture: {
+            case UnitId::TerranVulture:
+            case UnitId::TerranVultureHecaton: {
                 if (unit->mine_carrier.mine_count > 3) {
                     unit->mine_carrier.mine_count = 3;
                 }
@@ -2625,9 +2626,17 @@ namespace hooks {
                     unit->ground_weapon_cooldown = hooks::get_modified_cooldown(unit, 1, false);
                 }
             } break;
+            case UnitId::TerranTartarusMine: {
+                if (unit->order_signal & 32) {
+                    unit->order_signal &= 32;
+                    fire_bullet(unit, WeaponId::TartarusMineApollyoidConflagration, unit->order_target);
+                    unit->ground_weapon_cooldown = hooks::get_modified_cooldown(unit, 1, false);
+                }
+            } break;
             case UnitId::AskosiChantry: {
                 if (unit->can_use_passive_ability()) {
                     const auto timer = unit_ext.timers[TimerSermonSalveOverlay];
+                    u32 timer = unit_ext.timers[TimerSermonSalveOverlay];
                     if (!timer) {
                         unit_ext.timers[TimerSermonSalveOverlay] = 24;
                         bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
@@ -3328,7 +3337,7 @@ namespace hooks {
 
         // Controlled Demolition - initial cast
         if (bw::get_generic_rust_value(unit, RustId::CastControlledDemolition) && !unit_ext.timers[TimerEmergencyDetonation] && !unit_ext.timers[TimerControlledDemolition]) {
-            if (unit->id == UnitId::TerranLobotomyMine) {
+            if (unit_id_is_trap(unit->id)) {
                 unit->bwfunc_remove();
             } else {
                 bw::set_generic_rust_value(unit, RustId::CastControlledDemolition, 0);
@@ -3464,19 +3473,21 @@ namespace hooks {
         // Auriel - Incineration
         {
             u32 image_id = ImageId::HarakanApollyoidAdhesiveOverlay;
-            if (unit_ext.timers[TimerIncineration] >= 1) {
+            if (unit_ext.timers[TimerIncinerateArmor] >= 1 && !unit->sprite->get_overlay(image_id)) {
+                bw::add_unit_overlay(unit, image_id);
+            }
+            if (unit_ext.timers[TimerIncinerateDamage] >= 1) {
                 if (!unit->sprite->get_overlay(image_id)) {
                     bw::add_unit_overlay(unit, image_id);
                 }
-                if (!unit_ext.timers[TimerAurielIncinerationDamagePeriod]) {
-                    unit_ext.timers[TimerAurielIncinerationDamagePeriod] = 6;
+                if (!unit_ext.timers[TimerIncinerateDamagePeriod]) {
+                    unit_ext.timers[TimerIncinerateDamagePeriod] = 6;
                 }
-                if (unit_ext.timers[TimerAurielIncinerationDamagePeriod] == 1) {
+                if (unit_ext.timers[TimerIncinerateDamagePeriod] == 1) {
                     unit->damage_with_custom(256);
                 }
-
             }
-            if (unit_ext.timers[TimerIncineration] == 1) {
+            if (unit_ext.timers[TimerIncinerateDamage] == 1) {
                 bw::remove_unit_overlay(unit, image_id);
             }
         }
@@ -3485,7 +3496,6 @@ namespace hooks {
         if (unit_ext.timers[TimerTerminalSurge] == 1) {
             should_update_speed = true;
         }
-
         if (unit_ext.timers[TimerCausticDischargeSpeed] >= 1) {
             should_update_speed = true;
         }

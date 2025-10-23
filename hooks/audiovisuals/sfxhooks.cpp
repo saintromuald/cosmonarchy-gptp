@@ -91,7 +91,8 @@ namespace hooks {
                 case UnitId::TerranMatadorTankMode: {
                     return helper::get_random_unit_response(SoundId::MatadorOrderAggressive01, SoundId::MatadorOrderAggressive04);
                 } break;
-                case UnitId::TerranMadrigalImperiosoMode: {
+                case UnitId::TerranMadrigalImperiosoMode:
+                case UnitId::TerranMadrigalHecatonImperiosoMode: {
                     return helper::get_random_unit_response(SoundId::MadrigalOrderAggressive01, SoundId::MadrigalOrderAggressive04);
                 } break;
                 case UnitId::TerranRamesses: {

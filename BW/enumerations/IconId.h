@@ -334,7 +334,7 @@ namespace IconId {
         /*0149*/	MasonFusionCutter                   = 329,
         /*014A*/	FusionCutterHarvest                 = 330,
         /*014B*/	GeminiMissiles                      = 331,
-        /*014C*/	WraithBurstLasers                   = 332,
+        /*014C*/	WraithBurstLasersOld                = 332,
         /*014D*/	ATSLaserBattery                     = 333,
         /*014E*/	ATALaserBattery                     = 334,
         /*014F*/	HarakanFlamethrower                 = 335,
@@ -495,7 +495,7 @@ namespace IconId {
         IzirokorEnergizedBioplasma                      = 766,
         CausticFission                                  = 767,
         Miasma                                          = 768,
-        Reconstitution                                  = 769,
+        CarapaceSwarmPassive                            = 769,
         Autophagy                                       = 770,
         AdrenalFrenzy                                   = 771,
         AblativeWhiplash                                = 772,
@@ -504,7 +504,20 @@ namespace IconId {
         SkithrokorSkitteringSpores                      = 775,
         GorgrokorSerratedCleavers                       = 776,
 
+        BonesOfReflection                               = 777,
+        KalkaliskViscousAcid                            = 778,
         SaberSiphon                                     = 779,
+        BlackguardAsoniRifle                            = 780,
+        EmpyreanPlasmaBarrage                           = 781,
+        LiiraliskHollowedGlaves                         = 782,
+        ZarcavrokorBisectingBlades                      = 783,
+        VilgorokorDissolvingSabers                      = 784,
+        Reconstitution                                  = 785,
+        PerpetualWind                                   = 786,
+        KeskathalorScreamingVenom                       = 787,
+        WraithBurstLasers                               = 788,
+
+        TartarusMine                                    = 792,
 
         FanOfTeeth                                      = 820,
     };

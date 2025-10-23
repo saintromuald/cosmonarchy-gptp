@@ -591,7 +591,7 @@ namespace hooks {
                         unit->sprite->create_top_overlay(ImageId::MaverickStimpackInject);
                         unit_ext->values[ValueMadcapFullChargeRead] = 1;
                     }
-                    unit_ext->values[ValueMadcapStacks] = Clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
+                    unit_ext->values[ValueMadcapStacks] = Clamp(stacks + TerranMadcap::PassiveDecayTime, 0, TerranMadcap::PassiveMaxStacks * TerranMadcap::PassiveDecayTime);
                 }
 
                 if (unit->order_target.unit) {
@@ -798,10 +798,6 @@ namespace hooks {
 
         Box32 search_area = get_line_search_area(bullet, old_position);
         for (Unit* unit : g_unit_search.rect(search_area).filter()) {
-            // Disabled to allow units with interception weapons to hit Larva and Rilirokors. Not sure why this was ever a rule? -Pr0nogo 7 Jan '25
-        //	if (unit_id_ignores_ground_collision(unit->id)) {
-        //		continue;
-        //	}
             if (bullet->attack_target.unit != unit && bw::is_allied_to(bullet->player, unit->player)) {
                 continue;
             }

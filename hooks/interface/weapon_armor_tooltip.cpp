@@ -393,7 +393,7 @@ namespace hooks {
 		add_status(statuses, "Controlled Demolition", -1, 1, unit_ext->timers[TimerControlledDemolition], TimerType::Gptp);
 		add_status(statuses, "Emergency Detonation", -1, 1, unit_ext->timers[TimerEmergencyDetonation], TimerType::Gptp);
 		add_status(statuses, "Ion Field", -1, 1, unit_ext->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
-		add_status(statuses, "Incinerating", -1, 1, unit_ext->timers[TimerIncineration], TimerType::Gptp);
+		add_status(statuses, "Incinerating", -1, 1, unit_ext->timers[TimerIncinerateDamage], TimerType::Gptp);
 		add_status(statuses, "Lobotomized", -1, 1, unit_ext->timers[TimerLobotomySlow], TimerType::Gptp);
 		add_status(statuses, "Kelvin Munitions", -1, 1, unit_ext->timers[TimerKelvinMunitions], TimerType::Gptp);
 		add_status(statuses, "Hallucinating", -1, 1, unit_ext->timers[TimerHallucinating], TimerType::Gptp);
@@ -420,7 +420,7 @@ namespace hooks {
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
-		add_status(statuses, "Cabeirus Feeders", ceil((f32)unit_ext->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
+		add_status(statuses, "Cabeirus Feeders", ceil((f32)unit_ext->values[ValueMadcapStacks] / TerranMadcap::PassiveDecayTime), 10);
 		add_status(statuses, "Sublime Shepherd", unit_ext->values[ValueHasSublimeShepherd], 1);
 		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueCuirassIsSelfReviving], 0);
 		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);
@@ -449,6 +449,8 @@ namespace hooks {
 		add_status(statuses, "Entropy Gauntlets", unit->id == UnitId::TerranSavantEntropyGauntlets, 1);
 		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigalImperiosoMode, 1);
 		add_status(statuses, "Tempo Down", unit->id == UnitId::TerranMadrigalFuriaMode, 1);
+		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigalHecatonImperiosoMode, 1);
+		add_status(statuses, "Tempo Down", unit->id == UnitId::TerranMadrigalHecatonFuriaMode, 1);
 		add_status(statuses, "Phase Link", bw::has_clarion_links(unit), 1);
 		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
 		add_status(statuses, "Blissfully Embraced", unit_ext->values[ValueInfested], 1);
@@ -594,10 +596,12 @@ namespace hooks {
 	const char* get_special_tooltip_string(u16 icon_unit_id, Unit* unit) {
 		switch (icon_unit_id) {
 			case UnitId::TerranSpiderMine:
-			case UnitId::TerranLobotomyMine: {
+			case UnitId::TerranLobotomyMine:
+			case UnitId::TerranTartarusMine: {
 				switch (unit->id) {
-					case UnitId::TerranVulture:        return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363); // "Lobotomy Mines"
 					case UnitId::TerranClericFuturist: return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363); // "Lobotomy Mines"
+					case UnitId::TerranVulture:        return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363); // "Lobotomy Mines"
+					case UnitId::TerranVultureHecaton: return get_damage_tootlip_string(WeaponId::TartarusMineApollyoidConflagration, unit, 1363); // "Lobotomy Mines"
 					default:                           return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			  // "Spider Mines"
 				}
 			}
