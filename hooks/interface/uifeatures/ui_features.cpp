@@ -11,7 +11,7 @@
 #include "trigger_system/trigger_system.h"
 #include <hooks\interface\minimap.h>
 #include "Game.h"
-#include <hooks\interface\weapon_armor_tooltip.h>
+#include "hooks\interface\weapon_armor_tooltip.h"
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
 static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;
@@ -54,9 +54,9 @@ namespace hooks {
                 return;
             case 99: // Custom
                 switch (buffer[1]) {
-                    case NewGameCommand::CameraSync:
-                    case NewGameCommand::UuidRand:
-                        return;
+                case NewGameCommand::CameraSync:
+                case NewGameCommand::UuidRand:
+                    return;
                 }
         }
         if (counter->action_count < MaxActions) {
@@ -357,7 +357,6 @@ namespace hooks {
         if (unit) {
             // Required for goto to compile in C++20 mode :( -Veeq7
             u32 visibility;
-            u32 unit_status;
             u32 vision;
 
             u32 checksum = *g_minimap_box_checksum;
@@ -367,8 +366,7 @@ namespace hooks {
                 }
 
                 visibility = unit->sprite->visibility_status;
-                unit_status = unit->status;
-                if (unit_status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) {
+                if (unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) {
                     visibility &= unit->detection_status;
                 }
                 checksum ^= visibility;
@@ -396,13 +394,13 @@ namespace hooks {
                 }
             }
             u32 color = g_palette_index_reference[25];
-            if (units_dat::base_property[unit_id] & UnitProperty::ResourceContainer || player == NeutralHostilePlayer) {
+            if ((!unit_id_is_minerals(unit->id) && !unit_id_is_uncapped_gas_node(unit->id)) || player == NeutralHostilePlayer) {
                 color = index_ref;
             }
 
             Point16 pos = unit->sprite->position;
             Point16 dims = units_dat::building_dimensions[unit->id];
-            helper::draw_unit_box(pos.x, pos.y, dims.x, dims.y, color, units_dat::base_property[unit->id] & UnitProperty::Building);
+            helper::draw_unit_box(pos.x, pos.y, dims.x, dims.y, color, unit->is_building());
             goto next;
         }
     }
@@ -962,9 +960,9 @@ namespace hooks {
         const f32 sdx = dx * sens + g_mouse_error.x;
         const f32 sdy = dy * sens + g_mouse_error.y;
         if (g_config.use_pan_scrolling) {
-            scroll_screen(sdx, sdy);
+            scroll_screen(std::lround(sdx), std::lround(sdy));
         } else {
-            scroll_screen(-sdx, -sdy);
+            scroll_screen(std::lround(-sdx), std::lround(-sdy));
         }
         g_mouse_error.x = sdx - (s32)sdx;
         g_mouse_error.y = sdy - (s32)sdy;
@@ -1142,7 +1140,7 @@ namespace hooks {
         const char* cancel_string = g_stat_txt_buffer.get_string(802 + active_unit->get_race()); // Cancel 
         const char* name = helper::get_unit_name_stat_string(user->id);
         char dest[128];
-        sprintf_s(dest, 128, cancel_string, name); // Assigns to 'dest' the first letter of the string instead of the whole string, causing a crash. -Pr0nogo
+        sprintf_s(dest, 128, cancel_string, name);
         s32 bounds_top = 0;
         s32 bounds_left = 0;
         if (dialog->control_type) {
@@ -1197,6 +1195,12 @@ namespace hooks {
                 }
             } break;
         }
+    }
+
+    // Hooked to make movement smoother. -Pr0nogo
+    void move_screen_to_unit(Unit* unit) { // 004E6020
+        Point16 pos = {unit->position.x - 320, unit->position.y - 140};
+        helper::move_screen(pos);
     }
 
     // Eventually, hook the following to make stat_txt.tbl a .txt:
