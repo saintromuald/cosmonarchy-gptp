@@ -70,7 +70,9 @@ void auto_save_replay() {
 }
 
 static bool should_auto_upload_replay() {
-    if (g_globals->forbid_replay_auto_upload || !*g_multiplayer_mode) {
+    if (g_globals->forbid_replay_auto_upload ||
+        !*g_multiplayer_mode ||
+        bw::human_or_witness_count() < 2) {
         return false;
     }
     return bw::get_game_kind() == GameKind::Ranked
