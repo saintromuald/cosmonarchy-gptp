@@ -147,6 +147,13 @@ namespace hooks {
 									if (built_unit->id == UnitId::TerranMorningstar) {
 										helper::hide_and_disable_unit(new_unit);
 									} else {
+										if (units_dat::group_flags[new_unit->id].is_protoss) {
+											for (Image* image = new_unit->sprite->images.head; image; image = image->link.next) {
+												if (image->flags & ImageFlags::UseFullIscript) {
+													play_image_iscript(image, IscriptAnimation::WarpIn);
+												}
+											}
+										}
 										helper::order_new_unit_to_rally(new_unit, unit);
 									}
 								}
