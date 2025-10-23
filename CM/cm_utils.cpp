@@ -432,10 +432,12 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
     switch (g_globals->players[player].faction) {
         case Faction::TerranHecatonCoalition: {
             switch (unit_id) {
-                case UnitId::TerranMaverick: return UnitId::TerranHotshot;
-                case UnitId::TerranApostle:  return UnitId::TerranAuriel;
-                case UnitId::TerranGoliath:  return UnitId::TerranArhaun;
-                case UnitId::TerranTrojan:   return UnitId::TerranQilin;
+                case UnitId::TerranMaverick:              return UnitId::TerranHotshot;
+                case UnitId::TerranApostle:               return UnitId::TerranAuriel;
+                case UnitId::TerranVulture:               return UnitId::TerranVultureHecaton;
+                case UnitId::TerranGoliath:               return UnitId::TerranArhaun;
+                case UnitId::TerranMadrigalImperiosoMode: return UnitId::TerranMadrigalHecatonImperiosoMode;
+                case UnitId::TerranTrojan:                return UnitId::TerranQilin;
             }
         } break;
         case Faction::TerranFuturistFederation: {
@@ -488,6 +490,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
             switch (unit_id) {
                 case UnitId::ProtossZealot:      return UnitId::ProtossZealotStarbound;
                 case UnitId::ProtossLegionnaire: return UnitId::ProtossCicatus;
+                case UnitId::ProtossManifold:    return UnitId::ProtossManifoldStarbound;
             }
         } break;
         case Faction::ZergImicrenTendril: {
@@ -498,6 +501,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::ZergGoszirithTendril: {
             switch (unit_id) {
+            //  case UnitId::ZergZethrokor: return UnitId::ZergSovrokor
             //  case UnitId::ZergVorvrokor: return UnitId::ZergGarvrokor;
             }
         } break;
@@ -647,6 +651,15 @@ bool chat_message_is_allowed(const char* text) {
         || stricmp(text, "R") == 0
         || stricmp(text, "RDY") == 0
         || stricmp(text, "READY") == 0;
+}
+
+Faction get_random_faction(RaceId::Enum race) {
+    switch (race) {
+    case RaceId::Terran:  return static_cast<Faction>(bw::rand_between((u32)Faction::TerranOrionImperium, (u32)Faction::TerranUpstart));
+    case RaceId::Protoss: return static_cast<Faction>(bw::rand_between((u32)Faction::ProtossDivinePrimacy, (u32)Faction::ProtossStarbound));
+    case RaceId::Zerg:    return static_cast<Faction>(bw::rand_between((u32)Faction::ZergAtaltrethTendril, (u32)Faction::ZergZorthosTendril));
+    }
+    return Faction::None;
 }
 
 namespace WeaponId {

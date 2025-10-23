@@ -714,6 +714,23 @@ namespace hooks {
                 }
                 g_active_game_mode = std::make_unique<TheTurningGameMode>();
             } break;
+            case GameKind::FactionWars: {
+                for (s32 i = 0; i < PlayerLimit; i++) {
+                    if (g_player_table[i].type != PlayerType::Computer) {
+                        continue;
+                    }
+                    auto& cm_player = g_globals->players[i];
+                    if (cm_player.witness_mode != WitnessMode::WitnessMode_Disabled || cm_player.faction_was_set) {
+                        continue;
+                    }
+                    SelectFactionCommand command = {};
+                    command.type = GameCommand_Custom;
+                    command.subtype = NewGameCommand::SelectFaction;
+                    command.player = i;
+                    command.faction = get_random_faction(static_cast<RaceId::Enum>(g_player_table[i].race));
+                    helper::queue_game_command((u8*)&command, sizeof(command));
+                }
+            } break;
         }
         if (g_active_game_mode) {
             g_active_game_mode->on_init();
