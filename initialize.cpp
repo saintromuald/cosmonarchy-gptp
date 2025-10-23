@@ -124,6 +124,7 @@
 #include "hooks/interface/minimap.h"
 #include "hooks/game/creategame.h"
 #include "BW/extender/iscript_extender.h"
+#include "replay.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -670,6 +671,22 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
     // Disable user select check for starting units.
     memory_patch(0x004CD8AD, (u8)0xEB);
+
+    // Calculate iscript speed less frequently
+    // //iscript_update_speed@42D8C0
+    memory_patch(0x0042D90A, (u32)1);
+    nops(0x0042D983, 9);
+    //UMScoutPath@46AB10
+    memory_patch(0x0046AB5C, (u8)1);
+    memory_patch(0x0046AB94, (u8)1);
+
+    // Make following units with Ctrl+C smoother
+    memory_patch(0x004E6027, (u16)0x0F14);     // MOVSX EAX, word ptr [ESI + 0x14]; MOVSX...
+    memory_patch(0x004E6029, (u32)0x2D164EBF); // ...ECX, word ptr [ESI + 0x16]; SUB EAX, ...
+    memory_patch(0x004E602D, (u32)0x00000140); // ...0x140;
+    memory_patch(0x004E6031, (u32)0x00C8E981); // SUB ECX, 0xC8;
+    memory_patch(0x004E6035, (u32)0xE95E0000); // POP ESI; JMP...
+    memory_patch(0x004E6039, (u32)0xFFFB6403); // ...0x0049C440;
     // DarkenedFantasies, end
 
     // Pr0nogo, start
@@ -886,6 +903,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::inject_creategame_hooks();
 
 	hooks::inject_iscript_extender();
+
+    hooks::inject_replay_hooks();
 
 	return TRUE;
 }

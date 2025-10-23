@@ -62,6 +62,7 @@ char* get_stat_txt_string(u16 string_id);                                       
 void draw_show_hide_terrain_context(BinDlg* dialog);                                // 004A4C40
 void draw_cancel_unit_context(BinDlg* dialog);                                      // 00457B10
 void statdata_mouseover_interact(BinDlg* main_dialog, BinDlg* secondary_dialog);    // 00457CE0
+void move_screen_to_unit(Unit* unit);                                               // 004E6020
 
 void inject_ui_features_hooks();
 }

@@ -540,6 +540,39 @@ namespace {
         }
     }
 
+    void __declspec(naked) statdata_mouseover_interact_wrapper() { // 00457CE0
+        static BinDlg* main_dialog;
+        static BinDlg* secondary_dialog;
+        __asm {
+            PUSH EBP
+            MOV EBP, ESP
+            MOV main_dialog, EAX
+            MOV EAX, [EBP + 0x8]
+            MOV secondary_dialog, EAX
+            PUSHAD
+        }
+        hooks::statdata_mouseover_interact(main_dialog, secondary_dialog);
+        __asm {
+            POPAD
+            MOV ESP, EBP
+            POP EBP
+            RETN 0x4
+        }
+    }
+
+    void __declspec(naked) move_screen_to_unit_wrapper() { // 004E6020
+        static Unit* unit;
+        __asm {
+            MOV unit, EAX
+            PUSHAD
+        }
+        hooks::move_screen_to_unit(unit);
+        __asm {
+            POPAD
+            RETN
+        }
+    }
+
     // Non-hooks \\
 
     const u32 replayStatBtns_27AB5 = 0x00427AB5;
@@ -678,6 +711,8 @@ namespace hooks {
         jump_patch(get_stat_txt_string_wrapper,				0x004C36F0, 1);
         jump_patch(draw_show_hide_terrain_context_wrapper,	0x004A4C40, 0);
         jump_patch(draw_cancel_unit_context_wrapper,	    0x00457B10, 4);
+        jump_patch(statdata_mouseover_interact_wrapper,                 0x00457CE0, 1);
+    //  jump_patch(move_screen_to_unit_wrapper,                         0x004E6020, 3); // Working, but disabled to use memory patches instead. -Pr0nogo
 
         call_patch(get_scroll_directions_partial,			0x0047F155, 0);
         jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
