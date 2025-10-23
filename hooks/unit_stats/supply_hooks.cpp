@@ -518,12 +518,10 @@ namespace hooks {
 			dialog = dialog->parent;
 		}
 		dialog = dialog->child_dialog;
-
 		while (dialog->index != 1) { // This while loop is not necessary with a properly organized bin file, but keep it for safety. -DF
 			if (!dialog) {
 				return; // The original function would set dialog to null and break out of the loop. Surely that can't be good. -DF
 			}
-
             dialog = dialog->next;
 		}
 
@@ -537,22 +535,22 @@ namespace hooks {
 				u32 player_type = g_player_table[player].type;
 				if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && !cm_player.witness_mode && !cm_player.hide_in_team_ui) {
 					draw_player_stats(&dialog, &pos, player,
-						true,				// use_player_color
-						g_config.show_apm,	// can_show_apm
-						true,				// show_production
-						true,				// show_name
-						true,				// show_color_box
+						true,					// use_player_color
+						g_config.show_apm,		// can_show_apm
+						true,					// show_production
+						true,						// show_name
+						true,					// show_color_box
 						*g_is_holding_alt);	// count_in_production
 				}
 			}
 		} else { // Normal player UI. -Veeq7
 			draw_player_stats(&dialog, &pos, local_player,
-				false,														// use_player_color
+				false,													// use_player_color
 				g_config.show_team_ui_self && g_config.show_team_ui_apm,	// can_show_apm
-				g_config.show_ingame_global_queue,							// show_production
+				g_config.show_ingame_global_queue,						// show_production
 				g_config.show_team_ui_self && g_config.show_team_ui_names,	// show_name
-				g_config.show_team_ui_self,									// show_color_box
-				!*g_is_holding_alt);										// count_in_production
+				g_config.show_team_ui_self,								// show_color_box
+				!*g_is_holding_alt);								// count_in_production
 
 			if (g_config.show_team_ui) {
 				for (u32 player = 0; player < PlayerLimit; ++player) {
@@ -561,12 +559,12 @@ namespace hooks {
 					if ((player_type == PlayerType::Computer || player_type == PlayerType::Human) && player != local_player && !cm_player.witness_mode
 							&& !cm_player.hide_in_team_ui && bw::is_allied_to(player, local_player)) {
 						draw_player_stats(&dialog, &pos, player,
-							true,							   // use_player_color
-							g_config.show_team_ui_apm,		   // can_show_apm
+							true,								// use_player_color
+							g_config.show_team_ui_apm,			// can_show_apm
 							g_config.show_ingame_global_queue, // show_production
-							g_config.show_team_ui_names,	   // show_name
-							true,							   // show_color_box
-							!*g_is_holding_alt);			   // count_in_production
+							g_config.show_team_ui_names,			// show_name
+							true,								// show_color_box
+							!*g_is_holding_alt);			// count_in_production
 					}
 				}
 			}
@@ -576,12 +574,10 @@ namespace hooks {
 			if (dialog->flags & BinDlgFlags::Visible) {
 				helper::hide_dialog(dialog);
 				BinDlg* child = dialog->statRes.player_name; // dialog_name
-
 				if (child) {
 					if (child->flags & BinDlgFlags::Visible) {
 						helper::hide_dialog(child);
 					}
-
 					child = dialog->child_dialog; // dialog_production
 					for (u32 i_0 = RowSize; i_0; --i_0) {
 						if (child->flags & BinDlgFlags::Visible) {
@@ -592,7 +588,6 @@ namespace hooks {
 					}
 				}
 			}
-
 			dialog = dialog->next;
 		}
 	}

@@ -521,7 +521,7 @@ namespace hooks {
 				if (unit->burrowed_attacker_can_attack()) {
 					return true;
 				}
-				if (units_dat::right_click_action[unit->id] || unit->status & UnitStatus::GroundedBuilding && unit_can_rally(unit)) {
+				if (units_dat::right_click_action[unit->id] || unit->is_grounded_building() && unit_can_rally(unit)) {
 					return true;
 				}
 			}

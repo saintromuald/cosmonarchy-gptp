@@ -2,14 +2,12 @@
 #include "globals.h"
 
 namespace sfx_dat {
-
 u8* volume;
 u8* sound_flags;
 u16* portrait_duration;
 u8* type;
 char** sound_file;
 SoundData* sound_data;
-
 }
 
 namespace hooks {

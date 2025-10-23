@@ -2,183 +2,145 @@
 #include <hook_tools.h>
 #include "BW/api.h"
 
-namespace
-{
-	void __declspec(naked) get_supplies_available_wrapper()
-	{
+namespace {
+	void __declspec(naked) get_supplies_available_wrapper() {
 		static u8 player;
 		static s32 race;
 		static u32 result;
-		__asm
-		{
+		__asm {
 			MOV race, ECX
 			MOV player, AL
 			PUSHAD
 		}
 		result = hooks::get_supplies_available(player, race);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) get_supplies_remaining_wrapper()
-	{
+	void __declspec(naked) get_supplies_remaining_wrapper() {
 		static u8 player;
 		static u16 unit_id;
 		static s32 result;
-		__asm
-		{
+		__asm {
 			MOV unit_id, DI
 			MOV player, BL
 			PUSHAD
 		}
 		result = hooks::get_supplies_remaining(player, unit_id);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) get_supplies_max_wrapper()
-	{
+	void __declspec(naked) get_supplies_max_wrapper() {
 		static u16 unit_id;
 		static u8 player;
 		static s32 result;
-		__asm
-		{
+		__asm {
 			MOV player, CL
 			MOV unit_id, AX
 			PUSHAD
 		}
 		result = hooks::get_supplies_max(unit_id, player);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) get_supplies_used_wrapper()
-	{
+	void __declspec(naked) get_supplies_used_wrapper() {
 		static s32 race;
 		static u8 player;
 		static s32 result;
-		__asm
-		{
+		__asm {
 			MOV player, CL
 			MOV race, EAX
 			PUSHAD
 		}
 		result = hooks::get_supplies_used(race, player);
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) initialize_unit_counts_wrapper()
-	{
+	void __declspec(naked) initialize_unit_counts_wrapper() {
 		static char result;
-		__asm
-		{
+		__asm {
 			PUSHAD
 		}
 		result = hooks::initialize_unit_counts();
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV AL, result
 			RETN
 		}
-	}/*
-
-	void __declspec(naked) stat_res_main_proc_wrapper()
-	{
+	}
+	
+  /*void __declspec(naked) stat_res_main_proc_wrapper() {
 		static BinDlg* dialog;
-		__asm
-		{
+		__asm {
 			MOV dialog, ECX
 			PUSHAD
 		}
 		hooks::stat_res_main_proc(dialog);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}*/
 
-	void __declspec(naked) get_supplies_temp_wrapper()
-	{
+	void __declspec(naked) get_supplies_temp_wrapper() {
 		static s32 result;
-		__asm
-		{
+		__asm {
 			PUSHAD
 		}
 		result = hooks::get_supplies_temp();
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) redraw_supply_info_wrapper()
-	{
+	void __declspec(naked) redraw_supply_info_wrapper() {
 		static bool result;
-		__asm
-		{
+		__asm {
 			PUSHAD
 		}
 		result = hooks::redraw_supply_info();
-		__asm
-		{
+		__asm {
 			POPAD
 			MOV AL, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) draw_supply_unit_status_wrapper()
-	{
+	void __declspec(naked) draw_supply_unit_status_wrapper() {
 		static BinDlg* dialog;
-		__asm
-		{
+		__asm {
 			MOV dialog, EAX
 			PUSHAD
 		}
 		hooks::draw_supply_unit_status(dialog);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
 	}
 
-	b32 __stdcall has_supplies_for_unit_wrapper(u8 player, u16 unit_id, b32 can_show_error)
-	{
+	b32 __stdcall has_supplies_for_unit_wrapper(u8 player, u16 unit_id, b32 can_show_error) {
 		return 1;
-		if (hooks::has_supplies_for_unit(player, unit_id, can_show_error != 0))
-		{
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
 	}
 
-	void __declspec(naked) increment_unit_scores_wrapper() // 00488BF0
-	{
+	void __declspec(naked) increment_unit_scores_wrapper() { // 00488BF0
 		static Unit* unit;
 		static s32 count;
 		static s16 result;
@@ -202,8 +164,7 @@ namespace
 		}
 	}
 
-	void __declspec(naked) increment_unit_scores_ex_wrapper() // 00488D50
-	{
+	void __declspec(naked) increment_unit_scores_ex_wrapper() { // 00488D50
 		static s32 count;
 		static Unit* unit;
 		static s32 updateMorphMergeUnitScore;
@@ -228,10 +189,8 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_supply_hooks()
-	{
+namespace hooks {
+	void inject_supply_hooks() {
 		/* disable red supply text
 		u8 data[] = {
 			0x33, 0xC0 // xor eax, eax
@@ -240,18 +199,18 @@ namespace hooks
 
 		jump_patch(get_supplies_available_wrapper,		0x00488900, 1);
 		jump_patch(get_supplies_remaining_wrapper,		0x004889D0, 1);
-		jump_patch(get_supplies_max_wrapper,			0x00488990, 4);
-		jump_patch(get_supplies_used_wrapper,			0x004888C0, 1);
+		jump_patch(get_supplies_max_wrapper,				0x00488990, 4);
+		jump_patch(get_supplies_used_wrapper,				0x004888C0, 1);
 		jump_patch(initialize_unit_counts_wrapper,		0x00488F90, 0);
-	//	jump_patch(stat_res_main_proc_wrapper,			0x004E5640, 4);
-		jump_patch(get_supplies_temp_wrapper,			0x004246D0, 1);
+	//	jump_patch(stat_res_main_proc_wrapper,							0x004E5640, 4);
+		jump_patch(get_supplies_temp_wrapper,				0x004246D0, 1);
 		jump_patch(redraw_supply_info_wrapper,			0x00425230, 4);
 		jump_patch(draw_supply_unit_status_wrapper,		0x00427540, 1); // Currently broken, supply used in unit status display won't show properly for zerg and protoss units
-		jump_patch(has_supplies_for_unit_wrapper,		0x0042CF70, 1);
-		jump_patch(increment_unit_scores_wrapper,		0x00488BF0, 2);
-		jump_patch(increment_unit_scores_ex_wrapper,	0x00488D50, 1);
+		jump_patch(has_supplies_for_unit_wrapper,			0x0042CF70, 1);
+		jump_patch(increment_unit_scores_wrapper,			0x00488BF0, 2);
+		jump_patch(increment_unit_scores_ex_wrapper,		0x00488D50, 1);
 		
-		call_patch(stat_res_register_user_dialog_action, 0x004E58E4);
+		call_patch(stat_res_register_user_dialog_action,	0x004E58E4);
 		memory_patch(0x004E58EA, &stat_res_main_proc);
 	}
 }

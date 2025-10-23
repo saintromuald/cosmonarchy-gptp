@@ -46,7 +46,7 @@ namespace hooks {
         Unit* active = *g_active_portrait_unit;
         for (u32 i = 0; i < SelectionCap; ++i) {
             Unit* unit = g_client_selection_group->unit[i];
-            if (unit && unit->status & UnitStatus::Completed) {
+            if (unit && unit->is_completed()) {
                 return unit;
             }
         }

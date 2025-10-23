@@ -596,7 +596,7 @@ namespace SpriteId {
         ProtossAmaranth = 590,
         ZergKeskathGrotto = 591,
         ZergVithrilHaunt = 592,
-        ZergAlkajChasm = 593,
+        ZergKethrajChasm = 593,
         ProtossIdol = 594,
         ProtossGolem = 595,
         SalamanderImpact = 596,

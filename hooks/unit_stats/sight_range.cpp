@@ -1,8 +1,7 @@
 #include "sight_range.h"
 #include <BW/api.h>
 
-namespace hooks
-{
+namespace hooks {
 	/// Returns the modified sight distance of the unit, measured in matrices.
 	/// StarCraft passes 1 for is_for_spellcasting when using Feedback, Mind Control, and Hallucination (but not when launching Nukes).
 	/// Note: sight ranges cannot exceed 11, unless extended.
@@ -19,7 +18,7 @@ namespace hooks
 		if (bw::get_game_kind() == GameKind::DarkAges) {
 			sight_range -= bw::calculate_dark_ages_penalty(sight_range);
 		}
-		if (unit->status & UnitStatus::Burrowed && !unit_id_is_trap(unit->id)) {
+		if (unit->is_burrowed() && !unit_id_is_trap(unit->id)) {
 			sight_range /= 2;
 		}
 

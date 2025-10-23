@@ -609,7 +609,7 @@ bool is_zerg_building_morph_result(u16 id) {
         case UnitId::ZergTethvithSwamp:
         case UnitId::ZergChokralChazsal:
         case UnitId::ZergAlmakisAntre:
-        case UnitId::ZergAlkajChasm:
+        case UnitId::ZergKethrajChasm:
         case UnitId::ZergUlgorgCavern:
         case UnitId::ZergZozarcGorge: {
             return true;
@@ -952,12 +952,12 @@ void refresh_screen() {
 }
 
 static u32 log_random(gptp::GameLogger& logger, u32 value, std::source_location src, u32 old_last_random) {
-    if (g_config.log_randoms) {
-        logger << src.function_name() << "\n";
-        logger << src.file_name() << ":" << src.line() << "\n";
-        logger << "g_last_random_number was " << old_last_random << "\n";
-        logger << "Randomized " << value << " on frame " << g_elapsed_time_frames << "\n\n";
-    }
+//  if (g_config.log_randoms) {
+//      logger << src.function_name() << "\n";
+//      logger << src.file_name() << ":" << src.line() << "\n";
+//      logger << "g_last_random_number was " << old_last_random << "\n";
+//      logger << "Randomized " << value << " on frame " << g_elapsed_time_frames << "\n\n";
+//  }
     return value;
 }
 
@@ -1985,10 +1985,10 @@ void dump_sync_data() {
 }
 
 u32 get_zerg_regression(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->values[ValueRegressionUnstable]
-    ||	unit_ext->values[ValueIsNydusExit]
-    ||	unit_ext->values[ValueIsNeutralNydus]
+    auto& unit_ext = unit->ext();
+    if (unit_ext.values[ValueRegressionUnstable]
+    ||	unit_ext.values[ValueIsNydusExit]
+    ||	unit_ext.values[ValueIsNeutralNydus]
     ||  unit_id_is_larva(unit->id)) {
         // The above cases do not regress!
         return UnitId::None;
@@ -2014,7 +2014,7 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergSkibactScab:			return UnitId::ZergHydrithDen;
         case UnitId::ZergTethvithSwamp:			return UnitId::ZergSkibactScab;
         case UnitId::ZergBegrozithBarrow:		return UnitId::ZergAxtothAxis;
-        case UnitId::ZergAlkajChasm:			return UnitId::ZergGeszkathGrotto;
+        case UnitId::ZergKethrajChasm:			return UnitId::ZergGeszkathGrotto;
         case UnitId::ZergChokralChazsal:		return UnitId::ZergAlkagIteth;
         case UnitId::ZergUlgorgCavern:			return UnitId::ZergZorkizShroud;
         case UnitId::ZergZozarcGorge:			return UnitId::ZergUlgorgCavern;
@@ -3091,8 +3091,8 @@ void regress(Unit* unit, u32 regression_id) {
     }
     if (new_unit) {
         if (is_building) {
-            UnitExt* new_unit_ext = get_unit_ext(new_unit);
-            new_unit_ext->timers[TimerStun] = 1 * 24;
+            auto& new_unit_ext = new_unit->ext();
+            new_unit_ext.timers[TimerStun] = 1 * 24;
             // TODO: Try calling a cagra-related function to stop regression from ruining cagra spread. -Pr0nogo
             // TODO: Add stun audio visuals. -Veeq7
         } else {

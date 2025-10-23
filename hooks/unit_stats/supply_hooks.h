@@ -17,8 +17,7 @@ struct ProductionArrays {
 inline ProductionArrays g_production;
 inline graphics::Font* font_stat_res;
 
-namespace hooks
-{
+namespace hooks {
 	u32 get_supplies_available(u8 player, s32 race);								// 00488900
 	s32 get_supplies_remaining(u8 player, u16 unit_id);								// 004889D0
 	s32 get_supplies_max(u16 unit_id, u8 player);									// 00488990

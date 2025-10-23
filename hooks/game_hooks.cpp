@@ -3148,7 +3148,7 @@ namespace hooks {
         // Seraph - Observance
         if (unit_ext.timers[TimerObservanceDebuff] > 1) {
             auto seraphs = g_unit_search
-                .radial_ex(unit, Seraph::ObservanceSearchRange, FilterEnemy | FilterEnabled, { UnitId::TerranSeraph })
+                .radial_ex(unit, Seraph::ObservanceSearchRange, FilterEnemy | FilterEnabled, {UnitId::TerranSeraph})
                 .sort_by_distance(unit->position);
 
             if (seraphs.count()) {
@@ -3479,7 +3479,6 @@ namespace hooks {
                 if (unit_ext.timers[TimerApollyoidAdhesiveDamagePeriod] == 1) {
                     unit->damage_with_custom(256);
                 }
-
             }
             if (unit_ext.timers[TimerApollyoidAdhesive] == 1) {
                 bw::remove_unit_overlay(unit, image_id);

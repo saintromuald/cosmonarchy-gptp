@@ -606,18 +606,10 @@ namespace hooks {
     b32 fow_refinery_check(Unit* self, u16 fow_id) { // 00474500
         u8 race = self->get_race(); // TODO: Add support for custom races
         switch (race) {
-            case RaceId::Zerg: {
-                return fow_id == UnitId::ZergExcisant;
-            }
-            case RaceId::Protoss: {
-                return fow_id == UnitId::ProtossAquifer;
-            }
-            case RaceId::Terran: {
-                return fow_id == UnitId::TerranReservoir;
-            }
-            default: {
-                return 0;
-            }
+            case RaceId::Zerg:    return fow_id == UnitId::ZergExcisant;
+            case RaceId::Protoss: return fow_id == UnitId::ProtossAquifer;
+            case RaceId::Terran:  return fow_id == UnitId::TerranReservoir;
+            default:              return 0;
         }
     }
 
@@ -637,7 +629,7 @@ namespace hooks {
                     return;
                 }
                 if (unit_can_attack_target(order_target, unit, true)) {
-                    if (!helper::is_ai_target_related(unit, order_target)) {
+                    if (!helper::cannot_chase_target(unit, order_target)) {
                         best_target = order_target;
                         best_score = helper::get_target_priority(unit, order_target);
                         if (!best_score) {
@@ -653,7 +645,7 @@ namespace hooks {
             Unit* auto_target = unit->auto_target_unit;
             if (auto_target) {
                 if (helper::unit_can_attack_target(auto_target, unit, 1) && helper::is_unit_enemy(unit, unit->auto_target_unit)
-                && !helper::is_ai_target_related(unit, auto_target) && helper::is_unit_in_weapon_range(unit, unit->auto_target_unit))
+                && !helper::cannot_chase_target(unit, auto_target) && helper::is_unit_in_weapon_range(unit, unit->auto_target_unit))
                 {
                     s32 auto_target_score = helper::get_target_priority(unit, unit->auto_target_unit);
                     if (!auto_target_score) {

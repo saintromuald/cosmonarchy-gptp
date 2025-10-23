@@ -62,7 +62,6 @@ b32 unit_id_is_tech(u32 unit_id, bool allow_addons) {
 
         // Zerg
         case UnitId::ZergIrolIris:
-        case UnitId::ZergIrulentIvoa:
         case UnitId::ZergOthstolOviform:
         case UnitId::ZergQuazethPool:
         case UnitId::ZergKalkiirLake:
@@ -75,7 +74,7 @@ b32 unit_id_is_tech(u32 unit_id, bool allow_addons) {
         case UnitId::ZergAlkagIteth:
         case UnitId::ZergChokralChazsal:
         case UnitId::ZergGeszkathGrotto:
-        case UnitId::ZergAlkajChasm:
+        case UnitId::ZergKethrajChasm:
         case UnitId::ZergZorkizShroud:
         case UnitId::ZergUlgorgCavern:
         case UnitId::ZergZozarcGorge:

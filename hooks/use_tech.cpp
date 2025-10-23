@@ -248,7 +248,7 @@ namespace hooks {
             *g_last_internal_error = 1;
             return 0;
         }
-        if (!(unit->status & UnitStatus::Completed)) {
+        if (!unit->is_completed()) {
             *g_last_internal_error = 20;
             return 0;
         }
@@ -256,7 +256,7 @@ namespace hooks {
             *g_last_internal_error = 10;
             return 0;
         } 
-        if (unit->status & UnitStatus::IsHallucination && tech_id != TechId::Burrowing) {
+        if (unit->is_hallucination() && tech_id != TechId::Burrowing) {
             *g_last_internal_error = 22;
             return 0;
         }

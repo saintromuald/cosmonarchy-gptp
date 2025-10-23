@@ -159,13 +159,13 @@ namespace hooks {
 	}
 
 	void ai_burrower(Unit* unit) { // 004A1340
-		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueDisableAutoBurrow]) {
+		auto& unit_ext = unit->ext();
+		if (unit_ext.values[ValueDisableAutoBurrow]) {
 			return;
 		}
 
 		if (units_dat::base_property[unit->id] & UnitProperty::Burrowable) {
-			if (!(unit->status & UnitStatus::Burrowed) && unit->id != UnitId::ZergDroleth) {
+			if (!unit->is_burrowed() && unit->id != UnitId::ZergDroleth) {
 				if (unit->main_order_id == OrderId::ComputerAI || unit->main_order_id == OrderId::Guard) {
 					if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y) {
 						// Originally checked for burrow tech in the above conditional.
