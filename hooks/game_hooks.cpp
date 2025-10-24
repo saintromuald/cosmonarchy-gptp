@@ -2654,7 +2654,6 @@ namespace hooks {
             case UnitId::AskosiChantry: {
                 if (unit->can_use_passive_ability()) {
                     const auto timer = unit_ext.timers[TimerSermonSalveOverlay];
-                    u32 timer = unit_ext.timers[TimerSermonSalveOverlay];
                     if (!timer) {
                         unit_ext.timers[TimerSermonSalveOverlay] = 24;
                         bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));

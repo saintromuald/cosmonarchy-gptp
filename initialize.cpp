@@ -124,7 +124,6 @@
 #include "hooks/interface/minimap.h"
 #include "hooks/game/creategame.h"
 #include "BW/extender/iscript_extender.h"
-#include "replay.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -903,8 +902,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::inject_creategame_hooks();
 
 	hooks::inject_iscript_extender();
-
-    hooks::inject_replay_hooks();
 
 	return TRUE;
 }

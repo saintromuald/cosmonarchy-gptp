@@ -313,6 +313,10 @@ namespace AskosiChantry {
 inline constexpr s32 SermonSalveRange = 8 * 32;
 }
 
+namespace AskosiMimic {
+inline constexpr s32 MimicryRange = 4 * 32;
+}
+
 namespace AskosiCardinal {
 inline constexpr s32 SustainingSermonRange = 3 * 32;
 }

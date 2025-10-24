@@ -366,7 +366,7 @@ namespace UnitId {
         AskosiRove                                          = 449,
         AskosiObject                                        = 450,
         AskosiScepter                                       = 451,
-        AskosiIntende                                       = 452,
+        AskosiIntendent                                     = 452,
         AskosiHelion                                        = 453,
         AskosiEmissary                                      = 454,
         AskosiInkblot                                       = 455,

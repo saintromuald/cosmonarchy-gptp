@@ -927,6 +927,10 @@ namespace SpriteId {
         Corpse_Inzorthrokor             = 996,
 
         Corpse_Agrileth                 = 1021,
+            
+        Corpse_Cardinal                 = 1027,
+        Corpse_Vicar                    = 1029,
+        Corpse_Missionary               = 1031,
 
         Corpse_ZergBuildingSmall	    = 186,
         Corpse_ZergBuildingLarge	    = 187,

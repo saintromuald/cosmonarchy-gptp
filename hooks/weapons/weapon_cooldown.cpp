@@ -83,7 +83,7 @@ namespace hooks {
 		switch (unit->id) {
 			case UnitId::TerranMadcap: {
 				// Madcap Cabeirus Feeders behavior: increase weapon speed while stationary
-				u32 stacks = ceil((f64)unit_ext.values[ValueMadcapStacks] / MadcapPassiveDecayTime);
+				u32 stacks = ceil((f64)unit_ext.values[ValueMadcapStacks] / TerranMadcap::PassiveDecayTime);
 				if (stacks > 0) {
 					f64 new_cooldown = (f64)cooldown / (1 + stacks * 0.15);
 					cooldown = new_cooldown;

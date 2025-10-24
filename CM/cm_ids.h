@@ -67,7 +67,7 @@ bool weapon_id_can_proc_onhits(u32 weapon_id);
 WeaponOffsets* get_weapon_offsets(u32 weapon_id);
 
 bool unit_id_spawns_larva_by_order(u32 unit_id);
-u32 get_scribe_warp_distance(u32 unit_id);
+u32 get_worker_construction_distance(u32 unit_id);
 bool unit_id_ignored_on_minimap(u32 unit_id);
 bool unit_is_combatant(Unit* unit);
 bool unit_id_can_repair(u32 unit_id);

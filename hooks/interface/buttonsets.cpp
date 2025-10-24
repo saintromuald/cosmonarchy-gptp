@@ -2021,27 +2021,12 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
-                                        if (faction != Faction::ZergOrkotiTendril) {
-                                            if (player_has_base_unit_id(unit->player, UnitId::ZergUlgorgCavern)
-                                            ||  player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
-                                                current_button_state = Button_State::Enabled;
-                                            } else {
-                                                current_button_state = Button_State::Disabled;
-                                            }
+                                    case UnitId::ZergGorgrokor: {
+                                        if (player_has_base_unit_id(unit->player, UnitId::ZergUlgorgCavern)
+                                        ||  player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
+                                            current_button_state = Button_State::Enabled;
                                         } else {
-                                            current_button_state = Button_State::Invisible;
-                                        }
-                                    } break;
-                                    case UnitId::ZergAzanthrokor: {
-                                        if (faction == Faction::ZergOrkotiTendril) {
-                                            if (player_has_base_unit_id(unit->player, UnitId::ZergUlgorgCavern)
-                                            ||  player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
-                                                current_button_state = Button_State::Enabled;
-                                            } else {
-                                                current_button_state = Button_State::Disabled;
-                                            }
-                                        } else {
-                                            current_button_state = Button_State::Invisible;
+                                            current_button_state = Button_State::Disabled;
                                         }
                                     } break;
                                     case UnitId::ZergMutalisk:
@@ -2193,7 +2178,7 @@ namespace hooks {
                                     } break;
                                     case UnitId::ZergKethrostalor:
                                     case UnitId::ZergAlkajelisk: {
-                                        if (player_has_completed_unit_id(unit->player, UnitId::ZergKethrajKeep)) {
+                                        if (player_has_base_unit_id(unit->player, UnitId::ZergGeszkathGrotto)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
@@ -2294,8 +2279,7 @@ namespace hooks {
                                     current_button_state = Button_State::Invisible;
                                 }
                             } break;
-                            case UnitId::ZergGorgrokor:
-                            case UnitId::ZergAzanthrokor: {
+                            case UnitId::ZergGorgrokor: {
                                 if (current_button->requirement_var == UnitId::ZergZarcavrokor) {
                                     if (player_has_completed_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
                                         current_button_state = Button_State::Enabled;
@@ -2378,6 +2362,112 @@ namespace hooks {
                                     current_button_state = Button_State::Enabled;
                                 } else {
                                     current_button_state = Button_State::Invisible;
+                                }
+                            } break;
+
+                            case UnitId::AskosiPilgrim: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::AskosiLandlock:
+                                    case UnitId::AskosiArch:
+                                    case UnitId::AskosiGrandstand:
+                                    case UnitId::AskosiChantry:
+                                    case UnitId::AskosiRadix:
+                                    case UnitId::AskosiFunction: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::AskosiCipher:
+                                    case UnitId::AskosiGauntlet: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiRadix) || player_has_completed_unit_id(unit->player, UnitId::AskosiFunction)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiCosmoscope: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiCipher) || player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    } break;
+                                }
+                            } break;
+
+                            case UnitId::AskosiLandlock: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::AskosiPilgrim: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::AskosiProselyte: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiRadix) || player_has_completed_unit_id(unit->player, UnitId::AskosiFunction)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiDyad: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiCipher) || player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    }
+                                }
+                            } break;
+                            case UnitId::AskosiRadix: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::AskosiMissionary:
+                                    case UnitId::AskosiCardinal: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::AskosiMimic: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiCipher)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiVicar: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    }
+                                }
+                            } break;
+                            case UnitId::AskosiFunction: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::AskosiRove:
+                                    case UnitId::AskosiObject: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::AskosiScepter: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiCipher)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiIntendent: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    }
                                 }
                             } break;
                         }

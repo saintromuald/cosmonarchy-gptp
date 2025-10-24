@@ -671,7 +671,7 @@ Faction get_random_faction(RaceId::Enum race) {
 
 namespace WeaponId {
 // TODO: YAML
-const char* get_weapon_name(WeaponId::Enum weapon_id) {
+const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::MaverickGaussRifle:                  return "Gauss Rifle";
         case WeaponId::HeraclesJavelinCannons:              return "Javelin Cannons";

@@ -1838,46 +1838,6 @@ bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {
         || unit_id == UnitId::TerranTiangou;
 }
 
-bool is_terran_worker(UnitId::Enum unit_id) {
-    return unit_id == UnitId::TerranMason
-        || unit_id == UnitId::TerranTalos
-        || unit_id == UnitId::TerranOgunSmithyMode;
-}
-
-bool is_zerg_worker(UnitId::Enum unit_id) {
-    return unit_id == UnitId::ZergDroleth
-        || unit_id == UnitId::ZergAgrileth
-        || unit_id == UnitId::ZergGosvileth;
-}
-
-bool is_beacon(UnitId::Enum unit_id) {
-    return unit_id == UnitId::ExtBeaconTerran
-        || unit_id == UnitId::ExtBeaconProtoss
-        || unit_id == UnitId::ExtBeaconZerg;
-}
-
-bool has_fusion_sealers(Unit* unit) {
-    return unit->id == UnitId::TerranOgunSmithyMode;
-}
-
-bool match_id_to_base(UnitId::Enum match_id, UnitId::Enum base_id) {
-    switch (base_id) {
-        case UnitId::ZergIrolIris:       return match_id == UnitId::ZergOthstolOviform;
-        case UnitId::ZergQuazethPool:    return match_id == UnitId::ZergVornathPond;
-        case UnitId::ZergVornathPond:    return match_id == UnitId::ZergKalkiirLake;
-        case UnitId::ZergHydrithDen:     return match_id == UnitId::ZergSkibactScab;
-        case UnitId::ZergSkibactScab:    return match_id == UnitId::ZergTethvithSwamp;
-        case UnitId::ZergZorkizShroud:   return match_id == UnitId::ZergUlgorgCavern;
-        case UnitId::ZergUlgorgCavern:   return match_id == UnitId::ZergZozarcGorge;
-        case UnitId::ZergMutathSpire:    return match_id == UnitId::ZergTosvrolHaunt;
-        case UnitId::ZergAlkagIteth:     return match_id == UnitId::ZergChokralChazsal;
-        case UnitId::ZergMatravilNest:   return match_id == UnitId::ZergAlmakisAntre;
-        case UnitId::ZergAxtothAxis:     return match_id == UnitId::ZergBegrozithBarrow;
-        case UnitId::ZergGeszkathGrotto: return match_id == UnitId::ZergKethrajKeep;
-    }
-    return false;
-}
-
 bool has_interruptable_windup(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranCyprian
         || unit_id == UnitId::TerranEidolon
@@ -1928,7 +1888,7 @@ bool match_id_to_base(UnitId::Enum match_id, UnitId::Enum base_id) {
         case UnitId::ZergAlkagIteth:     return match_id == UnitId::ZergChokralChazsal;
         case UnitId::ZergMatravilNest:   return match_id == UnitId::ZergAlmakisAntre;
         case UnitId::ZergAxtothAxis:     return match_id == UnitId::ZergBegrozithBarrow;
-        case UnitId::ZergGeszkathGrotto: return match_id == UnitId::ZergKethrajChasm;
+        case UnitId::ZergGeszkathGrotto: return match_id == UnitId::ZergKethrajKeep;
     }
     return false;
 }

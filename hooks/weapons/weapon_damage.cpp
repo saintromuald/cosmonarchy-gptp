@@ -35,6 +35,22 @@ void apply_ensnare_internal(Unit* unit, u32 ensnare_factor, u32 ensnare_timer) {
     unit->update_speed();
 }
 
+void apply_corrosive_spores_internal(Unit* unit, u32 timer) {
+    auto& unit_ext = unit->ext();
+    bool has_spores = unit_ext.timers[TimerCorrosiveTouch];
+    if (!has_spores) {
+        ImageId::Enum overlay_id = ImageId::AcidSpores_4_5_Overlay_Small;
+        switch (bw::get_overlay_offset(unit->id, true)) {
+        case 1: overlay_id = ImageId::AcidSpores_4_5_Overlay_Small;  break;
+        case 2: overlay_id = ImageId::AcidSpores_4_5_Overlay_Medium; break;
+        case 3: overlay_id = ImageId::AcidSpores_4_5_Overlay_Large;  break;
+        case 4: overlay_id = ImageId::AcidSpores_6_9_Overlay_Large;  break;
+        }
+        bw::add_unit_overlay(unit, overlay_id);
+    }
+    unit_ext.timers[TimerCorrosiveTouch] = timer;
+}
+
 bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
     return bw::is_under_carapace_swarm(target)
         && weapons_dat::max_range[weapon_id] > 32
