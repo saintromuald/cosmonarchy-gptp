@@ -13,11 +13,37 @@ char* g_iscript_filenames[] = {
 static constexpr u32 IscriptFileCount = sizeof(g_iscript_filenames) / 4;
 static char* iscript_handles[IscriptFileCount];
 static Image* temp_image;
-static Image* ebx() { __asm MOV EAX, EBX };//I normally would inline those, but there's no inlining inside declspec(naked) funcs.
-static Image* ecx() { __asm MOV EAX, ECX };
-static Image* esi() { __asm MOV EAX, ESI };
-static Image* edi() { __asm MOV EAX, EDI };
-static Image* ebp() { __asm MOV EAX, [EBP - 0xC] };
+// I normally would inline these, but there's no inlining inside declspec(naked) funcs. -DF
+static __declspec(naked) Image* ebx() {
+	__asm {
+		MOV EAX, EBX
+		RETN
+	}
+};
+static __declspec(naked) Image* ecx() {
+	__asm {
+		MOV EAX, ECX
+		RETN
+	}
+}
+static __declspec(naked) Image* esi() {
+	__asm {
+		MOV EAX, ESI
+		RETN
+	}
+}
+static __declspec(naked) Image* edi() {
+	__asm {
+		MOV EAX, EDI
+		RETN
+	}
+}
+static __declspec(naked) Image* ebp() {
+	__asm {
+		MOV EAX, [EBP - 0xC]
+		RETN
+	}
+}
 
 namespace hooks {
 	// Returns the pointer to the iscript file defined by the image's iscript key.
