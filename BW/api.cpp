@@ -2012,16 +2012,7 @@ void dump_sync_data() {
     }
 }
 
-u32 get_zerg_regression(Unit* unit) {
-    auto& unit_ext = unit->ext();
-    if (unit_ext.values[ValueRegressionUnstable]
-    ||	unit_ext.values[ValueIsNydusExit]
-    ||	unit_ext.values[ValueIsNeutralNydus]
-    ||  unit_id_is_larva(unit->id)) {
-        // The above cases do not regress!
-        return UnitId::None;
-    }
-
+u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, bool from_gosvileth, bool from_agrileth) {
     switch (unit_id) {
         // Structure Morphs
         case UnitId::ZergCaphrolosk:			return UnitId::ZergHachirosk;
@@ -2064,18 +2055,16 @@ u32 get_zerg_regression(Unit* unit) {
         case UnitId::ZergZorkizShroud:
         case UnitId::ZergMatravilNest:
         case UnitId::ZergElthisthMound: {
-        //  return UnitId::None;			// Bugs: Larva don't unlink, cagra doesn't recede
-                                            // For now we circumvent these by creating the Droleth instead of transforming the structure into the Droleth
-        if (unit->is_completed()) {
-            if (unit_ext.values[ValueOriginatedFromAgrileth]) {
-                return UnitId::None;
+            if (completed) {
+                if (from_agrileth) {
+                    return UnitId::None;
+                }
+                if (from_gosvileth) {
+                    return UnitId::ZergGosvileth;
+                }
+                return UnitId::ZergDroleth;
             }
-            if (unit_ext.values[ValueOriginatedFromGosvileth]) {
-                return UnitId::ZergGosvileth;
-            }
-            return UnitId::ZergDroleth;
-        }
-        return UnitId::None;
+            return UnitId::None;
         }
 
         // Unit Morphs
@@ -2116,15 +2105,20 @@ u32 get_zerg_regression(Unit* unit) {
 }
 
 u32 get_zerg_regression(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->values[ValueRegressionUnstable] ||
-        unit_ext->values[ValueIsNydusExit] ||
-        unit_ext->values[ValueIsNeutralNydus]) {
+    auto& unit_ext = unit->ext();
+    if (unit_ext.values[ValueRegressionUnstable]
+    ||	unit_ext.values[ValueIsNydusExit]
+    ||	unit_ext.values[ValueIsNeutralNydus]
+    ||  unit_id_is_larva(unit->id)) {
         // The above cases do not regress!
         return UnitId::None;
     }
-    return get_unit_id_zerg_regression(unit->id, unit->faction(),
-        unit->is_completed() && !unit_ext->values[ValueOriginatedFromGosvileth]);
+    return get_zerg_regression(
+        UnitId::Enum(unit->id),
+        unit->faction(),
+        unit->is_completed(),
+        unit_ext.values[ValueOriginatedFromGosvileth],
+        unit_ext.values[ValueOriginatedFromAgrileth]);
 }
 
 bool unit_is_allied_or_detected(Unit* unit, u32 player) {
@@ -4203,6 +4197,20 @@ u32 human_or_witness_count() {
     return player_count;
 }
 
+u32 human_count() {
+    u32 player_count = 0;
+    for (u32 i = 0; i < 8; i++) {
+        if (bw::player_is_witness(i)) {
+            continue;
+        }
+        if (g_player_table[i].type != PlayerType::Human) {
+            continue;
+        }
+        player_count++;
+    }
+    return player_count;
+}
+
 bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id) {
     switch (unit_id) {
         // Allow Utility, Detection, Transports, No Weaponed Craft
@@ -4335,7 +4343,7 @@ f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable) {
 	}
 
 	if (!regression_unstable) {
-        if (u32 unit_id = bw::get_unit_id_zerg_regression(unit_id, faction, true); unit_id != UnitId::None) {
+        if (u32 unit_id = bw::get_zerg_regression(UnitId::Enum(unit_id), faction, true, false, false); unit_id != UnitId::None) {
             cost += unit_id_total_cost(unit_id, faction, regression_unstable);
         }
 	}
