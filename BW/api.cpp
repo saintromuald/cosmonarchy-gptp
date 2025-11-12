@@ -4086,7 +4086,7 @@ bool can_show_custom_ui() {
 }
 
 bool player_is_witness(u32 player) {
-    return player < PLAYABLE_PLAYER_COUNT && *g_is_in_game && g_globals->players[player].witness_mode;
+    return player < PlayerLimit && g_globals && g_globals->players[player].witness_mode;
 }
 
 bool player_is_active(u32 player) {
@@ -4343,8 +4343,8 @@ f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable) {
 	}
 
 	if (!regression_unstable) {
-        if (u32 unit_id = bw::get_zerg_regression(UnitId::Enum(unit_id), faction, true, false, false); unit_id != UnitId::None) {
-            cost += unit_id_total_cost(unit_id, faction, regression_unstable);
+        if (u32 regression_unit_id = bw::get_zerg_regression(UnitId::Enum(unit_id), faction, true, false, false); unit_id != UnitId::None) {
+            cost += unit_id_total_cost(regression_unit_id, faction, regression_unstable);
         }
 	}
 

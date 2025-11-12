@@ -210,7 +210,7 @@ struct TriggerButton {
     s32 priority;
 };
 
-using EcoMeasurements = std::array<f32, PlayerLimit>;
+using EcoSample = std::array<f32, PlayerLimit>;
 
 struct Globals {
     bool preferred_colors_set;
@@ -232,7 +232,7 @@ struct Globals {
     std::vector<SoundReplacement> sound_replacements;
     std::vector<SpriteReplacement> sprite_replacements;
     std::vector<TriggerButton> trigger_buttons;
-	std::vector<EcoMeasurements> eco_measurements;
+	std::vector<EcoSample> eco_samples;
     std::vector<char> uuid_rand;
 
 	void sample_eco();

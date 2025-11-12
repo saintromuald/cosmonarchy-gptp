@@ -52,8 +52,8 @@ extern const u32 Func_GetSeekRange;
 
 namespace hooks {
     void inject_weapon_range_hooks() {
-        jump_patch(get_seek_range_wrapper,		0x00476000, 3);
-        jump_patch(get_max_weapon_range_wrapper,	0x00475870, 1);
-        jump_patch(reassign_target_seek_range_wrapper,	0x0049E010, 0);
+        jump_patch(get_seek_range_wrapper,			            0x00476000, 3);
+        jump_patch(get_max_weapon_range_wrapper,	            0x00475870, 1);
+        jump_patch(reassign_target_seek_range_wrapper,      	0x0049E010, 0);
     }
 } // namespace hooks

@@ -1723,22 +1723,22 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 }
 
 void Globals::sample_eco() {
-	EcoMeasurements eco{};
+	EcoSample eco{};
 	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-		if (unit->player > eco.size()) {
+		if (unit->player > eco.size() || unit->is_dead()) {
 			continue;
 		}
 		UnitExt* unit_ext = get_unit_ext(unit);
 		eco[unit->player] += unit->total_cost();
 	}
-	eco_measurements.push_back(eco);
+	eco_samples.push_back(eco);
 }
 
 f32 Globals::calculate_hype() const {
-	const auto count = eco_measurements.size();
+	const auto count = eco_samples.size();
 	std::vector<f32> values(count);
 	for (size_t i = 0; i < values.size(); i++) {
-		values[i] = log(std::accumulate(eco_measurements[i].begin(), eco_measurements[i].end(), 0));
+		values[i] = log(std::accumulate(eco_samples[i].begin(), eco_samples[i].end(), 0));
 	}
 
 	f32 changes_mean = 0;

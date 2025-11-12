@@ -802,7 +802,8 @@ namespace hooks {
         }
 
         g_game->first_frame();
-		g_globals->sample_eco();
+        // @ReplayKraken: For now we are not using hype score -Veeq7
+		// g_globals->sample_eco();
         g_graphics.reset_all_graphics();
 
         // Update extended features
