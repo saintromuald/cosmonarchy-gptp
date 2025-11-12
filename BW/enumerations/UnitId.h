@@ -149,6 +149,7 @@ namespace UnitId {
         TerranTartarusMine                                  = 507,
         TerranMadrigalHecatonFuriaMode                      = 508,
         TerranMadrigalTurretHecatonFuriaMode                = 509,
+        TerranValkyrieHecaton                               = 520,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1

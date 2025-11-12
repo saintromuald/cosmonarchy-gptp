@@ -543,7 +543,8 @@ namespace hooks {
         // No attacker here
         switch (data.weapon_id) {
             case WeaponId::AurielQuarternaryRifle:
-            case WeaponId::ArhaunPhlegethonCannon: {
+            case WeaponId::ArhaunPhlegethonCannon:
+            case WeaponId::ValkyrieHecatonLogiRockets: {
                 target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
                 target_ext.timers[TimerIncinerateDamage] = HecatonAuriel::IncinerateTimer;
             } break;

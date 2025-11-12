@@ -1470,6 +1470,7 @@ bool unit_id_is_available_without_an_addon(u16 id) {
         || id == UnitId::TerranSouthpaw
         || id == UnitId::TerranPhiloc
         || id == UnitId::TerranWendigo
+        || id == UnitId::TerranValkyrieHecaton
         || id == UnitId::TerranQilin;
 }
 
@@ -2441,8 +2442,8 @@ void town_add_spending_request(AiTown& town, u32 count, u32 unit_id, u32 priorit
 }
 
 void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority, bool request_base) {
-    if (unit_id == UnitId::TerranPhalanxSiegeMode) {
-        unit_id = UnitId::TerranPhalanxTankMode;
+    if (unit_id_is_siege_mode(static_cast<UnitId::Enum>(unit_id))) {
+        unit_id = unit_id_to_tank_mode(static_cast<UnitId::Enum>(unit_id));
     }
     if (request_base) {
         UnitId::Enum base_unit_id = find_equivalent((UnitId::Enum) unit_id);
@@ -2456,22 +2457,22 @@ void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u3
 }
 
 void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority, bool request_base) {
-    u32 unit_id = guard_ai->unit_id;
-    if (unit_id == UnitId::TerranPhalanxSiegeMode) {
-        unit_id = UnitId::TerranPhalanxTankMode;
+    UnitId::Enum unit_id = (UnitId::Enum)guard_ai->unit_id;
+    if (unit_id_is_siege_mode((unit_id))) {
+        unit_id = unit_id_to_tank_mode(unit_id);
     }
     if (request_base) {
-        UnitId::Enum base_unit_id = find_equivalent((UnitId::Enum) unit_id);
+        UnitId::Enum base_unit_id = find_equivalent(unit_id);
         if (base_unit_id != UnitId::None && !player_count_units(player, base_unit_id, false)) {
             military_add_spending_request(player, unit_id, guard_ai->current_home, priority, request_base); // Intentionally using military, since we don't want the base unit to take over the guard
         }
     }
     g_aiscript_controller[player].minerals_needed += units_dat::mineral_cost[unit_id];
-    g_aiscript_controller[player].vespene_needed += units_dat::vespene_cost[unit_id];
+    g_aiscript_controller[player].vespene_needed  += units_dat::vespene_cost[unit_id];
     helper::ai_add_spending_request(unit_id, player, RequestType::Guard, priority, guard_ai);
 }
 
-// Based on the function at 0x00462670 -Veeq7
+// Based on the function prepare_guard_ai 00462670 -Veeq7
 GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position) {
     GuardAiList* guard_list = &g_player_guard_list->player[player];
     GuardAi* guard_ai = guard_list->array->first_free_guard;
@@ -4080,6 +4081,8 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::ApostleCharonRifle:                  return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
         case WeaponId::CyclopsFuturistFlakCannons:          return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
         case WeaponId::TiangouMoonboundSalvo:               return bw::rand_between(SoundId::TiangouWeaponfire01, SoundId::TiangouWeaponfire05);
+        case WeaponId::ValkyrieHaloRockets:                 return SoundId::Bullet_Tfrshoot_wav;
+        case WeaponId::ValkyrieHecatonLogiRockets:          return bw::rand_between(SoundId::ValkyrieHecatonWeaponfire01, SoundId::ValkyrieHecatonWeaponfire04);
 
         case WeaponId::ZealotPhaseBlades:	                return SoundId::ZealotWeaponhit01;
         case WeaponId::ZealotStarboundPhaseBlades:          return SoundId::ZealotStarboundWeaponhit01;
@@ -4111,6 +4114,7 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
 
 u32 get_weapon_hit_sound(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
+        case WeaponId::EidolonCoronerRifle:               return bw::rand_between(SoundId::EidolonWeaponhit01, SoundId::EidolonWeaponhit03);
         case WeaponId::AutocratEminenceRifle:             return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::RamessesPharoahCannons:            return SoundId::RamessesWeaponhit01;
         case WeaponId::CataphractLonginiusCannons:        return bw::rand_between(SoundId::CataphractWeaponhit01, SoundId::CataphractWeaponhit03);
