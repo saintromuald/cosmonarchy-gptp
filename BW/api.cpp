@@ -572,6 +572,7 @@ bool is_conventional_unit_morph_result(u16 id) {
         case UnitId::ZergGosvileth:
         case UnitId::ZergIroleth:
         case UnitId::ZergVorvrokor:
+        case UnitId::ZergGarvrokor:
         case UnitId::ZergLiiralisk:
         case UnitId::ZergKalkalisk:
         case UnitId::ZergSovroleth:
@@ -606,6 +607,7 @@ bool is_conventional_unit_morph_source(u16 id, bool allow_larvae) {
         case UnitId::ZergYblyleth:
         case UnitId::ZergOthstoleth:
         case UnitId::ZergZethrokor:
+        case UnitId::ZergSovrokor:
         case UnitId::ZergQuazilisk:
         case UnitId::ZergQuazrokor:
         case UnitId::ZergNathrokor:
@@ -2111,6 +2113,7 @@ u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, b
         // Unit Morphs
         case UnitId::ZergGosvileth:				return UnitId::ZergDroleth;
         case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
+        case UnitId::ZergGarvrokor:				return UnitId::ZergSovrokor;
         case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
         case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;
         case UnitId::ZergTosgrilisk:			return UnitId::ZergMutalisk;
@@ -4132,6 +4135,7 @@ u32 get_weapon_hit_sound(WeaponId::Enum weapon_id) {
         case WeaponId::StarSovereignInterventionMissiles: return SoundId::PanoptusWeaponhit01;
 
         case WeaponId::RililiskSwarmingSpores:            return SoundId::Bullet_ZLuHit00_wav;
+        case WeaponId::SovrokorSovrolClaws:               return bw::rand_between(SoundId::SovrokorWeaponhit01, SoundId::SovrokorWeaponhit03);
         case WeaponId::LiiraliskHomingSpore:              return SoundId::Bullet_ZLuHit00_wav;
         case WeaponId::ProtathalorPungentSpores:          return bw::rand_between(SoundId::ProtathalorWeaponhit01, SoundId::ProtathalorWeaponhit04);
         case WeaponId::NathreliskSignalingSpores:         return SoundId::Bullet_ZLuHit00_wav;

@@ -1593,6 +1593,12 @@ namespace hooks {
                     }
                 }
             } break;
+            case UnitId::ZergSovrokor: {
+                Unit* egg = unit->corpse_cocoon_search();
+                if (egg) {
+                    egg->status |= UnitStatus::NoCollide;
+                }
+            } break;
             case UnitId::ZergSovroleth: {
                 {	
                     EntryArray sovroleths = g_unit_search.radial_ex(unit, 8 * 32, FilterAlly, {UnitId::ZergSovroleth}); 
@@ -1600,21 +1606,7 @@ namespace hooks {
                 }
                 should_update_speed = true;
 
-                // Corpse Cocoon
-                for (Thingy* corpse : g_corpse_search.rect(unit->get_box32())) {
-                    auto* corpse_ext = get_thingy_ext(corpse);
-                    if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) && !unit_id_is_broodspawn(corpse_ext->unit_id)) {
-                        Unit* egg = bw::create_unit_in_game(UnitId::ZergEgg, unit->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
-                        if (egg) {
-                            set_custom_egg(egg, UnitId::ZergSovroleth, units_dat::time_cost[UnitId::ZergSovroleth] / 2);
-                        }
-                        auto& egg_ext = egg->ext();
-                        egg_ext.values[ValueNoCorpse] = true;
-                        egg_ext.values[ValueRegressionUnstable] = true;
-                        corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
-                        corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
-                    }
-                }
+                unit->corpse_cocoon_search();
             } break;
             case UnitId::ZergEgg:
             case UnitId::ZergCocoon:
@@ -3520,6 +3512,7 @@ namespace hooks {
 
         if (unit_ext.timers[TimerHidebreaker] == 1) {
             unit_ext.values[ValueVorvalHidebreaker] = 0;
+            unit_ext.values[ValueGarvrolHidebreaker] = 0;
             unit_ext.values[ValueNathrokHidebreaker] = 0;
             // TODO: Overlay
         }
@@ -3794,7 +3787,9 @@ namespace hooks {
                     case UnitId::ZergLarva:
                     case UnitId::ZergDroleth:
                     case UnitId::ZergZethrokor:
+                    case UnitId::ZergSovrokor:
                     case UnitId::ZergVorvrokor:
+                    case UnitId::ZergGarvrokor:
                     case UnitId::ZergLiiralisk:
                     case UnitId::ZergGeszithalor:
                     case UnitId::ZergRilirokor:

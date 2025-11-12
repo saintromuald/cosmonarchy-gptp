@@ -241,6 +241,7 @@ namespace hooks {
             case UnitId::TerranCyprian:
             case UnitId::ZergYblyleth:
             case UnitId::ZergVorvrokor:
+            case UnitId::ZergGarvrokor:
             case UnitId::ZergCikralisk:
             case UnitId::ZergInzorthrokor:
             case UnitId::ZergLakizilisk:

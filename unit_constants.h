@@ -390,6 +390,7 @@ inline constexpr s32 AmbientSFXDelayMax = 120;
 
 namespace Zerg {
 inline constexpr s32 LarvaSpawnRate = (14 * 24) / 8; // 14 seconds
+inline constexpr s32 HidebreakerDuration = 2 * 24 + 1;
 inline constexpr s32 AmitosisSearchRange = 3 * 32;
 inline constexpr s32 CorrosivePathogenRange = 4 * 32;
 }

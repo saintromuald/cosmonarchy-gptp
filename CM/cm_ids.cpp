@@ -284,9 +284,12 @@ bool unit_id_is_melee_air_unit(u32 unit_id) {
 
 bool unit_id_is_morphed_from_double_unit(u32 unit_id) {
     return unit_id == UnitId::ZergVorvrokor
+        || unit_id == UnitId::ZergGarvrokor
+        || unit_id == UnitId::ZergLiiralisk
         || unit_id == UnitId::ZergKalkalisk
+        || unit_id == UnitId::ZergGhitorokor
         || unit_id == UnitId::ZergTosgrilisk
-        || unit_id == UnitId::ZergGhitorokor;
+        || unit_id == UnitId::ZergBegrothilisk;
 }
 
 bool unit_id_is_power_generator(u32 unit_id) {
@@ -412,6 +415,8 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::ProtossDracadinOrder
         || unit_id == UnitId::ProtossManifoldStarbound
         
+        || unit_id == UnitId::ZergSovrokor
+        || unit_id == UnitId::ZergGarvrokor
         || unit_id == UnitId::ZergNathrelisk
         || unit_id == UnitId::ZergIziralisk
         || unit_id == UnitId::ZergInzorthrokor
@@ -1093,8 +1098,7 @@ bool unit_applies_ensnare(Unit* unit) {
             return true;
         } break;
     }
-    UnitExt& unit_ext = unit->ext();
-    if (unit_ext.timers[TimerEnsnaringBrood] > 0) {
+    if (unit->ext().timers[TimerEnsnaringBrood] > 0) {
         return true;
     }
     return false;
@@ -1159,6 +1163,7 @@ u32 get_death_sfx_id(u32 unit_id) {
         case UnitId::ZergGosvileth:		return SoundId::Zerg_DRONE_ZDrDth00_WAV;
         case UnitId::ZergIroleth:		return SoundId::Zerg_OVERLORD_ZOvDth00_WAV;
         case UnitId::ZergVorvrokor:		return SoundId::VorvrokorDeath01;
+        case UnitId::ZergGarvrokor:		return SoundId::VorvrokorDeath01;
         case UnitId::ZergLiiralisk:		return SoundId::Zerg_Hydra_ZHyDth00_WAV;
         case UnitId::ZergKalkalisk:		return SoundId::Zerg_Mutalid_ZMuDth00_WAV;
         case UnitId::ZergGhitorokor:	return SoundId::Zerg_Hydra_ZHyDth00_WAV;
@@ -1588,9 +1593,11 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
         case UnitId::ZergAgrileth:                 return SpriteId::Corpse_Agrileth;
         case UnitId::ZergOvileth:                  return SpriteId::Corpse_Ovileth;
         case UnitId::ZergZethrokor:                return SpriteId::Corpse_Zethrokor;
+        case UnitId::ZergSovrokor:                 return SpriteId::Corpse_Zethrokor;
         case UnitId::ZergQuazilisk:                return SpriteId::Corpse_Quazilisk;
         case UnitId::ZergQuazrokor:                return SpriteId::Corpse_Quazilisk;
         case UnitId::ZergVorvrokor:                return SpriteId::Corpse_Vorvrokor;
+        case UnitId::ZergGarvrokor:                return SpriteId::Corpse_Vorvrokor;
         case UnitId::ZergNathrokor:                return SpriteId::Corpse_Nathrokor;
         case UnitId::ZergLiiralisk:                return SpriteId::Corpse_ZergUnitSmall;
         case UnitId::ZergKalkalisk:                return SpriteId::Corpse_ZergUnitSmall;
@@ -1921,6 +1928,10 @@ bool match_id_to_base(UnitId::Enum match_id, UnitId::Enum base_id) {
         case UnitId::ZergGeszkathGrotto: return match_id == UnitId::ZergKethrajKeep;
     }
     return false;
+}
+
+bool is_triple_birth(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ZergSovrokor;
 }
 } // namespace UnitId
 

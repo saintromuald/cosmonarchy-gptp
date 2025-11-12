@@ -48,6 +48,7 @@ namespace hooks {
 		armor -= unit_ext->values[ValueAutocratControlledOppositionStacks];
 		armor -= unit_ext->values[ValueObservanceRend];
 		armor -= unit_ext->values[ValueVorvalHidebreaker];
+		armor -= unit_ext->values[ValueGarvrolHidebreaker];
 		armor -= unit_ext->values[ValueNathrokHidebreaker];
 		armor -= unit_ext->timers[TimerCorrosiveTouch] > 1;
 		armor -= unit_ext->values[ValueWendigoShatteredWindsStacks];

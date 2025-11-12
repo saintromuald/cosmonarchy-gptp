@@ -20,18 +20,18 @@ namespace hooks {
 			return;
 		}
 
-		UnitExt* unit_ext = get_unit_ext(unit);
+		auto& unit_ext = unit->ext();
 		if (!(unit->order_signal & 4)) {
 			Image* current_image = unit->sprite->main_graphic;
 			IscriptAnimation::Enum animation = IscriptAnimation::SpecialState1;
-			if (unit_ext->values[ValueSpecialSovrolethBirth]) {
+			if (unit_ext.values[ValueSpecialSovrolethBirth]) {
 				animation = IscriptAnimation::Unused2;
 			}
 			if (current_image->animation != animation) {
 				current_image->play_iscript_animation(animation);
 			}
-			if (!unit_ext->values[ValuePlayingHatchSound]) {
-				unit_ext->values[ValuePlayingHatchSound] = true;
+			if (!unit_ext.values[ValuePlayingHatchSound]) {
+				unit_ext.values[ValuePlayingHatchSound] = true;
 				bw::play_sound(SoundId::Zerg_Egg_ZEgRdy00_WAV, unit);
 			}
 		}
@@ -42,8 +42,8 @@ namespace hooks {
 			Point16 pos = {};
 			bool no_two_units = false;
 			if (units_dat::base_property[unit->create_origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
-			||  unit_ext->values[ValueSpecialSovrolethBirth]
-			||  unit_ext->values[ValueCustomEggActive])
+			||  unit_ext.values[ValueSpecialSovrolethBirth]
+			||  unit_ext.values[ValueCustomEggActive])
 			{
 				no_two_units = true;
 			}
@@ -52,10 +52,10 @@ namespace hooks {
 			if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg || unit->previous_unit_type == UnitId::ZergCocoon) {
 				offset_unit = false;
 			}
-			if (unit_ext->values[ValueSpecialSovrolethBirth]) {
+			if (unit_ext.values[ValueSpecialSovrolethBirth]) {
 				offset_unit = true;
 			}
-			unit_ext->values[ValueSpecialSovrolethBirth] = false;
+			unit_ext.values[ValueSpecialSovrolethBirth] = false;
 
 			if (unit_id_is_broodspawn(unit->id)) {
 				unit->remove_timer = Broodspawn::LifeTimer;
@@ -68,12 +68,11 @@ namespace hooks {
 			}
 
 			u32 extra_count = 0;
-			extra_count += unit->id == UnitId::ZergLarva ? 0 : unit_ext->values[ValueSwarmhold]; // Done this way to prevent double Larvae on Egg cancel. -Pr0nogo
+			extra_count += unit_id_is_larva(unit->id) ? 0 : unit_ext.values[ValueSwarmhold]; // Done this way to prevent double Larvae on Egg cancel. -Pr0nogo
 			if (unit->id != UnitId::ZergLarva && game_kind_doubles_units()) {
 				extra_count *= Massacre::UnitMultiplier;
 				extra_count++;
 			}
-			unit_ext->values[ValueSwarmhold] = 0;
 			if (unit_id_is_morphed_from_double_unit(unit->id) && unit->create_origin == UnitId::ZergOcsalLarva) { // Kinda stupid. -Pr0nogo
 			//	extra_count++;
 			}
@@ -86,7 +85,7 @@ namespace hooks {
 					auto& twin_unit_ext = twin_unit->ext();
 					if (stable_count) {
 						stable_count--;
-						twin_unit_ext.values[ValueRegressionUnstable] = unit_ext->values[ValueRegressionUnstable];
+						twin_unit_ext.values[ValueRegressionUnstable] = unit_ext.values[ValueRegressionUnstable];
 					} else {
 						twin_unit_ext.values[ValueRegressionUnstable] = bw::get_zerg_regression(twin_unit) != UnitId::None ? true : false;
 					}
@@ -101,17 +100,22 @@ namespace hooks {
 				extra_count *= 2;
 			}
 
+			if (UnitId::is_triple_birth(static_cast<UnitId::Enum>(unit->id))) {
+				if (!unit_ext.values[ValueRegressionUnstable]) {
+					extra_count += unit_ext.values[ValueSwarmhold] ? 2 : 1;
+				}
+			}
 			for (u32 i = 0; i < extra_count; ++i) {
 				Unit* new_unit = bw::create_unit_in_game(unit->id, unit->player, unit->position.x, unit->position.y);
 				if (new_unit) {
 					spread_debuffs(unit, new_unit);
 					new_unit->rally = unit->rally;
-					UnitExt* new_ext = get_unit_ext(new_unit);
+					auto& new_ext = new_unit->ext();
 					if (stable_count) {
 						stable_count--;
-						new_ext->values[ValueRegressionUnstable] = unit_ext->values[ValueRegressionUnstable];
+						new_ext.values[ValueRegressionUnstable] = unit_ext.values[ValueRegressionUnstable];
 					} else {
-						new_ext->values[ValueRegressionUnstable] = bw::get_zerg_regression(twin_unit) != UnitId::None ? true : false;
+						new_ext.values[ValueRegressionUnstable] = bw::get_zerg_regression(twin_unit) != UnitId::None ? true : false;
 					}
 					helper::order_new_unit_to_rally(new_unit, factory);
 					if (g_active_player_id == g_local_human_id && unit->sprite->flags & SpriteFlags::Selected) {
@@ -121,12 +125,18 @@ namespace hooks {
 				}
 			}
 
+			// This unit has collisionless proxy eggs.
+			if (unit->id == UnitId::ZergSovrokor) {
+				unit->status &= ~UnitStatus::NoCollide;
+			}
+			unit_ext.values[ValueSwarmhold] = 0;
+
 			if (!UnitId::is_zerg_worker(static_cast<UnitId::Enum>(unit->id)) && unit->id != UnitId::ZergOvileth && unit->id != UnitId::ZergYblyleth) {
 				helper::ai_training_unit(unit, unit);
 			}
 			helper::unit_completion_init(unit, 0);
-			if (unit_ext->values[ValueCustomEggActive]) {
-				unit_ext->values[ValueCustomEggActive] = false;
+			if (unit_ext.values[ValueCustomEggActive]) {
+				unit_ext.values[ValueCustomEggActive] = false;
 				u32 hp = unit->hitpoints;
 				helper::update_unit_stats_and_finish_building(unit);
 				unit->set_hitpoints(hp);
@@ -157,7 +167,7 @@ namespace hooks {
 				}
 			}
 			helper::force_order_done(unit);
-			unit->connected_unit = unit_ext->units[UnitMorphConnectedUnit];
+			unit->connected_unit = unit_ext.units[UnitMorphConnectedUnit];
 
 			// TODO: Run this function only for whoever selects this unit. Confirm that this function is actually the right function to run.
 			// Fixes the issue where the cancel button persists on a unit when you select an egg through the birth sequence. -Pr0nogo
@@ -196,6 +206,7 @@ namespace hooks {
 						case UnitId::ZergDroleth:
 						case UnitId::ZergYblyleth:
 						case UnitId::ZergZethrokor:
+						case UnitId::ZergSovrokor:
 						case UnitId::ZergQuazilisk:
 						case UnitId::ZergQuazrokor:
 						case UnitId::ZergCikralisk:
@@ -284,7 +295,8 @@ namespace hooks {
 						case UnitId::ZergDroleth: {
 							animation = IscriptAnimation::AirAttkInit;
 						} break;
-						case UnitId::ZergZethrokor: {
+						case UnitId::ZergZethrokor:
+						case UnitId::ZergSovrokor: {
 							animation = IscriptAnimation::Unused1;
 						} break;
 						// New mutation animation handling! Everything will eventually use this. -Pr0nogo
@@ -401,6 +413,12 @@ namespace hooks {
 			} break;
 			case UnitId::ZergZethrokor: {
 				if (morph_unit_id == UnitId::ZergVorvrokor) {
+					return true;
+				}
+				return false;
+			} break;
+			case UnitId::ZergSovrokor: {
+				if (morph_unit_id == UnitId::ZergGarvrokor) {
 					return true;
 				}
 				return false;

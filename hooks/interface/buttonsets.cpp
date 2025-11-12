@@ -1863,12 +1863,29 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::ZergZethrokor: {
-                                        if (player_has_base_unit_id(unit->player, UnitId::ZergQuazethPool)
-                                            || player_has_gestated_unit_id(unit->player, UnitId::ZergVornathPond)
-                                            || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
-                                            current_button_state = Button_State::Enabled;
+                                        if (faction != Faction::ZergGoszirithTendril) {
+                                            if (player_has_base_unit_id(unit->player, UnitId::ZergQuazethPool)
+                                                || player_has_gestated_unit_id(unit->player, UnitId::ZergVornathPond)
+                                                || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
                                         } else {
-                                            current_button_state = Button_State::Disabled;
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::ZergSovrokor: {
+                                        if (faction == Faction::ZergGoszirithTendril) {
+                                            if (player_has_base_unit_id(unit->player, UnitId::ZergQuazethPool)
+                                                || player_has_gestated_unit_id(unit->player, UnitId::ZergVornathPond)
+                                                || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::ZergQuazilisk: {
@@ -2093,11 +2110,23 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::ZergVorvrokor: {
-                                        if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
-                                        ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
-                                            current_button_state = Button_State::Enabled;
-                                        } else {
-                                            current_button_state = Button_State::Disabled;
+                                        if (faction != Faction::ZergGoszirithTendril) {
+                                            if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
+                                                || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        } break;
+                                        }
+                                    case UnitId::ZergGarvrokor: {
+                                        if (faction == Faction::ZergGoszirithTendril) {
+                                            if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
+                                                || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
                                         }
                                     } break;
                                     case UnitId::ZergLiiralisk:
@@ -2182,6 +2211,18 @@ namespace hooks {
                             } break;
                             case UnitId::ZergZethrokor: {
                                 if (current_button->requirement_var == UnitId::ZergVorvrokor) {
+                                    if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
+                                    ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                        current_button_state = Button_State::Enabled;
+                                    } else {
+                                        current_button_state = Button_State::Disabled;
+                                    }
+                                } else {
+                                    current_button_state = Button_State::Invisible;
+                                } break;
+                            } break;
+                            case UnitId::ZergSovrokor: {
+                                if (current_button->requirement_var == UnitId::ZergGarvrokor) {
                                     if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
                                     ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
                                         current_button_state = Button_State::Enabled;
@@ -3182,6 +3223,11 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ZergSovrokor: {
+                                    if (current_button->icon_id == IconId::CorpseCocoon) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ZergQuazrokor: {
                                     if (current_button->icon_id == IconId::AdrenalFrenzy) {
                                         current_button_state = Button_State::Enabled;
@@ -3201,6 +3247,11 @@ namespace hooks {
                                 case UnitId::ZergVorvrokor: {
                                     if (current_button->icon_id == IconId::CaptivatingClaws
                                     ||	current_button->icon_id == IconId::Hidebreaker) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergGarvrokor: {
+                                    if (current_button->icon_id == IconId::Hidebreaker) { // Hidebreaker II
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

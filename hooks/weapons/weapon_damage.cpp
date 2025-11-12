@@ -482,6 +482,12 @@ namespace hooks {
                 u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
                 data.damage /= divisor;
             } break;
+            case WeaponId::VorvalClaws: {
+                // TODO: Extend weapons and remove this
+                if (data.attacker->id == UnitId::ZergGarvrokor) {
+                    data.damage += 256;
+                }
+            } break;
             case WeaponId::GeszithalorAcidSpore: {
                 // Searing Acid - Geszithalor behavior
                 data.damage += data.damage_divisor * 10 * 256;
@@ -701,11 +707,20 @@ namespace hooks {
                     helper::mind_control_hit(data.attacker, data.target);
                 } break;
                 case WeaponId::VorvalClaws: {
-                    if (!target_ext.values[ValueVorvalHidebreaker]) {
-                        target_ext.values[ValueVorvalHidebreaker] = 1;
-                        // TODO: Overlay
+                    if (data.attacker->id == UnitId::ZergVorvrokor) {
+                        if (!target_ext.values[ValueVorvalHidebreaker]) {
+                            target_ext.values[ValueVorvalHidebreaker] = 1;
+                            // TODO: Overlay
+                        }
+                        target_ext.timers[TimerHidebreaker] = Zerg::HidebreakerDuration;
                     }
-                    target_ext.timers[TimerHidebreaker] = 2 * 24 + 1;
+                    if (data.attacker->id == UnitId::ZergGarvrokor) {
+                        if (!target_ext.values[ValueGarvrolHidebreaker]) {
+                            target_ext.values[ValueGarvrolHidebreaker] = 2;
+                            // TODO: Overlay
+                        }
+                        target_ext.timers[TimerHidebreaker] = Zerg::HidebreakerDuration;
+                    }
                 } break;
                 case WeaponId::NathrokorVestigialStrike:
                 case WeaponId::NathrokorNathrokClaws: {
@@ -713,7 +728,7 @@ namespace hooks {
                         target_ext.values[ValueNathrokHidebreaker] = 1;
                         // TODO: Overlay
                     }
-                    target_ext.timers[TimerHidebreaker] = 2 * 24 + 1;
+                    target_ext.timers[TimerHidebreaker] = Zerg::HidebreakerDuration;
                 } break;
             }
             // Ignore Carapace Swarm!
