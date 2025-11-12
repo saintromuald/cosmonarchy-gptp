@@ -35,6 +35,7 @@ f32 TheTurningGameMode::calculate_spawn_time_factor(UnitId::Enum unit_id) const 
     }
     
     factor /= bw::active_player_count(); // times the amount of players
+    return factor;
 }
 
 void TheTurningGameMode::on_init() {

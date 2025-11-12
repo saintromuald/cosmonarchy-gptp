@@ -16,12 +16,26 @@ void __declspec(naked) replay_save_wrapper() { // 004EEBEA
         JMP jmp_address
     }
 }
+
+void __declspec(naked) step_through_replay_data_wrapper() { // 004CDCE0
+    static GameAction* action_set;
+    __asm {
+        MOV action_set, ECX
+        PUSHAD
+    }
+    hooks::step_through_replay_data(action_set);
+    __asm {
+        POPAD
+        RETN
+    }
+}
 } // namespace
 
 namespace hooks {
 
 void inject_replay_hooks() {
-    jump_patch(replay_save_wrapper,				   0x004EEBEA, 1);
+    jump_patch(replay_save_wrapper,				0x004EEBEA, 1);
+    jump_patch(step_through_replay_data_wrapper, 0x004CDCE0, 1);
 }
 
 } // namespace hooks
