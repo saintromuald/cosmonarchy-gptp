@@ -15,27 +15,37 @@ static f32 Map(f32 value, f32 in_min, f32 in_max, f32 out_min, f32 out_max) {
     return Lerp(InvLerp(value, in_min, in_max), out_min, out_max);
 }
 
+f32 TheTurningGameMode::calculate_spawn_time_factor(UnitId::Enum unit_id) const {
+    f32 factor = 1;
+    factor += 0.05 * (g_elapsed_time_frames / 24.0 / 60.0); // 5% faster spawn every minute
+    factor += 0.01 * m_spawn_pool_size; // 1% faster for each unit in the pool
+
+    if (unit_id != UnitId::None) {
+        u32 cost = units_dat::mineral_cost[unit_id] + units_dat::vespene_cost[unit_id];
+        if (units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg) {
+            cost /= 2;
+        }
+        // factor spawn time relative to 200 combined cost
+        // e.g.
+        //     maverick at 50  is  50/200 = 0.25 = 25%  time = 4x speed
+        //     zealot   at 100 is 100/200 = 0.50 = 50%  time = 2x speed
+        //     shaman   at 200 is 200/200 = 1.00 = 100% time = 1x speed
+        //     minotaur at 650 is 650/200 = 3.25 = 325% time = 0.307x speed
+        factor *= cost / 200.0;
+    }
+    
+    factor /= bw::active_player_count(); // times the amount of players
+}
+
 void TheTurningGameMode::on_init() {
-    m_spawn_timer.start(DefaultSpawnTimer);
+    m_spawn_timer.start(DefaultSpawnTimer * calculate_spawn_time_factor());
     m_wave_timer.start(WaveTimer);
 }
 
 void TheTurningGameMode::on_tick() {
     if (m_spawn_timer.elapsed()) {
         if (Unit* unit = spawn()) {
-            u32 cost = units_dat::mineral_cost[unit->id] + units_dat::vespene_cost[unit->id];
-            if (units_dat::base_property[unit->id] & UnitProperty::TwoUnitsIn1Egg) {
-                cost /= 2;
-            }
-
-            f32 factor = 1;
-            factor += 0.05 * (g_elapsed_time_frames / 24.0 / 60.0); // 5% faster spawn every minute
-            factor += 0.01 * m_spawn_pool_size; // 1% faster for each unit in the pool
-            
-            factor *= cost / 200.0; // factor spawn time relative to 200 combined cost (e.g. maverick at 50 is 50/200 = 0.25)
-            factor /= bw::active_player_count(); // times the amount of players
-
-            m_spawn_timer.start(DefaultSpawnTimer * factor);
+            m_spawn_timer.start(DefaultSpawnTimer * calculate_spawn_time_factor(UnitId::Enum(unit->id)));
         }
     }
 

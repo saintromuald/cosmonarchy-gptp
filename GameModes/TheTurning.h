@@ -20,6 +20,7 @@ public:
 
 private:
     Unit* spawn();
+    f32 calculate_spawn_time_factor(UnitId::Enum unit_id = UnitId::None) const;
 
 private:
     u32 m_spawn_pool_size = 0;
