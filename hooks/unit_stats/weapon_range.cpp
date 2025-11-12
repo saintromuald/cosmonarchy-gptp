@@ -155,7 +155,7 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
 
 // Hooked to eventually extend weapon ids past 255. -Pr0nogo
 void reassign_target_acquisition_range() { // 0049E010
-    for (u32 unit_id = 0; unit_id < UnitLimit; unit_id++) {
+    for (u32 unit_id = 0; unit_id < UnitsIdLimit; unit_id++) {
         auto subunit_id = units_dat::subunit[unit_id];
         auto final_unit_id = subunit_id;
         if (subunit_id == UnitId::None) {
@@ -170,7 +170,7 @@ void reassign_target_acquisition_range() { // 0049E010
             }
         }
         auto air_weapon = units_dat::air_weapon[final_unit_id];
-        if (air_weapon < WeaponId::None) {
+        if (air_weapon != WeaponId::None) {
             auto max_range_air = weapons_dat::max_range[air_weapon] / 32;
             if (max_range_air > acquisition_range) {
                 acquisition_range = max_range_air;
