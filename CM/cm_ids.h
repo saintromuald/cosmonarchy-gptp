@@ -120,6 +120,7 @@ bool unit_id_is_mine_layer(UnitId::Enum unit_id);
 bool unit_id_can_construct(UnitId::Enum unit_id);
 bool unit_id_is_hangar_unit(UnitId::Enum unit_id);
 bool unit_id_is_air_spawner(UnitId::Enum unit_id);
+bool unit_id_is_flyer_or_air_spawner(UnitId::Enum unit_id);
 bool weapon_id_deals_no_damage(WeaponId::Enum weapon_id);
 bool unit_id_blocks_construction(UnitId::Enum unit_id);
 UnitId::Enum get_racial_worker_id(u32 race_id);

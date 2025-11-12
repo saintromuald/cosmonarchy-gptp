@@ -1466,6 +1466,11 @@ bool unit_id_is_air_spawner(UnitId::Enum unit_id) {
         || unit_id == UnitId::ZergTosvrolHaunt;
 }
 
+bool unit_id_is_flyer_or_air_spawner(UnitId::Enum unit_id) {
+    return units_dat::base_property[unit_id] & UnitProperty::Flyer
+        || unit_id_is_air_spawner(unit_id);
+}
+
 bool weapon_id_deals_no_damage(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::MindTyrantMaledictus; // More will be added later. -Pr0nogo
 }

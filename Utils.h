@@ -25,7 +25,9 @@ std::optional<std::invoke_result_t<GenFunc>> sample_best(GenFunc&& gen_func, Sco
     std::optional<Result> result{};
     Score best_score = std::numeric_limits<Score>::min();
 
-    while (max_samples > 0 && max_allowed_fails >= 0) {
+    // Since we are unsigned, we treat 0 as termination, and 1 as first try buffer
+    max_allowed_fails += 1;
+    while (max_samples > 0 && max_allowed_fails > 0) {
         const Result current = gen_func();
         const Score score = score_func(current);
         if (score < 0) {
