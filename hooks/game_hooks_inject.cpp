@@ -2,9 +2,6 @@
 #include <BW/api.h>
 #include <hook_tools.h>
 #include <logger.h>
-#include <config.h>
-#include <trigger_system\trigger_system.h>
-#include <player_color.h>
 
 bool isGameOn = false;
 
@@ -185,104 +182,6 @@ void __declspec(naked) mp_save_directory_wrapper() { // 0044CCF7
     }
 }
 
-constexpr std::string_view replay_ext = ".ext";
-constexpr auto replay_full_size = 31; // Some weird magic BW const we would want to extend 
-constexpr auto replay_name_size = replay_full_size - replay_ext.size();
-
-static fs::path get_replay_path() {
-    return bw::get_starcraft_path() / "maps" / "replays";
-}
-
-void copy_last_replay(const std::string& dir, const std::string& name) {
-    std::ifstream from(get_replay_path() / "LastReplay.rep", std::ios::binary);
-    if (!from) {
-        return;
-    }
-
-    fs::path to_path = get_replay_path() / "Autosave" / dir / name;
-    if (fs::exists(to_path)) {
-        return; // Do not overwrite existing files
-    }
-
-    std::error_code error;
-    fs::create_directories(to_path.parent_path(), error);
-
-    std::ofstream to(to_path, std::ios::binary);
-    if (!to) {
-        return;
-    }
-
-    to << from.rdbuf();
-}
-
-void replay_save() {
-    if (!g_config.auto_save_replays) {
-        return;
-    }
-
-    constexpr std::string_view ext = ".rep";
-    time_t now = time(0);
-    tm* ltm = localtime(&now);
-    std::string commit = bw::get_commit_hash();
-
-    std::stringstream dir_ss;
-    dir_ss << std::put_time(ltm, "%Y-%m-%d");
-    if (!commit.empty()) {
-        dir_ss << "_" << commit;
-    }
-
-    std::string dir = dir_ss.str();
-    if (dir.size() > replay_name_size) {
-        dir.resize(replay_name_size);
-    }
-
-    std::stringstream file_ss;
-    if (!commit.empty()) {
-        file_ss << commit << "_";
-    }
-    file_ss << std::put_time(ltm, "%H-%M") << "_" << g_current_map_name;
-
-    std::string file = file_ss.str();
-    if (file.size() > replay_name_size) {
-        file.resize(replay_name_size);
-    }
-
-    /*
-    bool first = true;
-    for (u32 i = 0; i < PlayerLimit; ++i) {
-        if (g_player_table[i].type != PlayerType::Human && g_player_table[i].type != PlayerType::Computer) {
-            continue;
-        }
-        if (globals->players[i].is_witness) {
-            continue;
-        }
-        if (first) {
-            first = false;
-            strcat_s(name, ", ");
-        } else {
-            strcat_s(name, " - ");
-        }
-        strcat_s(name, player_data.full_player_names[i].data);
-    }
-    */
-
-    copy_last_replay(dir, file + std::string{ext});
-}
-
-void __declspec(naked) replay_save_wrapper() { // 004EEBEA
-    static const u32 jmp_address = 0x004EEBF0;
-    __asm {
-        PUSHAD
-    }
-    replay_save();
-    static u8 is_league = *g_is_league_game;
-    __asm {
-        POPAD
-        CMP bl, is_league // original code
-        JMP jmp_address
-    }
-}
-
 void __declspec(naked) initialize_provider_version_wrapper() { // 00472770
     static GameVersion* version;
     __asm {
@@ -313,7 +212,6 @@ void inject_game_hooks() {
 
     jump_patch(sp_save_directory_wrapper,			   0x004AE9E2, 0);
     jump_patch(mp_save_directory_wrapper,			   0x0044CCF7, 1);
-    jump_patch(replay_save_wrapper,				   0x004EEBEA, 1);
 
     jump_patch(initialize_provider_version_wrapper,  0x00472770, 1);
     jump_patch(network_set_return_menu,              0x004DC5B0, 0);

@@ -868,7 +868,7 @@ namespace hooks
 	}
 
 	// Hooked to set Scenario as the default game type. -Pr0nogo
-	// Currently defaults to Competitive... which is good enough for now, I guess!
+	// Currently defaults to Unranked... which is good enough for now, I guess!
 	void initialize_game_type_list(BinDlg* list) { // 004AF400
 		helper::compile_list((s32(__stdcall*)(u32, u32, u32, u32))helper::compile_list_callback);
 		s32 last_game_type = helper::get_last_game_type_from_registry(list);

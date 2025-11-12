@@ -47,3 +47,6 @@ Faction get_random_faction(RaceId::Enum race);
 namespace WeaponId {
 const char* get_name(Unit* unit, WeaponId::Enum weapon_id);
 } // namespace WeaponId
+
+UnitId::Enum get_factional_regression(UnitId::Enum unit_id, Faction faction);
+UnitId::Enum get_factional_regression(Unit* unit);

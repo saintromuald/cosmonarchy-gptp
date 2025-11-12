@@ -55,6 +55,7 @@
 #include "aise_signal.h"
 #include "Game.h"
 #include "trigger_system/trigger_sound.h"
+#include "NewGameCommand.h"
 
 #include <random>
 #include <format>
@@ -801,6 +802,7 @@ namespace hooks {
         }
 
         g_game->first_frame();
+		g_globals->sample_eco();
         g_graphics.reset_all_graphics();
 
         // Update extended features
@@ -936,24 +938,23 @@ namespace hooks {
 
         process_quickbuilding();
 
-        // Sync camera
-        struct SyncCameraCommand {
-            u8 type = GameCommand_Custom;
-            u8 subtype = NewGameCommand::CameraSync;
-            u8 player;
-            Point16 pos;
-            u8 padding[5];
-        };
-        static_assert(sizeof(SyncCameraCommand) == 0xC);
-
-        Point16 camera = {};
-        camera.x = g_move_to_x;
-        camera.y = g_move_to_y;
-
-        SyncCameraCommand command = {};
-        command.player = *g_local_human_id;
-        command.pos = camera;
-        helper::queue_game_command((u8*)&command, sizeof(command));
+        // Queue Commands
+        cmd::CameraSync{
+            .player = u8(g_local_nation_id),
+            .pos = {
+                .x = u16(g_move_to_x),
+                .y = u16(g_move_to_y),
+            },
+        }.queue();
+        
+        if (g_elapsed_time_frames == 1) {
+            std::mt19937 rng{std::random_device{}()};
+            for (u32 i = 0; i < 3; i++) { // 30 bytes of randomness per player
+                cmd::UuidRand uuid_rand;
+                std::ranges::generate(uuid_rand.data, rng);
+                uuid_rand.queue();
+            }
+        }
 
         // Count workers
         for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
@@ -4293,9 +4294,12 @@ namespace hooks {
                                 }
                             } break;
                             case NewGameCommand::CameraSync: {
-                                u32 player = buffer[2];
-                                Point16 pos = *(Point16*)(buffer + 3);
-                                g_globals->players[player].camera = pos;
+                                const auto& cmd = cmd::CameraSync::from(buffer);
+                                g_globals->players[cmd.player].camera = cmd.pos;
+                            } break;
+                            case NewGameCommand::UuidRand: {
+                                const auto& cmd = cmd::UuidRand::from(buffer);
+                                g_globals->uuid_rand.append_range(cmd.data);
                             } break;
                             case NewGameCommand::SelectFaction: {
                                 u32 player = buffer[2];

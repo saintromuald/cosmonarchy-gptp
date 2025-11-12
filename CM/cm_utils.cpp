@@ -162,8 +162,8 @@ u32 get_bullet_damage(Bullet* bullet, u32 weapon_id) {
 
 const char* game_kind_to_string(GameKind game_kind) {
     switch (game_kind) {
-        case GameKind::Competitive: {
-            return "Competitive";
+        case GameKind::Unranked: {
+            return "Unranked";
         } break;
         case GameKind::Debug: {
             return "Debug";
@@ -204,14 +204,17 @@ const char* game_kind_to_string(GameKind game_kind) {
         case GameKind::Zombocalypse: {
             return "Zombocalypse";
         } break;
+        case GameKind::Ranked: {
+            return "Ranked";
+        } break;
     }
     return "Custom";
 }
 
 const char* game_kind_to_filename_string(GameKind game_kind) {
     switch (game_kind) {
-        case GameKind::Competitive: {
-            return "Competitive(1)";
+        case GameKind::Unranked: {
+            return "Unranked(1)";
         } break;
         case GameKind::Debug: {
             return "Debug(1)";
@@ -251,6 +254,9 @@ const char* game_kind_to_filename_string(GameKind game_kind) {
         } break;
         case GameKind::Zombocalypse: {
             return "Zombocalypse(1)";
+        } break;
+        case GameKind::Ranked: {
+            return "Ranked(1)";
         } break;
     }
     assert(false);
@@ -560,9 +566,8 @@ u32 get_banter_cooldown(UnitId::Enum unit_id) {
     return 0;
 }
 
-UnitId::Enum get_factional_regression(Unit* unit) {
-    Faction faction = unit->player < PlayerLimit ? g_globals->players[unit->player].faction : Faction::None;
-    switch (unit->id) {
+UnitId::Enum get_factional_regression(UnitId::Enum unit_id, Faction faction) {
+    switch (unit_id) {
         case UnitId::ZergIroleth: {
             switch (faction) {
                 case Faction::ZergZorthosTendril: return UnitId::ZergYblyleth;
@@ -606,6 +611,12 @@ UnitId::Enum get_factional_regression(Unit* unit) {
             return UnitId::ZergGorgrokor;
         } break;
     }
+    return UnitId::None;
+}
+
+UnitId::Enum get_factional_regression(Unit* unit) {
+    const auto faction = unit->player < PlayerLimit ? g_globals->players[unit->player].faction : Faction::None;
+    return get_factional_regression(UnitId::Enum(unit->id), faction);
 }
 
 void init_corpse(Thingy* corpse, SpriteId::Enum id, u32 player) {
@@ -932,5 +943,4 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
     }
     return "U...nimplemented";
 }
-
 } // namespace WeaponId

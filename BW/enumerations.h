@@ -558,7 +558,7 @@ enum Enum {
     TopVsBottom    = 15,
 
     // Cosmonarchy
-    Competitive    = 30,
+    Unranked       = 30,
     Scenario       = 31,
     Omnipresence   = 32,
     FactionWars    = 33,
@@ -572,6 +572,7 @@ enum Enum {
     Deathmarch     = 41,
     Brotherhood    = 42,
     Zombocalypse   = 43,
+    Ranked         = 44,
 };
 }
 
@@ -1564,3 +1565,51 @@ enum class Placeability : u8 {
     InvalidExplored = 8,
     InvalidUnexplored = 10,
 };
+
+enum class Faction : u8 {
+	None,
+
+	TerranOrionImperium,
+	TerranHecatonCoalition,
+	TerranFuturistFederation,
+	TerranGoldenRepublic,
+	TerranNydusTrinity,
+	TerranUpstart,
+
+	ProtossDivinePrimacy,
+	ProtossOrderOfTheSacredSaber,
+	ProtossKhalendricKnights,
+	ProtossStarbound,
+
+	ZergAtaltrethTendril,
+	ZergImicrenTendril,
+	ZergOrkotiTendril,
+	ZergGoszirithTendril,
+	ZergZorthosTendril,
+
+	Count,
+};
+
+static const char* faction_identifiers[] = { // This array needs to the same size and order as Faction enum
+	"none",
+
+	"orion_imperium",
+	"hecaton_coalition",
+	"futurist_federation",
+	"golden_republic",
+	"nydus_trinity",
+	"upstart_terran",
+
+	"divine_primacy",
+	"order_of_the_sacred_saber",
+	"khalendric_knights",
+	"starbound",
+
+	"ataltreth",
+	"imicren",
+	"goszirith",
+	"orkoti",
+	"zorthos",
+};
+static_assert(std::size(faction_identifiers) == (size_t)Faction::Count);
+

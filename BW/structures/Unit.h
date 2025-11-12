@@ -392,10 +392,10 @@ struct Unit : public UnitLayout {
     bool unit_is_training_or_morphing();
     bool is_queue_slot_active(int slot);
     u8 get_right_click_action_order();
+	Faction faction();
+    f32 total_cost();
 
-    inline u32 get_strength() {
-        return this->ground_strength >= this->air_strength ? this->ground_strength : this->air_strength;
-    }
+    inline u32 get_strength() const { return std::max(this->ground_strength, this->air_strength); }
 
     struct UnitExt& ext();
     bool has_energy_for(u32 tech_id);

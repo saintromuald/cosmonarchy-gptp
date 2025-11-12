@@ -58,7 +58,7 @@ enum InterceptType {
 enum class GameKind {
     Invalid,
 
-    Competitive,
+    Unranked,
     Scenario,
     Omnipresence,
     FactionWars,
@@ -71,6 +71,7 @@ enum class GameKind {
     Deathmarch,
     Brotherhood,
     Zombocalypse,
+    Ranked,
 
     Debug,
     Count,
@@ -919,6 +920,7 @@ bool unit_queue_full(Unit* unit);
 bool all_selected_units_have_addon(u32 unit_id);
 bool unit_is_stunned(Unit* unit);
 void dump_sync_data();
+u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, bool from_gosvileth, bool from_agrileth);
 u32 get_zerg_regression(Unit* unit);
 bool unit_is_allied_or_detected(Unit* unit, u32 player);
 u32 get_ground_path_distance_tiles(Point16 a, Point16 b);
@@ -1037,6 +1039,8 @@ std::string get_commit_hash();
 bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos);
 Point16 align_to_tile_grid(Point16 pos, UnitId::Enum unit_id);
 u32 active_player_count();
+u32 human_count();
+u32 human_or_witness_count();
 bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id);
 f32 calculate_dark_ages_penalty(f32 range);
 void zap_overlay(Unit* unit);
@@ -1044,4 +1048,5 @@ void play_manual_weaponfire_sound(Unit* unit, WeaponId::Enum weapon_id);
 void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id);
 u32 get_weapon_hit_sound(WeaponId::Enum weapon_id);
 Point16 get_building_reposition(Unit* unit, Point16 position);
+f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable);
 } // namespace bw

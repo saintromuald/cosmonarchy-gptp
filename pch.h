@@ -1,4 +1,5 @@
 #pragma once
+#define NOMINMAX
 
 #include <iostream>
 #include <fstream>
@@ -18,9 +19,6 @@
 #include <numeric>
 #include <functional>
 #include <filesystem>
-
-#define NOMINMAX
-#include <Windows.h>
 
 #include <json.hpp>
 #include <yaml-cpp\yaml.h>

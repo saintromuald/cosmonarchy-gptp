@@ -14,6 +14,7 @@
 #include "hooks/target_related.h"
 #include "data_ext.h"
 #include "BW/stat_txt_spec.h"
+#include "trigger_system/trigger_system.h"
 
 UnitRef::UnitRef(Unit* unit) : index{unit->get_unit_index()}, unique_id{unit->unique_id} {}
 
@@ -1470,6 +1471,15 @@ void Unit::count_connected_larva() {
     helper::iterate_units_at_location_target_proc_larva_count(this, &coords);
 }
 
+Faction Unit::faction() {
+	return player < PlayerLimit ? g_globals->players[player].faction : Faction::None;
+}
+
+f32 Unit::total_cost() {
+	UnitExt* unit_ext = get_unit_ext(this);
+	return bw::unit_id_total_cost(id, faction(), unit_ext->values[ValueRegressionUnstable]);
+}
+
 u32 Unit::standard_sprite_id() {
     if (this->id == UnitId::TerranBlackjack || this->id == UnitId::TerranBlackjackGolden) {
         UnitExt& unit_ext = this->ext();
@@ -1564,7 +1574,6 @@ bool Unit::is_hallucination() {
 bool Unit::is_grounded_building() {
     return this->status & UnitStatus::GroundedBuilding;
 }
-
 bool Unit::is_in_transport() {
     return this->status & UnitStatus::InTransport;
 }
