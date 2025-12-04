@@ -3736,6 +3736,9 @@ namespace hooks {
     bool game_preinit() {
         g_game = std::make_unique<Game>();
 
+        g_globals = std::make_unique<Globals>();
+        g_globals->current_advisor = get_advisor_type_from_config(g_player_table[g_local_nation_id].race);
+
         set_max_sight_range();
 
         // Update harvest time for mineral fields

@@ -17,7 +17,7 @@ static uuids::uuid_name_generator g_uuid_generator{uuids::uuid_namespace_dns};
 
 struct InsertMatchRequest {
     // NOTE: camelCase required for macro to work as intended
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(InsertMatchRequest, matchUuid, gameVersion, replayFile);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(InsertMatchRequest, matchUuid, gameVersion, replayFile, desyncFile);
 
     std::string matchUuid;
     std::string gameVersion;
@@ -40,8 +40,12 @@ bool upload_replay(const std::vector<char>& uuid_data, const std::string& game_v
     const auto json_str = json.dump();
 
     httplib::Client cli{"http://cosmonarchy.com"};
-    if (const auto res = cli.Post("/api/matches", json_str, "application/json")) {
-        return res->status == 200;
+    for (int retry = 0; retry < 3; retry++) {
+        if (const auto res = cli.Post("/api/matches", json_str, "application/json")) {
+            if (res->status >= 200 && res->status < 300) {
+                return true;
+            }
+        }
     }
     return false;
 }

@@ -1998,20 +1998,6 @@ bool unit_is_stunned(Unit* unit) {
         || unit_ext.timers[TimerStun] > 1 || unit_ext.values[ValueReviveStarted];
 }
 
-void dump_sync_data() {
-    g_globals->had_desync = true;
-    std::ofstream file{"desync.txt", std::ios::binary};
-    for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-        std::print(file, "Unit {} #{}", unit->get_name(), unit->get_unit_index() - 1);
-        std::print(file, "\tPlayer {}", unit->player);
-
-        Sprite* sprite = unit->sprite;
-        std::print(file, "Sprite");
-        std::print(file, "\tSprite Id: {}", sprite->id);
-        std::print(file, "\tVisibility: {}", sprite->visibility_status);
-    }
-}
-
 u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, bool from_gosvileth, bool from_agrileth) {
     switch (unit_id) {
         // Structure Morphs
@@ -4204,6 +4190,21 @@ u32 human_count() {
             continue;
         }
         if (g_player_table[i].type != PlayerType::Human) {
+            continue;
+        }
+        player_count++;
+    }
+    return player_count;
+}
+
+u32 human_or_defeated_human_count() {
+    u32 player_count = 0;
+    for (u32 i = 0; i < 8; i++) {
+        if (bw::player_is_witness(i)) {
+            continue;
+        }
+        if (g_player_table[i].type != PlayerType::Human
+            && g_player_table[i].type != PlayerType::HumanDefeated) {
             continue;
         }
         player_count++;
