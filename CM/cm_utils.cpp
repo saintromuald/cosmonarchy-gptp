@@ -35,12 +35,17 @@ void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
         bool ping = true;
         Point16 position = {};
         switch (event_type) {
-            case SpectatorEvent_Combat: {
-                position = { unit->position.x, unit->position.y };
+            // TODO: Different ping types, maybe sound queue... Must be tasteful! -Pr0nogo
+            case SpectatorEvent_Combat: 
+            case SpectatorEvent_Grief: {
+                position = {unit->position.x, unit->position.y};
             } break;
             case SpectatorEvent_Tech: {
-                position = { unit->position.x, unit->position.y };
+                position = {unit->position.x, unit->position.y};
             //	helper::play_sound_global(units_dat::sound_yes_first[unit->id]);
+            } break;
+            case SpectatorEvent_Nuke: {
+                position = {unit->order_target.pt.x, unit->order_target.pt.y};
             } break;
         }
         if (ping) {

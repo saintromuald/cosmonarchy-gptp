@@ -852,40 +852,41 @@ namespace hooks {
 		bw::decloak_passive_proc(unit);
 		unit->order_target.pt = unit->position;
 
-		UnitExt* unit_ext = get_unit_ext(unit);
-		switch (unit_ext->values[ValueProtossSwitchOrderState]) {
+		auto& unit_ext = unit->ext();
+		switch (unit_ext.values[ValueProtossSwitchOrderState]) {
 			case 0: {
 				if (unit->movement_flags & MovementFlags_Accelerating) {
 					bw::make_to_hold_position(unit);
 				}
-				unit_ext->values[ValueProtossSwitchOrderState] = 1;
+				unit_ext.values[ValueProtossSwitchOrderState] = 1;
 			} break;
 			case 1: {
 				if (!(unit->movement_flags & MovementFlags_Accelerating)
 				&&    unit->sprite->main_graphic->animation != IscriptAnimation::Walking
-				&&    unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] == 0)
+				&&    unit_ext.timers[TimerStarSovereignGriefOfAllGodsDelay] == 0)
 				{
-					unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] = 24;
+					unit_ext.timers[TimerStarSovereignGriefOfAllGodsDelay] = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 					unit->status |= UnitStatus::CanNotAttack;
-					unit_ext->values[ValueProtossSwitchOrderState] = 2;
+					unit_ext.values[ValueProtossSwitchOrderState] = 2;
 					bw::play_sound(SoundId::StarSovereignGriefOfAllGodsChannel, unit);
+					replay_witness_event(unit, SpectatorEvent_Grief);
 				}
 			} break;
 			case 2: {
 				unit->play_iscript_animation(IscriptAnimation::CastSpell);
-				unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] = 121;
-				unit_ext->values[ValueProtossSwitchOrderState] = 3;
+				unit_ext.timers[TimerStarSovereignGriefOfAllGodsChannel] = 121;
+				unit_ext.values[ValueProtossSwitchOrderState] = 3;
 			} break;
 			case 3: {
-				if (unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] != 0 && unit_ext->timers[TimerStarSovereignGriefOfAllGodsDelay] == 0 && unit->sprite->main_graphic->animation != IscriptAnimation::CastSpell) {
+				if (unit_ext.timers[TimerStarSovereignGriefOfAllGodsChannel] != 0 && unit_ext.timers[TimerStarSovereignGriefOfAllGodsDelay] == 0 && unit->sprite->main_graphic->animation != IscriptAnimation::CastSpell) {
 					unit->play_iscript_animation(IscriptAnimation::CastSpell);
-					unit_ext->timers[TimerStarSovereignGriefOfAllGodsChannel] = 121;
+					unit_ext.timers[TimerStarSovereignGriefOfAllGodsChannel] = 121;
 				} else if (unit->order_signal & 4) {
 					unit->order_signal &= ~0x4;
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->status &= ~UnitStatus::CanNotAttack;
-					unit_ext->values[ValueProtossSwitchOrderState] = 0;
+					unit_ext.values[ValueProtossSwitchOrderState] = 0;
 					unit->order_to_idle();
 				}
 			} break;

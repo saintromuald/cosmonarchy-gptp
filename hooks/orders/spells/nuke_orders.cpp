@@ -93,6 +93,7 @@ namespace hooks {
 					Unit* nuke = current_unit->building.silo.nuke;
 					current_unit->building.silo.nuke = 0;
 					current_unit->building.silo.is_ready = false;
+					replay_witness_event(unit, SpectatorEvent_Nuke);
 					helper::play_sound_from_unit(SoundId::Terran_GHOST_TGhLas00_wav, unit, 1, 0);
 					nuke->order_to(OrderId::NukeLaunch, unit->order_target.pt.x, unit->order_target.pt.y);
 					nuke->connected_unit = unit;
