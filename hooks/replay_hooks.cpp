@@ -6,6 +6,9 @@
 #include <trigger_system\trigger_system.h>
 #include <player_color.h>
 #include "../hook_tools.h"
+#include <future>
+#include <utility>
+#include "logger.h"
 
 namespace {
 
@@ -71,7 +74,7 @@ void auto_save_replay() {
 }
 
 static bool should_auto_upload_replay() {
-    if (g_globals->forbid_replay_auto_upload || bw::human_count() < 2) {
+    if (g_globals->forbid_replay_auto_upload || bw::human_or_defeated_human_count() < 2) {
         return false;
     }
     return bw::get_game_kind() == GameKind::Ranked || g_globals->had_desync;
@@ -86,12 +89,19 @@ void upload_last_replay() {
 
     std::vector<char> desync;
     if (g_globals->had_desync) {
-        if (std::ifstream desync_stream{"desync.txt", std::ios::binary}) {
-            desync.assign(std::istreambuf_iterator<char>(desync_stream), std::istreambuf_iterator<char>());
+        std::stringstream desync_file;
+        for (const auto* logger : gptp::g_loggers) {
+            desync_file << "============ " << logger->name() << " ============\n\n";
+            desync_file << logger->buffered_string();
+            desync_file << "\n\n";
         }
+        std::string str = desync_file.str();
+        desync.assign(str.begin(), str.end());
     }
 
-    ReplayKraken::upload_replay(g_globals->uuid_rand, bw::get_commit_hash(), replay, desync);
+    std::async([replay = std::move(replay), desync = std::move(desync)] {
+        ReplayKraken::upload_replay(g_globals->uuid_rand, bw::get_commit_hash(), replay, desync);
+    });
 }
 
 } // namespace

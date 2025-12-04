@@ -289,6 +289,7 @@ C_ASSERT(ARRAY_SIZE(trigger_behavior_names) == TriggerBehavior_Count);
 
 inline auto g_globals = std::make_unique<Globals>();
 
+Advisor get_advisor_type_from_config(u32 race);
 void init_trigger_system();
 void update_trigger_system(bool in_game);
 

@@ -35,48 +35,48 @@ namespace {
         }
     }
 
-    void __declspec(naked) targeted_order_wrapper() {
-        static s16 a1;
-        static s32 a2;
-        static Unit* a3;
-        static s16 a4;
-        static s32 a5;
-        static s32 a6;
-        static s32 a7;
-        static s32 a8;
-        static s32 a9;
-        static s32 a10;
-        __asm {
-            PUSH EBP
-            MOV EBP, ESP
-            MOV a1, DX
-            MOV a2, EBX
-            MOV a3, ESI
-            MOV a4, AX
-            PUSH EAX
-            MOV EAX, [EBP + 0x8]
-            MOV a5, EAX
-            MOV EAX, [EBP + 0xC]
-            MOV a6, EAX
-            MOV EAX, [EBP + 0x10]
-            MOV a7, EAX
-            MOV EAX, [EBP + 0x14]
-            MOV a8, EAX
-            MOV EAX, [EBP + 0x18]
-            MOV a9, EAX
-            MOV EAX, [EBP + 0x1C]
-            MOV a10, EAX
-            POP EAX
-            PUSHAD
-        }
-        hooks::targeted_order(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
-        __asm {
-            POPAD
-            MOV ESP, EBP
-            POP EBP
-            RETN 0x18
-        }
-    }
+    //void __declspec(naked) targeted_order_wrapper() {
+    //    static s16 a1;
+    //    static s32 a2;
+    //    static Unit* a3;
+    //    static s16 a4;
+    //    static s32 a5;
+    //    static s32 a6;
+    //    static s32 a7;
+    //    static s32 a8;
+    //    static s32 a9;
+    //    static s32 a10;
+    //    __asm {
+    //        PUSH EBP
+    //        MOV EBP, ESP
+    //        MOV a1, DX
+    //        MOV a2, EBX
+    //        MOV a3, ESI
+    //        MOV a4, AX
+    //        PUSH EAX
+    //        MOV EAX, [EBP + 0x8]
+    //        MOV a5, EAX
+    //        MOV EAX, [EBP + 0xC]
+    //        MOV a6, EAX
+    //        MOV EAX, [EBP + 0x10]
+    //        MOV a7, EAX
+    //        MOV EAX, [EBP + 0x14]
+    //        MOV a8, EAX
+    //        MOV EAX, [EBP + 0x18]
+    //        MOV a9, EAX
+    //        MOV EAX, [EBP + 0x1C]
+    //        MOV a10, EAX
+    //        POP EAX
+    //        PUSHAD
+    //    }
+    //    hooks::targeted_order(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
+    //    __asm {
+    //        POPAD
+    //        MOV ESP, EBP
+    //        POP EBP
+    //        RETN 0x18
+    //    }
+    //}
 
     void __declspec(naked) select_units_wrapper()
     {

@@ -2,7 +2,10 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
 #include <fstream>
+#include <sstream>
 
 #include "BW/bwdata.h"
 #include "config.h"
@@ -22,13 +25,17 @@ public:
 	GameLogger& operator<<(const T& t) {
 		if (try_open_log_file()) {
 			print_frame();
-			log_file << t;
+			m_log_file << t;
+			m_game_buffer << t;
 		}
 		return *this;
 	}
 
 	GameLogger& operator<<(std::ostream& (*func)(std::ostream&));
-	inline void set_enabled(bool enabled) { this->m_enabled = enabled; }
+	inline void set_enabled(bool enabled) { m_enabled = enabled; }
+
+	inline const char* name() const { return m_name; }
+	inline std::string buffered_string() const { return m_game_buffer.str(); }
 
 private:
 	bool try_open_log_file();
@@ -38,12 +45,20 @@ private:
 	const char* m_name;
 	bool m_enabled;
 	s32 m_last_updated_frame = -1; // So logging is possible on frame 0
-	std::ofstream log_file;
+	std::ofstream m_log_file;
+	std::stringstream m_game_buffer;
 };
 
 inline GameLogger g_logger{"Game", false};
 inline GameLogger g_critical_logger{"Critical", true};
 inline GameLogger g_sync_random_logger{"Sync Randoms", false};
 inline GameLogger g_local_random_logger{"Local Randoms", false};
+
+inline std::vector<GameLogger*> g_loggers{
+	&g_logger,
+	&g_critical_logger,
+	&g_sync_random_logger,
+	&g_local_random_logger
+};
 
 }

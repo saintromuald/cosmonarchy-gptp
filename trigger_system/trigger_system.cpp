@@ -44,7 +44,7 @@ static void init_auto_celebration() {
     }
 }
 
-static Advisor get_advisor_type_from_config(u32 race) {
+Advisor get_advisor_type_from_config(u32 race) {
     std::vector<Advisor> advisors = g_config.common_advisors; // Note this is a copy
     switch (race) {
         case RaceId::Terran: {
@@ -68,9 +68,6 @@ void init_trigger_system() {
     g_trigger.init = true;
     g_trigger.game_paused = false;
     g_action_table[47] = (ActionPointer)parse_comment_action;
-
-    g_globals = std::make_unique<Globals>();
-    g_globals->current_advisor = get_advisor_type_from_config(g_player_table[g_local_nation_id].race);
 
     init_auto_celebration();
     init_recolors();
