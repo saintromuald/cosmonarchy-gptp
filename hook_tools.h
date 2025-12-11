@@ -26,7 +26,7 @@ inline void jump_patch(const void* target, DWORD position, u32 nops = 0) {
     jump_patch(target, (void*)position, nops);
 }
 
-void nops(const u32 address, u32 number);
+void nop_patch(const u32 address, u32 number);
 
 // Injects a CALL to [target] at the [position], optionally overwriting [nops]
 // bytes with NOPs.

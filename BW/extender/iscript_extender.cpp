@@ -388,7 +388,7 @@ namespace hooks {
 		memory_patch(0x004D739C, (u8)0xE9);//JMP...
 		memory_patch(0x004D739D, (u32)0xB1);//...0x004D7452;
 		memory_patch(0x004D50C5, (u16)0x14EB);//JMP 0x004D50DB
-		nops(0x004D745C, 6);
+		nop_patch(0x004D745C, 6);
 
 		call_patch(init_iscript_bin, 0x004D7397, 0);	// 004D7390
 		call_patch(cleanup_iscript_handles, 0x004D50C0, 0);	// 004D50C0

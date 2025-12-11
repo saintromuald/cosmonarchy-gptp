@@ -340,11 +340,11 @@ jump_patch(mp_save_directory_wrapper,			   0x0044CCF7, 1);
 
 jump_patch(initialize_provider_version_wrapper,  0x00472770, 1);
 jump_patch(network_set_return_menu,              0x004DC5B0, 0);
+jump_patch(load_stat_txt,                        0x004C3A20, 1);
 
 // Fix replay buffer overflow. (get_replay_turn_data @ 004CDFF0)
 call_patch(hooks::get_replay_turn_data,          0x00487163);
 call_patch(replay_loop,                          0x004D96C4);
-
 call_patch(storm_patch0,                         0x1503E164); // DF: Re-order network providers
 }
 }

@@ -278,7 +278,7 @@ namespace hooks {
         memory_patch(0x0047B556, jmpToEnd);
         
         memory_patch(0x0047B7B1 + 2, (u8)0xE4);
-        nops(0x0047B7B7, 6);
+        nop_patch(0x0047B7B7, 6);
         
         // 0047BDCB
         u8 jmpp3[] = {0xeb,0x25};

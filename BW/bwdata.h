@@ -106,7 +106,8 @@ BW_DATA(Resources*,			resources,			0x0057F0F0);
 BW_DATA(cv5**,				tileGroup,			0x006D5EC8);
 
 /// TBL files
-BW_DATA(const u16*,			g_stat_txt_tbl,		0x006D1238);
+BW_DATA(const StringTbl*,	g_stat_txt_tbl,		0x006D1238);
+BW_REF(u32*,		        g_stat_txt_ptr,		0x006D1238);
 BW_DATA(const StringTbl*,	g_map_string_tbl,	0x005993D4);
 
 BW_DATA(const char*,		g_string_empty,		0x00501B7D);

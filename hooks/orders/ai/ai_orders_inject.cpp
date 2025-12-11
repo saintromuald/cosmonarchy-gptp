@@ -995,8 +995,8 @@ namespace hooks {
 		call_patch(ai_react_to_hit_town_nullcheck,				0x0043F388, 5);
 
 		// Disable worker and Zethrokor defense gimmick
-		nops(0x0043F85E, 2);
-		nops(0x0043F864, 2);
+		nop_patch(0x0043F85E, 2);
+		nop_patch(0x0043F864, 2);
 
 		// Update gas prios
 		u32 p105 = 105;
@@ -1005,6 +1005,6 @@ namespace hooks {
 		memory_patch(0x004336A3 + 1, p104);
 
 		// Make melee AI convert non building/worker regions state 6 back to 0 instead of 5
-		nops(0x0043E542, 2);
+		nop_patch(0x0043E542, 2);
 	}
 }

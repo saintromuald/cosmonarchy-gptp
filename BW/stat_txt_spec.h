@@ -2,34 +2,24 @@
 #include "globals.h"
 
 struct StatTxtStringTbl {
-	u16 getStringCount() const {
+	u16 get_string_count() const {
 		return *buffer;
 	}
-	u32 getStringCountExt() const {
-		return *extendedBuffer;
+	u32 get_string_count_ext() const {
+		return *extended_buffer;
 	}
 	const char* get_string(u32 index) const {
-		if (g_iquare_globals->tbl_extender) {
-			if (index == 0) {
-				return nullptr;
-			} else if (index <= getStringCountExt()) {
-				return (const char*)(extendedBuffer)+extendedBuffer[index];
-			} else {
-				return (const char*)0x00501B7D;
-			}
-		} else {
-			if ((u16)index == 0) {
-				return nullptr;
-			} else if ((u16)index <= getStringCount()) {
-				return (const char*)(buffer)+buffer[(u16)index];
-			} else {
-				return (const char*)0x00501B7D;
-			}
-		}
+        if (index == 0) {
+            return nullptr;
+        } else if (index <= get_string_count()) {
+            return (const char*)(buffer)+buffer[index];
+        } else {
+            return (const char*)0x00501B7D;
+        }
 	}
 	union {
 		u16* buffer;
-		u32* extendedBuffer;
+		u32* extended_buffer;
 	};
 };
 const StatTxtStringTbl* const g_stat_txt_tbl_new = (const StatTxtStringTbl*)0x006D1238;

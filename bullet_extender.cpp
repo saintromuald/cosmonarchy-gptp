@@ -60,7 +60,7 @@ void __declspec(naked) write_bullets_patch_48AF79() {
 namespace hooks {
 	void inject_bullet_extender() {
 		// 0048C260 create_bullet
-		nops(0x0048C26E, 14); // Remove valkyrie bullet count check
+		nop_patch(0x0048C26E, 14); // Remove valkyrie bullet count check
 
 		// 0048A690 initialize_bullet_array
 		memory_patch(0x0048A691, &new_bullet_table);

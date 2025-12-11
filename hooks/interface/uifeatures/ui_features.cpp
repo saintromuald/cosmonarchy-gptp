@@ -215,8 +215,8 @@ namespace hooks {
             return helper::refresh_selection_screen();
         }
         const char* description;
-        if (g_stat_txt_buffer.get_string_count() > 794) {
-            description = (char*)g_stat_txt_buffer.get_string(795);
+        if (g_stat_txt_buffer.get_string_count32() > 794) {
+            description = (char*)g_stat_txt_buffer.get_string32(795);
         } else {
             description = "";
         }
@@ -593,13 +593,23 @@ namespace hooks {
         }
     }
 
-    // Hooked to investigate crashes on Fraudscendance. -Pr0nogo
-    void draw_vertical_line(u16 size, u16 x, u16 y) { // 0041D7D0
-        Bitmap* surface = *g_current_surface;
-        for (u32 i = 0; i < size; ++i) {
-            surface->buffer[y * surface->width + x] = *g_draw_color_index;
-            y += 1;
+    // Hooked to bandage null string crashes. -Pr0nogo
+    // TODO: Fix lack of vertical lines introduced by this hook.
+    u8* draw_vertical_line(u16 iterations, s16 width_offset, u16 buffer_multiplier) { // 0041D7D0
+        if (!buffer_multiplier) {
+            return 0;
         }
+        Bitmap* surface = *g_current_surface;
+        u8* result = &surface->buffer[buffer_multiplier * surface->width + width_offset];
+        if (iterations) {
+            u8 index = *g_draw_color_index;
+            do {
+                *result = index;
+                result += surface->width;
+                --iterations;
+            } while (iterations);
+        }
+        return result;
     }
 
     // Hooked to improve functionality. -Veeq7
@@ -1035,7 +1045,7 @@ namespace hooks {
     u16 draw_game_menu_context(BinDlg* dialog) { // 004F4F70
         return helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left,
                                               dialog->bounds.top + dialog->parent->bounds.top,
-                                              (char*)g_stat_txt_buffer.get_string(814)); // Game Menu (F10)
+                                              (char*)g_stat_txt_buffer.get_string32(814)); // Game Menu (F10)
     }
 
     // Hooked by DarkenedFantasies to investigate rare crashes.
@@ -1073,17 +1083,17 @@ namespace hooks {
 
     // Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
     char* get_stat_txt_string(u16 string_id) { // 004C36F0
-        return (char*)g_stat_txt_buffer.get_string(string_id);
+        return (char*)g_stat_txt_buffer.get_string32(string_id);
     }
 
     // Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
     void draw_show_hide_terrain_context(BinDlg* dialog) { // 004A4C40
         if (!g_hide_minimap_terrain) {
             // string is 'Hide Terrain in Minimap'
-            helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left, dialog->bounds.top + dialog->parent->bounds.top, (char*)g_stat_txt_buffer.get_string(811));
+            helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left, dialog->bounds.top + dialog->parent->bounds.top, (char*)g_stat_txt_buffer.get_string32(811));
         } else {
             // string is 'Show Terrain in Minimap'
-            helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left, dialog->bounds.top + dialog->parent->bounds.top, (char*)g_stat_txt_buffer.get_string(810));
+            helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left, dialog->bounds.top + dialog->parent->bounds.top, (char*)g_stat_txt_buffer.get_string32(810));
         }
     }
 
@@ -1099,7 +1109,7 @@ namespace hooks {
             helper::refresh_selection_screen();
             return;
         }
-        const char* cancel_string = g_stat_txt_buffer.get_string(802 + active_unit->get_race()); // Cancel 
+        const char* cancel_string = g_stat_txt_buffer.get_string32(802 + active_unit->get_race()); // Cancel 
         const char* name = helper::get_unit_name_stat_string(user->id);
         char dest[128];
         sprintf_s(dest, 128, cancel_string, name);
@@ -1150,7 +1160,7 @@ namespace hooks {
                     if (index < 33 || index > 44) {
                         helper::refresh_selection_screen();
                     } else {
-                        helper::create_context_from_dialog(main_dialog, g_stat_txt_buffer.get_string(809)); // Selection instructions
+                        helper::create_context_from_dialog(main_dialog, g_stat_txt_buffer.get_string32(809)); // Selection instructions
                     }
                 } else {
                     helper::draw_unload_unit_context(main_dialog);

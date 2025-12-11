@@ -1037,28 +1037,44 @@ struct _uavail {
     u8* available[PLAYER_COUNT];
 };
 
-struct StringTbl
-{
+struct StringTbl {
     /// Returns the number of string entries in the TBL file.
-    u16 get_string_count() const
-    {
-        return *buffer;
+    u16 get_string_count() const { return buffer[0]; }
+    u32 get_string_count32() const { return extended[0]; }
+ 
+    /// Returns the string at @p index in the TBL file.
+    /// If the @p index is 0, returns NULL.
+    /// If the @p index is out of bounds, returns an empty string.
+    /// Based on function @ 0x004C36F0
+    const char* get_string(u16 index) const {
+        if (index) {
+            if (index <= get_string_count()) {
+                return start + buffer[index];
+            }
+            return (const char*)0x00501B7D; // g_string_empty in bwdata.h, SC default empty string
+        }
+        return nullptr;
     }
 
-    /// Returns the string at @p index in the TBL file.
-    /// If the @p index is 0, returns nullptr.
+    /// Returns the string at @p index in the extended TBL file.
+    /// If the @p index is 0, returns NULL.
     /// If the @p index is out of bounds, returns an empty string.
-    const char* get_string(u16 index) const {
-        //Based on function @ 0x004C36F0
-        if (index == 0) {
-            return nullptr; 
-        } else if (index <= get_string_count()) {
-            return (const char*)(buffer)+buffer[index];
-        } else {
-            return (const char*)0x00501B7D;	//g_string_empty in bwdata.h, SC default empty string
+    /// Based on function @ 0x004C36F0
+    const char* get_string32(u32 index) const {
+        if (index) {
+            if (index <= get_string_count32()) {
+                return start + extended[index];
+            }
+            return (const char*)0x00501B7D; // g_string_empty in bwdata.h, SC default empty string
         }
+        return nullptr;
     }
-    u16* buffer;
+ 
+    union {
+        const char* start;
+        u16* buffer;
+        u32* extended;
+    };
 };
 
 struct ForceFlags

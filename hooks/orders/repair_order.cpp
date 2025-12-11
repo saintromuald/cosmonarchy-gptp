@@ -376,8 +376,8 @@ namespace hooks {
 			u32 text_id_zeroed = text_id - 1;
 			if (text_id) {
 				char* text_string = 0;
-				if (text_id_zeroed < g_stat_txt_buffer.get_string_count()) {
-					text_string = (char*)g_stat_txt_buffer.get_string(text_id_zeroed + 1);
+				if (text_id_zeroed < g_stat_txt_buffer.get_string_count32()) {
+					text_string = (char*)g_stat_txt_buffer.get_string32(text_id_zeroed + 1);
 				}
 				if (text_string) {
 					if (*g_active_player_id == *g_local_human_id)

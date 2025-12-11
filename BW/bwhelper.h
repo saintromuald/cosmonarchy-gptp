@@ -3,6 +3,7 @@
 
 #define NOMINMAX
 #include <windows.h>
+#include <source_location>
 
 #define BW_FUNC(address, return_and_convention, name, ...) \
 typedef return_and_convention name##_func(__VA_ARGS__); \
@@ -859,7 +860,7 @@ namespace helper {
     Image* create_healthbar(Sprite* sprite);
     void remove_hp_bar(Image* a1);
     void refund_all_queue_slots(Unit* unit);
-    void* SMemAlloc(u32 amount);																					// 0041006A (based on Storm.dll definition)
+    void* SMemAlloc(u32 amount, u32 default_value = 0, std::source_location loc = std::source_location::current()); // 0041006A (based on Storm.dll definition)
     void* SMemAlloc(u32 amount, const char* unkFilename, u32 unkLine, u32 defaultValue);							// 0041006A (based on Storm.dll definition)
     void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, u32 callback);								// 00416090
     void remove_from_selections(Unit* unit);																		// 0049A7F0

@@ -934,7 +934,7 @@ namespace hooks {
     //	jump_patch(remove_unit_from_lists_wrapper,			0x0049E3F0, 0); // Not tested yet
         jump_patch(building_death_wrapper,					0x0049FD00, 5);
 
-        nops(0x004A0766, 5); // Disable kill all loaded units so we can call it before UnitExt is cleared
+        nop_patch(0x004A0766, 5); // Disable kill all loaded units so we can call it before UnitExt is cleared
         jump_patch(clear_bullet_targets_patch_8AACC,		0x0048AACC, 2); // DF: Fix bug where dying Lakizilisks sometimes deal double damage
     }
 }

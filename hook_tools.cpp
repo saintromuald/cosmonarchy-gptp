@@ -14,11 +14,11 @@ void call_patch(const void* target, void* position, const u32 nops) {
     delete[] data;
 }
 
-void nops(const u32 address, u32 number) {
-    u8 nop = 0x90;
-    for (s32 i = 0; i < number; i++) {
-        memory_patch((void*)(address + i), &nop, sizeof(u8));
-    }
+void nop_patch(const u32 address, u32 number) {
+	u8 nop = 0x90;
+	for (s32 i = 0; i < number; i++) {
+		memory_patch((void*)(address + i), &nop, sizeof(u8));
+	}
 }
 
 // Injects a relative JMP to [target] at the [position].
@@ -36,17 +36,17 @@ void jump_patch(const void* target, void* position, u32 nops) {
 }
 
 void wrapper_patch(const u8* code, u32 len, const u32 address, u32 nop) {
-    // function address
-    auto exe = wrapper_memory.exec_alloc(len);
-    if (nop > 0) {
-        nops(address + 0x5, nop);
-    }
-    for (s32 i = 0; i < len; i++) {
-        exe[i] = code[i];
-    }
-    u32 diff = (u32)exe - (address + 0x5);
-    memory_patch(address + 0x1, diff);
-    memory_patch(address, (u8)0xe8);
+	//function address
+	auto exe = wrapper_memory.exec_alloc(len);
+	if (nop > 0) {
+		nop_patch(address + 0x5, nop);
+	}
+	for (s32 i = 0; i < len; i++) {
+		exe[i] = code[i];
+	}
+	u32 diff = (u32)exe - (address + 0x5);
+	memory_patch(address + 0x1, diff);
+	memory_patch(address, (u8)0xe8);
 }
 
 // Inject an array of bytes, using the given length.

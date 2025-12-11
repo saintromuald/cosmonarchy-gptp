@@ -45,23 +45,23 @@ namespace hooks {
 		memory_patch(0x00424CE2, (u16)0x0214); // Small Size Hero
 		memory_patch(0x00424CEC, (u8)0xA1);	   // Small Size Normal/Parasite; Change AL to AH.
 		memory_patch(0x00424CF1, (u16)0x14B0); // MOV AL, 0x14;
-		nops(0x00424CF3, 8);
+		nop_patch(0x00424CF3, 8);
 		memory_patch(0x00424D2E, (u16)0x0316); // Large Size Hallucination
 		memory_patch(0x00424D42, (u16)0x0216); // Large Size Hero
 		memory_patch(0x00424D49, (u8)0xA1);	   // Large Size Normal/Parasite; Change AL to AH.
 		memory_patch(0x00424D4E, (u16)0x16B0); // MOV AL, 0x16;
-		nops(0x00424D50, 8);
+		nop_patch(0x00424D50, 8);
 		memory_patch(0x00424D8B, (u16)0x0315); // Medium Size Hallucination
 		memory_patch(0x00424D9C, (u16)0x0215); // Medium Size Hero
 		memory_patch(0x00424DA3, (u8)0xA1);	   // Medium Size Normal/Parasite; Change AL to AH.
 		memory_patch(0x00424DA8, (u16)0x15B0); // MOV AL, 0x15;
-		nops(0x00424DAA, 8);
+		nop_patch(0x00424DAA, 8);
 	//	stat_data_unit_wireframe_select_update (0x00456F50)
 		memory_patch(0x00456F70, (u16)0x0314); // Hallucination
 		memory_patch(0x00456F86, (u16)0x0214); // Hero
 		memory_patch(0x00456F8B, (u8)0xAE);    // Normal/Parasite; Change CL to CH.
 		memory_patch(0x00456F90, (u16)0x14B1); // MOV CL, 0x14;
-		nops(0x00456F92, 8);
+		nop_patch(0x00456F92, 8);
 	//	status_screen_draw_stat_button_border (0x00456D30)
 		const u8 _data[] = { 0x66, 0x8B, 0x4F, 0x24, 0x51, 0x8B, 0xD7 }; // MOV CX, [EDI + 0x24]; PUSH ECX; MOV EDX, EDI;
 		memory_patch((void*)0x00456D36, _data, 7);
