@@ -360,8 +360,8 @@ namespace hooks {
 
             if (error_string) {
                 const char* string = 0;
-                if ((u16)(error_string - 1) < g_stat_txt_buffer.get_string_count()) {
-                    string = g_stat_txt_buffer.get_string(error_string);
+                if ((u16)(error_string - 1) < g_stat_txt_buffer.get_string_count32()) {
+                    string = g_stat_txt_buffer.get_string32(error_string);
                     if (!string) {
                         return;
                     }
@@ -386,7 +386,7 @@ namespace hooks {
             }
 
             if (unit->player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
-                char* string = (char*)g_stat_txt_buffer.get_string(856);
+                char* string = (char*)g_stat_txt_buffer.get_string32(856);
                 helper::set_unit_stat_txt_error_message(string);
             }
         }
@@ -453,7 +453,7 @@ namespace hooks {
         if (bw::in_replay_or_witness()) {
             return false;
         }
-        const char* string = g_stat_txt_buffer.get_string(g_string_id[placement_state]);
+        const char* string = g_stat_txt_buffer.get_string32(g_string_id[placement_state]);
         if (!string) {
             return false;
         }
@@ -479,7 +479,7 @@ namespace hooks {
                     return;
                 }
                 if (*g_active_nation_id == g_local_nation_id && g_active_player_id == g_local_human_id) {
-                    helper::set_unit_stat_txt_error_message(g_stat_txt_buffer.get_string(863)); // You can't land there.
+                    helper::set_unit_stat_txt_error_message(g_stat_txt_buffer.get_string32(863)); // You can't land there.
                 }
                 helper::play_building_placement_sound(*g_active_portrait_unit);
                 if (building_id) {

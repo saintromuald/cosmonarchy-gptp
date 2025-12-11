@@ -567,8 +567,8 @@ namespace hooks {
                     u16 error_type_1 = error - 1;
                     const char* error_string_2 = 0;
                     if (error) {
-                        if (error_type_1 < g_stat_txt_buffer.get_string_count()) {
-                            error_string_2 = (char*)g_stat_txt_buffer.get_string(error_type_1 + 1);
+                        if (error_type_1 < g_stat_txt_buffer.get_string_count32()) {
+                            error_string_2 = (char*)g_stat_txt_buffer.get_string32(error_type_1 + 1);
                         } else {
                             error_string_2 = "";
                         }
@@ -591,8 +591,8 @@ namespace hooks {
             u8 active_player = active_unit->player;
             u16 error_string_id = error_type_2 - 1;
             if (error_type_2) {
-                if (error_string_id < g_stat_txt_buffer.get_string_count()) {
-                    helper::get_stat_txt_string(active_unit, active_player, (char*)g_stat_txt_buffer.get_string(error_string_id + 1));
+                if (error_string_id < g_stat_txt_buffer.get_string_count32()) {
+                    helper::get_stat_txt_string(active_unit, active_player, (char*)g_stat_txt_buffer.get_string32(error_string_id + 1));
                 } else {
                     helper::get_stat_txt_string(active_unit, active_player, "");
                 }

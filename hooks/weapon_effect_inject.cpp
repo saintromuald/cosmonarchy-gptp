@@ -283,7 +283,7 @@ namespace hooks {
 		memory_patch(Addr_WeaponsDatEffectSwitch, data, 4); // load pointer to address table
 		
 		// Remove nuclear missile damage rule (use weapon damage instead)
-		nops(0x0048ACDF, 2);
+		nop_patch(0x0048ACDF, 2);
 
 		jump_patch(splash_target_check_wrapper, 0x0048B570, 0);
 	}

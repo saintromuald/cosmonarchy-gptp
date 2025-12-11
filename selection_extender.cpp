@@ -212,32 +212,16 @@ void __declspec(naked) stat_data_unit_wireframe_select_update_patch_57046() {
 }
 
 const u32 statdataMouseOverInteract_57D93 = 0x00457D93;
-void __declspec(naked) statdataMouseOverInteract_patch_57046() {
+void __declspec(naked) statdataMouseOverInteract_patch_57D87() {
+    static const u32 get_stat_txt_string = 0x004C36F0;
     __asm {
-        MOVZX	EAX, byte ptr g_config.always_show_condensed_selection
-        TEST	EAX, EAX
-        JNE		offset isMultiSelect
-        MOV		EAX, GroupWireframesCap
-        CMP		byte ptr ds : [0x0059723D], AL//clientSelectionCount
-        JBE		offset isSingleSelect
-
-        isMultiSelect:
-        CMP		word ptr[ECX], 1765
-        JBE		offset stringDoesNotExist
-        MOVZX	EAX, word ptr[ECX + 2 * 1766]
-        ADD		EAX, ECX
-        JMP		statdataMouseOverInteract_57D93
-
-        isSingleSelect:
-        CMP		word ptr[ECX], 808
-        JBE		offset stringDoesNotExist
-        MOVZX	EAX, word ptr[ECX + 2 * 809]
-        ADD		EAX, ECX
-        JMP		statdataMouseOverInteract_57D93
-
-        stringDoesNotExist:
-        MOV		EAX, 0x00501B7D//"\x00"
-        JMP		statdataMouseOverInteract_57D93
+        MOV     EAX, GroupWireframesCap
+        CMP     byte ptr ds:[0x0059723D], AL//g_client_selection_count
+        MOV     ECX, 1766
+        MOV     EAX, 809
+        CMOVBE  ECX, EAX
+        CALL    get_stat_txt_string
+        JMP     statdataMouseOverInteract_57D93
     }
 }
 

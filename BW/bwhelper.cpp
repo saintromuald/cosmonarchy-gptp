@@ -6444,23 +6444,8 @@ namespace helper {
         }
     }
 
-    void* SMemAlloc(u32 amount) {
-        const u32 func_address = 0x0041006A;
-        const char* unkFilename  = "";
-        u32   unkLine            = 0;
-        u32   defaultValue       = 0;
-        static void* pointer_on_allocated_memory;
-        __asm {
-            PUSHAD
-            PUSH defaultValue		// probably what to fill the memory with
-            PUSH unkLine			// unknown use, seems to use hardcoded value
-            PUSH unkFilename		// unknown use, seems to use hardcoded adress (of some text?)
-            PUSH amount				// amount of memory to allocate
-            CALL func_address
-            MOV pointer_on_allocated_memory, EAX
-            POPAD
-        }
-        return pointer_on_allocated_memory;
+    void* SMemAlloc(u32 amount, u32 default_value, std::source_location loc) {
+        return SMemAlloc(amount, loc.file_name(), loc.line(), default_value);
     }
 
     void* SMemAlloc(u32 amount, const char* unkFilename, u32 unkLine, u32 defaultValue) {

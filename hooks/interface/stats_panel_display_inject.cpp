@@ -663,8 +663,8 @@ namespace hooks {
     //  jump_patch(stats_hangar_count_wrapper,					0x004253D0, 5); // Needs testing later
 
         // Disable player checks for progress bar functions
-        nops(0x0042690C, 2);
-        nops(0x00426918, 6);
+        nop_patch(0x0042690C, 2);
+        nop_patch(0x00426918, 6);
         
     //	call_patch(draw_tooltip_with_icon_partial_wrapper,          0x00458FB2, 1); // Don't recall why this was disabled.
 

@@ -757,8 +757,8 @@ namespace hooks {
 					if (unit->main_order_timer <= 45 || helper::is_unit_movable(unit)) {
 						u32 sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_MissileLaunch);
 						bw::play_sound(sound_id);
-						if (g_stat_txt_buffer.get_string_count() > 1046) {
-							helper::show_stat_txt_to_player((s32)g_stat_txt_buffer.get_string(1047), g_local_nation_id);
+						if (g_stat_txt_buffer.get_string_count32() > 1046) {
+							helper::show_stat_txt_to_player((s32)g_stat_txt_buffer.get_string32(1047), g_local_nation_id);
 						} else {
 							helper::show_stat_txt_to_player((s32)"", g_local_nation_id);
 						}

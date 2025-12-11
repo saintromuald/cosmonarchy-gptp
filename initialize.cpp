@@ -125,6 +125,7 @@
 #include "hooks/interface/minimap.h"
 #include "hooks/game/creategame.h"
 #include "BW/extender/iscript_extender.h"
+#include "hooks/limits/tbl_extender.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -198,7 +199,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     // Jesse, start 
     if (g_config.allow_multiple_instances) {
         // skip the jump to 0x004e0380 which checks for other instances and exits if found
-        nops(0x004e0b02, 5);
+        nop_patch(0x004e0b02, 5);
     }
     // Jesse, end
 
@@ -216,29 +217,29 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     memory_patch((void*)(0x004B9988 + 2), &human_slots, sizeof(u8));
 
     // Frame rate hack
-    nops(0x004D9923, 2);
+    nop_patch(0x004D9923, 2);
 
     // Allow all players addons to connect
-    nops(0x00440314, 6);
+    nop_patch(0x00440314, 6);
 
     // Custom Aise game command replay support
     u32 new_size = 0xC;
     memory_patch(0x005005F8 + 99 * sizeof(u32), new_size);
 
     // Remove minimap checksum checks.
-//	nops(0x0047CCB0, 22);				// Allows for silent desyncs
+//	nop_patch(0x0047CCB0, 22);				// Allows for silent desyncs
 
     // Update vision update timer to happen faster
     memory_patch(0x004D94D0 + 6, 2);
 
     // Remove mouse/keyboard conflict
-    nops(0x004D21A3, 2);
-    nops(0x004D2264, 2);
-    nops(0x004D1F26, 2);
-    nops(0x004D1FAE, 6);
+    nop_patch(0x004D21A3, 2);
+    nop_patch(0x004D2264, 2);
+    nop_patch(0x004D1F26, 2);
+    nop_patch(0x004D1FAE, 6);
 
     // Fix irradiate field being created on replace unit with type call
-    nops(0x00454EB9, 7);
+    nop_patch(0x00454EB9, 7);
     // Veeq7, end
 
     // iquare, start
@@ -313,24 +314,24 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 //	hooks::inject_economic_unit_hooks();
     // test for globals
-//	nops(0x004AAF23, 5);
+//	nop_patch(0x004AAF23, 5);
 //	const u8 retn = 0xc3;
 //	memory_patch(0x004AAF23 + 5, &retn, 1);
 
     // Didact attack hardcode
     /*
-    nops(0x0043AEE0, 10);
-    nops(0x0043CF89, 4);
+    nop_patch(0x0043AEE0, 10);
+    nop_patch(0x0043CF89, 4);
     memory_patch(0x0043CF8D, &jmp, 1);
-    nops(0x0047681B, 5);
+    nop_patch(0x0047681B, 5);
     memory_patch(0x00476820, &jmp, 1);
-    nops(0x00476E67, 6);
-    nops(0x00477AB7, 5);
+    nop_patch(0x00476E67, 6);
+    nop_patch(0x00477AB7, 5);
     memory_patch(0x00477ABC, &jmp, 1);
-    nops(0x00477E09, 5);
-    nops(0x00478613, 5);
-    nops(0x00478613, 5);
-    nops(0x0048B0A1, 5);
+    nop_patch(0x00477E09, 5);
+    nop_patch(0x00478613, 5);
+    nop_patch(0x00478613, 5);
+    nop_patch(0x0048B0A1, 5);
     memory_patch(0x0048B0A6, &jmp, 1);
     */
 
@@ -352,7 +353,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     // allow pissed/yes sounds for >= Command Center
     // memory_patch(0x0048EA20 + 2, patch_last_unit, 1);
     // hook required
-    // nops(0x0048EAB0, 5);
+    // nop_patch(0x0048EAB0, 5);
 
     // Bengalaas id hardcode
     memory_patch(0x0043157A + 2, patch_last_unit, 1);
@@ -449,7 +450,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     // Mind Tyrant - energy of controlled Mind Tyrants is no longer set to 0
 //	memory_patch(0x004F6938 + 4, patch_last_unit, 1);
 
-    nops(0x0049EEBD, 0xa); // disable beacon collision hardcode
+    nop_patch(0x0049EEBD, 0xa); // disable beacon collision hardcode
     u8 p8a = {0x8a};
     u8 ff = {0xff};
     memory_patch(0x00497764 + 3, &p8a, sizeof(u8));
@@ -602,20 +603,20 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     // Fix target acquisition for decloaking units
     memory_patch(0x0049B4C3, (u8)0xFC);
     memory_patch(0x0049B4EA, (u8)0xFC);
-    nops(0x0049B4C6, 6);
-    nops(0x0049B4ED, 6);
+    nop_patch(0x0049B4C6, 6);
+    nop_patch(0x0049B4ED, 6);
 
     // Allow setting slots to Computer in UMS lobbies
     memory_patch(0x00451134, (u32)5);
-    nops(0x00451A2E, 2);
-    nops(0x00451A6D, 2);
+    nop_patch(0x00451A2E, 2);
+    nop_patch(0x00451A6D, 2);
 
     // Allow switching to forces with Computer slots
     memory_patch(0x004523D9, (u8)0xFF);
     memory_patch(0x0045A939, (u8)0xFF);
 
     // Real-time minimap updates
-    nops(0x004A580B, 5);
+    nop_patch(0x004A580B, 5);
 
     // Fix crash on alt-F4 while 'save replay' dialog is open
     u8 Score_tMinimap[128];
@@ -667,16 +668,16 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     memory_patch(0x004C9600, (u8)7);
 
     // Display rank string on structures
-//	nops(0x00425D99, 2); // Needs more robust handling.
+//	nop_patch(0x00425D99, 2); // Needs more robust handling.
 
     // Disable user select check for starting units.
     memory_patch(0x004CD8AD, (u8)0xEB);
 
     // Calculate iscript speed less frequently
-    // //iscript_update_speed@42D8C0
+    // iscript_update_speed@42D8C0
     memory_patch(0x0042D90A, (u32)1);
-    nops(0x0042D983, 9);
-    //UMScoutPath@46AB10
+    nop_patch(0x0042D983, 9);
+    // UMScoutPath@46AB10
     memory_patch(0x0046AB5C, (u8)1);
     memory_patch(0x0046AB94, (u8)1);
 
@@ -904,6 +905,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::inject_creategame_hooks();
 
 	hooks::inject_iscript_extender();
+    hooks::inject_tbl_extender();
 
 	return TRUE;
 }

@@ -92,7 +92,7 @@ namespace hooks {
 
 			// Remove Ctrl-R
 			if (g_config.extended_control_groups) {
-				nops(0x00484785, 5);
+				nop_patch(0x00484785, 5);
 			}
 		}
 	}

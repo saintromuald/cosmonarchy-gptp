@@ -304,27 +304,28 @@ namespace {
     }
 
     void __declspec(naked) draw_vertical_line_wrapper() { // 0041D7D0
-        static u16 size_;
-        static u16 x;
-        static u16 y;
+        static u16 iterations;
+        static s16 width_offset;
+        static u16 buffer_multiplier;
+        static u8* result;
         __asm {
             PUSH EBP
             MOV EBP, ESP
             PUSH EAX
             MOV EAX, [EBP + 0x08]
-            MOV x, AX
+            MOV width_offset, AX
             MOV EAX, [EBP + 0x0C]
-            MOV y, AX
+            MOV buffer_multiplier, AX
             POP EAX
-            MOV size_, DX
+            MOV iterations, DX
             PUSHAD
         }
-        hooks::draw_vertical_line(size_, x, y);
+        result = hooks::draw_vertical_line(iterations, width_offset, buffer_multiplier);
         __asm {
             POPAD
             MOV ESP, EBP
             POP EBP
-            MOV EAX, 0
+            MOV EAX, result
             RETN 0x08
         }
     }
@@ -674,7 +675,6 @@ namespace {
 namespace hooks {
     void inject_ui_features_hooks() {
         jump_patch(draw_ui_features_wrapper,				0x0048D0A9, 0);
-    //	jump_patch(targeted_order_wrapper,					0x004754F0, 1);
     //	jump_patch(select_units_wrapper,					0x0046FA00, 1);
         jump_patch(queue_game_command_wrapper,				0x00485BD0, 4);
         jump_patch(check_hotkey_char_wrapper,				0x004588C0, 3);
@@ -691,7 +691,7 @@ namespace hooks {
     //	jump_patch(create_fow_sprite_partial_wrapper,		0x0048846D, 2); // Mark sprites as fow sprites in SpriteExt
 
         jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Clear SpriteExt on sprite destruction
-    //	jump_patch(draw_vertical_line_wrapper,				0x0041D7D0, 4); // crashes
+    	jump_patch(draw_vertical_line_wrapper,			0x0041D7D0, 4);
         jump_patch(centerview_unit_group,					0x004967E0, 1);
     //	jump_patch(draw_standard_button_graphic_wrapper,	0x004EFD90, 2); // not needed
         jump_patch(generic_dialog_update_wrapper,			0x004EF590, 1);

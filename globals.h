@@ -95,7 +95,6 @@ struct MultihitBullet {
 struct IquareGlobals {
     std::string output;
 
-    bool tbl_extender = false;
     bool unitid_extender = false;
 
     EffectRef m_next_effect_field_ref = 0;

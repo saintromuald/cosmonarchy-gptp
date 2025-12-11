@@ -227,8 +227,8 @@ namespace hooks {
             }
         } else if (unit->kill_count) {
             const char* text = "";
-            if (g_stat_txt_buffer.get_string_count() > 763) {
-                text = g_stat_txt_buffer.get_string(764);
+            if (g_stat_txt_buffer.get_string_count32() > 763) {
+                text = g_stat_txt_buffer.get_string32(764);
             }
 
             sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
@@ -794,8 +794,8 @@ namespace hooks {
             u32 race_string_2 = race + 770;
             const char* text = "";
             if (race_string_1) {
-                if (race_string_2 < g_stat_txt_buffer.get_string_count()) {
-                    text = g_stat_txt_buffer.get_string(race_string_2 + 1);
+                if (race_string_2 < g_stat_txt_buffer.get_string_count32()) {
+                    text = g_stat_txt_buffer.get_string32(race_string_2 + 1);
                 } else {
                     text = "";
                 }
@@ -1316,7 +1316,7 @@ namespace hooks {
     void set_unit_status_string_text(BinDlg* dialog) { // 00425B50
         Unit* unit = *g_active_portrait_unit;
         if (unit->status & UnitStatus::IsHallucination && (bw::in_replay_or_witness() || unit->player == g_local_nation_id)) {
-            helper::add_text_to_dialog(dialog, -20, g_stat_txt_buffer.get_string(832)); // Hallucination
+            helper::add_text_to_dialog(dialog, -20, g_stat_txt_buffer.get_string32(832)); // Hallucination
             return;
         }
 
@@ -1352,17 +1352,17 @@ namespace hooks {
         helper::add_text_to_dialog(dialog, -12, 0);
         helper::add_text_to_dialog(dialog, -13, 0);
         if (unit_id_is_minerals(unit->id)) {
-            sprintf_s(g_struct_char.buf, 260, "%s %d", g_stat_txt_buffer.get_string(796), unit->building.resource.resource_amount);
+            sprintf_s(g_struct_char.buf, 260, "%s %d", g_stat_txt_buffer.get_string32(796), unit->building.resource.resource_amount);
             helper::add_text_to_dialog(dialog, -11, g_struct_char.buf);
             return;
         }
 
         u16 resources = unit->building.resource.resource_amount;
         if (resources) {
-            sprintf_s(g_struct_char.buf, 260, "%s %d", g_stat_txt_buffer.get_string(797), resources);
+            sprintf_s(g_struct_char.buf, 260, "%s %d", g_stat_txt_buffer.get_string32(797), resources);
             helper::add_text_to_dialog(dialog, -11, g_struct_char.buf);
         } else {
-            helper::add_text_to_dialog(dialog, -11, g_stat_txt_buffer.get_string(798));
+            helper::add_text_to_dialog(dialog, -11, g_stat_txt_buffer.get_string32(798));
         }
 
         if (units_dat::shields_enabled[unit->id]) {
@@ -1435,7 +1435,7 @@ namespace hooks {
         if (unit->is_frozen()) {
             string_id = race + 828; // Disabled / Unpowered
         }
-        helper::add_text_to_dialog(dialog, -35, g_stat_txt_buffer.get_string(string_id));
+        helper::add_text_to_dialog(dialog, -35, g_stat_txt_buffer.get_string32(string_id));
     }
 
     // Hooked to fix the hangar unit icon pointer. -Pr0nogo

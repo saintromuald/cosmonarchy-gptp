@@ -579,8 +579,8 @@ namespace hooks {
 		jump_patch(apply_plague_wrapper,					  0x004F4550, 1);
 
 		// Remove optical flare target check
-		nops(0x0048BBC7, 2);
-		nops(0x0048BBCB, 5);
-		nops(0x0048BBD2, 2);
+		nop_patch(0x0048BBC7, 2);
+		nop_patch(0x0048BBCB, 5);
+		nop_patch(0x0048BBD2, 2);
     }
 }
