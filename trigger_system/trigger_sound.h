@@ -1,5 +1,6 @@
 #pragma once
 #define NOMINMAX
+#include <mmreg.h>
 #include <dsound.h>
 #include <vector>
 #include "DatExtend/dat_limits.h"

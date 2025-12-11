@@ -1,34 +1,54 @@
-// NOTE: This file is not part of unity build,
-//       so httplib doesn't see Windows.h includes we have everywhere,
-//       which would lead to compiler errors
 #include "pch.h"
 #include "ReplayKraken.h"
 
-#include <httplib.h>
-#include <json.hpp>
+#include <exception>
+#include <format>
+
 #include <cppcodec/base64_rfc4648.hpp>
-#include <uuid.h>
+#include <Windows.h>
 
-using Json = nlohmann::json;
+static std::string read_token() {
+    BYTE buffer[512]{};
+    DWORD size = sizeof(buffer);
+    const auto result = RegGetValueA(HKEY_LOCAL_MACHINE, "SOFTWARE\\The No-Frauds Club\\Cosmonarchy", "AccountToken",
+        RRF_RT_REG_SZ | RRF_SUBKEY_WOW6464KEY, nullptr, buffer, &size);
+    if (result != ERROR_SUCCESS) {
+        return {};
+    }
+    return reinterpret_cast<const char*>(buffer);
+}
 
-namespace ReplayKraken {
+ReplayKraken::ReplayKraken() {
+    m_token = read_token();
+    if (!m_token.empty()) {
+        m_api_client.set_default_headers({
+            {"Authorization", "Bearer " + m_token},
+        });
+        authenticate();
+    }
+}
 
-static uuids::uuid_name_generator g_uuid_generator{uuids::uuid_namespace_dns};
+bool ReplayKraken::authenticate() {
+    for (int retry = 0; retry < 3; retry++) {
+        if (const auto res = m_api_client.Get("/api/users/@me")) {
+            if (res->status == 200) {
+                const auto json = Json::parse(res->body);
+                try {
+                    m_username = json.at("username").get<std::string>();
+                    return true;
+                } catch (const std::exception& ex) {
+                    return false;
+                }
+            }
+        }
+    }
+    return false;
+}
 
-struct InsertMatchRequest {
-    // NOTE: camelCase required for macro to work as intended
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(InsertMatchRequest, matchUuid, gameVersion, replayFile, desyncFile);
-
-    std::string matchUuid;
-    std::string gameVersion;
-    std::string replayFile;
-    std::string desyncFile;
-};
-
-bool upload_replay(const std::vector<char>& uuid_data, const std::string& game_version,
+bool ReplayKraken::upload_replay(const std::vector<char>& uuid_data, const std::string& game_version,
     const std::vector<char>& replay_file, const std::vector<char>& desync_file) {
     InsertMatchRequest request{
-        .matchUuid = uuids::to_string(g_uuid_generator(std::string{std::begin(uuid_data), std::end(uuid_data)})),
+        .matchUuid = uuids::to_string(m_uuid_generator(std::string{std::begin(uuid_data), std::end(uuid_data)})),
         .gameVersion = game_version,
         .replayFile = cppcodec::base64_rfc4648::encode(replay_file),
     };
@@ -38,10 +58,8 @@ bool upload_replay(const std::vector<char>& uuid_data, const std::string& game_v
 
     const Json json(request);
     const auto json_str = json.dump();
-
-    httplib::Client cli{"http://cosmonarchy.com"};
     for (int retry = 0; retry < 3; retry++) {
-        if (const auto res = cli.Post("/api/matches", json_str, "application/json")) {
+        if (const auto res = m_api_client.Post("/api/matches", json_str, "application/json")) {
             if (res->status >= 200 && res->status < 300) {
                 return true;
             }
@@ -50,4 +68,3 @@ bool upload_replay(const std::vector<char>& uuid_data, const std::string& game_v
     return false;
 }
 
-} // namespace ReplayKraken

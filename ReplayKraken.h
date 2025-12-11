@@ -2,10 +2,39 @@
 #include <string>
 #include <vector>
 
-namespace ReplayKraken {
+#include <uuid.h>
+#include <httplib.h>
+#include <json.hpp>
 
-bool upload_replay(const std::vector<char>& uuid_data, const std::string& game_version,
-    const std::vector<char>& replay_file, const std::vector<char>& desync_file);
+using Json = nlohmann::json;
 
-} // namespace ReplayKraken
+struct InsertMatchRequest {
+    // NOTE: camelCase required for macro to work as intended
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(InsertMatchRequest, matchUuid, gameVersion, replayFile, desyncFile);
 
+    std::string matchUuid;
+    std::string gameVersion;
+    std::string replayFile;
+    std::string desyncFile;
+};
+
+class ReplayKraken {
+public:
+    ReplayKraken();
+
+    bool authenticate();
+
+    bool upload_replay(const std::vector<char>& uuid_data, const std::string& game_version,
+        const std::vector<char>& replay_file, const std::vector<char>& desync_file);
+
+    std::string token() const { return m_token; }
+    std::string username() const { return m_username; }
+
+private:
+    httplib::Client m_api_client{"http://cosmonarchy.com"};
+    uuids::uuid_name_generator m_uuid_generator{uuids::uuid_namespace_dns};
+    std::string m_token;
+    std::string m_username;
+};
+
+inline ReplayKraken g_replay_kraken;
