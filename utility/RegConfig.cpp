@@ -19,6 +19,7 @@ void RegDword::set(DWORD value) {
 	if (!hkey) return;
 	
 	RegSetKeyValueA(hkey, 0, m_key, REG_DWORD, &value, sizeof(value));
+	RegCloseKey(hkey);
 }
 
 void RegString::set(std::string_view value) {
@@ -26,6 +27,7 @@ void RegString::set(std::string_view value) {
 	if (!hkey) return;
 
 	RegSetKeyValueA(hkey, 0, m_key, REG_SZ, value.data(), value.size());
+	RegCloseKey(hkey);
 }
 
 }

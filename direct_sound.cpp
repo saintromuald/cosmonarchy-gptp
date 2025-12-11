@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <mmreg.h>
 #include <dsound.h>
 #include <BW/api.h>
 #include <BW/structures.h>

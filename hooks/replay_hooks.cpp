@@ -100,7 +100,7 @@ void upload_last_replay() {
     }
 
     std::async([replay = std::move(replay), desync = std::move(desync)] {
-        ReplayKraken::upload_replay(g_globals->uuid_rand, bw::get_commit_hash(), replay, desync);
+        g_replay_kraken.upload_replay(g_globals->uuid_rand, bw::get_commit_hash(), replay, desync);
     });
 }
 
