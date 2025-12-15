@@ -3788,7 +3788,7 @@ namespace hooks {
     }
 
     // Hooked to explore custom game commands. -Pr0nogo
-    void game_recv(char* buffer, s32 size, bool in_replay) { // 004865D0
+    void game_recv(char* buffer, s32 size, bool processing_replay_commands) { // 004865D0
         // Size needs to be s32 to support less than 0 comparison...
         if (size) {
             bool is_in_replay = g_is_in_replay;
@@ -3796,7 +3796,7 @@ namespace hooks {
             u32 command_size = 0;
             while (true) {
                 command_id = *buffer;
-                if (!g_is_in_replay || in_replay) {
+                if (!g_is_in_replay || processing_replay_commands) {
                     break;
                 }
                 switch (command_id) {
@@ -4398,7 +4398,7 @@ namespace hooks {
                     command_size = 82;
                     if (size >= command_size) {
                         if (!g_is_in_replay || !g_config.sanitize_replay_chat || chat_message_is_allowed((const char*)(buffer + 2))) {
-                            helper::bwfxn_display_text(buffer[1], (s32)(buffer + 2), in_replay);
+                            helper::bwfxn_display_text(buffer[1], (s32)(buffer + 2), processing_replay_commands);
                         }
                     next_command:
                         if (*g_active_nation_id < PlayerLimit) {
