@@ -3793,6 +3793,11 @@ namespace hooks {
         if (size) {
             u32 command_id = 0;
             u32 command_size = 0;
+            // === Replay Watcher Commands ===
+            // Here we process multiplayer commands like pausing or latency,
+            // and we skip all others
+            // For in-game commands and serialized replay commands we break out early
+            // and run the complete processing of all commands -Veeq7
             while (true) {
                 command_id = *buffer;
                 if (!g_is_in_replay || processing_replay_commands) {
@@ -3827,6 +3832,9 @@ namespace hooks {
                     } break;
                 }
             }
+            // === In-Game & Serialized Replay Commands ===
+            // Here we process ALL commands for in-game players and serialized replay commands -Veeq7
+            // TODO: This segment should be refactored to a function returning bool and a simple while loop without gotos
         process_command:
             switch (command_id) {
                 case GameCommand_Sequence: {
