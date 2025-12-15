@@ -380,7 +380,7 @@ bool unit_can_be_repulsed(Unit* unit) {
 }
 
 void specialist_energy_error(Unit* unit) {
-    if (bw::in_replay_or_witness() || *g_active_player_id != *g_local_human_id) {
+    if (bw::in_replay_or_witness() || g_active_player_id != g_local_human_id) {
         return;
     }
     if (const char* string = helper::get_stat_txt_string(unit->get_race() + 864)) {

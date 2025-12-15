@@ -195,7 +195,7 @@ namespace hooks {
 			u8 race_id = unit->get_race();
 			char* message = (char*)g_stat_txt_tbl_new->get_string(864 + race_id); // Not enough energy
 			if (message) {
-				if (g_local_nation_id == unit->player && *g_active_player_id == *g_local_human_id) {
+				if (g_local_nation_id == unit->player && g_active_player_id == g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(message);
 				}
 			}

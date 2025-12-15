@@ -380,7 +380,7 @@ namespace hooks {
 					text_string = (char*)g_stat_txt_buffer.get_string32(text_id_zeroed + 1);
 				}
 				if (text_string) {
-					if (*g_active_player_id == *g_local_human_id)
+					if (g_active_player_id == g_local_human_id)
 					{
 						strncpy(draw_out_text_left, text_string, 0xDAu);
 						text_bytes[12] = 4;

@@ -227,7 +227,7 @@ namespace hooks {
 			u32 final_message_id = message_id - 1;
 			if ((u16)message_id) {
 				char* message_string = (char*)g_stat_txt_buffer.get_string32(message_id);
-				if (player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
+				if (player == g_local_nation_id && g_active_player_id == g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(message_string);
 				}
 			}

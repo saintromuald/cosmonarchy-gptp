@@ -114,7 +114,7 @@ namespace hooks {
 						new_ext->values[ValueRegressionUnstable] = bw::get_zerg_regression(twin_unit) != UnitId::None ? true : false;
 					}
 					helper::order_new_unit_to_rally(new_unit, factory);
-					if (*g_active_player_id == *g_local_human_id && unit->sprite->flags & SpriteFlags::Selected) {
+					if (g_active_player_id == g_local_human_id && unit->sprite->flags & SpriteFlags::Selected) {
 						helper::select_new_unit(new_unit);
 					}
 					inherit_selection(unit, new_unit);
