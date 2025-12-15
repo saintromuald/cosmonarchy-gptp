@@ -6504,13 +6504,13 @@ namespace helper {
         return return_value;
     }
 
-    void register_user_dialog_action(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray) {
+    void register_user_dialog_action(BinDlg* dialog, BinDlgProc* interact_funcs, u32 count) {
         const u32 func_address = 0x00418100;
         __asm {
             PUSHAD
             MOV EAX, dialog
-            MOV EDI, array_of_fxnInteractFunc
-            MOV ECX, sizeOfArray
+            MOV EDI, interact_funcs
+            MOV ECX, count
             CALL func_address
             POPAD
         }
@@ -15728,5 +15728,60 @@ namespace helper {
             CALL func_address
             POPAD
         }
+    }
+
+    void latency_dialog_destroy(BinDlg* dialog, DialogEvent* dialog_event) {
+        const u32 func_address = 0x004e8920;
+        __asm {
+            PUSHAD
+            MOV EAX, dialog
+            MOV EDI, dialog_event
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void latency_dialog_create(BinDlg* dialog) {
+        const u32 func_address = 0x004e89c0;
+        __asm {
+            PUSHAD
+            MOV EAX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void latency_print_result(u32 unused, const char* string) {
+        const u32 func_address = 0x0048d0c0;
+        __asm {
+            PUSHAD
+            MOV EAX, unused
+            MOV EDI, string
+            CALL func_address
+            POPAD
+        }
+    }
+    void latency_activate_radio(BinDlg* dialog) {
+        const u32 func_address = 0x004e1900;
+        __asm {
+            PUSHAD
+            MOV EAX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    bool latency_radio_interact(BinDlg* dialog, DialogEvent* event) {
+        const u32 func_address = 0x004e1a70;
+        static b32 result;
+        __asm {
+            PUSHAD
+            MOV EAX, dialog
+            MOV EBX, event
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
     }
 }

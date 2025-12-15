@@ -90,7 +90,7 @@ namespace hooks
 		}
 		else
 		{
-			s32 player = *g_active_player_id;
+			s32 player = g_active_player_id;
 			u8 index = *g_unit_iterator_pos;
 			bool bStopLoop = false;
 			while (!bStopLoop)

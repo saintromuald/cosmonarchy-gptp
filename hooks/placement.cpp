@@ -369,7 +369,7 @@ namespace hooks {
                     string = "";
                 }
 
-                if (unit->player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
+                if (unit->player == g_local_nation_id && g_active_player_id == g_local_human_id) {
                     helper::set_unit_stat_txt_error_message(string);
                 }
             }
@@ -385,7 +385,7 @@ namespace hooks {
                 helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
             }
 
-            if (unit->player == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
+            if (unit->player == g_local_nation_id && g_active_player_id == g_local_human_id) {
                 char* string = (char*)g_stat_txt_buffer.get_string32(856);
                 helper::set_unit_stat_txt_error_message(string);
             }
@@ -457,7 +457,7 @@ namespace hooks {
         if (!string) {
             return false;
         }
-        if (*g_active_nation_id == g_local_nation_id && *g_active_player_id == *g_local_human_id) {
+        if (*g_active_nation_id == g_local_nation_id && g_active_player_id == g_local_human_id) {
             helper::set_unit_stat_txt_error_message(string);
         }
         return false;

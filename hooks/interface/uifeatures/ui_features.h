@@ -10,6 +10,11 @@ struct ApmCounter {
     u32 action_time[MaxActions];
 };
 
+enum DialogButtonIndex : s32 {
+    Ok = -2,
+    Cancel = -3,
+};
+
 inline const u32 UiTextHeight = 15;
 inline Point16 g_ui_text_pos;
 
@@ -63,6 +68,12 @@ void draw_cancel_unit_context(BinDlg* dialog);                                  
 void statdata_mouseover_interact(BinDlg* main_dialog, BinDlg* secondary_dialog);    // 00457CE0
 void move_screen_to_unit(Unit* unit);                                               // 004E6020
 
+bool __fastcall latency_dialog_proc(BinDlg* dialog, DialogEvent* dialog_event);     // 004e8ae0
+void __fastcall latency_dialog_activate(BinDlg* dialog, DialogEvent* dialog_event); // 004e8a30
+std::string latency_value_string(u8 latency);
+b32 __fastcall latency_interaction(BinDlg* dialog, DialogEvent* dialog_event);
+void set_latency (u8 latency);
+void load_latency_dialog();                                                         // 004ca0eb
 void inject_ui_features_hooks();
 }
 

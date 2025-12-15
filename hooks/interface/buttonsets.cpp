@@ -387,10 +387,10 @@ namespace hooks {
         SelectFactionCommand command = {};
         command.type = GameCommand_Custom;
         command.subtype = NewGameCommand::SelectFaction;
-        command.player = *g_local_human_id;
+        command.player = g_local_human_id;
         command.faction = Faction::None; // Default case
         auto buttonset_id = *g_active_portrait_buttonset_id;
-        u32 local_player = *g_local_human_id;
+        u32 local_player = g_local_human_id;
         auto& cm_player = g_globals->players[local_player];
         if (bw::get_game_kind() == GameKind::FactionWars && !cm_player.faction_was_set) {
             if (buttonset_id == UnitId::None) {
@@ -3669,17 +3669,23 @@ namespace hooks {
     // Size is 40 = 4 * 10 = 0x28
     // 0x004598D0 is statbtn_Btn_Interact
     // 0x00459890 is statbtn_BIN_ReplayProgressbar
-    const u32 Btn_fxnInteractFuncs[] = {
-        0x004598D0, 0x004598D0, 0x004598D0,
-        0x004598D0, 0x004598D0, 0x004598D0,
-        0x004598D0, 0x004598D0, 0x004598D0,
-        0x00459890
+    std::array Btn_fxnInteractFuncs{
+        (BinDlgProc)0x004598D0,
+        (BinDlgProc)0x004598D0,
+        (BinDlgProc)0x004598D0,
+        (BinDlgProc)0x004598D0,
+        (BinDlgProc)0x004598D0,
+        (BinDlgProc)0x004598D0,
+        (BinDlgProc)0x004598D0,
+        (BinDlgProc)0x004598D0,
+        (BinDlgProc)0x004598D0,
+        (BinDlgProc)0x00459890,
     };
 
     // Using a local array instead of the original may allow to go past the 9 buttons limitations
     // May need a special case using the original array address and count when in replay if modified
     void statbtn_bin_custom_ctrl_id(BinDlg* dialog) {
-        helper::register_user_dialog_action(dialog, (u32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
+        helper::register_user_dialog_action(dialog, Btn_fxnInteractFuncs.data(), sizeof(Btn_fxnInteractFuncs));
         helper::bindlg_blit_surface(dialog);
     }
 }

@@ -427,7 +427,7 @@ namespace hooks {
     }
 
     bool can_add_unit_to_active_selection(Unit* unit, u32 slot) {
-        u32 player = *g_active_player_id;
+        u32 player = g_active_player_id;
         bool has_buildings = false;
         bool has_units = false;
         for (u32 i = 0; i < SelectionCap; ++i) {
@@ -634,13 +634,13 @@ namespace hooks {
     // Hooked to investigate "archon mode".
     // Ended up being used for allied selection circles. -Pr0nogo
     b32 is_human_player_on_same_team(u32 player_id) { // 0049A110
-        if (player_id != *g_local_human_id
+        if (player_id != g_local_human_id
             && player_id < PlayerLimit) { // Originally checked for singleplayer (turned off so sp replays load selections) and for a team game (turned off so it works at all).
-            if (bw::is_allied_to(player_id, *g_local_human_id) && bw::is_allied_to(*g_local_human_id, player_id) && !g_globals->players[player_id].witness_mode) {
+            if (bw::is_allied_to(player_id, g_local_human_id) && bw::is_allied_to(g_local_human_id, player_id) && !g_globals->players[player_id].witness_mode) {
                 return true;
             }
         }
-        if (g_is_in_replay || g_globals->players[*g_local_human_id].witness_mode) {
+        if (g_is_in_replay || g_globals->players[g_local_human_id].witness_mode) {
             return true;
         }
         return false;
@@ -649,8 +649,8 @@ namespace hooks {
     // Hooked to not die to lard. -Pr0nogo
     u8 get_team_size(u32 selecting_player) { // 00485710
         if ((selecting_player < PlayerLimit && g_globals->players[selecting_player].witness_mode)
-            || !bw::is_allied_to(selecting_player, *g_local_human_id)
-            || !bw::is_allied_to(*g_local_human_id, selecting_player)) {
+            || !bw::is_allied_to(selecting_player, g_local_human_id)
+            || !bw::is_allied_to(g_local_human_id, selecting_player)) {
             return 2;
         }
         return 4;
@@ -664,7 +664,7 @@ namespace hooks {
 
     // Hooked to forbid witness selections from showing. -Pr0nogo
     void create_dashed_selection_main(Unit* unit, u32 selecting_player) { // 004E65CD
-        if (!g_is_in_replay && *g_local_human_id == selecting_player) {
+        if (!g_is_in_replay && g_local_human_id == selecting_player) {
             return;
         }
         if (selecting_player < PlayerLimit && g_globals->players[selecting_player].witness_mode) {
@@ -808,7 +808,7 @@ namespace hooks {
                 u32 force_offset = 0;
                 u32 iterations_2 = 0;
                 for (u32 force_offset = 0; force_offset < 0x120; force_offset += 36) {
-                    result = *g_local_human_id;
+                    result = g_local_human_id;
                     if (iterations_2 != result) {
                         if (g_player_table[result].force == (g_player_table[0].force + force_offset)) {
                             for (u32 i_3 = 0; i_3 < SelectionCap; ++i_3) {
@@ -884,8 +884,8 @@ namespace hooks {
         u32 player_zeroed = 0;
         if (*g_multiplayer_mode) {
             if (game_data->teams_enabled) {
-                u32 local_player = *g_local_human_id;
-                u32 local_force = g_player_table[*g_local_human_id].force;
+                u32 local_player = g_local_human_id;
+                u32 local_force = g_player_table[g_local_human_id].force;
                 u32 player_iterator = 8;
                 char* game_result_text_var = *game_result_text; // Actually a unit var
                 u8 last_player_force = g_player_table[8].force;

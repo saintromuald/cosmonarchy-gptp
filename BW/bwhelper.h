@@ -32,6 +32,7 @@ namespace helper {
     BW_FUNC(0x004D4960, bool __fastcall, title_dlg_proc, BinDlg* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004D1D70, s32 __fastcall, main_window_proc, void* main_window, HWND hwnd, UINT msg, u32* wparam, u32* lparam);
     BW_FUNC(0x004ADEA0, s32 __stdcall, compile_list_callback, char* string, s32 a3, s32 a4, s32 a5);
+    BW_FUNC(0x004c9780, void __stdcall, save_options_menu_result, BinDlg* dialog);
 
     bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
@@ -865,7 +866,7 @@ namespace helper {
     void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, u32 callback);								// 00416090
     void remove_from_selections(Unit* unit);																		// 0049A7F0
     u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
-    void register_user_dialog_action(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray);				// 00418100
+    void register_user_dialog_action(BinDlg* dialog, BinDlgProc* interact_funcs, u32 count);                        // 00418100
     void enable_control(BinDlg* dialog);																			// 00418E00
     void replay_stat_buttons(BinDlg* dialog);																		// 00427A80
     void update_command_card();																						// 004591D0
@@ -1820,4 +1821,10 @@ namespace helper {
     void report_game_result();                                                                      // 004C4790
     void iscript_set_pos(Image* image, s8 pos_x, s8 pos_y);                                         // 004D5900
     void orders_critter_wander(Unit* unit);                                                         // 0047C3C0
+
+    void latency_dialog_destroy(BinDlg* dialog, DialogEvent* dialog_event);                         // 004e8920
+    void latency_dialog_create(BinDlg* dialog);                                                     // 004e89c0
+    void latency_print_result(u32, const char* string);                                             // 0048d0c0
+    void latency_activate_radio(BinDlg* dialog);                                                    // 004e1900
+    bool latency_radio_interact(BinDlg* dialog, DialogEvent* event);                                // 004e1bc0
 }

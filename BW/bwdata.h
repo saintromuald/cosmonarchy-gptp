@@ -148,6 +148,7 @@ BW_REF(u32,					g_move_to_y,			0x006284A8);
 
 // Contains various information (names, player types, race types, and associated forces) of each player in the current game
 BW_DATA(Player*,			g_player_table,			0x0057EEE0);
+BW_DATA(Player*,			g_replay_player_table,	0x0064097b);
 
 struct SupplyData {
     u32 provided[PLAYER_COUNT];
@@ -161,9 +162,9 @@ BW_DATA(u32*,		g_countdown_timer,			0x0058D6F4);	// Vanilla trigger actions/cond
 BW_DATA(u32*,		g_elapsed_time_seconds,		0x0058D6F8);
 BW_DATA(u8*,		g_game_type,				0x00596820);	// Compare with GameType::Enum
 BW_DATA(s32*,		g_active_nation_id,			0x00512678);
-BW_DATA(s32*,		g_active_player_id,			0x0051267C);	// Used by get_active_player_next_selection
+BW_REF(s32,         g_active_player_id,         0x0051267C);	// Used by get_active_player_next_selection
 BW_REF(s32,			g_local_nation_id,			0x00512684);	// Actually stores the player ID, shared in team games
-BW_DATA(s32*,		g_local_human_id,			0x00512688);	// Invalid in replays, unique even in team games
+BW_REF(s32,         g_local_human_id,           0x00512688);	// Invalid in replays, unique even in team games
 BW_DATA(u8*,		g_current_tileset,			0x00596828);	// Tileset of current map - compare with TilesetType::Enum
 BW_DATA(s32*,		g_provider_max_buffer,		0x0057F0D8);
 BW_DATA(u32*,		g_provider_latency_calls,	0x0057F090);
@@ -564,12 +565,12 @@ BW_DATA(char*,		text_bytes,					0x00641674); // sizeof 13
 BW_DATA(s32*,		unit_stat_update_timer,		0x00640B54);
 
 // For cmdact_game_speed
-BW_DATA(s32*,		last_control_index,			0x006D051C);
+BW_REF(s32,         last_control_index,         0x006D051C);
 BW_DATA(b32*,		cpu_throttle,				0x006D5C00);
 BW_DATA(b32*,		wants_redraw,				0x005968EC);
 BW_DATA(s32*,		temp_cpu_throttle,			0x00655C3C);
-BW_DATA(char*,		bin_interact,				0x006D1224);
-BW_DATA(void**,		last_bindlg_menu_function,	0x006D1234);
+BW_REF(s8,          bin_interact,               0x006D1224);
+BW_REF(void*,       last_bindlg_menu_function,  0x006D1234);
 
 // For statport_dlg_interact
 BW_DATA(s8**,		g_dialog_key,				0x0068AC88);
@@ -1320,6 +1321,8 @@ BW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE_IN_PARENTHESIS, 0x00505734); 
 BW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE, 0x0050573C); //"%s %d"
 
 //////////////////////////////////////////////////////////////// @}
+
+BW_REF(u8, g_additional_turns_in_transit, 0x006556e4); // Additional turns-in-transit, selected in options->network
 
 #undef BW_DATA
 #undef BW_DATA_REF

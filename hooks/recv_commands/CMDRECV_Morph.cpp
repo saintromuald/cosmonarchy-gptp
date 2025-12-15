@@ -65,7 +65,7 @@ namespace hooks {
 		u32 size = 0;
 		Unit* selection[SelectionCap] = {};
 		for (u32 i = 0; i < SelectionCap; ++i) {
-			Unit* unit = players_selections->unit[*g_active_player_id][i];
+			Unit* unit = players_selections->unit[g_active_player_id][i];
 			if (unit && AssertSprite(unit->sprite)) { // sprite is new
 				selection[size++] = unit;
 			}

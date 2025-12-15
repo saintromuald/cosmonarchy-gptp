@@ -1269,7 +1269,7 @@ enum Enum {
 };
 }
 
-enum GameCommand {
+enum GameCommand : u8 {
     GameCommand_Sequence = 5,
     GameCommand_SaveGame = 6,
     GameCommand_LoadGame = 7,

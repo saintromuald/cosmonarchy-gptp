@@ -577,6 +577,10 @@ Unit* unit;
 u16 unit_id;
 };
 
+struct BinDlg;
+using BinDlgProc = u32(__fastcall*)(BinDlg*, DialogEvent*);
+using BinDlgProcEx = u32(__fastcall*)(BinDlg*, DialogEvent*, u32, u32);
+
 struct BinDlg {
 /*0x00*/  BinDlg*		next;
 /*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
@@ -598,9 +602,15 @@ StatusScreenState*	stat_button_user; // from Neiv's list
 GrpHead*			grp_head_user;
 PortraitData*		portrait_data;
 UserUnit*           user_unit_with_id;
+Options*            options;
 };
 
-/*0x2A*/  void*			fxn_interact;
+union {
+/*0x2A*/  void*         fxn_interact;
+/*0x2A*/  BinDlgProc    interaction_function;
+/*0x2A*/  BinDlgProcEx  interaction_function_extended;
+};
+
 /*0x2E*/  void*			fxn_update;
 /*0x32*/  BinDlg*		parent;
 
@@ -628,10 +638,15 @@ union {
         /*0x3E*/  u32		unk3e;					// unverified filler
     } dialogOn0x36;									// for when 0x36 is clearly BinDlg* but the rest is unknown
     struct {
-        /*0x36*/  b32		unkBool32_36;			// based on the value only being compared to 0
+        /*0x36*/  b32		is_selected;			// based on the value only being compared to 0
         /*0x3A*/  u32		unk3a;					// unverified filler
         /*0x3E*/  u32		unk3e;					// unverified filler
     } checkBox0x36;									// not completely sure
+    struct {
+        /*0x36*/  b32		is_selected;			
+        /*0x3A*/  u32		unk3a;					// unverified filler
+        /*0x3E*/  u32		unk3e;					// unverified filler
+    } radioButton0x36;								// not completely sure
     struct {
         /*0x36*/  u8		unkFlags36;				// "flag" because of possible unkFlags36 |= 1
         /*0x37*/  unk_t     unk37[3];				// unverified filler
@@ -1559,4 +1574,8 @@ struct GameAction {
     s32 size;
 };
 
+struct SetLatencyCommand {
+    GameCommand type = GameCommand_SetLatency;
+    u8 value;
+};
 #pragma pack()

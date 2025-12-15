@@ -34,7 +34,7 @@ namespace hooks {
         buffer[0] = 99;
         buffer[1] = NewGameCommand::GenericSwitchAbility;
         buffer[2] = value;
-        buffer[3] = *g_active_player_id;
+        buffer[3] = g_active_player_id;
         buffer[4] = rust_id;
         helper::queue_game_command(buffer, sizeof(buffer));
     }
@@ -44,7 +44,7 @@ namespace hooks {
         buffer[0] = 99;
         buffer[1] = NewGameCommand::GenericSwitchAbility;
         buffer[2] = !bw::get_generic_rust_value(unit, rust_id);
-        buffer[3] = *g_active_player_id;
+        buffer[3] = g_active_player_id;
         buffer[4] = rust_id;
         helper::queue_game_command(buffer, sizeof(buffer));
     }
@@ -189,7 +189,7 @@ namespace hooks {
                 u8 buffer[12] = {}; // btw
                 buffer[0] = 99;
                 buffer[1] = NewGameCommand::IssueCTFCop2;
-                buffer[2] = *g_active_player_id;
+                buffer[2] = g_active_player_id;
                 helper::queue_game_command(buffer, sizeof(buffer));
             } break;
             case TechId::LuminaryAuralAssault: {

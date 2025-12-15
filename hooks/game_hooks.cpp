@@ -300,7 +300,7 @@ namespace hooks {
 
         for (u32 i = 0; i < g_client_selection_count; ++i) {
             Unit* transport = g_client_selection_group->unit[i];
-            bool is_replay_or_witness = g_is_in_replay || g_globals->players[*g_local_human_id].witness_mode;
+            bool is_replay_or_witness = g_is_in_replay || g_globals->players[g_local_human_id].witness_mode;
             if (!bw::unit_is_allied_or_detected(transport, g_local_nation_id) && !is_replay_or_witness) {
                 continue;
             }
@@ -4217,7 +4217,7 @@ namespace hooks {
                 case GameCommand_SetLatency: {
                     command_size = 2;
                     if (size >= command_size) {
-                        helper::CMDRECV_set_latency(buffer, 0);
+                        set_latency(buffer[1]);
                         goto next_command;
                     }
                 } break;
@@ -4570,7 +4570,7 @@ namespace hooks {
                                 if (g_player_table[player].actions == g_replay_cmd_players[cmd]) {
                                     u32 _id = g_player_table[player].id;
                                     *g_active_nation_id = _id;
-                                    *g_active_player_id = _id;
+                                    g_active_player_id = _id;
                                     break;
                                 }
                             } while (++player < 8);
@@ -4581,7 +4581,7 @@ namespace hooks {
                         } while (++cmd < cmd_count);
                         g_replay_cmd_count = 0;
                         *g_active_nation_id = g_local_nation_id;
-                        *g_active_player_id = *g_local_human_id;
+                        g_active_player_id = g_local_human_id;
                         *g_active_storm_id = *g_local_storm_id;
                         g_is_in_game_loop = false;
                         g_6D5BEC = false;
@@ -4607,7 +4607,7 @@ namespace hooks {
                     helper::cancel_target_order();
                 }
                 helper::set_ingame_input_procs();
-                *last_control_index = 0;
+                last_control_index = 0;
                 helper::load_dialog("rez\\wmission.bin", (void*)0x00461510); // g_mission_bindlg_main()
             }
         }

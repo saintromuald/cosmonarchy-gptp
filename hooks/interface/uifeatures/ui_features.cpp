@@ -1181,4 +1181,116 @@ namespace hooks {
     //		004C3A20 load_stat_txt
     //		004575A0 draw_cancel_upgrade_context
     // -Pr0nogo
+
+    bool __fastcall latency_dialog_proc(BinDlg* dialog, DialogEvent* dialog_event) { // 004e8ae0
+        switch (dialog_event->number_order) {
+            case DialogEventType::DialogEventType_Dialog: {
+                switch (dialog_event->user) {
+                    case DialogUserType_Create: {
+                        helper::latency_dialog_create(dialog);
+                    } break;
+                    case DialogUserType_Destroy: {
+                        helper::latency_dialog_destroy(dialog, dialog_event);
+                        return true;
+                    } break;
+                    case DialogUserType_Activate: {
+                        latency_dialog_activate(dialog, dialog_event);
+                        return true;
+                    } break;
+                    case DialogUserType_InitChildren: {
+                        std::array latency_dialog_functions{
+                            &latency_interaction,
+                            &latency_interaction,
+                            &latency_interaction,
+                            &latency_interaction,
+                            &latency_interaction,
+                        };
+                        helper::register_user_dialog_action(dialog,
+                            latency_dialog_functions.data(), sizeof(latency_dialog_functions));
+                    } break;
+                }
+            }
+            case DialogEventType::DialogEventType_KeyDown:
+            case DialogEventType::DialogEventType_KeyRepeat:
+            case DialogEventType::DialogEventType_MouseMove:
+            case DialogEventType::DialogEventType_LButtonDown:
+            case DialogEventType::DialogEventType_LButtonUp:
+            case DialogEventType::DialogEventType_LButtonDouble:
+            case DialogEventType::DialogEventType_RButtonDown:
+            case DialogEventType::DialogEventType_RButtonUp:
+            case DialogEventType::DialogEventType_RButtonDouble:
+            case DialogEventType::DialogEventType_Spacebar: {
+                helper::generic_dialog_interact(dialog, dialog_event);
+                return true;
+            } break;
+            default: {
+                return helper::generic_dialog_interact(dialog, dialog_event);
+            } break;
+        }
+    }
+
+    void __fastcall latency_dialog_activate(BinDlg* dialog, DialogEvent* dialog_event) { // 004e8a30
+        if (last_control_index == DialogButtonIndex::Ok) {
+            for (auto control = dialog->child_dialog; control; control = control->next) {
+                if (control->radioButton0x36.is_selected) {
+                    SetLatencyCommand command;
+                    command.value = control->index - 1;
+                    helper::queue_game_command((u8*)&command, sizeof(command));
+                }
+            }
+        }
+        helper::save_options_menu_result(dialog);
+        if (bin_interact == 1) {
+            bin_interact = 0;
+            helper::destroy_dialog(dialog);
+            return;
+        }
+        bin_interact -= 2;
+        last_bindlg_menu_function = helper::main_menu_options_custom_interact;
+        helper::load_dialog("rez\\options.bin", helper::game_menu_dialog_interact);
+    }
+
+    std::string latency_value_string(u8 latency) {
+        switch (latency) {
+            case 0: return "None";
+            case 1: return "Low";
+            case 2: return "Medium";
+            case 3: return "High";
+            case 4: return "Extra-High";
+        }
+        return "";
+    }
+
+    b32 __fastcall latency_interaction(BinDlg* dialog, DialogEvent* event) {
+        if (event->number_order == DialogEventType_Dialog) {
+            switch (event->user) {
+            case DialogUserType_InitChildren: {
+                if (g_additional_turns_in_transit == dialog->index - 1) {
+                    helper::latency_activate_radio(dialog);
+                }
+            } break;
+            case DialogUserType_Activate:
+                helper::latency_activate_radio(dialog);
+                return true;
+            case DialogUserType_SetSelectionIndex: {
+                if (!event->field_4) return true;
+                helper::latency_activate_radio(dialog);
+                return true;
+            } break;
+            }
+        }
+        return helper::latency_radio_interact(dialog, event);
+    }
+
+    void set_latency(u8 latency) {
+        g_additional_turns_in_transit = std::min<u8>(latency, 4);
+
+        auto name = g_is_in_replay ? g_replay_player_table[g_active_player_id].name : g_player_table[g_active_player_id].name;
+        auto message = std::format("{} set latency compensation to {}", name, latency_value_string(latency));
+        helper::latency_print_result(0, message.c_str());
+    }
+
+    void load_latency_dialog() {
+        helper::load_dialog("rez\\netdlg.bin", &latency_dialog_proc);
+    }
 }

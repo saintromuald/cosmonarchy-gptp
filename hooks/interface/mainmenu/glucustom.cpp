@@ -36,10 +36,10 @@ namespace hooks
 	void cmdact_game_speed(BinDlg* control) // 00481EF0
 	{
 		helper::process_options_change(control);
-		char interacting_bin = (*bin_interact)-- - 1;
-		if (*bin_interact) {
-			*bin_interact = interacting_bin - 1;
-			*last_bindlg_menu_function = helper::main_menu_options_custom_interact;
+		char interacting_bin = (bin_interact--) - 1;
+		if (bin_interact) {
+			bin_interact = interacting_bin - 1;
+			last_bindlg_menu_function = helper::main_menu_options_custom_interact;
 			helper::load_dialog("rez\\options.bin", helper::game_menu_dialog_interact);
 		} else {
 			helper::destroy_dialog(control);
@@ -716,7 +716,7 @@ namespace hooks
 					return helper::generic_dialog_interact(text_message, dlg_event);
 				}
 				case DialogUserType_Activate:
-					switch (*last_control_index) {
+					switch (last_control_index) {
 						case 3: {
 							if (*g_is_demo) {
 								if (g_network_table_df->get_string_count() > 102) {

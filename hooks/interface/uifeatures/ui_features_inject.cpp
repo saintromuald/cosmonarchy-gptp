@@ -731,5 +731,7 @@ namespace hooks {
         memory_patch(0x004E09DC, (u8)0xA3);//Change "MOV [g_is_restart], 1" to "MOV [g_is_restart], EAX" to make room for callpatch.
         memory_patch(0x004E09DD, (u32)0x6D0F0C);
         call_patch(StarMain_restart_replay, 0x004E09E1);
+
+        memory_patch(0x004ca150, &load_latency_dialog);
     }
 }
