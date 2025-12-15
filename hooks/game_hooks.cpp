@@ -3791,7 +3791,6 @@ namespace hooks {
     void game_recv(char* buffer, s32 size, bool processing_replay_commands) { // 004865D0
         // Size needs to be s32 to support less than 0 comparison...
         if (size) {
-            bool is_in_replay = g_is_in_replay;
             u32 command_id = 0;
             u32 command_size = 0;
             while (true) {
@@ -4184,7 +4183,7 @@ namespace hooks {
                 case GameCommand_Hash: {
                     command_size = 7;
                     if (size >= command_size) {
-                        if (!is_in_replay && !helper::CMD_game_hash((HashPacket*)buffer)) {
+                        if (!g_is_in_replay && !helper::CMD_game_hash((HashPacket*)buffer)) {
                             *g_is_bad_hash = 1;
                             g_array_player_status[*g_active_storm_id] = 0x10000;
                         }
@@ -4217,7 +4216,7 @@ namespace hooks {
                 case GameCommand_SetReplaySpeed: {
                     command_size = 10;
                     if (size >= command_size) {
-                        if (is_in_replay) {
+                        if (g_is_in_replay) {
                             helper::CMDRECV_set_replay_speed(*(s32*)(buffer + 2), buffer[1], *(s32*)(buffer + 6));
                         }
                         goto next_command;
@@ -4407,7 +4406,6 @@ namespace hooks {
                         helper::save_replay_action(*g_replay_data, buffer, command_size, *g_active_storm_id);
                         size -= command_size;
                         buffer += command_size;
-                        is_in_replay = g_is_in_replay;
                         goto maybe_process_command;
                     }
                 } break;
