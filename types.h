@@ -32,3 +32,23 @@ typedef u8					b8;
 typedef u8					unk_t;
 typedef unsigned int		UINT;
 #endif
+
+#include <xmmintrin.h>
+#include <float.h>
+
+// Must be called on all game simulation threads for floats to not desync -Veeq7
+inline void init_float_precision() {
+    // Disable x87 extended precision
+    _controlfp(_PC_53, _MCW_RC);
+
+    // Round to nearest
+    _controlfp(_RC_NEAR, _MCW_PC);
+
+    // Mask all FP exceptions
+    _controlfp(_MCW_EM, _MCW_EM);
+    
+    // SSE: flush denormals
+    _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
+    _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+}
+

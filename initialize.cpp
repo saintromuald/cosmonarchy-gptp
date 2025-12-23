@@ -157,14 +157,8 @@ namespace {
     }
 }
 
-static void set_float_precision() {
-    u32 fp_current = 0;
-    _controlfp_s(&fp_current, RC_NEAR, _MCW_RC);
-    _controlfp_s(&fp_current, PC_24,   _MCW_PC);
-}
-
 BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
-    set_float_precision();
+    init_float_precision();
 
     load_config();
     run_wmode(g_config.disable_wmode_prompt, g_config.prefer_wmode);
