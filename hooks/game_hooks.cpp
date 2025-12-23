@@ -3734,6 +3734,8 @@ namespace hooks {
     }
 
     bool game_preinit() {
+        init_float_precision();
+
         g_game = std::make_unique<Game>();
 
         g_globals = std::make_unique<Globals>();
