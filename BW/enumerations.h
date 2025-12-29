@@ -1546,6 +1546,21 @@ enum Enum {
 };
 }
 
+enum class MainState : u32 {
+    Intro,
+    Init,
+    Exit,
+    Run,
+    Glues,
+    Restart,
+    Win,
+    Lose,
+    Credits,
+    Epilog,
+    Cinematic,
+    Max,
+};
+
 namespace WorkerContext {
 enum Enum {
     Harvesting = 0,

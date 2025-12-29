@@ -776,7 +776,7 @@ LABEL_87:
 				case RequirementOpcodes::MustBeBroodWar:
 				{
 					//DebugOut("MustBeBroodWar (%d):", currentOpcode);
-					if (!*g_is_brood_war)
+					if (!g_is_brood_war)
 					{
 						*g_last_internal_error = InternalErrors::UnknownError26;
 						//DebugOut(">Return NotAllowed");

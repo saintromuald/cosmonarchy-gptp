@@ -31,7 +31,8 @@ namespace helper {
     BW_FUNC(0x0049BFD0, char __cdecl, update_screen_position);
     BW_FUNC(0x004D4960, bool __fastcall, title_dlg_proc, BinDlg* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004D1D70, s32 __fastcall, main_window_proc, void* main_window, HWND hwnd, UINT msg, u32* wparam, u32* lparam);
-    BW_FUNC(0x004ADEA0, s32 __stdcall, compile_list_callback, char* string, s32 a3, s32 a4, s32 a5);
+    BW_FUNC(0x004ADEA0, s32 __stdcall, compile_list_callback, const char* string, s32 a3, s32 a4, s32 a5);
+    BW_FUNC(0x004DDD30, char* __stdcall, get_string_by_id, s16 id);
     BW_FUNC(0x004c9780, void __stdcall, save_options_menu_result, BinDlg* dialog);
 
     bool has_money_can_make(Unit* builder, u32 unit_to_build);
@@ -1822,9 +1823,27 @@ namespace helper {
     void iscript_set_pos(Image* image, s8 pos_x, s8 pos_y);                                         // 004D5900
     void orders_critter_wander(Unit* unit);                                                         // 0047C3C0
 
-    void latency_dialog_destroy(BinDlg* dialog, DialogEvent* dialog_event);                         // 004e8920
-    void latency_dialog_create(BinDlg* dialog);                                                     // 004e89c0
-    void latency_print_result(u32, const char* string);                                             // 0048d0c0
-    void latency_activate_radio(BinDlg* dialog);                                                    // 004e1900
-    bool latency_radio_interact(BinDlg* dialog, DialogEvent* event);                                // 004e1bc0
+    // For lobby creation and joining
+    bool initialize_spi(u32 provider_id);                                           // 004d3cc0
+    bool join_game(const GameData* game_data);                                      // 004d3b50
+    void load_map_info(MapFile* map_info);                                          // 004a7740
+    void load_replay_info(MapFile* map_info);                                       // 004a7c30
+    bool load_map_forces(const char* map_path, u32* force_flags, b32 is_campaign);  // 004bf5d0
+    u32 load_map_to_globals(GameData* game_data, u32 game_speed);                   // 004a68d0
+    bool create_multiplayer_lobby(GameData* game_data, char* game_password);        // 004d3910
+    bool prep_singleplayer_game();                                                  // 004dbea0
+    bool start_singleplayer_game(GameData* game_data);                              // 004d3fc0
+
+    // For managing character files
+    // List characters in Starcraft/characters and call the callback on each
+    void iterate_characters(void(__stdcall* callback)(CharacterFile* character));   // 004a8ab0
+    u32 save_character_file(CharacterFile* character);                              // 004a8880
+    void character_file_path(const char* name, char* output, u32 buffer_size);      // 004a8790
+
+    // For adding additional latency options
+    void latency_dialog_destroy(BinDlg* dialog, DialogEvent* dialog_event);         // 004e8920
+    void latency_dialog_create(BinDlg* dialog);                                     // 004e89c0
+    void latency_print_result(u32, const char* string);                             // 0048d0c0
+    void latency_activate_radio(BinDlg* dialog);                                    // 004e1900
+    bool latency_radio_interact(BinDlg* dialog, DialogEvent* event);                // 004e1bc0
 }

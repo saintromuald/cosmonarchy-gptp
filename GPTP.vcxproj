@@ -266,6 +266,11 @@
     <ClCompile Include="hooks\update_unit_sight.cpp" />
     <ClCompile Include="hooks\update_unit_sight_inject.cpp" />
     <ClCompile Include="BW\extender\iscript_extender.cpp" />
+    <ClCompile Include="BW\game_runner.cpp" />
+    <ClCompile Include="hooks\fraud_launcher_inject.cpp" />
+    <ClCompile Include="hooks\fraud_launcher.cpp" />
+    <CLCompile Include="BW\characters.cpp" />
+    <CLCompile Include="snp.cpp" />
     <ClCompile Include="maths.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -606,7 +611,9 @@
     <ClInclude Include="bwutils.h" />
     <ClInclude Include="BW\bwdata.h" />
     <ClInclude Include="BW\bwhelper.h" />
+    <ClInclude Include="BW\characters.h" />
     <ClInclude Include="BW\extender\iscript_extender.h" />
+    <ClInclude Include="BW\game_runner.h" />
     <ClInclude Include="BW\Storm.h" />
     <ClInclude Include="CM\cm.h" />
     <ClInclude Include="CM\cm_behaviors.h" />
@@ -626,6 +633,7 @@
     <ClInclude Include="GameModes\TheTurning.h" />
     <ClInclude Include="hooks\audiovisuals\image_render.h" />
     <ClInclude Include="hooks\DatExtend\dat_load.h" />
+    <ClInclude Include="hooks\fraud_launcher.h" />
     <ClInclude Include="hooks\grafting\button_functions.h" />
     <ClInclude Include="hooks\grafting\grafting.h" />
     <ClInclude Include="hooks\interface\minimap.h" />
@@ -637,6 +645,8 @@
     <ClInclude Include="hooks\replay_hooks.h" />
     <ClInclude Include="hooks\update_unit_sight.h" />
     <ClInclude Include="include\json.hpp" />
+    <ClInclude Include="main_menu.h" />
+    <ClInclude Include="snp.h" />
     <ClInclude Include="_vendor\magic_enum\magic_enum.hpp" />
     <ClInclude Include="_vendor\magic_enum\magic_enum_all.hpp" />
     <ClInclude Include="_vendor\magic_enum\magic_enum_containers.hpp" />

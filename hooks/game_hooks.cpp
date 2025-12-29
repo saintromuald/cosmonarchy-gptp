@@ -3863,7 +3863,7 @@ namespace hooks {
                         s32 string_size = helper::get_recv_string(28u, size - command_size, 0, buffer + 5, 0);
                         if (string_size) {
                             command_size += string_size;
-                            if (!*g_multiplayer_mode) {
+                            if (!g_multiplayer_mode) {
                                 helper::CMDRECV_load_game(buffer + 5);
                             }
                             goto next_command;
@@ -3932,7 +3932,7 @@ namespace hooks {
                     command_size = 2;
                     if (size >= command_size) {
                         u32 speed = buffer[1];
-                        if (speed < 7 && !*g_multiplayer_mode) {
+                        if (speed < 7 && !g_multiplayer_mode) {
                             (*g_options_list).speed = speed;
                         }
                         goto next_command;
@@ -4596,7 +4596,7 @@ namespace hooks {
         } else {
             helper::CMDRECV_set_replay_speed(g_options_list->speed, true, g_speed_multiplier);
             if (!g_685178 && !g_68517C) {
-                if (*g_multiplayer_mode && g_current_network_mode == 'BNET' && !g_685174) {
+                if (g_multiplayer_mode && g_current_network_mode == 'BNET' && !g_685174) {
                     g_685174 = true;
                     helper::report_game_result();
                 }

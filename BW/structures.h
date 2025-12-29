@@ -169,7 +169,7 @@ struct Base {
 };
 
 struct GameData { // taken from IDA and from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
-    u32		save_time;				  // 0x0
+    u32		index;				      // 0x0
     char	game_name[0x18];		  // 0x4
     u32		save_timestamp;			  // 0x1C
     u16		map_width_tiles;		  // 0x20
@@ -178,13 +178,13 @@ struct GameData { // taken from IDA and from https://gist.githubusercontent.com/
     u8		max_player_count;		  // 0x25
     u8		game_speed;				  // 0x26
     u8		game_state;				  // 0x27
-    u16		g_game_type;			  // 0x28
+    u16		game_type;			  // 0x28
     u16		game_subtype;			  // 0x2A
     u32		cdkey_hash;				  // 0x2C
     u16		tileset;				  // 0x30
     u8		is_replay;				  // 0x32
     u8		computer_player_count;	  // 0x33
-    u8		host_name[0x19];		  // 0x34
+    char	host_name[0x19];		  // 0x34
     char	map_title[0x20];		  // 0x4D
     u16		got_game_type;			  // 0x6D
     u16		got_game_subtype;		  // 0x6F
@@ -206,6 +206,49 @@ struct GameData { // taken from IDA and from https://gist.githubusercontent.com/
     u32		resource_gas_value;		  // 0x88
 };
 C_ASSERT(sizeof(GameData) == 0x8C);
+
+enum class MapFileError : u32 {
+    None,
+    Invalid,
+    WrongGameVersion,
+};
+
+struct MapFile {
+    MapFile* prev;
+    MapFile* next;
+    char display_filename[65];
+    char map_name[32];
+    char map_description[316];
+    char total_players_str[35];
+    char ai_players_str[35];
+    char human_players_str[35];
+    char map_size[35];
+    char map_tileset[35];
+    u32 list_index;
+    b32 map_loaded;
+    MapFileError map_load_error;
+    u8 game_state;
+    u8 _unk1;
+    u8 _unk2;
+    u8 _unk3;
+    u32 _unk4;
+    u8 selection_type;
+    char full_path[260];
+    char full_filename[260];
+    u8 _unk5;
+    u16 map_width_tiles;
+    u16 map_height_tiles;
+    u16 tileset_id;
+    u8 unk_6;
+    u8 max_players;
+    u8 computer_players;
+    u8 human_players;
+    char unk_7[16];
+    GameData game_data;
+    u8 force_map[8];
+    char _unused[40];
+    u16 size;
+};
 
 struct ReplayFrame { // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
     u32	time;    // The game frame on which the commands are to be played.
@@ -1574,6 +1617,124 @@ struct GameAction {
     s32 size;
 };
 
+struct CharacterFile {
+    u32 magic = 0x112233; // always 0x112233
+    b32 is_multiplayer;
+    u32 system_time;
+    char name[28];
+    u8 unknown_data[72];
+};
+
+enum class GameTypeListMode : u8 {
+    Unknown,
+    Melee,
+    Scenario,
+};
+
+struct GameTypeList {
+    GameTypeList* prev;
+    GameTypeList* next;
+    char name[64];
+    u8 game_type;
+    u8 unused;
+    u16 sub_type;
+    u8 unknown_1[6];
+    GameTypeListMode mode;
+    u8 unknown_2[317];
+    u32 size; // 0x198
+    u32 unknown_3;
+};
+
+//-------- SNET SPI related --------//
+using NetAddress = u8[16];
+
+struct Caps {
+    u32 size;
+    u32 flags;  // 0x20000003. 0x00000001 = page locked buffers, 0x00000002 = basic interface, 0x20000000 = release mode
+    u32 max_message_size;  // Must be between 128 and 512
+    u32 max_queue_size;
+    u32 max_players;
+    u32 bytes_per_second;
+    u32 latency;
+    u32 turns_per_second;
+    u32 turns_in_transit;
+};
+
+struct SPIProvider {
+    SPIProvider* prev;
+    SPIProvider* next;
+    char filename[260];
+    u32 index;
+    u32 id;  // e.g. 'BNET' or 'CNLK'
+    char name[128];
+    char description[128];
+    Caps caps;
+};
+
+struct AdFile {
+    u32 game_index;
+    u32 game_state;
+    u32 creation_time;
+    NetAddress  host;
+    u32 host_latency;
+    u32 host_last_time;
+    u32 category_bits;
+    char game_name[128];
+    char game_description[128];
+    AdFile* next;
+    void* extra;
+    u32 extra_bytes_count;
+    u32 program_id;
+    u32 version_id;
+    u8 extra_bytes[32];
+};
+
+struct LobbyInfo {
+    u32 unknown; // Always 4
+    u32 game_index;
+    const char* game_name; // Pointer to game_name field in the received adfile.game_info
+    const char* game_description; // Pointer to game_description field in the received adfile.game_info
+    u16 type;
+    u16 subtype;
+    u32 players;
+    u32 max_players;
+
+    // Since game_name is a pointer to the game_name field in the adfile received from the SPI
+    // we can get a pointer to the actual adfile by subtracting 40 bytes
+    AdFile* adfile() { return (AdFile*)(game_name - 40); };
+};
+
+struct SPIFunctions {
+    u32 size;
+    b32(__stdcall* compare_net_addresses)(NetAddress* left, NetAddress* right, u32* result);
+    b32(__stdcall* destroy)();
+    b32(__stdcall* free_message)(NetAddress* address, const char* data, u32 size);
+    b32(__stdcall* free_external_message)(NetAddress* address, const char* data, u32 size);
+    b32(__stdcall* get_game_info)(u32 index, const char* game_name_unused, const char* password_unused, AdFile* output);
+    b32(__stdcall* unused_get_performance_data)(u32 type, u32* output, u32, u32);
+    b32(__stdcall* initialize)(void* program_info, void* player_info, void* bnet_callbacks, void* version_info, void* receive_event);
+    b32(__stdcall* unused_initialize_device)();
+    b32(__stdcall* unused_lock_device_list)();
+    b32(__stdcall* lock_game_list)(u32, u32, AdFile** adfile_list);
+    b32(__stdcall* receive_message)(NetAddress** sender, char** message, u32* message_size);
+    b32(__stdcall* receive_external_message)(NetAddress** sender, char** message, u32* message_size);
+    b32(__stdcall* bnet_select_game)(u32 flags, void* program_info, void* player_info, void* bnet_callbacks, void* version_info, u32* player_id);
+    b32(__stdcall* send_message)(u32 destination_count, NetAddress** destination_list, char* message, u32 message_size);
+    b32(__stdcall* send_external_message)(char* destination, u32 message_size, char* blank1, char* blank2, char* message);
+    b32(__stdcall* start_advertising)(const char* game_name, const char* game_password, const char* game_stat_string, u32 game_state, u32 elapsed_time, u32 game_type, u32 unknown1, u32 unknown2, void* user_data, u32 user_data_size);
+    b32(__stdcall* stop_advertising)();
+    b32(__stdcall* unused_unlock_device_list)();
+    b32(__stdcall* unlock_game_list)(AdFile* game_list, u32* list_count);
+    b32(__stdcall* bnet_get_local_player_name)(char* name, u32 name_size, char* description, u32 description_size);
+    b32(__stdcall* bnet_report_game_result)(u32 unknown1, u32 unknown2, void* unknown3, void* unknown4, void* unknown5);
+    b32(__stdcall* unused_spi_check_data_file)();
+    b32(__stdcall* bnet_send_command)(char* stats, void(__fastcall* callback)(char*, u32));
+    b32(__stdcall* bnet_send_replay_path)(u32 unknown1, u32 unknown2, char* path);
+    b32(__stdcall* bnet_unknown_replay)(u32 unknown1);
+    b32(__stdcall* bnet_logout)(const char* player_name);
+    b32(__stdcall* bnet_get_player_name)(char* name_output, u32* size);
+};
+//---------- End SNET SPI ----------//
 struct SetLatencyCommand {
     GameCommand type = GameCommand_SetLatency;
     u8 value;

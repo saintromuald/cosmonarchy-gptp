@@ -9,14 +9,14 @@
 
 // Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
 
-#define BW_DATA(type, name, offset) type const name = (type)offset;		// Designed as const to make sure programmers don't read from or write to the address itself.
-#define BW_DATA_REF(type, name, offset)  extern type& name;				// Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
+#define BW_DATA(type, name, offset) type const name = (type)offset		// Designed as const to make sure programmers don't read from or write to the address itself.
+#define BW_DATA_REF(type, name, offset)  extern type& name				// Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
 
 // TODO: Replace BW_DATA to those new macros (which are harder to misuse and simpler to define)
 //       Or potentially make Neiv's style templated classes, like BwOffset<T> and BwArray<T> that would have either T& conversion operator or operator[]
 //                                                                                                                                                -Veeq7
-#define BW_REF(type, name, offset) inline type& name = *(type*)offset;
-#define BW_ARRAY(type, name, offset) type const* name = (type*)offset;
+#define BW_REF(type, name, offset) inline type& name = *(type*)offset
+#define BW_ARRAY(type, size, name, offset) inline std::array<type, size>& name = *(std::array<type, size>*)offset
 
 //////////////////////////////////////////////////////////////// @}
 /// @name Linked list nodes
@@ -147,8 +147,8 @@ BW_REF(u32,					g_move_to_x,			0x0062848C);
 BW_REF(u32,					g_move_to_y,			0x006284A8);
 
 // Contains various information (names, player types, race types, and associated forces) of each player in the current game
-BW_DATA(Player*,			g_player_table,			0x0057EEE0);
-BW_DATA(Player*,			g_replay_player_table,	0x0064097b);
+BW_ARRAY(Player,    12,     g_player_table,         0x0057EEE0);
+BW_ARRAY(Player,    12,	    g_replay_player_table,  0x0064097b);
 
 struct SupplyData {
     u32 provided[PLAYER_COUNT];
@@ -160,7 +160,8 @@ BW_DATA(SupplyData*,		g_race_supply,			0x00582144);	// Array; Use Unit::get_race
 BW_REF(u32,			g_elapsed_time_frames,		0x0057F23C);
 BW_DATA(u32*,		g_countdown_timer,			0x0058D6F4);	// Vanilla trigger actions/conditions (From BWAPI Offsets.h)
 BW_DATA(u32*,		g_elapsed_time_seconds,		0x0058D6F8);
-BW_DATA(u8*,		g_game_type,				0x00596820);	// Compare with GameType::Enum
+BW_REF(u8,          g_game_type,                0x00596820);	// Compare with GameType::Enum
+BW_REF(u8,          g_game_subtype,             0x00596822);
 BW_DATA(s32*,		g_active_nation_id,			0x00512678);
 BW_REF(s32,         g_active_player_id,         0x0051267C);	// Used by get_active_player_next_selection
 BW_REF(s32,			g_local_nation_id,			0x00512684);	// Actually stores the player ID, shared in team games
@@ -204,8 +205,9 @@ BW_DATA(StringTbl*,		g_network_table_df,				0x006D1220);
 
 // For init_singleplayer_custom
 BW_DATA(u32*,			g_selected_game_type,			0x0059BA64);
-BW_DATA(u16*,			g_selected_game_type_param,		0x0059BA5C);
+BW_DATA(u16*,           g_selected_game_type_param,     0x0059BA5C);
 BW_DATA(char*,			g_selected_singleplayer_race,	0x0057F266);
+BW_ARRAY(u8, 9,   g_selected_singleplayer_races,  0x0057F266);
 BW_DATA(char*,			g_custom_singleplayer,			0x0057F1E3);
 
 // For Lobotomy Mine
@@ -218,7 +220,7 @@ BW_DATA(ForceFlags*,	g_player_force_flags,		0x0058D5B8); // array of 0x4
 BW_DATA(u8*,			g_player_force,				0x0059BDA8); // array of 0x8
 BW_DATA(u8*,			g_player_force_replay_sth,	0x006D11A1); // array of 0x8
 BW_DATA(FILE*,			load_game_file_handle,		0x006D1218);
-BW_DATA(u8*,			g_multiplayer_mode,			0x0057F0B4);
+BW_REF(bool,			g_multiplayer_mode,			0x0057F0B4);
 BW_DATA(u32*,			g_initial_random_seed,		0x0051CA10);
 BW_DATA(u32*,			g_replay_random_seed,		0x006D0F38);
 BW_DATA(u32*,			g_random_counts,			0x0051C610); // count of 0x400
@@ -277,14 +279,13 @@ BW_REF(u32,				g_console_race_specific,		0x0051A3B4);
 // For load_game_create
 BW_REF(u32,				g_is_host,					0x00596888);
 BW_REF(u8,				g_out_of_game,				0x006D5A10);
-BW_REF(u32,				g_sc_main_state,			0x00596904);
+BW_REF(MainState,       g_sc_main_state,			0x00596904);
 BW_REF(u8,				g_game_active,				0x006D11EC);
 BW_REF(u16,				g_next_sc_main_state,		0x0051CE90);
 BW_REF(u32,				g_replay_end_frame,			0x006D0F31);
 
 // For level_cheat_create
 BW_REF(u32,				g_ophelia_enabled,			0x006D11C0);
-BW_REF(char,			g_player_name,				0x0057EEB5);
 
 // For update_placement_state_for_placement_box
 BW_REF(s8,			g_placing_player,				0x0064088C);
@@ -916,7 +917,7 @@ BW_DATA(ResourceAreaArray*,		g_resource_areas,			0x00692688);
 //-------- Internal constants --------//
 
 BW_DATA(b32*,	g_is_game_paused,				0x006509C4);  // See bw::g_is_game_paused()
-BW_DATA(b8*,	g_is_brood_war,					0x0058F440);  // See bw::is_brood_war_mode()
+BW_REF(b8,      g_is_brood_war,					0x0058F440);  // See bw::is_brood_war_mode()
 BW_DATA(u32*,	g_cheat_state,					0x006D5A6C);  // See bw::is_cheat_enabled()
 BW_REF(b32,		g_is_in_replay,					0x006D0F14);  // See bw::is_in_replay()
 BW_DATA(b32*,	g_is_replay_paused,				0x006D11B0);
@@ -1323,6 +1324,25 @@ BW_DATA(const char*, FORMATSTRING_TEXT_SPACE_VALUE, 0x0050573C); //"%s %d"
 //////////////////////////////////////////////////////////////// @}
 
 BW_REF(u8, g_additional_turns_in_transit, 0x006556e4); // Additional turns-in-transit, selected in options->network
+
+// For joining and creating lobbies
+BW_REF(GameData,        g_game_data,            0x005967f8);
+BW_REF(u32,             g_selected_snp,         0x006d5a28);
+BW_REF(s32,             g_glue_background_id,   0x0050E064);
+BW_REF(u16,             g_tileset_id,           0x0057f1dc);
+BW_REF(char,            g_player_name,          0x0057ee9c);
+BW_REF(GameTypeList*,   g_game_type_list,       0x0051a270);
+BW_REF(u32,             g_provider_id,          0x0059688c);
+
+
+//-------- storm.dll --------//
+
+BW_REF(SPIProvider*,        g_spi_provider,         0x1505e62c);
+BW_REF(SPIProvider*,        g_spi_provider_list,    0x1505ad6c);
+BW_REF(CRITICAL_SECTION,    g_spi_critsec,          0x1505eba8);
+BW_REF(SPIFunctions*,       g_spi_functions,        0x1505e620);
+
+//-------- end storm.dll --------//
 
 #undef BW_DATA
 #undef BW_DATA_REF
