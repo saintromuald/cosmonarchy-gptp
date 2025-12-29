@@ -91,6 +91,11 @@ struct std::formatter<TextColor> {
     }
 };
 
+template <size_t Capacity>
+inline void safe_copy(char(&to)[Capacity], const char* from) {
+    strncpy(to, from, Capacity - 1);
+}
+
 namespace enums {
 template <typename T>
 using base = std::underlying_type_t<T>;
@@ -537,7 +542,7 @@ inline f32 vec_length(Vec32f vec) {
 
 /// Checks whether the game is in Brood War mode (instead of vanilla StarCraft).
 inline bool is_brood_war_mode() {
-    return (*g_is_brood_war) != 0;
+    return g_is_brood_war;
 }
 
 /// Checks whether the given cheat flag is enabled.

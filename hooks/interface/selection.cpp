@@ -659,7 +659,7 @@ namespace hooks {
     // Hooked to investigate "archon mode".
     // Seems to only be called from lobbies, so it's probably not related to what I want. -Pr0nogo
     b32 game_is_team_game() { // 00484F50
-        return *g_multiplayer_mode && game_data->teams_enabled;
+        return g_multiplayer_mode && game_data->teams_enabled;
     }
 
     // Hooked to forbid witness selections from showing. -Pr0nogo
@@ -801,7 +801,7 @@ namespace hooks {
             }
         }
 
-        if (*g_multiplayer_mode) {
+        if (g_multiplayer_mode) {
             if (game_data->teams_enabled) {
                 Unit* player_selection = *players_selections->unit[0];
                 Unit* player_selection_2 = *players_selections->unit[0];
@@ -882,7 +882,7 @@ namespace hooks {
         }
 
         u32 player_zeroed = 0;
-        if (*g_multiplayer_mode) {
+        if (g_multiplayer_mode) {
             if (game_data->teams_enabled) {
                 u32 local_player = g_local_human_id;
                 u32 local_force = g_player_table[g_local_human_id].force;

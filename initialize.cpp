@@ -126,6 +126,7 @@
 #include "hooks/game/creategame.h"
 #include "BW/extender/iscript_extender.h"
 #include "hooks/limits/tbl_extender.h"
+#include "BW/game_runner.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -900,6 +901,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	hooks::inject_iscript_extender();
     hooks::inject_tbl_extender();
+
+    hooks::inject_menu_hooks();
 
 	return TRUE;
 }

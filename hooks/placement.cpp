@@ -103,6 +103,7 @@ namespace hooks {
     // Hooked to allow building on allied creep. -Pr0nogo
     int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) { // 00473010
         u32 human_only_player_bit = 0;
+        if (player == 0xff) return 0; // First time calling bug fix -Jesse
         if (g_player_table[player].type == PlayerType::Human) {
             human_only_player_bit = 1 << player;
         }
@@ -136,6 +137,7 @@ namespace hooks {
     // Hooked to allow building on allied creep. -Pr0nogo
     u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) { // 00473A10
         u32 human_only_player_bit = 0;
+        if (player == 0xff) return 0; // First time calling bug fix -Jesse
         if (g_player_table[player].type == PlayerType::Human) {
             human_only_player_bit = 1 << player;
         }

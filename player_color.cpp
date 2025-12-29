@@ -347,11 +347,6 @@ static u32 get_name_count(u32 race, u32 personality) {
     return count;
 }
 
-template <size_t Capacity>
-static void safe_copy(char (&to)[Capacity], const char* from) {
-    strncpy(to, from, Capacity - 1);
-}
-
 void set_player_name(u32 player, const char* name, bool prevent_overwrites) {
     if (prevent_overwrites) {
         g_player_data.has_custom_player_name[player] = true;

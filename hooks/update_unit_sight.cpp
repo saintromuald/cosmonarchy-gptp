@@ -159,7 +159,7 @@ namespace hooks {
 	}
 
 	void update_fog() {
-		if (*g_multiplayer_mode) {
+		if (g_multiplayer_mode) {
 			*g_cheat_state &= ~(CheatFlags::BlackSheepWall + CheatFlags::WarAintWhatItUsedToBe);
 		}
 		if (!((*g_game_layer).has_been_refreshed & 1)) {

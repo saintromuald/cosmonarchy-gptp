@@ -154,7 +154,7 @@ namespace hooks
 
 				if (unit->building.tech_id < TechId::Restoration)
 					TechSc->is_researched[unit->player][unit->building.tech_id] = 1;
-				else if (*g_is_brood_war)
+				else if (g_is_brood_war)
 					TechBw->is_researched[unit->player][unit->building.tech_id - TechId::Restoration] = 1;
 
 				bw::refresh_console();

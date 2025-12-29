@@ -3214,7 +3214,7 @@ bool unit_can_flee(Unit* unit) {
 }
 
 GameKind get_game_kind() {
-    switch (*g_game_type) {
+    switch (g_game_type) {
         case GameType::UseMapSettings:
         case GameType::Scenario:
             return GameKind::Scenario;

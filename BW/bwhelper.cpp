@@ -14137,7 +14137,7 @@ namespace helper {
     }
 
     b32 is_multiplayer_mode_bnet() {
-        return *g_multiplayer_mode && g_current_network_mode == 'BNET';
+        return g_multiplayer_mode && g_current_network_mode == 'BNET';
     }
 
     u32 snet_send_server_chat_command(char string) {
@@ -15778,6 +15778,157 @@ namespace helper {
             PUSHAD
             MOV EAX, dialog
             MOV EBX, event
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    bool initialize_spi(u32 provider_id) {
+        const u32 func_address = 0x004d3cc0;
+        static b32 result;
+        __asm {
+            PUSHAD
+            MOV EBX, provider_id
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    bool join_game(const GameData* game_data) {
+        const u32 func_address = 0x004d3b50;
+        static b32 result;
+        __asm {
+            PUSHAD
+            MOV EBX, game_data
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    void iterate_characters(void(__stdcall* callback)(CharacterFile* character)) {
+        const u32 func_address = 0x004a8ab0;
+        __asm {
+            PUSHAD
+            PUSH callback
+            CALL func_address
+            POPAD
+        }
+    }
+
+    u32 save_character_file(CharacterFile* character) {
+        const u32 func_address = 0x004a8880;
+        static u32 bytes_saved;
+        __asm {
+            PUSHAD
+            MOV EBX, character
+            CALL func_address
+            MOV bytes_saved, EAX
+            POPAD
+        }
+        return bytes_saved;
+    }
+
+    void character_file_path(const char* name, char* output, u32 buffer_size) {
+        const u32 func_address = 0x004a8790;
+        __asm {
+            PUSHAD
+            PUSH name
+            MOV ESI, output
+            MOV EDI, buffer_size
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void load_map_info(MapFile* map_info) {
+        const u32 func_address = 0x004a7740;
+        __asm {
+            PUSHAD
+            MOV EAX, map_info
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void load_replay_info(MapFile* map_info) {
+        const u32 func_address = 0x004a7c30;
+        __asm {
+            PUSHAD
+            MOV EAX, map_info
+            CALL func_address
+            POPAD
+        }
+    }
+
+    bool load_map_forces(const char* map_path, u32* force_flags_out = nullptr, b32 is_campaign = false) {
+        const u32 func_address = 0x004bf5d0;
+        static b32 result;
+        u32 forces[8]{};
+        if (!force_flags_out) force_flags_out = forces;
+        __asm {
+            PUSHAD
+            PUSH is_campaign
+            PUSH force_flags_out
+            PUSH map_path
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    u32 load_map_to_globals(GameData* game_data, u32 game_speed = 3) {
+        const u32 func_address = 0x004a68d0;
+        static u32 result;
+        __asm {
+            PUSHAD
+            PUSH game_speed
+            MOV EAX, game_data
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    bool create_multiplayer_lobby(GameData* game_data, char* game_password = nullptr) {
+        const u32 func_address = 0x004d3910;
+        static b32 result;
+        __asm {
+            PUSHAD
+            PUSH game_password
+            PUSH game_data
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    bool prep_singleplayer_game() {
+        const u32 func_address = 0x004dbea0;
+        static b32 result;
+        __asm {
+            PUSHAD
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    bool start_singleplayer_game(GameData* game_data) {
+        const u32 func_address = 0x004d3fc0;
+        static b32 result;
+        __asm {
+            PUSHAD
+            MOV EAX, game_data
             CALL func_address
             MOV result, EAX
             POPAD

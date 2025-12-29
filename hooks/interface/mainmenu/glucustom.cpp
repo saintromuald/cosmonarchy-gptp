@@ -3,13 +3,14 @@
 #include <BW/structures.h>
 #include <BW/bwdata.h>
 #include "hook_tools.h"
+#include "hooks/fraud_launcher.h"
 
 namespace hooks
 {
 	void display_establishing_shot() // 004D9200, hooked by X405
 	{
 		// This is the original original function which loads the establishing shots in campaigns
-		if (!*g_multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && *campaign_index) {
+		if (!g_multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && *campaign_index) {
 			for (s32 i = 0; i < 65; i++)
 			{
 				if (campaignMissions[i].mission_index == *campaign_index) {
@@ -664,8 +665,8 @@ namespace hooks
 	}
 
 	void glu_expcampaign_custom_ctrl_id() {
-		g_ophelia_enabled = 0;
-		*g_multiplayer_mode = 0;
+		g_ophelia_enabled = false;
+		g_multiplayer_mode = false;
 		helper::load_campaign_progress();
 		BinDlg* campaign_dialog = 0; // helper::load_full_menu_dialog("rez\\gluExpCmpgn.bin");
 
@@ -875,7 +876,7 @@ namespace hooks
 		u8 list_item_count = list->alternateVersion0x46.item_count;
 		if (list_item_count) {
 			u8 result = 0;
-			if (!*g_multiplayer_mode && !last_game_type) {
+			if (!g_multiplayer_mode && !last_game_type) {
 				int* child = (int*)list->child_smk;
 				while (1) {
 					int got_template = child[--list_item_count];
