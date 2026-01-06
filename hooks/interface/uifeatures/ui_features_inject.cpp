@@ -412,17 +412,6 @@ namespace {
         }
     }
 
-    void __declspec(naked) load_statdata_bin_wrapper() { // 00459B90
-        __asm {
-            PUSHAD
-        }
-        hooks::load_statdata_bin();
-        __asm {
-            POPAD
-            RETN
-        }
-    }
-
     void __declspec(naked) input_mmb_down_wrapper() { // 00484520
         static char result;
         static DialogEvent* event;
@@ -670,6 +659,68 @@ namespace {
             RETN
         }
     }
+
+    const u32 load_races_dropdown_50ba7 = 0x00450ba7;
+    void __declspec(naked) load_races_dropdown_wrapper() { // 00450b40
+        static u8 selected_index;
+        static BinDlg* dialog;
+        static RaceId::Enum selected_race;
+        __asm {
+            MOV dialog, ESI
+            MOV CL, [EBP+8]
+            MOV selected_race, CL
+            PUSHAD
+        }
+        selected_index = hooks::load_races_dropdown(dialog, selected_race);
+        __asm {
+            POPAD
+            MOV BL, selected_index
+            JMP load_races_dropdown_50ba7
+        }
+    }
+
+    void __declspec(naked) load_races_dropdown_singleplayer_wrapper() { // 004adf20
+        static BinDlg* dialog;
+        __asm {
+            MOV dialog, EAX
+            PUSHAD
+        }
+        hooks::load_races_dropdown_singleplayer(dialog);
+        __asm {
+            POPAD
+            RETN
+        }
+    }
+
+    const u32 race_valid_aaad6 = 0x004aaad6;
+    const u32 race_invalid_aab95 = 0x004aab95;
+    void __declspec(naked) is_valid_race_wrapper() { // 004aaab0
+        static RaceId::Enum race;
+        static bool valid;
+        __asm {
+            MOV race, AL
+            PUSHAD
+        }
+        valid = hooks::is_valid_race(race);
+        if (valid) {
+            __asm {
+                POPAD
+                JMP race_valid_aaad6
+            }
+        }
+        __asm {
+            POPAD
+            JMP race_invalid_aab95
+        }
+    }
+
+    const u32 glu_main_switch_de433 = 0x004de433;
+    void __declspec(naked) glu_main_switch_wrapper() { // 004de445
+        hooks::glu_main_swich();
+        __asm {
+            JMP glu_main_switch_de433
+        }
+    }
 }
 
 namespace hooks {
@@ -697,7 +748,6 @@ namespace hooks {
         jump_patch(generic_dialog_update_wrapper,			0x004EF590, 1);
         jump_patch(draw_stat_button_image_wrapper,			0x00456C30, 1);
         jump_patch(statbtn_button_update_wrapper,			0x00458900, 1);
-    //	jump_patch(load_statdata_bin_wrapper,				0x00459B90, 4);
     //	jump_patch(print_stat_res_info_wrapper,				0x004E52E0, 0); // Crashes
         jump_patch(input_mmb_down_wrapper,					0x00484520, 0);
         jump_patch(input_mmb_up,							0x004843A0, 0);
@@ -722,10 +772,10 @@ namespace hooks {
         jump_patch(dialog_update_proc_patch_1CBFA,			0x0041CBFA);
 
         // Passive icon colorization -- extension of color remaps. -DF
-        memory_patch(0x00459C1D, (u8)0x70); // Since it's a byte value push, this is the largest buffer size with this mempatch. Will need a jump_patch or hook to support more colors.
+        // memory_patch(0x00459C1D, (u8)0x70); // Since it's a byte value push, this is the largest buffer size with this mempatch. Will need a jump_patch or hook to support more colors.
+        // ^ No longer necessary since I've replaced load_command_buttons. -Jesse
         memory_patch(0x00456C59, &g_new_cmdbtn_palette);
         memory_patch(0x004589D5, &g_new_cmdbtn_palette);
-        memory_patch(0x00459C1F, &g_new_cmdbtn_palette);
 
         // Fix replay deletion on restart. -DF
         memory_patch(0x004E09DC, (u8)0xA3);//Change "MOV [g_is_restart], 1" to "MOV [g_is_restart], EAX" to make room for callpatch.
@@ -733,5 +783,13 @@ namespace hooks {
         call_patch(StarMain_restart_replay, 0x004E09E1);
 
         memory_patch(0x004ca150, &load_latency_dialog);
+
+        jump_patch(is_valid_race_wrapper, 0x004aaac2);
+        jump_patch(load_races_dropdown_wrapper, 0x00450b40);
+        call_patch(load_races_dropdown_singleplayer_wrapper, 0x004aed68);
+
+        jump_patch(glu_main_switch_wrapper, 0x004de445);
+        call_patch(glu_connect_init_provider, 0x004bae93);
+        jump_patch(glu_destroy_provider, 0x00410112);
     }
 }

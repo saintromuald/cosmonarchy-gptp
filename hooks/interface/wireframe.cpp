@@ -52,8 +52,8 @@ namespace hooks {
 				}
 				auto wireConst = g_wireframe_constants[shields * 2];
 				auto wireConstShift = g_wireframe_constants[(shields * 2) + 1];
-				auto buf1 = g_char_buffer[wireConst];//CL
-				al = g_char_buffer[wireConstShift];//AL
+				auto buf1 = g_wireframe_colors[wireConst];//CL
+				al = g_wireframe_colors[wireConstShift];//AL
 				*off_50CE81 = buf1;
 				*off_50CE82 = al;
 			}

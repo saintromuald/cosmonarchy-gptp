@@ -252,6 +252,9 @@
     <ClCompile Include="hooks\DatExtend\dat_load_inject.cpp" />
     <ClCompile Include="hooks\grafting\grafting.cpp" />
     <ClCompile Include="hooks\grafting\grafting_inject.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_join_crownlink.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_options.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_singleplayer.cpp" />
     <ClCompile Include="hooks\interface\minimap.cpp" />
     <ClCompile Include="hooks\interface\minimap_inject.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\hotkeys.cpp" />
@@ -542,6 +545,7 @@
     <ClCompile Include="hooks\unit_speed.cpp" />
     <ClCompile Include="hooks\unit_speed_inject.cpp" />
     <ClCompile Include="BW\UnitFinder.cpp" />
+    <ClCompile Include="BW\ui.cpp" />
     <ClCompile Include="hooks\update_status_effects.cpp" />
     <ClCompile Include="hooks\update_status_effects_inject.cpp" />
     <ClCompile Include="hooks\update_unit_state.cpp" />
@@ -612,9 +616,11 @@
     <ClInclude Include="BW\bwdata.h" />
     <ClInclude Include="BW\bwhelper.h" />
     <ClInclude Include="BW\characters.h" />
+    <ClInclude Include="BW\enumerations\GluIndex.h" />
     <ClInclude Include="BW\extender\iscript_extender.h" />
     <ClInclude Include="BW\game_runner.h" />
     <ClInclude Include="BW\Storm.h" />
+    <ClInclude Include="BW\ui.h" />
     <ClInclude Include="CM\cm.h" />
     <ClInclude Include="CM\cm_behaviors.h" />
     <ClInclude Include="CM\cm_ids.h" />
@@ -636,6 +642,9 @@
     <ClInclude Include="hooks\fraud_launcher.h" />
     <ClInclude Include="hooks\grafting\button_functions.h" />
     <ClInclude Include="hooks\grafting\grafting.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glu_join_crownlink.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glu_options.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glu_singleplayer.h" />
     <ClInclude Include="hooks\interface\minimap.h" />
     <ClInclude Include="hooks\interface\uifeatures\hotkeys.h" />
     <ClInclude Include="hooks\limits\sfx_extender.h" />

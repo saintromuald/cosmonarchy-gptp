@@ -30,7 +30,7 @@ namespace hooks
 		SStrNCat(&FileName, (const char*)(vector + 20), 0x104u);
 		strrchr(&FileName, 92);
 		SStrCopy(g_current_map_filename, &FileName, 0x104u);
-		*campaign_index = 0;
+		g_campaign_index = 0;
 		*dword_5994DC = 1;
 		if (!createDirectory(g_maps_folder))
 			return 0;

@@ -10,14 +10,14 @@ namespace hooks
 	void display_establishing_shot() // 004D9200, hooked by X405
 	{
 		// This is the original original function which loads the establishing shots in campaigns
-		if (!g_multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && *campaign_index) {
+		if (!g_multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && g_campaign_index) {
 			for (s32 i = 0; i < 65; i++)
 			{
-				if (campaignMissions[i].mission_index == *campaign_index) {
+				if (campaignMissions[i].mission_index == g_campaign_index) {
 					helper::load_init_credits_bin(campaignMissions[i].mission_name);
 				}
 			}
-		} else if (*campaign_index == 0 && g_current_map_filename) { // This addition enables establishing shots in custom scenarios
+		} else if (g_campaign_index == 0 && g_current_map_filename) { // This addition enables establishing shots in custom scenarios
 			helper::SFileOpenArchive(g_current_map_filename, 0, 0, map_archive_handle);
 			HANDLE* handle;
 			bool shot_exists = helper::sfile_open_file_ex(*map_archive_handle, "rez\\est.txt", 0, &handle);
@@ -54,15 +54,15 @@ namespace hooks
 		if (dialog->flags & BinDlgFlags::Visible) {
 			DialogEvent dlg_event = {};
 			dlg_event.current.y = g_mouse->y;
-			dlg_event.number_order = 14;
-			dlg_event.user = 14;
-			dlg_event.field_4 = 0;
+			dlg_event.number_order = DialogEventType_Dialog;
+			dlg_event.user = DialogUserType_Hide;
+			dlg_event.param = 0;
 			dlg_event.current.x = g_mouse->x;
 			if (((u32(__fastcall*)(BinDlg*, DialogEvent*, s32, s32))dialog->fxn_interact)(dialog, &dlg_event, 14, 0)) {
 				dlg_event.current.x = g_mouse->x;
-				dlg_event.number_order = 14;
-				dlg_event.user = 6;
-				dlg_event.field_4 = 0;
+				dlg_event.number_order = DialogEventType_Dialog;
+				dlg_event.user = DialogUserType_SelectNext;
+				dlg_event.param = 0;
 				dlg_event.current.y = g_mouse->y;
 				((void(__fastcall*)(BinDlg*, DialogEvent*, s32, s32))dialog->fxn_interact)(dialog, &dlg_event, 6, 0);
 				u32 dialog_flags = dialog->flags;
@@ -536,10 +536,10 @@ namespace hooks
 			LEA		EDX, [ECX * 4 + 0x0057EEE9] // playerTable[playerId].race
 			CMP		byte ptr[EDX], 7 // Check if race is Inactive.
 			JE		offset off_0
-			DEC		EDX // playerTable[playerId].type
-			CMP		byte ptr[EDX], 3 // Check if type is neither Human or Computer (Players of type 0 (Unused) have already been filtered out).
+			DEC		EDX // playerTable[playerId].number_order
+			CMP		byte ptr[EDX], 3 // Check if number_order is neither Human or Computer (Players of number_order 0 (Unused) have already been filtered out).
 			JBE		offset off_0 // Zero-flag is naturally set if the previous CMP is equal, so don't need to CMP again to set it.
-			CMP		EDX, EDX // Set zero-flag if player type is 4+.
+			CMP		EDX, EDX // Set zero-flag if player number_order is 4+.
 
 			off_0:
 			JMP sub_490300_903D2
@@ -720,8 +720,8 @@ namespace hooks
 					switch (last_control_index) {
 						case 3: {
 							if (*g_is_demo) {
-								if (g_network_table_df->get_string_count() > 102) {
-									helper::load_glu_pok_bindlg(g_network_table_df->get_string(103));
+								if (g_network_table.get_string_count() > 102) {
+									helper::load_glu_pok_bindlg(g_network_table.get_string(103));
 								} else {
 									helper::load_glu_pok_bindlg("");
 								}
@@ -733,6 +733,25 @@ namespace hooks
 								}
 								return helper::dialog_swish_out(text_message);
 							}
+
+							//auto next_dlgproc = (BinDlgProc*)0x006d1234;
+							//auto options_dlgproc = (BinDlgProc)0x004ca0a0;
+							//*next_dlgproc = (BinDlgProc)0x004ca450;
+							////*next_dlgproc = options_dlgproc;
+							//auto game_menu_dlgproc = (BinDlgProc)0x004ca240;
+							////helper::load_bin_dlg("rez\\gamemenu.bin", game_menu_dlgproc);
+							////helper::load_bin_dlg("rez\\options.bin", game_menu_dlgproc);
+							////helper::load_bin_dlg("rez\\snd_dlg.bin", (BinDlgProc)0x00481fa0);
+
+							//*(u32*)0x00656190 = *(u32*)0x0051a158;
+							//*(u32*)0x0065618c = *(u32*)0x00515224;
+							//*(u32*)0x00656188 = *(u32*)0x005137d4;
+
+							//helper::load_bin_dlg("rez\\video.bin", (BinDlgProc)0x00480f90);
+
+
+							return 1;
+
 						} break;
 						case 4: {
 							if (*g_is_broodwar) {
@@ -760,7 +779,7 @@ namespace hooks
 					}
 					goto LABEL_28;
 				case DialogUserType_InitChildren: {
-					helper::register_menu_functions(glu_main_functions, text_message, 0x2Cu, 0);
+					helper::register_menu_functions((BinDlgProc)glu_main_functions, text_message, 0x2Cu, 0);
 					return helper::generic_dialog_interact(text_message, dlg_event);
 				}
 				default: {
@@ -790,7 +809,7 @@ namespace hooks
 		HANDLE* file_1 = 0;
 		if (!helper::sfile_open_file_ex(0, "rez\\titledlg.bin", 0, &file_1)) {
 			u32 last_error = helper::serr_get_last_error();
-			helper::syswarn_file_not_found(last_error, "rez\\titledlg.bin");
+			helper::fatal_file_not_found(last_error, "rez\\titledlg.bin");
 		}
 
 		HANDLE* file_2 = file_1;
@@ -801,7 +820,7 @@ namespace hooks
 			helper::file_fatal(file_2, last_error_2);
 		}
 		if (!file_size_1) {
-			helper::syswarn_file_not_found(0x18u, "rez\\titledlg.bin");
+			helper::fatal_file_not_found(0x18u, "rez\\titledlg.bin");
 		}
 		BinDlg* gamedata_dlg = (BinDlg*)helper::SMemAlloc(file_size_1, "Starcraft\\SWAR\\lang\\gamedata.cpp", 210, 0);
 		HANDLE* file_3 = file_1;
@@ -822,7 +841,7 @@ namespace hooks
 		BinDlg* main_dlg = 0;
 		if (gamedata_dlg) {
 			gamedata_dlg->flags |= BinDlgFlags::Active;
-			helper::alloc_init_dialog_data(gamedata_dlg, (void(__fastcall*)(u32, u32, u32, u32, u32))helper::alloc_background_image, "Starcraft\\SWAR\\lang\\title.cpp", 190);
+			helper::alloc_init_dialog_data(gamedata_dlg, helper::alloc_background_image, "Starcraft\\SWAR\\lang\\title.cpp", 190);
 			main_dlg = gamedata_dlg;
 		}
 		*g_main_dlg = main_dlg;

@@ -21,6 +21,17 @@ namespace helper {
         return (sx ^ SETS(y2)) & (sx ^ SETS(x - y2));
     }
 
+    void glu_create(bool multiplayer) {
+        const u32 func_address = 0x004af6d0;
+        b32 create_multiplayer = multiplayer;
+        __asm {
+            PUSHAD
+            MOV EAX, create_multiplayer
+            CALL func_address
+            POPAD
+        }
+    }
+
     bool has_money_can_make(Unit* builder, u32 unit_to_build) {
         const u32 func_address = 0x00467250;
         static b32 result;
@@ -35,28 +46,15 @@ namespace helper {
         return (result != 0);
     }
 
-    // For loadRaceUI
-
-    void get_race_sound_list(s8 a1) {
-        s32 init_xd = a1;
-        const u32 func_address = 0x0048FB40;
-        __asm {
-            PUSHAD
-            PUSH init_xd
-            CALL func_address
-            POPAD
-        }
-    }
-
-    s32 dialog_grp_construct(s32 a1, s32 a2, s32 a3, s32(__fastcall* a4)(s32, s32, s32, s32)) {
+    s32 dialog_grp_construct(const char* filename, const char* log_filename, u32 log_line) {
         const u32 func_address = 0x004197B0;
         static s32 result;
         __asm {
             PUSHAD
-            PUSH a4
-            PUSH a3
-            MOV a1, EAX
-            MOV a2, ECX
+            PUSH 0x004d2b30
+            PUSH filename
+            MOV EAX, log_line
+            MOV ECX, log_filename
             CALL func_address
             MOV EAX, result
             POPAD
@@ -64,16 +62,15 @@ namespace helper {
         return result;
     }
 
-    void* load_graphic(const char* a1, u32 a2, u32 a3, const char* log_filename, u32 log_line) {
+    void* load_graphic(const char* filename, u32* bytes_read, const char* log_filename, u32 log_line) {
         static void* result;
         const u32 func_address = 0x004D2B30;
         __asm {
             PUSHAD
             PUSH log_line
             PUSH log_filename
-            MOV ESI, a3
-            MOV EDX, a2
-            MOV ECX, a1
+            MOV EDX, bytes_read
+            MOV ECX, filename
             CALL func_address
             MOV result, EAX
             POPAD
@@ -6464,7 +6461,7 @@ namespace helper {
         return pointer_on_allocated_memory;
     }
 
-    // Likely to call SMemAlloc!
+    // Enure matching clear_callback_timer is called in dlgproc destroy function
     void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, u32 callback) {
         const u32 func_address = 0x00416090;
         __asm {
@@ -6473,6 +6470,17 @@ namespace helper {
             PUSH time
             MOV AX, timer_index
             MOV ECX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void clear_callback_timer(BinDlg* dialog, u16 timer_index) {
+        const u32 func_address = 0x00416000;
+        __asm {
+            PUSHAD
+            MOV ESI, dialog
+            MOV DX, timer_index
             CALL func_address
             POPAD
         }
@@ -6516,7 +6524,7 @@ namespace helper {
         }
     }
 
-    void enable_control(BinDlg* dialog) {
+    void enable_dialog(BinDlg* dialog) {
         const u32 func_address = 0x00418E00;
         __asm {
             PUSHAD
@@ -7498,25 +7506,21 @@ namespace helper {
     }
 
     // For start_game
-    s32 boot_reason(u8 player) {
+    void boot_reason(u8 player) {
         const u32 func_address = 0x004B8870;
-        static s32 result;
         __asm {
             PUSHAD
             MOVZX AL, player
             CALL func_address
-            MOV result, EAX
             POPAD
         }
-        return result;
     }
 
-    s32 is_authorized_map(void* a1) {
+    bool is_authorized_map() {
         const u32 func_address = 0x004C4870;
-        static s32 result;
+        static b32 result;
         __asm {
             PUSHAD
-            MOV ECX, a1
             CALL func_address
             MOV result, EAX
             POPAD
@@ -10581,7 +10585,7 @@ namespace helper {
         }
     }
 
-    void bw_print_xy(char* text, s32 pos_x, s32 pos_y) {
+    void bw_print_xy(const char* text, s32 pos_x, s32 pos_y) {
         const u32 func_address = 0x004202B0;
         __asm {
             PUSHAD
@@ -11518,7 +11522,7 @@ namespace helper {
         return result;
     }
 
-    void syswarn_file_not_found(u32 code, const char* filename) {
+    void fatal_file_not_found(u32 code, const char* filename) {
         const u32 func_address = 0x004212C0;
         __asm {
             MOV EBX, code
@@ -13257,16 +13261,14 @@ namespace helper {
         return result;
     }
 
-    Player* randomize_player_slot() {
+    void randomize_player_slot() {
         static Player* result;
         const u32 func_address = 0x004A9A30;
         __asm {
             PUSHAD
             CALL func_address
-            MOV result, EAX
             POPAD
         }
-        return result;
     }
 
     void place_building_refinery_check(Unit* unit) {
@@ -13566,7 +13568,7 @@ namespace helper {
         }
     }
 
-    void alloc_init_dialog_data(BinDlg* dialog, void (__fastcall* function)(u32, u32, u32, u32, u32), const char* log_filename, u32 log_line) {
+    void alloc_init_dialog_data(BinDlg* dialog, void (__fastcall* function)(const char*, Bitmap*, Palette*, const char*, u32), const char* log_filename, u32 log_line) {
         const u32 func_address = 0x004194E0;
         __asm {
             PUSHAD
@@ -13574,6 +13576,7 @@ namespace helper {
             PUSH log_filename
             PUSH function
             MOV EAX, dialog
+            MOV EBX, dialog
             CALL func_address
             POPAD
         }
@@ -13588,6 +13591,20 @@ namespace helper {
             CALL func_address
             POPAD
         }
+    }
+
+    s32 display_dialog(BinDlgProc dialog_proc, BinDlg* dialog) {
+        static s32 result;
+        const u32 func_address = 0x0041a080;
+        __asm {
+            PUSHAD
+            PUSH dialog_proc
+            MOV EAX, dialog
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
     }
 
     u32 sfile_read_file(HANDLE* file, void* item, u32 size_arg, u32* read, u32 arg5) {
@@ -14366,6 +14383,20 @@ namespace helper {
         return (bool)result;
     }
 
+    bool generic_listbox_interact(BinDlg* dialog, DialogEvent* dlg_event) {
+        const u32 func_address = 0x0041baa0;
+        static u32 result;
+        __asm {
+            PUSHAD
+            MOV ECX, dialog
+            MOV EAX, dlg_event
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return (bool)result;
+    }
+
     void glu_main_create(BinDlg* dialog) {
         const u32 func_address = 0x004DB280;
         __asm {
@@ -14469,7 +14500,7 @@ namespace helper {
         return result;
     }
 
-    s32 register_menu_functions(bool (__fastcall** save_game_text_box)(BinDlg* func_dialog, DialogEvent* func_dlg_event), BinDlg* dialog, u32 count, u32 palette) {
+    s32 register_menu_functions(BinDlgProc dialog_proc_array, BinDlg* dialog, u32 count, u32 palette) {
         const u32 func_address = 0x004DD9E0;
         static s32 result;
         __asm {
@@ -14477,7 +14508,7 @@ namespace helper {
             PUSH palette
             PUSH count
             PUSH dialog
-            MOV EAX, save_game_text_box
+            MOV EAX, dialog_proc_array
             CALL func_address
             MOV result, EAX
             POPAD
@@ -15297,7 +15328,7 @@ namespace helper {
     void create_context_help_from_dialog(BinDlg* dialog, const char* text) {
         const u32 func_address = 0x00481510;
         u32 x = dialog->bounds.right, y = dialog->bounds.bottom;
-        if (dialog->control_type != 0) {
+        if (dialog->control_type != DialogControlTypes::DialogBoxDC) {
             x += dialog->parent->bounds.left;
             y += dialog->parent->bounds.top;
         }
@@ -15934,5 +15965,93 @@ namespace helper {
             POPAD
         }
         return result;
+    }
+
+    u8 combobox_add_item(BinDlg* dialog, u8 flags, const char* string) {
+        const u32 func_address = 0x0041b760;
+        static u8 result;
+        __asm {
+            PUSHAD
+            MOV ECX, dialog
+            MOV EAX, string
+            PUSH flags
+            CALL func_address
+            MOV result, AL
+            POPAD
+        }
+        return result;
+    }
+
+    void combobox_clear_items(BinDlg* dialog) {
+        const u32 func_address = 0x0041b890;
+        __asm {
+            PUSHAD
+            MOV EAX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void generic_combobox_update(BinDlg* dialog) {
+        const u32 func_address = 0x0041b410;
+        __asm {
+            PUSHAD
+            MOV EAX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void generic_combobox_selection_update(BinDlg* dialog, u8 index) {
+        const u32 func_address = 0x0041a600;
+        __asm {
+            PUSHAD
+            MOV ESI, dialog
+            MOV BL, index
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void update_dialog_text(BinDlg* dialog, u16 index, const char* string) {
+        const u32 func_address = 0x004dcf30;
+        __asm {
+            PUSHAD
+            MOV EAX, dialog
+            MOV CX, index
+            MOV EDI, string
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void glu_update_palette(u32 fade_time) {
+        const u32 func_address = 0x0041ea30;
+        __asm {
+            PUSHAD
+            PUSH fade_time
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void glu_change_menu_palette(u32 fade_time) {
+        const u32 func_address = 0x0041e9e0;
+        __asm {
+            PUSHAD
+            PUSH fade_time
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void enable_sound_list(u16* sounds_array) {
+        const u32 func_address = 0x004bccf0;
+        __asm {
+            PUSHAD
+            MOV EAX, sounds_array
+            CALL func_address
+            POPAD
+        }
     }
 }

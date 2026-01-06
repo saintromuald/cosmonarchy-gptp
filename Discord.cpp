@@ -25,7 +25,7 @@ DiscordState::DiscordState(bool in_game) : m_in_game(in_game) {
 		m_activity_type = DiscordActivityType_Playing;
 	}
 	m_map_name = g_current_map_name;
-	m_race = (RaceId::Enum)g_player_table[g_local_nation_id].race;
+	if (g_local_nation_id != -1) m_race = (RaceId::Enum)g_player_table[g_local_nation_id].race;
 	m_game_kind = bw::get_game_kind();
 }
 

@@ -296,7 +296,7 @@ namespace hooks {
     // Hooked to enable more refinery types. -Pr0nogo
     void issue_place_building_order(u16 unit_id, u8 order_id) { // 0048E730
         g_is_placing_building = 1;
-        *g_buttonset_special_buttonset_id = UnitId::Buttons_CancelPlaceBuilding;
+        g_buttonset_special_buttonset_id = UnitId::Buttons_CancelPlaceBuilding;
         helper::update_current_buttonset();
         g_place_building_message_id = 0;
         *g_place_building_order_id = order_id;

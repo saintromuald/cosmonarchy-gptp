@@ -37,7 +37,7 @@ bool CharacterManager::save_character_file(const char* name, bool multiplayer) {
     char_file.system_time = time(0);
     char_file.is_multiplayer = g_multiplayer_mode;
     safe_copy(char_file.name, name);
-    
+
     auto bytes_written = helper::save_character_file(&char_file);
     g_multiplayer_mode = original_mp_mode;
     return bytes_written;
@@ -49,7 +49,7 @@ bool CharacterManager::delete_character_file(const char* name, bool multiplayer)
 
     char path[260]{};
     helper::character_file_path(name, path, sizeof(path));
-    
+
     auto result = DeleteFileA(path);
     g_multiplayer_mode = original_mp_mode;
     return result;

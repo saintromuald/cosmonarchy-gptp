@@ -401,7 +401,7 @@ namespace hooks {
         helper::show_dialog(child);
         helper::disable_dialog(child);
         
-        GrpHead* icons_grp = *g_cmdicons_grp;
+        GrpHead* icons_grp = g_cmdicons_grp;
         StatusScreenState* state = child->stat_button_user;
         Unit* active_unit = *g_active_portrait_unit;
         child->graphic = get_stat_icon_graphic(armor_value);
@@ -457,7 +457,7 @@ namespace hooks {
         helper::show_dialog(child);
         helper::disable_dialog(child);
         StatusScreenState* state = child->stat_button_user;
-        GrpHead* icons_grp = *g_cmdicons_grp;
+        GrpHead* icons_grp = g_cmdicons_grp;
         child->graphic = get_stat_icon_graphic(damage_value);
         state->button_grp = icons_grp;
         state->grp_frame = weapons_dat::weapon_icon[weapon_id];
@@ -505,7 +505,7 @@ namespace hooks {
         helper::show_dialog(child);
         helper::disable_dialog(child);
         StatusScreenState* state = child->stat_button_user;
-        GrpHead* icons_grp = *g_cmdicons_grp;
+        GrpHead* icons_grp = g_cmdicons_grp;
         child->graphic = get_stat_icon_graphic(armor_value);
         state->button_grp = icons_grp;
         state->grp_frame = 310;
@@ -547,9 +547,9 @@ namespace hooks {
         helper::show_dialog(child);
         helper::disable_dialog(child);
         StatusScreenState* user = child->stat_button_user;
-        GrpHead* grp = *g_cmdicons_grp;
+        GrpHead* grp = g_cmdicons_grp;
         child->graphic = get_stat_icon_graphic(unit->mine_carrier.mine_count);
-        user->button_grp = *g_cmdicons_grp;
+        user->button_grp = g_cmdicons_grp;
         user->grp_frame = 13;
         user->type = 3;
         user->id = 13;
@@ -637,12 +637,12 @@ namespace hooks {
                 if (stat_icon == 1) {
                     stat_icon = g_console_index + 1;
                 }
-                if (stat_icon >= icons_grp->frame_count) {
+                if (stat_icon >= g_icons_grp->frame_count) {
                     stat_icon = 0;
                 }
-                u16 width = icons_grp->frames[stat_icon].w;
-                u16 height = icons_grp->frames[stat_icon].h;
-                s32 icon_index = icons_grp->frames[stat_icon].data_offset;
+                u16 width = g_icons_grp->frames[stat_icon].w;
+                u16 height = g_icons_grp->frames[stat_icon].h;
+                s32 icon_index = g_icons_grp->frames[stat_icon].data_offset;
                 if (icon_index < 0) {
                     icon_index &= 0x7FFFFFFFu;
                     height += 256;
@@ -658,7 +658,7 @@ namespace hooks {
 
                 data.w = width;
                 data.h = height;
-                data.stat_icon = &icons_grp[icon_index];
+                data.stat_icon = &g_icons_grp[icon_index];
                 helper::bw_print_icon(&bounds, &data, max_x, area->h);
 
                 char text_buffer[16] = {};
@@ -939,10 +939,10 @@ namespace hooks {
                         current_dialog->stat_button_user->grp_frame = slot_unit_id;
                         current_dialog->stat_button_user->type = 3;
                         current_dialog->stat_button_user->id = slot_unit_id;
-                        helper::enable_control(current_dialog);
+                        helper::enable_dialog(current_dialog);
                         current_dialog->text = g_queues_buffers[queue_slot];
                     } else {
-                        current_dialog->stat_button_user->button_grp = *g_cmdbtns_handle; // This global was previously defined as void**. -Pr0nogo
+                        current_dialog->stat_button_user->button_grp = g_cmdbtns_grp; // This global was previously defined as void**. -Pr0nogo
                         current_dialog->stat_button_user->grp_frame = queue_slot + 6;
                         current_dialog->stat_button_user->type = 6;
                         helper::disable_dialog(current_dialog);
@@ -1159,7 +1159,7 @@ namespace hooks {
             current_dialog->stat_button_user->grp_frame = built_unit_id;
             current_dialog->stat_button_user->type = PanelTooltipTypes::SpecialPanelTooltip;
             current_dialog->stat_button_user->id = built_unit_id;
-            helper::enable_control(current_dialog);
+            helper::enable_dialog(current_dialog);
             current_dialog->text = g_queues_buffers[0];
             helper::show_dialog(current_dialog);
 
@@ -1420,11 +1420,11 @@ namespace hooks {
 
         StatusScreenState* user = child_dialog->stat_button_user;
         child_dialog->graphic = 2;
-        user->button_grp = *g_cmdicons_grp;
+        user->button_grp = g_cmdicons_grp;
         user->grp_frame = upgrades_dat::upgrade_icon[unit->building.upgrade_id];
         user->type = 5;
         user->id = unit->building.upgrade_id;
-        helper::enable_control(child_dialog);
+        helper::enable_dialog(child_dialog);
         if (!(child_dialog->flags & BinDlgFlags::Highlighted)) {
             child_dialog->flags |= BinDlgFlags::Highlighted;
             helper::update_dialog(child_dialog);
@@ -1466,7 +1466,7 @@ namespace hooks {
         helper::disable_dialog(final_dialog);
         StatusScreenState* state = final_dialog->stat_button_user;
         final_dialog->graphic = 12;
-        state->button_grp = *g_cmdicons_grp;
+        state->button_grp = g_cmdicons_grp;
         u32 hangar_unit_id = 0;
         if (unit->id == UnitId::ProtossSolarion) {
             hangar_unit_id = UnitId::ProtossSteward;

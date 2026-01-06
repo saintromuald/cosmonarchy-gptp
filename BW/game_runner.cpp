@@ -20,7 +20,7 @@ GameRunner::Result GameRunner::create_singleplayer_game(const char* map_path, u1
 
     if (melee) {
         for (auto i = 0; i < 8; i++) {
-            g_selected_singleplayer_races[i] = m_player_slots[i].race;
+            g_selected_races[i] = m_player_slots[i].race;
             g_player_table[i].race = m_player_slots[i].race;
             if (i) { // Don't change slot 0 (Player)'s type
                 g_player_table[i].type = m_player_slots[i].type;
@@ -28,9 +28,9 @@ GameRunner::Result GameRunner::create_singleplayer_game(const char* map_path, u1
         }
         helper::randomize_player_slot();
     } else {
-        g_custom_singleplayer[0] = 1;
+        g_custom_singleplayer = true;
         for (auto i = 1; i < 8; i++) {
-            g_selected_singleplayer_races[i] = RaceId::None;
+            g_selected_races[i] = RaceId::None;
         }
     }
 
@@ -79,7 +79,7 @@ GameRunner::Result GameRunner::join_lobby(u32 index) {
     if (index > m_adfiles.size()) return Result::BadLobbyIndex;
     g_multiplayer_mode = true;
 
-    load_adfile(m_adfiles[index]);
+    load_adfile(index);
 
     if (helper::join_game(&m_mapfile.game_data)) {
         g_gl_glues_mode = MenuId::GlueChatroom;
@@ -95,15 +95,25 @@ GameRunner::Result GameRunner::update_adfiles() {
     if (!g_spi_functions) return Result::ProviderNotInitialized;
     m_adfiles.clear();
     AdFile* adfile_list{};
-    // The SNP provider will lock its mutex/critsec and provide a pointer to its lobby list
-    // If the list is empty it will return false and unlock its mutex so we can return
-    if (!g_spi_functions->lock_game_list(0, 0, &adfile_list)) return Result::Success;
-    for (auto ad_file = adfile_list; ad_file; ad_file = (AdFile*)ad_file->next) {
-        m_adfiles.push_back(*ad_file);
+
+    auto& provider_manager = snp::ProviderManager::instance();
+    if (provider_manager.is_crownlink()) {
+        provider_manager.iterate_lobbies([](const AdFile* adfile, P2PState peer_status, void* user_data) {
+            auto* adfiles = static_cast<std::vector<AdFileEx>*>(user_data);
+            adfiles->emplace_back(*adfile, peer_status);
+        }, &m_adfiles);
+        return Result::Success;
+    } else {
+        // The SNP provider will lock its mutex/critsec and provide a pointer to its lobby list
+        // If the list is empty it will return false and unlock its mutex so we can return
+        if (!g_spi_functions->lock_game_list(0, 0, &adfile_list)) return Result::Success;
+        for (auto ad_file = adfile_list; ad_file; ad_file = (AdFile*)ad_file->next) {
+            m_adfiles.push_back(*ad_file);
+        }
+        // Unlock the SNP provider's mutex/critsec
+        g_spi_functions->unlock_game_list(0, 0);
+        return Result::Success;
     }
-    // Unlock the SNP provider's mutex/critsec
-    g_spi_functions->unlock_game_list(0, 0);
-    return Result::Success;
 }
 
 GameRunner::Result GameRunner::load_map(const char* path) {
@@ -133,53 +143,21 @@ GameRunner::Result GameRunner::load_map(const char* path) {
     return Result::Success;
 }
 
-void GameRunner::load_adfile(const AdFile& ad_file) {
-    auto& game_data = m_mapfile.game_data;
-    game_data.index = ad_file.game_index;
-    // Parse description string
-    safe_copy(game_data.game_name, ad_file.game_name);
-
-    // Example statstring: ",33,18,7,,1e,,1,cb2edaab,5,,Server\rStatus\r"
-    std::string_view sv{ad_file.game_description};
-    auto statstring = sv | std::views::split(',')
-        | std::views::transform([](auto range) { return std::string_view(range.begin(), range.end()); })
-        | std::ranges::to<std::vector>();
-
-    load_number(game_data.save_timestamp, statstring[0]);
-
-    u32 width_height{};
-    load_number(width_height, statstring[1]);
-    if (width_height) {
-        game_data.map_width_tiles = width_height / 16 * 32;
-        game_data.map_height_tiles = width_height % 16 * 32;
+bool GameRunner::load_adfile(u32 index) {
+    for (auto& adfile : m_adfiles) {
+        if (adfile.game_index == index) {
+            bw::StatString stats{adfile.game_description};
+            if (stats.valid()) {
+                auto& game_data = m_mapfile.game_data;
+                game_data = stats.game_data();
+                game_data.index = adfile.game_index;
+                safe_copy(game_data.game_name, adfile.game_name);
+                return true;
+            }
+            return false;
+        }
     }
-
-    u16 active_max{};
-    load_number(active_max, statstring[2]);
-    if (active_max) {
-        game_data.active_player_count = active_max / 16;
-        game_data.max_player_count = active_max % 16;
-    } else {
-        game_data.max_player_count = 8;
-    }
-    
-    load_number(game_data.game_speed, statstring[3]);
-    load_number(game_data.game_state, statstring[4]);
-    load_number(game_data.game_type, statstring[5]);
-    // Skipping unused index 6
-    load_number(game_data.game_subtype, statstring[7]);
-    load_number(game_data.cdkey_hash, statstring[8]);
-    load_number(game_data.tileset, statstring[9]);
-    load_number(game_data.is_replay, statstring[10]);
-
-    if (!statstring[11].empty()) {
-        auto parts = statstring[11] | std::views::split('\r')
-            | std::views::transform([](auto range) { return std::string_view(range.begin(), range.end()); })
-            | std::ranges::to<std::vector>();
-
-        safe_copy(game_data.host_name, parts[0].data());
-        if (parts.size() >= 2) safe_copy(game_data.map_title, parts[1].data());
-    }
+    return false;
 }
 
 bool GameRunner::setup_game(const char* game_name, u16 game_type, u16 game_subtype) {
@@ -188,7 +166,7 @@ bool GameRunner::setup_game(const char* game_name, u16 game_type, u16 game_subty
     game_data.game_type = game_type;
     game_data.game_subtype = game_subtype;
     game_data.active_player_count = 1;
-    auto success = helper::load_map_forces(m_mapfile.full_path);
+    auto success = helper::load_map_forces(m_mapfile.full_path, 0, false);
     auto error = helper::load_map_to_globals(&game_data, 3);
     return (!error && success);
 }

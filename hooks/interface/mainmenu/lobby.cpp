@@ -4,14 +4,13 @@
 #include <BW/bwdata.h>
 #include "time.h"
 
-namespace hooks
-{
-	s32 init_game() { // 004EE110
+namespace hooks {
+	bool init_game() { // 004EE110
 		if (g_multiplayer_mode) {
 			return 0;
 		}
 
-		if (*g_custom_singleplayer) {
+		if (g_custom_singleplayer) {
 			if (game_data->victory_condition || game_data->starting_units || game_data->use_standard_unit_stats)
 			{
 				*g_initial_random_seed = time(0);
@@ -19,48 +18,42 @@ namespace hooks
 				srand(*g_initial_random_seed);
 
 				helper::switch_all_available_computer_slots_to_open();
-				g_player_table[g_local_nation_id].race = g_selected_singleplayer_race[0];
-				for (s32 player = 0; player < 8; player++) {
-					if (g_selected_singleplayer_race[player + 1] != RaceId::None)
-					{
-						helper::set_last_open_slot_to_computer(g_selected_singleplayer_race[player + 1]);
+				g_player_table[g_local_nation_id].race = g_selected_races[0];
+
+				for (auto i = 1; i < 8; i++) {
+					if (g_selected_races[i] != RaceId::None) {
+						helper::set_last_open_slot_to_computer(g_selected_races[i]);
 					}
 				}
 			}
 
-			// Convert open slots to computers (singleplayer)
-			for (s32 player = 0; player < 8; player++) {
-				if (g_player_table[player].type == PlayerType::OpenSlot) {
-					g_player_table[player].type = PlayerType::Computer;
-				}
+			for (auto& player : g_player_table) {
+				if (player.type == PlayerType::OpenSlot) player.type = PlayerType::Computer;
 			}
 		}
 		return 1;
 	}
 
-	s32 start_game(void* lobby_state, s32 player) // 00472060
-	{
-		lobby_state = g_game_state;
+	void start_game(s32 player) { // 00472060
 		u8 boot_reason = 4;
 
 		// Boot (incoming?) players if lobby is not idle
-		if (*g_game_state != 4) {
-			return helper::boot_reason(boot_reason);
+		if (g_game_state != 0x4) {
+			helper::boot_reason(boot_reason);
+			return;
 		}
 
-		// ?
-		s32 result = player;
+		// I believe player is named wrong -Jesse
 		if (player) {
-			return result;
+			return;
 		}
 
-		// Lard
-		if (!helper::is_authorized_map(lobby_state)) {
+		if (!helper::is_authorized_map()) {
 			boot_reason = 9;
-			return helper::boot_reason(boot_reason);
+			helper::boot_reason(boot_reason);
+			return;
 		}
 
-		// Replay-specific
 		if (g_is_in_replay) {
 			for (s32 i = 0; i < 12; i++) {
 				g_player_replay_watchers[i] = g_player_table[i];
@@ -68,98 +61,74 @@ namespace hooks
 		}
 
 		// Start countdown
-		*g_game_state = 5;
-		*g_countdown_timer_interval = 24;
-		if (2 * *g_provider_latency_calls + 4 >= 24) {
-			*g_countdown_timer_interval = 2 * *g_provider_latency_calls + 4;
+		g_game_state = 5;
+		g_countdown_timer_interval = 24;
+		if ((2 * g_provider_turns_in_transit) + 4 >= 24) {
+			g_countdown_timer_interval = 2 * g_provider_turns_in_transit + 4;
 		}
 
 		// Set timers
 		helper::set_timer_func();
 		s32 tick_count = helper::get_tick_count(); // CRASH
-		*g_countdown_timer_tick_count = tick_count;
-		*g_countdown_timer_tick_count_2 = tick_count;
-		result = tick_count - 120000;
+		g_countdown_timer_tick_count = tick_count;
+		g_countdown_time_remaining = g_countdown_timer_tick_count - 120000;
+		g_countdown_timer_tick_count_2 = tick_count;
 
-		*g_is_in_game = 1;
-		*g_elapsed_time_modified = 0;
-		*g_countdown_time_remaining = result;
+		g_is_in_game = true;
+		g_elapsed_time_modified = 0;
 
-		// Convert open slots to computers (multiplayer)
-		/*
-		for (s32 i = 0; i < 8; i++)
-		{
-			if (g_player_table[i].type == PlayerType::OpenSlot)
-			{
-				g_player_table[i].type = PlayerType::Computer;
-			}
-		}
-		*/
-
-		return result;
+		return;
 	}
 
 	// Hooked to triage and hopefully fix singleplayer randomness. -Pr0nogo
-	// Warning: not sure if Player in GPTP is the same as PlayerStruct in IDA!
-	Player* init_singleplayer_custom(BinDlg* dialog) // 004AD850
-	{
-		if (dialog->control_type) {
+	// Refactored -Jesse
+	void init_singleplayer_custom(BinDlg* dialog) { // 004AD850
+		if (dialog->control_type != DialogControlTypes::DialogBoxDC) {
 			dialog = dialog->parent;
 		}
-		BinDlg* child_dlg = dialog->child_dialog;
-		BinDlg* dropdown = 0;
-		if (child_dlg) {
-			while (child_dlg->index != 28) {
-				child_dlg = child_dlg->next;
-				if (!child_dlg) {
-					// originally GOTO label 6
-					dropdown = 0;
-					break;
+
+		auto children = get_children_by_index(dialog, GluCustomControls::PlayerRace1);
+		if (children.empty()) return;
+		BinDlg* player_race_combo = children[0];
+
+
+
+		auto melee = bw::is_melee_game(*g_selected_game_type, *g_selected_game_type_param);
+		if (melee) {
+			for (auto& race : g_selected_races | std::views::drop(1)) {
+				race = RaceId::None;
+			}
+
+			g_custom_singleplayer = true;
+			if (player_race_combo->ComboBox0x46.item_count) {
+				auto selection_index = player_race_combo->ComboBox0x46.selection_index;
+				if (selection_index != -1) {
+					g_selected_races[0] = (RaceId::Enum)player_race_combo->combobox_output_array_u32[selection_index];
 				}
 			}
-			dropdown = child_dlg;
-		} else { // originally label 6
-			dropdown = 0;
-		}
-		Player* result = (Player*)helper::is_melee_game(*g_selected_game_type, *g_selected_game_type_param, *g_selected_game_type); // first arg was SBYTE1(*g_selected_game_type)
-		if (result) {
-			g_selected_singleplayer_race[1] = 0x7070707; // these were both written
-			g_selected_singleplayer_race[5] = 0x7070707; // to using *(_DWORD *)&
-			g_custom_singleplayer[0] = 1;
-			if (dropdown->initial_version_0x46.text_pos.x) {
-				if (dropdown->initial_version_0x46.text_pos.y != -1) {
-					g_selected_singleplayer_race[0] = dropdown->child_dialog->bounds.x * dropdown->initial_version_0x46.text_pos.y; // I don't think this is correct
+
+			auto index = 1;
+			for (auto cpu_race_combo = player_race_combo->next; cpu_race_combo; cpu_race_combo = cpu_race_combo->next) {
+				auto selection_index = cpu_race_combo->ComboBox0x46.selection_index;
+				if ((cpu_race_combo->flags & 8) && cpu_race_combo->ComboBox0x46.item_count && selection_index != -1) {
+					g_selected_races[index] = (RaceId::Enum)cpu_race_combo->combobox_output_array_u32[selection_index];
 				}
+				index++;
 			}
-			result = (Player*)dropdown;
-			if (dropdown) {
-				char* race = &g_selected_singleplayer_race[1];
-				do {
-					if (result->name[13] & 8) {
-						if (result[1].name[23]) {
-							u8 race_something = result[2].id;
-							if (race_something != -1) {
-								*race++ = result[1].name[19] + 4 * race_something; // result[1].name[19] was originally prefixed with *(_BYTE*)(*(_DWORD*)&
-							}
-						}
-					}
-					result = (Player*)result->id;
-				} while (result);
-			}
-		} else if (dropdown->flags & 8) {
-			if (dropdown->initial_version_0x46.text_pos.x && dropdown->initial_version_0x46.text_pos.y != -1) {
-				g_player_table[g_local_nation_id].race = dropdown->child_dialog->bounds.x * dropdown->initial_version_0x46.text_pos.y; // I don't think this is correct
+		} else if (player_race_combo->flags & 8) {
+			auto selection_index = player_race_combo->ComboBox0x46.selection_index;
+			if (player_race_combo->ComboBox0x46.item_count && selection_index != -1) {
+				g_player_table[g_local_nation_id].race = (RaceId::Enum)player_race_combo->combobox_output_array_u32[selection_index];
 				g_is_in_game_loop = 1;
-				result = helper::randomize_player_slot();
+				helper::randomize_player_slot();
 				g_is_in_game_loop = 0;
 			} else {
-				g_player_table[g_local_nation_id].race = 6;
+				g_player_table[g_local_nation_id].race = RaceId::Random;
 				g_is_in_game_loop = 1;
-				result = helper::randomize_player_slot();
+				helper::randomize_player_slot();
 				g_is_in_game_loop = 0;
 			}
 		}
-		return result;
 	}
 
 	// Hooked to play a sound on player join. -Pr0nogo

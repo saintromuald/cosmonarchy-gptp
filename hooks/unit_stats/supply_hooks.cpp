@@ -614,7 +614,7 @@ namespace hooks {
 	void __fastcall stat_res_text_update(BinDlg* dialog, int dummy0, int dummy1, int dummy2) {
 		Bounds icon_area = {};
 		FxnDrawIconData icon_data = {};
-		GrpHead* icons_grp = *g_icons_grp;// For some reason, this exact order of initialization is critical for bw_print_icon() to work. -DF
+		GrpHead* icons_grp = g_icons_grp;// For some reason, this exact order of initialization is critical for bw_print_icon() to work. -DF
 
 		if (dialog->graphic >= icons_grp->frame_count) {
 			dialog->graphic = 0;
