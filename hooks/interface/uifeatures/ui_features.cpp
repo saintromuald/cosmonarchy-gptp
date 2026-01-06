@@ -12,6 +12,9 @@
 #include <hooks\interface\minimap.h>
 #include "Game.h"
 #include "hooks\interface\weapon_armor_tooltip.h"
+#include "..\snp.h"
+#include "..\mainmenu\glu_join_crownlink.h"
+#include "hooks/interface/mainmenu/glu_singleplayer.h"
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
 static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;
@@ -156,7 +159,7 @@ namespace hooks {
 
         u32 turns = 0;
         if (helper::snet_get_turns_in_transit(&turns)) {
-            if (turns >= 16 - *g_provider_latency_calls) {
+            if (turns >= 16 - g_provider_turns_in_transit) {
                 return;
             }
             register_action(&g_local_apm_counter, (char*)data);
@@ -624,7 +627,7 @@ namespace hooks {
         u32 final_flags = button->flags;
         if (button->flags & BinDlgFlags::Disabled
         || !(button->flags & BinDlgFlags::Visible)
-        ||  button != button_unk && (button->control_type != 1
+        ||  button != button_unk && (button->control_type != DialogControlTypes::DefaultButton
         ||  button_unk
         ||  parent->flags & BinDlgFlags::UseAlternateStyle)) {
             final_flags &= ~BinDlgFlags::Unknown12;
@@ -652,7 +655,7 @@ namespace hooks {
         u32 y_min = button->bounds.y;
         u32 y_max = button->bounds.h;
 
-        if (button->control_type == 1) {
+        if (button->control_type == DialogControlTypes::DefaultButton) {
             *g_draw_color_index = g_palette_index_reference[5];
             helper::bw_draw(y_min, x_min, x_max - x_min + 1, y_max - y_min + 1);
         }
@@ -708,12 +711,12 @@ namespace hooks {
     // Hooked to explore colorizing passive icons. -Pr0nogo
     void statbtn_button_update(BinDlg* button) { // 00458900
         u32 is_clicked = (button->flags & BinDlgFlags::NoClickSound) != 0;
-        if (is_clicked >= (*g_cmdbtns_handle)->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
+        if (is_clicked >= g_cmdbtns_grp->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
             is_clicked = 0; // Was LOWORD, presumably a flag negation
         }
 
-        GrpFrame* frame = &(*g_cmdbtns_handle)->frames[is_clicked];
-        void* image_data = (char*)*g_cmdbtns_handle + frame->data_offset;
+        GrpFrame* frame = &g_cmdbtns_grp->frames[is_clicked];
+        void* image_data = (char*)g_cmdbtns_grp + frame->data_offset;
         u32 bound_horizontal = button->bounds.right - button->bounds.left + 1;
         if (frame->w < bound_horizontal) {
             bound_horizontal = frame->w;
@@ -741,17 +744,17 @@ namespace hooks {
         {
             palette_type = 6;
         } else {
-            palette_type = button->graphic != *g_highlighted_icon ? 0 : 2;
+            palette_type = button->graphic != g_highlighted_icon ? 0 : 2;
         }
 
         memcpy(g_palette_remap, g_new_cmdbtn_palette[palette_type].colors, 16);
         u16 button_graphic = button->graphic;
-        if (button_graphic >= (*g_cmdicons_grp)->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
+        if (button_graphic >= (g_cmdicons_grp)->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
             button_graphic = 0;
         }
 
-        frame = &(*g_cmdicons_grp)->frames[button_graphic];
-        image_data = (char*)*g_cmdicons_grp + frame->data_offset;
+        frame = &(g_cmdicons_grp)->frames[button_graphic];
+        image_data = (char*)g_cmdicons_grp + frame->data_offset;
         SetRect((LPRECT)&rect, 0, 0, frame->w, frame->h);
         s32 offset_x = 0;
         s32 offset_y = 0;
@@ -780,107 +783,6 @@ namespace hooks {
             g_palette_remap[i] = i;
         }
     }
-
-    // Hooked to extend g_cmdbtn_palette. -Pr0nogo
-    void load_statdata_bin() // 00459B90
-    {
-        *g_active_portrait_buttonset_id = 228;
-        *g_buttonset_special_buttonset_id = 228;
-        *g_current_buttonset_id = 228;
-        u32 console_offset = aztp[g_console_index];
-        *g_highlighted_icon = -1;
-
-        char filename;
-        sprintf_s(&filename, 260, "%s%ccmdbtns.grp", "unit\\cmdbtns\\", console_offset);
-        *g_cmdbtns_handle = (GrpHead*)helper::load_graphic(&filename, 0, 260, "Starcraft\\SWAR\\lang\\statcmd.cpp", 1086);
-        *g_cmdicons_grp = (GrpHead*)helper::load_graphic("unit\\cmdbtns\\cmdicons.grp", 0, 260, "Starcraft\\SWAR\\lang\\statcmd.cpp", 1089);
-        if (!helper::sbmp_load_image("unit\\cmdbtns\\ticon.pcx", 0, "", 96, 0, 0, 0))
-        {
-            u32 error = helper::serr_get_last_error();
-            helper::syswarn_file_not_found(error, "unit\\cmdbtns\\ticon.pcx");
-        }
-
-        char n_u;
-        if (g_is_in_replay)
-        {
-            n_u = 'n';
-        } else {
-            n_u = aztp[g_console_index];
-        }
-
-        sprintf_s(&filename, 260, "rez\\statbtn%c.bin", n_u);
-        HANDLE* statdata_bin;
-        if (!helper::sfile_open_file_ex(0, &filename, 0, &statdata_bin))
-        {
-            u32 error_2 = helper::serr_get_last_error();
-            helper::syswarn_file_not_found(error_2, &filename);
-        }
-
-        u32 size = helper::SFileGetFileSize(statdata_bin, 0);
-        if (size == -1)
-        {
-            u32 error_3 = GetLastError();
-            helper::file_fatal(statdata_bin, error_3);
-        }
-        if (!size)
-        {
-            helper::syswarn_file_not_found(0x18u, &filename);
-        }
-
-        BinDlg* dialog = (BinDlg*)helper::SMemAlloc(size, "Starcraft\\SWAR\\lang\\gamedata.cpp", 210, 0);
-        u32 read;
-        if (!helper::sfile_read_file(statdata_bin, dialog, size, &read, 0)) // LPDWORD is supposed to be address of so it assigns value to it...
-        {
-            if (GetLastError() == 38)
-            {
-                helper::file_fatal(statdata_bin, 0x18u);
-            }
-            u32 error_4 = GetLastError();
-            helper::file_fatal(statdata_bin, error_4);
-        }
-        if (read != size)
-        {
-            helper::file_fatal(statdata_bin, 0x18u);
-        }
-
-        helper::SFileCloseFile(statdata_bin);
-        BinDlg* final_dialog = 0;
-        if (dialog)
-        {
-            dialog->flags |= 4u;
-            helper::alloc_init_dialog_data(dialog, (void(__fastcall*)(u32, u32, u32, u32, u32))helper::alloc_background_image, "Starcraft\\SWAR\\lang\\statcmd.cpp", 1096);
-            final_dialog = dialog;
-        } else {
-            final_dialog = 0;
-        }
-        *g_buttonset_dialog = final_dialog;
-        helper::initialize_dialog((u32(__fastcall*)(BinDlg*, DialogEvent*))helper::statbtn_dialog_interact, final_dialog);
-    }/*
-
-    void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update) // 004E52E0
-    {
-        helper::show_dialog(dialog);
-        s32 new_amount = resource_amount - *recent_spending;
-        if ((!dialog->text && new_amount) || new_amount) {
-            if (instant_update) {
-                *recent_spending = resource_amount;
-            } else {
-                *recent_spending += (2 * (new_amount > 0) - 1) + (new_amount >> 4);
-            }
-        }
-
-        if ((u8*)dialog->user != resource_amount || dialog->graphic != graphic) {
-            dialog->graphic = graphic;
-            dialog->user = (u32*)*recent_spending;
-            sprintf_s(g_countdown_timer_strings[32 * dialog->index + 4], 32, "%d", *recent_spending);
-            dialog->text = g_countdown_timer_strings[32 * dialog->index + 4];
-
-            if (!(dialog->flags & BinDlgFlags::Highlighted)) {
-                dialog->flags != BinDlgFlags::Highlighted;
-                helper::update_dialog(dialog);
-            }
-        }
-    }*/
 
     static POINT get_mouse_pos() {
         POINT result{};
@@ -1115,7 +1017,7 @@ namespace hooks {
         sprintf_s(dest, 128, cancel_string, name);
         s32 bounds_top = 0;
         s32 bounds_left = 0;
-        if (dialog->control_type) {
+        if (dialog->control_type != DialogControlTypes::DialogBoxDC) {
             bounds_left = dialog->parent->bounds.left;
             bounds_top = dialog->parent->bounds.top;
         }
@@ -1273,7 +1175,7 @@ namespace hooks {
                 helper::latency_activate_radio(dialog);
                 return true;
             case DialogUserType_SetSelectionIndex: {
-                if (!event->field_4) return true;
+                if (!event->param) return true;
                 helper::latency_activate_radio(dialog);
                 return true;
             } break;
@@ -1292,5 +1194,150 @@ namespace hooks {
 
     void load_latency_dialog() {
         helper::load_dialog("rez\\netdlg.bin", &latency_dialog_proc);
+    }
+
+    bool is_valid_race(RaceId::Enum race) {
+        switch (race) {
+        case RaceId::Zerg: return true;
+        case RaceId::Terran: return true;
+        case RaceId::Protoss: return true;
+        case RaceId::Askosi: return true;
+        case RaceId::Random: return true;
+        }
+        return false;
+    }
+
+    static void combobox_add_race(BinDlg* dialog, RaceId::Enum selected_race, u8& selection_index, RaceId::Enum race) {
+        auto index = helper::combobox_add_item(dialog, 0, race_to_table_string(race));
+        dialog->combobox_output_array_u32[index] = race;
+        if (race == selected_race) selection_index = index;
+    }
+
+    u8 load_races_dropdown(BinDlg* dialog, RaceId::Enum race) {
+        u8 selected_index = 0;
+        combobox_add_race(dialog, race, selected_index, RaceId::Zerg);
+        combobox_add_race(dialog, race, selected_index, RaceId::Terran);
+        combobox_add_race(dialog, race, selected_index, RaceId::Protoss);
+        if (g_game_type != GameType::Ranked) {
+            combobox_add_race(dialog, race, selected_index, RaceId::Askosi);
+        }
+        combobox_add_race(dialog, race, selected_index, RaceId::Random);
+        return selected_index;
+    }
+
+    void load_races_dropdown_singleplayer(BinDlg* dialog) {
+        dialog->flags |= 0x80000000;
+        auto selected_index = load_races_dropdown(dialog, RaceId::Random);
+        if (dialog->flags < 0) {
+            dialog->flags &= 0x7fffffff;
+            helper::generic_combobox_update(dialog);
+        }
+
+        if (selected_index < dialog->ComboBox0x46.item_count) {
+            DialogEvent event{};
+            event.number_order = DialogEventType_Dialog;
+            event.user = DialogUserType_SetSelectionIndex;
+            event.param = selected_index;
+            dialog->interaction_function(dialog, &event);
+        }
+    }
+
+    void glu_main_swich(){
+        switch (g_gl_glues_mode) {
+            case (MenuId::GlueMainMenu): {
+                g_out_of_game = false;
+                helper::glu_main();
+            } break;
+            case (MenuId::GlueSelConn): {
+                helper::glu_connection();
+            } break;
+            case (MenuId::GlueChatroom): {
+                helper::glu_chat();
+            } break;
+            case (MenuId::GlueBattlenet): {
+                g_is_bnet = true;
+                g_glue_background_id = -1;
+                helper::glu_bnet();
+            } break;
+            case (MenuId::GlueLogin): {
+                g_is_bnet = false;
+                helper::glu_login();
+            } break;
+            case (MenuId::GlueCampaign): {
+                helper::glu_campaign();
+            } break;
+            case (MenuId::GlueReadyT): {
+                helper::glu_ready_terran();
+            } break;
+            case (MenuId::GlueReadyZ): {
+                helper::glu_ready_zerg();
+            } break;
+            case (MenuId::GlueReadyP): {
+                helper::glu_ready_protoss();
+            } break;
+            case (MenuId::GlueGameSel):
+            case (MenuId::GlueDirect): {
+                auto& provider_manager = snp::ProviderManager::instance();
+                if (provider_manager.is_crownlink()) {
+                    glu_join_crownlink();
+                } else {
+                    helper::glu_join();
+                }
+            } break;
+            case (MenuId::GlueCreate): {
+                helper::glu_create(false);
+            } break;
+            case (MenuId::GlueCreateMultiplayer): {
+                helper::glu_create(true);
+            } break;
+            case (MenuId::GlueLoad): {
+                helper::glu_load();
+            } break;
+            case (MenuId::GlueScoreZd):
+            case (MenuId::GlueScoreZv):
+            case (MenuId::GlueScoreTd):
+            case (MenuId::GlueScoreTv):
+            case (MenuId::GlueScorePd):
+            case (MenuId::GlueScorePv): {
+                // Temporary for Askosi
+                for (auto& player : g_player_table) {
+                    if (player.race > 2) player.race = RaceId::Terran;
+                }
+                helper::glu_scorescreen();
+            } break;
+            case (MenuId::GlueModem): {
+                helper::glu_modem();
+            } break;
+            case (MenuId::GlueExCampaign): {
+                glu_campaign_ex();
+            } break;
+            case (MenuId::GlueGeneric): {
+                helper::glu_generic();
+            } break;
+            case (MenuId::GlueOptions): {
+                glu_options();
+            } break;
+            default: { g_gl_glues_mode = MenuId::GlueMainMenu; } break;
+        }
+    }
+
+    // Hooked to load Crownlink integration
+    bool glu_connect_init_provider() { // 004bade0
+        auto& provider_manager = snp::ProviderManager::instance();
+        if (g_selected_snp == 'BNET') g_connect_next_menu = MenuId::GlueBattlenet;
+        if (!provider_manager.initialize_provider(g_selected_snp)) {
+            return false;
+        }
+        if (provider_manager.is_crownlink()) {
+            provider_manager.set_status_lobby(false);
+        }
+        g_connect_next_menu = MenuId::GlueLogin;
+        return true;
+    }
+
+    // Hooked to ensure we're cleaning up when calling SNetDestroy
+    void glu_destroy_provider() { // 00410112
+        auto& provider_manager = snp::ProviderManager::instance();
+        provider_manager.destroy_provider();
     }
 }

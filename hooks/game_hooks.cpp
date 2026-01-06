@@ -179,7 +179,7 @@ namespace hooks {
 
         if (g_game && process_quickcasting()) {
             g_game->m_quick_casting.signal = true;
-            g_game->m_quick_casting.command_card = *g_buttonset_special_buttonset_id;
+            g_game->m_quick_casting.command_card = g_buttonset_special_buttonset_id;
         }
 
         if (g_game && g_game->m_transport_ui_unit) {
@@ -921,7 +921,7 @@ namespace hooks {
 
         // Implict ESC for closing submenus. -Pr0nogo
         // @Veeq7 - Should this be moved to hotkeys.cpp?
-        if (g_is_keycode_used[VK_ESCAPE] && bw::buttonset_id_is_submenu(*g_active_portrait_buttonset_id) && !*g_is_game_paused) {
+        if (g_is_keycode_used[VK_ESCAPE] && bw::buttonset_id_is_submenu(g_active_portrait_buttonset_id) && !*g_is_game_paused) {
             hooks::update_buttonset();
         }
         
@@ -4445,7 +4445,7 @@ namespace hooks {
     // Hooked to improve CrownLink end-of-game experience by moving back to game selection. -Pr0nogo
     s32 __cdecl network_set_return_menu() { // 004DC5B0
         s32 network_mode = g_current_network_mode;
-        if (network_mode == 'CNLK' || network_mode == 'CNDB') { // CrownLink and CrownLink Double Brain Cells
+        if (network_mode == 'CNLK' || network_mode == 'CLDB') { // CrownLink and CrownLink Double Brain Cells
             g_gl_glues_mode = MenuId::GlueGameSel;
             return network_mode;
         }

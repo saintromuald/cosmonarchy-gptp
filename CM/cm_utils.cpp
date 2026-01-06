@@ -278,6 +278,17 @@ const char* race_to_string(RaceId::Enum race) {
     return "Custom";
 }
 
+const char* race_to_table_string(RaceId::Enum race) {
+    switch (race) {
+    case RaceId::Zerg: return g_network_table.get_string(7);
+    case RaceId::Terran: return g_network_table.get_string(8);
+    case RaceId::Protoss: return g_network_table.get_string(9);
+    case RaceId::Askosi: return g_network_table.get_string(169);
+    case RaceId::Random: return g_network_table.get_string(10);
+    }
+    return g_string_empty;
+}
+
 bool order_id_ignores_collision(u32 order_id) {
     return order_id == OrderId::Burrow
         || order_id == OrderId::Unburrow;

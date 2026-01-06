@@ -157,9 +157,9 @@ namespace hooks {
                             // Kerrigan (Ghost) and Raynor (Vulture) have the corresponding normal active as "connected active"
                             if (active_button_set->connected_unit == selected_button_set_id) {
                                 active_button_set_id = selected_button_set_id;
-                                *g_current_buttonset_id = selected_button_set_id;
+                                g_current_buttonset_id = selected_button_set_id;
                             } else {
-                                *g_current_buttonset_id = UnitId::Buttons_GroupMixed;
+                                g_current_buttonset_id = UnitId::Buttons_GroupMixed;
                             }
                         }
                     }
@@ -167,32 +167,32 @@ namespace hooks {
             }
         }
         if (count_larva && count_larva + count_eggs == g_client_selection_count) {
-            *g_current_buttonset_id = UnitId::ZergLarva;
+            g_current_buttonset_id = UnitId::ZergLarva;
         }
         if (count_ocsal_larva && count_ocsal_larva + count_eggs == g_client_selection_count) {
-            *g_current_buttonset_id = UnitId::ZergOcsalLarva;
+            g_current_buttonset_id = UnitId::ZergOcsalLarva;
         }
-        if (*g_current_buttonset_id != UnitId::Buttons_Blank) {
+        if (g_current_buttonset_id != UnitId::Buttons_Blank) {
             if (count_repairmen == g_client_selection_count) {
-                *g_current_buttonset_id = UnitId::Buttons_MixedRepairmen;
+                g_current_buttonset_id = UnitId::Buttons_MixedRepairmen;
             } else if (count_workers == g_client_selection_count) {
-                *g_current_buttonset_id = UnitId::Buttons_GroupWorkers;
+                g_current_buttonset_id = UnitId::Buttons_GroupWorkers;
             } else if (count_burrowables) {
-                *g_current_buttonset_id = UnitId::Buttons_GroupBurrower;
+                g_current_buttonset_id = UnitId::Buttons_GroupBurrower;
             } else if (count_ministries == g_client_selection_count) {
-                *g_current_buttonset_id = UnitId::TerranMinistry;
+                g_current_buttonset_id = UnitId::TerranMinistry;
             } else if (count_nexuses == g_client_selection_count) {
-                *g_current_buttonset_id = UnitId::ProtossNexus;
+                g_current_buttonset_id = UnitId::ProtossNexus;
             } else if (count_zerg_production_base == g_client_selection_count) {
-                *g_current_buttonset_id = UnitId::ZergHachirosk;
+                g_current_buttonset_id = UnitId::ZergHachirosk;
             } else if (count_zerg_production_ocsal == g_client_selection_count) {
-                *g_current_buttonset_id = UnitId::ZergCaphrolosk;
+                g_current_buttonset_id = UnitId::ZergCaphrolosk;
             } else if (count_lifted_buildings) {
-                *g_current_buttonset_id = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
+                g_current_buttonset_id = UnitId::Buttons_GroupMixed; // TODO: Replace with Buttons_LiftedMixed or something
             } else if (count_attacking_buildings) {
-                *g_current_buttonset_id = UnitId::ProtossWarden;
+                g_current_buttonset_id = UnitId::ProtossWarden;
             } else if (count_buildings) {
-                *g_current_buttonset_id = UnitId::TerranGoliathTurret;
+                g_current_buttonset_id = UnitId::TerranGoliathTurret;
             }
         }
     }
@@ -204,7 +204,7 @@ namespace hooks {
     void highlight_button() {
         u8 current_unit_main_order_id = *g_buttonset_unit_order_id;
         u16 current_unit_button_icon = orders_dat::button_icon[current_unit_main_order_id];
-        BinDlg* current_button_dialog = (*g_buttonset_dialog)->child_dialog;
+        BinDlg* current_button_dialog = g_buttonset_dialog->child_dialog;
         u8 current_subunit_main_order_id = *g_buttonset_subunit_order_id;
 
         // if the subunit holds the weapon, get the icon from it
@@ -240,13 +240,13 @@ namespace hooks {
             } while (!stop_looping && current_button_dialog);
         }
         if (!current_button_dialog) {
-            *g_highlighted_icon = 0xFFFF;
+            g_highlighted_icon = 0xFFFF;
         } else {
             if (!(current_button_dialog->flags & BinDlgFlags::Highlighted)) {
                 current_button_dialog->flags |= BinDlgFlags::Highlighted;
                 bw::update_dialog(current_button_dialog);
             }
-            *g_highlighted_icon = used_button_icon;
+            g_highlighted_icon = used_button_icon;
         }
     }
 
@@ -255,25 +255,25 @@ namespace hooks {
     // Use update_buttonset_ex() for individual units and groups
     // Called by update_current_buttonset and updateSelectedUnitData (004C38B0)
     void update_buttonset() {
-        *g_buttonset_special_buttonset_id = UnitId::Buttons_Blank;
-        *g_active_portrait_buttonset_id = UnitId::Buttons_Blank;
+        g_buttonset_special_buttonset_id = UnitId::Buttons_Blank;
+        g_active_portrait_buttonset_id = UnitId::Buttons_Blank;
         if (bw::in_replay()) {
             if (*g_is_replay_paused) {
-                *g_buttonset_special_buttonset_id = UnitId::Buttons_ReplayPaused;
+                g_buttonset_special_buttonset_id = UnitId::Buttons_ReplayPaused;
             } else {
-                *g_buttonset_special_buttonset_id = UnitId::Buttons_ReplayPlaying;
+                g_buttonset_special_buttonset_id = UnitId::Buttons_ReplayPlaying;
             }
-            *g_current_buttonset_id = UnitId::Buttons_Blank;
+            g_current_buttonset_id = UnitId::Buttons_Blank;
             return;
         }
         if (g_client_selection_count > 0) {
             if (g_is_targeting) {
-                *g_buttonset_special_buttonset_id = UnitId::Buttons_Cancel;
+                g_buttonset_special_buttonset_id = UnitId::Buttons_Cancel;
             } else if (g_is_placing_building) {
-                *g_buttonset_special_buttonset_id = UnitId::Buttons_CancelPlaceBuilding;
+                g_buttonset_special_buttonset_id = UnitId::Buttons_CancelPlaceBuilding;
             }
         }
-        *g_current_buttonset_id = UnitId::Buttons_Blank;
+        g_current_buttonset_id = UnitId::Buttons_Blank;
         if (g_client_selection_count > 1) {
             update_buttonset_ex();
         }
@@ -290,28 +290,28 @@ namespace hooks {
         // Quick targeting post-handling
         if (g_game && g_game->m_quick_casting.signal) {
             g_game->m_quick_casting.signal = false;
-            *g_buttonset_special_buttonset_id = g_game->m_quick_casting.command_card;
+            g_buttonset_special_buttonset_id = g_game->m_quick_casting.command_card;
             g_minimap_cursor = 0;
         }
 
-        u16 buttonset_id = *g_buttonset_special_buttonset_id;
+        u16 buttonset_id = g_buttonset_special_buttonset_id;
         b32 refresh = g_force_button_refresh;
         Unit* active_unit = *g_active_portrait_unit;
-        if (g_force_button_refresh && (*g_buttonset_special_buttonset_id == UnitId::None || g_is_in_replay)) {
+        if (g_force_button_refresh && (g_buttonset_special_buttonset_id == UnitId::None || g_is_in_replay)) {
             helper::update_buttonset();
-            buttonset_id = *g_buttonset_special_buttonset_id;
+            buttonset_id = g_buttonset_special_buttonset_id;
         }
         if (buttonset_id == UnitId::None) {
-            buttonset_id = *g_current_buttonset_id;
-            if (*g_current_buttonset_id == UnitId::None) {
+            buttonset_id = g_current_buttonset_id;
+            if (g_current_buttonset_id == UnitId::None) {
                 if (!active_unit) {
                     goto BLOCK_highlight;
                 }
                 buttonset_id = active_unit->current_buttonset;
             }
         }
-        if (*g_active_portrait_buttonset_id != buttonset_id) {
-            *g_active_portrait_buttonset_id = buttonset_id;
+        if (g_active_portrait_buttonset_id != buttonset_id) {
+            g_active_portrait_buttonset_id = buttonset_id;
             g_force_button_refresh = true;
         BLOCK_update_then_highlight:
             helper::update_command_card();
@@ -331,7 +331,7 @@ namespace hooks {
                 highlight_button();
             }
             if (g_is_in_replay) {
-                helper::replay_stat_buttons(*g_buttonset_dialog);
+                helper::replay_stat_buttons(g_buttonset_dialog);
             }
             g_force_button_refresh = false;
             return;
@@ -389,7 +389,7 @@ namespace hooks {
         command.subtype = NewGameCommand::SelectFaction;
         command.player = g_local_human_id;
         command.faction = Faction::None; // Default case
-        auto buttonset_id = *g_active_portrait_buttonset_id;
+        auto buttonset_id = g_active_portrait_buttonset_id;
         u32 local_player = g_local_human_id;
         auto& cm_player = g_globals->players[local_player];
         if (bw::get_game_kind() == GameKind::FactionWars && !cm_player.faction_was_set) {
@@ -622,7 +622,7 @@ namespace hooks {
             qsort(current_buttonset->first_button, current_buttonset->buttons_in_set, sizeof(Button), compare_button);
         }
 
-        BinDlg* current_dialog = *g_buttonset_dialog;
+        BinDlg* current_dialog = g_buttonset_dialog;
         if (current_dialog->control_type != DialogControlTypes::DialogBoxDC) {
             current_dialog = current_dialog->parent;
         }
@@ -3636,7 +3636,7 @@ namespace hooks {
                         }
                         // 00459331
                         if (!jumpto59336 && !jumpto5934E) {
-                            helper::enable_control(current_dialog);
+                            helper::enable_dialog(current_dialog);
                         }
                         if (!jumpto5934E) {
                             // 00459336

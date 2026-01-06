@@ -22,11 +22,11 @@ namespace helper {
     BW_FUNC(0x0049B870, bool __cdecl, update_alliances);
     BW_FUNC(0x00437250, bool __fastcall, player_has_transports, u32 player);
     BW_FUNC(0x00440FA0, bool __fastcall, return_cargo_to_best_depot_proc, Unit* depot, Unit* worker);
-    BW_FUNC(0x004D27A0, void* __fastcall, alloc_background_image, const char* filename, Bitmap* bitmap, u32 buffer, u32 arg4, u32 arg5);
-    BW_FUNC(0x00459B00, char __fastcall, statbtn_dialog_interact, BinDlg* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004D27A0, void __fastcall, alloc_background_image, const char* filename, Bitmap* bitmap, Palette* palette, const char* log_filename, u32 log_line);
     BW_FUNC(0x00410154, b32 __stdcall, sbmp_load_image, const char* filename, PaletteEntry* palette, const char* buffer, u32 buffer_size, u32* width, u32* height, u32* bpp);
     BW_FUNC(0x004B5220, char __fastcall, glu_expcampaign_custom_ctrl_id, BinDlg* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004BE0B0, char __cdecl, refresh_cursor_0);
+    BW_FUNC(0x0041ca00, void __stdcall, refresh_region);
     BW_FUNC(0x004BE060, s32 __cdecl, cursor_refresh);
     BW_FUNC(0x0049BFD0, char __cdecl, update_screen_position);
     BW_FUNC(0x004D4960, bool __fastcall, title_dlg_proc, BinDlg* dialog, DialogEvent* dlg_event);
@@ -34,13 +34,52 @@ namespace helper {
     BW_FUNC(0x004ADEA0, s32 __stdcall, compile_list_callback, const char* string, s32 a3, s32 a4, s32 a5);
     BW_FUNC(0x004DDD30, char* __stdcall, get_string_by_id, s16 id);
     BW_FUNC(0x004c9780, void __stdcall, save_options_menu_result, BinDlg* dialog);
+    BW_FUNC(0x004f57a0, void __fastcall, load_bin_dlg, const char* bin_name, BinDlgProc dlgproc);
+
+    // Menu functions
+    BW_FUNC(0x004db930, void __stdcall, glu_main);
+    BW_FUNC(0x004baf30, void __stdcall, glu_connection);
+    BW_FUNC(0x004b9e70, void __stdcall, glu_chat);
+    BW_FUNC(0x004ad330, void __stdcall, glu_bnet);
+    BW_FUNC(0x004edc30, void __stdcall, glu_login);
+    BW_FUNC(0x004b2930, void __stdcall, glu_campaign);
+    BW_FUNC(0x004f7550, void __stdcall, glu_ready_terran);
+    BW_FUNC(0x004f71f0, void __stdcall, glu_ready_zerg);
+    BW_FUNC(0x004f78b0, void __stdcall, glu_ready_protoss);
+    BW_FUNC(0x004b86c0, void __stdcall, glu_join);
+    BW_FUNC(0x004b6490, void __stdcall, glu_load);
+    BW_FUNC(0x004b4af0, void __stdcall, glu_scorescreen);
+    BW_FUNC(0x004b19c0, void __stdcall, glu_modem);
+    BW_FUNC(0x004b52a0, void __stdcall, glu_ex_campaign);
+    BW_FUNC(0x004dcc90, void __stdcall, glu_generic);
+
+    BW_FUNC(0x004b5180, b32 __stdcall, dlgproc_glu_campaign_activate, BinDlg* dialog);
+    BW_FUNC(0x004d26b0, u8* __stdcall, generic_malloc_wrapper, u32 size);
+
+    // Console functions
+    BW_FUNC(0x0041d470, void __stdcall, console_update_surface_masks);
+    BW_FUNC(0x00456b40, void __fastcall, statdata_bar_update, BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x00458730, void __fastcall, cmdbuttons_bar_update, BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x00459B00, u32 __fastcall, statbtn_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004f36c0, u32 __fastcall, textbox_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004becf0, u32 __fastcall, statlb_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004e5910, u32 __fastcall, statres_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004f5240, u32 __fastcall, stat_f10_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004b8590, u32 __fastcall, glujoin_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004a5a80, void __stdcall, load_minimap);
+    BW_FUNC(0x0045f320, void __stdcall, load_statport);
+    BW_FUNC(0x00458570, void __stdcall, load_stat_data);
+
+    // Generic modal text entry with custom prompt
+    BW_FUNC(0x004b6e50, BOOL __stdcall, glu_modal_string_prompt, const char* prompt, char* output, u32 output_size, const char* disallowed_chars);
+
+    void glu_create(bool multiplayer); // 004af6d0
 
     bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
-    // For loadRaceUI
-    void get_race_sound_list(s8 a1);
-    s32 dialog_grp_construct(s32 a1, s32 a2, s32 a3, s32(__fastcall* a4)(s32, s32, s32, s32));
-    void* load_graphic(const char* a1, u32 a2, u32 a3, const char* log_filename, u32 log_line);
+    // Console functions
+    s32 dialog_grp_construct(const char* filename, const char* log_filename, u32 log_line);
+    void* load_graphic(const char* filename, u32* bytes_read, const char* log_filename, u32 log_line);
 
     s32 rand_func();
     bool unit_hp_below_33_percent(Unit* unit);
@@ -865,10 +904,11 @@ namespace helper {
     void* SMemAlloc(u32 amount, u32 default_value = 0, std::source_location loc = std::source_location::current()); // 0041006A (based on Storm.dll definition)
     void* SMemAlloc(u32 amount, const char* unkFilename, u32 unkLine, u32 defaultValue);							// 0041006A (based on Storm.dll definition)
     void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, u32 callback);								// 00416090
+    void clear_callback_timer(BinDlg* dialog, u16 timer_index);                                                    // 00416000
     void remove_from_selections(Unit* unit);																		// 0049A7F0
     u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
     void register_user_dialog_action(BinDlg* dialog, BinDlgProc* interact_funcs, u32 count);                        // 00418100
-    void enable_control(BinDlg* dialog);																			// 00418E00
+    void enable_dialog(BinDlg* dialog);																			// 00418E00
     void replay_stat_buttons(BinDlg* dialog);																		// 00427A80
     void update_command_card();																						// 004591D0
     void refresh_button_tooltip();																					// 00459770
@@ -914,8 +954,8 @@ namespace helper {
     bool set_last_open_slot_to_computer(s8 race);															// 004DBB70
 
     // For start_game
-    s32 boot_reason(u8 player);																				// 004B8870
-    s32 is_authorized_map(void* a1);																		// 004C4870
+    void boot_reason(u8 player);																			// 004B8870
+    bool is_authorized_map();                                                                               // 004C4870
     void set_timer_func();																					// 00472E00
     s32 get_tick_count();																					// 004FE0C4
 
@@ -1296,7 +1336,7 @@ namespace helper {
     void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply); // 00458800
 
     void bw_print_icon(Bounds* bounds, FxnDrawIconData* data, int pos_x, int pos_y);						// 0041D090
-    void bw_print_xy(char* text, s32 pos_x, s32 pos_y);														// 004202B0
+    void bw_print_xy(const char* text, s32 pos_x, s32 pos_y);														// 004202B0
 
     bool unit_is_in_notify_range(Unit* unit);																// 004E5AD0
     u32 reset_all_unit_attack_notify_timers_in_range(Unit* unit);											// 0048EAE0
@@ -1403,7 +1443,7 @@ namespace helper {
     s32 get_sfx_volume_from_screen_distance(u32 x, u32 y);													// 0048E8D0
     s32 get_sfx_pan_from_screen_distance(u32 x);															// 0048E850
 
-    void syswarn_file_not_found(u32 code, const char* filename);											// 004212C0
+    void fatal_file_not_found(u32 code, const char* filename);											// 004212C0
 
     void EAX_order(Unit* unit, u32 order_func_offset);
     void EBX_order(Unit* unit, u32 order_func_offset);
@@ -1566,7 +1606,7 @@ namespace helper {
     char create_dashed_selection(u32 player, Sprite* sprite, char color);									// 00499A10
 
     b32 is_melee_game(char game_type, s16 game_type_param, char game_type_2);								// 004AAFA0
-    Player* randomize_player_slot();																		// 004A9A30
+    void randomize_player_slot();																		// 004A9A30
 
     void place_building_refinery_check(Unit* unit);															// 0048E1E0
 
@@ -1600,8 +1640,10 @@ namespace helper {
     void image_render_fxn_0_0(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data);	// 0040ABBE
 
     void file_fatal(HANDLE* file, u32 something);																								// 004D2880
-    void alloc_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(u32, u32, u32, u32, u32), const char* log_filename, u32 log_line);	// 004194E0
+    void alloc_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(const char*, Bitmap*, Palette*, const char*, u32), const char* log_filename, u32 log_line);	// 004194E0
     void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog);													// 00419D20
+    s32 display_dialog(BinDlgProc dialog_proc, BinDlg* dialog);
+
     u32 sfile_read_file(HANDLE* file, void* item, u32 size_arg, u32* read, u32 arg5);															// 00410148
 
     s32 get_fastest_distance(u32 angle);																										// 00494C10
@@ -1688,6 +1730,7 @@ namespace helper {
     BYTE* statport_alloc();														// 0045E360
     bool generic_dialog_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 00418EB0
     bool generic_common_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 00418C40
+    bool generic_listbox_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 0041baa0
 
     void glu_main_create(BinDlg* dialog);										// 004DB280
     void dialog_swish_in(BinDlg* dialog);										// 004DE150
@@ -1698,7 +1741,7 @@ namespace helper {
     char dialog_swish_out(BinDlg* dialog);										// 004DD040
     s32 load_staredit_process(BinDlg* dialog);									// 004DB490
     s32 glu_main_display_cdrom_error_bindlg();									// 004DB770
-    s32 register_menu_functions(bool(__fastcall** save_game_text_box)(BinDlg* func_dialog, DialogEvent* func_dlg_event), BinDlg* dialog, u32 count, u32 palette); // 004DD9E0
+    s32 register_menu_functions(BinDlgProc dialog_proc_array, BinDlg* dialog, u32 count, u32 palette); // 004DD9E0
     void game_menu_bindlg(BinDlg* dialog);										// 004CA370
     void game_menu_bindlg_bypass(BinDlg* dialog);								// 004CA450
 
@@ -1846,4 +1889,14 @@ namespace helper {
     void latency_print_result(u32, const char* string);                             // 0048d0c0
     void latency_activate_radio(BinDlg* dialog);                                    // 004e1900
     bool latency_radio_interact(BinDlg* dialog, DialogEvent* event);                // 004e1bc0
+    
+    u8 combobox_add_item(BinDlg* dialog, u8 flags, const char* string);             // 0041b760
+    void combobox_clear_items(BinDlg* dialog);                                      // 0041b890
+    void generic_combobox_update(BinDlg* dialog);                                   // 0041b410
+    void generic_combobox_selection_update(BinDlg* dialog, u8 index);               // 0041a600
+    void update_dialog_text(BinDlg* dialog, u16 index, const char* string);         // 004dcf30
+    void glu_update_palette(u32 fade_time);                                         // 0041ea30
+    void glu_change_menu_palette(u32 fade_time);                                    // 0041e9e0
+
+    void enable_sound_list(u16* sounds_array);                                      // 004bccf0
 }

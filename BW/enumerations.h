@@ -12,6 +12,7 @@
 #include "enumerations/SoundId.h"
 #include "enumerations/IconId.h"
 #include "enumerations/PortraitId.h"
+#include "enumerations/GluIndex.h"
 #include <algorithm>
 
 namespace UnitSize {
@@ -209,6 +210,16 @@ enum Enum : u8 {
 };
 }
 
+constexpr std::optional<char> get_race_initial(RaceId::Enum race) {
+    switch (race) {
+    case RaceId::Zerg:    return 'z';
+    case RaceId::Terran:  return 't';
+    case RaceId::Protoss: return 'p';
+    case RaceId::Askosi:  return 'a';
+    }
+    return {};
+}
+
 namespace PlayerType {
 enum Enum {
     Inactive           = 0,
@@ -355,15 +366,16 @@ enum class TextColor : u8 {
     TextGone2    = 0x14,
 };
 
-enum class LobbyTextColor {
-    Purple1     = 0x01,
-    Purple2     = 0x02,
+enum class LobbyTextColor : u8{
+    Revert      = 0x01,
+    Blue        = 0x02,
+    Green       = 0x03,
     YellowGreen = 0x04,
     Grey        = 0x05,
     White       = 0x06,
     Red         = 0x07,
+    Black       = 0x08,
     Tab         = 0x09,
-    Black       = 0x10, // Could be wrong!
     AlignRight  = 0x18,
     AlignCenter = 0x19,
 };
@@ -541,7 +553,7 @@ enum Enum {
 
 // Compare with (*g_game_type)
 namespace GameType {
-enum Enum {
+enum Enum : u8 {
     // Vanilla, deprecated
     Melee          = 2,
     FreeForAll     = 3,
@@ -631,7 +643,7 @@ enum Enum {
     ReverseDialogDirection    = 0x10000000,
     UseAlternateStyle         = 0x20000000,
     NoClickSound              = 0x40000000,
-    HighlightText             = 0x80000000
+    HighlightText             = 0x80000000, // I think this is named incorrectly -Jesse
 };
 }
 
@@ -657,7 +669,7 @@ enum Enum {
 }
 
 namespace DialogControlTypes {
-enum Enum {
+enum DialogControlTypes : u16{
     DialogBoxDC         = 0x00000000, // DialogBox cannot be used, since it's used in winapi
     DefaultButton       = 0x00000001,
     Button              = 0x00000002,
@@ -1440,7 +1452,7 @@ enum AdvisorMessageId {
     AdvisorMessageId_NoLanding = 863,
 };
 
-enum DialogEventType {
+enum DialogEventType : u16 {
     DialogEventType_KeyDown = 0,
     DialogEventType_KeyRepeat = 1,
     DialogEventType_KeyUp = 2,
@@ -1462,7 +1474,7 @@ enum DialogEventType {
     DialogEventType_MWheelDown = 18,
 };
 
-enum DialogUserType {
+enum DialogUserType : u16 {
     DialogUserType_Create = 0,
     DialogUserType_Destroy = 1,
     DialogUserType_Activate = 2,
@@ -1516,7 +1528,7 @@ enum SpectatorEvent {
 };
 
 namespace MenuId {
-enum Enum {
+enum Enum : u32{
     GlueMainMenu = 0,
     GlueSimulate = 1,
     GlueSelConn = 2,
@@ -1529,7 +1541,7 @@ enum Enum {
     GlueReadyP = 9,
     GlueGameSel = 10,
     GlueCreate = 11,
-    GlueCreate2 = 12,
+    GlueCreateMultiplayer = 12,
     GlueLoad = 13,
     GlueScoreZd = 14,
     GlueScoreZv = 15,
@@ -1539,10 +1551,12 @@ enum Enum {
     GlueScorePv = 19,
     GlueModem = 20,
     GlueDirect = 21,
-    GlueCampaign2 = 22,
+    GlueExCampaign = 22,
     GlueGamemode = 23,
     GlueGamemode2 = 24,
     GlueGeneric = 25,
+    // Extended Menu
+    GlueOptions = 27,
 };
 }
 
@@ -1628,3 +1642,25 @@ static const char* faction_identifiers[] = { // This array needs to the same siz
 };
 static_assert(std::size(faction_identifiers) == (size_t)Faction::Count);
 
+enum OptionsFlags : u32 {
+    UnitSpeech              = 0x0000001,
+    UnitAcknowledgements    = 0x0000002,
+    BuildingSounds          = 0x0000004,
+    Subtitles               = 0x0000400,
+};
+
+enum class CrowServeState : u32 {
+    Disconnected,
+    Connecting,
+    Ready
+};
+
+enum class P2PState : u32 {
+    Disconnected,
+    Connecting,
+    Failed,
+    Standard,
+    Relay,
+    Radmin,
+    BadVersion,
+};

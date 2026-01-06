@@ -1,6 +1,7 @@
 #pragma once
 #include "BW/bwdata.h"
 #include "BW/api.h"
+#include "BW/ui.h"
 
 #define ActionSampleTime 10
 #define MaxActions 2000
@@ -45,8 +46,6 @@ void draw_standard_button_graphic(BinDlg* button1, BinDlg* button2, BinDlg* dest
 b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims);											// 004EF590
 void draw_stat_button_image(BinDlg* dialog);																			// 00456C30
 void statbtn_button_update(BinDlg* button);																				// 00458900
-void load_statdata_bin();																								// 00459B90
-void print_stat_res_info(BinDlg* dialog, u16 graphic, u8** recent_spending, u8* resource_amount, b32 instant_update);	// 004E52E0
 
 void register_action(ApmCounter* counter, char* buffer);
 void init_actions();
@@ -74,6 +73,15 @@ std::string latency_value_string(u8 latency);
 b32 __fastcall latency_interaction(BinDlg* dialog, DialogEvent* dialog_event);
 void set_latency (u8 latency);
 void load_latency_dialog();                                                         // 004ca0eb
+
+static bool is_valid_race(RaceId::Enum race);
+u8 load_races_dropdown(BinDlg* dialog, RaceId::Enum race);
+void load_races_dropdown_singleplayer(BinDlg* dialog);
+
+void glu_main_swich();                                                              // 004de45e
+bool glu_connect_init_provider();                                                   // 004bade0
+void glu_destroy_provider();                                                        // 00410112
+
 void inject_ui_features_hooks();
 }
 

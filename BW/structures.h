@@ -139,14 +139,14 @@ struct StringMap_w {
 };
 
 struct DialogEvent {
-    u32		user;				  // 0x0
-    u16		field_4;			  // 0x4
-    u16		field_6;			  // 0x6
-    u16		virtual_key;		  // 0x8
-    u16		virtual_key_modifier; // 0xA
-    u16		number_order;		  // 0xC
-    Point16	current;			  // 0xE
-    u16		field_12;			  // 0x12
+    u32		user;                   // 0x0
+    u16		param;                  // 0x4
+    u16		field_6;			    // 0x6
+    u16		virtual_key;		    // 0x8
+    u16		virtual_key_modifier;   // 0xA
+    u16		number_order;		    // 0xC
+    Point16	current;			    // 0xE
+    u16		field_12;			    // 0x12
 };
 
 // Seems to be identical to ResourceArea
@@ -277,7 +277,7 @@ struct Options { // taken from IDA
     u32		music;						// 0xC
     u32		sfx;						// 0x10
     u32		tip_number;					// 0x14
-    u32		flags;						// 0x18
+    u32		flags;						// 0x18 // See OptionsFlags
     u32		m_mouse_scroll;				// 0x1C
     u32		m_keyboard_scroll;			// 0x20
     u32		use_chat_colors;			// 0x24
@@ -628,8 +628,11 @@ struct BinDlg {
 /*0x00*/  BinDlg*		next;
 /*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
 /*0x10*/  u8*			buffer;
-/*0x14*/  char*			text;
-/*0x18*/  u32			flags;			// use BinDlgFlags::Enum
+union {
+    /*0x14*/  const char* text;
+    /*0x14*/  char (*textbox_buffer)[256]; // Only for DialogControlTypes::TextBox
+};
+/*0x18*/  s32			flags;			// use BinDlgFlags::Enum
 /*0x1C*/  u32			unk_1c;
 /*0x20*/  u16			index;
 /*0x22*/  u16			control_type;	// use DialogControlTypes::Enum
@@ -696,17 +699,31 @@ union {
         /*0x3A*/  u8**		unk3aArrayCharPtr;		// seen in a different context so may be wrong and belong to another category
         /*0x3E*/  u8		pszTextLen;				// should be the length of psz_text
         /*0x3F*/  unk_t     unk3f[3];				// unverified filler
-    } textDialog0x36;								// seems to apply to some text related dialogs
+    } TextBox0x36;								// seems to apply to some text related dialogs
     struct {
         /*0x36*/  u32		time_cost;
         /*0x3A*/  u32*		font_handle;
         /*0x3E*/  BinDlg*	player_name;
     } statRes;
+    struct {
+        /*0x36*/  u32*      _unk;
+        /*0x3A*/  char**    strings_array;          // Array of char* to heap-allocated strings
+        /*0x3E*/  u8*       flags_array;            // Array of u8 flags. 0x16 = copy input string to fresh malloc. 
+    } ComboBox;
+    struct {
+        /*0x36*/  void*     value_update_function;  // void __stdcall (BinDlg* dialog)
+        /*0x3A*/  u16       current;
+        /*0x3C*/  u16       min;
+        /*0x3E*/  u16       max;
+        /*0x40*/  u16       unk40;
+    } Slider;
 };
 
 union {
-/*0x42*/  void*			child_smk;
-/*0x42*/  BinDlg*		child_dialog;
+/*0x42*/  void*         child_smk;
+/*0x42*/  BinDlg*       child_dialog;
+/*0x42*/  u32*          combobox_output_array_u32;
+/*0x42*/  u8*           combobox_output_array_u8;
 };
 
 union {
@@ -733,12 +750,37 @@ union {
         /*0x4E*/  u8		unk4e;
         /*0x4F*/  unk_t     unk_4f[7];				// unverified filler
     } alternateVersion0x46;
+    struct {
+        /*0x46*/  u8        item_count;
+        /*0x47*/  u8		malloc_size;					
+        /*0x48*/  s8		selection_index;
+        /*0x49*/  u8		element_height;
+        /*0x4A*/  u8		_unk2;
+        /*0x4B*/  u8		_unk3;
+        /*0x4C*/  u8		flag;
+        /*0x4D*/  u8		selection_index_2;
+        /*0x4E*/  u8		_unk4;
+        /*0x4E*/  u8		_unk5;
+        /*0x4E*/  u8		_unk6;
+        /*0x4E*/  u8		_unk7;
+        /*0x4F*/  void*     unknown_function;
+    } ComboBox0x46;
 };
 
 };
 
 C_ASSERT(sizeof(BinDlg) == 86); //0x56
 //static_assert(sizeof(BinDlg) == 86, "The count of the BinDlg structure is invalid");
+
+// For load_statfluf_mouse_regions
+struct MousePixelmaskRegion {
+    s16 x;
+    s16 y;
+    s16 w;
+    s16 h;
+    BinDlg* dialog;
+};
+
 
 struct SMK_Structure {
     /*0x00*/ u32		smk_overlay_offset;
@@ -1295,6 +1337,16 @@ struct Bitmap {
     u8*			buffer;		// 0x4
 };
 
+struct SurfaceContext {
+    SurfaceContext* next;
+    SurfaceContext* prev;
+    void* surface;
+    u32 left;
+    u32 top;
+    u32 right;
+    u32 bottom;
+};
+
 struct IDirectSoundBuffer;
 struct SoundData {
     u32 wav_data_size;
@@ -1671,6 +1723,13 @@ struct SPIProvider {
     Caps caps;
 };
 
+struct AdFileExtra {
+    u32 total_slots;
+    u32 human_players;
+    u32 max_players;
+    u8 unused[20];
+};
+
 struct AdFile {
     u32 game_index;
     u32 game_state;
@@ -1686,7 +1745,14 @@ struct AdFile {
     u32 extra_bytes_count;
     u32 program_id;
     u32 version_id;
-    u8 extra_bytes[32];
+    AdFileExtra extra_bytes;
+};
+
+struct AdFileEx : AdFile {
+    P2PState peer_state;
+
+    AdFileEx(const AdFile& adfile) : AdFile{adfile}, peer_state{} {}
+    AdFileEx(const AdFile& adfile, P2PState state) : AdFile{adfile}, peer_state{state} {}
 };
 
 struct LobbyInfo {
@@ -1698,10 +1764,6 @@ struct LobbyInfo {
     u16 subtype;
     u32 players;
     u32 max_players;
-
-    // Since game_name is a pointer to the game_name field in the adfile received from the SPI
-    // we can get a pointer to the actual adfile by subtracting 40 bytes
-    AdFile* adfile() { return (AdFile*)(game_name - 40); };
 };
 
 struct SPIFunctions {
@@ -1735,8 +1797,36 @@ struct SPIFunctions {
     b32(__stdcall* bnet_get_player_name)(char* name_output, u32* size);
 };
 //---------- End SNET SPI ----------//
+
 struct SetLatencyCommand {
     GameCommand type = GameCommand_SetLatency;
     u8 value;
 };
+
+struct DialogFadeInfo {
+    bool _unk1;
+    bool _unk2;
+    u16 mouse_x;
+    u16 mouse_y;
+    u16 pointer_width;
+    u16 pointer_height;
+};
+
+struct MenuBackground {
+    u32 background_id;
+    char* filename;
+    u32 index;
+};
+
+struct RGBA {
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 a;
+};
+
+struct Palette {
+    RGBA colors[256];
+};
+
 #pragma pack()

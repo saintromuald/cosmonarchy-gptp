@@ -1,19 +1,7 @@
 #pragma once
 #include "BW/api.h"
 
-#pragma pack(push, 1)
-struct RGBA {
-	u8 r;
-	u8 g;
-	u8 b;
-	u8 a;
-};
-
 #define PaletteSize 256
-struct Palette {
-	RGBA colors[PaletteSize];
-};
-#pragma pack(pop)
 
 Palette* const init_palette = (Palette*)0x005994E0;
 Palette* const game_palette = (Palette*)0x006CEB40;

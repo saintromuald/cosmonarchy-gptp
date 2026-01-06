@@ -20,6 +20,10 @@ bool FraudLauncherClient::connect() {
     if (m_pipe_from_server == INVALID_HANDLE_VALUE) {
         return false;
     }
+    m_pipe_from_server = CreateFileA(m_pipe_from_server_name, GENERIC_READ, 0, nullptr, OPEN_EXISTING, 0, nullptr);
+    if (m_pipe_from_server == INVALID_HANDLE_VALUE) {
+        return false;
+    }
 
     m_connected = true;
     return true;
@@ -109,9 +113,9 @@ void example_providers() {
 
     // CrownLink allows you to also register a callback for when the server connection status changes
     // It will run immediately when registered to give you the current status
-    provider_manager.register_crownlink_status_callback([](snp::CrownLinkStatus status) {
+    provider_manager.register_crownlink_status_callback([](CrowServeState status, void* user_data) {
         // Send to Fraud Launcher
-    }, false, false);
+    }, nullptr);
 
     // When leaving multiplayer mode (e.g. entering a singleplayer game) destroy the provider to reduce load on the server
     provider_manager.destroy_provider();
@@ -151,7 +155,7 @@ void example_create_singleplayer() {
     const char* melee_map = R"(C:\Cosmonarchy\Starcraft\Maps\CMBW-Root\CMBW-maps\melee\1v1\Class 1 - Empire\(2)Acid Test 1.2.scx)";
     const char* scenario_path = R"(C:\Cosmonarchy\Starcraft\Maps\CMBW-Root\CMBW-maps\campaign\Tutorials\1. Further Notice.scx)";
     const char* replay_path = R"(C:\Cosmonarchy\Starcraft\Maps\replays\release_sp_replay.rep)";
-    
+
     auto result = game_runner.create_singleplayer_game(melee_map, GameType::Unranked, 1);
     // auto result = game_runner.create_singleplayer_game(scenario_path, GameType::Scenario);
     // auto result = game_runner.create_singleplayer_game(replay_path);
@@ -184,14 +188,16 @@ void example_join_lobby() {
     auto& provider_manager = snp::ProviderManager::instance();
     provider_manager.initialize_provider('CNLK');
 
-    // Setting up a status callback to both wait for crownlink to be ready but also
-    // to disable the "status lobby" that's normally used
-    snp::CrownLinkStatus crownlink_status{};
-    provider_manager.register_crownlink_status_callback([&crownlink_status](snp::CrownLinkStatus status) {
-        crownlink_status = status;
-    }, false, false);
+    // Setting up a status callback to wait for CrownLink to be ready
+    CrowServeState crownlink_status{};
+    provider_manager.register_crownlink_status_callback([](CrowServeState status, void* user_data) {
+        *(CrowServeState*)user_data = status;
+    }, &crownlink_status);
 
-    while (crownlink_status != snp::CrownLinkStatus::Ready) {
+    provider_manager.set_status_lobby(false);
+    provider_manager.set_map_name_edit(false);
+
+    while (crownlink_status != CrowServeState::Ready) {
         std::this_thread::sleep_for(100ms);
     }
 

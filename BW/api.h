@@ -17,6 +17,7 @@ using namespace magic_enum::bitwise_operators;
 
 #include "BW/bwdata.h"
 #include "BW/enumerations.h"
+#include "BW/bwhelper.h"
 #include "unit_search.h"
 #include "bwutils.h"
 #include "CM/cm.h"
@@ -93,7 +94,21 @@ struct std::formatter<TextColor> {
 
 template <size_t Capacity>
 inline void safe_copy(char(&to)[Capacity], const char* from) {
-    strncpy(to, from, Capacity - 1);
+    auto copy_size = Capacity - 1;
+    strncpy(to, from, copy_size);
+    to[copy_size] = 0;
+}
+
+template <size_t Capacity>
+inline void safe_copy(char(&to)[Capacity], const std::string& from) {
+    safe_copy(to, from.c_str());
+}
+
+template <size_t Capacity>
+inline void safe_copy(char(&to)[Capacity], std::string_view from) {
+    auto copy_size = std::min(Capacity - 1, from.size());
+    strncpy(to, from.data(), copy_size);
+    to[copy_size] = 0;
 }
 
 namespace enums {
@@ -107,6 +122,25 @@ base<T> to_base(T value) {
 } // enums
 
 namespace bw {
+
+class StatString {
+public:
+    StatString(const char* stat_string);
+
+    GameData& game_data() { return m_game_data; };
+    bool valid() const { return m_valid; };
+
+private:
+    template <typename T>
+    void load_number(T& output, std::string_view sv) {
+        std::from_chars(sv.data(), sv.data() + sv.size(), output, 16);
+    }
+
+private:
+    GameData m_game_data{};
+    bool m_valid = false;
+};
+
 
 s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed = false);
 
@@ -295,10 +329,12 @@ void show_error_message_with_sfx(u32 player, u32 statTxtId, u32 sfxId);
 
 u8 overlay_size(Unit* unit);
 
-void disable_dialog(BinDlg* dialog);															//18640
-void show_dialog(BinDlg* dialog);															//186A0
-void hide_dialog(BinDlg* dialog);															//18700
-void update_dialog(BinDlg* dialog);															//1C400
+void disable_dialog(BinDlg* dialog);    //18640
+void show_dialog(BinDlg* dialog);       //186A0
+void hide_dialog(BinDlg* dialog);       //18700
+void update_dialog(BinDlg* dialog);     //1C400
+
+
 /// @name Unit checks
 //////////////////////////////////////////////////////////////// @{
 
@@ -1054,4 +1090,5 @@ void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id);
 u32 get_weapon_hit_sound(WeaponId::Enum weapon_id);
 Point16 get_building_reposition(Unit* unit, Point16 position);
 f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable);
+bool is_melee_game(u8 game_type, u8 game_subtype);
 } // namespace bw

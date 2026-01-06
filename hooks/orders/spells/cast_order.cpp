@@ -313,7 +313,7 @@ namespace hooks {
 		helper::send_message_something(order_3, error);
 		helper::set_ingame_input_procs();
 		g_minimap_cursor = 2;
-		*g_buttonset_special_buttonset_id = 229;
+		g_buttonset_special_buttonset_id = 229;
 		helper::update_current_buttonset();
 	}
 

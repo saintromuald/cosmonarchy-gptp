@@ -19,47 +19,32 @@ namespace
 		}
 	}
 
-	void __declspec(naked) start_game_wrapper() // 00472060
-	{
-		static s32 result;
-		static void* lobby_state;
+	void __declspec(naked) start_game_wrapper() { // 00472060
 		static s32 player;
-		__asm
-		{
-			PUSH EBP
-			MOV EBP, ESP
-			PUSH EAX
-			MOV EAX, [EBP + 0x08]
-			MOV player, EAX
-			POP EAX
-			MOV lobby_state, ECX
+		__asm {
+			MOV player, ECX
 			PUSHAD
 		}
-		result = hooks::start_game(lobby_state, player);
-		__asm
-		{
+		hooks::start_game(player);
+		__asm {
 			POPAD
-			MOV EAX, result
-			MOV ESP, EBP
-			POP EBP
+			MOV ECX, player
 			RETN 4
 		}
 	}
 
 	void __declspec(naked) init_singleplayer_custom_wrapper() // 004AD850
 	{
-		static Player* result;
 		static BinDlg* dialog;
 		__asm
 		{
 			MOV dialog, EAX
 			PUSHAD
 		}
-		result = hooks::init_singleplayer_custom(dialog);
+		hooks::init_singleplayer_custom(dialog);
 		__asm
 		{
 			POPAD
-			MOV EAX, result
 			RETN
 		}
 	}
@@ -119,8 +104,8 @@ namespace hooks
 	void inject_lobby_hooks()
 	{
 		jump_patch(init_game_wrapper,					0x004EE110, 0);
-		jump_patch(start_game_wrapper,					0x00472060, 4);
-	//	jump_patch(init_singleplayer_custom_wrapper,	0x004AD850, 0);
+		call_patch(start_game_wrapper,					0x0048608b);
+		jump_patch(init_singleplayer_custom_wrapper,	0x004AD850, 0);
 		jump_patch(on_player_join_wrapper,				0x00470720, 4);
 		jump_patch(loadMenu_gluJoin_patch_B86C6,		0x004B86C6);
 	}

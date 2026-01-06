@@ -62,7 +62,7 @@ namespace hooks {
 			u32 read = 0;
 
 			if (!helper::sfile_open_file_ex(nullptr, g_iscript_filenames[index], 0, &file)) {
-				helper::syswarn_file_not_found(helper::serr_get_last_error(), g_iscript_filenames[index]);
+				helper::fatal_file_not_found(helper::serr_get_last_error(), g_iscript_filenames[index]);
 			}
 
 			u32 file_size = helper::SFileGetFileSize(file, 0);
@@ -72,7 +72,7 @@ namespace hooks {
 			}
 
 			if (!file_size) {
-				helper::syswarn_file_not_found(24, g_iscript_filenames[index]);
+				helper::fatal_file_not_found(24, g_iscript_filenames[index]);
 			}
 
 			char* item = (char*)helper::SMemAlloc(file_size, "Starcraft\\SWAR\\lang\\gamedata.cpp", 210, 0);

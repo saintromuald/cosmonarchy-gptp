@@ -35,6 +35,61 @@ bool __assert_sprite(Sprite* sprite, const char* function, const char* file, u64
 }
 
 namespace bw {
+StatString::StatString(const char* stat_string) {
+    std::string_view sv{stat_string};
+    auto statstring = sv | std::views::split(',')
+        | std::views::transform([](auto range) { return std::string_view(range.begin(), range.end()); })
+        | std::ranges::to<std::vector>();
+
+    if (statstring.size() == 12) {
+        m_valid = true;
+    } else {
+        return;
+    }
+
+    load_number(m_game_data.save_timestamp, statstring[0]);
+
+    u32 width_height{};
+    load_number(width_height, statstring[1]);
+    if (width_height) {
+        m_game_data.map_width_tiles = width_height / 16 * 32;
+        m_game_data.map_height_tiles = width_height % 16 * 32;
+    }
+
+    u16 active_max{};
+    load_number(active_max, statstring[2]);
+    if (active_max) {
+        m_game_data.active_player_count = active_max / 16;
+        m_game_data.max_player_count = active_max % 16;
+    } else {
+        m_game_data.max_player_count = 8;
+    }
+
+    load_number(m_game_data.game_speed, statstring[3]);
+    load_number(m_game_data.game_state, statstring[4]);
+    load_number(m_game_data.game_type, statstring[5]);
+    // Skipping unused index 6
+    load_number(m_game_data.game_subtype, statstring[7]);
+    load_number(m_game_data.cdkey_hash, statstring[8]);
+    load_number(m_game_data.tileset, statstring[9]);
+    load_number(m_game_data.is_replay, statstring[10]);
+
+    if (!statstring[11].empty()) {
+        auto parts = statstring[11] | std::views::split('\r')
+            | std::views::transform([](auto range) { return std::string_view(range.begin(), range.end()); })
+            | std::ranges::to<std::vector>();
+
+        if (!parts.empty()) {
+            auto copy_len = std::min(parts[0].size(), sizeof(m_game_data.host_name) - 1);
+            safe_copy(m_game_data.host_name, parts[0]);
+        }
+        if (parts.size() > 1) {
+            auto copy_len = std::min(parts[1].size(), sizeof(m_game_data.map_title) - 1);
+            safe_copy(m_game_data.map_title, parts[1]);
+        }
+    }
+}
+
 std::filesystem::path get_starcraft_path() {
     wchar_t buffer[MAX_PATH] = {};
     GetModuleFileNameW(NULL, buffer, MAX_PATH);
@@ -1535,7 +1590,7 @@ void hide_dialog(BinDlg* dialog) {
     }
 }
 
-void enable_control(BinDlg* dialog) {
+void enable_dialog(BinDlg* dialog) {
     const u32 func_address = 0x00418E00;
     __asm {
         PUSHAD
@@ -4357,4 +4412,14 @@ f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable) {
 	return cost;
 }
 
+bool is_melee_game(u8 game_type, u8 game_subtype) {
+    if (!g_game_type_list) return false;
+
+    for (auto current_type = g_game_type_list; current_type; current_type = current_type->next) {
+        if (current_type->game_type == game_type && current_type->sub_type == game_subtype) {
+            return current_type->mode == GameTypeListMode::Melee;
+        }
+    }
+    return false;
+}
 } // namespace bw

@@ -1,10 +1,13 @@
 #pragma once
 #include "../definitions.h"
 #include "structures.h"
-#include "BWhelper.h"
 #include "bullet_extender.h"
 #include "hooks/limits/ccmu.h"
 #include "graphics\Font.h"
+
+#define NOMINMAX
+#include <windows.h> 
+
 #pragma pack(1)
 
 // Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
@@ -168,7 +171,7 @@ BW_REF(s32,			g_local_nation_id,			0x00512684);	// Actually stores the player ID
 BW_REF(s32,         g_local_human_id,           0x00512688);	// Invalid in replays, unique even in team games
 BW_DATA(u8*,		g_current_tileset,			0x00596828);	// Tileset of current map - compare with TilesetType::Enum
 BW_DATA(s32*,		g_provider_max_buffer,		0x0057F0D8);
-BW_DATA(u32*,		g_provider_latency_calls,	0x0057F090);
+BW_REF(u32,         g_provider_turns_in_transit,0x0057F090);
 BW_DATA(u32*,		g_command_queue_size,		0x00654AA0);
 BW_DATA(char*,		g_turn_buffer,				0x00654880);
 
@@ -200,19 +203,17 @@ BW_DATA(PingArray*,		minimap_ping_array,			0x0059C1B8); // 16
 // For race_dropdown
 BW_DATA(StringMap_b*,	single_race_select,				0x0051AAA0);
 BW_DATA(StringMap_w*,	single_type_select,				0x0051AAA8);
-BW_DATA(u16*,			g_network_table,				0x006D1220);
-BW_DATA(StringTbl*,		g_network_table_df,				0x006D1220);
+BW_REF(StringTbl,       g_network_table,				0x006D1220);
 
 // For init_singleplayer_custom
-BW_DATA(u32*,			g_selected_game_type,			0x0059BA64);
-BW_DATA(u16*,           g_selected_game_type_param,     0x0059BA5C);
-BW_DATA(char*,			g_selected_singleplayer_race,	0x0057F266);
-BW_ARRAY(u8, 9,   g_selected_singleplayer_races,  0x0057F266);
-BW_DATA(char*,			g_custom_singleplayer,			0x0057F1E3);
+BW_DATA(u32*,               g_selected_game_type,           0x0059BA64);
+BW_DATA(u16*,               g_selected_game_type_param,     0x0059BA5C);
+BW_ARRAY(RaceId::Enum, 8,   g_selected_races,               0x0057F266);
+BW_REF(bool,                g_custom_singleplayer,          0x0057F1E3);
 
 // For Lobotomy Mine
 BW_DATA(char**,			g_status_screen_info_button_unk,	0x00519F40);
-BW_DATA(GrpHead**,		g_cmdicons_grp,						0x0068C1E0);
+BW_REF(GrpHead*,        g_cmdicons_grp,                     0x0068C1E0);
 
 // For init_game_load
 BW_DATA(void*,			scenario_chk,				0x006D0F24);
@@ -225,7 +226,7 @@ BW_DATA(u32*,			g_initial_random_seed,		0x0051CA10);
 BW_DATA(u32*,			g_replay_random_seed,		0x006D0F38);
 BW_DATA(u32*,			g_random_counts,			0x0051C610); // count of 0x400
 BW_DATA(u32*,			g_total_random_counts,		0x0051CA18);
-BW_DATA(u16*,			campaign_index,				0x0057F244);
+BW_REF(u16, 			g_campaign_index,				0x0057F244);
 BW_DATA(void**,			map_archive_handle,			0x00596BC4);
 BW_DATA(GameData*,		game_data,					0x005967F8);
 BW_DATA(u8*,			map_started,				0x006D121C);
@@ -233,7 +234,7 @@ BW_DATA(u8*,			player_has_left,			0x00581D62); // array of 0x8
 BW_DATA(u8*,			loss_type,					0x00581D61);
 BW_DATA(u8*,			unk_victory_variable,		0x00581D66);
 BW_DATA(u32*,			save_load_success,			0x006D5A68);
-BW_DATA(u32*,			g_elapsed_time_modified,	0x006D5BCC);
+BW_REF(u32,             g_elapsed_time_modified,    0x006D5BCC);
 BW_DATA(u32*,			saved_elapsed_seconds,		0x0057F240);
 BW_DATA(Options*,		g_options_list,				0x006CDFD4);
 BW_DATA(ReplayData**,	g_replay_data,				0x00596BBC);
@@ -269,12 +270,12 @@ BW_DATA(u8*,				palette_index_ref,  0x006CEB20);
 BW_REF(u32,					g_selection_sound_counter,	0x00640548);
 BW_REF(u32,					g_last_random_sfx_id,		0x006D5BE0);
 
-// For load_race_ui
+// For load_race_grp_and_sounds
 BW_REF(u8,				g_console_index,				0x0057F1E2);
 BW_REF(u16,				g_current_music_id,				0x0057F1DE);
-BW_REF(char,			g_campaign_first_mission_bw,	0x005122C0);
-BW_REF(char,			g_campaign_first_mission,		0x005122BC);
-BW_REF(u32,				g_console_race_specific,		0x0051A3B4);
+BW_ARRAY(u8, 3,         g_campaign_first_mission_bw,	0x005122C0);
+BW_ARRAY(u8, 3,         g_campaign_first_mission,		0x005122BC);
+BW_REF(s32,				g_race_ui_music_offset,		0x0051A3B4);
 
 // For load_game_create
 BW_REF(u32,				g_is_host,					0x00596888);
@@ -336,7 +337,8 @@ BW_DATA(BufferStr*,		g_struct_char_2,			0x006CAB08);
 BW_DATA(char*,			g_unk_string_char,			0x006CA668);
 
 // For draw_wireframe_shield
-BW_DATA(char*,			g_char_buffer,				0x0068C208);
+BW_ARRAY(u8, 0x18,      g_wireframe_colors,         0x0068C208);
+
 BW_DATA(char*,			g_byte_shield_string,		0x0068C20A); // count of 22
 BW_DATA(u8*,			g_wireframe_constants,		0x00515280); // count of 40
 BW_DATA(char**,			g_image_draw_palette_index,	0x0050CEC1); // count of 256
@@ -368,14 +370,14 @@ BW_DATA(Unit**,		g_bullet_bounce_missile_target,	0x0064EED0);
 BW_DATA(Unit**,		g_bullet_bounce_missile_next,	0x0064EED4);
 
 // For start_game
-BW_DATA(s8*,		g_game_state,					0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
-BW_DATA(Player*,	g_player_replay_watchers,		0x00640970);
+BW_REF(s8,              g_game_state,               0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
+BW_ARRAY(Player, 12,    g_player_replay_watchers,   0x00640970);
 
-BW_DATA(s8*,		g_countdown_timer_interval,		0x0066FBFC);
-BW_DATA(s32*,		g_countdown_timer_tick_count,	0x0059CC7C);
-BW_DATA(s32*,		g_countdown_timer_tick_count_2,	0x0059CC88);
-BW_DATA(s32*,		g_is_in_game,					0x006D5BC8);
-BW_DATA(s32*,		g_countdown_time_remaining,		0x0059CC78);
+BW_REF(s8,          g_countdown_timer_interval,     0x0066FBFC);
+BW_REF(u32,         g_countdown_timer_tick_count,	0x0059CC7C);
+BW_REF(u32,         g_countdown_timer_tick_count_2,	0x0059CC88);
+BW_REF(b32,         g_is_in_game,                   0x006D5BC8);
+BW_REF(u32,         g_countdown_time_remaining,     0x0059CC78);
 
 // For air_splash
 BW_DATA(Unit**,		g_air_splash_list,				ccmu_extender.air_splash_list);
@@ -566,7 +568,7 @@ BW_DATA(char*,		text_bytes,					0x00641674); // sizeof 13
 BW_DATA(s32*,		unit_stat_update_timer,		0x00640B54);
 
 // For cmdact_game_speed
-BW_REF(s32,         last_control_index,         0x006D051C);
+BW_REF(s16,         last_control_index,         0x006D051C);
 BW_DATA(b32*,		cpu_throttle,				0x006D5C00);
 BW_DATA(b32*,		wants_redraw,				0x005968EC);
 BW_DATA(s32*,		temp_cpu_throttle,			0x00655C3C);
@@ -977,8 +979,7 @@ BW_DATA(u32**,			g_current_tiles,						0x006D0E84);
 
 // For draw_tooltip_with_icon
 BW_DATA(char*,			grp_stat_res_icon_mapping,		0x00515228); // sizeof 8
-BW_DATA(GrpHead*,		icons_grp,						0x0068C238); // This is wrong. -DF
-BW_DATA(GrpHead**,		g_icons_grp,					0x0068C238);
+BW_REF(GrpHead*,        g_icons_grp,                    0x0068C238);
 BW_DATA(Box16*,			tooltip_required_area,			0x006CE0D8);
 
 // For do_attack_notify_unit
@@ -999,7 +1000,7 @@ BW_DATA(u32*,			trig_kill_unit_count,			0x005971E0);
 BW_DATA(u8*,			g_order_id_ground,					0x00641691);
 BW_DATA(char*,			g_order_id_obstructed,				0x00641693);
 BW_DATA(char*,			g_order_id_unit,					0x00641692);
-BW_DATA(u16*,			g_buttonset_special_buttonset_id,	0x0068C1C8);
+BW_REF(s16,             g_buttonset_special_buttonset_id,   0x0068C1C8);
 
 // For select_multiple_units_from_unit_list
 BW_REF(char,	        g_client_selection_changed,			0x0059723C);
@@ -1053,7 +1054,7 @@ BW_DATA(u32*,			g_minimap_box_checksum,		0x0059C1A8);
 BW_DATA(u32*,			g_minimap_draw_neutrals,	0x005993AC);
 
 // For draw_train_progress
-BW_DATA(GrpHead**,		g_cmdbtns_handle,			0x0068C1C0);
+BW_REF(GrpHead*,		g_cmdbtns_grp,              0x0068C1C0);
 
 // For draw_all_minimap_boxes
 BW_DATA(Bitmap**,		g_current_surface,			0x006CF4A8);
@@ -1084,8 +1085,8 @@ BW_DATA(char*,			g_is_drag_selecting,				0x0066FF5C);
 BW_DATA(char**,			g_queues_buffers,					0x00519F40);
 
 // For adding implicit ESC to submenus
-BW_DATA(u32*,			g_active_portrait_buttonset_id,		0x0068C14C);
-BW_DATA(u32*,			g_current_buttonset_id,				0x0068C1C4);
+BW_REF(s16,             g_active_portrait_buttonset_id,     0x0068C14C);
+BW_REF(s16,             g_current_buttonset_id,             0x0068C1C4);
 
 // For request_military_to
 BW_DATA_REF(u32*,		g_ai_strength_air,					0x006BB210);
@@ -1129,8 +1130,8 @@ BW_DATA(void**,			g_repulse_handle,					0x006D5CD8);
 BW_DATA(u8*,			g_images_draw_if_cloaked,			0x00667718);
 
 // For buttonsets.cpp
-BW_DATA(BinDlg**,		g_buttonset_dialog,					0x0068C148);
-BW_DATA(u16*,			g_highlighted_icon,					0x0068C1BC);
+BW_REF(BinDlg*,         g_buttonset_dialog,                 0x0068C148);
+BW_REF(s16,             g_highlighted_icon,                 0x0068C1BC);
 BW_DATA(u8*,			g_buttonset_unit_order_id,			0x0068C1E4);
 BW_DATA(u8*,			g_buttonset_subunit_order_id,		0x0068C1B8);
 
@@ -1213,6 +1214,7 @@ BW_DATA(char**,				g_countdown_timer_strings,			0x0068C240);
 
 // For load_menu_glu_expcampaign
 BW_REF(u32,					g_gl_glues_mode,					0x006D11BC);
+BW_REF(b32,                 g_is_bnet,              0x0051c414);
 
 // For weapon_behavior_can_hit_target_check
 BW_DATA(u32*,				g_neutral_carapace_swarm,			0x005873F0);
@@ -1239,9 +1241,6 @@ BW_DATA(u32*,				g_is_broodwar,						0x006D11E4);
 
 typedef bool __fastcall glu_main_function(BinDlg*, DialogEvent*);
 BW_DATA(glu_main_function**, glu_main_functions, 0x0051A388);
-
-// For get_unit_portrait_override
-BW_DATA(u16*,				g_campaign_index,					0x0057F244);
 
 // For game_talking_portrait
 BW_REF(u32,					g_trigger_portrait_active,			0x0068AC4C);
@@ -1343,6 +1342,73 @@ BW_REF(CRITICAL_SECTION,    g_spi_critsec,          0x1505eba8);
 BW_REF(SPIFunctions*,       g_spi_functions,        0x1505e620);
 
 //-------- end storm.dll --------//
+
+BW_REF(BinDlg*, g_connect_bin, 0x006d5a24);
+
+// For bindlg_load_background_palette / dialog_swish_in
+BW_REF(DialogFadeInfo, g_dialog_fade_info, 0x006cef50);
+
+// For register_functions_and_background and change_menu
+BW_REF(u32, g_menu_alloc_counter, 0x0051c4b8);
+BW_REF(u8*, g_background_buffer, 0x0051c004);
+BW_REF(Point16, g_background_size, 0x0051c000);
+BW_REF(Palette, g_background_palette, 0x0051c008);
+BW_ARRAY(MenuBackground, 27, g_menu_backgrounds, 0x004ffad4);
+
+// For console_index override
+BW_REF(u8, g_console_nation_id, 0x0057f1b0);
+BW_ARRAY(RaceId::Enum, 8, g_race_array, 0x0057f1c0);
+
+// For sound loading override
+BW_REF(u32, g_sound_cooldown_1, 0x0064087c);
+BW_REF(u32, g_sound_cooldown_2, 0x00640878);
+BW_REF(b32, g_racial_sounds_loaded, 0x006d5bdc);
+
+BW_ARRAY(u16, 327, g_zerg_sounds, 0x006402b8);
+BW_ARRAY(u16, 413, g_terran_sounds, 0x0063ff78);
+BW_ARRAY(u16, 396, g_protoss_sounds, 0x00640550);
+
+BW_ARRAY(u16*, 3, g_racial_sound_arrays, 0x00513628);
+
+BW_REF(b32, g_low_memory, 0x006d0f10);
+BW_REF(b32, g_low_memory_load_graphic, 0x006d1210);
+
+// Calculated in console_find_vertical_bounds
+// Used for trimming the console image in FUN_004d114
+BW_REF(u32, g_console_first_content_row, 0x00596b6c);
+BW_REF(u32, g_console_last_content_row, 0x00596b74);
+BW_REF(SurfaceContext*, g_surface_list_head, 0x0051a338);
+BW_REF(Bitmap, g_console_image, 0x00597240);
+BW_REF(SurfaceContext*, g_console_surface, 0x00597238);
+
+// For load_statfluf_mouse_regions
+BW_ARRAY(MousePixelmaskRegion, 6, g_statfluf_mouse_regions_z, 0x005152a8);
+BW_ARRAY(MousePixelmaskRegion, 5, g_statfluf_mouse_regions_t, 0x00515300);
+BW_ARRAY(MousePixelmaskRegion, 4, g_statfluf_mouse_regions_p, 0x00515348);
+BW_ARRAY(MousePixelmaskRegion, 7, g_statfluf_mouse_regions_replay, 0x00515388);
+
+// For console loading functions
+BW_ARRAY(u8, 19, g_thpbar_colors, 0x0066fbe4);
+BW_REF(Bitmap, g_conover_image, 0x0068ac78);
+BW_REF(Bitmap, g_statdata_progressbar_empty, 0x006d5cbc);
+BW_REF(Bitmap, g_statdata_progressbar_full, 0x006d5cc4);
+BW_REF(Bitmap, g_cmdbuttons_progressbar_empty, 0x006d5cac);
+BW_REF(Bitmap, g_cmdbuttons_progressbar_full, 0x006d5cb4);
+BW_REF(BinDlg*, g_textbox_dialog, 0x0068c140);
+BW_REF(BinDlg*, g_statlb_dialog, 0x00597284);
+BW_REF(b32, g_show_statlb, 0x00597288);
+BW_REF(u8, g_statlb_unk, 0x0059728c);
+BW_REF(BinDlg*, g_statres_dialog, 0x0068c234);
+BW_REF(u32, g_statres_unused1, 0x0068c230);
+BW_REF(u32, g_statres_unused2, 0x0068c22c);
+BW_REF(GrpHead*, g_wirefram_grp, 0x0068c204);
+BW_REF(BinDlg*, g_stat_f10_dialog, 0x0068c224);
+BW_REF(u16, g_minimap_move_to_tile_y, 0x0059c19c);
+BW_REF(u16, g_minimap_move_to_tile_x, 0x0059cc70);
+BW_REF(GrpHead*, g_minimap_blink_grp, 0x0059c1ac);
+BW_ARRAY(u8, 0x98, g_minimap_tblink_colors, 0x0059cac0);
+
+BW_REF(MenuId::Enum, g_connect_next_menu, 0x005999bc);
 
 #undef BW_DATA
 #undef BW_DATA_REF

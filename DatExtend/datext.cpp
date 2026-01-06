@@ -36,7 +36,7 @@ namespace DatExt {
 
 	StringTbl* g_unit_names_tbl = nullptr;
 	GrpHead* g_unit_icons = nullptr;
-	GrpHead** const g_unit_cmdicons = g_cmdicons_grp; // default value
+	GrpHead** const g_unit_cmdicons = &g_cmdicons_grp; // default value
 
 	bool set_dat_size(DatLoad* dat_table_ptr, u32 size) {
 		void* new_mem = nullptr;
@@ -155,7 +155,7 @@ namespace DatExt {
 	void extend_data() {
 		for (u32 i = 0; i < DatFile::COUNT; ++i) {
 			if (!set_dat_size((DatLoad*)datFiles[i].datTablePtr, datFiles[i].newLimit * datFiles[i].entrySize)) {
-				helper::syswarn_file_not_found(24, (char*)datFiles[i].name); // invalid file
+				helper::fatal_file_not_found(24, (char*)datFiles[i].name); // invalid file
 			}
 		}
 	}
