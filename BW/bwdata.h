@@ -4,6 +4,8 @@
 #include "bullet_extender.h"
 #include "hooks/limits/ccmu.h"
 #include "graphics\Font.h"
+#include "BW/structures/Player.h"
+#include "BW/structures.h"
 
 #define NOMINMAX
 #include <windows.h> 

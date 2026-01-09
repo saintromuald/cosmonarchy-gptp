@@ -1,4 +1,7 @@
 #include "game_hooks.h"
+
+#include <magic_enum/magic_enum.hpp>
+
 #include <graphics/graphics.h>
 #include <BW/api.h>
 #include <BW/ExtendSightLimit.h>
@@ -17,7 +20,6 @@
 #include "logger.h"
 #include "limits/sfx_extender.h"
 #include "hooks/weapons/weapon_spellhit.h"
-#include "globals.h"
 #include "unit_search.h"
 #include "player_color.h"
 #include "unit_ai.h"
@@ -36,16 +38,12 @@
 #include "hooks/interface/buttonsets.h"
 #include "weapons/weapon_fire.h"
 #include "harvest.h"
-#include "hooks/weapons/weapon_cooldown.h"
 #include <time.h>
-#include "trigger_system/trigger_system.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "selection_extender.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
-#include "hooks/weapons/weapon_damage.h"
 #include "hooks/update_unit_sight.h"
 #include "hooks/orders/larva_creep_spawn.h"
-#include "hooks/interface/uifeatures/hotkeys.h"
 #include "Discord.h"
 #include "hooks/rally_point.h"
 #include "GameModes/IGameMode.h"
@@ -56,6 +54,7 @@
 #include "Game.h"
 #include "trigger_system/trigger_sound.h"
 #include "NewGameCommand.h"
+#include "hooks/race_randomization.h"
 
 #include <random>
 #include <format>
@@ -730,6 +729,15 @@ namespace hooks {
                     command.player = i;
                     command.faction = get_random_faction(static_cast<RaceId::Enum>(g_player_table[i].race));
                     helper::queue_game_command((u8*)&command, sizeof(command));
+                }
+            } break;
+            case GameKind::Ranked: {
+                auto& randomizer = RaceRandomizer::instance();
+                for (const auto& player : randomizer.randomized_players()) {
+                    auto race_color = get_race_textcolor(static_cast<RaceId::Enum>(player.race));
+                    const auto race_name = magic_enum::enum_name(static_cast<RaceId::Enum>(player.race));
+                    const auto player_name = player.name[0] ? player.name : "CPU";
+                    bw::println(TextColor::White, "\t{} was assigned {}{}", player_name, race_color, race_name);
                 }
             } break;
         }

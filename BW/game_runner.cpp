@@ -1,4 +1,5 @@
 #include "game_runner.h"
+#include "hooks/race_randomization.h"
 
 GameRunner::Result GameRunner::create_singleplayer_game(const char* map_path, u16 game_type = GameType::Unranked, u16 game_subtype = 1) {
     if (!g_player_name) return Result::PlayerNameNotSet;
@@ -26,7 +27,8 @@ GameRunner::Result GameRunner::create_singleplayer_game(const char* map_path, u1
                 g_player_table[i].type = m_player_slots[i].type;
             }
         }
-        helper::randomize_player_slot();
+        auto& randomizer = RaceRandomizer::instance();
+        randomizer.process_randomization(std::span<Player>(g_player_table).first<8>());
     } else {
         g_custom_singleplayer = true;
         for (auto i = 1; i < 8; i++) {

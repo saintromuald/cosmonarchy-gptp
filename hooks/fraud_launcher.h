@@ -35,5 +35,8 @@ void example_create_singleplayer();
 void example_create_lobby();
 void example_join_lobby();
 
-
 inline FraudLauncherClient fraud_launcher{};
+
+namespace hooks {
+void inject_menu_hooks();
+}

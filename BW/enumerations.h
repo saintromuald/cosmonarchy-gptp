@@ -1,6 +1,7 @@
 #pragma once
 #pragma warning( disable: 4482 )
 
+#include "types.h"
 #include "enumerations/UnitId.h"
 #include "enumerations/WeaponId.h"
 #include "enumerations/UpgradeId.h"
@@ -193,6 +194,56 @@ enum Enum {
 };
 }
 
+// For use with bw::print()
+enum class TextColor : u8 {
+    Revert = 0x01,
+    Grey = 0x02,
+    Yellow = 0x03,
+    White = 0x04,
+    DarkGrey = 0x05,
+    Red = 0x06,
+    Green = 0x07,
+    Invisible = 0x08,
+    Tab = 0x09,
+    Newline = 0x0A,
+    Unknown = 0x0B,
+    Newline2 = 0x0C,
+    Invisible2 = 0x0D,
+    AlignRight = 0x12,
+    AlignCenter = 0x13,
+    TextGone = 0x14,
+    RiverBlue = 0x0E,
+    Teal = 0x0F,
+    Purple = 0x10,
+    Orange = 0x11,
+    Brown = 0x15,
+    LightGrey = 0x16,
+    Yellow2 = 0x17,
+    DarkGreen = 0x18,
+    Yellow3 = 0x19,
+    Yellow4 = 0x1A,
+    Navy = 0x1C,
+    ArmyGreen = 0x1D,
+    Grey2 = 0x1E,
+    Teal2 = 0x1F,
+    AlignCenter2 = 0x13,
+    TextGone2 = 0x14,
+};
+
+enum class LobbyTextColor : u8 {
+    Revert = 0x01,
+    Blue = 0x02,
+    Green = 0x03,
+    YellowGreen = 0x04,
+    Grey = 0x05,
+    White = 0x06,
+    Red = 0x07,
+    Black = 0x08,
+    Tab = 0x09,
+    AlignRight = 0x18,
+    AlignCenter = 0x19,
+};
+
 namespace RaceId {
 enum Enum : u8 {
     Zerg       = 0,
@@ -210,14 +261,24 @@ enum Enum : u8 {
 };
 }
 
-constexpr std::optional<char> get_race_initial(RaceId::Enum race) {
+inline std::optional<char> get_race_initial(RaceId::Enum race) {
     switch (race) {
-    case RaceId::Zerg:    return 'z';
-    case RaceId::Terran:  return 't';
-    case RaceId::Protoss: return 'p';
-    case RaceId::Askosi:  return 'a';
+        case RaceId::Zerg:    return 'z';
+        case RaceId::Terran:  return 't';
+        case RaceId::Protoss: return 'p';
+        case RaceId::Askosi:  return 'a';
     }
     return {};
+}
+
+inline TextColor get_race_textcolor(RaceId::Enum race) {
+    switch (race) {
+        case RaceId::Zerg:    return TextColor::Red;
+        case RaceId::Terran:  return TextColor::RiverBlue;
+        case RaceId::Protoss: return TextColor::Yellow;
+        case RaceId::Askosi:  return TextColor::DarkGreen;
+    }
+    return TextColor::White;
 }
 
 namespace PlayerType {
@@ -329,56 +390,6 @@ enum Enum {
     Enabled   = 1
 };
 }
-
-// For use with bw::print()
-enum class TextColor : u8 {
-    Revert       = 0x01,
-    Grey         = 0x02,
-    Yellow       = 0x03,
-    White        = 0x04,
-    DarkGrey     = 0x05,
-    Red          = 0x06,
-    Green        = 0x07,
-    Invisible    = 0x08,
-    Tab          = 0x09,
-    Newline      = 0x0A,
-    Unknown      = 0x0B,
-    Newline2     = 0x0C,
-    Invisible2   = 0x0D,
-    AlignRight   = 0x12,
-    AlignCenter  = 0x13,
-    TextGone     = 0x14,
-    RiverBlue    = 0x0E,
-    Teal         = 0x0F,
-    Purple       = 0x10,
-    Orange       = 0x11,
-    Brown        = 0x15,
-    LightGrey    = 0x16,
-    Yellow2      = 0x17,
-    DarkGreen    = 0x18,
-    Yellow3      = 0x19,
-    Yellow4      = 0x1A,
-    Navy         = 0x1C,
-    ArmyGreen    = 0x1D,
-    Grey2        = 0x1E,
-    Teal2        = 0x1F,
-    AlignCenter2 = 0x13,
-    TextGone2    = 0x14,
-};
-
-enum class LobbyTextColor : u8{
-    Revert      = 0x01,
-    Blue        = 0x02,
-    Green       = 0x03,
-    YellowGreen = 0x04,
-    Grey        = 0x05,
-    White       = 0x06,
-    Red         = 0x07,
-    Black       = 0x08,
-    Tab         = 0x09,
-    AlignRight  = 0x18,
-    AlignCenter = 0x19,
-};
 
 // For use with bw::play_iscript_animation()
 namespace IscriptAnimation {
