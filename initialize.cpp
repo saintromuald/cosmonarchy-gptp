@@ -129,6 +129,7 @@
 #include "BW/game_runner.h"
 #include "hooks/fraud_launcher.h"
 #include "hooks/interface/console.h"
+#include "hooks/race_randomization.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -905,8 +906,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_tbl_extender();
 
     hooks::inject_menu_hooks();
-
     hooks::inject_console_hooks();
+    hooks::inject_randomization_hooks();
 
 	return TRUE;
 }

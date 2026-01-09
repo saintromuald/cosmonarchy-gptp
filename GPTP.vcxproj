@@ -264,6 +264,8 @@
     <ClCompile Include="hooks\loading_hook_inject.cpp" />
     <ClCompile Include="hooks\orders\orders_root.cpp" />
     <ClCompile Include="hooks\orders\orders_root_inject.cpp" />
+    <ClCompile Include="hooks\race_randomization.cpp" />
+    <ClCompile Include="hooks\race_randomization_inject.cpp" />
     <ClCompile Include="hooks\replay_hooks.cpp" />
     <ClCompile Include="hooks\replay_hooks_inject.cpp" />
     <ClCompile Include="hooks\update_unit_sight.cpp" />
@@ -651,6 +653,7 @@
     <ClInclude Include="hooks\loading_hook.h" />
     <ClInclude Include="hooks\orders\orders_root.h" />
     <ClInclude Include="DatExtend\dat_limits.h" />
+    <ClInclude Include="hooks\race_randomization.h" />
     <ClInclude Include="hooks\replay_hooks.h" />
     <ClInclude Include="hooks\update_unit_sight.h" />
     <ClInclude Include="include\json.hpp" />

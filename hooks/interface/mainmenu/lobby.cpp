@@ -3,6 +3,7 @@
 #include <BW/structures.h>
 #include <BW/bwdata.h>
 #include "time.h"
+#include "hooks/race_randomization.h"
 
 namespace hooks {
 	bool init_game() { // 004EE110
@@ -120,12 +121,14 @@ namespace hooks {
 			if (player_race_combo->ComboBox0x46.item_count && selection_index != -1) {
 				g_player_table[g_local_nation_id].race = (RaceId::Enum)player_race_combo->combobox_output_array_u32[selection_index];
 				g_is_in_game_loop = 1;
-				helper::randomize_player_slot();
+				auto& randomizer = RaceRandomizer::instance();
+				randomizer.process_randomization(std::span<Player>(g_player_table).first<8>());
 				g_is_in_game_loop = 0;
 			} else {
 				g_player_table[g_local_nation_id].race = RaceId::Random;
 				g_is_in_game_loop = 1;
-				helper::randomize_player_slot();
+				auto& randomizer = RaceRandomizer::instance();
+				randomizer.process_randomization(std::span<Player>(g_player_table).first<8>());
 				g_is_in_game_loop = 0;
 			}
 		}
