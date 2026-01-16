@@ -841,7 +841,7 @@ namespace hooks
 		BinDlg* main_dlg = 0;
 		if (gamedata_dlg) {
 			gamedata_dlg->flags |= BinDlgFlags::Active;
-			helper::alloc_init_dialog_data(gamedata_dlg, helper::alloc_background_image, "Starcraft\\SWAR\\lang\\title.cpp", 190);
+			helper::fixup_and_init_dialog_data(gamedata_dlg, helper::alloc_background_image, "Starcraft\\SWAR\\lang\\title.cpp", 190);
 			main_dlg = gamedata_dlg;
 		}
 		*g_main_dlg = main_dlg;
@@ -871,19 +871,19 @@ namespace hooks
 		int height = GetSystemMetrics(SM_CYSCREEN);
 		int width = GetSystemMetrics(SM_CXSCREEN);
 		HWND hwnd = CreateWindowExA(0, "SWarClass", "Cosmonarchy", 0x90080000, 0, 0, width, height, NULL, NULL, instance, NULL);
-		*g_main_window = hwnd;
+		g_main_window = hwnd;
 		if (!hwnd) {
 			helper::fatal_error((char*)"CreateWindowEx");
-			hwnd = *g_main_window;
+			hwnd = g_main_window;
 		}
 		UpdateWindow(hwnd);
-		SetFocus(*g_main_window);
+		SetFocus(g_main_window);
 		SetCursor(NULL);
 		if (GetUserDefaultLangID() == 0x412) {
 			if (!*g_app_context) {
-				*g_app_context = helper::ImmGetContextBW(*g_main_window);
+				*g_app_context = helper::ImmGetContextBW(g_main_window);
 			}
-			*g_app_context = helper::ImmAssociateContextBW(*g_main_window, 0);
+			*g_app_context = helper::ImmAssociateContextBW(g_main_window, 0);
 		}
 	}
 

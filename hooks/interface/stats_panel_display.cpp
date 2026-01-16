@@ -1,13 +1,28 @@
 #include "stats_panel_display.h"
-#include <BW/api.h>
+
+#include "BW/api.h"
 #include "BW/stat_txt_spec.h"
 #include "hooks/interface/buttonsets.h"
 #include "trigger_system/trigger_system.h"
 #include "DatExtend/datext.h"
 #include "player_color.h"
-
+#include "BW/structures/Unit.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
+#include "hooks/interface/console/console.h"
+
+#include <ranges>
+
+static const auto resource_tooltip_definitions = std::to_array<tooltip_resource_cost>({
+    {tooltip_resource::Minerals, tooltip_ore_cost, &g_console_icons.mineral(), 0, true},
+    {tooltip_resource::Gas, tooltip_gas_cost, &g_console_icons.gas(), 0, true},
+    {tooltip_resource::Energy, tooltip_energy_cost, &g_console_icons.general(), 9, false},
+    {tooltip_resource::Unused, tooltip_unused_cost, &g_console_icons.general(), 8, false},
+    {tooltip_resource::BuildTime, tooltip_time_cost, &g_console_icons.general(), 7, false},
+    {tooltip_resource::PSupply, tooltip_p_supply_cost, &g_console_icons.supply(), 0, true},
+    {tooltip_resource::TSupply, tooltip_t_supply_cost, &g_console_icons.supply(), 0, true},
+    {tooltip_resource::ZSupply, tooltip_z_supply_cost, &g_console_icons.supply(), 0, true},
+});
 
 u16 __fastcall get_stat_icon_graphic(u8 value) {
     u8 frame = 13; // 2nd stat icon frame in unit\cmdbtns\?cmdbtns.grp
@@ -625,55 +640,41 @@ namespace hooks {
         *tooltip_z_supply_cost = z_supply;
     }
 
-    // 00458EF0 - Hooked to add time costs to tooltip info. -Pr0nogo
+    // 00458EF0 - Hooked to use new icon grps -Jesse
     void draw_tooltip_with_icon(Box16* area) {
-        bool did_draw = false;
-        u32 max_x = 2;
-        FxnDrawIconData data = {};
-        for (u32 i = 0; i < 8; ++i) {
-            u16 value = tooltip_ore_cost[i];
-            if (value) {
-                u8 stat_icon = grp_stat_res_icon_mapping[i];
-                if (stat_icon == 1) {
-                    stat_icon = g_console_index + 1;
-                }
-                if (stat_icon >= g_icons_grp->frame_count) {
-                    stat_icon = 0;
-                }
-                u16 width = g_icons_grp->frames[stat_icon].w;
-                u16 height = g_icons_grp->frames[stat_icon].h;
-                s32 icon_index = g_icons_grp->frames[stat_icon].data_offset;
-                if (icon_index < 0) {
-                    icon_index &= 0x7FFFFFFFu;
-                    height += 256;
-                }
+        const u32 space_width = 2;
+        s16 max_x = space_width;
+        s16 max_height = 0;
 
-                Bounds bounds = {};
-                bounds.x = 0;
-                bounds.y = 0;
-                bounds.w = width - 1;
-                bounds.h = height - 1;
-                bounds.width = width;
-                bounds.height = height;
+        auto has_value = [](const auto& r) { return *r.value; };
+        for (const auto& resource : resource_tooltip_definitions | std::ranges::views::filter(has_value)) {
+            auto index = resource.use_race_offset
+                ? resource.index + race_icon_offset(static_cast<RaceId::Enum>(g_console_index))
+                : resource.index;
 
-                data.w = width;
-                data.h = height;
-                data.stat_icon = &g_icons_grp[icon_index];
-                helper::bw_print_icon(&bounds, &data, max_x, area->h);
+            if (index >= resource.grp->frame_count()) index = 0;
 
-                char text_buffer[16] = {};
-                sprintf_s(text_buffer, 16, "%d", value);
-                helper::bw_print_xy(text_buffer, width + max_x + 2, area->h);
-
-                did_draw = true;
-                max_x = tooltip_required_area->w;
+            auto& current_frame = resource.grp->frame_headers()[index];
+            s16 width = current_frame.w;
+            s16 height = current_frame.h;
+            if (current_frame.data_offset < 0) {
+                current_frame.data_offset &= 0x7FFFFFFF;
+                width += 256;
             }
+
+            Bounds bounds{0, 0, width, height, width, height};
+            FxnDrawIconData data{width, height, resource.grp->get_frame_pixel_data(index)};
+            helper::bw_print_icon(&bounds, &data, max_x, area->bottom);
+            helper::bw_print_xy(std::format("{}", *resource.value).c_str(),
+                width + max_x + space_width, area->bottom);
+
+            max_height = std::max(max_height, height);
+            max_x = tooltip_required_area->right;
         }
-        if (did_draw) {
-            if (max_x > area->right) {
-                area->right = max_x;
-            }
-            area->bottom += data.h + 1;
+
+        if (max_x > space_width) {
+            area->right = std::max(area->right, max_x);
+            area->bottom += max_height + 1;
         }
     }
 

@@ -6462,7 +6462,7 @@ namespace helper {
     }
 
     // Enure matching clear_callback_timer is called in dlgproc destroy function
-    void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, u32 callback) {
+    void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, TimerCallback callback) {
         const u32 func_address = 0x00416090;
         __asm {
             PUSHAD
@@ -7720,7 +7720,7 @@ namespace helper {
         return result;
     }
 
-    // For stat_res_main_proc
+    // For stat_res_timer_proc
     /*void show_supply_info(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB) {
         const u32 Func_showSupplyInfo = 0x004E53B0;
         s32 graphic_xd = graphic;
@@ -13568,7 +13568,7 @@ namespace helper {
         }
     }
 
-    void alloc_init_dialog_data(BinDlg* dialog, void (__fastcall* function)(const char*, Bitmap*, Palette*, const char*, u32), const char* log_filename, u32 log_line) {
+    void fixup_and_init_dialog_data(BinDlg* dialog, void (__fastcall* function)(const char*, Bitmap*, Palette*, const char*, u32), const char* log_filename, u32 log_line) {
         const u32 func_address = 0x004194E0;
         __asm {
             PUSHAD
@@ -16050,6 +16050,187 @@ namespace helper {
         __asm {
             PUSHAD
             MOV EAX, sounds_array
+            CALL func_address
+            POPAD
+        }
+    }
+
+    bool initialize_bnet(u32 provider_id) {
+        const u32 func_address = 0x00452a30;
+        static b32 result;
+        __asm {
+            PUSHAD
+            MOV EAX, provider_id
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    graphics::Font* load_font(const char* font_name) {
+        const u32 load_font = 0x0041FD10;
+        const u32 allocate_font = 0x004DAB00;
+        static graphics::Font* result;
+        __asm {
+            PUSHAD
+            PUSH allocate_font
+            MOV EAX, font_name
+            CALL load_font
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    void process_player_presence(const Command_PlayerPresence* command, u32 sender) {
+        const u32 func_address = 0x004713e0;
+        __asm {
+            PUSHAD
+            PUSH sender
+            MOV EDX, command
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void process_join_force_request(const Command_JoinForce* command, u32 sender) {
+        const u32 func_address = 0x00471750;
+        __asm {
+            PUSHAD
+            PUSH sender
+            MOV ECX, command
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void process_slot_state_command(const Command_SetSlotState* command, u32 sender) {
+        const u32 func_address = 0x00471570;
+        __asm {
+            PUSHAD
+            PUSH sender
+            MOV EBX, command
+            CALL func_address
+            POPAD
+        }
+    }
+    void process_update_force_command(const Command_UpdatePlayerForce* command, u32 sender) {
+        const u32 func_address = 0x00471860;
+        __asm {
+            PUSHAD
+            PUSH sender
+            MOV EBX, command
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void process_start_game_sync(const Command_StartGameSync* command, u32 sender) {
+        const u32 func_address = 0x00472110;
+        __asm {
+            PUSHAD
+            MOV EAX, sender
+            MOV EDX, command
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void update_nation_array(u32 player_id) {
+        const u32 func_address = 0x004a8d40;
+        __asm {
+            PUSHAD
+            MOV ESI, player_id
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void reject_and_disconnect(u32 player_id, u8 reason) {
+        const u32 func_address = 0x00470480;
+        __asm {
+            PUSHAD
+            MOV ESI, player_id
+            MOV AL, reason
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void lobby_recv_original(u32 command_size, u32 sender, void* command_buffer) {
+        const u32 func_address = 0x00486040;
+        __asm {
+            PUSHAD
+            PUSH sender
+            PUSH command_size
+            MOV EAX, command_buffer
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void glu_chat_update_control_visibility(BinDlg* dialog, b32 hide_controls, b32 show_ok_button) {
+        const u32 func_address = 0x004b89f0;
+        __asm {
+            PUSHAD
+            PUSH show_ok_button
+            MOV EBX, hide_controls
+            MOV EDI, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    u32 glu_chat_dlgproc_activate(BinDlg* dialog) {
+        const u32 func_address = 0x004b9910;
+        u32 last_control = last_control_index;
+        static b32 result;
+        __asm {
+            PUSHAD
+            MOV ECX, dialog
+            MOV EAX, last_control
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+    }
+
+    void glu_chat_prep_labels(BinDlg* dialog) {
+        const u32 func_address = 0x004b9770;
+        __asm {
+            PUSHAD
+            MOV EDI, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void glu_chat_dlgproc_destroy(BinDlg* dialog) {
+        const u32 func_address = 0x004b8d70;
+        __asm {
+            PUSHAD
+            MOV EAX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void glu_chat_map_preview_destroy(BinDlg* dialog) {
+        const u32 func_address = 0x004b8d90;
+        __asm {
+            PUSHAD
+            MOV EDI, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void glu_chat_update_password_field(BinDlg* dialog) {
+        const u32 func_address = 0x004b8c80;
+        __asm {
+            PUSHAD
+            MOV EAX, dialog
             CALL func_address
             POPAD
         }

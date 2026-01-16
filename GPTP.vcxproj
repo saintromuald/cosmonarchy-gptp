@@ -112,7 +112,7 @@
       <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
@@ -153,7 +153,7 @@
       <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
@@ -196,7 +196,7 @@
       <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dsound.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
@@ -252,7 +252,15 @@
     <ClCompile Include="hooks\DatExtend\dat_load_inject.cpp" />
     <ClCompile Include="hooks\grafting\grafting.cpp" />
     <ClCompile Include="hooks\grafting\grafting_inject.cpp" />
+    <ClCompile Include="hooks\interface\console\statres.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\custom_glues.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\custom_glues_inject.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_chat.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_connection.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_join.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glu_join_crownlink.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_login.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_main.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glu_options.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glu_singleplayer.cpp" />
     <ClCompile Include="hooks\interface\minimap.cpp" />
@@ -262,12 +270,15 @@
     <ClCompile Include="hooks\limits\sfx_extender_inject.cpp" />
     <ClCompile Include="hooks\loading_hook.cpp" />
     <ClCompile Include="hooks\loading_hook_inject.cpp" />
+    <ClCompile Include="hooks\lobby_command_receive.cpp" />
+    <ClCompile Include="hooks\lobby_command_receive_inject.cpp" />
     <ClCompile Include="hooks\orders\orders_root.cpp" />
     <ClCompile Include="hooks\orders\orders_root_inject.cpp" />
     <ClCompile Include="hooks\race_randomization.cpp" />
     <ClCompile Include="hooks\race_randomization_inject.cpp" />
     <ClCompile Include="hooks\replay_hooks.cpp" />
     <ClCompile Include="hooks\replay_hooks_inject.cpp" />
+    <ClCompile Include="hooks\snp_inject.cpp" />
     <ClCompile Include="hooks\update_unit_sight.cpp" />
     <ClCompile Include="hooks\update_unit_sight_inject.cpp" />
     <ClCompile Include="BW\extender\iscript_extender.cpp" />
@@ -275,7 +286,7 @@
     <ClCompile Include="hooks\fraud_launcher_inject.cpp" />
     <ClCompile Include="hooks\fraud_launcher.cpp" />
     <CLCompile Include="BW\characters.cpp" />
-    <CLCompile Include="snp.cpp" />
+    <CLCompile Include="hooks/snp.cpp" />
     <ClCompile Include="maths.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -321,8 +332,8 @@
     <ClCompile Include="hooks\limits\extender.cpp" />
     <ClCompile Include="hooks\game\creategame.cpp" />
     <ClCompile Include="hooks\game\creategame_inject.cpp" />
-    <ClCompile Include="hooks\interface\console.cpp" />
-    <ClCompile Include="hooks\interface\console_inject.cpp" />
+    <ClCompile Include="hooks\interface\console\console.cpp" />
+    <ClCompile Include="hooks\interface\console\console_inject.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glucustom.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glucustom_inject.cpp" />
     <ClCompile Include="hooks\limits\extender_inject.cpp" />
@@ -644,13 +655,14 @@
     <ClInclude Include="hooks\fraud_launcher.h" />
     <ClInclude Include="hooks\grafting\button_functions.h" />
     <ClInclude Include="hooks\grafting\grafting.h" />
+    <ClInclude Include="hooks\interface\console\icon_manager.h" />
+    <ClInclude Include="hooks\interface\mainmenu\custom_glues.h" />
     <ClInclude Include="hooks\interface\mainmenu\glu_join_crownlink.h" />
-    <ClInclude Include="hooks\interface\mainmenu\glu_options.h" />
-    <ClInclude Include="hooks\interface\mainmenu\glu_singleplayer.h" />
     <ClInclude Include="hooks\interface\minimap.h" />
     <ClInclude Include="hooks\interface\uifeatures\hotkeys.h" />
     <ClInclude Include="hooks\limits\sfx_extender.h" />
     <ClInclude Include="hooks\loading_hook.h" />
+    <ClInclude Include="hooks\lobby_command_receive.h" />
     <ClInclude Include="hooks\orders\orders_root.h" />
     <ClInclude Include="DatExtend\dat_limits.h" />
     <ClInclude Include="hooks\race_randomization.h" />
@@ -658,7 +670,7 @@
     <ClInclude Include="hooks\update_unit_sight.h" />
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="main_menu.h" />
-    <ClInclude Include="snp.h" />
+    <ClInclude Include="hooks/snp.h" />
     <ClInclude Include="_vendor\magic_enum\magic_enum.hpp" />
     <ClInclude Include="_vendor\magic_enum\magic_enum_all.hpp" />
     <ClInclude Include="_vendor\magic_enum\magic_enum_containers.hpp" />
@@ -750,7 +762,7 @@
     <ClInclude Include="hooks\limits\extender.h" />
     <ClInclude Include="hooks\economic_units.h" />
     <ClInclude Include="hooks\game\creategame.h" />
-    <ClInclude Include="hooks\interface\console.h" />
+    <ClInclude Include="hooks\interface\console\console.h" />
     <ClInclude Include="hooks\interface\mainmenu\glucustom.h" />
     <ClInclude Include="hooks\limits\tbl_extender.h" />
     <ClInclude Include="hooks\maxhp.h" />

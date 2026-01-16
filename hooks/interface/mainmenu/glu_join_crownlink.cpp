@@ -1,6 +1,5 @@
-#include "glu_join_crownlink.h"
-
-#include "snp.h"
+#include "custom_glues.h"
+#include "hooks/snp.h"
 #include "BW/game_runner.h"
 #include "BW/enumerations.h"
 #include "magic_enum/magic_enum.hpp"
@@ -12,7 +11,7 @@ constexpr u16 timer_index = 0x2d;
 constexpr u32 timer_duration = 500;
 constexpr u32 password_max_length = 50;
 
-u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogEvent* event) {
+static u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogEvent* event) {
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
         case DialogUserType_Create: {
@@ -49,7 +48,7 @@ u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogEvent* e
     return helper::generic_listbox_interact(dialog, event);
 }
 
-u32 __fastcall dlgproc_glu_join_crownlink(BinDlg* dialog, DialogEvent* event) {
+static u32 __fastcall dlgproc_glu_join_crownlink(BinDlg* dialog, DialogEvent* event) {
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
         case DialogUserType_Create: {
@@ -270,8 +269,13 @@ void GluJoinCrownlinkContext::on_init_children(BinDlg* dialog, DialogEvent* even
     bindlg_load_interaction_functions(dialog, interaction_functions);
 }
 
-namespace hooks {
 void glu_join_crownlink() {
+    g_gl_glues_mode = MenuId::GlueGameSel;
+    g_glue_background_id = -1;
+    change_menu();
+
+    if (!g_music_playing) helper::dialog_music_fade(MusicId::MusicId_Title);
+
     g_is_in_replay = false;
     if (scenario_chk) {
         SMemFree(scenario_chk, __FILE__, __LINE__, 0);
@@ -291,12 +295,16 @@ void glu_join_crownlink() {
     case GluJoinControls::Create: {
         g_gl_glues_mode = MenuId::GlueCreate;
     } break;
+    case GluJoinControls::OtherProviders: {
+        helper::glu_login_leave_game();
+        g_gl_glues_mode = MenuId::GlueProviderSelectCrownlink;
+    } break;
     default: {
         g_gl_glues_mode = MenuId::GlueMainMenu;
     }
     }
+    g_glue_background_id = -1;
     change_menu();
 
     context.reset();
 }
-} // namespace hooks

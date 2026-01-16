@@ -3,28 +3,6 @@
 
 namespace
 {
-	void __declspec(naked) InitializeDialogWrapper()
-	{
-		static BinDlg* dialog;
-		static void* dlgFunc;
-		__asm
-		{
-			PUSH EBP
-			MOV EBP, ESP
-			MOV dialog, ESI
-			MOV dlgFunc, EAX
-			PUSHAD
-		}
-		hooks::initialize_dialog(dialog, dlgFunc);
-		__asm
-		{
-			POPAD
-			MOV ESP, EBP
-			POP EBP
-			RETN
-		}
-	}
-
 	void __declspec(naked) unit_IsStandardAndMovableWrapper()
 	{
 		static Unit* unit;
@@ -68,7 +46,6 @@ namespace hooks
 {
 	void inject_utils_hooks()
 	{
-		//jump_patch(InitializeDialogWrapper,				0x00419D20, 1);
 		jump_patch(unit_IsStandardAndMovableWrapper,		0x0047B770, 2);
 		//jump_patch(getActivePlayerFirstSelectionWrapper,	0x0049A850, 2);
 	}

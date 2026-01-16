@@ -34,6 +34,7 @@ typedef unsigned int		UINT;
 #endif
 
 #include <xmmintrin.h>
+#include <pmmintrin.h>
 #include <float.h>
 
 // Must be called on all game simulation threads for floats to not desync -Veeq7

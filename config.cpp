@@ -69,6 +69,8 @@ void load_config() {
     }
 
     YAML::Node yaml = YAML::LoadFile(g_config_path.string());
+    // Random settings
+    load_field(yaml, "random-races", g_config.random_races);
 
     // Launch settings
     load_field(yaml, "disable-wmode-prompt", g_config.disable_wmode_prompt);
@@ -195,6 +197,13 @@ void save_config() {
 
     yaml << YAML::Comment("Cosmonarchy config");
     yaml << YAML::Newline << YAML::Newline;
+    
+    yaml << YAML::Comment("Random settings");
+    yaml << YAML::Newline << YAML::Comment("Possible values: Zerg, Terran, Protoss, Askosi, All, Original");
+    yaml << YAML::Newline << YAML::Comment("You must select at least two values or All will be used");
+    write_field(yaml, "random-races", g_config.random_races);
+    yaml << YAML::Newline << YAML::Newline;
+
     yaml << YAML::Comment("Launch settings");
     write_field(yaml, "disable-wmode-prompt", g_config.disable_wmode_prompt);
     write_field(yaml, "prefer-wmode", g_config.prefer_wmode);

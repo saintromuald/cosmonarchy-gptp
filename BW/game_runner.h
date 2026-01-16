@@ -5,7 +5,7 @@
 #include "characters.h"
 #include "logger.h"
 #include "api.h"
-#include <snp.h>
+#include <hooks/snp.h>
 #include <thread>
 #include <type_traits>
 #include <ranges>

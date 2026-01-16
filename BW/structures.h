@@ -4,6 +4,7 @@
 
 #pragma once
 #include "types.h"
+#include <span>
 
 // New extender limits
 #define UnitLimit 4095
@@ -139,14 +140,14 @@ struct StringMap_w {
 };
 
 struct DialogEvent {
-    u32		user;                   // 0x0
-    u16		param;                  // 0x4
-    u16		field_6;			    // 0x6
-    u16		virtual_key;		    // 0x8
-    u16		virtual_key_modifier;   // 0xA
-    u16		number_order;		    // 0xC
-    Point16	current;			    // 0xE
-    u16		field_12;			    // 0x12
+    DialogUserType  user;                   // 0x0
+    u16             param;                  // 0x4 // param may be u32 - Jesse
+    u16             field_6;                // 0x6 
+    u16             virtual_key;            // 0x8
+    u16             virtual_key_modifier;   // 0xA
+    DialogEventType number_order;           // 0xC
+    Point16	current;                        // 0xE
+    u16 field_12;                           // 0x12
 };
 
 // Seems to be identical to ResourceArea
@@ -190,7 +191,7 @@ struct GameData { // taken from IDA and from https://gist.githubusercontent.com/
     u16		got_game_subtype;		  // 0x6F
     u16		got_game_subtype_display; // 0x71
     u16		got_game_subtype_label;	  // 0x73
-    u8		victory_condition;		  // 0x75
+    VictoryCondition victory_condition; // 0x75
     u8		resource_type;			  // 0x76
     u8		use_standard_unit_stats;  // 0x77
     u8		fog_of_war;				  // 0x78
@@ -478,6 +479,39 @@ struct GrpHead {
 C_ASSERT(sizeof(GrpHead) == 14);
 //static_assert(sizeof(GrpHead) == 14, "The count of the GrpHead structure is invalid");
 
+class GrpFile {
+public:
+    std::span<GrpFrame> frame_headers() {
+        return std::span<GrpFrame>(
+            reinterpret_cast<GrpFrame*>(m_raw_data),
+            m_frame_count
+        );
+    }
+
+    std::span<const GrpFrame> frame_headers() const {
+        return std::span<const GrpFrame>(
+            reinterpret_cast<const GrpFrame*>(m_raw_data),
+            m_frame_count
+        );
+    }
+
+    const u8* get_frame_pixel_data(size_t frame_index) const {
+        if (frame_index >= m_frame_count) frame_index = 0;
+        const GrpFrame& header = frame_headers()[frame_index];
+        return reinterpret_cast<const u8*>(this) + header.data_offset;
+    }
+
+    u16 frame_count() const { return m_frame_count; }
+    s16 width() const { return m_width; }
+    s16 height() const { return m_height; }
+
+private:
+    u16 m_frame_count;
+    s16 m_width;
+    s16 m_height;
+    u8 m_raw_data[];
+};
+
 // LO* file header
 struct LO_Header {
     u32 frame_count;
@@ -620,13 +654,75 @@ Unit* unit;
 u16 unit_id;
 };
 
+
 struct BinDlg;
+
+class DialogBounds {
+public:
+    DialogBounds();
+
+    static DialogBounds from_ltrb(s16 left, s16 top, s16 right, s16 bottom);
+    static DialogBounds from_xywh(s16 x, s16 y, u16 width, u16 height);
+
+    static DialogBounds from_bounds_ltrb(const Bounds bounds);
+    static DialogBounds from_bounds_xywh(const Bounds bounds);
+
+    s16 left() const { return m_left; }
+    s16 top() const { return m_top; }
+    s16 right() const { return m_right; }
+    s16 bottom() const { return m_bottom; }
+
+    s16 x() const { return m_left; }
+    s16 y() const { return m_top; }
+    u16 width() const { return m_width; }
+    u16 height() const { return m_height; }
+
+    void set_ltrb(s16 left, s16 top, s16 right, s16 bottom);
+    void set_xywh(s16 x, s16 y, u16 width, u16 height);
+
+    bool contains(const Point16 point) const;
+    bool contains(u16 x, u16 y) const;
+    bool contains_mouse() const;
+
+    bool is_empty() const;
+    bool is_valid() const;
+    Point16 center() const;
+    Point16 top_left() const;
+    Point16 top_right() const;
+    Point16 bottom_left() const;
+    Point16 bottom_right() const;
+
+    DialogBounds intersect(const DialogBounds& other) const;
+    DialogBounds unite(const DialogBounds& other) const;
+    DialogBounds inflate(s16 dx, s16 dy) const;
+    DialogBounds offset(s16 dx, s16 dy) const;
+
+    operator Box16() const;
+    operator Box32() const;
+    operator Bounds() const;
+    Bounds to_bounds() const;
+
+private:
+    s16 m_left;
+    s16 m_top;
+    s16 m_right;
+    s16 m_bottom;
+    u16 m_width;
+    u16 m_height;
+
+    void update_size();
+};
+
 using BinDlgProc = u32(__fastcall*)(BinDlg*, DialogEvent*);
 using BinDlgProcEx = u32(__fastcall*)(BinDlg*, DialogEvent*, u32, u32);
+using TimerCallback = void(__fastcall*)(BinDlg*, u16 index);
 
 struct BinDlg {
 /*0x00*/  BinDlg*		next;
-/*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
+union {
+    /*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
+    /*0x04*/  DialogBounds  dialog_bounds; // New version. TODO: Update old references
+};
 /*0x10*/  u8*			buffer;
 union {
     /*0x14*/  const char* text;
@@ -734,20 +830,20 @@ union {
         /*0x4E*/  unk_t     unk_4e[8];
     } initial_version_0x46;
     struct {
-        /*0x46*/  Point16	text_pos;				// unverified filler
-        /*0x4A*/  u32		unk4a;
+        /*0x46*/  Point16   text_pos;				// unverified filler
+        /*0x4A*/  void*     unk_function;
         /*0x4E*/  unk_t     unk_4e[8];				// unverified filler
     } onInitDialog0x46;
     struct {
-        /*0x46*/  u8		item_count;
-        /*0x47*/  u8		unk47;					// unverified filler
-        /*0x48*/  u8		unk48;
-        /*0x49*/  u8		unk49;
-        /*0x4A*/  u8		unk4a;
-        /*0x4B*/  u8		unk4b;
-        /*0x4C*/  b8		unk4c;
-        /*0x4D*/  u8		unk4d;
-        /*0x4E*/  u8		unk4e;
+        /*0x46*/  u8        item_count;
+        /*0x47*/  u8        unk47;					// unverified filler
+        /*0x48*/  u8        unk48;
+        /*0x49*/  u8        unk49;
+        /*0x4A*/  u8        unk4a;
+        /*0x4B*/  u8        unk4b;
+        /*0x4C*/  b8        unk4c;
+        /*0x4D*/  u8        unk4d;
+        /*0x4E*/  u8        unk4e;
         /*0x4F*/  unk_t     unk_4f[7];				// unverified filler
     } alternateVersion0x46;
     struct {
@@ -1277,7 +1373,7 @@ struct KillUnitArgs {
 struct FxnDrawIconData {
     u16 w;
     u16 h;
-    GrpHead* stat_icon;
+    const u8* pixel_data;
 };
 
 struct TriggerCondition {
@@ -1827,6 +1923,99 @@ struct RGBA {
 
 struct Palette {
     RGBA colors[256];
+};
+
+// For lobby_recv
+struct Command_Sequence {
+    GameCommand command = GameCommand_Sequence;
+};
+
+struct Command_StartCountdown {
+    GameCommand command = GameCommand_StartCountdown;
+};
+
+struct Command_FileTransferStatus {
+    GameCommand command = GameCommand_MapFileTransferStatus;
+    u8 value;
+};
+
+struct Command_PlayerUpdate {
+    GameCommand command = GameCommand_PlayerUpdate;
+    u8 player_index;
+    u8 player_actions_lowest_byte;
+    u8 type;
+    RaceId::Enum race;
+    u8 force;
+    u32 random_flags; // Extended value for selective random
+};
+
+struct Command_PlayerPresence {
+    GameCommand command = GameCommand_PlayerPresence;
+    u8 actions_Fist_byte = 0;
+    u16 unk_1 = 0;
+    u16 unk_2 = 1;
+    u16 unk_3 = 5;
+};
+
+struct Command_PlayerJoinRequest {
+    GameCommand command = GameCommand_JoinRequest;
+    RaceId::Enum race;
+    u8 force;
+    u32 save_game_data;
+    u16 unk_1;
+    u16 unk_padding_1;
+    u16 must_be_5 = 5;
+    bool cdkey_required;
+    u32 cdkey_hash;
+    u32 random_flags; // Extended value for selective random
+};
+
+struct Command_ChangeRace {
+    GameCommand command = GameCommand_ChangeRace;
+    u8 player_index;
+    RaceId::Enum race;
+    u32 random_flags; // Extended value for selective random
+};
+
+struct Command_JoinForce {
+    GameCommand command = GameCommand_JoinForce;
+    u8 force;
+};
+
+struct Command_MoveToSlot {
+    GameCommand command = GameCommand_MoveToSlot;
+    u8 slot;
+};
+
+struct Command_SetSlotState {
+    GameCommand command = GameCommand_SetSlotState;
+    u8 slot;
+    u8 state; // Computer = 0, Open = 1, Closed = 2;
+};
+
+struct Command_UpdatePlayerForce {
+    GameCommand command = GameCommand_UpdatePlayerForce;
+    u8 slot;
+    u8 force;
+};
+
+struct Command_StartGameSync {
+    GameCommand command = GameCommand_StartGameSync;
+    u32 timestamp;
+    u8 unk_always_8[8] = {8, 8, 8, 8, 8, 8, 8, 8};
+};
+
+struct Command_UnknownLobby {
+    GameCommand command = GameCommand_UnknownLobby;
+};
+
+struct Command_MakePublic {
+    GameCommand command = GameCommand_MakePublic;
+};
+
+struct Command_PlayerJoined {
+    GameCommand command = GameCommand_PlayerJoined;
+    u32 value = 0;
 };
 
 #pragma pack()

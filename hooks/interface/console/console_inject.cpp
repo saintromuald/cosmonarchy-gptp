@@ -1,5 +1,7 @@
 #include "console.h"
-#include <hook_tools.h>
+
+#include "hook_tools.h"
+#include "BW/bwhelper.h"
 
 namespace
 {

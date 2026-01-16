@@ -4454,6 +4454,7 @@ namespace hooks {
     s32 __cdecl network_set_return_menu() { // 004DC5B0
         s32 network_mode = g_current_network_mode;
         if (network_mode == 'CNLK' || network_mode == 'CLDB') { // CrownLink and CrownLink Double Brain Cells
+            g_glue_background_id = -1; // Force a palette refresh
             g_gl_glues_mode = MenuId::GlueGameSel;
             return network_mode;
         }

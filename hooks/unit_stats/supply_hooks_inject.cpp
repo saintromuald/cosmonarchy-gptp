@@ -90,7 +90,7 @@ namespace {
 			MOV dialog, ECX
 			PUSHAD
 		}
-		hooks::stat_res_main_proc(dialog);
+		hooks::stat_res_timer_proc(dialog);
 		__asm {
 			POPAD
 			RETN
@@ -202,15 +202,11 @@ namespace hooks {
 		jump_patch(get_supplies_max_wrapper,				0x00488990, 4);
 		jump_patch(get_supplies_used_wrapper,				0x004888C0, 1);
 		jump_patch(initialize_unit_counts_wrapper,		0x00488F90, 0);
-	//	jump_patch(stat_res_main_proc_wrapper,							0x004E5640, 4);
 		jump_patch(get_supplies_temp_wrapper,				0x004246D0, 1);
 		jump_patch(redraw_supply_info_wrapper,			0x00425230, 4);
 		jump_patch(draw_supply_unit_status_wrapper,		0x00427540, 1); // Currently broken, supply used in unit status display won't show properly for zerg and protoss units
 		jump_patch(has_supplies_for_unit_wrapper,			0x0042CF70, 1);
 		jump_patch(increment_unit_scores_wrapper,			0x00488BF0, 2);
 		jump_patch(increment_unit_scores_ex_wrapper,		0x00488D50, 1);
-		
-		call_patch(stat_res_register_user_dialog_action,	0x004E58E4);
-		memory_patch(0x004E58EA, &stat_res_main_proc);
 	}
 }

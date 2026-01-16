@@ -15,6 +15,7 @@
 #include "enumerations/PortraitId.h"
 #include "enumerations/GluIndex.h"
 #include <algorithm>
+#include <optional>
 
 namespace UnitSize {
 enum {
@@ -257,7 +258,8 @@ enum Enum : u8 {
 
     Askosi     = 69, // temp
 
-    Count      = 3,
+    Count      = 3, // Original races
+    FullCount  = 4,
 };
 }
 
@@ -279,6 +281,18 @@ inline TextColor get_race_textcolor(RaceId::Enum race) {
         case RaceId::Askosi:  return TextColor::DarkGreen;
     }
     return TextColor::White;
+}
+
+inline bool is_valid_race(RaceId::Enum race) {
+    switch (race) {
+        case RaceId::Zerg:
+        case RaceId::Terran:
+        case RaceId::Protoss:
+        case RaceId::Askosi:
+        case RaceId::Random:
+            return true;
+    }
+    return false;
 }
 
 namespace PlayerType {
@@ -598,6 +612,18 @@ enum Enum : u8 {
     Ranked         = 44,
 };
 }
+
+// GameMode::victory_condition see 0x004ABAF0
+enum class VictoryCondition : u8 {
+    Default, // Usually UMS, loads Melee triggers
+    Melee,
+    Unused,
+    Greed,
+    CaptureTheFlag,
+    SuddenDeath,
+    Slaughter,
+    OneOnOne, // Loads Melee triggers
+};
 
 // Compare with (*g_current_tileset)
 namespace TilesetType {
@@ -1345,11 +1371,26 @@ enum GameCommand : u8 {
     GameCommand_VoiceEnable2 = 57,
     GameCommand_Unused1 = 58,
     GameCommand_Unused2 = 59,
+    GameCommand_StartCountdown = 60, // {id} 
+    GameCommand_MapFileTransferStatus = 61, // {id, u8 value}
+    GameCommand_PlayerUpdate = 62, // Broadcast to all players when any player changes. {id, player_index, u8 first_byte_actions, playertype, race, force}
+    GameCommand_PlayerPresence = 63, // Broadcast to all players, {id, u16 0, u16 1, u16 5}
+    GameCommand_JoinRequest = 64,
+    GameCommand_ChangeRace = 65,
+    GameCommand_JoinForce = 66, // Similar to 67 but appears to be for team games {id, slot_index}
+    GameCommand_MoveToSlot = 67, // When clicking a team name {id, slot_index}
+    GameCommand_SetSlotState = 68, // Computer = 0, open = 1, closed = 2 {id, slot, state}
+    GameCommand_UpdatePlayerForce = 69, // Unsure {id, slot, force}
+    GameCommand_StartGameSync = 72, // {id, u32 timestamp, 8, 8, 8, 8, 8, 8, 8, 8}
+    GameCommand_PlayerJoined = 73, // {id, 0, 0, 0, 0}
+    GameCommand_JoinRejected = 78,
+    GameCommand_UnknownLobby = 84,
     GameCommand_SetLatency = 85,
     GameCommand_SetReplaySpeed = 86,
     GameCommand_LeaveGame = 87,
     GameCommand_MinimapPing = 88,
     GameCommand_MergeDarkArchon = 90,
+    GameCommand_MakePublic = 91, // Battle.net only I believe
     GameCommand_DisplaySomeText = 92,
     GameCommand_Custom = 99,
 };
@@ -1485,7 +1526,7 @@ enum DialogEventType : u16 {
     DialogEventType_MWheelDown = 18,
 };
 
-enum DialogUserType : u16 {
+enum DialogUserType : u32 {
     DialogUserType_Create = 0,
     DialogUserType_Destroy = 1,
     DialogUserType_Activate = 2,
@@ -1503,6 +1544,7 @@ enum DialogUserType : u16 {
     DialogUserType_Hide = 14,
     DialogUserType_ScrollUp = 15,
     DialogUserType_ScrollDown = 16,
+    DialogUserType_x405 = 1029,
 };
 
 enum MusicId {
@@ -1567,9 +1609,24 @@ enum Enum : u32{
     GlueGamemode2 = 24,
     GlueGeneric = 25,
     // Extended Menu
-    GlueOptions = 27,
+    GlueJoinCrownlink = 26,
+    GlueProviderSelectCrownlink = 27,
+    GlueOptions = 28,
 };
 }
+
+enum class GameState : u8 {
+    Unk_1 = 1,
+    Unk_2 = 2,
+    Unk_3 = 3,
+    InLobby = 4,
+    GameStarting = 5,
+    SlotsLocked = 6,
+    FinalCommands = 7,
+    WaitingForSaveData = 8,
+    EndLobby = 9,
+    InProgress = 12,
+};
 
 enum class MainState : u32 {
     Intro,

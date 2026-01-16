@@ -4,6 +4,9 @@
 inline const std::filesystem::path g_config_path = bw::get_starcraft_path() / "cosmonarchy.yml";
 
 struct Config {
+    // Random settings
+    std::vector<std::string> random_races{"Zerg", "Terran", "Protoss", "Askosi"};
+
     // Launch settings
     bool disable_wmode_prompt = true;
     bool prefer_wmode = false;

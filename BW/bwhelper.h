@@ -1,5 +1,6 @@
 #pragma once
-#include "BW\bwdata.h"
+#include "BW/bwdata.h"
+#include "BW/structures.h"
 
 #define NOMINMAX
 #include <windows.h>
@@ -53,8 +54,24 @@ namespace helper {
     BW_FUNC(0x004b52a0, void __stdcall, glu_ex_campaign);
     BW_FUNC(0x004dcc90, void __stdcall, glu_generic);
 
+    BW_FUNC(0x004ab840, u32* __stdcall, glu_main_load_ums_templates);
+    BW_FUNC(0x004c4680, void __stdcall, glu_login_leave_game);
     BW_FUNC(0x004b5180, b32 __stdcall, dlgproc_glu_campaign_activate, BinDlg* dialog);
     BW_FUNC(0x004d26b0, u8* __stdcall, generic_malloc_wrapper, u32 size);
+
+    BW_FUNC(0x00450210, void __stdcall, glu_chat_update_download_graphic);
+    BW_FUNC(0x004c46e0, void __stdcall, process_make_game_public_command);
+    BW_FUNC(0x00471670, void __stdcall, process_move_to_slot_request, const Command_MoveToSlot* command, u32 sender);
+    BW_FUNC(0x00470d10, void __stdcall, register_network_player, u8 player_id, u16 flags, u16 unk_1, u16 protocol_version);
+    BW_FUNC(0x004513f0, void __stdcall, chat_update_race_slots, BinDlg* dialog);
+    BW_FUNC(0x004b9bf0, void __stdcall, glu_chat_dlgproc_create, BinDlg* dialog);
+    BW_FUNC(0x004b9ac0, void __stdcall, glu_chat_map_preview_init, BinDlg* dialog);
+
+    BW_FUNC(0x004d9cd0, u32 __stdcall, get_cdkey_hash);
+    BW_FUNC(0x0045ade0, u8 __stdcall, find_force_balanced_slot);
+    BW_FUNC(0x004a99c0, u32 __stdcall, find_first_available_slot);
+    BW_FUNC(0x00472ab0, void __stdcall, add_player_to_active_list, u8* active_list, u32 sender);
+    BW_FUNC(0x004c4160, void __stdcall, update_game_mode, u32 open_slots);
 
     // Console functions
     BW_FUNC(0x0041d470, void __stdcall, console_update_surface_masks);
@@ -66,6 +83,7 @@ namespace helper {
     BW_FUNC(0x004e5910, u32 __fastcall, statres_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004f5240, u32 __fastcall, stat_f10_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004b8590, u32 __fastcall, glujoin_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004f4d60, u32 __fastcall, statfluf_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004a5a80, void __stdcall, load_minimap);
     BW_FUNC(0x0045f320, void __stdcall, load_statport);
     BW_FUNC(0x00458570, void __stdcall, load_stat_data);
@@ -903,12 +921,12 @@ namespace helper {
     void refund_all_queue_slots(Unit* unit);
     void* SMemAlloc(u32 amount, u32 default_value = 0, std::source_location loc = std::source_location::current()); // 0041006A (based on Storm.dll definition)
     void* SMemAlloc(u32 amount, const char* unkFilename, u32 unkLine, u32 defaultValue);							// 0041006A (based on Storm.dll definition)
-    void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, u32 callback);								// 00416090
-    void clear_callback_timer(BinDlg* dialog, u16 timer_index);                                                    // 00416000
+    void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, TimerCallback callback);                     // 00416090
+    void clear_callback_timer(BinDlg* dialog, u16 timer_index);                                                     // 00416000
     void remove_from_selections(Unit* unit);																		// 0049A7F0
     u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
     void register_user_dialog_action(BinDlg* dialog, BinDlgProc* interact_funcs, u32 count);                        // 00418100
-    void enable_dialog(BinDlg* dialog);																			// 00418E00
+    void enable_dialog(BinDlg* dialog);																			    // 00418E00
     void replay_stat_buttons(BinDlg* dialog);																		// 00427A80
     void update_command_card();																						// 004591D0
     void refresh_button_tooltip();																					// 00459770
@@ -980,7 +998,7 @@ namespace helper {
     // For initialize_unit_counts
     char team_game_count_races(char force, char* bIsLegal, char race);										// 004857B0
 
-    // For stat_res_main_proc
+    // For stat_res_timer_proc
     //void show_supply_info(BinDlg* dialog, s16 graphic, s16 mathA, u16 mathB);								// 004E53B0
     //void print_stat_res_info(BinDlg* dialog, u32 icon_graphic, u32* accrued_value, u32 resource_count, b32 do_not_accrue);	// 004E52E0
 
@@ -1640,7 +1658,7 @@ namespace helper {
     void image_render_fxn_0_0(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data);	// 0040ABBE
 
     void file_fatal(HANDLE* file, u32 something);																								// 004D2880
-    void alloc_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(const char*, Bitmap*, Palette*, const char*, u32), const char* log_filename, u32 log_line);	// 004194E0
+    void fixup_and_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(const char*, Bitmap*, Palette*, const char*, u32), const char* log_filename, u32 log_line);	// 004194E0
     void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog);													// 00419D20
     s32 display_dialog(BinDlgProc dialog_proc, BinDlg* dialog);
 
@@ -1899,4 +1917,25 @@ namespace helper {
     void glu_change_menu_palette(u32 fade_time);                                    // 0041e9e0
 
     void enable_sound_list(u16* sounds_array);                                      // 004bccf0
+    bool initialize_bnet(u32 provider_id);                                          // 00452a30
+
+    graphics::Font* load_font(const char* font_name);                               // 0041fd10
+
+    // For glu_chat
+    void process_player_presence(const Command_PlayerPresence* command, u32 sender);            // 004713e0
+    void process_join_force_request(const Command_JoinForce* command, u32 sender);              // 00471750
+    void process_slot_state_command(const Command_SetSlotState* command, u32 sender);           // 00471570
+    void process_update_force_command(const Command_UpdatePlayerForce* command, u32 sender);    // 00471860
+    void process_start_game_sync(const Command_StartGameSync* command, u32 sender);             // 00472110
+    void update_nation_array(u32 player_id);                                                    // 004a8d40
+    void reject_and_disconnect(u32 player_id, u8 reason);                                       // 00470480
+    void lobby_recv_original(u32 size, u32 sender, void* command_buffer);                       // 00486040
+
+    void glu_chat_update_control_visibility(BinDlg* dialog, b32 hide_controls, b32 show_ok_button); // 004b89f0
+
+    u32 glu_chat_dlgproc_activate(BinDlg* dialog);          // 004b9910
+    void glu_chat_prep_labels(BinDlg* dialog);              // 004b9770
+    void glu_chat_dlgproc_destroy(BinDlg* dialog);          // 004b8d70
+    void glu_chat_map_preview_destroy(BinDlg* dialog);      // 004b8d90
+    void glu_chat_update_password_field(BinDlg* dialog);    // 004b8c80
 }

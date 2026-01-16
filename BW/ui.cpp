@@ -1,5 +1,4 @@
 #include "ui.h"
-#include "snp.h"
 
 std::vector<BinDlg*> get_children_by_index(BinDlg* parent, s16 index) {
     std::vector<BinDlg*> output;
@@ -13,6 +12,17 @@ std::vector<BinDlg*> get_children_by_index(BinDlg* parent, s16 index) {
         if (child->index == index) output.push_back(child);
     }
     return output;
+}
+
+BinDlg* get_first_child_by_index(BinDlg* parent, s16 index) {
+    if (parent->control_type != DialogControlTypes::DialogBoxDC) {
+        parent = parent->parent;
+        if (!parent) return nullptr;
+    }
+    for (auto child = parent->child_dialog; child; child = child->next) {
+        if (child->index == index) return child;
+    }
+    return nullptr;
 }
 
 void show_dialogs_with_index(BinDlg* dialog, s16 index) {
@@ -82,7 +92,7 @@ void BinFile::load_file(const char* filename) {
     SFileCloseFile(file_handle);
     
     bin_dlg()->flags |= 4;
-    helper::alloc_init_dialog_data(bin_dlg(), helper::alloc_background_image, __FILE__, __LINE__);
+    helper::fixup_and_init_dialog_data(bin_dlg(), helper::alloc_background_image, __FILE__, __LINE__);
 }
 
 void bindlg_load_background_palette(BinDlg* dialog) {
@@ -100,7 +110,7 @@ void bindlg_load_background_palette(BinDlg* dialog) {
         helper::glu_update_palette(3);
         g_glue_background_id = id;
     }
-    helper::set_callback_timer(dialog, 0x2e, 100, 0x004de140);
+    helper::set_callback_timer(dialog, 0x2e, 100, (TimerCallback)0x004de140);
 }
 
 void bindlg_load_image(const char* filename, Palette* palette, BinDlg* dialog, u8* (__stdcall* malloc_func)(u32)) {
@@ -142,50 +152,10 @@ s32 background_id(MenuId::Enum menu_id) {
         return g_menu_backgrounds[menu_id].background_id;
     } else if (menu_id == MenuId::GlueOptions) {
         return background_id(MenuId::GlueSelConn);
+    } else if (menu_id == MenuId::GlueJoinCrownlink) {
+        return background_id(MenuId::GlueLogin);
     }
     return background_id(MenuId::GlueSelConn);
-}
-
-GrpHead* load_graphic(const char* filename, u32* bytes_read, const char* log_filename, u32 log_line) {
-    HANDLE file;
-    auto result = SFileOpenFile(filename, &file);
-    if (!result) {
-        helper::fatal_file_not_found(SErrGetLastError(), filename);
-    }
-
-    auto file_size = SFileGetFileSize(file, 0);
-    if (file_size == -1) {
-        helper::file_fatal(&file, SErrGetLastError());
-        return nullptr;
-    }
-
-    auto buffer = (GrpHead*)SMemAlloc(file_size, log_filename, log_line, 0);
-    if (!buffer) {
-        SFileCloseFile(file);
-        return nullptr;
-    }
-
-    u32 bytes = 0;
-    result = SFileReadFile(file, buffer, file_size, &bytes, 0);
-    if (!result) {
-        auto error = GetLastError();
-        SFileCloseFile(file);
-        SMemFree(buffer, __FILE__, __LINE__, 0);
-        if (error == ERROR_HANDLE_EOF) helper::file_fatal(&file, ERROR_BAD_LENGTH);
-        helper::file_fatal(&file, error);
-        return nullptr;
-    }
-    if (bytes != file_size) {
-        SFileCloseFile(file);
-        SMemFree(buffer, log_filename, log_line, 0);
-        helper::file_fatal(&file, ERROR_BAD_LENGTH);
-        return nullptr;
-    }
-
-    if (bytes_read) *bytes_read = bytes;
-
-    SFileCloseFile(file);
-    return buffer;
 }
 
 void load_pcx_to_bitmap(const char* filename, Bitmap& bitmap, Palette* palette) {
@@ -207,8 +177,8 @@ void bindlg_load_background(BinDlg* dialog) {
     g_gl_glues_mode = original_glues;
 }
 
-void change_menu() {
-    if (g_glue_background_id != background_id((MenuId::Enum)g_gl_glues_mode)) {
+void change_menu(bool force_refresh) {
+    if (force_refresh || g_glue_background_id != background_id((MenuId::Enum)g_gl_glues_mode)) {
         if (g_background_buffer) {
             SMemFree(g_background_buffer, __FILE__, __LINE__, 0);
         }
@@ -221,4 +191,42 @@ void change_menu() {
     helper::refresh_region();
 
     g_menu_alloc_counter = 0;
+}
+
+void initialize_dialog(BinDlg* dialog, BinDlgProc dialogproc) { // 00419d20
+    dialog->flags |= (BinDlgFlags::NoClickSound | BinDlgFlags::VerticalAlignmentBottom);
+    dialog->onInitDialog0x46.unk_function = nullptr;
+    if (dialogproc) {
+        dialog->interaction_function = dialogproc;
+    }
+
+    const auto area_size = static_cast<size_t>(dialog->onInitDialog0x36.response_area_width) *
+        static_cast<size_t>(dialog->onInitDialog0x36.response_area_height);
+    dialog->statRes.font_handle = (u32*)SMemAlloc(area_size, __FILE__, __LINE__, 0);
+
+    dialog->index = 0;
+
+    quick_send_event(dialog, DialogUserType_Generic);
+    
+    // Convert bounds from x/y/w/h to left/top/right/bottom
+    dialog->bounds.right += dialog->bounds.left;
+    dialog->bounds.bottom += dialog->bounds.top;
+
+    quick_send_event(dialog, DialogUserType_InitChildren);
+    quick_send_event(dialog, DialogUserType_Create);
+
+    helper::set_callback_timer(dialog, 12, 100, nullptr);
+
+    dialog->flags &= ~BinDlgFlags::VerticalAlignmentBottom;
+}
+
+void quick_send_event(BinDlg* dialog, DialogUserType user_type, u16 param) {
+    if (!dialog->interaction_function) return;
+    DialogEvent event{
+        .user = user_type,
+        .param = param,
+        .number_order = DialogEventType_Dialog,
+        .current = {static_cast<u16>(g_mouse->x), static_cast<u16>(g_mouse->y)},
+    };
+    dialog->interaction_function(dialog, &event);
 }

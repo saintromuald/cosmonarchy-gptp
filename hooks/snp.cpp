@@ -1,5 +1,4 @@
 #include "snp.h"
-#include "snp.h"
 
 namespace snp {
 std::vector<SPIProvider>& snp::ProviderManager::available_providers() {
@@ -10,7 +9,7 @@ std::vector<SPIProvider>& snp::ProviderManager::available_providers() {
 
 bool ProviderManager::is_crownlink() {
 	if (!g_spi_provider) return false;
-	return g_provider_id == 'CNLK' || g_provider_id == 'CLDB';
+	return m_provider_id == 'CNLK' || m_provider_id == 'CLDB';
 }
 
 bool ProviderManager::initialize_provider(u32 id) {
@@ -56,6 +55,7 @@ bool ProviderManager::iterate_lobbies(LobbyCallback callback, void* user_data) {
 	if (!is_crownlink()) return false;
 	if (!m_crownlink_api.iterate_lobbies) return false;
 	m_crownlink_api.iterate_lobbies(callback, user_data);
+	return true;
 }
 
 bool ProviderManager::set_turns_per_second(TurnsPerSecond turns_per_second) {
@@ -94,7 +94,7 @@ bool ProviderManager::get_lobby_password(std::string& output) {
 void ProviderManager::set_status_lobby(bool enable) {
 	if (!m_provider_id) return;
 	if (!is_crownlink()) return;
-	if (m_crownlink_api.set_status_lobby) return;
+	if (!m_crownlink_api.set_status_lobby) return;
 	m_crownlink_api.set_status_lobby(enable);
 }
 
@@ -132,3 +132,25 @@ b32 __stdcall snp::ProviderManager::add_provider_to_list(u32 id, const char* nam
 	return true;
 }
 } // namespace snp
+
+namespace hooks {
+// Hooked to load Crownlink integration
+bool glu_connect_init_provider() { // 004bade0
+	auto& provider_manager = snp::ProviderManager::instance();
+	if (g_selected_snp == 'BNET') g_connect_next_menu = MenuId::GlueBattlenet;
+	if (!provider_manager.initialize_provider(g_selected_snp)) {
+		return false;
+	}
+	if (provider_manager.is_crownlink()) {
+		provider_manager.set_status_lobby(false);
+	}
+	g_connect_next_menu = MenuId::GlueLogin;
+	return true;
+}
+
+// Hooked to ensure we're cleaning up when calling SNetDestroy
+void glu_destroy_provider() { // 00410112
+	auto& provider_manager = snp::ProviderManager::instance();
+	provider_manager.destroy_provider();
+}
+} // namespace hooks

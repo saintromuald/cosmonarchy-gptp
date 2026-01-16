@@ -1,14 +1,16 @@
 #pragma once
-#include "../definitions.h"
-#include "structures.h"
+#include "definitions.h"
+#include "types.h"
+#include "BW/structures.h"
+#include "BW/structures/Player.h"
 #include "bullet_extender.h"
 #include "hooks/limits/ccmu.h"
-#include "graphics\Font.h"
-#include "BW/structures/Player.h"
-#include "BW/structures.h"
+#include "graphics/Font.h"
+
 
 #define NOMINMAX
 #include <windows.h> 
+#include <array>
 
 #pragma pack(1)
 
@@ -91,7 +93,7 @@ BW_DATA_REF(UnitStatFuncArrayEntry*,	g_unit_stat_funcs_table,		0x005193A0);
 BW_DATA(ActionPointer*,	g_action_table,					0x00512800); // From triggers.cpp
 BW_DATA(ActionPointer*,	g_briefing_action_table,		0x00512800);
 BW_DATA(char**,			g_chk_string_table,				0x005993D4);
-BW_DATA(HWND*,			g_main_window,					0x0051BFB0);
+BW_REF(HWND,			g_main_window,					0x0051BFB0);
 BW_REF(s32,				g_music_volume,					0x006D5BB4);
 BW_REF(b8,				g_music_playing,				0x006D5BBC);
 
@@ -152,8 +154,9 @@ BW_REF(u32,					g_move_to_x,			0x0062848C);
 BW_REF(u32,					g_move_to_y,			0x006284A8);
 
 // Contains various information (names, player types, race types, and associated forces) of each player in the current game
-BW_ARRAY(Player,    12,     g_player_table,         0x0057EEE0);
-BW_ARRAY(Player,    12,	    g_replay_player_table,  0x0064097b);
+BW_ARRAY(Player,    12, g_player_table,         0x0057EEE0);
+BW_ARRAY(Player,    12, g_replay_player_table,  0x0064097b);
+BW_ARRAY(u32,       8,  g_player_id_table,      0x0057eec0);
 
 struct SupplyData {
     u32 provided[PLAYER_COUNT];
@@ -219,6 +222,7 @@ BW_REF(GrpHead*,        g_cmdicons_grp,                     0x0068C1E0);
 
 // For init_game_load
 BW_DATA(void*,			scenario_chk,				0x006D0F24);
+BW_REF(void*,			g_scenario_chk,				0x006D0F24); // Duplicate as scenario_chk should be void** but it's used in some odd functions -Jesse
 BW_DATA(ForceFlags*,	g_player_force_flags,		0x0058D5B8); // array of 0x4
 BW_DATA(u8*,			g_player_force,				0x0059BDA8); // array of 0x8
 BW_DATA(u8*,			g_player_force_replay_sth,	0x006D11A1); // array of 0x8
@@ -227,8 +231,8 @@ BW_REF(bool,			g_multiplayer_mode,			0x0057F0B4);
 BW_DATA(u32*,			g_initial_random_seed,		0x0051CA10);
 BW_DATA(u32*,			g_replay_random_seed,		0x006D0F38);
 BW_DATA(u32*,			g_random_counts,			0x0051C610); // count of 0x400
-BW_DATA(u32*,			g_total_random_counts,		0x0051CA18);
-BW_REF(u16, 			g_campaign_index,				0x0057F244);
+BW_DATA(u32*,           g_total_random_counts,		0x0051CA18);
+BW_REF(u16, 			g_campaign_index,           0x0057F244);
 BW_DATA(void**,			map_archive_handle,			0x00596BC4);
 BW_DATA(GameData*,		game_data,					0x005967F8);
 BW_DATA(u8*,			map_started,				0x006D121C);
@@ -280,7 +284,7 @@ BW_ARRAY(u8, 3,         g_campaign_first_mission,		0x005122BC);
 BW_REF(s32,				g_race_ui_music_offset,		0x0051A3B4);
 
 // For load_game_create
-BW_REF(u32,				g_is_host,					0x00596888);
+BW_REF(b32,				g_is_host,					0x00596888);
 BW_REF(u8,				g_out_of_game,				0x006D5A10);
 BW_REF(MainState,       g_sc_main_state,			0x00596904);
 BW_REF(u8,				g_game_active,				0x006D11EC);
@@ -372,7 +376,7 @@ BW_DATA(Unit**,		g_bullet_bounce_missile_target,	0x0064EED0);
 BW_DATA(Unit**,		g_bullet_bounce_missile_next,	0x0064EED4);
 
 // For start_game
-BW_REF(s8,              g_game_state,               0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
+BW_REF(GameState,       g_game_state,               0x0066FBFA); // 0x4 Idling in lobby | 0x5 Game starting | 0x6 Slots locked | 0x7 Sending final commands | 0x8 Waiting for save data | 0x9 End lobby
 BW_ARRAY(Player, 12,    g_player_replay_watchers,   0x00640970);
 
 BW_REF(s8,          g_countdown_timer_interval,     0x0066FBFC);
@@ -488,7 +492,7 @@ BW_DATA(s32*,		g_supplies_used_zerg,			0x00582174);
 BW_DATA(s32*,		g_unit_count_score,				0x00581DE4);
 BW_DATA(s8*,		unknown_57F41CB,				0x0057F1CB);
 
-// For stat_res_main_proc
+// For stat_res_timer_proc
 BW_DATA(s32*,		unknown_player_5153F8,			0x005153F8);
 BW_DATA(u32*,		unknown_68C22C,					0x0068C22C);
 BW_DATA(u32*,		unknown_68C230,					0x0068C230);
@@ -858,14 +862,14 @@ BW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // 640 x 480 divided into 1200
 BW_DATA(Layers*,				g_screen_layers,		0x006CEF50);
 typedef void(__stdcall* DrawGameProc)(graphics::Bitmap* surface, Bounds* bounds);
 static DrawGameProc const		g_old_draw_game_proc = (DrawGameProc)0x004BD580;
-BW_DATA(u32*,					g_current_font_color,	0x006CE0C0);
-BW_DATA(u8*,					g_font_spacing,			0x006CE0C4);
-BW_DATA(Box16*,					g_draw_text,			0x006CE0C8);/*
+BW_REF(u32,                     g_current_font_color,	0x006CE0C0);
+BW_REF(u8,                      g_font_spacing,         0x006CE0C4);
+BW_REF(Box16,                   g_draw_text,            0x006CE0C8);/*
 BW_DATA(u16*,					g_draw_text_left,		0x006CE0C8);
 BW_DATA(u16*,					g_draw_text_top,		0x006CE0CA);
 BW_DATA(u16*,					g_draw_text_right,		0x006CE0CC);
 BW_DATA(u16*,					g_draw_text_bottom,		0x006CE0CE);*/
-BW_DATA(u32*,					g_saved_font_color,		0x006CE0E8);
+BW_REF(u32,                     g_saved_font_color,		0x006CE0E8);
 
 // Array used in multiplayer to randomize factions used by unit.get_faction_color() and player.get_faction_color()
 // Max index is PLAYABLE_PLAYER_COUNT-1
@@ -1190,7 +1194,7 @@ BW_DATA(const VX4**,		g_vx4_file_handle,					0x00628458);
 BW_DATA(u8*,				g_is_league_game,					0x00629268);
 
 // For draw_standard_button_graphic
-BW_DATA(char*,				g_print_xy_alignment,				0x006CE110);
+BW_REF(u8, g_print_xy_alignment, 0x006CE110);
 
 // For draw_stat_button_image
 BW_DATA(CmdBtnPalette*,		g_cmdbtn_palette,					0x0068C150);
@@ -1332,9 +1336,9 @@ BW_REF(u32,             g_selected_snp,         0x006d5a28);
 BW_REF(s32,             g_glue_background_id,   0x0050E064);
 BW_REF(u16,             g_tileset_id,           0x0057f1dc);
 BW_REF(char,            g_player_name,          0x0057ee9c);
+BW_REF(char,            g_bnet_player_name,     0x0057f094);
 BW_REF(GameTypeList*,   g_game_type_list,       0x0051a270);
 BW_REF(u32,             g_provider_id,          0x0059688c);
-
 
 //-------- storm.dll --------//
 
@@ -1346,6 +1350,9 @@ BW_REF(SPIFunctions*,       g_spi_functions,        0x1505e620);
 //-------- end storm.dll --------//
 
 BW_REF(BinDlg*, g_connect_bin, 0x006d5a24);
+BW_REF(BinDlg*, g_login_bin, 0x005999c4);
+BW_REF(BinDlg*, g_join_bin, 0x00599a80);
+BW_REF(BinDlg*, g_chat_bin, 0x006d5a30);
 
 // For bindlg_load_background_palette / dialog_swish_in
 BW_REF(DialogFadeInfo, g_dialog_fade_info, 0x006cef50);
@@ -1411,6 +1418,33 @@ BW_REF(GrpHead*, g_minimap_blink_grp, 0x0059c1ac);
 BW_ARRAY(u8, 0x98, g_minimap_tblink_colors, 0x0059cac0);
 
 BW_REF(MenuId::Enum, g_connect_next_menu, 0x005999bc);
+
+// For glu_chat and random processing
+BW_REF(b32, g_chat_update_needed,       0x005999d4);
+BW_REF(u32, g_player_id,                0x0051268c);
+BW_REF(b32, g_chat_leaving_chat,        0x005999e8);
+BW_REF(b32, g_chat_comboboxes_enabled,  0x00512a10);
+BW_REF(b32, g_chat_game_is_public,      0x005999cc);
+BW_REF(b32, g_chat_destoyed,            0x006d5a38);
+BW_REF(u32, g_chat_unkown_1,            0x0068f4f0);
+BW_REF(u32, g_chat_unkown_2,            0x005999dc);
+BW_REF(u32, g_chat_unkown_3,            0x0068f520);
+
+BW_REF(HIMC, g_input_context, 0x006d6438);
+
+// For queue_lobby_commands
+BW_REF(Command_StartCountdown*, g_lobby_command_start_countdown, 0x006d5c70);
+BW_REF(Command_FileTransferStatus*, g_lobby_command_transfer_status, 0x006d5c70);
+BW_ARRAY(Command_PlayerUpdate*, 8, g_lobby_commands_player_update, 0x006d5c30);
+BW_ARRAY(Command_PlayerPresence*, 8, g_lobby_commands_player_presence, 0x006d5c50);
+BW_REF(Command_ChangeRace*, g_lobby_command_change_race, 0x006d5c7c);
+BW_REF(Command_JoinForce*, g_lobby_command_join_force, 0x006d5c80);
+BW_REF(Command_MoveToSlot*, g_lobby_command_move_to_slot, 0x006d5c84);
+BW_REF(Command_SetSlotState*, g_lobby_command_set_slot_state, 0x006d5c88);
+BW_REF(Command_UpdatePlayerForce*, g_lobby_command_update_force, 0x006d5c8c);
+BW_REF(Command_StartGameSync*, g_lobby_command_start_game_sync, 0x006d5c90);
+BW_REF(Command_MakePublic*, g_lobby_command_make_public, 0x006d5c94);
+BW_REF(Command_PlayerJoinRequest*, g_lobby_command_request_join, 0x006d5c78);
 
 #undef BW_DATA
 #undef BW_DATA_REF
