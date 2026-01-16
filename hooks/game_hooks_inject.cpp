@@ -2,6 +2,7 @@
 #include <BW/api.h>
 #include <hook_tools.h>
 #include <logger.h>
+#include "hooks/limits/tbl_extender.h"
 
 bool isGameOn = false;
 

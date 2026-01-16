@@ -28,7 +28,7 @@ GameRunner::Result GameRunner::create_singleplayer_game(const char* map_path, u1
             }
         }
         auto& randomizer = RaceRandomizer::instance();
-        randomizer.process_randomization(std::span<Player>(g_player_table).first<8>());
+        randomizer.process_randomization();
     } else {
         g_custom_singleplayer = true;
         for (auto i = 1; i < 8; i++) {
@@ -36,7 +36,7 @@ GameRunner::Result GameRunner::create_singleplayer_game(const char* map_path, u1
         }
     }
 
-    if (game_data->victory_condition == 0 && game_data->starting_units == 0
+    if (game_data->victory_condition == VictoryCondition::Default && game_data->starting_units == 0
         && game_data->tournament_mode_enabled == 0 && g_is_in_replay == 0 && !melee) {
         g_gl_glues_mode = race_ready_room(g_player_table[0].race);
     } else {
@@ -65,7 +65,7 @@ GameRunner::Result GameRunner::create_multiplayer_game(const char* map_path, u16
         g_is_in_replay = true;
     }
 
-    g_is_host = 0;
+    g_is_host = false;
     if (!helper::create_multiplayer_lobby(&m_mapfile.game_data, 0)) return Result::UnableToCreateGame;
 
     g_gl_glues_mode = MenuId::GlueChatroom;

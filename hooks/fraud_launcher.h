@@ -1,7 +1,7 @@
 #pragma once
 #include "BW\game_runner.h"
 #include "BW\bwdata.h"
-#include "snp.h"
+#include "hooks/snp.h"
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN

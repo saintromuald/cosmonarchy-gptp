@@ -19,7 +19,6 @@ enum class TurnsPerSecond : u32 {
     High = 12
 };
 
-//using StatusCallback = std::function<void(CrowServeState)>;
 using StatusCallback = void(*)(CrowServeState state, void* user_data);
 using LobbyCallback = void(*)(const AdFile*, P2PState peer_status, void*);
 using RegisterCallback = void(__stdcall*)(StatusCallback callback, void* user_data);
@@ -55,10 +54,11 @@ public:
 
     std::vector<SPIProvider>& available_providers();
     std::vector<SPIProvider>& providers() { return m_providers; }
-    static bool is_crownlink();
+    bool is_crownlink();
 
     bool initialize_provider(u32 id);
     void destroy_provider();
+    u32 provider_id() const { return m_provider_id; };
     bool register_crownlink_status_callback(StatusCallback callback, void* user_data);
     bool iterate_lobbies(LobbyCallback callback, void* user_data);
     bool set_turns_per_second(TurnsPerSecond turns_per_second);
@@ -81,3 +81,10 @@ private:
     CrownLinkApi m_crownlink_api;
 };
 } // namespace snp
+
+
+namespace hooks {
+bool glu_connect_init_provider();
+void glu_destroy_provider();
+void inject_snp_hooks();
+}

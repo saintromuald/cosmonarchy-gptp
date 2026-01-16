@@ -713,14 +713,6 @@ namespace {
             JMP race_invalid_aab95
         }
     }
-
-    const u32 glu_main_switch_de433 = 0x004de433;
-    void __declspec(naked) glu_main_switch_wrapper() { // 004de445
-        hooks::glu_main_swich();
-        __asm {
-            JMP glu_main_switch_de433
-        }
-    }
 }
 
 namespace hooks {
@@ -787,9 +779,5 @@ namespace hooks {
         jump_patch(is_valid_race_wrapper, 0x004aaac2);
         jump_patch(load_races_dropdown_wrapper, 0x00450b40);
         call_patch(load_races_dropdown_singleplayer_wrapper, 0x004aed68);
-
-        jump_patch(glu_main_switch_wrapper, 0x004de445);
-        call_patch(glu_connect_init_provider, 0x004bae93);
-        jump_patch(glu_destroy_provider, 0x00410112);
     }
 }

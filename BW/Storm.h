@@ -40,8 +40,11 @@ private:
 
 inline const StormStdCall<b32()> SNetDestroy{102};
 inline const StormStdCall<b32(u32, b32(__stdcall* callback)(u32 provider_id, const char* provider_name, const char* provider_description, Caps* caps))> SNetEnumProviders{105};
+inline const StormStdCall<b32(u32 player_id, char* buffer, u32 buffer_size)> SNetGetPlayerName{113};
 inline const StormStdCall<b32(Caps* caps)> SNetGetProviderCaps{114};
+inline const StormStdCall<b32(u32 player_id, void* data, u32 bytes)> SNetSendMessage{127};
 inline const StormStdCall<b32(u32, u32, bool(__stdcall* callback)(LobbyInfo* lobby_info), u32)> SNetEnumGamesEx{133};
+inline const StormStdCall<b32(char* output, u32 size)> SNetGetLeaguePlayerName{146};
 inline const StormStdCall<u32(HANDLE file)> SFileCloseFile{253};
 inline const StormStdCall<s32(HANDLE file, u32* size)> SFileGetFileSize{265};
 inline const StormStdCall<b32(const char* filename, HANDLE* handle)> SFileOpenFile{267};

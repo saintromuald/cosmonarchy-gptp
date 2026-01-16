@@ -67,7 +67,7 @@ namespace hooks
 			result = readMapChunks(0, (s32)scenario_chk, (s32*)&v7, *scenarioCHKSize);
 			if (result)
 			{
-				if (game_data->victory_condition || game_data->starting_units || game_data->tournament_mode_enabled)
+				if (game_data->victory_condition != VictoryCondition::Default || game_data->starting_units || game_data->tournament_mode_enabled)
 					v6 = &stru_500574[5 * v7];
 				else
 					v6 = &stru_50057C[5 * v7];

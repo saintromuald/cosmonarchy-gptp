@@ -81,32 +81,33 @@ namespace
 
 	// PATCHES \\
 
-	const u32 DLGMusicFade = 0x004A6310;
-	const u32 loadMenu_gluJoin_B86CB = 0x004B86CB;
-	void __declspec(naked) loadMenu_gluJoin_patch_B86C6() {
-		__asm {
-			MOV		AL, ds: [0x006D5BBC]		// musicPlaying
-			TEST	AL, AL
-			JNE		offset music_off
-			MOV		EAX, 22						// music_title_wav
-			CALL	DLGMusicFade
+	// This is no longer needed since glu_join and glu_join_crownlink are used now -Jesse
 
-		music_off:
-			MOV		EAX, ds : [0x006D0F24]		// chkFile
-			JMP		loadMenu_gluJoin_B86CB
-		}
-	}
+	//const u32 DLGMusicFade = 0x004A6310;
+	//const u32 loadMenu_gluJoin_B86CB = 0x004B86CB;
+	//void __declspec(naked) loadMenu_gluJoin_patch_B86C6() {
+	//	__asm {
+	//		MOV		AL, ds: [0x006D5BBC]		// musicPlaying
+	//		TEST	AL, AL
+	//		JNE		offset music_off
+	//		MOV		EAX, 22						// music_title_wav
+	//		CALL	DLGMusicFade
+
+	//	music_off:
+	//		MOV		EAX, ds : [0x006D0F24]		// chkFile
+	//		JMP		loadMenu_gluJoin_B86CB
+	//	}
+	//}
 }
 
 namespace hooks
 {
-
 	void inject_lobby_hooks()
 	{
 		jump_patch(init_game_wrapper,					0x004EE110, 0);
 		call_patch(start_game_wrapper,					0x0048608b);
 		jump_patch(init_singleplayer_custom_wrapper,	0x004AD850, 0);
 		jump_patch(on_player_join_wrapper,				0x00470720, 4);
-		jump_patch(loadMenu_gluJoin_patch_B86C6,		0x004B86C6);
+		//jump_patch(loadMenu_gluJoin_patch_B86C6,		0x004B86C6);
 	}
 }

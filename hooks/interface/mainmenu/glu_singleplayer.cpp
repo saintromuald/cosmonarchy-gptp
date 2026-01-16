@@ -1,9 +1,57 @@
-#include "glu_singleplayer.h"
+#include "custom_glues.h"
 #include "BW/ui.h"
 #include "BW/enumerations.h"
+#include "BW/game_runner.h"
+
+#include <minwindef.h>
+#include <filesystem>
+#include <optional>
 
 namespace {
-static u32 __fastcall dlgproc_glu_campaign_ex(BinDlg* dialog, DialogEvent* event) {
+static const fs::path starcraft_dir = []{
+    wchar_t buffer[MAX_PATH];
+    GetModuleFileNameW(0, buffer, MAX_PATH);
+    return fs::path{buffer}.parent_path();
+}();
+
+static const fs::path tutorials_root = starcraft_dir / "Maps" / "CMBW-Root" / "CMBW-maps" / "campaign" / "Tutorials";
+
+static std::optional<fs::path> tutorial_path(RaceId::Enum race) {
+    switch (race) {
+        case RaceId::Terran: return tutorials_root / "1. Further Notice.scx";
+        case RaceId::Protoss: return tutorials_root / "2. The Initiate.scx";
+        case RaceId::Zerg: return tutorials_root / "3. Autophagy.scx";
+    }
+    return {};
+}
+
+static u32 start_tutorial(BinDlg* dialog, RaceId::Enum race) {
+    auto& game_runner = GameRunner::instance();
+    auto scenario_path = tutorial_path(race);
+    if (!scenario_path) return 1;
+    if (game_runner.create_singleplayer_game(scenario_path->string().c_str(),
+        GameType::Scenario, 1) == GameRunner::Result::Success) {
+        return helper::dialog_swish_out(dialog);
+    }
+    return 1;
+}
+
+static u32 dlgproc_tutorial_activate(BinDlg* dialog, DialogEvent* event) {
+    switch (static_cast<GluTutorialControls>(last_control_index)) {
+        case GluTutorialControls::ZergTutorialButton: {
+            return start_tutorial(dialog, RaceId::Zerg);
+        } break;
+        case GluTutorialControls::TerranTutorialButton: {
+            return start_tutorial(dialog, RaceId::Terran);
+        } break;
+        case GluTutorialControls::ProtossTutorialButton: {
+            return start_tutorial(dialog, RaceId::Protoss);
+        } break;
+    }
+    return helper::generic_dialog_interact(dialog, event);
+}
+
+static u32 __fastcall dlgproc_glu_tutorials(BinDlg* dialog, DialogEvent* event) {
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
         case (DialogUserType_Create): {
@@ -13,19 +61,20 @@ static u32 __fastcall dlgproc_glu_campaign_ex(BinDlg* dialog, DialogEvent* event
             }
         } break;
         case (DialogUserType_Activate): {
-            return helper::dlgproc_glu_campaign_activate(dialog);
+            return dlgproc_tutorial_activate(dialog, event);
+            //return helper::dlgproc_glu_campaign_activate(dialog);
         } break;
         case (DialogUserType_InitChildren): {
             bindlg_load_background(dialog);
 
-            std::map<GluExCampgnControls, BinDlgProc> interaction_functions{
-                {GluExCampgnControls::LoadSavedButton, (BinDlgProc)0x004e1560},         // menu_generic_button
-                {GluExCampgnControls::ProtossCampaignButton, (BinDlgProc)0x004e17e0},   // generic_light_up_button
-                {GluExCampgnControls::TerranCampaignButton, (BinDlgProc)0x004b4f50},    // bindlg_excampaign
-                {GluExCampgnControls::ZergCampaignButton, (BinDlgProc)0x004b4f50},      // bindlg_excampaign
-                {GluExCampgnControls::CancelButton, (BinDlgProc)0x004e1560},            // menu_generic_button
-                {GluExCampgnControls::PlayCustomButton, (BinDlgProc)0x004e1560},        // menu_generic_button
-                {GluExCampgnControls::LoadReplayButton, (BinDlgProc)0x004e1560},        // menu_generic_button
+            std::map<GluTutorialControls, BinDlgProc> interaction_functions{
+                {GluTutorialControls::LoadSavedButton, (BinDlgProc)0x004e1560},         // menu_generic_button
+                {GluTutorialControls::ProtossTutorialButton, (BinDlgProc)0x004e17e0},   // generic_light_up_button
+                {GluTutorialControls::TerranTutorialButton, (BinDlgProc)0x004e17e0},    // generic_light_up_button
+                {GluTutorialControls::ZergTutorialButton, (BinDlgProc)0x004e17e0},      // generic_light_up_button
+                {GluTutorialControls::CancelButton, (BinDlgProc)0x004e1560},            // menu_generic_button
+                {GluTutorialControls::PlayCustomButton, (BinDlgProc)0x004e1560},        // menu_generic_button
+                {GluTutorialControls::LoadReplayButton, (BinDlgProc)0x004e1560},        // menu_generic_button
             };
             bindlg_load_interaction_functions(dialog, interaction_functions);
 
@@ -37,15 +86,14 @@ static u32 __fastcall dlgproc_glu_campaign_ex(BinDlg* dialog, DialogEvent* event
 }
 }
 
-namespace hooks {
-void glu_campaign_ex() {
+void glu_singleplayer() {
     g_ophelia_enabled = false;
     g_multiplayer_mode = false;
     helper::load_campaign_progress();
 
-    BinFile dialog{"rez\\gluexpcmpgn.bin"};
+    BinFile dialog{"rez\\glututorials.bin"};
 
-    auto result = helper::glu_load_bin_dialog(dialog.bin_dlg(), dlgproc_glu_campaign_ex);
+    auto result = helper::glu_load_bin_dialog(dialog.bin_dlg(), dlgproc_glu_tutorials);
 
     switch (static_cast<GluExCampgnControls>(result)) {
     case (GluExCampgnControls::LoadSavedButton): {
@@ -75,4 +123,3 @@ void glu_campaign_ex() {
     }
     change_menu();
 }
-} // namespace hooks

@@ -9,12 +9,11 @@
 #include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/game_hooks.h"
 #include "trigger_system/trigger_system.h"
-#include <hooks\interface\minimap.h>
+#include "hooks/interface/minimap.h"
 #include "Game.h"
-#include "hooks\interface\weapon_armor_tooltip.h"
-#include "..\snp.h"
-#include "..\mainmenu\glu_join_crownlink.h"
-#include "hooks/interface/mainmenu/glu_singleplayer.h"
+#include "hooks/interface/weapon_armor_tooltip.h"
+#include "hooks/snp.h"
+#include "hooks/interface/mainmenu/custom_glues.h"
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
 static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;
@@ -37,7 +36,7 @@ void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool a
 namespace hooks {
     void draw_text(const char* text, u32 x, u32 y, u32 w, u32 h, TextColor color) {
         helper::get_color_handle(color);
-        *g_print_xy_alignment = 0x11;
+        g_print_xy_alignment = 0x11;
         g_draw_text_box->left = x;
         g_draw_text_box->right = x + w;
         g_draw_text_box->top = y;
@@ -665,7 +664,7 @@ namespace hooks {
         }
         if (button->text) {
             bool highlight = button->flags & BinDlgFlags::HighlightText;
-            *g_print_xy_alignment = 34;
+            g_print_xy_alignment = 34;
             helper::dialog_draw_text(0, button, highlight, highlight);
         }
     }
@@ -1240,104 +1239,5 @@ namespace hooks {
             event.param = selected_index;
             dialog->interaction_function(dialog, &event);
         }
-    }
-
-    void glu_main_swich(){
-        switch (g_gl_glues_mode) {
-            case (MenuId::GlueMainMenu): {
-                g_out_of_game = false;
-                helper::glu_main();
-            } break;
-            case (MenuId::GlueSelConn): {
-                helper::glu_connection();
-            } break;
-            case (MenuId::GlueChatroom): {
-                helper::glu_chat();
-            } break;
-            case (MenuId::GlueBattlenet): {
-                g_is_bnet = true;
-                g_glue_background_id = -1;
-                helper::glu_bnet();
-            } break;
-            case (MenuId::GlueLogin): {
-                g_is_bnet = false;
-                helper::glu_login();
-            } break;
-            case (MenuId::GlueCampaign): {
-                helper::glu_campaign();
-            } break;
-            case (MenuId::GlueReadyT): {
-                helper::glu_ready_terran();
-            } break;
-            case (MenuId::GlueReadyZ): {
-                helper::glu_ready_zerg();
-            } break;
-            case (MenuId::GlueReadyP): {
-                helper::glu_ready_protoss();
-            } break;
-            case (MenuId::GlueGameSel):
-            case (MenuId::GlueDirect): {
-                auto& provider_manager = snp::ProviderManager::instance();
-                if (provider_manager.is_crownlink()) {
-                    glu_join_crownlink();
-                } else {
-                    helper::glu_join();
-                }
-            } break;
-            case (MenuId::GlueCreate): {
-                helper::glu_create(false);
-            } break;
-            case (MenuId::GlueCreateMultiplayer): {
-                helper::glu_create(true);
-            } break;
-            case (MenuId::GlueLoad): {
-                helper::glu_load();
-            } break;
-            case (MenuId::GlueScoreZd):
-            case (MenuId::GlueScoreZv):
-            case (MenuId::GlueScoreTd):
-            case (MenuId::GlueScoreTv):
-            case (MenuId::GlueScorePd):
-            case (MenuId::GlueScorePv): {
-                // Temporary for Askosi
-                for (auto& player : g_player_table) {
-                    if (player.race > 2) player.race = RaceId::Terran;
-                }
-                helper::glu_scorescreen();
-            } break;
-            case (MenuId::GlueModem): {
-                helper::glu_modem();
-            } break;
-            case (MenuId::GlueExCampaign): {
-                glu_campaign_ex();
-            } break;
-            case (MenuId::GlueGeneric): {
-                helper::glu_generic();
-            } break;
-            case (MenuId::GlueOptions): {
-                glu_options();
-            } break;
-            default: { g_gl_glues_mode = MenuId::GlueMainMenu; } break;
-        }
-    }
-
-    // Hooked to load Crownlink integration
-    bool glu_connect_init_provider() { // 004bade0
-        auto& provider_manager = snp::ProviderManager::instance();
-        if (g_selected_snp == 'BNET') g_connect_next_menu = MenuId::GlueBattlenet;
-        if (!provider_manager.initialize_provider(g_selected_snp)) {
-            return false;
-        }
-        if (provider_manager.is_crownlink()) {
-            provider_manager.set_status_lobby(false);
-        }
-        g_connect_next_menu = MenuId::GlueLogin;
-        return true;
-    }
-
-    // Hooked to ensure we're cleaning up when calling SNetDestroy
-    void glu_destroy_provider() { // 00410112
-        auto& provider_manager = snp::ProviderManager::instance();
-        provider_manager.destroy_provider();
     }
 }

@@ -274,14 +274,14 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
 // Hooked to add support for factional and crig-based advisors. -Pr0nogo
 void game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) { // 0045EDD0
     g_trigger_portrait_active = 1;
-    helper::set_callback_timer(*g_portrait, 4, time, 0x0045E610);
+    helper::set_callback_timer(*g_portrait, 4, time, (TimerCallback)0x0045E610);
     GameKind game_kind = bw::get_game_kind();
     u32 portrait_id = units_dat::portrait_id[unit_id];
     if (game_kind == GameKind::Scenario || game_kind == GameKind::FactionWars) {
         portrait_id = helper::get_unit_portrait_override(unit_id);
     }
     helper::display_update_portrait(portrait_id, 0, 2);
-    helper::set_callback_timer(*g_portrait, 3, time, 0x0045EC40);
+    helper::set_callback_timer(*g_portrait, 3, time, (TimerCallback)0x0045EC40);
     if (x_pos != -1) {
         g_last_event_position->x = (x_pos - 320) & ((x_pos - 320 < 0) - 1);
         g_last_event_position->y = (y_pos - 200) & ((y_pos - 200 < 0) - 1);
@@ -424,10 +424,10 @@ void do_unit_event_notification(Unit* unit, u8 event, u32 timer, bool ping, u32 
         u32 portrait_id = helper::get_unit_portrait_override(helper::get_last_queue_slot_id(unit));
         helper::display_update_portrait(portrait_id, unit, 2);
         if (timer || message_id >= SoundIdLimit) {
-            helper::set_callback_timer(*g_portrait, 3, timer, 0x0045EC40);
+            helper::set_callback_timer(*g_portrait, 3, timer, (TimerCallback)0x0045EC40);
         } else {
             *g_notification_message_id = message_id;
-            helper::set_callback_timer(*g_portrait, 3, 1000, 0x0045EF50);
+            helper::set_callback_timer(*g_portrait, 3, 1000, (TimerCallback)0x0045EF50);
         }
         if (unit && ping) {
             helper::set_last_event_position(unit->position.x, unit->position.y);
@@ -482,8 +482,8 @@ void dialog_music_fade(u32 music_id) { // 004A6310
             g_music_volume = volume;
             if (g_options_list->music) {
                 g_big_music_volume = 4294963900;
-                KillTimer(*g_main_window, 3);
-                SetTimer(*g_main_window, 3, 0x14, (TIMERPROC)0x004A6030);
+                KillTimer(g_main_window, 3);
+                SetTimer(g_main_window, 3, 0x14, (TIMERPROC)0x004A6030);
             }
         } else {
             helper::play_music(music_id);

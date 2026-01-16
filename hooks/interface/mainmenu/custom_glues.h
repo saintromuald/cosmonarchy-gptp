@@ -5,20 +5,20 @@ class GluJoinCrownlinkContext {
 public:
     GluJoinCrownlinkContext()
         : m_labels({
-            GluJoinControls::LobbyPasswordLabel,
-            GluJoinControls::CrownLinkStatus,
-            GluJoinControls::GameTitle,
-            GluJoinControls::MapName,
-            GluJoinControls::GameType,
-            GluJoinControls::Replay,
-            GluJoinControls::SubType,
-            GluJoinControls::MapSize,
+        GluJoinControls::LobbyPasswordLabel,
+        GluJoinControls::CrownLinkStatus,
+        GluJoinControls::GameTitle,
+        GluJoinControls::MapName,
+        GluJoinControls::GameType,
+        GluJoinControls::Replay,
+        GluJoinControls::SubType,
+        GluJoinControls::MapSize,
         }),
         m_binfile("rez\\glujoincrownlink.bin") {
     }
 
     BinDlg* get_dialog() { return m_binfile.bin_dlg(); };
-    
+
     void update_crownlink_status();
     void load_selected_entry(BinDlg* dialog);
     void update_listbox(BinDlg* dialog);
@@ -45,7 +45,17 @@ private:
     std::list<std::string> m_listbox_entries;
 };
 
+void glu_main();
+void glu_login();
+void glu_provider_select(bool from_crownlink);
+void glu_join();
+void glu_join_crownlink();
+void glu_singleplayer();
+void glu_options();
+void glu_chat();
+
+void glu_main_switch();
 
 namespace hooks {
-void glu_join_crownlink();
-} // namespace hooks
+void inject_custom_glues();
+}

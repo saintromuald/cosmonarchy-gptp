@@ -1,9 +1,11 @@
 #include "console.h"
-#include <Windows.h>
+
 #include "BW/api.h"
 #include "BW/structures.h"
 #include "BW/bwdata.h"
 #include "hooks/interface/uifeatures/ui_features.h"
+
+#include <numeric>
 
 namespace hooks {
 void load_racial_sounds(bool enable) { // 0048fb40
@@ -168,10 +170,8 @@ static SurfaceContext* console_create_surface(u32 offset_x, u32 offset_y, Bitmap
 }
 
 void load_console_image() {
-    auto race_char = get_race_initial((RaceId::Enum)g_console_index).value_or('t');
-
+    auto race_char = g_is_in_replay ? 'n' : get_race_initial((RaceId::Enum)g_console_index).value_or('t');
     auto filename = std::format("game\\{}console.pcx", race_char);
-    g_console_image.buffer;
 
     // Load bitmap from file
     u8* buffer_out;
@@ -215,8 +215,8 @@ void load_command_buttons() { // 00459b90
 
     auto initial = get_race_initial((RaceId::Enum)g_console_index).value_or('t');
     auto filename = std::format("unit\\cmdbtns\\{}cmdbtns.grp", initial);
-    g_cmdbtns_grp = load_graphic(filename.c_str(), 0, __FILE__, __LINE__);
-    g_cmdicons_grp = load_graphic("unit\\cmdbtns\\cmdicons.grp", 0, __FILE__, __LINE__);
+    g_cmdbtns_grp = load_file_smemalloc<GrpHead>(filename.c_str(), __FILE__, __LINE__);
+    g_cmdicons_grp = load_file_smemalloc<GrpHead>("unit\\cmdbtns\\cmdicons.grp", __FILE__, __LINE__);
 
     if (!SBmpLoadimage("unit\\cmdbtns\\ticon.pcx", 0, (u8*)&g_new_cmdbtn_palette, sizeof(g_new_cmdbtn_palette), 0, 0, 0)) {
         helper::fatal_file_not_found(SErrGetLastError(), "unit\\cmdbtns\\ticon.pcx");
@@ -229,9 +229,9 @@ void load_command_buttons() { // 00459b90
 
     auto dialog = load_file_smemalloc<BinDlg>(filename.c_str(), __FILE__, __LINE__);
     dialog->flags |= 0x4;
-    helper::alloc_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
+    helper::fixup_and_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
     g_buttonset_dialog = dialog;
-    helper::initialize_dialog(helper::statbtn_dlgproc, dialog);
+    initialize_dialog(dialog, helper::statbtn_dlgproc);
 }
 
 void load_textbox() { //004f37c0
@@ -239,44 +239,37 @@ void load_textbox() { //004f37c0
     auto filename = std::format("rez\\{}textbox.bin", initial);
     auto dialog = load_file_smemalloc<BinDlg>(filename.c_str(), __FILE__, __LINE__);
     dialog->flags |= 0x4;
-    helper::alloc_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
+    helper::fixup_and_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
     g_textbox_dialog = dialog;
-    helper::initialize_dialog(helper::textbox_dlgproc, dialog);
+    initialize_dialog(dialog, helper::textbox_dlgproc);
 }
 
 void load_statlb() { // 004bed70
-    if (g_multiplayer_mode != 0 && g_is_in_replay == 0) {
-        if (g_game_data.victory_condition != 3 && g_game_data.victory_condition != 6) {
-            return;
-        }
-    }
-    if (g_game_data.victory_condition == 0) {
-        if (g_game_data.starting_units != 0 || g_game_data.tournament_mode_enabled != 0) {
-            return;
-        }
+    bool is_standard_melee = (g_game_data.victory_condition == VictoryCondition::Default &&
+        g_game_data.starting_units == 0 &&
+        g_game_data.tournament_mode_enabled == 0);
+
+    bool should_show_statlb = !g_multiplayer_mode ||
+        g_game_data.victory_condition == VictoryCondition::Greed ||
+        g_game_data.victory_condition == VictoryCondition::Slaughter ||
+        is_standard_melee ||
+        g_is_in_replay;
+
+    if (!should_show_statlb) {
+        return;
     }
 
     g_statlb_unk = 0;
     g_show_statlb = true;
 
-    auto dialog = load_file_smemalloc<BinDlg>("rez\\statlb.bin", __FILE__, __LINE__);
-    dialog->flags |= 0x4;
-    helper::alloc_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
-    g_statlb_dialog = dialog;
-    helper::initialize_dialog(helper::statlb_dlgproc, dialog);
-}
-
-void load_statres() { // 004e5990
-    g_icons_grp = load_graphic("game\\icons.grp", 0, __FILE__, __LINE__);
-
-    auto dialog = load_file_smemalloc<BinDlg>("rez\\statres.bin", __FILE__, __LINE__);
-    helper::alloc_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
-    g_statres_dialog = dialog;
-    helper::initialize_dialog(helper::statres_dlgproc, dialog);
+    g_statlb_dialog = load_file_smemalloc<BinDlg>("rez\\statlb.bin", __FILE__, __LINE__);
+    g_statlb_dialog->flags |= 0x4;
+    helper::fixup_and_init_dialog_data(g_statlb_dialog, helper::alloc_background_image, __FILE__, __LINE__);
+    initialize_dialog(g_statlb_dialog, helper::statlb_dlgproc);
 }
 
 void load_wireframe_palette() { // 00456a90
-    g_wirefram_grp = load_graphic("unit\\wirefram\\wirefram.grp", 0, __FILE__, __LINE__);
+    g_wirefram_grp = load_file_smemalloc<GrpHead>("unit\\wirefram\\wirefram.grp", __FILE__, __LINE__);
     if (!SBmpLoadimage("game\\twire.pcx", 0, &g_wireframe_colors[0], sizeof(g_wireframe_colors), 0, 0, 0)) {
         helper::fatal_file_not_found(SErrGetLastError(), "game\\twire.pcx");
     };
@@ -284,9 +277,9 @@ void load_wireframe_palette() { // 00456a90
 
 void load_statf10() { // 004f5300
     auto dialog = load_file_smemalloc<BinDlg>("rez\\stat_f10.bin", __FILE__, __LINE__);
-    helper::alloc_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
+    helper::fixup_and_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
     g_stat_f10_dialog = dialog;
-    helper::initialize_dialog(helper::stat_f10_dlgproc, dialog);
+    initialize_dialog(dialog, helper::stat_f10_dlgproc);
 }
 
 // This is WIP and currently doesn't work
@@ -348,7 +341,7 @@ void load_statfluf_mouse_regions() {
         BinDlg* dialog = load_file_smemalloc<BinDlg>("rez\\statfluf.bin", __FILE__, __LINE__);
         dialog->flags |= 4;
 
-        helper::alloc_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
+        helper::fixup_and_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
 
         region.dialog = dialog;
 
@@ -360,7 +353,7 @@ void load_statfluf_mouse_regions() {
         dialog->onInitDialog0x36.response_area_width = region.w;
         dialog->onInitDialog0x36.response_area_height = region.h;
 
-        helper::initialize_dialog((BinDlgProc)0x004f4d60, dialog);
+        initialize_dialog(dialog, helper::statfluf_dlgproc);
     }
 }
 

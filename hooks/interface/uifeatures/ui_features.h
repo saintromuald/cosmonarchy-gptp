@@ -78,10 +78,6 @@ static bool is_valid_race(RaceId::Enum race);
 u8 load_races_dropdown(BinDlg* dialog, RaceId::Enum race);
 void load_races_dropdown_singleplayer(BinDlg* dialog);
 
-void glu_main_swich();                                                              // 004de45e
-bool glu_connect_init_provider();                                                   // 004bade0
-void glu_destroy_provider();                                                        // 00410112
-
 void inject_ui_features_hooks();
 }
 

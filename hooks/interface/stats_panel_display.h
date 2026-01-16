@@ -1,8 +1,27 @@
 #pragma once
-#include "../../BW/structures/Unit.h"
-#include "../../BW/structures.h"
+#include "BW/structures.h"
+#include "hooks/interface/console/console.h"
 
 u16 __fastcall get_stat_icon_graphic(u8 value);
+
+enum class tooltip_resource {
+    Minerals,
+    Gas,
+    Energy,
+    Unused,
+    BuildTime,
+    PSupply,
+    TSupply,
+    ZSupply,
+};
+
+struct tooltip_resource_cost {
+    tooltip_resource resource;
+    u16* value;
+    GrpFile* grp;
+    u16 index;
+    bool use_race_offset;
+};
 
 namespace hooks {
 void stats_panel_display(BinDlg* dialog);																										// 00426C60

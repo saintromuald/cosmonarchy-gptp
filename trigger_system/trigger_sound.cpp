@@ -72,7 +72,7 @@ void init_direct_sound() {
 		wave_format.nAvgBytesPerSec = wave_format.nSamplesPerSec * wave_format.nBlockAlign;
 		wave_format.cbSize = 0;
 
-		if (SUCCEEDED(g_direct_sound->SetCooperativeLevel(*(HWND*)g_main_window, DSSCL_PRIORITY))) {
+		if (SUCCEEDED(g_direct_sound->SetCooperativeLevel(g_main_window, DSSCL_PRIORITY))) {
 			DSBUFFERDESC buffer_description = {};
 			buffer_description.dwSize = sizeof(DSBUFFERDESC);
 			buffer_description.dwFlags = DSBCAPS_PRIMARYBUFFER;
@@ -484,7 +484,7 @@ SoundMainBuffer* get_next_music() {
 }
 
 static bool is_main_window_focused() {
-	return GetForegroundWindow() == *g_main_window;
+	return GetForegroundWindow() == g_main_window;
 }
 
 VolumePan calculate_volume_pan(PlaySoundSettings& settings) {
