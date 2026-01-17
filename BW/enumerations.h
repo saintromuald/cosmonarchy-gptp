@@ -275,10 +275,12 @@ inline std::optional<char> get_race_initial(RaceId::Enum race) {
 
 inline TextColor get_race_textcolor(RaceId::Enum race) {
     switch (race) {
-        case RaceId::Zerg:    return TextColor::Red;
-        case RaceId::Terran:  return TextColor::RiverBlue;
-        case RaceId::Protoss: return TextColor::Yellow;
-        case RaceId::Askosi:  return TextColor::DarkGreen;
+        case RaceId::Zerg:        return TextColor::Purple;
+        case RaceId::Terran:      return TextColor::RiverBlue;
+        case RaceId::Protoss:     return TextColor::Yellow;
+        case RaceId::Askosi:      return TextColor::DarkGreen;
+        case RaceId::Bloodsummon: return TextColor::Red;
+        case RaceId::Kogri:       return TextColor::Grey2;
     }
     return TextColor::White;
 }
