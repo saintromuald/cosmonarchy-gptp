@@ -69,6 +69,12 @@ void RaceRandomizer::process_randomization() {
             m_randomized_players.push_back(player);
         }
     }
+    cleanup_and_reset();
+}
+
+void RaceRandomizer::cleanup_and_reset() {
+    m_player_race_flags = {};
+    m_player_race_flags[0] = m_race_flags;
 }
 
 RaceRandomizer::RaceRandomizer() {
@@ -77,6 +83,7 @@ RaceRandomizer::RaceRandomizer() {
     for (auto& race : races) {
         m_race_flags |= magic_enum::enum_cast<RaceFlags>(race).value_or(RaceFlags::None);
     }
+    cleanup_and_reset();
 }
 
 void RaceRandomizer::save_config() {

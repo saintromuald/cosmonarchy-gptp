@@ -68,6 +68,7 @@ public:
     void set_race_flags(RaceFlags race_flags) { m_race_flags = race_flags; };
     void set_race_flags(u32 race_flags) { m_race_flags = static_cast<RaceFlags>(race_flags); };
     RaceFlags race_flags() const { return m_race_flags; };
+    void cleanup_and_reset();
 
 
 private:
