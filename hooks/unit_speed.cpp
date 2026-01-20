@@ -125,13 +125,13 @@ namespace hooks {
             speed *= 0.5;
         }
 
-        // Infestation - Slow
-        if (unit_ext.values[ValueReclaimed] || unit_ext.values[ValueInfested]) {
+        if (unit_ext.values[ValueReclaimed]) {
             speed *= 0.75;
         }
 
+        // Infestation - Slow
         if (unit_ext.values[ValueInfested] && bw::get_game_kind() != GameKind::Embraced) {
-            speed *= 0.75;
+            speed *= 0.66;
         }
 
         // Shade - speed steroid
