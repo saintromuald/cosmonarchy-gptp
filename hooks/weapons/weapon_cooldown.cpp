@@ -12,33 +12,13 @@ namespace hooks {
 			return armor_pen;
 		}
 
-		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->values[ValueTriggerArmorPenBaseSet]) {
-			armor_pen = unit_ext->values[ValueTriggerArmorPenBaseAmount];
+		const auto& unit_ext = unit->ext();
+		if (unit_ext.values[ValueTriggerArmorPenBaseSet]) {
+			armor_pen = unit_ext.values[ValueTriggerArmorPenBaseAmount];
 		}
 
-		armor_pen += unit_ext->unit_vectors[UnitVectorBarghests].size();
-		armor_pen += unit_ext->unit_vectors[UnitVectorManifolds].size();
-
-		switch (unit->id) {
-			case UnitId::TerranOlympian: {
-				// Olympian Dishonorable Discharge - add 3 armor pen to targets facing away from the Olympian
-				// Audiovisuals should be handled in weapon_damage eventually to account for behaviors that make attacks miss, redirect, etc
-				if (target && !units_dat::group_flags[target->id].is_building) {
-					if (bw::unit_is_exposed_to(target, unit->position)) {
-						auto& target_ext = target->ext();
-						if (!target_ext.timers[TimerOlympianMythicalMightSFX]) {
-							helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, target, 1, 0);
-							target_ext.timers[TimerOlympianMythicalMightSFX] = 3;
-						}
-						u32 overlay_id = bw::rand_between(SpriteId::OlympianDishonorableDischarge1, SpriteId::OlympianDishonorableDischarge3);
-						bw::create_and_init_thingy(overlay_id, target->position.x, target->position.y, unit->player, target->sprite->elevation + 1);
-						armor_pen += 3;
-					}
-				}
-			} break;
-		}
-
+		armor_pen += unit_ext.unit_vectors[UnitVectorBarghests].size();
+		armor_pen += unit_ext.unit_vectors[UnitVectorManifolds].size();
 		return armor_pen;
 	}
 
