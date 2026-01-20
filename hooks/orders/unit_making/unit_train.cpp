@@ -85,8 +85,7 @@ namespace hooks {
 
 	// generic unit training function
 	void order_train(Unit* unit) {
-		UnitExt* unitExt = get_unit_ext(unit);
-		if (!(unit->status & UnitStatus::Frozen) && !unit->is_frozen()) {
+		if (!unit->is_frozen()) {
 			bool jump_to_685D8 = false;
 			if (unit->secondary_order_state <= 1) {
 				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {
@@ -108,7 +107,6 @@ namespace hooks {
 			} else if (unit->secondary_order_state == 2) {
 				Unit* built_unit = unit->current_build_unit;
 				if (built_unit) {
-					UnitExt* built_unit_ext = get_unit_ext(built_unit);
 					u32 hp_gain = helper::progress_build_get_hp_gain(built_unit);
 					cm::progress_build(built_unit, {
 						.builder = unit,
@@ -161,6 +159,7 @@ namespace hooks {
 							helper::clear_building_ai_queue_slot(unit, unit->build_queue_slot);
 							unit->build_queue[unit->build_queue_slot] = UnitId::None;
 							unit->build_queue_slot = (unit->build_queue_slot + 1) % 5;
+							unit->play_completion_sfx();
 							jump_to_685D8 = true;
 						}
 					} else { // unit was canceled due to lack of space around the building
@@ -229,8 +228,7 @@ namespace hooks {
 			unit->parasite_flags = 0;
 			unit->is_blind = 0;
 			helper::unit_completion_init(unit, 0);
-			for (Image* image = unit->sprite->images.head; image; image = image->link.next)
-			{
+			for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
 				play_image_iscript(image, IscriptAnimation::Built);
 			}
 
@@ -251,8 +249,7 @@ namespace hooks {
 	}
 
 	// Hooked to investigate the "upper map bound" fail state for Seraph training. -Pr0nogo
-	Unit* attempt_train_hatch_unit(u16 unit_id, Unit* source, u32 show_error) // 00468200
-	{
+	Unit* attempt_train_hatch_unit(u16 unit_id, Unit* source, u32 show_error) { // 00468200
 		if (source->status & UnitStatus::GroundedBuilding
 		||  source->id == UnitId::ProtossSolarion
 		||  source->id == UnitId::ProtossAccantorOld

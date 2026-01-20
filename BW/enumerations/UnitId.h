@@ -382,6 +382,7 @@ namespace UnitId {
         AskosiFunction                                      = 462,
         AskosiGauntlet                                      = 463,
         AskosiCosmoscope                                    = 464,
+        AskosiBounty                                        = 510,
 
     // Special-Unit
         ExtTerranCivilian									= 332,

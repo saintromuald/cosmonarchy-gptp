@@ -4012,7 +4012,7 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::MaverickFuturistGaussSlugger:        return bw::rand_between(SoundId::MaverickFuturistWeaponfire01, SoundId::MaverickFuturistWeaponfire03);
         case WeaponId::HotshotDispatchShotgun:              return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
         case WeaponId::CannibalZuluSidekicks:               return bw::rand_between(SoundId::CannibalWeaponfire01, SoundId::CannibalWeaponfire04);
-        case WeaponId::EidolonCoronerRifle:                 return SoundId::Bullet_TGhFir00_wav;
+        case WeaponId::EidolonCoronerRifle:                 return bw::rand_between(SoundId::EidolonWeaponfire01, SoundId::EidolonWeaponfire03);
         case WeaponId::EidolonNydusRevenantRifle:           return bw::rand_between(SoundId::EidolonNydusWeaponfire01, SoundId::EidolonNydusWeaponfire05);
         case WeaponId::MadcapDanannAutogun:                 return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
         case WeaponId::BlackguardAsoniCarbine:              return bw::rand_between(SoundId::BlackguardWeaponfire01, SoundId::BlackguardWeaponfire04);;

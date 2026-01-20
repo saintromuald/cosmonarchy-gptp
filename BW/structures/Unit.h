@@ -437,6 +437,9 @@ struct Unit : public UnitLayout {
     bool can_proc_autovitality(u32 attacking_player, u32 shield_reduce, u32 damage);
     bool can_be_passive_cloaked(Unit* source);
     bool can_transport_air();
+    bool can_play_training_sfx();
+    void play_training_sfx();
+    void play_completion_sfx();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

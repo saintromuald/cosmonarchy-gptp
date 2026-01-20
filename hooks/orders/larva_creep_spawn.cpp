@@ -27,6 +27,7 @@ namespace hooks {
                 if (building->unit_ai) {
                     helper::ai_training_overlord(unit, building);
                 }
+                bw::play_sound({SoundId::LarvaSpawn01, SoundId::LarvaSpawn03}, unit);
             }
         } else {
             building->building.larva_timer = 3;
