@@ -1826,6 +1826,15 @@ namespace hooks {
                         }
                         return TECH_HIDDEN;
                     }
+                    case UnitId::TerranArhaun: {
+                        if (faction == Faction::TerranHecatonCoalition) {
+                            if (in_air) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
                     case UnitId::TerranAspirant: {
                         if (faction == Faction::TerranGoldenRepublic) {
                             if (in_air) {
