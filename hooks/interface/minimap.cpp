@@ -307,7 +307,7 @@ namespace hooks {
 		}
 	}
 
-	void __cdecl setMapSizeConstants() {//TODO: Doesn't handle map dimensions smaller than 64.
+	void __cdecl set_map_size_constants() {//TODO: Doesn't handle map dimensions smaller than 64.
 		u32 map_width = g_map_tile_size->width;
 		u32 map_height = g_map_tile_size->height;
 		u32 map_size = map_width <= map_height ? map_height : map_width;
@@ -326,7 +326,7 @@ namespace hooks {
 				map_height >>= 1;
 				*g_minimap_surface_CB = minimapSurfaceUpdate_256;
 				*g_minimap_vision_CB = minimapVisionUpdate_256;
-			} else {//map size == 192
+			} else { // map size == 192
 				map_width <<= 1;
 				map_width = DIV_ROUND_UP(map_width, 3);
 				map_height <<= 1;
@@ -365,7 +365,7 @@ namespace hooks {
 		minimap_dlg->bounds.top += offset;
 		minimap_dlg->bounds.bottom -= offset;
 
-		//inline of createMinimapSurface @ 0x004A3720
+		// inline of createMinimapSurface @ 0x004A3720
 		Bitmap* surf_buff = g_minimap_surface;
 		Bitmap* surf_buff_fog = g_minimap_surface_fog;
 		surf_buff->width = map_width;
@@ -374,7 +374,7 @@ namespace hooks {
 		surf_buff_fog->height = map_height;
 		surf_buff->buffer = (u8*)malloc(map_width * map_height);
 		surf_buff_fog->buffer = (u8*)malloc(map_width * map_height);
-		//end of createMinimapSurface
+		// end of createMinimapSurface
 
 		RECT minimap_rect = *g_minimap_rect;
 		minimap_rect.left = minimap_dlg->bounds.left;
@@ -414,7 +414,7 @@ namespace hooks {
 		ping_array->player = color;
 	}
 
-	void __fastcall MinimapImageUpdate(BinDlg* minimap, int dummy0, int dummy1, int dummy2) {
+	void __fastcall minimap_image_update(BinDlg* minimap, int dummy0, int dummy1, int dummy2) {
 		Bitmap* surface = g_minimap_surface_fog;
 		Bounds drawbounds = { 0, 0, surface->width - 1, surface->height - 1, surface->width, surface->height };
 		helper::blit_surface(&drawbounds, surface, minimap->bounds.left, minimap->bounds.top);
@@ -424,7 +424,7 @@ namespace hooks {
 			u32 box_y = (u32)minimap->bounds.top + g_move_to_y / zoom_level;
 			u32 box_x = (u32)minimap->bounds.left + g_move_to_x / zoom_level;
 			
-			//inline and simplification of DrawRectangle @ 0x004A37A0
+			// inline and simplification of DrawRectangle @ 0x004A37A0 - GPTP
 			u32 surf_w = ((Bitmap*)(*g_current_surface))->width;
 			u8* surf_buff = ((Bitmap*)(*g_current_surface))->buffer + surf_w * box_y + box_x;
 			u32 height = box_height - 1;
@@ -459,7 +459,7 @@ namespace hooks {
 				} while (rep);
 			} while (--i_0 >= 0);
 
-			//similar to DrawVerticalLine @ 0x0041D7D0, but draws both lines simultaneously
+			// similar to DrawVerticalLine @ 0x0041D7D0, but draws both lines simultaneously -GPTP
 			width = box_width;
 			i_0 = height - 1;
 
@@ -471,13 +471,13 @@ namespace hooks {
 		}
 	}
 
-	void draw_unit_box(s32 posX, u8 color, s32 posY, u32 sizeX, u32 sizeY, bool isBuilding) {
+	void draw_unit_box(s32 posX, u8 color, s32 posY, u32 sizeX, u32 sizeY, bool is_building) {
 		++*g_minimap_unit_box_count;
 		s32 size_x;
 		s32 size_y;
 		u32 zoom_level = *g_minimap_zoom_level;
 
-		if (isBuilding) {
+		if (is_building) {
 			size_x = sizeX >> 1;
 			size_y = sizeY >> 1;
 			sizeX = DIV_ROUND_UP(sizeX, zoom_level);
@@ -517,7 +517,7 @@ namespace hooks {
 			pos_y = g_map_height - sizeY;
 		}
 
-		//inline and simplification of DrawBox @ 0x004E1D20
+		// inline and simplification of DrawBox @ 0x004E1D20 -GPTP
 		u32 surf_w = ((Bitmap*)(*g_current_surface))->width;
 		u8* surf_buff = ((Bitmap*)(*g_current_surface))->buffer + surf_w * pos_y + pos_x;
 		u8 remainder = sizeX & 1;
@@ -540,8 +540,8 @@ namespace hooks {
 		} while (--i_0 >= 0);
 	}
 
-	void minimapGameMouseUpdate(BinDlg* minimap) {
-		//Truncated.
+	void minimap_game_mouse_update(BinDlg* minimap) {
+		// Truncated. -GPTP
 		u16 pos_x = (*g_mouse).x - (box_width >> 1);
 		u16 pos_y = (*g_mouse).y - (box_height >> 1);
 		helper::get_minimap_cursor_pos(&pos_x, &pos_y);

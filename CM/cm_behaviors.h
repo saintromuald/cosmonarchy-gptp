@@ -33,6 +33,7 @@ void ascend_corpses_in_area(Point16 position, SearchRadius radius, u32 player);
 void avenge_or_ascend_corpses_in_area(Point16 position, u32 radius, u32 player);
 void avenge_or_ascend_corpses_in_area(Point16 position, SearchRadius radius, u32 player);
 u32 unit_avenges_or_ascends(Unit* unit); // Returns (source_player + 1) if should avenge/ascend, returns 0 otherwise 
+void salvage_corpse(Thingy* corpse, u32 player);
 
 void incubate(Unit* target, u32 count, u32 unit_id, u32 player);
 void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);

@@ -591,6 +591,11 @@ namespace hooks {
                 data.target->plague_timer = Plague::MiasmaTimer;
                 target_ext.values[ValueMiasma] = 1;
             } break;
+            case WeaponId::ScepterOrmaScrapray:
+            case WeaponId::HelionUskoScrapray: {
+                target_ext.timers[TimerGoldRush] = 2 * 24;
+                target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
+            } break;
         }
 
         switch (data.target->id) {

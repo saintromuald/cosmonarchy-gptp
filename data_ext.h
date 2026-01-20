@@ -240,6 +240,8 @@ enum ExtValueId {
     ValueKethrostalorLaunchPos,
     ValueBloodyRain,
     ValueDontProcOnDeathEffects,
+    ValueTritonAbilityLaunchPos,
+    ValueGoldRushPlayer,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -413,6 +415,7 @@ enum ExtTimerId {
     TimerAmbientSFX,
     TimerMimicryCheck,
     TimerTerranWindup,
+    TimerGoldRush,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
