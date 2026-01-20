@@ -26,7 +26,7 @@ void augur_proc(Unit* augur, s32 radius) {
         if (bw::is_allied_to(unit->player, augur->player)) {
             return false;
         }
-        if (unit->status & UnitStatus::Invincible) {
+        if (unit->is_invincible()) {
             return false;
         }
         return true;

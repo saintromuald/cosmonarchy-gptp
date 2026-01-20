@@ -211,7 +211,7 @@ void avenge_or_ascend_corpses_in_area(Point16 position, SearchRadius radius, u32
 }
 
 u32 unit_avenges_or_ascends(Unit* unit) {
-	UnitExt* unit_ext = get_unit_ext(unit);
+	auto& unit_ext = unit->ext();
 
 	// Avenge
 	bool avenges = false;
@@ -224,9 +224,9 @@ u32 unit_avenges_or_ascends(Unit* unit) {
 			avenges = true;
 		} break;
 		default: {
-			if (unit_ext->values[ValueIsZombified]) {
+			if (unit_ext.values[ValueIsZombified]) {
 				avenges = true;
-			} else if (unit_ext->timers[TimerHeraldAvenge]) {
+			} else if (unit_ext.timers[TimerHeraldAvenge]) {
 				avenges = true;
 			}
 		} break;
@@ -237,10 +237,10 @@ u32 unit_avenges_or_ascends(Unit* unit) {
 
 	// Ascend
 	s32 ascend_player = -1;
-	if (unit_ext->values[ValueSignifyStacks] >= 5) {
-		ascend_player = unit_ext->values[ValueSignifyPlayer];
-	} else if (unit_ext->timers[TimerPariahHit]) {
-		ascend_player = unit_ext->values[ValuePariahHitPlayer];
+	if (unit_ext.values[ValueSignifyStacks] >= 5) {
+		ascend_player = unit_ext.values[ValueSignifyPlayer];
+	} else if (unit_ext.timers[TimerPariahHit]) {
+		ascend_player = unit_ext.values[ValuePariahHitPlayer];
 	}
 
 	if (ascend_player >= 0 && !bw::are_mutual_allies(unit->player, ascend_player)) {
@@ -249,17 +249,39 @@ u32 unit_avenges_or_ascends(Unit* unit) {
 	return 0;
 }
 
-void incubate(Unit* target, u32 count, u32 unit_id, u32 player) {
-	UnitExt* target_ext = get_unit_ext(target);
-	if (target_ext->timers[TimerIncubationArm]
-		||  units_dat::base_property[target->id] & UnitProperty::Invincible
-		||  unit_id_is_broodspawn(target->id)) {
+void salvage_corpse(Thingy* corpse, u32 player) {
+	ThingyExt* corpse_ext = get_thingy_ext(corpse);
+	UnitId::Enum unit_id = (UnitId::Enum)corpse_ext->unit_id;
+
+	if (player_id_is_extended(player)) {
 		return;
 	}
-	target_ext->values[ValueIncubationCount] = count; 
-	target_ext->values[ValueIncubationUnitId] = unit_id; 
-	target_ext->values[ValueIncubationPlayer] = player;
-	target_ext->timers[TimerIncubationArm] = 2 * 24 + 1;
+	u32 mineral_cost = units_dat::mineral_cost[unit_id] / 4;
+	u32 vespene_cost = units_dat::vespene_cost[unit_id] / 4;
+	// TODO: Probably offload this to a function that adds resources to players more generically
+	g_game_minerals[player] += mineral_cost;
+	g_total_minerals[player] += mineral_cost;
+	g_aiscript_controller[player].minerals_available += mineral_cost;
+	g_game_vespene[player] += vespene_cost;
+	g_total_vespene[player] += vespene_cost;
+	g_aiscript_controller[player].vespene_available += vespene_cost;
+
+	Point16 pos = corpse->sprite->position;
+	bw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
+	// TODO: SFX
+
+	consume_corpse(corpse);
+}
+
+void incubate(Unit* target, u32 count, u32 unit_id, u32 player) {
+	auto& target_ext = target->ext();
+	if (target_ext.timers[TimerIncubationArm] || target->is_invincible() || unit_id_is_broodspawn(target->id)) {
+		return;
+	}
+	target_ext.values[ValueIncubationCount] = count; 
+	target_ext.values[ValueIncubationUnitId] = unit_id; 
+	target_ext.values[ValueIncubationPlayer] = player;
+	target_ext.timers[TimerIncubationArm] = 2 * 24 + 1;
 	bw::add_unit_overlay(target, ImageId::ParasiteOverlay);
 }
 
@@ -269,11 +291,11 @@ void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp) {
 	egg->build_queue[egg->build_queue_slot] = unit_id;
 	egg->set_hitpoints(hp);
 
-	UnitExt* egg_ext = get_unit_ext(egg);
-	egg_ext->values[ValueCustomEggActive]   = true;
-	egg_ext->timers[TimerCustomEggHatch]    = time;
-	egg_ext->values[ValueCustomEggHatchMax] = time;
-	egg_ext->values[ValueCustomEggHpMax]    = hp;
+	auto& egg_ext = egg->ext();
+	egg_ext.values[ValueCustomEggActive]   = true;
+	egg_ext.timers[TimerCustomEggHatch]    = time;
+	egg_ext.values[ValueCustomEggHatchMax] = time;
+	egg_ext.values[ValueCustomEggHpMax]    = hp;
 }
 
 void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id) {
