@@ -217,7 +217,7 @@ namespace hooks {
 
     // Hooked to show doodad sprites in quasi-fog. -Pr0nogo
     b32 update_doodad_visibility(Thingy* thingy) { // 00487690
-        if (thingy->sprite->flags & SpriteFlags::Hidden) {
+        if (thingy->sprite->is_hidden()) {
             return false;
         }
 
@@ -1562,6 +1562,7 @@ namespace hooks {
                         bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
                         corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
                         corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+                        bw::play_sound({SoundId::UltrokorConsume01, SoundId::UltrokorConsume03}, unit);
                         break;
                     }
                 }
@@ -1642,11 +1643,14 @@ namespace hooks {
                         unit->order_computer(OrderId::ZergBirth);
                     }
                 }
-                
-                if ((unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon) && unit->order_signal & 8) {
-                    unit->order_signal &= ~0x8;
-                    helper::replace_sprite_images(unit->sprite, unit->id == UnitId::ZergEgg ? ImageId::Egg : ImageId::GuardianCocoon, 0);
-                    unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
+                if (unit_id_is_zerg_egg(unit->id)) {
+                    if (unit->order_signal & 8) {
+                        unit->order_signal &= ~0x8;
+                        helper::replace_sprite_images(unit->sprite, unit->id == UnitId::ZergEgg ? ImageId::Egg : ImageId::GuardianCocoon, 0);
+                        unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
+                    } else if (unit->can_play_training_sfx()) {
+                        unit->play_training_sfx();
+                    }
                 }
             } break;
             case UnitId::ProtossStarSovereign: {
@@ -1878,16 +1882,21 @@ namespace hooks {
                     break;
                 }
                 if (!unit_ext.timers[TimerBulwarkAstralSplendor]) {
-                    unit_ext.timers[TimerBulwarkAstralSplendor] = 48;
+                    u32 cooldown = ProtossBulwark::AstralSplendorCooldown;
+                    if (unit_ext.unit_vectors[UnitVectorCrucibles].size()) {
+                        cooldown /= 1.5;
+                    }
+                    unit_ext.timers[TimerBulwarkAstralSplendor] = cooldown;
 
                     // TODO: Unique audiovisuals!
                     bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
+                    bw::play_sound({SoundId::BulwarkAmbient01, SoundId::BulwarkAmbient03}, unit->position);
                     for (Unit* target : g_unit_search.radial(unit->position, ProtossBulwark::AstralSplendorRange).filter(unit, FilterAlly | FilterCompleted)) {
                         auto& target_ext = target->ext();
                         if (target_ext.timers[TimerAstralSplendorCooldown] || target->shields < target->max_shields() * 256) {
                             continue;
                         }
-                        target_ext.timers[TimerAstralSplendorCooldown] = 48;
+                        target_ext.timers[TimerAstralSplendorCooldown] = cooldown;
                         target->heal_shields(ProtossBulwark::AstralSplendorShieldAmount, unit);
 
                         // TODO: Unique audiovisuals!
@@ -2503,6 +2512,29 @@ namespace hooks {
                     unit->spell_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PsiStorm) * 1.25;
                 }
             } break;
+            case UnitId::TerranMinistry:
+            case UnitId::TerranTreasury:
+            case UnitId::TerranStockade:
+            case UnitId::TerranFulcrum:
+            case UnitId::TerranStarpad:
+            case UnitId::ProtossNexus:
+            case UnitId::ProtossEmbassy:
+            case UnitId::ProtossGateway:
+            case UnitId::ProtossGrandLibrary:
+            case UnitId::ProtossRogueGallery:
+            case UnitId::ProtossProstrationStage:
+            case UnitId::ProtossAncestralArchives:
+            case UnitId::ProtossLattice:
+            case UnitId::ProtossArdentAuthority:
+            case UnitId::ProtossUnitaryUnion:
+            case UnitId::ProtossSyntheticSynod:
+            case UnitId::ProtossStargate:
+            case UnitId::ProtossArgosy:
+            case UnitId::ProtossMonumentOfSin: {
+                if (unit->can_play_training_sfx()) {
+                    unit->play_training_sfx();
+                }
+            } break;
             case UnitId::ProtossCrucible: {
                 // Crucible - Khaydarin Charge stacks
                 if (unit->is_completed() && !unit->is_frozen()) {
@@ -2532,8 +2564,12 @@ namespace hooks {
                             target->update_speed();
                         }
                         if (!target->get_overlay(ImageId::CrucibleKhaydarinChargeOverlay)) {
-                            bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, { .underlay = true });
+                            bw::add_unit_overlay(target, ImageId::CrucibleKhaydarinChargeOverlay, {.underlay = true});
                         }
+                    }
+                    if (!unit_ext.timers[TimerAmbientSFX]) {
+                        unit_ext.timers[TimerAmbientSFX] = ProtossCrucible::AmbientSFXDelay;
+                        bw::play_sound(SoundId::CrucibleAmbient01, unit);
                     }
                 }
             } break;
@@ -2678,6 +2714,33 @@ namespace hooks {
                         auto& target_ext = target->ext();
                         if (!target_ext.timers[TimerSermonSalve]) {
                             target_ext.timers[TimerSermonSalve] = 3;
+                        }
+                    }
+                }
+            } break;
+            case UnitId::AskosiMimic: {
+                if (unit->can_use_passive_ability()) {
+                    for (Unit* ally : g_unit_search.radial(unit->position, AskosiMimic::MimicryRange).filter(unit, FilterAlly | FilterCombatant)) {
+                        ally->ext().timers[TimerMimicryCheck] = 3;
+                        if (ally->subunit && ally->subunit->is_subunit()) {
+                            ally->subunit->ext().timers[TimerMimicryCheck] = 3;
+                        }
+                    }
+                    bool do_heal = false;
+                    for (Thingy* corpse : g_corpse_search.radial(unit->position, 32)) {
+                        bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
+                        corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+                        corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+                        bw::play_sound({SoundId::AskosiScrap01, SoundId::AskosiScrap03}, corpse->sprite->position);
+                        do_heal = true;
+                        break;
+                    }
+                    if (do_heal) {
+                        for (Unit* ally : g_unit_search.radial(unit->position, Askosi::VitalRemainsRange).filter(unit, FilterAlly | FilterCompleted | FilterNoBuilding)) {
+                            if (ally->hitpoints < ally->get_max_hp_raw()) {
+                                ally->heal_hp(Askosi::VitalRemainsHeal, unit);
+                                helper::add_overlay_below_main(ally->sprite, ImageId::HealingPulseUnderlay, 0, 0, 0);
+                            }
                         }
                     }
                 }

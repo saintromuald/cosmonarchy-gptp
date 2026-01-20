@@ -187,11 +187,8 @@ namespace hooks {
 							helper::increment_unit_scores_ex(unit, -1, 0);
 						} break;
 					}
-
-					if (unit->is_completed()) {
-						unit->status -= UnitStatus::Completed;
-					}
-
+					unit->status &= ~UnitStatus::Completed;
+					
 					u16 egg_id = UnitId::None;
 					switch (unit->id) {
 						case UnitId::ZergLarva:

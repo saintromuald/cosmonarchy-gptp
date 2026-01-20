@@ -1,8 +1,7 @@
 #pragma once
 #include "../../../BW/structures/Unit.h"
 
-namespace hooks
-{
+namespace hooks {
 	s32 is_queue_slot_active(Unit* unit, u32 slot);
 	void secondary_order_train_fighter(Unit* unit);								// 00466790
 	void order_train(Unit* unit);												// 00468420

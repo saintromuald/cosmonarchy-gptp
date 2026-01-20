@@ -125,6 +125,26 @@ namespace Centaur {
 inline constexpr s32 MissileDistance = 4 * 32;
 }
 
+namespace TerranMinistry {
+inline constexpr s32 AmbientSFXDelay = 40;
+}
+
+namespace TerranTreasury {
+inline constexpr s32 AmbientSFXDelay = 25;
+}
+
+namespace TerranStockade {
+inline constexpr s32 AmbientSFXDelay = 34;
+}
+
+namespace TerranFulcrum {
+inline constexpr s32 AmbientSFXDelay = 36;
+}
+
+namespace TerranStarpad {
+inline constexpr s32 AmbientSFXDelay = 23;
+}
+
 namespace TerranFacade {
 inline constexpr s32 PryingEyesDuration = 10 * 24 + 1;
 inline constexpr s32 PryingEyesRange = 8 * 32;
@@ -220,6 +240,72 @@ inline constexpr f64 AIAbilLifePercentage = 0.5;
 inline constexpr s32 AIAbilTimer = 612;
 }
 
+namespace ProtossNexus {
+inline constexpr s32 AmbientSFXDelay = 37;
+}
+
+namespace ProtossEmbassy {
+inline constexpr s32 AmbientSFXDelay = 32;
+}
+
+namespace ProtossGateway {
+inline constexpr s32 AmbientSFXDelay = 41;
+}
+
+namespace ProtossGrandLibrary {
+inline constexpr s32 AmbientSFXDelay = 32;
+}
+
+namespace ProtossRogueGallery {
+inline constexpr s32 AmbientSFXDelay = 32;
+}
+
+namespace ProtossProstrationStage {
+inline constexpr s32 AmbientSFXDelay = 38;
+}
+
+namespace ProtossAncestralArchives {
+inline constexpr s32 AmbientSFXDelay = 24;
+}
+
+namespace ProtossLattice {
+inline constexpr s32 AmbientSFXDelay = 24;
+}
+
+namespace ProtossArdentAuthority {
+inline constexpr s32 AmbientSFXDelay = 27;
+}
+
+namespace ProtossUnitaryUnion {
+inline constexpr s32 AmbientSFXDelay = 18;
+}
+
+namespace ProtossSyntheticSynod {
+inline constexpr s32 AmbientSFXDelay = 51;
+}
+
+namespace ProtossStargate {
+inline constexpr s32 AmbientSFXDelay = 33;
+}
+
+namespace ProtossArgosy {
+inline constexpr s32 AmbientSFXDelay = 25;
+}
+
+namespace ProtossMonumentOfSin {
+inline constexpr s32 AmbientSFXDelay = 40;
+}
+
+namespace ProtossBulwark {
+inline constexpr s32 AstralSplendorShieldAmount = 10 * 256;
+inline constexpr s32 AstralSplendorRange = 8 * 32;
+inline constexpr s32 AstralSplendorCooldown = 24 * 2;
+}
+
+namespace ProtossCrucible {
+inline constexpr s32 AmbientSFXDelay = 184;
+}
+
 namespace Protoss {
 inline constexpr s32 AstralChargeRadius = 2 * 32;
 inline constexpr s32 VengefulMarchDuration = 1 * 24 + 1;
@@ -299,6 +385,11 @@ inline constexpr f64 ArmorReduction = 1;
 
 namespace Plague {
 inline constexpr s32 MiasmaTimer = 4;
+}
+
+namespace ZergEgg {
+inline constexpr s32 AmbientSFXDelayMin = 36;
+inline constexpr s32 AmbientSFXDelayMax = 120;
 }
 
 namespace Zerg {

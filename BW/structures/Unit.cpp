@@ -1673,3 +1673,112 @@ bool Unit::can_be_passive_cloaked(Unit* source) {
 bool Unit::can_transport_air() {
     return this->ext().values[ValueAirTransport];
 }
+
+bool Unit::can_play_training_sfx() {
+    if (!this->is_completed() && !unit_id_is_zerg_egg(this->id)) {
+        return false;
+    }
+    return !this->is_frozen() && this->build_queue[this->build_queue_slot] != UnitId::None && !this->ext().timers[TimerAmbientSFX];
+}
+
+void Unit::play_training_sfx() {
+    auto& unit_ext = this->ext();
+    s32 delay = 0;
+    SoundId::Enum sound_id = SoundId::None;
+    switch (this->id) {
+        case UnitId::TerranMinistry: {
+            sound_id = SoundId::MinistryAmbient01;
+            delay = TerranMinistry::AmbientSFXDelay;
+        } break;
+        case UnitId::TerranTreasury: {
+            sound_id = SoundId::TreasuryAmbient01;
+            delay = TerranTreasury::AmbientSFXDelay;
+        } break;
+        case UnitId::TerranStockade: {
+            sound_id = SoundId::StockadeAmbient01;
+            delay = TerranStockade::AmbientSFXDelay;
+        } break;
+        case UnitId::TerranFulcrum: {
+            sound_id = SoundId::FulcrumAmbient01;
+            delay = TerranFulcrum::AmbientSFXDelay;
+        } break;
+        case UnitId::TerranStarpad: {
+            sound_id = SoundId::StarpadAmbient01;
+            delay = TerranStarpad::AmbientSFXDelay;
+        } break;
+
+        case UnitId::ProtossNexus: {
+            sound_id = SoundId::NexusAmbient01;
+            delay = ProtossNexus::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossEmbassy: {
+            sound_id = SoundId::EmbassyAmbient01;
+            delay = ProtossEmbassy::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossGateway: {
+            sound_id = SoundId::GatewayAmbient01;
+            delay = ProtossGateway::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossGrandLibrary: {
+            sound_id = SoundId::GrandLibraryAmbient01;
+            delay = ProtossGrandLibrary::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossRogueGallery: {
+            sound_id = SoundId::RogueGalleryAmbient01;
+            delay = ProtossRogueGallery::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossProstrationStage: {
+            sound_id = SoundId::ProstrationStageAmbient01;
+            delay = ProtossProstrationStage::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossAncestralArchives: {
+            sound_id = SoundId::AncestralArchivesAmbient01;
+            delay = ProtossAncestralArchives::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossLattice: {
+            sound_id = SoundId::LatticeAmbient01;
+            delay = ProtossLattice::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossArdentAuthority: {
+            sound_id = SoundId::ArdentAuthorityAmbient01;
+            delay = ProtossArdentAuthority::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossUnitaryUnion: {
+            sound_id = SoundId::UnitaryUnionAmbient01;
+            delay = ProtossUnitaryUnion::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossStargate: {
+            sound_id = SoundId::StargateAmbient01;
+            delay = ProtossStargate::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossArgosy: {
+            sound_id = SoundId::ArgosyAmbient01;
+            delay = ProtossArgosy::AmbientSFXDelay;
+        } break;
+        case UnitId::ProtossMonumentOfSin: {
+            sound_id = SoundId::MonumentofSinAmbient01;
+            delay = ProtossMonumentOfSin::AmbientSFXDelay;
+        } break;
+
+        case UnitId::ZergEgg:
+        case UnitId::ZergCocoon: {
+            sound_id = static_cast<SoundId::Enum>(bw::rand_between(SoundId::EggAmbient01, SoundId::EggAmbient04));
+            delay = bw::rand_between(ZergEgg::AmbientSFXDelayMin, ZergEgg::AmbientSFXDelayMax);
+        } break;
+    }
+    unit_ext.timers[TimerAmbientSFX] = delay;
+    bw::play_sound(sound_id, this);
+}
+
+void Unit::play_completion_sfx() {
+    SoundId::Enum sound_id = SoundId::None;
+    switch (this->get_race()) {
+        case RaceId::Terran: {
+            sound_id =  SoundId::TerranUnitDeployment01;
+        } break;
+        case RaceId::Protoss: {
+            sound_id = static_cast<SoundId::Enum>(bw::rand_between(SoundId::ProtossUnitDeployment01, SoundId::ProtossUnitDeployment04));
+        } break;
+    }
+    bw::play_sound(sound_id, this);
+}

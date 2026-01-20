@@ -409,6 +409,7 @@ enum ExtTimerId {
     TimerSermonSalveOverlay,
     TimerIncinerateDamage,
     TimerIncinerateArmor,
+    TimerAmbientSFX,
     TimerTerranWindup,
     TimerMimicryCheck,
 
