@@ -113,6 +113,21 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) decollide_unit_wrapper() { // 004F2DE0
+		static Unit* unit;
+		static b32 result;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = hooks::decollide_unit(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	// Patches \\
 
 	const u32 playIdleIscript_978D8 = 0x004978D8;
@@ -148,15 +163,16 @@ namespace {
 
 namespace hooks {
 	void inject_unit_movement_hooks() {
-		jump_patch(unit_movement_dormant_wrapper,		0x0046A8D0, 1);
-	//	jump_patch(move_unit_wrapper,					0x004EB9F0, 1); // breaks sprite sorting
-		jump_patch(can_collide_with_wrapper,			0x0042DEE0, 2);
-	//	jump_patch(unit_movement_start_path_wrapper,	0x0046BD90, 1);
-		jump_patch(move_towards_wrapper,				0x004EB900, 1);
-	//	jump_patch(unit_movement_initialize_wrapper,	0x0046C320, 4); // Not tested yet
-	//	jump_patch(refresh_unit_after_move_wrapper,		0x00494160,	2); // Causes common freeze
+		jump_patch(unit_movement_dormant_wrapper, 0x0046A8D0, 1);
+	//	jump_patch(move_unit_wrapper,							0x004EB9F0, 1); // breaks sprite sorting
+		jump_patch(can_collide_with_wrapper,		0x0042DEE0, 2);
+	//	jump_patch(unit_movement_start_path_wrapper,			0x0046BD90, 1);
+		jump_patch(move_towards_wrapper,			0x004EB900, 1);
+	//	jump_patch(unit_movement_initialize_wrapper,			0x0046C320, 4); // Not tested yet
+	//	jump_patch(refresh_unit_after_move_wrapper,				0x00494160,	2); // Causes common freeze
+	//	jump_patch(decollide_unit_wrapper,						0x004F2DE0, 1); // Not tested yet
 
-	//	jump_patch(play_idle_iscript_patch_978D3,		0x004978D3); // DF - Fix animation bug with acceleration movement flag
-		jump_patch(can_move_unit_patch,					0x0049D3E3); // DF - Fix map revealers crashing on map start if colliding with air units
+	//	jump_patch(play_idle_iscript_patch_978D3,				0x004978D3); // DF - Fix animation bug with acceleration movement flag
+		jump_patch(can_move_unit_patch,			0x0049D3E3); // DF - Fix map revealers crashing on map start if colliding with air units
 	}
 }

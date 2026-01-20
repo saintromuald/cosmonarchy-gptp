@@ -474,9 +474,6 @@ Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, s8 elevation) 
         if (unit) {
             auto& unit_ext = unit->ext();
             // Don't spawn corpses under these circumstances!
-            if (unit_ext.values[ValueNoCorpse]) {
-                return 0;
-            }
             if (unit->id == UnitId::ZergVilgoleth) {
                 sprite->create_overlay(ImageId::ZergAirDeathExplosion_Small);
                 return 0;

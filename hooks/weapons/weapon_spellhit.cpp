@@ -117,23 +117,19 @@ namespace hooks {
 	// Bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	// the timer is reset before this call 2 times out of 3 (with previousLockdownTimer holding the pre-reset value), and the 3rd case, previousLockdownTimer is set to 131 (0x83)
 	void lockdown_hit(Unit* target, u8 timer, Bullet* bullet) {
-		// Add lockdown overlay if no ongoing lockdown already
-		if (target->lockdown_timer == 0) {
-			u32 image_id = ImageId::LockdownField_Small + bw::get_overlay_offset(target->id);
-			Unit* overlay_unit = target->subunit ? target->subunit : target;
-			overlay_unit->sprite->create_top_overlay(image_id, 0, 0, 0);
+		if (!unit_id_is_zerg_egg(target->id) || target->remaining_build_time > 24) {
+			if (target->lockdown_timer == 0) {
+				u32 image_id = ImageId::LockdownField_Small + bw::get_overlay_offset(target->id);
+				Unit* overlay_unit = target->subunit ? target->subunit : target;
+				overlay_unit->sprite->create_top_overlay(image_id, 0, 0, 0);
+			}
+			if (target->lockdown_timer < timer) {
+				target->lockdown_timer = timer;
+			}
+			disable_unit(target);
 		}
-
-		// This, added to the fact that target->lockdown_timer is set to 0 before this function, probably prevents lockdown to reset the duration of a previous lock
-		if (target->lockdown_timer < timer) {
-			target->lockdown_timer = timer;
-		}
-
-		// Should stop movements/orders/scripts of the unit, give it the status DoodadStatesThing.
-		// May have an effect on selection. Performs bw::refresh_console() code at the end
-		disable_unit(target);
-		UnitExt* target_ext = get_unit_ext(target);
-		target_ext->timers[TimerLobotomySlow] = 6 * 24 + 1;
+		auto& target_ext = target->ext();
+		target_ext.timers[TimerLobotomySlow] = 6 * 24 + 1;
 	}
 
 	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damage_divisor) { // 00479AE0

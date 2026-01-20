@@ -295,6 +295,7 @@
     </ClCompile>
     <ClCompile Include="GameModes\Uprising.cpp" />
     <ClCompile Include="ReplayKraken.cpp" />
+    <ClCompile Include="replay.cpp" />
     <ClCompile Include="utility\RegConfig.cpp" />
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="BW\extender\TileHeight_extender.cpp" />
@@ -707,6 +708,7 @@
     <ClInclude Include="maths.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="GameModes\Uprising.h" />
+    <ClInclude Include="replay.h" />
     <ClInclude Include="trigger_system\table_edit.h" />
     <ClInclude Include="ReplayKraken.h" />
     <ClInclude Include="utility\RegConfig.h" />

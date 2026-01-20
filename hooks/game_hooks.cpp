@@ -793,6 +793,7 @@ namespace hooks {
         *trigger_cooldown = 0; // Single frame hypertriggers
         if (!g_is_in_replay || g_elapsed_time_frames == 0) {
             g_options_list->speed = 6; // Lock game speed at fastest
+            g_replay_speed = 6;
         }
 
         g_discord.update_status_if_needed(true);

@@ -197,15 +197,15 @@ namespace hooks {
 
         // Originally had code checking for supplies.
         if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
-            helper::display_error_message_id_with_sfx(player, 850, (s32)g_console_index + 147); // Not enough minerals...mine more minerals.<0>
+            helper::display_error_message_id_with_sfx(player, 850, bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals));
             return false;
         }
         if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
-            helper::display_error_message_id_with_sfx(player, 851, (s32)g_console_index + 150); // Not enough Vespene gases....harvest more gas.<0>
+            helper::display_error_message_id_with_sfx(player, 851, bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene));
             return false;
         }
         if (helper::tile_location_is_unbuildable(builder, player, (builder->order_target.pt.x - units_dat::building_dimensions[building_id].x / 2) / 32, (builder->order_target.pt.y - units_dat::building_dimensions[building_id].y / 2) / 32, building_id, 0, 0, 1, 0)) {
-            helper::play_worker_error_sound(builder, 856); // You can't build there.<0>
+            helper::play_worker_error_sound(builder, 856);
             return false;
         } else {
             player = builder->player;
@@ -251,22 +251,22 @@ namespace hooks {
         u32 player = g_local_nation_id;
         Unit* parent = 0;
         switch (g_place_building_unit_id) {
-        case UnitId::ProtossPylon: {
-            parent = first_player_unit->unit[player];
-            if (parent) {
-                UnitExt* parent_ext = get_unit_ext(parent);
-                u16 id = g_place_building_unit_id;
-                do {
-                    switch (parent->id) {
-                        case UnitId::ProtossGateway: {
-                            if (helper::can_draw_placement_rect_maybe(id, parent)) {
-                                g_can_draw_placement_preview = 1;
-                            }
-                        } break;
-                    }
-                } while (parent);
-            }
-        } break;
+            case UnitId::ProtossPylon: {
+                parent = first_player_unit->unit[player];
+                if (parent) {
+                    auto& parent_ext = parent->ext();
+                    u16 id = g_place_building_unit_id;
+                    do {
+                        switch (parent->id) {
+                            case UnitId::ProtossGateway: {
+                                if (helper::can_draw_placement_rect_maybe(id, parent)) {
+                                    g_can_draw_placement_preview = 1;
+                                }
+                            } break;
+                        }
+                    } while (parent);
+                }
+            } break;
         }
     }
 
@@ -278,7 +278,7 @@ namespace hooks {
                 g_can_draw_placement_preview = 0;
             }
 
-            if (!unit_id_is_capped_gas_node(g_place_building_unit_id) && g_place_building_unit_id != UnitId::ZergEzigrisant) {
+            if (!unit_id_is_capped_gas_node(g_place_building_unit_id)) {
                 if (units_dat::group_flags[g_place_building_unit_id].is_terran) {
                     helper::place_building_normal_proc();
                 }

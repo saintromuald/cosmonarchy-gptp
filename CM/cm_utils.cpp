@@ -655,6 +655,9 @@ void init_corpse(Thingy* corpse, SpriteId::Enum id, u32 player) {
             if (unit_ext.timers[TimerAutocratControlledOpposition]) {
                 reclaim_corpse(corpse, unit_ext.values[ValueAutocratControlledOppositionPlayer]);
             }
+            if (unit_ext.values[ValueNoCorpse]) {
+                consume_corpse(corpse);
+            }
         }
     }
     corpse->sprite->elevation = 0;

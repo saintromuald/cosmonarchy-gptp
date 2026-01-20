@@ -233,4 +233,37 @@ namespace hooks {
 			subunit->pathing_flags ^= (subunit->pathing_flags ^ (subunit->sprite->elevation < 12)) & 1;
 		}
 	}
+
+	// Hooked to improve behavior for Terran builders. -Pr0nogo
+	b32 decollide_unit(Unit* unit) { // 004F2DE0
+		if (!(unit->status & UnitStatus::IsNormal)) {
+			return false;
+		}
+		Point16 position = {unit->sprite->position.x, unit->sprite->position.y};
+		if (!helper::is_blocked_position(unit, position)) {
+			return false;
+		}
+		if (unit->status & (UnitStatus::NoBrkCodeStart | UnitStatus::CanNotReceiveOrders) || unit->movement_flags & MovementFlags_StartingAttack) {
+			unit->status = unit->status | UnitStatus::IgnoreTileCollision;
+			return false;
+		}
+		helper::decollide_or_unstack(unit, &position);
+		helper::fix_target_location(&position, unit->id);
+		if (position.x != unit->sprite->position.x || position.y != unit->sprite->position.y) {
+			helper::reassign_path(unit);
+			if (helper::is_unit_movable(unit) || unit->movement_flags & MovementFlags_Braking) {
+				helper::set_move_target_xy(unit, position.x, position.y);
+			} else {
+				helper::set_next_waypoint(unit, position.x, position.y);
+			}
+			helper::get_allocated_path_single_step(unit, position.x, position.x);
+			unit->contour_bounds.y = 0;
+			unit->contour_bounds.h = 0;
+			unit->contour_bounds.x = 0;
+			unit->contour_bounds.w = 0;
+			return true;
+		}
+		unit->status |= UnitStatus::IgnoreTileCollision;
+		return false;
+	}
 }

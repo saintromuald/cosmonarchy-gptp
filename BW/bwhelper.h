@@ -1314,8 +1314,8 @@ namespace helper {
     AiTown* create_ai_town(u32 player, u32 x, u32 y);														// 00432020
 
     Sprite* sprite_destructor(Sprite* sprite);																// 00497B40
-    UnitPath* reassign_path(Unit* unit);																	// 0042F740
-    u32 initialize_unit(Unit* unit, u32 y, u32 unit_id, u32 x, u8 player_id);								// 0049F206
+    void reassign_path(Unit* unit);																	        // 0042F740
+    u32 initialize_unit(Unit* unit, u32 y, u32 unit_id, u32 x, u8 player);  								// 0049F206
     void update_hp_gain(Unit* unit);																		// 0047B180
 
     bool unit_is_geyser_ex(Unit* resource_node, Unit* worker);												// 00468930
@@ -1938,4 +1938,9 @@ namespace helper {
     void glu_chat_dlgproc_destroy(BinDlg* dialog);          // 004b8d70
     void glu_chat_map_preview_destroy(BinDlg* dialog);      // 004b8d90
     void glu_chat_update_password_field(BinDlg* dialog);    // 004b8c80
+    
+    b32 is_blocked_position(Unit* unit, Point16 position);                                          // 0042E1D0
+    void decollide_or_unstack(Unit* unit, Point16* position);                                       // 004F29E0
+    void set_next_waypoint(Unit* unit, u32 pos_x, u32 pos_y);                                       // 004EB130
+    void get_allocated_path_single_step(Unit* unit, u32 next_pos, u32 end_pos);                     // 0042F830
 }
