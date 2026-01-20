@@ -1669,3 +1669,7 @@ bool Unit::can_be_passive_cloaked(Unit* source) {
     return this->is_completed() && this != source && !this->is_neutral_accessory() && this->id != UnitId::TerranMorningstar
         && bw::are_mutual_allies(this->player, source->player) && this->player != 11 && !this->is_frozen();
 }
+
+bool Unit::can_transport_air() {
+    return this->ext().values[ValueAirTransport];
+}

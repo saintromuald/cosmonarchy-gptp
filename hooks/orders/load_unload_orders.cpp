@@ -405,7 +405,7 @@ bool can_enter_transport(Unit* transport, Unit* unit) { // 004E6E00
     if (bw::transport_is_full(transport)) {
         return 0;
     }
-    if (unit->is_in_air()) {
+    if (unit->is_in_air() && !transport->can_transport_air()) {
         return 0;
     }
     if (unit->player == 11) {

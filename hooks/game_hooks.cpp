@@ -3201,8 +3201,8 @@ namespace hooks {
             should_update_speed = true;
         }
 
-        // Terran traps - No collision
-        if (unit_id_is_trap(unit->id)) {
+        // Terran traps and all beacons - No collision
+        if (unit_id_is_trap(unit->id) || UnitId::is_beacon(static_cast<UnitId::Enum>(unit->id)) || unit_ext.values[ValueNoCollision]) {
             unit->status |= UnitStatus::NoCollide;
         }
 
