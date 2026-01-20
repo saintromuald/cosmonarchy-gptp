@@ -1533,7 +1533,6 @@ namespace hooks {
             } else {
                 launch_spin_variance = bw::rand_between(0, 1);
             }
-
             *g_launch_spin_random = launch_spin_variance;
             bool invert_spin = launch_spin_variance == 0;
             launch_spin_variance = launch_spin;
@@ -1547,20 +1546,20 @@ namespace hooks {
         }
 
         bullet->source_unit = parent;
-        if (units_dat::base_property[parent->id] & UnitProperty::Subunit) {
+        if (parent->is_subunit()) {
             bullet->source_unit = parent->subunit;
         }
         if (parent->id == UnitId::ProtossPlasmaShell) {
             bullet->source_unit = parent->hangar_unit.parent;
         }
-        if (parent->status & UnitStatus::IsHallucination) {
+        if (parent->is_hallucination()) {
             bullet->hit_flags |= 2;
         }
         bullet->next_bounce_unit = 0;
 
         Unit* target_unit = parent->order_target.unit;
         bullet->attack_target.unit = target_unit;
-        if (target_unit && target_unit->sprite) { // Seems related to Paladin, should be investigated. -Pr0nogo
+        if (target_unit && target_unit->sprite) {
             bullet->sprite->elevation = target_unit->sprite->elevation + 1;
             bullet->attack_target.pt.x = target_unit->position.x;
             bullet->attack_target.pt.y = target_unit->position.y;

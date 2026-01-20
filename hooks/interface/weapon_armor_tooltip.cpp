@@ -530,7 +530,7 @@ namespace hooks {
 			flags.push_back(is_active_detector ? "Detector" : "Detector (disabled)");
 		}
 		if (units_dat::base_property[unit->id] & UnitProperty::CreepBuilding) {
-			flags.push_back("Spreads cagra");
+			flags.push_back("Requires cagra");
 		}
 
 		std::string flag = format_string_vector(flags);
