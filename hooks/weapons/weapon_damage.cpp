@@ -838,7 +838,8 @@ namespace hooks {
                                 target_ext.values[ValueSavantPowerSiphonDebuff]++;
                                 target_ext.timers[TimerSavantPowerSiphonDebuff] = 2 * 24 + 1;
                             }
-                            helper::create_thingy(SpriteId::Feedback_Hit_Small + bw::get_overlay_offset(data.target->id), data.target->position.x, data.target->position.y, data.attacking_player_id);
+                            Thingy* overlay = helper::create_thingy(SpriteId::PowerSiphonHit_Small + bw::get_overlay_offset(data.target->id), data.target->position.x, data.target->position.y, data.attacking_player_id);
+                            overlay->sprite->elevation = data.target->sprite->elevation + 1;
                         }
                     } break;
                     case WeaponId::SevenstepGeometricRifle: {

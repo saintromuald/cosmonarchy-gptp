@@ -660,7 +660,7 @@ namespace hooks {
                     } break;
                     case WeaponId::SalamanderPerditionBarrage: {
                         // Salamander - Offset: Linear
-                        fire_line(unit, weapon_id, 3, 32, 1, 0);
+                        fire_line(unit, weapon_id, 6, 32, 1, 0);
                     } break;
                     case WeaponId::MinotaurAsterionLaserBattery: {
                         // Monoceros Targeting - Minotaur

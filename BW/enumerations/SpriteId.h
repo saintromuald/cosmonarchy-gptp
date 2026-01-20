@@ -830,6 +830,10 @@ namespace SpriteId {
 
         MorningstarRadiationField       = 1014,
 
+        PowerSiphonHit_Small            = 1032,
+        PowerSiphonHit_Medium           = 1033,
+        PowerSiphonHit_Large            = 1034,
+
         // CORPSE \\
             
         Corpse_Aspirant				    = 685,
