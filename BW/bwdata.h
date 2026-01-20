@@ -1315,6 +1315,8 @@ BW_REF(b32,   g_685174,             0x00685174); // No idea, but related to the 
 BW_REF(b32,   g_685178,             0x00685178); // Probably defines that the client is entering or is in the score screen.
 BW_REF(b32,   g_68517C,             0x0068517C); // Probably defines that the score screen dlg is loaded or active.
 
+BW_REF(u8,    g_replay_speed,       0x006D0F30);
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 BW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"

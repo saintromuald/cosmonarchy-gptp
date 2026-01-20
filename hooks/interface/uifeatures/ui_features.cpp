@@ -109,7 +109,7 @@ namespace hooks {
 
         if (g_config.show_timer) {
             char buffer[48] = {};
-            format_time(buffer, 48, "", g_elapsed_time_frames / 24, false);
+            format_time(buffer, 48, "", g_elapsed_time_frames * 0.042, false);
             draw_ui_text(buffer, TextColor::Green);
         }
 

@@ -10251,17 +10251,14 @@ namespace helper {
         return result;
     }
 
-    UnitPath* reassign_path(Unit* unit) {
-        static UnitPath* result;
+    void reassign_path(Unit* unit) {
         const u32 func_address = 0x0042F740;
         __asm {
             PUSHAD
             MOV ESI, unit
             CALL func_address
-            MOV result, EAX
             POPAD
         }
-        return result;
     }
 
     u32 initialize_unit(Unit* unit, u32 y, u32 unit_id, u32 x, u8 player_id) {
@@ -16067,6 +16064,55 @@ namespace helper {
         }
         return result;
     }
+    
+    b32 is_blocked_position(Unit* unit, Point16 position) {
+        const u32 func_address = 0x0042E1D0;
+        static b32 result;
+        __asm {
+            PUSHAD
+            PUSH position
+            PUSH unit
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    void decollide_or_unstack(Unit* unit, Point16* position) {
+        const u32 func_address = 0x004F29E0;
+        __asm {
+            PUSHAD
+            PUSH position
+            MOV ESI, unit
+            CALL func_address
+            POPAD
+        }
+    }
+    
+    void set_next_waypoint(Unit* unit, u32 pos_x, u32 pos_y) {
+        const u32 func_address = 0x004EB130;
+        __asm {
+            PUSHAD
+            MOV EAX, unit
+            MOV EDX, pos_x
+            MOV ECX, pos_y
+            CALL func_address
+            POPAD
+        }
+    }
+    
+    void get_allocated_path_single_step(Unit* unit, u32 next_pos, u32 end_pos) {
+        const u32 func_address = 0x0042F830;
+        __asm {
+            PUSHAD
+            PUSH end_pos
+            PUSH next_pos
+            MOV EAX, unit
+            CALL func_address
+            POPAD
+        }
+    }
 
     graphics::Font* load_font(const char* font_name) {
         const u32 load_font = 0x0041FD10;
@@ -16115,6 +16161,7 @@ namespace helper {
             POPAD
         }
     }
+
     void process_update_force_command(const Command_UpdatePlayerForce* command, u32 sender) {
         const u32 func_address = 0x00471860;
         __asm {

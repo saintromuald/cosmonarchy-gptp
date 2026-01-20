@@ -375,15 +375,6 @@ namespace hooks {
     void update_command_card() {
         init_req_table();
 
-        struct SelectFactionCommand {
-            u8 type;
-            u8 subtype;
-            u8 player;
-            Faction faction;
-            u8 padding[8];
-        };
-        static_assert(sizeof(SelectFactionCommand) == 12);
-
         SelectFactionCommand command = {};
         command.type = GameCommand_Custom;
         command.subtype = NewGameCommand::SelectFaction;
@@ -1081,7 +1072,7 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranSiren:
                                     case UnitId::TerranStriga: {
-                                        if (bw::unit_queue_full(unit)) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranTinkerersTower)) {
                                             current_button_state = Button_State::Disabled;
@@ -1091,7 +1082,7 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranOlympian:
                                     case UnitId::TerranAutocrat: {
-                                        if (bw::unit_queue_full(unit)) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranGuildhall)) {
                                             current_button_state = Button_State::Disabled;
@@ -1208,7 +1199,7 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranPhalanxTankMode: {
-                                        if (bw::unit_queue_full(unit) || faction == Faction::TerranNydusTrinity) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranNydusTrinity) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranPalladium)) {
                                             current_button_state = Button_State::Disabled;
@@ -1217,7 +1208,7 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranTarasque: {
-                                        if (bw::unit_queue_full(unit) || faction != Faction::TerranNydusTrinity) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranNydusTrinity) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranPalladium)) {
                                             current_button_state = Button_State::Disabled;
@@ -1262,7 +1253,7 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranClaymore:
                                     case UnitId::TerranPenumbra: {
-                                        if (bw::unit_queue_full(unit) || is_adding_on) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranFutureStation)) {
                                             current_button_state = Button_State::Disabled;
@@ -1272,7 +1263,7 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranAnticthon:
                                     case UnitId::TerranAion: {
-                                        if (bw::unit_queue_full(unit) || is_adding_on) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranBioticBastion)) {
                                             current_button_state = Button_State::Disabled;

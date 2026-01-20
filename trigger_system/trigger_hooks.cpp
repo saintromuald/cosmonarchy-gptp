@@ -540,6 +540,11 @@ void orders_rescue_passive(Unit* unit) { // 004A1EF0
     }
 }
 
+// Hooked to enable more garrison types and allied garrisons. -Pr0nogo
+s32 aiscript_unit_can_enter_bunker_proc(Unit* bunker, Unit* unit) { // 00440220
+    return unit_id_is_garrison(bunker->id) && bunker->is_grounded_building() && bw::are_mutual_allies(bunker->player, unit->player);
+}
+
 // HOOK INJECTION \\
 
 void __declspec(naked) execute_trigger_conditions_wrapper() { // 00489200
@@ -809,6 +814,23 @@ void __declspec(naked) orders_rescue_passive_wrapper() { // 004A6310
     }
 }
 
+void __declspec(naked) ai_unit_can_enter_bunker_proc_wrapper() { // 00440220
+    static Unit* bunker;
+    static Unit* unit;
+    static s32 result;
+    __asm {
+        MOV bunker, ECX
+        MOV unit, EDX
+        PUSHAD
+    }
+    result = aiscript_unit_can_enter_bunker_proc(bunker, unit);
+    __asm {
+        POPAD
+        MOV EAX, result
+        RETN
+    }
+}
+
 const char* create_next_campaign_game_4DC1F7() {
     return game_kind_to_filename_string(bw::get_game_kind());
 }
@@ -828,4 +850,5 @@ void inject_trigger_system_hooks() {
     jump_patch(update_selected_unit_portrait_wrapper,		0x0045EBC0, 0);
     jump_patch(dialog_music_fade_wrapper,					0x004A6310, 3);
     jump_patch(orders_rescue_passive_wrapper,				0x004A1EF0, 1);
+    jump_patch(ai_unit_can_enter_bunker_proc_wrapper,		0x00440220, 0);
 }

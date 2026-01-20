@@ -439,7 +439,7 @@ void orders_drone_build(Unit* builder) { // 0045E090
 
         // @Todo: Tidy this into not being inlined
         if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
-            helper::display_error_message_id_with_sfx(player, 850, g_console_index + 147);
+            helper::display_error_message_id_with_sfx(player, 850, bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals));
             helper::set_shadow_y(builder->sprite, vertical_offset);
             helper::refresh_sprite_data(builder->sprite);
             helper::order_immediate(builder, OrderId::ResetCollision1);
@@ -447,7 +447,7 @@ void orders_drone_build(Unit* builder) { // 0045E090
             return;
         }
         if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
-            helper::display_error_message_id_with_sfx(player, 851, g_console_index + 150);
+            helper::display_error_message_id_with_sfx(player, 851, bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene));
             helper::set_shadow_y(builder->sprite, vertical_offset);
             helper::refresh_sprite_data(builder->sprite);
             helper::order_immediate(builder, OrderId::ResetCollision1);
@@ -637,8 +637,7 @@ void orders_morph2(Unit* unit) { // 0045D0D0
     }
     if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
         u32 err_string_id = 850;
-        u32 err_reason = g_console_index + 147;
-        helper::display_error_message_id_with_sfx(player, err_string_id, err_reason);
+        helper::display_error_message_id_with_sfx(player, err_string_id, bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals));
 
         unit->build_queue[unit->build_queue_slot] = UnitId::None;
         unit->order_to_idle();
@@ -646,8 +645,7 @@ void orders_morph2(Unit* unit) { // 0045D0D0
     }
     if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
         u32 err_string_id = 851;
-        u32 err_reason = g_console_index + 150;
-        helper::display_error_message_id_with_sfx(player, err_string_id, err_reason);
+        helper::display_error_message_id_with_sfx(player, err_string_id, bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene));
 
         unit->build_queue[unit->build_queue_slot] = UnitId::None;
         unit->order_to_idle();

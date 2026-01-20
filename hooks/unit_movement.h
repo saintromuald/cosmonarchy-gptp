@@ -9,6 +9,7 @@ namespace hooks {
 	b32 move_towards(Unit* target, Unit* unit);							// 004EB900
 	s32 unit_movement_initialize(Unit* unit);							// 0046C320
 	void refresh_unit_after_move(Unit* unit);							// 00494160
+	b32 decollide_unit(Unit* unit);										// 004F2DE0
 
 	void inject_unit_movement_hooks();
 }

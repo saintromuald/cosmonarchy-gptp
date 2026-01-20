@@ -132,10 +132,10 @@ namespace hooks {
 							helper::has_money_can_make(unit, target_unit_id);
 						}
 					} else {
-						helper::display_error_message_id_with_sfx(unit->player, 851, g_console_index + 0x96);
+						helper::display_error_message_id_with_sfx(unit->player, 851, bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoVespene));
 					}
 				} else {
-					helper::display_error_message_id_with_sfx(unit->player, 850, g_console_index + 0x93);
+					helper::display_error_message_id_with_sfx(unit->player, 850, bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoMinerals));
 				}
 			} else {
 				helper::issue_order_targeting_ground(unit, order_id, pos.x, pos.y);
