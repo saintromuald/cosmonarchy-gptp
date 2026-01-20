@@ -6,6 +6,7 @@
 #include "hook_tools.h"
 #include <hooks/weapons/weapon_spellhit.h>
 #include "BW/extender/iscript_extender.h"
+#include "hooks/audiovisuals/image_render.h"
 
 void Image::play_iscript_animation(IscriptAnimation::Enum animation) {
     assert(this);
@@ -740,7 +741,13 @@ namespace hooks {
                     if (noop) {
                         break;
                     }
-                    (*g_active_iscript_entity)->order_signal |= arg;
+                    // Handle Lakizilisk nullsprite cases. -DF
+                    if (arg != 32) {
+                        (*g_active_iscript_entity)->order_signal |= arg;
+                    } else if (!((*g_active_iscript_entity)->order_signal & 32)) {
+                        helper::image_destructor(image);
+                        return;
+                    }
                 } break;
                 case IscriptOpcodes::opc_attackwith: {
                     char arg = take_iscript_datum<char>(program_state);
@@ -829,7 +836,7 @@ namespace hooks {
                         break;
                     }
                     (*g_active_iscript_unit)->status |= UnitStatus::NoBrkCodeStart;
-                    (*g_active_iscript_unit)->sprite->flags |= 0x80;
+                    (*g_active_iscript_unit)->sprite->flags |= SpriteFlags::IscriptCode;
                 } break;
                 case IscriptOpcodes::opc_nobrkcodeend: {
                     if (noop) {
@@ -1264,18 +1271,59 @@ namespace hooks {
         }
     }
 
+    void _declspec(naked) progress_subunit_direction_patch() {
+        __asm {
+            MOV EAX, 8            // sigorder = 8
+            MOV EDX, [ESI + 0x70] // subunit->parent
+            AND AL, [EDX + 0x4F]  // sigorder &= parent->order_signal
+            XOR[EDX + 0x4F], AL   // parent->order_signal ^= sigorder
+            OR EAX, [ESI + 0x5C]  // sigorder |= subunit->order_target.unit
+            RETN
+        }
+    }
+
+    void __declspec(naked) iscript_cases_deathloop() {
+        static u32 iscript_cases_switchbreak = 0x004D7500;
+        static u32 iscript_cases_end = 0x004D7BCA;
+        __asm {
+            MOV EAX, [EBP + 0x0C]
+            TEST EAX, EAX
+            JNE offset no_op
+            MOV EAX, ds: [0x006D11F4]//unit = g_active_iscript_entity
+            TEST byte ptr[EAX + 0x4F], 64//unit->sigorder
+            JNE offset no_op
+            JMP iscript_cases_end
+
+        no_op:
+            JMP iscript_cases_switchbreak
+        }
+    }
+
+
     void inject_image_hooks() {
-        jump_patch(initialize_image_data_wrapper,	0x004D5A50, 2);
-        jump_patch(set_image_direction_wrapper,		0x004D5F80, 1);
-        jump_patch(update_image_direction_wrapper,	0x004D5EA0, 2);
-        jump_patch(play_image_iscript_wrapper,		0x004D8470, 1);
-        jump_patch(show_cursor_marker_wrapper,		0x00488660, 3);
-        jump_patch(play_warp_in_overlay_wrapper,	0x004D8500, 0);
-    //	jump_patch(image_update_warp_flash_wrapper,	0x004D8590, 1);
-    //	jump_patch(iscript_opcode_cases_wrapper,	0x004D74C0, 1);
-        jump_patch(iscript_fireweapon_wrapper,		0x00479D40, 4);
-        jump_patch(iscript_attackwith_wrapper,		0x00479D60, 1);
-        jump_patch(iscript_useweapon_wrapper,		0x00479C30, 3);
-        jump_patch(iscript_nobrkcodeend_wrapper,	0x004753E0, 4);
+        jump_patch(initialize_image_data_wrapper,	 0x004D5A50, 2);
+        jump_patch(set_image_direction_wrapper,	 0x004D5F80, 1);
+        jump_patch(update_image_direction_wrapper, 0x004D5EA0, 2);
+        jump_patch(play_image_iscript_wrapper,	 0x004D8470, 1);
+        jump_patch(show_cursor_marker_wrapper,	 0x00488660, 3);
+        jump_patch(play_warp_in_overlay_wrapper,	 0x004D8500, 0);
+    //	jump_patch(image_update_warp_flash_wrapper,	             0x004D8590, 1);
+    //	jump_patch(iscript_opcode_cases_wrapper,	             0x004D74C0, 1);
+        jump_patch(iscript_fireweapon_wrapper,	 0x00479D40, 4);
+        jump_patch(iscript_attackwith_wrapper,	 0x00479D60, 1);
+        jump_patch(iscript_useweapon_wrapper,		 0x00479C30, 3);
+        jump_patch(iscript_nobrkcodeend_wrapper,	 0x004753E0, 4);
+
+        // Allow subunits to use turnccwise and so on.
+        call_patch(progress_subunit_direction_patch, 0x004EB663);
+
+        // Resolve buffer overflow crash after large graphics are drawn
+        memory_patch(0x004D5CDD, &new_warp_texture_buffer);
+        memory_patch(0x004D5CF1, &new_warp_texture_buffer);
+        memory_patch(0x004D5C9D, &new_warp_texture_buffer);
+        memory_patch(0x004D5CB1, &new_warp_texture_buffer);
+
+        // Fix Lakizilisk nullsprites. -DF
+        memory_patch(0x004D838C, &iscript_cases_deathloop);
     }
 }

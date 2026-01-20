@@ -3,7 +3,6 @@
 #include "BW/extender/iscript_extender.h"
 
 u8 threshold_map[256];
-u8 new_warp_texture_buffer[65025];
 
 UpdateFunc sgUpdateFuncs[] = {
 	{ PaletteType::Normal,				updateFunc_None },
@@ -740,7 +739,7 @@ namespace hooks {
 
 }
 
-//Placing this here instead of bwhelper because it's very specific to image_render.
+// Placing this here instead of bwhelper because it's very specific to image_render. -DF
 namespace helper {
 	void drawFunc(int function, s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData) {
 		__asm {

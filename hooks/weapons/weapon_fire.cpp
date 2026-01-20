@@ -1391,6 +1391,9 @@ namespace hooks {
 
     // Hooked to resolve issues with multihit bullets - Pr0nogo
     Bullet* delete_bullet (Bullet* bullet) { // 0048A560
+        if (bullet->source_unit && (bullet->source_unit->id == UnitId::ZergLakizilisk || bullet->source_unit->id == UnitId::ZergLakiziliskZorthos)) {
+            bullet->source_unit->order_signal &= ~64;
+        }
         if (!bullet->sprite) {
             if (*g_first_bullet == bullet) {
                 *g_first_bullet = bullet->next;
@@ -1567,6 +1570,9 @@ namespace hooks {
             bullet->attack_target.pt.y = parent->order_target.pt.y;
         }
 
+        if (parent->id == UnitId::ZergLakizilisk || parent->id == UnitId::ZergLakiziliskZorthos) {
+            parent->order_signal |= 64;
+        }
         switch (weapons_dat::behavior[weapon_id]) {
             case WeaponBehavior_FlyDoNotFollowTarget:
             case WeaponBehavior_FlyFollowTarget: {
