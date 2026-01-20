@@ -142,11 +142,10 @@ namespace hooks {
 				}
 				helper::set_resource_amount_carried(worker, resource_amount, chunk_image_id, is_mineral);
 				if (worker->id == UnitId::ProtossArtisan) {
-					UnitExt* unit_ext = get_unit_ext(worker);
-					unit_ext->timers[TimerArtisanReturn] = 49;
+					auto& unit_ext = worker->ext();
+					unit_ext.timers[TimerArtisanReturn] = 49;
 					helper::play_sound_from_unit(SoundId::ArtisanRadiantChannel, worker, 1, 0);
-					worker->play_iscript_animation(IscriptAnimation::WalkingToIdle);
-					worker->freeze();
+					worker->play_iscript_animation(IscriptAnimation::SpecialState2);
 				}
 			}
 		}

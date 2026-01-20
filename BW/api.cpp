@@ -3332,6 +3332,7 @@ Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target) {
 u32 get_fore_castle_armor_bonus(Unit* unit) {
     u32 bonus = 0;
     switch (unit->id) {
+        case UnitId::TerranMatadorTankMode:
         case UnitId::TerranMinotaur: {
             bonus += 2;
         }

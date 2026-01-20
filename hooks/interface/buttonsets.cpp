@@ -2705,7 +2705,8 @@ namespace hooks {
                                 } break;
                                 case UnitId::TerranMatadorTankMode:
                                 case UnitId::TerranMatadorCinderMode: {
-                                    if (current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
+                                    if (current_button->icon_id == IconId::TerranShipPlating // Fore Castle
+                                    ||  current_button->icon_id == IconId::FlyerAttack) {    // Apollyoid Adhesive
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

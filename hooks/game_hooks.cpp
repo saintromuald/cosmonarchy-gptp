@@ -2453,14 +2453,18 @@ namespace hooks {
             } break;
             case UnitId::ProtossArtisan: {
                 switch (unit_ext.timers[TimerArtisanReturn]) {
-                    case 48:
+                    case 48: {
+                        unit->status |= UnitStatus::NoBrkCodeStart;
+                        unit->sprite->flags |= SpriteFlags::IscriptCode;
+                    } // fallthrough intended
                     case 36:
                     case 24:
                     case 12: {
                         unit->sprite->create_top_overlay(ImageId::ArtisanResourceChannel);
                     } break;
                     case 1: {
-                        unit->unfreeze();
+                        unit->status &= ~UnitStatus::NoBrkCodeStart;
+                        unit->sprite->flags &= ~SpriteFlags::IscriptCode;
                         unit->sprite->create_top_overlay(ImageId::ArtisanResourceProc);
                         helper::play_sound_from_unit(SoundId::ArtisanRadiantProc, unit, 1, 0);
                         helper::return_resources_from_unit(unit);
@@ -2471,6 +2475,7 @@ namespace hooks {
                         } else {
                             helper::order_immediate(unit, order_id);
                         }
+                        unit->play_iscript_animation(IscriptAnimation::WalkingToIdle);
                         helper::to_idle(unit);
                     } break;
                 }
@@ -2649,14 +2654,14 @@ namespace hooks {
             } break;
             case UnitId::TerranLobotomyMine: {
                 if (unit->order_signal & 32) {
-                    unit->order_signal &= 32;
+                    unit->order_signal &= ~32;
                     fire_bullet(unit, WeaponId::LobotomyMineExplosion, unit->order_target);
                     unit->ground_weapon_cooldown = hooks::get_modified_cooldown(unit, 1, false);
                 }
             } break;
             case UnitId::TerranTartarusMine: {
                 if (unit->order_signal & 32) {
-                    unit->order_signal &= 32;
+                    unit->order_signal &= ~32;
                     fire_bullet(unit, WeaponId::TartarusMineApollyoidConflagration, unit->order_target);
                     unit->ground_weapon_cooldown = hooks::get_modified_cooldown(unit, 1, false);
                 }

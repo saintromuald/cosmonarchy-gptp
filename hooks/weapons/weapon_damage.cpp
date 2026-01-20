@@ -672,6 +672,22 @@ namespace hooks {
             }
 
             switch (data.weapon_id) {
+                case WeaponId::OlympianMountainGun:
+                case WeaponId::OlympianTitansFist: {
+                    if (!data.target->is_building() && bw::unit_is_exposed_to(data.target, data.attacker->position)) {
+                        s32 bonus_damage = hooks::get_modified_armor_pen(data.attacker, data.target, data.weapon_id) + data.bonus_armor_pen - hooks::get_armor_internal(data.target);
+                        if (bonus_damage > 0) {
+                            auto& target_ext = data.target->ext();
+                            if (!target_ext.timers[TimerOlympianMythicalMightSFX]) {
+                                helper::play_sound_from_unit(SoundId::OlympianMythicalMight01, data.target, 1, 0);
+                                target_ext.timers[TimerOlympianMythicalMightSFX] = 3;
+                            }
+                            u32 overlay_id = bw::rand_between(SpriteId::OlympianDishonorableDischarge1, SpriteId::OlympianDishonorableDischarge3);
+                            bw::create_and_init_thingy(overlay_id, data.target->position.x, data.target->position.y, data.attacking_player_id, data.target->sprite->elevation + 1);
+                            data.target->inflict_damage(bonus_damage * 256, data.attacker, data.attacking_player_id, false);
+                        }
+                    }
+                } break;
                 case WeaponId::AutocratEminenceRifle: {
                     g_iquare_globals->create_effect(EffectId::ReclamationField, 36, data.target->position, 2 * 32, SpriteId::CausticDischarge,
                         data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
