@@ -300,6 +300,7 @@ namespace hooks {
 						case UnitId::ZergKagralisk:
 						case UnitId::ZergEvigrilisk:
 						case UnitId::ZergAlmaksalisk:
+						case UnitId::ZergZoryusthaleth:
 						case UnitId::ZergLakizilisk:
 						case UnitId::ZergGorgrokor:
 						case UnitId::ZergAzanthrokor:
@@ -307,7 +308,6 @@ namespace hooks {
 						case UnitId::ZergGeszithalor: {
 							animation = IscriptAnimation::SpecialState1;
 						} break;
-						case UnitId::ZergZoryusthaleth: 
 						case UnitId::ZergInzorthrokor: {
 							animation = IscriptAnimation::Built;
 						} break;

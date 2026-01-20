@@ -65,19 +65,16 @@ namespace hooks {
         }
 
         // Zoryusthaleth - Swarming Omen - 133% movement speed when moving towards Zoryusthaleth victims
-        if (unit_ext.timers[TimerSwarmingOmenSearch]) {
+        if (unit_ext.timers[TimerSwarmingOmenSearch] && unit_ext.timers[TimerSwarmingOmenSpeed] < 2) {
             for (Unit* target : g_unit_search.radial_ex(unit, Zoryusthaleth::SwarmingOmenRadius)) {
                 UnitExt& target_ext = target->ext();
                 if (!target_ext.timers[TimerSwarmingOmenDebuff]) {
                     continue;
                 }
-                if (bw::is_allied_to(target->player, unit->player)) {
-                    continue;
-                }
                 if (!bw::unit_is_facing(unit, target->position)) {
                     continue;
                 }
-                speed *= 1.33;
+                unit_ext.timers[TimerSwarmingOmenSpeed] = 6;
                 if (unit_ext.try_reset_timer(TimerSwarmingOmenVisuals, 12)) {
                     bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
                 }
@@ -87,6 +84,9 @@ namespace hooks {
                 }
                 break;
             }
+        }
+        if (unit_ext.timers[TimerSwarmingOmenSpeed] > 1) {
+            speed *= 1.33;
         }
 
         // Tyranny of the Sun
