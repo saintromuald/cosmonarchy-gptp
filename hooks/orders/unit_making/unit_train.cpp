@@ -114,7 +114,7 @@ namespace hooks {
 						.hp_gain = hp_gain,
 					});
 					if (helper::generic_progress_build(built_unit, hp_gain, true)) {
-						if (built_unit->status & UnitStatus::Completed) {
+						if (built_unit->is_completed()) {
 							u32 count = 1;
 							Unit* built_units[2] = {built_unit, 0};
 							if (units_dat::base_property[built_unit->id] & UnitProperty::TwoUnitsIn1Egg || game_kind_doubles_units()) {

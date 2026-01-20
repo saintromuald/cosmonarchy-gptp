@@ -21,11 +21,10 @@ namespace hooks {
 	void cmdrecv_cancel_addon() {
 		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
-			if (unit->secondary_order_id == OrderId::BuildAddon
-				&& unit->status & UnitStatus::GroundedBuilding) {
+			if (unit->secondary_order_id == OrderId::BuildAddon && unit->is_grounded_building()) {
 				Unit* addon = unit->current_build_unit;
-				if (addon &&  !(addon->status & UnitStatus::Completed)
-				&&  unit->status & UnitStatus::Completed
+				if (addon && !addon->is_completed()
+				&&  unit->is_completed()
 				&&  unit->player == *g_active_nation_id) {
 					helper::cancel_addon_proc(unit);
 					bw::refresh_console();
@@ -38,7 +37,7 @@ namespace hooks {
 	void cmdrecv_cancel_upgrade() {
 		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
-			if (unit->status & UnitStatus::Completed && unit->player == *g_active_nation_id) {
+			if (unit->is_completed() && unit->player == *g_active_nation_id) {
 				helper::cancel_upgrade_proc(unit);
 				bw::refresh_console();
 			}
@@ -49,8 +48,8 @@ namespace hooks {
 	void cmdrecv_cancel_research() {
 		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
-			if (units_dat::base_property[unit->id] & UnitProperty::Building
-			&&  unit->status & UnitStatus::Completed
+			if (unit->is_building()
+			&&  unit->is_completed()
 			&&  unit->player == *g_active_nation_id) {
 				helper::cancel_research_proc(unit);
 				bw::refresh_console();
@@ -62,10 +61,9 @@ namespace hooks {
 	void cmdrecv_cancel_train(u16 slot) { // 004C0100
 		*g_unit_iterator_pos = 0;
 		while (Unit* unit = get_active_player_next_selection()) {
-			if (unit->id != UnitId::ZergLarva
-			&&  unit->id != UnitId::ZergOcsalLarva
+			if (!unit_id_is_larva(unit->id)
 			&& !bw::is_conventional_unit_morph_source(unit->id)
-			&&  unit->status & UnitStatus::Completed
+			&&  unit->is_completed()
 			&&  unit->player == *g_active_nation_id)
 			{
 				if (slot == 254) {

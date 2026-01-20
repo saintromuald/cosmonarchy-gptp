@@ -106,7 +106,7 @@ namespace hooks {
 
 	// Bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void restore_hit(Unit* target, Bullet* bullet) {
-		if (target->status & UnitStatus::IsHallucination) {
+		if (target->is_hallucination()) {
 			target->bwfunc_remove();
 		} else {
 			// Create impact overlay

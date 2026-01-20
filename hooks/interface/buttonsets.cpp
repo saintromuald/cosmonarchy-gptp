@@ -96,7 +96,7 @@ namespace hooks {
                     if (selected->get_ground_weapon() != WeaponId::None || selected->get_air_weapon() != WeaponId::None) {
                         count_attacking_buildings++;
                     }
-                    if (selected->status & UnitStatus::InAir) {
+                    if (selected->is_in_air()) {
                         count_lifted_buildings++;
                     }
                 }

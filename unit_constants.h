@@ -162,11 +162,6 @@ inline constexpr s32 SublimeShepherdRange = 6 * 32;
 
 // PROTOSS \\
 
-namespace ProtossBulwark {
-inline constexpr s32 AstralSplendorShieldAmount = 10 * 256;
-inline constexpr s32 AstralSplendorRange = 8 * 32;
-}
-
 namespace ProtossEcclesiast {
 inline constexpr s32 AstralBlessingTimer = 5 * 24 + 1;
 }
@@ -307,6 +302,7 @@ inline constexpr s32 AmbientSFXDelay = 184;
 }
 
 namespace Protoss {
+inline constexpr s32 TeleportRange = 3 * 32;
 inline constexpr s32 AstralChargeRadius = 2 * 32;
 inline constexpr s32 VengefulMarchDuration = 1 * 24 + 1;
 inline constexpr s32 BindingPlasmaTimer = 24 * 0.5;

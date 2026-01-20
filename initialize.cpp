@@ -197,7 +197,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     // Fix to make vanilla campaigns playable from Firegraft executables -UndeadStar
 //	jump_patch((void*)0x15017960, 0x004100C4); // insert a "jump to storm.dll function" instead of a "jump to firegraft function" in an array
 
-    // Jesse, start 
+    // Jesse, start
     if (g_config.allow_multiple_instances) {
         // skip the jump to 0x004e0380 which checks for other instances and exits if found
         nop_patch(0x004e0b02, 5);
@@ -874,36 +874,36 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_supply_hooks();
 
 //	hooks::inject_requirement_hooks();
-	hooks::inject_new_requirements_hooks();
-	hooks::inject_unit_ai_hooks();
-	hooks::inject_ai_request_hooks();
+    hooks::inject_new_requirements_hooks();
+    hooks::inject_unit_ai_hooks();
+    hooks::inject_ai_request_hooks();
 
-	hooks::inject_attack_orders_hooks();
+    hooks::inject_attack_orders_hooks();
 
-	hooks::inject_stop_hold_position_orders_hooks();
+    hooks::inject_stop_hold_position_orders_hooks();
 
-	hooks::inject_utils_hooks();
-	hooks::inject_select_larva_hooks();
+    hooks::inject_utils_hooks();
+    hooks::inject_select_larva_hooks();
 
-	hooks::inject_cmdrecv_siege_tank_hooks();
-	hooks::inject_bullet_extender();
-	inject_trigger_system_hooks();
-	hooks::inject_hp_bars_hooks();
-	hooks::inject_image_render_hooks();
-	hooks::inject_minimap_hooks();
+    hooks::inject_cmdrecv_siege_tank_hooks();
+    hooks::inject_bullet_extender();
+    inject_trigger_system_hooks();
+    hooks::inject_hp_bars_hooks();
+    hooks::inject_image_render_hooks();
+    hooks::inject_minimap_hooks();
 
-	// Limits - most likely needs to be patched in aise, aice, and mtl
-	hooks::inject_unit_extender();
-	hooks::inject_sprite_extender();
-	hooks::inject_order_extender();
-	hooks::inject_image_extender();
-	hooks::inject_thingy_extender();
+    // Limits - most likely needs to be patched in aise, aice, and mtl
+    hooks::inject_unit_extender();
+    hooks::inject_sprite_extender();
+    hooks::inject_order_extender();
+    hooks::inject_image_extender();
+    hooks::inject_thingy_extender();
 
-	hooks::inject_orders_root_hooks();
-	hooks::inject_selection_extender();
-	
-	hooks::inject_sight_update_hooks();
-	hooks::inject_creategame_hooks();
+    hooks::inject_orders_root_hooks();
+    hooks::inject_selection_extender();
+    
+    hooks::inject_sight_update_hooks();
+    hooks::inject_creategame_hooks();
 
 	hooks::inject_iscript_extender();
     hooks::inject_tbl_extender();
@@ -915,5 +915,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_snp_hooks();
     hooks::inject_lobby_command_hooks();
 
-	return TRUE;
+    hooks::inject_replay_hooks();
+
+    return TRUE;
 }
