@@ -411,8 +411,8 @@ enum ExtTimerId {
     TimerIncinerateArmor,
     TimerSwarmingOmenSpeed,
     TimerAmbientSFX,
-    TimerTerranWindup,
     TimerMimicryCheck,
+    TimerTerranWindup,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
