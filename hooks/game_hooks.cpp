@@ -562,6 +562,9 @@ namespace hooks {
                     case OrderId::CastThroughTheLookingGlass: {
                         bw::draw_aura_range(unit, ThroughTheLookingGlass::CastRange / 32, 164);
                     } break;
+                    case OrderId::AskosiRematerialize: {
+                        bw::draw_aura_range(unit, Askosi::RematerializeCastRange / 32, 164);
+                    } break;
                     default: {
                     } break;
                 }
@@ -1852,7 +1855,7 @@ namespace hooks {
                         } break;
                     }
                     if (do_teleport) {
-                        if (bw::teleport_to_unit(unit, target, min_radius, 0, true)) {
+                        if (bw::teleport_to_unit(unit, target, min_radius, {.preserve_order = true}, 0)) {
                             bw::add_unit_overlay(unit, image_id);
                             bw::decloak_passive_proc(unit);
                             if (unit->id == UnitId::ProtossCabalist) {
@@ -2321,14 +2324,16 @@ namespace hooks {
                 }
                 if (try_cast && !unit_ext.timers[TimerTryCastCustomSpell] && !unit_ext.timers[TimerHypnagogueChannel]) {
                     Point16 target_pos = {};
+                    bool target_is_unit = false;
                     if (unit->order_target.unit) {
                         target_pos.x = unit->order_target.unit->get_x();
                         target_pos.y = unit->order_target.unit->get_y();
+                        target_is_unit = true;
                     } else if (unit->order_target.pt.x && unit->order_target.pt.y) {
                         target_pos = unit->order_target.pt;
                     }
                     u32 range = ThroughTheLookingGlass::CastRange;
-                    if (bw::distance_between(unit->position, target_pos) > range) {
+                    if (bw::distance_between(unit->position, target_pos) > range || (target_is_unit && !helper::is_target_within_min_range(unit, range, unit->order_target.unit))) {
                         if (unit->order_target.unit) {
                             helper::spell_order_move_towards_target(unit, range);
                         } else {

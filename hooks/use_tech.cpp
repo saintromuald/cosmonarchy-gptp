@@ -114,8 +114,8 @@ namespace hooks {
             case TechId::MadrigalTempoChange: {
                 queue_generic_ability(RustId::CastToggleTempoChange, 1);
             } break;
-            case TechId::PaladinSkyfall: {
-                helper::issue_tri_target_order(OrderId::PaladinSkyfall, 0, 0);
+            case TechId::AskosiRematerialize: {
+                helper::issue_tri_target_order(OrderId::AskosiRematerialize, 0, 0);
             } break;
             case TechId::DefensiveMatrix: {
                 helper::issue_tri_target_order(OrderId::DefensiveMatrix, 0, 0);

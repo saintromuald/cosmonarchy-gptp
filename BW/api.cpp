@@ -167,7 +167,7 @@ bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id, bool preserve_
     return true;
 }
 
-bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, u16 sprite_id, bool preserve_order) {
+bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, const TeleportOptions& options, u16 sprite_id) {
     Box16 move_area = {};
     move_area.left = target->get_left() - radius;
     move_area.top = target->get_top() - radius;
@@ -179,11 +179,11 @@ bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, u16 sprite_id, bool 
     if (!bw::check_unit_collision_pos(unit, &unit->position, &new_pos, &move_area, false, 0)) {
         return false;
     }
-    if (target->get_distance_to_point(new_pos) > radius * 1.5) {
+    if (options.check_distance && target->get_distance_to_point(new_pos) > radius * 1.5) {
         return false;
     }
 
-    teleport_internal(unit, new_pos, sprite_id, preserve_order);
+    teleport_internal(unit, new_pos, sprite_id, options.preserve_order);
     return true;
 }
 
@@ -935,8 +935,8 @@ Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator, b
         return 0;
     }
     if (!give_massacre_resource) {
-        UnitExt* unit_ext = get_unit_ext(unit);
-        unit_ext->values[ValueNoMassacreResource] = 1;
+        auto& unit_ext = unit->ext();
+        unit_ext.values[ValueNoMassacreResource] = 1;
     }
 
     helper::update_unit_stats_and_finish_building(unit);
@@ -1101,7 +1101,7 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
         auto& unit_ext = unit->ext();
         if (creator) {
             spread_debuffs(creator, unit);
-            if (creator->status & UnitStatus::IsHallucination) {
+            if (creator->is_hallucination()) {
                 helper::apply_hallucination_stats(unit);
                 unit->status |= UnitStatus::IsHallucination;
                 unit->remove_timer = 1350;

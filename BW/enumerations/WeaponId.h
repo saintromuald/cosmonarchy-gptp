@@ -57,7 +57,7 @@ namespace WeaponId {
         SpraithCesiantSeekerSpores				 = 0x34,
         SurkithCesiantSubterraneanTentacle		 = 0x35,
         InfestedTerranSuicide					 = 0x36,
-        SkryrokorPlasmaMetamorphosis             = 0x37,
+        SkryrokorPlasmaMetamorphosis			 = 0x37,
         MatralethParasite						 = 0x38,
         SpawnBroodlings							 = 0x39,
         Ensnare									 = 0x3A,
@@ -369,7 +369,7 @@ namespace WeaponId {
         HelionUskoScrapray                  = 179,
         TiradeIktaDriver                    = 181,
         AvatarReformingCarbine              = 182,
-        Rematerialize                       = 207,
+        Rematerialize	    	            = 207, // ability targeting
         PilgrimMiningSaber                  = 239,
         RapidRandezvous                     = 247, // ability targeting
 

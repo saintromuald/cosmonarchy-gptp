@@ -258,6 +258,11 @@ struct BindingPlasmaOptions {
     SoundSet sound;
 };
 
+struct TeleportOptions {
+    bool preserve_order : 1 = false;
+    bool check_distance : 1 = true;
+};
+
 auto rand_one(const std::ranges::range auto& range, std::source_location src = std::source_location::current()) -> decltype(*std::ranges::begin(range)) {
     return *std::ranges::next(std::ranges::begin(range), bw::rand_between(0, std::ranges::size(range) - 1, src));
 };
@@ -292,7 +297,7 @@ Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* targ
 Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y);
 std::string read_samase_file(char* name);
 bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id = 0, bool preserve_order = false);
-bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, u16 sprite_id = 0, bool preserve_order = false);
+bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, const TeleportOptions& options, u16 sprite_id = 0);
 Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player = 11, s32 elevation_level = 11);
 Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees);
 Vec32 rotate_point(Vec32 anchor, Vec32 point, f64 angle_degrees);

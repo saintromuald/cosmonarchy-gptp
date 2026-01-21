@@ -394,6 +394,9 @@ enum Enum {
     GriefOfAllGods				= 155,  // CTF COP 2				| Star Sovereign glassing ability
     
     // Zerg
-    BlissfulEmbrace				= 154,  // Idle CTF COP             | Matraleth infestation ability
+    BlissfulEmbrace				= 154,  // Idle CTF COP             | Zerg infestation ability
+
+    // Askosi
+    AskosiRematerialize         = 12,   // Attack Tile              | Askosi ally pull ability
 };
 }

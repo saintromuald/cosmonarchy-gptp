@@ -389,7 +389,8 @@ namespace hooks {
 			case TechId::YamatoGun:
 			case TechId::Irradiate:
 			case TechId::LuminaryAuralAssault:
-			case TechId::GoskaLobotomyGrenade: {
+			case TechId::GoskaLobotomyGrenade:
+			case TechId::AskosiRematerialize: {
 				return false;
 			} break;
 			default: {
@@ -399,7 +400,7 @@ namespace hooks {
 					u32 order_target_y = unit->order_target.pt.y;
 					can_cast_on_tile = get_active_tile_flag(order_target_y, order_target_x, 0x410000, 0);
 				} else {
-					if (!order_target_unit || order_target_unit->status & UnitStatus::Invincible) {
+					if (!order_target_unit || order_target_unit->is_invincible()) {
 						return true;
 					}
 					can_cast_on_tile = (u16)helper::get_target_unit_ability_error_stat_string(order_target_unit, unit->player, tech_id) == 0;
