@@ -35,51 +35,7 @@ namespace {
         }
     }
 
-    //void __declspec(naked) targeted_order_wrapper() {
-    //    static s16 a1;
-    //    static s32 a2;
-    //    static Unit* a3;
-    //    static s16 a4;
-    //    static s32 a5;
-    //    static s32 a6;
-    //    static s32 a7;
-    //    static s32 a8;
-    //    static s32 a9;
-    //    static s32 a10;
-    //    __asm {
-    //        PUSH EBP
-    //        MOV EBP, ESP
-    //        MOV a1, DX
-    //        MOV a2, EBX
-    //        MOV a3, ESI
-    //        MOV a4, AX
-    //        PUSH EAX
-    //        MOV EAX, [EBP + 0x8]
-    //        MOV a5, EAX
-    //        MOV EAX, [EBP + 0xC]
-    //        MOV a6, EAX
-    //        MOV EAX, [EBP + 0x10]
-    //        MOV a7, EAX
-    //        MOV EAX, [EBP + 0x14]
-    //        MOV a8, EAX
-    //        MOV EAX, [EBP + 0x18]
-    //        MOV a9, EAX
-    //        MOV EAX, [EBP + 0x1C]
-    //        MOV a10, EAX
-    //        POP EAX
-    //        PUSHAD
-    //    }
-    //    hooks::targeted_order(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
-    //    __asm {
-    //        POPAD
-    //        MOV ESP, EBP
-    //        POP EBP
-    //        RETN 0x18
-    //    }
-    //}
-
-    void __declspec(naked) select_units_wrapper()
-    {
+    void __declspec(naked) select_units_wrapper() {
         static Unit** a1;
         static s32 a2;
         static s32 a3;
@@ -718,50 +674,51 @@ namespace {
 namespace hooks {
     void inject_ui_features_hooks() {
         jump_patch(draw_ui_features_wrapper,				0x0048D0A9, 0);
-    //	jump_patch(select_units_wrapper,					0x0046FA00, 1);
-        jump_patch(queue_game_command_wrapper,				0x00485BD0, 4);
+    //	jump_patch(select_units_wrapper,					            0x0046FA00, 1);
+        jump_patch(queue_game_command_wrapper,			0x00485BD0, 4);
         jump_patch(check_hotkey_char_wrapper,				0x004588C0, 3);
-    //	jump_patch(create_upgrade_level_tooltip_wrapper,	0x00459150, 3);
-    //	jump_patch(trigact_transmission_wrapper,			0x004C7890, 0);
+    //	jump_patch(create_upgrade_level_tooltip_wrapper,	            0x00459150, 3);
+    //	jump_patch(trigact_transmission_wrapper,			            0x004C7890, 0);
         jump_patch(draw_minimap_unit_box_wrapper,			0x004A4650, 4);
-        jump_patch(draw_all_minimap_boxes_wrapper,			0x004A4AC0, 0);
-        jump_patch(get_cursor_type_wrapper,					0x004D1460, 0);
-        jump_patch(cmdact_right_click_minimap_wrapper,		0x004563A0, 1);
+        jump_patch(draw_all_minimap_boxes_wrapper,		0x004A4AC0, 0);
+        jump_patch(get_cursor_type_wrapper,				0x004D1460, 0);
+        jump_patch(cmdact_right_click_minimap_wrapper,	0x004563A0, 1);
 
         // Allow units in fow (seems to desync)
-    //	jump_patch(show_fow_unit_check_wrapper,				0x004EBE88, 2); // Allow all unit ids to create fow sprites
-    //	jump_patch(include_sprite_in_vischeck_wrapper,		0x00497C6D, 0); // Exclude fow sprites from visibility checks as they are not synced
-    //	jump_patch(create_fow_sprite_partial_wrapper,		0x0048846D, 2); // Mark sprites as fow sprites in SpriteExt
+    //	jump_patch(show_fow_unit_check_wrapper,				            0x004EBE88, 2); // Allow all unit ids to create fow sprites
+    //	jump_patch(include_sprite_in_vischeck_wrapper,		            0x00497C6D, 0); // Exclude fow sprites from visibility checks as they are not synced
+    //	jump_patch(create_fow_sprite_partial_wrapper,		            0x0048846D, 2); // Mark sprites as fow sprites in SpriteExt
 
         jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Clear SpriteExt on sprite destruction
     	jump_patch(draw_vertical_line_wrapper,			0x0041D7D0, 4);
         jump_patch(centerview_unit_group,					0x004967E0, 1);
-    //	jump_patch(draw_standard_button_graphic_wrapper,	0x004EFD90, 2); // not needed
+    //	jump_patch(draw_standard_button_graphic_wrapper,	            0x004EFD90, 2); // not needed
         jump_patch(generic_dialog_update_wrapper,			0x004EF590, 1);
-        jump_patch(draw_stat_button_image_wrapper,			0x00456C30, 1);
+        jump_patch(draw_stat_button_image_wrapper,		0x00456C30, 1);
         jump_patch(statbtn_button_update_wrapper,			0x00458900, 1);
-    //	jump_patch(print_stat_res_info_wrapper,				0x004E52E0, 0); // Crashes
-        jump_patch(input_mmb_down_wrapper,					0x00484520, 0);
+    //	jump_patch(load_statdata_bin_wrapper,				            0x00459B90, 4);
+    //	jump_patch(print_stat_res_info_wrapper,				            0x004E52E0, 0); // Crashes
+        jump_patch(input_mmb_down_wrapper,				0x00484520, 0);
         jump_patch(input_mmb_up,							0x004843A0, 0);
-        jump_patch(input_mmb_move,							0x00484460, 1);
-    //	jump_patch(statport_dlg_interact_wrapper,			0x0045F290, 2);
+        jump_patch(input_mmb_move,						0x00484460, 1);
+    //	jump_patch(statport_dlg_interact_wrapper,			            0x0045F290, 2);
         jump_patch(CMDRECV_minimap_ping_wrapper,			0x004BF7A0, 0);
 
-    //	jump_patch(show_or_hide_minimap,					0x004A4150, 2);
-        jump_patch(draw_game_menu_context_wrapper,			0x004F4F70, 1);
-        jump_patch(get_tile_image_data_wrapper,				0x0040C3B0, 1);
-        jump_patch(get_stat_txt_string_wrapper,				0x004C36F0, 1);
-        jump_patch(draw_show_hide_terrain_context_wrapper,	0x004A4C40, 0);
+    //	jump_patch(show_or_hide_minimap,					            0x004A4150, 2);
+        jump_patch(draw_game_menu_context_wrapper,		0x004F4F70, 1);
+        jump_patch(get_tile_image_data_wrapper,			0x0040C3B0, 1);
+        jump_patch(get_stat_txt_string_wrapper,			0x004C36F0, 1);
+        jump_patch(draw_show_hide_terrain_context_wrapper,0x004A4C40, 0);
         jump_patch(draw_cancel_unit_context_wrapper,	    0x00457B10, 4);
-        jump_patch(statdata_mouseover_interact_wrapper,                 0x00457CE0, 1);
+        jump_patch(statdata_mouseover_interact_wrapper,   0x00457CE0, 1);
     //  jump_patch(move_screen_to_unit_wrapper,                         0x004E6020, 3); // Working, but disabled to use memory patches instead. -Pr0nogo
 
         call_patch(get_scroll_directions_partial,			0x0047F155, 0);
-        jump_patch(replayStatBtns_patch_27AB0,				0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
+        jump_patch(replayStatBtns_patch_27AB0,			0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 
         // Make ingame menus appear above custom UI elements. -DF
-        call_patch(dialog_update_proc_patch_1CB64,			0x0041CB64);
-        jump_patch(dialog_update_proc_patch_1CBFA,			0x0041CBFA);
+        call_patch(dialog_update_proc_patch_1CB64,		0x0041CB64);
+        jump_patch(dialog_update_proc_patch_1CBFA,		0x0041CBFA);
 
         // Passive icon colorization -- extension of color remaps. -DF
         // memory_patch(0x00459C1D, (u8)0x70); // Since it's a byte value push, this is the largest buffer size with this mempatch. Will need a jump_patch or hook to support more colors.

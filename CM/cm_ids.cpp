@@ -142,7 +142,7 @@ bool unit_id_is_race(u32 unit_id, u32 race) {
 }
 
 bool unit_id_is_combatant(u32 unit_id) {
-    if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster && unit_id != UnitId::TerranComsatStation) {
+    if (units_dat::base_property[unit_id] & UnitProperty::Spellcaster && !(units_dat::base_property[unit_id] & UnitProperty::Building)) {
         return true;
     }
     if (units_dat::ground_weapon[unit_id] != WeaponId::None || units_dat::air_weapon[unit_id] != WeaponId::None) {
@@ -644,7 +644,9 @@ bool order_id_is_harvest_related(u32 order_id) {
 bool tech_id_has_custom_targeting(u32 tech_id) {
     return tech_id != TechId::Hallucination
         && tech_id != TechId::LuminaryAuralAssault
-        && tech_id != TechId::HypnagogueThroughTheLookingGlass;
+        && tech_id != TechId::HypnagogueThroughTheLookingGlass
+        && tech_id != TechId::AskosiRematerialize
+        && tech_id != TechId::TritonLobotomyWarhead;
 }
 
 bool image_id_is_powerup(u32 image_id) {
@@ -770,6 +772,12 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueCataphractLaunchPos;
             offsets.count = 4;
+            return &offsets;
+        } break;
+        case WeaponId::GoskaLobotomyGrenade: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueTritonAbilityLaunchPos;
+            offsets.count = 1;
             return &offsets;
         } break;
         case WeaponId::PaladinCrusaderMissiles: {
@@ -1510,6 +1518,13 @@ UnitId::Enum get_racial_town_center_id(u32 race_id) {
     return UnitId::None;
 }
 
+bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {
+    return unit_id == UnitId::TerranGoliath
+        || unit_id == UnitId::TerranTriton
+        || unit_id == UnitId::TerranTiangou
+        || unit_id == UnitId::TerranArhaun;
+}
+
 namespace UnitId {
 bool can_cast_recall(UnitId::Enum unit_id) {
     return unit_id == UnitId::ProtossXenolith
@@ -1544,35 +1559,38 @@ u32 get_overlay_offset(UnitId::Enum unit_id) {
 SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
     // Specific
     switch (unit_id) {
-        case UnitId::TerranMason:                  return SpriteId::Corpse_Mason;
-        case UnitId::TerranMaverick:               return SpriteId::Corpse_Maverick;
-        case UnitId::TerranHarakan:                return SpriteId::Corpse_Harakan;
-        case UnitId::TerranHarakanGolden:          return SpriteId::Corpse_Harakan;
-        case UnitId::TerranCyprian:                return SpriteId::Corpse_Cyprian;
-        case UnitId::TerranCleric:                 return SpriteId::Corpse_Cleric;
-        case UnitId::TerranShamanSupportMode:      return SpriteId::Corpse_Shaman;
-        case UnitId::TerranShamanVisionaryMode:    return SpriteId::Corpse_Shaman;
-        case UnitId::TerranEidolon:                return SpriteId::Corpse_Eidolon;
-        case UnitId::TerranEidolonNydus:           return SpriteId::Corpse_Eidolon;
-        case UnitId::TerranSavantEntropyGauntlets: return SpriteId::Corpse_Savant;
-        case UnitId::TerranSavantPowerSiphon:      return SpriteId::Corpse_Savant;
-        case UnitId::TerranApostle:                return SpriteId::Corpse_Apostle;
-        case UnitId::TerranDilettante:             return SpriteId::Corpse_Dilettante;
-        case UnitId::TerranHypnagogue:             return SpriteId::Corpse_Hypnagogue;
-        case UnitId::TerranVulture:                return SpriteId::Corpse_Vulture;
-        case UnitId::TerranCyclops:                return SpriteId::Corpse_Cyclops;
-        case UnitId::TerranCyclopsFuturist:        return SpriteId::Corpse_Cyclops;
-        case UnitId::TerranGoliath:                return SpriteId::Corpse_Goliath;
-        case UnitId::TerranAspirant:               return SpriteId::Corpse_Aspirant;
-        case UnitId::TerranBlackjack:              return SpriteId::Corpse_Blackjack;
-        case UnitId::TerranBlackjackGolden:        return SpriteId::Corpse_Blackjack;
-        case UnitId::TerranPhalanxTankMode:        return SpriteId::Corpse_PhalanxTank;
-        case UnitId::TerranPhalanxSiegeMode:       return SpriteId::Corpse_PhalanxSiege;
-        case UnitId::TerranMadrigalImperiosoMode:  return SpriteId::Corpse_MadrigalFuria;
-        case UnitId::TerranMadrigalFuriaMode:      return SpriteId::Corpse_MadrigalFuria;
-        case UnitId::TerranWraith:                 return SpriteId::Corpse_Wraith;
-        case UnitId::TerranAncile:                 return SpriteId::Corpse_Ancile;
-        case UnitId::TerranTrojan:                 return SpriteId::Corpse_Trojan;
+        case UnitId::TerranMason:                        return SpriteId::Corpse_Mason;
+        case UnitId::TerranMaverick:                     return SpriteId::Corpse_Maverick;
+        case UnitId::TerranHarakan:                      return SpriteId::Corpse_Harakan;
+        case UnitId::TerranHarakanGolden:                return SpriteId::Corpse_Harakan;
+        case UnitId::TerranCyprian:                      return SpriteId::Corpse_Cyprian;
+        case UnitId::TerranCleric:                       return SpriteId::Corpse_Cleric;
+        case UnitId::TerranShamanSupportMode:            return SpriteId::Corpse_Shaman;
+        case UnitId::TerranShamanVisionaryMode:          return SpriteId::Corpse_Shaman;
+        case UnitId::TerranEidolon:                      return SpriteId::Corpse_Eidolon;
+        case UnitId::TerranEidolonNydus:                 return SpriteId::Corpse_Eidolon;
+        case UnitId::TerranSavantEntropyGauntlets:       return SpriteId::Corpse_Savant;
+        case UnitId::TerranSavantPowerSiphon:            return SpriteId::Corpse_Savant;
+        case UnitId::TerranApostle:                      return SpriteId::Corpse_Apostle;
+        case UnitId::TerranDilettante:                   return SpriteId::Corpse_Dilettante;
+        case UnitId::TerranHypnagogue:                   return SpriteId::Corpse_Hypnagogue;
+        case UnitId::TerranVulture:                      return SpriteId::Corpse_Vulture;
+        case UnitId::TerranVultureHecaton:               return SpriteId::Corpse_Vulture;
+        case UnitId::TerranCyclops:                      return SpriteId::Corpse_Cyclops;
+        case UnitId::TerranCyclopsFuturist:              return SpriteId::Corpse_Cyclops;
+        case UnitId::TerranGoliath:                      return SpriteId::Corpse_Goliath;
+        case UnitId::TerranAspirant:                     return SpriteId::Corpse_Aspirant;
+        case UnitId::TerranBlackjack:                    return SpriteId::Corpse_Blackjack;
+        case UnitId::TerranBlackjackGolden:              return SpriteId::Corpse_Blackjack;
+        case UnitId::TerranPhalanxTankMode:              return SpriteId::Corpse_PhalanxTank;
+        case UnitId::TerranPhalanxSiegeMode:             return SpriteId::Corpse_PhalanxSiege;
+        case UnitId::TerranMadrigalImperiosoMode:        return SpriteId::Corpse_MadrigalFuria;
+        case UnitId::TerranMadrigalHecatonImperiosoMode: return SpriteId::Corpse_MadrigalFuria;
+        case UnitId::TerranMadrigalFuriaMode:            return SpriteId::Corpse_MadrigalFuria;
+        case UnitId::TerranTriton:                       return SpriteId::Corpse_TerranUnitMedium;
+        case UnitId::TerranWraith:                       return SpriteId::Corpse_Wraith;
+        case UnitId::TerranAncile:                       return SpriteId::Corpse_Ancile;
+        case UnitId::TerranTrojan:                       return SpriteId::Corpse_Trojan;
                                                    
         case UnitId::ProtossScribe:                return SpriteId::Corpse_Scribe;
         case UnitId::ProtossEnvoy:                 return SpriteId::Corpse_Envoy;
@@ -1714,6 +1732,9 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
             case UnitId::TerranCyprian: {
                 ready_sound = helper::get_random_unit_response(SoundId::CyprianReady01, SoundId::CyprianReady03);
             } break;
+            case UnitId::TerranCannibal: {
+                ready_sound = helper::get_random_unit_response(SoundId::CannibalReady01, SoundId::CannibalReady03);
+            } break;
             case UnitId::TerranShamanSupportMode: {
                 ready_sound = helper::get_random_unit_response(SoundId::ShamanReady01, SoundId::ShamanReady03);
             } break;
@@ -1767,8 +1788,14 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
             case UnitId::TerranCataphract: {
                 ready_sound = helper::get_random_unit_response(SoundId::CataphractReady01, SoundId::CataphractReady03);
             } break;
+            case UnitId::TerranTriton: {
+                ready_sound = helper::get_random_unit_response(SoundId::TritonReady01, SoundId::TritonReady03);
+            } break;
             case UnitId::TerranPaladin: {
                 ready_sound = helper::get_random_unit_response(SoundId::PaladinReady01, SoundId::PaladinReady03);
+            } break;
+            case UnitId::TerranPazuzu: {
+                ready_sound = helper::get_random_unit_response(SoundId::PazuzuReady01, SoundId::PazuzuReady03);
             } break;
             case UnitId::TerranMadrigalImperiosoMode:
             case UnitId::TerranMadrigalHecatonImperiosoMode: {
@@ -1879,11 +1906,6 @@ bool has_autovitality(UnitId::Enum unit_id) {
 
 bool has_automandate(UnitId::Enum unit_id) {
     return unit_id == UnitId::ProtossSimulacrumAstral;
-}
-
-bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {
-    return unit_id == UnitId::TerranGoliath
-        || unit_id == UnitId::TerranTiangou;
 }
 
 bool has_interruptable_windup(UnitId::Enum unit_id) {

@@ -6067,59 +6067,37 @@ namespace helper {
     }
 
     // For targeted_order
-    Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vec32* a8, Unit* a9) {
+    void queue_new_order(u32 order_type, s16 pos_x, s16 pos_y, Unit* unit, u8 order_id, Unit* target, u16 fow_unit_id, Point16 position, Unit* secondary_target) {
         const u32 func_address = 0x00474B90;
-        s32 a7_xd = a7;
-        u32 a5_xd = a5;
         static Order* result;
         __asm {
             PUSHAD
-            MOV EAX, a1
-            MOVZX EDX, a2
-            MOVZX ECX, a3
-            PUSH a9
-            PUSH a8
-            PUSH a7_xd
-            PUSH a6
-            PUSH a5_xd
-            PUSH a4
+            PUSH secondary_target
+            PUSH position
+            PUSH DWORD PTR fow_unit_id
+            PUSH target
+            PUSH DWORD PTR order_id
+            PUSH unit
+            MOV CX, pos_y
+            MOV DX, pos_x
+            MOV EAX, order_type
             CALL func_address
-            MOV result, EAX
             POPAD
         }
-        return result;
     }
 
-    s32 show_stat_txt_to_player(s32 a1, s32 a2) {
+    s32 show_stat_txt_to_player(const char* text, u32 player) {
         const u32 func_address = 0x0048CF00;
         static s32 result;
         __asm {
             PUSHAD
-            MOV EAX, a1
-            MOV ECX, a2
+            MOV EAX, text
+            MOV ECX, player
             CALL func_address
             MOV result, EAX
             POPAD
         }
         return result;
-    }
-
-    void set_order_target(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vec32* a8, Unit* a9) {
-        const u32 func_address = 0x00475470;
-        __asm {
-            PUSHAD
-            MOVZX ECX, a1
-            MOVZX EDX, a2
-            MOVZX EAX, a3
-            MOV EDI, a4
-            PUSH a9
-            PUSH a8
-            PUSH a7
-            PUSH a6
-            PUSH a5
-            CALL func_address
-            POPAD
-        }
     }
 
     // For select_units
@@ -16109,6 +16087,39 @@ namespace helper {
             PUSH end_pos
             PUSH next_pos
             MOV EAX, unit
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void issue_order_by_type(u8 order_id, u16 pos_x, u16 pos_y, u32 order_type, Unit* unit, Unit* target, u32 fow_unit_id, Point16 position, Unit* secondary_target) {
+        const u32 func_address = 0x00475470;
+        __asm {
+            PUSHAD
+            PUSH secondary_target
+            PUSH position
+            PUSH fow_unit_id
+            PUSH target
+            PUSH unit
+            MOV EDI, order_type
+            MOV AX, pos_y
+            MOV DX, pos_x
+            MOV CL, order_id
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void command_targeted(u16 pos_x, u16 pos_y, Unit* unit, u32 unit_id, u8 order_id, u8 is_queued) {
+        const u32 func_address = 0x0049AB00;
+        __asm {
+            PUSHAD
+            PUSH DWORD PTR is_queued
+            PUSH DWORD PTR order_id
+            PUSH unit_id
+            PUSH unit
+            PUSH DWORD PTR pos_y
+            PUSH DWORD PTR pos_x
             CALL func_address
             POPAD
         }

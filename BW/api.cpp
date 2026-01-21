@@ -1257,8 +1257,8 @@ bool order_is_spell(s32 order_id) {
     //	|| order_id == OrderId::Ensnare				// Land Grab
         || order_id == OrderId::Irradiate
         || order_id == OrderId::StasisField
-        || order_id == OrderId::EMPShockwave		// Observance	 (unused)
-        || order_id == OrderId::Lockdown			// Lobotomy Mine (unused)
+        || order_id == OrderId::LobotomyGrenade		// For Goska
+        || order_id == OrderId::LobotomyWarhead		// For Triton
         || order_id == OrderId::PsiStorm
     //	|| order_id == OrderId::SummonBroodlings	// unused
         || order_id == OrderId::FireYamatoGun1;
@@ -1386,6 +1386,8 @@ bool unit_is_ranged_attacker(Unit* unit) {
         case UnitId::TerranMadrigalFuriaMode:
         case UnitId::TerranMadrigalTurretImperiosoMode:
         case UnitId::TerranMadrigalTurretFuriaMode:
+        case UnitId::TerranTriton:
+        case UnitId::TerranTritonTurret:
         case UnitId::Ackmed:
         case UnitId::TerranTiangou:
         case UnitId::TerranTiangouTurret:
@@ -4118,6 +4120,8 @@ u32 get_weapon_hit_sound(WeaponId::Enum weapon_id) {
         case WeaponId::AutocratEminenceRifle:             return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::RamessesPharoahCannons:            return SoundId::RamessesWeaponhit01;
         case WeaponId::CataphractLonginiusCannons:        return bw::rand_between(SoundId::CataphractWeaponhit01, SoundId::CataphractWeaponhit03);
+        case WeaponId::GoskaLobotomyGrenade:              return SoundId::TritonAbilityHit01;
+        case WeaponId::TritonLobotomyWarhead:             return SoundId::TritonAbilityHit01;
         case WeaponId::PenumbraErebolShockCannon:         return bw::rand_between(SoundId::PenumbraWeaponhit01, SoundId::PenumbraWeaponhit02);
         case WeaponId::ClaymoreHarpoonRailgun:            return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::WraithBurstLasers:                 return SoundId::Bullet_LASRHIT3_wav;

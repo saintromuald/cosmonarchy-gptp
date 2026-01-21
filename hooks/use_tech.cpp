@@ -106,7 +106,10 @@ namespace hooks {
                 helper::issue_tri_target_order(OrderId::PlaceMine, 0, 0);
             } break;
             case TechId::GoskaLobotomyGrenade: {
-                helper::issue_tri_target_order(OrderId::Lockdown, 0, 0);
+                helper::issue_tri_target_order(OrderId::LobotomyGrenade, 0, 0);
+            } break;
+            case TechId::TritonLobotomyWarhead: {
+                helper::issue_tri_target_order(OrderId::LobotomyWarhead, 0, 0);
             } break;
             case TechId::MadrigalTempoChange: {
                 queue_generic_ability(RustId::CastToggleTempoChange, 1);

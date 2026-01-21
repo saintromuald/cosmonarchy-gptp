@@ -22,6 +22,9 @@ namespace hooks {
 			case UnitId::ProtossAnalogue: {
 				energy = 150;
 			} break;
+			case UnitId::TerranTriton: {
+				energy = 175;
+			} break;
 			case UnitId::ProtossMindTyrant: {
 				energy = 200;
 			} break;

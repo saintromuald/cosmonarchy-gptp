@@ -247,8 +247,10 @@ namespace WeaponId {
         DiademIonCannon						= 198,
         SavantDiscoidRailgunEntropy		    = 199,
         SevenstepGeometricRiflePiercing		= 200,
-        MatadorTwinstrikeCannons			= 201,
+        MatadorTwinstrikeCanlnons			= 201,
         SalamanderAngeltearRockets			= 216,
+        TritonHydriaCannons                 = 245,
+        TritonLobotomyWarhead               = 246,
 
         // Protoss \\
         

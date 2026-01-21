@@ -226,15 +226,7 @@ void unit_on_death_behaviors(Unit* unit) {
                 }
             } break;
             case UnitId::TerranLobotomyMine: {
-                for (Unit* victim : g_unit_search.radial(unit->position, TerranMine::DetonationRange)) {
-                    if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
-                        continue;
-                    }
-                    auto& victim_ext = victim->ext();
-                    if (victim_ext.timers[TimerLobotomySlow] < TerranMine::LobotomyTimer) {
-                        victim_ext.timers[TimerLobotomySlow] = TerranMine::LobotomyTimer;
-                    }
-                }
+                apply_lobotomy_slow(unit->position);
             } break;
             case UnitId::TerranTartarusMine: {
                 for (Unit* victim : g_unit_search.radial(unit->position, TerranMine::DetonationRange)) {

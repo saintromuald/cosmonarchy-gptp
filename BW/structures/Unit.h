@@ -39,7 +39,7 @@ struct Unit : public UnitLayout {
     /// @name Unit Stats and Properties
     //////////////////////////////////////////////////////////////// @{
 
-    /// Checks if the unit is a clean detector (no Lockdown, Optical Flare, etc.)
+    /// Checks if the unit is a clean detector (no LobotomyGrenade, Optical Flare, etc.)
     bool can_detect() const;
 
     /// Returns the amount of HP displayed in-game. This is equal to
@@ -225,7 +225,7 @@ struct Unit : public UnitLayout {
     /// Silently removes the unit
     inline void silent_remove() {user_action_flags |= UserActionFlags_SilentRemove; bwfunc_remove();}
 
-    /// Removes the Lockdown effect from the unit.
+    /// Removes the LobotomyGrenade effect from the unit.
     void remove_lockdown();
 
     /// Removes the Maelstrom effect from the unit.

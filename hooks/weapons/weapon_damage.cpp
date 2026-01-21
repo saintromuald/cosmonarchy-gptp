@@ -926,7 +926,8 @@ namespace hooks {
                         }
                     } break;
                     case WeaponId::HeraclesJavelinCannons:
-                    case WeaponId::ClaymoreHarpoonRailgun: {
+                    case WeaponId::ClaymoreHarpoonRailgun:
+                    case WeaponId::TritonHydriaCannons: {
                         // Kelvin Munitions - Slow targets
                         target_ext.timers[TimerKelvinMunitions] = 3 * 24 + 1;
                     } break;

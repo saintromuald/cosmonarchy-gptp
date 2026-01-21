@@ -685,7 +685,7 @@ void refresh_debuffs(Unit* unit) {
         unit_ext->timers[TimerCaptivatingClaws] = Vorvrokor::CaptivatingClawsTimer;
     }
 
-    // Refresh Lockdown
+    // Refresh LobotomyGrenade
     if (unit->lockdown_timer) {
         unit->lockdown_timer = TerranMine::LobotomyTimerVanilla;
     }
@@ -779,7 +779,7 @@ void inherit_debuffs(Unit* parent, Unit* child) {
         parent_ext.unit_vectors[UnitVectorCaptivatingClaws] = child_ext.unit_vectors[UnitVectorCaptivatingClaws];
     }
 
-    // Inherit Lockdown
+    // Inherit LobotomyGrenade
     if (parent->lockdown_timer != 0) {
         child->lockdown_timer = parent->lockdown_timer;
     }
@@ -988,7 +988,7 @@ void restore_func(Unit* unit) {
     // Remove Empress stacks
     unit_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
 
-    // Remove Lockdown
+    // Remove LobotomyGrenade
     unit->remove_lockdown();
 
     // Remove Maelstrom
