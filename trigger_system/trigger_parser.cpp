@@ -796,7 +796,7 @@ u32 Parser::get_weapon_id() {
 	const auto marker = this->marker();
 	Token token = get_string();
 	for (u32 i = 0; i < WeaponId::Count; ++i) {
-		if (sv_lazy_equals(token.sv, g_stat_txt_tbl_new->get_string(weapons_dat::label[i]))) {
+		if (sv_lazy_equals(token.sv, g_stat_txt_tbl_new->get_string(weapons_dat::label[i]))) { // TODO: Use new method
 			return i;
 		}
 	}

@@ -175,11 +175,11 @@ s32 game_loop() { // 004D94B0 - hooked for lag testing - Pr0nogo
     aiLoop = sw.ElapsedMilliseconds();
     sw.Stop();
 
-    if (!visionUpdateCount) {
-        *visionUpdateCount = 100;
+    if (!g_vision_update_count) {
+        *g_vision_update_count = 100;
     }
-    v0 = *visionUpdateCount == 1;
-    *visionUpdateCount -= 1;
+    v0 = *g_vision_update_count == 1;
+    *g_vision_update_count -= 1;
     *g_vision_updated = v0;
     sw.Start();
     if (v0) {

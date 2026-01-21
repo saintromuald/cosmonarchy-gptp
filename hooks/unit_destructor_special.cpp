@@ -278,6 +278,7 @@ void unit_on_death_behaviors(Unit* unit) {
             case UnitId::ResourceMineralFieldType2:
             case UnitId::ResourceMineralFieldType3:
             case UnitId::ResourceVespeneGeyser:
+            case UnitId::ResourceVespeneRidge:
             case UnitId::TerranSieve:
             case UnitId::TerranReservoir:
             case UnitId::TerranWellbore:

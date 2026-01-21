@@ -74,7 +74,7 @@ const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 
 
 	// Get game strings
 	const char* entry_name = WeaponId::get_name(unit, weapon_id);
-	const char* damage_string = g_stat_txt_tbl_new->get_string(777); // "Damage:"
+	const char* damage_string = g_stat_txt_tbl->get_string32(777); // "Damage:"
 
 	UnitExt& unit_ext = unit->ext();
 
@@ -311,14 +311,14 @@ namespace hooks {
 	}
 
 	const char* get_armor_tooltip_string(Unit* unit) {
-		UnitExt* unit_ext = get_unit_ext(unit);
+		auto& unit_ext = unit->ext();
 
 		const bool extended = *g_is_holding_shift || g_config.always_show_extended_tooltips;
 		bool in_replay_or_witness = g_globals->players[g_local_nation_id].witness_mode || g_is_in_replay;
 
 		const u16 label_id = upgrades_dat::label[units_dat::armor_upgrade[unit->id]];
-		const char* armor_upgrade_name = g_stat_txt_tbl_new->get_string(label_id);
-		const char* armor_text = g_stat_txt_tbl_new->get_string(778); // "Armor:"
+		const char* armor_upgrade_name = g_stat_txt_tbl->get_string32(label_id);
+		const char* armor_text = g_stat_txt_tbl->get_string32(778); // "Armor:"
 
 		const u8 unit_size = units_dat::size_type[unit->id];
 		const char* size_label = "Size:";
@@ -357,35 +357,35 @@ namespace hooks {
 		}
 
 		// GPTP Timer + Value
-		add_status(statuses, "Apollyoid Adhesive", unit_ext->values[ValueApollyoidAdhesiveStacks], 3,
-			unit_ext->timers[TimerApollyoidAdhesive], TimerType::Gptp);
-		add_status(statuses, "Empowered", unit_ext->values[ValueSavantPowerSiphonBuff], 0,
-			unit_ext->timers[TimerSavantPowerSiphonBuff], TimerType::Gptp);
-		add_status(statuses, "Power Siphoned", unit_ext->values[ValueSavantPowerSiphonDebuff], 0,
-			unit_ext->timers[TimerSavantPowerSiphonDebuff], TimerType::Gptp);
-		add_status(statuses, "Deconstruction", unit_ext->values[ValueDeconstruction], 0,
-			unit_ext->timers[TimerDeconstruction], TimerType::Gptp);
-		add_status(statuses, "Petrification", unit_ext->values[ValuePetrificationStacks], 0,
-			unit_ext->timers[TimerPetrification], TimerType::Gptp);
-		add_status(statuses, "Observance", unit_ext->values[ValueObservanceRend], 0,
-			unit_ext->timers[TimerObservanceDebuff], TimerType::Gptp);
-		add_status(statuses, "Ensnared", unit_ext->values[ValueEnsnareFactor], 0,
+		add_status(statuses, "Apollyoid Adhesive", unit_ext.values[ValueApollyoidAdhesiveStacks], 3,
+			unit_ext.timers[TimerApollyoidAdhesive], TimerType::Gptp);
+		add_status(statuses, "Empowered", unit_ext.values[ValueSavantPowerSiphonBuff], 0,
+			unit_ext.timers[TimerSavantPowerSiphonBuff], TimerType::Gptp);
+		add_status(statuses, "Power Siphoned", unit_ext.values[ValueSavantPowerSiphonDebuff], 0,
+			unit_ext.timers[TimerSavantPowerSiphonDebuff], TimerType::Gptp);
+		add_status(statuses, "Deconstruction", unit_ext.values[ValueDeconstruction], 0,
+			unit_ext.timers[TimerDeconstruction], TimerType::Gptp);
+		add_status(statuses, "Petrification", unit_ext.values[ValuePetrificationStacks], 0,
+			unit_ext.timers[TimerPetrification], TimerType::Gptp);
+		add_status(statuses, "Observance", unit_ext.values[ValueObservanceRend], 0,
+			unit_ext.timers[TimerObservanceDebuff], TimerType::Gptp);
+		add_status(statuses, "Ensnared", unit_ext.values[ValueEnsnareFactor], 0,
 			unit->ensnare_timer, TimerType::Vanilla);
-		add_status(statuses, "Whetted Appetite", unit_ext->values[ValueMortothrokorStacks], 0,
+		add_status(statuses, "Whetted Appetite", unit_ext.values[ValueMortothrokorStacks], 0,
 			unit_ext->timers[TimerMortothrokorPassive], TimerType::Gptp);
-		add_status(statuses, "Corrosive Spores", unit_ext->values[ValueCorrosiveTouchStacks], 0,
+		add_status(statuses, "Corrosive Spores", unit_ext.values[ValueCorrosiveTouchStacks], 0,
 			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
-		add_status(statuses, "Anodyne Annex", unit_ext->values[ValueEmpressAnodyneAnnexStacks], 0,
+		add_status(statuses, "Anodyne Annex", unit_ext.values[ValueEmpressAnodyneAnnexStacks], 0,
 			unit_ext->timers[TimerAnnex], TimerType::Gptp);
-		add_status(statuses, "Shattered", unit_ext->values[ValueWendigoShatteredWindsStacks], 0,
+		add_status(statuses, "Shattered", unit_ext.values[ValueWendigoShatteredWindsStacks], 0,
 			unit_ext->timers[TimerWendigoShatteredWinds], TimerType::Gptp);
 
 		if (unit_ext->values[ValueSignifyStacks] < 5) {
-			add_status(statuses, "Cowardice", unit_ext->values[ValueSignifyStacks], 5,
+			add_status(statuses, "Cowardice", unit_ext.values[ValueSignifyStacks], 5,
 				unit_ext->timers[TimerSignify], TimerType::Gptp);
 		} else {
-			add_status(statuses, "Malice", unit_ext->values[ValueSignifyStacks], 1,
-				unit_ext->timers[TimerSignify], TimerType::Gptp);
+			add_status(statuses, "Malice", unit_ext.values[ValueSignifyStacks], 1,
+				unit_ext.timers[TimerSignify], TimerType::Gptp);
 		}
 
 		// GPTP Timer
@@ -455,21 +455,21 @@ namespace hooks {
 		add_status(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigalHecatonImperiosoMode, 1);
 		add_status(statuses, "Tempo Down", unit->id == UnitId::TerranMadrigalHecatonFuriaMode, 1);
 		add_status(statuses, "Phase Link", bw::has_clarion_links(unit), 1);
-		add_status(statuses, "Astral Rule", unit_ext->timers[TimerPatriarchAstralRule] > 0, 1);
-		add_status(statuses, "Blissfully Embraced", unit_ext->values[ValueInfested], 1);
+		add_status(statuses, "Astral Rule", unit_ext.timers[TimerPatriarchAstralRule] > 0, 1);
+		add_status(statuses, "Blissfully Embraced", unit_ext.values[ValueInfested], 1);
 
-		switch (unit_ext->values[ValueMindControllerUnitId]) {
+		switch (unit_ext.values[ValueMindControllerUnitId]) {
 			case UnitId::ProtossMindTyrant: add_status(statuses, "Tyranny", 1, 1); break;
 			case UnitId::ProtossDemiurge:	add_status(statuses, "Worshiping", 1, 1); break;
 		}
-		if (unit_ext->values[ValueIsZombified]) {
+		if (unit_ext.values[ValueIsZombified]) {
 			add_status(statuses, "Zombified", 1, 1);
 		}
 
 		// GPTP Timers - Gimmicked
-		add_status(statuses, "Observing", unit_ext->timers[TimerObservanceOverlay] > 0, 1);
-		add_status(statuses, "Dermal Accelerant", unit_ext->timers[TimerAlaszilethRegenBoost] > 0, 1);
-		add_status(statuses, "Blissful Embrace", unit_ext->timers[TimerInfesting] > 0, 1);
+		add_status(statuses, "Observing", unit_ext.timers[TimerObservanceOverlay] > 0, 1);
+		add_status(statuses, "Dermal Accelerant", unit_ext.timers[TimerAlaszilethRegenBoost] > 0, 1);
+		add_status(statuses, "Blissful Embrace", unit_ext.timers[TimerInfesting] > 0, 1);
 
 		// Vanilla Timer + Value
 		add_status(statuses, "Defensive Matrix", unit->defensive_matrix_hp / 256, 100, unit->defensive_matrix_timer);
@@ -489,7 +489,7 @@ namespace hooks {
 		// Vanilla Value
 		add_status(statuses, "Blinded", unit->is_blind != 0, 1);
 		add_status(statuses, "Lifted Off", is_building && is_in_air, 1);
-		add_status(statuses, "Cannot Attack", unit_ext->timers[TimerUnderDisruptionField] > 0, 1);
+		add_status(statuses, "Cannot Attack", unit_ext.timers[TimerUnderDisruptionField] > 0, 1);
 
 		// Case Specific
 		add_status(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
@@ -579,9 +579,9 @@ namespace hooks {
 	const char* get_shield_tooltip_string(Unit* unit) {
 		const bool extended = *g_is_holding_shift || g_config.always_show_extended_tooltips;
 		const u16 label_id = upgrades_dat::label[UpgradeId::ProtossPlasmaShields];
-		const char* shield_upgrade_name = g_stat_txt_tbl_new->get_string(label_id);
-		//const char* shields_text = g_stat_txt_tbl_new->get_string(779); // "Shields:"
-		const char* armor_text = g_stat_txt_tbl_new->get_string(778); // "Armor:"
+		const char* shield_upgrade_name = g_stat_txt_tbl->get_string32(label_id);
+		//const char* shields_text = g_stat_txt_tbl->get_string32(779); // "Shields:"
+		const char* armor_text = g_stat_txt_tbl->get_string32(778); // "Armor:"
 
 		const u8 base_armor = units_dat::armor_amount[unit->id];
 		s32 bonus_armor = get_bonus_armor(unit, base_armor);
@@ -609,7 +609,7 @@ namespace hooks {
 				}
 			}
 			case UnitId::TerranMorningstar: {
-				return g_stat_txt_tbl_new->get_string(793);									// "Missiles"
+				return g_stat_txt_tbl->get_string32(793);									// "Missiles"
 			}
 			case UnitId::ProtossSteward: {
 				return get_damage_tootlip_string(WeaponId::StewardPulseCannon, unit, 791);	// "Stewards"

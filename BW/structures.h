@@ -1273,8 +1273,7 @@ struct StringTbl {
     };
 };
 
-struct ForceFlags
-{
+struct ForceFlags {
     u8 randomize_start_locations : 1;
     u8 allied : 1;
     u8 allied_victory : 1;
@@ -1282,8 +1281,7 @@ struct ForceFlags
     u8 unused : 4;
 };
 
-struct Ping
-{
+struct Ping {
     b32 isActive;
     u32 x;
     u32 y;
@@ -1291,13 +1289,11 @@ struct Ping
     u16 player;
 };
 
-struct DSound
-{
+struct DSound {
     s32 lpVtbl;
 };
 
-struct CritSect
-{
+struct CritSect {
     s32 debugInfo;
     s32 lockCount;
     s32 recursionCount;
@@ -1306,16 +1302,14 @@ struct CritSect
     s32 spinCount;
 };
 
-struct FogMask
-{
+struct FogMask {
 //	u8  unexplored[1980];	// 0x0 (0x00657AA0)
 //	u8  explored[2112];		// 0x7BC (0x0065825C)
     u8  unexplored[4092];
     u8  visible[4];			// 0x840 (0x00658A9C)
 };
 
-struct ColorTable
-{
+struct ColorTable {
     u8  playerColorId[8];
 };
 
@@ -1330,8 +1324,7 @@ struct PlayerNamesEntry {
     u32		race;				// 0x44
 };
 
-struct PlayerNames
-{
+struct PlayerNames {
     PlayerNamesEntry player[8];
 };
 
@@ -1485,7 +1478,7 @@ struct IscriptProgram {
 };
 
 namespace helper {
-    extern bool unit_is_standard_and_movable(Unit* unit);
+extern bool unit_is_standard_and_movable(Unit* unit);
 }
 
 union UnitIndex {

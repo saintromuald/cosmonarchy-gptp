@@ -183,7 +183,7 @@ namespace hooks {
 		}
 
 		if (helper::cannot_cast_spell(unit)) {
-			char* message = (char*)g_stat_txt_tbl_new->get_string(876); // Invalid target
+			char* message = (char*)g_stat_txt_tbl->get_string32(876); // Invalid target
 			helper::get_stat_txt_string(unit, unit->player, message); // do the actual transmission corresponding to the message
 			helper::set_resource_target(unit); // make the unit stop since the order failed
 			unit->order_to_idle();
@@ -198,7 +198,7 @@ namespace hooks {
 
 		if (unit->energy < spell_cost) {
 			u8 race_id = unit->get_race();
-			char* message = (char*)g_stat_txt_tbl_new->get_string(864 + race_id); // Not enough energy
+			char* message = (char*)g_stat_txt_tbl->get_string32(864 + race_id); // Not enough energy
 			if (message) {
 				if (g_local_nation_id == unit->player && g_active_player_id == g_local_human_id) {
 					helper::set_unit_stat_txt_error_message(message);

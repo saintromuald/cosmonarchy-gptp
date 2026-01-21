@@ -73,7 +73,7 @@ namespace hooks {
                 tech_capable_unit = true;
             }
             if (!tech_capable_unit) {
-                char* message = (char*)g_stat_txt_tbl_new->get_string(864);
+                const char* message = g_stat_txt_tbl->get_string32(864);
                 Unit* portrait_unit = players_selections->unit[*g_active_nation_id][0];
                 helper::get_stat_txt_string(*g_active_portrait_unit, (*g_active_portrait_unit)->player, message);
                 return;
@@ -114,11 +114,11 @@ namespace hooks {
             case TechId::TritonLobotomyWarhead: {
                 helper::issue_tri_target_order(OrderId::LobotomyWarhead, 0, 0);
             } break;
-            case TechId::MadrigalTempoChange: {
-                queue_generic_ability(RustId::CastToggleTempoChange, 1);
-            } break;
             case TechId::AskosiRematerialize: {
                 helper::issue_tri_target_order(OrderId::AskosiRematerialize, 0, 0);
+            } break;
+            case TechId::AskosiRapidRendezvous: {
+                helper::issue_tri_target_order(OrderId::AskosiRapidRendezvous, 0, 0);
             } break;
             case TechId::DefensiveMatrix: {
                 helper::issue_tri_target_order(OrderId::DefensiveMatrix, 0, 0);

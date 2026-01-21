@@ -25,7 +25,7 @@ struct tooltip_resource_cost {
 
 namespace hooks {
 void stats_panel_display(BinDlg* dialog);																										// 00426C60
-const char* get_unit_rank_string(Unit* a1);																										// 0042F370
+const char* get_unit_rank_string(Unit* unit);																									// 0042F370
 void draw_unit_kills_string(BinDlg* dialog);																									// 00425DD0
 void draw_building_info(BinDlg* dlg);																											// 00427890
 void stats_armor_level(BinDlg* dialog, Unit* unit, u16 status_screen_index);																	// 00425600
