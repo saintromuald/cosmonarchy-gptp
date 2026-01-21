@@ -215,9 +215,18 @@ static void tick_effect(EffectField& effect) {
             } break;
             case EffectId::DiademIonField: {
                 for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
-                    UnitExt* unit_ext = get_unit_ext(unit);
                     unit->damage_with_custom(100 * total_scalar_hp, -1, effect.source, effect.player);
-                    unit_ext->timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
+                    unit->ext().timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
+                }
+            } break;
+            case EffectId::DivineDisciplineField: {
+                for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf)) {
+                    auto& unit_ext = unit->ext();
+                    if (bw::are_mutual_allies(unit->player, effect.source->player)) {
+                        unit_ext.timers[TimerDivineDisciplineBuff] = 24;
+                    } else {
+                        unit_ext.timers[TimerDivineDisciplineDebuff] = 24;
+                    }
                 }
             } break;
             case EffectId::PsiStorm: {
@@ -695,7 +704,7 @@ void refresh_debuffs(Unit* unit) {
         unit->maelstrom_timer = ProtossMindTyrant::MaelstromTimer;
     }
 
-    // Refresh Devourer Corrosive Spores
+    // Refresh Vithrilisk Corrosive Spores
     if (unit_ext->timers[TimerCorrosiveTouch]) {
         unit_ext->timers[TimerCorrosiveTouch] = Vithrilisk::CorrosiveTouchTimer;
     }
@@ -994,7 +1003,7 @@ void restore_func(Unit* unit) {
     // Remove Maelstrom
     unit->remove_maelstrom();
 
-    // Remove Devourer Corrosive Spores
+    // Remove Vithrilisk Corrosive Spores
     unit->remove_acid_spores();
 
     // Remove Deconstruction

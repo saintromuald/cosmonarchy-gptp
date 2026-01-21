@@ -152,6 +152,8 @@ namespace UnitId {
         TerranMadrigalHecatonFuriaMode                      = 508,
         TerranMadrigalTurretHecatonFuriaMode                = 509,
         TerranValkyrieHecaton                               = 520,
+        TerranQuadriga                                      = 541,
+        TerranSerathiel                                     = 547,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1

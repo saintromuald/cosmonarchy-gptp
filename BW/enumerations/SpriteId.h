@@ -834,6 +834,8 @@ namespace SpriteId {
         PowerSiphonHit_Medium           = 1033,
         PowerSiphonHit_Large            = 1034,
 
+        DivineDisciplineField           = 1083,
+
         // CORPSE \\
             
         Corpse_Aspirant				    = 685,

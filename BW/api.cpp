@@ -1473,6 +1473,7 @@ bool unit_id_is_available_without_an_addon(u16 id) {
         || id == UnitId::TerranPhiloc
         || id == UnitId::TerranWendigo
         || id == UnitId::TerranValkyrieHecaton
+        || id == UnitId::TerranQuadriga
         || id == UnitId::TerranQilin;
 }
 
@@ -4087,6 +4088,7 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::TiangouMoonboundSalvo:               return bw::rand_between(SoundId::TiangouWeaponfire01, SoundId::TiangouWeaponfire05);
         case WeaponId::ValkyrieHaloRockets:                 return SoundId::Bullet_Tfrshoot_wav;
         case WeaponId::ValkyrieHecatonLogiRockets:          return bw::rand_between(SoundId::ValkyrieHecatonWeaponfire01, SoundId::ValkyrieHecatonWeaponfire04);
+        case WeaponId::QuadrigaGodhandRockets:              return SoundId::Bullet_Tfrshoot_wav;
 
         case WeaponId::ZealotPhaseBlades:	                return SoundId::ZealotWeaponhit01;
         case WeaponId::ZealotStarboundPhaseBlades:          return SoundId::ZealotStarboundWeaponhit01;

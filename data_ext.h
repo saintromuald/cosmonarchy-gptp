@@ -303,7 +303,7 @@ enum ExtTimerId {
     TimerAlliedInvFrames,
     TimerIncubationArm,
     TimerAuralAssaultBlind,
-    TimerAnthelionGravityWell,
+    TimerPullTowards,
     TimerAnthelionEndlessEclipse,
     TimerAnthelionAttackCooldown,
     TimerStrigaRepulsion,

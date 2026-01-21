@@ -467,6 +467,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
                 case UnitId::TerranMadrigalImperiosoMode: return UnitId::TerranMadrigalHecatonImperiosoMode;
                 case UnitId::TerranValkyrie:              return UnitId::TerranValkyrieHecaton;
                 case UnitId::TerranTrojan:                return UnitId::TerranQilin;
+                case UnitId::TerranSeraph:                return UnitId::TerranSerathiel;
             }
         } break;
         case Faction::TerranFuturistFederation: {
@@ -484,6 +485,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
                 case UnitId::TerranHarakan:   return UnitId::TerranHarakanGolden;
                 case UnitId::TerranGoliath:   return UnitId::TerranAspirant;
                 case UnitId::TerranBlackjack: return UnitId::TerranBlackjackGolden;
+                case UnitId::TerranValkyrie:  return UnitId::TerranQuadriga;
                 case UnitId::TerranSeraph:    return UnitId::TerranLuminary;
             }
         } break;
@@ -903,8 +905,8 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case WeaponId::HelionUskoScrapray:                  return "Usko Scrapray";
         case WeaponId::SkortrithCesiantSkortraTendril:      return "Skortra Tentacle";
         case WeaponId::TiradeIktaDriver:                    return "Ikta Driver";
-        case WeaponId::AvatarReformingCarbine:              return "Reforming Carbine";
-        case WeaponId::HypnagogueThroughTheLookingGlass:    return "Through the Looking Glass";
+        case WeaponId::GrandstandArteDriver:                return "Arte Driver";
+        case WeaponId::QuadrigaGodhandRockets:              return "Godhand Rockets";
         case WeaponId::SilvertongueWordsmithRailgun:        return "Wordsmith Railgun";
         case WeaponId::OptectonSunsplitBeam:                return "Sunsplit Beam";
         case WeaponId::AutocortParticleRay:                 return "Particle Ray";
