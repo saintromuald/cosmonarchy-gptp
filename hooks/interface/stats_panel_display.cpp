@@ -422,7 +422,7 @@ namespace hooks {
         child->graphic = get_stat_icon_graphic(armor_value);
         state->button_grp = icons_grp;
         u32 final_unit_id = active_unit->build_queue[active_unit->build_queue_slot];
-        if (active_unit->status & UnitStatus::Completed || bw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot])) {
+        if (active_unit->is_completed() || UnitId::is_structure_morph(static_cast<UnitId::Enum>(active_unit->build_queue[active_unit->build_queue_slot]))) {
             final_unit_id = active_unit->id; // We also need to do this for birthing Zerg units
         }
         u16 frame = upgrades_dat::upgrade_icon[units_dat::armor_upgrade[final_unit_id]];
@@ -588,7 +588,7 @@ namespace hooks {
         }
 
         u16 queue = unit->build_queue[unit->build_queue_slot];
-        if (unit->status & UnitStatus::Completed || !bw::is_zerg_building_morph_result(queue)) {
+        if (unit->is_completed() || !UnitId::is_structure_morph(static_cast<UnitId::Enum>(queue))) {
             return helper::get_unit_name_stat_string(unit->id);
         } else {
             return helper::get_unit_name_stat_string(queue);
@@ -719,11 +719,11 @@ namespace hooks {
 
     // Hooked to correct errors and replace building morph id checks. -Pr0nogo
     u16 get_last_queue_slot_id(Unit* unit) { // 0047B270
-        if (unit->status & UnitStatus::Completed) {
+        if (unit->is_completed()) {
             return unit->id;
         }
         u16 queued_id = unit->build_queue[unit->build_queue_slot];
-        if (!bw::is_zerg_building_morph_result(queued_id)) {
+        if (!UnitId::is_structure_morph(static_cast<UnitId::Enum>(queued_id))) {
             return unit->id;
         }
         return queued_id;
@@ -964,9 +964,9 @@ namespace hooks {
                 progress_string_id = 0x33C; // "<6>Disabled" (<6> means 0x6 byte for red) (Unpowered for Protoss)
             } else {
                 u32 unit_id = unit->id;
-                if (!(unit->status & UnitStatus::Completed)) {
+                if (!unit->is_completed()) {
                     unit_id = unit->build_queue[unit->build_queue_slot];
-                    if (bw::is_zerg_building_morph_result(unit_id)) {
+                    if (UnitId::is_structure_morph(static_cast<UnitId::Enum>(unit_id))) {
                         unit_id = unit->id;
                     }
                 }

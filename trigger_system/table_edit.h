@@ -76,6 +76,19 @@ public:
             else if (stat == "remove_after")    alter_stat(weapon_ids, weapons_dat::remove_after);
             else if (stat == "explosion_type")  set_enum<WeaponEffect::Enum>(weapon_ids, weapons_dat::explosion_type);
             else m_parser.error("Invalid stat", stat.sv);
+        } else if (target == "flingy") {
+            const auto flingy_ids = m_parser.get_flingy_id_bitset();
+            if (flingy_ids.none()) {
+                m_parser.error("No valid flingy ids specified");
+            }
+            const auto stat = m_parser.get_word();
+            if      (stat == "sprite_id")        set_stat(flingy_ids, flingy_dat::sprite_id);
+            else if (stat == "top_speed")        alter_stat(flingy_ids, flingy_dat::top_speed);
+            else if (stat == "acceleration")     alter_stat(flingy_ids, flingy_dat::acceleration);
+            else if (stat == "halt_distance")    alter_stat(flingy_ids, flingy_dat::halt_distance);
+            else if (stat == "turn_speed")       set_stat(flingy_ids, flingy_dat::turn_speed);
+            else if (stat == "movement_control") set_enum<MovementType>(flingy_ids, flingy_dat::movement_control);
+            else m_parser.error("Invalid stat", stat.sv);
         } else {
             m_parser.error("Invalid token", target.sv);
         }

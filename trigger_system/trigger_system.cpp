@@ -1203,35 +1203,35 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             }
 
             for (Unit* unit : designator.search({.sort = count != 0}).take(count)) {
-                UnitExt* unit_ext = get_unit_ext(unit);
+                auto& unit_ext = unit->ext();
                 switch (trigger_stat) {
                     case TriggerStat_Armor: {
-                        unit_ext->values[ValueTriggerArmorBaseSet] = 1;
-                        unit_ext->values[ValueTriggerArmorBaseAmount] = value;
+                        unit_ext.values[ValueTriggerArmorBaseSet] = 1;
+                        unit_ext.values[ValueTriggerArmorBaseAmount] = value;
                     } break;
                     case TriggerStat_WeaponRange: {
-                        unit_ext->values[ValueTriggerWeaponRangeBaseSet] = 1;
-                        unit_ext->values[ValueTriggerWeaponRangeBaseAmount] = value;
+                        unit_ext.values[ValueTriggerWeaponRangeBaseSet] = 1;
+                        unit_ext.values[ValueTriggerWeaponRangeBaseAmount] = value;
                     } break;
                     case TriggerStat_ArmorPenetration: {
-                        unit_ext->values[ValueTriggerArmorPenBaseSet] = 1;
-                        unit_ext->values[ValueTriggerArmorPenBaseAmount] = value;
+                        unit_ext.values[ValueTriggerArmorPenBaseSet] = 1;
+                        unit_ext.values[ValueTriggerArmorPenBaseAmount] = value;
                     } break;
                     case TriggerStat_Damage: {
-                        unit_ext->values[ValueTriggerDamageBaseSet] = 1;
-                        unit_ext->values[ValueTriggerDamageBaseAmount] = value * 256;
+                        unit_ext.values[ValueTriggerDamageBaseSet] = 1;
+                        unit_ext.values[ValueTriggerDamageBaseAmount] = value * 256;
                     } break;
                     case TriggerStat_SplashInner: {
-                        unit_ext->values[ValueTriggerWeaponSplashInnerSet] = 1;
-                        unit_ext->values[ValueTriggerWeaponSplashInnerAmount] = value;
+                        unit_ext.values[ValueTriggerWeaponSplashInnerSet] = 1;
+                        unit_ext.values[ValueTriggerWeaponSplashInnerAmount] = value;
                     } break;
                     case TriggerStat_SplashMedium: {
-                        unit_ext->values[ValueTriggerWeaponSplashMediumSet] = 1;
-                        unit_ext->values[ValueTriggerWeaponSplashMediumAmount] = value;
+                        unit_ext.values[ValueTriggerWeaponSplashMediumSet] = 1;
+                        unit_ext.values[ValueTriggerWeaponSplashMediumAmount] = value;
                     } break;
                     case TriggerStat_SplashOuter: {
-                        unit_ext->values[ValueTriggerWeaponSplashOuterSet] = 1;
-                        unit_ext->values[ValueTriggerWeaponSplashOuterAmount] = value;
+                        unit_ext.values[ValueTriggerWeaponSplashOuterSet] = 1;
+                        unit_ext.values[ValueTriggerWeaponSplashOuterAmount] = value;
                     } break;
                     case TriggerStat_TimedLife: {
                         unit->remove_timer = value;
@@ -1289,6 +1289,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                     case TriggerBehavior_AirTransport: {
                         if (unit_ext.values[ValueAirTransport] != enable) {
                             unit_ext.values[ValueAirTransport] = enable;
+                        }
+                    } break;
+                    case TriggerBehavior_NoEnergyOverlay: {
+                        if (unit_ext.values[ValueNoEnergyOverlay] != enable) {
+                            unit_ext.values[ValueNoEnergyOverlay] = enable;
                         }
                     } break;
                 }
@@ -1378,6 +1383,29 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
             for (Unit* unit : designator.search({.sort = count != 0}).take(count)) {
                 rescue_unit(unit, target_player - 1);
+            }
+        } else if (parser.equals("set_nydus_link")) {
+            Designator designator_entry = parser.get_designator();
+            Designator designator_exit = parser.get_designator();
+            b32 enable = parser.get_s32();
+
+            for (Unit* entry : designator_entry.search().take(1)) {
+                for (Unit* exit : designator_exit.search().take(1)) {
+                    if (entry && exit) {
+                        if (enable) {
+                            entry->building.nydus_exit = exit;
+                            exit->building.nydus_exit = entry;
+                        //  exit->sprite->player = entry->sprite->player;
+                            entry->ext().values[ValueIsNydusEntry] = true;
+                            exit->ext().values[ValueIsNydusExit] = true;
+                        } else {
+                            entry->building.nydus_exit = 0;
+                            exit->building.nydus_exit = 0;
+                            entry->ext().values[ValueIsNydusEntry] = false;
+                            exit->ext().values[ValueIsNydusExit] = false;
+                        }
+                    }
+                }
             }
         } else if (parser.equals("var") || parser.equals("timer")) {
             bool is_timer = parser.equals("timer");

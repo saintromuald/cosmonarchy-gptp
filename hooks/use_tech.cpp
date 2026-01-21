@@ -158,12 +158,16 @@ namespace hooks {
             case TechId::PsionicStorm: {
                 if (can_play_local_sound) {
                     u32 action_sound = bw::rand_between_local(SoundId::Protoss_TEMPLAR_PTePss01_WAV, SoundId::Protoss_TEMPLAR_PTePss02_WAV);
+                    switch ((*g_active_portrait_unit)->id) {
+                        case UnitId::ExtTassadar:         action_sound = SoundId::Protoss_TASSADAR_UTaPss03_WAV; break;
+                        case UnitId::ExtInfestedKerrigan: action_sound = SoundId::None; break;
+                    }
                     bw::play_action_sound(action_sound, *g_active_portrait_unit);
                 }
                 helper::issue_tri_target_order(OrderId::PsiStorm, 0, 0);
             } break;
             case TechId::Hallucination: {
-                if (can_play_local_sound) {
+                if (can_play_local_sound && (*g_active_portrait_unit)->id != UnitId::ExtTassadar) {
                     u32 action_sound = SoundId::Protoss_TEMPLAR_PTePss03_WAV;
                     bw::play_action_sound(action_sound, *g_active_portrait_unit);
                 }
@@ -227,7 +231,9 @@ namespace hooks {
                         case UnitId::ProtossDidact: {
                             queue_generic_ability(RustId::CancelRecall, 1);
                         } break;
-                        case UnitId::ProtossCantavis: {
+                        case UnitId::ProtossCantavis:
+                        case UnitId::ExtTassadar:
+                        case UnitId::ExtInfestedKerrigan: {
                             queue_generic_ability(RustId::CancelPsiStorm, 1);
                         } break;
                     }

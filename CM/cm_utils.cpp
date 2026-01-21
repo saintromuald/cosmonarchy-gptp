@@ -55,8 +55,8 @@ void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
 }
 
 u32 get_construction_graphic(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    bool is_ocsal = unit_ext->values[ValueRegressionUnstable];
+    auto& unit_ext = unit->ext();
+    bool is_ocsal = unit_ext.values[ValueRegressionUnstable];
     switch (unit->id) {
         case UnitId::ZergIroleth: {
             if (is_ocsal) {
@@ -722,6 +722,10 @@ Faction get_random_faction(RaceId::Enum race) {
 namespace WeaponId {
 // TODO: YAML
 const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
+    return get_name(static_cast<UnitId::Enum>(unit->id), weapon_id);
+}
+
+const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::MaverickGaussRifle:                  return "Gauss Rifle";
         case WeaponId::HeraclesJavelinCannons:              return "Javelin Cannons";
@@ -756,10 +760,10 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case WeaponId::YamatoGun:                           return "Yamato Cannon";
         case WeaponId::NuclearMissile:                      return "Missile Strike";
         case WeaponId::GoskaLobotomyGrenade:                return "Lobotomy Grenade";
-        case WeaponId::EMP_Shockwave:                       return "EMP Shockwave";
+        case WeaponId::PsiAssault:                          return "Psi Assault";
         case WeaponId::Irradiate:                           return "Irradiate";
         case WeaponId::ZethrokorClaws:                      return "Zethrok Claws";
-        case WeaponId::VorvalClaws:                         return unit->id == UnitId::ZergVorvrokor ? "Vorvrok Claws" : "Garvrol Claws";
+        case WeaponId::VorvalClaws:                         return unit_id == UnitId::ZergVorvrokor ? "Vorvrok Claws" : "Garvrol Claws";
         case WeaponId::NathrokorVestigialStrike:            return "Vestigial Strike";
         case WeaponId::HydraliskNeedleSpines:               return "Needle Spines";
         case WeaponId::PenumbraErebolShockCannon:           return "Erebol Shock Cannon";
@@ -791,7 +795,7 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case WeaponId::VassalPulseBlaster:                  return "Pulse Blaster";
         case WeaponId::DracadinPhaseDisruptor:              return "Phase Disruptor";
         case WeaponId::GladiusPlasmaFlurry:                 return "Plasma Flurry";
-        case WeaponId::SimulacrumPhaseCannon:               return unit->id == UnitId::ProtossSimulacrum ? "Phase Cannon" : "Slice Cannon";
+        case WeaponId::SimulacrumPhaseCannon:               return unit_id == UnitId::ProtossSimulacrum ? "Phase Cannon" : "Slice Cannon";
         case WeaponId::AspirantPotentiumCannon:             return "Potentium Cannon";
         case WeaponId::ArchonPsionicShockwave:              return "Psionic Shockwave";
         case WeaponId::EmpyreanPlasmaBarrage:               return "Plasma Barrage";
@@ -812,7 +816,7 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case WeaponId::LegionnairePhaseSpear:               return "Phase Spear";
         case WeaponId::AkistrokorHarryingTalons:            return "Harrying Talons";
         case WeaponId::SavantDiscoidRailgun:                return "Discoid Railgun";
-        case WeaponId::LobotomyMineExplosion:               return unit->id == UnitId::TerranVulture ? "Lobotomy Mines" : "Electromagnetic Explosion";
+        case WeaponId::LobotomyMineExplosion:               return unit_id == UnitId::TerranVulture ? "Lobotomy Mines" : "Electromagnetic Explosion";
         case WeaponId::StarSovereignCelestialCannon:        return "Celestial Cannons";
         case WeaponId::StarSovereignInterventionMissiles:   return "Intervention Missiles";
         case WeaponId::SovrolethSpores:                     return "Sovrol Spores";
@@ -924,7 +928,7 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case WeaponId::DiademIonCannon:                     return "Ion Cannon";
         case WeaponId::SavantDiscoidRailgunEntropy:         return "Discoid Railgun";
         case WeaponId::SevenstepGeometricRiflePiercing:     return "Geometric Rifle";
-        case WeaponId::PietyWardProvidence:                 return unit->id == UnitId::TerranClericFuturist ? "Piety Wards" : "Providence";
+        case WeaponId::PietyWardProvidence:                 return unit_id == UnitId::TerranClericFuturist ? "Piety Wards" : "Providence";
         case WeaponId::AnalogueCylindricalBlaster:          return "Cylindrical Blaster";
         case WeaponId::PhilocHeirloomBatteries:             return "Heirloom Batteries";
         case WeaponId::NathrokorNathrokClaws:               return "Nathrok Claws";
@@ -983,3 +987,9 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
     return "U...nimplemented";
 }
 } // namespace WeaponId
+
+namespace FlingyId {
+const char* get_name(flingy_id::Enum flingy_id) {
+    return "";
+}
+} // namespace FlingyId

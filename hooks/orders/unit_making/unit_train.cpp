@@ -220,11 +220,17 @@ namespace hooks {
 			unit->remaining_build_time = 0;
 		}
 
-		if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building || unit->id == UnitId::None) {
-			unit->current_buttonset = unit->id;
+		if (!unit->is_frozen() || unit->is_building() || unit->id == UnitId::None) {
+			auto buttonset = unit->id;
+			auto& unit_ext = unit->ext();
+			if (unit_ext.values[ValueHasButtonsetOverride]) {
+				 buttonset = unit_ext.values[ValueButtonsetOverride];
+			}
+			unit->current_buttonset = buttonset;
+			helper::change_unit_buttonset(unit, buttonset);
 		}
 
-		if (unit->status & UnitStatus::GroundedBuilding) {
+		if (unit->is_grounded_building()) {
 			unit->parasite_flags = 0;
 			unit->is_blind = 0;
 			helper::unit_completion_init(unit, 0);

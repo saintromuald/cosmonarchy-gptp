@@ -302,6 +302,7 @@ bool unit_id_is_psi_provider(u16 unit_id) {
         || unit_id == UnitId::ProtossCrucible
         || unit_id == UnitId::ProtossXenolith
         || unit_id == UnitId::ExtProtossTemple
+        || unit_id == UnitId::ProtossWarpGateTheFall
 
         || unit_id == UnitId::ProtossAutocort;
 }
@@ -484,7 +485,7 @@ bool unit_paths_over_small_units(Unit* unit) {
 }
 
 bool unit_collides_with_titanic(Unit* unit) {
-    if (unit->status & UnitStatus::GroundedBuilding) {
+    if (unit->is_grounded_building()) {
         return unit->id != UnitId::ProtossPylon && !unit_id_is_minerals(unit->id);
     }
     return unit->id == UnitId::TerranCataphract
@@ -1047,7 +1048,10 @@ bool unit_id_spawns_larva_by_order(u32 unit_id) {
         || unit_id == UnitId::ZergCaphrolosk
         || unit_id == UnitId::ZergGathtelosk
         || unit_id == UnitId::ZergLarvoskCesiant
-        || unit_id == UnitId::ZergOcsalCesiant;
+        || unit_id == UnitId::ZergOcsalCesiant
+        || unit_id == UnitId::ZergCerebrateTheFall
+        || unit_id == UnitId::ZergOvermindWithShellTheFall
+        || unit_id == UnitId::ZergOvermindTheFall;
 }
 
 u32 get_worker_construction_distance(u32 structure_id) {
@@ -1298,7 +1302,7 @@ bool unit_could_spawn_custom_larva(Unit* unit) {
 }
 
 bool unit_spawns_custom_larva(Unit* unit) {
-    if (unit->status & UnitStatus::InAir || !(unit->status & UnitStatus::Completed)) {
+    if (unit->is_in_air() || !unit->is_completed()) {
         return false;
     }
     return unit_could_spawn_custom_larva(unit);

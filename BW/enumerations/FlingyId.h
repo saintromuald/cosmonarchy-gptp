@@ -1,4 +1,5 @@
 #pragma once
+#include <DatExtend\dat_limits.h>
 
 namespace flingy_id {
 	enum Enum {
@@ -385,5 +386,7 @@ namespace flingy_id {
 		BurstLasersHitBlue_Damageless			= 409,
 
 		ZergBactalisk							= 567,
+
+		Count									= FlingyIdLimit,
 	};
 }

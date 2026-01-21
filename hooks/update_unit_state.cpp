@@ -38,7 +38,7 @@ namespace hooks {
 				helper::set_all_image_group_flags_palette_11(unit->sprite);
 			}
 
-			if (!unit->get_overlay(overlay_id)) {
+			if (!unit->get_overlay(overlay_id) && !unit_ext.values[ValueNoEnergyOverlay]) {
 				bw::add_unit_overlay(unit, overlay_id);
 				helper::play_sound_from_unit(SoundId::EnergyRegenStart, unit, 1, 0);
 			}
@@ -264,7 +264,7 @@ namespace hooks {
 
 		// Only for fully-constructed units and buildings. -GPTP
 		// Modified 24/01/23 to allow Zerg building morph sources to regenerate while mutating. -Pr0nogo
-		if (unit->is_completed() ||	unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon || bw::is_zerg_building_morph_result(unit->build_queue[unit->build_queue_slot])) {
+		if (unit->is_completed() ||	unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon || UnitId::is_structure_morph(static_cast<UnitId::Enum>(unit->build_queue[unit->build_queue_slot]))) {
 			bool stop_here = false;
 			if (unit->remove_timer != 0) {
 				if (unit->id != UnitId::ZergRilirokor || !bw::get_active_tile_at_coords(unit->position)->has_cagra) {
@@ -631,10 +631,6 @@ namespace hooks {
 
 	// Hooked to improve functionality. -Pr0nogo
 	u8 replace_unit_with_id(Unit* unit, u32 new_id) { // 0049FED0
-		if (!AssertSprite(unit->sprite)) {
-			return false;
-		}
-
 		if (!unit->sprite->is_hidden()) {
 			helper::sort_unit(unit);
 			if (unit->is_grounded_building()) {

@@ -58,7 +58,7 @@ namespace hooks {
         if (!unit_building_can_act(unit)) {
             return;
         }
-        UnitExt& unit_ext = unit->ext();
+        auto& unit_ext = unit->ext();
         if (unit_ext.timers[TimerSpawnLarva] == 0 && unit->player != 11) {
             unit_ext.timers[TimerSpawnLarva] = 8;
             unit->count_connected_larva();
@@ -215,7 +215,9 @@ namespace hooks {
     bool spreads_creep(u16 unit_id, bool is_complete) {
         switch (unit_id) {
             case UnitId::ZergHachirosk:
-            case UnitId::ZergCagrantCesiant: {
+            case UnitId::ZergCagrantCesiant:
+            case UnitId::ZergCerebrateTheFall:
+            case UnitId::ZergOvermindTheFall: {
                 return is_complete;
             }
             case UnitId::ZergCaphrolosk:
@@ -227,7 +229,8 @@ namespace hooks {
             case UnitId::ZergSpirtithCesiant:
             case UnitId::ZergNydusCesiant:
             case UnitId::ZergKazitrithCesiant:
-            case UnitId::ZergOcsalCesiant: {
+            case UnitId::ZergOcsalCesiant:
+            case UnitId::ZergOvermindWithShellTheFall: {
                 return true;
             }
         }

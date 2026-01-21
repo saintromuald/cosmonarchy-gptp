@@ -601,11 +601,28 @@ static void remove_prefix(std::string_view& string, std::string_view prefix) {
 	}
 }
 
+Token get_short_unit_name(Unit* unit) {
+	std::string_view name = unit->get_name();
+	remove_prefix(name, "terran");
+	remove_prefix(name, "protoss");
+	remove_prefix(name, "zerg");
+	remove_prefix(name, "askosi");
+	remove_prefix(name, "bloodsummon");
+	return {name};
+}
+
 Token get_short_unit_name(u32 unit_id) {
 	std::string_view name = Unit::get_name(unit_id, true);
 	remove_prefix(name, "terran");
 	remove_prefix(name, "protoss");
 	remove_prefix(name, "zerg");
+	remove_prefix(name, "askosi");
+	remove_prefix(name, "bloodsummon");
+	return {name};
+}
+
+Token get_short_flingy_name(u32 flingy_id) {
+	std::string_view name = FlingyId::get_name(static_cast<flingy_id::Enum>(flingy_id));
 	return {name};
 }
 
@@ -794,6 +811,26 @@ WeaponIdBitset Parser::get_weapon_id_bitset() {
         if (weapon_id != WeaponId::None) {
             parser.set([weapon_id](u32 i) { return i == weapon_id; });
         }
+	});
+}
+
+u32 Parser::get_flingy_id() {
+	const auto marker = this->marker();
+	Token token = get_string();
+	for (u32 i = 0; i < flingy_id::Count; ++i) {
+		if (sv_lazy_equals(token.sv, get_short_flingy_name(i).sv)) {
+			return i;
+		}
+	}
+	unwind(marker);
+	return get_s32(flingy_id::Scourge);
+}
+
+FlingyIdBitset Parser::get_flingy_id_bitset() {
+	return parse_bitset<FlingyIdBitset>([&](BitsetParser<FlingyIdBitset>& parser) {
+        parser.unwind_token();
+        s32 flingy_id = get_flingy_id();
+        parser.set([flingy_id](u32 i) { return i == flingy_id; });
 	});
 }
 

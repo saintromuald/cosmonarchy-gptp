@@ -26,82 +26,81 @@ namespace hooks {
         return true;
     }
 
-	// Perform the Nydus Cesiant teleport effect on an unit that validated the conditions within the orders_enter_nydus function
-	void enter_nydus_effect(Unit* unit, Unit* nydus) { // 004EA180
-		if (!AssertSprite(nydus->building.nydus_exit->sprite)) {
-			nydus->building.nydus_exit = 0;
-			return;
-		}
+    // Perform the Nydus teleport effect on an unit that validated the conditions within the orders_enter_nydus function
+    void enter_nydus_effect(Unit* unit, Unit* nydus) { // 004EA180
+        Point16 old_pos = { unit->position.x, unit->position.y };
+        Point16 aimed_pos = {(nydus->building.nydus_exit)->position.x, (nydus->building.nydus_exit)->position.y};
+        Point16 final_pos = {};
+        bw::prepare_unit_move(unit, true);
+        helper::move_unit(unit, aimed_pos.x, aimed_pos.y);
+        if (bw::check_unit_collision_pos(unit, &aimed_pos, &final_pos, 0, false, 0)) {
+            SoundId::Enum nydus_sound_id = SoundId::LegionnaireTeleport01;
+            SoundId::Enum target_sound_id = SoundId::LegionnaireTeleport01;
+            switch (nydus->get_race()) {
+                case RaceId::Terran: {
+                    nydus_sound_id = SoundId::TerranUnitDeployment01;
+                    target_sound_id = SoundId::TerranUnitDeployment01;
+                } break;
+                case RaceId::Protoss: {
+                    nydus_sound_id = SoundId::Protoss_ARBITER_PAbFol02_WAV;
+                    target_sound_id = static_cast<SoundId::Enum>(bw::rand_between(SoundId::ProtossUnitDeployment01, SoundId::ProtossUnitDeployment03));
+                } break;
+                case RaceId::Zerg: {
+                    nydus_sound_id = SoundId::Misc_IntoNydus_wav;
+                    target_sound_id = SoundId::Misc_IntoNydus_wav;
+                } break;
+            }
+            bw::play_sound(nydus_sound_id, nydus->position);
+            helper::move_unit(unit, final_pos.x, final_pos.y);
+            helper::refresh_unit_after_move(unit);
+            bw::play_sound(target_sound_id, unit->position);
+            if (unit->order_queue_head) {
+                unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+                prepare_for_next_order(unit);
+            } else {
+                if (unit->unit_ai) {
+                    unit->order_computer(OrderId::ComputerAI);
+                } else {
+                    unit->order_computer(units_dat::return_to_idle_order[unit->id]);
+                }
+            }
+        } else {
+            // collision detected, restore old position
+            helper::move_unit(unit, old_pos.x, old_pos.y);
+            helper::refresh_unit_after_move(unit);
+        }
+    }
 
-		Point16 old_pos = { unit->position.x, unit->position.y };
-		Point16 aimed_pos = { (nydus->building.nydus_exit)->position.x, (nydus->building.nydus_exit)->position.y };
-		Point16 final_pos = {};
-		bw::prepare_unit_move(unit, true);
-		helper::move_unit(unit, aimed_pos.x, aimed_pos.y);
-		if (bw::check_unit_collision_pos(unit, &aimed_pos, &final_pos, 0, false, 0)) {
-			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydus, 1, 0);
-			helper::move_unit(unit, final_pos.x, final_pos.y);
-			helper::refresh_unit_after_move(unit);
-			helper::play_sound_from_unit(SoundId::Misc_IntoNydus_wav, nydus->building.nydus_exit, 1, 0);
-			if (unit->order_queue_head) {
-				unit->user_action_flags |= 1;
-				prepare_for_next_order(unit);
-			} else {
-				if (unit->unit_ai) {
-					unit->order_computer(OrderId::ComputerAI);
-				} else {
-					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-				}
-			}
-		} else {
-			// collision detected, restore old position
-			helper::move_unit(unit, old_pos.x, old_pos.y);
-			helper::refresh_unit_after_move(unit);
-		}
-	}
-
-	void orders_enter_nydus(Unit* unit) // 004EA3E0
-	{
-		Unit* nydus = unit->order_target.unit;
-		if  (!nydus
-		||  !(nydus->status & UnitStatus::Completed)
-		||   !nydus->building.nydus_exit
-		|| !((nydus->building.nydus_exit)->status & UnitStatus::Completed)
-		||  (!bw::is_allied_to(unit->player, nydus->player))
-		||    units_dat::base_property[unit->id] & UnitProperty::Flyer)
-		{
-			if (unit->order_queue_head)
-			{
-				unit->user_action_flags |= 1;
-				prepare_for_next_order(unit);
-			} else {
-				if (unit->unit_ai)
-				{
-					unit->order_computer(OrderId::ComputerAI);
-				} else {
-					unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-				}
-			}
-		} else {
-			if (unit->main_order_state == 0)
-			{
-				if (helper::order_to_move_to_target(unit, nydus))
-				{
-					unit->main_order_state = 1;
-				}
-			} else if (unit->main_order_state == 1) {
-					u8 movable_state = unit->get_movable_state();
-					if (movable_state == MovableState_ReachedDestination)
-					{
-						unit->main_order_state = 2;
-					} else if (movable_state != 0) { // (value is probably 2 == unmovable)
-						unit->order_to_idle();
-					}
-				}
-			if (unit->main_order_state == 2)
-			{
-				enter_nydus_effect(unit, nydus);
-			}
-		}
-	}
-}
+    void orders_enter_nydus(Unit* unit) { // 004EA3E0
+        Unit* nydus = unit->order_target.unit;
+        if (!nydus || !nydus->is_completed() || !nydus->building.nydus_exit || !nydus->building.nydus_exit->is_completed()
+        || (!bw::is_allied_to(unit->player, nydus->player))) {
+            if (unit->order_queue_head) {
+                unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+                prepare_for_next_order(unit);
+            } else {
+                if (unit->unit_ai) {
+                    unit->order_computer(OrderId::ComputerAI);
+                } else {
+                    unit->order_computer(units_dat::return_to_idle_order[unit->id]);
+                }
+            }
+            return;
+        }
+        if (unit->main_order_state == 0) {
+            if (helper::order_to_move_to_target(unit, nydus)) {
+                unit->main_order_state = 1;
+            }
+        } else if (unit->main_order_state == 1) {
+            u8 movable_state = unit->get_movable_state();
+            if (movable_state == MovableState_ReachedDestination) {
+                unit->main_order_state = 2;
+            } else if (movable_state != 0) { // (value is probably 2 == unmovable)
+                unit->order_to_idle();
+            }
+        }
+        if (unit->main_order_state == 2) {
+            enter_nydus_effect(unit, nydus);
+        }
+    }
+} // namespace hooks

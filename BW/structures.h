@@ -32,7 +32,7 @@ const s32 UNIT_ARRAY_LENGTH = UnitLimit;     // 1700
 const s32 BULLET_ARRAY_LENGTH = BulletLimit; // 100
 const s32 SPRITE_ARRAY_LENGTH = SpriteLimit; // 2500
 const s32 IMAGE_ARRAY_LENGTH = ImageLimit;   // 5000
-const s32 THINGY_ARRAY_LENGTH = ThingyLimit; // 500;
+const s32 THINGY_ARRAY_LENGTH = ThingyLimit; // 500
 
 /*
 const s32 UNIT_TYPE_COUNT = 228;

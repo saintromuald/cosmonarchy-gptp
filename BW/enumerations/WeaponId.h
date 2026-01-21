@@ -35,7 +35,7 @@ namespace WeaponId {
         YamatoGun								 = 0x1E,
         NuclearMissile							 = 0x1F,
         Lockdown								 = 0x20,
-        EMP_Shockwave							 = 0x21,
+        PsiAssault							     = 0x21,
         Irradiate								 = 0x22,
         ZethrokorClaws							 = 0x23,
         Claws_DevouringOne						 = 0x24,

@@ -81,12 +81,106 @@ namespace hooks {
 		*(u16*)grpwire_remappings = clr;
 		default_grp_remap[8] = grpwire_remappings[idx + idx * 4 + 14];
 
-		if (idx = units_dat::base_property[user->unit_id] & UnitProperty::Spellcaster) {
-			Unit* unit = user->unit;
-			u32 max_energy = unit->get_max_energy();
-			u32 cur_energy = unit->energy;
-			idx = cur_energy / (max_energy >> 8) >> 5;
-		}
-		*(u16*)&default_grp_remap[9] = *(u16*)&grpwire_remappings[idx];
-	}
-}
+        if (idx = units_dat::base_property[user->unit_id] & UnitProperty::Spellcaster) {
+            Unit* unit = user->unit;
+            u32 max_energy = unit->get_max_energy();
+            u32 cur_energy = unit->energy;
+            idx = cur_energy / (max_energy >> 8) >> 5;
+        }
+        *(u16*)&default_grp_remap[9] = *(u16*)&grpwire_remappings[idx];
+    }
+
+    // Hooked to allow wireframe crig overrides. -Pr0nogo
+    void __fastcall statdata_unit_wireframe_update(BinDlg* dialog, int x, int y, Box16* dest) { // 004568F0
+        Unit* unit = dialog->unit_user;
+        helper::status_screen_wireframe_coloring_related(unit);
+        helper::status_screen_wireframe_shield_related(unit);
+        helper::status_screen_wireframe_hp_related(unit);
+
+        u32 wireframe_id = unit->build_queue[unit->build_queue_slot];
+        if (unit->is_completed() || !UnitId::is_structure_morph(static_cast<UnitId::Enum>(wireframe_id))) {
+            wireframe_id = unit->id;
+            auto& unit_ext = unit->ext();
+            if (unit_ext.values[ValueHasWireframeOverride]) {
+                wireframe_id = unit_ext.values[ValueWireframeOverride];
+            }
+        }
+
+        // Default to Maverick if out of range
+        if (wireframe_id >= (g_wwire_image_buffer_ptr->frame_count & 0x7FFF)) {
+            wireframe_id = UnitId::TerranMaverick;
+        }
+
+        GrpFrame grp_frame = g_wwire_image_buffer_ptr->frames[wireframe_id];
+        grp_frame.data_offset = (u32)(g_wwire_image_buffer_ptr + g_wwire_image_buffer_ptr->frames[wireframe_id].data_offset);
+        Box32 image_size;
+        SetRect((LPRECT)&image_size, 0, 0, grp_frame.w, grp_frame.h);
+        helper::draw_func_normal(
+            dialog->bounds.left + (dialog->bounds.right - grp_frame.w - dialog->bounds.left + 1) / 2,
+            dialog->bounds.top + (dialog->bounds.bottom - grp_frame.h - dialog->bounds.top + 1) / 2,
+            &grp_frame,
+            &image_size,
+            0);
+        g_palette_remap[208] = 208;
+        g_palette_remap[209] = 209;
+        g_palette_remap[210] = 210;
+        g_palette_remap[211] = 211;
+        g_palette_remap[192] = 192;
+        g_palette_remap[193] = 193;
+        g_palette_remap[216] = 216;
+        g_palette_remap[217] = 217;
+        g_palette_remap[218] = 218;
+        g_palette_remap[219] = 219;
+    }
+
+    // Hooked to allow wireframe crig overrides. -Pr0nogo
+    void statdata_unit_grpwire_update(BinDlg* dialog) { // 00456F50
+        Unit* unit = dialog->unit_user;
+        if (unit->is_hallucination()) {
+            dialog->graphic = 788;
+        } else if (units_dat::base_property[unit->id] & UnitProperty::Hero) {
+            dialog->graphic = 532;
+        } else {
+            dialog->graphic = 20 + unit->parasite_flags ? 256 : 0;
+        }
+        helper::status_screen_draw_stat_button_border(dialog);
+        helper::status_screen_wireframe_coloring_related(unit);
+        helper::status_screen_wireframe_shield_related(unit);
+        helper::status_screen_wireframe_hp_related(unit);
+
+        u32 grpwire_id = unit->build_queue[unit->build_queue_slot];
+        if (unit->is_completed() || !UnitId::is_structure_morph(static_cast<UnitId::Enum>(grpwire_id))) {
+            grpwire_id = unit->id;
+            auto& unit_ext = unit->ext();
+            if (unit_ext.values[ValueHasWireframeOverride]) {
+                grpwire_id = unit_ext.values[ValueWireframeOverride];
+            }
+        }
+
+        // Default to Maverick if out of range
+        if (grpwire_id >= (g_gwire_image_buffer_ptr->frame_count & 0x7FFF)) {
+            grpwire_id = UnitId::TerranMaverick;
+        }
+
+        GrpFrame grp_frame = g_gwire_image_buffer_ptr->frames[grpwire_id];
+        grp_frame.data_offset = (u32)(g_gwire_image_buffer_ptr + g_gwire_image_buffer_ptr->frames[grpwire_id].data_offset);
+        Box32 image_size;
+        SetRect((LPRECT)&image_size, 0, 0, grp_frame.w, grp_frame.h);
+        helper::draw_func_normal(
+            dialog->bounds.left + (dialog->bounds.right - grp_frame.w - dialog->bounds.left + 1) / 2,
+            dialog->bounds.top + (dialog->bounds.bottom - grp_frame.h - dialog->bounds.top + 1) / 2,
+            &grp_frame,
+            &image_size,
+            0);
+        g_palette_remap[208] = 208;
+        g_palette_remap[209] = 209;
+        g_palette_remap[210] = 210;
+        g_palette_remap[211] = 211;
+        g_palette_remap[192] = 192;
+        g_palette_remap[193] = 193;
+        g_palette_remap[216] = 216;
+        g_palette_remap[217] = 217;
+        g_palette_remap[218] = 218;
+        g_palette_remap[219] = 219;
+    }
+} // namespace hooks

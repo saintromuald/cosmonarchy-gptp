@@ -28,6 +28,14 @@ namespace UnitId {
         TerranLodestoneStandalone							= 387,
         TerranTrenchfoot    								= 406,      // Grounded Anchor
         VolatileEgg											= 416,
+        ScenarioUnit1                                       = 524,
+        ScenarioUnit2                                       = 525,
+        ScenarioUnit3                                       = 526,
+        ScenarioUnit4                                       = 527,
+        ScenarioUnit5                                       = 528,
+        ScenarioUnit6                                       = 529,
+        ScenarioUnit7                                       = 530,
+        ScenarioUnit8                                       = 531,
 
     // Neutral
         TownCenterMarker									= 192,		// Terran Marker
@@ -204,7 +212,7 @@ namespace UnitId {
         ProtossEmpyrean										= 82,		// Gantrithor
         ProtossDemiurge										= 86,		// Danimoth
         ProtossPariah										= 87,		// Aldaris
-        ProtossVassalOld									= 88,		// Artanis
+        ExtTassadar									        = 88,		// Artanis
         ProtossSimulacrum									= 89,		// Rhynadon
         ProtossCharlatan									= 90,		// Bengalaas
         ProtossExemplar										= 94,		// Kakaru
@@ -416,6 +424,10 @@ namespace UnitId {
         ExtProtossWarpGate									= 346,
         ExtStasisChamber                                    = 347,
         TerranControlNode									= 359,
+        ProtossWarpGateTheFall   						    = 534,
+        ZergCerebrateTheFall       						    = 535,
+        ZergOvermindWithShellTheFall   						= 536,
+        ZergOvermindTheFall   						        = 537,
 
     // Old enum
         TerranMaverick										= 0,

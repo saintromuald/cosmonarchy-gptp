@@ -62,4 +62,4 @@ namespace hooks {
 		jump_patch(enter_nydus_effect_wrapper,		0x004EA180, 1);
 		jump_patch(orders_enter_nydus_wrapper,		0x004EA3E0, 0);
 	}
-}
+} // namespace hooks

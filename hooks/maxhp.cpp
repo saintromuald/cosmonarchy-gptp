@@ -179,14 +179,14 @@ namespace hooks
 
 	b32 ai_emp_shield_requirements_proc(Unit* target, Unit* caster) // 004413D0
 	{
-		if (!helper::ai_target_unit_is_worth_hitting(target, caster) || !bw::unit_has_shields(target) || !helper::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))
+		if (!helper::ai_target_unit_is_worth_hitting(target, caster) || !bw::unit_has_shields(target) || !helper::can_weapon_target_unit(WeaponId::PsiAssault, target, caster))
 		{
 			return 0;
 		}
 		u16 pos_x = target->sprite->position.x;
 		u16 pos_y = target->sprite->position.y;
 		*g_temp_hp_shields = 0;
-		*g_temp_weapon = WeaponId::EMP_Shockwave;
+		*g_temp_weapon = WeaponId::PsiAssault;
 		helper::create_splash_weapon_proc(160, pos_x, pos_y, (s32(__fastcall*)(s32, s32))helper::unit_shields_clump_in_area_accumulator_proc, caster);
 		return *g_temp_hp_shields >= 200;
 	}

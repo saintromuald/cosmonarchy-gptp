@@ -1280,15 +1280,13 @@ namespace hooks {
                         return true;
                     }
                 }
-                if (data.target->id == UnitId::ZergNydusCesiant) {
+                if (data.target->is_valid_nydus()) {
                     Unit* nydus_exit = data.target->building.nydus_exit;
-                    if (nydus_exit) {
-                        data.target->building.nydus_exit = 0;
-                        nydus_exit->building.nydus_exit = 0;
+                    data.target->building.nydus_exit = 0;
+                    nydus_exit->building.nydus_exit = 0;
 
-                        if (!target_ext.values[ValueIsNydusExit] == 1) {
-                            nydus_exit->bwfunc_remove();
-                        }
+                    if (!target_ext.values[ValueIsNydusExit] == 1) {
+                        nydus_exit->bwfunc_remove();
                     }
                 }
                 bw::regress(data.target, regression_id);

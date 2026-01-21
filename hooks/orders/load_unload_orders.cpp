@@ -212,7 +212,7 @@ void orders_pickup_4(Unit* unit) {
             *order_target_offset = 0;
             return;
         }
-        if (helper::is_target_within_min_range(unit, 1u, order_target)) {
+        if (helper::is_target_within_min_range(unit, 1, order_target)) {
             helper::load_unit_proc(order_target, unit);
             helper::issue_order_targeting_ground(order_target, OrderId::MoveUnload, unit->order_target.pt.x, unit->order_target.pt.y);
             if (order_target->unit_ai) {
@@ -303,7 +303,7 @@ void orders_pickup_4(Unit* unit) {
 // Unit is a unit trying to enter a transport
 void orders_enter_transport(Unit* unit) {
     Unit* target = unit->order_target.unit;
-    if (target && !(target->status & UnitStatus::IsHallucination) && units_dat::space_provided[target->id] != 0 && bw::can_be_entered_by(target, unit)) {
+    if (target && !target->is_hallucination() && units_dat::space_provided[target->id] != 0 && bw::can_be_entered_by(target, unit)) {
         if (unit->main_order_state == 0 && target->main_order_id != OrderId::Pickup2) {
             if (target->status & UnitStatus::Reacts) {
                 helper::prepend_order_targeting_unit(target, unit, OrderId::Pickup2);

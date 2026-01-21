@@ -1775,7 +1775,7 @@ namespace hooks {
                                             }
                                             // TODO: Add check to see if victim is already detected / if there's a detector in the box?
                                             if (!unit_id_is_garrison(victim->id) || !helper::is_unit_loaded(victim)) {
-                                                if (!helper::ai_unit_can_attack(victim) || units_dat::base_property[victim->id] & UnitProperty::Worker) {
+                                                if (!helper::ai_unit_can_attack(victim) || victim->is_worker()) {
                                                     break;
                                                 }
                                             }
