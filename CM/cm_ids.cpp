@@ -883,6 +883,12 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             offsets.count = 1;
             return &offsets;
         } break;
+        case WeaponId::UnarAutonomousRay: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueUnarLaunchPos;
+            offsets.count = 7;
+            return &offsets;
+        } break;
         case WeaponId::ArchitectDispersiveSalvo: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueArchitectLaunchPos;

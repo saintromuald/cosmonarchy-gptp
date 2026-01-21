@@ -267,9 +267,11 @@ namespace hooks {
             case UnitId::ZergAxitriliskWeaponless: {
                 speed *= 1.5;
             } break;
-            case UnitId::ZergMortothrokor:
-            case UnitId::ZergHydralisk: {
+            case UnitId::ZergMortothrokor: {
                 speed *= 1.6;
+            } break;
+            case UnitId::ZergHydralisk: {
+                speed *= 1.7;
             } break;
             case UnitId::TerranCannibal: {
                 speed *= 1.75;

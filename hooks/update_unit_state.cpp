@@ -14,21 +14,12 @@
 
 namespace hooks {
 	void update_unit_energy(Unit* unit) { // 004EB4B0
-		UnitExt* unit_ext = get_unit_ext(unit);
-		bool dont_regen = !unit->is_valid_caster() || !unit->is_completed() || unit_ext->energy_regen_timer <= 2 * 24 || unit->is_frozen();
+		auto& unit_ext = unit->ext();
+		bool dont_regen = !unit->is_valid_caster() || !unit->is_completed() || unit_ext.energy_regen_timer <= 2 * 24 || unit->is_frozen();
 
 		// Behaviors code -Veeq7
-		// Spend energy for Phobos Discharge
-		if (unit->id == UnitId::TerranPhobos && unit_ext->values[ValuePhobosDischarge] > 0) {
-			unit->spend_energy((200 * 256) / (5 * 24));
-			dont_regen = true;
-			if (unit->energy == 0) {
-				unit_ext->values[ValuePhobosDischarge] = 0;
-			}
-		}
-
 		// Block regen for channeling Facades
-		if (unit->id == UnitId::TerranFacade && unit_ext->timers[TimerFacadePryingEyesChannel]) {
+		if (unit->id == UnitId::TerranFacade && unit_ext.timers[TimerFacadePryingEyesChannel]) {
 			dont_regen = true;
 		}
 

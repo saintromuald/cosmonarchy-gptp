@@ -607,14 +607,21 @@ namespace hooks {
                 switch (weapon_id) {
                     case WeaponId::PhobosArgosLaserBatteries: {
                         // Phobos - Argent Capacitors passive
-                        if (unit->id == UnitId::TerranPhobos && unit_ext.values[ValuePhobosDischarge] == 0) {
-                            unit->add_unit_energy(5 * 256);
-                            if (unit->energy == unit->get_max_energy()) {
-                                unit_ext.values[ValuePhobosDischarge] = 1;
-                                unit->ground_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
-                                unit->air_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
-                                helper::play_sound_from_unit(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
-                                unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
+                        if (unit->id == UnitId::TerranPhobos) {
+                            if (unit_ext.values[ValuePhobosDischarge] == 0) {
+                                unit->add_unit_energy(5 * 256);
+                                if (unit->energy == unit->get_max_energy()) {
+                                    unit_ext.values[ValuePhobosDischarge] = 1;
+                                    unit->ground_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
+                                    unit->air_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
+                                    helper::play_sound_from_unit(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
+                                    unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
+                                }
+                            } else {
+                                unit->spend_energy(10 * 256);
+                                if (unit->energy == 0) {
+                                    unit_ext.values[ValuePhobosDischarge] = 0;
+                                }
                             }
                         }
                         fire_bullet(unit, weapon_id, weapon_target);

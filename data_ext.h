@@ -243,6 +243,7 @@ enum ExtValueId {
     ValueTritonAbilityLaunchPos,
     ValueGoldRushPlayer,
     ValueGarvrolHidebreaker,
+    ValueUnarLaunchPos,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
