@@ -75,14 +75,9 @@ BOOL WINAPI Plugin::GetModules(MPQDRAFTPLUGINMODULE* lpPluginModules, LPDWORD lp
 	return TRUE;
 }
 
-//Gotta define this in a separate file
+// Defined in initialize.cpp
 //BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer);
-
-BOOL WINAPI Plugin::TerminatePlugin()
-{
-	//By default, do nothing
-	return TRUE;
-}
+//BOOL WINAPI Plugin::TerminatePlugin();
 
 //Checks the file version of StarCraft.exe.
 //If the version is correct, returns TRUE. Otherwise, this displays appropriate
