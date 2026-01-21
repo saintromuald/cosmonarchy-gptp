@@ -1722,6 +1722,12 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
             case UnitId::TerranStriga: {
                 ready_sound = helper::get_random_unit_response(SoundId::StrigaReady01, SoundId::StrigaReady03);
             } break;
+            case UnitId::TerranDilettante: {
+                ready_sound = helper::get_random_unit_response(SoundId::DilettanteReady01, SoundId::DilettanteReady03);
+            } break;
+            case UnitId::TerranSevenstep: {
+                ready_sound = helper::get_random_unit_response(SoundId::SevenstepReady01, SoundId::SevenstepReady03);
+            } break;
             case UnitId::TerranAspirant: {
                 ready_sound = helper::get_random_unit_response(SoundId::AspirantReady01, SoundId::AspirantReady03);
             } break;
@@ -1800,6 +1806,12 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
             case UnitId::ProtossHierophant: {
                 ready_sound = helper::get_random_unit_response(SoundId::HierophantReady01, SoundId::HierophantReady03);
             } break;
+            case UnitId::ProtossAmaranth: {
+                ready_sound = helper::get_random_unit_response(SoundId::AmaranthReady01, SoundId::AmaranthReady03);
+            } break;
+            case UnitId::ProtossHerald: {
+                ready_sound = helper::get_random_unit_response(SoundId::HeraldReady01, SoundId::HeraldReady03);
+            } break;
             case UnitId::ProtossVagrant: {
                 ready_sound = helper::get_random_unit_response(SoundId::VagrantReady01, SoundId::VagrantReady03);
             } break;
@@ -1829,6 +1841,18 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
             } break;
             case UnitId::ProtossStarSovereign: {
                 ready_sound = helper::get_random_unit_response(SoundId::StarSovereignReady01, SoundId::StarSovereignReady03);
+            } break;
+            case UnitId::ZergLiiralisk: {
+                ready_sound = helper::get_random_unit_response(SoundId::LiiraliskReady01, SoundId::LiiraliskReady02);
+            } break;
+            case UnitId::AskosiPilgrim: {
+                ready_sound = helper::get_random_unit_response(SoundId::PilgrimReady01, SoundId::PilgrimReady03);
+            } break;
+            case UnitId::AskosiProselyte: {
+                ready_sound = helper::get_random_unit_response(SoundId::ProselyteReady01, SoundId::ProselyteReady03);
+            } break;
+            case UnitId::AskosiMissionary: {
+                ready_sound = helper::get_random_unit_response(SoundId::MissionaryReady01, SoundId::MissionaryReady03);
             } break;
         }
         return (SoundId::Enum)ready_sound;

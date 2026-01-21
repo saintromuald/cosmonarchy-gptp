@@ -2511,6 +2511,17 @@ namespace hooks {
                     unit->spell_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PsiStorm) * 1.25;
                 }
             } break;
+            case UnitId::ProtossAmaranth: {
+                Unit* target = unit->order_target.unit;
+                if (unit_ext.values[ValueAmaranthHealAmount] && target && !bw::are_mutual_allies(unit->player, target->player)) {
+                    if (unit_ext.damage_taken_timer > 2 * 24) {
+                        unit_ext.values[ValueAmaranthHealAmount] = 0;
+                    } else if (unit_ext.values[ValueAmaranthHealAmount] > 100 * 256 && unit->get_max_hp_raw() > units_dat::max_hitpoints[unit->id] * 0.8) {
+                        unit_ext.values[ValueAmaranthHealAmount] = 0;
+                        play_unit_banter(target, UnitId::ProtossAmaranth);
+                    }
+                }
+            } break;
             case UnitId::TerranMinistry:
             case UnitId::TerranTreasury:
             case UnitId::TerranStockade:

@@ -1083,7 +1083,11 @@ namespace hooks {
             data.attacker->heal_hp(damage_dealt * hp_factor, data.attacker);
         }
         if (shields_factor) {
-            data.attacker->heal_shields(damage_dealt * shields_factor, data.attacker);
+            auto healing_amount = damage_dealt * std::lround(shields_factor);
+            data.attacker->heal_shields(healing_amount, data.attacker);
+            if (data.attacker->id == UnitId::ProtossAmaranth) {
+                attacker_ext.values[ValueAmaranthHealAmount] += healing_amount;
+            }
         }
     }
 
