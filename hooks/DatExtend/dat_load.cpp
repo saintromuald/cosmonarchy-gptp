@@ -5,8 +5,7 @@
 #include "DatExtend/datext.h"
 
 namespace hooks {
-	void load_game_data(DatLoad* datTable, const char* normal_filename)
-	{
+	void load_game_data(DatLoad* datTable, const char* normal_filename) {
 		u32 size = 0;
 		u32 i;
 		u8* data;
@@ -25,13 +24,11 @@ namespace hooks {
 
 		// DatExt -- Patch dat file
 		// Note now every patch happens immediately with size being in DatExt::extend_data()
-	//	if (DatExt::set_dat_size(datTable, size) == false)
-	//	{
-	//		helper::fatal_file_not_found(24, filename); // invalid file
+	//	if (DatExt::set_dat_size(datTable, size) == false) {
+	//		helper::syswarn_file_not_found(24, filename); // invalid file
 	//	}
 		
-		for (i = 0; datTable[i].address != NULL; i++)
-		{
+		for (i = 0; datTable[i].address != NULL; i++) {
 			length = datTable[i].entries * datTable[i].length;
 			if (length > size) break;
 			memcpy(datTable[i].address, data + pos, length);
@@ -39,20 +36,17 @@ namespace hooks {
 			pos += length;
 		}
 		
-		if (size != 0)
-		{
-			helper::fatal_file_not_found(24, filename);
+		if (size != 0) {
+			helper::syswarn_file_not_found(24, filename);
 		}
 		
 		SMemFree(data, "Starcraft\\SWAR\\lang\\gamedata.cpp", 402, 0);
 		
 		// Apply Flingy Expand patch to default units.dat file, so that flingy datatype will be consistent whether DatExt is used or not
-		if (datTable == (DatLoad*)DatExt::LoadTable::Units_Dat)
-		{
+		if (datTable == (DatLoad*)DatExt::LoadTable::Units_Dat) {
 			DatExt::load_unit_names_tbl(); // load extended unit names table
 			DatExt::load_unit_icons(); // load extended unit icons
-			if (datTable[0].length == 1)
-			{
+			if (datTable[0].length == 1) {
 				DatExt::units_dat_flingy_expand();
 			}
 		}		

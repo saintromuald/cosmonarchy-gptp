@@ -1018,22 +1018,22 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
                     }
                     });
 
-                u32 allies = cosmonarchy_unit_count(unit, unit->position, ProtossLanifect::AISeekRange, Flags::IncludingSelf | Flags::Ally, {});
-                u32 enemies = cosmonarchy_unit_count(unit, unit->position, ProtossLanifect::AISeekRange, Flags::Enemy, {});
+                u32 allies = cosmonarchy_unit_count(unit, unit->position, ProtossLanifect::AISeekRange, Flags::IncludingSelf | Flags::Ally | Flags::NoAir, {});
+                u32 enemies = cosmonarchy_unit_count(unit, unit->position, ProtossLanifect::AISeekRange, Flags::Enemy | Flags::NoAir, {});
                 u32 threshold = std::min(std::min(ceilf(enemies / 4), ceilf(lanifects / 4)), ceilf(allies / 2));
                 if (web_state || webs < threshold) {
                     Unit* best_target = 0;
                     s32 max_score = INT_MIN;
-                    cosmonarchy_finder_loop(unit, unit->position, ProtossLanifect::AISeekRange, Flags::Enemy, {}, [&](Unit* target) {
+                    cosmonarchy_finder_loop(unit, unit->position, ProtossLanifect::AISeekRange, Flags::Enemy | Flags::NoAir, {}, [&](Unit* target) {
                         bool valid = true;
-                        cosmonarchy_finder_loop(unit, target->position, ProtossLanifect::AICheckRange / 2, Flags::Own, {}, [&](Unit* dweb) {
+                        cosmonarchy_finder_loop(unit, target->position, ProtossLanifect::AICheckRange / 2, Flags::Own | Flags::NoAir, {}, [&](Unit* dweb) {
                             if (bw::get_generic_rust_value(dweb, RustId::ToggleDisruptionField)) {
                                 valid = false;
                             }
                             });
                         if (valid) {
-                            s32 score = cosmonarchy_unit_count(unit, target->position, ProtossLanifect::AICheckRange, Flags::Enemy, {});
-                            score -= cosmonarchy_unit_count(unit, target->position, ProtossLanifect::AICheckRange, Flags::Ally, {});
+                            s32 score = cosmonarchy_unit_count(unit, target->position, ProtossLanifect::AICheckRange, Flags::Enemy | Flags::NoAir, {});
+                            score -= cosmonarchy_unit_count(unit, target->position, ProtossLanifect::AICheckRange, Flags::Ally | Flags::NoAir, {});
                             score -= bw::distance_between(unit->position, target->position) / 128;
                             if (score > max_score) {
                                 max_score = score;

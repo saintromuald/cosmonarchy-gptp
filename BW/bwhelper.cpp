@@ -8860,8 +8860,8 @@ namespace helper {
         __asm {
             PUSHAD
             PUSH order_id
-            MOV ESI, target
-            MOV EAX, unit
+            MOV EAX, target
+            MOV ESI, unit
             CALL func_address
             POPAD
         }
@@ -16322,6 +16322,19 @@ namespace helper {
         return (bool)result;
     }
 
+    s8 reset_game_input_procs(u16 cursor_index) {
+        const u32 func_address = 0x004843F0;
+        static s32 result;
+        __asm {
+            PUSHAD
+            PUSH DWORD PTR cursor_index
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return (s8)result;
+    }
+    
     bool can_recharge_shields(Unit* unit, Unit* battery) {
         const u32 func_address = 0x00493520;
         static b32 result;

@@ -12,7 +12,7 @@ namespace hooks {
 	}
 
 	static bool safety_unburrow_check(Unit* unit, Unit* target) {
-		if (!(target->status & UnitStatus::GroundedBuilding)) {
+		if (!target->is_grounded_building()) {
 			return false;
 		}
 		if (target == unit) {
@@ -43,15 +43,15 @@ namespace hooks {
 		}
 
 		// Forcibly unburrow units that collide with buildings
-		if (unit->status & UnitStatus::Burrowed) {
+		if (unit->is_burrowed()) {
 			ActiveTile* tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
 			if (tile->currently_occupied) {
 				// TODO: unit search
 				Unit* nearest = bw::UnitFinder::get_nearest_target(
-				unit->get_left() - 32,
-				unit->get_top() - 32,
-				unit->get_right() + 32,
-				unit->get_bottom() + 32,
+				unit->get_left() - 16,
+				unit->get_top() - 16,
+				unit->get_right() + 16,
+				unit->get_bottom() + 16,
 				unit, [&](Unit* target) {
 					return safety_unburrow_check(unit, target);
 				});

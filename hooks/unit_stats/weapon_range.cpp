@@ -91,6 +91,9 @@ u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
     if (unit_id == UnitId::TerranBlackjackGolden) {
         result -= 32;
     }
+    if (weapon_id == WeaponId::OlympianTitansFist) {
+        result = 30;
+    }
     return result;
 }
 

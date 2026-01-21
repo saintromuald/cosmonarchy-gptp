@@ -422,7 +422,7 @@ namespace hooks {
         child->graphic = get_stat_icon_graphic(armor_value);
         state->button_grp = icons_grp;
         u32 final_unit_id = active_unit->build_queue[active_unit->build_queue_slot];
-        if (active_unit->is_completed() || UnitId::is_structure_morph(static_cast<UnitId::Enum>(active_unit->build_queue[active_unit->build_queue_slot]))) {
+        if (active_unit->is_completed() || bw::is_zerg_building_morph_result(active_unit->build_queue[active_unit->build_queue_slot])) {
             final_unit_id = active_unit->id; // We also need to do this for birthing Zerg units
         }
         u16 frame = upgrades_dat::upgrade_icon[units_dat::armor_upgrade[final_unit_id]];
@@ -588,7 +588,7 @@ namespace hooks {
         }
 
         u16 queue = unit->build_queue[unit->build_queue_slot];
-        if (unit->is_completed() || !UnitId::is_structure_morph(static_cast<UnitId::Enum>(queue))) {
+        if (unit->is_completed() || !bw::is_zerg_building_morph_result(queue)) {
             return helper::get_unit_name_stat_string(unit->id);
         } else {
             return helper::get_unit_name_stat_string(queue);

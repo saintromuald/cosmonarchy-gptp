@@ -16,6 +16,7 @@ namespace SpriteId {
         switch (id) {
             case SpriteId::Corpse_Mason:
             case SpriteId::Corpse_Maverick:
+            case SpriteId::Corpse_MaverickFuturist:
             case SpriteId::Corpse_Harakan:
             case SpriteId::Corpse_Cyprian:
             case SpriteId::Corpse_Cleric:

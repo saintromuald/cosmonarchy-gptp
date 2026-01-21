@@ -1424,15 +1424,15 @@ bool Unit::has_energy_for(u32 tech_id) {
 }
 
 bool Unit::can_attack_transport_checks() {
-    if (!(this->status & UnitStatus::InTransport)) {
+    if (!this->is_in_transport()) {
         return true;
     }
 
-    if (this->status & UnitStatus::InBuilding && this->connected_unit) {
+    if (this->is_garrisoned() && this->connected_unit) {
         if (this->connected_unit->id == UnitId::TerranTencendur) {
             return true;
         }
-        if (this->connected_unit->status & UnitStatus::InAir) {
+        if (this->connected_unit->is_in_air()) {
             return false;
         }
         return true;
@@ -1831,6 +1831,7 @@ bool Unit::recharges_shields() {
 
 bool Unit::is_constructor() {
     return this->is_worker() || this->id == UnitId::TerranOgunWorkerMode || this->id == UnitId::AskosiDyad;
+}
 
 void Unit::pull_towards(Unit* source) {
     auto& unit_ext = this->ext();
@@ -1845,4 +1846,3 @@ void Unit::pull_towards(Unit* source) {
             unit_ext.timers[TimerPullTowards] = 0;
         }
     }
-}
