@@ -1782,3 +1782,31 @@ void Unit::play_completion_sfx() {
     }
     bw::play_sound(sound_id, this);
 }
+
+SoundId::Enum Unit::get_error_sfx() {
+    switch (this->get_race()) {
+        case RaceId::Terran:  return SoundId::Misc_Buzz_wav_2;
+        case RaceId::Protoss: return SoundId::Misc_PError_wav;
+        case RaceId::Zerg:    return SoundId::Zerg_DRONE_ZDrErr00_WAV_2;
+        case RaceId::Askosi:  return SoundId::Misc_Buzz_wav_2;
+    }
+    return SoundId::Misc_Buzz_wav_2;
+}
+
+Unit* Unit::corpse_cocoon_search() {
+    for (Thingy* corpse : g_corpse_search.rect(this->get_box32())) {
+        auto* corpse_ext = get_thingy_ext(corpse);
+        if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) && !unit_id_is_broodspawn(corpse_ext->unit_id)) {
+            Unit* egg = bw::create_unit_in_game(UnitId::ZergEgg, this->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
+            if (egg) {
+                set_custom_egg(egg, this->id, units_dat::time_cost[this->id] / 2);
+            }
+            auto& egg_ext = egg->ext();
+            egg_ext.values[ValueNoCorpse] = true;
+            egg_ext.values[ValueRegressionUnstable] = true;
+            corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+            corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+            return egg;
+        }
+    }
+}

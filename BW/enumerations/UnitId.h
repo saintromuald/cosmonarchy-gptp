@@ -326,6 +326,8 @@ namespace UnitId {
         ZergHydraliskOrkoti                                 = 436,
         ZergYblyleth                                        = 438,
         ZergAzanthrokor                                     = 511,
+        ZergSovrokor                                        = 519,
+        ZergGarvrokor                                       = 521,
 
     // Zerg-Building
         ZergAxtothAxis										= 130,		// Infested Command Center

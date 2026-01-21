@@ -529,8 +529,8 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::ZergGoszirithTendril: {
             switch (unit_id) {
-            //  case UnitId::ZergZethrokor: return UnitId::ZergSovrokor
-            //  case UnitId::ZergVorvrokor: return UnitId::ZergGarvrokor;
+                case UnitId::ZergZethrokor: return UnitId::ZergSovrokor;
+                case UnitId::ZergVorvrokor: return UnitId::ZergGarvrokor;
             }
         } break;
         case Faction::ZergOrkotiTendril: {
@@ -558,6 +558,9 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
     }
     if (unit_ext.unar_solitary_focus_stacks) {
         damage += unit_ext.unar_solitary_focus_stacks;
+    }
+    if (unit->id == UnitId::ZergGarvrokor) {
+        damage++;
     }
     return damage;
 }
@@ -751,7 +754,7 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case WeaponId::EMP_Shockwave:                       return "EMP Shockwave";
         case WeaponId::Irradiate:                           return "Irradiate";
         case WeaponId::ZethrokorClaws:                      return "Zethrok Claws";
-        case WeaponId::VorvalClaws:                         return "Vorvrok Claws";
+        case WeaponId::VorvalClaws:                         return unit->id == UnitId::ZergVorvrokor ? "Vorvrok Claws" : "Garvrol Claws";
         case WeaponId::NathrokorVestigialStrike:            return "Vestigial Strike";
         case WeaponId::HydraliskNeedleSpines:               return "Needle Spines";
         case WeaponId::PenumbraErebolShockCannon:           return "Erebol Shock Cannon";
@@ -965,7 +968,7 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case 247:                                           return "U...nimplemented";
         case WeaponId::AckmedMickenMelter:                  return "Micken Melter";
         case WeaponId::GoskaMedusaRifle:                    return "Medusa Rifle";
-        case 250:                                           return "U...nimplemented";
+        case WeaponId::SovrokorSovrolClaws:                 return "Sovrol Claws";
         case WeaponId::StroluumMagnatesMaw:                 return "Magnate's Maw";
         case 252:                                           return "U...nimplemented";
         case WeaponId::KerriganC10CanisterRifle:            return "C-10 Canister Rifle";

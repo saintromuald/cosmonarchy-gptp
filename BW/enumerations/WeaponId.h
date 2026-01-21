@@ -182,6 +182,7 @@ namespace WeaponId {
         BlackguardAsoniCarbine              = 240,
         ArhaunPhlegethonCannon              = 241,
         CannibalZuluSidekicks               = 243,
+        SovrokorSovrolClaws                 = 250,
 
         // Terran \\
             

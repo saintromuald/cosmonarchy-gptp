@@ -796,8 +796,17 @@ namespace hooks {
                     }
                 } break;
                 case UnitId::ZergZethrokor: {
-                    if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_gestated_unit_id(player_id, UnitId::ZergVornathPond) || player_has_base_unit_id(player_id, UnitId::ZergQuazethPool)) {
-                        return true;
+                    if (faction != Faction::ZergGoszirithTendril) {
+                        if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_gestated_unit_id(player_id, UnitId::ZergVornathPond) || player_has_base_unit_id(player_id, UnitId::ZergQuazethPool)) {
+                            return true;
+                        }
+                    }
+                } break;
+                case UnitId::ZergSovrokor: {
+                    if (faction == Faction::ZergGoszirithTendril) {
+                        if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_gestated_unit_id(player_id, UnitId::ZergVornathPond) || player_has_base_unit_id(player_id, UnitId::ZergQuazethPool)) {
+                            return true;
+                        }
                     }
                 } break;
                 case UnitId::ZergQuazilisk: {
@@ -940,6 +949,13 @@ namespace hooks {
         }
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZethrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergVorvrokor) {
+                if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
+                    return true;
+                }
+            }
+        }
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSovrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+            if (unit_id == UnitId::ZergGarvrokor) {
                 if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
                     return true;
                 }
@@ -2416,10 +2432,20 @@ namespace hooks {
                         return TECH_LOCKED;
                     }
                     case UnitId::ZergZethrokor: {
-                        if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_gestated_unit_id(player_id, UnitId::ZergVornathPond) || player_has_base_unit_id(player_id, UnitId::ZergQuazethPool)) {
-                            return TECH_ACTIVE;
+                        if (faction != Faction::ZergGoszirithTendril) {
+                            if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_gestated_unit_id(player_id, UnitId::ZergVornathPond) || player_has_base_unit_id(player_id, UnitId::ZergQuazethPool)) {
+                                return TECH_ACTIVE;
+                            }
+                            return TECH_LOCKED;
                         }
-                        return TECH_LOCKED;
+                    }
+                    case UnitId::ZergSovrokor: {
+                        if (faction == Faction::ZergGoszirithTendril) {
+                            if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_gestated_unit_id(player_id, UnitId::ZergVornathPond) || player_has_base_unit_id(player_id, UnitId::ZergQuazethPool)) {
+                                return TECH_ACTIVE;
+                            }
+                            return TECH_LOCKED;
+                        }
                     }
                     case UnitId::ZergQuazilisk: {
                         if (faction != Faction::ZergImicrenTendril) {
@@ -2581,13 +2607,29 @@ namespace hooks {
             }
             case UnitId::ZergZethrokor: {
                 if (unit_id == UnitId::ZergVorvrokor) {
-                    if (unit->is_burrowed()) {
-                        return TECH_HIDDEN;
-                    }
-                    if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
+                    if (faction != Faction::ZergGoszirithTendril) {
+                        if (unit->is_burrowed()) {
+                            return TECH_HIDDEN;
+                        }
+                        if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
+                            return TECH_ACTIVE;
+                        }
                         return TECH_ACTIVE;
                     }
-                    return TECH_ACTIVE;
+                }
+                return TECH_HIDDEN;
+            }
+            case UnitId::ZergSovrokor: {
+                if (unit_id == UnitId::ZergGarvrokor) {
+                    if (faction == Faction::ZergGoszirithTendril) {
+                        if (unit->is_burrowed()) {
+                            return TECH_HIDDEN;
+                        }
+                        if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_ACTIVE;
+                    }
                 }
                 return TECH_HIDDEN;
             }
@@ -2821,10 +2863,24 @@ namespace hooks {
                         return TECH_LOCKED;
                     }
                     case UnitId::ZergVorvrokor: {
-                        if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
-                            return TECH_ACTIVE;
+                        if (faction != Faction::ZergGoszirithTendril) {
+                            if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
+                                return TECH_ACTIVE;
+                            }
+                            return TECH_LOCKED;
+                        } else {
+                            return TECH_HIDDEN;
                         }
-                        return TECH_LOCKED;
+                    }
+                    case UnitId::ZergGarvrokor: {
+                        if (faction == Faction::ZergGoszirithTendril) {
+                            if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
+                                return TECH_ACTIVE;
+                            }
+                            return TECH_LOCKED;
+                        } else {
+                            return TECH_HIDDEN;
+                        }
                     }
                     case UnitId::ZergLiiralisk:
                     case UnitId::ZergKalkalisk: {

@@ -440,6 +440,8 @@ struct Unit : public UnitLayout {
     bool can_play_training_sfx();
     void play_training_sfx();
     void play_completion_sfx();
+    SoundId::Enum get_error_sfx();
+    Unit* corpse_cocoon_search();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);
