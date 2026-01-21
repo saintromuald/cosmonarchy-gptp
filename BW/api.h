@@ -953,7 +953,7 @@ u32 get_ai_region_military_count(AiRegion* region);
 void ai_defend(u32 player, u32 region_id);
 void ask_for_ai_help(Unit* victim, Unit* attacker);
 
-void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep);
+void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep, bool is_building);
 void spawn_custom_creep(Unit* unit);
 void spread_custom_creep(Unit* unit);
 void update_custom_creep_disappearance(Unit* unit);

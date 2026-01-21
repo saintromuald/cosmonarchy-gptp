@@ -21,14 +21,16 @@ namespace hooks {
 		if (!helper::do_units_collide(unit, target)) {
 			return false;
 		}
+		if (target->ext().units[UnitHiveOrgan]) {
+			return false;
+		}
 		return true;
 	}
 
 	void update_status_effects(Unit* unit) { // 00492F70
-		UnitExt* unit_ext = get_unit_ext(unit);
+		auto& unit_ext = unit->ext();
 		if (unit->subunit) {
-			UnitExt* subunit_ext = get_unit_ext(unit->subunit);
-			subunit_ext->units[UnitTurretParentLink] = unit;
+			unit->subunit->ext().units[UnitTurretParentLink] = unit;
 		}
 
 		// Decrement Stasis Field timer (and remove effect if 0)
@@ -78,7 +80,7 @@ namespace hooks {
 			if (unit->ensnare_timer == 0) {
 				unit->remove_overlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 				unit->update_speed();
-				unit_ext->values[ValueEnsnareFactor] = 0;
+				unit_ext.values[ValueEnsnareFactor] = 0;
 			}
 		}
 

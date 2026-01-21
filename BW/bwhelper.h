@@ -364,7 +364,7 @@ namespace helper {
     void refund_building_cost(u16 unit_id, u8 player);														// 0042CE70
     void update_building_ai(Unit* unit);																	// 00433FE0
     bool is_valid_building_morph(u16 building_id);															// 0045CC60
-    void update_new_unit_vision(u32 id, s32 x, s32 y);														// 0045CE90
+    void update_new_unit_cagra(u32 id, s32 x, s32 y);														// 0045CE90
     void cancel_zerg_building_morph(Unit* unit);															// 0045D410
     void stop_creep_disappearing_at_building(Unit* unit);												    // 0047D770
     void increment_unit_scores_ex(Unit* unit, s32 count, b32 update_morph_merge_unit_score);				// 00488D50
@@ -1947,4 +1947,17 @@ namespace helper {
     void issue_order_by_type(u8 order_id, u16 pos_x, u16 pos_y, u32 order_type, Unit* unit, Unit* target,
                              u32 fow_unit_id, Point16 position, Unit* secondary_target);             // 00475470
     void command_targeted(u16 pos_x, u16 pos_y, Unit* unit, u32 unit_id, u8 order_id, u8 is_queued); // 0049AB00
+    s32 node_is_unpathable(Unit* node);                                                              // 00473560
+    Unit* get_nearest_unit_from(u32 pos_x, u32 pos_y, u16 range, s32(__fastcall* proc)(Unit*, Unit*), Unit* compare); // 004E86C0
+
+    bool can_enter_nydus(Unit* unit, Unit* nydus);                                                    // 004E8C20
+    bool can_recharge_shields(Unit* unit, Unit* battery);                                             // 00493520
+
+    s8 reset_game_input_procs(u16 cursor_index);                                                      // 004843F0
+    void update_mineral_field_image(Unit* mineral_field);                                             // 00468830
+
+    b32 game_is_team_game();                                                                        // 00484F50
+    s32 is_cpu_force(u32 force_id_1, s8 force_id_2);                                                // 00484DF0
+
+    void set_fog_mask(u32 tile_flags, u32 x_tile, u32 y_tile, u32 x_final, u32 y_final);            // 00472E50
 }

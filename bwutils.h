@@ -93,7 +93,9 @@ namespace SpriteId {
             case SpriteId::Corpse_Agrileth:
             case SpriteId::Corpse_Cardinal:
             case SpriteId::Corpse_Vicar:
-            case SpriteId::Corpse_Missionary: {
+            case SpriteId::Corpse_Missionary:
+            case SpriteId::Corpse_Proselyte:
+            case SpriteId::Corpse_Malkothrokor: {
                 return true;
             } break;
         }

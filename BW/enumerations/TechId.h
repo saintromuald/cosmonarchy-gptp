@@ -28,6 +28,7 @@ namespace TechId {
     // Zerg
         MatralethEnsnaringBrood				= 13, // Spawn Broodlings
         ZergBlissfulEmbrace					= 35, // Unused Tech 35
+        MalkothrokorHiveTissue              = 45,
         StroluumSkryspawn					= 51,
 
         LarvalSubmenuSelectShared			= 9,  // Cloaking Field Wraith

@@ -250,7 +250,7 @@ namespace hooks {
 
 	// Hooked to investigate the "upper map bound" fail state for Seraph training. -Pr0nogo
 	Unit* attempt_train_hatch_unit(u16 unit_id, Unit* source, u32 show_error) { // 00468200
-		if (source->status & UnitStatus::GroundedBuilding
+		if (source->is_grounded_building()
 		||  source->id == UnitId::ProtossSolarion
 		||  source->id == UnitId::ProtossAccantorOld
 		||  source->id == UnitId::Hero_Warbringer

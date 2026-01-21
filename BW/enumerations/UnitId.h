@@ -321,6 +321,7 @@ namespace UnitId {
         ZergVilgoleth										= 378,
         ZergSasyrvoleth										= 407,
         ZergSkryrokor										= 503,
+        ZergMalkothrokor                                    = 548,
 
     // Zerg-Unit-Factional
         ZergNathrelisk										= 402,
@@ -551,7 +552,7 @@ namespace UnitId {
         ZergGathtelosk										= 133,	// Was Hive, morphed from Hachirosk
         ZergNydusCesiant									= 134,
         ZergHydrithDen										= 135,
-        ZergElthisthMound									= 136,
+        ZergRakzogthRoost									= 136,
         ZergGeszithRoost									= 137,
         ZergMatravilNest									= 138,
         ZergAlmakisAntre									= 139,

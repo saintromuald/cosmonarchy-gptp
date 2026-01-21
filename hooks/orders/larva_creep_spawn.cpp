@@ -83,14 +83,12 @@ namespace hooks {
     }
 
     void secondary_order_spread_creep_spawning_larva(Unit* unit) { // 004EA880
-        // No longer checks unit ids here because we check in the function itself,
-        // in order to prevent Cagrants regressed from Larvosks from spawning Larva. -Pr0nogo
+        // No longer checks unit ids here because we check in the function itself, in order to prevent Cagrants regressed from Larvosks from spawning Larva. -Pr0nogo
         secondary_order_spawning_larva(unit);
         if (unit->building.creep_timer != 0) {
             if (unit->building.creep_timer >= 2) {
                 unit->building.creep_timer -= 2;
-
-                const auto modifier = cm::get_building_modifier(unit, { .already_ticked = true });
+                const auto modifier = cm::get_building_modifier(unit, {.already_ticked = true});
                 if (unit->building.creep_timer > modifier.integer_step) {
                     unit->building.creep_timer -= modifier.integer_step;
                 } else {
@@ -99,7 +97,7 @@ namespace hooks {
             } else {
                 unit->building.creep_timer = 0;
             }
-        } else {
+        } else if (!unit->ext().units[UnitHiveOrgan]) {
             unit->building.creep_timer = 15;
             // look for a place to spawn creep on
             // return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
@@ -172,15 +170,15 @@ namespace hooks {
     // Return value is if the building is a creep source (spreads creep) or not
     bool get_creep_region(Box32* rect, u16 unit_id, s32 x, s32 y, bool defRetVal) {
         // Default maximum bounding count
-        const static s32 maxCreepAreaLeft = 320; // 10 tiles
-        const static s32 maxCreepAreaRight = 320; // 10 tiles
-        const static s32 maxCreepAreaUp = 200; // 6.25 tiles
-        const static s32 maxCreepAreaDown = 200; // 6.25 tiles
+        const static s32 max_cagra_left = 320; // 10 tiles
+        const static s32 max_cagra_right = 320; // 10 tiles
+        const static s32 max_cagra_up = 200; // 6.25 tiles
+        const static s32 max_cagra_down = 200; // 6.25 tiles
         if (spreads_creep(unit_id, defRetVal)) {
-            rect->left = (x - maxCreepAreaLeft) / 32;
-            rect->right = (x + maxCreepAreaRight) / 32;
-            rect->top = (y - maxCreepAreaUp) / 32;
-            rect->bottom = (y + maxCreepAreaDown) / 32;
+            rect->left = (x - max_cagra_left) / 32;
+            rect->right = (x + max_cagra_right) / 32;
+            rect->top = (y - max_cagra_up) / 32;
+            rect->bottom = (y + max_cagra_down) / 32;
             if (rect->left < 0) {
                 rect->left = 0;
             } else if (rect->right >= *helper::mapTileBufWidth) {

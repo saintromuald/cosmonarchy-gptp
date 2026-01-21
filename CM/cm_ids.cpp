@@ -415,7 +415,8 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::ProtossAshguard
         || unit_id == UnitId::ProtossDracadinOrder
         || unit_id == UnitId::ProtossManifoldStarbound
-        
+
+        || unit_id == UnitId::ZergYblyleth
         || unit_id == UnitId::ZergSovrokor
         || unit_id == UnitId::ZergGarvrokor
         || unit_id == UnitId::ZergNathrelisk
@@ -424,8 +425,7 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::ZergQuazrokor
         || unit_id == UnitId::ZergLakiziliskZorthos
         || unit_id == UnitId::ZergHydraliskOrkoti
-        || unit_id == UnitId::ZergAzanthrokor
-        || unit_id == UnitId::ZergYblyleth;
+        || unit_id == UnitId::ZergAzanthrokor;
 }
 
 bool unit_id_uses_xlarge_overlays(u16 unit_id) {
@@ -1005,6 +1005,37 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueKethrostalorLaunchPos;
             offsets.count = 5;
+            return &offsets;
+        } break;
+        case WeaponId::OgroszalethAcidBarrage: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueKalkaliskLaunchPos;
+            offsets.count = 1;
+            return &offsets;
+        } break;
+        case WeaponId::VicarOspoTwinshard: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueVicarLaunchPos;
+            offsets.count = 2;
+            return &offsets;
+        } break;
+        case WeaponId::IntendentErsaDriver: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueIntendentLaunchPos1;
+            offsets.count = 1;
+            return &offsets;
+        } break;
+        case WeaponId::IntendentAlruBurstray: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueIntendentLaunchPos2;
+            offsets.count = 3;
+            offsets.use_special_overlay = true;
+            return &offsets;
+        } break;
+        case WeaponId::HelionUskoScrapray: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueHelionLaunchPos;
+            offsets.count = 1;
             return &offsets;
         } break;
     }

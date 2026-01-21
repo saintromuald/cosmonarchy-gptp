@@ -8,12 +8,22 @@ static void special_load_unit(Unit* unit, Unit* transport) {
     if (helper::spreads_creep(unit->id, unit->is_completed())) {
         helper::update_creep_disappearance_unit(unit);
     }
+    Unit* hive_tissue = unit->ext().units[UnitHiveTissue];
+    if (hive_tissue) {
+        hive_tissue->status |= UnitStatus::InTransport;
+        helper::hide_and_disable_unit(hive_tissue);
+    }
 }
 
 static void special_unload_unit(Unit* unit, Unit* transport) {
     if (helper::spreads_creep(unit->id, unit->is_completed())) {
-        bw::spawn_custom_creep_at(unit->position, unit->id, false);
+        bw::spawn_custom_creep_at(unit->position, unit->id, false, unit->is_building());
         helper::set_secondary_order(unit, OrderId::SpreadCreep);
+    }
+    Unit* hive_tissue = unit->ext().units[UnitHiveTissue];
+    if (hive_tissue) {
+        hive_tissue->status &= ~UnitStatus::InTransport;
+        helper::show_and_enable_unit(hive_tissue);
     }
 }
 
@@ -91,7 +101,7 @@ static bool fix_unload_pos(Unit* unit, Point16* pos) {
 
 void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     s32 counter = 0;
-    UnitExt* transport_ext = get_unit_ext(transport);
+    auto& transport_ext = transport->ext();
     if (units_dat::space_provided[transport->id] != 0) {
         for (; counter < units_dat::space_provided[transport->id]; ++counter) {
             Unit* unit = get_loaded_unit_from_index(transport, counter);
@@ -135,16 +145,16 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     cargo_unit->connected_unit = transport;
 
     if (loaded_index < UNIT_ARRAY_LENGTH) {
-        transport_ext->loaded_unit[counter].index = loaded_index;
-        transport_ext->loaded_unit[counter].unique_id = cargo_unit->unique_id;
+        transport_ext.loaded_unit[counter].index = loaded_index;
+        transport_ext.loaded_unit[counter].unique_id = cargo_unit->unique_id;
     } else {
-        transport_ext->loaded_unit[counter].index = 0;
-        transport_ext->loaded_unit[counter].unique_id = 0;
+        transport_ext.loaded_unit[counter].index = 0;
+        transport_ext.loaded_unit[counter].unique_id = 0;
     }
 
     cargo_unit->status |= UnitStatus::InTransport;
     helper::hide_and_disable_unit(cargo_unit);
-    if (!(units_dat::base_property[cargo_unit->id] & UnitProperty::Building)) {
+    if (!cargo_unit->is_building()) {
         cargo_unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
     }
     special_load_unit(cargo_unit, transport);
@@ -241,7 +251,6 @@ b32 unload_unit_proc(Unit* unit) { // 004E7F70
 
     bw::decloak_passive_proc(unit);
     bw::decloak_passive_proc(transport);
-
     helper::move_unit(unit, pos.x, pos.y);
     if (unit->subunit) {
         helper::move_unit(unit->subunit, pos.x, pos.y);

@@ -378,7 +378,7 @@ namespace hooks {
 		} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 			bw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
-		} else if (units_dat::computer_ai_internal[unit->id] & 2 && !unit_id_is_zerg_egg(unit->id) && unit->id != UnitId::ZergOvileth && unit->id != UnitId::ZergYblyleth) {
+		} else if (units_dat::computer_ai_internal[unit->id] & 2 && !unit_id_is_zerg_egg(unit->id) && unit->id != UnitId::ZergOvileth) {
 			bw::printf("Military AI added to non military unit (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}

@@ -75,7 +75,7 @@ inline const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergZorkizShroud, UnitId::ZergUlgorgCavern, 1},
 	{UnitId::ZergUlgorgCavern, UnitId::ZergZozarcGorge, 1},
 	{UnitId::ZergMatravilNest, UnitId::ZergAlmakisAntre, 1},
-	{UnitId::ZergElthisthMound, UnitId::ZergRakzogthRoost, 1},
+	{UnitId::ZergRakzogthRoost, UnitId::ZergRakzogthRoost, 1},
 
 	{UnitId::ZergCagrantCesiant, UnitId::ZergSurkithCesiant, 0, true},
 	{UnitId::ZergCagrantCesiant, UnitId::ZergSpraithCesiant, 0, true},

@@ -188,7 +188,6 @@ namespace hooks {
 				} else {
 					switch (unit->id) {
 						case UnitId::ZergOvileth:
-						case UnitId::ZergYblyleth:
 						case UnitId::ZergIroleth:
 						case UnitId::ZergOthstoleth: {
 							break;
@@ -362,7 +361,7 @@ namespace hooks {
 					unit->energy = 0;
 				}
 
-				if (UnitId::is_zerg_worker(static_cast<UnitId::Enum>(unit->id)) || unit->id == UnitId::ZergOvileth && unit->id == UnitId::ZergYblyleth) {
+				if (UnitId::is_zerg_worker(static_cast<UnitId::Enum>(unit->id)) || unit->id == UnitId::ZergOvileth) {
 					helper::ai_training_unit(unit, unit);
 				}
 
@@ -404,8 +403,7 @@ namespace hooks {
 				}
 				return false;
 			} break;
-			case UnitId::ZergOvileth:
-			case UnitId::ZergYblyleth: {
+			case UnitId::ZergOvileth: {
 				if (morph_unit_id == UnitId::ZergIroleth) {
 					return true;
 				}

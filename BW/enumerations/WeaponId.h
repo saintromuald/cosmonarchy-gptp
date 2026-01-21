@@ -315,6 +315,7 @@ namespace WeaponId {
         GorgrokorSerratedCleavers			= 47,
         BactaliskCorrosiveAcid				= 50,
         SkithrokorSkitteringSpores			= 54,
+        OgroszalethAcidBarrage              = 61,
         KeskathalorScreamingVenom2			= 58,  // Keskathalor weapon 2 (doesn't spawn Caustic Discharge field)
         RililiskSwarmingSpores				= 81,
         LiiraliskHollowedSpores				= 85,

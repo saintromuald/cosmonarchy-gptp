@@ -361,8 +361,8 @@ namespace Yblyleth {
 inline constexpr s32 SpawnDelay = 2 * 24;
 }
 
-namespace Vithrilisk {
-inline constexpr s32 CorrosivePathogenRange = 4 * 32;
+namespace Malkothrokor {
+inline constexpr s32 SegmentedExpansionTimer = 15 * 24 + 1;
 }
 
 namespace Broodspawn {

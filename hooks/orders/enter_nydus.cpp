@@ -1,29 +1,30 @@
 #include "enter_nydus.h"
 #include <BW/api.h>
 
-namespace hooks
-{
-	// Necessary to assign the Enter Nydus order to units that normally can't use it
-	bool can_enter_nydus(Unit* unit, Unit* nydus) // 004E8C20
-	{
-		Unit* nydus_exit = nydus->building.nydus_exit;
-		if (!nydus_exit) {
-			return false;
-		}
-		if (!(nydus->status & UnitStatus::Completed) || !(nydus_exit->status & UnitStatus::Completed)) {
-			return false;
-		}
-		if (nydus->status & UnitStatus::InTransport || nydus_exit->status & UnitStatus::InTransport) {
-			return false;
-		}
-		if (!bw::is_allied_to(unit->player, nydus->player)) {
-			return false;
-		}
-		if ((units_dat::base_property[unit->id] & UnitProperty::Flyer)) {
-			return false;
-		}
-		return true;
-	}
+namespace hooks {
+    // Necessary to assign the Enter Nydus order to units that normally can't use it
+    bool can_enter_nydus(Unit* unit, Unit* nydus) { // 004E8C20
+        Unit* nydus_exit = nydus->building.nydus_exit;
+        if (!nydus_exit) {
+            return false;
+        }
+        if (!nydus->is_completed() || !nydus_exit->is_completed()) {
+            return false;
+        }
+        if (nydus->is_in_transport() || nydus_exit->is_in_transport()) {
+            return false;
+        }
+        if (!bw::is_allied_to(unit->player, nydus->player)) {
+            return false;
+        }
+        if (unit->is_in_air() || unit->is_flyer()) {
+            return nydus->id == UnitId::ProtossWarpGateTheFall;
+        }
+        if (unit->ext().units[UnitHiveTissue] == nydus) {
+            return false;
+        }
+        return true;
+    }
 
 	// Perform the Nydus Cesiant teleport effect on an unit that validated the conditions within the orders_enter_nydus function
 	void enter_nydus_effect(Unit* unit, Unit* nydus) { // 004EA180

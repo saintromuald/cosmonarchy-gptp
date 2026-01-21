@@ -86,6 +86,10 @@ namespace hooks
 			if (unit->subunit && unit->subunit->is_subunit()) {
 				give_unit(unit->subunit, player, count_as_completed);
 			}
+			Unit* hive_tissue = unit->ext().units[UnitHiveTissue];
+			if (hive_tissue) {
+				give_unit(hive_tissue, player, count_as_completed);
+			}
 
 			helper::apply_speed_upgrade_from_unit_type(unit);
 

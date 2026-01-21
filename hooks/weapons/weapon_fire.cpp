@@ -581,7 +581,7 @@ namespace hooks {
                 }
             }
 
-            if (unit_ext.unit_vectors[UnitVectorKazitriths].size()) {
+            if (unit_ext.unit_vectors[UnitVectorAdaptiveAmitosis].size()) {
                 fire_amitosis_weapon(unit, weapon_id);
             }
             if (!unit_id_has_custom_weapon_handling(unit->id)) {

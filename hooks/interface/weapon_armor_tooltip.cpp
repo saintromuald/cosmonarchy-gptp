@@ -300,12 +300,11 @@ namespace hooks {
 	}
 
 	s32 get_bonus_armor(Unit* unit, u8 base_armor) {
-		UnitExt* unit_ext = get_unit_ext(unit);
 		s32 bonus_armor = hooks::get_armor_internal(unit);
 		if (bonus_armor < 0) {
 			bonus_armor = 0;
 		}
-		if (!unit_ext->values[ValueTriggerArmorBaseSet]) {
+		if (!unit->ext().values[ValueTriggerArmorBaseSet]) {
 			bonus_armor -= base_armor;
 		}
 		return bonus_armor;
@@ -390,59 +389,63 @@ namespace hooks {
 		}
 
 		// GPTP Timer
-		add_status(statuses, "Controlled Demolition", -1, 1, unit_ext->timers[TimerControlledDemolition], TimerType::Gptp);
-		add_status(statuses, "Emergency Detonation", -1, 1, unit_ext->timers[TimerEmergencyDetonation], TimerType::Gptp);
-		add_status(statuses, "Ion Field", -1, 1, unit_ext->timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
-		add_status(statuses, "Incinerating", -1, 1, unit_ext->timers[TimerIncinerateDamage], TimerType::Gptp);
-		add_status(statuses, "Lobotomized", -1, 1, unit_ext->timers[TimerLobotomySlow], TimerType::Gptp);
-		add_status(statuses, "Kelvin Munitions", -1, 1, unit_ext->timers[TimerKelvinMunitions], TimerType::Gptp);
-		add_status(statuses, "Hallucinating", -1, 1, unit_ext->timers[TimerHallucinating], TimerType::Gptp);
-		add_status(statuses, "Triumphant Rise", -1, 1, unit_ext->timers[TimerTriumphantRiseDebuff], TimerType::Gptp);
-		add_status(statuses, "Maelstrom", -1, 1, unit_ext->timers[TimerMindTyrantMaelstromSlow], TimerType::Gptp);
-		add_status(statuses, "Autovitality", -1, 1, unit_ext->timers[TimerAutovitalityClone], TimerType::Gptp);
-		add_status(statuses, "Terminal Surge", -1, 1, unit_ext->timers[TimerTerminalSurge], TimerType::Gptp);
-		add_status(statuses, "Crisis of Faith", -1, 1, unit_ext->timers[TimerDemiurgeWorship], TimerType::Gptp);
-		add_status(statuses, "Stellar Enforcement", -1, 1, unit_ext->timers[TimerStellarEnforcement], TimerType::Gptp);
-		add_status(statuses, "Adrenal Frenzy", -1, 1, unit_ext->timers[TimerZergAdrenalFrenzy], TimerType::Gptp);
-		add_status(statuses, "Caustic Discharge", -1, 1, unit_ext->timers[TimerCausticDischargeSpeed], TimerType::Gptp);
-		add_status(statuses, "Incubating", -1, 1, unit_ext->timers[TimerIncubationArm], TimerType::Gptp);
-		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext->timers[TimerKaiserRampage], TimerType::Gptp);
-		add_status(statuses, "Blinded", -1, 1, unit_ext->timers[TimerAuralAssaultBlind], TimerType::Gptp);
-		add_status(statuses, "Swarming Omen", -1, 1, unit_ext->timers[TimerSwarmingOmenDebuff], TimerType::Gptp);
-		add_status(statuses, "Mitosal Fog", -1, 1, unit_ext->timers[TimerNathreliskMitosalFog], TimerType::Gptp);
-		add_status(statuses, "Awaiting Injection", -1, 1, unit_ext->timers[TimerStimpackDelay], TimerType::Gptp);
-		add_status(statuses, "Vengeance", -1, 1, unit_ext->timers[TimerAvenge], TimerType::Gptp);
-		add_status(statuses, "Ascension", -1, 1, unit_ext->timers[TimerAscend], TimerType::Gptp);
-		add_status(statuses, "Nanoshielded", -1, 1, unit_ext->timers[TimerClericHeal], TimerType::Gptp);
-		add_status(statuses, "Casting Prying Eyes", -1, 1, unit_ext->timers[TimerFacadePryingEyesChannel], TimerType::Gptp);
-		add_status(statuses, "Corrosive Touch", -1, 1, unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
-		add_status(statuses, "Hidebreaker", -1, 1, unit_ext->timers[TimerHidebreaker], TimerType::Gptp);
+		add_status(statuses, "Controlled Demolition", -1, 1, unit_ext.timers[TimerControlledDemolition], TimerType::Gptp);
+		add_status(statuses, "Emergency Detonation", -1, 1, unit_ext.timers[TimerEmergencyDetonation], TimerType::Gptp);
+		add_status(statuses, "Ion Field", -1, 1, unit_ext.timers[TimerIonFieldAttackSpeed], TimerType::Gptp);
+		add_status(statuses, "Incinerating", -1, 1, unit_ext.timers[TimerIncinerateDamage], TimerType::Gptp);
+		add_status(statuses, "Lobotomized", -1, 1, unit_ext.timers[TimerLobotomySlow], TimerType::Gptp);
+		add_status(statuses, "Kelvin Munitions", -1, 1, unit_ext.timers[TimerKelvinMunitions], TimerType::Gptp);
+		add_status(statuses, "Hallucinating", -1, 1, unit_ext.timers[TimerHallucinating], TimerType::Gptp);
+		add_status(statuses, "Triumphant Rise", -1, 1, unit_ext.timers[TimerTriumphantRiseDebuff], TimerType::Gptp);
+		add_status(statuses, "Maelstrom", -1, 1, unit_ext.timers[TimerMindTyrantMaelstromSlow], TimerType::Gptp);
+		add_status(statuses, "Autovitality", -1, 1, unit_ext.timers[TimerAutovitalityClone], TimerType::Gptp);
+		add_status(statuses, "Terminal Surge", -1, 1, unit_ext.timers[TimerTerminalSurge], TimerType::Gptp);
+		add_status(statuses, "Crisis of Faith", -1, 1, unit_ext.timers[TimerDemiurgeWorship], TimerType::Gptp);
+		add_status(statuses, "Stellar Enforcement", -1, 1, unit_ext.timers[TimerStellarEnforcement], TimerType::Gptp);
+		add_status(statuses, "Adrenal Frenzy", -1, 1, unit_ext.timers[TimerZergAdrenalFrenzy], TimerType::Gptp);
+		add_status(statuses, "Caustic Discharge", -1, 1, unit_ext.timers[TimerCausticDischargeSpeed], TimerType::Gptp);
+		add_status(statuses, "Incubating", -1, 1, unit_ext.timers[TimerIncubationArm], TimerType::Gptp);
+		add_status(statuses, "Kaiser Rampage", -1, 1, unit_ext.timers[TimerKaiserRampage], TimerType::Gptp);
+		add_status(statuses, "Blinded", -1, 1, unit_ext.timers[TimerAuralAssaultBlind], TimerType::Gptp);
+		add_status(statuses, "Swarming Omen", -1, 1, unit_ext.timers[TimerSwarmingOmenDebuff], TimerType::Gptp);
+		add_status(statuses, "Mitosal Fog", -1, 1, unit_ext.timers[TimerNathreliskMitosalFog], TimerType::Gptp);
+		add_status(statuses, "Awaiting Injection", -1, 1, unit_ext.timers[TimerStimpackDelay], TimerType::Gptp);
+		add_status(statuses, "Vengeance", -1, 1, unit_ext.timers[TimerAvenge], TimerType::Gptp);
+		add_status(statuses, "Ascension", -1, 1, unit_ext.timers[TimerAscend], TimerType::Gptp);
+		add_status(statuses, "Nanoshielded", -1, 1, unit_ext.timers[TimerClericHeal], TimerType::Gptp);
+		add_status(statuses, "Casting Prying Eyes", -1, 1, unit_ext.timers[TimerFacadePryingEyesChannel], TimerType::Gptp);
+		add_status(statuses, "Corrosive Touch", -1, 1, unit_ext.timers[TimerCorrosiveTouch], TimerType::Gptp);
+		add_status(statuses, "Hidebreaker", -1, 1, unit_ext.timers[TimerHidebreaker], TimerType::Gptp);
+		add_status(statuses, "Booming Blast", -1, 1, unit_ext.timers[TimerBoomingBlast], TimerType::Gptp);
+		add_status(statuses, "Segmented Expansion", -1, 1, unit_ext.timers[TimerSegmentedExpansion], TimerType::Gptp);
 
 		// GPTP Value
-		add_status(statuses, "Ensnaring Brood", unit_ext->timers[TimerEnsnaringBrood], 1);
-		add_status(statuses, "Cabeirus Feeders", ceil((f32)unit_ext->values[ValueMadcapStacks] / TerranMadcap::PassiveDecayTime), 10);
-		add_status(statuses, "Sublime Shepherd", unit_ext->values[ValueHasSublimeShepherd], 1);
-		add_status(statuses, "Stonewall Protocol", unit_ext->values[ValueCuirassIsSelfReviving], 0);
-		add_status(statuses, "Reconstitution", unit_ext->values[ValueReconstitution], 1);
-		add_status(statuses, "Controlled Opposition", unit_ext->values[ValueAutocratControlledOppositionStacks], 0);
-		add_status(statuses, "Energy Decay", unit_ext->values[ValueEntropyGauntlets], 0);
-		add_status(statuses, "Khaydarin Charge", unit_ext->unit_vectors[UnitVectorCrucibles].size() != 0, 0);
-		add_status(statuses, "Reclaimed", unit_ext->values[ValueReclaimed], 1);
-		add_status(statuses, "Repentant Chorus", unit_ext->unit_vectors[UnitVectorBarghests].size(), 0);
-		add_status(statuses, "Concurring Chorus", unit_ext->unit_vectors[UnitVectorManifolds].size(), 0);
-		add_status(statuses, "Adaptive Amitosis", unit_ext->unit_vectors[UnitVectorKazitriths].size() != 0, 0);
-		add_status(statuses, "Lucilleri Pheremones", unit_ext->timers[TimerLucilleriPheremones], 1);
-		add_status(statuses, "Solitary Focus", unit_ext->unar_solitary_focus_stacks, 4);
-		add_status(statuses, "Malefactor", unit_ext->values[ValueIsMalefactor] != 0, 1);
-		add_status(statuses, "Prying Eyes", unit_ext->timers[TimerFacadePryingEyesCloak], 1);
+		add_status(statuses, "Ensnaring Brood", unit_ext.timers[TimerEnsnaringBrood], 1);
+		add_status(statuses, "Cabeirus Feeders", ceil((f32)unit_ext.values[ValueMadcapStacks] / TerranMadcap::PassiveDecayTime), 10);
+		add_status(statuses, "Sublime Shepherd", unit_ext.values[ValueHasSublimeShepherd], 1);
+		add_status(statuses, "Stonewall Protocol", unit_ext.values[ValueCuirassIsSelfReviving], 0);
+		add_status(statuses, "Reconstitution", unit_ext.values[ValueReconstitution], 1);
+		add_status(statuses, "Controlled Opposition", unit_ext.values[ValueAutocratControlledOppositionStacks], 0);
+		add_status(statuses, "Energy Decay", unit_ext.values[ValueEntropyGauntlets], 0);
+		add_status(statuses, "Khaydarin Charge", unit_ext.unit_vectors[UnitVectorCrucibles].size() != 0, 0);
+		add_status(statuses, "Reclaimed", unit_ext.values[ValueReclaimed], 1);
+		add_status(statuses, "Repentant Chorus", unit_ext.unit_vectors[UnitVectorBarghests].size(), 0);
+		add_status(statuses, "Concurring Chorus", unit_ext.unit_vectors[UnitVectorManifolds].size(), 0);
+		add_status(statuses, "Adaptive Amitosis", unit_ext.unit_vectors[UnitVectorAdaptiveAmitosis].size() != 0, 0);
+		add_status(statuses, "Lucilleri Pheremones", unit_ext.timers[TimerLucilleriPheremones], 1);
+		add_status(statuses, "Solitary Focus", unit_ext.unar_solitary_focus_stacks, 4);
+		add_status(statuses, "Malefactor", unit_ext.values[ValueIsMalefactor] != 0, 1);
+		add_status(statuses, "Prying Eyes", unit_ext.timers[TimerFacadePryingEyesCloak], 1);
+		add_status(statuses, "Embedded", unit_ext.values[ValueReassemblyActive], 1);
+		add_status(statuses, "Segmented Expansion", unit_ext.values[ValueSegmentedExpansionStacks], 10);
 
-		add_status(statuses, "Decided Armor", unit_ext->values[ValueTriggerArmorBaseAmount]);
-		add_status(statuses, "Decided Reach", unit_ext->values[ValueTriggerWeaponRangeBaseAmount] / 32);
-		add_status(statuses, "Decided Piercing", unit_ext->values[ValueTriggerArmorPenBaseAmount]);
-		add_status(statuses, "Decided Damage", unit_ext->values[ValueTriggerDamageBaseAmount] / 256);
-		add_status(statuses, "Decided Collateral (Inner)", unit_ext->values[ValueTriggerWeaponSplashInnerAmount] / 32);
-		add_status(statuses, "Decided Collateral (Medium)", unit_ext->values[ValueTriggerWeaponSplashMediumAmount] / 32);
-		add_status(statuses, "Decided Collateral (Outer)", unit_ext->values[ValueTriggerWeaponSplashOuterAmount] / 32);
+		add_status(statuses, "Decided Armor", unit_ext.values[ValueTriggerArmorBaseAmount]);
+		add_status(statuses, "Decided Reach", unit_ext.values[ValueTriggerWeaponRangeBaseAmount] / 32);
+		add_status(statuses, "Decided Piercing", unit_ext.values[ValueTriggerArmorPenBaseAmount]);
+		add_status(statuses, "Decided Damage", unit_ext.values[ValueTriggerDamageBaseAmount] / 256);
+		add_status(statuses, "Decided Collateral (Inner)", unit_ext.values[ValueTriggerWeaponSplashInnerAmount] / 32);
+		add_status(statuses, "Decided Collateral (Medium)", unit_ext.values[ValueTriggerWeaponSplashMediumAmount] / 32);
+		add_status(statuses, "Decided Collateral (Outer)", unit_ext.values[ValueTriggerWeaponSplashOuterAmount] / 32);
 
 		// GPTP Value - Gimmicked
 		add_status(statuses, "Power Siphon", unit->id == UnitId::TerranSavantPowerSiphon, 1);

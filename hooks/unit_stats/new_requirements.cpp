@@ -793,6 +793,17 @@ namespace hooks {
                     return true;
                 } break;
                 case UnitId::ZergAgrileth: {
+                    if (faction == Faction::ZergZorthosTendril) {
+                        return false;
+                    }
+                    if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_gestated_unit_id(player_id, UnitId::ZergVornathPond) || player_has_base_unit_id(player_id, UnitId::ZergQuazethPool)) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ZergYblyleth: {
+                    if (faction != Faction::ZergZorthosTendril) {
+                        return false;
+                    }
                     if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_gestated_unit_id(player_id, UnitId::ZergVornathPond) || player_has_base_unit_id(player_id, UnitId::ZergQuazethPool)) {
                         return true;
                     }
@@ -802,12 +813,8 @@ namespace hooks {
                         return true;
                     }
                 } break;
-                case UnitId::ZergYblyleth: {
-                    if (faction == Faction::ZergZorthosTendril) {
-                        return true;
-                    }
-                } break;
-                case UnitId::ZergOthstoleth: {
+                case UnitId::ZergOthstoleth:
+                case UnitId::ZergMalkothrokor: {
                     if (TierUnlocked[RaceId::Zerg][Tier3]) {
                         return true;
                     }
@@ -945,6 +952,12 @@ namespace hooks {
                         return true;
                     }
                 } break;
+                case UnitId::ZergRakzilisk:
+                case UnitId::ZergOgroszaleth: {
+                    if (player_has_base_unit_id(player_id, UnitId::ZergRakzogthRoost)) {
+                        return true;
+                    }
+                } break;
             }
         }
 
@@ -956,8 +969,7 @@ namespace hooks {
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
-        ||  player_has_completed_unit_id(player_id, UnitId::ZergOvileth) || player_has_completed_unit_id(player_id, UnitId::ZergYblyleth)) {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva) || player_has_completed_unit_id(player_id, UnitId::ZergOvileth)) {
             if (unit_id == UnitId::ZergIroleth) {
                 if (TierUnlocked[RaceId::Zerg][Tier2]) {
                     return true;
@@ -1147,7 +1159,7 @@ namespace hooks {
                 } break;
                 case UnitId::ZergAxtothAxis:
                 case UnitId::ZergGeszkathGrotto:
-                case UnitId::ZergElthisthMound: {
+                case UnitId::ZergRakzogthRoost: {
                     if (TierUnlocked[RaceId::Zerg][Tier3]) {
                         return true;
                     }
@@ -2449,6 +2461,18 @@ namespace hooks {
                         return TECH_ACTIVE;
                     }
                     case UnitId::ZergAgrileth: {
+                        if (faction == Faction::ZergZorthosTendril) {
+                            return TECH_HIDDEN;
+                        }
+                        if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_gestated_unit_id(player_id, UnitId::ZergVornathPond) || player_has_base_unit_id(player_id, UnitId::ZergQuazethPool)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                    case UnitId::ZergYblyleth: {
+                        if (faction != Faction::ZergZorthosTendril) {
+                            return TECH_HIDDEN;
+                        }
                         if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_gestated_unit_id(player_id, UnitId::ZergVornathPond) || player_has_base_unit_id(player_id, UnitId::ZergQuazethPool)) {
                             return TECH_ACTIVE;
                         }
@@ -2458,13 +2482,9 @@ namespace hooks {
                         if (faction != Faction::ZergZorthosTendril) {
                             return TECH_ACTIVE;
                         }
-                    } 
-                    case UnitId::ZergYblyleth: {
-                        if (faction == Faction::ZergZorthosTendril) {
-                            return TECH_ACTIVE;
-                        }
-                    } 
-                    case UnitId::ZergOthstoleth: {
+                    }
+                    case UnitId::ZergOthstoleth:
+                    case UnitId::ZergMalkothrokor: {
                         if (TierUnlocked[RaceId::Zerg][Tier3]) {
                             return TECH_ACTIVE;
                         }
@@ -2626,13 +2646,19 @@ namespace hooks {
                         }
                         return TECH_LOCKED;
                     }
+                    case UnitId::ZergRakzilisk:
+                    case UnitId::ZergOgroszaleth: {
+                        if (player_has_base_unit_id(player_id, UnitId::ZergRakzogthRoost)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
                 }
                 return TECH_HIDDEN;
             }
             
             // Morphs
-            case UnitId::ZergOvileth:
-            case UnitId::ZergYblyleth: {
+            case UnitId::ZergOvileth: {
                 if (unit_id == UnitId::ZergIroleth) {
                     if (unit->is_burrowed()) {
                         return TECH_HIDDEN;
@@ -3016,7 +3042,7 @@ namespace hooks {
                     }
                     case UnitId::ZergAxtothAxis:
                     case UnitId::ZergGeszkathGrotto:
-                    case UnitId::ZergElthisthMound: {
+                    case UnitId::ZergRakzogthRoost: {
                         if (TierUnlocked[RaceId::Zerg][Tier3]) {
                             return TECH_ACTIVE;
                         }
