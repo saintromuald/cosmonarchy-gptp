@@ -1907,7 +1907,7 @@ void ask_for_ai_help(Unit* victim, Unit* attacker) {
     }
 }
 
-void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep) {
+void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep, bool is_building) {
     u32 w = units_dat::building_dimensions[unit_id].x / 32;
     u32 h = units_dat::building_dimensions[unit_id].y / 32;
     u32 x = pos.x / 32 - w / 2;
@@ -1919,11 +1919,13 @@ void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep) {
     } else {
         helper::set_creep(x, y, w, h, false);
     }
-    helper::set_map_tile_flags(0x8000000, x, y, w, h);
+    if (is_building) {
+        helper::set_map_tile_flags(0x8000000, x, y, w, h);
+    }
 }
 
 void spawn_custom_creep(Unit* unit) {
-    spawn_custom_creep_at(unit->position, unit->id, units_dat::group_flags[unit->id].is_factory);
+    spawn_custom_creep_at(unit->position, unit->id, units_dat::group_flags[unit->id].is_factory, unit->is_building());
 }
 
 static void stop_custom_creep_disappearing(Unit* unit) {
@@ -2100,7 +2102,7 @@ u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, b
         case UnitId::ZergGeszkathGrotto:
         case UnitId::ZergZorkizShroud:
         case UnitId::ZergMatravilNest:
-        case UnitId::ZergElthisthMound: {
+        case UnitId::ZergRakzogthRoost: {
             if (completed) {
                 if (from_agrileth) {
                     return UnitId::None;

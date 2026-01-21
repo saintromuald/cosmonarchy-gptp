@@ -137,6 +137,8 @@ namespace RustId {
 
         DisruptionWebDamage,
         DirgeAttacker,
+
+        MalkothrokorHiveTissue,
     };
 }
 
@@ -263,9 +265,10 @@ struct UnitLayout {
     /*0x074*/ Order*	order_queue_head;
     /*0x078*/ Order*	order_queue_tail;
     /*0x07C*/ Unit*		auto_target_unit;				// The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
-    /*0x080*/ Unit*		connected_unit;					// larva store a reference to the structure who created it
-                                                        // units inside transports store a reference to the transport
-                                                        // addons store a reference to its parent building (but not the other way around)
+    /*0x080*/ Unit*		connected_unit;					// Larva store a reference to the structure who created it
+                                                        // Units inside transports store a reference to the transport
+                                                        // Addons store a reference to its parent building (but not the other way around)
+                                                        // Incomplete Terran-style constructions store a reference to the primary builder
     /*0x084*/ u8        order_queue_count;
     /*0x085*/ u8        order_queue_timer;				// Cycles down from from 8 to 0 (inclusive). See also 0x122.
     /*0x086*/ u8        unused_86;

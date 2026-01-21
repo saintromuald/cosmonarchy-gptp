@@ -293,12 +293,12 @@ namespace hooks {
 				u32 factor = bw::get_regeneration_factor(unit);
 				if (unit_ext.damage_taken_timer > 2 * 24) {
 					factor++;
+					if (unit->is_burrowed()) {
+						factor++;
+					}
 				}
 
 				s32 regen = 11 * factor; // 1 HP per second, before factor.
-				if (unit->is_burrowed()) {
-					regen *= 2;
-				}
 				if (unit->id == UnitId::TerranEidolonNydus && unit->is_cloaked) {
 					regen *= 1.33;
 				}
@@ -893,14 +893,14 @@ namespace hooks {
 			first_player_unit->unit[player] = unit;
 			helper::increment_unit_scores(unit, 1);
 
-			if (unit->status & UnitStatus::GroundedBuilding) {
+			bool is_hive_tissue = unit->ext().units[UnitHiveOrgan] != nullptr;
+			if (unit->is_grounded_building()) {
 				helper::update_unit_order_finder(unit);
-				if (unit->status & UnitStatus::GroundedBuilding) {
+				if (!is_hive_tissue) {
 					helper::set_building_tile_flag(unit, unit->sprite->position.x, unit->sprite->position.y);
 				}
 				helper::check_unstack(unit);
-				if (unit->status & UnitStatus::InAir)
-				{
+				if (unit->is_in_air()) {
 					helper::set_repulse_angle(unit);
 				}
 				helper::unit_completion_init(unit, 1);
@@ -921,7 +921,7 @@ namespace hooks {
 				unit->sprite->flags |= SpriteFlags::RemoveAfterDeath;
 				return true;
 			} else {
-				if (!(unit->sprite->flags & SpriteFlags::Hidden)) {
+				if (!unit->sprite->is_hidden()) {
 					helper::refresh_unit_vision(unit);
 				}
 				return true;

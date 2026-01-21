@@ -74,6 +74,17 @@ namespace hooks {
 			return false;
 		}
 
+		if (unit_id == UnitId::ZergMalkothrokor || collider_id == UnitId::ZergMalkothrokor) {
+			auto& unit_ext = unit->ext();
+			auto& collider_ext = colliding_unit->ext();
+			if (unit_ext.units[UnitHiveOrgan] == colliding_unit || unit_ext.units[UnitHiveTissue] == colliding_unit) {
+				return false;
+			}
+			if (collider_ext.units[UnitHiveTissue] == unit || collider_ext.units[UnitHiveOrgan] == unit) {
+				return false;
+			}
+		}
+
 		if (!(unit->status & UnitStatus::IsGathering) || collider_status & UnitStatus::GroundedBuilding) {
 			return true;
 		}
@@ -220,7 +231,7 @@ namespace hooks {
 		}
 
 		helper::check_unstack(unit);
-		if (unit->status & UnitStatus::InAir) {
+		if (unit->is_in_air()) {
 			helper::set_repulse_angle(unit);
 		}
 		helper::toggle_unit_path(unit);

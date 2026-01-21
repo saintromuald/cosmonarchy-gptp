@@ -36,24 +36,24 @@ namespace hooks {
 
 	s32 get_armor_internal(Unit* unit) {
 		s32 armor = units_dat::armor_amount[unit->id] + get_armor_bonus(unit);
-		UnitExt* unit_ext = get_unit_ext(unit);
+		auto& unit_ext = unit->ext();
 
 		// Override base armor
-		if (unit_ext->values[ValueTriggerArmorBaseSet]) {
-			armor = unit_ext->values[ValueTriggerArmorBaseAmount];
+		if (unit_ext.values[ValueTriggerArmorBaseSet]) {
+			armor = unit_ext.values[ValueTriggerArmorBaseAmount];
 		}
 
 		// Armor rends
-		armor -= unit_ext->values[ValueApollyoidAdhesiveStacks];
-		armor -= unit_ext->values[ValueAutocratControlledOppositionStacks];
-		armor -= unit_ext->values[ValueObservanceRend];
-		armor -= unit_ext->values[ValueVorvalHidebreaker];
-		armor -= unit_ext->values[ValueGarvrolHidebreaker];
-		armor -= unit_ext->values[ValueNathrokHidebreaker];
-		armor -= unit_ext->timers[TimerCorrosiveTouch] > 1;
-		armor -= unit_ext->values[ValueWendigoShatteredWindsStacks];
-		armor -= unit_ext->timers[TimerDiscordantChorus] > 1;
-		armor -= unit_ext->timers[TimerIncinerateArmor] > 1;
+		armor -= unit_ext.values[ValueApollyoidAdhesiveStacks];
+		armor -= unit_ext.values[ValueAutocratControlledOppositionStacks];
+		armor -= unit_ext.values[ValueObservanceRend];
+		armor -= unit_ext.values[ValueVorvalHidebreaker];
+		armor -= unit_ext.values[ValueGarvrolHidebreaker];
+		armor -= unit_ext.values[ValueNathrokHidebreaker];
+		armor -= unit_ext.timers[TimerCorrosiveTouch] > 1;
+		armor -= unit_ext.values[ValueWendigoShatteredWindsStacks];
+		armor -= unit_ext.timers[TimerDiscordantChorus] > 1;
+		armor -= unit_ext.timers[TimerIncinerateArmor] > 1;
 
 		if (armor < 0) {
 			armor = 0;

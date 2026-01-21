@@ -1752,7 +1752,6 @@ namespace hooks {
                                         case UnitId::TerranSeraph:
                                         case UnitId::ProtossWitness:
                                         case UnitId::ZergOvileth:
-                                        case UnitId::ZergYblyleth:
                                         case UnitId::ZergIroleth: {
                                             if (helper::is_unit_loaded(unit)) {
                                                 break;

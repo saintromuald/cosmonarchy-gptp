@@ -20,20 +20,25 @@ void orders_zerg_build_self(Unit* building) {
     if (!bw::is_zerg_building_morph_result(building_id)) {
         building_id = building->id;
     }
+    bool is_hive_tissue = building_ext.units[UnitHiveOrgan] != nullptr;
 
     switch (building->main_order_state) {
         case 0: {
-            bw::prepare_building_area(building->position, building_id);
-            // Remove statuses if the source worker had them before morphing
-            building->status &= ~UnitStatus::NoCollide;
-            building->status &= ~UnitStatus::IsGathering;
-            if (helper::is_valid_building_morph(building_id) && !building_ext.values[ValueOriginatedFromGosvileth]) {
-                building->create_origin = building->id;
+            if (!is_hive_tissue) {
+                bw::prepare_building_area(building->position, building_id);
+                // Remove statuses if the source worker had them before morphing
+                building->status &= ~UnitStatus::NoCollide;
+                building->status &= ~UnitStatus::IsGathering;
+                if (helper::is_valid_building_morph(building_id) && !building_ext.values[ValueOriginatedFromGosvileth]) {
+                    building->create_origin = building->id;
+                }
+            } else {
+                building->create_origin = UnitId::None;
             }
-            ++building->main_order_state;
             if (unit_id_is_tech_tier_structure(building_id)) {
                 replay_witness_event(building, SpectatorEvent_Tech);
             }
+            ++building->main_order_state;
         } // fallthrough
         case 1: {
             if (building->remaining_build_time < 3 * units_dat::time_cost[building_id] >> 2) {
@@ -83,9 +88,14 @@ void orders_zerg_build_self(Unit* building) {
                     building->status &= ~UnitStatus::Completed;
                     helper::replace_unit_with_id(building, building_id);
 
-                    hp_after_morph += units_dat::max_hitpoints[building_id] - units_dat::max_hitpoints[building->previous_unit_type];
-                    if (hp_after_morph < 256) {
-                        hp_after_morph = 256;
+                    if (!is_hive_tissue) {
+                        hp_after_morph += units_dat::max_hitpoints[building_id] - units_dat::max_hitpoints[building->previous_unit_type];
+                        if (hp_after_morph < 256) {
+                            hp_after_morph = 256;
+                        }
+                    } else {
+                        building_ext.values[ValueRegressionUnstable] = true;
+                        hp_after_morph = building->get_max_hp_raw();
                     }
                     building->set_hitpoints(hp_after_morph);
                     building->remaining_build_time = 0;
@@ -115,7 +125,13 @@ void orders_zerg_build_self(Unit* building) {
                     image->play_iscript_animation(IscriptAnimation::AlmostBuilt);
                 }
                 bw::play_sound((SoundId::Enum)units_dat::sound_what_first[building->id], building);
-                helper::update_new_unit_vision(building_id, building->sprite->position.x, building->sprite->position.y);
+
+                if (is_hive_tissue) {
+                    building->sprite->elevation = building_ext.units[UnitHiveOrgan]->sprite->elevation + 1;
+                    helper::clear_building_from_tile_flag(building, building->position.x, building->position.y);
+                } else {
+                    helper::update_new_unit_cagra(building_id, building->sprite->position.x, building->sprite->position.y);
+                }
             }
             return;
         } break;
@@ -375,7 +391,7 @@ Unit* begin_gas_building(Unit* unit, u16 unit_id) { // 004678A0
         target_ext.values[ValueOriginatedFromGosvileth] = true;
     }
     helper::replace_unit_with_id(target, unit_id);
-    if (!target->is_frozen() || units_dat::base_property[target->id] & UnitProperty::Building) {
+    if (!target->is_frozen() || target->is_building()) {
         target->current_buttonset = UnitId::Buttons_CancelConstruction;
     }
     if (target->get_race() == RaceId::Zerg) {

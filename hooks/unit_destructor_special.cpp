@@ -567,7 +567,7 @@ s32 remove_subunit_or_gas_container(Unit* unit) { // 004A0080
 
 // Hooked to troubleshoot a Map Revealer crash. -Pr0nogo
 void unit_die(Unit* unit) { // 004A0740
-    if (units_dat::base_property[(unsigned __int16)unit->id] & UnitProperty::Building) {
+    if (unit->is_building()) {
         *g_ignore_unit_flag80_clear_subcount = 1;
     }
     helper::unit_destructor_special_cases(unit);
@@ -597,7 +597,7 @@ void unit_die(Unit* unit) { // 004A0740
         if (sprite && !(sprite->flags & SpriteFlags::Hidden)) {
             helper::end_collision_tracking(unit);
         }
-        if (!(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+        if (!unit->is_building()) {
             unit->is_cloaked = 0;
             helper::is_unit_cloaking(unit);
             if (unit->status & UnitStatus::RequiresDetection) {
@@ -634,11 +634,11 @@ void unit_die(Unit* unit) { // 004A0740
             helper::remove_selection_circle(sprite);
         }
         helper::increment_unit_scores(unit, -1);
-        if (unit->status & UnitStatus::Completed) {
+        if (unit->is_completed()) {
             helper::increment_unit_scores_ex(unit, -1, 0);
         }
         if (!g_is_in_replay && unit->player == g_local_nation_id && g_is_placing_building
-            && !helper::CMDRECV_place_building_allowed(*g_active_portrait_unit, *g_place_building_order_id, g_place_building_unit_id))
+        &&  !helper::CMDRECV_place_building_allowed(*g_active_portrait_unit, *g_place_building_order_id, g_place_building_unit_id))
         {
             helper::refresh_layers_3_and_4();
             helper::end_building_placement();

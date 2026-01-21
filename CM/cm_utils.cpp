@@ -548,6 +548,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::ZergZorthosTendril: {
             switch (unit_id) {
+                case UnitId::ZergAgrileth:   return UnitId::ZergYblyleth;
                 case UnitId::ZergNathrokor:  return UnitId::ZergNathrelisk;
                 case UnitId::ZergIzirokor:   return UnitId::ZergIziralisk;
             //  case UnitId::ZergLakizilisk: return UnitId::ZergLakiziliskZorthos;
@@ -604,12 +605,6 @@ u32 get_banter_cooldown(UnitId::Enum unit_id) {
 
 UnitId::Enum get_factional_regression(UnitId::Enum unit_id, Faction faction) {
     switch (unit_id) {
-        case UnitId::ZergIroleth: {
-            switch (faction) {
-                case Faction::ZergZorthosTendril: return UnitId::ZergYblyleth;
-            }
-            return UnitId::ZergOvileth;
-        } break;
         case UnitId::ZergLiiralisk: {
             switch (faction) {
                 case Faction::ZergImicrenTendril: return UnitId::ZergQuazrokor;
@@ -787,7 +782,7 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case WeaponId::KeskathalorScreamingVenom2:          return "Screaming Venom";
         case WeaponId::CarapaceSwarm:                       return "Carapace Swarm";
         case WeaponId::Plague:                              return "Plague";
-        case WeaponId::Consume:                             return "Consume";
+        case WeaponId::OgroszalethAcidBarrage:              return "Acid Barrage";
         case WeaponId::ScribeParticleBeam:                  return "Particle Beam";
         case WeaponId::ScribeParticleBeamHarvest:           return "Particle Beam";
         case WeaponId::ZealotPhaseBlades:                   return "Phase Blades";
@@ -977,7 +972,7 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case WeaponId::AckmedMickenMelter:                  return "Micken Melter";
         case WeaponId::GoskaMedusaRifle:                    return "Medusa Rifle";
         case WeaponId::SovrokorSovrolClaws:                 return "Sovrol Claws";
-        case WeaponId::StroluumMagnatesMaw:                 return "Magnate's Maw";
+        case WeaponId::StroluumMagnatesMaw:                 return unit_id == UnitId::Stroluum ? "Magnate's Maw" : "Tunneling Maw";
         case WeaponId::ValkyrieHecatonLogiRockets:          return "Logi Rockets";
         case WeaponId::KerriganC10CanisterRifle:            return "C-10 Canister Rifle";
         case WeaponId::KerriganClaws:                       return "Claws";

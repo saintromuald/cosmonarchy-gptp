@@ -303,7 +303,7 @@ namespace hooks {
 			}
 			return order_id;
 		}
-		if (unit->status & UnitStatus::GroundedBuilding) {
+		if (unit->is_grounded_building()) {
 			return OrderId::Nothing2;
 		}
 
@@ -317,7 +317,7 @@ namespace hooks {
 		if (helper::unit_is_active_transport(target_unit) && helper::can_enter_transport(target_unit, unit)) {
 			return OrderId::EnterTransport;
 		}
-		if (target_unit->status & UnitStatus::Burrowed) {
+		if (target_unit->is_burrowed()) {
 			return OrderId::Move;
 		}
 		// Previously had Matraleth infest code
@@ -594,11 +594,11 @@ namespace hooks {
 
 	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
 	void drone_build_execute(Unit* unit) { // 0045D2E0
-		if (unit->get_race() == RaceId::Zerg) {
+		bool is_hive_tissue = unit->ext().units[UnitHiveOrgan] != nullptr;
+		if (unit->get_race() == RaceId::Zerg && !is_hive_tissue) {
 			helper::stop_creep_disappearing_at_building(unit);
 		}
-		u32 unit_status = unit->status;
-		if (!unit->is_frozen() || units_dat::base_property[unit->id] & UnitProperty::Building) {
+		if (!unit->is_frozen() || unit->is_building()) {
 			if (unit_can_have_rally(unit)) {
 				unit->current_buttonset = UnitId::Buttons_CancelMutationWithRallyPt;
 			} else {
@@ -607,10 +607,9 @@ namespace hooks {
 		}
 
 		helper::unit_completion_init(unit, 1);
-		char main_order_id = unit->main_order_id;
-		char action_flags = unit->user_action_flags | 1;
-		unit->hitpoints = units_dat::max_hitpoints[unit->id] / 10;
-		unit->user_action_flags = action_flags;
+		u8 main_order_id = unit->main_order_id;
+		unit->hitpoints = is_hive_tissue ? units_dat::max_hitpoints[unit->id] : units_dat::max_hitpoints[unit->id] / 10;
+		unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
 		if (main_order_id) {
 			while (Order* order = unit->order_queue_tail) {
 				if (!orders_dat::can_be_interrupted[order->order_id] && order->order_id != OrderId::ZergBirth) {

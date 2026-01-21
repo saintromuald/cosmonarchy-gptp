@@ -1248,7 +1248,7 @@ namespace hooks {
                     auto& cohort_ext = cohort->ext();
                     cohort_ext.values[ValueCohortServileVigor] = true;
                     cohort_ext.values[ValueNoCorpse] = false;
-                    cohort_ext.timers[TimerCohortCorpseDelay] = 24;
+                    cohort_ext.timers[TimerCorpseConsumptionDelay] = 24;
                     cohort->remove_timer = 240;
                 }
                 return true;

@@ -2546,7 +2546,7 @@ namespace helper {
         return bw::is_zerg_building_morph_result(building_id);
     }
 
-    void update_new_unit_vision(u32 id, s32 x, s32 y) {
+    void update_new_unit_cagra(u32 id, s32 x, s32 y) {
         const u32 func_address = 0x0045CE90;
         __asm {
             PUSHAD
@@ -16250,6 +16250,20 @@ namespace helper {
             MOV EAX, last_control
             CALL func_address
             MOV result, EAX
+            POPAD
+        }
+    }
+    
+    void set_fog_mask(u32 tile_flags, u32 x_tile, u32 y_tile, u32 x_final, u32 y_final) {
+        const u32 func_address = 0x00472E50;
+        __asm {
+            PUSHAD
+            PUSH y_final
+            PUSH x_final
+            MOV EDI, x_tile
+            MOV ECX, y_tile
+            MOV EAX, tile_flags
+            CALL func_address
             POPAD
         }
     }

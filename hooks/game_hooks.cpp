@@ -475,6 +475,11 @@ namespace hooks {
                     case UnitId::ZergVilgoleth: {
                         g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
                     } break;
+                    case UnitId::ZergOgroszaleth: {
+                        if (unit->is_burrowed()) {
+                            g_graphics.draw_circle(source.x, source.y, unit->get_adaptive_amitosis_range(), graphics::GREEN, graphics::ON_MAP);
+                        }
+                    } break;
                     case UnitId::ZergKazitrithCesiant: {
                         g_graphics.draw_circle(source.x, source.y, unit->get_adaptive_amitosis_range(), graphics::GREEN, graphics::ON_MAP);
                     } break;
@@ -1573,7 +1578,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::TerranCohort: {
-                if (!unit_ext.timers[TimerCohortCorpseDelay] && unit_ext.values[ValueCohortServileVigor]) {
+                if (!unit_ext.timers[TimerCorpseConsumptionDelay] && unit_ext.values[ValueCohortServileVigor]) {
                     u32 radius = 1 * 32;
                     for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
                         unit_ext.values[ValueCohortServileVigor] = 0;
@@ -1584,6 +1589,32 @@ namespace hooks {
                         unit->remove_timer = 0;
                         break;
                     }
+                }
+            } break;
+            case UnitId::ZergMalkothrokor: {
+                if (!unit_ext.timers[TimerCorpseConsumptionDelay]) {
+                    u32 radius = 1 * 32;
+                    for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
+                        bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
+                        corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+                        corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+                        unit->heal_hp(25 * 256);
+
+                        unit_ext.timers[TimerCorpseConsumptionDelay] = 24;
+                        if (!unit_ext.timers[TimerSegmentedExpansion]) {
+                            unit_ext.values[ValueSegmentedExpansionStacks]++;
+                        }
+                        break;
+                    }
+                }
+                if (unit_ext.values[ValueSegmentedExpansionStacks] >= 10) {
+                    // TODO: Audiovisuals
+                    unit_ext.values[ValueSegmentedExpansionStacks] -= 10;
+                    unit_ext.timers[TimerSegmentedExpansion] = Malkothrokor::SegmentedExpansionTimer;
+                    should_update_speed = true;
+                }
+                if (unit_ext.timers[TimerSegmentedExpansion] == 1) {
+                    bw::create_unit_from_ability(UnitId::ZergMalkothrokor, bw::get_game_kind() == GameKind::Massacre ? 2 : 1, unit->player, unit->position, unit);
                 }
             } break;
             case UnitId::TerranCannibal: {
@@ -2647,17 +2678,18 @@ namespace hooks {
                     }
                 }
             } break;
+            case UnitId::ZergOgroszaleth:
             case UnitId::ZergKazitrithCesiant: {
-                if (unit->is_completed() && !unit->is_frozen() && !unit->is_in_transport()) {
+                if (unit->can_use_passive_ability() && (unit->is_building() || unit->is_burrowed())) {
                     u32 radius = unit->get_adaptive_amitosis_range();
                     for (Unit* target : g_unit_search.radial_ex(unit, radius, FilterAlly | FilterCompleted)) {
                         if (!target->has_weapon()) {
                             continue;
                         }
                         auto& target_ext = target->ext();
-                        auto& kazitriths = target_ext.unit_vectors[UnitVectorKazitriths];
-                        if (!std::ranges::contains(kazitriths, unit)) {
-                            kazitriths.push_back(unit);
+                        auto& sources = target_ext.unit_vectors[UnitVectorAdaptiveAmitosis];
+                        if (!std::ranges::contains(sources, unit)) {
+                            sources.push_back(unit);
                         }
                         if (!target->get_overlay(ImageId::AdaptiveAmitosisOverlay)) {
                             bw::add_unit_overlay(target, ImageId::AdaptiveAmitosisOverlay);
@@ -2819,6 +2851,111 @@ namespace hooks {
                     }
                 }
             } break;
+            case UnitId::AskosiDyad: {
+                if (unit->main_order_id != OrderId::AskosiSalvage) {
+                    break;
+                }
+                Unit* target = unit->order_target.unit;
+                if (!target) {
+                    break;
+                }
+                if (unit_id_is_larva(target->id) || unit_id_is_zerg_egg(target->id) || target->player == 11) {
+                    unit->order_to_idle();
+                    break;
+                }
+                u32 range = CommonBehavior::MeleeWeaponDistance;
+                if (!helper::is_target_within_min_range(unit, range, target)) {
+                    helper::spell_order_move_towards_target(unit, range);
+                    unit_ext.values[ValueTalosAnimationTimer] = 0;
+                    break;
+                }
+
+                auto& target_ext = target->ext();
+                target_ext.timers[TimerSalvageStun] = 2 * 24 + 1;
+                u32 mineral_cost = units_dat::mineral_cost[target->id];
+                u32 vespene_cost = units_dat::vespene_cost[target->id];
+                u32 time = units_dat::time_cost[target->id] / 2;
+                target_ext.salvage_time += 1;
+                target_ext.salvage_minerals += (f32)mineral_cost * 0.50 / time;
+                while (target_ext.salvage_minerals > 1) {
+                    target_ext.salvage_minerals -= 1;
+                    resources->minerals[unit->player] += 1;
+                }
+                target_ext.salvage_gas += (f32)vespene_cost * 0.50 / time;
+                while (target_ext.salvage_gas > 1) {
+                    target_ext.salvage_gas -= 1;
+                    resources->gas[unit->player] += 1;
+                }
+                if (target_ext.salvage_time >= time) {
+                    resources->minerals[unit->player] += ceilf(target_ext.salvage_minerals);
+                    resources->gas[unit->player] += ceilf(target_ext.salvage_gas);
+                    target->damage_with_custom(target->get_current_life_ingame() * 256, 255);
+                    unit->order_to_idle();
+                }
+
+                if (!(unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving) && !unit_ext.timers[TimerTalosAnimationSubtimer]) {
+                    u32 width = units_dat::building_dimensions[target->id].x * 0.75;
+                    u32 height = units_dat::building_dimensions[target->id].y * 0.75;
+                    s32 x_offset = bw::random() % width - width / 2;
+                    s32 y_offset = bw::random() % height - height / 2;
+                    x_offset = Clamp(x_offset, -127, 128);
+                    y_offset = Clamp(y_offset, -127, 128);
+
+                    Unit* final_target = target;
+                    if (target->subunit && target->subunit->is_subunit()) {
+                        final_target = target->subunit;
+                    }
+                    final_target->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
+                    u32 subtimer = bw::rand_between(3, 7);
+                    unit_ext.timers[TimerTalosAnimationSubtimer] = subtimer;
+                }
+                if (!unit_ext.values[ValueTalosAnimationTimer] || unit_ext.values[ValueTalosAnimationTimer] % 128 == 0) {
+                    Point16 pos = target->sprite->position;
+                    switch (bw::random() % 4) {
+                    case 0: {
+                        pos.x -= units_dat::unit_bounds[target->id].left * 0.75;
+                        pos.y -= units_dat::unit_bounds[target->id].top * 0.75;
+                    } break;
+                    case 1: {
+                        pos.x += units_dat::unit_bounds[target->id].right * 0.75;
+                        pos.y -= units_dat::unit_bounds[target->id].top * 0.75;
+                    } break;
+                    case 2: {
+                        pos.x -= units_dat::unit_bounds[target->id].left * 0.75;
+                        pos.y += units_dat::unit_bounds[target->id].bottom * 0.75;
+                    } break;
+                    case 3: {
+                        pos.x += units_dat::unit_bounds[target->id].right * 0.75;
+                        pos.y += units_dat::unit_bounds[target->id].bottom * 0.75;
+                    } break;
+                    }
+                    helper::set_move_target_xy(unit, pos.x, pos.y);
+                }
+                unit_ext.values[ValueTalosAnimationTimer] += 1;
+            } break;
+        }
+        // Huge switch statement ends
+
+        if (unit->id == UnitId::ZergOgroszaleth && unit->order_signal & 4) {
+            unit_ext.timers[TimerAdaptiveAmitosisGrowth] = unit->is_burrowed() ? 0 : AdaptiveAmitosis::GrowthTimer;
+        }
+
+        if (UnitId::spreads_cagra_while_burrowed(static_cast<UnitId::Enum>(unit->id))) {
+            unit->tick_burrowed_cagra_spread();
+        }
+
+        if (unit_ext.units[UnitHijackTarget]) {
+            Unit* target = unit_ext.units[UnitHijackTarget];
+            if (target->position != unit->position) {
+                helper::move_unit(unit, target->position.x, target->position.y);
+            }
+        }
+
+        if (unit_ext.units[UnitHiveOrgan]) {
+            Unit* organ = unit_ext.units[UnitHiveOrgan];
+            if (organ->position != unit->position) {
+                helper::move_unit(unit, organ->position.x, organ->position.y);
+            }
         }
 
         // Terran-style windups
@@ -3286,16 +3423,17 @@ namespace hooks {
             bw::remove_unit_overlay(unit, ImageId::CrucibleKhaydarinChargeOverlay);
         }
 
-        // Clear Kazitrith vector
-        std::erase_if(unit_ext.unit_vectors[UnitVectorKazitriths], [unit](Unit* kazitrith) {
-            if (kazitrith->is_frozen() || kazitrith->is_in_transport() || bw::distance_between(unit->position, kazitrith->position) > kazitrith->get_adaptive_amitosis_range()) {
+        // Clear Adaptive Amitosis vector
+        std::erase_if(unit_ext.unit_vectors[UnitVectorAdaptiveAmitosis], [unit](Unit* source) {
+            if (!source->can_use_passive_ability() || bw::distance_between(unit->position, source->position) > source->get_adaptive_amitosis_range()
+            ||  (source->id == UnitId::ZergOgroszaleth && !source->is_burrowed())) {
                 bw::remove_unit_overlay(unit, ImageId::AdaptiveAmitosisOverlay);
                 return true;
             }
             return false;
         });
 
-        if (unit->get_overlay(ImageId::AdaptiveAmitosisOverlay) && unit_ext.unit_vectors[UnitVectorKazitriths].size() == 0) {
+        if (unit->get_overlay(ImageId::AdaptiveAmitosisOverlay) && unit_ext.unit_vectors[UnitVectorAdaptiveAmitosis].size() == 0) {
             bw::remove_unit_overlay(unit, ImageId::AdaptiveAmitosisOverlay);
         }
 
@@ -4432,20 +4570,48 @@ namespace hooks {
                                         }
                                     }
 
-                                    UnitExt* unit_ext = get_unit_ext(unit);
+                                    auto& unit_ext = unit->ext();
                                     bool set_value = true;
                                     switch (unit->id) {
                                         case UnitId::Stroluum: {
                                             bool set_value = false;
                                             if (unit->has_energy_for(TechId::StroluumSkryspawn)) {
                                                 unit->spend_energy(TechId::energy_cost(TechId::StroluumSkryspawn));
-                                                if (!unit_ext->timers[TimerSkryspawn]) {
-                                                    unit_ext->timers[TimerSkryspawn] = 3 * 24 + 1;
+                                                if (!unit_ext.timers[TimerSkryspawn]) {
+                                                    unit_ext.timers[TimerSkryspawn] = 3 * 24 + 1;
                                                     unit->freeze();
                                                 }
                                             } else {
                                                 specialist_energy_error(unit);
                                                 helper::to_idle(unit);
+                                            }
+                                        } break;
+                                        case UnitId::ZergMalkothrokor: {
+                                            bool set_value = false;
+                                            if (!unit_ext.units[UnitHiveTissue]) {
+                                                u32 building_id = UnitId::None;
+                                                switch (rust_id) {
+                                                    case RustId::MalkothrokorHiveTissue: {
+                                                        building_id = UnitId::ZergCagrantCesiant;
+                                                    } break;
+                                                }
+                                                Unit* hive_tissue = helper::create_unit(building_id, unit->position.x, unit->position.y, unit->player);
+                                                if (hive_tissue) {
+                                                    hive_tissue->sprite->elevation = unit->sprite->elevation + 1;
+                                                    hive_tissue->current_buttonset = UnitId::Buttons_CancelConstruction;
+                                                    helper::clear_building_from_tile_flag(hive_tissue, hive_tissue->position.x, hive_tissue->position.y);
+
+                                                    auto& tissue_ext = hive_tissue->ext();
+                                                    tissue_ext.units[UnitHiveOrgan] = unit;
+                                                    helper::ai_training_overlord(hive_tissue, unit);
+                                                    helper::drone_build_execute(hive_tissue);
+                                                    bw::inherit_debuffs(unit, hive_tissue);
+                                                    tissue_ext.timers[TimerConstructionSFXDelay] = 6;
+                                                    bw::play_sound(SoundId::ZergConstructionStart01, hive_tissue);
+
+                                                    unit_ext.units[UnitHiveTissue] = hive_tissue;
+                                                    helper::change_unit_buttonset(unit, unit->id);
+                                                }
                                             }
                                         } break;
                                     }

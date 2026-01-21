@@ -102,6 +102,10 @@ namespace hooks {
             }
         }
 
+        if (unit_ext.units[UnitHiveTissue]) {
+            speed *= 2;
+        }
+
         if (unit_ext.values[ValueIsMalefactor] == 2) {
             speed *= 1.33;
         }
@@ -235,6 +239,7 @@ namespace hooks {
             case UnitId::TerranMatadorTankMode:
             case UnitId::ProtossGolem:
             case UnitId::ProtossSycophant:
+            case UnitId::ZergMalkothrokor:
             case UnitId::ZergZethrokor:
             case UnitId::ZergAxitrilisk: {
                 speed *= 1.25;

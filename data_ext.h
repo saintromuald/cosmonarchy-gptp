@@ -418,6 +418,17 @@ enum ExtTimerId {
     TimerMimicryCheck,
     TimerTerranWindup,
     TimerGoldRush,
+    TimerDilettanteLuck,
+    TimerIsBeingHijacked,
+    TimerAdrenalFrenzyVisuals,
+    TimerImpactDissipation,
+    TimerImpactDissipationVisuals,
+    TimerDivineDisciplineBuff,
+    TimerDivineDisciplineDebuff,
+    TimerRejoinderOfService,
+    TimerBoomingBlast,
+    TimerAskosiPowerBreach,
+    TimerSegmentedExpansion,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
@@ -458,6 +469,10 @@ enum ExtUnitId {
     UnitMindTyrantMalefactor,
     UnitInfestingMatraleth,
     UnitPlagueSource,
+    UnitHijacker,
+    UnitHijackTarget,
+    UnitHiveOrgan,
+    UnitHiveTissue,
 
     UnitCount,
 };
@@ -476,7 +491,8 @@ enum ExtUnitVectorId {
     UnitVectorStaggerBlacklist,
     UnitVectorBarghests,
     UnitVectorManifolds,
-    UnitVectorKazitriths,
+    UnitVectorAdaptiveAmitosis,
+    UnitVectorAskosiBuilders,
 
     UnitVectorCount,
 };

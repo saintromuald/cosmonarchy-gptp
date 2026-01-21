@@ -1,8 +1,7 @@
 #pragma once
 #include "../../BW/structures/Unit.h"
 
-namespace hooks
-{
+namespace hooks {
 	void create_building_larva(Unit* main_building);														// 0049D660
 	bool iterate_units_at_location_target_proc_larva_count(Unit* unit, Unit* main_building);				// 004E8C80
 	void secondary_order_spawning_larva(Unit* unit);														// 004EA780
@@ -18,4 +17,4 @@ namespace hooks
 	void orders_larva_idle(Unit* unit);																		// 004E9F90
 
 	void inject_larva_creep_spawn_hooks();
-}
+} // namespace hooks

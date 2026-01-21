@@ -80,6 +80,9 @@ namespace hooks {
             }
         }
         switch (tech) {
+            case TechId::MalkothrokorHiveTissue: {
+                queue_generic_ability(RustId::MalkothrokorHiveTissue, UnitId::ZergSurkithCesiant);
+            } break;
             case TechId::ControlledDemolition: {
                 queue_generic_ability(RustId::CastControlledDemolition, 1);
             } break;

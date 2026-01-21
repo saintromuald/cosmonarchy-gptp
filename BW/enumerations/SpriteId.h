@@ -936,6 +936,13 @@ namespace SpriteId {
         Corpse_Vicar                    = 1029,
         Corpse_Missionary               = 1031,
 
+        Corpse_Proselyte                = 1064,
+        Corpse_AskosiBuildingTiny       = 1065,
+
+        Corpse_MaverickFuturist         = 1071,
+
+        Corpse_Malkothrokor             = 1090,
+
         Corpse_ZergBuildingSmall	    = 186,
         Corpse_ZergBuildingLarge	    = 187,
     };
