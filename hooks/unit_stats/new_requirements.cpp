@@ -2962,6 +2962,7 @@ namespace hooks {
                         }
                         return TECH_LOCKED;
                     }
+                    case UnitId::ZergKethrostalor:
                     case UnitId::ZergAlkajelisk: {
                         return TECH_ACTIVE;
                     }

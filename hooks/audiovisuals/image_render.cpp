@@ -1,8 +1,10 @@
 #include "image_render.h"
 #include <math.h>
 #include "BW/extender/iscript_extender.h"
+#include "BW/api.h"
 
 u8 threshold_map[256];
+u8 new_warp_texture_buffer[65025];
 
 UpdateFunc sgUpdateFuncs[] = {
 	{ PaletteType::Normal,				updateFunc_None },
@@ -78,9 +80,9 @@ RenderFunc sgRenderFuncs[] = {
 	{ PaletteType::VisibleCloaking_WT,	drawFunc::WarpTexture_VisibleCloakAnim,	drawFunc::WarpTexture_VisibleCloakAnim },
 	{ PaletteType::VisibleCloaked_WT,	drawFunc::WarpTexture_VisibleCloak,		drawFunc::WarpTexture_VisibleCloak },
 	{ PaletteType::VisibleDecloaking_WT,drawFunc::WarpTexture_VisibleCloakAnim,	drawFunc::WarpTexture_VisibleCloakAnim },
-	{ PaletteType::HiddenCloaking_WF,	drawFunc::WarpFlash_HiddenCloakAnim,	drawFunc::WarpFlash_HiddenCloakAnim },
+	{ PaletteType::HiddenCloaking_WF,	drawFunc::WarpFlash_HiddenCloakAnim,	drawFunc::WarpFlash_HiddenCloakAnim_mirror },
 	{ PaletteType::HiddenCloaked_WF,	drawFunc::WarpFlash_HiddenCloak,		drawFunc::WarpFlash_HiddenCloak },
-	{ PaletteType::HiddenDecloaking_WF,	drawFunc::WarpFlash_HiddenCloakAnim,	drawFunc::WarpFlash_HiddenCloakAnim },
+	{ PaletteType::HiddenDecloaking_WF,	drawFunc::WarpFlash_HiddenCloakAnim,	drawFunc::WarpFlash_HiddenCloakAnim_mirror },
 	{ PaletteType::VisibleCloaking_WF,	drawFunc::WarpFlash_Normal,				drawFunc::WarpFlash_Normal_mirror },
 	{ PaletteType::VisibleCloaked_WF,	drawFunc::WarpFlash_Normal,				drawFunc::WarpFlash_Normal_mirror },
 	{ PaletteType::VisibleDecloaking_WF,drawFunc::WarpFlash_Normal,				drawFunc::WarpFlash_Normal_mirror },
@@ -177,7 +179,13 @@ namespace drawFunc {
 	}
 
 	void __fastcall WarpFlash_HiddenCloakAnim(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData) {
-		threshold_remapping(screenX, screenY, pFrame, grpRect, (u8)(colorData >> 8), (u8*)((int)g_color_shift[1].data + ((colorData >> 8) & 0xFF00)));
+		threshold_flash(screenX, screenY, pFrame, grpRect, (u8)(colorData >> 8), (u8*)((int)g_color_shift[1].data + ((colorData >> 8) & 0xFF00)));
+		return;
+	}
+
+	void __fastcall WarpFlash_HiddenCloakAnim_mirror(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData) {
+		threshold_flash_mirror(screenX, screenY, pFrame, grpRect, (u8)(colorData >> 8), (u8*)((int)g_color_shift[1].data + ((colorData >> 8) & 0xFF00)));
+		return;
 	}
 
 	void __fastcall Decloaking_update(Image* image) {
@@ -186,10 +194,12 @@ namespace drawFunc {
 			if (type < PaletteType::HiddenCloaking_WT) {
 				if (type < PaletteType::WarpAnchor) {
 					type = PaletteType::Normal;
-				} else {
+				}
+				else {
 					type = PaletteType::WarpAnchor;
 				}
-			} else {
+			}
+			else {
 				type = PaletteType::WarpTexture;
 			}
 			image->palette_type = type;
@@ -260,7 +270,8 @@ namespace drawFunc {
 		u8 type = main_image->palette_type;
 		if (type == PaletteType::HiddenCloaked || type == PaletteType::VisibleCloaked) {
 			image->flags |= ImageFlags::Invisible;
-		} else if (!(image->parent_sprite->flags & SpriteFlags::Burrowed)) {
+		}
+		else if (!(image->parent_sprite->flags & SpriteFlags::Burrowed)) {
 			if (type < PaletteType::HiddenCloaking || type > PaletteType::VisibleDecloaking) {
 				image->palette_type = PaletteType::Shadow;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[PaletteType::Shadow].fxn_mirror : sgRenderFuncs[PaletteType::Shadow].fxn;
@@ -296,15 +307,99 @@ namespace drawFunc {
 }
 
 namespace hooks {
+	void __fastcall AI_CloakUnit(Unit* unit) {
+		u32 status = unit->status;
+
+		if (!(status & UnitStatus::RequiresDetection)) {
+			if (!unit->is_cloaked++ && !unit->invisible_link.next) { // inline of secondaryOrd_Cloak @ 491790
+				Unit* first_cloaked_unit = *g_first_invisible_unit;
+				unit->invisible_link.next = first_cloaked_unit;
+				unit->invisible_link.prev = nullptr;
+
+				if (first_cloaked_unit) {
+					first_cloaked_unit->invisible_link.prev = unit;
+				}
+
+				*g_first_invisible_unit = unit;
+				bw::refresh_console();
+			}
+
+			bool is_unburrow = unit->main_order_id == OrderId::Unburrow;
+			make_cloaked(0, unit->sprite, 3, is_unburrow ? 33 : 0);
+			unit->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
+
+			if (unit->secondary_order_id != OrderId::Cloak && !is_unburrow) {
+				unit->secondary_order_id = OrderId::Cloak;
+				unit->secondary_order_pos = {};
+				unit->current_build_unit = nullptr;
+				unit->secondary_order_state = 0;
+			}
+
+			unit->detection_status = 0x80000000;
+		}
+	}
+
 	u8 get_type_offset(u8 type) {
 		switch (type) {
-			case PaletteType::WarpTexture: {
-				return 12;
+		case PaletteType::WarpTexture: {
+			return 12;
+		}
+		case PaletteType::WarpFlash: {
+			return 17;
+		}
+		case PaletteType::WarpAnchor:
+		case PaletteType::HiddenCloaking_WA:
+		case PaletteType::HiddenCloaked_WA:
+		case PaletteType::HiddenDecloaking_WA:
+		case PaletteType::VisibleCloaking_WA:
+		case PaletteType::VisibleCloaked_WA:
+		case PaletteType::VisibleDecloaking_WA: {
+			return 18;
+		}
+		case PaletteType::HiddenCloaking_WT:
+		case PaletteType::HiddenCloaked_WT:
+		case PaletteType::HiddenDecloaking_WT:
+		case PaletteType::VisibleCloaking_WT:
+		case PaletteType::VisibleCloaked_WT:
+		case PaletteType::VisibleDecloaking_WT: {
+			return 24;
+		}
+		case PaletteType::HiddenCloaking_WF:
+		case PaletteType::HiddenCloaked_WF:
+		case PaletteType::HiddenDecloaking_WF:
+		case PaletteType::VisibleCloaking_WF:
+		case PaletteType::VisibleCloaked_WF:
+		case PaletteType::VisibleDecloaking_WF: {
+			return 30;
+		}
+		default: {
+			return 0;
+		}
+		}
+	}
+
+	u8 get_new_type(u8 type_offset) {
+		if (type_offset == PaletteType::WarpTexture) {
+			return 24;
+		}
+		if (type_offset == PaletteType::WarpFlash) {
+			return 30;
+		}
+		return type_offset;
+	}
+
+	u8 get_new_type(u8 type, u8 type_offset) {
+		if (!type) {
+			if (type_offset == PaletteType::WarpTexture) {
+				return 24;
 			}
-			case PaletteType::WarpFlash: {
-				return 17;
+			if (type_offset == PaletteType::WarpFlash) {
+				return 30;
 			}
-			case PaletteType::WarpAnchor:
+			return type_offset;
+		}
+		else {
+			switch (type_offset) {
 			case PaletteType::HiddenCloaking_WA:
 			case PaletteType::HiddenCloaked_WA:
 			case PaletteType::HiddenDecloaking_WA:
@@ -332,57 +427,6 @@ namespace hooks {
 			default: {
 				return 0;
 			}
-		}
-	}
-
-	u8 get_new_type(u8 type_offset) {
-		if (type_offset == PaletteType::WarpTexture) {
-			return 24;
-		}
-		if (type_offset == PaletteType::WarpFlash) {
-			return 30;
-		}
-		return type_offset;
-	}
-
-	u8 get_new_type(u8 type, u8 type_offset) {
-		if (!type) {
-			if (type_offset == PaletteType::WarpTexture) {
-				return 24;
-			}
-			if (type_offset == PaletteType::WarpFlash) {
-				return 30;
-			}
-			return type_offset;
-		} else {
-			switch (type_offset) {
-				case PaletteType::HiddenCloaking_WA:
-				case PaletteType::HiddenCloaked_WA:
-				case PaletteType::HiddenDecloaking_WA:
-				case PaletteType::VisibleCloaking_WA:
-				case PaletteType::VisibleCloaked_WA:
-				case PaletteType::VisibleDecloaking_WA: {
-					return 18;
-				}
-				case PaletteType::HiddenCloaking_WT:
-				case PaletteType::HiddenCloaked_WT:
-				case PaletteType::HiddenDecloaking_WT:
-				case PaletteType::VisibleCloaking_WT:
-				case PaletteType::VisibleCloaked_WT:
-				case PaletteType::VisibleDecloaking_WT: {
-					return 24;
-				}
-				case PaletteType::HiddenCloaking_WF:
-				case PaletteType::HiddenCloaked_WF:
-				case PaletteType::HiddenDecloaking_WF:
-				case PaletteType::VisibleCloaking_WF:
-				case PaletteType::VisibleCloaked_WF:
-				case PaletteType::VisibleDecloaking_WF: {
-					return 30;
-				}
-				default: {
-					return 0;
-				}
 			}
 		}
 	}
@@ -399,7 +443,8 @@ namespace hooks {
 				image->draw_fxn.step0 = 0;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type_offset].fxn_mirror : sgRenderFuncs[type_offset].fxn;
 				image->update_fxn = sgUpdateFuncs[type_offset].fxn;
-			} else {
+			}
+			else {
 				u16 flags = image->flags;
 
 				if (type == PaletteType::Shadow || (type == PaletteType::ShadowCloak && (flags |= ImageFlags::Invisible))) {
@@ -426,19 +471,25 @@ namespace hooks {
 				image->flags |= ImageFlags::Redraw;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
 				image->update_fxn = sgUpdateFuncs[type].fxn;
-			} else if (!type) {
+			}
+			else if (!type) {
 				type = get_new_type(type_offset) + PaletteType::VisibleCloaked;
 				image->palette_type = type;
 				image->flags |= ImageFlags::Redraw;
 				image->draw_fxn.step0 = 33;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
 				image->update_fxn = sgUpdateFuncs[type].fxn;
-			} else if (type == PaletteType::Shadow) {
+			}
+			else if (type == PaletteType::Shadow) {
 				image->palette_type = PaletteType::ShadowCloak;
 				image->flags |= ImageFlags::Redraw;
 				image->draw_fxn.step0 = 13;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[PaletteType::ShadowCloak].fxn_mirror : sgRenderFuncs[PaletteType::ShadowCloak].fxn;
 				image->update_fxn = sgUpdateFuncs[PaletteType::ShadowCloak].fxn;
+			}
+			else if (type == PaletteType::UseRemapping && image->flags & ImageFlags::Invisible && images_dat::draw_if_cloaked[image->id]) {
+				u8 flags = image->flags;
+				image->flags = (flags & ~ImageFlags::Invisible) | ImageFlags::Redraw;
 			}
 		}
 	}
@@ -460,7 +511,8 @@ namespace hooks {
 					image->draw_fxn.step0 = cloakL;
 					image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
 					image->update_fxn = sgUpdateFuncs[type].fxn;
-				} else if (type == PaletteType::Shadow) {
+				}
+				else if (type == PaletteType::Shadow) {
 					image->palette_type = PaletteType::ShadowCloak;
 					image->flags |= ImageFlags::Redraw;
 					image->draw_fxn.step0 = cloakL;
@@ -468,7 +520,8 @@ namespace hooks {
 					image->update_fxn = sgUpdateFuncs[PaletteType::ShadowCloak].fxn;
 				}
 			}
-		} else if (cloakedStatus == 2) {
+		}
+		else if (cloakedStatus == 2) {
 			for (Image* image = sprite->images.head; image; image = image->link.next) {
 				u8 type = image->palette_type;
 				u8 type_offset = get_type_offset(type);
@@ -481,7 +534,8 @@ namespace hooks {
 					image->draw_fxn.step0 = cloakL;
 					image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
 					image->update_fxn = sgUpdateFuncs[type].fxn;
-				} else if (type == PaletteType::Shadow) {
+				}
+				else if (type == PaletteType::Shadow) {
 					image->palette_type = PaletteType::ShadowCloak;
 					image->flags |= ImageFlags::Redraw;
 					image->draw_fxn.step0 = cloakL;
@@ -489,7 +543,8 @@ namespace hooks {
 					image->update_fxn = sgUpdateFuncs[PaletteType::ShadowCloak].fxn;
 				}
 			}
-		} else if (cloakedStatus == 3) {
+		}
+		else if (cloakedStatus == 3) {
 			for (Image* image = sprite->images.head; image; image = image->link.next) {
 				u8 type = image->palette_type;
 				u8 type_offset = get_type_offset(type);
@@ -502,7 +557,8 @@ namespace hooks {
 					image->draw_fxn.step0 = cloakL;
 					image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
 					image->update_fxn = sgUpdateFuncs[type].fxn;
-				} else if (type == PaletteType::Shadow || type == PaletteType::ShadowCloak) {
+				}
+				else if (type == PaletteType::Shadow || type == PaletteType::ShadowCloak) {
 					image->palette_type = PaletteType::Shadow;
 					image->flags |= (ImageFlags::Redraw | ImageFlags::Invisible);
 					image->draw_fxn.step0 = cloakL;
@@ -527,7 +583,8 @@ namespace hooks {
 				image->flags |= ImageFlags::Redraw;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
 				image->update_fxn = sgUpdateFuncs[type].fxn;
-			} else if (type == PaletteType::Shadow || type == PaletteType::ShadowCloak) {
+			}
+			else if (type == PaletteType::Shadow || type == PaletteType::ShadowCloak) {
 				image->palette_type = PaletteType::ShadowCloak;
 				image->flags |= ImageFlags::Redraw;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[PaletteType::ShadowCloak].fxn_mirror : sgRenderFuncs[PaletteType::ShadowCloak].fxn;
@@ -563,6 +620,9 @@ namespace hooks {
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
 				image->update_fxn = sgUpdateFuncs[type].fxn;
 			}
+			else if (type == PaletteType::UseRemapping && !(image->flags & ImageFlags::Invisible) && images_dat::draw_if_cloaked[image->id]) {
+				image->flags |= ImageFlags::Invisible | ImageFlags::Redraw;
+			}
 		}
 	}
 
@@ -573,21 +633,26 @@ namespace hooks {
 			type -= type_offset;
 
 			if (type == PaletteType::HiddenCloaking || type == PaletteType::HiddenCloaked
-			|| type == PaletteType::VisibleCloaking || type == PaletteType::VisibleCloaked) {
+				|| type == PaletteType::VisibleCloaking || type == PaletteType::VisibleCloaked) {
 				type = type < PaletteType::HiddenDecloaking ? PaletteType::HiddenDecloaking : PaletteType::VisibleDecloaking;
 				type += type_offset;
 				image->palette_type = type;
 				image->flags |= ImageFlags::Redraw;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
 				image->update_fxn = sgUpdateFuncs[type].fxn;
-			} else if (type == PaletteType::Shadow || type == PaletteType::ShadowCloak) {
+			}
+			else if (type == PaletteType::Shadow || type == PaletteType::ShadowCloak) {
 				image->palette_type = PaletteType::ShadowCloak;
 				image->flags |= ImageFlags::Redraw;
 				image->render_fxn = image->flags & ImageFlags::Mirrored ? sgRenderFuncs[PaletteType::ShadowCloak].fxn_mirror : sgRenderFuncs[PaletteType::ShadowCloak].fxn;
 				image->update_fxn = sgUpdateFuncs[PaletteType::ShadowCloak].fxn;
 			}
+			else if (type == PaletteType::UseRemapping && image->flags & ImageFlags::Invisible && images_dat::draw_if_cloaked[image->id]) {
+				u8 flags = image->flags;
+				image->flags = (flags & ~ImageFlags::Invisible) | ImageFlags::Redraw;
+			}
 
-			//inline of showImagesHiddenByCloak @ 0x00498170 (extracted from loop)
+			//inline of showImagesHiddenByCloak @ 498170 (extracted from loop)
 			if (!images_dat::draw_if_cloaked[image->id] && image->flags & ImageFlags::Invisible) {
 				image->flags &= ~ImageFlags::Invisible;
 				image->flags |= ImageFlags::Redraw;
@@ -632,8 +697,115 @@ namespace hooks {
 		}
 	}
 
+	//Optimizes fog sprite creation by avoiding unnecessarily creating Images (that will be freed anyway),
+	//and prevents possible desyncs caused by Iscript rng opcodes executed by the Init animations of those images.
+	Sprite* create_empty_sprite(u32 spriteId, Point16 spritePos, u8 playerId) {
+		Sprite* sprite = g_free_sprites->head;
+
+		if (!sprite) {
+			return nullptr;
+		}
+
+		g_free_sprites->head = sprite->link.next;
+
+		if (g_free_sprites->tail == sprite) {
+			g_free_sprites->tail = sprite->link.prev;
+		}
+
+		if (sprite->link.prev) {
+			sprite->link.prev->link.next = sprite->link.next;
+		}
+
+		if (sprite->link.next) {
+			sprite->link.next->link.prev = sprite->link.prev;
+		}
+
+		sprite->link.prev = nullptr;
+		sprite->link.next = nullptr;
+
+		if (spritePos.x < g_map_width_pixels && spritePos.y < g_map_height_pixels) {
+			sprite->position = spritePos;
+			sprite->id = spriteId;
+			sprite->player = playerId;
+			sprite->visibility_status = -1;
+			sprite->elevation = 4;
+			sprite->flags = 0;
+			sprite->selection_timer = 0;
+
+			if (!sprites_dat::is_visible[spriteId]) {
+				sprite->flags = SpriteFlags::Hidden;
+				helper::refresh_all_visible_images_at_screen_pos(sprite, 0);
+			}
+
+			GrpHead* grp_file = g_image_grp_graphics[sprites_dat::image_id[spriteId]];
+			u16 grp_size = grp_file->width;
+			u16 sprite_size = 255;
+
+			if (grp_size < sprite_size) {
+				sprite_size = grp_size;
+			}
+
+			sprite->width = (u8)sprite_size;
+			grp_size = grp_file->height;
+			sprite_size = 255;
+
+			if (grp_size < sprite_size) {
+				sprite_size = grp_size;
+			}
+
+			sprite->height = (u8)sprite_size;
+			s32 tile_y = sprite->position.y >> 5;
+			Sprite* spr = g_sprites_on_tile_row->heads[tile_y];
+
+			if (spr) {
+				if (g_sprites_on_tile_row->tails[tile_y] == spr) {
+					g_sprites_on_tile_row->tails[tile_y] = sprite;
+				}
+
+				sprite->link.prev = spr;
+				sprite->link.next = spr->link.next;
+
+				if (spr->link.next) {
+					spr->link.next->link.prev = sprite;
+				}
+
+				spr->link.next = sprite;
+			}
+			else {
+				g_sprites_on_tile_row->tails[tile_y] = sprite;
+				g_sprites_on_tile_row->heads[tile_y] = sprite;
+			}
+		}
+		else {
+			Sprite* first_unused = g_free_sprites->head;
+
+			if (first_unused) {
+				if (g_free_sprites->tail == first_unused) {
+					g_free_sprites->tail = sprite;
+				}
+
+				sprite->link.prev = g_free_sprites->head;
+				sprite->link.next = first_unused->link.next;
+
+				if (first_unused->link.next) {
+					first_unused->link.next->link.prev = sprite;
+				}
+
+				first_unused->link.next = sprite;
+				sprite = nullptr;
+			}
+			else {
+				g_free_sprites->head = sprite;
+				g_free_sprites->tail = sprite;
+				sprite = nullptr;
+			}
+		}
+
+		return sprite;
+	}
+
 	Sprite* /*__stdcall*/ duplicate_sprite(Sprite* sprite) {
-		Sprite* new_sprite = helper::create_sprite(sprite->id, sprite->position.x, sprite->position.y, sprite->player);
+		Sprite* new_sprite = create_empty_sprite(sprite->id, sprite->position, sprite->player);
 		if (!new_sprite) {
 			return nullptr;
 		}
@@ -651,7 +823,7 @@ namespace hooks {
 		new_sprite->main_graphic = nullptr;
 		for (image = sprite->images.tail; image; image = image->link.prev) {
 			u8 type = image->palette_type;
-			if (type == PaletteType::HPBar || type == PaletteType::RLE_OUTLINE) {
+			if (type == PaletteType::HPBar || type == PaletteType::RLE_OUTLINE || image->flags & ImageFlags::Invisible) {
 				continue;
 			}
 
@@ -664,20 +836,77 @@ namespace hooks {
 			new_image->frameset = image->frameset;
 			new_image->frame_index = image->frame_index;
 			new_image->draw_fxn = image->draw_fxn;
+			u8 new_type = new_image->palette_type;
+
+			if (!new_type || new_type == PaletteType::WarpFlash) {
+				u8 main_type = image->palette_type;
+				main_type -= get_type_offset(main_type);
+				u8 _type = main_type - 2;
+
+				if (_type <= 2) { // Hidden Cloaking/Cloaked/Decloaking
+					set_image_palette_type(new_image, PaletteType::ImageBounds);
+					u16 image_id = new_image->id;
+					u32 geyser_id = 0;
+					switch (image_id) {
+						case ImageId::Extractor:
+						case ImageId::Assimilator:
+						case ImageId::Refinery:
+						case ImageId::Wellbore: {
+							geyser_id = ImageId::VespeneGeyser;
+						} break;
+						case ImageId::Sieve:
+						case ImageId::Cedent:
+						case ImageId::Eskigant:
+						case ImageId::Arch: {
+							geyser_id = ImageId::VespeneRidge;
+						}
+					}
+
+					if (geyser_id) {
+						Image* geyser = helper::create_image(new_sprite, geyser_id == ImageId::VespeneGeyser ? ImageId::VespeneGeyserShadow : ImageId::VespeneRidgeShadow, 0, 0, 0);
+
+						if (!geyser) {
+							new_sprite->free();
+							return nullptr;
+						}
+
+						u16 frame_index = *g_current_tileset;
+						geyser->frameset = frame_index;
+						geyser->frame_index = frame_index;
+						helper::update_image_draw_data(geyser);
+						geyser = helper::create_image(new_sprite, geyser_id, 0, 0, 0);
+
+						if (!geyser) {
+							new_sprite->free();
+							return nullptr;
+						}
+
+						geyser->frameset = frame_index;
+						geyser->frame_index = frame_index;
+						helper::update_image_draw_data(geyser);
+					}
+				}
+				else if (_type <= 5) {//Visible Cloaking/Cloaked/Decloaking
+					new_type = get_new_type(new_type) + main_type;
+					set_image_palette_type(new_image, new_type);
+				}
+
+				new_image->draw_fxn = image->draw_fxn;
+			}
+
 			u16 new_flags = new_image->flags;
 			u8 flip_state = image->flags & ImageFlags::Mirrored;
 			if ((new_flags & ImageFlags::Mirrored) != flip_state) {//I don't know why this entire block exists, everything within it is already handled by create_image.
-				type = new_image->palette_type;
 				new_flags = (new_flags & ~ImageFlags::Mirrored) | flip_state | ImageFlags::Redraw;
 				new_image->flags = new_flags;
-				new_image->render_fxn = flip_state ? sgRenderFuncs[type].fxn_mirror : sgRenderFuncs[type].fxn;
+				new_image->render_fxn = flip_state ? sgRenderFuncs[new_type].fxn_mirror : sgRenderFuncs[new_type].fxn;
 
 				if (new_flags & ImageFlags::UsesSpecialOffset) {
 					//inline of update_image_position_offset @ 0x004D5A00
 					Image* main_image = image->parent_sprite->main_graphic;
 					GrpHead* overlay_grp = (GrpHead*)images_dat::lo_special[main_image->id];
 					GrpFrame* frame = &overlay_grp->frames[main_image->frame_index];
-					
+
 					s8 h_offset = frame->x;
 					if (main_image->flags & ImageFlags::Mirrored) {
 						h_offset = -h_offset;
@@ -737,37 +966,58 @@ namespace hooks {
 		image->flags = flags | ImageFlags::Redraw;
 	}
 
+	void copy_image_palette_type(Image* image) { // 004D5E40
+		u8 type = image->palette_type;
+
+		if (!type || type == PaletteType::WarpFlash) {
+			Image* main = image->parent_sprite->main_graphic;
+			u8 main_type = main->palette_type;
+			main_type -= get_type_offset(main_type);
+
+			if (main_type >= PaletteType::HiddenCloaking && main_type <= PaletteType::VisibleDecloaking) {
+				type = get_new_type(type) + main_type;
+				set_image_palette_type(image, type);
+				image->draw_fxn.frame = main->draw_fxn.frame;
+				image->draw_fxn.step0 = main->draw_fxn.step0;
+			}
+		}
+	}
+
+	//Hide overlays on e.g. Nexus when the building is completed under cloak and undetected (but still show if detected).
+	bool __fastcall draw_if_cloaked(Image* image, u32 imageId) {
+		if (!images_dat::draw_if_cloaked[imageId])
+			return false;
+
+		if (images_dat::rle_function[imageId] != PaletteType::UseRemapping)
+			return true;
+
+		u8 main_type = image->parent_sprite->main_graphic->palette_type;
+		main_type -= get_type_offset(main_type);
+		return main_type < PaletteType::HiddenCloaking || main_type > PaletteType::HiddenCloaked;
+	}
 }
 
-// Placing this here instead of bwhelper because it's very specific to image_render. -DF
+//Placing this here instead of bwhelper because it's very specific to image_render.
 namespace helper {
 	void drawFunc(int function, s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, int colorData) {
 		__asm {
-			PUSHAD
-			MOV		EAX, colorData
-			PUSH	EAX
-			MOV		EAX, grpRect
-			PUSH	EAX
-			MOV		EAX, pFrame
-			PUSH	EAX
-			MOV		ECX, screenX
-			MOV		EDX, screenY
-			MOV		EAX, function
+			PUSH colorData
+			PUSH grpRect
+			PUSH pFrame
+			MOV ECX, screenX
+			MOV EDX, screenY
+			MOV EAX, function
 			CALL	EAX
-			POPAD
 		}
 	}
 
 	void drawFunc_WarpTexture_colorData(Box32* grpRect, u32 frame) {
 		const u32 func_address = 0x004D53F0;
 		__asm {
-			PUSHAD
-			PUSH	new_warp_texture_buffer
-			MOV		EAX, frame
-			PUSH	EAX
-			MOV		EAX, grpRect
+			PUSH new_warp_texture_buffer
+			PUSH frame
+			MOV EAX, grpRect
 			CALL	func_address
-			POPAD
 		}
 	}
 }

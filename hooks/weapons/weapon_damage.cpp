@@ -1454,15 +1454,33 @@ namespace hooks {
         }
     }
 
+    // Internal version of is_better_target 004769D0
+    bool is_better_target2(Unit* self, Unit* auto_target, Unit* compare) {
+        if (compare != auto_target) {
+            u32 cmp_player = compare->player == 11 ? compare->sprite->player : compare->player;
+            if (!bw::is_allied_to(self->player, cmp_player)) {
+                if (!auto_target) {
+                    return self->can_attack_target(compare, 1);
+                }
+                return !self->can_attack_target(auto_target, 1) || !self->is_target_enemy(auto_target)
+                    || (helper::is_unit_in_weapon_range(self, compare) && helper::is_unit_in_weapon_range(self, auto_target));
+            }
+        }
+        return false;
+    }
+
     // Hooked to investigate crashes. -Pr0nogo
     u32 ask_for_help(Unit* attacker, Unit* helper) { // 00476E60
         // Originally had code to prohibit Didact and Danimoth unit IDs.
-        if (helper->is_worker() || helper->is_burrowed() || !helper::ai_unit_can_attack(helper) || !helper::is_better_target(helper, helper->auto_target_unit, attacker)) {
+        if (helper->is_worker() || helper->is_burrowed() || !helper->has_weapon()) {
+            return false;
+        }
+        if (!hooks::is_better_target2(helper, helper->auto_target_unit, attacker)) {
             return false;
         }
         Unit* subunit = helper->subunit;
         helper->auto_target_unit = attacker;
-        if (helper::unit_is_subunit(subunit)) {
+        if (subunit->is_subunit()) {
             subunit->last_attacking_player = helper->last_attacking_player;
             helper->subunit->auto_target_unit = attacker;
         }
