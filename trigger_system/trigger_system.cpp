@@ -1236,6 +1236,18 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                     case TriggerStat_TimedLife: {
                         unit->remove_timer = value;
                     } break;
+                    case TriggerStat_Wireframe: {
+                        unit_ext.values[ValueHasWireframeOverride] = true;
+                        unit_ext.values[ValueWireframeOverride] = value;
+                    } break;
+                    case TriggerStat_Buttonset: {
+                        unit_ext.values[ValueHasButtonsetOverride] = true;
+                        unit_ext.values[ValueButtonsetOverride] = value;
+                    } break;
+                    case TriggerStat_HealRange: {
+                        unit_ext.values[ValueTriggerHealRangeSet] = 1;
+                        unit_ext.values[ValueTriggerHealRangeAmount] = value;
+                    } break;
                 }
             }
         } else if (parser.equals("set_unit_behavior")) {
@@ -1348,6 +1360,14 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                     } break;
                     case OrderId::GriefOfAllGods: {
                         unit->issue_custom_order(order_id);
+                    } break;
+                    case OrderId::ConstructingBuilding: {
+                        for (Unit* target_unit : g_unit_search.rect(target.area.box)) {
+                            if (target_unit && target_unit->is_building() && !target_unit->is_completed()) {
+                                unit->order_to(order_id, target_unit);
+                                break;
+                            }
+                        }
                     } break;
                 }
             }
@@ -1692,16 +1712,24 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
         } else if (parser.equals("move_location")) {
             const auto location = parser.get_location();
             const auto designator = parser.get_designator();
+            const auto offset_left   = parser.get_s32();
+            const auto offset_top    = parser.get_s32();
+            const auto offset_right  = parser.get_s32();
+            const auto offset_bottom = parser.get_s32();
             if (!location) {
                 parser.error("Invalid location");
                 continue;
             }
-            const auto offsets = location->dimensions.offsets_from_center();
+            auto loc_offsets = location->dimensions.offsets_from_center();
+            loc_offsets.left   += offset_left;
+            loc_offsets.top    += offset_top;
+            loc_offsets.right  += offset_right;
+            loc_offsets.bottom += offset_bottom;
             if (const auto unit = designator.search({.sort = true}).first()) {
-                location->dimensions.left   = unit->position.x + offsets.left;
-                location->dimensions.top    = unit->position.y + offsets.top;
-                location->dimensions.right  = unit->position.x + offsets.right;
-                location->dimensions.bottom = unit->position.y + offsets.bottom;
+                location->dimensions.left   = unit->position.x + loc_offsets.left;
+                location->dimensions.top    = unit->position.y + loc_offsets.top;
+                location->dimensions.right  = unit->position.x + loc_offsets.right;
+                location->dimensions.bottom = unit->position.y + loc_offsets.bottom;
             }
         } else if (parser.equals("recreate_units")) {
             const auto designator = parser.get_designator();
@@ -1720,51 +1748,51 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 }
 
 void Globals::sample_eco() {
-	EcoSample eco{};
-	for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-		if (unit->player > eco.size() || unit->is_dead()) {
-			continue;
-		}
-		UnitExt* unit_ext = get_unit_ext(unit);
-		eco[unit->player] += unit->total_cost();
-	}
-	eco_samples.push_back(eco);
+    EcoMeasurements eco{};
+    for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+        if (unit->player > eco.size()) {
+            continue;
+        }
+        UnitExt* unit_ext = get_unit_ext(unit);
+        eco[unit->player] += unit->total_cost();
+    }
+    eco_measurements.push_back(eco);
 }
 
 f32 Globals::calculate_hype() const {
-	const auto count = eco_samples.size();
-	std::vector<f32> values(count);
-	for (size_t i = 0; i < values.size(); i++) {
-		values[i] = log(std::accumulate(eco_samples[i].begin(), eco_samples[i].end(), 0));
-	}
+    const auto count = eco_measurements.size();
+    std::vector<f32> values(count);
+    for (size_t i = 0; i < values.size(); i++) {
+        values[i] = log(std::accumulate(eco_measurements[i].begin(), eco_measurements[i].end(), 0));
+    }
 
-	f32 changes_mean = 0;
-	std::vector<f32> changes(count-1);
-	for (size_t i = 0; i < changes.size(); i++) {
-		changes[i] = values[i] = values[i];
-		changes_mean += changes[i];
-	}
-	changes_mean /= count;
+    f32 changes_mean = 0;
+    std::vector<f32> changes(count-1);
+    for (size_t i = 0; i < changes.size(); i++) {
+        changes[i] = values[i] = values[i];
+        changes_mean += changes[i];
+    }
+    changes_mean /= count;
 
-	f32 volatility = 0;
-	for (f32 change : changes) {
-		f32 mean_diff = change - changes_mean;
-		volatility += mean_diff * mean_diff;
-	}
-	volatility = sqrt(volatility / changes.size());
+    f32 volatility = 0;
+    for (f32 change : changes) {
+        f32 mean_diff = change - changes_mean;
+        volatility += mean_diff * mean_diff;
+    }
+    volatility = sqrt(volatility / changes.size());
 
-	f32 sum_x = 0;
-	f32 sum_y = 0;
-	f32 sum_xx = 0;
-	f32 sum_xy = 0;
-	for (size_t x = 0; x < count; x++) {
-		f32 y = values[x];
-		sum_x += x;
-		sum_y += y;
-		sum_xx += x * x;
-		sum_xy += x * y;
-	}
-	f32 slope = (count * sum_xy - sum_x * sum_y) / (count * sum_xx - sum_x * sum_x);
+    f32 sum_x = 0;
+    f32 sum_y = 0;
+    f32 sum_xx = 0;
+    f32 sum_xy = 0;
+    for (size_t x = 0; x < count; x++) {
+        f32 y = values[x];
+        sum_x += x;
+        sum_y += y;
+        sum_xx += x * x;
+        sum_xy += x * y;
+    }
+    f32 slope = (count * sum_xy - sum_x * sum_y) / (count * sum_xx - sum_x * sum_x);
 
-	return slope * (1 + volatility);
+    return slope * (1 + volatility);
 }
