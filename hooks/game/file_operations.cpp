@@ -61,10 +61,10 @@ namespace hooks
 
 		v7 = a1;
 		if (g_is_in_replay) {
-			v3 = *scenarioCHKSize;
+			v3 = *g_scenario_chk_size;
 			v4 = scenario_chk;
 			v7 = 0;
-			result = readMapChunks(0, (s32)scenario_chk, (s32*)&v7, *scenarioCHKSize);
+			result = readMapChunks(0, (s32)scenario_chk, (s32*)&v7, *g_scenario_chk_size);
 			if (result)
 			{
 				if (game_data->victory_condition != VictoryCondition::Default || game_data->starting_units || game_data->tournament_mode_enabled)

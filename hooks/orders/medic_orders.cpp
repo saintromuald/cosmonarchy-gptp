@@ -3,8 +3,7 @@
 #include "globals.h"
 #include <math_utils.h>
 
-namespace hooks
-{
+namespace hooks {
 	void orders_medic_heal2(Unit* unit) { // 00463740
 		if (!(unit->movement_flags & MovementFlags_Accelerating)) {
 			Image* current_image = unit->sprite->images.head;
@@ -174,18 +173,18 @@ namespace hooks
 			return false;
 		}
 
-		if (!target || target == cleric || cleric->status & UnitStatus::IsHallucination) {
+		if (!target || target == cleric || cleric->is_hallucination()) {
 			return false;
 		}
-		UnitExt* target_ext = get_unit_ext(target);
-		if (units_dat::base_property[target->id] & UnitProperty::Building
-		||  target->status & UnitStatus::InAir
+		auto& target_ext = target->ext();
+		if (target->is_building()
+		||  target->is_in_air()
 		|| !bw::is_allied_to(cleric->player, target->player)
 		||  target->player >= PlayerLimit
 		||  cleric->player >= PlayerLimit
 		||  target->hitpoints >= units_dat::max_hitpoints[target->id]
 		||  target->is_frozen()
-		||  target_ext->timers[TimerReviveFlagClearMax])
+		||  target_ext.timers[TimerReviveFlagClearMax])
 		{
 			return false;
 		}

@@ -4500,4 +4500,47 @@ bool is_melee_game(u8 game_type, u8 game_subtype) {
     }
     return false;
 }
+
+void set_merge_move_target(Unit* unit, Unit* target) {
+    s32 x = unit->sprite->position.x;
+    if (unit->sprite->position.x > MAXINT16) {
+        x = (0xFFFF0000) + unit->sprite->position.x;
+    }
+    if (target->sprite->position.x > MAXINT16) {
+        x += (0xFFFF0000) + target->sprite->position.x;
+    } else {
+        x += target->sprite->position.x;
+    }
+    if (x < 0) {
+        x -= 0xFFFFFFFF;
+    }
+
+    s32 y = unit->sprite->position.y;
+    if (unit->sprite->position.y > MAXINT16) {
+        y = (0xFFFF0000) + unit->sprite->position.y;
+    }
+    if (target->sprite->position.y > MAXINT16) {
+        y += (0xFFFF0000) + target->sprite->position.y;
+    } else {
+        y += target->sprite->position.y;
+    }
+    if (y < 0) {
+        y -= 0xFFFFFFFF;
+    }
+
+    x /= 2;
+    y /= 2;
+    if ((u16)x > MAXINT16) {
+        x = 0xFFFF0000 + (u16)x;
+    } else {
+        x = (u16)x;
+    }
+    if ((u16)y > MAXINT16) {
+        y = 0xFFFF0000 + (u16)y;
+    } else {
+        y = (u16)y;
+    }
+    helper::delayed_set_move_target_xy(unit, x, y);
+}
+
 } // namespace bw

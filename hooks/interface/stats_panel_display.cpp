@@ -857,7 +857,7 @@ namespace hooks {
                 helper::update_dialog(current_dialog);
             }
             u32 text_id = 0x313 + built_unit->get_race(); // "Mutating", "Adding On", "Opening Warp Rift"
-            helper::add_text_to_dialog(dialog, -40, (char*)g_stat_txt_tbl_new->get_string(text_id));
+            helper::add_text_to_dialog(dialog, -40, (char*)g_stat_txt_tbl->get_string32(text_id));
         }
     }
 
@@ -960,8 +960,8 @@ namespace hooks {
             }
 
             u32 progress_string_id = 0;
-            if (unit->status & UnitStatus::GroundedBuilding && unit->is_frozen()) {
-                progress_string_id = 0x33C; // "<6>Disabled" (<6> means 0x6 byte for red) (Unpowered for Protoss)
+            if (unit->is_grounded_building() && unit->is_frozen()) {
+                progress_string_id = 828; // "<6>Disabled" (<6> means 0x6 byte for red) (Unpowered for Protoss)
             } else {
                 u32 unit_id = unit->id;
                 if (!unit->is_completed()) {
@@ -973,15 +973,15 @@ namespace hooks {
 
                 // Note: original code recalculated unitId/built_unit_id, not done here to optimize things. -GPTP
                 if (unit_id_is_protoss_warp_factory(unit_id)) { // TODO: Revisit this, a saner way to achieve this result, especially since it doesn't even scale if we want the string to say "assembling" based on queued unit. -Pr0nogo
-                    progress_string_id = 0x303; //"Morphing" ("Building" for Terran, "Opening Warp Gate" for Protoss)
+                    progress_string_id = 771; //"Morphing" ("Building" for Terran, "Opening Warp Gate" for Protoss)
                 } else {
-                    progress_string_id = 0x306; //"Morphing" ("Building" for Terran and Protoss)
+                    progress_string_id = 774; //"Morphing" ("Building" for Terran and Protoss)
                 }
 
             }
 
             // Simplified lots of code here, should work. -GPTP
-            char* status_text = (char*)g_stat_txt_tbl_new->get_string(progress_string_id + unit->get_race());
+            char* status_text = (char*)g_stat_txt_tbl->get_string32(progress_string_id + unit->get_race());
             if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
                 current_dialog = dialog->child_dialog;
             } else {
@@ -1168,7 +1168,7 @@ namespace hooks {
                 current_dialog->flags |= BinDlgFlags::Highlighted;
                 helper::update_dialog(current_dialog);
             }
-            helper::add_text_to_dialog(dialog, -15, (char*)g_stat_txt_tbl_new->get_string(0x303 + unit->get_race())); // Zerg: "Morphing", Terran: "Building", Protoss: "Opening Warp Gate"
+            helper::add_text_to_dialog(dialog, -15, (char*)g_stat_txt_tbl->get_string32(771 + unit->get_race())); // Zerg: "Morphing", Terran: "Building", Protoss: "Opening Warp Gate"
         }
     }
 
@@ -1187,7 +1187,7 @@ namespace hooks {
             helper::dialog_set_progress_bar_value(dialog, 13, helper::get_remaining_build_time_percentage(unit));
 
             // Skipping hardcoded use of stat_txt_tbl. -GPTP			
-            helper::add_text_to_dialog(dialog, -30, (char*)g_stat_txt_tbl_new->get_string(0x316)); // Text: "Summoning"
+            helper::add_text_to_dialog(dialog, -30, (char*)g_stat_txt_tbl->get_string32(790)); // Text: "Summoning"
             helper::set_text_string(dialog);
             helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
         }
