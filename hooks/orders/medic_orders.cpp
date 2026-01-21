@@ -133,7 +133,12 @@ namespace hooks
 		} else {
 			if (unit->main_order_state == 0) {
 				if (target && helper::move_towards(unit, target) && unit->get_movable_state() != MovableState_UnmovableAtDestination) {
-					if (unit->is_target_within_min_range(target, 30)) {
+					u32 range = Cleric::HealRange;
+					auto& cleric_ext = unit->ext();
+					if (cleric_ext.values[ValueTriggerHealRangeSet]) {
+						range = cleric_ext.values[ValueTriggerHealRangeAmount];
+					}
+					if (unit->is_target_within_min_range(target, range)) {
 						helper::set_resource_target(unit);
 						unit->main_order_state = 1;
 					}
@@ -189,7 +194,6 @@ namespace hooks
 
 	// TODO: Figure out what these return values are used for, and make an enum. -Pr0nogo
 	u32 do_medic_heal(Unit* cleric, Unit* target) { // 00463C40
-		UnitExt* unit_ext = get_unit_ext(cleric);
 		if (!can_auto_heal(cleric)) {
 			return 0;
 		}
@@ -197,29 +201,35 @@ namespace hooks
 		if (cleric->can_use_tech(TechId::Healing, cleric->player)) {
 			if (target && helper::ai_order_heal(cleric, target)) {
 				Unit* acquired = target;
-				if (!acquired) {
+				if (!acquired || acquired->is_being_healed) {
 					acquired = helper::acquire_medic_heal_target(cleric);
+					return 0;
 				}
-				if (acquired) {
-					helper::unit_order_move_to_target_unit(cleric, acquired);
-					if (!cleric->is_target_within_min_range(acquired, 30)) {
-						if (!(cleric->status & UnitStatus::AttackMove)) {
-							helper::move_to_target(acquired, cleric);
-						}
-						return 3;
+				helper::unit_order_move_to_target_unit(cleric, acquired);
+				u32 range = Cleric::HealRange;
+				auto& cleric_ext = cleric->ext();
+				if (cleric_ext.values[ValueTriggerHealRangeSet]) {
+					range = cleric_ext.values[ValueTriggerHealRangeAmount];
+				}
+				if (!cleric->is_target_within_min_range(acquired, range)) {
+					if (!(cleric->status & UnitStatus::AttackMove)) {
+						helper::move_to_target(acquired, cleric);
 					}
-					bw::decloak_passive_proc(cleric);
-					target->heal_hp(Cleric::HealAmount, cleric);
+					return 3;
+				}
+				bw::decloak_passive_proc(cleric);
+				target->heal_hp(Cleric::HealAmount, cleric);
 
-					// Nanoshield passive
-					if (cleric->id == UnitId::TerranCleric) {
-						auto& target_ext = target->ext();
-						target_ext.timers[TimerClericHeal] = Cleric::NanoshieldTimer;
-					}
-					return 1;
+				// Nanoshield passive
+				if (cleric->id == UnitId::TerranCleric) {
+					auto& target_ext = target->ext();
+					target_ext.timers[TimerClericHeal] = Cleric::NanoshieldTimer;
 				}
+				target->is_being_healed = 1;
+				return 1;
 			}
 		}
 		return 0;
 	}
+
 }

@@ -214,7 +214,16 @@ struct TriggerButton {
     s32 priority;
 };
 
-using EcoSample = std::array<f32, PlayerLimit>;
+struct DesyncState {
+    bool type_1;
+    bool type_2;
+    bool type_3;
+    bool type_4;
+    bool warning_player_flag;
+    bool warning_hash_struct;
+};
+
+using EcoMeasurements = std::array<f32, PlayerLimit>;
 
 struct Globals {
     bool preferred_colors_set;
@@ -252,6 +261,9 @@ enum TriggerStat : u8 {
     TriggerStat_SplashMedium,
     TriggerStat_SplashOuter,
     TriggerStat_TimedLife,
+    TriggerStat_Wireframe,
+    TriggerStat_Buttonset,
+    TriggerStat_HealRange,
 
     TriggerStat_Count,
 };
@@ -265,6 +277,9 @@ static const char* trigger_stat_names[] = {
     "splash_medium",
     "splash_outer",
     "timed_life",
+    "wireframe",
+    "buttonset",
+    "heal_range",
 };
 C_ASSERT(ARRAY_SIZE(trigger_stat_names) == TriggerStat_Count);
 
