@@ -137,7 +137,7 @@ static u32 main_order_func_offsets[][3] {
 	{ 0x004E7700,	/*OrderId::MoveUnload*/				Func_Type::PUSH,2},
 	{ 0x00492850,	/*OrderId::FireYamatoGun1*/			Func_Type::EAX,	2},
 	{ 0x004F6FA0,	/*OrderId::FireYamatoGun2*/			Func_Type::EAX,	2},
-	{ 0x00492850,	/*OrderId::Lockdown*/				Func_Type::EAX,	2},
+	{ 0x00492850,	/*OrderId::LobotomyGrenade*/		Func_Type::EAX,	2},
 	{ 0x004E9E60,	/*OrderId::Burrow*/					Func_Type::EAX,	2},
 	{ 0x004E9860,	/*OrderId::Burrowed*/				Func_Type::EAX,	2},
 	{ 0x004EA670,	/*OrderId::Unburrow*/				Func_Type::EAX,	2},
@@ -327,19 +327,19 @@ namespace hooks {
 				helper::EDI_order(unit, main_order_func_offsets[OrderId::Warpin][0]);
 			} break;
 			case OrderId::BlissfulEmbrace: {
-				UnitExt* unit_ext = get_unit_ext(unit);
+				auto& unit_ext = unit->ext();
 				Unit* target = unit->order_target.unit;
 				if (target && can_infest(unit->player, target)) {
 					if (helper::get_distance_to_unit(unit, target) > 16) {
 						helper::spell_order_move_towards_target(unit, 12);
-					} else if (!(unit->movement_flags & MovementFlags_Moving) && !unit_ext->timers[TimerGenericAbilityAnimation]) {
+					} else if (!(unit->movement_flags & MovementFlags_Moving) && !unit_ext.timers[TimerGenericAbilityAnimation]) {
 						mark_infesting(unit->player, target);
 						bw::decloak_passive_proc(unit);
 						UnitExt* target_ext = get_unit_ext(target);
 						target_ext->units[UnitInfestingMatraleth] = unit;
 
 						unit->play_iscript_animation(IscriptAnimation::CastSpell);
-						unit_ext->timers[TimerGenericAbilityAnimation] = 12;
+						unit_ext.timers[TimerGenericAbilityAnimation] = 12;
 					}
 				} else {
 					unit->order_target.unit = 0;
@@ -352,16 +352,23 @@ namespace hooks {
 			} break;
 			case OrderId::WyvernLandGrab: {
 				if (unit->id == UnitId::TerranWyvern) {
-					UnitExt* unit_ext = get_unit_ext(unit);
-					unit_ext->values[ValueWyvernLandGrabOn] = 1;
-					unit_ext->values[ValueWyvernLandGrabX] = unit->order_target.pt.x;
-					unit_ext->values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
+					auto& unit_ext = unit->ext();
+					unit_ext.values[ValueWyvernLandGrabOn] = 1;
+					unit_ext.values[ValueWyvernLandGrabX] = unit->order_target.pt.x;
+					unit_ext.values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
 				}
 			} break;
 			case OrderId::CastThroughTheLookingGlass: {
-				UnitExt* unit_ext = get_unit_ext(unit);
-				if (!unit_ext->timers[TimerHypnagogueChannel] && !unit_ext->values[ValueTryCastCustomSpell]) {
-					unit_ext->values[ValueTryCastCustomSpell] = true;
+				auto& unit_ext = unit->ext();
+				if (!unit_ext.timers[TimerHypnagogueChannel] && !unit_ext.values[ValueTryCastCustomSpell]) {
+					unit_ext.values[ValueTryCastCustomSpell] = true;
+				}
+			} break;
+			case OrderId::AskosiRematerialize:
+			case OrderId::LobotomyWarhead: {
+				auto& unit_ext = unit->ext();
+				if (!unit_ext.values[ValueTryCastCustomSpell]) {
+					unit_ext.values[ValueTryCastCustomSpell] = true;
 				}
 			} break;
 			default: {
@@ -448,21 +455,17 @@ namespace hooks {
 	// Hooked to refund queued structures. -Pr0nogo
 	void do_next_queued_order(Unit* unit) { // 00475000
 		Order* queue_head = unit->order_queue_head;
-		if (unit->unit_ai) {
-			if (queue_head) {
-				if (unit->is_burrowed()) {
-					u32 order_queue_id = queue_head->order_id;
-					if (order_queue_id) {
-						if (order_queue_id != OrderId::Unburrow && order_queue_id != OrderId::Burrowed && order_queue_id != OrderId::ComputerAI) {
-							if (!unit_id_is_trap(unit->id)
-							&& (!unit_id_is_burrowed_attacker(unit->id) || order_queue_id != OrderId::Guard && order_queue_id != OrderId::AttackFixedRange))
-							{
-								helper::insert_order_targeting_ground_before(OrderId::Unburrow, queue_head, unit, unit->sprite->position.x, unit->sprite->position.y);
-								unit->status &= ~UnitStatus::CanNotReceiveOrders;
-								helper::to_idle(unit);
-								return;
-							}
-						}
+		if (unit->unit_ai && queue_head && unit->is_burrowed()) {
+			u32 order_queue_id = queue_head->order_id;
+			if (order_queue_id) {
+				if (order_queue_id != OrderId::Unburrow && order_queue_id != OrderId::Burrowed && order_queue_id != OrderId::ComputerAI) {
+					if (!unit_id_is_trap(unit->id)
+						&& (!unit_id_is_burrowed_attacker(unit->id) || order_queue_id != OrderId::Guard && order_queue_id != OrderId::AttackFixedRange))
+					{
+						helper::insert_order_targeting_ground_before(OrderId::Unburrow, queue_head, unit, unit->sprite->position.x, unit->sprite->position.y);
+						unit->status &= ~UnitStatus::CanNotReceiveOrders;
+						helper::to_idle(unit);
+						return;
 					}
 				}
 			}
@@ -504,25 +507,23 @@ namespace hooks {
 				helper::ignore_iscript_go_to_idle(unit);
 				if (!(units_dat::base_property[unit->id] & UnitProperty::Subunit)) {
 					Unit* subunit = unit->subunit;
-					if (subunit) {
-						if (units_dat::base_property[subunit->id] & UnitProperty::Subunit) {
-							u32 final_order_id = order_id;
-							if (order_id == units_dat::return_to_idle_order[unit->id]) {
-								final_order_id = units_dat::return_to_idle_order[subunit->id];
-							} else if (order_id == units_dat::attack_unit_order[unit->id]) {
-								final_order_id = units_dat::attack_unit_order[subunit->id];
-							} else if (order_id == units_dat::attack_move_order[unit->id]) {
-								final_order_id = units_dat::attack_move_order[subunit->id];
-							} else if (!orders_dat::Unknown4[order_id]) {
-								return;
-							}
-
-							if (order_target) {
-								helper::order_interrupt(subunit, order_target, order_position.x, order_position.y, final_order_id);
-							} else {
-								helper::issue_order_targeting_fow(subunit, final_order_id, order_unit_id, order_position.x, order_position.y);
-							}
-						}
+					if (!subunit || !subunit->is_subunit()) {
+						return;
+					}
+					u32 final_order_id = order_id;
+					if (order_id == units_dat::return_to_idle_order[unit->id]) {
+						final_order_id = units_dat::return_to_idle_order[subunit->id];
+					} else if (order_id == units_dat::attack_unit_order[unit->id]) {
+						final_order_id = units_dat::attack_unit_order[subunit->id];
+					} else if (order_id == units_dat::attack_move_order[unit->id]) {
+						final_order_id = units_dat::attack_move_order[subunit->id];
+					} else if (!orders_dat::Unknown4[order_id]) {
+						return;
+					}
+					if (order_target) {
+						helper::order_interrupt(subunit, order_target, order_position.x, order_position.y, final_order_id);
+					} else {
+						helper::issue_order_targeting_fow(subunit, final_order_id, order_unit_id, order_position.x, order_position.y);
 					}
 				}
 			}
@@ -760,7 +761,7 @@ namespace hooks {
 						if (g_stat_txt_buffer.get_string_count32() > 1046) {
 							helper::show_stat_txt_to_player((s32)g_stat_txt_buffer.get_string32(1047), g_local_nation_id);
 						} else {
-							helper::show_stat_txt_to_player((s32)"", g_local_nation_id);
+							helper::show_stat_txt_to_player("", g_local_nation_id);
 						}
 						unit->main_order_state = 2;
 					}
@@ -890,6 +891,46 @@ namespace hooks {
 					unit->order_to_idle();
 				}
 			} break;
+		}
+	}
+
+	// Hooked to troubleshoot custom abilities. -Pr0nogo
+	void targeted_order(u16 x_pos, u32 fow_unit_id, Unit* unit, u16 y_pos, u32 order_type, u32 is_queued, u8 order_id, Unit* target, Point16 position, Unit* secondary_target) {
+		if (is_queued && orders_dat::can_be_queued[order_id]) {
+			switch (unit->main_order_id) {
+				case OrderId::Guard:
+				case OrderId::PlayerGuard:
+				case OrderId::Nothing2:
+				case OrderId::Pickup1:
+				case OrderId::Patrol:
+				case OrderId::Medic: {
+					helper::issue_order_by_type(order_id, x_pos, y_pos, order_type, unit, target, fow_unit_id, position, secondary_target);
+					return;
+				} break;
+				default: {
+					if (unit->order_queue_count < 8) {
+						if (g_order_count < 1800) {
+							helper::queue_new_order(order_type, x_pos, y_pos, unit, order_id, target, fow_unit_id, position, secondary_target);
+						}
+						else {
+							if (g_stat_txt_buffer.get_string_count() > 872) {
+								helper::show_stat_txt_to_player(g_stat_txt_buffer.get_string(873), unit->player);
+							} else {
+								helper::show_stat_txt_to_player("", unit->player);
+							}
+						}
+					} else {
+						if (g_stat_txt_buffer.get_string_count() > 870) {
+							helper::show_stat_txt_to_player(g_stat_txt_buffer.get_string(871), unit->player);
+						} else {
+							helper::show_stat_txt_to_player("", unit->player);
+						}
+					}
+					break;
+				}
+			}
+		} else {
+			helper::issue_order_by_type(order_id, x_pos, y_pos, order_type, unit, target, fow_unit_id, position, secondary_target);
 		}
 	}
 

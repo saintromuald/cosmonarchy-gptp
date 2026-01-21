@@ -239,7 +239,7 @@ namespace {
 	//	(void*)0x0048B80B,	// 15 - Yamato Gun
 	//	(void*)0x0048B8B9,	// 2 - Splash (Radial)
 	//	(void*)0x0048B8B9,	// 3 - Splash (Enemy)
-	//	(void*)0x0048B910	// 4 - Lockdown
+	//	(void*)0x0048B910	// 4 - LobotomyGrenade
 	//	(void*)0x0048B969,	// 6 - MatralethParasite
 	//	(void*)0x0048B9C8,	// 7 - Broodlings
 
@@ -248,7 +248,7 @@ namespace {
 		normal_damage_wrapper,		//  1 - Normal
 		radial_splash_wrapper,		//  2 - Splash (Radial)
 		enemy_splash_wrapper,		//  3 - Splash (Enemy)
-		lockdown_wrapper,			//  4 - Lockdown
+		lockdown_wrapper,			//  4 - LobotomyGrenade
 		nuke_wrapper,				//  5 - Nuclear Missile
 		parasite_wrapper,			//  6 - MatralethParasite
 		broodspawn_wrapper,			//  7 - Broodlings

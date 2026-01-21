@@ -397,15 +397,20 @@ namespace hooks {
 	void lockdown(Bullet* bullet, u32 weapon_id) {
 		s16 x = bullet->sprite->position.x;
 		s16 y = bullet->sprite->position.y;
-		s16 r = weapons_dat::outer_splash_radius[WeaponId::LobotomyMineExplosion];
-		bw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
-		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
-			Unit* target = units_in_splash.get_unit(i);
-			if (!target->is_dead() && !units_dat::group_flags[target->id].is_building
-			&&  !unit_id_is_trap(target->id) && !unit_id_is_resource_node(target->id, false) && target->id != UnitId::TerranMorningstar)
-			{
-				hooks::lockdown_hit(target, TerranMine::LobotomyTimerVanilla, bullet);
+		s16 r = weapons_dat::outer_splash_radius[weapon_id];
+		if (r) {
+			bw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
+			for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
+				Unit* target = units_in_splash.get_unit(i);
+				if (!target->is_dead() && !units_dat::group_flags[target->id].is_building
+				&&  !unit_id_is_trap(target->id) && !unit_id_is_resource_node(target->id, false) && target->id != UnitId::TerranMorningstar)
+				{
+					hooks::lockdown_hit(target, TerranMine::LobotomyTimerVanilla, bullet);
+				}
 			}
+		} else if (bullet->attack_target.unit) {
+			hooks::lockdown_hit(bullet->attack_target.unit, TerranMine::LobotomyTimerVanilla, bullet);
+			apply_lobotomy_slow(bullet->attack_target.pt);
 		}
 	}
 

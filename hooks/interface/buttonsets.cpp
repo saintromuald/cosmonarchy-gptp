@@ -691,7 +691,6 @@ namespace hooks {
 
                     if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Spell_Researched) {
                         auto& unit_ext = unit->ext();
-                        // Terran structure buttonset handling - Controlled Demolition / Emergency Detonation
                         switch (current_button->requirement_var) {
                             case TechId::ControlledDemolition: {
                                 if (unit_ext.timers[TimerControlledDemolition] || unit_ext.timers[TimerEmergencyDetonation]) {
@@ -707,7 +706,8 @@ namespace hooks {
                                     current_button_state = Button_State::Enabled;
                                 }
                             } break;
-                            case TechId::HypnagogueThroughTheLookingGlass: {
+                            case TechId::HypnagogueThroughTheLookingGlass:
+                            case TechId::TritonLobotomyWarhead: {
                                 current_button_state = Button_State::Enabled;
                             } break;
                             case TechId::FacadePryingEyes: {
@@ -1549,8 +1549,9 @@ namespace hooks {
                                 switch (current_button->requirement_var) {
                                     case UnitId::TerranRamesses:
                                     case UnitId::TerranDurendal:
-                                    case UnitId::TerranCataphract: {
-                                        if (unit->status & UnitStatus::GroundedBuilding) {
+                                    case UnitId::TerranCataphract:
+                                    case UnitId::TerranTriton: {
+                                        if (unit->is_grounded_building()) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Invisible;
@@ -2672,8 +2673,9 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranHeracles: {
-                                    if (current_button->icon_id == IconId::FusionCutterHarvest) { // Kelvin Munitions
+                                case UnitId::TerranHeracles:
+                                case UnitId::TerranTriton: {
+                                    if (current_button->icon_id == IconId::KelvinMunitions) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

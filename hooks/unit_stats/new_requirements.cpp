@@ -356,7 +356,8 @@ namespace hooks {
             switch (unit_id) {
                 case UnitId::TerranRamesses:
                 case UnitId::TerranDurendal:
-                case UnitId::TerranCataphract: {
+                case UnitId::TerranCataphract:
+                case UnitId::TerranTriton: {
                     return true;
                 } break;
             }
@@ -1893,7 +1894,8 @@ namespace hooks {
                 switch (unit_id) {
                     case UnitId::TerranRamesses:
                     case UnitId::TerranDurendal:
-                    case UnitId::TerranCataphract: {
+                    case UnitId::TerranCataphract:
+                    case UnitId::TerranTriton: {
                         if (in_air) {
                             return TECH_HIDDEN;
                         }

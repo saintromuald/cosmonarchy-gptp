@@ -14,10 +14,10 @@ namespace hooks {
 		{
 			u16 tech_cost = techdata_dat::energy_cost[tech_id] << 8;
 			*energy_cost = tech_cost;
-			if (caster->energy >= tech_cost) { // Used to check for TheGathering cheat.			
+			if (caster->energy >= tech_cost) {
 				if (tech_id == TechId::Hallucination && !order_target) {
-					UnitExt* unit_ext = get_unit_ext(caster);
-					if (unit_ext->values[ValueJustCastedHallucination]) {
+					auto& unit_ext = caster->ext();
+					if (unit_ext.values[ValueJustCastedHallucination]) {
 						return 0;
 					}
 					Point16 target_pos = caster->order_target.pt;
@@ -70,7 +70,6 @@ namespace hooks {
 		switch (tech_id) {
 			// Targeting terrain; added many new cases
 			case TechId::Irradiate:
-			case TechId::EMPShockwave:
 			case TechId::ScannerSweep:
 			case TechId::CarapaceSwarm:
 			case TechId::Plague:
@@ -85,6 +84,12 @@ namespace hooks {
 			case TechId::MatralethParasite:
 			case TechId::GoskaLobotomyGrenade: {
 				return true;
+			}
+			case TechId::AskosiRematerialize: {
+				return target && bw::are_mutual_allies(caster->player, target->player);
+			}
+			case TechId::TritonLobotomyWarhead: {
+				return target != nullptr;
 			}
 			default: {
 				if (tech_id != TechId::SpiderMines) {
@@ -135,7 +140,7 @@ namespace hooks {
 	}
 
 	void orders_spell(Unit* unit) { // 00492850
-		UnitExt* unit_ext = get_unit_ext(unit);
+		auto& unit_ext = unit->ext();
 		u32 order_weapon_id = orders_dat::order_weapon_id[unit->main_order_id];
 		Unit* target = unit->order_target.unit;
 
@@ -144,22 +149,22 @@ namespace hooks {
 			bw::decloak_passive_proc(unit);
 			if (unit->order_signal & 0x20) {
 				unit->order_signal &= ~0x20;
-				unit_ext->timers[TimerSkyfall] = 3;
-				unit_ext->values[ValueSkyfallStacks] = 0;
+				unit_ext.timers[TimerSkyfall] = 3;
+				unit_ext.values[ValueSkyfallStacks] = 0;
 				Point16 pt = unit->order_target.pt;
 				if (unit->order_target.unit) {
 					pt = unit->order_target.unit->position;
 					unit->order_target.unit = 0;
 				}
-				unit_ext->values[ValueSkyfallX] = unit->order_target.pt.x;
-				unit_ext->values[ValueSkyfallY] = unit->order_target.pt.y;
+				unit_ext.values[ValueSkyfallX] = unit->order_target.pt.x;
+				unit_ext.values[ValueSkyfallY] = unit->order_target.pt.y;
 			}
 		}
 
 		if (unit->id == UnitId::TerranWyvern) {
-			unit_ext->values[ValueWyvernLandGrabOn] = 1;
-			unit_ext->values[ValueWyvernLandGrabX] = unit->order_target.pt.x;
-			unit_ext->values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
+			unit_ext.values[ValueWyvernLandGrabOn] = 1;
+			unit_ext.values[ValueWyvernLandGrabX] = unit->order_target.pt.x;
+			unit_ext.values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
 		}
 
 		if (unit->main_order_state == 2) {
@@ -342,8 +347,10 @@ namespace hooks {
 		Unit* order_target_unit = unit->order_target.unit;
 		if (unit->unit_ai) {
 			switch (order_id) {
-				// Stasis Field logic was originally also used for Lockdown (aka Magna Pulse)
-				case OrderId::StasisField: {
+				// Stasis Field logic was originally also used for LobotomyGrenade (aka Magna Pulse)
+				case OrderId::StasisField:
+				case OrderId::AskosiRematerialize:
+				case OrderId::LobotomyWarhead: {
 					if (!order_target_unit || order_target_unit->is_frozen()) {
 						return true;
 					}
@@ -364,9 +371,7 @@ namespace hooks {
 			}
 		}
 		if (orders_dat::use_weapon_targeting[order_id]) {
-			if (!helper::can_weapon_target_unit(order_weapon_id, order_target_unit, unit)) {
-				return true;
-			}
+			return helper::can_weapon_target_unit(order_weapon_id, order_target_unit, unit) == false;
 		}
 		u32 tech_id = orders_dat::tech_used[order_id];
 		switch (tech_id) {

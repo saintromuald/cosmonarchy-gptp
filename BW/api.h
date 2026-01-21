@@ -340,7 +340,7 @@ void update_dialog(BinDlg* dialog);     //1C400
 
 /// Checks whether the transport can hold this unit.
 ///
-/// This function checks whether [transport] has any status effects (Lockdown,
+/// This function checks whether [transport] has any status effects (LobotomyGrenade,
 /// Maelstrom, etc.), is owned by the same player, and has enough space for
 /// [unit]. It does NOT check whether [transport] is a hallucination, or is an
 /// Overlord without the transport upgrade, or whether the [unit] itself has any

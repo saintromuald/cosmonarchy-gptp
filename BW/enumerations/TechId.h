@@ -10,7 +10,7 @@ namespace TechId {
         CancelNewAbility					= 26, // Unused Tech 26 | used for: Wyvern Land Grab, Didact Dimensional Recall, Controlled Demolition
 
     // Terran
-        GoskaLobotomyGrenade				=  1, // Lockdown
+        GoskaLobotomyGrenade				=  1, // LobotomyGrenade
         ControlledDemolition				=  2, // EMP Shockwave
         SavantOnhitToggle					= 24, // Restoration
         ApostleLazarusAgent					= 32, // Lurker Aspect
@@ -20,6 +20,7 @@ namespace TechId {
         AzazelSublimeShepherd				= 40, // Unused Tech 40
         TalosSalvage						= 41, // Unused Tech 41
         HypnagogueThroughTheLookingGlass	= 42, // Unused Tech 42
+        TritonLobotomyWarhead   			= 46, // Unused Tech 46
         FacadePryingEyes                    = 47,
 
     // Protoss
@@ -28,7 +29,6 @@ namespace TechId {
     // Zerg
         MatralethEnsnaringBrood				= 13, // Spawn Broodlings
         ZergBlissfulEmbrace					= 35, // Unused Tech 35
-        KazitrithColonyAdaptation			= 46,
         StroluumSkryspawn					= 51,
 
         LarvalSubmenuSelectShared			= 9,  // Cloaking Field Wraith
@@ -39,8 +39,8 @@ namespace TechId {
         // Brood War \\
 
         Stimpacks				=  0,
-        Lockdown				=  1,
-        EMPShockwave			=  2,
+    //  Lockdown				=  1,
+    //  EMPShockwave			=  2,
         SpiderMines				=  3,
         ScannerSweep			=  4, // (default)
         TankSiegeMode			=  5,

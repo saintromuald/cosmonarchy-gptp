@@ -865,9 +865,9 @@ namespace helper {
     void set_font_handle(u32* font);																				// 0041FB30
 
     // For targeted_order
-    Order* queue_new_order(Order* a1, s16 a2, s16 a3, Unit* a4, u8 a5, s32 a6, s16 a7, Vec32* a8, Unit* a9);		// 00474B90
-    s32 show_stat_txt_to_player(s32 a1, s32 a2);																	// 0048CF00
-    void set_order_target(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, Unit* a6, s32 a7, Vec32* a8, Unit* a9);		    // 00475470
+    void queue_new_order(u32 order_type, s16 pos_x, s16 pos_y, Unit* unit, u8 order_id, Unit* target,
+                         u16 fow_unit_id, Point16 position, Unit* secondary_target);		                        // 00474B90
+    s32 show_stat_txt_to_player(const char* text, u32 player);														// 0048CF00
 
     // For select_units
     s32 select_single_unit_from_id(s32 index);																		// 00496D30
@@ -1943,4 +1943,8 @@ namespace helper {
     void decollide_or_unstack(Unit* unit, Point16* position);                                       // 004F29E0
     void set_next_waypoint(Unit* unit, u32 pos_x, u32 pos_y);                                       // 004EB130
     void get_allocated_path_single_step(Unit* unit, u32 next_pos, u32 end_pos);                     // 0042F830
+
+    void issue_order_by_type(u8 order_id, u16 pos_x, u16 pos_y, u32 order_type, Unit* unit, Unit* target,
+                             u32 fow_unit_id, Point16 position, Unit* secondary_target);             // 00475470
+    void command_targeted(u16 pos_x, u16 pos_y, Unit* unit, u32 unit_id, u8 order_id, u8 is_queued); // 0049AB00
 }

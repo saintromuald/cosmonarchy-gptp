@@ -148,12 +148,6 @@ bool is_unused_order(u8 order_id) {
 }
 
 u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId) {
-    if (orig_result == 0) { // Valid target 
-        bw::print("Can cast");
-        if (techId == TechId::Lockdown) {
-            bw::printf("Lockdown %d %d", caster->order_target.pt.x, caster->order_target.pt.y);
-        }
-    }
     return orig_result;
 }
 

@@ -232,7 +232,7 @@ enum Enum {
                     * Default Requirements: Unused. */
     FireYamatoGun2         = 0x72, /**< Move to cast spell on shrouded building.
                     * Default Requirements: Unused. */
-    Lockdown             = 0x73, /**< Cast Spell: Lockdown.
+    LobotomyGrenade        = 0x73, /**< Cast Spell: LobotomyGrenade.
                     * Default Requirements: Unused. */
     Burrow                 = 0x74, /**< Burrow Unit.
                     * Default Requirements: Unused. */
@@ -246,8 +246,8 @@ enum Enum {
                     * Default Requirements: Unused. */
     SummonBroodlings       = 0x79, /**< Cast Spell: Spawn Broodings.
                     * Default Requirements: Unused. */
-    EMPShockwave           = 0x7A, /**< Cast Spell: EMP Shockwave.
-                    * Default Requirements: Unused. */
+//  EMPShockwave           = 0x7A, /**< Cast Spell: EMP Shockwave.
+//                  * Default Requirements: Unused. */
     NukeWait               = 0x7B, /**< Unknown.
                     * Default Requirements: Unit must be Terran Nuclear Missile. */
     NukeTrain              = 0x7C, /**< Silo Idle
@@ -358,7 +358,7 @@ enum Enum {
                     * Default Requirements: Unit must be Terran Medic. */
     HealMove               = 0xB1, /**< Attack move command for the Terran Medic.
                     * Default Requirements: Unit must be Terran Medic. */
-    HoldPositionCleric      = 0xB2, /**< Holds Position for Terran Medics, heals units within distance.
+    HoldPositionCleric     = 0xB2, /**< Holds Position for Terran Medics, heals units within distance.
                     * Default Requirements: Unit must be Terran Medic. */
     MedicHeal2             = 0xB3, /**< Return to idle after heal.
                     * Default Requirements: Unused. */
@@ -382,14 +382,12 @@ enum Enum {
                     * Default Requirements: Unused. */
     None                   = 0xBD,
     
-    // Cosmonarchy BW \\
+    // Cosmonarchy \\
     
     // Terran
-    PaladinSkyfall				= 12,   // Attack Tile              | Paladin missile barrage ability		| unused
-    TalosSalvage				= 13,   // Hover                    | Savant energy siphon ability			| unused
-    EnergyDecay					= 104,  // Guardian Aspect          | Savant anti-specialist ability		| unused
-    Observance					= 122,  // EMP Shockwave            | Seraph armor rend ability				| unused
-    WyvernLandGrab				= 153,	// CTF COP (Initialize)		| Wyvern switch							| unused
+    LobotomyWarhead 			= 104,  // Guardian Aspect          | Triton stun + slow ability
+    LobotomyWarheadOld 			= 122,  // EMP Shockwave            | Triton stun + slow ability            | unused
+    WyvernLandGrab				= 153,	// CTF COP (Initialize)		| Wyvern target ground					| unused
     CastThroughTheLookingGlass	= 180,	// Restoration				| Hypnagogue transportation ability
     
     // Protoss

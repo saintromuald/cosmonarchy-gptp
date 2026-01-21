@@ -119,6 +119,7 @@ void load_config() {
         load_field(yaml_advisors, "terran", g_config.terran_advisors);
         load_field(yaml_advisors, "protoss", g_config.protoss_advisors);
         load_field(yaml_advisors, "zerg", g_config.zerg_advisors);
+        load_field(yaml_advisors, "askosi", g_config.askosi_advisors);
     }
 
     // Hotkeys
@@ -273,6 +274,7 @@ void save_config() {
         write_field(yaml, "terran", g_config.terran_advisors);
         write_field(yaml, "protoss", g_config.protoss_advisors);
         write_field(yaml, "zerg", g_config.zerg_advisors);
+        write_field(yaml, "askosi", g_config.askosi_advisors);
         yaml << YAML::EndMap;
     }
     yaml << YAML::Newline << YAML::Newline;

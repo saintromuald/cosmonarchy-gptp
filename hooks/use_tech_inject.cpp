@@ -3,22 +3,18 @@
 #include "BW/api.h"
 #include "hook_tools.h"
 
-namespace
-{
-	void __declspec(naked) btnsact_use_tech_wrapper() // 00423F70
-	{
+namespace {
+	void __declspec(naked) btnsact_use_tech_wrapper() { // 00423F70
 		static u16 id;
 		static GrpHead* grphead;
-		__asm
-		{
+		__asm {
 			MOV id, CX
 			MOV grphead, ESI
 			PUSHAD
 		}
 		// grphead framecount (1-9) is button number in command card
 		hooks::btnsact_use_tech(id, grphead);
-		__asm
-		{
+		__asm {
 			POPAD
 			RETN
 		}
@@ -26,8 +22,7 @@ namespace
 
 	const u32 Hook_Jump_SkipUpgradeOp = 0x0046D5CC;
 	const u32 Hook_Jump_UpgradeFunctionality = 0x0046D5BE;
-	void __declspec(naked) upgrade_id_comparison_wrapper()
-	{
+	void __declspec(naked) upgrade_id_comparison_wrapper() {
 		// EDX (0xffff), CX (firegraft shift), EAX (1)
 		static u32 edx_0xffff;
 		static u16 opcode;
@@ -38,15 +33,12 @@ namespace
 			MOV eax_res, EAX
 			PUSHAD
 		}
-		if (opcode < bw::get_aise_value(nullptr, nullptr, AiseId::UpgradeLength, 0, 0))
-		{
+		if (opcode < bw::get_aise_value(nullptr, nullptr, AiseId::UpgradeLength, 0, 0)) {
 			__asm {
 				POPAD
 				JMP Hook_Jump_UpgradeFunctionality
 			}
-		}
-		else
-		{
+		} else {
 			__asm {
 				POPAD
 				JMP Hook_Jump_SkipUpgradeOp
@@ -81,12 +73,10 @@ namespace
 	}
 }
 
-namespace hooks
-{
-	void inject_use_tech_hooks()
-	{
+namespace hooks {
+	void inject_use_tech_hooks() {
 		jump_patch(btnsact_use_tech_wrapper,		0x00423F70, 1);
 		jump_patch(upgrade_id_comparison_wrapper,	0x0046D5B8, 0);
-	//	jump_patch(tech_use_allowed_wrapper,		0x0046DD80, 2);
+	//	jump_patch(tech_use_allowed_wrapper,					0x0046DD80,		 2);
 	}
 }

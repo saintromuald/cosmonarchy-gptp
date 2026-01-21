@@ -588,3 +588,15 @@ void tick_psi_storm_damage(EffectField& effect, u32 update_period, u32 tick_scal
 			helper::get_direction_from_points(effect.position, unit->position), unit->is_building() ? 2 : 1);
 	}
 }
+
+void apply_lobotomy_slow(Point16 position) {
+	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
+		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
+			continue;
+		}
+		auto& victim_ext = victim->ext();
+		if (victim_ext.timers[TimerLobotomySlow] < TerranMine::LobotomyTimer) {
+			victim_ext.timers[TimerLobotomySlow] = TerranMine::LobotomyTimer;
+		}
+	}
+}

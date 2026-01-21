@@ -546,8 +546,11 @@ namespace hooks {
                     case OrderId::CastMaledictus: {
                         weapon = WeaponId::MindTyrantMaledictus;
                     } break;
-                    case OrderId::Lockdown: {
+                    case OrderId::LobotomyGrenade: {
                         weapon = WeaponId::GoskaLobotomyGrenade;
+                    } break;
+                    case OrderId::LobotomyWarhead: {
+                        weapon = WeaponId::TritonLobotomyWarhead;
                     } break;
                     case OrderId::Hallucination1:
                     case OrderId::NukePaint: {
@@ -571,8 +574,7 @@ namespace hooks {
                 Unit* ignore_resource_unit = 0;
 
                 // Worker harvest links
-                if (units_dat::base_property[unit->id] & UnitProperty::Worker
-                    && order_id_is_harvest_related(unit->main_order_id)) {
+                if (unit->is_worker() && order_id_is_harvest_related(unit->main_order_id)) {
                     Unit* target_resource = unit->worker.target_resource.unit;
                     if (target_resource) {
                         graphics::ColorId color = graphics::CYAN;
@@ -1072,6 +1074,8 @@ namespace hooks {
                 }
             } break;
             case UnitId::TerranGoliath:
+            case UnitId::TerranTriton:
+            case UnitId::TerranArhaun:
             case UnitId::TerranTiangou: {
                 helper::turn_unit(unit, 96);
                 if (unit->subunit) {
@@ -2243,6 +2247,69 @@ namespace hooks {
                         unit_ext.timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
                     } else {
                         unit_ext.timers[TimerSecondaryWeaponCooldown] = 3;
+                    }
+                }
+            } break;
+            case UnitId::AskosiVicar:
+            case UnitId::AskosiEmissary: {
+                // Askosi units - Rematerialize
+                bool is_air_unit = unit->is_in_air();
+                auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
+                if (try_cast && (unit->main_order_id != OrderId::AskosiRematerialize || unit->is_frozen())) {
+                    try_cast = false;
+                }
+                if (try_cast && !unit_ext.timers[TimerTryCastCustomSpell]) {
+                    Unit* target = unit->order_target.unit;
+                    if (!target || !bw::are_mutual_allies(unit->player, target->player)) {
+                        // TODO: add error handling
+                    } else {
+                        Point16 target_pos = {unit->order_target.unit->get_x(), unit->order_target.unit->get_y()};
+                        u32 range = Askosi::RematerializeCastRange;
+                        if (!helper::is_target_within_min_range(unit, range, target)) {
+                            if (unit->order_target.unit) {
+                                helper::spell_order_move_towards_target(unit, range);
+                            } else {
+                                helper::set_move_target_xy(unit, target_pos.x, target_pos.y);
+                            }
+                            unit_ext.timers[TimerTryCastCustomSpell] = 3;
+                        } else {
+                            u16 energy_cost = 0;
+                            if (helper::spell_order(unit, TechId::AskosiRematerialize, &energy_cost, range, 1330)) {
+                                unit->spend_energy(energy_cost);
+                                bw::teleport_to_unit(target, unit, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
+                                try_cast = false;
+                            }
+                        }
+                    }
+                }
+            } break;
+            case UnitId::TerranTriton: {
+                auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
+                if (try_cast && (unit->main_order_id != OrderId::LobotomyWarhead || unit->is_frozen())) {
+                    try_cast = false;
+                }
+                if (try_cast && !unit_ext.timers[TimerTryCastCustomSpell]) {
+                    Unit* target = unit->order_target.unit;
+                    if (!target) {
+                        // TODO: add error handling
+                    } else {
+                        Point16 target_pos = { unit->order_target.unit->get_x(), unit->order_target.unit->get_y() };
+                        u32 range = TerranTriton::LobotomyWarheadRange;
+                        if (!helper::is_target_within_min_range(unit, range, target)) {
+                            if (unit->order_target.unit) {
+                                helper::spell_order_move_towards_target(unit, range);
+                            } else {
+                                helper::set_move_target_xy(unit, target_pos.x, target_pos.y);
+                            }
+                            unit_ext.timers[TimerTryCastCustomSpell] = 3;
+                        } else {
+                            u16 energy_cost = 0;
+                            if (helper::spell_order(unit, TechId::TritonLobotomyWarhead, &energy_cost, range, 1330)) {
+                                unit->spend_energy(energy_cost);
+                                fire_bullet(unit, WeaponId::TritonLobotomyWarhead, unit->order_target);
+                                try_cast = false;
+                            }
+                        }
                     }
                 }
             } break;

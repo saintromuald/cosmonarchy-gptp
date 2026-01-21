@@ -92,14 +92,18 @@ inline constexpr s32 IncinerateTimer = 5 * 24 + 1;
 inline constexpr s32 DetonationRange = 2 * 32;
 }
 
-namespace Cuirass {
-inline constexpr u32 SelfReviveHP = 50 * 256;
-inline constexpr s32 SelfHeal = 160; // (15 * 256) / 24 = 160
-}
-
 namespace Madrigal {
 inline constexpr s32 DirgeTimer = 48 + 1;
 inline constexpr s32 DirgeDamage = 5;
+}
+
+namespace TerranTriton {
+inline constexpr s32 LobotomyWarheadRange = 7 * 32;
+}
+
+namespace Cuirass {
+inline constexpr u32 SelfReviveHP = 50 * 256;
+inline constexpr s32 SelfHeal = 160; // (15 * 256) / 24 = 160
 }
 
 namespace UpstartWendigo {

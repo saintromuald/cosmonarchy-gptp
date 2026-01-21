@@ -62,6 +62,9 @@ namespace hooks {
                 case UnitId::TerranCyprian: {
                     return helper::get_random_unit_response(SoundId::CyprianOrderAggressive01, SoundId::CyprianOrderAggressive04);
                 } break;
+                case UnitId::TerranCannibal: {
+                    return helper::get_random_unit_response(SoundId::CannibalOrderAggressive01, SoundId::CannibalOrderAggressive04);
+                } break;
                 case UnitId::TerranSavantEntropyGauntlets:
                 case UnitId::TerranSavantPowerSiphon: {
                     return helper::get_random_unit_response(SoundId::SavantOrderAggressive01, SoundId::SavantOrderAggressive04);
@@ -110,8 +113,14 @@ namespace hooks {
                 case UnitId::TerranCataphract: {
                     return helper::get_random_unit_response(SoundId::CataphractOrderAggressive01, SoundId::CataphractOrderAggressive04);
                 } break;
+                case UnitId::TerranTriton: {
+                    return helper::get_random_unit_response(SoundId::TritonOrderAggressive01, SoundId::TritonOrderAggressive04);
+                } break;
                 case UnitId::TerranPaladin: {
                     return helper::get_random_unit_response(SoundId::PaladinOrderAggressive01, SoundId::PaladinOrderAggressive04);
+                } break;
+                case UnitId::TerranPazuzu: {
+                    return helper::get_random_unit_response(SoundId::PazuzuOrderAggressive01, SoundId::PazuzuOrderAggressive04);
                 } break;
                 case UnitId::TerranAnticthon: {
                     return helper::get_random_unit_response(SoundId::AnticthonOrderAggressive01, SoundId::AnticthonOrderAggressive04);

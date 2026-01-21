@@ -117,6 +117,8 @@ namespace UnitId {
         TerranSavantPowerSiphon                             = 428,
         TerranOgunWorkerMode                                = 494,
         TerranOgunSmithyMode                                = 497,
+        TerranTriton                                        = 512,
+        TerranTritonTurret                                  = 513,
 
     // Terran-Unit-Factional
         TerranCohort										= 50,		// Infested Terran

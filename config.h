@@ -52,6 +52,7 @@ struct Config {
     std::vector<Advisor> terran_advisors{};
     std::vector<Advisor> protoss_advisors{};
     std::vector<Advisor> zerg_advisors{};
+    std::vector<Advisor> askosi_advisors{};
     bool celebrations_enabled = true;
 
     // Hotkeys

@@ -657,6 +657,9 @@ namespace hooks {
                         // Paladin - Offset: Linear
                         fire_line(unit, weapon_id, 10, 32, 2, 16);
                     } break;
+                    case WeaponId::TritonLobotomyWarhead: {
+                        fire_bullet(unit, weapon_id, unit->order_target);
+                    } break;
                     case WeaponId::AnticthonEncirclingMirror: {
                         // Multi-Attack V
                         fire_multiple(unit, weapon_id, 5, FilterEnemy, {});
