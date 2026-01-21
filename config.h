@@ -17,6 +17,7 @@ struct Config {
     bool show_timer = true;
     bool show_apm = true;
     bool always_show_extended_tooltips = false;
+    bool suppress_windows_key = false;
 
     // Selection UI
     UiBool show_rally_lines = true;

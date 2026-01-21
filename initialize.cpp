@@ -162,6 +162,41 @@ namespace {
             load_wmode();
         }
     }
+
+    static HHOOK g_keyboard_hook = nullptr;
+
+    static LRESULT CALLBACK key_hook_block_win_key(int code, WPARAM wparam, LPARAM lparam) {
+        if (code >= 0) {
+            HWND foreground_window = GetForegroundWindow();
+            if (foreground_window == g_main_window) {
+                KBDLLHOOKSTRUCT* keypress = (KBDLLHOOKSTRUCT*)lparam;
+
+                if (keypress->vkCode == VK_LWIN || keypress->vkCode == VK_RWIN) {
+                    return 1;
+                }
+            }
+        }
+
+        return CallNextHookEx(g_keyboard_hook, code, wparam, lparam);
+    }
+
+    static void install_win_key_hook() {
+        if (g_keyboard_hook) return;
+
+        g_keyboard_hook = SetWindowsHookExA(
+            WH_KEYBOARD_LL,
+            key_hook_block_win_key,
+            GetModuleHandleA(nullptr),
+            0
+        );
+    }
+
+    static void remove_win_key_hook() {
+        if (!g_keyboard_hook) return;
+
+        UnhookWindowsHookEx(g_keyboard_hook);
+        g_keyboard_hook = nullptr;
+    }
 }
 
 BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
@@ -191,6 +226,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     std::chrono::milliseconds sleepq7(15000);
     std::this_thread::sleep_for(sleepq7);
     */
+
+    // Hook windows key to prevent accidentally breaking window focus
+    if (g_config.suppress_windows_key) install_win_key_hook();
 
     DatExt::extend_data();
 
@@ -918,4 +956,10 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_replay_hooks();
 
     return TRUE;
+}
+
+BOOL WINAPI Plugin::TerminatePlugin() {
+    remove_win_key_hook();
+
+    return true;
 }
