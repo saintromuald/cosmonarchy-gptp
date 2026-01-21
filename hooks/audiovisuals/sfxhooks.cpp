@@ -81,6 +81,12 @@ namespace hooks {
                 case UnitId::TerranStriga: {
                     return helper::get_random_unit_response(SoundId::StrigaOrderAggressive01, SoundId::StrigaOrderAggressive04);
                 } break;
+                case UnitId::TerranDilettante: {
+                    return helper::get_random_unit_response(SoundId::DilettanteOrderAggressive01, SoundId::DilettanteOrderAggressive04);
+                } break;
+                case UnitId::TerranSevenstep: {
+                    return helper::get_random_unit_response(SoundId::SevenstepOrderAggressive01, SoundId::SevenstepOrderAggressive04);
+                } break;
                 case UnitId::TerranAspirant: {
                     return helper::get_random_unit_response(SoundId::AspirantOrderAggressive01, SoundId::AspirantOrderAggressive04);
                 } break;
@@ -141,6 +147,12 @@ namespace hooks {
                 case UnitId::ProtossHierophant: {
                     return helper::get_random_unit_response(SoundId::HierophantOrderAggressive01, SoundId::HierophantOrderAggressive04);
                 } break;
+                case UnitId::ProtossAmaranth: {
+                    return helper::get_random_unit_response(SoundId::AmaranthOrderAggressive01, SoundId::AmaranthOrderAggressive04);
+                } break;
+                case UnitId::ProtossHerald: {
+                    return helper::get_random_unit_response(SoundId::HeraldOrderAggressive01, SoundId::HeraldOrderAggressive04);
+                } break;
                 case UnitId::ProtossVagrant: {
                     return helper::get_random_unit_response(SoundId::VagrantOrderAggressive01, SoundId::VagrantOrderAggressive04);
                 } break;
@@ -170,6 +182,18 @@ namespace hooks {
                 } break;
                 case UnitId::ProtossStarSovereign: {
                     return helper::get_random_unit_response(SoundId::StarSovereignOrderAggressive01, SoundId::StarSovereignOrderAggressive04);
+                } break;
+                case UnitId::ZergLiiralisk: {
+                    return helper::get_random_unit_response(SoundId::LiiraliskOrderAggressive01, SoundId::LiiraliskOrderAggressive03);
+                } break;
+                case UnitId::AskosiPilgrim: {
+                    return helper::get_random_unit_response(SoundId::PilgrimOrderAggressive01, SoundId::PilgrimOrderAggressive04);
+                } break;
+                case UnitId::AskosiProselyte: {
+                    return helper::get_random_unit_response(SoundId::ProselyteOrderAggressive01, SoundId::ProselyteOrderAggressive04);
+                } break;
+                case UnitId::AskosiMissionary: {
+                    return helper::get_random_unit_response(SoundId::MissionaryOrderAggressive01, SoundId::MissionaryOrderAggressive04);
                 } break;
             }
         }

@@ -3390,6 +3390,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return helper::get_random_unit_response(SoundId::KortarAdvisor_NoMinerals01, SoundId::KortarAdvisor_NoMinerals04);
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_NoMinerals01, SoundId::GoldenRepublicAdvisor_NoMinerals04);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_NoMinerals01, SoundId::GokuAdvisor_NoMinerals04);
+                    case Advisor::Askosi:	      return helper::get_random_unit_response(SoundId::AskosiAdvisor_NoMinerals01, SoundId::AskosiAdvisor_NoMinerals04);
+                    case Advisor::Bloodsummon:    return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_NoMinerals01, SoundId::BloodsummonAdvisor_NoMinerals04);
                 }
             } break;
             case AdvisorEvent_NoVespene: {
@@ -3404,6 +3406,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return helper::get_random_unit_response(SoundId::KortarAdvisor_NoVespene01, SoundId::KortarAdvisor_NoVespene04);
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_NoVespene01, SoundId::GoldenRepublicAdvisor_NoVespene04);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_NoVespene01, SoundId::GokuAdvisor_NoVespene04);
+                    case Advisor::Askosi:	      return helper::get_random_unit_response(SoundId::AskosiAdvisor_NoVespene01, SoundId::AskosiAdvisor_NoVespene04);
+                    case Advisor::Bloodsummon:    return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_NoVespene01, SoundId::BloodsummonAdvisor_NoVespene04);
                 }
             } break;
             case AdvisorEvent_NoEnergy: {
@@ -3418,6 +3422,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return helper::get_random_unit_response(SoundId::KortarAdvisor_NoEnergy01, SoundId::KortarAdvisor_NoEnergy04);
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_NoEnergy01, SoundId::GoldenRepublicAdvisor_NoEnergy04);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_NoEnergy01, SoundId::GokuAdvisor_NoEnergy04);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_NoEnergy01, SoundId::AskosiAdvisor_NoEnergy04);
+                    case Advisor::Bloodsummon:    return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_NoEnergy01, SoundId::BloodsummonAdvisor_NoEnergy04);
                 }
             } break;
             case AdvisorEvent_NoBuildTerran: {
@@ -3432,6 +3438,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_NoBuild01;
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_NoBuild01, SoundId::GoldenRepublicAdvisor_NoBuild02);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_NoBuild01, SoundId::GokuAdvisor_NoBuild02);
+                    case Advisor::Askosi:         return helper::get_random_unit_response(SoundId::AskosiAdvisor_NoBuild01, SoundId::AskosiAdvisor_NoBuild02);
+                    case Advisor::Bloodsummon:    return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_NoBuild01, SoundId::BloodsummonAdvisor_NoBuild02);
                 }
             } break;
             case AdvisorEvent_NoBuildProtoss: {
@@ -3446,6 +3454,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_NoWarp01;
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_NoWarp01, SoundId::GoldenRepublicAdvisor_NoWarp02);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_NoWarp01, SoundId::GokuAdvisor_NoWarp02);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_NoWarp01, SoundId::AskosiAdvisor_NoWarp02);
+                    case Advisor::Bloodsummon:    return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_NoWarp01, SoundId::BloodsummonAdvisor_NoWarp02);
                 }
             } break;
             case AdvisorEvent_NoBuildZerg: {
@@ -3460,6 +3470,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_NoBuild01;
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_NoBuild01, SoundId::GoldenRepublicAdvisor_NoBuild02);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_NoBuild01, SoundId::GokuAdvisor_NoBuild02);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_NoBuild01, SoundId::AskosiAdvisor_NoBuild02);
+                    case Advisor::Bloodsummon:    return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_NoBuild01, SoundId::BloodsummonAdvisor_NoBuild02);
                 }
             } break;
             case AdvisorEvent_NoLanding: {
@@ -3474,6 +3486,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_NoLand01;
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_NoLand01, SoundId::GoldenRepublicAdvisor_NoLand02);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_NoLand01, SoundId::GokuAdvisor_NoLand02);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_NoLand01, SoundId::AskosiAdvisor_NoLand02);
+                    case Advisor::Bloodsummon:    return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_NoLand01, SoundId::BloodsummonAdvisor_NoLand02);
                 }
             } break;
             case AdvisorEvent_LandingInterrupted: {
@@ -3488,6 +3502,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_LandingInterrupt01;
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_LandingInterrupt01, SoundId::GoldenRepublicAdvisor_LandingInterrupt02);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_LandingInterrupt01, SoundId::GokuAdvisor_LandingInterrupt02);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_LandingInterrupt01, SoundId::AskosiAdvisor_LandingInterrupt02);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_LandingInterrupt01, SoundId::BloodsummonAdvisor_LandingInterrupt02);
                 }
             } break;
             case AdvisorEvent_PlacementInterrupted: {
@@ -3502,6 +3518,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_NoBuild01;
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_NoBuild01, SoundId::GoldenRepublicAdvisor_NoBuild02);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_NoBuild01, SoundId::GokuAdvisor_NoBuild02);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_NoBuild01, SoundId::AskosiAdvisor_NoBuild02);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_NoBuild01, SoundId::BloodsummonAdvisor_NoBuild02);
                 }
             } break;
             case AdvisorEvent_StructureComplete_T: {
@@ -3519,6 +3537,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_Warp01;
                     case Advisor::GoldenRepublic: return SoundId::GoldenRepublicAdvisor_Warp01;
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_Warp01, SoundId::GokuAdvisor_Warp02);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_Warp01, SoundId::AskosiAdvisor_Warp02);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_Warp01, SoundId::BloodsummonAdvisor_Warp02);
                 }
             } break;
             case AdvisorEvent_StructureComplete_Z: {
@@ -3533,6 +3553,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_Build01;
                     case Advisor::GoldenRepublic: return SoundId::GoldenRepublicAdvisor_BuildZerg01;
                     case Advisor::Goku:		      return SoundId::GokuAdvisor_BuildZerg01;
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_BuildZerg01, SoundId::AskosiAdvisor_BuildZerg02);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_BuildZerg01, SoundId::BloodsummonAdvisor_BuildZerg02);
                 }
             } break;
             case AdvisorEvent_AddonComplete: {
@@ -3547,6 +3569,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_Addon01;
                     case Advisor::GoldenRepublic: return SoundId::GoldenRepublicAdvisor_Addon01;
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_Addon01, SoundId::GokuAdvisor_Addon02);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_Addon01, SoundId::AskosiAdvisor_Addon02);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_Addon01, SoundId::BloodsummonAdvisor_Addon02);
                 }
             } break;
             case AdvisorEvent_TechUpComplete: {
@@ -3561,6 +3585,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_Tech01;
                     case Advisor::GoldenRepublic: return SoundId::GoldenRepublicAdvisor_Tech01;
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_Tech01, SoundId::GokuAdvisor_Tech02);
+                    case Advisor::Askosi:	      return helper::get_random_unit_response(SoundId::AskosiAdvisor_Tech01, SoundId::AskosiAdvisor_Tech02);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_Tech01, SoundId::BloodsummonAdvisor_Tech02);
                 }
             } break;
             case AdvisorEvent_MissileArmed: {
@@ -3575,6 +3601,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_MissileArmed01;
                     case Advisor::GoldenRepublic: return SoundId::GoldenRepublicAdvisor_MissileArmed01;
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_MissileArmed01, SoundId::GokuAdvisor_MissileArmed02);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_MissileArmed01, SoundId::AskosiAdvisor_MissileArmed02);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_MissileArmed01, SoundId::BloodsummonAdvisor_MissileArmed02);
                 }
             } break;
             case AdvisorEvent_ArmyUnderAttack: {
@@ -3589,6 +3617,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return helper::get_random_unit_response(SoundId::KortarAdvisor_ArmyUnderAttack01, SoundId::KortarAdvisor_ArmyUnderAttack04);
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_ArmyUnderAttack01, SoundId::GoldenRepublicAdvisor_ArmyUnderAttack04);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_ArmyUnderAttack01, SoundId::GokuAdvisor_ArmyUnderAttack03);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_ArmyUnderAttack01, SoundId::AskosiAdvisor_ArmyUnderAttack04);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_ArmyUnderAttack01, SoundId::BloodsummonAdvisor_ArmyUnderAttack04);
                 }
             } break;
             case AdvisorEvent_BaseUnderAttack: {
@@ -3603,6 +3633,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return helper::get_random_unit_response(SoundId::KortarAdvisor_BaseUnderAttack01, SoundId::KortarAdvisor_BaseUnderAttack04);
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_BaseUnderAttack01, SoundId::GoldenRepublicAdvisor_BaseUnderAttack04);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_BaseUnderAttack01, SoundId::GokuAdvisor_BaseUnderAttack03);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_BaseUnderAttack01, SoundId::AskosiAdvisor_BaseUnderAttack04);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_BaseUnderAttack01, SoundId::BloodsummonAdvisor_BaseUnderAttack04);
                 }
             } break;
             case AdvisorEvent_MissileLaunch: {
@@ -3617,6 +3649,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_MissileLaunch01;
                     case Advisor::GoldenRepublic: return SoundId::GoldenRepublicAdvisor_MissileLaunch01;
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_MissileLaunch01, SoundId::GokuAdvisor_MissileLaunch02);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_MissileLaunch01, SoundId::AskosiAdvisor_MissileLaunch02);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_MissileLaunch01, SoundId::BloodsummonAdvisor_MissileLaunch02);
                 }
             } break;
             case AdvisorEvent_AllyUnderAttack_T: {
@@ -3631,6 +3665,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return helper::get_random_unit_response(SoundId::KortarAdvisor_AllyUnderAttack_Terran01, SoundId::KortarAdvisor_AllyUnderAttack_Terran03);
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_AllyUnderAttack_Terran01, SoundId::GoldenRepublicAdvisor_AllyUnderAttack_Terran03);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_AllyUnderAttack_Terran01, SoundId::GokuAdvisor_AllyUnderAttack_Terran03);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_AllyUnderAttack_Terran01, SoundId::AskosiAdvisor_AllyUnderAttack_Terran03);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_AllyUnderAttack_Terran01, SoundId::BloodsummonAdvisor_AllyUnderAttack_Terran03);
                 }
             } break;
             case AdvisorEvent_AllyUnderAttack_P: {
@@ -3645,6 +3681,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return helper::get_random_unit_response(SoundId::KortarAdvisor_AllyUnderAttack_Protoss01, SoundId::KortarAdvisor_AllyUnderAttack_Protoss03);
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_AllyUnderAttack_Protoss01, SoundId::GoldenRepublicAdvisor_AllyUnderAttack_Protoss03);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_AllyUnderAttack_Protoss01, SoundId::GokuAdvisor_AllyUnderAttack_Protoss03);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_AllyUnderAttack_Protoss01, SoundId::AskosiAdvisor_AllyUnderAttack_Protoss03);
+                    case Advisor::Bloodsummon:    return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_AllyUnderAttack_Protoss01, SoundId::BloodsummonAdvisor_AllyUnderAttack_Protoss03);
                 }
             } break;
             case AdvisorEvent_AllyUnderAttack_Z: {
@@ -3659,6 +3697,24 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return helper::get_random_unit_response(SoundId::KortarAdvisor_AllyUnderAttack_Zerg01, SoundId::KortarAdvisor_AllyUnderAttack_Zerg03);
                     case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_AllyUnderAttack_Zerg01, SoundId::GoldenRepublicAdvisor_AllyUnderAttack_Zerg03);
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_AllyUnderAttack_Zerg01, SoundId::GokuAdvisor_AllyUnderAttack_Zerg03);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_AllyUnderAttack_Zerg01, SoundId::AskosiAdvisor_AllyUnderAttack_Zerg03);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_AllyUnderAttack_Zerg01, SoundId::BloodsummonAdvisor_AllyUnderAttack_Zerg03);
+                }
+            } break;
+            case AdvisorEvent_AllyUnderAttack_A: {
+                switch (advisor) {
+                    case Advisor::Terran:	      return SoundId::AdvisorTerranUnderAttackZerg;
+                    case Advisor::Protoss:	      return SoundId::AdvisorProtossUnderAttackZerg;
+                    case Advisor::Zerg:		      return SoundId::AtaltrethAdvisor_AllyUnderAttack_Askosi01;
+                    case Advisor::Ackmed:	      return helper::get_random_unit_response(SoundId::AckmedAdvisor_ArmyUnderAttack01, SoundId::AckmedAdvisor_ArmyUnderAttack03);
+                    case Advisor::HADRAL:	      return SoundId::HADRALAdvisor_AllyUnderAttack_Askosi01;
+                    case Advisor::Artemis:	      return SoundId::ArtemisAdvisor_AllyUnderAttack_Askosi01;
+                    case Advisor::Furen:	      return SoundId::FurenAdvisor_AllyUnderAttack_Askosi01;
+                    case Advisor::Kortar:	      return helper::get_random_unit_response(SoundId::KortarAdvisor_AllyUnderAttack_Askosi01, SoundId::KortarAdvisor_AllyUnderAttack_Askosi03);
+                    case Advisor::GoldenRepublic: return helper::get_random_unit_response(SoundId::GoldenRepublicAdvisor_AllyUnderAttack_Askosi01, SoundId::GoldenRepublicAdvisor_AllyUnderAttack_Askosi03);
+                    case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_AllyUnderAttack_Askosi01, SoundId::GokuAdvisor_AllyUnderAttack_Askosi03);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_AllyUnderAttack_Askosi01, SoundId::AskosiAdvisor_AllyUnderAttack_Askosi03);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_AllyUnderAttack_Askosi01, SoundId::BloodsummonAdvisor_AllyUnderAttack_Askosi03);
                 }
             } break;
             case AdvisorEvent_AbandonAddon: {
@@ -3673,6 +3729,8 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Kortar:	      return SoundId::KortarAdvisor_AddonAbandon01;
                     case Advisor::GoldenRepublic: return SoundId::GoldenRepublicAdvisor_AddonAbandon01;
                     case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_AddonAbandon01, SoundId::GokuAdvisor_AddonAbandon02);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_AddonAbandon01, SoundId::AskosiAdvisor_AddonAbandon02);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_AddonAbandon01, SoundId::BloodsummonAdvisor_AddonAbandon02);
                 }
             } break;
         }

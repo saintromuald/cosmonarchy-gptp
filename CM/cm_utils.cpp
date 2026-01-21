@@ -350,6 +350,12 @@ bool play_unit_banter(Unit* victim, u16 speaker_unit_id) {
         case UnitId::ProtossHierophant: {
             bw::play_sound({SoundId::HierophantBanterB01, SoundId::HierophantBanterB03}, speaker);
         } break;
+        case UnitId::ProtossAmaranth: {
+            bw::play_sound({SoundId::AmaranthBanter01, SoundId::AmaranthBanter04}, speaker);
+        } break;
+        case UnitId::ProtossVagrant: {
+            bw::play_sound({SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04}, victim);
+        } break;
         case UnitId::ProtossPatriarch: {
             bw::play_sound({SoundId::PatriarchBanter01, SoundId::PatriarchBanter04}, speaker);
         } break;
@@ -573,6 +579,9 @@ u32 get_banter_cooldown(UnitId::Enum unit_id) {
         case UnitId::ProtossHierophant:
         case UnitId::ProtossPatriarch: {
             return 24 * 60;
+        }
+        case UnitId::ProtossAmaranth: {
+            return 24 * 15;
         }
         case UnitId::ProtossCicatus:
         case UnitId::ProtossVagrant: {

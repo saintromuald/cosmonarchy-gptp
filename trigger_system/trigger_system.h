@@ -110,6 +110,8 @@ enum class Advisor : u8 {
     Terran,
     Protoss,
     Zerg,
+    Askosi,
+    Bloodsummon,
 
     // Community
     Goku,
@@ -135,6 +137,8 @@ static const char* advisor_names[]{
     "Terran",
     "Protoss",
     "Zerg",
+    "Askosi",
+    "Bloodsummon",
 
     // Community
     "Goku",
