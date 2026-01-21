@@ -66,15 +66,12 @@ namespace {
 
 	void __declspec(naked) minimapGameMouseUpdate_wrapper() {
 		static BinDlg* minimap;
-
 		__asm {
 			//Truncated.
 			MOV		minimap, EDI
 			PUSHAD
 		}
-
-		hooks::minimapGameMouseUpdate(minimap);
-
+		hooks::minimap_game_mouse_update(minimap);
 		__asm {
 			POPAD
 			MOV		ESP, EBP
@@ -87,9 +84,7 @@ namespace {
 		__asm {
 			PUSHAD
 		}
-
-		hooks::setMapSizeConstants();
-
+		hooks::set_map_size_constants();
 		__asm {
 			POPAD
 			RET
@@ -102,7 +97,7 @@ namespace hooks {
 		jump_patch(minimap_ping_wrapper, 0x004A34C0, 1);
 		jump_patch(draw_unit_box_wrapper, 0x004A3FD0, 1);
 		jump_patch(setMapSizeConstants_wrapper, 0x004A4400, 1);
-		memory_patch(0x004A4CEA, &MinimapImageUpdate);
+		memory_patch(0x004A4CEA, &minimap_image_update);
 		jump_patch(minimapGameMouseUpdate_wrapper, 0x004A4D61, 2);
 	}
 }

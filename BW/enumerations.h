@@ -256,7 +256,9 @@ enum Enum : u8 {
     Random     = 6,
     None       = 7,  // also called Inactive
 
-    Askosi     = 69, // temp
+    Askosi      = 69,
+    Bloodsummon = 70,
+    Kogri       = 71,
 
     Count      = 3, // Original races
     FullCount  = 4,
