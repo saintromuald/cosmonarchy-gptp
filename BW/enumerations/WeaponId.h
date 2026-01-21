@@ -183,6 +183,7 @@ namespace WeaponId {
         ArhaunPhlegethonCannon              = 241,
         CannibalZuluSidekicks               = 243,
         SovrokorSovrolClaws                 = 250,
+        ValkyrieHecatonLogiRockets          = 252,
 
         // Terran \\
             
@@ -368,6 +369,7 @@ namespace WeaponId {
         AvatarReformingCarbine              = 182,
         Rematerialize                       = 207,
         PilgrimMiningSaber                  = 239,
+        RapidRandezvous                     = 247, // ability targeting
 
         // Misc \\
 

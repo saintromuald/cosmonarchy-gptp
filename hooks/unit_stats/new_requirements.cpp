@@ -394,23 +394,26 @@ namespace hooks {
                     }
                     return false;
                 }
-                case UnitId::TerranValkyrie: {
-                    return true;
-                }
-                case UnitId::TerranAncile: {
-                    if (faction != Faction::TerranUpstart) {
+                case UnitId::TerranPhiloc: {
+                    if (faction == Faction::TerranFuturistFederation) {
                         return true;
                     }
                     return false;
                 }
-                case UnitId::TerranTrojan: {
+                case UnitId::TerranValkyrie: {
                     if (faction != Faction::TerranHecatonCoalition) {
                         return true;
                     }
                     return false;
                 }
-                case UnitId::TerranPhiloc: {
-                    if (faction == Faction::TerranFuturistFederation) {
+                case UnitId::TerranValkyrieHecaton: {
+                    if (faction == Faction::TerranHecatonCoalition) {
+                        return true;
+                    }
+                    return false;
+                }
+                case UnitId::TerranAncile: {
+                    if (faction != Faction::TerranUpstart) {
                         return true;
                     }
                     return false;
@@ -421,6 +424,12 @@ namespace hooks {
                     }
                     return false;
                 } break;
+                case UnitId::TerranTrojan: {
+                    if (faction != Faction::TerranHecatonCoalition) {
+                        return true;
+                    }
+                    return false;
+                }
                 case UnitId::TerranQilin: {
                     if (faction == Faction::TerranHecatonCoalition) {
                         return true;
@@ -1935,14 +1944,26 @@ namespace hooks {
                         }
                         return TECH_HIDDEN;
                     }
-                    case UnitId::TerranValkyrie: {
-                        if (in_air) {
-                            return TECH_HIDDEN;
+                    case UnitId::TerranPhiloc: {
+                        if (faction == Faction::TerranFuturistFederation) {
+                            if (in_air) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
                         }
-                        return TECH_ACTIVE;
+                        return TECH_HIDDEN;
                     }
-                    case UnitId::TerranTrojan: {
+                    case UnitId::TerranValkyrie: {
                         if (faction != Faction::TerranHecatonCoalition) {
+                            if (in_air) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranValkyrieHecaton: {
+                        if (faction == Faction::TerranHecatonCoalition) {
                             if (in_air) {
                                 return TECH_HIDDEN;
                             }
@@ -1959,8 +1980,8 @@ namespace hooks {
                         }
                         return TECH_HIDDEN;
                     }
-                    case UnitId::TerranPhiloc: {
-                        if (faction == Faction::TerranFuturistFederation) {
+                    case UnitId::TerranWendigo: {
+                        if (faction == Faction::TerranUpstart) {
                             if (in_air) {
                                 return TECH_HIDDEN;
                             }
@@ -1968,8 +1989,8 @@ namespace hooks {
                         }
                         return TECH_HIDDEN;
                     }
-                    case UnitId::TerranWendigo: {
-                        if (faction == Faction::TerranUpstart) {
+                    case UnitId::TerranTrojan: {
+                        if (faction != Faction::TerranHecatonCoalition) {
                             if (in_air) {
                                 return TECH_HIDDEN;
                             }

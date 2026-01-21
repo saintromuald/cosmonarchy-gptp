@@ -465,6 +465,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
                 case UnitId::TerranVulture:               return UnitId::TerranVultureHecaton;
                 case UnitId::TerranGoliath:               return UnitId::TerranArhaun;
                 case UnitId::TerranMadrigalImperiosoMode: return UnitId::TerranMadrigalHecatonImperiosoMode;
+                case UnitId::TerranValkyrie:              return UnitId::TerranValkyrieHecaton;
                 case UnitId::TerranTrojan:                return UnitId::TerranQilin;
             }
         } break;
@@ -962,15 +963,15 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case WeaponId::ArhaunPhlegethonCannon:              return "Plegethon Cannon";
         case WeaponId::LiiraliskHomingSpore:                return "Homing Spores";
         case WeaponId::CannibalZuluSidekicks:               return "Zulu Sidekicks";
-        case 244:                                           return "U...nimplemented";
-        case 245:                                           return "U...nimplemented";
-        case 246:                                           return "U...nimplemented";
-        case 247:                                           return "U...nimplemented";
+        case WeaponId::KethrostalorStaggeredSpores:         return "Staggered Spores";
+        case WeaponId::TritonHydriaCannons:                 return "Hydria Cannons";
+        case WeaponId::TritonLobotomyWarhead:               return "Lobotomy Warhead";
+        case WeaponId::RapidRandezvous:                     return "Rapid Rendezvous";
         case WeaponId::AckmedMickenMelter:                  return "Micken Melter";
         case WeaponId::GoskaMedusaRifle:                    return "Medusa Rifle";
         case WeaponId::SovrokorSovrolClaws:                 return "Sovrol Claws";
         case WeaponId::StroluumMagnatesMaw:                 return "Magnate's Maw";
-        case 252:                                           return "U...nimplemented";
+        case WeaponId::ValkyrieHecatonLogiRockets:          return "Logi Rockets";
         case WeaponId::KerriganC10CanisterRifle:            return "C-10 Canister Rifle";
         case WeaponId::KerriganClaws:                       return "Claws";
         case WeaponId::NoneNew:                             return "None";

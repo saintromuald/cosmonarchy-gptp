@@ -1281,8 +1281,15 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranValkyrie: {
-                                        if (!in_air) {
-                                            current_button_state = Button_State::Enabled;
+                                        if (faction == Faction::TerranHecatonCoalition) {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranValkyrieHecaton: {
+                                        if (faction == Faction::TerranHecatonCoalition) {
+                                            if (!in_air) {
+                                                current_button_state = Button_State::Enabled;
+                                            }
                                         }
                                     } break;
                                     case UnitId::TerranAncile: {
@@ -2848,6 +2855,11 @@ namespace hooks {
                                 } break;
                                 case UnitId::TerranValkyrie: {
                                     if (current_button->icon_id == IconId::PsiAssault) { // Offset: Cone
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::TerranValkyrieHecaton: {
+                                    if (current_button->icon_id == IconId::FlyerAttack) { // Great Conflagration
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

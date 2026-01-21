@@ -389,6 +389,7 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::TerranSouthpaw
         || unit_id == UnitId::TerranTarasque
         || unit_id == UnitId::TerranPhiloc
+        || unit_id == UnitId::TerranValkyrieHecaton
         || unit_id == UnitId::TerranWendigo
         || unit_id == UnitId::TerranLuminary
         || unit_id == UnitId::TerranQilin
