@@ -442,6 +442,11 @@ struct Unit : public UnitLayout {
     void play_completion_sfx();
     SoundId::Enum get_error_sfx();
     Unit* corpse_cocoon_search();
+    bool is_valid_nydus();
+    bool is_rescuable();
+    bool recharges_shields();
+    bool is_constructor();
+    void pull_towards(Unit* source);
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

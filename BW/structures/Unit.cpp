@@ -1810,3 +1810,36 @@ Unit* Unit::corpse_cocoon_search() {
         }
     }
 }
+
+bool Unit::is_valid_nydus() {
+    auto& unit_ext = this->ext();
+    return (unit_ext.values[ValueIsNydusEntry] || unit_ext.values[ValueIsNydusExit] || this->id == UnitId::ZergNydusCesiant) && this->building.nydus_exit;
+}
+
+bool Unit::is_rescuable() {
+    u32 player_type = g_player_table[this->player].type;
+    return player_type == PlayerType::Rescuable || player_type == PlayerType::UnusedRescueActive;
+}
+
+bool Unit::recharges_shields() {
+    // Maybe we add this mechanic back in later, for Golden Republic Terrans or some other shield-user. -Pr0nogo
+    return false;
+}
+
+bool Unit::is_constructor() {
+    return this->is_worker() || this->id == UnitId::TerranOgunWorkerMode || this->id == UnitId::AskosiDyad;
+
+void Unit::pull_towards(Unit* source) {
+    auto& unit_ext = this->ext();
+    Point16 target_pos = source->position;
+    if (this->position != target_pos && !this->is_burrowed()) {
+        Point16 final_pos = this->position;
+        final_pos.x += unit_ext.repulsion_vector.x;
+        final_pos.y += unit_ext.repulsion_vector.y;
+        final_pos = bw::clamp_point(final_pos);
+
+        if (!bw::move_unit_improved(this, final_pos.x, final_pos.y) && unit_ext.timers[TimerPullTowards]) {
+            unit_ext.timers[TimerPullTowards] = 0;
+        }
+    }
+}

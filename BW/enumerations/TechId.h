@@ -11,9 +11,10 @@ namespace TechId {
     // Terran
         GoskaLobotomyGrenade				=  1, // LobotomyGrenade
         ControlledDemolition				=  2, // EMP Shockwave
+        DivineDiscipline                    = 10, // Ghost Personnel Cloaking
+        RejoinderOfService                  = 12, // Infestation
         SavantOnhitToggle					= 24, // Restoration
-        ApostleLazarusAgent					= 32, // Lurker Aspect
-        MadrigalTempoChange					= 36, // Unused Tech 36
+        ApostleLazarusAgent					= 32, // Lakizilisk Aspect
         PaladinSkyfall						= 37, // Unused Tech 37
         EmergencyDetonation					= 39, // Unused Tech 39
         AzazelSublimeShepherd				= 40, // Unused Tech 40
