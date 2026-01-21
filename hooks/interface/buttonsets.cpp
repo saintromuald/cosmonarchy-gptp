@@ -484,10 +484,10 @@ namespace hooks {
                         command.faction = Faction::TerranNydusTrinity;
                         helper::queue_game_command((u8*)&command, sizeof(command));
                     } break;
-                //	case RaceId::Protoss: {
-                //		command.faction = Faction::Protoss5;
-                //		helper::queue_game_command((u8*)&command, sizeof(command));
-                //	} break;
+                 	case RaceId::Protoss: {
+                 		command.faction = Faction::ProtossAstralOmen;
+                 		helper::queue_game_command((u8*)&command, sizeof(command));
+                 	} break;
                     case RaceId::Zerg: {
                         command.faction = Faction::ZergZorthosTendril;
                         helper::queue_game_command((u8*)&command, sizeof(command));
@@ -1737,7 +1737,14 @@ namespace hooks {
                             case UnitId::ProtossLattice: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::ProtossSimulacrum: {
-                                        current_button_state = Button_State::Enabled;
+                                        if (faction != Faction::ProtossAstralOmen) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossSimulacrumAstral: {
+                                        if (faction == Faction::ProtossAstralOmen) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
                                     } break;
                                     case UnitId::ProtossManifold: {
                                         if (faction != Faction::ProtossStarbound) {
@@ -1749,10 +1756,6 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
-                                    case UnitId::ProtossGolem:
-                                    case UnitId::ProtossIdol: {
-                                        current_button_state = Button_State::Enabled;
-                                    } break;
                                     case UnitId::ProtossVassal: {
                                         if (faction != Faction::ProtossOrderOfTheSacredSaber) {
                                             current_button_state = Button_State::Enabled;
@@ -1762,6 +1765,10 @@ namespace hooks {
                                         if (faction == Faction::ProtossOrderOfTheSacredSaber) {
                                             current_button_state = Button_State::Enabled;
                                         }
+                                    } break;
+                                    case UnitId::ProtossGolem:
+                                    case UnitId::ProtossIdol: {
+                                        current_button_state = Button_State::Enabled;
                                     } break;
                                 }
                             } break;
@@ -3067,7 +3074,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossSimulacrum:
-                                case UnitId::ProtossRenesair: {
+                                case UnitId::ProtossRenesair:
+                                case UnitId::ProtossSimulacrumAstral: {
                                     if (current_button->icon_id == IconId::ApialSensors) { // Autovitality
                                         current_button_state = Button_State::Enabled;
                                     }

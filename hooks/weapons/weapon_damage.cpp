@@ -455,7 +455,20 @@ namespace hooks {
         }
 
         // Weapon & Attacker based calcs
-        switch (data.weapon_id) { // Damage divisor calc
+        switch (data.weapon_id) {
+            // TODO: Extend weapons and remove these
+            case WeaponId::SimulacrumPhaseCannon: {
+                if (data.attacker->id == UnitId::ProtossSimulacrumAstral) {
+                    data.damage -= 256 * 2;
+                }
+            } break;
+            case WeaponId::VorvalClaws: {
+                if (data.attacker->id == UnitId::ZergGarvrokor) {
+                    data.damage += 256;
+                }
+            } break;
+
+            // Damage divisor calc
             case WeaponId::AshguardPhaseCremator: {
                 data.damage += KhalendricAshguard::IndomitableAnnexDamageMultiplier * target_ext.indomitable_annex_stacks * 256;
             } break;
@@ -764,7 +777,8 @@ namespace hooks {
                     }
                 } break;
                 case UnitId::ProtossRenesair:
-                case UnitId::ProtossSimulacrum: {
+                case UnitId::ProtossSimulacrum:
+                case UnitId::ProtossSimulacrumAstral: {
                     // Autovitality
                     if (data.target->can_proc_autovitality(data.attacker->player, data.shield_reduce_amount, data.damage)) {
                         target_ext.timers[TimerAutovitalityClone] = 4 * 24;

@@ -623,18 +623,15 @@ namespace hooks {
         }
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossLattice)) {
             switch (unit_id) {
-                case UnitId::ProtossVassal: {
-                    if (faction != Faction::ProtossOrderOfTheSacredSaber) {
-                        return true;
-                    }
-                } break;
-                case UnitId::ProtossRenesair: {
-                    if (faction == Faction::ProtossOrderOfTheSacredSaber) {
-                        return true;
-                    }
-                } break;
                 case UnitId::ProtossSimulacrum: {
-                    return true;
+                    if (faction != Faction::ProtossAstralOmen) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ProtossSimulacrumAstral: {
+                    if (faction == Faction::ProtossAstralOmen) {
+                        return true;
+                    }
                 } break;
                 case UnitId::ProtossManifold: {
                     if (faction != Faction::ProtossStarbound) {
@@ -643,6 +640,16 @@ namespace hooks {
                 } break;
                 case UnitId::ProtossManifoldStarbound: {
                     if (faction == Faction::ProtossStarbound) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ProtossVassal: {
+                    if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ProtossRenesair: {
+                    if (faction == Faction::ProtossOrderOfTheSacredSaber) {
                         return true;
                     }
                 } break;
@@ -2250,20 +2257,17 @@ namespace hooks {
             } break;
             case UnitId::ProtossLattice: {
                 switch (unit_id) {
-                    case UnitId::ProtossVassal: {
-                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
-                            return TECH_ACTIVE;
-                        }
-                        return TECH_HIDDEN;
-                    }
-                    case UnitId::ProtossRenesair: {
-                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
-                            return TECH_ACTIVE;
-                        }
-                        return TECH_HIDDEN;
-                    }
                     case UnitId::ProtossSimulacrum: {
-                        return TECH_ACTIVE;
+                        if (faction != Faction::ProtossAstralOmen) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::ProtossSimulacrumAstral: {
+                        if (faction == Faction::ProtossAstralOmen) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
                     }
                     case UnitId::ProtossManifold: {
                         if (faction != Faction::ProtossStarbound) {
@@ -2273,6 +2277,18 @@ namespace hooks {
                     }
                     case UnitId::ProtossManifoldStarbound: {
                         if (faction == Faction::ProtossStarbound) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::ProtossVassal: {
+                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::ProtossRenesair: {
+                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
                             return TECH_ACTIVE;
                         }
                         return TECH_HIDDEN;

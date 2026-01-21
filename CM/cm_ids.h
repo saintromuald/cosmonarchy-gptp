@@ -137,6 +137,7 @@ bool has_autovitality(UnitId::Enum unit_id);
 bool unit_id_turns_to_face_target(UnitId::Enum unit_id);
 bool has_interruptable_windup(UnitId::Enum unit_id);
 SoundId::Enum get_windup_sfx(UnitId::Enum unit_id);
+bool has_automandate(UnitId::Enum unit_id);
 bool is_terran_worker(UnitId::Enum unit_id);
 bool is_zerg_worker(UnitId::Enum unit_id);
 bool is_beacon(UnitId::Enum unit_id);

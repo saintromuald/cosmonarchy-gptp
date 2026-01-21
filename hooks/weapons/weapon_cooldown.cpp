@@ -88,6 +88,9 @@ namespace hooks {
 			case UnitId::ProtossVagrantShade: {
 				cooldown /= 1.5;
 			} break;
+			case UnitId::ProtossSimulacrumAstral: {
+				cooldown /= 1.2;
+			} break;
 			case UnitId::ZergGhitorokor: {
 				// Relentless Aggression
 				if (unit_ext.values[ValueGhitorokorRelentlessAggressionStacks]) {

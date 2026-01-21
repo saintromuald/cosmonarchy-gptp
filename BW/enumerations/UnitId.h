@@ -244,6 +244,8 @@ namespace UnitId {
         ProtossAshguard                                     = 424,
         ProtossDracadinOrder                                = 430,
         ProtossManifoldStarbound                            = 437,
+        ProtossSimulacrumAstral                             = 522,
+        ProtossWarlock                                      = 523,
 
     // Protoss-Building
         ProtossAutomatonRegister							= 158,		// Unused Protoss 1
