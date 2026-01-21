@@ -4476,7 +4476,8 @@ f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable) {
 	}
 
 	if (!regression_unstable) {
-        if (u32 regression_unit_id = bw::get_zerg_regression(UnitId::Enum(unit_id), faction, true, false, false); unit_id != UnitId::None) {
+        u32 regression_unit_id = bw::get_zerg_regression(UnitId::Enum(unit_id), faction, true, false, false);
+        if (regression_unit_id != UnitId::None) {
             cost += unit_id_total_cost(regression_unit_id, faction, regression_unstable);
         }
 	}

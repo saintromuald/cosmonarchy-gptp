@@ -506,8 +506,7 @@ namespace {
 
 
 namespace DatExt {
-	void units_dat_do_patch(u32 newCount)
-	{
+	void units_dat_do_patch(u32 newCount) {
 		u32 i,j, offs;
 		dat_table_patch((DatLoad*)LoadTable::Units_Dat, unit_r);
 
@@ -524,8 +523,7 @@ namespace DatExt {
 		unit_newArrs[1] = calloc(newCount * PLAYER_COUNT, sizeof(u32));
 		// - Null-terminated list of null-terminated lists of addresses
 		// - First value in list is the unit ID referenced, second value is the player ID
-		for (i = 0; unit_Complete[i] != 0 || i == 0; i++)
-		{
+		for (i = 0; unit_Complete[i] != 0 || i == 0; i++) {
 			offs = (u32)unit_newArrs[1] + (unit_Complete[i] * PLAYER_COUNT + unit_Complete[i + 1]) * sizeof(u32); // ID offset
 			i += simple_replace(&unit_Complete[i + 2], offs);
 			i += 2;
@@ -547,8 +545,7 @@ namespace DatExt {
 		unit_newArrs[5] = malloc(newCount * sizeof(u32) * 2);
 		// - Zero-terminated list of zero-terminated lists
 		j = 0;
-		do
-		{
+		do {
 			offs = (u32)unit_newArrs[5] + (unit_AIStrength[j] * newCount + unit_AIStrength[j + 1]) * sizeof(u32); // factor * 12 + add
 			j += simple_replace((u32*)&unit_AIStrength[j + 2], offs);
 			j += 3;
@@ -558,8 +555,7 @@ namespace DatExt {
 		unit_newArrs[6] = malloc(sizeof(AI_Main) * PLAYABLE_PLAYER_COUNT); // malloc((0x404 + newCount) * PLAYABLE_PLAYER_COUNT); // (0x404 + unit count) * 8 players
 		// - Zero-terminated list of {Player, Offset, ptr, ptr, ptr, ..., 0}
 		j = 0;
-		do
-		{
+		do {
 			offs = (u32)unit_newArrs[6] + unit_AIStruct[j] * sizeof(AI_Main) + unit_AIStruct[j + 1]; // player * (0x404 + entries) + offset
 			//offs = (u32)unit_newArrs[6] + unit_AIStruct[j] * (0x404 + newCount) + unit_AIStruct[j + 1]; // player * (0x404 + entries) + offset
 			j += simple_replace((u32*)&unit_AIStruct[j + 2], offs);
@@ -577,15 +573,13 @@ namespace DatExt {
 		unitCompleteTable_var = (UnitDeaths*)unit_newArrs[1];
 		unitKilledTable_var = (UnitDeaths*)unit_newArrs[2];
 		deathTable_var = (UnitDeaths*)unit_newArrs[3];
-		for (i = 0; i < PLAYER_COUNT; i++)
-		{
+		for (i = 0; i < PLAYER_COUNT; i++) {
 			g_unit_availability->available[i] = (u8*)(unit_newArrs[4]) + newCount * i;
 		}
 		g_ai_strength_air = (u32*)unit_newArrs[5];
 		g_ai_strength_ground = (u32*)unit_newArrs[5] + newCount;
 		AIScriptController_var = (AI_Main*)unit_newArrs[6];
-		//for (i = 0; i < PLAYABLE_PLAYER_COUNT; i++)
-		//{
+		//for (i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
 		//	AIScriptController_var[i] = (AI_Main*)((u32)(unit_newArrs[6]) + (0x404 + newCount)*i);
 		//}
 	
@@ -593,24 +587,20 @@ namespace DatExt {
 		units_dat_flingy_expand();
 	}
 	
-	void units_dat_flingy_expand()
-	{
+	void units_dat_flingy_expand() {
 		int i;
 		u32 offs;
-		DatLoad* datTable = (DatLoad*)LoadTable::Units_Dat;
+		DatLoad* dat_table = (DatLoad*)LoadTable::Units_Dat;
 	
 		// Loading default dat file?
-		if (datTable[0].length == 1)
-		{
-			u8* src = (u8*)datTable[0].address;
+		if (dat_table[0].length == 1) {
+			u8* src = (u8*)dat_table[0].address;
 			u16* dst;
-			if ((u32)datTable[0].address == 0x006644F8)
-			{
-				datTable[0].address = malloc(datTable[0].entries * 2);
+			if ((u32)dat_table[0].address == 0x006644F8) {
+				dat_table[0].address = malloc(dat_table[0].entries * 2);
 			}
-			dst = (u16*)datTable[0].address;	
-			for (i = datTable[0].entries - 1; i >= 0; i--)
-			{
+			dst = (u16*)dat_table[0].address;
+			for (i = dat_table[0].entries - 1; i >= 0; i--) {
 				dst[i] = src[i];
 			}	
 			// already patched?
@@ -618,12 +608,11 @@ namespace DatExt {
 		}
 	
 		// Apply patch	
-		offs = (u32)datTable[0].address;
+		offs = (u32)dat_table[0].address;
 		*(u32*)(&ThingyExpandFxns[0].bytes[4]) = offs;
 		*(u32*)(&ThingyExpandFxns[1].bytes[4]) = offs;
 		// Copy functions
-		for (i = 0; ThingyExpandFxns[i].ofs != NULL; i++)
-		{
+		for (i = 0; ThingyExpandFxns[i].ofs != NULL; i++) {
 			memory_patch(ThingyExpandFxns[i].ofs, ThingyExpandFxns[i].bytes, 9);
 		}
 		i = 0xC3; // Retn
@@ -631,8 +620,7 @@ namespace DatExt {
 		memory_patch(TE_FUNC_DD + 8, (u8*)&i, 1);
 	
 		// Replace assembly
-		for (i = 0; ThingyExpand[i].ofs != 0; i++)
-		{
+		for (i = 0; ThingyExpand[i].ofs != 0; i++) {
 			memory_patch(ThingyExpand[i].ofs, ThingyExpand[i].bytes, 3);
 			offs = ThingyExpand[i].func - ThingyExpand[i].ofs - 7; // Calculate relative offset
 			memory_patch(ThingyExpand[i].ofs + 3, offs);
@@ -640,10 +628,8 @@ namespace DatExt {
 	}
 	
 	void units_dat_unpatch() {
-		for (int i = 0; i < UNIT_ARR_COUNT; i++)
-		{
-			if (unit_newArrs[i] != NULL)
-			{
+		for (int i = 0; i < UNIT_ARR_COUNT; i++) {
+			if (unit_newArrs[i] != NULL) {
 				free(unit_newArrs[i]);
 				unit_newArrs[i] = NULL;
 			}

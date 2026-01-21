@@ -522,7 +522,7 @@ namespace hooks {
                                 goto iterate_selection;
                             }
                         }
-                        can_attack_final = unit_can_attack_target(target, unit, 1);
+                        can_attack_final = helper::unit_can_attack_target(target, unit, 1);
                         goto iterate_selection;
                     }
                     if (helper::can_weapon_target_unit(weapon_id, target, unit) || fow_unit_id < UnitId::None && ~(units_dat::base_property[fow_unit_id] >> 29) & 1) {
@@ -536,13 +536,17 @@ namespace hooks {
         iterate_selection:
             selected_units = selected_units_2 + 1;
             selected_units_2++;
-            if (selected_units_2 >= &ccmu_extender.new_client_selection_group[SelectionCap]) {
+            if (selected_units_2 >= &ccmu_extender.new_client_selection_group[SelectionLimit]) {
                 break;
             }
         }
 
         s32 error_type_2 = error;
         Unit* active_unit = *g_active_portrait_unit;
+        if (!active_unit) {
+            bw::print("target_related.cpp: unit was null when it shouldn't be!");
+            return;
+        }
         u8 race = active_unit->get_race();
         if (use_weapon) {
             if (!can_attack_final || error != 0xFFFF) {
@@ -1061,5 +1065,33 @@ namespace hooks {
             return helper::is_target_within_min_range(final_unit, min_range, target);
         }
         return false;
+    }
+
+    // Hooked to eventually extend weapon ids past 255. -Pr0nogo
+    u8 get_ground_weapon_id(Unit* unit) { // 00475A90
+        if (!unit->burrowed_attacker_can_attack()) {
+            return WeaponId::None;
+        }
+        u32 weapon_id = units_dat::ground_weapon[unit->id];
+        if (weapon_id != WeaponId::None) {
+            return weapon_id;
+        }
+        Unit* subunit = unit->subunit;
+        if (subunit) {
+            return units_dat::ground_weapon[subunit->id];
+        }
+        return WeaponId::None;
+    }
+
+    // Hooked to investigate crashes. -Pr0nogo
+    void minimap_game_target_order(DialogEvent* event) { // 004A55F0
+        u16 cursor_pos_x = event->current.x;
+        u16 cursor_pos_y = event->current.y;
+        helper::get_minimap_cursor_pos(&cursor_pos_x, &cursor_pos_y);
+        helper::reset_game_input_procs(0);
+        u16 pos_y = cursor_pos_y;
+        u16 pos_x = cursor_pos_x;
+        helper::do_targeted_order(cursor_pos_x, cursor_pos_y, 0, UnitId::None);
+        helper::show_cursor_marker(pos_y, pos_x);
     }
 }

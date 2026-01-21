@@ -370,10 +370,10 @@ namespace hooks {
                 MOV EBP, ESP
                 MOV hashStructIndex, AL
         }
-        if (!warningOnce00) {
+        if (!g_globals->desync_state.warning_hash_struct) {
             sprintf_s(buffer, "Invalid hash_struct_index!\nhashStructIndex: %u", hashStructIndex);
             bw::print(buffer, TextColor::Red);
-            warningOnce00 = true;
+            g_globals->desync_state.warning_hash_struct = true;
         }
         __asm {
             POPAD
@@ -393,10 +393,10 @@ namespace hooks {
             MOV EBP, ESP
             MOV active_nation_id, EBX
         }
-        if (!warningOnce01) {
+        if (!g_globals->desync_state.warning_player_flag) {
             sprintf_s(buffer, "Invalid PlayerFlag!\nplayer id: %u\nplayer name: %s", active_nation_id, g_player_table[active_nation_id].name);
             bw::print(buffer, TextColor::Red);
-            warningOnce01 = true;
+            g_globals->desync_state.warning_player_flag = true;
         }
         __asm {
             POPAD
@@ -408,7 +408,6 @@ namespace hooks {
         }
     }
 
-    static bool warning_once_02 = false;
     const u32 Hook_DropDebugging02 = 0x0047CD63;
     void __declspec(naked) drop_debugging_02() {
 //		static char buffer[256];
@@ -422,12 +421,12 @@ namespace hooks {
             MOV visibility_hash, CL
             MOV nation_hash, DL
         }
-        if (!succeeded && !warning_once_02) {
+        if (!succeeded && !g_globals->desync_state.type_4) {
 //			sprintf_s(buffer, "Invalid SpriteVisibility!!\nactiveNationID: %u", *g_active_nation_id);
 //			bw::print(buffer, GameTextColor::Red);
             bw::printf("Invalid SpriteVisibility!\nactive_nation_id: % u", *g_active_nation_id);
             bw::printf("SpriteVisHash (from VisionSync) %d =/= vision_hash (from CMD) %d", nation_hash, visibility_hash);
-            warning_once_02 = true;
+            g_globals->desync_state.type_4 = true;
         }
         __asm {
             POPAD
@@ -468,10 +467,9 @@ namespace hooks {
         if (g_hash_list[hash_struct_index].hash != *(u16*)(data + 2)) {
             succeeded = false;
             if (g_hash_list[hash_struct_index].hash_type == 1) {
-                if (!warning_once_03_00) {
+                if (!g_globals->desync_state.type_1) {
                     g_globals->had_desync = true;
-
-                    snprintf(buffer, sizeof(buffer), "Invalid Hash, type 1! Your player id is: %u\nSubmit criticals to help debug!", g_local_nation_id);
+                    snprintf(buffer, sizeof(buffer), "Invalid Hash, type 1! Your player id is: %u", g_local_nation_id);
                     bw::print(buffer, TextColor::Red);
                     snprintf(buffer, sizeof(buffer), "Critical frame: %u\nLocal Type: %u | Remote Type: %u\nLocal Hash: 0x%X | Remote Hash: 0x%X\nLocal nation id: %u | Active visions: %u | Explored visions: %u\nLast random number: %u",
                         g_elapsed_time_frames,
@@ -490,21 +488,6 @@ namespace hooks {
                         }
                     }
 
-                    /*
-                    GPTP::critical_logger << "\n\nSynced selections:";
-                    for (u32 player = 0; player < PLAYABLE_PLAYER_COUNT; player++) {
-                        for (u32 i = 0; i < SelectionLimit; i++) {
-                            snprintf(buffer, sizeof(buffer), "\n Player %04u", player);
-                            GPTP::critical_logger << buffer;
-                            Unit* unit = players_selections->unit[player][i];
-                            if (unit) {
-                                snprintf(buffer, sizeof(buffer), "\n id:%04u, index:0x%08X", unit->id, unit->get_unit_index());
-                                GPTP::critical_logger << buffer;
-                            }
-                        }
-                    }
-                    */
-
                     //This value is incremented *after* generating the mask_hash, so we use the previous value to get the tiles pertinent to the hash.
                     s32 y = (*g_mask_hash_current_y ? *g_mask_hash_current_y : g_map_tile_size->height) - 1;
                     snprintf(buffer, sizeof(buffer), "\n\nActive tiles (%u):", y);
@@ -520,17 +503,16 @@ namespace hooks {
                     }
 
                     gptp::g_critical_logger << "\n\nActive units:";
-
                     for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
                         snprintf(buffer, sizeof(buffer), "\n[%03X] hp:0x%08X sh:0x%08X id:%04u en:0x%04X pos:0x%04X%04X | u:%02u o:0x%02X%02X%02X%02X s:0x%08X",
-                            ((u32)unit - (u32)&ccmu_extender.unit_table) / 336, unit->hitpoints, unit->shields, unit->id, unit->energy, unit->sprite->position.x, unit->sprite->position.y,//Unit data used for GameHash indexing.
-                            unit->unique_id, unit->main_order_id, unit->main_order_state, unit->order_signal, unit->main_order_timer, unit->status);//Extra info, not associated with the hash code.
+                            ((u32)unit - (u32)&ccmu_extender.unit_table) / 336, unit->hitpoints, unit->shields, unit->id, unit->energy, unit->sprite->position.x, unit->sprite->position.y, // Unit data used for GameHash indexing.
+                            unit->unique_id, unit->main_order_id, unit->main_order_state, unit->order_signal, unit->main_order_timer, unit->status); // Extra info, not associated with the hash code.
                         gptp::g_critical_logger << buffer;
                     }
                     gptp::g_critical_logger << "\n";
-                    warning_once_03_00 = true;
+                    g_globals->desync_state.type_1 = true;
                 }
-            } else if (!warning_once_03_01) {
+            } else if (!g_globals->desync_state.type_2) {
                 sprintf_s(buffer, "Invalid Hash!\nhash_struct_index: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x\nElapsed time: %u",
                     hash_struct_index,
                     g_hash_list[hash_struct_index].hash_type,
@@ -539,15 +521,15 @@ namespace hooks {
                     *(u16*)(data + 2),
                     g_elapsed_time_frames);
                 bw::print(buffer, TextColor::Yellow);
-                warning_once_03_01 = true;
+                g_globals->desync_state.type_2 = true;
             }
         }
 
-        if (g_hash_list[hash_struct_index].hash_type != (hash_type & 0x0F) && warning_once_03_02) {
+        if (g_hash_list[hash_struct_index].hash_type != (hash_type & 0x0F) && !g_globals->desync_state.type_3) {
             succeeded = false;
             sprintf_s(buffer, "Invalid HashType!\hash_struct_index: %u\nHashType = %u", hash_struct_index, g_hash_list[hash_struct_index].hash_type);
             bw::print(buffer, TextColor::Red);
-            warning_once_03_02 = true;
+            g_globals->desync_state.type_3 = true;
         }
         if (succeeded) {
             __asm {

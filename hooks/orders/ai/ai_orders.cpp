@@ -1267,7 +1267,7 @@ namespace hooks {
                 resource = fallback;
             }
             if (resource && (resource->id == UnitId::ResourceVespeneRidge || resource->id == UnitId::ResourceVespeneGeyser || resource->is_completed())) {
-                helper::assign_order_with_target(resource, worker, OrderId::Harvest1);
+                helper::assign_order_with_target(worker, resource, OrderId::Harvest1);
                 resource->building.resource.resource_belongs_to_ai = 1;
                 resource->ext().values[ValueAssignedHarvesters] += 1; // Update assigned harvesters for this frame for the sake of mineral field priority calcs...
             }
@@ -1782,7 +1782,7 @@ namespace hooks {
                                             if (unit->energy >= techdata_dat::energy_cost[TechId::ScannerSweep] * 256 || unit->main_order_id == OrderId::PlaceScanner) {
                                                 break;
                                             }
-                                            helper::assign_order_with_target(threat, unit, OrderId::PlaceScanner);
+                                            helper::assign_order_with_target(unit, threat, OrderId::PlaceScanner);
                                             return;
                                         } break;
                                     }
@@ -1819,7 +1819,7 @@ namespace hooks {
             }
             if (victim_region) {
                 if (victim_region->follow_target) {
-                    helper::assign_order_with_target(victim, victim_region->follow_target, OrderId::AIPatrol);
+                    helper::assign_order_with_target(victim_region->follow_target, victim, OrderId::AIPatrol);
                     return;
                 }
             }

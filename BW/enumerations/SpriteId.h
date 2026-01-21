@@ -607,7 +607,7 @@ namespace SpriteId {
         GladiusMissile = 601,
         GladiusMissileImpact = 602,
         ZergBactalisk = 603,
-        CyclopsWeaponImpact = 604,
+        CyclopsWeaponImpactOld = 604,
         MaelstromMissile = 605,
         PhotonCannonMissileImpact = 606,
         Kalkalisk = 607,
@@ -791,6 +791,8 @@ namespace SpriteId {
         CyclopsPassiveArmingOverlay     = 877,
 
         AprilFools_Quazilisk		    = 879,
+
+        CyclopsWeaponImpact             = 885,
 
         LegionnaireTeleportEffect	    = 893,
 

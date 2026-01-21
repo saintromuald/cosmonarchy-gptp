@@ -239,6 +239,7 @@ struct Globals {
         return yields[(size_t)type] ? yields[(size_t)type] : default_yields[(size_t)type];
     }
 
+    DesyncState desync_state;
     bool had_desync = false;
     bool forbid_replay_auto_upload = false;
     std::unordered_map<TriggerAction*, TriggerExt> trigger_exts;

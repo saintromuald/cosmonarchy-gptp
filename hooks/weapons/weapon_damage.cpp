@@ -565,6 +565,9 @@ namespace hooks {
                 target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
                 target_ext.timers[TimerIncinerateDamage] = TerranMine::IncinerateTimer;
             } break;
+            case WeaponId::CyclopsBrontesPayload: {
+                data.target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
+            } break;
             case WeaponId::WendigoFusionSaw: {
                 target_ext.values[ValueWendigoShatteredWindsStacks]++;
                 target_ext.timers[TimerWendigoShatteredWinds] = UpstartWendigo::ShatteredWindsDuration;

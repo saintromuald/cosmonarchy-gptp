@@ -16,23 +16,23 @@ u8 grpwire_remappings[] = {
 };
 
 namespace hooks {
-	// Was initially in building_zerg. The rest of the function this fragment is from use too many unknowns, thus this is only a fragment.
-	// This allows to change the wireframe displayed for the unit, the special case being that zerg morphing buildings show the wireframe of the new building before construction is complete.
-	// -iquare
-	u16 stat_data_unit_wireframe_update_fragment(Unit* unit) {
-		u16 unit_id = UnitId::None;
-		bool use_current_id = true;
-		if (!unit->is_completed()) {
-			unit_id = unit->build_queue[unit->build_queue_slot];
-			if (bw::is_zerg_building_morph_result(unit_id)) {
-				use_current_id = false;
-			}
-		}
-		if (use_current_id) {
-			unit_id = unit->id;
-		}
-		return unit_id;
-	}
+    // Was initially in building_zerg. The rest of the function this fragment is from use too many unknowns, thus this is only a fragment.
+    // This allows to change the wireframe displayed for the unit, the special case being that zerg morphing buildings show the wireframe of the new building before construction is complete.
+    // -iquare
+    u16 stat_data_unit_wireframe_update_fragment(Unit* unit) {
+        u16 unit_id = UnitId::None;
+        bool use_current_id = true;
+        if (!unit->is_completed()) {
+            unit_id = unit->build_queue[unit->build_queue_slot];
+            if (bw::is_zerg_building_morph_result(unit_id)) {
+                use_current_id = false;
+            }
+        }
+        if (use_current_id) {
+            unit_id = unit->id;
+        }
+        return unit_id;
+    }
 
 	u8 wireframe_shields(Unit* unit) {
 		auto eax = unit->id;
@@ -98,7 +98,7 @@ namespace hooks {
         helper::status_screen_wireframe_hp_related(unit);
 
         u32 wireframe_id = unit->build_queue[unit->build_queue_slot];
-        if (unit->is_completed() || !UnitId::is_structure_morph(static_cast<UnitId::Enum>(wireframe_id))) {
+        if (unit->is_completed() || !bw::is_zerg_building_morph_result(wireframe_id)) {
             wireframe_id = unit->id;
             auto& unit_ext = unit->ext();
             if (unit_ext.values[ValueHasWireframeOverride]) {
@@ -149,7 +149,7 @@ namespace hooks {
         helper::status_screen_wireframe_hp_related(unit);
 
         u32 grpwire_id = unit->build_queue[unit->build_queue_slot];
-        if (unit->is_completed() || !UnitId::is_structure_morph(static_cast<UnitId::Enum>(grpwire_id))) {
+        if (unit->is_completed() || !bw::is_zerg_building_morph_result(grpwire_id)) {
             grpwire_id = unit->id;
             auto& unit_ext = unit->ext();
             if (unit_ext.values[ValueHasWireframeOverride]) {
