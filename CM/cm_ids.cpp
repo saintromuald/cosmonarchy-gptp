@@ -80,7 +80,6 @@ b32 unit_id_is_tech(u32 unit_id, bool allow_addons) {
         case UnitId::ZergZozarcGorge:
         case UnitId::ZergMatravilNest:
         case UnitId::ZergAlmakisAntre:
-        case UnitId::ZergElthisthMound:
         case UnitId::ZergRakzogthRoost:
             return true;
     }
@@ -1022,15 +1021,8 @@ WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
         } break;
         case WeaponId::IntendentErsaDriver: {
             static WeaponOffsets offsets{};
-            offsets.value_id = ValueIntendentLaunchPos1;
+            offsets.value_id = ValueIntendentLaunchPos;
             offsets.count = 1;
-            return &offsets;
-        } break;
-        case WeaponId::IntendentAlruBurstray: {
-            static WeaponOffsets offsets{};
-            offsets.value_id = ValueIntendentLaunchPos2;
-            offsets.count = 3;
-            offsets.use_special_overlay = true;
             return &offsets;
         } break;
         case WeaponId::HelionUskoScrapray: {
@@ -1552,13 +1544,6 @@ UnitId::Enum get_racial_town_center_id(u32 race_id) {
     return UnitId::None;
 }
 
-bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {
-    return unit_id == UnitId::TerranGoliath
-        || unit_id == UnitId::TerranTriton
-        || unit_id == UnitId::TerranTiangou
-        || unit_id == UnitId::TerranArhaun;
-}
-
 namespace UnitId {
 bool can_cast_recall(UnitId::Enum unit_id) {
     return unit_id == UnitId::ProtossXenolith
@@ -1938,6 +1923,13 @@ bool has_autovitality(UnitId::Enum unit_id) {
     return unit_id == UnitId::ProtossSimulacrum || unit_id == UnitId::ProtossRenesair || unit_id == UnitId::ProtossSimulacrumAstral;
 }
 
+bool turns_to_face_target(UnitId::Enum unit_id) {
+    return unit_id == UnitId::TerranGoliath
+        || unit_id == UnitId::TerranTriton
+        || unit_id == UnitId::TerranTiangou
+        || unit_id == UnitId::TerranArhaun;
+}
+
 bool has_automandate(UnitId::Enum unit_id) {
     return unit_id == UnitId::ProtossSimulacrumAstral;
 }
@@ -2000,6 +1992,19 @@ bool match_id_to_base(UnitId::Enum match_id, UnitId::Enum base_id) {
 bool is_triple_birth(UnitId::Enum unit_id) {
     return unit_id == UnitId::ZergSovrokor;
 }
+
+bool has_forward_march(UnitId::Enum unit_id) {
+    return unit_id == UnitId::TerranDurendal
+        || unit_id == UnitId::AskosiIntendent;
+}
+
+// units_dat: make building placement box divisible by 32! -Pr0nogo
+bool spreads_cagra_while_burrowed(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ZergAgrileth
+        || unit_id == UnitId::ZergYblyleth
+        || unit_id == UnitId::ZergMalkothrokor;
+}
+
 } // namespace UnitId
 
 namespace WeaponId {

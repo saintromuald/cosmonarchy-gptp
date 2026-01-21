@@ -246,7 +246,7 @@ struct Globals {
     std::vector<SoundReplacement> sound_replacements;
     std::vector<SpriteReplacement> sprite_replacements;
     std::vector<TriggerButton> trigger_buttons;
-	std::vector<EcoSample> eco_samples;
+    std::vector<EcoMeasurements> eco_measurements;
     std::vector<char> uuid_rand;
 
 	void sample_eco();

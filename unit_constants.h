@@ -48,6 +48,7 @@ inline constexpr s32 ReintegrationTimer = 10 * 24;
 }
 
 namespace Cleric {
+inline constexpr s32 HealRange = 30;
 inline constexpr s32 HealAmount = 96;  // 9 HP per second
 inline constexpr s32 NanoshieldTimer = 25;
 }

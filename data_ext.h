@@ -250,6 +250,15 @@ enum ExtValueId {
     ValueIsNydusEntry,
     ValueHasButtonsetOverride,
     ValueButtonsetOverride,
+    ValueVicarLaunchPos,
+    ValueIntendentLaunchPos,
+    ValueHelionLaunchPos,
+    ValueTriggerHealRangeSet,
+    ValueTriggerHealRangeAmount,
+    ValueReassemblyActive,
+    ValueSegmentedExpansionStacks,
+    ValueAmaranthHealAmount,
+    TimerCorpseConsumptionDelay,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -435,6 +444,7 @@ enum ExtTimerId {
     TimerBoomingBlast,
     TimerAskosiPowerBreach,
     TimerSegmentedExpansion,
+    TimerSalvageStun,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

@@ -994,7 +994,7 @@ BW_DATA(u32*,			notify_cooldown,				0x00640870);
 //BW_DATA(SoundData*,	g_sound_data,					0x006D1270); // THIS IS NOT EXTENDED!!!
 
 // For stat_data_unit_wireframe_select_update
-BW_DATA(char**,			off_68C1FC,						0x0068C1FC);
+BW_DATA(GrpHead*,		g_gwire_image_buffer_ptr,		0x0068C1FC);
 BW_DATA(char*,			g_palette_remap,				0x0050CDC1);
 
 // For kill_units_at_location_proc
@@ -1316,6 +1316,14 @@ BW_REF(b32,   g_685178,             0x00685178); // Probably defines that the cl
 BW_REF(b32,   g_68517C,             0x0068517C); // Probably defines that the score screen dlg is loaded or active.
 
 BW_REF(u8,    g_replay_speed,       0x006D0F30);
+
+BW_REF(Point16, g_resource_target_acquire_position, 0x0069579C);
+BW_REF(u32,     g_resource_target_acquire_radius,   0x006955E8);
+BW_REF(u32,     g_require_empty_ai_resource,        0x004432FA);
+
+BW_REF(const u16,   g_map_tileset,                  0x0057F1DC);
+
+BW_REF(GrpHead*,    g_wwire_image_buffer_ptr,       0x0068C204);
 
 //-------- Format strings used by Starcraft implementations of printf --------//
 

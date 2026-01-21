@@ -92,9 +92,6 @@ namespace hooks {
             case TechId::ScannerSweep: {
                 helper::issue_tri_target_order(OrderId::PlaceScanner, 0, 0);
             } break;
-            case TechId::TalosSalvage: {
-                helper::issue_tri_target_order(OrderId::TalosSalvage, 0, 0);
-            } break;
             case TechId::ApostleLazarusAgent: {
                 if (can_play_local_sound) {
                     u32 action_sound = bw::rand_between_local(SoundId::ApostleToggleLazarus01, SoundId::ApostleToggleLazarus03);

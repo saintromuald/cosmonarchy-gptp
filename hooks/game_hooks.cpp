@@ -1490,85 +1490,6 @@ namespace hooks {
                     }
                 }
             } break;
-            case UnitId::TerranTalos: {
-                if (unit->main_order_id == OrderId::TalosSalvage) {
-                    Unit* target = unit->order_target.unit;
-                    if (target) {
-                        if (unit->is_target_within_min_range(target, unit->get_max_weapon_range(unit->get_ground_weapon()))) {
-                            auto& target_ext = target->ext();
-                            target_ext.timers[TimerSalvageStunTimer] = 2 * 24 + 1;
-                            
-                            u32 time = units_dat::time_cost[target->id] / 2;
-                            target_ext.salvage_time += 1;
-                            
-                            target_ext.salvage_minerals += (f32)units_dat::mineral_cost[target->id] / time;
-                            while (target_ext.salvage_minerals > 1) {
-                                target_ext.salvage_minerals -= 1;
-                                resources->minerals[unit->player] += 1;
-                            }
-                            
-                            target_ext.salvage_gas += (f32)units_dat::vespene_cost[target->id] / time;
-                            while (target_ext.salvage_gas > 1) {
-                                target_ext.salvage_gas -= 1;
-                                resources->gas[unit->player] += 1;
-                            }
-                            
-                            if (target_ext.salvage_time >= time) {
-                                resources->minerals[unit->player] += ceilf(target_ext.salvage_minerals);
-                                resources->gas[unit->player] += ceilf(target_ext.salvage_gas);
-                                target->bwfunc_remove();
-                            }
-
-                            if (!(unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving)
-                                && !unit_ext.timers[TimerTalosAnimationSubtimer]) {
-
-                                u32 width  = units_dat::building_dimensions[target->id].x * 0.75;
-                                u32 height = units_dat::building_dimensions[target->id].y * 0.75;
-
-                                s32 x_offset = bw::random() % width  - width  / 2;
-                                s32 y_offset = bw::random() % height - height / 2;
-
-                                x_offset = Clamp(x_offset, -127, 128);
-                                y_offset = Clamp(y_offset, -127, 128);
-
-                                Unit* final_target = unit;
-                                if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
-                                    final_target = unit->subunit;
-                                }
-                                final_target->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
-                                u32 subtimer = bw::rand_between(3, 7);
-                                unit_ext.timers[TimerTalosAnimationSubtimer] = subtimer;
-                            }
-
-                            if (!unit_ext.values[ValueTalosAnimationTimer] || unit_ext.values[ValueTalosAnimationTimer] % 128 == 0) {
-                                Point16 pos = target->sprite->position;
-                                switch (bw::random() % 4) {
-                                    case 0: {
-                                        pos.x -= units_dat::unit_bounds[target->id].left * 0.75;
-                                        pos.y -= units_dat::unit_bounds[target->id].top * 0.75;
-                                    } break;
-                                    case 1: {
-                                        pos.x += units_dat::unit_bounds[target->id].right * 0.75;
-                                        pos.y -= units_dat::unit_bounds[target->id].top * 0.75;
-                                    } break;
-                                    case 2: {
-                                        pos.x -= units_dat::unit_bounds[target->id].left * 0.75;
-                                        pos.y += units_dat::unit_bounds[target->id].bottom * 0.75;
-                                    } break;
-                                    case 3: {
-                                        pos.x += units_dat::unit_bounds[target->id].right * 0.75;
-                                        pos.y += units_dat::unit_bounds[target->id].bottom * 0.75;
-                                    } break;
-                                }
-                                helper::set_move_target_xy(unit, pos.x, pos.y);
-                            }
-                            unit_ext.values[ValueTalosAnimationTimer] += 1;
-                        } else {
-                            unit_ext.values[ValueTalosAnimationTimer] = 0;
-                        }
-                    }
-                }
-            } break;
             case UnitId::ZergUltrokor: {
                 // Kaiser Rampage - Ultrokor behavior
                 if (!unit->is_burrowed() && !unit_ext.timers[TimerKaiserRampageTimeout]) {
@@ -2161,7 +2082,7 @@ namespace hooks {
                                     Vec32f displacement = bw::normalize(diff);
                                     displacement.x *= -1 * 32.0 / displacement_time;
                                     displacement.y *= -1 * 32.0 / displacement_time;
-                                    target_ext.timers[TimerAnthelionGravityWell] = displacement_time;
+                                    target_ext.timers[TimerPullTowards] = displacement_time;
                                     target_ext.repulsion_vector = displacement;
                                 }
                             }
@@ -3276,12 +3197,12 @@ namespace hooks {
         }
 
         // Decloak on stun
-        if (unit->is_frozen() || unit_ext.timers[TimerStrigaRepulsion] || unit_ext.timers[TimerMagnetarAttraction] || unit_ext.timers[TimerAnthelionGravityWell]) {
+        if (unit->is_frozen() || unit_ext.timers[TimerStrigaRepulsion] || unit_ext.timers[TimerMagnetarAttraction] || unit_ext.timers[TimerPullTowards]) {
             bw::decloak_passive_proc(unit);
         }
 
         // Play addon work animations when related units are being trained by parent structure
-        if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon && unit->building.addon->status & UnitStatus::Completed)
+        if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->building.addon && unit->building.addon->is_completed())
         {
             // Wait for addon connector extension sequence to finish before animating
             // Have to find a working method... -Pr0nogo
@@ -3361,7 +3282,7 @@ namespace hooks {
         }
 
         // Anthelion - Gravity Well
-        if (unit_ext.timers[TimerAnthelionGravityWell] && unit_ext.units[UnitAnthelionGravityWellSource]) {
+        if (unit_ext.timers[TimerPullTowards] && unit_ext.units[UnitAnthelionGravityWellSource]) {
             Point16 target_pos = unit_ext.units[UnitAnthelionGravityWellSource]->position;
             if (unit->position != target_pos && !unit->is_burrowed()) {
                 Point16 final_pos = unit->position;
@@ -3370,7 +3291,7 @@ namespace hooks {
                 final_pos = bw::clamp_point(final_pos);
 
                 if (!bw::move_unit_improved(unit, final_pos.x, final_pos.y)) {
-                    unit_ext.timers[TimerAnthelionGravityWell] = 0;
+                    unit_ext.timers[TimerPullTowards] = 0;
                 }
             }
         }

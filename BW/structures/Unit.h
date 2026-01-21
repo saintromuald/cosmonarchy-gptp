@@ -448,6 +448,7 @@ struct Unit : public UnitLayout {
     bool recharges_shields();
     bool is_constructor();
     void pull_towards(Unit* source);
+    void tick_burrowed_cagra_spread();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

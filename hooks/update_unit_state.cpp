@@ -264,7 +264,7 @@ namespace hooks {
 
 		// Only for fully-constructed units and buildings. -GPTP
 		// Modified 24/01/23 to allow Zerg building morph sources to regenerate while mutating. -Pr0nogo
-		if (unit->is_completed() ||	unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon || UnitId::is_structure_morph(static_cast<UnitId::Enum>(unit->build_queue[unit->build_queue_slot]))) {
+		if (unit->is_completed() ||	unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon || bw::is_zerg_building_morph_result(unit->build_queue[unit->build_queue_slot])) {
 			bool stop_here = false;
 			if (unit->remove_timer != 0) {
 				if (unit->id != UnitId::ZergRilirokor || !bw::get_active_tile_at_coords(unit->position)->has_cagra) {

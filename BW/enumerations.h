@@ -1488,6 +1488,15 @@ enum AdvisorEvent {
     AdvisorEvent_AllyUnderAttack_Z = 20,
 
     AdvisorEvent_AbandonAddon = 21,
+
+    AdvisorEvent_AllyUnderAttack_A = 22,
+    AdvisorEvent_AllyUnderAttack_B = 23,
+    AdvisorEvent_AllyUnderAttack_K = 24,
+
+    AdvisorEvent_Assembly          = 25,
+    AdvisorEvent_Ritual            = 26,
+    AdvisorEvent_Arena             = 27,
+
 };
 
 enum AdvisorMessageId {
@@ -1548,6 +1557,7 @@ enum DialogUserType {
     DialogUserType_Hide              = 14,
     DialogUserType_ScrollUp          = 15,
     DialogUserType_ScrollDown        = 16,
+    DialogUserType_x405              = 0x405,
 };
 
 enum MusicId {

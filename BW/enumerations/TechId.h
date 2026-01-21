@@ -38,6 +38,7 @@ namespace TechId {
         LarvalSubmenuSelectAssault			= 38, // Unused Tech 38
 
     // Askosi
+        AskosiRapidRendezvous    			= 9,  // Wraith Cloaking Field
         AskosiRematerialize     			= 23, // Archon Warp
 
         // Brood War \\

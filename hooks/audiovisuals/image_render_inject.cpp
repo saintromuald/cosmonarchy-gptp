@@ -241,7 +241,7 @@ void inject_image_render_hooks() {
     jump_patch(set_image_palette_type2_wrapper, 0x004D58B0, 1);
     call_patch(copy_image_palette_type_wrapper, 0x004D6EE1, 15);
     call_patch(draw_if_cloaked_ebx, 0x004D6EC7, 1);
-    nops(0x004A07DC, 14); // unit_die @ 0x004A0740; Allow buildings to be removed from cloaked units list.
+    nop_patch(0x004A07DC, 14); // unit_die @ 0x004A0740; Allow buildings to be removed from cloaked units list.
     call_patch(AI_CloakUnit_wrapper, 0x0049B60B); // DoCloak @ 0x0049B5B0; Fix unburrowing units being perma-cloaked by arbiters.
 
     call_patch(drawSprite_patch_98C84, 0x00498C84); // drawSprite @ 0x00498C50

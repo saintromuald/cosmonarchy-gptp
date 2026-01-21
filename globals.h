@@ -41,6 +41,7 @@ enum class EffectId {
     OscilliantBindingPlasma,
     GladiusBindingPlasma,
     MiasmaPlagueField,
+    DivineDisciplineField,
 
     Count,
 };

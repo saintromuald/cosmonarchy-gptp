@@ -723,7 +723,7 @@ namespace hooks {
             return unit->id;
         }
         u16 queued_id = unit->build_queue[unit->build_queue_slot];
-        if (!UnitId::is_structure_morph(static_cast<UnitId::Enum>(queued_id))) {
+        if (!bw::is_zerg_building_morph_result(queued_id)) {
             return unit->id;
         }
         return queued_id;
@@ -966,7 +966,7 @@ namespace hooks {
                 u32 unit_id = unit->id;
                 if (!unit->is_completed()) {
                     unit_id = unit->build_queue[unit->build_queue_slot];
-                    if (UnitId::is_structure_morph(static_cast<UnitId::Enum>(unit_id))) {
+                    if (bw::is_zerg_building_morph_result(unit_id)) {
                         unit_id = unit->id;
                     }
                 }

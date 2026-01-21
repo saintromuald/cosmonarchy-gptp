@@ -1795,7 +1795,7 @@ f32 Globals::calculate_hype() const {
     }
 
     f32 changes_mean = 0;
-    std::vector<f32> changes(count-1);
+    std::vector<f32> changes(count - 1);
     for (size_t i = 0; i < changes.size(); i++) {
         changes[i] = values[i] = values[i];
         changes_mean += changes[i];

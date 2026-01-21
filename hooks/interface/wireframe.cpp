@@ -183,4 +183,5 @@ namespace hooks {
         g_palette_remap[218] = 218;
         g_palette_remap[219] = 219;
     }
+
 } // namespace hooks

@@ -458,13 +458,19 @@ namespace hooks {
         switch (data.weapon_id) {
             // TODO: Extend weapons and remove these
             case WeaponId::SimulacrumPhaseCannon: {
+                if (!data.attacker) {
+                    break;
+                }
                 if (data.attacker->id == UnitId::ProtossSimulacrumAstral) {
                     data.damage -= 256 * 2;
                 }
             } break;
             case WeaponId::VorvalClaws: {
+                if (!data.attacker) {
+                    break;
+                }
                 if (data.attacker->id == UnitId::ZergGarvrokor) {
-                    data.damage += 256;
+                    data.damage += 256 * 1;
                 }
             } break;
 
@@ -494,12 +500,6 @@ namespace hooks {
             case WeaponId::ArchitectDispersiveSalvo: {
                 u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
                 data.damage /= divisor;
-            } break;
-            case WeaponId::VorvalClaws: {
-                // TODO: Extend weapons and remove this
-                if (data.attacker->id == UnitId::ZergGarvrokor) {
-                    data.damage += 256;
-                }
             } break;
             case WeaponId::GeszithalorAcidSpore: {
                 // Searing Acid - Geszithalor behavior

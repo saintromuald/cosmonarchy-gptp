@@ -156,6 +156,7 @@ namespace WeaponId {
         TarasqueHedonCannon					= 135,
         TarasqueAcceleratedPlasmid			= 136, // Tarasque mobile weapon
         SouthpawKnockoutDrivers				= 169,
+        QuadrigaGodhandRockets              = 183,
         MadrigalHecatonAngeltearMissiles    = 188,
         TartarusMineApollyoidConflagration  = 190,
         PietyWardProvidence                 = 201,
@@ -369,7 +370,7 @@ namespace WeaponId {
         IntendentAlruBurstray               = 157,
         HelionUskoScrapray                  = 179,
         TiradeIktaDriver                    = 181,
-        AvatarReformingCarbine              = 182,
+        GrandstandArteDriver                = 182,
         Rematerialize	    	            = 207, // ability targeting
         PilgrimMiningSaber                  = 239,
         RapidRandezvous                     = 247, // ability targeting

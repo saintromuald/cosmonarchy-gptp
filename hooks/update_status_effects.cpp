@@ -147,7 +147,7 @@ namespace hooks {
 		}
 
 		// Vithrilisk - Corrosive Touch - update overlays
-		if (unit_ext->values[ValueCorrosiveTouchStacks] != 0) {
+		if (unit_ext.values[ValueCorrosiveTouchStacks] != 0) {
 			// Calculate the appropriate overlay ID
 			u32 acid_overlay_id = get_spores_overlay_id(unit);
 			if (!unit->get_overlay(acid_overlay_id)) {

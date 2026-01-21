@@ -2543,7 +2543,7 @@ namespace helper {
 
     // is_valid_morph @ 0x0045CC60;
     bool is_valid_building_morph(u16 building_id) {
-        return UnitId::is_structure_morph(static_cast<UnitId::Enum>(building_id));
+        return bw::is_zerg_building_morph_result(building_id);
     }
 
     void update_new_unit_cagra(u32 id, s32 x, s32 y) {
@@ -10678,12 +10678,11 @@ namespace helper {
         return result;
     }
 
-    char status_screen_wireframe_shield_related(u32 unused, Unit* unit) {
+    char status_screen_wireframe_shield_related(Unit* unit) {
         static char result;
         const u32 func_address = 0x004566B0;
         __asm {
             PUSHAD
-            MOV ECX, unused
             MOV EDX, unit
             CALL func_address
             MOV result, AL
@@ -13519,6 +13518,20 @@ namespace helper {
     }
 
     void image_render_fxn_0_0(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data) {
+        const u32 func_address = 0x0040ABBE;
+        __asm {
+            PUSHAD
+            PUSH color_data
+            PUSH rect
+            PUSH image_data
+            MOV EDX, screen_y
+            MOV ECX, screen_x
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void draw_func_normal(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data) {
         const u32 func_address = 0x0040ABBE;
         __asm {
             PUSHAD

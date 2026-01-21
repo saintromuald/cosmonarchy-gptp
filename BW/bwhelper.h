@@ -1354,7 +1354,7 @@ namespace helper {
     void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply); // 00458800
 
     void bw_print_icon(Bounds* bounds, FxnDrawIconData* data, int pos_x, int pos_y);						// 0041D090
-    void bw_print_xy(const char* text, s32 pos_x, s32 pos_y);														// 004202B0
+    void bw_print_xy(const char* text, s32 pos_x, s32 pos_y);												// 004202B0
 
     bool unit_is_in_notify_range(Unit* unit);																// 004E5AD0
     u32 reset_all_unit_attack_notify_timers_in_range(Unit* unit);											// 0048EAE0
@@ -1366,7 +1366,7 @@ namespace helper {
 
     void status_screen_draw_stat_button_border(BinDlg* dialog);												// 00456D30
     u32 status_screen_wireframe_coloring_related(Unit* unit);												// 004567C0
-    char status_screen_wireframe_shield_related(u32 unused, Unit* unit);									// 004566B0
+    char status_screen_wireframe_shield_related(Unit* unit);									            // 004566B0
     u32 status_screen_wireframe_hp_related(Unit* unit);														// 00456730
 
     char toggle_unit_pathing_properties(Unit* unit);														// 004030D0
@@ -1656,6 +1656,8 @@ namespace helper {
     b32 draw_dialog_image(Box16* dims, void* bitmap, u32 width, u32 height, u32 flags);						// 004EF440
 
     void image_render_fxn_0_0(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data);	// 0040ABBE
+
+    void draw_func_normal(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data);	    // 0040ABBE
 
     void file_fatal(HANDLE* file, u32 something);																								// 004D2880
     void fixup_and_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(const char*, Bitmap*, Palette*, const char*, u32), const char* log_filename, u32 log_line);	// 004194E0

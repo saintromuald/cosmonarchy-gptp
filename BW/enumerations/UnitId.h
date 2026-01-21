@@ -361,7 +361,6 @@ namespace UnitId {
         ZergSibraelosk										= 227,		// Morphed from Caphrolosk | Terran Gas Tank Type 2
         ZergSpirtithCesiant									= 292,		// Morphed from Cagrant Cesiant
         ZergSkortrithCesiant								= 293,		// Morphed from Surkith Cesiant
-        ZergRakzogthRoost									= 303,		// Unused
         ZergBegrozithBarrow									= 329,		// Unused
         ZergChokralChazsal									= 330,		// Morphed from Alkag Iteth
         ZergNephrilosk										= 350,		// Unused

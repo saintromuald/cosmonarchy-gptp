@@ -3318,17 +3318,6 @@ namespace hooks {
                                         }
                                     }
                                 } break;
-                                case UnitId::ZergAgrileth:
-                                case UnitId::ZergGosvileth: {
-                                    if (current_button->icon_id == IconId::VentralSacs) { // Plethoral Gestation
-                                        current_button_state = Button_State::Enabled;
-                                    }
-                                } break;
-                                case UnitId::ZergSovrokor: {
-                                    if (current_button->icon_id == IconId::CorpseCocoon) {
-                                        current_button_state = Button_State::Enabled;
-                                    }
-                                } break;
                                 case UnitId::ZergQuazilisk:
                                 case UnitId::ZergQuazrokor: {
                                     if (current_button->icon_id == IconId::AdrenalFrenzy) {

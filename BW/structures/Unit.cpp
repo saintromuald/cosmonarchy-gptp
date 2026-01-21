@@ -1846,3 +1846,14 @@ void Unit::pull_towards(Unit* source) {
             unit_ext.timers[TimerPullTowards] = 0;
         }
     }
+}
+
+void Unit::tick_burrowed_cagra_spread() {
+    if (this->order_signal & 4) {
+        if (!this->is_burrowed()) {
+            bw::spawn_custom_creep(this);
+        } else {
+            bw::update_custom_creep_disappearance(this);
+        }
+    }
+}

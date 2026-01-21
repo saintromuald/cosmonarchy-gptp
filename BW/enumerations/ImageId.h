@@ -1035,6 +1035,8 @@ namespace ImageId {
         SavantFormSwitchPower						= 1110,
         ShamanNaniteField							= 1158,
         PhaseLineBlast								= 1195,
+        
+        VespeneRidgeShadow                          = 1209,
 
         KalkaliskBirthCocoon						= 1222,
         IrolethBirthCocoon							= 1223,
@@ -1202,6 +1204,8 @@ namespace ImageId {
         Christmas_VespeneChunk1						= 1677,
         Christmas_VespeneChunk2						= 1678,
         HarakanApollyoidAdhesiveOverlay				= 1679,
+        
+        Wellbore                                    = 1691,
 
         MadrigalDirgeProc							= 1698,
             
@@ -1299,7 +1303,12 @@ namespace ImageId {
 
         AdaptiveAmitosisOverlay						= 1964,
 
+        Sieve                                       = 1970,
+
         VespeneRidgeUnderlay					    = 1972,
+        Cedent                                      = 1973,
+
+        Eskigant                                    = 1976,
 
         UnarOrbital                                 = 1987,
 
@@ -1313,6 +1322,8 @@ namespace ImageId {
         CorrosiveTouchExplosionSmall                = 2043,
 
         CikraliskAttackOverlay                      = 2056,
+            
+        Arch                                        = 2069,
 
         ZoryusthalethMutate                         = 2107,
 

@@ -494,7 +494,7 @@ namespace IconId {
         NathrokorVestigialStrike                        = 765,
         IzirokorEnergizedBioplasma                      = 766,
         CausticFission                                  = 767,
-        Miasma                                          = 768,
+        MiasmaOld                                       = 768,
         CarapaceSwarmPassive                            = 769,
         Autophagy                                       = 770,
         AdrenalFrenzy                                   = 771,
@@ -519,6 +519,40 @@ namespace IconId {
 
         TartarusMine                                    = 792,
 
+        Scepter                                         = 796,
+
+        Tirade                                          = 798,
+
         FanOfTeeth                                      = 820,
+
+        Vicar                                           = 827,
+        
+        Mimic                                           = 837,
+        Intendent                                       = 838,
+
+        WyxharAssembly                                  = 840,
+
+        CikraliskAcidSalvo                              = 848,
+        EvigriliskBrutishTendrils                       = 849,
+        CrushingTide                                    = 850,
+        EndlessLimbs                                    = 851,
+        TosgriliskExplosiveSpores                       = 852,
+        GhitorokorGnashingTendrils                      = 853,
+        LashingLimbs                                    = 854,
+        LitheOrganelle                                  = 855,
+        OkrimniliskOmnispores                           = 856,
+        ProtathalorPungentSpores                        = 857,
+        KagraliskRepeatingVenom                         = 858,
+        KonviliskSowingSpines                           = 859,
+        DishonorableDischarge                           = 860,
+        Malkothrokor                                    = 861,
+        GolemPhaseLances                                = 862,
+        VibranceSensoryOverload                         = 863,
+        CabalistWarpBlade                               = 864,
+        MalkothrokorTunnelingMaw                        = 865,
+        Miasma                                          = 866,
+        DeathlessProcession                             = 867,
+        EternalService                                  = 868,
+        AdherentPhaseBlade                              = 868,
     };
 }

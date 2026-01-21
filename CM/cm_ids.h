@@ -134,7 +134,7 @@ u32 get_overlay_offset(UnitId::Enum unit_id);
 SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id);
 SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id);
 bool has_autovitality(UnitId::Enum unit_id);
-bool unit_id_turns_to_face_target(UnitId::Enum unit_id);
+bool turns_to_face_target(UnitId::Enum unit_id);
 bool has_interruptable_windup(UnitId::Enum unit_id);
 SoundId::Enum get_windup_sfx(UnitId::Enum unit_id);
 bool has_automandate(UnitId::Enum unit_id);
@@ -144,6 +144,8 @@ bool is_beacon(UnitId::Enum unit_id);
 bool has_fusion_sealers(Unit* unit);
 bool match_id_to_base(UnitId::Enum match_id, UnitId::Enum baseline_id);
 bool is_triple_birth(UnitId::Enum unit_id);
+bool has_forward_march(UnitId::Enum unit_id);
+bool spreads_cagra_while_burrowed(UnitId::Enum unit_id);
 } // namespace UnitId
 
 namespace WeaponId {

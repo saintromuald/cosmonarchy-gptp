@@ -372,17 +372,17 @@ namespace hooks {
 		add_status(statuses, "Ensnared", unit_ext.values[ValueEnsnareFactor], 0,
 			unit->ensnare_timer, TimerType::Vanilla);
 		add_status(statuses, "Whetted Appetite", unit_ext.values[ValueMortothrokorStacks], 0,
-			unit_ext->timers[TimerMortothrokorPassive], TimerType::Gptp);
+			unit_ext.timers[TimerMortothrokorPassive], TimerType::Gptp);
 		add_status(statuses, "Corrosive Spores", unit_ext.values[ValueCorrosiveTouchStacks], 0,
-			unit_ext->timers[TimerCorrosiveTouch], TimerType::Gptp);
+			unit_ext.timers[TimerCorrosiveTouch], TimerType::Gptp);
 		add_status(statuses, "Anodyne Annex", unit_ext.values[ValueEmpressAnodyneAnnexStacks], 0,
-			unit_ext->timers[TimerAnnex], TimerType::Gptp);
+			unit_ext.timers[TimerAnnex], TimerType::Gptp);
 		add_status(statuses, "Shattered", unit_ext.values[ValueWendigoShatteredWindsStacks], 0,
-			unit_ext->timers[TimerWendigoShatteredWinds], TimerType::Gptp);
+			unit_ext.timers[TimerWendigoShatteredWinds], TimerType::Gptp);
 
-		if (unit_ext->values[ValueSignifyStacks] < 5) {
+		if (unit_ext.values[ValueSignifyStacks] < 5) {
 			add_status(statuses, "Cowardice", unit_ext.values[ValueSignifyStacks], 5,
-				unit_ext->timers[TimerSignify], TimerType::Gptp);
+				unit_ext.timers[TimerSignify], TimerType::Gptp);
 		} else {
 			add_status(statuses, "Malice", unit_ext.values[ValueSignifyStacks], 1,
 				unit_ext.timers[TimerSignify], TimerType::Gptp);

@@ -17,7 +17,7 @@ bool is_morphing(Unit* building) {
 void orders_zerg_build_self(Unit* building) {
     auto& building_ext = building->ext();
     u16 building_id = building->build_queue[building->build_queue_slot];
-    if (!UnitId::is_structure_morph(static_cast<UnitId::Enum>(building_id))) {
+    if (!bw::is_zerg_building_morph_result(building_id)) {
         building_id = building->id;
     }
     bool is_hive_tissue = building_ext.units[UnitHiveOrgan] != nullptr;
@@ -247,7 +247,7 @@ namespace hooks {
 // Checks if @p unit_id is a building that can be morphed from another building.
 // Note: This hook affects the behavior of Unit::is_remorphing_building().
 bool is_morphed_building(u16 unit_id) {
-    if (UnitId::is_structure_morph(static_cast<UnitId::Enum>(unit_id))) {
+    if (bw::is_zerg_building_morph_result(unit_id)) {
         return true;
     }
     return false;
