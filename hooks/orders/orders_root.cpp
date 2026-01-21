@@ -371,6 +371,79 @@ namespace hooks {
 					unit_ext.values[ValueTryCastCustomSpell] = true;
 				}
 			} break;
+			case OrderId::Follow: {
+				Unit* target = unit->order_target.unit;
+				if (!target) {
+					if (unit->order_queue_head) {
+						unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+						helper::do_next_queued_order(unit);
+					} else if (unit->unit_ai) {
+						helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
+					} else {
+						helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
+					}
+					return;
+				}
+				if (unit->unit_ai) {
+					u32 hp = units_dat::max_hitpoints[unit->id] * 256;
+					if (!hp) {
+						hp = (unit->hitpoints + 255) * 256;
+						if (!hp) {
+							hp = 1;
+						}
+					}
+					if ((unit->hitpoints + 255) * 256 == hp) {
+						helper::to_idle(unit);
+						return;
+					}
+				}
+				if (!unit->main_order_state) {
+					if (!helper::order_to_move_to_target(unit, target)) {
+						return;
+					}
+					if (target->is_valid_nydus()) {
+						if (helper::can_enter_nydus(unit, target)) {
+							helper::assign_order_with_target(unit, target, OrderId::EnterNydusCanal);
+							return;
+						}
+					} else if (target->recharges_shields()) {
+						if (helper::can_recharge_shields(unit, target)) {
+							helper::assign_order_with_target(unit, target, OrderId::RechargeShields1);
+							return;
+						}
+					}
+					unit->main_order_state = 1;
+				}
+				if (!unit->main_order_timer) {
+					unit->main_order_timer = 7;
+					if (helper::is_unit_enemy(unit, target)) {
+						if (helper::unit_can_attack_target(target, unit, 1)) {
+							helper::issue_order_targeting_nothing(unit, OrderId::Guard);
+							return;
+						}
+					}
+					if (!unit->is_in_air()) {
+						if (!helper::unit_has_path_to_target(unit, target)) {
+							helper::make_to_hold_position(unit);
+							return;
+						}
+					}
+					if (target->is_rescuable() && !helper::is_target_within_min_range(unit, 1, target)) {
+						helper::order_to_move_to_target(unit, target);
+						return;
+					}
+					if (!helper::is_target_within_min_range(unit, 96, target)) {
+						helper::move_towards(unit, target);
+						return;
+					}
+					if (!target->is_grounded_building() && !unit->order_queue_head) {
+						helper::make_to_hold_position(unit);
+						return;
+					}
+					helper::to_idle(unit);
+					return;
+				}
+			} break;
 			default: {
 				if (unit->is_frozen() || (!(unit->status & UnitStatus::Reacts) && unit->status & UnitStatus::CanNotAttack)) {
 					helper::EAX_order(unit, 0x0043FF00); // known as "get_maelstrom_target", though don't make much sense in this context
@@ -626,8 +699,8 @@ namespace hooks {
 			}
 
 			if (unit->order_queue_head) {
-				unit->user_action_flags |= 1;
-				do_next_queued_order(unit);
+				unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+				helper::do_next_queued_order(unit);
 			} else if (unit->unit_ai) {
 				helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
 			} else {
@@ -895,7 +968,7 @@ namespace hooks {
 	}
 
 	// Hooked to troubleshoot custom abilities. -Pr0nogo
-	void targeted_order(u16 x_pos, u32 fow_unit_id, Unit* unit, u16 y_pos, u32 order_type, u32 is_queued, u8 order_id, Unit* target, Point16 position, Unit* secondary_target) {
+	void targeted_order(u16 x_pos, u32 fow_unit_id, Unit* unit, u16 y_pos, u32 order_type, u32 is_queued, u8 order_id, Unit* target, Point16 position, Unit* secondary_target) { // 004754F0
 		if (is_queued && orders_dat::can_be_queued[order_id]) {
 			switch (unit->main_order_id) {
 				case OrderId::Guard:
@@ -931,6 +1004,19 @@ namespace hooks {
 			}
 		} else {
 			helper::issue_order_by_type(order_id, x_pos, y_pos, order_type, unit, target, fow_unit_id, position, secondary_target);
+		}
+	}
+
+	// Hooked to investigate a crash. -Pr0nogo
+	void force_order_done(Unit* unit) { // 00475420
+		unit->status = unit->status & 0xFFFFEFFF;
+		if (unit->order_queue_head) {
+			unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+			helper::do_next_queued_order(unit);
+		} else if (unit->unit_ai) {
+			helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI); // Computer AI
+		} else {
+			helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
 		}
 	}
 

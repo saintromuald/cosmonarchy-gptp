@@ -291,6 +291,7 @@ enum TriggerBehavior : u8 {
     TriggerBehavior_Critter,
     TriggerBehavior_NoCollision,
     TriggerBehavior_AirTransport,
+    TriggerBehavior_NoEnergyOverlay,
 
     TriggerBehavior_Count,
 };
@@ -303,6 +304,7 @@ static const char* trigger_behavior_names[] = {
     "critter",
     "no_collision",
     "air_transport",
+    "no_energy_overlay",
 };
 C_ASSERT(ARRAY_SIZE(trigger_behavior_names) == TriggerBehavior_Count);
 

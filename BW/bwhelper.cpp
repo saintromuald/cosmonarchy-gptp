@@ -2543,7 +2543,7 @@ namespace helper {
 
     // is_valid_morph @ 0x0045CC60;
     bool is_valid_building_morph(u16 building_id) {
-        return bw::is_zerg_building_morph_result(building_id);
+        return UnitId::is_structure_morph(static_cast<UnitId::Enum>(building_id));
     }
 
     void update_new_unit_cagra(u32 id, s32 x, s32 y) {
@@ -16306,5 +16306,33 @@ namespace helper {
             CALL func_address
             POPAD
         }
+    }
+
+    bool can_enter_nydus(Unit* unit, Unit* nydus) {
+        const u32 func_address = 0x004E8C20;
+        static b32 result;
+        __asm {
+            PUSHAD
+            MOV EAX, unit
+            MOV EDX, nydus
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return (bool)result;
+    }
+
+    bool can_recharge_shields(Unit* unit, Unit* battery) {
+        const u32 func_address = 0x00493520;
+        static b32 result;
+        __asm {
+            PUSHAD
+            MOV EAX, unit
+            MOV EDI, battery
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return (bool)result;
     }
 }

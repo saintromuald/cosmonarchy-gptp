@@ -22,6 +22,7 @@ struct Token {
 	bool iequals(std::string_view other) const { return sv_iequals(sv, other); }
 	bool lazy_equals(std::string_view other) const { return sv_lazy_equals(sv, other); }
 };
+Token get_short_unit_name(Unit* unit);
 Token get_short_unit_name(u32 unit_id);
 
 enum LocationFlags {
@@ -75,6 +76,7 @@ struct Area {
 using PlayerBitset = std::bitset<FullPlayerLimit>;
 using UnitIdBitset = std::bitset<UnitId::Count>;
 using WeaponIdBitset = std::bitset<WeaponId::Count>;
+using FlingyIdBitset = std::bitset<flingy_id::Count>;
 
 template <typename I, size_t N, size_t MAX = N>
 struct IterateBitset {
@@ -262,6 +264,9 @@ public:
 
 	u32 get_weapon_id();
 	WeaponIdBitset get_weapon_id_bitset();
+
+	u32 get_flingy_id();
+	FlingyIdBitset get_flingy_id_bitset();
 
 	u32 get_flags_bitset();
 	u32 get_flags_bitset(const char** enum_names, size_t count);

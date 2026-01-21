@@ -321,7 +321,7 @@ void transform_unit_main(Unit* unit, u32 unit_id) { // 0049F170
             image->flags |= ImageFlags::Redraw;
         }
     }
-    if (unit->status & UnitStatus::GroundedBuilding) {
+    if (unit->is_grounded_building()) {
         unit->build_queue[unit->build_queue_slot] = UnitId::None;
     }
     unit->main_order_id = order_type;

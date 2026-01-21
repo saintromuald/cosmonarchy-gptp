@@ -346,7 +346,7 @@ namespace hooks {
             pos.y -= 4;
 
             {
-                Token short_unit_name = get_short_unit_name(transport->id);
+                Token short_unit_name = get_short_unit_name(transport);
                 std::string unit_name = std::format("{}{} [{}/{}]:", bw::get_player_color_code(transport->player, true).data, short_unit_name.string().c_str(), space_used, units_dat::space_provided[transport->id]);
                 g_graphics.draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
                 local_pos.y += 13;
@@ -356,9 +356,9 @@ namespace hooks {
             for (u32 j = 0; j < cargo_slots_count; ++j) {
                 CargoSlot cargo_slot = cargo_slots[j];
 
-                std::string short_unit_name = get_short_unit_name(cargo_slot.unit->id).string();
-                if (cargo_slot.unit->id == UnitId::TerranPhalanxSiegeMode) {
-                    short_unit_name += " (Sieged)";
+                std::string short_unit_name = get_short_unit_name(cargo_slot.unit).string();
+                if (unit_id_is_siege_mode(static_cast<UnitId::Enum>(cargo_slot.unit->id))) {
+                    short_unit_name += " (Deployed)";
                 }
                 std::string unit_name = "";
                 if (cargo_slot.count > 1) {
@@ -487,7 +487,7 @@ namespace hooks {
             }
 
             // Show connected Nyduses
-            if (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit) {
+            if (unit->is_valid_nydus()) {
                 if (bw::unit_is_allied_or_detected(unit, g_local_nation_id) || bw::in_replay_or_witness()) {
                     draw_simple_line(source, unit->building.nydus_exit->position, graphics::PURPLE);
                 }
@@ -1118,11 +1118,15 @@ namespace hooks {
                     unit_ext.values[ValueIsNeutralNydus] = 1;
                 }
             } break;
-            case UnitId::ProtossVassalOld: {
-                helper::replace_unit_with_id(unit, UnitId::ProtossVassal);
+            case UnitId::ExtTassadar: { // Old vassal ID, delete this after CHKDraft
+                if (g_elapsed_time_frames < 3) {
+                    helper::replace_unit_with_id(unit, UnitId::ProtossVassal);
+                }
             } break;
-            case UnitId::ProtossAccantorOld: {
-                helper::replace_unit_with_id(unit, UnitId::ProtossAccantor);
+            case UnitId::ProtossAccantorOld: { // Delete this after CHKDraft
+                if (g_elapsed_time_frames < 3) {
+                    helper::replace_unit_with_id(unit, UnitId::ProtossAccantor);
+                }
             } break;
             case UnitId::ProtossSolarion: {
                 u32 missing_count = 12 - (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count);
@@ -1412,6 +1416,11 @@ namespace hooks {
                     unit->remove_timer = Broodspawn::LifeTimer;
                 }
             } break;
+        }
+
+        if (unit_ext.values[ValueHasButtonsetOverride]) {
+            unit->current_buttonset = unit_ext.values[ValueButtonsetOverride];
+            helper::change_unit_buttonset(unit, unit_ext.values[ValueButtonsetOverride]);
         }
 
         // Unit-specific
@@ -2394,7 +2403,7 @@ namespace hooks {
                             target_pos.x = unit_ext.values[ValueThroughTheLookingGlassX];
                             target_pos.y = unit_ext.values[ValueThroughTheLookingGlassY];
                             Point16 pos = unit->position;
-                            helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, pos.x,		  pos.y, unit->player);
+                            helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, pos.x, pos.y, unit->player);
                             helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, target_pos.x, target_pos.y, unit->player);
                         } break;
                         case 1: {
@@ -2589,7 +2598,8 @@ namespace hooks {
                     hooks::carapace_swarm_hit_internal(unit->position.x, unit->position.y, unit->player, UnitId::Spell_CarapaceSwarmSmall);
                 }
             } break;
-            case UnitId::ProtossCantavis: {
+            case UnitId::ProtossCantavis:
+            case UnitId::ExtTassadar: {
                 if (unit->order_signal & 64) {
                     unit->order_signal &= ~64;
                     bw::decloak_passive_proc(unit);
@@ -3149,7 +3159,7 @@ namespace hooks {
         }
 
         // Temp fix for iscript-based workers getting stuck - DarkenedFantasies
-        if ((unit->id == UnitId::TerranMason || unit->id == UnitId::ProtossScribe || unit->id == UnitId::ZergDroleth)
+        if ((unit->id == UnitId::TerranMason || unit->id == UnitId::ProtossScribe || unit->id == UnitId::ZergDroleth || unit->id == UnitId::AskosiPilgrim)
         &&	unit->current_speed_1 == 0
         &&	unit->current_speed_2 == 0
         &&	unit->movement_flags & MovementFlags_Accelerating)

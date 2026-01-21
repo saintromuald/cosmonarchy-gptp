@@ -160,6 +160,7 @@ void unit_on_death_behaviors(Unit* unit) {
         case UnitId::ProtossCrucible:
         case UnitId::ProtossXenolith:
         case UnitId::ExtProtossTemple:
+        case UnitId::ProtossWarpGateTheFall:
         case UnitId::ProtossAutocort: {
             // code from hooks::remove_psi_field(Unit* unit)
             // copied because the content is hardcoded here
@@ -186,19 +187,17 @@ void unit_on_death_behaviors(Unit* unit) {
             // end hardcoding remove_from_psi_providers_list @ 00493100 to avoid use of a helper
             g_can_update_powered_status = true;
         } break;
-        case UnitId::ZergNydusCesiant: {
-            Unit* nydus_exit = unit->building.nydus_exit;
-            if (nydus_exit) {
-                unit->building.nydus_exit = 0;
-                nydus_exit->building.nydus_exit = 0;
+    }
 
-                if (unit_ext.values[ValueIsNydusExit]) {
-                    bw::regress(nydus_exit, UnitId::ZergCagrantCesiant);
-                } else {
-                    nydus_exit->bwfunc_remove();
-                }
-            }
-        } break;
+    if (unit->is_valid_nydus()) {
+        Unit* nydus_exit = unit->building.nydus_exit;
+        unit->building.nydus_exit = 0;
+        nydus_exit->building.nydus_exit = 0;
+        if (unit_ext.values[ValueIsNydusExit]) {
+            bw::regress(nydus_exit, UnitId::ZergCagrantCesiant);
+        } else {
+            nydus_exit->bwfunc_remove();
+        }
     }
 
     if (unit_ext.values[ValueDontProcOnDeathEffects]) {

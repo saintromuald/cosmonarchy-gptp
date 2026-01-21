@@ -26,7 +26,7 @@ namespace hooks
 		Unit* old_target = unit->order_target.unit;
 
 		if (target) {
-			if (target->id == UnitId::ZergNydusCesiant && target->building.nydus_exit) {
+			if (target->is_valid_nydus()) {
 				unit->order_to(OrderId::EnterNydusCanal, target);
 				return;
 			}

@@ -29,6 +29,7 @@ namespace hooks {
 				energy = 200;
 			} break;
 			case UnitId::ProtossCantavis:
+			case UnitId::ExtTassadar:
 			case UnitId::Goska: {
 				energy = 250;
 			} break;

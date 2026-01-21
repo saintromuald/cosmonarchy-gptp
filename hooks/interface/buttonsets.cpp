@@ -55,7 +55,7 @@ namespace hooks {
 
     // 00458BC0
     // Called (with a jump) as last instruction of update_buttonset
-    // Will update the buttonset for the currently unit active type, or handle special cases of mixed selections
+    // Will update the buttonset for the currently active unit type, or handle special cases of mixed selections
     void update_buttonset_ex() {
         u8 count_workers = 0;
         u8 count_burrowables = 0;
@@ -85,12 +85,10 @@ namespace hooks {
             Unit* selected = g_client_selection_group->unit[i];
             if (selected) {
                 selected_button_set_id = selected->current_buttonset;
-
                 selected_properties = units_dat::base_property[selected->id];
                 if (selected_properties & UnitProperty::Worker) {
                     count_workers++;
                 }
-
                 if (selected_properties & UnitProperty::Building) {
                     count_buildings++;
                     if (selected->get_ground_weapon() != WeaponId::None || selected->get_air_weapon() != WeaponId::None) {
@@ -100,27 +98,21 @@ namespace hooks {
                         count_lifted_buildings++;
                     }
                 }
-
                 if (selected_properties & UnitProperty::Burrowable) {
                     count_burrowables++;
                 }
-
                 if (units_dat::group_flags[selected->id].is_zerg) {
                     count_zergs++;
                 }
-
                 if (selected->id == UnitId::ZergLarva) {
                     count_larva++;
                 }
-
                 if (selected->id == UnitId::ZergOcsalLarva) {
                     count_ocsal_larva++;
                 }
-
                 if (selected->id == UnitId::ZergEgg) {
                     count_eggs++;
                 }
-
                 if (unit_id_can_repair(selected->id)) {
                     count_repairmen++;
                 }
@@ -149,7 +141,11 @@ namespace hooks {
             Unit* selected = g_client_selection_group->unit[i];
             if (selected) {
                 // if you use a custom buttonset, and are reusing the current_buttonset property of an active differently, change these conditions to take it in account
-                if (selected->status & UnitStatus::Completed && selected_button_set_id != active_button_set_id) {
+                if (selected->is_completed() && selected_button_set_id != active_button_set_id) {
+                    auto& unit_ext = selected->ext();
+                    if (bw::client_selection_unit_id_count(selected->id) == bw::client_selection_count() && unit_ext.values[ValueHasButtonsetOverride]) {
+                        selected_button_set_id = unit_ext.values[ValueButtonsetOverride];
+                    }
                     ButtonSet* selected_button_set = hooks::get_buttonset(selected_button_set_id);
                     ButtonSet* active_button_set = hooks::get_buttonset(active_button_set_id);
                     if (active_button_set->first_button != selected_button_set->first_button) {
@@ -285,6 +281,18 @@ namespace hooks {
         return &(g_buttonset_table[index]);
     }
 
+    // Hooked to allow crig overrides for buttonsets. -Pr0nogo
+    void change_unit_buttonset(Unit* unit, u16 unit_id) { // 004E5D60
+        if (!unit->is_frozen() || unit->is_building() || unit_id == UnitId::None) {
+            auto buttonset = unit_id;
+            auto& unit_ext = unit->ext();
+            if (unit->id == unit_id && unit_ext.values[ValueHasButtonsetOverride]) {
+                buttonset = unit_ext.values[ValueButtonsetOverride];
+            }
+            unit->current_buttonset = buttonset;
+        }
+    }
+
     // Main update_buttonset function; calls update_buttonset() and others
     void update_current_buttonset() { // 004599A0
         // Quick targeting post-handling
@@ -375,141 +383,143 @@ namespace hooks {
     void update_command_card() {
         init_req_table();
 
-        SelectFactionCommand command = {};
-        command.type = GameCommand_Custom;
-        command.subtype = NewGameCommand::SelectFaction;
-        command.player = g_local_human_id;
-        command.faction = Faction::None; // Default case
         auto buttonset_id = g_active_portrait_buttonset_id;
-        u32 local_player = g_local_human_id;
+        auto local_player = g_local_human_id;
         auto& cm_player = g_globals->players[local_player];
-        if (bw::get_game_kind() == GameKind::FactionWars && !cm_player.faction_was_set) {
-            if (buttonset_id == UnitId::None) {
-                switch (g_player_table[local_player].race) {
-                    case RaceId::Terran: {
-                        buttonset_id = UnitId::Buttons_FactionSelect;
-                    } break;
-                    case RaceId::Protoss: {
-                        buttonset_id = UnitId::Buttons_FactionSelectProtoss;
-                    } break;
-                    case RaceId::Zerg: {
-                        buttonset_id = UnitId::Buttons_FactionSelectZerg;
-                    } break;
-                    case RaceId::Askosi: {
-                        // TODO: Add Askosi case
-                    } break;
+        { // Faction selection
+            SelectFactionCommand command = {};
+            command.type = GameCommand_Custom;
+            command.subtype = NewGameCommand::SelectFaction;
+            command.player = g_local_human_id;
+            command.faction = Faction::None; // Default case
+            if (bw::get_game_kind() == GameKind::FactionWars && !cm_player.faction_was_set) {
+                if (buttonset_id == UnitId::None) {
+                    switch (g_player_table[local_player].race) {
+                        case RaceId::Terran: {
+                            buttonset_id = UnitId::Buttons_FactionSelect;
+                        } break;
+                        case RaceId::Protoss: {
+                            buttonset_id = UnitId::Buttons_FactionSelectProtoss;
+                        } break;
+                        case RaceId::Zerg: {
+                            buttonset_id = UnitId::Buttons_FactionSelectZerg;
+                        } break;
+                        case RaceId::Askosi: {
+                            // TODO: Add Askosi case
+                        } break;
+                    }
+                } else if (buttonset_id == UnitId::Buttons_FactionSelect) {
+                    switch (g_player_table[local_player].race) {
+                        case RaceId::Terran: {
+                            // TODO: Race-specific buttonset code
+                        } break;
+                        case RaceId::Protoss: {
+                            // TODO: Race-specific buttonset code
+                        } break;
+                        case RaceId::Zerg: {
+                            // TODO: Race-specific buttonset code
+                        } break;
+                        case RaceId::Askosi: {
+                            // TODO: Add Askosi case
+                        } break;
+                    }
+                } else if (buttonset_id == UnitId::Buttons_FactionSelect1) {
+                    switch (g_player_table[local_player].race) {
+                        case RaceId::Terran: {
+                            command.faction = Faction::TerranOrionImperium;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                        case RaceId::Protoss: {
+                            command.faction = Faction::ProtossDivinePrimacy;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                        case RaceId::Zerg: {
+                            command.faction = Faction::ZergAtaltrethTendril;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                    }
+                    cm_player.faction_was_set = true;
+                } else if (buttonset_id == UnitId::Buttons_FactionSelect2) {
+                    switch (g_player_table[local_player].race) {
+                        case RaceId::Terran: {
+                            command.faction = Faction::TerranHecatonCoalition;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                        case RaceId::Protoss: {
+                            command.faction = Faction::ProtossOrderOfTheSacredSaber;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                        case RaceId::Zerg: {
+                            command.faction = Faction::ZergImicrenTendril;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                    }
+                    cm_player.faction_was_set = true;
+                } else if (buttonset_id == UnitId::Buttons_FactionSelect3) {
+                    switch (g_player_table[local_player].race) {
+                        case RaceId::Terran: {
+                            command.faction = Faction::TerranFuturistFederation;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                        case RaceId::Protoss: {
+                            command.faction = Faction::ProtossKhalendricKnights;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                        case RaceId::Zerg: {
+                            command.faction = Faction::ZergOrkotiTendril;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                    }
+                    cm_player.faction_was_set = true;
+                } else if (buttonset_id == UnitId::Buttons_FactionSelect4) {
+                    switch (g_player_table[local_player].race) {
+                        case RaceId::Terran: {
+                            command.faction = Faction::TerranGoldenRepublic;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                        case RaceId::Protoss: {
+                            command.faction = Faction::ProtossStarbound;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                        case RaceId::Zerg: {
+                            command.faction = Faction::ZergGoszirithTendril;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                    }
+                    cm_player.faction_was_set = true;
+                } else if (buttonset_id == UnitId::Buttons_FactionSelect5) {
+                    switch (g_player_table[local_player].race) {
+                        case RaceId::Terran: {
+                            command.faction = Faction::TerranNydusTrinity;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                     	case RaceId::Protoss: {
+                     		command.faction = Faction::ProtossAstralOmen;
+                     		helper::queue_game_command((u8*)&command, sizeof(command));
+                     	} break;
+                        case RaceId::Zerg: {
+                            command.faction = Faction::ZergZorthosTendril;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                    }
+                    cm_player.faction_was_set = true;
+                } else if (buttonset_id == UnitId::Buttons_FactionSelect6) {
+                    switch (g_player_table[local_player].race) {
+                        case RaceId::Terran: {
+                            command.faction = Faction::TerranUpstart;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                    //	case RaceId::Protoss: {
+                    //		command.faction = Faction::Protoss6;
+                    //		helper::queue_game_command((u8*)&command, sizeof(command));
+                    //	} break;
+                    //	case RaceId::Zerg: {
+                    //		command.faction = Faction::Zerg6;
+                    //		helper::queue_game_command((u8*)&command, sizeof(command));
+                    //	} break;
+                    }
+                    cm_player.faction_was_set = true;
                 }
-            } else if (buttonset_id == UnitId::Buttons_FactionSelect) {
-                switch (g_player_table[local_player].race) {
-                    case RaceId::Terran: {
-                        // TODO: Race-specific buttonset code
-                    } break;
-                    case RaceId::Protoss: {
-                        // TODO: Race-specific buttonset code
-                    } break;
-                    case RaceId::Zerg: {
-                        // TODO: Race-specific buttonset code
-                    } break;
-                    case RaceId::Askosi: {
-                        // TODO: Add Askosi case
-                    } break;
-                }
-            } else if (buttonset_id == UnitId::Buttons_FactionSelect1) {
-                switch (g_player_table[local_player].race) {
-                    case RaceId::Terran: {
-                        command.faction = Faction::TerranOrionImperium;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                    case RaceId::Protoss: {
-                        command.faction = Faction::ProtossDivinePrimacy;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                    case RaceId::Zerg: {
-                        command.faction = Faction::ZergAtaltrethTendril;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                }
-                cm_player.faction_was_set = true;
-            } else if (buttonset_id == UnitId::Buttons_FactionSelect2) {
-                switch (g_player_table[local_player].race) {
-                    case RaceId::Terran: {
-                        command.faction = Faction::TerranHecatonCoalition;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                    case RaceId::Protoss: {
-                        command.faction = Faction::ProtossOrderOfTheSacredSaber;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                    case RaceId::Zerg: {
-                        command.faction = Faction::ZergImicrenTendril;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                }
-                cm_player.faction_was_set = true;
-            } else if (buttonset_id == UnitId::Buttons_FactionSelect3) {
-                switch (g_player_table[local_player].race) {
-                    case RaceId::Terran: {
-                        command.faction = Faction::TerranFuturistFederation;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                    case RaceId::Protoss: {
-                        command.faction = Faction::ProtossKhalendricKnights;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                    case RaceId::Zerg: {
-                        command.faction = Faction::ZergOrkotiTendril;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                }
-                cm_player.faction_was_set = true;
-            } else if (buttonset_id == UnitId::Buttons_FactionSelect4) {
-                switch (g_player_table[local_player].race) {
-                    case RaceId::Terran: {
-                        command.faction = Faction::TerranGoldenRepublic;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                    case RaceId::Protoss: {
-                        command.faction = Faction::ProtossStarbound;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                    case RaceId::Zerg: {
-                        command.faction = Faction::ZergGoszirithTendril;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                }
-                cm_player.faction_was_set = true;
-            } else if (buttonset_id == UnitId::Buttons_FactionSelect5) {
-                switch (g_player_table[local_player].race) {
-                    case RaceId::Terran: {
-                        command.faction = Faction::TerranNydusTrinity;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                 	case RaceId::Protoss: {
-                 		command.faction = Faction::ProtossAstralOmen;
-                 		helper::queue_game_command((u8*)&command, sizeof(command));
-                 	} break;
-                    case RaceId::Zerg: {
-                        command.faction = Faction::ZergZorthosTendril;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                }
-                cm_player.faction_was_set = true;
-            } else if (buttonset_id == UnitId::Buttons_FactionSelect6) {
-                switch (g_player_table[local_player].race) {
-                    case RaceId::Terran: {
-                        command.faction = Faction::TerranUpstart;
-                        helper::queue_game_command((u8*)&command, sizeof(command));
-                    } break;
-                //	case RaceId::Protoss: {
-                //		command.faction = Faction::Protoss6;
-                //		helper::queue_game_command((u8*)&command, sizeof(command));
-                //	} break;
-                //	case RaceId::Zerg: {
-                //		command.faction = Faction::Zerg6;
-                //		helper::queue_game_command((u8*)&command, sizeof(command));
-                //	} break;
-                }
-                cm_player.faction_was_set = true;
             }
         }
 
@@ -2584,6 +2594,9 @@ namespace hooks {
                             if (bw::client_selection_unit_id_count(unit->id) != g_client_selection_count) {
                                 current_button_state = Button_State::Invisible;
                             }
+                            if (unit_ext->values[ValueHasButtonsetOverride]) {
+                                current_button_state = Button_State::Enabled;
+                            }
                             if (unit->is_detector()) {
                                 if (current_button->icon_id == IconId::OcularImplants) { // Detector
                                     current_button_state = unit->is_building() && unit->is_in_air() ? Button_State::Invisible : Button_State::Enabled;
@@ -2749,7 +2762,7 @@ namespace hooks {
                                 case UnitId::TerranStriga: {
                                     if (current_button->icon_id == IconId::Projection
                                     ||	current_button->icon_id == IconId::FleetingFocus
-                                    ||	current_button->icon_id == IconId::FlyerAttack) {			// Apollyoid Adhesive
+                                    ||	current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2759,9 +2772,14 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranAutocrat: {
-                                    if (current_button->icon_id == IconId::RechargeShields	  // Reclamation Fields
-                                    ||  current_button->icon_id == IconId::KineticPenetration
-                                    ||  current_button->icon_id == IconId::Reclamation) {	  // Reclamation
+                                    if (current_button->icon_id == IconId::RechargeShields // Reclamation Fields
+                                    ||  current_button->icon_id == IconId::ProlongedArms
+                                    ||  current_button->icon_id == IconId::Reclamation) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::TerranDilettante: {
+                                    if (current_button->icon_id == IconId::ApialSensors) { // Beginner's Luck
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3554,7 +3572,10 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergHachirosk:
-                                case UnitId::ZergLarvoskCesiant: {
+                                case UnitId::ZergLarvoskCesiant:
+                                case UnitId::ZergCerebrateTheFall:
+                                case UnitId::ZergOvermindWithShellTheFall:
+                                case UnitId::ZergOvermindTheFall: {
                                     if (current_button->icon_id == IconId::MetasynapticNode) { // Larval Gestation
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -3657,7 +3678,9 @@ namespace hooks {
                                         can_cancel = true;
                                     }
                                 } break;
-                                case UnitId::ProtossCantavis: {
+                                case UnitId::ProtossCantavis:
+                                case UnitId::ExtTassadar:
+                                case UnitId::ExtInfestedKerrigan: {
                                     if (g_iquare_globals->get_effect(unit_ext->current_storm)) {
                                         can_cancel = true;
                                     }

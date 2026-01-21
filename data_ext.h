@@ -244,6 +244,12 @@ enum ExtValueId {
     ValueGoldRushPlayer,
     ValueGarvrolHidebreaker,
     ValueUnarLaunchPos,
+    ValueNoEnergyOverlay,
+    ValueHasWireframeOverride,
+    ValueWireframeOverride,
+    ValueIsNydusEntry,
+    ValueHasButtonsetOverride,
+    ValueButtonsetOverride,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -507,7 +513,7 @@ struct UnitExt {
     bool					pause_timers;
     u32						energy_regen_timer;
 
-    // Every unit will starts counted as out of combat
+    // Every unit starts counted as out of combat
     u32						shield_regen_timer = UINT_MAX;
     u32						damage_taken_timer = UINT_MAX;
     u32						damage_dealt_timer = UINT_MAX;

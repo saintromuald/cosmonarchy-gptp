@@ -128,8 +128,8 @@ namespace {
     //-------- cancel_unit --------//
 
     void __fastcall cancel_unit_wrapper(Unit* unit) {
-        UnitExt* unit_ext = get_unit_ext(unit);
-        if (unit->is_dead() || unit->is_completed() || (unit->id == UnitId::ZergNydusCesiant && unit->building.nydus_exit)) {
+        auto& unit_ext = unit->ext();
+        if (unit->is_dead() || unit->is_completed() || unit->is_valid_nydus()) {
             return;
         }
         if (bw::is_conventional_unit_morph_source(unit->id, false) || bw::is_conventional_unit_morph_result(unit->id)) {
@@ -195,8 +195,8 @@ namespace {
             }
         } else {
             change_unit_type(unit, cancel_change_unit_id);
-            unit->energy = unit_ext->values[ValuePreMorphEnergy];
-            unit_ext->units[UnitMorphConnectedUnit] = unit->connected_unit;
+            unit->energy = unit_ext.values[ValuePreMorphEnergy];
+            unit_ext.units[UnitMorphConnectedUnit] = unit->connected_unit;
             unit->remaining_build_time = 0;
             unit->build_queue[unit->build_queue_slot] = UnitId::None;
             

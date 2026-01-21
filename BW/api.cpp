@@ -2089,6 +2089,8 @@ u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, b
         case UnitId::ZergAlmakisAntre:			return UnitId::ZergMatravilNest;
         case UnitId::ZergRakzogthRoost:			return UnitId::ZergElthisthMound;
 
+        case UnitId::ZergOvermindWithShellTheFall: return UnitId::ZergOvermindTheFall;
+
         // Base Structures
         case UnitId::ZergHachirosk:
         case UnitId::ZergEskigant:

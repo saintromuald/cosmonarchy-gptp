@@ -420,6 +420,7 @@ struct Unit : public UnitLayout {
     bool can_burrow();
     bool is_computer_controlled();
     bool is_in_air();
+    bool is_flyer();
     bool is_invincible();
     bool is_spellcaster();
     bool is_hallucination();

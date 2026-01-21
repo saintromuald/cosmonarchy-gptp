@@ -70,7 +70,7 @@ namespace hooks {
 				result = helper::update_building_land_unit_selection(*(u32*)sprite, unit);
 			}
 		}
-		unit->current_buttonset = 228;
+		unit->current_buttonset = UnitId::Buttons_Blank;
 		bw::refresh_console();
 		return result;
 	}
@@ -229,10 +229,10 @@ namespace hooks {
 
 		// define the base box of effect
 		Box16 aoe = {};
-		aoe.left = (u16)x - weapons_dat::inner_splash_radius[WeaponId::EMP_Shockwave];
-		aoe.right = (u16)x + weapons_dat::inner_splash_radius[WeaponId::EMP_Shockwave];
-		aoe.top = (u16)y - weapons_dat::inner_splash_radius[WeaponId::EMP_Shockwave];
-		aoe.bottom = (u16)y + weapons_dat::inner_splash_radius[WeaponId::EMP_Shockwave];
+		aoe.left = (u16)x - weapons_dat::inner_splash_radius[WeaponId::PsiAssault];
+		aoe.right = (u16)x + weapons_dat::inner_splash_radius[WeaponId::PsiAssault];
+		aoe.top = (u16)y - weapons_dat::inner_splash_radius[WeaponId::PsiAssault];
+		aoe.bottom = (u16)y + weapons_dat::inner_splash_radius[WeaponId::PsiAssault];
 
 		// check and fix effect if beyond width of map
 		if (aoe.left < 0) {
@@ -621,11 +621,9 @@ namespace hooks {
 				Unit* creating_unit = helper::get_creating_unit(unit);
 				helper::give_all_unit_properties_to_player(creating_unit, player);
 			}
-			if (unit->id == UnitId::ZergNydusCesiant) {
+			if (unit->is_valid_nydus()) {
 				Unit* nydus_exit = unit->building.nydus_exit;
-				if (nydus_exit) {
-					helper::give_all_unit_properties_to_player(nydus_exit, player);
-				}
+				helper::give_all_unit_properties_to_player(nydus_exit, player);
 			}
 		}
 		return true;

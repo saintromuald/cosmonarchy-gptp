@@ -30,7 +30,7 @@ namespace AI
 			if (!bw::unit_has_shields(target))
 				return false;
 
-			if (!bw::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))
+			if (!bw::can_weapon_target_unit(WeaponId::PsiAssault, target, caster))
 				return false;
 
 			const s32 totalEnemyShields = get_total_enemy_shields_in_area(target->get_x(), target->get_y(), 160, caster);
@@ -57,7 +57,7 @@ namespace AI
 			if (!target->is_valid_caster())
 				return false;
 
-			if (!bw::can_weapon_target_unit(WeaponId::EMP_Shockwave, target, caster))
+			if (!bw::can_weapon_target_unit(WeaponId::PsiAssault, target, caster))
 				return false;
 
 			const s32 totalEnemyEnergy = get_total_enemy_energy_in_area(target->get_x(), target->get_y(), 160, caster);

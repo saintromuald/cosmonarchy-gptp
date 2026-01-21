@@ -22,7 +22,7 @@ GetWeaponHitPosFunc const get_weapon_hit_pos = (GetWeaponHitPosFunc)0x004762C0;
 }
 
 static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit) {
-    if (unit->status & UnitStatus::Invincible) {
+    if (unit->is_invincible()) {
         return false;
     }
     if (bw::is_allied_to(bullet->player, unit->player)) {

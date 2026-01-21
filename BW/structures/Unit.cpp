@@ -175,10 +175,9 @@ u32 Unit::get_max_weapon_range(u8 weapon_id) const {
 }
 
 const char* Unit::get_name() {
-    assert(this);
-    UnitExt* unit_ext = get_unit_ext(this);
-    if (unit_ext->custom_name) {
-        return unit_ext->custom_name;
+    auto& unit_ext = this->ext();
+    if (unit_ext.custom_name) {
+        return unit_ext.custom_name;
     }
     if (this->player < PlayerLimit) {
         const auto& custom_unit_names = g_globals->players[this->player].custom_unit_names;
@@ -1559,6 +1558,10 @@ bool Unit::is_in_air() {
     return this->status & UnitStatus::InAir;
 }
 
+bool Unit::is_flyer() {
+    return units_dat::base_property[this->id] & UnitProperty::Flyer;
+}
+
 bool Unit::is_invincible() {
     return this->status & UnitStatus::Invincible || units_dat::base_property[this->id] & UnitProperty::Invincible;
 }
@@ -1813,7 +1816,7 @@ Unit* Unit::corpse_cocoon_search() {
 
 bool Unit::is_valid_nydus() {
     auto& unit_ext = this->ext();
-    return (unit_ext.values[ValueIsNydusEntry] || unit_ext.values[ValueIsNydusExit] || this->id == UnitId::ZergNydusCesiant) && this->building.nydus_exit;
+    return (unit_ext.values[ValueIsNydusEntry] || unit_ext.values[ValueIsNydusExit]) && this->building.nydus_exit;
 }
 
 bool Unit::is_rescuable() {
