@@ -636,7 +636,7 @@ namespace hooks {
                             if (helper::is_unit_in_weapon_range(unit, order_target)) {
                                 return;
                             }
-                            best_score = 1;
+                            best_score = (!(unit->status & UnitStatus::Reacts) * 4 + 1) | ((unit->main_order_id == OrderId::HoldPositionNormal) * 4);
                         }
                     }
                 }
@@ -645,11 +645,11 @@ namespace hooks {
             Unit* auto_target = unit->auto_target_unit;
             if (auto_target) {
                 if (helper::unit_can_attack_target(auto_target, unit, 1) && helper::is_unit_enemy(unit, unit->auto_target_unit)
-                && !helper::cannot_chase_target(unit, auto_target) && helper::is_unit_in_weapon_range(unit, unit->auto_target_unit))
+                    && !helper::cannot_chase_target(unit, auto_target))
                 {
                     s32 auto_target_score = helper::get_target_priority(unit, unit->auto_target_unit);
-                    if (!auto_target_score) {
-                        auto_target_score = 1;
+                    if (!auto_target_score && !helper::is_unit_in_weapon_range(unit, unit->auto_target_unit)) {
+                        auto_target_score = (!(unit->status & UnitStatus::Reacts) * 4 + 1) | ((unit->main_order_id == OrderId::HoldPositionNormal) * 4);
                     }
                     if (auto_target_score < best_score) {
                         best_target = unit->auto_target_unit;

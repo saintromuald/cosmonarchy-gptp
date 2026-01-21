@@ -167,7 +167,7 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     if (is_garrison) {
         cargo_unit->status = (cargo_unit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
         if (cargo_unit->subunit) {
-            cargo_unit->subunit->status = (cargo_unit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
+            cargo_unit->subunit->status = (cargo_unit->subunit->status & ~UnitStatus::Reacts) | UnitStatus::InBuilding;
         }
         if (cargo_unit->path) {
             u32* path_0x4 = (u32*)((u32)cargo_unit->path->next);

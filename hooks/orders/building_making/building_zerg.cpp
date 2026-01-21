@@ -99,6 +99,7 @@ void orders_zerg_build_self(Unit* building) {
                                 control_group.add(worker);
                             }
                         }
+                        bw::inherit_debuffs(building, worker);
                     }
                     if (building_ext.values[ValueRegressionUnstable]) {
                         auto& worker_ext = worker->ext();
@@ -686,13 +687,22 @@ void droleth_build_excisant(Unit* builder) { // 0045D790
     u32 building_id = builder->build_queue[builder->build_queue_slot];
     Unit* building = helper::begin_gas_building(builder, building_id);
     if (building) {
-        UnitExt* building_ext = get_unit_ext(building);
-        building_ext->values[ValuePreMorphHP] = builder->hitpoints;
+        auto& building_ext = building->ext();
+        building_ext.values[ValuePreMorphHP] = builder->hitpoints;
         helper::ai_training_overlord(building, builder);
         builder->user_action_flags |= UserActionFlags_SilentRemove;
         helper::orders_self_destructing(builder);
         helper::drone_build_execute(building);
         helper::add_overlay_below_main(building->sprite, unit_id_is_ridge_refinery(building_id) ? ImageId::VespeneRidgeUnderlay : ImageId::VespeneGeyserUnderlay, 0, 0, 0);
+        if (builder->id == UnitId::ZergAgrileth) {
+            for (ControlGroup& control_group : hotkeys.control_groups) {
+                if (control_group.has(builder)) {
+                    control_group.remove(builder);
+                    control_group.add(building);
+                }
+            }
+        }
+        bw::inherit_debuffs(builder, building);
         return;
     }
 

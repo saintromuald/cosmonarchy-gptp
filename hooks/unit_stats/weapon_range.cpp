@@ -131,7 +131,7 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
     }
 
     // Give bonus distance to garrisoned units - after melee unit calcs so flamethrower units can attack
-    if (unit->status & UnitStatus::InBuilding) {
+    if (unit->is_garrisoned()) {
         bonus_amount += 64;
     }
 
@@ -150,7 +150,7 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
         final_range -= 32;
     }
 
-    return final_range * scale + bonus_amount;
+    return std::lround(final_range * scale) + bonus_amount;
 }
 
 // Hooked to eventually extend weapon ids past 255. -Pr0nogo
