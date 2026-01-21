@@ -1668,49 +1668,51 @@ enum class Placeability : u8 {
 };
 
 enum class Faction : u8 {
-	None,
+    None,
 
-	TerranOrionImperium,
-	TerranHecatonCoalition,
-	TerranFuturistFederation,
-	TerranGoldenRepublic,
-	TerranNydusTrinity,
-	TerranUpstart,
+    TerranOrionImperium,
+    TerranHecatonCoalition,
+    TerranFuturistFederation,
+    TerranGoldenRepublic,
+    TerranNydusTrinity,
+    TerranUpstart,
 
-	ProtossDivinePrimacy,
-	ProtossOrderOfTheSacredSaber,
-	ProtossKhalendricKnights,
-	ProtossStarbound,
+    ProtossDivinePrimacy,
+    ProtossOrderOfTheSacredSaber,
+    ProtossKhalendricKnights,
+    ProtossStarbound,
+    ProtossAstralOmen,
 
-	ZergAtaltrethTendril,
-	ZergImicrenTendril,
-	ZergOrkotiTendril,
-	ZergGoszirithTendril,
-	ZergZorthosTendril,
+    ZergAtaltrethTendril,
+    ZergImicrenTendril,
+    ZergOrkotiTendril,
+    ZergGoszirithTendril,
+    ZergZorthosTendril,
 
-	Count,
+    Count,
 };
 
 static const char* faction_identifiers[] = { // This array needs to the same size and order as Faction enum
-	"none",
+    "none",
 
-	"orion_imperium",
-	"hecaton_coalition",
-	"futurist_federation",
-	"golden_republic",
-	"nydus_trinity",
-	"upstart_terran",
+    "orion_imperium",
+    "hecaton_coalition",
+    "futurist_federation",
+    "golden_republic",
+    "nydus_trinity",
+    "upstart_terran",
 
-	"divine_primacy",
-	"order_of_the_sacred_saber",
-	"khalendric_knights",
-	"starbound",
+    "divine_primacy",
+    "order_of_the_sacred_saber",
+    "khalendric_knights",
+    "starbound",
+    "astral_omen",
 
-	"ataltreth",
-	"imicren",
-	"goszirith",
-	"orkoti",
-	"zorthos",
+    "ataltreth",
+    "imicren",
+    "goszirith",
+    "orkoti",
+    "zorthos",
 };
 static_assert(std::size(faction_identifiers) == (size_t)Faction::Count);
 

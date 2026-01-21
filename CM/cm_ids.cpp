@@ -1868,7 +1868,11 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
 }
 
 bool has_autovitality(UnitId::Enum unit_id) {
-    return unit_id == UnitId::ProtossSimulacrum || unit_id == UnitId::ProtossRenesair;
+    return unit_id == UnitId::ProtossSimulacrum || unit_id == UnitId::ProtossRenesair || unit_id == UnitId::ProtossSimulacrumAstral;
+}
+
+bool has_automandate(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ProtossSimulacrumAstral;
 }
 
 bool unit_id_turns_to_face_target(UnitId::Enum unit_id) {

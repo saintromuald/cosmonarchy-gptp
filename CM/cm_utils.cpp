@@ -522,6 +522,12 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
                 case UnitId::ProtossManifold:    return UnitId::ProtossManifoldStarbound;
             }
         } break;
+        case Faction::ProtossAstralOmen: {
+            switch (unit_id) {
+            //  case UnitId::ProtossHerald:      return UnitId::ProtossWarlock;
+                case UnitId::ProtossSimulacrum:  return UnitId::ProtossSimulacrumAstral;
+            }
+        } break;
         case Faction::ZergImicrenTendril: {
             switch (unit_id) {
                 case UnitId::ZergQuazilisk:     return UnitId::ZergQuazrokor;
@@ -560,8 +566,9 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
     if (unit_ext.unar_solitary_focus_stacks) {
         damage += unit_ext.unar_solitary_focus_stacks;
     }
-    if (unit->id == UnitId::ZergGarvrokor) {
-        damage++;
+    switch (unit->id) {
+        case UnitId::ZergGarvrokor:           damage++;    break;
+        case UnitId::ProtossSimulacrumAstral: damage -= 2; break;
     }
     return damage;
 }
@@ -787,7 +794,7 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
         case WeaponId::VassalPulseBlaster:                  return "Pulse Blaster";
         case WeaponId::DracadinPhaseDisruptor:              return "Phase Disruptor";
         case WeaponId::GladiusPlasmaFlurry:                 return "Plasma Flurry";
-        case WeaponId::SimulacrumPhaseCannon:               return "Phase Cannon";
+        case WeaponId::SimulacrumPhaseCannon:               return unit->id == UnitId::ProtossSimulacrum ? "Phase Cannon" : "Slice Cannon";
         case WeaponId::AspirantPotentiumCannon:             return "Potentium Cannon";
         case WeaponId::ArchonPsionicShockwave:              return "Psionic Shockwave";
         case WeaponId::EmpyreanPlasmaBarrage:               return "Plasma Barrage";

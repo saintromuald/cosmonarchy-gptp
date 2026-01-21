@@ -3415,6 +3415,9 @@ namespace hooks {
                 u32 count = 1;
                 if (UnitId::has_autovitality(static_cast<UnitId::Enum>(unit->id))) {
                     count = bw::get_game_kind() == GameKind::Brotherhood ? 2 : 1;
+                    if (UnitId::has_automandate(static_cast<UnitId::Enum>(unit->id))) {
+                        count++;
+                    }
                 }
                 unit_ext.values[ValueIsCloning] = true;
                 bw::create_unit_from_ability(unit->id, count, unit->player, unit->position, unit);
@@ -4439,6 +4442,9 @@ namespace hooks {
                                             } break;
                                             case Faction::ProtossStarbound: {
                                                 bw::printf("\t%s (P%u) has chosen the Starbound.", player_name, player + 1, TextColor::White);
+                                            } break;
+                                            case Faction::ProtossAstralOmen: {
+                                                bw::printf("\t%s (P%u) has chosen the Astral Omen.", player_name, player + 1, TextColor::White);
                                             } break;
                                         }
                                     } break;
