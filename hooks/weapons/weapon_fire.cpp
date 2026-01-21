@@ -104,8 +104,10 @@ static u32 get_correction_distance(Point16 unit_pos, u32 unit_id, Point16 source
 
 static std::optional<Point16> get_launch_pos(Unit* unit, WeaponId::Enum weapon_id, Target target, WeaponOffsets* offsets) {
     auto behavior = weapons_dat::behavior[weapon_id];
-    if (weapon_id == WeaponId::HypnagogueThroughTheLookingGlass) {
-        behavior = WeaponBehavior_AppearOnTargetSite;
+    // Behavior override for new abilities
+    switch (weapon_id) {
+        case WeaponId::HypnagogueThroughTheLookingGlass: behavior = WeaponBehavior_AppearOnTargetSite; break;
+        case WeaponId::Rematerialize:                    behavior = WeaponBehavior_AppearOnTargetUnit; break;
     }
     
     if (behavior == WeaponBehavior_AppearOnTargetUnit) {

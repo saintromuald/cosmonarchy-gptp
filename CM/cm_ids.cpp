@@ -699,6 +699,7 @@ bool weapon_id_can_proc_onhits(u32 weapon_id) {
         && weapon_id != WeaponId::StasisField
         && weapon_id != WeaponId::MatralethParasite
         && weapon_id != WeaponId::Plague
+        && weapon_id != WeaponId::Rematerialize
         && weapon_id != WeaponId::Custom
         && weapon_id != WeaponId::NuclearMissile;
 }
@@ -1245,9 +1246,7 @@ bool unit_id_is_trap(u32 unit_id) {
 }
 
 bool unit_building_can_act(Unit* unit) {
-    if (unit->status & UnitStatus::InAir ||
-        unit->status & UnitStatus::IsHallucination ||
-        !(unit->status & UnitStatus::Completed)) {
+    if (unit->is_in_air() || unit->is_hallucination() || !unit->is_completed()) {
         return false;
     }
     return true;

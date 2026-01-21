@@ -6,7 +6,6 @@ namespace TechId {
 
     // Shared
         TargetGround						= 17, // Ensnare | used for: Wyvern Land Grab
-        UnusedAnticthonFailureMode			= 23, // Archon Warp
         CancelNewAbility					= 26, // Unused Tech 26 | used for: Wyvern Land Grab, Didact Dimensional Recall, Controlled Demolition
 
     // Terran
@@ -35,6 +34,9 @@ namespace TechId {
         LarvalSubmenuSelectControl			= 28, // Dark Archon Meld
         LarvalSubmenuSelectSwarm			= 33, // Unused Tech 33
         LarvalSubmenuSelectAssault			= 38, // Unused Tech 38
+
+    // Askosi
+        AskosiRematerialize     			= 23, // Archon Warp
 
         // Brood War \\
 

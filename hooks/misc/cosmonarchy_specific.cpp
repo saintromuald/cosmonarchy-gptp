@@ -134,7 +134,6 @@ u32 get_flingy_halt_distance(Flingy* flingy) {
 bool is_unused_order(u8 order_id) {
     switch (order_id) {
         case OrderId::GuardianAspect:
-        case OrderId::PaladinSkyfall: // OrderId::AttackTile
         case OrderId::Hover:
         case OrderId::Warpin:
         case OrderId::CTFCOP2: {
@@ -164,8 +163,7 @@ bool can_attack_target_end_chunk(Unit* source, u32 target_flags) {
     return false;
 }
 
-s32 game_loop() // 004D94B0 - hooked for lag testing - Pr0nogo
-{
+s32 game_loop() { // 004D94B0 - hooked for lag testing - Pr0nogo
     bool v0;
     win32::Stopwatch sw;
     sw.Start();

@@ -1560,7 +1560,7 @@ bool Unit::is_in_air() {
 }
 
 bool Unit::is_invincible() {
-    return this->status & UnitStatus::Invincible;
+    return this->status & UnitStatus::Invincible || units_dat::base_property[this->id] & UnitProperty::Invincible;
 }
 
 bool Unit::is_spellcaster() {
