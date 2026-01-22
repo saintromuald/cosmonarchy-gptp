@@ -165,14 +165,17 @@ namespace {
 
     static HHOOK g_keyboard_hook = nullptr;
 
-    static LRESULT CALLBACK key_hook_block_win_key(int code, WPARAM wparam, LPARAM lparam) {
+    // This is a low-level hook that's installed system-wide
+    // Do not extend this for other keys unless they also need blocked system-wide
+    // Use hotkeys.cpp instead
+    static LRESULT CALLBACK key_press_hook_block_win(int code, WPARAM wparam, LPARAM lparam) {
         if (code >= 0) {
             HWND foreground_window = GetForegroundWindow();
             if (foreground_window == g_main_window) {
                 KBDLLHOOKSTRUCT* keypress = (KBDLLHOOKSTRUCT*)lparam;
 
                 if (keypress->vkCode == VK_LWIN || keypress->vkCode == VK_RWIN) {
-                    return 1;
+                    return true;
                 }
             }
         }
@@ -181,11 +184,12 @@ namespace {
     }
 
     static void install_win_key_hook() {
+        if (!g_config.suppress_windows_key) return;
         if (g_keyboard_hook) return;
 
         g_keyboard_hook = SetWindowsHookExA(
             WH_KEYBOARD_LL,
-            key_hook_block_win_key,
+            key_press_hook_block_win,
             GetModuleHandleA(nullptr),
             0
         );
@@ -228,7 +232,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     */
 
     // Hook windows key to prevent accidentally breaking window focus
-    if (g_config.suppress_windows_key) install_win_key_hook();
+    install_win_key_hook();
 
     DatExt::extend_data();
 
