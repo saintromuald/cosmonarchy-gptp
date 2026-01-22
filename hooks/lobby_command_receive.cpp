@@ -127,7 +127,7 @@ void queue_lobby_commands() {
 
 static void process_change_race_command(const Command_ChangeRace* command, u32 sender) {
     if (!g_is_host) return;
-    if (g_game_state != GameState::InLobby) return;
+    if (g_game_state < GameState::InLobby) return;
 
     const auto index = command->player_index == 8 ? g_player_id_table[sender] : command->player_index;
 
