@@ -4,8 +4,10 @@
 
 namespace cm {
 BuildingModifier get_building_modifier(Unit* unit, const ProgressBuildOptions& options) {
-	BuildingModifier modifier{.factor = 1, .integer_step = 1};
-	if (unit && !options.use_stock_speed) {
+	BuildingModifier modifier{.factor = 1_fp64, .integer_step = 1};
+
+	assert(unit);
+	if (!options.use_stock_speed) {
 		UnitExt* unit_ext = get_unit_ext(unit);
 
 		Unit* builder = options.builder;
@@ -14,7 +16,7 @@ BuildingModifier get_building_modifier(Unit* unit, const ProgressBuildOptions& o
 			if ((builder && builder->id == UnitId::TerranTalos)
 				|| unit->create_origin == UnitId::ProtossArtisan
 				|| unit->create_origin == UnitId::ZergGosvileth) {
-				modifier.factor *= 1.5;
+				modifier.factor *= 1.5_fp64;
 			}
 			*/
 		}
@@ -27,7 +29,7 @@ BuildingModifier get_building_modifier(Unit* unit, const ProgressBuildOptions& o
 			}
 		}
 		if (crucible_active) {
-			modifier.factor *= 1.5;
+			modifier.factor *= 1.5_fp64;
 		}
 
 		if (unit->player < PlayerLimit) {
@@ -41,11 +43,11 @@ BuildingModifier get_building_modifier(Unit* unit, const ProgressBuildOptions& o
 		if (unit_ext->build_progress_last_update_tick != g_elapsed_time_frames) {
 			unit_ext->build_progress_last_update_tick = g_elapsed_time_frames;
 
-			unit_ext->build_progress_float += modifier.factor;
-			unit_ext->build_progress_integer = floor(unit_ext->build_progress_float);
+			unit_ext->build_progress_float += modifier.factor - 1;
+			unit_ext->build_progress_integer = (u32)floor(unit_ext->build_progress_float);
 			unit_ext->build_progress_float -= unit_ext->build_progress_integer;
 		}
-		modifier.integer_step = unit_ext->build_progress_integer;
+		modifier.integer_step += unit_ext->build_progress_integer;
 	}
 
 	if (options.already_ticked) {
@@ -73,11 +75,11 @@ bool progress_build(Unit* unit, const ProgressBuildOptions& options) {
 	if (modifier.factor) {
 		if (options.shield_gain) {
 			s32 max_shields = units_dat::max_shield_points[unit->id] << 8;
-			unit->shields = std::min<s32>(unit->shields + options.shield_gain * modifier.factor, max_shields);
+			unit->shields = std::min(s32(unit->shields + options.shield_gain * modifier.factor), max_shields);
 		}
 		// Need to call set_hitpoints for shield case, regardless of hp_gain, to update unit force value and etc
 		if (options.hp_gain || options.shield_gain) {
-			unit->set_hitpoints(unit->hitpoints + options.hp_gain * modifier.factor);
+			unit->set_hitpoints(s32(unit->hitpoints + options.hp_gain * modifier.factor));
 		}
 	}
 	return false;

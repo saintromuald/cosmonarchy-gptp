@@ -4,7 +4,7 @@
 namespace cm {
 
 struct BuildingModifier {
-	f32 factor;
+	fp64 factor;
 	u32 integer_step;
 };
 

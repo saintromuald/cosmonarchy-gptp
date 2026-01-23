@@ -20,7 +20,7 @@ struct DataExt {
 	array2d<AiTownExt, PlayerLimit, AiTownCap> ai_towns{};
 
 	DataExt() {
-		units.resize(UNIT_ARRAY_LENGTH);
+		units.resize(UNIT_ARRAY_LENGTH, {});
 	}
 };
 
