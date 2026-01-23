@@ -544,7 +544,7 @@ struct UnitExt {
         UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX
     };
 
-    f32						build_progress_float;
+    fp64				    build_progress_float;
     u32						build_progress_integer;
     u32						build_progress_last_update_tick;
 
