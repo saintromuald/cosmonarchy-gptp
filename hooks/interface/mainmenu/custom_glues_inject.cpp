@@ -11,10 +11,10 @@ static void __declspec(naked) glu_main_switch_wrapper() { // 004de445
 
 // jump 00451be7 -> 00451bed
 static void __declspec(naked) chat_race_combobox_wrapper() { // 00451aa0
+    static const u32 jump_address = 0x00451bed;
     static BinDlg* dialog;
     static RaceId::Enum selected_race;
     static u32 player_id;
-    static const u32 jump_address = 0x00451bed;
     __asm {
         MOV dialog, EAX
         MOV selected_race, DL
