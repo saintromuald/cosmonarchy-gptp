@@ -78,8 +78,8 @@ private:
 
 private:
     std::vector<Player> m_randomized_players;
-    std::array<RaceFlags, 12> m_player_race_flags;
-    std::array<std::string, 12> m_player_race_strings;
+    std::array<RaceFlags, PlayerLimit+1> m_player_race_flags;
+    std::array<std::string, PlayerLimit+1> m_player_race_strings;
     RaceFlags m_race_flags;
 };
 
