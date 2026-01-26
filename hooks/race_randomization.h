@@ -52,7 +52,6 @@ inline bool has_flag(RaceFlags flags, RaceFlags flag) {
     return (flags & flag) != RaceFlags::None;
 }
 
-
 class RaceRandomizer {
 public:
     static RaceRandomizer& instance() {
@@ -62,25 +61,30 @@ public:
 
     void process_randomization();
     const std::vector<Player>& randomized_players() { return m_randomized_players; };
-    void set_player_race_flags(u32 index, RaceFlags race_flags) { m_player_race_flags[index] = race_flags; };
-    void set_player_race_flags(u32 index, u32 race_flags) { m_player_race_flags[index] = static_cast<RaceFlags>(race_flags); };
+    void set_player_race_flags(u32 index, RaceFlags race_flags);
+    void set_player_race_flags(u32 index, u32 race_flags) { set_player_race_flags(index, static_cast<RaceFlags>(race_flags)); };
     RaceFlags player_race_flags(u32 index) const { return m_player_race_flags[index]; };
     void set_race_flags(RaceFlags race_flags) { m_race_flags = race_flags; };
     void set_race_flags(u32 race_flags) { m_race_flags = static_cast<RaceFlags>(race_flags); };
     RaceFlags race_flags() const { return m_race_flags; };
     void cleanup_and_reset();
-
+    std::string& race_string(u32 index) { return m_player_race_strings[index]; }
 
 private:
     RaceRandomizer();
     
+    void update_race_string(u32 index);
     void save_config();
 
 private:
     std::vector<Player> m_randomized_players;
-    std::array<RaceFlags, 16> m_player_race_flags;
+    std::array<RaceFlags, 12> m_player_race_flags;
+    std::array<std::string, 12> m_player_race_strings;
     RaceFlags m_race_flags;
 };
+
+u32 slot_id_to_index(u32 slot);
+u32 index_to_slot_id(u32 index);
 
 namespace hooks {
 void randomize_races(); // 004a9a30

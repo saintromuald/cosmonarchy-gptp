@@ -654,6 +654,11 @@ Unit* unit;
 u16 unit_id;
 };
 
+struct Bitmap {
+    u16 width;  // 0x0
+    u16 height; // 0x2
+    u8* buffer; // 0x4
+};
 
 struct BinDlg;
 
@@ -662,10 +667,7 @@ public:
     DialogBounds();
 
     static DialogBounds from_ltrb(s16 left, s16 top, s16 right, s16 bottom);
-    static DialogBounds from_xywh(s16 x, s16 y, u16 width, u16 height);
-
-    static DialogBounds from_bounds_ltrb(const Bounds bounds);
-    static DialogBounds from_bounds_xywh(const Bounds bounds);
+    static DialogBounds from_xywh(s16 x, s16 y, u16 w, u16 h);
 
     s16 left() const { return m_left; }
     s16 top() const { return m_top; }
@@ -674,8 +676,8 @@ public:
 
     s16 x() const { return m_left; }
     s16 y() const { return m_top; }
-    u16 width() const { return m_width; }
-    u16 height() const { return m_height; }
+    s16 w() const { return std::max(0, m_right - m_left + 1); };
+    s16 h() const { return std::max(0, m_bottom - m_top + 1); };
 
     void set_ltrb(s16 left, s16 top, s16 right, s16 bottom);
     void set_xywh(s16 x, s16 y, u16 width, u16 height);
@@ -699,40 +701,33 @@ public:
 
     operator Box16() const;
     operator Box32() const;
-    operator Bounds() const;
-    Bounds to_bounds() const;
 
 private:
     s16 m_left;
     s16 m_top;
     s16 m_right;
     s16 m_bottom;
-    u16 m_width;
-    u16 m_height;
-
-    void update_size();
 };
 
 using BinDlgProc = u32(__fastcall*)(BinDlg*, DialogEvent*);
-using BinDlgProcEx = u32(__fastcall*)(BinDlg*, DialogEvent*, u32, u32);
 using TimerCallback = void(__fastcall*)(BinDlg*, u16 index);
 
 struct BinDlg {
-/*0x00*/  BinDlg*		next;
+/*0x00*/  BinDlg*   next;
 union {
-    /*0x04*/  Bounds		bounds;			// 0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
-    /*0x04*/  DialogBounds  dialog_bounds; // New version. TODO: Update old references
+    /*0x04*/  Box16 bounds;         // Some dialogs (buttons, statfluf) use x/y/w/h
+    /*0x04*/  Box16 dialog_bounds;  // Safer alternative for fully-hooked functions that we can guarantee are always l/t/r/b
 };
-/*0x10*/  u8*			buffer;
+/*0x0c*/  Bitmap    bitmap;
 union {
     /*0x14*/  const char* text;
-    /*0x14*/  char (*textbox_buffer)[256]; // Only for DialogControlTypes::TextBox
+    /*0x14*/  char (*textbox_buffer)[256]; // Only for DialogControlType::TextBox
 };
-/*0x18*/  s32			flags;			// use BinDlgFlags::Enum
-/*0x1C*/  u32			unk_1c;
-/*0x20*/  u16			index;
-/*0x22*/  u16			control_type;	// use DialogControlTypes::Enum
-/*0x24*/  u16			graphic;
+/*0x18*/  s32               flags;			// use BinDlgFlags::Enum
+/*0x1C*/  u32               unk_1c;
+/*0x20*/  u16               index;
+/*0x22*/  DialogControlType control_type;	// use DialogControlType::Enum
+/*0x24*/  u16               graphic;
 
 union {
 /*0x26*/  void*		user;
@@ -750,13 +745,20 @@ Options*            options;
 union {
 /*0x2A*/  void*         fxn_interact;
 /*0x2A*/  BinDlgProc    interaction_function;
-/*0x2A*/  BinDlgProcEx  interaction_function_extended;
 };
 
 /*0x2E*/  void*			fxn_update;
 /*0x32*/  BinDlg*		parent;
 
 union {
+    struct {
+        /*0x36*/ Bitmap bitmap;
+        /*0x3A*/ // FILLER
+    } DialogBoxDC_0x36;
+    struct {
+        /*0x36*/ s16 width;
+        /*0x38*/ s16 height;
+    } dimensions_0x36;              // Buttons & statfluf regions just have dimensions here
     struct {
         /*0x36*/  Box16		response_area;
         /*0x3E*/  BinDlg*	unk_3e;
@@ -811,7 +813,7 @@ union {
         /*0x3A*/  u16       current;
         /*0x3C*/  u16       min;
         /*0x3E*/  u16       max;
-        /*0x40*/  u16       unk40;
+        /*0x40*/  u16       unk_40;
     } Slider;
 };
 
@@ -867,6 +869,28 @@ union {
 
 C_ASSERT(sizeof(BinDlg) == 86); //0x56
 //static_assert(sizeof(BinDlg) == 86, "The count of the BinDlg structure is invalid");
+
+
+struct GluChatEntry {
+    u32 slot_type; // 2:team/heading, 8:open, 6:computer, 5:self, 4:other player
+    u32 unk_1;
+    char player_name[65];
+    u8 padding[3];
+    u32 slot_id;
+    u32 player_id; // FFFFFFFF for cpu players
+    u8 padding_1[10];
+    u16 bounds_left;
+    u16 bounds_top;
+    u16 unk_2;
+    u8 padding_2[12];
+    RaceId::Enum race;
+    u8 padding_3[43];
+    u32 latency; // Unsure
+    u8 padding_4[12];
+    BinDlg* dialog;
+};
+
+C_ASSERT(sizeof(GluChatEntry) == 176);
 
 // For load_statfluf_mouse_regions
 struct MousePixelmaskRegion {
@@ -1420,12 +1444,6 @@ struct PaletteEntry {
     u8			flags;		// 0x3
 };
 
-struct Bitmap {
-    u16			width;		// 0x0
-    u16			height;		// 0x2
-    u8*			buffer;		// 0x4
-};
-
 struct SurfaceContext {
     SurfaceContext* next;
     SurfaceContext* prev;
@@ -1934,7 +1952,7 @@ struct Command_FileTransferStatus {
 
 struct Command_PlayerUpdate {
     GameCommand command = GameCommand_PlayerUpdate;
-    u8 player_index;
+    u8 player_id;
     u8 player_actions_lowest_byte;
     u8 type;
     RaceId::Enum race;
@@ -1975,9 +1993,9 @@ struct Command_JoinForce {
     u8 force;
 };
 
-struct Command_MoveToSlot {
-    GameCommand command = GameCommand_MoveToSlot;
-    u8 slot;
+struct Command_MoveToForce {
+    GameCommand command = GameCommand_MoveToForce;
+    u8 force;
 };
 
 struct Command_SetSlotState {

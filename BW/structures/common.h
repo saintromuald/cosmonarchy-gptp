@@ -80,6 +80,16 @@ union Box16 {
 		s16 w;
 		s16 h;
 	};
+
+	bool contains_ltrb(Point16 point) const {
+		return point.x >= left && point.x <= right &&
+			point.y >= top && point.y <= bottom;
+	}
+
+	bool contains_xywh(Point16 point) const {
+		return point.x >= x && point.x < x + w &&
+			point.y >= y && point.y < y + h;
+	}
 };
 
 union Box32 {

@@ -292,7 +292,7 @@ void game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) { // 004
 // Overrides are reflected in briefings.
 void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 0046CF30
     BinDlg* ready_room_dlg = *g_ready_room_dialog;
-    if (ready_room_dlg->control_type) {
+    if (ready_room_dlg->control_type != DialogControlType::DialogBoxDC) {
         ready_room_dlg = ready_room_dlg->parent;
     }
 

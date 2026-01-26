@@ -94,6 +94,7 @@ struct std::formatter<TextColor> {
 
 template <size_t Capacity>
 inline void safe_copy(char(&to)[Capacity], const char* from) {
+    if (!from) { to[0] = 0; return; }
     auto copy_size = Capacity - 1;
     strncpy(to, from, copy_size);
     to[copy_size] = 0;
@@ -107,7 +108,27 @@ inline void safe_copy(char(&to)[Capacity], const std::string& from) {
 template <size_t Capacity>
 inline void safe_copy(char(&to)[Capacity], std::string_view from) {
     auto copy_size = std::min(Capacity - 1, from.size());
-    strncpy(to, from.data(), copy_size);
+    std::memcpy(to, from.data(), copy_size);
+    to[copy_size] = 0;
+}
+
+template<size_t Capacity>
+inline void safe_copy(std::array<char, Capacity>& to, const char* from) {
+    if (!from) { to[0] = 0; return; }
+    auto copy_size = Capacity - 1;
+    strncpy(to.data(), from, copy_size);
+    to[copy_size] = 0;
+}
+
+template<size_t Capacity>
+inline void safe_copy(std::array<char, Capacity>& to, const std::string& from) {
+    safe_copy(to, from.c_str());
+}
+
+template<size_t Capacity>
+inline void safe_copy(std::array<char, Capacity>& to, std::string_view from) {
+    auto copy_size = std::min(Capacity - 1, from.size());
+    std::memcpy(to.data(), from.data(), copy_size);
     to[copy_size] = 0;
 }
 

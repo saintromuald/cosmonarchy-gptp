@@ -4,7 +4,7 @@ std::vector<BinDlg*> get_children_by_index(BinDlg* parent, s16 index) {
     std::vector<BinDlg*> output;
     if (!parent) return output;
 
-    if (parent->control_type != DialogControlTypes::DialogBoxDC) {
+    if (parent->control_type != DialogControlType::DialogBoxDC) {
         parent = parent->parent;
         if (!parent) return output;
     }
@@ -15,7 +15,7 @@ std::vector<BinDlg*> get_children_by_index(BinDlg* parent, s16 index) {
 }
 
 BinDlg* get_first_child_by_index(BinDlg* parent, s16 index) {
-    if (parent->control_type != DialogControlTypes::DialogBoxDC) {
+    if (parent->control_type != DialogControlType::DialogBoxDC) {
         parent = parent->parent;
         if (!parent) return nullptr;
     }
@@ -28,14 +28,24 @@ BinDlg* get_first_child_by_index(BinDlg* parent, s16 index) {
 void show_dialogs_with_index(BinDlg* dialog, s16 index) {
     auto children = get_children_by_index(dialog, index);
     for (auto child : children) {
-        if (child) helper::show_dialog(child);
+        if (child) show_bin_dialog(child);
     }
 }
 
 void hide_dialogs_with_index(BinDlg* dialog, s16 index) {
     auto children = get_children_by_index(dialog, index);
     for (auto child : children) {
-        if (child) helper::hide_dialog(child);
+        if (child) hide_bin_dialog(child);
+    }
+}
+
+void update_dialog_visibility(BinDlg* dialog, s16 index, bool show) {
+    auto child = get_first_child_by_index(dialog, index);
+    if (!child) return;
+    if (show) {
+        show_bin_dialog(child);
+    } else {
+        hide_bin_dialog(child);
     }
 }
 
@@ -116,23 +126,23 @@ void bindlg_load_background_palette(BinDlg* dialog) {
 void bindlg_load_image(const char* filename, Palette* palette, BinDlg* dialog, u8* (__stdcall* malloc_func)(u32)) {
     u32 width{};
     u32 height{};
-    if (!SBmpAllocLoadImage(filename, palette, &dialog->buffer, &width, &height, 0, 0, malloc_func)) {
+    if (!SBmpAllocLoadImage(filename, palette, &dialog->bitmap.buffer, &width, &height, 0, 0, malloc_func)) {
         auto error = SErrGetLastError();
         helper::fatal_file_not_found(error, filename);
     }
-    dialog->bounds.width = width;
-    dialog->bounds.height = height;
+    dialog->bitmap.width = width;
+    dialog->bitmap.height = height;
 }
 
 // Ensure text remains a valid pointer for the life of the dialog
-// Except DialogControlTypes::TextBox see: 004dcf30
+// Except DialogControlType::TextBox see: 004dcf30
 void update_dialog_text(BinDlg* dialog, s16 index, const char* text) {
     if (!dialog || !text) return;
 
     auto children = get_children_by_index(dialog, index);
     for (auto child : children) {
         if (!child) continue;
-        if (child->control_type == DialogControlTypes::TextBox) {
+        if (child->control_type == DialogControlType::TextBox) {
             safe_copy(*child->textbox_buffer, text);
             child->TextBox0x36.unkFlags36 |= 1;
             if (!(child->flags & BinDlgFlags::Visible)) {
@@ -200,9 +210,8 @@ void initialize_dialog(BinDlg* dialog, BinDlgProc dialogproc) { // 00419d20
         dialog->interaction_function = dialogproc;
     }
 
-    const auto area_size = static_cast<size_t>(dialog->onInitDialog0x36.response_area_width) *
-        static_cast<size_t>(dialog->onInitDialog0x36.response_area_height);
-    dialog->statRes.font_handle = (u32*)SMemAlloc(area_size, __FILE__, __LINE__, 0);
+    const auto area_size = dialog->DialogBoxDC_0x36.bitmap.width * dialog->DialogBoxDC_0x36.bitmap.height;
+    dialog->DialogBoxDC_0x36.bitmap.buffer = (u8*)SMemAlloc(area_size, __FILE__, __LINE__, 0);
 
     dialog->index = 0;
 
@@ -229,4 +238,41 @@ void quick_send_event(BinDlg* dialog, DialogUserType user_type, u16 param) {
         .current = {static_cast<u16>(g_mouse->x), static_cast<u16>(g_mouse->y)},
     };
     dialog->interaction_function(dialog, &event);
+}
+
+void show_bin_dialog(BinDlg* dialog) {
+    if (!dialog) return;
+    if (dialog->flags & BinDlgFlags::Visible) return;
+    DialogEvent event{
+        .user = DialogUserType_Show,
+        .number_order = DialogEventType_Dialog,
+        .current = {(u16)g_mouse->x, (u16)g_mouse->y}
+    };
+    auto result = dialog->interaction_function(dialog, &event);
+    if (result && (dialog->flags & BinDlgFlags::Highlighted) == 0) {
+        dialog->flags |= BinDlgFlags::Highlighted;
+        helper::update_dialog(dialog);
+    }
+}
+
+void hide_bin_dialog(BinDlg* dialog) {
+    if (!dialog) return;
+    if ((dialog->flags & BinDlgFlags::Visible) == 0) return;
+    DialogEvent event{
+        .user = DialogUserType_Hide,
+        .number_order = DialogEventType_Dialog,
+        .current = {(u16)g_mouse->x, (u16)g_mouse->y}
+    };
+    auto result = dialog->interaction_function(dialog, &event);
+    if (result) {
+        DialogEvent next_event{
+            .user = DialogUserType_SelectNext,
+            .number_order = DialogEventType_Dialog,
+            .current = {(u16)g_mouse->x, (u16)g_mouse->y}
+        };
+        if ((dialog->flags & BinDlgFlags::Highlighted) == 0) {
+            dialog->flags |= BinDlgFlags::Highlighted;
+            helper::update_dialog(dialog);
+        }
+    }
 }

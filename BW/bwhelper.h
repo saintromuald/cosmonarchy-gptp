@@ -54,6 +54,9 @@ namespace helper {
     BW_FUNC(0x004b52a0, void __stdcall, glu_ex_campaign);
     BW_FUNC(0x004dcc90, void __stdcall, glu_generic);
 
+    // Generic menu functions by control type
+    BW_ARRAY(BinDlgProc, 15, g_default_dialogprocs, 0x005014ac);
+
     BW_FUNC(0x004ab840, u32* __stdcall, glu_main_load_ums_templates);
     BW_FUNC(0x004c4680, void __stdcall, glu_login_leave_game);
     BW_FUNC(0x004b5180, b32 __stdcall, dlgproc_glu_campaign_activate, BinDlg* dialog);
@@ -61,7 +64,7 @@ namespace helper {
 
     BW_FUNC(0x00450210, void __stdcall, glu_chat_update_download_graphic);
     BW_FUNC(0x004c46e0, void __stdcall, process_make_game_public_command);
-    BW_FUNC(0x00471670, void __stdcall, process_move_to_slot_request, const Command_MoveToSlot* command, u32 sender);
+    BW_FUNC(0x00471670, void __stdcall, process_move_to_slot_request, const Command_MoveToForce* command, u32 sender);
     BW_FUNC(0x00470d10, void __stdcall, register_network_player, u8 player_id, u16 flags, u16 unk_1, u16 protocol_version);
     BW_FUNC(0x004513f0, void __stdcall, chat_update_race_slots, BinDlg* dialog);
     BW_FUNC(0x004b9bf0, void __stdcall, glu_chat_dlgproc_create, BinDlg* dialog);
@@ -72,6 +75,10 @@ namespace helper {
     BW_FUNC(0x004a99c0, u32 __stdcall, find_first_available_slot);
     BW_FUNC(0x00472ab0, void __stdcall, add_player_to_active_list, u8* active_list, u32 sender);
     BW_FUNC(0x004c4160, void __stdcall, update_game_mode, u32 open_slots);
+
+    BW_FUNC(0x0041bc40, u32 __fastcall, generic_combobox_interact, BinDlg* dialog, DialogEvent* event);
+    
+    BW_FUNC(0x00450a60, u32 __fastcall, chat_race_combobox_interact, BinDlg* dialog, DialogEvent* event);
 
     // Console functions
     BW_FUNC(0x0041d470, void __stdcall, console_update_surface_masks);
@@ -931,7 +938,6 @@ namespace helper {
     void update_command_card();																						// 004591D0
     void refresh_button_tooltip();																					// 00459770
     void bindlg_blit_surface(BinDlg* dialog);																		// 004C35F0
-    u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
     s32 req_check(u32 requirement_func, u16 requirement_var, u32 player, Unit* unit);
     void update_mineral_patch_image(Unit* mineralPatch);
     void update_image_position_offset(Image* image);
@@ -1939,7 +1945,6 @@ namespace helper {
     void glu_chat_prep_labels(BinDlg* dialog);              // 004b9770
     void glu_chat_dlgproc_destroy(BinDlg* dialog);          // 004b8d70
     void glu_chat_map_preview_destroy(BinDlg* dialog);      // 004b8d90
-    void glu_chat_update_password_field(BinDlg* dialog);    // 004b8c80
     
     b32 is_blocked_position(Unit* unit, Point16 position);                                          // 0042E1D0
     void decollide_or_unstack(Unit* unit, Point16* position);                                       // 004F29E0

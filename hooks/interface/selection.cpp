@@ -1019,7 +1019,7 @@ namespace hooks {
                 }
             } else {
                 current_dialog = dialog->parent;
-                if (current_dialog->control_type) {
+                if (current_dialog->control_type != DialogControlType::DialogBoxDC) {
                     current_dialog = current_dialog->parent;
                 }
                 current_dialog = current_dialog->child_dialog;
@@ -1048,7 +1048,7 @@ namespace hooks {
             if (g_config.always_show_condensed_selection || *g_is_holding_ctrl || count > GroupWireframesCap) {
                 memset(&unit_list, 0, sizeof(unit_list));
                 BinDlg* current_dialog = dialog->parent;
-                if (current_dialog->control_type) {
+                if (current_dialog->control_type != DialogControlType::DialogBoxDC) {
                     current_dialog = current_dialog->parent;
                 }
                 current_dialog = current_dialog->child_dialog;
@@ -1119,7 +1119,7 @@ namespace hooks {
     void generate_group_wireframes(BinDlg* dialog) {
         if (g_status_screen_func != 1) {
             BinDlg* current_dialog = dialog;
-            if (!current_dialog->control_type) {
+            if (current_dialog->control_type == DialogControlType::DialogBoxDC) {
                 current_dialog = current_dialog->child_dialog;
             }
             while (current_dialog) {
@@ -1130,7 +1130,7 @@ namespace hooks {
         }
         helper::store_selection_group_hp_and_type();
         BinDlg* current_dialog = dialog;
-        if (current_dialog->control_type) {
+        if (current_dialog->control_type != DialogControlType::DialogBoxDC) {
             current_dialog = current_dialog->parent;
         }
         current_dialog = current_dialog->child_dialog;

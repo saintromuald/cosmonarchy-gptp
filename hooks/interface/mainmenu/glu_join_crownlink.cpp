@@ -17,8 +17,8 @@ static u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogE
         case DialogUserType_Create: {
             context->update_listbox(dialog);
             context->load_selected_entry(dialog);
-            if (dialog->flags & BinDlgFlags::HighlightText) {
-                dialog->flags &= ~BinDlgFlags::HighlightText;
+            if (dialog->flags & BinDlgFlags::UpdateNeeded) {
+                dialog->flags &= ~BinDlgFlags::UpdateNeeded;
                 helper::generic_combobox_update(dialog);
             }
             helper::set_callback_timer(dialog, timer_index, timer_duration, 0);
@@ -179,7 +179,7 @@ void GluJoinCrownlinkContext::update_listbox(BinDlg* dialog) {
     auto& game_runner = GameRunner::instance();
     auto selected_adfile = selected_adfile_index(dialog);
 
-    dialog->flags |= BinDlgFlags::HighlightText;
+    dialog->flags |= BinDlgFlags::UpdateNeeded;
     helper::combobox_clear_items(dialog);
 
     game_runner.update_adfiles();
@@ -192,8 +192,8 @@ void GluJoinCrownlinkContext::update_listbox(BinDlg* dialog) {
         auto new_index = helper::combobox_add_item(dialog, 0, m_listbox_entries.back().c_str());
     }
     
-    if (dialog->flags & BinDlgFlags::HighlightText) {
-        dialog->flags &= ~BinDlgFlags::HighlightText;
+    if (dialog->flags & BinDlgFlags::UpdateNeeded) {
+        dialog->flags &= ~BinDlgFlags::UpdateNeeded;
         helper::generic_combobox_update(dialog);
     }
 

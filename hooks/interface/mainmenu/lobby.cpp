@@ -87,7 +87,7 @@ namespace hooks {
     // Hooked to triage and hopefully fix singleplayer randomness. -Pr0nogo
     // Refactored -Jesse
     void init_singleplayer_custom(BinDlg* dialog) { // 004AD850
-        if (dialog->control_type != DialogControlTypes::DialogBoxDC) {
+        if (dialog->control_type != DialogControlType::DialogBoxDC) {
             dialog = dialog->parent;
         }
 

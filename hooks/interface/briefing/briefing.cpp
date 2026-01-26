@@ -9,7 +9,7 @@ namespace hooks
 	// Hooked in case we need it later - Pr0nogo
 	void update_mission_objectives() { // 0046CD30 | doesn't work currently
 		BinDlg* ready_room_var = *g_ready_room_dialog;
-		if (ready_room_var->control_type) {
+		if (ready_room_var->control_type != DialogControlType::DialogBoxDC) {
 			ready_room_var = (*g_ready_room_dialog)->parent;
 		}
 

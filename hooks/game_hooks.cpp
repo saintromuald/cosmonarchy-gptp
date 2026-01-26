@@ -744,10 +744,11 @@ namespace hooks {
             case GameKind::Ranked: {
                 auto& randomizer = RaceRandomizer::instance();
                 for (const auto& player : randomizer.randomized_players()) {
+                    if (player.type != PlayerType::Human) break;
+                    if (g_globals->players[player.id].witness_mode) break;
                     auto race_color = get_race_textcolor(static_cast<RaceId::Enum>(player.race));
                     const auto race_name = magic_enum::enum_name(static_cast<RaceId::Enum>(player.race));
-                    const auto player_name = player.name[0] ? player.name : "CPU";
-                    bw::println(TextColor::White, "\t{} was assigned {}{}", player_name, race_color, race_name);
+                    bw::println(TextColor::White, "\t{} was assigned {}{}", player.name, race_color, race_name);
                 }
             } break;
         }

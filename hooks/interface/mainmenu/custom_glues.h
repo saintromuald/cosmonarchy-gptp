@@ -1,5 +1,6 @@
 #pragma once
 #include "BW/ui.h"
+#include "glu_chat.h"
 
 class GluJoinCrownlinkContext {
 public:
@@ -52,7 +53,6 @@ void glu_join();
 void glu_join_crownlink();
 void glu_singleplayer();
 void glu_options();
-void glu_chat();
 
 void glu_main_switch();
 

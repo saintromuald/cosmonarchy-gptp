@@ -43,6 +43,12 @@ void hide_dialogs_with_index(BinDlg* dialog, T index) {
     hide_dialogs_with_index(dialog, std::to_underlying(index));
 }
 
+void update_dialog_visibility(BinDlg* dialog, s16 index, bool show);
+template<EnumS16 T>
+void update_dialog_visibility(BinDlg* dialog, T index, bool show) {
+    update_dialog_visibility(dialog, std::to_underlying(index), show);
+}
+
 void enable_dialogs_with_index(BinDlg* dialog, s16 index);
 template<EnumS16 T>
 void enable_dialogs_with_index(BinDlg* dialog, T index) {
@@ -82,6 +88,9 @@ void bindlg_load_background(BinDlg* dialog);
 void change_menu(bool force_refresh = false);
 void initialize_dialog(BinDlg* dialog, BinDlgProc dialogproc); // 00419d20
 void quick_send_event(BinDlg* dialog, DialogUserType user_type, u16 param = 0);
+
+void show_bin_dialog(BinDlg* dialog);
+void hide_bin_dialog(BinDlg* dialog);
 
 template<EnumS16 T>
 class BinDlgLabels {

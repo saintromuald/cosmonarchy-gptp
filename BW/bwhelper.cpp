@@ -15316,7 +15316,7 @@ namespace helper {
     void create_context_help_from_dialog(BinDlg* dialog, const char* text) {
         const u32 func_address = 0x00481510;
         u32 x = dialog->bounds.right, y = dialog->bounds.bottom;
-        if (dialog->control_type != DialogControlTypes::DialogBoxDC) {
+        if (dialog->control_type != DialogControlType::DialogBoxDC) {
             x += dialog->parent->bounds.left;
             y += dialog->parent->bounds.top;
         }
@@ -16306,16 +16306,6 @@ namespace helper {
         __asm {
             PUSHAD
             MOV EDI, dialog
-            CALL func_address
-            POPAD
-        }
-    }
-
-    void glu_chat_update_password_field(BinDlg* dialog) {
-        const u32 func_address = 0x004b8c80;
-        __asm {
-            PUSHAD
-            MOV EAX, dialog
             CALL func_address
             POPAD
         }

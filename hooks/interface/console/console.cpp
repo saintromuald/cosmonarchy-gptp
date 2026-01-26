@@ -282,7 +282,6 @@ void load_statf10() { // 004f5300
     initialize_dialog(dialog, helper::stat_f10_dlgproc);
 }
 
-// This is WIP and currently doesn't work
 void load_console() { // 004c3bb0
     load_console_image();
     if (!SBmpLoadimage("game\\thpbar.pcx", 0, &g_thpbar_colors[0], sizeof(g_thpbar_colors), 0, 0, 0)) {
@@ -329,8 +328,7 @@ static std::pair<MousePixelmaskRegion*, size_t> get_mouse_regions() {
     return {g_statfluf_mouse_regions_t.data(), g_statfluf_mouse_regions_t.size()};
 }
 
-// Each console has an array of BoundedBinDlg that box regions of the console where there is image transparency
-// These regions have special mouse handling to check if you're clicking on the console or the map
+// Each console has an array of BoundedBinDlg that box regions of the console outside the main 3 boxes
 // Custom consoles should provide an array of these to load here
 void load_statfluf_mouse_regions() {
     auto [mouse_regions, region_count] = get_mouse_regions();
@@ -350,8 +348,8 @@ void load_statfluf_mouse_regions() {
         dialog->bounds.w = region.w - 1;
         dialog->bounds.h = region.h - 1;
 
-        dialog->onInitDialog0x36.response_area_width = region.w;
-        dialog->onInitDialog0x36.response_area_height = region.h;
+        dialog->DialogBoxDC_0x36.bitmap.width = region.w;
+        dialog->DialogBoxDC_0x36.bitmap.height = region.h;
 
         initialize_dialog(dialog, helper::statfluf_dlgproc);
     }

@@ -164,7 +164,7 @@ void ControlGroup::center_camera() {
 	bw::move_camera({(u16)avg_pos.x, (u16)avg_pos.y});
 }
 
-DialogBounds::DialogBounds() : m_left{0}, m_top{0}, m_right{0}, m_bottom{0}, m_width{0}, m_height{0} {
+DialogBounds::DialogBounds() : m_left{0}, m_top{0}, m_right{0}, m_bottom{0} {
 }
 
 DialogBounds DialogBounds::from_ltrb(s16 left, s16 top, s16 right, s16 bottom) {
@@ -173,27 +173,16 @@ DialogBounds DialogBounds::from_ltrb(s16 left, s16 top, s16 right, s16 bottom) {
 	db.m_top = top;
 	db.m_right = right;
 	db.m_bottom = bottom;
-	db.update_size();
 	return db;
 }
 
-DialogBounds DialogBounds::from_xywh(s16 x, s16 y, u16 width, u16 height) {
+DialogBounds DialogBounds::from_xywh(s16 x, s16 y, u16 w, u16 h) {
 	DialogBounds db;
 	db.m_left = x;
 	db.m_top = y;
-	db.m_width = width;
-	db.m_height = height;
-	db.m_right = x + static_cast<s16>(width) - 1;
-	db.m_bottom = y + static_cast<s16>(height) - 1;
+	db.m_right = x + static_cast<s16>(w) - 1;
+	db.m_bottom = y + static_cast<s16>(h) - 1;
 	return db;
-}
-
-DialogBounds DialogBounds::from_bounds_ltrb(const Bounds bounds) {
-	return from_ltrb(bounds.left, bounds.top, bounds.right, bounds.bottom);
-}
-
-DialogBounds DialogBounds::from_bounds_xywh(const Bounds bounds){
-	return from_xywh(bounds.x, bounds.y, bounds.w, bounds.h);
 }
 
 void DialogBounds::set_ltrb(s16 left, s16 top, s16 right, s16 bottom) {
@@ -201,16 +190,13 @@ void DialogBounds::set_ltrb(s16 left, s16 top, s16 right, s16 bottom) {
 	m_top = top;
 	m_right = right;
 	m_bottom = bottom;
-	update_size();
 }
 
-void DialogBounds::set_xywh(s16 x, s16 y, u16 width, u16 height) {
+void DialogBounds::set_xywh(s16 x, s16 y, u16 w, u16 h) {
 	m_left = x;
 	m_top = y;
-	m_width = width;
-	m_height = height;
-	m_right = x + static_cast<s16>(width) - 1;
-	m_bottom = y + static_cast<s16>(height) - 1;
+	m_right = x + static_cast<s16>(w) - 1;
+	m_bottom = y + static_cast<s16>(h) - 1;
 }
 
 bool DialogBounds::contains(const Point16 point) const {
@@ -227,7 +213,7 @@ bool DialogBounds::contains_mouse() const {
 }
 
 bool DialogBounds::is_empty() const {
-	return m_width == 0 || m_height == 0;
+	return w() == 0 || h() == 0;
 }
 
 bool DialogBounds::is_valid() const {
@@ -236,8 +222,8 @@ bool DialogBounds::is_valid() const {
 
 Point16 DialogBounds::center() const {
 	return Point16{
-		static_cast<u16>(m_left + static_cast<s16>(m_width) / 2),
-		static_cast<u16>(m_top + static_cast<s16>(m_height) / 2)
+		static_cast<u16>((m_left + m_right) / 2),
+		static_cast<u16>((m_top + m_bottom) / 2)
 	};
 }
 
@@ -296,24 +282,4 @@ DialogBounds::operator Box16() const {
 
 DialogBounds::operator Box32() const {
 	return Box32{m_left, m_top, m_right, m_bottom};
-}
-
-DialogBounds::operator Bounds() const {
-	Bounds bounds;
-	bounds.left = m_left;
-	bounds.top = m_top;
-	bounds.right = m_right;
-	bounds.bottom = m_bottom;
-	bounds.width = m_width;
-	bounds.height = m_height;
-	return bounds;
-}
-
-Bounds DialogBounds::to_bounds() const {
-	return *this;
-}
-
-void DialogBounds::update_size() {
-	m_width = static_cast<u16>(std::max(0, m_right - m_left + 1));
-	m_height = static_cast<u16>(std::max(0, m_bottom - m_top + 1));
 }

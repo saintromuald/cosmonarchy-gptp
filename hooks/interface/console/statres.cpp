@@ -107,8 +107,8 @@ static void statres_prep_child_dialogs(BinDlg* dialog) {
         BinDlg* parent_offset = dialog + ResSize;
 
         do {
-            u16 control_type = dialog->control_type;
-            if (!control_type) {
+            auto control_type = dialog->control_type;
+            if (control_type == DialogControlType::DialogBoxDC) {
                 dialog = dialog->child_dialog;
                 continue;
             }
@@ -381,7 +381,7 @@ static void draw_player_stats(BinDlg** dialog_ptr, Point16* pos, u32 player,
 
 // Hook edited by DarkenedFantasies for new replay UI. -Pr0nogo
 static void __fastcall stat_res_timer_proc(BinDlg* dialog, u16 index_unused) { // 004E5640
-    if (dialog->control_type) {
+    if (dialog->control_type != DialogControlType::DialogBoxDC) {
         dialog = dialog->parent;
     }
     dialog = dialog->child_dialog;

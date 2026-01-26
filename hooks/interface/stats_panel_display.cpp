@@ -197,7 +197,7 @@ namespace hooks {
         }
 
         BinDlg* current_dialog = dialog->parent;
-        if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
+        if (dialog->control_type == DialogControlType::DialogBoxDC) {
             current_dialog = dialog;
         }
         if (current_dialog->child_dialog) {
@@ -249,7 +249,7 @@ namespace hooks {
             sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
             helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
         } else if (unit->player == g_local_nation_id && !g_is_in_replay) {
-            BinDlg* actual_dialog = dialog->control_type ? dialog->parent : dialog;
+            BinDlg* actual_dialog = dialog->control_type != DialogControlType::DialogBoxDC ? dialog->parent : dialog;
             BinDlg* child = actual_dialog->child_dialog;
             while (child && child->index != 65515) {
                 child = child->next;
@@ -397,7 +397,7 @@ namespace hooks {
         Unit* portrait_unit = *g_active_portrait_unit;
         s32 armor_value = units_dat::armor_amount[portrait_unit->id] + get_bonus_armor(portrait_unit, units_dat::armor_amount[portrait_unit->id]);
         sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%i", armor_value);
-        if (dialog_var->control_type) {
+        if (dialog_var->control_type != DialogControlType::DialogBoxDC) {
             dialog_var = dialog_var->parent;
         }
         BinDlg* child = dialog_var->child_dialog;
@@ -452,7 +452,7 @@ namespace hooks {
         sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", damage_value);
 
         BinDlg* dialog_var = dialog;
-        if (dialog->control_type) {
+        if (dialog->control_type != DialogControlType::DialogBoxDC) {
             dialog_var = dialog->parent;
         }
 
@@ -501,7 +501,7 @@ namespace hooks {
         u32 armor_value = base_armor + get_bonus_armor(unit, units_dat::armor_amount[unit->id]);
         sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", armor_value);
 
-        if (dialog_var->control_type) {
+        if (dialog_var->control_type != DialogControlType::DialogBoxDC) {
             dialog_var = dialog_var->parent;
         }
         BinDlg* child = dialog_var->child_dialog;
@@ -543,7 +543,7 @@ namespace hooks {
             return 0;
         }
         sprintf_s(g_status_screen_info_button_unk[index], 8, "%d", unit->mine_carrier.mine_count);
-        if (dialog->control_type) {
+        if (dialog->control_type != DialogControlType::DialogBoxDC) {
             dialog = dialog->parent;
         }
 
@@ -714,7 +714,7 @@ namespace hooks {
                 } break;
             }
         }
-        return generic_interact_functions[dialog_var->control_type](dialog, event);
+        return generic_interact_functions[std::to_underlying(dialog_var->control_type)](dialog, event);
     }
 
     // Hooked to correct errors and replace building morph id checks. -Pr0nogo
@@ -769,7 +769,7 @@ namespace hooks {
             u16 build_time = helper::get_remaining_build_time_percentage(unit);
             helper::dialog_set_progress_bar_value(dialog, 16, build_time);
             BinDlg* dialog_context = dialog;
-            if (dialog->control_type) {
+            if (dialog->control_type != DialogControlType::DialogBoxDC) {
                 dialog_context = dialog->parent;
             }
             BinDlg* child = dialog_context->child_dialog;
@@ -835,7 +835,7 @@ namespace hooks {
 
             helper::dialog_set_progress_bar_value(dialog, 16, helper::get_remaining_build_time_percentage(built_unit));
             u32 slot_unit_id = helper::get_last_queue_slot_id(built_unit);
-            if (dialog->control_type == DialogControlTypes::DialogBoxDC)
+            if (dialog->control_type == DialogControlType::DialogBoxDC)
             {
                 current_dialog = dialog->child_dialog;
             } else {
@@ -879,7 +879,7 @@ namespace hooks {
     void stats_queue_progress(BinDlg* dialog) { // 004268D0
         Unit* unit = *g_active_portrait_unit;
         BinDlg* current_dialog;
-        if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
+        if (dialog->control_type == DialogControlType::DialogBoxDC) {
             current_dialog = dialog->child_dialog;
         } else {
             current_dialog = dialog->parent->child_dialog;
@@ -982,7 +982,7 @@ namespace hooks {
 
             // Simplified lots of code here, should work. -GPTP
             char* status_text = (char*)g_stat_txt_tbl->get_string32(progress_string_id + unit->get_race());
-            if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
+            if (dialog->control_type == DialogControlType::DialogBoxDC) {
                 current_dialog = dialog->child_dialog;
             } else {
                 current_dialog = dialog->parent->child_dialog;
@@ -1043,7 +1043,7 @@ namespace hooks {
     // Don't see any progress bar code here... is this even relevant?
     void stats_morph_progress(BinDlg* dialog, int index, u32 unk) { // 00457250
         BinDlg* current_dialog;
-        if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
+        if (dialog->control_type == DialogControlType::DialogBoxDC) {
             current_dialog = dialog->child_dialog;
         } else {
             current_dialog = dialog->parent->child_dialog;
@@ -1097,7 +1097,7 @@ namespace hooks {
             }
 
             helper::draw_display_buttons(dialog);
-            if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
+            if (dialog->control_type == DialogControlType::DialogBoxDC) {
                 current_dialog = dialog->child_dialog;
             } else {
                 current_dialog = dialog->parent->child_dialog;
@@ -1108,7 +1108,7 @@ namespace hooks {
             }
 
             helper::hide_dialog(current_dialog);
-            if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
+            if (dialog->control_type == DialogControlType::DialogBoxDC) {
                 current_dialog = dialog->child_dialog;
             } else {
                 current_dialog = dialog->parent->child_dialog;
@@ -1120,7 +1120,7 @@ namespace hooks {
 
             helper::hide_dialog(current_dialog);
         } else { // TODO: Something in this half of the hook is cucko. -Pr0nogo
-            if (dialog->control_type == DialogControlTypes::DialogBoxDC) {
+            if (dialog->control_type == DialogControlType::DialogBoxDC) {
                 current_dialog = dialog->child_dialog;
             } else {
                 current_dialog = dialog->parent->child_dialog;
@@ -1238,7 +1238,7 @@ namespace hooks {
     void unit_stat_act_default(BinDlg* dialog) { // 00425EE0
         g_status_screen_func = 0;
         BinDlg* final_dialog = dialog;
-        if (dialog->control_type == 0) {
+        if (dialog->control_type == DialogControlType::DialogBoxDC) {
             final_dialog = *(BinDlg**)&dialog->child_dialog;
         }
 
@@ -1303,7 +1303,7 @@ namespace hooks {
         }
         
         BinDlg* stat_dialog = g_statdata_dialog;
-        if (!stat_dialog->control_type) {
+        if (stat_dialog->control_type == DialogControlType::DialogBoxDC) {
             stat_dialog = *(BinDlg**)&g_statdata_dialog->child_dialog;
         }
         for (; stat_dialog; stat_dialog = stat_dialog->next) {
@@ -1370,7 +1370,7 @@ namespace hooks {
             helper::stats_shield_level(dialog, 0);
             return;
         }
-        if (dialog->control_type) {
+        if (dialog->control_type != DialogControlType::DialogBoxDC) {
             dialog = dialog->parent;
         }
         BinDlg* child_dialog = dialog->child_dialog;
@@ -1404,7 +1404,7 @@ namespace hooks {
         helper::dialog_set_progress_bar_value(dialog, 14, 100 * (time_cost - unit->building.upgrade_research_time) / time_cost);
 
         BinDlg* active_dialog = dialog;
-        if (dialog->control_type) {
+        if (dialog->control_type != DialogControlType::DialogBoxDC) {
             active_dialog = dialog->parent;
         }
         BinDlg* child_dialog = active_dialog->child_dialog;
@@ -1448,7 +1448,7 @@ namespace hooks {
         }
         sprintf_s(g_status_screen_info_button_unk[iterations], 8, "%d ", count);
         BinDlg* main_dialog = dialog;
-        if (dialog->control_type) {
+        if (dialog->control_type != DialogControlType::DialogBoxDC) {
             main_dialog = dialog->parent;
         }
         BinDlg* final_dialog = main_dialog->child_dialog;

@@ -624,7 +624,7 @@ namespace hooks {
         }
 
         BinDlg* current_dialog = g_buttonset_dialog;
-        if (current_dialog->control_type != DialogControlTypes::DialogBoxDC) {
+        if (current_dialog->control_type != DialogControlType::DialogBoxDC) {
             current_dialog = current_dialog->parent;
         }
         current_dialog = current_dialog->child_dialog;
@@ -639,7 +639,7 @@ namespace hooks {
         if (!stop_there && g_config.grid_hotkeys) {
             for (BinDlg* dialog = current_dialog; dialog; dialog = dialog->next) {
                 if (dialog->index > 0 && dialog->index <= 9
-                    && dialog->control_type == DialogControlTypes::Button
+                    && dialog->control_type == DialogControlType::Button
                     && dialog->button_user && dialog->button_user->requirement_string_id) {
                     // we normally want const string to avoid accidental overwrites, but here we intend to overwrite the hotkey character, that's why we cast to char*
                     char* label = (char*)helper::get_stat_txt_string(dialog->button_user->requirement_string_id); 
