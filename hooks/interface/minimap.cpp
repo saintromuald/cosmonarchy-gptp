@@ -419,7 +419,7 @@ namespace hooks {
 		Bounds drawbounds = { 0, 0, surface->width - 1, surface->height - 1, surface->width, surface->height };
 		helper::blit_surface(&drawbounds, surface, minimap->bounds.left, minimap->bounds.top);
 
-		if (!*g_minimap_draw_neutrals) {
+		if (!g_minimap_draw_neutrals) {
 			u32 zoom_level = *g_minimap_zoom_level;
 			u32 box_y = (u32)minimap->bounds.top + g_move_to_y / zoom_level;
 			u32 box_x = (u32)minimap->bounds.left + g_move_to_x / zoom_level;

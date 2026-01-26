@@ -68,19 +68,23 @@ namespace hooks
 {
 void inject_console_hooks() {
     call_patch(load_race_grp_and_sounds, 0x004ef275);
-    call_patch(load_console_image, 0x004c3bb2);
-    call_patch(load_statfluf_mouse_regions, 0x004c3be3);
-    call_patch(unload_statfluf_mouse_regions, 0x004c385c);
+    
     jump_patch(conover_filename_wrapper, 0x0045f20a);
     call_patch(load_statdata_progressbar, 0x00458200);
     call_patch(load_cmdbuttons_progressbar, 0x004598b0);
-    call_patch(load_command_buttons, 0x004c3c01);
-    call_patch(load_textbox, 0x004c3c0b);
-    call_patch(load_statlb, 0x004c3bed);
-    call_patch(load_statres, 0x004c3bf2);
-    call_patch(load_wireframe_palette, 0x004c3bfc);
 
-    // call_patch(load_console, 0x004eedae); // AISE crash. Needs investigating
+    call_patch(load_console, 0x004eedae);
+    call_patch(unload_statfluf_mouse_regions, 0x004c385c);
+    
+    // These call_patches are no longer necessary since
+    // load_console has been fully reimplemented
+    //call_patch(load_console_image, 0x004c3bb2);
+    //call_patch(load_statfluf_mouse_regions, 0x004c3be3);
+    //call_patch(load_statlb, 0x004c3bed);
+    //call_patch(load_statres, 0x004c3bf2);
+    //call_patch(load_wireframe_palette, 0x004c3bfc);
+    //call_patch(load_command_buttons, 0x004c3c01);
+    //call_patch(load_textbox, 0x004c3c0b);
 
     jump_patch(setTextStr_Wrapper, 0x004263E0, 0);
 }

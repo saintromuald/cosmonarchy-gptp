@@ -146,7 +146,7 @@ void draw_supply_unit_status(BinDlg* dialog) {
             g_status_screen_func = 12;
         }
 
-        BinDlg* child = dialog->control_type ? dialog->parent->child_dialog : dialog->child_dialog;
+        BinDlg* child = dialog->control_type != DialogControlType::DialogBoxDC ? dialog->parent->child_dialog : dialog->child_dialog;
         while (child) {
             helper::hide_dialog(child);
             child = child->next;

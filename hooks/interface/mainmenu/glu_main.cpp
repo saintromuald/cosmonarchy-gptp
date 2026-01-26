@@ -2,6 +2,7 @@
 #include "BW/enumerations.h"
 #include "BW/bwdata.h"
 #include "BW/ui.h"
+#include "BW/api.h"
 #include "BW/bwhelper.h"
 #include "hooks/snp.h"
 
@@ -18,6 +19,8 @@ static void load_game_templates(){ // See: 004dbac5
 
 void glu_main() {
     g_multiplayer_mode = false;
+
+    safe_copy(g_version_string, std::format("Cosmonarchy build {}", bw::get_commit_hash()));
 
     BinFile dialog{"rez\\gluMain.bin"};
     auto result = helper::glu_load_bin_dialog(dialog.bin_dlg(), (BinDlgProc)0x004db7a0);

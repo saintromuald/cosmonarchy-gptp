@@ -684,7 +684,7 @@ enum Enum {
     ReverseDialogDirection    = 0x10000000,
     UseAlternateStyle         = 0x20000000,
     NoClickSound              = 0x40000000,
-    HighlightText             = 0x80000000, // I think this is named incorrectly -Jesse
+    UpdateNeeded              = 0x80000000,
 };
 }
 
@@ -709,25 +709,23 @@ enum Enum {
 };
 }
 
-namespace DialogControlTypes {
-enum DialogControlTypes : u16{
-    DialogBoxDC         = 0x00000000, // DialogBox cannot be used, since it's used in winapi
-    DefaultButton       = 0x00000001,
-    Button              = 0x00000002,
-    OptionButton        = 0x00000003,
-    CheckBox            = 0x00000004,
-    Image               = 0x00000005,
-    HorizontalScrollBar = 0x00000006,
-    VerticalScrollBar   = 0x00000007,
-    TextBox             = 0x00000008,
-    LabelLeftAlign      = 0x00000009,
-    LabelCenterAlign    = 0x0000000A,
-    LabelRightAlign     = 0x0000000B,
-    ListBox             = 0x0000000C,
-    ComboBox            = 0x0000000D,
-    LightUpButton       = 0x0000000E
+enum class DialogControlType : u16 {
+    DialogBoxDC         = 0,
+    DefaultButton       = 1,
+    Button              = 2,
+    OptionButton        = 3,
+    CheckBox            = 4,
+    Image               = 5,
+    HorizontalScrollBar = 6,
+    VerticalScrollBar   = 7,
+    TextBox             = 8,
+    LabelLeftAlign      = 9,
+    LabelCenterAlign    = 10,
+    LabelRightAlign     = 11,
+    ListBox             = 12,
+    ComboBox            = 13,
+    LightUpButton       = 14
 };
-}
 
 // Use with units_dat::RightClickActions
 namespace RightClickActions {
@@ -1382,7 +1380,7 @@ enum GameCommand : u8 {
     GameCommand_JoinRequest = 64,
     GameCommand_ChangeRace = 65,
     GameCommand_JoinForce = 66, // Similar to 67 but appears to be for team games {id, slot_index}
-    GameCommand_MoveToSlot = 67, // When clicking a team name {id, slot_index}
+    GameCommand_MoveToForce = 67, // When clicking a team name {id, slot_index}
     GameCommand_SetSlotState = 68, // Computer = 0, open = 1, closed = 2 {id, slot, state}
     GameCommand_UpdatePlayerForce = 69, // Unsure {id, slot, force}
     GameCommand_StartGameSync = 72, // {id, u32 timestamp, 8, 8, 8, 8, 8, 8, 8, 8}
@@ -1557,7 +1555,7 @@ enum DialogUserType {
     DialogUserType_Hide              = 14,
     DialogUserType_ScrollUp          = 15,
     DialogUserType_ScrollDown        = 16,
-    DialogUserType_x405              = 0x405,
+    DialogUserType_AnimationDone     = 0x405,
 };
 
 enum MusicId {

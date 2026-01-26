@@ -1,7 +1,9 @@
 #pragma once
 #include "BW/bwdata.h"
 #include "BW/api.h"
-#include "BW/ui.h"
+#include "BW/ui.h"  
+
+#include <optional>
 
 #define ActionSampleTime 10
 #define MaxActions 2000
@@ -75,7 +77,7 @@ void set_latency (u8 latency);
 void load_latency_dialog();                                                         // 004ca0eb
 
 static bool is_valid_race(RaceId::Enum race);
-u8 load_races_dropdown(BinDlg* dialog, RaceId::Enum race);
+u8 load_races_dropdown(BinDlg* dialog, RaceId::Enum race, std::optional<u32>slot_id = {});
 void load_races_dropdown_singleplayer(BinDlg* dialog);
 
 void inject_ui_features_hooks();

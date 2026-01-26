@@ -156,7 +156,8 @@ BW_REF(u32,					g_move_to_y,			0x006284A8);
 // Contains various information (names, player types, race types, and associated forces) of each player in the current game
 BW_ARRAY(Player,    12, g_player_table,         0x0057EEE0);
 BW_ARRAY(Player,    12, g_replay_player_table,  0x0064097b);
-BW_ARRAY(u32,       8,  g_player_id_table,      0x0057eec0);
+BW_ARRAY(Player,    12, g_map_default_players,  0x0059bdb0);
+BW_ARRAY(u32,       8,  g_player_slots_by_id,   0x0057eec0);
 
 struct SupplyData {
     u32 provided[PLAYER_COUNT];
@@ -1057,7 +1058,7 @@ BW_DATA(u32*,			g_trigger_wait,				0x00650980);
 // For draw_minimap_box
 BW_DATA(char*,			g_minimap_state,			0x006D5BBE);
 BW_DATA(u32*,			g_minimap_box_checksum,		0x0059C1A8);
-BW_DATA(u32*,			g_minimap_draw_neutrals,	0x005993AC);
+BW_REF(b32,             g_minimap_draw_neutrals,    0x005993AC);
 
 // For draw_train_progress
 BW_REF(GrpHead*,		g_cmdbtns_grp,              0x0068C1C0);
@@ -1363,6 +1364,7 @@ BW_REF(BinDlg*, g_connect_bin, 0x006d5a24);
 BW_REF(BinDlg*, g_login_bin, 0x005999c4);
 BW_REF(BinDlg*, g_join_bin, 0x00599a80);
 BW_REF(BinDlg*, g_chat_bin, 0x006d5a30);
+BW_REF(BinDlg*, g_minimap_bin, 0x0059cb5c);
 
 // For bindlg_load_background_palette / dialog_swish_in
 BW_REF(DialogFadeInfo, g_dialog_fade_info, 0x006cef50);
@@ -1439,6 +1441,7 @@ BW_REF(b32, g_chat_destoyed,            0x006d5a38);
 BW_REF(u32, g_chat_unkown_1,            0x0068f4f0);
 BW_REF(u32, g_chat_unkown_2,            0x005999dc);
 BW_REF(u32, g_chat_unkown_3,            0x0068f520);
+BW_REF(b32, g_chat_minimap_shown,       0x005999d0);
 
 BW_REF(HIMC, g_input_context, 0x006d6438);
 
@@ -1449,12 +1452,16 @@ BW_ARRAY(Command_PlayerUpdate*, 8, g_lobby_commands_player_update, 0x006d5c30);
 BW_ARRAY(Command_PlayerPresence*, 8, g_lobby_commands_player_presence, 0x006d5c50);
 BW_REF(Command_ChangeRace*, g_lobby_command_change_race, 0x006d5c7c);
 BW_REF(Command_JoinForce*, g_lobby_command_join_force, 0x006d5c80);
-BW_REF(Command_MoveToSlot*, g_lobby_command_move_to_slot, 0x006d5c84);
+BW_REF(Command_MoveToForce*, g_lobby_command_move_to_force, 0x006d5c84);
 BW_REF(Command_SetSlotState*, g_lobby_command_set_slot_state, 0x006d5c88);
 BW_REF(Command_UpdatePlayerForce*, g_lobby_command_update_force, 0x006d5c8c);
 BW_REF(Command_StartGameSync*, g_lobby_command_start_game_sync, 0x006d5c90);
 BW_REF(Command_MakePublic*, g_lobby_command_make_public, 0x006d5c94);
 BW_REF(Command_PlayerJoinRequest*, g_lobby_command_request_join, 0x006d5c78);
+
+BW_ARRAY(GluChatEntry, 12, g_chat_slot_entries, 0x0068ecb0);
+
+BW_ARRAY(char, 260, g_version_string, 0x005122c8);
 
 #undef BW_DATA
 #undef BW_DATA_REF

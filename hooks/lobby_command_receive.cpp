@@ -13,6 +13,7 @@
 #include <variant>
 #include <memory>
 #include <functional>
+#include <optional>
 
 static bool is_all_cpu_force(u8 force) {
     for (const auto& player : g_player_table) {
@@ -71,7 +72,7 @@ void broadcast_player_update(Player& player) {
         g_lobby_commands_player_update[player.id] = (Command_PlayerUpdate*)SMemAlloc(sizeof(Command_PlayerUpdate), __FILE__, __LINE__, 0);
     }
     g_lobby_commands_player_update[player.id]->command = GameCommand_PlayerUpdate;
-    g_lobby_commands_player_update[player.id]->player_index = player.id;
+    g_lobby_commands_player_update[player.id]->player_id = player.id;
     g_lobby_commands_player_update[player.id]->player_actions_lowest_byte = player.actions;
     g_lobby_commands_player_update[player.id]->type = player.type;
     g_lobby_commands_player_update[player.id]->race = static_cast<RaceId::Enum>(player.race);
@@ -98,9 +99,10 @@ void queue_lobby_commands() {
     
     send_and_free(g_lobby_command_start_countdown);
     send_and_free(g_lobby_command_transfer_status);
+
     for (auto& command : g_lobby_commands_player_update) {
         if (command) {
-            command->random_flags = std::to_underlying(race_randomizer.player_race_flags(command->player_index));
+            command->random_flags = std::to_underlying(race_randomizer.player_race_flags(command->player_id));
         }
         send_and_free(command);
     }
@@ -113,7 +115,7 @@ void queue_lobby_commands() {
     }
     send_and_free(g_lobby_command_change_race);
     send_and_free(g_lobby_command_join_force);
-    send_and_free(g_lobby_command_move_to_slot);
+    send_and_free(g_lobby_command_move_to_force);
     send_and_free(g_lobby_command_set_slot_state);
     send_and_free(g_lobby_command_update_force);
     send_and_free(g_lobby_command_start_game_sync);
@@ -129,12 +131,12 @@ static void process_change_race_command(const Command_ChangeRace* command, u32 s
     if (!g_is_host) return;
     if (g_game_state < GameState::InLobby) return;
 
-    const auto index = command->player_index == 8 ? g_player_id_table[sender] : command->player_index;
+    const auto index = command->player_index == 8 ? g_player_slots_by_id[sender] : command->player_index;
 
-    if (!can_change_race(command->race, index, g_player_id_table[sender])) return;
+    if (!can_change_race(command->race, index, g_player_slots_by_id[sender])) return;
 
     auto& race_randomizer = RaceRandomizer::instance();
-    race_randomizer.set_player_race_flags(index, command->random_flags);
+    race_randomizer.set_player_race_flags(sender, command->random_flags);
 
     auto force = g_player_table[index].force;
     auto multiplayer_and_teams = g_multiplayer_mode && g_game_data.teams_enabled;
@@ -155,7 +157,7 @@ static void process_change_race_command(const Command_ChangeRace* command, u32 s
 static void process_player_update_command(const Command_PlayerUpdate* command, u32 sender) {
     if (sender != 0) return;
     if (g_is_host) return;
-    if (command->player_index >= 8) return;
+    if (command->player_id >= 8) return;
     u8 actions_byte = command->player_actions_lowest_byte;
     if (actions_byte > 8 && actions_byte != 0xff) return;
 
@@ -168,9 +170,9 @@ static void process_player_update_command(const Command_PlayerUpdate* command, u
         g_game_state = GameState::InLobby;
     } else if (g_game_state == GameState::Unk_1 || g_game_state == GameState::Unk_2) return;
 
-    Player& player = g_player_table[command->player_index];
+    Player& player = g_player_table[command->player_id];
     player = {
-        .id = command->player_index,
+        .id = command->player_id,
         .actions = player_actions,
         .type = command->type,
         .race = command->race,
@@ -184,7 +186,78 @@ static void process_player_update_command(const Command_PlayerUpdate* command, u
     g_chat_update_needed = true;
 
     auto& race_randomizer = RaceRandomizer::instance();
-    race_randomizer.set_player_race_flags(command->player_index, command->random_flags);
+    race_randomizer.set_player_race_flags(command->player_id, command->random_flags);
+}
+
+static std::optional<u8> get_open_slot_same_force(u8 force, u32 current_slot) {
+    // Search starting from next slot, wrapping around
+    for (u8 i = 0; i < 8; i++) {
+        u8 slot_index = (current_slot + 1 + i) % 8;
+
+        auto& player = g_player_table[slot_index];
+        if (player.force == force && player.type == PlayerType::OpenSlot) {
+            return slot_index;
+        }
+    }
+
+    return {};  // No available slot found
+}
+
+static std::optional<u8> get_open_slot_new_force(u8 force) {
+    for (u8 slot = 0; slot < 8; slot++) {
+        auto& player = g_player_table[slot];
+
+        if (player.force == force && player.type == PlayerType::OpenSlot) {
+            return slot;
+        }
+    }
+
+    return {};  // No available slot found
+}
+
+static void move_player_to_slot(u8 current_slot, u8 new_slot) {
+    // Race and force are retained when moving slots
+    auto current_slot_race = g_player_table[current_slot].race;
+    auto current_slot_force = g_player_table[current_slot].force;
+    auto new_slot_race = g_player_table[new_slot].race;
+    auto new_slot_force = g_player_table[new_slot].force;
+
+    g_player_table[new_slot] = g_player_table[current_slot];
+    g_player_table[current_slot] = g_map_default_players[current_slot];
+
+    g_player_table[new_slot].id = new_slot;
+    g_player_table[new_slot].race = new_slot_race;
+    g_player_table[new_slot].force = new_slot_force;
+
+    g_player_table[current_slot].id = current_slot;
+    g_player_table[current_slot].race = current_slot_race;
+    g_player_table[current_slot].force = current_slot_force;
+
+    helper::update_nation_array(g_player_id);
+}
+
+static void process_change_slot_command(const Command_MoveToForce* command, u32 player_id) {
+    if (!g_is_host) return;
+    if (g_game_state < GameState::InLobby) return;
+    if (g_game_data.victory_condition != VictoryCondition::Default) return;
+    if (g_game_data.starting_units || g_game_data.tournament_mode_enabled) return;
+    if (command->force == 0 || command->force > 4) return;
+    auto current_slot = index_to_slot_id(player_id);
+    if (current_slot > 7) return;
+    if (g_player_table[current_slot].type != PlayerType::Human) return;
+
+    std::optional<u8> new_slot;
+    if (g_player_table[current_slot].force == command->force) {
+        new_slot = get_open_slot_same_force(command->force, current_slot);
+    } else {
+        new_slot = get_open_slot_new_force(command->force);
+    }
+    if (!new_slot) return;
+
+    move_player_to_slot(current_slot, new_slot.value());
+    broadcast_player_update(g_player_table[current_slot]);
+    broadcast_player_update(g_player_table[new_slot.value()]);
+    g_chat_update_needed = true;
 }
 
 CommandResult CommandResult::success(size_t bytes) {
@@ -251,6 +324,15 @@ void LobbyCommandProcessor::register_handlers() {
         },
         "ChangeRace"
     });
+    m_handlers.emplace(GameCommand_MoveToForce, CommandInfo{
+        sizeof(Command_MoveToForce),
+        [](std::span<const u8> data, u32 sender_id) -> CommandResult {
+            auto* command = reinterpret_cast<const Command_MoveToForce*>(data.data());
+            process_change_slot_command(command, sender_id);
+            return CommandResult::success(sizeof(Command_MoveToForce));
+        },
+        "MoveToForce"
+    });
 }
 
 void LobbyCommandProcessor::process_command_data(std::span<const u8> command_data, u32 sender_id) {
@@ -280,7 +362,7 @@ static u32 get_command_size(u8 command_id) {
         case GameCommand_JoinRequest: return sizeof(Command_PlayerJoinRequest);
         case GameCommand_ChangeRace: return sizeof(Command_ChangeRace);
         case GameCommand_JoinForce: return sizeof(Command_JoinForce);
-        case GameCommand_MoveToSlot: return sizeof(Command_MoveToSlot);
+        case GameCommand_MoveToForce: return sizeof(Command_MoveToForce);
         case GameCommand_SetSlotState: return sizeof(Command_SetSlotState);
         case GameCommand_UpdatePlayerForce: return sizeof(Command_UpdatePlayerForce);
         case GameCommand_StartGameSync: return sizeof(Command_StartGameSync);

@@ -34,9 +34,9 @@ static SelectedRacesArray to_race_array(RaceFlags race_flags) {
     std::array<RaceId::Enum, RaceId::FullCount> races{};
     u32 count = 0;
 
-    if (has_flag(race_flags, RaceFlags::Zerg))    races[count++] = RaceId::Zerg;
     if (has_flag(race_flags, RaceFlags::Terran))  races[count++] = RaceId::Terran;
     if (has_flag(race_flags, RaceFlags::Protoss)) races[count++] = RaceId::Protoss;
+    if (has_flag(race_flags, RaceFlags::Zerg))    races[count++] = RaceId::Zerg;
     if (has_flag(race_flags, RaceFlags::Askosi))  races[count++] = RaceId::Askosi;
 
     return {races, count};
@@ -55,8 +55,9 @@ void RaceRandomizer::process_randomization() {
     for (auto& player : g_player_table) {
         if (player.race == RaceId::Random) {
             if (player.type == PlayerType::Human) {
-                if (m_player_race_flags[player.id] != RaceFlags::None) {
-                    auto selected_races = to_race_array(m_player_race_flags[player.id]);
+                auto index = slot_id_to_index(player.id);
+                if (index < 8 && m_player_race_flags[index] != RaceFlags::None) {
+                    auto selected_races = to_race_array(m_player_race_flags[index]);
                     player.race = random_from(to_span(selected_races));
                 } else {
                     player.race = random_from(human_races);
@@ -72,9 +73,14 @@ void RaceRandomizer::process_randomization() {
     cleanup_and_reset();
 }
 
+void RaceRandomizer::set_player_race_flags(u32 index, RaceFlags race_flags) {
+    m_player_race_flags[index] = race_flags;
+    update_race_string(index);
+}
+
 void RaceRandomizer::cleanup_and_reset() {
     m_player_race_flags = {};
-    m_player_race_flags[0] = m_race_flags;
+    set_player_race_flags(0, m_race_flags);
 }
 
 RaceRandomizer::RaceRandomizer() {
@@ -84,6 +90,23 @@ RaceRandomizer::RaceRandomizer() {
         m_race_flags |= magic_enum::enum_cast<RaceFlags>(race).value_or(RaceFlags::None);
     }
     cleanup_and_reset();
+}
+
+void RaceRandomizer::update_race_string(u32 index) {
+    auto& flags = m_player_race_flags[index];
+    auto& string = m_player_race_strings[index];
+
+    if ((flags & RaceFlags::All) == RaceFlags::All) {
+        string = "Random{All}";
+        return;
+    }
+
+    string = "Random{";
+    if (has_flag(flags, RaceFlags::Terran)) string += "T";
+    if (has_flag(flags, RaceFlags::Protoss)) string += "P";
+    if (has_flag(flags, RaceFlags::Zerg)) string += "Z";
+    if (has_flag(flags, RaceFlags::Askosi)) string += "A";
+    string += "}";
 }
 
 void RaceRandomizer::save_config() {
@@ -110,4 +133,15 @@ void randomize_races() {
     auto& randomizer = RaceRandomizer::instance();
     randomizer.process_randomization();
 }
+}
+
+u32 slot_id_to_index(u32 slot) {
+    for (auto i = 0; i < 8; i++) {
+        if (g_player_slots_by_id[i] == slot) return i;
+    }
+    return 8;
+}
+
+u32 index_to_slot_id(u32 index) {
+    return g_player_slots_by_id[index];
 }

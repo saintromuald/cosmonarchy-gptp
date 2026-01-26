@@ -14,6 +14,7 @@
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/snp.h"
 #include "hooks/interface/mainmenu/custom_glues.h"
+#include "hooks/race_randomization.h"
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
 static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;
@@ -334,7 +335,7 @@ namespace hooks {
                     visibility &= unit->detection_status;
                 }
                 checksum ^= visibility;
-                if (*g_minimap_draw_neutrals) {
+                if (g_minimap_draw_neutrals) {
                     break;
                 }
 
@@ -626,7 +627,7 @@ namespace hooks {
         u32 final_flags = button->flags;
         if (button->flags & BinDlgFlags::Disabled
         || !(button->flags & BinDlgFlags::Visible)
-        ||  button != button_unk && (button->control_type != DialogControlTypes::DefaultButton
+        ||  button != button_unk && (button->control_type != DialogControlType::DefaultButton
         ||  button_unk
         ||  parent->flags & BinDlgFlags::UseAlternateStyle)) {
             final_flags &= ~BinDlgFlags::Unknown12;
@@ -654,7 +655,7 @@ namespace hooks {
         u32 y_min = button->bounds.y;
         u32 y_max = button->bounds.h;
 
-        if (button->control_type == DialogControlTypes::DefaultButton) {
+        if (button->control_type == DialogControlType::DefaultButton) {
             *g_draw_color_index = g_palette_index_reference[5];
             helper::bw_draw(y_min, x_min, x_max - x_min + 1, y_max - y_min + 1);
         }
@@ -663,7 +664,7 @@ namespace hooks {
             helper::bw_draw(y_min, x_min, x_max - x_min + 1, y_max - y_min + 1);
         }
         if (button->text) {
-            bool highlight = button->flags & BinDlgFlags::HighlightText;
+            bool highlight = button->flags & BinDlgFlags::UpdateNeeded;
             g_print_xy_alignment = 34;
             helper::dialog_draw_text(0, button, highlight, highlight);
         }
@@ -671,8 +672,8 @@ namespace hooks {
 
     // Hooked to explore colorizing passive icons. -Pr0nogo
     b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims) { // 004EF590
-        if (button->buffer) {
-            return helper::draw_dialog_image(dims, &button->bounds.width, width, height, 0);
+        if (button->bitmap.buffer) {
+            return helper::draw_dialog_image(dims, &button->bitmap, width, height, 0);
         }
         *g_draw_color_index = (button->flags & BinDlgFlags::TransparentHideColor) == 0 ? g_palette_index_reference[12] : 0;
         return helper::draw_box(dims->x, dims->y, dims->w - dims->x + 1, dims->h - dims->y + 1);
@@ -681,7 +682,7 @@ namespace hooks {
     // Hooked to explore colorizing passive icons. -Pr0nogo
     void draw_stat_button_image(BinDlg* dialog) { // 00456C30
         u8 palette_type = 3;
-        if (dialog->flags & BinDlgFlags::Disabled || dialog->control_type != DialogControlTypes::Button) {
+        if (dialog->flags & BinDlgFlags::Disabled || dialog->control_type != DialogControlType::Button) {
             palette_type = 4;
         }
 
@@ -932,7 +933,7 @@ namespace hooks {
 
     // Hooked to add config option blocking the toggle. -Pr0nogo
     void __cdecl show_or_hide_minimap() { // 004A4150
-        if (*g_minimap_draw_neutrals != 1 && g_hide_minimap_terrain && g_config.can_toggle_minimap_terrain) {
+        if (!g_minimap_draw_neutrals && g_hide_minimap_terrain && g_config.can_toggle_minimap_terrain) {
             Bitmap* current_surface = *g_current_surface;
             memset(g_minimap_surface_2->buffer, 0, (s16)g_minimap_surface_2->height * (s16)g_minimap_surface_2->width);
             *g_current_surface = current_surface;
@@ -1016,7 +1017,7 @@ namespace hooks {
         sprintf_s(dest, 128, cancel_string, name);
         s32 bounds_top = 0;
         s32 bounds_left = 0;
-        if (dialog->control_type != DialogControlTypes::DialogBoxDC) {
+        if (dialog->control_type != DialogControlType::DialogBoxDC) {
             bounds_left = dialog->parent->bounds.left;
             bounds_top = dialog->parent->bounds.top;
         }
@@ -1206,21 +1207,28 @@ namespace hooks {
         return false;
     }
 
-    static void combobox_add_race(BinDlg* dialog, RaceId::Enum selected_race, u8& selection_index, RaceId::Enum race) {
-        auto index = helper::combobox_add_item(dialog, 0, race_to_table_string(race));
+    static void combobox_add_race(BinDlg* dialog, RaceId::Enum selected_race, u8& selection_index, RaceId::Enum race, std::optional<u32> slot_id) {
+        u8 index = 0;
+        if (slot_id && race == RaceId::Random) {
+            auto player_id = slot_id_to_index(slot_id.value());
+            auto& race_randomizer = RaceRandomizer::instance();
+            auto& race_string = race_randomizer.race_string(player_id);
+            index = helper::combobox_add_item(dialog, 0, race_string.c_str());
+        } else {
+            index = helper::combobox_add_item(dialog, 0, race_to_table_string(race));
+        }
+        //auto index = helper::combobox_add_item(dialog, 0, race_to_table_string(race));
         dialog->combobox_output_array_u32[index] = race;
         if (race == selected_race) selection_index = index;
     }
 
-    u8 load_races_dropdown(BinDlg* dialog, RaceId::Enum race) {
+    u8 load_races_dropdown(BinDlg* dialog, RaceId::Enum race, std::optional<u32>slot_id) {
         u8 selected_index = 0;
-        combobox_add_race(dialog, race, selected_index, RaceId::Zerg);
-        combobox_add_race(dialog, race, selected_index, RaceId::Terran);
-        combobox_add_race(dialog, race, selected_index, RaceId::Protoss);
-        if (g_game_type != GameType::Ranked) {
-            combobox_add_race(dialog, race, selected_index, RaceId::Askosi);
-        }
-        combobox_add_race(dialog, race, selected_index, RaceId::Random);
+        combobox_add_race(dialog, race, selected_index, RaceId::Zerg, {});
+        combobox_add_race(dialog, race, selected_index, RaceId::Terran, {});
+        combobox_add_race(dialog, race, selected_index, RaceId::Protoss, {});
+        combobox_add_race(dialog, race, selected_index, RaceId::Askosi, {});
+        combobox_add_race(dialog, race, selected_index, RaceId::Random, slot_id);
         return selected_index;
     }
 

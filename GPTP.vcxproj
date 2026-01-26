@@ -657,6 +657,7 @@
     <ClInclude Include="hooks\grafting\grafting.h" />
     <ClInclude Include="hooks\interface\console\icon_manager.h" />
     <ClInclude Include="hooks\interface\mainmenu\custom_glues.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glu_chat.h" />
     <ClInclude Include="hooks\interface\mainmenu\glu_join_crownlink.h" />
     <ClInclude Include="hooks\interface\minimap.h" />
     <ClInclude Include="hooks\interface\uifeatures\hotkeys.h" />

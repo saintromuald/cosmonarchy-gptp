@@ -38,8 +38,18 @@ private:
     FuncPtr m_func;
 };
 
+enum class SNetGetGameInfoType : u32 {
+    Name            = 1,
+    Password        = 2,
+    Mode            = 3,
+    StatString      = 4,
+    InitDataBytes   = 5,
+    MaxPlayers      = 6,
+};
+
 inline const StormStdCall<b32()> SNetDestroy{102};
 inline const StormStdCall<b32(u32, b32(__stdcall* callback)(u32 provider_id, const char* provider_name, const char* provider_description, Caps* caps))> SNetEnumProviders{105};
+inline const StormStdCall<b32(SNetGetGameInfoType type, char* output, u32 output_size, u32* bytes_written)> SNetGetGameInfo{107};
 inline const StormStdCall<b32(u32 player_id, char* buffer, u32 buffer_size)> SNetGetPlayerName{113};
 inline const StormStdCall<b32(Caps* caps)> SNetGetProviderCaps{114};
 inline const StormStdCall<b32(u32 player_id, void* data, u32 bytes)> SNetSendMessage{127};
