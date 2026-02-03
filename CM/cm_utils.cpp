@@ -710,11 +710,24 @@ bool chat_message_is_allowed(const char* text) {
         || stricmp(text, "READY") == 0;
 }
 
+void randomize_faction(u32 player_id) {
+    auto& cm_player = g_globals->players[player_id];
+    if (cm_player.witness_mode != WitnessMode::WitnessMode_Disabled || cm_player.faction_was_set) {
+        return;
+    }
+    SelectFactionCommand command = {};
+    command.type = GameCommand_Custom;
+    command.subtype = NewGameCommand::SelectFaction;
+    command.player = player_id;
+    command.faction = get_random_faction(static_cast<RaceId::Enum>(g_player_table[player_id].race));
+    helper::queue_game_command((u8*)&command, sizeof(command));
+}
+
 Faction get_random_faction(RaceId::Enum race) {
     switch (race) {
-    case RaceId::Terran:  return static_cast<Faction>(bw::rand_between((u32)Faction::TerranOrionImperium, (u32)Faction::TerranUpstart));
-    case RaceId::Protoss: return static_cast<Faction>(bw::rand_between((u32)Faction::ProtossDivinePrimacy, (u32)Faction::ProtossStarbound));
-    case RaceId::Zerg:    return static_cast<Faction>(bw::rand_between((u32)Faction::ZergAtaltrethTendril, (u32)Faction::ZergZorthosTendril));
+        case RaceId::Terran:  return static_cast<Faction>(bw::rand_between((u32)Faction::TerranOrionImperium, (u32)Faction::TerranUpstart));
+        case RaceId::Protoss: return static_cast<Faction>(bw::rand_between((u32)Faction::ProtossDivinePrimacy, (u32)Faction::ProtossAstralOmen));
+        case RaceId::Zerg:    return static_cast<Faction>(bw::rand_between((u32)Faction::ZergAtaltrethTendril, (u32)Faction::ZergZorthosTendril));
     }
     return Faction::None;
 }

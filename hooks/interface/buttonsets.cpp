@@ -3457,7 +3457,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergKethrostalor: {
-                                    if (current_button->icon_id == IconId::ZergFlyerAttacks) { // Bloody Rain
+                                    if (current_button->icon_id == IconId::BloodyRain) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

@@ -554,5 +554,8 @@ namespace IconId {
         DeathlessProcession                             = 867,
         EternalService                                  = 868,
         AdherentPhaseBlade                              = 868,
+
+        BloodyRain                                      = 894,
+        AkrenoBioticWingblades                          = 895,
     };
 }

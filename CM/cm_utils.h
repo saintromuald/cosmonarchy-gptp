@@ -43,6 +43,7 @@ void init_corpse(Thingy* corpse, SpriteId::Enum id, u32 player);
 bool game_kind_has_zombies(GameKind game_kind = bw::get_game_kind());
 bool game_kind_doubles_units(GameKind game_kind = bw::get_game_kind());
 bool chat_message_is_allowed(const char* text);
+void randomize_faction(u32 player_id);
 Faction get_random_faction(RaceId::Enum race);
 
 namespace WeaponId {
