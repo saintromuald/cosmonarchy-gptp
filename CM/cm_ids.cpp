@@ -267,7 +267,9 @@ bool unit_id_is_ground_garrison(u32 unit_id) {
 }
 
 bool unit_id_is_garrison(u32 unit_id) {
-    return unit_id_is_ground_garrison(unit_id); // Will add more bunker types later. -Pr0nogo
+    return unit_id_is_ground_garrison(unit_id)
+        || unit_id == UnitId::ZergScrylyleth
+        || unit_id == UnitId::AskosiGrandstandHoldout;
 }
 
 bool unit_id_is_melee_air_unit(u32 unit_id) {

@@ -984,14 +984,14 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::ArhaunPhlegethonCannon:              return "Plegethon Cannon";
         case WeaponId::LiiraliskHomingSpore:                return "Homing Spores";
         case WeaponId::CannibalZuluSidekicks:               return "Zulu Sidekicks";
-        case WeaponId::KethrostalorStaggeredSpores:         return "Staggered Spores";
+        case WeaponId::KethrostalorStaggeredSpores:         return unit_id == UnitId::ZergKethrostalor ? "Staggered Spores" : "Spewing Spores";
         case WeaponId::TritonHydriaCannons:                 return "Hydria Cannons";
         case WeaponId::TritonLobotomyWarhead:               return "Lobotomy Warhead";
         case WeaponId::RapidRandezvous:                     return "Rapid Rendezvous";
         case WeaponId::AckmedMickenMelter:                  return "Micken Melter";
         case WeaponId::GoskaMedusaRifle:                    return "Medusa Rifle";
         case WeaponId::SovrokorSovrolClaws:                 return "Sovrol Claws";
-        case WeaponId::StroluumMagnatesMaw:                 return unit_id == UnitId::Stroluum ? "Magnate's Maw" : "Tunneling Maw";
+        case WeaponId::MalkothrokorTunnelingMaw:            return unit_id == UnitId::ZergMalkothrokor ? "Tunneling Maw" : "Magnate's Maw";
         case WeaponId::ValkyrieHecatonLogiRockets:          return "Logi Rockets";
         case WeaponId::KerriganC10CanisterRifle:            return "C-10 Canister Rifle";
         case WeaponId::KerriganClaws:                       return "Claws";

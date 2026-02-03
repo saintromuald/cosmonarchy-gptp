@@ -74,8 +74,9 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
             final_range = weapons_dat::max_range[weapon_id] / 32;
         }
     }
-    if (unit->id == UnitId::TerranBlackjackGolden) {
-        final_range -= 1;
+    switch (unit->id) {
+        case UnitId::TerranBlackjackGolden: final_range -= 1; break;
+        case UnitId::ZergZethalor:          final_range -= 4; break;
     }
     if (unit_ext.unar_solitary_focus_stacks) {
         bonus_amount += unit_ext.unar_solitary_focus_stacks;
