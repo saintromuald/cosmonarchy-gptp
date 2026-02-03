@@ -17,7 +17,7 @@ struct ProgressBuildOptions {
 	u32 shield_gain;
 };
 
-BuildingModifier get_building_modifier(Unit* unit, const ProgressBuildOptions& options = {});
+BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOptions& options = {});
 
 bool progress_build(Unit* unit, const ProgressBuildOptions& options = {});
 

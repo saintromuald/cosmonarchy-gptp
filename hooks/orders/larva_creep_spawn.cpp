@@ -63,7 +63,7 @@ namespace hooks {
             unit_ext.timers[TimerSpawnLarva] = 8;
             unit->count_connected_larva();
             if (*g_larva_counter < 3 && !unit->is_in_air()) {
-                const auto modifier = cm::get_building_modifier(unit);
+                const auto modifier = cm::advance_building_modifier(unit);
                 if (unit->building.larva_timer > modifier.integer_step) {
                     unit->building.larva_timer -= modifier.integer_step;
                 } else {
@@ -88,7 +88,7 @@ namespace hooks {
         if (unit->building.creep_timer != 0) {
             if (unit->building.creep_timer >= 2) {
                 unit->building.creep_timer -= 2;
-                const auto modifier = cm::get_building_modifier(unit, {.already_ticked = true});
+                const auto modifier = cm::advance_building_modifier(unit, {.already_ticked = true});
                 if (unit->building.creep_timer > modifier.integer_step) {
                     unit->building.creep_timer -= modifier.integer_step;
                 } else {
