@@ -1011,7 +1011,23 @@ namespace hooks {
             helper::refresh_selection_screen();
             return;
         }
-        const char* cancel_string = g_stat_txt_buffer.get_string32(802 + active_unit->get_race()); // Cancel 
+
+        const char* cancel_string = "(%s)";
+        if (bw::in_replay_or_witness() || active_unit->player != g_local_nation_id) {
+            switch (active_unit->get_race()) {
+                case RaceId::Terran:  cancel_string = "Deploying (%s)"; break;
+                case RaceId::Protoss: cancel_string = "Warping (%s)";   break;
+                case RaceId::Zerg:    cancel_string = "Morphing (%s)";  break;
+                case RaceId::Askosi:  cancel_string = "Raising (%s)";   break;
+            }
+        } else {
+            switch (active_unit->get_race()) {
+                case RaceId::Terran:  cancel_string = "Cancel Deployment (%s)"; break;
+                case RaceId::Protoss: cancel_string = "Cancel Warp (%s)";       break;
+                case RaceId::Zerg:    cancel_string = "Cancel Morph (%s)";      break;
+                case RaceId::Askosi:  cancel_string = "Cancel Raising (%s)";    break;
+            }
+        }
         const char* name = helper::get_unit_name_stat_string(user->id);
         char dest[128];
         sprintf_s(dest, 128, cancel_string, name);
@@ -1032,12 +1048,6 @@ namespace hooks {
         }
 
         u16 index = main_dialog->index;
-        if (g_is_in_replay) {
-            if (index < 9 || index > 12) {
-                helper::refresh_selection_screen();
-                return;
-            }
-        }
         // Don't yet have an enum for index here.
         switch (index) {
             case 2:
