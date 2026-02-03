@@ -741,11 +741,13 @@ namespace hooks {
                 } break;
                 case WeaponId::NathrokorVestigialStrike:
                 case WeaponId::NathrokorNathrokClaws: {
-                    if (!target_ext.values[ValueNathrokHidebreaker]) {
-                        target_ext.values[ValueNathrokHidebreaker] = 1;
-                        // TODO: Overlay
+                    if (data.attacker->id == UnitId::ZergNathrokor) {
+                        if (!target_ext.values[ValueNathrokHidebreaker]) {
+                            target_ext.values[ValueNathrokHidebreaker] = 1;
+                            // TODO: Overlay
+                        }
+                        target_ext.timers[TimerHidebreaker] = Zerg::HidebreakerDuration;
                     }
-                    target_ext.timers[TimerHidebreaker] = Zerg::HidebreakerDuration;
                 } break;
             }
             // Ignore Carapace Swarm!

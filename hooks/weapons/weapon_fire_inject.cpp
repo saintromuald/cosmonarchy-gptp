@@ -212,7 +212,7 @@ namespace {
 		static s32 result;
 		static Unit* unit;
 		static u8 weapon_id;
-		u32 attack_type;
+		static u32 attack_type;
 		static char iscript_anim;
 		__asm {
 			PUSH EBP
@@ -333,7 +333,7 @@ namespace {
 
 	void __declspec(naked) unit_id_is_melee_air_unit_wrapper() {
 		u32 unit_id;
-		bool is_air_unit;
+		static bool is_air_unit;
 		__asm {
 			MOVZX	EAX, word ptr[ESI + 0x64]
 			MOV		unit_id, EAX

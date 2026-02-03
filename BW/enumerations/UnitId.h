@@ -162,6 +162,12 @@ namespace UnitId {
         TerranValkyrieHecaton                               = 520,
         TerranQuadriga                                      = 541,
         TerranSerathiel                                     = 547,
+        TerranGoremast                                      = 567,
+        TerranBroadside                                     = 568,
+        TerranBroadsideTurret                               = 569,
+        TerranVultureUpstart                                = 570,
+        TerranCutlass                                       = 571,
+        TerranCutlassTurret                                 = 572,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1

@@ -729,16 +729,7 @@ namespace hooks {
                     if (g_player_table[i].type != PlayerType::Computer) {
                         continue;
                     }
-                    auto& cm_player = g_globals->players[i];
-                    if (cm_player.witness_mode != WitnessMode::WitnessMode_Disabled || cm_player.faction_was_set) {
-                        continue;
-                    }
-                    SelectFactionCommand command = {};
-                    command.type = GameCommand_Custom;
-                    command.subtype = NewGameCommand::SelectFaction;
-                    command.player = i;
-                    command.faction = get_random_faction(static_cast<RaceId::Enum>(g_player_table[i].race));
-                    helper::queue_game_command((u8*)&command, sizeof(command));
+                    randomize_faction(i);
                 }
             } break;
             case GameKind::Ranked: {
@@ -959,7 +950,7 @@ namespace hooks {
 
         process_quickbuilding();
 
-        // Queue Commands
+        // Queue commands
         cmd::CameraSync{
             .player = u8(g_local_nation_id),
             .pos = {
@@ -1041,6 +1032,18 @@ namespace hooks {
         for (Unit* unit = *g_first_hidden_unit; unit; unit = unit->link.next) {
             if (unit->is_completed()) {
                 tick_unit(unit, true);
+            }
+        }
+
+        if (g_elapsed_time_frames == 24 * 60) {
+            // Randomize faction if not set
+            if (bw::get_game_kind() == GameKind::FactionWars) {
+                for (s32 i = 0; i < PlayerLimit; i++) {
+                    if (g_player_table[i].type == PlayerType::Computer) {
+                        continue;
+                    }
+                    randomize_faction(i);
+                }
             }
         }
 
@@ -1569,7 +1572,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::ZergSovroleth: {
-                {	
+                {
                     EntryArray sovroleths = g_unit_search.radial_ex(unit, 8 * 32, FilterAlly, {UnitId::ZergSovroleth}); 
                     unit_ext.values[ValueSovrolethLinkCount] = sovroleths.count();
                 }
