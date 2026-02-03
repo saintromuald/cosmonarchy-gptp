@@ -65,27 +65,27 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_tmp\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <SourcePath>$(ProjectDir)\_vendor\;$(VC_SourcePath)</SourcePath>
-    <IncludePath>$(ProjectDir)\_vendor\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <SourcePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>CM-GPTP-Debug</TargetName>
     <TargetExt>.qdp</TargetExt>
-    <LibraryPath>$(ProjectDir)\_vendor\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">
-    <SourcePath>$(ProjectDir)\_vendor\;$(VC_SourcePath)</SourcePath>
-    <IncludePath>$(ProjectDir)\_vendor\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <SourcePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>CM-GPTP-FastDebug</TargetName>
     <TargetExt>.qdp</TargetExt>
-    <LibraryPath>$(ProjectDir)\_vendor\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <SourcePath>$(ProjectDir)\_vendor\;$(VC_SourcePath)</SourcePath>
-    <IncludePath>$(ProjectDir)\_vendor\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <SourcePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>CM-GPTP-Release</TargetName>
     <TargetExt>.qdp</TargetExt>
-    <LibraryPath>$(ProjectDir)\_vendor\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

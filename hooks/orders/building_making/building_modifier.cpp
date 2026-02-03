@@ -3,25 +3,15 @@
 #include "trigger_system\trigger_system.h"
 
 namespace cm {
-BuildingModifier get_building_modifier(Unit* unit, const ProgressBuildOptions& options) {
+BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOptions& options) {
 	BuildingModifier modifier{.factor = 1_fp64, .integer_step = 1};
 
 	assert(unit);
+    auto& unit_ext = unit->ext();
 	if (!options.use_stock_speed) {
-		UnitExt* unit_ext = get_unit_ext(unit);
-
 		Unit* builder = options.builder;
-		if (options.is_constructing) {
-			/*
-			if ((builder && builder->id == UnitId::TerranTalos)
-				|| unit->create_origin == UnitId::ProtossArtisan
-				|| unit->create_origin == UnitId::ZergGosvileth) {
-				modifier.factor *= 1.5_fp64;
-			}
-			*/
-		}
 
-		bool crucible_active = !unit_ext->unit_vectors[UnitVectorCrucibles].empty();
+		bool crucible_active = !unit_ext.unit_vectors[UnitVectorCrucibles].empty();
 		if (!crucible_active && builder) {
 			UnitExt* builder_ext = get_unit_ext(builder);
 			if (!builder_ext->unit_vectors[UnitVectorCrucibles].empty()) {
@@ -39,16 +29,12 @@ BuildingModifier get_building_modifier(Unit* unit, const ProgressBuildOptions& o
 		if (bw::get_game_kind() == GameKind::Debug) {
 			modifier.factor *= 32;
 		}
-
-		if (unit_ext->build_progress_last_update_tick != g_elapsed_time_frames) {
-			unit_ext->build_progress_last_update_tick = g_elapsed_time_frames;
-
-			unit_ext->build_progress_float += modifier.factor - 1;
-			unit_ext->build_progress_integer = (u32)floor(unit_ext->build_progress_float);
-			unit_ext->build_progress_float -= unit_ext->build_progress_integer;
-		}
-		modifier.integer_step += unit_ext->build_progress_integer;
 	}
+
+    unit_ext.build_progress_accumulator += modifier.factor - 1;
+    const auto step = (u32)unit_ext.build_progress_accumulator; // truncate
+    unit_ext.build_progress_accumulator -= step;
+    modifier.integer_step += step;
 
 	if (options.already_ticked) {
 		modifier.factor -= 1;
@@ -65,7 +51,7 @@ bool progress_build(Unit* unit, const ProgressBuildOptions& options) {
 		return true;
 	}
 
-	const auto modifier = get_building_modifier(unit, options);
+	const auto modifier = advance_building_modifier(unit, options);
 	if (unit->remaining_build_time >= modifier.integer_step) {
 		unit->remaining_build_time -= modifier.integer_step;
 	} else {
@@ -74,12 +60,14 @@ bool progress_build(Unit* unit, const ProgressBuildOptions& options) {
 
 	if (modifier.factor) {
 		if (options.shield_gain) {
-			s32 max_shields = units_dat::max_shield_points[unit->id] << 8;
-			unit->shields = std::min(s32(unit->shields + options.shield_gain * modifier.factor), max_shields);
+			const s32 max_shields = units_dat::max_shield_points[unit->id] << 8;
+			const auto gain = s32(options.shield_gain * modifier.factor);
+			unit->shields = std::min(unit->shields + gain, max_shields);
 		}
 		// Need to call set_hitpoints for shield case, regardless of hp_gain, to update unit force value and etc
 		if (options.hp_gain || options.shield_gain) {
-			unit->set_hitpoints(s32(unit->hitpoints + options.hp_gain * modifier.factor));
+			const auto gain = s32(options.hp_gain * modifier.factor);
+			unit->set_hitpoints(unit->hitpoints + gain);
 		}
 	}
 	return false;

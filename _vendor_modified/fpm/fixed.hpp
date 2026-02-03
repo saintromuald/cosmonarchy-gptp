@@ -182,6 +182,11 @@ public:
         return *this;
     }
 
+    inline explicit operator bool() const noexcept
+    {
+        return m_value != 0;
+    }
+
 private:
     BaseType m_value{};
 };
