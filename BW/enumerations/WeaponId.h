@@ -144,7 +144,7 @@ namespace WeaponId {
         GoskaLobotomyGrenade				= 32,
         AckmedMickenMelter					= 248,
         GoskaMedusaRifle					= 249,
-        StroluumMagnatesMaw					= 251,
+        MalkothrokorTunnelingMaw			= 251,
         KerriganC10CanisterRifle            = 253,
         KerriganClaws                       = 254,
 

@@ -449,6 +449,8 @@ struct Unit : public UnitLayout {
     bool is_constructor();
     void pull_towards(Unit* source);
     void tick_burrowed_cagra_spread();
+    void booming_blast_proc();
+    bool is_valid_garrison();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

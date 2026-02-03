@@ -29,22 +29,15 @@ namespace hooks {
 	void unit_attacks_from_inside_bunker(Unit* unit) { // 004790A0
 		Unit* garrison = unit->connected_unit;
 		if (garrison) {
-			if (unit_id_is_ground_garrison(garrison->id) && garrison->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
-				return; // Disallow units in garrisons from firing while garrison is lifted or in a transport.
-			}
-			if (!unit_id_is_garrison(garrison->id)) {
-				return; // Disallow units in transports from firing under any circumstances.
+			if (!garrison->is_valid_garrison()) {
+				return;
 			}
 		}
-
 		if (unit->subunit) {
 			Unit* subunit_garrison = unit->subunit->connected_unit;
 			if (subunit_garrison) {
-				if (unit_id_is_ground_garrison(subunit_garrison->id) && subunit_garrison->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
-					return; // Disallow units in garrisons from firing while garrisons is lifted or in a transport.
-				}
-				if (!unit_id_is_garrison(subunit_garrison->id)) {
-					return; // Disallow units in transports from firing under any circumstances.
+				if (!subunit_garrison->is_valid_garrison()) {
+					return;
 				}
 			}
 		}
@@ -129,7 +122,8 @@ namespace hooks {
 					case RaceId::Terran: {
 						sprite_id = SpriteId::BunkerAttackOverlay_Orange;
 					} break;
-					case RaceId::Protoss: {
+					case RaceId::Protoss:
+					case RaceId::Askosi: {
 						sprite_id = SpriteId::BunkerAttackOverlay_Blue;
 					} break;
 					case RaceId::Zerg: {

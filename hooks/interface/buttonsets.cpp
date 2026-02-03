@@ -2155,7 +2155,7 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::ZergVorvrokor: {
-                                        if (faction != Faction::ZergGoszirithTendril) {
+                                        if (faction != Faction::ZergGoszirithTendril && faction != Faction::ZergOrkotiTendril) {
                                             if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
                                                 || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
                                                 current_button_state = Button_State::Enabled;
@@ -2166,6 +2166,16 @@ namespace hooks {
                                         }
                                     case UnitId::ZergGarvrokor: {
                                         if (faction == Faction::ZergGoszirithTendril) {
+                                            if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
+                                                || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::ZergZethalor: {
+                                        if (faction == Faction::ZergOrkotiTendril) {
                                             if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
                                                 || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
                                                 current_button_state = Button_State::Enabled;
@@ -3456,6 +3466,7 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ZergZethalor:
                                 case UnitId::ZergKethrostalor: {
                                     if (current_button->icon_id == IconId::BloodyRain) {
                                         current_button_state = Button_State::Enabled;

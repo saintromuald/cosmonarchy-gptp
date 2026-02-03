@@ -19,6 +19,11 @@ namespace hooks {
 
 		armor_pen += unit_ext.unit_vectors[UnitVectorBarghests].size();
 		armor_pen += unit_ext.unit_vectors[UnitVectorManifolds].size();
+
+		switch (unit->id) {
+			case UnitId::ZergZethalor: armor_pen -= 3; break;
+		}
+
 		return armor_pen;
 	}
 

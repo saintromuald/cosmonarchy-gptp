@@ -1857,3 +1857,33 @@ void Unit::tick_burrowed_cagra_spread() {
         }
     }
 }
+
+void Unit::booming_blast_proc() {
+    auto& unit_ext = this->ext();
+    u32 attacking_player = unit_ext.values[ValueBoomingBlastPlayer];
+    unit_ext.values[ValueBoomingBlastPlayer] = 0;
+    unit_ext.timers[TimerBoomingBlast] = 0;
+    this->damage_with(WeaponId::BoomingBlast, -1, 0, attacking_player);
+    for (Unit* nearby : g_unit_search.radial_ex(this, 2 * 32, FilterNotSelf)) {
+        if (bw::are_mutual_allies(attacking_player, nearby->player)) {
+            continue;
+        }
+        nearby->damage_with(WeaponId::BoomingBlast, -1, 0, attacking_player);
+        nearby->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel); // TODO: Own visuals
+    }
+    // TODO: Own audiovisuals
+    this->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+    bw::play_sound({SoundId::AskosiDeploy01, SoundId::AskosiDeploy03}, this->position);
+}
+
+bool Unit::is_valid_garrison() {
+    if (unit_id_is_ground_garrison(this->id) && this->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
+        return false;
+    }
+    if (!unit_id_is_garrison(this->id)) {
+        return false;
+    }
+    if (this->id == UnitId::ZergScrylyleth && !this->is_burrowed()) {
+        return false;
+    }
+}
