@@ -786,24 +786,18 @@ namespace hooks {
 
             u32 flags = child->flags;
             if (!(flags & 1)) {
-                child->flags = flags | 1;
+                child->flags = flags | BinDlgFlags::Highlighted;
                 helper::update_dialog(child);
             }
 
-            u8 race = unit->get_race();
-            u32 race_string_1 = race + 771;
-            u32 race_string_2 = race + 770;
-            const char* text = "";
-            if (race_string_1) {
-                if (race_string_2 < g_stat_txt_buffer.get_string_count32()) {
-                    text = g_stat_txt_buffer.get_string32(race_string_2 + 1);
-                } else {
-                    text = "";
-                }
-            } else {
-                text = 0;
+            const char* string = "Building";
+            switch (unit->get_race()) {
+                case RaceId::Terran:  string = "Under Construction"; break;
+                case RaceId::Protoss: string = "Opening Warp Rift";  break;
+                case RaceId::Zerg:    string = "Mutating";           break;
+                case RaceId::Askosi:  string = "Assembling";         break;
             }
-            helper::add_text_to_dialog(dialog_context, -40, text);
+            helper::add_text_to_dialog(dialog_context, -40, string);
             helper::set_text_string(dialog_context);
             helper::add_text_to_dialog(dialog_context, -5, unit->get_name());
         }
@@ -835,8 +829,8 @@ namespace hooks {
 
             helper::dialog_set_progress_bar_value(dialog, 16, helper::get_remaining_build_time_percentage(built_unit));
             u32 slot_unit_id = helper::get_last_queue_slot_id(built_unit);
-            if (dialog->control_type == DialogControlType::DialogBoxDC)
-            {
+            BinDlg* current_dialog = 0;
+            if (dialog->control_type == DialogControlType::DialogBoxDC) {
                 current_dialog = dialog->child_dialog;
             } else {
                 current_dialog = dialog->parent->child_dialog;
@@ -856,8 +850,14 @@ namespace hooks {
                 current_dialog->flags |= BinDlgFlags::Highlighted;
                 helper::update_dialog(current_dialog);
             }
-            u32 text_id = 0x313 + built_unit->get_race(); // "Mutating", "Adding On", "Opening Warp Rift"
-            helper::add_text_to_dialog(dialog, -40, (char*)g_stat_txt_tbl->get_string32(text_id));
+            const char* string = "Building";
+            switch (unit->get_race()) {
+                case RaceId::Terran:  string = "Under Construction"; break;
+                case RaceId::Protoss: string = "Opening Warp Rift";  break;
+                case RaceId::Zerg:    string = "Mutating";           break;
+                case RaceId::Askosi:  string = "Assembling";         break;
+            }
+            helper::add_text_to_dialog(dialog, -40, string);
         }
     }
 
@@ -1037,6 +1037,7 @@ namespace hooks {
                 }
             }
         }
+        helper::add_text_to_dialog(dialog, -30, string);
     }
 
     // Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
@@ -1187,7 +1188,7 @@ namespace hooks {
             helper::dialog_set_progress_bar_value(dialog, 13, helper::get_remaining_build_time_percentage(unit));
 
             // Skipping hardcoded use of stat_txt_tbl. -GPTP			
-            helper::add_text_to_dialog(dialog, -30, (char*)g_stat_txt_tbl->get_string32(790)); // Text: "Summoning"
+            helper::add_text_to_dialog(dialog, -30, "Summoning");
             helper::set_text_string(dialog);
             helper::add_text_to_dialog(dialog, -5, get_unit_name(unit));
         }
@@ -1316,8 +1317,11 @@ namespace hooks {
     // Hooked to convert stat_txt.tbl to txt, and to improve in-game displays. -Pr0nogo
     void set_unit_status_string_text(BinDlg* dialog) { // 00425B50
         Unit* unit = *g_active_portrait_unit;
-        if (unit->status & UnitStatus::IsHallucination && (bw::in_replay_or_witness() || unit->player == g_local_nation_id)) {
-            helper::add_text_to_dialog(dialog, -20, g_stat_txt_buffer.get_string32(832)); // Hallucination
+        if (!unit->is_completed()) {
+            return;
+        }
+        if (unit->is_hallucination() && (bw::in_replay_or_witness() || unit->player == g_local_nation_id)) {
+            helper::add_text_to_dialog(dialog, -20, "Hallucination");
             return;
         }
 
@@ -1326,8 +1330,15 @@ namespace hooks {
             bool can_see_progress_bar = unit->player == g_local_nation_id || bw::is_allied_to(unit->player, g_local_nation_id)
                                      || bw::in_replay_or_witness()        || player_detects_unit(g_local_nation_id, unit);
 
-            if (!unit->is_completed() || (progress_bar_exists && can_see_progress_bar)) {
-                helper::add_text_to_dialog(dialog, -20, "");
+            if (progress_bar_exists && can_see_progress_bar) {
+                const char* string = "Training";
+                switch (unit->get_race()) {
+                    case RaceId::Terran:  string = "Deploying"; break;
+                    case RaceId::Protoss: string = "Warping";   break;
+                    case RaceId::Zerg:    string = "Morphing";  break;
+                    case RaceId::Askosi:  string = "Raising";   break;
+                }
+                helper::add_text_to_dialog(dialog, -20, string);
                 return;
             }
             if (unit->is_frozen()) {

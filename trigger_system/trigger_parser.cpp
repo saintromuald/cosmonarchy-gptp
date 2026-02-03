@@ -608,6 +608,7 @@ Token get_short_unit_name(Unit* unit) {
 	remove_prefix(name, "zerg");
 	remove_prefix(name, "askosi");
 	remove_prefix(name, "bloodsummon");
+	remove_prefix(name, "kogri");
 	return {name};
 }
 
@@ -618,6 +619,7 @@ Token get_short_unit_name(u32 unit_id) {
 	remove_prefix(name, "zerg");
 	remove_prefix(name, "askosi");
 	remove_prefix(name, "bloodsummon");
+	remove_prefix(name, "kogri");
 	return {name};
 }
 

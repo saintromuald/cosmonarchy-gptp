@@ -553,7 +553,7 @@ namespace IconId {
         Miasma                                          = 866,
         DeathlessProcession                             = 867,
         EternalService                                  = 868,
-        AdherentPhaseBlade                              = 868,
+        AdherentPhaseBlade                              = 869,
 
         BloodyRain                                      = 894,
         AkrenoBioticWingblades                          = 895,
