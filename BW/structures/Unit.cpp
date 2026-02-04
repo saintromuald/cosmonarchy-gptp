@@ -1801,9 +1801,10 @@ Unit* Unit::corpse_cocoon_search() {
         auto* corpse_ext = get_thingy_ext(corpse);
         if (!(corpse->sprite->flags & SpriteFlags::RemoveAfterDeath) && !unit_id_is_broodspawn(corpse_ext->unit_id)) {
             Unit* egg = bw::create_unit_in_game(UnitId::ZergEgg, this->player, corpse->sprite->position.x, corpse->sprite->position.y, 0, false);
-            if (egg) {
-                set_custom_egg(egg, this->id, units_dat::time_cost[this->id] / 2);
+            if (!egg) {
+                continue;
             }
+            set_custom_egg(egg, this->id, units_dat::time_cost[this->id] / 2);
             auto& egg_ext = egg->ext();
             egg_ext.values[ValueNoCorpse] = true;
             egg_ext.values[ValueRegressionUnstable] = true;
@@ -1812,6 +1813,7 @@ Unit* Unit::corpse_cocoon_search() {
             return egg;
         }
     }
+    return nullptr;
 }
 
 bool Unit::is_valid_nydus() {
