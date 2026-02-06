@@ -189,13 +189,13 @@ static void tick_effect(EffectField& effect) {
             } break;
             case EffectId::SalamanderFire: {
                 for (Unit* target : g_unit_search.search_ex(effect, FilterNoAir)) {
-                    UnitExt* target_ext = get_unit_ext(target);
-                    if (!target_ext->timers[TimerSalamanderFire]) { // So it only applies to the same unit once every second.
-                        if (target_ext->values[ValueApollyoidAdhesiveStacks] < ApollyoidAdhesive::StackCap) {
-                            target_ext->values[ValueApollyoidAdhesiveStacks]++;
+                    auto& target_ext = target->ext();
+                    if (!target_ext.timers[TimerSalamanderFire]) { // So it only applies to the same unit once every second.
+                        if (target_ext.values[ValueApollyoidAdhesiveStacks] < ApollyoidAdhesive::StackCap) {
+                            target_ext.values[ValueApollyoidAdhesiveStacks]++;
                         }
-                        target_ext->timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
-                        target_ext->timers[TimerSalamanderFire] = 24;
+                        target_ext.timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
+                        target_ext.timers[TimerSalamanderFire] = 24;
                     }
                 }
             } break;
@@ -444,6 +444,34 @@ static void tick_effect(EffectField& effect) {
                     bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, source, target, target->position, effect.position);
                     bw::play_sound({SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03}, effect.position);
                     effect.intervals--;
+                }
+            } break;
+            case EffectId::ScrapworldImplosion: {
+                if (effect.current_time) {
+                    break;
+                }
+                bw::play_sound({SoundId::AkrenoPassiveProc01, SoundId::AkrenoPassiveProc03}, effect.position);
+                for (Unit* pull_victim : g_unit_search.radial(effect.position, Askosi::ScrapworldImplosionRange)) {
+                    if (unit_can_be_repulsed(pull_victim)) {
+                        pull_victim->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel); // TODO: Own visuals
+
+                        auto& pull_ext = pull_victim->ext();
+                        const u32 displacement_time = 5;
+                        Vec32 diff = bw::vec_between(effect.position, pull_victim->sprite->position);
+                        if (bw::vec_length(diff) > 12) {
+                            Vec32f displacement = bw::normalize(diff);
+                            displacement.x *= -1 * 32.0 / displacement_time;
+                            displacement.y *= -1 * 32.0 / displacement_time;
+                            pull_ext.timers[TimerPullTowards] = displacement_time;
+                            pull_ext.repulsion_vector = displacement;
+                            pull_ext.pull_pos = effect.position;
+                        }
+
+                        if (!bw::are_mutual_allies(pull_victim->player, effect.player)) {
+                            pull_victim->ext().timers[TimerScrapworldImplosion] = Askosi::ScrapworldImplosionSlowDuration;
+                            pull_victim->update_speed();
+                        }
+                    }
                 }
             } break;
         }

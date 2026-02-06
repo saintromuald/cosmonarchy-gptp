@@ -369,7 +369,7 @@ void update_dialog(BinDlg* dialog);     //1C400
 /// This function checks whether [transport] has any status effects (LobotomyGrenade,
 /// Maelstrom, etc.), is owned by the same player, and has enough space for
 /// [unit]. It does NOT check whether [transport] is a hallucination, or is an
-/// Overlord without the transport upgrade, or whether the [unit] itself has any
+/// Ovileth without the transport upgrade, or whether the [unit] itself has any
 /// status effects. Note that this function is affected by the EXE edits
 /// "change bunker count check to organic flag check" and
 /// "remove bunker count check" in FireGraft.
@@ -1094,7 +1094,7 @@ bool unit_can_fire_secondary_weapon(Unit* unit);
 void cancel_targeting_and_place_building();
 void select(std::vector<Unit*>& units, bool play_response);
 u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id);
-u32 get_weapon_fire_sound(u32 weapon_id);
+u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit);
 bool unit_regenerates_hp(Unit* unit);
 u32 get_regeneration_factor(Unit* unit);
 bool unit_has_shields(Unit* unit);
@@ -1113,7 +1113,7 @@ f32 calculate_dark_ages_penalty(f32 range);
 void zap_overlay(Unit* unit);
 void play_manual_weaponfire_sound(Unit* unit, WeaponId::Enum weapon_id);
 void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id);
-u32 get_weapon_hit_sound(WeaponId::Enum weapon_id);
+u32 get_weapon_hit_sound(WeaponId::Enum weapon_id, Unit* unit);
 Point16 get_building_reposition(Unit* unit, Point16 position);
 f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable);
 bool is_melee_game(u8 game_type, u8 game_subtype);

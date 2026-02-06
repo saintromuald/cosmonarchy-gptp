@@ -209,23 +209,16 @@ namespace
 		}
 	}
 
-	b32 __cdecl current_unit_selection_can_cloak_wrapper()
-	{
-		RaceId::Enum race;
-		for (s32 i = 0; i < SelectionCap; ++i)
-		{
+	b32 __cdecl current_unit_selection_can_cloak_wrapper() {
+		for (s32 i = 0; i < SelectionCap; ++i) {
 			Unit* unit = g_client_selection_group->unit[i];
-			if (unit != nullptr)
-			{
-				if (bw::is_cheat_enabled(CheatFlags::TheGathering)
-					|| unit->energy >= techdata_dat::energy_cost[hooks::get_cloaking_tech(unit)] * 256)
-				{
+			if (unit) {
+				if (unit->energy >= techdata_dat::energy_cost[hooks::get_cloaking_tech(unit)] * 256) {
 					return true;
 				}
 			}
 		}
-		race = (*g_active_portrait_unit)->get_race();
-		bw::show_error_message_with_sfx((*g_active_portrait_unit)->player, 864 + race, 156 + race);
+		helper::display_error_message_id_with_sfx((*g_active_portrait_unit)->player, 864, 156 + (*g_active_portrait_unit)->get_race());
 		return false;
 	}
 }

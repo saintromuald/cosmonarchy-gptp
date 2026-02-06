@@ -44,6 +44,9 @@ u32 get_refinery_id_from_race(u32 player) {
                 refinery_id = UnitId::ZergEzigrisant;
             }
         } break;
+        case RaceId::Askosi: {
+            refinery_id = UnitId::None; // Not yet implemented.
+        } break;
     }
     return refinery_id;
 }
@@ -719,7 +722,7 @@ namespace hooks {
 
     // Hooked to fix player_need and improve functionality. -Pr0nogo
     void ai_add_spending_request_from_towns(u32 player) { // 00436320
-        g_aiscript_controller[player].ai_flags.upgrades_finished = true; // HIBYTE(g_aiscript_controller[player].ai_flags) |= 4u;
+        g_aiscript_controller[player].ai_flags.upgrades_finished = true; // HIBYTE(g_aiscript_controller[player].ai_flags) |= 4;
 
         u32 race = g_player_table[player].race;
         u32 builder_id = UnitId::None;
@@ -737,6 +740,10 @@ namespace hooks {
             case RaceId::Zerg: {
                 main_building_id = UnitId::ZergHachirosk;
                 builder_id = UnitId::ZergDroleth;
+            } break;
+            case RaceId::Askosi: {
+                main_building_id = UnitId::AskosiLandlock;
+                builder_id = UnitId::AskosiPilgrim;
             } break;
         }
 
@@ -861,7 +868,8 @@ namespace hooks {
         u32 worker_race = unit->get_race();
         if (worker_race == Unit::get_race(unit_id)) {
             switch (worker_race) {
-                case RaceId::Terran: {
+                case RaceId::Terran:
+                case RaceId::Askosi: {
                     return OrderId::BuildTerran;
                 } break;
                 case RaceId::Protoss: {
@@ -1136,16 +1144,12 @@ namespace hooks {
     // Hooked to lay the groundwork for more refinery types. -Pr0nogo
     u32 get_default_refinery_type(u32 player) { // 004320D0
         switch (g_player_table[player].race) {
-            case RaceId::Zerg: {
-                return UnitId::ZergExcisant;
-            }
-            case RaceId::Terran: {
-                return UnitId::TerranReservoir;
-            }
-            case RaceId::Protoss: {
-                return UnitId::ProtossAquifer;
-            }
+            case RaceId::Zerg:    return UnitId::ZergExcisant;
+            case RaceId::Terran:  return UnitId::TerranReservoir;
+            case RaceId::Protoss: return UnitId::ProtossAquifer;
+            case RaceId::Askosi:  return UnitId::None; // Not yet implemented.
         }
+        return UnitId::None;
     }
 
     // Hooked to improve functionality. -Pr0nogo

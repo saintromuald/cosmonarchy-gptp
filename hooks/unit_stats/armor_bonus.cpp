@@ -31,6 +31,19 @@ namespace hooks {
 		if (unit_ext.timers[TimerClericHeal]) {
 			armor_modifier += 1;
 		}
+		if (unit_ext.values[ValueReassemblyActive]) {
+			switch (unit->id) {
+				case UnitId::AskosiTirade: {
+					armor_modifier += 1;
+				} break;
+				case UnitId::AskosiThaumalogue:
+				case UnitId::AskosiObject:
+				case UnitId::AskosiScepter:
+				case UnitId::AskosiPetract: {
+					armor_modifier += 2;
+				} break;
+			}
+		}
 		return armor_modifier;
 	}
 
@@ -54,6 +67,7 @@ namespace hooks {
 		armor -= unit_ext.values[ValueWendigoShatteredWindsStacks];
 		armor -= unit_ext.timers[TimerDiscordantChorus] > 1;
 		armor -= unit_ext.timers[TimerIncinerateArmor] > 1;
+		armor -= unit_ext.values[ValueAshHeap];
 
 		if (armor < 0) {
 			armor = 0;

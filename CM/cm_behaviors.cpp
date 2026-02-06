@@ -309,9 +309,8 @@ void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id) {
 }
 
 bool can_infest(u32 player, Unit* target, bool force) {
-	// Spawning cagra wouldn't work properly on units. Spawning cagra on units or addons could corrupt/crash the game. Addons don't transfer properly anyways
-	UnitExt* target_ext = get_unit_ext(target);
-	return target->status & UnitStatus::Completed && !(units_dat::base_property[target->id] & UnitProperty::Addon)
+	// Spawning cagra wouldn't work properly on units. Spawning cagra on units or addons could corrupt/crash the game.
+	return target->is_completed() && !(units_dat::base_property[target->id] & UnitProperty::Addon)
 		&& (force || is_hostile_or_neutral(player, target->player));
 }
 
@@ -319,9 +318,9 @@ void mark_infesting(u32 player, Unit* target) {
 	if (!can_infest(player, target)) {
 		return;
 	}
-	UnitExt* target_ext = get_unit_ext(target);
-	target_ext->timers[TimerInfesting] = 24;
-	target_ext->values[ValueInfestingPlayer] = player;
+	auto& target_ext = target->ext();
+	target_ext.timers[TimerInfesting] = 24;
+	target_ext.values[ValueInfestingPlayer] = player;
 }
 
 static u32 blissful_embrace_overlay_image_id(Unit* target) {
@@ -366,7 +365,7 @@ void blissful_embrace_tick(Unit* target) {
 		}
 		target->sprite->create_overlay(effect_image_id);
 
-		// Spread initial creep
+		// Spread initial cagra
 		if (unit_spreads_custom_creep(target)) {
 			bw::spawn_custom_creep(target);
 		}
@@ -381,7 +380,7 @@ void blissful_embrace(Unit* target, u32 player, bool force) {
 
 	// Eject loaded units if possible, kill them otherwise
 	bw::unload_or_kill_loaded_units(target);
-	UnitExt* target_ext = get_unit_ext(target);
+	auto& target_ext = target->ext();
 
 	// Remove connected larva
 	u16 larva_id = UnitId::ZergLarva;
@@ -396,9 +395,9 @@ void blissful_embrace(Unit* target, u32 player, bool force) {
 
 	// Obtain control
 	target->give_to(player);
-	target_ext->values[ValueInfested] = true;
+	target_ext.values[ValueInfested] = true;
 
-	if (Unit* matraleth = target_ext->units[UnitInfestingMatraleth]) {
+	if (Unit* matraleth = target_ext.units[UnitInfestingMatraleth]) {
 		matraleth->order_to_idle();
 	}
 
@@ -407,8 +406,8 @@ void blissful_embrace(Unit* target, u32 player, bool force) {
 }
 
 void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
-	UnitExt* target_ext = get_unit_ext(target);
-	target_ext->values[ValueMindControlOriginalPlayer] = 0;
+	auto& target_ext = target->ext();
+	target_ext.values[ValueMindControlOriginalPlayer] = 0;
 
 	// Recurse
 	for (u32 i = 0; i < TransportCap; ++i) {
@@ -427,8 +426,8 @@ void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
 	target->remove_timer = 1 + stacks * 24 * 1;
 
 	target->give_to(player);
-	target_ext->values[ValueEmpressAnodyneAnnexStacks] = 0;
-	target_ext->values[ValueIsZombified] = true;
+	target_ext.values[ValueEmpressAnodyneAnnexStacks] = 0;
+	target_ext.values[ValueIsZombified] = true;
 
 	// Audiovisuals
 	target->sprite->create_overlay(ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
@@ -589,14 +588,14 @@ void tick_psi_storm_damage(EffectField& effect, u32 update_period, u32 tick_scal
 	}
 }
 
-void apply_lobotomy_slow(Point16 position) {
+void apply_lobotomy_slow(Point16 position, u32 timer) {
 	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
 		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
 			continue;
 		}
 		auto& victim_ext = victim->ext();
-		if (victim_ext.timers[TimerLobotomySlow] < TerranMine::LobotomyTimer) {
-			victim_ext.timers[TimerLobotomySlow] = TerranMine::LobotomyTimer;
+		if (victim_ext.timers[TimerLobotomySlow] < timer) {
+			victim_ext.timers[TimerLobotomySlow] = timer;
 		}
 	}
 }

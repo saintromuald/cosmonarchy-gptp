@@ -86,7 +86,7 @@ u32 get_splash_width_from_weapon_id(u32 weapon_id);
 u32 get_splash_height_from_weapon_id(u32 weapon_id);
 bool weapon_id_bounces_caustic_fission(u32 weapon_id);
 u32 get_death_sfx_id(u32 unit_id);
-u32 weapon_id_is_secondary(u32 weapon_id);
+u32 weapon_id_is_automatic(u32 weapon_id);
 bool unit_id_has_custom_air_weapon(u32 unit_id);
 bool weapon_id_returns_to_attacker(u32 weapon_id);
 bool weapon_id_is_incremental(u32 weapon_id);
@@ -146,11 +146,13 @@ bool match_id_to_base(UnitId::Enum match_id, UnitId::Enum baseline_id);
 bool is_triple_birth(UnitId::Enum unit_id);
 bool has_forward_march(UnitId::Enum unit_id);
 bool spreads_cagra_while_burrowed(UnitId::Enum unit_id);
+bool has_swarming_spite(UnitId::Enum unit_id);
 } // namespace UnitId
 
 namespace WeaponId {
 u32  get_custom_melee_factor(WeaponId::Enum weapon_id);
 bool weapon_splits(WeaponId::Enum weapon_id);
-bool weapon_id_bounces_binding_plasma(WeaponId::Enum weapon_id);
+bool bounces_binding_plasma(WeaponId::Enum weapon_id);
 bool can_attack_target(WeaponId::Enum weapon_id, Unit* target);
+bool bounces_power_breach(WeaponId::Enum weapon_id);
 } // namespace WeaponId

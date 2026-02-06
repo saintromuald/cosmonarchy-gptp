@@ -8,9 +8,9 @@ namespace hooks {
 	// Hooked to change order conditions and actions for custom spells. - Pr0nogo
 	s32 spell_order(s32 default_order_string, Unit* caster, u16 tech_id, s32 range, u16* energy_cost) { // 004926D0
 		Unit* order_target = caster->order_target.unit;
-		u16 meme = (u16)default_order_string;
+		u16 error_string = (u16)default_order_string;
 		if (!tech_id_has_custom_targeting(tech_id)
-		||	(order_target && hooks::can_target_spell(tech_id, order_target, UnitId::None, caster, order_target->sprite->position.x, order_target->sprite->position.y, &meme)))
+		||	(order_target && hooks::can_target_spell(tech_id, order_target, UnitId::None, caster, order_target->sprite->position.x, order_target->sprite->position.y, &error_string)))
 		{
 			u16 tech_cost = techdata_dat::energy_cost[tech_id] << 8;
 			*energy_cost = tech_cost;
@@ -82,13 +82,23 @@ namespace hooks {
 			case TechId::LuminaryAuralAssault:
 			case TechId::HypnagogueThroughTheLookingGlass:
 			case TechId::MatralethParasite:
+			case TechId::DivineDiscipline:
 			case TechId::GoskaLobotomyGrenade: {
 				return true;
 			}
-			case TechId::AskosiRematerialize: {
+			case TechId::AskosiRematerialize:
+			case TechId::AskosiRapidRendezvous:
+			case TechId::AskosiSalvage: {
 				return target && bw::are_mutual_allies(caster->player, target->player);
 			}
-			case TechId::TritonLobotomyWarhead: {
+			case TechId::AskosiHijack: {
+				if (target) {
+					return bw::are_mutual_allies(caster->player, target->player) || (bw::are_mutual_allies(caster->player, target->player) && target->is_askosi_embedded());
+				}
+				return false;
+			}
+			case TechId::TritonLobotomyWarhead:
+			case TechId::RejoinderOfService: {
 				return target != nullptr;
 			}
 			default: {
@@ -99,7 +109,7 @@ namespace hooks {
 						if (!target->is_invincible()) {
 						LABEL_20:
 							if (fow_unit_id == UnitId::None) {
-								error_stat_string = (u32)helper::get_target_unit_ability_error_stat_string(target, caster->player, tech_id);
+								error_stat_string = helper::get_tech_use_error_message(target, caster->player, tech_id);
 							} else {
 								error_stat_string = helper::can_target_spell_on_fow_unit((s32)tech_id, fow_unit_id);
 							}							
@@ -198,11 +208,8 @@ namespace hooks {
 
 		if (unit->energy < spell_cost) {
 			u8 race_id = unit->get_race();
-			char* message = (char*)g_stat_txt_tbl->get_string32(864 + race_id); // Not enough energy
-			if (message) {
-				if (g_local_nation_id == unit->player && g_active_player_id == g_local_human_id) {
-					helper::set_unit_stat_txt_error_message(message);
-				}
+			if (g_local_nation_id == unit->player && g_active_player_id == g_local_human_id) {
+				helper::set_unit_stat_txt_error_message("Not enough energy");
 			}
 			unit->order_to_idle();
 		} else {
@@ -344,26 +351,33 @@ namespace hooks {
 	bool cannot_cast_spell(Unit* unit) { // 00492140
 		u32 order_id = unit->main_order_id;
 		u32 order_weapon_id = orders_dat::order_weapon_id[order_id];
-		Unit* order_target_unit = unit->order_target.unit;
+		Unit* target = unit->order_target.unit;
 		if (unit->unit_ai) {
 			switch (order_id) {
 				// Stasis Field logic was originally also used for LobotomyGrenade (aka Magna Pulse)
+				case OrderId::LobotomyWarhead:
 				case OrderId::StasisField:
 				case OrderId::AskosiRematerialize:
-				case OrderId::LobotomyWarhead: {
-					if (!order_target_unit || order_target_unit->is_frozen()) {
+				case OrderId::AskosiRapidRendezvous:
+				case OrderId::AskosiHijack: {
+					if (!target || target->is_frozen()) {
+						return true;
+					}
+				} break;
+				case OrderId::AskosiSalvage: {
+					if (!target || target->ext().timers[TimerSalvageStun]) {
 						return true;
 					}
 				} break;
 				// Originally had Parasite code here
 				// Originally had EMP Shockwave code here
 				case OrderId::Irradiate: {
-					if (!order_target_unit || order_target_unit->irradiate_timer) {
+					if (!target || target->irradiate_timer) {
 						return true;
 					}
 				} break;
 				case OrderId::Plague: {
-					if (!order_target_unit || order_target_unit->plague_timer) {
+					if (!target || target->plague_timer) {
 						return true;
 					}
 				} break;
@@ -371,7 +385,7 @@ namespace hooks {
 			}
 		}
 		if (orders_dat::use_weapon_targeting[order_id]) {
-			return helper::can_weapon_target_unit(order_weapon_id, order_target_unit, unit) == false;
+			return helper::can_weapon_target_unit(order_weapon_id, target, unit) == false;
 		}
 		u32 tech_id = orders_dat::tech_used[order_id];
 		switch (tech_id) {
@@ -390,7 +404,13 @@ namespace hooks {
 			case TechId::Irradiate:
 			case TechId::LuminaryAuralAssault:
 			case TechId::GoskaLobotomyGrenade:
-			case TechId::AskosiRematerialize: {
+			case TechId::TritonLobotomyWarhead:
+			case TechId::DivineDiscipline:
+			case TechId::RejoinderOfService:
+			case TechId::AskosiRematerialize:
+			case TechId::AskosiRapidRendezvous:
+			case TechId::AskosiSalvage:
+			case TechId::AskosiHijack: {
 				return false;
 			} break;
 			default: {
@@ -400,10 +420,10 @@ namespace hooks {
 					u32 order_target_y = unit->order_target.pt.y;
 					can_cast_on_tile = get_active_tile_flag(order_target_y, order_target_x, 0x410000, 0);
 				} else {
-					if (!order_target_unit || order_target_unit->is_invincible()) {
+					if (!target || target->is_invincible()) {
 						return true;
 					}
-					can_cast_on_tile = (u16)helper::get_target_unit_ability_error_stat_string(order_target_unit, unit->player, tech_id) == 0;
+					can_cast_on_tile = (u16)helper::get_tech_use_error_message(target, unit->player, tech_id) == 0;
 				}
 				if (can_cast_on_tile) {
 					return false;

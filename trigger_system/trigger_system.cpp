@@ -56,6 +56,9 @@ Advisor get_advisor_type_from_config(u32 race) {
         case RaceId::Zerg: {
             advisors.insert_range(advisors.end(), g_config.zerg_advisors);
         } break;
+        case RaceId::Askosi: {
+            advisors.insert_range(advisors.end(), g_config.askosi_advisors);
+        } break;
     }
     if (advisors.size()) {
         u32 index = bw::rand_between_local(0, advisors.size() - 1);
@@ -67,6 +70,7 @@ Advisor get_advisor_type_from_config(u32 race) {
 void init_trigger_system() {
     g_trigger.init = true;
     g_trigger.game_paused = false;
+    g_action_table[47] = (ActionPointer)parse_comment_action;
     g_action_table[47] = (ActionPointer)parse_comment_action;
 
     init_auto_celebration();
@@ -123,14 +127,15 @@ static u32 unit_get_desired_sprite_id(Unit* unit) {
         } break;
         case Celebration_Christmas: {
             switch (unit->id) {
-                case UnitId::ResourceMineralField:		return SpriteId::Christmas_MineralField1;
-                case UnitId::ResourceMineralFieldType2:	return SpriteId::Christmas_MineralField2;
-                case UnitId::ResourceMineralFieldType3:	return SpriteId::Christmas_MineralField3;
-                case UnitId::TerranMinistry:			return SpriteId::Christmas_CommandCenter;
-                case UnitId::ProtossNexus:				return SpriteId::Christmas_Nexus;
-                case UnitId::ZergHachirosk:				return SpriteId::Christmas_Hachirosk;
-                case UnitId::ZergCaphrolosk:			return SpriteId::Christmas_Caphrolosk;
-                case UnitId::ZergGathtelosk:			return SpriteId::Christmas_Gathtelosk;
+                case UnitId::ResourceMineralField:		 return SpriteId::Christmas_MineralField1;
+                case UnitId::ResourceMineralFieldType2:	 return SpriteId::Christmas_MineralField2;
+                case UnitId::ResourceMineralFieldType3:	 return SpriteId::Christmas_MineralField3;
+                case UnitId::TerranMinistry:			 return SpriteId::Christmas_CommandCenter;
+                case UnitId::ProtossNexus:				 return SpriteId::Christmas_Nexus;
+                case UnitId::ZergHachirosk:				 return SpriteId::Christmas_Hachirosk;
+                case UnitId::ZergCaphrolosk:			 return SpriteId::Christmas_Caphrolosk;
+                case UnitId::ZergGathtelosk:			 return SpriteId::Christmas_Gathtelosk;
+                case UnitId::AskosiLandlock:             return SpriteId::Christmas_Landlock;
             }
         } break;
     }
@@ -145,7 +150,7 @@ static void replace_sprite(Unit* unit, u32 sprite_id) {
 
     // This shouldn't be needed, since `unit_can_change_sprite` should protect us already and avoid visual flicker
     // Unfortunately without this shitty hardcode nexus never warps
-    if (!(unit->status & UnitStatus::Completed)) {
+    if (!unit->is_completed()) {
         return;
     }
 
@@ -168,8 +173,8 @@ static void replace_sprite(Unit* unit, u32 sprite_id) {
         unit->sprite->main_graphic->free();
         unit->sprite->main_graphic = new_image;
 
-        UnitExt* unit_ext = get_unit_ext(unit);
-        unit_ext->values[ValueCustomImage] = image_id + 1;
+        auto& unit_ext = unit->ext();
+        unit_ext.values[ValueCustomImage] = image_id + 1;
     }
     helper::turn_unit(unit, direction);
 }
@@ -1153,6 +1158,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
         } else if (parser.equals("set_race")) {
             u32 player = parser.get_player();
             u32 race = parser.get_enum(race_names, ARRAY_SIZE(race_names));
+            if (race == 3) {
+                race = u32(RaceId::Askosi);
+            }
 
             if (player) {
                 player -= 1;

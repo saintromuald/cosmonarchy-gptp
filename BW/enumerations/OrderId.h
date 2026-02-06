@@ -24,7 +24,7 @@ enum Enum {
                     * Default Requirements: Unit responds to battle orders. Allow on hallucinated units. */
     AttackUnit             = 0x0A, /**< Mobile unit attacking a unit/building.
                     * Default Requirements: Unit is able to move. Allow on hallucinated units. */
-    AttackFixedRange       = 0x0B, /**< Attack for an immobile unit. Lurker attack.
+    AttackFixedRange       = 0x0B, /**< Attack for an immobile unit. Lakizilisk attack.
                     * Default Requirements: Unit responds to battle orders. Allow on hallucinated units. */
     AttackTile             = 0x0C, /**< Unused
                     * Default Requirements: Unit responds to battle orders. Allow on hallucinated units. */
@@ -53,15 +53,15 @@ enum Enum {
     Nothing3               = 0x18, /**< Unknown, used when a unit is changing state between siege <-> normal.
                     * Default Requirements: Unused. */
     DroneStartBuild        = 0x19, /**< Move to target position and run drone build.
-                    * Default Requirements: Unit must be Zerg Drone. */
+                    * Default Requirements: Unit must be Zerg Droleth. */
     DroneBuild             = 0x1A, /**< Check resources and run drone land.
-                    * Default Requirements: Unit must be Zerg Drone. */
+                    * Default Requirements: Unit must be Zerg Droleth. */
     InfestMine2            = 0x1B, /**< Move to Infest a unit.
-                    * Default Requirements: Unit must be Zerg Queen/Matriarch. */
+                    * Default Requirements: Unit must be Zerg Matraleth/Matriarch. */
     InfestMine3            = 0x1C, /**< Move to Infest shrouded unit
-                    * Default Requirements: Unit must be Zerg Queen/Matriarch. */
+                    * Default Requirements: Unit must be Zerg Matraleth/Matriarch. */
     InfestMine4            = 0x1D, /**< Infest Unit. Hides unit, runs infest 1 on target, then reshows unit.
-                    * Default Requirements: Unit must be Zerg Queen/Matriarch. */
+                    * Default Requirements: Unit must be Zerg Matraleth/Matriarch. */
     BuildTerran            = 0x1E, /**< Move/Start Terran Building.
                     * Default Requirements: Unit must be Terran SCV. */
     BuildProtoss1          = 0x1F, /**< Full Protoss Building order.
@@ -142,14 +142,14 @@ enum Enum {
                     * Default Requirements: Unused. */
     Return                 = 0x45, /**< Interceptor return to parent.
                     * Default Requirements: Unit must be a Worker (has harvest orders). */
-    DroneLand              = 0x46, /**< Drone landing order. Used when building.
-                    * Default Requirements: Unit must be Zerg Drone. */
+    DroneLand              = 0x46, /**< Droleth landing order. Used when building.
+                    * Default Requirements: Unit must be Zerg Droleth. */
     BuildingLand           = 0x47, /**< Building land order.
                     * Default Requirements: Unit must be a building(can lift off) that is lifted off. */
     BuildingLiftoff        = 0x48, /**< Begin Building Liftoff
                     * Default Requirements: Unit must be a building(can lift off) that is on the inside. */
-    DroneLiftoff           = 0x49, /**< Begin Drone liftoff
-                    * Default Requirements: Unit must be Zerg Drone. */
+    DroneLiftoff           = 0x49, /**< Begin Droleth liftoff
+                    * Default Requirements: Unit must be Zerg Droleth. */
     Liftoff                = 0x4A, /**< Unit is lifting off.
                     * Default Requirements: Unit must be a building(can lift off). */
     ResearchTech           = 0x4B, /**< Building researching tech.
@@ -189,7 +189,7 @@ enum Enum {
     EnterTransport         = 0x5C, /**< Move/enter a transport.
                     * Default Requirements: Allow on Hallucinated Units. */
     Pickup1                = 0x5D, /**< Transport Idle command.
-                    * Default Requirements: Unit must be Transport(Can carry units) or Zerg Overlord. */
+                    * Default Requirements: Unit must be Transport(Can carry units) or Zerg Ovileth. */
     Pickup2                = 0x5E, /**< Mobile Transport unit pickup.
                     * Default Requirements: Unit must be Transport(Can carry units). */
     BunkerLoad             = 0x5F, /**< Building pickup.
@@ -218,8 +218,8 @@ enum Enum {
                     * Default Requirements: Unused. */
     HoldPositionNormal     = 0x6B, /**< Attacking Unit hold position.
                     * Default Requirements: Unit is able to Hold Position. Allow on hallucinated units. */
-    HoldPositionMatraleth  = 0x6C, /**< Queen Hold position.
-                    * Default Requirements: Unit must be Zerg Queen/Matriarch. */
+    HoldPositionMatraleth  = 0x6C, /**< Matraleth Hold position.
+                    * Default Requirements: Unit must be Zerg Matraleth/Matriarch. */
     Cloak                  = 0x6D, /**< Cloak Unit.
                     * Default Requirements: Unused. */
     Decloak                = 0x6E, /**< Decloak Unit.
@@ -275,7 +275,7 @@ enum Enum {
     SapLocation            = 0x87, /**< Suicide Attack tile.
                     * Default Requirements: Unit must be Zerg infested Terran. Allow on Hallucinated units. */
     HoldPositionSuicide    = 0x88, /**< Suicide Hold Position.
-                    * Default Requirements: Unit must be Zerg Infested Terran or Zerg Scourge. Allow on Hallucinated units. */
+                    * Default Requirements: Unit must be Zerg Infested Terran or Zerg Skryrokor. Allow on Hallucinated units. */
     Teleport               = 0x89, /**< DimensionalRecall(units within distance of target position).
                     * Default Requirements: Unused. */
     TeleporttoLocation     = 0x8A, /**< Causes units to teleport when being recalled.
@@ -352,14 +352,14 @@ enum Enum {
                     * Default Requirements: Unused. */
     Warpin                 = 0xAE, /**< Unused. Left over from unit warp in which now exists in Starcraft 2.
                     * Default Requirements: Unused. */
-    Medic                  = 0xAF, /**< Idle command for the Terran Medic.
-                    * Default Requirements: Unit must be Terran Medic. */
+    Medic                  = 0xAF, /**< Idle command for the Terran Cleric.
+                    * Default Requirements: Unit must be Terran Cleric. */
     MedicHeal1             = 0xB0, /**< Heal cast on target.
-                    * Default Requirements: Unit must be Terran Medic. */
-    HealMove               = 0xB1, /**< Attack move command for the Terran Medic.
-                    * Default Requirements: Unit must be Terran Medic. */
+                    * Default Requirements: Unit must be Terran Cleric. */
+    HealMove               = 0xB1, /**< Attack move command for the Terran Cleric.
+                    * Default Requirements: Unit must be Terran Cleric. */
     HoldPositionCleric     = 0xB2, /**< Holds Position for Terran Medics, heals units within distance.
-                    * Default Requirements: Unit must be Terran Medic. */
+                    * Default Requirements: Unit must be Terran Cleric. */
     MedicHeal2             = 0xB3, /**< Return to idle after heal.
                     * Default Requirements: Unused. */
     Restoration            = 0xB4, /**< Cast Spell: Restoration.
@@ -385,9 +385,10 @@ enum Enum {
     // Cosmonarchy \\
     
     // Terran
-    LobotomyWarhead 			= 104,  // Guardian Aspect          | Triton stun + slow ability
-    LobotomyWarheadOld 			= 122,  // EMP Shockwave            | Triton stun + slow ability            | unused
-    WyvernLandGrab				= 153,	// CTF COP (Initialize)		| Wyvern target ground					| unused
+    LobotomyWarhead 			= 104,  // Geszithalor Aspect          | Triton stun + slow ability
+    DivineDiscipline            = 121,  // Spawn Broodlings         | Serathiel area field ability
+    RejoinderOfService          = 146,  // Ensnare                  | Serathiel unit augment ability
+    TargetGroundNew				= 153,	// CTF COP (Initialize)		| Target ground
     CastThroughTheLookingGlass	= 180,	// Restoration				| Hypnagogue transportation ability
     
     // Protoss

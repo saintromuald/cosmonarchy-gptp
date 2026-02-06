@@ -350,6 +350,7 @@ static KiterType get_kiter_type(u32 unit_id) {
         case UnitId::ProtossUnar:
         case UnitId::ProtossArchitect:
         case UnitId::ProtossSolarion:
+        case UnitId::ZergZethalor:
         case UnitId::ZergProtathalor:
         case UnitId::ZergHydraliskOrkoti:
         case UnitId::ZergBactalisk:

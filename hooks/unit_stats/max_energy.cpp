@@ -7,9 +7,15 @@ namespace hooks {
 	u16 get_unit_max_energy(Unit* const unit) { // 00491870 
 		u32 energy = 200;
 		switch (unit->id) {
+			case UnitId::AskosiEyelet:
+			case UnitId::AskosiVicar: {
+				energy = 50;
+			} break;
 			case UnitId::TerranPietyWard:
 			case UnitId::TerranPhobos:
-			case UnitId::TerranFacade: {
+			case UnitId::TerranFacade:
+			case UnitId::AskosiCardinal:
+			case UnitId::AskosiRove: {
 				energy = 100;
 			} break;
 			case UnitId::TerranAncile:
@@ -25,6 +31,7 @@ namespace hooks {
 			case UnitId::TerranTriton: {
 				energy = 175;
 			} break;
+			case UnitId::TerranSerathiel:
 			case UnitId::ProtossMindTyrant: {
 				energy = 200;
 			} break;

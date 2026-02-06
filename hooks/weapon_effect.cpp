@@ -164,8 +164,8 @@ namespace hooks {
 			} else if (splash == SplashType::FriendlyNew) {
 				bool lakizilisk_override = false;
 				if (bullet->source_unit) {
-					UnitExt* bullet_source_ext = get_unit_ext(bullet->source_unit);
-					if ((Unit*)bullet_source_ext->values[ValueMissileReturnTarget] == target) {
+					auto& bullet_source_ext = bullet->source_unit->ext();
+					if ((Unit*)bullet_source_ext.values[ValueMissileReturnTarget] == target) {
 						lakizilisk_override = true;
 					}
 				}
@@ -285,6 +285,9 @@ namespace hooks {
 				if (bullet) {
 					if (bullet->source_unit && weapon_id_bounces_caustic_fission(bullet->weapon_id)) {
 						divisor = 1;
+					} else if (WeaponId::bounces_power_breach(static_cast<WeaponId::Enum>(bullet->weapon_id))) {
+						const s32 bounce_count = 4;
+						divisor = bounce_count - bullet->remaining_bounces;
 					} else {
 						const s32 bounce_count = 2;
 						divisor = bounce_count - bullet->remaining_bounces;

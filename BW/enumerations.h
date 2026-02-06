@@ -247,14 +247,14 @@ enum class LobbyTextColor : u8 {
 
 namespace RaceId {
 enum Enum : u8 {
-    Zerg       = 0,
-    Terran     = 1,
-    Protoss    = 2,
-    Other      = 3,  // also called Independent
-    Neutral    = 4,
-    UserSelect = 5,
-    Random     = 6,
-    None       = 7,  // also called Inactive
+    Zerg        = 0,
+    Terran      = 1,
+    Protoss     = 2,
+    Other       = 3,  // also called Independent
+    Neutral     = 4,
+    UserSelect  = 5,
+    Random      = 6,
+    None        = 7,  // also called Inactive
 
     Askosi      = 69,
     Bloodsummon = 70,
@@ -511,16 +511,16 @@ enum Enum {
 // Use with weapons_dat::explosion_type[]
 namespace WeaponEffect {
 enum Enum {
-    None                 = 0,
-    NormalHit            = 1,
-    SplashRadial         = 2,
-    SplashEnemy          = 3,
-    Lockdown             = 4,
-    NuclearMissile       = 5,
-    Parasite             = 6,
-    Broodlings           = 7,
-    EMPShockwave         = 8,
-    Irradiate            = 9,
+    None                 =  0,
+    NormalHit            =  1,
+    SplashRadial         =  2,
+    SplashEnemy          =  3,
+    Lockdown             =  4,
+    NuclearMissile       =  5,
+    Parasite             =  6,
+    Broodlings           =  7,
+    EMPShockwave         =  8,
+    Irradiate            =  9,
     Ensnare              = 10,
     Plague               = 11,
     StasisField          = 12,
@@ -1207,8 +1207,8 @@ enum AiBuildOrder { // dark_swarm_unit
 };
 
 enum UnitResponseContext {
-    URC_Normal = 0,
-    URC_Target = 1,
+    URC_Normal  = 0,
+    URC_Target  = 1,
     URC_OrderId = 2,
 };
 
@@ -1400,7 +1400,7 @@ enum GameCommand : u8 {
 enum UserActionFlags {
     UserActionFlags_IscriptGoToIdle = 0x1, // after NoBrkCodeEnd, test at 0x00475403
     UserActionFlags_UMStartPath     = 0x2, // test at 0x0046BDAD
-    UserActionFlags_SilentRemove        = 0x4, // remove unit, test at 0x00479487
+    UserActionFlags_SilentRemove    = 0x4, // remove unit, test at 0x00479487
 };
 
 enum PathingFlags {
@@ -1494,7 +1494,6 @@ enum AdvisorEvent {
     AdvisorEvent_Assembly          = 25,
     AdvisorEvent_Ritual            = 26,
     AdvisorEvent_Arena             = 27,
-
 };
 
 enum AdvisorMessageId {

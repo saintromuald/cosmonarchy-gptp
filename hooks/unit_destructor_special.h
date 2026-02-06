@@ -5,5 +5,5 @@ void unit_on_death_behaviors(Unit* unit);
 Thingy* iscript_create_sprite(Image* image, u16 id, u32 x, u32 y, s8 elevation); // 004D7120
 
 namespace hooks {
-	void inject_unit_destructor_special_hooks();
+void inject_unit_destructor_special_hooks();
 }

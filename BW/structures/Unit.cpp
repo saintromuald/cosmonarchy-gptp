@@ -211,13 +211,12 @@ RaceId::Enum Unit::get_race() const {
 // Based on function at 0x0047B150
 RaceId::Enum Unit::get_race(u16 unit_id) {
     assert(unit_id < UnitsIdLimit);
-
     if (units_dat::group_flags[unit_id].is_zerg) {
         return RaceId::Zerg;
     } else if (units_dat::group_flags[unit_id].is_protoss) {
         return RaceId::Protoss;
     } else if (units_dat::group_flags[unit_id].is_terran) {
-        return RaceId::Terran;
+        return UnitId::is_askosi(static_cast<UnitId::Enum>(unit_id)) ? RaceId::Askosi : RaceId::Terran;
     } else {
         return RaceId::Neutral;
     }
@@ -810,16 +809,16 @@ void Unit::order_computer(u8 order_id) {
 }
 
 // Equivalent to 00474D60 __order function
-void Unit::order_simple(u8 order_id, bool stopPreviousOrders) {
-    this->order(order_id, 0, 0, 0, UnitId::None, stopPreviousOrders);
+void Unit::order_simple(u8 order_id, bool stop_previous_orders) {
+    this->order(order_id, 0, 0, 0, UnitId::None, stop_previous_orders);
 }
 
 // Equivalent to 00474D10 issue_queued_order_target function
-void Unit::issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviousOrders) {
+void Unit::issue_queued_order_target(u8 order_id, Unit* target, bool stop_previous_orders) {
     if (!target) {
-        this->order(order_id, 0, 0, 0, UnitId::None, stopPreviousOrders);
+        this->order(order_id, 0, 0, 0, UnitId::None, stop_previous_orders);
     } else {
-        this->order(order_id, target->sprite->position.x, target->sprite->position.y, target, UnitId::None, stopPreviousOrders);
+        this->order(order_id, target->sprite->position.x, target->sprite->position.y, target, UnitId::None, stop_previous_orders);
     }
 }
 
@@ -1481,7 +1480,7 @@ f32 Unit::total_cost() {
 
 u32 Unit::standard_sprite_id() {
     if (this->id == UnitId::TerranBlackjack || this->id == UnitId::TerranBlackjackGolden) {
-        UnitExt& unit_ext = this->ext();
+        auto& unit_ext = this->ext();
         if (unit_ext.values[ValueWearAndTear]) {
             return this->id == UnitId::TerranBlackjack ? SpriteId::TerranBlackjackDamaged : SpriteId::TerranBlackjackGoldenDamaged;
         } else {
@@ -1674,7 +1673,7 @@ bool Unit::can_be_passive_cloaked(Unit* source) {
 }
 
 bool Unit::can_transport_air() {
-    return this->ext().values[ValueAirTransport];
+    return this->ext().values[ValueAirTransport] || this->id == UnitId::AskosiGrandstandHoldout;
 }
 
 bool Unit::can_play_training_sfx() {
@@ -1782,6 +1781,9 @@ void Unit::play_completion_sfx() {
         case RaceId::Protoss: {
             sound_id = static_cast<SoundId::Enum>(bw::rand_between(SoundId::ProtossUnitDeployment01, SoundId::ProtossUnitDeployment04));
         } break;
+        case RaceId::Askosi: {
+            sound_id = SoundId::AskosiUnitDeployment01;
+        } break;
     }
     bw::play_sound(sound_id, this);
 }
@@ -1835,18 +1837,22 @@ bool Unit::is_constructor() {
     return this->is_worker() || this->id == UnitId::TerranOgunWorkerMode || this->id == UnitId::AskosiDyad;
 }
 
-void Unit::pull_towards(Unit* source) {
-    auto& unit_ext = this->ext();
-    Point16 target_pos = source->position;
-    if (this->position != target_pos && !this->is_burrowed()) {
-        Point16 final_pos = this->position;
-        final_pos.x += unit_ext.repulsion_vector.x;
-        final_pos.y += unit_ext.repulsion_vector.y;
-        final_pos = bw::clamp_point(final_pos);
+bool Unit::is_askosi_embedded() {
+    return this->ext().values[ValueReassemblyActive];
+}
 
-        if (!bw::move_unit_improved(this, final_pos.x, final_pos.y) && unit_ext.timers[TimerPullTowards]) {
-            unit_ext.timers[TimerPullTowards] = 0;
-        }
+void Unit::pull_towards(Unit* source) {
+    auto& pull_ext = this->ext();
+    pull_ext.units[UnitPullTowardsSource] = source;
+    const u32 displacement_time = 5;
+    Vec32 diff = bw::vec_between(source->sprite->position, this->sprite->position);
+    if (bw::vec_length(diff) > 12) {
+        Vec32f displacement = bw::normalize(diff);
+        displacement.x *= -1 * 32.0 / displacement_time;
+        displacement.y *= -1 * 32.0 / displacement_time;
+        pull_ext.timers[TimerPullTowards] = displacement_time;
+        pull_ext.repulsion_vector = displacement;
+        pull_ext.pull_pos = source->position;
     }
 }
 
@@ -1860,16 +1866,15 @@ void Unit::tick_burrowed_cagra_spread() {
     }
 }
 
-void Unit::booming_blast_proc() {
+void Unit::booming_blast_proc(bool damage_self) {
     auto& unit_ext = this->ext();
     u32 attacking_player = unit_ext.values[ValueBoomingBlastPlayer];
     unit_ext.values[ValueBoomingBlastPlayer] = 0;
     unit_ext.timers[TimerBoomingBlast] = 0;
-    this->damage_with(WeaponId::BoomingBlast, -1, 0, attacking_player);
+    if (damage_self) {
+        this->damage_with(WeaponId::BoomingBlast, -1, 0, attacking_player);
+    }
     for (Unit* nearby : g_unit_search.radial_ex(this, 2 * 32, FilterNotSelf)) {
-        if (bw::are_mutual_allies(attacking_player, nearby->player)) {
-            continue;
-        }
         nearby->damage_with(WeaponId::BoomingBlast, -1, 0, attacking_player);
         nearby->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel); // TODO: Own visuals
     }
@@ -1888,4 +1893,8 @@ bool Unit::is_valid_garrison() {
     if (this->id == UnitId::ZergScrylyleth && !this->is_burrowed()) {
         return false;
     }
+    if (this->id == UnitId::AskosiPetract && !this->ext().values[ValueReassemblyActive]) {
+        return false;
+    }
+    return true;
 }

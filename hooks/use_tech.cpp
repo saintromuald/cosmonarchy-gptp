@@ -73,9 +73,8 @@ namespace hooks {
                 tech_capable_unit = true;
             }
             if (!tech_capable_unit) {
-                const char* message = g_stat_txt_tbl->get_string32(864);
                 Unit* portrait_unit = players_selections->unit[*g_active_nation_id][0];
-                helper::get_stat_txt_string(*g_active_portrait_unit, (*g_active_portrait_unit)->player, message);
+                helper::get_stat_txt_string(*g_active_portrait_unit, (*g_active_portrait_unit)->player, "Not enough energy");
                 return;
             }
         }
@@ -117,6 +116,9 @@ namespace hooks {
             case TechId::AskosiRapidRendezvous: {
                 helper::issue_tri_target_order(OrderId::AskosiRapidRendezvous, 0, 0);
             } break;
+            case TechId::AskosiHijack: {
+                helper::issue_tri_target_order(OrderId::AskosiHijack, 0, 0);
+            } break;
             case TechId::DefensiveMatrix: {
                 helper::issue_tri_target_order(OrderId::DefensiveMatrix, 0, 0);
             } break;
@@ -135,13 +137,16 @@ namespace hooks {
                 helper::issue_tri_target_order(OrderId::Consume, 0, 0);
             } break;
             case TechId::TargetGround: {
-                helper::issue_tri_target_order(OrderId::WyvernLandGrab, 0, 0);
+                helper::issue_tri_target_order(OrderId::TargetGroundNew, 0, 0);
             } break;
             case TechId::MatralethParasite: {
                 helper::issue_tri_target_order(OrderId::CastParasite, 0, 0);
             } break;
-            case TechId::Infestation: {
-                helper::issue_tri_target_order(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
+            case TechId::DivineDiscipline: {
+                helper::issue_tri_target_order(OrderId::DivineDiscipline, 0, 0);
+            } break;
+            case TechId::RejoinderOfService: {
+                helper::issue_tri_target_order(OrderId::RejoinderOfService, 0, 0);
             } break;
             case TechId::ZergBlissfulEmbrace: {
                 helper::issue_tri_target_order(OrderId::BlissfulEmbrace, 0, 0);
@@ -210,6 +215,9 @@ namespace hooks {
             } break;
             case TechId::LarvalSubmenuSelectControl: {
                 select_larva_type(UnitId::Buttons_LarvaControl, UnitId::Buttons_OcsalLarvaControl);
+            } break;
+            case TechId::AskosiSalvage: {
+                helper::issue_tri_target_order(OrderId::AskosiSalvage, 0, 0);
             } break;
             case TechId::StroluumSkryspawn: {
                 queue_generic_ability_simple();

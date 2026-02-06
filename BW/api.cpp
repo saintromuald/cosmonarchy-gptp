@@ -264,7 +264,7 @@ bool can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker) {
 
     const TargetFlag target_flags = weapons_dat::target_flags[weapon_id];
     const u32 targetProps = units_dat::base_property[target->id];
-    if (target->status & UnitStatus::InAir ? !target_flags.air : !target_flags.ground) {
+    if (target->is_in_air() ? !target_flags.air : !target_flags.ground) {
         return false;
     }
     if (target_flags.mechanical && !(targetProps & UnitProperty::Mechanical)) {
@@ -571,8 +571,10 @@ bool is_conventional_unit_morph_result(u16 id) {
     switch (id) {
         case UnitId::ZergGosvileth:
         case UnitId::ZergIroleth:
+        case UnitId::ZergScrylyleth:
         case UnitId::ZergVorvrokor:
         case UnitId::ZergGarvrokor:
+        case UnitId::ZergZethalor:
         case UnitId::ZergLiiralisk:
         case UnitId::ZergKalkalisk:
         case UnitId::ZergSovroleth:
@@ -1353,12 +1355,13 @@ UnitId::Enum get_trap_id(Unit* unit) {
         case UnitId::TerranClericFuturist: return UnitId::TerranPietyWard;
         case UnitId::TerranVulture:        return UnitId::TerranLobotomyMine;
         case UnitId::TerranVultureHecaton: return UnitId::TerranTartarusMine;
+        case UnitId::AskosiProselyte:      return UnitId::AskosiEyelet;
     }
     return UnitId::None;
 }
 
 bool unit_is_ranged_attacker(Unit* unit) {
-    if (unit->connected_unit && unit->connected_unit->is_in_air()) {
+    if (unit->connected_unit && unit->connected_unit->is_in_air() && !unit->connected_unit->is_valid_garrison()) {
         return false;
     }
 
@@ -1478,29 +1481,24 @@ bool unit_id_is_available_without_an_addon(u16 id) {
 }
 
 void apply_hallucinating(Unit* unit, u8 player, u32 time) {
-    UnitExt* unit_ext = get_unit_ext(unit);
+    auto& unit_ext = unit->ext();
 
     Unit* context = unit->subunit ? unit->subunit : unit;
     if (!context->get_overlay(ImageId::HallucinationHit)) {
-        // Overlay
         context->sprite->create_overlay(ImageId::HallucinationHit, 0, 0, 0);
-
-        // Sound
-        if (!unit_ext->timers[TimerHallucinating]) {
+        if (!unit_ext.timers[TimerHallucinating]) {
             helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit, 1, 0);
         } else {
             helper::play_sound_from_unit(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit, 1, 0);
         }
     }
-
-    // Value
-    if (unit_ext->timers[TimerHallucinating] < time) {
-        unit_ext->timers[TimerHallucinating] = time;
+    if (unit_ext.timers[TimerHallucinating] < time) {
+        unit_ext.timers[TimerHallucinating] = time;
     }
 }
 
 bool can_be_entered_by(Unit* transport, Unit* unit) {
-    const u32 func_address = 0x004E6E00; // AKA CanEnterTransport()
+    const u32 func_address = 0x004E6E00;
     static u32 result;
     __asm {
         PUSHAD
@@ -1996,6 +1994,7 @@ AiScript* run_default_ai(u32 player, Point16 pos) {
         case RaceId::Terran:	bw::printf("Running Terran AI for player %u", player + 1);  return bw::run_ai(player, pos, 'xCMT');
         case RaceId::Protoss:	bw::printf("Running Protoss AI for player %u", player + 1); return bw::run_ai(player, pos, 'xCMP');
         case RaceId::Zerg:		bw::printf("Running Zerg AI for player %u", player + 1);    return bw::run_ai(player, pos, 'xCMZ');
+        case RaceId::Askosi:	bw::printf("Running Terran (Askosi) AI for player %u", player + 1);  return bw::run_ai(player, pos, 'xCMT');
     }
     return 0;
 }
@@ -2120,6 +2119,7 @@ u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, b
         // Unit Morphs
         case UnitId::ZergGosvileth:				return UnitId::ZergDroleth;
         case UnitId::ZergVorvrokor:				return UnitId::ZergZethrokor;
+        case UnitId::ZergZethalor:				return UnitId::ZergZethrokor;
         case UnitId::ZergGarvrokor:				return UnitId::ZergSovrokor;
         case UnitId::ZergGhitorokor:			return UnitId::ZergCikralisk;
         case UnitId::ZergSovroleth:				return UnitId::ZergProtathalor;
@@ -2135,7 +2135,6 @@ u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, b
         case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
         case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
 
-        // Imagine, eventually we will have everything using this...  -Pr0nogo
         case UnitId::ZergIroleth:
         case UnitId::ZergLiiralisk:
         case UnitId::ZergKalkalisk:
@@ -2512,7 +2511,10 @@ GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position) {
 u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
     switch (weapon_id) {
         case WeaponId::KethrostalorStaggeredSpores: {
-            return unit->id == UnitId::ZergZethalor ? 1 : 5;
+            return unit->id == UnitId::ZergKethrostalor ? 5 : 1;
+        }
+        case WeaponId::CrematoriumOkliQuadshard: {
+            return unit->id == UnitId::AskosiCrematorium ? 4 : 1;
         }
         case WeaponId::HotshotDispatchShotgun:
         case WeaponId::SirenCharybdalRifle: {
@@ -2528,7 +2530,6 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
         case WeaponId::SundogBlindsideRockets:
         case WeaponId::CohortGaussPistols:
         case WeaponId::ZealotPhaseBlades:
-        case WeaponId::CicatusPhaseClaws:
         case WeaponId::AmaranthPsiCleaver:
         case WeaponId::GolemBloodlessAssault:
         case WeaponId::IdolPrismaticBlaster:
@@ -2541,7 +2542,9 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
         case WeaponId::MortothrokorWickedIncisors:
         case WeaponId::KagraliskRepeatingVenom:
         case WeaponId::AlmaksaliskPiercingSpines:
-        case WeaponId::KeskathalorScreamingVenom: {
+        case WeaponId::KeskathalorScreamingVenom:
+        case WeaponId::MissionaryAruoTwinshot:
+        case WeaponId::VicarOspoTwinshard: {
             return 2;
         }
         case WeaponId::StarSovereignInterventionMissiles: {
@@ -2670,7 +2673,7 @@ std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference
 }
 
 bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, const BindingPlasmaOptions& options) {
-    UnitExt& victim_ext = victim->ext();
+    auto& victim_ext = victim->ext();
     u32 player = victim_ext.values[options.player_value_id];
     const auto targets = binding_plasma_find_targets(victim->position, victim, player, victim_ext.values[options.stack_value_id]);
     if (targets.empty()) {
@@ -3387,6 +3390,9 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                 case RaceId::Zerg: {
                     advisor = Advisor::Zerg;
                 } break;
+                case RaceId::Askosi: {
+                    advisor = Advisor::Askosi;
+                } break;
             }
         }
 
@@ -3776,6 +3782,7 @@ u32 get_advisor_sound_from_message_id(u32 player, u32 message_id) {
                 case RaceId::Terran:  return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
                 case RaceId::Protoss: return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildProtoss);
                 case RaceId::Zerg:    return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildZerg);
+                case RaceId::Askosi:  return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
             }
             return bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoBuildTerran);
         } break;
@@ -3886,6 +3893,7 @@ u32 get_cloak_sound_id(Unit* unit) {
     switch (unit->get_race()) {
         case RaceId::Terran:  return SoundId::CloakTerranOn;
         case RaceId::Protoss: return SoundId::Terran_PHOENIX_TPhClo00_WAV;
+        case RaceId::Askosi:  return SoundId::CloakTerranOn;
     }
     return SoundId::Terran_PHOENIX_TPhClo00_WAV;
 }
@@ -3897,6 +3905,7 @@ u32 get_decloak_sound_id(Unit* unit) {
     switch (unit->get_race()) {
         case RaceId::Terran:  return SoundId::CloakTerranOff;
         case RaceId::Protoss: return SoundId::Terran_PHOENIX_TPhClo01_WAV;
+        case RaceId::Askosi:  return SoundId::CloakTerranOff;
     }
     return SoundId::Terran_PHOENIX_TPhClo01_WAV;
 }
@@ -4068,16 +4077,29 @@ u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id) {
     switch (unit->id) {
         case UnitId::TerranSavantEntropyGauntlets: return bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
         case UnitId::TerranSavantPowerSiphon:      return bw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
+
+        // @TOOD: Extend weapons and remove these
+        case UnitId::ProtossZealot:                return SoundId::ZealotWeaponhit01;
+        case UnitId::ProtossZealotStarbound:       return SoundId::ZealotStarboundWeaponhit01;
+        case UnitId::ProtossCicatus:               return bw::rand_between(SoundId::CicatusWeaponfire01, SoundId::CicatusWeaponfire03);
+        case UnitId::ProtossEcclesiast:	           return bw::rand_between(SoundId::EcclesiastWeaponfire01, SoundId::EcclesiastWeaponfire04);
+        case UnitId::ProtossEcclesiastKhalendric:  return bw::rand_between(SoundId::EcclesiastKhalendricWeaponfire01, SoundId::EcclesiastKhalendricWeaponfire03);
         case UnitId::ProtossManifold:              return bw::rand_between(SoundId::ManifoldWeaponfire01, SoundId::ManifoldWeaponfire03);
         case UnitId::ProtossManifoldStarbound:     return bw::rand_between(SoundId::ManifoldStarboundWeaponfire01, SoundId::ManifoldStarboundWeaponfire04);
+        case UnitId::AskosiAvatar:                 return bw::rand_between(SoundId::AvatarWeaponfire01, SoundId::AvatarWeaponfire03);
+        case UnitId::AskosiIntendent:              return bw::rand_between(SoundId::IntendentWeaponfireA01, SoundId::IntendentWeaponfireA03);
+        case UnitId::AskosiAgonist:                return bw::rand_between(SoundId::AgonistWeaponfire01, SoundId::AgonistWeaponfire03);
+        case UnitId::AskosiPhontis:                return bw::rand_between(SoundId::PhontisWeaponfire01, SoundId::PhontisWeaponfire03);
+        case UnitId::AskosiAkreno:                 return bw::rand_between(SoundId::AkrenoWeaponfire01, SoundId::AkrenoWeaponfire03);
+        case UnitId::AskosiCrematorium:            return bw::rand_between(SoundId::CrematoriumWeaponfire01, SoundId::CrematoriumWeaponfire03);
     }
     if (!sound_id) {
-        sound_id = get_weapon_fire_sound(weapon_id);
+        sound_id = get_weapon_fire_sound(weapon_id, unit);
     }
     return sound_id;
 }
 
-u32 get_weapon_fire_sound(u32 weapon_id) {
+u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit) {
     switch (weapon_id) {
         case WeaponId::MaverickGaussRifle:                  return SoundId::Bullet_TMaFir00_wav;
         case WeaponId::MaverickFuturistGaussSlugger:        return bw::rand_between(SoundId::MaverickFuturistWeaponfire01, SoundId::MaverickFuturistWeaponfire03);
@@ -4094,12 +4116,7 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::ValkyrieHecatonLogiRockets:          return bw::rand_between(SoundId::ValkyrieHecatonWeaponfire01, SoundId::ValkyrieHecatonWeaponfire04);
         case WeaponId::QuadrigaGodhandRockets:              return SoundId::Bullet_Tfrshoot_wav;
 
-        case WeaponId::ZealotPhaseBlades:	                return SoundId::ZealotWeaponhit01;
-        case WeaponId::ZealotStarboundPhaseBlades:          return SoundId::ZealotStarboundWeaponhit01;
-        case WeaponId::EcclesiastAstralBlaster:	            return bw::rand_between(SoundId::EcclesiastWeaponfire01, SoundId::EcclesiastWeaponfire04);
-        case WeaponId::EcclesiastKhalendricAvengingBlaster:	return bw::rand_between(SoundId::EcclesiastKhalendricWeaponfire01, SoundId::EcclesiastKhalendricWeaponfire03);
         case WeaponId::LegionnairePhaseSpear:	            return SoundId::LegionnaireWeaponfire01;
-        case WeaponId::CicatusPhaseClaws:	                return bw::rand_between(SoundId::CicatusWeaponfire01, SoundId::CicatusWeaponfire03);
         case WeaponId::HierophantPhaseSignifier:	        return bw::rand_between(SoundId::HierophantWeaponfire01, SoundId::HierophantWeaponfire02);
         case WeaponId::AshguardPhaseCremator:	            return bw::rand_between(SoundId::AshguardWeaponfire01, SoundId::AshguardWeaponfire05);
         case WeaponId::CharlatanFerventBlaster:	            return bw::rand_between(SoundId::CharlatanWeaponfire01, SoundId::CharlatanWeaponfire03);
@@ -4117,12 +4134,23 @@ u32 get_weapon_fire_sound(u32 weapon_id) {
         case WeaponId::HydraliskOrkotiNeedleSpores:         return bw::rand_between(SoundId::HydraliskOrkotiWeaponfire01, SoundId::HydraliskOrkotiWeaponfire03);
         case WeaponId::KethrostalorStaggeredSpores:         return bw::rand_between(SoundId::KethrostalorWeaponfire01, SoundId::KethrostalorWeaponfire03);
 
+        case WeaponId::GrandstandArteDriver:                return bw::rand_between(SoundId::GrandstandWeaponfire01, SoundId::GrandstandWeaponfire03);
+        case WeaponId::PilgrimMiningSaber:                  return bw::rand_between(SoundId::PilgrimWeaponfire01, SoundId::PilgrimWeaponfire04);
+        case WeaponId::ProselyteDispatchPistols:            return bw::rand_between(SoundId::ProselyteWeaponfire01, SoundId::ProselyteWeaponfire04);
+        case WeaponId::MissionaryAruoTwinshot:              return bw::rand_between(SoundId::MissionaryWeaponfire01, SoundId::MissionaryWeaponfire03);
+        case WeaponId::VicarOspoTwinshard:                  return bw::rand_between(SoundId::VicarWeaponfire01, SoundId::VicarWeaponfire03);
+        case WeaponId::AphoristAnsaSunshot:                 return bw::rand_between(SoundId::AphoristWeaponfire01, SoundId::AphoristWeaponfire03);
+        case WeaponId::ThaumalogueUtsoCarbine:              return bw::rand_between(SoundId::ThaumalogueWeaponfire01, SoundId::ThaumalogueWeaponfire03);
+        case WeaponId::RoveElreScaleshot:                   return bw::rand_between(SoundId::RoveWeaponfire01, SoundId::RoveWeaponfire03);
+        case WeaponId::IntendentErsaDriver:                 return bw::rand_between(SoundId::IntendentWeaponfireA01, SoundId::IntendentWeaponfireA03);
+        case WeaponId::TiradeIktaDriver:                    return bw::rand_between(SoundId::TiradeWeaponfire01, SoundId::TiradeWeaponfire03);
+
         case WeaponId::SmoochieBoyKissingEmoji:             return bw::rand_between(SoundId::SmoochieBoyWeaponfire01, SoundId::SmoochieBoyWeaponfire03);
     }
     return SoundId::None;
 }
 
-u32 get_weapon_hit_sound(WeaponId::Enum weapon_id) {
+u32 get_weapon_hit_sound(WeaponId::Enum weapon_id, Unit* unit) {
     switch (weapon_id) {
         case WeaponId::EidolonCoronerRifle:               return bw::rand_between(SoundId::EidolonWeaponhit01, SoundId::EidolonWeaponhit03);
         case WeaponId::AutocratEminenceRifle:             return SoundId::Bullet_LASRHIT3_wav;
@@ -4169,23 +4197,32 @@ u32 get_weapon_hit_sound(WeaponId::Enum weapon_id) {
         case WeaponId::SpraithCesiantSeekerSpores:        return bw::rand_between(SoundId::SpraithCesiantWeaponhit01, SoundId::SpraithCesiantWeaponhit02);
         case WeaponId::SpirtithCesiantSpirtilSpores:      return bw::rand_between(SoundId::SpirtithWeaponhit01, SoundId::SpirtithWeaponhit02);
 
+        case WeaponId::AphoristAnsaSunshot:               return bw::rand_between(SoundId::AphoristWeaponhit01, SoundId::AphoristWeaponhit03);
+
         case WeaponId::SmoochieBoyKissingEmoji:           return bw::rand_between(SoundId::SmoochieBoyWeaponhit01, SoundId::SmoochieBoyWeaponhit04);
     }
     return SoundId::None;
 }
 
 bool unit_regenerates_hp(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
+    auto& unit_ext = unit->ext();
     return units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP
-        || unit_ext->values[ValueInfested]
-        || unit_ext->timers[TimerNathreliskMitosalFog];
+        || unit_ext.values[ValueInfested]
+        || unit_ext.timers[TimerNathreliskMitosalFog]
+        || unit_ext.timers[TimerImpactDissipation];
 }
 
 u32 get_regeneration_factor(Unit* unit) {
     u32 factor = 0;
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->timers[TimerNathreliskMitosalFog]) {
+    auto& unit_ext = unit->ext();
+    if (unit_ext.timers[TimerNathreliskMitosalFog]) {
         factor += 2;
+    }
+    if (unit_ext.timers[TimerImpactDissipation]) {
+        factor += 4;
+    }
+    if (unit->id == UnitId::ZergMalkothrokor && unit->is_burrowed()) {
+        factor += 3;
     }
     return factor;
 }
@@ -4371,6 +4408,11 @@ bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id) {
         case UnitId::ZergMatraleth:
             return false;
 
+        case UnitId::AskosiConstituent:
+        case UnitId::AskosiEmissary:
+        case UnitId::AskosiInkblot:
+            return false;
+
         // Disable Useless Production
         case UnitId::TerranRotary:
         case UnitId::TerranHadron:
@@ -4408,13 +4450,13 @@ void zap_overlay(Unit* unit) {
 }
 
 void play_manual_weaponfire_sound(Unit* unit, WeaponId::Enum weapon_id) {
-    if (const auto sound_id = bw::get_weapon_fire_sound(weapon_id)) {
+    if (const auto sound_id = bw::get_weapon_fire_sound(weapon_id, unit)) {
         bw::play_sound(sound_id, unit->position);
     }
 }
 
 void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id) {
-    if (const auto sound_id = bw::get_weapon_hit_sound(weapon_id)) {
+    if (const auto sound_id = bw::get_weapon_hit_sound(weapon_id, unit)) {
         bw::play_sound(sound_id, unit->position);
     }
 }

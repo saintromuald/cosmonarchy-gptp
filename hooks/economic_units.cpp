@@ -51,32 +51,23 @@ namespace hooks {
 		return false;
 	}
 
+	// worker is not used originally in regards of supply, but may be required for custom race support. -iquare
 	bool is_terran_supply(u16 unit_id, Unit* worker) {
-		// worker is not used originally in regards of supply, but may be required for custom race support
 		if (unit_id == UnitId::TerranSupplyDepot) {
 			return true;
 		}
 		return false;
 	}
 
+	// player is not used originally but may be required for custom race support. -iquare
 	u32 get_supply_structure_from_race(u32 race, u8 player) {
-		u32 id = 0xe4;
-		// player is not used originally but may be required for custom race support
+		u32 id = UnitId::None;
 		switch (race) {
-			case RaceId::Terran:
-				id = UnitId::TerranSupplyDepot;
-				break;
-			case RaceId::Protoss:
-				id = UnitId::ProtossPylon;
-				break;
-			case RaceId::Zerg:
-				id = UnitId::ZergOvileth;
-				break;
-			default:
-				id = UnitId::ZergOvileth;
-				break;
+			case RaceId::Terran:  return id = UnitId::TerranSupplyDepot;
+			case RaceId::Protoss: return id = UnitId::ProtossPylon;
+			case RaceId::Zerg:    return id = UnitId::ZergOvileth;
+			default:			  return id = UnitId::ZergOvileth;
 		}
-		return id;
 	}
 
 	// Returns town race judging by main town, first checks if it has buildings assigned

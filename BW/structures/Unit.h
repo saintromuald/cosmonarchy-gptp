@@ -54,7 +54,7 @@ struct Unit : public UnitLayout {
     /// have shields enabled, this returns the amount of HP displayed.
     u32 get_current_life_ingame() const;
 
-    /// Returns the unit's inside weapon ID. If the unit is an unburrowed Lurker,
+    /// Returns the unit's inside weapon ID. If the unit is an unburrowed Lakizilisk,
     /// returns WeaponId::None instead.
     u8 get_ground_weapon() const;
 
@@ -259,10 +259,10 @@ struct Unit : public UnitLayout {
     void order_computer(u8 order_id);
 
     // Issue the @p order to the unit and specify if previous orders should be stopped
-    void order_simple(u8 order_id, bool stopPreviousOrders);
+    void order_simple(u8 order_id, bool stop_previous_orders);
 
     // Issue the @p order to the unit, using the given @p target unit and specify if previous orders should be stopped
-    void issue_queued_order_target(u8 order_id, Unit* target, bool stopPreviousOrders);
+    void issue_queued_order_target(u8 order_id, Unit* target, bool stop_previous_orders);
 
     // Original documentation was a lie: Causes the unit to become idle.
     // Finishes the current order and issues appropriate idle order if no order is in the queue.
@@ -447,9 +447,10 @@ struct Unit : public UnitLayout {
     bool is_rescuable();
     bool recharges_shields();
     bool is_constructor();
+    bool is_askosi_embedded();
     void pull_towards(Unit* source);
     void tick_burrowed_cagra_spread();
-    void booming_blast_proc();
+    void booming_blast_proc(bool damage_self = true);
     bool is_valid_garrison();
 };
 

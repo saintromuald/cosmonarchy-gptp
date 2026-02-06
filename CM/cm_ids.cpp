@@ -9,7 +9,8 @@ bool unit_id_is_geyser_refinery(u16 unit_id) {
         || unit_id == UnitId::TerranWellbore
         || unit_id == UnitId::ProtossAquifer
         || unit_id == UnitId::ZergExcisant
-        || unit_id == UnitId::ZergEzigrisant;
+        || unit_id == UnitId::ZergEzigrisant
+        || unit_id == UnitId::AskosiAbutment;
 }
 
 bool unit_id_is_capped_gas_node(u16 unit_id) {
@@ -136,6 +137,11 @@ bool unit_id_is_race(u32 unit_id, u32 race) {
                 return true;
             }
         } break;
+        case RaceId::Askosi: {
+            if (UnitId::is_askosi(static_cast<UnitId::Enum>(unit_id))) {
+                return true;
+            }
+        } break;
     }
     return false;
 }
@@ -255,7 +261,9 @@ bool unit_id_is_vespene_node(u32 unit_id) {
         || unit_id == UnitId::ProtossAquifer
         || unit_id == UnitId::ZergEskigant
         || unit_id == UnitId::ZergExcisant
-        || unit_id == UnitId::ZergEzigrisant;
+        || unit_id == UnitId::ZergEzigrisant
+        || unit_id == UnitId::AskosiArch
+        || unit_id == UnitId::AskosiAbutment;
 }
 
 bool unit_id_is_ground_garrison(u32 unit_id) {
@@ -263,13 +271,14 @@ bool unit_id_is_ground_garrison(u32 unit_id) {
         || unit_id == UnitId::TerranLodestone
         || unit_id == UnitId::TerranLodestoneStandalone
         || unit_id == UnitId::TerranTrenchfoot
-        || unit_id == UnitId::TerranTencendur;
+        || unit_id == UnitId::TerranTencendur
+        || unit_id == UnitId::ZergScrylyleth;
 }
 
 bool unit_id_is_garrison(u32 unit_id) {
     return unit_id_is_ground_garrison(unit_id)
-        || unit_id == UnitId::ZergScrylyleth
-        || unit_id == UnitId::AskosiGrandstandHoldout;
+        || unit_id == UnitId::AskosiGrandstandHoldout
+        || unit_id == UnitId::AskosiPetract;
 }
 
 bool unit_id_is_melee_air_unit(u32 unit_id) {
@@ -328,6 +337,10 @@ UnitId::Enum unit_id_to_siege_mode(UnitId::Enum unit_id) {
     //	case UnitId::TerranCuirassTankMode:              return UnitId::TerramCuirassTrenchMode;
     	case UnitId::TerranOgunWorkerMode:               return UnitId::TerranOgunSmithyMode;
     	case UnitId::TerranMadrigalHecatonImperiosoMode: return UnitId::TerranMadrigalHecatonFuriaMode;
+
+        case UnitId::AskosiGrandstand:                   return UnitId::AskosiGrandstandVision;
+        case UnitId::AskosiGrandstandVision:             return UnitId::AskosiGrandstandHoldout;
+        case UnitId::AskosiGrandstandHoldout:            return UnitId::AskosiGrandstand;
     }
     return UnitId::None;
 }
@@ -342,6 +355,10 @@ UnitId::Enum unit_id_to_tank_mode(UnitId::Enum unit_id) {
     //	case UnitId::TerramCuirassTrenchMode:        return UnitId::TerranCuirassTankMode;
         case UnitId::TerranOgunSmithyMode:           return UnitId::TerranOgunWorkerMode;
         case UnitId::TerranMadrigalHecatonFuriaMode: return UnitId::TerranMadrigalHecatonImperiosoMode;
+
+        case UnitId::AskosiGrandstand:               return UnitId::AskosiGrandstandHoldout;
+        case UnitId::AskosiGrandstandHoldout:        return UnitId::AskosiGrandstandVision;
+        case UnitId::AskosiGrandstandVision:         return UnitId::AskosiGrandstand;
     }
     return UnitId::None;
 }
@@ -392,9 +409,10 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::TerranTarasque
         || unit_id == UnitId::TerranPhiloc
         || unit_id == UnitId::TerranValkyrieHecaton
+        || unit_id == UnitId::TerranQuadriga
         || unit_id == UnitId::TerranWendigo
-        || unit_id == UnitId::TerranLuminary
         || unit_id == UnitId::TerranQilin
+        || unit_id == UnitId::TerranLuminary
         || unit_id == UnitId::TerranAuriel
         || unit_id == UnitId::TerranCyclopsFuturist
         || unit_id == UnitId::TerranHarakanGolden
@@ -419,8 +437,10 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::ProtossManifoldStarbound
 
         || unit_id == UnitId::ZergYblyleth
+        || unit_id == UnitId::ZergScrylyleth
         || unit_id == UnitId::ZergSovrokor
         || unit_id == UnitId::ZergGarvrokor
+        || unit_id == UnitId::ZergZethalor
         || unit_id == UnitId::ZergNathrelisk
         || unit_id == UnitId::ZergIziralisk
         || unit_id == UnitId::ZergInzorthrokor
@@ -458,7 +478,9 @@ bool unit_id_is_resource_node(u16 unit_id, bool count_gas_structures) {
             || unit_id == UnitId::ProtossAquifer
             || unit_id == UnitId::ZergEskigant
             || unit_id == UnitId::ZergExcisant
-            || unit_id == UnitId::ZergEzigrisant;
+            || unit_id == UnitId::ZergEzigrisant
+            || unit_id == UnitId::AskosiArch
+            || unit_id == UnitId::AskosiAbutment;
     }
     return unit_id == UnitId::ResourceMineralField
         || unit_id == UnitId::ResourceMineralFieldType2
@@ -548,11 +570,13 @@ bool weapon_id_is_melee_aoe(u32 weapon_id) {
         || weapon_id == WeaponId::GorgrokorSerratedCleavers
         || weapon_id == WeaponId::ZarcavrokorBisectingBlades
         || weapon_id == WeaponId::TethzorokorSaberArray
-        || weapon_id == WeaponId::TetcaerokorCleavingMaw;
+        || weapon_id == WeaponId::TetcaerokorCleavingMaw
+        || weapon_id == WeaponId::DoroninKorozzetBeastblades;
 }
 
 bool weapon_id_cleaves(u32 weapon_id) {
-    return weapon_id == WeaponId::TethzorokorSaberArray;
+    return weapon_id == WeaponId::TethzorokorSaberArray
+        || weapon_id == WeaponId::DoroninKorozzetBeastblades;
 }
 
 u32 weapon_id_intercepts(u32 weapon_id) {
@@ -619,7 +643,8 @@ bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
             case WeaponId::GorgrokorSerratedCleavers:
             case WeaponId::ZarcavrokorBisectingBlades:
             case WeaponId::TethzorokorSaberArray:
-            case WeaponId::TetcaerokorCleavingMaw: {
+            case WeaponId::TetcaerokorCleavingMaw:
+            case WeaponId::DoroninKorozzetBeastblades: {
                 return true;
             }
         }
@@ -648,7 +673,12 @@ bool tech_id_has_custom_targeting(u32 tech_id) {
         && tech_id != TechId::LuminaryAuralAssault
         && tech_id != TechId::HypnagogueThroughTheLookingGlass
         && tech_id != TechId::AskosiRematerialize
-        && tech_id != TechId::TritonLobotomyWarhead;
+        && tech_id != TechId::TritonLobotomyWarhead
+        && tech_id != TechId::DivineDiscipline
+        && tech_id != TechId::RejoinderOfService
+        && tech_id != TechId::AskosiSalvage
+        && tech_id != TechId::AskosiHijack
+        && tech_id != TechId::AskosiRapidRendezvous;
 }
 
 bool image_id_is_powerup(u32 image_id) {
@@ -671,7 +701,6 @@ bool image_id_is_powerup(u32 image_id) {
 ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
     switch (weapon_id) {
         case WeaponId::HarakanFlamethrower:				return ImageId::HarakanFlamethrower;
-        case WeaponId::HarakanGoldenFlamethrower:		return ImageId::HarakanFlamethrower;
         case WeaponId::MatadorTwinstrikeFlamethrowers:	return ImageId::HarakanFlamethrower;
         case WeaponId::DurendalAbaddonFlamethrowers:	return ImageId::HarakanFlamethrower;
         case WeaponId::StrigaPhaseSaber:				return ImageId::StrigaAttackOverlay;
@@ -689,8 +718,7 @@ bool weapon_id_can_proc_onhits(u32 weapon_id) {
     // * Clarion Phase Link
     // * Analogue Empathy Core
     // * Custom trigger damage overrides
-    return weapon_id != WeaponId::HypnagogueThroughTheLookingGlass
-        && weapon_id != WeaponId::SpiderMines
+    return weapon_id != WeaponId::SpiderMines
         && weapon_id != WeaponId::LobotomyMineExplosion
         && weapon_id != WeaponId::Irradiate
         && weapon_id != WeaponId::YamatoGun
@@ -701,7 +729,6 @@ bool weapon_id_can_proc_onhits(u32 weapon_id) {
         && weapon_id != WeaponId::StasisField
         && weapon_id != WeaponId::MatralethParasite
         && weapon_id != WeaponId::Plague
-        && weapon_id != WeaponId::Rematerialize
         && weapon_id != WeaponId::Custom
         && weapon_id != WeaponId::NuclearMissile;
 }
@@ -1052,7 +1079,11 @@ u32 get_worker_construction_distance(u32 structure_id) {
     switch (structure_id) {
         case UnitId::ProtossAquifer:
         case UnitId::ProtossArdentAuthority:
-        case UnitId::AskosiLandlock:{
+        case UnitId::AskosiLandlock:
+        case UnitId::AskosiBounty:
+        case UnitId::AskosiRadix:
+        case UnitId::AskosiFunction:
+        case UnitId::AskosiCosmoscope: {
             return 88;
         }
         case UnitId::ProtossGrandLibrary:
@@ -1060,6 +1091,12 @@ u32 get_worker_construction_distance(u32 structure_id) {
         case UnitId::ProtossSyntheticSynod:
         case UnitId::ProtossArgosy: {
             return 99;
+        }
+        case UnitId::AskosiGrandstand:
+        case UnitId::AskosiChantry:
+        case UnitId::AskosiCipher:
+        case UnitId::AskosiGauntlet: {
+            return 48;
         }
     }
     return 70;
@@ -1091,7 +1128,6 @@ bool unit_id_can_repair(u32 unit_id) {
 
 bool weapon_id_is_flamethrower(u32 weapon_id) {
     return weapon_id == WeaponId::HarakanFlamethrower
-        || weapon_id == WeaponId::HarakanGoldenFlamethrower
         || weapon_id == WeaponId::MatadorTwinstrikeFlamethrowers
         || weapon_id == WeaponId::DurendalAbaddonFlamethrowers
         || weapon_id == WeaponId::AckmedMickenMelter;
@@ -1226,8 +1262,8 @@ u32 get_death_sfx_id(u32 unit_id) {
     }
 }
 
-u32 weapon_id_is_secondary(u32 weapon_id) {
-    return weapon_id == WeaponId::DurendalPhilistineAutogun
+u32 weapon_id_is_automatic(u32 weapon_id) {
+    return weapon_id == WeaponId::DurendalPhilistineSalvo
         || weapon_id == WeaponId::TarasqueAcceleratedPlasmid;
 }
 
@@ -1271,7 +1307,8 @@ bool skip_military_tracking_by_unit_id(u32 unit_id) {
 bool unit_id_is_trap(u32 unit_id) {
     return unit_id == UnitId::TerranSpiderMine
         || unit_id == UnitId::TerranLobotomyMine
-        || unit_id == UnitId::TerranTartarusMine;
+        || unit_id == UnitId::TerranTartarusMine
+        || unit_id == UnitId::AskosiEyelet;
 }
 
 bool unit_building_can_act(Unit* unit) {
@@ -1305,6 +1342,9 @@ bool unit_spawns_custom_larva(Unit* unit) {
 bool unit_could_spread_custom_creep(Unit* unit) {
     if (helper::spreads_creep(unit->id, true)) {
         return false;
+    }
+    if (UnitId::spreads_cagra_while_burrowed(static_cast<UnitId::Enum>(unit->id)) && unit->is_burrowed()) {
+        return true;
     }
     auto& unit_ext = unit->ext();
     switch (unit->id) {
@@ -1431,6 +1471,7 @@ u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
                 case Faction::ProtossKhalendricKnights:     return PortraitId::AdvisorKhalendricKnights;
                 case Faction::ProtossOrderOfTheSacredSaber: return PortraitId::Patriarch; // Temporary
                 case Faction::ProtossStarbound:             return PortraitId::AdvisorStarbound;
+                case Faction::ProtossAstralOmen:            return PortraitId::Demiurge;
             }
         } break;
         case PortraitId::AdvisorZerg: {
@@ -1448,7 +1489,8 @@ bool unit_id_is_tiny_unit(u32 unit_id) {
     return unit_id == UnitId::TerranPietyWard
         || unit_id == UnitId::TerranLobotomyMine
         || unit_id == UnitId::TerranTartarusMine
-        || unit_id == UnitId::ZergRilirokor;
+        || unit_id == UnitId::ZergRilirokor
+        || unit_id == UnitId::AskosiEyelet;
 }
 
 bool unit_id_is_spell(u32 unit_id) {
@@ -1484,7 +1526,8 @@ bool weapon_id_can_self_splash(u32 weapon_id) {
 bool unit_id_is_mine_layer(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranVulture
         || unit_id == UnitId::TerranVultureHecaton
-        || unit_id == UnitId::TerranClericFuturist;
+        || unit_id == UnitId::TerranClericFuturist
+        || unit_id == UnitId::AskosiProselyte;
 }
 
 bool unit_id_can_construct(UnitId::Enum unit_id) {
@@ -1497,7 +1540,10 @@ bool unit_id_can_construct(UnitId::Enum unit_id) {
         || unit_id == UnitId::ProtossAutocort
         || unit_id == UnitId::ZergDroleth
         || unit_id == UnitId::ZergAgrileth
-        || unit_id == UnitId::ZergGosvileth;
+        || unit_id == UnitId::ZergGosvileth
+        || unit_id == UnitId::AskosiPilgrim
+        || unit_id == UnitId::AskosiDyad
+        || unit_id == UnitId::AskosiConstituent;
 }
 
 bool unit_id_is_hangar_unit(UnitId::Enum unit_id) {
@@ -1533,6 +1579,7 @@ UnitId::Enum get_racial_worker_id(u32 race_id) {
         case RaceId::Terran:  return UnitId::TerranMason;
         case RaceId::Protoss: return UnitId::ProtossScribe;
         case RaceId::Zerg:    return UnitId::ZergDroleth;
+        case RaceId::Askosi:  return UnitId::AskosiPilgrim;
     }
     return UnitId::None;
 }
@@ -1542,6 +1589,7 @@ UnitId::Enum get_racial_town_center_id(u32 race_id) {
         case RaceId::Terran:  return UnitId::TerranMinistry;
         case RaceId::Protoss: return UnitId::ProtossNexus;
         case RaceId::Zerg:    return UnitId::ZergHachirosk;
+        case RaceId::Askosi:  return UnitId::AskosiLandlock;
     }
     return UnitId::None;
 }
@@ -1555,8 +1603,20 @@ bool can_cast_recall(UnitId::Enum unit_id) {
 bool has_manual_weapon_fire_sfx(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranSavantEntropyGauntlets
         || unit_id == UnitId::TerranSavantPowerSiphon
+
+        // @TODO: Extend weapons and remove these
+        || unit_id == UnitId::ProtossZealot
+        || unit_id == UnitId::ProtossZealotStarbound
+        || unit_id == UnitId::ProtossEcclesiast
+        || unit_id == UnitId::ProtossEcclesiastKhalendric
+        || unit_id == UnitId::ProtossCicatus
         || unit_id == UnitId::ProtossManifold
-        || unit_id == UnitId::ProtossManifoldStarbound;
+        || unit_id == UnitId::ProtossManifoldStarbound
+        || unit_id == UnitId::AskosiAvatar
+        || unit_id == UnitId::AskosiAgonist
+        || unit_id == UnitId::AskosiPhontis
+        || unit_id == UnitId::AskosiAkreno
+        || unit_id == UnitId::AskosiCrematorium;
 }
 
 bool is_atg_regression(UnitId::Enum old_unit_id, UnitId::Enum new_unit_id) {
@@ -1679,7 +1739,8 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
     u32 overlay_size = UnitId::get_overlay_offset(unit_id);
     bool is_unit = !(units_dat::base_property[unit_id] & UnitProperty::Building);
     switch (Unit::get_race(unit_id)) {
-        case RaceId::Terran: {
+        case RaceId::Terran:
+        case RaceId::Askosi: {
             switch (overlay_size) {
                 case 0: return !is_unit ? SpriteId::Corpse_TerranUnitSmall  : SpriteId::Corpse_TerranBuildingSmall;
                 case 1: return !is_unit ? SpriteId::Corpse_TerranUnitMedium : SpriteId::Corpse_TerranBuildingSmall;
@@ -1725,200 +1786,235 @@ bool is_askosi(UnitId::Enum unit_id) {
         || unit_id == UnitId::AskosiEmissary
         || unit_id == UnitId::AskosiInkblot
         || unit_id == UnitId::AskosiTirade
+        || unit_id == UnitId::AskosiConstituent
+        || unit_id == UnitId::AskosiAphorist
+        || unit_id == UnitId::AskosiThaumalogue
+        || unit_id == UnitId::AskosiAvatar
+        || unit_id == UnitId::AskosiDoronin
+        || unit_id == UnitId::AskosiAgonist
+        || unit_id == UnitId::AskosiPetract
+        || unit_id == UnitId::AskosiPhontis
+        || unit_id == UnitId::AskosiZonguard
+        || unit_id == UnitId::AskosiAkreno
+        || unit_id == UnitId::AskosiIconoclast
+        || unit_id == UnitId::AskosiCrematorium
+        || unit_id == UnitId::AskosiParaclete
+        || unit_id == UnitId::AskosiAuxine
 
         || unit_id == UnitId::AskosiLandlock
         || unit_id == UnitId::AskosiArch
         || unit_id == UnitId::AskosiGrandstand
+        || unit_id == UnitId::AskosiGrandstandHoldout
+        || unit_id == UnitId::AskosiGrandstandVision
         || unit_id == UnitId::AskosiChantry
         || unit_id == UnitId::AskosiRadix
         || unit_id == UnitId::AskosiCipher
         || unit_id == UnitId::AskosiFunction
         || unit_id == UnitId::AskosiGauntlet
-        || unit_id == UnitId::AskosiCosmoscope;
+        || unit_id == UnitId::AskosiCosmoscope
+        || unit_id == UnitId::AskosiBounty
+        || unit_id == UnitId::AskosiAbutment
+        || unit_id == UnitId::AskosiProscenium
+        || unit_id == UnitId::AskosiConduit
+        || unit_id == UnitId::AskosiZylode
+        || unit_id == UnitId::AskosiBestiary
+        || unit_id == UnitId::AskosiAstrolabe
+        || unit_id == UnitId::AskosiPanoply
+        || unit_id == UnitId::AskosiObelisk;
 }
 
 SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
-    if (unit_id != UnitId::ProtossSteward && unit_id != UnitId::ProtossPlasmaShell) {
-        u32 ready_sound = units_dat::sound_ready[unit_id];
-        switch (unit_id) {
-            case UnitId::TerranMorningstar: {
-                ready_sound = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_MissileArmed);
-            } break;
-            case UnitId::TerranTalos: {
-                ready_sound = helper::get_random_unit_response(SoundId::TalosReady01, SoundId::TalosReady03);
-            } break;
-            case UnitId::TerranHotshot: {
-                ready_sound = helper::get_random_unit_response(SoundId::HotshotReady01, SoundId::HotshotReady03);
-            } break;
-            case UnitId::TerranCyprian: {
-                ready_sound = helper::get_random_unit_response(SoundId::CyprianReady01, SoundId::CyprianReady03);
-            } break;
-            case UnitId::TerranCannibal: {
-                ready_sound = helper::get_random_unit_response(SoundId::CannibalReady01, SoundId::CannibalReady03);
-            } break;
-            case UnitId::TerranShamanSupportMode: {
-                ready_sound = helper::get_random_unit_response(SoundId::ShamanReady01, SoundId::ShamanReady03);
-            } break;
-            case UnitId::TerranSavantEntropyGauntlets:
-            case UnitId::TerranSavantPowerSiphon: {
-                ready_sound = helper::get_random_unit_response(SoundId::SavantReady01, SoundId::SavantReady03);
-            } break;
-            case UnitId::TerranMadcap: {
-                ready_sound = helper::get_random_unit_response(SoundId::MadcapReady01, SoundId::MadcapReady03);
-            } break;
-            case UnitId::TerranHeracles: {
-                ready_sound = helper::get_random_unit_response(SoundId::HeraclesReady01, SoundId::HeraclesReady03);
-            } break;
-            case UnitId::TerranApostle: {
-                ready_sound = helper::get_random_unit_response(SoundId::ApostleReady01, SoundId::ApostleReady03);
-            } break;
-            case UnitId::TerranSiren: {
-                ready_sound = helper::get_random_unit_response(SoundId::SirenReady01, SoundId::SirenReady03);
-            } break;
-            case UnitId::TerranStriga: {
-                ready_sound = helper::get_random_unit_response(SoundId::StrigaReady01, SoundId::StrigaReady03);
-            } break;
-            case UnitId::TerranDilettante: {
-                ready_sound = helper::get_random_unit_response(SoundId::DilettanteReady01, SoundId::DilettanteReady03);
-            } break;
-            case UnitId::TerranSevenstep: {
-                ready_sound = helper::get_random_unit_response(SoundId::SevenstepReady01, SoundId::SevenstepReady03);
-            } break;
-            case UnitId::TerranAspirant: {
-                ready_sound = helper::get_random_unit_response(SoundId::AspirantReady01, SoundId::AspirantReady03);
-            } break;
-            case UnitId::TerranBlackjack:
-            case UnitId::TerranBlackjackGolden: {
-                ready_sound = helper::get_random_unit_response(SoundId::BlackjackReady01, SoundId::BlackjackReady03);
-            } break;
-            case UnitId::TerranMatadorTankMode: {
-                ready_sound = helper::get_random_unit_response(SoundId::MatadorReady01, SoundId::MatadorReady03);
-            } break;
-            case UnitId::TerranPhalanxTankMode:
-            case UnitId::TerranPhalanxTankModeTurret:
-            case UnitId::TerranPhalanxSiegeMode:
-            case UnitId::TerranPhalanxSiegeModeTurret: {
-                ready_sound = helper::get_random_unit_response(SoundId::PhalanxReady01, SoundId::PhalanxReady02);
-            } break;
-            case UnitId::TerranRamesses: {
-                ready_sound = helper::get_random_unit_response(SoundId::RamessesReady01, SoundId::RamessesReady03);
-            } break;
-            case UnitId::TerranDurendal: {
-                ready_sound = helper::get_random_unit_response(SoundId::DurendalReady01, SoundId::DurendalReady03);
-            } break;
-            case UnitId::TerranCataphract: {
-                ready_sound = helper::get_random_unit_response(SoundId::CataphractReady01, SoundId::CataphractReady03);
-            } break;
-            case UnitId::TerranTriton: {
-                ready_sound = helper::get_random_unit_response(SoundId::TritonReady01, SoundId::TritonReady03);
-            } break;
-            case UnitId::TerranPaladin: {
-                ready_sound = helper::get_random_unit_response(SoundId::PaladinReady01, SoundId::PaladinReady03);
-            } break;
-            case UnitId::TerranPazuzu: {
-                ready_sound = helper::get_random_unit_response(SoundId::PazuzuReady01, SoundId::PazuzuReady03);
-            } break;
-            case UnitId::TerranMadrigalImperiosoMode:
-            case UnitId::TerranMadrigalHecatonImperiosoMode: {
-                ready_sound = helper::get_random_unit_response(SoundId::MadrigalReady01, SoundId::MadrigalReady03);
-            } break;
-            case UnitId::TerranAnticthon: {
-                ready_sound = helper::get_random_unit_response(SoundId::AnticthonReady01, SoundId::AnticthonReady03);
-            } break;
-            case UnitId::TerranAion: {
-                ready_sound = helper::get_random_unit_response(SoundId::AionReady01, SoundId::AionReady03);
-            } break;
-            case UnitId::TerranAncile: {
-                ready_sound = helper::get_random_unit_response(SoundId::AncileReady01, SoundId::AncileReady01);
-            } break;
-            case UnitId::TerranWyvern: {
-                ready_sound = helper::get_random_unit_response(SoundId::WyvernReady01, SoundId::WyvernReady03);
-            } break;
-            case UnitId::TerranSundog: {
-                ready_sound = helper::get_random_unit_response(SoundId::SundogReady01, SoundId::SundogReady03);
-            } break;
-            case UnitId::TerranSalamander: {
-                ready_sound = helper::get_random_unit_response(SoundId::SalamanderReady01, SoundId::SalamanderReady03);
-            } break;
-            case UnitId::TerranAzazel: {
-                ready_sound = helper::get_random_unit_response(SoundId::AzazelReady01, SoundId::AzazelReady03);
-            } break;
-            case UnitId::TerranPhobos: {
-                ready_sound = helper::get_random_unit_response(SoundId::PhobosReady01, SoundId::PhobosReady03);
-            } break;
-            case UnitId::TerranCentaur:
-            case UnitId::TerranMagnetar: // TODO: Own lines
-            case UnitId::TerranHippogriff: // TODO: Own lines
-            {
-                ready_sound = helper::get_random_unit_response(SoundId::CentaurReady01, SoundId::CentaurReady03);
-            } break;
-            case UnitId::ProtossZealot: {
-                ready_sound = helper::get_random_unit_response(SoundId::ZealotReady01, SoundId::ZealotReady02);
-            } break;
-            case UnitId::ProtossEcclesiast: {
-                ready_sound = helper::get_random_unit_response(SoundId::EcclesiastReady01, SoundId::EcclesiastReady03);
-            } break;
-            case UnitId::ProtossDracadin:
-            case UnitId::ProtossDracadinOrder: {
-                ready_sound = helper::get_random_unit_response(SoundId::DracadinReady01, SoundId::DracadinReady03);
-            } break;
-            case UnitId::ProtossLegionnaire: {
-                ready_sound = helper::get_random_unit_response(SoundId::LegionnaireReady01, SoundId::LegionnaireReady03);
-            } break;
-            case UnitId::ProtossHierophant: {
-                ready_sound = helper::get_random_unit_response(SoundId::HierophantReady01, SoundId::HierophantReady03);
-            } break;
-            case UnitId::ProtossAmaranth: {
-                ready_sound = helper::get_random_unit_response(SoundId::AmaranthReady01, SoundId::AmaranthReady03);
-            } break;
-            case UnitId::ProtossHerald: {
-                ready_sound = helper::get_random_unit_response(SoundId::HeraldReady01, SoundId::HeraldReady03);
-            } break;
-            case UnitId::ProtossVagrant: {
-                ready_sound = helper::get_random_unit_response(SoundId::VagrantReady01, SoundId::VagrantReady03);
-            } break;
-            case UnitId::ProtossVagrantShade: {
-                ready_sound = helper::get_random_unit_response(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
-            } break;
-            case UnitId::ProtossPariah: {
-                ready_sound = helper::get_random_unit_response(SoundId::PariahReady01, SoundId::PariahReady03);
-            } break;
-            case UnitId::ProtossPotentate: {
-                ready_sound = helper::get_random_unit_response(SoundId::PotentateReady01, SoundId::PotentateReady03);
-            } break;
-            case UnitId::ProtossOptecton: {
-                ready_sound = helper::get_random_unit_response(SoundId::OptectonReady01, SoundId::OptectonReady03);
-            } break;
-            case UnitId::ProtossPatriarch: {
-                ready_sound = helper::get_random_unit_response(SoundId::PatriarchReady01, SoundId::PatriarchReady03);
-            } break;
-            case UnitId::ProtossGolem: {
-                ready_sound = helper::get_random_unit_response(SoundId::GolemReady01, SoundId::GolemReady02);
-            } break;
-            case UnitId::ProtossEmpress: {
-                ready_sound = helper::get_random_unit_response(SoundId::EmpressReady01, SoundId::EmpressReady03);
-            } break;
-            case UnitId::ProtossMagister: {
-                ready_sound = helper::get_random_unit_response(SoundId::MagisterReady01, SoundId::MagisterReady03);
-            } break;
-            case UnitId::ProtossStarSovereign: {
-                ready_sound = helper::get_random_unit_response(SoundId::StarSovereignReady01, SoundId::StarSovereignReady03);
-            } break;
-            case UnitId::ZergLiiralisk: {
-                ready_sound = helper::get_random_unit_response(SoundId::LiiraliskReady01, SoundId::LiiraliskReady02);
-            } break;
-            case UnitId::AskosiPilgrim: {
-                ready_sound = helper::get_random_unit_response(SoundId::PilgrimReady01, SoundId::PilgrimReady03);
-            } break;
-            case UnitId::AskosiProselyte: {
-                ready_sound = helper::get_random_unit_response(SoundId::ProselyteReady01, SoundId::ProselyteReady03);
-            } break;
-            case UnitId::AskosiMissionary: {
-                ready_sound = helper::get_random_unit_response(SoundId::MissionaryReady01, SoundId::MissionaryReady03);
-            } break;
-        }
-        return (SoundId::Enum)ready_sound;
+    if (unit_id == UnitId::ProtossSteward || unit_id == UnitId::ProtossPlasmaShell) {
+        return SoundId::None;
     }
+    u32 ready_sound = units_dat::sound_ready[unit_id];
+    switch (unit_id) {
+        case UnitId::TerranMorningstar: {
+            ready_sound = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_MissileArmed);
+        } break;
+        case UnitId::TerranTalos: {
+            ready_sound = helper::get_random_unit_response(SoundId::TalosReady01, SoundId::TalosReady03);
+        } break;
+        case UnitId::TerranHotshot: {
+            ready_sound = helper::get_random_unit_response(SoundId::HotshotReady01, SoundId::HotshotReady03);
+        } break;
+        case UnitId::TerranCyprian: {
+            ready_sound = helper::get_random_unit_response(SoundId::CyprianReady01, SoundId::CyprianReady03);
+        } break;
+        case UnitId::TerranCannibal: {
+            ready_sound = helper::get_random_unit_response(SoundId::CannibalReady01, SoundId::CannibalReady03);
+        } break;
+        case UnitId::TerranShamanSupportMode: {
+            ready_sound = helper::get_random_unit_response(SoundId::ShamanReady01, SoundId::ShamanReady03);
+        } break;
+        case UnitId::TerranSavantEntropyGauntlets:
+        case UnitId::TerranSavantPowerSiphon: {
+            ready_sound = helper::get_random_unit_response(SoundId::SavantReady01, SoundId::SavantReady03);
+        } break;
+        case UnitId::TerranMadcap: {
+            ready_sound = helper::get_random_unit_response(SoundId::MadcapReady01, SoundId::MadcapReady03);
+        } break;
+        case UnitId::TerranHeracles: {
+            ready_sound = helper::get_random_unit_response(SoundId::HeraclesReady01, SoundId::HeraclesReady03);
+        } break;
+        case UnitId::TerranApostle: {
+            ready_sound = helper::get_random_unit_response(SoundId::ApostleReady01, SoundId::ApostleReady03);
+        } break;
+        case UnitId::TerranSiren: {
+            ready_sound = helper::get_random_unit_response(SoundId::SirenReady01, SoundId::SirenReady03);
+        } break;
+        case UnitId::TerranStriga: {
+            ready_sound = helper::get_random_unit_response(SoundId::StrigaReady01, SoundId::StrigaReady03);
+        } break;
+        case UnitId::TerranDilettante: {
+            ready_sound = helper::get_random_unit_response(SoundId::DilettanteReady01, SoundId::DilettanteReady03);
+        } break;
+        case UnitId::TerranSevenstep: {
+            ready_sound = helper::get_random_unit_response(SoundId::SevenstepReady01, SoundId::SevenstepReady03);
+        } break;
+        case UnitId::TerranAspirant: {
+            ready_sound = helper::get_random_unit_response(SoundId::AspirantReady01, SoundId::AspirantReady03);
+        } break;
+        case UnitId::TerranBlackjack:
+        case UnitId::TerranBlackjackGolden: {
+            ready_sound = helper::get_random_unit_response(SoundId::BlackjackReady01, SoundId::BlackjackReady03);
+        } break;
+        case UnitId::TerranMatadorTankMode: {
+            ready_sound = helper::get_random_unit_response(SoundId::MatadorReady01, SoundId::MatadorReady03);
+        } break;
+        case UnitId::TerranPhalanxTankMode:
+        case UnitId::TerranPhalanxTankModeTurret:
+        case UnitId::TerranPhalanxSiegeMode:
+        case UnitId::TerranPhalanxSiegeModeTurret: {
+            ready_sound = helper::get_random_unit_response(SoundId::PhalanxReady01, SoundId::PhalanxReady02);
+        } break;
+        case UnitId::TerranRamesses: {
+            ready_sound = helper::get_random_unit_response(SoundId::RamessesReady01, SoundId::RamessesReady03);
+        } break;
+        case UnitId::TerranDurendal: {
+            ready_sound = helper::get_random_unit_response(SoundId::DurendalReady01, SoundId::DurendalReady03);
+        } break;
+        case UnitId::TerranCataphract: {
+            ready_sound = helper::get_random_unit_response(SoundId::CataphractReady01, SoundId::CataphractReady03);
+        } break;
+        case UnitId::TerranTriton: {
+            ready_sound = helper::get_random_unit_response(SoundId::TritonReady01, SoundId::TritonReady03);
+        } break;
+        case UnitId::TerranPaladin: {
+            ready_sound = helper::get_random_unit_response(SoundId::PaladinReady01, SoundId::PaladinReady03);
+        } break;
+        case UnitId::TerranPazuzu: {
+            ready_sound = helper::get_random_unit_response(SoundId::PazuzuReady01, SoundId::PazuzuReady03);
+        } break;
+        case UnitId::TerranMadrigalImperiosoMode:
+        case UnitId::TerranMadrigalHecatonImperiosoMode: {
+            ready_sound = helper::get_random_unit_response(SoundId::MadrigalReady01, SoundId::MadrigalReady03);
+        } break;
+        case UnitId::TerranAnticthon: {
+            ready_sound = helper::get_random_unit_response(SoundId::AnticthonReady01, SoundId::AnticthonReady03);
+        } break;
+        case UnitId::TerranAion: {
+            ready_sound = helper::get_random_unit_response(SoundId::AionReady01, SoundId::AionReady03);
+        } break;
+        case UnitId::TerranAncile: {
+            ready_sound = helper::get_random_unit_response(SoundId::AncileReady01, SoundId::AncileReady01);
+        } break;
+        case UnitId::TerranWyvern: {
+            ready_sound = helper::get_random_unit_response(SoundId::WyvernReady01, SoundId::WyvernReady03);
+        } break;
+        case UnitId::TerranSundog: {
+            ready_sound = helper::get_random_unit_response(SoundId::SundogReady01, SoundId::SundogReady03);
+        } break;
+        case UnitId::TerranSalamander: {
+            ready_sound = helper::get_random_unit_response(SoundId::SalamanderReady01, SoundId::SalamanderReady03);
+        } break;
+        case UnitId::TerranAzazel: {
+            ready_sound = helper::get_random_unit_response(SoundId::AzazelReady01, SoundId::AzazelReady03);
+        } break;
+        case UnitId::TerranPhobos: {
+            ready_sound = helper::get_random_unit_response(SoundId::PhobosReady01, SoundId::PhobosReady03);
+        } break;
+        case UnitId::TerranCentaur:
+        case UnitId::TerranMagnetar: // TODO: Own lines
+        case UnitId::TerranHippogriff: // TODO: Own lines
+        {
+            ready_sound = helper::get_random_unit_response(SoundId::CentaurReady01, SoundId::CentaurReady03);
+        } break;
+        case UnitId::ProtossZealot: {
+            ready_sound = helper::get_random_unit_response(SoundId::ZealotReady01, SoundId::ZealotReady02);
+        } break;
+        case UnitId::ProtossEcclesiast: {
+            ready_sound = helper::get_random_unit_response(SoundId::EcclesiastReady01, SoundId::EcclesiastReady03);
+        } break;
+        case UnitId::ProtossDracadin:
+        case UnitId::ProtossDracadinOrder: {
+            ready_sound = helper::get_random_unit_response(SoundId::DracadinReady01, SoundId::DracadinReady03);
+        } break;
+        case UnitId::ProtossLegionnaire: {
+            ready_sound = helper::get_random_unit_response(SoundId::LegionnaireReady01, SoundId::LegionnaireReady03);
+        } break;
+        case UnitId::ProtossHierophant: {
+            ready_sound = helper::get_random_unit_response(SoundId::HierophantReady01, SoundId::HierophantReady03);
+        } break;
+        case UnitId::ProtossAmaranth: {
+            ready_sound = helper::get_random_unit_response(SoundId::AmaranthReady01, SoundId::AmaranthReady03);
+        } break;
+        case UnitId::ProtossHerald: {
+            ready_sound = helper::get_random_unit_response(SoundId::HeraldReady01, SoundId::HeraldReady03);
+        } break;
+        case UnitId::ProtossVagrant: {
+            ready_sound = helper::get_random_unit_response(SoundId::VagrantReady01, SoundId::VagrantReady03);
+        } break;
+        case UnitId::ProtossVagrantShade: {
+            ready_sound = helper::get_random_unit_response(SoundId::VagrantShadeReady01, SoundId::VagrantShadeReady04);
+        } break;
+        case UnitId::ProtossPariah: {
+            ready_sound = helper::get_random_unit_response(SoundId::PariahReady01, SoundId::PariahReady03);
+        } break;
+        case UnitId::ProtossPotentate: {
+            ready_sound = helper::get_random_unit_response(SoundId::PotentateReady01, SoundId::PotentateReady03);
+        } break;
+        case UnitId::ProtossSycophant: {
+            ready_sound = helper::get_random_unit_response(SoundId::SycophantReady01, SoundId::SycophantReady03);
+        } break;
+        case UnitId::ProtossOptecton: {
+            ready_sound = helper::get_random_unit_response(SoundId::OptectonReady01, SoundId::OptectonReady03);
+        } break;
+        case UnitId::ProtossPatriarch: {
+            ready_sound = helper::get_random_unit_response(SoundId::PatriarchReady01, SoundId::PatriarchReady03);
+        } break;
+        case UnitId::ProtossGolem: {
+            ready_sound = helper::get_random_unit_response(SoundId::GolemReady01, SoundId::GolemReady02);
+        } break;
+        case UnitId::ProtossEmpress: {
+            ready_sound = helper::get_random_unit_response(SoundId::EmpressReady01, SoundId::EmpressReady03);
+        } break;
+        case UnitId::ProtossMagister: {
+            ready_sound = helper::get_random_unit_response(SoundId::MagisterReady01, SoundId::MagisterReady03);
+        } break;
+        case UnitId::ProtossStarSovereign: {
+            ready_sound = helper::get_random_unit_response(SoundId::StarSovereignReady01, SoundId::StarSovereignReady03);
+        } break;
+        case UnitId::ZergLiiralisk: {
+            ready_sound = helper::get_random_unit_response(SoundId::LiiraliskReady01, SoundId::LiiraliskReady02);
+        } break;
+        case UnitId::AskosiPilgrim: {
+            ready_sound = helper::get_random_unit_response(SoundId::PilgrimReady01, SoundId::PilgrimReady03);
+        } break;
+        case UnitId::AskosiProselyte: {
+            ready_sound = helper::get_random_unit_response(SoundId::ProselyteReady01, SoundId::ProselyteReady03);
+        } break;
+        case UnitId::AskosiMissionary: {
+            ready_sound = helper::get_random_unit_response(SoundId::MissionaryReady01, SoundId::MissionaryReady03);
+        } break;
+        case UnitId::AskosiRove: {
+            ready_sound = helper::get_random_unit_response(SoundId::RoveReady01, SoundId::RoveReady03);
+        } break;
+        case UnitId::AskosiHelion: {
+            ready_sound = helper::get_random_unit_response(SoundId::HelionReady01, SoundId::HelionReady03);
+        } break;
+    }
+    return (SoundId::Enum)ready_sound;
 }
 
 bool has_autovitality(UnitId::Enum unit_id) {
@@ -1997,13 +2093,15 @@ bool is_triple_birth(UnitId::Enum unit_id) {
 
 bool has_forward_march(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranDurendal
-        || unit_id == UnitId::AskosiIntendent;
+        || unit_id == UnitId::AskosiIntendent
+        || unit_id == UnitId::AskosiZonguard;
 }
 
 // units_dat: make building placement box divisible by 32! -Pr0nogo
 bool spreads_cagra_while_burrowed(UnitId::Enum unit_id) {
     return unit_id == UnitId::ZergAgrileth
         || unit_id == UnitId::ZergYblyleth
+        || unit_id == UnitId::ZergScrylyleth
         || unit_id == UnitId::ZergMalkothrokor;
 }
 
@@ -2011,9 +2109,6 @@ bool spreads_cagra_while_burrowed(UnitId::Enum unit_id) {
 
 namespace WeaponId {
 u32 get_custom_melee_factor(WeaponId::Enum weapon_id) {
-    switch (weapon_id) {
-       case WeaponId::CicatusPhaseClaws: return 2;
-    }
     return 1;
 }
 
@@ -2021,7 +2116,7 @@ bool weapon_splits(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::ArchitectDispersiveSalvo;
 }
 
-bool weapon_id_bounces_binding_plasma(WeaponId::Enum weapon_id) {
+bool bounces_binding_plasma(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::OscilliantRotatingRay
         || weapon_id == WeaponId::GladiusPlasmaFlurry;
 }
@@ -2037,5 +2132,9 @@ bool can_attack_target(WeaponId::Enum weapon_id, Unit* target) {
         return true;
     }
     return false;
+}
+
+bool bounces_power_breach(WeaponId::Enum weapon_id) {
+    return weapon_id == WeaponId::IntendentErsaDriver;
 }
 } // namespace WeaponId

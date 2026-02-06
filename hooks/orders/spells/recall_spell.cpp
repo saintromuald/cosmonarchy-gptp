@@ -163,10 +163,8 @@ namespace hooks {
         } else {
             u32 energy_cost = techdata_dat::energy_cost[TechId::DimensionalRecall] * 256;
             if (!unit->has_energy(energy_cost)) {
-                u8 raceId = unit->get_race();
-                char* message = (char*)g_stat_txt_tbl->get_string32(864 + raceId); // "Not enough energy"
-                if (message && unit->player == g_local_nation_id && g_active_player_id == g_local_human_id) {
-                    helper::set_unit_stat_txt_error_message(message);
+                if (unit->player == g_local_nation_id && g_active_player_id == g_local_human_id) {
+                    helper::set_unit_stat_txt_error_message("Not enough energy");
                 }
                 unit->order_to_idle();
             } else {

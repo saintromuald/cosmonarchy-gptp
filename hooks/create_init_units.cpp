@@ -145,6 +145,7 @@ namespace hooks {
             if (*(race_id_offset - 1) == 2 || *(race_id_offset - 1) == 1) {
                 // 0 is use map settings, 1 is Workers, 2 is Workers + Main Building
                 StartingUnits starting_units = (StartingUnits)g_starting_units;
+                auto race_id = g_player_table[player].race;
 
                 if (g_victory_conditions == 0 && starting_units == StartingUnits::MapUnits && g_tournament_mode == 0 && player < PlayerLimit && (g_player_force[player]) != 0) {
                     // race selected instead of using map settings?
@@ -156,8 +157,8 @@ namespace hooks {
                 }
 
                 if (starting_units == StartingUnits::WorkersTownCenter) {
-                    create_initial_melee_buildings(*race_id_offset, player);
-                    if (*race_id_offset == RaceId::Zerg) {
+                    create_initial_melee_buildings(race_id, player);
+                    if (race_id == RaceId::Zerg) {
                         create_initial_ovileth(player);
                     }
                 }
@@ -167,8 +168,8 @@ namespace hooks {
                     bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
                     bool is_omnipresence = game_kind == GameKind::Omnipresence;
                     bool is_duopoly = game_kind == GameKind::Duopoly;
-                    u32 worker_id = get_racial_worker_id(*race_id_offset);
-                    u8 townhall_id = get_racial_town_center_id(*race_id_offset);
+                    u32 worker_id = get_racial_worker_id(race_id);
+                    u8 townhall_id = get_racial_town_center_id(race_id);
                     if (!is_computer_player && (is_omnipresence || is_duopoly)) {
                         townhall_id = UnitId::Omnivale;
                     }

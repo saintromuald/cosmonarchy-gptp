@@ -378,7 +378,7 @@ namespace UnitId {
         ZergVornathPond										= 396,		// Morphed from Quazeth Pool
         ZergSkibactScab										= 397,		// Morphed from Hydrith Den
         ZergEskigant                                        = 421,
-        ZergZozarcGorge                                     = 493,      // Morphed from Ultrav Cavern
+        ZergZozarcGorge                                     = 493,      // Morphed from Ulgorg Cavern
 
     // Askosi-Unit
         AskosiPilgrim                                       = 439,
@@ -396,6 +396,21 @@ namespace UnitId {
         AskosiEmissary                                      = 454,
         AskosiInkblot                                       = 455,
         AskosiTirade                                        = 456,
+        AskosiAvatar                                        = 538,
+        AskosiThaumalogue                                   = 542,
+        AskosiPetract                                       = 543,
+        AskosiCrematorium                                   = 544,
+        AskosiAphorist                                      = 551,
+        AskosiDoronin                                       = 552,
+        AskosiAgonist                                       = 553,
+        AskosiPhontis                                       = 554,
+        AskosiZonguard                                      = 555,
+        AskosiAkreno                                        = 556,
+        AskosiIconoclast                                    = 557,
+        AskosiParaclete                                     = 558,
+        AskosiEyelet                                        = 564,
+        AskosiAuxine                                        = 565,
+        AskosiConstituent                                   = 566,
 
     // Askosi-Building
         AskosiLandlock                                      = 429,
@@ -408,6 +423,16 @@ namespace UnitId {
         AskosiGauntlet                                      = 463,
         AskosiCosmoscope                                    = 464,
         AskosiBounty                                        = 510,
+        AskosiGrandstandHoldout                             = 532,
+        AskosiGrandstandVision                              = 533,
+        AskosiAbutment                                      = 539,
+        AskosiProscenium                                    = 540,
+        AskosiZylode                                        = 545,
+        AskosiAstrolabe                                     = 546,
+        AskosiPanoply                                       = 550,
+        AskosiBestiary                                      = 561,
+        AskosiConduit                                       = 562,
+        AskosiObelisk                                       = 563,
 
     // Special-Unit
         ExtTerranCivilian									= 332,

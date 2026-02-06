@@ -83,7 +83,7 @@ namespace UpgradeId {
 		VitalEncephalon = 75,			// Gorgoleth energy
 		RaveningMandible = 76,			// Gorgoleth attack speed per energy
 		Metastasis = 77,				// Plague transmit on death
-		Heatshield = 78,				// Firebat HP
+		Heatshield = 78,				// Harakan HP
 		SequesterPods = 80,				// Missile Turret distance
 		Reservations = 81,				// Terran Building extra addon spot
 		RadiationShockwave = 82,		// Irradiate EMP on death
@@ -94,7 +94,7 @@ namespace UpgradeId {
 		ChaosMatter = 87,				// Exemplar bounce during Khaydarin Eclipse
 		FinalHour = 88,					// Augur projectile death
 		ForeCastle = 89,				// Battlecruiser forward-facing armor
-		TectonicClaws = 90,				// Lurker burrow speed
+		TectonicClaws = 90,				// Lakizilisk burrow speed
 		SaberSiphon = 91,				// Ultrokor lifesteal
 		KaiserRampage = 92,				// Ultrokor movement and attack speed on kill
 		CorrosiveDispersion = 93,		// Basilisk attack distance on creep
@@ -107,7 +107,7 @@ namespace UpgradeId {
 		EphemeralBlades = 100,			// Hallucination damage
 		Ascendancy = 101,				// High Templar energy and bonus energy on spell kill
 		GroundZero = 102,				// Nuclear Missile radiation
-		AdrenalinePacks = 103,			// Medic and Shaman support-armor on heal
+		AdrenalinePacks = 103,			// Cleric and Shaman support-armor on heal
 		CaptivatingClaws = 104,			// Vorvaling 25% movespeed slow
 		PeerReviewedDestruction = 105,	// Science Vessel paint nuke target
 		PassengerInsurance = 106,		// Dropship acceleration
@@ -121,9 +121,9 @@ namespace UpgradeId {
 		SomaticImplants = 114,			// Ghost movespeed while cloaked
 		Hotdrop = 115,					// Dropship unload speed
 		LitheOrganelle = 117,			// Mutalisk extra bounce
-		CriticalMass = 118,				// Devourer Corrosive Spores explosion
-		AcridDisplacement = 119,		// Guardian damage field per projectile travel time
-		SeismicSpines = 120,			// Lurker projectile return to attacker
+		CriticalMass = 118,				// Vithrilisk Corrosive Spores explosion
+		AcridDisplacement = 119,		// Geszithalor damage field per projectile travel time
+		SeismicSpines = 120,			// Lakizilisk projectile return to attacker
 		Incubators = 121,				// Broodling Broodspawn on kill
 		Autovitality = 122,				// Robotic unit shield capacity
 		IonPropulsion = 123,			// Vulture "fly" behavior
@@ -220,8 +220,8 @@ namespace ScUpgrade {
 		AdrenalGlands = 28,
 		MuscularAugments = 29,
 		GroovedSpines = 30,
-		GameteMeiosis = 31, // (Queen +50)
-		MetasynapticNode = 32, // (Defiler +50)
+		GameteMeiosis = 31, // (Matraleth +50)
+		MetasynapticNode = 32, // (Isthrathaleth +50)
 		SingularityCharge = 33,
 		LegEnhancements = 34,
 		ScarabDamage = 35,
@@ -246,7 +246,7 @@ namespace BwUpgrade {
 		UnusedUpgrade48 = 2,
 		ArgusTalisman = 3, // (Dark Archon +50)
 		UnusedUpgrade50 = 4,
-		CaduceusReactor = 5, // (Medic +50)
+		CaduceusReactor = 5, // (Cleric +50)
 		ChitinousPlating = 6,
 		AnabolicSynthesis = 7,
 		CharonBooster = 8,

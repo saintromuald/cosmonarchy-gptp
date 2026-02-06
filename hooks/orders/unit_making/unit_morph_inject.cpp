@@ -172,7 +172,8 @@ namespace {
                     }
                     unit->bwfunc_remove();
                 } break;
-                case RaceId::Terran: {
+                case RaceId::Terran:
+                case RaceId::Askosi: {
                     if (unit->id == UnitId::TerranMorningstar) {
                         Unit* silo = unit->connected_unit;
                         if (silo) {

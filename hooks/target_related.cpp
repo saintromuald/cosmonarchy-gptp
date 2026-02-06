@@ -559,7 +559,7 @@ namespace hooks {
             }
         check_energy:
             if (energy_cost && not_enough_energy) {
-                helper::display_error_message_id_with_sfx(active_unit->player, race + 864, bw::get_advisor_sound_from_event_type(active_unit->player, AdvisorEvent_NoEnergy));
+                helper::display_error_message_id_with_sfx(active_unit->player, 864, bw::get_advisor_sound_from_event_type(active_unit->player, AdvisorEvent_NoEnergy));
                 return;
             }
         } else {
@@ -607,11 +607,12 @@ namespace hooks {
 
     // Hooked to add support for new refineries. -Pr0nogo
     b32 fow_refinery_check(Unit* self, u16 fow_id) { // 00474500
-        u8 race = self->get_race(); // TODO: Add support for custom races
+        u8 race = self->get_race();
         switch (race) {
-            case RaceId::Zerg:    return fow_id == UnitId::ZergExcisant;
+            case RaceId::Zerg:    return fow_id == UnitId::ZergExcisant || fow_id == UnitId::ZergEzigrisant;
             case RaceId::Protoss: return fow_id == UnitId::ProtossAquifer;
-            case RaceId::Terran:  return fow_id == UnitId::TerranReservoir;
+            case RaceId::Terran:  return fow_id == UnitId::TerranReservoir || fow_id == UnitId::TerranWellbore;
+        //  case RaceId::Askosi:  return fow_id == UnitId::None; // Not yet implemented
             default:              return 0;
         }
     }
@@ -621,7 +622,6 @@ namespace hooks {
         if (!can_pick_new_target(unit)) {
             return;
         }
-
         if (unit->status & UnitStatus::AttackMove) {
             Unit* best_target = 0;
             s32 best_score = INT_MAX;
@@ -644,7 +644,6 @@ namespace hooks {
                     }
                 }
             }
-
             Unit* auto_target = unit->auto_target_unit;
             if (auto_target) {
                 if (helper::unit_can_attack_target(auto_target, unit, 1) && helper::is_unit_enemy(unit, unit->auto_target_unit)

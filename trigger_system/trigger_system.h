@@ -30,6 +30,7 @@ static const char* race_names[] = {
     "Zerg",
     "Terran",
     "Protoss",
+    "Askosi"
 };
 static_assert(std::size(race_names) == RaceId::Count);
 

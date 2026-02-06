@@ -53,4 +53,4 @@ void clear_maledictus_if_needed(Unit* unit);
 AttackTargetingType attack_targeting_type_of(Unit* unit);
 bool can_pick_new_target(Unit* unit);
 void tick_psi_storm_damage(EffectField& effect, u32 update_period, u32 tick_scalar_hp);
-void apply_lobotomy_slow(Point16 position);
+void apply_lobotomy_slow(Point16 position, u32 timer);

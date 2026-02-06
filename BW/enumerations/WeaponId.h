@@ -168,9 +168,7 @@ namespace WeaponId {
         AzanthrokorAzanthrokSpew            = 213,
         CyclopsBrontesPayload				= 217, // Passive explosion
         CyclopsFuturistFlakCannons			= 218,
-        HarakanGoldenFlamethrower			= 220,
         IziraliskCorrosiveBioplasma			= 221,
-        EcclesiastKhalendricAvengingBlaster = 224,
         AshguardPhaseCremator               = 229,
         LakiziliskZorthosSuccessiveSpines   = 230,
         QuazrokorQuazrokSpray               = 232,
@@ -215,7 +213,6 @@ namespace WeaponId {
         OlympianTitansFist					= 123,
         OlympianMountainGun					= 124,
         WyvernJacksonCannon					= 125,
-        PaladinSkyfall						= 126, // Ability targeting
         DiademHammerfallBeacon				= 129, // Main weapon precursor
         StrigaPhaseSaber					= 133,
         AnticthonEncirclingMirror			= 137,
@@ -224,26 +221,17 @@ namespace WeaponId {
         SentinelCerberusRailgun				= 147,
         SundogBlindsideRockets				= 150,
         MatadorTwinstrikeFlamethrowers		= 151,
-        PegasusRetractorBatteries			= 154,
-        PegasusLancetMissiles				= 155,
         HippogriffChimeraCannons			= 156,
-        OberonAxisDrivers					= 157,
         HippogriffPegasusMissiles			= 158,
         AionLazarusSalvo					= 159,
         WendigoFusionSaw					= 168,
         RamessesPharoahCannons				= 170,
         DurendalAbaddonFlamethrowers		= 171,
-        DurendalPhilistineAutogun			= 172,
+        DurendalPhilistineSalvo			    = 172,
         CataphractLonginiusCannons			= 173,
         DilettanteUpstartRifle				= 174,
         SevenstepGeometricRifle				= 175,
         HypnagogueKaleidoscopeCannon		= 176,
-        AmbassadorDiplomatPulseRifle		= 178,
-        AmbassadorSignatorySalvo			= 179,
-        HeirUsurperFlamethrower				= 180,
-        HeirExcellencyLaserBatteries		= 181,
-        HorsemanHadesCannon					= 182,
-        HypnagogueThroughTheLookingGlass	= 183, // Ability targeting
         SilvertongueWordsmithRailgun		= 184,
         DiademIonCannon						= 198,
         SavantDiscoidRailgunEntropy		    = 199,
@@ -299,17 +287,14 @@ namespace WeaponId {
         AnalogueCylindricalBlaster			= 202,
         PotentateTalismanicWeaver			= 206,
         VibranceSensoryOverload				= 219,
-        CicatusPhaseClaws					= 222,
-        ZealotStarboundPhaseBlades			= 223,
         OscilliantRotatingRay               = 225,
-        RenesairRotatingBlaster             = 226,
         ExtatusRepeatingBlaster             = 227,
         UnarAutonomousRay                   = 228,
 
         // Zerg \\
                     
         ZoryusthalethMonstrousMaw			= 28,
-        VorvalClaws							= 36,
+        VorvrokorVorvrokClaws							= 36,
         NathrokorVestigialStrike			= 37,
         KeskathalorScreamingVenom			= 41,
         AlkajeliskPlasmidSpores				= 45,
@@ -326,7 +311,6 @@ namespace WeaponId {
         QuaziliskAcridBarbs					= 102,
         AlmaksaliskPiercingSpines			= 110,
         KalkaliskViscousAcid				= 117,
-        ZergBlissfulEmbrace					= 127, // Ability targeting
         AxitriliskSearingVenom				= 134,
         IzirokorEnergizedBioplasma			= 142,
         GosvilethGosvilSpines               = 143,
@@ -367,13 +351,18 @@ namespace WeaponId {
         ObjectOrliMallet                    = 127,
         ScepterOrmaScrapray                 = 154,
         IntendentErsaDriver                 = 155,
-        IntendentAlruBurstray               = 157,
+        BoomingBlast                        = 157,
         HelionUskoScrapray                  = 179,
         TiradeIktaDriver                    = 181,
         GrandstandArteDriver                = 182,
-        Rematerialize	    	            = 207, // ability targeting
+        RemoteHijack	    	            = 207, // ability targeting
+        AgonistOnlaDrivers                  = 220,
+        DoroninKorozzetBeastblades          = 222,
+        ThaumalogueUtsoCarbine              = 223,
+        CrematoriumOkliQuadshard            = 224,
+        AphoristAnsaSunshot                 = 226,
         PilgrimMiningSaber                  = 239,
-        RapidRandezvous                     = 247, // ability targeting
+        RapidRendezvous                     = 247, // ability targeting, unused
 
         // Misc \\
 

@@ -1230,6 +1230,7 @@ namespace ImageId {
 
         OkrimniliskOmnisporesFire					= 1819, 
         
+        ArchitectWeaponChannel                      = 1820,
         ArtisanResourceChannel						= 1821,
         ArtisanResourceProc							= 1822,
         SwarmingOmenSmall							= 1823,
@@ -1328,6 +1329,18 @@ namespace ImageId {
         ZoryusthalethMutate                         = 2107,
 
         AzanthrokorMutate                           = 2187,
+
+        MineralChunkRich01                          = 2198,
+        MineralChunkRich02                          = 2199,
+
+        ImpactDissipationSmall						= 2244,
+        ImpactDissipationMedium						= 2245,
+        ImpactDissipationLarge						= 2246,
+        ImpactDissipationXLarge						= 2247,
+
+        AshHeapOverlay                              = 2277,
+
+        AskosiEmbeddedOverlay                       = 2304,
 
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,

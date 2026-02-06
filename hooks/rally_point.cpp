@@ -194,7 +194,7 @@ namespace hooks {
 					}
 				}
 			}
-			if (unit->status & UnitStatus::IsHallucination) {
+			if (unit->is_hallucination()) {
 				if (order_type == 4 || order_type == 5) {
 					order_type = 1;
 				}
@@ -208,8 +208,6 @@ namespace hooks {
 						if (!rally_target) {
 							rally_target = unit;
 						}
-
-						UnitExt* unitExt = get_unit_ext(unit);
 						unit->rally.unit = rally_target;
 						unit->rally.pt.x = rally_target->sprite->position.x;
 						unit->rally.pt.y = rally_target->sprite->position.y;
@@ -217,18 +215,29 @@ namespace hooks {
 				} else if (unit != target) {
 					if (right_click_order == OrderId::RallyPointToTile) {
 						if (hooks::unit_can_have_rally(unit)) {
-							UnitExt* unitExt = get_unit_ext(unit);
 							unit->rally.unit = 0;
 							unit->rally.pt.x = x;
 							unit->rally.pt.y = y;
 						}
 					} else {
-						if (right_click_order == OrderId::Attack1) {
-							Unit* subunit = unit->subunit;
-							if (subunit) {
-								helper::targeted_order_unit(target, unit->subunit, queued != 0, units_dat::attack_unit_order[subunit->id]);
-							}
-							right_click_order = units_dat::attack_unit_order[unit->id];
+						switch (right_click_order) {
+							case OrderId::Attack1: {
+								Unit* subunit = unit->subunit;
+								if (subunit) {
+									helper::targeted_order_unit(target, unit->subunit, queued != 0, units_dat::attack_unit_order[subunit->id]);
+								}
+								right_click_order = units_dat::attack_unit_order[unit->id];
+							} break;
+							case OrderId::HarvestGas1: {
+								if (unit->get_race() == RaceId::Askosi && target->get_race() == RaceId::Askosi && !target->is_completed()) {
+									right_click_order = OrderId::ConstructingBuilding;
+								}
+							} break;
+							case OrderId::ConstructingBuilding: {
+								if (unit->get_race() != RaceId::Askosi && unit->is_constructor() && !target->is_completed() && target->get_race() == RaceId::Askosi) {
+									right_click_order = OrderId::Move;
+								}
+							} break;
 						}
 						if (helper::order_is_allowed(unit, right_click_order, *g_active_nation_id) == 1) {
 							if (target) {
@@ -496,7 +505,7 @@ namespace hooks {
 
 		// Try fixing right-click orders for landed Terran towers. Unsuccessful for now.
 		if (unit->id == UnitId::TerranWatchdog || unit->id == UnitId::TerranSentinel) {
-			if (unit->status & UnitStatus::InAir) {
+			if (unit->is_in_air()) {
 				return 1;
 			}
 			else {

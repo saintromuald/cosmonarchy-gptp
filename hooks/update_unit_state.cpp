@@ -125,7 +125,7 @@ namespace hooks {
 					if (turret->order_target.unit
 					&&  turret->main_order_id != OrderId::Follow
 					&&  turret->main_order_id != OrderId::Patrol
-					&&  turret->main_order_id != OrderId::WyvernLandGrab) {
+					&&  turret->main_order_id != OrderId::TargetGroundNew) {
 						Unit* new_target = turret->order_target.unit;
 						if (wyvern_can_fire_at(unit, new_target)) {
 							unit_ext.units[UnitWyvernTargetLock] = new_target;
@@ -364,19 +364,18 @@ namespace hooks {
 
 			// Terran building burn-down
 			if (!stop_here && !unit_ext.values[ValueInfested] && !unit_ext.timers[TimerBurnDownDelay]) {
-				if (unit->get_race() == RaceId::Terran) {
-					if (unit->is_grounded_building() || units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) {
-						if (helper::unit_hp_is_in_redzone(unit)) {
-							// Manual handling of on-death behaviors. -Pr0nogo
-							if (unit->hitpoints <= 20 && unit_ext.timers[TimerInfesting]) {
-								blissful_embrace(unit, unit_ext.values[ValueInfestingPlayer]);
-								unit->set_hitpoints(100 * 256 + units_dat::max_hitpoints[unit->id] / 3);
-							} else {
-								unit->damage_hp(20, 0, unit->last_attacking_player, true);
-								if (unit->plague_timer && unit->hitpoints <= 256) {
-									unit->bwfunc_remove();
-								}
-							}
+				if (unit->get_race() != RaceId::Terran) {
+					return;
+				}
+				if (unit->is_building() && helper::unit_hp_is_in_redzone(unit)) {
+					// Manual handling of on-death behaviors. -Pr0nogo
+					if (unit->hitpoints <= 20 && unit_ext.timers[TimerInfesting]) {
+						blissful_embrace(unit, unit_ext.values[ValueInfestingPlayer]);
+						unit->set_hitpoints(100 * 256 + units_dat::max_hitpoints[unit->id] / 3);
+					} else {
+						unit->damage_hp(20, 0, unit->last_attacking_player, true);
+						if (unit->plague_timer && unit->hitpoints <= 256) {
+							unit->bwfunc_remove();
 						}
 					}
 				}
@@ -700,18 +699,18 @@ namespace hooks {
 		}
 		helper::increment_unit_scores_ex(unit, 1, 1);
 
-		UnitExt* unit_ext = get_unit_ext(unit);
-		if (!unit_ext->values[ValueNoMassacreResource]) {
+		auto& unit_ext = unit->ext();
+		if (!unit_ext.values[ValueNoMassacreResource]) {
 			if (game_kind_doubles_units() && unit_should_give_gas_in_massacre_mode(unit)) {
 				bw::add_massacre_resource(unit->player);
 			}
 		} else {
-			unit_ext->values[ValueNoMassacreResource] = 0;
+			unit_ext.values[ValueNoMassacreResource] = 0;
 		}
 
 		if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak
-		||	unit_ext->values[ValueTriggerBehaviorProximityCloak]
-		||	unit_ext->values[ValueTriggerBehaviorSteadyShroud])
+		||	unit_ext.values[ValueTriggerBehaviorProximityCloak]
+		||	unit_ext.values[ValueTriggerBehaviorSteadyShroud])
 		{
 			helper::begin_cloak(unit, bw::get_cloak_sound_id(unit));
 		}
@@ -752,7 +751,19 @@ namespace hooks {
 		} else if (unit->sprite->is_hidden() && !unit_id_is_hangar_unit((UnitId::Enum)unit->id)) {
 			helper::show_and_enable_unit(unit);
 		}
-		// Originally had trap code
+
+		switch (unit->id) {
+			case UnitId::AskosiBounty: {
+			    for (Unit* mineral : g_unit_search.radial(unit->position, 12 * 32)) {
+			        if (unit_id_is_minerals(mineral->id)) {
+			            mineral->building.resource.resource_amount += 500;
+			            mineral->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+			            helper::update_mineral_field_image(mineral);
+			            // TODO: Own audiovisuals
+			        }
+			    }
+			} break;
+		}
 
 		u32 player_type = g_player_table[unit->player].type;
 		if (player_type == PlayerType::Rescuable) {
@@ -855,7 +866,7 @@ namespace hooks {
 			unit->hitpoints = current_hp;
 			
 			u32 main_order_id;
-			if ((unit->status & UnitStatus::GroundedBuilding) == 0) {
+			if (!unit->is_grounded_building()) {
 				main_order_id = OrderId::Nothing2;
 			} else {
 				main_order_id = units_dat::human_idle_order[unit_id];

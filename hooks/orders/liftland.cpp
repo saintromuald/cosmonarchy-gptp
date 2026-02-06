@@ -82,8 +82,7 @@ namespace hooks {
 				}
 			}
 		} else if (unit->main_order_state == 2) {
-			UnitExt* unit_ext = get_unit_ext(unit);
-			unit_ext->timers[TimerLiftLandDelay] = 52 + 1;
+			unit->ext().timers[TimerLiftLandDelay] = 52 + 1;
 			bool stop_there = false;
 			if (!helper::is_unit_positions_2_equal(unit)) {
 				stop_there = ((unit->velocity_direction_1 - bw::get_angle(unit->position.x, unit->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y)) != 0);
@@ -161,8 +160,7 @@ namespace hooks {
 				helper::flying_building_lift_if_still_blocked(unit);
 				helper::force_order_done(unit);
 
-				UnitExt* unit_ext = get_unit_ext(unit);
-				if (unit_ext->values[ValueInfested]) {
+				if (unit->ext().values[ValueInfested]) {
 					bw::spawn_custom_creep(unit);
 				}
 				Unit* addon = helper::connect_addon_check(unit);
@@ -275,14 +273,15 @@ namespace hooks {
 			AdvisorEvent event_type = AdvisorEvent_LandingInterrupted;
 			switch (unit->get_race()) {
 				case RaceId::Terran: {
-					if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+					if (unit->is_worker()) {
 						event_type = AdvisorEvent_PlacementInterrupted;
 					}
 				} break;
 				case RaceId::Protoss: {
 					event_type = AdvisorEvent_NoBuildProtoss;
 				} break;
-				case RaceId::Zerg: {
+				case RaceId::Zerg:
+				case RaceId::Askosi: {
 					event_type = AdvisorEvent_PlacementInterrupted;
 				} break;
 			}

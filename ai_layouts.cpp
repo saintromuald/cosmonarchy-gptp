@@ -501,6 +501,9 @@ static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 t
         case RaceId::Zerg: {
             placeholder.unit_id = UnitId::ZergHachirosk;
         } break;
+        case RaceId::Askosi: {
+            placeholder.unit_id = UnitId::AskosiLandlock;
+        } break;
     }
 
     u32 old_priority = placeholder.priority;

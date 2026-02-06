@@ -184,6 +184,9 @@ bool unit_flag_match(Unit* target, Unit* center, u32 flags, const std::unordered
 	if (flags & FilterCombatant && !unit_id_is_combatant(target->id)) {
 		return false;
 	}
+	if (flags & FilterNeutral && target->player != 11) {
+		return false;
+	}
 	return true;
 }
 

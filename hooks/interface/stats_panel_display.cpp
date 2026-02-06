@@ -807,7 +807,6 @@ namespace hooks {
 
     // Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
     void stats_addon_builder(BinDlg* dialog) { // 00425F30
-        BinDlg* current_dialog;
         Unit* unit = *g_active_portrait_unit;
         if (g_is_in_replay != 0 || unit->player == g_local_nation_id) {
             if (g_status_screen_func != 9) {
@@ -820,8 +819,7 @@ namespace hooks {
             if (unit->main_order_id == OrderId::BuildTerran
             ||	unit->main_order_id == OrderId::Repair1
             ||	unit->main_order_id == OrderId::ConstructingBuilding
-            ||	helper::is_attempting_protoss_build(unit))
-            {
+            ||	helper::is_attempting_protoss_build(unit)) {
                 built_unit = unit->order_target.unit;
             } else if (unit->secondary_order_id == OrderId::TrainUnit || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
                 built_unit = unit->current_build_unit;
@@ -829,17 +827,7 @@ namespace hooks {
 
             helper::dialog_set_progress_bar_value(dialog, 16, helper::get_remaining_build_time_percentage(built_unit));
             u32 slot_unit_id = helper::get_last_queue_slot_id(built_unit);
-            BinDlg* current_dialog = 0;
-            if (dialog->control_type == DialogControlType::DialogBoxDC) {
-                current_dialog = dialog->child_dialog;
-            } else {
-                current_dialog = dialog->parent->child_dialog;
-            }
-
-            while (current_dialog && (s16)current_dialog->index != 17)
-            {
-                current_dialog = current_dialog->next;
-            }
+            BinDlg* current_dialog = get_first_child_by_index(dialog, 17);
             current_dialog->graphic = 2;
             current_dialog->stat_button_user->button_grp = *DatExt::get_unit_icons_pointer();
             current_dialog->stat_button_user->grp_frame = slot_unit_id;
@@ -871,171 +859,12 @@ namespace hooks {
         }
 
         helper::dialog_set_progress_bar_value(dialog, 13, helper::get_remaining_build_time_percentage(unit));
-        u32 textId = 0x31F + unit->get_race(); // "Mutating" for Zerg, "Under Construction" for Terran, "Opening Warp Rift" for Protoss
-        helper::add_text_to_dialog(dialog, -30, (char*)g_stat_txt_tbl_new->get_string(textId));
-    }
-
-    // Ported from GPTP to show remaining build time seconds above progress bar. -Pr0nogo
-    void stats_queue_progress(BinDlg* dialog) { // 004268D0
-        Unit* unit = *g_active_portrait_unit;
-        BinDlg* current_dialog;
-        if (dialog->control_type == DialogControlType::DialogBoxDC) {
-            current_dialog = dialog->child_dialog;
-        } else {
-            current_dialog = dialog->parent->child_dialog;
-        }
-
-        while (current_dialog && current_dialog->index != 2) {
-            current_dialog = current_dialog->next;
-        }
-
-        if (g_is_in_replay || unit->player == g_local_nation_id) {
-            if (g_status_screen_func != 5) {
-                helper::hide_optional_status_screen_controls(dialog);
-                helper::show_control_group(dialog, -15, 8);
-                g_status_screen_func = 5;
-            }
-
-            Unit* built_unit = 0;
-            if (unit->main_order_id == OrderId::BuildTerran
-            ||	unit->main_order_id == OrderId::Repair1
-            ||	unit->main_order_id == OrderId::ConstructingBuilding
-            ||	helper::is_attempting_protoss_build(unit))
-            {
-                built_unit = unit->order_target.unit;
-            } else if (unit->secondary_order_id == OrderId::TrainUnit || unit->secondary_order_id == OrderId::TrainFighter || helper::is_constructing_addon(unit)) {
-                built_unit = unit->current_build_unit;
-            } else {
-                built_unit = 0;
-            }
-
-            u32 progress = 0;
-            if (built_unit) {
-                progress = helper::get_remaining_build_time_percentage(built_unit);
-            }
-
-            helper::dialog_set_progress_bar_value(dialog, 7, progress);
-            u32 queue_slot = 0;
-            while (current_dialog) {
-                if (queue_slot >= 5) {
-                    current_dialog = 0;
-                } else {
-                    u32 slot_unit_id = unit->build_queue[(unit->build_queue_slot + queue_slot) % 5];
-                    char* slot_text;
-                    if (queue_slot == 0) {
-                        slot_text = (char*)FORMATSTRING_COLORYELLOW_VALUE_COLORCYAN_SPACE;	// queued slot number display (yellow)
-                    } else {
-                        slot_text = (char*)FORMATSTRING_VALUE_SPACE;						// active slot number display (cyan)
-                    }
-
-                    helper::bw_sprintf_s(g_queues_buffers[queue_slot], 8, slot_text, queue_slot + 1);
-                    if (queue_slot == 0 || queue_slot >= 4) {
-                        current_dialog->graphic = 2;
-                    } else {
-                        current_dialog->graphic = 4;
-                    }
-
-                    if (slot_unit_id != UnitId::None) {
-                        current_dialog->stat_button_user->button_grp = *DatExt::get_unit_icons_pointer();
-                        current_dialog->stat_button_user->grp_frame = slot_unit_id;
-                        current_dialog->stat_button_user->type = 3;
-                        current_dialog->stat_button_user->id = slot_unit_id;
-                        helper::enable_dialog(current_dialog);
-                        current_dialog->text = g_queues_buffers[queue_slot];
-                    } else {
-                        current_dialog->stat_button_user->button_grp = g_cmdbtns_grp; // This global was previously defined as void**. -Pr0nogo
-                        current_dialog->stat_button_user->grp_frame = queue_slot + 6;
-                        current_dialog->stat_button_user->type = 6;
-                        helper::disable_dialog(current_dialog);
-                        current_dialog->text = 0;
-                    }
-
-                    if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
-                        current_dialog->flags |= BinDlgFlags::Highlighted;
-                        helper::update_dialog(current_dialog);
-                    }
-                    current_dialog = current_dialog->next;
-                    queue_slot++;
-                }
-            }
-
-            u32 progress_string_id = 0;
-            if (unit->is_grounded_building() && unit->is_frozen()) {
-                progress_string_id = 828; // "<6>Disabled" (<6> means 0x6 byte for red) (Unpowered for Protoss)
-            } else {
-                u32 unit_id = unit->id;
-                if (!unit->is_completed()) {
-                    unit_id = unit->build_queue[unit->build_queue_slot];
-                    if (bw::is_zerg_building_morph_result(unit_id)) {
-                        unit_id = unit->id;
-                    }
-                }
-
-                // Note: original code recalculated unitId/built_unit_id, not done here to optimize things. -GPTP
-                if (unit_id_is_protoss_warp_factory(unit_id)) { // TODO: Revisit this, a saner way to achieve this result, especially since it doesn't even scale if we want the string to say "assembling" based on queued unit. -Pr0nogo
-                    progress_string_id = 771; //"Morphing" ("Building" for Terran, "Opening Warp Gate" for Protoss)
-                } else {
-                    progress_string_id = 774; //"Morphing" ("Building" for Terran and Protoss)
-                }
-
-            }
-
-            // Simplified lots of code here, should work. -GPTP
-            char* status_text = (char*)g_stat_txt_tbl->get_string32(progress_string_id + unit->get_race());
-            if (dialog->control_type == DialogControlType::DialogBoxDC) {
-                current_dialog = dialog->child_dialog;
-            } else {
-                current_dialog = dialog->parent->child_dialog;
-            }
-
-            while (current_dialog && (s16)current_dialog->index != -15) {
-                current_dialog = current_dialog->next;
-            }
-            // Spoiler: it didn't work.
-            if (current_dialog) { // This nullcheck wasn't in the original code. Currently we crash if this is removed, and text status_text is not written to any visible dialog. IDA was not helpful. -Pr0nogo
-                current_dialog->text = status_text;
-            }
-
-            while (current_dialog) {
-                if (!(current_dialog->flags & BinDlgFlags::Visible)) {
-                    struct {
-                        u32 unknown_value;		// [EBP-0x20]	[00]
-                        u32 always_zero_here;	// [EBP-0x1C]	[04]
-                        u32 not_allocated_2;	// [EBP-0x18]	[08]
-                        u16 always_14_here;		// [EBP-0x14]	[0C]
-                        s16 mouse_x;			// [EBP-0x12]	[0E]
-                        s16 mouse_y;			// [EBP-0x10]	[10]
-                        u32 ignored_3;			// [EBP-0x0C]	[14] //used to store a queueSlot+1 value from earlier
-                        u16 not_allocated_1;	// [EBP-0x0A]	[16]
-                        u16 ignored_2;			// [EBP-0x08]	[18] //used to store built_unit_id value from earlier
-                        u32 ignored_1;			// [EBP-0x04]	[1C] //used to store queueSlot value from earlier
-                    } stack_placeholder;
-
-                    // Not allocated on original code, but result is probably more true to the original like this. -GPTP
-                    stack_placeholder.not_allocated_1 = 0;
-                    stack_placeholder.not_allocated_2 = 0;
-
-                    // Zeroed because ignored, if bugs will have to fill with real values maybe. -GPTP
-                    stack_placeholder.ignored_1 = 0;
-                    stack_placeholder.ignored_2 = 0;
-                    stack_placeholder.ignored_3 = 0;
-
-                    stack_placeholder.mouse_y = g_mouse->y;
-                    stack_placeholder.always_14_here = 14;
-                    stack_placeholder.unknown_value = 13;
-                    stack_placeholder.always_zero_here = 0;
-                    stack_placeholder.mouse_x = g_mouse->x;
-
-                    if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Highlighted)) {
-                        current_dialog->flags |= BinDlgFlags::Highlighted;
-                        helper::update_dialog(current_dialog);
-                    }
-                }
-                if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
-                    current_dialog->flags |= BinDlgFlags::Highlighted;
-                    helper::update_dialog(current_dialog);
-                }
-            }
+        const char* string = "Building";
+        switch (unit->get_race()) {
+            case RaceId::Terran:  string = "Under Construction"; break;
+            case RaceId::Protoss: string = "Opening Warp Rift";  break;
+            case RaceId::Zerg:    string = "Mutating";           break;
+            case RaceId::Askosi:  string = "Assembling";         break;
         }
         helper::add_text_to_dialog(dialog, -30, string);
     }
@@ -1342,7 +1171,7 @@ namespace hooks {
                 return;
             }
             if (unit->is_frozen()) {
-                helper::add_text_to_dialog(dialog, -20, helper::get_stat_txt_string(unit->get_race() + 828)); // Disabled
+                helper::add_text_to_dialog(dialog, -20, "Disabled");
             } else {
                 helper::add_text_to_dialog(dialog, -20, helper::get_unit_rank_string(unit));
             }
@@ -1492,6 +1321,4 @@ namespace hooks {
             helper::update_dialog(final_dialog);
         }
     }
-
-    // Eventually, hook show_tech_progress 0x004268D0 -Pr0nogo
 }

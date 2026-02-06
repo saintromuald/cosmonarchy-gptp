@@ -247,6 +247,7 @@ enum ExtValueId {
     ValueNoEnergyOverlay,
     ValueHasWireframeOverride,
     ValueWireframeOverride,
+    ValueAmaranthHealAmount,
     ValueIsNydusEntry,
     ValueHasButtonsetOverride,
     ValueButtonsetOverride,
@@ -259,6 +260,16 @@ enum ExtValueId {
     ValueSegmentedExpansionStacks,
     ValueAmaranthHealAmount,
     TimerCorpseConsumptionDelay,
+    ValueDyadAssisting,
+    ValueHijackOriginalPlayer,
+    ValueReassemblyActive,
+    ValueVicarLaunchPos,
+    ValueHelionLaunchPos,
+    ValueAskosiBuildProc,
+    ValueBoomingBlastPlayer,
+    ValueAshHeap,
+    ValueAshHeapPlayer,
+    ValueWarringWindsStacks,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -325,7 +336,7 @@ enum ExtTimerId {
     TimerAxitriliskShieldLossSFX,
     TimerOwnerChangedRecently,
     TimerMagnetarAttraction,
-    TimerSalvageStunTimer,
+    TimerSalvageStun,
     TimerCreepMorphOverlay,
     TimerCustomEggHatch,
     TimerMindControlRecede,
@@ -444,7 +455,15 @@ enum ExtTimerId {
     TimerBoomingBlast,
     TimerAskosiPowerBreach,
     TimerSegmentedExpansion,
-    TimerSalvageStun,
+    TimerNaniteFieldLockout,
+    TimerPowerOverload,
+    TimerAshHeapArmorRend,
+    TimerAshHeap,
+    TimerRetaliationAssembly,
+    TimerNewDominion,
+    TimerWarringWindsCooldown,
+    TimerScrapworldImplosion,
+    TimerVitalRemainsArmorPen,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
@@ -473,7 +492,7 @@ enum ExtUnitId {
     UnitDirgeSource,
     UnitBunkerLockOn,
     UnitAnnexSource,
-    UnitAnthelionGravityWellSource,
+    UnitPullTowardsSource,
     UnitTurretParentLink,
     UnitMorphConnectedUnit,
     UnitAddonParent,
@@ -489,6 +508,7 @@ enum ExtUnitId {
     UnitHijackTarget,
     UnitHiveOrgan,
     UnitHiveTissue,
+    UnitPowerOverloadSource,
 
     UnitCount,
 };
@@ -509,6 +529,7 @@ enum ExtUnitVectorId {
     UnitVectorManifolds,
     UnitVectorAdaptiveAmitosis,
     UnitVectorAskosiBuilders,
+    UnitVectorScepters,
 
     UnitVectorCount,
 };
@@ -572,6 +593,8 @@ struct UnitExt {
     u32                     indomitable_annex_stacks;
     u32                     last_malefactor_player;
 
+    Point16                 pull_pos;
+
     u32						values[ValueCount];
     u32						timers[TimerCount];
     Unit*					units[UnitCount];
@@ -612,6 +635,7 @@ struct BulletExt {
     bool did_pierce;
 
     Unit* cargo;
+    u32 source_id;
 };
 
 struct SpriteExt {

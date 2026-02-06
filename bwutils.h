@@ -92,11 +92,16 @@ namespace SpriteId {
             case SpriteId::Corpse_HydraliskOrkoti:
             case SpriteId::Corpse_Inzorthrokor:
             case SpriteId::Corpse_Agrileth:
+            case SpriteId::Corpse_AskosiBuildingLarge:
+            case SpriteId::Corpse_AskosiBuildingSmall:
+            case SpriteId::Corpse_AskosiBuildingTiny:
             case SpriteId::Corpse_Cardinal:
             case SpriteId::Corpse_Vicar:
             case SpriteId::Corpse_Missionary:
             case SpriteId::Corpse_Proselyte:
-            case SpriteId::Corpse_Malkothrokor: {
+            case SpriteId::Corpse_Malkothrokor:
+            case SpriteId::Corpse_Zethalor:
+            case SpriteId::Corpse_Thaumalogue: {
                 return true;
             } break;
         }

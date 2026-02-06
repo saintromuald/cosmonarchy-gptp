@@ -76,7 +76,7 @@ const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 
 	const char* entry_name = WeaponId::get_name(unit, weapon_id);
 	const char* damage_string = g_stat_txt_tbl->get_string32(777); // "Damage:"
 
-	UnitExt& unit_ext = unit->ext();
+	auto& unit_ext = unit->ext();
 
 	u8 damage_factor = bw::get_damage_factor_for_tooltip(weapon_id, unit);
 	u8 upgrade_level = bw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
@@ -379,6 +379,8 @@ namespace hooks {
 			unit_ext.timers[TimerAnnex], TimerType::Gptp);
 		add_status(statuses, "Shattered", unit_ext.values[ValueWendigoShatteredWindsStacks], 0,
 			unit_ext.timers[TimerWendigoShatteredWinds], TimerType::Gptp);
+		add_status(statuses, "Ash Heap", unit_ext.values[ValueAshHeap], 0,
+			unit_ext.timers[TimerAshHeap], TimerType::Gptp);
 
 		if (unit_ext.values[ValueSignifyStacks] < 5) {
 			add_status(statuses, "Cowardice", unit_ext.values[ValueSignifyStacks], 5,
@@ -418,6 +420,10 @@ namespace hooks {
 		add_status(statuses, "Hidebreaker", -1, 1, unit_ext.timers[TimerHidebreaker], TimerType::Gptp);
 		add_status(statuses, "Booming Blast", -1, 1, unit_ext.timers[TimerBoomingBlast], TimerType::Gptp);
 		add_status(statuses, "Segmented Expansion", -1, 1, unit_ext.timers[TimerSegmentedExpansion], TimerType::Gptp);
+		add_status(statuses, "Impact Dissipation", -1, 1, unit_ext.timers[TimerImpactDissipation], TimerType::Gptp);
+		add_status(statuses, "Retaliation Protocol", -1, 1, unit_ext.timers[TimerRetaliationAssembly], TimerType::Gptp);
+		add_status(statuses, "New Dominion", -1, 1, unit_ext.timers[TimerNewDominion], TimerType::Gptp);
+		add_status(statuses, "Imploded", -1, 1, unit_ext.timers[TimerScrapworldImplosion], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext.timers[TimerEnsnaringBrood], 1);
@@ -438,6 +444,8 @@ namespace hooks {
 		add_status(statuses, "Prying Eyes", unit_ext.timers[TimerFacadePryingEyesCloak], 1);
 		add_status(statuses, "Embedded", unit_ext.values[ValueReassemblyActive], 1);
 		add_status(statuses, "Segmented Expansion", unit_ext.values[ValueSegmentedExpansionStacks], 10);
+		add_status(statuses, "Vital Remains", unit_ext.timers[TimerVitalRemainsArmorPen], 1);
+		add_status(statuses, "Principal Augment", unit_ext.unit_vectors[UnitVectorScepters].size(), 0);
 
 		add_status(statuses, "Decided Armor", unit_ext.values[ValueTriggerArmorBaseAmount]);
 		add_status(statuses, "Decided Reach", unit_ext.values[ValueTriggerWeaponRangeBaseAmount] / 32);
@@ -600,7 +608,8 @@ namespace hooks {
 		switch (icon_unit_id) {
 			case UnitId::TerranSpiderMine:
 			case UnitId::TerranLobotomyMine:
-			case UnitId::TerranTartarusMine: {
+			case UnitId::TerranTartarusMine:
+			case UnitId::AskosiEyelet: {
 				switch (unit->id) {
 					case UnitId::TerranClericFuturist: return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363); // "Lobotomy Mines"
 					case UnitId::TerranVulture:        return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363); // "Lobotomy Mines"

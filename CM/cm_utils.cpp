@@ -218,51 +218,21 @@ const char* game_kind_to_string(GameKind game_kind) {
 
 const char* game_kind_to_filename_string(GameKind game_kind) {
     switch (game_kind) {
-        case GameKind::Unranked: {
-            return "Unranked(1)";
-        } break;
-        case GameKind::Debug: {
-            return "Debug(1)";
-        } break;
-        case GameKind::Scenario: {
-            return "Scenario(1)";
-        } break;
-        case GameKind::FactionWars: {
-            return "Faction Wars(1)";
-        } break;
-        case GameKind::Massacre: {
-            return "Massacre(1)";
-        } break;
-        case GameKind::Omnipresence: {
-            return "Omnipresence(1)";
-        } break;
-        case GameKind::TheTurning: {
-            return "The Turning(1)";
-        } break;
-        case GameKind::Uprising: {
-            return "Uprising(1)";
-        } break;
-        case GameKind::Duopoly: {
-            return "Duopoly(1)";
-        } break;
-        case GameKind::Embraced: {
-            return "Embraced(1)";
-        } break;
-        case GameKind::DarkAges: {
-            return "Dark Ages(1)";
-        } break;
-        case GameKind::Deathmarch: {
-            return "Deathmarch(1)";
-        } break;
-        case GameKind::Brotherhood: {
-            return "Brotherhood(1)";
-        } break;
-        case GameKind::Zombocalypse: {
-            return "Zombocalypse(1)";
-        } break;
-        case GameKind::Ranked: {
-            return "Ranked(1)";
-        } break;
+        case GameKind::Unranked:     return "Unranked(1)";
+        case GameKind::Debug:        return "Debug(1)";
+        case GameKind::Scenario:     return "Scenario(1)";
+        case GameKind::FactionWars:  return "Faction Wars(1)";
+        case GameKind::Massacre:     return "Massacre(1)";
+        case GameKind::Omnipresence: return "Omnipresence(1)";
+        case GameKind::TheTurning:   return "The Turning(1)";
+        case GameKind::Uprising:     return "Uprising(1)";
+        case GameKind::Duopoly:      return "Duopoly(1)";
+        case GameKind::Embraced:     return "Embraced(1)";
+        case GameKind::DarkAges:     return "Dark Ages(1)";
+        case GameKind::Deathmarch:   return "Deathmarch(1)";
+        case GameKind::Brotherhood:  return "Brotherhood(1)";
+        case GameKind::Zombocalypse: return "Zombocalypse(1)";
+        case GameKind::Ranked:       return "Ranked(1)";
     }
     assert(false);
     return "";
@@ -270,26 +240,21 @@ const char* game_kind_to_filename_string(GameKind game_kind) {
 
 const char* race_to_string(RaceId::Enum race) {
     switch (race) {
-        case RaceId::Terran: {
-            return "Terran";
-        } break;
-        case RaceId::Protoss: {
-            return "Protoss";
-        } break;
-        case RaceId::Zerg: {
-            return "Zerg";
-        } break;
+        case RaceId::Terran:  return "Terran";
+        case RaceId::Protoss: return "Protoss";
+        case RaceId::Zerg:    return "Zerg";
+        case RaceId::Askosi:  return "Askosi";
     }
     return "Custom";
 }
 
 const char* race_to_table_string(RaceId::Enum race) {
     switch (race) {
-    case RaceId::Zerg: return g_network_table.get_string(7);
-    case RaceId::Terran: return g_network_table.get_string(8);
-    case RaceId::Protoss: return g_network_table.get_string(9);
-    case RaceId::Askosi: return g_network_table.get_string(169);
-    case RaceId::Random: return g_network_table.get_string(10);
+        case RaceId::Zerg:    return g_network_table.get_string(7);
+        case RaceId::Terran:  return g_network_table.get_string(8);
+        case RaceId::Protoss: return g_network_table.get_string(9);
+        case RaceId::Askosi:  return g_network_table.get_string(169);
+        case RaceId::Random:  return g_network_table.get_string(10);
     }
     return g_string_empty;
 }
@@ -405,9 +370,7 @@ void specialist_energy_error(Unit* unit) {
     if (bw::in_replay_or_witness() || g_active_player_id != g_local_human_id) {
         return;
     }
-    if (const char* string = helper::get_stat_txt_string(unit->get_race() + 864)) {
-        helper::set_unit_stat_txt_error_message(string);
-    }
+    helper::set_unit_stat_txt_error_message("Not enough energy.");
 }
 
 bool unit_should_give_gas_in_massacre_mode(Unit* unit) {
@@ -453,6 +416,7 @@ void set_up_mines(Unit* unit) {
         case UnitId::TerranVulture:        unit->mine_carrier.mine_count = 3; break;
         case UnitId::TerranVultureHecaton: unit->mine_carrier.mine_count = 3; break;
         case UnitId::TerranClericFuturist: unit->mine_carrier.mine_count = 1; break;
+        case UnitId::AskosiProselyte:      unit->mine_carrier.mine_count = 1; break;
     }
 }
 
@@ -544,6 +508,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::ZergOrkotiTendril: {
             switch (unit_id) {
+                case UnitId::ZergVorvrokor: return UnitId::ZergZethalor;
                 case UnitId::ZergHydralisk: return UnitId::ZergHydraliskOrkoti;
                 case UnitId::ZergGorgrokor: return UnitId::ZergAzanthrokor;
             }
@@ -570,8 +535,14 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
         damage += unit_ext.unar_solitary_focus_stacks;
     }
     switch (unit->id) {
-        case UnitId::ZergGarvrokor:           damage++;    break;
+        case UnitId::ProtossCicatus:          damage -= 3; break;
         case UnitId::ProtossSimulacrumAstral: damage -= 2; break;
+        case UnitId::ZergGarvrokor:           damage += 1; break;
+        case UnitId::ZergZethalor:            damage -= 4; break;
+        case UnitId::AskosiAvatar:            damage += 10; break;
+        case UnitId::AskosiPhontis:           damage += 2; break;
+        case UnitId::AskosiAkreno:            damage += 6; break;
+        case UnitId::AskosiIconoclast:        damage += 1; break;
     }
     return damage;
 }
@@ -776,7 +747,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::PsiAssault:                          return "Psi Assault";
         case WeaponId::Irradiate:                           return "Irradiate";
         case WeaponId::ZethrokorClaws:                      return "Zethrok Claws";
-        case WeaponId::VorvalClaws:                         return unit_id == UnitId::ZergVorvrokor ? "Vorvrok Claws" : "Garvrol Claws";
+        case WeaponId::VorvrokorVorvrokClaws:               return unit_id == UnitId::ZergVorvrokor ? "Vorvrok Claws" : "Garvrol Claws";
         case WeaponId::NathrokorVestigialStrike:            return "Vestigial Strike";
         case WeaponId::HydraliskNeedleSpines:               return "Needle Spines";
         case WeaponId::PenumbraErebolShockCannon:           return "Erebol Shock Cannon";
@@ -804,7 +775,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::OgroszalethAcidBarrage:              return "Acid Barrage";
         case WeaponId::ScribeParticleBeam:                  return "Particle Beam";
         case WeaponId::ScribeParticleBeamHarvest:           return "Particle Beam";
-        case WeaponId::ZealotPhaseBlades:                   return "Phase Blades";
+        case WeaponId::ZealotPhaseBlades:                   return unit_id == UnitId::ProtossZealot ? "Phase Blades" : "Phase Claws";
         case WeaponId::VassalPulseBlaster:                  return "Pulse Blaster";
         case WeaponId::DracadinPhaseDisruptor:              return "Phase Disruptor";
         case WeaponId::GladiusPlasmaFlurry:                 return "Plasma Flurry";
@@ -837,7 +808,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::PhobosArgosLaserBatteries:           return "Argos Laser Batteries";
         case WeaponId::KonviliskSowingSpines:               return "Sowing Spines";
         case WeaponId::SirenCharybdalRifle:                 return "Charybdal Rifle";
-        case WeaponId::EcclesiastAstralBlaster:             return "Astral Blaster";
+        case WeaponId::EcclesiastAstralBlaster:             return unit_id == UnitId::ProtossEcclesiast ? "Astral Blaster" : "Ascending Blaster";
         case WeaponId::AtreusDauntlessDisruptorCannon:      return "Dauntless Disruption Cannon";
         case WeaponId::AmaranthPsiCleaver:                  return "Phase Cleaver";
         case WeaponId::LanifectNeutronFlare:                return "Neutron Flare";
@@ -895,9 +866,9 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::ZarcavrokorBisectingBlades:          return "Bisecting Blades";
         case WeaponId::ZergBonesofReflection:               return "Bones of Reflection";
         case WeaponId::ScepterOrmaScrapray:                 return "Orma Scrapray";
-        case WeaponId::IntendentErsaDriver:                 return "Ersa Driver";
+        case WeaponId::IntendentErsaDriver:                 return unit_id == UnitId::AskosiIntendent ? "Ersa Driver" : "Alru Driver";
         case WeaponId::HippogriffChimeraCannons:            return "Chimera Cannons";
-        case WeaponId::IntendentAlruBurstray:               return "Alru Burstray";
+        case WeaponId::BoomingBlast:                        return "Booming Blast";
         case WeaponId::HippogriffPegasusMissiles:           return "Pegasus Missiles";
         case WeaponId::AionLazarusSalvo:                    return "Lazarus Salvo";
         case WeaponId::HeraldStellarTorch:                  return "Stellar Torch";
@@ -944,10 +915,10 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::PietyWardProvidence:                 return unit_id == UnitId::TerranClericFuturist ? "Piety Wards" : "Providence";
         case WeaponId::AnalogueCylindricalBlaster:          return "Cylindrical Blaster";
         case WeaponId::PhilocHeirloomBatteries:             return "Heirloom Batteries";
-        case WeaponId::NathrokorNathrokClaws:               return "Nathrok Claws";
+        case WeaponId::NathrokorNathrokClaws:               return unit_id == UnitId::ZergNathrokor ? "Nathrok Claws" : "Biotic Wingblades";
         case WeaponId::GorgrokorCalcification:              return "Calcification";
         case WeaponId::PotentateTalismanicWeaver:           return "Talismanic Weaver";
-        case WeaponId::Rematerialize:                       return "Rematerialize";
+        case WeaponId::RemoteHijack:                        return "Remote Hijack";
         case WeaponId::HotshotDispatchShotgun:              return "Dispatch Shotgun";
         case WeaponId::AurielQuarternaryRifle:              return "Quarternary Rifle";
         case WeaponId::AdherentPhaseBlade:                  return "Phase Blade";
@@ -960,13 +931,13 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::CyclopsBrontesPayload:               return "Brontes Payload";
         case WeaponId::CyclopsFuturistFlakCannons:          return "Flak Cannon";
         case WeaponId::VibranceSensoryOverload:             return "Sensory Overload";
-        case WeaponId::HarakanGoldenFlamethrower:           return "Flamethrower";
+        case WeaponId::AgonistOnlaDrivers:                  return "Onla Drivers";
         case WeaponId::IziraliskCorrosiveBioplasma:         return "Corrosive Bioplasma";
-        case WeaponId::CicatusPhaseClaws:                   return "Phase Claws";
-        case WeaponId::ZealotStarboundPhaseBlades:          return "Phase Blades";
-        case WeaponId::EcclesiastKhalendricAvengingBlaster: return "Avenging Blaster";
+        case WeaponId::DoroninKorozzetBeastblades:          return "Korozzet Beastblades";
+        case WeaponId::ThaumalogueUtsoCarbine:              return "Utso Carbine";
+        case WeaponId::CrematoriumOkliQuadshard:            return unit_id == UnitId::AskosiCrematorium ? "Okli Quadshard" : "Reforming Carbine";
         case WeaponId::OscilliantRotatingRay:               return "Rotating Ray";
-        case WeaponId::RenesairRotatingBlaster:             return "Rotating Blaster";
+        case WeaponId::AphoristAnsaSunshot:                 return "Ansa Sunshot";
         case WeaponId::ExtatusRepeatingBlaster:             return "Repeating Blaster";
         case WeaponId::UnarAutonomousRay:                   return "Autonomous Ray";
         case WeaponId::AshguardPhaseCremator:               return "Phase Cremator";
@@ -987,7 +958,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::KethrostalorStaggeredSpores:         return unit_id == UnitId::ZergKethrostalor ? "Staggered Spores" : "Spewing Spores";
         case WeaponId::TritonHydriaCannons:                 return "Hydria Cannons";
         case WeaponId::TritonLobotomyWarhead:               return "Lobotomy Warhead";
-        case WeaponId::RapidRandezvous:                     return "Rapid Rendezvous";
+        case WeaponId::RapidRendezvous:                     return "Rapid Rendezvous";
         case WeaponId::AckmedMickenMelter:                  return "Micken Melter";
         case WeaponId::GoskaMedusaRifle:                    return "Medusa Rifle";
         case WeaponId::SovrokorSovrolClaws:                 return "Sovrol Claws";
