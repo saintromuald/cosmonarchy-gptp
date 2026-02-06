@@ -36,47 +36,47 @@ namespace hooks {
 	u32 get_modified_cooldown(Unit* base_unit, u32 cooldown_param, bool clamp) {
 		Unit* unit = base_unit->is_subunit() ? base_unit->subunit : base_unit;
 		UnitExt& unit_ext = unit->ext();
-		f32 cooldown = cooldown_param;
+		fp32 cooldown{cooldown_param};
 
 		// @TODO: Extend weapon ids and remove this
 		switch (unit->id) {
-			case UnitId::ProtossCicatus:		      cooldown /= 1.13; break;
-			case UnitId::ProtossRenesair:		      cooldown *= 1.10; break;
-			case UnitId::ProtossSimulacrumAstral:     cooldown /= 1.20; break;
-			case UnitId::AskosiAvatar:				  cooldown *= 3.00; break;
-			case UnitId::AskosiPhontis:		          cooldown *= 1.33; break;
-			case UnitId::AskosiIconoclast:		      cooldown /= 1.13; break;
+			case UnitId::ProtossCicatus:			cooldown /= 1.13_fp32; break;
+			case UnitId::ProtossRenesair:			cooldown *= 1.10_fp32; break;
+			case UnitId::ProtossSimulacrumAstral:	cooldown /= 1.20_fp32; break;
+			case UnitId::AskosiAvatar:				cooldown *= 3.00_fp32; break;
+			case UnitId::AskosiPhontis:				cooldown *= 1.33_fp32; break;
+			case UnitId::AskosiIconoclast:			cooldown /= 1.13_fp32; break;
 		}
 
 		// Stimpack
 		if (unit->stim_timer) {
-			cooldown /= 2.5;
+			cooldown /= 2.5_fp32;
 		}
 
 		// Ensnare
 		if (unit->ensnare_timer) {
 			switch (unit_ext.values[ValueEnsnareFactor]) {
 				case 1: cooldown += cooldown / 3;   break;
-				case 2: cooldown += cooldown / 1.5; break;
+				case 2: cooldown += cooldown / 1.5_fp32; break;
 			}
 		}
 
 		// Crucible
 		bool has_crucible = unit_ext.unit_vectors[UnitVectorCrucibles].size() != 0;
-		cooldown /= 1 + (has_crucible * 0.23); // Divisor math is different
+		cooldown /= 1 + (has_crucible * 0.23_fp32); // Divisor math is different
 
 		// Vithrilisk - Corrosive Spores: lower attack speed of victim
 		cooldown *= 1 + unit_ext.values[ValueCorrosiveTouchStacks] * CorrosiveTouch::CooldownIncrease;
 
 		// Protoss Cornerstone: Ascend - attack cooldown
 		if (unit_ext.timers[TimerAscend]) {
-			cooldown /= 1.33;
+			cooldown /= 1.33_fp32;
 		}
 
 		if (unit_ext.values[ValueReassemblyActive]) {
 			switch (unit->id) {
 				case UnitId::AskosiScepter: {
-					cooldown /= 1.33;
+					cooldown /= 1.33_fp32;
 				} break;
 				case UnitId::AskosiTirade: {
 					cooldown *= 2;
@@ -89,26 +89,26 @@ namespace hooks {
 		}
 
 		if (unit_ext.timers[TimerNewDominion]) {
-			cooldown /= 1.33;
+			cooldown /= 1.33_fp32;
 		}
 
 		if (unit_ext.values[ValueIsShade]) {
-			cooldown /= 1.5;
+			cooldown /= 1.5_fp32;
 		}
 
 		if (unit_ext.timers[TimerDivineDisciplineBuff]) {
-			cooldown /= 1.25;
+			cooldown /= 1.25_fp32;
 		}
 		if (unit_ext.timers[TimerDivineDisciplineDebuff]) {
-			cooldown /= 0.75;
+			cooldown /= 0.75_fp32;
 		}
 
 		switch (unit->id) {
 			case UnitId::TerranMadcap: {
 				// Madcap Cabeirus Feeders behavior: increase weapon speed while stationary
-				u32 stacks = ceil((f64)unit_ext.values[ValueMadcapStacks] / TerranMadcap::PassiveDecayTime);
-				if (stacks > 0) {
-					f64 new_cooldown = (f64)cooldown / (1 + stacks * 0.15);
+				auto stacks = ceil((fp32)unit_ext.values[ValueMadcapStacks] / TerranMadcap::PassiveDecayTime);
+				if (stacks > 0_fp32) {
+					fp32 new_cooldown = cooldown / (1 + stacks * 0.15_fp32);
 					cooldown = new_cooldown;
 				}
 			} break;
@@ -116,11 +116,11 @@ namespace hooks {
 			case UnitId::TerranBlackjackGolden: {
 				// Blackjack Wear and Tear: reduce weapon speed based on missing health
 				if (unit_ext.values[ValueWearAndTear]) {
-					cooldown /= 0.66;
+					cooldown /= 0.66_fp32;
 				}
 			} break;
 			case UnitId::TerranMatadorCinderMode: {
-				cooldown /= 1.25;
+				cooldown /= 1.25_fp32;
 			} break;
 			case UnitId::TerranPhobos: {
 				// Argent Capacitors
@@ -129,18 +129,18 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::ProtossVagrantShade: {
-				cooldown /= 1.5;
+				cooldown /= 1.5_fp32;
 			} break;
 			case UnitId::ZergGhitorokor: {
 				// Relentless Aggression
 				if (unit_ext.values[ValueGhitorokorRelentlessAggressionStacks]) {
-					cooldown /= 1 + (0.10 * unit_ext.values[ValueGhitorokorRelentlessAggressionStacks]);
+					cooldown /= 1 + (0.10_fp32 * unit_ext.values[ValueGhitorokorRelentlessAggressionStacks]);
 				}
 			} break;
 			case UnitId::ZergMortothrokor: {
 				// Whetted Appetite
 				if (unit_ext.values[ValueMortothrokorStacks]) {
-					cooldown /= 1 + (0.05 * unit_ext.values[ValueMortothrokorStacks]);
+					cooldown /= 1 + (0.05_fp32 * unit_ext.values[ValueMortothrokorStacks]);
 				}
 			} break;
 			case UnitId::ZergUltrokor: {
@@ -153,12 +153,12 @@ namespace hooks {
 
 		// Ion Cannon Ion Field: Attack Speed Buff
 		if (unit_ext.timers[TimerIonFieldAttackSpeed] > 0) {
-			cooldown /= 1.5;
+			cooldown /= 1.5_fp32;
 		}
 
 		// Hierophant Signify: Malice
 		if (unit_ext.values[ValueSignifyStacks] >= 5) {
-			cooldown /= 0.6666;
+			cooldown *= 1.5_fp32;
 		}
 
 		if (unit->stim_timer) { // Fixes aice-related Stimpack issue
@@ -167,21 +167,17 @@ namespace hooks {
 
 		// Power Siphon
 		if (unit_ext.values[ValueSavantPowerSiphonBuff]) {
-			cooldown /= 1 + (0.1 * unit_ext.values[ValueSavantPowerSiphonBuff]);
+			cooldown /= 1 + (0.1_fp32 * unit_ext.values[ValueSavantPowerSiphonBuff]);
 		}
 		if (unit_ext.values[ValueSavantPowerSiphonDebuff]) {
-			cooldown *= 1 + (0.1 * unit_ext.values[ValueSavantPowerSiphonDebuff]);
+			cooldown *= 1 + (0.1_fp32 * unit_ext.values[ValueSavantPowerSiphonDebuff]);
 		}
 
 		if (clamp) {
-			if (cooldown > 250) { // Max cutoff
-				cooldown = 250;
-			} else if (cooldown < 1) { // Min cutoff (previously 5)
-				cooldown = 1;
-			}
+			cooldown = std::clamp(cooldown, 1_fp32, 250_fp32);
 		}
 
-		return cooldown;
+		return static_cast<u32>(cooldown);
 	}
 
 	/// Calculates the unit's weapon cooldown, factoring in upgrades and status effects.

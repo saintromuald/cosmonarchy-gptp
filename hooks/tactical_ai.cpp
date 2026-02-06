@@ -192,7 +192,7 @@ static u32 get_damage_against(Unit* unit, u32 weapon_id, Unit* target) {
 
 static u32 get_dps_against(Unit* source, Unit* target) {
     if (target->id == UnitId::ProtossSolarion) {
-        return static_cast<u32>((get_damage_against(source, WeaponId::StewardPulseCannon, target) /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
+        return static_cast<u32>((get_damage_against(source, WeaponId::StewardPulseCannon, target) /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0_fp32*/)
             * (target->unit_with_hangar.in_hangar_count + target->unit_with_hangar.out_hangar_count)
             * 1.5_fp32); // additional bias to encourage targeting solarions more
     } else if (units_dat::base_property[target->id] & UnitProperty::Spellcaster
@@ -278,7 +278,7 @@ s32 get_targeting_cost(Unit* source, Unit* target) {
     // Value attacking units with smaller pathing cost more
     s32 dist = (s32)bw::distance_between(source->position, target->position) - get_max_range(source->id);
     if (dist > 0) {
-        cost += dist / 32.0;
+        cost += s32(dist / 32.0_fp32);
     }
 
     // Value attacking strategically important targets
@@ -389,7 +389,7 @@ static s32 get_effect_value(Unit* unit, EffectField* effect) {
 
     bool flyer = unit->status & UnitStatus::InAir;
     u32 total_hp = unit->get_total_hp_plus_shields();
-    f32 hp_percentage = total_hp / (f32)(unit->get_max_hp_ingame() + unit->get_max_shields_in_game());
+    fp32 hp_percentage = total_hp / static_cast<fp32>(unit->get_max_hp_ingame() + unit->get_max_shields_in_game());
 
     KiterType type = get_kiter_type(unit->id);
     switch (effect->id) {
@@ -410,7 +410,7 @@ static s32 get_effect_value(Unit* unit, EffectField* effect) {
         } break;
         case EffectId::DiademIonField: {
             if (!flyer) {
-                if (total_hp > 50 && hp_percentage > 0.5 && unit_ext->timers[TimerIonFieldAttackSpeed] < 1 * 24) {
+                if (total_hp > 50 && hp_percentage > 0.5_fp32 && unit_ext->timers[TimerIonFieldAttackSpeed] < 1 * 24) {
                     value += 100;
                 } else {
                     value -= 100;
@@ -418,13 +418,13 @@ static s32 get_effect_value(Unit* unit, EffectField* effect) {
             }
         } break;
         case EffectId::AspirantCriticality: {
-            if (!flyer && hp_percentage < 1) {
+            if (!flyer && hp_percentage < 1_fp32) {
                 value += 100;
             }
         } break;
         case EffectId::KeskathalorCausticDischarge: {
             if (!flyer) {
-                if (total_hp > 50 && hp_percentage > 0.5 && type == KiterType_Melee && unit_ext->timers[TimerCausticDischargeSpeed] < 1 * 24) {
+                if (total_hp > 50 && hp_percentage > 0.5_fp32 && type == KiterType_Melee && unit_ext->timers[TimerCausticDischargeSpeed] < 1 * 24) {
                     value += 100;
                 } else {
                     value -= 100;
@@ -454,11 +454,11 @@ static s32 get_effect_value(Unit* unit, EffectField* effect) {
 
 static bool should_kite_back_against(Unit* unit, Unit* target) {
     if (target && target->can_attack_target(unit)) { // This formula was found by iquare
-        f32 factor = 1.0 / 343.0;
-        f32 kiter_speed = unit->flingy_top_speed;
-        f32 target_speed = target->flingy_top_speed;
-        f32 kiting_time = (unit->flingy_acceleration + unit->flingy_turn_rate) * 2 * factor;
-        if (kiter_speed > target_speed && get_max_range(target->id) > get_max_range(unit->id) + kiting_time) {
+        fp32 factor = 1.0_fp32 / 343.0_fp32;
+        fp32 kiter_speed{unit->flingy_top_speed};
+        fp32 target_speed{target->flingy_top_speed};
+        fp32 kiting_time = (unit->flingy_acceleration + unit->flingy_turn_rate) * 2 * factor;
+        if (kiter_speed > target_speed && static_cast<fp32>(get_max_range(target->id)) > get_max_range(unit->id) + kiting_time) {
             return true;
         }
     }
@@ -641,9 +641,9 @@ static bool unit_kiting_can_attack(Unit* unit) {
         return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit);
     }
     if (unit->movement_flags & MovementFlags_Accelerating || unit->flingy_turn_rate < 35) {
-        return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.75;
+        return get_current_weapon_cooldown(unit) <= u8(get_max_weapon_cooldown(unit) * 0.75_fp32);
     }
-    return get_current_weapon_cooldown(unit) <= get_max_weapon_cooldown(unit) * 0.25;
+    return get_current_weapon_cooldown(unit) <= u8(get_max_weapon_cooldown(unit) * 0.25_fp32);
 }
 
 static void kiting_mark_active(UnitExt* unit_ext) {
@@ -790,7 +790,7 @@ static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
         //				signal_sum += 1;
         //			}
         //		});
-        //		if (signal_sum >= local_group.unitCount * 0.4) {
+        //		if (signal_sum >= local_group.unitCount * 0.4_fp32) {
         //			sync = true;
         //			update_sync = true;
         //		}
@@ -836,12 +836,12 @@ static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
                 bool should_kite_back = result.backward_found;
                 bool prefer_kiting_forward = !unit_has_min_range(unit) && result.forward_found;
-                f32 hostile_advantage = result.hostile_strength / (f32)result.ally_strength;
+                fp32 hostile_advantage = result.hostile_strength / static_cast<fp32>(result.ally_strength);
                 u32 distance = result.distance;
                 u32 max_range = get_max_range(unit->id);
                 switch (get_kiter_type(unit->id)) {
                     case KiterType_Melee: {
-                        if (!prefer_kiting_forward && unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2) {
+                        if (!prefer_kiting_forward && unit->hitpoints < s32(unit->get_total_hp_plus_shields() * 0.2_fp32)) {
                             unit_ext->timers[TimerAI_KitingCooldown] = 24;
                             unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
                             KITE_DEBUG("%s: fall back", unit->get_name());
@@ -855,14 +855,14 @@ static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
                         }
                     } break;
                     case KiterType_Ranged: {
-                        if (!prefer_kiting_forward && (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || hostile_advantage >= 2.0)) {
+                        if (!prefer_kiting_forward && (unit->hitpoints < s32(unit->get_total_hp_plus_shields() * 0.2_fp32) || hostile_advantage >= 2.0_fp32)) {
                             unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
                             KITE_DEBUG("%s: fall back", unit->get_name());
                         } else if (prefer_kiting_forward || distance >= max_range * 2
-                            || (distance > max_range * 0.75 && hostile_advantage <= 0.5)) {
+                            || (distance > u32(max_range * 0.75_fp32) && hostile_advantage <= 0.5_fp32)) {
                             unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
                             KITE_DEBUG("%s: forward", unit->get_name());
-                        } else if (should_kite_back || hostile_advantage >= 1.0 || distance <= max_range * 0.25) {
+                        } else if (should_kite_back || hostile_advantage >= 1.0_fp32 || distance <= u32(max_range * 0.25_fp32)) {
                             unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
                             KITE_DEBUG("%s: backward", unit->get_name());
                         }
@@ -871,7 +871,7 @@ static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
                         if (distance > max_range * 2) {
                             unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
                             KITE_DEBUG("%s: forward", unit->get_name());
-                        } else if (should_kite_back || distance < max_range * 1.25) {
+                        } else if (should_kite_back || distance < u32(max_range * 1.25_fp32)) {
                             unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
                             KITE_DEBUG("%s: backward", unit->get_name());
                         }
@@ -879,10 +879,10 @@ static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
                     case KiterType_Flagship: {
                         bool dont_turn = unit->flingy_turn_rate < 15;
                         if (!prefer_kiting_forward && !dont_turn
-                            && (unit->hitpoints < unit->get_total_hp_plus_shields() * 0.2 || hostile_advantage >= 2.0)) {
+                            && (unit->hitpoints < s32(unit->get_total_hp_plus_shields() * 0.2_fp32) || hostile_advantage >= 2.0_fp32)) {
                             unit->order_to(OrderId::Move, result.backward_pos.x, result.backward_pos.y);
                             KITE_DEBUG("%s: fall back", unit->get_name());
-                        } else if (prefer_kiting_forward || (distance > max_range * 0.75 && hostile_advantage <= 0.5)) {
+                        } else if (prefer_kiting_forward || (distance > u32(max_range * 0.75_fp32) && hostile_advantage <= 0.5_fp32)) {
                             unit->order_to(OrderId::Move, result.forward_pos.x, result.forward_pos.y);
                             KITE_DEBUG("%s: forward", unit->get_name());
                         } else if (should_kite_back && !dont_turn) {
@@ -897,7 +897,7 @@ static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 }
 
 static fp32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
-    fp32 cost = 0_fp32;
+    fp32 cost{};
 
     // Value attacking units with higher dps
     Unit* context_target = target->subunit ? target->subunit : target;

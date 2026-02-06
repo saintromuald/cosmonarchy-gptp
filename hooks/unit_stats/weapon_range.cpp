@@ -32,7 +32,7 @@ namespace hooks {
 // Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
 u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in tiles, unfortunately
     auto& unit_ext = unit->ext();
-    fp32 bonus_amount = 0_fp32;
+    fp32 bonus_amount{};
     if (bw::get_game_kind() == GameKind::DarkAges) {
         bonus_amount -= bw::calculate_dark_ages_penalty(static_cast<fp32>(units_dat::seek_range[unit->id]));
     }
@@ -120,7 +120,7 @@ u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
 u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cliff_advantage) {
     auto& unit_ext = unit->ext();
 
-    fp32 bonus_amount = 0_fp32;
+    fp32 bonus_amount{};
     if (bw::get_game_kind() == GameKind::DarkAges) {
         bonus_amount -= bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0_fp32) * 32;
     }

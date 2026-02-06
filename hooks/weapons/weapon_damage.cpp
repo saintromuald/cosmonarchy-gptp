@@ -1234,8 +1234,8 @@ namespace hooks {
 
     static void weapon_damage_lifesteal(const WeaponDamageData& data) {
         s32 damage_dealt = data.damage + data.shield_reduce_amount;
-        fp32 hp_factor = 0_fp32;
-        fp32 shields_factor = 0_fp32;
+        fp32 hp_factor{};
+        fp32 shields_factor{};
 
         auto& attacker_ext = data.attacker->ext();
         if (attacker_ext.timers[TimerLucilleriPheremones]) {
