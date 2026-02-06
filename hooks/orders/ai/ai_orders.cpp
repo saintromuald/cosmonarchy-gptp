@@ -552,16 +552,11 @@ namespace hooks {
         u16 unit_id = UnitId::None;
         // TODO: Add support for custom races. -Pr0nogo
         u8 race_id = g_player_table[player].race;
-        switch(race_id) {
-            case RaceId::Terran: {
-                unit_id = UnitId::TerranMason;
-            } break;
-            case RaceId::Protoss: {
-                unit_id = UnitId::ProtossScribe;
-            } break;
-            case RaceId::Zerg: {
-                unit_id = UnitId::ZergDroleth;
-            } break;
+        switch (race_id) {
+            case RaceId::Terran:  unit_id = UnitId::TerranMason; break;
+            case RaceId::Protoss: unit_id = UnitId::ProtossScribe; break;
+            case RaceId::Zerg:    unit_id = UnitId::ZergDroleth; break;
+            case RaceId::Askosi:  unit_id = UnitId::AskosiPilgrim; break;
         }
         u32 completed_count = g_completed_unit_count_table[unit_id].player[player];
         // Originally had an inlined function that combined sieged and unsieged tanks for unit counts
@@ -1153,6 +1148,10 @@ namespace hooks {
                 case RaceId::Zerg: {
                     worker_count += g_completed_unit_count_table[UnitId::ZergDroleth].player[town_player];
                     worker_count += g_completed_unit_count_table[UnitId::ZergGosvileth].player[town_player];
+                } break;
+                case RaceId::Askosi: {
+                    worker_count += g_completed_unit_count_table[UnitId::AskosiPilgrim].player[town_player];
+                    worker_count += g_completed_unit_count_table[UnitId::AskosiConstituent].player[town_player];
                 } break;
             }
 

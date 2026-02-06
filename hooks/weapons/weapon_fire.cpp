@@ -18,7 +18,6 @@ namespace {
 
 typedef void(__stdcall* GetWeaponHitPosFunc)(Unit* unit, s32* x, s32* y);
 GetWeaponHitPosFunc const get_weapon_hit_pos = (GetWeaponHitPosFunc)0x004762C0;
-
 }
 
 static bool alkajelisk_spore_match(Bullet* bullet, Unit* unit) {
@@ -106,8 +105,7 @@ static std::optional<Point16> get_launch_pos(Unit* unit, WeaponId::Enum weapon_i
     auto behavior = weapons_dat::behavior[weapon_id];
     // Behavior override for new abilities
     switch (weapon_id) {
-        case WeaponId::HypnagogueThroughTheLookingGlass: behavior = WeaponBehavior_AppearOnTargetSite; break;
-        case WeaponId::Rematerialize:                    behavior = WeaponBehavior_AppearOnTargetUnit; break;
+        // Not currently needed, but keeping this hint for future implementations.
     }
     
     if (behavior == WeaponBehavior_AppearOnTargetUnit) {
@@ -147,10 +145,10 @@ Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const F
 
     bool is_ion_cannon = unit->id == UnitId::TerranDiadem;
     if (is_ion_cannon) {
-        UnitExt* unit_ext = get_unit_ext(unit);
+        auto& unit_ext = unit->ext();
         target.unit = 0;
-        target.pt.x = unit_ext->values[ValueDiademTargetPosX];
-        target.pt.y = unit_ext->values[ValueDiademTargetPosY];
+        target.pt.x = unit_ext.values[ValueDiademTargetPosX];
+        target.pt.y = unit_ext.values[ValueDiademTargetPosY];
     }
 
     auto offsets = !opts.ignore_weapon_offsets ? get_weapon_offsets(weapon_id) : nullptr;
@@ -366,18 +364,18 @@ void fire_shotgun(Unit* unit, WeaponId::Enum weapon_id, u32 side_count, s32 angl
 }
 
 static bool internal_fired_stagger(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 filters, const FireMultipleOpts& opts, Unit* fired_at) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    auto& blacklist = unit_ext->unit_vectors[UnitVectorStaggerBlacklist];
+    auto& unit_ext = unit->ext();
+    auto& blacklist = unit_ext.unit_vectors[UnitVectorStaggerBlacklist];
 
     bool apply_cooldown = false;
     if (fired_at) {
         blacklist.push_back(fired_at);
         unit->ground_weapon_cooldown = opts.stagger;
         unit->air_weapon_cooldown = opts.stagger;
-        unit_ext->timers[TimerClearStaggerBlacklist] = opts.stagger + 6; // Ideally we would get attack animation time instead of hardcoding 6. -Veeq7
-        unit_ext->values[ValueStaggerWeaponId] = weapon_id;
-        unit_ext->values[ValueStaggerCount] += 1;
-        if (max_targets && unit_ext->values[ValueStaggerCount] >= max_targets) {
+        unit_ext.timers[TimerClearStaggerBlacklist] = opts.stagger + 6; // Ideally we would get attack animation time instead of hardcoding 6. -Veeq7
+        unit_ext.values[ValueStaggerWeaponId] = weapon_id;
+        unit_ext.values[ValueStaggerCount] += 1;
+        if (max_targets && unit_ext.values[ValueStaggerCount] >= max_targets) {
             apply_cooldown = true;
         }
     } else {
@@ -386,8 +384,8 @@ static bool internal_fired_stagger(Unit* unit, WeaponId::Enum weapon_id, u32 max
 
     if (apply_cooldown) {
         blacklist.clear();
-        unit_ext->timers[TimerClearStaggerBlacklist] = 0;
-        unit_ext->values[ValueStaggerCount] = 0;
+        unit_ext.timers[TimerClearStaggerBlacklist] = 0;
+        unit_ext.values[ValueStaggerCount] = 0;
         apply_weapon_cooldown(unit, weapon_id);
     }
 
@@ -410,24 +408,23 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
     bool apply_cooldown = has_stagger ? false : opts.fire_opts.apply_cooldown;
 
     Unit* fired_at = 0;
-    Unit* order_target_unit = unit->order_target.unit;
-    if (!opts.ignore_main
-            && order_target_unit
+    Unit* target_unit = unit->order_target.unit;
+    if (!opts.ignore_main && target_unit
             && unit->main_order_id != OrderId::Follow
             && unit->main_order_id != OrderId::Patrol
             && unit->main_order_id != OrderId::EnterTransport
             && unit->main_order_id != OrderId::EnterNydusCanal
-            && can_fire_at(order_target_unit)
-            && unit->can_attack_target(order_target_unit)) {
-        if (weapon_id_is_secondary(weapon_id) && bw::is_allied_to(unit->player, order_target_unit->player)) {
+            && can_fire_at(target_unit)
+            && unit->can_attack_target(target_unit)) {
+        if (weapon_id_is_automatic(weapon_id) && bw::is_allied_to(unit->player, target_unit->player)) {
             return false; // This is stupid, but the unit_flag_match handling causes tism with entering transports. Should make more elegant later. -Pr0nogo
         }
-        if (unit_flag_match(order_target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
-            if (!has_stagger || !std::ranges::contains(blacklist, order_target_unit)) {
+        if (unit_flag_match(target_unit, unit, filters & ~(FilterAlly | FilterEnemy))) { // We want to attack the order target regardless of alliance flags
+            if (!has_stagger || !std::ranges::contains(blacklist, target_unit)) {
                 for (u32 i = 0; i < factor; i++) {
-                    Bullet* bullet = fire_bullet(unit, weapon_id, make_target(order_target_unit), {.apply_cooldown = apply_cooldown});
+                    Bullet* bullet = fire_bullet(unit, weapon_id, make_target(target_unit), {.apply_cooldown = apply_cooldown});
                     if (bullet) {
-                        fired_at = order_target_unit;
+                        fired_at = target_unit;
                         BulletExt* bullet_ext = get_bullet_ext(bullet);
                         bullet_ext->divisor_multiplier = opts.divisor_multiplier;
                         if (has_stagger) {
@@ -444,10 +441,10 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
 
     EntryArray<Unit> targets;
     if (opts.center_on_target) {
-        if (!order_target_unit) {
+        if (!target_unit) {
             return fired_at != 0;
         }
-        targets = g_unit_search.radial(order_target_unit->position, opts.center_on_target_range_overwrite ? opts.center_on_target_range_overwrite : max_attack_range);
+        targets = g_unit_search.radial(target_unit->position, opts.center_on_target_range_overwrite ? opts.center_on_target_range_overwrite : max_attack_range);
     } else {
         Box32 area = {
             unit->get_left()   - max_attack_range - 8 * 32, // We can't account for size of all possible other units, but we want border to border search,
@@ -458,16 +455,16 @@ bool fire_multiple(Unit* unit, WeaponId::Enum weapon_id, u32 max_targets, u32 fi
         targets = g_unit_search.rect(area);
     }
     targets.filter(unit, filters);
-    Point16 sort_center = order_target_unit ? order_target_unit->position : unit->position;
+    Point16 sort_center = target_unit ? target_unit->position : unit->position;
     targets.sort_by_distance(sort_center);
     
     for (Unit* target : targets) {
-        if (target == unit
-        ||  target == order_target_unit
-        ||  bw::is_allied_to(unit->player, target->player)
-        || !unit->can_attack_target(target)
-        || !can_fire_at(target)
-        ||(has_target_cap && !max_targets)) {
+        if  (target == unit
+        ||   target == target_unit
+        ||   bw::is_allied_to(unit->player, target->player)
+        ||  !unit->can_attack_target(target)
+        ||  !can_fire_at(target)
+        ||  (has_target_cap && !max_targets)) {
             continue;
         }
 
@@ -688,7 +685,8 @@ namespace hooks {
                             .stagger = 2,
                         });
                     } break;
-                    case WeaponId::ValkyrieHaloRockets: {
+                    case WeaponId::ValkyrieHaloRockets: 
+                    case WeaponId::QuadrigaGodhandRockets: {
                         // Offset: Cone
                         s32 angle = 15 - index * 4;
                         s32 scatter = -15 + index * 5 + 32; // Adding 32 for Valkyrie specifically.
@@ -794,6 +792,18 @@ namespace hooks {
                             cargo->ext().values[ValueDontProcOnDeathEffects] = true;
                             cargo->silent_remove();
                         }
+                        bullet_ext->source_id = unit->id;
+                    } break;
+                    case WeaponId::TiradeIktaDriver: {
+                        // Tirade Excoriation Assembly
+                        if (unit->is_askosi_embedded()) {
+                            fire_multiple(unit, WeaponId::TiradeIktaDriver, 0, FilterEnemy, {});
+                        //  fire_multiple(unit, WeaponId::TiradeIktaDriver, 0, FilterEnemy, {
+                        //      .stagger = 0,
+                        //  });
+                        } else {
+                            fire_bullet(unit, weapon_id, weapon_target);
+                        }
                     } break;
                     default: {
                         fire_bullet(unit, weapon_id, weapon_target);
@@ -810,7 +820,11 @@ namespace hooks {
                         // TODO: audiovisuals
                         fire_bullet(mimic, weapon_id, weapon_target);
                         apply_weapon_cooldown(mimic, weapon_id);
+                        mimic->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
                     }
+                }
+                if (unit_ext.timers[TimerRejoinderOfService]) {
+                    // TODO: Audiovisuals
                 }
             }
         }
@@ -1002,9 +1016,8 @@ namespace hooks {
 
         f32 z_climb = 0;
         switch (bullet->weapon_id) {
-            case WeaponId::PhalanxArcliteShockCannon: {
-                z_climb = 0.25;
-            } break;
+            case WeaponId::PhalanxArcliteShockCannon: z_climb = 0.25; break;
+            case WeaponId::AphoristAnsaSunshot:       z_climb = 0.40; break;
         }
 
         // Unapply displacement
@@ -1276,7 +1289,7 @@ namespace hooks {
             bullet_ext->bounced = true;
             u8 next_bounce = bullet->remaining_bounces - 1;
             // Gladius infinite bouncing
-            bool is_binding_plasma = WeaponId::weapon_id_bounces_binding_plasma(static_cast<WeaponId::Enum>(bullet->weapon_id));
+            bool is_binding_plasma = WeaponId::bounces_binding_plasma(static_cast<WeaponId::Enum>(bullet->weapon_id));
             if (is_binding_plasma) {
                 next_bounce = 1;
             }
@@ -1369,7 +1382,7 @@ namespace hooks {
         }
 
         // Gladius Binding Plasma behavior
-        if (WeaponId::weapon_id_bounces_binding_plasma(static_cast<WeaponId::Enum>(g_iquare_globals->bounce_bullet->weapon_id))) {
+        if (WeaponId::bounces_binding_plasma(static_cast<WeaponId::Enum>(g_iquare_globals->bounce_bullet->weapon_id))) {
             if (target && *g_bullet_bounce_missile_next && (*g_bullet_bounce_missile_next)->sprite && target->sprite) {
                 if (g_iquare_globals->was_already_hit_by_multihit_bullet(g_iquare_globals->bounce_bullet, target)) {
                     return false;
@@ -1631,6 +1644,12 @@ namespace hooks {
                     default: {
                         if (weapon_id_bounces_crushing_tide(weapon_id)) {
                             bullet->remaining_bounces = 2;
+                        } else if (WeaponId::bounces_power_breach(static_cast<WeaponId::Enum>(bullet->weapon_id))) {
+                            if (bullet->source_unit && bullet->source_unit->id == UnitId::AskosiIntendent) {
+                                bullet->remaining_bounces = 4;
+                            } else {
+                                bullet->remaining_bounces = 1;
+                            }
                         } else {
                             bullet->remaining_bounces = 3;
                         }

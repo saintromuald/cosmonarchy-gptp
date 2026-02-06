@@ -18,7 +18,6 @@ namespace TechId {
         PaladinSkyfall						= 37, // Unused Tech 37
         EmergencyDetonation					= 39, // Unused Tech 39
         AzazelSublimeShepherd				= 40, // Unused Tech 40
-        TalosSalvage						= 41, // Unused Tech 41
         HypnagogueThroughTheLookingGlass	= 42, // Unused Tech 42
         TritonLobotomyWarhead   			= 46, // Unused Tech 46
         FacadePryingEyes                    = 47,
@@ -40,6 +39,8 @@ namespace TechId {
     // Askosi
         AskosiRapidRendezvous    			= 9,  // Wraith Cloaking Field
         AskosiRematerialize     			= 23, // Archon Warp
+        AskosiHijack                        = 36, // Unused Tech 36
+        AskosiSalvage						= 41, // Unused Tech 41
 
         // Brood War \\
 

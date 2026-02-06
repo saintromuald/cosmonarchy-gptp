@@ -50,6 +50,11 @@ static void special_post_unload_unit(Unit* unit, Unit* transport) {
         unit->order_to(OrderId::SiegeMode);
     }
 
+    if (transport->id == UnitId::AskosiPetract) {
+        auto& unit_ext = unit->ext();
+        unit_ext.timers[TimerNewDominion] = Askosi::NewDominionDuration;
+    }
+
     const auto apply_unload_delay = [](Unit* unit) {
         if (!unit) return;
         const auto update_delay = [](auto& var) {

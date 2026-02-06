@@ -197,7 +197,7 @@ static u32 main_order_func_offsets[][3] {
 	{ 0x0047BE80,	/*OrderId::Enabledoodad*/			Func_Type::EAX,	2},
 	{ 0x0047BD60,	/*OrderId::Disabledoodad*/			Func_Type::EAX,	2},
 	{ 0x004E4C70,	/*OrderId::Warpin*/					Func_Type::EDI,	0},
-	{ 0x00463900,	/*OrderId::Medic*/					Func_Type::EAX,	2},
+	{ 0x00463900,	/*OrderId::Cleric*/					Func_Type::EAX,	2},
 	{ 0x00464180,	/*OrderId::MedicHeal1*/				Func_Type::EAX,	1},
 	{ 0x004637B0,	/*OrderId::HealMove*/				Func_Type::PUSH,1},
 	{ 0x00464050,	/*OrderId::HoldPositionCleric*/		Func_Type::ESI,	1},
@@ -350,7 +350,7 @@ namespace hooks {
 			case OrderId::GriefOfAllGods: {
 				hooks::orders_grief_of_all_gods(unit);
 			} break;
-			case OrderId::WyvernLandGrab: {
+			case OrderId::TargetGroundNew: {
 				if (unit->id == UnitId::TerranWyvern) {
 					auto& unit_ext = unit->ext();
 					unit_ext.values[ValueWyvernLandGrabOn] = 1;
@@ -364,8 +364,13 @@ namespace hooks {
 					unit_ext.values[ValueTryCastCustomSpell] = true;
 				}
 			} break;
+			case OrderId::LobotomyWarhead:
+			case OrderId::DivineDiscipline:
+			case OrderId::RejoinderOfService:
 			case OrderId::AskosiRematerialize:
-			case OrderId::LobotomyWarhead: {
+			case OrderId::AskosiRapidRendezvous:
+			case OrderId::AskosiHijack:
+			case OrderId::AskosiSalvage: {
 				auto& unit_ext = unit->ext();
 				if (!unit_ext.values[ValueTryCastCustomSpell]) {
 					unit_ext.values[ValueTryCastCustomSpell] = true;

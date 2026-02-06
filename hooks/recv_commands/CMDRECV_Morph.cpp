@@ -182,8 +182,7 @@ namespace hooks {
 						return OrderId::Repair1;
 					}
 				}
-			} else if (target_unit->player == unit->player && target_unit->get_race() == RaceId::Terran
-				&&   !(units_dat::base_property[target_unit->id] & UnitProperty::Addon)) {
+			} else if (target_unit->player == unit->player && !target_unit->is_addon() && (target_unit->get_race() == RaceId::Terran || target_unit->get_race() == RaceId::Askosi)) {
 				if (!target_unit->connected_unit || target_unit->connected_unit->order_target.unit != target_unit) {
 					return OrderId::ConstructingBuilding;
 				}

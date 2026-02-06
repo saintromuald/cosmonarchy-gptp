@@ -9,7 +9,6 @@
 namespace hooks {
     // The structure is being constructed
     void orders_terran_build_self(Unit* building) { // 00467760
-        IscriptAnimation::Enum anim;
         switch (building->main_order_state) {
             case 0: {
                 if (building->hitpoints < units_dat::max_hitpoints[building->id] * 0.2) {
@@ -50,7 +49,8 @@ namespace hooks {
     // Resume construction on an existing structure
     void orders_scv_build_2(Unit* unit) { // 00467A70
         Unit* built_unit = unit->order_target.unit;
-        UnitExt& builder_ext = unit->ext();
+        auto& builder_ext = unit->ext();
+        bool is_askosi = unit->get_race() == RaceId::Askosi;
         if (built_unit && !built_unit->is_completed()) {
             switch (unit->main_order_state) {
                 case 0: {
@@ -65,8 +65,18 @@ namespace hooks {
                         unit->order_to_idle();
                     } else if (movable_state != MovableState_NotReachedDestination) {
                         bw::refresh_console();
-
-                        if (built_unit->connected_unit && built_unit->connected_unit != unit && (built_unit->connected_unit)->order_target.unit == built_unit) {
+                        if (is_askosi) {
+                            auto& built_ext = built_unit->ext();
+                            auto& vec = built_ext.unit_vectors[UnitVectorAskosiBuilders];
+                            if (vec.size() < 5) {
+                                if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
+                                    vec.push_back(unit);
+                                }
+                                unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
+                                unit->order_simple(units_dat::return_to_idle_order[unit->id], false);
+                                ++unit->main_order_state;
+                            }
+                        } else if (built_unit->connected_unit && built_unit->connected_unit != unit && (built_unit->connected_unit)->order_target.unit == built_unit) {
                             unit->order_to_idle(); // another worker is already on the job
                         } else {
                             builder_ext.values[ValueTerranConstruction] = built_unit->id;
@@ -95,17 +105,14 @@ namespace hooks {
                     s16 x_max = built_unit->sprite->position.x + units_dat::unit_bounds[built_unit->id].right  - units_dat::unit_bounds[unit->id].right;
                     s16 y_min = built_unit->sprite->position.y - units_dat::unit_bounds[built_unit->id].top    + units_dat::unit_bounds[unit->id].top;
                     s16 y_max = built_unit->sprite->position.y + units_dat::unit_bounds[built_unit->id].bottom - units_dat::unit_bounds[unit->id].bottom;
-
                     if (x_min > x_max) { // If worker is wider than building, don't make him shuffle around horizontally. Might be safer to compare units_dat bounds, but this should be true for like 99% of cases.
                         x_min = built_unit->sprite->position.x;
                         x_max = built_unit->sprite->position.x;
                     }
-
                     if (y_min > y_max) { // If worker is taller than building, don't make him shuffle around vertically.
                         y_min = built_unit->sprite->position.y;
                         y_max = built_unit->sprite->position.y;
                     }
-
                     // DF: New, RNG-free pattern
                     if (unit->position.y >= y_max) {
                         unit->order_target.pt.x = x_min;
@@ -117,7 +124,6 @@ namespace hooks {
                     } else {
                         unit->order_target.pt.y = y_max;
                     }
-
                     helper::fix_target_location(&unit->order_target.pt, unit->id);
                     if (!helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
                         return;
@@ -167,16 +173,27 @@ namespace hooks {
                 } break;
             }
 
-            u16 hp_gain = built_unit->build_repair_hp_gain;
-            cm::progress_build(built_unit, {
-                .builder = unit,
-                .is_constructing = true,
-                .already_ticked = true,
-                .hp_gain = hp_gain,
-            });
-
-            helper::generic_progress_build(built_unit, hp_gain, false);
-            if (!(built_unit->status & UnitStatus::Completed)) {
+            fp64 hp_gain{built_unit->build_repair_hp_gain};
+            if (is_askosi) {
+                auto& built_ext = built_unit->ext();
+                auto askosi_builder_count = built_ext.unit_vectors[UnitVectorAskosiBuilders].size();
+                if (askosi_builder_count > 1) {
+                    hp_gain *= 1 + ((askosi_builder_count - 1) * 0.10_fp64);
+                }
+                if (unit->id == UnitId::AskosiDyad) {
+                    hp_gain *= 1.25_fp64;
+                }
+                built_ext.values[ValueAskosiBuildProc]++;
+                if (built_ext.values[ValueAskosiBuildProc] >= askosi_builder_count) {
+                    built_ext.values[ValueAskosiBuildProc] = 0;
+                    cm::progress_build(built_unit, {.builder = unit, .is_constructing = true, .already_ticked = true, .is_askosi = true, .hp_gain = u16(hp_gain)});
+                    helper::generic_progress_build(built_unit, u16(hp_gain), false);
+                }
+            } else {
+                cm::progress_build(built_unit, {.builder = unit, .is_constructing = true, .already_ticked = true, .hp_gain = u16(hp_gain)});
+                helper::generic_progress_build(built_unit, u16(hp_gain), false);
+            }
+            if (!built_unit->is_completed()) {
                 return;
             }
         }
@@ -188,7 +205,8 @@ namespace hooks {
         if (built_unit) {
             built_unit->connected_unit = 0;
             helper::play_building_complete_sound(unit);
-            bw::play_sound(SoundId::TerranConstructionEnd01, built_unit->position);
+            SoundId::Enum sound_id = is_askosi ? SoundId::AskosiConstructionEnd01 : SoundId::TerranConstructionEnd01;
+            bw::play_sound(sound_id, built_unit->position);
             bw::play_sound((SoundId::Enum)units_dat::sound_what_first[built_unit->id], built_unit);
             if (unit_id_is_tech_tier_structure(built_unit->id)) {
                 replay_witness_event(built_unit, SpectatorEvent_Tech);
@@ -196,8 +214,11 @@ namespace hooks {
             builder_ext.values[ValueTerranConstruction] = UnitId::None;
             helper::update_unit_damage_overlay(built_unit); // New - fix bug where damaged structures don't create overlay until damaged or healed. -Pr0nogo
             if ((built_unit->is_completed() && unit_id_is_capped_gas_node(built_unit->id) && built_unit->player == unit->player) || unit_id_is_minerals(built_unit->id)) {
-                unit->order_to(OrderId::Harvest1, built_unit);
-                return;
+                if (unit->id != UnitId::TerranOgunWorkerMode && unit->id != UnitId::AskosiDyad) {
+                    unit->order_to(OrderId::Harvest1, built_unit);
+                    unit->ext().values[ValueWorkerContext] = WorkerContext::Harvesting;
+                    return;
+                }
             }
         }
 
@@ -211,20 +232,33 @@ namespace hooks {
         }
     }
 
-    // Move to construct a structure that has not been started already
+    // Move to construct a structure that has not yet begun
     void orders_scv_build(Unit* unit) { // 00467FD0
         if (unit->unit_ai) {
             unit->status |= UnitStatus::IsGathering;
         }
-
+        bool is_askosi = unit->get_race() == RaceId::Askosi;
         if (unit->main_order_state) {
             if (unit->main_order_state == 1) {
                 if (unit->sprite->position.x == unit->move_target.pt.x
                     && unit->sprite->position.y == unit->move_target.pt.y) {
-                    if (!(unit->status & UnitStatus::Unmovable)
-                    &&    helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128)
-                    &&    helper::begin_building(unit))
-                    {
+                    bool is_at_building_site = false;
+                    if (is_askosi) {
+                        u32 distance = bw::distance_between(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
+                        u32 distance_wanted = get_worker_construction_distance(unit->build_queue[unit->build_queue_slot]);
+                        if (distance / 256 > distance_wanted) {
+                            if (unit->get_movable_state() != MovableState_NotReachedDestination) {
+                                helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+                            }
+                        } else {
+                            helper::make_to_hold_position(unit);
+                            is_at_building_site = true;
+                        }
+                    } else {
+                        is_at_building_site = helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128);
+                    }
+                    
+                    if (!(unit->status & UnitStatus::Unmovable) && is_at_building_site && helper::start_building(unit)) {
                         auto& builder_ext = unit->ext();
                         builder_ext.terran_build_pos = unit->position;
 
@@ -253,7 +287,14 @@ namespace hooks {
                             spread_debuffs(unit, built_unit);
                             builder_ext.values[ValueTerranConstruction] = built_unit->id;
                             built_unit->create_origin = unit->id;
-                            built_unit->connected_unit = unit;
+                            if (is_askosi) {
+                                auto& vec = built_unit->ext().unit_vectors[UnitVectorAskosiBuilders];
+                                if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
+                                    vec.push_back(unit);
+                                }
+                            } else {
+                                built_unit->connected_unit = unit;
+                            }
                             built_unit->sprite->player = unit->sprite->player; // Player color inheritance.
                             unit->main_order_id = OrderId::ConstructingBuilding;
                             unit->main_order_state = 3;
@@ -393,7 +434,7 @@ namespace hooks {
                     helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[135] + 1000 * (building_complete_something[0] / 1000), 1, 135);
                 } break;
                 case RaceId::Terran: {
-                    UnitExt* builder_ext = get_unit_ext(unit);
+                    auto& builder_ext = unit->ext();
                     u32 sound_id = 0;
                     if (units_dat::base_property[unit->id] & UnitProperty::Building) {
                         sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_AddonComplete);
@@ -404,7 +445,7 @@ namespace hooks {
                         sound_id = SoundId::Terran_SCV_TSCUpd00_WAV; // Job's finished
                     }
 
-                    if (unit_id_is_tech_tier_structure(builder_ext->values[ValueTerranConstruction])) {
+                    if (unit_id_is_tech_tier_structure(builder_ext.values[ValueTerranConstruction])) {
                         sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_TechUpComplete);
                     }
 
@@ -412,12 +453,15 @@ namespace hooks {
                     helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
                 } break;
                 case RaceId::Protoss: {
-                    default: {
-                        u32 sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_StructureComplete_P);
-                        helper::play_sound_from_unit(sound_id, unit, 1, 99);
-                        helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
-                    } break;
-                }
+                    u32 sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_StructureComplete_P);
+                    helper::play_sound_from_unit(sound_id, unit, 1, 99);
+                    helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
+                } break;
+                case RaceId::Askosi: {
+                    u32 sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_Assembly);
+                    helper::play_sound_from_unit(sound_id, unit, 1, 99);
+                    helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
+                } break;
             }
         }
     }
@@ -511,9 +555,13 @@ namespace hooks {
     // Hooked to modify addon construction speed based on building modifier (for e.g. Crucible speed boosts) -Pr0nogo
     // This is a generic progress build applied not only to addons! -Veeq7
     bool generic_progress_build(Unit* unit, u32 hp_gain, bool is_incomplete) { // 004679A0
+        bool use_stock_speed = unit->connected_unit == nullptr;
+        if (unit->connected_unit && unit->get_race() == RaceId::Askosi && unit->connected_unit->get_race() == RaceId::Askosi) {
+            use_stock_speed = true;
+        }
         if (!cm::progress_build(unit, {
             .builder = unit->connected_unit,
-            .use_stock_speed = !unit->connected_unit, // For non-addons only want to tick once, we already call cm::progress_build for them individually, together with the actual builder unit
+            .use_stock_speed = use_stock_speed, // For non-addons only want to tick once, we already call cm::progress_build for them individually, together with the actual builder unit
             .hp_gain = hp_gain,
         })) {
             return true;
@@ -522,11 +570,11 @@ namespace hooks {
         helper::update_unit_stats_and_finish_building(unit);
         if (!is_incomplete || helper::show_finished_unit(unit)) {
             helper::update_unit_strength_and_apply_default_orders(unit);
-            if (!(unit->status & UnitStatus::GroundedBuilding)) {
+            if (!unit->is_grounded_building()) {
                 helper::play_unit_ready_sound(unit);
                 return true;
             }
-            if (units_dat::group_flags[unit->id].is_terran) {
+            if (unit->get_race() == RaceId::Terran) {
                 Unit* addon = helper::connect_addon_check(unit);
                 if (addon) {
                     helper::complete_addon(unit, addon);

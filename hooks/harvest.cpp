@@ -14,11 +14,13 @@ u32 get_gas_tier(Unit* unit) {
 			case UnitId::TerranSieve:
 			case UnitId::ProtossCedent:
 			case UnitId::ZergEskigant:
+			case UnitId::AskosiArch:
 				return 2;
 
 			case UnitId::TerranReservoir:
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergExcisant:
+			case UnitId::AskosiAbutment:
 				return 3;
 
 			case UnitId::TerranWellbore:
@@ -94,17 +96,17 @@ namespace hooks {
 				chunk_image_id = ImageId::Christmas_MineralChunk1;
 			}
 			is_mineral = true;
-		} else if (resource->get_race() == RaceId::Protoss) {
-			chunk_image_id = ImageId::ProtossGasOrbType1;
-		} else if (resource->get_race() == RaceId::Zerg) {
-			chunk_image_id = ImageId::ZergGasSacType1;
-		} else if (resource->get_race() == RaceId::Terran) {
-			chunk_image_id = ImageId::TerranGasTankType1;
 		} else if (resource->id == UnitId::ResourceVespeneRidge || resource->id == UnitId::ResourceVespeneGeyser) {
-			chunk_image_id = ImageId::GasRaw;
-		} else {
-			no_chunk_image = true;
-		}
+            chunk_image_id = ImageId::GasRaw;
+        } else {
+            switch (resource->get_race()) {
+                case RaceId::Terran:  chunk_image_id = ImageId::TerranGasTankType1; break;
+                case RaceId::Protoss: chunk_image_id = ImageId::ProtossGasOrbType1; break;
+                case RaceId::Zerg:    chunk_image_id = ImageId::ZergGasSacType1;    break;
+                case RaceId::Askosi:  chunk_image_id = ImageId::TerranGasTankType1; break;
+                default:			  no_chunk_image = true;						break;
+            }
+        }
 
 		if (!no_chunk_image) {
 			if (g_globals->celebration == Celebration_Christmas) {
@@ -165,7 +167,9 @@ namespace hooks {
 			case UnitId::ProtossAquifer:
 			case UnitId::ZergEskigant:
 			case UnitId::ZergExcisant:
-			case UnitId::ZergEzigrisant: {
+			case UnitId::ZergEzigrisant:
+            case UnitId::AskosiArch:
+            case UnitId::AskosiAbutment: {
 				if ((ignore_completed || node->is_completed()) && (node->player == worker->player || bw::are_mutual_allies(node->player, worker->player))) {
 					return true;
 				}

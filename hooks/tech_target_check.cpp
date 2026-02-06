@@ -4,11 +4,10 @@
 #include <BW/api.h>
 
 namespace hooks {
-u32 get_tech_use_error_message_hook(Unit* target, u8 player, u16 tech_id) { // 00491E80
+u32 get_tech_use_error_message(Unit* target, u8 player, u16 tech_id) { // 00491E80
 	if (target->stasis_timer != 0) {
 		return 900; // Units in stasis can't be targeted.<0>
 	} else {
-		// GPTP mongomin were here
 		bool is_building = target->is_building();
 		switch (tech_id) {
 			case TechId::MindTyrantMaledictus: {
@@ -42,8 +41,7 @@ u32 get_tech_use_error_message_hook(Unit* target, u8 player, u16 tech_id) { // 0
 			case TechId::EmergencyDetonation:
 			case TechId::Irradiate:
 			case TechId::Hallucination:
-			case TechId::PsionicStorm:
-			{
+			case TechId::PsionicStorm: {
 				return 0;
 			} break;
 			case TechId::ZergBlissfulEmbrace: {
@@ -52,9 +50,33 @@ u32 get_tech_use_error_message_hook(Unit* target, u8 player, u16 tech_id) { // 0
 				}
 				if (unit_id_is_trap(target->id) || !unit_id_is_valid_for_most_abilities(target->id)) {
 					return 876; // Invalid target.<0>
-				} else {
-					return 0; // valid target
 				}
+				return 0; // valid target
+			} break;
+			case TechId::AskosiRapidRendezvous: {
+				if (!bw::are_mutual_allies(player, target->player) || !target->is_completed()) {
+					return 873;
+				}
+				if (target->is_in_air()) {
+					return 886;
+				}
+				return 0;
+			} break;
+			case TechId::AskosiRematerialize:
+			case TechId::AskosiSalvage: {
+				if (!bw::are_mutual_allies(player, target->player) || !target->is_completed()) {
+					return 873;
+				}
+				return 0;
+			} break;
+			case TechId::AskosiHijack: {
+				if (bw::are_mutual_allies(player, target->player) && !target->is_askosi_embedded()) {
+					return 906;
+				}
+				if (!target->is_completed()) {
+					return 905;
+				}
+				return 0;
 			} break;
 			default: {
 				return 876; // Invalid target.<0>

@@ -44,12 +44,12 @@ BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOption
 }
 
 bool progress_build(Unit* unit, const ProgressBuildOptions& options) {
-	if (!unit) {
-		return false;
-	}
-	if (!unit->remaining_build_time) {
-		return true;
-	}
+    if (!unit) {
+        return false;
+    }
+    if (!unit->remaining_build_time) {
+        return true;
+    }
 
 	const auto modifier = advance_building_modifier(unit, options);
 	if (unit->remaining_build_time >= modifier.integer_step) {

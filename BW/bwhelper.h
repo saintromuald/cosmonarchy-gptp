@@ -182,7 +182,6 @@ namespace helper {
     bool unitIsFrozen(Unit* a1);
     bool isUnitCasterNotHallucination(Unit* a1);
     b32 get_active_tile_flag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags);
-    u32 get_target_unit_ability_error_stat_string(Unit* target, u8 player, u32 tech_id);			// 00491E80
 
     // For modify_unit_shields
     s32 SErrSetLastError(char a1);
@@ -333,7 +332,7 @@ namespace helper {
     bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance);					// 00401240
     void check_unstack(Unit* unit);												                            // 0042D9A0
     Unit* check_collision(Unit* unit);												                        // 0042D9A0
-    bool begin_building(Unit* unit);																		// 00467030
+    bool start_building(Unit* unit);																		// 00467030
     Unit* begin_gas_building(Unit* unit, u32 unit_id);														// 004678A0
     void add_overlay_below_main(Sprite* sprite, u32 imageId, u32 x_offset, u32 y_offset, u32 direction);	// 00498D70
     void replace_sprite_images(Sprite* sprite, u32 image_id, u32 image_direction);							// 00499BB0
@@ -523,7 +522,7 @@ namespace helper {
     b32 spell_order_move_towards_target(Unit* caster, u32 range);																	// 00492450
 
     // For can_target_spell
-    s16 can_target_spell_on_fow_unit(s32 techId, s16 unit_id);																		// 004914B0
+    s16 can_target_spell_on_fow_unit(s32 tech_id, s16 unit_id);																		// 004914B0
 
     void increment_unit_death_scores(Unit* unit, u8 player);																		// 00488AF0
     void give_sprite(Unit* unit, u8 player);																						// 0049E4E0
@@ -591,7 +590,6 @@ namespace helper {
 
     // for generic_right_click_unit_proc_2
     s32 is_order_valid(char order_id, Unit* self, Unit* unused, Unit* target, s32* error);											// 00474D90
-    u16 get_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3);																// 00491E80
 
     // for cmdrecv_hold_position
     Unit* get_active_player_next_selection();																						// 0049A850
@@ -779,8 +777,8 @@ namespace helper {
     u32 get_unit_damage_bonus(Unit* unit, u8 weapon_id);															// 00475EC0
     void attack_overlay_and_notify(Unit* attacker, Unit* target, u32 weaponType, u32 direction);			        // 00479730
     u32 get_unit_bullet_damage(Bullet* bullet, Unit* target);														// 0048ACD0
-    u32 get_spell_stat_string(Unit* target, u32 techId, u8 player);													// 00491E80
-    void disable_unit(Unit* unit);																				// 00492CC0 (hooked in weapon_spellhit)
+    u32 get_tech_use_error_message(Unit* target, u8 player, u16 tech_id);										    // 00491E80
+    void disable_unit(Unit* unit);																				    // 00492CC0 (hooked in weapon_spellhit)
     void set_all_image_group_flags_palette_11(Sprite* sprite);														// 00497430
     void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attacking_player_id, Box16* coords);					// 004E8280
     void iterate_units_at_location_target_proc_ensnare(Unit* attacker, Box16* coords);								// 004E8280
@@ -939,7 +937,6 @@ namespace helper {
     void refresh_button_tooltip();																					// 00459770
     void bindlg_blit_surface(BinDlg* dialog);																		// 004C35F0
     s32 req_check(u32 requirement_func, u16 requirement_var, u32 player, Unit* unit);
-    void update_mineral_patch_image(Unit* mineralPatch);
     void update_image_position_offset(Image* image);
 
     // Identical to function @ 0x004F3AF0

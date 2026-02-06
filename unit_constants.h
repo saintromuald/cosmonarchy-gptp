@@ -126,6 +126,12 @@ inline constexpr s32 DefensiveMatrixTimer = 30; // roughly 10 seconds
 inline constexpr s32 DefensiveMatrixHeal = 107; // ~10 HP per second | 256 * 5 / 24
 }
 
+namespace HecatonSerathiel {
+inline constexpr s32 DivineDisciplineRange = 6 * 32;
+inline constexpr s32 RejoinderOfServiceRange = 6 * 32;
+inline constexpr s32 RejoinderOfServiceTimer = 5 * 24;
+}
+
 namespace Centaur {
 inline constexpr s32 MissileDistance = 4 * 32;
 }
@@ -414,8 +420,42 @@ namespace AskosiMimic {
 inline constexpr s32 MimicryRange = 5 * 32;
 }
 
+namespace AskosiScepter {
+inline constexpr s32 PrincipalityRange = 8 * 32;
+}
+
+namespace AskosiThaumalogue {
+inline constexpr s32 RetaliationAssemblyDuration = 3 * 24;
+}
+
 namespace Askosi {
-inline constexpr s32 RematerializeCastRange = 4 * 32;
+inline constexpr s32 ScrapworldGoldRushTimer = 2 * 24;
+
+inline constexpr s32 BoomingBlastTimer = 2 * 24 + 1;
+inline constexpr s32 PowerOverloadTimer = 24;
+
+inline constexpr s32 HijackCastRange = 2 * 32;
+
+inline constexpr s32 ImpactDissipationDuration = 2 * 24 + 1;
+
+inline constexpr s32 RematerializeCastRange = 6 * 32;
+
+inline constexpr s32 RapidRendezvousCastRange = 5 * 32;
+
 inline constexpr s32 VitalRemainsHeal = 10 * 256;
 inline constexpr s32 VitalRemainsRange = 5 * 32;
+inline constexpr s32 VitalRemainsArmorPenDuration = 4 * 24;
+
+inline constexpr s32 ScrapworldAshHeapDuration = 2 * 24 + 1;
+
+inline constexpr s32 PreylockCastRange = 6 * 32;
+
+inline constexpr s32 NewDominionDuration = 10 * 24 + 1;
+
+inline constexpr s32 WarringWindsCooldown = 3;
+inline constexpr s32 WarringWindsHealAmount = 5 * 256;
+inline constexpr s32 WarringWindsRange = 8 * 32;
+
+inline constexpr s32 ScrapworldImplosionRange = 6 * 32;
+inline constexpr s32 ScrapworldImplosionSlowDuration = 5 * 24 + 1;
 }

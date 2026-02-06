@@ -174,6 +174,9 @@ namespace hooks {
                 case UnitId::ProtossPotentate: {
                     return helper::get_random_unit_response(SoundId::PotentateOrderAggressive01, SoundId::PotentateOrderAggressive04);
                 } break;
+                case UnitId::ProtossSycophant: {
+                    return helper::get_random_unit_response(SoundId::SycophantOrderAggressive01, SoundId::SycophantOrderAggressive04);
+                } break;
                 case UnitId::ProtossOptecton: {
                     return helper::get_random_unit_response(SoundId::OptectonOrderAggressive01, SoundId::OptectonOrderAggressive04);
                 } break;
@@ -203,6 +206,12 @@ namespace hooks {
                 } break;
                 case UnitId::AskosiMissionary: {
                     return helper::get_random_unit_response(SoundId::MissionaryOrderAggressive01, SoundId::MissionaryOrderAggressive04);
+                } break;
+                case UnitId::AskosiRove: {
+                    return helper::get_random_unit_response(SoundId::RoveOrderAggressive01, SoundId::RoveOrderAggressive04);
+                } break;
+                case UnitId::AskosiHelion: {
+                    return helper::get_random_unit_response(SoundId::HelionOrderAggressive01, SoundId::HelionOrderAggressive04);
                 } break;
             }
         }
@@ -245,8 +254,10 @@ namespace hooks {
     void play_unit_ready_sound(Unit* unit) { // 0048F440
         if (!g_is_in_replay && unit->player == g_local_nation_id && !g_use_quiet_sounds) {
             SoundId::Enum ready_sound = UnitId::get_unit_ready_sound(static_cast<UnitId::Enum>(unit->id));
-            helper::play_sound_from_unit(ready_sound, unit, g_options_list->flags & 1, 99);
-            helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[ready_sound] + 1000 * (sfx_dat::sound_data[ready_sound].duration_ms / 1000), 1, ready_sound);
+            if (ready_sound != SoundId::None) {
+                helper::play_sound_from_unit(ready_sound, unit, g_options_list->flags & 1, 99);
+                helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[ready_sound] + 1000 * (sfx_dat::sound_data[ready_sound].duration_ms / 1000), 1, ready_sound);
+            }
         }
     }
 

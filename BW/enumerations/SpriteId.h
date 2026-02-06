@@ -836,6 +836,8 @@ namespace SpriteId {
         PowerSiphonHit_Medium           = 1033,
         PowerSiphonHit_Large            = 1034,
 
+        Christmas_Landlock              = 1081,
+
         DivineDisciplineField           = 1083,
 
         // CORPSE \\
@@ -934,6 +936,10 @@ namespace SpriteId {
 
         Corpse_Inzorthrokor             = 996,
 
+        Corpse_AskosiBuildingLarge      = 1004,
+
+        Corpse_AskosiBuildingSmall      = 1007,
+
         Corpse_Agrileth                 = 1021,
             
         Corpse_Cardinal                 = 1027,
@@ -946,6 +952,9 @@ namespace SpriteId {
         Corpse_MaverickFuturist         = 1071,
 
         Corpse_Malkothrokor             = 1090,
+
+        Corpse_Thaumalogue              = 1108,
+        Corpse_Zethalor                 = 1109,
 
         Corpse_ZergBuildingSmall	    = 186,
         Corpse_ZergBuildingLarge	    = 187,

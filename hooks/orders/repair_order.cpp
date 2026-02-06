@@ -37,7 +37,7 @@ namespace hooks {
 					return;
 				} break;
 				case 6: {
-					if (!unit->get_movable_state()) { // not reached destination
+					if (unit->get_movable_state() == MovableState_NotReachedDestination) {
 						helper::move_towards(unit, target);
 						return;
 					}
@@ -56,12 +56,12 @@ namespace hooks {
 							current_angle = 256 - current_angle;
 						}
 						if (current_angle > weapons_dat::attack_angle[unit->get_ground_weapon()]) {
-							break; // goto LABEL_35
+							break;
 						}
 					}
 					unit->worker.repair_resource_loss_timer++;
 					unit->main_order_state++;
-				} break; // goto LABEL_35
+				} break;
 				case 8: {
 					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
 					helper::unit_order_move_to_target_unit(unit, target);
@@ -78,10 +78,9 @@ namespace hooks {
 					}
 				} break;
 				default: {
-				} break; // goto LABEL_35
+				} break;
 			}
 
-			// LABEL_35:
 			if (target->hitpoints < units_dat::max_hitpoints[target->id] - 128) { // The -128 is to avoid visual issues with HP drains. -Pr0nogo
 				if (target->new_repair_timer) {
 					target->new_repair_timer--;
@@ -108,23 +107,11 @@ namespace hooks {
 
 		if (unit->order_queue_head || !target) {
 			helper::force_order_done(unit);
-			/*unit->userActionFlags |= 1;
-			prepareForNextOrder(unit);*/
 		} else {
 			unit->main_order_state = 1;
-			/*u8 orderId;
-
-			if (unit->pAI) {
-			orderId = OrderId::ComputerAI;
-			} else {
-			orderId = units_dat::ReturnToIdleOrder[unit->id];
-			}
-
-			unit->orderComputerCL(orderId);*/
 		}
 
-		if (target && !(target->status & UnitStatus::InTransport))
-		{
+		if (target && !target->is_in_transport()) {
 			target->connected_unit = 0;
 		}
 	}
@@ -233,7 +220,7 @@ namespace hooks {
 				helper::parse_orders_dat_requirements();
 			}
 			if (player == unit->player) {
-				if (order_id == OrderId::RallyPointToVisibleUnit || order_id == OrderId::RallyPointToTile || unit->status & UnitStatus::Completed) {
+				if (order_id == OrderId::RallyPointToVisibleUnit || order_id == OrderId::RallyPointToTile || unit->is_completed()) {
 					if (unit->is_frozen()) {
 						*g_last_internal_error = 10;
 						result = 0;
@@ -285,7 +272,7 @@ namespace hooks {
 				if (unit->burrowed_attacker_can_attack()) {
 					action = RightClickActions::NoMove_NormalAttack;
 				} else {
-					char right_click_order = helper::get_right_click_action_order(unit);
+					auto right_click_order = helper::get_right_click_action_order(unit);
 					if (!right_click_order) {
 						if (hooks::unit_can_rally(unit)) {
 							right_click_order = RightClickActions::NormalMove_NoAttack;
@@ -293,25 +280,20 @@ namespace hooks {
 					}
 					action = right_click_order;
 				}
-				if (unit->is_hallucination()) {
-					if (action == RightClickActions::Harvest || action == RightClickActions::HarvestAndRepair) {
-						action = RightClickActions::NormalMove_NormalAttack;
-					}
-				}
 
 				bool is_neutral = target && units_dat::base_property[target->id] & UnitProperty::NeutralAccessories;
 				switch (action) {
-					case RightClickActions::NormalMove_NormalAttack:
+					case RightClickActions::NormalMove_NormalAttack: {
 						if (!target || !helper::is_unit_enemy(*g_active_portrait_unit, target) || is_neutral || helper::unit_can_attack_target(target, unit, 1)) {
 							return true;
 						}
 						text_id = 879;
-						sfx_id = unit->get_race() + SoundId::Zerg_DRONE_ZDrErr00_WAV_2;
-					case RightClickActions::NoMove_NormalAttack:
+						sfx_id = unit->get_error_sfx();
+					} break;
+					case RightClickActions::NoMove_NormalAttack: {
 						if (!target || is_neutral) {
 							break;
 						}
-
 						if (helper::unit_can_attack_target(target, unit, 1)) {
 							if (helper::is_unit_target_out_of_max_range(unit, target)) {
 								text_id = 888;
@@ -324,26 +306,24 @@ namespace hooks {
 						} else {
 							text_id = 879;
 						}
-						sfx_id = unit->get_race() + 138;
+						sfx_id = unit->get_error_sfx();
+					} break;
 					case RightClickActions::Harvest:
-					case RightClickActions::HarvestAndRepair:
+					case RightClickActions::HarvestAndRepair: {
 						if (!target || is_neutral) {
 							return true;
 						}
-						if (target->id == UnitId::ResourceVespeneGeyser) {
-						//	sfx_id = unit->get_race() + SoundId::Zerg_Drone_ZDrErr00_WAV;
-						//	text_id = unit->get_race()  + 893;
-						} else {
+						if (target->id != UnitId::ResourceVespeneGeyser && target->id != UnitId::ResourceVespeneRidge) {
 							if (!helper::is_unit_enemy(*g_active_portrait_unit, target) || is_neutral || helper::unit_can_attack_target(target, unit, 1)) {
 								return true;
 							}
 							text_id = 879;
-							sfx_id = unit->get_race() + SoundId::Zerg_DRONE_ZDrErr00_WAV_2;
+							sfx_id = unit->get_error_sfx();
 						}
-						break;
+					} break;
 					default: {
 						return true;
-					}
+					} break;
 				}
 			}
 			selected_units = selected_units_2 - 1;
@@ -380,8 +360,7 @@ namespace hooks {
 					text_string = (char*)g_stat_txt_buffer.get_string32(text_id_zeroed + 1);
 				}
 				if (text_string) {
-					if (g_active_player_id == g_local_human_id)
-					{
+					if (g_active_player_id == g_local_human_id) {
 						strncpy(draw_out_text_left, text_string, 0xDAu);
 						text_bytes[12] = 4;
 						*unit_stat_update_timer = GetTickCount() + 7000;

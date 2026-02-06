@@ -671,7 +671,9 @@ namespace hooks {
                             case UnitId::Buttons_FactionSelectZerg:
                             case UnitId::ZergLarva:
                             case UnitId::ZergOcsalLarva:
-                            case UnitId::AskosiPilgrim: {
+                            case UnitId::AskosiPilgrim:
+                            case UnitId::AskosiDyad:
+                            case UnitId::AskosiConstituent: {
                                 current_button_state = Button_State::Enabled;
                             } break;
                             case UnitId::TerranMason:
@@ -827,7 +829,7 @@ namespace hooks {
                     }
 
                     // @Veeq7 - Please advise how to do this more elegantly! Not enough space on command card to show all these and the other vital functions. -Pr0nogo
-                    if (unit && unit->id == UnitId::ZergYblyleth && unit->is_burrowed()) {
+                    if (unit && (unit->id == UnitId::ZergYblyleth || unit->id == UnitId::ZergScrylyleth) && unit->is_burrowed()) {
                         if (current_button->icon_id == IconId::Move
                         ||  current_button->icon_id == IconId::Stop
                         ||  current_button->icon_id == IconId::Patrol
@@ -966,6 +968,19 @@ namespace hooks {
                         TierUnlocked[RaceId::Protoss][Tier4] = player_has_completed_powered_unit_id(unit->player, UnitId::ProtossProstrationStage)
                             || player_has_completed_powered_unit_id(unit->player, UnitId::ProtossUnitaryUnion)
                             || player_has_completed_powered_unit_id(unit->player, UnitId::ProtossArgosy);
+                    }
+
+                    if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Tank_Is_In_Tank_Mode
+                    ||  current_button->requirement_func == (ReqFunc*)ButtonRequirements::Tank_Is_In_Siege_Mode) {
+                        switch (unit->id) {
+                            case UnitId::AskosiGrandstandHoldout: {
+                                if (unit->get_first_loaded_unit()) {
+                                    current_button_state = Button_State::Disabled;
+                                } else {
+                                    current_button_state = Button_State::Enabled;
+                                }
+                            }
+                        }
                     }
 
                     if (current_button->requirement_func == (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) {
@@ -1300,12 +1315,19 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranValkyrie: {
-                                        if (faction == Faction::TerranHecatonCoalition) {
+                                        if (faction == Faction::TerranHecatonCoalition || faction == Faction::TerranGoldenRepublic) {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::TerranValkyrieHecaton: {
                                         if (faction == Faction::TerranHecatonCoalition) {
+                                            if (!in_air) {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::TerranQuadriga: {
+                                        if (faction == Faction::TerranGoldenRepublic) {
                                             if (!in_air) {
                                                 current_button_state = Button_State::Enabled;
                                             }
@@ -1360,8 +1382,8 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
-                                    case UnitId::TerranSeraph: {
-                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranGoldenRepublic) {
+                                    case UnitId::TerranLuminary: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranGoldenRepublic) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCommandment)) {
                                             current_button_state = Button_State::Disabled;
@@ -1369,8 +1391,17 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
-                                    case UnitId::TerranLuminary: {
-                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranGoldenRepublic) {
+                                    case UnitId::TerranSeraph: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranHecatonCoalition || faction == Faction::TerranGoldenRepublic) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCommandment)) {
+                                            current_button_state = Button_State::Disabled;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::TerranSerathiel: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranHecatonCoalition) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCommandment)) {
                                             current_button_state = Button_State::Disabled;
@@ -1440,6 +1471,13 @@ namespace hooks {
                                     } break;
                                     case UnitId::ZergDroleth: {
                                         if (is_omnipresence || duopoly_state != GameModeRace_TerranProtoss) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiPilgrim: {
+                                        if (is_omnipresence) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Invisible;
@@ -2154,6 +2192,16 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
+                                    case UnitId::ZergScrylyleth: {
+                                        if (faction == Faction::ZergZorthosTendril) {
+                                            if (player_has_base_unit_id(unit->player, UnitId::ZergIrolIris)
+                                                || player_has_gestated_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        }
+                                    } break;
                                     case UnitId::ZergVorvrokor: {
                                         if (faction != Faction::ZergGoszirithTendril && faction != Faction::ZergOrkotiTendril) {
                                             if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
@@ -2162,8 +2210,8 @@ namespace hooks {
                                             } else {
                                                 current_button_state = Button_State::Disabled;
                                             }
-                                        } break;
                                         }
+                                    } break;
                                     case UnitId::ZergGarvrokor: {
                                         if (faction == Faction::ZergGoszirithTendril) {
                                             if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
@@ -2177,7 +2225,7 @@ namespace hooks {
                                     case UnitId::ZergZethalor: {
                                         if (faction == Faction::ZergOrkotiTendril) {
                                             if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
-                                                || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                            || player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
                                                 current_button_state = Button_State::Enabled;
                                             } else {
                                                 current_button_state = Button_State::Disabled;
@@ -2264,8 +2312,41 @@ namespace hooks {
                                     } break;
                                 }
                             } break;
+                            case UnitId::ZergOvileth: {
+                                if (current_button->requirement_var == UnitId::ZergIroleth) {
+                                    if (unit->get_first_loaded_unit()) {
+                                        current_button_state = Button_State::Disabled;
+                                    } else if (player_has_base_unit_id(unit->player, UnitId::ZergIrolIris)
+                                        || player_has_gestated_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
+                                        current_button_state = Button_State::Enabled;
+                                    } else {
+                                        current_button_state = Button_State::Disabled;
+                                    }
+                                }
+                            } break;
+                            case UnitId::ZergYblyleth: {
+                                if (current_button->requirement_var == UnitId::ZergScrylyleth) {
+                                    if (faction != Faction::ZergZorthosTendril) {
+                                        current_button_state = Button_State::Invisible;
+                                    } else if (unit->get_first_loaded_unit()) {
+                                        current_button_state = Button_State::Disabled;
+                                    } else if (player_has_base_unit_id(unit->player, UnitId::ZergIrolIris)
+                                        || player_has_gestated_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
+                                        current_button_state = Button_State::Enabled;
+                                    } else {
+                                        current_button_state = Button_State::Disabled;
+                                    }
+                                }
+                            } break;
                             case UnitId::ZergZethrokor: {
-                                if (current_button->requirement_var == UnitId::ZergVorvrokor) {
+                                if (current_button->requirement_var == UnitId::ZergVorvrokor && faction != Faction::ZergOrkotiTendril) {
+                                    if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
+                                    ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
+                                        current_button_state = Button_State::Enabled;
+                                    } else {
+                                        current_button_state = Button_State::Disabled;
+                                    }
+                                } else if (current_button->requirement_var == UnitId::ZergZethalor && faction == Faction::ZergOrkotiTendril) {
                                     if (player_has_base_unit_id(unit->player, UnitId::ZergVornathPond)
                                     ||  player_has_unit_id(unit->player, UnitId::ZergKalkiirLake)) {
                                         current_button_state = Button_State::Enabled;
@@ -2274,7 +2355,7 @@ namespace hooks {
                                     }
                                 } else {
                                     current_button_state = Button_State::Invisible;
-                                } break;
+                                }
                             } break;
                             case UnitId::ZergSovrokor: {
                                 if (current_button->requirement_var == UnitId::ZergGarvrokor) {
@@ -2473,7 +2554,9 @@ namespace hooks {
                                 }
                             } break;
 
-                            case UnitId::AskosiPilgrim: {
+                            case UnitId::AskosiPilgrim:
+                            case UnitId::AskosiDyad: 
+                            case UnitId::AskosiConstituent: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::AskosiLandlock:
                                     case UnitId::AskosiArch:
@@ -2484,15 +2567,19 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     } break;
                                     case UnitId::AskosiCipher:
-                                    case UnitId::AskosiGauntlet: {
+                                    case UnitId::AskosiGauntlet:
+                                    case UnitId::AskosiCosmoscope: {
                                         if (player_has_completed_unit_id(unit->player, UnitId::AskosiRadix) || player_has_completed_unit_id(unit->player, UnitId::AskosiFunction)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
-                                    case UnitId::AskosiCosmoscope: {
-                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiCipher) || player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
+                                    case UnitId::AskosiBounty:
+                                    case UnitId::AskosiAbutment:
+                                    case UnitId::AskosiProscenium:
+                                    case UnitId::AskosiZylode: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiCipher) && player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
@@ -2500,6 +2587,15 @@ namespace hooks {
                                     } break;
                                     default: {
                                         current_button_state = Button_State::Invisible;
+                                    } break;
+                                    case UnitId::AskosiConduit:
+                                    case UnitId::AskosiBestiary:
+                                    case UnitId::AskosiAstrolabe: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiProscenium) || player_has_completed_unit_id(unit->player, UnitId::AskosiZylode)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
                                     } break;
                                 }
                             } break;
@@ -2518,6 +2614,13 @@ namespace hooks {
                                     } break;
                                     case UnitId::AskosiDyad: {
                                         if (player_has_completed_unit_id(unit->player, UnitId::AskosiCipher) || player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiConstituent: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiProscenium) || player_has_completed_unit_id(unit->player, UnitId::AskosiZylode)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
@@ -2578,6 +2681,106 @@ namespace hooks {
                                     }
                                 }
                             } break;
+                            case UnitId::AskosiCosmoscope: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::AskosiHelion:
+                                    case UnitId::AskosiEmissary: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::AskosiInkblot: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiCipher)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiTirade: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    }
+                                }
+                            } break;
+                            case UnitId::AskosiProscenium: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::AskosiAphorist:
+                                    case UnitId::AskosiThaumalogue: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::AskosiAvatar: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiConduit)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiDoronin: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiBestiary)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    }
+                                }
+                            } break;
+                            case UnitId::AskosiZylode: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::AskosiAgonist:
+                                    case UnitId::AskosiPetract: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::AskosiPhontis: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiConduit)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiZonguard: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiBestiary)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    } break;
+                                }
+                            } break;
+                            case UnitId::AskosiAstrolabe: {
+                                switch (current_button->requirement_var) {
+                                case UnitId::AskosiAkreno:
+                                case UnitId::AskosiIconoclast: {
+                                    current_button_state = Button_State::Enabled;
+                                } break;
+                                case UnitId::AskosiCrematorium: {
+                                    if (player_has_completed_unit_id(unit->player, UnitId::AskosiConduit)) {
+                                        current_button_state = Button_State::Enabled;
+                                    } else {
+                                        current_button_state = Button_State::Disabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiParaclete: {
+                                    if (player_has_completed_unit_id(unit->player, UnitId::AskosiBestiary)) {
+                                        current_button_state = Button_State::Enabled;
+                                    } else {
+                                        current_button_state = Button_State::Disabled;
+                                    }
+                                } break;
+                                default: {
+                                    current_button_state = Button_State::Invisible;
+                                }
+                                }
+                            } break;
                         }
                     }
 
@@ -2612,6 +2815,11 @@ namespace hooks {
                                     current_button_state = unit->is_building() && unit->is_in_air() ? Button_State::Invisible : Button_State::Enabled;
                                 }
                             }
+                            if (UnitId::has_forward_march(static_cast<UnitId::Enum>(unit->id))) {
+                                if (current_button->icon_id == IconId::ForwardMarch) {
+                                    current_button_state = Button_State::Enabled;
+                                }
+                            }
 
                             switch (unit->id) {
                                 // GLOBAL \\
@@ -2624,7 +2832,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossWitness: {
-                                    if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun) { // Steady Shroud
+                                    if (current_button->icon_id == IconId::ShroudOfAdun) { // Steady Shroud
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2859,8 +3067,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranDurendal: {
-                                    if (current_button->icon_id == IconId::ForwardMarch
-                                    ||  current_button->icon_id == IconId::FlyerAttack) {	 // Apollyoid Adhesive
+                                    if (current_button->icon_id == IconId::FlyerAttack) {	 // Apollyoid Adhesive
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2931,8 +3138,9 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::TerranValkyrie: {
-                                    if (current_button->icon_id == IconId::PsiAssault) { // Offset: Cone
+                                case UnitId::TerranValkyrie:
+                                case UnitId::TerranQuadriga: {
+                                    if (current_button->icon_id == IconId::OffsetCone) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -2954,7 +3162,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranSeraph: {
-                                    if (current_button->icon_id == IconId::DemiurgePassiveWorship) { // Observance
+                                    if (current_button->icon_id == IconId::Worship) { // Observance
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3001,7 +3209,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::TerranDiadem: {
                                     if (current_button->icon_id == IconId::OpticalFlare					// Ion Field
-                                    || current_button->icon_id == IconId::DidactPassiveShroudOfAdun) {	// Artillery targeting
+                                    || current_button->icon_id == IconId::ShroudOfAdun) {	// Artillery targeting
                                         if (unit->status & UnitStatus::GroundedBuilding) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
@@ -3090,13 +3298,13 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossCabalist: {
-                                    if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
+                                    if (current_button->icon_id == IconId::ShroudOfAdun	// Steady Shroud
                                     ||	current_button->icon_id == IconId::ProtossGroundWeapons) {		// Silent Strides
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::ProtossBarghest: {
-                                    if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun	// Steady Shroud
+                                    if (current_button->icon_id == IconId::ShroudOfAdun	// Steady Shroud
                                     ||	current_button->icon_id == IconId::ApialSensors) {				// Repentant Chorus
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -3106,7 +3314,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::ProtossCharlatan: {
                                     if (current_button->icon_id == IconId::AntimatterMissiles		 // Interception
-                                    ||  current_button->icon_id == IconId::DemiurgePassiveWorship) { // Leading the Blind
+                                    ||  current_button->icon_id == IconId::Worship) { // Leading the Blind
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3164,7 +3372,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossManifoldStarbound: {
-                                    if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Discordant Chorus
+                                    if (current_button->icon_id == IconId::ApialSensors                  // Multi-Attack III
+                                     || current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Discordant Chorus
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3208,13 +3417,13 @@ namespace hooks {
                                 } break;
                                 case UnitId::ProtossVibrance: {
                                     if (current_button->icon_id == IconId::ArchonPsionicShockwave    // Pulsing Attack
-                                    ||  current_button->icon_id == IconId::DidactPassiveShroudOfAdun // Steady Shroud
+                                    ||  current_button->icon_id == IconId::ShroudOfAdun // Steady Shroud
                                     ||  current_button->icon_id == IconId::ProtossGroundWeapons) {	 // Astral Blessing
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::ProtossDemiurge: {
-                                    if (current_button->icon_id == IconId::DemiurgePassiveWorship) { // Worship
+                                    if (current_button->icon_id == IconId::Worship) { // Worship
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3244,7 +3453,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossDidact: {
-                                    if (current_button->icon_id == IconId::DidactPassiveShroudOfAdun) { // Shroud of Adun
+                                    if (current_button->icon_id == IconId::ShroudOfAdun) { // Shroud of Adun
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3318,7 +3527,8 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::ZergYblyleth: {
+                                case UnitId::ZergYblyleth:
+                                case UnitId::ZergScrylyleth: {
                                     if (current_button->icon_id == IconId::PneumatizedCaparace      // Cagra Autophagy
                                     ||  current_button->icon_id == IconId::ZergAdvancedBuildings) { // Cagragenesis
                                         if (unit->is_burrowed()) {
@@ -3585,6 +3795,78 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ZergQuazethPool: {
+                                    if (current_button->icon_id == IconId::Zethrokor
+                                    ||  current_button->icon_id == IconId::Quazilisk) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergVornathPond: {
+                                    if (current_button->icon_id == IconId::Zethrokor
+                                    ||  current_button->icon_id == IconId::Quazilisk
+                                    ||  current_button->icon_id == IconId::Nathrokor
+                                    ||  current_button->icon_id == IconId::Vorvrokor) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergKalkiirLake: {
+                                    if (current_button->icon_id == IconId::Zethrokor
+                                    ||  current_button->icon_id == IconId::Quazilisk
+                                    ||  current_button->icon_id == IconId::Nathrokor
+                                    ||  current_button->icon_id == IconId::Vorvrokor
+                                    ||  current_button->icon_id == IconId::Liiralisk
+                                    ||  current_button->icon_id == IconId::Kalkalisk) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergHydrithDen: {
+                                    if (current_button->icon_id == IconId::Hydralisk
+                                    ||  current_button->icon_id == IconId::Izirokor) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergSkibactScab: {
+                                    if (current_button->icon_id == IconId::Hydralisk
+                                    ||  current_button->icon_id == IconId::Izirokor
+                                    ||  current_button->icon_id == IconId::Skithrokor
+                                    ||  current_button->icon_id == IconId::Bactalisk) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergTethvithSwamp: {
+                                    if (current_button->icon_id == IconId::Hydralisk
+                                    ||  current_button->icon_id == IconId::Izirokor
+                                    ||  current_button->icon_id == IconId::Skithrokor
+                                    ||  current_button->icon_id == IconId::Bactalisk
+                                    ||  current_button->icon_id == IconId::Tethzorokor
+                                    ||  current_button->icon_id == IconId::Vithrilisk) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergZorkizShroud: {
+                                    if (current_button->icon_id == IconId::Zoryusthaleth
+                                    ||  current_button->icon_id == IconId::Lakizilisk) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergUlgorgCavern: {
+                                    if (current_button->icon_id == IconId::Zoryusthaleth
+                                    ||  current_button->icon_id == IconId::Lakizilisk
+                                    ||  current_button->icon_id == IconId::Ultrokor
+                                    ||  current_button->icon_id == IconId::Gorgrokor) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ZergZozarcGorge: {
+                                    if (current_button->icon_id == IconId::Zoryusthaleth
+                                    ||  current_button->icon_id == IconId::Lakizilisk
+                                    ||  current_button->icon_id == IconId::Ultrokor
+                                    ||  current_button->icon_id == IconId::Gorgrokor
+                                    ||  current_button->icon_id == IconId::Zobriolisk
+                                    ||  current_button->icon_id == IconId::Zarcavrokor) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ZergCaphrolosk:
                                 case UnitId::ZergGathtelosk:
                                 case UnitId::ZergOcsalCesiant: {
@@ -3594,6 +3876,152 @@ namespace hooks {
                                 } break;
                                 case UnitId::ZergSkortrithCesiant: {
                                     if (current_button->icon_id == IconId::SurkithCesiantSubterraneanTentacle) { // Tendril Amitosis
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+
+                                // ASKOSI \\
+
+                                case UnitId::AskosiPilgrim: {
+                                    if (current_button->icon_id == IconId::MoebiusReactor         // Shared Designs
+                                     || current_button->icon_id == IconId::FusionCutterHarvest) { // Scrapworld: Gold Rush
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiConstituent: {
+                                    if (current_button->icon_id == IconId::MoebiusReactor) { // Shared Designs
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiDyad: {
+                                    if (current_button->icon_id == IconId::IdolPrismaticBlaster) { // Schematic Unity
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiMissionary:
+                                case UnitId::AskosiDoronin:
+                                case UnitId::AskosiRove: {
+                                    if (current_button->icon_id == IconId::ShoulderedBurden) { // Impact Dissipation
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiCardinal: {
+                                    if (current_button->icon_id == IconId::SustainingSermon) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiMimic: {
+                                    if (current_button->icon_id == IconId::Mimicry
+                                     || current_button->icon_id == IconId::VitalRemains) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiVicar: {
+                                    if (current_button->icon_id == IconId::KelvinMunitions) { // Booming Blast
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiThaumalogue: {
+                                    if (current_button->icon_id == IconId::Mimicry) { // Retaliation Assembly
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiAvatar:
+                                case UnitId::AskosiCrematorium: {
+                                    if (current_button->icon_id == IconId::DestinationScrapworld) { // Scrapworld: Ash Heap
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiObject: {
+                                    if (current_button->icon_id == IconId::ShoulderedBurden
+                                     || current_button->icon_id == IconId::WyxharAssembly) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiScepter: {
+                                    if (current_button->icon_id == IconId::FusionCutterHarvest    // Principality Assembly
+                                     || current_button->icon_id == IconId::FusionCutterHarvest) { // Scrapworld: Gold Rush
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiIntendent: {
+                                    if (current_button->icon_id == IconId::ShroudOfAdun // Power Breach
+                                    ||  current_button->icon_id == IconId::ForwardMarch) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiAgonist: {
+                                    if (current_button->icon_id == IconId::ShoulderedBurden     // Impact Dissipation
+                                    ||  current_button->icon_id == IconId::TerranShipWeapons) { // Advancing Motion
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiPetract: {
+                                    if (current_button->icon_id == IconId::ShoulderedBurden       // Impact Dissipation
+                                    ||  current_button->icon_id == IconId::MuscularAugments       // New Dominion
+                                    ||  current_button->icon_id == IconId::FusionCutterHarvest) { // Terrestrial Assembly
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiPhontis: {
+                                    if (current_button->icon_id == IconId::Mimicry                // Power Overload
+                                    ||  current_button->icon_id == IconId::DeathlessProcession) { // Warring Winds
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiZonguard: {
+                                    if (current_button->icon_id == IconId::ChitinousPlating) { // Mechanical Rage
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiHelion: {
+                                    if (current_button->icon_id == IconId::FusionCutterHarvest) { // Scrapworld: Gold Rush
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiTirade: {
+                                    if (current_button->icon_id == IconId::FusionCutterHarvest) { // Excoriation Assembly
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiAkreno: {
+                                    if (current_button->icon_id == IconId::ShoulderedBurden         // Impact Dissipation
+                                    ||  current_button->icon_id == IconId::DestinationScrapworld) { // Scrapworld: Implosion
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiIconoclast: {
+                                    if (current_button->icon_id == IconId::KelvinMunitions          // Booming Blast
+                                    ||  current_button->icon_id == IconId::DestinationScrapworld) { // Scrapworld: Gold Rush
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiGrandstand: {
+                                    if (current_button->icon_id == IconId::Mimicry) { // Power Overload
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiChantry: {
+                                    if (current_button->icon_id == IconId::Restoration) { // Sermon Salve
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiCipher: {
+                                    if (current_button->icon_id == IconId::Mimic
+                                    ||  current_button->icon_id == IconId::Scepter
+                                    ||  current_button->icon_id == IconId::Inkblot) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiGauntlet: {
+                                    if (current_button->icon_id == IconId::Vicar
+                                    ||  current_button->icon_id == IconId::Intendent
+                                    ||  current_button->icon_id == IconId::Tirade) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiBounty: {
+                                    if (current_button->icon_id == IconId::FusionCutterHarvest) { // Scrapworld: Cornucopia
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

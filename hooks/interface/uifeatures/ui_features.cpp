@@ -740,7 +740,7 @@ namespace hooks {
             palette_type = 2;
         } else if (button->button_user->requirement_var == TechId::Healing
                 && button->button_user->icon_id != IconId::Heal 
-                && button->button_user->icon_id != IconId::Medic) // Passive icons
+                && button->button_user->icon_id != IconId::Cleric) // Passive icons
         {
             palette_type = 6;
         } else {

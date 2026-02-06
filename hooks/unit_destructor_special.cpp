@@ -41,7 +41,7 @@ void augur_proc(Unit* augur, s32 radius) {
 }
 
 void augur_sacrifice(Unit* augur, s32 radius) {
-    UnitExt& target_ext = augur->ext();
+    auto& target_ext = augur->ext();
     if (target_ext.values[ValueAugurSafetyCheck] == 0) {
         target_ext.values[ValueAugurSafetyCheck] = 1;
         augur_proc(augur, radius);
@@ -204,6 +204,14 @@ void unit_on_death_behaviors(Unit* unit) {
         return;
     }
 
+    if (unit_ext.timers[TimerRejoinderOfService]) {
+        for (Unit* pull_victim : g_unit_search.radial_ex(unit, unit->get_sight_range() * 32, FilterEnemy | FilterNoBuilding)) {
+            if (unit_can_be_repulsed(pull_victim)) {
+                pull_victim->pull_towards(unit);
+            }
+        }
+    }
+
     if (unit_ext.timers[TimerIncinerateDamage] >= 1) {
         g_iquare_globals->create_effect(EffectId::SalamanderFire, 5 * 24, { unit->position.x, unit->position.y }, 0.5 * 32, SpriteId::SalamanderImpact, 5, unit_ext.values[ValueIncineratePlayer], 0);
         unit_ext.timers[TimerIncinerateDamage] = 0;
@@ -219,7 +227,7 @@ void unit_on_death_behaviors(Unit* unit) {
         switch (unit->id) {
             case UnitId::TerranAnvil: {
                 // Anvil - death while armed
-                if (unit->building.silo.is_ready && !unit_ext.timers[TimerControlledDemolition] && !unit_ext.timers[TimerSalvageStunTimer]) {
+                if (unit->building.silo.is_ready && !unit_ext.timers[TimerControlledDemolition] && !unit_ext.timers[TimerSalvageStun]) {
                     bw::create_and_init_thingy(SpriteId::Nuke_Hit, unit->position.x, unit->position.y, 11, 12);
                     helper::create_bullet(WeaponId::NuclearMissile, unit, unit->position.x, unit->position.y, unit->player, 0);
                 }
@@ -286,7 +294,9 @@ void unit_on_death_behaviors(Unit* unit) {
             case UnitId::ProtossAquifer:
             case UnitId::ZergEskigant:
             case UnitId::ZergExcisant:
-            case UnitId::ZergEzigrisant: {
+            case UnitId::ZergEzigrisant:
+            case UnitId::AskosiArch:
+            case UnitId::AskosiAbutment: {
                 free_resource_container(unit);
             } break;
             case UnitId::ProtossAugur: {
@@ -324,6 +334,24 @@ void unit_on_death_behaviors(Unit* unit) {
                     apply_corrosive_spores_internal(hostile, Broodspawn::DeathCycleCorrosiveTouchTimer);
                 }
             } break;
+            case UnitId::AskosiAkreno: {
+                unit->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel); // TODO: Own visuals
+                bw::play_sound({SoundId::AkrenoPassiveCharge01, SoundId::AkrenoPassiveCharge03}, unit->position);
+                g_iquare_globals->create_effect(EffectId::ScrapworldImplosion, 1 * 24, {unit->position.x, unit->position.y}, 6 * 32, SpriteId::DivineDisciplineField, 5, unit->player, 0);
+            }
+        }
+
+        Unit* hijacker = unit_ext.units[UnitHijacker];
+        if (hijacker) {
+            hijacker->status &= ~UnitStatus::CanNotReceiveOrders;
+        }
+
+        if (UnitId::has_swarming_spite(static_cast<UnitId::Enum>(unit->id)) && !unit_ext.values[ValueDontProcSwarmingSpite]) {
+            for (Unit* ally : g_unit_search.radial_ex(unit, SwarmingSpite::Range, FilterAlly | FilterNoBuilding)) {
+                // TODO: Own audiovisuals
+                bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
+                unit_ext.timers[TimerZergAdrenalFrenzy] = SwarmingSpite::Duration;
+            }
         }
     }
 
@@ -532,7 +560,7 @@ s32 remove_subunit_or_gas_container(Unit* unit) { // 004A0080
     if (id != UnitId::TerranSieve && id != UnitId::TerranReservoir && id != UnitId::TerranWellbore && id != UnitId::ZergEzigrisant) {
         if (id == UnitId::ZergEskigant || id == UnitId::ZergExcisant) {
             helper::remove_creep_at_unit(sprite->position.x, sprite->position.y, id);
-        } else if (id != UnitId::ProtossCedent && id != UnitId::ProtossAquifer) {
+        } else if (id != UnitId::ProtossCedent && id != UnitId::ProtossAquifer && id != UnitId::AskosiArch && id != UnitId::AskosiAbutment) {
             return 0;
         }
     }

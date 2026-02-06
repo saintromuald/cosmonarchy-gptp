@@ -354,6 +354,7 @@ namespace hooks {
                 case RaceId::Terran:  sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildTerran);  break;
                 case RaceId::Protoss: sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildProtoss); break;
                 case RaceId::Zerg:    sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildZerg);    break;
+                case RaceId::Askosi:  sound_id = bw::get_advisor_sound_from_event_type(unit->player, AdvisorEvent_NoBuildTerran);  break;
             }
 
             if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {

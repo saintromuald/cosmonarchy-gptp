@@ -49,6 +49,10 @@ namespace hooks {
                     nydus_sound_id = SoundId::Misc_IntoNydus_wav;
                     target_sound_id = SoundId::Misc_IntoNydus_wav;
                 } break;
+                case RaceId::Askosi: {
+                    nydus_sound_id = SoundId::AskosiUnitDeployment01;
+                    target_sound_id = SoundId::AskosiUnitDeployment01;
+                } break;
             }
             bw::play_sound(nydus_sound_id, nydus->position);
             helper::move_unit(unit, final_pos.x, final_pos.y);

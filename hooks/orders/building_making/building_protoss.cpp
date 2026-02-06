@@ -42,7 +42,7 @@ namespace hooks {
 							helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
 						}
 					} else {
-						if (helper::begin_building(unit)) {
+						if (helper::start_building(unit)) {
 							Unit* built_unit;
 
 							if (is_gas_cap) {

@@ -300,7 +300,7 @@ namespace hooks {
 			return;
 		}
 
-		if (target && !(target->status & UnitStatus::Invincible) && helper::get_spell_stat_string(target, TechId::Consume, attacker->player) == 0) { // returning a value != 0 means there was an error
+		if (target && !(target->status & UnitStatus::Invincible) && helper::get_tech_use_error_message(target, TechId::Consume, attacker->player) == 0) { // returning a value != 0 means there was an error
 			helper::increment_unit_death_scores(target, attacker->player);
 			if (!(target->status & UnitStatus::IsHallucination)) {
 				for (Unit* unit : g_unit_search.radial_ex(attacker, 3 * 32, FilterAlly | FilterIncludingSelf)) {

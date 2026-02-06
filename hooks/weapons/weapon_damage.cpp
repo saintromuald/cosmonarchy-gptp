@@ -67,7 +67,13 @@ bool irradiate_target(Unit* unit) {
 
 namespace hooks {
     static void play_alert(Unit* unit, u32 sound_id) {
-        u32 alert_id = SoundId::AlertZerg - g_console_index;
+        u32 alert_id = SoundId::None;
+        switch (g_console_index) {
+            case RaceId::Terran:  alert_id = SoundId::AlertTerran;  break;
+            case RaceId::Protoss: alert_id = SoundId::AlertProtoss; break;
+            case RaceId::Zerg:    alert_id = SoundId::AlertZerg;    break;
+            case RaceId::Askosi:  alert_id = SoundId::AlertTerran;  break;
+        }
         if (g_options_list->flags & 1) {
             bw::play_sound(alert_id);
         }
@@ -140,15 +146,10 @@ namespace hooks {
 
                     AdvisorEvent type;
                     switch (g_player_table[unit->player].race) {
-                        case RaceId::Zerg: {
-                            type = AdvisorEvent_AllyUnderAttack_Z;
-                        } break;
-                        case RaceId::Protoss: {
-                            type = AdvisorEvent_AllyUnderAttack_P;
-                        } break;
-                        case RaceId::Terran: {
-                            type = AdvisorEvent_AllyUnderAttack_T;
-                        }
+                        case RaceId::Zerg:    type = AdvisorEvent_AllyUnderAttack_Z; break;
+                        case RaceId::Protoss: type = AdvisorEvent_AllyUnderAttack_P; break;
+                        case RaceId::Terran:  type = AdvisorEvent_AllyUnderAttack_T; break;
+                        case RaceId::Askosi:  type = AdvisorEvent_AllyUnderAttack_A; break;
                     }
                     u32 sound_id = bw::get_advisor_sound_from_event_type(local_player, type);
                     play_alert(unit, sound_id);
@@ -221,9 +222,9 @@ namespace hooks {
         }
 
         if (data.attacker) {
-            UnitExt* attacker_ext = get_unit_ext(data.attacker);
-            if (attacker_ext->values[ValueTriggerDamageBaseSet] && weapon_id_can_proc_onhits(data.weapon_id)) {
-                data.damage = attacker_ext->values[ValueTriggerDamageBaseAmount];
+            auto& attacker_ext = data.attacker->ext();
+            if (attacker_ext.values[ValueTriggerDamageBaseSet] && weapon_id_can_proc_onhits(data.weapon_id)) {
+                data.damage = attacker_ext.values[ValueTriggerDamageBaseAmount];
             }
 
             if (data.attacker->is_hallucination()) {
@@ -231,13 +232,16 @@ namespace hooks {
             }
         }
 
-        // Ancile - Providence - Hitscan handling
         if (weapon_id_can_proc_onhits(data.weapon_id)) {
+            // Ancile & Piety Ward - Providence - Hitscan handling
             auto units = g_unit_search
                 .radial_ex(data.target, 2 * 32, FilterIncludingSelf | FilterAlly, {UnitId::TerranAncile, UnitId::TerranPietyWard})
                 .sort_by_distance(data.target->position);
 
             for (Unit* unit : units) {
+                if (unit->is_frozen()) {
+                    continue;
+                }
                 if (unit->energy < 1 * 256) {
                     continue;
                 }
@@ -254,6 +258,28 @@ namespace hooks {
 
                 data.damage -= energy_to_spend;
                 if (data.damage == 0) {
+                    return;
+                }
+            }
+            // Object, Petract - Shouldered Burden
+            if (data.target->id != UnitId::AskosiObject && data.target->id != UnitId::AskosiPetract && data.target->player != 11) {
+                auto shoulders = g_unit_search
+                    .radial_ex(data.target, 4 * 32, FilterNotSelf | FilterAlly, {UnitId::AskosiObject, UnitId::AskosiPetract})
+                    .sort_by_distance(data.target->position);
+
+                for (Unit* shoulder : shoulders) {
+                    if (shoulder == data.attacker) {
+                        continue;
+                    }
+                    if (shoulder->is_frozen()) {
+                        continue;
+                    }
+
+                    shoulder->damage_with(data.weapon_id, data.damage, data.attacker, data.attacking_player_id, data.direction, data.damage_divisor);
+                    bw::create_shield_overlay(data.target, data.direction);
+                    bw::play_sound({SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03}, shoulder); // TODO: Own audio
+                    play_attack_notification(shoulder);
+                    bw::reveal_attacker(data.attacker, shoulder);
                     return;
                 }
             }
@@ -318,6 +344,9 @@ namespace hooks {
                 }
             }
             armor_total = std::max(armor_total, 0);
+            if (data.attacker && data.attacker->ext().timers[TimerRejoinderOfService]) {
+                armor_total = 0;
+            }
             if (data.weapon_id != WeaponId::PsiStorm) {
                 data.damage -= std::min(data.damage, armor_total * 256);
             }
@@ -449,53 +478,88 @@ namespace hooks {
             data.damage_type = DamageType::Independent;
         }
 
-        // Phase Link: No On-hits
+        // Phase Link: no on-hits
         if (data.is_phase_link_damage_instance) {
-            return; // Skip Weapon & Attacker based calcs, since we already did those for phase link
+            return; // Skip weapon & attacker based calcs, since we already did those for Phase Link
         }
 
         // Weapon & Attacker based calcs
-        switch (data.weapon_id) {
-            // TODO: Extend weapons and remove these
-            case WeaponId::SimulacrumPhaseCannon: {
-                if (!data.attacker) {
-                    break;
-                }
-                if (data.attacker->id == UnitId::ProtossSimulacrumAstral) {
-                    data.damage -= 256 * 2;
-                }
-            } break;
-            case WeaponId::VorvalClaws: {
-                if (!data.attacker) {
-                    break;
-                }
-                if (data.attacker->id == UnitId::ZergGarvrokor) {
-                    data.damage += 256 * 1;
-                }
-            } break;
+        
+        if (data.attacker) {
+            switch (data.weapon_id) {
+                // @TODO: Extend weapons and remove these
+                case WeaponId::ZealotPhaseBlades: {
+                    if (data.attacker->id == UnitId::ProtossCicatus) {
+                        data.damage -= 3 * 256;
+                    }
+                } break;
+                case WeaponId::VassalPulseBlaster: {
+                    if (data.attacker->id == UnitId::ProtossRenesair) {
+                        data.damage -= 2 * 256;
+                    }
+                } break;
+                case WeaponId::SimulacrumPhaseCannon: {
+                    if (data.attacker->id == UnitId::ProtossSimulacrumAstral) {
+                        data.damage -= 2 * 256;
+                    }
+                } break;
+                case WeaponId::VorvrokorVorvrokClaws: {
+                    if (data.attacker->id == UnitId::ZergGarvrokor) {
+                        data.damage += 1 * 256;
+                    }
+                } break;
+                case WeaponId::NathrokorNathrokClaws: {
+                    if (data.attacker->id == UnitId::AskosiAkreno) {
+                        data.damage += 6 * 256;
+                    }
+                } break;
+                case WeaponId::KethrostalorStaggeredSpores: {
+                    if (data.attacker->id == UnitId::ZergZethalor) {
+                        data.damage -= 4 * 256;
+                    }
+                } break;
+                case WeaponId::RoveElreScaleshot: {
+                    if (data.attacker->id == UnitId::AskosiThaumalogue) {
+                        data.damage += 2 * 256;
+                    }
+                } break;
+                case WeaponId::IntendentErsaDriver: {
+                    if (data.attacker->id == UnitId::AskosiPhontis) {
+                        data.damage -= 2 * 256;
+                    }
+                } break;
+                case WeaponId::VicarOspoTwinshard: {
+                    if (data.attacker->id == UnitId::AskosiIconoclast) {
+                        data.damage += 1 * 256;
+                    }
+                } break;
+                case WeaponId::CrematoriumOkliQuadshard: {
+                    if (data.attacker->id == UnitId::AskosiAvatar) {
+                        data.damage += 10 * 256;
+                    }
+                } break;
 
-            // Damage divisor calc
+                // Behaviors
+                case WeaponId::CabalistWarpBlades: {
+                    auto& attacker_ext = data.attacker->ext();
+                    if (attacker_ext.values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
+                        data.damage *= 1.5;
+                        attacker_ext.values[ValueCabalistSilentStridesDamage] = 0;
+                    }
+                } break;
+                case WeaponId::UnarAutonomousRay: {
+                    auto& attacker_ext = data.attacker->ext();
+                    if (attacker_ext.unar_solitary_focus_stacks) {
+                        data.damage += attacker_ext.unar_solitary_focus_stacks * 256;
+                    }
+                } break;
+            }
+        }
+
+        // Divisor calcs and other modifiers
+        switch (data.weapon_id) {
             case WeaponId::AshguardPhaseCremator: {
                 data.damage += KhalendricAshguard::IndomitableAnnexDamageMultiplier * target_ext.indomitable_annex_stacks * 256;
-            } break;
-            case WeaponId::CabalistWarpBlades: {
-                if (!data.attacker) {
-                    break;
-                }
-                auto& attacker_ext = data.attacker->ext();
-                if (attacker_ext.values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
-                    data.damage *= 1.5;
-                    attacker_ext.values[ValueCabalistSilentStridesDamage] = 0;
-                }
-            } break;
-            case WeaponId::UnarAutonomousRay: {
-                if (!data.attacker) {
-                    break;
-                }
-                auto& attacker_ext = data.attacker->ext();
-                if (attacker_ext.unar_solitary_focus_stacks) {
-                    data.damage += attacker_ext.unar_solitary_focus_stacks * 256;
-                }
             } break;
             case WeaponId::ArchitectDispersiveSalvo: {
                 u32 divisor = data.damage_divisor ? data.damage_divisor : 1;
@@ -614,9 +678,10 @@ namespace hooks {
                 data.target->plague_timer = Plague::MiasmaTimer;
                 target_ext.values[ValueMiasma] = 1;
             } break;
+            case WeaponId::PilgrimMiningSaber:
             case WeaponId::ScepterOrmaScrapray:
             case WeaponId::HelionUskoScrapray: {
-                target_ext.timers[TimerGoldRush] = 2 * 24;
+                target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
                 target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
             } break;
         }
@@ -640,6 +705,23 @@ namespace hooks {
                 if (data.damage > 0 && !bw::is_under_carapace_swarm(data.target) && !target_ext.timers[TimerReconstitutionDelay]) {
                     target_ext.timers[TimerReconstitutionDelay] = 2 * 24 + 1;
                     helper::play_sound_from_unit(SoundId::Zerg_Ultra_ZUlRor00_WAV, data.target, 1, 0);
+                }
+            } break;
+            case UnitId::AskosiMissionary:
+            case UnitId::AskosiDoronin:
+            case UnitId::AskosiRove:
+            case UnitId::AskosiAgonist:
+            case UnitId::AskosiEmissary:
+            case UnitId::AskosiAkreno: {
+                target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+                data.target->update_speed();
+            } break;
+            case UnitId::AskosiThaumalogue: {
+                if (target_ext.values[ValueReassemblyActive]) {
+                    target_ext.timers[TimerRetaliationAssembly] = AskosiThaumalogue::RetaliationAssemblyDuration;
+                } else {
+                    target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+                    data.target->update_speed();
                 }
             } break;
         }
@@ -666,9 +748,14 @@ namespace hooks {
                     malefactor_ext = malefactor->ext();
                 }
             }
-            if (!bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !data.target->is_building() && malefactor_ext.units[UnitMindTyrantLink] && malefactor_ext.values[ValueIsMalefactor] == 2) {
-                target_ext.timers[TimerMalefactorTyrannize] = ProtossMindTyrant::MalefactorTyrannizeDuration;
-                target_ext.last_malefactor_player = data.attacking_player_id;
+            Unit* tyrant = malefactor_ext.units[UnitMindTyrantLink];
+            if (tyrant) {
+                if (tyrant->energy >= Protoss::TyrannyEnergyCost && !bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !data.target->is_building() && malefactor_ext.values[ValueIsMalefactor] == 2) {
+                    target_ext.timers[TimerMalefactorTyrannize] = ProtossMindTyrant::MalefactorTyrannizeDuration;
+                    target_ext.last_malefactor_player = data.attacking_player_id;
+                    // Drain energy for every tyrannized unit
+                    tyrant->spend_energy(Protoss::TyrannyEnergyCost);
+                }
             }
 
             switch (data.attacker->id) {
@@ -723,7 +810,7 @@ namespace hooks {
                 case WeaponId::MindTyrantMaledictus: {
                     helper::mind_control_hit(data.attacker, data.target);
                 } break;
-                case WeaponId::VorvalClaws: {
+                case WeaponId::VorvrokorVorvrokClaws: {
                     if (data.attacker->id == UnitId::ZergVorvrokor) {
                         if (!target_ext.values[ValueVorvalHidebreaker]) {
                             target_ext.values[ValueVorvalHidebreaker] = 1;
@@ -826,10 +913,35 @@ namespace hooks {
                 } break;
                 case UnitId::ZergTethzorokor:
                 case UnitId::ZergZarcavrokor: {
-                    // Fan of Teeth - Zarcavrokor behavior
+                    // Fan of Teeth
                     if (data.target != data.attacker && !target_ext.timers[TimerZarcavrokorSecondaryFire]) {
                         fire_bullet(data.target, WeaponId::ZergBonesofReflection, make_target(data.attacker), {.apply_cooldown = false});
                         target_ext.timers[TimerZarcavrokorSecondaryFire] = weapons_dat::cooldown[WeaponId::ZergBonesofReflection] - 1;
+                    }
+                } break;
+                case UnitId::AskosiPhontis: {
+                    // Warring Winds
+                    if (data.target != data.attacker && !target_ext.timers[TimerWarringWindsCooldown]) {
+                        target_ext.timers[TimerWarringWindsCooldown] = Askosi::WarringWindsCooldown;
+                        target_ext.values[ValueWarringWindsStacks]++;
+                        data.target->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+                        for (Unit* ally : g_unit_search.radial_ex(data.target, Askosi::WarringWindsRange, FilterAlly | FilterIncludingSelf)) {
+                            ally->heal_hp(Askosi::WarringWindsHealAmount);
+
+                            // TODO: Own audiovisuals
+                            ally->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+                        }
+                        if (target_ext.values[ValueWarringWindsStacks] >= 10) {
+                            target_ext.values[ValueWarringWindsStacks] = 0;
+                            for (Unit* pull_victim : g_unit_search.radial_ex(data.target, Askosi::WarringWindsRange, FilterNoBuilding)) {
+                                if (unit_can_be_repulsed(pull_victim)) {
+                                    pull_victim->pull_towards(data.target);
+
+                                    // TODO: Own audiovisuals
+                                    pull_victim->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+                                }
+                            }
+                        }
                     }
                 } break;
             }
@@ -842,7 +954,11 @@ namespace hooks {
                 case WeaponId::MadrigalHecatonAngeltearMissiles:
                 case WeaponId::DurendalAbaddonFlamethrowers:
                 case WeaponId::SalamanderAngeltearRockets:
-                case WeaponId::AckmedMickenMelter: {
+                case WeaponId::AckmedMickenMelter:
+                case WeaponId::YamatoGun: {
+                    if (data.attacker->id == UnitId::TerranHarakanGolden) {
+                        break;
+                    }
                     if (target_ext.values[ValueApollyoidAdhesiveStacks] < ApollyoidAdhesive::StackCap) {
                         target_ext.values[ValueApollyoidAdhesiveStacks]++;
                     }
@@ -873,9 +989,10 @@ namespace hooks {
 
                 switch (data.weapon_id) {
                     case WeaponId::InzorthrokorInzorReflux:
-                    case WeaponId::ZergBlissfulEmbrace:
                     case WeaponId::AkistrokorHarryingTalons: {
-                        mark_infesting(data.attacking_player_id, data.target);
+                        if (data.attacker->id != UnitId::AskosiObject) { // TODO: Extend weapons.datex and remove this
+                            mark_infesting(data.attacking_player_id, data.target);
+                        }
                     } break;
                     case WeaponId::SavantDiscoidRailgun: {
                         // Power Siphon
@@ -936,6 +1053,22 @@ namespace hooks {
                         // Kelvin Munitions - Slow targets
                         target_ext.timers[TimerKelvinMunitions] = 3 * 24 + 1;
                     } break;
+                    case WeaponId::VicarOspoTwinshard: {
+                        if (!target_ext.timers[TimerBoomingBlast]) {
+                            target_ext.timers[TimerBoomingBlast] = Askosi::BoomingBlastTimer;
+                            target_ext.values[ValueBoomingBlastPlayer] = data.attacking_player_id;
+                        }
+                        if (data.attacker->id == UnitId::AskosiIconoclast) {
+                            target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
+                            target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
+                        }
+                    } break;
+                    case WeaponId::GrandstandArteDriver:
+                    case WeaponId::IntendentErsaDriver: {
+                        if (!target_ext.timers[TimerPowerOverload]) {
+                            target_ext.timers[TimerPowerOverload] = Askosi::PowerOverloadTimer * hooks::get_armor_internal(data.target) + 1;
+                        }
+                    } break;
                     case WeaponId::AspirantPotentiumCannon: {
                         // Aspirant - Criticality
                         target_ext.timers[TimerCriticality] = 2 * 24 + 1;
@@ -983,10 +1116,12 @@ namespace hooks {
                     } break;
                     case WeaponId::EmpressFadingBioplasma: {
                         // Empress - Anodyne Annex - add stack
-                        target_ext.units[UnitAnnexSource] = data.attacker;
-                        target_ext.values[ValueEmpressAnodyneAnnexStacks]++;
-                        target_ext.values[ValueAnnexSourcePlayer] = data.attacking_player_id;
-                        target_ext.timers[TimerAnnex] = 2 * 24 + 1;
+                        if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+                            target_ext.units[UnitAnnexSource] = data.attacker;
+                            target_ext.values[ValueEmpressAnodyneAnnexStacks]++;
+                            target_ext.values[ValueAnnexSourcePlayer] = data.attacking_player_id;
+                            target_ext.timers[TimerAnnex] = 2 * 24 + 1;
+                        }
                     } break;
                     case WeaponId::GhitorokorGnashingTendrils: {
                         attacker_ext.values[ValueGhitorokorRelentlessAggressionStacks]++;
@@ -1058,8 +1193,8 @@ namespace hooks {
                     case WeaponId::VibranceSensoryOverload:
                     case WeaponId::ExtatusRepeatingBlaster:
                     case WeaponId::MatrixKhaydarinRay: {
-                        // Astral Blessing - Ecclesiast behavior
-                        if (data.attacking_player_id != data.target->player && !bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+                        // Astral Blessing
+                        if (data.attacker->id != UnitId::ProtossEcclesiastKhalendric && data.attacking_player_id != data.target->player && !bw::is_allied_to(data.attacking_player_id, data.target->player)) {
                             bw::astral_blessing_proc(data.target, data.attacking_player_id, data.weapon_id);
                         }
                     } break;
@@ -1079,7 +1214,19 @@ namespace hooks {
                     } break;
                     case WeaponId::GoskaMedusaRifle: {
                         bw::refresh_debuffs(data.target);
-                    }
+                    } break;
+                    case WeaponId::CardinalInoaTwinaxe: {
+                        // Every second strike, the Cardinal's weapon releases a restorative pulse, granting to all allies within 3 range a heal equal to damage dealt.
+                        if (data.attacker->order_signal & 0x20) {
+                            data.attacker->order_signal &= ~0x20;
+                            bw::heal_proc(data.attacker, data.attacking_player_id, AskosiCardinal::SustainingSermonRange, AskosiCardinal::SustainingSermonHeal);
+                        }
+                    } break;
+                    case WeaponId::CrematoriumOkliQuadshard: {
+                        target_ext.timers[TimerAshHeap] = Askosi::ScrapworldAshHeapDuration;
+                        target_ext.timers[TimerAshHeapArmorRend] += Askosi::ScrapworldAshHeapDuration - 1;
+                        target_ext.values[ValueAshHeapPlayer] = data.attacking_player_id;
+                    } break;
                 }
             }
         }
@@ -1096,9 +1243,11 @@ namespace hooks {
         }
         switch (data.weapon_id) {
             case WeaponId::GhitorokorGnashingTendrils:
-            case WeaponId::TethzorokorSaberArray:
             case WeaponId::UltrokorKaiserBlades: {
                 // Broodspawn Death Cycle, Ghitorokor / Tethzorokor / Ultrokor Saber Siphon
+                hp_factor += 1;
+            } break;
+            case WeaponId::TethzorokorSaberArray: {
                 hp_factor += 1;
             } break;
             case WeaponId::MortothrokorWickedIncisors: {
@@ -1129,18 +1278,19 @@ namespace hooks {
 
     static bool weapon_damage_fatal(const WeaponDamageData& data) {
         bool fatal_deal_damage = true;
-        UnitExt& target_ext = data.target->ext();
+        auto& target_ext = data.target->ext();
 
         // Note that the order here matters a lot
         //
         // 1. Plague
         // 2. Game Mode
         // 3. Unit-specific behaviors
-        // 4. Infestation
-        // 5. Regression
-        // 6. Tyranny of the Sun
-        // 7. Zombification
-        // 8. Miscellaneous lesser behaviors
+        // 4. Hijacker exit
+        // 5. Infestation
+        // 6. Regression
+        // 7. Tyranny of the Sun
+        // 8. Zombification
+        // 9. Miscellaneous lesser behaviors
         // 
         // We exit early to not trigger multiple different fatal damage handling at once
 
@@ -1258,9 +1408,55 @@ namespace hooks {
                 }
                 return true;
             } break;
+            case UnitId::AskosiThaumalogue:
+            case UnitId::AskosiObject:
+            case UnitId::AskosiScepter:
+            case UnitId::AskosiPetract:
+            case UnitId::AskosiTirade: {
+                if (!target_ext.values[ValueReassemblyActive]) {
+                    target_ext.values[ValueReassemblyActive] = true;
+                    data.target->heal_hp(data.target->get_max_hp_raw());
+                    data.target->play_iscript_animation(IscriptAnimation::SpecialState1);
+                    data.target->update_speed();
+                    bw::play_sound({SoundId::AskosiDeploy01, SoundId::AskosiDeploy03}, data.target->position);
+                    data.target->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+                    if (data.target->id == UnitId::AskosiObject) {
+                        data.target->status |= UnitStatus::CanNotReceiveOrders;
+                    }
+                    fatal_deal_damage = false;
+                }
+            } break;
         }
 
         if (fatal_deal_damage) {
+            // Askosi Ash Heap
+            if (target_ext.timers[TimerAshHeap]) {
+                for (Unit* nearby : g_unit_search.radial_ex(data.target, 2 * 32, FilterNotSelf)) {
+                    auto ash_heap_player = target_ext.values[ValueAshHeapPlayer];
+                    if (bw::is_allied_to(nearby->player, ash_heap_player)) {
+                        continue;
+                    }
+                    auto& nearby_ext = nearby->ext();
+                    nearby_ext.values[ValueAshHeapPlayer] = ash_heap_player;
+                    nearby_ext.timers[TimerAshHeap] = Askosi::ScrapworldAshHeapDuration;
+                    nearby_ext.timers[TimerAshHeapArmorRend] += Askosi::ScrapworldAshHeapDuration;
+                }
+            }
+
+            // Askosi Hijack - the hijacker escapes!
+            Unit* hijacker = target_ext.units[UnitHijacker];
+            if (hijacker) {
+                helper::move_unit(hijacker, data.target->position.x, data.target->position.y);
+                helper::show_and_enable_unit(hijacker);
+                hijacker->status &= ~UnitStatus::NoCollide;
+                target_ext.units[UnitHijacker] = 0;
+            }
+
+            // Askosi Booming Blast
+            if (target_ext.timers[TimerBoomingBlast] > 1) {
+                data.target->booming_blast_proc(false);
+            }
+
             // Matraleth, Akistokor - Blissful Embrace - infest target
             if (target_ext.timers[TimerInfesting]) {
                 fatal_deal_damage = false;
@@ -1298,7 +1494,7 @@ namespace hooks {
                 if (data.target) {
                     unit_on_death_behaviors(data.target);
                     if (data.attacker && !bw::is_allied_to(data.attacking_player_id, data.target->player)) { // Personally I think it's fine if kills are tracked regardless of allegiance,
-                                                                                                             // but we need to hook 004797B0 to make this a global rule. -Pr0nogo
+                                                                                                                // but we need to hook 004797B0 to make this a global rule. -Pr0nogo
                         helper::increment_unit_kill_count(data.attacker);
                     }
                 }
@@ -1307,7 +1503,6 @@ namespace hooks {
                 if (data.target->is_burrowed()) {
                     data.target->main_order_id = OrderId::Unburrow;
                 }
-
                 return fatal_deal_damage;
             }
 
@@ -1325,7 +1520,7 @@ namespace hooks {
                 }
             }
 
-            EntryArray masters = g_unit_search
+            auto masters = g_unit_search
                 .radial_ex(data.target, 6 * 32, 0, {UnitId::ProtossDemiurge})
                 .filter_by([&data](Unit* master) {
                     if (bw::is_allied_to(data.target->player, master->player)) {
@@ -1482,6 +1677,7 @@ namespace hooks {
         if (!hooks::is_better_target2(helper, helper->auto_target_unit, attacker)) {
             return false;
         }
+
         Unit* subunit = helper->subunit;
         helper->auto_target_unit = attacker;
         if (subunit->is_subunit()) {

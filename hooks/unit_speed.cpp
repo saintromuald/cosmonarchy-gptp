@@ -39,8 +39,18 @@ namespace hooks {
             speed *= 0.666;
         }
 
+        // Scrapworld: Implosion - slow
+        if (unit_ext.timers[TimerScrapworldImplosion] > 1) {
+            speed *= 0.666;
+        }
+
         // Claymore - Kelvin Munitions - slow
         if (unit_ext.timers[TimerKelvinMunitions] > 1) {
+            speed *= 0.666;
+        }
+
+        // Grandstand - Booming Blast - slow
+        if (unit_ext.timers[TimerBoomingBlast] > 1) {
             speed *= 0.666;
         }
 
@@ -89,6 +99,10 @@ namespace hooks {
             speed *= 1.33;
         }
 
+        if (unit_ext.timers[TimerImpactDissipation] > 1) {
+            speed *= 1.33;
+        }
+
         // Tyranny of the Sun
         if (unit_ext.values[ValueMindControllerUnitId]) {
             auto targets = g_unit_search
@@ -121,6 +135,11 @@ namespace hooks {
 
         // Hierophant Signify: Cowardice
         if (unit_ext.values[ValueSignifyStacks]) {
+            speed *= 0.5;
+        }
+
+        // Hijack - slow
+        if (unit_ext.timers[TimerIsBeingHijacked] > 1) {
             speed *= 0.5;
         }
 
@@ -213,7 +232,11 @@ namespace hooks {
             case UnitId::TerranCataphract:
             case UnitId::ProtossDracadin:
             case UnitId::ZergQuazrokor:
-            case UnitId::ZergZoryusthaleth: {
+            case UnitId::ZergZoryusthaleth:
+            case UnitId::AskosiPilgrim:
+            case UnitId::AskosiVicar:
+            case UnitId::AskosiObject:
+            case UnitId::AskosiThaumalogue: {
                 speed *= 1.1;
             } break;
             case UnitId::TerranCyclops:
@@ -230,7 +253,10 @@ namespace hooks {
             case UnitId::ProtossSimulacrumAstral:
             case UnitId::ZergAgrileth:
             case UnitId::ZergLiiralisk:
-            case UnitId::ZergIzirokor: {
+            case UnitId::ZergIzirokor:
+            case UnitId::AskosiMissionary:
+            case UnitId::AskosiCardinal:
+            case UnitId::AskosiDoronin: {
                 speed *= 1.2;
             } break;
             case UnitId::TerranSavantEntropyGauntlets:
@@ -252,7 +278,9 @@ namespace hooks {
             case UnitId::ZergInzorthrokor:
             case UnitId::ZergLakizilisk:
             case UnitId::ZergLakiziliskZorthos:
-            case UnitId::ZergZobriolisk: {
+            case UnitId::ZergZobriolisk:
+            case UnitId::AskosiProselyte:
+            case UnitId::AskosiAvatar: {
                 speed *= 1.3;
             } break;
             case UnitId::TerranHarakanGolden:
@@ -289,6 +317,9 @@ namespace hooks {
         }
 
         if (speed < 0) {
+            speed = 0;
+        }
+        if (unit_ext.values[ValueReassemblyActive]) {
             speed = 0;
         }
         return speed;

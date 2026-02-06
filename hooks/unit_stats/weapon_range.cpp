@@ -74,9 +74,16 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
             final_range = weapons_dat::max_range[weapon_id] / 32;
         }
     }
+
+    // @TODO: Extend weapon ids and remove this
     switch (unit->id) {
-        case UnitId::TerranBlackjackGolden: final_range -= 1; break;
-        case UnitId::ZergZethalor:          final_range -= 4; break;
+        case UnitId::TerranBlackjackGolden:       final_range -= 1; break;
+        case UnitId::ProtossEcclesiastKhalendric: final_range -= 1; break;
+        case UnitId::ProtossRenesair:             final_range += 1; break;
+        case UnitId::ZergZethalor:                final_range -= 6; break;
+        case UnitId::AskosiAvatar:                final_range -= 1; break;
+        case UnitId::AskosiPhontis:               final_range += 1; break;
+        case UnitId::AskosiIconoclast:            final_range -= 2; break;
     }
     if (unit_ext.unar_solitary_focus_stacks) {
         bonus_amount += unit_ext.unar_solitary_focus_stacks;
@@ -85,24 +92,31 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
 };
 
 u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
-    u32 result = weapons_dat::max_range[weapon_id];
+    u32 final_range = weapons_dat::max_range[weapon_id];
     if (bw::get_game_kind() == GameKind::DarkAges && weapons_dat::max_range[weapon_id] > 32 && !unit_id_is_trap(unit_id)) {
-        result -= bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0f) * 32;
+        final_range -= std::lround(bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0f)) * 32;
     }
-    if (unit_id == UnitId::TerranBlackjackGolden) {
-        result -= 32;
+    // @TODO: Extend weapons and remove these
+    switch (unit_id) {
+        case UnitId::TerranBlackjackGolden:       final_range -= 1 * 32; break;
+        case UnitId::ProtossEcclesiastKhalendric: final_range -= 1 * 32; break;
+        case UnitId::ProtossRenesair:             final_range += 1 * 32; break;
+        case UnitId::ZergZethalor:                final_range -= 6 * 32; break;
+        case UnitId::AskosiAvatar:                final_range -= 1 * 32; break;
+        case UnitId::AskosiPhontis:               final_range += 1 * 32; break;
+        case UnitId::AskosiIconoclast:            final_range -= 2 * 32; break;
     }
     if (weapon_id == WeaponId::OlympianTitansFist) {
-        result = 30;
+        final_range = 30;
     }
-    return result;
+    return final_range;
 }
 
 // Returns the modified max distance for the weapon, which is assumed to be attached to the given unit.
 // This hook affects the behavior of Unit::get_max_weapon_range().
 // Note: Weapon ranges are measured in pixels.
 u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cliff_advantage) {
-    UnitExt& unit_ext = unit->ext();
+    auto& unit_ext = unit->ext();
 
     s32 bonus_amount = 0;
     if (bw::get_game_kind() == GameKind::DarkAges) {
@@ -143,6 +157,14 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
         bonus_amount += 32 * unit_ext.unar_solitary_focus_stacks;
     }
 
+    if (unit_ext.values[ValueReassemblyActive]) {
+        switch (unit->id) {
+            case UnitId::AskosiScepter: {
+                bonus_amount += 64;
+            } break;
+        }
+    }
+
     if (unit_ext.timers[TimerAuralAssaultBlind] > 1) {
         return std::min(weapons_dat::max_range[weapon_id], 64u);
     }
@@ -150,10 +172,17 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
     u32 final_range = weapons_dat::max_range[weapon_id];
     if (unit_ext.values[ValueTriggerWeaponRangeBaseSet]) {
         final_range = unit_ext.values[ValueTriggerWeaponRangeBaseAmount];
-    } else if (unit->id == UnitId::TerranBlackjackGolden) {
-        final_range -= 32;
+    } else {
+        switch (unit->id) {
+            case UnitId::TerranBlackjackGolden:       final_range -= 1 * 32; break;
+            case UnitId::ProtossEcclesiastKhalendric: final_range -= 1 * 32; break;
+            case UnitId::ProtossRenesair:             final_range += 1 * 32; break;
+            case UnitId::ZergZethalor:                final_range -= 6 * 32; break;
+            case UnitId::AskosiAvatar:                final_range -= 1 * 32; break;
+            case UnitId::AskosiPhontis:               final_range += 1 * 32; break;
+            case UnitId::AskosiIconoclast:            final_range -= 2 * 32; break;
+        }
     }
-
     return std::lround(final_range * scale) + bonus_amount;
 }
 

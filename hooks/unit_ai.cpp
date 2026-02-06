@@ -324,6 +324,11 @@ namespace hooks {
 							is_valid_town_hall = true;
 						}
 					} break;
+					case RaceId::Askosi: {
+						if (unit->id == UnitId::AskosiLandlock || unit->id == UnitId::AskosiBounty) {
+							is_valid_town_hall = true;
+						}
+					} break;
 				}
 
 				if (is_valid_town_hall || helper::unit_is_active_resource_depot(unit)) {
@@ -378,7 +383,7 @@ namespace hooks {
 		} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
 			bw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
-		} else if (units_dat::computer_ai_internal[unit->id] & 2 && !unit_id_is_zerg_egg(unit->id) && unit->id != UnitId::ZergOvileth) {
+		} else if (units_dat::computer_ai_internal[unit->id] & 2 && !unit_id_is_zerg_egg(unit->id) && unit->id != UnitId::ZergOvileth && unit->id != UnitId::ZergYblyleth) {
 			bw::printf("Military AI added to non military unit (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
 			prevent = true;
 		}

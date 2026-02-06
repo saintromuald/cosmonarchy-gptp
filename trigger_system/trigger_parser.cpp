@@ -770,6 +770,8 @@ UnitIdBitset Parser::get_unit_id_bitset() {
             parser.set([](u32 i) { return unit_id_is_race(i, RaceId::Protoss); });
 		} else if (iequals("zerg")) {
             parser.set([](u32 i) { return unit_id_is_race(i, RaceId::Zerg); });
+		} else if (iequals("askosi")) {
+            parser.set([](u32 i) { return unit_id_is_race(i, RaceId::Askosi); });
 		} else if (iequals("combatants")) {
             parser.set([](u32 i) { return unit_id_is_combatant(i); });
 		} else if (iequals("transports")) {

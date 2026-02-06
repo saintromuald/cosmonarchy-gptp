@@ -3,47 +3,38 @@
 #include <BW/api.h>
 #include "ai_layouts.h"
 
-namespace hooks
-{
+namespace hooks {
 	// Used in itself, complete_addon, begin_gas_building, GiveAllUnitPropertiesToPlayerAndMakeIdle, removeSubunitOrGasContainer, ai_create_unit, orders_RescuePassive, orders_InfestMine1
 	// Changes would affect all those functions and maybe more
-	void give_unit(Unit* unit, u32 player, u32 count_as_completed)
-	{
-		if (unit->player != player)
-		{
+	void give_unit(Unit* unit, u32 player, u32 count_as_completed) {
+		if (unit->player != player) {
 			helper::remove_unit_ai(unit, 0);
 
 			bool is_morphing = false;
-			if (unit->is_remorphing_building())
-			{
+			if (unit->is_remorphing_building()) {
 				unit->status |= UnitStatus::Completed;
 				is_morphing = true;
 			}
 
 			helper::increment_unit_scores(unit, -1);
-			if (unit->status & UnitStatus::Completed)
-			{
+			if (unit->is_completed()) {
 				helper::increment_unit_scores_ex(unit, 0, -1);
 			}
 
 			u32 selection_index = 0;
-			bool isSelected = (unit->sprite->flags & SpriteFlags::Selected) == 1;
-			if (isSelected)
-			{
+			bool is_selected = (unit->sprite->flags & SpriteFlags::Selected) == 1;
+			if (is_selected) {
 				selection_index = unit->sprite->selection_index;
 				helper::destroy_unit_selection(unit);
 			}
 
-			if (unit->player_link.prev)
-			{
+			if (unit->player_link.prev) {
 				(unit->player_link.prev)->player_link.next = unit->player_link.next;
 			}
-			if (unit->player_link.next)
-			{
+			if (unit->player_link.next) {
 				(unit->player_link.next)->player_link.prev = unit->player_link.prev;
 			}
-			if (unit == first_player_unit->unit[unit->player])
-			{
+			if (unit == first_player_unit->unit[unit->player]) {
 				first_player_unit->unit[unit->player] = unit->player_link.next;
 			}
 
@@ -51,28 +42,24 @@ namespace hooks
 			unit->player_link.next = nullptr;
 			unit->player = player;
 
-			// maybe "if" not needed?
-			if (isSelected)
-			{
+			// Maybe "if" not needed? -GPTP
+			if (is_selected) {
 				helper::create_unit_selection(unit, selection_index);
 			}
 
 			unit->player_link.prev = nullptr;
 			unit->player_link.next = first_player_unit->unit[player];
 
-			if (first_player_unit->unit[player])
-			{
+			if (first_player_unit->unit[player]) {
 				(first_player_unit->unit[player])->player_link.prev = unit;
 			}
 
 			first_player_unit->unit[player] = unit;
 			helper::increment_unit_scores(unit, 1);
-			if (unit->status & UnitStatus::Completed)
-			{
+			if (unit->is_completed()) {
 				helper::increment_unit_scores_ex(unit, count_as_completed, 1);
 			}
-			if (is_morphing)
-			{
+			if (is_morphing) {
 				unit->status &= ~UnitStatus::Completed;
 			}
 
@@ -123,8 +110,8 @@ namespace hooks
 					helper::add_worker_structure_ai(unit, town);
 				}
 			} else {
-				UnitExt* unit_ext = get_unit_ext(unit);
-				if (unit_ext->values[ValueInfested] || unit_ext->values[ValueMindControlPlayer]) {
+				auto& unit_ext = unit->ext();
+				if (unit_ext.values[ValueInfested] || unit_ext.values[ValueMindControlPlayer] || unit_ext.values[ValueHijackOriginalPlayer]) {
 					helper::ai_training_simple_military(unit, unit);
 				} else {
 					helper::add_guard_ai_to_unit(unit);

@@ -768,21 +768,6 @@ namespace helper {
         return result;
     }
 
-    u32 get_target_unit_ability_error_stat_string(Unit* target, u8 player, u32 tech_id) {
-        const u32 func_address = 0x00491E80;
-        static u32 result;
-        __asm {
-            PUSHAD
-            PUSH tech_id
-            MOVZX BL, player
-            MOV EAX, target
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return result;
-    }
-
     // For modify_unit_shields
 
     s32 SErrSetLastError(char a1) {
@@ -2185,7 +2170,7 @@ namespace helper {
         return result;
     }
 
-    bool begin_building(Unit* unit) {
+    bool start_building(Unit* unit) {
         const u32 func_address = 0x00467030;
         static b32 result;
         __asm {
@@ -4164,21 +4149,6 @@ namespace helper {
         return result;
     }
 
-    u16 get_unit_ability_error_stat_string(Unit* a1, char a2, s32 a3) {
-        const u32 func_address = 0x00491E80;
-        static u32 result;
-        __asm {
-            PUSHAD
-            PUSH a3
-            MOVZX BL, a2
-            MOV EAX, a1
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return (u16)result;
-    }
-
     // for cmdrecv_hold_position
 
     Unit* get_active_player_next_selection() {
@@ -5458,13 +5428,13 @@ namespace helper {
         return return_value;
     }
 
-    u32 get_spell_stat_string(Unit* target, u32 techId, u8 player) {
+    u32 get_tech_use_error_message(Unit* target, u8 player, u16 tech_id) {
         const u32 func_address = 0x00491E80;
         static u32 return_value;
         __asm {
             PUSHAD
-            MOVZX EBX, player
-            PUSH techId
+            PUSH DWORD PTR tech_id
+            MOV BL, player
             MOV EAX, target
             CALL func_address
             MOV return_value, EAX
@@ -6565,24 +6535,6 @@ namespace helper {
         return return_value;
     }
 
-    void update_mineral_patch_image(Unit* unit) {
-        IscriptAnimation::Enum anim = IscriptAnimation::Built;
-        if (unit->building.resource.resource_amount == 0) {
-            anim = IscriptAnimation::Landing;
-        } else if (unit->building.resource.resource_amount < 250) {
-            anim = IscriptAnimation::SpecialState1;
-        } else if (unit->building.resource.resource_amount < 500) {
-            anim = IscriptAnimation::SpecialState2;
-        } else if (unit->building.resource.resource_amount < 750) {
-            anim = IscriptAnimation::AlmostBuilt;
-        }
-
-        if (unit->building.resource.resource_iscript != anim) {
-            unit->building.resource.resource_iscript = anim;
-            unit->sprite->play_iscript_animation(anim);
-        }
-    }
-
     void update_image_position_offset(Image* image) {
         const u32 func_address = 0x004D5A00;
         __asm {
@@ -7122,14 +7074,13 @@ namespace helper {
         return result;
     }
 
-    s16 can_target_spell_on_fow_unit(s32 techId, s16 unit_id) {
+    s16 can_target_spell_on_fow_unit(s32 tech_id, s16 unit_id) {
         const u32 func_address = 0x004914B0;
         static s32 result;
-        u32 unit_id_xd = unit_id;
         __asm {
             PUSHAD
-            PUSH unit_id_xd
-            MOV EAX, techId
+            PUSH DWORD PTR unit_id
+            MOV EAX, tech_id
             CALL func_address
             MOV result, EAX
             POPAD
@@ -16350,5 +16301,40 @@ namespace helper {
             POPAD
         }
         return (bool)result;
+    }
+
+    void update_mineral_field_image(Unit* mineral_field) {
+        const u32 func_address = 0x00468830;
+        __asm {
+            PUSHAD
+            MOV ECX, mineral_field
+            CALL func_address
+            POPAD
+        }
+    }
+
+    b32 game_is_team_game() {
+        const u32 func_address = 0x00484F50;
+        static b32 result;
+        __asm {
+            PUSHAD
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    s32 is_cpu_force(u32 force_id_1, s8 force_id_2) {
+        const u32 func_address = 0x00484DF0;
+        static s32 result;
+        __asm {
+            PUSHAD
+            MOV ECX, force_id_1
+            MOV DL, force_id_2
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
     }
 }

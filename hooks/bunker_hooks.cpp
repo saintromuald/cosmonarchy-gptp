@@ -42,28 +42,26 @@ namespace hooks {
 			}
 		}
 
-		if (bw::unit_is_ranged_attacker(unit)) {
-			unit->status |= UnitStatus::AttackMove;
-			if (unit->subunit) {
-				unit->subunit->status |= UnitStatus::AttackMove;
-			}
-			if (helper::attack_apply_cooldown(unit)) {
-				if (unit->order_target.pt.x != unit->next_target_waypoint.x
-				||  unit->order_target.pt.y != unit->next_target_waypoint.y)
-				{
-					unit->next_target_waypoint.x = unit->order_target.pt.x;
-					unit->next_target_waypoint.y = unit->order_target.pt.y;
-				}
-			} else if (!unit->main_order_timer) {
-				Unit* target = unit->order_target.unit;
-				if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
-					if (unit->connected_unit) {
-						UnitExt* bunker_ext = get_unit_ext(unit->connected_unit);
-						Unit* target = bunker_ext->units[UnitBunkerLockOn];
-						if (target && unit->can_attack_target(target) && is_within_attack_range(unit, target)) {
-							unit->order_target.unit = bunker_ext->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order
-						}
-					}
+        if (bw::unit_is_ranged_attacker(unit)) {
+            unit->status |= UnitStatus::AttackMove;
+            if (unit->subunit) {
+                unit->subunit->status |= UnitStatus::AttackMove;
+            }
+            if (helper::attack_apply_cooldown(unit)) {
+                if (unit->order_target.pt.x != unit->next_target_waypoint.x || unit->order_target.pt.y != unit->next_target_waypoint.y) {
+                    unit->next_target_waypoint.x = unit->order_target.pt.x;
+                    unit->next_target_waypoint.y = unit->order_target.pt.y;
+                }
+            } else if (!unit->main_order_timer) {
+                Unit* target = unit->order_target.unit;
+                if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
+                    if (unit->connected_unit) {
+                        UnitExt* bunker_ext = get_unit_ext(unit->connected_unit);
+                        Unit* target = bunker_ext->units[UnitBunkerLockOn];
+                        if (target && unit->can_attack_target(target) && is_within_attack_range(unit, target)) {
+                            unit->order_target.unit = bunker_ext->units[UnitBunkerLockOn]; // TODO: Find a way to set bunker lock on from attack order. -Veeq7
+                        }
+                    }
 
 					if (!target || !unit->can_attack_target(target) || !is_within_attack_range(unit, target)) {
 						const u32 radius = std::max(unit->get_max_weapon_range(unit->get_ground_weapon()), unit->get_max_weapon_range(unit->get_air_weapon()));
@@ -97,11 +95,21 @@ namespace hooks {
 			final_unit = unit->subunit;
 		}
 
-		if (!final_unit->connected_unit) { // Protect against a crash when a garrisoned unit attacks at the same time as a garrison dies. -Pr0nogo
+		Unit* garrison = final_unit->connected_unit;
+		if (!garrison) { // Protect against a crash when a garrisoned unit attacks at the same time as a garrison dies. -Pr0nogo
 			return;
 		}
+		bw::decloak_passive_proc(garrison);
 
-		Image* bunker_image = final_unit->connected_unit->sprite->main_graphic;
+		if (garrison->id == UnitId::AskosiGrandstandHoldout) {
+			garrison->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+			return;
+		}
+		if (garrison->id == UnitId::ZergScrylyleth) {
+			garrison->sprite->create_top_overlay(ImageId::SwarmingOmenLarge);
+			return;
+		}
+		Image* bunker_image = garrison->sprite->main_graphic;
 		u8 frame_direction = (unit->current_direction_1 + 16) / 32 % 8; // We use unit here instead of final_unit, because subunits were not turning correctly. -Pr0nogo
 		const LO_Header* attack_overlay = lo_files->attack_overlays[bunker_image->id];
 		Point8 offset = attack_overlay->get_offset(bunker_image->frame_index, frame_direction);
@@ -112,7 +120,7 @@ namespace hooks {
 
 		u8 frame_angle = frame_direction * 32;
 		u16 sprite_id = SpriteId::BunkerAttackOverlay_Orange;
-		switch (final_unit->connected_unit->id) {
+		switch (garrison->id) {
 			case UnitId::TerranAnchor:
 			case UnitId::TerranTrenchfoot:
 			case UnitId::TerranLodestone:
@@ -136,7 +144,8 @@ namespace hooks {
 					case RaceId::Terran: {
 						sprite_id = SpriteId::TencendurAttackOverlay_Orange;
 					} break;
-					case RaceId::Protoss: {
+					case RaceId::Protoss:
+					case RaceId::Askosi: {
 						sprite_id = SpriteId::TencendurAttackOverlay_Blue;
 					} break;
 					case RaceId::Zerg: {
@@ -149,9 +158,7 @@ namespace hooks {
 			frame_angle = ((final_unit->current_direction_1 + 8) / 16 % 16) * 16;
 			sprite_id = SpriteId::HarakanFlamethrower;
 		}
-
-		bw::decloak_passive_proc(final_unit->connected_unit);
-
+		
 		// TODO: Fix effect nonsense with subunits
 		Thingy* bunker_attack_effect = helper::create_thingy(sprite_id, offset.x + final_unit->get_x(), offset.y + final_unit->get_y(), final_unit->player);
 		if (!bunker_attack_effect) {
@@ -239,11 +246,11 @@ namespace hooks {
 		}
 		if (unit->is_garrisoned()) {
 			if (unit->subunit) {
-				if (unit->subunit->connected_unit && unit->subunit->connected_unit->status & (UnitStatus::InAir | UnitStatus::InTransport)) {
+				if (unit->subunit->connected_unit && !unit->subunit->connected_unit->is_valid_garrison()) {
 					return false;
 				}
 			}
-			if (unit->connected_unit && unit->connected_unit->is_in_transport()) {
+			if (unit->connected_unit && !unit->connected_unit->is_valid_garrison()) {
 				return false;
 			}
 			helper::create_bunker_attack_overlay(unit);

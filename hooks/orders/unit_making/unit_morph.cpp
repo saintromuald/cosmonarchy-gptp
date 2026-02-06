@@ -410,7 +410,7 @@ namespace hooks {
 				return false;
 			} break;
 			case UnitId::ZergZethrokor: {
-				if (morph_unit_id == UnitId::ZergVorvrokor) {
+				if (morph_unit_id == UnitId::ZergVorvrokor || morph_unit_id == UnitId::ZergZethalor) {
 					return true;
 				}
 				return false;

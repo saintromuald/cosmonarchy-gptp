@@ -9,13 +9,12 @@
 namespace hooks {
 // Unit is a transport
 // This is the initial pickup order
-void orders_pickup_1(Unit* unit) {
+void orders_pickup_1(Unit* unit) { // 004E7300
     Unit* unit_to_load = unit->order_target.unit;
     if (unit_to_load && bw::can_be_entered_by(unit, unit_to_load)) {
         helper::prepend_order_targeting_unit(unit, unit_to_load, OrderId::Pickup2);
         prepare_for_next_order(unit);
     } else if (unit->unit_ai) {
-        Point16 pos = {0,0};
         unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
         if (unit->main_order_id != OrderId::Die) {
             bool bStopLoop = (unit->order_queue_tail == 0);
@@ -36,7 +35,7 @@ void orders_pickup_1(Unit* unit) {
 }
 
 // Unit is a non-mobile transport (bunker)
-void orders_pickup_3(Unit* unit) {
+void orders_pickup_3(Unit* unit) { // 004E73B0
     Unit* unit_to_load = unit->order_target.unit;
     if (!unit_to_load) {
         if (unit->order_queue_head) {
@@ -58,8 +57,8 @@ void orders_pickup_3(Unit* unit) {
 }
 
 // Unit is a transport
-// This is used after orders_pickup_1
-void orders_pickup_2(Unit* unit) {
+// This is used after orders_pickup_1. -GPTP
+void orders_pickup_2(Unit* unit) { // 004E75D0
     Unit* unit_to_load = unit->order_target.unit;
     if (!unit_to_load) {
         if (unit->order_queue_head) {
@@ -78,7 +77,8 @@ void orders_pickup_2(Unit* unit) {
         if (unit->main_order_state == 0) {
             if (bw::can_be_entered_by(unit, unit_to_load)) {
                 if (unit->main_order_timer == 0) {
-                    if (!unit->is_target_within_min_range(unit_to_load, 1)) {
+                    u32 range = unit->id == UnitId::AskosiEmissary ? 4 * 32 : 1;
+                    if (!unit->is_target_within_min_range(unit_to_load, range)) {
                         helper::order_to_move_to_target(unit, unit_to_load);
                     } else {
                         helper::make_to_hold_position(unit);
@@ -104,8 +104,8 @@ void orders_pickup_2(Unit* unit) {
 }
 
 // Unit is a transport
-// A big part of the code could not be tested since different inside height test never occured during testing
-void orders_move_unload(Unit* unit) {
+// A big part of the code could not be tested since different inside height test never occured during testing. -GPTP
+void orders_move_unload(Unit* unit) { // 004E7700
     u32 distance;
     if (unit->main_order_state == 0 &&
         unit->order_target.unit) {
@@ -171,7 +171,7 @@ void orders_move_unload(Unit* unit) {
 
 // Unit is a unit to be picked up by transport
 // Breaks AI transport usage! -Pr0nogo
-void orders_pickup_4(Unit* unit) {
+void orders_pickup_4(Unit* unit) { // 004E7B70
     bool is_neutral = unit->player == 11;
     bool is_in_transport = unit->is_in_transport();
     if (is_neutral) {
@@ -300,8 +300,8 @@ void orders_pickup_4(Unit* unit) {
     */
 }
 
-// Unit is a unit trying to enter a transport
-void orders_enter_transport(Unit* unit) {
+// Unit is a unit trying to enter a transport. -GPTP
+void orders_enter_transport(Unit* unit) { // 004E7CF0
     Unit* target = unit->order_target.unit;
     if (target && !target->is_hallucination() && units_dat::space_provided[target->id] != 0 && bw::can_be_entered_by(target, unit)) {
         if (unit->main_order_state == 0 && target->main_order_id != OrderId::Pickup2) {
@@ -318,7 +318,8 @@ void orders_enter_transport(Unit* unit) {
         }
 
         helper::move_towards(unit, target);
-        if (unit->is_target_within_min_range(target, 1)) {
+        u32 range = target->id == UnitId::AskosiEmissary ? 4 * 32 : 1;
+        if (unit->is_target_within_min_range(target, range)) {
             helper::load_unit_proc(target, unit);
         }
     } else if (unit->order_queue_head) {
@@ -331,7 +332,7 @@ void orders_enter_transport(Unit* unit) {
     }
 }
 
-void orders_unload(Unit* unit) {
+void orders_unload(Unit* unit) { // 004E80D0
     bool is_grounded_building = unit->is_grounded_building();
     if (!is_grounded_building && unit->main_order_timer != 0) {
         return;
@@ -414,16 +415,26 @@ bool can_enter_transport(Unit* transport, Unit* unit) { // 004E6E00
     if (unit->is_building() && transport->is_building()) {
         return 0;
     }
+    if (unit->ext().units[UnitHiveOrgan]) {
+        return 0;
+    }
 
-    u32 space_provided = units_dat::space_provided[transport->id];
+    u32 space_provided_transport = units_dat::space_provided[transport->id];
+    u32 space_provided_cargo = units_dat::space_provided[unit->id];
     s32 space_required = 0;
     Unit* loaded_unit;
-    for (u32 index = 0; index < space_provided; ++index) {
+    for (u32 index = 0; index < space_provided_transport; ++index) {
         loaded_unit = helper::get_loaded_unit_from_index(transport, index);
         if (loaded_unit) {
             space_required += units_dat::space_required[loaded_unit->id];
         }
     }
-    return space_provided - space_required >= units_dat::space_required[unit->id];
+    for (u32 index = 0; index < space_provided_cargo; ++index) {
+        loaded_unit = helper::get_loaded_unit_from_index(unit, index);
+        if (loaded_unit) {
+            space_required += units_dat::space_required[loaded_unit->id];
+        }
+    }
+    return space_provided_transport - space_required >= units_dat::space_required[unit->id];
 }
 }

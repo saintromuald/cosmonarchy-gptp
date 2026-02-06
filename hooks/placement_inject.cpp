@@ -173,18 +173,15 @@ namespace
         }
     }
 
-    void __declspec(naked) start_building_wrapper() // 00467030
-    {
+    void __declspec(naked) start_building_wrapper() { // 00467030
         static s32 result;
         static Unit* builder;
-        __asm
-        {
+        __asm {
             MOV builder, EAX
             PUSHAD
         }
         result = hooks::start_building(builder);
-        __asm
-        {
+        __asm {
             POPAD
             MOV EAX, result
             RETN
@@ -445,29 +442,29 @@ namespace
 }
 
 namespace hooks {
-    void inject_placement_hooks() {
-        jump_patch(init_placement_box_pos_wrapper,							0x0048D660, 0);
-        jump_patch(draw_placement_box_wrapper,								0x0048DDC0, 4);
-    //	jump_patch(update_placement_state_for_placement_box_wrapper,		0x0048DCE0, 0);
-        jump_patch(is_tile_blocked_by_wrapper,								0x00473300, 0);
-        jump_patch(update_creep_building_placement_state_wrapper,			0x00473010, 1);
-        jump_patch(update_building_placement_state_map_tile_flags_wrapper,	0x00473A10, 1);
-        jump_patch(start_building_wrapper,									0x00467030, 1);
-        jump_patch(place_building_refinery_check_wrapper,					0x0048E1E0, 3);
-        jump_patch(place_building_refinery_proc_wrapper,					0x0048E430, 2);
-        jump_patch(place_building_proc_wrapper,								0x0048E6E0, 0);
-        jump_patch(unit_id_is_refinery_wrapper,								0x0047AFE0, 1);
-        jump_patch(issue_place_building_order_wrapper,						0x0048E730, 8);
-    //	jump_patch(play_building_placement_sound_wrapper,					0x0048F630, 3); // Fine, but unnecessary at the moment.
-        jump_patch(set_worker_error_wrapper,								0x0048F7B0, 1);
-        jump_patch(play_worker_error_sound_wrapper,							0x0048F6C0, 1);
-        jump_patch(get_placement_restrictions_from_sprite_id,				0x00487B00, 1);
-        jump_patch(place_building_message_wrapper,							0x0048D930, 4);
-    //	jump_patch(input_place_building_click_notify_wrapper,				0x0048E4E0, 0); // Not working yet...
-        jump_patch(vespene_geyser_placebox_wrapper,				            0x00473DB0, 1);
+void inject_placement_hooks() {
+    jump_patch(init_placement_box_pos_wrapper,							0x0048D660, 0);
+    jump_patch(draw_placement_box_wrapper,								0x0048DDC0, 4);
+//	jump_patch(update_placement_state_for_placement_box_wrapper,		                0x0048DCE0, 0);
+    jump_patch(is_tile_blocked_by_wrapper,								0x00473300, 0);
+    jump_patch(update_creep_building_placement_state_wrapper,			    0x00473010, 1);
+    jump_patch(update_building_placement_state_map_tile_flags_wrapper,	0x00473A10, 1);
+    jump_patch(start_building_wrapper,									0x00467030, 1);
+    jump_patch(place_building_refinery_check_wrapper,					    0x0048E1E0, 3);
+    jump_patch(place_building_refinery_proc_wrapper,					    0x0048E430, 2);
+    jump_patch(place_building_proc_wrapper,								0x0048E6E0, 0);
+    jump_patch(unit_id_is_refinery_wrapper,								0x0047AFE0, 1);
+    jump_patch(issue_place_building_order_wrapper,						0x0048E730, 8);
+//	jump_patch(play_building_placement_sound_wrapper,					                0x0048F630, 3); // Fine, but unnecessary at the moment.
+    jump_patch(set_worker_error_wrapper,								    0x0048F7B0, 1);
+    jump_patch(play_worker_error_sound_wrapper,							0x0048F6C0, 1);
+    jump_patch(get_placement_restrictions_from_sprite_id,				    0x00487B00, 1);
+    jump_patch(place_building_message_wrapper,							0x0048D930, 4);
+//	jump_patch(input_place_building_click_notify_wrapper,				                0x0048E4E0, 0); // Not working yet...
+    jump_patch(vespene_geyser_placebox_wrapper,				            0x00473DB0, 1);
 
-        // DF - Fix Treasury being unable to claim addons
-    //	jump_patch(TTBaseUnitType_patch_6E1A6,								0x0046E1A6, 3); //TTBaseUnitType (0x0046E170)
-    //	jump_patch(do_place_building_checking_patch_8E253,					0x0048E253, 3); //do_place_building_checking (0x0048E210)
-    }
+    // DF - Fix Treasury being unable to claim addons
+//	jump_patch(TTBaseUnitType_patch_6E1A6,								                0x0046E1A6, 3); //TTBaseUnitType (0x0046E170)
+//	jump_patch(do_place_building_checking_patch_8E253,					                0x0048E253, 3); //do_place_building_checking (0x0048E210)
+}
 }
