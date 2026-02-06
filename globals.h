@@ -161,5 +161,5 @@ bool has_clarion_links(Unit* unit);
 std::vector<Unit*> get_clarion_links(Unit* unit);
 
 // Returns damage left after spread
-s32 spread_clarion_damage(const hooks::WeaponDamageData& data, f32 factor);
+s32 spread_clarion_damage(const hooks::WeaponDamageData& data, fp32 factor);
 }

@@ -1175,9 +1175,9 @@ static bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
     return !unit->is_in_air() && (weapon_id == WeaponId::None || weapons_dat::max_range[weapon_id] > 32) && weapon_id != WeaponId::DurendalAbaddonFlamethrowers;
 }
 
-f32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {
+fp32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {
     if (!can_use_cliff_advantage(unit, weapon)) {
-        return 0;
+        return 0_fp32;
     }
     Point16 unit_pos;
     if (unit_id_is_burrowed_attacker(unit->id)) {
@@ -1186,11 +1186,11 @@ f32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_t
         unit_pos = unit->position;
     }
     s32 source_height = g_height_table[g_map_tile_size->width * (unit_pos.y >> 5) + (unit_pos.x >> 5)];
-    f32 multiplier = bw::get_game_kind() == GameKind::DarkAges ? 0.5 : 1;
+    fp32 multiplier = bw::get_game_kind() == GameKind::DarkAges ? 0.5_fp32 : 1_fp32;
     if (!target_unit) {
         return std::max(source_height, 0) * multiplier;
     } else if (target_unit->is_in_air()) {
-        return 0;
+        return 0_fp32;
     }
     s32 target_height = g_height_table[g_map_tile_size->width * (target_unit->position.y >> 5) + (target_unit->position.x >> 5)];
     return std::max(source_height - target_height, 0) * multiplier;
@@ -4447,8 +4447,8 @@ bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id) {
     return units_dat::base_property[unit_id] & UnitProperty::Flyer;
 }
 
-f32 calculate_dark_ages_penalty(f32 range) {
-    return range - round(range * 0.8 / 2) * 2;
+fp32 calculate_dark_ages_penalty(fp32 range) {
+    return range - round(range * 0.8_fp32 / 2) * 2;
 }
 
 void zap_overlay(Unit* unit) {

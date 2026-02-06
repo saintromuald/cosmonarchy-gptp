@@ -561,7 +561,7 @@ struct UnitExt {
         UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX
     };
 
-    fp64				    build_progress_accumulator;
+    fp32                    build_progress_accumulator;
 
     u32						salvage_time;
     f32						salvage_minerals;

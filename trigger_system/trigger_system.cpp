@@ -1802,7 +1802,7 @@ f32 Globals::calculate_hype() const {
         values[i] = log(std::accumulate(eco_measurements[i].begin(), eco_measurements[i].end(), 0));
     }
 
-    f32 changes_mean = 0;
+    auto changes_mean = 0.0f;
     std::vector<f32> changes(count - 1);
     for (size_t i = 0; i < changes.size(); i++) {
         changes[i] = values[i] = values[i];
@@ -1811,8 +1811,8 @@ f32 Globals::calculate_hype() const {
     changes_mean /= count;
 
     f32 volatility = 0;
-    for (f32 change : changes) {
-        f32 mean_diff = change - changes_mean;
+    for (auto change : changes) {
+        auto mean_diff = change - changes_mean;
         volatility += mean_diff * mean_diff;
     }
     volatility = sqrt(volatility / changes.size());
@@ -1822,7 +1822,7 @@ f32 Globals::calculate_hype() const {
     f32 sum_xx = 0;
     f32 sum_xy = 0;
     for (size_t x = 0; x < count; x++) {
-        f32 y = values[x];
+        auto y = values[x];
         sum_x += x;
         sum_y += y;
         sum_xx += x * x;

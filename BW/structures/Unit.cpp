@@ -1474,8 +1474,8 @@ Faction Unit::faction() {
 }
 
 f32 Unit::total_cost() {
-	UnitExt* unit_ext = get_unit_ext(this);
-	return bw::unit_id_total_cost(id, faction(), unit_ext->values[ValueRegressionUnstable]);
+    auto& unit_ext = this->ext();
+    return bw::unit_id_total_cost(id, faction(), unit_ext.values[ValueRegressionUnstable]);
 }
 
 u32 Unit::standard_sprite_id() {

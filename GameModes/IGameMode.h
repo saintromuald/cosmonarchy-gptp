@@ -16,7 +16,7 @@ public:
 	virtual void on_unit_tick(Unit* unit) {}
 	virtual void on_unit_damage(const hooks::WeaponDamageData& data) {}
 	virtual void on_unit_damage_modifiers(hooks::WeaponDamageData& data) {}
-	virtual void on_unit_damage_lifesteal(const hooks::WeaponDamageData& data, f32& hp_factor, f32& shields_factor) {}
+	virtual void on_unit_damage_lifesteal(const hooks::WeaponDamageData& data, fp32& hp_factor, fp32& shields_factor) {}
 	virtual bool on_unit_damage_fatal(const hooks::WeaponDamageData& data) { return true; }
 	virtual void on_unit_death(Unit* unit) {}
 	// TODO: add more major hook callbacks, like stats e.g. OnUnitSpeedUpdate

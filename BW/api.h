@@ -903,7 +903,7 @@ Unit* create_unit_from_bullet(UnitId::Enum unit_id, u32 player, Point16 position
 void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator = nullptr);
 u16 get_last_queue_slot_id(Unit* a1);
 s32 dir_saturate(s32 direction, s32 value);
-f32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus);
+fp32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus);
 void set_offset_to_parent_special_overlay(Image* image);
 bool is_slowed(Unit* unit);
 void hide_and_disable_unit(Unit* unit);
@@ -1110,7 +1110,7 @@ u32 human_count();
 u32 human_or_defeated_human_count();
 u32 human_or_witness_count();
 bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id);
-f32 calculate_dark_ages_penalty(f32 range);
+fp32 calculate_dark_ages_penalty(fp32 range);
 void zap_overlay(Unit* unit);
 void play_manual_weaponfire_sound(Unit* unit, WeaponId::Enum weapon_id);
 void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id);

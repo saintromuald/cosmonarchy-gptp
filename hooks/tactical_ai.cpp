@@ -192,23 +192,23 @@ static u32 get_damage_against(Unit* unit, u32 weapon_id, Unit* target) {
 
 static u32 get_dps_against(Unit* source, Unit* target) {
     if (target->id == UnitId::ProtossSolarion) {
-        return (get_damage_against(source, WeaponId::StewardPulseCannon, target) /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
+        return static_cast<u32>((get_damage_against(source, WeaponId::StewardPulseCannon, target) /* / INSERT STEWARD WEAPON COOLDOWN HERE / 24.0f*/)
             * (target->unit_with_hangar.in_hangar_count + target->unit_with_hangar.out_hangar_count)
-            * 1.5; // additional bias to encourage targeting solarions more
+            * 1.5_fp32); // additional bias to encourage targeting solarions more
     } else if (units_dat::base_property[target->id] & UnitProperty::Spellcaster
         && target->id != UnitId::TerranComsatStation) {
         return (target->energy / 256 / 50) * 20;
     } else {
         Unit* context = source->subunit ? source->subunit : source;
         u32 weapon_id = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
-        f32 multiplier = weapons_dat::inner_splash_radius[weapon_id] ? 1.5 : 1;
-        return hooks::get_current_dps_from_damage(target, weapon_id, get_damage_against(source, weapon_id, target)) * multiplier;
+        fp32 multiplier = weapons_dat::inner_splash_radius[weapon_id] ? 1.5_fp32 : 1_fp32;
+        return static_cast<u32>(hooks::get_current_dps_from_damage(target, weapon_id, get_damage_against(source, weapon_id, target)) * multiplier);
     }
     return 0;
 }
 
-static f32 get_furia_damage_potential(Unit* unit) {
-    f32 furia_damage_potential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
+static fp32 get_furia_damage_potential(Unit* unit) {
+    fp32 furia_damage_potential = hooks::get_current_dps(unit, WeaponId::MadrigalFuriaMissiles);
     return furia_damage_potential *= cosmonarchy_unit_count(unit, unit->position, 6 * 32, Flags::Enemy, {});
 }
 
@@ -896,19 +896,19 @@ static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
     }
 }
 
-static f32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
-    f32 cost = 0;
+static fp32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
+    fp32 cost = 0_fp32;
 
     // Value attacking units with higher dps
     Unit* context_target = target->subunit ? target->subunit : target;
     u32 weapon_id = source->status & UnitStatus::InAir ? context_target->get_air_weapon() : context_target->get_ground_weapon();
-    f32 multiplier = weapons_dat::inner_splash_radius[weapon_id] ? 1.5 : 1;
+    fp32 multiplier = weapons_dat::inner_splash_radius[weapon_id] ? 1.5_fp32 : 1_fp32;
     cost -= hooks::get_current_dps(target, weapon_id) * multiplier;
 
     // Value attacking units with smaller pathing cost more
     s32 dist = (s32)bw::distance_between(source->position, target->position) - get_max_range(source->id);
     if (dist > 0) {
-        cost += dist / 32.0;
+        cost += dist / 32.0_fp32;
     }
 
     // Value attacking strategically important targets
@@ -984,9 +984,9 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
         switch (unit->id) {
             case UnitId::TerranMadrigalImperiosoMode: {
                     if (!unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] && unit->main_order_id != OrderId::SiegeMode) {
-                        f32 furia_damage_potential = get_furia_damage_potential(unit);
-                        f32 imperioso_damage_potential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles])
-                                                          / hooks::get_weapon_cooldown_float(unit, WeaponId::MadrigalImperiosoMissiles);
+                        fp32 furia_damage_potential = get_furia_damage_potential(unit);
+                        fp32 imperioso_damage_potential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles])
+                                                          / hooks::get_weapon_cooldown_fp(unit, WeaponId::MadrigalImperiosoMissiles);
 
                         if (furia_damage_potential > imperioso_damage_potential * 2) {
                             unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] = 5 * 24;
@@ -996,9 +996,9 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
                 } break;
             case UnitId::TerranMadrigalFuriaMode: {
                 if (!unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] && unit->main_order_id != OrderId::TankMode) {
-                    f32 furia_damage_potential = get_furia_damage_potential(unit);
-                    f32 imperioso_damage_potential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles])
-                                                      / hooks::get_weapon_cooldown_float(unit, WeaponId::MadrigalImperiosoMissiles);
+                    fp32 furia_damage_potential = get_furia_damage_potential(unit);
+                    fp32 imperioso_damage_potential = (weapons_dat::damage_amount[WeaponId::MadrigalImperiosoMissiles])
+                                                      / hooks::get_weapon_cooldown_fp(unit, WeaponId::MadrigalImperiosoMissiles);
 
                     if (imperioso_damage_potential * 2 > furia_damage_potential) {
                         unit_ext->timers[TimerAI_MadrigalTempoChangeCooldown] = 5 * 24;
@@ -1083,11 +1083,11 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
             } break;
             case UnitId::ZergMatraleth: {
                 if (unit->main_order_id != OrderId::BlissfulEmbrace) {
-                    f32 min_cost = FLT_MAX;
+                    fp32 min_cost = std::numeric_limits<fp32>::max();
                     Unit* best_target = 0;
                     for (Unit* target : g_unit_search.radial_ex(unit, 512 * 32, FilterEnemy | FilterBuilding)) {
                         if (can_infest(unit->player, target)) {
-                            f32 cost = get_blissful_embrace_target_cost(unit, target);
+                            fp32 cost = get_blissful_embrace_target_cost(unit, target);
                             if (cost < min_cost) {
                                 min_cost = cost;
                                 best_target = target;

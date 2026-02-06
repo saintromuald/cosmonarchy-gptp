@@ -56,7 +56,7 @@ inline void init_float_precision() {
     _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
 }
 
-using fp32 = fpm::fixed<s32, s64, 8>;
+using fp32 = fpm::fixed<s32, s64, 12>;
 using fp64 = fpm::fixed<s64, boost::int128::int128_t, 32>;
 
 inline fp32 operator""_fp32(unsigned long long f) { return fp32{f}; }
