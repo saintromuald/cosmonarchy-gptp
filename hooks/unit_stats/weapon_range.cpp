@@ -32,9 +32,9 @@ namespace hooks {
 // Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
 u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in tiles, unfortunately
     auto& unit_ext = unit->ext();
-    s16 bonus_amount = 0;
+    fp32 bonus_amount = 0_fp32;
     if (bw::get_game_kind() == GameKind::DarkAges) {
-        bonus_amount -= bw::calculate_dark_ages_penalty(units_dat::seek_range[unit->id]);
+        bonus_amount -= bw::calculate_dark_ages_penalty(static_cast<fp32>(units_dat::seek_range[unit->id]));
     }
 
     if (target) {
@@ -45,10 +45,10 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
         }
     }
 
-    f32 scale = 1;
+    fp32 scale = 1_fp32;
     // Sovroleth - Writhing Web
     if (unit->id == UnitId::ZergSovroleth) {
-        scale += 0.05 * unit_ext.values[ValueSovrolethLinkCount];
+        scale += 0.05_fp32 * unit_ext.values[ValueSovrolethLinkCount];
     }
 
     // Height advantage
@@ -57,8 +57,8 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     // Ignore bonus distance for melee units
     u32 weapon_range = estimate_max_weapon_range(unit, target);
     if (weapon_range <= 32 || unit_id_is_trap(unit->id)) {
-        scale = 1;
-        bonus_amount = 0;
+        scale = 1_fp32;
+        bonus_amount = 0_fp32;
     }
 
     u32 final_range = units_dat::seek_range[unit->id];
@@ -88,13 +88,15 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     if (unit_ext.unar_solitary_focus_stacks) {
         bonus_amount += unit_ext.unar_solitary_focus_stacks;
     }
-    return final_range * scale + bonus_amount;
+
+    return static_cast<u8>(final_range * scale + bonus_amount);
 };
 
+// Only used for the tooltip
 u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
     u32 final_range = weapons_dat::max_range[weapon_id];
     if (bw::get_game_kind() == GameKind::DarkAges && weapons_dat::max_range[weapon_id] > 32 && !unit_id_is_trap(unit_id)) {
-        final_range -= std::lround(bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0f)) * 32;
+        final_range -= static_cast<u32>(round(bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0_fp32))) * 32;
     }
     // @TODO: Extend weapons and remove these
     switch (unit_id) {
@@ -118,9 +120,9 @@ u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
 u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cliff_advantage) {
     auto& unit_ext = unit->ext();
 
-    s32 bonus_amount = 0;
+    fp32 bonus_amount = 0_fp32;
     if (bw::get_game_kind() == GameKind::DarkAges) {
-        bonus_amount -= bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0f) * 32;
+        bonus_amount -= bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0_fp32) * 32;
     }
 
     // Stellar Enforcement - Magister behavior
@@ -131,10 +133,10 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
         }
     }
 
-    f32 scale = 1;
+    fp32 scale = 1_fp32;
     // Sovroleth - Writhing Web
     if (unit->id == UnitId::ZergSovroleth) {
-        scale += 0.05 * unit_ext.values[ValueSovrolethLinkCount];
+        scale += 0.05_fp32 * unit_ext.values[ValueSovrolethLinkCount];
     }
 
     // Height advantage
@@ -144,8 +146,8 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
 
     // Ignore bonus distance for melee units
     if (weapons_dat::max_range[weapon_id] <= 32 || unit_id_is_trap(unit->id)) {
-        scale = 1;
-        bonus_amount = 0;
+        scale = 1_fp32;
+        bonus_amount = 0_fp32;
     }
 
     // Give bonus distance to garrisoned units - after melee unit calcs so flamethrower units can attack
@@ -183,7 +185,8 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
             case UnitId::AskosiIconoclast:            final_range -= 2 * 32; break;
         }
     }
-    return std::lround(final_range * scale) + bonus_amount;
+
+    return static_cast<u32>(round(final_range * scale) + bonus_amount);
 }
 
 // Hooked to eventually extend weapon ids past 255. -Pr0nogo

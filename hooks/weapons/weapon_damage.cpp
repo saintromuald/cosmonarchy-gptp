@@ -354,7 +354,7 @@ namespace hooks {
 
         // Phase Link: spread the damage before dealing it to shields
         if (!data.is_phase_link_damage_instance && bw::has_clarion_links(data.target)) {
-            data.damage = bw::spread_clarion_damage(data, 0.75);
+            data.damage = bw::spread_clarion_damage(data, 0.75_fp32);
         }
 
         // Mind Tyrant - Villanous Fervor - Reduce Mind Tyrant energy first
@@ -1233,13 +1233,13 @@ namespace hooks {
     }
 
     static void weapon_damage_lifesteal(const WeaponDamageData& data) {
-        u32 damage_dealt = data.damage + data.shield_reduce_amount;
-        f32 hp_factor = 0;
-        f32 shields_factor = 0;
+        s32 damage_dealt = data.damage + data.shield_reduce_amount;
+        fp32 hp_factor = 0_fp32;
+        fp32 shields_factor = 0_fp32;
 
         auto& attacker_ext = data.attacker->ext();
         if (attacker_ext.timers[TimerLucilleriPheremones]) {
-            hp_factor += 0.5;
+            hp_factor += 0.5_fp32;
         }
         switch (data.weapon_id) {
             case WeaponId::GhitorokorGnashingTendrils:
@@ -1252,7 +1252,7 @@ namespace hooks {
             } break;
             case WeaponId::MortothrokorWickedIncisors: {
                 // Mortothrokor Whetted Appetite
-                hp_factor += attacker_ext.values[ValueMortothrokorStacks] * 0.05;
+                hp_factor += attacker_ext.values[ValueMortothrokorStacks] * 0.05_fp32;
             } break;
             case WeaponId::AdherentPhaseBlade:
             case WeaponId::AmaranthPsiCleaver: {
@@ -1265,10 +1265,10 @@ namespace hooks {
             g_active_game_mode->on_unit_damage_lifesteal(data, hp_factor, shields_factor);
         }
         if (hp_factor) {
-            data.attacker->heal_hp(damage_dealt * hp_factor, data.attacker);
+            data.attacker->heal_hp(static_cast<s32>(damage_dealt * hp_factor), data.attacker);
         }
         if (shields_factor) {
-            auto healing_amount = damage_dealt * std::lround(shields_factor);
+            auto healing_amount = static_cast<s32>(damage_dealt * shields_factor);
             data.attacker->heal_shields(healing_amount, data.attacker);
             if (data.attacker->id == UnitId::ProtossAmaranth) {
                 attacker_ext.values[ValueAmaranthHealAmount] += healing_amount;

@@ -173,15 +173,15 @@ namespace hooks {
                 } break;
             }
 
-            fp64 hp_gain{built_unit->build_repair_hp_gain};
+            fp32 hp_gain{built_unit->build_repair_hp_gain};
             if (is_askosi) {
                 auto& built_ext = built_unit->ext();
                 auto askosi_builder_count = built_ext.unit_vectors[UnitVectorAskosiBuilders].size();
                 if (askosi_builder_count > 1) {
-                    hp_gain *= 1 + ((askosi_builder_count - 1) * 0.10_fp64);
+                    hp_gain *= 1 + ((askosi_builder_count - 1) * 0.10_fp32);
                 }
                 if (unit->id == UnitId::AskosiDyad) {
-                    hp_gain *= 1.25_fp64;
+                    hp_gain *= 1.25_fp32;
                 }
                 built_ext.values[ValueAskosiBuildProc]++;
                 if (built_ext.values[ValueAskosiBuildProc] >= askosi_builder_count) {

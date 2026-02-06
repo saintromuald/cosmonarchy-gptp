@@ -3,8 +3,8 @@
 
 namespace cm {
 struct BuildingModifier {
-	fp64 factor;
-	u32 integer_step;
+	fp32 factor;
+	u32  integer_step;
 };
 
 struct ProgressBuildOptions {

@@ -275,11 +275,11 @@ static void tick_effect(EffectField& effect) {
                     } break;
                     case 1:
                     case 2: {
-                        f32 distance = effect.tick * 2 * 32;
+                        fp32 distance = effect.tick * 2 * 32_fp32;
                         u32 count = effect.tick * 8;
 
                         Point16 pos = effect.position;
-                        pos.x += distance;
+                        pos.x += static_cast<u16>(distance);
                         for (u32 i = 0; i < count; i++) {
                             pos = bw::rotate_point((Point16)effect.position, pos, (360.0 / count));
                             g_iquare_globals->create_effect(EffectId::Irradiate, 20 * 24 - elapsed, pos, 1.5 * 32, SpriteId::MorningstarRadiationField, 5, effect.player, effect.source);
@@ -1158,7 +1158,7 @@ static void link_damage(Unit* unit, s32 damage, s8 direction, const hooks::Weapo
     hooks::weapon_damage_root(new_data);
 }
 
-s32 spread_clarion_damage(const hooks::WeaponDamageData& data, f32 factor) {
+s32 spread_clarion_damage(const hooks::WeaponDamageData& data, fp32 factor) {
     Unit* target = data.target;
     s32 damage = data.damage;
     s32 damage_to_spread = std::min(s32(damage * factor), target->shields);

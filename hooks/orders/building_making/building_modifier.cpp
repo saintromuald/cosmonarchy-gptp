@@ -4,7 +4,7 @@
 
 namespace cm {
 BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOptions& options) {
-	BuildingModifier modifier{.factor = 1_fp64, .integer_step = 1};
+	BuildingModifier modifier{.factor = 1_fp32, .integer_step = 1};
 
 	assert(unit);
     auto& unit_ext = unit->ext();
@@ -19,7 +19,7 @@ BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOption
 			}
 		}
 		if (crucible_active) {
-			modifier.factor *= 1.5_fp64;
+			modifier.factor *= 1.5_fp32;
 		}
 
 		if (unit->player < PlayerLimit) {

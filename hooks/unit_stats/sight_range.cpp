@@ -14,7 +14,7 @@ namespace hooks {
 		if (!is_for_spellcasting && unit->is_blind) { // Check if the unit is blinded (don't bother if this is for spellcasting)
 			return BLIND_SIGHT_RANGE;
 		}
-		u32 sight_range = units_dat::sight_range[unit->id];
+		fp32 sight_range{units_dat::sight_range[unit->id]};
 		if (bw::get_game_kind() == GameKind::DarkAges) {
 			sight_range -= bw::calculate_dark_ages_penalty(sight_range);
 		}
@@ -24,8 +24,8 @@ namespace hooks {
 
 		UnitExt* unit_ext = get_unit_ext(unit);
 		if (unit_ext->values[ValueInfested] && bw::get_game_kind() != GameKind::Embraced) {
-			sight_range /= 1.66;
+			sight_range /= 1.66_fp32;
 		}
-		return sight_range;
+		return static_cast<u32>(sight_range);
 	}
 }
