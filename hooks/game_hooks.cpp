@@ -1607,16 +1607,16 @@ namespace hooks {
             case UnitId::ZergNathrokor: {
                 if (unit_ext.timers[TimerCustomEggHatch]) {
                     u32 morph_unit_id = unit->build_queue[unit->build_queue_slot];
-                    f32 time_factor = unit_ext.timers[TimerCustomEggHatch] / (f32)unit_ext.values[ValueCustomEggHatchMax];
-                    unit->remaining_build_time = units_dat::time_cost[morph_unit_id] * time_factor;
+                    fp32 time_factor = unit_ext.timers[TimerCustomEggHatch] / fp32(unit_ext.values[ValueCustomEggHatchMax]);
+                    unit->remaining_build_time = u16(units_dat::time_cost[morph_unit_id] * time_factor);
 
                     if (unit_ext.timers[TimerCustomEggHatch] == 1 + 19 && morph_unit_id == UnitId::ZergSovroleth) {
                         unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
                     }
                     if (unit_ext.timers[TimerCustomEggHatch] == 1) {
-                        f32 hp_factor = (f32)unit->hitpoints / unit_ext.values[ValueCustomEggHpMax];
+                        fp32 hp_factor = fp32(unit->hitpoints) / unit_ext.values[ValueCustomEggHpMax];
                         helper::replace_unit_with_id(unit, morph_unit_id);
-                        unit->set_hitpoints(units_dat::max_hitpoints[morph_unit_id] * hp_factor);
+                        unit->set_hitpoints(s32(units_dat::max_hitpoints[morph_unit_id] * hp_factor));
                         bw::give_ai_ex(unit);
                         helper::play_unit_ready_sound(unit);
                         unit->build_queue[unit->build_queue_slot] = UnitId::None;
@@ -1865,9 +1865,9 @@ namespace hooks {
                     break;
                 }
                 if (!unit_ext.timers[TimerBulwarkAstralSplendor]) {
-                    u32 cooldown = ProtossBulwark::AstralSplendorCooldown;
+                    u32 cooldown{ProtossBulwark::AstralSplendorCooldown};
                     if (unit_ext.unit_vectors[UnitVectorCrucibles].size()) {
-                        cooldown /= 1.5;
+                        cooldown = static_cast<u32>(cooldown / 1.5_fp32);
                     }
                     unit_ext.timers[TimerBulwarkAstralSplendor] = cooldown;
 
@@ -2723,7 +2723,7 @@ namespace hooks {
                         effect->destroy();
                     }
                     unit_ext.current_storm = 0;
-                    unit->spell_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PsiStorm) * 1.25;
+                    unit->spell_cooldown = u8(get_modified_weapon_cooldown(unit, WeaponId::PsiStorm) * 1.25_fp32);
                 }
             } break;
             case UnitId::ProtossAmaranth: {
@@ -2731,7 +2731,7 @@ namespace hooks {
                 if (unit_ext.values[ValueAmaranthHealAmount] && target && !bw::are_mutual_allies(unit->player, target->player)) {
                     if (unit_ext.damage_taken_timer > 2 * 24) {
                         unit_ext.values[ValueAmaranthHealAmount] = 0;
-                    } else if (unit_ext.values[ValueAmaranthHealAmount] > 100 * 256 && unit->get_max_hp_raw() > units_dat::max_hitpoints[unit->id] * 0.8) {
+                    } else if (unit_ext.values[ValueAmaranthHealAmount] > 100 * 256 && unit->get_max_hp_raw() > s32(units_dat::max_hitpoints[unit->id] * 0.8_fp32)) {
                         unit_ext.values[ValueAmaranthHealAmount] = 0;
                         play_unit_banter(target, UnitId::ProtossAmaranth);
                     }
@@ -2998,26 +2998,26 @@ namespace hooks {
                 u32 vespene_cost = units_dat::vespene_cost[target->id];
                 u32 time = units_dat::time_cost[target->id] / 2;
                 target_ext.salvage_time += 1;
-                target_ext.salvage_minerals += (f32)mineral_cost * 0.50 / time;
-                while (target_ext.salvage_minerals > 1) {
+                target_ext.salvage_minerals += mineral_cost * 0.50_fp32 / time;
+                while (target_ext.salvage_minerals > 1_fp32) {
                     target_ext.salvage_minerals -= 1;
                     resources->minerals[unit->player] += 1;
                 }
-                target_ext.salvage_gas += (f32)vespene_cost * 0.50 / time;
-                while (target_ext.salvage_gas > 1) {
+                target_ext.salvage_gas += vespene_cost * 0.50_fp32 / time;
+                while (target_ext.salvage_gas > 1_fp32) {
                     target_ext.salvage_gas -= 1;
                     resources->gas[unit->player] += 1;
                 }
                 if (target_ext.salvage_time >= time) {
-                    resources->minerals[unit->player] += ceilf(target_ext.salvage_minerals);
-                    resources->gas[unit->player] += ceilf(target_ext.salvage_gas);
+                    resources->minerals[unit->player] += static_cast<s32>(fpm::ceil(target_ext.salvage_minerals));
+                    resources->gas[unit->player] += static_cast<s32>(fpm::ceil(target_ext.salvage_gas));
                     target->damage_with_custom(target->get_current_life_ingame() * 256, 255);
                     unit->order_to_idle();
                 }
 
                 if (!(unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving) && !unit_ext.timers[TimerTalosAnimationSubtimer]) {
-                    u32 width = units_dat::building_dimensions[target->id].x * 0.75;
-                    u32 height = units_dat::building_dimensions[target->id].y * 0.75;
+                    u32 width = u32(units_dat::building_dimensions[target->id].x * 0.75_fp32);
+                    u32 height = u32(units_dat::building_dimensions[target->id].y * 0.75_fp32);
                     s32 x_offset = bw::random() % width - width / 2;
                     s32 y_offset = bw::random() % height - height / 2;
                     x_offset = Clamp(x_offset, -127, 128);
@@ -3035,20 +3035,20 @@ namespace hooks {
                     Point16 pos = target->sprite->position;
                     switch (bw::random() % 4) {
                     case 0: {
-                        pos.x -= units_dat::unit_bounds[target->id].left * 0.75;
-                        pos.y -= units_dat::unit_bounds[target->id].top * 0.75;
+                        pos.x -= u16(units_dat::unit_bounds[target->id].left * 0.75_fp32);
+                        pos.y -= u16(units_dat::unit_bounds[target->id].top * 0.75_fp32);
                     } break;
                     case 1: {
-                        pos.x += units_dat::unit_bounds[target->id].right * 0.75;
-                        pos.y -= units_dat::unit_bounds[target->id].top * 0.75;
+                        pos.x += u16(units_dat::unit_bounds[target->id].right * 0.75_fp32);
+                        pos.y -= u16(units_dat::unit_bounds[target->id].top * 0.75_fp32);
                     } break;
                     case 2: {
-                        pos.x -= units_dat::unit_bounds[target->id].left * 0.75;
-                        pos.y += units_dat::unit_bounds[target->id].bottom * 0.75;
+                        pos.x -= u16(units_dat::unit_bounds[target->id].left * 0.75_fp32);
+                        pos.y += u16(units_dat::unit_bounds[target->id].bottom * 0.75_fp32);
                     } break;
                     case 3: {
-                        pos.x += units_dat::unit_bounds[target->id].right * 0.75;
-                        pos.y += units_dat::unit_bounds[target->id].bottom * 0.75;
+                        pos.x += u16(units_dat::unit_bounds[target->id].right * 0.75_fp32);
+                        pos.y += u16(units_dat::unit_bounds[target->id].bottom * 0.75_fp32);
                     } break;
                     }
                     helper::set_move_target_xy(unit, pos.x, pos.y);
@@ -3504,8 +3504,8 @@ namespace hooks {
         }
 
         if (unit->is_addon() && !unit->is_completed() && unit->connected_unit && !unit->connected_unit->is_frozen() && !unit_ext.timers[TimerAddonAnimation]) {
-            u32 width  = units_dat::building_dimensions[unit->id].x * 0.5;
-            u32 height = units_dat::building_dimensions[unit->id].y * 0.5;
+            u32 width  = u32(units_dat::building_dimensions[unit->id].x * 0.5_fp32);
+            u32 height = u32(units_dat::building_dimensions[unit->id].y * 0.5_fp32);
 
             s32 x_offset = bw::random() % width - width / 2;
             s32 y_offset = bw::random() % height - height / 2;

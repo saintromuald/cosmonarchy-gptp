@@ -1132,7 +1132,7 @@ namespace hooks {
             u8 minerals_percentage = 0;
             u8 gas_percentage = 0;
             helper::ai_resource_need_split(&gas_percentage, town_player, &minerals_percentage);
-            u32 gas_count = gas_percentage * town->worker_count / 100.0;
+            u32 gas_count = u32(gas_percentage * town->worker_count / 100.0_fp32);
 
             u32 worker_count = 0;
             // TODO: Add support for custom races. -Pr0nogo
@@ -1402,29 +1402,29 @@ namespace hooks {
         return true;
     }
 
-    static f32 get_resarea_score(u32 player, AiTown* main_town, ResourceArea* area, const EntryArray<Unit>& units, bool use_absolute_path) {
-        f32 score = 0;
+    static fp32 get_resarea_score(u32 player, AiTown* main_town, ResourceArea* area, const EntryArray<Unit>& units, bool use_absolute_path) {
+        fp32 score{};
 
         // TODO: make trigger customizable (and probably convert all biases to 1.0, so it's always the default)
-        const f32 own_bias      = -1.0;
-        const f32 ally_bias     = -0.5;
-        const f32 enemy_bias    =  0.5;
-        const f32 distance_bias = -5.0;
-        const f32 mineral_bias  =  0.5;
-        const f32 gas_bias      =  1.0;
+        const fp32 own_bias{-1};
+        const fp32 ally_bias{-0.5};
+        const fp32 enemy_bias{0.5};
+        const fp32 distance_bias{-5};
+        const fp32 mineral_bias{0.5};
+        const fp32 gas_bias{1};
 
         u32 own_count = 0;
         u32 ally_count = 0;
         u32 enemy_count = 0;
         u32 start_location_count = 0;
-        f32 average_own_distance = 0; 
-        f32 average_ally_distance = 0; 
-        f32 average_enemy_distance = 0; 
-        f32 average_start_location_distance = 0; 
+        fp32 average_own_distance{};
+        fp32 average_ally_distance{};
+        fp32 average_enemy_distance{};
+        fp32 average_start_location_distance{};
 
         for (u32 i = 0; i < PlayerLimit; ++i) {
             for (Unit* unit = first_player_unit->unit[i]; unit; unit = unit->player_link.next) {
-                f32 distance = bw::distance_between(area->position, unit->position) / 32.0;
+                fp32 distance = bw::distance_between(area->position, unit->position) / 32.0_fp32;
                 if (player == i) {
                     own_count++;
                     average_own_distance += distance;
@@ -1437,7 +1437,7 @@ namespace hooks {
                 }
             }
             if (player != i && first_player_unit->unit[i]) {
-                f32 distance = bw::distance_between(area->position, g_start_positions[i]) / 32.0;
+                fp32 distance = bw::distance_between(area->position, g_start_positions[i]) / 32.0_fp32;
                 start_location_count++;
                 average_start_location_distance += distance;
             }
@@ -1455,7 +1455,7 @@ namespace hooks {
             score += average_enemy_distance * enemy_bias;
         }
 
-        f32 distance_from_main = bw::get_ground_path_distance_tiles(main_town->position, area->position);
+        fp32 distance_from_main{bw::get_ground_path_distance_tiles(main_town->position, area->position)};
         score += distance_from_main * distance_bias;
 
         for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
@@ -1480,7 +1480,7 @@ namespace hooks {
 
     static u32 ai_find_expansion_custom(u32 player, AiTown* main_town) {
         u32 best_resarea = 0;
-        f32 best_score = INT_MIN;
+        fp32 best_score = std::numeric_limits<fp32>::lowest();
 
         bool has_transport = bw::player_has_transport(player);
         Region* main_region = bw::get_region(bw::get_region_id(main_town->position));
@@ -1496,7 +1496,7 @@ namespace hooks {
                 use_absolute_path = true;
             }
 
-            f32 score = get_resarea_score(player, main_town, area, units, use_absolute_path);
+            fp32 score = get_resarea_score(player, main_town, area, units, use_absolute_path);
             if (score > best_score) {
                 best_score = score;
                 best_resarea = i;
@@ -1870,7 +1870,7 @@ namespace hooks {
         s32 missing_air = ai_region->air_strength_needed - ai_region->air_strength_full;
 
         Unit* best_unit = 0;
-        f32 best_score = 0;
+        fp32 best_score{};
         for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
             if (!unit->is_completed() || !helper::is_valid_for(unit->id, unit, 0)) {
                 continue;
@@ -1933,8 +1933,8 @@ namespace hooks {
                 continue;
             }
 
-            f32 distance = helper::get_path_distance_to(unit, region_center);
-            f32 score = distance >= 1 ? force / distance : force;
+            fp32 distance{helper::get_path_distance_to(unit, region_center)};
+            fp32 score = distance >= 1_fp32 ? force / distance : fp32(force);
             if (score > best_score) {
                 best_score = score;
                 best_unit = unit;

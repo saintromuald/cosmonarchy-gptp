@@ -653,7 +653,7 @@ namespace hooks {
 
     static Unit* find_unit_for_guard(u32 player, u32 unit_id, Point16 position) {
         Unit* best_unit = 0;
-        f32 best_score = 0;
+        fp32 best_score{};
         for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
             if (unit->id != unit_id) {
                 continue;
@@ -671,12 +671,12 @@ namespace hooks {
             if (current_ai_region->defense_priority > 110) {
                 continue;
             }
-            f32 force = unit->ground_strength + unit->air_strength;
+            fp32 force{unit->ground_strength + unit->air_strength};
             if (!force) {
                 continue;
             }
-            f32 distance = helper::get_path_distance_to(unit, position);
-            f32 score = distance >= 1 ? force / distance : force;
+            fp32 distance{helper::get_path_distance_to(unit, position)};
+            fp32 score = distance >= 1_fp32 ? force / distance : force;
             if (score > best_score) {
                 best_score = score;
                 best_unit = unit;

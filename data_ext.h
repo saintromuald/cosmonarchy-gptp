@@ -564,8 +564,8 @@ struct UnitExt {
     fp32                    build_progress_accumulator;
 
     u32						salvage_time;
-    f32						salvage_minerals;
-    f32						salvage_gas;
+    fp32                    salvage_minerals;
+    fp32                    salvage_gas;
 
     Point16					terran_build_pos;
     Point16					recall_pos;
