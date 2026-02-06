@@ -104,7 +104,7 @@ namespace hooks {
                                 index++;
                             } break;
                             case UnitId::TerranDurendal: {
-                                helper::stats_weapon_level(dialog, index, WeaponId::DurendalPhilistineAutogun);
+                                helper::stats_weapon_level(dialog, index, WeaponId::DurendalPhilistineSalvo);
                                 index++;
                             } break;
                             case UnitId::TerranCentaur: {

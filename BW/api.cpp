@@ -2247,7 +2247,7 @@ bool buttonset_id_is_submenu(u32 buttonset_id) {
 u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
     switch (unit_id) {
         case UnitId::TerranTarasque:	return WeaponId::TarasqueAcceleratedPlasmid;
-        case UnitId::TerranDurendal:	return WeaponId::DurendalPhilistineAutogun;
+        case UnitId::TerranDurendal:	return WeaponId::DurendalPhilistineSalvo;
         case UnitId::TerranCentaur:		return WeaponId::CentaurSunchaserMissiles;
         case UnitId::ZergTethzorokor:	return WeaponId::ZergBonesofReflection;
         case UnitId::ZergZobriolisk:    return WeaponId::ZobrioliskRapidSpinesAir;
@@ -2373,6 +2373,28 @@ void shield_heal_proc(Unit* heal_source, u32 heal_source_player, u32 range, u32 
             // Shield heal
             unit->heal_shields(heal_amount * 256, heal_source);
         }
+    }
+}
+
+void heal_proc(Unit* heal_source, u32 heal_source_player, u32 range, u32 heal_amount) {
+    Box32 search_area = {};
+    search_area.left = heal_source->position.x - range;
+    search_area.top = heal_source->position.y - range;
+    search_area.right = heal_source->position.x + range;
+    search_area.bottom = heal_source->position.y + range;
+
+    for (Unit* unit : g_unit_search.rect(search_area).filter(heal_source)) {
+        if (heal_source_player != unit->player && !is_allied_to(heal_source_player, unit->player)) {
+            continue;
+        }
+        if (unit->hitpoints < units_dat::max_hitpoints[unit->id]) {
+            // Shield check for default behavior
+            helper::add_overlay_below_main(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+            helper::add_overlay_below_main(heal_source->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+        } else {
+            continue;
+        }
+        unit->heal_hp(heal_amount, heal_source);
     }
 }
 

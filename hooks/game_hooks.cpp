@@ -2085,7 +2085,7 @@ namespace hooks {
                     if (fire_multiple(unit, WeaponId::ZobrioliskRapidSpinesAir, 1, FilterEnemy | FilterNoGround, {})) {
                         unit->sprite->create_top_overlay(ImageId::ZobrioliskBurrowWeaponfireOverlay);
                     //  bw::play_sound({SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03}, unit->position);
-                        unit_ext.timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
+                        unit_ext.timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineSalvo);
                     } else {
                         unit_ext.timers[TimerSecondaryWeaponCooldown] = 3;
                     }
@@ -2234,10 +2234,10 @@ namespace hooks {
             case UnitId::TerranDurendal: {
                 // Durendal - Forward March
                 if (bw::unit_can_fire_secondary_weapon(unit)) {
-                    if (fire_multiple(unit, WeaponId::DurendalPhilistineAutogun, 1, FilterEnemy, {.fire_opts = {.apply_cooldown = false}})) {
+                    if (fire_multiple(unit, WeaponId::DurendalPhilistineSalvo, 1, FilterEnemy, {.fire_opts = {.apply_cooldown = false}})) {
                         unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
                         bw::play_sound({SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03}, unit->position);
-                        unit_ext.timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineAutogun);
+                        unit_ext.timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineSalvo);
                     } else {
                         unit_ext.timers[TimerSecondaryWeaponCooldown] = 3;
                     }

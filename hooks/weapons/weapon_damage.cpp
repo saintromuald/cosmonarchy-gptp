@@ -1612,7 +1612,7 @@ namespace hooks {
             final_sprite->create_overlay(spores_image, 0, 0, 0);
         }
 
-        target_ext->timers[TimerCorrosiveTouch] = Vithrilisk::CorrosiveTouchTimer;
+        target_ext->timers[TimerCorrosiveTouch] = CorrosiveTouch::Timer;
         return 0;
     }
 

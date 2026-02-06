@@ -883,7 +883,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::SouthpawKnockoutDrivers:             return "Knockout Drivers";
         case WeaponId::RamessesPharoahCannons:              return "Pharoah Cannons";
         case WeaponId::DurendalAbaddonFlamethrowers:        return "Abaddon Flamethrowers";
-        case WeaponId::DurendalPhilistineAutogun:           return "Philistine Autogun";
+        case WeaponId::DurendalPhilistineSalvo:             return "Philistine Salvo";
         case WeaponId::CataphractLonginiusCannons:          return "Longinius Cannons";
         case WeaponId::DilettanteUpstartRifle:              return "Upstart Rifle";
         case WeaponId::SevenstepGeometricRifle:             return "Geometric Rifle";

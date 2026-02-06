@@ -186,7 +186,7 @@ namespace hooks {
                 built_ext.values[ValueAskosiBuildProc]++;
                 if (built_ext.values[ValueAskosiBuildProc] >= askosi_builder_count) {
                     built_ext.values[ValueAskosiBuildProc] = 0;
-                    cm::progress_build(built_unit, {.builder = unit, .is_constructing = true, .already_ticked = true, .is_askosi = true, .hp_gain = u16(hp_gain)});
+                    cm::progress_build(built_unit, {.builder = unit, .is_constructing = true, .already_ticked = true, .hp_gain = u16(hp_gain), .is_askosi = true});
                     helper::generic_progress_build(built_unit, u16(hp_gain), false);
                 }
             } else {

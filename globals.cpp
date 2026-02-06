@@ -728,7 +728,7 @@ void refresh_debuffs(Unit* unit) {
 
     // Refresh Vithrilisk Corrosive Spores
     if (unit_ext->timers[TimerCorrosiveTouch]) {
-        unit_ext->timers[TimerCorrosiveTouch] = Vithrilisk::CorrosiveTouchTimer;
+        unit_ext->timers[TimerCorrosiveTouch] = CorrosiveTouch::Timer;
     }
 
     // Refresh Irradiate

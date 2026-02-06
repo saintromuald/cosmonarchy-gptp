@@ -66,7 +66,7 @@ namespace hooks {
 		cooldown /= 1 + (has_crucible * 0.23); // Divisor math is different
 
 		// Vithrilisk - Corrosive Spores: lower attack speed of victim
-		cooldown *= 1 + unit_ext.values[ValueCorrosiveTouchStacks] * Vithrilisk::CorrosiveTouchCooldownIncrease;
+		cooldown *= 1 + unit_ext.values[ValueCorrosiveTouchStacks] * CorrosiveTouch::CooldownIncrease;
 
 		// Protoss Cornerstone: Ascend - attack cooldown
 		if (unit_ext.timers[TimerAscend]) {

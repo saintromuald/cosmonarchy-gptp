@@ -1004,6 +1004,7 @@ void set_bullet_direction(Bullet* bullet, Unit* target);
 bool move_unit_ai(Unit* unit, AiRegion* ai_region);
 void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id);
 void shield_heal_proc(Unit* healer, u32 heal_source_player, u32 range, u32 heal_amount);
+void heal_proc(Unit* heal_source, u32 heal_source_player, u32 range, u32 heal_amount);
 bool is_attack_region(AiRegion* ai_region);
 void prepare_building_area(Point16 pos, u32 unit_id, Unit* ignore = 0);
 void town_add_spending_request(AiTown& town, u32 count, u32 unit_id, u32 priority, bool request_base = true);

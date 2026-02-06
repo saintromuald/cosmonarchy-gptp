@@ -233,7 +233,7 @@ void unit_on_death_behaviors(Unit* unit) {
                 }
             } break;
             case UnitId::TerranLobotomyMine: {
-                apply_lobotomy_slow(unit->position);
+                apply_lobotomy_slow(unit->position, TerranMine::LobotomyTimer);
             } break;
             case UnitId::TerranTartarusMine: {
                 for (Unit* victim : g_unit_search.radial(unit->position, TerranMine::DetonationRange)) {
@@ -346,7 +346,7 @@ void unit_on_death_behaviors(Unit* unit) {
             hijacker->status &= ~UnitStatus::CanNotReceiveOrders;
         }
 
-        if (UnitId::has_swarming_spite(static_cast<UnitId::Enum>(unit->id)) && !unit_ext.values[ValueDontProcSwarmingSpite]) {
+        if (UnitId::has_swarming_spite(static_cast<UnitId::Enum>(unit->id)) && !unit_ext.values[ValueDontProcOnDeathEffects]) {
             for (Unit* ally : g_unit_search.radial_ex(unit, SwarmingSpite::Range, FilterAlly | FilterNoBuilding)) {
                 // TODO: Own audiovisuals
                 bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));

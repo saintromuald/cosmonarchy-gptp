@@ -413,7 +413,7 @@ namespace hooks {
 			}
 		} else if (bullet->attack_target.unit) {
 			hooks::lockdown_hit(bullet->attack_target.unit, TerranMine::LobotomyTimerVanilla, bullet);
-			apply_lobotomy_slow(bullet->attack_target.pt);
+			apply_lobotomy_slow(bullet->attack_target.pt, TerranMine::LobotomyTimer * 2);
 		}
 	}
 

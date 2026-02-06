@@ -258,13 +258,8 @@ enum ExtValueId {
     ValueTriggerHealRangeAmount,
     ValueReassemblyActive,
     ValueSegmentedExpansionStacks,
-    ValueAmaranthHealAmount,
-    TimerCorpseConsumptionDelay,
     ValueDyadAssisting,
     ValueHijackOriginalPlayer,
-    ValueReassemblyActive,
-    ValueVicarLaunchPos,
-    ValueHelionLaunchPos,
     ValueAskosiBuildProc,
     ValueBoomingBlastPlayer,
     ValueAshHeap,
@@ -464,6 +459,7 @@ enum ExtTimerId {
     TimerWarringWindsCooldown,
     TimerScrapworldImplosion,
     TimerVitalRemainsArmorPen,
+    TimerCorpseConsumptionDelay,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

@@ -2105,6 +2105,10 @@ bool spreads_cagra_while_burrowed(UnitId::Enum unit_id) {
         || unit_id == UnitId::ZergMalkothrokor;
 }
 
+bool has_swarming_spite(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ZergSkryrokor;
+}
+
 } // namespace UnitId
 
 namespace WeaponId {

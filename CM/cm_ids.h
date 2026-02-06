@@ -147,6 +147,7 @@ bool is_triple_birth(UnitId::Enum unit_id);
 bool has_forward_march(UnitId::Enum unit_id);
 bool spreads_cagra_while_burrowed(UnitId::Enum unit_id);
 bool has_swarming_spite(UnitId::Enum unit_id);
+bool is_askosi(UnitId::Enum unit_id);
 } // namespace UnitId
 
 namespace WeaponId {

@@ -48,13 +48,14 @@ inline constexpr s32 ReintegrationTimer = 10 * 24;
 }
 
 namespace Cleric {
-inline constexpr s32 HealRange = 30;
 inline constexpr s32 HealAmount = 96;  // 9 HP per second
 inline constexpr s32 NanoshieldTimer = 25;
+inline constexpr s32 HealRange = 30;
 }
 
 namespace Shaman {
-inline constexpr s32 NaniteFieldHealAmount = 4;
+inline constexpr s32 NaniteFieldHealAmount = 8;
+inline constexpr s32 NaniteFieldDuration = 1 * 24;
 inline constexpr s32 NaniteFieldSupportRange = 4 * 32;
 inline constexpr s32 NaniteFieldVisionaryRange = 6 * 32;
 }
@@ -100,6 +101,8 @@ inline constexpr s32 DirgeDamage = 5;
 
 namespace TerranTriton {
 inline constexpr s32 LobotomyWarheadRange = 7 * 32;
+inline constexpr s32 LobotomyWarheadStunTimer = 4 * 24;
+inline constexpr s32 LobotomyWarheadSlowTimer = 8 * 24;
 }
 
 namespace Cuirass {
@@ -321,13 +324,13 @@ inline constexpr s32 BindingPlasmaRadius = 3 * 32;
 inline constexpr s32 BindingPlasmaSearchRadius = 8 * 32;
 inline constexpr s32 DimensionalRecallInterval = 12;
 inline constexpr s32 DimensionalRecallRange = 2 * 32;
+inline constexpr s32 TyrannyEnergyCost = 10 * 256;
 }
 
 // ZERG \\
 
 namespace Nathrokor {
 inline constexpr s32 AdrenalFrenzyTimer = 2 * 24 + 1;
-inline constexpr f64 AdrenalFrenzySpeedFactor = 0.01;
 }
 
 namespace Vorvrokor {
@@ -336,12 +339,6 @@ inline constexpr s32 CaptivatingClawsTimer = 24 + 1;
 
 namespace Axitrilisk {
 inline constexpr s32 PerpetualWindTimer = 8 * 24 + 1;
-}
-
-namespace Vithrilisk {
-inline constexpr s32 CorrosiveTouchTimer = 5 * 24 + 1;
-inline constexpr f64 CorrosiveTouchCooldownIncrease = 0.05;
-inline constexpr f64 CorrosiveTouchArmorReduction = 1 * 256;
 }
 
 namespace Zoryusthaleth {
@@ -373,7 +370,6 @@ inline constexpr s32 SegmentedExpansionTimer = 15 * 24 + 1;
 }
 
 namespace Broodspawn {
-inline constexpr s32 DeathCycleEnsnareRange = 3 * 32;
 inline constexpr s32 DeathCycleCorrosiveTouchRange = 3 * 32;
 inline constexpr s32 DeathCycleCorrosiveTouchTimer = 2 * 24 + 1;
 inline constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
@@ -386,12 +382,17 @@ inline constexpr s32 GrowthTimer = 3 * 24 + 1;
 
 namespace CorrosiveTouch {
 inline constexpr s32 Timer = 3 * 24 + 1;
-inline constexpr f64 CooldownIncrease = 3;
-inline constexpr f64 ArmorReduction = 1;
+inline constexpr s32 CooldownIncrease = 3;
+inline constexpr s32 ArmorReduction = 1;
 }
 
 namespace Plague {
 inline constexpr s32 MiasmaTimer = 4;
+}
+
+namespace SwarmingSpite {
+inline constexpr s32 Range = 6 * 32;
+inline constexpr s32 Duration = 2 * 24;
 }
 
 namespace ZergEgg {
@@ -414,6 +415,7 @@ inline constexpr s32 SermonSalveRange = 8 * 32;
 
 namespace AskosiCardinal {
 inline constexpr s32 SustainingSermonRange = 3 * 32;
+inline constexpr s32 SustainingSermonHeal = 5 * 256;
 }
 
 namespace AskosiMimic {

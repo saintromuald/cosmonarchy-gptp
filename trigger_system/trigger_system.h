@@ -32,7 +32,7 @@ static const char* race_names[] = {
     "Protoss",
     "Askosi"
 };
-static_assert(std::size(race_names) == RaceId::Count);
+static_assert(std::size(race_names) == RaceId::FullCount);
 
 enum class CrigPlayerType {
     Human,
