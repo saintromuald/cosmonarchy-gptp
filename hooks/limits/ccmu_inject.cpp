@@ -448,9 +448,10 @@ namespace hooks {
 		memory_patch(0x004410E1, &ccmu_extender.unit_finder_x);
 		memory_patch(0x004410F4, &ccmu_extender.unit_finder_y);
 
-		// sub_446350 (0x00446350)
+		//init_resareas (0x00446350)
 		memory_patch(0x00446355, UnitLimit);
-		memory_patch(0x004464CE, -UnitLimit);
+		memory_patch(0x004464C8, (UnitLimit + 1) / 4);
+		memory_patch(0x004464CE, -(UnitLimit + 1));
 		memory_patch(0x004464DC, -UnitLimit);
 		memory_patch(0x0044659A, -UnitLimit);
 		memory_patch(0x004465A8, -UnitLimit);
