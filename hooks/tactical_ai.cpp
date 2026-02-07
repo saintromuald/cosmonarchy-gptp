@@ -7,52 +7,7 @@
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/unit_stats/armor_bonus.h"
-
-/* DONE
-Apostle Lazarus Agent: If 5 or more organic nearby_allies (that don't have the buff) are nearby,
-cast the spell. **DONE**
-AI should also try to position Apostles near organics.
-
-Matraleth MatralethParasite: When 5 or more supply's worth of units (of any owner) are within 128px of each other,
-target the group. **DONE**
-
-Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 192px of the Star Sovereign,
-and there are no allied town halls and less than 2000 HP+shields worth of allied units within the same radius,
-and the Star Sovereign has more than 50% of HP+shields combined,
-channel the ability. **DONE**
-Attempt to protect the Star Sovereign with low-cost/low-HP units.
-
-Lanifect Disruption Field:
-When there are at least 3 nearby_allies within 128px, and there are at least 2 enemies within 128px,
-and there are no activated Disruption Fields within 96px,
-and the Lanifect is above 50% total HP and shields,
-move towards the most significant enemy threat within 128px (in terms of enemy unit count).
-Recheck conditions to disable the behavior (besides HP/shield checks). **DONE**
-*/
-
-/* TODO
-Eidolon Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them,
-I would suggest dropping them in positions where enemy inside units
-have been spotted/attacked/killed within the last few minutes.
-That way it's like they're responding to inside paths taken by enemies.
-Vulture Spider Mines could be done in similar ways.
-
-Madrigal Tempo Change: When 3 or more hostiles within 4 weapon distance,
-switch to Tempo Up (Furia);
-else, switch to Tempo Down (Imperioso)
-
-Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within distance,
-target terrain between the Paladin and the target group, 64px away from the group.
-
-Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target
-the group and stay within distance while attempting to avoid damage.
-
-Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many
-nearby_allies as possible.
-
-Didact DimensionalRecall: "Offensive" cast when the Didact is added to an attack and a group of 6 or more units are within 160px of
-one another. Attempt to group as many units as possible during the channel.
-*/
+#include <algorithm>
 
 #define ENABLE_KITE_DEBUG_MESSAGES 0
 
@@ -836,7 +791,7 @@ static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
                 bool should_kite_back = result.backward_found;
                 bool prefer_kiting_forward = !unit_has_min_range(unit) && result.forward_found;
-                fp32 hostile_advantage = result.hostile_strength / static_cast<fp32>(result.ally_strength);
+                fp32 hostile_advantage = result.hostile_strength / std::max(static_cast<fp32>(result.ally_strength), static_cast<fp32>(1));
                 u32 distance = result.distance;
                 u32 max_range = get_max_range(unit->id);
                 switch (get_kiter_type(unit->id)) {
