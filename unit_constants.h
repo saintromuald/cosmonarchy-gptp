@@ -66,7 +66,7 @@ constexpr s32 PassiveMaxStacks = 10;
 }
 
 namespace TerranApostle {
-inline constexpr u32 BloodTitheRange = 3 * 24;
+inline constexpr u32 BloodTitheRange = 3 * 32;
 inline constexpr u32 BloodTitheHeal = 5 * 256;
 }
 
