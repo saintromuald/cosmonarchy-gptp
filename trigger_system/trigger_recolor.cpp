@@ -1,6 +1,6 @@
 #include "trigger_recolor.h"
 #include "color_palette.h"
-#include "maths.h"
+#include "interpolation.h"
 
 RecolorSystem recolor_system;
 
@@ -20,7 +20,7 @@ void update_recolors() {
 		}
 
 		for (u32 i = 0; i < recolor_system.current_recolor.set.count; ++i) {
-			recolor_system.current_recolor.set.recolors[i] = lerp_recolor(ease_in_out(t), recolor_system.source_recolor.set.recolors[i], recolor_system.target_recolor.set.recolors[i]);
+			recolor_system.current_recolor.set.recolors[i] = lerp_recolor(utils::ease_in_out(t), recolor_system.source_recolor.set.recolors[i], recolor_system.target_recolor.set.recolors[i]);
 		}
 
 		set_palette_recolor(recolor_system.current_recolor.set);

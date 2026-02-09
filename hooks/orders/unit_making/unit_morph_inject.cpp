@@ -4,8 +4,6 @@
 #include "hooks\orders\building_making\building_zerg.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include "globals.h"
-#include "math_utils.h"
-
 namespace {
     //-------- cmdrecv_unit_morph --------//
 

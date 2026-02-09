@@ -59,7 +59,29 @@ inline void init_float_precision() {
 using fp32 = fpm::fixed<s32, s64, 12>;
 using fp64 = fpm::fixed<s64, boost::int128::int128_t, 32>;
 
-inline fp32 operator""_fp32(unsigned long long f) { return fp32{s32(f)}; }
-inline fp64 operator""_fp64(unsigned long long f) { return fp64{s64(f)}; }
-inline fp32 operator""_fp32(long double f) { return fp32{f}; }
-inline fp64 operator""_fp64(long double f) { return fp64{f}; }
+inline consteval fp32 operator""fp(unsigned long long f) { return fp32{s32(f)}; }
+inline consteval fp64 operator""dfp(unsigned long long f) { return fp64{s64(f)}; }
+inline consteval fp32 operator""fp(long double f) { return fp32{f}; }
+inline consteval fp64 operator""dfp(long double f) { return fp64{f}; }
+
+inline constexpr u32 TileSize = 32;
+inline consteval u32 operator""tiles(long double tiles) {
+    return static_cast<u32>(tiles * TileSize);
+}
+inline consteval u32 operator""tiles(unsigned long long tiles) {
+    return static_cast<u32>(tiles * TileSize);
+}
+
+inline constexpr u32 TickRate = 24;
+inline consteval u32 operator""secs(long double seconds) {
+    return static_cast<u32>(seconds * TickRate);
+}
+inline consteval u32 operator""secs(unsigned long long seconds) {
+    return static_cast<u32>(seconds * TickRate);
+}
+inline consteval u32 operator""mins(long double minutes) {
+    return static_cast<u32>(minutes * 60 * TickRate);
+}
+inline consteval u32 operator""mins(unsigned long long minutes) {
+    return static_cast<u32>(minutes * 60 * TickRate);
+}

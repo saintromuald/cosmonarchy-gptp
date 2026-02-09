@@ -61,7 +61,7 @@ private:
 	std::vector<UprisingWave> m_waves;
 	std::vector<UprisingCreator> m_creators{
         // Tier 1
-		UprisingCreator{static_cast<u32>(1.5 * 60 * 24), {
+		UprisingCreator{1.5mins, {
             UprisingSpawnerInfo{
                 .name = "Ackmed's BBQ",
                 .unit_id = UnitId::TerranStockade,

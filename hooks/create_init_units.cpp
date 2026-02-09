@@ -54,11 +54,11 @@ namespace hooks {
         }
     }
 
-    f64 Sign(f64 x) {
-        return x < 0.0 ? -1.0 : x > 0.0 ? 1.0 : 0.0;
+    static fp32 sign(fp32 x) {
+        return x < 0.0fp ? -1.0fp : x > 0.0fp ? 1.0fp : 0.0fp;
     }
 
-    Point16 find_worker_spawn_positions(s32 townhallId, const u16& startX, const u16& startY, bool& horizontal) {
+    static Point16 find_worker_spawn_positions(s32 townhallId, const u16& startX, const u16& startY, bool& horizontal) {
         s32 sum_x = 0;
         s32 sum_y = 0;
         u32 count = 0;
@@ -87,24 +87,24 @@ namespace hooks {
             sum_y = 1;
         }
 
-        f64 averageX = (f64)sum_x / count;
-        f64 averageY = (f64)sum_y / count;
-        f64 distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5);
+        const auto averageX = fp32(sum_x) / count;
+        const auto averageY = fp32(sum_y) / count;
+        const auto distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5fp);
 
-        f64 offset_x = averageX / distance;
-        f64 offset_y = averageY / distance;
+        auto offset_x = averageX / distance;
+        auto offset_y = averageY / distance;
 
-        const f64 distance_multiplier = 1.4;
-        f64 width = distance_multiplier;
-        f64 height = distance_multiplier;
+        const fp32 distance_multiplier{1.4};
+        auto width = distance_multiplier;
+        auto height = distance_multiplier;
 
-        if (offset_x < 0) {
+        if (offset_x < 0fp) {
             width *= units_dat::unit_bounds[townhallId].left;
         } else {
             width *= units_dat::unit_bounds[townhallId].right;
         }
 
-        if (offset_y < 0) {
+        if (offset_y < 0fp) {
             height *= units_dat::unit_bounds[townhallId].top;
         } else {
             height *= units_dat::unit_bounds[townhallId].bottom;
@@ -113,21 +113,21 @@ namespace hooks {
         offset_x = offset_x * width;
         offset_y = offset_y * height;
 
-        const f64 diagonal_threshold = 0.5; // 1 - full diagonal, 0 - straight line
+        const fp32 diagonal_threshold{0.5}; // 1 - full diagonal, 0 - straight line
         bool force_horizontal = false;
-        f64 max = std::max(abs(offset_x), abs(offset_y));
-        f64 min = std::min(abs(offset_x), abs(offset_y));
-        if (min != 0 && diagonal_threshold != 0) {
+        const auto max = std::max(abs(offset_x), abs(offset_y));
+        const auto min = std::min(abs(offset_x), abs(offset_y));
+        if (min != 0fp && diagonal_threshold != 0fp) {
             force_horizontal = max / min < 1 / diagonal_threshold;
         }
 
         if (force_horizontal || abs(offset_x) < abs(offset_y)) {
             offset_x = -units_dat::unit_bounds[townhallId].left * distance_multiplier;
-            offset_y = Sign(offset_y) * height;
+            offset_y = sign(offset_y) * height;
             horizontal = true;
         } else {
-            offset_x = Sign(offset_x) * width;
-            offset_y = units_dat::unit_bounds[townhallId].bottom * distance_multiplier * 1.5;
+            offset_x = sign(offset_x) * width;
+            offset_y = units_dat::unit_bounds[townhallId].bottom * distance_multiplier * 1.5fp;
             horizontal = false;
         }
 

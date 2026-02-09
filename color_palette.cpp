@@ -1,5 +1,5 @@
 #include "color_palette.h"
-#include "maths.h"
+#include "interpolation.h"
 
 Recolor default_recolor() {
 	return {
@@ -19,11 +19,11 @@ RecolorSet default_recolor_set() {
 }
 
 Recolor lerp_recolor(f32 t, Recolor a, Recolor b) {
-	a.r          = smoothstep(t, a.r,			 b.r);
-	a.g          = smoothstep(t, a.g,			 b.g);
-	a.b          = smoothstep(t, a.b,			 b.b);
-	a.gamma      = smoothstep(t, a.gamma,		 b.gamma);
-	a.saturation = smoothstep(t, a.saturation,   b.saturation);
+	a.r          = utils::smoothstep(t, a.r,			 b.r);
+	a.g          = utils::smoothstep(t, a.g,			 b.g);
+	a.b          = utils::smoothstep(t, a.b,			 b.b);
+	a.gamma      = utils::smoothstep(t, a.gamma,		 b.gamma);
+	a.saturation = utils::smoothstep(t, a.saturation,   b.saturation);
 	return a;
 }
 
@@ -35,7 +35,7 @@ Recolor lerpn_recolor(f32 t, Recolor* recolors, u32 count) {
 		return recolors[0];
 	}
 	u32 last = count - 1;
-	t = clamp(ease_in_out(t), 0, 1);
+	t = std::clamp<f32>(utils::ease_in_out(t), 0, 1);
 	t *= last;
 
 	u32 index = (u32)t;
@@ -47,8 +47,8 @@ Recolor lerpn_recolor(f32 t, Recolor* recolors, u32 count) {
 }
 
 static u8 mix_color(f32 base, f32 blend, f32 saturation, f32 brightness) {
-	base = smoothstep(saturation, brightness, base);
-	return clamp(base * blend, 0, 1) * 255;
+	base = utils::smoothstep(saturation, brightness, base);
+	return std::clamp<f32>(base * blend, 0, 1) * 255;
 }
 
 void set_palette_recolor(RecolorSet set) {

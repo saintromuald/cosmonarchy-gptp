@@ -379,8 +379,8 @@ namespace hooks {
         box.w = box_width;
         box.h = box_height;
 
-        box.x = Clamp(box.x, 0, g_map_width);
-        box.y = Clamp(box.y, 0, g_map_height);
+        box.x = std::clamp<s32>(box.x, 0, g_map_width);
+        box.y = std::clamp<s32>(box.y, 0, g_map_height);
 
         if (box.x + box.w >= g_map_width) {
             box.w = g_map_width - box.x;

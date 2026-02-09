@@ -179,7 +179,7 @@ bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, const TeleportOption
     if (!bw::check_unit_collision_pos(unit, &unit->position, &new_pos, &move_area, false, 0)) {
         return false;
     }
-    if (options.check_distance && target->get_distance_to_point(new_pos) > radius * 1.5) {
+    if (options.check_distance && target->get_distance_to_point(new_pos) > u32(radius * 1.5fp)) {
         return false;
     }
 
@@ -1177,7 +1177,7 @@ static bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
 
 fp32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {
     if (!can_use_cliff_advantage(unit, weapon)) {
-        return 0_fp32;
+        return 0fp;
     }
     Point16 unit_pos;
     if (unit_id_is_burrowed_attacker(unit->id)) {
@@ -1186,11 +1186,11 @@ fp32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_
         unit_pos = unit->position;
     }
     s32 source_height = g_height_table[g_map_tile_size->width * (unit_pos.y >> 5) + (unit_pos.x >> 5)];
-    fp32 multiplier = bw::get_game_kind() == GameKind::DarkAges ? 0.5_fp32 : 1_fp32;
+    fp32 multiplier = bw::get_game_kind() == GameKind::DarkAges ? 0.5fp : 1fp;
     if (!target_unit) {
         return std::max(source_height, 0) * multiplier;
     } else if (target_unit->is_in_air()) {
-        return 0_fp32;
+        return 0fp;
     }
     s32 target_height = g_height_table[g_map_tile_size->width * (target_unit->position.y >> 5) + (target_unit->position.x >> 5)];
     return std::max(source_height - target_height, 0) * multiplier;
@@ -1981,10 +1981,10 @@ AiScript* run_ai(u32 player, Box32 area, s32 name) {
 
 AiScript* run_ai(u32 player, Point16 pos, s32 name) {
     Box32 area = {};
-    area.left = pos.x - 2 * 32;
-    area.right = pos.x + 2 * 32;
-    area.top = pos.y - 1.5 * 32;
-    area.bottom = pos.y + 1.5 * 32;
+    area.left = pos.x - 2tiles;
+    area.right = pos.x + 2tiles;
+    area.top = pos.y - 1.5tiles;
+    area.bottom = pos.y + 1.5tiles;
     return run_ai(player, area, name);
 }
 
@@ -2894,7 +2894,7 @@ void find_closest_point_to_line(Vec32f from, Vec32f to, Vec32f point, f32* out_d
 
     f32 t = bw::dot_product(ab, ap);
     t /= bw::dot_product(ab, ab);
-    t = Clamp(t, 0, 1);
+    t = std::clamp<f32>(t, 0, 1);
 
     Vec32f cp = from;
     cp.x += ab.x * t;
@@ -2929,8 +2929,8 @@ std::optional<LineLineIntersect> line_line_intersection(Vec32f a0, Vec32f a1, Ve
     LineLineIntersect result = {};
     result.t =  ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
     result.u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom;
-    result.clamped_t = Clamp(result.t, 0, 1);
-    result.clamped_u = Clamp(result.u, 0, 1);
+    result.clamped_t = std::clamp<f32>(result.t, 0, 1);
+    result.clamped_u = std::clamp<f32>(result.u, 0, 1);
     result.cp = {
         x1 + (x2 - x1) * result.t,
         y1 + (y2 - y1) * result.t,
@@ -2972,8 +2972,8 @@ static std::pair<Vec32f, Vec32f> closest_points_on_segments(Vec32f a0, Vec32f a1
         s = (v21_2 * v21 - v22 * v21_1) / denom;
         t = (-v21_1 * v21 + v11 * v21_2) / denom;
     }
-    s = Clamp(s, 0, 1);
-    t = Clamp(t, 0, 1);
+    s = std::clamp<f32>(s, 0, 1);
+    t = std::clamp<f32>(t, 0, 1);
 
     Vec32f cp0 = {
         P1.x + V1.x * s,
@@ -4448,7 +4448,7 @@ bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id) {
 }
 
 fp32 calculate_dark_ages_penalty(fp32 range) {
-    return range - round(range * 0.8_fp32 / 2) * 2;
+    return range - round(range * 0.8fp / 2) * 2;
 }
 
 void zap_overlay(Unit* unit) {
@@ -4460,8 +4460,8 @@ void zap_overlay(Unit* unit) {
         s32 x_offset = bw::random() % width - width / 2;
         s32 y_offset = bw::random() % height - height / 2;
 
-        x_offset = Clamp(x_offset, -128, 127);
-        y_offset = Clamp(y_offset, -128, 127);
+        x_offset = std::clamp<s32>(x_offset, -128, 127);
+        y_offset = std::clamp<s32>(y_offset, -128, 127);
         Unit* overlay_unit = unit;
         if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
             overlay_unit = unit->subunit;

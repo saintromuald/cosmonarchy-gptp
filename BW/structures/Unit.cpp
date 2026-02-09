@@ -9,7 +9,6 @@
 #include "trigger_system/trigger_events.h"
 #include "trigger_system/trigger_system.h"
 #include <DatExtend/datext.h>
-#include "math_utils.h"
 #include "hooks/unit_stats/armor_bonus.h"
 #include "hooks/target_related.h"
 #include "data_ext.h"
@@ -413,7 +412,7 @@ void Unit::set_hitpoints(s32 hitpoints) {
     static u32 func_address = 0x00467340;
     assert(this);
 
-    hitpoints = Clamp(hitpoints, 0, units_dat::max_hitpoints[this->id]);
+    hitpoints = std::clamp<s32>(hitpoints, 0, units_dat::max_hitpoints[this->id]);
 
     __asm {
         PUSHAD
@@ -734,11 +733,11 @@ void Unit::spend_energy(u32 energy_spent) {
 }
 
 void Unit::add_unit_energy(u32 energy) {
-    this->energy = (u32)Clamp(this->energy + energy, 0, this->get_max_energy());
+    this->energy = std::clamp<u16>(this->energy + energy, 0, this->get_max_energy());
 }
 
 void Unit::add_unit_energy_capped(u32 energy, u32 energyMax) {
-    this->energy = (u32)Clamp(this->energy + energy, 0, energyMax);
+    this->energy = std::clamp<u16>(this->energy + energy, 0, energyMax);
 }
 
 // Identical to get_max_vitality @ 00402710

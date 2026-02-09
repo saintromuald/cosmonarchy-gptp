@@ -1,24 +1,13 @@
 #include "TheTurning.h"
 #include "BW/api.h"
+#include "interpolation.h"
 
 #include <ranges>
 
-static f32 Lerp(f32 t, f32 min, f32 max) {
-    return std::clamp((1 - t) * min + t * max, min, max);
-}
-
-static f32 InvLerp(f32 value, f32 min, f32 max) {
-    return std::clamp<f32>((value - min) / (max - min), 0, 1);
-}
-
-static f32 Map(f32 value, f32 in_min, f32 in_max, f32 out_min, f32 out_max) {
-    return Lerp(InvLerp(value, in_min, in_max), out_min, out_max);
-}
-
-f32 TheTurningGameMode::calculate_spawn_time_factor(UnitId::Enum unit_id) const {
-    f32 factor = 1;
-    factor += 0.05 * (g_elapsed_time_frames / 24.0 / 60.0); // 5% faster spawn every minute
-    factor += 0.01 * m_spawn_pool_size; // 1% faster for each unit in the pool
+fp32 TheTurningGameMode::calculate_spawn_time_factor(UnitId::Enum unit_id) const {
+    fp32 factor{1};
+    factor += 0.05fp * (g_elapsed_time_frames / 60secs); // 5% faster spawn every minute
+    factor += 0.01fp * m_spawn_pool_size; // 1% faster for each unit in the pool
 
     if (unit_id != UnitId::None) {
         u32 cost = units_dat::mineral_cost[unit_id] + units_dat::vespene_cost[unit_id];
@@ -31,7 +20,7 @@ f32 TheTurningGameMode::calculate_spawn_time_factor(UnitId::Enum unit_id) const 
         //     zealot   at 100 is 100/200 = 0.50 = 50%  time = 2x speed
         //     shaman   at 200 is 200/200 = 1.00 = 100% time = 1x speed
         //     minotaur at 650 is 650/200 = 3.25 = 325% time = 0.307x speed
-        factor *= cost / 200.0;
+        factor *= cost / 200.0fp;
     }
     
     factor /= bw::active_player_count(); // times the amount of players
@@ -39,21 +28,21 @@ f32 TheTurningGameMode::calculate_spawn_time_factor(UnitId::Enum unit_id) const 
 }
 
 void TheTurningGameMode::on_init() {
-    m_spawn_timer.start(DefaultSpawnTimer * calculate_spawn_time_factor());
+    m_spawn_timer.start(u32(DefaultSpawnTimer * calculate_spawn_time_factor()));
     m_wave_timer.start(WaveTimer);
 }
 
 void TheTurningGameMode::on_tick() {
     if (m_spawn_timer.elapsed()) {
         if (Unit* unit = spawn()) {
-            m_spawn_timer.start(DefaultSpawnTimer * calculate_spawn_time_factor(UnitId::Enum(unit->id)));
+            m_spawn_timer.start(u32(DefaultSpawnTimer * calculate_spawn_time_factor(UnitId::Enum(unit->id))));
         }
     }
 
     if (m_wave_timer.elapsed()) {
         m_wave_timer.start(WaveTimer);
 
-        f32 fraction = Map(g_elapsed_time_frames, WaveTimer, 5 * WaveTimer, 0.1, 0.6);
+        fp32 fraction = utils::map<fp32>(g_elapsed_time_frames, WaveTimer, 5fp * WaveTimer, 0.1fp, 0.6fp);
         auto units = g_unit_search.all().owned_by(NeutralHostilePlayer).filter_by([](Unit* unit) {
             UnitExt* unit_ext = get_unit_ext(unit);
             return !unit_ext->values[ValueTurningAggressiveMode];

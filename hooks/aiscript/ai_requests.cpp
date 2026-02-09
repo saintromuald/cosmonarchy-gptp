@@ -676,7 +676,7 @@ namespace hooks {
                 continue;
             }
             fp32 distance{helper::get_path_distance_to(unit, position)};
-            fp32 score = distance >= 1_fp32 ? force / distance : force;
+            fp32 score = distance >= 1fp ? force / distance : force;
             if (score > best_score) {
                 best_score = score;
                 best_unit = unit;

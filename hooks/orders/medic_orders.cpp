@@ -1,7 +1,6 @@
 #include "medic_orders.h"
 #include <BW/api.h>
 #include "globals.h"
-#include <math_utils.h>
 
 namespace hooks {
 	void orders_medic_heal2(Unit* unit) { // 00463740

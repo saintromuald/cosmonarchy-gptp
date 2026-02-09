@@ -9,8 +9,8 @@ struct SpawnCandidate {
 
 class TheTurningGameMode : public IGameMode {
 public:
-    static constexpr u32 DefaultSpawnTimer = 60 * 24;
-    static constexpr u32 WaveTimer = 3 * 60 * 24;
+    static constexpr u32 DefaultSpawnTimer = 60secs;
+    static constexpr u32 WaveTimer = 3mins;
 
     void on_init() override;
     void on_tick() override;
@@ -20,7 +20,7 @@ public:
 
 private:
     Unit* spawn();
-    f32 calculate_spawn_time_factor(UnitId::Enum unit_id = UnitId::None) const;
+    fp32 calculate_spawn_time_factor(UnitId::Enum unit_id = UnitId::None) const;
 
 private:
     u32 m_spawn_pool_size = 0;
