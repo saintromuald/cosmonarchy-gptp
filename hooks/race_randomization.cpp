@@ -47,6 +47,12 @@ static std::span<const RaceId::Enum> to_span(const SelectedRacesArray& race_arra
 }
 
 static RaceId::Enum random_from(std::span<const RaceId::Enum> races) {
+    if (!g_multiplayer_mode) {
+        // Use local randoms in singleplayer so we don't get the same result repeatedly when restarting
+        // Sync randoms isn't seeded at this stage in singleplayer
+        // This doesn't break replays as they contain the final race assignment data
+        return races[bw::rand_between_local(0, races.size() - 1)];
+    }
     return races[bw::rand_between(0, races.size() - 1)];
 }
 
