@@ -809,8 +809,7 @@ namespace hooks {
 
 	// Hooked to do a silly imlpementation of the Artisan revision. -Pr0nogo
 	s32 order_to_move_to_target(Unit* target, Unit* unit) { // 004EB980
-		UnitExt* unit_ext = get_unit_ext(unit);
-		if (unit_ext->timers[TimerArtisanReturn]) {
+		if (unit->ext().timers[TimerArtisanReturn]) {
 			return 0;
 		}
 		s32 result = helper::move_to_target(target, unit);
