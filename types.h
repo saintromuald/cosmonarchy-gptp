@@ -59,7 +59,7 @@ inline void init_float_precision() {
 using fp32 = fpm::fixed<s32, s64, 12>;
 using fp64 = fpm::fixed<s64, boost::int128::int128_t, 32>;
 
-inline fp32 operator""_fp32(unsigned long long f) { return fp32{f}; }
-inline fp64 operator""_fp64(unsigned long long f) { return fp64{f}; }
+inline fp32 operator""_fp32(unsigned long long f) { return fp32{s32(f)}; }
+inline fp64 operator""_fp64(unsigned long long f) { return fp64{s64(f)}; }
 inline fp32 operator""_fp32(long double f) { return fp32{f}; }
 inline fp64 operator""_fp64(long double f) { return fp64{f}; }
